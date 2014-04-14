@@ -7069,6 +7069,33 @@ int combo_points_t::consume( const std::string* source_name )
   return tmp_count;
 }
 
+/* Report Extension Class
+ * Here you can define class specific report extensions/overrides
+ */
+class druid_report_t : public player_report_extension_t
+{
+public:
+  druid_report_t( druid_t& player ) :
+      p( player )
+  {
+
+  }
+
+  virtual void html_customsection( report::sc_html_stream& /* os*/ ) override
+  {
+    /*// Custom Class Section
+    os << "\t\t\t\t<div class=\"player-section custom_section\">\n"
+        << "\t\t\t\t\t<h3 class=\"toggle open\">Custom Section</h3>\n"
+        << "\t\t\t\t\t<div class=\"toggle-content\">\n";
+
+    os << p.name();
+
+    os << "\t\t\t\t\t\t</div>\n" << "\t\t\t\t\t</div>\n";*/
+  }
+private:
+  druid_t& p;
+};
+
 // DRUID MODULE INTERFACE ===================================================
 
 struct druid_module_t : public module_t
@@ -7077,7 +7104,9 @@ struct druid_module_t : public module_t
 
   virtual player_t* create_player( sim_t* sim, const std::string& name, race_e r = RACE_NONE ) const
   {
-    return new druid_t( sim, name, r );
+    druid_t* p = new druid_t( sim, name, r );
+    p -> report_extension = std::shared_ptr<player_report_extension_t>( new druid_report_t( *p ) );
+    return p;
   }
   virtual bool valid() const { return true; }
   virtual void init( sim_t* sim ) const

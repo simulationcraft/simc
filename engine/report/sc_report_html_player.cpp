@@ -2538,6 +2538,14 @@ void print_html_player_buffs( report::sc_html_stream& os, player_t* p, player_pr
 
 }
 
+void print_html_player_custom_section( report::sc_html_stream& os, player_t* p, player_processed_report_information_t& /*ri*/ )
+{
+
+  p->report_extension -> html_customsection( os );
+
+
+}
+
 // print_html_player ========================================================
 
 void print_html_player_description( report::sc_html_stream& os, sim_t* sim, player_t* p, int j )
@@ -3510,6 +3518,8 @@ void print_html_player_( report::sc_html_stream& os, sim_t* sim, player_t* p, in
   print_html_player_abilities( os, p );
 
   print_html_player_buffs( os, p, p -> report_information );
+
+  print_html_player_custom_section( os, p, p -> report_information );
 
   print_html_player_resources( os, p, p -> report_information );
 

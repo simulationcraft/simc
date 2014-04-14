@@ -5693,6 +5693,33 @@ set_e priest_t::decode_set( const item_t& item ) const
   return SET_NONE;
 }
 
+/* Report Extension Class
+ * Here you can define class specific report extensions/overrides
+ */
+class priest_report_t : public player_report_extension_t
+{
+public:
+  priest_report_t( priest_t& player ) :
+      p( player )
+  {
+
+  }
+
+  virtual void html_customsection( report::sc_html_stream& /* os*/ ) override
+  {
+    /*// Custom Class Section
+    os << "\t\t\t\t<div class=\"player-section custom_section\">\n"
+        << "\t\t\t\t\t<h3 class=\"toggle open\">Custom Section</h3>\n"
+        << "\t\t\t\t\t<div class=\"toggle-content\">\n";
+
+    os << p.name();
+
+    os << "\t\t\t\t\t\t</div>\n" << "\t\t\t\t\t</div>\n";*/
+  }
+private:
+  priest_t& p;
+};
+
 // PRIEST MODULE INTERFACE ==================================================
 
 struct priest_module_t : public module_t
@@ -5701,7 +5728,9 @@ struct priest_module_t : public module_t
 
   virtual player_t* create_player( sim_t* sim, const std::string& name, race_e r = RACE_NONE ) const override
   {
-    return new priest_t( sim, name, r );
+    priest_t* p = new priest_t( sim, name, r );
+    p -> report_extension = std::shared_ptr<player_report_extension_t>( new priest_report_t( *p ) );
+    return p;
   }
   virtual bool valid() const override { return true; }
   virtual void init( sim_t* sim ) const override

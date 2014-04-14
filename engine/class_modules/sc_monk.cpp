@@ -4159,6 +4159,33 @@ const spell_data_t& monk_t::active_stance_data( stance_e stance ) const
   return static_stance_data( stance );
 }
 
+/* Report Extension Class
+ * Here you can define class specific report extensions/overrides
+ */
+class monk_report_t : public player_report_extension_t
+{
+public:
+  monk_report_t( monk_t& player ) :
+      p( player )
+  {
+
+  }
+
+  virtual void html_customsection( report::sc_html_stream& /* os*/ ) override
+  {
+    /*// Custom Class Section
+    os << "\t\t\t\t<div class=\"player-section custom_section\">\n"
+        << "\t\t\t\t\t<h3 class=\"toggle open\">Custom Section</h3>\n"
+        << "\t\t\t\t\t<div class=\"toggle-content\">\n";
+
+    os << p.name();
+
+    os << "\t\t\t\t\t\t</div>\n" << "\t\t\t\t\t</div>\n";*/
+  }
+private:
+  monk_t& p;
+};
+
 // MONK MODULE INTERFACE ====================================================
 
 struct monk_module_t : public module_t
@@ -4167,7 +4194,9 @@ struct monk_module_t : public module_t
 
   virtual player_t* create_player( sim_t* sim, const std::string& name, race_e r = RACE_NONE ) const
   {
-    return new monk_t( sim, name, r );
+    monk_t* p = new monk_t( sim, name, r );
+    p -> report_extension = std::shared_ptr<player_report_extension_t>( new monk_report_t( *p ) );
+    return p;
   }
   virtual bool valid() const { return true; }
   virtual void init        ( sim_t* ) const {}

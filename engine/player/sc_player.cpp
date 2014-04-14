@@ -438,6 +438,7 @@ player_t::player_t( sim_t*             s,
   no_action_list_provided(),
   // Reporting
   quiet( false ),
+  report_extension( new player_report_extension_t() ),
   iteration_fight_length( timespan_t::zero() ), arise_time( timespan_t::min() ),
   iteration_waiting_time( timespan_t::zero() ), iteration_executed_foreground_actions( 0 ),
   rps_gain( 0 ), rps_loss( 0 ),

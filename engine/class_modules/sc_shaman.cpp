@@ -6091,6 +6091,33 @@ role_e shaman_t::primary_role() const
   return player_t::primary_role();
 }
 
+/* Report Extension Class
+ * Here you can define class specific report extensions/overrides
+ */
+class shaman_report_t : public player_report_extension_t
+{
+public:
+  shaman_report_t( shaman_t& player ) :
+      p( player )
+  {
+
+  }
+
+  virtual void html_customsection( report::sc_html_stream& /* os*/ ) override
+  {
+    /*// Custom Class Section
+    os << "\t\t\t\t<div class=\"player-section custom_section\">\n"
+        << "\t\t\t\t\t<h3 class=\"toggle open\">Custom Section</h3>\n"
+        << "\t\t\t\t\t<div class=\"toggle-content\">\n";
+
+    os << p.name();
+
+    os << "\t\t\t\t\t\t</div>\n" << "\t\t\t\t\t</div>\n";*/
+  }
+private:
+  shaman_t& p;
+};
+
 // SHAMAN MODULE INTERFACE ==================================================
 
 struct shaman_module_t : public module_t
@@ -6099,7 +6126,9 @@ struct shaman_module_t : public module_t
 
   virtual player_t* create_player( sim_t* sim, const std::string& name, race_e r = RACE_NONE ) const
   {
-    return new shaman_t( sim, name, r );
+    shaman_t* p = new shaman_t( sim, name, r );
+    p -> report_extension = std::shared_ptr<player_report_extension_t>( new shaman_report_t( *p ) );
+    return p;
   }
   virtual bool valid() const { return true; }
   virtual void init( sim_t* sim ) const

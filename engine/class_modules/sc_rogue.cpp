@@ -3905,6 +3905,33 @@ set_e rogue_t::decode_set( const item_t& item ) const
   return SET_NONE;
 }
 
+/* Report Extension Class
+ * Here you can define class specific report extensions/overrides
+ */
+class rogue_report_t : public player_report_extension_t
+{
+public:
+  rogue_report_t( rogue_t& player ) :
+      p( player )
+  {
+
+  }
+
+  virtual void html_customsection( report::sc_html_stream& /* os*/ ) override
+  {
+    /*// Custom Class Section
+    os << "\t\t\t\t<div class=\"player-section custom_section\">\n"
+        << "\t\t\t\t\t<h3 class=\"toggle open\">Custom Section</h3>\n"
+        << "\t\t\t\t\t<div class=\"toggle-content\">\n";
+
+    os << p.name();
+
+    os << "\t\t\t\t\t\t</div>\n" << "\t\t\t\t\t</div>\n";*/
+  }
+private:
+  rogue_t& p;
+};
+
 // ROGUE MODULE INTERFACE ===================================================
 
 struct rogue_module_t : public module_t
@@ -3913,7 +3940,9 @@ struct rogue_module_t : public module_t
 
   virtual player_t* create_player( sim_t* sim, const std::string& name, race_e r = RACE_NONE ) const
   {
-    return new rogue_t( sim, name, r );
+    rogue_t* p = new rogue_t( sim, name, r );
+    p -> report_extension = std::shared_ptr<player_report_extension_t>( new rogue_report_t( *p ) );
+    return p;
   }
 
   virtual bool valid() const
