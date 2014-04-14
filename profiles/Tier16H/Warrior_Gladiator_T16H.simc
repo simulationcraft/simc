@@ -1,0 +1,64 @@
+warrior="Warrior_Protection_T16H"
+level=90
+race=orc
+role=tank
+position=back
+professions=enchanting=600/inscription=600
+talents=http://us.battle.net/wow/en/tool/talent-calculator#Zb!.00110.
+glyphs=unending_rage
+spec=protection
+
+# This default action priority list is automatically created based on your character.
+# It is a attempt to provide you with a action list that is both simple and practicable,
+# while resulting in a meaningful and good simulation. It may not result in the absolutely highest possible dps.
+# Feel free to edit, adapt and improve it to your own needs.
+# SimulationCraft is always looking for updates and improvements to the default action lists.
+
+# Executed before combat begins. Accepts non-harmful actions only.
+
+actions.precombat=flask,type=winters_bite
+actions.precombat+=/food,type=black_pepper_ribs_and_shrimp
+# Snapshot raid buffed stats before combat begins and pre-potting is done.
+actions.precombat+=/snapshot_stats
+actions.precombat+=/stance,choose=gladiator
+actions.precombat+=/mogu_power_potion
+
+# Executed every time the actor is available.
+
+actions=charge
+actions+=/auto_attack
+actions+=shield_charge,if=rage>60
+actions+=shield_slam,if=buff.shield_charge.up
+actions+=revenge,if=buff.shield_charge.up
+actions+=heroic_strike,if=rage>100|buff.shield_charge.up
+
+head=faceguard_of_the_prehistoric_marauder,id=99409,stats=5617armor_2290str_3795sta_1567parry_1567mastery,gems=indomitable_primal_320parry_270sta
+neck=blackfuses_blasting_cord,id=105622,stats=1490str_2236sta_994parry_994exp
+shoulders=shoulderguards_of_the_prehistoric_marauder,id=99407,stats=5185armor_1720str_2820sta_1192exp_1142mastery,gems=320parry_320parry_120str,enchant=780sta_100dodge
+back=qianying_fortitude_of_niuzao,id=102250,stats=1555armor_1855str_2902sta_991parry_991exp_991mastery,gems=320parry_90sta,enchant=200sta
+chest=earthbreakers_steaming_chestplate,id=105512,stats=7021armor_2435str_4013sta_1664dodge_1664parry,gems=320parry_320dodge_160parry_160hit_180dodge,enchant=300sta
+wrists=bracers_of_sordid_sleep,id=105415,stats=3072armor_1490str_2236sta_994dodge_994parry,enchant=170dodge
+hands=handguards_of_the_prehistoric_marauder,id=99408,stats=4321armor_1720str_2820sta_856exp_1365mastery,gems=320parry_320parry_120str,enchant=150sta
+waist=untarnishable_greatbelt,id=105587,stats=3949armor_1827str_2981sta_1019parry_1378mastery,gems=320parry_320dodge_320parry_120str
+legs=legguards_of_the_prehistoric_marauder,id=99410,stats=6049armor_2370str_3795sta_1482parry_1681hit,gems=320dodge_320dodge_180sta,enchant=430sta_165dodge
+feet=treads_of_unchained_hate,id=105414,stats=4827armor_1907str_2981sta_1370parry_1147hit,gems=320parry_60dodge,enchant=140mastery
+finger1=galakrond_control_band,id=105492,stats=1410str_2236sta_953dodge_945parry,gems=160parry_160hit_60parry,enchant=160sta
+finger2=ring_of_the_iron_tomb,id=105536,stats=1410str_2236sta_1036dodge_832hit,gems=320dodge_60dodge,enchant=160sta
+trinket1=vial_of_living_corruption,id=105568,upgrade=2
+trinket2=curse_of_hubris,id=105645,upgrade=2
+main_hand=encapsulated_essence_of_immerseus,id=105417,stats=1066str_1720sta_724dodge_724parry,weapon=mace_2.6speed_13192min_24500max,gems=320parry_60str,enchant=rivers_song
+off_hand=shield_of_mockery,id=105481,stats=22519armor_1410str_2236sta_930dodge_978parry,gems=320parry_60str,enchant=170parry
+
+# Gear Summary
+# gear_strength=24880
+# gear_stamina=42349
+# gear_expertise_rating=4033
+# gear_hit_rating=3980
+# gear_mastery_rating=6583
+# gear_armor=64115
+# gear_dodge_rating=8636
+# gear_parry_rating=17118
+# meta_gem=indomitable_primal
+# tier16_2pc_tank=1
+# tier16_4pc_tank=1
+# main_hand=encapsulated_essence_of_immerseus,heroic=1,elite=1,weapon=mace_2.6speed_13192min_24500max,enchant=rivers_song

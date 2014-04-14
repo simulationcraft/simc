@@ -181,9 +181,12 @@ public:
   struct procs_t
   {
     proc_t* raging_blow_wasted;
-    proc_t* taste_for_blood_wasted;
+    proc_t* shield_charge_wasted;
     proc_t* strikes_of_opportunity;
     proc_t* sudden_death;
+    proc_t* taste_for_blood_wasted;
+
+
     proc_t* t15_2pc_melee;
   } proc;
 
@@ -1447,7 +1450,7 @@ struct execute_t : public warrior_attack_t
     // Include the weapon so we benefit from seasoned soldier.
     weapon             = &( player -> main_hand_weapon );
     weapon_multiplier  = 0;
-    base_multiplier *= 1.0 + p -> perk.empowered_execute -> effectN( 1 ).percent();
+    base_multiplier   *= 1.0 + p -> perk.empowered_execute -> effectN( 1 ).percent();
   }
 
   virtual double cost() const
@@ -1500,36 +1503,12 @@ struct ignite_weapon_t : public warrior_attack_t
     use_off_gcd = true;
   }
 
-  virtual double cost() const
-  {
-    double c = warrior_attack_t::cost();
-    const warrior_t* p = cast();
-
-    if ( p -> buff.ultimatum -> check() )
-      c *= 1 + p -> buff.ultimatum -> data().effectN( 1 ).percent();
-
-    return c;
-  }
-
-  virtual double crit_chance( double crit, int delta_level ) const
-  {
-    double cc = warrior_attack_t::crit_chance( crit, delta_level );
-
-    const warrior_t* p = cast();
-
-    if ( p -> buff.ultimatum -> check() )
-      cc += p -> buff.ultimatum -> data().effectN( 2 ).percent();
-
-    return cc;
-  }
-
   virtual void execute()
   {
     warrior_t* p = cast();
 
     warrior_attack_t::execute();
 
-    p -> buff.ultimatum -> expire();
     p -> buff.ignite_weapon -> trigger();
   }
 };
@@ -1558,6 +1537,21 @@ struct heroic_strike_t : public warrior_attack_t
       background = true;
 
     use_off_gcd = true;
+  }
+
+  virtual double action_multiplier() const
+  {
+    double am = warrior_attack_t::action_multiplier();
+
+    const warrior_t* p = cast();
+
+    if( p -> buff.shield_charge -> up() )
+    {
+      am *= 1.0 + p -> buff.shield_charge -> default_value;
+      p -> buff.shield_charge -> decrement();
+    }
+
+    return am;
   }
 
   virtual double cost() const
@@ -2042,6 +2036,21 @@ struct revenge_t : public warrior_attack_t
     base_multiplier *= 1.0 + p -> perk.improved_revenge -> effectN( 1 ).percent();
   }
 
+  virtual double action_multiplier() const
+  {
+    double am = warrior_attack_t::action_multiplier();
+
+    const warrior_t* p = cast();
+
+    if( p -> buff.shield_charge -> up() )
+    {
+      am *= 1.0 + p -> buff.shield_charge -> default_value;
+      p -> buff.shield_charge -> decrement();
+    }
+
+    return am;
+  }
+
   virtual void execute()
   {
     warrior_attack_t::execute();
@@ -2093,6 +2102,46 @@ struct second_wind_t : public heal_t // SW has been changed to life-leech in WoD
 
 };
 
+// Shield Charge ============================================================
+
+struct shield_charge_t : public warrior_attack_t
+{
+  shield_charge_t( warrior_t* p, const std::string& options_str ) :
+    warrior_attack_t( "shield_charge", p, p -> find_spell( 156321 ) )
+  {
+   parse_options( NULL, options_str );
+
+   if ( !p -> buff.gladiator_stance -> check() )
+     background = true;
+
+    base_teleport_distance = data().max_range();
+    movement_directionality = MOVEMENT_OMNI;
+  }
+
+  
+  virtual void execute()
+  {
+    warrior_attack_t::execute();
+
+    warrior_t* p = cast();
+    if ( p -> buff.shield_charge -> stack() == p -> buff.shield_charge -> max_stack() )
+      p -> proc.shield_charge_wasted -> occur();
+
+    p -> buff.shield_charge -> trigger();
+
+  }
+
+  virtual bool ready()
+  {
+    warrior_t* p = cast();
+
+    if ( p -> current.distance_to_move > base_teleport_distance )
+      return false;
+
+    return warrior_attack_t::ready();
+  }
+};
+
 // Shield Slam ==============================================================
 
 struct shield_slam_t : public warrior_attack_t
@@ -2119,6 +2168,20 @@ struct shield_slam_t : public warrior_attack_t
     base_multiplier *= 1.0 + p -> perk.improved_shield_slam -> effectN( 1 ).percent();
   }
 
+  virtual double action_multiplier() const
+  {
+    double am = warrior_attack_t::action_multiplier();
+
+    const warrior_t* p = cast();
+
+    if( p -> buff.shield_charge -> up() )
+    {
+      am *= 1.0 + p -> buff.shield_charge -> default_value;
+      p -> buff.shield_charge -> decrement();
+    }
+
+    return am;
+  }
 
   virtual void execute()
   {
@@ -2841,7 +2904,8 @@ struct shield_block_t : public warrior_spell_t
     warrior_spell_t( "shield_block", p, p -> find_class_spell( "Shield Block" ) )
   {
     parse_options( NULL, options_str );
-
+    if ( p -> buff.gladiator_stance -> check() )
+      background = true;
     harmful = false;
     cooldown -> duration = timespan_t::from_seconds( 9.0 );
     cooldown -> charges = 2;
@@ -3207,7 +3271,7 @@ action_t* warrior_t::create_action( const std::string& name,
   if ( name == "revenge"            ) return new revenge_t            ( this, options_str );
   if ( name == "shield_barrier"     ) return new shield_barrier_t     ( this, options_str );
   if ( name == "shield_block"       ) return new shield_block_t       ( this, options_str );
-  //if ( name == "shield_charge"      ) return new shield_charge_t      ( this, options_str );
+  if ( name == "shield_charge"      ) return new shield_charge_t      ( this, options_str );
   if ( name == "shield_wall"        ) return new shield_wall_t        ( this, options_str );
   if ( name == "shield_slam"        ) return new shield_slam_t        ( this, options_str );
   if ( name == "shockwave"          ) return new shockwave_t          ( this, options_str );
@@ -3892,7 +3956,8 @@ void warrior_t::create_buffs()
 
   buff.shield_charge    = buff_creator_t( this, "shield_charge" ).spell( find_spell( 156321 ) )
                           .max_stack( 2 )
-                          .chance( 1 );
+                          .chance( 1 )
+                          .default_value( find_spell( 156321 ) -> effectN( 2 ).percent() );
                           
 
   buff.shield_wall      = buff_creator_t( this, "shield_wall", find_class_spell( "Shield Wall" ) )
@@ -3980,7 +4045,7 @@ void warrior_t::init_procs()
   proc.sudden_death            = get_proc( "sudden_death"            );
   proc.taste_for_blood_wasted  = get_proc( "taste_for_blood_wasted"  );
   proc.raging_blow_wasted      = get_proc( "raging_blow_wasted"      );
-
+  proc.shield_charge_wasted    = get_proc( "shield_charge_wasted"    );
   proc.t15_2pc_melee           = get_proc( "t15_2pc_melee"           );
 }
 
