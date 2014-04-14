@@ -5940,6 +5940,7 @@ void shaman_t::reset()
   ls_reset = timespan_t::zero();
   active_flame_shocks = 0;
   lava_surge_during_lvb = false;
+  rppm_echo_of_the_elements.reset();
 }
 
 // shaman_t::decode_set =====================================================
