@@ -815,13 +815,13 @@ void warrior_attack_t::consume_resource()
     //use can be looked at as wasted resources. I'll hopefully have a better way of showing it in the results page in the future, or I may remove it if I find it unnecessary.
     // At the least I will shorten the names :) 
     if ( rage >  p -> cooldown.heroic_leap -> remains().total_seconds() )
-      p -> resource_gain( RESOURCE_RAGE, rage - p -> cooldown.heroic_leap -> remains().total_seconds() , p -> gain.reduced_cooldown_heroic_leap );
+      p -> gain.reduced_cooldown_heroic_leap -> add( RESOURCE_RAGE, rage - p -> cooldown.heroic_leap -> remains().total_seconds() , 0 );
     if ( rage >  p -> cooldown.recklessness -> remains().total_seconds() )
-      p -> resource_gain( RESOURCE_RAGE, rage - p -> cooldown.recklessness -> remains().total_seconds() , p -> gain.reduced_cooldown_recklessness );
+      p -> gain.reduced_cooldown_recklessness -> add( RESOURCE_RAGE, rage - p -> cooldown.recklessness -> remains().total_seconds() , 0 );
     if ( rage >  p -> cooldown.storm_bolt -> remains().total_seconds() )
-      p -> resource_gain( RESOURCE_RAGE, rage - p -> cooldown.storm_bolt -> remains().total_seconds() , p -> gain.reduced_cooldown_storm_bolt );
+      p -> gain.reduced_cooldown_storm_bolt -> add( RESOURCE_RAGE, rage - p -> cooldown.storm_bolt -> remains().total_seconds() , 0 );
     if ( rage >  p -> cooldown.bladestorm -> remains().total_seconds() )
-      p -> resource_gain( RESOURCE_RAGE, rage - p -> cooldown.bladestorm -> remains().total_seconds() , p -> gain.reduced_cooldown_bladestorm );
+      p -> gain.reduced_cooldown_bladestorm -> add( RESOURCE_RAGE, rage - p -> cooldown.bladestorm -> remains().total_seconds() , 0 );
 
     rage *= -1;
     p -> cooldown.heroic_leap -> adjust( timespan_t::from_seconds( rage ) );
