@@ -187,7 +187,8 @@ const struct expr_data_map_t
   { "mastery", DATA_MASTERY_SPELL },
   { "spec_spell", DATA_SPECIALIZATION_SPELL },
   { "glyph", DATA_GLYPH_SPELL },
-  { "set_bonus", DATA_SET_BONUS_SPELL }
+  { "set_bonus", DATA_SET_BONUS_SPELL },
+  { "perk_spell", DATA_PERK_SPELL },
 };
 
 expr_data_e parse_data_type( const std::string& name )
@@ -408,6 +409,24 @@ struct spell_list_expr_t : public spell_data_expr_t
             for ( unsigned n = 0; n < sim -> dbc.set_bonus_spell_size(); n++ )
             {
               if ( ! ( spell_id = sim -> dbc.set_bonus_spell( cls, tier, n ) ) )
+                continue;
+
+              result_spell_list.push_back( spell_id );
+            }
+          }
+        }
+        break;
+      }
+
+      case DATA_PERK_SPELL:
+      {
+        for ( unsigned cls = 0; cls < sim -> dbc.specialization_max_class(); cls++ )
+        {
+          for ( unsigned tree = 0; tree < sim -> dbc.specialization_max_per_class(); tree++ )
+          {
+          for ( unsigned n = 0; n < sim -> dbc.perk_ability_size(); n++ )
+          {
+              if ( ! ( spell_id = sim -> dbc.perk_ability( cls, tree, n ) ) )
                 continue;
 
               result_spell_list.push_back( spell_id );
