@@ -188,7 +188,7 @@ std::string item_t::to_string()
     s << " }";
   }
 
-  if ( socket_color_match() )
+  if ( socket_color_match() && parsed.socket_bonus_stats.size() > 0 )
   {
     s << " socket_bonus={ ";
 
