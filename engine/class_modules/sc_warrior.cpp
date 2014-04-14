@@ -1396,7 +1396,8 @@ struct devastate_t : public warrior_attack_t
 struct dragon_roar_t : public warrior_attack_t
 {
   dragon_roar_t( warrior_t* p, const std::string& options_str ) :
-    warrior_attack_t( "dragon_roar", p, p -> talents.dragon_roar)
+    warrior_attack_t( "dragon_roar", p, p -> find_spell( 118000 ) ) // p -> talents.dragon_roar seems to fail for protection spec at level 100
+                                                                    // It works at level 90, and it works at level 100 for fury/arms.
   {
     parse_options( NULL, options_str );
     aoe = -1;
@@ -1744,7 +1745,7 @@ struct impending_victory_t : public warrior_attack_t
   {
     warrior_t* p = cast();
 
-    if ( p -> talents.impending_victory ->ok() && p -> buff.tier15_2pc_tank -> check() )
+    if ( p -> talents.impending_victory -> ok() && p -> buff.tier15_2pc_tank -> check() )
       return true;
 
     return warrior_attack_t::ready();
@@ -2109,13 +2110,16 @@ struct shield_charge_t : public warrior_attack_t
   shield_charge_t( warrior_t* p, const std::string& options_str ) :
     warrior_attack_t( "shield_charge", p, p -> find_spell( 156321 ) )
   {
-   parse_options( NULL, options_str );
+    parse_options( NULL, options_str );
 
-   if ( !p -> buff.gladiator_stance -> check() )
-     background = true;
+    if ( p -> active_stance == STANCE_DEFENSE )
+      background = true;
 
     base_teleport_distance = data().max_range();
     movement_directionality = MOVEMENT_OMNI;
+
+    harmful = false;
+    use_off_gcd = true;
   }
 
   
@@ -2158,12 +2162,9 @@ struct shield_slam_t : public warrior_attack_t
 
     rage_gain = data().effectN( 3 ).resource( RESOURCE_RAGE );
 
-    stats -> add_child( player -> get_stats( "shield_slam_combust" ) );
+    //stats -> add_child( player -> get_stats( "shield_slam_combust" ) ); // What is this even for?
 
-    // Assumption: player level stays constant
-    // Values taken from tooltip: 2013/05/22
-    attack_power_mod.direct = ( std::max( p -> level, 85 ) * 0.75 ) + ( std::max( p -> level, 80 ) * 0.4 ) + 0.35;
-    attack_power_mod.direct /= 100.0; // assumption, not clear from tooltip
+    attack_power_mod.direct = 2.8; // Hard coded 4/14/14 as DBC doesn't show this.
 
     base_multiplier *= 1.0 + p -> perk.improved_shield_slam -> effectN( 1 ).percent();
   }
@@ -2904,7 +2905,7 @@ struct shield_block_t : public warrior_spell_t
     warrior_spell_t( "shield_block", p, p -> find_class_spell( "Shield Block" ) )
   {
     parse_options( NULL, options_str );
-    if ( p -> buff.gladiator_stance -> check() )
+    if ( p -> active_stance == STANCE_GLADIATOR )
       background = true;
     harmful = false;
     cooldown -> duration = timespan_t::from_seconds( 9.0 );
@@ -4136,7 +4137,7 @@ void warrior_t::combat_begin()
   if ( active_stance == STANCE_BATTLE && ! buff.battle_stance -> check() )
     buff.battle_stance -> trigger();
 
-  if ( specialization() == WARRIOR_PROTECTION && !buff.gladiator_stance -> check() )
+  if ( specialization() == WARRIOR_PROTECTION && active_stance == STANCE_DEFENSE )
     vengeance_start();
 
 }
@@ -4161,7 +4162,7 @@ double warrior_t::composite_player_multiplier( school_e school ) const
   if ( buff.avatar -> up() )
     m *= 1.0 + buff.avatar -> data().effectN( 1 ).percent();
 
-  if ( buff.gladiator_stance -> up() )
+  if ( active_stance == STANCE_GLADIATOR )
     m *= 1.0 + buff.gladiator_stance -> data().effectN( 1 ).percent();
 
   return m;
