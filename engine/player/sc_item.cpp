@@ -591,7 +591,7 @@ std::string item_t::encoded_gems()
     return option_gems_str;
 
   std::string stats_str = stat_pairs_to_str( parsed.gem_stats );
-  if ( socket_color_match() )
+  if ( socket_color_match() && parsed.socket_bonus_stats.size() > 0 )
   {
     if ( ! stats_str.empty() )
       stats_str += "_";
