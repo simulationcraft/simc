@@ -27,10 +27,10 @@ actions.precombat+=/mogu_power_potion
 
 actions=charge
 actions+=/auto_attack
-actions+=shield_charge,if=rage>60
-actions+=shield_slam,if=buff.shield_charge.up
-actions+=revenge,if=buff.shield_charge.up
-actions+=heroic_strike,if=rage>100|buff.shield_charge.up
+actions+=/shield_charge,if=rage>60
+actions+=/shield_slam,if=buff.shield_charge.up
+actions+=/revenge,if=buff.shield_charge.up
+actions+=/heroic_strike,if=rage>100|buff.shield_charge.up
 
 head=faceguard_of_the_prehistoric_marauder,id=99409,stats=5617armor_2290str_3795sta_1567parry_1567mastery,gems=indomitable_primal_320parry_270sta
 neck=blackfuses_blasting_cord,id=105622,stats=1490str_2236sta_994parry_994exp
