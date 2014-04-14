@@ -1302,6 +1302,65 @@ std::ostream& stream_printf( std::ostream&, const char* format, ... );
 // Include IO Module
 #include "util/io.hpp"
 
+// Report ===================================================================
+
+namespace report
+{
+class indented_stream : public io::ofstream
+{
+  int level_;
+  virtual const char* _tabs() const = 0;
+
+public:
+  indented_stream() : level_( 0 ) {}
+
+  int level() const { return level_; }
+  void set_level( int l ) { level_ = l; }
+
+  indented_stream& tabs()
+  {
+    *this << _tabs();
+    return *this;
+  }
+
+  ofstream& operator+=( int c ) { assert( level_ + c >= 0 ); level_ += c; return *this; }
+  ofstream& operator-=( int c ) { assert( level_ - c >= 0 ); level_ -= c; return *this; }
+
+  ofstream& operator++() { ++level_; return *this; }
+  ofstream& operator--() { assert( level_ > 0 ); --level_; return *this; }
+};
+
+struct sc_html_stream : public indented_stream
+{
+  virtual const char* _tabs() const
+  {
+    switch ( level() )
+    {
+      case  0: return "";
+      case  1: return "\t";
+      case  2: return "\t\t";
+      case  3: return "\t\t\t";
+      case  4: return "\t\t\t\t";
+      case  5: return "\t\t\t\t\t";
+      case  6: return "\t\t\t\t\t\t";
+      case  7: return "\t\t\t\t\t\t\t";
+      case  8: return "\t\t\t\t\t\t\t\t";
+      case  9: return "\t\t\t\t\t\t\t\t\t";
+      case 10: return "\t\t\t\t\t\t\t\t\t\t";
+      case 11: return "\t\t\t\t\t\t\t\t\t\t\t";
+      case 12: return "\t\t\t\t\t\t\t\t\t\t\t\t";
+      default: assert( 0 ); return NULL;
+    }
+  }
+};
+
+// In the end we will restore the simplicity of the code structure, but for now these are duplicated here.
+void print_spell_query( sim_t*, unsigned level );
+void print_profiles( sim_t* );
+void print_text( FILE*, sim_t*, bool detail );
+void print_suite( sim_t* );
+};
+
 // Spell information struct, holding static functions to output spell data in a human readable form
 
 namespace spell_info
@@ -3932,6 +3991,24 @@ private:
   }
 };
 
+/* Player Report Extension
+ * Allows class modules to write extension to the report sections
+ * based on the dynamic class of the player
+ */
+
+class player_report_extension_t
+{
+public:
+  virtual ~player_report_extension_t()
+  {
+
+  }
+  virtual void html_customsection( report::sc_html_stream& )
+  {
+
+  }
+};
+
 // Player ===================================================================
 
 struct player_t : public actor_t
@@ -4122,6 +4199,7 @@ struct player_t : public actor_t
 
   bool quiet;
   // Reporting
+  std::shared_ptr<player_report_extension_t> report_extension;
   timespan_t iteration_fight_length, arise_time;
   timespan_t iteration_waiting_time;
   int       iteration_executed_foreground_actions;
@@ -6203,17 +6281,6 @@ namespace consumable
 {
 action_t* create_action( player_t*, const std::string& name, const std::string& options );
 }
-
-// Report ===================================================================
-
-namespace report
-{
-// In the end we will restore the simplicity of the code structure, but for now these are duplicated here.
-void print_spell_query( sim_t*, unsigned level );
-void print_profiles( sim_t* );
-void print_text( FILE*, sim_t*, bool detail );
-void print_suite( sim_t* );
-};
 
 // Wowhead  =================================================================
 

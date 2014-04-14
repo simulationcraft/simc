@@ -4900,6 +4900,33 @@ set_e mage_t::decode_set( const item_t& item ) const
   return SET_NONE;
 }
 
+/* Report Extension Class
+ * Here you can define class specific report extensions/overrides
+ */
+class mage_report_t : public player_report_extension_t
+{
+public:
+  mage_report_t( mage_t& player ) :
+      p( player )
+  {
+
+  }
+
+  virtual void html_customsection( report::sc_html_stream& /* os*/ ) override
+  {
+    /*// Custom Class Section
+    os << "\t\t\t\t<div class=\"player-section custom_section\">\n"
+        << "\t\t\t\t\t<h3 class=\"toggle open\">Custom Section</h3>\n"
+        << "\t\t\t\t\t<div class=\"toggle-content\">\n";
+
+    os << p.name();
+
+    os << "\t\t\t\t\t\t</div>\n" << "\t\t\t\t\t</div>\n";*/
+  }
+private:
+  mage_t& p;
+};
+
 // MAGE MODULE INTERFACE ====================================================
 
 struct mage_module_t : public module_t
@@ -4908,7 +4935,9 @@ struct mage_module_t : public module_t
 
   virtual player_t* create_player( sim_t* sim, const std::string& name, race_e r = RACE_NONE ) const
   {
-    return new mage_t( sim, name, r );
+    mage_t* p = new mage_t( sim, name, r );
+    p -> report_extension = std::shared_ptr<player_report_extension_t>( new mage_report_t( *p ) );
+    return p;
   }
   virtual bool valid() const { return true; }
   virtual void init        ( sim_t* ) const {}

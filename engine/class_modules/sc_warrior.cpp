@@ -4454,6 +4454,33 @@ void warrior_t::enrage()
     buff.enraged_speed -> trigger();
 }
 
+/* Report Extension Class
+ * Here you can define class specific report extensions/overrides
+ */
+class warrior_report_t : public player_report_extension_t
+{
+public:
+  warrior_report_t( warrior_t& player ) :
+      p( player )
+  {
+
+  }
+
+  virtual void html_customsection( report::sc_html_stream& /* os*/ ) override
+  {
+    /*// Custom Class Section
+    os << "\t\t\t\t<div class=\"player-section custom_section\">\n"
+        << "\t\t\t\t\t<h3 class=\"toggle open\">Custom Section</h3>\n"
+        << "\t\t\t\t\t<div class=\"toggle-content\">\n";
+
+    os << p.name();
+
+    os << "\t\t\t\t\t\t</div>\n" << "\t\t\t\t\t</div>\n";*/
+  }
+private:
+  warrior_t& p;
+};
+
 // WARRIOR MODULE INTERFACE =================================================
 
 struct warrior_module_t : public module_t
@@ -4461,7 +4488,11 @@ struct warrior_module_t : public module_t
   warrior_module_t() : module_t( WARRIOR ) {}
 
   virtual player_t* create_player( sim_t* sim, const std::string& name, race_e r = RACE_NONE ) const
-  { return new warrior_t( sim, name, r ); }
+  {
+    warrior_t* p = new warrior_t( sim, name, r );
+    p -> report_extension = std::shared_ptr<player_report_extension_t>( new warrior_report_t( *p ) );
+    return p;
+  }
 
   virtual bool valid() const { return true; }
 
