@@ -1845,7 +1845,11 @@ class SpellDataGenerator(DataGenerator):
             if perk_data.id_spell == 0:
                 continue
 
-            self.process_spell(perk_data.id_spell, ids, 0, 0)
+            spec_data = self._chrspecialization_db[perk_data.id_spec]
+            if spec_data.id == 0:
+                continue
+
+            self.process_spell(perk_data.id_spell, ids, DataGenerator._class_masks[spec_data.class_id], 0)
 
         # Get base skills from SkillLineAbility
         for ability_id, ability_data in self._skilllineability_db.iteritems():
