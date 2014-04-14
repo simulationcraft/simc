@@ -568,16 +568,6 @@ enum set_e
 };
 static_assert( static_cast<int>( SET_MAX ) == ( 1 + N_TIER * 3 * N_TIER_BONUS / 2 ), "enum set_e must be structured correctly." );
 
-enum gem_e
-{
-  GEM_NONE = 0,
-  GEM_META, GEM_PRISMATIC,
-  GEM_RED, GEM_YELLOW, GEM_BLUE,
-  GEM_ORANGE, GEM_GREEN, GEM_PURPLE,
-  GEM_COGWHEEL, GEM_HYDRAULIC,
-  GEM_MAX
-};
-
 enum meta_gem_e
 {
   META_GEM_NONE = 0,
@@ -1156,7 +1146,7 @@ const char* attribute_type_string     ( attribute_e type );
 const char* dot_behavior_type_string  ( dot_behavior_e t );
 const char* flask_type_string         ( flask_e type );
 const char* food_type_string          ( food_e type );
-const char* gem_type_string           ( gem_e type );
+const char* gem_type_string           ( item_socket_color type );
 const char* meta_gem_type_string      ( meta_gem_e type );
 const char* player_type_string        ( player_e );
 const char* pet_type_string           ( pet_e type );
@@ -1205,7 +1195,7 @@ attribute_e parse_attribute_type ( const std::string& name );
 dmg_e parse_dmg_type             ( const std::string& name );
 flask_e parse_flask_type         ( const std::string& name );
 food_e parse_food_type           ( const std::string& name );
-gem_e parse_gem_type             ( const std::string& name );
+item_socket_color parse_gem_type ( const std::string& name );
 meta_gem_e parse_meta_gem_type   ( const std::string& name );
 player_e parse_player_type       ( const std::string& name );
 pet_e parse_pet_type             ( const std::string& name );
@@ -1250,9 +1240,8 @@ slot_e translate_invtype( inventory_type inv_type );
 weapon_e translate_weapon_subclass( int weapon_subclass );
 item_subclass_weapon translate_weapon( weapon_e weapon );
 profession_e translate_profession_id( int skill_id );
-gem_e translate_socket_color( item_socket_color );
 
-bool socket_gem_match( gem_e socket, unsigned gem );
+bool socket_gem_match( item_socket_color socket, item_socket_color gem );
 double crit_multiplier( meta_gem_e gem );
 double stat_itemization_weight( stat_e s );
 std::vector<std::string> string_split( const std::string& str, const std::string& delim );
@@ -3187,7 +3176,7 @@ struct item_t
       range::fill( data.stat_type_e, -1 );
       range::fill( data.stat_val, 0 );
       range::fill( gem_id, 0 );
-      range::fill( gem_color, GEM_NONE );
+      range::fill( gem_color, SOCKET_COLOR_NONE );
     }
   } parsed;
 
@@ -6446,7 +6435,7 @@ namespace enchant
   bool passive_enchant( item_t& item, unsigned spell_id );
 
   bool initialize_item_enchant( item_t& item, std::vector< stat_pair_t >& stats, special_effect_source_e source, const item_enchantment_data_t& enchant );
-  unsigned initialize_gem( item_t& item, unsigned gem_id );
+  item_socket_color initialize_gem( item_t& item, unsigned gem_id );
 }
 
 // Unique Gear ==============================================================

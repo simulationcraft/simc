@@ -417,18 +417,18 @@ meta_gem_e enchant::meta_gem_type( const dbc_t&                   dbc,
  * stats in a separate place (such as player_t::init_meta_gem()) is no longer
  * necessary.
  */
-unsigned enchant::initialize_gem( item_t& item, unsigned gem_id )
+item_socket_color enchant::initialize_gem( item_t& item, unsigned gem_id )
 {
   if ( gem_id == 0 )
-    return GEM_NONE;
+    return SOCKET_COLOR_NONE;
 
   const item_data_t* gem = item.player -> dbc.item( gem_id );
   if ( ! gem )
-    return GEM_NONE;
+    return SOCKET_COLOR_NONE;
 
   const gem_property_data_t& gem_prop = item.player -> dbc.gem_property( gem -> gem_properties );
   if ( ! gem_prop.id )
-    return GEM_NONE;
+    return SOCKET_COLOR_NONE;
 
   const item_enchantment_data_t& data = item.player -> dbc.item_enchantment( gem_prop.enchant_id );
 
@@ -436,12 +436,16 @@ unsigned enchant::initialize_gem( item_t& item, unsigned gem_id )
                                            gem_prop.color != SOCKET_COLOR_META ? item.parsed.gem_stats : item.parsed.meta_gem_stats, 
                                            SPECIAL_EFFECT_SOURCE_GEM,
                                            data ) )
-    return GEM_NONE;
+    return SOCKET_COLOR_NONE;
 
   // TODO: This should really be removed, as should player -> meta_gem
   if ( gem_prop.color == SOCKET_COLOR_META )
     item.player -> meta_gem = enchant::meta_gem_type( item.player -> dbc, data );
 
-  return gem_prop.color;
+  // Ensure our gems are always translated correctly to a color
+  assert( gem_prop.color == SOCKET_COLOR_NONE || 
+          ! util::str_compare_ci( util::gem_type_string( static_cast< item_socket_color >( gem_prop.color ) ), "unknown" ) );
+
+  return static_cast< item_socket_color >( gem_prop.color );
 }
 
