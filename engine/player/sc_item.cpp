@@ -591,6 +591,14 @@ std::string item_t::encoded_gems()
     return option_gems_str;
 
   std::string stats_str = stat_pairs_to_str( parsed.gem_stats );
+  if ( socket_color_match() )
+  {
+    if ( ! stats_str.empty() )
+      stats_str += "_";
+
+    stats_str += stat_pairs_to_str( parsed.socket_bonus_stats );
+  }
+
   if ( slot == SLOT_HEAD && player -> meta_gem != META_GEM_NONE )
   {
     std::string meta_str = util::meta_gem_type_string( player -> meta_gem );
@@ -1087,7 +1095,7 @@ bool item_t::decode_gems()
     {
       player -> meta_gem = meta_gem;
       // Init meta gem based on spell data
-      if ( ! enchant::initialize_item_enchant( *this, SPECIAL_EFFECT_SOURCE_GEM, meta_gem_enchant ) )
+      if ( ! enchant::initialize_item_enchant( *this, parsed.meta_gem_stats, SPECIAL_EFFECT_SOURCE_GEM, meta_gem_enchant ) )
         return false;
     }
 
@@ -1117,6 +1125,10 @@ bool item_t::decode_gems()
 
   for ( size_t i = 0; i < parsed.gem_stats.size(); i++ )
     stats.add_stat( parsed.gem_stats[ i ].stat, parsed.gem_stats[ i ].value );
+
+  // Meta gem stats need to be separated to avoid double dipping the static stats portion of the gem.
+  for ( size_t i = 0; i < parsed.meta_gem_stats.size(); i++ )
+    stats.add_stat( parsed.meta_gem_stats[ i ].stat, parsed.meta_gem_stats[ i ].value );
 
   if ( socket_color_match() )
   {
@@ -1240,7 +1252,7 @@ bool item_t::decode_enchant()
     if ( parsed.enchant_stats.size() == 0 )
     {
       const item_enchantment_data_t& enchant_data = enchant::find_item_enchant( player -> dbc, option_enchant_str );
-      if ( ! enchant::initialize_item_enchant( *this, SPECIAL_EFFECT_SOURCE_ENCHANT, enchant_data ) )
+      if ( ! enchant::initialize_item_enchant( *this, parsed.enchant_stats, SPECIAL_EFFECT_SOURCE_ENCHANT, enchant_data ) )
         return false;
     }
   }
@@ -1248,7 +1260,7 @@ bool item_t::decode_enchant()
   else if ( parsed.enchant_id > 0 )
   {
     const item_enchantment_data_t& enchant_data = player -> dbc.item_enchantment( parsed.enchant_id );
-    if ( ! enchant::initialize_item_enchant( *this, SPECIAL_EFFECT_SOURCE_ENCHANT, enchant_data ) )
+    if ( ! enchant::initialize_item_enchant( *this, parsed.enchant_stats,SPECIAL_EFFECT_SOURCE_ENCHANT, enchant_data ) )
       return false;
   }
 
@@ -1272,7 +1284,7 @@ bool item_t::decode_addon()
     if ( parsed.addon_stats.size() == 0 )
     {
       const item_enchantment_data_t& enchant_data = enchant::find_item_enchant( player -> dbc, option_addon_str );
-      if ( ! enchant::initialize_item_enchant( *this, SPECIAL_EFFECT_SOURCE_ADDON, enchant_data ) )
+      if ( ! enchant::initialize_item_enchant( *this, parsed.addon_stats, SPECIAL_EFFECT_SOURCE_ADDON, enchant_data ) )
         return false;
     }
   }
@@ -1287,7 +1299,7 @@ bool item_t::decode_addon()
     if ( parsed.addon_stats.size() == 0 )
     {
       const item_enchantment_data_t& enchant_data = player -> dbc.item_enchantment( parsed.addon_id );
-      if ( ! enchant::initialize_item_enchant( *this, SPECIAL_EFFECT_SOURCE_ADDON, enchant_data ) )
+      if ( ! enchant::initialize_item_enchant( *this, parsed.addon_stats, SPECIAL_EFFECT_SOURCE_ADDON, enchant_data ) )
         return false;
     }
   }
@@ -1528,7 +1540,7 @@ bool item_t::download_item( item_t& item )
        item.parsed.data.id_socket_bonus > 0 )
   {
     const item_enchantment_data_t& bonus = item.player -> dbc.item_enchantment( item.parsed.data.id_socket_bonus );
-    success = enchant::initialize_item_enchant( item, SPECIAL_EFFECT_SOURCE_SOCKET_BONUS, bonus );
+    success = enchant::initialize_item_enchant( item, item.parsed.socket_bonus_stats, SPECIAL_EFFECT_SOURCE_SOCKET_BONUS, bonus );
   }
 
   return success;

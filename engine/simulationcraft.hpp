@@ -3172,7 +3172,7 @@ struct item_t
     int                      armor;
     std::array<int, 3>       gem_id;
     std::array<int, 3>       gem_color;
-    std::vector<stat_pair_t> gem_stats, socket_bonus_stats;
+    std::vector<stat_pair_t> gem_stats, meta_gem_stats, socket_bonus_stats;
     std::vector<stat_pair_t> enchant_stats;
     std::vector<stat_pair_t> addon_stats;
     std::vector<stat_pair_t> suffix_stats;
@@ -6445,7 +6445,7 @@ namespace enchant
   meta_gem_e meta_gem_type( const dbc_t& dbc, const item_enchantment_data_t& );
   bool passive_enchant( item_t& item, unsigned spell_id );
 
-  bool initialize_item_enchant( item_t& item, special_effect_source_e source, const item_enchantment_data_t& enchant );
+  bool initialize_item_enchant( item_t& item, std::vector< stat_pair_t >& stats, special_effect_source_e source, const item_enchantment_data_t& enchant );
   unsigned initialize_gem( item_t& item, unsigned gem_id );
 }
 

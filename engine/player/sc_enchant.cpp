@@ -178,7 +178,33 @@ const item_enchantment_data_t& enchant::find_item_enchant( const dbc_t& dbc,
   return dbc.item_enchantment( 0 );
 }
 
+/**
+ * Initialize an item enchant from DBC data.
+ *
+ * This function initializes a Blizzard SpellItemEnchantment.dbc entry so that
+ * simc understands it. Blizzard uses item enchantmnts to represent Enchants,
+ * Gems, and Tinkers, and this function handles all of the initialization.
+ *
+ * The function supports three types of information per item enchantment entry
+ * 1) Stat enchants (will be translated into simc-understandable stats) that
+ *    will be inserted into the given vector reference. Typically called by
+ *    various decode_xx() functions in item_t.
+ * 2) Passive aura enchants. Certain passive aura enchants are supported by the
+ *    system out of the box. Currently, any primary stat, or rating granting
+ *    passive aura will be translated directly into simc-understandable stat.
+ *    TODO-WOD: Once we have "passive buff" support, we can offload the stat
+ *    deduction to stat_buff_t, reducing code replication.
+ * 3) Procs. Item enchantments use three relevant proc types for simc
+ *    - Spell procs when an item is worn (EQUIP_SPELL)
+ *    - Spell procs when a weapon lands a hit (COMBAT_SPELL)
+ *    - On-use abilities (USE_SPELL)
+ *    This function translates the relevant proc type information so that
+ *    special_effect_t is initialized correctly, and then passes the rest of
+ *    the proc initialization to the generalized initialize_special_effect()
+ *    function in sc_unique_gear.cpp.
+ */
 bool enchant::initialize_item_enchant( item_t& item,
+                                       std::vector< stat_pair_t >& stats,
                                        special_effect_source_e source,
                                        const item_enchantment_data_t& enchant )
 {
@@ -234,16 +260,7 @@ bool enchant::initialize_item_enchant( item_t& item,
       {
         stat_pair_t stat = item_database::item_enchantment_effect_stats( item.player, enchant, i );
         if ( stat.stat != STAT_NONE && stat.value != 0 )
-        {
-          if ( source == SPECIAL_EFFECT_SOURCE_ENCHANT )
-            item.parsed.enchant_stats.push_back( stat );
-          else if ( source == SPECIAL_EFFECT_SOURCE_GEM )
-            item.parsed.gem_stats.push_back( stat );
-          else if ( source == SPECIAL_EFFECT_SOURCE_ADDON )
-            item.parsed.addon_stats.push_back( stat );
-          else if ( source == SPECIAL_EFFECT_SOURCE_SOCKET_BONUS )
-            item.parsed.socket_bonus_stats.push_back( stat );
-        }
+          stats.push_back( stat );
         break;
       }
       default:
@@ -266,7 +283,7 @@ bool enchant::initialize_item_enchant( item_t& item,
  * Such enchants include any passive spells that apply a stat aura, for
  * example.
  *
- * TODO: Add socket enchant can be done here
+ * TODO-WOD: For now, this needs to sync with stat_buff_t stats.
  */
 bool enchant::passive_enchant( item_t& item, unsigned spell_id )
 {
@@ -386,6 +403,20 @@ meta_gem_e enchant::meta_gem_type( const dbc_t&                   dbc,
   return util::parse_meta_gem_type( shortname );
 }
 
+/**
+ * Intialize gem, based on game client data.
+ *
+ * Gem stats will be set to item_t::parsed.gem_stats, and the gem color
+ * returned. Actual initialization is performed through the unified
+ * initialize_item_enchant() function. Additionally, for backwards
+ * compatibility, the meta gem type is translated from the gem (item) name.
+ *
+ * Note that meta gem stats are separateed form normal gem stats, as the meta
+ * gem initialization is now fully DBC aware, and will initialize correct stats
+ * for the actors purely based on the meta gem name. Thus, hardcoding meta gem
+ * stats in a separate place (such as player_t::init_meta_gem()) is no longer
+ * necessary.
+ */
 unsigned enchant::initialize_gem( item_t& item, unsigned gem_id )
 {
   if ( gem_id == 0 )
@@ -401,7 +432,10 @@ unsigned enchant::initialize_gem( item_t& item, unsigned gem_id )
 
   const item_enchantment_data_t& data = item.player -> dbc.item_enchantment( gem_prop.enchant_id );
 
-  if ( ! enchant::initialize_item_enchant( item, SPECIAL_EFFECT_SOURCE_GEM, data ) )
+  if ( ! enchant::initialize_item_enchant( item, 
+                                           gem_prop.color != SOCKET_COLOR_META ? item.parsed.gem_stats : item.parsed.meta_gem_stats, 
+                                           SPECIAL_EFFECT_SOURCE_GEM,
+                                           data ) )
     return GEM_NONE;
 
   // TODO: This should really be removed, as should player -> meta_gem
