@@ -4030,7 +4030,8 @@ void warrior_t::init_position()
   {
     base.position = POSITION_BACK;
     position_str = util::position_type_string( base.position );
-    sim -> out_debug.printf( "%s: Position adjusted to %s for Gladiator DPS", name(), position_str.c_str() );
+    if ( sim -> debug )
+      sim -> out_debug.printf( "%s: Position adjusted to %s for Gladiator DPS", name(), position_str.c_str() );
   }
 
 }
