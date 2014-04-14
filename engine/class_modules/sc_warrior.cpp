@@ -3592,36 +3592,36 @@ void warrior_t::apl_tg_fury()
                                "# and then expend all of this rage by using heroic strike 3-4 times during colossus smash. It's also a good idea to save 1 charge of raging blow to use inside of this 6.5 second window.\n"
                                "# Cooldowns are stacked whenever possible, and only delayed for the very last use of them.\n" );
   single_target -> add_action( this, "Berserker Rage", "if=buff.enrage.remains<1&cooldown.bloodthirst.remains>1" );
-  single_target -> add_action( this, "Heroic Strike", "if=(debuff.colossus_smash.up&rage>=40&target.health.pct>=20|rage>=100)&buff.enrage.up" );
-  single_target -> add_action( this, "Heroic Leap", "if=debuff.colossus_smash.up" );
+  single_target -> add_action( this, "Heroic Strike", "if=(debuff.colossus_smash.up&rage>=40|rage>=100)&buff.enrage.up" );
+  single_target -> add_action( this, "Heroic Leap", "if=debuff.colossus_smash.up&buff.enrage.up" );
   single_target -> add_action( this, "Bloodthirst", "if=!buff.enrage.up" );
   single_target -> add_action( "storm_bolt,if=enabled&buff.cooldown_reduction.up&debuff.colossus_smash.up", 
                                "Galakras cooldown reduction trinket allows Storm Bolt to be synced with Colossus Smash. 'buff.cooldown_reduction.up' is a hackish way of seeing if the trinket is equipped." );
-  single_target -> add_action( this, "Raging Blow", "if=buff.raging_blow.stack=2&debuff.colossus_smash.up&target.health.pct>=20",
+  single_target -> add_action( this, "Raging Blow", "if=buff.raging_blow.stack=2&debuff.colossus_smash.up",
                                "Delay Bloodthirst if 2 stacks of raging blow are available inside Colossus Smash." );
   single_target -> add_action( "storm_bolt,if=enabled&buff.cooldown_reduction.down&debuff.colossus_smash.up" );
   single_target -> add_action( "dragon_roar,if=enabled&(!debuff.colossus_smash.up&(buff.bloodbath.up|!talent.bloodbath.enabled))" );
   single_target -> add_action( this, "Bloodthirst", "" );
-  single_target -> add_action( this, "Wild Strike", "if=buff.bloodsurge.react&target.health.pct>=20&cooldown.bloodthirst.remains<=1",
+  single_target -> add_action( this, "Wild Strike", "if=buff.bloodsurge.react&cooldown.bloodthirst.remains<=1&cooldown.bloodthirst.remains>0.3",
                                "The GCD reduction of the Bloodsurge buff allows 3 Wild Strikes in-between Bloodthirst." );
-  single_target -> add_action( "wait,sec=cooldown.bloodthirst.remains,if=!(target.health.pct<20&debuff.colossus_smash.up&rage>=30&buff.enrage.up)&cooldown.bloodthirst.remains<=1" );
+  single_target -> add_action( "wait,sec=cooldown.bloodthirst.remains,if=!(debuff.colossus_smash.up&rage>=30&buff.enrage.up)&cooldown.bloodthirst.remains<=1" );
   single_target -> add_action( this, "Colossus Smash", "" ,
                                "The debuff from Colossus Smash lasts 6.5 seconds and also has 0.25~ seconds of travel time. This allows 4 1.5 second globals to be used inside of it every time now." );
   single_target -> add_action( "storm_bolt,if=enabled&buff.cooldown_reduction.down" );
-  single_target -> add_action( this, "Execute", "if=debuff.colossus_smash.up|rage>70|target.time_to_die<12" );
-  single_target -> add_action( this, "Berserker Rage", "if=buff.raging_blow.stack<=1" );
-  single_target -> add_action( this, "Raging Blow", "if=target.health.pct<20|buff.raging_blow.stack=2|debuff.colossus_smash.up|buff.raging_blow.remains<=3" );
+  single_target -> add_action( this, "Execute", "if=buff.raging_blow.stack<2&(((rage>70&!debuff.colossus_smash.up)|debuff.colossus_smash.up)|trinket.proc.strength.up)|target.time_to_die<5" );
+  single_target -> add_action( this, "Berserker Rage", "if=buff.raging_blow.stack<=1&target.health.pct>=20" );
+  single_target -> add_action( this, "Raging Blow", "if=buff.raging_blow.stack=2|debuff.colossus_smash.up|buff.raging_blow.remains<=3" );
   single_target -> add_action( "bladestorm,if=enabled,interrupt_if=cooldown.bloodthirst.remains<1" );
-  single_target -> add_action( this, "Wild Strike", "if=buff.bloodsurge.up" );
   single_target -> add_action( this, "Raging Blow", "if=cooldown.colossus_smash.remains>=1" );
+  single_target -> add_action( this, "Wild Strike", "if=buff.bloodsurge.up" );
   single_target -> add_action( this, "Shattering Throw", "if=cooldown.colossus_smash.remains>5",
                                "Shattering Throw is a very small personal dps increase, but a fairly significant raid dps increase. Only use to fill empty globals." );
   single_target -> add_action( "shockwave,if=enabled" );
   single_target -> add_action( this, "Heroic Throw", "if=debuff.colossus_smash.down&rage<60" );
-  single_target -> add_action( this, "Wild Strike", "if=debuff.colossus_smash.up&target.health.pct>=20" );
+  single_target -> add_action( this, "Wild Strike", "if=debuff.colossus_smash.up" );
   single_target -> add_action( this, "Battle Shout", "if=rage<70" );
-  single_target -> add_action( "impending_victory,if=enabled&target.health.pct>=20&cooldown.colossus_smash.remains>=1.5" );
-  single_target -> add_action( this, "Wild Strike", "if=cooldown.colossus_smash.remains>=2&rage>=70&target.health.pct>=20" );
+  single_target -> add_action( "impending_victory,if=enabled&cooldown.colossus_smash.remains>=1.5" );
+  single_target -> add_action( this, "Wild Strike", "if=cooldown.colossus_smash.remains>=2&rage>=70" );
 
   two_targets -> add_action( "bloodbath,if=enabled&((!talent.bladestorm.enabled&(cooldown.colossus_smash.remains<2|debuff.colossus_smash.remains>=5|target.time_to_die<=20))|(talent.bladestorm.enabled))" );
   two_targets -> add_action( this, "Berserker Rage", "if=(talent.bladestorm.enabled&(buff.bloodbath.up|!talent.bloodbath.enabled)&!cooldown.bladestorm.remains&(!talent.storm_bolt.enabled|(talent.storm_bolt.enabled&!debuff.colossus_smash.up)))|(!talent.bladestorm.enabled&buff.enrage.remains<1&cooldown.bloodthirst.remains>1)" );
