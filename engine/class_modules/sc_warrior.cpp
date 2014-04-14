@@ -74,6 +74,7 @@ public:
     buff_t* rude_interruption;
     absorb_buff_t* shield_barrier;
     buff_t* shield_block;
+    buff_t* shield_charge;
     buff_t* shield_wall;
     buff_t* sweeping_strikes;
     buff_t* sword_and_board;
@@ -129,6 +130,11 @@ public:
     gain_t* shield_slam;
     gain_t* sweeping_strikes;
     gain_t* sword_and_board;
+
+    gain_t* reduced_cooldown_bladestorm;
+    gain_t* reduced_cooldown_storm_bolt;
+    gain_t* reduced_cooldown_heroic_leap;
+    gain_t* reduced_cooldown_recklessness;
 
     gain_t* tier15_4pc_tank;
     gain_t* tier16_2pc_melee;
@@ -326,6 +332,7 @@ public:
   virtual void      init_scaling();
   virtual void      create_buffs();
   virtual void      init_gains();
+  virtual void      init_position();
   virtual void      init_procs();
   virtual void      init_rng();
   virtual void      combat_begin();
@@ -803,15 +810,27 @@ void warrior_attack_t::consume_resource()
   double rage = resource_consumed;
   if ( rage > 0 )
   {
-    rage = -1*(rage / 30);
-    //All specs
+    rage /= 30;
+    //The next block of code is intended to assist with optimizing the rotation with the talent anger management. Any rage spent while the following abilities are already available to
+    //use can be looked at as wasted resources. I'll hopefully have a better way of showing it in the results page in the future, or I may remove it if I find it unnecessary.
+    // At the least I will shorten the names :) 
+    if ( rage >  p -> cooldown.heroic_leap -> remains().total_seconds() )
+      p -> resource_gain( RESOURCE_RAGE, rage - p -> cooldown.heroic_leap -> remains().total_seconds() , p -> gain.reduced_cooldown_heroic_leap );
+    if ( rage >  p -> cooldown.recklessness -> remains().total_seconds() )
+      p -> resource_gain( RESOURCE_RAGE, rage - p -> cooldown.recklessness -> remains().total_seconds() , p -> gain.reduced_cooldown_recklessness );
+    if ( rage >  p -> cooldown.storm_bolt -> remains().total_seconds() )
+      p -> resource_gain( RESOURCE_RAGE, rage - p -> cooldown.storm_bolt -> remains().total_seconds() , p -> gain.reduced_cooldown_storm_bolt );
+    if ( rage >  p -> cooldown.bladestorm -> remains().total_seconds() )
+      p -> resource_gain( RESOURCE_RAGE, rage - p -> cooldown.bladestorm -> remains().total_seconds() , p -> gain.reduced_cooldown_bladestorm );
+
+    rage *= -1;
     p -> cooldown.heroic_leap -> adjust( timespan_t::from_seconds( rage ) );
     p -> cooldown.recklessness -> adjust( timespan_t::from_seconds( rage ) );
     p -> cooldown.shield_wall -> adjust( timespan_t::from_seconds( rage ) ); 
 
     if ( p -> specialization() == WARRIOR_FURY || p -> specialization() == WARRIOR_ARMS )
     {
-      p -> cooldown.storm_bolt -> adjust( timespan_t::from_seconds( rage ) ); 
+      p -> cooldown.storm_bolt -> adjust( timespan_t::from_seconds( rage ) );
       p -> cooldown.bladestorm -> adjust( timespan_t::from_seconds( rage ) );
       p -> cooldown.avatar -> adjust( timespan_t::from_seconds( rage ) );
       p -> cooldown.bloodbath -> adjust( timespan_t::from_seconds( rage ) ); 
@@ -1048,7 +1067,7 @@ struct auto_attack_t : public warrior_attack_t
     warrior_attack_t::impact( s );
     warrior_t* p = cast();
 
-    if ( p -> specialization() == WARRIOR_PROTECTION && s -> result == RESULT_CRIT)
+    if ( p -> specialization() == WARRIOR_PROTECTION && s -> result == RESULT_CRIT )
       p -> buff.riposte -> trigger();
 
   }
@@ -3412,6 +3431,8 @@ void warrior_t::apl_precombat()
 
   if ( specialization() != WARRIOR_PROTECTION )
     precombat -> add_action( "stance,choose=battle" );
+  else if ( primary_role() == ROLE_ATTACK )
+    precombat -> add_action( "stance,choose=gladiator" );
   else
     precombat -> add_action( "stance,choose=defensive" );
 
@@ -3611,7 +3632,7 @@ void warrior_t::apl_tg_fury()
   single_target -> add_action( "storm_bolt,if=enabled&cooldown.colossus_smash.remains>3" );
   single_target -> add_action( this, "Execute", "if=debuff.colossus_smash.up|rage>70|target.time_to_die<12" );
   single_target -> add_action( this, "Raging Blow", "if=target.health.pct<20|buff.raging_blow.stack=2|debuff.colossus_smash.up|buff.raging_blow.remains<=3" );
-  single_target -> add_action( "#ravager"  );
+  single_target -> add_action( "ravager"  );
   single_target -> add_action( "bladestorm,if=enabled,interrupt_if=cooldown.bloodthirst.remains<1" );
   single_target -> add_action( this, "Wild Strike", "if=buff.bloodsurge.up" );
   single_target -> add_action( this, "Raging Blow", "if=cooldown.colossus_smash.remains>=1" );
@@ -3804,6 +3825,7 @@ void warrior_t::init_scaling()
   {
     scales_with[ STAT_WEAPON_OFFHAND_DPS   ] = true;
     scales_with[ STAT_WEAPON_OFFHAND_SPEED ] = sim -> weapon_speed_scale_factors != 0;
+    scales_with[ STAT_MULTISTRIKE_RATING   ] = true;
   }
 
 }
@@ -3842,7 +3864,7 @@ void warrior_t::create_buffs()
 
   buff.ignite_weapon    = buff_creator_t( this, "ignite_weapon", find_spell( 156288 ) );
 
-  buff.gladiator_stance = buff_creator_t( this, "gladiator_stance",    talents.gladiator_stance );
+  buff.gladiator_stance = buff_creator_t( this, "gladiator_stance",   find_spell( 156291 ) );
 
   buff.heroic_leap_glyph = buff_creator_t( this, "heroic_leap_glyph", glyphs.heroic_leap );
 
@@ -3866,7 +3888,12 @@ void warrior_t::create_buffs()
                          .add_invalidate( CACHE_PARRY );
 
   buff.shield_block     = buff_creator_t( this, "shield_block" ).spell( find_spell( 132404 ) )
-                          .add_invalidate( CACHE_BLOCK );
+                         .add_invalidate( CACHE_BLOCK );
+
+  buff.shield_charge    = buff_creator_t( this, "shield_charge" ).spell( find_spell( 156321 ) )
+                          .max_stack( 2 )
+                          .chance( 1 );
+                          
 
   buff.shield_wall      = buff_creator_t( this, "shield_wall", find_class_spell( "Shield Wall" ) )
                           .default_value( find_class_spell( "Shield Wall" )-> effectN( 1 ).percent() )
@@ -3918,12 +3945,32 @@ void warrior_t::init_gains()
   gain.sweeping_strikes       = get_gain( "sweeping_strikes"      );
   gain.sword_and_board        = get_gain( "sword_and_board"       );
 
+  gain.reduced_cooldown_bladestorm = get_gain( "reduced_cooldown_bladestorm" );
+  gain.reduced_cooldown_heroic_leap = get_gain ("reduced_cooldown_heroic_leap" );
+  gain.reduced_cooldown_recklessness = get_gain( "reduced_cooldown_recklessness" );
+  gain.reduced_cooldown_storm_bolt = get_gain( "reduced_cooldown_storm_bolt" );
+
   gain.tier15_4pc_tank        = get_gain( "tier15_4pc_tank"       );
   gain.tier16_2pc_melee       = get_gain( "tier16_2pc_melee"      );
   gain.tier16_4pc_tank        = get_gain( "tier16_4pc_tank"       );
 }
 
-// warrior_t::init_procs ====================================================
+// warrior_t::init_position ====================================================
+
+void warrior_t::init_position()
+{
+  player_t::init_position();
+
+  if ( specialization() == WARRIOR_PROTECTION && primary_role() == ROLE_ATTACK )
+  {
+    base.position = POSITION_BACK;
+    position_str = util::position_type_string( base.position );
+    sim -> out_debug.printf( "%s: Position adjusted to %s for Gladiator DPS", name(), position_str.c_str() );
+  }
+
+}
+
+// warrior_t::init_procs ======================================================
 
 void warrior_t::init_procs()
 {
@@ -3995,7 +4042,7 @@ void warrior_t::init_action_list()
       apl_arms();
       break;
     case WARRIOR_PROTECTION:
-      if ( ROLE_DPS )
+      if ( ROLE_ATTACK )
         apl_gladiator();
       else
         apl_prot();
@@ -4211,15 +4258,14 @@ void warrior_t::regen( timespan_t periodicity )
 
 role_e warrior_t::primary_role() const
 {
-  if ( player_t::primary_role() == ROLE_TANK )
-    return ROLE_TANK;
 
-  if ( player_t::primary_role() == ROLE_ATTACK || player_t::primary_role() == ROLE_DPS )
-    return ROLE_ATTACK;
-
-  if ( specialization() == WARRIOR_PROTECTION && player_t::primary_role() == !ROLE_DPS )
-    return ROLE_TANK;
-
+  if ( specialization() == WARRIOR_PROTECTION || player_t::primary_role() == ROLE_TANK )
+  {
+    if ( player_t::primary_role() == ROLE_DPS || player_t::primary_role() == ROLE_ATTACK )
+      return ROLE_ATTACK;
+    else
+      return ROLE_TANK;
+  }
   return ROLE_ATTACK;
 }
 
