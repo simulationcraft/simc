@@ -55,7 +55,7 @@ double fmt_value( double v, effect_type_t type, effect_subtype_t sub_type );
 const std::string& get_token( unsigned int id_spell );
 bool add_token( unsigned int id_spell, const std::string& token_name, bool ptr );
 unsigned int get_token_id( const std::string& token );
-
+bool valid_gem_color( unsigned color );
 }
 
 // ==========================================================================

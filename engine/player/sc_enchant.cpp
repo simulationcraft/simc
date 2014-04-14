@@ -442,9 +442,7 @@ item_socket_color enchant::initialize_gem( item_t& item, unsigned gem_id )
   if ( gem_prop.color == SOCKET_COLOR_META )
     item.player -> meta_gem = enchant::meta_gem_type( item.player -> dbc, data );
 
-  // Ensure our gems are always translated correctly to a color
-  assert( gem_prop.color == SOCKET_COLOR_NONE || 
-          ! util::str_compare_ci( util::gem_type_string( static_cast< item_socket_color >( gem_prop.color ) ), "unknown" ) );
+  assert( dbc::valid_gem_color( gem_prop.color ) );
 
   return static_cast< item_socket_color >( gem_prop.color );
 }

@@ -468,6 +468,28 @@ void dbc::de_init()
   }
 }
 
+/* Validate gem color */
+bool dbc::valid_gem_color( unsigned color )
+{
+  switch ( color )
+  {
+    case SOCKET_COLOR_NONE:
+    case SOCKET_COLOR_META:
+    case SOCKET_COLOR_RED:
+    case SOCKET_COLOR_YELLOW:
+    case SOCKET_COLOR_BLUE:
+    case SOCKET_COLOR_ORANGE:
+    case SOCKET_COLOR_PURPLE:
+    case SOCKET_COLOR_GREEN:
+    case SOCKET_COLOR_HYDRAULIC:
+    case SOCKET_COLOR_PRISMATIC:
+    case SOCKET_COLOR_COGWHEEL:
+      return true;
+    default:
+      return false;
+  }
+}
+
 std::vector< const spell_data_t* > dbc_t::effect_affects_spells( unsigned family, const spelleffect_data_t* effect ) const
 {
   std::vector< const spell_data_t* > affected_spells;

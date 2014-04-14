@@ -1207,7 +1207,7 @@ void player_t::init_items()
 
 // player_t::init_meta_gem ==================================================
 
-void player_t::init_meta_gem( gear_stats_t& item_stats )
+void player_t::init_meta_gem( gear_stats_t& )
 {
   if ( ! meta_gem_str.empty() ) meta_gem = util::parse_meta_gem_type( meta_gem_str );
 

@@ -322,6 +322,7 @@ enum item_spell_trigger_type
     ITEM_SPELLTRIGGER_LEARN_SPELL_ID  = 6
 };
 
+/* If you add socket colors here, update dbc::valid_gem_color() too */
 enum item_socket_color
 {
   SOCKET_COLOR_NONE                 = 0,
@@ -329,13 +330,12 @@ enum item_socket_color
   SOCKET_COLOR_RED                  = 2,
   SOCKET_COLOR_YELLOW               = 4,
   SOCKET_COLOR_BLUE                 = 8,
-  SOCKET_COLOR_ORANGE               = 6,
-  SOCKET_COLOR_PURPLE               = 10,
-  SOCKET_COLOR_GREEN                = 12,
+  SOCKET_COLOR_ORANGE               = SOCKET_COLOR_RED | SOCKET_COLOR_YELLOW,
+  SOCKET_COLOR_PURPLE               = SOCKET_COLOR_RED | SOCKET_COLOR_BLUE,
+  SOCKET_COLOR_GREEN                = SOCKET_COLOR_BLUE | SOCKET_COLOR_YELLOW,
   SOCKET_COLOR_HYDRAULIC            = 16,
   SOCKET_COLOR_PRISMATIC            = SOCKET_COLOR_RED | SOCKET_COLOR_YELLOW | SOCKET_COLOR_BLUE,
   SOCKET_COLOR_COGWHEEL             = 32,
-  SOCKET_COLOR_MAX
 };
 
 enum item_bind_type

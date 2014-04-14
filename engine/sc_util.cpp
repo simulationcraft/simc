@@ -549,39 +549,6 @@ attribute_e util::parse_attribute_type( const std::string& name )
   return parse_enum<attribute_e, ATTRIBUTE_NONE, ATTRIBUTE_MAX, attribute_type_string>( name );
 }
 
-// gem_type_string ==========================================================
-
-const char* util::gem_type_string( item_socket_color type )
-{
-  switch ( type )
-  {
-    case SOCKET_COLOR_META:      return "meta";
-    case SOCKET_COLOR_PRISMATIC: return "prismatic";
-    case SOCKET_COLOR_RED:       return "red";
-    case SOCKET_COLOR_YELLOW:    return "yellow";
-    case SOCKET_COLOR_BLUE:      return "blue";
-    case SOCKET_COLOR_ORANGE:    return "orange";
-    case SOCKET_COLOR_GREEN:     return "green";
-    case SOCKET_COLOR_PURPLE:    return "purple";
-    case SOCKET_COLOR_COGWHEEL:  return "cogwheel";
-    case SOCKET_COLOR_HYDRAULIC: return "hydraulic";
-    default:            return "unknown";
-  }
-}
-
-// parse_gem_type ===========================================================
-
-item_socket_color util::parse_gem_type( const std::string& name )
-{
-  return parse_enum<item_socket_color, SOCKET_COLOR_NONE, SOCKET_COLOR_MAX, gem_type_string>( name );
-}
-
-// parse_gem_stat ===========================================================
-
-stat_e util::parse_gem_stat( const std::string& name )
-{
-  return parse_enum<stat_e, STAT_NONE, STAT_MAX, stat_type_gem>( name );
-}
 // meta_gem_type_string =====================================================
 
 const char* util::meta_gem_type_string( meta_gem_e type )

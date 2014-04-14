@@ -1119,7 +1119,7 @@ bool item_t::decode_gems()
       if ( parsed.gem_id[ i ] == 0 )
         continue;
 
-      parsed.gem_color[ i ] = enchant::initialize_gem( *this,  parsed.gem_id[ i ] );
+      parsed.gem_color[ i ] = enchant::initialize_gem( *this, parsed.gem_id[ i ] );
     }
   }
 
@@ -1260,7 +1260,7 @@ bool item_t::decode_enchant()
   else if ( parsed.enchant_id > 0 )
   {
     const item_enchantment_data_t& enchant_data = player -> dbc.item_enchantment( parsed.enchant_id );
-    if ( ! enchant::initialize_item_enchant( *this, parsed.enchant_stats,SPECIAL_EFFECT_SOURCE_ENCHANT, enchant_data ) )
+    if ( ! enchant::initialize_item_enchant( *this, parsed.enchant_stats, SPECIAL_EFFECT_SOURCE_ENCHANT, enchant_data ) )
       return false;
   }
 
