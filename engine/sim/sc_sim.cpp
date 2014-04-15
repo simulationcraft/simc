@@ -897,7 +897,7 @@ sim_t::sim_t( sim_t* p, int index ) :
   allow_flasks( true ),
   solo_raid( false ),
   global_item_upgrade_level( 0 ),
-  report_information( report_information_t() ),
+  report_information(),
   // Multi-Threading
   threads( 0 ), thread_index( index ), thread_priority( sc_thread_t::NORMAL ), work_queue(),
   spell_query( 0 ), spell_query_level( MAX_LEVEL ),
