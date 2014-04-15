@@ -34,7 +34,6 @@ actions+=/ferocious_bite,cycle_targets=1,if=dot.rip.ticking&dot.rip.remains<=3&t
 actions+=/faerie_fire,cycle_targets=1,if=debuff.physical_vulnerability.down
 actions+=/savage_roar,if=buff.savage_roar.remains<3
 actions+=/virmens_bite_potion,if=target.time_to_die<=40
-actions+=/use_item,slot=waist,sync=tigers_fury
 actions+=/use_item,slot=hands,sync=tigers_fury
 actions+=/blood_fury,sync=tigers_fury
 actions+=/berserking,sync=tigers_fury
@@ -92,7 +91,7 @@ main_hand=halberd_of_inner_shadows,id=105560,upgrade=2,gems=80agi_160crit_60agi,
 # gear_intellect=80
 # gear_spirit=80
 # gear_hit_rating=660
-# gear_crit_rating=1424
+# gear_crit_rating=1116
 # gear_haste_rating=535
 # gear_mastery_rating=585
 # gear_armor=414
@@ -100,7 +99,3 @@ main_hand=halberd_of_inner_shadows,id=105560,upgrade=2,gems=80agi_160crit_60agi,
 # meta_gem=capacitive_primal
 # tier16_2pc_melee=1
 # tier16_4pc_melee=1
-# hands=grips_of_the_shattered_vale,heroic=1,addon=synapse_springs_mark_ii
-# waist=cord_of_black_dreams,heroic=1,elite=1,addon=nitro_boosts
-# trinket1=rune_of_reorigination,heroic=1,elite=1
-# main_hand=halberd_of_inner_shadows,heroic=1,elite=1,weapon=polearm_3.60speed_755min_1134max,enchant=dancing_steel

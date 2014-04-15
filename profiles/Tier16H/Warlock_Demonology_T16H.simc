@@ -85,14 +85,11 @@ off_hand=revelations_of_yshaarj,id=105650,upgrade=2,gems=160exp_160haste_60int,e
 # gear_spell_power=590
 # gear_expertise_rating=2080
 # gear_hit_rating=220
-# gear_crit_rating=975
+# gear_crit_rating=667
 # gear_haste_rating=4142
 # gear_mastery_rating=726
 # gear_armor=285
 # meta_gem=sinister_primal
 # tier16_2pc_caster=1
 # tier16_4pc_caster=1
-# back=xingho_breath_of_yulon,enchant=lightweave_embroidery_3
-# hands=gloves_of_the_horned_nightmare,heroic=1,addon=synapse_springs_mark_ii
-# main_hand=arcweaver_spell_sword,heroic=1,elite=1,weapon=sword_2.20speed_156min_292max,enchant=jade_spirit
 default_pet=felguard

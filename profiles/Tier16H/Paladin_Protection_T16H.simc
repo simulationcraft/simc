@@ -72,7 +72,7 @@ off_hand=bulwark_of_the_fallen_general,id=105556,upgrade=2,gems=320haste,enchant
 
 # Gear Summary
 # gear_strength=928
-# gear_stamina=4345
+# gear_stamina=4037
 # gear_expertise_rating=1120
 # gear_crit_rating=451
 # gear_haste_rating=6868
@@ -83,4 +83,3 @@ off_hand=bulwark_of_the_fallen_general,id=105556,upgrade=2,gems=320haste,enchant
 # meta_gem=indomitable_primal
 # tier16_2pc_tank=1
 # tier16_4pc_tank=1
-# main_hand=siegecrafters_forge_hammer,heroic=1,elite=1,weapon=mace_2.60speed_370min_690max,enchant=windsong

@@ -81,7 +81,7 @@ off_hand=hvitserks_formidable_shanker,id=105601,upgrade=2,gems=160agi_60agi,ench
 # gear_intellect=80
 # gear_spirit=80
 # gear_hit_rating=160
-# gear_crit_rating=1099
+# gear_crit_rating=791
 # gear_haste_rating=1380
 # gear_mastery_rating=535
 # gear_armor=413
@@ -89,6 +89,3 @@ off_hand=hvitserks_formidable_shanker,id=105601,upgrade=2,gems=160agi_60agi,ench
 # meta_gem=capacitive_primal
 # tier16_2pc_melee=1
 # tier16_4pc_melee=1
-# hands=gloves_of_the_barbed_assassin,heroic=1,addon=synapse_springs_2
-# main_hand=enchanted_shaotien_saber,heroic=1,elite=1,weapon=sword_2.60speed_370min_690max,enchant=dancing_steel
-# off_hand=hvitserks_formidable_shanker,heroic=1,elite=1,weapon=dagger_1.80speed_256min_478max,enchant=dancing_steel

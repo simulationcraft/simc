@@ -70,13 +70,11 @@ main_hand=korkron_hand_cannon,id=105559,upgrade=2,gems=160agi_60agi,enchant=lord
 # gear_spirit=80
 # gear_expertise_rating=160
 # gear_hit_rating=180
-# gear_crit_rating=1313
+# gear_crit_rating=1005
 # gear_haste_rating=636
 # gear_mastery_rating=1112
 # gear_armor=721
 # meta_gem=capacitive_primal
 # tier16_2pc_melee=1
 # tier16_4pc_melee=1
-# hands=gloves_of_the_unblinking_vigil,heroic=1,addon=synapse_springs_2
-# main_hand=korkron_hand_cannon,heroic=1,elite=1,weapon=gun_3.00speed_550min_1023max,enchant=lord_blastingtons_scope_of_doom
 summon_pet=cat

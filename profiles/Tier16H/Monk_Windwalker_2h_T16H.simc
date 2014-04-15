@@ -80,7 +80,7 @@ main_hand=trident_of_corrupted_waters,id=105408,upgrade=2,gems=80agi_160hit_60ag
 # gear_intellect=80
 # gear_spirit=80
 # gear_hit_rating=320
-# gear_crit_rating=4335
+# gear_crit_rating=4027
 # gear_haste_rating=452
 # gear_mastery_rating=343
 # gear_armor=413
@@ -88,5 +88,3 @@ main_hand=trident_of_corrupted_waters,id=105408,upgrade=2,gems=80agi_160hit_60ag
 # meta_gem=capacitive_primal
 # tier16_2pc_melee=1
 # tier16_4pc_melee=1
-# hands=gloves_of_the_golden_protector,heroic=1,elite=1,addon=synapse_springs_mark_ii
-# main_hand=trident_of_corrupted_waters,heroic=1,elite=1,weapon=staff_3.30speed_692min_1039max,enchant=dancing_steel

@@ -81,7 +81,7 @@ off_hand=softfoots_last_resort,id=105430,upgrade=2,gems=80agi_160crit_60agi,ench
 # gear_intellect=80
 # gear_spirit=80
 # gear_hit_rating=320
-# gear_crit_rating=4464
+# gear_crit_rating=4156
 # gear_haste_rating=586
 # gear_mastery_rating=457
 # gear_armor=413
@@ -89,6 +89,3 @@ off_hand=softfoots_last_resort,id=105430,upgrade=2,gems=80agi_160crit_60agi,ench
 # meta_gem=capacitive_primal
 # tier16_2pc_melee=1
 # tier16_4pc_melee=1
-# hands=gloves_of_the_golden_protector,heroic=1,elite=1,addon=synapse_springs_mark_ii
-# main_hand=korvens_crimson_crescent,heroic=1,elite=1,weapon=axe_2.60speed_370min_690max,enchant=dancing_steel
-# off_hand=softfoots_last_resort,heroic=1,elite=1,weapon=fist_2.60speed_370min_690max,enchant=dancing_steel

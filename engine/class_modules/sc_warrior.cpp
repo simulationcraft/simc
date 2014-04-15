@@ -181,7 +181,6 @@ public:
   struct procs_t
   {
     proc_t* raging_blow_wasted;
-    proc_t* shield_charge_wasted;
     proc_t* strikes_of_opportunity;
     proc_t* sudden_death;
     proc_t* taste_for_blood_wasted;
@@ -343,6 +342,7 @@ public:
   virtual double    matching_gear_multiplier( attribute_e attr ) const;
   virtual double    composite_block() const;
   virtual double    composite_parry() const;
+  virtual double    composite_expertise() const;
   virtual double    composite_crit_block() const;
   virtual double    composite_player_critical_damage_multiplier() const;
   virtual double    composite_crit_avoidance() const;
@@ -819,16 +819,18 @@ void warrior_attack_t::consume_resource()
     // At the least I will shorten the names :) 
     if ( rage >  p -> cooldown.heroic_leap -> remains().total_seconds() )
       p -> gain.reduced_cooldown_heroic_leap -> add( RESOURCE_RAGE, rage - p -> cooldown.heroic_leap -> remains().total_seconds() , 0 );
-    if ( rage >  p -> cooldown.recklessness -> remains().total_seconds() )
-      p -> gain.reduced_cooldown_recklessness -> add( RESOURCE_RAGE, rage - p -> cooldown.recklessness -> remains().total_seconds() , 0 );
-    if ( rage >  p -> cooldown.storm_bolt -> remains().total_seconds() )
-      p -> gain.reduced_cooldown_storm_bolt -> add( RESOURCE_RAGE, rage - p -> cooldown.storm_bolt -> remains().total_seconds() , 0 );
-    if ( rage >  p -> cooldown.bladestorm -> remains().total_seconds() )
-      p -> gain.reduced_cooldown_bladestorm -> add( RESOURCE_RAGE, rage - p -> cooldown.bladestorm -> remains().total_seconds() , 0 );
+    if ( p -> specialization() == WARRIOR_FURY || p -> specialization() == WARRIOR_ARMS )
+      {
+      if ( rage >  p -> cooldown.recklessness -> remains().total_seconds() )
+        p -> gain.reduced_cooldown_recklessness -> add( RESOURCE_RAGE, rage - p -> cooldown.recklessness -> remains().total_seconds() , 0 );
+      if ( rage >  p -> cooldown.storm_bolt -> remains().total_seconds() )
+        p -> gain.reduced_cooldown_storm_bolt -> add( RESOURCE_RAGE, rage - p -> cooldown.storm_bolt -> remains().total_seconds() , 0 );
+      if ( rage >  p -> cooldown.bladestorm -> remains().total_seconds() )
+        p -> gain.reduced_cooldown_bladestorm -> add( RESOURCE_RAGE, rage - p -> cooldown.bladestorm -> remains().total_seconds() , 0 );
+      }
 
     rage *= -1;
     p -> cooldown.heroic_leap -> adjust( timespan_t::from_seconds( rage ) );
-    p -> cooldown.recklessness -> adjust( timespan_t::from_seconds( rage ) );
     p -> cooldown.shield_wall -> adjust( timespan_t::from_seconds( rage ) ); 
 
     if ( p -> specialization() == WARRIOR_FURY || p -> specialization() == WARRIOR_ARMS )
@@ -839,6 +841,7 @@ void warrior_attack_t::consume_resource()
       p -> cooldown.bloodbath -> adjust( timespan_t::from_seconds( rage ) ); 
       p -> cooldown.dragon_roar -> adjust( timespan_t::from_seconds( rage ) );
       p -> cooldown.shockwave -> adjust( timespan_t::from_seconds( rage ) ); 
+      p -> cooldown.recklessness -> adjust( timespan_t::from_seconds( rage ) );
     }
     else if ( p -> specialization() == WARRIOR_PROTECTION )
     {
@@ -919,7 +922,7 @@ struct melee_t : public warrior_attack_t
     repeating   = true;
     trigger_gcd = timespan_t::zero();
 
-    if ( p -> dual_wield() ) base_hit -= 0.19;
+    if ( p -> dual_wield() ) base_hit -= 0.17;
   }
 
   virtual timespan_t execute_time() const
@@ -1405,6 +1408,8 @@ struct dragon_roar_t : public warrior_attack_t
     // lets us benefit from seasoned_soldier, etc. but do not add weapon damage to it
     weapon            = &( p -> main_hand_weapon );
     weapon_multiplier = 0;
+    base_dd_min = 0; // Temporary
+    base_dd_max = 0;
   }
 
   double calculate_direct_amount( action_state_t* state )
@@ -1547,10 +1552,7 @@ struct heroic_strike_t : public warrior_attack_t
     const warrior_t* p = cast();
 
     if( p -> buff.shield_charge -> up() )
-    {
       am *= 1.0 + p -> buff.shield_charge -> default_value;
-      p -> buff.shield_charge -> decrement();
-    }
 
     return am;
   }
@@ -2044,10 +2046,7 @@ struct revenge_t : public warrior_attack_t
     const warrior_t* p = cast();
 
     if( p -> buff.shield_charge -> up() )
-    {
       am *= 1.0 + p -> buff.shield_charge -> default_value;
-      p -> buff.shield_charge -> decrement();
-    }
 
     return am;
   }
@@ -2103,49 +2102,6 @@ struct second_wind_t : public heal_t // SW has been changed to life-leech in WoD
 
 };
 
-// Shield Charge ============================================================
-
-struct shield_charge_t : public warrior_attack_t
-{
-  shield_charge_t( warrior_t* p, const std::string& options_str ) :
-    warrior_attack_t( "shield_charge", p, p -> find_spell( 156321 ) )
-  {
-    parse_options( NULL, options_str );
-
-    if ( p -> active_stance == STANCE_DEFENSE )
-      background = true;
-
-    base_teleport_distance = data().max_range();
-    movement_directionality = MOVEMENT_OMNI;
-
-    harmful = false;
-    use_off_gcd = true;
-  }
-
-  
-  virtual void execute()
-  {
-    warrior_attack_t::execute();
-
-    warrior_t* p = cast();
-    if ( p -> buff.shield_charge -> stack() == p -> buff.shield_charge -> max_stack() )
-      p -> proc.shield_charge_wasted -> occur();
-
-    p -> buff.shield_charge -> trigger();
-
-  }
-
-  virtual bool ready()
-  {
-    warrior_t* p = cast();
-
-    if ( p -> current.distance_to_move > base_teleport_distance )
-      return false;
-
-    return warrior_attack_t::ready();
-  }
-};
-
 // Shield Slam ==============================================================
 
 struct shield_slam_t : public warrior_attack_t
@@ -2176,10 +2132,7 @@ struct shield_slam_t : public warrior_attack_t
     const warrior_t* p = cast();
 
     if( p -> buff.shield_charge -> up() )
-    {
       am *= 1.0 + p -> buff.shield_charge -> default_value;
-      p -> buff.shield_charge -> decrement();
-    }
 
     return am;
   }
@@ -2936,6 +2889,50 @@ struct shield_block_t : public warrior_spell_t
   }
 };
 
+// Shield Charge ============================================================
+
+struct shield_charge_t : public warrior_spell_t
+{
+  shield_charge_t( warrior_t* p, const std::string& options_str ) :
+    warrior_spell_t( "shield_charge", p, p -> find_spell( 156321 )  )
+  {
+    parse_options( NULL, options_str );
+    if ( p -> active_stance == STANCE_DEFENSE )
+      background = true;
+    harmful = false;
+
+    base_teleport_distance = data().max_range();
+    movement_directionality = MOVEMENT_OMNI;
+
+    cooldown -> duration = timespan_t::from_seconds( 9.0 );
+    cooldown -> charges = 2;
+
+    use_off_gcd = true;
+  }
+
+  virtual void execute()
+  {
+    warrior_spell_t::execute();
+    warrior_t* p = cast();
+
+    if ( p -> buff.shield_charge -> check() )
+      p -> buff.shield_charge -> extend_duration( p, timespan_t::from_seconds( 6.0 ) );
+    else
+      p -> buff.shield_charge -> trigger();
+  }
+
+  virtual bool ready()
+  {
+    warrior_t* p = cast();
+
+    if ( p -> current.distance_to_move > base_teleport_distance )
+      return false;
+
+    return warrior_spell_t::ready();
+  }
+
+};
+
 // Shield Wall ==============================================================
 
 struct shield_wall_t : public warrior_spell_t
@@ -3521,7 +3518,6 @@ void warrior_t::apl_precombat()
 
 void warrior_t::apl_smf_fury()
 {
-  std::vector<std::string> item_actions       = get_item_actions();
   std::vector<std::string> racial_actions     = get_racial_actions();
 
   action_priority_list_t* default_list        = get_action_priority_list( "default"       );
@@ -3539,9 +3535,6 @@ void warrior_t::apl_smf_fury()
   default_list -> add_action( this, "Recklessness", "if=!talent.bloodbath.enabled&(((cooldown.colossus_smash.remains<2|debuff.colossus_smash.remains>=5)&target.time_to_die>192)|target.health.pct<20)|buff.bloodbath.up&(target.time_to_die>192|target.health.pct<20)|target.time_to_die<=12",
                               "This incredibly long line can be translated to 'Use recklessness on cooldown with colossus smash; unless the boss will die before the ability is usable again, and then combine with execute instead.'" );
   default_list -> add_action( "avatar,if=enabled&(buff.recklessness.up|target.time_to_die<=25)" );
-
-  for ( size_t i = 0; i < item_actions.size(); i++ )
-    default_list -> add_action( item_actions[ i ] + ",if=buff.bloodbath.up|(!talent.bloodbath.enabled&debuff.colossus_smash.up)|buff.recklessness.up" );
 
   for ( size_t i = 0; i < racial_actions.size(); i++ )
     default_list -> add_action( racial_actions[ i ] + ",if=buff.bloodbath.up|(!talent.bloodbath.enabled&debuff.colossus_smash.up)|buff.recklessness.up" );
@@ -3642,7 +3635,6 @@ void warrior_t::apl_smf_fury()
 
 void warrior_t::apl_tg_fury()
 {
-  std::vector<std::string> item_actions       = get_item_actions();
   std::vector<std::string> racial_actions     = get_racial_actions();
 
   action_priority_list_t* default_list        = get_action_priority_list( "default"       );
@@ -3660,9 +3652,6 @@ void warrior_t::apl_tg_fury()
   default_list -> add_action( this, "Recklessness", "if=!talent.bloodbath.enabled&((cooldown.colossus_smash.remains<2|debuff.colossus_smash.remains>=5)&(target.time_to_die>192|target.health.pct<20))|buff.bloodbath.up&(target.time_to_die>192|target.health.pct<20)|target.time_to_die<=12",
                               "This incredibly long line can be translated to 'Use recklessness on cooldown with colossus smash; unless the boss will die before the ability is usable again, and then combine with execute instead.'" );
   default_list -> add_action( "avatar,if=enabled&(buff.recklessness.up|target.time_to_die<=25)" );
-
-  for ( size_t i = 0; i < item_actions.size(); i++ )
-    default_list -> add_action( item_actions[ i ] + ",if=buff.bloodbath.up|(!talent.bloodbath.enabled&debuff.colossus_smash.up)|buff.recklessness.up" );
 
   for ( size_t i = 0; i < racial_actions.size(); i++ )
     default_list -> add_action( racial_actions[ i ] + ",if=buff.bloodbath.up|(!talent.bloodbath.enabled&debuff.colossus_smash.up)|buff.recklessness.up" );
@@ -3761,7 +3750,6 @@ void warrior_t::apl_tg_fury()
 
 void warrior_t::apl_arms()
 {
-  std::vector<std::string> item_actions       = get_item_actions();
   std::vector<std::string> racial_actions     = get_racial_actions();
 
   action_priority_list_t* default_list        = get_action_priority_list( "default"       );
@@ -3777,9 +3765,6 @@ void warrior_t::apl_arms()
   default_list -> add_action( this, "Recklessness", "if=!talent.bloodbath.enabled&((cooldown.colossus_smash.remains<2|debuff.colossus_smash.remains>=5)&(target.time_to_die>192|target.health.pct<20))|buff.bloodbath.up&(target.time_to_die>192|target.health.pct<20)|target.time_to_die<=12",
                               "This incredibly long line (Due to differing talent choices) says 'Use recklessness on cooldown with colossus smash, unless the boss will die before the ability is usable again, and then use it with execute.'" );
   default_list -> add_action( "avatar,if=enabled&(buff.recklessness.up|target.time_to_die<=25)" );
-
-  for ( size_t i = 0; i < item_actions.size(); i++ )
-    default_list -> add_action( item_actions[ i ] + ",if=buff.bloodbath.up|(!talent.bloodbath.enabled&debuff.colossus_smash.up)|buff.recklessness.up" );
 
   for ( size_t i = 0; i < racial_actions.size(); i++ )
     default_list -> add_action( racial_actions[ i ] + ",if=buff.bloodbath.up|(!talent.bloodbath.enabled&debuff.colossus_smash.up)|buff.recklessness.up" );
@@ -3826,7 +3811,6 @@ void warrior_t::apl_arms()
 
 void warrior_t::apl_prot()
 {
-  std::vector<std::string> item_actions       = get_item_actions();
   std::vector<std::string> racial_actions     = get_racial_actions();
 
   action_priority_list_t* default_list        = get_action_priority_list( "default" );
@@ -3838,9 +3822,6 @@ void warrior_t::apl_prot()
   if ( sim -> allow_potions && level >= 80 )
     default_list -> add_action( "mountains_potion,if=incoming_damage_2500ms>health.max*0.6&(buff.shield_wall.down&buff.last_stand.down)" );
 
-  for ( size_t i = 0; i < item_actions.size(); i++ )
-    default_list -> add_action( item_actions[ i ] + "" );
-
   default_list -> add_action( this, "Heroic Strike", "if=buff.ultimatum.up" );
   default_list -> add_action( this, "Shield Block" );
   default_list -> add_action( this, "Shield Barrier", "if=incoming_damage_1500ms>health.max*0.3|rage>rage.max-20" );
@@ -3851,7 +3832,6 @@ void warrior_t::apl_prot()
   normal_rotation -> add_action( this, "Shield Slam" );
   normal_rotation -> add_action( this, "Revenge" );
   normal_rotation -> add_action( this, "Heroic Strike", "if=buff.ultimatum.up" );
-  normal_rotation -> add_action( "ignite_weapon,if=buff.ultimatum.up" );
   normal_rotation -> add_action( "ravager" );
   normal_rotation -> add_action( this, "Thunder Clap" );
   normal_rotation -> add_action( this, "Demoralizing Shout" );
@@ -3864,9 +3844,29 @@ void warrior_t::apl_prot()
 // Gladiator combat action list, to be completed later.
 void warrior_t::apl_gladiator()
 {
+  std::vector<std::string> racial_actions     = get_racial_actions();
   action_priority_list_t* default_list = get_action_priority_list( "default" );
 
-  default_list -> add_action( this, "Heroic Strike" );
+
+  default_list -> add_action( this, "charge" );
+  default_list -> add_action( "auto_attack" );
+  for ( size_t i = 0; i < racial_actions.size(); i++ )
+    default_list -> add_action( racial_actions[ i ] + "" );
+  
+  if ( sim -> allow_potions && level >= 80 )
+    default_list -> add_action( "mogu_power_potion,if=target.health.pct<20" );
+
+  default_list -> add_action( "shield_charge,if=buff.shield_charge.down" );
+  default_list -> add_action( this, "Heroic Strike", "if=buff.ultimatum.up|(buff.shield_charge.up&rage>50&target.health.pct>20)" );
+  default_list -> add_action( "bloodbath,if=enabled" );
+  default_list -> add_action( this, "Heroic Leap" );
+  default_list -> add_action( this, "Shield Slam", "if=buff.shield_charge.up|cooldown.shield_charge.remains>3|rage<30" );
+  default_list -> add_action( this, "Execute" , "if=rage>50" );
+  default_list -> add_action( "dragon_roar" );
+  default_list -> add_action( this, "Revenge" , "if=buff.shield_charge.up|cooldown.shield_charge.remains>2|rage<30" );
+  default_list -> add_action( this, "Thunder Clap" );
+  default_list -> add_action( this, "Devastate", "if=cooldown.shield_slam.remains>1" );
+
 }
 
 
@@ -3929,7 +3929,9 @@ void warrior_t::create_buffs()
 
   buff.ignite_weapon    = buff_creator_t( this, "ignite_weapon", find_spell( 156288 ) );
 
-  buff.gladiator_stance = buff_creator_t( this, "gladiator_stance",   find_spell( 156291 ) );
+  buff.gladiator_stance = buff_creator_t( this, "gladiator_stance",   find_spell( 156291 ) )
+                          .default_value( cache.mastery_value() )
+                          .add_invalidate( CACHE_ATTACK_POWER );
 
   buff.heroic_leap_glyph = buff_creator_t( this, "heroic_leap_glyph", glyphs.heroic_leap );
 
@@ -3956,7 +3958,6 @@ void warrior_t::create_buffs()
                          .add_invalidate( CACHE_BLOCK );
 
   buff.shield_charge    = buff_creator_t( this, "shield_charge" ).spell( find_spell( 156321 ) )
-                          .max_stack( 2 )
                           .chance( 1 )
                           .default_value( find_spell( 156321 ) -> effectN( 2 ).percent() );
                           
@@ -4047,7 +4048,6 @@ void warrior_t::init_procs()
   proc.sudden_death            = get_proc( "sudden_death"            );
   proc.taste_for_blood_wasted  = get_proc( "taste_for_blood_wasted"  );
   proc.raging_blow_wasted      = get_proc( "raging_blow_wasted"      );
-  proc.shield_charge_wasted    = get_proc( "shield_charge_wasted"    );
   proc.t15_2pc_melee           = get_proc( "t15_2pc_melee"           );
 }
 
@@ -4109,7 +4109,7 @@ void warrior_t::init_action_list()
       apl_arms();
       break;
     case WARRIOR_PROTECTION:
-      if ( ROLE_ATTACK )
+      if ( primary_role() == ROLE_ATTACK )
         apl_gladiator();
       else
         apl_prot();
@@ -4211,7 +4211,15 @@ double warrior_t::composite_block() const
 
 //warrior_t::composite_expertise =======================================
 
-//To be done
+double warrior_t::composite_expertise() const
+{
+  double expertise = current.stats.expertise_rating / current_rating().expertise;
+
+  if( spec.unwavering_sentinel -> ok() )
+    expertise += spec.unwavering_sentinel ->effectN( 5 ).base_value();
+
+  return expertise;
+}
 
 // warrior_t::composite_parry ==========================================
 
@@ -4317,7 +4325,7 @@ void warrior_t::regen( timespan_t periodicity )
 {
   player_t::regen( periodicity );
 
-  if ( buff.defensive_stance -> check() )
+  if ( buff.defensive_stance -> check() || buff.gladiator_stance -> check() )
     player_t::resource_gain( RESOURCE_RAGE, ( periodicity.total_seconds() / 3.0 ), gain.defensive_stance );
 }
 
@@ -4453,7 +4461,7 @@ action_t* warrior_t::create_proc_action( const std::string& name )
 
 bool warrior_t::create_profile( std::string& profile_str, save_e type, bool save_html )
 {
-  if ( specialization() == WARRIOR_PROTECTION && ROLE_TANK )
+  if ( specialization() == WARRIOR_PROTECTION &&  primary_role() == ROLE_TANK )
     position_str = "front";
 
   return player_t::create_profile( profile_str, type, save_html );
