@@ -358,7 +358,7 @@ struct water_elemental_pet_t : public pet_t
   struct mini_waterbolt_t : public spell_t
   {
     mini_waterbolt_t( water_elemental_pet_t* p , int bolt_count = 1 ) :
-      spell_t( "mini_waterbolt", p, p -> find_spell( 131581 ) )
+      spell_t( "mini_waterbolt", p, p -> find_spell( 31707 ) )
     {
       may_crit = true;
       background = true;
@@ -2153,7 +2153,7 @@ struct frost_bomb_t : public mage_spell_t
 struct mini_frostbolt_t : public mage_spell_t
 {
   mini_frostbolt_t( mage_t* p, int bolt_count = 1 ) :
-    mage_spell_t( "mini_frostbolt", p, p -> find_spell( 131079 ) )
+    mage_spell_t( "mini_frostbolt", p, p -> find_spell( 31707 ) )
   {
     background = true;
     //dual = true;
@@ -2584,7 +2584,7 @@ struct mini_ice_lance_t : public mage_spell_t
 {
 
   mini_ice_lance_t( mage_t* p , int bolt_count = 1 ) :
-    mage_spell_t( "mini_ice_lance", p, p -> find_spell( 131080 ) )
+    mage_spell_t( "mini_ice_lance", p, p -> find_spell( 30455 ) )
   {
     background = true;
     //dual = true;
@@ -3071,7 +3071,7 @@ public:
 struct mirror_image_t : public mage_spell_t
 {
   mirror_image_t( mage_t* p, const std::string& options_str ) :
-    mage_spell_t( "mirror_image", p, p -> find_class_spell( "Mirror Image" ) )
+    mage_spell_t( "mirror_image", p, p -> find_spell( 55342 ) )
   {
     parse_options( NULL, options_str );
     num_ticks = 0;
@@ -3737,7 +3737,7 @@ struct choose_rotation_t : public action_t
 struct alter_time_t : public mage_spell_t
 {
   alter_time_t( mage_t* p, const std::string& options_str ) :
-    mage_spell_t( "alter_time_activate", p, p -> find_class_spell( "Alter Time" ) )
+    mage_spell_t( "alter_time_activate", p, p -> find_spell( 108978 ) )
   {
     parse_options( NULL, options_str );
 
