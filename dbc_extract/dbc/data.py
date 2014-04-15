@@ -101,7 +101,7 @@ _DBC_FIELDS = {
         'id', 'id_item_set', 'id_spell', 'n_req_items', 'unk_wod_1'
     ],
     'ItemEffect.db2': [
-        'id', 'id_item', 'index', 'id_spell', 'trigger_type', ( 'cooldown_category', '%d' ), ( 'category_cooldown', '%d' ), ( 'cooldown_group', '%d' ), ( 'cooldown', '%d' )
+        'id', 'id_item', 'index', ( 'id_spell', '%6u' ), 'trigger_type', ( 'cooldown_category', '%6d' ), ( 'cooldown_category_duration', '%6d' ), ( 'cooldown_group', '%6d' ), ( 'cooldown_group_duration', '%6d' )
     ],
     'MinorTalent.dbc': [
         'id', 'id_spec', 'id_spell', 'index'

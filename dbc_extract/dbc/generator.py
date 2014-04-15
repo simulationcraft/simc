@@ -963,17 +963,27 @@ class ItemDataGenerator(DataGenerator):
             fields += [ '{ %s }' % ', '.join(item.field('stat_val_1', 'stat_val_2', 'stat_val_3', 'stat_val_4', 'stat_val_5', 'stat_val_6', 'stat_val_7', 'stat_val_8', 'stat_val_9', 'stat_val_10')) ]
             fields += [ '{ %s }' % ', '.join(item.field('stat_alloc_1', 'stat_alloc_2', 'stat_alloc_3', 'stat_alloc_4', 'stat_alloc_5', 'stat_alloc_6', 'stat_alloc_7', 'stat_alloc_8', 'stat_alloc_9', 'stat_alloc_10')) ]
             fields += [ '{ %s }' % ', '.join(item.field('stat_socket_mul_1', 'stat_socket_mul_2', 'stat_socket_mul_3', 'stat_socket_mul_4', 'stat_socket_mul_5', 'stat_socket_mul_6', 'stat_socket_mul_7', 'stat_socket_mul_8', 'stat_socket_mul_9', 'stat_socket_mul_10')) ]
-            spells = [ '0', '0', '0', '0', '0' ]
-            trigger_types = [ '0', '0', '0', '0', '0' ]
-            cooldown = [ '-1', '-1', '-1', '-1', '-1' ]
-            for spell in item.spells:
-                spells[ spell.index ] = str(spell.id_spell)
-                trigger_types[ spell.index ] = str(spell.trigger_type)
-                cooldown[ spell.index ] = str(spell.cooldown)
 
-            fields += [ '{ %s }' % ', '.join(spells) ]
+            spells = self._itemeffect_db[0].field('id_spell') * 5
+            trigger_types = self._itemeffect_db[0].field('trigger_type') * 5
+            cooldown_category = self._itemeffect_db[0].field('cooldown_category') * 5
+            cooldown_value = self._itemeffect_db[0].field('cooldown_category_duration') * 5
+            cooldown_group = self._itemeffect_db[0].field('cooldown_group') * 5
+            cooldown_shared = self._itemeffect_db[0].field('cooldown_group_duration') * 5
+            for spell in item.spells:
+                spells[ spell.index ] = spell.field('id_spell')[ 0 ]
+                trigger_types[ spell.index ] = spell.field('trigger_type')[ 0 ]
+                cooldown_category[ spell.index ] = spell.field('cooldown_category')[ 0 ]
+                cooldown_value[ spell.index ] = spell.field('cooldown_category_duration')[ 0 ]
+                cooldown_group[ spell.index ] = spell.field('cooldown_group')[ 0 ]
+                cooldown_shared[ spell.index ] = spell.field('cooldown_group_duration')[ 0 ]
+
             fields += [ '{ %s }' % ', '.join(trigger_types) ]
-            fields += [ '{ %s }' % ', '.join(cooldown) ]
+            fields += [ '{ %s }' % ', '.join(spells) ]
+            fields += [ '{ %s }' % ', '.join(cooldown_category) ]
+            fields += [ '{ %s }' % ', '.join(cooldown_value) ]
+            fields += [ '{ %s }' % ', '.join(cooldown_group) ]
+            fields += [ '{ %s }' % ', '.join(cooldown_shared) ]
 
             fields += [ '{ %s }' % ', '.join(item.field('socket_color_1', 'socket_color_2', 'socket_color_3')) ]
             fields += item.field('gem_props', 'socket_bonus', 'item_set', 'rand_suffix' )

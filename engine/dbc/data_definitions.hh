@@ -94,9 +94,12 @@ struct item_data_t {
   int      stat_val[10];
   int      stat_alloc[10];
   double   stat_socket_mul[10];
-  int      id_spell[5];
   int      trigger_spell[5];      // item_spell_trigger_type
-  int      cooldown[5];
+  int      id_spell[5];
+  int      cooldown_category[5];
+  int      cooldown_category_duration[5];
+  int      cooldown_group[5];
+  int      cooldown_group_duration[5];
   int      socket_color[3];       // item_socket_color
   int      gem_properties;
   int      id_socket_bonus;

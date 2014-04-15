@@ -353,10 +353,10 @@ timespan_t special_effect_t::cooldown() const
 
   // First, check item cooldowns, since they override (in simc) whatever the
   // spell cooldown may be
-  for ( size_t i = 0, end = sizeof_array( item -> parsed.data.cooldown ); i < end; i++ ) 
+  for ( size_t i = 0, end = sizeof_array( item -> parsed.data.cooldown_category_duration ); i < end; i++ ) 
   {
-    if ( item -> parsed.data.cooldown[ i ] > 0 )
-      return timespan_t::from_millis( item -> parsed.data.cooldown[ i ] );
+    if ( item -> parsed.data.cooldown_category_duration[ i ] > 0 )
+      return timespan_t::from_millis( item -> parsed.data.cooldown_category_duration[ i ] );
   }
 
   if ( driver() -> cooldown() > timespan_t::zero() )
