@@ -342,6 +342,7 @@ public:
   virtual double    matching_gear_multiplier( attribute_e attr ) const;
   virtual double    composite_block() const;
   virtual double    composite_parry() const;
+  virtual double    composite_attack_power_multiplier() const;
   virtual double    composite_expertise() const;
   virtual double    composite_crit_block() const;
   virtual double    composite_player_critical_damage_multiplier() const;
@@ -4231,6 +4232,18 @@ double warrior_t::composite_parry() const
   return parryriposte;
 }
 
+// warrior_t::composite_attack_power_multiplier ========================
+
+double warrior_t::composite_attack_power_multiplier() const
+{
+  double ap = player_t::composite_attack_power_multiplier();
+
+  if ( mastery.critical_block -> ok() )
+    ap += cache.mastery_value();
+
+  return ap;
+}
+
 // warrior_t::composite_crit_block =====================================
 
 double warrior_t::composite_crit_block() const
@@ -4313,6 +4326,7 @@ void warrior_t::invalidate_cache( cache_e c )
   {
     player_t::invalidate_cache( CACHE_BLOCK );
     player_t::invalidate_cache( CACHE_CRIT_BLOCK );
+    player_t::invalidate_cache( CACHE_ATTACK_POWER );
   }
 
 }
