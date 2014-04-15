@@ -110,8 +110,8 @@ public:
   {
     double matching_gear_multiplier;
     double flurry_rating_multiplier;
-    double haste_attack_ancestral_swiftness;
-    double haste_spell_ancestral_swiftness;
+    double speed_attack_ancestral_swiftness;
+    double haste_ancestral_swiftness;
     double haste_elemental_mastery;
     double attack_speed_flurry;
     double attack_speed_unleash_wind;
@@ -5072,8 +5072,8 @@ void shaman_t::init_spells()
   spell.windfury_driver              = find_spell( 33757 );
 
   // Constants
-  constant.haste_attack_ancestral_swiftness = 1.0 / ( 1.0 + spell.ancestral_swiftness -> effectN( 2 ).percent() );
-  constant.haste_spell_ancestral_swiftness  = 1.0 / ( 1.0 + spell.ancestral_swiftness -> effectN( 1 ).percent() );
+  constant.speed_attack_ancestral_swiftness = 1.0 / ( 1.0 + spell.ancestral_swiftness -> effectN( 2 ).percent() );
+  constant.haste_ancestral_swiftness  = 1.0 / ( 1.0 + spell.ancestral_swiftness -> effectN( 1 ).percent() );
 
   // Tier16 2PC Enhancement bonus actions, these need to bypass imbue checks
   // presumably, so we cannot just re-use our actual imbued ones
@@ -5667,7 +5667,7 @@ double shaman_t::composite_spell_haste() const
   double h = player_t::composite_spell_haste();
 
   if ( talent.ancestral_swiftness -> ok() )
-    h *= constant.haste_spell_ancestral_swiftness;
+    h *= constant.haste_ancestral_swiftness;
 
   if ( buff.elemental_mastery -> up() )
     h *= constant.haste_elemental_mastery;
@@ -5734,7 +5734,7 @@ double shaman_t::composite_melee_haste() const
     h *= constant.haste_elemental_mastery;
 
   if ( talent.ancestral_swiftness -> ok() )
-    h *= constant.haste_attack_ancestral_swiftness;
+    h *= constant.haste_ancestral_swiftness;
 
   if ( buff.tier13_4pc_healer -> up() )
     h *= 1.0 / ( 1.0 + buff.tier13_4pc_healer -> data().effectN( 1 ).percent() );
@@ -5753,6 +5753,9 @@ double shaman_t::composite_melee_speed() const
 
   if ( buff.unleash_wind -> up() )
     speed *= constant.attack_speed_unleash_wind;
+
+  if ( talent.ancestral_swiftness -> ok() )
+    speed *= constant.speed_attack_ancestral_swiftness;
 
   return speed;
 }
