@@ -1464,7 +1464,7 @@ struct eternal_flame_t : public paladin_heal_t
   {
     paladin_heal_t::impact( s );
 
-    td( s -> target ) -> buffs.eternal_flame -> trigger( 1, buff_t::DEFAULT_VALUE(), -1, s -> action -> hasted_num_ticks( s -> haste ) * s -> action -> tick_time( s -> haste ) + timespan_t::from_millis( 1 ) );
+    //td( s -> target ) -> buffs.eternal_flame -> trigger( 1, buff_t::DEFAULT_VALUE(), -1, s -> action -> hasted_num_ticks( s -> haste ) * s -> action -> tick_time( s -> haste ) + timespan_t::from_millis( 1 ) );
   }
 
   virtual void last_tick( dot_t* d )
