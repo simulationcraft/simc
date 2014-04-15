@@ -5845,7 +5845,7 @@ double shaman_t::composite_multistrike() const
 
   // TODO-WOD: Flat or multiplicative bonus?
   if ( buff.unleashed_fury_wf -> up() )
-    m *= 1.0 + buff.unleashed_fury_wf -> data().effectN( 1 ).percent();
+    m += buff.unleashed_fury_wf -> data().effectN( 1 ).percent();
 
   return m;
 }
