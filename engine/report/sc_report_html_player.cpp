@@ -269,8 +269,6 @@ void print_html_action_summary( report::sc_html_stream& os, unsigned stats_mask,
 
   // Count
   double count = ( result_type == 1 ) ? s -> num_tick_results.mean() : s -> num_direct_results.mean();
-  count -= results[ RESULT_MULTISTRIKE ].count.mean();
-  count -= results[ RESULT_MULTISTRIKE_CRIT ].count.mean();
 
   os.printf( "\t\t\t\t\t\t\t\t<td class=\"right small\">%.1f</td>\n", count );
 
