@@ -1407,7 +1407,7 @@ void print_html_contents( report::sc_html_stream& os, sim_t* sim )
 
 // print_html_sim_summary ===================================================
 
-void print_html_sim_summary( report::sc_html_stream& os, sim_t* sim, sim_t::report_information_t& ri )
+void print_html_sim_summary( report::sc_html_stream& os, sim_t* sim, sim_report_information_t& ri )
 {
   os << "\t\t\t\t<div id=\"sim-info\" class=\"section\">\n";
 
@@ -1770,7 +1770,7 @@ void print_html_raw_ability_summary( report::sc_html_stream& os, sim_t* sim )
 
 // print_html_raid_summary ==================================================
 
-void print_html_raid_summary( report::sc_html_stream& os, sim_t* sim, sim_t::report_information_t& ri )
+void print_html_raid_summary( report::sc_html_stream& os, sim_t* sim, sim_report_information_t& ri )
 {
   os << "\t\t<div id=\"raid-summary\" class=\"section section-open\">\n\n";
 
@@ -1922,7 +1922,7 @@ void print_html_raid_imagemap( report::sc_html_stream& os, sim_t* sim, size_t nu
     imgid, mapid, imgid, mapid, mapid );
 }
 
-void print_html_raid_imagemaps( report::sc_html_stream& os, sim_t* sim, sim_t::report_information_t& ri )
+void print_html_raid_imagemaps( report::sc_html_stream& os, sim_t* sim, sim_report_information_t& ri )
 {
 
   os << "\t\t<script type=\"text/javascript\">\n"

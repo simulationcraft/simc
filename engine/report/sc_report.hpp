@@ -9,6 +9,10 @@
 #include "simulationcraft.hpp"
 #include <fstream>
 
+struct player_t;
+struct player_processed_report_information_t;
+struct sim_report_information_t;
+
 #define MAX_PLAYERS_PER_CHART 20
 
 #define LOOTRANK_ENABLED 1
@@ -48,10 +52,58 @@ std::string gear_weights_pawn      ( player_t*, bool hit_expertise );
 namespace report
 {
 
+class indented_stream : public io::ofstream
+{
+  int level_;
+  virtual const char* _tabs() const = 0;
+
+public:
+  indented_stream() : level_( 0 ) {}
+
+  int level() const { return level_; }
+  void set_level( int l ) { level_ = l; }
+
+  indented_stream& tabs()
+  {
+    *this << _tabs();
+    return *this;
+  }
+
+  ofstream& operator+=( int c ) { assert( level_ + c >= 0 ); level_ += c; return *this; }
+  ofstream& operator-=( int c ) { assert( level_ - c >= 0 ); level_ -= c; return *this; }
+
+  ofstream& operator++() { ++level_; return *this; }
+  ofstream& operator--() { assert( level_ > 0 ); --level_; return *this; }
+};
+
+struct sc_html_stream : public indented_stream
+{
+  virtual const char* _tabs() const
+  {
+    switch ( level() )
+    {
+      case  0: return "";
+      case  1: return "\t";
+      case  2: return "\t\t";
+      case  3: return "\t\t\t";
+      case  4: return "\t\t\t\t";
+      case  5: return "\t\t\t\t\t";
+      case  6: return "\t\t\t\t\t\t";
+      case  7: return "\t\t\t\t\t\t\t";
+      case  8: return "\t\t\t\t\t\t\t\t";
+      case  9: return "\t\t\t\t\t\t\t\t\t";
+      case 10: return "\t\t\t\t\t\t\t\t\t\t";
+      case 11: return "\t\t\t\t\t\t\t\t\t\t\t";
+      case 12: return "\t\t\t\t\t\t\t\t\t\t\t\t";
+      default: assert( 0 ); return NULL;
+    }
+  }
+};
+
 
 void generate_player_charts         ( player_t*, player_processed_report_information_t& );
 void generate_player_buff_lists     ( player_t*, player_processed_report_information_t& );
-void generate_sim_report_information( sim_t*,       sim_t::report_information_t& );
+void generate_sim_report_information( sim_t*, sim_report_information_t& );
 
 void print_html_sample_data ( report::sc_html_stream&, sim_t*, extended_sample_data_t&, const std::string& name, int& td_counter, int columns = 1 );
 
@@ -63,14 +115,6 @@ void print_html_player ( report::sc_html_stream&, player_t*, int );
 void print_xml         ( sim_t* );
 void print_suite       ( sim_t* );
 void print_csv_data( sim_t* );
-
-struct compare_hat_donor_interval
-{
-  bool operator()( const player_t* l, const player_t* r ) const
-  {
-    return ( l -> procs.hat_donor -> interval_sum.mean() < r -> procs.hat_donor -> interval_sum.mean() );
-  }
-};
 
 struct tabs_t
 {
@@ -125,7 +169,8 @@ static const char* const beta_warnings[] =
   "Beta! Beta! Beta! Beta! Beta! Beta!",
 };
 #endif // SC_BETA
-}
+
+} // reort
 
 std::string pretty_spell_text( const spell_data_t& default_spell, const std::string& text, const player_t& p );
 inline std::string pretty_spell_text( const spell_data_t& default_spell, const char* text, const player_t& p )

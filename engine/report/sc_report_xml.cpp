@@ -18,7 +18,7 @@ void print_xml_targets( sim_t* sim, xml_writer_t & writer );
 void print_xml_buffs( sim_t* sim, xml_writer_t & writer );
 void print_xml_hat_donors( sim_t* sim, xml_writer_t & writer );
 void print_xml_performance( sim_t* sim, xml_writer_t & writer );
-void print_xml_summary( sim_t* sim, xml_writer_t & writer, sim_t::report_information_t& );
+void print_xml_summary( sim_t* sim, xml_writer_t & writer, sim_report_information_t& );
 void print_xml_player( sim_t* sim, xml_writer_t & writer, player_t * p, player_t * owner );
 
 void print_xml_player_stats( xml_writer_t & writer, player_t * p );
@@ -33,6 +33,14 @@ void print_xml_player_scale_factors( xml_writer_t & writer, player_t * p, player
 void print_xml_player_dps_plots( xml_writer_t & writer, player_t * p );
 void print_xml_player_charts( xml_writer_t & writer, player_processed_report_information_t& );
 void print_xml_player_gear( xml_writer_t & writer, player_t* p );
+
+struct compare_hat_donor_interval
+{
+  bool operator()( const player_t* l, const player_t* r ) const
+  {
+    return ( l -> procs.hat_donor -> interval_sum.mean() < r -> procs.hat_donor -> interval_sum.mean() );
+  }
+};
 
 void print_xml_errors( sim_t* sim, xml_writer_t & writer )
 {
@@ -841,7 +849,7 @@ void print_xml_hat_donors( sim_t* sim, xml_writer_t & writer )
   int num_donors = ( int ) hat_donors.size();
   if ( num_donors )
   {
-    range::sort( hat_donors, report::compare_hat_donor_interval()  );
+    range::sort( hat_donors, compare_hat_donor_interval()  );
 
     writer.begin_tag( "honor_among_thieves" );
 
@@ -889,7 +897,7 @@ void print_xml_config( sim_t* sim, xml_writer_t & writer )
   writer.end_tag( "config" );
 }
 
-void print_xml_summary( sim_t* sim, xml_writer_t & writer, sim_t::report_information_t& ri )
+void print_xml_summary( sim_t* sim, xml_writer_t & writer, sim_report_information_t& ri )
 {
   writer.begin_tag( "summary" );
 

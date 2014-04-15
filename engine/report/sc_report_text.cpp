@@ -8,6 +8,14 @@
 
 namespace { // UNNAMED NAMESPACE ==========================================
 
+struct compare_hat_donor_interval
+{
+  bool operator()( const player_t* l, const player_t* r ) const
+  {
+    return ( l -> procs.hat_donor -> interval_sum.mean() < r -> procs.hat_donor -> interval_sum.mean() );
+  }
+};
+
 void simplify_html( std::string& buffer )
 {
   util::replace_all( buffer, "&lt;", "<" );
@@ -792,7 +800,7 @@ void print_text_hat_donors( FILE* file, sim_t* sim )
   int num_donors = ( int ) hat_donors.size();
   if ( num_donors )
   {
-    range::sort( hat_donors, report::compare_hat_donor_interval() );
+    range::sort( hat_donors, compare_hat_donor_interval() );
 
     util::fprintf( file, "\nHonor Among Thieves Donor Report:\n" );
 

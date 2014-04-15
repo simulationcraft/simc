@@ -1319,62 +1319,7 @@ std::ostream& stream_printf( std::ostream&, const char* format, ... );
 
 // Report ===================================================================
 
-namespace report
-{
-class indented_stream : public io::ofstream
-{
-  int level_;
-  virtual const char* _tabs() const = 0;
-
-public:
-  indented_stream() : level_( 0 ) {}
-
-  int level() const { return level_; }
-  void set_level( int l ) { level_ = l; }
-
-  indented_stream& tabs()
-  {
-    *this << _tabs();
-    return *this;
-  }
-
-  ofstream& operator+=( int c ) { assert( level_ + c >= 0 ); level_ += c; return *this; }
-  ofstream& operator-=( int c ) { assert( level_ - c >= 0 ); level_ -= c; return *this; }
-
-  ofstream& operator++() { ++level_; return *this; }
-  ofstream& operator--() { assert( level_ > 0 ); --level_; return *this; }
-};
-
-struct sc_html_stream : public indented_stream
-{
-  virtual const char* _tabs() const
-  {
-    switch ( level() )
-    {
-      case  0: return "";
-      case  1: return "\t";
-      case  2: return "\t\t";
-      case  3: return "\t\t\t";
-      case  4: return "\t\t\t\t";
-      case  5: return "\t\t\t\t\t";
-      case  6: return "\t\t\t\t\t\t";
-      case  7: return "\t\t\t\t\t\t\t";
-      case  8: return "\t\t\t\t\t\t\t\t";
-      case  9: return "\t\t\t\t\t\t\t\t\t";
-      case 10: return "\t\t\t\t\t\t\t\t\t\t";
-      case 11: return "\t\t\t\t\t\t\t\t\t\t\t";
-      case 12: return "\t\t\t\t\t\t\t\t\t\t\t\t";
-      default: assert( 0 ); return NULL;
-    }
-  }
-};
-
-// In the end we will restore the simplicity of the code structure, but for now these are duplicated here.
-void print_spell_query( sim_t*, unsigned level );
-void print_profiles( sim_t* );
-void print_text( FILE*, sim_t*, bool detail );
-void print_suite( sim_t* );
-};
+#include "report/sc_report.hpp"
 
 // Spell information struct, holding static functions to output spell data in a human readable form
 
@@ -2120,7 +2065,8 @@ enum expr_data_e
   DATA_MASTERY_SPELL,
   DATA_SPECIALIZATION_SPELL,
   DATA_GLYPH_SPELL,
-  DATA_SET_BONUS_SPELL
+  DATA_SET_BONUS_SPELL,
+  DATA_PERK_SPELL,
 };
 
 struct spell_data_expr_t
@@ -2424,6 +2370,14 @@ private:
   void reschedule_event( core_event_t* );
 };
 
+struct sim_report_information_t
+{
+  bool charts_generated;
+  std::vector<std::string> dps_charts, hps_charts, gear_charts, dpet_charts;
+  std::string timeline_chart, downtime_chart;
+  sim_report_information_t() { charts_generated = false; }
+};
+
 // Simulation Engine ========================================================
 
 struct sim_t : public core_sim_t, private sc_thread_t
@@ -2614,13 +2568,7 @@ public:
   int solo_raid;
   int global_item_upgrade_level;
 
-  struct report_information_t
-  {
-    bool charts_generated;
-    std::vector<std::string> dps_charts, hps_charts, gear_charts, dpet_charts;
-    std::string timeline_chart, downtime_chart;
-    report_information_t() { charts_generated = false; }
-  } report_information;
+  sim_report_information_t report_information;
 
   // Multi-Threading
   mutex_t mutex;

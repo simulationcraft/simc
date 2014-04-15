@@ -367,7 +367,7 @@ public:
     talent(),
     glyph(),
     spell(),
-    rppm_echo_of_the_elements( *this )
+    rppm_echo_of_the_elements( *this, 0, RPPM_HASTE )
   {
     // Active
     active_lightning_charge   = 0;
