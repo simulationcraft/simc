@@ -1714,6 +1714,14 @@ bool unique_gear::initialize_special_effect( special_effect_t& effect,
   if ( effect.spell_id == 0 )
     effect.spell_id = spell_id;
 
+  if ( effect.spell_id > 0 && item.player -> find_spell( effect.spell_id ) -> id() != effect.spell_id )
+  {
+    if ( item.sim -> debug )
+      item.sim -> out_debug.printf( "Player %s unable to initialize special effect in item %s, spell identifier %u not found.", item.player -> name(), item.name(), effect.spell_id );
+    effect.type = SPECIAL_EFFECT_NONE;
+    return ret;
+  }
+
   // For generic procs, make sure we have a PPM, RPPM or Proc Chance available,
   // otherwise there's no point in trying to proc anything
   if ( effect.type == SPECIAL_EFFECT_EQUIP && ! proc::usable_proc( effect ) )
