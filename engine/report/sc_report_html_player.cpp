@@ -2321,24 +2321,17 @@ void print_html_player_description( report::sc_html_stream& os, sim_t* sim, play
                p -> collected_data.hps.mean() + p -> collected_data.aps.mean(), 
                p -> collected_data.aps.mean() );
     // print TMI
-    double tmi_display =  p -> collected_data.theck_meloree_index.mean();
-    std::string tmi_letter = " ";
-    if ( tmi_display >= 1000000000.0 )
-      os.printf( ", %1.2e%sTMI\n", tmi_display, tmi_letter.c_str() );
+    double tmi_display = p -> collected_data.theck_meloree_index.mean();
+    if ( tmi_display >= 1.0e7 )
+      os.printf( ", %.2fM TMI", tmi_display / 1.0e6 );
+    else if ( std::abs( tmi_display ) <= 999.9 )
+      os.printf( ", %.3fk TMI", tmi_display / 1.0e3 );
     else
-    {
-      if ( tmi_display >= 10000000.0 )
-      {
-        tmi_display /= 1e6;
-        tmi_letter = "M ";
-      }
-      else if ( tmi_display >= 999.9 ) 
-      {
-        tmi_display /= 1e3;
-        tmi_letter = "k ";
-      }
-      os.printf( ", %.1f%sTMI\n", tmi_display, tmi_letter.c_str() );
-    }
+      os.printf( ", %.1fk TMI", tmi_display / 1.0e3 );
+    // if we're using a non-standard window, append that to the label appropriately (i.e. TMI-4.0 for a 4.0-second window)
+    if ( p -> tmi_window != 6.0 )
+      os.printf( "-%1.1f", p -> tmi_window );
+    os << "\n";
   }
   os << "</h2>\n";
 

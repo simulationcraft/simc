@@ -735,7 +735,6 @@ void SC_OptionsTab::createToolTips()
                                      "Leaving at *custom* will use the SimC defaults unless overwritten by the user." ) );
 
   choice.tmi_window -> setToolTip( tr( "Specify window duration for calculating TMI. Default is 6 sec.\n"
-                                       "Reducing this increases the metric's sensitivity to shorter damage spikes.\n"
                                        "Set to 0 if you want to vary on a per-player basis in the Simulate tab using \"tmi_window=#\"." ) );
 
   choice.tmi_actor_only -> setToolTip( tr( "Ignore external healing for TMI calculations.\n"

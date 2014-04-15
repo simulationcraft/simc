@@ -9974,7 +9974,7 @@ void player_collected_data_t::collect_data( const player_t& p )
       if ( f_length )
       {
         // define constants and variables
-        int window = std::floor( ( p.tmi_window ) / 1.0 + 0.5 ); // window size, bin time replaces 1 eventually
+        int window = (int) std::floor( ( p.tmi_window ) / 1.0 + 0.5 ); // window size, bin time replaces 1 eventually
 
         // declare sliding average timeline
         sc_timeline_t sliding_average_tl;
