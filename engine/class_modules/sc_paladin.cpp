@@ -320,7 +320,6 @@ public:
   virtual double    composite_player_multiplier( school_e school ) const;
   virtual double    composite_spell_power( school_e school ) const;
   virtual double    composite_spell_power_multiplier() const;
-  virtual double    composite_spell_speed() const;
   virtual double    composite_block() const;
   virtual double    composite_crit_avoidance() const;
   virtual double    composite_dodge() const;
@@ -3599,10 +3598,7 @@ struct paladin_seal_t : public paladin_melee_attack_t
       p() -> active_seal = seal_type; // set the new seal
 
     // if we've swapped to or from Seal of Insight, we'll need to refresh spell haste cache
-    if ( seal_orig != seal_type )
-      if ( seal_orig == SEAL_OF_INSIGHT ||
-           seal_type == SEAL_OF_INSIGHT )
-        p() -> invalidate_cache( CACHE_SPELL_SPEED );
+
   }
 
   virtual bool ready()
@@ -5074,20 +5070,6 @@ double paladin_t::composite_spell_power_multiplier() const
     return 1.0;
 
   return player_t::composite_spell_power_multiplier();
-}
-
-// paladin_t::composite_spell_speed =========================================
-
-double paladin_t::composite_spell_speed() const
-{
-  double m = player_t::composite_spell_speed();
-
-  if ( active_seal == SEAL_OF_INSIGHT )
-  {
-    m /= ( 1.0 + passives.seal_of_insight -> effectN( 3 ).percent() );
-  }
-
-  return m;
 }
 
 // paladin_t::composite_tank_block ==========================================
