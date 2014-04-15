@@ -1320,8 +1320,7 @@ static void trigger_icicle_gain( action_state_t* state )
 struct ignite_t : public residual_dot_action< mage_spell_t >
 {
   ignite_t( mage_t* player ) :
-    residual_dot_action_t( "ignite", player, player -> dbc.spell( 12654 )  )
-    // Acessed through dbc.spell because it is a level 99 spell which will not be parsed with find_spell
+    residual_dot_action_t( "ignite", player, player -> find_spell( 12846 ) )
   {
   }
 };
