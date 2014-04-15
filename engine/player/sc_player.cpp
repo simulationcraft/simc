@@ -4442,6 +4442,7 @@ void player_t::stat_gain( stat_e    stat,
   switch ( stat )
   {
     case STAT_STAMINA: 
+    case STAT_ALL:
     {
       recalculate_resource_max( RESOURCE_HEALTH );
       // Adjust current health to new max on stamina gains, if the actor is not in combat
@@ -4562,6 +4563,7 @@ void player_t::stat_loss( stat_e    stat,
   switch ( stat )
   {
     case STAT_STAMINA:
+    case STAT_ALL:
     {
       recalculate_resource_max( RESOURCE_HEALTH );
       // Adjust current health to new max on stamina gains
