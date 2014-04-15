@@ -2057,7 +2057,6 @@ class SpellDataGenerator(DataGenerator):
 
         # Item enchantments that use a spell
         for eid, data in self._spellitemenchantment_db.iteritems():
-            filter_list = { }
             for attr_id in xrange(1, 4):
                 attr_type = getattr(data, 'type_%d' % attr_id)
                 if attr_type == 1 or attr_type == 3 or attr_type == 7:
@@ -2071,25 +2070,11 @@ class SpellDataGenerator(DataGenerator):
                (data.ilevel < self._options.min_ilevel or data.ilevel > self._options.max_ilevel):
                 continue
             
-            filter_list = { }
             for spell in data.spells:
-                sid = spell.id_spell
-                if sid > 0:
-                    self.process_spell(sid, ids, 0, 0)
-                
-                # The spell is a valid spell that we want, kludge in the on-use
-                # cooldown if the spell is of on-use type in the item. This 
-                # should work as long as there are no two on-use effects (unlikely)
-                # or Blizzard does not decide to reduce the on-use cooldown 
-                # based on item type (lfr, normal, heroic, etc.)
-                stype = spell.trigger_type
-                if ids.get(sid) and stype == 0 and spell.cooldown > 0:
-                    # Put in the new cooldown to the spell id data that is 
-                    # passed to generate()
-                    if ids[sid].get('cooldown'):
-                        self.debug('Spell id %d already has a cooldown set' % sid)
-                    else:
-                        ids[sid]['cooldown'] = spell.cooldown
+                if spell.id_spell == 0:
+                    continue
+
+                self.process_spell(spell.id_spell, ids, 0, 0)
         
         # Last, get the explicitly defined spells in _spell_id_list on a class basis and the 
         # generic spells from SpellDataGenerator._spell_id_list[0]
@@ -2182,10 +2167,7 @@ class SpellDataGenerator(DataGenerator):
             fields += self._spelllevels_db[spell.id_levels].field('base_level', 'max_level')
             fields += self._spellrange_db[self._spellmisc_db[spell.id_misc].id_range].field('min_range')
             fields += self._spellrange_db[self._spellmisc_db[spell.id_misc].id_range].field('max_range')
-            if ids.get(id, { }).get('cooldown') == None:
-                fields += self._spellcooldowns_db[spell.id_cooldowns].field('cooldown_duration', 'gcd_cooldown')
-            else:
-                fields += [ '%7u' % ids[id]['cooldown'], '%4u' % 0 ]
+            fields += self._spellcooldowns_db[spell.id_cooldowns].field('cooldown_duration', 'gcd_cooldown')
 
             fields += self._spellcategories_db[spell.id_categories].field('category')
             fields += self._spellduration_db[self._spellmisc_db[spell.id_misc].id_duration].field('duration_1')
