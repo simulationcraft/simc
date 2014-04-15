@@ -527,7 +527,7 @@ std::string spell_info::to_str( const dbc_t& dbc, const spell_data_t* spell, int
     if ( dbc.is_specialization_ability( spell -> id() ) )
     {
       std::vector<specialization_e> spec_list;
-      std::vector<specialization_e>::iterator iter;
+      std::vector<specialization_e>::const_iterator iter;
       dbc.ability_specialization( spell -> id(), spec_list );
 
       for ( iter = spec_list.begin(); iter != spec_list.end(); ++iter )
@@ -539,7 +539,7 @@ std::string spell_info::to_str( const dbc_t& dbc, const spell_data_t* spell, int
       spec_list.clear();
     }
 
-    for ( unsigned int i = 0; i < 12; i++ )
+    for ( unsigned int i = 1; i < 12; i++ )
     {
       if ( spell -> class_mask() & ( 1 << ( i - 1 ) ) )
       {
