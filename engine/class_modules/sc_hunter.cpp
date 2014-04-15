@@ -3187,7 +3187,7 @@ struct summon_pet_t : public hunter_spell_t
 struct stampede_t : public hunter_spell_t
 {
   stampede_t( hunter_t* p, const std::string& options_str ) :
-    hunter_spell_t( "stampede", p, p -> find_class_spell( "Stampede" ) )
+    hunter_spell_t( "stampede", p, p -> find_spell( 121818 ) ) // find_class_spell( "Stampede" ) gives an entirely different stampede(57386) at the moment.
   {
     parse_options( NULL, options_str );
     harmful = false;
