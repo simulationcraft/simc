@@ -3929,9 +3929,7 @@ void warrior_t::create_buffs()
 
   buff.ignite_weapon    = buff_creator_t( this, "ignite_weapon", find_spell( 156288 ) );
 
-  buff.gladiator_stance = buff_creator_t( this, "gladiator_stance",   find_spell( 156291 ) )
-                          .default_value( cache.mastery_value() )
-                          .add_invalidate( CACHE_ATTACK_POWER );
+  buff.gladiator_stance = buff_creator_t( this, "gladiator_stance",   find_spell( 156291 ) );
 
   buff.heroic_leap_glyph = buff_creator_t( this, "heroic_leap_glyph", glyphs.heroic_leap );
 
