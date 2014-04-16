@@ -1036,7 +1036,7 @@ public:
 
     return t;
   }
-  // Ensures mastery for Arcane is only added to spells which call mage_spell_t, so things like the Legendary Cloak do not get modified. Added 4/15/2015
+  // Ensures mastery for Arcane is only added to spells which call mage_spell_t, so things like the Legendary Cloak do not get modified. Added 4/15/2014
   virtual double action_multiplier() const
   {
     double am=spell_t::action_multiplier();
