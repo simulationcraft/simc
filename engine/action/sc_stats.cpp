@@ -305,10 +305,10 @@ void stats_t::analyze()
     {
       // Multistrike results are independent of normal results, even though
       // they are computed through the same stats
-      direct_results_detail[ i ].analyze( direct_results_detail[ RESULT_MULTISTRIKE      ].count.mean() +
-                                          direct_results_detail[ RESULT_MULTISTRIKE_CRIT ].count.mean() );
-      tick_results_detail[ i ].analyze( tick_results_detail[ RESULT_MULTISTRIKE      ].count.mean() + 
-                                        tick_results_detail[ RESULT_MULTISTRIKE_CRIT ].count.mean() );
+      direct_results_detail[ i ].analyze( direct_results_detail[ FULLTYPE_MULTISTRIKE      ].count.mean() +
+                                          direct_results_detail[ FULLTYPE_MULTISTRIKE_CRIT ].count.mean() );
+      tick_results_detail[ i ].analyze( tick_results_detail[ FULLTYPE_MULTISTRIKE      ].count.mean() + 
+                                        tick_results_detail[ FULLTYPE_MULTISTRIKE_CRIT ].count.mean() );
     }
   }
 
