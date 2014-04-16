@@ -57,7 +57,7 @@ public:
   // Benefits
   struct benefits_t
   {
-    benefit_t* arcane_charge[ 7 ];
+    benefit_t* arcane_charge[ 4 ]; // CHANGED 2014/4/15 - Arcane Charges max stack is 4 now, not 7.
     benefit_t* dps_rotation;
     benefit_t* dpm_rotation;
     benefit_t* water_elemental;
@@ -123,14 +123,14 @@ public:
     const spell_data_t* icy_veins;
     const spell_data_t* inferno_blast;
     const spell_data_t* living_bomb;
-    const spell_data_t* loose_mana;
     const spell_data_t* mana_gem;
-    const spell_data_t* mirror_image;
     const spell_data_t* splitting_ice;
 
 
     // Minor
     const spell_data_t* arcane_brilliance;
+	const spell_data_t* loose_mana; // CHANGED 2014/4/15 - Loose mana is a minor glyph, not major.
+	const spell_data_t* mirror_image; // CHANGED 2014/4/15 - Mirror image is a minor glyph, not major.
   } glyphs;
 
 
@@ -1027,7 +1027,6 @@ public:
 
     return c;
   }
-
   virtual timespan_t execute_time() const
   {
     timespan_t t = spell_t::execute_time();
@@ -1037,7 +1036,16 @@ public:
 
     return t;
   }
-
+  // Ensures mastery for Arcane is only added to spells which call mage_spell_t, so things like the Legendary Cloak do not get modified. Added 4/15/2015
+  virtual double action_multiplier() const
+  {
+	double am=spell_t::action_multiplier();
+		if ( p() -> specialization() == MAGE_ARCANE )
+			double mana_pct= p() -> resources.pct( RESOURCE_MANA );
+			am *= 1.0 + mana_pct * p() -> composite_mastery_value();
+		return am;
+  }
+  //
   virtual void schedule_execute( action_state_t* state = 0 )
   {
     spell_t::schedule_execute( state );
@@ -4595,17 +4603,12 @@ double mage_t::composite_player_multiplier( school_e school ) const
     m *= 1.0 + buffs.incanters_absorption -> value() * buffs.incanters_absorption -> data().effectN( 1 ).percent();
   }
 
-  if ( spec.mana_adept -> ok() )
-  {
-    double mana_pct = resources.pct( RESOURCE_MANA );
-    m *= 1.0 + mana_pct * cache.mastery_value();
-  }
-
   if ( specialization() == MAGE_ARCANE )
     cache.player_mult_valid[ school ] = false;
 
   return m;
 }
+
 
 void mage_t::invalidate_cache( cache_e c )
 {
@@ -4667,6 +4670,8 @@ double mage_t::matching_gear_multiplier( attribute_e attr ) const
   return 0.0;
 }
 
+
+}
 // mage_t::reset ============================================================
 
 void mage_t::reset()
@@ -4920,7 +4925,7 @@ struct mage_module_t : public module_t
   virtual void combat_end  ( sim_t* ) const {}
 };
 
-} // UNNAMED NAMESPACE
+ // UNNAMED NAMESPACE
 
 const module_t* module_t::mage()
 {
