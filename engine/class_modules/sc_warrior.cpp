@@ -4136,9 +4136,9 @@ void warrior_t::combat_begin()
   if ( active_stance == STANCE_BATTLE && ! buff.battle_stance -> check() )
     buff.battle_stance -> trigger();
 
-  if ( specialization() == WARRIOR_PROTECTION && active_stance == STANCE_DEFENSE )
-    vengeance_start();
-
+  //if ( specialization() == WARRIOR_PROTECTION && active_stance == STANCE_DEFENSE )
+    //vengeance_start(); 
+    
 }
 
 // warrior_t::reset =========================================================
