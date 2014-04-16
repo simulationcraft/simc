@@ -5695,7 +5695,7 @@ double shaman_t::composite_spell_crit() const
 {
   double crit = player_t::composite_spell_crit();
 
-  crit *= 1.0 + spec.critical_strikes -> effectN( 1 ).percent();
+  crit += spec.critical_strikes -> effectN( 1 ).percent();
 
   return crit;
 }
@@ -5766,7 +5766,7 @@ double shaman_t::composite_melee_crit() const
 {
   double crit = player_t::composite_melee_crit();
 
-  crit *= 1.0 + spec.critical_strikes -> effectN( 1 ).percent();
+  crit += spec.critical_strikes -> effectN( 1 ).percent();
 
   return crit;
 }
