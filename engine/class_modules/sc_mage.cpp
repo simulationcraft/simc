@@ -1039,11 +1039,13 @@ public:
   // Ensures mastery for Arcane is only added to spells which call mage_spell_t, so things like the Legendary Cloak do not get modified. Added 4/15/2015
   virtual double action_multiplier() const
   {
-	double am=spell_t::action_multiplier();
-		if ( p() -> specialization() == MAGE_ARCANE )
-			double mana_pct= p() -> resources.pct( RESOURCE_MANA );
-			am *= 1.0 + mana_pct * p() -> composite_mastery_value();
-		return am;
+    double am=spell_t::action_multiplier();
+    if ( p() -> specialization() == MAGE_ARCANE )
+    {
+      double mana_pct= p() -> resources.pct( RESOURCE_MANA );
+      am *= 1.0 + mana_pct * p() -> composite_mastery_value();
+    }
+    return am;
   }
   //
   virtual void schedule_execute( action_state_t* state = 0 )
