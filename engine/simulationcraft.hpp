@@ -2539,7 +2539,7 @@ struct sim_t : public core_sim_t, private sc_thread_t
   int         auto_ready_trigger;
   int         stat_cache;
   int         max_aoe_enemies;
-  bool        tmi_actor_only;
+  bool        show_etmi;
   double      tmi_window_global;
 
   // Target options
@@ -3831,6 +3831,7 @@ struct player_collected_data_t
   // Tank
   extended_sample_data_t deaths;
   extended_sample_data_t theck_meloree_index;
+  extended_sample_data_t effective_theck_meloree_index;
   extended_sample_data_t max_spike_amount;
   sc_timeline_t vengeance_timeline;
 
@@ -3866,9 +3867,11 @@ struct player_collected_data_t
     sc_timeline_t merged_timeline;
     bool collect; // whether we collect all this or not.
     health_changes_timeline_t() : previous_loss_level( 0.0 ), previous_gain_level( 0.0 ), collect( false ) {}
-  } health_changes;
+  };
 
-
+  health_changes_timeline_t health_changes;     //records all health changes
+  health_changes_timeline_t health_changes_tmi; //records only health changes due to damage and self-healng/self-absorb
+  
 
   struct action_sequence_data_t
   {
@@ -3901,6 +3904,8 @@ struct player_collected_data_t
   void analyze( const player_t& );
   void collect_data( const player_t& );
   void print_tmi_debug_csv( const sc_timeline_t* ma, const sc_timeline_t* nma, const std::vector<double>& weighted_value, const player_t& p );
+  double calculate_tmi( const health_changes_timeline_t& tl, int window, double f_length, const player_t& p );
+  double calculate_max_spike_damage( const health_changes_timeline_t& tl, int window );
   std::ostream& data_str( std::ostream& s ) const;
 };
 
@@ -4103,7 +4108,6 @@ struct player_t : public actor_t
   specialization_e  _spec;
   bool         bugs; // If true, include known InGame mechanics which are probably the cause of a bug and not inteded
   bool scale_player;
-  bool tmi_self_only;
   double death_pct; // Player will die if he has equal or less than this value as health-pct
 
   // dynamic attributes - things which change during combat
