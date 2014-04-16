@@ -5126,7 +5126,6 @@ void shaman_t::init_scaling()
     case SHAMAN_ENHANCEMENT:
       scales_with[ STAT_WEAPON_OFFHAND_DPS    ] = true;
       scales_with[ STAT_WEAPON_OFFHAND_SPEED  ] = sim -> weapon_speed_scale_factors != 0;
-      scales_with[ STAT_HIT_RATING2           ] = true;
       scales_with[ STAT_SPIRIT                ] = false;
       scales_with[ STAT_SPELL_POWER           ] = false;
       scales_with[ STAT_INTELLECT             ] = false;
