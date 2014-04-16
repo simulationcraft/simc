@@ -1496,7 +1496,7 @@ struct flurry_of_xuen_driver_t : public attack_t
   action_t* ac;
 
   flurry_of_xuen_driver_t( player_t* player, action_t* action = 0 ) :
-    attack_t( "flurry_of_xuen", player, player -> find_spell( 146194 ) ),
+    attack_t( "flurry_of_xuen_driver", player, player -> find_spell( 146194 ) ),
     ac( 0 )
   {
     hasted_ticks = may_crit = may_miss = may_dodge = may_parry = callbacks = false;
