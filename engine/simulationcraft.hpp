@@ -1191,6 +1191,7 @@ set_e parse_set_bonus            ( const std::string& name );
 slot_e parse_slot_type           ( const std::string& name );
 stat_e parse_stat_type           ( const std::string& name );
 stat_e parse_gem_stat            ( const std::string& name );
+specialization_e parse_specialization_type( const std::string &name );
 
 const char* movement_direction_string( movement_direction_e );
 movement_direction_e parse_movement_direction( const std::string& name );
