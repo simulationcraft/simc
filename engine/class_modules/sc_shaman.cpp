@@ -128,6 +128,7 @@ public:
     buff_t* lightning_shield;
     buff_t* maelstrom_weapon;
     buff_t* shamanistic_rage;
+    buff_t* shocking_lava;
     buff_t* spirit_walk;
     buff_t* spiritwalkers_grace;
     buff_t* tier16_2pc_melee;
@@ -2577,6 +2578,8 @@ struct lava_lash_t : public shaman_melee_attack_t
     {
       if ( td( state -> target ) -> dot.flame_shock -> ticking )
         trigger_improved_lava_lash( this );
+
+      p() -> buff.shocking_lava -> trigger();
     }
   }
 };
@@ -3218,6 +3221,14 @@ struct lava_burst_t : public shaman_spell_t
     p() -> lava_surge_during_lvb = false;
   }
 
+  virtual void impact( action_state_t* state )
+  {
+    shaman_spell_t::impact( state );
+
+    if ( result_is_hit( state -> result ) )
+      p() -> buff.shocking_lava -> trigger();
+  }
+
   virtual timespan_t execute_time() const
   {
     if ( p() -> buff.lava_surge -> up() )
@@ -3599,6 +3610,15 @@ struct earth_shock_t : public shaman_spell_t
     stats -> add_child ( player -> get_stats( "fulmination" ) );
   }
 
+  double action_multiplier() const
+  {
+    double m = shaman_spell_t::action_multiplier();
+    
+    m *= 1.0 + p() -> buff.shocking_lava -> stack() * p() -> buff.shocking_lava -> data().effectN( 1 ).percent();
+
+    return m;
+  }
+
   double composite_target_crit( player_t* target ) const
   {
     double c = shaman_spell_t::composite_target_crit( target );
@@ -3615,6 +3635,8 @@ struct earth_shock_t : public shaman_spell_t
   virtual void execute()
   {
     shaman_spell_t::execute();
+
+    p() -> buff.shocking_lava -> expire();
 
     if ( consume_threshold == 0 )
       return;
@@ -3667,32 +3689,12 @@ struct flame_shock_t : public shaman_spell_t
   void assess_damage( dmg_e type, action_state_t* s )
   { if ( s -> result_amount > 0 ) shaman_spell_t::assess_damage( type, s ); }
 
-  double composite_da_multiplier() const
+  double action_multiplier() const
   {
-    double m = shaman_spell_t::composite_da_multiplier();
+    double m = shaman_spell_t::action_multiplier();
 
-    if ( p() -> buff.unleash_flame -> check() )
-      m *= 1.0 + p() -> buff.unleash_flame -> data().effectN( 2 ).percent();
-
-    return m;
-  }
-
-  double composite_ta_multiplier() const
-  {
-    double m = shaman_spell_t::composite_ta_multiplier();
-
-    if ( p() -> buff.unleash_flame -> check() )
-      m *= 1.0 + p() -> buff.unleash_flame -> data().effectN( 2 ).percent();
-
-    return m;
-  }
-
-  virtual double composite_hit() const
-  {
-    double m = shaman_spell_t::composite_hit();
-
-    if ( p() -> specialization() == SHAMAN_RESTORATION )
-      m += p() -> spec.spiritual_insight -> effectN( 3 ).percent();
+    m *= 1.0 + p() -> buff.unleash_flame -> stack() * p() -> buff.unleash_flame -> data().effectN( 2 ).percent();
+    m *= 1.0 + p() -> buff.shocking_lava -> stack() * p() -> buff.shocking_lava -> data().effectN( 1 ).percent();
 
     return m;
   }
@@ -3706,6 +3708,8 @@ struct flame_shock_t : public shaman_spell_t
       p() -> proc.uf_flame_shock -> occur();
 
     shaman_spell_t::execute();
+
+    p() -> buff.shocking_lava -> expire();
   }
 
   virtual void tick( dot_t* d )
@@ -5168,6 +5172,8 @@ void shaman_t::create_buffs()
                                  .chance( spec.maelstrom_weapon -> proc_chance() )
                                  .activated( false );
   buff.shamanistic_rage        = buff_creator_t( this, "shamanistic_rage",  spec.shamanistic_rage );
+  buff.shocking_lava           = buff_creator_t( this, "shocking_lava", find_spell( 157174 ) )
+                                 .chance( talent.shocking_lava -> ok() );
   buff.spirit_walk             = buff_creator_t( this, "spirit_walk", spec.spirit_walk );
   buff.spiritwalkers_grace     = buff_creator_t( this, "spiritwalkers_grace", find_class_spell( "Spiritwalker's Grace" ) )
                                  .chance( 1.0 )
