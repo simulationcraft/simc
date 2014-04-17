@@ -20,26 +20,27 @@ actions.precombat=flask,type=winters_bite
 actions.precombat+=/food,type=black_pepper_ribs_and_shrimp
 # Snapshot raid buffed stats before combat begins and pre-potting is done.
 actions.precombat+=/snapshot_stats
-actions.precombat+=/stance,choose=gladiator
+actions.precombat+=/stance,choose=defensive
 actions.precombat+=/mogu_power_potion
 
 # Executed every time the actor is available.
 
 actions=charge
 actions+=/auto_attack
-actions+=/blood_fury
-actions+=/berserking
-actions+=/arcane_torrent
-actions+=/mogu_power_potion,if=target.health.pct<20
+actions+=/blood_fury,if=buff.bloodbath.up|buff.avatar.up|buff.shield_charge.up
+actions+=/berserking,if=buff.bloodbath.up|buff.avatar.up|buff.shield_charge.up
+actions+=/arcane_torrent,if=buff.bloodbath.up|buff.avatar.up|buff.shield_charge.up
+actions+=/mogu_power_potion,if=target.health.pct<20&buff.bloodbath.up|target.time_to_die<=25
 actions+=/shield_charge,if=buff.shield_charge.down
-actions+=/heroic_strike,if=buff.ultimatum.up|(buff.shield_charge.up&rage>50&target.health.pct>20)
-actions+=/bloodbath,if=enabled
-actions+=/heroic_leap
-actions+=/shield_slam,if=buff.shield_charge.up|cooldown.shield_charge.remains>3|rage<30
-actions+=/execute,if=rage>50
-actions+=/dragon_roar
-actions+=/revenge,if=buff.shield_charge.up|cooldown.shield_charge.remains>2|rage<30
-actions+=/thunder_clap
+actions+=/heroic_strike,if=buff.ultimatum.up|(buff.shield_charge.up&rage>50&target.health.pct>20)|rage>110
+actions+=/bloodbath,if=talent.bloodbath.enabled
+actions+=/avatar,if=talent.avatar.enabled
+actions+=/heroic_leap,if=buff.bloodbath.up|cooldown.bloodbath.remains>5
+actions+=/shield_slam
+actions+=/revenge,if=buff.shield_charge.up&rage<100
+actions+=/execute,if=rage>100|target.time_to_die<12|(rage>50&(buff.bloodbath.up|buff.avatar.up))
+actions+=/storm_bolt,if=talent.storm_bolt.enabled&((buff.bloodbath.up|cooldown.bloodbath.remains>7))
+actions+=/dragon_roar,if=talent.dragon_roar.enabled&((buff.bloodbath.up|cooldown.bloodbath.remains>10))
 actions+=/devastate,if=cooldown.shield_slam.remains>1
 
 head=helmet_of_the_prehistoric_marauder,id=99418,upgrade=2,gems=capacitive_primal_16crit_8haste_8crit
