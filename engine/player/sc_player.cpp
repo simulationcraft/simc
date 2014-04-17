@@ -7769,7 +7769,7 @@ expr_t* player_t::create_expression( action_t* a,
     }
     else
     {
-      s = const_cast< spell_data_t* >( find_talent_spell( splits[ 1 ], std::string(), SPEC_NONE, true ) );
+      s = const_cast< spell_data_t* >( find_talent_spell( splits[ 1 ], std::string(), specialization(), true ) );
     }
 
     return new s_expr_t( name_str, *this, s );
