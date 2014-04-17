@@ -1972,13 +1972,20 @@ talent_data_t* talent_data_t::find( player_e c, unsigned int row, unsigned int c
     }
   }
 
-  // Second round without spec check
+  // Second round to check all talents, either with a none spec, or no spec check at all,
+  // depending on what the caller gave in "spec" parameter
   for ( unsigned k = 0; talent_data[ k ].name_cstr(); k++ )
   {
     talent_data_t& td = talent_data[ k ];
-    if ( td.is_class( c ) && ( row == td.row() ) && ( col == td.col() ) )
+    if ( spec != SPEC_NONE )
     {
-      return &td;
+      if ( td.is_class( c ) && ( row == td.row() ) && ( col == td.col() ) && td.specialization() == SPEC_NONE )
+        return &td;
+    }
+    else
+    {
+      if ( td.is_class( c ) && ( row == td.row() ) && ( col == td.col() ) )
+        return &td;
     }
   }
 
