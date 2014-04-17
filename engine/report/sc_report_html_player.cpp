@@ -173,7 +173,7 @@ std::string output_action_name( stats_t* s, player_t* actor )
   if ( id > 1 )
   {
     href = "http://";
-    href += ( s -> player -> dbc.ptr ? "ptr" : "www" );
+    href += ( s -> player -> dbc.ptr ? "ptr" : "wod" );
     href += ".wowhead.com/spell=";
     href += util::to_string( id );
 
@@ -963,7 +963,7 @@ void print_html_gear ( report::sc_html_stream& os, player_t* p )
   {
     item_t& item = p -> items[ i ];
 
-    std::string domain = p -> dbc.ptr ? "ptr" : "www";
+    std::string domain = p -> dbc.ptr ? "ptr" : "wod";
     std::string item_string;
     if ( item.active() )
     {
@@ -2330,7 +2330,7 @@ void print_html_player_buff( report::sc_html_stream& os, buff_t* b, int report_d
         if ( b -> sim -> dbc.ptr )
           href += "ptr";
         else
-          href += "www";
+          href += "wod";
         href += ".wowhead.com/spell=";
         href += util::to_string( b -> data().id() );
       }
