@@ -124,6 +124,7 @@ public:
     buff_t* elemental_focus;
     buff_t* echo_of_the_elements;
     buff_t* lava_surge;
+    buff_t* spew_lava;
     buff_t* lightning_shield;
     buff_t* maelstrom_weapon;
     buff_t* shamanistic_rage;
@@ -3971,17 +3972,21 @@ struct shaman_totem_pet_t : public pet_t
 
   // Pulse related functionality
   totem_pulse_action_t* pulse_action;
-  core_event_t*              pulse_event;
+  core_event_t*         pulse_event;
   timespan_t            pulse_amplitude;
 
   // Summon related functionality
   pet_t*                summon_pet;
 
+  // Spew Lava
+  buff_t*               spew_lava;
+  action_t*             spew_lava_action;
+
   shaman_totem_pet_t( shaman_t* p, const std::string& n, totem_e tt ) :
     pet_t( p -> sim, p, n, true ),
     totem_type( tt ),
     pulse_action( 0 ), pulse_event( 0 ), pulse_amplitude( timespan_t::zero() ),
-    summon_pet( 0 )
+    summon_pet( 0 ), spew_lava( 0 ), spew_lava_action( 0 )
   { }
 
   virtual void summon( timespan_t = timespan_t::zero() );
@@ -4018,6 +4023,18 @@ struct shaman_totem_pet_t : public pet_t
       return make_ref_expr( name, duration );
 
     return pet_t::create_expression( a, name );
+  }
+
+  virtual void init_spells();
+
+  virtual void create_buffs()
+  {
+    pet_t::create_buffs();
+
+    if ( totem_type != TOTEM_FIRE )
+      return;
+
+    spew_lava = buff_creator_t( this, "spew_lava", o() -> find_talent_spell( "Spew Lava" ) );
   }
 };
 
@@ -4086,6 +4103,24 @@ struct totem_pulse_action_t : public spell_t
   }
 };
 
+struct spew_lava_action_t : public totem_pulse_action_t
+{
+  spew_lava_action_t( shaman_totem_pet_t* p ) :
+    totem_pulse_action_t( p, p -> find_spell( 157501 ) )
+  {
+    may_miss = may_crit = false;
+    tick_may_crit = true;
+    aoe = -1;
+    travel_speed = 0;
+    spell_power_mod.tick = data().effectN( 1 ).coeff();
+    spell_power_mod.direct = 0;
+    base_tick_time = p -> find_spell( 152255 ) -> effectN( 1 ).period();
+    num_ticks = p -> find_spell( 152255 ) -> duration().total_seconds() / base_tick_time.total_seconds();
+    base_dd_min = base_dd_max = 0;
+    hasted_ticks = false;
+  }
+};
+
 struct totem_pulse_event_t : public event_t
 {
   shaman_totem_pet_t* totem;
@@ -4133,6 +4168,45 @@ void shaman_totem_pet_t::dismiss()
   if ( o() -> totems[ totem_type ] == this )
     o() -> totems[ totem_type ] = 0;
 }
+
+void shaman_totem_pet_t::init_spells()
+{
+  pet_t::init_spells();
+
+  if ( totem_type != TOTEM_FIRE )
+    return;
+
+  spew_lava_action = new spew_lava_action_t( this );
+}
+
+// Spew Lava Spell =========================================================
+
+struct spew_lava_t: public shaman_spell_t
+{
+  spew_lava_t( shaman_t* player, const std::string& options_str ) :
+    shaman_spell_t( player, player -> find_talent_spell( "Spew Lava" ), options_str )
+  {
+    harmful = false;
+    num_ticks = 0;
+    base_tick_time = timespan_t::zero();
+  }
+
+  virtual void execute()
+  {
+    shaman_spell_t::execute();
+
+    p() -> totems[ TOTEM_FIRE ] -> spew_lava -> trigger();
+    p() -> totems[ TOTEM_FIRE ] -> spew_lava_action -> schedule_execute();
+  }
+
+  bool ready()
+  {
+    if ( ! p() -> totems[ TOTEM_FIRE ] )
+      return false;
+
+    return shaman_spell_t::ready();
+  }
+};
 
 // Earth Elemental Totem Spell ==============================================
 
@@ -4823,6 +4897,7 @@ action_t* shaman_t::create_action( const std::string& name,
   if ( name == "lightning_shield"        ) return new         lightning_shield_t( this, options_str );
   if ( name == "primal_strike"           ) return new            primal_strike_t( this, options_str );
   if ( name == "shamanistic_rage"        ) return new         shamanistic_rage_t( this, options_str );
+  if ( name == "spew_lava"               ) return new               spew_lava_t( this, options_str );
   if ( name == "windstrike"              ) return new               windstrike_t( this, options_str );
   if ( name == "feral_spirit"            ) return new       feral_spirit_spell_t( this, options_str );
   if ( name == "spirit_walk"             ) return new              spirit_walk_t( this, options_str );
@@ -5151,6 +5226,8 @@ void shaman_t::create_buffs()
                                  .cd( spec.elemental_focus -> internal_cooldown() );
   buff.echo_of_the_elements    = buff_creator_t( this, "echo_of_the_elements", talent.echo_of_the_elements )
                                  .chance( talent.echo_of_the_elements -> ok() );
+  buff.spew_lava               = buff_creator_t( this, "spew_lava", talent.spew_lava )
+                                 .chance( talent.spew_lava -> ok() );
   buff.lava_surge              = buff_creator_t( this, "lava_surge",        spec.lava_surge )
                                  .activated( false )
                                  .chance( 1.0 ); // Proc chance is handled externally
