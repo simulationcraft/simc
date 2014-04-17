@@ -584,6 +584,13 @@ void print_html_action_info( report::sc_html_stream& os, unsigned stats_mask, st
     os << "\t\t\t\t\t\t\t\t\t<table  class=\"details\">\n";
     if ( s -> num_direct_results.mean() > 0 )
     {
+      os << "\t\t\t\t\t\t\t\t\t\t<tr>\n"
+         << "\t\t\t\t\t\t\t\t\t\t\t<th class=\"small\" colspan=\"3\">&nbsp;</th>\n"
+         << "\t\t\t\t\t\t\t\t\t\t\t<th class=\"small\" colspan=\"3\">Simulation</th>\n"
+         << "\t\t\t\t\t\t\t\t\t\t\t<th class=\"small\" colspan=\"3\">Iteration Average</th>\n"
+         << "\t\t\t\t\t\t\t\t\t\t\t<th class=\"small\" colspan=\"3\">&nbsp;</th>\n"
+         << "\t\t\t\t\t\t\t\t\t\t<tr>\n";
+
       // Direct Damage
       os << "\t\t\t\t\t\t\t\t\t\t<tr>\n"
          << "\t\t\t\t\t\t\t\t\t\t\t<th class=\"small\">Direct Results</th>\n"
@@ -592,9 +599,9 @@ void print_html_action_info( report::sc_html_stream& os, unsigned stats_mask, st
          << "\t\t\t\t\t\t\t\t\t\t\t<th class=\"small\">Mean</th>\n"
          << "\t\t\t\t\t\t\t\t\t\t\t<th class=\"small\">Min</th>\n"
          << "\t\t\t\t\t\t\t\t\t\t\t<th class=\"small\">Max</th>\n"
-         << "\t\t\t\t\t\t\t\t\t\t\t<th class=\"small\">Average per Iteration</th>\n"
-         << "\t\t\t\t\t\t\t\t\t\t\t<th class=\"small\">Average Min</th>\n"
-         << "\t\t\t\t\t\t\t\t\t\t\t<th class=\"small\">Average Max</th>\n"
+         << "\t\t\t\t\t\t\t\t\t\t\t<th class=\"small\">Mean</th>\n"
+         << "\t\t\t\t\t\t\t\t\t\t\t<th class=\"small\">Min</th>\n"
+         << "\t\t\t\t\t\t\t\t\t\t\t<th class=\"small\">Max</th>\n"
          << "\t\t\t\t\t\t\t\t\t\t\t<th class=\"small\">Actual Amount</th>\n"
          << "\t\t\t\t\t\t\t\t\t\t\t<th class=\"small\">Total Amount</th>\n"
          << "\t\t\t\t\t\t\t\t\t\t\t<th class=\"small\">Overkill %</th>\n"
@@ -648,15 +655,22 @@ void print_html_action_info( report::sc_html_stream& os, unsigned stats_mask, st
     {
       // Tick Damage
       os << "\t\t\t\t\t\t\t\t\t\t<tr>\n"
+         << "\t\t\t\t\t\t\t\t\t\t\t<th class=\"small\" colspan=\"3\">&nbsp;</th>\n"
+         << "\t\t\t\t\t\t\t\t\t\t\t<th class=\"small\" colspan=\"3\">Simulation</th>\n"
+         << "\t\t\t\t\t\t\t\t\t\t\t<th class=\"small\" colspan=\"3\">Iteration Average</th>\n"
+         << "\t\t\t\t\t\t\t\t\t\t\t<th class=\"small\" colspan=\"3\">&nbsp;</th>\n"
+         << "\t\t\t\t\t\t\t\t\t\t<tr>\n";
+
+      os << "\t\t\t\t\t\t\t\t\t\t<tr>\n"
          << "\t\t\t\t\t\t\t\t\t\t\t<th class=\"small\">Tick Results</th>\n"
          << "\t\t\t\t\t\t\t\t\t\t\t<th class=\"small\">Count</th>\n"
          << "\t\t\t\t\t\t\t\t\t\t\t<th class=\"small\">Pct</th>\n"
          << "\t\t\t\t\t\t\t\t\t\t\t<th class=\"small\">Mean</th>\n"
          << "\t\t\t\t\t\t\t\t\t\t\t<th class=\"small\">Min</th>\n"
          << "\t\t\t\t\t\t\t\t\t\t\t<th class=\"small\">Max</th>\n"
-         << "\t\t\t\t\t\t\t\t\t\t\t<th class=\"small\">Average per Iteration</th>\n"
-         << "\t\t\t\t\t\t\t\t\t\t\t<th class=\"small\">Average Min</th>\n"
-         << "\t\t\t\t\t\t\t\t\t\t\t<th class=\"small\">Average Max</th>\n"
+         << "\t\t\t\t\t\t\t\t\t\t\t<th class=\"small\">Mean</th>\n"
+         << "\t\t\t\t\t\t\t\t\t\t\t<th class=\"small\">Min</th>\n"
+         << "\t\t\t\t\t\t\t\t\t\t\t<th class=\"small\">Max</th>\n"
          << "\t\t\t\t\t\t\t\t\t\t\t<th class=\"small\">Actual Amount</th>\n"
          << "\t\t\t\t\t\t\t\t\t\t\t<th class=\"small\">Total Amount</th>\n"
          << "\t\t\t\t\t\t\t\t\t\t\t<th class=\"small\">Overkill %</th>\n"
