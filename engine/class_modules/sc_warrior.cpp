@@ -653,8 +653,8 @@ struct opportunity_strike_t : public warrior_attack_t
 
     warrior_t* p = cast();
 
-    if ( result_is_hit( s -> result ) )
-      trigger_sudden_death( this, p -> spec.sudden_death -> proc_chance() );
+    //if ( result_is_hit( s -> result ) )
+      //trigger_sudden_death( this, p -> spec.sudden_death -> proc_chance() ); Looks like mastery no longer procs this, I guess they're trying to increase the value of haste.
 
   }
 };
@@ -4446,7 +4446,9 @@ void warrior_t::create_options()
   option_t::copy( options, warrior_options );
 }
 
-struct warrior_flurry_of_xuen_t : public warrior_attack_t // Specialized flurry so that armor reduction from colossus smash will function.
+// Specialized flurry of xuen so that armor reduction from colossus smash will function
+
+struct warrior_flurry_of_xuen_t : public warrior_attack_t
 {
   warrior_flurry_of_xuen_t( warrior_t* p ) :
     warrior_attack_t( "flurry_of_xuen", p, p -> find_spell( 147891 ) )
@@ -4473,7 +4475,7 @@ action_t* warrior_t::create_proc_action( const std::string& name )
 
 bool warrior_t::create_profile( std::string& profile_str, save_e type, bool save_html )
 {
-  if ( specialization() == WARRIOR_PROTECTION &&  primary_role() == ROLE_TANK )
+  if ( specialization() == WARRIOR_PROTECTION && primary_role() == ROLE_TANK )
     position_str = "front";
 
   return player_t::create_profile( profile_str, type, save_html );
