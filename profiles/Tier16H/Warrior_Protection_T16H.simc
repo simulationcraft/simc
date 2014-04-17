@@ -38,7 +38,7 @@ actions+=/run_action_list,name=normal_rotation
 actions.normal_rotation=shield_slam
 actions.normal_rotation+=/revenge
 actions.normal_rotation+=/heroic_strike,if=buff.ultimatum.up
-actions.normal_rotation+=/ravager
+actions.normal_rotation+=/ravager,if=enabled
 actions.normal_rotation+=/thunder_clap
 actions.normal_rotation+=/demoralizing_shout
 actions.normal_rotation+=/impending_victory,if=enabled

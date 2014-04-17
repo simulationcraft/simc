@@ -40,10 +40,10 @@ actions+=/run_action_list,name=aoe,if=active_enemies>=2
 actions+=/run_action_list,name=single_target,if=active_enemies<2
 
 actions.single_target=heroic_strike,if=rage>115
-actions.single_target+=/ignite_weapon,if=(rage>100&target.health.pct>20)|buff.ignite_weapon.down
+actions.single_target+=/ignite_weapon,if=enabled&(rage>100&target.health.pct>20)|buff.ignite_weapon.down
 actions.single_target+=/mortal_strike,if=dot.deep_wounds.remains<1.0|buff.enrage.down|rage<10
 actions.single_target+=/colossus_smash,if=debuff.colossus_smash.remains<1.0
-actions.single_target+=/ravager
+actions.single_target+=/ravager,if=enabled
 # Use cancelaura (in-game) to stop bladestorm if CS comes off cooldown during it for any reason.
 actions.single_target+=/bladestorm,if=enabled,interrupt_if=!cooldown.colossus_smash.remains
 actions.single_target+=/mortal_strike
@@ -58,8 +58,8 @@ actions.single_target+=/slam,if=target.health.pct>=20
 
 actions.aoe=sweeping_strikes
 actions.aoe+=/heroic_strike,if=rage>100
-actions.aoe+=/ignite_weapon,if=buff.ignite_weapon.down|rage>100
-actions.aoe+=/ravager
+actions.aoe+=/ignite_weapon,if=enabled&buff.ignite_weapon.down|rage>100
+actions.aoe+=/ravager,if=enabled
 actions.aoe+=/bladestorm,if=enabled&buff.enrage.remains>4
 actions.aoe+=/dragon_roar,if=enabled&debuff.colossus_smash.down
 actions.aoe+=/colossus_smash,if=debuff.colossus_smash.remains<1

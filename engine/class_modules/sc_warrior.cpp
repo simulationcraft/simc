@@ -809,15 +809,14 @@ void warrior_attack_t::consume_resource()
   if ( proc )
     return;
 
-  if ( p -> bugs )
-  {
   double rage = resource_consumed;
-  if ( rage > 0 )
+  if ( rage > 0 && p -> talents.anger_management -> ok() )
   {
     rage /= 30;
     //The next block of code is intended to assist with optimizing the rotation with the talent anger management. Any rage spent while the following abilities are already available to
     //use can be looked at as wasted resources. I'll hopefully have a better way of showing it in the results page in the future, or I may remove it if I find it unnecessary.
-    // At the least I will shorten the names :) 
+    // At the least I will shorten the names :)
+    /* Disabled for now, going to implement as a seperate part of the report
     if ( rage >  p -> cooldown.heroic_leap -> remains().total_seconds() )
       p -> gain.reduced_cooldown_heroic_leap -> add( RESOURCE_RAGE, rage - p -> cooldown.heroic_leap -> remains().total_seconds() , 0 );
     if ( p -> specialization() == WARRIOR_FURY || p -> specialization() == WARRIOR_ARMS )
@@ -829,7 +828,7 @@ void warrior_attack_t::consume_resource()
       if ( rage >  p -> cooldown.bladestorm -> remains().total_seconds() )
         p -> gain.reduced_cooldown_bladestorm -> add( RESOURCE_RAGE, rage - p -> cooldown.bladestorm -> remains().total_seconds() , 0 );
       }
-
+      */
     rage *= -1;
     p -> cooldown.heroic_leap -> adjust( timespan_t::from_seconds( rage ) );
     p -> cooldown.shield_wall -> adjust( timespan_t::from_seconds( rage ) ); 
@@ -849,7 +848,6 @@ void warrior_attack_t::consume_resource()
       p -> cooldown.demoralizing_shout -> adjust( timespan_t::from_seconds( rage ) );
       p -> cooldown.last_stand -> adjust( timespan_t::from_seconds( rage ) );
     }
-  }
   }
   // Warrior attacks (non-AoE) which are are avoided by the target consume only 20%
   if ( resource_consumed > 0 && ! aoe && result_is_miss( execute_state -> result ) )
@@ -888,7 +886,7 @@ void warrior_attack_t::impact( action_state_t* s )
   if ( result_is_hit( s -> result ) && !proc && s -> result_amount > 0 && this -> id != 147891 ) // Flurry of Xuen
   {
     trigger_strikes_of_opportunity( this );
-    if ( p -> buff.sweeping_strikes -> up() && ( !aoe || this -> id == 78 ) )
+    if ( p -> buff.sweeping_strikes -> up() && ( !aoe || this -> id == 78 ) ) // Heroic strike exception due to glyph that turns it into 2-target cleave.
       trigger_sweeping_strikes( execute_state );
     if ( special )
     {
@@ -1400,8 +1398,7 @@ struct devastate_t : public warrior_attack_t
 struct dragon_roar_t : public warrior_attack_t
 {
   dragon_roar_t( warrior_t* p, const std::string& options_str ) :
-    warrior_attack_t( "dragon_roar", p, p -> find_spell( 118000 ) ) // p -> talents.dragon_roar seems to fail for protection spec at level 100
-                                                                    // It works at level 90, and it works at level 100 for fury/arms.
+    warrior_attack_t( "dragon_roar", p, p -> talents.dragon_roar )
   {
     parse_options( NULL, options_str );
     aoe = -1;
@@ -1495,7 +1492,7 @@ struct execute_t : public warrior_attack_t
 struct ignite_weapon_t : public warrior_attack_t
 {
   ignite_weapon_t( warrior_t* p, const std::string& options_str ) :
-    warrior_attack_t( "ignite_weapon", p, p -> find_spell( 156288 ) )
+    warrior_attack_t( "ignite_weapon", p, p -> talents.ignite_weapon )
   {
     parse_options( NULL, options_str );
 
@@ -2005,7 +2002,7 @@ struct raging_blow_t : public warrior_attack_t
 struct ravager_t : public warrior_attack_t
 {
   ravager_t( warrior_t* p, const std::string& options_str ) :
-    warrior_attack_t( "ravager", p, p -> find_spell( 152277 ) )
+    warrior_attack_t( "ravager", p, p -> talents.ravager )
   {
     parse_options( NULL, options_str );
 
@@ -3554,7 +3551,7 @@ void warrior_t::apl_smf_fury()
                                "# and then expend all of this rage by using heroic strike 3-4 times during colossus smash. It's also a good idea to save 1 charge of raging blow to use inside of this 6.5 second window.\n"
                                "# Cooldowns are stacked whenever possible, and only delayed for the very last use of them.\n" );
   single_target -> add_action( this, "Heroic Strike", "if=((debuff.colossus_smash.up&rage>=40)&target.health.pct>=20)|rage>=100&buff.enrage.up" );
-  single_target -> add_action( "ignite_weapon,if=(target.health.pct>=20&(rage>90|(buff.enrage.up&rage>40)))|buff.ignite_weapon.remains<2" );
+  single_target -> add_action( "ignite_weapon,if=enabled&(target.health.pct>=20&(rage>90|(buff.enrage.up&rage>40)))|buff.ignite_weapon.remains<2" );
   single_target -> add_action( this, "Heroic Leap", "if=debuff.colossus_smash.up" );
   single_target -> add_action( "storm_bolt,if=enabled&debuff.colossus_smash.up" );
   single_target -> add_action( this, "Raging Blow", "if=buff.raging_blow.stack=2&debuff.colossus_smash.up&target.health.pct>=20",
@@ -3570,7 +3567,7 @@ void warrior_t::apl_smf_fury()
   single_target -> add_action( "storm_bolt,if=enabled&cooldown.colossus_smash.remains>3" );
   single_target -> add_action( this, "Execute", "if=debuff.colossus_smash.up|rage>70|target.time_to_die<12" );
   single_target -> add_action( this, "Raging Blow", "if=target.health.pct<20|buff.raging_blow.stack=2|(debuff.colossus_smash.up|(cooldown.bloodthirst.remains>=1&buff.raging_blow.remains<=3))" );
-  single_target -> add_action( "ravager"  );
+  single_target -> add_action( "ravager,if=enabled"  );
   single_target -> add_action( "bladestorm,if=enabled,interrupt_if=cooldown.bloodthirst.remains<1" );
   single_target -> add_action( this, "Wild Strike", "if=buff.bloodsurge.up" );
   single_target -> add_action( this, "Raging Blow", "if=cooldown.colossus_smash.remains>=3", 
@@ -3582,8 +3579,8 @@ void warrior_t::apl_smf_fury()
   two_targets -> add_action( "bloodbath,if=enabled" );
   two_targets -> add_action( this, "Heroic Leap", "if=buff.enrage.up" );
   two_targets -> add_action( this, "Heroic Strike", "if=rage>100" );
-  two_targets -> add_action( "ignite_weapon,if=(target.health.pct>=20&rage>100)|buff.ignite_weapon.down" );
-  two_targets -> add_action( "ravager"  );
+  two_targets -> add_action( "ignite_weapon,if=enabled&(target.health.pct>=20&rage>100)|buff.ignite_weapon.down" );
+  two_targets -> add_action( "ravager,if=enabled"  );
   two_targets -> add_action( "bladestorm,if=enabled&buff.enrage.remains>4" );
   two_targets -> add_action( "dragon_roar,if=enabled&(!debuff.colossus_smash.up&(buff.bloodbath.up|!talent.bloodbath.enabled))",
                              "Generally, if an encounter has any type of AoE, Bladestorm will be the better choice than Dragon Roar." );
@@ -3599,9 +3596,9 @@ void warrior_t::apl_smf_fury()
 
   three_targets -> add_action( "bloodbath,if=enabled" );
   three_targets -> add_action( this, "Heroic Leap", "if=buff.enrage.up" );
-  three_targets -> add_action( "ravager"  );
+  three_targets -> add_action( "ravager,if=enabled"  );
   three_targets -> add_action( this, "Heroic Strike", "if=rage>100" );
-  three_targets -> add_action( "ignite_weapon,if=(target.health.pct>=20&rage>100)|buff.ignite_weapon.down" );
+  three_targets -> add_action( "ignite_weapon,if=enabled&(target.health.pct>=20&rage>100)|buff.ignite_weapon.down" );
   three_targets -> add_action( "bladestorm,if=enabled&buff.enrage.remains>4" );
   three_targets -> add_action( "dragon_roar,if=enabled&!debuff.colossus_smash.up&(buff.bloodbath.up|!talent.bloodbath.enabled)" );
   three_targets -> add_action( this, "Bloodthirst", "cycle_targets=1,if=!dot.deep_wounds.ticking" );
@@ -3615,8 +3612,8 @@ void warrior_t::apl_smf_fury()
   aoe -> add_action( "bloodbath,if=enabled" );
   aoe -> add_action( this, "Heroic Leap", "if=buff.enrage.up" );
   aoe -> add_action( this, "Heroic Strike", "if=rage>100" );
-  aoe -> add_action( "ignite_weapon,if=(target.health.pct>=20&rage>100)|buff.ignite_weapon.down" );
-  aoe -> add_action( "ravager"  );
+  aoe -> add_action( "ignite_weapon,if=enabled&(target.health.pct>=20&rage>100)|buff.ignite_weapon.down" );
+  aoe -> add_action( "ravager,if=enabled"  );
   aoe -> add_action( "bladestorm,if=enabled&buff.enrage.remains>4" );
   aoe -> add_action( this, "Bloodthirst", "cycle_targets=1,if=!dot.deep_wounds.ticking&buff.enrage.down", 
                      "Enrage overlaps 4 GCDs, which allows bloodthirst to be used mostly to keep enrage up, as rage income is typically not an issue with the aoe rotation." );
@@ -3672,7 +3669,7 @@ void warrior_t::apl_tg_fury()
                                "# and then expend all of this rage by using heroic strike 3-4 times during colossus smash. It's also a good idea to save 1 charge of raging blow to use inside of this 6.5 second window.\n"
                                "# Cooldowns are stacked whenever possible, and only delayed for the very last use of them.\n" );
   single_target -> add_action( this, "Heroic Strike", "if=(debuff.colossus_smash.up&rage>=40&target.health.pct>=20|rage>=100)&buff.enrage.up" );
-  single_target -> add_action( "ignite_weapon,if=(target.health.pct>=20&(rage>90|(buff.enrage.up&rage>40)))|buff.ignite_weapon.remains<2" );
+  single_target -> add_action( "ignite_weapon,if=enabled&(target.health.pct>=20&(rage>90|(buff.enrage.up&rage>40)))|buff.ignite_weapon.remains<2" );
   single_target -> add_action( this, "Heroic Leap", "if=debuff.colossus_smash.up" );
   single_target -> add_action( this, "Bloodthirst", "if=!buff.enrage.up" );
   single_target -> add_action( "storm_bolt,if=enabled&debuff.colossus_smash.up" );
@@ -3687,7 +3684,7 @@ void warrior_t::apl_tg_fury()
   single_target -> add_action( "storm_bolt,if=enabled&cooldown.colossus_smash.remains>3" );
   single_target -> add_action( this, "Execute", "if=debuff.colossus_smash.up|rage>70|target.time_to_die<12" );
   single_target -> add_action( this, "Raging Blow", "if=target.health.pct<20|buff.raging_blow.stack=2|debuff.colossus_smash.up|buff.raging_blow.remains<=3" );
-  single_target -> add_action( "ravager"  );
+  single_target -> add_action( "ravager,if=enabled"  );
   single_target -> add_action( "bladestorm,if=enabled,interrupt_if=cooldown.bloodthirst.remains<1" );
   single_target -> add_action( this, "Wild Strike", "if=buff.bloodsurge.up" );
   single_target -> add_action( this, "Raging Blow", "if=cooldown.colossus_smash.remains>=1" );
@@ -3698,8 +3695,8 @@ void warrior_t::apl_tg_fury()
   two_targets -> add_action( "bloodbath,if=enabled" );
   two_targets -> add_action( this, "Heroic Leap", "if=buff.enrage.up" );
   two_targets -> add_action( this, "Heroic Strike", "if=rage>100" );
-  two_targets -> add_action( "ignite_weapon,if=(target.health.pct>=20&rage>100)|buff.ignite_weapon.down" );
-  two_targets -> add_action( "ravager"  );
+  two_targets -> add_action( "ignite_weapon,if=enabled&(target.health.pct>=20&rage>100)|buff.ignite_weapon.down" );
+  two_targets -> add_action( "ravager,if=enabled"  );
   two_targets -> add_action( "bladestorm,if=enabled&buff.enrage.remains>4" );
   two_targets -> add_action( "dragon_roar,if=enabled&(!debuff.colossus_smash.up&(buff.bloodbath.up|!talent.bloodbath.enabled))",
                              "Generally, if an encounter has any type of AoE, Bladestorm will be the better choice than Dragon Roar." );
@@ -3716,8 +3713,8 @@ void warrior_t::apl_tg_fury()
   three_targets -> add_action( "bloodbath,if=enabled" );
   three_targets -> add_action( this, "Heroic Leap", "if=buff.enrage.up" );
   three_targets -> add_action( this, "Heroic Strike", "if=rage>100" );
-  three_targets -> add_action( "ignite_weapon,if=(target.health.pct>=20&rage>100)|buff.ignite_weapon.down" );
-  three_targets -> add_action( "ravager"  );
+  three_targets -> add_action( "ignite_weapon,if=enabled&(target.health.pct>=20&rage>100)|buff.ignite_weapon.down" );
+  three_targets -> add_action( "ravager,if=enabled"  );
   three_targets -> add_action( "bladestorm,if=enabled&buff.enrage.remains>4" );
   three_targets -> add_action( "dragon_roar,if=enabled&!debuff.colossus_smash.up&(buff.bloodbath.up|!talent.bloodbath.enabled)" );
   three_targets -> add_action( this, "Bloodthirst", "cycle_targets=1,if=!dot.deep_wounds.ticking" );
@@ -3731,8 +3728,8 @@ void warrior_t::apl_tg_fury()
   aoe -> add_action( "bloodbath,if=enabled" );
   aoe -> add_action( this, "Heroic Leap", "if=buff.enrage.up" );
   aoe -> add_action( this, "Heroic Strike", "if=rage>100" );
-  aoe -> add_action( "ignite_weapon,if=(target.health.pct>=20&rage>100)|buff.ignite_weapon.down" );
-  aoe -> add_action( "ravager"  );
+  aoe -> add_action( "ignite_weapon,if=enabled&(target.health.pct>=20&rage>100)|buff.ignite_weapon.down" );
+  aoe -> add_action( "ravager,if=enabled"  );
   aoe -> add_action( "bladestorm,if=enabled&buff.enrage.remains>4" );
   aoe -> add_action( this, "Bloodthirst", "cycle_targets=1,if=!dot.deep_wounds.ticking&buff.enrage.down", 
                      "Enrage overlaps 4 GCDs, which allows bloodthirst to be used mostly to keep enrage up, as rage income is typically not an issue with the aoe rotation." );
@@ -3776,10 +3773,10 @@ void warrior_t::apl_arms()
   default_list -> add_action( "run_action_list,name=single_target,if=active_enemies<2" );
 
   single_target -> add_action( this, "Heroic Strike", "if=rage>115" ) ;
-  single_target -> add_action( "ignite_weapon,if=(rage>100&target.health.pct>20)|buff.ignite_weapon.down" );
+  single_target -> add_action( "ignite_weapon,if=enabled&(rage>100&target.health.pct>20)|buff.ignite_weapon.down" );
   single_target -> add_action( this, "Mortal Strike", "if=dot.deep_wounds.remains<1.0|buff.enrage.down|rage<10" ) ;
   single_target -> add_action( this, "Colossus Smash", "if=debuff.colossus_smash.remains<1.0" );
-  single_target -> add_action( "ravager" );
+  single_target -> add_action( "ravager,if=enabled" );
   single_target -> add_action( "bladestorm,if=enabled,interrupt_if=!cooldown.colossus_smash.remains",
                               "Use cancelaura (in-game) to stop bladestorm if CS comes off cooldown during it for any reason." );
   single_target -> add_action( this, "Mortal Strike" );
@@ -3794,8 +3791,8 @@ void warrior_t::apl_arms()
 
   aoe -> add_action( this, "Sweeping Strikes" );
   aoe -> add_action( this, "Heroic Strike", "if=rage>100" );
-  aoe -> add_action( "ignite_weapon,if=buff.ignite_weapon.down|rage>100" );
-  aoe -> add_action( "ravager" );
+  aoe -> add_action( "ignite_weapon,if=enabled&buff.ignite_weapon.down|rage>100" );
+  aoe -> add_action( "ravager,if=enabled" );
   aoe -> add_action( "bladestorm,if=enabled&buff.enrage.remains>4" );
   aoe -> add_action( "dragon_roar,if=enabled&debuff.colossus_smash.down" );
   aoe -> add_action( this, "Colossus Smash", "if=debuff.colossus_smash.remains<1" );
@@ -3833,7 +3830,7 @@ void warrior_t::apl_prot()
   normal_rotation -> add_action( this, "Shield Slam" );
   normal_rotation -> add_action( this, "Revenge" );
   normal_rotation -> add_action( this, "Heroic Strike", "if=buff.ultimatum.up" );
-  normal_rotation -> add_action( "ravager" );
+  normal_rotation -> add_action( "ravager,if=enabled" );
   normal_rotation -> add_action( this, "Thunder Clap" );
   normal_rotation -> add_action( this, "Demoralizing Shout" );
   normal_rotation -> add_action( "impending_victory,if=enabled" );
