@@ -435,7 +435,7 @@ _DBC_FIELDS = {
     'Talent.dbc' : [
         ( 'id', '%5u' ),      ( 'spec_id', '%3u' ),    ( 'row', '%3u' ),         ( 'col', '%3u' ),       ( 'id_spell', '%7u' ),
         ( 'pet', '%5u' ),     ( 'unk_15464_1', '%#.8x' ),       ( 'unk_15464_2', '%#.8x' ),     'class_id',           ( 'id_replace', '%9u' ),
-        ( 'unk_15464_3', '%2u' ),  
+        'ofs_desc',  
     ],
     'TalentTab.dbc' : [
         ( 'id', '%5u' ),       'ofs_name',          'spell_icon', ( 'mask_class', '%#.3x' ), ( 'mask_pet_talent', '%#.1x' ),
@@ -940,6 +940,22 @@ class SkillLine(DBCRecord):
             s += 'desc=\"%s\" ' % self.desc
 
         s += DBCRecord.__str__(self)
+
+        return s
+
+class Talent(DBCRecord):
+    def parse(self):
+        DBCRecord.parse(self)
+
+        if self.ofs_desc != 0:
+            self.desc = self._dbc_parser.get_string_block(self.ofs_desc)
+        else:
+            self.desc = ''
+    
+    def __str__(self):
+        s = DBCRecord.__str__(self)
+        if self.desc:
+            s += 'desc=\"%s\" ' % self.desc
 
         return s
 
