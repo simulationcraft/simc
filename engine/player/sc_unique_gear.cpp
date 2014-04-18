@@ -278,7 +278,7 @@ static const special_effect_db_item_t __special_effect_db[] = {
   {  94746, 0,                                                  0 }, /* Power Torrent */
 
   /* Wrath of the Lich King */
-  {  59620, 0,                                enchant::berserking },
+  {  59620, "1PPM",                                             0 }, /* Berserking */
   {  42976, 0,                               enchant::executioner },
 
   /* The Burning Crusade */
@@ -739,21 +739,6 @@ void enchant::executioner( special_effect_t& effect,
            .activated( false );
 
   effect.name_str = tokenized_name( spell );
-  effect.ppm_ = 1.0;
-
-  action_callback_t* cb = new weapon_buff_proc_callback_t( item.player, effect, item.weapon(), buff );
-  item.player -> callbacks.register_attack_callback( RESULT_HIT_MASK, cb );
-}
-
-void enchant::berserking( special_effect_t& effect, 
-                          const item_t& item,
-                          const special_effect_db_item_t& dbitem )
-{
-  const spell_data_t* spell = item.player -> find_spell( dbitem.spell_id );
-  stat_buff_t* buff = stat_buff_creator_t( item.player, tokenized_name( spell ) + suffix( item ), spell )
-                      .activated( false );
-
-  effect.name_str = tokenized_name( spell ) + suffix( item );
   effect.ppm_ = 1.0;
 
   action_callback_t* cb = new weapon_buff_proc_callback_t( item.player, effect, item.weapon(), buff );
