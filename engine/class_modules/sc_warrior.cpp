@@ -7,11 +7,17 @@
 
 // ==========================================================================
 //
-// TODO:
-//  Later:
-//   * Move the bleeds out of being warrior_attack_t to stop them
-//     triggering effects or having special cases in the class.
+// TODO: Check WoD mechanics whenever alpha/beta roll around:
+// Sweeping strikes + opportunity strike proccing off each other
+// Raging Blow: Will the parent still fail if either MH/OH miss.
+// Dragon Roar: Does it still have diminishing returns on more than 1 target
+// Deep wounds: Check protection/arms/fury deep wounds ticks to see if the modifier is still there
+// Bladestorm: Same as above.
+// Ravager: Does it dynamically update with the character after being thrown? (Most likely yes, but you never know.) 
+// 
 //
+// Gladiator Stance: Everything about it. What protection specializations/abilities are enabled/disabled
+// does it attain rage periodically or from autoattacks, does revenge/shield slam grant rage on use?
 // ==========================================================================
 
 namespace { // UNNAMED NAMESPACE
@@ -26,6 +32,7 @@ enum warrior_stance { STANCE_BATTLE = 1, STANCE_DEFENSE = 4, STANCE_GLADIATOR };
 
 struct warrior_td_t : public actor_pair_t
 {
+
   dot_t* dots_bloodbath;
   dot_t* dots_deep_wounds;
   dot_t* dots_ravager;
@@ -498,7 +505,7 @@ struct warrior_attack_t : public warrior_action_t< melee_attack_t >
 
     const warrior_t* p = cast();
 
-    if ( weapon &&  weapon -> group() == WEAPON_2H && p -> spec.seasoned_soldier && this -> id != 115767 ) //hack to let Deep wounds not benefit from seasoned soldier
+    if ( weapon &&  weapon -> group() == WEAPON_2H && p -> spec.seasoned_soldier )
       am *= 1.0 + p -> spec.seasoned_soldier -> effectN( 1 ).percent();
 
     // --- Enrages ---
@@ -511,7 +518,7 @@ struct warrior_attack_t : public warrior_action_t< melee_attack_t >
       }
 
     // --- Passive Talents ---
-    if ( p -> spec.single_minded_fury -> ok() && p -> dual_wield() && this -> id != 115767 )//hack to let Deep wounds not benefit from SMF
+    if ( p -> spec.single_minded_fury -> ok() && p -> dual_wield() )
     {
       if (  p -> main_hand_weapon .group() == WEAPON_1H &&
             p -> off_hand_weapon .group() == WEAPON_1H )
@@ -533,7 +540,7 @@ struct warrior_attack_t : public warrior_action_t< melee_attack_t >
 
     const warrior_t* p = cast();
 
-    if ( special && this -> id != 115767 ) // Recklessness crit bonus does not count towards deep wounds.
+    if ( special )
       cc += p -> buff.recklessness -> value();
 
     return cc;
@@ -545,7 +552,7 @@ struct warrior_attack_t : public warrior_action_t< melee_attack_t >
 
     const warrior_t* p = cast();
 
-    if( special && this -> id != 115767 && p -> buff.recklessness -> up() )
+    if( special && p -> buff.recklessness -> up() )
       cd += p -> buff.recklessness -> data().effectN( 2 ).percent();
 
     return cd;
@@ -1329,23 +1336,6 @@ struct colossus_smash_t : public warrior_attack_t
                           p -> perk.improved_colossus_smash -> effectN( 1 ).base_value(),
                           p -> gain.colossus_smash );
     }
-  }
-};
-
-// Deep Wounds ==============================================================
-
-struct deep_wounds_t : public warrior_attack_t
-{
-  deep_wounds_t( warrior_t* p ) :
-    warrior_attack_t( "deep_wounds", p, p -> find_spell( 115767 ) )
-  {
-    background    = true;
-    proc          = true;
-    tick_may_crit = true;
-    may_miss = may_glance = may_block = may_dodge = may_parry = may_crit = false;
-
-    dot_behavior = DOT_REFRESH;
-
   }
 };
 
@@ -2624,17 +2614,8 @@ struct warrior_spell_t : public warrior_action_t< spell_t >
   warrior_spell_t( const std::string& n, warrior_t* p, const spell_data_t* s = spell_data_t::nil() ) :
     base_t( n, p, s )
   {
-  }
-
-  virtual timespan_t gcd() const
-  {
-    timespan_t t = action_t::gcd();
-      if ( t == timespan_t::zero() ) return timespan_t::zero();
-
-      t *= player -> cache.attack_haste();
-      if ( t < min_gcd ) t = min_gcd;
-
-      return t;
+  may_miss = may_glance = may_block = may_dodge = may_parry = may_crit = false;
+  use_off_gcd = true;
   }
 };
 
@@ -2684,6 +2665,29 @@ struct battle_shout_t : public warrior_spell_t
   }
 };
 
+// Berserker Rage ===========================================================
+
+struct berserker_rage_t : public warrior_spell_t
+{
+  berserker_rage_t( warrior_t* p, const std::string& options_str ) :
+    warrior_spell_t( "berserker_rage", p, p -> find_class_spell( "Berserker Rage" ) )
+  {
+    parse_options( NULL, options_str );
+
+    harmful = false;
+  }
+
+  virtual void execute()
+  {
+    warrior_spell_t::execute();
+
+    warrior_t* p = cast();
+
+    p -> buff.berserker_rage -> trigger();
+    p -> enrage();
+  }
+};
+
 // Bloodbath ================================================================
 
 struct bloodbath_t : public warrior_spell_t
@@ -2730,26 +2734,41 @@ struct commanding_shout_t : public warrior_spell_t
   }
 };
 
-// Berserker Rage ===========================================================
+// Deep Wounds ==============================================================
 
-struct berserker_rage_t : public warrior_spell_t
+struct deep_wounds_t : public warrior_spell_t
 {
-  berserker_rage_t( warrior_t* p, const std::string& options_str ) :
-    warrior_spell_t( "berserker_rage", p, p -> find_class_spell( "Berserker Rage" ) )
+  deep_wounds_t( warrior_t* p ) :
+    warrior_spell_t( "deep_wounds", p, p -> find_spell( 115767 ) )
   {
-    parse_options( NULL, options_str );
+    background    = true;
+    proc          = true;
+    tick_may_crit = true;
 
-    harmful = false;
+    dot_behavior = DOT_REFRESH;
+
   }
 
-  virtual void execute()
+  virtual double action_multiplier() const
   {
-    warrior_spell_t::execute();
+    double am = base_t::action_multiplier();
 
-    warrior_t* p = cast();
+    const warrior_t* p = cast();
 
-    p -> buff.berserker_rage -> trigger();
-    p -> enrage();
+    // --- Enrages ---
+      if ( p -> buff.enrage -> up() )
+      {
+        am *= 1.0 + p -> buff.enrage -> data().effectN( 2 ).percent();
+
+        if ( p -> mastery.unshackled_fury -> ok() )
+          am *= 1.0 + p -> cache.mastery_value();
+      }
+
+    // --- Buffs / Procs ---
+    if ( p -> buff.rude_interruption -> up() )
+      am *= 1.0 + p -> buff.rude_interruption -> value();
+
+    return am;
   }
 };
 
