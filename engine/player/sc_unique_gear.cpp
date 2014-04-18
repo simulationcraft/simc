@@ -273,7 +273,7 @@ static const special_effect_db_item_t __special_effect_db[] = {
 
   /* Cataclysm */
   {  94747, 0,                           enchant::hurricane_spell },
-  {  74221, 0,                          enchant::hurricane_weapon },
+  {  89086, 0,                          enchant::hurricane_weapon },
   {  74245, 0,                                 enchant::landslide },
   {  94746, 0,                             enchant::power_torrent },
 
@@ -686,23 +686,22 @@ void enchant::hurricane_weapon( special_effect_t& effect,
                                 const item_t& item,
                                 const special_effect_db_item_t& dbitem )
 {
-  const spell_data_t* spell = item.player -> find_spell( dbitem.spell_id );
-  stat_buff_t* buff = stat_buff_creator_t( item.player, tokenized_name( spell ) + suffix( item ), spell )
+  const spell_data_t* spell = item.player -> find_spell( 74221 );
+  stat_buff_t* buff = stat_buff_creator_t( item.player, tokenized_name( spell ) + suffix( item ) )
+                      .spell( spell )
                       .activated( false );
 
-  effect.name_str = tokenized_name( spell ) + suffix( item );
-  effect.ppm_ = 1.0;
+  effect.custom_buff = buff;
 
-  action_callback_t* cb = new weapon_buff_proc_callback_t( item.player, effect, item.weapon(), buff );
-  item.player -> callbacks.register_attack_callback( RESULT_HIT_MASK, cb );
+  new dbc_proc_callback_t( item.player, effect );
 }
 
-struct hurricane_spell_proc_t : public proc_callback_t<action_state_t>
+struct hurricane_spell_proc_t : public dbc_proc_callback_t
 {
   buff_t *mh_buff, *oh_buff, *s_buff;
 
   hurricane_spell_proc_t( player_t* p, const special_effect_t& effect, buff_t* mhb, buff_t* ohb, buff_t* sb ) :
-    proc_callback_t<action_state_t>( p, effect ), 
+    dbc_proc_callback_t( p, effect ),
     mh_buff( mhb ), oh_buff( ohb ), s_buff( sb )
   { }
 
@@ -743,19 +742,11 @@ void enchant::hurricane_spell( special_effect_t& effect,
 
   const spell_data_t* driver = item.player -> find_spell( dbitem.spell_id );
   const spell_data_t* spell = driver -> effectN( 1 ).trigger();
-  stat_buff_t* spell_buff = stat_buff_creator_t( item.player, "hurricane_s", spell )
+  stat_buff_t* spell_buff = stat_buff_creator_t( item.player, "Hurricane_spell", spell )
                             .activated( false );
 
-  effect.name_str = tokenized_name( spell ) + "_spell";
-  effect.proc_chance_ = driver -> proc_chance();
-  effect.cooldown_ = driver -> internal_cooldown();
+  new hurricane_spell_proc_t( item.player, effect, mh_buff, oh_buff, spell_buff );
 
-  action_callback_t* cb = new hurricane_spell_proc_t( item.player, effect, mh_buff, oh_buff, spell_buff );
-
-  item.player -> callbacks.register_spell_direct_damage_callback( SCHOOL_SPELL_MASK, cb );
-  item.player -> callbacks.register_spell_tick_damage_callback  ( SCHOOL_SPELL_MASK, cb );
-  item.player -> callbacks.register_direct_heal_callback        ( SCHOOL_SPELL_MASK, cb );
-  item.player -> callbacks.register_tick_heal_callback          ( SCHOOL_SPELL_MASK, cb );
 }
 
 void enchant::landslide( special_effect_t& effect, 
