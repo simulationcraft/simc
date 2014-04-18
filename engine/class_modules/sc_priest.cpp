@@ -165,6 +165,11 @@ public:
     const spell_data_t* mental_anguish;
   } mastery_spells;
 
+  struct perk_spells_t
+  {
+    const spell_data_t* enhanced_mind_flay;
+  } perks;
+
   // Cooldowns
   struct cooldowns_t
   {
@@ -272,6 +277,7 @@ public:
     talents(),
     specs(),
     mastery_spells(),
+    perks(),
     cooldowns(),
     gains(),
     benefits(),
@@ -2483,6 +2489,12 @@ struct mind_flay_base_t : public priest_spell_t
     may_crit     = false;
     channeled    = true;
     hasted_ticks = false;
+
+    if ( priest.perks.enhanced_mind_flay -> ok() )
+    {
+      num_ticks += 1;
+      base_tick_time *= 1.0 + priest.perks.enhanced_mind_flay -> effectN( 1 ).percent();
+    }
   }
 
   virtual double action_multiplier() const override
@@ -4930,6 +4942,9 @@ void priest_t::init_spells()
   mastery_spells.shield_discipline    = find_mastery_spell( PRIEST_DISCIPLINE );
   mastery_spells.echo_of_light        = find_mastery_spell( PRIEST_HOLY );
   mastery_spells.mental_anguish       = find_mastery_spell( PRIEST_SHADOW );
+
+  // Perk Spells
+  perks.enhanced_mind_flay            = find_perk_spell( "Enhanced Mind Flay" );
 
   // Glyphs
   glyphs.circle_of_healing            = find_glyph_spell( "Glyph of Circle of Healing" );
