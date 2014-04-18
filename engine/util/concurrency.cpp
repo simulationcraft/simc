@@ -283,6 +283,7 @@ private:
 #elif ( defined( _POSIX_THREADS ) && _POSIX_THREADS > 0 ) || defined( _GLIBCXX_HAVE_GTHR_DEFAULT ) || defined( _GLIBCXX__PTHREADS ) || defined( _GLIBCXX_HAS_GTHREADS )
 // POSIX
 #include <pthread.h>
+#include <cstdio>
 #include <unistd.h>
 
 // mutex_t::native_t ========================================================
