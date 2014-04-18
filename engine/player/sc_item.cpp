@@ -80,7 +80,7 @@ const special_effect_t& item_t::special_effect( special_effect_source_e source, 
   for ( size_t i = 0; i < parsed.special_effects.size(); i++ )
   {
     if ( ( source == SPECIAL_EFFECT_SOURCE_NONE || parsed.special_effects[ i ].source == source ) && 
-         ( type == SPECIAL_EFFECT_NONE || type == parsed.special_effects[ i ].type == type ) )
+         ( type == SPECIAL_EFFECT_NONE || type == parsed.special_effects[ i ].type ) )
     {
       return parsed.special_effects[ i ];
     }

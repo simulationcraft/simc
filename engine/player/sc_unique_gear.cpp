@@ -562,23 +562,17 @@ void enchant::colossus( special_effect_t& effect,
                         const item_t& item,
                         const special_effect_db_item_t& dbitem )
 {
-  const spell_data_t* driver = item.player -> find_spell( dbitem.spell_id );
   const spell_data_t* spell = item.player -> find_spell( 116631 );
 
-  absorb_buff_t* buff = absorb_buff_creator_t( item.player, tokenized_name( spell ) + suffix( item ), spell )
+  absorb_buff_t* buff = absorb_buff_creator_t( item.player, tokenized_name( spell ) + suffix( item ) )
+                        .spell( spell )
                         .source( item.player -> get_stats( tokenized_name( spell ) + suffix( item ) ) )
                         .activated( false );
 
-  effect.name_str = tokenized_name( driver );
-  effect.ppm_ = -1.0 * driver -> real_ppm();
   effect.rppm_scale = RPPM_HASTE;
+  effect.custom_buff = buff;
 
-  action_callback_t* cb = new buff_proc_callback_t<absorb_buff_t>( item.player, effect, buff );
-
-  item.player -> callbacks.register_attack_callback( RESULT_HIT_MASK | RESULT_DODGE_MASK | RESULT_PARRY_MASK, cb );
-  item.player -> callbacks.register_spell_callback ( RESULT_HIT_MASK, cb );
-  item.player -> callbacks.register_tick_callback  ( RESULT_HIT_MASK, cb );
-  item.player -> callbacks.register_heal_callback  ( SCHOOL_ALL_MASK, cb );
+  new dbc_proc_callback_t( item, effect );
 }
 
 void enchant::dancing_steel( special_effect_t& effect, 
