@@ -1417,8 +1417,6 @@ struct dragon_roar_t : public warrior_attack_t
     // lets us benefit from seasoned_soldier, etc. but do not add weapon damage to it
     weapon            = &( p -> main_hand_weapon );
     weapon_multiplier = 0;
-    base_dd_min = 0; // Temporary
-    base_dd_max = 0;
   }
 
   double calculate_direct_amount( action_state_t* state )
@@ -1465,7 +1463,8 @@ struct execute_t : public warrior_attack_t
     // Include the weapon so we benefit from seasoned soldier.
     weapon             = &( player -> main_hand_weapon );
     weapon_multiplier  = 0;
-    base_multiplier   *= 1.0 + p -> perk.empowered_execute -> effectN( 1 ).percent();
+    attack_power_mod.direct  = data().effectN( 1 ).ap_coeff();
+    attack_power_mod.direct *= 1.0 + p -> perk.empowered_execute -> effectN( 1 ).percent();
   }
 
   virtual double cost() const
@@ -2051,9 +2050,10 @@ struct revenge_t : public warrior_attack_t
   {
     parse_options( NULL, options_str );
 
-    aoe = 2;
+    aoe = 3;
     rage_gain = data().effectN( 2 ).resource( RESOURCE_RAGE );
-    base_multiplier *= 1.0 + p -> perk.improved_revenge -> effectN( 1 ).percent();
+    attack_power_mod.direct  = data().effectN( 1 ).ap_coeff();
+    attack_power_mod.direct *= 1.0 + p -> perk.improved_revenge -> effectN( 1 ).percent();
   }
 
   virtual double action_multiplier() const
@@ -2134,7 +2134,7 @@ struct shield_slam_t : public warrior_attack_t
     rage_gain = data().effectN( 3 ).resource( RESOURCE_RAGE );
     attack_power_mod.direct = 2.8; // Hard coded 4/14/14 as DBC doesn't show this.
 
-    base_multiplier *= 1.0 + p -> perk.improved_shield_slam -> effectN( 1 ).percent();
+    attack_power_mod.direct *= 1.0 + p -> perk.improved_shield_slam -> effectN( 1 ).percent();
   }
 
   virtual double action_multiplier() const
@@ -2387,6 +2387,7 @@ struct thunder_clap_t : public warrior_attack_t
     // Pass in weapon so it can be benefited by seasoned solider
     weapon            = &( p -> main_hand_weapon );
     weapon_multiplier = 0;
+    attack_power_mod.direct = data().effectN( 1 ).ap_coeff();
 
     if ( p -> spec.unwavering_sentinel -> ok() && p -> active_stance != STANCE_GLADIATOR )
       base_costs[ current_resource() ] *= 1.0 + p -> spec.unwavering_sentinel -> effectN( 2 ).percent();
@@ -2403,11 +2404,11 @@ struct thunder_clap_t : public warrior_attack_t
     if ( p -> spec.seasoned_soldier -> ok() )
       base_costs[ current_resource() ] += p -> spec.seasoned_soldier -> effectN( 2 ).resource( current_resource() );
 
-    base_multiplier *= 1.0 + p -> perk.improved_thunder_clap -> effectN( 1 ).percent();
+    attack_power_mod.direct *= 1.0 + p -> perk.improved_thunder_clap -> effectN( 1 ).percent();
     if ( p -> glyphs.resonating_power -> ok() )
-      base_multiplier *= 1.0 + p -> glyphs.resonating_power -> effectN( 1 ).percent();
+      attack_power_mod.direct *= 1.0 + p -> glyphs.resonating_power -> effectN( 1 ).percent();
     if ( p -> spec.blood_and_thunder -> ok() )
-      base_multiplier *= 1.0 + p -> spec.blood_and_thunder -> effectN( 2 ).percent();
+      attack_power_mod.direct *= 1.0 + p -> spec.blood_and_thunder -> effectN( 2 ).percent();
   }
 
   virtual double action_multiplier() const
@@ -2744,7 +2745,7 @@ struct deep_wounds_t : public warrior_spell_t
     background    = true;
     proc          = true;
     tick_may_crit = true;
-
+    hasted_ticks  = false;
     dot_behavior = DOT_REFRESH;
 
   }
@@ -2819,7 +2820,9 @@ struct shield_barrier_t : public warrior_action_t<absorb_t>
     may_crit      = false;
     tick_may_crit = false;
     target        = player;
-    base_multiplier *= 1.0 + p -> perk.improved_shield_barrier -> effectN( 1 ).percent();
+
+    attack_power_mod.direct  = data().effectN( 1 ).ap_coeff();
+    attack_power_mod.direct *= 1.0 + p -> perk.improved_shield_barrier -> effectN( 1 ).percent();
   }
 
   virtual void consume_resource()
@@ -3880,6 +3883,8 @@ void warrior_t::apl_gladiator()
 {
   std::vector<std::string> racial_actions     = get_racial_actions();
   action_priority_list_t* default_list = get_action_priority_list( "default" );
+  action_priority_list_t* single_target = get_action_priority_list( "single_target" );
+  action_priority_list_t* aoe = get_action_priority_list( "aoe" );
 
 
   default_list -> add_action( this, "charge" );
@@ -3889,18 +3894,35 @@ void warrior_t::apl_gladiator()
   
   if ( sim -> allow_potions && level >= 80 )
     default_list -> add_action( "mogu_power_potion,if=target.health.pct<20&buff.bloodbath.up|target.time_to_die<=25" );
+  default_list -> add_action( "run_action_list,name=single_target,if=active_enemies<=4" );
+  default_list -> add_action( "run_action_list,name=aoe,if=active_enemies>3" );
 
-  default_list -> add_action( "shield_charge,if=buff.shield_charge.down" );
-  default_list -> add_action( this, "Heroic Strike", "if=buff.ultimatum.up|(buff.shield_charge.up&rage>50&target.health.pct>20)|rage>110" );
-  default_list -> add_talent( this, "Bloodbath" );
-  default_list -> add_talent( this, "Avatar" );
-  default_list -> add_action( this, "Heroic Leap", "if=buff.bloodbath.up|cooldown.bloodbath.remains>5" );
-  default_list -> add_action( this, "Shield Slam" );
-  default_list -> add_action( this, "Revenge" , "if=buff.shield_charge.up&rage<100" );
-  default_list -> add_action( this, "Execute" , "if=rage>100|target.time_to_die<12|(rage>50&(buff.bloodbath.up|buff.avatar.up))" );
-  default_list -> add_talent( this, "Storm Bolt", "if=(buff.bloodbath.up|cooldown.bloodbath.remains>7)" );
-  default_list -> add_talent( this, "Dragon Roar", "if=(buff.bloodbath.up|cooldown.bloodbath.remains>10)"  );
-  default_list -> add_action( this, "Devastate", "if=cooldown.shield_slam.remains>1" );
+  single_target -> add_action( this, "Shield Charge", "if=buff.shield_charge.down" );
+  single_target -> add_action( this, "Heroic Strike", "if=buff.ultimatum.up|(buff.shield_charge.up&rage>50&target.health.pct>20)|rage>110" );
+  single_target -> add_talent( this, "Bloodbath" );
+  single_target -> add_talent( this, "Avatar" );
+  single_target -> add_action( this, "Heroic Leap", "if=(buff.bloodbath.up|cooldown.bloodbath.remains>5)|!talent.bloodbath.enabled" );
+  single_target -> add_action( this, "Shield Slam" );
+  single_target -> add_action( this, "Revenge" , "if=buff.shield_charge.up&rage<100" );
+  single_target -> add_action( this, "Execute" , "if=rage>100|target.time_to_die<12|(rage>50&(buff.bloodbath.up|buff.avatar.up))" );
+  single_target -> add_talent( this, "Storm Bolt", "if=(buff.bloodbath.up|cooldown.bloodbath.remains>7)|!talent.bloodbath.enabled" );
+  single_target -> add_talent( this, "Dragon Roar", "if=(buff.bloodbath.up|cooldown.bloodbath.remains>10)|!talent.bloodbath.enabled"  );
+  single_target -> add_action( this, "Thunder Clap" );
+  single_target -> add_action( this, "Devastate" );
+
+  aoe -> add_talent( this, "Bloodbath" );
+  aoe -> add_talent( this, "Avatar" );
+  aoe -> add_action( this, "Shield Charge", "if=buff.shield_charge.down" );
+  aoe -> add_action( this, "Thunder Clap", "if=!dot.deep_wounds.ticking" );
+  aoe -> add_talent( this, "Bladestorm" );
+  aoe -> add_action( this, "Heroic Strike", "if=buff.ultimatum.up|buff.shield_charge.up&rage>50|rage>110" );
+  aoe -> add_action( this, "Heroic Leap", "if=(buff.bloodbath.up|cooldown.bloodbath.remains>5|!talent.bloodbath.enabled)" );
+  aoe -> add_action( this, "Shield Slam" );
+  aoe -> add_action( this, "Thunder Clap" );
+  aoe -> add_action( this, "Revenge", "if=buff.shield_charge.up&rage<100" );
+  aoe -> add_talent( this, "Dragon Roar", "if=(buff.bloodbath.up|cooldown.bloodbath.remains>10)|!talent.bloodbath.enabled" );
+  aoe -> add_talent( this, "Storm Bolt", "if=(buff.bloodbath.up|cooldown.bloodbath.remains>7)|!talent.bloodbath.enabled" );
+  aoe -> add_action( this, "Devastate" );
 
 }
 

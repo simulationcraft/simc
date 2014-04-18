@@ -1,0 +1,101 @@
+warrior="Warrior_Arms_T16H_lvl_100"
+level=100
+race=orc
+role=attack
+position=back
+professions=engineering=600/blacksmithing=600
+talents=http://us.battle.net/wow/en/tool/talent-calculator#Za!.0..11.
+glyphs=unending_rage/death_from_above/sweeping_strikes/resonating_power
+spec=arms
+
+# This default action priority list is automatically created based on your character.
+# It is a attempt to provide you with a action list that is both simple and practicable,
+# while resulting in a meaningful and good simulation. It may not result in the absolutely highest possible dps.
+# Feel free to edit, adapt and improve it to your own needs.
+# SimulationCraft is always looking for updates and improvements to the default action lists.
+
+# Executed before combat begins. Accepts non-harmful actions only.
+
+actions.precombat=flask,type=winters_bite
+actions.precombat+=/food,type=black_pepper_ribs_and_shrimp
+# Snapshot raid buffed stats before combat begins and pre-potting is done.
+actions.precombat+=/snapshot_stats
+actions.precombat+=/stance,choose=battle
+actions.precombat+=/mogu_power_potion
+
+# Executed every time the actor is available.
+
+actions=charge
+actions+=/auto_attack
+actions+=/mogu_power_potion,if=(target.health.pct<20&buff.recklessness.up)|buff.bloodlust.react|target.time_to_die<=25
+# This incredibly long line (Due to differing talent choices) says 'Use recklessness on cooldown with colossus smash, unless the boss will die before the ability is usable again, and then use it with execute.'
+actions+=/recklessness,if=!talent.bloodbath.enabled&((cooldown.colossus_smash.remains<2|debuff.colossus_smash.remains>=5)&(target.time_to_die>192|target.health.pct<20))|buff.bloodbath.up&(target.time_to_die>192|target.health.pct<20)|target.time_to_die<=12
+actions+=/avatar,if=talent.avatar.enabled&((buff.recklessness.up|target.time_to_die<=25))
+actions+=/blood_fury,if=buff.bloodbath.up|(!talent.bloodbath.enabled&debuff.colossus_smash.up)|buff.recklessness.up
+actions+=/berserking,if=buff.bloodbath.up|(!talent.bloodbath.enabled&debuff.colossus_smash.up)|buff.recklessness.up
+actions+=/arcane_torrent,if=buff.bloodbath.up|(!talent.bloodbath.enabled&debuff.colossus_smash.up)|buff.recklessness.up
+actions+=/bloodbath,if=talent.bloodbath.enabled&((debuff.colossus_smash.remains>0.1|cooldown.colossus_smash.remains<5|target.time_to_die<=20))
+actions+=/heroic_leap,if=debuff.colossus_smash.up
+actions+=/run_action_list,name=aoe,if=active_enemies>=2
+actions+=/run_action_list,name=single_target,if=active_enemies<2
+
+actions.single_target=heroic_strike,if=rage>115
+actions.single_target+=/ignite_weapon,if=talent.ignite_weapon.enabled&((rage>100&target.health.pct>20)|buff.ignite_weapon.down)
+actions.single_target+=/mortal_strike,if=dot.deep_wounds.remains<1.0|buff.enrage.down|rage<10
+actions.single_target+=/colossus_smash,if=debuff.colossus_smash.remains<1.0
+actions.single_target+=/ravager,if=talent.ravager.enabled
+# Use cancelaura (in-game) to stop bladestorm if CS comes off cooldown during it for any reason.
+actions.single_target+=/bladestorm,if=enabled,interrupt_if=!cooldown.colossus_smash.remains
+actions.single_target+=/mortal_strike
+actions.single_target+=/storm_bolt,if=talent.storm_bolt.enabled&debuff.colossus_smash.up
+actions.single_target+=/dragon_roar,if=talent.dragon_roar.enabled&debuff.colossus_smash.down
+actions.single_target+=/execute,if=buff.taste_for_blood.down|rage>90|target.time_to_die<12
+# Slam is preferable to overpower with crit procs/recklessness.
+actions.single_target+=/slam,if=target.health.pct>=20&(trinket.stacking_stat.crit.stack>=10|buff.recklessness.up)
+actions.single_target+=/overpower,if=target.health.pct>=20&rage<100
+actions.single_target+=/execute
+actions.single_target+=/slam,if=target.health.pct>=20
+
+actions.aoe=sweeping_strikes
+actions.aoe+=/heroic_strike,if=rage>100
+actions.aoe+=/ignite_weapon,if=talent.ignite_weapon.enabled&(buff.ignite_weapon.down|rage>100)
+actions.aoe+=/ravager,if=talent.ravager.enabled
+actions.aoe+=/bladestorm,if=talent.bladestorm.enabled&buff.enrage.remains>4
+actions.aoe+=/dragon_roar,if=talent.dragon_roar.enabled&debuff.colossus_smash.down
+actions.aoe+=/colossus_smash,if=debuff.colossus_smash.remains<1
+actions.aoe+=/thunder_clap
+actions.aoe+=/mortal_strike,if=active_enemies=2|rage<50
+actions.aoe+=/execute,if=active_enemies=2
+actions.aoe+=/slam,if=buff.sweeping_strikes.up&debuff.colossus_smash.up
+actions.aoe+=/overpower,if=active_enemies=2
+actions.aoe+=/slam,if=buff.sweeping_strikes.up
+
+head=helmet_of_the_prehistoric_marauder,id=99418,upgrade=2,gems=capacitive_primal_16crit_8haste_8crit
+neck=malkoroks_tainted_dog_tags,id=105566,upgrade=2
+shoulders=spaulders_of_the_fallen_warchief,id=104645,upgrade=2,gems=16crit_16crit,enchant=10str_5crit
+back=gonglu_strength_of_xuen,id=102249,upgrade=2,gems=8haste_8crit,enchant=9crit
+chest=breastplate_of_shamanic_mirrors,id=105532,upgrade=2,gems=8haste_8crit_8haste_8crit_16crit,enchant=3all
+shirt=precious_ribbon,id=52019
+wrists=bracers_of_blind_hatred,id=105456,upgrade=2,gems=16crit,enchant=9mastery
+hands=gauntlets_of_the_prehistoric_marauder,id=99412,upgrade=2,gems=8haste_8crit_8haste_8crit_16crit,enchant=9mastery
+waist=demolishers_reinforced_belt,id=104513,upgrade=2,gems=8haste_8crit_16crit_16crit,addon=nitro_boosts
+legs=legplates_of_willful_doom,id=104569,upgrade=2,gems=16crit_16crit_16crit,enchant=14str_8crit
+feet=greaves_of_sublime_superiority,id=105478,upgrade=2,gems=8haste_8crit,enchant=7mastery
+finger1=seal_of_the_forgotten_kings,id=105589,upgrade=2,gems=16crit
+finger2=sorrowpath_signet,id=105436,upgrade=2
+trinket1=evil_eye_of_galakras,id=105491,upgrade=2
+trinket2=thoks_tail_tip,id=105609,upgrade=2
+main_hand=xalatoh_desecrated_image_of_gorehowl,id=105644,upgrade=2,gems=8haste_8crit,enchant=dancing_steel
+
+# Gear Summary
+# gear_strength=961
+# gear_agility=3
+# gear_stamina=1531
+# gear_intellect=3
+# gear_spirit=3
+# gear_crit_rating=898
+# gear_haste_rating=305
+# gear_mastery_rating=465
+# gear_armor=1187
+# meta_gem=capacitive_primal
+# tier16_2pc_melee=1

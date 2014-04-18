@@ -1,11 +1,11 @@
-warrior="Warrior_Gladiator_T16H"
-level=90
+warrior="Warrior_Gladiator_T16H_lvl_100"
+level=100
 race=orc
 role=attack
 position=back
-professions=enchanting=600/inscription=600
-talents=http://us.battle.net/wow/en/tool/talent-calculator#Zb!.00110.
-glyphs=unending_rage
+professions=engineering=600/blacksmithing=600
+talents=http://us.battle.net/wow/en/tool/talent-calculator#Zb!.0..101
+glyphs=unending_rage/death_from_above/bull_rush/cleave
 spec=protection
 
 # This default action priority list is automatically created based on your character.
