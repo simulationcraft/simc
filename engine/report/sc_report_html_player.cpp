@@ -360,26 +360,30 @@ void print_html_action_info( report::sc_html_stream& os, unsigned stats_mask, st
   os << "</td>\n";
 
   // DPS and DPS %
-  std::string compound_aps     = "";
-  std::string compound_aps_pct = "";
-  double cAPS    = s -> portion_aps.mean();
-  double cAPSpct = s -> portion_amount;
-
-  for ( size_t i = 0, num_children = s -> children.size(); i < num_children; i++ )
+  // Skip for abilities that do no damage
+  if ( s -> compound_amount > 0 )
   {
-    cAPS    += s -> children[ i ] -> portion_apse.mean();
-    cAPSpct += s -> children[ i ] -> portion_amount;
+    std::string compound_aps     = "";
+    std::string compound_aps_pct = "";
+    double cAPS    = s -> portion_aps.mean();
+    double cAPSpct = s -> portion_amount;
+
+    for ( size_t i = 0, num_children = s -> children.size(); i < num_children; i++ )
+    {
+      cAPS    += s -> children[ i ] -> portion_apse.mean();
+      cAPSpct += s -> children[ i ] -> portion_amount;
+    }
+
+    if ( cAPS > s -> portion_aps.mean()  ) compound_aps     = "&nbsp;(" + util::to_string( cAPS, 0 ) + ")";
+    if ( cAPSpct > s -> portion_amount ) compound_aps_pct = "&nbsp;(" + util::to_string( cAPSpct * 100, 1 ) + "%)";
+
+    os.printf( "\t\t\t\t\t\t\t\t<td class=\"right small\" rowspan=\"%d\">%.0f%s</td>\n",
+      result_rows,
+      s -> portion_aps.pretty_mean(), compound_aps.c_str() );
+    os.printf( "\t\t\t\t\t\t\t\t<td class=\"right small\" rowspan=\"%d\">%.1f%%%s</td>\n",
+      result_rows,
+      s -> portion_amount * 100, compound_aps_pct.c_str() );
   }
-
-  if ( cAPS > s -> portion_aps.mean()  ) compound_aps     = "&nbsp;(" + util::to_string( cAPS, 0 ) + ")";
-  if ( cAPSpct > s -> portion_amount ) compound_aps_pct = "&nbsp;(" + util::to_string( cAPSpct * 100, 1 ) + "%)";
-
-  os.printf( "\t\t\t\t\t\t\t\t<td class=\"right small\" rowspan=\"%d\">%.0f%s</td>\n",
-    result_rows,
-    s -> portion_aps.pretty_mean(), compound_aps.c_str() );
-  os.printf( "\t\t\t\t\t\t\t\t<td class=\"right small\" rowspan=\"%d\">%.1f%%%s</td>\n",
-    result_rows,
-    s -> portion_amount * 100, compound_aps_pct.c_str() );
 
   // Number of executes
   os.printf( "\t\t\t\t\t\t\t\t<td class=\"right small\" rowspan=\"%d\">%.1f</td>\n",
@@ -390,35 +394,40 @@ void print_html_action_info( report::sc_html_stream& os, unsigned stats_mask, st
   os.printf( "\t\t\t\t\t\t\t\t<td class=\"right small\" rowspan=\"%d\">%.2fsec</td>\n",
     result_rows,
     s -> total_intervals.pretty_mean() );
-
-  // Amount per execute
-  os.printf( "\t\t\t\t\t\t\t\t<td class=\"right small\" rowspan=\"%d\">%.0f</td>\n",
-    result_rows,
-    s -> ape );
-
-  // Amount per execute time
-  os.printf( "\t\t\t\t\t\t\t\t<td class=\"right small\" rowspan=\"%d\">%.0f</td>\n",
-    result_rows,
-    s -> apet );
-
-  bool periodic_only = false;
-  if ( has_amount_results( s -> direct_results ) )
-    print_html_action_summary( os, stats_mask, 0, s, p );
-  else if ( has_amount_results( s -> tick_results ) )
+  
+  // Skip the rest of this for abilities that do no damage
+  if ( s -> compound_amount > 0 )
   {
-    periodic_only = true;
-    print_html_action_summary( os, stats_mask, 1, s, p );
-  }
-  else
-    os.printf("\t\t\t\t\t\t\t\t<td class=\"right small\" colspan=\"%d\"></td>\n", n_columns );
+    // Amount per execute
+    os.printf( "\t\t\t\t\t\t\t\t<td class=\"right small\" rowspan=\"%d\">%.0f</td>\n",
+      result_rows,
+      s -> ape );
 
-  os.printf( "\t\t\t\t\t\t\t</tr>\n" );
+    // Amount per execute time
+    os.printf( "\t\t\t\t\t\t\t\t<td class=\"right small\" rowspan=\"%d\">%.0f</td>\n",
+      result_rows,
+      s -> apet );
 
-  if ( ! periodic_only && has_amount_results( s -> tick_results ) )
-  {
-    os << "\t\t\t\t\t\t\t<tr" << row_class << ">\n";
-    print_html_action_summary( os, stats_mask, 1, s, p );
-    os << "\t\t\t\t\t\t\t</tr>\n";
+    bool periodic_only = false;
+    if ( has_amount_results( s -> direct_results ) )
+      print_html_action_summary( os, stats_mask, 0, s, p );
+    else if ( has_amount_results( s -> tick_results ) )
+    {
+      periodic_only = true;
+      print_html_action_summary( os, stats_mask, 1, s, p );
+    }
+    else
+      os.printf("\t\t\t\t\t\t\t\t<td class=\"right small\" colspan=\"%d\"></td>\n", n_columns );
+
+    os.printf( "\t\t\t\t\t\t\t</tr>\n" );
+
+    if ( ! periodic_only && has_amount_results( s -> tick_results ) )
+    {
+      os << "\t\t\t\t\t\t\t<tr" << row_class << ">\n";
+      print_html_action_summary( os, stats_mask, 1, s, p );
+      os << "\t\t\t\t\t\t\t</tr>\n";
+    }
+
   }
 
   if ( p -> sim -> report_details )
@@ -3112,7 +3121,10 @@ void output_player_damage_summary( report::sc_html_stream& os, player_t* actor )
 
   unsigned n_row = 0;
   for ( size_t i = 0; i < actor -> stats_list.size(); ++i )
-    output_player_action( os, n_row, n_optional_columns, MASK_DMG, actor -> stats_list[ i ], actor );
+  {
+    if ( actor -> stats_list[ i ] -> compound_amount > 0 )
+      output_player_action( os, n_row, n_optional_columns, MASK_DMG, actor -> stats_list[ i ], actor );
+  }
 
   // Print pet statistics
   for ( size_t i = 0; i < actor -> pet_list.size(); ++i )
@@ -3128,6 +3140,9 @@ void output_player_damage_summary( report::sc_html_stream& os, player_t* actor )
         continue;
 
       if ( s -> parent && s -> parent -> player == pet )
+        continue;
+
+      if ( s -> compound_amount == 0 )
         continue;
 
       if ( first )
@@ -3203,7 +3218,10 @@ void output_player_heal_summary( report::sc_html_stream& os, player_t* actor )
 
   unsigned n_row = 0;
   for ( size_t i = 0; i < actor -> stats_list.size(); ++i )
-    output_player_action( os, n_row, n_optional_columns, MASK_HEAL | MASK_ABSORB, actor -> stats_list[ i ], actor );
+  {
+    if ( actor -> stats_list[ i ] -> compound_amount > 0 )
+      output_player_action( os, n_row, n_optional_columns, MASK_HEAL | MASK_ABSORB, actor -> stats_list[ i ], actor );
+  }
 
   // Print pet statistics
   for ( size_t i = 0; i < actor -> pet_list.size(); ++i )
@@ -3219,6 +3237,9 @@ void output_player_heal_summary( report::sc_html_stream& os, player_t* actor )
         continue;
 
       if ( s -> parent && s -> parent -> player == pet )
+        continue;
+      
+      if ( s -> compound_amount == 0 )
         continue;
 
       if ( first )
@@ -3242,6 +3263,72 @@ void output_player_heal_summary( report::sc_html_stream& os, player_t* actor )
   os << "\t\t\t\t\t\t</table>\n";
 }
 
+void output_player_simple_ability_summary( report::sc_html_stream& os, player_t* actor )
+{
+  if ( actor -> collected_data.dmg.max() == 0 && ! actor -> sim -> debug )
+    return;
+
+  // Number of static columns in table
+  const int static_columns = 2;
+  // Number of dynamically changing columns
+  int n_optional_columns = 0;
+
+  // Abilities Section - Simple Actions
+  os << "\t\t\t\t\t\t<table class=\"sc\">\n"
+      << "\t\t\t\t\t\t\t<tr>\n"
+      << "\t\t\t\t\t\t\t\t<th class=\"left small\">Simple Action Stats</th>\n"
+      << "\t\t\t\t\t\t\t\t<th class=\"small\"><a href=\"#help-count\" class=\"help\">Execute</a></th>\n"
+      << "\t\t\t\t\t\t\t\t<th class=\"small\"><a href=\"#help-interval\" class=\"help\">Interval</a></th>\n";
+
+  os << "\t\t\t\t\t\t\t<tr>\n"
+      << "\t\t\t\t\t\t\t\t<th class=\"left small\">" << util::encode_html( actor -> name() ) << "</th>\n"
+      << "\t\t\t\t\t\t\t\t<td colspan=\"" << ( static_columns + n_optional_columns ) << "\" class=\"filler\"></td>\n"
+      << "\t\t\t\t\t\t\t</tr>\n";
+
+  unsigned n_row = 0;
+  for ( size_t i = 0; i < actor -> stats_list.size(); ++i )
+  {
+    if ( actor -> stats_list[ i ] -> compound_amount == 0 )
+      output_player_action( os, n_row, n_optional_columns, MASK_DMG | MASK_HEAL | MASK_ABSORB, actor -> stats_list[ i ], actor );
+  }
+
+  // Print pet statistics
+  for ( size_t i = 0; i < actor -> pet_list.size(); ++i )
+  {
+    pet_t* pet = actor -> pet_list[ i ];
+
+    bool first = true;
+    for ( size_t m = 0; m < pet -> stats_list.size(); ++m )
+    {
+      stats_t* s = pet -> stats_list[ m ];
+
+      if ( ! is_output_stat( MASK_DMG | MASK_HEAL | MASK_ABSORB, false, s ) )
+        continue;
+
+      if ( s -> parent && s -> parent -> player == pet )
+        continue;
+
+      if ( s -> compound_amount > 0 )
+        continue;
+
+      if ( first )
+      {
+        first = false;
+        os.printf(
+          "\t\t\t\t\t\t\t<tr>\n"
+          "\t\t\t\t\t\t\t\t<th class=\"left small\">pet - %s</th>\n"
+          "\t\t\t\t\t\t\t\t<td colspan=\"%d\" class=\"filler\"></td>\n"
+          "\t\t\t\t\t\t\t</tr>\n",
+          pet -> name_str.c_str(), 1 + static_columns + n_optional_columns );
+      }
+
+      output_player_action( os, n_row, n_optional_columns, MASK_DMG | MASK_HEAL | MASK_ABSORB, s, pet );
+    }
+  }
+
+  os << "\t\t\t\t\t\t</table>\n";
+}
+
 void print_html_player_abilities( report::sc_html_stream& os, player_t* p )
 {
   // open section
@@ -3251,6 +3338,7 @@ void print_html_player_abilities( report::sc_html_stream& os, player_t* p )
 
   output_player_damage_summary( os, p );
   output_player_heal_summary( os, p );
+  output_player_simple_ability_summary( os, p );
 
   // close section
   os << "\t\t\t\t\t</div>\n"
