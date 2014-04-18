@@ -879,22 +879,9 @@ void gem::sinister_primal( special_effect_t& effect,
   if ( item.sim -> challenge_mode )
     return;
 
-  struct sinister_primal_proc_t : public buff_proc_callback_t<buff_t>
-  {
-    sinister_primal_proc_t( player_t* p, const special_effect_t& data, const spell_data_t* driver ) :
-      buff_proc_callback_t<buff_t>( p, data, p -> buffs.tempus_repit, driver )
-    { }
-  };
+  effect.custom_buff = item.player->buffs.tempus_repit;
 
-  const spell_data_t* driver = item.player -> find_spell( dbitem.spell_id );
-
-  effect.name_str = "tempus_repit";
-  effect.ppm_      = -1.0 * driver -> real_ppm();
-  effect.cooldown_ = driver -> internal_cooldown(); 
-
-  sinister_primal_proc_t* cb = new sinister_primal_proc_t( item.player, effect, driver );
-  item.player -> callbacks.register_direct_damage_callback( SCHOOL_ALL_MASK, cb );
-  item.player -> callbacks.register_tick_damage_callback( SCHOOL_ALL_MASK, cb );
+  new dbc_proc_callback_t( item, effect );
 }
 
 void gem::indomitable_primal( special_effect_t& effect, 
