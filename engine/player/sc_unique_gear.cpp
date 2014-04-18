@@ -273,8 +273,8 @@ static const special_effect_db_item_t __special_effect_db[] = {
 
   /* Cataclysm */
   {  94747, 0,                           enchant::hurricane_spell },
-  {      0, 0,                          enchant::hurricane_weapon },
-  {      0, 0,                                 enchant::landslide },
+  {  74221, "1PPM",                                             0 },
+  {  74245, "1PPM",                                             0 }, /* Landslide */
   {  94746, 0,                             enchant::power_torrent },
 
   /* Wrath of the Lich King */
@@ -682,20 +682,6 @@ void enchant::windsong( special_effect_t& effect,
 
 }
 
-void enchant::hurricane_weapon( special_effect_t& effect, 
-                                const item_t& item,
-                                const special_effect_db_item_t& dbitem )
-{
-  const spell_data_t* spell = item.player -> find_spell( 74221 );
-  stat_buff_t* buff = stat_buff_creator_t( item.player, tokenized_name( spell ) + suffix( item ) )
-                      .spell( spell )
-                      .activated( false );
-
-  effect.custom_buff = buff;
-
-  new dbc_proc_callback_t( item.player, effect );
-}
-
 struct hurricane_spell_proc_t : public dbc_proc_callback_t
 {
   buff_t *mh_buff, *oh_buff, *s_buff;
@@ -747,22 +733,6 @@ void enchant::hurricane_spell( special_effect_t& effect,
 
   new hurricane_spell_proc_t( item.player, effect, mh_buff, oh_buff, spell_buff );
 
-}
-
-void enchant::landslide( special_effect_t& effect, 
-                         const item_t& item,
-                         const special_effect_db_item_t& dbitem )
-{
-  const spell_data_t* spell = item.player -> find_spell( dbitem.spell_id );
-  stat_buff_t* buff = stat_buff_creator_t( item.player, tokenized_name( spell ) + suffix( item ), spell )
-                      .activated( false );
-
-  effect.name_str = tokenized_name( spell ) + suffix( item );
-  effect.ppm_ = 1.0;
-
-  effect.custom_buff = buff;
-
-  new dbc_proc_callback_t( item.player, effect );
 }
 
 void enchant::power_torrent( special_effect_t& effect, 

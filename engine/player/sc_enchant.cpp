@@ -240,8 +240,7 @@ bool enchant::initialize_item_enchant( item_t& item,
         // correct weapon
         effect.weapon_proc = true;
         effect.type = SPECIAL_EFFECT_EQUIP;
-        effect.trigger_type = PROC_ATTACK;
-        effect.trigger_mask = RESULT_HIT_MASK;
+        effect.proc_flags_ = PF_MELEE | PF_MELEE_ABILITY | PF_RANGED | PF_RANGED_ABILITY;
         effect.encoding_str = encoded_enchant_name( item.player -> dbc, enchant );
         break;
       case ITEM_ENCHANTMENT_EQUIP_SPELL:
