@@ -275,7 +275,7 @@ static const special_effect_db_item_t __special_effect_db[] = {
   {  94747, 0,                           enchant::hurricane_spell },
   {  74221, "1PPM",                                             0 }, /* Hurricane Weapon */
   {  74245, "1PPM",                                             0 }, /* Landslide */
-  {  94746, 0,                             enchant::power_torrent },
+  {  94746, 0,                                                  0 }, /* Power Torrent */
 
   /* Wrath of the Lich King */
   {  59620, 0,                                enchant::berserking },
@@ -725,28 +725,6 @@ void enchant::hurricane_spell( special_effect_t& effect,
 
   new hurricane_spell_proc_t( item.player, effect, mh_buff, oh_buff, spell_buff );
 
-}
-
-void enchant::power_torrent( special_effect_t& effect, 
-                             const item_t& item,
-                             const special_effect_db_item_t& dbitem )
-{
-  const spell_data_t* driver = item.player -> find_spell( dbitem.spell_id );
-  const spell_data_t* spell = driver -> effectN( 1 ).trigger();
-
-  stat_buff_t* buff = stat_buff_creator_t( item.player, tokenized_name( spell ) + suffix( item ), spell )
-                      .activated( false );
-
-  effect.name_str = tokenized_name( spell ) + suffix( item );
-  effect.proc_chance_ = driver -> proc_chance();
-  effect.cooldown_ = driver -> internal_cooldown();
-
-  action_callback_t* cb = new buff_proc_callback_t<stat_buff_t>( item.player, effect, buff );
-  
-  item.player -> callbacks.register_spell_tick_damage_callback  ( SCHOOL_ALL_MASK, cb );
-  item.player -> callbacks.register_spell_direct_damage_callback( SCHOOL_ALL_MASK, cb );
-  item.player -> callbacks.register_tick_heal_callback          ( SCHOOL_ALL_MASK, cb );
-  item.player -> callbacks.register_direct_heal_callback        ( SCHOOL_ALL_MASK, cb );
 }
 
 void enchant::executioner( special_effect_t& effect, 
