@@ -282,12 +282,12 @@ static const special_effect_db_item_t __special_effect_db[] = {
   {  42976, 0,                               enchant::executioner },
 
   /* The Burning Crusade */
-  {  28093, 0,                                  enchant::mongoose },
+  {  28093, "1PPM",                                  0 }, /* Mongoose */
 
   /* Engineering enchants */
-  { 109092, 0,                              enchant::mirror_scope },
-  { 109085, 0,           enchant::lord_blastingtons_scope_of_doom },
-  {  95713, 0,                              enchant::gnomish_xray },
+  { 109092, "1PPM",   0 }, /* Mirror Scope */
+  { 109085, "1PPM",   0 }, /* Lord Blastingtons Scope of Doom */
+  {  95713, "1PPM",   0 }, /* Gnomish XRay */
 
   /* Profession perks */
   { 125484, "OnSpellDamageHeal",                                0 }, /* Lightweave Embroidery Rank 3 */
@@ -744,69 +744,6 @@ void enchant::executioner( special_effect_t& effect,
   effect.custom_buff = buff;
 
   new dbc_proc_callback_t( item, effect );
-}
-
-void enchant::mongoose( special_effect_t& effect, 
-                        const item_t& item,
-                        const special_effect_db_item_t& dbitem )
-{
-  const spell_data_t* spell = item.player -> find_spell( dbitem.spell_id );
-  stat_buff_t* buff = stat_buff_creator_t( item.player, tokenized_name( spell ) + suffix( item ), spell )
-                      .activated( false );
-
-  effect.name_str = tokenized_name( spell ) + suffix( item );
-  effect.ppm_ = 1.0;
-
-  action_callback_t* cb = new weapon_buff_proc_callback_t( item.player, effect, item.weapon(), buff );
-  item.player -> callbacks.register_attack_callback( RESULT_HIT_MASK, cb );
-}
-
-void enchant::lord_blastingtons_scope_of_doom( special_effect_t& effect, 
-                                               const item_t& item,
-                                               const special_effect_db_item_t& dbitem )
-{
-  const spell_data_t* spell = item.player -> find_spell( dbitem.spell_id );
-
-  stat_buff_t* buff = stat_buff_creator_t( item.player, tokenized_name( spell ), spell )
-                      .activated( false );
-
-  effect.name_str = tokenized_name( spell );
-  effect.ppm_ = 1.0; // PPM
-
-  action_callback_t* cb = new weapon_buff_proc_callback_t( item.player, effect, item.weapon(), buff );
-  item.player -> callbacks.register_attack_callback( RESULT_HIT_MASK, cb );
-}
-
-void enchant::mirror_scope( special_effect_t& effect, 
-                            const item_t& item,
-                            const special_effect_db_item_t& dbitem )
-{
-  const spell_data_t* spell = item.player -> find_spell( dbitem.spell_id );
-
-  effect.name_str = tokenized_name( spell );
-  effect.ppm_ = 1.0;
-
-  stat_buff_t* buff = stat_buff_creator_t( item.player, tokenized_name( spell ), spell );
-
-  action_callback_t* cb = new weapon_buff_proc_callback_t( item.player, effect, item.weapon(), buff );
-  item.player -> callbacks.register_attack_callback( RESULT_HIT_MASK, cb );
-}
-
-void enchant::gnomish_xray( special_effect_t& effect, 
-                            const item_t& item,
-                            const special_effect_db_item_t& dbitem )
-{
-  const spell_data_t* driver = item.player -> find_spell( dbitem.spell_id );
-  const spell_data_t* spell = driver -> effectN( 1 ).trigger();
-
-  effect.name_str = tokenized_name( spell );
-  effect.ppm_ = 1.0;
-  effect.cooldown_ = driver -> internal_cooldown();
-
-  stat_buff_t* buff = stat_buff_creator_t( item.player, tokenized_name( spell ), spell );
-
-  action_callback_t* cb = new weapon_buff_proc_callback_t( item.player, effect, item.weapon(), buff );
-  item.player -> callbacks.register_attack_callback( RESULT_HIT_MASK, cb );
 }
 
 // Profession perks =========================================================
