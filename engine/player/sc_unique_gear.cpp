@@ -307,8 +307,8 @@ static const special_effect_db_item_t __special_effect_db[] = {
    * Gems
    */
 
-  {  39958, 0,                            gem::thundering_skyfire },
-  {  55380, 0,                            gem::thundering_skyfire }, /* Can use same callback for both */
+  {  39958, "0.2PPM", 0 }, /* Thundering Skyfire */ // TODO: check why 20% PPM and not 100% from spell data?
+  {  55380, "0.2PPM", 0 }, /* Thundering Skyfire */ /* Can use same callback for both */ // TODO: check why 20% PPM and not 100% from spell data?
   { 137592, 0,                               gem::sinister_primal }, /* Caster Legendary Gem */
   { 137594, 0,                            gem::indomitable_primal }, /* Tank Legendary Gem */
   { 137595, 0,                             gem::capacitive_primal }, /* Melee Legendary Gem */
@@ -815,16 +815,16 @@ void profession::synapse_springs( special_effect_t& effect,
 
 void profession::zen_alchemist_stone( special_effect_t& effect,
                                       const item_t& item,
-                                      const special_effect_db_item_t& dbitem )
+                                      const special_effect_db_item_t& /* dbitem */ )
 {
-  struct zen_alchemist_stone_callback : public proc_callback_t<action_state_t>
+  struct zen_alchemist_stone_callback : public dbc_proc_callback_t
   {
     stat_buff_t* buff_str;
     stat_buff_t* buff_agi;
     stat_buff_t* buff_int;
 
     zen_alchemist_stone_callback( const item_t& i, const special_effect_t& data ) :
-      proc_callback_t<action_state_t>( i.player, data )
+      dbc_proc_callback_t( i.player, data )
     {
       const spell_data_t* spell = listener -> find_spell( 105574 );
 
@@ -849,7 +849,7 @@ void profession::zen_alchemist_stone( special_effect_t& effect,
                  .add_stat( STAT_INTELLECT, value );
     }
 
-    void execute( action_t* a, action_state_t* /* state */ )
+    virtual void execute( action_t* a, action_state_t* /* state */ ) override
     {
       player_t* p = a -> player;
 
@@ -869,38 +869,7 @@ void profession::zen_alchemist_stone( special_effect_t& effect,
 
   maintenance_check( 450 );
 
-  const spell_data_t* driver = item.player -> find_spell( dbitem.spell_id );
-
-  effect.name_str    = "zen_alchemist_stone";
-  effect.proc_chance_ = driver -> proc_chance();
-  effect.cooldown_    = driver -> internal_cooldown();
-
-  zen_alchemist_stone_callback* cb = new zen_alchemist_stone_callback( item, effect );
-  item.player -> callbacks.register_direct_damage_callback( SCHOOL_ALL_MASK, cb );
-  item.player -> callbacks.register_tick_damage_callback( SCHOOL_ALL_MASK, cb );
-  item.player -> callbacks.register_direct_heal_callback( RESULT_ALL_MASK, cb );
-}
-
-// Gems ====================================================================
-
-void gem::thundering_skyfire( special_effect_t& effect, 
-                              const item_t& item,
-                              const special_effect_db_item_t& dbitem )
-{
-  const spell_data_t* driver = item.player -> find_spell( dbitem.spell_id );
-  const spell_data_t* spell = driver -> effectN( 1 ).trigger();
-
-  //FIXME: 0.2 ppm_ seems to roughly match in-game behavior, but we need to verify the exact mechanics
-  stat_buff_t* buff = stat_buff_creator_t( item.player, tokenized_name( spell ), spell )
-                      .activated( false );
-
-  effect.name_str = tokenized_name( spell );
-  effect.ppm_ = 0.2; // PPM
-
-  // TODO: Procs only on auto attacks it seems. Make it proc on attacks for
-  // now, regardless of handedness.
-  action_callback_t* cb = new buff_proc_callback_t<stat_buff_t>( item.player, effect, buff );
-  item.player -> callbacks.register_attack_callback( RESULT_HIT_MASK, cb );
+  new zen_alchemist_stone_callback( item, effect );
 }
 
 void gem::sinister_primal( special_effect_t& effect, 
