@@ -169,6 +169,7 @@ public:
   {
     const spell_data_t* enhanced_mind_flay;
     const spell_data_t* enhanced_shadow_orbs;
+    const spell_data_t* enhanced_shadow_word_death;
   } perks;
 
   // Cooldowns
@@ -2263,9 +2264,14 @@ struct shadow_word_death_t final : public priest_spell_t
     if ( result_is_hit( s -> result ) )
     {
       if ( over_20 )
+      {
         s -> result_amount /= 4.0;
-      else if ( ! priest.buffs.shadow_word_death_reset_cooldown -> check() )
+      }
+      // Assume from the wording of perk 'Enhanced Shadow Word: Death' that it's a 100% chance.
+      else if ( ! priest.buffs.shadow_word_death_reset_cooldown -> check() || priest.perks.enhanced_shadow_word_death -> ok() )
+      {
         generate_shadow_orb( 1, priest.gains.shadow_orb_swd );
+      }
     }
 
     priest_spell_t::impact( s );
@@ -4956,6 +4962,7 @@ void priest_t::init_spells()
   // Perk Spells
   perks.enhanced_mind_flay            = find_perk_spell( "Enhanced Mind Flay" );
   perks.enhanced_shadow_orbs          = find_perk_spell( "Enhanced Shadow Orbs" );
+  perks.enhanced_shadow_word_death    = find_perk_spell( "Enhanced Shadow Word: Death" );
 
   // Glyphs
   glyphs.circle_of_healing            = find_glyph_spell( "Glyph of Circle of Healing" );
