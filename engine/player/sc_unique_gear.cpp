@@ -741,8 +741,9 @@ void enchant::executioner( special_effect_t& effect,
   effect.name_str = tokenized_name( spell );
   effect.ppm_ = 1.0;
 
-  action_callback_t* cb = new weapon_buff_proc_callback_t( item.player, effect, item.weapon(), buff );
-  item.player -> callbacks.register_attack_callback( RESULT_HIT_MASK, cb );
+  effect.custom_buff = buff;
+
+  new dbc_proc_callback_t( item, effect );
 }
 
 void enchant::mongoose( special_effect_t& effect, 
