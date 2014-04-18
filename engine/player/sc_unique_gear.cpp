@@ -273,7 +273,7 @@ static const special_effect_db_item_t __special_effect_db[] = {
 
   /* Cataclysm */
   {  94747, 0,                           enchant::hurricane_spell },
-  {  74221, "1PPM",                                             0 },
+  {  74221, "1PPM",                                             0 }, /* Hurricane Weapon */
   {  74245, "1PPM",                                             0 }, /* Landslide */
   {  94746, 0,                             enchant::power_torrent },
 
@@ -544,18 +544,10 @@ void enchant::rivers_song( special_effect_t& effect,
     buff = stat_buff_creator_t( item.player, tokenized_name( spell ), spell )
            .activated( false );
 
-  // Have 2 RPPM instances proccing a single buff for now.
-  effect.name_str = tokenized_name( spell ) + suffix( item );
-  effect.ppm_ = -1.0 * driver -> real_ppm();
-  effect.cooldown_ = driver -> internal_cooldown();
   effect.rppm_scale = RPPM_HASTE;
+  effect.custom_buff = buff;
 
-  action_callback_t* cb = new buff_proc_callback_t<stat_buff_t>( item.player, effect, buff );
-
-  item.player -> callbacks.register_attack_callback( RESULT_HIT_MASK | RESULT_DODGE_MASK | RESULT_PARRY_MASK, cb );
-  item.player -> callbacks.register_spell_callback ( RESULT_HIT_MASK, cb );
-  item.player -> callbacks.register_tick_callback  ( RESULT_HIT_MASK, cb );
-  item.player -> callbacks.register_heal_callback  ( SCHOOL_ALL_MASK, cb );
+  new dbc_proc_callback_t( item, effect );
 }
 
 void enchant::colossus( special_effect_t& effect,
