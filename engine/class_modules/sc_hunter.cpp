@@ -127,7 +127,7 @@ public:
     const spell_data_t* narrow_escape;
     const spell_data_t* crouching_tiger_hidden_chimera;
 
-    const spell_data_t* silencing_shot;
+    const spell_data_t* intimidation;
     const spell_data_t* wyvern_sting;
     const spell_data_t* binding_shot;
 
@@ -146,6 +146,11 @@ public:
     const spell_data_t* glaive_toss;
     const spell_data_t* powershot;
     const spell_data_t* barrage;
+
+    const spell_data_t* flaming_shots;
+    const spell_data_t* focusing_shot;
+    const spell_data_t* versatility;
+    const spell_data_t* lone_wolf;
   } talents;
 
   // Specialization Spells
@@ -216,7 +221,6 @@ public:
     const spell_data_t* misdirection;
     const spell_data_t* no_escape;
     const spell_data_t* pathfinding;
-    const spell_data_t* scatter_shot;
     const spell_data_t* scattering;
     const spell_data_t* snake_trap;
     const spell_data_t* tranquilizing_shot;
@@ -2426,19 +2430,6 @@ struct kill_shot_t : public hunter_ranged_attack_t
   }
 };
 
-// Scatter Shot Attack ======================================================
-
-struct scatter_shot_t : public hunter_ranged_attack_t
-{
-  scatter_shot_t( hunter_t* player, const std::string& options_str ) :
-    hunter_ranged_attack_t( "scatter_shot", player, player -> find_class_spell( "Scatter Shot" ) )
-  {
-    parse_options( NULL, options_str );
-
-    normalize_weapon_speed = true;
-  }
-};
-
 // Serpent Sting Attack =====================================================
 
 // FIXME does this extra dmg count as a ranged attack for purposes of thrill, trinket procs, etc.
@@ -2636,19 +2627,6 @@ struct multi_shot_t : public hunter_ranged_attack_t
           crit_occurred++;
       }*/
     }
-  }
-};
-
-// Silencing Shot Attack ====================================================
-
-struct silencing_shot_t : public hunter_ranged_attack_t
-{
-  silencing_shot_t( hunter_t* player, const std::string& /* options_str */ ) :
-    hunter_ranged_attack_t( "silencing_shot", player, player -> find_class_spell( "Silencing Shot" ) )
-  {
-    weapon_multiplier = 0.0;
-
-    may_miss = may_glance = may_block = may_dodge = may_parry = may_crit = false;
   }
 };
 
@@ -3238,8 +3216,6 @@ action_t* hunter_t::create_action( const std::string& name,
   if ( name == "kill_command"          ) return new           kill_command_t( this, options_str );
   if ( name == "kill_shot"             ) return new              kill_shot_t( this, options_str );
   if ( name == "multi_shot"            ) return new             multi_shot_t( this, options_str );
-  if ( name == "scatter_shot"          ) return new           scatter_shot_t( this, options_str );
-  if ( name == "silencing_shot"        ) return new         silencing_shot_t( this, options_str );
   if ( name == "steady_shot"           ) return new            steady_shot_t( this, options_str );
   if ( name == "summon_pet"            ) return new             summon_pet_t( this, options_str );
   if ( name == "cobra_shot"            ) return new             cobra_shot_t( this, options_str );
@@ -3318,7 +3294,7 @@ void hunter_t::init_spells()
   talents.narrow_escape                     = find_talent_spell( "Narrow Escape" );
   talents.exhilaration                      = find_talent_spell( "Exhilaration" );
 
-  talents.silencing_shot                    = find_talent_spell( "Silencing Shot" );
+  talents.intimidation                      = find_talent_spell( "Intimidation" );
   talents.wyvern_sting                      = find_talent_spell( "Wyvern Sting" );
   talents.binding_shot                      = find_talent_spell( "Binding Shot" );
 
@@ -3332,11 +3308,16 @@ void hunter_t::init_spells()
 
   talents.a_murder_of_crows                 = find_talent_spell( "A Murder of Crows" );
   talents.blink_strikes                     = find_talent_spell( "Blink Strikes" );
-  talents.stampede                         = find_talent_spell( "Stampede" );
+  talents.stampede                          = find_talent_spell( "Stampede" );
 
   talents.glaive_toss                       = find_talent_spell( "Glaive Toss" );
   talents.powershot                         = find_talent_spell( "Powershot" );
   talents.barrage                           = find_talent_spell( "Barrage" );
+
+  talents.flaming_shots                     = find_talent_spell( "Flaming Shots" );
+  talents.focusing_shot                     = find_talent_spell( "Focusing Shot" );
+  talents.versatility                       = find_talent_spell( "Versatility" );
+  talents.lone_wolf                         = find_talent_spell( "Lone Wolf" );
 
   // Mastery
   mastery.master_of_beasts     = find_mastery_spell( HUNTER_BEAST_MASTERY );
@@ -3364,7 +3345,6 @@ void hunter_t::init_spells()
   glyphs.misdirection        = find_glyph_spell( "Glyph of Misdirection"  );
   glyphs.no_escape           = find_glyph_spell( "Glyph of No Escape"  );
   glyphs.pathfinding         = find_glyph_spell( "Glyph of Pathfinding"  );
-  glyphs.scatter_shot        = find_glyph_spell( "Glyph of Scatter Shot"  );
   glyphs.scattering          = find_glyph_spell( "Glyph of Scattering"  );
   glyphs.snake_trap          = find_glyph_spell( "Glyph of Snake Trap"  );
   glyphs.tranquilizing_shot  = find_glyph_spell( "Glyph of Tranquilizing Shot"  );
@@ -3658,7 +3638,7 @@ void hunter_t::init_action_list()
         action_list_str += "/multi_shot,if=active_enemies>5|(active_enemies>1&buff.beast_cleave.down)";
 
         if ( level >= 87 )
-          action_list_str += "/stampede,if=trinket.stat.agility.up|target.time_to_die<=20|(trinket.stacking_stat.agility.stack>10&trinket.stat.agility.cooldown_remains<=3)";
+          action_list_str += "/stampede,if=enabled&(trinket.stat.agility.up|target.time_to_die<=20|(trinket.stacking_stat.agility.stack>10&trinket.stat.agility.cooldown_remains<=3))";
 
         action_list_str += "/barrage,if=enabled&active_enemies>5";
         action_list_str += "/kill_shot";
@@ -3686,7 +3666,7 @@ void hunter_t::init_action_list()
         action_list_str += "/fervor,if=enabled&focus<=50";
 
         if ( level >= 87 )
-          action_list_str += "/stampede,if=trinket.stat.agility.up|target.time_to_die<=20|(trinket.stacking_stat.agility.stack>10&trinket.stat.agility.cooldown_remains<=3)";
+          action_list_str += "/stampede,if=enabled&(trinket.stat.agility.up|target.time_to_die<=20|(trinket.stacking_stat.agility.stack>10&trinket.stat.agility.cooldown_remains<=3))";
 
         action_list_str += "/a_murder_of_crows,if=enabled&!ticking";
         action_list_str += "/dire_beast,if=enabled";
@@ -3743,7 +3723,7 @@ void hunter_t::init_action_list()
         action_list_str += "/dire_beast,if=enabled";
 
         if ( level >= 87 )
-          action_list_str += "/stampede,if=trinket.stat.agility.up|target.time_to_die<=20|(trinket.stacking_stat.agility.stack>10&trinket.stat.agility.cooldown_remains<=3)";
+          action_list_str += "/stampede,if=enabled&trinket.stat.agility.up|target.time_to_die<=20|(trinket.stacking_stat.agility.stack>10&trinket.stat.agility.cooldown_remains<=3))";
 
         action_list_str += "/arcane_shot,if=focus>=67&active_enemies<2";
         action_list_str += "/multi_shot,if=focus>=67&active_enemies>1";

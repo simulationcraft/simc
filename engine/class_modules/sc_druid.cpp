@@ -6125,9 +6125,6 @@ void druid_t::init_scaling()
   if ( specialization() == DRUID_FERAL )
     scales_with[ STAT_SPIRIT ] = false;
 
-  if ( specialization() == DRUID_BALANCE )
-    scales_with[ STAT_SPIRIT ] = false;
-
   if ( specialization() == DRUID_GUARDIAN )
   {
     scales_with[ STAT_WEAPON_DPS ] = false;

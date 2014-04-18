@@ -1191,6 +1191,7 @@ set_e parse_set_bonus            ( const std::string& name );
 slot_e parse_slot_type           ( const std::string& name );
 stat_e parse_stat_type           ( const std::string& name );
 stat_e parse_gem_stat            ( const std::string& name );
+specialization_e parse_specialization_type( const std::string &name );
 
 const char* movement_direction_string( movement_direction_e );
 movement_direction_e parse_movement_direction( const std::string& name );
@@ -2408,8 +2409,6 @@ struct sim_t : public core_sim_t, private sc_thread_t
   int         max_aoe_enemies;
   bool        tmi_actor_only;
   double      tmi_window_global;
-  int         new_tmi;
-  double      tmi_filter;
 
   // Target options
   double      target_death_pct;
@@ -3687,6 +3686,7 @@ struct player_collected_data_t
   // Tank
   extended_sample_data_t deaths;
   extended_sample_data_t theck_meloree_index;
+  extended_sample_data_t max_spike_amount;
   sc_timeline_t vengeance_timeline;
 
   std::array<simple_sample_data_t,RESOURCE_MAX> resource_lost, resource_gained;
@@ -4155,8 +4155,6 @@ struct player_t : public actor_t
   double    rps_gain, rps_loss;
   std::string tmi_debug_file_str;
   double tmi_window;
-  int new_tmi;
-  double tmi_filter;
 
   auto_dispose< std::vector<buff_t*> > buff_list;
   auto_dispose< std::vector<proc_t*> > proc_list;
