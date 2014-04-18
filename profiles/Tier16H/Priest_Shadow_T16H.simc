@@ -76,7 +76,7 @@ finger1=signet_of_the_dinomancers,id=105606,upgrade=2,gems=80int_160mastery_60hi
 finger2=laserslice_signet,id=105520,upgrade=2,gems=320mastery_60spi
 trinket1=purified_bindings_of_immerseus,id=105422,upgrade=2
 trinket2=kardris_toxic_totem,id=105540,upgrade=2
-main_hand=horned_mace_of_the_old_ones,id=105649,upgrade=2,gems=80int_160mastery_60int,enchant=jade_spirit
+main_hand=horned_mace_of_the_old_ones,id=105649,upgrade=2,gems=80int_160mastery_60int,enchant=hurricane
 off_hand=revelations_of_yshaarj,id=105650,upgrade=2,gems=80int_160mastery_60int,enchant=165int
 
 # Gear Summary

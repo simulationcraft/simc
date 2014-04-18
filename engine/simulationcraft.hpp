@@ -6009,17 +6009,18 @@ struct dbc_proc_callback_t : public action_callback_t
 
   buff_t* proc_buff;
   action_t* proc_action;
+  weapon_t* weapon;
 
   dbc_proc_callback_t( const item_t& i, const special_effect_t& e ) :
     action_callback_t( i.player ), item( i ), effect( e ), cooldown( 0 ),
     proc_chance( 0 ), ppm( 0 ),
-    proc_buff( 0 ), proc_action( 0 )
+    proc_buff( 0 ), proc_action( 0 ), weapon( 0 )
   { }
 
   dbc_proc_callback_t( player_t* p, const special_effect_t& e ) :
     action_callback_t( p ), item( default_item_ ), effect( e ), cooldown( 0 ),
     proc_chance( 0 ), ppm( 0 ),
-    proc_buff( 0 ), proc_action( 0 )
+    proc_buff( 0 ), proc_action( 0 ), weapon( 0 )
   { }
 
   void initialize();
@@ -6041,8 +6042,8 @@ struct dbc_proc_callback_t : public action_callback_t
     // (weapon_proc == true), dbc_proc_callback_t _REQUIRES_ that the action
     // has the correct weapon specified. Old style procs allowed actions
     // without any weapon to pass through.
-    if ( effect.weapon_proc && item.weapon() != a -> weapon )
-      return;
+    if ( weapon && a -> weapon && a -> weapon != weapon ) return;
+
 
     bool triggered = roll( a );
     if ( listener -> sim -> debug )

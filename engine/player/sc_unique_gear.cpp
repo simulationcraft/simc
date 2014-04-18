@@ -273,8 +273,8 @@ static const special_effect_db_item_t __special_effect_db[] = {
 
   /* Cataclysm */
   {  94747, 0,                           enchant::hurricane_spell },
-  {  89086, 0,                          enchant::hurricane_weapon },
-  {  74245, 0,                                 enchant::landslide },
+  {      0, 0,                          enchant::hurricane_weapon },
+  {      0, 0,                                 enchant::landslide },
   {  94746, 0,                             enchant::power_torrent },
 
   /* Wrath of the Lich King */
@@ -760,8 +760,9 @@ void enchant::landslide( special_effect_t& effect,
   effect.name_str = tokenized_name( spell ) + suffix( item );
   effect.ppm_ = 1.0;
 
-  action_callback_t* cb = new weapon_buff_proc_callback_t( item.player, effect, item.weapon(), buff );
-  item.player -> callbacks.register_attack_callback( RESULT_HIT_MASK, cb );
+  effect.custom_buff = buff;
+
+  new dbc_proc_callback_t( item.player, effect );
 }
 
 void enchant::power_torrent( special_effect_t& effect, 

@@ -1039,6 +1039,10 @@ void dbc_proc_callback_t::initialize()
   // in which case the proc does not trigger a buff.
   proc_buff = effect.create_buff();
   
+  if ( effect.weapon_proc && effect.item )
+  {
+    weapon = effect.item -> weapon();
+  }
   // TODO: Create action (through special_effect_t)
   
   // Register callback to new proc system
