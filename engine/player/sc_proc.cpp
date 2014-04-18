@@ -1035,6 +1035,9 @@ void dbc_proc_callback_t::initialize()
     cooldown -> duration = effect.cooldown();
   }
 
+  // Initialize proc action
+  proc_action = effect.execute_action;
+
   // Initialize the potential proc buff through special_effect_t. Can return 0,
   // in which case the proc does not trigger a buff.
   proc_buff = effect.create_buff();
