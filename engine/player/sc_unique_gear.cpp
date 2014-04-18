@@ -560,7 +560,7 @@ void enchant::rivers_song( special_effect_t& effect,
 
 void enchant::colossus( special_effect_t& effect,
                         const item_t& item,
-                        const special_effect_db_item_t& dbitem )
+                        const special_effect_db_item_t& /* dbitem */ )
 {
   const spell_data_t* spell = item.player -> find_spell( 116631 );
 
@@ -630,16 +630,16 @@ void enchant::jade_spirit( special_effect_t& effect,
   new dbc_proc_callback_t( item.player, effect );
 }
 
-struct windsong_callback_t : public proc_callback_t<action_state_t>
+struct windsong_callback_t : public dbc_proc_callback_t
 {
   stat_buff_t* haste, *crit, *mastery;
 
-  windsong_callback_t( const special_effect_t& effect, 
+  windsong_callback_t( const item_t& i,
+                       const special_effect_t& effect,
                        stat_buff_t* hb,
                        stat_buff_t* cb,
-                       stat_buff_t* mb,
-                       const spell_data_t* driver ) :
-    proc_callback_t<action_state_t>( hb -> player, effect, driver ),
+                       stat_buff_t* mb ) :
+                 dbc_proc_callback_t( i, effect ),
     haste( hb ), crit( cb ), mastery( mb )
   { }
 
@@ -663,9 +663,8 @@ struct windsong_callback_t : public proc_callback_t<action_state_t>
 
 void enchant::windsong( special_effect_t& effect, 
                         const item_t& item,
-                        const special_effect_db_item_t& dbitem )
+                        const special_effect_db_item_t& /* dbitem */ )
 {
-  const spell_data_t* driver = item.player -> find_spell( dbitem.spell_id );
   const spell_data_t* mastery = item.player -> find_spell( 104510 );
   const spell_data_t* haste = item.player -> find_spell( 104423 );
   const spell_data_t* crit = item.player -> find_spell( 104509 );
@@ -677,14 +676,10 @@ void enchant::windsong( special_effect_t& effect,
   stat_buff_t* crit_buff    = stat_buff_creator_t( item.player, "windsong_crit" + suffix( item ), crit )
                               .activated( false );
 
-  effect.name_str = tokenized_name( mastery ) + suffix( item );
-  effect.ppm_ = -1.0 * driver -> real_ppm();
+  //effect.name_str = tokenized_name( mastery ) + suffix( item );
 
-  action_callback_t* cb  = new windsong_callback_t( effect, haste_buff, crit_buff, mastery_buff, driver );
-  item.player -> callbacks.register_attack_callback( RESULT_HIT_MASK, cb );
-  item.player -> callbacks.register_spell_callback ( RESULT_HIT_MASK, cb );
-  item.player -> callbacks.register_tick_callback  ( RESULT_HIT_MASK, cb );
-  item.player -> callbacks.register_heal_callback  ( SCHOOL_ALL_MASK, cb );
+  new windsong_callback_t( item, effect, haste_buff, crit_buff, mastery_buff );
+
 }
 
 void enchant::hurricane_weapon( special_effect_t& effect, 
