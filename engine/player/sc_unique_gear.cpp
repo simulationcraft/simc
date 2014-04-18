@@ -891,14 +891,9 @@ void gem::indomitable_primal( special_effect_t& effect,
   if ( item.sim -> challenge_mode )
     return;
 
-  const spell_data_t* driver = item.player -> find_spell( dbitem.spell_id );
-    
-  effect.name_str = "fortitude";
-  effect.ppm_      = -1.0 * driver -> real_ppm();
-  effect.cooldown_ = driver -> internal_cooldown();
+  effect.custom_buff = item.player -> buffs.fortitude;
 
-  action_callback_t *cb = new buff_proc_callback_t<buff_t>( item.player, effect, item.player -> buffs.fortitude );
-  item.player -> callbacks.register_incoming_attack_callback( RESULT_ALL_MASK, cb );
+  new dbc_proc_callback_t( item, effect );
 }
 
 void gem::capacitive_primal( special_effect_t& effect, 
@@ -966,38 +961,25 @@ void gem::courageous_primal( special_effect_t& effect,
   if ( item.sim -> challenge_mode )
     return;
 
-  struct courageous_primal_proc_t : public buff_proc_callback_t<buff_t>
+  struct courageous_primal_proc_t : public dbc_proc_callback_t
   {
     courageous_primal_proc_t( player_t* p, const special_effect_t& data ) :
-      buff_proc_callback_t<buff_t>( p, data, p -> buffs.courageous_primal_diamond_lucidity )
+      dbc_proc_callback_t( p, data )
     { }
 
-    void trigger( action_t* action, void* call_data )
+    virtual void trigger( action_t* action, void* call_data ) override
     {
       spell_base_t* spell = debug_cast<spell_base_t*>( action );
       if ( ! spell -> procs_courageous_primal_diamond )
         return;
 
-      buff_proc_callback_t<buff_t>::trigger( action, call_data );
-    }
-
-    void execute( action_t* action, action_state_t* call_data )
-    {
-      if ( listener -> sim -> debug )
-        listener -> sim -> out_debug.printf( "%s procs %s from action %s.",
-            listener -> name(), buff -> name(), action -> name() );
-
-      buff_proc_callback_t<buff_t>::execute( action, call_data );
+      dbc_proc_callback_t::trigger( action, call_data );
     }
   };
 
-    const spell_data_t* driver = item.player -> find_spell( dbitem.spell_id );
-    effect.name_str = "courageous_primal_diamond_lucidity";
-    effect.ppm_      = -1.0 * driver -> real_ppm();
-    effect.cooldown_ = driver -> internal_cooldown();
+  effect.custom_buff = item.player -> buffs.courageous_primal_diamond_lucidity;
 
-    action_callback_t* cb = new courageous_primal_proc_t( item.player, effect );
-    item.player -> callbacks.register_spell_callback( RESULT_ALL_MASK, cb );
+  new courageous_primal_proc_t( item.player, effect );
 }
 
 // Items ====================================================================
