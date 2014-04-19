@@ -76,6 +76,7 @@ public:
     buff_t* meat_cleaver;
     buff_t* riposte;
     buff_t* raging_blow;
+    buff_t* raging_blow_glyph;
     buff_t* raging_wind;
     buff_t* ravager;
     buff_t* recklessness;
@@ -163,12 +164,13 @@ public:
   struct glyphs_t
   {
     const spell_data_t* bull_rush;
-    //const spell_data_t* bloodthirst;
+    const spell_data_t* bloodthirst;
     const spell_data_t* cleave;
     const spell_data_t* death_from_above;
     const spell_data_t* enraged_speed;
     const spell_data_t* heroic_leap;
-    //const spell_data_t* long_charge;
+    const spell_data_t* long_charge;
+    const spell_data_t* raging_blow;
     const spell_data_t* raging_wind;
     const spell_data_t* recklessness;
     const spell_data_t* resonating_power;
@@ -667,17 +669,6 @@ struct opportunity_strike_t : public warrior_attack_t
   {
     background = true;
   }
-
-  virtual void impact( action_state_t* s )
-  {
-    warrior_attack_t::impact( s );
-
-    warrior_t* p = cast();
-
-    //if ( result_is_hit( s -> result ) )
-      //trigger_sudden_death( this, p -> spec.sudden_death -> proc_chance() ); Looks like mastery no longer procs this, I guess they're trying to increase the value of haste.
-
-  }
 };
 
 static void trigger_strikes_of_opportunity( warrior_attack_t* a )
@@ -1174,17 +1165,40 @@ struct bloodthirst_heal_t : public heal_t
   double pct_heal;
 
   bloodthirst_heal_t( warrior_t* p ) :
-    heal_t( "bloodthirst_heal", p, p -> find_specialization_spell( "Bloodthirst" ) )
+    heal_t( "bloodthirst_heal", p, p -> find_spell( 117313 ) )
   {
     // Implemented as an actual heal because of spell callbacks ( for Hurricane, etc. )
     background = true;
     target     = p;
     may_crit   = false;
-    pct_heal   = p -> find_spell( 117313 ) -> effectN( 1 ).percent();
-    base_multiplier *= 1.0 + p -> perk.improved_bloodthirst -> effectN( 1 ).percent();
+    pct_heal   = data().effectN( 1 ).percent();
+    pct_heal  *= 1.0 + p -> perk.improved_bloodthirst -> effectN( 1 ).percent();
+    pct_heal  *= 1.0 + p -> glyphs.bloodthirst -> effectN( 2 ).percent();
   }
 
   virtual resource_e current_resource() const { return RESOURCE_NONE; }
+  
+  virtual double calculate_direct_amount( action_state_t* state )
+  {
+    warrior_t* p = static_cast<warrior_t*>( player );
+
+    if( p -> buff.raging_blow_glyph -> up() )
+      pct_heal *= 1.0 + p -> glyphs.raging_blow -> effectN( 1 ).percent();
+
+    heal_t::execute();
+    if( p -> buff.raging_blow_glyph -> up() )
+    {
+      pct_heal /= 1.0 + p -> glyphs.raging_blow -> effectN( 1 ).percent();
+      p -> buff.raging_blow_glyph -> expire();
+    }
+
+    double amount = state -> target -> resources.max[ RESOURCE_HEALTH ] * pct_heal;
+
+    // Record initial amount to state
+    state -> result_raw = state -> result_total = amount;
+
+    return amount;
+  }
 
 };
 
@@ -1263,6 +1277,7 @@ struct charge_t : public warrior_attack_t
     parse_options( NULL , options_str );
     base_teleport_distance = data().max_range();
     base_teleport_distance += p -> perk.improved_charge -> effectN( 1 ).base_value();
+    base_teleport_distance += p -> glyphs.long_charge -> effectN( 1 ).base_value();
     movement_directionality = MOVEMENT_OMNI;
 
     if ( p -> talents.double_time -> ok() )
@@ -1641,9 +1656,6 @@ struct heroic_leap_t : public warrior_attack_t
     const spell_data_t* dmg_spell = p -> spell.heroic_leap -> effectN( 2 ).trigger();
     attack_power_mod.direct = dmg_spell -> effectN( 1 ).ap_coeff();
 
-    // Heroic Leap can trigger procs from either weapon
-    proc_ignores_slot = true;
-
     // Allow benefits from seasoned solider, etc.
     weapon            = &( p -> main_hand_weapon );
     weapon_multiplier = 0;
@@ -1665,8 +1677,7 @@ struct heroic_leap_t : public warrior_attack_t
     ( p -> dbc.spell( 52174 ) -> effectN( 1 ).radius() + p -> perk.improved_heroic_leap -> effectN( 1 ).base_value() ) )
     s -> result_amount = 0;
 
-  if( p -> glyphs.heroic_leap -> ok() )
-    p -> buff.heroic_leap_glyph -> trigger();
+  p -> buff.heroic_leap_glyph -> trigger();
 
   warrior_attack_t::impact( s );
 
@@ -1904,8 +1915,7 @@ struct pummel_t : public warrior_attack_t
 
     warrior_t* p = cast();
 
-    if ( p -> glyphs.rude_interruption -> ok() )
-      p -> buff.rude_interruption -> trigger();
+    p -> buff.rude_interruption -> trigger();
   }
 
   virtual bool ready()
@@ -1951,7 +1961,6 @@ struct raging_blow_t : public warrior_attack_t
     mh_attack( NULL ), oh_attack( NULL ), oh_test( NULL )
   {
     // Parent attack is only to determine miss/dodge/parry
-    base_dd_min = base_dd_max = 0;
     weapon_multiplier = attack_power_mod.direct = 0;
     may_crit = proc = false;
     weapon = &( p -> main_hand_weapon ); // Include the weapon for racial expertise
@@ -1988,6 +1997,9 @@ struct raging_blow_t : public warrior_attack_t
     {
       mh_attack -> execute();
       oh_attack -> execute();
+      if ( mh_attack -> execute_state -> result == RESULT_CRIT &&
+           oh_attack -> execute_state -> result == RESULT_CRIT )
+           p -> buff.raging_blow_glyph -> trigger();
       p -> buff.raging_wind -> trigger();
       p -> buff.meat_cleaver -> expire();
     }
@@ -3408,11 +3420,14 @@ void warrior_t::init_spells()
   perk.improved_thunder_clap         = find_perk_spell( "Improved Thunder Clap"         );
 
   // Glyphs
+  glyphs.bloodthirst            = find_glyph_spell( "Glyph of Bloodthirst"         );
   glyphs.bull_rush              = find_glyph_spell( "Glyph of Bull Rush"           );
   glyphs.cleave                 = find_glyph_spell( "Glyph of Cleave"              );
   glyphs.death_from_above       = find_glyph_spell( "Glyph of Death From Above"    );
   glyphs.enraged_speed          = find_glyph_spell( "Glyph of Enraged Speed"       );
   glyphs.heroic_leap            = find_glyph_spell( "Glyph of Heroic Leap"         );
+  glyphs.long_charge            = find_glyph_spell( "Glyph of Long Charge"         );
+  glyphs.raging_blow            = find_glyph_spell( "Glyph of Raging Blow"         );
   glyphs.raging_wind            = find_glyph_spell( "Glyph of Raging Wind"         );
   glyphs.recklessness           = find_glyph_spell( "Glyph of Recklessness"        );
   glyphs.resonating_power       = find_glyph_spell( "Glyph of Resonating Power"    );
@@ -3530,7 +3545,7 @@ void warrior_t::apl_precombat()
 
   if ( specialization() != WARRIOR_PROTECTION )
     precombat -> add_action( "stance,choose=battle" );
-  else if ( primary_role() == ROLE_ATTACK && talents.gladiators_resolve -> ok() )
+  else if ( primary_role() == ROLE_ATTACK ) // Fix later, add in talent check for gladiator.
     precombat -> add_action( "stance,choose=gladiator" );
   else
     precombat -> add_action( "stance,choose=defensive" );
@@ -3988,7 +4003,8 @@ void warrior_t::create_buffs()
 
   buff.gladiator_stance = buff_creator_t( this, "gladiator_stance",   find_spell( 156291 ) );
 
-  buff.heroic_leap_glyph = buff_creator_t( this, "heroic_leap_glyph", glyphs.heroic_leap );
+  buff.heroic_leap_glyph = buff_creator_t( this, "heroic_leap_glyph", glyphs.heroic_leap )
+                           .chance( glyphs.heroic_leap -> ok() ? 1 : 0 );
 
   buff.meat_cleaver     = buff_creator_t( this, "meat_cleaver",     spec.meat_cleaver -> effectN( 1 ).trigger() )
                           .max_stack( find_spell( 85739 ) -> max_stacks() );
@@ -3996,12 +4012,13 @@ void warrior_t::create_buffs()
   buff.raging_blow      = buff_creator_t( this, "raging_blow",      find_spell( 131116 ) )
                           .max_stack( find_spell( 131116 ) -> effectN( 1 ).base_value() );
 
-  buff.raging_wind      = buff_creator_t( this, "raging_wind",      glyphs.raging_wind -> effectN( 1 ).trigger() )
-                          .chance( ( glyphs.raging_wind -> ok() ? 1 : 0 ) );
+  buff.raging_blow_glyph = buff_creator_t( this, "raging_blow_glyph",  glyphs.raging_blow )
+                          .chance( glyphs.raging_blow -> ok() ? 1 : 0 );
 
-  buff.ravager          = buff_creator_t( this, "ravager", talents.ravager )
-                          .duration( talents.ravager -> duration() )
-                          .chance ( 1 );
+  buff.raging_wind      = buff_creator_t( this, "raging_wind",      glyphs.raging_wind -> effectN( 1 ).trigger() )
+                          .chance( glyphs.raging_wind -> ok() ? 1 : 0 );
+
+  buff.ravager          = buff_creator_t( this, "ravager", talents.ravager );
 
   buff.recklessness     = buff_creator_t( this, "recklessness",     find_class_spell( "Recklessness" ) )
                           .duration( find_class_spell( "Recklessness" ) -> duration() * ( 1.0 + ( glyphs.recklessness -> ok() ? glyphs.recklessness -> effectN( 2 ).percent() : 0 )  ) )
@@ -4019,7 +4036,6 @@ void warrior_t::create_buffs()
                          .add_invalidate( CACHE_BLOCK );
 
   buff.shield_charge    = buff_creator_t( this, "shield_charge" ).spell( find_spell( 156321 ) )
-                          .chance( 1 )
                           .default_value( find_spell( 156321 ) -> effectN( 2 ).percent() );
                           
 
@@ -4037,6 +4053,7 @@ void warrior_t::create_buffs()
 
   buff.sword_and_board  = buff_creator_t( this, "sword_and_board",   find_spell( 50227 ) )
                           .chance( spec.sword_and_board -> effectN( 1 ).percent() );
+
   buff.ultimatum        = buff_creator_t( this, "ultimatum",   spec.ultimatum -> effectN( 1 ).trigger() )
                           .chance( spec.ultimatum -> ok() ? spec.ultimatum -> proc_chance() : 0 );
 
@@ -4049,6 +4066,7 @@ void warrior_t::create_buffs()
   buff.death_sentence   = buff_creator_t( this, "death_sentence", find_spell( 144441 ) ); //T16 4 pc melee buff.
 
   buff.rude_interruption = buff_creator_t( this, "rude_interruption", glyphs.rude_interruption )
+                           .chance( glyphs.rude_interruption -> ok() ? 1 : 0 )
                            .default_value( glyphs.rude_interruption -> effectN( 1 ).percent() );
 
   buff.shield_barrier = absorb_buff_creator_t( this, "shield_barrier", find_spell( 112048 ) )
@@ -4295,7 +4313,7 @@ double warrior_t::composite_parry() const
   double parryriposte = current.stats.parry_rating / current_rating().parry;
 
   if ( buff.riposte -> up() )
-    parryriposte += spec.riposte -> effectN( 1 ).percent();
+    parryriposte += cache.attack_crit();
 
   if ( buff.ravager -> up() )
     parryriposte += talents.ravager -> effectN( 2 ).percent();
@@ -4647,8 +4665,7 @@ void warrior_t::enrage()
                  gain.enrage );
   buff.enrage -> trigger();
 
-  if ( glyphs.enraged_speed -> ok() )
-    buff.enraged_speed -> trigger();
+  buff.enraged_speed -> trigger();
 }
 
 /* Report Extension Class

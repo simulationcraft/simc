@@ -20,7 +20,7 @@ actions.precombat=flask,type=winters_bite
 actions.precombat+=/food,type=black_pepper_ribs_and_shrimp
 # Snapshot raid buffed stats before combat begins and pre-potting is done.
 actions.precombat+=/snapshot_stats
-actions.precombat+=/stance,choose=defensive
+actions.precombat+=/stance,choose=gladiator
 actions.precombat+=/mogu_power_potion
 
 # Executed every time the actor is available.

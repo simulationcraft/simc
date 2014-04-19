@@ -4,7 +4,7 @@ race=orc
 role=attack
 position=back
 professions=engineering=600/blacksmithing=600
-talents=http://us.battle.net/wow/en/tool/talent-calculator#ZZ!.0..11.
+talents=http://us.battle.net/wow/en/tool/talent-calculator#ZZ!0100220
 glyphs=unending_rage/death_from_above/cleave
 spec=fury
 
@@ -124,10 +124,10 @@ actions.aoe+=/colossus_smash
 actions.aoe+=/storm_bolt,if=talent.storm_bolt.enabled
 actions.aoe+=/shockwave,if=talent.shockwave.enabled
 
-head=helmet_of_the_prehistoric_marauder,id=99418,upgrade=2,gems=capacitive_primal_16crit_8haste_8crit
+head=helmet_of_the_prehistoric_marauder,id=99418,upgrade=2,gems=16crit_8haste_8crit
 neck=malkoroks_tainted_dog_tags,id=105566,upgrade=2
 shoulders=spaulders_of_the_fallen_warchief,id=104645,upgrade=2,gems=16crit_16crit,enchant=10str_5crit
-back=gonglu_strength_of_xuen,id=102249,upgrade=2,gems=8haste_8crit,enchant=9crit
+back=tigerclaw_cape,id=98147,upgrade=2,gems=8haste_8crit,enchant=9crit
 chest=breastplate_of_shamanic_mirrors,id=105532,upgrade=2,gems=8haste_8crit_8haste_8crit_16crit,enchant=3all
 shirt=precious_ribbon,id=52019
 wrists=bracers_of_blind_hatred,id=105456,upgrade=2,gems=16crit,enchant=9mastery
@@ -148,9 +148,8 @@ off_hand=malkoroks_skullcleaver,id=105567,upgrade=2,gems=8haste_8crit,enchant=da
 # gear_stamina=1506
 # gear_intellect=3
 # gear_spirit=3
-# gear_crit_rating=896
+# gear_crit_rating=880
 # gear_haste_rating=371
 # gear_mastery_rating=393
 # gear_armor=1187
-# meta_gem=capacitive_primal
 # tier16_2pc_melee=1
