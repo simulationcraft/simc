@@ -802,10 +802,11 @@ void warrior_attack_t::impact( action_state_t* s )
 struct melee_t : public warrior_attack_t
 {
   int sync_weapons;
+  bool first;
 
   melee_t( const std::string& name, warrior_t* p, int sw ) :
     warrior_attack_t( name, p, spell_data_t::nil() ),
-    sync_weapons( sw )
+    sync_weapons( sw ),  first( true )
   {
     school      = SCHOOL_PHYSICAL;
     may_glance  = true;
@@ -817,20 +818,20 @@ struct melee_t : public warrior_attack_t
     if ( p -> dual_wield() ) base_hit -= 0.19;
   }
 
+ void reset()
+  {
+    warrior_attack_t::reset();
+
+    first = true;
+  }
+
   virtual timespan_t execute_time() const
   {
     timespan_t t = warrior_attack_t::execute_time();
-
-    if ( player -> in_combat )
+    if ( first )
+      return ( weapon -> slot == SLOT_OFF_HAND ) ? ( sync_weapons ? std::min( t / 2, timespan_t::from_seconds( 0.01 ) ) : t / 2 ) : timespan_t::from_seconds( 0.01 );
+    else
       return t;
-
-    if ( weapon -> slot == SLOT_MAIN_HAND || sync_weapons )
-      return timespan_t::from_seconds( 0.02 );
-
-    // Before combat begins, unless we are under sync_weapons the OH is
-    // delayed by half its swing time.
-
-    return timespan_t::from_seconds( 0.02 ) + t / 2;
   }
 
   virtual void execute()
@@ -839,6 +840,8 @@ struct melee_t : public warrior_attack_t
     // must be applied before the (repeating) event schedule, and the decrement
     // here must be done before it.
     trigger_flurry( this, -1 );
+    if ( first )
+      first = false;
 
     warrior_attack_t::execute();
   }
@@ -856,9 +859,8 @@ struct melee_t : public warrior_attack_t
     }
     // Any attack that hits or is dodged/blocked/parried generates rage
     if ( s -> result != RESULT_MISS )
-    {
       trigger_rage_gain();
-    }
+
   }
 
   virtual double action_multiplier() const
