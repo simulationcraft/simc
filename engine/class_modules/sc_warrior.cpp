@@ -2408,9 +2408,6 @@ struct thunder_clap_t : public warrior_attack_t
       cooldown -> duration *= 1 + p -> glyphs.resonating_power -> effectN( 2 ).percent();
     }
 
-    // TC can trigger procs from either weapon, even though it doesn't need a weapon
-    proc_ignores_slot = true;
-
     if ( p -> spec.seasoned_soldier -> ok() )
       base_costs[ current_resource() ] += p -> spec.seasoned_soldier -> effectN( 2 ).resource( current_resource() );
 
@@ -2419,15 +2416,6 @@ struct thunder_clap_t : public warrior_attack_t
       attack_power_mod.direct *= 1.0 + p -> glyphs.resonating_power -> effectN( 1 ).percent();
     if ( p -> spec.blood_and_thunder -> ok() )
       attack_power_mod.direct *= 1.0 + p -> spec.blood_and_thunder -> effectN( 2 ).percent();
-  }
-
-  virtual double action_multiplier() const
-  {
-    double am = warrior_attack_t::action_multiplier();
-
-    //const warrior_t* p = cast();
-
-    return am;
   }
 
   virtual void impact( action_state_t* s )
