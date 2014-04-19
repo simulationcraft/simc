@@ -1431,11 +1431,12 @@ struct melee_t : public monk_melee_attack_t
 
 
   int sync_weapons;
+  bool first;
   tiger_strikes_melee_attack_t* tsproc;
 
   melee_t( const std::string& name, monk_t* player, int sw ) :
     monk_melee_attack_t( name, player, spell_data_t::nil() ),
-    sync_weapons( sw ), tsproc( nullptr )
+    sync_weapons( sw ), tsproc( nullptr ), first( true )
   {
     background  = true;
     repeating   = true;
@@ -1451,14 +1452,21 @@ struct melee_t : public monk_melee_attack_t
     }
   }
 
+ void reset()
+  {
+    monk_melee_attack_t::reset();
+
+    first = true;
+  }
+
   virtual timespan_t execute_time() const
   {
     timespan_t t = monk_melee_attack_t::execute_time();
-    if ( ! player -> in_combat )
-    {
-      return ( weapon -> slot == SLOT_OFF_HAND ) ? ( sync_weapons ? std::min( t / 2, timespan_t::from_seconds( 0.2 ) ) : t / 2 ) : timespan_t::from_seconds( 0.01 );
-    }
-    return t;
+
+    if ( first )
+      return ( weapon -> slot == SLOT_OFF_HAND ) ? ( sync_weapons ? std::min( t / 2, timespan_t::from_seconds( 0.01 ) ) : t / 2 ) : timespan_t::from_seconds( 0.01 );
+    else
+      return t;
   }
 
   void execute()
@@ -1467,6 +1475,9 @@ struct melee_t : public monk_melee_attack_t
     // FIXME: This is super hacky and spams up the APL sample sequence a bit.
     if ( p() -> buff.channeling_soothing_mist -> check() )
       return;
+
+    if ( first )
+      first = false;
 
     if ( time_to_execute > timespan_t::zero() && player -> executing )
     {
