@@ -58,7 +58,7 @@ public:
 
 // mutex_t::native_t ========================================================
 /*
-#if ! defined( __MINGW32__ ) && WINVER > 0x0502
+#if ! defined( __MINGW32__ )
 class mutex_t::native_t : public nonmoveable
 {
   CRITICAL_SECTION cs;
@@ -72,7 +72,7 @@ public:
 
   PCRITICAL_SECTION primitive() { return &cs; }
 };
-#else // mingw32 + win xp
+#else
 */
 class mutex_t::native_t : public nonmoveable
 {
@@ -91,7 +91,7 @@ public:
 
 // condition_variable_t::native_t ===========================================
 /*
-#if ! defined( __MINGW32__ ) && WINVER > 0x0502
+#if ! defined( __MINGW32__ )
 class condition_variable_t::native_t : public nonmoveable
 {
   CONDITION_VARIABLE cv;
@@ -113,7 +113,7 @@ public:
   void broadcast()
   { WakeAllConditionVariable( &cv ); }
 };
-#else // mingw32 + win xp
+#else
 */
 // Emulated condition variable for mingw using win32 thread model. Adapted from
 // http://www.cs.wustl.edu/~schmidt/win32-cv-1.html
@@ -268,7 +268,7 @@ public:
   }
 
   static void sleep_seconds( double t )
-  { ::Sleep( ( DWORD ) (t * 1000 ) ); }
+  { ::Sleep( ( DWORD ) t * 1000 ); }
 
 private:
   static void set_thread_priority( HANDLE handle, priority_e prio )
@@ -283,8 +283,8 @@ private:
 #elif ( defined( _POSIX_THREADS ) && _POSIX_THREADS > 0 ) || defined( _GLIBCXX_HAVE_GTHR_DEFAULT ) || defined( _GLIBCXX__PTHREADS ) || defined( _GLIBCXX_HAS_GTHREADS )
 // POSIX
 #include <pthread.h>
-#include <unistd.h>
 #include <cstdio>
+#include <unistd.h>
 
 // mutex_t::native_t ========================================================
 
@@ -359,7 +359,7 @@ public:
   { set_thread_priority( pthread_self(), prio ); }
 
   static void sleep_seconds( double t )
-  { ::sleep( t ); }
+  { ::sleep( ( unsigned int )t ); }
 
 private:
   static void set_thread_priority( pthread_t t, priority_e prio )
@@ -472,8 +472,6 @@ void sc_thread_t::set_calling_thread_priority( priority_e prio )
 
 void sc_thread_t::wait()
 { native_handle -> join(); }
-
-// sc_thread_t::sleep() =====================================================
 
 void sc_thread_t::sleep_seconds( double t )
 { native_t::sleep_seconds( t ); }

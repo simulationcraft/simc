@@ -2235,6 +2235,13 @@ const char* util::specialization_string( specialization_e spec )
   }
 }
 
+// parse_position_type ======================================================
+
+specialization_e util::parse_specialization_type( const std::string &name )
+{
+  return parse_enum<specialization_e, SPEC_NONE, static_cast<specialization_e>(DRUID_RESTORATION+1), specialization_string>( name );
+}
+
 // parse_item_quality =======================================================
 
 int util::parse_item_quality( const std::string& quality )

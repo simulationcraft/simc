@@ -868,7 +868,7 @@ sim_t::sim_t( sim_t* p, int index ) :
   save_prefix_str( "save_" ),
   save_talent_str( 0 ),
   talent_format( TALENT_FORMAT_UNCHANGED ),
-  auto_ready_trigger( 0 ), stat_cache( 1 ), max_aoe_enemies( 20 ), tmi_actor_only( 0 ), tmi_window_global( 0 ), new_tmi( 0 ), tmi_filter( 1.0 ),
+  auto_ready_trigger( 0 ), stat_cache( 1 ), max_aoe_enemies( 20 ), show_etmi( 0 ), tmi_window_global( 0 ),
   target_death_pct( 0 ), rel_target_level( 3 ), target_level( -1 ), target_adds( 0 ), desired_targets( 0 ),
   challenge_mode( false ), scale_to_itemlevel ( -1 ),
   active_enemies( 0 ), active_allies( 0 ),
@@ -882,7 +882,9 @@ sim_t::sim_t( sim_t* p, int index ) :
   scaling( new scaling_t( this ) ),
   plot( new plot_t( this ) ),
   reforge_plot( new reforge_plot_t( this ) ),
-  elapsed_cpu( timespan_t::zero() ), elapsed_time( timespan_t::zero() ), iteration_dmg( 0 ), iteration_heal( 0 ), iteration_absorb( 0 ),
+  elapsed_cpu( 0.0 ),
+  elapsed_time( 0.0 ),
+  iteration_dmg( 0 ), iteration_heal( 0 ), iteration_absorb( 0 ),
   raid_dps(), total_dmg(), raid_hps(), total_heal(), total_absorb(), raid_aps(),
   simulation_length( "Simulation Length", false ),
   report_progress( 1 ),
@@ -1691,8 +1693,8 @@ bool sim_t::execute()
 
   analyze();
 
-  elapsed_cpu = timespan_t::from_seconds( ( util::cpu_time() - start_cpu_time ) );
-  elapsed_time = timespan_t::from_seconds( util::wall_time() - start_time );
+  elapsed_cpu =  util::cpu_time() - start_cpu_time;
+  elapsed_time =  util::wall_time() - start_time;
 
   return true;
 }
@@ -1960,10 +1962,8 @@ void sim_t::create_options()
     opt_bool( "challenge_mode", challenge_mode ),
     opt_int( "scale_to_itemlevel", scale_to_itemlevel ),
     opt_int( "desired_targets", desired_targets ),
-    opt_bool( "tmi_actor_only", tmi_actor_only ),
+    opt_bool( "show_etmi", show_etmi ),
     opt_float( "tmi_window_global", tmi_window_global ),
-    opt_int( "new_tmi", new_tmi ),
-    opt_float( "tmi_filter", tmi_filter),
     // Character Creation
     opt_func( "death_knight", parse_player ),
     opt_func( "deathknight", parse_player ),

@@ -1207,6 +1207,7 @@ school_e parse_school_type       ( const std::string& name );
 set_e parse_set_bonus            ( const std::string& name );
 slot_e parse_slot_type           ( const std::string& name );
 stat_e parse_stat_type           ( const std::string& name );
+specialization_e parse_specialization_type( const std::string &name );
 
 const char* movement_direction_string( movement_direction_e );
 movement_direction_e parse_movement_direction( const std::string& name );
@@ -2318,6 +2319,7 @@ public:
     ~event_managment_t();
     void add_event( core_event_t*, timespan_t delta_time, timespan_t current_time );
     void flush_events();
+    void preallocate_events( unsigned num );
     void init();
     core_event_t* next_event();
     void reset();
@@ -2421,10 +2423,8 @@ struct sim_t : public core_sim_t, private sc_thread_t
   int         auto_ready_trigger;
   int         stat_cache;
   int         max_aoe_enemies;
-  bool        tmi_actor_only;
+  bool        show_etmi;
   double      tmi_window_global;
-  int         new_tmi;
-  double      tmi_filter;
 
   // Target options
   double      target_death_pct;
@@ -2525,8 +2525,8 @@ public:
   scaling_t* const scaling;
   plot_t*    const plot;
   reforge_plot_t* const reforge_plot;
-  timespan_t elapsed_cpu;
-  timespan_t elapsed_time;
+  double elapsed_cpu;
+  double elapsed_time;
   double     iteration_dmg, iteration_heal, iteration_absorb;
   simple_sample_data_t raid_dps, total_dmg, raid_hps, total_heal, total_absorb, raid_aps;
   extended_sample_data_t simulation_length;
@@ -2856,11 +2856,11 @@ struct core_event_t
 
   static void cancel( core_event_t*& e );
 
-  static void* allocate( std::size_t size, core_sim_t& );
+  static void* allocate( std::size_t size, core_sim_t::event_managment_t& );
   static void  recycle( core_event_t* );
   static void  release( core_event_t*& );
 
-  static void* operator new( std::size_t size, core_sim_t& sim ) { return allocate( size, sim ); }
+  static void* operator new( std::size_t size, core_sim_t& sim ) { return allocate( size, sim.em ); }
 
 #if defined(__GXX_EXPERIMENTAL_CXX0X__) && ( defined(SC_GCC) && SC_GCC >= 40400 || defined(SC_CLANG) && SC_CLANG >= 30000 ) // Improved compile-time diagnostics.
   static void* operator new( std::size_t ) throw() = delete; // DO NOT USE
@@ -3727,6 +3727,8 @@ struct player_collected_data_t
   // Tank
   extended_sample_data_t deaths;
   extended_sample_data_t theck_meloree_index;
+  extended_sample_data_t effective_theck_meloree_index;
+  extended_sample_data_t max_spike_amount;
   sc_timeline_t vengeance_timeline;
 
   std::array<simple_sample_data_t,RESOURCE_MAX> resource_lost, resource_gained;
@@ -3761,9 +3763,11 @@ struct player_collected_data_t
     sc_timeline_t merged_timeline;
     bool collect; // whether we collect all this or not.
     health_changes_timeline_t() : previous_loss_level( 0.0 ), previous_gain_level( 0.0 ), collect( false ) {}
-  } health_changes;
+  };
 
-
+  health_changes_timeline_t health_changes;     //records all health changes
+  health_changes_timeline_t health_changes_tmi; //records only health changes due to damage and self-healng/self-absorb
+  
 
   struct action_sequence_data_t
   {
@@ -3796,6 +3800,8 @@ struct player_collected_data_t
   void analyze( const player_t& );
   void collect_data( const player_t& );
   void print_tmi_debug_csv( const sc_timeline_t* ma, const sc_timeline_t* nma, const std::vector<double>& weighted_value, const player_t& p );
+  double calculate_tmi( const health_changes_timeline_t& tl, int window, double f_length, const player_t& p );
+  double calculate_max_spike_damage( const health_changes_timeline_t& tl, int window );
   std::ostream& data_str( std::ostream& s ) const;
 };
 
@@ -4016,7 +4022,6 @@ struct player_t : public actor_t
   specialization_e  _spec;
   bool         bugs; // If true, include known InGame mechanics which are probably the cause of a bug and not inteded
   bool scale_player;
-  bool tmi_self_only;
   double death_pct; // Player will die if he has equal or less than this value as health-pct
   double size; // Actor size, only used for enemies. Affects the travel distance calculation for spells.
 
@@ -4195,8 +4200,6 @@ struct player_t : public actor_t
   double    rps_gain, rps_loss;
   std::string tmi_debug_file_str;
   double tmi_window;
-  int new_tmi;
-  double tmi_filter;
 
   auto_dispose< std::vector<buff_t*> > buff_list;
   auto_dispose< std::vector<proc_t*> > proc_list;

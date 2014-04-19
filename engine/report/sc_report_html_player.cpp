@@ -360,26 +360,30 @@ void print_html_action_info( report::sc_html_stream& os, unsigned stats_mask, st
   os << "</td>\n";
 
   // DPS and DPS %
-  std::string compound_aps     = "";
-  std::string compound_aps_pct = "";
-  double cAPS    = s -> portion_aps.mean();
-  double cAPSpct = s -> portion_amount;
-
-  for ( size_t i = 0, num_children = s -> children.size(); i < num_children; i++ )
+  // Skip for abilities that do no damage
+  if ( s -> compound_amount > 0 )
   {
-    cAPS    += s -> children[ i ] -> portion_apse.mean();
-    cAPSpct += s -> children[ i ] -> portion_amount;
+    std::string compound_aps     = "";
+    std::string compound_aps_pct = "";
+    double cAPS    = s -> portion_aps.mean();
+    double cAPSpct = s -> portion_amount;
+
+    for ( size_t i = 0, num_children = s -> children.size(); i < num_children; i++ )
+    {
+      cAPS    += s -> children[ i ] -> portion_apse.mean();
+      cAPSpct += s -> children[ i ] -> portion_amount;
+    }
+
+    if ( cAPS > s -> portion_aps.mean()  ) compound_aps     = "&nbsp;(" + util::to_string( cAPS, 0 ) + ")";
+    if ( cAPSpct > s -> portion_amount ) compound_aps_pct = "&nbsp;(" + util::to_string( cAPSpct * 100, 1 ) + "%)";
+
+    os.printf( "\t\t\t\t\t\t\t\t<td class=\"right small\" rowspan=\"%d\">%.0f%s</td>\n",
+      result_rows,
+      s -> portion_aps.pretty_mean(), compound_aps.c_str() );
+    os.printf( "\t\t\t\t\t\t\t\t<td class=\"right small\" rowspan=\"%d\">%.1f%%%s</td>\n",
+      result_rows,
+      s -> portion_amount * 100, compound_aps_pct.c_str() );
   }
-
-  if ( cAPS > s -> portion_aps.mean()  ) compound_aps     = "&nbsp;(" + util::to_string( cAPS, 0 ) + ")";
-  if ( cAPSpct > s -> portion_amount ) compound_aps_pct = "&nbsp;(" + util::to_string( cAPSpct * 100, 1 ) + "%)";
-
-  os.printf( "\t\t\t\t\t\t\t\t<td class=\"right small\" rowspan=\"%d\">%.0f%s</td>\n",
-    result_rows,
-    s -> portion_aps.pretty_mean(), compound_aps.c_str() );
-  os.printf( "\t\t\t\t\t\t\t\t<td class=\"right small\" rowspan=\"%d\">%.1f%%%s</td>\n",
-    result_rows,
-    s -> portion_amount * 100, compound_aps_pct.c_str() );
 
   // Number of executes
   os.printf( "\t\t\t\t\t\t\t\t<td class=\"right small\" rowspan=\"%d\">%.1f</td>\n",
@@ -390,35 +394,40 @@ void print_html_action_info( report::sc_html_stream& os, unsigned stats_mask, st
   os.printf( "\t\t\t\t\t\t\t\t<td class=\"right small\" rowspan=\"%d\">%.2fsec</td>\n",
     result_rows,
     s -> total_intervals.pretty_mean() );
-
-  // Amount per execute
-  os.printf( "\t\t\t\t\t\t\t\t<td class=\"right small\" rowspan=\"%d\">%.0f</td>\n",
-    result_rows,
-    s -> ape );
-
-  // Amount per execute time
-  os.printf( "\t\t\t\t\t\t\t\t<td class=\"right small\" rowspan=\"%d\">%.0f</td>\n",
-    result_rows,
-    s -> apet );
-
-  bool periodic_only = false;
-  if ( has_amount_results( s -> direct_results ) )
-    print_html_action_summary( os, stats_mask, 0, s, p );
-  else if ( has_amount_results( s -> tick_results ) )
+  
+  // Skip the rest of this for abilities that do no damage
+  if ( s -> compound_amount > 0 )
   {
-    periodic_only = true;
-    print_html_action_summary( os, stats_mask, 1, s, p );
-  }
-  else
-    os.printf("\t\t\t\t\t\t\t\t<td class=\"right small\" colspan=\"%d\"></td>\n", n_columns );
+    // Amount per execute
+    os.printf( "\t\t\t\t\t\t\t\t<td class=\"right small\" rowspan=\"%d\">%.0f</td>\n",
+      result_rows,
+      s -> ape );
 
-  os.printf( "\t\t\t\t\t\t\t</tr>\n" );
+    // Amount per execute time
+    os.printf( "\t\t\t\t\t\t\t\t<td class=\"right small\" rowspan=\"%d\">%.0f</td>\n",
+      result_rows,
+      s -> apet );
 
-  if ( ! periodic_only && has_amount_results( s -> tick_results ) )
-  {
-    os << "\t\t\t\t\t\t\t<tr" << row_class << ">\n";
-    print_html_action_summary( os, stats_mask, 1, s, p );
-    os << "\t\t\t\t\t\t\t</tr>\n";
+    bool periodic_only = false;
+    if ( has_amount_results( s -> direct_results ) )
+      print_html_action_summary( os, stats_mask, 0, s, p );
+    else if ( has_amount_results( s -> tick_results ) )
+    {
+      periodic_only = true;
+      print_html_action_summary( os, stats_mask, 1, s, p );
+    }
+    else
+      os.printf("\t\t\t\t\t\t\t\t<td class=\"right small\" colspan=\"%d\"></td>\n", n_columns );
+
+    os.printf( "\t\t\t\t\t\t\t</tr>\n" );
+
+    if ( ! periodic_only && has_amount_results( s -> tick_results ) )
+    {
+      os << "\t\t\t\t\t\t\t<tr" << row_class << ">\n";
+      print_html_action_summary( os, stats_mask, 1, s, p );
+      os << "\t\t\t\t\t\t\t</tr>\n";
+    }
+
   }
 
   if ( p -> sim -> report_details )
@@ -1830,6 +1839,8 @@ void print_html_player_statistics( report::sc_html_stream& os, player_t* p, play
   report::print_html_sample_data( os, p -> sim, p -> collected_data.heal, "Heal", sd_counter );
   report::print_html_sample_data( os, p -> sim, p -> collected_data.htps, "HTPS", sd_counter );
   report::print_html_sample_data( os, p -> sim, p -> collected_data.theck_meloree_index, "TMI", sd_counter );
+  report::print_html_sample_data( os, p -> sim, p -> collected_data.effective_theck_meloree_index, "ETMI", sd_counter );
+  report::print_html_sample_data( os, p -> sim, p -> collected_data.max_spike_amount, "MSD", sd_counter );
 
   os << "\t\t\t\t\t\t\t\t<tr>\n"
      "\t\t\t\t\t\t\t\t<td>\n";
@@ -2614,24 +2625,29 @@ void print_html_player_description( report::sc_html_stream& os, sim_t* sim, play
                p -> collected_data.hps.mean() + p -> collected_data.aps.mean(), 
                p -> collected_data.aps.mean() );
     // print TMI
-    double tmi_display =  p -> collected_data.theck_meloree_index.mean();
-    std::string tmi_letter = " ";
-    if ( tmi_display >= 1000000000.0 )
-      os.printf( ", %1.2e%sTMI\n", tmi_display, tmi_letter.c_str() );
+    double tmi_display = p -> collected_data.theck_meloree_index.mean();
+    if ( tmi_display >= 1.0e7 )
+      os.printf( ", %.2fM TMI", tmi_display / 1.0e6 );
+    else if ( std::abs( tmi_display ) <= 999.9 )
+      os.printf( ", %.3fk TMI", tmi_display / 1.0e3 );
     else
+      os.printf( ", %.1fk TMI", tmi_display / 1.0e3 );
+    // if we're using a non-standard window, append that to the label appropriately (i.e. TMI-4.0 for a 4.0-second window)
+    if ( p -> tmi_window != 6.0 )
+      os.printf( "-%1.1f", p -> tmi_window );
+
+    if ( sim -> show_etmi || sim -> player_no_pet_list.size() > 1 )
     {
-      if ( tmi_display >= 10000000.0 )
-      {
-        tmi_display /= 1e6;
-        tmi_letter = "M ";
-      }
-      else if ( tmi_display >= 100000.0 )
-      {
-        tmi_display /= 1e3;
-        tmi_letter = "k ";
-      }
-      os.printf( ", %.1f%sTMI\n", tmi_display, tmi_letter.c_str() );
+      double etmi_display = p -> collected_data.effective_theck_meloree_index.mean();
+      if ( etmi_display >= 1.0e7 )
+        os.printf( ", %.1fk ETMI", etmi_display / 1.0e6 );
+      else if ( std::abs( etmi_display ) <= 999.9 )
+        os.printf( ", %.3fk ETMI", etmi_display / 1.0e3 );
+      else
+        os.printf( ", %.1fk ETMI", etmi_display / 1.0e3 );
     }
+
+    os << "\n";
   }
   os << "</h2>\n";
 
@@ -2726,7 +2742,7 @@ void print_html_player_results_spec_gear( report::sc_html_stream& os, sim_t* sim
   // Absorb
   if ( cd.aps.mean() > 0 )
   {
-    os << "\t\t\t\t\t\t\t\t<th><a href=\"#help-hps\" class=\"help\">APS</a></th>\n"
+    os << "\t\t\t\t\t\t\t\t<th><a href=\"#help-aps\" class=\"help\">APS</a></th>\n"
        << "\t\t\t\t\t\t\t\t<th><a href=\"#help-error\" class=\"help\">APS Error</a></th>\n"
        << "\t\t\t\t\t\t\t\t<th><a href=\"#help-range\" class=\"help\">APS Range</a></th>\n"
        << "\t\t\t\t\t\t\t\t<th><a href=\"#help-hpr\" class=\"help\">APR</a></th>\n";
@@ -2738,7 +2754,7 @@ void print_html_player_results_spec_gear( report::sc_html_stream& os, sim_t* sim
   // Now do the data row
   if ( cd.dps.mean() > 0 )
   {
-    double range = ( p -> collected_data.dps.percentile( 0.95 ) - p -> collected_data.dps.percentile( 0.05 ) ) / 2;
+    double range = ( p -> collected_data.dps.percentile( 0.5 + sim -> confidence / 2 ) - p -> collected_data.dps.percentile( 0.5 - sim -> confidence / 2 ) );
     double dps_error = sim_t::distribution_mean_error( *sim, p -> collected_data.dps );
     os.printf(
       "\t\t\t\t\t\t\t\t<td>%.1f</td>\n"
@@ -2760,7 +2776,7 @@ void print_html_player_results_spec_gear( report::sc_html_stream& os, sim_t* sim
   // Heal
   if ( cd.hps.mean() > 0 )
   {
-    double range = ( cd.hps.percentile( 0.95 ) - cd.hps.percentile( 0.05 ) ) / 2;
+    double range = ( cd.hps.percentile( 0.5 + sim -> confidence / 2 ) - cd.hps.percentile( 0.5 - sim -> confidence / 2 ) );
     double hps_error = sim_t::distribution_mean_error( *sim, p -> collected_data.hps );
     os.printf(
       "\t\t\t\t\t\t\t\t<td>%.1f</td>\n"
@@ -2783,7 +2799,7 @@ void print_html_player_results_spec_gear( report::sc_html_stream& os, sim_t* sim
   // Absorb
   if ( cd.aps.mean() > 0 )
   {
-    double range = ( cd.aps.percentile( 0.95 ) - cd.aps.percentile( 0.05 ) ) / 2;
+    double range = ( cd.aps.percentile( 0.5 + sim -> confidence / 2 ) - cd.aps.percentile( 0.5 - sim -> confidence / 2 ) );
     double aps_error = sim_t::distribution_mean_error( *sim, p -> collected_data.aps );
     os.printf(
       "\t\t\t\t\t\t\t\t<td>%.1f</td>\n"
@@ -2806,20 +2822,33 @@ void print_html_player_results_spec_gear( report::sc_html_stream& os, sim_t* sim
   if ( p -> primary_role() == ROLE_TANK && p -> type != ENEMY )
   {
     os << "\t\t\t\t\t\t<table class=\"sc mt\">\n"
-       << "\t\t\t\t\t\t\t<tr>\n"
+       // experimental first row for stacking the tables - wasn't happy with how it looked, may return to it later
+       //<< "\t\t\t\t\t\t\t<tr>\n" // first row
+       //<< "\t\t\t\t\t\t\t\t<th colspan=\"3\"><a href=\"#help-dtps\" class=\"help\">DTPS</a></th>\n"
+       //<< "\t\t\t\t\t\t\t\t<td>&nbsp&nbsp&nbsp&nbsp&nbsp</td>\n"
+       //<< "\t\t\t\t\t\t\t\t<th colspan=\"5\"><a href=\"#help-tmi\" class=\"help\">TMI</a></th>\n"
+       //<< "\t\t\t\t\t\t\t\t<td>&nbsp&nbsp&nbsp&nbsp&nbsp</td>\n"
+       //<< "\t\t\t\t\t\t\t\t<th colspan=\"4\"><a href=\"#help-msd\" class=\"help\">MSD</a></th>\n"
+       //<< "\t\t\t\t\t\t\t</tr>\n" // end first row
+       << "\t\t\t\t\t\t\t<tr>\n"  // start second row 
        << "\t\t\t\t\t\t\t\t<th><a href=\"#help-dtps\" class=\"help\">DTPS</a></th>\n"
        << "\t\t\t\t\t\t\t\t<th><a href=\"#help-error\" class=\"help\">DTPS Error</a></th>\n"
        << "\t\t\t\t\t\t\t\t<th><a href=\"#help-range\" class=\"help\">DTPS Range</a></th>\n"
        << "\t\t\t\t\t\t\t\t<th>&nbsp;</th>\n"
        << "\t\t\t\t\t\t\t\t<th><a href=\"#help-tmi\" class=\"help\">TMI</a></th>\n"
        << "\t\t\t\t\t\t\t\t<th><a href=\"#help-error\" class=\"help\">TMI Error</a></th>\n"
-       << "\t\t\t\t\t\t\t\t<th><a href=\"#help-error\" class=\"help\">TMI Min</a></th>\n"
-       << "\t\t\t\t\t\t\t\t<th><a href=\"#help-error\" class=\"help\">TMI Max</a></th>\n"
-       << "\t\t\t\t\t\t\t\t<th><a href=\"#help-range\" class=\"help\">TMI Range</a></th>\n"
-       << "\t\t\t\t\t\t\t</tr>\n"
-       << "\t\t\t\t\t\t\t<tr>\n";
+       << "\t\t\t\t\t\t\t\t<th><a href=\"#help-tmi\" class=\"help\">TMI Min</a></th>\n"
+       << "\t\t\t\t\t\t\t\t<th><a href=\"#help-tmi\" class=\"help\">TMI Max</a></th>\n"
+       << "\t\t\t\t\t\t\t\t<th><a href=\"#help-tmirange\" class=\"help\">TMI Range</a></th>\n"
+       << "\t\t\t\t\t\t\t\t<th>&nbsp</th>\n"
+       << "\t\t\t\t\t\t\t\t<th><a href=\"#help-msd\" class=\"help\">MSD Mean</a></th>\n"
+       << "\t\t\t\t\t\t\t\t<th><a href=\"#help-msd\" class=\"help\">MSD Min</a></th>\n"
+       << "\t\t\t\t\t\t\t\t<th><a href=\"#help-msd\" class=\"help\">MSD Max</a></th>\n"
+       << "\t\t\t\t\t\t\t\t<th><a href=\"#help-msd-freq\" class=\"help\">MSD Freq.</a></th>\n"
+       << "\t\t\t\t\t\t\t</tr>\n" // end second row
+       << "\t\t\t\t\t\t\t<tr>\n"; // start third row
 
-    double dtps_range = ( cd.dtps.percentile( 0.95 ) - cd.dtps.percentile( 0.05 ) ) / 2;
+    double dtps_range = ( cd.dtps.percentile( 0.5 + sim -> confidence / 2 ) - cd.dtps.percentile( 0.5 - sim -> confidence / 2 ) );
     double dtps_error = sim_t::distribution_mean_error( *sim, p -> collected_data.dtps );
     os.printf(
       "\t\t\t\t\t\t\t\t<td>%.1f</td>\n"
@@ -2830,16 +2859,16 @@ void print_html_player_results_spec_gear( report::sc_html_stream& os, sim_t* sim
       dtps_range, cd.dtps.mean() ? dtps_range / cd.dtps.mean() * 100.0 : 0 );
     
     // spacer
-    os << "\t\t\t\t\t\t\t\t<td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>\n";
+    os << "\t\t\t\t\t\t\t\t<td>&nbsp&nbsp&nbsp&nbsp&nbsp</td>\n";
     
     double tmi_error = sim_t::distribution_mean_error( *sim, p -> collected_data.theck_meloree_index );
-    double tmi_range = ( cd.theck_meloree_index.percentile( 0.95 ) - cd.theck_meloree_index.percentile( 0.05 ) ) / 2;
+    double tmi_range = ( cd.theck_meloree_index.percentile( 0.5 + sim -> confidence / 2 ) - cd.theck_meloree_index.percentile( 0.5 - sim -> confidence / 2 ) );
 
     // print TMI
-    if ( cd.theck_meloree_index.mean() > 1.0e8 )
-      os.printf( "\t\t\t\t\t\t\t\t<td>%1.2e</td>\n", cd.theck_meloree_index.mean() );
+    if ( abs( cd.theck_meloree_index.mean() ) > 1.0e8 )
+      os.printf( "\t\t\t\t\t\t\t\t<td>%1.3e</td>\n", cd.theck_meloree_index.mean() );
     else
-      os.printf( "\t\t\t\t\t\t\t\t<td>%.1f</td>\n", cd.theck_meloree_index.mean() );
+      os.printf( "\t\t\t\t\t\t\t\t<td>%.1fk</td>\n", cd.theck_meloree_index.mean() / 1e3 );
 
     // print TMI error/variance
     if ( tmi_error > 1.0e6 )
@@ -2849,23 +2878,21 @@ void print_html_player_results_spec_gear( report::sc_html_stream& os, sim_t* sim
     }
     else
     {
-      os.printf( "\t\t\t\t\t\t\t\t<td>%.1f / %.2f%%</td>\n",
+      os.printf( "\t\t\t\t\t\t\t\t<td>%.0f / %.2f%%</td>\n",
                  tmi_error, cd.theck_meloree_index.mean() ? tmi_error * 100.0 / cd.theck_meloree_index.mean() : 0.0 );
     }
 
     // print  TMI min/max
-    if ( cd.theck_meloree_index.max() > 1.0e8 )
-    {
-      os.printf( "\t\t\t\t\t\t\t\t<td>%1.2e</td>\n"
-                 "\t\t\t\t\t\t\t\t<td>%1.2e</td>\n",
-                 cd.theck_meloree_index.min(), cd.theck_meloree_index.max() );
-    }
-    else      
-    {
-      os.printf( "\t\t\t\t\t\t\t\t<td>%.1f</td>\n"
-                 "\t\t\t\t\t\t\t\t<td>%.1f</td>\n",
-                 cd.theck_meloree_index.min(), cd.theck_meloree_index.max() );
-    }
+    if ( abs( cd.theck_meloree_index.min() ) > 1.0e8 )
+      os.printf( "\t\t\t\t\t\t\t\t<td>%1.2e</td>\n", cd.theck_meloree_index.min() );
+    else
+      os.printf( "\t\t\t\t\t\t\t\t<td>%.1fk</td>\n", cd.theck_meloree_index.min() / 1e3 );
+    
+    if ( abs( cd.theck_meloree_index.max() ) > 1.0e8 )
+      os.printf( "\t\t\t\t\t\t\t\t<td>%1.2e</td>\n", cd.theck_meloree_index.max() );
+    else
+      os.printf( "\t\t\t\t\t\t\t\t<td>%.1fk</td>\n", cd.theck_meloree_index.max() / 1e3 );
+
     // print TMI range
     if ( tmi_range > 1.0e8 )
     {
@@ -2874,10 +2901,22 @@ void print_html_player_results_spec_gear( report::sc_html_stream& os, sim_t* sim
     }
     else
     {
-      os.printf( "\t\t\t\t\t\t\t\t<td>%.1f / %.1f%%</td>\n",
-                  tmi_range, cd.theck_meloree_index.mean() ? tmi_range * 100.0 / cd.theck_meloree_index.mean() : 0.0 );
+      os.printf( "\t\t\t\t\t\t\t\t<td>%.1fk / %.1f%%</td>\n",
+                  tmi_range / 1e3, cd.theck_meloree_index.mean() ? tmi_range * 100.0 / cd.theck_meloree_index.mean() : 0.0 );
     }
+        
+    // spacer
+    os << "\t\t\t\t\t\t\t\t<td>&nbsp&nbsp&nbsp&nbsp&nbsp</td>\n";
 
+    // print Max Spike Size stats
+    os.printf( "\t\t\t\t\t\t\t\t<td>%.1f%%</td>\n", cd.max_spike_amount.mean() );
+    os.printf( "\t\t\t\t\t\t\t\t<td>%.1f%%</td>\n", cd.max_spike_amount.min() );
+    os.printf( "\t\t\t\t\t\t\t\t<td>%.1f%%</td>\n", cd.max_spike_amount.max() );
+    
+    // print rough estimate of spike frequency
+    os.printf( "\t\t\t\t\t\t\t\t<td>%.1f</td>\n", cd.theck_meloree_index.mean() ? std::exp( cd.theck_meloree_index.mean() / 1e3 / cd.max_spike_amount.mean() ) : 0.0 );
+
+    // End defensive table
     os << "\t\t\t\t\t\t\t</tr>\n"
        << "\t\t\t\t\t\t</table>\n";
   }
@@ -3126,7 +3165,10 @@ void output_player_damage_summary( report::sc_html_stream& os, player_t* actor )
 
   unsigned n_row = 0;
   for ( size_t i = 0; i < actor -> stats_list.size(); ++i )
-    output_player_action( os, n_row, n_optional_columns, MASK_DMG, actor -> stats_list[ i ], actor );
+  {
+    if ( actor -> stats_list[ i ] -> compound_amount > 0 )
+      output_player_action( os, n_row, n_optional_columns, MASK_DMG, actor -> stats_list[ i ], actor );
+  }
 
   // Print pet statistics
   for ( size_t i = 0; i < actor -> pet_list.size(); ++i )
@@ -3142,6 +3184,9 @@ void output_player_damage_summary( report::sc_html_stream& os, player_t* actor )
         continue;
 
       if ( s -> parent && s -> parent -> player == pet )
+        continue;
+
+      if ( s -> compound_amount == 0 )
         continue;
 
       if ( first )
@@ -3217,7 +3262,10 @@ void output_player_heal_summary( report::sc_html_stream& os, player_t* actor )
 
   unsigned n_row = 0;
   for ( size_t i = 0; i < actor -> stats_list.size(); ++i )
-    output_player_action( os, n_row, n_optional_columns, MASK_HEAL | MASK_ABSORB, actor -> stats_list[ i ], actor );
+  {
+    if ( actor -> stats_list[ i ] -> compound_amount > 0 )
+      output_player_action( os, n_row, n_optional_columns, MASK_HEAL | MASK_ABSORB, actor -> stats_list[ i ], actor );
+  }
 
   // Print pet statistics
   for ( size_t i = 0; i < actor -> pet_list.size(); ++i )
@@ -3233,6 +3281,9 @@ void output_player_heal_summary( report::sc_html_stream& os, player_t* actor )
         continue;
 
       if ( s -> parent && s -> parent -> player == pet )
+        continue;
+      
+      if ( s -> compound_amount == 0 )
         continue;
 
       if ( first )
@@ -3256,6 +3307,72 @@ void output_player_heal_summary( report::sc_html_stream& os, player_t* actor )
   os << "\t\t\t\t\t\t</table>\n";
 }
 
+void output_player_simple_ability_summary( report::sc_html_stream& os, player_t* actor )
+{
+  if ( actor -> collected_data.dmg.max() == 0 && ! actor -> sim -> debug )
+    return;
+
+  // Number of static columns in table
+  const int static_columns = 2;
+  // Number of dynamically changing columns
+  int n_optional_columns = 0;
+
+  // Abilities Section - Simple Actions
+  os << "\t\t\t\t\t\t<table class=\"sc\">\n"
+      << "\t\t\t\t\t\t\t<tr>\n"
+      << "\t\t\t\t\t\t\t\t<th class=\"left small\">Simple Action Stats</th>\n"
+      << "\t\t\t\t\t\t\t\t<th class=\"small\"><a href=\"#help-count\" class=\"help\">Execute</a></th>\n"
+      << "\t\t\t\t\t\t\t\t<th class=\"small\"><a href=\"#help-interval\" class=\"help\">Interval</a></th>\n";
+
+  os << "\t\t\t\t\t\t\t<tr>\n"
+      << "\t\t\t\t\t\t\t\t<th class=\"left small\">" << util::encode_html( actor -> name() ) << "</th>\n"
+      << "\t\t\t\t\t\t\t\t<td colspan=\"" << ( static_columns + n_optional_columns ) << "\" class=\"filler\"></td>\n"
+      << "\t\t\t\t\t\t\t</tr>\n";
+
+  unsigned n_row = 0;
+  for ( size_t i = 0; i < actor -> stats_list.size(); ++i )
+  {
+    if ( actor -> stats_list[ i ] -> compound_amount == 0 )
+      output_player_action( os, n_row, n_optional_columns, MASK_DMG | MASK_HEAL | MASK_ABSORB, actor -> stats_list[ i ], actor );
+  }
+
+  // Print pet statistics
+  for ( size_t i = 0; i < actor -> pet_list.size(); ++i )
+  {
+    pet_t* pet = actor -> pet_list[ i ];
+
+    bool first = true;
+    for ( size_t m = 0; m < pet -> stats_list.size(); ++m )
+    {
+      stats_t* s = pet -> stats_list[ m ];
+
+      if ( ! is_output_stat( MASK_DMG | MASK_HEAL | MASK_ABSORB, false, s ) )
+        continue;
+
+      if ( s -> parent && s -> parent -> player == pet )
+        continue;
+
+      if ( s -> compound_amount > 0 )
+        continue;
+
+      if ( first )
+      {
+        first = false;
+        os.printf(
+          "\t\t\t\t\t\t\t<tr>\n"
+          "\t\t\t\t\t\t\t\t<th class=\"left small\">pet - %s</th>\n"
+          "\t\t\t\t\t\t\t\t<td colspan=\"%d\" class=\"filler\"></td>\n"
+          "\t\t\t\t\t\t\t</tr>\n",
+          pet -> name_str.c_str(), 1 + static_columns + n_optional_columns );
+      }
+
+      output_player_action( os, n_row, n_optional_columns, MASK_DMG | MASK_HEAL | MASK_ABSORB, s, pet );
+    }
+  }
+
+  os << "\t\t\t\t\t\t</table>\n";
+}
+
 void print_html_player_abilities( report::sc_html_stream& os, player_t* p )
 {
   // open section
@@ -3265,6 +3382,7 @@ void print_html_player_abilities( report::sc_html_stream& os, player_t* p )
 
   output_player_damage_summary( os, p );
   output_player_heal_summary( os, p );
+  output_player_simple_ability_summary( os, p );
 
   // close section
   os << "\t\t\t\t\t</div>\n"

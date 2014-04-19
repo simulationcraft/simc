@@ -165,6 +165,13 @@ public:
     const spell_data_t* mental_anguish;
   } mastery_spells;
 
+  struct perk_spells_t
+  {
+    const spell_data_t* enhanced_mind_flay;
+    const spell_data_t* enhanced_shadow_orbs;
+    const spell_data_t* enhanced_shadow_word_death;
+  } perks;
+
   // Cooldowns
   struct cooldowns_t
   {
@@ -272,6 +279,7 @@ public:
     talents(),
     specs(),
     mastery_spells(),
+    perks(),
     cooldowns(),
     gains(),
     benefits(),
@@ -848,6 +856,11 @@ public:
       // FIX-ME: Needs to drop haste aura too.
       sform  -> expire();
     }
+  }
+
+  double shadow_orbs_to_consume() const
+  {
+    return std::min( 3.0, priest.resources.current[ RESOURCE_SHADOW_ORB ] );
   }
 
   priest_td_t& get_td( player_t* t ) const
@@ -2251,9 +2264,14 @@ struct shadow_word_death_t final : public priest_spell_t
     if ( result_is_hit( s -> result ) )
     {
       if ( over_20 )
+      {
         s -> result_amount /= 4.0;
-      else if ( ! priest.buffs.shadow_word_death_reset_cooldown -> check() )
+      }
+      // Assume from the wording of perk 'Enhanced Shadow Word: Death' that it's a 100% chance.
+      else if ( ! priest.buffs.shadow_word_death_reset_cooldown -> check() || priest.perks.enhanced_shadow_word_death -> ok() )
+      {
         generate_shadow_orb( 1, priest.gains.shadow_orb_swd );
+      }
     }
 
     priest_spell_t::impact( s );
@@ -2347,7 +2365,7 @@ struct devouring_plague_t final : public priest_spell_t
     {
       shadow_orb_state_t& dp_state = static_cast<shadow_orb_state_t&>( *state );
 
-      dp_state.orbs_used = as<int>( priest.resources.current[ current_resource() ] );
+      dp_state.orbs_used = as<int>( shadow_orbs_to_consume() );
 
       priest_spell_t::snapshot_state( state, type );
     }
@@ -2356,7 +2374,7 @@ struct devouring_plague_t final : public priest_spell_t
     {
       double m = priest_spell_t::action_ta_multiplier();
 
-      m *= priest.resources.current[ current_resource() ];
+      m *= shadow_orbs_to_consume();
 
       return m;
     }
@@ -2407,7 +2425,7 @@ struct devouring_plague_t final : public priest_spell_t
 
     if ( execute_state -> result != RESULT_MISS )
     {
-      resource_consumed = priest.resources.current[ current_resource() ];
+      resource_consumed = shadow_orbs_to_consume();
     }
 
     player -> resource_loss( current_resource(), resource_consumed, nullptr, this );
@@ -2483,6 +2501,12 @@ struct mind_flay_base_t : public priest_spell_t
     may_crit     = false;
     channeled    = true;
     hasted_ticks = false;
+
+    if ( priest.perks.enhanced_mind_flay -> ok() )
+    {
+      num_ticks += 1;
+      base_tick_time *= 1.0 + priest.perks.enhanced_mind_flay -> effectN( 1 ).percent();
+    }
   }
 
   virtual double action_multiplier() const override
@@ -3317,7 +3341,7 @@ struct void_entropy_t : public priest_spell_t
   {
     shadow_orb_state_t& dp_state = static_cast<shadow_orb_state_t&>( *state );
 
-    dp_state.orbs_used = as<int>( priest.resources.current[ current_resource() ] );
+    dp_state.orbs_used = as<int>( shadow_orbs_to_consume() );
 
     priest_spell_t::snapshot_state( state, type );
   }
@@ -3328,7 +3352,7 @@ struct void_entropy_t : public priest_spell_t
 
     if ( execute_state -> result != RESULT_MISS )
     {
-      resource_consumed = priest.resources.current[ current_resource() ];
+      resource_consumed = shadow_orbs_to_consume();
     }
 
     player -> resource_loss( current_resource(), resource_consumed, nullptr, this );
@@ -4831,7 +4855,11 @@ void priest_t::init_base_stats()
   base.stats.attack_power = 0.0;
 
   if ( specs.shadow_orbs -> ok() )
+  {
     resources.base[ RESOURCE_SHADOW_ORB ] = 3.0;
+
+    resources.base[ RESOURCE_SHADOW_ORB ] += perks.enhanced_shadow_orbs -> effectN( 1 ).base_value();
+  }
 
   base.attack_power_per_strength = 1.0;
   base.spell_power_per_intellect = 1.0;
@@ -4930,6 +4958,11 @@ void priest_t::init_spells()
   mastery_spells.shield_discipline    = find_mastery_spell( PRIEST_DISCIPLINE );
   mastery_spells.echo_of_light        = find_mastery_spell( PRIEST_HOLY );
   mastery_spells.mental_anguish       = find_mastery_spell( PRIEST_SHADOW );
+
+  // Perk Spells
+  perks.enhanced_mind_flay            = find_perk_spell( "Enhanced Mind Flay" );
+  perks.enhanced_shadow_orbs          = find_perk_spell( "Enhanced Shadow Orbs" );
+  perks.enhanced_shadow_word_death    = find_perk_spell( "Enhanced Shadow Word: Death" );
 
   // Glyphs
   glyphs.circle_of_healing            = find_glyph_spell( "Glyph of Circle of Healing" );
