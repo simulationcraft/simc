@@ -1825,6 +1825,8 @@ void print_html_player_statistics( report::sc_html_stream& os, player_t* p, play
   report::print_html_sample_data( os, p -> sim, p -> collected_data.heal, "Heal", sd_counter );
   report::print_html_sample_data( os, p -> sim, p -> collected_data.htps, "HTPS", sd_counter );
   report::print_html_sample_data( os, p -> sim, p -> collected_data.theck_meloree_index, "TMI", sd_counter );
+  report::print_html_sample_data( os, p -> sim, p -> collected_data.effective_theck_meloree_index, "ETMI", sd_counter );
+  report::print_html_sample_data( os, p -> sim, p -> collected_data.max_spike_amount, "MSD", sd_counter );
 
   os << "\t\t\t\t\t\t\t\t<tr>\n"
      "\t\t\t\t\t\t\t\t<td>\n";
@@ -2609,24 +2611,29 @@ void print_html_player_description( report::sc_html_stream& os, sim_t* sim, play
                p -> collected_data.hps.mean() + p -> collected_data.aps.mean(), 
                p -> collected_data.aps.mean() );
     // print TMI
-    double tmi_display =  p -> collected_data.theck_meloree_index.mean();
-    std::string tmi_letter = " ";
-    if ( tmi_display >= 1000000000.0 )
-      os.printf( ", %1.2e%sTMI\n", tmi_display, tmi_letter.c_str() );
+    double tmi_display = p -> collected_data.theck_meloree_index.mean();
+    if ( tmi_display >= 1.0e7 )
+      os.printf( ", %.2fM TMI", tmi_display / 1.0e6 );
+    else if ( std::abs( tmi_display ) <= 999.9 )
+      os.printf( ", %.3fk TMI", tmi_display / 1.0e3 );
     else
+      os.printf( ", %.1fk TMI", tmi_display / 1.0e3 );
+    // if we're using a non-standard window, append that to the label appropriately (i.e. TMI-4.0 for a 4.0-second window)
+    if ( p -> tmi_window != 6.0 )
+      os.printf( "-%1.1f", p -> tmi_window );
+
+    if ( sim -> show_etmi || sim -> player_no_pet_list.size() > 1 )
     {
-      if ( tmi_display >= 10000000.0 )
-      {
-        tmi_display /= 1e6;
-        tmi_letter = "M ";
-      }
-      else if ( tmi_display >= 999.9 ) 
-      {
-        tmi_display /= 1e3;
-        tmi_letter = "k ";
-      }
-      os.printf( ", %.1f%sTMI\n", tmi_display, tmi_letter.c_str() );
+      double etmi_display = p -> collected_data.effective_theck_meloree_index.mean();
+      if ( etmi_display >= 1.0e7 )
+        os.printf( ", %.1fk ETMI", etmi_display / 1.0e6 );
+      else if ( std::abs( etmi_display ) <= 999.9 )
+        os.printf( ", %.3fk ETMI", etmi_display / 1.0e3 );
+      else
+        os.printf( ", %.1fk ETMI", etmi_display / 1.0e3 );
     }
+
+    os << "\n";
   }
   os << "</h2>\n";
 
@@ -2888,12 +2895,12 @@ void print_html_player_results_spec_gear( report::sc_html_stream& os, sim_t* sim
     os << "\t\t\t\t\t\t\t\t<td>&nbsp&nbsp&nbsp&nbsp&nbsp</td>\n";
 
     // print Max Spike Size stats
-    os.printf( "\t\t\t\t\t\t\t\t<td>%.1f%%</td>\n", cd.max_spike_amount.mean() * 100 );
-    os.printf( "\t\t\t\t\t\t\t\t<td>%.1f%%</td>\n", cd.max_spike_amount.min() * 100 );
-    os.printf( "\t\t\t\t\t\t\t\t<td>%.1f%%</td>\n", cd.max_spike_amount.max() * 100 );
+    os.printf( "\t\t\t\t\t\t\t\t<td>%.1f%%</td>\n", cd.max_spike_amount.mean() );
+    os.printf( "\t\t\t\t\t\t\t\t<td>%.1f%%</td>\n", cd.max_spike_amount.min() );
+    os.printf( "\t\t\t\t\t\t\t\t<td>%.1f%%</td>\n", cd.max_spike_amount.max() );
     
     // print rough estimate of spike frequency
-    os.printf( "\t\t\t\t\t\t\t\t<td>%.1f</td>\n", cd.theck_meloree_index.mean() ? std::exp( cd.theck_meloree_index.mean() / 1e3 / cd.max_spike_amount.mean() / 100 ) : 0.0 );
+    os.printf( "\t\t\t\t\t\t\t\t<td>%.1f</td>\n", cd.theck_meloree_index.mean() ? std::exp( cd.theck_meloree_index.mean() / 1e3 / cd.max_spike_amount.mean() ) : 0.0 );
 
     // End defensive table
     os << "\t\t\t\t\t\t\t</tr>\n"

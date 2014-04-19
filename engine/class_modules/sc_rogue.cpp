@@ -1113,7 +1113,7 @@ struct melee_t : public rogue_attack_t
     timespan_t t = rogue_attack_t::execute_time();
     if ( first )
     {
-      return ( weapon -> slot == SLOT_OFF_HAND ) ? ( sync_weapons ? std::min( t / 2, timespan_t::from_seconds( 0.01 ) ) : t / 2 ) : timespan_t::from_seconds( 0.01 );
+      return ( weapon -> slot == SLOT_OFF_HAND ) ? ( sync_weapons ? std::min( t / 2, timespan_t::zero() ) : t / 2 ) : timespan_t::zero();
     }
     return t;
   }
@@ -3198,7 +3198,7 @@ void rogue_t::init_action_list()
     // Rotation
     def -> add_action( this, "Slice and Dice", "if=buff.slice_and_dice.remains<2|(buff.slice_and_dice.remains<15&buff.bandits_guile.stack=11&combo_points>=4)" );
 
-    def -> add_talent( this, "Marked for Death", "if=combo_points=0&dot.revealing_strike.ticking" );
+    def -> add_talent( this, "Marked for Death", "if=combo_points<=1&dot.revealing_strike.ticking" );
 
     // Generate combo points, or use combo points
     def -> add_action( "run_action_list,name=generator,if=combo_points<5|(talent.anticipation.enabled&anticipation_charges<=4&!dot.revealing_strike.ticking)" );

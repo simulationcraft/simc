@@ -1470,19 +1470,19 @@ void print_html_sim_summary( report::sc_html_stream& os, sim_t* sim, sim_report_
     "\t\t\t\t\t\t\t\t<th>CPU Seconds:</th>\n"
     "\t\t\t\t\t\t\t\t<td>%.4f</td>\n"
     "\t\t\t\t\t\t\t</tr>\n",
-    sim -> elapsed_cpu.total_seconds() );
+    sim -> elapsed_cpu );
   os.printf(
     "\t\t\t\t\t\t\t<tr class=\"left\">\n"
     "\t\t\t\t\t\t\t\t<th>Physical Seconds:</th>\n"
     "\t\t\t\t\t\t\t\t<td>%.4f</td>\n"
     "\t\t\t\t\t\t\t</tr>\n",
-    sim -> elapsed_time.total_seconds() );
+    sim -> elapsed_time );
   os.printf(
     "\t\t\t\t\t\t\t<tr class=\"left\">\n"
     "\t\t\t\t\t\t\t\t<th>Speed Up:</th>\n"
     "\t\t\t\t\t\t\t\t<td>%.0f</td>\n"
     "\t\t\t\t\t\t\t</tr>\n",
-    sim -> iterations * sim -> simulation_length.mean() / sim -> elapsed_cpu.total_seconds() );
+    sim -> iterations * sim -> simulation_length.mean() / sim -> elapsed_cpu );
 
   os << "\t\t\t\t\t\t\t<tr class=\"left\">\n"
      << "\t\t\t\t\t\t\t\t<td><h2>Settings:</h2></td>\n"
@@ -2187,7 +2187,7 @@ void print_html_help_boxes( report::sc_html_stream& os, sim_t* sim )
   os << "\t\t<div id=\"help-tmi\">\n"
      << "\t\t\t<div class=\"help-box\">\n"
      << "\t\t\t\t<h3>Theck-Meloree Index</h3>\n"
-     << "\t\t\t\t<p>Measure of damage smoothness, calculated over entire fight length. Related to max spike damage, 1k TMI is roughly equivalent to 1% of your health.  Lower is better.</p>\n"
+     << "\t\t\t\t<p>Measure of damage smoothness, calculated over entire fight length. Related to max spike damage, 1k TMI is roughly equivalent to 1% of your health. TMI ignores external healing and absorbs. Lower is better.</p>\n"
      << "\t\t\t</div>\n"
      << "\t\t</div>\n";
 
@@ -2208,7 +2208,7 @@ void print_html_help_boxes( report::sc_html_stream& os, sim_t* sim )
 
   os << "\t\t<div id=\"help-msd-freq\">\n"
      << "\t\t\t<div class=\"help-box\">\n"
-     << "\t\t\t\t<h3>Max Spike Damage</h3>\n"
+     << "\t\t\t\t<h3>Max Spike Damage Frequency</h3>\n"
      << "\t\t\t\t<p>This is roughly how many spikes as large as MSD Mean you take per iteration. Calculated from TMI and MSD values.</p>\n"
      << "\t\t\t</div>\n"
      << "\t\t</div>\n";

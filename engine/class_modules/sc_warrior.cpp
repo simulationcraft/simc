@@ -885,10 +885,11 @@ void warrior_attack_t::impact( action_state_t* s )
 struct melee_t : public warrior_attack_t
 {
   int sync_weapons;
+  bool first;
 
   melee_t( const std::string& name, warrior_t* p, int sw ) :
     warrior_attack_t( name, p, spell_data_t::nil() ),
-    sync_weapons( sw )
+    sync_weapons( sw ),  first( true )
   {
     school      = SCHOOL_PHYSICAL;
     may_glance  = true;
@@ -900,20 +901,20 @@ struct melee_t : public warrior_attack_t
     if ( p -> dual_wield() ) base_hit -= 0.19;
   }
 
+  void reset()
+  {
+    warrior_attack_t::reset();
+
+    first = true;
+  }
+
   virtual timespan_t execute_time() const
   {
     timespan_t t = warrior_attack_t::execute_time();
-
-    if ( player -> in_combat )
+    if ( first )
+      return ( weapon -> slot == SLOT_OFF_HAND ) ? ( sync_weapons ? std::min( t / 2, timespan_t::zero() ) : t / 2 ) : timespan_t::zero();
+    else
       return t;
-
-    if ( weapon -> slot == SLOT_MAIN_HAND || sync_weapons )
-      return timespan_t::from_seconds( 0.02 );
-
-    // Before combat begins, unless we are under sync_weapons the OH is
-    // delayed by half its swing time.
-
-    return timespan_t::from_seconds( 0.02 ) + t / 2;
   }
 
   virtual void execute()
@@ -922,6 +923,8 @@ struct melee_t : public warrior_attack_t
     // must be applied before the (repeating) event schedule, and the decrement
     // here must be done before it.
     trigger_flurry( this, -1 );
+    if ( first )
+      first = false;
 
     warrior_t*p = cast();
 
@@ -946,9 +949,8 @@ struct melee_t : public warrior_attack_t
     }
     // Any attack that hits or is dodged/blocked/parried generates rage
     if ( s -> result != RESULT_MISS )
-    {
       trigger_rage_gain();
-    }
+
   }
 
   virtual double action_multiplier() const
@@ -3600,11 +3602,11 @@ void warrior_t::apl_tg_fury()
   single_target -> add_action( this, "Heroic Leap", "if=debuff.colossus_smash.up" );
   single_target -> add_action( this, "Bloodthirst", "if=!buff.enrage.up" );
   single_target -> add_action( "storm_bolt,if=enabled&debuff.colossus_smash.up" );
-  single_target -> add_action( this, "Raging Blow", "if=buff.raging_blow.stack=2&debuff.colossus_smash.up&target.health.pct>=20",
+  single_target -> add_action( this, "Raging Blow", "if=buff.raging_blow.stack=2&debuff.colossus_smash.up",
                                "Delay Bloodthirst if 2 stacks of raging blow are available inside Colossus Smash." );
   single_target -> add_action( "dragon_roar,if=enabled&(!debuff.colossus_smash.up&(buff.bloodbath.up|!talent.bloodbath.enabled))" );
   single_target -> add_action( this, "Bloodthirst" );
-  single_target -> add_action( this, "Wild Strike", "if=buff.bloodsurge.react&target.health.pct>=20&cooldown.bloodthirst.remains<=1",
+  single_target -> add_action( this, "Wild Strike", "if=buff.bloodsurge.react&cooldown.bloodthirst.remains<=1&cooldown.bloodthirst.remains>0.3",
                                "The GCD reduction of the Bloodsurge buff allows 3 Wild Strikes in-between Bloodthirst." );
   single_target -> add_action( this, "Colossus Smash", "" ,
                                "The debuff from Colossus Smash lasts 6.5 seconds and also has 0.25~ seconds of travel time. This allows 4 1.5 second globals to be used inside of it every time now." );
@@ -3613,8 +3615,8 @@ void warrior_t::apl_tg_fury()
   single_target -> add_action( this, "Raging Blow", "if=target.health.pct<20|buff.raging_blow.stack=2|debuff.colossus_smash.up|buff.raging_blow.remains<=3" );
   single_target -> add_action( "#ravager"  );
   single_target -> add_action( "bladestorm,if=enabled,interrupt_if=cooldown.bloodthirst.remains<1" );
-  single_target -> add_action( this, "Wild Strike", "if=buff.bloodsurge.up" );
   single_target -> add_action( this, "Raging Blow", "if=cooldown.colossus_smash.remains>=1" );
+  single_target -> add_action( this, "Wild Strike", "if=buff.bloodsurge.up" );
   single_target -> add_action( "shockwave,if=enabled" );
   single_target -> add_action( this, "Wild Strike", "if=(debuff.colossus_smash.up|(cooldown.colossus_smash.remains>=2&rage>=70))&target.health.pct>=20" );
   single_target -> add_action( "impending_victory,if=enabled&target.health.pct>=20&cooldown.colossus_smash.remains>=1.5" );
