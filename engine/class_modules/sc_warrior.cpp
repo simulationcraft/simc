@@ -1185,17 +1185,15 @@ struct bloodthirst_heal_t : public heal_t
     if( p -> buff.raging_blow_glyph -> up() )
       pct_heal *= 1.0 + p -> glyphs.raging_blow -> effectN( 1 ).percent();
 
-    heal_t::execute();
+    double amount = state -> target -> resources.max[ RESOURCE_HEALTH ] * pct_heal;
+    // Record initial amount to state
+    state -> result_raw = state -> result_total = amount;
+
     if( p -> buff.raging_blow_glyph -> up() )
     {
       pct_heal /= 1.0 + p -> glyphs.raging_blow -> effectN( 1 ).percent();
       p -> buff.raging_blow_glyph -> expire();
     }
-
-    double amount = state -> target -> resources.max[ RESOURCE_HEALTH ] * pct_heal;
-
-    // Record initial amount to state
-    state -> result_raw = state -> result_total = amount;
 
     return amount;
   }
