@@ -818,7 +818,7 @@ struct melee_t : public warrior_attack_t
     if ( p -> dual_wield() ) base_hit -= 0.19;
   }
 
- void reset()
+  void reset()
   {
     warrior_attack_t::reset();
 

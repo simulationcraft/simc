@@ -2378,8 +2378,10 @@ bool death_knight_spell_t::ready()
 struct melee_t : public death_knight_melee_attack_t
 {
   int sync_weapons;
+  bool first;
+
   melee_t( const char* name, death_knight_t* p, int sw ) :
-    death_knight_melee_attack_t( name, p ), sync_weapons( sw )
+    death_knight_melee_attack_t( name, p ), sync_weapons( sw ), first ( true )
   {
     school          = SCHOOL_PHYSICAL;
     may_glance      = true;
@@ -2391,15 +2393,31 @@ struct melee_t : public death_knight_melee_attack_t
       base_hit -= 0.19;
   }
 
+ void reset()
+  {
+    death_knight_melee_attack_t::reset();
+
+    first = true;
+  }
+
   virtual timespan_t execute_time() const
   {
     timespan_t t = death_knight_melee_attack_t::execute_time();
-    if ( ! player -> in_combat )
-    {
-      return ( weapon -> slot == SLOT_OFF_HAND ) ? ( sync_weapons ? std::min( t / 2, timespan_t::from_seconds( 0.2 ) ) : t / 2 ) : timespan_t::from_seconds( 0.01 );
-    }
-    return t;
+
+    if ( first )
+      return ( weapon -> slot == SLOT_OFF_HAND ) ? ( sync_weapons ? std::min( t / 2, timespan_t::from_seconds( 0.01 ) ) : t / 2 ) : timespan_t::from_seconds( 0.01 );
+    else
+      return t;
   }
+
+  virtual void execute()
+  {
+    if ( first )
+      first = false;
+
+    death_knight_melee_attack_t::execute();
+  }
+
 
   virtual void impact( action_state_t* s )
   {
