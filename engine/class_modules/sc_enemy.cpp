@@ -32,9 +32,8 @@ struct melee_t : public melee_attack_t
     background  = true;
     repeating   = true;
     trigger_gcd = timespan_t::zero();
-    base_dd_min = 260000;
+    base_dd_min = 26000;
     base_execute_time = timespan_t::from_seconds( 2.4 );
-    aoe = -1;
   }
 
   virtual size_t available_targets( std::vector< player_t* >& tl ) const
@@ -154,7 +153,7 @@ struct melee_nuke_t : public attack_t
     may_miss = may_dodge = may_parry = false;
     may_block = true;
     base_execute_time = timespan_t::from_seconds( 3.0 );
-    base_dd_min = 250000;
+    base_dd_min = 25000;
 
     cooldown = player -> get_cooldown( name_str + "_" + target -> name() );
 
@@ -170,7 +169,7 @@ struct melee_nuke_t : public attack_t
       opt_null()
     };
     parse_options( options, options_str );
-    
+        
     // check that the specified damage range is sane
     if ( damage_range > base_dd_min || damage_range < 0 )
       damage_range = 0.1 * base_dd_min; // if not, set to +/-10%
@@ -187,6 +186,32 @@ struct melee_nuke_t : public attack_t
     if ( aoe_tanks == 1 )
       aoe = -1;
   }
+
+  virtual size_t available_targets( std::vector< player_t* >& tl ) const
+  {
+    // TODO: This does not work for heals at all, as it presumes enemies in the
+    // actor list.
+
+    tl.clear();
+    tl.push_back( target );
+    for ( size_t i = 0, actors = sim -> actor_list.size(); i < actors; i++ )
+    {
+      //only add non heal_target tanks to this list for now
+      if ( !sim -> actor_list[ i ] -> is_sleeping() &&
+           !sim -> actor_list[ i ] -> is_enemy() &&
+           sim -> actor_list[ i ] -> primary_role() == ROLE_TANK &&
+           sim -> actor_list[ i ] != target &&
+           sim -> actor_list[ i ] != sim -> heal_target )
+        tl.push_back( sim -> actor_list[ i ] );
+    }
+    //if we have no target (no tank), add the healing target as substitute
+    if ( tl.empty() )
+    {
+      tl.push_back( sim->heal_target );
+    }
+    return tl.size();
+  }
+
   
   virtual double calculate_direct_amount( action_state_t* s )
   {
@@ -200,7 +225,6 @@ struct melee_nuke_t : public attack_t
 
     return amount;
   }
-
 };
 
 // Spell Nuke ===============================================================
@@ -212,7 +236,7 @@ struct spell_nuke_t : public spell_t
   {
     school = SCHOOL_FIRE;
     base_execute_time = timespan_t::from_seconds( 3.0 );
-    base_dd_min = 50000;
+    base_dd_min = 5000;
 
     cooldown = player -> get_cooldown( name_str + "_" + target -> name() );
 
@@ -298,7 +322,7 @@ struct spell_dot_t : public spell_t
     school = SCHOOL_FIRE;
     base_tick_time = timespan_t::from_seconds( 1.0 );
     num_ticks = 10;
-    base_td = 50000;
+    base_td = 5000;
 
     cooldown = player -> get_cooldown( name_str + "_" + target -> name() );
 
@@ -368,7 +392,7 @@ struct spell_aoe_t : public spell_t
   {
     school = SCHOOL_FIRE;
     base_execute_time = timespan_t::from_seconds( 3.0 );
-    base_dd_min = 50000;
+    base_dd_min = 5000;
 
     cooldown = player -> get_cooldown( name_str + "_" + target -> name() );
 
@@ -390,7 +414,6 @@ struct spell_aoe_t : public spell_t
 
     may_crit = false;
 
-    aoe = -1;
   }
 
   virtual size_t available_targets( std::vector< player_t* >& tl ) const
@@ -578,7 +601,7 @@ struct heal_enemy_t : public enemy_t
 
   virtual void init_resources( bool /* force */ )
   {
-    resources.base[ RESOURCE_HEALTH ] = 200000000.0;
+    resources.base[ RESOURCE_HEALTH ] = 20000000.0;
 
     player_t::init_resources( true );
 
@@ -802,15 +825,15 @@ void enemy_t::init_action_list()
         switch ( tmi_boss_enum )
         {
           case TMI_NONE:
-            action_list_str += "/auto_attack,damage=" + util::to_string( 700000 * level_mult ) + ",attack_speed=2,aoe_tanks=1";
-            action_list_str += "/spell_dot,damage=" + util::to_string( 50000 * level_mult ) + ",tick_time=2,num_ticks=10,cooldown=40,aoe_tanks=1,if=!ticking";
-            action_list_str += "/spell_nuke,damage=" + util::to_string( 500000 * level_mult ) + ",cooldown=35,attack_speed=3,aoe_tanks=1";
-            action_list_str += "/melee_nuke,damage=" + util::to_string( 1000000 * level_mult ) + ",cooldown=27,attack_speed=3,aoe_tanks=1";
+            action_list_str += "/auto_attack,damage=" + util::to_string( 70000 * level_mult ) + ",attack_speed=2,aoe_tanks=1";
+            action_list_str += "/spell_dot,damage=" + util::to_string( 5000 * level_mult ) + ",tick_time=2,num_ticks=10,cooldown=40,aoe_tanks=1,if=!ticking";
+            action_list_str += "/spell_nuke,damage=" + util::to_string( 50000 * level_mult ) + ",cooldown=35,attack_speed=3,aoe_tanks=1";
+            action_list_str += "/melee_nuke,damage=" + util::to_string( 100000 * level_mult ) + ",cooldown=27,attack_speed=3,aoe_tanks=1";
             break;
           default:
             // boss damage information ( could move outside this function and make a constant )
-            int aa_damage [ 9 ] =  { 0, 550000, 750000, 900000, 1250000, 1550000, 1900000, 2300000, 3000000 };
-            int dot_damage [ 9 ] = { 0,  27500,  37500,  45000,   62500,   77500,   95000,  115000,  150000 };
+            int aa_damage [ 9 ] =  { 0, 5500, 7500, 9000, 12500, 15500, 19000, 23000, 30000 };
+            int dot_damage [ 9 ] = { 0,  2700,  3750,  4500,   6250,   7750,   9500,  11500,  15000 };
             action_list_str += "/auto_attack,damage=" + util::to_string( aa_damage[ tmi_boss_enum ] ) + ",attack_speed=1.5";
             action_list_str += "/spell_dot,damage=" + util::to_string( dot_damage[ tmi_boss_enum ] ) + ",tick_time=2,num_ticks=15,aoe_tanks=1,if=!ticking";
         }
@@ -822,7 +845,7 @@ void enemy_t::init_action_list()
           if ( !sim -> player_list[ i ] -> is_pet() && sim -> player_list[ i ] -> primary_role() == ROLE_HEAL )
             ++healers;
 
-        action_list_str += "/auto_attack,damage=" + util::to_string( 200000 * healers * level / 85 ) + ",attack_speed=2.0,target=" + sim -> heal_target -> name_str;
+        action_list_str += "/auto_attack,damage=" + util::to_string( 20000 * healers * level / 85 ) + ",attack_speed=2.0,target=" + sim -> heal_target -> name_str;
       }
     }
   }
