@@ -34,6 +34,7 @@ struct melee_t : public melee_attack_t
     trigger_gcd = timespan_t::zero();
     base_dd_min = 26000;
     base_execute_time = timespan_t::from_seconds( 2.4 );
+    aoe = -1;
   }
 
   virtual size_t available_targets( std::vector< player_t* >& tl ) const
@@ -414,6 +415,7 @@ struct spell_aoe_t : public spell_t
 
     may_crit = false;
 
+    aoe = -1;
   }
 
   virtual size_t available_targets( std::vector< player_t* >& tl ) const
