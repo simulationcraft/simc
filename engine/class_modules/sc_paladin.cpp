@@ -720,7 +720,7 @@ struct avengers_shield_t : public paladin_spell_t
 struct avenging_wrath_t : public paladin_spell_t
 {
   avenging_wrath_t( paladin_t* p, const std::string& options_str )
-    : paladin_spell_t( "avenging_wrath", p, p -> find_class_spell( "Avenging Wrath" ) )
+    : paladin_spell_t( "avenging_wrath", p, p -> find_specialization_spell( "Avenging Wrath" ) )
   {
     parse_options( NULL, options_str );
 
@@ -1045,7 +1045,7 @@ struct consecration_t : public paladin_spell_t
 struct devotion_aura_t : public paladin_spell_t
 {
   devotion_aura_t( paladin_t* p, const std::string& options_str ) :
-    paladin_spell_t( "devotion_aura", p, p -> find_class_spell( "Devotion Aura" ) )
+    paladin_spell_t( "devotion_aura", p, p -> find_specialization_spell( "Devotion Aura" ) )
   {
     parse_options( NULL, options_str );
 
@@ -1230,11 +1230,17 @@ struct eternal_flame_t : public paladin_heal_t
   {
     parse_options( NULL, options_str );
 
-    // remove =GCD constraints for prot
+    // remove GCD constraints & cast time for prot
     if ( p -> passives.guarded_by_the_light -> ok() )
     {
       trigger_gcd = timespan_t::zero();
       use_off_gcd = true;
+      base_execute_time *= 1 + p -> passives.guarded_by_the_light -> effectN( 10 ).percent();
+    }
+    // remove cast time for ret
+    if ( p -> passives.sword_of_light -> ok() )
+    {
+      base_execute_time *= 1 + p -> passives.sword_of_light -> effectN( 9 ).percent();
     }
   }
 
@@ -2439,11 +2445,17 @@ struct word_of_glory_t : public paladin_heal_t
     // healing coefficients stored in 130551
     parse_effect_data( p -> find_spell( 130551 ) -> effectN( 1 ) );
 
-    // remove =GCD constraints for prot
+    // remove GCD constraints & cast time for prot
     if ( p -> passives.guarded_by_the_light -> ok() )
     {
       trigger_gcd = timespan_t::zero();
       use_off_gcd = true;
+      base_execute_time *= 1 + p -> passives.guarded_by_the_light -> effectN( 10 ).percent();
+    }
+    // remove cast time for ret
+    if ( p -> passives.sword_of_light -> ok() )
+    {
+      base_execute_time *= 1 + p -> passives.sword_of_light -> effectN( 9 ).percent();
     }
   }
 
@@ -2538,12 +2550,21 @@ struct word_of_glory_damage_t : public paladin_spell_t
     resource_consumed = RESOURCE_HOLY_POWER;
     resource_current = RESOURCE_HOLY_POWER;
     base_costs[RESOURCE_HOLY_POWER] = 1;
-    if ( p -> specialization() == PALADIN_PROTECTION )
+   
+    base_execute_time = timespan_t::from_seconds( 1.5 ); // TODO: test if this still has a cast time as holy with HW glyph; irrelevant for prot/ret
+
+    // remove GCD constraints & cast time for prot
+    if ( p -> passives.guarded_by_the_light -> ok() )
     {
+      trigger_gcd = timespan_t::zero();
       use_off_gcd = true;
+      base_execute_time *= 1 + p -> passives.guarded_by_the_light -> effectN( 10 ).percent();
     }
-    else
-      trigger_gcd = timespan_t::from_seconds( 1.5 ); // not sure why, but trigger_gcd defaults to zero for WoG when loaded from spell db
+    // remove cast time for ret
+    if ( p -> passives.sword_of_light -> ok() )
+    {
+      base_execute_time *= 1 + p -> passives.sword_of_light -> effectN( 9 ).percent();
+    }
 
   }
 
@@ -4144,7 +4165,7 @@ void paladin_t::create_buffs()
   buffs.selfless_healer        = buff_creator_t( this, "selfless_healer", find_spell( 114250 ) );
 
   // General
-  buffs.avenging_wrath         = buff_creator_t( this, "avenging_wrath", find_class_spell( "Avenging Wrath" ) )
+  buffs.avenging_wrath         = buff_creator_t( this, "avenging_wrath", find_specialization_spell( "Avenging Wrath" ) )
                                  .cd( timespan_t::zero() ) // Let the ability handle the CD
                                  .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
   if ( find_talent_spell( "Sanctified Wrath" ) -> ok() )
@@ -4257,7 +4278,7 @@ void paladin_t::generate_action_prio_list_prot()
   for ( size_t i = 0; i < racial_actions.size(); i++ )
     def -> add_action( racial_actions[ i ] );
 
-  def -> add_action( this, "Avenging Wrath" );
+  //def -> add_action( this, "Avenging Wrath" );
   def -> add_talent( this, "Holy Avenger" );
   def -> add_action( this, "Divine Protection" ); // use on cooldown
   def -> add_action( this, "Guardian of Ancient Kings" ); // use on cooldown
@@ -4267,7 +4288,7 @@ void paladin_t::generate_action_prio_list_prot()
   //def -> add_action( this, "Word of Glory", "if=buff.bastion_of_glory.react>3&incoming_damage_5s>health.max*0.8" );
   //def -> add_talent( this, "Eternal Flame", "if=buff.bastion_of_glory.react>3&incoming_damage_5s>health.max*0.8" );
   def -> add_action( this, "Shield of the Righteous", "if=holy_power>=5|buff.divine_purpose.react|incoming_damage_1500ms>=health.max*0.3" );
-  def -> add_action( this, "Judgment", "if=talent.sanctified_wrath.enabled&buff.avenging_wrath.react" );
+  //def -> add_action( this, "Judgment", "if=talent.sanctified_wrath.enabled&buff.avenging_wrath.react" );
   def -> add_action( "wait,sec=cooldown.judgment.remains,if=talent.sanctified_wrath.enabled&cooldown.judgment.remains>0&cooldown.judgment.remains<=0.5" );
   def -> add_action( this, "Crusader Strike" );
   def -> add_action( "wait,sec=cooldown.crusader_strike.remains,if=cooldown.crusader_strike.remains>0&cooldown.crusader_strike.remains<=0.5" );
