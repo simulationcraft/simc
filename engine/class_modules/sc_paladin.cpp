@@ -538,6 +538,16 @@ struct paladin_heal_t : public paladin_spell_base_t<heal_t>
     return am;
   }
 
+  virtual double action_ta_multiplier() const
+  {
+    double am = base_t::action_ta_multiplier();
+
+    if ( p() -> active_seal == SEAL_OF_INSIGHT && benefits_from_seal_of_insight )
+      am *= 1.0 + p() -> passives.seal_of_insight -> effectN( 2 ).percent();
+
+    return am;
+  }
+
   virtual void impact( action_state_t* s )
   {
     base_t::impact( s );
@@ -1222,9 +1232,51 @@ struct divine_shield_t : public paladin_spell_t
 
 // Eternal Flame  ===========================================================
 
-// contains all information for both the heal and the HoT component
+// HoT portion
+struct eternal_flame_hot_t : public paladin_heal_t
+{
+  eternal_flame_hot_t( paladin_t* p ) :
+    paladin_heal_t( "eternal_flame", p, p -> find_spell( 156322 ) )
+  {
+    background = true;
+    benefits_from_seal_of_insight = true; // TODO: test
+  }
+  
+  virtual void impact( action_state_t* s )
+  {
+    paladin_heal_t::impact( s );
+
+    td( s -> target ) -> buffs.eternal_flame -> trigger( 1, buff_t::DEFAULT_VALUE(), -1, s -> action -> hasted_num_ticks( s -> haste ) * s -> action -> tick_time( s -> haste ) + timespan_t::from_millis( 1 ) );
+  }
+  
+  virtual void last_tick( dot_t* d )
+  {
+    td( d -> state -> target ) -> buffs.eternal_flame -> expire();
+
+    paladin_heal_t::last_tick( d );
+  }
+
+  virtual double action_ta_multiplier() const
+  {
+    // this scales just the ticks
+    double am = paladin_heal_t::action_ta_multiplier();
+
+    if ( target == player )
+    {
+      // HoT is more effective when used on self
+      am *= 1.0 + p() -> talents.eternal_flame -> effectN( 2 ).percent(); 
+    }
+
+    return am;
+  }
+
+};
+
+// Direct Heal
 struct eternal_flame_t : public paladin_heal_t
 {
+  eternal_flame_hot_t* hot;
+
   eternal_flame_t( paladin_t* p, const std::string& options_str ) :
     paladin_heal_t( "eternal_flame", p, p -> find_talent_spell( "Eternal Flame" ) )
   {
@@ -1242,6 +1294,9 @@ struct eternal_flame_t : public paladin_heal_t
     {
       base_execute_time *= 1 + p -> passives.sword_of_light -> effectN( 9 ).percent();
     }
+
+    // create HoT child object
+    hot = new eternal_flame_hot_t( p );
   }
 
   virtual void update_ready( timespan_t cd_duration )
@@ -1296,24 +1351,15 @@ struct eternal_flame_t : public paladin_heal_t
     return am;
   }
 
-  virtual double action_ta_multiplier() const
-  {
-    // this scales just the ticks
-    double am = paladin_heal_t::action_ta_multiplier();
-    if ( target == player )
-    {
-      // HoT is twice as effective when used on self
-      am *= 1.0 + p() -> talents.eternal_flame -> effectN( 3 ).percent(); 
-    }
-
-    return am;
-  }
-
   virtual void execute()
   {
     double hopo = std::min( 3, p() -> holy_power_stacks() ); // can't consume more than 3 holy power
 
     paladin_heal_t::execute();
+
+    // trigger HoT
+    hot -> target = target;
+    hot -> schedule_execute();
 
     // Glyph of Word of Glory handling
     if ( p() -> spells.glyph_of_word_of_glory -> ok() )
@@ -1331,20 +1377,6 @@ struct eternal_flame_t : public paladin_heal_t
       p() -> buffs.bastion_of_glory -> expire();
       p() -> buffs.bastion_of_power -> expire();
     }
-  }
-
-  virtual void impact( action_state_t* s )
-  {
-    paladin_heal_t::impact( s );
-
-    //td( s -> target ) -> buffs.eternal_flame -> trigger( 1, buff_t::DEFAULT_VALUE(), -1, s -> action -> hasted_num_ticks( s -> haste ) * s -> action -> tick_time( s -> haste ) + timespan_t::from_millis( 1 ) );
-  }
-
-  virtual void last_tick( dot_t* d )
-  {
-    td( d -> state -> target ) -> buffs.eternal_flame -> expire();
-
-    paladin_heal_t::last_tick( d );
   }
 };
 
@@ -3742,11 +3774,10 @@ struct eternal_flame_t : public buff_t
 {
   paladin_td_t* pair;
   eternal_flame_t( paladin_td_t* q ) :
-    buff_t( buff_creator_t( *q, "eternal_flame", q -> source -> find_spell( 114163 ) ) ),
+    buff_t( buff_creator_t( *q, "eternal_flame", q -> source -> find_spell( 156322 ) ) ),
     pair( q )
   {
     cooldown -> duration = timespan_t::zero();
-
   }
 
   virtual void expire_override()
