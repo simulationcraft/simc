@@ -1416,10 +1416,7 @@ void print_html_player_scale_factors( report::sc_html_stream& os, sim_t* sim, pl
   {
     if ( p -> sim -> scaling -> has_scale_factors() )
     {
-      int colspan = 0; // Count stats
-      for ( stat_e i = STAT_NONE; i < STAT_MAX; i++ )
-        if ( p -> scales_with[ i ] )
-          ++colspan;
+      int colspan = p -> scaling_stats.size();
 
       os << "\t\t\t\t\t\t<table class=\"sc mt\">\n";
 
@@ -1429,13 +1426,13 @@ void print_html_player_scale_factors( report::sc_html_stream& os, sim_t* sim, pl
 
       os << "\t\t\t\t\t\t\t<tr>\n"
          << "\t\t\t\t\t\t\t\t<th></th>\n";
-      for ( stat_e i = STAT_NONE; i < STAT_MAX; i++ )
-        if ( p -> scales_with[ i ] )
-        {
+
+      for ( int i = 0; i < p -> scaling_stats.size(); i++ )
+      {
           os.printf(
             "\t\t\t\t\t\t\t\t<th>%s</th>\n",
-            util::stat_type_abbrev( i ) );
-        }
+            util::stat_type_abbrev( p -> scaling_stats[ i ] ) );
+      }
       if ( p -> sim -> scaling -> scale_lag )
       {
         os << "\t\t\t\t\t\t\t\t<th>ms Lag</th>\n";
@@ -1444,20 +1441,21 @@ void print_html_player_scale_factors( report::sc_html_stream& os, sim_t* sim, pl
       os << "\t\t\t\t\t\t\t</tr>\n";
       os << "\t\t\t\t\t\t\t<tr>\n"
          << "\t\t\t\t\t\t\t\t<th class=\"left\">Scale Factors</th>\n";
-      for ( stat_e i = STAT_NONE; i < STAT_MAX; i++ )
-        if ( p -> scales_with[ i ] )
-        {
-          if ( std::abs( p -> scaling.get_stat( i ) ) > 1.0e5 )
+
+      for ( int i = 0; i < p -> scaling_stats.size(); i++ )
+      {
+        if ( std::abs( p -> scaling.get_stat( p -> scaling_stats[ i ] ) > 1.0e5 ) )
             os.printf(
               "\t\t\t\t\t\t\t\t<td>%.*e</td>\n",
               p -> sim -> report_precision,
-              p -> scaling.get_stat( i ) );
+              p -> scaling.get_stat( p -> scaling_stats[ i ] ) );
           else
             os.printf(
               "\t\t\t\t\t\t\t\t<td>%.*f</td>\n",
               p -> sim -> report_precision,
-              p -> scaling.get_stat( i ) );
-        }
+              p -> scaling.get_stat( p -> scaling_stats[ i ] ) );
+
+      }
       if ( p -> sim -> scaling -> scale_lag )
         os.printf(
           "\t\t\t\t\t\t\t\t<td>%.*f</td>\n",
@@ -1466,24 +1464,24 @@ void print_html_player_scale_factors( report::sc_html_stream& os, sim_t* sim, pl
       os << "\t\t\t\t\t\t\t</tr>\n";
       os << "\t\t\t\t\t\t\t<tr>\n"
          << "\t\t\t\t\t\t\t\t<th class=\"left\">Normalized</th>\n";
-      for ( stat_e i = STAT_NONE; i < STAT_MAX; i++ )
-        if ( p -> scales_with[ i ] )
-          os.printf(
+
+      for ( int i = 0; i < p -> scaling_stats.size(); i++ )
+        os.printf(
             "\t\t\t\t\t\t\t\t<td>%.*f</td>\n",
             p -> sim -> report_precision,
-            p -> scaling_normalized.get_stat( i ) );
+            p -> scaling_normalized.get_stat( p -> scaling_stats[ i ] ) );
       os << "\t\t\t\t\t\t\t</tr>\n";
       os << "\t\t\t\t\t\t\t<tr>\n"
          << "\t\t\t\t\t\t\t\t<th class=\"left\">Scale Deltas</th>\n";
-      for ( stat_e i = STAT_NONE; i < STAT_MAX; i++ )
+
+      for ( int i = 0; i < p -> scaling_stats.size(); i++ )
       {
-        if ( ! p -> scales_with[ i ] )
-          continue;
-        
-        double value = p -> sim -> scaling -> stats.get_stat( i );
+        double value = p -> sim -> scaling -> stats.get_stat( p -> scaling_stats[ i ] );
         std::string prefix;
         if ( p -> sim -> scaling -> center_scale_delta == 1 && 
-            i != STAT_SPIRIT && i != STAT_HIT_RATING && i != STAT_EXPERTISE_RATING )
+            p -> scaling_stats[ i ] != STAT_SPIRIT && 
+            p -> scaling_stats[ i ] != STAT_HIT_RATING && 
+            p -> scaling_stats[ i ] != STAT_EXPERTISE_RATING )
         {
           value /= 2;
           prefix = "+/- ";
@@ -1492,28 +1490,29 @@ void print_html_player_scale_factors( report::sc_html_stream& os, sim_t* sim, pl
         os.printf(
           "\t\t\t\t\t\t\t\t<td>%s%.*f</td>\n",
           prefix.c_str(),
-          ( i == STAT_WEAPON_OFFHAND_SPEED || i == STAT_WEAPON_SPEED ) ? 2 : 0,
+          ( p -> scaling_stats[ i ] == STAT_WEAPON_OFFHAND_SPEED || 
+            p -> scaling_stats[ i ] == STAT_WEAPON_SPEED ) ? 2 : 0,
           value );
+
       }
       if ( p -> sim -> scaling -> scale_lag )
         os << "\t\t\t\t\t\t\t\t<td>100</td>\n";
       os << "\t\t\t\t\t\t\t</tr>\n";
       os << "\t\t\t\t\t\t\t<tr>\n"
          << "\t\t\t\t\t\t\t\t<th class=\"left\">Error</th>\n";
-      for ( stat_e i = STAT_NONE; i < STAT_MAX; i++ )
-        if ( p -> scales_with[ i ] )
-        {
-          if ( std::abs( p -> scaling.get_stat( i ) ) > 1.0e5 )
+
+      for ( int i = 0; i < p -> scaling_stats.size(); i++ )
+        if ( std::abs( p -> scaling.get_stat( p -> scaling_stats[ i ] ) ) > 1.0e5 )
             os.printf(
               "\t\t\t\t\t\t\t\t<td>%.*e</td>\n",
               p -> sim -> report_precision,
-              p -> scaling_error.get_stat( i ) );
+              p -> scaling_error.get_stat( p -> scaling_stats[ i ] ) );
           else           
             os.printf(
               "\t\t\t\t\t\t\t\t<td>%.*f</td>\n",
               p -> sim -> report_precision,
-              p -> scaling_error.get_stat( i ) );
-        }
+              p -> scaling_error.get_stat( p -> scaling_stats[ i ] ) );
+
       if ( p -> sim -> scaling -> scale_lag )
         os.printf(
           "\t\t\t\t\t\t\t\t<td>%.*f</td>\n",
