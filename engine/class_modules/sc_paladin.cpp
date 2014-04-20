@@ -73,7 +73,6 @@ public:
   action_t* active_seal_of_justice_proc;
   action_t* active_seal_of_righteousness_proc;
   action_t* active_seal_of_truth_proc;
-  action_t* ancient_fury_explosion;
   player_t* last_judgement_target;
 
   struct active_actions_t
@@ -86,7 +85,6 @@ public:
   struct buffs_t
   {
     buff_t* alabaster_shield;
-    buff_t* ancient_power;
     buff_t* ardent_defender;
     buff_t* avenging_wrath;
     buff_t* barkskin;
@@ -107,7 +105,6 @@ public:
     buff_t* hand_of_purity;
     buff_t* holy_avenger;
     buff_t* infusion_of_light;
-    buff_t* inquisition;
     buff_t* judgments_of_the_wise;
     buff_t* sacred_shield;  // dummy buff for APL simplicity
     buff_t* selfless_healer;
@@ -155,17 +152,12 @@ public:
   {
     // these seem to be required to get Art of War and Grand Crusader procs working
     cooldown_t* avengers_shield;
-    cooldown_t* divine_protection; // can be removed in 5.4
-    cooldown_t* divine_shield;  // can be removed in 5.4
     cooldown_t* exorcism;
-    cooldown_t* lay_on_hands;  // can be removed in 5.4
   } cooldowns;
 
   // Passives
   struct passives_t
   {
-    const spell_data_t* ancient_fury;
-    const spell_data_t* ancient_power;
     const spell_data_t* boundless_conviction;
     const spell_data_t* divine_bulwark;
     const spell_data_t* grand_crusader;
@@ -183,10 +175,7 @@ public:
     const spell_data_t* the_art_of_war;
     const spell_data_t* vengeance;
   } passives;
-
-  // Pets
-  pet_t* guardian_of_ancient_kings;
-
+  
   // Procs
   struct procs_t
   {
@@ -202,7 +191,6 @@ public:
   struct spells_t
   {
     const spell_data_t* alabaster_shield;
-    const spell_data_t* guardian_of_ancient_kings_ret;
     const spell_data_t* holy_light;
     const spell_data_t* glyph_of_word_of_glory;
     const spell_data_t* sanctified_wrath; // needed to pull out spec-specific effects
@@ -242,7 +230,6 @@ public:
     const spell_data_t* hand_of_sacrifice;
     const spell_data_t* harsh_words;
     const spell_data_t* immediate_truth;
-    const spell_data_t* inquisition;
     const spell_data_t* mass_exorcism;
     const spell_data_t* templars_verdict;
     const spell_data_t* word_of_glory;
@@ -265,7 +252,6 @@ public:
     gains( gains_t() ),
     cooldowns( cooldowns_t() ),
     passives( passives_t() ),
-    guardian_of_ancient_kings( nullptr ),
     procs( procs_t() ),
     spells( spells_t() ),
     talents( talents_t() ),
@@ -289,15 +275,11 @@ public:
     active_seal_of_insight_proc        = 0;
     active_seal_of_righteousness_proc  = 0;
     active_seal_of_truth_proc          = 0;
-    ancient_fury_explosion             = 0;
     bok_up                             = false;
     bom_up                             = false;
 
     cooldowns.avengers_shield = get_cooldown( "avengers_shield" );
-    cooldowns.divine_protection = get_cooldown( "divine_protection" );
-    cooldowns.divine_shield = get_cooldown( "divine_shield" );
     cooldowns.exorcism = get_cooldown( "exorcism" );
-    cooldowns.lay_on_hands = get_cooldown( "lay_on_hands" );
 
     beacon_target = 0;
 
@@ -334,8 +316,6 @@ public:
   virtual resource_e primary_resource() const { return RESOURCE_MANA; }
   virtual role_e primary_role() const;
   virtual void      regen( timespan_t periodicity );
-  virtual pet_t*    create_pet    ( const std::string& name, const std::string& type = std::string() );
-  virtual void      create_pets   ();
   virtual void      combat_begin();
 
   int     holy_power_stacks() const;
@@ -360,88 +340,6 @@ public:
     return td;
   }
 };
-
-namespace pets {
-
-// Guardian of Ancient Kings Pet ============================================
-
-// TODO: melee attack
-struct guardian_of_ancient_kings_ret_t : public pet_t
-{
-  melee_attack_t* melee;
-
-  struct melee_t : public melee_attack_t
-  {
-    paladin_t* owner;
-
-    melee_t( guardian_of_ancient_kings_ret_t* p )
-      : melee_attack_t( "melee", p, spell_data_t::nil() ), owner( 0 )
-    {
-      school = SCHOOL_PHYSICAL;
-      weapon = &( p -> main_hand_weapon );
-      base_execute_time = weapon -> swing_time;
-      background = true;
-      repeating  = true;
-      may_crit = true;
-      trigger_gcd = timespan_t::zero();
-      owner = p -> o();
-    }
-
-    virtual void execute()
-    {
-      melee_attack_t::execute();
-      if ( result_is_hit( execute_state -> result ) )
-      {
-        owner -> buffs.ancient_power -> trigger();
-      }
-    }
-  };
-
-  guardian_of_ancient_kings_ret_t( sim_t *sim, paladin_t *p )
-    : pet_t( sim, p, "guardian_of_ancient_kings", true ), melee( 0 )
-  {
-    main_hand_weapon.type = WEAPON_BEAST;
-    main_hand_weapon.swing_time = timespan_t::from_seconds( 2.0 );
-    main_hand_weapon.min_dmg = dbc.spell_scaling( o() -> type, level ) * 6.1;
-    main_hand_weapon.max_dmg = dbc.spell_scaling( o() -> type, level ) * 6.1;
-    main_hand_weapon.damage  = ( main_hand_weapon.min_dmg + main_hand_weapon.max_dmg ) / 2;
-    owner_coeff.ap_from_ap = 6.1;
-  }
-
-  paladin_t* o()
-  { return debug_cast<paladin_t*>( owner ); }
-
-  virtual void init_base_stats()
-  {
-    pet_t::init_base_stats();
-    melee = new melee_t( this );
-  }
-
-  virtual void dismiss()
-  {
-    // Only trigger the explosion if we're not sleeping
-    if ( is_sleeping() ) return;
-
-    pet_t::dismiss();
-
-    if ( o() -> ancient_fury_explosion && ! o() -> ancient_fury_explosion -> target -> is_sleeping() )
-      o() -> ancient_fury_explosion -> execute();
-  }
-
-  virtual void arise()
-  {
-    pet_t::arise();
-    schedule_ready();
-  }
-
-  virtual void schedule_ready( timespan_t delta_time = timespan_t::zero(), bool waiting = false )
-  {
-    pet_t::schedule_ready( delta_time, waiting );
-    if ( ! melee -> execute_event ) melee -> execute();
-  }
-};
-
-} // end namespace pets
 
 // ==========================================================================
 // Paladin Ability Templates
@@ -709,37 +607,6 @@ struct paladin_absorb_t : public paladin_spell_base_t< absorb_t >
                     const spell_data_t* s = spell_data_t::nil() ) :
     base_t( n, p, s )
   { }
-};
-
-// Ancient Fury =============================================================
-
-struct ancient_fury_t : public paladin_spell_t
-{
-  ancient_fury_t( paladin_t* p ) :
-    paladin_spell_t( "ancient_fury", p, p -> passives.ancient_fury )
-  {
-    // TODO meteor stuff
-    background = true;
-    callbacks  = false;
-    may_crit   = true;
-    crit_bonus = 1.0; // Ancient Fury crits for 200%
-  }
-
-  virtual void execute()
-  {
-    paladin_spell_t::execute();
-
-    p() -> buffs.ancient_power -> expire();
-  }
-
-  virtual double action_multiplier() const
-  {
-    double am = paladin_spell_t::action_multiplier();
-
-    am *= p() -> buffs.ancient_power -> stack();
-
-    return am;
-  }
 };
 
 // Ardent Defender ==========================================================
@@ -1731,7 +1598,7 @@ struct flash_of_light_t : public paladin_heal_t
 struct guardian_of_ancient_kings_t : public paladin_spell_t
 {
   guardian_of_ancient_kings_t( paladin_t* p, const std::string& options_str )
-    : paladin_spell_t( "guardian_of_ancient_kings", p, p -> find_class_spell( "Guardian of Ancient Kings" ) )
+    : paladin_spell_t( "guardian_of_ancient_kings", p, p -> find_specialization_spell( "Guardian of Ancient Kings" ) )
   {
     parse_options( NULL, options_str );
     use_off_gcd = true;
@@ -1744,8 +1611,6 @@ struct guardian_of_ancient_kings_t : public paladin_spell_t
 
     p() -> buffs.guardian_of_ancient_kings -> trigger();
 
-    if ( p() -> specialization() == PALADIN_RETRIBUTION )
-      p() -> guardian_of_ancient_kings -> summon( p() -> spells.guardian_of_ancient_kings_ret -> duration() );
   }
 };
 
@@ -2255,45 +2120,6 @@ struct illuminated_healing_t : public paladin_absorb_t
     background = true;
     proc = true;
     trigger_gcd = timespan_t::zero();
-  }
-};
-
-// Inquisition ==============================================================
-
-struct inquisition_t : public paladin_spell_t
-{
-  timespan_t base_duration;
-  double multiplier;
-
-  inquisition_t( paladin_t* p, const std::string& options_str )
-    : paladin_spell_t( "inquisition", p, p -> find_class_spell( "Inquisition" ) ),
-      base_duration( data().duration() ),
-      multiplier( data().effectN( 1 ).percent() )
-  {
-    parse_options( NULL, options_str );
-    may_miss     = false;
-    harmful      = false;
-    hasted_ticks = false;
-    num_ticks    = 0;
-  }
-
-  virtual void execute()
-  {
-    timespan_t duration = base_duration;
-    if ( p() -> buffs.inquisition -> check() )
-    {
-      // Inquisition behaves like a dot with DOT_REFRESH.
-      // You will not lose your current 'tick' when refreshing.
-      int result = static_cast<int>( p() -> buffs.inquisition -> remains() / base_tick_time );
-      timespan_t carryover = p() -> buffs.inquisition -> remains();
-      carryover -= base_tick_time * result;
-      duration += carryover;
-    }
-
-    duration += base_duration * ( p() -> holy_power_stacks() <= 3 ? p() -> holy_power_stacks() - 1 : 2 );
-    p() -> buffs.inquisition -> trigger( 1, multiplier, -1.0, duration );
-
-    paladin_spell_t::execute();
   }
 };
 
@@ -2820,11 +2646,6 @@ struct paladin_melee_attack_t : public paladin_action_t< melee_attack_t >
     // handle all on-hit effects (seals, Ancient Power, battle healer)
     if ( result_is_hit( execute_state -> result ) )
     {
-      if ( ! p() -> guardian_of_ancient_kings -> is_sleeping() )
-      {
-        p() -> buffs.ancient_power -> trigger();
-      }
-
       if ( trigger_seal || ( trigger_seal_of_righteousness && ( p() -> active_seal == SEAL_OF_RIGHTEOUSNESS ) )
                         || ( trigger_seal_of_justice && ( p() -> active_seal == SEAL_OF_JUSTICE ) )
                         || ( trigger_seal_of_truth && ( p() -> active_seal == SEAL_OF_TRUTH ) ) )
@@ -3372,8 +3193,7 @@ struct hand_of_light_proc_t : public paladin_melee_attack_t
     //am = melee_attack_t::action_multiplier();
     // not *= since we don't want to double dip, just calling base to initialize variables
     double am = static_cast<paladin_t*>( player ) -> get_hand_of_light();
-    //am *= 1.0 + static_cast<paladin_t*>( player ) -> buffs.inquisition -> value();  //was double dipping on inquisition -
-    //once from the paladin composite player multiplier with inq on all holy damage and once from this line of code
+    
     //was double dipping on avenging wrath - hand of light is not affected by avenging wrath so that it does not double dip
     //easier to remove it here than try to add an exception at the global avenging wrath buff level
     if ( p() -> buffs.avenging_wrath -> check() )
@@ -3997,7 +3817,6 @@ action_t* paladin_t::create_action( const std::string& name, const std::string& 
   if ( name == "holy_shock_heal"           ) return new holy_shock_heal_t          ( this, options_str );
   if ( name == "holy_wrath"                ) return new holy_wrath_t               ( this, options_str );
   if ( name == "guardian_of_ancient_kings" ) return new guardian_of_ancient_kings_t( this, options_str );
-  if ( name == "inquisition"               ) return new inquisition_t              ( this, options_str );
   if ( name == "judgment"                  ) return new judgment_t                 ( this, options_str );
   if ( name == "light_of_dawn"             ) return new light_of_dawn_t            ( this, options_str );
   if ( name == "lights_hammer"             ) return new lights_hammer_t            ( this, options_str );
@@ -4358,7 +4177,7 @@ void paladin_t::create_buffs()
   buffs.infusion_of_light      = buff_creator_t( this, "infusion_of_light", find_class_spell( "Infusion of Light" ) );
 
   // Prot
-  buffs.guardian_of_ancient_kings      = buff_creator_t( this, "guardian_of_ancient_kings", find_spell( 86659 ) )
+  buffs.guardian_of_ancient_kings      = buff_creator_t( this, "guardian_of_ancient_kings", find_specialization_spell( "Guardian of Ancient Kings" ) )
                                           .cd( timespan_t::zero() ); // let the ability handle the CD
   buffs.grand_crusader                 = buff_creator_t( this, "grand_crusader" ).spell( passives.grand_crusader -> effectN( 1 ).trigger() ).chance( passives.grand_crusader -> proc_chance() );
   buffs.shield_of_the_righteous        = buff_creator_t( this, "shield_of_the_righteous" ).spell( find_spell( 132403 ) );
@@ -4366,8 +4185,6 @@ void paladin_t::create_buffs()
   buffs.shield_of_glory                = buff_creator_t( this, "shield_of_glory" ).spell( find_spell( 138242 ) );
 
   // Ret
-  buffs.ancient_power          = buff_creator_t( this, "ancient_power", passives.ancient_power ).add_invalidate( CACHE_STRENGTH );
-  buffs.inquisition            = buff_creator_t( this, "inquisition", find_class_spell( "Inquisition" ) ).add_invalidate( CACHE_CRIT ).add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
   buffs.judgments_of_the_wise  = buff_creator_t( this, "judgments_of_the_wise", find_specialization_spell( "Judgments of the Wise" ) );
   buffs.tier15_2pc_melee       = buff_creator_t( this, "tier15_2pc_melee", find_spell( 138162 ) )
                                  .default_value( find_spell( 138162 ) -> effectN( 1 ).percent() )
@@ -4527,9 +4344,9 @@ void paladin_t::generate_action_prio_list_ret()
   if ( sim -> allow_potions )
   {
     if ( level > 85 )
-      def -> add_action( "mogu_power_potion,if=(buff.bloodlust.react|(buff.ancient_power.up&buff.avenging_wrath.up)|target.time_to_die<=40)" );
+      def -> add_action( "mogu_power_potion,if=(buff.bloodlust.react|buff.avenging_wrath.up|target.time_to_die<=40)" );
     else if ( level >= 80 )
-      def -> add_action( "golemblood_potion,if=buff.bloodlust.react|(buff.ancient_power.up&buff.avenging_wrath.up)|target.time_to_die<=40" );
+      def -> add_action( "golemblood_potion,if=buff.bloodlust.react|buff.avenging_wrath.up|target.time_to_die<=40" );
   }
 
   // This should<tm> get Censure up before the auto attack lands
@@ -4540,17 +4357,14 @@ void paladin_t::generate_action_prio_list_ret()
   def -> add_action ( this, "Judgment", "if=!target.debuff.physical_vulnerability.up|target.debuff.physical_vulnerability.remains<6" );
   }*/
 
-  // Inquisition
-  def -> add_action( this, "Inquisition", "if=(buff.inquisition.down|buff.inquisition.remains<=2)&(holy_power>=3|target.time_to_die<holy_power*20|buff.divine_purpose.react)" );
-
   // Avenging Wrath
-  def -> add_action( this, "Avenging Wrath", "if=buff.inquisition.up" );
+  def -> add_action( this, "Avenging Wrath" );
 
   // Guardian of Ancient Kings
-  def -> add_action( this, "Guardian of Ancient Kings", "if=buff.inquisition.up" ); 
+  def -> add_action( this, "Guardian of Ancient Kings" ); 
 
   // Holy Avenger
-  def -> add_talent( this, "Holy Avenger", "if=buff.inquisition.up&holy_power<=2" ); 
+  def -> add_talent( this, "Holy Avenger", "if=holy_power<=2" ); 
 
   // Items (not sure why they're radomly put here? I guess after cooldowns but before rotational abilities)
   int num_items = ( int ) items.size();
@@ -4561,7 +4375,6 @@ void paladin_t::generate_action_prio_list_ret()
       std::string item_str;
       item_str += "use_item,name=";
       item_str += items[ i ].name();
-      item_str += ",if=buff.inquisition.up&(buff.ancient_power.down|buff.ancient_power.stack=12)";
       def -> add_action( item_str );
     }
   }
@@ -4577,10 +4390,10 @@ void paladin_t::generate_action_prio_list_ret()
     def -> add_action( racial_actions[ i ] );
 
   // Execution Sentence
-  def -> add_talent( this, "Execution Sentence", "if=buff.inquisition.up&(buff.ancient_power.down|buff.ancient_power.stack=12)" );
+  def -> add_talent( this, "Execution Sentence" );
 
   // Light's Hammer
-  def -> add_talent( this, "Light's Hammer", "if=buff.inquisition.up&(buff.ancient_power.down|buff.ancient_power.stack=12)" );
+  def -> add_talent( this, "Light's Hammer" );
   
   // Divine Storm
   def -> add_action( this, "Divine Storm", "if=active_enemies>=2&(holy_power=5|buff.divine_purpose.react|(buff.holy_avenger.up&holy_power>=3))" );
@@ -4620,8 +4433,8 @@ void paladin_t::generate_action_prio_list_ret()
   def -> add_action( this, "Exorcism" );
   def -> add_action( "wait,sec=cooldown.exorcism.remains,if=cooldown.exorcism.remains>0&cooldown.exorcism.remains<=0.2" );
   def -> add_action( this, "Templar's Verdict", "if=buff.tier15_4pc_melee.up&active_enemies<4" );
-  def -> add_action( this, "Divine Storm", "if=active_enemies>=2&buff.inquisition.remains>4" );
-  def -> add_action( this, "Templar's Verdict", "if=buff.inquisition.remains>4" );
+  def -> add_action( this, "Divine Storm", "if=active_enemies>=2" );
+  def -> add_action( this, "Templar's Verdict" );
   def -> add_talent( this, "Holy Prism" );
 }
 
@@ -4782,7 +4595,6 @@ void paladin_t::init_action_list()
   }
 
   active_hand_of_light_proc          = new hand_of_light_proc_t         ( this );
-  ancient_fury_explosion             = new ancient_fury_t               ( this );
 
   // create action priority lists
   if ( action_list_str.empty() )
@@ -4847,7 +4659,6 @@ void paladin_t::init_spells()
   talents.execution_sentence      = find_talent_spell( "Execution Sentence" );
 
   // Spells
-  spells.guardian_of_ancient_kings_ret = find_class_spell( "Guardian Of Ancient Kings", std::string(), PALADIN_RETRIBUTION );
   spells.holy_light                    = find_specialization_spell( "Holy Light" );
   spells.sanctified_wrath              = find_spell( 114232 );  // spec-specific effects for Sanctified Wrath
 
@@ -4873,8 +4684,6 @@ void paladin_t::init_spells()
   passives.grand_crusader         = find_specialization_spell( "Grand Crusader" );
 
   // Ret Passives
-  passives.ancient_fury           = find_spell( spells.guardian_of_ancient_kings_ret -> ok() ? 86704 : 0 );
-  passives.ancient_power          = find_spell( spells.guardian_of_ancient_kings_ret -> ok() ? 86700 : 0 );
   passives.judgments_of_the_bold  = find_specialization_spell( "Judgments of the Bold" );
   passives.sword_of_light         = find_specialization_spell( "Sword of Light" );
   passives.sword_of_light_value   = find_spell( passives.sword_of_light -> ok() ? 20113 : 0 );
@@ -4897,7 +4706,6 @@ void paladin_t::init_spells()
   glyphs.hand_of_sacrifice        = find_glyph_spell( "Glyph of Hand of Sacrifice" );
   glyphs.harsh_words              = find_glyph_spell( "Glyph of Harsh Words" );
   glyphs.immediate_truth          = find_glyph_spell( "Glyph of Immediate Truth" );
-  glyphs.inquisition              = find_glyph_spell( "Glyph of Inquisition"     );
   glyphs.word_of_glory            = find_glyph_spell( "Glyph of Word of Glory"   );
   
   // more spells, these need the glyph check to be present before they can be executed
@@ -4963,11 +4771,6 @@ double paladin_t::composite_attribute_multiplier( attribute_e attr ) const
 {
   double m = player_t::composite_attribute_multiplier( attr );
 
-  // Ancient Power buffs STR
-  if ( attr == ATTR_STRENGTH && buffs.ancient_power -> check() )
-  {
-    m *= 1.0 + buffs.ancient_power -> stack() * passives.ancient_power -> effectN( 1 ).percent();
-  }
   // Guarded by the Light buffs STA
   if ( attr == ATTR_STAMINA )
   {
@@ -4983,10 +4786,7 @@ double paladin_t::composite_melee_crit() const
 {
   double m = player_t::composite_melee_crit();
 
-  if ( buffs.inquisition -> check() )
-  {
-    m += buffs.inquisition -> data().effectN( 3 ).percent();
-  }
+  // TODO: used to get buffed by Inquisition, probably can be removed now
 
   return m;
 }
@@ -4996,12 +4796,9 @@ double paladin_t::composite_melee_crit() const
 double paladin_t::composite_spell_crit() const
 {
   double m = player_t::composite_spell_crit();
-
-  if ( buffs.inquisition -> check() )
-  {
-    m += buffs.inquisition -> data().effectN( 3 ).percent();
-  }
-
+  
+  // TODO: used to get buffed by Inquisition, probably can be removed now
+  
   return m;
 }
 
@@ -5015,14 +4812,9 @@ double paladin_t::composite_player_multiplier( school_e school ) const
   // Avenging Wrath buffs everything
   m *= 1.0 + buffs.avenging_wrath -> value();
 
-  // Inquisition buffs holy damage only
+  // T15_2pc_melee buffs holy damage only
   if ( dbc::is_school( school, SCHOOL_HOLY ) )
   {
-    if ( buffs.inquisition -> up() )
-    {
-      m *= 1.0 + buffs.inquisition -> value();
-    }
-
     m *= 1.0 + buffs.tier15_2pc_melee -> value();
   }
 
@@ -5139,7 +4931,7 @@ void paladin_t::target_mitigation( school_e school,
   // Guardian of Ancient Kings
   if ( buffs.guardian_of_ancient_kings -> up() && specialization() == PALADIN_PROTECTION )
   {
-    s -> result_amount *= 1.0 + buffs.guardian_of_ancient_kings -> data().effectN( 3 ).percent(); // Value of the buff is stored in another spell
+    s -> result_amount *= 1.0 + buffs.guardian_of_ancient_kings -> data().effectN( 3 ).percent();
     if ( sim -> debug && s -> action && ! s -> target -> is_enemy() && ! s -> target -> is_add() )
       sim -> out_debug.printf( "Damage to %s after GAnK is %f", s -> target -> name(), s -> result_amount );
   }
@@ -5382,34 +5174,6 @@ void paladin_t::create_options()
   };
 
   option_t::copy( options, paladin_options );
-}
-
-// paladin_t::create_pet ====================================================
-
-pet_t* paladin_t::create_pet( const std::string& pet_name,
-                              const std::string& /* pet_type */ )
-{
-  pet_t* p = find_pet( pet_name );
-  if ( p ) return p;
-
-  using namespace pets;
-
-  if ( pet_name == "guardian_of_ancient_kings_ret" )
-  {
-    return new guardian_of_ancient_kings_ret_t( sim, this );
-  }
-  return 0;
-}
-
-// paladin_t::create_pets ===================================================
-
-// FIXME: Not possible to check spec at this point, but in the future when all
-// three versions of the guardian are implemented, it would be fugly to have to
-// give them different names just for the lookup
-
-void paladin_t::create_pets()
-{
-  guardian_of_ancient_kings = create_pet( "guardian_of_ancient_kings_ret" );
 }
 
 // paladin_t::combat_begin ==================================================
