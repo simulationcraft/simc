@@ -1342,11 +1342,16 @@ void player_t::init_defense()
 
   // Armor Coefficient
   double a, b;
-  if ( level > 85 )
-  {
-    a = 4037.5;
-    b = -317117.5;
+  if ( level > 85 ) // Probably only works at level 100, assuming that they keep the same damage reduction % as now. (34.9%) Need to figure out the coefficients sometime.
+  { // For now, it's better than everything having 0.1% armor reduction.
+    a = 100;
+    b = -236.87;
   }
+  //else if ( level > 85 ) // need to update
+  //{
+  // a = 4037.5;
+  // b = -317117.5;
+  // }
   else if ( level > 80 )
   {
     a = 2167.5;

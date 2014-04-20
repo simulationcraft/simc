@@ -736,22 +736,22 @@ void enemy_t::init_defense()
 
     switch ( level )
     {
-      case 80: a = 9616; break;
-      case 81: a = 10034; break;
-      case 82: a = 10338; break;
-      case 83: a = 10643; break;
-      case 84: a = 10880; break;
-      case 85: a = 11092; break;
-      case 86: a = 11387; break;
-      case 87: a = 11682; break;
-      case 88: a = 11977; break;
-      case 89: a = 17960; break;
-      case 90: a = 19680; break;
-      case 91: a = 21400; break; // TO-DO: Confirm.
-      case 92: a = 23115; break; // TO-DO: Confirm.
-      case 93: a = 24835; break;
-      default: if ( level < 80 )
-          a = ( int ) floor ( ( level / 80.0 ) * 9729 ); // Need a better value here.
+      case 90: a = 1047; break; // From DBC Data. Reia will likely replace this with automation magic at some point.
+      case 91: a = 1185; break;
+      case 92: a = 1342; break;
+      case 93: a = 1518; break;
+      case 94: a = 1718; break;
+      case 95: a = 1945; break;
+      case 96: a = 2201; break;
+      case 97: a = 2419; break;
+      case 98: a = 2819; break;
+      case 99: a = 3190; break;
+      case 100: a = 3610; break;
+      case 101: a = 4086; break;
+      case 102: a = 4624; break;
+      case 103: a = 5234; break;
+      default: if ( level < 90 )
+          a = ( int ) floor ( ( level * 10 ) + 147 );
         break;
     }
   }
