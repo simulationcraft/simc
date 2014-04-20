@@ -1319,16 +1319,12 @@ struct demoralizing_screech_t : public hunter_main_pet_spell_t
 
     aoe         = -1;
     auto_cast = true;
-    background = ( sim -> overrides.weakened_blows != 0 );
+    // with Weakened Blows removed, this may not be necessary
   }
 
   virtual void impact( action_state_t* s )
   {
     hunter_main_pet_spell_t::impact( s );
-
-    // TODO: Is actually an aoe ability
-    if ( result_is_hit( s -> result ) && ! sim -> overrides.weakened_blows )
-      s -> target -> debuffs.weakened_blows -> trigger( 1, buff_t::DEFAULT_VALUE(), -1.0, data().duration() );
   }
 };
 

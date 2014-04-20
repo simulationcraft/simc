@@ -2721,11 +2721,7 @@ struct blood_plague_t : public death_knight_spell_t
   virtual void impact( action_state_t* s )
   {
     death_knight_spell_t::impact( s );
-
-    if ( ! sim -> overrides.weakened_blows && p() -> spec.scarlet_fever -> ok() &&
-         result_is_hit( s -> result ) )
-      s -> target -> debuffs.weakened_blows -> trigger();
-
+    
     if ( ! sim -> overrides.physical_vulnerability && p() -> spec.ebon_plaguebringer -> ok() &&
          result_is_hit( s -> result ) )
       s -> target -> debuffs.physical_vulnerability -> trigger();

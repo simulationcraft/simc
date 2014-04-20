@@ -1314,12 +1314,7 @@ void action_t::update_vengeance( dmg_e type,
       if ( ! sim -> challenge_mode )
         s -> target -> vengeance_list.add( player, player -> get_raw_dps( s ), sim -> current_time );
 
-      // factor out weakened_blows from physical damage
       double raw_damage = s -> result_raw;
-      if ( school == SCHOOL_PHYSICAL && s -> action -> player -> debuffs.weakened_blows -> check() )
-      {
-        raw_damage /= ( 1.0 - s -> action -> player -> debuffs.weakened_blows -> value() );
-      }
 
       // Take swing time for auto_attacks, take 60 for special attacks (this is how blizzard does it)
       double attack_frequency = 0.0;

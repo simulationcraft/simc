@@ -667,10 +667,6 @@ static bool init_debuffs( sim_t* sim )
     p -> debuffs.weakened_armor          = buff_creator_t( p, "weakened_armor", p -> find_spell( 113746 ) )
                                            .default_value( std::fabs( p -> find_spell( 113746 ) -> effectN( 1 ).percent() ) )
                                            .add_invalidate( CACHE_ARMOR );
-
-    p -> debuffs.weakened_blows          = buff_creator_t( p, "weakened_blows", p -> find_spell( 115798 ) )
-                                           .default_value( std::fabs( p -> find_spell( 115798 ) -> effectN( 1 ).percent() ) )
-                                           .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
   }
 
   return true;
@@ -2889,13 +2885,7 @@ double player_t::composite_multistrike() const
 double player_t::composite_player_multiplier( school_e school ) const
 {
   double m = 1.0;
-
-  if ( type != PLAYER_GUARDIAN )
-  {
-    if ( school == SCHOOL_PHYSICAL && debuffs.weakened_blows -> check() )
-      m *= 1.0 - debuffs.weakened_blows -> value();
-  }
-
+  
   return m;
 }
 

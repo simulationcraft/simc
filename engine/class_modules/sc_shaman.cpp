@@ -3655,17 +3655,6 @@ struct earth_shock_t : public shaman_spell_t
       }
     }
   }
-
-  virtual void impact( action_state_t* state )
-  {
-    shaman_spell_t::impact( state );
-
-    if ( result_is_hit( state -> result ) )
-    {
-      if ( ! sim -> overrides.weakened_blows )
-        state -> target -> debuffs.weakened_blows -> trigger();
-    }
-  }
 };
 
 // Flame Shock Spell ========================================================

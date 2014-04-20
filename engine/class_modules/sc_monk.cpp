@@ -1625,9 +1625,6 @@ struct keg_smash_t : public monk_melee_attack_t
     {
       if ( apply_dizzying_haze )
         td( s -> target ) -> buff.dizzying_haze -> trigger();
-
-      if ( ! sim -> overrides.weakened_blows )
-        s -> target -> debuffs.weakened_blows -> trigger();
     }
   }
 };

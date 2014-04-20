@@ -2488,7 +2488,6 @@ public:
     int physical_vulnerability;
     int ranged_vulnerability;
     int weakened_armor;
-    int weakened_blows;
     int bleeding;
 
     // Misc stuff needs resolving
@@ -4353,7 +4352,6 @@ public:
     debuff_t* physical_damage;
     debuff_t* physical_vulnerability;
     debuff_t* ranged_vulnerability;
-    debuff_t* weakened_blows;
     debuff_t* weakened_armor;
   } debuffs;
 

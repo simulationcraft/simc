@@ -2830,10 +2830,6 @@ struct crusader_strike_t : public paladin_melee_attack_t
         p() -> resource_gain( RESOURCE_HOLY_POWER, p() -> buffs.holy_avenger -> value() - g, p() -> gains.hp_holy_avenger );
       }
 
-      // Apply Weakened Blows
-      if ( ! sim -> overrides.weakened_blows )
-        s -> target -> debuffs.weakened_blows -> trigger();
-
       // Trigger Hand of Light procs
       trigger_hand_of_light( s );
 
@@ -2974,10 +2970,6 @@ struct hammer_of_the_righteous_aoe_t : public paladin_melee_attack_t
   {
     paladin_melee_attack_t::impact( s );
 
-    // Everything hit by Hammer of the Righteous AoE triggers Weakened Blows
-    if ( ! sim -> overrides.weakened_blows )
-      s -> target -> debuffs.weakened_blows -> trigger();
-
     // Trigger Hand of Light procs
     trigger_hand_of_light( s );
 
@@ -3054,10 +3046,6 @@ struct hammer_of_the_righteous_t : public paladin_melee_attack_t
 
       // Trigger Hand of Light procs
       trigger_hand_of_light( s );
-
-      // Mists of Pandaria: Hammer of the Righteous triggers Weakened Blows
-      if ( ! sim -> overrides.weakened_blows )
-        target -> debuffs.weakened_blows -> trigger();
     }
   }
 };
