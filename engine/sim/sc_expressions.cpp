@@ -351,13 +351,23 @@ expression_t::parse_tokens( action_t* action,
 
 void expression_t::print_tokens( std::vector<expr_token_t>& tokens, sim_t* sim )
 {
-  sim -> out_debug.raw() << "tokens:";
-  size_t num_tokens = tokens.size();
-  for ( size_t i = 0; i < num_tokens; i++ )
+  std::string str;
+  if ( tokens.size() > 0 )
+    str += "tokens: ";
+
+  char token_str_buf[512];
+  for ( size_t i = 0; i < tokens.size(); i++ )
   {
     expr_token_t& t = tokens[ i ];
-    sim -> out_debug.raw().printf( "%2d  '%s'", t.type, t.label.c_str() );
+
+    snprintf( token_str_buf, sizeof( token_str_buf ), "%2d '%s'", t.type, t.label.c_str() );
+    str += token_str_buf;
+
+    if ( i < tokens.size() - 1 )
+      str += " | ";
   }
+
+  sim -> out_debug << str;
 }
 
 // convert_to_unary =========================================================
