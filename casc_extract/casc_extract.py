@@ -1,30 +1,36 @@
-import optparse, time
+import optparse, time, sys
 
 import build_cfg, casc, jenkins
 
-parser = optparse.OptionParser()
-parser.add_option( '-m', '--mode', dest = 'mode', choices = [ 'meta', 'dbc' ], default = 'meta',
+parser = optparse.OptionParser( usage = 'Usage: %prog -d wow_install_dir [options] file_path ...')
+parser.add_option( '-m', '--mode', dest = 'mode', choices = [ 'meta', 'dbc' ],
                    help = 'Extraction mode: "root" for root/encoding file extraction, "dbc" for DBC file extraction' )
-parser.add_option( '-r', '--root', dest = 'root_file', type = 'string',
-                   help = 'Root file path location. Required for --mode=dbc' )
-parser.add_option( '-e', '--encoding', dest = 'encoding_file', type = 'string',
-				   help = 'Encoding file path location. Required for --mode=dbc' )
+parser.add_option( '-b', '--dbfile', dest = 'dbfile', type = 'string', default = 'dbfile', 
+					help = "A textual file containing a list of file paths to extract [default dbfile]" )
+parser.add_option( '-r', '--root', dest = 'root_file', type = 'string', default = 'root',
+                   help = 'Root file path location.' )
+parser.add_option( '-e', '--encoding', dest = 'encoding_file', type = 'string', default = 'encoding',
+				   help = 'Encoding file path location.' )
 parser.add_option( '-d', '--datadir', dest = 'data_dir', type = 'string',
 				   help = 'World of Warcraft install directory' )
 
 if __name__ == '__main__':
 	(opts, args) = parser.parse_args()
+	opts.parser = parser
 	
-	build_cfg = build_cfg.BuildCfg(opts)
-	if not build_cfg.open():
+	build = build_cfg.BuildCfg(opts)
+	if not build.open():
 		sys.exit(1)
 
-	if opts.mode == 'meta':
-		#extractor = casc.BLTEExtract(opts, args)
-		#files = [ build_cfg.root_file(), build_cfg.encoding_file() ]
-		#print 'Extracting root/encoding file(s) %s' % ', '.join(files)
-		#extractor.extract_file_by_md5(files)
+	if opts.mode == 'dbc':
+		fname_db = build_cfg.DBFileList(opts)
+		if not fname_db.open():
+			sys.exit(1)
 
+		for k, v in fname_db.iteritems():
+			print k, v
+			
+	if opts.mode == 'meta':
 		encoding = casc.CASCEncodingFile(opts, build_cfg.encoding_file())
 		encoding.open()
 		
@@ -35,7 +41,7 @@ if __name__ == '__main__':
 		index.open()
 		
 		md5ss = root.GetFileMD5('DBFilesClient\\SpellClassOptions.db2')
-		#print encoding.GetFileKeys('c94630ca72f95de6716464f28e62cade'.decode('hex'))
+
 		for md5s in md5ss:
 			keys = encoding.GetFileKeys(md5s)
 			print md5s.encode('hex'), keys[0].encode('hex')

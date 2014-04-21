@@ -140,12 +140,9 @@ class BLTEFile(object):
 		pass
 
 class BLTEExtract(object):
-	def __init__(self, options, data_files):
+	def __init__(self, options):
 		self.options = options
-		self.data_files = data_files
-		self.fdesc = None
-		self.fd = None
-		self.fsize = None
+		self.files = {}
 
 	def close(self):
 		if self.fd:
@@ -170,7 +167,10 @@ class BLTEExtract(object):
 		self.fd = mmap.mmap(self.fdesc.fileno(), 0, access = mmap.ACCESS_READ)
 	
 		return True
-
+	
+	def extract_file(self, file_key, file_md5sum, data_file_number, data_file_offset, blte_file_size):
+		pass
+	
 	def extract_file_by_md5(self, file_md5s):
 		found = 0
 		
@@ -397,7 +397,6 @@ class CASCRootFile(object):
 		hash_name = file.strip().upper().replace('/', '\\')
 		hash = jenkins.hashlittle2(hash_name)
 		v = (hash[0] << 32) | hash[1]
-		print struct.pack('Q', v).encode('hex')
 		return self.hash_map.get(v, [])
 		
 	def open(self):
@@ -412,9 +411,7 @@ class CASCRootFile(object):
 				if n_entries == 0:
 					continue
 				
-				unk_data = []
-				for idx in xrange(0, n_entries):
-					unk_data.append(struct.unpack('I', f.read(4))[0])
+				f.seek(4 * n_entries, os.SEEK_CUR)
 
 				for entry_idx in xrange(0, n_entries):
 					md5s = f.read(16)
