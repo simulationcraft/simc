@@ -31,6 +31,7 @@ actions+=/mogu_power_potion,if=(target.health.pct<20&buff.recklessness.up)|targe
 # This incredibly long line can be translated to 'Use recklessness on cooldown with colossus smash; unless the boss will die before the ability is usable again, and then combine with execute instead.'
 actions+=/recklessness,if=!talent.bloodbath.enabled&(((cooldown.colossus_smash.remains<2|debuff.colossus_smash.remains>=5)&target.time_to_die>192)|target.health.pct<20)|buff.bloodbath.up&(target.time_to_die>192|target.health.pct<20)|target.time_to_die<=12
 actions+=/avatar,if=talent.avatar.enabled&((buff.recklessness.up|target.time_to_die<=25))
+actions+=/berserker_rage,if=buff.enrage.down
 actions+=/blood_fury,if=buff.bloodbath.up|(!talent.bloodbath.enabled&debuff.colossus_smash.up)|buff.recklessness.up
 actions+=/berserking,if=buff.bloodbath.up|(!talent.bloodbath.enabled&debuff.colossus_smash.up)|buff.recklessness.up
 actions+=/arcane_torrent,if=buff.bloodbath.up|(!talent.bloodbath.enabled&debuff.colossus_smash.up)|buff.recklessness.up
@@ -53,12 +54,12 @@ actions.single_target+=/ignite_weapon,if=talent.ignite_weapon.enabled&((target.h
 actions.single_target+=/heroic_leap,if=debuff.colossus_smash.up
 actions.single_target+=/storm_bolt,if=talent.storm_bolt.enabled&debuff.colossus_smash.up
 # Delay Bloodthirst if 2 stacks of raging blow are available inside Colossus Smash.
-actions.single_target+=/raging_blow,if=buff.raging_blow.stack=2&debuff.colossus_smash.up&target.health.pct>=20
+actions.single_target+=/raging_blow,if=buff.raging_blow.stack=2&debuff.colossus_smash.up
 # Until execute range, Bloodthirst is used on cooldown 95% of the time. When execute range is reached, bloodthirst can be delayed 1-2~ globals as long as the conditions below are met.
 # This is done to lower the amount of heroic strike usage, and to increase the amount of executes used.
 actions.single_target+=/bloodthirst,if=!(target.health.pct<20&debuff.colossus_smash.up&rage>=30&buff.enrage.up)
 # The GCD reduction of the Bloodsurge buff allows 3 Wild Strikes in-between Bloodthirst.
-actions.single_target+=/wild_strike,if=buff.bloodsurge.react&target.health.pct>=20&cooldown.bloodthirst.remains<=1
+actions.single_target+=/wild_strike,if=buff.bloodsurge.react&cooldown.bloodthirst.remains<=1&cooldown.bloodthirst.remains>0.3
 # The debuff from Colossus Smash lasts 6.5 seconds and also has 0.25~ seconds of travel time. This allows 4 1.5 second globals to be used inside of it every time now.
 actions.single_target+=/colossus_smash
 actions.single_target+=/storm_bolt,if=talent.storm_bolt.enabled&cooldown.colossus_smash.remains>3
@@ -66,11 +67,12 @@ actions.single_target+=/execute,if=debuff.colossus_smash.up|rage>70|target.time_
 actions.single_target+=/raging_blow,if=target.health.pct<20|buff.raging_blow.stack=2|(debuff.colossus_smash.up|(cooldown.bloodthirst.remains>=1&buff.raging_blow.remains<=3))
 actions.single_target+=/ravager,if=talent.ravager.enabled
 actions.single_target+=/bladestorm,if=enabled,interrupt_if=cooldown.bloodthirst.remains<1
+actions.single_target+=/raging_blow,if=cooldown.colossus_smash.remains>=1
 actions.single_target+=/wild_strike,if=buff.bloodsurge.up
 # If Colossus Smash is coming up soon, it's a good idea to save 1 charge of raging blow for it.
 actions.single_target+=/raging_blow,if=cooldown.colossus_smash.remains>=3
 actions.single_target+=/shockwave,if=talent.shockwave.enabled
-actions.single_target+=/wild_strike,if=(debuff.colossus_smash.up|(cooldown.colossus_smash.remains>=2&rage>=70))&target.health.pct>=20
+actions.single_target+=/wild_strike,if=(debuff.colossus_smash.up|(cooldown.colossus_smash.remains>=2&rage>=60))&target.health.pct>=20
 actions.single_target+=/impending_victory,if=talent.impending_victory.enabled&(target.health.pct>=20&cooldown.colossus_smash.remains>=2)
 
 actions.two_targets=bloodbath,if=talent.bloodbath.enabled
