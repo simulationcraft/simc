@@ -1473,7 +1473,7 @@ std::string chart::scaling_dps( player_t* p )
   }
   else if ( p -> sim -> plot -> dps_plot_negative )
   {
-    const int start = - ( p -> sim -> plot -> dps_plot_points * p -> sim -> plot -> dps_plot_step );
+    const int start = (int) - ( p -> sim -> plot -> dps_plot_points * p -> sim -> plot -> dps_plot_step );
     snprintf( buffer, sizeof( buffer ), "chxl=0:|%d|%.0f|%.0f|%.0f|0|1:|%.0f|%.0f", start, start * 0.75, start * 0.5, start * 0.25, min_dps, max_dps ); s += buffer;
   }
   else

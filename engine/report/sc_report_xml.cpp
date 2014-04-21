@@ -268,7 +268,7 @@ void print_xml_player_gear( xml_writer_t & writer, player_t* p )
   double n_items = 0;
   unsigned ilevel = 0;
   writer.begin_tag( "items" );
-  for ( int i = 0, end = p -> items.size(); i < end; i++ )
+  for ( size_t i = 0, end = p -> items.size(); i < end; i++ )
   {
     item_t* item = &( p -> items[ i ] );
     if ( ! item -> active() )
@@ -287,7 +287,7 @@ void print_xml_player_gear( xml_writer_t & writer, player_t* p )
   if ( n_items > 0 )
     writer.print_attribute( "average_ilevel", util::to_string( util::round( ilevel / n_items, 3 ) ) );
 
-  for ( int i = 0, end = p -> items.size(); i < end; i++ )
+  for ( size_t i = 0, end = p -> items.size(); i < end; i++ )
   {
     item_t* item = &( p -> items[ i ] );
     if ( ! item -> active() )

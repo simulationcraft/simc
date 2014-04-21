@@ -1430,7 +1430,7 @@ struct melee_t : public monk_melee_attack_t
 
   melee_t( const std::string& name, monk_t* player, int sw ) :
     monk_melee_attack_t( name, player, spell_data_t::nil() ),
-    sync_weapons( sw ), tsproc( nullptr ), first( true )
+    sync_weapons( sw ), first( true ), tsproc( nullptr )
   {
     background  = true;
     repeating   = true;
@@ -2365,7 +2365,7 @@ struct crackling_jade_lightning_t : public monk_spell_t
   {
     monk_spell_t::snapshot_state( state, rt );
     cjl_state_t* ss = debug_cast< cjl_state_t* >( state );
-    ss -> lucidity = player -> buffs.courageous_primal_diamond_lucidity -> check();
+    ss -> lucidity = player -> buffs.courageous_primal_diamond_lucidity -> check() != 0;
   }
 
   double cost_per_second( const cjl_state_t* state )

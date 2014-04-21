@@ -2907,7 +2907,7 @@ struct chaos_bolt_t : public warlock_spell_t
     hasted_ticks = false;
     
     if ( p -> talents.grimoire_of_sacrifice -> ok() )
-      num_ticks = p -> talents.grimoire_of_sacrifice -> effectN( 12 ).time_value().total_seconds() / data().effectN( 2 ).period().total_seconds();
+      num_ticks = (int) ( p -> talents.grimoire_of_sacrifice -> effectN( 12 ).time_value().total_seconds() / data().effectN( 2 ).period().total_seconds() );
   }
 
   virtual double crit_chance( double /* crit */, int /* delta_level */ ) const

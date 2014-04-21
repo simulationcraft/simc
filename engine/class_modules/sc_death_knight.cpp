@@ -103,7 +103,7 @@ struct runes_t
     // give each rune a slot number
     for ( size_t i = 0; i < slot.size(); ++i )
     {
-      slot[ i ].slot_number = i;
+      slot[ i ].slot_number = static_cast<int>(i);
       slot[ i ].dk = p;
     }
   }
@@ -3019,7 +3019,7 @@ struct bone_shield_t : public death_knight_spell_t
       cooldown -> duration -= pre_cast;
       p() -> buffs.bone_shield -> buff_duration -= pre_cast;
 
-      p() -> buffs.bone_shield -> trigger( max_stacks ); // FIXME
+      p() -> buffs.bone_shield -> trigger( static_cast<int>(max_stacks) ); // FIXME
       death_knight_spell_t::execute();
 
       cooldown -> duration += pre_cast;
@@ -3027,7 +3027,7 @@ struct bone_shield_t : public death_knight_spell_t
     }
     else
     {
-      p() -> buffs.bone_shield -> trigger( max_stacks ); // FIXME
+      p() -> buffs.bone_shield -> trigger( static_cast<int>(max_stacks) ); // FIXME
       p() -> buffs.bone_wall -> expire();
       death_knight_spell_t::execute();
     }

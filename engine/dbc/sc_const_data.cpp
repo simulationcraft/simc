@@ -478,9 +478,9 @@ std::vector< const spell_data_t* > dbc_t::effect_affects_spells( unsigned family
   for ( size_t i = 0, end = l -> size(); i < end; i++ )
   {
     const spell_data_t* s = l -> at( i );
-    for ( size_t j = 0, vend = NUM_CLASS_FAMILY_FLAGS * 32; j < vend; j++ )
+    for ( unsigned int j = 0, vend = NUM_CLASS_FAMILY_FLAGS * 32; j < vend; j++ )
     {
-      if ( effect -> class_flag( j ) && s -> class_flag( j ) )
+      if ( effect -> class_flag(j ) && s -> class_flag( j ) )
       {
         if ( std::find( affected_spells.begin(), affected_spells.end(), s ) == affected_spells.end() )
           affected_spells.push_back( s );
@@ -521,7 +521,7 @@ std::vector< const spelleffect_data_t* > dbc_t::effects_affecting_spell( const s
       const spelleffect_data_t& effect = s -> effectN( idx );
 
       // Match spell family flags
-      for ( size_t j = 0, vend = NUM_CLASS_FAMILY_FLAGS * 32; j < vend; j++ )
+      for ( unsigned int j = 0, vend = NUM_CLASS_FAMILY_FLAGS * 32; j < vend; j++ )
       {
         if ( ! ( effect.class_flag( j ) && spell -> class_flag( j ) ) )
           continue;
@@ -2532,7 +2532,7 @@ unsigned dbc_t::perk_ability_id( specialization_e spec_id, size_t perk_idx ) con
   assert( ( int )class_idx >= 0 && class_idx < specialization_max_class() &&
           ( int )spec_index >= 0 && spec_index < specialization_max_per_class() );
 
-  return perk_ability( class_idx, spec_index, perk_idx );
+  return perk_ability( class_idx, spec_index, static_cast<unsigned int>(perk_idx) );
 }
 
 unsigned dbc_t::perk_ability_id( specialization_e spec_id, const char* spell_name ) const

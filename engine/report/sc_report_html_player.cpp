@@ -1402,7 +1402,7 @@ void print_html_player_scale_factors( report::sc_html_stream& os, sim_t* sim, pl
   {
     if ( p -> sim -> scaling -> has_scale_factors() )
     {
-      int colspan = p -> scaling_stats.size();
+      int colspan = static_cast<int>(p -> scaling_stats.size());
 
       os << "\t\t\t\t\t\t<table class=\"sc mt\">\n";
 
@@ -1413,7 +1413,7 @@ void print_html_player_scale_factors( report::sc_html_stream& os, sim_t* sim, pl
       os << "\t\t\t\t\t\t\t<tr>\n"
          << "\t\t\t\t\t\t\t\t<th></th>\n";
 
-      for ( int i = 0; i < p -> scaling_stats.size(); i++ )
+      for ( size_t i = 0; i < p -> scaling_stats.size(); i++ )
       {
           os.printf(
             "\t\t\t\t\t\t\t\t<th>%s</th>\n",
@@ -1428,7 +1428,7 @@ void print_html_player_scale_factors( report::sc_html_stream& os, sim_t* sim, pl
       os << "\t\t\t\t\t\t\t<tr>\n"
          << "\t\t\t\t\t\t\t\t<th class=\"left\">Scale Factors</th>\n";
 
-      for ( int i = 0; i < p -> scaling_stats.size(); i++ )
+      for ( size_t i = 0; i < p -> scaling_stats.size(); i++ )
       {
         if ( std::abs( p -> scaling.get_stat( p -> scaling_stats[ i ] ) > 1.0e5 ) )
             os.printf(
@@ -1451,7 +1451,7 @@ void print_html_player_scale_factors( report::sc_html_stream& os, sim_t* sim, pl
       os << "\t\t\t\t\t\t\t<tr>\n"
          << "\t\t\t\t\t\t\t\t<th class=\"left\">Normalized</th>\n";
 
-      for ( int i = 0; i < p -> scaling_stats.size(); i++ )
+      for ( size_t i = 0; i < p -> scaling_stats.size(); i++ )
         os.printf(
             "\t\t\t\t\t\t\t\t<td>%.*f</td>\n",
             p -> sim -> report_precision,
@@ -1460,7 +1460,7 @@ void print_html_player_scale_factors( report::sc_html_stream& os, sim_t* sim, pl
       os << "\t\t\t\t\t\t\t<tr>\n"
          << "\t\t\t\t\t\t\t\t<th class=\"left\">Scale Deltas</th>\n";
 
-      for ( int i = 0; i < p -> scaling_stats.size(); i++ )
+      for ( size_t i = 0; i < p -> scaling_stats.size(); i++ )
       {
         double value = p -> sim -> scaling -> stats.get_stat( p -> scaling_stats[ i ] );
         std::string prefix;
@@ -1487,7 +1487,7 @@ void print_html_player_scale_factors( report::sc_html_stream& os, sim_t* sim, pl
       os << "\t\t\t\t\t\t\t<tr>\n"
          << "\t\t\t\t\t\t\t\t<th class=\"left\">Error</th>\n";
 
-      for ( int i = 0; i < p -> scaling_stats.size(); i++ )
+      for ( size_t i = 0; i < p -> scaling_stats.size(); i++ )
         if ( std::abs( p -> scaling.get_stat( p -> scaling_stats[ i ] ) ) > 1.0e5 )
             os.printf(
               "\t\t\t\t\t\t\t\t<td>%.*e</td>\n",

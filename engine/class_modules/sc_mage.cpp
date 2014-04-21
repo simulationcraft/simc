@@ -4856,7 +4856,7 @@ expr_t* mage_t::create_expression( action_t* a, const std::string& name_str )
         if ( mage.icicles.size() == 0 )
           return 0;
         else if ( mage.sim -> current_time - mage.icicles[ 0 ].first < mage.spells.icicles_driver -> duration() )
-          return mage.icicles.size();
+          return static_cast<double>(mage.icicles.size());
         else
         {
           size_t icicles = 0;
@@ -4868,7 +4868,7 @@ expr_t* mage_t::create_expression( action_t* a, const std::string& name_str )
             icicles++;
           }
 
-          return icicles;
+          return static_cast<double>(icicles);
         }
       }
     };
