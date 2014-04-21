@@ -2236,9 +2236,15 @@ struct slam_sweeping_strikes_attack_t : public warrior_attack_t
     return 0;
   }
 
-  virtual double action_multiplier() const
+  virtual void execute()
   {
-    return data().effectN( 2 ).percent(); //Deals 35% of original damage
+    warrior_t*p = cast();
+
+    base_dd_max *= data().effectN( 2 ).percent(); //Deals 35% of original damage
+    base_dd_min *= data().effectN( 2 ).percent();
+
+    warrior_attack_t::execute();
+
   }
 
   size_t available_targets( std::vector< player_t* >& tl ) const
