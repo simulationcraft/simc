@@ -707,6 +707,11 @@ static  void trigger_sweeping_strikes( action_state_t* s )
       base_costs[ RESOURCE_RAGE] = 0;     //Resource consumption already accounted for in the buff application.
     }
 
+  virtual double target_armor( player_t* ) const
+  {
+    return 0; // Armor accounted for in previous attack.
+  }
+
   virtual timespan_t travel_time() const
   {
   // It's possible for sweeping strikes and opportunity strikes to proc off each other into infinity as long as the rng.roll on opportunity strikes returns true. 
