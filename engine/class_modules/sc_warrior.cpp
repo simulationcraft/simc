@@ -994,7 +994,11 @@ struct melee_t : public warrior_attack_t
     if ( s -> result != RESULT_MISS )
       trigger_rage_gain();
 
+    if ( p -> specialization() == WARRIOR_PROTECTION && s -> result == RESULT_CRIT && p -> active_stance == STANCE_DEFENSE )
+      p -> buff.riposte -> trigger();
+
   }
+
 
   virtual double action_multiplier() const
   {
@@ -1085,17 +1089,6 @@ struct auto_attack_t : public warrior_attack_t
       return false;
 
     return( p -> main_hand_attack -> execute_event == 0 ); // not swinging
-  }
-
-  
-  virtual void impact( action_state_t* s )
-  {
-    warrior_attack_t::impact( s );
-    warrior_t* p = cast();
-
-    if ( p -> specialization() == WARRIOR_PROTECTION && s -> result == RESULT_CRIT && p -> active_stance == STANCE_DEFENSE )
-      p -> buff.riposte -> trigger();
-
   }
 };
 
@@ -3976,7 +3969,7 @@ void warrior_t::create_buffs()
                           .cd( timespan_t::zero() );
 
                           
-  buff.riposte         = buff_creator_t( this, "riposte",      find_spell( 145672 ) ) 
+  buff.riposte         = buff_creator_t( this, "riposte",      find_spell( 145674 ) )
                          .add_invalidate( CACHE_PARRY );
 
   buff.taste_for_blood = buff_creator_t( this, "taste_for_blood" )
