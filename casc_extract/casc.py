@@ -26,13 +26,13 @@ class BLTEChunk(object):
 
 	def extract(self, data):
 		if len(data) != self.chunk_length:
-			print >>sys.stderr, 'Invalid data length for chunk#%d, expected %u got %u' % (
-				self.id, self.chunk_length, len(data))
+			self.options.parser.error('Invalid data length for chunk#%d, expected %u got %u' % (
+				self.id, self.chunk_length, len(data)))
 			return False
 		
 		type = ord(data[0])
 		if type not in [ _NULL_CHUNK, _COMPRESSED_CHUNK, _UNCOMPRESSED_CHUNK ]:
-			print >>sys.stderr, 'Unknown chunk type %#x for chunk%d' % (type, self.id)
+			self.options.parser.error('Unknown chunk type %#x for chunk%d' % (type, self.id))
 			return False
 		
 		self.__verify(data)
@@ -49,12 +49,12 @@ class BLTEChunk(object):
 			dc = zlib.decompressobj()
 			uncompressed_data = dc.decompress(data[1:])
 			if len(dc.unused_data) > 0:
-				print >>sys.stderr, 'Unused %d bytes of compressed data in chunk%d' % (len(dc.unused_data), self.id)
+				self.options.parser.error('Unused %d bytes of compressed data in chunk%d' % (len(dc.unused_data), self.id))
 				return False
 			
 			if len(uncompressed_data) != self.output_length:
-				print >>sys.stderr, 'Output chunk data length mismatch in chunk %d, expected %d got %d' % (
-					self.id, self.output_length, len(uncompressed_data))
+				self.options.parser.error('Output chunk data length mismatch in chunk %d, expected %d got %d' % (
+					self.id, self.output_length, len(uncompressed_data)))
 				return False
 			
 			self.output_data = uncompressed_data
@@ -83,7 +83,7 @@ class BLTEFile(object):
 	def __extract_direct(self):
 		type = ord(self.extractor.fd.read(_MARKER_LEN))
 		if type != _COMPRESSED_CHUNK:
-			print >>sys.stderr, 'Direct extraction only supports compressed data, was given %#x' % type
+			self.options.parser.error('Direct extraction only supports compressed data, was given %#x' % type)
 			return False
 		
 		# We don't know where the compressed data ends, so read until it's done
@@ -110,7 +110,7 @@ class BLTEFile(object):
 		else:
 			unk_1, cc_b1, cc_b2, cc_b3 = struct.unpack('BBBB', self.extractor.fd.read(_CHUNK_HEADER_LEN))
 			if unk_1 != 0x0F:
-				print >>sys.stderr, 'Unknown magic byte %d %#x in BLTE @%#.8x' % (unk_1, self.extractor.fd.tell() - _CHUNK_HEADER_LEN)
+				self.options.parser.error('Unknown magic byte %d %#x in BLTE @%#.8x' % (unk_1, self.extractor.fd.tell() - _CHUNK_HEADER_LEN))
 				return False
 			
 			n_chunks = (cc_b1 << 16) | (cc_b2 << 8) | cc_b3
@@ -155,12 +155,12 @@ class BLTEExtract(object):
 		self.close()
 
 		if not os.access(data_file, os.R_OK):
-			print >>sys.stderr, 'File %s not readable.' % data_file
+			self.options.parser.error('File %s not readable.' % data_file)
 			return False
 		
 		self.fsize = os.stat(data_file).st_size
 		if self.fsize == 0:
-			print >>sys.stderr, 'File %s is empty.' % data_file
+			self.options.parser.error('File %s is empty.' % data_file)
 			return False
 		
 		self.fdesc = open(data_file, 'rb')
@@ -226,7 +226,7 @@ class CASCDataIndexFile(object):
 	
 	def open(self):
 		if not os.access(self.file, os.R_OK):
-			print >>sys.stderr, 'Unable to read index file %s' % self.file
+			self.options.parser.error('Unable to read index file %s' % self.file)
 			return False
 		
 		fsize = os.stat(self.file).st_size
@@ -276,13 +276,13 @@ class CASCDataIndex(object):
 	def open(self):
 		data_dir = os.path.join(self.options.data_dir, 'Data', 'data')
 		if not os.access(data_dir, os.R_OK):
-			print >>sys.stderr, 'Unable to read World of Warcraft data directory %s' % data_dir
+			self.options.parser.error('Unable to read World of Warcraft data directory %s' % data_dir)
 			return False
 		
 		idx_files_glob = os.path.join(data_dir, '*.idx')
 		idx_files = glob.glob(idx_files_glob)
 		if len(idx_files) == 0:
-			print >>sys.stderr, 'No index files found in World of Warcraft data directory %s' % data_dir
+			self.options.parser.error('No index files found in World of Warcraft data directory %s' % data_dir)
 			return False
 		
 		idx_file_re = re.compile('([0-9a-fA-F]{2})([0-9a-fA-F]{8})')
@@ -291,7 +291,7 @@ class CASCDataIndex(object):
 		for idx_file in idx_files:
 			mobj = idx_file_re.match(os.path.basename(idx_file))
 			if not mobj:
-				print >>sys.stderr, 'Unable to match filename %s' % idx_file
+				self.options.parser.error('Unable to match filename %s' % idx_file)
 				return False
 			
 			file_number = int(mobj.group(1), 16)
@@ -321,7 +321,7 @@ class CASCEncodingFile(object):
 	
 	def open(self):
 		if not os.access(self.file, os.R_OK):
-			print >>sys.stderr, 'Unable to open encoding file %s for reading' % self.file
+			self.options.parser.error('Unable to open encoding file %s for reading' % self.file)
 			return False
 		
 		with open(self.file, 'rb') as f:
@@ -329,7 +329,7 @@ class CASCEncodingFile(object):
 			while f.tell() < fsize:
 				locale = f.read(2)
 				if locale != 'EN':
-					print >>sys.stderr, 'Unknown locale "%s" in file %s, only EN supported' % (locale, self.file)
+					self.options.parser.error('Unknown locale "%s" in file %s, only EN supported' % (locale, self.file))
 					return False
 
 				unk_b1, unk_b2, unk_b3, unk_s1, unk_s2, hash_table_size, unk_w1, unk_b3, hash_table_offset = struct.unpack('>BBBHHIIBI', f.read(20))
@@ -355,18 +355,18 @@ class CASCEncodingFile(object):
 							keys.append(f.read(16))
 						
 						if entry_id == 0 and file_md5 != self.first_entries[hash_block]:
-							print >>sys.stderr, 'Invalid first md5 in block %d@%u, expected %s got %s' % (
-								hash_block, f.tell(), self.first_entries[hash_block].encode('hex'), file_md5.encode('hex'))
+							self.options.parser.error('Invalid first md5 in block %d@%u, expected %s got %s' % (
+								hash_block, f.tell(), self.first_entries[hash_block].encode('hex'), file_md5.encode('hex')))
 							return False
 						
 						#print '%5u %8u %8u %2u %s %s' % (entry_id, f.tell(), file_size, n_keys, file_md5.encode('hex'), file_key.encode('hex'))
 						if file_size > 1000000000:
-							print >>sys.stderr, 'Invalid (too large) file size %u in block %u, entry id %u, pos %u' % (file_size, hash_block, entry_id, f.tell())
+							self.options.parser.error('Invalid (too large) file size %u in block %u, entry id %u, pos %u' % (file_size, hash_block, entry_id, f.tell()))
 							return False
 						
 						if file_md5 in self.md5_map:
-							print >>sys.stderr, 'Duplicate md5 entry %s in block %d@%u' % (
-								file_md5.encode('hex'), hash_block, f.tell())
+							self.options.parser.error('Duplicate md5 entry %s in block %d@%u' % (
+								file_md5.encode('hex'), hash_block, f.tell()))
 							return False
 						
 						self.md5_map[file_md5] = (file_size, keys)
@@ -378,9 +378,8 @@ class CASCEncodingFile(object):
 					for pad_idx in xrange(0, 4096 - (f.tell() - before)):
 						byte = f.read(1)
 						if byte != '\x00':
-							print >>sys.stderr, 'Invalid padding byte %u at the end of block %u, pos %u, expected 0, got %#x' % (pad_idx, hash_block, f.tell(), ord(byte))
+							self.options.parser.error('Invalid padding byte %u at the end of block %u, pos %u, expected 0, got %#x' % (pad_idx, hash_block, f.tell(), ord(byte)))
 							return False
-
 				break
 		
 		return True
@@ -401,7 +400,7 @@ class CASCRootFile(object):
 		
 	def open(self):
 		if not os.access(self.file, os.R_OK):
-			print >>sys.stderr, 'Unable to open root file %s for reading' % self.file
+			self.options.parser.error('Unable to open root file %s for reading' % self.file)
 			return False
 	
 		with open(self.file, 'rb') as f:
