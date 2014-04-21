@@ -52,6 +52,7 @@ public:
   action_t* active_blood_craze;
   action_t* active_deep_wounds;
   action_t* active_opportunity_strike;
+  action_t* active_second_wind;
   attack_t* active_sweeping_strikes;
 
   heal_t* active_t16_2pc;
@@ -305,6 +306,7 @@ public:
     active_blood_craze        = 0;
     active_deep_wounds        = 0;
     active_opportunity_strike = 0;
+    active_second_wind        = 0;
     active_sweeping_strikes   = 0;
     active_t16_2pc            = 0;
     active_stance             = STANCE_BATTLE;
@@ -905,6 +907,14 @@ void warrior_attack_t::impact( action_state_t* s )
   base_t::impact( s );
   warrior_t* p     = cast();
   warrior_td_t* td = cast_td( s -> target );
+
+  if ( s -> result_amount > 0 )
+    if ( p -> talents.second_wind -> ok() &&  p -> resources.current[ RESOURCE_HEALTH ] < p -> resources.max[ RESOURCE_HEALTH ] * 0.35 )
+    {
+      p -> active_second_wind -> base_dd_min = s -> result_amount;
+      p -> active_second_wind -> base_dd_max = s -> result_amount;
+      p -> active_second_wind -> execute();
+    }
 
   if ( result_is_hit( s -> result ) && !proc && s -> result_amount > 0 && this -> id != 147891 ) // Flurry of Xuen
   {
@@ -2150,6 +2160,16 @@ struct second_wind_t : public heal_t // SW has been changed to life-leech in WoD
     target         = p;
   }
 
+  virtual void execute()
+  {
+    warrior_t* p = static_cast<warrior_t*>( player );
+
+    base_dd_max *= 0.1; //Heals for 10% of original damage
+    base_dd_min *= 0.1;
+
+    heal_t::execute();
+
+  }
 };
 
 // Shield Slam ==============================================================
@@ -2797,6 +2817,7 @@ struct deep_wounds_t : public warrior_spell_t
 
     return am;
   }
+
 };
 
 // Recklessness =============================================================
@@ -3432,6 +3453,7 @@ void warrior_t::init_spells()
   active_deep_wounds   = new deep_wounds_t( this );
   active_bloodbath_dot = new bloodbath_dot_t( this );
   active_blood_craze   = new blood_craze_t( this );
+  active_second_wind   = new second_wind_t( this );
   active_t16_2pc       = new tier16_2pc_tank_heal_t( this );
 
   if ( mastery.strikes_of_opportunity -> ok() )
