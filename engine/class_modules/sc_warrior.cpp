@@ -698,6 +698,7 @@ static  void trigger_sweeping_strikes( action_state_t* s )
 {
   struct sweeping_strikes_attack_t : public warrior_attack_t
   {
+    double pct_damage;
     sweeping_strikes_attack_t( warrior_t* p ) :
       warrior_attack_t( "sweeping_strikes_attack", p, p -> find_spell( 12328 ) )
     {
@@ -707,6 +708,8 @@ static  void trigger_sweeping_strikes( action_state_t* s )
       weapon_multiplier = 0;
       base_costs[ RESOURCE_RAGE] = 0;     //Resource consumption already accounted for in the buff application.
       cooldown -> duration = timespan_t::zero(); // Cooldown accounted for in the buff.
+      pct_damage   = data().effectN( 1 ).percent();
+      pct_damage  += p -> find_spell( 137049 ) -> effectN( 2 ).percent(); // They haven't removed the hotfix yet.
     }
 
   virtual double target_armor( player_t* ) const
@@ -718,8 +721,8 @@ static  void trigger_sweeping_strikes( action_state_t* s )
   {
     warrior_t*p = cast();
 
-    base_dd_max *= data().effectN( 1 ).percent(); //Deals 75% of original damage
-    base_dd_min *= data().effectN( 1 ).percent();
+    base_dd_max *= pct_damage; //Deals 50% of original damage
+    base_dd_min *= pct_damage;
 
     warrior_attack_t::execute();
 
