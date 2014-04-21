@@ -49,6 +49,7 @@ public:
   // Active
 
   action_t* active_bloodbath_dot;
+  action_t* active_blood_craze;
   action_t* active_deep_wounds;
   action_t* active_opportunity_strike;
   attack_t* active_sweeping_strikes;
@@ -63,6 +64,7 @@ public:
     buff_t* battle_stance;
     buff_t* berserker_rage;
     buff_t* bloodbath;
+    buff_t* blood_craze;
     buff_t* bloodsurge;
     buff_t* defensive_stance;
     buff_t* enrage;
@@ -214,6 +216,7 @@ public:
     const spell_data_t* readiness_fury;
   //Prot-only
     const spell_data_t* bastion_of_defense;
+    const spell_data_t* blood_craze;
     const spell_data_t* readiness_protection;
     const spell_data_t* riposte;
     const spell_data_t* sword_and_board;
@@ -299,6 +302,7 @@ public:
   {
     // Active
     active_bloodbath_dot      = 0;
+    active_blood_craze        = 0;
     active_deep_wounds        = 0;
     active_opportunity_strike = 0;
     active_sweeping_strikes   = 0;
@@ -994,9 +998,16 @@ struct melee_t : public warrior_attack_t
     if ( s -> result != RESULT_MISS )
       trigger_rage_gain();
 
-    if ( p -> specialization() == WARRIOR_PROTECTION && s -> result == RESULT_CRIT && p -> active_stance == STANCE_DEFENSE )
-      p -> buff.riposte -> trigger();
-
+    if ( p -> specialization() == WARRIOR_PROTECTION && p -> active_stance == STANCE_DEFENSE )
+    {
+      if ( s -> result == RESULT_CRIT )
+        p -> buff.riposte -> trigger();
+      if ( s -> result == RESULT_MULTISTRIKE || s -> result == RESULT_MULTISTRIKE_CRIT )
+      {
+        p -> buff.blood_craze -> trigger();
+        p -> active_blood_craze -> execute();
+      }
+    }
   }
 
 
@@ -2097,6 +2108,36 @@ struct revenge_t : public warrior_attack_t
   }
 };
 
+// Blood Craze ==============================================================
+
+struct blood_craze_t : public heal_t
+{
+  blood_craze_t( warrior_t* p ) :
+    heal_t( "blood_craze", p , p -> spec.blood_craze )
+  {
+    num_ticks = 3;
+    base_tick_time = timespan_t::from_seconds( 1.0 );
+    hasted_ticks = false;
+    tick_may_crit = false;
+    tick_zero = true;
+    harmful = false;
+    background = true;
+    target = p;
+    dot_behavior = DOT_EXTEND;
+
+  }
+
+  virtual void tick( dot_t* d )
+  {
+    warrior_t* p = static_cast<warrior_t*>( player );
+
+    base_td = p -> resources.max[ RESOURCE_HEALTH ] * 0.01;
+
+    // call tick()
+    heal_t::tick( d );
+  }
+
+};
 // Second Wind ==============================================================
 
 struct second_wind_t : public heal_t // SW has been changed to life-leech in WoD.
@@ -2665,7 +2706,11 @@ struct berserker_rage_t : public warrior_spell_t
     warrior_t* p = cast();
 
     p -> buff.berserker_rage -> trigger();
-    p -> enrage();
+
+    if ( p -> buff.raging_blow -> stack() == 2 )
+      p -> proc.raging_blow_wasted -> occur();
+    if ( p -> specialization() == WARRIOR_FURY )
+      p -> buff.raging_blow -> trigger();
   }
 };
 
@@ -2724,6 +2769,7 @@ struct deep_wounds_t : public warrior_spell_t
     proc          = true;
     tick_may_crit = true;
     hasted_ticks  = false;
+    dynamic_tick_action = true;
     dot_behavior = DOT_REFRESH;
   }
 
@@ -3285,6 +3331,7 @@ void warrior_t::init_spells()
 
   // Spec Passives
   spec.bastion_of_defense       = find_specialization_spell( "Bastion of Defense"    );
+  spec.blood_craze              = find_specialization_spell( "Blood Craze"           );
   spec.blood_and_thunder        = find_specialization_spell( "Blood and Thunder"     );
   spec.bloodsurge               = find_specialization_spell( "Bloodsurge"            );
   spec.crazed_berserker         = find_specialization_spell( "Crazed Berserker"      );
@@ -3384,6 +3431,7 @@ void warrior_t::init_spells()
   // Active spells
   active_deep_wounds   = new deep_wounds_t( this );
   active_bloodbath_dot = new bloodbath_dot_t( this );
+  active_blood_craze   = new blood_craze_t( this );
   active_t16_2pc       = new tier16_2pc_tank_heal_t( this );
 
   if ( mastery.strikes_of_opportunity -> ok() )
@@ -3927,11 +3975,16 @@ void warrior_t::create_buffs()
                           .cd( timespan_t::zero() )
                           .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
   buff.battle_stance    = buff_creator_t( this, "battle_stance",    find_class_spell( "Battle Stance" ) );
+
   buff.berserker_rage   = buff_creator_t( this, "berserker_rage",   find_class_spell( "Berserker Rage" ) )
                           .cd( timespan_t::zero() );
 
   buff.bloodbath        = buff_creator_t( this, "bloodbath",        talents.bloodbath )
                           .cd( timespan_t::zero() );
+
+  buff.blood_craze      = buff_creator_t( this, "blood_craze",      spec.blood_craze )
+                          .duration( find_spell( 159363 ) -> duration() );
+
   buff.bloodsurge       = buff_creator_t( this, "bloodsurge",       spec.bloodsurge -> effectN( 1 ).trigger() )
                           .chance( spec.bloodsurge -> effectN( 1 ).percent() );
 
