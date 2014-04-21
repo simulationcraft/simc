@@ -827,10 +827,10 @@ void enemy_t::init_action_list()
         switch ( tmi_boss_enum )
         {
           case TMI_NONE:
-            action_list_str += "/auto_attack,damage=" + util::to_string( 70000 * level_mult ) + ",attack_speed=2,aoe_tanks=1";
-            action_list_str += "/spell_dot,damage=" + util::to_string( 5000 * level_mult ) + ",tick_time=2,num_ticks=10,cooldown=40,aoe_tanks=1,if=!ticking";
-            action_list_str += "/spell_nuke,damage=" + util::to_string( 50000 * level_mult ) + ",cooldown=35,attack_speed=3,aoe_tanks=1";
-            action_list_str += "/melee_nuke,damage=" + util::to_string( 100000 * level_mult ) + ",cooldown=27,attack_speed=3,aoe_tanks=1";
+            action_list_str += "/auto_attack,damage=" + util::to_string( 11000 * level_mult ) + ",attack_speed=2,aoe_tanks=1";
+            action_list_str += "/spell_dot,damage=" + util::to_string( 4000 * level_mult ) + ",tick_time=2,num_ticks=10,cooldown=40,aoe_tanks=1,if=!ticking";
+            action_list_str += "/spell_nuke,damage=" + util::to_string( 8000 * level_mult ) + ",cooldown=35,attack_speed=3,aoe_tanks=1";
+            action_list_str += "/melee_nuke,damage=" + util::to_string( 14000 * level_mult ) + ",cooldown=27,attack_speed=3,aoe_tanks=1";
             break;
           default:
             // boss damage information ( could move outside this function and make a constant )
