@@ -306,10 +306,13 @@ class CASCDataIndex(object):
 			self.idx_data[file_number] = CASCDataIndexFile(self.options, self, *file_data)
 			if not self.idx_data[file_number].open():
 				return False
+		
+		return True
 
 class CASCEncodingFile(object):
-	def __init__(self, options, file = ''):
-		self.file = len(file) and file or options.encoding_file
+	def __init__(self, options, build):
+		self.options = options
+		self.build = build
 		self.first_entries = []
 		self.md5_map = { }
 	
@@ -320,16 +323,16 @@ class CASCEncodingFile(object):
 		return self.md5_map.get(md5s, (0, []))[1]
 	
 	def open(self):
-		if not os.access(self.file, os.R_OK):
-			self.options.parser.error('Unable to open encoding file %s for reading' % self.file)
+		if not os.access(self.options.encoding_file, os.R_OK):
+			self.options.parser.error('Unable to open encoding file "%s" for reading' % self.options.encoding_file)
 			return False
 		
-		with open(self.file, 'rb') as f:
-			fsize = os.stat(self.file).st_size
+		with open(self.options.encoding_file, 'rb') as f:
+			fsize = os.stat(self.options.encoding_file).st_size
 			while f.tell() < fsize:
 				locale = f.read(2)
 				if locale != 'EN':
-					self.options.parser.error('Unknown locale "%s" in file %s, only EN supported' % (locale, self.file))
+					self.options.parser.error('Unknown locale "%s" in file %s, only EN supported' % (locale, self.options.encoding_file))
 					return False
 
 				unk_b1, unk_b2, unk_b3, unk_s1, unk_s2, hash_table_size, unk_w1, unk_b3, hash_table_offset = struct.unpack('>BBBHHIIBI', f.read(20))
@@ -385,26 +388,27 @@ class CASCEncodingFile(object):
 		return True
 		
 class CASCRootFile(object):
-	def __init__(self, options, encoding, file = ''):
-		self.encoding = encoding
-		self.file = len(file) and file or options.root_file
+	def __init__(self, options, build):
+		self.build = build
 		self.options = options
 		self.hash_map = {}
-		self.n_entries = 0
 	
 	def GetFileMD5(self, file):
 		hash_name = file.strip().upper().replace('/', '\\')
 		hash = jenkins.hashlittle2(hash_name)
 		v = (hash[0] << 32) | hash[1]
 		return self.hash_map.get(v, [])
+	
+	def GetFileHashMD5(self, file_hash):
+		return self.hash_map.get(file_hash, [])
 		
 	def open(self):
-		if not os.access(self.file, os.R_OK):
-			self.options.parser.error('Unable to open root file %s for reading' % self.file)
+		if not os.access(self.options.root_file, os.R_OK):
+			self.options.parser.error('Unable to open root file %s for reading' % self.options.root_file)
 			return False
 	
-		with open(self.file, 'rb') as f:
-			fsize = os.stat(self.file).st_size
+		with open(self.options.root_file, 'rb') as f:
+			fsize = os.stat(self.options.root_file).st_size
 			while f.tell() < fsize:
 				n_entries, unk_1, unk_2 = struct.unpack('III', f.read(12))
 				if n_entries == 0:
@@ -422,5 +426,5 @@ class CASCRootFile(object):
 					
 					#print unk_data[entry_idx], file_name_hash.encode('hex'), md5s.encode('hex')
 					self.hash_map[val].append(md5s)
-					self.n_entries += 1
 
+		return True
