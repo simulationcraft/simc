@@ -704,7 +704,9 @@ static  void trigger_sweeping_strikes( action_state_t* s )
       may_miss = may_dodge = may_parry = may_crit = callbacks = false;
       background                 = true;
       aoe                        = 1;
+      weapon_multiplier = 0;
       base_costs[ RESOURCE_RAGE] = 0;     //Resource consumption already accounted for in the buff application.
+      cooldown -> duration = timespan_t::zero(); // Cooldown accounted for in the buff.
     }
 
   virtual double target_armor( player_t* ) const
@@ -712,22 +714,22 @@ static  void trigger_sweeping_strikes( action_state_t* s )
     return 0; // Armor accounted for in previous attack.
   }
 
+  virtual void execute()
+  {
+    warrior_t*p = cast();
+
+    base_dd_max *= data().effectN( 1 ).percent(); //Deals 75% of original damage
+    base_dd_min *= data().effectN( 1 ).percent();
+
+    warrior_attack_t::execute();
+
+  }
+
   virtual timespan_t travel_time() const
   {
   // It's possible for sweeping strikes and opportunity strikes to proc off each other into infinity as long as the rng.roll on opportunity strikes returns true. 
   // Sweeping strikes has a 1 second "travel time" in game. 
     return timespan_t::from_seconds( 1 );
-  }
-
-  virtual void execute()
-  {
-   warrior_t*p = cast();
-
-   base_dd_min *= data().effectN( 1 ).percent(); // 75% of original attack
-   base_dd_max *= data().effectN( 1 ).percent();
-
-   warrior_attack_t::execute();
-
   }
 
   size_t available_targets( std::vector< player_t* >& tl ) const
