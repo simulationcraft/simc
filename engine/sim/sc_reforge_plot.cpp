@@ -323,7 +323,7 @@ double reforge_plot_t::progress( std::string& phase, std::string* detailed )
       reforge_iter += ( reforge_plot_iterations > 0 ? reforge_plot_iterations : sim -> iterations );
   }
 
-  sim -> detailed_progress( detailed, reforge_iter, total_iter );
+  sim -> detailed_progress( detailed, (int) reforge_iter, (int) total_iter );
 
   return reforge_iter / total_iter;
 }

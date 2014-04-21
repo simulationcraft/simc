@@ -425,7 +425,6 @@ public:
     t16_2pc_starfall_bolt( nullptr ),
     t16_2pc_sun_bolt( nullptr ),
     active( active_actions_t() ),
-    pet_force_of_nature(),
     caster_form_weapon(),
     buff( buffs_t() ),
     cooldown( cooldowns_t() ),
@@ -443,9 +442,14 @@ public:
 
     eclipse_bar_value     = 0;
     eclipse_bar_direction = 0;
-
+    
     initial_eclipse = 65535;
     default_initial_eclipse = -75;
+
+    for (size_t i = 0; i < sizeof_array(pet_force_of_nature); i++)
+    {
+        pet_force_of_nature[i] = nullptr;
+    }
 
     cooldown.natures_swiftness   = get_cooldown( "natures_swiftness"   );
     cooldown.mangle              = get_cooldown( "mangle"         );
@@ -556,7 +560,7 @@ struct natures_vigil_proc_t : public spell_t
 
     natures_vigil_heal_t( druid_t* p ) :
       heal_t( "natures_vigil_heal", p, p -> find_spell( 124988 ) ),
-      dmg_coeff( 0.0 ), heal_coeff( 0.0 ) 
+      heal_coeff( 0.0 ), dmg_coeff( 0.0 )
     {
       background = proc = dual = true;
       may_crit = may_miss      = false;
@@ -3526,14 +3530,14 @@ struct healing_touch_t : public druid_heal_t
     init_living_seed();
   }
 
-  double spell_direct_power_coefficient( const action_state_t* state ) const
+  double spell_direct_power_coefficient( const action_state_t* /* state */ ) const
   {
     if ( p() -> specialization() == DRUID_GUARDIAN && p() -> buff.dream_of_cenarius -> check() )
       return 0.0;
     return data().effectN( 1 ).coeff();
   }
 
-  double attack_direct_power_coefficient( const action_state_t* state ) const
+  double attack_direct_power_coefficient( const action_state_t* /* state */ ) const
   {
     if ( p() -> specialization() == DRUID_GUARDIAN && p() -> buff.dream_of_cenarius -> check() )
       return data().effectN( 1 ).coeff();
