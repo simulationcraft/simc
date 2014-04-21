@@ -714,6 +714,17 @@ static  void trigger_sweeping_strikes( action_state_t* s )
     return timespan_t::from_seconds( 1 );
   }
 
+  virtual void execute()
+  {
+   warrior_t*p = cast();
+
+   base_dd_min *= data().effectN( 1 ).percent(); // 75% of original attack
+   base_dd_max *= data().effectN( 1 ).percent();
+
+   warrior_attack_t::execute();
+
+  }
+
   size_t available_targets( std::vector< player_t* >& tl ) const
   {
     tl.clear();
