@@ -349,7 +349,7 @@ public:
   virtual double    composite_block() const;
   virtual double    composite_parry() const;
   virtual double    composite_attack_power_multiplier() const;
-  virtual double    composite_expertise() const;
+  virtual double    composite_melee_expertise( weapon_t* ) const;
   virtual double    composite_crit_block() const;
   virtual double    composite_crit_avoidance() const;
   virtual double    composite_dodge() const;
@@ -4235,14 +4235,14 @@ double warrior_t::composite_block() const
   return b;
 }
 
-//warrior_t::composite_expertise =======================================
+//warrior_t::composite_melee_expertise =======================================
 
-double warrior_t::composite_expertise() const
+double warrior_t::composite_melee_expertise( weapon_t * w ) const
 {
-  double expertise = current.stats.expertise_rating / current_rating().expertise;
+  double expertise = player_t::composite_melee_expertise ( w );
 
   if ( spec.unwavering_sentinel -> ok() && active_stance != STANCE_GLADIATOR )
-    expertise += spec.unwavering_sentinel -> effectN( 5 ).base_value();
+    expertise += spec.unwavering_sentinel -> effectN( 5 ).percent();
 
   return expertise;
 }
