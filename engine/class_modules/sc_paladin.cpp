@@ -121,7 +121,6 @@ public:
     gain_t* divine_plea;
     gain_t* extra_regen;
     gain_t* judgments_of_the_wise;
-    gain_t* sanctuary;
     gain_t* seal_of_insight;
     gain_t* glyph_divine_storm;
     gain_t* glyph_divine_shield;
@@ -299,6 +298,7 @@ public:
   virtual double    composite_attribute_multiplier( attribute_e attr ) const;
   virtual double    composite_attack_power_multiplier() const;
   virtual double    composite_melee_crit() const;
+  virtual double    composite_melee_expertise( weapon_t* weapon ) const;
   virtual double    composite_spell_crit() const;
   virtual double    composite_player_multiplier( school_e school ) const;
   virtual double    composite_spell_power( school_e school ) const;
@@ -3008,13 +3008,13 @@ struct hammer_of_the_righteous_aoe_t : public paladin_melee_attack_t
   {
     // AoE effect always hits if single-target attack succeeds
     // Doesn't proc seals or Grand Crusader
+    // TODO: need to re-test all of this
     may_dodge = false;
     may_parry = false;
     may_miss  = false;
     background = true;
     aoe       = -1;
     trigger_gcd = timespan_t::zero(); // doesn't incur GCD (HotR does that already)
-
   }
   virtual double action_multiplier() const
   {
@@ -3029,6 +3029,22 @@ struct hammer_of_the_righteous_aoe_t : public paladin_melee_attack_t
     return am;
   }
 
+  // HotR AoE does not hit the main target
+  size_t available_targets( std::vector< player_t* >& tl ) const
+  {
+    tl.clear();
+
+    for ( size_t i = 0; i < sim -> actor_list.size(); i++ )
+    {
+      if ( ! sim -> actor_list[ i ] -> is_sleeping() &&
+             sim -> actor_list[ i ] -> is_enemy() &&
+             sim -> actor_list[ i ] != target )
+        tl.push_back( sim -> actor_list[ i ] );
+    }
+
+    return tl.size();
+  }
+
   virtual void impact( action_state_t* s )
   {
     paladin_melee_attack_t::impact( s );
@@ -3040,11 +3056,8 @@ struct hammer_of_the_righteous_aoe_t : public paladin_melee_attack_t
 
 struct hammer_of_the_righteous_t : public paladin_melee_attack_t
 {
-  hammer_of_the_righteous_aoe_t* proc;
-
   hammer_of_the_righteous_t( paladin_t* p, const std::string& options_str )
-    : paladin_melee_attack_t( "hammer_of_the_righteous", p, p -> find_class_spell( "Hammer of the Righteous" ), true ),
-      proc( new hammer_of_the_righteous_aoe_t( p ) )
+    : paladin_melee_attack_t( "hammer_of_the_righteous", p, p -> find_class_spell( "Hammer of the Righteous" ), true ) 
   {
     parse_options( NULL, options_str );
 
@@ -3059,7 +3072,8 @@ struct hammer_of_the_righteous_t : public paladin_melee_attack_t
     trigger_seal = true;
 
     // Implement AoE proc
-    add_child( proc );
+    impact_action = new hammer_of_the_righteous_aoe_t( p );
+    add_child( impact_action );
   }
 
   virtual void update_ready( timespan_t cd_duration )
@@ -3092,9 +3106,6 @@ struct hammer_of_the_righteous_t : public paladin_melee_attack_t
     // Special things that happen when HotR connects
     if ( result_is_hit( s -> result ) )
     {
-      // Trigger AoE proc
-      proc -> execute();
-
       // Holy Power gains, only relevant if CS connects
       int g = 1; // default is a gain of 1 Holy Power
       p() -> resource_gain( RESOURCE_HOLY_POWER, g, p() -> gains.hp_hammer_of_the_righteous ); // apply gain, record as due to CS
@@ -3992,7 +4003,6 @@ void paladin_t::init_gains()
   gains.divine_plea                 = get_gain( "divine_plea"            );
   gains.extra_regen                 = get_gain( ( specialization() == PALADIN_RETRIBUTION ) ? "sword_of_light" : "guarded_by_the_light" );
   gains.judgments_of_the_wise       = get_gain( "judgments_of_the_wise"  );
-  gains.sanctuary                   = get_gain( "sanctuary"              );
   gains.seal_of_insight             = get_gain( "seal_of_insight"        );
   gains.glyph_divine_storm          = get_gain( "glyph_of_divine_storm"  );
   gains.glyph_divine_shield         = get_gain( "glyph_of_divine_shield" );
@@ -4840,6 +4850,18 @@ double paladin_t::composite_melee_crit() const
   return m;
 }
 
+// paladin_t::composite_melee_expertise =====================================
+
+double paladin_t::composite_melee_expertise( weapon_t* w ) const
+{
+  double expertise = player_t::composite_melee_expertise( w );
+
+  if ( passives.sanctuary -> ok() )
+    expertise += passives.sanctuary -> effectN( 4 ).percent();
+
+  return expertise;
+}
+
 // paladin_t::composite_spell_crit ==========================================
 
 double paladin_t::composite_spell_crit() const
@@ -4888,7 +4910,7 @@ double paladin_t::composite_spell_power( school_e school ) const
 {
   double sp = player_t::composite_spell_power( school );
 
-  // For Protection and Retribution, SP is fixed to AP/2 by passives
+  // For Protection and Retribution, SP is fixed to AP by passives
   switch ( specialization() )
   {
     case PALADIN_PROTECTION:
