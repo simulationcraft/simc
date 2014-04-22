@@ -165,8 +165,29 @@ class BLTEExtract(object):
 		if self.fdesc:
 			self.fdesc.close()
 	
+	def __extract_data(self):
+		if self.fd.read(4) != _BLTE_MAGIC:
+			self.options.parser.error('Invalid BLTE magic in file')
+		
+		file = BLTEFile(self)
+		if not file.extract():
+			return None
+		
 	def extract(self, file_name):
-		pass
+		if not self.open(file_name):
+			return False
+		
+		if not os.access(self.options.output, os.W_OK):
+			self.options.parser.error('Output file %s is not writeable' % self.options.output)
+			return False
+		
+		file = self.__extract_data()
+		if not file:
+			return False
+		
+		self.close()
+		
+		return True
 	
 	def extract_file(self, file_key, file_md5sum, file_output, data_file_number, data_file_offset, blte_file_size):
 		path = os.path.join(self.options.data_dir, 'Data', 'data', 'data.%03u' % data_file_number)
@@ -190,12 +211,8 @@ class BLTEExtract(object):
 		
 		# Skip 10 bytes of unknown data
 		self.fd.seek(10, os.SEEK_CUR)
-		if self.fd.read(4) != _BLTE_MAGIC:
-			self.options.parser.error('Invalid BLTE magic in file')
-				
-		file = BLTEFile(self)
-		if not file.extract():
-			return False
+		
+		file = self.__extract_data()
 		
 		file_md5 = md5.new(file.output_data).digest()
 		if file_md5sum != file_md5:
@@ -203,6 +220,8 @@ class BLTEExtract(object):
 		
 		with open(output_path, 'wb') as output_file:
 			output_file.write(file.output_data)
+
+		self.close()
 
 		return True
 	
