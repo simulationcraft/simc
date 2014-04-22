@@ -4888,7 +4888,7 @@ action_t* shaman_t::create_action( const std::string& name,
   if ( name == "earth_elemental_totem"   ) return new earth_elemental_totem_spell_t( this, options_str );
   if ( name == "fire_elemental_totem"    ) return new  fire_elemental_totem_spell_t( this, options_str );
   if ( name == "magma_totem"             ) return new                shaman_totem_t( "magma_totem", this, options_str, find_specialization_spell( "Magma Totem" ) );
-  if ( name == "searing_totem"           ) return new                shaman_totem_t( "searing_totem", this, options_str, find_specialization_spell( "Searing Totem" ) );
+  if ( name == "searing_totem"           ) return new                shaman_totem_t( "searing_totem", this, options_str, find_class_spell( "Searing Totem" ) );
 
   return player_t::create_action( name, options_str );
 }
