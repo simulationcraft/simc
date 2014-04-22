@@ -147,6 +147,7 @@ public:
     stat_buff_t* elemental_blast_crit;
     stat_buff_t* elemental_blast_haste;
     stat_buff_t* elemental_blast_mastery;
+    stat_buff_t* elemental_blast_multistrike;
     stat_buff_t* tier13_2pc_caster;
     stat_buff_t* tier13_4pc_caster;
   } buff;
@@ -342,7 +343,6 @@ public:
   // Tier16 random imbues
   action_t* t16_wind;
   action_t* t16_flame;
-  action_t* t16_frost;
 
   shaman_t( sim_t* sim, const std::string& name, race_e r = RACE_TAUREN ) :
     player_t( sim, SHAMAN, name, r ),
@@ -407,7 +407,6 @@ public:
 
     t16_wind = 0;
     t16_flame = 0;
-    t16_frost = 0;
   }
 
   // Character Definition
@@ -1713,7 +1712,7 @@ static bool trigger_tier16_2pc_melee( const action_state_t* s )
 
   p -> proc.t16_2pc_melee -> occur();
 
-  switch ( static_cast< int >( p -> rng().range( 0, 3 ) ) )
+  switch ( static_cast< int >( p -> rng().range( 0, 2 ) ) )
   {
     // Windfury
     case 0:
@@ -1722,10 +1721,6 @@ static bool trigger_tier16_2pc_melee( const action_state_t* s )
     // Flametongue
     case 1:
       p -> t16_flame -> execute();
-      break;
-    // Frostbrand
-    case 2:
-      p -> t16_frost -> execute();
       break;
     default:
       assert( false );
@@ -2027,20 +2022,6 @@ struct unleash_flame_t : public shaman_spell_t
     p() -> buff.unleash_flame -> trigger();
     if ( result_is_hit( execute_state -> result ) && p() -> talent.unleashed_fury -> ok() )
       td( execute_state -> target ) -> debuff.unleashed_fury -> trigger();
-  }
-};
-
-struct unleash_frost_t : public shaman_spell_t
-{
-  unleash_frost_t( const std::string& name, shaman_t* player ) :
-    shaman_spell_t( name, player, player -> dbc.spell( 73682 ) )
-  {
-    harmful              = true;
-    background           = true;
-    //proc                 = true;
-
-    // Don't cooldown here, unleash elements ability will handle it
-    cooldown -> duration = timespan_t::zero();
   }
 };
 
@@ -3336,7 +3317,7 @@ struct elemental_blast_t : public shaman_spell_t
     if ( result == RESULT_NONE )
     {
       result = RESULT_HIT;
-      unsigned max_buffs = 3 + ( p() -> specialization() == SHAMAN_ENHANCEMENT ? 1 : 0 );
+      unsigned max_buffs = 4 + ( p() -> specialization() == SHAMAN_ENHANCEMENT ? 1 : 0 );
 
       unsigned b = static_cast< unsigned >( rng().range( 0, max_buffs ) );
       assert( b < max_buffs );
@@ -3345,6 +3326,7 @@ struct elemental_blast_t : public shaman_spell_t
       p() -> buff.elemental_blast_crit -> expire();
       p() -> buff.elemental_blast_haste -> expire();
       p() -> buff.elemental_blast_mastery -> expire();
+      p() -> buff.elemental_blast_multistrike -> expire();
 
       if ( b == 0 )
         p() -> buff.elemental_blast_crit -> trigger();
@@ -3352,6 +3334,8 @@ struct elemental_blast_t : public shaman_spell_t
         p() -> buff.elemental_blast_haste -> trigger();
       else if ( b == 2 )
         p() -> buff.elemental_blast_mastery -> trigger();
+      else if ( b == 3 )
+        p() -> buff.elemental_blast_multistrike -> trigger();
       else
         p() -> buff.elemental_blast_agility -> trigger();
 
@@ -4888,7 +4872,7 @@ action_t* shaman_t::create_action( const std::string& name,
   if ( name == "earth_elemental_totem"   ) return new earth_elemental_totem_spell_t( this, options_str );
   if ( name == "fire_elemental_totem"    ) return new  fire_elemental_totem_spell_t( this, options_str );
   if ( name == "magma_totem"             ) return new                shaman_totem_t( "magma_totem", this, options_str, find_specialization_spell( "Magma Totem" ) );
-  if ( name == "searing_totem"           ) return new                shaman_totem_t( "searing_totem", this, options_str, find_specialization_spell( "Searing Totem" ) );
+  if ( name == "searing_totem"           ) return new                shaman_totem_t( "searing_totem", this, options_str, find_class_spell( "Searing Totem" ) );
 
   return player_t::create_action( name, options_str );
 }
@@ -5120,7 +5104,6 @@ void shaman_t::init_spells()
   {
     t16_wind = new unleash_wind_t( "t16_unleash_wind", this );
     t16_flame = new unleash_flame_t( "t16_unleash_flame", this );
-    t16_frost = new unleash_frost_t( "t16_unleash_frost", this );
   }
 
   player_t::init_spells();
@@ -5251,9 +5234,12 @@ void shaman_t::create_buffs()
   buff.elemental_blast_mastery = stat_buff_creator_t( this, "elemental_blast_mastery", find_spell( 118522 ) )
                                  .max_stack( 1 )
                                  .add_stat( STAT_MASTERY_RATING, find_spell( 118522 ) -> effectN( 3 ).average( this ) );
+  buff.elemental_blast_multistrike = stat_buff_creator_t( this, "elemental_blast_multistrike", find_spell( 118522 ) )
+                                 .max_stack( 1 )
+                                 .add_stat( STAT_MULTISTRIKE_RATING, find_spell( 118522 ) -> effectN( 4 ).average( this ) );
   buff.elemental_blast_agility = stat_buff_creator_t( this, "elemental_blast_agility", find_spell( 118522 ) )
                                  .max_stack( 1 )
-                                 .add_stat( STAT_AGILITY, find_spell( 118522 ) -> effectN( 4 ).average( this ) );
+                                 .add_stat( STAT_AGILITY, find_spell( 118522 ) -> effectN( 5 ).average( this ) );
   buff.tier13_2pc_caster        = stat_buff_creator_t( this, "tier13_2pc_caster", find_spell( 105779 ) );
   buff.tier13_4pc_caster        = stat_buff_creator_t( this, "tier13_4pc_caster", find_spell( 105821 ) );
   buff.tier16_2pc_melee         = buff_creator_t( this, "tier16_2pc_melee", sets.set( SET_T16_2PC_MELEE ) -> effectN( 1 ).trigger() )

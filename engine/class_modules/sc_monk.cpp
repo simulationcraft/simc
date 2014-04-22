@@ -843,7 +843,7 @@ struct jab_t : public monk_melee_attack_t
     mh = &( player -> main_hand_weapon );
     oh = &( player -> off_hand_weapon );
 
-    base_multiplier = 1.5; // hardcoded into tooltip
+    base_multiplier = 2.091; // hardcoded into tooltip
 
     if ( player -> specialization() == MONK_BREWMASTER )
       weapon_power_mod = 1 / 11.0;
@@ -1026,7 +1026,7 @@ struct blackout_kick_t : public monk_melee_attack_t
     base_dd_min = base_dd_max = 0.0; attack_power_mod.direct = spell_power_mod.direct = 0.0; //  deactivate parsed spelleffect1
     mh = &( player -> main_hand_weapon );
     oh = &( player -> off_hand_weapon );
-    base_multiplier = 8.0 * 0.89; // hardcoded into tooltip
+    base_multiplier = 9.929; // hardcoded into tooltip
     if ( player -> specialization() == MONK_BREWMASTER )
       weapon_power_mod = 1 / 11.0;
 
@@ -1160,7 +1160,7 @@ struct rising_sun_kick_t : public monk_melee_attack_t
     base_dd_min = base_dd_max = attack_power_mod.direct = spell_power_mod.direct = 0.0;//  deactivate parsed spelleffect1
     mh = &( player -> main_hand_weapon ) ;
     oh = &( player -> off_hand_weapon ) ;
-    base_multiplier = 14.4 * 0.89; // hardcoded into tooltip
+    base_multiplier = 17.866; // hardcoded into tooltip
   }
 
   virtual void impact ( action_state_t* s )
@@ -1261,7 +1261,7 @@ struct spinning_crane_kick_t : public monk_melee_attack_t
 	} 
     else
     {
-      base_multiplier = 1.59 * (1.75/1.59); // hardcoded into tooltip
+      base_multiplier = 1.59 * (2.44/1.59); // hardcoded into tooltip
 	  school = SCHOOL_PHYSICAL;
       channeled = true;
       tick_action = new spinning_crane_kick_tick_t( p, p -> find_spell( data().effectN( 1 ).trigger_spell_id() ) );
@@ -1340,7 +1340,7 @@ struct fists_of_fury_t : public monk_melee_attack_t
     stancemask = FIERCE_TIGER;
     channeled = true;
     tick_zero = true;
-    base_multiplier = 7.5 * 0.89; // hardcoded into tooltip
+    base_multiplier = 18.5; // hardcoded into tooltip
     school = SCHOOL_PHYSICAL;
 	//weapon_multiplier = (player -> main_hand_weapon.type == WEAPON_POLEARM
 	//	|| player -> main_hand_weapon.type == WEAPON_STAFF ? 1.0 : 0.898882275);
@@ -1605,8 +1605,7 @@ struct keg_smash_t : public monk_melee_attack_t
     mh = &( player -> main_hand_weapon ) ;
     oh = &( player -> off_hand_weapon ) ;
 
-    base_multiplier = 8.12; // hardcoded into tooltip
-    base_multiplier *= 1.5; // Unknown 1.5 modifier applied at some point in time
+    base_multiplier = 10.00; // hardcoded into tooltip
     weapon_power_mod = 1 / 11.0; // BM AP -> DPS conversion is with ap/11
   }
 
@@ -1648,7 +1647,8 @@ struct expel_harm_t : public monk_melee_attack_t
     mh = &( player -> main_hand_weapon );
     oh = &( player -> off_hand_weapon );
 
-    base_multiplier = 7.0; // hardcoded into tooltip
+    base_multiplier = 15.768; // hardcoded into tooltip
+	base_multiplier *= .33; // 33% of the heal is done as damage
     if ( p -> glyph.targeted_expulsion -> ok() )
       base_multiplier *= 1.0 - p -> glyph.targeted_expulsion -> effectN( 2 ).percent();
 
@@ -1942,7 +1942,7 @@ struct chi_wave_t : public monk_spell_t
     direct_damage_t( monk_t* p ) :
       monk_spell_t( "chi_wave_dd", p, p -> find_spell( 115098 ) )
     {
-      attack_power_mod.direct = 0.45; // hardcoded into tooltip of 115098
+      attack_power_mod.direct = 0.757; // hardcoded into tooltip of 115098
 
       background = true;
     }
@@ -1993,6 +1993,7 @@ struct chi_torpedo_t : public monk_spell_t
   {
     parse_options( nullptr, options_str );
     aoe = -1;
+	attack_power_mod.direct = .994;
   }
 };
 
@@ -2076,6 +2077,7 @@ struct breath_of_fire_t : public monk_spell_t
       monk_spell_t( "breath_of_fire_dot", &p, p.find_spell( 123725 ) )
     {
       background = true;
+	  attack_power_mod.tick = 1.188;
     }
   };
   periodic_t* dot_action;
@@ -2085,6 +2087,7 @@ struct breath_of_fire_t : public monk_spell_t
     dot_action( new periodic_t( p ) )
   {
     parse_options( nullptr, options_str );
+	attack_power_mod.direct = .662;
 
     aoe = -1;
     stancemask = STURDY_OX;
@@ -2350,7 +2353,7 @@ struct crackling_jade_lightning_t : public monk_spell_t
     channeled = tick_may_crit = true;
     hasted_ticks = false; // Channeled spells always have hasted ticks. Use hasted_ticks = false to disable the increase in the number of ticks.
     procs_courageous_primal_diamond = false;
-    attack_power_mod.tick = 0.386;
+    attack_power_mod.tick = 0.641;
 
     base_multiplier += p.spec.teachings_of_the_monastery -> effectN( 6 ).percent();
   }
@@ -2480,7 +2483,7 @@ struct expel_harm_heal_t : public monk_heal_t
     stancemask = STURDY_OX | FIERCE_TIGER;
     if ( ! p.glyph.targeted_expulsion -> ok() )
       target = &p;
-    base_multiplier = 2.0;
+    base_multiplier = 3.0;
 
     attack = new attacks::expel_harm_t( &p );
   }
@@ -2737,7 +2740,7 @@ struct zen_sphere_t : public monk_heal_t
       background = dual = true;
       aoe = -1;
 
-      attack_power_mod.direct = 0.281 * 1.15; // hardcoded into tooltip
+      attack_power_mod.direct = 0.234 * 1.15; // hardcoded into tooltip
       school = SCHOOL_NATURE;
     }
   };
@@ -2754,7 +2757,7 @@ struct zen_sphere_t : public monk_heal_t
 
     school = SCHOOL_NATURE;
     if ( player -> specialization() == MONK_MISTWEAVER )
-      attack_power_mod.tick = 0.108 * 1.15; // hardcoded into tooltip
+      attack_power_mod.tick = 0.09 * 1.2 * 1.15; // hardcoded into tooltip
     else
       attack_power_mod.tick = 0.09 * 1.15;  // hardcoded into tooltip
 
@@ -2803,7 +2806,7 @@ struct guard_t : public monk_absorb_t
     trigger_gcd = timespan_t::zero();
     target = &p;
 
-    attack_power_mod.direct = 1.971; // hardcoded into tooltip 2013/04/10
+    attack_power_mod.direct = 2.267; // hardcoded into tooltip 2013/04/10
   }
 
   virtual void impact( action_state_t* s )
@@ -2814,17 +2817,17 @@ struct guard_t : public monk_absorb_t
 
   virtual void execute()
   {
-    p() -> buff.power_guard -> up();
+    // p() -> buff.power_guard -> up();
     monk_absorb_t::execute();
-    p() -> buff.power_guard -> expire();
+    // p() -> buff.power_guard -> expire();
   }
 
   virtual double action_multiplier() const
   {
     double am = monk_absorb_t::action_multiplier();
 
-    if ( p() -> buff.power_guard -> check() )
-      am *= 1.0 + p() -> buff.power_guard -> data().effectN( 1 ).percent();
+    // if ( p() -> buff.power_guard -> check() )
+    //  am *= 1.0 + p() -> buff.power_guard -> data().effectN( 1 ).percent();
 
     return am;
   }
