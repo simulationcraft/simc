@@ -1425,10 +1425,11 @@ struct stay_of_execution_t : public paladin_heal_t
     }
 
     assert( as<unsigned>( num_ticks ) < sizeof_array( soe_tick_multiplier ) );
-    soe_tick_multiplier[ 0 ] = 1.0;
-    for ( int i = 1; i < num_ticks; ++i )
-      soe_tick_multiplier[ i ] = soe_tick_multiplier[ i - 1 ] * 1.1;
-    soe_tick_multiplier[ 10 ] = soe_tick_multiplier[ 9 ] * 5;
+    // this is reversed from Execution Sentence's tick order
+    soe_tick_multiplier[ 10 ] = 1.0;
+    for ( int i = 9; i > 0 ; --i )
+      soe_tick_multiplier[ i ] = soe_tick_multiplier[ i + 1 ] * 1.1;
+    soe_tick_multiplier[ 0 ] = soe_tick_multiplier[ 1 ] * 5;
 
   }
 
