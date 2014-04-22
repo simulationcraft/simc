@@ -224,52 +224,6 @@ class BLTEExtract(object):
 		self.close()
 
 		return True
-	
-	def extract_file_by_md5(self, file_md5s):
-		found = 0
-		
-		globbed_files = []
-		for data_file in self.data_files:
-			globbed_files += glob.glob(data_file)
-		
-		for data_file in globbed_files:
-			print 'Checking file %s' % data_file
-			if not self.open(data_file):
-				return False
-			
-			while self.fd.tell() < self.fsize:
-				# Find next BLTE magic
-				next_blte = self.fd.find(_BLTE_MAGIC)
-				if next_blte == -1:
-					break
-				else:
-					self.fd.seek(next_blte)
-					self.fd.read(len(_BLTE_MAGIC))
-				
-				blte = BLTEFile(self)
-				if not blte.extract():
-					return False
-				
-				output_md5 = md5.new(blte.output_data).hexdigest()
-				if output_md5 in file_md5s:
-					print 'Found file md5 %s, length=%u' % (output_md5, len(blte.output_data))
-					ff = open(output_md5, 'wb')
-					ff.write(blte.output_data)
-					ff.close()
-					found += 1
-				
-				#elif blte.output_data[:2] == 'EN':
-				#	ff = open('encoding_' + output_md5, 'w')
-				#	ff.write(blte.output_data)
-				#	ff.close()
-				#	print 'File matches "EN" at start.'
-				
-				if found == len(file_md5s):
-					break
-			
-			if found == len(file_md5s):
-				break
-
 
 class CASCDataIndexFile(object):
 	def __init__(self, options, index, version, file):
