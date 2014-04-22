@@ -2727,10 +2727,7 @@ struct berserker_rage_t : public warrior_spell_t
 
     p -> buff.berserker_rage -> trigger();
 
-    if ( p -> buff.raging_blow -> stack() == 2 )
-      p -> proc.raging_blow_wasted -> occur();
-    if ( p -> specialization() == WARRIOR_FURY )
-      p -> buff.raging_blow -> trigger();
+    p -> enrage();
   }
 };
 
