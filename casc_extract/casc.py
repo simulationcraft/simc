@@ -142,18 +142,8 @@ class BLTEFile(object):
 class BLTEExtract(object):
 	def __init__(self, options):
 		self.options = options
-		self.files = {}
 
-	def close(self):
-		if self.fd:
-			self.fd.close()
-		
-		if self.fdesc:
-			self.fdesc.close()
-	
 	def open(self, data_file):
-		self.close()
-
 		if not os.access(data_file, os.R_OK):
 			self.options.parser.error('File %s not readable.' % data_file)
 			return False
@@ -168,8 +158,53 @@ class BLTEExtract(object):
 	
 		return True
 	
-	def extract_file(self, file_key, file_md5sum, data_file_number, data_file_offset, blte_file_size):
+	def close(self):
+		if self.fd:
+			self.fd.close()
+		
+		if self.fdesc:
+			self.fdesc.close()
+	
+	def extract(self, file_name):
 		pass
+	
+	def extract_file(self, file_key, file_md5sum, file_output, data_file_number, data_file_offset, blte_file_size):
+		path = os.path.join(self.options.data_dir, 'Data', 'data', 'data.%03u' % data_file_number)
+		output_path = os.path.join(self.options.output, file_output)
+		
+		if not self.open(path):
+			return False
+		
+		if not os.access(os.path.dirname(output_path), os.W_OK):
+			self.options.parser.error('Output file %s is not writeable' % output_path)
+
+		self.fd.seek(data_file_offset, os.SEEK_SET)
+		
+		key = self.fd.read(16)
+		blte_len = struct.unpack('<I', self.fd.read(4))[0]
+		if key[::-1] != file_key:
+			self.options.parser.error('Invalid file key for %s, expected %s, got %s' % (file_output, file_key.encode('hex'), key.encode('hex')))
+		
+		if blte_len != blte_file_size:
+			self.options.parser.error('Invalid file length, expected %u got %u' % (blte_file_size, blte_len))
+		
+		# Skip 10 bytes of unknown data
+		self.fd.seek(10, os.SEEK_CUR)
+		if self.fd.read(4) != _BLTE_MAGIC:
+			self.options.parser.error('Invalid BLTE magic in file')
+				
+		file = BLTEFile(self)
+		if not file.extract():
+			return False
+		
+		file_md5 = md5.new(file.output_data).digest()
+		if file_md5sum != file_md5:
+			self.options.parser.error('Invalid md5sum for extracted file, expected %s got %s' % (file_md5sum.encode('hex'), file_md5.encode('hex')))
+		
+		with open(output_path, 'wb') as output_file:
+			output_file.write(file.output_data)
+
+		return True
 	
 	def extract_file_by_md5(self, file_md5s):
 		found = 0
