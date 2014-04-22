@@ -1,6 +1,6 @@
 #define TALENT_SIZE (287)
 
-// 287 talents, wow build 18125
+// 287 talents, wow build 18164
 static struct talent_data_t __talent_data[] = {
 //{ Name                                ,    Id, Flgs,  Class, Spc, Col, Row, SpellID, ReplaceID, S1 },
   { "Second Wind"                       , 15757, 0x00, 0x0001,   0,   1,   1,   29838,         0,  0 },
@@ -174,23 +174,23 @@ static struct talent_data_t __talent_data[] = {
   { "Thrill of the Hunt"                , 19365, 0x00, 0x0004,   0,   2,   3,  109306,         0,  0 },
   { "Vigilance"                         , 19676, 0x00, 0x0001,   0,   2,   4,  114030,         0,  0 },
   { "Soul of the Forest"                , 19677, 0x00, 0x0400,   0,   0,   3,  114107,         0,  0 },
-  { "Void Tendrils"                     , 19752, 0x00, 0x0010,   0,   0,   0,  108920,         0,  0 },
-  { "Psychic Scream"                    , 19753, 0x00, 0x0010,   0,   1,   0,    8122,         0,  0 },
-  { "Dominate Mind"                     , 19754, 0x00, 0x0010,   0,   2,   0,     605,         0,  0 },
-  { "Angelic Bulwark"                   , 19755, 0x00, 0x0010,   0,   2,   3,  108945,         0,  0 },
+  { "Desperate Prayer"                  , 19752, 0x00, 0x0010,   0,   0,   0,   19236,         0,  0 },
+  { "Spectral Guise"                    , 19753, 0x00, 0x0010,   0,   1,   0,  112833,         0,  0 },
+  { "Angelic Bulwark"                   , 19754, 0x00, 0x0010,   0,   2,   0,  108945,         0,  0 },
+  { "Dominate Mind"                     , 19755, 0x00, 0x0010,   0,   2,   3,     605,         0,  0 },
   { "Body and Soul"                     , 19756, 0x00, 0x0010,   0,   0,   1,   64129,         0,  0 },
   { "Angelic Feather"                   , 19757, 0x00, 0x0010,   0,   1,   1,  121536,         0,  0 },
   { "Phantasm"                          , 19758, 0x00, 0x0010,   0,   2,   1,  108942,         0,  0 },
   { "From Darkness, Comes Light"        , 19759, 0x00, 0x0010,   0,   0,   2,  109186,         0,  0 },
   { "Divine Star"                       , 19760, 0x00, 0x0010,   0,   1,   5,  110744,         0,  0 },
   { "Solace and Insanity"               , 19761, 0x00, 0x0010,   0,   2,   2,  139139,         0,  0 },
-  { "Desperate Prayer"                  , 19762, 0x00, 0x0010,   0,   0,   3,   19236,         0,  0 },
+  { "Void Tendrils"                     , 19762, 0x00, 0x0010,   0,   0,   3,  108920,         0,  0 },
   { "Halo"                              , 19763, 0x00, 0x0010,   0,   2,   5,  120517,         0,  0 },
   { "Twist of Fate"                     , 19764, 0x00, 0x0010,   0,   0,   4,  109142,         0,  0 },
   { "Power Infusion"                    , 19765, 0x00, 0x0010,   0,   1,   4,   10060,         0,  0 },
   { "Divine Insight"                    , 19766, 0x00, 0x0010,   0,   2,   4,  109175,         0,  0 },
   { "Cascade"                           , 19767, 0x00, 0x0010,   0,   0,   5,  121135,         0,  0 },
-  { "Spectral Guise"                    , 19768, 0x00, 0x0010,   0,   1,   3,  112833,         0,  0 },
+  { "Psychic Scream"                    , 19768, 0x00, 0x0010,   0,   1,   3,    8122,         0,  0 },
 //{ Name                                ,    Id, Flgs,  Class, Spc, Col, Row, SpellID, ReplaceID, S1 },
   { "Mindbender"                        , 19769, 0x00, 0x0010,   0,   1,   2,  123040,     34433,  0 },
   { "Ascension"                         , 19771, 0x00, 0x0200,   0,   1,   2,  115396,         0,  0 },

@@ -4,7 +4,7 @@
 #ifndef MAX_CLASS
 #define MAX_CLASS (12)
 #endif
-// Class based active abilities, wow build 18125
+// Class based active abilities, wow build 18164
 static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SIZE] = {
   {
     {
@@ -124,12 +124,13 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
        85673, // Word of Glory
            0,
     },
-    // Holy tree, 8 abilities
+    // Holy tree, 9 abilities
     {
+       31842, // Avenging Wrath
        53563, // Beacon of Light
         2812, // Denounce
        31821, // Devotion Aura
-       31842, // Divine Favor
+       54428, // Divine Plea
        82326, // Holy Light
        82327, // Holy Radiance
        20473, // Holy Shock
@@ -236,6 +237,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
        50433, // Ankle Crack (Special Ability)
       159988, // Bark of the Wild
        17253, // Bite (Basic Attack)
+      160017, // Blessing of Kongs
        24423, // Bloody Screech (Special Ability)
        93433, // Burrow Attack (Exotic Ability)
       128432, // Cackling Howl (Special Ability)
@@ -258,7 +260,6 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
        54680, // Monstrous Bite (Exotic Ability)
       160073, // Plainswalking (Special Ability)
        90347, // Play (Bonus Ability)
-      160017, // Primal Intensity
        24450, // Prowl (Bonus Ability)
        90364, // Qiraji Fortitude (Exotic Ability)
        50518, // Ravage (Special Ability)
@@ -283,7 +284,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
   },
   // Class active abilities for Rogue
   {
-    // General tree, 31 abilities
+    // General tree, 30 abilities
     {
         8676, // Ambush
         2094, // Blind
@@ -292,10 +293,10 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
       121411, // Crimson Tempest
         3408, // Crippling Poison
         2823, // Deadly Poison
+      152150, // Death from Above
         1725, // Distract
         5277, // Evasion
         2098, // Eviscerate
-       51723, // Fan of Knives
         1966, // Feint
          703, // Garrote
         1776, // Gouge
@@ -303,7 +304,6 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
          408, // Kidney Shot
        14185, // Preparation
        73651, // Recuperate
-       73981, // Redirect
         6770, // Sap
         5938, // Shiv
       114018, // Shroud of Concealment
@@ -318,10 +318,11 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
         8679, // Wound Poison
            0,
     },
-    // Assassination tree, 5 abilities
+    // Assassination tree, 6 abilities
     {
       111240, // Dispatch
        32645, // Envenom
+       51723, // Fan of Knives
         1329, // Mutilate
         1943, // Rupture
        79140, // Vendetta
@@ -335,9 +336,10 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
        84617, // Revealing Strike
            0,
     },
-    // Subtlety tree, 4 abilities
+    // Subtlety tree, 5 abilities
     {
           53, // Backstab
+       51723, // Fan of Knives
        16511, // Hemorrhage
         1943, // Rupture
        51713, // Shadow Dance
@@ -432,9 +434,10 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
   },
   // Class active abilities for Death Knight
   {
-    // General tree, 25 abilities
+    // General tree, 26 abilities
     {
        48707, // Anti-Magic Shell
+       42650, // Army of the Dead
        48721, // Blood Boil
        48263, // Blood Presence
        45902, // Blood Strike
@@ -461,9 +464,8 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
        48265, // Unholy Presence
            0,
     },
-    // Blood tree, 8 abilities
+    // Blood tree, 7 abilities
     {
-       42650, // Army of the Dead
        49222, // Bone Shield
        49028, // Dancing Rune Weapon
        55050, // Heart Strike
@@ -868,7 +870,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
   },
   // Class active abilities for Druid
   {
-    // General tree, 39 abilities
+    // General tree, 40 abilities
     {
         1066, // Aquatic Form (Shapeshift)
        22812, // Barkskin
@@ -888,6 +890,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
       102560, // Incarnation: Chosen of Elune (Talent, Shapeshift)
       102543, // Incarnation: King of the Jungle (Talent, Shapeshift)
       102558, // Incarnation: Son of Ursoc (Talent, Shapeshift)
+       29166, // Innervate
        33745, // Lacerate
        22570, // Maim
        33917, // Mangle
@@ -939,9 +942,8 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
         5217, // Tiger's Fury
            0,
     },
-    // Guardian tree, 7 abilities
+    // Guardian tree, 6 abilities
     {
-      102795, // Bear Hug
       106952, // Berserk
         6785, // Ravage
         2782, // Remove Corruption
@@ -950,9 +952,10 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
       106839, // Skull Bash
            0,
     },
-    // Restoration tree, 11 abilities
+    // Restoration tree, 12 abilities
     {
       145518, // Genesis
+       29166, // Innervate
       102342, // Ironbark
        33763, // Lifebloom
        88423, // Nature's Cure
@@ -976,7 +979,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
 
 #define TREE_SPECIALIZATION_SIZE (28)
 
-// Talent tree specialization abilities, wow build 18125
+// Talent tree specialization abilities, wow build 18164
 static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZATION_SIZE] = {
   // Specialization abilities for Hunter pets
   {
@@ -1107,11 +1110,12 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
   {
     // Specialization abilities for Holy
     {
+       31842, // Avenging Wrath
        53563, // Beacon of Light
        88821, // Daybreak
         2812, // Denounce
        31821, // Devotion Aura
-       31842, // Divine Favor
+       54428, // Divine Plea
       158920, // Healer Level 90 Mana Fix
       112859, // Holy Insight
        82326, // Holy Light
@@ -1243,6 +1247,7 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
        51667, // Cut to the Chase
       111240, // Dispatch
        32645, // Envenom
+       51723, // Fan of Knives
       137037, // Hotfix Passive
        14117, // Improved Poisons
        76803, // Mastery: Potent Poisons
@@ -1275,6 +1280,7 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
     {
           53, // Backstab
        79152, // Energetic Recovery
+       51723, // Fan of Knives
        91023, // Find Weakness
        16511, // Hemorrhage
        51701, // Honor Among Thieves
@@ -1386,7 +1392,6 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
   {
     // Specialization abilities for Blood
     {
-       42650, // Army of the Dead
        49542, // Blood Parasite
        50034, // Blood Rites
        49222, // Bone Shield
@@ -1530,6 +1535,7 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
        61295, // Riptide
        98008, // Spirit Link Totem
       112858, // Spiritual Insight
+       55453, // Telluric Currents
        51564, // Tidal Waves
        52127, // Water Shield
            0,
@@ -1732,6 +1738,7 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
     },
     // Specialization abilities for Windwalker
     {
+      160911, // <DND> Windwalker Monk Energy Driver
       116092, // Afterlife
       123980, // Brewing: Tigereye Brew
       128595, // Combat Conditioning
@@ -1815,7 +1822,6 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
     },
     // Specialization abilities for Guardian
     {
-      102795, // Bear Hug
       106952, // Berserk
       157447, // Critical Strikes
       106734, // Guardian Overrides Passive
@@ -1844,6 +1850,7 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
       145518, // Genesis
       158920, // Healer Level 90 Mana Fix
       137012, // Hotfix Passive
+       29166, // Innervate
       102342, // Ironbark
       108299, // Killer Instinct
        86093, // Leather Specialization
@@ -1873,7 +1880,7 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
 
 #define CLASS_MASTERY_ABILITY_SIZE (1)
 
-// Class mastery abilities, wow build 18125
+// Class mastery abilities, wow build 18164
 static unsigned __class_mastery_ability_data[MAX_CLASS][MAX_SPECS_PER_CLASS][CLASS_MASTERY_ABILITY_SIZE] = {
   {
     {
@@ -2096,7 +2103,7 @@ static unsigned __class_mastery_ability_data[MAX_CLASS][MAX_SPECS_PER_CLASS][CLA
 #define MAX_RACE (28)
 #endif
 
-// Racial abilities, wow build 18125
+// Racial abilities, wow build 18164
 static unsigned __race_ability_data[MAX_RACE][MAX_CLASS][RACE_ABILITY_SIZE] = {
   {
     {     0, },
@@ -2819,7 +2826,7 @@ static unsigned __race_ability_data[MAX_RACE][MAX_CLASS][RACE_ABILITY_SIZE] = {
 
 #define GLYPH_ABILITIES_SIZE (39)
 
-// Glyph spells for classes, wow build 18125
+// Glyph spells for classes, wow build 18164
 static unsigned __glyph_abilities_data[][3][GLYPH_ABILITIES_SIZE] = {
   {
     {
@@ -2904,10 +2911,10 @@ static unsigned __glyph_abilities_data[][3][GLYPH_ABILITIES_SIZE] = {
        56414, // Glyph of Dazing Shield
        56420, // Glyph of Denounce
       146955, // Glyph of Devotion Aura
-      159572, // Glyph of Divine Favor
        54924, // Glyph of Divine Protection
       146956, // Glyph of Divine Shield
        63220, // Glyph of Divine Storm
+      159572, // Glyph of Divine Wrath
        54939, // Glyph of Divinity
        54922, // Glyph of Double Jeopardy
        54935, // Glyph of Final Wrath
@@ -3153,8 +3160,9 @@ static unsigned __glyph_abilities_data[][3][GLYPH_ABILITIES_SIZE] = {
       159416, // Glyph of the Ice Reaper
            0,
     },
-    // Minor Glyphs (10 spells)
+    // Minor Glyphs (11 spells)
     {
+       58669, // Glyph of Army of the Dead
        59336, // Glyph of Corpse Explosion
        60200, // Glyph of Death Gate
        58677, // Glyph of Death's Embrace
@@ -3173,7 +3181,7 @@ static unsigned __glyph_abilities_data[][3][GLYPH_ABILITIES_SIZE] = {
   },
   // Glyph spells for Shaman
   {
-    // Major Glyphs (38 spells)
+    // Major Glyphs (37 spells)
     {
        55442, // Glyph of Capacitor Totem
        55449, // Glyph of Chain Lightning
@@ -3206,7 +3214,6 @@ static unsigned __glyph_abilities_data[][3][GLYPH_ABILITIES_SIZE] = {
       159651, // Glyph of Spiritwalker's Aegis
       159650, // Glyph of Spiritwalker's Focus
        55446, // Glyph of Spiritwalker's Grace
-       55453, // Glyph of Telluric Currents
        63270, // Glyph of Thunder
        55438, // Glyph of Totemic Recall
        63298, // Glyph of Totemic Vigor
@@ -3469,7 +3476,7 @@ static unsigned __glyph_abilities_data[][3][GLYPH_ABILITIES_SIZE] = {
 
 #define TIER_BONUSES_TIER_BASE (13)
 
-// Tier item set bonuses for class, wow build 18125
+// Tier item set bonuses for class, wow build 18164
 static unsigned __tier_bonuses_data[][TIER_BONUSES_MAX_TIER][TIER_BONUSES_SIZE] = {
   {
     {
@@ -3894,7 +3901,7 @@ static unsigned __tier_bonuses_data[][TIER_BONUSES_MAX_TIER][TIER_BONUSES_SIZE] 
 
 #define PERK_SIZE (9)
 
-// Perk specialization abilities, wow build 18125
+// Perk specialization abilities, wow build 18164
 static unsigned __perk_data[][MAX_SPECS_PER_CLASS][PERK_SIZE] = {
   {
     {
@@ -4052,7 +4059,7 @@ static unsigned __perk_data[][MAX_SPECS_PER_CLASS][PERK_SIZE] = {
       157581, // 1: Empowered Bandit's Guile
       157605, // 2: Instant Poison
       157613, // 3: Enhanced Adrenaline Rush
-      157615, // 4: Enhanced Fan of Knives
+      157615, // 4: Enhanced Blade Flurry
       157645, // 5: Empowered Crimson Tempest
       157660, // 6: Improved Ambidexterity
       157661, // 7: Improved Sinister Strike
@@ -4135,9 +4142,9 @@ static unsigned __perk_data[][MAX_SPECS_PER_CLASS][PERK_SIZE] = {
       157403, // 2: Empowered Icebound Fortitude
       157389, // 3: Empowered Pillar of Frost
       157409, // 4: Empowered Rime
-      157380, // 5: Improved Soul Reaper
-      157376, // 6: Improved Cinderglacier
-      157367, // 7: Improved Razorice
+      157380, // 5: Improved Mind Freeze
+      157376, // 6: Improved Runeforges
+      157367, // 7: Improved Death Grip
       157408, // 8: Enhanced Death Strike
     },
     // Unholy
@@ -4214,7 +4221,7 @@ static unsigned __perk_data[][MAX_SPECS_PER_CLASS][PERK_SIZE] = {
     {
       157630, // 0: Improved Combustion
       157640, // 1: Improved Dragon's Breath
-      157642, // 2: Enhanced Fireball
+      157642, // 2: Enhanced Pyrotechnics
       157622, // 3: Enhanced Inferno Blast
       157637, // 4: Improved Fireball and Frostfire Bolt
       157621, // 5: Improved Flamestrike

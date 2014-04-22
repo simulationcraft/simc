@@ -91,7 +91,14 @@ _DIFF_DATA = {
             ( 'cdc_spell_4', _REMOVE_FIELD ),
             ( 'cdc_spell_5', _REMOVE_FIELD )
         ],
-    }
+    },
+    18164: {
+        'Item-sparse.db2': [
+            ( 'socket_cont_1', _REMOVE_FIELD ),
+            ( 'socket_cont_2', _REMOVE_FIELD ),
+            ( 'socket_cont_3', _REMOVE_FIELD )
+        ]
+    },
 }
 
 # Base DBC/DB2 fields, works for WoW build 17898 (Mists of Pandaria/5.4.7)
