@@ -297,6 +297,7 @@ public:
   virtual void      reset();
   virtual expr_t*   create_expression( action_t*, const std::string& name );
   virtual double    composite_attribute_multiplier( attribute_e attr ) const;
+  virtual double    composite_attack_power_multiplier() const;
   virtual double    composite_melee_crit() const;
   virtual double    composite_spell_crit() const;
   virtual double    composite_player_multiplier( school_e school ) const;
@@ -1235,11 +1236,15 @@ struct divine_shield_t : public paladin_spell_t
 // HoT portion
 struct eternal_flame_hot_t : public paladin_heal_t
 {
+  double hopo;
+
   eternal_flame_hot_t( paladin_t* p ) :
-    paladin_heal_t( "eternal_flame", p, p -> find_spell( 156322 ) )
+    paladin_heal_t( "eternal_flame_tick", p, p -> find_spell( 156322 ) )
   {
     background = true;
     benefits_from_seal_of_insight = true; // TODO: test
+
+    hopo = 0;
   }
   
   virtual void impact( action_state_t* s )
@@ -1261,10 +1266,13 @@ struct eternal_flame_hot_t : public paladin_heal_t
     // this scales just the ticks
     double am = paladin_heal_t::action_ta_multiplier();
 
+    // Scale based on HP used
+    am *= hopo;
+
     if ( target == player )
     {
       // HoT is more effective when used on self
-      am *= 1.0 + p() -> talents.eternal_flame -> effectN( 2 ).percent(); 
+      am *= 1.0 + p() -> talents.eternal_flame -> effectN( 2 ).percent();
     }
 
     return am;
@@ -1278,7 +1286,8 @@ struct eternal_flame_t : public paladin_heal_t
   eternal_flame_hot_t* hot;
 
   eternal_flame_t( paladin_t* p, const std::string& options_str ) :
-    paladin_heal_t( "eternal_flame", p, p -> find_talent_spell( "Eternal Flame" ) )
+    paladin_heal_t( "eternal_flame", p, p -> find_talent_spell( "Eternal Flame" ) ),
+    hot( new eternal_flame_hot_t( p ) )
   {
     parse_options( NULL, options_str );
 
@@ -1295,8 +1304,8 @@ struct eternal_flame_t : public paladin_heal_t
       base_execute_time *= 1 + p -> passives.sword_of_light -> effectN( 9 ).percent();
     }
 
-    // create HoT child object
-    hot = new eternal_flame_hot_t( p );
+    // attach HoT as child object - doesn't seem to work?
+    add_child( hot );
   }
 
   virtual void update_ready( timespan_t cd_duration )
@@ -1353,12 +1362,13 @@ struct eternal_flame_t : public paladin_heal_t
 
   virtual void execute()
   {
-    double hopo = std::min( 3, p() -> holy_power_stacks() ); // can't consume more than 3 holy power
+    double hopo = ( ( p() -> holy_power_stacks() <= 3  && cost() > 0.0 ) ? p() -> holy_power_stacks() : 3 );
 
     paladin_heal_t::execute();
 
     // trigger HoT
     hot -> target = target;
+    hot -> hopo = hopo;
     hot -> schedule_execute();
 
     // Glyph of Word of Glory handling
@@ -3025,7 +3035,6 @@ struct hammer_of_the_righteous_aoe_t : public paladin_melee_attack_t
 
     // Trigger Hand of Light procs
     trigger_hand_of_light( s );
-
   }
 };
 
@@ -4892,6 +4901,18 @@ double paladin_t::composite_spell_power( school_e school ) const
       break;
   }
   return sp;
+}
+
+// paladin_t::composite_attack_power_multiplier =============================
+
+double paladin_t::composite_attack_power_multiplier() const
+{
+  double ap = player_t::composite_spell_power_multiplier();
+
+  if ( passives.divine_bulwark -> ok () )
+    ap += get_divine_bulwark(); // TODO: check if additive or multiplicative
+
+  return ap;
 }
 
 // paladin_t::composite_spell_power_multiplier ==============================
