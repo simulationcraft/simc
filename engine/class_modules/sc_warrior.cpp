@@ -666,7 +666,6 @@ struct opportunity_strike_t : public warrior_attack_t
   opportunity_strike_t( warrior_t* p ) :
     warrior_attack_t( "opportunity_strike", p, p -> find_spell( 76858 ) )
   {
-   base_multiplier *= 2.5;
    background = true;
   }
 };
