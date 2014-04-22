@@ -173,7 +173,9 @@ class BLTEExtract(object):
 		if not file.extract():
 			return None
 		
-	def extract(self, file_name):
+		return file
+		
+	def extract_file(self, file_name):
 		if not self.open(file_name):
 			return False
 		
@@ -213,6 +215,8 @@ class BLTEExtract(object):
 		self.fd.seek(10, os.SEEK_CUR)
 		
 		file = self.__extract_data()
+		if not file:
+			return False
 		
 		file_md5 = md5.new(file.output_data).digest()
 		if file_md5sum != file_md5:
@@ -335,63 +339,70 @@ class CASCEncodingFile(object):
 			self.options.parser.error('Unable to open encoding file "%s" for reading' % self.options.encoding_file)
 			return False
 		
-		with open(self.options.encoding_file, 'rb') as f:
-			fsize = os.stat(self.options.encoding_file).st_size
-			while f.tell() < fsize:
-				locale = f.read(2)
-				if locale != 'EN':
-					self.options.parser.error('Unknown locale "%s" in file %s, only EN supported' % (locale, self.options.encoding_file))
-					return False
+		data = ''
+		
+		with open(self.options.encoding_file, 'rb') as encoding_file:
+			data = encoding_file.read()
+		
+		md5str = md5.new(data).hexdigest()
+		if md5str != self.build.encoding_file():
+			self.options.parser.error('Encoding file MD5sum error, expected %s, got %s' % (
+				self.build.encoding_file(), md5str))
+		
+		offset = 0
+		fsize = os.stat(self.options.encoding_file).st_size
+		locale = data[offset:offset + 2]; offset += 2
+		if locale != 'EN':
+			self.options.parser.error('Unknown locale "%s" in file %s, only EN supported' % (locale, self.options.encoding_file))
+			return False
 
-				unk_b1, unk_b2, unk_b3, unk_s1, unk_s2, hash_table_size, unk_w1, unk_b3, hash_table_offset = struct.unpack('>BBBHHIIBI', f.read(20))
-				#print hash_table_size, hash_table_offset, unk_b1, unk_b2, unk_b3, unk_s1, unk_s2, unk_w1, unk_b3
-				f.seek(hash_table_offset, os.SEEK_CUR)
+		unk_b1, unk_b2, unk_b3, unk_s1, unk_s2, hash_table_size, unk_w1, unk_b3, hash_table_offset = struct.unpack('>BBBHHIIBI', data[offset:offset + 20])
+		offset += 20 + hash_table_offset
+		
+		for hash_entry in xrange(0, hash_table_size):
+			md5_file = data[offset:offset + 16]; offset += 16
+			md5_sum = data[offset:offset + 16]; offset += 16
+			self.first_entries.append(md5_file)
+
+		for hash_block in xrange(0, hash_table_size):
+			before = offset
+			entry_id = 0
+			#print 'Block %u begins at %u' % (hash_block, f.tell())
+			n_keys = struct.unpack('H', data[offset:offset + 2])[0]; offset += 2
+			while n_keys != 0:
+				keys = []
+				file_size = struct.unpack('>I', data[offset:offset + 4])[0]; offset += 4
+					
+				file_md5 = data[offset:offset + 16]; offset += 16
+				for key_idx in xrange(0, n_keys):
+					keys.append(data[offset:offset + 16]); offset += 16
 				
-				for hash_entry in xrange(0, hash_table_size):
-					md5_file = f.read(16)
-					md5_sum = f.read(16)
-					self.first_entries.append(md5_file)
-
-				for hash_block in xrange(0, hash_table_size):
-					before = f.tell()
-					entry_id = 0
-					#print 'Block %u begins at %u' % (hash_block, f.tell())
-					n_keys = struct.unpack('H', f.read(2))[0]
-					while n_keys != 0:
-						keys = []
-						file_size = struct.unpack('>I', f.read(4))[0]
-							
-						file_md5 = f.read(16)
-						for key_idx in xrange(0, n_keys):
-							keys.append(f.read(16))
-						
-						if entry_id == 0 and file_md5 != self.first_entries[hash_block]:
-							self.options.parser.error('Invalid first md5 in block %d@%u, expected %s got %s' % (
-								hash_block, f.tell(), self.first_entries[hash_block].encode('hex'), file_md5.encode('hex')))
-							return False
-						
-						#print '%5u %8u %8u %2u %s %s' % (entry_id, f.tell(), file_size, n_keys, file_md5.encode('hex'), file_key.encode('hex'))
-						if file_size > 1000000000:
-							self.options.parser.error('Invalid (too large) file size %u in block %u, entry id %u, pos %u' % (file_size, hash_block, entry_id, f.tell()))
-							return False
-						
-						if file_md5 in self.md5_map:
-							self.options.parser.error('Duplicate md5 entry %s in block %d@%u' % (
-								file_md5.encode('hex'), hash_block, f.tell()))
-							return False
-						
-						self.md5_map[file_md5] = (file_size, keys)
-					
-						entry_id += 1
-						n_keys = struct.unpack('H', f.read(2))[0]
-					
-					# Blocks are padded to 4096 bytes it seems, sanity check that the padding is all zeros, though
-					for pad_idx in xrange(0, 4096 - (f.tell() - before)):
-						byte = f.read(1)
-						if byte != '\x00':
-							self.options.parser.error('Invalid padding byte %u at the end of block %u, pos %u, expected 0, got %#x' % (pad_idx, hash_block, f.tell(), ord(byte)))
-							return False
-				break
+				if entry_id == 0 and file_md5 != self.first_entries[hash_block]:
+					self.options.parser.error('Invalid first md5 in block %d@%u, expected %s got %s' % (
+						hash_block, offset, self.first_entries[hash_block].encode('hex'), file_md5.encode('hex')))
+					return False
+				
+				#print '%5u %8u %8u %2u %s %s' % (entry_id, f.tell(), file_size, n_keys, file_md5.encode('hex'), file_key.encode('hex'))
+				if file_size > 1000000000:
+					self.options.parser.error('Invalid (too large) file size %u in block %u, entry id %u, pos %u' % (file_size, hash_block, entry_id, offset))
+					return False
+				
+				if file_md5 in self.md5_map:
+					self.options.parser.error('Duplicate md5 entry %s in block %d@%u' % (
+						file_md5.encode('hex'), hash_block, offset))
+					return False
+				
+				self.md5_map[file_md5] = (file_size, keys)
+			
+				entry_id += 1
+				n_keys = struct.unpack('H', data[offset:offset + 2])[0]; offset += 2
+			
+			# Blocks are padded to 4096 bytes it seems, sanity check that the padding is all zeros, though
+			for pad_idx in xrange(0, 4096 - (offset - before)):
+				byte = data[offset:offset + 1]; offset += 1
+				if byte != '\x00':
+					self.options.parser.error('Invalid padding byte %u at the end of block %u, pos %u, expected 0, got %#x' % (pad_idx, hash_block, offset, ord(byte)))
+					return False
 		
 		return True
 		

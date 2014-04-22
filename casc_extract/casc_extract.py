@@ -76,7 +76,7 @@ if __name__ == '__main__':
 		blte = casc.BLTEExtract(opts)
 		for file in args:
 			print 'Extracting %s ...'
-			if not blte.extract(file):
+			if not blte.extract_file(file):
 				sys.exit(1)
 	
 	elif opts.mode == 'extract':
@@ -104,8 +104,7 @@ if __name__ == '__main__':
 			parser.error('Found multiple file keys with md5sum %s' % args[0])
 		
 		file_location = index.GetIndexData(keys[0])
-		print file_location
-		print keys
+		
 		
 		blte = casc.BLTEExtract(opts)
 		
