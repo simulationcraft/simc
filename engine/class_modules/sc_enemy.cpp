@@ -739,7 +739,8 @@ void enemy_t::init_defense()
       case 90: a = 1047; break; // From DBC Data. Reia will likely replace this with automation magic at some point.
       case 91: a = 1185; break;
       case 92: a = 1342; break;
-      case 93: a = 1518; break;
+//      case 93: a = 1518; break;
+      case 93: a = 5234; break; // WOD-TODO: Dummy value to not mess up level 90 sims in the interim period of WoD alpha/beta.
       case 94: a = 1718; break;
       case 95: a = 1945; break;
       case 96: a = 2201; break;
