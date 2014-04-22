@@ -343,7 +343,6 @@ public:
   // Tier16 random imbues
   action_t* t16_wind;
   action_t* t16_flame;
-  action_t* t16_frost;
 
   shaman_t( sim_t* sim, const std::string& name, race_e r = RACE_TAUREN ) :
     player_t( sim, SHAMAN, name, r ),
@@ -408,7 +407,6 @@ public:
 
     t16_wind = 0;
     t16_flame = 0;
-    t16_frost = 0;
   }
 
   // Character Definition
@@ -1714,7 +1712,7 @@ static bool trigger_tier16_2pc_melee( const action_state_t* s )
 
   p -> proc.t16_2pc_melee -> occur();
 
-  switch ( static_cast< int >( p -> rng().range( 0, 3 ) ) )
+  switch ( static_cast< int >( p -> rng().range( 0, 2 ) ) )
   {
     // Windfury
     case 0:
@@ -1723,10 +1721,6 @@ static bool trigger_tier16_2pc_melee( const action_state_t* s )
     // Flametongue
     case 1:
       p -> t16_flame -> execute();
-      break;
-    // Frostbrand
-    case 2:
-      p -> t16_frost -> execute();
       break;
     default:
       assert( false );
@@ -2028,20 +2022,6 @@ struct unleash_flame_t : public shaman_spell_t
     p() -> buff.unleash_flame -> trigger();
     if ( result_is_hit( execute_state -> result ) && p() -> talent.unleashed_fury -> ok() )
       td( execute_state -> target ) -> debuff.unleashed_fury -> trigger();
-  }
-};
-
-struct unleash_frost_t : public shaman_spell_t
-{
-  unleash_frost_t( const std::string& name, shaman_t* player ) :
-    shaman_spell_t( name, player, player -> dbc.spell( 73682 ) )
-  {
-    harmful              = true;
-    background           = true;
-    //proc                 = true;
-
-    // Don't cooldown here, unleash elements ability will handle it
-    cooldown -> duration = timespan_t::zero();
   }
 };
 
@@ -5124,7 +5104,6 @@ void shaman_t::init_spells()
   {
     t16_wind = new unleash_wind_t( "t16_unleash_wind", this );
     t16_flame = new unleash_flame_t( "t16_unleash_flame", this );
-    t16_frost = new unleash_frost_t( "t16_unleash_frost", this );
   }
 
   player_t::init_spells();
