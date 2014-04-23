@@ -2322,8 +2322,6 @@ struct lights_hammer_t : public paladin_spell_t
     //tick_action = new lights_hammer_tick_t( p, p -> find_spell( 114919 ) );
     lh_heal_tick = new lights_hammer_heal_tick_t( p );
     lh_damage_tick = new lights_hammer_damage_tick_t( p );
-    add_child( lh_heal_tick );
-    add_child( lh_damage_tick );
 
     // disable if not talented
     if ( ! ( p -> talents.lights_hammer -> ok() ) )
