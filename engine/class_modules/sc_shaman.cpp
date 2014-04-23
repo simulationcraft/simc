@@ -733,7 +733,7 @@ struct shaman_spell_t : public shaman_spell_base_t<spell_t>
   {
     base_t::impact( state );
 
-    if ( overload_spell )
+    if ( overload_spell && result_is_hit( state -> result ) )
     {
       double overload_chance = 0.0;
       if ( p() -> mastery.elemental_overload -> ok() )
