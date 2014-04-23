@@ -1615,9 +1615,6 @@ struct hurricane_strike_t : public monk_melee_attack_t
   }
   virtual double cost() const
   {
-    if ( p() -> buff.focus_of_xuen -> check() ){
-      return monk_melee_attack_t::cost() - 1;
-    }
     return monk_melee_attack_t::cost();
   }
  virtual void consume_resource()
@@ -1628,11 +1625,6 @@ struct hurricane_strike_t : public monk_melee_attack_t
     if ( result_is_hit( execute_state -> result ) )
       p() -> track_chi_consumption += savings;
 
-    if ( p() -> buff.focus_of_xuen -> up() )
-    {
-      p() -> gain.focus_of_xuen_savings -> add( RESOURCE_CHI, savings );
-      p() -> buff.focus_of_xuen -> expire();
-    }
   }
 };
 
