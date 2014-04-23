@@ -83,6 +83,7 @@ public:
   struct active_actions_t
   {
     action_t* blackout_kick_dot;
+    action_t* chi_explosion_dot;
     actions::spells::stagger_self_damage_t* stagger_self_damage;
   } active_actions;
 
@@ -95,6 +96,7 @@ public:
     buff_t* chi_sphere;
     buff_t* combo_breaker_tp;
     buff_t* combo_breaker_bok;
+    buff_t* combo_breaker_ce;
     buff_t* energizing_brew;
     buff_t* elusive_brew_stacks;
     buff_t* elusive_brew_activated;
@@ -157,6 +159,7 @@ public:
   {
     proc_t* combo_breaker_bok;
     proc_t* combo_breaker_tp;
+    proc_t* combo_breaker_ce;
     proc_t* mana_tea;
     proc_t* tier15_2pc_melee;
     proc_t* tier15_4pc_melee;
@@ -924,7 +927,10 @@ struct jab_t : public monk_melee_attack_t
       return;
 
     double cb_chance = combo_breaker_chance();
-    p() -> buff.combo_breaker_bok -> trigger( 1, buff_t::DEFAULT_VALUE(), cb_chance );
+    if ( p() -> talent.chi_explosion_ww -> ok() )
+      p() -> buff.combo_breaker_ce -> trigger( 1, buff_t::DEFAULT_VALUE(), cb_chance );
+    else
+      p() -> buff.combo_breaker_bok -> trigger( 1, buff_t::DEFAULT_VALUE(), cb_chance );
     p() -> buff.combo_breaker_tp  -> trigger( 1, buff_t::DEFAULT_VALUE(), cb_chance );
 
     // Chi Gain
@@ -1020,6 +1026,9 @@ struct tiger_palm_t : public monk_melee_attack_t
 
   virtual double cost() const
   {
+    // TODO check if Chi Serenity is consumed before Combo Breaker
+    if ( p() -> buff.chi_serenity -> check() )
+      return 0;
     if ( p() -> buff.combo_breaker_tp -> check() )
       return 0;
 
@@ -1143,8 +1152,11 @@ struct blackout_kick_t : public monk_melee_attack_t
       trigger_blackout_kick_dot( this, s -> target, s -> result_amount * data().effectN( 2 ).percent( ) );
   }
 
-virtual double cost() const
+  virtual double cost() const
   {
+    // TODO: check if Chi Serenity is consumed before Combo Breaker
+    if ( p() -> buff.chi_serenity -> check() )
+      return 0.0;
     if ( p() -> buff.combo_breaker_bok -> check() ){
       return 0.0;
     }
@@ -1165,6 +1177,145 @@ virtual double cost() const
     {
       p() -> gain.combo_breaker_savings -> add( RESOURCE_CHI, savings );
       p() -> buff.combo_breaker_bok -> expire();
+    }
+    else if ( p() -> buff.focus_of_xuen -> up() )
+    {
+      p() -> gain.focus_of_xuen_savings -> add( RESOURCE_CHI, savings );
+      p() -> buff.focus_of_xuen -> expire();
+    }
+  }
+};
+
+// ==========================================================================
+// Chi Explosion
+// ==========================================================================
+// TODO: implement varying Chi values
+
+struct dot_chi_explosion_t : public ignite::pct_based_action_t< monk_melee_attack_t >
+{
+  dot_chi_explosion_t( monk_t* p ) :
+    base_t( "chi_explosion_dot", p, p -> find_spell( 157681 ) )
+  {
+    tick_may_crit = true;
+    may_miss = false;
+    base_td_multiplier = 1.50; // hard code the 50% increase
+  }
+};
+
+struct chi_explosion_t : public monk_melee_attack_t
+{
+  void trigger_chi_explosion_dot( chi_explosion_t* s, player_t* t, double dmg )
+  {
+    monk_t* p = s -> p();
+
+    ignite::trigger_pct_based(
+      p -> active_actions.chi_explosion_dot,
+      t,
+      dmg );
+  }
+
+  chi_explosion_t( monk_t* p, const std::string& options_str ) :
+    monk_melee_attack_t( "chi_explosion", p, p -> find_spell ( 157681 ) )
+  {
+    parse_options( nullptr, options_str );
+    base_dd_min = base_dd_max = 0.0;
+    mh = &( player -> main_hand_weapon );
+    oh = &( player -> off_hand_weapon );
+    attack_power_mod.direct = spell_power_mod.direct = 1.35;
+	// Empowered Blackout Kick 
+    base_multiplier *= 1 + p -> perk.empowered_blackout_kick -> effectN( 1 ).percent();
+    school = SCHOOL_NATURE;
+    if ( player -> specialization() == MONK_BREWMASTER )
+      weapon_power_mod = 1 / 11.0;
+
+    if ( p -> spec.teachings_of_the_monastery -> ok() )
+    {
+      aoe = 1 + p -> spec.teachings_of_the_monastery -> effectN( 3 ).base_value();
+      base_aoe_multiplier = p -> spec.teachings_of_the_monastery -> effectN( 5 ).percent();
+    }
+  }
+
+  virtual void impact( action_state_t* s )
+  {
+    monk_melee_attack_t::impact( s );
+
+    if ( result_is_hit( s -> result ) )
+    {
+      if ( p() -> spec.brewmaster_training -> ok() )
+      {
+        if ( p() -> buff.shuffle -> check() )
+        {
+          p() -> buff.shuffle -> extend_duration( p(), timespan_t::from_seconds( 6.0 ) );
+        }
+        else
+        {
+          p() -> buff.shuffle -> trigger();
+        }
+      }
+      if ( p() -> spec.teachings_of_the_monastery -> ok() )
+      {
+        p() -> buff.serpents_zeal -> trigger();
+      }
+    }
+  }
+
+  virtual void execute()
+  {
+    monk_melee_attack_t::execute();
+
+    consume_muscle_memory();
+  }
+
+  virtual double action_multiplier() const
+  {
+    double m = monk_melee_attack_t::action_multiplier();
+
+    if ( p() -> buff.muscle_memory -> check() )
+      m *= 1.0 + p() -> find_spell( 139597 ) -> effectN( 1 ).percent();
+
+    // check for melee 2p and CB: TP, for the 50% dmg bonus
+    if ( p() -> sets.has_set_bonus( SET_T16_2PC_MELEE ) && p() -> buff.combo_breaker_ce -> check() ) {
+      // damage increased by 40% for WW 2pc upon CB
+      m *= 1.4;
+    }
+
+    return m;
+  }
+
+  virtual void assess_damage( dmg_e type, action_state_t* s )
+  {
+    monk_melee_attack_t::assess_damage( type, s );
+
+    if ( p() -> specialization() == MONK_WINDWALKER )
+
+      trigger_chi_explosion_dot( this, s -> target, s -> result_amount * data().effectN( 2 ).percent( ) );
+  }
+
+  virtual double cost() const
+  {
+    if ( p() -> buff.combo_breaker_ce -> check() ){
+      if (monk_melee_attack_t::cost() < p() -> find_class_spell( "Combo Breaker: Chi Explosion" ) -> effectN( 1 ).base_value())
+        return monk_melee_attack_t::cost();
+      else
+        return monk_melee_attack_t::cost() - p() -> find_class_spell( "Combo Breaker: Chi Explosion" ) -> effectN( 1 ).base_value();
+    }
+    if ( p() -> buff.focus_of_xuen -> check() ){
+		return monk_melee_attack_t::cost() - 1;
+    }
+    return monk_melee_attack_t::cost();
+  }
+ virtual void consume_resource()
+  {
+    monk_melee_attack_t::consume_resource();
+
+    double savings = base_costs[ RESOURCE_CHI ] - cost();
+    if ( result_is_hit( execute_state -> result ) )
+      p() -> track_chi_consumption += savings;
+
+    if ( p() -> buff.combo_breaker_ce -> up() )
+    {
+      p() -> gain.combo_breaker_savings -> add( RESOURCE_CHI, savings );
+      p() -> buff.combo_breaker_ce -> expire();
     }
     else if ( p() -> buff.focus_of_xuen -> up() )
     {
@@ -1224,6 +1375,8 @@ struct rising_sun_kick_t : public monk_melee_attack_t
   }
   virtual double cost() const
   {
+    if ( p() -> buff.chi_serenity -> check() )
+      return 0.0;
     if ( p() -> buff.focus_of_xuen -> check() ){
       return monk_melee_attack_t::cost() - 1;//+ p() -> buff.focus_of_xuen -> s_data -> effectN( 1 ).base_value(); // TODO: Update to spell data
     }
@@ -1415,6 +1568,8 @@ struct fists_of_fury_t : public monk_melee_attack_t
   }
   virtual double cost() const
   {
+    if ( p() -> buff.chi_serenity -> check() )
+      return 0.0;
     if ( p() -> buff.focus_of_xuen -> check() ){
       return monk_melee_attack_t::cost() - 1;// + p() -> buff.focus_of_xuen -> s_data -> effectN( 1 ).base_value();// TODO: Update to spell data
     }
@@ -1422,6 +1577,50 @@ struct fists_of_fury_t : public monk_melee_attack_t
   }
 
   virtual void consume_resource()
+  {
+    monk_melee_attack_t::consume_resource();
+
+    double savings = base_costs[ RESOURCE_CHI ] - cost();
+    if ( result_is_hit( execute_state -> result ) )
+      p() -> track_chi_consumption += savings;
+
+    if ( p() -> buff.focus_of_xuen -> up() )
+    {
+      p() -> gain.focus_of_xuen_savings -> add( RESOURCE_CHI, savings );
+      p() -> buff.focus_of_xuen -> expire();
+    }
+  }
+};
+
+// ==========================================================================
+// Hurricane Strike
+// ==========================================================================
+
+struct hurricane_strike_t : public monk_melee_attack_t
+{
+  hurricane_strike_t( monk_t* p, const std::string& options_str ) :
+    monk_melee_attack_t( "hurricane_strike", p, p -> find_class_spell( "Hurricane Strike" ) )
+  {
+    parse_options( nullptr, options_str );
+    stancemask = FIERCE_TIGER;
+    base_dd_min = base_dd_max = attack_power_mod.direct = spell_power_mod.direct = 0.0;//  deactivate parsed spelleffect1
+    mh = &( player -> main_hand_weapon ) ;
+    oh = &( player -> off_hand_weapon ) ;
+    base_multiplier = 30 * 2.5; // hardcoded into tooltip
+  }
+
+  virtual void impact ( action_state_t* s )
+  {
+    monk_melee_attack_t::impact( s );
+  }
+  virtual double cost() const
+  {
+    if ( p() -> buff.focus_of_xuen -> check() ){
+      return monk_melee_attack_t::cost() - 1;
+    }
+    return monk_melee_attack_t::cost();
+  }
+ virtual void consume_resource()
   {
     monk_melee_attack_t::consume_resource();
 
@@ -1893,7 +2092,7 @@ struct zen_sphere_damage_t : public monk_spell_t
   {
     background = true;
 
-    attack_power_mod.direct = 0.09 * 1.15; // hardcoded into tooltip
+    attack_power_mod.direct = 0.09; // hardcoded into tooltip
     school = SCHOOL_NATURE;
   }
 };
@@ -1906,7 +2105,7 @@ struct zen_sphere_detonate_damage_t : public monk_spell_t
     background = true;
     aoe = -1;
 
-    attack_power_mod.direct = 0.368 * 1.15; // hardcoded into tooltip
+    attack_power_mod.direct = 0.368; // hardcoded into tooltip
     school = SCHOOL_NATURE;
   }
 };
@@ -1925,6 +2124,13 @@ struct spinning_fire_blossom_t : public monk_spell_t
 
   }
 
+  virtual double cost() const
+  {
+    if ( p() -> buff.chi_serenity -> check() )
+      return 0.0;
+    return monk_spell_t::cost();
+  }
+
   virtual double composite_target_da_multiplier( player_t* t ) const
   {
     double m = monk_spell_t::composite_target_da_multiplier( t );
@@ -1940,13 +2146,14 @@ struct spinning_fire_blossom_t : public monk_spell_t
 // Chi Wave
 // ==========================================================================
 /*
- * TODO: FOR REALISTIC BOUNCING, IT WILL BOUNCE ENEMY -> MONK -> ENEMY -> MONK -> ENEMY but on dummies it hits enemy then monk and stops.
- * So only 3 ticks will occur in a single target simming scenario. Alternate scenarios need to be determined.
- * TODO: Need to add decrementing buff to handle bouncing mechanic. .561 coeff
- * verify damage
+ * TODO: FOR REALISTIC BOUNCING, IT WILL BOUNCE ENEMY -> MONK -> ENEMY -> MONK -> ENEMY -> MONK -> ENEMY.
+ * So only 4 ticks will occur in a single target simming scenario. Alternate scenarios need to be determined.
+ * TODO: Need to add decrementing buff to handle bouncing mechanic. 
 */
 struct chi_wave_t : public monk_spell_t
 {
+  heals::monk_heal_t* chi_wave_heal_t;
+
   struct direct_damage_t : public monk_spell_t
   {
     direct_damage_t( monk_t* p ) :
@@ -1964,7 +2171,8 @@ struct chi_wave_t : public monk_spell_t
     parse_options( nullptr, options_str );
     num_ticks = 4;
     hasted_ticks   = false;
-    base_tick_time = timespan_t::from_seconds( 1.0 );
+    base_tick_time = timespan_t::from_seconds( 2.0 );
+    school = SCHOOL_NATURE;
 
     attack_power_mod.direct = spell_power_mod.direct = base_dd_min = base_dd_max = 0;
 
@@ -1986,9 +2194,7 @@ struct chi_burst_t : public monk_spell_t
     parse_options( nullptr, options_str );
     aoe = -1;
     special = false; // Disable pausing of auto attack while casting this spell
-    attack_power_mod.direct = 1.21; // hardcoded into tooltip 2013/04/10
-    base_dd_min = player -> find_spell( 130651 ) -> effectN( 1 ).min( player );
-    base_dd_max = player -> find_spell( 130651 ) -> effectN( 1 ).max( player );
+    attack_power_mod.direct = 2.036; // hardcoded into tooltip
   }
 };
 
@@ -2004,6 +2210,28 @@ struct chi_torpedo_t : public monk_spell_t
     parse_options( nullptr, options_str );
     aoe = -1;
 	attack_power_mod.direct = .994;
+  }
+};
+
+// ==========================================================================
+// Chi Serenity
+// ==========================================================================
+
+struct chi_serenity_t : public monk_spell_t
+{
+  chi_serenity_t( monk_t* player, const std::string& options_str ) :
+    monk_spell_t( "chi_serenity", player, player -> talent.chi_serenity )
+  {
+    parse_options( nullptr, options_str );
+
+    harmful = false;
+  }
+
+  virtual void execute()
+  {
+    monk_spell_t::execute();
+
+    p() -> buff.chi_serenity -> trigger();
   }
 };
 
@@ -2105,6 +2333,13 @@ struct breath_of_fire_t : public monk_spell_t
 
     aoe = -1;
     stancemask = STURDY_OX;
+  }
+
+  virtual double cost() const
+  {
+    if ( p() -> buff.chi_serenity -> check() )
+      return 0.0;
+    return monk_spell_t::cost();
   }
 
   virtual void impact( action_state_t* s )
@@ -2309,6 +2544,13 @@ struct purifying_brew_t : public monk_spell_t
     stancemask = STURDY_OX;
     harmful = false;
     trigger_gcd = timespan_t::zero();
+  }
+
+  virtual double cost() const
+  {
+    if ( p() -> buff.chi_serenity -> check() )
+      return 0.0;
+    return monk_spell_t::cost();
   }
 
   virtual void execute()
@@ -2754,9 +2996,43 @@ struct surging_mist_t : public monk_heal_t
   }
 };
 
+// ==========================================================================
+// Chi Wave (Heal)
+// ==========================================================================
+
+struct chi_wave_heal_t : public monk_heal_t
+{
+  struct direct_heal_t : public monk_heal_t
+  {
+    direct_heal_t( monk_t& p, const std::string& options_str ) :
+      monk_heal_t( "chi_wave_heal", p, p.find_spell( 132467 ) )
+    {
+      attack_power_mod.direct = 0.757; // hardcoded into tooltip of 132467
+
+      background = true;
+    }
+  };
+
+  chi_wave_heal_t( monk_t& p, const std::string& options_str ) :
+    monk_heal_t( "chi_wave", p, p.talent.chi_wave )
+  {
+    parse_options( nullptr, options_str );
+    num_ticks = 3;
+    hasted_ticks   = false;
+    time_to_travel = timespan_t::from_seconds( 1.0 );
+    base_tick_time = timespan_t::from_seconds( 2.0 );
+
+    attack_power_mod.direct = spell_power_mod.direct = base_dd_min = base_dd_max = 0;
+
+    special = false;
+
+    tick_action = new direct_heal_t( p, options_str );
+  }
+};
+
 
 // ==========================================================================
-// Zen Sphere
+// Zen Sphere (Heal)
 // ==========================================================================
 
 struct zen_sphere_t : public monk_heal_t
@@ -2789,9 +3065,9 @@ struct zen_sphere_t : public monk_heal_t
 
     school = SCHOOL_NATURE;
     if ( player -> specialization() == MONK_MISTWEAVER )
-      attack_power_mod.tick = 0.09 * 1.2 * 1.15; // hardcoded into tooltip
+      attack_power_mod.tick = 0.09 * 1.2; // hardcoded into tooltip
     else
-      attack_power_mod.tick = 0.09 * 1.15;  // hardcoded into tooltip
+      attack_power_mod.tick = 0.09;  // hardcoded into tooltip
 
     cooldown -> duration = timespan_t::from_seconds( 10.0 );
   }
@@ -2963,6 +3239,9 @@ action_t* monk_t::create_action( const std::string& name,
   if ( name == "invoke_xuen"           ) return new             xuen_spell_t( this, options_str );
   if ( name == "chi_torpedo"           ) return new            chi_torpedo_t( this, options_str );
 
+  if ( name == "hurricane_strike"      ) return new       hurricane_strike_t( this, options_str );
+  if ( name == "chi_explosion"         ) return new          chi_explosion_t( this, options_str );
+  if ( name == "chi_serenity"          ) return new           chi_serenity_t( this, options_str );
   return base_t::create_action( name, options_str );
 }
 
@@ -3202,6 +3481,7 @@ void monk_t::create_buffs()
   buff.chi_sphere        = buff_creator_t( this, "chi_sphere"          ).max_stack( 5 );
   buff.combo_breaker_bok = buff_creator_t( this, "combo_breaker_bok"   ).spell( find_spell( 116768 ) );
   buff.combo_breaker_tp  = buff_creator_t( this, "combo_breaker_tp"    ).spell( find_spell( 118864 ) );
+  buff.combo_breaker_ce  = buff_creator_t( this, "combo_breaker_ce"    ).spell( find_spell( 159407 ) );
   buff.energizing_brew   = buff_creator_t( this, "energizing_brew" ).spell( find_class_spell( "Energizing Brew" ) );
   buff.energizing_brew -> buff_duration += sets.set( SET_T14_4PC_MELEE ) -> effectN( 1 ).time_value(); //verify working
   buff.tigereye_brew     = buff_creator_t( this, "tigereye_brew"       ).spell( find_spell( 125195 ) );
@@ -3492,7 +3772,8 @@ double monk_t::composite_player_heal_multiplier( school_e school ) const
 {
   double m = base_t::composite_player_heal_multiplier( school );
 
-  m *= 1.0 + active_stance_data( WISE_SERPENT ).effectN( 5 ).percent();
+  if ( current_stance() == WISE_SERPENT )
+    m *= 1.0 + active_stance_data( WISE_SERPENT ).effectN( 3 ).percent();
 
   return m;
 }
@@ -3503,8 +3784,8 @@ double monk_t::composite_melee_hit() const
 {
   double ah = base_t::composite_melee_hit();
 
-  if ( current_stance() == WISE_SERPENT )
-    ah += ( ( cache.spirit() - base.stats.get_stat( STAT_SPIRIT ) ) * static_stance_data( WISE_SERPENT ).effectN( 4 ).percent() ) / current_rating().attack_hit;
+  if ( current_stance() == SPIRITED_CRANE )
+    ah += ( ( cache.spirit() - base.stats.get_stat( STAT_SPIRIT ) ) * static_stance_data( SPIRITED_CRANE ).effectN( 3 ).percent() ) / current_rating().attack_hit;
 
   return ah;
 }
@@ -3515,8 +3796,8 @@ double monk_t::composite_spell_hit() const
 {
   double sh = base_t::composite_spell_hit();
 
-  if ( current_stance() == WISE_SERPENT )
-    sh += ( ( cache.spirit() - base.stats.get_stat( STAT_SPIRIT ) ) * static_stance_data( WISE_SERPENT ).effectN( 4 ).percent() ) / current_rating().spell_hit;
+  if ( current_stance() == SPIRITED_CRANE )
+    sh += ( ( cache.spirit() - base.stats.get_stat( STAT_SPIRIT ) ) * static_stance_data( SPIRITED_CRANE ).effectN( 3 ).percent() ) / current_rating().spell_hit;
 
   return sh;
 }
@@ -3537,8 +3818,8 @@ double monk_t::composite_melee_expertise( weapon_t* weapon ) const
 
 double monk_t::composite_melee_attack_power() const
 {
-  if ( current_stance() == WISE_SERPENT )
-    return composite_spell_power( SCHOOL_MAX ) * static_stance_data( WISE_SERPENT ).effectN( 2 ).percent();
+  if ( current_stance() == SPIRITED_CRANE)
+    return composite_spell_power( SCHOOL_MAX ) * static_stance_data( SPIRITED_CRANE ).effectN( 3 ).percent();
 
   return base_t::composite_melee_attack_power();
 }
@@ -3622,11 +3903,11 @@ void monk_t::invalidate_cache( cache_e c )
   switch ( c )
   {
     case CACHE_SPELL_POWER:
-      if ( current_stance() == WISE_SERPENT )
+      if ( current_stance() == WISE_SERPENT || current_stance() == SPIRITED_CRANE)
         player_t::invalidate_cache( CACHE_ATTACK_POWER );
       break;
     case CACHE_SPIRIT:
-      if ( current_stance() == WISE_SERPENT )
+      if ( current_stance() == WISE_SERPENT || current_stance() == SPIRITED_CRANE)
       {
         player_t::invalidate_cache( CACHE_HIT );
         player_t::invalidate_cache( CACHE_ATTACK_EXP );
