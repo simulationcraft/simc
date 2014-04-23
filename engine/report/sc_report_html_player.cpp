@@ -3090,7 +3090,9 @@ void output_player_action( report::sc_html_stream& os,
     if ( ! is_output_stat( mask, true, child_stats ) )
       continue;
 
-    print_html_action_info( os, mask, child_stats, row++, cols, actor );
+    // skip if child contributes no damage
+    if ( child_stats -> compound_amount > 0 )
+      print_html_action_info( os, mask, child_stats, row++, cols, actor );
   }
 }
 
