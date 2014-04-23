@@ -3161,7 +3161,7 @@ struct summon_pet_t : public hunter_spell_t
 struct stampede_t : public hunter_spell_t
 {
   stampede_t( hunter_t* p, const std::string& options_str ) :
-    hunter_spell_t( "stampede", p, p -> find_spell( 121818 ) ) // find_class_spell( "Stampede" ) gives an entirely different stampede(57386) at the moment.
+    hunter_spell_t( "stampede", p, p -> talents.stampede )
   {
     parse_options( NULL, options_str );
     harmful = false;
@@ -3633,8 +3633,7 @@ void hunter_t::init_action_list()
         action_list_str += "/bestial_wrath,if=focus>60&!buff.beast_within.up";
         action_list_str += "/multi_shot,if=active_enemies>5|(active_enemies>1&buff.beast_cleave.down)";
 
-        if ( level >= 87 )
-          action_list_str += "/stampede,if=enabled&(trinket.stat.agility.up|target.time_to_die<=20|(trinket.stacking_stat.agility.stack>10&trinket.stat.agility.cooldown_remains<=3))";
+        action_list_str += "/stampede,if=enabled&(trinket.stat.agility.up|target.time_to_die<=20|(trinket.stacking_stat.agility.stack>10&trinket.stat.agility.cooldown_remains<=3))";
 
         action_list_str += "/barrage,if=enabled&active_enemies>5";
         action_list_str += "/kill_shot";
@@ -3661,8 +3660,7 @@ void hunter_t::init_action_list()
         action_list_str += "/powershot,if=enabled";
         action_list_str += "/fervor,if=enabled&focus<=50";
 
-        if ( level >= 87 )
-          action_list_str += "/stampede,if=enabled&(trinket.stat.agility.up|target.time_to_die<=20|(trinket.stacking_stat.agility.stack>10&trinket.stat.agility.cooldown_remains<=3))";
+        action_list_str += "/stampede,if=enabled&(trinket.stat.agility.up|target.time_to_die<=20|(trinket.stacking_stat.agility.stack>10&trinket.stat.agility.cooldown_remains<=3))";
 
         action_list_str += "/a_murder_of_crows,if=enabled&!ticking";
         action_list_str += "/dire_beast,if=enabled";
@@ -3718,8 +3716,7 @@ void hunter_t::init_action_list()
         action_list_str += "/arcane_shot,if=buff.thrill_of_the_hunt.react";
         action_list_str += "/dire_beast,if=enabled";
 
-        if ( level >= 87 )
-          action_list_str += "/stampede,if=enabled&trinket.stat.agility.up|target.time_to_die<=20|(trinket.stacking_stat.agility.stack>10&trinket.stat.agility.cooldown_remains<=3))";
+        action_list_str += "/stampede,if=enabled&(trinket.stat.agility.up|target.time_to_die<=20|(trinket.stacking_stat.agility.stack>10&trinket.stat.agility.cooldown_remains<=3))";
 
         action_list_str += "/arcane_shot,if=focus>=67&active_enemies<2";
         action_list_str += "/multi_shot,if=focus>=67&active_enemies>1";
