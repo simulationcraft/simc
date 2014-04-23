@@ -972,7 +972,7 @@ void enemy_t::recalculate_health()
     delta_time /= std::pow( ( sim -> current_iteration + 1 ), health_recalculation_dampening_exponent ); // dampening factor, by default 1/n
     double factor = 1.0 - ( delta_time / sim -> expected_iteration_time );
 
-    if ( factor > 2.0 ) factor = 2.0;
+    if ( factor > 1.5 ) factor = 1.5;
     if ( factor < 0.5 ) factor = 0.5;
 
     initial_health *= factor;

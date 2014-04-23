@@ -1309,14 +1309,10 @@ struct flurry_of_xuen_driver_t : public attack_t
   }
 };
 
-struct flurry_of_xuen_cb_t : public proc_callback_t<action_state_t>
+struct flurry_of_xuen_cb_t : public dbc_proc_callback_t
 {
-  action_t* action;
-
-  flurry_of_xuen_cb_t( const item_t& item, const special_effect_t& effect, const spell_data_t* driver ) :
-    proc_callback_t<action_state_t>( item.player, effect, driver ),
-    action( new flurry_of_xuen_driver_t( listener, listener -> create_proc_action( effect.name_str ) ) )
-
+  flurry_of_xuen_cb_t( player_t* p, const special_effect_t& effect ) :
+    dbc_proc_callback_t( p, effect )
   { }
 
   void trigger( action_t* action, void* call_data )
@@ -1325,13 +1321,7 @@ struct flurry_of_xuen_cb_t : public proc_callback_t<action_state_t>
     if ( action -> id == 147891 || action -> id == 146194 || action -> id == 137597 )
       return;
 
-    proc_callback_t<action_state_t>::trigger( action, call_data );
-  }
-
-  void execute( action_t*, action_state_t* state )
-  {
-    action -> target = state -> target;
-    action -> schedule_execute(); 
+    dbc_proc_callback_t::trigger( action, call_data );
   }
 };
 
@@ -1353,11 +1343,9 @@ void item::flurry_of_xuen( special_effect_t& effect,
   effect.ppm_        = -1.0 * driver -> real_ppm();
   effect.ppm_       *= item_database::approx_scale_coefficient( item.parsed.data.level, item.item_level() );
   effect.rppm_scale = RPPM_HASTE;
-  effect.cooldown_   = driver -> internal_cooldown();
+  effect.execute_action = new flurry_of_xuen_driver_t( p, p -> create_proc_action( effect.name_str ) );
 
-  flurry_of_xuen_cb_t* cb = new flurry_of_xuen_cb_t( item, effect, driver );
-
-  p -> callbacks.register_attack_callback( RESULT_HIT_MASK, cb );
+  new flurry_of_xuen_cb_t( p, effect );
 }
 
 struct essence_of_yulon_t : public spell_t
@@ -1386,27 +1374,19 @@ struct essence_of_yulon_driver_t : public spell_t
   }
 };
 
-struct essence_of_yulon_cb_t : public proc_callback_t<action_state_t>
+struct essence_of_yulon_cb_t : public dbc_proc_callback_t
 {
-  action_t* action;
 
-  essence_of_yulon_cb_t( const item_t& item, const special_effect_t& effect, const spell_data_t* driver ) :
-    proc_callback_t<action_state_t>( item.player, effect, driver ),
-    action( new essence_of_yulon_driver_t( item.player ) )
+  essence_of_yulon_cb_t( player_t* p, const special_effect_t& effect ) :
+    dbc_proc_callback_t( p, effect )
   { }
-
-  void execute( action_t*, action_state_t* state )
-  {
-    action -> target = state -> target;
-    action -> schedule_execute();
-  }
 
   void trigger( action_t* action, void* call_data )
   {
-    if ( action -> id == 148008 )
+    if ( action -> id == 148008 ) // dot direct damage ticks can't proc itself
       return;
 
-    proc_callback_t<action_state_t>::trigger( action, call_data );
+    dbc_proc_callback_t::trigger( action, call_data );
   }
 };
 
@@ -1428,9 +1408,9 @@ void item::essence_of_yulon( special_effect_t& effect,
   effect.ppm_         = -1.0 * driver -> real_ppm();
   effect.ppm_        *= item_database::approx_scale_coefficient( item.parsed.data.level, item.item_level() );
   effect.rppm_scale  = RPPM_HASTE;
+  effect.execute_action = new essence_of_yulon_driver_t( item.player );
 
-  essence_of_yulon_cb_t* cb = new essence_of_yulon_cb_t( item, effect, driver );
-  p -> callbacks.register_spell_direct_damage_callback( SCHOOL_ALL_MASK, cb );
+  new essence_of_yulon_cb_t( item.player, effect );
 }
 
 void item::endurance_of_niuzao( special_effect_t& /* effect */,
