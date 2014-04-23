@@ -150,6 +150,8 @@ public:
     stat_buff_t* elemental_blast_multistrike;
     stat_buff_t* tier13_2pc_caster;
     stat_buff_t* tier13_4pc_caster;
+
+    buff_t* improved_chain_lightning;
   } buff;
 
   // Cooldowns
@@ -296,6 +298,14 @@ public:
     const spell_data_t* improved_stormstrike;
     const spell_data_t* improved_lava_lash_2;
     const spell_data_t* improved_feral_spirits;
+
+    // Elemental
+    const spell_data_t* improved_chain_lightning;
+    const spell_data_t* improved_lightning_shield;
+    const spell_data_t* improved_elemental_fury;
+    const spell_data_t* improved_lightning_bolt;
+    const spell_data_t* improved_lava_burst;
+    const spell_data_t* improved_shocks;
   } perk;
 
   // Glyphs
@@ -706,7 +716,7 @@ struct shaman_spell_t : public shaman_spell_base_t<spell_t>
   {
     parse_options( 0, options );
 
-    crit_bonus_multiplier *= 1.0 + p -> spec.elemental_fury -> effectN( 1 ).percent();
+    crit_bonus_multiplier *= 1.0 + p -> spec.elemental_fury -> effectN( 1 ).percent() + p -> perk.improved_elemental_fury -> effectN( 1 ).percent();
   }
 
   virtual void   execute();
@@ -739,7 +749,7 @@ struct shaman_spell_t : public shaman_spell_base_t<spell_t>
 
     // Overloads dont trigger elemental focus
     if ( ! overload && ! proc && p() -> specialization() == SHAMAN_ELEMENTAL &&
-         base_dd_min > 0 && state -> result == RESULT_CRIT )
+         spell_power_mod.direct > 0 && state -> result == RESULT_CRIT )
       p() -> buff.elemental_focus -> trigger( p() -> buff.elemental_focus -> data().initial_stacks() );
   }
 
@@ -1131,7 +1141,7 @@ struct fire_elemental_t : public pet_t
       school                      = SCHOOL_FIRE;
       may_crit                    = true;
       base_costs[ RESOURCE_MANA ] = 0;
-      crit_bonus_multiplier      *= 1.0 + p -> o() -> spec.elemental_fury -> effectN( 1 ).percent();
+      crit_bonus_multiplier      *= 1.0 + p -> o() -> spec.elemental_fury -> effectN( 1 ).percent() + p -> o() -> perk.improved_elemental_fury -> effectN( 1 ).percent();
     }
 
     virtual double composite_da_multiplier() const
@@ -1212,7 +1222,7 @@ struct fire_elemental_t : public pet_t
       repeating                    = true;
       spell_power_mod.direct       = 1.0;
       school                       = SCHOOL_FIRE;
-      crit_bonus_multiplier       *= 1.0 + player -> o() -> spec.elemental_fury -> effectN( 1 ).percent();
+      crit_bonus_multiplier       *= 1.0 + player -> o() -> spec.elemental_fury -> effectN( 1 ).percent() + player -> o() -> perk.improved_elemental_fury -> effectN( 1 ).percent();
       weapon_power_mod             = 0;
       base_dd_min                  = player -> dbc.spell_scaling( player -> o() -> type, player -> level );
       base_dd_max                  = player -> dbc.spell_scaling( player -> o() -> type, player -> level );
@@ -1787,6 +1797,7 @@ struct lava_burst_overload_t : public shaman_spell_t
   lava_burst_overload_t( shaman_t* player ) :
     shaman_spell_t( "lava_burst_overload", player, player -> dbc.spell( 77451 ) )
   {
+    base_multiplier     *= 1.0 + player -> perk.improved_lava_burst -> effectN( 1 ).percent();
     overload             = true;
     background           = true;
     base_execute_time    = timespan_t::zero();
@@ -1837,6 +1848,7 @@ struct lightning_bolt_overload_t : public shaman_spell_t
     background           = true;
     base_execute_time    = timespan_t::zero();
     base_multiplier     += player -> spec.shamanism -> effectN( 1 ).percent();
+    base_multiplier     *= 1.0 + player -> perk.improved_lightning_bolt -> effectN( 1 ).percent();
   }
 
   virtual double composite_target_multiplier( player_t* target ) const
@@ -2794,7 +2806,6 @@ struct chain_lightning_t : public shaman_spell_t
   chain_lightning_t( shaman_t* player, const std::string& options_str ) :
     shaman_spell_t( "chain_lightning", player, player -> find_class_spell( "Chain Lightning" ), options_str )
   {
-    base_execute_time    += player -> spec.shamanism        -> effectN( 3 ).time_value();
     cooldown -> duration += player -> spec.shamanism        -> effectN( 4 ).time_value();
     base_multiplier      += player -> spec.shamanism        -> effectN( 2 ).percent();
     aoe                   = player -> glyph.chain_lightning -> effectN( 1 ).base_value() + 3;
@@ -2826,6 +2837,13 @@ struct chain_lightning_t : public shaman_spell_t
     }
 
     return c;
+  }
+
+  void execute()
+  {
+    shaman_spell_t::execute();
+
+    p() -> buff.improved_chain_lightning -> trigger( execute_state -> n_targets );
   }
 
   void impact( action_state_t* state )
@@ -2877,6 +2895,13 @@ struct lava_beam_t : public shaman_spell_t
       m *= 1.0 + p() -> buff.unleash_flame -> data().effectN( 2 ).percent();
 
     return m;
+  }
+
+  void execute()
+  {
+    shaman_spell_t::execute();
+
+    p() -> buff.improved_chain_lightning -> trigger( execute_state -> n_targets );
   }
 
   void impact( action_state_t* state )
@@ -3110,6 +3135,7 @@ struct lava_burst_t : public shaman_spell_t
   lava_burst_t( shaman_t* player, const std::string& options_str ) :
     shaman_spell_t( "lava_burst", player, player -> find_class_spell( "Lava Burst" ), options_str )
   {
+    base_multiplier     *= 1.0 + player -> perk.improved_lava_burst -> effectN( 1 ).percent();
     uses_eoe = player -> specialization() == SHAMAN_ELEMENTAL;
     overload_spell          = new lava_burst_overload_t( player );
     add_child( overload_spell );
@@ -3187,7 +3213,10 @@ struct lava_burst_t : public shaman_spell_t
     shaman_spell_t::impact( state );
 
     if ( result_is_hit( state -> result ) )
+    {
       p() -> buff.shocking_lava -> trigger();
+      trigger_rolling_thunder( this );
+    }
   }
 
   virtual timespan_t execute_time() const
@@ -3207,6 +3236,7 @@ struct lightning_bolt_t : public shaman_spell_t
     shaman_spell_t( "lightning_bolt", player, player -> find_class_spell( "Lightning Bolt" ), options_str )
   {
     base_multiplier   += player -> spec.shamanism -> effectN( 1 ).percent();
+    base_multiplier   *= 1.0 + player -> perk.improved_lightning_bolt -> effectN( 1 ).percent();
     base_execute_time += player -> spec.shamanism -> effectN( 3 ).time_value();
     overload_spell     = new lightning_bolt_overload_t( player );
     add_child( overload_spell );
@@ -3566,6 +3596,7 @@ struct earth_shock_t : public shaman_spell_t
     shaman_spell_t( "earth_shock", player, player -> find_class_spell( "Earth Shock" ), options_str ),
     consume_threshold( ( int ) player -> spec.fulmination -> effectN( 1 ).base_value() )
   {
+    base_multiplier      *= 1.0 + player -> perk.improved_shocks -> effectN( 1 ).percent();
     uses_eoe = player -> specialization() == SHAMAN_ELEMENTAL || player -> specialization() == SHAMAN_ENHANCEMENT;
     cooldown             = player -> cooldown.shock;
     cooldown -> duration = data().cooldown() + player -> spec.spiritual_insight -> effectN( 3 ).time_value();
@@ -3629,6 +3660,8 @@ struct flame_shock_t : public shaman_spell_t
   flame_shock_t( shaman_t* player, const std::string& options_str ) :
     shaman_spell_t( "flame_shock", player, player -> find_class_spell( "Flame Shock" ), options_str )
   {
+    // TODO-WOD: Separate to tick and direct amount to be safe
+    base_multiplier      *= 1.0 + player -> perk.improved_shocks -> effectN( 1 ).percent();
     uses_eoe = player -> specialization() == SHAMAN_ELEMENTAL || player -> specialization() == SHAMAN_ENHANCEMENT;
     tick_may_crit         = true;
     dot_behavior          = DOT_REFRESH;
@@ -3707,6 +3740,7 @@ struct frost_shock_t : public shaman_spell_t
   frost_shock_t( shaman_t* player, const std::string& options_str ) :
     shaman_spell_t( "frost_shock", player, player -> find_class_spell( "Frost Shock" ), options_str )
   {
+    base_multiplier      *= 1.0 + player -> perk.improved_shocks -> effectN( 1 ).percent();
     uses_eoe = player -> specialization() == SHAMAN_ELEMENTAL || player -> specialization() == SHAMAN_ENHANCEMENT;
     if ( ! player -> perk.improved_frost_shock -> ok() )
       cooldown = player -> cooldown.shock;
@@ -4035,7 +4069,7 @@ struct totem_pulse_action_t : public spell_t
   {
     may_crit = harmful = background = true;
     callbacks = false;
-    crit_bonus_multiplier *= 1.0 + totem -> o() -> spec.elemental_fury -> effectN( 1 ).percent();
+    crit_bonus_multiplier *= 1.0 + totem -> o() -> spec.elemental_fury -> effectN( 1 ).percent() + totem -> o() -> perk.improved_elemental_fury -> effectN( 1 ).percent();
   }
 
   void init()
@@ -5063,15 +5097,25 @@ void shaman_t::init_spells()
   talent.storm_elemental_totem       = find_talent_spell( "Storm Elemental Totem" );
   talent.spew_lava                   = find_talent_spell( "Spew Lava" );
 
+  // Perks - Shared
+  perk.improved_searing_totem        = find_perk_spell( "Improved Searing Totem" );
+  perk.improved_frost_shock          = find_perk_spell( "Improved Frost Shock" );
+
   // Perks - Enhancement
-  perk.improved_searing_totem        = find_perk_spell( 1 );
-  perk.improved_frost_shock          = find_perk_spell( 2 );
-  perk.improved_lava_lash            = find_perk_spell( 3 );
-  perk.improved_flame_shock          = find_perk_spell( 4 );
-  perk.improved_maelstrom_weapon     = find_perk_spell( 5 );
-  perk.improved_stormstrike          = find_perk_spell( 6 );
+  perk.improved_lava_lash            = find_perk_spell( "Improved Lava Lash" );
+  perk.improved_flame_shock          = find_perk_spell( "Improved Flame Shock" );
+  perk.improved_maelstrom_weapon     = find_perk_spell( "Improved Maelstrom Weapon" );
+  perk.improved_stormstrike          = find_perk_spell( "Improved Stormstrike" );
   perk.improved_lava_lash_2          = find_perk_spell( 7 );
-  perk.improved_feral_spirits        = find_perk_spell( 8 );
+  perk.improved_feral_spirits        = find_perk_spell( "Improved Feral Spirits" );
+
+  // Perks - Elemental
+  perk.improved_chain_lightning      = find_perk_spell( "Improved Chain Lightning" );
+  perk.improved_lightning_shield     = find_perk_spell( "Improved Lightning Shield" );
+  perk.improved_elemental_fury       = find_perk_spell( "Improved Elemental Fury" );
+  perk.improved_lightning_bolt       = find_perk_spell( "Improved Lightning Bolt" );
+  perk.improved_lava_burst           = find_perk_spell( "Improved Lava Burst" );
+  perk.improved_shocks               = find_perk_spell( "Improved Shocks" );
 
   // Glyphs
   glyph.chain_lightning              = find_glyph_spell( "Glyph of Chain Lightning" );
@@ -5185,7 +5229,7 @@ void shaman_t::create_buffs()
                                  .chance( 1.0 ); // Proc chance is handled externally
   buff.lightning_shield        = buff_creator_t( this, "lightning_shield", find_class_spell( "Lightning Shield" ) )
                                  .max_stack( ( specialization() == SHAMAN_ELEMENTAL )
-                                             ? static_cast< int >( spec.rolling_thunder -> effectN( 1 ).base_value() )
+                                             ? static_cast< int >( spec.rolling_thunder -> effectN( 1 ).base_value() + perk.improved_lightning_shield -> effectN( 1 ).base_value() )
                                              : find_class_spell( "Lightning Shield" ) -> initial_stacks() )
                                  .cd( timespan_t::zero() );
   buff.maelstrom_weapon        = buff_creator_t( this, "maelstrom_weapon",  spec.maelstrom_weapon -> effectN( 1 ).trigger() )
@@ -5244,6 +5288,11 @@ void shaman_t::create_buffs()
   buff.tier13_4pc_caster        = stat_buff_creator_t( this, "tier13_4pc_caster", find_spell( 105821 ) );
   buff.tier16_2pc_melee         = buff_creator_t( this, "tier16_2pc_melee", sets.set( SET_T16_2PC_MELEE ) -> effectN( 1 ).trigger() )
                                   .chance( static_cast< double >( sets.has_set_bonus( SET_T16_2PC_MELEE ) ) );
+
+
+  buff.improved_chain_lightning = buff_creator_t( this, "improved_chain_lightning", find_perk_spell( "Improved Chain Lightning" ) )
+                                  .max_stack( 5 ) // TODO-WOD: Figure this out from spell data
+                                  .chance( perk.improved_chain_lightning -> ok() );
 }
 
 // shaman_t::init_gains =====================================================
