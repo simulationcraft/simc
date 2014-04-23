@@ -2605,7 +2605,7 @@ void print_html_player_description( report::sc_html_stream& os, sim_t* sim, play
   }
 
   const std::string n = util::encode_html( p -> name() );
-  if ( p -> collected_data.dps.mean() >= p -> collected_data.hps.mean() )
+  if ( p -> collected_data.dps.mean() >= p -> collected_data.hps.mean() || p -> primary_role() == ROLE_TANK )
     os.printf( "\">%s&nbsp;:&nbsp;%.0f dps",
                n.c_str(),
                p -> collected_data.dps.mean() );
