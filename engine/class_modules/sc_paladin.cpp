@@ -98,6 +98,7 @@ public:
     buff_t* divine_purpose;
     buff_t* divine_shield;
     buff_t* double_jeopardy;
+    buff_t* enhanced_holy_shock;
     buff_t* guardian_of_ancient_kings;
     buff_t* grand_crusader;
     buff_t* glyph_templars_verdict;
@@ -174,6 +175,38 @@ public:
     const spell_data_t* the_art_of_war;
     const spell_data_t* vengeance;
   } passives;
+
+  // Perks
+  struct 
+  {
+    // Multiple
+    const spell_data_t* improved_crusader_strike;     // prot, ret
+    const spell_data_t* improved_divine_protection;   // all
+    const spell_data_t* improved_flash_of_light;      // holy, ret
+    const spell_data_t* improved_forbearance;         // all
+    const spell_data_t* improved_judgment;            // prot, ret
+
+    // Holy
+    const spell_data_t* empowered_beacon_of_light;
+    const spell_data_t* empowered_holy_shock;
+    const spell_data_t* enhanced_holy_shock;
+    const spell_data_t* improved_daybreak; // Daybreak not fully implemented
+    const spell_data_t* improved_denounce; // Denounce not implemented at all!
+    const spell_data_t* improved_holy_light;
+
+    // Protection
+    const spell_data_t* empowered_avengers_shield;
+    const spell_data_t* improved_block;
+    const spell_data_t* improved_consecration;
+    const spell_data_t* improved_hammer_of_the_righteous;
+    const spell_data_t* improved_word_of_glory;
+
+    // Retribution
+    const spell_data_t* empowered_hammer_of_wrath;
+    const spell_data_t* empowered_seal_of_truth;
+    const spell_data_t* enhanced_hand_of_sacrifice;
+    const spell_data_t* improved_exorcism;
+  } perk;
   
   // Procs
   struct procs_t
@@ -574,9 +607,12 @@ struct paladin_heal_t : public paladin_spell_base_t<heal_t>
 
     p() -> active_beacon_of_light -> target = p() -> beacon_target;
 
+    double amount = s -> result_amount;
+    amount *= p() -> beacon_target -> buffs.beacon_of_light -> data().effectN( 1 ).percent();
+    amount *= 1.0 + p() -> perk.empowered_beacon_of_light -> effectN( 1 ).percent();
 
-    p() -> active_beacon_of_light -> base_dd_min = s -> result_amount * p() -> beacon_target -> buffs.beacon_of_light -> data().effectN( 1 ).percent();
-    p() -> active_beacon_of_light -> base_dd_max = s -> result_amount * p() -> beacon_target -> buffs.beacon_of_light -> data().effectN( 1 ).percent();
+    p() -> active_beacon_of_light -> base_dd_min = amount;
+    p() -> active_beacon_of_light -> base_dd_max = amount;
 
     // Holy light heals for 100% instead of 50%
     if ( data().id() == p() -> spells.holy_light -> id() )
@@ -660,7 +696,7 @@ struct avengers_shield_t : public paladin_spell_t
     }
 
     // hits 1 target if FS glyphed, 3 otherwise
-    aoe = ( p -> glyphs.focused_shield -> ok() ) ? 1 : 3;
+    aoe = ( p -> glyphs.focused_shield -> ok() ) ? 1 : 3 + p -> perk.empowered_avengers_shield -> effectN( 1 ).base_value();
     may_crit     = true;
     
     // link needed for trigger_grand_crusader
@@ -997,6 +1033,9 @@ struct censure_t : public paladin_spell_t
 
     am *= td( t ) -> buffs.debuffs_censure -> check();
 
+    // Empowered Seal of Truth perk (TODO: See if this affects Censure)
+    am *= 1.0 + p() -> perk.empowered_seal_of_truth-> effectN( 1 ).percent();
+
     return am;
   }
 
@@ -1049,6 +1088,15 @@ struct consecration_t : public paladin_spell_t
       paladin_spell_t::tick( d );
     }
   }
+
+  virtual double action_ta_multiplier()
+  {
+    double am = paladin_spell_t::action_ta_multiplier();
+
+    am *= 1.0 + p() -> perk.improved_consecration -> effectN( 1 ).percent();
+
+    return am;
+  }
 };
 
 // Devotion Aura Spell ======================================================
@@ -1081,42 +1129,6 @@ struct devotion_aura_t : public paladin_spell_t
         p -> buffs.devotion_aura -> trigger(); // Technically these stack; we're abstracting somewhat by assuming they don't
       }
     }
-  }
-};
-
-// Divine Light Spell =======================================================
-
-struct divine_light_t : public paladin_heal_t
-{
-  divine_light_t( paladin_t* p, const std::string& options_str ) :
-    paladin_heal_t( "divine_light", p, p -> find_class_spell( "Divine Light" ) )
-  {
-    parse_options( NULL, options_str );
-  }
-
-  virtual void execute()
-  {
-    paladin_heal_t::execute();
-
-    p() -> buffs.daybreak -> trigger();
-    p() -> buffs.infusion_of_light -> expire();
-  }
-
-  virtual timespan_t execute_time() const
-  {
-    timespan_t t = paladin_heal_t::execute_time();
-
-    if ( p() -> buffs.infusion_of_light -> check() )
-      t += p() -> buffs.infusion_of_light -> data().effectN( 1 ).time_value();
-
-    return t;
-  }
-
-  virtual void schedule_execute( action_state_t* state = 0 )
-  {
-    paladin_heal_t::schedule_execute( state );
-
-    p() -> buffs.infusion_of_light -> up(); // Buff uptime tracking
   }
 };
 
@@ -1357,6 +1369,9 @@ struct eternal_flame_t : public paladin_heal_t
       am *= ( 1.0 + p() -> buffs.bastion_of_glory -> stack() * ( p() -> buffs.bastion_of_glory -> data().effectN( 1 ).percent() + p() -> get_divine_bulwark() ) );
     }
 
+    // Improved Word of Glory perk
+    am *= 1.0 + p() -> perk.improved_word_of_glory -> effectN( 1 ).percent();
+
     return am;
   }
 
@@ -1532,6 +1547,10 @@ struct exorcism_t : public paladin_spell_t
   {
     double am = paladin_spell_t::action_multiplier();
 
+    // Improved Exorcism perk
+    am *= 1.0 + p() -> perk.improved_exorcism -> effectN( 1 ).percent(); 
+
+    // Holy Avenger
     if ( p() -> buffs.holy_avenger -> check() )
     {
       am *= 1.0 + p() -> buffs.holy_avenger -> data().effectN( 4 ).percent();
@@ -1603,6 +1622,9 @@ struct flash_of_light_t : public paladin_heal_t
   virtual double action_multiplier() const
   {
     double am = paladin_heal_t::action_multiplier();
+
+    // Improved Flash of Light perk
+    am *= 1.0 + p() -> perk.improved_flash_of_light -> effectN( 1 ).percent();
 
     // Selfless healer has two effects
     if ( p() -> talents.selfless_healer -> ok() )
@@ -1701,6 +1723,8 @@ struct hand_of_sacrifice_redirect_t : public paladin_spell_t
     may_miss = false;
     base_multiplier = data().effectN( 1 ).percent();
     target = p;
+
+    cooldown -> duration += timespan_t::from_millis( p -> perk.enhanced_hand_of_sacrifice -> effectN( 1 ).base_value() );
   }
 
   void trigger( double redirect_value )
@@ -1796,6 +1820,15 @@ struct holy_light_t : public paladin_heal_t
     paladin_heal_t::schedule_execute( state );
 
     p() -> buffs.infusion_of_light -> up(); // Buff uptime tracking
+  }
+
+  virtual double action_multiplier()
+  {
+    double am = paladin_heal_t::action_multiplier();
+    
+    am *= 1.0 + p() -> perk.improved_holy_light -> effectN( 1 ).percent();
+
+    return am;
   }
 };
 
@@ -2026,6 +2059,15 @@ struct holy_shock_t : public paladin_spell_t
     }
   }
 
+  virtual double action_multiplier()
+  {
+    double am = paladin_spell_t::action_multiplier();
+
+    am *= 1.0 + p() -> perk.empowered_holy_shock -> effectN( 1 ).percent();
+
+    return am;
+  }
+
   virtual void update_ready( timespan_t cd_override )
   {
     cd_override = cooldown -> duration;
@@ -2097,7 +2139,15 @@ struct holy_shock_heal_t : public paladin_heal_t
     }
 
     p() -> buffs.daybreak -> expire();
-    cooldown -> duration = cd_duration;
+
+    if ( p() -> buffs.enhanced_holy_shock -> check() )
+    {
+      // this feels like the wrong way to accomplish this, will review later
+      cooldown -> duration = timespan_t::zero();
+      p() -> buffs.enhanced_holy_shock -> expire();
+    }
+    else
+      cooldown -> duration = cd_duration;
 
     if ( execute_state -> result == RESULT_CRIT )
       p() -> buffs.infusion_of_light -> trigger();
@@ -2553,6 +2603,9 @@ struct word_of_glory_t : public paladin_heal_t
       am *= ( 1.0 + p() -> buffs.bastion_of_glory -> stack() * ( p() -> buffs.bastion_of_glory -> data().effectN( 1 ).percent() + p() -> get_divine_bulwark() ) );
     }
 
+    // Improved Word of Glory perk
+    am *= 1.0 + p() -> perk.improved_word_of_glory -> effectN( 1 ).percent();
+
     return am;
   }
 
@@ -2629,6 +2682,9 @@ struct word_of_glory_damage_t : public paladin_spell_t
 
     // scale the am by holy power spent, can't be more than 3 and Divine Purpose counts as 3
     am *= ( ( p() -> holy_power_stacks() <= 3  && c > 0.0 ) ? p() -> holy_power_stacks() : 3 );
+
+    // Improved Word of Glory perk - sure, why not (TODO: test)
+    am *= 1.0 + p() -> perk.improved_word_of_glory -> effectN( 1 ).percent();
 
     return am;
   }
@@ -2862,6 +2918,9 @@ struct crusader_strike_t : public paladin_melee_attack_t
       am *= 1.0 + p() -> buffs.holy_avenger -> data().effectN( 4 ).percent();
     }
 
+    // Improved Crusader Strike perk
+    am *= 1.0 + p() -> perk.improved_crusader_strike -> effectN( 1 ).percent();
+
     return am;
   }
 
@@ -3021,6 +3080,9 @@ struct hammer_of_the_righteous_aoe_t : public paladin_melee_attack_t
   {
     double am = paladin_melee_attack_t::action_multiplier();
 
+    // Improved HotR perk
+    am *= 1.0 + p() -> perk.improved_hammer_of_the_righteous -> effectN( 1 ).percent();
+
     // Holy Avenger buffs HotR damage by 30% while active
     if ( p() -> buffs.holy_avenger -> check() )
     {
@@ -3090,6 +3152,9 @@ struct hammer_of_the_righteous_t : public paladin_melee_attack_t
   virtual double action_multiplier() const
   {
     double am = paladin_melee_attack_t::action_multiplier();
+
+    // Improved HotR perk
+    am *= 1.0 + p() -> perk.improved_hammer_of_the_righteous -> effectN( 1 ).percent();
 
     // Holy Avenger buffs HotR damage by 30% while active
     if ( p() -> buffs.holy_avenger -> check() )
@@ -3219,7 +3284,9 @@ struct hammer_of_wrath_t : public paladin_melee_attack_t
   virtual bool ready()
   {
     // not available if target is above 20% health unless Sword of Light present and Avenging Wrath up
-    if ( target -> health_percentage() > 20 && ! ( p() -> passives.sword_of_light -> ok() && p() -> buffs.avenging_wrath -> check() ) )
+    // Improved HoW perk raises the threshold to 35%
+    double threshold = 20 + p() -> perk.empowered_hammer_of_wrath -> ok() ? 15 : 0;
+    if ( target -> health_percentage() > threshold && ! ( p() -> passives.sword_of_light -> ok() && p() -> buffs.avenging_wrath -> check() ) )
       return false;
 
     return paladin_melee_attack_t::ready();
@@ -3377,6 +3444,9 @@ struct judgment_t : public paladin_melee_attack_t
   virtual double action_multiplier() const
   {
     double am = paladin_melee_attack_t::action_multiplier();
+
+    // Improved Judgment perk
+    am *= 1.0 + p() -> perk.improved_judgment -> effectN( 1 ).percent();
 
     // Holy Avenger buffs J damage by 30% while active
     if ( p() -> buffs.holy_avenger -> check() )
@@ -3555,15 +3625,23 @@ struct seal_of_truth_proc_t : public paladin_melee_attack_t
         }
       }
     }
+  }
+
+  virtual double action_multiplier()
+  {
+    double am = paladin_melee_attack_t::action_multiplier();
+
+    // Improved SoT perk
+    am *= 1.0 + p() -> perk.empowered_seal_of_truth -> effectN( 1 ).percent();
 
     // Glyph of Immediate Truth increases direct damage
-    if ( p -> glyphs.immediate_truth -> ok() )
-    {
-      base_multiplier *= 1.0 + p -> glyphs.immediate_truth -> effectN( 1 ).percent();
-    }
-
+    if ( p() -> glyphs.immediate_truth -> ok() )
+      am *= 1.0 + p() -> glyphs.immediate_truth -> effectN( 1 ).percent();
+    
     // Retribution T14 4-piece boosts seal damage
-    base_multiplier *= 1.0 + p -> sets.set( SET_T14_4PC_MELEE ) -> effectN( 1 ).percent();
+    am *= 1.0 + p() -> sets.set( SET_T14_4PC_MELEE ) -> effectN( 1 ).percent();
+
+    return am;
   }
 };
 
@@ -3903,7 +3981,6 @@ action_t* paladin_t::create_action( const std::string& name, const std::string& 
   if ( name == "word_of_glory_damage"      ) return new word_of_glory_damage_t     ( this, options_str );
   if ( name == "holy_light"                ) return new holy_light_t               ( this, options_str );
   if ( name == "flash_of_light"            ) return new flash_of_light_t           ( this, options_str );
-  if ( name == "divine_light"              ) return new divine_light_t             ( this, options_str );
   if ( name == "lay_on_hands"              ) return new lay_on_hands_t             ( this, options_str );
 
   return player_t::create_action( name, options_str );
@@ -4235,6 +4312,7 @@ void paladin_t::create_buffs()
   buffs.daybreak               = buff_creator_t( this, "daybreak", find_class_spell( "Daybreak" ) );
   buffs.divine_plea            = buff_creator_t( this, "divine_plea", find_class_spell( "Divine Plea" ) ).cd( timespan_t::zero() ); // Let the ability handle the CD
   buffs.infusion_of_light      = buff_creator_t( this, "infusion_of_light", find_class_spell( "Infusion of Light" ) );
+  buffs.enhanced_holy_shock    = buff_creator_t( this, "enhanced_holy_shock", find_spell( 160002 ) );
 
   // Prot
   buffs.guardian_of_ancient_kings      = buff_creator_t( this, "guardian_of_ancient_kings", find_specialization_spell( "Guardian of Ancient Kings" ) )
@@ -4726,6 +4804,7 @@ void paladin_t::init_spells()
   passives.divine_bulwark         = find_mastery_spell( PALADIN_PROTECTION );
   passives.hand_of_light          = find_mastery_spell( PALADIN_RETRIBUTION );
   passives.illuminated_healing    = find_mastery_spell( PALADIN_HOLY );
+  
   // Passives
 
   // Shared Passives
@@ -4749,6 +4828,35 @@ void paladin_t::init_spells()
   passives.sword_of_light_value   = find_spell( passives.sword_of_light -> ok() ? 20113 : 0 );
   passives.the_art_of_war         = find_specialization_spell( "The Art of War" );
 
+  // Perks
+  // Multiple
+  perk.improved_crusader_strike   = find_perk_spell( "Improved Crusader Strike" );
+  perk.improved_divine_protection = find_perk_spell( "Improved Divine Protection" );
+  perk.improved_flash_of_light    = find_perk_spell( "Improved Flash of Light" );
+  perk.improved_forbearance       = find_perk_spell( "Improved Forbearance" );
+  perk.improved_judgment          = find_perk_spell( "Improved Judgment" );
+
+  // Holy Perks
+  perk.empowered_beacon_of_light  = find_perk_spell( "Empowered Beacon of Light" );
+  perk.empowered_holy_shock       = find_perk_spell( "Empwowered Holy Shock" );
+  perk.enhanced_holy_shock        = find_perk_spell( "Enhanced Holy Shock" );
+  perk.improved_daybreak          = find_perk_spell( "Improved Daybreak" );
+  perk.improved_denounce          = find_perk_spell( "Improved Denounce" );
+  perk.improved_holy_light        = find_perk_spell( "Improved Holy Light" );
+
+  // Prot Perks
+  perk.empowered_avengers_shield  = find_perk_spell( "Empowered Avenger's Shield" );
+  perk.improved_block             = find_perk_spell( "Improved Block" );
+  perk.improved_consecration      = find_perk_spell( "Improved Consecration" );
+  perk.improved_hammer_of_the_righteous = find_perk_spell( "Improved Hammer of the Righteous" );
+  perk.improved_word_of_glory     = find_perk_spell( "Improved Word of Glory" );
+
+  // Ret Perks
+  perk.empowered_hammer_of_wrath  = find_perk_spell( "Empowered Hammer of Wrath" );
+  perk.empowered_seal_of_truth    = find_perk_spell( "Empowered Seal of Truth" );
+  perk.enhanced_hand_of_sacrifice = find_perk_spell( "Enhanced Hand of Sacrifice" );
+  perk.improved_exorcism          = find_perk_spell( "Improved Exorcism" );
+  
   // Glyphs
   glyphs.alabaster_shield         = find_glyph_spell( "Glyph of the Alabaster Shield" );
   glyphs.battle_healer            = find_glyph_spell( "Glyph of the Battle Healer" );
@@ -4789,6 +4897,9 @@ void paladin_t::init_spells()
 
   if ( passives.illuminated_healing -> ok() )
     active_illuminated_healing = new illuminated_healing_t( this );
+
+  // TODO: check if this benefit is only for the paladin (as coded) or for all targets
+  debuffs.forbearance -> buff_duration += timespan_t::from_millis( perk.improved_forbearance -> effectN( 1 ).base_value() );
 
   // Tier Bonuses
   static const set_bonus_description_t set_bonuses =
@@ -4971,6 +5082,9 @@ double paladin_t::composite_block() const
   // Guarded by the Light block not affected by diminishing returns
   b += passives.guarded_by_the_light -> effectN( 6 ).percent();
 
+  // Improved Block perk (assuming for now that it's not affected by DR
+  b += perk.improved_block -> effectN( 1 ).percent();
+
   return b;
 }
 
@@ -5048,7 +5162,7 @@ void paladin_t::target_mitigation( school_e school,
   {
     if ( util::school_type_component( school, SCHOOL_MAGIC ) )
     {
-      s -> result_amount *= 1.0 + buffs.divine_protection -> data().effectN( 1 ).percent() * ( 1.0 + glyphs.divine_protection -> effectN( 1 ).percent() );
+      s -> result_amount *= 1.0 + buffs.divine_protection -> data().effectN( 1 ).percent() + glyphs.divine_protection -> effectN( 1 ).percent() + perk.improved_divine_protection -> effectN( 1 ).percent();
     }
     else
     {
