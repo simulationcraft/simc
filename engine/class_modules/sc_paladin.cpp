@@ -1089,7 +1089,7 @@ struct consecration_t : public paladin_spell_t
     }
   }
 
-  virtual double action_ta_multiplier()
+  virtual double action_ta_multiplier() const
   {
     double am = paladin_spell_t::action_ta_multiplier();
 
@@ -1822,7 +1822,7 @@ struct holy_light_t : public paladin_heal_t
     p() -> buffs.infusion_of_light -> up(); // Buff uptime tracking
   }
 
-  virtual double action_multiplier()
+  virtual double action_multiplier() const
   {
     double am = paladin_heal_t::action_multiplier();
     
@@ -2059,7 +2059,7 @@ struct holy_shock_t : public paladin_spell_t
     }
   }
 
-  virtual double action_multiplier()
+  virtual double action_multiplier() const
   {
     double am = paladin_spell_t::action_multiplier();
 
@@ -3627,7 +3627,7 @@ struct seal_of_truth_proc_t : public paladin_melee_attack_t
     }
   }
 
-  virtual double action_multiplier()
+  virtual double action_multiplier() const
   {
     double am = paladin_melee_attack_t::action_multiplier();
 
