@@ -1364,7 +1364,7 @@ struct rising_sun_kick_t : public monk_melee_attack_t
     oh = &( player -> off_hand_weapon ) ;
     base_multiplier = 17.866; // hardcoded into tooltip
     // Empowered Rising Sun Kick
-	base_multiplier *= 1 + p -> perk.empowered_rising_sun_kick -> effectN( 1 ).percent;
+	base_multiplier *= 1 + p -> perk.empowered_rising_sun_kick -> effectN( 1 ).percent();
   }
 
   virtual void impact ( action_state_t* s )
@@ -1469,7 +1469,7 @@ struct spinning_crane_kick_t : public monk_melee_attack_t
       base_multiplier = 1.59 * (2.44/1.59); // hardcoded into tooltip
 	  // Empowered Spinning Crane Kick
       if ( player -> specialization() == MONK_WINDWALKER )
-         base_multiplier *= 1 + p -> perk.empowered_spinning_crane_kick -> effectN( 1 ).percent;
+         base_multiplier *= 1 + p -> perk.empowered_spinning_crane_kick -> effectN( 1 ).percent();
 	  school = SCHOOL_PHYSICAL;
       channeled = true;
       tick_action = new spinning_crane_kick_tick_t( p, p -> find_spell( data().effectN( 1 ).trigger_spell_id() ) );
@@ -2144,7 +2144,7 @@ struct spinning_fire_blossom_t : public monk_spell_t
 */
 struct chi_wave_t : public monk_spell_t
 {
-  heals::monk_heal_t* chi_wave_heal_t;
+  // heals::monk_heal_t* chi_wave_heal_t;
 
   struct direct_damage_t : public monk_spell_t
   {
@@ -2398,7 +2398,7 @@ struct fortifying_brew_t : public monk_spell_t
 
     // Extra Health is set by current max_health, doesn't change when max_health changes.
     double health_gain = player -> resources.max[ RESOURCE_HEALTH ];
-	health_gain *= ( p() -> glyph.fortifying_brew -> ok() ? p() -> find_spell( 124997 ) -> effectN ( 2 ).percent : p() -> find_class_spell( "Fortifying Brew" ) -> effectN ( 1 ).percent  );
+	health_gain *= ( p() -> glyph.fortifying_brew -> ok() ? p() -> find_spell( 124997 ) -> effectN ( 2 ).percent() : p() -> find_class_spell( "Fortifying Brew" ) -> effectN ( 1 ).percent()  );
     player -> stat_gain( STAT_MAX_HEALTH, health_gain, nullptr, this );
   }
 };
