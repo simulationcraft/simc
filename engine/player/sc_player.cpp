@@ -2591,10 +2591,7 @@ double player_t::composite_melee_attack_power() const
 
   ap += current.attack_power_per_strength * ( cache.strength() - 10 );
   ap += current.attack_power_per_agility  * ( cache.agility() - 10 );
-
-  if ( ! is_enemy() )
-    ap += buffs.vengeance -> value();
-
+  
   return ap;
 }
 
