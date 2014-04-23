@@ -37,7 +37,7 @@ if __name__ == '__main__':
 		if not encoding.open():
 			sys.exit(1)
 		
-		root = casc.CASCRootFile(opts, build)
+		root = casc.CASCRootFile(opts, build, encoding)
 		if not root.open():
 			sys.exit(1)
 		
@@ -58,8 +58,8 @@ if __name__ == '__main__':
 				file_locations = []
 				for file_key in file_keys:
 					location = index.GetIndexData(file_key)
-					if location[0] != -1:
-						extract_data.append((file_key, md5s, file_name, location[0], location[1], location[2]))
+					if len(location) > 0:
+						extract_data.append((file_key, md5s, file_name, location))
 			
 			if len(extract_data) == 0:
 				continue
@@ -96,17 +96,27 @@ if __name__ == '__main__':
 		if not index.open():
 			sys.exit(1)
 		
-		keys = encoding.GetFileKeys(args[0].decode('hex'))
-		if len(keys) == 0:
-			parser.error('No file found with md5sum %s' % args[0])
+		keys = []
+		md5s = None
+		if 'key:' in args[0]:
+			keys.append(args[0][4:].decode('hex'))
+		elif 'md5:' in args[0]:
+			md5s = args[0][4:]
+			keys = encoding.GetFileKeys(args[0][4:].decode('hex'))
+			if len(keys) == 0:
+				parser.error('No file found with md5sum %s' % args[0][4:])		
 		
 		if len(keys) > 1:
-			parser.error('Found multiple file keys with md5sum %s' % args[0])
-		
+			parser.error('Found multiple file keys with %s' % args[0])
+
 		file_location = index.GetIndexData(keys[0])
+		if len(file_location) == 0:
+			parser.error('No file location found for %s' % args[0])
 		
+		if len(file_location) > 1:
+			parser.error('casc_extract cannot extract files (%s) with multiple locations (%d)' % (args[0]	, len(file_location)))
 		
 		blte = casc.BLTEExtract(opts)
 		
-		if not blte.extract_file(keys[0], args[0].decode('hex'), *file_location):
+		if not blte.extract_file(keys[0], md5s and md5s.decode('hex') or None, opts.output, file_location):
 			sys.exit(1)
