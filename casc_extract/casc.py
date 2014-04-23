@@ -1,5 +1,5 @@
 # CASC file formats, based on the work of Caali et al. @ http://www.ownedcore.com/forums/world-of-warcraft/world-of-warcraft-model-editing/471104-analysis-of-casc-filesystem.html
-import os, sys, mmap, md5, stat, struct, zlib, glob, re
+import os, sys, mmap, md5, stat, struct, zlib, glob, re, urllib2
 
 import jenkins
 
@@ -35,7 +35,8 @@ class BLTEChunk(object):
 			self.options.parser.error('Unknown chunk type %#x for chunk%d' % (type, self.id))
 			return False
 		
-		self.__verify(data)
+		if type != 0x00:
+			self.__verify(data)
 		
 		return self.__decompress(data)
 	
@@ -72,7 +73,8 @@ class BLTEChunk(object):
 
 class BLTEFile(object):
 	def __init__(self, extractor):
-		self.extractor = extractor
+		self.data = extractor
+		self.offset = 0
 		self.chunks = []
 		self.output_data = ''
 		self.extract_status = True
@@ -80,37 +82,66 @@ class BLTEFile(object):
 	def add_chunk(self, length, c_length, md5s):
 		self.chunks.append(BLTEChunk(len(self.chunks), length, c_length, md5s))
 	
+	def __read(self, bytes):
+		if isinstance(self.data, BLTEExtract):
+			return self.data.fd.read(bytes)
+		else:
+			nibble = self.data[self.offset:self.offset + bytes]
+			self.offset += bytes
+			return nibble
+	
+	def __seek(self, offset, pos):
+		if isinstance(self.data, BLTEExtract):
+			self.data.fd.seek(offset, pos)
+		else:
+			if pos == os.SEEK_CUR:
+				self.offset += offset
+			elif pos == os.SEEK_SET:
+				self.offset = offset
+			elif pos == os.SEEK_END:
+				self.offset = len(self.data) + offset
+	
+	def __tell(self):
+		if isinstance(self.data, BLTEExtract):
+			return self.data.fd.tell()
+		else:
+			return self.offset
+
 	def __extract_direct(self):
-		type = ord(self.extractor.fd.read(_MARKER_LEN))
+		type = ord(self.__read(_MARKER_LEN))
 		if type != _COMPRESSED_CHUNK:
 			self.options.parser.error('Direct extraction only supports compressed data, was given %#x' % type)
 			return False
 		
 		# We don't know where the compressed data ends, so read until it's done
-		compressed_data = self.extractor.fd.read(_BLOCK_DATA_SIZE)
+		compressed_data = self.__read(_BLOCK_DATA_SIZE)
 		dc = zlib.decompressobj()
 		while len(compressed_data) > 0:
 			self.output_data += dc.decompress(compressed_data)
 			if len(dc.unused_data) > 0:
 				# Compressed segment ended at some point, rewind file position
-				self.extractor.fd.seek(-len(dc.unused_data), os.SEEK_CUR)
+				self.__seek(-len(dc.unused_data), os.SEEK_CUR)
 				break
 			
 			# More data ..
-			compressed_data = self.extractor.fd.read(_BLOCK_DATA_SIZE)
+			compressed_data = self.__read(_BLOCK_DATA_SIZE)
 		
 		return True
 
 	def extract(self):
-		pos = self.extractor.fd.tell()
-		chunk_data_offset = struct.unpack('>I', self.extractor.fd.read(_CHUNK_DATA_OFFSET_LEN))[0]
+		pos = self.__tell()
+		
+		if self.__read(4) != _BLTE_MAGIC:
+			self.options.parser.error('Invalid BLTE magic in file')
+		
+		chunk_data_offset = struct.unpack('>I', self.__read(_CHUNK_DATA_OFFSET_LEN))[0]
 		if chunk_data_offset == 0:
 			if not self.__extract_direct():
 				return False
 		else:
-			unk_1, cc_b1, cc_b2, cc_b3 = struct.unpack('BBBB', self.extractor.fd.read(_CHUNK_HEADER_LEN))
+			unk_1, cc_b1, cc_b2, cc_b3 = struct.unpack('BBBB', self.__read(_CHUNK_HEADER_LEN))
 			if unk_1 != 0x0F:
-				self.options.parser.error('Unknown magic byte %d %#x in BLTE @%#.8x' % (unk_1, self.extractor.fd.tell() - _CHUNK_HEADER_LEN))
+				self.options.parser.error('Unknown magic byte %d %#x in BLTE @%#.8x' % (unk_1, self.__tell() - _CHUNK_HEADER_LEN))
 				return False
 			
 			n_chunks = (cc_b1 << 16) | (cc_b2 << 8) | cc_b3
@@ -119,20 +150,24 @@ class BLTEFile(object):
 			
 			# Chunk information
 			for chunk_id in xrange(0, n_chunks):
-				c_len, out_len = struct.unpack('>II', self.extractor.fd.read(_CHUNK_HEADER_2_LEN))
-				chunk_sum = self.extractor.fd.read(_CHUNK_SUM_LEN)
+				c_len, out_len = struct.unpack('>II', self.__read(_CHUNK_HEADER_2_LEN))
+				chunk_sum = self.__read(_CHUNK_SUM_LEN)
 
+				#print 'Chunk#%d@%u: c_len=%u out_len=%u sum=%s' % (chunk_id, self.__tell() - 24, c_len, out_len, chunk_sum.encode('hex'))
 				self.add_chunk(c_len, out_len, chunk_sum)
 			
 			# Read chunk data
+			sum_in_file = 0
 			for chunk_id in xrange(0, n_chunks):
 				chunk = self.chunks[chunk_id]
 
-				data = self.extractor.fd.read(chunk.chunk_length)
+				#print 'Chunk#%d@%u: Data extract len=%u, total=%u' % (chunk_id, self.__tell(), chunk.chunk_length, sum_in_file)
+				data = self.__read(chunk.chunk_length)
 				if not chunk.extract(data):
 					self.extract_status = False
 
 				self.output_data += chunk.output_data
+				sum_in_file += len(chunk.output_data)
 
 		return True
 			
@@ -165,16 +200,20 @@ class BLTEExtract(object):
 		if self.fdesc:
 			self.fdesc.close()
 	
-	def __extract_data(self):
-		if self.fd.read(4) != _BLTE_MAGIC:
-			self.options.parser.error('Invalid BLTE magic in file')
-		
+	def __extract_file(self):
 		file = BLTEFile(self)
 		if not file.extract():
 			return None
 		
 		return file
+	
+	def extract_data(self, data):
+		file = BLTEFile(data)
+		if not file.extract():
+			return None
 		
+		return file.output_data
+	
 	def extract_file(self, file_name):
 		if not self.open(file_name):
 			return False
@@ -183,7 +222,7 @@ class BLTEExtract(object):
 			self.options.parser.error('Output file %s is not writeable' % self.options.output)
 			return False
 		
-		file = self.__extract_data()
+		file = self.__extract_file()
 		if not file:
 			return False
 		
@@ -214,12 +253,12 @@ class BLTEExtract(object):
 		# Skip 10 bytes of unknown data
 		self.fd.seek(10, os.SEEK_CUR)
 		
-		file = self.__extract_data()
+		file = self.__extract_file()
 		if not file:
 			return False
 		
 		file_md5 = md5.new(file.output_data).digest()
-		if file_md5sum != file_md5:
+		if file_md5sum and file_md5sum != file_md5:
 			self.options.parser.error('Invalid md5sum for extracted file, expected %s got %s' % (file_md5sum.encode('hex'), file_md5.encode('hex')))
 		
 		with open(output_path, 'wb') as output_file:
@@ -260,8 +299,7 @@ class CASCDataIndexFile(object):
 				data_file_number = (high_byte << 2) | ((low_bits & 0xC0000000) >> 30)
 				data_file_offset = (low_bits & 0x3FFFFFFF)
 
-				if not self.index.AddIndex(key, int(data_file_number), int(data_file_offset), file_size):
-					return False
+				self.index.AddIndex(key, int(data_file_number), int(data_file_offset), file_size, self.file)
 				
 				#print key.encode('hex'), data_file_number, data_file_offset, high_byte, low_bits, file_size
 
@@ -273,17 +311,14 @@ class CASCDataIndex(object):
 		self.idx_files = {}
 		self.idx_data = {}
 	
-	def AddIndex(self, key, data_file, data_offset, file_size):
-		if key in self.idx_data:
-			entry = self.idx_data[key]
-			print >>sys.stderr, 'Duplicate key %s: old={ file#=%u, file_offset=%u, file_size=%u } new={ file#=%u, file_offset=%u, file_size=%u }' % (
-				key.encode('hex'), entry[0], entry[1], entry[2], data_file, data_offset, file_size)
+	def AddIndex(self, key, data_file, data_offset, file_size, indexname):
+		if key not in self.idx_data:
+			self.idx_data[key] = []
 		
-		self.idx_data[key] = (data_file, data_offset, file_size)
-		return True
+		self.idx_data[key].append((data_file, data_offset, file_size, indexname))
 	
 	def GetIndexData(self, key):
-		return self.idx_data.get(key[:9], (-1, 0, 0))
+		return self.idx_data.get(key[:9], [])
 	
 	def open(self):
 		data_dir = os.path.join(self.options.data_dir, 'Data', 'data')
@@ -328,6 +363,35 @@ class CASCEncodingFile(object):
 		self.first_entries = []
 		self.md5_map = { }
 	
+	def __bootstrap(self):
+		base_path = os.path.dirname(self.options.encoding_file)
+		if len(base_path) == 0:
+			base_path = os.getcwd()
+		
+		if not os.access(base_path, os.W_OK):
+			self.options.parser.error('Error bootstrapping CASCEncodingFile, "%s" is not writable' % base_path)
+		
+		try:
+			print 'Fetching %s ...' % self.build.encoding_blte_url()
+			f = urllib2.urlopen(self.build.encoding_blte_url(), timeout = 5)
+			if f.getcode() != 200:
+				self.options.parser.error('HTTP request for %s returns %u' % (self.build.encoding_blte_url(), f.getcode()))
+		except urllib2.URLError, e:
+			self.options.parser.error('Unable to fetch %s: %s' % (self.build.encoding_blte_url(), e.reason))
+		
+		blte = BLTEFile(f.read())
+		if not blte.extract():
+			self.options.parser.error('Unable to uncompress BLTE data for encoding file')
+	
+		md5s = md5.new(blte.output_data).hexdigest()
+		if md5s != self.build.encoding_file():
+			self.options.parser.error('Invalid md5sum in encoding file, expected %s got %s' % (self.build.encoding_file(), md5s))
+	
+		with open(self.options.encoding_file, 'wb') as f:
+			f.write(blte.output_data)
+			
+		return blte.output_data
+	
 	def HasMD5(self, md5s):
 		return self.md5_map.has_key(md5s)
 	
@@ -335,19 +399,17 @@ class CASCEncodingFile(object):
 		return self.md5_map.get(md5s, (0, []))[1]
 	
 	def open(self):
-		if not os.access(self.options.encoding_file, os.R_OK):
-			self.options.parser.error('Unable to open encoding file "%s" for reading' % self.options.encoding_file)
-			return False
-		
 		data = ''
 		
-		with open(self.options.encoding_file, 'rb') as encoding_file:
-			data = encoding_file.read()
+		if not os.access(self.options.encoding_file, os.R_OK):
+			data = self.__bootstrap()
+		else:
+			with open(self.options.encoding_file, 'rb') as encoding_file:
+				data = encoding_file.read()
 		
-		md5str = md5.new(data).hexdigest()
-		if md5str != self.build.encoding_file():
-			self.options.parser.error('Encoding file MD5sum error, expected %s, got %s' % (
-				self.build.encoding_file(), md5str))
+			md5str = md5.new(data).hexdigest()
+			if md5str != self.build.encoding_file():
+				data = self.__bootstrap()
 		
 		offset = 0
 		fsize = os.stat(self.options.encoding_file).st_size
@@ -407,8 +469,9 @@ class CASCEncodingFile(object):
 		return True
 		
 class CASCRootFile(object):
-	def __init__(self, options, build):
+	def __init__(self, options, build, encoding):
 		self.build = build
+		self.encoding = encoding
 		self.options = options
 		self.hash_map = {}
 	
