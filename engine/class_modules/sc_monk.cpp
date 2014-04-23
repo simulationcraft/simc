@@ -753,6 +753,37 @@ public:
   }
 };
 
+struct monk_spell_t : public monk_action_t<spell_t>
+{
+  monk_spell_t( const std::string& n, monk_t* player,
+                const spell_data_t* s = spell_data_t::nil() ) :
+    base_t( n, player, s )
+  {
+  }
+
+  virtual double composite_target_multiplier( player_t* t ) const
+  {
+    double m = base_t::composite_target_multiplier( t );
+
+    if ( td( t ) -> buff.rising_sun_kick -> check() )
+    {
+      m *= 1.0 + td( t ) -> buff.rising_sun_kick -> data().effectN( 1 ).percent();
+    }
+
+    return m;
+  }
+};
+
+struct monk_heal_t : public monk_action_t<heal_t>
+{
+  monk_heal_t( const std::string& n, monk_t& p,
+               const spell_data_t* s = spell_data_t::nil() ) :
+    base_t( n, &p, s )
+  {
+    harmful = false;
+  }
+};
+
 namespace attacks {
 
 struct monk_melee_attack_t : public monk_action_t<melee_attack_t>
@@ -1868,26 +1899,6 @@ struct expel_harm_t : public monk_melee_attack_t
 } // END melee_attacks NAMESPACE
 
 namespace spells {
-struct monk_spell_t : public monk_action_t<spell_t>
-{
-  monk_spell_t( const std::string& n, monk_t* player,
-                const spell_data_t* s = spell_data_t::nil() ) :
-    base_t( n, player, s )
-  {
-  }
-
-  virtual double composite_target_multiplier( player_t* t ) const
-  {
-    double m = base_t::composite_target_multiplier( t );
-
-    if ( td( t ) -> buff.rising_sun_kick -> check() )
-    {
-      m *= 1.0 + td( t ) -> buff.rising_sun_kick -> data().effectN( 1 ).percent();
-    }
-
-    return m;
-  }
-};
 
 // ==========================================================================
 // Stance
@@ -2144,7 +2155,14 @@ struct spinning_fire_blossom_t : public monk_spell_t
 */
 struct chi_wave_t : public monk_spell_t
 {
-  // heals::monk_heal_t* chi_wave_heal_t;
+  struct direct_heal_t : public monk_heal_t
+  {
+    direct_heal_t( monk_t* p ) :
+      monk_heal_t( "chi_wave_heal", *p )
+    {
+
+    }
+  };
 
   struct direct_damage_t : public monk_spell_t
   {
@@ -2157,20 +2175,44 @@ struct chi_wave_t : public monk_spell_t
     }
   };
 
+  direct_heal_t* heal;
+  direct_damage_t* damage;
+  bool use_damage;
+
   chi_wave_t( monk_t* player, const std::string& options_str  ) :
-    monk_spell_t( "chi_wave", player, player -> talent.chi_wave )
+    monk_spell_t( "chi_wave", player, player -> talent.chi_wave ),
+    heal( new direct_heal_t( player ) ),
+    damage( new direct_damage_t( player ) ),
+    use_damage( true )
   {
     parse_options( nullptr, options_str );
     num_ticks = 4;
     hasted_ticks   = false;
-    base_tick_time = timespan_t::from_seconds( 2.0 );
+    base_tick_time = timespan_t::from_seconds( 1.0 );
     school = SCHOOL_NATURE;
 
     attack_power_mod.direct = spell_power_mod.direct = base_dd_min = base_dd_max = 0;
 
     special = false;
+  }
 
-    tick_action = new direct_damage_t( player );
+  virtual void impact( action_state_t* s ) override
+  {
+    use_damage = true; // Set flag so that the first tick does damage
+    monk_spell_t::impact( s );
+  }
+
+  virtual void tick( dot_t* d ) override
+  {
+    // Select appropriate tick action
+    if ( use_damage )
+      tick_action = damage;
+    else
+      tick_action = heal;
+
+    use_damage = !use_damage; // Invert flag for next use
+
+    monk_spell_t::tick( d );
   }
 };
 
@@ -2676,16 +2718,6 @@ struct crackling_jade_lightning_t : public monk_spell_t
 
 namespace heals {
 
-struct monk_heal_t : public monk_action_t<heal_t>
-{
-  monk_heal_t( const std::string& n, monk_t& p,
-               const spell_data_t* s = spell_data_t::nil() ) :
-    base_t( n, &p, s )
-  {
-    harmful = false;
-  }
-};
-
 // ==========================================================================
 // Enveloping Mist
 // ==========================================================================
@@ -2996,7 +3028,7 @@ struct chi_wave_heal_t : public monk_heal_t
 {
   struct direct_heal_t : public monk_heal_t
   {
-    direct_heal_t( monk_t& p, const std::string& options_str ) :
+    direct_heal_t( monk_t& p ) :
       monk_heal_t( "chi_wave_heal", p, p.find_spell( 132467 ) )
     {
       attack_power_mod.direct = 0.757; // hardcoded into tooltip of 132467
@@ -3018,7 +3050,7 @@ struct chi_wave_heal_t : public monk_heal_t
 
     special = false;
 
-    tick_action = new direct_heal_t( p, options_str );
+    tick_action = new direct_heal_t( p );
   }
 };
 
@@ -3029,8 +3061,8 @@ struct chi_wave_heal_t : public monk_heal_t
 
 struct zen_sphere_t : public monk_heal_t
 {
-  spells::monk_spell_t* zen_sphere_damage;
-  spells::monk_spell_t* zen_sphere_detonate_damage;
+  monk_spell_t* zen_sphere_damage;
+  monk_spell_t* zen_sphere_detonate_damage;
 
   struct zen_sphere_detonate_heal_t : public monk_heal_t
   {
