@@ -45,42 +45,52 @@ class BuildCfg(object):
 	def __init__(self, options):
 		self.options = options
 		self.cfg = None
+		self.build_cfg_file = None
+		self.cdn_domain = None
+		self.cdn_dir = None
 	
 	def open(self):
 		if not self.options.data_dir:
 			self.options.parser.error('No World of Warcraft installation directory given')
-			return False
 
 		if not os.access(self.options.data_dir, os.R_OK):
 			self.options.parser.error('World of Warcraft installation directory %s is not readable' % self.options.data_dir)
-			return False
 		
-		build_file = os.path.join(self.options.data_dir, '.build.db')
+		build_file = os.path.join(self.options.data_dir, '.build.info')
 		if not os.access(build_file, os.R_OK):
-			self.options.parser.error('World of Warcraft installation directory does not contain a readable .build.db file')
-			return False
+			self.options.parser.error('World of Warcraft installation directory does not contain a readable .build.info file')
 		
-		build_str = ''
+		build_lines = None
 		with open(build_file, 'r') as build:
-			build_str = build.read().strip().split('|')[0]
+			build_lines = build.readlines()
 		
-		if len(build_str) == 0:
-			self.options.parser.error('Could not deduce build configuration from .build.db file')
-			return False
+		if len(build_lines) != 2:
+			self.options.parser.error('Unknown file format for .build.info file, expected 2 lines, got %u' % len(build_lines))
+		
+		line_split = build_lines[1].strip().split('|')
+		if len(line_split) != 12:
+			self.options.parser.error('Unknown file format for .build.info file, expected 12 fields, got %u' % len(line_split))
+		
+		self.build_cfg_file = line_split[2]
+		self.cdn_domain = line_split[7]
+		self.cdn_dir = line_split[6]
+		
+		if len(self.build_cfg_file) == 0:
+			self.options.parser.error('Could not deduce build configuration from .build.info file')
 		
 		data_dir = os.path.join(self.options.data_dir, 'Data')
 		if not os.access(data_dir, os.R_OK):
 			self.options.parser.error('World of Warcraft installation directory does not contain a Data" directory')
 			return False
 		
-		build_cfg_file = os.path.join(data_dir, 'config', build_str[0:2], build_str[2:4], build_str)
-		if not os.access(data_dir, os.R_OK):
-			self.options.parser.error('Could not read configuration file %s' % build_cfg_file)
+		build_cfg_path = os.path.join(data_dir, 'config', self.build_cfg_file[0:2], self.build_cfg_file[2:4], self.build_cfg_file)
+		if not os.access(build_cfg_path, os.R_OK):
+			self.options.parser.error('Could not read configuration file %s' % build_cfg_path)
 			return False
 
 		self.cfg = ConfigParser.SafeConfigParser()
 		# Slight hack to get the configuration file read easily
-		conf_str = '[base]\n' + open(build_cfg_file, 'r').read()
+		conf_str = '[base]\n' + open(build_cfg_path, 'r').read()
 		conf_str_fp = StringIO.StringIO(conf_str)
 		self.cfg.readfp(conf_str_fp)
 		
@@ -115,12 +125,17 @@ class BuildCfg(object):
 		else:
 			v
 
+	def encoding_blte_url(self):
+		blte_file = self.encoding_blte()
+		
+		return 'http://%s%s/data/%s/%s/%s' % (self.cdn_domain, self.cdn_dir, blte_file[0:2], blte_file[2:4], blte_file)
+	
 	def encoding_blte(self):
 		if not self.cfg and not open():
 			return None
 		
 		if not self.cfg.has_option('base', 'encoding'):
-			self.options.parser.error('Build configuratino has no "encoding" option')
+			self.options.parser.error('Build configuration has no "encoding" option')
 			return None
 		
 		v = self.cfg.get('base', 'encoding').split(' ')
