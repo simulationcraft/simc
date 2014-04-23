@@ -51,7 +51,7 @@ namespace actions {
 }
 struct monk_t;
 
-enum stance_e { STURDY_OX = 1, FIERCE_TIGER, SPIRITED_CRANE, WISE_SERPENT = 4 };
+enum stance_e { STURDY_OX = 0x1, FIERCE_TIGER = 0x2, SPIRITED_CRANE = 0x4, WISE_SERPENT = 0x8 };
 
 struct monk_td_t : public actor_pair_t
 {
