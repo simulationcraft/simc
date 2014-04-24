@@ -2403,16 +2403,7 @@ struct dizzying_haze_t : public monk_spell_t
     aoe = -1;
     stancemask = STURDY_OX;
     ability_lag = timespan_t::from_seconds( 0.5 ); // ground target malus
-  }
-
-  virtual double cost() const
-  {
-    // Improved Dizzying Haze
-    double c = monk_spell_t::cost();
-
-    c *= 1 + player -> find_perk_spell( "Improved Dizzying Haze" ) -> effectN( 1 ).percent();
-
-    return c;
+    base_costs[ RESOURCE_ENERGY ] *= 1 + player -> find_perk_spell( "Improved Dizzying Haze" ) -> effectN( 1 ).percent(); 
   }
 
   virtual void impact( action_state_t* s )
