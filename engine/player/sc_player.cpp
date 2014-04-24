@@ -1348,50 +1348,11 @@ void player_t::init_special_effects()
   {
     special_effect_t effect( this );
     effect.spell_id = totg -> id();
-    effect.execute_action = new spell_t( "touch_of_the_grave_action", this, totg -> effectN( 1 ).trigger() );
+    effect.execute_action = new spell_t( "touch_of_the_grave", this, totg -> effectN( 1 ).trigger() );
     effect.execute_action -> background = true;
+    special_effects.push_back( effect );
 
-    new dbc_proc_callback_t( this, effect );
-
-    /*
-    struct touch_of_the_grave_discharge_spell_t : public spell_t
-    {
-      touch_of_the_grave_discharge_spell_t( player_t* p, const spell_data_t* s ) :
-        spell_t( "touch_of_the_grave", p, s )
-      {
-        school           = ( s -> effectN( 1 ).trigger() -> get_school_type() == SCHOOL_DRAIN ) ? SCHOOL_SHADOW : s -> effectN( 1 ).trigger() -> get_school_type();
-        discharge_proc   = true;
-        trigger_gcd      = timespan_t::zero();
-        base_dd_min      = s -> effectN( 1 ).trigger() -> effectN( 1 ).average( p );
-        base_dd_max      = s -> effectN( 1 ).trigger() -> effectN( 1 ).average( p );
-        may_crit         = false;
-        may_miss         = false;
-        background       = true;
-        aoe              = 0;
-      }
-
-      virtual void impact( action_state_t* s )
-      {
-        spell_t::impact( s );
-
-        if ( result_is_hit( s -> result ) )
-        {
-          player -> resource_gain( RESOURCE_HEALTH, s -> result_amount, player -> gains.touch_of_the_grave );
-        }
-      }
-    };
-
-    special_effect_t se_data;
-    se_data.name_str = "touch_of_the_grave";
-    se_data.proc_chance_ = totg -> proc_chance();
-    se_data.cooldown_ = totg -> internal_cooldown();
-
-    action_t* a = new touch_of_the_grave_discharge_spell_t( this, totg -> effectN( 1 ).trigger() );
-    action_callback_t* cb = new discharge_proc_t<action_t>( this, se_data, a );
-
-    callbacks.register_attack_callback       ( RESULT_HIT_MASK, cb );
-    callbacks.register_harmful_spell_callback( RESULT_HIT_MASK, cb );
-    */
+    new dbc_proc_callback_t( this, special_effects.back() );
   }
 
   unique_gear::init( this );

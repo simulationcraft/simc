@@ -359,10 +359,13 @@ timespan_t special_effect_t::cooldown() const
 
   // First, check item cooldowns, since they override (in simc) whatever the
   // spell cooldown may be
-  for ( size_t i = 0, end = sizeof_array( item -> parsed.data.cooldown_category_duration ); i < end; i++ ) 
+  if ( item )
   {
-    if ( item -> parsed.data.cooldown_category_duration[ i ] > 0 )
-      return timespan_t::from_millis( item -> parsed.data.cooldown_category_duration[ i ] );
+    for ( size_t i = 0, end = sizeof_array( item -> parsed.data.cooldown_category_duration ); i < end; i++ )
+    {
+      if ( item -> parsed.data.cooldown_category_duration[ i ] > 0 )
+        return timespan_t::from_millis( item -> parsed.data.cooldown_category_duration[ i ] );
+    }
   }
 
   if ( driver() -> cooldown() > timespan_t::zero() )
@@ -1037,7 +1040,6 @@ void dbc_proc_callback_t::initialize()
   // Initialize cooldown, if applicable
   if ( effect.cooldown() > timespan_t::zero() )
   {
-    assert( cooldown_name().size() );
     cooldown = listener -> get_cooldown( cooldown_name() );
     cooldown -> duration = effect.cooldown();
   }
@@ -1081,7 +1083,6 @@ std::string dbc_proc_callback_t::cooldown_name() const
   // issues when the trinkets are worn.
   n += "_" + util::to_string( effect.driver() -> id() );
 
-  assert( n.size() );
   return n;
 }
 
