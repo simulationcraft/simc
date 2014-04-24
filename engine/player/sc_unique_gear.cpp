@@ -910,13 +910,19 @@ void gem::capacitive_primal( special_effect_t& effect,
     capacitive_primal_proc_t( const item_t& i, const special_effect_t& data ) :
       dbc_proc_callback_t( i, data )
     {
+
+    }
+
+    virtual void initialize() override
+    {
+      dbc_proc_callback_t::initialize();
       // Unfortunately the weapon-based RPPM modifiers have to be hardcoded,
       // as they will not show on the client tooltip data.
-      if ( listener -> main_hand_weapon.group() != WEAPON_2H )
+      if ( listener->main_hand_weapon.group() != WEAPON_2H )
       {
-        if ( listener -> specialization() == WARRIOR_FURY )
+        if ( listener->specialization() == WARRIOR_FURY )
           rppm.set_modifier( 1.152 );
-        else if ( listener -> specialization() == DEATH_KNIGHT_FROST )
+        else if ( listener->specialization() == DEATH_KNIGHT_FROST )
           rppm.set_modifier( 1.134 );
       }
     }
