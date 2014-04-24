@@ -301,6 +301,11 @@ buff_t* special_effect_t::create_buff() const
   }
 }
 
+action_t* special_effect_t::create_action() const
+{
+  return execute_action;
+}
+
 // special_effect_t::proc_flags =============================================
 
 unsigned special_effect_t::proc_flags() const

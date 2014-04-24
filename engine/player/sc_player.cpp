@@ -5773,11 +5773,12 @@ struct use_item_t : public action_t
 {
   item_t* item;
   std::string use_name;
-  const special_effect_t* effect;
+  action_t* action;
+  buff_t* buff;
 
   use_item_t( player_t* player, const std::string& options_str ) :
     action_t( ACTION_OTHER, "use_item", player ),
-    item( 0 ), effect( 0 )
+    item( 0 )
   {
     std::string item_name, item_slot;
 
@@ -5826,15 +5827,17 @@ struct use_item_t : public action_t
       return;
     }
 
+    // Parse Special Effect
     const special_effect_t& e = item -> special_effect( SPECIAL_EFFECT_SOURCE_NONE, SPECIAL_EFFECT_USE );
-    if ( e.type != SPECIAL_EFFECT_USE )
+    buff = e.create_buff();
+    action = e.create_action();
+
+    if ( !buff && !action )
     {
-      sim -> errorf( "Player %s attempting 'use_item' action with item '%s' which has no 'use=' encoding.\n", player -> name(), item -> name() );
-      item = nullptr;
-      return;
+      sim -> errorf( "Player %s has 'use_item' action with no custom buff or action setup.\n", player -> name() );
+      background = true;
     }
 
-    effect = &e;
     stats = player ->  get_stats( name_str, this );
 
     use_name = e.name_str.empty() ? item -> name() : e.name_str;
@@ -5857,19 +5860,19 @@ struct use_item_t : public action_t
 
   virtual void execute()
   {
-    bool triggered = effect->custom_buff == 0;
-    if ( effect->custom_buff )
-      triggered = effect->custom_buff -> trigger();
+    bool triggered = buff == 0;
+    if ( buff )
+      triggered = buff -> trigger();
 
-    if ( triggered && effect->execute_action &&
-         ( ! effect->custom_buff || effect->custom_buff -> check() == effect->custom_buff -> max_stack() ) )
+    if ( triggered && action &&
+         ( ! buff || buff -> check() == buff -> max_stack() ) )
     {
-      effect->execute_action -> schedule_execute();
+      action -> schedule_execute();
 
       // Decide whether to expire the buff even with 1 max stack
-      if ( effect->custom_buff && effect->custom_buff -> max_stack() > 1 )
+      if ( buff && buff -> max_stack() > 1 )
       {
-        effect->custom_buff -> expire();
+        buff -> expire();
       }
     }
 

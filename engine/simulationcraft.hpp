@@ -3118,6 +3118,8 @@ struct special_effect_t
   buff_t* create_buff() const;
   special_effect_buff_e buff_type() const;
 
+  action_t* create_action() const;
+
   bool is_stat_buff() const;
   stat_buff_t* initialize_stat_buff() const;
 
