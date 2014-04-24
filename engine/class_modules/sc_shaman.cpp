@@ -982,6 +982,9 @@ struct feral_spirit_pet_t : public pet_t
 
     m *= 1.0 + o() -> perk.improved_feral_spirits -> effectN( 1 ).percent();
 
+    // TODO-WOD: Figure out values for reals, put 100% scaling here for now
+    m *= 2.0;
+
     return m;
   }
 };
