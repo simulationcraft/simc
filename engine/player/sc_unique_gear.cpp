@@ -25,15 +25,6 @@ namespace enchant
   void colossus( special_effect_t&, const item_t&, const special_effect_db_item_t& );
   void executioner( special_effect_t&, const item_t&, const special_effect_db_item_t& );
   void hurricane_spell( special_effect_t&, const item_t&, const special_effect_db_item_t& );
-  void hurricane_weapon( special_effect_t&, const item_t&, const special_effect_db_item_t& );
-  void landslide( special_effect_t&, const item_t&, const special_effect_db_item_t& );
-  void mongoose( special_effect_t&, const item_t&, const special_effect_db_item_t& );
-  void power_torrent( special_effect_t&, const item_t&, const special_effect_db_item_t& );
-  void berserking( special_effect_t&, const item_t&, const special_effect_db_item_t& );
-
-  void gnomish_xray( special_effect_t&, const item_t&, const special_effect_db_item_t& );
-  void lord_blastingtons_scope_of_doom( special_effect_t&, const item_t&, const special_effect_db_item_t& );
-  void mirror_scope( special_effect_t&, const item_t&, const special_effect_db_item_t& );
 }
 
 namespace profession
@@ -57,7 +48,6 @@ namespace item
 
 namespace gem
 {
-  void thundering_skyfire( special_effect_t&, const item_t&, const special_effect_db_item_t& );
   void sinister_primal( special_effect_t&, const item_t&, const special_effect_db_item_t& );
   void indomitable_primal( special_effect_t&, const item_t&, const special_effect_db_item_t& );
   void capacitive_primal( special_effect_t&, const item_t&, const special_effect_db_item_t& );
@@ -282,12 +272,12 @@ static const special_effect_db_item_t __special_effect_db[] = {
   {  42976, 0,                               enchant::executioner },
 
   /* The Burning Crusade */
-  {  28093, "1PPM",                                  0 }, /* Mongoose */
+  {  28093, "1PPM",                                             0 }, /* Mongoose */
 
   /* Engineering enchants */
-  { 109092, "1PPM",   0 }, /* Mirror Scope */
-  { 109085, "1PPM",   0 }, /* Lord Blastingtons Scope of Doom */
-  {  95713, "1PPM",   0 }, /* Gnomish XRay */
+  { 109092, "1PPM",                                             0 }, /* Mirror Scope */
+  { 109085, "1PPM",                                             0 }, /* Lord Blastingtons Scope of Doom */
+  {  95713, "1PPM",                                             0 }, /* Gnomish XRay */
 
   /* Profession perks */
   { 125484, "OnSpellDamageHeal",                                0 }, /* Lightweave Embroidery Rank 3 */
@@ -302,6 +292,7 @@ static const special_effect_db_item_t __special_effect_db[] = {
   { 105574, 0,                    profession::zen_alchemist_stone }, /* Zen Alchemist Stone (stat proc) */
   { 141331, 0,                        profession::synapse_springs },
   { 126734, 0,                        profession::synapse_springs },
+  {  55004, 0,                           profession::nitro_boosts },
 
   /**
    * Gems
@@ -551,30 +542,21 @@ void enchant::executioner( special_effect_t& effect,
 
 struct nitro_boosts_action_t : public action_t
 {
-  timespan_t _duration;
-  timespan_t _cd;
   buff_t* buff;
   
-  nitro_boosts_action_t( player_t* p, const std::string& n, timespan_t duration, timespan_t cd ) :
-    action_t( ACTION_USE, n, p ),
-    _duration( duration ),
-    _cd( cd ),
-    buff( nullptr )
-  {
-    background = true;
-  }
+  nitro_boosts_action_t( player_t* p ) : action_t( ACTION_USE, "nitro_boosts", p )
+  { background = true; }
 
   virtual void execute()
   {
     if ( sim -> log ) sim -> out_log.printf( "%s performs %s", player -> name(), name() );
 
     player -> buffs.nitro_boosts-> trigger();
-
-    update_ready();
   }
+
   virtual bool ready()
   {
-  //To do: Add the various other spells that block nitro boost from being used.
+    //To do: Add the various other spells that block nitro boost from being used.
     if ( player -> buffs.stampeding_roar -> check() || player -> buffs.stampeding_shout -> check() ) // Cannot use nitro boosts when stampeding roar/shout buffs are up.
       return false;
 
@@ -583,15 +565,12 @@ struct nitro_boosts_action_t : public action_t
 };
 
 void profession::nitro_boosts( special_effect_t& effect, 
-                                  const item_t& item,
-                                  const special_effect_db_item_t& dbitem )
+                               const item_t& item,
+                               const special_effect_db_item_t& )
 {
-  /*
-  player_t* p = item.player;
-  item -> parsed.use.name_str = "nitro_boosts";
-  item -> parsed.use.cooldown = timespan_t::from_seconds( 180.0 );
-  item -> parsed.use.execute_action = new nitro_boosts_action_t( p, "nitro_boosts", timespan_t::from_seconds( 5.0 ), timespan_t::from_seconds( 180.0 ) );
-  */
+  // TODO-WOD: This is stupid, need to find a better way to implement custom on-use items
+  effect.type = SPECIAL_EFFECT_USE;
+  effect.execute_action = new nitro_boosts_action_t( item.player );
 };
 
 void profession::synapse_springs( special_effect_t& effect, 
