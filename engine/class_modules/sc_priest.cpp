@@ -54,7 +54,7 @@ struct priest_t final : public player_t
 public:
   typedef player_t base_t;
 
-  struct buffs_t
+  struct
   {
     // Talents
     buff_t* power_infusion;
@@ -91,7 +91,7 @@ public:
   } buffs;
 
   // Talents
-  struct talents_t
+  struct
   {
     const spell_data_t* void_tendrils;
     const spell_data_t* psychic_scream;
@@ -127,7 +127,7 @@ public:
   } talents;
 
   // Specialization Spells
-  struct specs_t
+  struct
   {
     // General
 
@@ -158,7 +158,7 @@ public:
   } specs;
 
   // Mastery Spells
-  struct mastery_spells_t
+  struct
   {
     const spell_data_t* shield_discipline;
     const spell_data_t* echo_of_light;
@@ -170,10 +170,12 @@ public:
     const spell_data_t* enhanced_mind_flay;
     const spell_data_t* enhanced_shadow_orbs;
     const spell_data_t* enhanced_shadow_word_death;
+    const spell_data_t* improved_shadow_word_pain;
+    const spell_data_t* improved_vampiric_touch;
   } perks;
 
   // Cooldowns
-  struct cooldowns_t
+  struct
   {
     cooldown_t* chakra;
     cooldown_t* inner_focus;
@@ -184,7 +186,7 @@ public:
   } cooldowns;
 
   // Gains
-  struct gains_t
+  struct
   {
     gain_t* devouring_plague_health;
     gain_t* dispersion;
@@ -200,13 +202,13 @@ public:
   } gains;
 
   // Benefits
-  struct benefits_t
+  struct
   {
     benefit_t* smites_with_glyph_increase;
   } benefits;
 
   // Procs
-  struct procs_t
+  struct
   {
     proc_t* divine_insight_shadow;
     proc_t* mastery_extra_tick;
@@ -222,14 +224,14 @@ public:
   } procs;
 
   // Special
-  struct active_spells_t
+  struct
   {
     const spell_data_t* surge_of_darkness;
     action_t* echo_of_light;
   } active_spells;
 
   // Pets
-  struct pets_t
+  struct
   {
     pet_t* shadowfiend;
     pet_t* mindbender;
@@ -2571,6 +2573,8 @@ struct shadow_word_pain_t final : public priest_spell_t
 
     base_multiplier *= 1.0 + p.sets.set( SET_T13_4PC_CASTER ) -> effectN( 1 ).percent();
 
+    base_multiplier *= 1.0 + p.perks.improved_shadow_word_pain -> effectN( 1 ).percent();
+
     base_crit   += p.sets.set( SET_T14_2PC_CASTER ) -> effectN( 1 ).percent();
 
     num_ticks += ( int ) ( ( p.sets.set( SET_T14_4PC_CASTER ) -> effectN( 1 ).base_value() / 1000.0 ) / base_tick_time.total_seconds() );
@@ -2643,6 +2647,8 @@ struct vampiric_touch_t final : public priest_spell_t
   {
     parse_options( nullptr, options_str );
     may_crit   = false;
+
+    base_multiplier *= 1.0 + p.perks.improved_vampiric_touch -> effectN( 1 ).percent();
 
     num_ticks += ( int ) ( ( p.sets.set( SET_T14_4PC_CASTER ) -> effectN( 1 ).base_value() / 1000.0 ) / base_tick_time.total_seconds() );
 
@@ -4963,6 +4969,8 @@ void priest_t::init_spells()
   perks.enhanced_mind_flay            = find_perk_spell( "Enhanced Mind Flay" );
   perks.enhanced_shadow_orbs          = find_perk_spell( "Enhanced Shadow Orbs" );
   perks.enhanced_shadow_word_death    = find_perk_spell( "Enhanced Shadow Word: Death" );
+  perks.improved_shadow_word_pain     = find_perk_spell( "Improved Shadow Word: Pain" );
+  perks.improved_vampiric_touch       = find_perk_spell( "Improved Vampiric Touch" );
 
   // Glyphs
   glyphs.circle_of_healing            = find_glyph_spell( "Glyph of Circle of Healing" );
