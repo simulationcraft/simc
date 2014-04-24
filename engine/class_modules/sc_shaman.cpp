@@ -227,7 +227,6 @@ public:
 
     // Elemental
     const spell_data_t* elemental_focus;
-    const spell_data_t* elemental_precision;
     const spell_data_t* elemental_fury;
     const spell_data_t* fulmination;
     const spell_data_t* lava_surge;
@@ -430,13 +429,11 @@ public:
   virtual void      moving();
   virtual void      invalidate_cache( cache_e c );
   virtual double    composite_movement_speed() const;
-  virtual double    composite_melee_hit() const;
   virtual double    composite_melee_haste() const;
   virtual double    composite_melee_speed() const;
   virtual double    composite_melee_crit() const;
   virtual double    composite_spell_haste() const;
   virtual double    composite_spell_crit() const;
-  virtual double    composite_spell_hit() const;
   virtual double    composite_spell_power( school_e school ) const;
   virtual double    composite_spell_power_multiplier() const;
   virtual double    composite_player_multiplier( school_e school ) const;
@@ -5046,7 +5043,6 @@ void shaman_t::init_spells()
   // Elemental
   spec.elemental_focus       = find_specialization_spell( "Elemental Focus" );
   spec.elemental_fury        = find_specialization_spell( "Elemental Fury" );
-  spec.elemental_precision   = find_specialization_spell( "Elemental Precision" );
   spec.fulmination           = find_specialization_spell( "Fulmination" );
   spec.lava_surge            = find_specialization_spell( "Lava Surge" );
   spec.readiness_elemental   = find_specialization_spell( "Readiness: Elemental" );
@@ -5755,18 +5751,6 @@ double shaman_t::composite_spell_haste() const
   return h;
 }
 
-// shaman_t::composite_spell_hit ============================================
-
-double shaman_t::composite_spell_hit() const
-{
-  double hit = player_t::composite_spell_hit();
-
-  hit += ( spec.elemental_precision -> ok() *
-           ( cache.spirit() - base.stats.get_stat( STAT_SPIRIT ) ) ) / current_rating().spell_hit;
-
-  return hit;
-}
-
 // shaman_t::composite_spell_crit =========================================
 
 double shaman_t::composite_spell_crit() const
@@ -5788,18 +5772,6 @@ double shaman_t::composite_movement_speed() const
     ms *= 1.0 + buff.spirit_walk -> data().effectN( 1 ).percent();
 
   return ms;
-}
-
-// shaman_t::composite_attack_hit ===========================================
-
-double shaman_t::composite_melee_hit() const
-{
-  double hit = player_t::composite_melee_hit();
-
-  hit += ( spec.elemental_precision -> ok() *
-           ( cache.spirit() - base.stats.get_stat( STAT_SPIRIT ) ) ) / current_rating().attack_hit;
-
-  return hit;
 }
 
 // shaman_t::composite_attack_haste =========================================
@@ -5956,12 +5928,6 @@ void shaman_t::invalidate_cache( cache_e c )
     case CACHE_ATTACK_POWER:
       if ( specialization() == SHAMAN_ENHANCEMENT )
         player_t::invalidate_cache( CACHE_SPELL_POWER );
-      break;
-    case CACHE_SPIRIT:
-      if ( spec.elemental_precision -> ok() )
-      {
-        player_t::invalidate_cache( CACHE_HIT );
-      }
       break;
     case CACHE_MASTERY:
       if ( mastery.enhanced_elements -> ok() )
