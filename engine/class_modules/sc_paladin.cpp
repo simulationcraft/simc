@@ -13,10 +13,10 @@
 namespace { // UNNAMED NAMESPACE
 
 // Forward declarations
-
 struct paladin_t;
 struct hand_of_sacrifice_redirect_t;
 struct blessing_of_the_guardians_t;
+namespace buffs { struct avenging_wrath_buff_t; }
 
 enum seal_e
 {
@@ -86,8 +86,7 @@ public:
   {
     buff_t* alabaster_shield;
     buff_t* ardent_defender;
-    buff_t* avenging_wrath;
-    buff_t* barkskin;
+    buffs::avenging_wrath_buff_t* avenging_wrath;
     buff_t* bastion_of_glory;
     buff_t* bastion_of_power; // t16_4pc_tank
     buff_t* blessed_life;
@@ -115,7 +114,7 @@ public:
     buff_t* tier15_2pc_melee;
     buff_t* tier15_4pc_melee;
   } buffs;
-
+  
   // Gains
   struct gains_t
   {
@@ -169,6 +168,7 @@ public:
     const spell_data_t* plate_specialization;
     const spell_data_t* sanctity_of_battle;
     const spell_data_t* sanctuary;
+    const spell_data_t* shining_protector; // TODO: hook up to heals
     const spell_data_t* seal_of_insight;
     const spell_data_t* sword_of_light;
     const spell_data_t* sword_of_light_value;
@@ -332,8 +332,11 @@ public:
   virtual double    composite_attack_power_multiplier() const;
   virtual double    composite_melee_crit() const;
   virtual double    composite_melee_expertise( weapon_t* weapon ) const;
+  virtual double    composite_melee_haste() const;
   virtual double    composite_spell_crit() const;
+  virtual double    composite_spell_haste() const;
   virtual double    composite_player_multiplier( school_e school ) const;
+  virtual double    composite_player_heal_multiplier( school_e school ) const;
   virtual double    composite_spell_power( school_e school ) const;
   virtual double    composite_spell_power_multiplier() const;
   virtual double    composite_block() const;
@@ -374,6 +377,115 @@ public:
     return td;
   }
 };
+
+
+// ==========================================================================
+// Paladin Buffs, Part One
+// ==========================================================================
+// Paladin buffs are split up into two sections. This one is for ones that 
+// need to be defined before action_t definitions, because those action_t 
+// definitions call methods of these buffs. Generic buffs that can be defined 
+// anywhere are also put here. There's a second buffs section near the end 
+// containing ones that require action_t definitions to function properly.
+
+namespace buffs {
+
+struct avenging_wrath_buff_t : public buff_t
+{
+  double damage_modifier;
+  double healing_modifier;
+  double crit_bonus;
+  double haste_bonus;
+
+  avenging_wrath_buff_t( player_t* p ) :
+    buff_t( buff_creator_t( p, "avenging_wrath", p -> specialization() == PALADIN_RETRIBUTION ? p -> find_spell( 31884 ) : p -> find_spell( 31842 ) ) ),
+    damage_modifier( 0.0 ),
+    healing_modifier( 0.0 ),
+    crit_bonus( 0.0 ),
+    haste_bonus( 0.0 )
+  {
+    // Map modifiers appropriately based on spec
+    if ( p -> specialization() == PALADIN_RETRIBUTION )
+    {
+      damage_modifier = data().effectN( 1 ).percent();
+      healing_modifier = data().effectN( 2 ).percent();
+    }
+    else // we're Holy
+    {
+      damage_modifier = data().effectN( 6 ).percent();
+      healing_modifier = data().effectN( 3 ).percent();
+      crit_bonus = data().effectN( 2 ).percent();
+      haste_bonus = data().effectN( 1 ).percent();
+
+      // not sure which ones we actually need to invalidate, so let's just nuke them all
+      add_invalidate( CACHE_CRIT );
+      add_invalidate( CACHE_SPELL_CRIT );
+      add_invalidate( CACHE_ATTACK_CRIT );
+      add_invalidate( CACHE_HASTE );
+      add_invalidate( CACHE_ATTACK_HASTE );
+      add_invalidate( CACHE_SPELL_HASTE );
+    }
+
+    // Lengthen duration if Sanctified Wrath is taken
+    const spell_data_t* s = p -> find_talent_spell( "Sanctified Wrath" );
+    if ( s -> ok() )
+      buff_duration *= 1.0 + s -> effectN( 2 ).percent();
+
+    // let the ability handle the cooldown
+    cooldown -> duration = timespan_t::zero();
+
+    // invalidate Damage and Healing for both specs
+    add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
+    add_invalidate( CACHE_PLAYER_HEAL_MULTIPLIER );
+  }
+
+  double get_damage_mod()
+  {
+    return damage_modifier;
+  }
+
+  double get_healing_mod()
+  {
+    return healing_modifier;
+  }
+
+  double get_crit_bonus()
+  {
+    return crit_bonus;
+  }
+
+  double get_haste_bonus()
+  {
+    return haste_bonus;
+  }
+};
+
+// Eternal Flame buff
+struct eternal_flame_t : public buff_t
+{
+  paladin_td_t* pair;
+  eternal_flame_t( paladin_td_t* q ) :
+    buff_t( buff_creator_t( *q, "eternal_flame", q -> source -> find_spell( 156322 ) ) ),
+    pair( q )
+  {
+    cooldown -> duration = timespan_t::zero();
+  }
+
+  virtual void expire_override()
+  {
+    buff_t::expire_override();
+
+    // cancel existing Eternal Flame HoT
+    pair -> dots.eternal_flame -> cancel();    
+  }
+  
+};
+
+} // end namespace buffs
+// ==========================================================================
+// End Paladin Buffs, Part One
+// ==========================================================================
+
 
 // ==========================================================================
 // Paladin Ability Templates
@@ -763,15 +875,22 @@ struct avengers_shield_t : public paladin_spell_t
 };
 
 // Avenging Wrath ===========================================================
+// AW is two spells now (31884 for Ret, 31842 for Holy) and the effects are all jumbled. 
+// Thus, we need to use some ugly hacks to get it to work seamlessly for both specs within the same spell.
+// Most of them can be found in buffs::avenging_wrath_buff_t, this spell just triggers the buff
 
 struct avenging_wrath_t : public paladin_spell_t
 {
   avenging_wrath_t( paladin_t* p, const std::string& options_str )
-    : paladin_spell_t( "avenging_wrath", p, p -> find_specialization_spell( "Avenging Wrath" ) )
+    : paladin_spell_t( "avenging_wrath", p, p -> specialization() == PALADIN_RETRIBUTION ? p -> find_spell( 31884 ) : p -> find_spell( 31842 ) )
   {
     parse_options( NULL, options_str );
 
     cooldown -> duration += p -> passives.sword_of_light -> effectN( 7 ).time_value();
+
+    // disable for protection
+    if ( p -> specialization() == PALADIN_PROTECTION )
+      background = true;
 
     harmful = false;
     use_off_gcd = true;    
@@ -782,33 +901,7 @@ struct avenging_wrath_t : public paladin_spell_t
   {
     paladin_spell_t::execute();
 
-    p() -> buffs.avenging_wrath -> trigger( 1, data().effectN( 1 ).percent() );
-  }
-};
-
-// Barkskin =================================================================
-
-struct barkskin_t : public paladin_spell_t
-{
-  barkskin_t( paladin_t* p, const std::string& options_str )
-    : paladin_spell_t( "barkskin", p, p -> find_spell( 113075 ) )
-  {
-    use_off_gcd = true;
-    parse_options( nullptr, options_str );
-  }
-
-  virtual double cost() const
-  {    
-    // this should be 1 HP
-    return base_costs[ RESOURCE_HOLY_POWER ];
-  }
-
-  virtual void execute()
-  {
-    paladin_spell_t::execute();
-
-    // apply barkskin buff
-    p() -> buffs.barkskin -> trigger();
+    p() -> buffs.avenging_wrath -> trigger();
   }
 };
 
@@ -1738,6 +1831,8 @@ struct hand_of_sacrifice_redirect_t : public paladin_spell_t
       execute();
   }
 
+  // Hand of Sacrifice's Execute function is defined after Paladin Buffs, Part Deux because it requires 
+  // the definition of the buffs_t::hand_of_sacrifice_t object.
 };
 
 struct hand_of_sacrifice_t : public paladin_spell_t
@@ -3325,7 +3420,7 @@ struct hand_of_light_proc_t : public paladin_melee_attack_t
     //easier to remove it here than try to add an exception at the global avenging wrath buff level
     if ( p() -> buffs.avenging_wrath -> check() )
     {
-      am /= 1.0 + p() -> buffs.avenging_wrath -> value();
+      am /= 1.0 + p() -> buffs.avenging_wrath -> get_damage_mod();
     }
     return am;
   }
@@ -3777,6 +3872,12 @@ struct templars_verdict_t : public paladin_melee_attack_t
 // End Attacks
 // ==========================================================================
 
+// ==========================================================================
+// Paladin Buffs, Part Deux
+// ==========================================================================
+// Certain buffs need to be defined  after actions, because they call methods 
+// found in action_t definitions.
+
 namespace buffs {
 
 struct hand_of_sacrifice_t : public buff_t
@@ -3792,8 +3893,7 @@ struct hand_of_sacrifice_t : public buff_t
 
   }
 
-  /* Trigger function for the paladin applying HoS on the target
-   */
+  // Trigger function for the paladin applying HoS on the target
   bool trigger_hos( paladin_t& source )
   {
     if ( this -> source )
@@ -3805,8 +3905,7 @@ struct hand_of_sacrifice_t : public buff_t
     return buff_t::trigger( 1 );
   }
 
-  /* Misuse functions as the redirect callback for damage onto the source
-   */
+  // Misuse functions as the redirect callback for damage onto the source
   virtual bool trigger( int, double value, double, timespan_t )
   {
     assert( source );
@@ -3866,28 +3965,10 @@ struct divine_protection_t : public buff_t
 
 };
 
-// Eternal Flame buff
-struct eternal_flame_t : public buff_t
-{
-  paladin_td_t* pair;
-  eternal_flame_t( paladin_td_t* q ) :
-    buff_t( buff_creator_t( *q, "eternal_flame", q -> source -> find_spell( 156322 ) ) ),
-    pair( q )
-  {
-    cooldown -> duration = timespan_t::zero();
-  }
-
-  virtual void expire_override()
-  {
-    buff_t::expire_override();
-
-    // cancel existing Eternal Flame HoT
-    pair -> dots.eternal_flame -> cancel();    
-  }
-  
-};
-
 } // end namespace buffs
+// ==========================================================================
+// End Paladin Buffs, Part Deux
+// ==========================================================================
 
 // Hand of Sacrifice execute function
 
@@ -3929,7 +4010,6 @@ action_t* paladin_t::create_action( const std::string& name, const std::string& 
   if ( name == "ardent_defender"           ) return new ardent_defender_t          ( this, options_str );
   if ( name == "avengers_shield"           ) return new avengers_shield_t          ( this, options_str );
   if ( name == "avenging_wrath"            ) return new avenging_wrath_t           ( this, options_str );
-  if ( name == "barkskin"                  ) return new barkskin_t                 ( this, options_str );
   if ( name == "beacon_of_light"           ) return new beacon_of_light_t          ( this, options_str );
   if ( name == "blessing_of_kings"         ) return new blessing_of_kings_t        ( this, options_str );
   if ( name == "blessing_of_might"         ) return new blessing_of_might_t        ( this, options_str );
@@ -4291,15 +4371,7 @@ void paladin_t::create_buffs()
   buffs.selfless_healer        = buff_creator_t( this, "selfless_healer", find_spell( 114250 ) );
 
   // General
-  buffs.avenging_wrath         = buff_creator_t( this, "avenging_wrath", find_specialization_spell( "Avenging Wrath" ) )
-                                 .cd( timespan_t::zero() ) // Let the ability handle the CD
-                                 .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
-  if ( find_talent_spell( "Sanctified Wrath" ) -> ok() )
-  {
-    buffs.avenging_wrath -> buff_duration *= 1.0 + find_talent_spell( "Sanctified Wrath" ) -> effectN( 2 ).percent();
-  }
-
-  buffs.barkskin               = buff_creator_t( this, "barkskin", find_spell( 113075 ) );
+  buffs.avenging_wrath         = new buffs::avenging_wrath_buff_t( this );
   buffs.divine_protection      = new buffs::divine_protection_t( this );
   buffs.divine_shield          = buff_creator_t( this, "divine_shield", find_class_spell( "Divine Shield" ) )
                                  .cd( timespan_t::zero() ) // Let the ability handle the CD
@@ -4818,6 +4890,7 @@ void paladin_t::init_spells()
   passives.guarded_by_the_light   = find_specialization_spell( "Guarded by the Light" );
   passives.vengeance              = find_specialization_spell( "Vengeance" );
   passives.sanctuary              = find_specialization_spell( "Sanctuary" );
+  passives.shining_protector      = find_specialization_spell( "Shining Protector" );
   passives.grand_crusader         = find_specialization_spell( "Grand Crusader" );
 
   // Ret Passives
@@ -4949,13 +5022,15 @@ double paladin_t::composite_attribute_multiplier( attribute_e attr ) const
   return m;
 }
 
-// paladin_t::composite_attack_crit =========================================
+// paladin_t::composite_melee_crit =========================================
 
 double paladin_t::composite_melee_crit() const
 {
-  double m = player_t::composite_melee_crit();
-
-  // TODO: used to get buffed by Inquisition, probably can be removed now
+  double m = player_t::composite_melee_crit();  
+  
+  // This should only give a nonzero boost for Holy
+  if ( buffs.avenging_wrath -> check() )
+    m += buffs.avenging_wrath -> get_crit_bonus();
 
   return m;
 }
@@ -4972,15 +5047,43 @@ double paladin_t::composite_melee_expertise( weapon_t* w ) const
   return expertise;
 }
 
+// paladin_t::composite_melee_haste =========================================
+
+double paladin_t::composite_melee_haste() const
+{
+  double h = player_t::composite_melee_haste();
+
+  // This should only give a nonzero boost for Holy
+  if ( buffs.avenging_wrath -> check() )
+    h /= 1.0 + buffs.avenging_wrath -> get_haste_bonus();
+
+  return h;
+}
+
 // paladin_t::composite_spell_crit ==========================================
 
 double paladin_t::composite_spell_crit() const
 {
   double m = player_t::composite_spell_crit();
   
-  // TODO: used to get buffed by Inquisition, probably can be removed now
+  // This should only give a nonzero boost for Holy
+  if ( buffs.avenging_wrath -> check() )
+    m += buffs.avenging_wrath -> get_crit_bonus();
   
   return m;
+}
+
+// paladin_t::composite_spell_haste ==========================================
+
+double paladin_t::composite_spell_haste() const
+{
+  double h = player_t::composite_spell_haste();
+  
+  // This should only give a nonzero boost for Holy
+  if ( buffs.avenging_wrath -> check() )
+    h /= 1.0 + buffs.avenging_wrath -> get_haste_bonus();
+  
+  return h;
 }
 
 // paladin_t::composite_player_multiplier ===================================
@@ -4991,7 +5094,8 @@ double paladin_t::composite_player_multiplier( school_e school ) const
 
   // These affect all damage done by the paladin
   // Avenging Wrath buffs everything
-  m *= 1.0 + buffs.avenging_wrath -> value();
+  if ( buffs.avenging_wrath -> check() )
+    m *= 1.0 + buffs.avenging_wrath -> get_damage_mod();
 
   // T15_2pc_melee buffs holy damage only
   if ( dbc::is_school( school, SCHOOL_HOLY ) )
@@ -5012,6 +5116,19 @@ double paladin_t::composite_player_multiplier( school_e school ) const
     m *= 1.0 + buffs.warrior_of_the_light -> data().effectN( 1 ).percent();
 
   return m;
+}
+
+// paladin_t::composite_player_heal_multiplier ==============================
+
+double paladin_t::composite_player_heal_multiplier( school_e s ) const
+{
+  double m = player_t::composite_player_heal_multiplier( s );
+
+  if ( buffs.avenging_wrath -> check() )
+    m *= 1.0 + buffs.avenging_wrath -> get_healing_mod();
+
+  return m;
+
 }
 
 // paladin_t::composite_spell_power =========================================
@@ -5145,14 +5262,6 @@ void paladin_t::target_mitigation( school_e school,
     }
     if ( sim -> debug && s -> action && ! s -> target -> is_enemy() && ! s -> target -> is_add() )
       sim -> out_debug.printf( "Damage to %s after Hand of Purity is %f", s -> target -> name(), s -> result_amount );
-  }
-
-  // Barkskin
-  if ( buffs.barkskin -> up() )
-  {
-    s -> result_amount *= 1.0 + buffs.barkskin -> data().effectN( 2 ).percent();
-    if ( sim -> debug && s -> action && ! s -> target -> is_enemy() && ! s -> target -> is_add() )
-      sim -> out_debug.printf( "Damage to %s after Barkskin is %f", s -> target -> name(), s -> result_amount );
   }
 
   // Divine Protection
