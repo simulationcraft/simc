@@ -549,39 +549,6 @@ attribute_e util::parse_attribute_type( const std::string& name )
   return parse_enum<attribute_e, ATTRIBUTE_NONE, ATTRIBUTE_MAX, attribute_type_string>( name );
 }
 
-// gem_type_string ==========================================================
-
-const char* util::gem_type_string( gem_e type )
-{
-  switch ( type )
-  {
-    case GEM_META:      return "meta";
-    case GEM_PRISMATIC: return "prismatic";
-    case GEM_RED:       return "red";
-    case GEM_YELLOW:    return "yellow";
-    case GEM_BLUE:      return "blue";
-    case GEM_ORANGE:    return "orange";
-    case GEM_GREEN:     return "green";
-    case GEM_PURPLE:    return "purple";
-    case GEM_COGWHEEL:  return "cogwheel";
-    case GEM_HYDRAULIC: return "hydraulic";
-    default:            return "unknown";
-  }
-}
-
-// parse_gem_type ===========================================================
-
-gem_e util::parse_gem_type( const std::string& name )
-{
-  return parse_enum<gem_e, GEM_NONE, GEM_MAX, gem_type_string>( name );
-}
-
-// parse_gem_stat ===========================================================
-
-stat_e util::parse_gem_stat( const std::string& name )
-{
-  return parse_enum<stat_e, STAT_NONE, STAT_MAX, stat_type_gem>( name );
-}
 // meta_gem_type_string =====================================================
 
 const char* util::meta_gem_type_string( meta_gem_e type )
@@ -1404,6 +1371,33 @@ const char* util::proc_type2_string( proc_types2 type )
   }
 }
 
+// special_effect_string ====================================================
+
+const char* util::special_effect_string( special_effect_e type )
+{
+  switch ( type )
+  {
+    case SPECIAL_EFFECT_EQUIP: return "equip";
+    case SPECIAL_EFFECT_USE:   return "use";
+    case SPECIAL_EFFECT_CUSTOM: return "custom";
+    default:                   return "unknown";
+  }
+}
+
+// special_effect_source_string =============================================
+
+const char* util::special_effect_source_string( special_effect_source_e type )
+{
+  switch ( type )
+  {
+    case SPECIAL_EFFECT_SOURCE_ITEM:    return "item";
+    case SPECIAL_EFFECT_SOURCE_ENCHANT: return "enchant";
+    case SPECIAL_EFFECT_SOURCE_ADDON:   return "addon";
+    case SPECIAL_EFFECT_SOURCE_GEM:     return "gem";
+    default:                            return "unknown";
+  }
+}
+
 // stat_type_string =========================================================
 
 const char* util::stat_type_string( stat_e stat )
@@ -1741,6 +1735,7 @@ int util::class_id( player_e type )
     case PLAYER_SPECIAL_SCALE2: return 13;
     case PLAYER_SPECIAL_SCALE3: return 14;
     case PLAYER_SPECIAL_SCALE4: return 15;
+    case PLAYER_SPECIAL_SCALE5: return 16;
     default:           return 0;
   }
 }
@@ -2074,21 +2069,9 @@ slot_e util::translate_invtype( inventory_type inv_type )
 
 // socket_gem_match =========================================================
 
-bool util::socket_gem_match( gem_e socket, unsigned gem )
+bool util::socket_gem_match( item_socket_color socket, item_socket_color gem )
 {
-  if ( socket == GEM_NONE      ) return true;
-
-  if ( socket == GEM_PRISMATIC ) return ( gem & SOCKET_COLOR_PRISMATIC ) != 0;
-
-  if ( socket == GEM_HYDRAULIC ) return ( gem == SOCKET_COLOR_HYDRAULIC );
-  if ( socket == GEM_COGWHEEL  ) return ( gem == SOCKET_COLOR_COGWHEEL );
-  if ( socket == GEM_META      ) return ( gem == SOCKET_COLOR_META );
-
-  if ( socket == GEM_RED       ) return ( gem & SOCKET_COLOR_RED ) != 0 ;
-  if ( socket == GEM_YELLOW    ) return ( gem & SOCKET_COLOR_YELLOW  ) != 0;
-  if ( socket == GEM_BLUE      ) return ( gem & SOCKET_COLOR_BLUE  ) != 0;
-
-  return false;
+  return ( gem & socket ) != 0;
 }
 
 // string_split =============================================================
@@ -2191,23 +2174,6 @@ std::string& util::erase_all( std::string& s, const std::string& from )
   }
 
   return s;
-}
-
-// translate_gem_color ======================================================
-
-gem_e util::translate_socket_color( item_socket_color c )
-{
-  switch ( c )
-  {
-    case SOCKET_COLOR_BLUE:      return GEM_BLUE;
-    case SOCKET_COLOR_META:      return GEM_META;
-    case SOCKET_COLOR_PRISMATIC: return GEM_PRISMATIC;
-    case SOCKET_COLOR_RED:       return GEM_RED;
-    case SOCKET_COLOR_YELLOW:    return GEM_YELLOW;
-    case SOCKET_COLOR_COGWHEEL:  return GEM_COGWHEEL;
-    case SOCKET_COLOR_NONE:
-    default:                     return GEM_NONE;
-  }
 }
 
 // item_quality_string ======================================================

@@ -118,7 +118,7 @@ off_hand=korvens_crimson_crescent,id=105625,upgrade=2,gems=160exp_160mastery_60a
 # gear_spirit=80
 # gear_expertise_rating=1600
 # gear_hit_rating=480
-# gear_crit_rating=1062
+# gear_crit_rating=754
 # gear_haste_rating=513
 # gear_mastery_rating=4422
 # gear_armor=719
@@ -126,6 +126,3 @@ off_hand=korvens_crimson_crescent,id=105625,upgrade=2,gems=160exp_160mastery_60a
 # meta_gem=capacitive_primal
 # tier16_2pc_melee=1
 # tier16_4pc_melee=1
-# hands=grips_of_celestial_harmony,heroic=1,addon=synapse_springs_mark_ii
-# main_hand=korvens_crimson_crescent,heroic=1,elite=1,weapon=axe_2.60speed_370min_690max,enchant=dancing_steel
-# off_hand=korvens_crimson_crescent,heroic=1,elite=1,weapon=axe_2.60speed_370min_690max,enchant=dancing_steel

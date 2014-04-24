@@ -398,7 +398,7 @@ public:
   // Character Definition
   virtual void      init_spells();
   virtual void      init_action_list();
-  virtual void      init_enchant();
+  virtual void      init_special_effects();
   virtual void      init_rng();
   virtual void      init_base_stats();
   virtual void      init_scaling();
@@ -623,6 +623,7 @@ static bool group_runes ( const death_knight_t* player, int blood, int frost, in
 
   std::array<bool,RUNE_SLOT_MAX> use;
   range::fill( use, false );
+
   int use_slot = -1;
 
   if ( blood )
@@ -2116,7 +2117,7 @@ struct death_knight_melee_attack_t : public death_knight_action_t<melee_attack_t
     if ( ! p -> sets.has_set_bonus( SET_T15_2PC_MELEE ) )
       return;
 
-    if ( ( p -> t15_2pc_melee.trigger( *this ) ) )
+    if ( ( p -> t15_2pc_melee.trigger() ) )
     {
       p -> procs.t15_2pc_melee -> occur();
       size_t i;
@@ -2720,11 +2721,7 @@ struct blood_plague_t : public death_knight_spell_t
   virtual void impact( action_state_t* s )
   {
     death_knight_spell_t::impact( s );
-
-    if ( ! sim -> overrides.weakened_blows && p() -> spec.scarlet_fever -> ok() &&
-         result_is_hit( s -> result ) )
-      s -> target -> debuffs.weakened_blows -> trigger();
-
+    
     if ( ! sim -> overrides.physical_vulnerability && p() -> spec.ebon_plaguebringer -> ok() &&
          result_is_hit( s -> result ) )
       s -> target -> debuffs.physical_vulnerability -> trigger();
@@ -5642,14 +5639,15 @@ void death_knight_t::init_action_list()
   player_t::init_action_list();
 }
 
-// death_knight_t::init_enchant =============================================
+// death_knight_t::init_special_effects =====================================
 
-void death_knight_t::init_enchant()
+// TODO: Broken, fix fix fix
+void death_knight_t::init_special_effects()
 {
-  player_t::init_enchant();
+  player_t::init_special_effects();
 
-  std::string& mh_enchant = items[ SLOT_MAIN_HAND ].parsed.enchant.name_str;
-  std::string& oh_enchant = items[ SLOT_OFF_HAND  ].parsed.enchant.name_str;
+  const special_effect_t& mh_effect = items[ SLOT_MAIN_HAND ].special_effect( SPECIAL_EFFECT_SOURCE_ENCHANT );
+  const special_effect_t& oh_effect = items[ SLOT_OFF_HAND ].special_effect( SPECIAL_EFFECT_SOURCE_ENCHANT );
 
   // Rune of Cinderglacier ==================================================
   struct cinderglacier_callback_t : public action_callback_t
@@ -5781,57 +5779,57 @@ void death_knight_t::init_enchant()
                                        .quiet( true )
                                        .chance( 0 );
 
-  if ( mh_enchant == "rune_of_the_fallen_crusader" )
+  if ( mh_effect.name_str == "rune_of_the_fallen_crusader" )
   {
     callbacks.register_attack_callback( RESULT_HIT_MASK, new fallen_crusader_callback_t( this, SLOT_MAIN_HAND, runeforge.rune_of_the_fallen_crusader ) );
   }
-  else if ( mh_enchant == "rune_of_razorice" )
+  else if ( mh_effect.name_str == "rune_of_razorice" )
   {
     callbacks.register_attack_callback( RESULT_HIT_MASK, new razorice_callback_t( this, SLOT_MAIN_HAND ) );
   }
-  else if ( mh_enchant == "rune_of_cinderglacier" )
+  else if ( mh_effect.name_str == "rune_of_cinderglacier" )
   {
     callbacks.register_attack_callback( RESULT_HIT_MASK, new cinderglacier_callback_t( this, SLOT_MAIN_HAND, runeforge.rune_of_cinderglacier ) );
   }
 
-  if ( oh_enchant == "rune_of_the_fallen_crusader" )
+  if ( oh_effect.name_str == "rune_of_the_fallen_crusader" )
   {
     callbacks.register_attack_callback( RESULT_HIT_MASK, new fallen_crusader_callback_t( this, SLOT_OFF_HAND, runeforge.rune_of_the_fallen_crusader ) );
   }
-  else if ( oh_enchant == "rune_of_razorice" )
+  else if ( oh_effect.name_str == "rune_of_razorice" )
   {
     callbacks.register_attack_callback( RESULT_HIT_MASK, new razorice_callback_t( this, SLOT_OFF_HAND ) );
   }
-  else if ( oh_enchant == "rune_of_cinderglacier" )
+  else if ( oh_effect.name_str == "rune_of_cinderglacier" )
   {
     callbacks.register_attack_callback( RESULT_HIT_MASK, new cinderglacier_callback_t( this, SLOT_OFF_HAND, runeforge.rune_of_cinderglacier ) );
   }
 
-  if ( mh_enchant == "rune_of_the_stoneskin_gargoyle" )
+  if ( mh_effect.name_str == "rune_of_the_stoneskin_gargoyle" )
     runeforge.rune_of_the_stoneskin_gargoyle -> default_chance = 1.0;
 
-  if ( mh_enchant == "rune_of_the_nerubian_carapace" )
+  if ( mh_effect.name_str == "rune_of_the_nerubian_carapace" )
     runeforge.rune_of_the_nerubian_carapace -> default_chance = 1.0;
 
-  if ( oh_enchant == "rune_of_the_nerubian_carapace" )
+  if ( oh_effect.name_str == "rune_of_the_nerubian_carapace" )
     runeforge.rune_of_the_nerubian_carapace_oh -> default_chance = 1.0;
 
-  if ( mh_enchant == "rune_of_spellshattering" )
+  if ( mh_effect.name_str == "rune_of_spellshattering" )
     runeforge.rune_of_spellshattering -> default_chance = 1.0;
 
-  if ( mh_enchant == "rune_of_swordshattering" )
+  if ( mh_effect.name_str == "rune_of_swordshattering" )
     runeforge.rune_of_swordshattering -> default_chance = 1.0;
 
-  if ( mh_enchant == "rune_of_spellbreaking" )
+  if ( mh_effect.name_str == "rune_of_spellbreaking" )
     runeforge.rune_of_spellbreaking -> default_chance = 1.0;
 
-  if ( oh_enchant == "rune_of_spellbreaking" )
+  if ( oh_effect.name_str == "rune_of_spellbreaking" )
     runeforge.rune_of_spellbreaking_oh -> default_chance = 1.0;
 
-  if ( mh_enchant == "rune_of_swordbreaking" )
+  if ( mh_effect.name_str == "rune_of_swordbreaking" )
     runeforge.rune_of_swordbreaking -> default_chance = 1.0;
 
-  if ( oh_enchant == "rune_of_swordbreaking" )
+  if ( oh_effect.name_str == "rune_of_swordbreaking" )
     runeforge.rune_of_swordbreaking_oh -> default_chance = 1.0;
 }
 

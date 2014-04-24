@@ -149,7 +149,7 @@ const char * _effect_type_strings[] =
   0,                    0,                          "Trigger Spell w/ Value", "Apply Owner Area Aura",    0,                       // 140
   0,                    "Activate Rune",            0,                      0,                          0,                       // 145
   0,                    "Trigger Spell",            0,                      0,                          0,                       // 150
-  "Titan Grip",         0,                          "Create Item",          0,                          0,                       // 155
+  "Titan Grip",         "Add Socket",               "Create Item",          0,                          0,                       // 155
   0,                    0,                          0,                      0,                          0,                       // 160
   0,                    0,                          0,                                                                           // 165
 };
@@ -262,6 +262,9 @@ std::string spell_flags( const spell_data_t* spell )
 
   if ( spell -> flags( SPELL_ATTR_PASSIVE ) )
     s << "Passive, ";
+
+  if ( spell -> flags( SPELL_ATTR_HIDDEN ) )
+    s << "Hidden, ";
 
   if ( s.tellp() > 1 )
   {

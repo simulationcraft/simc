@@ -46,13 +46,16 @@ const char* wow_version( bool ptr );
 const char* wow_ptr_status( bool ptr );
 const item_data_t* items( bool ptr );
 std::size_t        n_items( bool ptr );
+const item_enchantment_data_t* item_enchantments( bool ptr );
+std::size_t        n_item_enchantments( bool ptr );
+const gem_property_data_t* gem_properties( bool ptr );
 specialization_e translate_spec_str   ( player_e ptype, const std::string& spec_str );
 std::string specialization_string     ( specialization_e spec );
 double fmt_value( double v, effect_type_t type, effect_subtype_t sub_type );
 const std::string& get_token( unsigned int id_spell );
 bool add_token( unsigned int id_spell, const std::string& token_name, bool ptr );
 unsigned int get_token_id( const std::string& token );
-
+bool valid_gem_color( unsigned color );
 }
 
 // ==========================================================================
@@ -288,6 +291,11 @@ public:
   double delta( const item_t* item ) const;
   double min( const item_t* item ) const;
   double max( const item_t* item ) const;
+
+  double average( const item_t& item ) const { return average( &item ); }
+  double delta( const item_t& item ) const { return delta( &item ); }
+  double min( const item_t& item ) const { return min( &item ); }
+  double max( const item_t& item ) const { return max( &item ); }
 
   bool override_field( const std::string& field, double value );
 
@@ -855,6 +863,15 @@ public:
 
   std::size_t n_items() const
   { return dbc::n_items( ptr ); }
+
+  const item_enchantment_data_t* item_enchantments() const
+  { return dbc::item_enchantments( ptr ); }
+
+  std::size_t n_item_enchantments() const
+  { return dbc::n_item_enchantments( ptr ); }
+
+  const gem_property_data_t* gem_properties() const
+  { return dbc::gem_properties( ptr ); }
 
   bool add_token( unsigned int id_spell, const std::string& token_name ) const
   { return dbc::add_token( id_spell, token_name, ptr ); }

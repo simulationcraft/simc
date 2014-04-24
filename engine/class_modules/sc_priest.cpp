@@ -3327,31 +3327,6 @@ struct void_entropy_t : public priest_spell_t
 
    }
 
-  virtual action_state_t* new_state() override
-  { return new shadow_orb_state_t( this, target ); }
-
-  virtual action_state_t* get_state( const action_state_t* s = nullptr ) override
-  {
-    action_state_t* s_ = priest_spell_t::get_state( s );
-
-    if ( !s )
-    {
-      shadow_orb_state_t* ds_ = static_cast<shadow_orb_state_t*>( s_ );
-      ds_ -> orbs_used = 0;
-    }
-
-    return s_;
-  }
-
-  virtual void snapshot_state( action_state_t* state, dmg_e type ) override
-  {
-    shadow_orb_state_t& dp_state = static_cast<shadow_orb_state_t&>( *state );
-
-    dp_state.orbs_used = as<int>( shadow_orbs_to_consume() );
-
-    priest_spell_t::snapshot_state( state, type );
-  }
-
   virtual void consume_resource() override
   {
     resource_consumed = cost();
@@ -3375,7 +3350,7 @@ struct void_entropy_t : public priest_spell_t
    {
      double m = priest_spell_t::action_ta_multiplier();
 
-     m *= priest.resources.current[ current_resource() ];
+     m *= shadow_orbs_to_consume();
 
      return m;
    }

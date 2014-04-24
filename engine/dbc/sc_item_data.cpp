@@ -5,25 +5,6 @@
 
 #include "simulationcraft.hpp"
 
-namespace   // UNNAMED NAMESPACE ==========================================
-{
-
-std::size_t encode_item_enchant_stats( const item_enchantment_data_t& enchantment, std::vector<stat_pair_t>& stats )
-{
-  assert( enchantment.id );
-
-  for ( int i = 0; i < 3; i++ )
-  {
-    stat_pair_t s = item_database::item_enchantment_effect_stats( enchantment, i );
-    if ( s.stat != STAT_NONE )
-      stats.push_back( s );
-  }
-
-  return stats.size();
-}
-
-}  // UNNAMED NAMESPACE ====================================================
-
 stat_pair_t item_database::item_enchantment_effect_stats( const item_enchantment_data_t& enchantment, int index )
 {
   assert( enchantment.id );
@@ -35,6 +16,36 @@ stat_pair_t item_database::item_enchantment_effect_stats( const item_enchantment
   return stat_pair_t();
 }
 
+stat_pair_t item_database::item_enchantment_effect_stats( player_t* player,
+                                                          const item_enchantment_data_t& enchantment,
+                                                          int index )
+{
+  assert( enchantment.id );
+  assert( index >= 0 && index < 3 );
+
+  if ( enchantment.ench_type[ index ] != ITEM_ENCHANTMENT_STAT )
+    return stat_pair_t();
+  stat_e stat = util::translate_item_mod( enchantment.ench_prop[ index ] );
+  double value = 0;
+
+  if ( enchantment.id_scaling == 0 )
+    value = enchantment.ench_amount[ index ];
+  else
+  {
+    unsigned level = player -> level;
+
+    if ( static_cast< unsigned >( player -> level ) > enchantment.max_scaling_level )
+      level = enchantment.max_scaling_level;
+
+    double budget = player -> dbc.spell_scaling( static_cast< player_e >( enchantment.id_scaling ), level );
+    value = util::round( budget * enchantment.ench_coeff[ index ] );
+  }
+
+  if ( stat != STAT_NONE && value != 0 )
+    return stat_pair_t( stat, value );
+
+  return stat_pair_t();
+}
 
 std::string item_database::stat_to_str( int stat, int stat_amount )
 {
@@ -346,53 +357,6 @@ uint32_t item_database::weapon_dmg_max( item_t& item )
                             item.parsed.data.delay / 1000.0 * ( 1 + item.parsed.data.dmg_range / 2 ) + 0.5 );
 }
 
-bool item_database::parse_gems( item_t& item )
-{
-  bool match = true;
-
-  for ( size_t i = 0; i < sizeof_array( item.parsed.gem_id ); i++ )
-  {
-    if ( item.parsed.gem_id[ i ] == 0 )
-    {
-      /// Check if there's a gem slot, if so, this is ungemmed item.
-      if ( item.parsed.data.socket_color[ i ] )
-        match = false;
-      continue;
-    }
-
-    if ( item.parsed.data.socket_color[ i ] )
-    {
-      if ( ! ( item_t::parse_gem( item, item.parsed.gem_id[ i ] ) & item.parsed.data.socket_color[ i ] ) )
-        match = false;
-    }
-    else
-    {
-      // Naively accept gems to wrist/hands/waist past the "official" sockets, but only a
-      // single extra one. Wrist/hands should be checked against player professions at
-      // least ..
-      // Also accept it on main/offhands for the new 5.1 legendary questline stuff
-      if ( item.slot == SLOT_WRISTS || item.slot == SLOT_HANDS ||
-           item.slot == SLOT_WAIST || item.slot == SLOT_MAIN_HAND ||
-           item.slot == SLOT_OFF_HAND )
-      {
-        item_t::parse_gem( item, item.parsed.gem_id[ i ] );
-        break;
-      }
-    }
-  }
-
-  // Socket bonus
-  const item_enchantment_data_t& socket_bonus = item.player -> dbc.item_enchantment( item.parsed.data.id_socket_bonus );
-  if ( match && socket_bonus.id )
-  {
-    std::vector<stat_pair_t> s;
-    if ( encode_item_enchant_stats( socket_bonus, s ) )
-      item.parsed.gem_stats.insert( item.parsed.gem_stats.end(), s.begin(), s.end() );
-  }
-
-  return true;
-}
-
 bool item_database::parse_item_spell_enchant( item_t& item,
                                               std::vector<stat_pair_t>& stats,
                                               special_effect_t& effect,
@@ -407,7 +371,7 @@ bool item_database::parse_item_spell_enchant( item_t& item,
     return true;
   }
 
-  effect.clear();
+  effect.reset();
   stats.clear();
 
   for ( unsigned i = 0, k = 0; i < 3; ++i ) // loop through the 3 enchant effects and append them to result string
@@ -489,23 +453,7 @@ bool item_database::parse_item_spell_enchant( item_t& item,
   return true;
 }
 
-// item_database_t::download_slot ===========================================
-
-bool item_database::download_slot( item_t& item )
-{
-  bool ret = load_item_from_data( item );
-
-  if ( ret )
-  {
-    parse_gems( item );
-
-    item.source_str = "Local";
-  }
-
-  return ret;
-}
-
-// item_database_t::load_item_from_data =====================================
+// item_database_t::// item_database_t::load_item_from_data =====================================
 
 bool item_database::load_item_from_data( item_t& item )
 {
@@ -518,6 +466,8 @@ bool item_database::load_item_from_data( item_t& item )
   item.parsed.data.name = item.name_str.c_str();
 
   util::tokenize( item.name_str );
+  
+  // Socket bonus needs to be added separately ...
 
   return true;
 }
@@ -547,50 +497,6 @@ bool item_database::download_glyph( player_t* player, std::string& glyph_name,
   glyph_name = glyph -> name;
 
   return true;
-}
-
-// item_database_t::parse_gem ===============================================
-
-unsigned item_database::parse_gem( item_t& item, unsigned gem_id )
-{
-  if ( gem_id == 0 )
-    return GEM_NONE;
-
-  const item_data_t* gem = item.player -> dbc.item( gem_id );
-  if ( ! gem )
-    return GEM_NONE;
-
-  const gem_property_data_t& gem_prop = item.player -> dbc.gem_property( gem -> gem_properties );
-  if ( ! gem_prop.id )
-    return GEM_NONE;
-
-  if ( gem_prop.color == SOCKET_COLOR_META )
-  {
-    // For now, make meta gems simply parse the name out
-    std::string gem_name = gem -> name;
-    std::size_t cut_pt = gem_name.rfind( " Diamond" );
-    if ( cut_pt != gem_name.npos )
-    {
-      gem_name.erase( cut_pt );
-      util::tokenize( gem_name );
-      meta_gem_e meta_type = util::parse_meta_gem_type( gem_name );
-      if ( meta_type != META_GEM_NONE )
-        item.player -> meta_gem = meta_type;
-    }
-  }
-  else
-  {
-    // Fetch gem stats
-    const item_enchantment_data_t& item_ench = item.player -> dbc.item_enchantment( gem_prop.enchant_id );
-    if ( item_ench.id )
-    {
-      std::vector<stat_pair_t> stats;
-      if ( encode_item_enchant_stats( item_ench, stats ) )
-        item.parsed.gem_stats.insert( item.parsed.gem_stats.end(), stats.begin(), stats.end() );
-    }
-  }
-
-  return gem_prop.color;
 }
 
 // item_database::upgrade_ilevel ============================================
@@ -623,3 +529,36 @@ double item_database::item_budget( const item_t* item, unsigned max_ilevel )
 
   return m_scale;
 }
+
+// item_database::parse_tokens ==============================================
+
+size_t item_database::parse_tokens( std::vector<token_t>& tokens,
+                                    const std::string&    encoded_str )
+{
+  std::vector<std::string> splits = util::string_split( encoded_str, "_" );
+
+  tokens.resize( splits.size() );
+  for ( size_t i = 0; i < splits.size(); i++ )
+  {
+    token_t& t = tokens[ i ];
+    t.full = splits[ i ];
+    int index = 0;
+    while ( t.full[ index ] != '\0' &&
+            t.full[ index ] != '%'  &&
+            ! isalpha( static_cast<unsigned char>( t.full[ index ] ) ) ) index++;
+    if ( index == 0 )
+    {
+      t.name = t.full;
+      t.value = 0;
+    }
+    else
+    {
+      t.name = t.full.substr( index );
+      t.value_str = t.full.substr( 0, index );
+      t.value = atof( t.value_str.c_str() );
+    }
+  }
+
+  return splits.size();
+}
+

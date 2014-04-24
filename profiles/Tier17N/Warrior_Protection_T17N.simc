@@ -1,0 +1,82 @@
+warrior="Warrior_Protection_T16H_lvl_100"
+level=100
+race=night_elf
+role=tank
+position=front
+professions=engineering=600/blacksmithing=600
+talents=http://us.battle.net/wow/en/tool/talent-calculator#Zb!0110212
+glyphs=unending_rage/death_from_above/bull_rush/cleave
+spec=protection
+
+# This default action priority list is automatically created based on your character.
+# It is a attempt to provide you with a action list that is both simple and practicable,
+# while resulting in a meaningful and good simulation. It may not result in the absolutely highest possible dps.
+# Feel free to edit, adapt and improve it to your own needs.
+# SimulationCraft is always looking for updates and improvements to the default action lists.
+
+# Executed before combat begins. Accepts non-harmful actions only.
+
+actions.precombat=flask,type=earth
+actions.precombat+=/food,type=chun_tian_spring_rolls
+# Snapshot raid buffed stats before combat begins and pre-potting is done.
+actions.precombat+=/snapshot_stats
+actions.precombat+=/stance,choose=defensive
+actions.precombat+=/mountains_potion
+
+# Executed every time the actor is available.
+
+actions=charge
+actions+=/auto_attack
+actions+=/berserker_rage,if=buff.enrage.down
+actions+=/mountains_potion,if=incoming_damage_2500ms>health.max*0.6&(buff.shield_wall.down&buff.last_stand.down)
+actions+=/heroic_strike,if=buff.ultimatum.up
+actions+=/shield_block
+actions+=/shield_barrier,if=incoming_damage_1500ms>health.max*0.3|rage>rage.max-20
+actions+=/shield_wall,if=incoming_damage_2500ms>health.max*0.6
+actions+=/last_stand,if=incoming_damage_2500ms>health.max*0.6&buff.shield_wall.down
+actions+=/run_action_list,name=normal_rotation
+
+actions.normal_rotation=shield_slam
+actions.normal_rotation+=/revenge
+actions.normal_rotation+=/heroic_strike,if=buff.ultimatum.up
+actions.normal_rotation+=/ravager,if=talent.ravager.enabled
+actions.normal_rotation+=/thunder_clap
+actions.normal_rotation+=/demoralizing_shout
+actions.normal_rotation+=/impending_victory,if=talent.impending_victory.enabled
+actions.normal_rotation+=/victory_rush,if=!talent.impending_victory.enabled
+actions.normal_rotation+=/bloodbath,if=talent.bloodbath.enabled
+actions.normal_rotation+=/bladestorm,if=talent.bladestorm.enabled
+actions.normal_rotation+=/shockwave,if=talent.shockwave.enabled
+actions.normal_rotation+=/storm_bolt,if=talent.storm_bolt.enabled
+actions.normal_rotation+=/dragon_roar,if=talent.dragon_roar.enabled
+actions.normal_rotation+=/devastate
+
+head=helmet_of_the_prehistoric_marauder,id=99418,upgrade=2,gems=16crit_8haste_8crit
+neck=malkoroks_tainted_dog_tags,id=105566,upgrade=2
+shoulders=spaulders_of_the_fallen_warchief,id=104645,upgrade=2,gems=16crit_16crit,enchant=10str_5crit
+back=tigerclaw_cape,id=98147,upgrade=2,gems=8haste_8crit,enchant=9crit
+chest=breastplate_of_shamanic_mirrors,id=105532,upgrade=2,gems=8haste_8crit_8haste_8crit_16crit,enchant=3all
+shirt=precious_ribbon,id=52019
+wrists=bracers_of_blind_hatred,id=105456,upgrade=2,gems=16crit,enchant=9mastery
+hands=gauntlets_of_the_prehistoric_marauder,id=99412,upgrade=2,gems=8haste_8crit_8haste_8crit_16crit,enchant=9mastery
+waist=demolishers_reinforced_belt,id=104513,upgrade=2,gems=8haste_8crit_16crit_16crit
+legs=legplates_of_willful_doom,id=104569,upgrade=2,gems=16crit_16crit_16crit,enchant=14str_8crit
+feet=greaves_of_sublime_superiority,id=105478,upgrade=2,gems=8haste_8crit,enchant=7mastery
+finger1=seal_of_the_forgotten_kings,id=105589,upgrade=2,gems=16crit
+finger2=sorrowpath_signet,id=105436,upgrade=2
+trinket1=evil_eye_of_galakras,id=105491,upgrade=2
+trinket2=thoks_tail_tip,id=105609,upgrade=2
+main_hand=encapsulated_essence_of_immerseus,id=105417,upgrade=2
+off_hand=shield_of_mockery,id=105481,upgrade=2
+
+# Gear Summary
+# gear_strength=955
+# gear_agility=3
+# gear_stamina=1528
+# gear_intellect=3
+# gear_spirit=3
+# gear_crit_rating=879
+# gear_haste_rating=297
+# gear_mastery_rating=420
+# gear_armor=2073
+# tier16_2pc_melee=1

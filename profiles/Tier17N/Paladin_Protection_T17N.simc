@@ -1,0 +1,80 @@
+paladin="Paladin_Protection_T17N"
+level=100
+race=blood_elf
+role=tank
+position=front
+professions=Blacksmithing=600/Enchanting=600
+talents=http://us.battle.net/wow/en/tool/talent-calculator#bZ!201121.
+glyphs=focused_shield/alabaster_shield/divine_protection
+spec=protection
+
+# This default action priority list is automatically created based on your character.
+# It is a attempt to provide you with a action list that is both simple and practicable,
+# while resulting in a meaningful and good simulation. It may not result in the absolutely highest possible dps.
+# Feel free to edit, adapt and improve it to your own needs.
+# SimulationCraft is always looking for updates and improvements to the default action lists.
+
+# Executed before combat begins. Accepts non-harmful actions only.
+
+actions.precombat=flask,type=earth
+actions.precombat+=/food,type=chun_tian_spring_rolls
+actions.precombat+=/blessing_of_kings,if=(!aura.str_agi_int.up)&(aura.mastery.up)
+actions.precombat+=/blessing_of_might,if=!aura.mastery.up
+actions.precombat+=/seal_of_insight
+actions.precombat+=/sacred_shield,if=talent.sacred_shield.enabled
+# Snapshot raid buffed stats before combat begins and pre-potting is done.
+actions.precombat+=/snapshot_stats
+
+# Executed every time the actor is available.
+
+actions=/auto_attack
+actions+=/blood_fury
+actions+=/berserking
+actions+=/arcane_torrent
+actions+=/holy_avenger,if=talent.holy_avenger.enabled
+actions+=/divine_protection
+actions+=/guardian_of_ancient_kings
+actions+=/eternal_flame,if=talent.eternal_flame.enabled&(buff.eternal_flame.remains<2&buff.bastion_of_glory.react>2&(holy_power>=3|buff.divine_purpose.react|buff.bastion_of_power.react))
+actions+=/eternal_flame,if=talent.eternal_flame.enabled&(buff.bastion_of_power.react&buff.bastion_of_glory.react>=5)
+actions+=/shield_of_the_righteous,if=holy_power>=5|buff.divine_purpose.react|incoming_damage_1500ms>=health.max*0.3
+actions+=/wait,sec=cooldown.judgment.remains,if=talent.sanctified_wrath.enabled&cooldown.judgment.remains>0&cooldown.judgment.remains<=0.5
+actions+=/crusader_strike
+actions+=/wait,sec=cooldown.crusader_strike.remains,if=cooldown.crusader_strike.remains>0&cooldown.crusader_strike.remains<=0.5
+actions+=/judgment
+actions+=/wait,sec=cooldown.judgment.remains,if=cooldown.judgment.remains>0&cooldown.judgment.remains<=0.5&(cooldown.crusader_strike.remains-cooldown.judgment.remains)>=0.5
+actions+=/avengers_shield
+actions+=/sacred_shield,if=talent.sacred_shield.enabled&target.dot.sacred_shield.remains<5
+actions+=/holy_wrath
+actions+=/execution_sentence,if=talent.execution_sentence.enabled
+actions+=/lights_hammer,if=talent.lights_hammer.enabled
+actions+=/hammer_of_wrath
+actions+=/consecration,if=target.debuff.flying.down&!ticking
+actions+=/holy_prism,if=talent.holy_prism.enabled
+actions+=/sacred_shield,if=talent.sacred_shield.enabled
+
+head=faceguard_of_winged_triumph,id=99370,upgrade=2,gems=16haste_8crit_8haste_14sta
+neck=juggernauts_ignition_keys,id=105513,upgrade=2
+shoulders=shoulderguards_of_winged_triumph,id=99364,upgrade=2,gems=16haste_16haste
+back=qianying_fortitude_of_niuzao,id=102250,upgrade=2,gems=8crit_8haste_9sta
+chest=chestguard_of_winged_triumph,id=99368,upgrade=2,gems=8crit_8haste_8crit_8haste_8crit_8haste_14sta
+wrists=bubbleburst_bracers,id=105411,upgrade=2,gems=16haste,enchant=7mastery
+hands=handguards_of_winged_triumph,id=99369,upgrade=2,gems=16haste_16haste_16haste
+waist=demolishers_reinforced_belt,id=105509,upgrade=2,gems=16haste_16haste_16haste
+legs=legplates_of_unthinking_strife,id=105640,upgrade=2,gems=16haste_16haste_16haste,enchant=10sta
+feet=wolfrider_spurs,id=105531,upgrade=2,gems=16haste_60crit,enchant=7haste
+finger1=asgorathian_blood_seal,id=105620,upgrade=2,gems=8crit_8haste_6haste
+finger2=seal_of_the_forgotten_kings,id=105589,upgrade=2,gems=8crit_8haste_6haste
+trinket1=vial_of_living_corruption,id=105568,upgrade=2
+trinket2=thoks_tail_tip,id=105609,upgrade=2
+main_hand=siegecrafters_forge_hammer,id=105621,upgrade=2,gems=16haste,enchant=windsong
+off_hand=bulwark_of_the_fallen_general,id=105556,upgrade=2,gems=16haste
+
+# Gear Summary
+# gear_strength=928
+# gear_stamina=1728
+# gear_crit_rating=507
+# gear_haste_rating=814
+# gear_mastery_rating=363
+# gear_armor=2076
+# tier16_2pc_tank=1
+# tier16_4pc_tank=1

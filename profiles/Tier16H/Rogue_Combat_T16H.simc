@@ -41,15 +41,14 @@ actions+=/vanish,if=time>10&(combo_points<3|(talent.anticipation.enabled&anticip
 actions+=/killing_spree,if=energy<45
 actions+=/adrenaline_rush,if=energy<35|buff.shadow_blades.up
 actions+=/slice_and_dice,if=buff.slice_and_dice.remains<2|(buff.slice_and_dice.remains<15&buff.bandits_guile.stack=11&combo_points>=4)
-actions+=/marked_for_death,if=talent.marked_for_death.enabled&(combo_points=0&dot.revealing_strike.ticking)
+actions+=/marked_for_death,if=talent.marked_for_death.enabled&(combo_points<=1&dot.revealing_strike.ticking)
 actions+=/run_action_list,name=generator,if=combo_points<5|(talent.anticipation.enabled&anticipation_charges<=4&!dot.revealing_strike.ticking)
 actions+=/run_action_list,name=finisher,if=!talent.anticipation.enabled|buff.deep_insight.up|cooldown.shadow_blades.remains<=11|anticipation_charges>=4|(buff.shadow_blades.up&anticipation_charges>=3)
 actions+=/run_action_list,name=generator,if=energy>60|buff.deep_insight.down|buff.deep_insight.remains>5-combo_points
 
 # Combo point generators
 
-actions.generator=fan_of_knives,line_cd=5,if=active_enemies>=4
-actions.generator+=/revealing_strike,if=ticks_remain<2
+actions.generator=revealing_strike,if=ticks_remain<2
 actions.generator+=/sinister_strike
 
 # Combo point finishers
@@ -81,7 +80,7 @@ off_hand=hvitserks_formidable_shanker,id=105601,upgrade=2,gems=160agi_60agi,ench
 # gear_intellect=80
 # gear_spirit=80
 # gear_hit_rating=160
-# gear_crit_rating=1099
+# gear_crit_rating=791
 # gear_haste_rating=1380
 # gear_mastery_rating=535
 # gear_armor=413
@@ -89,6 +88,3 @@ off_hand=hvitserks_formidable_shanker,id=105601,upgrade=2,gems=160agi_60agi,ench
 # meta_gem=capacitive_primal
 # tier16_2pc_melee=1
 # tier16_4pc_melee=1
-# hands=gloves_of_the_barbed_assassin,heroic=1,addon=synapse_springs_2
-# main_hand=enchanted_shaotien_saber,heroic=1,elite=1,weapon=sword_2.60speed_370min_690max,enchant=dancing_steel
-# off_hand=hvitserks_formidable_shanker,heroic=1,elite=1,weapon=dagger_1.80speed_256min_478max,enchant=dancing_steel

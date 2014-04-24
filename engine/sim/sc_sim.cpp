@@ -1044,7 +1044,6 @@ void sim_t::combat_begin()
     if ( overrides.mortal_wounds          ) t -> debuffs.mortal_wounds          -> override_buff();
     if ( overrides.physical_vulnerability ) t -> debuffs.physical_vulnerability -> override_buff();
     if ( overrides.weakened_armor         ) t -> debuffs.weakened_armor         -> override_buff( 3 );
-    if ( overrides.weakened_blows         ) t -> debuffs.weakened_blows         -> override_buff();
     if ( overrides.bleeding               ) t -> debuffs.bleeding               -> override_buff( 1, 1.0 );
   }
 
@@ -1765,7 +1764,6 @@ void sim_t::use_optimal_buffs_and_debuffs( int value )
   overrides.mortal_wounds           = optimal_raid;
   overrides.physical_vulnerability  = optimal_raid;
   overrides.weakened_armor          = optimal_raid;
-  overrides.weakened_blows          = optimal_raid;
   overrides.bleeding                = optimal_raid;
 
   overrides.bloodlust               = optimal_raid;
@@ -1889,7 +1887,6 @@ void sim_t::create_options()
     opt_int( "override.mortal_wounds", overrides.mortal_wounds ),
     opt_int( "override.physical_vulnerability", overrides.physical_vulnerability ),
     opt_int( "override.weakened_armor", overrides.weakened_armor ),
-    opt_int( "override.weakened_blows", overrides.weakened_blows ),
     opt_int( "override.bleeding", overrides.bleeding ),
     opt_func( "override.spell_data", parse_override_spell_data ),
     opt_float( "override.target_health", overrides.target_health ),

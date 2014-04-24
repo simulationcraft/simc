@@ -667,10 +667,6 @@ static bool init_debuffs( sim_t* sim )
     p -> debuffs.weakened_armor          = buff_creator_t( p, "weakened_armor", p -> find_spell( 113746 ) )
                                            .default_value( std::fabs( p -> find_spell( 113746 ) -> effectN( 1 ).percent() ) )
                                            .add_invalidate( CACHE_ARMOR );
-
-    p -> debuffs.weakened_blows          = buff_creator_t( p, "weakened_blows", p -> find_spell( 115798 ) )
-                                           .default_value( std::fabs( p -> find_spell( 115798 ) -> effectN( 1 ).percent() ) )
-                                           .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
   }
 
   return true;
@@ -783,9 +779,8 @@ bool player_t::init( sim_t* sim )
   range::for_each( sim -> actor_list, std::mem_fn( &player_t::init_initial_stats ) );
   range::for_each( sim -> actor_list, std::mem_fn( &player_t::init_defense ) );
   range::for_each( sim -> actor_list, std::mem_fn( &player_t::create_buffs ) ); // keep here for now
-  range::for_each( sim -> actor_list, std::mem_fn( &player_t::init_enchant ) );
   range::for_each( sim -> actor_list, std::mem_fn( &player_t::init_scaling ) );
-  range::for_each( sim -> actor_list, std::mem_fn( &player_t::init_unique_gear ) );
+  range::for_each( sim -> actor_list, std::mem_fn( &player_t::init_special_effects ) ); // Must be before _init_actions
   range::for_each( sim -> actor_list, std::mem_fn( &player_t::_init_actions ) );
   range::for_each( sim -> actor_list, std::mem_fn( &player_t::init_gains ) );
   range::for_each( sim -> actor_list, std::mem_fn( &player_t::init_procs ) );
@@ -811,6 +806,12 @@ bool player_t::init( sim_t* sim )
   }
 
   return true;
+}
+
+void player_t::register_callbacks()
+{
+  for ( size_t i = 0, end = callbacks.all_callbacks.size(); i < end; i++ )
+    callbacks.all_callbacks[ i ] -> initialize();
 }
 
 // player_t::init ===========================================================
@@ -1199,136 +1200,17 @@ void player_t::init_items()
 
 // player_t::init_meta_gem ==================================================
 
-void player_t::init_meta_gem( gear_stats_t& item_stats )
+void player_t::init_meta_gem( gear_stats_t& )
 {
   if ( ! meta_gem_str.empty() ) meta_gem = util::parse_meta_gem_type( meta_gem_str );
 
   if ( sim -> debug ) sim -> out_debug.printf( "Initializing meta-gem for player (%s)", name() );
 
-  if      ( meta_gem == META_AGILE_SHADOWSPIRIT         ) item_stats.attribute[ ATTR_AGILITY ] += 54;
-  else if ( meta_gem == META_AGILE_PRIMAL               ) item_stats.attribute[ ATTR_AGILITY ] += 216;
-  else if ( meta_gem == META_AUSTERE_EARTHSIEGE         ) item_stats.attribute[ ATTR_STAMINA ] += 32;
-  else if ( meta_gem == META_AUSTERE_SHADOWSPIRIT       ) item_stats.attribute[ ATTR_STAMINA ] += 81;
-  else if ( meta_gem == META_AUSTERE_PRIMAL             ) item_stats.attribute[ ATTR_STAMINA ] += 324;
-  else if ( meta_gem == META_BEAMING_EARTHSIEGE         ) item_stats.crit_rating += 21;
-  else if ( meta_gem == META_BRACING_EARTHSIEGE         ) item_stats.attribute[ ATTR_INTELLECT ] += 21;
-  else if ( meta_gem == META_BRACING_EARTHSTORM         ) item_stats.attribute[ ATTR_INTELLECT ] += 12;
-  else if ( meta_gem == META_BRACING_SHADOWSPIRIT       ) item_stats.attribute[ ATTR_INTELLECT ] += 54;
-  else if ( meta_gem == META_BURNING_SHADOWSPIRIT       ) item_stats.attribute[ ATTR_INTELLECT ] += 54;
-  else if ( meta_gem == META_BURNING_PRIMAL             ) item_stats.attribute[ ATTR_INTELLECT ] += 216;
-  else if ( meta_gem == META_CHAOTIC_SHADOWSPIRIT       ) item_stats.crit_rating += 54;
-  else if ( meta_gem == META_CHAOTIC_SKYFIRE            ) item_stats.crit_rating += 12;
-  else if ( meta_gem == META_CHAOTIC_SKYFLARE           ) item_stats.crit_rating += 21;
-  else if ( meta_gem == META_DESTRUCTIVE_SHADOWSPIRIT   ) item_stats.crit_rating += 54;
-  else if ( meta_gem == META_DESTRUCTIVE_PRIMAL         ) item_stats.crit_rating += 432;
-  else if ( meta_gem == META_DESTRUCTIVE_SKYFIRE        ) item_stats.crit_rating += 12;
-  else if ( meta_gem == META_DESTRUCTIVE_SKYFLARE       ) item_stats.crit_rating += 21;
-  else if ( meta_gem == META_EFFULGENT_SHADOWSPIRIT     ) item_stats.attribute[ ATTR_STAMINA ] += 81;
-  else if ( meta_gem == META_EMBER_SHADOWSPIRIT         ) item_stats.attribute[ ATTR_INTELLECT ] += 54;
-  else if ( meta_gem == META_EMBER_PRIMAL               ) item_stats.attribute[ ATTR_INTELLECT ] += 216;
-  else if ( meta_gem == META_EMBER_SKYFIRE              ) item_stats.attribute[ ATTR_INTELLECT ] += 12;
-  else if ( meta_gem == META_EMBER_SKYFLARE             ) item_stats.attribute[ ATTR_INTELLECT ] += 21;
-  else if ( meta_gem == META_ENIGMATIC_SHADOWSPIRIT     ) item_stats.crit_rating += 54;
-  else if ( meta_gem == META_ENIGMATIC_PRIMAL           ) item_stats.crit_rating += 432;
-  else if ( meta_gem == META_ENIGMATIC_SKYFLARE         ) item_stats.crit_rating += 21;
-  else if ( meta_gem == META_ENIGMATIC_STARFLARE        ) item_stats.crit_rating += 17;
-  else if ( meta_gem == META_ENIGMATIC_SKYFIRE          ) item_stats.crit_rating += 12;
-  else if ( meta_gem == META_ETERNAL_EARTHSIEGE         ) item_stats.dodge_rating += 21;
-  else if ( meta_gem == META_ETERNAL_SHADOWSPIRIT       ) item_stats.attribute[ ATTR_STAMINA ] += 81;
-  else if ( meta_gem == META_ETERNAL_PRIMAL             ) item_stats.dodge_rating += 432;
-  else if ( meta_gem == META_FLEET_SHADOWSPIRIT         ) item_stats.mastery_rating += 54;
-  else if ( meta_gem == META_FLEET_PRIMAL               ) item_stats.mastery_rating += 432;
-  else if ( meta_gem == META_FORLORN_SHADOWSPIRIT       ) item_stats.attribute[ ATTR_INTELLECT ] += 54;
-  else if ( meta_gem == META_FORLORN_PRIMAL             ) item_stats.attribute[ ATTR_INTELLECT ] += 216;
-  else if ( meta_gem == META_FORLORN_SKYFLARE           ) item_stats.attribute[ ATTR_INTELLECT ] += 21;
-  else if ( meta_gem == META_FORLORN_STARFLARE          ) item_stats.attribute[ ATTR_INTELLECT ] += 17;
-  else if ( meta_gem == META_IMPASSIVE_SHADOWSPIRIT     ) item_stats.crit_rating += 54;
-  else if ( meta_gem == META_IMPASSIVE_PRIMAL           ) item_stats.crit_rating += 432;
-  else if ( meta_gem == META_IMPASSIVE_SKYFLARE         ) item_stats.crit_rating += 21;
-  else if ( meta_gem == META_IMPASSIVE_STARFLARE        ) item_stats.crit_rating += 17;
-  else if ( meta_gem == META_INSIGHTFUL_EARTHSIEGE      ) item_stats.attribute[ ATTR_INTELLECT ] += 21;
-  else if ( meta_gem == META_INSIGHTFUL_EARTHSTORM      ) item_stats.attribute[ ATTR_INTELLECT ] += 12;
-  else if ( meta_gem == META_INVIGORATING_EARTHSIEGE    ) item_stats.haste_rating += 21;
-  else if ( meta_gem == META_PERSISTENT_EARTHSHATTER    ) item_stats.crit_rating += 21;
-  else if ( meta_gem == META_PERSISTENT_EARTHSIEGE      ) item_stats.crit_rating += 17;
-  else if ( meta_gem == META_POWERFUL_EARTHSHATTER      ) item_stats.attribute[ ATTR_STAMINA ] += 26;
-  else if ( meta_gem == META_POWERFUL_EARTHSIEGE        ) item_stats.attribute[ ATTR_STAMINA ] += 32;
-  else if ( meta_gem == META_POWERFUL_EARTHSTORM        ) item_stats.attribute[ ATTR_STAMINA ] += 18;
-  else if ( meta_gem == META_POWERFUL_SHADOWSPIRIT      ) item_stats.attribute[ ATTR_STAMINA ] += 81;
-  else if ( meta_gem == META_POWERFUL_PRIMAL            ) item_stats.attribute[ ATTR_STAMINA ] += 324;
-  else if ( meta_gem == META_RELENTLESS_EARTHSIEGE      ) item_stats.attribute[ ATTR_AGILITY ] += 21;
-  else if ( meta_gem == META_RELENTLESS_EARTHSTORM      ) item_stats.attribute[ ATTR_AGILITY ] += 12;
-  else if ( meta_gem == META_REVERBERATING_SHADOWSPIRIT ) item_stats.attribute[ ATTR_STRENGTH ] += 54;
-  else if ( meta_gem == META_REVERBERATING_PRIMAL       ) item_stats.attribute[ ATTR_STRENGTH ] += 216;
-  else if ( meta_gem == META_REVITALIZING_SHADOWSPIRIT  ) item_stats.attribute[ ATTR_SPIRIT ] += 54;
-  else if ( meta_gem == META_REVITALIZING_PRIMAL        ) item_stats.attribute[ ATTR_SPIRIT ] += 432;
-  else if ( meta_gem == META_REVITALIZING_SKYFLARE      ) item_stats.attribute[ ATTR_SPIRIT ] += 22;
-  else if ( meta_gem == META_SWIFT_SKYFIRE              ) item_stats.crit_rating += 12;
-  else if ( meta_gem == META_SWIFT_SKYFLARE             ) item_stats.crit_rating += 21;
-  else if ( meta_gem == META_SWIFT_STARFLARE            ) item_stats.crit_rating += 17;
-  else if ( meta_gem == META_TIRELESS_STARFLARE         ) item_stats.attribute[ ATTR_INTELLECT ] += 17;
-  else if ( meta_gem == META_TIRELESS_SKYFLARE          ) item_stats.attribute[ ATTR_INTELLECT ] += 21;
-  else if ( meta_gem == META_TRENCHANT_EARTHSHATTER     ) item_stats.attribute[ ATTR_INTELLECT ] += 17;
-  else if ( meta_gem == META_TRENCHANT_EARTHSIEGE       ) item_stats.attribute[ ATTR_INTELLECT ] += 21;
-  else if ( meta_gem == META_CAPACITIVE_PRIMAL          ) item_stats.crit_rating += 324;
-  else if ( meta_gem == META_INDOMITABLE_PRIMAL         ) item_stats.attribute[ ATTR_STAMINA ] += 324;
-  else if ( meta_gem == META_COURAGEOUS_PRIMAL          ) item_stats.attribute[ ATTR_INTELLECT ] += 324;
-  else if ( meta_gem == META_SINISTER_PRIMAL            ) item_stats.crit_rating += 324;
-
   if ( ( meta_gem == META_AUSTERE_EARTHSIEGE ) || ( meta_gem == META_AUSTERE_SHADOWSPIRIT ) )
   {
     initial.armor_multiplier *= 1.02;
   }
-  /*
-  else if ( ( meta_gem == META_EMBER_SHADOWSPIRIT ) || ( meta_gem == META_EMBER_SKYFIRE ) || ( meta_gem == META_EMBER_SKYFLARE ) )
-  {
-    mana_per_intellect *= 1.02;
-  }
-  else if ( meta_gem == META_BEAMING_EARTHSIEGE )
-  {
-    mana_per_intellect *= 1.02;
-  }
-  */
-  else if ( meta_gem == META_MYSTICAL_SKYFIRE )
-  {
-    special_effect_t data;
-    data.name_str     = "mystical_skyfire";
-    data.trigger_type = PROC_SPELL;
-    data.trigger_mask = RESULT_HIT_MASK;
-    data.stat         = STAT_HASTE_RATING;
-    data.stat_amount  = 320;
-    data.proc_chance  = 0.15;
-    data.duration     = timespan_t::from_seconds( 4 );
-    data.cooldown     = timespan_t::from_seconds( 45 );
 
-    unique_gear::register_stat_proc( this, data );
-  }
-  else if ( meta_gem == META_INSIGHTFUL_EARTHSTORM )
-  {
-    special_effect_t data;
-    data.name_str     = "insightful_earthstorm";
-    data.trigger_type = PROC_SPELL;
-    data.trigger_mask = RESULT_HIT_MASK;
-    data.stat         = STAT_MANA;
-    data.stat_amount  = 300;
-    data.proc_chance  = 0.05;
-    data.cooldown     = timespan_t::from_seconds( 15 );
-
-    unique_gear::register_stat_proc( this, data );
-  }
-  else if ( meta_gem == META_INSIGHTFUL_EARTHSIEGE )
-  {
-    special_effect_t data;
-    data.name_str     = "insightful_earthsiege";
-    data.trigger_type = PROC_SPELL;
-    data.trigger_mask = RESULT_HIT_MASK;
-    data.stat         = STAT_MANA;
-    data.stat_amount  = 600;
-    data.proc_chance  = 0.05;
-    data.cooldown     = timespan_t::from_seconds( 15 );
-
-    unique_gear::register_stat_proc( this, data );
-  }
 }
 
 // player_t::init_position ==================================================
@@ -1411,11 +1293,16 @@ void player_t::init_defense()
 
   // Armor Coefficient
   double a, b;
-  if ( level > 85 )
-  {
-    a = 4037.5;
-    b = -317117.5;
+  if ( level > 85 ) // Probably only works at level 100, assuming that they keep the same damage reduction % as now. (34.9%) Need to figure out the coefficients sometime.
+  { // For now, it's better than everything having 0.1% armor reduction.
+    a = 100;
+    b = -236.87;
   }
+  //else if ( level > 85 ) // need to update
+  //{
+  // a = 4037.5;
+  // b = -317117.5;
+  // }
   else if ( level > 80 )
   {
     a = 2167.5;
@@ -1450,22 +1337,25 @@ void player_t::init_weapon( weapon_t& w )
   if ( w.slot == SLOT_OFF_HAND  ) assert( w.type >= WEAPON_NONE && w.type < WEAPON_2H );
 }
 
-// player_t::init_unique_gear ===============================================
+// player_t::init_special_effects ===============================================
 
-void player_t::init_unique_gear()
+void player_t::init_special_effects()
 {
-  if ( sim -> debug ) sim -> out_debug.printf( "Initializing unique gear for player (%s)", name() );
+  if ( sim -> debug ) sim -> out_debug.printf( "Initializing special effects for player (%s)", name() );
+
+  const spell_data_t* totg = find_racial_spell( "Touch of the Grave" );
+  if ( totg -> ok() )
+  {
+    special_effect_t effect( this );
+    effect.spell_id = totg -> id();
+    effect.execute_action = new spell_t( "touch_of_the_grave", this, totg -> effectN( 1 ).trigger() );
+    effect.execute_action -> background = true;
+    special_effects.push_back( effect );
+
+    new dbc_proc_callback_t( this, special_effects.back() );
+  }
 
   unique_gear::init( this );
-}
-
-// player_t::init_enchant ===================================================
-
-void player_t::init_enchant()
-{
-  if ( sim -> debug ) sim -> out_debug.printf( "Initializing enchants for player (%s)", name() );
-
-  unique_gear::initialize_special_effects( this );
 }
 
 // player_t::init_resources =================================================
@@ -1627,7 +1517,8 @@ std::string player_t::init_use_item_actions( const std::string& append )
   for ( size_t i = 0; i < items.size(); ++i )
   {
     if ( items[ i ].slot == SLOT_HANDS ) continue;
-    if ( items[ i ].parsed.use.active() )
+
+    if ( items[ i ].has_use_special_effect() )
     {
       buffer += "/use_item,slot=";
       buffer += items[ i ].slot_name();
@@ -1637,7 +1528,7 @@ std::string player_t::init_use_item_actions( const std::string& append )
       }
     }
   }
-  if ( items[ SLOT_HANDS ].parsed.use.active() )
+  if ( items[ SLOT_HANDS ].has_use_special_effect() )
   {
     buffer += "/use_item,slot=";
     buffer += items[ SLOT_HANDS ].slot_name();
@@ -1658,11 +1549,11 @@ std::vector<std::string> player_t::get_item_actions()
   {
     // Make sure hands slot comes last
     if ( items[ i ].slot == SLOT_HANDS ) continue;
-    if ( items[ i ].parsed.use.active() )
+    if ( items[ i ].has_use_special_effect() )
       actions.push_back( std::string( "use_item,slot=" ) + items[ i ].slot_name() );
   }
 
-  if ( items[ SLOT_HANDS ].parsed.use.active() )
+  if ( items[ SLOT_HANDS ].has_use_special_effect() )
     actions.push_back( std::string( "use_item,slot=" ) + items[ SLOT_HANDS ].slot_name() );
 
   return actions;
@@ -1779,9 +1670,10 @@ std::string player_t::include_default_on_use_items( player_t& p, const std::stri
   for ( size_t i = 0; i < p.items.size(); i++ )
   {
     item_t& item = p.items[ i ];
-    if ( item.parsed.use.active() )
+    if ( item.has_use_special_effect() )
     {
-      if ( ! item.parsed.use.name_str.empty() && exclude_effects.find( item.parsed.use.name_str ) != std::string::npos )
+      const special_effect_t& effect = item.special_effect( SPECIAL_EFFECT_SOURCE_NONE, SPECIAL_EFFECT_USE );
+      if ( ! effect.name_str.empty() && exclude_effects.find( effect.name_str ) != std::string::npos )
         continue;
       s += "/use_item,name=";
       s += item.name();
@@ -1805,11 +1697,12 @@ std::string player_t::include_specific_on_use_item( player_t& p, const std::stri
   for ( size_t i = 0; i < p.items.size(); i++ )
   {
     item_t& item = p.items[ i ];
-    if ( item.parsed.use.active() )
+    const special_effect_t& effect = item.special_effect( SPECIAL_EFFECT_SOURCE_NONE, SPECIAL_EFFECT_USE );
+    if ( effect.type == SPECIAL_EFFECT_USE )
     {
       for ( size_t j = 0; j < splits.size(); ++j )
       {
-        if ( splits[ j ] == item.parsed.use.name_str )
+        if ( splits[ j ] == effect.name_str )
         {
           s += "/use_item,name=";
           s += item.name();
@@ -2478,20 +2371,6 @@ void player_t::create_buffs()
       potion_buffs.virmens_bite = potion_buff_creator( this, "virmens_bite_potion" )
                                   .spell( find_spell( 105697 ) );
 
-      buffs.amplified = buff_creator_t( this, "amplified", find_spell( 146051 ) )
-                        .add_invalidate( CACHE_MASTERY )
-                        .add_invalidate( CACHE_HASTE )
-                        .add_invalidate( CACHE_SPIRIT )
-                        .chance( 0 )
-                        /* .add_invalidate( CACHE_PLAYER_CRITICAL_DAMAGE ) */
-                        /* .add_invalidate( CACHE_PLAYER_CRITICAL_HEALING ) */;
-
-      buffs.amplified_2 = buff_creator_t( this, "amplified_2", find_spell( 146051 ) )
-                          .add_invalidate( CACHE_MASTERY )
-                          .add_invalidate( CACHE_HASTE )
-                          .add_invalidate( CACHE_SPIRIT )
-                          .chance( 0 );
-
     buffs.cooldown_reduction = buff_creator_t( this, "cooldown_reduction" )
                                .chance( 0 )
                                .default_value( 1 );
@@ -2633,10 +2512,7 @@ double player_t::composite_melee_attack_power() const
 
   ap += current.attack_power_per_strength * ( cache.strength() - 10 );
   ap += current.attack_power_per_agility  * ( cache.agility() - 10 );
-
-  if ( ! is_enemy() )
-    ap += buffs.vengeance -> value();
-
+  
   return ap;
 }
 
@@ -2929,16 +2805,10 @@ double player_t::composite_multistrike() const
 
 // player_t::composite_player_multiplier ====================================
 
-double player_t::composite_player_multiplier( school_e school ) const
+double player_t::composite_player_multiplier( school_e /* school */ ) const
 {
   double m = 1.0;
-
-  if ( type != PLAYER_GUARDIAN )
-  {
-    if ( school == SCHOOL_PHYSICAL && debuffs.weakened_blows -> check() )
-      m *= 1.0 - debuffs.weakened_blows -> value();
-  }
-
+  
   return m;
 }
 
@@ -3105,10 +2975,6 @@ double player_t::composite_attribute_multiplier( attribute_e attr ) const
       if ( sim -> auras.stamina -> check() )
         m *= 1.0 + sim -> auras.stamina -> value();
       break;
-    case ATTR_SPIRIT:
-      m *= 1.0 + buffs.amplified -> value();
-      m *= 1.0 + buffs.amplified_2 -> value();
-      break;
     default:
       break;
   }
@@ -3118,31 +2984,9 @@ double player_t::composite_attribute_multiplier( attribute_e attr ) const
 
 // player_t::composite_rating_multiplier ====================================
 
-double player_t::composite_rating_multiplier( rating_e rating ) const
+double player_t::composite_rating_multiplier( rating_e ) const
 {
-  double v = 1.0;
-
-  if ( is_pet() || is_enemy() )
-    return v;
-
-  // Internally, we treat all the primary rating types as a single entity; 
-  // in game, they are actually split into spell/ranged/melee
-  switch ( rating )
-  {
-    case RATING_SPELL_HASTE:
-    case RATING_MELEE_HASTE:
-    case RATING_RANGED_HASTE:
-      v *= 1.0 + buffs.amplified -> value();
-      v *= 1.0 + buffs.amplified_2 -> value();
-      break;
-    case RATING_MASTERY:
-      v *= 1.0 + buffs.amplified -> value();
-      v *= 1.0 + buffs.amplified_2 -> value();
-      break;
-    default: break;
-  }
-
-  return v;
+  return 1.0;
 }
 
 // player_t::composite_rating ===============================================
@@ -3953,8 +3797,6 @@ void player_t::arise()
 
   if ( ! is_enemy() && ! is_pet() )
   {
-    buffs.amplified -> trigger();
-    buffs.amplified_2 -> trigger();
     buffs.cooldown_reduction -> trigger();
     buffs.pandarens_step -> trigger();
     buffs.blurred_speed -> trigger();
@@ -4520,6 +4362,7 @@ void player_t::stat_gain( stat_e    stat,
   switch ( stat )
   {
     case STAT_STAMINA: 
+    case STAT_ALL:
     {
       recalculate_resource_max( RESOURCE_HEALTH );
       // Adjust current health to new max on stamina gains, if the actor is not in combat
@@ -4640,10 +4483,11 @@ void player_t::stat_loss( stat_e    stat,
   switch ( stat )
   {
     case STAT_STAMINA:
+    case STAT_ALL:
     {
       recalculate_resource_max( RESOURCE_HEALTH );
       // Adjust current health to new max on stamina gains
-      double delta = resources.current[ RESOURCE_HEALTH ] - resources.max[ RESOURCE_MAX ];
+      double delta = resources.current[ RESOURCE_HEALTH ] - resources.max[ RESOURCE_HEALTH ];
       if ( delta > 0 )
         resource_loss( RESOURCE_HEALTH, delta, gain, action );
       break;
@@ -4969,7 +4813,8 @@ void player_t::assess_damage( school_e school,
 
   // New callback system; proc abilities on incoming events. 
   // TODO: Not used for now.
-  if ( 0 )
+  // TODO: How to express action causing/not causing incoming callbacks?
+  if ( s -> action -> callbacks )
   {
     proc_types pt = s -> proc_type();
     proc_types2 pt2 = s -> execute_proc_type2();
@@ -5462,6 +5307,8 @@ struct racial_spell_t : public spell_t
   }
 };
 
+// Touch of the Grave =======================================================
+
 // Shadowmeld ===============================================================
 
 struct shadowmeld_t : public racial_spell_t
@@ -5757,7 +5604,7 @@ struct snapshot_stats_t : public action_t
     buffed_stats.resource     = p -> resources.max;
 
     buffed_stats.spell_haste  = p -> cache.spell_haste();
-    buffed_stats.spell_speed  = p -> cache.spell_speed();
+    //buffed_stats.spell_speed  = p -> cache.spell_speed(); Spell speed is removed in WoD, I believe.
     buffed_stats.attack_haste = p -> cache.attack_haste();
     buffed_stats.attack_speed = p -> cache.attack_speed();
     buffed_stats.mastery_value = p -> cache.mastery_value();
@@ -5925,14 +5772,13 @@ struct wait_until_ready_t : public wait_fixed_t
 struct use_item_t : public action_t
 {
   item_t* item;
-  spell_t* discharge;
-  action_callback_t* trigger;
-  stat_buff_t* buff;
   std::string use_name;
+  action_t* action;
+  buff_t* buff;
 
   use_item_t( player_t* player, const std::string& options_str ) :
     action_t( ACTION_OTHER, "use_item", player ),
-    item( 0 ), discharge( 0 ), trigger( 0 ), buff( 0 )
+    item( 0 )
   {
     std::string item_name, item_slot;
 
@@ -5981,82 +5827,28 @@ struct use_item_t : public action_t
       return;
     }
 
-    if ( ! item -> parsed.use.active() )
+    // Parse Special Effect
+    const special_effect_t& e = item -> special_effect( SPECIAL_EFFECT_SOURCE_NONE, SPECIAL_EFFECT_USE );
+    buff = e.create_buff();
+    action = e.create_action();
+
+    if ( !buff && !action )
     {
-      sim -> errorf( "Player %s attempting 'use_item' action with item '%s' which has no 'use=' encoding.\n", player -> name(), item -> name() );
-      item = nullptr;
-      return;
+      sim -> errorf( "Player %s has 'use_item' action with no custom buff or action setup.\n", player -> name() );
+      background = true;
     }
 
     stats = player ->  get_stats( name_str, this );
 
-    special_effect_t& e = item -> parsed.use;
-
     use_name = e.name_str.empty() ? item -> name() : e.name_str;
-
-    if ( e.trigger_type )
-    {
-      if ( e.cost_reduction && e.school && e.discharge_amount )
-        trigger = unique_gear::register_cost_reduction_proc( player, e );
-      else if ( e.stat )
-      {
-        trigger = unique_gear::register_stat_proc( player, e );
-      }
-      else if ( e.school )
-      {
-        trigger = unique_gear::register_discharge_proc( player, e );
-      }
-
-      if ( trigger ) trigger -> deactivate();
-    }
-    else if ( e.school )
-    {
-      struct discharge_spell_t : public spell_t
-      {
-        discharge_spell_t( const char* n, player_t* p, double a, school_e s, unsigned int override_result_es_mask = 0, unsigned int result_es_mask = 0 ) :
-          spell_t( n, p, spell_data_t::nil() )
-        {
-          school = s;
-          trigger_gcd = timespan_t::zero();
-          base_dd_min = a;
-          base_dd_max = a;
-          may_crit    = ( s != SCHOOL_DRAIN ) && ( ( override_result_es_mask & RESULT_CRIT_MASK ) ? ( result_es_mask & RESULT_CRIT_MASK ) : true ); // Default true
-          may_miss    = ( override_result_es_mask & RESULT_MISS_MASK ) ? ( result_es_mask & RESULT_MISS_MASK ) != 0 : may_miss;
-          background  = true;
-        }
-      };
-
-      discharge = new discharge_spell_t( use_name.c_str(), player, e.discharge_amount, e.school, e.override_result_es_mask, e.result_es_mask );
-    }
-    else if ( e.stat )
-    {
-      if ( e.max_stacks  == 0 ) e.max_stacks  = 1;
-      if ( e.proc_chance == 0 ) e.proc_chance = 1;
-
-      buff = dynamic_cast<stat_buff_t*>( buff_t::find( player, use_name, player ) );
-      if ( ! buff )
-        buff = stat_buff_creator_t( player, use_name ).max_stack( e.max_stacks )
-               .duration( e.duration )
-               .cd( e.cooldown )
-               .chance( e.proc_chance )
-               .reverse( e.reverse )
-               .add_stat( e.stat, e.stat_amount );
-    }
-    else if ( e.execute_action )
-    {
-      assert( player == e.execute_action -> player ); // check if the action is from the same player. Might be overly strict
-    }
-    else assert( false );
 
     std::string cooldown_name = use_name;
     cooldown_name += "_";
     cooldown_name += item -> slot_name();
 
     cooldown = player -> get_cooldown( cooldown_name );
-    cooldown -> duration = item -> parsed.use.cooldown;
+    cooldown -> duration = e.cooldown();
     trigger_gcd = timespan_t::zero();
-
-    if ( buff != 0 ) buff -> cooldown = cooldown;
   }
 
   void lockout( timespan_t duration )
@@ -6068,50 +5860,21 @@ struct use_item_t : public action_t
 
   virtual void execute()
   {
-    if ( discharge )
-    {
-      discharge -> execute();
-    }
-    else if ( trigger )
-    {
-      if ( sim -> log ) sim -> out_log.printf( "%s performs %s", player -> name(), use_name.c_str() );
+    bool triggered = buff == 0;
+    if ( buff )
+      triggered = buff -> trigger();
 
-      trigger -> activate();
+    if ( triggered && action &&
+         ( ! buff || buff -> check() == buff -> max_stack() ) )
+    {
+      action -> schedule_execute();
 
-      if ( item -> parsed.use.duration != timespan_t::zero() )
+      // Decide whether to expire the buff even with 1 max stack
+      if ( buff && buff -> max_stack() > 1 )
       {
-        struct trigger_expiration_t : public event_t
-        {
-          item_t* item;
-          action_callback_t* trigger;
-
-          trigger_expiration_t( player_t& player, item_t* i, action_callback_t* t ) :
-            event_t( player, i -> name() ), item( i ), trigger( t )
-          {
-            sim().add_event( this, item -> parsed.use.duration );
-          }
-          virtual void execute()
-          {
-            trigger -> deactivate();
-          }
-        };
-
-        new ( *sim ) trigger_expiration_t( *player, item, trigger );
-
-        lockout( item -> parsed.use.duration );
+        buff -> expire();
       }
     }
-    else if ( buff )
-    {
-      if ( sim -> log ) sim -> out_log.printf( "%s performs %s", player -> name(), use_name.c_str() );
-      buff -> trigger();
-      lockout( buff -> buff_duration );
-    }
-    else if ( action_t* a = item -> parsed.use.execute_action )
-    {
-      a -> execute();
-    }
-    else assert( false );
 
     // Enable to report use_item ability
     //if ( ! dual ) stats -> add_execute( time_to_execute );
@@ -6122,7 +5885,6 @@ struct use_item_t : public action_t
   virtual void reset()
   {
     action_t::reset();
-    if ( trigger ) trigger -> deactivate();
   }
 
   virtual bool ready()
@@ -7410,7 +7172,7 @@ expr_t* player_t::create_expression( action_t* a,
         {
           if ( t1 )
           {
-            const special_effect_t& e = a -> player -> items[ SLOT_TRINKET_1 ].parsed.equip;
+            const special_effect_t& e = a -> player -> items[ SLOT_TRINKET_1 ].special_effect( SPECIAL_EFFECT_SOURCE_NONE, SPECIAL_EFFECT_EQUIP );
             if ( e.stat == s && ( ( ! stacking && e.max_stacks <= 1 ) || ( stacking && e.max_stacks > 1 ) ) )
             {
               buff_t* b1 = buff_t::find( a -> player, e.name_str );
@@ -7420,7 +7182,7 @@ expr_t* player_t::create_expression( action_t* a,
 
           if ( t2 )
           {
-            const special_effect_t& e = a -> player -> items[ SLOT_TRINKET_2 ].parsed.equip;
+            const special_effect_t& e = a -> player -> items[ SLOT_TRINKET_2 ].special_effect( SPECIAL_EFFECT_SOURCE_NONE, SPECIAL_EFFECT_EQUIP );
             if ( e.stat == s && ( ( ! stacking && e.max_stacks <= 1 ) || ( stacking && e.max_stacks > 1 ) ) )
             {
               buff_t* b2 = buff_t::find( a -> player, e.name_str );
@@ -7467,13 +7229,13 @@ expr_t* player_t::create_expression( action_t* a,
         {
           if ( t1 )
           {
-            const special_effect_t& e = p -> items[ SLOT_TRINKET_1 ].parsed.equip;
+            const special_effect_t& e = p -> items[ SLOT_TRINKET_1 ].special_effect( SPECIAL_EFFECT_SOURCE_NONE, SPECIAL_EFFECT_EQUIP );
             if ( e.stat == s ) has_t1 = true;
           }
 
           if ( t2 )
           {
-            const special_effect_t& e = p -> items[ SLOT_TRINKET_2 ].parsed.equip;
+            const special_effect_t& e = p -> items[ SLOT_TRINKET_2 ].special_effect( SPECIAL_EFFECT_SOURCE_NONE, SPECIAL_EFFECT_EQUIP );
             if ( e.stat == s ) has_t2 = true;
           }
         }
@@ -7840,7 +7602,7 @@ expr_t* player_t::create_expression( action_t* a,
     }
     else
     {
-      s = const_cast< spell_data_t* >( find_talent_spell( splits[ 1 ], std::string(), SPEC_NONE, true ) );
+      s = const_cast< spell_data_t* >( find_talent_spell( splits[ 1 ], std::string(), specialization(), true ) );
     }
 
     return new s_expr_t( name_str, *this, s );
@@ -8292,27 +8054,6 @@ bool player_t::create_profile( std::string& profile_str, save_e stype, bool save
       if ( set_bonus_t::has_set_bonus( this, s ) && ( s % 3 != 1 ) /* Only report 2pc/4pc, not base set bonus enum */ )
       {
         profile_str += std::string("# ") + util::set_bonus_string( s ) + "=1" + term;
-      }
-    }
-
-    for ( slot_e i = SLOT_MIN; i < SLOT_MAX; i++ )
-    {
-      item_t& item = items[ SLOT_OUT_ORDER[ i ] ];
-      if ( ! item.active() ) continue;
-      if ( item.unique || item.parsed.enchant.unique || item.parsed.addon.unique || ! item.encoded_weapon().empty() )
-      {
-        profile_str += "# ";
-        profile_str += item.slot_name();
-        profile_str += "=";
-        profile_str += item.name();
-        if ( item.parsed.data.heroic()                ) profile_str += ",heroic=1";
-        if ( item.parsed.data.lfr()                   ) profile_str += ",lfr=1";
-        if ( item.parsed.data.flex()                   ) profile_str += ",flex=1";
-        if ( item.parsed.data.elite()         ) profile_str += ",elite=1";
-        if ( ! item.encoded_weapon().empty()        ) profile_str += ",weapon=" + item.encoded_weapon();
-        if ( ! item.parsed.enchant.name_str.empty() ) profile_str += ",enchant=" + item.parsed.enchant.name_str;
-        if ( ! item.parsed.addon.name_str.empty()   ) profile_str += ",addon="   + item.parsed.addon.name_str;
-        profile_str += term;
       }
     }
 
@@ -8885,7 +8626,7 @@ void player_callbacks_t::register_callback( unsigned proc_flags,
 
   for ( proc_types t = PROC1_TYPE_MIN; t < PROC1_TYPE_BLIZZARD_MAX; t++ )
   {
-    // If there's no proc-on-X, we don't need to add anything
+    // If there's no proc-by-X, we don't need to add anything
     if ( ! ( proc_flags & ( 1 << t ) ) )
       continue;
 
@@ -8896,26 +8637,58 @@ void player_callbacks_t::register_callback( unsigned proc_flags,
     add_proc_callback( t, proc_flags2, cb );
   }
 
-  // Separately handle periodic procs, since they need some special massaging
+  // Periodic X done
   if ( proc_flags & PF_PERIODIC )
   {
     // 1) Periodic damage only. This is the default behavior of our system when
     // only PROC1_PERIODIC is defined on a trinket.
-    if ( ! ( proc_flags & PF_HEAL ) && ! ( proc_flags2 & PF2_PERIODIC_HEAL ) )
+    if ( ! ( proc_flags & PF_ALL_HEAL ) &&                                               // No healing ability type flags
+         ! ( proc_flags2 & PF2_PERIODIC_HEAL ) )                                         // .. nor periodic healing result type flag
+    {
       add_proc_callback( PROC1_PERIODIC, proc_flags2, cb );
-
+    }
     // 2) Periodic heals only. Either inferred by a "proc by direct heals" flag, 
     //    or by "proc on periodic heal ticks" flag, but require that there's 
     //    no direct / ticked spell damage in flags.
-    else if ( ( ( proc_flags & PF_HEAL ) || ( proc_flags2 & PF2_PERIODIC_HEAL ) ) && 
-              ! ( proc_flags & PF_SPELL ) && ! ( proc_flags2 & PF2_PERIODIC_DAMAGE ) )
+    else if ( ( ( proc_flags & PF_ALL_HEAL ) || ( proc_flags2 & PF2_PERIODIC_HEAL ) ) && // Healing ability
+              ! ( proc_flags & PF_ALL_DAMAGE ) &&                                        // .. with no damaging ability type flags
+              ! ( proc_flags2 & PF2_PERIODIC_DAMAGE ) )                                  // .. nor periodic damage result type flag
+    {
       add_proc_callback( PROC1_PERIODIC_HEAL, proc_flags2, cb );
-
+    }
     // Both
     else
     {
       add_proc_callback( PROC1_PERIODIC, proc_flags2, cb );
       add_proc_callback( PROC1_PERIODIC_HEAL, proc_flags2, cb );
+    }
+  }
+
+  // Periodic X taken
+  if ( proc_flags & PF_PERIODIC_TAKEN )
+  {
+    // 1) Periodic damage only. This is the default behavior of our system when
+    // only PROC1_PERIODIC is defined on a trinket.
+    if ( ! ( proc_flags & PF_ALL_HEAL_TAKEN ) &&                                         // No healing ability type flags
+         ! ( proc_flags2 & PF2_PERIODIC_HEAL ) )                                         // .. nor periodic healing result type flag
+    {
+      add_proc_callback( PROC1_PERIODIC_TAKEN, proc_flags2, cb );
+    }
+    // 2) Periodic heals only. Either inferred by a "proc by direct heals" flag, 
+    //    or by "proc on periodic heal ticks" flag, but require that there's 
+    //    no direct / ticked spell damage in flags.
+    else if ( ( ( proc_flags & PF_ALL_HEAL_TAKEN ) || ( proc_flags2 & PF2_PERIODIC_HEAL ) ) && // Healing ability
+              ! ( proc_flags & PF_DAMAGE_TAKEN ) &&                                        // .. with no damaging ability type flags
+              ! ( proc_flags & PF_ANY_DAMAGE_TAKEN ) &&                                    // .. nor Blizzard's own "any damage taken" flag
+              ! ( proc_flags2 & PF2_PERIODIC_DAMAGE ) )                                    // .. nor periodic damage result type flag
+    {
+      add_proc_callback( PROC1_PERIODIC_HEAL_TAKEN, proc_flags2, cb );
+    }
+    // Both
+    else
+    {
+      add_proc_callback( PROC1_PERIODIC_TAKEN, proc_flags2, cb );
+      add_proc_callback( PROC1_PERIODIC_HEAL_TAKEN, proc_flags2, cb );
     }
   }
 }

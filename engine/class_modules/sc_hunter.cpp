@@ -1319,16 +1319,12 @@ struct demoralizing_screech_t : public hunter_main_pet_spell_t
 
     aoe         = -1;
     auto_cast = true;
-    background = ( sim -> overrides.weakened_blows != 0 );
+    // with Weakened Blows removed, this may not be necessary
   }
 
   virtual void impact( action_state_t* s )
   {
     hunter_main_pet_spell_t::impact( s );
-
-    // TODO: Is actually an aoe ability
-    if ( result_is_hit( s -> result ) && ! sim -> overrides.weakened_blows )
-      s -> target -> debuffs.weakened_blows -> trigger( 1, buff_t::DEFAULT_VALUE(), -1.0, data().duration() );
   }
 };
 
@@ -1721,7 +1717,7 @@ struct hunter_ranged_attack_t : public hunter_action_t<ranged_attack_t>
     if ( ! p() -> sets.has_set_bonus( SET_T15_2PC_MELEE ) )
       return;
 
-    if ( ( p() -> ppm_tier15_2pc_melee.trigger( *this ) ) )
+    if ( ( p() -> ppm_tier15_2pc_melee.trigger() ) )
     {
       p() -> procs.tier15_2pc_melee -> occur();
       size_t i;
@@ -2736,7 +2732,7 @@ void hunter_ranged_attack_t::trigger_tier15_4pc_melee( proc_t* proc, attack_t* a
   if ( ! p() -> sets.has_set_bonus( SET_T15_4PC_MELEE ) )
     return;
 
-  if ( p() -> ppm_tier15_4pc_melee.trigger( *this ) )
+  if ( p() -> ppm_tier15_4pc_melee.trigger() )
   {
     proc -> occur();
     attack -> execute();
@@ -3165,7 +3161,7 @@ struct summon_pet_t : public hunter_spell_t
 struct stampede_t : public hunter_spell_t
 {
   stampede_t( hunter_t* p, const std::string& options_str ) :
-    hunter_spell_t( "stampede", p, p -> find_class_spell( "Stampede" ) )
+    hunter_spell_t( "stampede", p, p -> talents.stampede )
   {
     parse_options( NULL, options_str );
     harmful = false;
@@ -3637,8 +3633,7 @@ void hunter_t::init_action_list()
         action_list_str += "/bestial_wrath,if=focus>60&!buff.beast_within.up";
         action_list_str += "/multi_shot,if=active_enemies>5|(active_enemies>1&buff.beast_cleave.down)";
 
-        if ( level >= 87 )
-          action_list_str += "/stampede,if=enabled&(trinket.stat.agility.up|target.time_to_die<=20|(trinket.stacking_stat.agility.stack>10&trinket.stat.agility.cooldown_remains<=3))";
+        action_list_str += "/stampede,if=enabled&(trinket.stat.agility.up|target.time_to_die<=20|(trinket.stacking_stat.agility.stack>10&trinket.stat.agility.cooldown_remains<=3))";
 
         action_list_str += "/barrage,if=enabled&active_enemies>5";
         action_list_str += "/kill_shot";
@@ -3665,8 +3660,7 @@ void hunter_t::init_action_list()
         action_list_str += "/powershot,if=enabled";
         action_list_str += "/fervor,if=enabled&focus<=50";
 
-        if ( level >= 87 )
-          action_list_str += "/stampede,if=enabled&(trinket.stat.agility.up|target.time_to_die<=20|(trinket.stacking_stat.agility.stack>10&trinket.stat.agility.cooldown_remains<=3))";
+        action_list_str += "/stampede,if=enabled&(trinket.stat.agility.up|target.time_to_die<=20|(trinket.stacking_stat.agility.stack>10&trinket.stat.agility.cooldown_remains<=3))";
 
         action_list_str += "/a_murder_of_crows,if=enabled&!ticking";
         action_list_str += "/dire_beast,if=enabled";
@@ -3722,8 +3716,7 @@ void hunter_t::init_action_list()
         action_list_str += "/arcane_shot,if=buff.thrill_of_the_hunt.react";
         action_list_str += "/dire_beast,if=enabled";
 
-        if ( level >= 87 )
-          action_list_str += "/stampede,if=enabled&trinket.stat.agility.up|target.time_to_die<=20|(trinket.stacking_stat.agility.stack>10&trinket.stat.agility.cooldown_remains<=3))";
+        action_list_str += "/stampede,if=enabled&(trinket.stat.agility.up|target.time_to_die<=20|(trinket.stacking_stat.agility.stack>10&trinket.stat.agility.cooldown_remains<=3))";
 
         action_list_str += "/arcane_shot,if=focus>=67&active_enemies<2";
         action_list_str += "/multi_shot,if=focus>=67&active_enemies>1";

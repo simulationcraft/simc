@@ -196,6 +196,7 @@ inline bool is_pandaren( race_e r ) { return RACE_PANDAREN <= r && r <= RACE_PAN
 
 enum player_e
 {
+  PLAYER_SPECIAL_SCALE5 = -5,
   PLAYER_SPECIAL_SCALE4 = -4,
   PLAYER_SPECIAL_SCALE3 = -3,
   PLAYER_SPECIAL_SCALE2 = -2,
@@ -395,6 +396,32 @@ enum proc_e
   PROC_MAX
 };
 
+enum special_effect_e
+{
+  SPECIAL_EFFECT_NONE = -1,
+  SPECIAL_EFFECT_EQUIP,
+  SPECIAL_EFFECT_USE,
+  SPECIAL_EFFECT_CUSTOM
+};
+
+enum special_effect_source_e
+{
+  SPECIAL_EFFECT_SOURCE_NONE = -1,
+  SPECIAL_EFFECT_SOURCE_ITEM,
+  SPECIAL_EFFECT_SOURCE_ENCHANT,
+  SPECIAL_EFFECT_SOURCE_ADDON,
+  SPECIAL_EFFECT_SOURCE_GEM,
+  SPECIAL_EFFECT_SOURCE_SOCKET_BONUS
+};
+
+enum special_effect_buff_e
+{
+  SPECIAL_EFFECT_BUFF_NONE = -1,
+  SPECIAL_EFFECT_BUFF_CUSTOM,
+  SPECIAL_EFFECT_BUFF_STAT,
+  SPECIAL_EFFECT_BUFF_ABSORB
+};
+
 enum action_e { ACTION_USE = 0, ACTION_SPELL, ACTION_ATTACK, ACTION_HEAL, ACTION_ABSORB, ACTION_SEQUENCE, ACTION_OTHER, ACTION_MAX };
 
 enum school_e
@@ -540,16 +567,6 @@ enum set_e
   SET_MAX
 };
 static_assert( static_cast<int>( SET_MAX ) == ( 1 + N_TIER * 3 * N_TIER_BONUS / 2 ), "enum set_e must be structured correctly." );
-
-enum gem_e
-{
-  GEM_NONE = 0,
-  GEM_META, GEM_PRISMATIC,
-  GEM_RED, GEM_YELLOW, GEM_BLUE,
-  GEM_ORANGE, GEM_GREEN, GEM_PURPLE,
-  GEM_COGWHEEL, GEM_HYDRAULIC,
-  GEM_MAX
-};
 
 enum meta_gem_e
 {
@@ -1129,7 +1146,6 @@ const char* attribute_type_string     ( attribute_e type );
 const char* dot_behavior_type_string  ( dot_behavior_e t );
 const char* flask_type_string         ( flask_e type );
 const char* food_type_string          ( food_e type );
-const char* gem_type_string           ( gem_e type );
 const char* meta_gem_type_string      ( meta_gem_e type );
 const char* player_type_string        ( player_e );
 const char* pet_type_string           ( pet_e type );
@@ -1151,6 +1167,8 @@ const char* set_bonus_string          ( set_e type );
 const char* cache_type_string         ( cache_e type );
 const char* proc_type_string          ( proc_types type );
 const char* proc_type2_string         ( proc_types2 type );
+const char* special_effect_string     ( special_effect_e type );
+const char* special_effect_source_string( special_effect_source_e type );
 
 bool is_match_slot( slot_e slot );
 item_subclass_armor matching_armor_type ( player_e ptype );
@@ -1176,7 +1194,6 @@ attribute_e parse_attribute_type ( const std::string& name );
 dmg_e parse_dmg_type             ( const std::string& name );
 flask_e parse_flask_type         ( const std::string& name );
 food_e parse_food_type           ( const std::string& name );
-gem_e parse_gem_type             ( const std::string& name );
 meta_gem_e parse_meta_gem_type   ( const std::string& name );
 player_e parse_player_type       ( const std::string& name );
 pet_e parse_pet_type             ( const std::string& name );
@@ -1190,7 +1207,6 @@ school_e parse_school_type       ( const std::string& name );
 set_e parse_set_bonus            ( const std::string& name );
 slot_e parse_slot_type           ( const std::string& name );
 stat_e parse_stat_type           ( const std::string& name );
-stat_e parse_gem_stat            ( const std::string& name );
 specialization_e parse_specialization_type( const std::string &name );
 
 const char* movement_direction_string( movement_direction_e );
@@ -1222,9 +1238,8 @@ slot_e translate_invtype( inventory_type inv_type );
 weapon_e translate_weapon_subclass( int weapon_subclass );
 item_subclass_weapon translate_weapon( weapon_e weapon );
 profession_e translate_profession_id( int skill_id );
-gem_e translate_socket_color( item_socket_color );
 
-bool socket_gem_match( gem_e socket, unsigned gem );
+bool socket_gem_match( item_socket_color socket, item_socket_color gem );
 double crit_multiplier( meta_gem_e gem );
 double stat_itemization_weight( stat_e s );
 std::vector<std::string> string_split( const std::string& str, const std::string& delim );
@@ -2473,7 +2488,6 @@ public:
     int physical_vulnerability;
     int ranged_vulnerability;
     int weakened_armor;
-    int weakened_blows;
     int bleeding;
 
     // Misc stuff needs resolving
@@ -3052,19 +3066,26 @@ struct weapon_t
 
 struct special_effect_t
 {
+  const item_t* item;
+  player_t* player;
+
+  special_effect_e type;
+  special_effect_source_e source;
   std::string name_str, trigger_str, encoding_str;
   proc_e trigger_type;
   int64_t trigger_mask;
+  unsigned proc_flags_; /* Proc-by */
+  unsigned proc_flags2_; /* Proc-on (hit/damage/...) */
   stat_e stat;
   school_e school;
   int max_stacks;
   double stat_amount, discharge_amount, discharge_scaling;
-  double proc_chance;
-  double ppm;
+  double proc_chance_;
+  double ppm_;
   rppm_scale_e rppm_scale;
-  timespan_t duration, cooldown, tick;
+  timespan_t duration_, cooldown_, tick;
   bool cost_reduction;
-  bool no_refresh;
+  int refresh;
   bool chance_to_discharge;
   unsigned int override_result_es_mask;
   unsigned result_es_mask;
@@ -3072,32 +3093,47 @@ struct special_effect_t
   int aoe;
   bool proc_delay;
   bool unique;
-  unsigned spell_id, aura_spell_id;
+  bool weapon_proc;
+  unsigned spell_id, trigger_spell_id;
   action_t* execute_action; // Allows custom action to be executed on use
+  buff_t* custom_buff; // Allows custom action
 
-  special_effect_t() :
-    trigger_type( PROC_NONE ), trigger_mask( 0 ), stat( STAT_NONE ), school( SCHOOL_NONE ),
-    max_stacks( 0 ), stat_amount( 0 ), discharge_amount( 0 ), discharge_scaling( 0 ),
-    proc_chance( 0 ), ppm( 0 ), rppm_scale( RPPM_NONE ), duration( timespan_t::zero() ), cooldown( timespan_t::zero() ),
-    tick( timespan_t::zero() ), cost_reduction( false ),
-    no_refresh( false ), chance_to_discharge( false ), override_result_es_mask( 0 ),
-    result_es_mask( 0 ), reverse( false ), aoe( 0 ), proc_delay( false ), unique( false ),
-    spell_id( 0 ), aura_spell_id( 0 ), execute_action( nullptr )
-  { }
+  special_effect_t( player_t* p ) :
+    item( nullptr ), player( p ),
+    name_str()
+  { reset(); }
 
-  std::string to_string();
+  special_effect_t( const item_t* item );
+
+  void reset();
+  bool parse_spell_data( const item_t& item, unsigned driver_id );
+  std::string to_string() const;
   bool active() { return stat != STAT_NONE || school != SCHOOL_NONE || execute_action; }
-  void clear()
-  {
-    name_str.clear(); trigger_type = PROC_NONE; trigger_mask = 0; stat = STAT_NONE;
-    school = SCHOOL_NONE; max_stacks = 0; stat_amount = 0; discharge_amount = 0;
-    discharge_scaling = 0; proc_chance = 0; ppm = 0; rppm_scale = RPPM_NONE;
-    duration = timespan_t::zero(); cooldown = timespan_t::zero();
-    tick = timespan_t::zero(); cost_reduction = false; no_refresh = false;
-    chance_to_discharge = false; override_result_es_mask = 0;
-    result_es_mask = 0; reverse = false; aoe = 0; proc_delay = false;
-    unique = false; spell_id = 0; aura_spell_id = 0;
-  }
+
+  const spell_data_t* driver() const;
+  const spell_data_t* trigger() const;
+  std::string name() const;
+
+  // Buff related functionality
+  buff_t* create_buff() const;
+  special_effect_buff_e buff_type() const;
+
+  action_t* create_action() const;
+
+  bool is_stat_buff() const;
+  stat_buff_t* initialize_stat_buff() const;
+
+  /* Accessors for driver specific features of the proc; some are also used for on-use effects */
+  unsigned proc_flags() const;
+  unsigned proc_flags2() const;
+  double ppm() const;
+  double rppm() const;
+  double proc_chance() const;
+  timespan_t cooldown() const;
+
+  /* Accessors for buff specific features of the proc. */
+  timespan_t duration() const;
+  timespan_t tick_time() const;
 };
 
 // Item =====================================================================
@@ -3119,7 +3155,7 @@ struct item_t
   sim_t* sim;
   player_t* player;
   slot_e slot;
-  bool unique, unique_addon, is_ptr, fetched;
+  bool unique, unique_addon, is_ptr;
 
   // Structure contains the "parsed form" of this specific item, be the data
   // from user options, or a data source such as the Blizzard API, or Wowhead
@@ -3131,22 +3167,23 @@ struct item_t
     unsigned                 addon_id;
     int                      armor;
     std::array<int, 3>       gem_id;
-    std::vector<stat_pair_t> gem_stats;
+    std::array<int, 3>       gem_color;
+    std::vector<stat_pair_t> gem_stats, meta_gem_stats, socket_bonus_stats;
     std::vector<stat_pair_t> enchant_stats;
     std::vector<stat_pair_t> addon_stats;
     std::vector<stat_pair_t> suffix_stats;
     item_data_t              data;
-    special_effect_t         use, equip, enchant, addon;
+    std::vector<special_effect_t> special_effects;
     std::vector<std::string> source_list;
 
     parsed_input_t() :
-      upgrade_level( 0 ),
-      suffix_id( 0 ), enchant_id( 0 ), addon_id( 0 ), armor( 0 ),
-      data(), use(), equip(), enchant(), addon()
+      upgrade_level( 0 ), suffix_id( 0 ), enchant_id( 0 ), addon_id( 0 ), 
+      armor( 0 ), data()
     {
       range::fill( data.stat_type_e, -1 );
       range::fill( data.stat_val, 0 );
       range::fill( gem_id, 0 );
+      range::fill( gem_color, SOCKET_COLOR_NONE );
     }
   } parsed;
 
@@ -3180,19 +3217,20 @@ struct item_t
   gear_stats_t base_stats, stats;
 
   item_t() : sim( 0 ), player( 0 ), slot( SLOT_INVALID ), unique( false ),
-    unique_addon( false ), is_ptr( false ), fetched( false ),
+    unique_addon( false ), is_ptr( false ),
     parsed(), xml() { }
   item_t( player_t*, const std::string& options_str );
 
   bool active() const;
   const char* name() const;
-  const char* slot_name();
-  weapon_t* weapon();
+  const char* slot_name() const;
+  weapon_t* weapon() const;
   bool init();
   bool parse_options();
 
   bool is_matching_type();
   bool is_valid_type();
+  bool socket_color_match() const;
 
   unsigned item_level() const;
   unsigned upgrade_level() const;
@@ -3216,7 +3254,6 @@ struct item_t
   bool decode_gems();
   bool decode_enchant();
   bool decode_addon();
-  bool decode_special( special_effect_t&, const std::string& encoding );
   bool decode_weapon();
   bool decode_heroic();
   bool decode_lfr();
@@ -3228,19 +3265,25 @@ struct item_t
   bool decode_ilevel();
   bool decode_quality();
   bool decode_data_source();
+  bool decode_equip_effect();
+  bool decode_use_effect();
 
   bool decode_proc_spell( special_effect_t& effect );
 
   static bool download_slot( item_t& item );
   static bool download_item( item_t& );
   static bool download_glyph( player_t* player, std::string& glyph_name, const std::string& glyph_id );
-  static unsigned parse_gem( item_t& item, unsigned gem_id );
 
   static std::vector<stat_pair_t> str_to_stat_pair( const std::string& stat_str );
   static std::string stat_pairs_to_str( const std::vector<stat_pair_t>& stat_pairs );
 
   std::string to_string();
   bool has_stats();
+  bool has_special_effect( special_effect_source_e source = SPECIAL_EFFECT_SOURCE_NONE, special_effect_e type = SPECIAL_EFFECT_NONE );
+  bool has_use_special_effect()
+  { return has_special_effect( SPECIAL_EFFECT_SOURCE_NONE, SPECIAL_EFFECT_USE ); }
+
+  const special_effect_t& special_effect( special_effect_source_e source = SPECIAL_EFFECT_SOURCE_NONE, special_effect_e type = SPECIAL_EFFECT_NONE );
 };
 
 
@@ -4132,6 +4175,7 @@ struct player_t : public actor_t
 
   // Callbacks
   player_callbacks_t callbacks;
+  std::vector<special_effect_t> special_effects;
 
   // Action Priority List
   auto_dispose< std::vector<action_t*> > action_list;
@@ -4273,8 +4317,6 @@ public:
     buff_t* fortitude;
 
     // 5.4 trinkets
-    buff_t* amplified; // caster 146046
-    buff_t* amplified_2;
     buff_t* cooldown_reduction;
 
     //Runspeed Enchants
@@ -4315,7 +4357,6 @@ public:
     debuff_t* physical_damage;
     debuff_t* physical_vulnerability;
     debuff_t* ranged_vulnerability;
-    debuff_t* weakened_blows;
     debuff_t* weakened_armor;
   } debuffs;
 
@@ -4398,8 +4439,7 @@ public:
 
   virtual void init_defense();
   virtual void create_buffs();
-  virtual void init_unique_gear();
-  virtual void init_enchant();
+  virtual void init_special_effects();
   virtual void init_scaling();
   virtual void init_action_list() {}
   virtual void init_gains();
@@ -4408,7 +4448,7 @@ public:
   virtual void init_benefits();
   virtual void init_rng();
   virtual void init_stats();
-  virtual void register_callbacks() {}
+  virtual void register_callbacks();
 private:
   void _init_actions();
 public:
@@ -5243,7 +5283,6 @@ struct action_t : public noncopyable
   virtual expr_t* create_expression( const std::string& name );
 
   virtual double ppm_proc_chance( double PPM ) const;
-  virtual double real_ppm_proc_chance( double PPM, timespan_t last_proc_attempt, timespan_t last_successful_proc, rppm_scale_e scales_with ) const;
 
   dot_t* get_dot( player_t* t = nullptr )
   {
@@ -5501,8 +5540,10 @@ struct action_state_t : public noncopyable
   virtual proc_types2 impact_proc_type2() const
   {
     // Don't allow impact procs that do not do damage or heal anyone; they 
-    // should all be handled by execute_proc_type2().
-    if ( result_amount <= 0 )
+    // should all be handled by execute_proc_type2(). Note that this is based
+    // on the _total_ amount done. This is so that fully overhealed heals are
+    // still alowed to proc things.
+    if ( result_total <= 0 )
       return PROC2_INVALID;
 
     if ( result == RESULT_HIT )
@@ -5789,7 +5830,7 @@ public:
 struct real_ppm_t
 {
 private:
-  rng_t&       rng;
+  player_t*    player;
   double       freq;
   double       modifier;
   double       rppm;
@@ -5797,9 +5838,52 @@ private:
   timespan_t   last_successful_trigger;
   timespan_t   initial_precombat_time;
   rppm_scale_e scales_with;
+
+  static double max_interval() { return 10.0; }
+  static double max_bad_luck_prot() { return 1000.0; }
 public:
-  real_ppm_t( player_t& p, double frequency = std::numeric_limits<double>::min(), rppm_scale_e s = RPPM_NONE, unsigned spell_id = 0 ) :
-    rng( p.rng() ),
+  static double proc_chance( player_t*         player,
+                             double            PPM,
+                             const timespan_t& last_trigger, 
+                             const timespan_t& last_successful_proc, 
+                             rppm_scale_e      scales_with )
+  {
+    double coeff = 1.0;
+    double seconds = std::min( ( player -> sim -> current_time - last_trigger ).total_seconds(), max_interval() );
+
+    if ( scales_with == RPPM_HASTE )
+      coeff *= 1.0 / std::min( player -> cache.spell_haste(), player -> cache.attack_haste() );
+    else if ( scales_with == RPPM_ATTACK_CRIT )
+      coeff *= 1.0 + player -> cache.attack_crit();
+    else if ( scales_with == RPPM_SPELL_CRIT )
+      coeff *= 1.0 + player -> cache.spell_crit();
+
+    double real_ppm = PPM * coeff;
+    double old_rppm_chance = real_ppm * ( seconds / 60.0 );
+
+    // RPPM Extension added on 12. March 2013: http://us.battle.net/wow/en/blog/8953693?page=44
+    // Formula see http://us.battle.net/wow/en/forum/topic/8197741003#1
+    double last_success = std::min( ( player -> sim -> current_time - last_successful_proc ).total_seconds(), max_bad_luck_prot() );
+    double expected_average_proc_interval = 60.0 / real_ppm;
+
+    double rppm_chance = std::max( 1.0, 1 + ( ( last_success / expected_average_proc_interval - 1.5 ) * 3.0 ) )  * old_rppm_chance;
+    if ( player -> sim -> debug )
+      player -> sim -> out_debug.printf( "base=%.3f coeff=%.3f last_trig=%.3f last_proc=%.3f scales=%d chance=%.5f%%",
+          PPM, coeff, last_trigger.total_seconds(), last_successful_proc.total_seconds(), scales_with,
+          rppm_chance * 100.0 );
+    return rppm_chance;
+  }
+
+  real_ppm_t() :
+    player( 0 ), freq( 0 ), modifier( 0 ), rppm( 0 ),
+    last_trigger_attempt( timespan_t::from_seconds( -10.0 ) ),
+    last_successful_trigger( timespan_t::from_seconds( -120.0 ) ),
+    initial_precombat_time( timespan_t::from_seconds( -120.0 ) ), // Assume 5min out of combat before pull
+    scales_with( RPPM_NONE )
+  { }
+
+  real_ppm_t( player_t& p, double frequency = 0, rppm_scale_e s = RPPM_NONE, unsigned spell_id = 0 ) :
+    player( &p ),
     freq( frequency ),
     modifier( p.dbc.rppm_coefficient( p.specialization(), spell_id ) ),
     rppm( freq * modifier ),
@@ -5812,16 +5896,16 @@ public:
   void set_frequency( double frequency )
   { freq = frequency; rppm = freq * modifier; }
 
-  double get_frequency()
+  double get_frequency() const
   { return freq; }
 
   void set_modifier( double mod )
   { modifier = mod; rppm = freq * modifier; }
 
-  double get_modifier()
+  double get_modifier() const
   { return modifier; }
 
-  double get_rppm()
+  double get_rppm() const
   { return rppm; }
 
   void reset()
@@ -5830,21 +5914,19 @@ public:
     last_successful_trigger = initial_precombat_time;
   }
 
-  bool trigger( action_t& a )
+  bool trigger()
   {
-    assert( freq != std::numeric_limits<double>::min() && "Real PPM Frequency not set!" );
+    assert( freq != 0 && "Real PPM Frequency not set!" );
 
-    if ( last_trigger_attempt == a.sim -> current_time )
+    if ( last_trigger_attempt == player -> sim -> current_time )
       return false;
 
-    double chance = a.real_ppm_proc_chance( rppm, last_trigger_attempt, last_successful_trigger, scales_with );
-    last_trigger_attempt = a.sim -> current_time;
+    bool success = player -> rng().roll( proc_chance( player, rppm, last_trigger_attempt, last_successful_trigger, scales_with ) );
 
-    bool success = rng.roll( chance );
+    last_trigger_attempt = player -> sim -> current_time;
+
     if ( success )
-    {
-      last_successful_trigger = a.sim -> current_time;
-    }
+      last_successful_trigger = player -> sim -> current_time;
     return success;
   }
 };
@@ -5870,6 +5952,7 @@ struct action_callback_t
   virtual ~action_callback_t() {}
   virtual void trigger( action_t*, void* call_data ) = 0;
   virtual void reset() {}
+  virtual void initialize() { }
   virtual void activate() { active = true; }
   virtual void deactivate() { active = false; }
 
@@ -5902,201 +5985,138 @@ struct action_callback_t
 
 // Generic proc callback ======================================================
 
-template<typename T_CALLDATA>
-struct proc_callback_t : public action_callback_t
+/**
+ * DBC-driven proc callback. Extensively leans on the concept of "driver"
+ * spells that blizzard uses to trigger actual proc spells in most cases. Uses
+ * spell data as much as possible (through interaction with special_effect_t).
+ * Intentionally vastly simplified compared to our other (older) callback
+ * systems. The "complex" logic is offloaded either into special_effect_t
+ * (creation of buffs/actions), special effect_t initialization (what kind of
+ * special effect to create from DBC data or user given options, or when and
+ * why to proc things (new DBC based proc system).
+ *
+ * The actual triggering logic is also vastly simplified (see execute()), as
+ * the majority of procs in WoW are very simple. Custom procs can always be
+ * derived off of this struct.
+ */
+struct dbc_proc_callback_t : public action_callback_t
 {
-  special_effect_t proc_data;
-  real_ppm_t       rppm;
-  cooldown_t*      cooldown;
-  rng_t&           proc_rng;
+  static const item_t default_item_;
+  
+  const item_t& item;
+  const special_effect_t& effect;
+  cooldown_t* cooldown;
 
-  struct delay_event_t : public event_t
-  {
-    proc_callback_t& callback;
-    action_t* action;
-    T_CALLDATA* call_data;
+  // Proc trigger types, cached/initialized here from special_effect_t to avoid
+  // needless spell data lookups in vast majority of cases
+  real_ppm_t  rppm;
+  double      proc_chance;
+  double      ppm;
 
-    delay_event_t( player_t& p, proc_callback_t& cb, action_t* a, T_CALLDATA* cd ) :
-      event_t( p, "proc_callback_delay" ),
-      callback( cb ), action( a ), call_data( cd )
-    {
-      timespan_t delay = sim().rng().gauss( sim().default_aura_delay, sim().default_aura_delay_stddev );
-      sim().add_event( this, delay );
-    }
+  buff_t* proc_buff;
+  action_t* proc_action;
+  weapon_t* weapon;
 
-    virtual void execute()
-    {
-      callback.execute( action, call_data );
-    }
-  };
+  dbc_proc_callback_t( const item_t& i, const special_effect_t& e ) :
+    action_callback_t( i.player ), item( i ), effect( e ), cooldown( 0 ),
+    proc_chance( 0 ), ppm( 0 ),
+    proc_buff( 0 ), proc_action( 0 ), weapon( 0 )
+  { }
 
-  proc_callback_t( player_t* p, const special_effect_t& data, const spell_data_t* driver = spell_data_t::nil() ) :
-    action_callback_t( p ),
-    proc_data( data ),
-    rppm( *listener, is_rppm() ? std::fabs( data.ppm ) : std::numeric_limits<double>::min(), data.rppm_scale, driver -> id() ),
-    cooldown( nullptr ), proc_rng( listener -> rng() )
-  {
-    if ( proc_data.cooldown != timespan_t::zero() )
-    {
-      cooldown = listener -> get_cooldown( proc_data.name_str );
-      cooldown -> duration = proc_data.cooldown;
-    }
-  }
+  dbc_proc_callback_t( player_t* p, const special_effect_t& e ) :
+    action_callback_t( p ), item( default_item_ ), effect( e ), cooldown( 0 ),
+    proc_chance( 0 ), ppm( 0 ),
+    proc_buff( 0 ), proc_action( 0 ), weapon( 0 )
+  { }
 
-private:
-  // Execute should be doing all the proc mechanisms, trigger is for triggering
-  virtual void execute( action_t* a, T_CALLDATA* call_data ) = 0;
-public:
-  virtual void trigger( action_t* action, void* call_data )
-  {
-    if ( cooldown && cooldown -> down() ) return;
+  void initialize();
 
-    bool triggered = false;
-    double chance = proc_chance();
-
-    if ( chance == 0 ) return;
-
-    if ( is_rppm() )
-      triggered = rppm.trigger( *action );
-    else if ( is_ppm() )
-      triggered = proc_rng.roll( action -> ppm_proc_chance( chance ) );
-    else if ( chance > 0 )
-      triggered = proc_rng.roll( chance );
-
-    if ( listener -> sim -> debug )
-      listener -> sim -> out_debug.printf( "%s attempts to proc %s on %s: %d",
-                                 listener -> name(),
-                                 proc_data.name_str.c_str(),
-                                 action -> name(), triggered );
-
-    if ( triggered )
-    {
-      T_CALLDATA* arg = static_cast<T_CALLDATA*>( call_data );
-
-      if ( proc_data.proc_delay )
-        new ( *listener -> sim ) delay_event_t( *listener, *this, action, arg );
-      else
-        execute( action, arg );
-
-      if ( cooldown ) cooldown -> start();
-    }
-  }
-
-  bool is_rppm() { return proc_data.ppm < 0; }
-  bool is_ppm() { return proc_data.ppm > 0; }
-
-  virtual double proc_chance()
-  {
-    if ( is_rppm() )
-      return rppm.get_rppm();
-    else if ( is_ppm() )
-      return proc_data.ppm;
-    else if ( proc_data.proc_chance > 0 )
-      return proc_data.proc_chance;
-
-    return 0;
-  }
+  std::string cooldown_name() const;
 
   void reset()
   {
     action_callback_t::reset();
-    if ( cooldown ) cooldown -> reset( false );
-    rppm.reset();
+    if ( rppm.get_frequency() > 0 )
+      rppm.reset();
   }
-};
 
-template <typename T_BUFF, typename T_CALLDATA = action_state_t>
-struct buff_proc_callback_t : public proc_callback_t<T_CALLDATA>
-{
-  struct tick_stack_t : public event_t
+  void trigger( action_t* a, void* call_data )
   {
-    buff_proc_callback_t<T_BUFF>* callback;
+    if ( cooldown && cooldown -> down() ) return;
 
-    tick_stack_t( player_t& p, buff_proc_callback_t* cb, timespan_t initial_delay = timespan_t::zero() ) :
-      event_t( p, "cb_tick_stack" ), callback( cb )
-    { sim().add_event( this, callback -> proc_data.tick + initial_delay ); }
+    // Weapon-based proc triggering differs from "old" callbacks. When used
+    // (weapon_proc == true), dbc_proc_callback_t _REQUIRES_ that the action
+    // has the correct weapon specified. Old style procs allowed actions
+    // without any weapon to pass through.
+    if ( weapon && a -> weapon && a -> weapon != weapon ) return;
 
-    virtual void execute()
+
+    bool triggered = roll( a );
+    if ( listener -> sim -> debug )
+      listener -> sim -> out_debug.printf( "%s attempts to proc %s on %s: %d",
+                                 listener -> name(),
+                                 effect.to_string().c_str(),
+                                 a -> name(), triggered );
+    if ( triggered )
     {
-      if ( ( callback -> buff -> reverse && callback -> buff -> check() > 0 ) ||
-           ( ! callback -> buff -> reverse && callback -> buff -> check() > 0 && callback -> buff -> check() < callback -> buff -> max_stack() ) )
+      execute( a, static_cast<action_state_t*>( call_data ) );
+
+      if ( cooldown )
+        cooldown -> start();
+    }
+  }
+private:
+  rng_t& rng() const
+  { return listener -> rng(); }
+
+  bool roll( action_t* action )
+  {
+    if ( rppm.get_frequency() > 0 )
+      return rppm.trigger();
+    else if ( ppm > 0 )
+      return rng().roll( action -> ppm_proc_chance( ppm ) );
+    else if ( proc_chance > 0 )
+      return rng().roll( proc_chance );
+
+    assert( false );
+    return false;
+  }
+
+  /**
+   * Base rules for proc execution.
+   * 1) If we proc a buff, trigger it
+   * 2a) If the buff triggered and is at max stack, and we have an action,
+   *     execute the action on the target of the action that triggered this 
+   *     proc.
+   * 2b) If we have no buff, trigger the action on the target of the action 
+   *     that triggered this proc.
+   *
+   * TODO: Ticking buffs, though that'd be better served by fusing tick_buff_t
+   * into buff_t.
+   * TODO: Proc delay
+   * TODO: Buff cooldown hackery for expressions. Is this really needed or can
+   * we do it in a smarter way (better expression support?)
+   */
+  virtual void execute( action_t* /* a */, action_state_t* state )
+  {
+    bool triggered = proc_buff == 0;
+    if ( proc_buff )
+      triggered = proc_buff -> trigger();
+
+    if ( triggered && proc_action && 
+         ( ! proc_buff || proc_buff -> check() == proc_buff -> max_stack() ) )
+    {
+      action_state_t* proc_state = proc_action -> get_state();
+      proc_state -> target = state -> target;
+      proc_action -> snapshot_state( proc_state, proc_action -> type == ACTION_HEAL ? HEAL_DIRECT : DMG_DIRECT );
+      proc_action -> schedule_execute( proc_state );
+
+      // Decide whether to expire the buff even with 1 max stack
+      if ( proc_buff && proc_buff -> max_stack() > 1 )
       {
-        callback -> buff -> cooldown -> reset( false );
-        callback -> buff -> trigger();
-        new ( sim() ) tick_stack_t( *p(), callback );
+        proc_buff -> expire();
       }
     }
-  };
-
-  T_BUFF* buff;
-
-  buff_proc_callback_t( player_t* p, const special_effect_t& data, T_BUFF* b = nullptr, const spell_data_t* driver = spell_data_t::nil() ) :
-    proc_callback_t<T_CALLDATA>( p, data, driver ), buff( b )
-  {
-    if ( this -> proc_data.max_stacks == 0 ) this -> proc_data.max_stacks = 1;
-    if ( this -> proc_data.proc_chance == 0 ) this -> proc_data.proc_chance = 1;
-  }
-
-  void execute( action_t* action, T_CALLDATA* /* call_data */ )
-  {
-    assert( buff );
-    // Since buff procs allow tracking of cooldown (by having the cooldown
-    // duplicated in the buff, as well as in proc_callback_t), we reset the CD
-    // before triggering the buff to ensure that the buff can actually proc.
-    // Without the reset, the simulator may use a sequence where the cooldown
-    // of the buff is still up, while the cooldown of the proc_calllback_t
-    // object is not, causing the actual buff to not trigger.
-    buff -> cooldown -> reset( false );
-    buff -> trigger( this -> proc_data.reverse ? this -> proc_data.max_stacks : 1 );
-
-    if ( this -> proc_data.tick != timespan_t::zero() ) // The buff stacks over time.
-    {
-      timespan_t initial_delay;
-      if ( buff -> delay )
-        initial_delay = buff -> delay -> remains();
-      new ( *this -> listener -> sim ) tick_stack_t( *action -> player, this, initial_delay );
-    }
-  }
-};
-
-template <typename T_ACTION, typename T_CALLDATA = action_state_t>
-struct discharge_proc_t : public proc_callback_t<T_CALLDATA>
-{
-  int       discharge_stacks;
-  T_ACTION* discharge_action;
-  proc_t*   discharge_proc;
-  proc_t*   discharge_proc_stack;
-
-  discharge_proc_t( player_t* p, const special_effect_t& data, T_ACTION* a, const spell_data_t* driver = spell_data_t::nil() ) :
-    proc_callback_t<T_CALLDATA>( p, data, driver ),
-    discharge_stacks( 0 ), discharge_action( a ),
-    discharge_proc( proc_callback_t<T_CALLDATA>::listener -> get_proc( data.name_str ) ),
-    discharge_proc_stack( this -> proc_data.max_stacks > 1 ? proc_callback_t<T_CALLDATA>::listener -> get_proc( data.name_str + "_stacks" ) : 0 )
-  {
-    // Discharge Procs have a delay by default
-    this -> proc_data.proc_delay = true;
-  }
-
-  void reset()
-  {
-    proc_callback_t<T_CALLDATA>::reset();
-    discharge_stacks = 0;
-  }
-
-  void execute( action_t* action, T_CALLDATA* /* call_data */ )
-  {
-    assert( discharge_action );
-    if ( ++discharge_stacks >= this -> proc_data.max_stacks )
-    {
-      discharge_stacks = 0;
-      if ( this -> listener -> sim -> debug )
-        this -> listener -> sim -> out_debug.printf( "%s procs %s", action -> name(), discharge_action -> name() );
-      discharge_action -> execute();
-      discharge_proc -> occur();
-    }
-
-    if ( discharge_proc_stack )
-      discharge_proc_stack -> occur();
   }
 };
 
@@ -6152,10 +6172,8 @@ struct travel_event_t : public event_t
 
 namespace item_database
 {
-bool     download_slot(      item_t& item );
 bool     download_item(      item_t& item );
 bool     download_glyph(     player_t* player, std::string& glyph_name, const std::string& glyph_id );
-unsigned parse_gem(          item_t& item, unsigned gem_id );
 bool     initialize_item_sources( item_t& item, std::vector<std::string>& source_list );
 
 int      random_suffix_type( item_t& item );
@@ -6170,7 +6188,6 @@ uint32_t weapon_dmg_max(     item_t& item );
 uint32_t weapon_dmg_max(     const item_data_t*, const dbc_t&, unsigned item_level = 0 );
 
 bool     load_item_from_data( item_t& item );
-bool     parse_gems(          item_t&      item );
 
 // Parse anything relating to the use of ItemSpellEnchantment.dbc. This includes
 // enchants, and engineering addons.
@@ -6184,46 +6201,71 @@ int scaled_stat( const item_data_t& item, const dbc_t& dbc, size_t idx, unsigned
 
 unsigned upgrade_ilevel( const item_data_t& item, unsigned upgrade_level );
 stat_pair_t item_enchantment_effect_stats( const item_enchantment_data_t& enchantment, int index );
+stat_pair_t item_enchantment_effect_stats( player_t* player, const item_enchantment_data_t& enchantment, int index );
 double item_budget( const item_t* item, unsigned max_ilevel );
 
 inline bool heroic( unsigned f ) { return ( f & RAID_TYPE_HEROIC ) == RAID_TYPE_HEROIC; }
 inline bool lfr( unsigned f ) { return ( f & RAID_TYPE_LFR ) == RAID_TYPE_LFR; }
 inline bool flex( unsigned f ) { return ( f & RAID_TYPE_FLEXIBLE ) == RAID_TYPE_FLEXIBLE; }
 inline bool elite( unsigned f ) { return ( f & RAID_TYPE_ELITE ) == RAID_TYPE_ELITE; }
+
+struct token_t
+{
+  std::string full;
+  std::string name;
+  double value;
+  std::string value_str;
+};
+size_t parse_tokens( std::vector<token_t>& tokens, const std::string& encoded_str );
+}
+
+// Procs ====================================================================
+
+namespace proc
+{
+  bool parse_special_effect_encoding( special_effect_t& effect, const item_t& item, const std::string& str );
+  bool usable_proc( const special_effect_t& effect );
+}
+
+// Enchants =================================================================
+
+namespace enchant
+{
+  struct enchant_db_item_t
+  {
+    const char* enchant_name;
+    unsigned    enchant_id;
+  };
+
+  unsigned find_enchant_id( const std::string& name );
+  std::string find_enchant_name( unsigned enchant_id );
+  std::string encoded_enchant_name( const dbc_t&, const item_enchantment_data_t& );
+
+  const item_enchantment_data_t& find_item_enchant( const dbc_t& dbc, const std::string& name );
+  const item_enchantment_data_t& find_meta_gem( const dbc_t& dbc, const std::string& encoding );
+  meta_gem_e meta_gem_type( const dbc_t& dbc, const item_enchantment_data_t& );
+  bool passive_enchant( item_t& item, unsigned spell_id );
+
+  bool initialize_item_enchant( item_t& item, std::vector< stat_pair_t >& stats, special_effect_source_e source, const item_enchantment_data_t& enchant );
+  item_socket_color initialize_gem( item_t& item, unsigned gem_id );
 }
 
 // Unique Gear ==============================================================
 
 namespace unique_gear
 {
+  struct special_effect_db_item_t
+  {
+    unsigned    spell_id;
+    const char* encoded_options;
+    //const std::function<void(special_effect_t&, const item_t&, const special_effect_db_item_t&)> custom_cb;
+    void (*custom_cb)(special_effect_t&, const item_t&, const special_effect_db_item_t&);
+  };
+
 void init( player_t* );
 
-action_callback_t* register_stat_proc( player_t*, special_effect_t& );
-action_callback_t* register_cost_reduction_proc( player_t*, special_effect_t& );
-
-action_callback_t* register_discharge_proc( player_t*, special_effect_t& );
-
-action_callback_t* register_chance_discharge_proc( player_t*, special_effect_t& );
-
-action_callback_t* register_stat_discharge_proc( player_t*, special_effect_t& );
-
-action_callback_t* register_discharge_proc( item_t&, special_effect_t& );
-action_callback_t* register_chance_discharge_proc( item_t&, special_effect_t& );
-action_callback_t* register_stat_discharge_proc( item_t&, special_effect_t& );
-
-bool get_equip_encoding( std::string& encoding,
-                         const std::string& item_name,
-                         unsigned type_flags,
-                         bool ptr,
-                         unsigned item_id = 0 );
-
-bool get_use_encoding( std::string& encoding,
-                       const std::string& item_name,
-                       unsigned type_flags,
-                       bool ptr,
-                       unsigned item_id = 0 );
-
-void initialize_special_effects( player_t* player );
+const special_effect_db_item_t& find_special_effect_db_item( unsigned spell_id );
+bool initialize_special_effect( special_effect_t& effect, const item_t& item, unsigned spell_id );
 };
 
 // Consumable ===============================================================
@@ -6243,13 +6285,9 @@ enum wowhead_e
   PTR
 };
 
-bool download_slot( item_t&, wowhead_e source = LIVE,
-                    cache::behavior_e b = cache::items() );
 bool download_item( item_t&, wowhead_e source = LIVE, cache::behavior_e b = cache::items() );
 bool download_glyph( player_t* player, std::string& glyph_name, const std::string& glyph_id,
                      wowhead_e source = LIVE, cache::behavior_e b = cache::items() );
-gem_e parse_gem( item_t& item, unsigned gem_id,
-                 wowhead_e source = LIVE, cache::behavior_e b = cache::items() );
 bool download_item_data( item_t&            item,
                          cache::behavior_e  caching,
                          wowhead_e          source );
@@ -6284,9 +6322,6 @@ bool download_item( item_t&, cache::behavior_e b = cache::items() );
 
 bool download_glyph( player_t* player, std::string& glyph_name, const std::string& glyph_id,
                      cache::behavior_e b = cache::items() );
-
-bool download_slot( item_t& item, cache::behavior_e b = cache::items() );
-gem_e parse_gem( item_t& item, unsigned gem_id, cache::behavior_e b = cache::items() );
 }
 
 // HTTP Download  ===========================================================

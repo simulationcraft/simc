@@ -42,6 +42,8 @@ SRC += \
     report$(PATHSEP)sc_report.cpp \
     report$(PATHSEP)sc_chart.cpp \
     player$(PATHSEP)sc_unique_gear.cpp \
+    player$(PATHSEP)sc_proc.cpp \
+    player$(PATHSEP)sc_enchant.cpp \
     player$(PATHSEP)sc_set_bonus.cpp \
     player$(PATHSEP)sc_player.cpp \
     player$(PATHSEP)sc_pet.cpp \

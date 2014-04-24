@@ -283,6 +283,43 @@ size_t dbc::n_items( bool ptr )
   return n;
 }
 
+const item_enchantment_data_t* dbc::item_enchantments( bool ptr )
+{
+  ( void )ptr;
+
+  const item_enchantment_data_t* p = __spell_item_ench_data;
+#if SC_USE_PTR
+  if ( ptr )
+    p = __ptr_spell_item_ench_data;
+#endif
+  return p;
+}
+
+size_t dbc::n_item_enchantments( bool ptr )
+{
+  ( void )ptr;
+
+  size_t n = SPELL_ITEM_ENCH_SIZE;
+#if SC_USE_PTR
+  if ( ptr )
+    n = PTR_SPELL_ITEM_ENCH_SIZE;
+#endif
+
+  return n;
+}
+
+const gem_property_data_t* dbc::gem_properties( bool ptr )
+{
+  ( void )ptr;
+
+  const gem_property_data_t* p = __gem_property_data;
+#if SC_USE_PTR
+  if ( ptr )
+    p = __ptr_gem_property_data;
+#endif
+  return p;
+}
+
 /* Here we modify the spell data to match in-game values if the data differs thanks to bugs or hotfixes.
  *
  */
@@ -352,34 +389,6 @@ void dbc::apply_hotfixes()
   // Death Knight
 
   // Misc
-
-  // Legendary gems are buffs in game, hack them to become +500 / +550 stat gems
-  item_enchantment_data_t* e = item_enchantment_data_index.get( false, 4996 );
-  assert( e );
-  e -> ench_type[ 0 ] = ITEM_ENCHANTMENT_STAT; e -> ench_prop[ 0 ] = ITEM_MOD_AGILITY;
-
-  e = item_enchantment_data_index.get( false, 4997 );
-  assert( e );
-  e -> ench_type[ 0 ] = ITEM_ENCHANTMENT_STAT; e -> ench_prop[ 0 ] = ITEM_MOD_STRENGTH;
-
-  e = item_enchantment_data_index.get( false, 4998 );
-  assert( e );
-  e -> ench_type[ 0 ] = ITEM_ENCHANTMENT_STAT; e -> ench_prop[ 0 ] = ITEM_MOD_INTELLECT;
-
-  if ( SC_USE_PTR )
-  {
-    e = item_enchantment_data_index.get( true, 4996 );
-    assert( e );
-    e -> ench_type[ 0 ] = ITEM_ENCHANTMENT_STAT; e -> ench_prop[ 0 ] = ITEM_MOD_AGILITY;
-
-    e = item_enchantment_data_index.get( true, 4997 );
-    assert( e );
-    e -> ench_type[ 0 ] = ITEM_ENCHANTMENT_STAT; e -> ench_prop[ 0 ] = ITEM_MOD_STRENGTH;
-
-    e = item_enchantment_data_index.get( true, 4998 );
-    assert( e );
-    e -> ench_type[ 0 ] = ITEM_ENCHANTMENT_STAT; e -> ench_prop[ 0 ] = ITEM_MOD_INTELLECT;
-  }
 }
 
 static void generate_class_flags_index( bool ptr = false )
@@ -456,6 +465,28 @@ void dbc::de_init()
   if ( SC_USE_PTR )
   {
     spell_data_t::de_link( true );
+  }
+}
+
+/* Validate gem color */
+bool dbc::valid_gem_color( unsigned color )
+{
+  switch ( color )
+  {
+    case SOCKET_COLOR_NONE:
+    case SOCKET_COLOR_META:
+    case SOCKET_COLOR_RED:
+    case SOCKET_COLOR_YELLOW:
+    case SOCKET_COLOR_BLUE:
+    case SOCKET_COLOR_ORANGE:
+    case SOCKET_COLOR_PURPLE:
+    case SOCKET_COLOR_GREEN:
+    case SOCKET_COLOR_HYDRAULIC:
+    case SOCKET_COLOR_PRISMATIC:
+    case SOCKET_COLOR_COGWHEEL:
+      return true;
+    default:
+      return false;
   }
 }
 

@@ -96,6 +96,7 @@ enum proc_flag
   PF_SPELL_TAKEN          = 1 << PROC1_SPELL_TAKEN,
   PF_PERIODIC             = 1 << PROC1_PERIODIC, // Any periodic ability landed
   PF_PERIODIC_TAKEN       = 1 << PROC1_PERIODIC_TAKEN,
+
   PF_ANY_DAMAGE_TAKEN     = 1 << PROC1_ANY_DAMAGE_TAKEN,
 
   // Irrelevant ones for us
@@ -103,6 +104,17 @@ enum proc_flag
   PF_OFFHAND                  = 0x00800000,
   PF_DEATH                    = 0x01000000,
   PF_JUMP                     = 0x02000000,
+
+  // Helper types
+  PF_ALL_DAMAGE               = PF_MELEE | PF_MELEE_ABILITY |
+                                PF_RANGED | PF_RANGED_ABILITY |
+                                PF_AOE_SPELL | PF_SPELL,
+  PF_ALL_HEAL                 = PF_AOE_HEAL | PF_HEAL,
+
+  PF_DAMAGE_TAKEN         = PF_MELEE_TAKEN | PF_MELEE_ABILITY_TAKEN |
+                            PF_RANGED_TAKEN | PF_RANGED_ABILITY_TAKEN |
+                            PF_AOE_SPELL_TAKEN | PF_SPELL_TAKEN,
+  PF_ALL_HEAL_TAKEN       = PF_AOE_HEAL_TAKEN | PF_HEAL_TAKEN,
 };
 
 // Qualifier on what result / advanced type allows a proc trigger
@@ -310,6 +322,7 @@ enum item_spell_trigger_type
     ITEM_SPELLTRIGGER_LEARN_SPELL_ID  = 6
 };
 
+/* If you add socket colors here, update dbc::valid_gem_color() too */
 enum item_socket_color
 {
   SOCKET_COLOR_NONE                 = 0,
@@ -317,6 +330,9 @@ enum item_socket_color
   SOCKET_COLOR_RED                  = 2,
   SOCKET_COLOR_YELLOW               = 4,
   SOCKET_COLOR_BLUE                 = 8,
+  SOCKET_COLOR_ORANGE               = SOCKET_COLOR_RED | SOCKET_COLOR_YELLOW,
+  SOCKET_COLOR_PURPLE               = SOCKET_COLOR_RED | SOCKET_COLOR_BLUE,
+  SOCKET_COLOR_GREEN                = SOCKET_COLOR_BLUE | SOCKET_COLOR_YELLOW,
   SOCKET_COLOR_HYDRAULIC            = 16,
   SOCKET_COLOR_PRISMATIC            = SOCKET_COLOR_RED | SOCKET_COLOR_YELLOW | SOCKET_COLOR_BLUE,
   SOCKET_COLOR_COGWHEEL             = 32,
@@ -1064,7 +1080,7 @@ enum spell_attribute_e
   SPELL_ATTR_UNK4, // 4 isAbility
   SPELL_ATTR_TRADESPELL, // 5 trade spells, will be added by client to a sublist of profession spell
   SPELL_ATTR_PASSIVE, // 6 Passive spell
-  SPELL_ATTR_UNK7, // 7 can't be linked in chat?
+  SPELL_ATTR_HIDDEN, // 7 can't be linked in chat?
   SPELL_ATTR_UNK8, // 8 hide created item in tooltip (for effect=24)
   SPELL_ATTR_UNK9, // 9
   SPELL_ATTR_ON_NEXT_SWING_2, // 10 on next swing 2

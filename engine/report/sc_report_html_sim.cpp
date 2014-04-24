@@ -1967,6 +1967,28 @@ void print_html_scale_factors( report::sc_html_stream& os, sim_t* sim )
 
   os << "\t\t\t\t<table class=\"sc\">\n";
 
+  // this next part is used to determine which columns to suppress
+  std::vector<double> stat_effect_is_nonzero;
+
+    //initialize accumulator to zero
+  for ( stat_e j = STAT_NONE; j < STAT_MAX; j++ )
+  {
+    stat_effect_is_nonzero[ j ] = 0.0;
+  }
+
+  // cycle through players
+  for ( size_t i = 0, players = sim -> players_by_name.size(); i < players; i++ )
+  {
+    player_t* p = sim -> players_by_name[ i ];
+
+    // add the absolute value of their stat weights to accumulator element
+    for ( stat_e j = STAT_NONE; j < STAT_MAX; j++ )
+    {
+      stat_effect_is_nonzero[ j ] += std::abs( p -> scaling.get_stat( j ) );
+    }
+  }
+  // end column suppression section
+
   player_e prev_type = PLAYER_NONE;
 
   for ( size_t i = 0, players = sim -> players_by_name.size(); i < players; i++ )
@@ -1981,12 +2003,12 @@ void print_html_scale_factors( report::sc_html_stream& os, sim_t* sim )
          << "\t\t\t\t\t\t<th class=\"left small\">Profile</th>\n";
       for ( stat_e j = STAT_NONE; j < STAT_MAX; j++ )
       {
-        if ( sim -> scaling -> stats.get_stat( j ) != 0 )
+        if ( sim -> scaling -> stats.get_stat( j ) != 0 && stat_effect_is_nonzero[ j ] > 0 )
         {
           os << "\t\t\t\t\t\t<th class=\"small\">" << util::stat_type_abbrev( j ) << "</th>\n";
         }
       }
-      os << "\t\t\t\t\t\t<th class=\"small\">wowhead</th>\n"
+      os << "\t\t\t\t\t\t<th colspan=\"2\" class=\"small\">wowhead</th>\n"
          << "\t\t\t\t\t\t<th class=\"small\">lootrank</th>\n"
          << "\t\t\t\t\t</tr>\n";
     }
@@ -2002,7 +2024,7 @@ void print_html_scale_factors( report::sc_html_stream& os, sim_t* sim )
       p -> name() );
     for ( stat_e j = STAT_NONE; j < STAT_MAX; j++ )
     {
-      if ( sim -> scaling -> stats.get_stat( j ) != 0 )
+      if ( sim -> scaling -> stats.get_stat( j ) != 0 && stat_effect_is_nonzero[ j ] > 0 )
       {
         if ( p -> scaling.get_stat( j ) == 0 )
         {

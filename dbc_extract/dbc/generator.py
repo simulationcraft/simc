@@ -963,17 +963,27 @@ class ItemDataGenerator(DataGenerator):
             fields += [ '{ %s }' % ', '.join(item.field('stat_val_1', 'stat_val_2', 'stat_val_3', 'stat_val_4', 'stat_val_5', 'stat_val_6', 'stat_val_7', 'stat_val_8', 'stat_val_9', 'stat_val_10')) ]
             fields += [ '{ %s }' % ', '.join(item.field('stat_alloc_1', 'stat_alloc_2', 'stat_alloc_3', 'stat_alloc_4', 'stat_alloc_5', 'stat_alloc_6', 'stat_alloc_7', 'stat_alloc_8', 'stat_alloc_9', 'stat_alloc_10')) ]
             fields += [ '{ %s }' % ', '.join(item.field('stat_socket_mul_1', 'stat_socket_mul_2', 'stat_socket_mul_3', 'stat_socket_mul_4', 'stat_socket_mul_5', 'stat_socket_mul_6', 'stat_socket_mul_7', 'stat_socket_mul_8', 'stat_socket_mul_9', 'stat_socket_mul_10')) ]
-            spells = [ '0', '0', '0', '0', '0' ]
-            trigger_types = [ '0', '0', '0', '0', '0' ]
-            cooldown = [ '-1', '-1', '-1', '-1', '-1' ]
-            for spell in item.spells:
-                spells[ spell.index ] = str(spell.id_spell)
-                trigger_types[ spell.index ] = str(spell.trigger_type)
-                cooldown[ spell.index ] = str(spell.cooldown)
 
-            fields += [ '{ %s }' % ', '.join(spells) ]
+            spells = self._itemeffect_db[0].field('id_spell') * 5
+            trigger_types = self._itemeffect_db[0].field('trigger_type') * 5
+            cooldown_category = self._itemeffect_db[0].field('cooldown_category') * 5
+            cooldown_value = self._itemeffect_db[0].field('cooldown_category_duration') * 5
+            cooldown_group = self._itemeffect_db[0].field('cooldown_group') * 5
+            cooldown_shared = self._itemeffect_db[0].field('cooldown_group_duration') * 5
+            for spell in item.spells:
+                spells[ spell.index ] = spell.field('id_spell')[ 0 ]
+                trigger_types[ spell.index ] = spell.field('trigger_type')[ 0 ]
+                cooldown_category[ spell.index ] = spell.field('cooldown_category')[ 0 ]
+                cooldown_value[ spell.index ] = spell.field('cooldown_category_duration')[ 0 ]
+                cooldown_group[ spell.index ] = spell.field('cooldown_group')[ 0 ]
+                cooldown_shared[ spell.index ] = spell.field('cooldown_group_duration')[ 0 ]
+
             fields += [ '{ %s }' % ', '.join(trigger_types) ]
-            fields += [ '{ %s }' % ', '.join(cooldown) ]
+            fields += [ '{ %s }' % ', '.join(spells) ]
+            fields += [ '{ %s }' % ', '.join(cooldown_category) ]
+            fields += [ '{ %s }' % ', '.join(cooldown_value) ]
+            fields += [ '{ %s }' % ', '.join(cooldown_group) ]
+            fields += [ '{ %s }' % ', '.join(cooldown_shared) ]
 
             fields += [ '{ %s }' % ', '.join(item.field('socket_color_1', 'socket_color_2', 'socket_color_3')) ]
             fields += item.field('gem_props', 'socket_bonus', 'item_set', 'rand_suffix' )
@@ -1224,6 +1234,7 @@ class SpellDataGenerator(DataGenerator):
          104993,                    # Jade Spirit
          116631,                    # Colossus
          105617,                    # Alchemist's Flask
+         137596,                    # Capacitance
         ),
         
         # Warrior:
@@ -2060,7 +2071,6 @@ class SpellDataGenerator(DataGenerator):
 
         # Item enchantments that use a spell
         for eid, data in self._spellitemenchantment_db.iteritems():
-            filter_list = { }
             for attr_id in xrange(1, 4):
                 attr_type = getattr(data, 'type_%d' % attr_id)
                 if attr_type == 1 or attr_type == 3 or attr_type == 7:
@@ -2074,25 +2084,11 @@ class SpellDataGenerator(DataGenerator):
                (data.ilevel < self._options.min_ilevel or data.ilevel > self._options.max_ilevel):
                 continue
             
-            filter_list = { }
             for spell in data.spells:
-                sid = spell.id_spell
-                if sid > 0:
-                    self.process_spell(sid, ids, 0, 0)
-                
-                # The spell is a valid spell that we want, kludge in the on-use
-                # cooldown if the spell is of on-use type in the item. This 
-                # should work as long as there are no two on-use effects (unlikely)
-                # or Blizzard does not decide to reduce the on-use cooldown 
-                # based on item type (lfr, normal, heroic, etc.)
-                stype = spell.trigger_type
-                if ids.get(sid) and stype == 0 and spell.cooldown > 0:
-                    # Put in the new cooldown to the spell id data that is 
-                    # passed to generate()
-                    if ids[sid].get('cooldown'):
-                        self.debug('Spell id %d already has a cooldown set' % sid)
-                    else:
-                        ids[sid]['cooldown'] = spell.cooldown
+                if spell.id_spell == 0:
+                    continue
+
+                self.process_spell(spell.id_spell, ids, 0, 0)
         
         # Last, get the explicitly defined spells in _spell_id_list on a class basis and the 
         # generic spells from SpellDataGenerator._spell_id_list[0]
@@ -2185,10 +2181,7 @@ class SpellDataGenerator(DataGenerator):
             fields += self._spelllevels_db[spell.id_levels].field('base_level', 'max_level')
             fields += self._spellrange_db[self._spellmisc_db[spell.id_misc].id_range].field('min_range')
             fields += self._spellrange_db[self._spellmisc_db[spell.id_misc].id_range].field('max_range')
-            if ids.get(id, { }).get('cooldown') == None:
-                fields += self._spellcooldowns_db[spell.id_cooldowns].field('cooldown_duration', 'gcd_cooldown')
-            else:
-                fields += [ '%7u' % ids[id]['cooldown'], '%4u' % 0 ]
+            fields += self._spellcooldowns_db[spell.id_cooldowns].field('cooldown_duration', 'gcd_cooldown')
 
             fields += self._spellcategories_db[spell.id_categories].field('category')
             fields += self._spellduration_db[self._spellmisc_db[spell.id_misc].id_duration].field('duration_1')

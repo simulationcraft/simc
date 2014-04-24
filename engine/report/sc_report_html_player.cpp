@@ -173,7 +173,7 @@ std::string output_action_name( stats_t* s, player_t* actor )
   if ( id > 1 )
   {
     href = "http://";
-    href += ( s -> player -> dbc.ptr ? "ptr" : "www" );
+    href += ( s -> player -> dbc.ptr ? "ptr" : "wod" );
     href += ".wowhead.com/spell=";
     href += util::to_string( id );
 
@@ -593,6 +593,13 @@ void print_html_action_info( report::sc_html_stream& os, unsigned stats_mask, st
     os << "\t\t\t\t\t\t\t\t\t<table  class=\"details\">\n";
     if ( s -> num_direct_results.mean() > 0 )
     {
+      os << "\t\t\t\t\t\t\t\t\t\t<tr>\n"
+         << "\t\t\t\t\t\t\t\t\t\t\t<th class=\"small\" colspan=\"3\">&nbsp;</th>\n"
+         << "\t\t\t\t\t\t\t\t\t\t\t<th class=\"small\" colspan=\"3\">Simulation</th>\n"
+         << "\t\t\t\t\t\t\t\t\t\t\t<th class=\"small\" colspan=\"3\">Iteration Average</th>\n"
+         << "\t\t\t\t\t\t\t\t\t\t\t<th class=\"small\" colspan=\"3\">&nbsp;</th>\n"
+         << "\t\t\t\t\t\t\t\t\t\t<tr>\n";
+
       // Direct Damage
       os << "\t\t\t\t\t\t\t\t\t\t<tr>\n"
          << "\t\t\t\t\t\t\t\t\t\t\t<th class=\"small\">Direct Results</th>\n"
@@ -601,9 +608,9 @@ void print_html_action_info( report::sc_html_stream& os, unsigned stats_mask, st
          << "\t\t\t\t\t\t\t\t\t\t\t<th class=\"small\">Mean</th>\n"
          << "\t\t\t\t\t\t\t\t\t\t\t<th class=\"small\">Min</th>\n"
          << "\t\t\t\t\t\t\t\t\t\t\t<th class=\"small\">Max</th>\n"
-         << "\t\t\t\t\t\t\t\t\t\t\t<th class=\"small\">Average per Iteration</th>\n"
-         << "\t\t\t\t\t\t\t\t\t\t\t<th class=\"small\">Average Min</th>\n"
-         << "\t\t\t\t\t\t\t\t\t\t\t<th class=\"small\">Average Max</th>\n"
+         << "\t\t\t\t\t\t\t\t\t\t\t<th class=\"small\">Mean</th>\n"
+         << "\t\t\t\t\t\t\t\t\t\t\t<th class=\"small\">Min</th>\n"
+         << "\t\t\t\t\t\t\t\t\t\t\t<th class=\"small\">Max</th>\n"
          << "\t\t\t\t\t\t\t\t\t\t\t<th class=\"small\">Actual Amount</th>\n"
          << "\t\t\t\t\t\t\t\t\t\t\t<th class=\"small\">Total Amount</th>\n"
          << "\t\t\t\t\t\t\t\t\t\t\t<th class=\"small\">Overkill %</th>\n"
@@ -657,15 +664,22 @@ void print_html_action_info( report::sc_html_stream& os, unsigned stats_mask, st
     {
       // Tick Damage
       os << "\t\t\t\t\t\t\t\t\t\t<tr>\n"
+         << "\t\t\t\t\t\t\t\t\t\t\t<th class=\"small\" colspan=\"3\">&nbsp;</th>\n"
+         << "\t\t\t\t\t\t\t\t\t\t\t<th class=\"small\" colspan=\"3\">Simulation</th>\n"
+         << "\t\t\t\t\t\t\t\t\t\t\t<th class=\"small\" colspan=\"3\">Iteration Average</th>\n"
+         << "\t\t\t\t\t\t\t\t\t\t\t<th class=\"small\" colspan=\"3\">&nbsp;</th>\n"
+         << "\t\t\t\t\t\t\t\t\t\t<tr>\n";
+
+      os << "\t\t\t\t\t\t\t\t\t\t<tr>\n"
          << "\t\t\t\t\t\t\t\t\t\t\t<th class=\"small\">Tick Results</th>\n"
          << "\t\t\t\t\t\t\t\t\t\t\t<th class=\"small\">Count</th>\n"
          << "\t\t\t\t\t\t\t\t\t\t\t<th class=\"small\">Pct</th>\n"
          << "\t\t\t\t\t\t\t\t\t\t\t<th class=\"small\">Mean</th>\n"
          << "\t\t\t\t\t\t\t\t\t\t\t<th class=\"small\">Min</th>\n"
          << "\t\t\t\t\t\t\t\t\t\t\t<th class=\"small\">Max</th>\n"
-         << "\t\t\t\t\t\t\t\t\t\t\t<th class=\"small\">Average per Iteration</th>\n"
-         << "\t\t\t\t\t\t\t\t\t\t\t<th class=\"small\">Average Min</th>\n"
-         << "\t\t\t\t\t\t\t\t\t\t\t<th class=\"small\">Average Max</th>\n"
+         << "\t\t\t\t\t\t\t\t\t\t\t<th class=\"small\">Mean</th>\n"
+         << "\t\t\t\t\t\t\t\t\t\t\t<th class=\"small\">Min</th>\n"
+         << "\t\t\t\t\t\t\t\t\t\t\t<th class=\"small\">Max</th>\n"
          << "\t\t\t\t\t\t\t\t\t\t\t<th class=\"small\">Actual Amount</th>\n"
          << "\t\t\t\t\t\t\t\t\t\t\t<th class=\"small\">Total Amount</th>\n"
          << "\t\t\t\t\t\t\t\t\t\t\t<th class=\"small\">Overkill %</th>\n"
@@ -972,7 +986,7 @@ void print_html_gear ( report::sc_html_stream& os, player_t* p )
   {
     item_t& item = p -> items[ i ];
 
-    std::string domain = p -> dbc.ptr ? "ptr" : "www";
+    std::string domain = p -> dbc.ptr ? "ptr" : "wod";
     std::string item_string;
     if ( item.active() )
     {
@@ -2340,7 +2354,7 @@ void print_html_player_buff( report::sc_html_stream& os, buff_t* b, int report_d
         if ( b -> sim -> dbc.ptr )
           href += "ptr";
         else
-          href += "www";
+          href += "wod";
         href += ".wowhead.com/spell=";
         href += util::to_string( b -> data().id() );
       }
@@ -2591,7 +2605,7 @@ void print_html_player_description( report::sc_html_stream& os, sim_t* sim, play
   }
 
   const std::string n = util::encode_html( p -> name() );
-  if ( p -> collected_data.dps.mean() >= p -> collected_data.hps.mean() )
+  if ( p -> collected_data.dps.mean() >= p -> collected_data.hps.mean() || p -> primary_role() == ROLE_TANK )
     os.printf( "\">%s&nbsp;:&nbsp;%.0f dps",
                n.c_str(),
                p -> collected_data.dps.mean() );
@@ -3076,7 +3090,9 @@ void output_player_action( report::sc_html_stream& os,
     if ( ! is_output_stat( mask, true, child_stats ) )
       continue;
 
-    print_html_action_info( os, mask, child_stats, row++, cols, actor );
+    // skip if child contributes no damage
+    if ( child_stats -> compound_amount > 0 )
+      print_html_action_info( os, mask, child_stats, row++, cols, actor );
   }
 }
 
