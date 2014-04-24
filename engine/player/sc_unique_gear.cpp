@@ -525,9 +525,8 @@ void enchant::elemental_force( special_effect_t& effect,
 
 void enchant::rivers_song( special_effect_t& effect,
                            const item_t& item,
-                           const special_effect_db_item_t& dbitem )
+                           const special_effect_db_item_t& /* dbitem */ )
 {
-  const spell_data_t* driver = item.player -> find_spell( dbitem.spell_id );
   const spell_data_t* spell = item.player -> find_spell( 116660 );
 
   stat_buff_t* buff = static_cast<stat_buff_t*>( buff_t::find( item.player, tokenized_name( spell ) ) );
@@ -866,7 +865,7 @@ void profession::zen_alchemist_stone( special_effect_t& effect,
 
 void gem::sinister_primal( special_effect_t& effect, 
                            const item_t& item,
-                           const special_effect_db_item_t& dbitem )
+                           const special_effect_db_item_t& /* dbitem */ )
 {
   if ( item.sim -> challenge_mode )
     return;
@@ -878,7 +877,7 @@ void gem::sinister_primal( special_effect_t& effect,
 
 void gem::indomitable_primal( special_effect_t& effect, 
                               const item_t& item,
-                              const special_effect_db_item_t& dbitem )
+                              const special_effect_db_item_t& /* dbitem */ )
 {
   if ( item.sim -> challenge_mode )
     return;
@@ -906,10 +905,10 @@ void gem::capacitive_primal( special_effect_t& effect,
     }
   };
 
-  struct capacitive_primal_proc_t : public discharge_proc_t<action_t>
+  struct capacitive_primal_proc_t : public dbc_proc_callback_t
   {
-    capacitive_primal_proc_t( player_t* p, const special_effect_t& data, action_t* a, const spell_data_t* spell ) :
-      discharge_proc_t<action_t>( p, data, a, spell )
+    capacitive_primal_proc_t( const item_t& i, const special_effect_t& data ) :
+      dbc_proc_callback_t( i, data )
     {
       // Unfortunately the weapon-based RPPM modifiers have to be hardcoded,
       // as they will not show on the client tooltip data.
@@ -928,27 +927,29 @@ void gem::capacitive_primal( special_effect_t& effect,
       if ( action -> id == 147891 || action -> id == 146194 || action -> id == 137597 )
         return;
 
-      discharge_proc_t<action_t>::trigger( action, call_data );
+      dbc_proc_callback_t::trigger( action, call_data );
     }
   };
 
-  const spell_data_t* driver = item.player -> find_spell( dbitem.spell_id );
-  const spell_data_t* spell = item.player -> find_spell( 137596 );
+  player_t* p = item.player;
 
-  effect.max_stacks = spell -> max_stacks();
-  effect.ppm_ = -1.0 * driver -> real_ppm();
+  // Stacking Buff
+  effect.custom_buff = buff_creator_t( p, "capacitance", p -> find_spell( 137596 ) );
   effect.rppm_scale = RPPM_HASTE;
 
-  action_t* ls = item.player -> create_proc_action( "lightning_strike" );
+
+  // Execute Action
+  action_t* ls = p -> create_proc_action( "lightning_strike" );
   if ( ! ls )
-    ls = new lightning_strike_t( item.player );
-  action_callback_t* cb = new capacitive_primal_proc_t( item.player, effect, ls, driver );
-  item.player -> callbacks.register_attack_callback( RESULT_HIT_MASK, cb );
+    ls = new lightning_strike_t( p );
+  effect.execute_action = ls;
+
+  new capacitive_primal_proc_t( item, effect );
 }
 
 void gem::courageous_primal( special_effect_t& effect, 
                              const item_t& item,
-                             const special_effect_db_item_t& dbitem )
+                             const special_effect_db_item_t& /* dbitem */ )
 {
   if ( item.sim -> challenge_mode )
     return;
@@ -1086,11 +1087,10 @@ void item::rune_of_reorigination( special_effect_t& effect,
 
 void item::spark_of_zandalar( special_effect_t& effect,
                               const item_t& item,
-                              const special_effect_db_item_t& dbitem )
+                              const special_effect_db_item_t& /* dbitem */ )
 {
   maintenance_check( 502 );
 
-  const spell_data_t* driver = item.player -> find_spell( dbitem.spell_id );
   const spell_data_t* buff = item.player -> find_spell( 138960 );
 
   std::string buff_name = buff -> name_cstr();
@@ -1106,7 +1106,7 @@ void item::spark_of_zandalar( special_effect_t& effect,
     stat_buff_t* buff;
 
     spark_of_zandalar_callback_t( const item_t& i, const special_effect_t& data ) :
-      dbc_proc_callback_t( i.player, data )
+      dbc_proc_callback_t( i, data )
     {
       const spell_data_t* spell = listener -> find_spell( 138958 );
       sparks = buff_creator_t( listener, "zandalari_spark_driver", spell )

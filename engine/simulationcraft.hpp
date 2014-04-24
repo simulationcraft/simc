@@ -6104,6 +6104,12 @@ private:
       action_state_t* proc_state = proc_action -> get_state();
       proc_state -> target = state -> target;
       proc_action -> schedule_execute( proc_state );
+
+      // Decide whether to expire the buff even with 1 max stack
+      if ( proc_buff && proc_buff -> max_stack() > 1 )
+      {
+        proc_buff -> expire();
+      }
     }
   }
 };
