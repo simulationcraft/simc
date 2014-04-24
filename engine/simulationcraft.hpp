@@ -6103,6 +6103,7 @@ private:
     {
       action_state_t* proc_state = proc_action -> get_state();
       proc_state -> target = state -> target;
+      proc_action -> snapshot_state( proc_state, proc_action -> type == ACTION_HEAL ? HEAL_DIRECT : DMG_DIRECT );
       proc_action -> schedule_execute( proc_state );
 
       // Decide whether to expire the buff even with 1 max stack
