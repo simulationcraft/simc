@@ -975,6 +975,9 @@ void enemy_t::recalculate_health()
     if ( factor > 1.5 ) factor = 1.5;
     if ( factor < 0.5 ) factor = 0.5;
 
+    if ( sim -> current_time > sim -> expected_iteration_time && this != sim -> target ) // Special case for aoe targets that do not die before fluffy pillow.
+      factor = 1;
+
     initial_health *= factor;
   }
 
