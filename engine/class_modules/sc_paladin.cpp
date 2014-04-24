@@ -3633,7 +3633,7 @@ struct paladin_seal_t : public paladin_melee_attack_t
   {
     if ( sim -> log ) sim -> out_log.printf( "%s performs %s", player -> name(), name() );
     consume_resource();
-    seal_e seal_orig = p() -> active_seal;
+    //seal_e seal_orig = p() -> active_seal;
     if ( p() -> specialization() == PALADIN_PROTECTION && seal_type == SEAL_OF_JUSTICE )
     {
       sim -> errorf( "Protection attempted to cast Seal of Justice, defaulting to no seal" );

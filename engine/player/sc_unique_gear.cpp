@@ -317,197 +317,6 @@ static const special_effect_db_item_t __special_effect_db[] = {
   {      0, 0,                                                  0 }
 };
 
-struct stat_buff_proc_t : public buff_proc_callback_t<stat_buff_t>
-{
-  stat_buff_proc_t( player_t* p, const special_effect_t& data, const spell_data_t* driver = spell_data_t::nil() ) :
-    buff_proc_callback_t<stat_buff_t>( p, data, 0, driver )
-  {
-    buff = stat_buff_creator_t( listener, proc_data.name() )
-           .activated( data.reverse || data.tick != timespan_t::zero() )
-           .max_stack( proc_data.max_stacks )
-           .duration( proc_data.duration_ )
-           .cd( proc_data.cooldown_ )
-           .reverse( proc_data.reverse )
-           .add_stat( proc_data.stat, proc_data.stat_amount );
-  }
-};
-
-struct cost_reduction_buff_proc_t : public buff_proc_callback_t<cost_reduction_buff_t>
-{
-  cost_reduction_buff_proc_t( player_t* p, const special_effect_t& data, const spell_data_t* driver = spell_data_t::nil() ) :
-    buff_proc_callback_t<cost_reduction_buff_t>( p, data, 0, driver )
-  {
-    buff = cost_reduction_buff_creator_t( listener, proc_data.name_str )
-           .activated( false )
-           .max_stack( proc_data.max_stacks )
-           .duration( proc_data.duration_ )
-           .cd( proc_data.cooldown_ )
-           .reverse( proc_data.reverse )
-           .amount( proc_data.discharge_amount );
-  }
-};
-
-struct discharge_spell_t : public spell_t
-{
-  discharge_spell_t( player_t* p, special_effect_t& data ) :
-    spell_t( data.name_str, p, spell_data_t::nil() )
-  {
-    school = ( data.school == SCHOOL_DRAIN ) ? SCHOOL_SHADOW : data.school;
-    discharge_proc = true;
-    item_proc = true;
-    trigger_gcd = timespan_t::zero();
-    base_dd_min = data.discharge_amount;
-    base_dd_max = data.discharge_amount;
-    // TODO: direct_power_mod = data.discharge_scaling;
-    may_crit = ( data.school != SCHOOL_DRAIN ) && ( ( data.override_result_es_mask & RESULT_CRIT_MASK ) ? ( data.result_es_mask & RESULT_CRIT_MASK ) : true ); // Default true
-    may_miss = ( data.override_result_es_mask & RESULT_MISS_MASK ) ? ( data.result_es_mask & RESULT_MISS_MASK ) != 0 : may_miss;
-    background  = true;
-    aoe = data.aoe;
-  }
-};
-
-struct discharge_attack_t : public attack_t
-{
-  discharge_attack_t(  player_t* p, special_effect_t& data ) :
-    attack_t( data.name_str, p, spell_data_t::nil() )
-  {
-    school = ( data.school == SCHOOL_DRAIN ) ? SCHOOL_SHADOW : data.school;
-    discharge_proc = true;
-    item_proc = true;
-    trigger_gcd = timespan_t::zero();
-    base_dd_min = data.discharge_amount;
-    base_dd_max = data.discharge_amount;
-    // TODO: direct_power_mod = data.discharge_scaling;
-    may_crit = ( data.school != SCHOOL_DRAIN ) && ( ( data.override_result_es_mask & RESULT_CRIT_MASK ) ? ( data.result_es_mask & RESULT_CRIT_MASK ) : true ); // Default true
-    may_miss = ( data.override_result_es_mask & RESULT_MISS_MASK ) ? ( data.result_es_mask & RESULT_MISS_MASK ) != 0 : may_miss;
-    may_dodge = ( data.school == SCHOOL_PHYSICAL ) && ( ( data.override_result_es_mask & RESULT_DODGE_MASK ) ? ( data.result_es_mask & RESULT_DODGE_MASK ) : may_dodge );
-    may_parry = ( data.school == SCHOOL_PHYSICAL ) && ( ( data.override_result_es_mask & RESULT_PARRY_MASK ) ? ( data.result_es_mask & RESULT_PARRY_MASK ) : may_parry )
-                && ( p -> position() == POSITION_FRONT || p ->position() == POSITION_RANGED_FRONT );
-    //may_block = ( data.school == SCHOOL_PHYSICAL ) && ( ( data.override_result_es_mask & RESULT_BLOCK_MASK ) ? ( data.result_es_mask & RESULT_BLOCK_MASK ) : may_block )
-    //            && ( p -> position() == POSITION_FRONT || p -> position() == POSITION_RANGED_FRONT );
-    may_glance = false;
-    background  = true;
-    aoe = data.aoe;
-  }
-};
-
-struct discharge_proc_callback_base_t : public discharge_proc_t<action_t>
-{
-  discharge_proc_callback_base_t( player_t* p, const special_effect_t& data, const spell_data_t* driver = spell_data_t::nil() ) :
-    discharge_proc_t<action_t>( p, data, nullptr, driver )
-  {
-    if ( proc_data.discharge_amount > 0 )
-    {
-      discharge_action = new discharge_spell_t( p, proc_data );
-    }
-    else
-    {
-      discharge_action = new discharge_attack_t( p, proc_data );
-    }
-  }
-};
-
-// discharge_proc_callback ==================================================
-
-struct discharge_proc_callback_t : public discharge_proc_callback_base_t
-{
-
-  discharge_proc_callback_t( player_t* p, const special_effect_t& data, const spell_data_t* driver = spell_data_t::nil() ) :
-    discharge_proc_callback_base_t( p, data, driver )
-  { }
-};
-
-// chance_discharge_proc_callback ===========================================
-
-struct chance_discharge_proc_callback_t : public discharge_proc_callback_base_t
-{
-
-  chance_discharge_proc_callback_t( player_t* p, const special_effect_t& data, const spell_data_t* driver = spell_data_t::nil() ) :
-    discharge_proc_callback_base_t( p, data, driver )
-  { }
-
-  virtual double proc_chance()
-  {
-    if ( discharge_stacks == this -> proc_data.max_stacks )
-      return 1.0;
-
-    return discharge_proc_callback_base_t::proc_chance();
-  }
-};
-
-// stat_discharge_proc_callback =============================================
-
-struct stat_discharge_proc_callback_t : public discharge_proc_t<action_t>
-{
-  stat_buff_t* buff;
-
-  stat_discharge_proc_callback_t( player_t* p, special_effect_t& data, const spell_data_t* driver = spell_data_t::nil() ) :
-    discharge_proc_t<action_t>( p, data, nullptr, driver )
-  {
-    if ( proc_data.max_stacks == 0 ) proc_data.max_stacks = 1;
-    if ( proc_data.proc_chance_ == 0 ) proc_data.proc_chance_ = 1;
-
-    buff = stat_buff_creator_t( p, proc_data.name_str )
-           .max_stack( proc_data.max_stacks )
-           .duration( proc_data.duration_ )
-           .cd( proc_data.cooldown_ )
-           .chance( proc_data.proc_chance_ )
-           .activated( false /* proc_data.activated */ )
-           .add_stat( proc_data.stat, proc_data.stat_amount );
-
-    if ( proc_data.discharge_amount > 0 )
-    {
-      discharge_action = new discharge_spell_t( p, proc_data );
-    }
-    else
-    {
-      discharge_action = new discharge_attack_t( p, proc_data );
-    }
-  }
-
-  virtual void deactivate()
-  {
-    action_callback_t::deactivate();
-    buff -> expire();
-  }
-
-  virtual void trigger( action_t* a, void* /* call_data */ )
-  {
-    if ( buff -> trigger( a ) )
-    {
-      if ( ! allow_self_procs && ( a == discharge_action ) ) return;
-      discharge_action -> execute();
-    }
-  }
-};
-
-// Weapon Proc Callback =====================================================
-
-struct weapon_proc_callback_t : public proc_callback_t<action_state_t>
-{
-  typedef proc_callback_t<action_state_t> base_t;
-  weapon_t* weapon;
-  bool all_damage;
-
-  weapon_proc_callback_t( player_t* p,
-                          special_effect_t& e,
-                          weapon_t* w,
-                          bool all = false,
-                          const spell_data_t* driver = spell_data_t::nil() ) :
-    base_t( p, e, driver ),
-    weapon( w ), all_damage( all )
-  {
-  }
-
-  virtual void trigger( action_t* a, void* call_data )
-  {
-    if ( ! all_damage && a -> proc ) return;
-    if ( a -> weapon && weapon && a -> weapon != weapon ) return;
-
-    base_t::trigger( a, call_data );
-  }
-};
-
 
 // Enchants ================================================================
 
@@ -515,27 +324,19 @@ void enchant::elemental_force( special_effect_t& effect,
                                const item_t& item,
                                const special_effect_db_item_t& dbitem )
 {
-  const spell_data_t* driver = item.player -> find_spell( dbitem.spell_id );
-  const spell_data_t* elemental_force_spell = item.player -> find_spell( 116616 );
 
-  double amount = ( elemental_force_spell -> effectN( 1 ).min( item.player ) + elemental_force_spell -> effectN( 1 ).max( item.player ) ) / 2;
-
-  effect.ppm_ = -1.0 * driver -> real_ppm();
-  effect.school = SCHOOL_ELEMENTAL;
-  effect.discharge_amount = amount;
+  const spell_data_t* elemental_force_spell = item.player -> find_spell( dbitem.spell_id )->effectN( 1 ).trigger();
+  effect.execute_action = new spell_t( "elemental_force", item.player, elemental_force_spell );
+  effect.execute_action -> background = true;
   effect.rppm_scale = RPPM_HASTE;
 
-  action_callback_t* cb  = new discharge_proc_callback_t( item.player, effect );
-  item.player -> callbacks.register_attack_callback( RESULT_HIT_MASK, cb );
-  item.player -> callbacks.register_spell_callback ( RESULT_HIT_MASK, cb );
-  item.player -> callbacks.register_tick_callback  ( RESULT_HIT_MASK, cb );
+  new dbc_proc_callback_t( item, effect );
 }
 
 void enchant::rivers_song( special_effect_t& effect,
                            const item_t& item,
-                           const special_effect_db_item_t& dbitem )
+                           const special_effect_db_item_t& /* dbitem */ )
 {
-  const spell_data_t* driver = item.player -> find_spell( dbitem.spell_id );
   const spell_data_t* spell = item.player -> find_spell( 116660 );
 
   stat_buff_t* buff = static_cast<stat_buff_t*>( buff_t::find( item.player, tokenized_name( spell ) ) );
@@ -874,7 +675,7 @@ void profession::zen_alchemist_stone( special_effect_t& effect,
 
 void gem::sinister_primal( special_effect_t& effect, 
                            const item_t& item,
-                           const special_effect_db_item_t& dbitem )
+                           const special_effect_db_item_t& /* dbitem */ )
 {
   if ( item.sim -> challenge_mode )
     return;
@@ -886,7 +687,7 @@ void gem::sinister_primal( special_effect_t& effect,
 
 void gem::indomitable_primal( special_effect_t& effect, 
                               const item_t& item,
-                              const special_effect_db_item_t& dbitem )
+                              const special_effect_db_item_t& /* dbitem */ )
 {
   if ( item.sim -> challenge_mode )
     return;
@@ -898,7 +699,7 @@ void gem::indomitable_primal( special_effect_t& effect,
 
 void gem::capacitive_primal( special_effect_t& effect, 
                              const item_t& item,
-                             const special_effect_db_item_t& dbitem )
+                             const special_effect_db_item_t& /* dbitem */ )
 {
   if ( item.sim -> challenge_mode )
     return;
@@ -914,18 +715,24 @@ void gem::capacitive_primal( special_effect_t& effect,
     }
   };
 
-  struct capacitive_primal_proc_t : public discharge_proc_t<action_t>
+  struct capacitive_primal_proc_t : public dbc_proc_callback_t
   {
-    capacitive_primal_proc_t( player_t* p, const special_effect_t& data, action_t* a, const spell_data_t* spell ) :
-      discharge_proc_t<action_t>( p, data, a, spell )
+    capacitive_primal_proc_t( const item_t& i, const special_effect_t& data ) :
+      dbc_proc_callback_t( i, data )
     {
+
+    }
+
+    virtual void initialize() override
+    {
+      dbc_proc_callback_t::initialize();
       // Unfortunately the weapon-based RPPM modifiers have to be hardcoded,
       // as they will not show on the client tooltip data.
-      if ( listener -> main_hand_weapon.group() != WEAPON_2H )
+      if ( listener->main_hand_weapon.group() != WEAPON_2H )
       {
-        if ( listener -> specialization() == WARRIOR_FURY )
+        if ( listener->specialization() == WARRIOR_FURY )
           rppm.set_modifier( 1.152 );
-        else if ( listener -> specialization() == DEATH_KNIGHT_FROST )
+        else if ( listener->specialization() == DEATH_KNIGHT_FROST )
           rppm.set_modifier( 1.134 );
       }
     }
@@ -936,27 +743,29 @@ void gem::capacitive_primal( special_effect_t& effect,
       if ( action -> id == 147891 || action -> id == 146194 || action -> id == 137597 )
         return;
 
-      discharge_proc_t<action_t>::trigger( action, call_data );
+      dbc_proc_callback_t::trigger( action, call_data );
     }
   };
 
-  const spell_data_t* driver = item.player -> find_spell( dbitem.spell_id );
-  const spell_data_t* spell = item.player -> find_spell( 137596 );
+  player_t* p = item.player;
 
-  effect.max_stacks = spell -> max_stacks();
-  effect.ppm_ = -1.0 * driver -> real_ppm();
+  // Stacking Buff
+  effect.custom_buff = buff_creator_t( p, "capacitance", p -> find_spell( 137596 ) );
   effect.rppm_scale = RPPM_HASTE;
 
-  action_t* ls = item.player -> create_proc_action( "lightning_strike" );
+
+  // Execute Action
+  action_t* ls = p -> create_proc_action( "lightning_strike" );
   if ( ! ls )
-    ls = new lightning_strike_t( item.player );
-  action_callback_t* cb = new capacitive_primal_proc_t( item.player, effect, ls, driver );
-  item.player -> callbacks.register_attack_callback( RESULT_HIT_MASK, cb );
+    ls = new lightning_strike_t( p );
+  effect.execute_action = ls;
+
+  new capacitive_primal_proc_t( item, effect );
 }
 
 void gem::courageous_primal( special_effect_t& effect, 
                              const item_t& item,
-                             const special_effect_db_item_t& dbitem )
+                             const special_effect_db_item_t& /* dbitem */ )
 {
   if ( item.sim -> challenge_mode )
     return;
@@ -1094,11 +903,10 @@ void item::rune_of_reorigination( special_effect_t& effect,
 
 void item::spark_of_zandalar( special_effect_t& effect,
                               const item_t& item,
-                              const special_effect_db_item_t& dbitem )
+                              const special_effect_db_item_t& /* dbitem */ )
 {
   maintenance_check( 502 );
 
-  const spell_data_t* driver = item.player -> find_spell( dbitem.spell_id );
   const spell_data_t* buff = item.player -> find_spell( 138960 );
 
   std::string buff_name = buff -> name_cstr();
@@ -1114,7 +922,7 @@ void item::spark_of_zandalar( special_effect_t& effect,
     stat_buff_t* buff;
 
     spark_of_zandalar_callback_t( const item_t& i, const special_effect_t& data ) :
-      dbc_proc_callback_t( i.player, data )
+      dbc_proc_callback_t( i, data )
     {
       const spell_data_t* spell = listener -> find_spell( 138958 );
       sparks = buff_creator_t( listener, "zandalari_spark_driver", spell )
@@ -1336,14 +1144,11 @@ void item::flurry_of_xuen( special_effect_t& effect,
 
   player_t* p = item.player;
   const spell_data_t* driver = p -> find_spell( dbitem.spell_id );
-  std::string name = driver -> name_cstr();
-  util::tokenize( name );
 
-  effect.name_str   = name;
   effect.ppm_        = -1.0 * driver -> real_ppm();
   effect.ppm_       *= item_database::approx_scale_coefficient( item.parsed.data.level, item.item_level() );
   effect.rppm_scale = RPPM_HASTE;
-  effect.execute_action = new flurry_of_xuen_driver_t( p, p -> create_proc_action( effect.name_str ) );
+  effect.execute_action = new flurry_of_xuen_driver_t( p, p -> create_proc_action( effect.name() ) );
 
   new flurry_of_xuen_cb_t( p, effect );
 }
@@ -1401,10 +1206,7 @@ void item::essence_of_yulon( special_effect_t& effect,
 
   player_t* p = item.player;
   const spell_data_t* driver = p -> find_spell( dbitem.spell_id );
-  std::string name = driver -> name_cstr();
-  util::tokenize( name );
 
-  effect.name_str    = name;
   effect.ppm_         = -1.0 * driver -> real_ppm();
   effect.ppm_        *= item_database::approx_scale_coefficient( item.parsed.data.level, item.item_level() );
   effect.rppm_scale  = RPPM_HASTE;
@@ -1536,349 +1338,4 @@ void unique_gear::init( player_t* p )
         new dbc_proc_callback_t( item, effect );
     }
   }
-}
-
-// ==========================================================================
-// unique_gear::stat_proc
-// ==========================================================================
-
-action_callback_t* unique_gear::register_stat_proc( player_t* player,
-                                                    const special_effect_t& effect )
-{
-  action_callback_t* cb = new stat_buff_proc_t( player, effect );
-
-  if ( effect.trigger_type == PROC_DAMAGE || effect.trigger_type == PROC_DAMAGE_HEAL )
-  {
-    player -> callbacks.register_tick_damage_callback( effect.trigger_mask, cb );
-    player -> callbacks.register_direct_damage_callback( effect.trigger_mask, cb );
-  }
-  if ( effect.trigger_type == PROC_HEAL || effect.trigger_type == PROC_DAMAGE_HEAL )
-  {
-    player -> callbacks.register_tick_heal_callback( effect.trigger_mask, cb );
-    player -> callbacks.register_direct_heal_callback( effect.trigger_mask, cb );
-  }
-  else if ( effect.trigger_type == PROC_TICK_DAMAGE )
-  {
-    player -> callbacks.register_tick_damage_callback( effect.trigger_mask, cb );
-  }
-  else if ( effect.trigger_type == PROC_DIRECT_DAMAGE )
-  {
-    player -> callbacks.register_direct_damage_callback( effect.trigger_mask, cb );
-  }
-  else if ( effect.trigger_type == PROC_DIRECT_CRIT )
-  {
-    player -> callbacks.register_direct_crit_callback( effect.trigger_mask, cb );
-  }
-  else if ( effect.trigger_type == PROC_SPELL_TICK_DAMAGE )
-  {
-    player -> callbacks.register_spell_tick_damage_callback( effect.trigger_mask, cb );
-  }
-  else if ( effect.trigger_type == PROC_SPELL_DIRECT_DAMAGE )
-  {
-    player -> callbacks.register_spell_direct_damage_callback( effect.trigger_mask, cb );
-  }
-  else if ( effect.trigger_type == PROC_ATTACK )
-  {
-    player -> callbacks.register_attack_callback( effect.trigger_mask, cb );
-  }
-  else if ( effect.trigger_type == PROC_SPELL )
-  {
-    player -> callbacks.register_spell_callback( effect.trigger_mask, cb );
-  }
-  else if ( effect.trigger_type == PROC_TICK )
-  {
-    player -> callbacks.register_tick_callback( effect.trigger_mask, cb );
-  }
-  else if ( effect.trigger_type == PROC_HARMFUL_SPELL )
-  {
-    player -> callbacks.register_harmful_spell_callback( effect.trigger_mask, cb );
-    player -> callbacks.register_tick_callback( effect.trigger_mask, cb );
-  }
-  else if ( effect.trigger_type == PROC_HARMFUL_SPELL_LANDING )
-  {
-    player -> callbacks.register_harmful_spell_callback( effect.trigger_mask, cb );
-  }
-  else if ( effect.trigger_type == PROC_HEAL_SPELL )
-  {
-    player -> callbacks.register_heal_callback( effect.trigger_mask, cb );
-  }
-  else if ( effect.trigger_type == PROC_DAMAGE_HEAL_SPELL )
-  {
-    player -> callbacks.register_spell_callback( effect.trigger_mask, cb );
-    player -> callbacks.register_heal_callback( effect.trigger_mask, cb );
-  }
-
-  return cb;
-}
-
-// ==========================================================================
-// unique_gear::cost_reduction_proc
-// ==========================================================================
-
-action_callback_t* unique_gear::register_cost_reduction_proc( player_t* player,
-                                                              const special_effect_t& effect )
-{
-  action_callback_t* cb = new cost_reduction_buff_proc_t( player, effect );
-
-  if ( effect.trigger_type == PROC_DAMAGE || effect.trigger_type == PROC_DAMAGE_HEAL )
-  {
-    player -> callbacks.register_tick_damage_callback( effect.trigger_mask, cb );
-    player -> callbacks.register_direct_damage_callback( effect.trigger_mask, cb );
-  }
-  if ( effect.trigger_type == PROC_HEAL || effect.trigger_type == PROC_DAMAGE_HEAL )
-  {
-    player -> callbacks.register_tick_heal_callback( effect.trigger_mask, cb );
-    player -> callbacks.register_direct_heal_callback( effect.trigger_mask, cb );
-  }
-  else if ( effect.trigger_type == PROC_TICK_DAMAGE )
-  {
-    player -> callbacks.register_tick_damage_callback( effect.trigger_mask, cb );
-  }
-  else if ( effect.trigger_type == PROC_DIRECT_DAMAGE )
-  {
-    player -> callbacks.register_direct_damage_callback( effect.trigger_mask, cb );
-  }
-  else if ( effect.trigger_type == PROC_DIRECT_CRIT )
-  {
-    player -> callbacks.register_direct_crit_callback( effect.trigger_mask, cb );
-  }
-  else if ( effect.trigger_type == PROC_SPELL_TICK_DAMAGE )
-  {
-    player -> callbacks.register_spell_tick_damage_callback( effect.trigger_mask, cb );
-  }
-  else if ( effect.trigger_type == PROC_SPELL_DIRECT_DAMAGE )
-  {
-    player -> callbacks.register_spell_direct_damage_callback( effect.trigger_mask, cb );
-  }
-  else if ( effect.trigger_type == PROC_TICK )
-  {
-    player -> callbacks.register_tick_callback( effect.trigger_mask, cb );
-  }
-  else if ( effect.trigger_type == PROC_ATTACK )
-  {
-    player -> callbacks.register_attack_callback( effect.trigger_mask, cb );
-  }
-  else if ( effect.trigger_type == PROC_SPELL )
-  {
-    player -> callbacks.register_spell_callback( effect.trigger_mask, cb );
-  }
-  else if ( effect.trigger_type == PROC_HARMFUL_SPELL )
-  {
-    player -> callbacks.register_harmful_spell_callback( effect.trigger_mask, cb );
-    player -> callbacks.register_tick_callback( effect.trigger_mask, cb );
-  }
-  else if ( effect.trigger_type == PROC_HEAL_SPELL )
-  {
-    player -> callbacks.register_heal_callback( effect.trigger_mask, cb );
-  }
-
-  return cb;
-}
-
-// ==========================================================================
-// unique_gear::discharge_proc
-// ==========================================================================
-
-action_callback_t* unique_gear::register_discharge_proc( player_t* player,
-                                                         const special_effect_t& effect )
-{
-  action_callback_t* cb = new discharge_proc_callback_t( player, effect );
-
-  const proc_e& type = effect.trigger_type;
-  const int64_t& mask = effect.trigger_mask;
-
-  if ( type == PROC_DAMAGE || type == PROC_DAMAGE_HEAL )
-  {
-    player -> callbacks.register_tick_damage_callback( mask, cb );
-    player -> callbacks.register_direct_damage_callback( mask, cb );
-  }
-  if ( type == PROC_HEAL || type == PROC_DAMAGE_HEAL )
-  {
-    player -> callbacks.register_tick_heal_callback( mask, cb );
-    player -> callbacks.register_direct_heal_callback( mask, cb );
-  }
-  else if ( type == PROC_TICK_DAMAGE )
-  {
-    player -> callbacks.register_tick_damage_callback( mask, cb );
-  }
-  else if ( type == PROC_DIRECT_DAMAGE )
-  {
-    player -> callbacks.register_direct_damage_callback( mask, cb );
-  }
-  else if ( type == PROC_DIRECT_CRIT )
-  {
-    player -> callbacks.register_direct_crit_callback( mask, cb );
-  }
-  else if ( type == PROC_SPELL_TICK_DAMAGE )
-  {
-    player -> callbacks.register_spell_tick_damage_callback( mask, cb );
-  }
-  else if ( type == PROC_SPELL_DIRECT_DAMAGE )
-  {
-    player -> callbacks.register_spell_direct_damage_callback( mask, cb );
-  }
-  else if ( type == PROC_TICK )
-  {
-    player -> callbacks.register_tick_callback( mask, cb );
-  }
-  else if ( type == PROC_ATTACK )
-  {
-    player -> callbacks.register_attack_callback( mask, cb );
-  }
-  else if ( type == PROC_SPELL )
-  {
-    player -> callbacks.register_spell_callback( mask, cb );
-  }
-  else if ( type == PROC_SPELL_AND_TICK )
-  {
-    player -> callbacks.register_spell_callback( mask, cb );
-    player -> callbacks.register_tick_callback( mask, cb );
-  }
-  else if ( type == PROC_HARMFUL_SPELL )
-  {
-    player -> callbacks.register_harmful_spell_callback( mask, cb );
-  }
-  else if ( type == PROC_HEAL_SPELL )
-  {
-    player -> callbacks.register_heal_callback( mask, cb );
-  }
-
-  return cb;
-}
-
-// ==========================================================================
-// unique_gear::chance_discharge_proc
-// ==========================================================================
-
-action_callback_t* unique_gear::register_chance_discharge_proc( player_t* player,
-                                                                const special_effect_t& effect )
-{
-  action_callback_t* cb = new chance_discharge_proc_callback_t( player, effect );
-
-  const proc_e& type = effect.trigger_type;
-  const int64_t& mask = effect.trigger_mask;
-
-  if ( type == PROC_DAMAGE || type == PROC_DAMAGE_HEAL )
-  {
-    player -> callbacks.register_tick_damage_callback( mask, cb );
-    player -> callbacks.register_direct_damage_callback( mask, cb );
-  }
-  if ( type == PROC_HEAL  || type == PROC_DAMAGE_HEAL )
-  {
-    player -> callbacks.register_tick_heal_callback( mask, cb );
-    player -> callbacks.register_direct_heal_callback( mask, cb );
-  }
-  else if ( type == PROC_TICK_DAMAGE )
-  {
-    player -> callbacks.register_tick_damage_callback( mask, cb );
-  }
-  else if ( type == PROC_DIRECT_DAMAGE )
-  {
-    player -> callbacks.register_direct_damage_callback( mask, cb );
-  }
-  else if ( type == PROC_DIRECT_CRIT )
-  {
-    player -> callbacks.register_direct_crit_callback( mask, cb );
-  }
-  else if ( type == PROC_SPELL_TICK_DAMAGE )
-  {
-    player -> callbacks.register_spell_tick_damage_callback( mask, cb );
-  }
-  else if ( type == PROC_SPELL_DIRECT_DAMAGE )
-  {
-    player -> callbacks.register_spell_direct_damage_callback( mask, cb );
-  }
-  else if ( type == PROC_TICK )
-  {
-    player -> callbacks.register_tick_callback( mask, cb );
-  }
-  else if ( type == PROC_ATTACK )
-  {
-    player -> callbacks.register_attack_callback( mask, cb );
-  }
-  else if ( type == PROC_SPELL )
-  {
-    player -> callbacks.register_spell_callback( mask, cb );
-  }
-  else if ( type == PROC_SPELL_AND_TICK )
-  {
-    player -> callbacks.register_spell_callback( mask, cb );
-    player -> callbacks.register_tick_callback( mask, cb );
-  }
-  else if ( type == PROC_HARMFUL_SPELL )
-  {
-    player -> callbacks.register_harmful_spell_callback( mask, cb );
-  }
-  else if ( type == PROC_HEAL_SPELL )
-  {
-    player -> callbacks.register_heal_callback( mask, cb );
-  }
-
-  return cb;
-}
-
-// ==========================================================================
-// unique_gear::stat_discharge_proc
-// ==========================================================================
-
-action_callback_t* unique_gear::register_stat_discharge_proc( player_t* player,
-                                                              const special_effect_t& effect )
-{
-  action_callback_t* cb = new discharge_proc_callback_t( player, effect );
-
-  const proc_e& type = effect.trigger_type;
-  const int64_t& mask = effect.trigger_mask;
-
-  if ( type == PROC_DAMAGE || type == PROC_DAMAGE_HEAL )
-  {
-    player -> callbacks.register_tick_damage_callback( mask, cb );
-    player -> callbacks.register_direct_damage_callback( mask, cb );
-  }
-  if ( type == PROC_HEAL  || type == PROC_DAMAGE_HEAL )
-  {
-    player -> callbacks.register_tick_heal_callback( mask, cb );
-    player -> callbacks.register_direct_heal_callback( mask, cb );
-  }
-  else if ( type == PROC_TICK_DAMAGE )
-  {
-    player -> callbacks.register_tick_damage_callback( mask, cb );
-  }
-  else if ( type == PROC_DIRECT_DAMAGE )
-  {
-    player -> callbacks.register_direct_damage_callback( mask, cb );
-  }
-  else if ( type == PROC_DIRECT_CRIT )
-  {
-    player -> callbacks.register_direct_crit_callback( mask, cb );
-  }
-  else if ( type == PROC_SPELL_TICK_DAMAGE )
-  {
-    player -> callbacks.register_spell_tick_damage_callback( mask, cb );
-  }
-  else if ( type == PROC_SPELL_DIRECT_DAMAGE )
-  {
-    player -> callbacks.register_spell_direct_damage_callback( mask, cb );
-  }
-  else if ( type == PROC_TICK )
-  {
-    player -> callbacks.register_tick_callback( mask, cb );
-  }
-  else if ( type == PROC_ATTACK )
-  {
-    player -> callbacks.register_attack_callback( mask, cb );
-  }
-  else if ( type == PROC_SPELL )
-  {
-    player -> callbacks.register_spell_callback( mask, cb );
-  }
-  else if ( type == PROC_HARMFUL_SPELL )
-  {
-    player -> callbacks.register_harmful_spell_callback( mask, cb );
-  }
-  else if ( type == PROC_HEAL_SPELL )
-  {
-    player -> callbacks.register_heal_callback( mask, cb );
-  }
-
-  return cb;
 }

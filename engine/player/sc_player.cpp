@@ -1210,56 +1210,7 @@ void player_t::init_meta_gem( gear_stats_t& )
   {
     initial.armor_multiplier *= 1.02;
   }
-  /*
-  else if ( ( meta_gem == META_EMBER_SHADOWSPIRIT ) || ( meta_gem == META_EMBER_SKYFIRE ) || ( meta_gem == META_EMBER_SKYFLARE ) )
-  {
-    mana_per_intellect *= 1.02;
-  }
-  else if ( meta_gem == META_BEAMING_EARTHSIEGE )
-  {
-    mana_per_intellect *= 1.02;
-  }
-  */
-  else if ( meta_gem == META_MYSTICAL_SKYFIRE )
-  {
-    special_effect_t data;
-    data.name_str     = "mystical_skyfire";
-    data.trigger_type = PROC_SPELL;
-    data.trigger_mask = RESULT_HIT_MASK;
-    data.stat         = STAT_HASTE_RATING;
-    data.stat_amount  = 320;
-    data.proc_chance_ = 0.15;
-    data.duration_    = timespan_t::from_seconds( 4 );
-    data.cooldown_    = timespan_t::from_seconds( 45 );
 
-    unique_gear::register_stat_proc( this, data );
-  }
-  else if ( meta_gem == META_INSIGHTFUL_EARTHSTORM )
-  {
-    special_effect_t data;
-    data.name_str     = "insightful_earthstorm";
-    data.trigger_type = PROC_SPELL;
-    data.trigger_mask = RESULT_HIT_MASK;
-    data.stat         = STAT_MANA;
-    data.stat_amount  = 300;
-    data.proc_chance_ = 0.05;
-    data.cooldown_    = timespan_t::from_seconds( 15 );
-
-    unique_gear::register_stat_proc( this, data );
-  }
-  else if ( meta_gem == META_INSIGHTFUL_EARTHSIEGE )
-  {
-    special_effect_t data;
-    data.name_str     = "insightful_earthsiege";
-    data.trigger_type = PROC_SPELL;
-    data.trigger_mask = RESULT_HIT_MASK;
-    data.stat         = STAT_MANA;
-    data.stat_amount  = 600;
-    data.proc_chance_ = 0.05;
-    data.cooldown_    = timespan_t::from_seconds( 15 );
-
-    unique_gear::register_stat_proc( this, data );
-  }
 }
 
 // player_t::init_position ==================================================
@@ -1395,43 +1346,13 @@ void player_t::init_special_effects()
   const spell_data_t* totg = find_racial_spell( "Touch of the Grave" );
   if ( totg -> ok() )
   {
-    struct touch_of_the_grave_discharge_spell_t : public spell_t
-    {
-      touch_of_the_grave_discharge_spell_t( player_t* p, const spell_data_t* s ) :
-        spell_t( "touch_of_the_grave", p, s )
-      {
-        school           = ( s -> effectN( 1 ).trigger() -> get_school_type() == SCHOOL_DRAIN ) ? SCHOOL_SHADOW : s -> effectN( 1 ).trigger() -> get_school_type();
-        discharge_proc   = true;
-        trigger_gcd      = timespan_t::zero();
-        base_dd_min      = s -> effectN( 1 ).trigger() -> effectN( 1 ).average( p );
-        base_dd_max      = s -> effectN( 1 ).trigger() -> effectN( 1 ).average( p );
-        may_crit         = false;
-        may_miss         = false;
-        background       = true;
-        aoe              = 0;
-      }
+    special_effect_t effect( this );
+    effect.spell_id = totg -> id();
+    effect.execute_action = new spell_t( "touch_of_the_grave", this, totg -> effectN( 1 ).trigger() );
+    effect.execute_action -> background = true;
+    special_effects.push_back( effect );
 
-      virtual void impact( action_state_t* s )
-      {
-        spell_t::impact( s );
-
-        if ( result_is_hit( s -> result ) )
-        {
-          player -> resource_gain( RESOURCE_HEALTH, s -> result_amount, player -> gains.touch_of_the_grave );
-        }
-      }
-    };
-
-    special_effect_t se_data;
-    se_data.name_str = "touch_of_the_grave";
-    se_data.proc_chance_ = totg -> proc_chance();
-    se_data.cooldown_ = totg -> internal_cooldown();
-
-    action_t* a = new touch_of_the_grave_discharge_spell_t( this, totg -> effectN( 1 ).trigger() );
-    action_callback_t* cb = new discharge_proc_t<action_t>( this, se_data, a );
-
-    callbacks.register_attack_callback       ( RESULT_HIT_MASK, cb );
-    callbacks.register_harmful_spell_callback( RESULT_HIT_MASK, cb );
+    new dbc_proc_callback_t( this, special_effects.back() );
   }
 
   unique_gear::init( this );
@@ -2884,7 +2805,7 @@ double player_t::composite_multistrike() const
 
 // player_t::composite_player_multiplier ====================================
 
-double player_t::composite_player_multiplier( school_e school ) const
+double player_t::composite_player_multiplier( school_e /* school */ ) const
 {
   double m = 1.0;
   
@@ -5851,15 +5772,13 @@ struct wait_until_ready_t : public wait_fixed_t
 struct use_item_t : public action_t
 {
   item_t* item;
-  spell_t* discharge;
-  action_callback_t* trigger;
-  buff_t* buff;
   std::string use_name;
-  const special_effect_t* effect;
+  action_t* action;
+  buff_t* buff;
 
   use_item_t( player_t* player, const std::string& options_str ) :
     action_t( ACTION_OTHER, "use_item", player ),
-    item( 0 ), discharge( 0 ), trigger( 0 ), buff( 0 ), effect( 0 )
+    item( 0 )
   {
     std::string item_name, item_slot;
 
@@ -5908,68 +5827,20 @@ struct use_item_t : public action_t
       return;
     }
 
+    // Parse Special Effect
     const special_effect_t& e = item -> special_effect( SPECIAL_EFFECT_SOURCE_NONE, SPECIAL_EFFECT_USE );
-    if ( e.type != SPECIAL_EFFECT_USE )
+    buff = e.create_buff();
+    action = e.create_action();
+
+    if ( !buff && !action )
     {
-      sim -> errorf( "Player %s attempting 'use_item' action with item '%s' which has no 'use=' encoding.\n", player -> name(), item -> name() );
-      item = nullptr;
-      return;
+      sim -> errorf( "Player %s has 'use_item' action with no custom buff or action setup.\n", player -> name() );
+      background = true;
     }
 
-    effect = &e;
     stats = player ->  get_stats( name_str, this );
 
     use_name = e.name_str.empty() ? item -> name() : e.name_str;
-
-    if ( e.trigger_type )
-    {
-      if ( e.cost_reduction && e.school && e.discharge_amount )
-        trigger = unique_gear::register_cost_reduction_proc( player, e );
-      else if ( e.stat )
-      {
-        trigger = unique_gear::register_stat_proc( player, e );
-      }
-      else if ( e.school )
-      {
-        trigger = unique_gear::register_discharge_proc( player, e );
-      }
-
-      if ( trigger ) trigger -> deactivate();
-    }
-    else if ( e.school )
-    {
-      struct discharge_spell_t : public spell_t
-      {
-        discharge_spell_t( const char* n, player_t* p, double a, school_e s, unsigned int override_result_es_mask = 0, unsigned int result_es_mask = 0 ) :
-          spell_t( n, p, spell_data_t::nil() )
-        {
-          school = s;
-          trigger_gcd = timespan_t::zero();
-          base_dd_min = a;
-          base_dd_max = a;
-          may_crit    = ( s != SCHOOL_DRAIN ) && ( ( override_result_es_mask & RESULT_CRIT_MASK ) ? ( result_es_mask & RESULT_CRIT_MASK ) : true ); // Default true
-          may_miss    = ( override_result_es_mask & RESULT_MISS_MASK ) ? ( result_es_mask & RESULT_MISS_MASK ) != 0 : may_miss;
-          background  = true;
-        }
-      };
-
-      discharge = new discharge_spell_t( use_name.c_str(), player, e.discharge_amount, e.school, e.override_result_es_mask, e.result_es_mask );
-    }
-    else if ( effect -> is_stat_buff() )
-    {
-      stat_buff_t* b = dynamic_cast<stat_buff_t*>( buff_t::find( player, use_name, player ) );
-      if ( ! b )
-        b = effect -> initialize_stat_buff();
-
-      buff = b;
-    }
-    else if ( e.execute_action )
-    {
-      assert( player == e.execute_action -> player ); // check if the action is from the same player. Might be overly strict
-    }
-    else if ( e.custom_buff )
-      buff = e.custom_buff;
-    else assert( false );
 
     std::string cooldown_name = use_name;
     cooldown_name += "_";
@@ -5978,8 +5849,6 @@ struct use_item_t : public action_t
     cooldown = player -> get_cooldown( cooldown_name );
     cooldown -> duration = e.cooldown();
     trigger_gcd = timespan_t::zero();
-
-    if ( buff != 0 ) buff -> cooldown = cooldown;
   }
 
   void lockout( timespan_t duration )
@@ -5991,51 +5860,21 @@ struct use_item_t : public action_t
 
   virtual void execute()
   {
-    if ( discharge )
-    {
-      discharge -> execute();
-    }
-    else if ( trigger )
-    {
-      if ( sim -> log ) sim -> out_log.printf( "%s performs %s", player -> name(), use_name.c_str() );
+    bool triggered = buff == 0;
+    if ( buff )
+      triggered = buff -> trigger();
 
-      trigger -> activate();
+    if ( triggered && action &&
+         ( ! buff || buff -> check() == buff -> max_stack() ) )
+    {
+      action -> schedule_execute();
 
-      if ( effect -> duration_ != timespan_t::zero() )
+      // Decide whether to expire the buff even with 1 max stack
+      if ( buff && buff -> max_stack() > 1 )
       {
-        struct trigger_expiration_t : public event_t
-        {
-          item_t* item;
-          action_callback_t* trigger;
-          const special_effect_t* effect;
-
-          trigger_expiration_t( player_t& player, item_t* i, const special_effect_t* e, action_callback_t* t ) :
-            event_t( player, i -> name() ), item( i ), trigger( t ), effect( e )
-          {
-            sim().add_event( this, effect -> duration() );
-          }
-          virtual void execute()
-          {
-            trigger -> deactivate();
-          }
-        };
-
-        new ( *sim ) trigger_expiration_t( *player, item, effect, trigger );
-
-        lockout( effect -> duration() );
+        buff -> expire();
       }
     }
-    else if ( buff )
-    {
-      if ( sim -> log ) sim -> out_log.printf( "%s performs %s", player -> name(), use_name.c_str() );
-      buff -> trigger();
-      lockout( buff -> buff_duration );
-    }
-    else if ( action_t* a = effect -> execute_action )
-    {
-      a -> execute();
-    }
-    else assert( false );
 
     // Enable to report use_item ability
     //if ( ! dual ) stats -> add_execute( time_to_execute );
@@ -6046,7 +5885,6 @@ struct use_item_t : public action_t
   virtual void reset()
   {
     action_t::reset();
-    if ( trigger ) trigger -> deactivate();
   }
 
   virtual bool ready()

@@ -13,7 +13,7 @@ struct proc_parse_opt_t
   unsigned    flags;
 };
   
-static const proc_parse_opt_t __proc_opts[] =
+const proc_parse_opt_t __proc_opts[] =
 {
   { "aoespell",    PF_AOE_SPELL                                                },
   { "spell",       PF_SPELL | PF_PERIODIC                                      },
@@ -33,7 +33,7 @@ static const proc_parse_opt_t __proc_opts[] =
   { 0,             0                                                           },
 };
 
-static const proc_parse_opt_t __proc2_opts[] =
+const proc_parse_opt_t __proc2_opts[] =
 {
   { "hit",        PF2_ALL_HIT         },
   { "crit",       PF2_CRIT            },
@@ -51,7 +51,7 @@ static const proc_parse_opt_t __proc2_opts[] =
 bool has_proc( const std::vector<std::string>& opts, const std::string& proc )
 { return std::find( opts.begin(), opts.end(), proc ) != opts.end(); }
 
-static void parse_proc_flags( const std::string&      flags,
+void parse_proc_flags( const std::string&      flags,
                               const proc_parse_opt_t* opts,
                               unsigned&               proc_flags )
 {
@@ -69,7 +69,7 @@ static void parse_proc_flags( const std::string&      flags,
 
 // Helper function to detect stat buff type from spell effect data, more
 // specifically by mapping Blizzard's effect sub types to actual stats in simc.
-static stat_e stat_buff_type( const spelleffect_data_t& effect )
+stat_e stat_buff_type( const spelleffect_data_t& effect )
 {
   stat_e stat = STAT_NONE;
 
@@ -113,6 +113,12 @@ static stat_e stat_buff_type( const spelleffect_data_t& effect )
 
 } // UNNAMED NAMESPACE
 
+special_effect_t::special_effect_t( const item_t* item ) :
+    item( item ),
+    player( item -> player )
+{
+  reset();
+}
 // special_effect_t::reset ======================================
 
 void special_effect_t::reset()
@@ -178,10 +184,10 @@ void special_effect_t::reset()
 
 const spell_data_t* special_effect_t::driver() const
 {
-  if ( ! item )
+  if ( !player )
     return spell_data_t::nil();
 
-  return item -> player -> find_spell( spell_id );
+  return player -> find_spell( spell_id );
 }
 
 // special_effect_t::trigger ================================================
@@ -295,6 +301,11 @@ buff_t* special_effect_t::create_buff() const
   }
 }
 
+action_t* special_effect_t::create_action() const
+{
+  return execute_action;
+}
+
 // special_effect_t::proc_flags =============================================
 
 unsigned special_effect_t::proc_flags() const
@@ -353,10 +364,13 @@ timespan_t special_effect_t::cooldown() const
 
   // First, check item cooldowns, since they override (in simc) whatever the
   // spell cooldown may be
-  for ( size_t i = 0, end = sizeof_array( item -> parsed.data.cooldown_category_duration ); i < end; i++ ) 
+  if ( item )
   {
-    if ( item -> parsed.data.cooldown_category_duration[ i ] > 0 )
-      return timespan_t::from_millis( item -> parsed.data.cooldown_category_duration[ i ] );
+    for ( size_t i = 0, end = sizeof_array( item -> parsed.data.cooldown_category_duration ); i < end; i++ )
+    {
+      if ( item -> parsed.data.cooldown_category_duration[ i ] > 0 )
+        return timespan_t::from_millis( item -> parsed.data.cooldown_category_duration[ i ] );
+    }
   }
 
   if ( driver() -> cooldown() > timespan_t::zero() )
@@ -1036,7 +1050,7 @@ void dbc_proc_callback_t::initialize()
   }
 
   // Initialize proc action
-  proc_action = effect.execute_action;
+  proc_action = effect.create_action();
 
   // Initialize the potential proc buff through special_effect_t. Can return 0,
   // in which case the proc does not trigger a buff.
@@ -1061,7 +1075,10 @@ void dbc_proc_callback_t::initialize()
 std::string dbc_proc_callback_t::cooldown_name() const
 {
   if ( ! effect.name_str.empty() )
+  {
+    assert( effect.name_str.size() );
     return effect.name_str;
+  }
 
   std::string n = effect.driver() -> name_cstr();
   assert( ! n.empty() );
