@@ -2884,7 +2884,7 @@ double player_t::composite_multistrike() const
 
 // player_t::composite_player_multiplier ====================================
 
-double player_t::composite_player_multiplier( school_e school ) const
+double player_t::composite_player_multiplier( school_e /* school */ ) const
 {
   double m = 1.0;
   

@@ -725,8 +725,6 @@ static  void trigger_sweeping_strikes( action_state_t* s )
 
   virtual void execute()
   {
-    warrior_t*p = cast();
-
     base_dd_max *= pct_damage; //Deals 50% of original damage
     base_dd_min *= pct_damage;
 
@@ -2162,8 +2160,6 @@ struct second_wind_t : public heal_t // SW has been changed to life-leech in WoD
 
   virtual void execute()
   {
-    warrior_t* p = static_cast<warrior_t*>( player );
-
     base_dd_max *= 0.1; //Heals for 10% of original damage
     base_dd_min *= 0.1;
 
@@ -2281,7 +2277,6 @@ struct shockwave_t : public warrior_attack_t
 
   virtual void update_ready( timespan_t )
   {
-    warrior_t* p = cast();
     cd_reduction = timespan_t::zero();
 
     if ( result_is_hit( execute_state -> result ) )
@@ -2313,8 +2308,6 @@ struct slam_sweeping_strikes_attack_t : public warrior_attack_t
 
   virtual void execute()
   {
-    warrior_t*p = cast();
-
     base_dd_max *= data().effectN( 2 ).percent(); //Deals 35% of original damage
     base_dd_min *= data().effectN( 2 ).percent();
 

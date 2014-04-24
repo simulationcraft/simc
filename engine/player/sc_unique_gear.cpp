@@ -889,7 +889,7 @@ void gem::indomitable_primal( special_effect_t& effect,
 
 void gem::capacitive_primal( special_effect_t& effect, 
                              const item_t& item,
-                             const special_effect_db_item_t& dbitem )
+                             const special_effect_db_item_t& /* dbitem */ )
 {
   if ( item.sim -> challenge_mode )
     return;
