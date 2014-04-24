@@ -1973,7 +1973,7 @@ void print_html_scale_factors( report::sc_html_stream& os, sim_t* sim )
     //initialize accumulator to zero
   for ( stat_e j = STAT_NONE; j < STAT_MAX; j++ )
   {
-    stat_effect_is_nonzero[ j ] = 0.0;
+    stat_effect_is_nonzero.push_back( 0.0 );
   }
 
   // cycle through players
