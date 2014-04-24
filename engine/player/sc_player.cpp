@@ -5851,15 +5851,12 @@ struct wait_until_ready_t : public wait_fixed_t
 struct use_item_t : public action_t
 {
   item_t* item;
-  spell_t* discharge;
-  action_callback_t* trigger;
-  buff_t* buff;
   std::string use_name;
   const special_effect_t* effect;
 
   use_item_t( player_t* player, const std::string& options_str ) :
     action_t( ACTION_OTHER, "use_item", player ),
-    item( 0 ), discharge( 0 ), trigger( 0 ), buff( 0 ), effect( 0 )
+    item( 0 ), effect( 0 )
   {
     std::string item_name, item_slot;
 
@@ -5921,56 +5918,6 @@ struct use_item_t : public action_t
 
     use_name = e.name_str.empty() ? item -> name() : e.name_str;
 
-    if ( e.trigger_type )
-    {
-      if ( e.cost_reduction && e.school && e.discharge_amount )
-        trigger = unique_gear::register_cost_reduction_proc( player, e );
-      else if ( e.stat )
-      {
-        trigger = unique_gear::register_stat_proc( player, e );
-      }
-      else if ( e.school )
-      {
-        trigger = unique_gear::register_discharge_proc( player, e );
-      }
-
-      if ( trigger ) trigger -> deactivate();
-    }
-    else if ( e.school )
-    {
-      struct discharge_spell_t : public spell_t
-      {
-        discharge_spell_t( const char* n, player_t* p, double a, school_e s, unsigned int override_result_es_mask = 0, unsigned int result_es_mask = 0 ) :
-          spell_t( n, p, spell_data_t::nil() )
-        {
-          school = s;
-          trigger_gcd = timespan_t::zero();
-          base_dd_min = a;
-          base_dd_max = a;
-          may_crit    = ( s != SCHOOL_DRAIN ) && ( ( override_result_es_mask & RESULT_CRIT_MASK ) ? ( result_es_mask & RESULT_CRIT_MASK ) : true ); // Default true
-          may_miss    = ( override_result_es_mask & RESULT_MISS_MASK ) ? ( result_es_mask & RESULT_MISS_MASK ) != 0 : may_miss;
-          background  = true;
-        }
-      };
-
-      discharge = new discharge_spell_t( use_name.c_str(), player, e.discharge_amount, e.school, e.override_result_es_mask, e.result_es_mask );
-    }
-    else if ( effect -> is_stat_buff() )
-    {
-      stat_buff_t* b = dynamic_cast<stat_buff_t*>( buff_t::find( player, use_name, player ) );
-      if ( ! b )
-        b = effect -> initialize_stat_buff();
-
-      buff = b;
-    }
-    else if ( e.execute_action )
-    {
-      assert( player == e.execute_action -> player ); // check if the action is from the same player. Might be overly strict
-    }
-    else if ( e.custom_buff )
-      buff = e.custom_buff;
-    else assert( false );
-
     std::string cooldown_name = use_name;
     cooldown_name += "_";
     cooldown_name += item -> slot_name();
@@ -5978,8 +5925,6 @@ struct use_item_t : public action_t
     cooldown = player -> get_cooldown( cooldown_name );
     cooldown -> duration = e.cooldown();
     trigger_gcd = timespan_t::zero();
-
-    if ( buff != 0 ) buff -> cooldown = cooldown;
   }
 
   void lockout( timespan_t duration )
@@ -5991,51 +5936,21 @@ struct use_item_t : public action_t
 
   virtual void execute()
   {
-    if ( discharge )
-    {
-      discharge -> execute();
-    }
-    else if ( trigger )
-    {
-      if ( sim -> log ) sim -> out_log.printf( "%s performs %s", player -> name(), use_name.c_str() );
+    bool triggered = effect->custom_buff == 0;
+    if ( effect->custom_buff )
+      triggered = effect->custom_buff -> trigger();
 
-      trigger -> activate();
+    if ( triggered && effect->execute_action &&
+         ( ! effect->custom_buff || effect->custom_buff -> check() == effect->custom_buff -> max_stack() ) )
+    {
+      effect->execute_action -> schedule_execute();
 
-      if ( effect -> duration_ != timespan_t::zero() )
+      // Decide whether to expire the buff even with 1 max stack
+      if ( effect->custom_buff && effect->custom_buff -> max_stack() > 1 )
       {
-        struct trigger_expiration_t : public event_t
-        {
-          item_t* item;
-          action_callback_t* trigger;
-          const special_effect_t* effect;
-
-          trigger_expiration_t( player_t& player, item_t* i, const special_effect_t* e, action_callback_t* t ) :
-            event_t( player, i -> name() ), item( i ), trigger( t ), effect( e )
-          {
-            sim().add_event( this, effect -> duration() );
-          }
-          virtual void execute()
-          {
-            trigger -> deactivate();
-          }
-        };
-
-        new ( *sim ) trigger_expiration_t( *player, item, effect, trigger );
-
-        lockout( effect -> duration() );
+        effect->custom_buff -> expire();
       }
     }
-    else if ( buff )
-    {
-      if ( sim -> log ) sim -> out_log.printf( "%s performs %s", player -> name(), use_name.c_str() );
-      buff -> trigger();
-      lockout( buff -> buff_duration );
-    }
-    else if ( action_t* a = effect -> execute_action )
-    {
-      a -> execute();
-    }
-    else assert( false );
 
     // Enable to report use_item ability
     //if ( ! dual ) stats -> add_execute( time_to_execute );
@@ -6046,7 +5961,6 @@ struct use_item_t : public action_t
   virtual void reset()
   {
     action_t::reset();
-    if ( trigger ) trigger -> deactivate();
   }
 
   virtual bool ready()
