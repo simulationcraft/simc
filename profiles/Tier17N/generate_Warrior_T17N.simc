@@ -9,7 +9,7 @@ race=orc
 spec=arms
 role=attack
 position=back
-talents=1211331
+talents=1211323
 professions=engineering=600/blacksmithing=600
 glyphs=unending_rage/death_from_above/sweeping_strikes/resonating_power
 head=helmet_of_the_prehistoric_marauder,id=99418,upgrade=2,gems=16crit_8haste_8crit
@@ -39,7 +39,7 @@ race=orc
 spec=fury
 role=attack
 position=back
-talents=1211331
+talents=1211323
 glyphs=unending_rage/death_from_above/cleave
 professions=engineering=600/blacksmithing=600
 
@@ -74,7 +74,7 @@ race=orc
 spec=fury
 role=attack
 position=back
-talents=1211331
+talents=1211323
 professions=engineering=600/blacksmithing=600
 glyphs=unending_rage/death_from_above/cleave
 head=helmet_of_the_prehistoric_marauder,id=99418,upgrade=2,gems=16crit_8haste_8crit
@@ -135,7 +135,7 @@ level=100
 race=orc
 role=attack
 position=back
-talents=1211323
+talents=1213323
 glyphs=unending_rage/death_from_above/bull_rush/cleave
 professions=engineering=600/blacksmithing=600
 spec=prot
