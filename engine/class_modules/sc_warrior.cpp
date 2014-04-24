@@ -955,7 +955,7 @@ struct melee_t : public warrior_attack_t
     repeating   = true;
     trigger_gcd = timespan_t::zero();
 
-    if ( p -> dual_wield() ) base_hit -= 0.17;
+    if ( p -> dual_wield() ) base_hit -= 0.19;
   }
 
   void reset()

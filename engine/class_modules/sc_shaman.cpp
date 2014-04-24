@@ -2392,7 +2392,7 @@ struct melee_t : public shaman_attack_t
     base_execute_time = w -> swing_time;
 
     if ( p() -> specialization() == SHAMAN_ENHANCEMENT && p() -> dual_wield() )
-      base_hit -= 0.17;
+      base_hit -= 0.19;
   }
 
   void reset()
