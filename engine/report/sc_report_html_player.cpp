@@ -361,7 +361,7 @@ void print_html_action_info( report::sc_html_stream& os, unsigned stats_mask, st
 
   // DPS and DPS %
   // Skip for abilities that do no damage
-  if ( s -> compound_amount > 0 )
+  if ( s -> compound_amount > 0 || ( s -> parent && s -> parent -> compound_amount > 0 ) )
   {
     std::string compound_aps     = "";
     std::string compound_aps_pct = "";
@@ -3090,9 +3090,7 @@ void output_player_action( report::sc_html_stream& os,
     if ( ! is_output_stat( mask, true, child_stats ) )
       continue;
 
-    // skip if child contributes no damage
-    if ( child_stats -> compound_amount > 0 )
-      print_html_action_info( os, mask, child_stats, row++, cols, actor );
+    print_html_action_info( os, mask, child_stats, row++, cols, actor );
   }
 }
 
