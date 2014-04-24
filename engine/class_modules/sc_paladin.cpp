@@ -4206,14 +4206,13 @@ void paladin_t::init_scaling()
 
   specialization_e tree = specialization();
 
-  // Technically prot and ret scale with int and sp too, but it's so minor it's not worth the sim time.
+  // Only Holy cares about INT/SPI/SP.
   scales_with[ STAT_INTELLECT   ] = ( tree == PALADIN_HOLY );
   scales_with[ STAT_SPIRIT      ] = ( tree == PALADIN_HOLY );
   scales_with[ STAT_SPELL_POWER ] = ( tree == PALADIN_HOLY );
 
   if ( primary_role() == ROLE_TANK )
   {
-    scales_with[ STAT_PARRY_RATING ] = true;
     scales_with[ STAT_BLOCK_RATING ] = true;
     scales_with[ STAT_STRENGTH     ] = true;
   }
