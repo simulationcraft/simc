@@ -2375,11 +2375,7 @@ void player_t::create_buffs()
                                .chance( 0 )
                                .default_value( 1 );
 
-    buffs.nitro_boosts       = buff_creator_t( this, "nitro_boosts" )
-                    .spell( find_spell( 133022 ) )
-                    .cd( timespan_t::from_seconds( 180 ) )
-                    .chance( 1 )
-                    .duration( timespan_t::from_seconds( 5 ) );
+    buffs.nitro_boosts       = buff_creator_t( this, "nitro_boosts", find_spell( 54861 ) );
 
     buffs.blurred_speed     = buff_creator_t( this, "blurred_speed" )
                    .spell( find_spell( 104409 ) )
