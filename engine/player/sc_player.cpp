@@ -1210,56 +1210,7 @@ void player_t::init_meta_gem( gear_stats_t& )
   {
     initial.armor_multiplier *= 1.02;
   }
-  /*
-  else if ( ( meta_gem == META_EMBER_SHADOWSPIRIT ) || ( meta_gem == META_EMBER_SKYFIRE ) || ( meta_gem == META_EMBER_SKYFLARE ) )
-  {
-    mana_per_intellect *= 1.02;
-  }
-  else if ( meta_gem == META_BEAMING_EARTHSIEGE )
-  {
-    mana_per_intellect *= 1.02;
-  }
-  */
-  else if ( meta_gem == META_MYSTICAL_SKYFIRE )
-  {
-    special_effect_t data;
-    data.name_str     = "mystical_skyfire";
-    data.trigger_type = PROC_SPELL;
-    data.trigger_mask = RESULT_HIT_MASK;
-    data.stat         = STAT_HASTE_RATING;
-    data.stat_amount  = 320;
-    data.proc_chance_ = 0.15;
-    data.duration_    = timespan_t::from_seconds( 4 );
-    data.cooldown_    = timespan_t::from_seconds( 45 );
 
-    unique_gear::register_stat_proc( this, data );
-  }
-  else if ( meta_gem == META_INSIGHTFUL_EARTHSTORM )
-  {
-    special_effect_t data;
-    data.name_str     = "insightful_earthstorm";
-    data.trigger_type = PROC_SPELL;
-    data.trigger_mask = RESULT_HIT_MASK;
-    data.stat         = STAT_MANA;
-    data.stat_amount  = 300;
-    data.proc_chance_ = 0.05;
-    data.cooldown_    = timespan_t::from_seconds( 15 );
-
-    unique_gear::register_stat_proc( this, data );
-  }
-  else if ( meta_gem == META_INSIGHTFUL_EARTHSIEGE )
-  {
-    special_effect_t data;
-    data.name_str     = "insightful_earthsiege";
-    data.trigger_type = PROC_SPELL;
-    data.trigger_mask = RESULT_HIT_MASK;
-    data.stat         = STAT_MANA;
-    data.stat_amount  = 600;
-    data.proc_chance_ = 0.05;
-    data.cooldown_    = timespan_t::from_seconds( 15 );
-
-    unique_gear::register_stat_proc( this, data );
-  }
 }
 
 // player_t::init_position ==================================================

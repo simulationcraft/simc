@@ -6484,15 +6484,6 @@ namespace unique_gear
 
 void init( player_t* );
 
-action_callback_t* register_stat_proc( player_t*, const special_effect_t& );
-action_callback_t* register_cost_reduction_proc( player_t*, const special_effect_t& );
-
-action_callback_t* register_discharge_proc( player_t*, const special_effect_t& );
-
-action_callback_t* register_chance_discharge_proc( player_t*, const special_effect_t& );
-
-action_callback_t* register_stat_discharge_proc( player_t*, const special_effect_t& );
-
 const special_effect_db_item_t& find_special_effect_db_item( unsigned spell_id );
 bool initialize_special_effect( special_effect_t& effect, const item_t& item, unsigned spell_id );
 };
