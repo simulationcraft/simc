@@ -3067,6 +3067,7 @@ struct weapon_t
 struct special_effect_t
 {
   const item_t* item;
+  player_t* player;
 
   special_effect_e type;
   special_effect_source_e source;
@@ -3097,11 +3098,12 @@ struct special_effect_t
   action_t* execute_action; // Allows custom action to be executed on use
   buff_t* custom_buff; // Allows custom action
 
-  special_effect_t() : item( 0 )
+  special_effect_t( player_t* p ) :
+    item( nullptr ), player( p ),
+    name_str()
   { reset(); }
 
-  special_effect_t( const item_t* item ) : item( item )
-  { reset(); }
+  special_effect_t( const item_t* item );
 
   void reset();
   bool parse_spell_data( const item_t& item, unsigned driver_id );

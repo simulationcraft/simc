@@ -113,6 +113,12 @@ static stat_e stat_buff_type( const spelleffect_data_t& effect )
 
 } // UNNAMED NAMESPACE
 
+special_effect_t::special_effect_t( const item_t* item ) :
+    item( item ),
+    player( item -> player )
+{
+  reset();
+}
 // special_effect_t::reset ======================================
 
 void special_effect_t::reset()
@@ -178,10 +184,10 @@ void special_effect_t::reset()
 
 const spell_data_t* special_effect_t::driver() const
 {
-  if ( ! item )
+  if ( !player )
     return spell_data_t::nil();
 
-  return item -> player -> find_spell( spell_id );
+  return player -> find_spell( spell_id );
 }
 
 // special_effect_t::trigger ================================================
@@ -1031,6 +1037,7 @@ void dbc_proc_callback_t::initialize()
   // Initialize cooldown, if applicable
   if ( effect.cooldown() > timespan_t::zero() )
   {
+    assert( cooldown_name().size() );
     cooldown = listener -> get_cooldown( cooldown_name() );
     cooldown -> duration = effect.cooldown();
   }
@@ -1061,7 +1068,10 @@ void dbc_proc_callback_t::initialize()
 std::string dbc_proc_callback_t::cooldown_name() const
 {
   if ( ! effect.name_str.empty() )
+  {
+    assert( effect.name_str.size() );
     return effect.name_str;
+  }
 
   std::string n = effect.driver() -> name_cstr();
   assert( ! n.empty() );
@@ -1071,6 +1081,7 @@ std::string dbc_proc_callback_t::cooldown_name() const
   // issues when the trinkets are worn.
   n += "_" + util::to_string( effect.driver() -> id() );
 
+  assert( n.size() );
   return n;
 }
 

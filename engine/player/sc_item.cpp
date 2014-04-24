@@ -73,7 +73,7 @@ bool item_t::has_special_effect( special_effect_source_e source, special_effect_
 
 const special_effect_t& item_t::special_effect( special_effect_source_e source, special_effect_e type )
 {
-  static special_effect_t nonevalue;
+  static special_effect_t nonevalue(this);
 
   // Note note returns first available, but odds that there are several on-
   // equip enchants in an item is slim to none
@@ -1291,7 +1291,7 @@ bool item_t::decode_addon()
   // .. Otherwise, parse addon based on DBC information and enchant_id
   else if ( parsed.addon_id > 0 )
   {
-    special_effect_t effect;
+    special_effect_t effect( this );
     if ( ! item_database::parse_item_spell_enchant( *this, parsed.addon_stats, effect, parsed.addon_id ) )
       sim -> errorf( "Player %s unable to parse addon id %u for item \"%s\" at slot %s.\n",
           player -> name(), parsed.addon_id, name(), slot_name() );

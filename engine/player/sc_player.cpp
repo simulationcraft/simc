@@ -1346,6 +1346,14 @@ void player_t::init_special_effects()
   const spell_data_t* totg = find_racial_spell( "Touch of the Grave" );
   if ( totg -> ok() )
   {
+    special_effect_t effect( this );
+    effect.spell_id = totg -> id();
+    effect.execute_action = new spell_t( "touch_of_the_grave_action", this, totg -> effectN( 1 ).trigger() );
+    effect.execute_action -> background = true;
+
+    new dbc_proc_callback_t( this, effect );
+
+    /*
     struct touch_of_the_grave_discharge_spell_t : public spell_t
     {
       touch_of_the_grave_discharge_spell_t( player_t* p, const spell_data_t* s ) :
@@ -1383,6 +1391,7 @@ void player_t::init_special_effects()
 
     callbacks.register_attack_callback       ( RESULT_HIT_MASK, cb );
     callbacks.register_harmful_spell_callback( RESULT_HIT_MASK, cb );
+    */
   }
 
   unique_gear::init( this );
