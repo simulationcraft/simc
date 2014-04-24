@@ -508,27 +508,19 @@ struct weapon_proc_callback_t : public proc_callback_t<action_state_t>
   }
 };
 
-
 // Enchants ================================================================
 
 void enchant::elemental_force( special_effect_t& effect,
                                const item_t& item,
                                const special_effect_db_item_t& dbitem )
 {
-  const spell_data_t* driver = item.player -> find_spell( dbitem.spell_id );
-  const spell_data_t* elemental_force_spell = item.player -> find_spell( 116616 );
 
-  double amount = ( elemental_force_spell -> effectN( 1 ).min( item.player ) + elemental_force_spell -> effectN( 1 ).max( item.player ) ) / 2;
-
-  effect.ppm_ = -1.0 * driver -> real_ppm();
-  effect.school = SCHOOL_ELEMENTAL;
-  effect.discharge_amount = amount;
+  const spell_data_t* elemental_force_spell = item.player -> find_spell( dbitem.spell_id )->effectN( 1 ).trigger();
+  effect.execute_action = new spell_t( "elemental_force", item.player, elemental_force_spell );
+  effect.execute_action -> background = true;
   effect.rppm_scale = RPPM_HASTE;
 
-  action_callback_t* cb  = new discharge_proc_callback_t( item.player, effect );
-  item.player -> callbacks.register_attack_callback( RESULT_HIT_MASK, cb );
-  item.player -> callbacks.register_spell_callback ( RESULT_HIT_MASK, cb );
-  item.player -> callbacks.register_tick_callback  ( RESULT_HIT_MASK, cb );
+  new dbc_proc_callback_t( item, effect );
 }
 
 void enchant::rivers_song( special_effect_t& effect,
