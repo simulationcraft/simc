@@ -2763,17 +2763,21 @@ struct word_of_glory_t : public paladin_heal_t
   }
 };
 
-// Word of Glory Damage ( Harsh Words ) =====================================
+// Harsh Word ( Word of Glory Damage ) =====================================
 
-struct word_of_glory_damage_t : public paladin_spell_t
+struct harsh_word_t : public paladin_spell_t
 {
-  word_of_glory_damage_t( paladin_t* p, const std::string& options_str ) :
-    paladin_spell_t( "word_of_glory_damage", p,
-                     ( p -> find_class_spell( "Word of Glory" ) -> ok() && p -> glyphs.harsh_words -> ok() ) ? p -> find_spell( 130552 ) : spell_data_t::not_found() )
+  harsh_word_t( paladin_t* p, const std::string& options_str ) :
+    paladin_spell_t( "harsh_word", p, p -> find_class_spell( "Harsh_Word" ) )
   {
     parse_options( NULL, options_str );
     resource_consumed = RESOURCE_HOLY_POWER;
     resource_current = RESOURCE_HOLY_POWER;
+
+    //disable if not glyphed
+    if ( ! p -> glyphs.harsh_words -> ok() )
+      background = true;
+
     base_costs[RESOURCE_HOLY_POWER] = 1;
    
     base_execute_time = timespan_t::from_seconds( 1.5 ); // TODO: test if this still has a cast time as holy with HW glyph; irrelevant for prot/ret
@@ -4093,7 +4097,7 @@ action_t* paladin_t::create_action( const std::string& name, const std::string& 
   if ( name == "eternal_flame"             ) return new eternal_flame_t            ( this, options_str );
   if ( name == "word_of_glory"             ) return new word_of_glory_t            ( this, options_str );
   if ( name == "sacred_shield"             ) return new sacred_shield_t            ( this, options_str );
-  if ( name == "word_of_glory_damage"      ) return new word_of_glory_damage_t     ( this, options_str );
+  if ( name == "harsh_word"                ) return new harsh_word_t               ( this, options_str );
   if ( name == "holy_light"                ) return new holy_light_t               ( this, options_str );
   if ( name == "flash_of_light"            ) return new flash_of_light_t           ( this, options_str );
   if ( name == "lay_on_hands"              ) return new lay_on_hands_t             ( this, options_str );
