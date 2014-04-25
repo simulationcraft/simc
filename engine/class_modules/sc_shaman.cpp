@@ -3597,7 +3597,6 @@ struct earth_shock_t : public shaman_spell_t
     consume_threshold( ( int ) player -> spec.fulmination -> effectN( 1 ).base_value() )
   {
     base_multiplier      *= 1.0 + player -> perk.improved_shocks -> effectN( 1 ).percent();
-    uses_eoe = player -> specialization() == SHAMAN_ELEMENTAL || player -> specialization() == SHAMAN_ENHANCEMENT;
     cooldown             = player -> cooldown.shock;
     cooldown -> duration = data().cooldown() + player -> spec.spiritual_insight -> effectN( 3 ).time_value();
     shock                = true;
@@ -3662,7 +3661,6 @@ struct flame_shock_t : public shaman_spell_t
   {
     // TODO-WOD: Separate to tick and direct amount to be safe
     base_multiplier      *= 1.0 + player -> perk.improved_shocks -> effectN( 1 ).percent();
-    uses_eoe = player -> specialization() == SHAMAN_ELEMENTAL || player -> specialization() == SHAMAN_ENHANCEMENT;
     tick_may_crit         = true;
     dot_behavior          = DOT_REFRESH;
     cooldown              = player -> cooldown.shock;
