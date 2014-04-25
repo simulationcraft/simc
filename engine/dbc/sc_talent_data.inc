@@ -1,6 +1,6 @@
 #define TALENT_SIZE (287)
 
-// 287 talents, wow build 18164
+// 287 talents, wow build 18179
 static struct talent_data_t __talent_data[] = {
 //{ Name                                ,    Id, Flgs,  Class, Spc, Col, Row, SpellID, ReplaceID, S1 },
   { "Second Wind"                       , 15757, 0x00, 0x0001,   0,   1,   1,   29838,         0,  0 },
@@ -70,7 +70,7 @@ static struct talent_data_t __talent_data[] = {
   { "Avatar"                            , 19138, 0x00, 0x0001,   0,   0,   5,  107574,         0,  0 },
   { "Bloodbath"                         , 19139, 0x00, 0x0001,   0,   1,   5,   12292,         0,  0 },
   { "Bladestorm"                        , 19140, 0x00, 0x0001,   0,   2,   5,   46924,         0,  0 },
-  { "Roiling Blood"                     , 19165, 0x00, 0x0020,   0,   0,   0,  108170,         0,  0 },
+  { "Plaguebearer"                      , 19165, 0x00, 0x0020,   0,   0,   0,  161497,         0,  0 },
   { "Plague Leech"                      , 19166, 0x00, 0x0020,   0,   1,   0,  123693,         0,  0 },
   { "Unholy Blight"                     , 19217, 0x00, 0x0020,   0,   2,   0,  115989,         0,  0 },
   { "Lichborne"                         , 19218, 0x00, 0x0020,   0,   0,   1,   49039,         0,  0 },

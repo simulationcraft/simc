@@ -99,6 +99,11 @@ _DIFF_DATA = {
             ( 'socket_cont_3', _REMOVE_FIELD )
         ]
     },
+    18179: {
+        'SpellPower.dbc': [
+            ( 'id_display', _REMOVE_FIELD )
+        ]
+    },
 }
 
 # Base DBC/DB2 fields, works for WoW build 17898 (Mists of Pandaria/5.4.7)
