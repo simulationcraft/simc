@@ -2847,6 +2847,7 @@ static unsigned __glyph_abilities_data[][3][GLYPH_ABILITIES_SIZE] = {
        58367, // Glyph of Bloodthirst
        94372, // Glyph of Bull Rush
       159701, // Glyph of Cleave
+       89003, // Glyph of Colossus Smash
        63325, // Glyph of Death From Above
        58386, // Glyph of Die by the Sword
        58355, // Glyph of Enraged Speed
@@ -3299,7 +3300,6 @@ static unsigned __glyph_abilities_data[][3][GLYPH_ABILITIES_SIZE] = {
   {
     // Major Glyphs (25 spells)
     {
-       89003, // Glyph of Colossus Smash
        56235, // Glyph of Conflagrate
        58080, // Glyph of Curse of Exhaustion
       159653, // Glyph of Curses

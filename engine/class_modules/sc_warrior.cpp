@@ -161,6 +161,7 @@ public:
     const spell_data_t* bull_rush;
     const spell_data_t* bloodthirst;
     const spell_data_t* cleave;
+    const spell_data_t* colossus_smash;
     const spell_data_t* death_from_above;
     const spell_data_t* enraged_speed;
     const spell_data_t* heroic_leap;
@@ -923,12 +924,12 @@ void warrior_attack_t::impact( action_state_t* s )
     {
       if( p -> buff.bloodbath -> up() )
         trigger_bloodbath_dot( s -> target, s -> result_amount );
-      if ( p -> sets.has_set_bonus( SET_T16_2PC_MELEE ) && td ->  debuffs_colossus_smash -> up() && // Melee tier 16 2 piece.
+      /*if ( p -> sets.has_set_bonus( SET_T16_2PC_MELEE ) && td ->  debuffs_colossus_smash -> up() && // Melee tier 16 2 piece.
          ( this ->  weapon == &( p -> main_hand_weapon ) || this -> id == 100130 ) &&    // Only procs once per ability used.
            this -> id != 12328 && this -> id != 76858 )                                  // Doesn't proc from opportunity strikes or sweeping strikes.
         p -> resource_gain( RESOURCE_RAGE,
                             p -> sets.set( SET_T16_2PC_MELEE ) -> effectN( 1 ).base_value(), 
-                            p -> gain.tier16_2pc_melee );
+                            p -> gain.tier16_2pc_melee );*/
     }
 
     trigger_flurry( this, 3 );
@@ -1233,11 +1234,11 @@ struct bloodthirst_t : public warrior_attack_t
     base_multiplier += p -> sets.set( SET_T14_2PC_MELEE ) -> effectN( 2 ).percent();
   }
 
-  double composite_crit_multiplier() const
+  double composite_crit() const
   {
-    double c = warrior_attack_t::composite_crit_multiplier();
+    double c = warrior_attack_t::composite_crit();
 
-    c *= 2;
+    c += data().effectN( 4 ).percent();
 
     return c;
   }
@@ -1351,7 +1352,11 @@ struct colossus_smash_t : public warrior_attack_t
     {
       warrior_t* p = cast();
       warrior_td_t* td = cast_td( s -> target );
-      td -> debuffs_colossus_smash -> trigger( 1, data().effectN( 2 ).percent() );
+
+      if ( p -> glyphs.colossus_smash -> ok() )
+        td -> debuffs_colossus_smash -> trigger( 1, p -> glyphs.colossus_smash -> effectN( 3 ).percent() );
+      else
+        td -> debuffs_colossus_smash -> trigger( 1, data().effectN( 2 ).percent() );
 
       if ( ! sim -> overrides.physical_vulnerability )
         s -> target -> debuffs.physical_vulnerability -> trigger();
@@ -2719,8 +2724,6 @@ struct berserker_rage_t : public warrior_spell_t
     warrior_t* p = cast();
 
     p -> buff.berserker_rage -> trigger();
-
-    p -> enrage();
   }
 };
 
@@ -3270,8 +3273,10 @@ warrior_td_t::warrior_td_t( player_t* target, warrior_t* p  ) :
   dots_deep_wounds = target -> get_dot( "deep_wounds", p );
   dots_ravager     = target -> get_dot( "ravager",     p );
 
-  debuffs_colossus_smash     = buff_creator_t( *this, "colossus_smash" ).duration( p -> find_class_spell( "Colossus Smash" ) -> duration() );
-
+  debuffs_colossus_smash     = buff_creator_t( *this, "colossus_smash" )
+                               .duration( p -> glyphs.colossus_smash -> ok() ?
+                               ( timespan_t::from_seconds( p -> glyphs.colossus_smash -> effectN( 1 ).base_value() ) + p -> spell.colossus_smash -> duration() ) :
+                               p -> spell.colossus_smash -> duration() );
   debuffs_demoralizing_shout = new buffs::debuff_demo_shout_t( *this );
 
 }
@@ -3418,6 +3423,7 @@ void warrior_t::init_spells()
   // Glyphs
   glyphs.bloodthirst            = find_glyph_spell( "Glyph of Bloodthirst"         );
   glyphs.bull_rush              = find_glyph_spell( "Glyph of Bull Rush"           );
+  glyphs.colossus_smash         = find_glyph_spell( "Glyph of Colossus Smash"      );
   glyphs.cleave                 = find_glyph_spell( "Glyph of Cleave"              );
   glyphs.death_from_above       = find_glyph_spell( "Glyph of Death From Above"    );
   glyphs.enraged_speed          = find_glyph_spell( "Glyph of Enraged Speed"       );
