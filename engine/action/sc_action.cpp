@@ -1711,10 +1711,10 @@ void action_t::init()
   if ( may_crit || tick_may_crit )
     snapshot_flags |= STATE_CRIT | STATE_TGT_CRIT;
 
-  if ( base_td > 0 || num_ticks > 0 )
+  if ( spell_power_mod.tick > 0 || num_ticks > 0 )
     snapshot_flags |= STATE_MUL_TA | STATE_TGT_MUL_TA;
 
-  if ( ( base_dd_min > 0 && base_dd_max > 0 ) || weapon_multiplier > 0 )
+  if ( ( spell_power_mod.direct > 0 || attack_power_mod.direct > 0 ) || weapon_multiplier > 0 )
     snapshot_flags |= STATE_MUL_DA | STATE_TGT_MUL_DA;
 
   if ( ( spell_power_mod.direct > 0 || spell_power_mod.tick > 0 ) )
