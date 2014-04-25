@@ -619,7 +619,7 @@ std::string item_t::encoded_enchant()
     return option_enchant_str;
 
   if ( ! special_effect( SPECIAL_EFFECT_SOURCE_ENCHANT ).encoding_str.empty() )
-    return special_effect( SPECIAL_EFFECT_SOURCE_ENCHANT ).encoding_str 
+    return special_effect( SPECIAL_EFFECT_SOURCE_ENCHANT ).encoding_str;
 
   std::string stats_str = stat_pairs_to_str( parsed.enchant_stats );
 
