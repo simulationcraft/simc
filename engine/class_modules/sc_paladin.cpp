@@ -47,6 +47,7 @@ struct paladin_td_t : public actor_pair_t
   {
     buff_t* debuffs_censure;
     buff_t* eternal_flame;
+    buff_t* glyph_of_flash_of_light;
     absorb_buff_t* sacred_shield_tick;
   } buffs;
 
@@ -92,7 +93,6 @@ public:
     buff_t* blessed_life;
     buff_t* daybreak;
     buff_t* divine_crusader; // t16_4pc_melee
-    buff_t* divine_plea;
     buff_t* divine_protection;
     buff_t* divine_purpose;
     buff_t* divine_shield;
@@ -256,6 +256,7 @@ public:
     const spell_data_t* divine_shield;
     const spell_data_t* divine_storm;
     const spell_data_t* double_jeopardy;
+    const spell_data_t* flash_of_light;
     const spell_data_t* final_wrath;
     const spell_data_t* focused_shield;
     const spell_data_t* focused_wrath;
@@ -694,6 +695,20 @@ struct paladin_heal_t : public paladin_spell_base_t<heal_t>
     return am;
   }
 
+  // This was an attempt to get Glyph of Flash of Light to do something... it failed.
+  /*
+  virtual double composite_target_multiplier( player_t* t ) const override
+  {
+    double ctm = base_t::composite_target_multiplier( t );
+
+    if ( td( t ) -> buffs.glyph_of_flash_of_light -> check() )
+      ctm *= 1.0 + p() -> glyphs.flash_of_light -> effectN( 1 ).percent();
+
+    return ctm;
+
+  }
+  */
+
   virtual void impact( action_state_t* s )
   {
     base_t::impact( s );
@@ -702,6 +717,11 @@ struct paladin_heal_t : public paladin_spell_base_t<heal_t>
 
     if ( s -> target != p() -> beacon_target )
       trigger_beacon_of_light( s );
+
+    // expire Glyph of Flash of Light buff if it exists
+    if ( td( s -> target ) -> buffs.glyph_of_flash_of_light -> up() )
+      td( s -> target ) -> buffs.glyph_of_flash_of_light -> expire();
+
   }
 
   void trigger_beacon_of_light( action_state_t* s )
@@ -1014,7 +1034,9 @@ struct blessing_of_might_t : public paladin_spell_t
   }
 };
 
+// Blessing of the Guardians =====================================
 // Blessing of the Guardians is the t16_2pc_tank set bonus
+
 struct blessing_of_the_guardians_t : public paladin_heal_t
 {
   double accumulated_damage;
@@ -1237,12 +1259,19 @@ struct divine_plea_t : public paladin_spell_t
     harmful = false;
   }
 
-  virtual void execute()
+  virtual void impact( action_state_t* s )
   {
-    paladin_spell_t::execute();
+    paladin_spell_t::impact( s );
 
-    p() -> buffs.divine_plea -> trigger();
+    // Mana gain
+    p() -> resource_gain( RESOURCE_MANA, 
+                          data().effectN( 2 ).base_value() / 10000 * p() -> resources.max[ RESOURCE_MANA ], 
+                          p() -> gains.divine_plea );
   }
+
+  // TODO: may need to override cost if this cannot consume divine purpose!
+
+  
 };
 
 // Divine Protection ========================================================
@@ -1347,8 +1376,6 @@ struct eternal_flame_hot_t : public paladin_heal_t
     paladin_heal_t( "eternal_flame_tick", p, p -> find_spell( 156322 ) )
   {
     background = true;
-    benefits_from_seal_of_insight = true; // TODO: test
-
     hopo = 0;
   }
   
@@ -1754,6 +1781,15 @@ struct flash_of_light_t : public paladin_heal_t
       p() -> buffs.selfless_healer -> expire();
     }
 
+  }
+
+  virtual void impact( action_state_t* s )
+  {
+    paladin_heal_t::impact( s );
+
+    // apply glyph_of_flash_of_light buff if applicable
+    if ( p() -> glyphs.flash_of_light -> ok() )
+      td( s -> target ) -> buffs.glyph_of_flash_of_light -> trigger();
   }
 };
 
@@ -3996,6 +4032,7 @@ paladin_td_t::paladin_td_t( player_t* target, paladin_t* paladin ) :
 
   buffs.debuffs_censure    = buff_creator_t( *this, "censure", paladin -> find_spell( 31803 ) );
   buffs.eternal_flame      = new buffs::eternal_flame_t( this );
+  buffs.glyph_of_flash_of_light = buff_creator_t( *this, "glyph_of_flash_of_light", paladin -> find_spell( 54957 ) );
   buffs.sacred_shield_tick = absorb_buff_creator_t( *this, "sacred_shield_tick", paladin -> find_spell( 65148 ) )
                              .source( paladin -> get_stats( "sacred_shield" ) )
                              .cd( timespan_t::zero() )
@@ -4124,8 +4161,6 @@ void paladin_t::init_base_stats()
     case PALADIN_HOLY:
       role = ROLE_HEAL;
       base.distance = 30;
-      //base.attack_hit += 0; // TODO spirit -> hit talents.enlightened_judgments
-      //base.spell_hit  += 0; // TODO spirit -> hit talents.enlightened_judgments
       break;
     case PALADIN_PROTECTION:
       role = ROLE_TANK;
@@ -4379,7 +4414,6 @@ void paladin_t::create_buffs()
 
   // Holy
   buffs.daybreak               = buff_creator_t( this, "daybreak", find_class_spell( "Daybreak" ) );
-  buffs.divine_plea            = buff_creator_t( this, "divine_plea", find_class_spell( "Divine Plea" ) ).cd( timespan_t::zero() ); // Let the ability handle the CD
   buffs.infusion_of_light      = buff_creator_t( this, "infusion_of_light", find_class_spell( "Infusion of Light" ) );
   buffs.enhanced_holy_shock    = buff_creator_t( this, "enhanced_holy_shock", find_spell( 160002 ) );
 
@@ -4782,18 +4816,9 @@ void paladin_t::validate_action_priority_list()
 
 void paladin_t::init_action_list()
 {
-  // sanity check - Holy not implemented yet
-  if ( specialization() != PALADIN_RETRIBUTION && specialization() != PALADIN_PROTECTION )
-  {
-    if ( ! quiet )
-      sim -> errorf( "Player %s's role (%s) or spec(%s) isn't supported yet.",
-                     name(), util::role_type_string( primary_role() ), dbc::specialization_string( specialization() ).c_str() );
-    quiet = true;
-    return;
-  }
 
-  // sanity check - can't do anything w/o main hand weapon equipped
-  if ( main_hand_weapon.type == WEAPON_NONE )
+  // sanity check - Prot/Ret can't do anything w/o main hand weapon equipped
+  if ( main_hand_weapon.type == WEAPON_NONE && ( specialization() == PALADIN_RETRIBUTION || specialization() == PALADIN_PROTECTION ) )
   {
     if ( !quiet )
       sim -> errorf( "Player %s has no weapon equipped at the Main-Hand slot.", name() );
@@ -4936,14 +4961,15 @@ void paladin_t::init_spells()
   glyphs.divine_protection        = find_glyph_spell( "Glyph of Divine Protection" );
   glyphs.divine_storm             = find_glyph_spell( "Glyph of Divine Storm" );
   glyphs.double_jeopardy          = find_glyph_spell( "Glyph of Double Jeopardy" );
-  glyphs.mass_exorcism            = find_glyph_spell( "Glyph of Mass Exorcism" );
-  glyphs.templars_verdict         = find_glyph_spell( "Glyph of Templar's Verdict" );
+  glyphs.flash_of_light           = find_glyph_spell( "Glyph of Flash of Light" );
   glyphs.final_wrath              = find_glyph_spell( "Glyph of Final Wrath" );
   glyphs.focused_wrath            = find_glyph_spell( "Glyph of Focused Wrath" );
   glyphs.focused_shield           = find_glyph_spell( "Glyph of Focused Shield" );
   glyphs.hand_of_sacrifice        = find_glyph_spell( "Glyph of Hand of Sacrifice" );
   glyphs.harsh_words              = find_glyph_spell( "Glyph of Harsh Words" );
   glyphs.immediate_truth          = find_glyph_spell( "Glyph of Immediate Truth" );
+  glyphs.mass_exorcism            = find_glyph_spell( "Glyph of Mass Exorcism" );
+  glyphs.templars_verdict         = find_glyph_spell( "Glyph of Templar's Verdict" );
   glyphs.word_of_glory            = find_glyph_spell( "Glyph of Word of Glory"   );
   
   // more spells, these need the glyph check to be present before they can be executed
@@ -5001,7 +5027,7 @@ role_e paladin_t::primary_role() const
     return ROLE_TANK;
 
   if ( player_t::primary_role() == ROLE_HEAL || specialization() == PALADIN_HOLY )
-    return ROLE_HYBRID; //To prevent spawning healing_target, as there is no support for healing.
+    return ROLE_HEAL; 
 
   return ROLE_HYBRID;
 }
@@ -5391,13 +5417,6 @@ void paladin_t::regen( timespan_t periodicity )
     }
   }
 
-  if ( buffs.divine_plea -> up() )
-  {
-    double tick_pct = ( buffs.divine_plea -> data().effectN( 1 ).base_value() ) * 0.01;
-    double tick_amount = resources.max[ RESOURCE_MANA ] * tick_pct;
-    double amount = periodicity.total_seconds() * tick_amount / 3;
-    resource_gain( RESOURCE_MANA, amount, gains.divine_plea );
-  }
   if ( buffs.judgments_of_the_wise -> up() )
   {
     double tot_amount = resources.base[ RESOURCE_MANA ] * buffs.judgments_of_the_wise -> data().effectN( 1 ).percent();
