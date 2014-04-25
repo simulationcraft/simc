@@ -152,6 +152,9 @@ _DBC_FIELDS = {
     'GlyphProperties.dbc' : [
           'id',      ( 'id_spell', '%5u' ),  'flags',      'unk_3'
     ],
+    'GlyphRequiredSpec.db2': [
+          'id', 'id_glyph_property', 'id_spec',
+    ],
     'Item.db2' : [
           'id',      ( 'classs', '%2d' ), ( 'subclass', '%2d' ), ( 'unk_3', '%d' ), ( 'material', '%d' ),
           'id_display', 'type_inv',   'sheath'

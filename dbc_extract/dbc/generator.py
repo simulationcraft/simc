@@ -3414,10 +3414,6 @@ class SpellItemEnchantmentGenerator(RandomSuffixGenerator):
                 if not effect or effect.type != 53:
                     continue
 
-                # No level-based scaling on enchant, skip
-                if data.id_scaling == 0:
-                    continue
-
                 item_ench = self._spellitemenchantment_db[effect.misc_value]
                 if item_ench.id == 0:
                     continue
@@ -3452,10 +3448,7 @@ class SpellItemEnchantmentGenerator(RandomSuffixGenerator):
             fields += [ '{ %s }' % ', '.join(ench_data.field('type_1', 'type_2', 'type_3')) ]
             fields += [ '{ %s }' % ', '.join(ench_data.field('amount_1', 'amount_2', 'amount_3')) ]
             fields += [ '{ %s }' % ', '.join(ench_data.field('id_property_1', 'id_property_2', 'id_property_3')) ]
-            if self.dbc_version(50400, 17056):
-                fields += [ '{ %s }' % ', '.join(ench_data.field('coeff_1', 'coeff_2', 'coeff_3')) ]
-            else:
-                fields += [ '{ 0, 0, 0 }' ]
+            fields += [ '{ %s }' % ', '.join(ench_data.field('coeff_1', 'coeff_2', 'coeff_3')) ]
             if hasattr(ench_data, '_spells'):
                 fields += ench_data._spells[ 0 ].field('id')
             else:
