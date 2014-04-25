@@ -389,6 +389,15 @@ void dbc::apply_hotfixes()
   // Death Knight
 
   // Misc
+
+  // Connect Colossus Enchant Driver (118314) with its trigger spell (116631)
+  s = spell_data_t::find( 118314, false );
+  const_cast<spelleffect_data_t&>(s -> effectN( 1 ))._trigger_spell_id = 116631;
+  const_cast<spelleffect_data_t&>(s -> effectN( 1 ))._trigger_spell = spell_data_t::find( 116631, false );
+  // Connect Colossus Enchant Driver (118314) with its trigger spell (116631)
+  s = spell_data_t::find( 118314, true );
+  const_cast<spelleffect_data_t&>(s -> effectN( 1 ))._trigger_spell_id = 116631;
+  const_cast<spelleffect_data_t&>(s -> effectN( 1 ))._trigger_spell = spell_data_t::find( 116631, true );
 }
 
 static void generate_class_flags_index( bool ptr = false )

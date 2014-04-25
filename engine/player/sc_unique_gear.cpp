@@ -259,7 +259,7 @@ static const special_effect_db_item_t __special_effect_db[] = {
   { 104561, 0,                                  enchant::windsong },
   { 104428, 0,                           enchant::elemental_force },
   { 104441, 0,                               enchant::rivers_song },
-  { 118314, 0,                                  enchant::colossus },
+  { 118314, "rppmhaste",                                        0 }, /* Colossus */
 
   /* Cataclysm */
   {  94747, 0,                           enchant::hurricane_spell },
@@ -335,23 +335,6 @@ void enchant::rivers_song( special_effect_t& effect,
   if ( ! buff )
     buff = stat_buff_creator_t( item.player, tokenized_name( spell ), spell )
            .activated( false );
-
-  effect.rppm_scale = RPPM_HASTE;
-  effect.custom_buff = buff;
-
-  new dbc_proc_callback_t( item, effect );
-}
-
-void enchant::colossus( special_effect_t& effect,
-                        const item_t& item,
-                        const special_effect_db_item_t& /* dbitem */ )
-{
-  const spell_data_t* spell = item.player -> find_spell( 116631 );
-
-  absorb_buff_t* buff = absorb_buff_creator_t( item.player, tokenized_name( spell ) + suffix( item ) )
-                        .spell( spell )
-                        .source( item.player -> get_stats( tokenized_name( spell ) + suffix( item ) ) )
-                        .activated( false );
 
   effect.rppm_scale = RPPM_HASTE;
   effect.custom_buff = buff;

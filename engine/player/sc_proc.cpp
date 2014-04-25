@@ -272,6 +272,51 @@ stat_buff_t* special_effect_t::initialize_stat_buff() const
   return creator;
 }
 
+bool special_effect_t::is_absorb_buff() const
+{
+  for ( size_t i = 1, end = trigger() -> effect_count(); i <= end; i++ )
+  {
+    const spelleffect_data_t& effect = trigger() -> effectN( i );
+    if ( effect.id() == 0 )
+      continue;
+
+    if ( effect.subtype() == A_SCHOOL_ABSORB )
+      return true;
+  }
+
+  return false;
+}
+
+absorb_buff_t* special_effect_t::initialize_absorb_buff() const
+{
+  absorb_buff_creator_t creator( item -> player, name(), spell_data_t::nil(),
+                               source == SPECIAL_EFFECT_SOURCE_ITEM ? item : 0 );
+
+  // Setup the spell for the stat buff
+  if ( trigger() -> id() > 0 )
+    creator.spell( trigger() );
+  else if ( driver() -> id() > 0 )
+    creator.spell( driver() );
+
+  // Setup user option overrides. Note that if there are no user set overrides,
+  // the buff will automagically deduce correct options from the spell data,
+  // the special_effect_t object should not issue overrides to the creator
+  // object.
+  if ( max_stacks > 0 )
+    creator.max_stack( max_stacks );
+
+  if ( duration_ > timespan_t::zero() )
+    creator.duration( duration_ );
+
+  if ( reverse )
+    creator.reverse( true );
+
+  if ( tick > timespan_t::zero() )
+    creator.period( tick );
+
+  return creator;
+}
+
 // special_effect_t::buff_type ==============================================
 
 special_effect_buff_e special_effect_t::buff_type() const
@@ -282,6 +327,8 @@ special_effect_buff_e special_effect_t::buff_type() const
     return SPECIAL_EFFECT_BUFF_CUSTOM;
   else if ( is_stat_buff() )
     return SPECIAL_EFFECT_BUFF_STAT;
+  else if ( is_absorb_buff() )
+    return SPECIAL_EFFECT_BUFF_ABSORB;
 
   return SPECIAL_EFFECT_BUFF_NONE;
 }
@@ -296,6 +343,8 @@ buff_t* special_effect_t::create_buff() const
       return custom_buff;
     case SPECIAL_EFFECT_BUFF_STAT:
       return initialize_stat_buff();
+    case SPECIAL_EFFECT_BUFF_ABSORB:
+      return initialize_absorb_buff();
     default:
       return 0;
   }

@@ -393,11 +393,6 @@ namespace buffs {
 
 struct avenging_wrath_buff_t : public buff_t
 {
-  double damage_modifier;
-  double healing_modifier;
-  double crit_bonus;
-  double haste_bonus;
-
   avenging_wrath_buff_t( player_t* p ) :
     buff_t( buff_creator_t( p, "avenging_wrath", p -> specialization() == PALADIN_RETRIBUTION ? p -> find_spell( 31884 ) : p -> find_spell( 31842 ) ) ),
     damage_modifier( 0.0 ),
@@ -440,25 +435,31 @@ struct avenging_wrath_buff_t : public buff_t
     add_invalidate( CACHE_PLAYER_HEAL_MULTIPLIER );
   }
 
-  double get_damage_mod()
+  double get_damage_mod() const
   {
     return damage_modifier;
   }
 
-  double get_healing_mod()
+  double get_healing_mod() const
   {
     return healing_modifier;
   }
 
-  double get_crit_bonus()
+  double get_crit_bonus() const
   {
     return crit_bonus;
   }
 
-  double get_haste_bonus()
+  double get_haste_bonus() const
   {
     return haste_bonus;
   }
+private:
+  double damage_modifier;
+  double healing_modifier;
+  double crit_bonus;
+  double haste_bonus;
+
 };
 
 // Eternal Flame buff

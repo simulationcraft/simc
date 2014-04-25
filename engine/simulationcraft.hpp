@@ -3123,6 +3123,9 @@ struct special_effect_t
   bool is_stat_buff() const;
   stat_buff_t* initialize_stat_buff() const;
 
+  bool is_absorb_buff() const;
+  absorb_buff_t* initialize_absorb_buff() const;
+
   /* Accessors for driver specific features of the proc; some are also used for on-use effects */
   unsigned proc_flags() const;
   unsigned proc_flags2() const;
