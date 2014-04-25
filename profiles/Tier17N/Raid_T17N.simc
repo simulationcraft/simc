@@ -22,8 +22,8 @@ optimal_raid=1
 # Monk_Windwalker_1h_T17N.simc
 # Monk_Windwalker_2h_T17N.simc
 
-# Paladin_Protection_T17N.simc
-# Paladin_Retribution_T17N.simc
+Paladin_Protection_T17N.simc
+Paladin_Retribution_T17N.simc
 
 Priest_Shadow_T17N_COP.simc
 Priest_Shadow_T17N_VE.simc
