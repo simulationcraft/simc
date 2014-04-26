@@ -37,14 +37,14 @@ if __name__ == '__main__':
 		if not encoding.open():
 			sys.exit(1)
 		
-		root = casc.CASCRootFile(opts, build, encoding)
-		if not root.open():
-			sys.exit(1)
-		
 		index = casc.CASCDataIndex(opts)
 		if not index.open():
 			sys.exit(1)
 
+		root = casc.CASCRootFile(opts, build, encoding, index)
+		if not root.open():
+			sys.exit(1)
+		
 		blte = casc.BLTEExtract(opts)
 	
 		for file_hash, file_name in fname_db.iteritems():
@@ -57,9 +57,10 @@ if __name__ == '__main__':
 
 				file_locations = []
 				for file_key in file_keys:
-					location = index.GetIndexData(file_key)
-					if len(location) > 0:
-						extract_data.append((file_key, md5s, file_name, location))
+					file_locations = index.GetIndexData(file_key)
+					if len(file_locations) > 0:
+						loc = file_locations[0]
+						extract_data.append((file_key, md5s, file_name, loc[0], loc[1], loc[2]))
 			
 			if len(extract_data) == 0:
 				continue
@@ -82,10 +83,6 @@ if __name__ == '__main__':
 	elif opts.mode == 'extract':
 		build = build_cfg.BuildCfg(opts)
 		if not build.open():
-			sys.exit(1)
-		
-		fname_db = build_cfg.DBFileList(opts)
-		if not fname_db.open():
 			sys.exit(1)
 		
 		encoding = casc.CASCEncodingFile(opts, build)
@@ -118,5 +115,5 @@ if __name__ == '__main__':
 		
 		blte = casc.BLTEExtract(opts)
 		
-		if not blte.extract_file(keys[0], md5s and md5s.decode('hex') or None, opts.output, file_location):
+		if not blte.extract_file(keys[0], md5s and md5s.decode('hex') or None, opts.output, *file_location[0]):
 			sys.exit(1)

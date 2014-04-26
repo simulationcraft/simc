@@ -230,16 +230,12 @@ class BLTEExtract(object):
 		
 		return True
 	
-	def extract_file(self, file_key, file_md5sum, file_output, data_file_number, data_file_offset, blte_file_size):
+	def extract_data(self, file_key, file_md5sum, data_file_number, data_file_offset, blte_file_size):
 		path = os.path.join(self.options.data_dir, 'Data', 'data', 'data.%03u' % data_file_number)
-		output_path = os.path.join(self.options.output, file_output)
-		
-		if not self.open(path):
-			return False
-		
-		if not os.access(os.path.dirname(output_path), os.W_OK):
-			self.options.parser.error('Output file %s is not writeable' % output_path)
 
+		if not self.open(path):
+			return None
+		
 		self.fd.seek(data_file_offset, os.SEEK_SET)
 		
 		key = self.fd.read(16)
@@ -255,16 +251,27 @@ class BLTEExtract(object):
 		
 		file = self.__extract_file()
 		if not file:
-			return False
+			return None
 		
 		file_md5 = md5.new(file.output_data).digest()
 		if file_md5sum and file_md5sum != file_md5:
 			self.options.parser.error('Invalid md5sum for extracted file, expected %s got %s' % (file_md5sum.encode('hex'), file_md5.encode('hex')))
 		
-		with open(output_path, 'wb') as output_file:
-			output_file.write(file.output_data)
-
 		self.close()
+		
+		return file.output_data
+			
+	def extract_file(self, file_key, file_md5sum, file_output, data_file_number, data_file_offset, blte_file_size):	
+		output_path = os.path.join(self.options.output, file_output)
+		if not os.access(os.path.dirname(output_path), os.W_OK):
+			self.options.parser.error('Output file %s is not writable' % output_path)
+			
+		data = self.extract_data(file_key, file_md5sum, data_file_number, data_file_offset, blte_file_size)
+		if not data:
+			return False
+		
+		with open(output_path, 'wb') as output_file:
+			output_file.write(data)
 
 		return True
 
@@ -315,7 +322,7 @@ class CASCDataIndex(object):
 		if key not in self.idx_data:
 			self.idx_data[key] = []
 		
-		self.idx_data[key].append((data_file, data_offset, file_size, indexname))
+		self.idx_data[key].append((data_file, data_offset, file_size))
 	
 	def GetIndexData(self, key):
 		return self.idx_data.get(key[:9], [])
@@ -469,11 +476,43 @@ class CASCEncodingFile(object):
 		return True
 		
 class CASCRootFile(object):
-	def __init__(self, options, build, encoding):
+	def __init__(self, options, build, encoding, index):
 		self.build = build
+		self.index = index
 		self.encoding = encoding
 		self.options = options
 		self.hash_map = {}
+	
+	def __bootstrap(self):
+		base_path = os.path.dirname(self.options.root_file)
+		if len(base_path) == 0:
+			base_path = os.getcwd()
+		
+		if not os.access(base_path, os.W_OK):
+			self.options.parser.error('Error bootstrapping CASCRootFile, "%s" is not writable' % base_path)
+		
+		keys = self.encoding.GetFileKeys(self.build.root_file().decode('hex'))
+		if len(keys) == 0:
+			self.options.parser.error('Could not find root file with mdsum %s from data' % self.build.root_file())
+		
+		file_locations = []
+		for key in keys:
+			file_locations.append((key, self.build.root_file().decode('hex')) + self.index.GetIndexData(key)[0])
+		
+		if len(file_locations) == 0:
+			self.options.parser.error('Could not find root file location in data')
+		
+		if len(file_locations) > 1:
+			self.options.parser.error('Multiple (%d) file locations for root file in data' % len(file_locations))
+
+		print 'Extracting root file %s ...' % self.build.root_file()
+		blte = BLTEExtract(self.options)
+		data = blte.extract_data(*file_locations[0])
+	
+		with open(self.options.root_file, 'wb') as f:
+			f.write(data)
+			
+		return data
 	
 	def GetFileMD5(self, file):
 		hash_name = file.strip().upper().replace('/', '\\')
@@ -486,27 +525,35 @@ class CASCRootFile(object):
 		
 	def open(self):
 		if not os.access(self.options.root_file, os.R_OK):
-			self.options.parser.error('Unable to open root file %s for reading' % self.options.root_file)
-			return False
+			data = self.__bootstrap()
+		else:
+			with open(self.options.root_file, 'rb') as root_file:
+				data = root_file.read()
+		
+			md5str = md5.new(data).hexdigest()
+			if md5str != self.build.root_file():
+				data = self.__bootstrap()
 	
-		with open(self.options.root_file, 'rb') as f:
-			fsize = os.stat(self.options.root_file).st_size
-			while f.tell() < fsize:
-				n_entries, unk_1, unk_2 = struct.unpack('III', f.read(12))
-				if n_entries == 0:
-					continue
-				
-				f.seek(4 * n_entries, os.SEEK_CUR)
+		offset = 0
+		while offset < len(data):
+			n_entries, unk_1, unk_2 = struct.unpack('III', data[offset:offset + 12])
+			offset += 12
+			if n_entries == 0:
+				continue
+			
+			offset += 4 * n_entries
 
-				for entry_idx in xrange(0, n_entries):
-					md5s = f.read(16)
-					file_name_hash = f.read(8)
-					val = struct.unpack('Q', file_name_hash)[0]
-					
-					if not val in self.hash_map:
-						self.hash_map[val] = []
-					
-					#print unk_data[entry_idx], file_name_hash.encode('hex'), md5s.encode('hex')
-					self.hash_map[val].append(md5s)
+			for entry_idx in xrange(0, n_entries):
+				md5s = data[offset:offset + 16]
+				offset += 16
+				file_name_hash = data[offset:offset + 8]
+				offset += 8
+				val = struct.unpack('Q', file_name_hash)[0]
+				
+				if not val in self.hash_map:
+					self.hash_map[val] = []
+				
+				#print unk_data[entry_idx], file_name_hash.encode('hex'), md5s.encode('hex')
+				self.hash_map[val].append(md5s)
 
 		return True
