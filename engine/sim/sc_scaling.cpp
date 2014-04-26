@@ -198,6 +198,7 @@ void scaling_t::init_deltas()
   if ( stats.haste_rating == 0 ) stats.haste_rating = default_delta;
   if ( stats.mastery_rating == 0 ) stats.mastery_rating = default_delta;
   if ( stats.multistrike_rating == 0 ) stats.multistrike_rating = default_delta;
+  if ( stats.readiness_rating == 0 ) stats.readiness_rating = default_delta;
 
   // Defensive
   if ( stats.armor == 0 ) stats.armor = default_delta;
@@ -546,6 +547,7 @@ void scaling_t::create_options()
     opt_float( "scale_haste_rating", stats.haste_rating ),
     opt_float( "scale_mastery_rating", stats.mastery_rating ),
     opt_float( "scale_multistrike_rating", stats.multistrike_rating ),
+    opt_float( "scale_readiness_rating", stats.readiness_rating ),
     opt_float( "scale_weapon_dps", stats.weapon_dps ),
     opt_float( "scale_weapon_speed", stats.weapon_speed ),
     opt_float( "scale_offhand_weapon_dps", stats.weapon_offhand_dps ),

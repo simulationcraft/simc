@@ -456,7 +456,7 @@ double ranged_attack_t::glance_chance( int delta_level ) const
 double ranged_attack_t::composite_target_multiplier( player_t* target ) const
 {
   double v = attack_t::composite_target_multiplier( target );
-  v *= target -> composite_ranged_attack_player_vulnerability();
+
   return v;
 }
 

@@ -1313,6 +1313,7 @@ const char* util::cache_type_string( cache_e c )
     case CACHE_BLOCK:        return "block";
     case CACHE_ARMOR:        return "armor";
     case CACHE_MULTISTRIKE:  return "multistrike";
+    case CACHE_READINESS:    return "readiness";
 
     default: return "unknown";
   }
@@ -1451,6 +1452,7 @@ const char* util::stat_type_string( stat_e stat )
 
     case STAT_PVP_POWER: return "pvp_power";
     case STAT_MULTISTRIKE_RATING: return "multistrike_rating";
+    case STAT_READINESS_RATING: return "readiness_rating";
 
     case STAT_ALL: return "all";
 
@@ -1512,6 +1514,8 @@ const char* util::stat_type_abbrev( stat_e stat )
     case STAT_PVP_POWER: return "PvPP";
 
     case STAT_MULTISTRIKE_RATING: return "Mult";
+
+    case STAT_READINESS_RATING: return "Read";
 
     case STAT_ALL: return "All";
 
@@ -1906,6 +1910,7 @@ stat_e util::translate_item_mod( int item_mod )
     case ITEM_MOD_RESILIENCE_RATING:   return STAT_RESILIENCE_RATING;
     case ITEM_MOD_PVP_POWER:           return STAT_PVP_POWER;
     case ITEM_MOD_MULTISTRIKE_RATING:  return STAT_MULTISTRIKE_RATING;
+    case ITEM_MOD_READINESS_RATING:    return STAT_READINESS_RATING;
     default:                           return STAT_NONE;
   }
 }
@@ -1929,10 +1934,11 @@ int util::translate_stat( stat_e stat )
     case STAT_ATTACK_POWER:      return ITEM_MOD_ATTACK_POWER;
     case STAT_SPELL_POWER:       return ITEM_MOD_SPELL_POWER;
     case STAT_MASTERY_RATING:    return ITEM_MOD_MASTERY_RATING;
-    case STAT_ARMOR:       return ITEM_MOD_EXTRA_ARMOR;
+    case STAT_ARMOR:             return ITEM_MOD_EXTRA_ARMOR;
     case STAT_RESILIENCE_RATING: return ITEM_MOD_RESILIENCE_RATING;
     case STAT_PVP_POWER:         return ITEM_MOD_PVP_POWER;
     case STAT_MULTISTRIKE_RATING:return ITEM_MOD_MULTISTRIKE_RATING;
+    case STAT_READINESS_RATING:  return ITEM_MOD_READINESS_RATING;
     default:                     return ITEM_MOD_NONE;
   }
 }
@@ -1958,7 +1964,7 @@ stat_e util::translate_rating_mod( unsigned ratings )
     return STAT_MASTERY_RATING;
   else if ( ratings & RATING_MOD_PVP_POWER )
     return STAT_PVP_POWER;
-  // TODO: WOW-MULTISTRIKE
+  // TODO: WOW-MULTISTRIKE and READINESS.
 
   return STAT_NONE;
 }
@@ -2996,6 +3002,7 @@ double stat_itemization_weight( stat_e s )
     case STAT_HIT_RATING:
     case STAT_MASTERY_RATING:
     case STAT_MULTISTRIKE_RATING:
+    case STAT_READINESS_RATING:
     case STAT_SPIRIT:
       return 2;
     default:

@@ -1490,9 +1490,6 @@ struct expose_armor_t : public rogue_attack_t
 
     if ( result_is_hit( execute_state -> result ) )
     {
-      if ( ! sim -> overrides.weakened_armor )
-        target -> debuffs.weakened_armor -> trigger( p() -> glyph.expose_armor -> ok() ? 3 : 1 );
-
       rogue_td_t* td = this -> td( target );
       td -> combo_points.add( 1 );
     }
@@ -1511,16 +1508,6 @@ struct fan_of_knives_t : public rogue_attack_t
     aoe              = -1;
   }
 
-  void impact( action_state_t* s )
-  {
-    rogue_attack_t::impact( s );
-
-    if ( result_is_hit( s -> result ) )
-    {
-      if ( p() -> glyph.sharp_knives -> ok() && ! sim -> overrides.weakened_armor )
-        target -> debuffs.weakened_armor -> trigger();
-    }
-  }
 };
 
 // Crimson Tempest ==========================================================

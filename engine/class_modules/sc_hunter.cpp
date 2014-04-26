@@ -1296,16 +1296,8 @@ struct corrosive_spit_t : public hunter_main_pet_spell_t
     parse_options( 0, options_str );
 
     auto_cast = true;
-    background = ( sim -> overrides.weakened_armor != 0 );
   }
 
-  virtual void impact( action_state_t* s )
-  {
-    hunter_main_pet_spell_t::impact( s );
-
-    if ( result_is_hit( s -> result ) && ! sim -> overrides.weakened_armor )
-      s -> target -> debuffs.weakened_armor -> trigger( 1, buff_t::DEFAULT_VALUE(), -1.0, data().duration() );
-  }
 };
 
 // Demoralizing Screech  ====================================================
@@ -1352,16 +1344,8 @@ struct tear_armor_t : public hunter_main_pet_spell_t
 
     auto_cast = true;
 
-    background = ( sim -> overrides.weakened_armor != 0 );
   }
 
-  virtual void impact( action_state_t* s )
-  {
-    hunter_main_pet_spell_t::impact( s );
-
-    if ( result_is_hit( s -> result ) && ! sim -> overrides.weakened_armor )
-      s -> target -> debuffs.weakened_armor -> trigger( 1, buff_t::DEFAULT_VALUE(), -1.0, data().duration() );
-  }
 };
 
 // Hyena Cackling Howl ======================================================

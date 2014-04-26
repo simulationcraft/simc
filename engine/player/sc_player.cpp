@@ -657,16 +657,8 @@ static bool init_debuffs( sim_t* sim )
     p -> debuffs.physical_vulnerability  = buff_creator_t( p, "physical_vulnerability", p -> find_spell( 81326 ) )
                                            .default_value( p -> find_spell( 81326 ) -> effectN( 1 ).percent() );
 
-    // TODO-WOD: Is ranged vulnerability gone now?
-    p -> debuffs.ranged_vulnerability    = buff_creator_t( p, "ranged_vulnerability", p -> find_spell( 1130 ) )
-                                           .default_value( /* p -> find_spell( 1130 ) -> effectN( 2 ).percent() */ 0 );
-
     p -> debuffs.mortal_wounds           = buff_creator_t( p, "mortal_wounds", p -> find_spell( 115804 ) )
                                            .default_value( std::fabs( p -> find_spell( 115804 ) -> effectN( 1 ).percent() ) );
-
-    p -> debuffs.weakened_armor          = buff_creator_t( p, "weakened_armor", p -> find_spell( 113746 ) )
-                                           .default_value( std::fabs( p -> find_spell( 113746 ) -> effectN( 1 ).percent() ) )
-                                           .add_invalidate( CACHE_ARMOR );
   }
 
   return true;
@@ -866,6 +858,7 @@ void scale_challenge_mode( player_t& p, const rating_t& rating )
     old_rating_sum += ( int ) p.gear.get_stat( STAT_BLOCK_RATING );
     old_rating_sum += ( int ) p.gear.get_stat( STAT_MASTERY_RATING );
     old_rating_sum += ( int ) p.gear.get_stat( STAT_MULTISTRIKE_RATING );
+    old_rating_sum += ( int ) p.gear.get_stat( STAT_READINESS_RATING );
 
     int old_rating_sum_wo_hit_exp = ( int ) ( old_rating_sum - p.gear.get_stat( STAT_EXPERTISE_RATING ) - p.gear.get_stat( STAT_HIT_RATING ) );
 
@@ -924,6 +917,7 @@ void scale_challenge_mode( player_t& p, const rating_t& rating )
       p.gear.set_stat( STAT_BLOCK_RATING, floor( p.gear.get_stat( STAT_BLOCK_RATING ) / old_rating_sum_wo_hit_exp * target_rating_sum_wo_hit_exp ) );
       p.gear.set_stat( STAT_MASTERY_RATING, floor( p.gear.get_stat( STAT_MASTERY_RATING ) / old_rating_sum_wo_hit_exp * target_rating_sum_wo_hit_exp ) );
       p.gear.set_stat( STAT_MULTISTRIKE_RATING, floor( p.gear.get_stat( STAT_MULTISTRIKE_RATING ) / old_rating_sum_wo_hit_exp * target_rating_sum_wo_hit_exp ) );
+      p.gear.set_stat( STAT_READINESS_RATING, floor( p.gear.get_stat( STAT_READINESS_RATING ) / old_rating_sum_wo_hit_exp * target_rating_sum_wo_hit_exp ) );
     }
   }
 
@@ -1976,6 +1970,7 @@ void player_t::init_scaling()
     scales_with[ STAT_HASTE_RATING              ] = true;
     scales_with[ STAT_MASTERY_RATING            ] = true;
     scales_with[ STAT_MULTISTRIKE_RATING        ] = true;
+    scales_with[ STAT_READINESS_RATING          ] = true;
 
     scales_with[ STAT_WEAPON_DPS   ] = attack;
     scales_with[ STAT_WEAPON_SPEED ] = sim -> weapon_speed_scale_factors ? attack : false;
@@ -2021,6 +2016,10 @@ void player_t::init_scaling()
 
         case STAT_MULTISTRIKE_RATING:
           initial.stats.multistrike_rating += v;
+          break;
+
+        case STAT_READINESS_RATING:
+          initial.stats.readiness_rating += v;
           break;
 
         case STAT_WEAPON_DPS:
@@ -2799,6 +2798,15 @@ double player_t::composite_multistrike() const
   return ms;
 }
 
+// player_t::composite_readiness ============================================
+
+double player_t::composite_readiness() const
+{
+  double rd = composite_readiness_rating() / current.rating.readiness;
+
+  return rd;
+}
+
 // player_t::composite_player_multiplier ====================================
 
 double player_t::composite_player_multiplier( school_e /* school */ ) const
@@ -3022,6 +3030,8 @@ double player_t::composite_rating( rating_e rating ) const
       v = current.stats.block_rating; break;
     case RATING_MULTISTRIKE:
       v = current.stats.multistrike_rating; break;
+    case RATING_READINESS:
+      v = current.stats.readiness_rating; break;
     default: break;
   }
 
@@ -3045,17 +3055,6 @@ double player_t::composite_player_vulnerability( school_e school ) const
     m *= 1.0 + debuffs.vulnerable -> value();
 
   return m;
-}
-
-// player_t::composite_ranged_attack_player_vulnerability ===================
-
-double player_t::composite_ranged_attack_player_vulnerability() const
-{
-  // MoP: Increase ranged damage taken by 5%. make sure
-  if ( debuffs.ranged_vulnerability -> check() )
-    return 1.0 + debuffs.ranged_vulnerability -> value();
-
-  return 1.0;
 }
 
 double player_t::composite_mitigation_multiplier( school_e /* school */ ) const
@@ -4284,6 +4283,7 @@ void player_t::stat_gain( stat_e    stat,
     case STAT_BLOCK_RATING:
     case STAT_MASTERY_RATING:
     case STAT_MULTISTRIKE_RATING:
+    case STAT_READINESS_RATING:
       current.stats.add_stat( stat, amount );
       temporary.add_stat( stat, temp_value * amount );
       invalidate_cache( cache_from_stat( stat ) );
@@ -4404,6 +4404,7 @@ void player_t::stat_loss( stat_e    stat,
     case STAT_BLOCK_RATING:
     case STAT_MASTERY_RATING:
     case STAT_MULTISTRIKE_RATING:
+    case STAT_READINESS_RATING:
       current.stats.add_stat( stat, -amount );
       temporary.add_stat( stat, temp_value * -amount );
       invalidate_cache( cache_from_stat( stat ) );
@@ -5605,6 +5606,7 @@ struct snapshot_stats_t : public action_t
     buffed_stats.attack_speed = p -> cache.attack_speed();
     buffed_stats.mastery_value = p -> cache.mastery_value();
     buffed_stats.multistrike = p -> cache.multistrike();
+    buffed_stats.readiness = p -> cache.readiness();
 
     buffed_stats.spell_power  = util::round( p -> cache.spell_power( SCHOOL_MAX ) * p -> composite_spell_power_multiplier() );
     buffed_stats.spell_hit    = p -> cache.spell_hit();
@@ -8252,6 +8254,7 @@ void player_t::create_options()
     opt_float( "gear_armor",            gear.armor ),
     opt_float( "gear_mastery_rating",   gear.mastery_rating ),
     opt_float( "gear_multistrike_rating", gear.multistrike_rating ),
+    opt_float( "gear_readiness_rating", gear.readiness_rating ),
 
     // Stat Enchants
     opt_float( "enchant_strength",         enchant.attribute[ ATTR_STRENGTH  ] ),
@@ -8268,6 +8271,7 @@ void player_t::create_options()
     opt_float( "enchant_crit_rating",      enchant.crit_rating ),
     opt_float( "enchant_mastery_rating",   enchant.mastery_rating ),
     opt_float( "enchant_multistrike_rating", enchant.multistrike_rating ),
+    opt_float( "enchant_readiness_rating", enchant.readiness_rating ),
     opt_float( "enchant_health",           enchant.resource[ RESOURCE_HEALTH ] ),
     opt_float( "enchant_mana",             enchant.resource[ RESOURCE_MANA   ] ),
     opt_float( "enchant_rage",             enchant.resource[ RESOURCE_RAGE   ] ),
@@ -9276,6 +9280,17 @@ double player_stat_cache_t::multistrike() const
   }
   else assert( _multistrike == player -> composite_multistrike() );
   return _multistrike;
+}
+
+double player_stat_cache_t::readiness() const
+{
+  if ( ! active || ! valid[ CACHE_READINESS ] )
+  {
+    valid[ CACHE_READINESS ] = true;
+    _readiness = player -> composite_readiness();
+  }
+  else assert( _readiness = player -> composite_readiness() );
+  return _readiness;
 }
 
 // player_stat_cache_t::mastery =============================================

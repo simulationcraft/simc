@@ -5,7 +5,7 @@
 
 #include "simulationcraft.hpp"
 
-namespace { // UNNAMED NAMESPACE ==========================================
+namespace { // UNNAMED NAMESPACE ============================================
 
 // parse_ptr ================================================================
 
@@ -1040,10 +1040,8 @@ void sim_t::combat_begin()
   {
     player_t* t = target_list[ i ];
     if ( overrides.magic_vulnerability    ) t -> debuffs.magic_vulnerability    -> override_buff();
-    if ( overrides.ranged_vulnerability   ) t -> debuffs.ranged_vulnerability   -> override_buff();
     if ( overrides.mortal_wounds          ) t -> debuffs.mortal_wounds          -> override_buff();
     if ( overrides.physical_vulnerability ) t -> debuffs.physical_vulnerability -> override_buff();
-    if ( overrides.weakened_armor         ) t -> debuffs.weakened_armor         -> override_buff( 3 );
     if ( overrides.bleeding               ) t -> debuffs.bleeding               -> override_buff( 1, 1.0 );
   }
 
@@ -1342,8 +1340,6 @@ bool sim_t::init()
     if ( healers > 0 )
       heal_target = module_t::heal_enemy() -> create_player( this, "Healing Target" );
   }
-
-
 
   if ( max_player_level < 0 )
   {
@@ -1760,10 +1756,8 @@ void sim_t::use_optimal_buffs_and_debuffs( int value )
   overrides.str_agi_int             = optimal_raid;
 
   overrides.magic_vulnerability     = optimal_raid;
-  overrides.ranged_vulnerability    = optimal_raid;
   overrides.mortal_wounds           = optimal_raid;
   overrides.physical_vulnerability  = optimal_raid;
-  overrides.weakened_armor          = optimal_raid;
   overrides.bleeding                = optimal_raid;
 
   overrides.bloodlust               = optimal_raid;
@@ -1883,10 +1877,8 @@ void sim_t::create_options()
     opt_int( "override.stamina", overrides.stamina ),
     opt_int( "override.str_agi_int", overrides.str_agi_int ),
     opt_int( "override.magic_vulnerability", overrides.magic_vulnerability ),
-    opt_int( "override.ranged_vulnerability", overrides.ranged_vulnerability ),
     opt_int( "override.mortal_wounds", overrides.mortal_wounds ),
     opt_int( "override.physical_vulnerability", overrides.physical_vulnerability ),
-    opt_int( "override.weakened_armor", overrides.weakened_armor ),
     opt_int( "override.bleeding", overrides.bleeding ),
     opt_func( "override.spell_data", parse_override_spell_data ),
     opt_float( "override.target_health", overrides.target_health ),

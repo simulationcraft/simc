@@ -663,7 +663,7 @@ enum stat_e
   STAT_WEAPON_OFFHAND_DPS, STAT_WEAPON_OFFHAND_SPEED,
   STAT_ARMOR, STAT_RESILIENCE_RATING, STAT_DODGE_RATING, STAT_PARRY_RATING,
   STAT_BLOCK_RATING, STAT_PVP_POWER,
-  STAT_MULTISTRIKE_RATING,
+  STAT_MULTISTRIKE_RATING, STAT_READINESS_RATING,
   STAT_ALL,
   STAT_MAX
 };
@@ -695,7 +695,7 @@ enum cache_e
   CACHE_MASTERY,
   CACHE_DODGE, CACHE_PARRY, CACHE_BLOCK, CACHE_CRIT_BLOCK, CACHE_ARMOR,
   CACHE_CRIT_AVOIDANCE, CACHE_MISS,
-  CACHE_MULTISTRIKE,
+  CACHE_MULTISTRIKE, CACHE_READINESS,
   CACHE_PLAYER_DAMAGE_MULTIPLIER,
   CACHE_PLAYER_HEAL_MULTIPLIER,
   CACHE_MAX
@@ -728,6 +728,7 @@ inline cache_e cache_from_stat( stat_e st )
     case STAT_BLOCK_RATING: return CACHE_BLOCK;
     case STAT_ARMOR: return CACHE_ARMOR;
     case STAT_MULTISTRIKE_RATING: return CACHE_MULTISTRIKE;
+    case STAT_READINESS_RATING: return CACHE_READINESS;
     default: break;
   }
   return CACHE_NONE;
@@ -1415,6 +1416,7 @@ struct gear_stats_t
   double resilience_rating;
   double pvp_power;
   double multistrike_rating;
+  double readiness_rating;
 
   gear_stats_t() :
     attribute(), resource(),
@@ -1422,7 +1424,7 @@ struct gear_stats_t
     hit_rating( 0.0 ), hit_rating2( 0.0 ), crit_rating( 0.0 ), haste_rating( 0.0 ), weapon_dps( 0.0 ), weapon_speed( 0.0 ),
     weapon_offhand_dps( 0.0 ), weapon_offhand_speed( 0.0 ), armor( 0.0 ), dodge_rating( 0.0 ),
     parry_rating( 0.0 ), block_rating( 0.0 ), mastery_rating( 0.0 ), resilience_rating( 0.0 ), pvp_power( 0.0 ),
-    multistrike_rating( 0.0 )
+    multistrike_rating( 0.0 ), readiness_rating( 0.0 )
   { }
 
   friend gear_stats_t operator+( const gear_stats_t& left, const gear_stats_t& right )
@@ -1454,6 +1456,7 @@ struct gear_stats_t
     resilience_rating += right.resilience_rating;
     pvp_power += right.pvp_power;
     multistrike_rating += right.multistrike_rating;
+    readiness_rating += right.readiness_rating;
     range::transform ( attribute, right.attribute, attribute.begin(), std::plus<int>() );
     range::transform ( resource, right.resource, resource.begin(), std::plus<int>() );
     return *this;
@@ -2486,8 +2489,6 @@ public:
     int magic_vulnerability;
     int mortal_wounds;
     int physical_vulnerability;
-    int ranged_vulnerability;
-    int weakened_armor;
     int bleeding;
 
     // Misc stuff needs resolving
@@ -2891,6 +2892,7 @@ enum rating_e
   RATING_MASTERY,
   RATING_PVP_POWER,
   RATING_MULTISTRIKE,
+  RATING_READINESS,
   RATING_MAX
 };
 
@@ -2915,6 +2917,7 @@ inline cache_e cache_from_rating( rating_e r )
     case RATING_PVP_POWER: return CACHE_NONE;
     case RATING_PVP_RESILIENCE: return CACHE_NONE;
     case RATING_MULTISTRIKE: return CACHE_MULTISTRIKE;
+    case RATING_READINESS: return CACHE_READINESS;
     default: break;
   }
   assert( false ); return CACHE_NONE;
@@ -2930,6 +2933,7 @@ struct rating_t
   double mastery;
   double pvp_resilience, pvp_power;
   double multistrike;
+  double readiness;
 
   double& get( rating_e r )
   {
@@ -2952,6 +2956,7 @@ struct rating_t
       case RATING_PVP_POWER: return pvp_power;
       case RATING_PVP_RESILIENCE: return pvp_resilience;
       case RATING_MULTISTRIKE: return multistrike;
+      case RATING_READINESS: return readiness;
       default: break;
     }
     assert( false ); return mastery;
@@ -3576,7 +3581,7 @@ private:
   mutable double _attack_haste, _spell_haste;
   mutable double _attack_speed, _spell_speed;
   mutable double _dodge, _parry, _block, _crit_block, _armor;
-  mutable double _mastery_value, _crit_avoidance, _miss, _multistrike;
+  mutable double _mastery_value, _crit_avoidance, _miss, _multistrike, _readiness;
   mutable double _player_mult[SCHOOL_MAX + 1], _player_heal_mult[SCHOOL_MAX + 1];
 public:
   bool active; // runtime active-flag
@@ -3611,6 +3616,7 @@ public:
   double armor() const;
   double mastery_value() const;
   double multistrike() const;
+  double readiness() const;
   double player_multiplier( school_e ) const;
   double player_heal_multiplier( school_e ) const;
 #else
@@ -3640,6 +3646,7 @@ public:
   double armor() const            { return player -> composite_armor();           }
   double mastery_value() const    { return player -> composite_mastery_value();   }
   double multistrike() const      { return player -> composite_multistrike(); }
+  double readiness() const        { return player -> composite_readiness(); }
 #endif
 };
 
@@ -3797,7 +3804,7 @@ struct player_collected_data_t
     double attack_power,  attack_hit,  mh_attack_expertise,  oh_attack_expertise, attack_crit;
     double armor, miss, crit, dodge, parry, block;
     double spell_haste, spell_speed, attack_haste, attack_speed;
-    double mastery_value, multistrike;
+    double mastery_value, multistrike, readiness;
   } buffed_stats_snapshot;
 
   player_collected_data_t( const std::string& player_name, sim_t& );
@@ -4359,8 +4366,6 @@ public:
     debuff_t* mortal_wounds;
     debuff_t* physical_damage;
     debuff_t* physical_vulnerability;
-    debuff_t* ranged_vulnerability;
-    debuff_t* weakened_armor;
   } debuffs;
 
   struct gains_t
@@ -4484,6 +4489,7 @@ public:
   virtual double composite_mastery() const;
   virtual double composite_mastery_value() const;
   virtual double composite_multistrike() const;
+  virtual double composite_readiness() const;
 
   virtual double composite_armor() const;
   virtual double composite_armor_multiplier() const;
@@ -4558,6 +4564,9 @@ public:
 
   double composite_multistrike_rating() const
   { return composite_rating( RATING_MULTISTRIKE ); }
+
+  double composite_readiness_rating() const
+  { return composite_rating( RATING_READINESS ); }
 
   double get_attribute( attribute_e a ) const
   { return util::round( composite_attribute( a ) * composite_attribute_multiplier( a ) ); }
@@ -4724,7 +4733,6 @@ public:
 
   /* New stuff */
   virtual double composite_player_vulnerability( school_e ) const;
-  virtual double composite_ranged_attack_player_vulnerability() const;
 
   virtual void activate_action_list( action_priority_list_t* a, bool off_gcd = false );
 
@@ -4960,6 +4968,9 @@ public:
 
   virtual double composite_multistrike() const
   { return owner -> cache.multistrike(); }
+
+  virtual double composite_readiness() const
+  { return owner -> cache.readiness(); }
 
   virtual double composite_melee_attack_power() const;
 
@@ -5368,6 +5379,7 @@ public:
   virtual double composite_target_crit( player_t* /* target */ ) const;
   virtual double composite_target_multiplier( player_t* target ) const { return target -> composite_player_vulnerability( school ); }
   virtual double composite_multistrike() const { return player -> cache.multistrike(); }
+  virtual double composite_readiness() const { return player -> cache.readiness(); }
 
   // the direct amount multiplier due to debuffs on the target
   virtual double composite_target_da_multiplier( player_t* target ) const { return composite_target_multiplier( target ); }

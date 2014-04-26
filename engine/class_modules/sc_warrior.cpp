@@ -8,14 +8,19 @@
 // ==========================================================================
 //
 // TODO: Check WoD mechanics whenever alpha/beta roll around:
-// Sweeping strikes + opportunity strike proccing off each other
-// Raging Blow: Will the parent still fail if either MH/OH miss.
+// Overall mechanics: Does parry hasting still exist in the game? I noticed in the debug log that it still has it,
+//                    however, I thought that it was completely removed from the game sometime in the last expansion? 
+//                    Maybe it was only for enemy targets.
+// Sweeping strikes + opportunity strike proccing off each other (They'll redo arms mastery, I think)
+// Raging Blow: Will the parent still fail if either MH/OH parry. (Not incredibly important anymore, but it'd be nice to know)
 // Dragon Roar: Does it still have diminishing returns on more than 1 target
 // Deep wounds: Check protection/arms/fury deep wounds ticks to see if the modifier is still there
 // Bladestorm: Same as above.
 // Ravager: Does it dynamically update with the character after being thrown? (Most likely yes, but you never know.) 
-// Gladiator Stance: Everything about it. What protection specializations/abilities are enabled/disabled
-// does it attain rage periodically or from autoattacks, does revenge/shield slam grant rage on use?
+//          If thrown before colossus smash, will it gain the benefit of the debuff on the target?
+// Gladiator Stance: What protection specializations/abilities are enabled/disabled?
+// Check T16-2 piece to see if they change it because of the new colossus smash glyph.
+// Code-wise: Make sure I (Alex/Collision) didn't screw up anything important, such as deep wounds.
 // ==========================================================================
 
 namespace { // UNNAMED NAMESPACE
@@ -1169,6 +1174,16 @@ struct bladestorm_t : public warrior_attack_t
     }
   }
 
+  virtual void update_ready( timespan_t cd_duration )
+  {
+    warrior_t* p = cast();
+
+    if ( ( p -> specialization() == WARRIOR_FURY || p -> specialization() == WARRIOR_ARMS ) &&
+           p -> talents.bladestorm -> ok() )
+      cd_duration /= 1 + player -> cache.readiness();
+
+    warrior_attack_t::update_ready( cd_duration );
+  }
   // Bladestorm is not modified by haste effects
   virtual double composite_haste() const { return 1.0; }
 };
@@ -1394,6 +1409,16 @@ struct demoralizing_shout : public warrior_attack_t
     }
   }
 
+  virtual void update_ready( timespan_t cd_duration )
+  {
+    warrior_t* p = cast();
+
+    if ( p -> specialization() == WARRIOR_PROTECTION )
+      cd_duration /= 1 + player -> cache.readiness();
+
+    warrior_attack_t::update_ready( cd_duration );
+  }
+
 };
 
 // Devastate ================================================================
@@ -1477,6 +1502,17 @@ struct dragon_roar_t : public warrior_attack_t
   {
     // Dragon Roar always crits
     return 1.0;
+  }
+
+  virtual void update_ready( timespan_t cd_duration )
+  {
+    warrior_t* p = cast();
+
+    if ( ( p -> specialization() == WARRIOR_FURY || p -> specialization() == WARRIOR_ARMS ) &&
+           p -> talents.dragon_roar -> ok() )
+      cd_duration /= 1 + player -> cache.readiness();
+
+    warrior_attack_t::update_ready( cd_duration );
   }
 };
 
@@ -1685,7 +1721,15 @@ struct heroic_leap_t : public warrior_attack_t
   p -> buff.heroic_leap_glyph -> trigger();
 
   warrior_attack_t::impact( s );
+  }
 
+  virtual void update_ready( timespan_t cd_duration )
+  {
+    warrior_t* p = cast();
+
+    cd_duration /= 1 + player -> cache.readiness();
+
+    warrior_attack_t::update_ready( cd_duration );
   }
 
 };
@@ -2266,7 +2310,6 @@ struct shield_slam_t : public warrior_attack_t
 
 struct shockwave_t : public warrior_attack_t
 {
-  timespan_t cd_reduction;
   shockwave_t( warrior_t* p, const std::string& options_str ) :
     warrior_attack_t( "shockwave", p, p -> talents.shockwave )
   {
@@ -2277,18 +2320,21 @@ struct shockwave_t : public warrior_attack_t
     may_parry         = false;
     may_block         = false;
     aoe               = -1;
-    cd_reduction      = timespan_t::zero();
   }
 
-  virtual void update_ready( timespan_t )
+  virtual void update_ready( timespan_t cd_duration )
   {
-    cd_reduction = timespan_t::zero();
+    warrior_t* p = cast();
+
+    if ( ( p -> specialization() == WARRIOR_FURY || p -> specialization() == WARRIOR_ARMS ) &&
+           p -> talents.shockwave -> ok() )
+      cd_duration /= 1 + player -> cache.readiness();
 
     if ( result_is_hit( execute_state -> result ) )
       if ( execute_state -> n_targets >= 3 )
-        cd_reduction = timespan_t::from_seconds( -20 );
+        cd_duration += timespan_t::from_seconds( -20 );
 
-    warrior_attack_t::update_ready( cd_reduction );
+    warrior_attack_t::update_ready( cd_duration );
   }
 };
 
@@ -2424,6 +2470,17 @@ struct storm_bolt_t : public warrior_attack_t
 
     if ( p -> specialization() == WARRIOR_FURY && result_is_hit( execute_state -> result ) ) // If MH fails to land, OH does not execute.
       oh_attack -> execute();
+  }
+
+  virtual void update_ready( timespan_t cd_duration )
+  {
+    warrior_t* p = cast();
+
+    if ( ( p -> specialization() == WARRIOR_FURY || p -> specialization() == WARRIOR_ARMS ) &&
+           p -> talents.storm_bolt -> ok() )
+      cd_duration /= 1 + player -> cache.readiness();
+
+    warrior_attack_t::update_ready( cd_duration );
   }
 };
 
@@ -2681,6 +2738,17 @@ struct avatar_t : public warrior_spell_t
 
     p -> buff.avatar -> trigger();
   }
+
+  virtual void update_ready( timespan_t cd_duration )
+  {
+    warrior_t* p = cast();
+
+    if ( ( p -> specialization() == WARRIOR_FURY || p -> specialization() == WARRIOR_ARMS ) &&
+           p -> talents.avatar -> ok() )
+      cd_duration /= 1 + player -> cache.readiness();
+
+    warrior_spell_t::update_ready( cd_duration );
+  }
 };
 
 // Battle Shout =============================================================
@@ -2746,6 +2814,17 @@ struct bloodbath_t : public warrior_spell_t
     warrior_t* p = cast();
 
     p -> buff.bloodbath -> trigger();
+  }
+
+  virtual void update_ready( timespan_t cd_duration )
+  {
+    warrior_t* p = cast();
+
+    if ( ( p -> specialization() == WARRIOR_FURY || p -> specialization() == WARRIOR_ARMS ) &&
+           p -> talents.bloodbath -> ok() )
+      cd_duration /= 1 + player -> cache.readiness();
+
+    warrior_spell_t::update_ready( cd_duration );
   }
 };
 
@@ -2841,6 +2920,16 @@ struct recklessness_t : public warrior_spell_t
     warrior_t* p = cast();
 
     p -> buff.recklessness -> trigger( 1, bonus_crit );
+  }
+
+  virtual void update_ready( timespan_t cd_duration )
+  {
+    warrior_t* p = cast();
+
+    if ( ( p -> specialization() == WARRIOR_FURY || p -> specialization() == WARRIOR_ARMS ) )
+      cd_duration /= 1 + player -> cache.readiness();
+
+    warrior_spell_t::update_ready( cd_duration );
   }
 };
 
@@ -3038,6 +3127,16 @@ struct shield_wall_t : public warrior_spell_t
 
     p -> buff.shield_wall -> trigger( 1, value );
   }
+
+  virtual void update_ready( timespan_t cd_duration )
+  {
+    warrior_t* p = cast();
+
+    if ( p -> specialization() == WARRIOR_PROTECTION )
+      cd_duration /= 1 + player -> cache.readiness();
+
+    warrior_spell_t::update_ready( cd_duration );
+  }
 };
 
 // Stampeding Roar =========================================================
@@ -3208,6 +3307,16 @@ struct last_stand_t : public warrior_spell_t
     warrior_t* p = cast();
 
     p -> buff.last_stand -> trigger();
+  }
+
+  virtual void update_ready( timespan_t cd_duration )
+  {
+    warrior_t* p = cast();
+
+    if ( p -> specialization() == WARRIOR_PROTECTION )
+      cd_duration /= 1 + player -> cache.readiness();
+
+    warrior_spell_t::update_ready( cd_duration );
   }
 };
 

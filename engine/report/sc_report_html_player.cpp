@@ -1155,6 +1155,30 @@ void print_html_stats ( report::sc_html_stream& os, player_t* a )
     j++;
     os.printf(
       "\t\t\t\t\t\t\t\t\t<tr%s>\n"
+      "\t\t\t\t\t\t\t\t\t\t<th class=\"left\">Multistrike</th>\n"
+      "\t\t\t\t\t\t\t\t\t\t<td class=\"right\">%.2f%%</td>\n"
+      "\t\t\t\t\t\t\t\t\t\t<td class=\"right\">%.2f%%</td>\n"
+      "\t\t\t\t\t\t\t\t\t\t<td class=\"right\">%.0f</td>\n"
+      "\t\t\t\t\t\t\t\t\t</tr>\n",
+      ( j % 2 == 1 ) ? " class=\"odd\"" : "",
+      100 * buffed_stats.multistrike,
+      100 * a -> composite_multistrike(),
+      a -> initial.stats.multistrike_rating );
+    j++;
+    os.printf(
+      "\t\t\t\t\t\t\t\t\t<tr%s>\n"
+      "\t\t\t\t\t\t\t\t\t\t<th class=\"left\">Readiness</th>\n"
+      "\t\t\t\t\t\t\t\t\t\t<td class=\"right\">%.2f%%</td>\n"
+      "\t\t\t\t\t\t\t\t\t\t<td class=\"right\">%.2f%%</td>\n"
+      "\t\t\t\t\t\t\t\t\t\t<td class=\"right\">%.0f</td>\n"
+      "\t\t\t\t\t\t\t\t\t</tr>\n",
+      ( j % 2 == 1 ) ? " class=\"odd\"" : "",
+      100 * buffed_stats.readiness,
+      100 * a -> composite_readiness(),
+      a -> initial.stats.readiness_rating );
+    j++;
+    os.printf(
+      "\t\t\t\t\t\t\t\t\t<tr%s>\n"
       "\t\t\t\t\t\t\t\t\t\t<th class=\"left\">ManaReg per Second</th>\n"
       "\t\t\t\t\t\t\t\t\t\t<td class=\"right\">%.0f</td>\n"
       "\t\t\t\t\t\t\t\t\t\t<td class=\"right\">%.0f</td>\n"
