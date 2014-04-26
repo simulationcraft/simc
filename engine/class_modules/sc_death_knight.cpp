@@ -155,6 +155,7 @@ public:
   {
     buff_t* antimagic_shell;
     buff_t* army_of_the_dead;
+    buff_t* bladed_armor;
     buff_t* blood_charge;
     buff_t* blood_presence;
     buff_t* bone_wall;
@@ -407,6 +408,7 @@ public:
   virtual void      init_procs();
   virtual void      init_resources( bool force );
   virtual double    composite_armor_multiplier() const;
+  virtual double    composite_melee_attack_power() const;
   virtual double    composite_melee_speed() const;
   virtual double    composite_melee_haste() const;
   virtual double    composite_spell_haste() const;
@@ -5915,6 +5917,8 @@ void death_knight_t::create_buffs()
 
   buffs.antimagic_shell     = buff_creator_t( this, "antimagic_shell", find_class_spell( "Anti-Magic Shell" ) )
                               .cd( timespan_t::zero() );
+  buffs.bladed_armor           = buff_creator_t( this, "bladed_armor", find_specialization_spell( "Bladed Armor" ) )
+                                 .add_invalidate( CACHE_ATTACK_POWER );
   buffs.blood_charge        = buff_creator_t( this, "blood_charge", find_spell( 114851 ) )
                               .chance( find_talent_spell( "Blood Tap" ) -> ok() );
   buffs.blood_presence      = buff_creator_t( this, "blood_presence", find_class_spell( "Blood Presence" ) )
@@ -6076,6 +6080,9 @@ void death_knight_t::combat_begin()
 
   if ( specialization() == DEATH_KNIGHT_BLOOD )
     vengeance_start();
+
+  if ( find_specialization_spell( "Bladed Armor" ) )
+    buffs.bladed_armor -> trigger();
 }
 
 // death_knight_t::assess_heal ==============================================
@@ -6286,6 +6293,17 @@ double death_knight_t::composite_player_multiplier( school_e school ) const
     m *= 1.0 + cache.mastery_value();
 
   return m;
+}
+
+// death_knight_t::composite_melee_attack_power ==================================
+
+double death_knight_t::composite_melee_attack_power() const
+{
+  double ap = player_t::composite_melee_attack_power();
+
+  ap += buffs.bladed_armor -> data().effectN( 1 ).percent() * current.stats.get_stat( STAT_BONUS_ARMOR );
+
+  return ap;
 }
 
 // death_knight_t::composite_attack_speed() =================================

@@ -90,6 +90,7 @@ public:
     buffs::avenging_wrath_buff_t* avenging_wrath;
     buff_t* bastion_of_glory;
     buff_t* bastion_of_power; // t16_4pc_tank
+    buff_t* bladed_armor;
     buff_t* blessed_life;
     buff_t* daybreak;
     buff_t* divine_crusader; // t16_4pc_melee
@@ -331,6 +332,7 @@ public:
   virtual expr_t*   create_expression( action_t*, const std::string& name );
   virtual double    composite_attribute_multiplier( attribute_e attr ) const;
   virtual double    composite_attack_power_multiplier() const;
+  virtual double    composite_melee_attack_power() const;
   virtual double    composite_melee_crit() const;
   virtual double    composite_melee_expertise( weapon_t* weapon ) const;
   virtual double    composite_melee_haste() const;
@@ -4390,6 +4392,8 @@ void paladin_t::create_buffs()
                                  .cd( timespan_t::zero() );
   buffs.bastion_of_glory       = buff_creator_t( this, "bastion_of_glory", find_spell( 114637 ) );
   buffs.bastion_of_power       = buff_creator_t( this, "bastion_of_power", find_spell( 144569 ) );
+  buffs.bladed_armor           = buff_creator_t( this, "bladed_armor", find_specialization_spell( "Bladed Armor" ) )
+                                 .add_invalidate( CACHE_ATTACK_POWER );
   buffs.blessed_life           = buff_creator_t( this, "glyph_blessed_life", glyphs.blessed_life )
                                  .cd( timespan_t::from_seconds( glyphs.blessed_life -> effectN( 2 ).base_value() ) );
   buffs.double_jeopardy        = buff_creator_t( this, "glyph_double_jeopardy", glyphs.double_jeopardy )
@@ -5182,6 +5186,17 @@ double paladin_t::composite_spell_power( school_e school ) const
   return sp;
 }
 
+// paladin_t::composite_melee_attack_power ==================================
+
+double paladin_t::composite_melee_attack_power() const
+{
+  double ap = player_t::composite_melee_attack_power();
+
+  ap += buffs.bladed_armor -> data().effectN( 1 ).percent() * current.stats.get_stat( STAT_BONUS_ARMOR );
+
+  return ap;
+}
+
 // paladin_t::composite_attack_power_multiplier =============================
 
 double paladin_t::composite_attack_power_multiplier() const
@@ -5514,6 +5529,9 @@ void paladin_t::combat_begin()
 
   if ( passives.vengeance -> ok() )
     vengeance_start();
+
+  if ( find_specialization_spell( "Bladed Armor" ) )
+    buffs.bladed_armor -> trigger();
 }
 
 // paladin_t::holy_power_stacks =============================================

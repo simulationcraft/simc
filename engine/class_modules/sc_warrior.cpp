@@ -67,6 +67,7 @@ public:
     buff_t* avatar;
     buff_t* battle_stance;
     buff_t* berserker_rage;
+    buff_t* bladed_armor;
     buff_t* bloodbath;
     buff_t* blood_craze;
     buff_t* bloodsurge;
@@ -360,6 +361,7 @@ public:
   virtual double    composite_block() const;
   virtual double    composite_parry() const;
   virtual double    composite_attack_power_multiplier() const;
+  virtual double    composite_melee_attack_power() const;
   virtual double    composite_melee_expertise( weapon_t* ) const;
   virtual double    composite_crit_block() const;
   virtual double    composite_crit_avoidance() const;
@@ -4115,6 +4117,9 @@ void warrior_t::create_buffs()
   buff.berserker_rage   = buff_creator_t( this, "berserker_rage",   find_class_spell( "Berserker Rage" ) )
                           .cd( timespan_t::zero() );
 
+  buff.bladed_armor     = buff_creator_t( this, "bladed_armor", find_specialization_spell( "Bladed Armor" ) )
+                          .add_invalidate( CACHE_ATTACK_POWER );
+
   buff.bloodbath        = buff_creator_t( this, "bloodbath",        talents.bloodbath )
                           .cd( timespan_t::zero() );
 
@@ -4349,6 +4354,9 @@ void warrior_t::combat_begin()
 
   //if ( specialization() == WARRIOR_PROTECTION && active_stance == STANCE_DEFENSE )
     //vengeance_start(); 
+  
+  if ( find_specialization_spell( "Bladed Armor" ) )
+    buff.bladed_armor -> trigger();
     
 }
 
@@ -4416,6 +4424,17 @@ double warrior_t::composite_block() const
     b += buff.shield_block -> data().effectN( 1 ).percent();
 
   return b;
+}
+
+// warrior_t::composite_melee_attack_power ==================================
+
+double warrior_t::composite_melee_attack_power() const
+{
+  double ap = player_t::composite_melee_attack_power();
+
+  ap += buff.bladed_armor -> data().effectN( 1 ).percent() * current.stats.get_stat( STAT_BONUS_ARMOR );
+
+  return ap;
 }
 
 //warrior_t::composite_melee_expertise =======================================

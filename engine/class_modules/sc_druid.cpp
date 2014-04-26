@@ -184,6 +184,7 @@ public:
     buff_t* feral_rage;
 
     // Guardian
+    buff_t* bladed_armor;
     buff_t* lacerate;
     buff_t* might_of_ursoc;
     buff_t* savage_defense;
@@ -482,6 +483,7 @@ public:
   virtual void      regen( timespan_t periodicity );
   virtual timespan_t available() const;
   virtual double    composite_armor_multiplier() const;
+  virtual double    composite_melee_attack_power() const;
   virtual double    composite_melee_crit() const;
   virtual double    composite_melee_hit() const;
   virtual double    composite_melee_expertise( weapon_t* ) const;
@@ -5818,6 +5820,8 @@ void druid_t::create_buffs()
   buff.feral_rage            = buff_creator_t( this, "feral_rage", find_spell( 146874 ) ); // tier16_4pc_melee
 
   // Guardian
+  buff.bladed_armor           = buff_creator_t( this, "bladed_armor", find_specialization_spell( "Bladed Armor" ) )
+                                .add_invalidate( CACHE_ATTACK_POWER );
   buff.barkskin              = new barkskin_t( *this );
   buff.lacerate              = buff_creator_t( this, "lacerate" , find_class_spell( "Lacerate" ) );
   buff.might_of_ursoc        = new might_of_ursoc_t( this, 106922, "might_of_ursoc" );
@@ -6323,6 +6327,10 @@ void druid_t::combat_begin()
   // If Savagery is talented, apply Savage Roar entering combat
   if ( talent.savagery -> ok() )
     buff.savage_roar -> trigger();
+  
+  // Apply Bladed Armor buff 
+  if ( find_specialization_spell( "Bladed Armor" ) )
+    buff.bladed_armor -> trigger();
 }
 
 // druid_t::invalidate_cache ================================================
@@ -6451,6 +6459,17 @@ double druid_t::composite_player_heal_multiplier( school_e school ) const
   m *= 1.0 + buff.heart_of_the_wild -> heal_multiplier();
 
   return m;
+}
+
+// druid_t::composite_melee_attack_power ==================================
+
+double druid_t::composite_melee_attack_power() const
+{
+  double ap = player_t::composite_melee_attack_power();
+
+  ap += buff.bladed_armor -> data().effectN( 1 ).percent() * current.stats.get_stat( STAT_BONUS_ARMOR );
+
+  return ap;
 }
 
 // druid_t::composite_melee_crit ============================================

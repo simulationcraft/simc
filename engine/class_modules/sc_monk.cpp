@@ -92,6 +92,7 @@ public:
 
   struct buffs_t
   {
+    buff_t* bladed_armor;
     buff_t* channeling_soothing_mist;
     buff_t* chi_sphere;
     buff_t* combo_breaker_tp;
@@ -3481,6 +3482,8 @@ void monk_t::create_buffs()
   buff.chi_serenity      = buff_creator_t( this, "chi_serenity", talent.chi_serenity );
 
   // Brewmaster
+  buff.bladed_armor           = buff_creator_t( this, "bladed_armor", find_specialization_spell( "Bladed Armor" ) )
+                                .add_invalidate( CACHE_ATTACK_POWER );
   buff.elusive_brew_stacks    = buff_creator_t( this, "elusive_brew_stacks"    ).spell( find_spell( 128939 ) );
   buff.elusive_brew_activated = buff_creator_t( this, "elusive_brew_activated" ).spell( spec.elusive_brew )
                                 .add_invalidate( CACHE_DODGE )
@@ -3842,7 +3845,12 @@ double monk_t::composite_melee_attack_power() const
   if ( current_stance() == SPIRITED_CRANE)
     return composite_spell_power( SCHOOL_MAX ) * static_stance_data( SPIRITED_CRANE ).effectN( 3 ).percent();
 
-  return base_t::composite_melee_attack_power();
+  
+  double ap = player_t::composite_melee_attack_power();
+
+  ap += buff.bladed_armor -> data().effectN( 1 ).percent() * current.stats.get_stat( STAT_BONUS_ARMOR );
+
+  return ap;
 }
 
 // monk_t::composite_tank_parry
@@ -4040,6 +4048,9 @@ void monk_t::combat_begin()
     timespan_t d = player_t::rng().real() * timespan_t::from_seconds( 20.0 );
     new ( *sim ) power_strikes_event_t( *this, d );
   }
+
+  if ( find_specialization_spell( "Bladed Armor" ) )
+    buff.bladed_armor -> trigger();
 }
 
 void monk_t::target_mitigation( school_e school,
