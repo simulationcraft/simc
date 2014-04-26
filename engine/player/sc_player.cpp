@@ -3114,6 +3114,9 @@ void player_t::invalidate_cache( cache_e c )
     case CACHE_SPELL_HASTE:
       invalidate_cache( CACHE_SPELL_SPEED );
       break;
+    case CACHE_BONUS_ARMOR:
+      if ( primary_role() == ROLE_TANK )
+        invalidate_cache( CACHE_ATTACK_POWER );
     default: break;
   }
 

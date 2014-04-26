@@ -58,7 +58,7 @@ void gear_stats_t::add_stat( stat_e stat,
     case STAT_WEAPON_OFFHAND_SPEED:  weapon_offhand_speed  += value; break;
 
     case STAT_ARMOR:             armor          += value; break;
-    case STAT_BONUS_ARMOR:       bonus_armor    = value; break;
+    case STAT_BONUS_ARMOR:       bonus_armor    += value; break;
     case STAT_DODGE_RATING:      dodge_rating   += value; break;
     case STAT_PARRY_RATING:      parry_rating   += value; break;
 
