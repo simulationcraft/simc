@@ -352,7 +352,131 @@ buff_t* special_effect_t::create_buff() const
 
 action_t* special_effect_t::create_action() const
 {
-  return execute_action;
+  switch ( action_type() )
+  {
+  case SPECIAL_EFFECT_ACTION_CUSTOM:
+    return execute_action;
+  case SPECIAL_EFFECT_ACTION_SPELL:
+    return initialize_offensive_spell_action();
+  case SPECIAL_EFFECT_ACTION_HEAL:
+    return initialize_heal_action();
+  case SPECIAL_EFFECT_ACTION_ATTACK:
+    return initialize_attack_action();
+  default:
+    return nullptr;
+  }
+}
+
+special_effect_action_e special_effect_t::action_type() const
+{
+  if ( type == SPECIAL_EFFECT_CUSTOM )
+    return SPECIAL_EFFECT_ACTION_CUSTOM;
+  else if ( execute_action != 0 )
+    return SPECIAL_EFFECT_ACTION_CUSTOM;
+  else if ( is_offensive_spell_action() )
+    return SPECIAL_EFFECT_ACTION_SPELL;
+  else if ( is_heal_action() )
+    return SPECIAL_EFFECT_ACTION_HEAL;
+  else if ( is_attack_action() )
+    return SPECIAL_EFFECT_ACTION_ATTACK;
+
+  return SPECIAL_EFFECT_ACTION_NONE;
+}
+
+bool special_effect_t::is_offensive_spell_action() const
+{
+  for ( size_t i = 1, end = trigger() -> effect_count(); i <= end; i++ )
+  {
+    const spelleffect_data_t& effect = trigger() -> effectN( i );
+    if ( effect.id() == 0 )
+      continue;
+
+    if ( effect.type() == E_SCHOOL_DAMAGE || effect.type() == E_HEALTH_LEECH )
+      return true;
+
+    if ( effect.type() == E_APPLY_AURA )
+    {
+      if ( effect.subtype() == A_PERIODIC_DAMAGE || effect.subtype() == A_PERIODIC_LEECH )
+        return true;
+    }
+  }
+
+  return false;
+}
+
+spell_t* special_effect_t::initialize_offensive_spell_action() const
+{
+  const spell_data_t* s = spell_data_t::nil();
+
+  // Setup the spell data
+  if ( trigger() -> id() > 0 )
+    s = trigger();
+  else if ( driver() -> id() > 0 )
+    s = driver();
+
+  return new spell_t( name(), player, s );
+}
+
+bool special_effect_t::is_heal_action() const
+{
+  for ( size_t i = 1, end = trigger() -> effect_count(); i <= end; i++ )
+  {
+    const spelleffect_data_t& effect = trigger() -> effectN( i );
+    if ( effect.id() == 0 )
+      continue;
+
+    if ( effect.type() == E_HEAL )
+      return true;
+
+    if ( effect.type() == E_APPLY_AURA )
+    {
+      if ( effect.subtype() == A_PERIODIC_HEAL )
+        return true;
+    }
+  }
+
+  return false;
+}
+
+heal_t* special_effect_t::initialize_heal_action() const
+{
+  const spell_data_t* s = spell_data_t::nil();
+
+  // Setup the spell data
+  if ( trigger() -> id() > 0 )
+    s = trigger();
+  else if ( driver() -> id() > 0 )
+    s = driver();
+
+  return new heal_t( name(), player, s );
+}
+
+bool special_effect_t::is_attack_action() const
+{
+  for ( size_t i = 1, end = trigger() -> effect_count(); i <= end; i++ )
+  {
+    const spelleffect_data_t& effect = trigger() -> effectN( i );
+    if ( effect.id() == 0 )
+      continue;
+
+    if ( effect.type() == E_WEAPON_DAMAGE || effect.type() == E_WEAPON_PERCENT_DAMAGE )
+      return true;
+  }
+
+  return false;
+}
+
+attack_t* special_effect_t::initialize_attack_action() const
+{
+  const spell_data_t* s = spell_data_t::nil();
+
+  // Setup the spell data
+  if ( trigger() -> id() > 0 )
+    s = trigger();
+  else if ( driver() -> id() > 0 )
+    s = driver();
+
+  return new attack_t( name(), player, s );
 }
 
 // special_effect_t::proc_flags =============================================

@@ -127,6 +127,7 @@ struct core_sim_t;
 class  expr_t;
 struct gain_t;
 struct haste_buff_t;
+struct heal_t;
 struct item_t;
 struct module_t;
 class option_t;
@@ -140,6 +141,7 @@ struct sim_t;
 struct spell_data_t;
 struct spell_id_t;
 struct spelleffect_data_t;
+struct spell_t;
 struct stats_t;
 struct stat_buff_t;
 struct stat_pair_t;
@@ -420,6 +422,15 @@ enum special_effect_buff_e
   SPECIAL_EFFECT_BUFF_CUSTOM,
   SPECIAL_EFFECT_BUFF_STAT,
   SPECIAL_EFFECT_BUFF_ABSORB
+};
+
+enum special_effect_action_e
+{
+  SPECIAL_EFFECT_ACTION_NONE = -1,
+  SPECIAL_EFFECT_ACTION_CUSTOM,
+  SPECIAL_EFFECT_ACTION_SPELL,
+  SPECIAL_EFFECT_ACTION_HEAL,
+  SPECIAL_EFFECT_ACTION_ATTACK,
 };
 
 enum action_e { ACTION_USE = 0, ACTION_SPELL, ACTION_ATTACK, ACTION_HEAL, ACTION_ABSORB, ACTION_SEQUENCE, ACTION_OTHER, ACTION_MAX };
@@ -3126,13 +3137,21 @@ struct special_effect_t
   buff_t* create_buff() const;
   special_effect_buff_e buff_type() const;
 
-  action_t* create_action() const;
-
   bool is_stat_buff() const;
   stat_buff_t* initialize_stat_buff() const;
 
   bool is_absorb_buff() const;
   absorb_buff_t* initialize_absorb_buff() const;
+
+  // Action related functionality
+  action_t* create_action() const;
+  special_effect_action_e action_type() const;
+  bool is_offensive_spell_action() const;
+  spell_t* initialize_offensive_spell_action() const;
+  bool is_heal_action() const;
+  heal_t* initialize_heal_action() const;
+  bool is_attack_action() const;
+  attack_t* initialize_attack_action() const;
 
   /* Accessors for driver specific features of the proc; some are also used for on-use effects */
   unsigned proc_flags() const;
