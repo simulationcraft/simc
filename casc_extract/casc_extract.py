@@ -48,7 +48,7 @@ if __name__ == '__main__':
 		blte = casc.BLTEExtract(opts)
 	
 		for file_hash, file_name in fname_db.iteritems():
-			extract_data = []
+			extract_data = None
 			
 			file_md5s = root.GetFileHashMD5(file_hash)
 			file_keys = []
@@ -57,20 +57,17 @@ if __name__ == '__main__':
 
 				file_locations = []
 				for file_key in file_keys:
-					file_locations = index.GetIndexData(file_key)
-					if len(file_locations) > 0:
-						loc = file_locations[0]
-						extract_data.append((file_key, md5s, file_name, loc[0], loc[1], loc[2]))
+					file_location = index.GetIndexData(file_key)
+					if file_location[0] > -1:
+						extract_data = (file_key, md5s, file_name) + file_location
+						break
 			
-			if len(extract_data) == 0:
+			if not extract_data:
 				continue
-			
-			if len(extract_data) > 1:
-				parser.error('File %s has multiple extraction locations' % file_name)
 			
 			print 'Extracting %s ...' % file_name
 		
-			if not blte.extract_file(*extract_data[0]):
+			if not blte.extract_file(*extract_data):
 				sys.exit(1)
 		
 	elif opts.mode == 'unpack':
@@ -107,13 +104,10 @@ if __name__ == '__main__':
 			parser.error('Found multiple file keys with %s' % args[0])
 
 		file_location = index.GetIndexData(keys[0])
-		if len(file_location) == 0:
+		if file_location[0] == -1:
 			parser.error('No file location found for %s' % args[0])
-		
-		if len(file_location) > 1:
-			parser.error('casc_extract cannot extract files (%s) with multiple locations (%d)' % (args[0]	, len(file_location)))
 		
 		blte = casc.BLTEExtract(opts)
 		
-		if not blte.extract_file(keys[0], md5s and md5s.decode('hex') or None, opts.output, *file_location[0]):
+		if not blte.extract_file(keys[0], md5s and md5s.decode('hex') or None, opts.output, *file_location):
 			sys.exit(1)

@@ -94,7 +94,8 @@ class BuildCfg(object):
 		conf_str_fp = StringIO.StringIO(conf_str)
 		self.cfg.readfp(conf_str_fp)
 		
-		self.open = True
+		print 'Wow build: %s' % self.cfg.get('base', 'build-name')
+		
 		return True
 	
 	def root_file(self):

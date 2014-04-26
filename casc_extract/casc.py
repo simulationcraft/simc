@@ -320,12 +320,13 @@ class CASCDataIndex(object):
 	
 	def AddIndex(self, key, data_file, data_offset, file_size, indexname):
 		if key not in self.idx_data:
-			self.idx_data[key] = []
-		
-		self.idx_data[key].append((data_file, data_offset, file_size))
+			self.idx_data[key] = (data_file, data_offset, file_size)
+		else:
+			print >>sys.stderr, 'Duplicate key %s in index %s old=%s, new=%s' % (
+				key.encode('hex'), indexname, self.idx_data[key], (data_file, data_offset, file_size))
 	
 	def GetIndexData(self, key):
-		return self.idx_data.get(key[:9], [])
+		return self.idx_data.get(key[:9], (-1, 0, 0))
 	
 	def open(self):
 		data_dir = os.path.join(self.options.data_dir, 'Data', 'data')
