@@ -1244,7 +1244,7 @@ stat_buff_t::stat_buff_t( const stat_buff_creator_t& params ) :
       else if ( effect.subtype() == A_MOD_DAMAGE_DONE && effect.misc_value1() == 126 )
         s = STAT_SPELL_POWER;
       else if ( effect.subtype() == A_MOD_RESISTANCE )
-        s = STAT_ARMOR;
+        s = STAT_BONUS_ARMOR;
       else if ( ! has_ap && ( effect.subtype() == A_MOD_ATTACK_POWER || effect.subtype() == A_MOD_RANGED_ATTACK_POWER ) )
       {
         s = STAT_ATTACK_POWER;

@@ -661,7 +661,7 @@ enum stat_e
   STAT_HIT_RATING, STAT_HIT_RATING2, STAT_CRIT_RATING, STAT_HASTE_RATING, STAT_MASTERY_RATING,
   STAT_WEAPON_DPS, STAT_WEAPON_SPEED,
   STAT_WEAPON_OFFHAND_DPS, STAT_WEAPON_OFFHAND_SPEED,
-  STAT_ARMOR, STAT_RESILIENCE_RATING, STAT_DODGE_RATING, STAT_PARRY_RATING,
+  STAT_ARMOR, STAT_BONUS_ARMOR, STAT_RESILIENCE_RATING, STAT_DODGE_RATING, STAT_PARRY_RATING,
   STAT_BLOCK_RATING, STAT_PVP_POWER,
   STAT_MULTISTRIKE_RATING, STAT_READINESS_RATING,
   STAT_ALL,
@@ -693,7 +693,7 @@ enum cache_e
   CACHE_HASTE, CACHE_ATTACK_HASTE, CACHE_SPELL_HASTE,
   CACHE_SPEED, CACHE_ATTACK_SPEED, CACHE_SPELL_SPEED,
   CACHE_MASTERY,
-  CACHE_DODGE, CACHE_PARRY, CACHE_BLOCK, CACHE_CRIT_BLOCK, CACHE_ARMOR,
+  CACHE_DODGE, CACHE_PARRY, CACHE_BLOCK, CACHE_CRIT_BLOCK, CACHE_ARMOR, CACHE_BONUS_ARMOR,
   CACHE_CRIT_AVOIDANCE, CACHE_MISS,
   CACHE_MULTISTRIKE, CACHE_READINESS,
   CACHE_PLAYER_DAMAGE_MULTIPLIER,
@@ -727,6 +727,7 @@ inline cache_e cache_from_stat( stat_e st )
     case STAT_PARRY_RATING: return CACHE_PARRY;
     case STAT_BLOCK_RATING: return CACHE_BLOCK;
     case STAT_ARMOR: return CACHE_ARMOR;
+    case STAT_BONUS_ARMOR: return CACHE_BONUS_ARMOR;
     case STAT_MULTISTRIKE_RATING: return CACHE_MULTISTRIKE;
     case STAT_READINESS_RATING: return CACHE_READINESS;
     default: break;
@@ -1409,6 +1410,7 @@ struct gear_stats_t
   double weapon_offhand_dps;
   double weapon_offhand_speed;
   double armor;
+  double bonus_armor;
   double dodge_rating;
   double parry_rating;
   double block_rating;
@@ -1422,7 +1424,7 @@ struct gear_stats_t
     attribute(), resource(),
     spell_power( 0.0 ), attack_power( 0.0 ), expertise_rating( 0.0 ), expertise_rating2( 0.0 ),
     hit_rating( 0.0 ), hit_rating2( 0.0 ), crit_rating( 0.0 ), haste_rating( 0.0 ), weapon_dps( 0.0 ), weapon_speed( 0.0 ),
-    weapon_offhand_dps( 0.0 ), weapon_offhand_speed( 0.0 ), armor( 0.0 ), dodge_rating( 0.0 ),
+    weapon_offhand_dps( 0.0 ), weapon_offhand_speed( 0.0 ), armor( 0.0 ), bonus_armor( 0.0 ), dodge_rating( 0.0 ),
     parry_rating( 0.0 ), block_rating( 0.0 ), mastery_rating( 0.0 ), resilience_rating( 0.0 ), pvp_power( 0.0 ),
     multistrike_rating( 0.0 ), readiness_rating( 0.0 )
   { }
@@ -1449,6 +1451,7 @@ struct gear_stats_t
     weapon_offhand_dps += right.weapon_offhand_dps;
     weapon_offhand_speed += right.weapon_offhand_speed;
     armor += right.armor;
+    bonus_armor += right.bonus_armor;
     dodge_rating += right.dodge_rating;
     parry_rating += right.parry_rating;
     block_rating += right.block_rating;

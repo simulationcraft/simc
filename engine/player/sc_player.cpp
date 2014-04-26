@@ -1979,6 +1979,7 @@ void player_t::init_scaling()
     scales_with[ STAT_WEAPON_OFFHAND_SPEED ] = false;
 
     scales_with[ STAT_ARMOR          ] = tank;
+    scales_with[ STAT_BONUS_ARMOR    ] = tank;
 
     scales_with[ STAT_BLOCK_RATING ] = tank;
 
@@ -2069,6 +2070,8 @@ void player_t::init_scaling()
           break;
 
         case STAT_ARMOR:          initial.stats.armor       += v; break;
+
+        case STAT_BONUS_ARMOR:    initial.stats.bonus_armor += v; break;
 
         case STAT_BLOCK_RATING:   initial.stats.block_rating       += v; break;
 
@@ -2352,7 +2355,7 @@ void player_t::create_buffs()
                                 .add_stat( STAT_INTELLECT, 1200.0 );
       potion_buffs.earthen    = potion_buff_creator( this, "earthen_potion" )
                                 .duration( timespan_t::from_seconds( 25.0 ) )
-                                .add_stat( STAT_ARMOR, 4800.0 );
+                                .add_stat( STAT_BONUS_ARMOR, 4800.0 );
       potion_buffs.golemblood = potion_buff_creator( this, "golemblood_potion" )
                                 .duration( timespan_t::from_seconds( 25.0 ) )
                                 .add_stat( STAT_STRENGTH, 1200.0 );
@@ -2566,6 +2569,11 @@ double player_t::composite_armor() const
   double a = current.stats.armor;
 
   a *= composite_armor_multiplier();
+
+  // Traditionally, armor multipliers have only applied to base armor from gear
+  // and not bonus armor. I'm assuming this will continue in WoD - need to test
+  // in beta to be sure - Theck, 4/26/2014
+  a += current.stats.bonus_armor;
 
   return a;
 }
@@ -4278,6 +4286,7 @@ void player_t::stat_gain( stat_e    stat,
     case STAT_HIT_RATING:
     case STAT_CRIT_RATING:
     case STAT_ARMOR:
+    case STAT_BONUS_ARMOR:
     case STAT_DODGE_RATING:
     case STAT_PARRY_RATING:
     case STAT_BLOCK_RATING:
@@ -4399,6 +4408,7 @@ void player_t::stat_loss( stat_e    stat,
     case STAT_HIT_RATING:
     case STAT_CRIT_RATING:
     case STAT_ARMOR:
+    case STAT_BONUS_ARMOR:
     case STAT_DODGE_RATING:
     case STAT_PARRY_RATING:
     case STAT_BLOCK_RATING:
@@ -7381,6 +7391,7 @@ expr_t* player_t::create_expression( action_t* a,
       case STAT_CRIT_RATING:      return make_ref_expr( name_str, temporary.crit_rating );
       case STAT_HASTE_RATING:     return make_ref_expr( name_str, temporary.haste_rating );
       case STAT_ARMOR:            return make_ref_expr( name_str, temporary.armor );
+      case STAT_BONUS_ARMOR:      return make_ref_expr( name_str, temporary.bonus_armor );
       case STAT_DODGE_RATING:     return make_ref_expr( name_str, temporary.dodge_rating );
       case STAT_PARRY_RATING:     return make_ref_expr( name_str, temporary.parry_rating );
       case STAT_BLOCK_RATING:     return make_ref_expr( name_str, temporary.block_rating );
@@ -7446,6 +7457,7 @@ expr_t* player_t::create_expression( action_t* a,
       case STAT_CRIT_RATING:      return make_mem_fn_expr( name_str, *this, &player_t::composite_melee_crit_rating );
       case STAT_HASTE_RATING:     return make_mem_fn_expr( name_str, *this, &player_t::composite_melee_haste_rating );
       case STAT_ARMOR:            return make_ref_expr( name_str, current.stats.armor );
+      case STAT_BONUS_ARMOR:      return make_ref_expr( name_str, current.stats.bonus_armor );
       case STAT_DODGE_RATING:     return make_mem_fn_expr( name_str, *this, &player_t::composite_dodge_rating );
       case STAT_PARRY_RATING:     return make_mem_fn_expr( name_str, *this, &player_t::composite_parry_rating );
       case STAT_BLOCK_RATING:     return make_mem_fn_expr( name_str, *this, &player_t::composite_block_rating );
@@ -9247,7 +9259,7 @@ double player_stat_cache_t::miss() const
 
 double player_stat_cache_t::armor() const
 {
-  if ( ! active || ! valid[ CACHE_ARMOR ] )
+  if ( ! active || ! valid[ CACHE_ARMOR ] || ! valid[ CACHE_BONUS_ARMOR ] )
   {
     valid[ CACHE_ARMOR ] = true;
     _armor = player -> composite_armor();

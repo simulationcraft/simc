@@ -1442,6 +1442,7 @@ const char* util::stat_type_string( stat_e stat )
     case STAT_WEAPON_OFFHAND_SPEED:  return "weapon_offhand_speed";
 
     case STAT_ARMOR:             return "armor";
+    case STAT_BONUS_ARMOR:       return "bonus_armor";
     case STAT_RESILIENCE_RATING: return "resilience_rating";
     case STAT_DODGE_RATING:      return "dodge_rating";
     case STAT_PARRY_RATING:      return "parry_rating";
@@ -1503,6 +1504,7 @@ const char* util::stat_type_abbrev( stat_e stat )
     case STAT_WEAPON_OFFHAND_SPEED:  return "WOHspeed";
 
     case STAT_ARMOR:             return "Armor";
+    case STAT_BONUS_ARMOR:       return "BonusArmor";
     case STAT_RESILIENCE_RATING: return "Resil";
     case STAT_DODGE_RATING:      return "Dodge";
     case STAT_PARRY_RATING:      return "Parry";
@@ -1906,7 +1908,7 @@ stat_e util::translate_item_mod( int item_mod )
     case ITEM_MOD_RANGED_ATTACK_POWER: return STAT_ATTACK_POWER;
     case ITEM_MOD_SPELL_POWER:         return STAT_SPELL_POWER;
     case ITEM_MOD_MASTERY_RATING:      return STAT_MASTERY_RATING;
-    case ITEM_MOD_EXTRA_ARMOR:         return STAT_ARMOR;
+    case ITEM_MOD_EXTRA_ARMOR:         return STAT_BONUS_ARMOR;
     case ITEM_MOD_RESILIENCE_RATING:   return STAT_RESILIENCE_RATING;
     case ITEM_MOD_PVP_POWER:           return STAT_PVP_POWER;
     case ITEM_MOD_MULTISTRIKE_RATING:  return STAT_MULTISTRIKE_RATING;
@@ -1934,7 +1936,7 @@ int util::translate_stat( stat_e stat )
     case STAT_ATTACK_POWER:      return ITEM_MOD_ATTACK_POWER;
     case STAT_SPELL_POWER:       return ITEM_MOD_SPELL_POWER;
     case STAT_MASTERY_RATING:    return ITEM_MOD_MASTERY_RATING;
-    case STAT_ARMOR:             return ITEM_MOD_EXTRA_ARMOR;
+    case STAT_BONUS_ARMOR:       return ITEM_MOD_EXTRA_ARMOR;
     case STAT_RESILIENCE_RATING: return ITEM_MOD_RESILIENCE_RATING;
     case STAT_PVP_POWER:         return ITEM_MOD_PVP_POWER;
     case STAT_MULTISTRIKE_RATING:return ITEM_MOD_MULTISTRIKE_RATING;

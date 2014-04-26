@@ -202,6 +202,7 @@ void scaling_t::init_deltas()
 
   // Defensive
   if ( stats.armor == 0 ) stats.armor = default_delta;
+  if ( stats.bonus_armor == 0 ) stats.bonus_armor = default_delta;
   if ( stats.dodge_rating  == 0 ) stats.dodge_rating  = default_delta;
   if ( stats.parry_rating  == 0 ) stats.parry_rating  = default_delta;
   if ( stats.block_rating  == 0 ) stats.block_rating  = default_delta;

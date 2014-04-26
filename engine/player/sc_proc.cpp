@@ -94,7 +94,7 @@ stat_e stat_buff_type( const spelleffect_data_t& effect )
       stat = STAT_MAX_HEALTH;
       break;
     case A_MOD_RESISTANCE:
-      stat = STAT_ARMOR;
+      stat = STAT_BONUS_ARMOR;
       break;
     case A_MOD_ATTACK_POWER:
     case A_MOD_RANGED_ATTACK_POWER:

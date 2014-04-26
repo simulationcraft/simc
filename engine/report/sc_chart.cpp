@@ -344,6 +344,7 @@ std::string stat_color( stat_e type )
     case STAT_DODGE_RATING:             return class_color( MONK );
     case STAT_PARRY_RATING:             return color::teal;
     case STAT_ARMOR:                    return class_color( PRIEST );
+    case STAT_BONUS_ARMOR:              return class_color( PRIEST );
     default:                            return std::string();
   }
 }
@@ -2052,6 +2053,7 @@ std::string chart::gear_weights_lootrank( player_t* p )
       case STAT_HASTE_RATING:             name = "mh";   break;
       case STAT_MASTERY_RATING:           name = "Mr";   break;
       case STAT_ARMOR:                    name = "Arm";  break;
+      case STAT_BONUS_ARMOR:              name = "bar";  break;
       case STAT_WEAPON_DPS:
         if ( HUNTER == p -> type ) name = "rdps"; else name = "dps";  break;
       case STAT_WEAPON_OFFHAND_DPS:       name = "odps"; break;
@@ -2224,6 +2226,7 @@ std::string chart::gear_weights_wowhead( player_t* p, bool hit_expertise )
       case STAT_PARRY_RATING:             id = 46;  break;
       case STAT_HASTE_RATING:             id = 103; break;
       case STAT_ARMOR:                    id = 41;  break;
+      case STAT_BONUS_ARMOR:              id = 109; break;
       case STAT_MASTERY_RATING:           id = 170; break;
       case STAT_WEAPON_DPS:
         if ( HUNTER == p -> type ) id = 138; else id = 32;  break;
@@ -2471,6 +2474,7 @@ std::string chart::gear_weights_pawn( player_t* p,
       case STAT_HASTE_RATING:             name = "HasteRating";      if ( value * 20 > maxY ) maxY = value * 20; break;
       case STAT_MASTERY_RATING:           name = "MasteryRating";    if ( value * 20 > maxY ) maxY = value * 20; break;
       case STAT_ARMOR:                    name = "Armor";            break;
+      case STAT_BONUS_ARMOR:              name = "BonusArmor";      break;
       case STAT_WEAPON_DPS:
         if ( HUNTER == p -> type ) name = "RangedDps"; else name = "MeleeDps";  break;
       default: break;

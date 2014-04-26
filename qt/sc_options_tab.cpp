@@ -74,6 +74,7 @@ const OptionEntry scalingOptions[] =
   { "Analyze Off-hand Weapon DPS",      "wohdps",   "Calculate scale factors for Off-hand Weapon DPS"      },
   { "Analyze Off-hand Weapon Speed",    "wohspeed", "Calculate scale factors for Off-hand Weapon Speed"    },
   { "Analyze Armor",                    "armor",    "Calculate scale factors for Armor"                    },
+  { "Analyze Bonus Armor",              "bonusarmor",   "Calculate scale factors for Bonus Armor"              },
   { "Analyze Latency",                  "",         "Calculate scale factors for Latency"                  },
   { NULL, NULL, NULL }
 };
@@ -94,6 +95,7 @@ const OptionEntry plotOptions[] =
   { "Plot Scaling per Readiness Rating", "CDRecov", "Generate Scaling curve for Readiness Rating" },
   { "Plot Scaling per Weapon DPS",       "wdps",    "Generate Scaling curve for Weapon DPS"       },
   { "Plot Scaling per Armor",            "armor",   "Generate Scaling curve for Armor"            },
+  { "Plot Scaling per Bonus Armor",      "bonusarmor",  "Generate Scaling curve for Bonus Armor"      },
   { NULL, NULL, NULL }
 };
 
