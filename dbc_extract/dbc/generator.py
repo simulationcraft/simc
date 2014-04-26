@@ -1923,6 +1923,22 @@ class SpellDataGenerator(DataGenerator):
         
 
         # Get spells relating to item enchants, so we can populate a (nice?) list
+        for enchant_id, enchant_data in self._spellitemenchantment_db.iteritems():
+            for i in xrange(1, 4):
+                type_field_str = 'type_%d' % i
+                id_field_str = 'id_property_%d' % i
+
+                # "combat spell", "equip spell", "use spell"
+                if getattr(enchant_data, type_field_str) not in [ 1, 3, 7 ]:
+                    continue
+                
+                spell_id = getattr(enchant_data, id_field_str)
+                if not spell_id:
+                    continue
+                
+                self.process_spell(spell_id, ids, 0, 0)
+
+        # Get spells that create item enchants
         for ability_id, ability_data in self._skilllineability_db.iteritems():
             if ability_data.id_skill not in self._profession_enchant_categories:
                 continue;
@@ -2002,7 +2018,7 @@ class SpellDataGenerator(DataGenerator):
                         if not effect or effect.type != 53:
                             continue
                         
-                        self.process_spell(enchant_spell_id, ids, 0, 0)
+                        self.process_spell(spell_id, ids, 0, 0)
             # Grab relevant spells from consumables as well
             elif classdata.classs == 0:
                 for item_effect in data.spells:
