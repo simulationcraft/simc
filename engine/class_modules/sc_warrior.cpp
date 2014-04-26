@@ -1177,7 +1177,7 @@ struct bladestorm_t : public warrior_attack_t
 
     if ( ( p -> specialization() == WARRIOR_FURY || p -> specialization() == WARRIOR_ARMS ) &&
            p -> talents.bladestorm -> ok() )
-      cd_duration = cooldown -> duration * ( 1 - player -> cache.readiness() );
+      cd_duration = cooldown -> duration / ( 1 + player -> cache.readiness() );
 
     warrior_attack_t::update_ready( cd_duration );
   }
@@ -1381,6 +1381,15 @@ struct colossus_smash_t : public warrior_attack_t
                           p -> gain.colossus_smash );
     }
   }
+
+  /*virtual void update_ready( timespan_t cd_duration )
+  {
+    warrior_t* p = cast();
+
+    cd_duration = cooldown -> duration / ( 1 + player -> cache.readiness() );
+
+    warrior_attack_t::update_ready( cd_duration );
+  }*/
 };
 
 // Demoralizing Shout =======================================================
@@ -1411,7 +1420,7 @@ struct demoralizing_shout : public warrior_attack_t
     warrior_t* p = cast();
 
     if ( p -> specialization() == WARRIOR_PROTECTION )
-      cd_duration = cooldown -> duration * ( 1 - player -> cache.readiness() );
+      cd_duration = cooldown -> duration / ( 1 + player -> cache.readiness() );
 
     warrior_attack_t::update_ready( cd_duration );
   }
@@ -1507,7 +1516,7 @@ struct dragon_roar_t : public warrior_attack_t
 
     if ( ( p -> specialization() == WARRIOR_FURY || p -> specialization() == WARRIOR_ARMS ) &&
            p -> talents.dragon_roar -> ok() )
-      cd_duration = cooldown -> duration * ( 1 - player -> cache.readiness() );
+      cd_duration = cooldown -> duration / ( 1 + player -> cache.readiness() );
 
     warrior_attack_t::update_ready( cd_duration );
   }
@@ -1724,7 +1733,7 @@ struct heroic_leap_t : public warrior_attack_t
   {
     warrior_t* p = cast();
 
-    cd_duration = cooldown -> duration * ( 1 - player -> cache.readiness() );
+    cd_duration = cooldown -> duration / ( 1 + player -> cache.readiness() );
 
     warrior_attack_t::update_ready( cd_duration );
   }
@@ -2078,7 +2087,7 @@ struct ravager_t : public warrior_attack_t
     base_tick_time = data().effectN( 3 ).period();
     num_ticks     = ( int ) ( data().duration().total_seconds() / base_tick_time.total_seconds() ); 
     hasted_ticks  = false;
-
+    dot_behavior  = DOT_REFRESH;
 
     const spell_data_t* dmg_spell = p -> dbc.spell( 156287 ); // Like all wonderful spells, the damage is in another castle.
     attack_power_mod.tick = dmg_spell -> effectN( 1 ).ap_coeff();
@@ -2325,7 +2334,7 @@ struct shockwave_t : public warrior_attack_t
 
     if ( ( p -> specialization() == WARRIOR_FURY || p -> specialization() == WARRIOR_ARMS ) &&
            p -> talents.shockwave -> ok() )
-      cd_duration = cooldown -> duration * ( 1 - player -> cache.readiness() );
+      cd_duration = cooldown -> duration / ( 1 + player -> cache.readiness() );
 
     if ( result_is_hit( execute_state -> result ) )
       if ( execute_state -> n_targets >= 3 )
@@ -2475,7 +2484,7 @@ struct storm_bolt_t : public warrior_attack_t
 
     if ( ( p -> specialization() == WARRIOR_FURY || p -> specialization() == WARRIOR_ARMS ) &&
            p -> talents.storm_bolt -> ok() )
-      cd_duration = cooldown -> duration * ( 1 - player -> cache.readiness() );
+      cd_duration = cooldown -> duration / ( 1 + player -> cache.readiness() );
 
     warrior_attack_t::update_ready( cd_duration );
   }
@@ -2742,7 +2751,7 @@ struct avatar_t : public warrior_spell_t
 
     if ( ( p -> specialization() == WARRIOR_FURY || p -> specialization() == WARRIOR_ARMS ) &&
            p -> talents.avatar -> ok() )
-      cd_duration = cooldown -> duration * ( 1 - player -> cache.readiness() );
+      cd_duration = cooldown -> duration / ( 1 + player -> cache.readiness() );
 
     warrior_spell_t::update_ready( cd_duration );
   }
@@ -2819,7 +2828,7 @@ struct bloodbath_t : public warrior_spell_t
 
     if ( ( p -> specialization() == WARRIOR_FURY || p -> specialization() == WARRIOR_ARMS ) &&
            p -> talents.bloodbath -> ok() )
-      cd_duration = cooldown -> duration * ( 1 - player -> cache.readiness() );
+      cd_duration = cooldown -> duration / ( 1 + player -> cache.readiness() );
 
     warrior_spell_t::update_ready( cd_duration );
   }
@@ -2924,7 +2933,7 @@ struct recklessness_t : public warrior_spell_t
     warrior_t* p = cast();
 
     if ( ( p -> specialization() == WARRIOR_FURY || p -> specialization() == WARRIOR_ARMS ) )
-      cd_duration = cooldown -> duration * ( 1 - player -> cache.readiness() );
+      cd_duration = cooldown -> duration / ( 1 + player -> cache.readiness() );
 
     warrior_spell_t::update_ready( cd_duration );
   }
@@ -3130,7 +3139,7 @@ struct shield_wall_t : public warrior_spell_t
     warrior_t* p = cast();
 
     if ( p -> specialization() == WARRIOR_PROTECTION )
-      cd_duration = cooldown -> duration * ( 1 - player -> cache.readiness() );
+      cd_duration = cooldown -> duration / ( 1 + player -> cache.readiness() );
 
     warrior_spell_t::update_ready( cd_duration );
   }
@@ -3311,7 +3320,7 @@ struct last_stand_t : public warrior_spell_t
     warrior_t* p = cast();
 
     if ( p -> specialization() == WARRIOR_PROTECTION )
-      cd_duration = cooldown -> duration * ( 1 - player -> cache.readiness() );
+      cd_duration = cooldown -> duration / ( 1 + player -> cache.readiness() );
 
     warrior_spell_t::update_ready( cd_duration );
   }

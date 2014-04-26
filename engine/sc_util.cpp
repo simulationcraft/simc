@@ -1515,7 +1515,7 @@ const char* util::stat_type_abbrev( stat_e stat )
 
     case STAT_MULTISTRIKE_RATING: return "Mult";
 
-    case STAT_READINESS_RATING: return "Read";
+    case STAT_READINESS_RATING: return "CDRecov";
 
     case STAT_ALL: return "All";
 
