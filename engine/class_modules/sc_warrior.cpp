@@ -8,9 +8,6 @@
 // ==========================================================================
 //
 // TODO: Check WoD mechanics whenever alpha/beta roll around:
-// Overall mechanics: Does parry hasting still exist in the game? I noticed in the debug log that it still has it,
-//                    however, I thought that it was completely removed from the game sometime in the last expansion? 
-//                    Maybe it was only for enemy targets.
 // Sweeping strikes + opportunity strike proccing off each other (They'll redo arms mastery, I think)
 // Raging Blow: Will the parent still fail if either MH/OH parry. (Not incredibly important anymore, but it'd be nice to know)
 // Dragon Roar: Does it still have diminishing returns on more than 1 target
@@ -1180,7 +1177,7 @@ struct bladestorm_t : public warrior_attack_t
 
     if ( ( p -> specialization() == WARRIOR_FURY || p -> specialization() == WARRIOR_ARMS ) &&
            p -> talents.bladestorm -> ok() )
-      cd_duration /= 1 + player -> cache.readiness();
+      cd_duration = cooldown -> duration * ( 1 - player -> cache.readiness() );
 
     warrior_attack_t::update_ready( cd_duration );
   }
@@ -1414,7 +1411,7 @@ struct demoralizing_shout : public warrior_attack_t
     warrior_t* p = cast();
 
     if ( p -> specialization() == WARRIOR_PROTECTION )
-      cd_duration /= 1 + player -> cache.readiness();
+      cd_duration = cooldown -> duration * ( 1 - player -> cache.readiness() );
 
     warrior_attack_t::update_ready( cd_duration );
   }
@@ -1510,7 +1507,7 @@ struct dragon_roar_t : public warrior_attack_t
 
     if ( ( p -> specialization() == WARRIOR_FURY || p -> specialization() == WARRIOR_ARMS ) &&
            p -> talents.dragon_roar -> ok() )
-      cd_duration /= 1 + player -> cache.readiness();
+      cd_duration = cooldown -> duration * ( 1 - player -> cache.readiness() );
 
     warrior_attack_t::update_ready( cd_duration );
   }
@@ -1727,7 +1724,7 @@ struct heroic_leap_t : public warrior_attack_t
   {
     warrior_t* p = cast();
 
-    cd_duration /= 1 + player -> cache.readiness();
+    cd_duration = cooldown -> duration * ( 1 - player -> cache.readiness() );
 
     warrior_attack_t::update_ready( cd_duration );
   }
@@ -2328,7 +2325,7 @@ struct shockwave_t : public warrior_attack_t
 
     if ( ( p -> specialization() == WARRIOR_FURY || p -> specialization() == WARRIOR_ARMS ) &&
            p -> talents.shockwave -> ok() )
-      cd_duration /= 1 + player -> cache.readiness();
+      cd_duration = cooldown -> duration * ( 1 - player -> cache.readiness() );
 
     if ( result_is_hit( execute_state -> result ) )
       if ( execute_state -> n_targets >= 3 )
@@ -2478,7 +2475,7 @@ struct storm_bolt_t : public warrior_attack_t
 
     if ( ( p -> specialization() == WARRIOR_FURY || p -> specialization() == WARRIOR_ARMS ) &&
            p -> talents.storm_bolt -> ok() )
-      cd_duration /= 1 + player -> cache.readiness();
+      cd_duration = cooldown -> duration * ( 1 - player -> cache.readiness() );
 
     warrior_attack_t::update_ready( cd_duration );
   }
@@ -2745,7 +2742,7 @@ struct avatar_t : public warrior_spell_t
 
     if ( ( p -> specialization() == WARRIOR_FURY || p -> specialization() == WARRIOR_ARMS ) &&
            p -> talents.avatar -> ok() )
-      cd_duration /= 1 + player -> cache.readiness();
+      cd_duration = cooldown -> duration * ( 1 - player -> cache.readiness() );
 
     warrior_spell_t::update_ready( cd_duration );
   }
@@ -2822,7 +2819,7 @@ struct bloodbath_t : public warrior_spell_t
 
     if ( ( p -> specialization() == WARRIOR_FURY || p -> specialization() == WARRIOR_ARMS ) &&
            p -> talents.bloodbath -> ok() )
-      cd_duration /= 1 + player -> cache.readiness();
+      cd_duration = cooldown -> duration * ( 1 - player -> cache.readiness() );
 
     warrior_spell_t::update_ready( cd_duration );
   }
@@ -2927,7 +2924,7 @@ struct recklessness_t : public warrior_spell_t
     warrior_t* p = cast();
 
     if ( ( p -> specialization() == WARRIOR_FURY || p -> specialization() == WARRIOR_ARMS ) )
-      cd_duration /= 1 + player -> cache.readiness();
+      cd_duration = cooldown -> duration * ( 1 - player -> cache.readiness() );
 
     warrior_spell_t::update_ready( cd_duration );
   }
@@ -3133,7 +3130,7 @@ struct shield_wall_t : public warrior_spell_t
     warrior_t* p = cast();
 
     if ( p -> specialization() == WARRIOR_PROTECTION )
-      cd_duration /= 1 + player -> cache.readiness();
+      cd_duration = cooldown -> duration * ( 1 - player -> cache.readiness() );
 
     warrior_spell_t::update_ready( cd_duration );
   }
@@ -3314,7 +3311,7 @@ struct last_stand_t : public warrior_spell_t
     warrior_t* p = cast();
 
     if ( p -> specialization() == WARRIOR_PROTECTION )
-      cd_duration /= 1 + player -> cache.readiness();
+      cd_duration = cooldown -> duration * ( 1 - player -> cache.readiness() );
 
     warrior_spell_t::update_ready( cd_duration );
   }
