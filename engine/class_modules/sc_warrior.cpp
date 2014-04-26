@@ -47,6 +47,7 @@ struct warrior_t : public player_t
 {
 public:
   int initial_rage;
+  double cdr_mult;
 
   // Active
 
@@ -337,6 +338,7 @@ public:
     cooldown.stance_swap              -> duration = timespan_t::from_seconds( 1.5 );
 
     initial_rage = 0;
+    cdr_mult = 11;
 
     base.distance = 3.0;
     base.distance_to_move = 20.0; // Warriors almost always charge into combat.
@@ -1137,6 +1139,7 @@ struct bladestorm_t : public warrior_attack_t
   attack_t* bladestorm_mh;
   attack_t* bladestorm_oh;
 
+
   bladestorm_t( warrior_t* p, const std::string& options_str ) :
     warrior_attack_t( "bladestorm", p, p -> talents.bladestorm ),
     bladestorm_mh( new bladestorm_tick_t( p, "bladestorm_mh" ) ),
@@ -1177,7 +1180,7 @@ struct bladestorm_t : public warrior_attack_t
 
     if ( ( p -> specialization() == WARRIOR_FURY || p -> specialization() == WARRIOR_ARMS ) &&
            p -> talents.bladestorm -> ok() )
-      cd_duration = cooldown -> duration / ( 1 + player -> cache.readiness() );
+      cd_duration = cooldown -> duration / ( 1 + ( player -> cache.readiness() * p -> cdr_mult ) );
 
     warrior_attack_t::update_ready( cd_duration );
   }
@@ -1386,7 +1389,7 @@ struct colossus_smash_t : public warrior_attack_t
   {
     warrior_t* p = cast();
 
-    cd_duration = cooldown -> duration / ( 1 + player -> cache.readiness() );
+    cd_duration = cooldown -> duration / ( 1 + ( player -> cache.readiness() * p -> cdr_mult ) );
 
     warrior_attack_t::update_ready( cd_duration );
   }*/
@@ -1420,7 +1423,7 @@ struct demoralizing_shout : public warrior_attack_t
     warrior_t* p = cast();
 
     if ( p -> specialization() == WARRIOR_PROTECTION )
-      cd_duration = cooldown -> duration / ( 1 + player -> cache.readiness() );
+      cd_duration = cooldown -> duration / ( 1 + ( player -> cache.readiness() * p -> cdr_mult ) );
 
     warrior_attack_t::update_ready( cd_duration );
   }
@@ -1516,7 +1519,7 @@ struct dragon_roar_t : public warrior_attack_t
 
     if ( ( p -> specialization() == WARRIOR_FURY || p -> specialization() == WARRIOR_ARMS ) &&
            p -> talents.dragon_roar -> ok() )
-      cd_duration = cooldown -> duration / ( 1 + player -> cache.readiness() );
+      cd_duration = cooldown -> duration / ( 1 + ( player -> cache.readiness() * p -> cdr_mult ) );
 
     warrior_attack_t::update_ready( cd_duration );
   }
@@ -1733,7 +1736,7 @@ struct heroic_leap_t : public warrior_attack_t
   {
     warrior_t* p = cast();
 
-    cd_duration = cooldown -> duration / ( 1 + player -> cache.readiness() );
+    cd_duration = cooldown -> duration / ( 1 + ( player -> cache.readiness() * p -> cdr_mult ) );
 
     warrior_attack_t::update_ready( cd_duration );
   }
@@ -2334,7 +2337,7 @@ struct shockwave_t : public warrior_attack_t
 
     if ( ( p -> specialization() == WARRIOR_FURY || p -> specialization() == WARRIOR_ARMS ) &&
            p -> talents.shockwave -> ok() )
-      cd_duration = cooldown -> duration / ( 1 + player -> cache.readiness() );
+      cd_duration = cooldown -> duration / ( 1 + ( player -> cache.readiness() * p -> cdr_mult ) );
 
     if ( result_is_hit( execute_state -> result ) )
       if ( execute_state -> n_targets >= 3 )
@@ -2484,7 +2487,7 @@ struct storm_bolt_t : public warrior_attack_t
 
     if ( ( p -> specialization() == WARRIOR_FURY || p -> specialization() == WARRIOR_ARMS ) &&
            p -> talents.storm_bolt -> ok() )
-      cd_duration = cooldown -> duration / ( 1 + player -> cache.readiness() );
+      cd_duration = cooldown -> duration / ( 1 + ( player -> cache.readiness() * p -> cdr_mult ) );
 
     warrior_attack_t::update_ready( cd_duration );
   }
@@ -2751,7 +2754,7 @@ struct avatar_t : public warrior_spell_t
 
     if ( ( p -> specialization() == WARRIOR_FURY || p -> specialization() == WARRIOR_ARMS ) &&
            p -> talents.avatar -> ok() )
-      cd_duration = cooldown -> duration / ( 1 + player -> cache.readiness() );
+      cd_duration = cooldown -> duration / ( 1 + ( player -> cache.readiness() * p -> cdr_mult ) );
 
     warrior_spell_t::update_ready( cd_duration );
   }
@@ -2828,7 +2831,7 @@ struct bloodbath_t : public warrior_spell_t
 
     if ( ( p -> specialization() == WARRIOR_FURY || p -> specialization() == WARRIOR_ARMS ) &&
            p -> talents.bloodbath -> ok() )
-      cd_duration = cooldown -> duration / ( 1 + player -> cache.readiness() );
+      cd_duration = cooldown -> duration / ( 1 + ( player -> cache.readiness() * p -> cdr_mult ) );
 
     warrior_spell_t::update_ready( cd_duration );
   }
@@ -2933,7 +2936,7 @@ struct recklessness_t : public warrior_spell_t
     warrior_t* p = cast();
 
     if ( ( p -> specialization() == WARRIOR_FURY || p -> specialization() == WARRIOR_ARMS ) )
-      cd_duration = cooldown -> duration / ( 1 + player -> cache.readiness() );
+      cd_duration = cooldown -> duration / ( 1 + ( player -> cache.readiness() * p -> cdr_mult ) );
 
     warrior_spell_t::update_ready( cd_duration );
   }
@@ -3139,7 +3142,7 @@ struct shield_wall_t : public warrior_spell_t
     warrior_t* p = cast();
 
     if ( p -> specialization() == WARRIOR_PROTECTION )
-      cd_duration = cooldown -> duration / ( 1 + player -> cache.readiness() );
+      cd_duration = cooldown -> duration / ( 1 + ( player -> cache.readiness() * p -> cdr_mult ) );
 
     warrior_spell_t::update_ready( cd_duration );
   }
@@ -3320,7 +3323,7 @@ struct last_stand_t : public warrior_spell_t
     warrior_t* p = cast();
 
     if ( p -> specialization() == WARRIOR_PROTECTION )
-      cd_duration = cooldown -> duration / ( 1 + player -> cache.readiness() );
+      cd_duration = cooldown -> duration / ( 1 + ( player -> cache.readiness() * p -> cdr_mult ) );
 
     warrior_spell_t::update_ready( cd_duration );
   }
@@ -4641,6 +4644,7 @@ void warrior_t::create_options()
   option_t warrior_options[] =
   {
     opt_int( "initial_rage", initial_rage ),
+    opt_float( "cdr_mult", cdr_mult ),
     opt_null()
   };
 
@@ -4691,6 +4695,7 @@ void warrior_t::copy_from( player_t* source )
   warrior_t* p = debug_cast<warrior_t*>( source );
 
   initial_rage = p -> initial_rage;
+  cdr_mult = p -> cdr_mult;
 }
 
 // warrior_t::decode_set ====================================================
