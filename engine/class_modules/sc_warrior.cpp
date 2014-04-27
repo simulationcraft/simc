@@ -2354,7 +2354,10 @@ struct shockwave_t : public warrior_attack_t
 
     if ( result_is_hit( execute_state -> result ) )
       if ( execute_state -> n_targets >= 3 )
-        cd_duration += timespan_t::from_seconds( -20 );
+        if ( cd_duration > timespan_t::from_seconds( 20 ) )
+          cd_duration += timespan_t::from_seconds( -20 );
+        else
+          cd_duration = timespan_t::zero();
 
     warrior_attack_t::update_ready( cd_duration );
   }
