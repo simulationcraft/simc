@@ -4971,6 +4971,9 @@ public:
 
   virtual double composite_multistrike() const
   { return owner -> cache.multistrike(); }
+// 4/27/2014: Currently this line asserts. Need to fix at some point.
+//virtual double composite_readiness() const
+  //{ return owner -> cache.readiness(); }
 
   virtual double composite_melee_attack_power() const;
 
