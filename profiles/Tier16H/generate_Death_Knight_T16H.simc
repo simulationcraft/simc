@@ -16,8 +16,8 @@ back=gonglu_strength_of_xuen,id=102249,gems=4str_8crit_3str,enchant=9crit,reforg
 chest=breastplate_of_shamanic_mirrors,id=105532,gems=4str_8crit_4str__8crit_16crit_9str,enchant=4all,upgrade=2
 wrists=bracers_of_blind_hatred,id=105456,gems=16crit,enchant=9str,upgrade=2,reforge=mastery_exp
 hands=gauntlets_of_cyclopean_dread,id=99336,gems=16crit_4str_8crit_4str_8crit_6str,enchant=9str,addon=synapse_springs_mark_ii,reforge=hit_crit,upgrade=2
-waist=ashen_wall_girdle,id=105533,gems=4str_8crit_8crit_8hit_16crit_6str,reforge=hit_crit,upgrade=2
-legs=legplates_of_willful_doom,id=105565,gems=8crit_8hit_8crit_8hit_4str_8crit_6str,enchant=14str_8crit,upgrade=2
+waist=ashen_wall_girdle,id=105533,gems=4str_8crit_8crit_8crit_16crit_6str,reforge=hit_crit,upgrade=2
+legs=legplates_of_willful_doom,id=105565,gems=8crit_8crit_8crit_8crit_4str_8crit_6str,enchant=14str_8crit,upgrade=2
 feet=greaves_of_sublime_superiority,id=105478,gems=4str_8crit_3crit,enchant=9haste,reforge=hit_mastery,upgrade=2
 finger1=devilfang_band,id=105611,gems=4str_8crit_3exp,reforge=mastery_crit,upgrade=2
 finger2=seal_of_the_forgotten_kings,id=105589,gems=4str_8crit_3haste,upgrade=2,reforge=haste_exp
@@ -42,7 +42,7 @@ back=gonglu_strength_of_xuen,id=102249,gems=4str_8crit_3str,enchant=9crit,reforg
 chest=breastplate_of_cyclopean_dread,id=99335,gems=4str_8crit_4str__8crit_4str_8crit_9str,enchant=4all,reforge=mastery_crit,upgrade=2
 wrists=bracers_of_blind_hatred,id=105456,gems=16crit,enchant=9str,upgrade=2
 hands=gauntlets_of_cyclopean_dread,id=99336,gems=16crit_4str_8crit_4str_8crit_6str,enchant=9str,addon=synapse_springs_mark_ii,reforge=mastery_crit,upgrade=2
-waist=ashen_wall_girdle,id=105533,gems=4str_8crit_8crit_8hit_16crit_6str,reforge=hit_exp,upgrade=2
+waist=ashen_wall_girdle,id=105533,gems=4str_8crit_8crit_8crit_16crit_6str,reforge=hit_exp,upgrade=2
 legs=greaves_of_cyclopean_dread,id=99338,gems=16crit_16crit_6str,enchant=14str_8crit,upgrade=2
 feet=greaves_of_sublime_superiority,id=105478,gems=4str_8crit_3crit,enchant=9haste,reforge=hit_exp,upgrade=2
 finger1=devilfang_band,id=105611,gems=4str_8crit_3exp,reforge=mastery_crit,upgrade=2
@@ -69,7 +69,7 @@ chest=breastplate_of_cyclopean_dread,id=99335,upgrade=2,gems=4str_8mastery_4str_
 wrists=bracers_of_blind_hatred,id=105456,gems=16mastery,upgrade=2,enchant=9str
 hands=gauntlets_of_cyclopean_dread,id=99336,upgrade=2,gems=16mastery_4str_8mastery_4str_8mastery_6str,enchant=9str,addon=synapse_springs_mark_ii
 waist=demolishers_reinforced_belt,id=105509,upgrade=2,gems=4str_8mastery_16mastery_16mastery_6str,reforge=haste_crit
-legs=legplates_of_willful_doom,id=105565,upgrade=2,gems=8mastery_8hit_8mastery_8hit_4str_8mastery_6str,enchant=14str_8crit
+legs=legplates_of_willful_doom,id=105565,upgrade=2,gems=8mastery_8crit_8mastery_8crit_4str_8mastery_6str,enchant=14str_8crit
 feet=malkoroks_giant_stompers,id=105563,upgrade=2,gems=16mastery,enchant=7mastery,reforge=exp_crit
 finger1=devilfang_band,id=105611,upgrade=2,gems=4str_8mastery_3exp,reforge=exp_crit
 finger2=bloodclaw_band,id=105534,upgrade=2,gems=16mastery_3haste,reforge=hit_crit

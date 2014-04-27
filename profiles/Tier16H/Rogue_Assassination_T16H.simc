@@ -58,8 +58,8 @@ chest=tunic_of_the_barbed_assassin,id=99356,upgrade=2,gems=8agi_8agi_8agi_9agi,e
 wrists=bombers_blackened_wristwatch,id=105616,upgrade=2,enchant=9agi
 hands=gloves_of_the_barbed_assassin,id=99355,upgrade=2,gems=8agi_8agi_6agi,enchant=9haste
 waist=cord_of_black_dreams,id=105635,upgrade=2,gems=8agi_4agi_8haste_8agi_6agi
-legs=rious_vigilant_leggings,id=105529,upgrade=2,gems=4agi_8hit_4agi_8hit_6agi,enchant=14agi_8crit
-feet=pandaren_roofsprinters,id=105582,upgrade=2,gems=4agi_8hit_3mastery,enchant=7agi
+legs=rious_vigilant_leggings,id=105529,upgrade=2,gems=4agi_8crit_4agi_8crit_6agi,enchant=14agi_8crit
+feet=pandaren_roofsprinters,id=105582,upgrade=2,gems=4agi_8crit_3mastery,enchant=7agi
 finger1=kilruks_band_of_ascendancy,id=105624,upgrade=2,gems=8agi_3crit
 finger2=swift_serpent_signet,id=105483,upgrade=2,gems=4agi_8haste_3crit
 trinket1=assurance_of_consequence,id=105472,upgrade=2
@@ -73,8 +73,8 @@ off_hand=hvitserks_formidable_shanker,id=105601,upgrade=2,gems=8agi_3agi,enchant
 # gear_stamina=1514
 # gear_intellect=4
 # gear_spirit=4
-# gear_hit_rating=33
-# gear_crit_rating=259
+# gear_hit_rating=9
+# gear_crit_rating=283
 # gear_haste_rating=539
 # gear_mastery_rating=523
 # gear_armor=414

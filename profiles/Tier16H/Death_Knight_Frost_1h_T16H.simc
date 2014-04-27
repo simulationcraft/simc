@@ -81,7 +81,7 @@ chest=breastplate_of_cyclopean_dread,id=99335,upgrade=2,gems=4str_8mastery_4str_
 wrists=bracers_of_blind_hatred,id=105456,upgrade=2,gems=16mastery,enchant=9str
 hands=gauntlets_of_cyclopean_dread,id=99336,upgrade=2,gems=16mastery_4str_8mastery_4str_8mastery_6str,enchant=9str,addon=synapse_springs_mark_ii
 waist=demolishers_reinforced_belt,id=105509,upgrade=2,gems=4str_8mastery_16mastery_16mastery_6str
-legs=legplates_of_willful_doom,id=105565,upgrade=2,gems=8mastery_8hit_8mastery_8hit_4str_8mastery_6str,enchant=14str_8crit
+legs=legplates_of_willful_doom,id=105565,upgrade=2,gems=8mastery_8crit_8mastery_8crit_4str_8mastery_6str,enchant=14str_8crit
 feet=malkoroks_giant_stompers,id=105563,upgrade=2,gems=16mastery,enchant=7mastery
 finger1=devilfang_band,id=105611,upgrade=2,gems=4str_8mastery_3exp
 finger2=bloodclaw_band,id=105534,upgrade=2,gems=16mastery_3haste
@@ -97,8 +97,7 @@ off_hand=xifeng_longblade_of_the_titanic_guardian,id=105460,upgrade=2,gems=4str_
 # gear_intellect=4
 # gear_spirit=4
 # gear_expertise_rating=3
-# gear_hit_rating=16
-# gear_crit_rating=494
+# gear_crit_rating=510
 # gear_haste_rating=210
 # gear_mastery_rating=815
 # gear_armor=1191

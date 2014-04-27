@@ -61,15 +61,15 @@ actions+=/divine_storm,if=active_enemies>=2
 actions+=/templars_verdict
 actions+=/holy_prism,if=talent.holy_prism.enabled
 
-head=helmet_of_winged_triumph,id=99379,upgrade=2,gems=capacitive_primal_8exp_8haste_9str
+head=helmet_of_winged_triumph,id=99379,upgrade=2,gems=capacitive_primal_8haste_8haste_9str
 neck=juggernauts_ignition_keys,id=105513,upgrade=2
-shoulders=pauldrons_of_winged_triumph,id=99373,upgrade=2,gems=8exp_8haste_8exp_8haste_6str,enchant=10str_5crit
+shoulders=pauldrons_of_winged_triumph,id=99373,upgrade=2,gems=8haste_8haste_8haste_8haste_6str,enchant=10str_5crit
 back=gonglu_strength_of_xuen,id=102249,upgrade=2,gems=4str_8haste_3str,enchant=9hit
-chest=battleplate_of_winged_triumph,id=99387,upgrade=2,gems=8exp_8haste_8exp_8haste_8exp_8haste_9str,enchant=4all
+chest=battleplate_of_winged_triumph,id=99387,upgrade=2,gems=8haste_8haste_8haste_8haste_8haste_8haste_9str,enchant=4all
 wrists=bubbleburst_bracers,id=105411,upgrade=2,enchant=9str
 hands=gauntlets_of_winged_triumph,id=99380,upgrade=2,gems=4str_8haste_4str_8haste_6str,enchant=9str
-waist=demolishers_reinforced_belt,id=105509,upgrade=2,gems=8exp_8haste_16haste_16haste_6str
-legs=legplates_of_unthinking_strife,id=105640,upgrade=2,gems=8hit_8haste_8hit_8haste_8exp_8haste_9str,enchant=14str_8crit
+waist=demolishers_reinforced_belt,id=105509,upgrade=2,gems=8haste_8haste_16haste_16haste_6str
+legs=legplates_of_unthinking_strife,id=105640,upgrade=2,gems=8crit_8haste_8crit_8haste_8haste_8haste_9str,enchant=14str_8crit
 feet=wolfrider_spurs,id=105531,upgrade=2,gems=16haste_3crit,enchant=9haste
 finger1=asgorathian_blood_seal,id=105620,upgrade=2,gems=4str_8haste_3haste
 finger2=seal_of_the_forgotten_kings,id=105589,upgrade=2,gems=4str_8haste_3haste
@@ -83,10 +83,9 @@ main_hand=britomarts_jagged_pike,id=105610,upgrade=2,gems=16haste_3str,enchant=d
 # gear_stamina=1539
 # gear_intellect=4
 # gear_spirit=4
-# gear_expertise_rating=64
-# gear_hit_rating=25
-# gear_crit_rating=316
-# gear_haste_rating=778
+# gear_hit_rating=9
+# gear_crit_rating=332
+# gear_haste_rating=842
 # gear_mastery_rating=412
 # gear_armor=1191
 # gear_readiness_rating=99

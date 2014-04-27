@@ -95,20 +95,20 @@ actions.aoe+=/fire_nova,if=active_flame_shock>=1
 
 head=helmet_of_celestial_harmony,id=99341,upgrade=2,gems=capacitive_primal_4agi_8mastery_9agi
 neck=immerseus_crystalline_eye,id=105407,upgrade=2
-shoulders=quarantine_shoulderguards,id=105455,upgrade=2,gems=8mastery_8hit_8mastery_8hit_6agi,enchant=10agi_5crit
+shoulders=quarantine_shoulderguards,id=105455,upgrade=2,gems=8mastery_8crit_8mastery_8crit_6agi,enchant=10agi_5crit
 back=fenyu_fury_of_xuen,id=102248,upgrade=2,gems=4agi_8mastery_3agi,enchant=9crit
-chest=cuirass_of_celestial_harmony,id=99347,upgrade=2,gems=8exp_8mastery_8exp_8mastery_8exp_8mastery_9agi,enchant=4all
+chest=cuirass_of_celestial_harmony,id=99347,upgrade=2,gems=8haste_8mastery_8haste_8mastery_8haste_8mastery_9agi,enchant=4all
 wrists=bracers_of_infinite_pipes,id=105617,upgrade=2,enchant=9agi
-hands=grips_of_celestial_harmony,id=99340,upgrade=2,gems=8exp_8mastery_8exp_8mastery_6agi,enchant=9mastery,addon=synapse_springs_mark_ii
-waist=cannoneers_multipocket_gunbelt,id=105486,upgrade=2,gems=8exp_8mastery_8mastery_8hit_16mastery_6agi
+hands=grips_of_celestial_harmony,id=99340,upgrade=2,gems=8haste_8mastery_8haste_8mastery_6agi,enchant=9mastery,addon=synapse_springs_mark_ii
+waist=cannoneers_multipocket_gunbelt,id=105486,upgrade=2,gems=8haste_8mastery_8mastery_8crit_16mastery_6agi
 legs=legguards_of_celestial_harmony,id=99342,upgrade=2,gems=16mastery_16mastery_6agi,enchant=14agi_8crit
-feet=ravagers_pathwalkers,id=105553,upgrade=2,gems=8exp_8mastery_3agi,enchant=7agi
+feet=ravagers_pathwalkers,id=105553,upgrade=2,gems=8haste_8mastery_3agi,enchant=7agi
 finger1=swift_serpent_signet,id=105483,upgrade=2,gems=16mastery_3crit
-finger2=kilruks_band_of_ascendancy,id=105624,upgrade=2,gems=8exp_8mastery_3crit
+finger2=kilruks_band_of_ascendancy,id=105624,upgrade=2,gems=8haste_8mastery_3crit
 trinket1=assurance_of_consequence,id=105472,upgrade=2
 trinket2=haromms_talisman,id=105527,upgrade=2
-main_hand=korvens_crimson_crescent,id=105625,upgrade=2,gems=8exp_8mastery_3agi,enchant=dancing_steel
-off_hand=korvens_crimson_crescent,id=105625,upgrade=2,gems=8exp_8mastery_3agi,enchant=dancing_steel
+main_hand=korvens_crimson_crescent,id=105625,upgrade=2,gems=8haste_8mastery_3agi,enchant=dancing_steel
+off_hand=korvens_crimson_crescent,id=105625,upgrade=2,gems=8haste_8mastery_3agi,enchant=dancing_steel
 
 # Gear Summary
 # gear_strength=4
@@ -116,10 +116,8 @@ off_hand=korvens_crimson_crescent,id=105625,upgrade=2,gems=8exp_8mastery_3agi,en
 # gear_stamina=1512
 # gear_intellect=4
 # gear_spirit=4
-# gear_expertise_rating=80
-# gear_hit_rating=24
-# gear_crit_rating=217
-# gear_haste_rating=513
+# gear_crit_rating=241
+# gear_haste_rating=593
 # gear_mastery_rating=765
 # gear_armor=719
 # gear_multistrike_rating=99

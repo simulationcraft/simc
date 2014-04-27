@@ -11,10 +11,10 @@ professions=blacksmithing=600/engineering=600
 talents=http://us.battle.net/wow/en/tool/talent-calculator#ca!200002
 glyphs=vendetta
 spec=assassination
-legs=rious_vigilant_leggings,id=105529,gems=4agi_8hit_4agi_8hit_6agi,enchant=14agi_8crit,reforge=crit_haste,upgrade=2
+legs=rious_vigilant_leggings,id=105529,gems=4agi_8crit_4agi_8crit_6agi,enchant=14agi_8crit,reforge=crit_haste,upgrade=2
 shoulders=spaulders_of_the_barbed_assassin,id=99350,gems=8agi_8agi_6agi,enchant=10agi_5crit,reforge=exp_hit,upgrade=2
 wrists=bombers_blackened_wristwatch,id=105616,enchant=9agi,reforge=mastery_hit,upgrade=2
-feet=pandaren_roofsprinters,id=105582,gems=4agi_8hit_3mastery,enchant=7agi,reforge=mastery_hit,upgrade=2
+feet=pandaren_roofsprinters,id=105582,gems=4agi_8crit_3mastery,enchant=7agi,reforge=mastery_hit,upgrade=2
 chest=tunic_of_the_barbed_assassin,id=99356,gems=8agi_8agi_8agi_9agi,enchant=4all,reforge=mastery_crit,upgrade=2
 main_hand=hvitserks_formidable_shanker,id=105601,gems=8agi_3agi,enchant=dancing_steel,reforge=mastery_crit,upgrade=2
 off_hand=hvitserks_formidable_shanker,id=105601,gems=8agi_3agi,enchant=dancing_steel,reforge=mastery_exp,upgrade=2
@@ -45,7 +45,7 @@ chest=tunic_of_the_barbed_assassin,id=99356,gems=8agi_8agi_8agi_9agi,enchant=4al
 main_hand=enchanted_shaotien_saber,id=105581,gems=8agi_3agi,enchant=dancing_steel,upgrade=2
 off_hand=hvitserks_formidable_shanker,id=105601,gems=8agi_3agi,enchant=dancing_steel,upgrade=2
 hands=gloves_of_the_barbed_assassin,id=99355,gems=8agi_8agi_8agi_6agi,enchant=9haste,reforge=mastery_crit,upgrade=2,addon=synapse_springs_2
-waist=damrons_belt_of_darkness,id=105528,gems=8agi_4agi_8hit_8agi_6agi,upgrade=2
+waist=damrons_belt_of_darkness,id=105528,gems=8agi_4agi_8crit_8agi_6agi,upgrade=2
 head=helmet_of_the_barbed_assassin,id=99348,gems=capacitive_primal_8agi_9agi,reforge=mastery_crit,upgrade=2
 back=fenyu_fury_of_xuen,id=102248,gems=8agi_3agi,enchant=9crit,reforge=mastery_exp,upgrade=2
 finger1=kilruks_band_of_ascendancy,id=105624,gems=8agi_3crit,reforge=mastery_hit,upgrade=2
@@ -65,7 +65,7 @@ position=back
 professions=Blacksmithing=600/engineering=600
 talents=http://us.battle.net/wow/en/tool/talent-calculator#cb!200002
 spec=subtlety
-legs=rious_vigilant_leggings,id=105529,gems=4agi_8hit_4agi_8hit_6agi,enchant=14agi_8crit,reforge=mastery_haste,upgrade=2
+legs=rious_vigilant_leggings,id=105529,gems=4agi_8crit_4agi_8crit_6agi,enchant=14agi_8crit,reforge=mastery_haste,upgrade=2
 shoulders=spaulders_of_the_barbed_assassin,id=99350,gems=8agi_8agi_6agi,enchant=10agi_5crit,reforge=exp_hit,upgrade=2
 wrists=bombers_blackened_wristwatch,id=105616,enchant=9agi,gems=8agi,reforge=mastery_exp,upgrade=2
 feet=stonetoes_tormented_treads,id=105431,gems=8agi_3mastery,enchant=7agi,reforge=hit_crit,upgrade=2

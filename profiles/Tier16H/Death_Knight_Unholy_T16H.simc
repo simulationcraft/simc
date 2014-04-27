@@ -90,8 +90,8 @@ back=gonglu_strength_of_xuen,id=102249,upgrade=2,gems=4str_8crit_3str,enchant=9c
 chest=breastplate_of_shamanic_mirrors,id=105532,upgrade=2,gems=4str_8crit_4str__8crit_16crit_9str,enchant=4all
 wrists=bracers_of_blind_hatred,id=105456,upgrade=2,gems=16crit,enchant=9str
 hands=gauntlets_of_cyclopean_dread,id=99336,upgrade=2,gems=16crit_4str_8crit_4str_8crit_6str,enchant=9str,addon=synapse_springs_mark_ii
-waist=ashen_wall_girdle,id=105533,upgrade=2,gems=4str_8crit_8crit_8hit_16crit_6str
-legs=legplates_of_willful_doom,id=105565,upgrade=2,gems=8crit_8hit_8crit_8hit_4str_8crit_6str,enchant=14str_8crit
+waist=ashen_wall_girdle,id=105533,upgrade=2,gems=4str_8crit_8crit_8crit_16crit_6str
+legs=legplates_of_willful_doom,id=105565,upgrade=2,gems=8crit_8crit_8crit_8crit_4str_8crit_6str,enchant=14str_8crit
 feet=greaves_of_sublime_superiority,id=105478,upgrade=2,gems=4str_8crit_3crit,enchant=9haste
 finger1=devilfang_band,id=105611,upgrade=2,gems=4str_8crit_3exp
 finger2=seal_of_the_forgotten_kings,id=105589,upgrade=2,gems=4str_8crit_3haste
@@ -106,8 +106,7 @@ main_hand=xalatoh_desecrated_image_of_gorehowl,id=105644,upgrade=2,gems=4str_8cr
 # gear_intellect=4
 # gear_spirit=4
 # gear_expertise_rating=3
-# gear_hit_rating=24
-# gear_crit_rating=823
+# gear_crit_rating=847
 # gear_haste_rating=195
 # gear_mastery_rating=522
 # gear_armor=1210

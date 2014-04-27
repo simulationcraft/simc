@@ -76,8 +76,8 @@ chest=raiment_of_the_shattered_vale,id=99326,upgrade=2,gems=8agi_8agi_8agi_9agi,
 wrists=bombers_blackened_wristwatch,id=105616,upgrade=2,enchant=9agi
 hands=grips_of_the_shattered_vale,id=99327,upgrade=2,gems=8agi_8agi_6agi,enchant=9haste
 waist=cord_of_black_dreams,id=105635,upgrade=2,gems=8agi_4agi_8crit_8agi_6agi,addon=nitro_boosts
-legs=rious_vigilant_leggings,id=105529,upgrade=2,gems=4agi_8hit_4agi_8hit_6agi,enchant=14agi_8crit
-feet=pandaren_roofsprinters,id=105582,upgrade=2,gems=4agi_8hit_3mastery,enchant=7agi
+legs=rious_vigilant_leggings,id=105529,upgrade=2,gems=4agi_8crit_4agi_8crit_6agi,enchant=14agi_8crit
+feet=pandaren_roofsprinters,id=105582,upgrade=2,gems=4agi_8crit_3mastery,enchant=7agi
 finger1=kilruks_band_of_ascendancy,id=105624,upgrade=2,gems=8agi_3crit
 finger2=ring_of_restless_energy,id=105558,upgrade=2,gems=8agi_3crit
 trinket1=rune_of_reorigination,id=96918,upgrade=2
@@ -90,8 +90,8 @@ main_hand=halberd_of_inner_shadows,id=105560,upgrade=2,gems=4agi_8crit_3agi,ench
 # gear_stamina=1539
 # gear_intellect=4
 # gear_spirit=4
-# gear_hit_rating=33
-# gear_crit_rating=446
+# gear_hit_rating=9
+# gear_crit_rating=470
 # gear_haste_rating=374
 # gear_mastery_rating=528
 # gear_armor=414

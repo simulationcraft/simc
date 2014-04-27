@@ -54,12 +54,12 @@ actions.aoe+=/incinerate
 
 head=hood_of_the_horned_nightmare,id=99425,upgrade=2,gems=sinister_primal_8exp_8mastery_9int
 neck=untainted_guardians_chain,id=105465,upgrade=2
-shoulders=rimerift_shoulders,id=105464,upgrade=2,gems=8exp_8mastery_8hit_8mastery_6int,enchant=10int_5crit
+shoulders=rimerift_shoulders,id=105464,upgrade=2,gems=8exp_8mastery_8crit_8mastery_6int,enchant=10int_5crit
 back=xingho_breath_of_yulon,id=102246,upgrade=2,gems=8exp_8mastery_3int,enchant=9crit
 chest=robes_of_the_horned_nightmare,id=99416,upgrade=2,gems=8exp_8mastery_8exp_8mastery_8exp_8mastery_9int,enchant=4all
 wrists=avools_ancestral_bracers,id=105591,upgrade=2,enchant=9int
 hands=gloves_of_the_horned_nightmare,id=99424,upgrade=2,gems=8exp_8mastery_8exp_8mastery_6int,enchant=9mastery
-waist=belt_of_ominous_trembles,id=105515,upgrade=2,gems=8exp_8mastery_8hit_8mastery_16mastery_6int
+waist=belt_of_ominous_trembles,id=105515,upgrade=2,gems=8exp_8mastery_8crit_8mastery_16mastery_6int
 legs=leggings_of_the_horned_nightmare,id=99426,upgrade=2,gems=16mastery_16mastery_6int,enchant=14int_8crit
 feet=boneinlaid_sandals,id=105493,upgrade=2,gems=16mastery_3hit,enchant=7mastery
 finger1=iyyokuks_hereditary_seal,id=105628,upgrade=2
@@ -77,8 +77,8 @@ off_hand=revelations_of_yshaarj,id=105650,upgrade=2,gems=8exp_8mastery_3int,ench
 # gear_spirit=4
 # gear_spell_power=590
 # gear_expertise_rating=96
-# gear_hit_rating=19
-# gear_crit_rating=393
+# gear_hit_rating=3
+# gear_crit_rating=409
 # gear_haste_rating=316
 # gear_mastery_rating=797
 # gear_armor=284

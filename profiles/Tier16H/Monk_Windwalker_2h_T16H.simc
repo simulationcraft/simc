@@ -70,7 +70,7 @@ finger1=reality_ripper_ring,id=105451,upgrade=2,gems=4agi_8crit
 finger2=ring_of_restless_energy,id=105558,upgrade=2,gems=4agi_8crit_3crit
 trinket1=ticking_ebon_detonator,id=105612,upgrade=2
 trinket2=haromms_talisman,id=105527,upgrade=2
-main_hand=trident_of_corrupted_waters,id=105408,upgrade=2,gems=4agi_8hit_3agi,enchant=dancing_steel
+main_hand=trident_of_corrupted_waters,id=105408,upgrade=2,gems=4agi_8crit_3agi,enchant=dancing_steel
 
 # Gear Summary
 # gear_strength=13
@@ -78,8 +78,7 @@ main_hand=trident_of_corrupted_waters,id=105408,upgrade=2,gems=4agi_8hit_3agi,en
 # gear_stamina=1537
 # gear_intellect=4
 # gear_spirit=4
-# gear_hit_rating=8
-# gear_crit_rating=803
+# gear_crit_rating=811
 # gear_haste_rating=452
 # gear_mastery_rating=286
 # gear_armor=413

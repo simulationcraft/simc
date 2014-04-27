@@ -63,7 +63,7 @@ back=fenyu_fury_of_xuen,id=102248,upgrade=2,gems=8agi_3agi,enchant=9crit
 chest=tunic_of_the_barbed_assassin,id=99356,upgrade=2,gems=8agi_8agi_8agi_9agi,enchant=4all
 wrists=bombers_blackened_wristwatch,id=105616,upgrade=2,gems=8agi,enchant=9agi
 hands=gloves_of_the_barbed_assassin,id=99355,upgrade=2,gems=8agi_8agi_8agi_6agi,enchant=9haste,addon=synapse_springs_2
-waist=damrons_belt_of_darkness,id=105528,upgrade=2,gems=8agi_4agi_8hit_8agi_6agi
+waist=damrons_belt_of_darkness,id=105528,upgrade=2,gems=8agi_4agi_8crit_8agi_6agi
 legs=legguards_of_the_barbed_assassin,id=99349,upgrade=2,gems=4agi_8haste_4agi_8haste_6agi,enchant=14agi_8crit
 feet=stonetoes_tormented_treads,id=105431,upgrade=2,gems=8agi_3mastery,enchant=7agi
 finger1=kilruks_band_of_ascendancy,id=105624,upgrade=2,gems=8agi_3crit
@@ -79,8 +79,7 @@ off_hand=hvitserks_formidable_shanker,id=105601,upgrade=2,gems=8agi_3agi,enchant
 # gear_stamina=1512
 # gear_intellect=4
 # gear_spirit=4
-# gear_hit_rating=8
-# gear_crit_rating=254
+# gear_crit_rating=262
 # gear_haste_rating=611
 # gear_mastery_rating=478
 # gear_armor=413

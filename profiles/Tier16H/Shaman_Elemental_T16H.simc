@@ -83,7 +83,7 @@ wrists=bracers_of_the_pristine_purifier,id=105598,upgrade=2,enchant=9int
 hands=grips_of_tidal_force,id=105501,upgrade=2,gems=4int_8haste_16haste_6int,enchant=9haste,addon=synapse_springs_mark_ii
 waist=chitinlink_chain_belt,id=105597,upgrade=2,gems=4int_8haste_16haste_16haste_6int
 legs=leggings_of_celestial_harmony,id=99333,upgrade=2,gems=16haste_16haste_6int,enchant=14int_8crit
-feet=powderstained_totemic_treads,id=105618,upgrade=2,gems=8haste_8spi_3spi,enchant=7mastery
+feet=powderstained_totemic_treads,id=105618,upgrade=2,gems=8haste_8crit_3spi,enchant=7mastery
 finger1=signet_of_the_dinomancers,id=105606,upgrade=2,gems=4int_8haste_3spi
 finger2=laserslice_signet,id=105520,upgrade=2,gems=16haste_3spi
 trinket1=purified_bindings_of_immerseus,id=105422,upgrade=2
@@ -96,9 +96,9 @@ off_hand=revelations_of_yshaarj,id=105650,upgrade=2,gems=4int_8haste_3int,enchan
 # gear_agility=4
 # gear_stamina=1534
 # gear_intellect=1083
-# gear_spirit=99
+# gear_spirit=91
 # gear_spell_power=590
-# gear_crit_rating=339
+# gear_crit_rating=347
 # gear_haste_rating=585
 # gear_mastery_rating=506
 # gear_armor=718
