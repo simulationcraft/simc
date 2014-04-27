@@ -8,6 +8,7 @@
   Add all buffs
   - Crackling Jade Lightning
   Change expel harm to heal later on.
+  - Change GCD to 1.5 seconds for mistweaver, allow 1.0 second gcd while in ox/tiger stance.
 
   WINDWALKER:
   Power Strikes timers not linked to spelldata (fix soon)
@@ -19,6 +20,8 @@
    - Uplift
    - Life Cocoon
    - Teachings of the Monastery
+   - Crane Style Techniques
+   - Focus and Harmony
     * SCK healing
     * BoK's cleave effect
    - Non-glyphed Mana Tea
@@ -104,16 +107,13 @@ public:
     buff_t* fortifying_brew;
     absorb_buff_t* guard;
     buff_t* mana_tea;
-    buff_t* muscle_memory;
     buff_t* power_strikes;
     buff_t* rushing_jade_wind;
-    buff_t* serpents_zeal;
     buff_t* shuffle;
     buff_t* tigereye_brew;
     buff_t* tigereye_brew_use;
     buff_t* tiger_power;
     buff_t* tiger_strikes;
-    buff_t* vital_mists;
 	buff_t* tier14_4pc_melee;
     buff_t* tier16_4pc_melee;
     buff_t* focus_of_xuen;
@@ -128,7 +128,7 @@ private:
   {
     const spell_data_t* fierce_tiger;
     const spell_data_t* sturdy_ox;
-	const spell_data_t* spirited_crane;
+    const spell_data_t* spirited_crane;
     const spell_data_t* wise_serpent;
   } stance_data;
 public:
@@ -146,7 +146,6 @@ public:
     gain_t* jab;
     gain_t* keg_smash;
     gain_t* mana_tea;
-    gain_t* muscle_memory;
     gain_t* renewing_mist;
     gain_t* soothing_mist;
     gain_t* spinning_crane_kick;
@@ -220,7 +219,8 @@ public:
     // Mistweaver
     const spell_data_t* brewing_mana_tea;
     const spell_data_t* mana_meditation;
-    const spell_data_t* muscle_memory;
+    const spell_data_t* focus_and_harmony; // To-do: Implement
+    const spell_data_t* crane_style_techniques;
     const spell_data_t* teachings_of_the_monastery;
 
     // Windwalker
@@ -744,14 +744,6 @@ public:
     ab::execute();
   }
 
-  void consume_muscle_memory()
-  {
-    if ( p() -> buff.muscle_memory -> up() )
-    {
-      p() -> resource_gain( RESOURCE_MANA, p() -> resources.max[ RESOURCE_MANA ] * p() -> find_spell( 139597 ) -> effectN( 2 ).percent(), p() -> gain.muscle_memory );
-      p() -> buff.muscle_memory -> expire();
-    }
-  }
 };
 
 struct monk_spell_t : public monk_action_t<spell_t>
@@ -940,11 +932,7 @@ struct jab_t : public monk_melee_attack_t
   {
     monk_melee_attack_t::impact( s );
 
-    if ( result_is_hit( s -> result ) )
-    {
-      if ( p() -> spec.muscle_memory -> ok() )
-        p() -> buff.muscle_memory -> trigger();
-    }
+
   }
 
   virtual void execute()
@@ -1023,8 +1011,6 @@ struct tiger_palm_t : public monk_melee_attack_t
 
     if ( p() -> spec.teachings_of_the_monastery -> ok() )
       m *= 1.0 + p() -> spec.teachings_of_the_monastery -> effectN( 7 ).percent();
-    if ( p() -> buff.muscle_memory -> check() )
-      m *= 1.0 + p() -> find_spell( 139597 ) -> effectN( 1 ).percent();
 
 
     // check for melee 2p and CB: TP, for the 50% dmg bonus
@@ -1044,8 +1030,6 @@ struct tiger_palm_t : public monk_melee_attack_t
     {
       p() -> buff.tiger_power -> trigger();
 
-      if ( p() -> spec.teachings_of_the_monastery -> ok() )
-        p() -> buff.vital_mists -> trigger();
     }
   }
 
@@ -1053,7 +1037,6 @@ struct tiger_palm_t : public monk_melee_attack_t
   {
     monk_melee_attack_t::execute();
 
-    consume_muscle_memory();
   }
 
   virtual double cost() const
@@ -1112,7 +1095,7 @@ struct blackout_kick_t : public monk_melee_attack_t
     monk_melee_attack_t( "blackout_kick", p, p -> find_class_spell( "Blackout Kick" ) )
   {
     parse_options( nullptr, options_str );
-    base_dd_min = base_dd_max = 0.0; attack_power_mod.direct = spell_power_mod.direct = 0.0; //  deactivate parsed spelleffect1
+    attack_power_mod.direct = spell_power_mod.direct = 0.0; //  deactivate parsed spelleffect1
     mh = &( player -> main_hand_weapon );
     oh = &( player -> off_hand_weapon );
     base_multiplier = 9.929; // hardcoded into tooltip
@@ -1145,10 +1128,6 @@ struct blackout_kick_t : public monk_melee_attack_t
           p() -> buff.shuffle -> trigger();
         }
       }
-      if ( p() -> spec.teachings_of_the_monastery -> ok() )
-      {
-        p() -> buff.serpents_zeal -> trigger();
-      }
     }
   }
 
@@ -1156,21 +1135,18 @@ struct blackout_kick_t : public monk_melee_attack_t
   {
     monk_melee_attack_t::execute();
 
-    consume_muscle_memory();
   }
 
   virtual double action_multiplier() const
   {
     double m = monk_melee_attack_t::action_multiplier();
 
-    if ( p() -> buff.muscle_memory -> check() )
-      m *= 1.0 + p() -> find_spell( 139597 ) -> effectN( 1 ).percent();
 
     // check for melee 2p and CB: TP, for the 50% dmg bonus
     if ( p() -> sets.has_set_bonus( SET_T16_2PC_MELEE ) && p() -> buff.combo_breaker_bok -> check() ) {
       // damage increased by 40% for WW 2pc upon CB
       m *= 1.4;
-    }
+  }
 
     return m;
   }
@@ -1284,10 +1260,6 @@ struct chi_explosion_t : public monk_melee_attack_t
           p() -> buff.shuffle -> trigger();
         }
       }
-      if ( p() -> spec.teachings_of_the_monastery -> ok() )
-      {
-        p() -> buff.serpents_zeal -> trigger();
-      }
     }
   }
 
@@ -1295,15 +1267,12 @@ struct chi_explosion_t : public monk_melee_attack_t
   {
     monk_melee_attack_t::execute();
 
-    consume_muscle_memory();
   }
 
   virtual double action_multiplier() const
   {
     double m = monk_melee_attack_t::action_multiplier();
 
-    if ( p() -> buff.muscle_memory -> check() )
-      m *= 1.0 + p() -> find_spell( 139597 ) -> effectN( 1 ).percent();
 
     // check for melee 2p and CB: TP, for the 50% dmg bonus
     if ( p() -> sets.has_set_bonus( SET_T16_2PC_MELEE ) && p() -> buff.combo_breaker_ce -> check() ) {
@@ -1543,8 +1512,7 @@ struct spinning_crane_kick_t : public monk_melee_attack_t
       else
         chi_gain = data().effectN( 4 ).base_value();
       player -> resource_gain( RESOURCE_CHI, chi_gain, p() -> gain.spinning_crane_kick, this );
-      if ( p() -> spec.muscle_memory -> ok() )
-        p() -> buff.muscle_memory -> trigger();
+
     }
   }
 };
@@ -2991,8 +2959,7 @@ struct surging_mist_t : public monk_heal_t
   {
     double c = monk_heal_t::cost();
 
-    if ( p() -> buff.vital_mists -> up() )
-      c *= 1.0 + p() -> buff.vital_mists -> stack() * p() -> buff.vital_mists -> data().effectN( 2 ).percent();
+
 
     return c;
   }
@@ -3004,17 +2971,12 @@ struct surging_mist_t : public monk_heal_t
     if ( p() -> buff.channeling_soothing_mist -> check() )
       return timespan_t::zero();
 
-    if ( p() -> buff.vital_mists -> up() )
-      et *= 1.0 + p() -> buff.vital_mists -> stack() * p() -> buff.vital_mists -> data().effectN( 1 ).percent();
-
     return et;
   }
 
   virtual void execute()
   {
     monk_heal_t::execute();
-
-    p() -> buff.vital_mists -> expire();
 
     player -> resource_gain( RESOURCE_CHI, p() -> find_spell( 116694 ) -> effectN( 2 ).base_value(), p() -> gain.surging_mist, this );
   }
@@ -3358,7 +3320,8 @@ void monk_t::init_spells()
   // Mistweaver Passives
   spec.brewing_mana_tea           = find_specialization_spell( "Brewing: Mana Tea" );
   spec.mana_meditation            = find_specialization_spell( "Mana Meditation" );
-  spec.muscle_memory              = find_specialization_spell( "Muscle Memory" );
+  spec.focus_and_harmony          = find_specialization_spell( "Focus and Harmony" );
+  spec.crane_style_techniques     = find_specialization_spell( "Crane Style Techniques" ); //To-do: Implement
   spec.teachings_of_the_monastery = find_specialization_spell( "Teachings of the Monastery" );
 
   // Stance
@@ -3405,7 +3368,6 @@ void monk_t::init_base_stats()
   base_t::init_base_stats();
 
   base.distance = ( specialization() == MONK_MISTWEAVER ) ? 40 : 3;
-
   base_gcd = timespan_t::from_seconds( 1.0 );
 
   resources.base[  RESOURCE_CHI  ] = 4 + talent.ascension -> effectN( 1 ).base_value();
@@ -3500,9 +3462,6 @@ void monk_t::create_buffs()
   // Mistweaver
   buff.channeling_soothing_mist = buff_creator_t( this, "channeling_soothing_mist" ).spell( spell_data_t::nil()  );
   buff.mana_tea                 = buff_creator_t( this, "mana_tea"                 ).spell( find_spell( 115867 ) );
-  buff.muscle_memory            = buff_creator_t( this, "muscle_memory"            ).spell( find_spell( 139597 ) );
-  buff.serpents_zeal            = buff_creator_t( this, "serpents_zeal"            ).spell( find_spell( 127722 ) );
-  buff.vital_mists              = buff_creator_t( this, "vital_mists"              ).spell( find_spell( 118674 ) );
 
   // Windwalker
   buff.chi_sphere        = buff_creator_t( this, "chi_sphere"          ).max_stack( 5 );
@@ -3534,7 +3493,6 @@ void monk_t::init_gains()
   gain.jab                   = get_gain( "jab"                      );
   gain.keg_smash             = get_gain( "keg_smash"                );
   gain.mana_tea              = get_gain( "mana_tea"                 );
-  gain.muscle_memory         = get_gain( "muscle_memory"            );
   gain.renewing_mist         = get_gain( "renewing_mist"            );
   gain.soothing_mist         = get_gain( "soothing_mist"            );
   gain.spinning_crane_kick   = get_gain( "spinning_crane_kick"      );
@@ -4349,11 +4307,11 @@ void monk_t::apl_combat_mistweaver()
 
 
   st_list_str += "/crackling_jade_lightning,if=buff.bloodlust.up&buff.lucidity.up";
-  st_list_str += "/tiger_palm,if=buff.muscle_memory.up&buff.lucidity.up";
+  st_list_str += "/tiger_palm,if=buff.lucidity.up";
   st_list_str += "/jab,if=buff.lucidity.up";
-  st_list_str += "/tiger_palm,if=buff.muscle_memory.up&!buff.tiger_power.up";
-  st_list_str += "/blackout_kick,if=buff.muscle_memory.up&buff.tiger_power.up&chi>1";
-  st_list_str += "/tiger_palm,if=buff.muscle_memory.up&buff.tiger_power.up";
+  st_list_str += "/tiger_palm,if=!buff.tiger_power.up";
+  st_list_str += "/blackout_kick,if=buff.tiger_power.up&chi>1";
+  st_list_str += "/tiger_palm,if=buff.tiger_power.up";
   st_list_str += "/chi_wave,if=talent.chi_wave.enabled";
   st_list_str += "/zen_sphere,cycle_targets=1,if=talent.zen_sphere.enabled&!dot.zen_sphere.ticking";
   st_list_str += "/jab";
@@ -4363,8 +4321,8 @@ void monk_t::apl_combat_mistweaver()
   aoe_list_str += "/rushing_jade_wind,if=talent.rushing_jade_wind.enabled";
   aoe_list_str += "/zen_sphere,cycle_targets=1,if=talent.zen_sphere.enabled&!dot.zen_sphere.ticking";
   aoe_list_str += "/chi_burst,if=talent.chi_burst.enabled";
-  aoe_list_str += "/tiger_palm,if=buff.muscle_memory.up&!buff.tiger_power.up";
-  aoe_list_str += "/blackout_kick,if=buff.muscle_memory.up&buff.tiger_power.up&chi>1";
+  aoe_list_str += "/tiger_palm,if=!buff.tiger_power.up";
+  aoe_list_str += "/blackout_kick,if=buff.tiger_power.up&chi>1";
   aoe_list_str += "/jab,if=talent.rushing_jade_wind.enabled";
 }
 
