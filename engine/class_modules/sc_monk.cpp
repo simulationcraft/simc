@@ -2154,66 +2154,68 @@ struct spinning_fire_blossom_t : public monk_spell_t
  * So only 4 ticks will occur in a single target simming scenario. Alternate scenarios need to be determined.
  * TODO: Need to add decrementing buff to handle bouncing mechanic. 
 */
+
+
+struct chi_wave_heal_tick_t : public monk_heal_t
+{
+  chi_wave_heal_tick_t( monk_t& p, const std::string& name ) :
+    monk_heal_t( name, p, p.talent.chi_wave )
+  {
+    background    = true;
+    direct_tick   = true;
+    attack_power_mod.direct = 0.757;
+    target = player;
+  }
+};
+
+struct chi_wave_dmg_tick_t : public monk_spell_t
+{
+  chi_wave_dmg_tick_t( monk_t* player, const std::string& name ) :
+    monk_spell_t( name, player, player -> talent.chi_wave )
+  {
+    background    = true;
+    direct_tick   = true;
+    attack_power_mod.direct = 0.757; // hardcoded into tooltip of 115098
+  }
+};
+
 struct chi_wave_t : public monk_spell_t
 {
-  struct direct_heal_t : public monk_heal_t
-  {
-    direct_heal_t( monk_t* p ) :
-      monk_heal_t( "chi_wave_heal", *p )
-    {
-
-    }
-  };
-
-  struct direct_damage_t : public monk_spell_t
-  {
-    direct_damage_t( monk_t* p ) :
-      monk_spell_t( "chi_wave_dd", p, p -> find_spell( 115098 ) )
-    {
-      attack_power_mod.direct = 0.757; // hardcoded into tooltip of 115098
-
-      background = true;
-    }
-  };
-
-  direct_heal_t* heal;
-  direct_damage_t* damage;
-  bool use_damage;
-
+  spell_t* damage;
+  heal_t* heal;
+  bool dmg;
   chi_wave_t( monk_t* player, const std::string& options_str  ) :
     monk_spell_t( "chi_wave", player, player -> talent.chi_wave ),
-    heal( new direct_heal_t( player ) ),
-    damage( new direct_damage_t( player ) ),
-    use_damage( true )
+    heal( new chi_wave_heal_tick_t( *player, "chi_wave_heal") ),
+    damage( new chi_wave_dmg_tick_t( player, "chi_wave_damage" ) ),
+    dmg( true )
   {
     parse_options( nullptr, options_str );
-    num_ticks = 4;
     hasted_ticks   = false;
+    num_ticks = 8;
     base_tick_time = timespan_t::from_seconds( 1.0 );
-    school = SCHOOL_NATURE;
-
-    attack_power_mod.direct = spell_power_mod.direct = base_dd_min = base_dd_max = 0;
-
-    special = false;
+    add_child( heal );
+    add_child( damage );
+    tick_zero = true;
+    harmful=false;
   }
 
-  virtual void impact( action_state_t* s ) override
+  virtual void impact( action_state_t* s ) 
   {
-    use_damage = true; // Set flag so that the first tick does damage
+    dmg = true; // Set flag so that the first tick does damage
     monk_spell_t::impact( s );
   }
 
-  virtual void tick( dot_t* d ) override
+  virtual void tick( dot_t* d )
   {
-    // Select appropriate tick action
-    if ( use_damage )
-      tick_action = damage;
-    else
-      tick_action = heal;
-
-    use_damage = !use_damage; // Invert flag for next use
-
     monk_spell_t::tick( d );
+    // Select appropriate tick action
+    if ( dmg )
+      damage -> execute();
+    else
+      heal -> execute();
+
+    dmg = !dmg; // Invert flag for next use
   }
 };
 
