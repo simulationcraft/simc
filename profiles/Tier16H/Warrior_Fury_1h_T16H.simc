@@ -60,6 +60,7 @@ actions.single_target+=/raging_blow,if=buff.raging_blow.stack=2&debuff.colossus_
 actions.single_target+=/bloodthirst,if=!(target.health.pct<20&debuff.colossus_smash.up&rage>=30&buff.enrage.up)
 # The GCD reduction of the Bloodsurge buff allows 3 Wild Strikes in-between Bloodthirst.
 actions.single_target+=/wild_strike,if=buff.bloodsurge.react&target.health.pct>=20&cooldown.bloodthirst.remains<=1
+actions.single_target+=/dragon_roar,if=talent.dragon_roar.enabled&((!debuff.colossus_smash.up&(buff.bloodbath.up|!talent.bloodbath.enabled)))
 # The debuff from Colossus Smash lasts 6.5 seconds and also has 0.25~ seconds of travel time. This allows 4 1.5 second globals to be used inside of it every time now.
 actions.single_target+=/colossus_smash
 actions.single_target+=/storm_bolt,if=talent.storm_bolt.enabled&cooldown.colossus_smash.remains>3
