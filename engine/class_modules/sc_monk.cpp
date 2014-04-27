@@ -2192,7 +2192,7 @@ struct chi_wave_t : public monk_spell_t
   {
     parse_options( nullptr, options_str );
     hasted_ticks   = false;
-    num_ticks = 8;
+    num_ticks = 7;
     base_tick_time = timespan_t::from_seconds( 1.0 );
     add_child( heal );
     add_child( damage );
