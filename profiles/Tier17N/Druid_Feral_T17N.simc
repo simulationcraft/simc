@@ -1,0 +1,102 @@
+druid="Druid_Feral_T17N"
+level=100
+race=troll
+role=attack
+position=back
+professions=engineering=600/alchemy=600
+talents=http://us.battle.net/wow/en/tool/talent-calculator#UZ!...2.1.
+glyphs=cat_form
+spec=feral
+
+# This default action priority list is automatically created based on your character.
+# It is a attempt to provide you with a action list that is both simple and practicable,
+# while resulting in a meaningful and good simulation. It may not result in the absolutely highest possible dps.
+# Feel free to edit, adapt and improve it to your own needs.
+# SimulationCraft is always looking for updates and improvements to the default action lists.
+
+# Executed before combat begins. Accepts non-harmful actions only.
+
+actions.precombat=flask,type=spring_blossoms
+actions.precombat+=/food,type=sea_mist_rice_noodles
+actions.precombat+=/mark_of_the_wild,if=!aura.str_agi_int.up
+actions.precombat+=/cat_form
+actions.precombat+=/prowl
+# Snapshot raid buffed stats before combat begins and pre-potting is done.
+actions.precombat+=/snapshot_stats
+actions.precombat+=/virmens_bite_potion
+
+# Executed every time the actor is available.
+
+actions=pounce,if=buff.prowl.up
+actions+=/auto_attack
+# Keep Rip from falling off during execute range.
+actions+=/ferocious_bite,cycle_targets=1,if=dot.rip.ticking&dot.rip.remains<=3&target.health.pct<=25
+actions+=/faerie_fire,cycle_targets=1,if=debuff.physical_vulnerability.down
+actions+=/savage_roar,if=buff.savage_roar.remains<3
+actions+=/virmens_bite_potion,if=target.time_to_die<=40
+actions+=/use_item,slot=waist,sync=tigers_fury
+actions+=/blood_fury,sync=tigers_fury
+actions+=/berserking,sync=tigers_fury
+actions+=/arcane_torrent,sync=tigers_fury
+actions+=/tigers_fury,if=energy<=35&!buff.omen_of_clarity.react
+actions+=/virmens_bite_potion,sync=berserk,if=target.health.pct<25
+actions+=/berserk,if=buff.tigers_fury.up
+actions+=/thrash_cat,if=buff.omen_of_clarity.react&dot.thrash_cat.remains<3
+actions+=/rip,cycle_targets=1,if=dot.rip.remains<2&combo_points>=5
+# Apply the strongest possible Rip during execute.
+actions+=/rip,cycle_targets=1,if=target.health.pct<25&combo_points>=5&action.rip.tick_multiplier>dot.rip.multiplier
+actions+=/rake,cycle_targets=1,if=!talent.bloody_thrash.enabled&dot.rake.remains<3
+actions+=/rake,cycle_targets=1,if=!talent.bloody_thrash.enabled&action.rake.tick_multiplier>dot.rake.multiplier
+actions+=/moonfire,cycle_targets=1,if=talent.lunar_inspiration.enabled&dot.moonfire.remains<3
+# Pool energy for Thrash.
+actions+=/pool_resource,for_next=1
+actions+=/thrash_cat,cycle_targets=1,if=talent.bloody_thrash.enabled&(dot.rake.remains<3|action.rake.tick_multiplier>dot.rake.multiplier)
+actions+=/ferocious_bite,if=combo_points>=5&(energy.time_to_max<=1|buff.berserk.up)&dot.rip.remains>=4
+# Cast a CP generator.
+actions+=/run_action_list,name=filler,if=combo_points<5
+actions+=/natures_vigil,if=talent.natures_vigil.enabled
+actions+=/healing_touch,if=buff.natures_vigil.up&buff.predatory_swiftness.up
+actions+=/rejuvenation,if=buff.natures_vigil.up&!ticking
+actions+=/faerie_fire,cycle_targets=1,if=debuff.physical_vulnerability.remains>0
+
+# Pool energy for Ravage.
+actions.filler=pool_resource,for_next=1
+actions.filler+=/ravage
+# Pool energy for Swipe.
+actions.filler+=/pool_resource,for_next=1
+actions.filler+=/swipe,if=active_enemies>1
+# Rake for CP if it hits harder than Shred.
+actions.filler+=/rake,if=action.rake.hit_damage>=action.shred.hit_damage
+actions.filler+=/shred
+
+head=headpiece_of_the_shattered_vale,id=99328,upgrade=2,gems=capacitive_primal_8agi_9agi
+neck=immerseus_crystalline_eye,id=105407,upgrade=2
+shoulders=spaulders_of_the_shattered_vale,id=99322,upgrade=2,gems=8agi_8agi_6agi,enchant=10agi_5crit
+back=fenyu_fury_of_xuen,id=102248,upgrade=2,gems=8agi_3agi,enchant=9hit,addon=goblin_glider
+chest=raiment_of_the_shattered_vale,id=99326,upgrade=2,gems=8agi_8agi_8agi_9agi,enchant=4all
+wrists=bombers_blackened_wristwatch,id=105616,upgrade=2,enchant=9agi
+hands=grips_of_the_shattered_vale,id=99327,upgrade=2,gems=8agi_8agi_6agi,enchant=9haste
+waist=cord_of_black_dreams,id=105635,upgrade=2,gems=8agi_4agi_8crit_8agi_6agi,addon=nitro_boosts
+legs=rious_vigilant_leggings,id=105529,upgrade=2,gems=4agi_8crit_4agi_8crit_6agi,enchant=14agi_8crit
+feet=pandaren_roofsprinters,id=105582,upgrade=2,gems=4agi_8crit_3mastery,enchant=7agi
+finger1=kilruks_band_of_ascendancy,id=105624,upgrade=2,gems=8agi_3crit
+finger2=ring_of_restless_energy,id=105558,upgrade=2,gems=8agi_3crit
+trinket1=rune_of_reorigination,id=96918,upgrade=2
+trinket2=haromms_talisman,id=105527,upgrade=2
+main_hand=halberd_of_inner_shadows,id=105560,upgrade=2,gems=4agi_8crit_3agi,enchant=dancing_steel
+
+# Gear Summary
+# gear_strength=4
+# gear_agility=1229
+# gear_stamina=1539
+# gear_intellect=4
+# gear_spirit=4
+# gear_hit_rating=9
+# gear_crit_rating=470
+# gear_haste_rating=374
+# gear_mastery_rating=528
+# gear_armor=414
+# gear_multistrike_rating=99
+# meta_gem=capacitive_primal
+# tier16_2pc_melee=1
+# tier16_4pc_melee=1

@@ -1,0 +1,82 @@
+mage="Mage_Arcane_T17N"
+level=100
+race=troll
+role=spell
+position=back
+professions=tailoring=600/engineering=600
+talents=http://us.battle.net/wow/en/tool/talent-calculator#ea!0...11.
+glyphs=arcane_power
+spec=arcane
+
+# This default action priority list is automatically created based on your character.
+# It is a attempt to provide you with a action list that is both simple and practicable,
+# while resulting in a meaningful and good simulation. It may not result in the absolutely highest possible dps.
+# Feel free to edit, adapt and improve it to your own needs.
+# SimulationCraft is always looking for updates and improvements to the default action lists.
+
+# Executed before combat begins. Accepts non-harmful actions only.
+
+actions.precombat=flask,type=warm_sun
+actions.precombat+=/food,type=mogu_fish_stew
+actions.precombat+=/arcane_brilliance
+actions.precombat+=/snapshot_stats
+actions.precombat+=/rune_of_power
+actions.precombat+=/jade_serpent_potion
+actions.precombat+=/mirror_image
+
+# Executed every time the actor is available.
+
+actions=counterspell,if=target.debuff.casting.react
+actions+=/time_warp,if=target.health.pct<25|time>5
+actions+=/rune_of_power,if=buff.rune_of_power.remains<cast_time
+actions+=/rune_of_power,if=cooldown.arcane_power.remains=0&buff.rune_of_power.remains<buff.arcane_power.duration
+actions+=/mirror_image
+actions+=/arcane_power,if=time_to_bloodlust>180&((buff.rune_of_power.remains>=buff.arcane_power.duration&buff.arcane_missiles.stack=2&buff.arcane_charge.stack>2)|target.time_to_die<buff.arcane_power.duration+5),moving=0
+actions+=/berserking,if=(buff.arcane_power.up|target.time_to_die<18)
+actions+=/jade_serpent_potion,if=(buff.arcane_power.up|target.time_to_die<50)
+actions+=/run_action_list,name=aoe,if=active_enemies>=6
+actions+=/run_action_list,name=single_target,if=active_enemies<6
+
+actions.aoe=arcane_barrage,if=buff.arcane_charge.stack>=4
+actions.aoe+=/arcane_explosion
+
+actions.single_target=arcane_blast,if=buff.profound_magic.up&buff.arcane_charge.stack>3&mana.pct>93
+actions.single_target+=/arcane_missiles,if=(buff.arcane_missiles.stack=2&cooldown.arcane_power.remains>0)|(buff.arcane_charge.stack>=4&cooldown.arcane_power.remains>8)
+actions.single_target+=/arcane_barrage,if=buff.arcane_charge.stack>=4&mana.pct<95
+actions.single_target+=/arcane_blast
+actions.single_target+=/arcane_barrage,moving=1
+actions.single_target+=/fire_blast,moving=1
+
+head=ebon_ritual_hood,id=105647,upgrade=2,gems=sinister_primal_8haste_8mastery_9int
+neck=untainted_guardians_chain,id=105465,upgrade=2
+shoulders=chronomancer_mantle,id=99401,upgrade=2,gems=8haste_8mastery_8haste_8mastery_6int,enchant=10int_5crit
+back=xingho_breath_of_yulon,id=102246,upgrade=2,gems=4int_8mastery_3int,enchant=9crit
+chest=chronomancer_robes,id=99400,upgrade=2,gems=8haste_8mastery_8haste_8mastery_8haste_8mastery_9int,enchant=4all
+wrists=avools_ancestral_bracers,id=105591,upgrade=2,enchant=9int
+hands=chronomancer_gloves,id=99397,upgrade=2,gems=8haste_8mastery_8haste_8mastery_6int,enchant=9mastery
+waist=belt_of_ominous_trembles,id=105515,upgrade=2,gems=8haste_8mastery_8crit_8mastery_16mastery_6int
+legs=chronomancer_leggings,id=99399,upgrade=2,gems=16mastery_16mastery_6int,enchant=14int_8crit
+feet=boneinlaid_sandals,id=105493,upgrade=2,gems=16mastery_3hit,enchant=7mastery
+finger1=iyyokuks_hereditary_seal,id=105628,upgrade=2
+finger2=signet_of_the_dinomancers,id=105606,upgrade=2,gems=16mastery
+trinket1=purified_bindings_of_immerseus,id=105422,upgrade=2
+trinket2=kardris_toxic_totem,id=105540,upgrade=2
+main_hand=immaculately_preserved_wand,id=105594,upgrade=2,gems=8haste_8mastery_3int,enchant=jade_spirit
+off_hand=revelations_of_yshaarj,id=105650,upgrade=2,gems=8haste_8mastery_3int,enchant=8int
+
+# Gear Summary
+# gear_strength=4
+# gear_agility=4
+# gear_stamina=1536
+# gear_intellect=1036
+# gear_spirit=4
+# gear_spell_power=590
+# gear_hit_rating=3
+# gear_crit_rating=435
+# gear_haste_rating=442
+# gear_mastery_rating=732
+# gear_armor=284
+# gear_multistrike_rating=99
+# meta_gem=sinister_primal
+# tier16_2pc_caster=1
+# tier16_4pc_caster=1

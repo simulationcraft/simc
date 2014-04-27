@@ -3,7 +3,7 @@ talent_format=armory
 
 # Warrior Arms T17N
 
-warrior="Warrior_Arms_T16H_lvl_100"
+warrior="Warrior_Arms_T17N"
 level=100
 race=orc
 spec=arms
@@ -33,7 +33,7 @@ save=Warrior_Arms_T17N.simc
 
 
 # Warrior Fury 1h T17N
-warrior="Warrior_Fury_1h_T16H_lvl_100"
+warrior="Warrior_Fury_1h_T17N"
 level=100
 race=orc
 spec=fury
@@ -68,7 +68,7 @@ save=Warrior_Fury_1h_T17N.simc
 
 
 # Warrior Fury 2h T17N
-warrior="Warrior_Fury_2h_T16H_lvl_100"
+warrior="Warrior_Fury_2h_T17N"
 level=100
 race=orc
 spec=fury
@@ -99,7 +99,7 @@ save=Warrior_Fury_2h_T17N.simc
 
 
 # Warrior Protection T17N
-warrior="Warrior_Protection_T16H_lvl_100"
+warrior="Warrior_Protection_T17N"
 level=100
 race=night_elf
 role=tank
@@ -130,7 +130,7 @@ save=Warrior_Protection_T17N.simc
 
 
 # Warrior Gladiator T17N
-warrior="Warrior_Gladiator_T16H_lvl_100"
+warrior="Warrior_Gladiator_T17N"
 level=100
 race=orc
 role=attack

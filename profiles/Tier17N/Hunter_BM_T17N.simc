@@ -1,0 +1,79 @@
+hunter="Hunter_BM_T17N"
+level=100
+race=orc
+role=attack
+position=ranged_back
+professions=enchanting=600/engineering=600
+talents=http://us.battle.net/wow/en/tool/talent-calculator#Ya!...100.
+spec=beast_mastery
+
+# This default action priority list is automatically created based on your character.
+# It is a attempt to provide you with a action list that is both simple and practicable,
+# while resulting in a meaningful and good simulation. It may not result in the absolutely highest possible dps.
+# Feel free to edit, adapt and improve it to your own needs.
+# SimulationCraft is always looking for updates and improvements to the default action lists.
+
+# Executed before combat begins. Accepts non-harmful actions only.
+
+actions.precombat=flask,type=spring_blossoms
+actions.precombat+=/food,type=sea_mist_rice_noodles
+actions.precombat+=/summon_pet
+actions.precombat+=/snapshot_stats
+actions.precombat+=/virmens_bite_potion
+
+# Executed every time the actor is available.
+
+actions=virmens_bite_potion,if=target.time_to_die<=25|buff.stampede.up
+actions+=/auto_shot
+actions+=/explosive_trap,if=active_enemies>1
+actions+=/blood_fury
+actions+=/dire_beast,if=enabled
+actions+=/fervor,if=enabled&focus<=65
+actions+=/bestial_wrath,if=focus>60&!buff.beast_within.up
+actions+=/multi_shot,if=active_enemies>5|(active_enemies>1&buff.beast_cleave.down)
+actions+=/stampede,if=enabled&(trinket.stat.agility.up|target.time_to_die<=20|(trinket.stacking_stat.agility.stack>10&trinket.stat.agility.cooldown_remains<=3))
+actions+=/barrage,if=enabled&active_enemies>5
+actions+=/kill_shot
+actions+=/kill_command
+actions+=/a_murder_of_crows,if=enabled&!ticking
+actions+=/glaive_toss,if=enabled
+actions+=/barrage,if=enabled
+actions+=/powershot,if=enabled
+actions+=/cobra_shot,if=active_enemies>5
+actions+=/arcane_shot,if=buff.thrill_of_the_hunt.react|buff.beast_within.up
+actions+=/focus_fire,five_stacks=1
+actions+=/arcane_shot,if=focus>=61
+actions+=/cobra_shot
+
+head=headguard_of_the_unblinking_vigil,id=99402,upgrade=2,gems=capacitive_primal_8haste_8crit_9agi
+neck=immerseus_crystalline_eye,id=105407,upgrade=2
+shoulders=spaulders_of_the_unblinking_vigil,id=99404,upgrade=2,gems=8agi_8agi_6agi,enchant=10agi_5crit
+back=fenyu_fury_of_xuen,id=102248,upgrade=2,gems=8agi_3agi,enchant=9hit
+chest=ancient_archers_chestguard,id=105585,upgrade=2,gems=8agi_8agi_4agi_8mastery_9agi,enchant=4all
+wrists=bracers_of_infinite_pipes,id=105617,upgrade=2,enchant=9agi
+hands=gloves_of_the_unblinking_vigil,id=99406,upgrade=2,gems=8agi_8agi_6agi,enchant=9haste
+waist=arrowflight_girdle,id=105584,upgrade=2,gems=8agi_4agi_8mastery_8agi_6agi
+legs=legguards_of_the_unblinking_vigil,id=99403,upgrade=2,gems=4agi_8mastery_4agi_8mastery_6agi,enchant=14agi_8crit
+feet=ravagers_pathwalkers,id=105553,upgrade=2,gems=8agi_3agi,enchant=7agi
+finger1=ring_of_restless_energy,id=105558,upgrade=2,gems=8agi_3crit
+finger2=kilruks_band_of_ascendancy,id=105624,upgrade=2,gems=8agi_3crit
+trinket1=assurance_of_consequence,id=105472,upgrade=2
+trinket2=ticking_ebon_detonator,id=105612,upgrade=2
+main_hand=korkron_hand_cannon,id=105559,upgrade=2,gems=8agi_3agi,enchant=lord_blastingtons_scope_of_doom
+
+# Gear Summary
+# gear_strength=4
+# gear_agility=1157
+# gear_stamina=1539
+# gear_intellect=4
+# gear_spirit=4
+# gear_hit_rating=9
+# gear_crit_rating=487
+# gear_haste_rating=483
+# gear_mastery_rating=504
+# gear_armor=721
+# gear_readiness_rating=99
+# meta_gem=capacitive_primal
+# tier16_2pc_melee=1
+# tier16_4pc_melee=1
+summon_pet=cat
