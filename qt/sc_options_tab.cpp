@@ -346,10 +346,10 @@ void SC_OptionsTab::createPlotsTab()
   plotsLayout -> setFieldGrowthPolicy( QFormLayout::FieldsStayAtSizeHint );
 
   // Create Combo Boxes
-  choice.plots_points = addValidatorToComboBox( 1, INT_MAX, createChoice( 4, "20", "30", "40", "50" ) );
+  choice.plots_points = addValidatorToComboBox( 1, INT_MAX, createChoice( 4, "10", "20", "30", "40" ) );
   plotsLayout -> addRow( tr( "Number of Plot Points" ), choice.plots_points );
 
-  choice.plots_step = addValidatorToComboBox( 1, INT_MAX, createChoice( 6, "5", "10", "25", "50", "75", "100" ) );
+  choice.plots_step = addValidatorToComboBox( 1, INT_MAX, createChoice( 6, "50", "100", "150", "200", "250", "300" ) );
   plotsLayout -> addRow( tr( "Plot Step Amount" ), choice.plots_step );
 
   plotsButtonGroup = new QButtonGroup();
@@ -376,10 +376,10 @@ void SC_OptionsTab::createReforgePlotsTab()
   reforgePlotsLayout -> setFieldGrowthPolicy( QFormLayout::FieldsStayAtSizeHint );
 
   // Create Combo Boxes
-  choice.reforgeplot_amount = addValidatorToComboBox( 1, INT_MAX, createChoice( 10, "5", "10", "25", "50", "75", "100", "150", "200", "300", "500" ) );
+  choice.reforgeplot_amount = addValidatorToComboBox( 1, INT_MAX, createChoice( 10, "250", "500", "750", "1000", "1250", "1500", "2000", "2500", "3000", "5000" ) );
   reforgePlotsLayout -> addRow( tr( "Reforge Amount" ), choice.reforgeplot_amount );
 
-  choice.reforgeplot_step = addValidatorToComboBox( 1, INT_MAX, createChoice( 6, "1", "5", "10", "25", "50", "100" ) );
+  choice.reforgeplot_step = addValidatorToComboBox( 1, INT_MAX, createChoice( 6, "50", "100", "200", "500", "750", "1000" ) );
   reforgePlotsLayout -> addRow( tr( "Step Amount" ), choice.reforgeplot_step );
 
   QLabel* messageText = new QLabel( tr( "A maximum of three stats may be ran at once.\n" ) );
@@ -541,12 +541,12 @@ void SC_OptionsTab::decodeOptions()
   load_setting( settings, "center_scale_delta", choice.center_scale_delta, "No" );
   load_setting( settings, "scale_over", choice.scale_over );
 
-  load_setting( settings, "plot_points", choice.plots_points );
+  load_setting( settings, "plot_points", choice.plots_points, "10" );
   load_setting( settings, "plot_step", choice.plots_step, "100" );
 
 
-  load_setting( settings, "reforgeplot_amount", choice.reforgeplot_amount, "25" );
-  load_setting( settings, "reforgeplot_step", choice.reforgeplot_step, "5" );
+  load_setting( settings, "reforgeplot_amount", choice.reforgeplot_amount, "500" );
+  load_setting( settings, "reforgeplot_step", choice.reforgeplot_step, "50" );
 
 
   load_buff_debuff_group( settings, "buff_buttons", buffsButtonGroup );
