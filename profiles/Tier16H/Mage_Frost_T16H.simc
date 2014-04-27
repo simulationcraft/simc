@@ -37,7 +37,6 @@ actions+=/icy_veins,if=time_to_bloodlust>180&((buff.brain_freeze.react|buff.fing
 actions+=/berserking,if=buff.icy_veins.up|target.time_to_die<18
 actions+=/jade_serpent_potion,if=buff.icy_veins.up|target.time_to_die<45
 actions+=/use_item,slot=hands,if=buff.rune_of_power.remains>20|target.time_to_die<25
-actions+=/flamestrike,if=active_enemies>=5
 actions+=/frostfire_bolt,if=buff.brain_freeze.up
 actions+=/ice_lance,if=buff.fingers_of_frost.up
 actions+=/frostfire_bolt,if=buff.brain_freeze.react&cooldown.icy_veins.remains>2

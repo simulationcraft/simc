@@ -43,13 +43,11 @@ actions.aoe+=/pestilence,if=dot.blood_plague.ticking&talent.unholy_blight.enable
 actions.aoe+=/summon_gargoyle
 actions.aoe+=/dark_transformation
 actions.aoe+=/blood_tap,if=talent.blood_tap.enabled&buff.shadow_infusion.stack=5
-actions.aoe+=/blood_boil,if=blood=2|death=2
 actions.aoe+=/death_and_decay,if=unholy=1
 actions.aoe+=/soul_reaper,if=unholy=2&target.health.pct-3*(target.health.pct%target.time_to_die)<=35
 actions.aoe+=/scourge_strike,if=unholy=2
 actions.aoe+=/blood_tap,if=talent.blood_tap.enabled&buff.blood_charge.stack>10
 actions.aoe+=/death_coil,if=runic_power>90|buff.sudden_doom.react|(buff.dark_transformation.down&rune.unholy<=1)
-actions.aoe+=/blood_boil
 actions.aoe+=/icy_touch
 actions.aoe+=/soul_reaper,if=unholy=1&target.health.pct-3*(target.health.pct%target.time_to_die)<=35
 actions.aoe+=/scourge_strike,if=unholy=1
@@ -113,5 +111,6 @@ main_hand=xalatoh_desecrated_image_of_gorehowl,id=105644,upgrade=2,gems=80str_16
 # gear_haste_rating=418
 # gear_mastery_rating=522
 # gear_armor=1210
+# gear_readiness_rating=99
 # meta_gem=capacitive_primal
 # tier16_2pc_melee=1

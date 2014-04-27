@@ -89,6 +89,8 @@ off_hand=shield_of_mockery,id=105481,upgrade=2
 # gear_crit_rating=895
 # gear_haste_rating=297
 # gear_mastery_rating=420
-# gear_armor=2073
+# gear_armor=2037
+# gear_bonus_armor=36
+# gear_readiness_rating=99
 # meta_gem=capacitive_primal
 # tier16_2pc_melee=1

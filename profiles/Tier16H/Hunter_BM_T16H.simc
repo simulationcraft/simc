@@ -74,6 +74,7 @@ main_hand=korkron_hand_cannon,id=105559,upgrade=2,gems=160agi_60agi,enchant=lord
 # gear_haste_rating=636
 # gear_mastery_rating=1112
 # gear_armor=721
+# gear_readiness_rating=99
 # meta_gem=capacitive_primal
 # tier16_2pc_melee=1
 # tier16_4pc_melee=1

@@ -20,7 +20,6 @@ actions.precombat=flask,type=earth
 actions.precombat+=/food,type=chun_tian_spring_rolls
 actions.precombat+=/blessing_of_kings,if=(!aura.str_agi_int.up)&(aura.mastery.up)
 actions.precombat+=/blessing_of_might,if=!aura.mastery.up
-actions.precombat+=/seal_of_insight
 actions.precombat+=/sacred_shield,if=talent.sacred_shield.enabled
 # Snapshot raid buffed stats before combat begins and pre-potting is done.
 actions.precombat+=/snapshot_stats
@@ -76,9 +75,11 @@ off_hand=bulwark_of_the_fallen_general,id=105556,upgrade=2,gems=320haste,enchant
 # gear_crit_rating=451
 # gear_haste_rating=6868
 # gear_mastery_rating=526
-# gear_armor=2076
+# gear_armor=2041
+# gear_bonus_armor=35
 # gear_dodge_rating=265
 # gear_parry_rating=170
+# gear_readiness_rating=99
 # meta_gem=indomitable_primal
 # tier16_2pc_tank=1
 # tier16_4pc_tank=1

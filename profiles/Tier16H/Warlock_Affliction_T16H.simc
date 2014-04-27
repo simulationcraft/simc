@@ -47,7 +47,6 @@ actions+=/agony,cycle_targets=1,if=!ticking
 actions+=/corruption,cycle_targets=1,if=(!ticking|remains<tick_time)&target.time_to_die>=6&miss_react
 actions+=/unstable_affliction,cycle_targets=1,if=(!ticking|remains<(cast_time+tick_time))&target.time_to_die>=5&miss_react
 actions+=/life_tap,if=buff.dark_soul.down&buff.bloodlust.down&mana.pct<50
-actions+=/malefic_grasp,chain=1,interrupt_if=target.health.pct<=20
 actions+=/life_tap,moving=1,if=mana.pct<80&mana.pct<target.health.pct
 actions+=/life_tap
 

@@ -5614,7 +5614,7 @@ struct snapshot_stats_t : public action_t
     buffed_stats.resource     = p -> resources.max;
 
     buffed_stats.spell_haste  = p -> cache.spell_haste();
-    //buffed_stats.spell_speed  = p -> cache.spell_speed(); Spell speed is removed in WoD, I believe.
+    buffed_stats.spell_speed  = p -> cache.spell_speed();
     buffed_stats.attack_haste = p -> cache.attack_haste();
     buffed_stats.attack_speed = p -> cache.attack_speed();
     buffed_stats.mastery_value = p -> cache.mastery_value();

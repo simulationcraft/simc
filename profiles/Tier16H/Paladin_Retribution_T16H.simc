@@ -90,6 +90,7 @@ main_hand=britomarts_jagged_pike,id=105610,upgrade=2,gems=320haste_60str,enchant
 # gear_haste_rating=5194
 # gear_mastery_rating=412
 # gear_armor=1191
+# gear_readiness_rating=99
 # meta_gem=capacitive_primal
 # tier16_2pc_melee=1
 # tier16_4pc_melee=1

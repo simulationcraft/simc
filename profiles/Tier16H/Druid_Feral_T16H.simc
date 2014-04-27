@@ -5,7 +5,7 @@ role=attack
 position=back
 professions=engineering=600/alchemy=600
 talents=http://us.battle.net/wow/en/tool/talent-calculator#UZ!...2.1.
-glyphs=savagery/cat_form
+glyphs=cat_form
 spec=feral
 
 # This default action priority list is automatically created based on your character.
@@ -34,6 +34,7 @@ actions+=/ferocious_bite,cycle_targets=1,if=dot.rip.ticking&dot.rip.remains<=3&t
 actions+=/faerie_fire,cycle_targets=1,if=debuff.physical_vulnerability.down
 actions+=/savage_roar,if=buff.savage_roar.remains<3
 actions+=/virmens_bite_potion,if=target.time_to_die<=40
+actions+=/use_item,slot=waist,sync=tigers_fury
 actions+=/use_item,slot=hands,sync=tigers_fury
 actions+=/blood_fury,sync=tigers_fury
 actions+=/berserking,sync=tigers_fury

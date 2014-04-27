@@ -38,8 +38,7 @@ actions+=/use_item,slot=hands,if=target.time_to_die<25&buff.rune_of_power.remain
 actions+=/run_action_list,name=aoe,if=active_enemies>=6
 actions+=/run_action_list,name=single_target,if=active_enemies<6
 
-actions.aoe=flamestrike
-actions.aoe+=/arcane_barrage,if=buff.arcane_charge.stack>=4
+actions.aoe=arcane_barrage,if=buff.arcane_charge.stack>=4
 actions.aoe+=/arcane_explosion
 
 actions.single_target=arcane_blast,if=buff.profound_magic.up&buff.arcane_charge.stack>3&mana.pct>93
