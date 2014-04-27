@@ -1439,12 +1439,12 @@ struct spinning_crane_kick_t : public monk_melee_attack_t
   struct spinning_crane_kick_tick_t : public monk_melee_attack_t
   {
     spinning_crane_kick_tick_t( monk_t* p, const spell_data_t* s ) :
-      monk_melee_attack_t( "spinning_crane_kick_tick", p, s )
+      monk_melee_attack_t( "spinning_crane_kick_tick", p, p -> find_class_spell( "Spinning Crane Kick" ) )
     {
       background  = true;
       dual        = true;
       direct_tick = true;
-	  may_crit = may_miss = may_block = may_dodge = may_parry = true;
+      may_crit = may_miss = may_block = may_dodge = may_parry = true;
       aoe = -1;
       base_dd_min = base_dd_max = 0.0; attack_power_mod.direct = spell_power_mod.direct = 0.0;//  deactivate parsed spelleffect1
       mh = &( player -> main_hand_weapon ) ;
@@ -1459,12 +1459,12 @@ struct spinning_crane_kick_t : public monk_melee_attack_t
   struct rushing_jade_wind_tick_t : public monk_melee_attack_t
   {
     rushing_jade_wind_tick_t( monk_t* p, const spell_data_t* s ) :
-      monk_melee_attack_t( "rushing_jade_wind_tick", p, s )
+      monk_melee_attack_t( "rushing_jade_wind_tick", p, p -> find_talent_spell( "Rushing Jade Wind" ) )
     {
       background  = true;
       dual        = true;
       direct_tick = true;
-	  may_crit = may_miss = may_block = may_dodge = may_parry = true;
+      may_crit = may_miss = may_block = may_dodge = may_parry = true;
       aoe = -1;
       base_dd_min = base_dd_max = 0.0; attack_power_mod.direct = spell_power_mod.direct = 0.0;//  deactivate parsed spelleffect1
       mh = &( player -> main_hand_weapon ) ;
@@ -1491,20 +1491,20 @@ struct spinning_crane_kick_t : public monk_melee_attack_t
     hasted_ticks = true;
 
     if ( p -> talent.rushing_jade_wind -> ok() )
-	{
+  {
       base_multiplier = 1.59 * (1.4/1.59); // hardcoded into tooltip
-	  school = SCHOOL_NATURE; // Application is Nature but the actual damage ticks is Physical
-      tick_action = new rushing_jade_wind_tick_t( p, p -> find_spell( data().effectN( 1 ).trigger_spell_id() ) );
-	} 
+      school = SCHOOL_NATURE; // Application is Nature but the actual damage ticks is Physical
+      tick_action = new rushing_jade_wind_tick_t( p, p -> find_talent_spell( "Rushing Jade Wind" ) );
+  } 
     else
     {
       base_multiplier = 1.59 * (2.44/1.59); // hardcoded into tooltip
-	  // Empowered Spinning Crane Kick
+    // Empowered Spinning Crane Kick
       if ( player -> specialization() == MONK_WINDWALKER )
          base_multiplier *= 1 + p -> perk.empowered_spinning_crane_kick -> effectN( 1 ).percent();
-	  school = SCHOOL_PHYSICAL;
+      school = SCHOOL_PHYSICAL;
       channeled = true;
-      tick_action = new spinning_crane_kick_tick_t( p, p -> find_spell( data().effectN( 1 ).trigger_spell_id() ) );
+      tick_action = new spinning_crane_kick_tick_t( p, p -> find_class_spell( "spinning_crane_kick" ) );
     }
     dynamic_tick_action = true;
   }
@@ -3474,7 +3474,8 @@ void monk_t::create_buffs()
   buff.power_strikes     = buff_creator_t( this, "power_strikes"       ).spell( find_spell( 129914 ) );
   // hard code the 5% for dual welding since currently no effect shows that at this point.
   buff.tiger_strikes     = buff_creator_t( this, "tiger_strikes" ).spell( find_spell( 120273 ) )
-                           .chance( ( main_hand_weapon.group() == WEAPON_1H ? 0.05 : find_specialization_spell( "Tiger Strikes" ) -> proc_chance() ) );
+                           .chance( main_hand_weapon.group() == WEAPON_1H ? 0.05 : 0.08 )
+                           .add_invalidate( CACHE_MULTISTRIKE );
   buff.tiger_power       = buff_creator_t( this, "tiger_power" )
                            .spell( find_class_spell( "Tiger Palm" ) -> effectN( 2 ).trigger() );
   buff.rushing_jade_wind = buff_creator_t( this, "rushing_jade_wind", talent.rushing_jade_wind )
