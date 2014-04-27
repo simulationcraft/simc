@@ -194,11 +194,11 @@ const spell_data_t* special_effect_t::driver() const
 
 const spell_data_t* special_effect_t::trigger() const
 {
-  if ( ! item )
+  if ( ! player )
     return spell_data_t::nil();
 
   if ( trigger_spell_id > 0 )
-    return item -> player -> find_spell( trigger_spell_id );
+    return player -> find_spell( trigger_spell_id );
 
   for ( size_t i = 1, end = driver() -> effect_count(); i <= end; i++ )
   {
@@ -240,7 +240,7 @@ bool special_effect_t::is_stat_buff() const
 
 stat_buff_t* special_effect_t::initialize_stat_buff() const
 {
-  stat_buff_creator_t creator( item -> player, name(), spell_data_t::nil(),
+  stat_buff_creator_t creator( player, name(), spell_data_t::nil(),
                                source == SPECIAL_EFFECT_SOURCE_ITEM ? item : 0 );
 
   // Setup the spell for the stat buff
@@ -289,7 +289,7 @@ bool special_effect_t::is_absorb_buff() const
 
 absorb_buff_t* special_effect_t::initialize_absorb_buff() const
 {
-  absorb_buff_creator_t creator( item -> player, name(), spell_data_t::nil(),
+  absorb_buff_creator_t creator( player, name(), spell_data_t::nil(),
                                source == SPECIAL_EFFECT_SOURCE_ITEM ? item : 0 );
 
   // Setup the spell for the stat buff
@@ -350,6 +350,39 @@ buff_t* special_effect_t::create_buff() const
   }
 }
 
+namespace {
+
+struct proc_spell_t : public spell_t
+{
+
+  proc_spell_t( const std::string& token, player_t* p, const spell_data_t* s ) :
+    spell_t( token, p, s )
+  {
+    background = true;
+  }
+};
+
+struct proc_heal_t : public heal_t
+{
+
+  proc_heal_t( const std::string& token, player_t* p, const spell_data_t* s ) :
+    heal_t( token, p, s )
+  {
+    background = true;
+  }
+};
+
+struct proc_attack_t : public attack_t
+{
+
+  proc_attack_t( const std::string& token, player_t* p, const spell_data_t* s ) :
+    attack_t( token, p, s )
+  {
+    background = true;
+  }
+};
+
+}
 action_t* special_effect_t::create_action() const
 {
   switch ( action_type() )
@@ -414,7 +447,9 @@ spell_t* special_effect_t::initialize_offensive_spell_action() const
   else if ( driver() -> id() > 0 )
     s = driver();
 
-  return new spell_t( name(), player, s );
+  proc_spell_t* spell = new proc_spell_t( name(), player, s );
+  spell -> init();
+  return spell;
 }
 
 bool special_effect_t::is_heal_action() const
@@ -448,7 +483,9 @@ heal_t* special_effect_t::initialize_heal_action() const
   else if ( driver() -> id() > 0 )
     s = driver();
 
-  return new heal_t( name(), player, s );
+  proc_heal_t* heal = new proc_heal_t( name(), player, s );
+  heal -> init();
+  return heal;
 }
 
 bool special_effect_t::is_attack_action() const
@@ -476,7 +513,9 @@ attack_t* special_effect_t::initialize_attack_action() const
   else if ( driver() -> id() > 0 )
     s = driver();
 
-  return new attack_t( name(), player, s );
+  proc_attack_t* attack = new proc_attack_t( name(), player, s );
+  attack -> init();
+  return attack;
 }
 
 // special_effect_t::proc_flags =============================================
@@ -625,7 +664,7 @@ std::string special_effect_t::name() const
 
   // Append weapon suffix automatically to the name.
   // TODO: We need a "shared" mechanism here
-  if ( item -> slot == SLOT_OFF_HAND )
+  if ( item && item -> slot == SLOT_OFF_HAND )
     n += "_oh";
 
   return n;
