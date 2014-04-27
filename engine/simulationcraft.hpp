@@ -5169,7 +5169,7 @@ struct action_t : public noncopyable
   bool dual;
   bool callbacks, special, channeled, background, sequence, use_off_gcd, quiet;
   bool direct_tick, direct_tick_callbacks, periodic_hit, repeating, harmful, proc, item_proc, proc_ignores_slot;
-  bool auto_cast, initialized;
+  bool initialized;
   bool may_hit, may_miss, may_dodge, may_parry, may_glance, may_block, may_crush, may_crit;
   bool tick_may_crit, tick_zero, hasted_ticks;
   dot_behavior_e dot_behavior;

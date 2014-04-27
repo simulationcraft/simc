@@ -1136,7 +1136,6 @@ struct monstrous_bite_t : public hunter_main_pet_attack_t
     hunter_main_pet_attack_t( "monstrous_bite", p, p -> find_spell( 54680 ) )
   {
     parse_options( NULL, options_str );
-    auto_cast = true;
     school = SCHOOL_PHYSICAL;
     stats -> school = SCHOOL_PHYSICAL;
   }
@@ -1272,7 +1271,6 @@ struct lightning_breath_t : public hunter_main_pet_spell_t
 
     parse_options( 0, options_str );
 
-    auto_cast = true;
     background = ( sim -> overrides.magic_vulnerability != 0 );
   }
 
@@ -1295,7 +1293,6 @@ struct corrosive_spit_t : public hunter_main_pet_spell_t
 
     parse_options( 0, options_str );
 
-    auto_cast = true;
   }
 
 };
@@ -1310,7 +1307,6 @@ struct demoralizing_screech_t : public hunter_main_pet_spell_t
     parse_options( 0, options_str );
 
     aoe         = -1;
-    auto_cast = true;
     // with Weakened Blows removed, this may not be necessary
   }
 
@@ -1329,7 +1325,6 @@ struct ravage_t : public hunter_main_pet_spell_t
   {
     parse_options( 0, options_str );
 
-    auto_cast = true;
   }
 };
 
@@ -1342,7 +1337,6 @@ struct tear_armor_t : public hunter_main_pet_spell_t
   {
     parse_options( 0, options_str );
 
-    auto_cast = true;
 
   }
 
@@ -1358,7 +1352,6 @@ struct cackling_howl_t : public hunter_main_pet_spell_t
   {
     parse_options( 0, options_str );
 
-    auto_cast = true;
   }
 };
 
@@ -1386,7 +1379,6 @@ struct froststorm_breath_t : public hunter_main_pet_spell_t
 
     parse_options( NULL, options_str );
 
-    auto_cast = true;
 
     tick_spell = new froststorm_breath_tick_t( player );
 

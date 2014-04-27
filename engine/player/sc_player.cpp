@@ -3693,7 +3693,7 @@ void player_t::schedule_ready( timespan_t delta_time,
   {
     timespan_t lag = timespan_t::zero();
 
-    if ( last_foreground_action && ! last_foreground_action -> auto_cast )
+    if ( last_foreground_action )
     {
       if ( last_foreground_action -> ability_lag > timespan_t::zero() )
       {
