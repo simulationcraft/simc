@@ -257,7 +257,7 @@ static const special_effect_db_item_t __special_effect_db[] = {
   { 120033, 0,                               enchant::jade_spirit },
   { 141178, 0,                               enchant::jade_spirit },
   { 104561, 0,                                  enchant::windsong },
-  { 104428, 0,                           enchant::elemental_force },
+  { 104428, "rppmhaste",                                        0 }, /* Elemental Force */
   { 104441, 0,                               enchant::rivers_song },
   { 118314, "rppmhaste",                                        0 }, /* Colossus */
 
@@ -310,19 +310,6 @@ static const special_effect_db_item_t __special_effect_db[] = {
 
 
 // Enchants ================================================================
-
-void enchant::elemental_force( special_effect_t& effect,
-                               const item_t& item,
-                               const special_effect_db_item_t& dbitem )
-{
-
-  const spell_data_t* elemental_force_spell = item.player -> find_spell( dbitem.spell_id )->effectN( 1 ).trigger();
-  effect.execute_action = new spell_t( "elemental_force", item.player, elemental_force_spell );
-  effect.execute_action -> background = true;
-  effect.rppm_scale = RPPM_HASTE;
-
-  new dbc_proc_callback_t( item, effect );
-}
 
 void enchant::rivers_song( special_effect_t& effect,
                            const item_t& item,

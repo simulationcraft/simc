@@ -1223,7 +1223,7 @@ bool proc::usable_proc( const special_effect_t& effect )
   }
 
   // Require a valid buff or an action
-  if ( effect.buff_type() == SPECIAL_EFFECT_BUFF_NONE && ! effect.execute_action )
+  if ( effect.buff_type() == SPECIAL_EFFECT_BUFF_NONE && effect.action_type() == SPECIAL_EFFECT_ACTION_NONE )
   {
     if ( effect.item && effect.item -> sim -> debug )
       effect.item -> sim -> out_debug.printf( "%s unusable proc %s: No constructible buff or action",
