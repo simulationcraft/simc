@@ -1141,7 +1141,6 @@ struct bladestorm_t : public warrior_attack_t
   attack_t* bladestorm_mh;
   attack_t* bladestorm_oh;
 
-
   bladestorm_t( warrior_t* p, const std::string& options_str ) :
     warrior_attack_t( "bladestorm", p, p -> talents.bladestorm ),
     bladestorm_mh( new bladestorm_tick_t( p, "bladestorm_mh" ) ),
@@ -2077,25 +2076,30 @@ struct raging_blow_t : public warrior_attack_t
 };
 
 // Ravager ==============================================================
+struct ravager_tick_t : public warrior_attack_t
+{
+  ravager_tick_t( warrior_t* p, const std::string& name ) :
+    warrior_attack_t( name , p, p -> find_spell( 156287 ) )
+  {
+    aoe           = -1;
+    background    = true;
+    direct_tick   = true;
+  }
+};
 
 struct ravager_t : public warrior_attack_t
 {
+  attack_t* ravager;
   ravager_t( warrior_t* p, const std::string& options_str ) :
-    warrior_attack_t( "ravager", p, p -> talents.ravager )
+    warrior_attack_t( "ravager", p, p -> talents.ravager ),
+    ravager( new ravager_tick_t( p, "ravager_tick" ) )
   {
     parse_options( NULL, options_str );
 
-    aoe           = -1;
-    proc          = false;
-    tick_may_crit = true;
     tick_zero     = true;
-    base_tick_time = data().effectN( 3 ).period();
-    num_ticks     = ( int ) ( data().duration().total_seconds() / base_tick_time.total_seconds() ); 
     hasted_ticks  = false;
-    dot_behavior  = DOT_REFRESH;
-
-    const spell_data_t* dmg_spell = p -> dbc.spell( 156287 ); // Like all wonderful spells, the damage is in another castle.
-    attack_power_mod.tick = dmg_spell -> effectN( 1 ).ap_coeff();
+    harmful       = false;
+    add_child( ravager );
   }
 
   virtual void execute()
@@ -2105,6 +2109,13 @@ struct ravager_t : public warrior_attack_t
     p -> buff.ravager -> trigger();
 
     warrior_attack_t::execute();
+  }
+
+  virtual void tick( dot_t* d )
+  {
+    warrior_attack_t::tick( d );
+
+    ravager -> execute();
   }
 };
 
@@ -2404,7 +2415,7 @@ struct slam_t : public warrior_attack_t
     parse_options( NULL, options_str );
 
     weapon = &( p -> main_hand_weapon );
-    
+
     extra_sweep = new slam_sweeping_strikes_attack_t( p );
     add_child( extra_sweep );
   }
@@ -4130,6 +4141,7 @@ void warrior_t::create_buffs()
                           .chance( spec.bloodsurge -> effectN( 1 ).percent() );
 
   buff.defensive_stance = buff_creator_t( this, "defensive_stance", find_class_spell( "Defensive Stance" ) );
+
   buff.enrage           = buff_creator_t( this, "enrage",           find_spell( 12880 ) )
                           .activated( false ) ; //Account for delay in buff application.
 
