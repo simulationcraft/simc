@@ -3185,10 +3185,13 @@ void player_t::combat_begin()
 
   init_resources( true );
 
-  for ( size_t i = 0; i < precombat_action_list.size(); i++ )
+  if ( ! is_pet() && ! is_add() )
   {
-    if ( precombat_action_list[ i ] -> ready() )
-      precombat_action_list[ i ] -> execute();
+    for ( size_t i = 0; i < precombat_action_list.size(); i++ )
+    {
+      if ( precombat_action_list[ i ] -> ready() )
+        precombat_action_list[ i ] -> execute();
+    }
   }
 
   if ( ! precombat_action_list.empty() )
@@ -9304,7 +9307,7 @@ double player_stat_cache_t::readiness() const
     valid[ CACHE_READINESS ] = true;
     _readiness = player -> composite_readiness();
   }
-  else assert( _readiness = player -> composite_readiness() );
+  else assert( _readiness == player -> composite_readiness() );
   return _readiness;
 }
 
