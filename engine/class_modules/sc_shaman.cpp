@@ -5156,7 +5156,7 @@ void shaman_t::init_base_stats()
 {
   player_t::init_base_stats();
 
-  base.stats.attack_power = ( level * 2 ) - 30;
+  //base.stats.attack_power = ( level * 2 ) - 30; Gone in WoD, double check later.
   base.attack_power_per_strength = 0.0;
   base.attack_power_per_agility  = 1.0;
   base.spell_power_per_intellect = 1.0;

@@ -1504,7 +1504,7 @@ struct spinning_crane_kick_t : public monk_melee_attack_t
          base_multiplier *= 1 + p -> perk.empowered_spinning_crane_kick -> effectN( 1 ).percent();
       school = SCHOOL_PHYSICAL;
       channeled = true;
-      tick_action = new spinning_crane_kick_tick_t( p, p -> find_class_spell( "spinning_crane_kick" ) );
+      tick_action = new spinning_crane_kick_tick_t( p, p -> find_class_spell( "Spinning Crane Kick" ) );
     }
     dynamic_tick_action = true;
   }
@@ -3416,7 +3416,7 @@ void monk_t::init_base_stats()
   base_chi_regen_per_second = 0;
   base_energy_regen_per_second = 10.0;
 
-  base.stats.attack_power = level * 2.0;
+  //base.stats.attack_power = level * 2.0; Removed in WoD, double check later.
   base.attack_power_per_strength = 0.0;
   base.attack_power_per_agility  = 1.0;
   base.spell_power_per_intellect = 1.0;

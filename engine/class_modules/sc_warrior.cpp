@@ -1476,7 +1476,7 @@ struct devastate_t : public warrior_attack_t
 struct dragon_roar_t : public warrior_attack_t
 {
   dragon_roar_t( warrior_t* p, const std::string& options_str ) :
-    warrior_attack_t( "dragon_roar", p, p -> talents.dragon_roar )
+    warrior_attack_t( "dragon_roar", p, p -> find_spell( 118000 ) )
   {
     parse_options( NULL, options_str );
     aoe = -1;

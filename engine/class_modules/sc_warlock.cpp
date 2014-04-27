@@ -670,7 +670,7 @@ struct felbolt_t : public warlock_pet_spell_t
 struct mortal_cleave_t : public warlock_pet_melee_attack_t
 {
   mortal_cleave_t( warlock_pet_t* p ) :
-    warlock_pet_melee_attack_t( p, "Mortal Cleave" )
+    warlock_pet_melee_attack_t( "mortal_cleave", p, p -> find_spell( "Mortal Cleave" ) )
   {
     aoe = -1;
     weapon = &( p -> main_hand_weapon );
@@ -4728,8 +4728,8 @@ void warlock_t::init_base_stats()
 {
   player_t::init_base_stats();
 
-  base.stats.attack_power += -10;
-  base.attack_power_per_strength = 2.0;
+  //base.stats.attack_power += -10; Remove in WoD
+  base.attack_power_per_strength = 1.0;
   base.spell_power_per_intellect = 1.0;
 
   base.attribute_multiplier[ ATTR_STAMINA ] *= 1.0 + spec.fel_armor -> effectN( 1 ).percent();

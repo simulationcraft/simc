@@ -674,11 +674,11 @@ public:
   {
     base_t::init_base_stats();
 
-    base.stats.attribute[ ATTR_STRENGTH  ] = util::interpolate( level, 0, 162, 331, 476 );
-    base.stats.attribute[ ATTR_AGILITY   ] = util::interpolate( level, 0, 54, 113, 438 );
-    base.stats.attribute[ ATTR_STAMINA   ] = util::interpolate( level, 0, 307, 361 ); // stamina is different for every pet type
-    base.stats.attribute[ ATTR_INTELLECT ] = 100; // FIXME: is 61 at lvl 75. Use /script print(UnitStats("pet",x)); 1=str,2=agi,3=stam,4=int,5=spi
-    base.stats.attribute[ ATTR_SPIRIT    ] = 100; // FIXME: is 101 at lvl 75. Values are equal for a cat and a gorilla.
+    //base.stats.attribute[ ATTR_STRENGTH  ] = util::interpolate( level, 0, 162, 331, 476 ); Base stats are gone in WoD, double check later.
+    //base.stats.attribute[ ATTR_AGILITY   ] = util::interpolate( level, 0, 54, 113, 438 );
+    //base.stats.attribute[ ATTR_STAMINA   ] = util::interpolate( level, 0, 307, 361 ); // stamina is different for every pet type
+    //base.stats.attribute[ ATTR_INTELLECT ] = 100; // FIXME: is 61 at lvl 75. Use /script print(UnitStats("pet",x)); 1=str,2=agi,3=stam,4=int,5=spi
+    //base.stats.attribute[ ATTR_SPIRIT    ] = 100; // FIXME: is 101 at lvl 75. Values are equal for a cat and a gorilla.
 
     resources.base[ RESOURCE_HEALTH ] = util::interpolate( level, 0, 4253, 6373 );
     resources.base[ RESOURCE_FOCUS ] = 100 + o() -> specs.kindred_spirits -> effectN( 1 ).resource( RESOURCE_FOCUS );
@@ -2382,9 +2382,6 @@ struct kill_shot_t : public hunter_ranged_attack_t
   {
     parse_options( NULL, options_str );
 
-    base_dd_min *= weapon_multiplier; // Kill Shot's weapon multiplier applies to the base damage as well
-    base_dd_max *= weapon_multiplier;
-
     cd_glyph_kill_shot -> duration = player -> dbc.spell( 90967 ) -> duration();
 
     normalize_weapon_speed = true;
@@ -3398,10 +3395,10 @@ void hunter_t::init_base_stats()
 {
   player_t::init_base_stats();
 
-  base.stats.attack_power = level * 2;
+  //base.stats.attack_power = level * 2; Base stats are removed in WoD.
 
   base.attack_power_per_strength = 0.0; // Prevents scaling from strength. Will need to separate melee and ranged AP if this is needed in the future.
-  base.attack_power_per_agility  = 2.0;
+  base.attack_power_per_agility  = 1.0;
 
   base_focus_regen_per_second = 4;
   if ( sets.has_set_bonus( SET_PVP_4PC_MELEE ) )

@@ -3379,9 +3379,9 @@ void rogue_t::init_base_stats()
 {
   player_t::init_base_stats();
 
-  base.stats.attack_power = ( level * 2 );
+  //base.stats.attack_power = ( level * 2 ); Gone in WoD, double check later.
   base.attack_power_per_strength = 1.0;
-  base.attack_power_per_agility  = 2.0;
+  base.attack_power_per_agility  = 1.0;
 
   resources.base[ RESOURCE_ENERGY ] = 100;
   if ( main_hand_weapon.type == WEAPON_DAGGER && off_hand_weapon.type == WEAPON_DAGGER )

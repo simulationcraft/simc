@@ -2315,8 +2315,6 @@ struct holy_wrath_t : public paladin_spell_t
     //Holy Wrath is an oddball - spell database entry doesn't properly contain damage details
     //Tooltip formula is wrong as well.  We're gong to hardcode it here based on empirical testing
     //see http://maintankadin.failsafedesign.com/forum/viewtopic.php?p=743800#p743800
-    base_dd_min = 4300; // fixed base damage (no range)
-    base_dd_max = 4300;
     attack_power_mod.direct =  0.91;         // 0.91 AP scaling
 
   }
@@ -4138,10 +4136,10 @@ void paladin_t::init_base_stats()
 {
   player_t::init_base_stats();
 
-  base.attack_power_per_strength = 2.0;
+  base.attack_power_per_strength = 1.0;
   base.spell_power_per_intellect = 1.0;
 
-  base.stats.attack_power = level * 3;
+  //base.stats.attack_power = level * 3; Gone in WoD, double check later.
 
   resources.base[ RESOURCE_HOLY_POWER ] = 3 + passives.boundless_conviction -> effectN( 1 ).base_value();
 

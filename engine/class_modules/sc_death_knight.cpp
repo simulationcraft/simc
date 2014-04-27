@@ -5063,9 +5063,9 @@ void death_knight_t::init_base_stats()
   base.attribute_multiplier[ ATTR_STRENGTH ] *= 1.0 + spec.unholy_might -> effectN( 1 ).percent();
   base.attribute_multiplier[ ATTR_STAMINA ]  *= 1.0 + spec.veteran_of_the_third_war -> effectN( 1 ).percent();
 
-  base.stats.attack_power = level * ( level > 80 ? 3.0 : 2.0 );
+  //base.stats.attack_power = level * ( level > 80 ? 3.0 : 2.0 ); Removed for WoD. Double check later.
 
-  base.attack_power_per_strength = 2.0;
+  base.attack_power_per_strength = 1.0;
 
   resources.base[ RESOURCE_RUNIC_POWER ] = 100;
 
@@ -5096,7 +5096,7 @@ void death_knight_t::init_spells()
   // Specialization
 
   // Generic
-  spec.plate_specialization = find_specialization_spell( "Plate Specialization" );
+  spec.plate_specialization       = find_specialization_spell( "Plate Specialization" );
 
   // Blood
   spec.blood_parasite             = find_specialization_spell( "Blood Parasite" );

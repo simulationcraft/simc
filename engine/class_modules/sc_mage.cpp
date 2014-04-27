@@ -284,6 +284,7 @@ public:
   virtual double    mana_regen_per_second() const;
   virtual double    composite_player_multiplier( school_e school ) const;
   virtual void invalidate_cache( cache_e );
+  virtual double    composite_multistrike() const;
   virtual double    composite_spell_crit() const;
   virtual double    composite_spell_haste() const;
   virtual double    matching_gear_multiplier( attribute_e attr ) const;
@@ -3930,7 +3931,7 @@ void mage_t::init_base_stats()
 
   base.spell_power_per_intellect = 1.0;
 
-  base.stats.attack_power = -10;
+  //base.stats.attack_power = -10; Removed in WoD
   base.attack_power_per_strength = 1.0;
 
   diminished_kfactor    = 0.009830;
@@ -3973,7 +3974,7 @@ void mage_t::create_buffs()
   buffs.fingers_of_frost     = buff_creator_t( this, "fingers_of_frost", find_spell( 112965 ) ).chance( find_spell( 112965 ) -> effectN( 1 ).percent() )
                                .duration( timespan_t::from_seconds( 15.0 ) )
                                .max_stack( 2 );
-  buffs.frost_armor          = buff_creator_t( this, "frost_armor", find_spell( 7302 ) ).add_invalidate( CACHE_SPELL_HASTE );
+  buffs.frost_armor          = buff_creator_t( this, "frost_armor", find_spell( 7302 ) ).add_invalidate( CACHE_MULTISTRIKE );
   buffs.icy_veins            = new buffs::icy_veins_t( this );
   buffs.ice_floes            = buff_creator_t( this, "ice_floes", talents.ice_floes );
   buffs.invokers_energy      = buff_creator_t( this, "invokers_energy", find_spell( 116257 ) )
@@ -4481,16 +4482,23 @@ double mage_t::composite_spell_crit() const
   return c;
 }
 
+//mage_t::composite_multistrike =============================================
+
+double mage_t::composite_multistrike() const
+{
+  double ms = player_t::composite_multistrike();
+
+  if ( buffs.frost_armor -> up() )
+    ms += buffs.frost_armor -> data().effectN( 1 ).percent();
+
+  return ms;
+}
+
 // mage_t::composite_spell_haste ============================================
 
 double mage_t::composite_spell_haste() const
 {
   double h = player_t::composite_spell_haste();
-
-  if ( buffs.frost_armor -> up() )
-  {
-    h *= 1.0 / ( 1.0 + buffs.frost_armor -> data().effectN( 1 ).percent() );
-  }
 
   if ( buffs.icy_veins -> up() && !glyphs.icy_veins -> ok() )
   {
