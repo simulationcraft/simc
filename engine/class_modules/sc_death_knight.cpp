@@ -3167,10 +3167,8 @@ struct death_coil_t : public death_knight_spell_t
     parse_options( NULL, options_str );
 
     attack_power_mod.direct = 0.514;
-    base_dd_min      = data().effectN( 1 ).min( p ); // "average" value of base damage scaling from spell data is inaccurate
-    base_dd_max      = data().effectN( 1 ).max( p ); // it is overridden to 0.745 in sc_const_data.cpp apply_hotfixes()
 
-    base_costs[ RESOURCE_RUNIC_POWER ] *= 1.0 + p -> spec.sudden_doom -> effectN( 2 ).percent();
+    base_costs[ RESOURCE_RUNIC_POWER ] *= 1.0 + p -> spec.sudden_doom -> effectN( 1 ).percent();
   }
 
   virtual double cost() const
