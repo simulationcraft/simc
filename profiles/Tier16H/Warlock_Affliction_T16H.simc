@@ -29,7 +29,6 @@ actions.precombat+=/jade_serpent_potion
 # Executed every time the actor is available.
 
 actions=curse_of_the_elements,if=debuff.magic_vulnerability.down
-actions+=/use_item,name=gloves_of_the_horned_nightmare
 actions+=/jade_serpent_potion,if=buff.bloodlust.react|target.health.pct<=20
 actions+=/berserking
 actions+=/dark_soul,if=!talent.archimondes_darkness.enabled|(talent.archimondes_darkness.enabled&(charges=2|trinket.proc.intellect.react|trinket.stacking_proc.intellect.react|target.health.pct<=10))
@@ -58,36 +57,36 @@ actions.aoe+=/seed_of_corruption,cycle_targets=1,if=(buff.soulburn.down&!in_flig
 actions.aoe+=/haunt,cycle_targets=1,if=!in_flight_to_target&debuff.haunt.remains<cast_time+travel_time&shard_react
 actions.aoe+=/life_tap,if=mana.pct<70
 
-head=flameslingers_fiery_cowl,id=105495,upgrade=2,gems=sinister_primal_320haste_180int
+head=flameslingers_fiery_cowl,id=105495,upgrade=2,gems=sinister_primal_16haste_9int
 neck=untainted_guardians_chain,id=105465,upgrade=2
-shoulders=mantle_of_the_horned_nightmare,id=99417,upgrade=2,gems=160exp_160haste_160exp_160haste_120int,enchant=200int_100crit
-back=xingho_breath_of_yulon,id=102246,upgrade=2,gems=80int_160haste_60int,enchant=lightweave_embroidery_3
-chest=robes_of_the_tendered_heart,id=105440,upgrade=2,gems=160exp_160haste_320haste_160haste_160hit_180int,enchant=80all
-wrists=avools_ancestral_bracers,id=105591,upgrade=2,stats=1270armor_1490int_2236sta_1009haste_969mastery,enchant=180int
-hands=gloves_of_the_horned_nightmare,id=99424,upgrade=2,gems=160exp_160haste_160exp_160haste_120int,enchant=170mastery,addon=synapse_springs_mark_ii
-waist=belt_of_ominous_trembles,id=105515,upgrade=2,gems=160exp_160haste_160haste_160hit_320haste_120int
-legs=leggings_of_furious_flame,id=105516,upgrade=2,gems=160haste_160hit_160haste_160hit_120int,enchant=285int_165crit
-feet=boneinlaid_sandals,id=105493,upgrade=2,gems=320haste_60hit,enchant=140mastery
-finger1=signet_of_the_dinomancers,id=105606,upgrade=2,gems=320haste
+shoulders=mantle_of_the_horned_nightmare,id=99417,upgrade=2,gems=8exp_8haste_8exp_8haste_6int,enchant=10int_5crit
+back=xingho_breath_of_yulon,id=102246,upgrade=2,gems=4int_8haste_3int,enchant=9crit
+chest=robes_of_the_tendered_heart,id=105440,upgrade=2,gems=8exp_8haste_16haste_8haste_8hit_9int,enchant=4all
+wrists=avools_ancestral_bracers,id=105591,upgrade=2,enchant=9int
+hands=gloves_of_the_horned_nightmare,id=99424,upgrade=2,gems=8exp_8haste_8exp_8haste_6int,enchant=9mastery
+waist=belt_of_ominous_trembles,id=105515,upgrade=2,gems=8exp_8haste_8haste_8hit_16haste_6int
+legs=leggings_of_furious_flame,id=105516,upgrade=2,gems=8haste_8hit_8haste_8hit_6int,enchant=14int_8crit
+feet=boneinlaid_sandals,id=105493,upgrade=2,gems=16haste_3hit,enchant=7mastery
+finger1=signet_of_the_dinomancers,id=105606,upgrade=2,gems=16haste
 finger2=extinguished_ember_of_galakras,id=105498,upgrade=2
 trinket1=black_blood_of_yshaarj,id=105648,upgrade=2
 trinket2=purified_bindings_of_immerseus,id=105422,upgrade=2
-main_hand=arcweaver_spell_sword,id=105550,upgrade=2,gems=80int_160haste_60int,enchant=jade_spirit
-off_hand=revelations_of_yshaarj,id=105650,upgrade=2,gems=80int_160haste_60int,enchant=165int
+main_hand=arcweaver_spell_sword,id=105550,upgrade=2,gems=4int_8haste_3int,enchant=jade_spirit
+off_hand=revelations_of_yshaarj,id=105650,upgrade=2,gems=4int_8haste_3int,enchant=8int
 
 # Gear Summary
-# gear_strength=80
-# gear_agility=80
-# gear_stamina=3951
-# gear_intellect=4664
-# gear_spirit=80
+# gear_strength=4
+# gear_agility=4
+# gear_stamina=1554
+# gear_intellect=1056
+# gear_spirit=4
 # gear_spell_power=590
-# gear_expertise_rating=960
-# gear_hit_rating=700
-# gear_crit_rating=601
-# gear_haste_rating=5402
-# gear_mastery_rating=1702
-# gear_armor=1637
+# gear_expertise_rating=48
+# gear_hit_rating=35
+# gear_crit_rating=358
+# gear_haste_rating=859
+# gear_mastery_rating=403
+# gear_armor=289
 # meta_gem=sinister_primal
 # tier16_2pc_caster=1
 default_pet=felhunter

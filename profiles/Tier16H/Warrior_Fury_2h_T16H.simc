@@ -126,31 +126,31 @@ actions.aoe+=/colossus_smash
 actions.aoe+=/storm_bolt,if=talent.storm_bolt.enabled
 actions.aoe+=/shockwave,if=talent.shockwave.enabled
 
-head=helmet_of_the_prehistoric_marauder,id=99418,upgrade=2,gems=capacitive_primal_16crit_8haste_8crit
+head=helmet_of_the_prehistoric_marauder,id=99418,upgrade=2,gems=capacitive_primal_16crit_8haste_8crit_9str
 neck=malkoroks_tainted_dog_tags,id=105566,upgrade=2
-shoulders=spaulders_of_the_fallen_warchief,id=104645,upgrade=2,gems=16crit_16crit,enchant=10str_5crit
-back=gonglu_strength_of_xuen,id=102249,upgrade=2,gems=8haste_8crit,enchant=9crit,addon=goblin_glider
-chest=breastplate_of_shamanic_mirrors,id=105532,upgrade=2,gems=8haste_8crit_8haste_8crit_16crit,enchant=3all
+shoulders=spaulders_of_the_fallen_warchief,id=104645,upgrade=2,gems=16crit_16crit_6str,enchant=10str_5crit
+back=gonglu_strength_of_xuen,id=102249,upgrade=2,gems=8haste_8crit_3str,enchant=9crit
+chest=breastplate_of_shamanic_mirrors,id=105532,upgrade=2,gems=8haste_8crit_8haste_8crit_16crit_6str,enchant=3all
 shirt=precious_ribbon,id=52019
-wrists=bracers_of_blind_hatred,id=105456,upgrade=2,gems=16crit,enchant=9mastery
-hands=gauntlets_of_the_prehistoric_marauder,id=99412,upgrade=2,gems=8haste_8crit_8haste_8crit_16crit,enchant=9mastery,addon=synapse_springs_mark_ii
-waist=demolishers_reinforced_belt,id=104513,upgrade=2,gems=8haste_8crit_16crit_16crit,addon=nitro_boosts
+wrists=bracers_of_blind_hatred,id=105456,upgrade=2,enchant=9mastery
+hands=gauntlets_of_the_prehistoric_marauder,id=99412,upgrade=2,gems=8haste_8crit_8haste_8crit_6str,enchant=9mastery
+waist=demolishers_reinforced_belt,id=104513,upgrade=2,gems=8haste_8crit_16crit_16crit_6str
 legs=legplates_of_willful_doom,id=104569,upgrade=2,gems=16crit_16crit_16crit,enchant=14str_8crit
-feet=greaves_of_sublime_superiority,id=105478,upgrade=2,gems=8haste_8crit,enchant=7mastery
-finger1=seal_of_the_forgotten_kings,id=105589,upgrade=2,gems=16crit
+feet=greaves_of_sublime_superiority,id=105478,upgrade=2,gems=8haste_8crit_3str,enchant=7mastery
+finger1=seal_of_the_forgotten_kings,id=105589,upgrade=2,gems=16crit_3str
 finger2=sorrowpath_signet,id=105436,upgrade=2
 trinket1=evil_eye_of_galakras,id=105491,upgrade=2
 trinket2=thoks_tail_tip,id=105609,upgrade=2
-main_hand=xalatoh_desecrated_image_of_gorehowl,id=105644,upgrade=2,gems=8haste_8crit,enchant=dancing_steel
-off_hand=xalatoh_desecrated_image_of_gorehowl,id=105644,upgrade=2,gems=8haste_8crit,enchant=dancing_steel
+main_hand=xalatoh_desecrated_image_of_gorehowl,id=105644,upgrade=2,gems=8haste_8crit_3str,enchant=dancing_steel
+off_hand=xalatoh_desecrated_image_of_gorehowl,id=105644,upgrade=2,gems=8haste_8crit_3str,enchant=dancing_steel
 
 # Gear Summary
-# gear_strength=1062
+# gear_strength=1110
 # gear_agility=3
 # gear_stamina=1688
 # gear_intellect=3
 # gear_spirit=3
-# gear_crit_rating=966
+# gear_crit_rating=934
 # gear_haste_rating=313
 # gear_mastery_rating=537
 # gear_armor=1187

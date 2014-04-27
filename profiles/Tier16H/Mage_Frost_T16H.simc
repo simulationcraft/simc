@@ -36,7 +36,6 @@ actions+=/frozen_orb
 actions+=/icy_veins,if=time_to_bloodlust>180&((buff.brain_freeze.react|buff.fingers_of_frost.react)|target.time_to_die<22),moving=0
 actions+=/berserking,if=buff.icy_veins.up|target.time_to_die<18
 actions+=/jade_serpent_potion,if=buff.icy_veins.up|target.time_to_die<45
-actions+=/use_item,slot=hands,if=buff.rune_of_power.remains>20|target.time_to_die<25
 actions+=/frostfire_bolt,if=buff.brain_freeze.up
 actions+=/ice_lance,if=buff.fingers_of_frost.up
 actions+=/frostfire_bolt,if=buff.brain_freeze.react&cooldown.icy_veins.remains>2
@@ -46,35 +45,35 @@ actions+=/frostbolt
 actions+=/fire_blast,moving=1
 actions+=/ice_lance,moving=1
 
-head=chronomancer_hood,id=99398,upgrade=2,gems=sinister_primal_160exp_160mastery_180int
+head=chronomancer_hood,id=99398,upgrade=2,gems=sinister_primal_8exp_8mastery_9int
 neck=untainted_guardians_chain,id=105465,upgrade=2
-shoulders=chronomancer_mantle,id=99401,upgrade=2,gems=160exp_160mastery_160exp_160mastery_120int,enchant=200int_100crit
-back=xingho_breath_of_yulon,id=102246,upgrade=2,gems=80int_160mastery_60int,enchant=lightweave_embroidery_3
-chest=robes_of_the_tendered_heart,id=105440,upgrade=2,gems=160exp_160mastery_320mastery_160hit_160mastery_180int,enchant=80all
-wrists=avools_ancestral_bracers,id=105591,upgrade=2,enchant=180int
-hands=chronomancer_gloves,id=99397,upgrade=2,gems=80int_160mastery_80int_160mastery_120int,enchant=170mastery,addon=synapse_springs_mark_ii
-waist=belt_of_ominous_trembles,id=105515,upgrade=2,gems=160exp_160mastery_160hit_160mastery_320mastery_120int
-legs=chronomancer_leggings,id=99399,upgrade=2,gems=320mastery_320mastery_120int,enchant=285int_165crit
-feet=boneinlaid_sandals,id=105493,upgrade=2,gems=320mastery_60hit,enchant=140mastery
-finger1=signet_of_the_dinomancers,id=105606,upgrade=2,gems=80int_160mastery_60haste
+shoulders=chronomancer_mantle,id=99401,upgrade=2,gems=8exp_8mastery_8exp_8mastery_6int,enchant=10int_5crit
+back=xingho_breath_of_yulon,id=102246,upgrade=2,gems=4int_8mastery_3int,enchant=9crit
+chest=robes_of_the_tendered_heart,id=105440,upgrade=2,gems=8exp_8mastery_16mastery_8hit_8mastery_9int,enchant=4all
+wrists=avools_ancestral_bracers,id=105591,upgrade=2,enchant=9int
+hands=chronomancer_gloves,id=99397,upgrade=2,gems=4int_8mastery_4int_8mastery_6int,enchant=9mastery
+waist=belt_of_ominous_trembles,id=105515,upgrade=2,gems=8exp_8mastery_8hit_8mastery_16mastery_6int
+legs=chronomancer_leggings,id=99399,upgrade=2,gems=16mastery_16mastery_6int,enchant=14int_8crit
+feet=boneinlaid_sandals,id=105493,upgrade=2,gems=16mastery_3hit,enchant=7mastery
+finger1=signet_of_the_dinomancers,id=105606,upgrade=2,gems=4int_8mastery_3haste
 finger2=iyyokuks_hereditary_seal,id=105628,upgrade=2
 trinket1=purified_bindings_of_immerseus,id=105422,upgrade=2
 trinket2=black_blood_of_yshaarj,id=105648,upgrade=2
-main_hand=immaculately_preserved_wand,id=105594,upgrade=2,gems=80int_160mastery_60int,enchant=jade_spirit
-off_hand=revelations_of_yshaarj,id=105650,upgrade=2,gems=80int_160mastery_60int,enchant=165int
+main_hand=immaculately_preserved_wand,id=105594,upgrade=2,gems=4int_8mastery_3int,enchant=jade_spirit
+off_hand=revelations_of_yshaarj,id=105650,upgrade=2,gems=4int_8mastery_3int,enchant=8int
 
 # Gear Summary
-# gear_strength=80
-# gear_agility=80
-# gear_stamina=1612
-# gear_intellect=3346
-# gear_spirit=80
+# gear_strength=4
+# gear_agility=4
+# gear_stamina=1536
+# gear_intellect=1056
+# gear_spirit=4
 # gear_spell_power=590
-# gear_expertise_rating=800
-# gear_hit_rating=380
-# gear_crit_rating=709
-# gear_haste_rating=595
-# gear_mastery_rating=4392
+# gear_expertise_rating=40
+# gear_hit_rating=19
+# gear_crit_rating=466
+# gear_haste_rating=538
+# gear_mastery_rating=602
 # gear_armor=285
 # meta_gem=sinister_primal
 # tier16_2pc_caster=1
