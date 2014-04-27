@@ -1342,8 +1342,6 @@ void player_t::init_special_effects()
   {
     special_effect_t effect( this );
     effect.spell_id = totg -> id();
-    effect.execute_action = new spell_t( "touch_of_the_grave", this, totg -> effectN( 1 ).trigger() );
-    effect.execute_action -> background = true;
     special_effects.push_back( effect );
 
     new dbc_proc_callback_t( this, special_effects.back() );
