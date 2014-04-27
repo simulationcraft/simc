@@ -271,7 +271,7 @@ public:
     const spell_data_t* maim;
     const spell_data_t* maul;
     const spell_data_t* ninth_life;
-    const spell_data_t* savagery;
+    //const spell_data_t* savagery; Missing from spell data at the moment. Don't think it's actually removed.
     const spell_data_t* skull_bash;
     const spell_data_t* ursols_defense;
     const spell_data_t* wild_growth;
@@ -1930,8 +1930,8 @@ public:
 
   virtual void execute()
   {
-    if ( p() -> buff.prowl -> check() && p() -> glyph.savagery -> ok() )
-      trigger_savagery();
+    //if ( p() -> buff.prowl -> check() && p() -> glyph.savagery -> ok() )
+      //trigger_savagery(); Glyph is changed in WoD
 
     base_t::execute();
 
@@ -5648,7 +5648,7 @@ void druid_t::init_spells()
   glyph.ninth_life            = find_glyph_spell( "Glyph of the Ninth Life" );
   glyph.regrowth              = find_glyph_spell( "Glyph of Regrowth" );
   glyph.rejuvenation          = find_glyph_spell( "Glyph of Rejuvenation" );
-  glyph.savagery              = find_glyph_spell( "Glyph of Savagery" );
+  //glyph.savagery              = find_glyph_spell( "Glyph of Savagery" ); Missing in spell data 4/26/2014
   glyph.skull_bash            = find_glyph_spell( "Glyph of Skull Bash" );
   glyph.ursols_defense        = find_glyph_spell( "Glyph of Ursol's Defense" );
   glyph.wild_growth           = find_glyph_spell( "Glyph of Wild Growth" );
