@@ -2019,7 +2019,7 @@ struct fireball_t : public mage_spell_t
 struct flamestrike_t : public mage_spell_t
 {
   flamestrike_t( mage_t* p, const std::string& options_str ) :
-    mage_spell_t( "flamestrike", p, p -> find_class_spell( "Flamestrike" ) )
+    mage_spell_t( "flamestrike", p, p -> find_specialization_spell( "Flamestrike" ) )
   {
     parse_options( NULL, options_str );
 
@@ -4240,8 +4240,6 @@ void mage_t::init_action_list()
 
       //AoE
 
-      aoe_list_str = "/flamestrike";
-
       if ( talents.nether_tempest -> ok() )   aoe_list_str += "/nether_tempest,cycle_targets=1,if=(!ticking|remains<tick_time)&target.time_to_die>6";
       else if ( talents.living_bomb -> ok() ) aoe_list_str += "/living_bomb,cycle_targets=1,if=(!ticking|remains<tick_time)&target.time_to_die>tick_time*3";
       else if ( talents.frost_bomb -> ok() )  aoe_list_str += "/frost_bomb,if=!ticking&target.time_to_die>cast_time+tick_time";
@@ -4365,8 +4363,6 @@ void mage_t::init_action_list()
         action_list_str += init_use_item_actions( ",if=buff.invokers_energy.remains>20|target.time_to_die<25" );
       else
         action_list_str += init_use_item_actions( ",if=target.time_to_die<25" );
-
-      action_list_str += "/flamestrike,if=active_enemies>=5";
 
       if ( level >= 87 )
       {
