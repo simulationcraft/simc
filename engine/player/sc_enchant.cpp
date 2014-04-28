@@ -80,8 +80,9 @@ std::string enchant::find_enchant_name( unsigned enchant_id )
 std::string enchant::encoded_enchant_name( const dbc_t& dbc, const item_enchantment_data_t& enchant )
 {
   std::string enchant_name;
-  const spell_data_t* enchant_source = dbc.spell( enchant.id_spell );
+  std::string enchant_rank_str;
 
+  const spell_data_t* enchant_source = dbc.spell( enchant.id_spell );
   if ( enchant_source -> id() > 0 )
   {
     enchant_name = enchant_source -> name_cstr();
@@ -101,6 +102,10 @@ std::string enchant::encoded_enchant_name( const dbc_t& dbc, const item_enchantm
     }
 
     util::tokenize( enchant_name );
+
+    if ( enchant_source -> rank_str() )
+      enchant_rank_str = enchant_source -> rank_str();
+    util::tokenize( enchant_rank_str );
   }
   // Revert back to figuring out name based on pure item enchantment data. This
   // will probably be wrong in many cases, but what can we do.
@@ -114,20 +119,19 @@ std::string enchant::encoded_enchant_name( const dbc_t& dbc, const item_enchantm
       if ( enchant.ench_prop[ i ] == 0 || enchant.ench_type[ i ] == 0 )
         continue;
 
-      std::string rank_str;
       if ( dbc.spell( enchant.ench_prop[ i ] ) -> rank_str() )
-        rank_str = dbc.spell( enchant.ench_prop[ i ] ) -> rank_str();
-      util::tokenize( rank_str );
-
-      std::string::size_type offset = rank_str.find( "rank_" );
-      // Erase "rank_"
-      if ( offset != std::string::npos )
-        rank_str.erase( offset, 5 );
-
-      if ( ! rank_str.empty() )
-        enchant_name += "_" + rank_str;
+        enchant_rank_str = dbc.spell( enchant.ench_prop[ i ] ) -> rank_str();
+      util::tokenize( enchant_rank_str );
     }
   }
+
+  // Erase "rank_"
+  std::string::size_type rank_offset = enchant_rank_str.find( "rank_" );
+  if ( rank_offset != std::string::npos )
+    enchant_rank_str.erase( rank_offset, 5 );
+
+  if ( ! enchant_rank_str.empty() )
+    enchant_name += "_" + enchant_rank_str;
 
   return enchant_name;
 }
@@ -159,48 +163,11 @@ const item_enchantment_data_t& enchant::find_item_enchant( const dbc_t& dbc,
         item_enchant -> id != 0;
         item_enchant++ )
   {
-    if ( item_enchant -> name == 0 )
+    if ( ! item_enchant -> name && ! item_enchant -> id_spell )
       continue;
 
-    std::string enchant_name = item_enchant -> name;
-    util::tokenize( enchant_name );
-    // Check for partial match in the name, enchant name must be fully
-    // contained in the given parameter
-    if ( ! util::str_in_str_ci( name, enchant_name ) )
-      continue;
-
-    // Partial match found, see if the spell has a rank string, and massage
-    // name to account for it.
-    for ( size_t i = 0; i < sizeof_array( item_enchant -> ench_prop ); i++ )
-    {
-      if ( item_enchant -> ench_prop[ i ] == 0 ||
-           item_enchant -> ench_type[ i ] == 0 )
-        continue;
-
-      std::string rank_str;
-      if ( dbc.spell( item_enchant -> ench_prop[ i ] ) -> rank_str() )
-        rank_str = dbc.spell( item_enchant -> ench_prop[ i ] ) -> rank_str();
-      util::tokenize( rank_str );
-
-      // Compare to exact enchant name match, if rank string is missing
-      if ( rank_str.empty() && util::str_compare_ci( name, enchant_name ) )
-        return *item_enchant;
-
-      // Compare directly to enchant name + rank
-      if ( ! rank_str.empty() && util::str_compare_ci( name, enchant_name + "_" + rank_str ) )
-        return *item_enchant;
-
-      std::string::size_type offset = rank_str.find( "rank_" );
-      if ( offset != std::string::npos )
-      {
-        // Erase "rank_", and try again
-        rank_str.erase( offset, 5 );
-
-        // Match <enchant name>_<enchant rank number>
-        if ( util::str_compare_ci( name, enchant_name + "_" + rank_str ) )
-          return *item_enchant;
-      }
-    }
+    if ( util::str_compare_ci( name, encoded_enchant_name( dbc, *item_enchant ) ) )
+      return *item_enchant;
   }
 
   return dbc.item_enchantment( 0 );
