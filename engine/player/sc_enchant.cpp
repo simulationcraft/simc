@@ -236,19 +236,20 @@ bool enchant::initialize_item_enchant( item_t& item,
         effect.weapon_proc = true;
         effect.type = SPECIAL_EFFECT_EQUIP;
         effect.proc_flags_ = PF_MELEE | PF_MELEE_ABILITY | PF_RANGED | PF_RANGED_ABILITY;
-        effect.encoding_str = encoded_enchant_name( item.player -> dbc, enchant );
         break;
       case ITEM_ENCHANTMENT_EQUIP_SPELL:
-        // Passive (stat) giving enchants get a special treatment
+        // Passive enchants get a special treatment. In essence, we only support
+        // a couple, and they are handled without special effect initialization
+        // for now. Unfortunately, they do need to be added to the special
+        // effect list, so we can output them in saved profiles as the enchant
+        // name, instead of a bunch of stats.
         if ( passive_enchant( item, enchant.ench_prop[ i ] ) )
-          continue;
-
-        effect.type = SPECIAL_EFFECT_EQUIP;
-        effect.encoding_str = encoded_enchant_name( item.player -> dbc, enchant );
+          effect.type = SPECIAL_EFFECT_PASSIVE;
+        else
+          effect.type = SPECIAL_EFFECT_EQUIP;
         break;
       case ITEM_ENCHANTMENT_USE_SPELL:
         effect.type = SPECIAL_EFFECT_USE;
-        effect.encoding_str = encoded_enchant_name( item.player -> dbc, enchant );
         break;
       case ITEM_ENCHANTMENT_STAT:
       {
@@ -262,13 +263,22 @@ bool enchant::initialize_item_enchant( item_t& item,
     }
 
     // First phase initialize the spell effect
-    if ( effect.type != SPECIAL_EFFECT_NONE && 
-         unique_gear::initialize_special_effect( effect, item, enchant.ench_prop[ i ] ) )
+    if ( effect.type != SPECIAL_EFFECT_NONE && effect.type != SPECIAL_EFFECT_PASSIVE )
+      unique_gear::initialize_special_effect( effect, item, enchant.ench_prop[ i ] );
+
+    // If this enchant has any kind of special effect, we need to encode it's
+    // name in the saved profiles, so when the profile is loaded, it's loaded
+    // through the enchant init system. This is currently only an issue with the
+    // boot enchants in WoW, where they have a passive aura (run speed) and
+    // stats. Without an encoding string, the enchant would lose the run speed
+    // property upon profile save (and subsequent loads).
+    if ( effect.type != SPECIAL_EFFECT_NONE )
     {
-      if ( effect.type != SPECIAL_EFFECT_NONE )
-        item.parsed.special_effects.push_back( effect );
+      effect.encoding_str = encoded_enchant_name( item.player -> dbc, enchant );
+      item.parsed.special_effects.push_back( effect );
     }
   }
+
   return true;
 }
 
