@@ -106,7 +106,6 @@ public:
     buff_t* hand_of_purity;
     buff_t* holy_avenger;
     buff_t* infusion_of_light;
-    buff_t* judgments_of_the_wise;
     buff_t* sacred_shield;  // dummy buff for APL simplicity
     buff_t* selfless_healer;
     buff_t* shield_of_glory; // t15_2pc_tank
@@ -121,7 +120,6 @@ public:
   {
     gain_t* divine_plea;
     gain_t* extra_regen;
-    gain_t* judgments_of_the_wise;
     gain_t* seal_of_insight;
     gain_t* glyph_divine_storm;
     gain_t* glyph_divine_shield;
@@ -163,7 +161,9 @@ public:
     const spell_data_t* grand_crusader;
     const spell_data_t* guarded_by_the_light;
     const spell_data_t* hand_of_light;
+    const spell_data_t* holy_insight;
     const spell_data_t* illuminated_healing;
+    const spell_data_t* infusion_of_light;
     const spell_data_t* judgments_of_the_bold;
     const spell_data_t* judgments_of_the_wise;
     const spell_data_t* plate_specialization;
@@ -191,7 +191,7 @@ public:
     const spell_data_t* empowered_beacon_of_light;
     const spell_data_t* empowered_holy_shock;
     const spell_data_t* enhanced_holy_shock;
-    const spell_data_t* improved_daybreak; // Daybreak not fully implemented
+    const spell_data_t* improved_daybreak; 
     const spell_data_t* improved_denounce; // Denounce not implemented at all!
     const spell_data_t* improved_holy_light;
 
@@ -684,6 +684,9 @@ struct paladin_heal_t : public paladin_spell_base_t<heal_t>
 
     if ( p() -> active_seal == SEAL_OF_INSIGHT && benefits_from_seal_of_insight )
       am *= 1.0 + p() -> passives.seal_of_insight -> effectN( 2 ).percent();
+    
+    // Holy Insight - Holy passive
+    am *= 1.0 + p() -> passives.holy_insight -> effectN( 6 ).percent();
 
     return am;
   }
@@ -697,9 +700,7 @@ struct paladin_heal_t : public paladin_spell_base_t<heal_t>
 
     return am;
   }
-
-  // This was an attempt to get Glyph of Flash of Light to do something... it failed.
-  
+    
   virtual double composite_target_multiplier( player_t* t ) const
   {
     double ctm = base_t::composite_target_multiplier( t );
@@ -715,7 +716,6 @@ struct paladin_heal_t : public paladin_spell_base_t<heal_t>
 
   }
   
-
   virtual void impact( action_state_t* s )
   {
     base_t::impact( s );
@@ -1225,6 +1225,21 @@ struct consecration_t : public paladin_spell_t
   }
 };
 
+// Daybreak =================================================================
+//This is the aoe healing proc triggered by Holy Shock
+
+struct daybreak_t : public paladin_heal_t
+{
+  daybreak_t( paladin_t* p )
+    : paladin_heal_t( "daybreak", p, p->find_spell( 121129 ) )
+  {
+    background = true;
+    aoe = -1;
+    split_aoe_damage = true;
+  }
+  
+};
+
 // Devotion Aura Spell ======================================================
 
 struct devotion_aura_t : public paladin_spell_t
@@ -1276,7 +1291,7 @@ struct divine_plea_t : public paladin_spell_t
 
     // Mana gain
     p() -> resource_gain( RESOURCE_MANA, 
-                          data().effectN( 2 ).base_value() / 10000 * p() -> resources.max[ RESOURCE_MANA ], 
+                          data().effectN( 2 ).base_value() / 10000.0 * p() -> resources.max[ RESOURCE_MANA ], 
                           p() -> gains.divine_plea );
   }
 
@@ -1418,6 +1433,11 @@ struct eternal_flame_hot_t : public paladin_heal_t
       am *= 1.0 + p() -> talents.eternal_flame -> effectN( 2 ).percent();
     }
 
+    // Holy Insight buffs all healing by 25% & WoG/EF/LoD by 50%.
+    // The 25% buff is already in paladin_heal_t, so we need to divide by that first & then apply 50%
+    am /= 1.0 + p() -> passives.holy_insight -> effectN( 6 ).percent();
+    am *= 1.0 + p() -> passives.holy_insight -> effectN( 9 ).percent();
+
     return am;
   }
 
@@ -1502,6 +1522,11 @@ struct eternal_flame_t : public paladin_heal_t
 
     // Improved Word of Glory perk
     am *= 1.0 + p() -> perk.improved_word_of_glory -> effectN( 1 ).percent();
+    
+    // Holy Insight buffs all healing by 25% & WoG/EF/LoD by 50%.
+    // The 25% buff is already in paladin_heal_t, so we need to divide by that first & then apply 50%
+    am /= 1.0 + p() -> passives.holy_insight -> effectN( 6 ).percent();
+    am *= 1.0 + p() -> passives.holy_insight -> effectN( 9 ).percent();
 
     return am;
   }
@@ -1779,9 +1804,6 @@ struct flash_of_light_t : public paladin_heal_t
   {
     paladin_heal_t::execute();
 
-    p() -> buffs.daybreak -> trigger();
-    p() -> buffs.infusion_of_light -> expire();
-
     // if Selfless Healer is talented, expire SH buff 
     if ( p() -> talents.selfless_healer -> ok() )
     {
@@ -1791,6 +1813,9 @@ struct flash_of_light_t : public paladin_heal_t
 
       p() -> buffs.selfless_healer -> expire();
     }
+
+    // Enhanced Holy Shock trigger
+    p() -> buffs.enhanced_holy_shock -> trigger();
 
   }
 
@@ -1947,8 +1972,10 @@ struct holy_light_t : public paladin_heal_t
   {
     paladin_heal_t::execute();
 
-    p() -> buffs.daybreak -> trigger();
     p() -> buffs.infusion_of_light -> expire();
+    
+    // Enhanced Holy Shock trigger
+    p() -> buffs.enhanced_holy_shock -> trigger();
   }
 
   virtual timespan_t execute_time() const
@@ -2127,6 +2154,7 @@ struct holy_radiance_t : public paladin_heal_t
     paladin_heal_t::execute();
 
     p() -> buffs.infusion_of_light -> expire();
+    p() -> buffs.daybreak -> trigger();
   }
 
   virtual timespan_t execute_time() const
@@ -2149,31 +2177,27 @@ struct holy_radiance_t : public paladin_heal_t
 
 // Holy Shock ===============================================================
 
-// TODO: fix the fugly hack
-// TODO: merge into one spell that selects action based on target type
-struct holy_shock_t : public paladin_spell_t
+// Holy Shock is another one of those "heals or does damage depending on target" spells.
+// The holy_shock_t structure handles global stuff, and calls one of two children 
+// (holy_shock_damage_t or holy_shock_heal_t) depending on target to handle healing/damage
+// find_class_spell returns spell 20473, which has the cooldown/cost/etc stuff, but the actual 
+// damage and healing information is in spells 25912 and 25914, respectively.
+
+struct holy_shock_damage_t : public paladin_spell_t
 {
-  double cooldown_mult;
   double crit_increase;
 
-  holy_shock_t( paladin_t* p, const std::string& options_str )
-    : paladin_spell_t( "holy_shock", p, p -> find_class_spell( "Holy Shock" ) ),
-      cooldown_mult( 1.0 ), crit_increase( 0.0 )
+  holy_shock_damage_t( paladin_t* p, const std::string& options_str )
+    : paladin_spell_t( "holy_shock_damage", p, p -> find_spell( 25912 ) ),
+      crit_increase( 0.0 )
   {
-    parse_options( NULL, options_str );
 
-    // hack! spell 20473 has the cooldown/cost/etc stuff, but the actual spell cast
-    // to do damage is 25912
-    parse_effect_data( ( *player -> dbc.effect( 25912 ) ) );
+    background = true;
+    trigger_gcd = timespan_t::zero();
 
-    base_crit += 0.25;
+    // this grabs the 25% base crit bonus from 20473
+    base_crit += p -> find_class_spell( "Holy Shock" ) -> effectN( 1 ).percent();
 
-    if ( ( p -> specialization() == PALADIN_HOLY ) && p -> find_talent_spell( "Sanctified Wrath" ) -> ok()  )
-    {
-      // the actual values of these are stored in spell 114232 rather than the spell returned by find_talent_spell
-      cooldown_mult = p -> spells.sanctified_wrath -> effectN( 1 ).percent();
-      crit_increase = p -> spells.sanctified_wrath -> effectN( 5 ).percent();
-    }
   }
 
   virtual double composite_crit() const
@@ -2214,44 +2238,30 @@ struct holy_shock_t : public paladin_spell_t
     return am;
   }
 
-  virtual void update_ready( timespan_t cd_override )
-  {
-    cd_override = cooldown -> duration;
-    if ( p() -> buffs.avenging_wrath -> up() )
-      cd_override *= cooldown_mult;
-
-    paladin_spell_t::update_ready( cd_override );
-  }
 };
 
 // Holy Shock Heal Spell ====================================================
 
 struct holy_shock_heal_t : public paladin_heal_t
 {
-  timespan_t cd_duration;
-  const spell_data_t* scaling_data;
-  double cooldown_mult;
   double crit_increase;
+  daybreak_t* daybreak;
 
   holy_shock_heal_t( paladin_t* p, const std::string& options_str ) :
-    paladin_heal_t( "holy_shock_heal", p, p -> find_spell( 20473 ) ), cd_duration( timespan_t::zero() ),
-    scaling_data( p -> find_spell( 25914 ) )
+    paladin_heal_t( "holy_shock_heal", p, p -> find_spell( 25914 ) ),
+    crit_increase( 0.0 )
   {
-    check_spec( PALADIN_HOLY );
+    background = true;
+    trigger_gcd = timespan_t::zero();
+        
+    // this grabs the 25% base crit bonus from 20473
+    base_crit += p -> find_class_spell( "Holy Shock" ) -> effectN( 1 ).percent();
 
-    parse_options( NULL, options_str );
+    // Daybreak gives this a 75% splash heal
+    daybreak = new daybreak_t( p );
+    //add_child( daybreak );
+    base_aoe_multiplier = p -> find_specialization_spell( "Daybreak" ) -> effectN( 1 ).percent();
 
-    // Heal info is in 25914
-    parse_spell_data( *scaling_data );
-
-    cd_duration = cooldown -> duration;
-
-    if ( ( p -> specialization() == PALADIN_HOLY ) && p -> find_talent_spell( "Sanctified Wrath" ) -> ok()  )
-    {
-      // the actual values of these are stored in spell 114232 rather than the spell returned by find_talent_spell
-      cooldown_mult = p -> spells.sanctified_wrath -> effectN( 1 ).percent();
-      crit_increase = p -> spells.sanctified_wrath -> effectN( 5 ).percent();
-    }
   }
 
   virtual double composite_crit() const
@@ -2268,12 +2278,9 @@ struct holy_shock_heal_t : public paladin_heal_t
 
   virtual void execute()
   {
-    if ( p() -> buffs.daybreak -> up() )
-      cooldown -> duration = timespan_t::zero();
-
     paladin_heal_t::execute();
 
-    int g = scaling_data -> effectN( 2 ).base_value();
+    int g = 1;
     p() -> resource_gain( RESOURCE_HOLY_POWER,
                           g,
                           p() -> gains.hp_holy_shock );
@@ -2284,7 +2291,77 @@ struct holy_shock_heal_t : public paladin_heal_t
                             p() -> gains.hp_holy_avenger );
     }
 
-    p() -> buffs.daybreak -> expire();
+    if ( execute_state -> result == RESULT_CRIT )
+      p() -> buffs.infusion_of_light -> trigger();
+  }
+
+  virtual void impact ( action_state_t* s )
+  {
+    paladin_heal_t::impact( s );
+
+    if ( p() -> buffs.daybreak -> up() )
+    {
+      // trigger the Daybreak heal
+      daybreak -> base_dd_min = daybreak -> base_dd_max = base_aoe_multiplier * s -> result_amount * (1.0 + p() -> perk.improved_daybreak -> effectN( 1 ).percent() );
+      daybreak -> schedule_execute();
+      
+      // expire the buff
+      p() -> buffs.daybreak -> expire();
+    }
+  }
+
+};
+
+struct holy_shock_t : public paladin_heal_t
+{
+  holy_shock_damage_t* damage;
+  holy_shock_heal_t* heal;
+  timespan_t cd_duration;
+  double cooldown_mult;
+
+  holy_shock_t( paladin_t* p, const std::string& options_str )
+    : paladin_heal_t( "holy_shock", p, p -> find_specialization_spell( "Holy Shock" ) )
+  {
+    check_spec( PALADIN_HOLY );
+    parse_options( NULL, options_str );
+
+    cd_duration = cooldown -> duration;
+
+    double crit_increase = 0.0;
+
+    // Bonuses from Sanctified Wrath need to be stored for future use
+    if ( ( p -> specialization() == PALADIN_HOLY ) && p -> find_talent_spell( "Sanctified Wrath" ) -> ok()  )
+    {
+      // the actual values of these are stored in spell 114232 rather than the spell returned by find_talent_spell
+      cooldown_mult = p -> spells.sanctified_wrath -> effectN( 1 ).percent();
+      crit_increase = p -> spells.sanctified_wrath -> effectN( 5 ).percent();
+    }
+
+    // create the damage and healing spell effects, designate them as children for reporting
+    damage = new holy_shock_damage_t( p, options_str );
+    damage ->crit_increase = crit_increase;
+    add_child( damage );
+    heal = new holy_shock_heal_t( p, options_str );
+    heal ->crit_increase = crit_increase;
+    add_child( heal );
+
+  }
+
+  virtual void execute()
+  {
+    if ( target -> is_enemy() )
+    {
+      // damage enemy
+      damage -> target = target;
+      damage -> schedule_execute();
+    }
+    else
+    {
+      // heal friendly
+      heal -> target = target;
+      heal -> schedule_execute();
+    }
+
 
     if ( p() -> buffs.enhanced_holy_shock -> check() )
     {
@@ -2295,8 +2372,7 @@ struct holy_shock_heal_t : public paladin_heal_t
     else
       cooldown -> duration = cd_duration;
 
-    if ( execute_state -> result == RESULT_CRIT )
-      p() -> buffs.infusion_of_light -> trigger();
+    paladin_heal_t::execute();
   }
 
   virtual void update_ready( timespan_t cd_override )
@@ -2502,6 +2578,11 @@ struct light_of_dawn_t : public paladin_heal_t
     double am = paladin_heal_t::action_multiplier();
 
     am *= p() -> holy_power_stacks();
+
+    // Holy Insight buffs all healing by 25% & WoG/EF/LoD by 50%.
+    // The 25% buff is already in paladin_heal_t, so we need to divide by that first & then apply 50%
+    am /= 1.0 + p() -> passives.holy_insight -> effectN( 6 ).percent();
+    am *= 1.0 + p() -> passives.holy_insight -> effectN( 9 ).percent();
 
     return am;
   }
@@ -2747,6 +2828,11 @@ struct word_of_glory_t : public paladin_heal_t
 
     // Improved Word of Glory perk
     am *= 1.0 + p() -> perk.improved_word_of_glory -> effectN( 1 ).percent();
+
+    // Holy Insight buffs all healing by 25% & WoG/EF/LoD by 50%.
+    // The 25% buff is already in paladin_heal_t, so we need to divide by that first & then apply 50%
+    am /= 1.0 + p() -> passives.holy_insight -> effectN( 6 ).percent();
+    am *= 1.0 + p() -> passives.holy_insight -> effectN( 9 ).percent();
 
     return am;
   }
@@ -4153,6 +4239,7 @@ void paladin_t::init_base_stats()
 
   //base.stats.attack_power = level * 3; Gone in WoD, double check later.
 
+  // Boundless Conviction raises max holy power to 5
   resources.base[ RESOURCE_HOLY_POWER ] = 3 + passives.boundless_conviction -> effectN( 1 ).base_value();
 
   // Avoidance diminishing Returns constants/conversions
@@ -4171,7 +4258,12 @@ void paladin_t::init_base_stats()
   // note that these conversions are level-specific; these are L90 values
   base.dodge_per_agility = 1 / 10000.0 / 100.0; // empirically tested
   base.parry_per_strength = 1 / 95115.8596; // exact value given by Blizzard
+
+  // Holy Insight grants mana regen from spirit during combat
+  base.mana_regen_from_spirit_multiplier = passives.holy_insight -> effectN( 3 ).percent();
   
+  // Holy Insight increases max mana for Holy
+  resources.base_multiplier[ RESOURCE_MANA ] = 1.0 + passives.holy_insight -> effectN( 1 ).percent();
   
   switch ( specialization() )
   {
@@ -4185,6 +4277,7 @@ void paladin_t::init_base_stats()
     default:
       break;
   }
+
   // this fixes the position output in the HTML file
   position_str = util::position_type_string( base.position );
 }
@@ -4208,9 +4301,9 @@ void paladin_t::init_gains()
 {
   player_t::init_gains();
 
+  // Mana
   gains.divine_plea                 = get_gain( "divine_plea"            );
   gains.extra_regen                 = get_gain( ( specialization() == PALADIN_RETRIBUTION ) ? "sword_of_light" : "guarded_by_the_light" );
-  gains.judgments_of_the_wise       = get_gain( "judgments_of_the_wise"  );
   gains.seal_of_insight             = get_gain( "seal_of_insight"        );
   gains.glyph_divine_storm          = get_gain( "glyph_of_divine_storm"  );
   gains.glyph_divine_shield         = get_gain( "glyph_of_divine_shield" );
@@ -4432,9 +4525,10 @@ void paladin_t::create_buffs()
   buffs.hand_of_purity         = buff_creator_t( this, "hand_of_purity", find_talent_spell( "Hand of Purity" ) ).cd( timespan_t::zero() ); // Let the ability handle the CD
 
   // Holy
-  buffs.daybreak               = buff_creator_t( this, "daybreak", find_class_spell( "Daybreak" ) );
-  buffs.infusion_of_light      = buff_creator_t( this, "infusion_of_light", find_class_spell( "Infusion of Light" ) );
-  buffs.enhanced_holy_shock    = buff_creator_t( this, "enhanced_holy_shock", find_spell( 160002 ) );
+  buffs.daybreak               = buff_creator_t( this, "daybreak", find_spell( 88819 ) );
+  buffs.infusion_of_light      = buff_creator_t( this, "infusion_of_light", find_spell( 54149 ) );
+  buffs.enhanced_holy_shock    = buff_creator_t( this, "enhanced_holy_shock", find_spell( 160002 ) )
+                                 .chance( find_spell( 157478 ) -> proc_chance() );
 
   // Prot
   buffs.guardian_of_ancient_kings      = buff_creator_t( this, "guardian_of_ancient_kings", find_specialization_spell( "Guardian of Ancient Kings" ) )
@@ -4445,7 +4539,6 @@ void paladin_t::create_buffs()
   buffs.shield_of_glory                = buff_creator_t( this, "shield_of_glory" ).spell( find_spell( 138242 ) );
 
   // Ret
-  buffs.judgments_of_the_wise  = buff_creator_t( this, "judgments_of_the_wise", find_specialization_spell( "Judgments of the Wise" ) );
   buffs.tier15_2pc_melee       = buff_creator_t( this, "tier15_2pc_melee", find_spell( 138162 ) )
                                  .default_value( find_spell( 138162 ) -> effectN( 1 ).percent() )
                                  .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
@@ -4927,6 +5020,8 @@ void paladin_t::init_spells()
   passives.seal_of_insight        = find_class_spell( "Seal of Insight" );
 
   // Holy Passives
+  passives.holy_insight           = find_specialization_spell( "Holy Insight" );
+  passives.infusion_of_light      = find_specialization_spell( "Infusion of Light" );
 
   // Prot Passives
   passives.judgments_of_the_wise  = find_specialization_spell( "Judgments of the Wise" );
@@ -5100,6 +5195,9 @@ double paladin_t::composite_melee_haste() const
   // This should only give a nonzero boost for Holy
   if ( buffs.avenging_wrath -> check() )
     h /= 1.0 + buffs.avenging_wrath -> get_haste_bonus();
+  
+  // Infusion of Light (Holy) adds 10% haste
+  h /= 1.0 + passives.infusion_of_light -> effectN( 2 ).percent();
 
   return h;
 }
@@ -5126,6 +5224,9 @@ double paladin_t::composite_spell_haste() const
   // This should only give a nonzero boost for Holy
   if ( buffs.avenging_wrath -> check() )
     h /= 1.0 + buffs.avenging_wrath -> get_haste_bonus();
+
+  // Infusion of Light (Holy) adds 10% haste
+  h /= 1.0 + passives.infusion_of_light -> effectN( 2 ).percent();
   
   return h;
 }
@@ -5445,13 +5546,6 @@ void paladin_t::regen( timespan_t periodicity )
 
       last_extra_regen -= extra_regen_period;
     }
-  }
-
-  if ( buffs.judgments_of_the_wise -> up() )
-  {
-    double tot_amount = resources.base[ RESOURCE_MANA ] * buffs.judgments_of_the_wise -> data().effectN( 1 ).percent();
-    double amount = periodicity.total_seconds() * tot_amount / buffs.judgments_of_the_wise -> buff_duration.total_seconds();
-    resource_gain( RESOURCE_MANA, amount, gains.judgments_of_the_wise );
   }
 }
 
