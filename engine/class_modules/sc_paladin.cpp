@@ -699,18 +699,22 @@ struct paladin_heal_t : public paladin_spell_base_t<heal_t>
   }
 
   // This was an attempt to get Glyph of Flash of Light to do something... it failed.
-  /*
-  virtual double composite_target_multiplier( player_t* t ) const override
+  
+  virtual double composite_target_multiplier( player_t* t ) const
   {
     double ctm = base_t::composite_target_multiplier( t );
 
     if ( td( t ) -> buffs.glyph_of_flash_of_light -> check() )
+    {
       ctm *= 1.0 + p() -> glyphs.flash_of_light -> effectN( 1 ).percent();
+      if ( sim -> debug )
+        sim -> out_debug.printf("=================== %s benefits from GoFoL buff ====================", name() );
+    }
 
     return ctm;
 
   }
-  */
+  
 
   virtual void impact( action_state_t* s )
   {
@@ -723,7 +727,11 @@ struct paladin_heal_t : public paladin_spell_base_t<heal_t>
 
     // expire Glyph of Flash of Light buff if it exists
     if ( td( s -> target ) -> buffs.glyph_of_flash_of_light -> up() )
+    {
       td( s -> target ) -> buffs.glyph_of_flash_of_light -> expire();
+      if ( sim -> debug )
+        sim -> out_debug.printf("=================== %s consumes GoFoL buff ====================", name() );
+    }
 
   }
 
@@ -1792,7 +1800,11 @@ struct flash_of_light_t : public paladin_heal_t
 
     // apply glyph_of_flash_of_light buff if applicable
     if ( p() -> glyphs.flash_of_light -> ok() )
+    {
       td( s -> target ) -> buffs.glyph_of_flash_of_light -> trigger();
+      if ( sim -> debug )
+        sim -> out_debug.printf("=================== Flash of Light applies GoFoL buff ====================");      
+    }
   }
 };
 
