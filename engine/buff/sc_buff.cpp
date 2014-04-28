@@ -857,18 +857,18 @@ void buff_t::expire( timespan_t delay )
     {
       timespan_t start_time = timespan_t::from_seconds( last_start.total_millis() / 1000 ) ;
       timespan_t end_time = timespan_t::from_seconds( sim -> current_time.total_millis() / 1000 );
-      double begin_uptime = ( 1000 - last_start.total_millis() % 1000 ) / 1000.0;
-      double end_uptime = ( sim -> current_time.total_millis() % 1000 ) / 1000.0;
+      timespan_t begin_uptime = (( timespan_t::from_seconds( 1 ) - last_start ) % timespan_t::from_seconds( 1 ) );
+      timespan_t end_uptime = (sim -> current_time % timespan_t::from_seconds( 1 ));
 
-      if ( last_start.total_millis() % 1000 == 0 )
-        begin_uptime = 1.0;
+      if ( last_start % timespan_t::from_seconds( 1 ) == timespan_t::zero() )
+        begin_uptime = timespan_t::from_seconds( 1 );
 
-      uptime_array.add( start_time, begin_uptime );
+      uptime_array.add( start_time, begin_uptime.total_seconds() );
       for ( timespan_t i = start_time + timespan_t::from_millis( 1000 ); i < end_time; i = i + timespan_t::from_millis( 1000 ) )
         uptime_array.add( i, 1 );
 
-      if ( end_uptime != 0 )
-        uptime_array.add( end_time, end_uptime );
+      if ( end_uptime != timespan_t::zero() )
+        uptime_array.add( end_time, end_uptime.total_seconds() );
     }
   }
 
