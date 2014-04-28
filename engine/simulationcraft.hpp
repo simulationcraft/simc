@@ -404,7 +404,6 @@ enum special_effect_e
   SPECIAL_EFFECT_EQUIP,
   SPECIAL_EFFECT_USE,
   SPECIAL_EFFECT_CUSTOM,
-  SPECIAL_EFFECT_PASSIVE,
 };
 
 enum special_effect_source_e
@@ -3198,6 +3197,7 @@ struct item_t
     std::array<int, 3>       gem_id;
     std::array<int, 3>       gem_color;
     std::vector<stat_pair_t> gem_stats, meta_gem_stats, socket_bonus_stats;
+    std::string              encoded_enchant;
     std::vector<stat_pair_t> enchant_stats;
     std::vector<stat_pair_t> addon_stats;
     std::vector<stat_pair_t> suffix_stats;

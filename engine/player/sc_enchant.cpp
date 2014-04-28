@@ -244,9 +244,10 @@ bool enchant::initialize_item_enchant( item_t& item,
         // effect list, so we can output them in saved profiles as the enchant
         // name, instead of a bunch of stats.
         if ( passive_enchant( item, enchant.ench_prop[ i ] ) )
-          effect.type = SPECIAL_EFFECT_PASSIVE;
-        else
-          effect.type = SPECIAL_EFFECT_EQUIP;
+        {
+          item.parsed.encoded_enchant = encoded_enchant_name( item.player -> dbc, enchant );
+          continue;
+        }
         break;
       case ITEM_ENCHANTMENT_USE_SPELL:
         effect.type = SPECIAL_EFFECT_USE;
@@ -263,15 +264,12 @@ bool enchant::initialize_item_enchant( item_t& item,
     }
 
     // First phase initialize the spell effect
-    if ( effect.type != SPECIAL_EFFECT_NONE && effect.type != SPECIAL_EFFECT_PASSIVE )
-      unique_gear::initialize_special_effect( effect, item, enchant.ench_prop[ i ] );
+    if ( effect.type != SPECIAL_EFFECT_NONE && 
+         unique_gear::initialize_special_effect( effect, item, enchant.ench_prop[ i ] ) )
 
     // If this enchant has any kind of special effect, we need to encode it's
     // name in the saved profiles, so when the profile is loaded, it's loaded
-    // through the enchant init system. This is currently only an issue with the
-    // boot enchants in WoW, where they have a passive aura (run speed) and
-    // stats. Without an encoding string, the enchant would lose the run speed
-    // property upon profile save (and subsequent loads).
+    // through the enchant init system.
     if ( effect.type != SPECIAL_EFFECT_NONE )
     {
       effect.encoding_str = encoded_enchant_name( item.player -> dbc, enchant );
