@@ -857,10 +857,10 @@ void buff_t::expire( timespan_t delay )
     {
       timespan_t start_time = timespan_t::from_seconds( last_start.total_millis() / 1000 ) ;
       timespan_t end_time = timespan_t::from_seconds( sim -> current_time.total_millis() / 1000 );
-      double begin_uptime = ( 1000 - last_start.total_millis() % 1000 ) / 1000.0;
-      double end_uptime = ( sim -> current_time.total_millis() % 1000 ) / 1000.0;
+      double begin_uptime = ( 1000 - (int64_t)last_start.total_millis() % 1000 ) / 1000.0;
+      double end_uptime = ( (int64_t)sim -> current_time.total_millis() % 1000 ) / 1000.0;
 
-      if ( last_start.total_millis() % 1000 == 0 )
+      if ( (int64_t)last_start.total_millis() % 1000 == 0 )
         begin_uptime = 1.0;
 
       uptime_array.add( start_time, begin_uptime );
