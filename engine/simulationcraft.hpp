@@ -5167,7 +5167,7 @@ struct action_t : public noncopyable
   int aoe, pre_combat, may_multistrike;
   bool dual; // true if this action should not be counted for executes
   bool callbacks, special, channeled, background, sequence, use_off_gcd, quiet;
-  bool direct_tick, direct_tick_callbacks, periodic_hit, repeating, harmful, proc, item_proc;
+  bool direct_tick, direct_tick_callbacks, periodic_hit, repeating, harmful, proc;
   bool initialized;
   bool may_hit, may_miss, may_dodge, may_parry, may_glance, may_block, may_crush, may_crit;
   bool tick_may_crit, tick_zero, hasted_ticks;
@@ -5977,11 +5977,10 @@ struct action_callback_t
   player_t* listener;
   bool active;
   bool allow_self_procs;
-  bool allow_item_procs;
   bool allow_procs;
 
-  action_callback_t( player_t* l, bool ap = false, bool aip = false, bool asp = false ) :
-    listener( l ), active( true ), allow_self_procs( asp ), allow_item_procs( aip ), allow_procs( ap )
+  action_callback_t( player_t* l, bool ap = false, bool asp = false ) :
+    listener( l ), active( true ), allow_self_procs( asp ), allow_procs( ap )
   {
     assert( l );
     if ( std::find( l -> callbacks.all_callbacks.begin(), l -> callbacks.all_callbacks.end(), this )
@@ -6005,7 +6004,6 @@ struct action_callback_t
       action_callback_t* cb = v[ i ];
       if ( cb -> active )
       {
-        if ( ! cb -> allow_item_procs && a && a -> item_proc ) return;
         if ( ! cb -> allow_procs && a && a -> proc ) return;
         cb -> trigger( a, call_data );
       }
