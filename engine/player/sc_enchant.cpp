@@ -79,26 +79,54 @@ std::string enchant::find_enchant_name( unsigned enchant_id )
  */
 std::string enchant::encoded_enchant_name( const dbc_t& dbc, const item_enchantment_data_t& enchant )
 {
-  std::string enchant_name = enchant.name;
-  util::tokenize( enchant_name );
+  std::string enchant_name;
+  const spell_data_t* enchant_source = dbc.spell( enchant.id_spell );
 
-  for ( size_t i = 0; i < sizeof_array( enchant.ench_prop ); i++ )
+  if ( enchant_source -> id() > 0 )
   {
-    if ( enchant.ench_prop[ i ] == 0 || enchant.ench_type[ i ] == 0 )
-      continue;
+    enchant_name = enchant_source -> name_cstr();
+    std::string::size_type enchant_pos = enchant_name.find( "Enchant " );
+    std::string::size_type enchant_hyphen_pos = enchant_name.find( "-" );
 
-    std::string rank_str;
-    if ( dbc.spell( enchant.ench_prop[ i ] ) -> rank_str() )
-      rank_str = dbc.spell( enchant.ench_prop[ i ] ) -> rank_str();
-    util::tokenize( rank_str );
+    // Cut out "Enchant XXX -" from the string, if it exists, also remove any 
+    // following whitespace. Consider that to be the enchant name. If "Enchant
+    // XXX -" is not found, just consider the linked spell's full name to be
+    // the enchant name.
+    if ( enchant_pos != std::string::npos && enchant_hyphen_pos != std::string::npos &&
+         enchant_hyphen_pos > enchant_pos )
+    {
+      enchant_name = enchant_name.substr( enchant_hyphen_pos + 1 );
+      while ( enchant_name[ 0 ] == ' ' )
+        enchant_name.erase( enchant_name.begin() );
+    }
 
-    std::string::size_type offset = rank_str.find( "rank_" );
-    // Erase "rank_"
-    if ( offset != std::string::npos )
-      rank_str.erase( offset, 5 );
+    util::tokenize( enchant_name );
+  }
+  // Revert back to figuring out name based on pure item enchantment data. This
+  // will probably be wrong in many cases, but what can we do.
+  else
+  {
+    enchant_name = enchant.name;
+    util::tokenize( enchant_name );
 
-    if ( ! rank_str.empty() )
-      enchant_name += "_" + rank_str;
+    for ( size_t i = 0; i < sizeof_array( enchant.ench_prop ); i++ )
+    {
+      if ( enchant.ench_prop[ i ] == 0 || enchant.ench_type[ i ] == 0 )
+        continue;
+
+      std::string rank_str;
+      if ( dbc.spell( enchant.ench_prop[ i ] ) -> rank_str() )
+        rank_str = dbc.spell( enchant.ench_prop[ i ] ) -> rank_str();
+      util::tokenize( rank_str );
+
+      std::string::size_type offset = rank_str.find( "rank_" );
+      // Erase "rank_"
+      if ( offset != std::string::npos )
+        rank_str.erase( offset, 5 );
+
+      if ( ! rank_str.empty() )
+        enchant_name += "_" + rank_str;
+    }
   }
 
   return enchant_name;
