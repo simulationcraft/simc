@@ -1024,14 +1024,13 @@ void sim_t::combat_begin()
     t -> combat_begin();
   }
 
-  if ( overrides.attack_speed            ) auras.attack_speed            -> override_buff();
   if ( overrides.attack_power_multiplier ) auras.attack_power_multiplier -> override_buff();
   if ( overrides.critical_strike         ) auras.critical_strike         -> override_buff();
 
   if ( overrides.mastery                 )
     auras.mastery -> override_buff( 1, dbc.effect_average( dbc.spell( 116956 ) -> effectN( 1 ).id(), max_player_level ) );
 
-  if ( overrides.spell_haste             ) auras.spell_haste             -> override_buff();
+  if ( overrides.haste                   ) auras.haste                   -> override_buff();
   if ( overrides.spell_power_multiplier  ) auras.spell_power_multiplier  -> override_buff();
   if ( overrides.stamina                 ) auras.stamina                 -> override_buff();
   if ( overrides.str_agi_int             ) auras.str_agi_int             -> override_buff();
@@ -1248,12 +1247,6 @@ bool sim_t::init()
 
   // MoP aura initialization
 
-  // Attack and Ranged speed, value from Swiftblade's Cunning (id=113742) (Rogue)
-  auras.attack_speed = buff_creator_t( this, "attack_speed" )
-                       .max_stack( 100 )
-                       .default_value( dbc.spell( 113742 ) -> effectN( 1 ).percent() )
-                       .add_invalidate( CACHE_HASTE );
-
   // Attack Power Multiplier, value from Trueshot Aura (id=19506) (Hunter)
   auras.attack_power_multiplier = buff_creator_t( this, "attack_power_multiplier" )
                                   .max_stack( 100 )
@@ -1272,8 +1265,8 @@ bool sim_t::init()
                   .default_value( dbc.spell( 116956 ) -> effectN( 1 ).base_value() )
                   .add_invalidate( CACHE_MASTERY );
 
-  // Spell Haste, value from Mind Quickening (id=49868) (Priest)
-  auras.spell_haste = buff_creator_t( this, "spell_haste" )
+  // Haste, value from Mind Quickening (id=49868) (Priest)
+  auras.haste = buff_creator_t( this, "haste" )
                       .max_stack( 100 )
                       .default_value( dbc.spell( 49868 ) -> effectN( 1 ).percent() )
                       .add_invalidate( CACHE_HASTE );
@@ -1746,11 +1739,10 @@ void sim_t::use_optimal_buffs_and_debuffs( int value )
 {
   optimal_raid = value;
 
-  overrides.attack_speed            = optimal_raid;
   overrides.attack_power_multiplier = optimal_raid;
   overrides.critical_strike         = optimal_raid;
   overrides.mastery                 = optimal_raid;
-  overrides.spell_haste             = optimal_raid;
+  overrides.haste             = optimal_raid;
   overrides.spell_power_multiplier  = optimal_raid;
   overrides.stamina                 = optimal_raid;
   overrides.str_agi_int             = optimal_raid;
@@ -1868,11 +1860,10 @@ void sim_t::create_options()
     opt_int( "max_aoe_enemies", max_aoe_enemies ),
     // Raid buff overrides
     opt_func( "optimal_raid", parse_optimal_raid ),
-    opt_int( "override.attack_speed", overrides.attack_speed ),
     opt_int( "override.attack_power_multiplier", overrides.attack_power_multiplier ),
     opt_int( "override.critical_strike", overrides.critical_strike ),
     opt_int( "override.mastery", overrides.mastery ),
-    opt_int( "override.spell_haste", overrides.spell_haste ),
+    opt_int( "override.haste", overrides.haste ),
     opt_int( "override.spell_power_multiplier", overrides.spell_power_multiplier ),
     opt_int( "override.stamina", overrides.stamina ),
     opt_int( "override.str_agi_int", overrides.str_agi_int ),

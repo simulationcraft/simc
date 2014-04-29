@@ -4335,8 +4335,8 @@ struct shadowform_t final : public priest_buff_t<buff_t>
   {
     bool r = base_t::trigger( stacks, value, chance, duration );
 
-    if ( ! sim -> overrides.spell_haste )
-      sim -> auras.spell_haste -> trigger();
+    if ( ! sim -> overrides.haste )
+      sim -> auras.haste -> trigger();
 
     return r;
   }
@@ -4345,8 +4345,8 @@ struct shadowform_t final : public priest_buff_t<buff_t>
   {
     base_t::expire_override();
 
-    if ( ! sim -> overrides.spell_haste )
-      sim -> auras.spell_haste -> decrement();
+    if ( ! sim -> overrides.haste )
+      sim -> auras.haste -> decrement();
   }
 };
 

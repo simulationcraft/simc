@@ -2471,11 +2471,14 @@ double player_t::composite_melee_haste() const
     if ( buffs.unholy_frenzy -> check() )
       h *= 1.0 / ( 1.0 + buffs.unholy_frenzy -> value() );
 
-    if ( buffs.mongoose_mh && buffs.mongoose_mh -> up() )  // Should we remove this? Burning Crusade/WOTLK were a long time ago.
+    if ( buffs.mongoose_mh && buffs.mongoose_mh -> up() )
       h *= 1.0 / ( 1.0 + 30 / current.rating.attack_haste );
 
     if ( buffs.mongoose_oh && buffs.mongoose_oh -> up() ) 
       h *= 1.0 / ( 1.0 + 30 / current.rating.attack_haste );
+
+    if ( sim -> auras.haste -> check() )
+      h *= 1.0 / ( 1.0 + sim -> auras.haste -> value() );
 
     if ( buffs.berserking -> up() )
       h *= 1.0 / ( 1.0 + buffs.berserking -> data().effectN( 1 ).percent() );
@@ -2490,12 +2493,9 @@ double player_t::composite_melee_haste() const
 
 // player_t::composite_attack_speed =========================================
 
-double player_t::composite_melee_speed() const
+double player_t::composite_melee_speed() const // Attack speed buff has been changed to attack haste.
 {
   double h = composite_melee_haste();
-
-  if ( ! is_enemy() && ! is_add() && sim -> auras.attack_speed -> check() )
-    h *= 1.0 / ( 1.0 + sim -> auras.attack_speed -> value() );
 
   return h;
 }
@@ -2712,8 +2712,8 @@ double player_t::composite_spell_haste() const
     if ( buffs.tempus_repit -> up() )
       h *= 1.0 / ( 1.0 + buffs.tempus_repit -> data().effectN( 1 ).percent() );
 
-    if ( sim -> auras.spell_haste -> check() )
-      h *= 1.0 / ( 1.0 + sim -> auras.spell_haste -> value() );
+    if ( sim -> auras.haste -> check() )
+      h *= 1.0 / ( 1.0 + sim -> auras.haste -> value() );
 
     if ( race == RACE_GOBLIN || race == RACE_GNOME )
       h *= 1.0 / ( 1.0 + 0.01 );
@@ -3095,14 +3095,10 @@ void player_t::invalidate_cache( cache_e c )
     case CACHE_AGILITY:
       if ( current.attack_power_per_agility > 0 )
         invalidate_cache( CACHE_ATTACK_POWER );
-      if ( current.attack_crit_per_agility > 0 )
-        invalidate_cache( CACHE_ATTACK_CRIT );
       if ( current.dodge_per_agility > 0 )
         invalidate_cache( CACHE_DODGE );
       break;
     case CACHE_INTELLECT:
-      if ( current.spell_crit_per_intellect > 0 )
-        invalidate_cache( CACHE_SPELL_CRIT );
       if ( current.spell_power_per_intellect > 0 )
         invalidate_cache( CACHE_SPELL_POWER );
       break;

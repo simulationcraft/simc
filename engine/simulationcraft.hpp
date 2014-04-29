@@ -2490,11 +2490,10 @@ public:
   struct overrides_t
   {
     // Buff overrides
-    int attack_speed;
     int attack_power_multiplier;
     int critical_strike;
     int mastery;
-    int spell_haste;
+    int haste;
     int spell_power_multiplier;
     int stamina;
     int str_agi_int;
@@ -2515,10 +2514,9 @@ public:
   {
     // Raid-wide auras from various classes
     aura_t* attack_power_multiplier;
-    aura_t* attack_speed;
     aura_t* critical_strike;
     aura_t* mastery;
-    aura_t* spell_haste;
+    aura_t* haste;
     aura_t* spell_power_multiplier;
     aura_t* stamina;
     aura_t* str_agi_int;
@@ -4990,9 +4988,6 @@ public:
 
   virtual double composite_multistrike() const
   { return owner -> cache.multistrike(); }
-// 4/27/2014: Currently this line asserts. Need to fix at some point.
-//virtual double composite_readiness() const
-  //{ return owner -> cache.readiness(); }
 
   virtual double composite_readiness() const
   { return owner -> cache.readiness(); }

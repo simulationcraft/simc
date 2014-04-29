@@ -1453,7 +1453,7 @@ struct moonkin_form_t : public druid_buff_t< buff_t >
   {
     base_t::expire_override();
 
-    sim -> auras.spell_haste -> decrement();
+    sim -> auras.haste -> decrement();
   }
 
   virtual void start( int stacks, double value, timespan_t duration )
@@ -1463,8 +1463,8 @@ struct moonkin_form_t : public druid_buff_t< buff_t >
 
     base_t::start( stacks, value, duration );
 
-    if ( ! sim -> overrides.spell_haste )
-      sim -> auras.spell_haste -> trigger();
+    if ( ! sim -> overrides.haste )
+      sim -> auras.haste -> trigger();
   }
 };
 
