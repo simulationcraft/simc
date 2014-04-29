@@ -543,10 +543,8 @@ player_t::base_initial_current_t::base_initial_current_t() :
   stats(),
   mana_regen_per_second(),
   spell_power_per_intellect( 0 ),
-  spell_crit_per_intellect( 0 ),
   attack_power_per_strength( 0 ),
   attack_power_per_agility( 0 ),
-  attack_crit_per_agility( 0 ),
   dodge_per_agility( 0 ),
   parry_per_strength( 0 ),
   mana_regen_per_spirit( 0 ),
@@ -583,10 +581,8 @@ std::string player_t::base_initial_current_t::to_string()
   s << stats.to_string();
   s << "mana_regen_per_second=" << mana_regen_per_second;
   s << " spell_power_per_intellect=" << spell_power_per_intellect;
-  s << " spell_crit_per_intellect=" << spell_crit_per_intellect;
   s << " attack_power_per_strength=" << attack_power_per_strength;
   s << " attack_power_per_agility=" << attack_power_per_agility;
-  s << " attack_crit_per_agility=" << attack_crit_per_agility;
   s << " dodge_per_agility=" << dodge_per_agility;
   s << " parry_per_strength=" << parry_per_strength;
   s << " mana_regen_per_spirit=" << mana_regen_per_spirit;
@@ -965,8 +961,6 @@ void player_t::init_base_stats()
 
     base.spell_crit               = dbc.spell_crit_base( type, level );
     base.attack_crit              = dbc.melee_crit_base( type, level );
-    base.spell_crit_per_intellect = dbc.spell_crit_scaling( type, level );
-    base.attack_crit_per_agility  = dbc.melee_crit_scaling( type, level );
     base.mastery = 8.0;
 
     resources.base[ RESOURCE_HEALTH ] = dbc.health_base( type, level );
@@ -2530,9 +2524,6 @@ double player_t::composite_melee_crit() const
 {
   double ac = current.attack_crit + composite_melee_crit_rating() / current.rating.attack_crit;
 
-  if ( current.attack_crit_per_agility )
-    ac += ( cache.agility() / current.attack_crit_per_agility / 100.0 );
-
   if ( ! is_pet() && ! is_enemy() && ! is_add() && sim -> auras.critical_strike -> check() )
     ac += sim -> auras.critical_strike -> value();
 
@@ -2761,11 +2752,6 @@ double player_t::composite_spell_crit() const
 {
   double sc = current.spell_crit + composite_spell_crit_rating() / current.rating.spell_crit;
 
-  if ( current.spell_crit_per_intellect > 0 )
-  {
-    sc += ( cache.intellect() / current.spell_crit_per_intellect / 100.0 );
-  }
-
   if ( ! is_pet() && ! is_enemy() )
   {
     if ( sim -> auras.critical_strike -> check() )
@@ -2780,7 +2766,7 @@ double player_t::composite_spell_crit() const
 
 // player_t::composite_spell_hit ============================================
 
-double player_t::composite_spell_hit() const  //Needs to be revamped for WoD.
+double player_t::composite_spell_hit() const
 {
   double sh = composite_spell_hit_rating() / current.rating.spell_hit;
   

@@ -4109,8 +4109,8 @@ struct player_t : public actor_t
 
     double mana_regen_per_second;
 
-    double spell_power_per_intellect, spell_crit_per_intellect;
-    double attack_power_per_strength, attack_power_per_agility, attack_crit_per_agility;
+    double spell_power_per_intellect;
+    double attack_power_per_strength, attack_power_per_agility;
     double dodge_per_agility, parry_per_strength;
     double mana_regen_per_spirit, mana_regen_from_spirit_multiplier, health_per_stamina;
     std::array<double, SCHOOL_MAX> resource_reduction;
