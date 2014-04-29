@@ -215,7 +215,7 @@ std::string item_t::to_string()
     s << w -> swing_time.total_seconds();
   }
 
-  if ( parsed.enchant_stats.size() > 0 )
+  if ( parsed.enchant_stats.size() > 0 && parsed.encoded_enchant.empty() )
   {
     s << " enchant={ ";
 
@@ -228,6 +228,8 @@ std::string item_t::to_string()
     std::streampos x = s.tellp(); s.seekp( x - std::streamoff( 2 ) );
     s << " }";
   }
+  else if ( ! parsed.encoded_enchant.empty() )
+    s << " enchant={ " << parsed.encoded_enchant << " }";
 
   for ( size_t i = 0; i < parsed.special_effects.size(); i++ )
   {
@@ -446,7 +448,7 @@ void item_t::encoded_item( xml_writer_t& writer )
   if ( parsed.gem_stats.size() > 0 || ( slot == SLOT_HEAD && player -> meta_gem != META_GEM_NONE ) )
     writer.print_attribute( "gems", encoded_gems() );
 
-  if ( parsed.enchant_stats.size() > 0 || ! has_special_effect( SPECIAL_EFFECT_SOURCE_ENCHANT ) )
+  if ( parsed.enchant_stats.size() > 0 || ! parsed.encoded_enchant.empty() )
     writer.print_attribute( "enchant", encoded_enchant() );
 
   if ( parsed.addon_stats.size() > 0 || ! has_special_effect( SPECIAL_EFFECT_SOURCE_ADDON ) )
@@ -502,7 +504,7 @@ std::string item_t::encoded_item()
     s << ",gems=" << encoded_gems();
 
   if ( ! option_enchant_str.empty() || parsed.enchant_stats.size() > 0 ||
-       has_special_effect( SPECIAL_EFFECT_SOURCE_ENCHANT ) )
+       ! parsed.encoded_enchant.empty() )
     s << ",enchant=" << encoded_enchant();
 
   if ( ! option_addon_str.empty() || parsed.addon_stats.size() > 0 ||
@@ -618,12 +620,10 @@ std::string item_t::encoded_enchant()
   if ( ! option_enchant_str.empty() )
     return option_enchant_str;
 
-  if ( ! special_effect( SPECIAL_EFFECT_SOURCE_ENCHANT ).encoding_str.empty() )
-    return special_effect( SPECIAL_EFFECT_SOURCE_ENCHANT ).encoding_str;
+  if ( ! parsed.encoded_enchant.empty() )
+    return parsed.encoded_enchant;
 
-  std::string stats_str = stat_pairs_to_str( parsed.enchant_stats );
-
-  return stats_str;
+  return stat_pairs_to_str( parsed.enchant_stats );
 }
 
 // item_t::encoded_addon ====================================================

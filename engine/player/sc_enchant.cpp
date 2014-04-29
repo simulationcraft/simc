@@ -79,27 +79,59 @@ std::string enchant::find_enchant_name( unsigned enchant_id )
  */
 std::string enchant::encoded_enchant_name( const dbc_t& dbc, const item_enchantment_data_t& enchant )
 {
-  std::string enchant_name = enchant.name;
-  util::tokenize( enchant_name );
+  std::string enchant_name;
+  std::string enchant_rank_str;
 
-  for ( size_t i = 0; i < sizeof_array( enchant.ench_prop ); i++ )
+  const spell_data_t* enchant_source = dbc.spell( enchant.id_spell );
+  if ( enchant_source -> id() > 0 )
   {
-    if ( enchant.ench_prop[ i ] == 0 || enchant.ench_type[ i ] == 0 )
-      continue;
+    enchant_name = enchant_source -> name_cstr();
+    std::string::size_type enchant_pos = enchant_name.find( "Enchant " );
+    std::string::size_type enchant_hyphen_pos = enchant_name.find( "-" );
 
-    std::string rank_str;
-    if ( dbc.spell( enchant.ench_prop[ i ] ) -> rank_str() )
-      rank_str = dbc.spell( enchant.ench_prop[ i ] ) -> rank_str();
-    util::tokenize( rank_str );
+    // Cut out "Enchant XXX -" from the string, if it exists, also remove any 
+    // following whitespace. Consider that to be the enchant name. If "Enchant
+    // XXX -" is not found, just consider the linked spell's full name to be
+    // the enchant name.
+    if ( enchant_pos != std::string::npos && enchant_hyphen_pos != std::string::npos &&
+         enchant_hyphen_pos > enchant_pos )
+    {
+      enchant_name = enchant_name.substr( enchant_hyphen_pos + 1 );
+      while ( enchant_name[ 0 ] == ' ' )
+        enchant_name.erase( enchant_name.begin() );
+    }
 
-    std::string::size_type offset = rank_str.find( "rank_" );
-    // Erase "rank_"
-    if ( offset != std::string::npos )
-      rank_str.erase( offset, 5 );
+    util::tokenize( enchant_name );
 
-    if ( ! rank_str.empty() )
-      enchant_name += "_" + rank_str;
+    if ( enchant_source -> rank_str() )
+      enchant_rank_str = enchant_source -> rank_str();
+    util::tokenize( enchant_rank_str );
   }
+  // Revert back to figuring out name based on pure item enchantment data. This
+  // will probably be wrong in many cases, but what can we do.
+  else
+  {
+    enchant_name = enchant.name;
+    util::tokenize( enchant_name );
+
+    for ( size_t i = 0; i < sizeof_array( enchant.ench_prop ); i++ )
+    {
+      if ( enchant.ench_prop[ i ] == 0 || enchant.ench_type[ i ] == 0 )
+        continue;
+
+      if ( dbc.spell( enchant.ench_prop[ i ] ) -> rank_str() )
+        enchant_rank_str = dbc.spell( enchant.ench_prop[ i ] ) -> rank_str();
+      util::tokenize( enchant_rank_str );
+    }
+  }
+
+  // Erase "rank_"
+  std::string::size_type rank_offset = enchant_rank_str.find( "rank_" );
+  if ( rank_offset != std::string::npos )
+    enchant_rank_str.erase( rank_offset, 5 );
+
+  if ( ! enchant_rank_str.empty() )
+    enchant_name += "_" + enchant_rank_str;
 
   return enchant_name;
 }
@@ -131,48 +163,11 @@ const item_enchantment_data_t& enchant::find_item_enchant( const dbc_t& dbc,
         item_enchant -> id != 0;
         item_enchant++ )
   {
-    if ( item_enchant -> name == 0 )
+    if ( ! item_enchant -> name && ! item_enchant -> id_spell )
       continue;
 
-    std::string enchant_name = item_enchant -> name;
-    util::tokenize( enchant_name );
-    // Check for partial match in the name, enchant name must be fully
-    // contained in the given parameter
-    if ( ! util::str_in_str_ci( name, enchant_name ) )
-      continue;
-
-    // Partial match found, see if the spell has a rank string, and massage
-    // name to account for it.
-    for ( size_t i = 0; i < sizeof_array( item_enchant -> ench_prop ); i++ )
-    {
-      if ( item_enchant -> ench_prop[ i ] == 0 ||
-           item_enchant -> ench_type[ i ] == 0 )
-        continue;
-
-      std::string rank_str;
-      if ( dbc.spell( item_enchant -> ench_prop[ i ] ) -> rank_str() )
-        rank_str = dbc.spell( item_enchant -> ench_prop[ i ] ) -> rank_str();
-      util::tokenize( rank_str );
-
-      // Compare to exact enchant name match, if rank string is missing
-      if ( rank_str.empty() && util::str_compare_ci( name, enchant_name ) )
-        return *item_enchant;
-
-      // Compare directly to enchant name + rank
-      if ( ! rank_str.empty() && util::str_compare_ci( name, enchant_name + "_" + rank_str ) )
-        return *item_enchant;
-
-      std::string::size_type offset = rank_str.find( "rank_" );
-      if ( offset != std::string::npos )
-      {
-        // Erase "rank_", and try again
-        rank_str.erase( offset, 5 );
-
-        // Match <enchant name>_<enchant rank number>
-        if ( util::str_compare_ci( name, enchant_name + "_" + rank_str ) )
-          return *item_enchant;
-      }
-    }
+    if ( util::str_compare_ci( name, encoded_enchant_name( dbc, *item_enchant ) ) )
+      return *item_enchant;
   }
 
   return dbc.item_enchantment( 0 );
@@ -241,19 +236,21 @@ bool enchant::initialize_item_enchant( item_t& item,
         effect.weapon_proc = true;
         effect.type = SPECIAL_EFFECT_EQUIP;
         effect.proc_flags_ = PF_MELEE | PF_MELEE_ABILITY | PF_RANGED | PF_RANGED_ABILITY;
-        effect.encoding_str = encoded_enchant_name( item.player -> dbc, enchant );
         break;
       case ITEM_ENCHANTMENT_EQUIP_SPELL:
-        // Passive (stat) giving enchants get a special treatment
+        // Passive enchants get a special treatment. In essence, we only support
+        // a couple, and they are handled without special effect initialization
+        // for now. Unfortunately, they do need to be added to the special
+        // effect list, so we can output them in saved profiles as the enchant
+        // name, instead of a bunch of stats.
         if ( passive_enchant( item, enchant.ench_prop[ i ] ) )
+        {
+          item.parsed.encoded_enchant = encoded_enchant_name( item.player -> dbc, enchant );
           continue;
-
-        effect.type = SPECIAL_EFFECT_EQUIP;
-        effect.encoding_str = encoded_enchant_name( item.player -> dbc, enchant );
+        }
         break;
       case ITEM_ENCHANTMENT_USE_SPELL:
         effect.type = SPECIAL_EFFECT_USE;
-        effect.encoding_str = encoded_enchant_name( item.player -> dbc, enchant );
         break;
       case ITEM_ENCHANTMENT_STAT:
       {
@@ -269,11 +266,17 @@ bool enchant::initialize_item_enchant( item_t& item,
     // First phase initialize the spell effect
     if ( effect.type != SPECIAL_EFFECT_NONE && 
          unique_gear::initialize_special_effect( effect, item, enchant.ench_prop[ i ] ) )
+
+    // If this enchant has any kind of special effect, we need to encode it's
+    // name in the saved profiles, so when the profile is loaded, it's loaded
+    // through the enchant init system.
+    if ( effect.type != SPECIAL_EFFECT_NONE )
     {
-      if ( effect.type != SPECIAL_EFFECT_NONE )
-        item.parsed.special_effects.push_back( effect );
+      effect.encoding_str = encoded_enchant_name( item.player -> dbc, enchant );
+      item.parsed.special_effects.push_back( effect );
     }
   }
+
   return true;
 }
 
@@ -315,6 +318,11 @@ bool enchant::passive_enchant( item_t& item, unsigned spell_id )
         break;
       case A_MOD_RATING:
         stat = util::translate_rating_mod( effect.misc_value1() );
+        break;
+      // Clump all movement speed enchants additively into "passive_movement_speed"
+      case A_MOD_SPEED_ALWAYS:
+        item.player -> base_movement_speed_multiplier += effect.percent();
+        ret = true;
         break;
       default:
         break;

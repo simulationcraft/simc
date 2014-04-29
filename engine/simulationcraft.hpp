@@ -403,7 +403,7 @@ enum special_effect_e
   SPECIAL_EFFECT_NONE = -1,
   SPECIAL_EFFECT_EQUIP,
   SPECIAL_EFFECT_USE,
-  SPECIAL_EFFECT_CUSTOM
+  SPECIAL_EFFECT_CUSTOM,
 };
 
 enum special_effect_source_e
@@ -2490,11 +2490,10 @@ public:
   struct overrides_t
   {
     // Buff overrides
-    int attack_speed;
     int attack_power_multiplier;
     int critical_strike;
     int mastery;
-    int spell_haste;
+    int haste;
     int spell_power_multiplier;
     int stamina;
     int str_agi_int;
@@ -2515,10 +2514,9 @@ public:
   {
     // Raid-wide auras from various classes
     aura_t* attack_power_multiplier;
-    aura_t* attack_speed;
     aura_t* critical_strike;
     aura_t* mastery;
-    aura_t* spell_haste;
+    aura_t* haste;
     aura_t* spell_power_multiplier;
     aura_t* stamina;
     aura_t* str_agi_int;
@@ -3199,6 +3197,7 @@ struct item_t
     std::array<int, 3>       gem_id;
     std::array<int, 3>       gem_color;
     std::vector<stat_pair_t> gem_stats, meta_gem_stats, socket_bonus_stats;
+    std::string              encoded_enchant;
     std::vector<stat_pair_t> enchant_stats;
     std::vector<stat_pair_t> addon_stats;
     std::vector<stat_pair_t> suffix_stats;
@@ -4306,6 +4305,7 @@ public:
 
   // Movement & Position
   double base_movement_speed;
+  double base_movement_speed_multiplier; // _PASSIVE_ movement speed multipliers
   double x_position, y_position;
 
   struct buffs_t
@@ -4350,10 +4350,6 @@ public:
 
     // 5.4 trinkets
     buff_t* cooldown_reduction;
-
-    //Runspeed Enchants
-    buff_t* pandarens_step;
-    buff_t* blurred_speed;
 
     stat_buff_t* flask;
   } buffs;
@@ -4990,9 +4986,6 @@ public:
 
   virtual double composite_multistrike() const
   { return owner -> cache.multistrike(); }
-// 4/27/2014: Currently this line asserts. Need to fix at some point.
-//virtual double composite_readiness() const
-  //{ return owner -> cache.readiness(); }
 
   virtual double composite_readiness() const
   { return owner -> cache.readiness(); }

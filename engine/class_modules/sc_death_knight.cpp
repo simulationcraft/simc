@@ -6665,8 +6665,8 @@ void death_knight_t::arise()
     }
   }
 
-  if ( specialization() == DEATH_KNIGHT_FROST  && ! sim -> overrides.attack_speed ) sim -> auras.attack_speed -> trigger();
-  if ( specialization() == DEATH_KNIGHT_UNHOLY && ! sim -> overrides.attack_speed ) sim -> auras.attack_speed -> trigger();
+  if ( specialization() == DEATH_KNIGHT_FROST  && ! sim -> overrides.haste ) sim -> auras.haste -> trigger();
+  if ( specialization() == DEATH_KNIGHT_UNHOLY && ! sim -> overrides.haste ) sim -> auras.haste -> trigger();
 
   runeforge.rune_of_the_stoneskin_gargoyle -> trigger();
   runeforge.rune_of_the_nerubian_carapace -> trigger();

@@ -1796,7 +1796,7 @@ struct start_attack_t : public hunter_ranged_attack_t
     return( player -> main_hand_attack -> execute_event == 0 ); // not swinging
   }
 
-  virtual timespan_t execute_time() const
+/*  virtual timespan_t execute_time() const
   {
     double h = 1.0;
 
@@ -1804,6 +1804,7 @@ struct start_attack_t : public hunter_ranged_attack_t
 
     return hunter_ranged_attack_t::execute_time() * h;
   }
+ This shouldn't be needed anymore due to attack speed no longer being a raid buff.*/
 };
 
 // Aimed Shot ===============================================================

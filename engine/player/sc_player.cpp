@@ -463,7 +463,8 @@ player_t::player_t( sim_t*             s,
   // Scaling
   scaling_lag( 0 ), scaling_lag_error( 0 ),
   // Movement & Position
-  base_movement_speed( 7.0 ), x_position( 0.0 ), y_position( 0.0 ),
+  base_movement_speed( 7.0 ), base_movement_speed_multiplier( 1.0 ), 
+  x_position( 0.0 ), y_position( 0.0 ),
   buffs( buffs_t() ),
   potion_buffs( potion_buffs_t() ),
   debuffs( debuffs_t() ),
@@ -2376,15 +2377,6 @@ void player_t::create_buffs()
                                .default_value( 1 );
 
     buffs.nitro_boosts       = buff_creator_t( this, "nitro_boosts", find_spell( 54861 ) );
-
-    buffs.blurred_speed     = buff_creator_t( this, "blurred_speed" )
-                   .spell( find_spell( 104409 ) )
-                   .chance( 0 );
-
-    buffs.pandarens_step     = buff_creator_t( this, "pandarens_step" )
-                   .spell( find_spell( 104414 ) )
-                   .chance( 0 );
-
     }
 
   }
@@ -2452,11 +2444,7 @@ double player_t::mana_regen_per_second() const
 }
 
 // Night elf passive will change from 1% crit during the day, to 1% haste during the night. 
-// Need a way to include human racial, which will increase two secondary stats of the players choice into any secondary. 
-// Hit/Expertise are being removed as a stat, but it will still be possible for non-tanks to be parried if standing in front of the boss.
-// 
-
-
+// Need a way to include human racial.
 // player_t::composite_attack_haste =========================================
 
 double player_t::composite_melee_haste() const
@@ -2471,11 +2459,14 @@ double player_t::composite_melee_haste() const
     if ( buffs.unholy_frenzy -> check() )
       h *= 1.0 / ( 1.0 + buffs.unholy_frenzy -> value() );
 
-    if ( buffs.mongoose_mh && buffs.mongoose_mh -> up() )  // Should we remove this? Burning Crusade/WOTLK were a long time ago.
+    if ( buffs.mongoose_mh && buffs.mongoose_mh -> up() )
       h *= 1.0 / ( 1.0 + 30 / current.rating.attack_haste );
 
     if ( buffs.mongoose_oh && buffs.mongoose_oh -> up() ) 
       h *= 1.0 / ( 1.0 + 30 / current.rating.attack_haste );
+
+    if ( sim -> auras.haste -> check() )
+      h *= 1.0 / ( 1.0 + sim -> auras.haste -> value() );
 
     if ( buffs.berserking -> up() )
       h *= 1.0 / ( 1.0 + buffs.berserking -> data().effectN( 1 ).percent() );
@@ -2490,12 +2481,9 @@ double player_t::composite_melee_haste() const
 
 // player_t::composite_attack_speed =========================================
 
-double player_t::composite_melee_speed() const
+double player_t::composite_melee_speed() const // Attack speed buff has been changed to attack haste.
 {
   double h = composite_melee_haste();
-
-  if ( ! is_enemy() && ! is_add() && sim -> auras.attack_speed -> check() )
-    h *= 1.0 / ( 1.0 + sim -> auras.attack_speed -> value() );
 
   return h;
 }
@@ -2544,7 +2532,7 @@ double player_t::composite_melee_crit() const
 
 // player_t::composite_attack_expertise =====================================
 
-double player_t::composite_melee_expertise( weapon_t* ) const // Parry will still be part of the game, however there will not be a way to reduce parry chance.
+double player_t::composite_melee_expertise( weapon_t* ) const
 {
   double e = composite_expertise_rating() / current.rating.expertise;
 
@@ -2553,7 +2541,7 @@ double player_t::composite_melee_expertise( weapon_t* ) const // Parry will stil
 
 // player_t::composite_attack_hit ===========================================
 
-double player_t::composite_melee_hit() const  // removed for WoD.
+double player_t::composite_melee_hit() const
 {
   double ah = composite_melee_hit_rating() / current.rating.attack_hit;
 
@@ -2712,8 +2700,8 @@ double player_t::composite_spell_haste() const
     if ( buffs.tempus_repit -> up() )
       h *= 1.0 / ( 1.0 + buffs.tempus_repit -> data().effectN( 1 ).percent() );
 
-    if ( sim -> auras.spell_haste -> check() )
-      h *= 1.0 / ( 1.0 + sim -> auras.spell_haste -> value() );
+    if ( sim -> auras.haste -> check() )
+      h *= 1.0 / ( 1.0 + sim -> auras.haste -> value() );
 
     if ( race == RACE_GOBLIN || race == RACE_GNOME )
       h *= 1.0 / ( 1.0 + 0.01 );
@@ -2780,11 +2768,10 @@ double player_t::composite_spell_crit() const
 
 // player_t::composite_spell_hit ============================================
 
-double player_t::composite_spell_hit() const  //Needs to be revamped for WoD.
+double player_t::composite_spell_hit() const
 {
   double sh = composite_spell_hit_rating() / current.rating.spell_hit;
-  
-  sh += composite_melee_expertise();
+
   return sh;
 }
 
@@ -2881,27 +2868,22 @@ double player_t::composite_movement_speed() const
 {
   double speed = base_movement_speed;
 
-  if ( buffs.blurred_speed -> up() )
-    speed += buffs.blurred_speed -> data().effectN( 1 ).percent();
-
-  if ( buffs.pandarens_step -> up() )
-    speed += buffs.pandarens_step -> data().effectN( 1 ).percent();
+  double m = base_movement_speed_multiplier;
 
   if ( buffs.nitro_boosts -> up() )
-    speed += buffs.nitro_boosts -> data().effectN( 1 ).percent();
+    m += buffs.nitro_boosts -> data().effectN( 1 ).percent();
 
   if ( buffs.stampeding_roar -> up() )
-    speed += buffs.stampeding_roar -> data().effectN( 1 ).percent();
+    m += buffs.stampeding_roar -> data().effectN( 1 ).percent();
 
   if ( buffs.stampeding_shout -> up() )
-    speed += buffs.stampeding_shout -> data().effectN( 1 ).percent();
+    m += buffs.stampeding_shout -> data().effectN( 1 ).percent();
 
   // Commenting this out for now. How will we take the daze aspect into account?
   //if ( buffs.aspect_of_the_pack -> up() )
   //speed *= 1.0 + buffs.aspect_of_the_pack -> data().effectN( 1 ).percent();
 
-  speed += buffs.body_and_soul -> current_value;
-
+  m += buffs.body_and_soul -> current_value;
 
   // From http://www.wowpedia.org/Movement_speed_effects
   // Additional items looked up
@@ -2928,7 +2910,7 @@ double player_t::composite_movement_speed() const
 
   // Swiftness Potion: 50%
 
-  return speed;
+  return speed * m;
 }
 
 // player_t::composite_attribute ============================================
@@ -3095,14 +3077,10 @@ void player_t::invalidate_cache( cache_e c )
     case CACHE_AGILITY:
       if ( current.attack_power_per_agility > 0 )
         invalidate_cache( CACHE_ATTACK_POWER );
-      if ( current.attack_crit_per_agility > 0 )
-        invalidate_cache( CACHE_ATTACK_CRIT );
       if ( current.dodge_per_agility > 0 )
         invalidate_cache( CACHE_DODGE );
       break;
     case CACHE_INTELLECT:
-      if ( current.spell_crit_per_intellect > 0 )
-        invalidate_cache( CACHE_SPELL_CRIT );
       if ( current.spell_power_per_intellect > 0 )
         invalidate_cache( CACHE_SPELL_POWER );
       break;
@@ -3803,11 +3781,7 @@ void player_t::arise()
   }
 
   if ( ! is_enemy() && ! is_pet() )
-  {
     buffs.cooldown_reduction -> trigger();
-    buffs.pandarens_step -> trigger();
-    buffs.blurred_speed -> trigger();
-  }
 
   if ( has_foreground_actions( *this ) )
     schedule_ready();

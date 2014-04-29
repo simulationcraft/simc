@@ -20,9 +20,8 @@ const OptionEntry buffOptions[] =
 {
   { "Toggle All Buffs",             "",                                 "Toggle all buffs on/off"                         },
   { "Attack Power Multiplier",      "override.attack_power_multiplier", "+10% Attack Power Multiplier"                    },
-  { "Attack Speed",                 "override.attack_speed",            "+10% Melee and Ranged Attack Speed"              },
   { "Spell Power Multiplier",       "override.spell_power_multiplier",  "+10% Spell Power Multiplier"                     },
-  { "Spell Haste",                  "override.spell_haste",             "+5% Spell Haste"                                 },
+  { "Haste",                        "override.haste",                   "+5% Haste"                                       },
 
   { "Critical Strike",              "override.critical_strike",         "+5% Melee/Ranged/Spell Critical Strike Chance"   },
   { "Mastery",                      "override.mastery",                 "+5 Mastery"                                      },
