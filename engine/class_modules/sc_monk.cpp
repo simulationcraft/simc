@@ -192,14 +192,14 @@ public:
     const spell_data_t* invoke_xuen;
     const spell_data_t* chi_torpedo;
  
-        const spell_data_t* soul_dance;
-        const spell_data_t* breath_of_the_serpent;
-        const spell_data_t* hurricane_strike;
-        const spell_data_t* chi_explosion_bm;
-        const spell_data_t* chi_explosion_ww;
-        const spell_data_t* chi_explosion_mw;
-        const spell_data_t* chi_serenity;
-        const spell_data_t* path_of_mists;
+    const spell_data_t* soul_dance;
+    const spell_data_t* breath_of_the_serpent;
+    const spell_data_t* hurricane_strike;
+    const spell_data_t* chi_explosion_bm;
+    const spell_data_t* chi_explosion_ww;
+    const spell_data_t* chi_explosion_mw;
+    const spell_data_t* chi_serenity;
+    const spell_data_t* path_of_mists;
   } talent;
  
   // Specialization
@@ -232,31 +232,31 @@ public:
   {
      // GENERAL
      const spell_data_t* empowered_blackout_kick;
-         // const spell_data_t* enhanced_roll;
-         // const spell_data_t* enhanced_transcendence;
-         const spell_data_t* empowered_tiger_palm;
+    // const spell_data_t* enhanced_roll;
+    // const spell_data_t* enhanced_transcendence;
+    const spell_data_t* empowered_tiger_palm;
  
-         // Brewmaster
-         const spell_data_t* empowered_keg_smash;
-         // const spell_data_t* improved_breath_of_fire;
-         // const spell_data_t* improved_dizzying_haze;
-         const spell_data_t* improved_elusive_brew;
-         const spell_data_t* improved_guard;
-         const spell_data_t* improved_stance_of_the_sturdy_ox;
+    // Brewmaster
+    const spell_data_t* empowered_keg_smash;
+    // const spell_data_t* improved_breath_of_fire;
+    // const spell_data_t* improved_dizzying_haze;
+    const spell_data_t* improved_elusive_brew;
+    const spell_data_t* improved_guard;
+    const spell_data_t* improved_stance_of_the_sturdy_ox;
  
-         // Mistweaver
-         const spell_data_t* empowered_surging_mist;
-         const spell_data_t* improved_expel_harm;
-         const spell_data_t* improved_life_cocoon;
-         const spell_data_t* improved_renewing_mist;
-         const spell_data_t* improved_soothing_mist;
+    // Mistweaver
+    const spell_data_t* empowered_surging_mist;
+    const spell_data_t* improved_expel_harm;
+    const spell_data_t* improved_life_cocoon;
+    const spell_data_t* improved_renewing_mist;
+    const spell_data_t* improved_soothing_mist;
  
-         // Windwalker
-         const spell_data_t* empowered_chi;
-         const spell_data_t* empowered_fists_of_fury;
-         const spell_data_t* empowered_rising_sun_kick;
-         const spell_data_t* empowered_spinning_crane_kick;
-         const spell_data_t* improved_energizing_brew;
+    // Windwalker
+    const spell_data_t* empowered_chi;
+    const spell_data_t* empowered_fists_of_fury;
+    const spell_data_t* empowered_rising_sun_kick;
+    const spell_data_t* empowered_spinning_crane_kick;
+    const spell_data_t* improved_energizing_brew;
   } perk;
  
   struct mastery_spells_t
@@ -392,7 +392,11 @@ public:
   void stance_invalidates( stance_e );
   const spell_data_t& static_stance_data( stance_e ) const;
   const spell_data_t& active_stance_data( stance_e ) const;
- 
+
+  // Custom Monk Functions
+  void  clear_stagger();
+  bool  has_stagger();
+
 };
  
 // ==========================================================================
@@ -686,7 +690,7 @@ public:
   // Used mostly for the Chi Explosion Talent
   double variable_chi_to_consume()
   {
-    return std::min( 4.0, monk.resources.current[ RESOURCE_CHI ] );
+    return std::min( 4.0, p() -> resources.current[ RESOURCE_CHI ] );
   }
  
   virtual void consume_resource()
@@ -1302,10 +1306,10 @@ struct chi_explosion_t : public monk_melee_attack_t
           p() -> buff.shuffle -> extend_duration( p(), timespan_t::from_seconds( 2 + ( 2 * resource_consumed ) ) );
         }
       }
-      if ( ( resource_consumed >= 3 ) && ( p() -> active_actions.stagger_self_damage -> stagger_ticking() ) )
+      if ( ( resource_consumed >= 3 ) && ( p() -> has_stagger() ) )
       {
         // Clears all stagger damage
-        p() -> active_actions.stagger_self_damage -> clear_all_damage();
+        p() -> clear_stagger();
       }
     }
     else if ( p() -> talent.chi_explosion_ww -> ok() )
@@ -2632,7 +2636,7 @@ struct purifying_brew_t : public monk_spell_t
     return monk_spell_t::ready();
   }
 };
- 
+
 // ==========================================================================
 // Crackling Jade Lightning
 // ==========================================================================
@@ -3771,6 +3775,15 @@ set_e monk_t::decode_set( const item_t& item ) const
   return SET_NONE;
 }
  
+bool monk_t::has_stagger()
+{
+  return active_actions.stagger_self_damage -> stagger_ticking();
+}
+void monk_t::clear_stagger()
+{
+  active_actions.stagger_self_damage -> clear_all_damage();
+}
+
 // monk_t::composite_attack_speed
  
 double monk_t::composite_melee_speed() const
