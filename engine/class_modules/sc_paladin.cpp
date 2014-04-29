@@ -74,6 +74,7 @@ public:
   action_t* active_seal_of_justice_proc;
   action_t* active_seal_of_righteousness_proc;
   action_t* active_seal_of_truth_proc;
+  heal_t*   active_shining_protector_proc;
   player_t* last_judgement_target;
 
   struct active_actions_t
@@ -309,6 +310,7 @@ public:
     active_seal_of_insight_proc        = 0;
     active_seal_of_righteousness_proc  = 0;
     active_seal_of_truth_proc          = 0;
+    active_shining_protector_proc      = 0;
     bok_up                             = false;
     bom_up                             = false;
 
@@ -363,6 +365,7 @@ public:
   double  get_hand_of_light();
   double  jotp_haste();
   void    trigger_grand_crusader();
+  void    trigger_shining_protector( action_state_t* );
   void    generate_action_prio_list_prot();
   void    generate_action_prio_list_ret();
   void    generate_action_prio_list_holy();
@@ -2746,6 +2749,39 @@ struct seal_of_insight_proc_t : public paladin_heal_t
   }
 };
 
+// Shining Protector ========================================================
+// This is a protection-specific multistrike effect
+
+struct shining_protector_t : public paladin_heal_t
+{
+  proc_t* proc_tracker;
+
+  shining_protector_t( paladin_t* p )
+    : paladin_heal_t( "shining_protector", p, p -> find_specialization_spell( "Shining Protector" ) ),
+    proc_tracker( p -> get_proc( name_str ) )
+  {
+    background = true;
+    proc = true;
+    target = player;
+    may_multistrike = false;    
+  }
+  
+  virtual void execute()
+  {
+    if ( rng().roll( p() -> composite_multistrike() ) )
+    {
+      proc_tracker -> occur();
+
+      paladin_heal_t::execute();
+    }
+    else
+    {
+      update_ready();
+    }
+  }
+
+};
+
 // Word of Glory  ===========================================================
 
 struct word_of_glory_t : public paladin_heal_t
@@ -4218,6 +4254,19 @@ void paladin_t::trigger_grand_crusader()
   }
 }
 
+void paladin_t::trigger_shining_protector( action_state_t* s )
+{
+  if ( ! passives.shining_protector -> ok() || s -> action == active_shining_protector_proc )
+    return;
+
+  // Attempt to proc the heal
+  double heal_amount = s -> result_amount * passives.shining_protector -> effectN( 1 ).percent();
+  active_shining_protector_proc -> base_dd_max = active_shining_protector_proc -> base_dd_min = heal_amount;
+  active_shining_protector_proc -> schedule_execute();
+
+
+}
+
 // paladin_t::init_defense ==================================================
 
 void paladin_t::init_defense()
@@ -5108,6 +5157,9 @@ void paladin_t::init_spells()
   if ( passives.illuminated_healing -> ok() )
     active_illuminated_healing = new illuminated_healing_t( this );
 
+  if ( passives.shining_protector -> ok() )
+    active_shining_protector_proc = new shining_protector_t( this );
+
   // TODO: check if this benefit is only for the paladin (as coded) or for all targets
   debuffs.forbearance -> buff_duration += timespan_t::from_millis( perk.improved_forbearance -> effectN( 1 ).base_value() );
 
@@ -5605,6 +5657,10 @@ void paladin_t::assess_heal( school_e school, dmg_e dmg_type, action_state_t* s 
   {
     s -> result_amount *= 1.0 + spells.sanctified_wrath  -> effectN( 4 ).percent();
   }
+
+  // Shining Protector procs a heal every now and again
+  if ( passives.shining_protector -> ok() )
+    trigger_shining_protector( s );
 
   player_t::assess_heal( school, dmg_type, s );
 }
