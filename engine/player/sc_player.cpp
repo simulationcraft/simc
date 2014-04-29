@@ -2444,11 +2444,7 @@ double player_t::mana_regen_per_second() const
 }
 
 // Night elf passive will change from 1% crit during the day, to 1% haste during the night. 
-// Need a way to include human racial, which will increase two secondary stats of the players choice into any secondary. 
-// Hit/Expertise are being removed as a stat, but it will still be possible for non-tanks to be parried if standing in front of the boss.
-// 
-
-
+// Need a way to include human racial.
 // player_t::composite_attack_haste =========================================
 
 double player_t::composite_melee_haste() const
@@ -2536,7 +2532,7 @@ double player_t::composite_melee_crit() const
 
 // player_t::composite_attack_expertise =====================================
 
-double player_t::composite_melee_expertise( weapon_t* ) const // Parry will still be part of the game, however there will not be a way to reduce parry chance.
+double player_t::composite_melee_expertise( weapon_t* ) const
 {
   double e = composite_expertise_rating() / current.rating.expertise;
 
@@ -2545,7 +2541,7 @@ double player_t::composite_melee_expertise( weapon_t* ) const // Parry will stil
 
 // player_t::composite_attack_hit ===========================================
 
-double player_t::composite_melee_hit() const  // removed for WoD.
+double player_t::composite_melee_hit() const
 {
   double ah = composite_melee_hit_rating() / current.rating.attack_hit;
 
@@ -2772,11 +2768,10 @@ double player_t::composite_spell_crit() const
 
 // player_t::composite_spell_hit ============================================
 
-double player_t::composite_spell_hit() const  //Needs to be revamped for WoD.
+double player_t::composite_spell_hit() const
 {
   double sh = composite_spell_hit_rating() / current.rating.spell_hit;
-  
-  sh += composite_melee_expertise();
+
   return sh;
 }
 
