@@ -463,7 +463,8 @@ player_t::player_t( sim_t*             s,
   // Scaling
   scaling_lag( 0 ), scaling_lag_error( 0 ),
   // Movement & Position
-  base_movement_speed( 7.0 ), x_position( 0.0 ), y_position( 0.0 ),
+  base_movement_speed( 7.0 ), base_movement_speed_multiplier( 1.0 ), 
+  x_position( 0.0 ), y_position( 0.0 ),
   buffs( buffs_t() ),
   potion_buffs( potion_buffs_t() ),
   debuffs( debuffs_t() ),
@@ -2376,15 +2377,6 @@ void player_t::create_buffs()
                                .default_value( 1 );
 
     buffs.nitro_boosts       = buff_creator_t( this, "nitro_boosts", find_spell( 54861 ) );
-
-    buffs.blurred_speed     = buff_creator_t( this, "blurred_speed" )
-                   .spell( find_spell( 104409 ) )
-                   .chance( 0 );
-
-    buffs.pandarens_step     = buff_creator_t( this, "pandarens_step" )
-                   .spell( find_spell( 104414 ) )
-                   .chance( 0 );
-
     }
 
   }
@@ -2881,27 +2873,22 @@ double player_t::composite_movement_speed() const
 {
   double speed = base_movement_speed;
 
-  if ( buffs.blurred_speed -> up() )
-    speed += buffs.blurred_speed -> data().effectN( 1 ).percent();
-
-  if ( buffs.pandarens_step -> up() )
-    speed += buffs.pandarens_step -> data().effectN( 1 ).percent();
+  double m = base_movement_speed_multiplier;
 
   if ( buffs.nitro_boosts -> up() )
-    speed += buffs.nitro_boosts -> data().effectN( 1 ).percent();
+    m += buffs.nitro_boosts -> data().effectN( 1 ).percent();
 
   if ( buffs.stampeding_roar -> up() )
-    speed += buffs.stampeding_roar -> data().effectN( 1 ).percent();
+    m += buffs.stampeding_roar -> data().effectN( 1 ).percent();
 
   if ( buffs.stampeding_shout -> up() )
-    speed += buffs.stampeding_shout -> data().effectN( 1 ).percent();
+    m += buffs.stampeding_shout -> data().effectN( 1 ).percent();
 
   // Commenting this out for now. How will we take the daze aspect into account?
   //if ( buffs.aspect_of_the_pack -> up() )
   //speed *= 1.0 + buffs.aspect_of_the_pack -> data().effectN( 1 ).percent();
 
-  speed += buffs.body_and_soul -> current_value;
-
+  m += buffs.body_and_soul -> current_value;
 
   // From http://www.wowpedia.org/Movement_speed_effects
   // Additional items looked up
@@ -2928,7 +2915,7 @@ double player_t::composite_movement_speed() const
 
   // Swiftness Potion: 50%
 
-  return speed;
+  return speed * m;
 }
 
 // player_t::composite_attribute ============================================
@@ -3799,11 +3786,7 @@ void player_t::arise()
   }
 
   if ( ! is_enemy() && ! is_pet() )
-  {
     buffs.cooldown_reduction -> trigger();
-    buffs.pandarens_step -> trigger();
-    buffs.blurred_speed -> trigger();
-  }
 
   if ( has_foreground_actions( *this ) )
     schedule_ready();

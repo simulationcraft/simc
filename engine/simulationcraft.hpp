@@ -4305,6 +4305,7 @@ public:
 
   // Movement & Position
   double base_movement_speed;
+  double base_movement_speed_multiplier; // _PASSIVE_ movement speed multipliers
   double x_position, y_position;
 
   struct buffs_t
@@ -4349,10 +4350,6 @@ public:
 
     // 5.4 trinkets
     buff_t* cooldown_reduction;
-
-    //Runspeed Enchants
-    buff_t* pandarens_step;
-    buff_t* blurred_speed;
 
     stat_buff_t* flask;
   } buffs;
