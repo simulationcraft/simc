@@ -8,16 +8,18 @@
 // ==========================================================================
 //
 // TODO: Check WoD mechanics whenever alpha/beta roll around:
+
 // Sweeping strikes + opportunity strike proccing off each other (They'll redo arms mastery, I think)
+//
 // Raging Blow: Will the parent still fail if either MH/OH parry. (Not incredibly important anymore, but it'd be nice to know)
+//
 // Dragon Roar: Does it still have diminishing returns on more than 1 target
-// Deep wounds: Check protection/arms/fury deep wounds ticks to see if the modifier is still there
-// Bladestorm: Same as above.
-// Ravager: Does it dynamically update with the character after being thrown? (Most likely yes, but you never know.) 
-//          If thrown before colossus smash, will it gain the benefit of the debuff on the target?
-// Gladiator Stance: What protection specializations/abilities are enabled/disabled?
-// Check T16-2 piece to see if they change it because of the new colossus smash glyph.
-// Code-wise: Make sure I (Alex/Collision) didn't screw up anything important, such as deep wounds.
+//
+// Find a better way to select gladiator stance action list based on user input. I'm not sure if 
+// relying on people to select their primary role as dps while importing a protection warrior is the
+// best way to do it, but I have no idea how to make it work otherwise. 
+//
+// Someone who is knowledgable about prot warrior mechanics/changes should look over the defensive abilities.
 // ==========================================================================
 
 namespace { // UNNAMED NAMESPACE
@@ -47,7 +49,8 @@ struct warrior_t : public player_t
 {
 public:
   int initial_rage;
-  double cdr_mult;
+  double cdr_mult; // Allow the user to select the multiplier on CDR rating ---> percentage conversion.
+                   // At least until we find out what the actual multiplier is.
 
   // Active
 
@@ -73,6 +76,7 @@ public:
     buff_t* bloodsurge;
     buff_t* defensive_stance;
     buff_t* enrage;
+    buff_t* enraged_regeneration;
     buff_t* enraged_speed;
     buff_t* ignite_weapon;
     buff_t* gladiator_stance;
@@ -95,12 +99,12 @@ public:
     buff_t* sword_and_board;
     buff_t* taste_for_blood;
     buff_t* ultimatum;
+
+    haste_buff_t* flurry;
+    // Tier bonuses
+    buff_t* tier15_2pc_tank;
     buff_t* death_sentence;
     buff_t* tier16_reckless_defense;
-    
-    haste_buff_t* flurry;
-
-    buff_t* tier15_2pc_tank;
   } buff;
 
   // Cooldowns
@@ -144,9 +148,9 @@ public:
     gain_t* sweeping_strikes;
     gain_t* sword_and_board;
 
+    //Tier bonuses
     gain_t* tier15_4pc_tank;
     gain_t* tier16_2pc_melee;
-
     gain_t* tier16_4pc_tank;
   } gain;
 
@@ -197,7 +201,7 @@ public:
     proc_t* sudden_death;
     proc_t* taste_for_blood_wasted;
 
-
+    //Tier bonuses
     proc_t* t15_2pc_melee;
   } proc;
 
@@ -339,7 +343,7 @@ public:
     cooldown.stance_swap              -> duration = timespan_t::from_seconds( 1.5 );
 
     initial_rage = 0;
-    cdr_mult = 11;
+    cdr_mult = 11.5;
 
     base.distance = 3.0;
     base.distance_to_move = 20.0; // Warriors almost always charge into combat.
@@ -1208,7 +1212,7 @@ struct bloodthirst_heal_t : public heal_t
   }
 
   virtual resource_e current_resource() const { return RESOURCE_NONE; }
-  
+
   virtual double calculate_direct_amount( action_state_t* state )
   {
     warrior_t* p = static_cast<warrior_t*>( player );
@@ -2203,7 +2207,6 @@ struct blood_craze_t : public heal_t
     background = true;
     target = p;
     dot_behavior = DOT_EXTEND;
-
   }
 
   virtual void tick( dot_t* d )
@@ -2219,7 +2222,7 @@ struct blood_craze_t : public heal_t
 };
 // Second Wind ==============================================================
 
-struct second_wind_t : public heal_t // SW has been changed to life-leech in WoD.
+struct second_wind_t : public heal_t
 {
   second_wind_t( warrior_t* p ) :
     heal_t( "second_wind", p, p -> talents.second_wind )
@@ -2236,6 +2239,59 @@ struct second_wind_t : public heal_t // SW has been changed to life-leech in WoD
 
     heal_t::execute();
 
+  }
+};
+
+// Enraged Regeneration ===============================================
+
+struct enraged_regeneration_t : public heal_t
+{
+  bool first_tick;
+  enraged_regeneration_t( warrior_t* p, const std::string& options_str ) :
+    heal_t( "enraged_regeneration", p, p -> talents.enraged_regeneration ),
+    first_tick( true )
+  {
+    parse_options( NULL, options_str );
+    hasted_ticks = tick_may_crit = harmful = false;
+    tick_zero = true;
+    num_ticks = 5;
+    base_tick_time = timespan_t::from_seconds( 1.0 );
+    target = p;
+  }
+
+  virtual void impact( action_state_t* s )
+  {
+    first_tick = true;
+    heal_t::impact( s );
+  }
+
+  virtual void execute()
+  {
+    warrior_t* p = static_cast<warrior_t*>( player );
+
+    p -> buff.enraged_regeneration -> trigger();
+
+    heal_t::execute();
+  }
+
+  virtual void tick( dot_t* d )
+  {
+    warrior_t* p = static_cast<warrior_t*>( player );
+
+    if ( first_tick )
+    {
+      pct_heal = data().effectN( 1 ).percent();
+      first_tick = false;
+    }
+    else
+      pct_heal = data().effectN( 2 ).percent();
+
+    if ( p -> buff.enrage -> up() )
+      pct_heal *= 2;
+
+    base_td = p -> resources.max[ RESOURCE_HEALTH ] * pct_heal;
+
+    heal_t::tick( d );
   }
 };
 
@@ -3433,6 +3489,7 @@ action_t* warrior_t::create_action( const std::string& name,
   if ( name == "demoralizing_shout" ) return new demoralizing_shout   ( this, options_str );
   if ( name == "devastate"          ) return new devastate_t          ( this, options_str );
   if ( name == "dragon_roar"        ) return new dragon_roar_t        ( this, options_str );
+  if ( name == "enraged_regeneration" ) return new enraged_regeneration_t ( this, options_str );
   if ( name == "execute"            ) return new execute_t            ( this, options_str );
   if ( name == "heroic_leap"        ) return new heroic_leap_t        ( this, options_str );
   if ( name == "heroic_strike"      ) return new heroic_strike_t      ( this, options_str );
@@ -4021,6 +4078,7 @@ void warrior_t::apl_prot()
 
   normal_rotation -> add_action( this, "Shield Slam" );
   normal_rotation -> add_action( this, "Revenge" );
+  normal_rotation -> add_talent( this, "Enraged Regeneration" );
   normal_rotation -> add_action( this, "Heroic Strike", "if=buff.ultimatum.up" );
   normal_rotation -> add_talent( this, "Ravager" );
   normal_rotation -> add_action( this, "Thunder Clap" );
@@ -4147,6 +4205,8 @@ void warrior_t::create_buffs()
 
   buff.enrage           = buff_creator_t( this, "enrage",           find_spell( 12880 ) )
                           .activated( false ) ; //Account for delay in buff application.
+
+  buff.enraged_regeneration = buff_creator_t( this, "enraged_regeneration",   talents.enraged_regeneration );
 
   buff.enraged_speed    = buff_creator_t( this, "enraged_speed",    glyphs.enraged_speed )
                           .chance( glyphs.enraged_speed -> ok() ? 1 : 0 )
@@ -4367,8 +4427,8 @@ void warrior_t::combat_begin()
   if ( active_stance == STANCE_BATTLE && ! buff.battle_stance -> check() )
     buff.battle_stance -> trigger();
 
-  //if ( specialization() == WARRIOR_PROTECTION && active_stance == STANCE_DEFENSE )
-    //vengeance_start(); 
+  if ( specialization() == WARRIOR_PROTECTION && active_stance == STANCE_DEFENSE )
+    vengeance_start();
   
   if ( find_specialization_spell( "Bladed Armor" ) )
     buff.bladed_armor -> trigger();

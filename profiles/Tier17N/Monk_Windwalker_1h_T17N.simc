@@ -46,7 +46,7 @@ actions.aoe+=/chi_burst,if=talent.chi_burst.enabled
 actions.aoe+=/rising_sun_kick,if=chi=chi.max
 actions.aoe+=/spinning_crane_kick,if=!talent.rushing_jade_wind.enabled
 
-actions.single_target=/fists_of_fury,if=energy.time_to_max>4&buff.tiger_power.remains>4&debuff.rising_sun_kick.remains>4
+actions.single_target=fists_of_fury,if=energy.time_to_max>4&buff.tiger_power.remains>4&debuff.rising_sun_kick.remains>4
 actions.single_target+=/rising_sun_kick
 actions.single_target+=/chi_wave,if=talent.chi_wave.enabled&energy.time_to_max>2
 actions.single_target+=/chi_burst,if=talent.chi_burst.enabled&energy.time_to_max>2
