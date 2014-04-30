@@ -158,6 +158,7 @@ public:
   struct passives_t
   {
     const spell_data_t* boundless_conviction;
+    const spell_data_t* daybreak;
     const spell_data_t* divine_bulwark;
     const spell_data_t* grand_crusader;
     const spell_data_t* guarded_by_the_light;
@@ -1239,6 +1240,43 @@ struct daybreak_t : public paladin_heal_t
     background = true;
     aoe = -1;
     split_aoe_damage = true;
+    may_crit = false;
+    may_multistrike = false; // guess, TODO: Test
+  }
+
+  virtual void init()
+  {
+    paladin_heal_t::init();
+    // add snapshot flags to allow for action_multiplier() to be called
+    snapshot_flags |= STATE_MUL_DA | STATE_TGT_MUL_DA;
+  }
+
+
+  // Daybreak ignores the target of the holy_shock_heal_t that procs it. 
+  // This is the standard heal_t::available_targets() with tl.push_back( target ) removed
+  // (since we don't want to include the target) and an unnecessary group_only check removed
+  virtual size_t available_targets( std::vector< player_t* >& tl ) const
+  {
+    tl.clear();
+
+    for ( size_t i = 0, actors = sim -> player_non_sleeping_list.size(); i < actors; i++ )
+    {
+      player_t* t = sim -> player_non_sleeping_list[ i ];
+
+      if ( t != target )
+        tl.push_back( t );
+    }
+
+    return tl.size();
+  }
+
+  virtual double action_multiplier() const
+  {
+    double am = p() -> passives.daybreak -> effectN( 1 ).percent();
+
+    am *= 1.0 + p() -> perk.improved_daybreak -> effectN( 1 ).percent();
+
+    return am;
   }
   
 };
@@ -2263,8 +2301,6 @@ struct holy_shock_heal_t : public paladin_heal_t
     // Daybreak gives this a 75% splash heal
     daybreak = new daybreak_t( p );
     //add_child( daybreak );
-    base_aoe_multiplier = p -> find_specialization_spell( "Daybreak" ) -> effectN( 1 ).percent();
-
   }
 
   virtual double composite_crit() const
@@ -2305,7 +2341,7 @@ struct holy_shock_heal_t : public paladin_heal_t
     if ( p() -> buffs.daybreak -> up() )
     {
       // trigger the Daybreak heal
-      daybreak -> base_dd_min = daybreak -> base_dd_max = base_aoe_multiplier * s -> result_amount * (1.0 + p() -> perk.improved_daybreak -> effectN( 1 ).percent() );
+      daybreak -> base_dd_min = daybreak -> base_dd_max = s -> result_amount;
       daybreak -> schedule_execute();
       
       // expire the buff
@@ -2770,6 +2806,7 @@ struct shining_protector_t : public paladin_heal_t
   virtual void init()
   {
     paladin_heal_t::init();
+    // add snapshot flags to allow for action_multiplier() to be called
     snapshot_flags |= STATE_MUL_DA | STATE_TGT_MUL_DA;
   }
 
@@ -5078,6 +5115,7 @@ void paladin_t::init_spells()
   passives.seal_of_insight        = find_class_spell( "Seal of Insight" );
 
   // Holy Passives
+  passives.daybreak               = find_specialization_spell( "Daybreak" );
   passives.holy_insight           = find_specialization_spell( "Holy Insight" );
   passives.infusion_of_light      = find_specialization_spell( "Infusion of Light" );
 
