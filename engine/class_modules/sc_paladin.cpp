@@ -2763,21 +2763,28 @@ struct shining_protector_t : public paladin_heal_t
     background = true;
     proc = true;
     target = player;
-    may_multistrike = false;    
+    may_multistrike = false; // guess, almost certain
+    may_crit = false;        // guess, but pretty likely
   }
-  
+
+  virtual void init()
+  {
+    paladin_heal_t::init();
+    snapshot_flags |= STATE_MUL_DA | STATE_TGT_MUL_DA;
+  }
+
+  virtual double action_da_multiplier() const
+  {
+    double am = p() -> passives.shining_protector -> effectN( 1 ).percent();
+
+    return am;
+  }
+
   virtual void execute()
   {
-    if ( rng().roll( p() -> composite_multistrike() ) )
-    {
-      proc_tracker -> occur();
+    proc_tracker -> occur();
 
-      paladin_heal_t::execute();
-    }
-    else
-    {
-      update_ready();
-    }
+    paladin_heal_t::execute();
   }
 
 };
@@ -4260,9 +4267,11 @@ void paladin_t::trigger_shining_protector( action_state_t* s )
     return;
 
   // Attempt to proc the heal
-  double heal_amount = s -> result_amount * passives.shining_protector -> effectN( 1 ).percent();
-  active_shining_protector_proc -> base_dd_max = active_shining_protector_proc -> base_dd_min = heal_amount;
-  active_shining_protector_proc -> schedule_execute();
+  if ( rng().roll( composite_multistrike() ) )
+  {
+    active_shining_protector_proc -> base_dd_max = active_shining_protector_proc -> base_dd_min = s -> result_amount;
+    active_shining_protector_proc -> schedule_execute();
+  }
 
 
 }
