@@ -51,7 +51,6 @@ public:
   int initial_rage;
   double cdr_mult; // Allow the user to select the multiplier on CDR rating ---> percentage conversion.
                    // At least until we find out what the actual multiplier is.
-
   // Active
 
   action_t* active_bloodbath_dot;
@@ -397,6 +396,10 @@ public:
 
   // Custom Warrior Functions
   void enrage();
+
+  simple_sample_data_t cs_damage;
+  simple_sample_data_t priority_damage;
+  simple_sample_data_t all_damage;
 
   target_specific_t<warrior_td_t*> target_data;
 
@@ -924,6 +927,15 @@ void warrior_attack_t::impact( action_state_t* s )
       p -> active_second_wind -> base_dd_max = s -> result_amount;
       p -> active_second_wind -> execute();
     }
+
+  if ( td -> debuffs_colossus_smash -> up() && s -> result_amount > 0)
+    p -> cs_damage.add( s -> result_amount );
+
+  if ( ( s -> target == sim -> target ) && s -> result_amount > 0 )
+    p -> priority_damage.add( s -> result_amount );
+
+  if ( s -> result_amount > 0 )
+    p -> all_damage.add( s -> result_amount );
 
   if ( result_is_hit( s -> result ) && !proc && s -> result_amount > 0 && this -> id != 147891 ) // Flurry of Xuen
   {
@@ -2945,6 +2957,25 @@ struct deep_wounds_t : public warrior_spell_t
     dynamic_tick_action = true;
     dot_behavior = DOT_REFRESH;
   }
+  
+  virtual double calculate_tick_amount( action_state_t* s )
+  {
+    warrior_spell_t::calculate_tick_amount( s );
+
+    warrior_t*p = cast();
+    warrior_td_t* td = cast_td( s -> target );
+
+    if ( td -> debuffs_colossus_smash -> up() && s -> result_amount > 0)
+      p -> cs_damage.add( s -> result_amount );
+
+    if ( ( s -> target == sim -> target ) && s -> result_amount > 0 )
+      p -> priority_damage.add( s -> result_amount );
+
+    if ( s -> result_amount > 0 )
+      p -> all_damage.add( s -> result_amount );
+
+    return s -> result_amount;
+  }
 
   virtual double action_multiplier() const
   {
@@ -4897,19 +4928,34 @@ public:
   warrior_report_t( warrior_t& player ) :
       p( player )
   {
-
   }
 
-  virtual void html_customsection( report::sc_html_stream& /* os*/ ) override
+  virtual void html_customsection( report::sc_html_stream& os ) override
   {
-    /*// Custom Class Section
+
+    double cs_damage = p.cs_damage.sum();
+    double all_damage = p.all_damage.sum();
+    double priority_damage = p.priority_damage.sum();
+
+    // Custom Class Section
     os << "\t\t\t\t<div class=\"player-section custom_section\">\n"
         << "\t\t\t\t\t<h3 class=\"toggle open\">Custom Section</h3>\n"
         << "\t\t\t\t\t<div class=\"toggle-content\">\n";
 
-    os << p.name();
+    os << p.name()<<"\n<br>";
+    os << "\t\t\t\t\t<p>Percentage of damage dealt to primary target</p>\n";
+    os << "%"<<( ( priority_damage / all_damage ) * 100 );
+    os << "\t\t\t\t\t<p>Percentage of primary target damage that occurs inside of Colossus Smash</p>\n";
+    os << "%"<<( ( cs_damage / priority_damage ) * 100 );
+    os << "\t\t\t\t\t<p> Dps done to primary target </p>\n";
+    os << ( ( priority_damage / all_damage ) * p.collected_data.dps.mean() );
+    os << "\t\t\t\t\t<p> DEBUG OUTPUT </p>\n";
+    os << "\t\t\t\t\t<p> Colossus Smash Sum over all Iterations</p>"<<cs_damage;
+    os << "\t\t\t\t\t<p> Colossus Smash Sum average on one iteration</p>"<<( cs_damage / p.sim -> iterations );
+    os << "\t\t\t\t\t<p> Overall Damage Sum over all Iterations</p>"<<( all_damage / p.sim -> iterations );
+    os << "\t\t\t\t\t<p> Priority Target Sum over all Iterations</p>"<<( priority_damage / p.sim -> iterations );
 
-    os << "\t\t\t\t\t\t</div>\n" << "\t\t\t\t\t</div>\n";*/
+    os << "\t\t\t\t\t\t</div>\n" << "\t\t\t\t\t</div>\n";
   }
 private:
   warrior_t& p;
