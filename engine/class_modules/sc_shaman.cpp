@@ -41,6 +41,8 @@ struct shaman_t;
 enum totem_e { TOTEM_NONE = 0, TOTEM_AIR, TOTEM_EARTH, TOTEM_FIRE, TOTEM_WATER, TOTEM_MAX };
 enum imbue_e { IMBUE_NONE = 0, FLAMETONGUE_IMBUE, WINDFURY_IMBUE, FROSTBRAND_IMBUE, EARTHLIVING_IMBUE };
 
+#define MAX_MAELSTROM_STACK ( 5 )
+
 struct shaman_attack_t;
 struct shaman_spell_t;
 struct shaman_heal_t;
@@ -71,6 +73,51 @@ struct shaman_td_t : public actor_pair_t
   shaman_td_t( player_t* target, shaman_t* p );
 };
 
+struct counter_t
+{
+  const sim_t* sim;
+
+  double value, interval;
+  timespan_t last;
+
+  counter_t( shaman_t* p );
+
+  void add( double val, timespan_t time )
+  {
+    // Skip iteration 0 for non-debug, non-log sims
+    if ( sim -> current_iteration == 0 && sim -> iterations > 1 && ! sim -> debug && ! sim -> log )
+      return;
+
+    value += val;
+    if ( last > timespan_t::min() )
+      interval += ( time - last ).total_seconds();
+    last = time;
+  }
+
+  void reset()
+  { last = timespan_t::min(); }
+
+  double divisor() const
+  {
+    if ( ! sim -> debug && ! sim -> log && sim -> iterations > 1 )
+      return sim -> iterations - 1;
+    else
+      return 1;
+  }
+
+  double mean()
+  { return value / divisor(); }
+
+  double interval_mean()
+  { return interval / divisor(); }
+
+  void merge( const counter_t& other )
+  {
+    value += other.value;
+    interval += other.interval;
+  }
+};
+
 struct shaman_t : public player_t
 {
 public:
@@ -78,6 +125,7 @@ public:
   timespan_t ls_reset;
   int        active_flame_shocks;
   bool       lava_surge_during_lvb;
+  std::vector<counter_t*> counters;
 
   // Options
   timespan_t wf_delay;
@@ -205,7 +253,6 @@ public:
     proc_t* windfury;
 
     proc_t* fulmination[7];
-    proc_t* maelstrom_weapon_used[6];
 
     proc_t* uf_flame_shock;
     proc_t* uf_fire_nova;
@@ -418,6 +465,8 @@ public:
     t16_flame = 0;
   }
 
+  virtual           ~shaman_t();
+
   // Character Definition
   virtual void      init_spells();
   virtual void      init_base_stats();
@@ -452,6 +501,7 @@ public:
   virtual role_e primary_role() const;
   virtual void      arise();
   virtual void      reset();
+  virtual void      merge( player_t& other );
 
   target_specific_t<shaman_td_t*> target_data;
 
@@ -468,6 +518,17 @@ public:
   // Event Tracking
   virtual void regen( timespan_t periodicity );
 };
+
+shaman_t::~shaman_t()
+{
+  range::dispose( counters );
+}
+
+counter_t::counter_t( shaman_t* p ) :
+  sim( p -> sim ), value( 0 ), interval( 0 ), last( timespan_t::min() )
+{
+  p -> counters.push_back( this );
+}
 
 shaman_td_t::shaman_td_t( player_t* target, shaman_t* p ) :
   actor_pair_t( target, p )
@@ -598,10 +659,20 @@ private:
 public:
   typedef shaman_spell_base_t<Base> base_t;
 
+  std::vector<counter_t*> maelstrom_weapon_used;
+
   shaman_spell_base_t( const std::string& n, shaman_t* player,
                        const spell_data_t* s = spell_data_t::nil() ) :
     ab( n, player, s )
   { }
+
+  void init()
+  {
+    ab::init();
+
+    for ( size_t i = 0; i < MAX_MAELSTROM_STACK + 2; i++ )
+      maelstrom_weapon_used.push_back( new counter_t( ab::p() ) );
+  }
 
   void execute();
   void schedule_execute( action_state_t* state = 0 );
@@ -668,8 +739,8 @@ public:
 
   // Maelstrom Weapon functionality
   bool        may_proc_maelstrom;
-  proc_t*     maelstrom_procs;
-  proc_t*     maelstrom_procs_wasted;
+  counter_t*  maelstrom_procs;
+  counter_t*  maelstrom_procs_wasted;
 
   shaman_attack_t( const std::string& token, shaman_t* p, const spell_data_t* s ) :
     base_t( token, p, s ),
@@ -687,8 +758,8 @@ public:
 
     if ( may_proc_maelstrom )
     {
-      maelstrom_procs = ab::player -> get_proc( ab::name_str + "_maelstrom" );
-      maelstrom_procs_wasted = ab::player -> get_proc( ab::name_str + "_maelstrom_wasted" );
+      maelstrom_procs = new counter_t( p() );
+      maelstrom_procs_wasted = new counter_t( p() );
     }
   }
 
@@ -1422,14 +1493,12 @@ static bool trigger_maelstrom_weapon( shaman_attack_t* a )
   {
     if ( mwstack == a -> p() -> buff.maelstrom_weapon -> total_stack() )
     {
-      a -> p() -> proc.wasted_mw -> occur();
       if ( a -> maelstrom_procs_wasted )
-        a -> maelstrom_procs_wasted -> occur();
+        a -> maelstrom_procs_wasted -> add( 1, a -> sim -> current_time );
     }
 
-    a -> p() -> proc.maelstrom_weapon -> occur();
     if ( a -> maelstrom_procs )
-      a -> maelstrom_procs -> occur();
+      a -> maelstrom_procs -> add( 1, a -> sim -> current_time );
   }
 
   return procced;
@@ -2231,7 +2300,7 @@ void shaman_spell_base_t<Base>::schedule_execute( action_state_t* state )
   }
 
   if ( ab::instant_eligibility() && ! use_ancestral_swiftness() && p -> specialization() == SHAMAN_ENHANCEMENT )
-    p -> proc.maelstrom_weapon_used[ p -> buff.maelstrom_weapon -> check() ] -> occur();
+    maelstrom_weapon_used[ p -> buff.maelstrom_weapon -> check() ] -> add( 1, p -> sim -> current_time );
 }
 
 // shaman_spell_base_t::execute =============================================
@@ -5342,11 +5411,6 @@ void shaman_t::init_procs()
   {
     proc.fulmination[ i ] = get_proc( "fulmination_" + util::to_string( i ) );
   }
-
-  for ( int i = 0; i < 6; i++ )
-  {
-    proc.maelstrom_weapon_used[ i ] = get_proc( "maelstrom_weapon_stack_" + util::to_string( i ) );
-  }
 }
 
 // shaman_t::init_actions ===================================================
@@ -5989,6 +6053,20 @@ void shaman_t::reset()
   active_flame_shocks = 0;
   lava_surge_during_lvb = false;
   rppm_echo_of_the_elements.reset();
+  for ( size_t i = 0, end = counters.size(); i < end; i++ )
+    counters[ i ] -> reset();
+}
+
+// shaman_t::merge ==========================================================
+
+void shaman_t::merge( player_t& other )
+{
+  player_t::merge( other );
+
+  shaman_t& s = static_cast<shaman_t&>( other );
+
+  for ( size_t i = 0, end = counters.size(); i < end; i++ )
+    counters[ i ] -> merge( *s.counters[ i ] );
 }
 
 // shaman_t::decode_set =====================================================
@@ -6147,20 +6225,182 @@ class shaman_report_t : public player_report_extension_t
 public:
   shaman_report_t( shaman_t& player ) :
       p( player )
-  {
+  { }
 
+  void mwgen_table_header( report::sc_html_stream& os )
+  {
+    os << "<table class=\"sc\" style=\"float: left;margin-right: 10px;\">\n"
+         << "<tr>\n"
+           << "<th>Ability</th>\n"
+           << "<th>Generated</th>\n"
+           << "<th>Wasted</th>\n"
+         << "</tr>\n";
   }
 
-  virtual void html_customsection( report::sc_html_stream& /* os*/ ) override
+  void mwuse_table_header( report::sc_html_stream& os )
   {
-    /*// Custom Class Section
+    os << "<table class=\"sc\" style=\"float: left;\">\n"
+         << "<tr>\n"
+           << "<th>Ability</th>\n"
+           << "<th>0</th><th>1</th><th>2</th><th>3</th><th>4</th><th>5</th><th>Total</th>\n"
+         << "</tr>\n";
+  }
+
+  void mwgen_table_footer( report::sc_html_stream& os )
+  {
+    os << "</table>\n";
+  }
+
+  void mwuse_table_footer( report::sc_html_stream& os )
+  {
+    os << "</table>\n";
+  }
+
+  void mwgen_table_contents( report::sc_html_stream& os )
+  {
+    double total_generated = 0, total_wasted = 0;
+
+    for ( size_t i = 0, end = p.stats_list.size(); i < end; i++ )
+    {
+      stats_t* stats = p.stats_list[ i ];
+      double n_generated = 0, n_wasted = 0;
+
+      for ( size_t j = 0, end2 = stats -> action_list.size(); j < end2; j++ )
+      {
+        shaman_attack_t* a = dynamic_cast<shaman_attack_t*>( stats -> action_list[ j ] );
+        if ( ! a )
+          continue;
+
+        if ( ! a -> may_proc_maelstrom )
+          continue;
+
+        n_generated += a -> maelstrom_procs -> mean();
+        total_generated += a -> maelstrom_procs -> mean();
+        n_wasted += a -> maelstrom_procs_wasted -> mean();
+        total_wasted += a -> maelstrom_procs_wasted -> mean();
+      }
+
+      if ( n_generated > 0 || n_wasted > 0 )
+      {
+        std::string name_str = stats -> name_str.c_str();
+        if ( stats -> action_list[ 0 ] -> id > 1 )
+        {
+          name_str = "<a href=\"http://wod.wowhead.com/spell=" + util::to_string( stats -> action_list[ 0 ] -> id ) + "\">";
+          name_str += stats -> name_str.c_str();
+          name_str += "</a>";
+        }
+
+        os.printf("<tr><td style=\"text-align:left;\">%s</td><td>%.1f</td><td>%.1f (%.2f%%)</td></tr>",
+            name_str.c_str(),
+            n_generated,
+            n_wasted, 100.0 * n_wasted / n_generated );
+      }
+    }
+
+    os.printf("<tr><td style=\"text-align: left;\">Total</td><td>%.1f</td><td>%.1f (%.2f%%)</td>",
+        total_generated, total_wasted, 100.0 * total_wasted / total_generated );
+  }
+
+  void mwuse_table_contents( report::sc_html_stream& os )
+  {
+    std::vector<double> total_mw_used( MAX_MAELSTROM_STACK + 2 );
+
+    for ( size_t i = 0, end = p.action_list.size(); i < end; i++ )
+    {
+      if ( shaman_spell_t* s = dynamic_cast<shaman_spell_t*>( p.action_list[ i ] ) )
+      {
+        for ( size_t j = 0, end2 = s -> maelstrom_weapon_used.size() - 1; j < end2; j++ )
+        {
+          total_mw_used[ j ] += s -> maelstrom_weapon_used[ j ] -> mean();
+          total_mw_used[ MAX_MAELSTROM_STACK + 1 ] += s -> maelstrom_weapon_used[ j ] -> mean();
+        }
+      }
+    }
+
+    for ( size_t i = 0, end = p.stats_list.size(); i < end; i++ )
+    {
+      stats_t* stats = p.stats_list[ i ];
+      std::vector<double> n_used( MAX_MAELSTROM_STACK + 2 );
+      bool has_used = false;
+
+      for ( size_t j = 0, end2 = stats -> action_list.size(); j < end2; j++ )
+      {
+        if ( shaman_spell_t* s = dynamic_cast<shaman_spell_t*>( stats -> action_list[ j ] ) )
+        {
+          for ( size_t k = 0, end3 = s -> maelstrom_weapon_used.size() - 1; k < end3; k++ )
+          {
+            if ( s -> maelstrom_weapon_used[ k ] -> mean() > 0 )
+              has_used = true;
+
+            n_used[ k ] += s -> maelstrom_weapon_used[ k ] -> mean();
+            n_used[ MAX_MAELSTROM_STACK + 1 ] += s -> maelstrom_weapon_used[ k ] -> mean();
+          }
+        }
+      }
+
+      if ( has_used )
+      {
+        std::string name_str = stats -> name_str.c_str();
+        if ( stats -> action_list[ 0 ] -> id > 1 )
+        {
+          name_str = "<a href=\"http://wod.wowhead.com/spell=" + util::to_string( stats -> action_list[ 0 ] -> id ) + "\">";
+          name_str += stats -> name_str.c_str();
+          name_str += "</a>";
+        }
+
+        os.printf("<tr><td style=\"text-align:left;\">%s</td>",
+            name_str.c_str() );
+
+        for ( size_t j = 0, end2 = n_used.size(); j < end2; j++ )
+        {
+          double pct = 0;
+          if ( total_mw_used[ j ] > 0 )
+            pct = 100.0 * n_used[ j ] / n_used[ MAX_MAELSTROM_STACK + 1 ];
+
+          if ( j < end2 - 1 )
+            os.printf("<td>%.1f (%.2f%%)</td>", n_used[ j ], pct );
+          else
+            os.printf("<td>%.1f</td>", n_used[ j ] );
+        }
+
+        os << "</tr>\n";
+      }
+    }
+
+    os.printf("<tr><td>Total</td>");
+
+    for ( size_t i = 0, end = total_mw_used.size() - 1; i < end; i++ )
+      os.printf("<td>%.1f (%.2f%%)</td>",
+          total_mw_used[ i ], 100 * total_mw_used[ i ] / total_mw_used[ MAX_MAELSTROM_STACK + 1 ] );
+
+    os.printf("<td>%.1f</td>", total_mw_used[ MAX_MAELSTROM_STACK + 1 ] );
+
+    os << "</tr>\n";
+  }
+
+  virtual void html_customsection( report::sc_html_stream& os ) override
+  {
+    if ( p.specialization() != SHAMAN_ENHANCEMENT )
+      return;
+
+    // Custom Class Section
     os << "\t\t\t\t<div class=\"player-section custom_section\">\n"
-        << "\t\t\t\t\t<h3 class=\"toggle open\">Custom Section</h3>\n"
+        << "\t\t\t\t\t<h3 class=\"toggle open\">Maelstrom Weapon details</h3>\n"
         << "\t\t\t\t\t<div class=\"toggle-content\">\n";
 
-    os << p.name();
+    
+    mwgen_table_header( os );
+    mwgen_table_contents( os );
+    mwgen_table_footer( os );
 
-    os << "\t\t\t\t\t\t</div>\n" << "\t\t\t\t\t</div>\n";*/
+    mwuse_table_header( os );
+    mwuse_table_contents( os );
+    mwuse_table_footer( os );
+
+    os << "<div class=\"clear\"></div>\n";
+
+    os << "\t\t\t\t\t\t</div>\n"
+       << "\t\t\t\t\t</div>\n";
   }
 private:
   shaman_t& p;
