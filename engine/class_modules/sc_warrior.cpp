@@ -51,6 +51,9 @@ public:
   int initial_rage;
   double cdr_mult; // Allow the user to select the multiplier on CDR rating ---> percentage conversion.
                    // At least until we find out what the actual multiplier is.
+  simple_sample_data_t cs_damage;
+  simple_sample_data_t priority_damage;
+  simple_sample_data_t all_damage;
   // Active
 
   action_t* active_bloodbath_dot;
@@ -296,7 +299,6 @@ public:
     const spell_data_t* improved_thunder_clap;
   } perk;
 
-
   warrior_t( sim_t* sim, const std::string& name, race_e r = RACE_NIGHT_ELF ) :
     player_t( sim, WARRIOR, name, r ),
     buff( buffs_t() ),
@@ -393,13 +395,15 @@ public:
   virtual role_e    primary_role() const;
   virtual void      assess_damage( school_e, dmg_e, action_state_t* s );
   virtual void      copy_from( player_t* source );
+  virtual simple_sample_data_t   value_t( const warrior_t& other ) {
+  cs_damage.merge( other.cs_damage );
+  priority_damage.merge( other.priority_damage );
+  all_damage.merge( other.all_damage );
+  return simple_sample_data_t();
+  }
 
   // Custom Warrior Functions
   void enrage();
-
-  simple_sample_data_t cs_damage;
-  simple_sample_data_t priority_damage;
-  simple_sample_data_t all_damage;
 
   target_specific_t<warrior_td_t*> target_data;
 
@@ -549,6 +553,24 @@ struct warrior_attack_t : public warrior_action_t< melee_attack_t >
     return am;
   }
 
+  void assess_damage(dmg_e type,
+               action_state_t* s)
+  {
+    attack_t::assess_damage( type, s );
+
+    warrior_t* p  = cast();
+    warrior_td_t* td = cast_td( s -> target );
+
+    if ( td -> debuffs_colossus_smash -> up() && s -> result_amount > 0)
+      p -> cs_damage.add( s -> result_amount );
+
+    if ( ( s -> target == sim -> target ) && s -> result_amount > 0 )
+      p -> priority_damage.add( s -> result_amount );
+
+    if ( s -> result_amount > 0 )
+      p -> all_damage.add( s -> result_amount );
+  }
+
   virtual double composite_crit() const
   {
     double cc = base_t::composite_crit();
@@ -639,6 +661,7 @@ struct warrior_attack_t : public warrior_action_t< melee_attack_t >
 
       return t;
   }
+
 };
 
 // trigger_bloodbath ========================================================
@@ -927,15 +950,6 @@ void warrior_attack_t::impact( action_state_t* s )
       p -> active_second_wind -> base_dd_max = s -> result_amount;
       p -> active_second_wind -> execute();
     }
-
-  if ( td -> debuffs_colossus_smash -> up() && s -> result_amount > 0)
-    p -> cs_damage.add( s -> result_amount );
-
-  if ( ( s -> target == sim -> target ) && s -> result_amount > 0 )
-    p -> priority_damage.add( s -> result_amount );
-
-  if ( s -> result_amount > 0 )
-    p -> all_damage.add( s -> result_amount );
 
   if ( result_is_hit( s -> result ) && !proc && s -> result_amount > 0 && this -> id != 147891 ) // Flurry of Xuen
   {
@@ -2809,6 +2823,25 @@ struct warrior_spell_t : public warrior_action_t< spell_t >
     may_miss = may_glance = may_block = may_dodge = may_parry = may_crit = false;
     use_off_gcd = true;
   }
+
+  void assess_damage(dmg_e type,
+               action_state_t* s)
+  {
+    spell_t::assess_damage( type, s );
+
+    warrior_t* p  = cast();
+    warrior_td_t* td = cast_td( s -> target );
+
+    if ( td -> debuffs_colossus_smash -> up() && s -> result_amount > 0)
+      p -> cs_damage.add( s -> result_amount );
+
+    if ( ( s -> target == sim -> target ) && s -> result_amount > 0 )
+      p -> priority_damage.add( s -> result_amount );
+
+    if ( s -> result_amount > 0 )
+      p -> all_damage.add( s -> result_amount );
+  }
+
 };
 
 // Avatar ===================================================================
@@ -2956,25 +2989,6 @@ struct deep_wounds_t : public warrior_spell_t
     hasted_ticks  = false;
     dynamic_tick_action = true;
     dot_behavior = DOT_REFRESH;
-  }
-  
-  virtual double calculate_tick_amount( action_state_t* s )
-  {
-    warrior_spell_t::calculate_tick_amount( s );
-
-    warrior_t*p = cast();
-    warrior_td_t* td = cast_td( s -> target );
-
-    if ( td -> debuffs_colossus_smash -> up() && s -> result_amount > 0)
-      p -> cs_damage.add( s -> result_amount );
-
-    if ( ( s -> target == sim -> target ) && s -> result_amount > 0 )
-      p -> priority_damage.add( s -> result_amount );
-
-    if ( s -> result_amount > 0 )
-      p -> all_damage.add( s -> result_amount );
-
-    return s -> result_amount;
   }
 
   virtual double action_multiplier() const
@@ -4343,6 +4357,7 @@ void warrior_t::init_gains()
   gain.tier16_4pc_tank        = get_gain( "tier16_4pc_tank"       );
 }
 
+
 // warrior_t::init_position ====================================================
 
 void warrior_t::init_position()
@@ -4898,6 +4913,7 @@ set_e warrior_t::decode_set( const item_t& item ) const
   return SET_NONE;
 }
 
+
 // warrior_t::enrage ========================================================
 
 void warrior_t::enrage()
@@ -4919,6 +4935,7 @@ void warrior_t::enrage()
   buff.enraged_speed -> trigger();
 }
 
+
 /* Report Extension Class
  * Here you can define class specific report extensions/overrides
  */
@@ -4932,7 +4949,6 @@ public:
 
   virtual void html_customsection( report::sc_html_stream& os ) override
   {
-
     double cs_damage = p.cs_damage.sum();
     double all_damage = p.all_damage.sum();
     double priority_damage = p.priority_damage.sum();
