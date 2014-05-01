@@ -4949,11 +4949,13 @@ public:
     os << "%"<<( ( cs_damage / priority_damage ) * 100 );
     os << "\t\t\t\t\t<p> Dps done to primary target </p>\n";
     os << ( ( priority_damage / all_damage ) * p.collected_data.dps.mean() );
-    os << "\t\t\t\t\t<p> DEBUG OUTPUT </p>\n";
+    os << "\t\t\t\t\t<p> =============== DEBUG OUTPUT ================== </p>\n";
     os << "\t\t\t\t\t<p> Colossus Smash Sum over all Iterations</p>"<<cs_damage;
     os << "\t\t\t\t\t<p> Colossus Smash Sum average on one iteration</p>"<<( cs_damage / p.sim -> iterations );
-    os << "\t\t\t\t\t<p> Overall Damage Sum over all Iterations</p>"<<( all_damage / p.sim -> iterations );
-    os << "\t\t\t\t\t<p> Priority Target Sum over all Iterations</p>"<<( priority_damage / p.sim -> iterations );
+    os << "\t\t\t\t\t<p> Overall Damage Sum over all Iterations</p>"<<( all_damage );
+    os << "\t\t\t\t\t<p> Overall Damage Sum average on one iteration</p>"<<( all_damage / p.sim -> iterations );
+    os << "\t\t\t\t\t<p> Priority Target Sum over all Iterations</p>"<<( priority_damage );
+    os << "\t\t\t\t\t<p> Priority Target Sum average on one Iteration</p>"<<( priority_damage / p.sim -> iterations );
 
     os << "\t\t\t\t\t\t</div>\n" << "\t\t\t\t\t</div>\n";
   }
