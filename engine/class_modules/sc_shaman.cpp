@@ -82,16 +82,16 @@ struct counter_t
 
   counter_t( shaman_t* p );
 
-  void add( double val, timespan_t time )
+  void add( double val )
   {
     // Skip iteration 0 for non-debug, non-log sims
-    if ( sim -> current_iteration == 0 && sim -> iterations > 1 && ! sim -> debug && ! sim -> log )
+    if ( sim -> current_iteration == 0 && sim -> iterations > sim -> threads && ! sim -> debug && ! sim -> log )
       return;
 
     value += val;
     if ( last > timespan_t::min() )
-      interval += ( time - last ).total_seconds();
-    last = time;
+      interval += ( sim -> current_time - last ).total_seconds();
+    last = sim -> current_time;
   }
 
   void reset()
@@ -99,10 +99,10 @@ struct counter_t
 
   double divisor() const
   {
-    if ( ! sim -> debug && ! sim -> log && sim -> iterations > 1 )
-      return sim -> iterations - 1;
+    if ( ! sim -> debug && ! sim -> log && sim -> iterations > sim -> threads )
+      return sim -> iterations - sim -> threads;
     else
-      return 1;
+      return std::min( sim -> iterations, sim -> threads );
   }
 
   double mean()
@@ -1494,11 +1494,11 @@ static bool trigger_maelstrom_weapon( shaman_attack_t* a )
     if ( mwstack == a -> p() -> buff.maelstrom_weapon -> total_stack() )
     {
       if ( a -> maelstrom_procs_wasted )
-        a -> maelstrom_procs_wasted -> add( 1, a -> sim -> current_time );
+        a -> maelstrom_procs_wasted -> add( 1 );
     }
 
     if ( a -> maelstrom_procs )
-      a -> maelstrom_procs -> add( 1, a -> sim -> current_time );
+      a -> maelstrom_procs -> add( 1 );
   }
 
   return procced;
@@ -2300,7 +2300,7 @@ void shaman_spell_base_t<Base>::schedule_execute( action_state_t* state )
   }
 
   if ( ab::instant_eligibility() && ! use_ancestral_swiftness() && p -> specialization() == SHAMAN_ENHANCEMENT )
-    maelstrom_weapon_used[ p -> buff.maelstrom_weapon -> check() ] -> add( 1, p -> sim -> current_time );
+    maelstrom_weapon_used[ p -> buff.maelstrom_weapon -> check() ] -> add( 1 );
 }
 
 // shaman_spell_base_t::execute =============================================
@@ -6290,14 +6290,14 @@ public:
           name_str += "</a>";
         }
 
-        os.printf("<tr><td style=\"text-align:left;\">%s</td><td>%.1f</td><td>%.1f (%.2f%%)</td></tr>",
+        os.printf("<tr><td style=\"text-align:left;\">%s</td><td>%.2f</td><td>%.2f (%.2f%%)</td></tr>",
             name_str.c_str(),
-            n_generated,
-            n_wasted, 100.0 * n_wasted / n_generated );
+            util::round( n_generated, 2 ),
+            util::round( n_wasted, 2 ), util::round( 100.0 * n_wasted / n_generated, 2 ) );
       }
     }
 
-    os.printf("<tr><td style=\"text-align: left;\">Total</td><td>%.1f</td><td>%.1f (%.2f%%)</td>",
+    os.printf("<tr><td style=\"text-align: left;\">Total</td><td>%.2f</td><td>%.2f (%.2f%%)</td>",
         total_generated, total_wasted, 100.0 * total_wasted / total_generated );
   }
 
