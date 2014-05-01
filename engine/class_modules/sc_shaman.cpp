@@ -2689,13 +2689,15 @@ struct stormstrike_t : public shaman_attack_t
       for ( int i = 0; i < ( mwstack + bonus ) - p() -> buff.maelstrom_weapon -> max_stack(); i++ )
       {
         p() -> proc.wasted_t15_2pc_melee -> occur();
-        p() -> proc.wasted_mw -> occur();
+        if ( maelstrom_procs_wasted )
+          maelstrom_procs_wasted -> add( 1 );
       }
 
       for ( int i = 0; i < bonus; i++ )
       {
         p() -> proc.t15_2pc_melee -> occur();
-        p() -> proc.maelstrom_weapon -> occur();
+        if ( maelstrom_procs )
+          maelstrom_procs -> add( 1 );
       }
     }
   }
@@ -2775,13 +2777,15 @@ struct windstrike_t : public shaman_attack_t
       for ( int i = 0; i < ( mwstack + bonus ) - p() -> buff.maelstrom_weapon -> max_stack(); i++ )
       {
         p() -> proc.wasted_t15_2pc_melee -> occur();
-        p() -> proc.wasted_mw -> occur();
+        if ( maelstrom_procs_wasted )
+          maelstrom_procs_wasted -> add( 1 );
       }
 
       for ( int i = 0; i < bonus; i++ )
       {
         p() -> proc.t15_2pc_melee -> occur();
-        p() -> proc.maelstrom_weapon -> occur();
+        if ( maelstrom_procs )
+          maelstrom_procs -> add( 1 );
       }
     }
   }
@@ -6259,6 +6263,7 @@ public:
   void mwgen_table_contents( report::sc_html_stream& os )
   {
     double total_generated = 0, total_wasted = 0;
+    int n = 0;
 
     for ( size_t i = 0, end = p.stats_list.size(); i < end; i++ )
     {
@@ -6290,7 +6295,12 @@ public:
           name_str += "</a>";
         }
 
-        os.printf("<tr><td style=\"text-align:left;\">%s</td><td>%.2f</td><td>%.2f (%.2f%%)</td></tr>",
+        std::string row_class_str = "";
+        if ( ++n & 1 )
+          row_class_str = " class=\"odd\"";
+
+        os.printf("<tr%s><td style=\"text-align:left;\">%s</td><td>%.2f</td><td>%.2f (%.2f%%)</td></tr>",
+            row_class_str.c_str(),
             name_str.c_str(),
             util::round( n_generated, 2 ),
             util::round( n_wasted, 2 ), util::round( 100.0 * n_wasted / n_generated, 2 ) );
@@ -6304,6 +6314,7 @@ public:
   void mwuse_table_contents( report::sc_html_stream& os )
   {
     std::vector<double> total_mw_used( MAX_MAELSTROM_STACK + 2 );
+    int n = 0;
 
     for ( size_t i = 0, end = p.action_list.size(); i < end; i++ )
     {
@@ -6340,6 +6351,10 @@ public:
 
       if ( has_used )
       {
+        std::string row_class_str = "";
+        if ( ++n & 1 )
+          row_class_str = " class=\"odd\"";
+
         std::string name_str = stats -> name_str.c_str();
         if ( stats -> action_list[ 0 ] -> id > 1 )
         {
@@ -6348,8 +6363,8 @@ public:
           name_str += "</a>";
         }
 
-        os.printf("<tr><td style=\"text-align:left;\">%s</td>",
-            name_str.c_str() );
+        os.printf("<tr%s><td style=\"text-align:left;\">%s</td>",
+            row_class_str.c_str(), name_str.c_str() );
 
         for ( size_t j = 0, end2 = n_used.size(); j < end2; j++ )
         {
