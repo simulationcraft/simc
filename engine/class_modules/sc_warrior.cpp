@@ -605,13 +605,24 @@ struct warrior_attack_t : public warrior_action_t< melee_attack_t >
   void trigger_bloodbath_dot( player_t* t, double dmg )
   {
     warrior_t& p = *cast();
+    warrior_td_t* td = cast_td( t -> target );
 
     if ( ! p.buff.bloodbath -> check() ) return;
+
+    if ( td -> debuffs_colossus_smash -> up() && dmg > 0)
+      p.cs_damage.add( p.buff.bloodbath -> data().effectN( 1 ).percent() * dmg  );
+
+    if ( ( t -> target == sim -> target ) && dmg > 0 )
+      p.priority_damage.add( p.buff.bloodbath -> data().effectN( 1 ).percent() * dmg  );
+
+    if ( dmg > 0 )
+      p.all_damage.add( p.buff.bloodbath -> data().effectN( 1 ).percent() * dmg  );
 
     ignite::trigger_pct_based(
       p.active_bloodbath_dot, // ignite spell
       t, // target
       p.buff.bloodbath -> data().effectN( 1 ).percent() * dmg );
+
   }
 
   void trigger_rage_gain()
