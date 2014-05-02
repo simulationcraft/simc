@@ -248,9 +248,6 @@ bool parse_items( player_t*  p,
       const rapidjson::Value& upgrade = params[ "upgrade" ];
       if ( upgrade.HasMember( "current" ) ) item.parsed.upgrade_level = upgrade[ "current" ].GetUint();
     }
-
-    if ( ! item_t::download_slot( item ) )
-      return false;
   }
 
   return true;
@@ -519,6 +516,15 @@ js::js_node_t download_item_data( item_t& item, cache::behavior_e caching )
             item.parsed.data.socket_color[ i ] = SOCKET_COLOR_HYDRAULIC;
         }
       }
+
+      std::string socketBonus;
+      if ( js::get_value( socketBonus, js, "socketInfo/socketBonus" ) )
+      {
+        std::string stat;
+        util::fuzzy_stats( stat, socketBonus );
+        std::vector<stat_pair_t> bonus = item_t::str_to_stat_pair( stat );
+        item.parsed.socket_bonus_stats = bonus;
+      }
     }
 
     js::get_value( item.parsed.data.id_set, js, "itemSet" );
@@ -610,100 +616,6 @@ js::js_node_t download_roster( sim_t* sim,
   return js;
 }
 
-// parse_gem_stats ==========================================================
-
-std::vector<stat_pair_t> parse_gem_stats( const std::string& bonus )
-{
-  std::vector<stat_pair_t> stats;
-
-  std::istringstream in( bonus );
-
-  int amount;
-  std::string stat;
-
-  in >> amount;
-  in >> stat;
-
-  stat_e st = util::parse_gem_stat( stat );
-  if ( st != STAT_NONE )
-    stats.push_back( stat_pair_t( st, amount ) );
-
-  in >> stat;
-  if ( in )
-  {
-    if ( util::str_compare_ci( stat, "Rating" ) )
-      in >> stat;
-
-    if ( in )
-    {
-      if ( util::str_compare_ci( stat, "and" ) )
-      {
-        in >> amount;
-        in >> stat;
-
-        st = util::parse_stat_type( stat );
-        if ( st != STAT_NONE )
-          stats.push_back( stat_pair_t( st, amount ) );
-      }
-    }
-  }
-
-  return stats;
-}
-
-bool parse_gems( item_t& item, const js::js_node_t& js )
-{
-  bool match = true;
-
-  item.parsed.gem_stats.clear();
-
-  for ( size_t i = 0; i < sizeof_array( item.parsed.gem_id ); i++ )
-  {
-    if ( item.parsed.gem_id[ i ] == 0 )
-    {
-      // Check if there's a gem slot, if so, this is ungemmed item.
-      if ( item.parsed.data.socket_color[ i ] )
-        match = false;
-      continue;
-    }
-
-    if ( item.parsed.data.socket_color[ i ] )
-    {
-      if ( ! ( item_t::parse_gem( item, item.parsed.gem_id[ i ] ) & item.parsed.data.socket_color[ i ] ) )
-        match = false;
-    }
-    else
-    {
-      // Naively accept gems to wrist/hands/waist past the "official" sockets, but only a
-      // single extra one. Wrist/hands should be checked against player professions at
-      // least ..
-      // Also accept it on main/offhands for the new 5.1 legendary questline stuff
-      if ( item.slot == SLOT_WRISTS || item.slot == SLOT_HANDS ||
-           item.slot == SLOT_WAIST || item.slot == SLOT_MAIN_HAND ||
-           item.slot == SLOT_OFF_HAND )
-      {
-        item_t::parse_gem( item, item.parsed.gem_id[ i ] );
-        break;
-      }
-    }
-  }
-
-  // Socket bonus
-  if ( match )
-  {
-    std::string socketBonus;
-    if ( js::get_value( socketBonus, js, "socketInfo/socketBonus" ) )
-    {
-      std::string stat;
-      util::fuzzy_stats( stat, socketBonus );
-      std::vector<stat_pair_t> bonus = item_t::str_to_stat_pair( stat );
-      item.parsed.gem_stats.insert( item.parsed.gem_stats.end(), bonus.begin(), bonus.end() );
-    }
-  }
-
-  return true;
-}
-
 } // close anonymous namespace ==============================================
 
 // bcp_api::download_player =================================================
@@ -763,21 +675,6 @@ bool bcp_api::download_item( item_t& item, cache::behavior_e caching )
   if ( ret )
     item.source_str = "Blizzard";
   return ret;
-}
-
-// bcp_api::download_slot() =================================================
-
-bool bcp_api::download_slot( item_t& item, cache::behavior_e caching )
-{
-  js::js_node_t js = download_item_data( item, caching );
-  if ( ! js )
-    return false;
-
-  parse_gems( item, js );
-
-  item.source_str = "Blizzard";
-
-  return true;
 }
 
 // bcp_api::download_guild ==================================================
@@ -865,56 +762,6 @@ bool bcp_api::download_glyph( player_t*          player,
   }
 
   return true;
-}
-
-// bcp_api::parse_gem =======================================================
-
-gem_e bcp_api::parse_gem( item_t& item, unsigned gem_id, cache::behavior_e caching )
-{
-  const std::string& region =
-    item.player -> region_str.empty()
-    ? item.sim -> default_region_str
-    : item.player -> region_str;
-
-  js::js_node_t js = download_id( item.sim, region, gem_id, caching );
-  if ( ! js )
-    return GEM_NONE;
-
-  if ( item.sim -> debug )
-    item.sim -> out_debug.raw() << js;
-
-  std::string type_str;
-  if ( ! js::get_value( type_str, js, "gemInfo/type/type" ) )
-    return GEM_NONE;
-  util::tokenize( type_str );
-
-  gem_e type = util::parse_gem_type( type_str );
-
-  std::string result;
-  if ( type == GEM_META )
-  {
-    if ( ! js::get_value( result, js, "name" ) )
-      return GEM_NONE;
-
-    std::string::size_type pos = result.rfind( " Diamond" );
-    if ( pos != std::string::npos ) result.erase( pos );
-    // Set meta gem here.
-    util::tokenize( result );
-    meta_gem_e meta_type = util::parse_meta_gem_type( result );
-    if ( meta_type != META_GEM_NONE )
-      item.player -> meta_gem = meta_type;
-    result.clear();
-  }
-  else
-  {
-    std::string bonus;
-    if ( ! js::get_value( bonus, js, "gemInfo/bonus/name" ) )
-      return GEM_NONE;
-    std::vector<stat_pair_t> stats = parse_gem_stats( bonus );
-    item.parsed.gem_stats.insert( item.parsed.gem_stats.end(), stats.begin(), stats.end() );
-  }
-
-  return type;
 }
 
 #if USE_WOWREFORGE

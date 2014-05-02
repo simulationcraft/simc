@@ -214,7 +214,7 @@ action_priority_t* action_priority_list_t::add_talent( const player_t* p,
                                                        const std::string& action_options,
                                                        const std::string& comment )
 {
-  const spell_data_t* s = p -> find_talent_spell( name, "", false, false );
+  const spell_data_t* s = p -> find_talent_spell( name, "", SPEC_NONE, false, false );
   std::string talent_check_str = "talent." + dbc::get_token( s -> id() ) + ".enabled";
   bool found_if = false;
   bool found_talent_check = false;
@@ -280,10 +280,6 @@ action_t::action_t( action_e       ty,
   repeating(),
   harmful( true ),
   proc(),
-  item_proc(),
-  proc_ignores_slot(),
-  discharge_proc(),
-  auto_cast(),
   initialized(),
   may_hit( true ),
   may_miss(),
@@ -304,8 +300,8 @@ action_t::action_t( action_e       ty,
   trigger_gcd( player -> base_gcd ),
   range(),
   weapon_power_mod(),
-  direct_power_mod(),
-  tick_power_mod(),
+  attack_power_mod(),
+  spell_power_mod(),
   base_execute_time( timespan_t::zero() ),
   base_tick_time( timespan_t::zero() ),
   time_to_execute( timespan_t::zero() ),
@@ -317,7 +313,7 @@ action_t::action_t( action_e       ty,
   dot_behavior                   = DOT_CLIP;
   trigger_gcd                    = player -> base_gcd;
   range                          = -1.0;
-  weapon_power_mod               = 1.0 / 14.0;
+  weapon_power_mod               = 1.0 / 3.5;
 
 
   base_dd_min                    = 0.0;
@@ -331,8 +327,6 @@ action_t::action_t( action_e       ty,
   rp_gain                        = 0.0;
   base_spell_power               = 0.0;
   base_attack_power              = 0.0;
-  base_spell_power_multiplier    = 0.0;
-  base_attack_power_multiplier   = 0.0;
   crit_multiplier                = 1.0;
   crit_bonus_multiplier          = 1.0;
   base_dd_adder                  = 0.0;
@@ -508,7 +502,8 @@ void action_t::parse_effect_data( const spelleffect_data_t& spelleffect_data )
     case E_HEAL:
     case E_SCHOOL_DAMAGE:
     case E_HEALTH_LEECH:
-      direct_power_mod = spelleffect_data.coeff();
+      spell_power_mod.direct = spelleffect_data.coeff();
+      attack_power_mod.direct = spelleffect_data.ap_coeff(); // change to ap_coeff
       base_dd_min      = player -> dbc.effect_min( spelleffect_data.id(), player -> level );
       base_dd_max      = player -> dbc.effect_max( spelleffect_data.id(), player -> level );
       break;
@@ -534,7 +529,8 @@ void action_t::parse_effect_data( const spelleffect_data_t& spelleffect_data )
         case A_PERIODIC_DAMAGE:
         case A_PERIODIC_LEECH:
         case A_PERIODIC_HEAL:
-          tick_power_mod   = spelleffect_data.coeff();
+          spell_power_mod.tick = spelleffect_data.coeff();
+          attack_power_mod.tick = spelleffect_data.ap_coeff(); // change to ap_coeff
           base_td          = player -> dbc.effect_average( spelleffect_data.id(), player -> level );
         case A_PERIODIC_ENERGIZE:
         case A_PERIODIC_TRIGGER_SPELL_WITH_VALUE:
@@ -550,7 +546,8 @@ void action_t::parse_effect_data( const spelleffect_data_t& spelleffect_data )
           }
           break;
         case A_SCHOOL_ABSORB:
-          direct_power_mod = spelleffect_data.coeff();
+          spell_power_mod.direct = spelleffect_data.coeff();
+          attack_power_mod.direct = spelleffect_data.ap_coeff(); // change to ap_coeff
           base_dd_min      = player -> dbc.effect_min( spelleffect_data.id(), player -> level );
           base_dd_max      = player -> dbc.effect_max( spelleffect_data.id(), player -> level );
           break;
@@ -727,19 +724,12 @@ double action_t::crit_chance( double crit, int /* delta_level */ ) const
 double action_t::total_crit_bonus() const
 {
   double crit_multiplier_buffed = crit_multiplier * composite_player_critical_multiplier();
-  double base_crit_bonus = crit_bonus;
-  if ( ! player -> is_pet() && ! player -> is_enemy() )
-  {
-    base_crit_bonus += player -> buffs.amplified -> value();
-    base_crit_bonus += player -> buffs.amplified_2 -> value();
-  }
-
-  double bonus = ( ( 1.0 + base_crit_bonus ) * crit_multiplier_buffed - 1.0 ) * crit_bonus_multiplier;
+  double bonus = ( ( 1.0 + crit_bonus ) * crit_multiplier_buffed - 1.0 ) * crit_bonus_multiplier;
 
   if ( sim -> debug )
   {
     sim -> out_debug.printf( "%s crit_bonus for %s: cb=%.3f b_cb=%.2f b_cm=%.2f b_cbm=%.2f",
-                   player -> name(), name(), bonus, base_crit_bonus, crit_multiplier_buffed, crit_bonus_multiplier );
+                   player -> name(), name(), bonus, crit_bonus, crit_multiplier_buffed, crit_bonus_multiplier );
   }
 
   return bonus;
@@ -778,9 +768,12 @@ double action_t::calculate_tick_amount( action_state_t* state )
 {
   double amount = 0;
 
-  if ( base_ta( state ) == 0 && tick_power_coefficient( state ) == 0 ) return 0;
+  if ( base_ta( state ) == 0 && spell_tick_power_coefficient( state ) == 0 && attack_tick_power_coefficient( state ) == 0) return 0;
 
-  amount  = floor( base_ta( state ) + 0.5 ) + bonus_ta( state ) + state -> composite_power() * tick_power_coefficient( state );
+  amount  = floor( base_ta( state ) + 0.5 );
+  amount += bonus_ta( state );
+  amount += state -> composite_spell_power() * spell_tick_power_coefficient( state );
+  amount += state -> composite_attack_power() * attack_tick_power_coefficient( state );
   amount *= state -> composite_ta_multiplier();
 
   double init_tick_amount = amount;
@@ -803,10 +796,11 @@ double action_t::calculate_tick_amount( action_state_t* state )
 
   if ( sim -> debug )
   {
-    sim -> out_debug.printf( "%s amount for %s on %s: ta=%.0f i_ta=%.0f b_ta=%.0f bonus_ta=%.0f mod=%.2f power=%.0f mult=%.2f",
+    sim -> out_debug.printf( "%s amount for %s on %s: ta=%.0f i_ta=%.0f b_ta=%.0f bonus_ta=%.0f s_mod=%.2f s_power=%.0f a_mod=%.2f a_power=%.0f mult=%.2f",
                    player -> name(), name(), target -> name(), amount,
                    init_tick_amount, base_ta( state ), bonus_ta( state ),
-                   tick_power_coefficient( state ), state -> composite_power(),
+                   spell_tick_power_coefficient( state ), state -> composite_spell_power(),
+                   attack_tick_power_coefficient( state ), state -> composite_attack_power(),
                    state -> composite_ta_multiplier() );
   }
 
@@ -821,7 +815,7 @@ double action_t::calculate_direct_amount( action_state_t* state )
 
   if ( round_base_dmg ) amount = floor( amount + 0.5 );
 
-  if ( amount == 0 && weapon_multiplier == 0 && direct_power_coefficient( state ) == 0 ) return 0;
+  if ( amount == 0 && weapon_multiplier == 0 && attack_direct_power_coefficient( state ) == 0 && spell_direct_power_coefficient( state ) == 0 ) return 0;
 
   double base_direct_amount = amount;
   double weapon_amount = 0;
@@ -836,7 +830,8 @@ double action_t::calculate_direct_amount( action_state_t* state )
     amount *= weapon_multiplier;
     weapon_amount = amount;
   }
-  amount += direct_power_coefficient( state ) * ( state -> composite_power() );
+  amount += spell_direct_power_coefficient( state ) * ( state -> composite_spell_power() );
+  amount += attack_direct_power_coefficient( state ) * ( state -> composite_attack_power() );
   amount *= state -> composite_da_multiplier();
 
   // AoE with decay per target
@@ -905,9 +900,11 @@ double action_t::calculate_direct_amount( action_state_t* state )
 
   if ( sim -> debug )
   {
-    sim -> out_debug.printf( "%s amount for %s: dd=%.0f i_dd=%.0f w_dd=%.0f b_dd=%.0f mod=%.2f power=%.0f mult=%.2f w_mult=%.2f",
-                   player -> name(), name(), amount, state -> result_raw, weapon_amount, base_direct_amount, direct_power_coefficient( state ),
-                   state -> composite_power(), state -> composite_da_multiplier(), weapon_multiplier );
+    sim -> out_debug.printf( "%s amount for %s: dd=%.0f i_dd=%.0f w_dd=%.0f b_dd=%.0f s_mod=%.2f s_power=%.0f a_mod=%.2f a_power=%.0f mult=%.2f w_mult=%.2f",
+                   player -> name(), name(), amount, state -> result_raw, weapon_amount, base_direct_amount,
+                   spell_direct_power_coefficient( state ), state -> composite_spell_power(),
+                   attack_direct_power_coefficient( state ), state -> composite_attack_power(),
+                   state -> composite_da_multiplier(), weapon_multiplier );
   }
 
   // Record total amount to state
@@ -1127,7 +1124,7 @@ void action_t::execute()
   // TODO: Not used for now.
   // Note: direct_tick_callbacks should not be used with the new system, 
   // override action_t::proc_type() instead
-  if ( 0 /* callbacks */ )
+  if ( callbacks )
   {
     proc_types pt = execute_state -> proc_type();
     proc_types2 pt2 = execute_state -> execute_proc_type2();
@@ -1313,12 +1310,7 @@ void action_t::update_vengeance( dmg_e type,
       if ( ! sim -> challenge_mode )
         s -> target -> vengeance_list.add( player, player -> get_raw_dps( s ), sim -> current_time );
 
-      // factor out weakened_blows from physical damage
       double raw_damage = s -> result_raw;
-      if ( school == SCHOOL_PHYSICAL && s -> action -> player -> debuffs.weakened_blows -> check() )
-      {
-        raw_damage /= ( 1.0 - s -> action -> player -> debuffs.weakened_blows -> value() );
-      }
 
       // Take swing time for auto_attacks, take 60 for special attacks (this is how blizzard does it)
       double attack_frequency = 0.0;
@@ -1431,7 +1423,7 @@ void action_t::assess_damage( dmg_e    type,
   // TODO: Not used for now.
   // Note: direct_tick_callbacks should not be used with the new system, 
   // override action_t::proc_type() instead
-  if ( 0 /* callbacks */ )
+  if ( callbacks )
   {
     proc_types pt = s -> proc_type();
     proc_types2 pt2 = s -> impact_proc_type2();
@@ -1710,25 +1702,30 @@ void action_t::init()
 
   // TODO: WOD-MULTISTRIKE
   if ( may_multistrike == -1 )
-    may_multistrike = may_crit;
+    may_multistrike = may_crit || tick_may_crit;
 
   if ( may_crit || tick_may_crit )
     snapshot_flags |= STATE_CRIT | STATE_TGT_CRIT;
 
-  if ( base_td > 0 || num_ticks > 0 )
+  if ( spell_power_mod.tick > 0 || num_ticks > 0 )
     snapshot_flags |= STATE_MUL_TA | STATE_TGT_MUL_TA;
 
-  if ( ( base_dd_min > 0 && base_dd_max > 0 ) || weapon_multiplier > 0 )
+  if ( ( spell_power_mod.direct > 0 || attack_power_mod.direct > 0 ) || weapon_multiplier > 0 )
     snapshot_flags |= STATE_MUL_DA | STATE_TGT_MUL_DA;
 
-  if ( base_spell_power_multiplier > 0 && ( direct_power_mod > 0 || tick_power_mod > 0 ) )
+  if ( ( spell_power_mod.direct > 0 || spell_power_mod.tick > 0 ) )
     snapshot_flags |= STATE_SP;
 
-  if ( base_attack_power_multiplier > 0 && ( weapon_power_mod > 0 || direct_power_mod > 0 || tick_power_mod > 0 ) )
+  if ( ( weapon_power_mod > 0 || attack_power_mod.direct > 0 || attack_power_mod.tick > 0 ) )
     snapshot_flags |= STATE_AP;
 
   if ( num_ticks > 0 && ( hasted_ticks || channeled ) )
     snapshot_flags |= STATE_HASTE;
+
+  // WOD: Dot Snapshoting is gone
+  update_flags |= snapshot_flags;
+  update_flags &= ~STATE_MUL_DA;
+  update_flags &= ~STATE_MUL_TA;
 
   if ( pre_combat || action_list == "precombat" )
   {
@@ -2235,44 +2232,6 @@ double action_t::ppm_proc_chance( double PPM ) const
 
     return ( PPM * t.total_minutes() );
   }
-}
-
-// action_t::real_ppm_proc_chance ===========================================
-
-double action_t::real_ppm_proc_chance( double PPM, timespan_t last_trigger, timespan_t last_successful_proc, rppm_scale_e scales_with ) const
-{
-  // Old RPPM formula
-  double coeff = 1.0;
-  double seconds = std::min( ( sim -> current_time - last_trigger ).total_seconds(), 10.0 );
-
-  switch ( scales_with )
-  {
-    case RPPM_HASTE:
-      coeff *= 1.0 / std::min( player -> cache.spell_haste(), player -> cache.attack_haste() );
-      break;
-    case RPPM_ATTACK_CRIT:
-      coeff *= 1.0 + player -> cache.attack_crit();
-      break;
-    case RPPM_SPELL_CRIT:
-      coeff *= 1.0 + player -> cache.spell_crit();
-      break;
-    default: break;
-  }
-
-  double old_rppm_chance = ( PPM * ( seconds / 60.0 ) ) * coeff;
-
-
-  // RPPM Extension added on 12. March 2013: http://us.battle.net/wow/en/blog/8953693?page=44
-  // Formula see http://us.battle.net/wow/en/forum/topic/8197741003#1
-  double last_success = std::min( ( sim -> current_time - last_successful_proc ).total_seconds(), 1000.0 );
-
-  double expected_average_proc_interval = 60.0 / ( PPM * coeff );
-  double rppm_chance = std::max( 1.0, 1 + ( ( last_success / expected_average_proc_interval - 1.5 ) * 3.0 ) )  * old_rppm_chance;
-  if ( sim -> debug )
-    sim -> out_debug.printf( "base=%.3f coeff=%.3f last_trig=%.3f last_proc=%.3f scales=%d chance=%.5f%%",
-        PPM, coeff, last_trigger.total_seconds(), last_successful_proc.total_seconds(), scales_with,
-        rppm_chance * 100.0 );
-  return rppm_chance;
 }
 
 // action_t::tick_time ======================================================

@@ -57,7 +57,7 @@ public:
 #include <process.h>
 
 // mutex_t::native_t ========================================================
-
+/*
 #if ! defined( __MINGW32__ )
 class mutex_t::native_t : public nonmoveable
 {
@@ -73,6 +73,7 @@ public:
   PCRITICAL_SECTION primitive() { return &cs; }
 };
 #else
+*/
 class mutex_t::native_t : public nonmoveable
 {
   HANDLE mutex_;
@@ -86,10 +87,10 @@ public:
 
   HANDLE primitive() { return mutex_; }
 };
-#endif /* __MINGW32 __ */
+//#endif /* __MINGW32 __ */
 
 // condition_variable_t::native_t ===========================================
-
+/*
 #if ! defined( __MINGW32__ )
 class condition_variable_t::native_t : public nonmoveable
 {
@@ -113,7 +114,8 @@ public:
   { WakeAllConditionVariable( &cv ); }
 };
 #else
-// Emulated condition variable for mingw using win32 thread model. Adapted from 
+*/
+// Emulated condition variable for mingw using win32 thread model. Adapted from
 // http://www.cs.wustl.edu/~schmidt/win32-cv-1.html
 class condition_variable_t::native_t : public nonmoveable
 {
@@ -206,7 +208,7 @@ public:
       LeaveCriticalSection( &waiters_count_lock_ );
   }
 };
-#endif /* __MINGW32__ */
+//#endif /* __MINGW32__ */
 
 namespace { // unnamed namespace
 /* Convert our priority enumerations to WinAPI Thread Priority values
@@ -266,7 +268,7 @@ public:
   }
 
   static void sleep_seconds( double t )
-  { ::Sleep( ( DWORD ) (t * 1000 ) ); }
+  { ::Sleep( ( DWORD ) t * 1000 ); }
 
 private:
   static void set_thread_priority( HANDLE handle, priority_e prio )
@@ -281,6 +283,7 @@ private:
 #elif ( defined( _POSIX_THREADS ) && _POSIX_THREADS > 0 ) || defined( _GLIBCXX_HAVE_GTHR_DEFAULT ) || defined( _GLIBCXX__PTHREADS ) || defined( _GLIBCXX_HAS_GTHREADS )
 // POSIX
 #include <pthread.h>
+#include <cstdio>
 #include <unistd.h>
 
 // mutex_t::native_t ========================================================
@@ -356,7 +359,7 @@ public:
   { set_thread_priority( pthread_self(), prio ); }
 
   static void sleep_seconds( double t )
-  { ::sleep( t ); }
+  { ::sleep( ( unsigned int )t ); }
 
 private:
   static void set_thread_priority( pthread_t t, priority_e prio )
@@ -469,8 +472,6 @@ void sc_thread_t::set_calling_thread_priority( priority_e prio )
 
 void sc_thread_t::wait()
 { native_handle -> join(); }
-
-// sc_thread_t::sleep() =====================================================
 
 void sc_thread_t::sleep_seconds( double t )
 { native_t::sleep_seconds( t ); }

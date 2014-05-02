@@ -217,14 +217,21 @@ void stats_t::datacollection_end()
 
   for ( result_e i = RESULT_NONE; i < RESULT_MAX; i++ )
   {
-    idr += direct_results[ i ].iteration_count;
-    itr += tick_results[ i ].iteration_count;
+    // Multistrike results are independent of normal results, even though they
+    // are computed through the same stats
+    if ( i != RESULT_MULTISTRIKE && i != RESULT_MULTISTRIKE_CRIT )
+    {
+      idr += direct_results[ i ].iteration_count;
+      itr += tick_results[ i ].iteration_count;
+    }
+
     iaa += direct_results[ i ].iteration_actual_amount + tick_results[ i ].iteration_actual_amount;
     ita += direct_results[ i ].iteration_total_amount + tick_results[ i ].iteration_total_amount;
 
     direct_results[ i ].datacollection_end();
     tick_results[ i ].datacollection_end();
   }
+
   for ( full_result_e i = FULLTYPE_NONE; i < FULLTYPE_MAX; i++ )
   {
     direct_results_detail[ i ].datacollection_end();
@@ -272,13 +279,37 @@ void stats_t::analyze()
 
   for ( result_e i = RESULT_NONE; i < RESULT_MAX; i++ )
   {
-    direct_results[ i ].analyze( num_direct_results.mean() );
-    tick_results[ i ].analyze( num_tick_results.mean() );
+    if ( i != RESULT_MULTISTRIKE && i != RESULT_MULTISTRIKE_CRIT )
+    {
+      direct_results[ i ].analyze( num_direct_results.mean() );
+      tick_results[ i ].analyze( num_tick_results.mean() );
+    }
+    else
+    {
+      // Multistrike results are independent of normal results, even though
+      // they are computed through the same stats
+      direct_results[ i ].analyze( direct_results[ RESULT_MULTISTRIKE      ].count.mean() +
+                                   direct_results[ RESULT_MULTISTRIKE_CRIT ].count.mean() );
+      tick_results[ i ].analyze( tick_results[ RESULT_MULTISTRIKE      ].count.mean() + 
+                                 tick_results[ RESULT_MULTISTRIKE_CRIT ].count.mean() );
+    }
   }
   for ( full_result_e i = FULLTYPE_NONE; i < FULLTYPE_MAX; i++ )
   {
-    direct_results_detail[ i ].analyze( num_direct_results.mean() );
-    tick_results_detail[ i ].analyze( num_tick_results.mean() );
+    if ( i != FULLTYPE_MULTISTRIKE && i != FULLTYPE_MULTISTRIKE_CRIT )
+    {
+      direct_results_detail[ i ].analyze( num_direct_results.mean() );
+      tick_results_detail[ i ].analyze( num_tick_results.mean() );
+    }
+    else
+    {
+      // Multistrike results are independent of normal results, even though
+      // they are computed through the same stats
+      direct_results_detail[ i ].analyze( direct_results_detail[ FULLTYPE_MULTISTRIKE      ].count.mean() +
+                                          direct_results_detail[ FULLTYPE_MULTISTRIKE_CRIT ].count.mean() );
+      tick_results_detail[ i ].analyze( tick_results_detail[ FULLTYPE_MULTISTRIKE      ].count.mean() + 
+                                        tick_results_detail[ FULLTYPE_MULTISTRIKE_CRIT ].count.mean() );
+    }
   }
 
   portion_aps.analyze_all();

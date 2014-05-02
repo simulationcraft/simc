@@ -5,10 +5,11 @@
 #ifndef SIMULATIONCRAFT_H
 #define SIMULATIONCRAFT_H
 
-#define SC_MAJOR_VERSION "600"
+#define SC_MAJOR_VERSION "601"
 #define SC_MINOR_VERSION "1"
 #define SC_USE_PTR ( 0 )
 #define SC_BETA ( 1 )
+#define SC_BETA_STR "wod"
 
 #define SC_VERSION ( SC_MAJOR_VERSION "-" SC_MINOR_VERSION )
 
@@ -127,6 +128,7 @@ struct core_sim_t;
 class  expr_t;
 struct gain_t;
 struct haste_buff_t;
+struct heal_t;
 struct item_t;
 struct module_t;
 class option_t;
@@ -140,6 +142,7 @@ struct sim_t;
 struct spell_data_t;
 struct spell_id_t;
 struct spelleffect_data_t;
+struct spell_t;
 struct stats_t;
 struct stat_buff_t;
 struct stat_pair_t;
@@ -196,6 +199,7 @@ inline bool is_pandaren( race_e r ) { return RACE_PANDAREN <= r && r <= RACE_PAN
 
 enum player_e
 {
+  PLAYER_SPECIAL_SCALE5 = -5,
   PLAYER_SPECIAL_SCALE4 = -4,
   PLAYER_SPECIAL_SCALE3 = -3,
   PLAYER_SPECIAL_SCALE2 = -2,
@@ -395,6 +399,41 @@ enum proc_e
   PROC_MAX
 };
 
+enum special_effect_e
+{
+  SPECIAL_EFFECT_NONE = -1,
+  SPECIAL_EFFECT_EQUIP,
+  SPECIAL_EFFECT_USE,
+  SPECIAL_EFFECT_CUSTOM,
+};
+
+enum special_effect_source_e
+{
+  SPECIAL_EFFECT_SOURCE_NONE = -1,
+  SPECIAL_EFFECT_SOURCE_ITEM,
+  SPECIAL_EFFECT_SOURCE_ENCHANT,
+  SPECIAL_EFFECT_SOURCE_ADDON,
+  SPECIAL_EFFECT_SOURCE_GEM,
+  SPECIAL_EFFECT_SOURCE_SOCKET_BONUS
+};
+
+enum special_effect_buff_e
+{
+  SPECIAL_EFFECT_BUFF_NONE = -1,
+  SPECIAL_EFFECT_BUFF_CUSTOM,
+  SPECIAL_EFFECT_BUFF_STAT,
+  SPECIAL_EFFECT_BUFF_ABSORB
+};
+
+enum special_effect_action_e
+{
+  SPECIAL_EFFECT_ACTION_NONE = -1,
+  SPECIAL_EFFECT_ACTION_CUSTOM,
+  SPECIAL_EFFECT_ACTION_SPELL,
+  SPECIAL_EFFECT_ACTION_HEAL,
+  SPECIAL_EFFECT_ACTION_ATTACK,
+};
+
 enum action_e { ACTION_USE = 0, ACTION_SPELL, ACTION_ATTACK, ACTION_HEAL, ACTION_ABSORB, ACTION_SEQUENCE, ACTION_OTHER, ACTION_MAX };
 
 enum school_e
@@ -502,7 +541,6 @@ enum slot_e   // these enum values match armory settings
 // Caster 2/4, Melee 2/4, Tank 2/4, Heal 2/4
 #define N_TIER_BONUS 8
 
-
 enum set_e
 {
   SET_NONE = 0,
@@ -541,16 +579,6 @@ enum set_e
   SET_MAX
 };
 static_assert( static_cast<int>( SET_MAX ) == ( 1 + N_TIER * 3 * N_TIER_BONUS / 2 ), "enum set_e must be structured correctly." );
-
-enum gem_e
-{
-  GEM_NONE = 0,
-  GEM_META, GEM_PRISMATIC,
-  GEM_RED, GEM_YELLOW, GEM_BLUE,
-  GEM_ORANGE, GEM_GREEN, GEM_PURPLE,
-  GEM_COGWHEEL, GEM_HYDRAULIC,
-  GEM_MAX
-};
 
 enum meta_gem_e
 {
@@ -645,9 +673,9 @@ enum stat_e
   STAT_HIT_RATING, STAT_HIT_RATING2, STAT_CRIT_RATING, STAT_HASTE_RATING, STAT_MASTERY_RATING,
   STAT_WEAPON_DPS, STAT_WEAPON_SPEED,
   STAT_WEAPON_OFFHAND_DPS, STAT_WEAPON_OFFHAND_SPEED,
-  STAT_ARMOR, STAT_RESILIENCE_RATING, STAT_DODGE_RATING, STAT_PARRY_RATING,
+  STAT_ARMOR, STAT_BONUS_ARMOR, STAT_RESILIENCE_RATING, STAT_DODGE_RATING, STAT_PARRY_RATING,
   STAT_BLOCK_RATING, STAT_PVP_POWER,
-  STAT_MULTISTRIKE_RATING,
+  STAT_MULTISTRIKE_RATING, STAT_READINESS_RATING,
   STAT_ALL,
   STAT_MAX
 };
@@ -677,9 +705,9 @@ enum cache_e
   CACHE_HASTE, CACHE_ATTACK_HASTE, CACHE_SPELL_HASTE,
   CACHE_SPEED, CACHE_ATTACK_SPEED, CACHE_SPELL_SPEED,
   CACHE_MASTERY,
-  CACHE_DODGE, CACHE_PARRY, CACHE_BLOCK, CACHE_CRIT_BLOCK, CACHE_ARMOR,
+  CACHE_DODGE, CACHE_PARRY, CACHE_BLOCK, CACHE_CRIT_BLOCK, CACHE_ARMOR, CACHE_BONUS_ARMOR,
   CACHE_CRIT_AVOIDANCE, CACHE_MISS,
-  CACHE_MULTISTRIKE,
+  CACHE_MULTISTRIKE, CACHE_READINESS,
   CACHE_PLAYER_DAMAGE_MULTIPLIER,
   CACHE_PLAYER_HEAL_MULTIPLIER,
   CACHE_MAX
@@ -711,7 +739,9 @@ inline cache_e cache_from_stat( stat_e st )
     case STAT_PARRY_RATING: return CACHE_PARRY;
     case STAT_BLOCK_RATING: return CACHE_BLOCK;
     case STAT_ARMOR: return CACHE_ARMOR;
+    case STAT_BONUS_ARMOR: return CACHE_BONUS_ARMOR;
     case STAT_MULTISTRIKE_RATING: return CACHE_MULTISTRIKE;
+    case STAT_READINESS_RATING: return CACHE_READINESS;
     default: break;
   }
   return CACHE_NONE;
@@ -991,10 +1021,6 @@ public:
     LIST,          // std::vector<std::string>
     MAP,           // std::map<std::string,std::string>
     FUNC,          // function_t*
-#if 0
-    TALENT_RANK,   // talent rank
-    SPELL_ENABLED, // spell enabled
-#endif
     DEPRECATED
   };
 
@@ -1074,7 +1100,7 @@ inline option_t opt_null()
 // Talent Translation =======================================================
 
 #ifndef MAX_TALENT_ROWS
-#define MAX_TALENT_ROWS ( 6 )
+#define MAX_TALENT_ROWS ( 7 )
 #endif
 
 #ifndef MAX_TALENT_COLS
@@ -1134,7 +1160,6 @@ const char* attribute_type_string     ( attribute_e type );
 const char* dot_behavior_type_string  ( dot_behavior_e t );
 const char* flask_type_string         ( flask_e type );
 const char* food_type_string          ( food_e type );
-const char* gem_type_string           ( gem_e type );
 const char* meta_gem_type_string      ( meta_gem_e type );
 const char* player_type_string        ( player_e );
 const char* pet_type_string           ( pet_e type );
@@ -1156,6 +1181,8 @@ const char* set_bonus_string          ( set_e type );
 const char* cache_type_string         ( cache_e type );
 const char* proc_type_string          ( proc_types type );
 const char* proc_type2_string         ( proc_types2 type );
+const char* special_effect_string     ( special_effect_e type );
+const char* special_effect_source_string( special_effect_source_e type );
 
 bool is_match_slot( slot_e slot );
 item_subclass_armor matching_armor_type ( player_e ptype );
@@ -1181,7 +1208,6 @@ attribute_e parse_attribute_type ( const std::string& name );
 dmg_e parse_dmg_type             ( const std::string& name );
 flask_e parse_flask_type         ( const std::string& name );
 food_e parse_food_type           ( const std::string& name );
-gem_e parse_gem_type             ( const std::string& name );
 meta_gem_e parse_meta_gem_type   ( const std::string& name );
 player_e parse_player_type       ( const std::string& name );
 pet_e parse_pet_type             ( const std::string& name );
@@ -1195,8 +1221,7 @@ school_e parse_school_type       ( const std::string& name );
 set_e parse_set_bonus            ( const std::string& name );
 slot_e parse_slot_type           ( const std::string& name );
 stat_e parse_stat_type           ( const std::string& name );
-stat_e parse_reforge_type        ( const std::string& name );
-stat_e parse_gem_stat            ( const std::string& name );
+specialization_e parse_specialization_type( const std::string &name );
 
 const char* movement_direction_string( movement_direction_e );
 movement_direction_e parse_movement_direction( const std::string& name );
@@ -1227,9 +1252,8 @@ slot_e translate_invtype( inventory_type inv_type );
 weapon_e translate_weapon_subclass( int weapon_subclass );
 item_subclass_weapon translate_weapon( weapon_e weapon );
 profession_e translate_profession_id( int skill_id );
-gem_e translate_socket_color( item_socket_color );
 
-bool socket_gem_match( gem_e socket, unsigned gem );
+bool socket_gem_match( item_socket_color socket, item_socket_color gem );
 double crit_multiplier( meta_gem_e gem );
 double stat_itemization_weight( stat_e s );
 std::vector<std::string> string_split( const std::string& str, const std::string& delim );
@@ -1299,7 +1323,7 @@ std::ostream& stream_printf( std::ostream&, const char* format, ... );
 
 // Data Access ==============================================================
 #ifndef MAX_LEVEL
-#define MAX_LEVEL (90)
+#define MAX_LEVEL (100)
 #endif
 
 // Include DBC Module
@@ -1307,6 +1331,10 @@ std::ostream& stream_printf( std::ostream&, const char* format, ... );
 
 // Include IO Module
 #include "util/io.hpp"
+
+// Report ===================================================================
+
+#include "report/sc_report.hpp"
 
 // Spell information struct, holding static functions to output spell data in a human readable form
 
@@ -1394,6 +1422,7 @@ struct gear_stats_t
   double weapon_offhand_dps;
   double weapon_offhand_speed;
   double armor;
+  double bonus_armor;
   double dodge_rating;
   double parry_rating;
   double block_rating;
@@ -1401,14 +1430,15 @@ struct gear_stats_t
   double resilience_rating;
   double pvp_power;
   double multistrike_rating;
+  double readiness_rating;
 
   gear_stats_t() :
     attribute(), resource(),
     spell_power( 0.0 ), attack_power( 0.0 ), expertise_rating( 0.0 ), expertise_rating2( 0.0 ),
     hit_rating( 0.0 ), hit_rating2( 0.0 ), crit_rating( 0.0 ), haste_rating( 0.0 ), weapon_dps( 0.0 ), weapon_speed( 0.0 ),
-    weapon_offhand_dps( 0.0 ), weapon_offhand_speed( 0.0 ), armor( 0.0 ), dodge_rating( 0.0 ),
+    weapon_offhand_dps( 0.0 ), weapon_offhand_speed( 0.0 ), armor( 0.0 ), bonus_armor( 0.0 ), dodge_rating( 0.0 ),
     parry_rating( 0.0 ), block_rating( 0.0 ), mastery_rating( 0.0 ), resilience_rating( 0.0 ), pvp_power( 0.0 ),
-    multistrike_rating( 0.0 )
+    multistrike_rating( 0.0 ), readiness_rating( 0.0 )
   { }
 
   friend gear_stats_t operator+( const gear_stats_t& left, const gear_stats_t& right )
@@ -1433,6 +1463,7 @@ struct gear_stats_t
     weapon_offhand_dps += right.weapon_offhand_dps;
     weapon_offhand_speed += right.weapon_offhand_speed;
     armor += right.armor;
+    bonus_armor += right.bonus_armor;
     dodge_rating += right.dodge_rating;
     parry_rating += right.parry_rating;
     block_rating += right.block_rating;
@@ -1440,6 +1471,7 @@ struct gear_stats_t
     resilience_rating += right.resilience_rating;
     pvp_power += right.pvp_power;
     multistrike_rating += right.multistrike_rating;
+    readiness_rating += right.readiness_rating;
     range::transform ( attribute, right.attribute, attribute.begin(), std::plus<int>() );
     range::transform ( resource, right.resource, resource.begin(), std::plus<int>() );
     return *this;
@@ -2052,7 +2084,8 @@ enum expr_data_e
   DATA_MASTERY_SPELL,
   DATA_SPECIALIZATION_SPELL,
   DATA_GLYPH_SPELL,
-  DATA_SET_BONUS_SPELL
+  DATA_SET_BONUS_SPELL,
+  DATA_PERK_SPELL,
 };
 
 struct spell_data_expr_t
@@ -2304,6 +2337,7 @@ public:
     ~event_managment_t();
     void add_event( core_event_t*, timespan_t delta_time, timespan_t current_time );
     void flush_events();
+    void preallocate_events( unsigned num );
     void init();
     core_event_t* next_event();
     void reset();
@@ -2356,6 +2390,14 @@ private:
   void reschedule_event( core_event_t* );
 };
 
+struct sim_report_information_t
+{
+  bool charts_generated;
+  std::vector<std::string> dps_charts, hps_charts, gear_charts, dpet_charts;
+  std::string timeline_chart, downtime_chart;
+  sim_report_information_t() { charts_generated = false; }
+};
+
 // Simulation Engine ========================================================
 
 struct sim_t : public core_sim_t, private sc_thread_t
@@ -2399,10 +2441,8 @@ struct sim_t : public core_sim_t, private sc_thread_t
   int         auto_ready_trigger;
   int         stat_cache;
   int         max_aoe_enemies;
-  bool        tmi_actor_only;
+  bool        show_etmi;
   double      tmi_window_global;
-  int         new_tmi;
-  double      tmi_filter;
 
   // Target options
   double      target_death_pct;
@@ -2451,23 +2491,18 @@ public:
   struct overrides_t
   {
     // Buff overrides
-    int attack_speed;
     int attack_power_multiplier;
     int critical_strike;
     int mastery;
-    int spell_haste;
+    int haste;
     int spell_power_multiplier;
     int stamina;
     int str_agi_int;
 
     // Debuff overrides
-    int slowed_casting;
     int magic_vulnerability;
     int mortal_wounds;
     int physical_vulnerability;
-    int ranged_vulnerability;
-    int weakened_armor;
-    int weakened_blows;
     int bleeding;
 
     // Misc stuff needs resolving
@@ -2480,10 +2515,9 @@ public:
   {
     // Raid-wide auras from various classes
     aura_t* attack_power_multiplier;
-    aura_t* attack_speed;
     aura_t* critical_strike;
     aura_t* mastery;
-    aura_t* spell_haste;
+    aura_t* haste;
     aura_t* spell_power_multiplier;
     aura_t* stamina;
     aura_t* str_agi_int;
@@ -2504,8 +2538,8 @@ public:
   scaling_t* const scaling;
   plot_t*    const plot;
   reforge_plot_t* const reforge_plot;
-  timespan_t elapsed_cpu;
-  timespan_t elapsed_time;
+  double elapsed_cpu;
+  double elapsed_time;
   double     iteration_dmg, iteration_heal, iteration_absorb;
   simple_sample_data_t raid_dps, total_dmg, raid_hps, total_heal, total_absorb, raid_aps;
   extended_sample_data_t simulation_length;
@@ -2547,13 +2581,7 @@ public:
   int solo_raid;
   int global_item_upgrade_level;
 
-  struct report_information_t
-  {
-    bool charts_generated;
-    std::vector<std::string> dps_charts, hps_charts, gear_charts, dpet_charts;
-    std::string timeline_chart, downtime_chart;
-    report_information_t() { charts_generated = false; }
-  } report_information;
+  sim_report_information_t report_information;
 
   // Multi-Threading
   mutex_t mutex;
@@ -2841,11 +2869,11 @@ struct core_event_t
 
   static void cancel( core_event_t*& e );
 
-  static void* allocate( std::size_t size, core_sim_t& );
+  static void* allocate( std::size_t size, core_sim_t::event_managment_t& );
   static void  recycle( core_event_t* );
   static void  release( core_event_t*& );
 
-  static void* operator new( std::size_t size, core_sim_t& sim ) { return allocate( size, sim ); }
+  static void* operator new( std::size_t size, core_sim_t& sim ) { return allocate( size, sim.em ); }
 
 #if defined(__GXX_EXPERIMENTAL_CXX0X__) && ( defined(SC_GCC) && SC_GCC >= 40400 || defined(SC_CLANG) && SC_CLANG >= 30000 ) // Improved compile-time diagnostics.
   static void* operator new( std::size_t ) throw() = delete; // DO NOT USE
@@ -2877,6 +2905,7 @@ enum rating_e
   RATING_MASTERY,
   RATING_PVP_POWER,
   RATING_MULTISTRIKE,
+  RATING_READINESS,
   RATING_MAX
 };
 
@@ -2901,6 +2930,7 @@ inline cache_e cache_from_rating( rating_e r )
     case RATING_PVP_POWER: return CACHE_NONE;
     case RATING_PVP_RESILIENCE: return CACHE_NONE;
     case RATING_MULTISTRIKE: return CACHE_MULTISTRIKE;
+    case RATING_READINESS: return CACHE_READINESS;
     default: break;
   }
   assert( false ); return CACHE_NONE;
@@ -2916,6 +2946,7 @@ struct rating_t
   double mastery;
   double pvp_resilience, pvp_power;
   double multistrike;
+  double readiness;
 
   double& get( rating_e r )
   {
@@ -2938,6 +2969,7 @@ struct rating_t
       case RATING_PVP_POWER: return pvp_power;
       case RATING_PVP_RESILIENCE: return pvp_resilience;
       case RATING_MULTISTRIKE: return multistrike;
+      case RATING_READINESS: return readiness;
       default: break;
     }
     assert( false ); return mastery;
@@ -2958,15 +2990,9 @@ struct rating_t
     // Read ratings from DBC
     for ( rating_e i = static_cast<rating_e>( 0 ); i < RATING_MAX; ++i )
     {
-      // TODO: WOD-MULTISTRIKE
-      if ( i == RATING_MULTISTRIKE )
-        get( i ) = dbc.combat_rating( RATING_SPELL_CRIT, level ) / 3.3333333333;
-      else
-      {
-        get( i ) = dbc.combat_rating( i,  level );
-        if ( i == RATING_MASTERY )
-          get( i ) /= 100.0;
-      }
+      get( i ) = dbc.combat_rating( i,  level );
+      if ( i == RATING_MASTERY )
+        get( i ) /= 100.0;
     }
   }
 
@@ -3058,19 +3084,26 @@ struct weapon_t
 
 struct special_effect_t
 {
+  const item_t* item;
+  player_t* player;
+
+  special_effect_e type;
+  special_effect_source_e source;
   std::string name_str, trigger_str, encoding_str;
   proc_e trigger_type;
   int64_t trigger_mask;
+  unsigned proc_flags_; /* Proc-by */
+  unsigned proc_flags2_; /* Proc-on (hit/damage/...) */
   stat_e stat;
   school_e school;
   int max_stacks;
   double stat_amount, discharge_amount, discharge_scaling;
-  double proc_chance;
-  double ppm;
+  double proc_chance_;
+  double ppm_;
   rppm_scale_e rppm_scale;
-  timespan_t duration, cooldown, tick;
+  timespan_t duration_, cooldown_, tick;
   bool cost_reduction;
-  bool no_refresh;
+  int refresh;
   bool chance_to_discharge;
   unsigned int override_result_es_mask;
   unsigned result_es_mask;
@@ -3078,32 +3111,58 @@ struct special_effect_t
   int aoe;
   bool proc_delay;
   bool unique;
-  unsigned spell_id, aura_spell_id;
+  bool weapon_proc;
+  unsigned spell_id, trigger_spell_id;
   action_t* execute_action; // Allows custom action to be executed on use
+  buff_t* custom_buff; // Allows custom action
 
-  special_effect_t() :
-    trigger_type( PROC_NONE ), trigger_mask( 0 ), stat( STAT_NONE ), school( SCHOOL_NONE ),
-    max_stacks( 0 ), stat_amount( 0 ), discharge_amount( 0 ), discharge_scaling( 0 ),
-    proc_chance( 0 ), ppm( 0 ), rppm_scale( RPPM_NONE ), duration( timespan_t::zero() ), cooldown( timespan_t::zero() ),
-    tick( timespan_t::zero() ), cost_reduction( false ),
-    no_refresh( false ), chance_to_discharge( false ), override_result_es_mask( 0 ),
-    result_es_mask( 0 ), reverse( false ), aoe( 0 ), proc_delay( false ), unique( false ),
-    spell_id( 0 ), aura_spell_id( 0 ), execute_action( nullptr )
-  { }
+  special_effect_t( player_t* p ) :
+    item( nullptr ), player( p ),
+    name_str()
+  { reset(); }
 
-  std::string to_string();
+  special_effect_t( const item_t* item );
+
+  void reset();
+  bool parse_spell_data( const item_t& item, unsigned driver_id );
+  std::string to_string() const;
   bool active() { return stat != STAT_NONE || school != SCHOOL_NONE || execute_action; }
-  void clear()
-  {
-    name_str.clear(); trigger_type = PROC_NONE; trigger_mask = 0; stat = STAT_NONE;
-    school = SCHOOL_NONE; max_stacks = 0; stat_amount = 0; discharge_amount = 0;
-    discharge_scaling = 0; proc_chance = 0; ppm = 0; rppm_scale = RPPM_NONE;
-    duration = timespan_t::zero(); cooldown = timespan_t::zero();
-    tick = timespan_t::zero(); cost_reduction = false; no_refresh = false;
-    chance_to_discharge = false; override_result_es_mask = 0;
-    result_es_mask = 0; reverse = false; aoe = 0; proc_delay = false;
-    unique = false; spell_id = 0; aura_spell_id = 0;
-  }
+
+  const spell_data_t* driver() const;
+  const spell_data_t* trigger() const;
+  std::string name() const;
+
+  // Buff related functionality
+  buff_t* create_buff() const;
+  special_effect_buff_e buff_type() const;
+
+  bool is_stat_buff() const;
+  stat_buff_t* initialize_stat_buff() const;
+
+  bool is_absorb_buff() const;
+  absorb_buff_t* initialize_absorb_buff() const;
+
+  // Action related functionality
+  action_t* create_action() const;
+  special_effect_action_e action_type() const;
+  bool is_offensive_spell_action() const;
+  spell_t* initialize_offensive_spell_action() const;
+  bool is_heal_action() const;
+  heal_t* initialize_heal_action() const;
+  bool is_attack_action() const;
+  attack_t* initialize_attack_action() const;
+
+  /* Accessors for driver specific features of the proc; some are also used for on-use effects */
+  unsigned proc_flags() const;
+  unsigned proc_flags2() const;
+  double ppm() const;
+  double rppm() const;
+  double proc_chance() const;
+  timespan_t cooldown() const;
+
+  /* Accessors for buff specific features of the proc. */
+  timespan_t duration() const;
+  timespan_t tick_time() const;
 };
 
 // Item =====================================================================
@@ -3125,39 +3184,36 @@ struct item_t
   sim_t* sim;
   player_t* player;
   slot_e slot;
-  bool unique, unique_addon, is_ptr, fetched;
+  bool unique, unique_addon, is_ptr;
 
   // Structure contains the "parsed form" of this specific item, be the data
   // from user options, or a data source such as the Blizzard API, or Wowhead
   struct parsed_input_t
   {
-    stat_e                   reforged_from;
-    stat_e                   reforged_to;
     int                      upgrade_level;
     int                      suffix_id;
     unsigned                 enchant_id;
     unsigned                 addon_id;
-    unsigned                 reforge_id;
     int                      armor;
     std::array<int, 3>       gem_id;
-    std::vector<stat_pair_t> gem_stats;
+    std::array<int, 3>       gem_color;
+    std::vector<stat_pair_t> gem_stats, meta_gem_stats, socket_bonus_stats;
+    std::string              encoded_enchant;
     std::vector<stat_pair_t> enchant_stats;
     std::vector<stat_pair_t> addon_stats;
     std::vector<stat_pair_t> suffix_stats;
     item_data_t              data;
-    special_effect_t         use, equip, enchant, addon;
+    std::vector<special_effect_t> special_effects;
     std::vector<std::string> source_list;
 
     parsed_input_t() :
-      reforged_from( STAT_NONE ), reforged_to( STAT_NONE ), upgrade_level( 0 ),
-      suffix_id( 0 ), enchant_id( 0 ), addon_id( 0 ), reforge_id( 0 ), armor( 0 ),
-      data(), use(), equip(), enchant(), addon()
+      upgrade_level( 0 ), suffix_id( 0 ), enchant_id( 0 ), addon_id( 0 ), 
+      armor( 0 ), data()
     {
       range::fill( data.stat_type_e, -1 );
       range::fill( data.stat_val, 0 );
-      range::fill( data.cooldown_spell, -1 );
-      range::fill( data.cooldown_category, -1 );
       range::fill( gem_id, 0 );
+      range::fill( gem_color, SOCKET_COLOR_NONE );
     }
   } parsed;
 
@@ -3183,7 +3239,6 @@ struct item_t
   std::string option_flex_str;
   std::string option_elite_str;
   std::string option_armor_type_str;
-  std::string option_reforge_str;
   std::string option_ilevel_str;
   std::string option_quality_str;
   std::string option_data_source_str;
@@ -3192,19 +3247,20 @@ struct item_t
   gear_stats_t base_stats, stats;
 
   item_t() : sim( 0 ), player( 0 ), slot( SLOT_INVALID ), unique( false ),
-    unique_addon( false ), is_ptr( false ), fetched( false ),
+    unique_addon( false ), is_ptr( false ),
     parsed(), xml() { }
   item_t( player_t*, const std::string& options_str );
 
   bool active() const;
   const char* name() const;
-  const char* slot_name();
-  weapon_t* weapon();
+  const char* slot_name() const;
+  weapon_t* weapon() const;
   bool init();
   bool parse_options();
 
   bool is_matching_type();
   bool is_valid_type();
+  bool socket_color_match() const;
 
   unsigned item_level() const;
   unsigned upgrade_level() const;
@@ -3223,40 +3279,41 @@ struct item_t
   std::string encoded_addon();
   std::string encoded_upgrade_level();
   std::string encoded_random_suffix_id();
-  std::string encoded_reforge();
 
   bool decode_stats();
   bool decode_gems();
   bool decode_enchant();
   bool decode_addon();
-  bool decode_special( special_effect_t&, const std::string& encoding );
   bool decode_weapon();
   bool decode_heroic();
   bool decode_lfr();
   bool decode_elite();
   bool decode_flexible();
   bool decode_armor_type();
-  bool decode_reforge();
   bool decode_random_suffix();
   bool decode_upgrade_level();
   bool decode_ilevel();
   bool decode_quality();
   bool decode_data_source();
+  bool decode_equip_effect();
+  bool decode_use_effect();
 
   bool decode_proc_spell( special_effect_t& effect );
-
-  bool parse_reforge_id();
 
   static bool download_slot( item_t& item );
   static bool download_item( item_t& );
   static bool download_glyph( player_t* player, std::string& glyph_name, const std::string& glyph_id );
-  static unsigned parse_gem( item_t& item, unsigned gem_id );
 
   static std::vector<stat_pair_t> str_to_stat_pair( const std::string& stat_str );
   static std::string stat_pairs_to_str( const std::vector<stat_pair_t>& stat_pairs );
 
   std::string to_string();
   bool has_stats();
+  bool has_special_effect( special_effect_source_e source = SPECIAL_EFFECT_SOURCE_NONE, special_effect_e type = SPECIAL_EFFECT_NONE );
+  bool has_use_special_effect()
+  { return has_special_effect( SPECIAL_EFFECT_SOURCE_NONE, SPECIAL_EFFECT_USE ); }
+
+  const special_effect_t& special_effect( special_effect_source_e source = SPECIAL_EFFECT_SOURCE_NONE, special_effect_e type = SPECIAL_EFFECT_NONE );
 };
 
 
@@ -3546,7 +3603,7 @@ private:
   mutable double _attack_haste, _spell_haste;
   mutable double _attack_speed, _spell_speed;
   mutable double _dodge, _parry, _block, _crit_block, _armor;
-  mutable double _mastery_value, _crit_avoidance, _miss, _multistrike;
+  mutable double _mastery_value, _crit_avoidance, _miss, _multistrike, _readiness;
   mutable double _player_mult[SCHOOL_MAX + 1], _player_heal_mult[SCHOOL_MAX + 1];
 public:
   bool active; // runtime active-flag
@@ -3581,6 +3638,7 @@ public:
   double armor() const;
   double mastery_value() const;
   double multistrike() const;
+  double readiness() const;
   double player_multiplier( school_e ) const;
   double player_heal_multiplier( school_e ) const;
 #else
@@ -3610,6 +3668,7 @@ public:
   double armor() const            { return player -> composite_armor();           }
   double mastery_value() const    { return player -> composite_mastery_value();   }
   double multistrike() const      { return player -> composite_multistrike(); }
+  double readiness() const        { return player -> composite_readiness(); }
 #endif
 };
 
@@ -3703,6 +3762,8 @@ struct player_collected_data_t
   // Tank
   extended_sample_data_t deaths;
   extended_sample_data_t theck_meloree_index;
+  extended_sample_data_t effective_theck_meloree_index;
+  extended_sample_data_t max_spike_amount;
   sc_timeline_t vengeance_timeline;
 
   std::array<simple_sample_data_t,RESOURCE_MAX> resource_lost, resource_gained;
@@ -3737,9 +3798,11 @@ struct player_collected_data_t
     sc_timeline_t merged_timeline;
     bool collect; // whether we collect all this or not.
     health_changes_timeline_t() : previous_loss_level( 0.0 ), previous_gain_level( 0.0 ), collect( false ) {}
-  } health_changes;
+  };
 
-
+  health_changes_timeline_t health_changes;     //records all health changes
+  health_changes_timeline_t health_changes_tmi; //records only health changes due to damage and self-healng/self-absorb
+  
 
   struct action_sequence_data_t
   {
@@ -3763,7 +3826,7 @@ struct player_collected_data_t
     double attack_power,  attack_hit,  mh_attack_expertise,  oh_attack_expertise, attack_crit;
     double armor, miss, crit, dodge, parry, block;
     double spell_haste, spell_speed, attack_haste, attack_speed;
-    double mastery_value, multistrike;
+    double mastery_value, multistrike, readiness;
   } buffed_stats_snapshot;
 
   player_collected_data_t( const std::string& player_name, sim_t& );
@@ -3772,6 +3835,8 @@ struct player_collected_data_t
   void analyze( const player_t& );
   void collect_data( const player_t& );
   void print_tmi_debug_csv( const sc_timeline_t* ma, const sc_timeline_t* nma, const std::vector<double>& weighted_value, const player_t& p );
+  double calculate_tmi( const health_changes_timeline_t& tl, int window, double f_length, const player_t& p );
+  double calculate_max_spike_damage( const health_changes_timeline_t& tl, int window );
   std::ostream& data_str( std::ostream& s ) const;
 };
 
@@ -3955,6 +4020,24 @@ private:
   }
 };
 
+/* Player Report Extension
+ * Allows class modules to write extension to the report sections
+ * based on the dynamic class of the player
+ */
+
+class player_report_extension_t
+{
+public:
+  virtual ~player_report_extension_t()
+  {
+
+  }
+  virtual void html_customsection( report::sc_html_stream& )
+  {
+
+  }
+};
+
 // Player ===================================================================
 
 struct player_t : public actor_t
@@ -3974,7 +4057,6 @@ struct player_t : public actor_t
   specialization_e  _spec;
   bool         bugs; // If true, include known InGame mechanics which are probably the cause of a bug and not inteded
   bool scale_player;
-  bool tmi_self_only;
   double death_pct; // Player will die if he has equal or less than this value as health-pct
   double size; // Actor size, only used for enemies. Affects the travel distance calculation for spells.
 
@@ -4125,6 +4207,7 @@ struct player_t : public actor_t
 
   // Callbacks
   player_callbacks_t callbacks;
+  std::vector<special_effect_t> special_effects;
 
   // Action Priority List
   auto_dispose< std::vector<action_t*> > action_list;
@@ -4145,6 +4228,7 @@ struct player_t : public actor_t
 
   bool quiet;
   // Reporting
+  std::shared_ptr<player_report_extension_t> report_extension;
   timespan_t iteration_fight_length, arise_time;
   timespan_t iteration_waiting_time;
   int       iteration_executed_foreground_actions;
@@ -4152,8 +4236,6 @@ struct player_t : public actor_t
   double    rps_gain, rps_loss;
   std::string tmi_debug_file_str;
   double tmi_window;
-  int new_tmi;
-  double tmi_filter;
 
   auto_dispose< std::vector<buff_t*> > buff_list;
   auto_dispose< std::vector<proc_t*> > proc_list;
@@ -4224,6 +4306,7 @@ public:
 
   // Movement & Position
   double base_movement_speed;
+  double base_movement_speed_multiplier; // _PASSIVE_ movement speed multipliers
   double x_position, y_position;
 
   struct buffs_t
@@ -4239,7 +4322,6 @@ public:
     buff_t* guardian_spirit;
     buff_t* hand_of_sacrifice;
     buff_t* heroic_presence;
-    buff_t* hymn_of_hope;
     buff_t* illuminated_healing;
     buff_t* innervate;
     buff_t* lifeblood;
@@ -4268,13 +4350,9 @@ public:
     buff_t* fortitude;
 
     // 5.4 trinkets
-    buff_t* amplified; // caster 146046
-    buff_t* amplified_2;
     buff_t* cooldown_reduction;
 
-    //Runspeed Enchants
-    buff_t* pandarens_step;
-    buff_t* blurred_speed;
+    stat_buff_t* flask;
   } buffs;
 
   struct potion_buffs_t
@@ -4303,17 +4381,10 @@ public:
     debuff_t* vulnerable;
 
     // MoP debuffs
-    debuff_t* slowed_casting;
     debuff_t* magic_vulnerability;
     debuff_t* mortal_wounds;
     debuff_t* physical_damage;
     debuff_t* physical_vulnerability;
-    debuff_t* ranged_vulnerability;
-    debuff_t* weakened_blows;
-    debuff_t* weakened_armor;
-
-    // Class specific "general" debuffs
-    debuff_t* shattering_throw;
   } debuffs;
 
   struct gains_t
@@ -4327,7 +4398,6 @@ public:
     gain_t* focus_regen;
     gain_t* glyph_of_innervate;
     gain_t* health;
-    gain_t* hymn_of_hope;
     gain_t* innervate;
     gain_t* mana_potion;
     gain_t* mana_spring_totem;
@@ -4396,8 +4466,7 @@ public:
 
   virtual void init_defense();
   virtual void create_buffs();
-  virtual void init_unique_gear();
-  virtual void init_enchant();
+  virtual void init_special_effects();
   virtual void init_scaling();
   virtual void init_action_list() {}
   virtual void init_gains();
@@ -4406,7 +4475,7 @@ public:
   virtual void init_benefits();
   virtual void init_rng();
   virtual void init_stats();
-  virtual void register_callbacks() {}
+  virtual void register_callbacks();
 private:
   void _init_actions();
 public:
@@ -4439,6 +4508,7 @@ public:
   virtual double composite_mastery() const;
   virtual double composite_mastery_value() const;
   virtual double composite_multistrike() const;
+  virtual double composite_readiness() const;
 
   virtual double composite_armor() const;
   virtual double composite_armor_multiplier() const;
@@ -4513,6 +4583,9 @@ public:
 
   double composite_multistrike_rating() const
   { return composite_rating( RATING_MULTISTRIKE ); }
+
+  double composite_readiness_rating() const
+  { return composite_rating( RATING_READINESS ); }
 
   double get_attribute( attribute_e a ) const
   { return util::round( composite_attribute( a ) * composite_attribute_multiplier( a ) ); }
@@ -4596,9 +4669,11 @@ public:
   const spell_data_t* find_racial_spell( const std::string& name, const std::string& token = std::string(), race_e s = RACE_NONE ) const;
   const spell_data_t* find_class_spell( const std::string& name, const std::string& token = std::string(), specialization_e s = SPEC_NONE ) const;
   const spell_data_t* find_pet_spell( const std::string& name, const std::string& token = std::string() ) const;
-  const spell_data_t* find_talent_spell( const std::string& name, const std::string& token = std::string(), bool name_tokenized = false, bool check_validity = true ) const;
+  const spell_data_t* find_talent_spell( const std::string& name, const std::string& token = std::string(), specialization_e s = SPEC_NONE, bool name_tokenized = false, bool check_validity = true ) const;
   const spell_data_t* find_glyph_spell( const std::string& name, const std::string& token = std::string() ) const;
   const spell_data_t* find_specialization_spell( const std::string& name, const std::string& token = std::string(), specialization_e s = SPEC_NONE ) const;
+  const spell_data_t* find_perk_spell( const std::string& name, specialization_e s = SPEC_NONE ) const;
+  const spell_data_t* find_perk_spell( size_t idx, specialization_e s = SPEC_NONE ) const;
   const spell_data_t* find_mastery_spell( specialization_e s, const std::string& token = std::string(), uint32_t idx = 0 ) const;
   const spell_data_t* find_spell( const std::string& name, const std::string& token = std::string(), specialization_e s = SPEC_NONE ) const;
   const spell_data_t* find_spell( const unsigned int id, const std::string& token = std::string() ) const;
@@ -4677,7 +4752,6 @@ public:
 
   /* New stuff */
   virtual double composite_player_vulnerability( school_e ) const;
-  virtual double composite_ranged_attack_player_vulnerability() const;
 
   virtual void activate_action_list( action_priority_list_t* a, bool off_gcd = false );
 
@@ -4914,6 +4988,9 @@ public:
   virtual double composite_multistrike() const
   { return owner -> cache.multistrike(); }
 
+  virtual double composite_readiness() const
+  { return owner -> cache.readiness(); }
+
   virtual double composite_melee_attack_power() const;
 
   virtual double composite_spell_power( school_e school ) const;
@@ -5082,11 +5159,10 @@ struct action_t : public noncopyable
   uint32_t id;
   resource_e resource_current;
   int aoe, pre_combat, may_multistrike;
-  // true if this action should not be counted for executes
-  bool dual;
+  bool dual; // true if this action should not be counted for executes
   bool callbacks, special, channeled, background, sequence, use_off_gcd, quiet;
-  bool direct_tick, direct_tick_callbacks, periodic_hit, repeating, harmful, proc, item_proc, proc_ignores_slot;
-  bool discharge_proc, auto_cast, initialized;
+  bool direct_tick, direct_tick_callbacks, periodic_hit, repeating, harmful, proc;
+  bool initialized;
   bool may_hit, may_miss, may_dodge, may_parry, may_glance, may_block, may_crush, may_crit;
   bool tick_may_crit, tick_zero, hasted_ticks;
   dot_behavior_e dot_behavior;
@@ -5094,7 +5170,10 @@ struct action_t : public noncopyable
   double rp_gain;
   timespan_t min_gcd, trigger_gcd;
   double range;
-  double weapon_power_mod, direct_power_mod, tick_power_mod;
+  double weapon_power_mod;
+  struct {
+  double direct, tick;
+  } attack_power_mod, spell_power_mod;
   timespan_t base_execute_time;
   timespan_t base_tick_time;
   std::array< double, RESOURCE_MAX > base_costs;
@@ -5103,7 +5182,6 @@ struct action_t : public noncopyable
   double base_dd_multiplier, base_td_multiplier;
   double base_multiplier, base_hit, base_crit;
   double base_spell_power, base_attack_power;
-  double base_spell_power_multiplier, base_attack_power_multiplier;
   double crit_multiplier, crit_bonus_multiplier, crit_bonus;
   double base_dd_adder;
   double base_ta_adder;
@@ -5237,7 +5315,6 @@ struct action_t : public noncopyable
   virtual expr_t* create_expression( const std::string& name );
 
   virtual double ppm_proc_chance( double PPM ) const;
-  virtual double real_ppm_proc_chance( double PPM, timespan_t last_proc_attempt, timespan_t last_successful_proc, rppm_scale_e scales_with ) const;
 
   dot_t* get_dot( player_t* t = nullptr )
   {
@@ -5287,10 +5364,14 @@ public:
   { snapshot_internal( s, update_flags, rt ); }
   virtual void consolidate_snapshot_flags();
 
-  virtual double direct_power_coefficient( const action_state_t* ) const
-  { return direct_power_mod; }
-  virtual double tick_power_coefficient( const action_state_t* ) const
-  { return tick_power_mod; }
+  virtual double attack_direct_power_coefficient( const action_state_t* ) const
+  { return attack_power_mod.direct; }
+  virtual double attack_tick_power_coefficient( const action_state_t* ) const
+  { return attack_power_mod.tick; }
+  virtual double spell_direct_power_coefficient( const action_state_t* ) const
+  { return spell_power_mod.direct; }
+  virtual double spell_tick_power_coefficient( const action_state_t* ) const
+  { return spell_power_mod.tick; }
   virtual double base_da_min( const action_state_t* ) const
   { return base_dd_min; }
   virtual double base_da_max( const action_state_t* ) const
@@ -5316,6 +5397,7 @@ public:
   virtual double composite_target_crit( player_t* /* target */ ) const;
   virtual double composite_target_multiplier( player_t* target ) const { return target -> composite_player_vulnerability( school ); }
   virtual double composite_multistrike() const { return player -> cache.multistrike(); }
+  virtual double composite_readiness() const { return player -> cache.readiness(); }
 
   // the direct amount multiplier due to debuffs on the target
   virtual double composite_target_da_multiplier( player_t* target ) const { return composite_target_multiplier( target ); }
@@ -5349,6 +5431,11 @@ public:
   // stuff and such.
   virtual proc_types proc_type() const
   { return PROC1_INVALID; }
+
+  bool has_amount_result() const
+  {
+    return attack_power_mod.direct > 0 || attack_power_mod.tick > 0 || spell_power_mod.direct > 0 || spell_power_mod.tick > 0 || ( weapon && weapon_multiplier > 0 );
+  }
 
 private:
   std::vector<travel_event_t*> travel_events;
@@ -5433,13 +5520,10 @@ struct action_state_t : public noncopyable
   { return crit + target_crit; }
 
   virtual double composite_attack_power() const
-  { return attack_power * action -> base_attack_power_multiplier; }
+  { return attack_power; }
 
   virtual double composite_spell_power() const
-  { return spell_power * action -> base_spell_power_multiplier; }
-
-  virtual double composite_power() const
-  { return composite_attack_power() + composite_spell_power(); }
+  { return spell_power; }
 
   virtual double composite_da_multiplier() const
   { return da_multiplier * target_da_multiplier; }
@@ -5489,8 +5573,10 @@ struct action_state_t : public noncopyable
   virtual proc_types2 impact_proc_type2() const
   {
     // Don't allow impact procs that do not do damage or heal anyone; they 
-    // should all be handled by execute_proc_type2().
-    if ( result_amount <= 0 )
+    // should all be handled by execute_proc_type2(). Note that this is based
+    // on the _total_ amount done. This is so that fully overhealed heals are
+    // still alowed to proc things.
+    if ( result_total <= 0 )
       return PROC2_INVALID;
 
     if ( result == RESULT_HIT )
@@ -5515,6 +5601,7 @@ struct action_state_t : public noncopyable
 struct attack_t : public action_t
 {
   double base_attack_expertise;
+  bool auto_attack;
 
   attack_t( const std::string& token, player_t* p, const spell_data_t* s = spell_data_t::nil() );
 
@@ -5777,7 +5864,7 @@ public:
 struct real_ppm_t
 {
 private:
-  rng_t&       rng;
+  player_t*    player;
   double       freq;
   double       modifier;
   double       rppm;
@@ -5785,9 +5872,52 @@ private:
   timespan_t   last_successful_trigger;
   timespan_t   initial_precombat_time;
   rppm_scale_e scales_with;
+
+  static double max_interval() { return 10.0; }
+  static double max_bad_luck_prot() { return 1000.0; }
 public:
-  real_ppm_t( player_t& p, double frequency = std::numeric_limits<double>::min(), rppm_scale_e s = RPPM_NONE, unsigned spell_id = 0 ) :
-    rng( p.rng() ),
+  static double proc_chance( player_t*         player,
+                             double            PPM,
+                             const timespan_t& last_trigger, 
+                             const timespan_t& last_successful_proc, 
+                             rppm_scale_e      scales_with )
+  {
+    double coeff = 1.0;
+    double seconds = std::min( ( player -> sim -> current_time - last_trigger ).total_seconds(), max_interval() );
+
+    if ( scales_with == RPPM_HASTE )
+      coeff *= 1.0 / std::min( player -> cache.spell_haste(), player -> cache.attack_haste() );
+    else if ( scales_with == RPPM_ATTACK_CRIT )
+      coeff *= 1.0 + player -> cache.attack_crit();
+    else if ( scales_with == RPPM_SPELL_CRIT )
+      coeff *= 1.0 + player -> cache.spell_crit();
+
+    double real_ppm = PPM * coeff;
+    double old_rppm_chance = real_ppm * ( seconds / 60.0 );
+
+    // RPPM Extension added on 12. March 2013: http://us.battle.net/wow/en/blog/8953693?page=44
+    // Formula see http://us.battle.net/wow/en/forum/topic/8197741003#1
+    double last_success = std::min( ( player -> sim -> current_time - last_successful_proc ).total_seconds(), max_bad_luck_prot() );
+    double expected_average_proc_interval = 60.0 / real_ppm;
+
+    double rppm_chance = std::max( 1.0, 1 + ( ( last_success / expected_average_proc_interval - 1.5 ) * 3.0 ) )  * old_rppm_chance;
+    if ( player -> sim -> debug )
+      player -> sim -> out_debug.printf( "base=%.3f coeff=%.3f last_trig=%.3f last_proc=%.3f scales=%d chance=%.5f%%",
+          PPM, coeff, last_trigger.total_seconds(), last_successful_proc.total_seconds(), scales_with,
+          rppm_chance * 100.0 );
+    return rppm_chance;
+  }
+
+  real_ppm_t() :
+    player( 0 ), freq( 0 ), modifier( 0 ), rppm( 0 ),
+    last_trigger_attempt( timespan_t::from_seconds( -10.0 ) ),
+    last_successful_trigger( timespan_t::from_seconds( -120.0 ) ),
+    initial_precombat_time( timespan_t::from_seconds( -120.0 ) ), // Assume 5min out of combat before pull
+    scales_with( RPPM_NONE )
+  { }
+
+  real_ppm_t( player_t& p, double frequency = 0, rppm_scale_e s = RPPM_NONE, unsigned spell_id = 0 ) :
+    player( &p ),
     freq( frequency ),
     modifier( p.dbc.rppm_coefficient( p.specialization(), spell_id ) ),
     rppm( freq * modifier ),
@@ -5800,16 +5930,16 @@ public:
   void set_frequency( double frequency )
   { freq = frequency; rppm = freq * modifier; }
 
-  double get_frequency()
+  double get_frequency() const
   { return freq; }
 
   void set_modifier( double mod )
   { modifier = mod; rppm = freq * modifier; }
 
-  double get_modifier()
+  double get_modifier() const
   { return modifier; }
 
-  double get_rppm()
+  double get_rppm() const
   { return rppm; }
 
   void reset()
@@ -5818,21 +5948,19 @@ public:
     last_successful_trigger = initial_precombat_time;
   }
 
-  bool trigger( action_t& a )
+  bool trigger()
   {
-    assert( freq != std::numeric_limits<double>::min() && "Real PPM Frequency not set!" );
+    assert( freq != 0 && "Real PPM Frequency not set!" );
 
-    if ( last_trigger_attempt == a.sim -> current_time )
+    if ( last_trigger_attempt == player -> sim -> current_time )
       return false;
 
-    double chance = a.real_ppm_proc_chance( rppm, last_trigger_attempt, last_successful_trigger, scales_with );
-    last_trigger_attempt = a.sim -> current_time;
+    bool success = player -> rng().roll( proc_chance( player, rppm, last_trigger_attempt, last_successful_trigger, scales_with ) );
 
-    bool success = rng.roll( chance );
+    last_trigger_attempt = player -> sim -> current_time;
+
     if ( success )
-    {
-      last_successful_trigger = a.sim -> current_time;
-    }
+      last_successful_trigger = player -> sim -> current_time;
     return success;
   }
 };
@@ -5844,11 +5972,10 @@ struct action_callback_t
   player_t* listener;
   bool active;
   bool allow_self_procs;
-  bool allow_item_procs;
   bool allow_procs;
 
-  action_callback_t( player_t* l, bool ap = false, bool aip = false, bool asp = false ) :
-    listener( l ), active( true ), allow_self_procs( asp ), allow_item_procs( aip ), allow_procs( ap )
+  action_callback_t( player_t* l, bool ap = false, bool asp = false ) :
+    listener( l ), active( true ), allow_self_procs( asp ), allow_procs( ap )
   {
     assert( l );
     if ( std::find( l -> callbacks.all_callbacks.begin(), l -> callbacks.all_callbacks.end(), this )
@@ -5858,6 +5985,7 @@ struct action_callback_t
   virtual ~action_callback_t() {}
   virtual void trigger( action_t*, void* call_data ) = 0;
   virtual void reset() {}
+  virtual void initialize() { }
   virtual void activate() { active = true; }
   virtual void deactivate() { active = false; }
 
@@ -5871,7 +5999,6 @@ struct action_callback_t
       action_callback_t* cb = v[ i ];
       if ( cb -> active )
       {
-        if ( ! cb -> allow_item_procs && a && a -> item_proc ) return;
         if ( ! cb -> allow_procs && a && a -> proc ) return;
         cb -> trigger( a, call_data );
       }
@@ -5890,201 +6017,138 @@ struct action_callback_t
 
 // Generic proc callback ======================================================
 
-template<typename T_CALLDATA>
-struct proc_callback_t : public action_callback_t
+/**
+ * DBC-driven proc callback. Extensively leans on the concept of "driver"
+ * spells that blizzard uses to trigger actual proc spells in most cases. Uses
+ * spell data as much as possible (through interaction with special_effect_t).
+ * Intentionally vastly simplified compared to our other (older) callback
+ * systems. The "complex" logic is offloaded either into special_effect_t
+ * (creation of buffs/actions), special effect_t initialization (what kind of
+ * special effect to create from DBC data or user given options, or when and
+ * why to proc things (new DBC based proc system).
+ *
+ * The actual triggering logic is also vastly simplified (see execute()), as
+ * the majority of procs in WoW are very simple. Custom procs can always be
+ * derived off of this struct.
+ */
+struct dbc_proc_callback_t : public action_callback_t
 {
-  special_effect_t proc_data;
-  real_ppm_t       rppm;
-  cooldown_t*      cooldown;
-  rng_t&           proc_rng;
+  static const item_t default_item_;
+  
+  const item_t& item;
+  const special_effect_t& effect;
+  cooldown_t* cooldown;
 
-  struct delay_event_t : public event_t
-  {
-    proc_callback_t& callback;
-    action_t* action;
-    T_CALLDATA* call_data;
+  // Proc trigger types, cached/initialized here from special_effect_t to avoid
+  // needless spell data lookups in vast majority of cases
+  real_ppm_t  rppm;
+  double      proc_chance;
+  double      ppm;
 
-    delay_event_t( player_t& p, proc_callback_t& cb, action_t* a, T_CALLDATA* cd ) :
-      event_t( p, "proc_callback_delay" ),
-      callback( cb ), action( a ), call_data( cd )
-    {
-      timespan_t delay = sim().rng().gauss( sim().default_aura_delay, sim().default_aura_delay_stddev );
-      sim().add_event( this, delay );
-    }
+  buff_t* proc_buff;
+  action_t* proc_action;
+  weapon_t* weapon;
 
-    virtual void execute()
-    {
-      callback.execute( action, call_data );
-    }
-  };
+  dbc_proc_callback_t( const item_t& i, const special_effect_t& e ) :
+    action_callback_t( i.player ), item( i ), effect( e ), cooldown( 0 ),
+    proc_chance( 0 ), ppm( 0 ),
+    proc_buff( 0 ), proc_action( 0 ), weapon( 0 )
+  { }
 
-  proc_callback_t( player_t* p, const special_effect_t& data, const spell_data_t* driver = spell_data_t::nil() ) :
-    action_callback_t( p ),
-    proc_data( data ),
-    rppm( *listener, is_rppm() ? std::fabs( data.ppm ) : std::numeric_limits<double>::min(), data.rppm_scale, driver -> id() ),
-    cooldown( nullptr ), proc_rng( listener -> rng() )
-  {
-    if ( proc_data.cooldown != timespan_t::zero() )
-    {
-      cooldown = listener -> get_cooldown( proc_data.name_str );
-      cooldown -> duration = proc_data.cooldown;
-    }
-  }
+  dbc_proc_callback_t( player_t* p, const special_effect_t& e ) :
+    action_callback_t( p ), item( default_item_ ), effect( e ), cooldown( 0 ),
+    proc_chance( 0 ), ppm( 0 ),
+    proc_buff( 0 ), proc_action( 0 ), weapon( 0 )
+  { }
 
-private:
-  // Execute should be doing all the proc mechanisms, trigger is for triggering
-  virtual void execute( action_t* a, T_CALLDATA* call_data ) = 0;
-public:
-  virtual void trigger( action_t* action, void* call_data )
-  {
-    if ( cooldown && cooldown -> down() ) return;
+  void initialize();
 
-    bool triggered = false;
-    double chance = proc_chance();
-
-    if ( chance == 0 ) return;
-
-    if ( is_rppm() )
-      triggered = rppm.trigger( *action );
-    else if ( is_ppm() )
-      triggered = proc_rng.roll( action -> ppm_proc_chance( chance ) );
-    else if ( chance > 0 )
-      triggered = proc_rng.roll( chance );
-
-    if ( listener -> sim -> debug )
-      listener -> sim -> out_debug.printf( "%s attempts to proc %s on %s: %d",
-                                 listener -> name(),
-                                 proc_data.name_str.c_str(),
-                                 action -> name(), triggered );
-
-    if ( triggered )
-    {
-      T_CALLDATA* arg = static_cast<T_CALLDATA*>( call_data );
-
-      if ( proc_data.proc_delay )
-        new ( *listener -> sim ) delay_event_t( *listener, *this, action, arg );
-      else
-        execute( action, arg );
-
-      if ( cooldown ) cooldown -> start();
-    }
-  }
-
-  bool is_rppm() { return proc_data.ppm < 0; }
-  bool is_ppm() { return proc_data.ppm > 0; }
-
-  virtual double proc_chance()
-  {
-    if ( is_rppm() )
-      return rppm.get_rppm();
-    else if ( is_ppm() )
-      return proc_data.ppm;
-    else if ( proc_data.proc_chance > 0 )
-      return proc_data.proc_chance;
-
-    return 0;
-  }
+  std::string cooldown_name() const;
 
   void reset()
   {
     action_callback_t::reset();
-    if ( cooldown ) cooldown -> reset( false );
-    rppm.reset();
+    if ( rppm.get_frequency() > 0 )
+      rppm.reset();
   }
-};
 
-template <typename T_BUFF, typename T_CALLDATA = action_state_t>
-struct buff_proc_callback_t : public proc_callback_t<T_CALLDATA>
-{
-  struct tick_stack_t : public event_t
+  void trigger( action_t* a, void* call_data )
   {
-    buff_proc_callback_t<T_BUFF>* callback;
+    if ( cooldown && cooldown -> down() ) return;
 
-    tick_stack_t( player_t& p, buff_proc_callback_t* cb, timespan_t initial_delay = timespan_t::zero() ) :
-      event_t( p, "cb_tick_stack" ), callback( cb )
-    { sim().add_event( this, callback -> proc_data.tick + initial_delay ); }
+    // Weapon-based proc triggering differs from "old" callbacks. When used
+    // (weapon_proc == true), dbc_proc_callback_t _REQUIRES_ that the action
+    // has the correct weapon specified. Old style procs allowed actions
+    // without any weapon to pass through.
+    if ( weapon && a -> weapon && a -> weapon != weapon ) return;
 
-    virtual void execute()
+
+    bool triggered = roll( a );
+    if ( listener -> sim -> debug )
+      listener -> sim -> out_debug.printf( "%s attempts to proc %s on %s: %d",
+                                 listener -> name(),
+                                 effect.to_string().c_str(),
+                                 a -> name(), triggered );
+    if ( triggered )
     {
-      if ( ( callback -> buff -> reverse && callback -> buff -> check() > 0 ) ||
-           ( ! callback -> buff -> reverse && callback -> buff -> check() > 0 && callback -> buff -> check() < callback -> buff -> max_stack() ) )
+      execute( a, static_cast<action_state_t*>( call_data ) );
+
+      if ( cooldown )
+        cooldown -> start();
+    }
+  }
+private:
+  rng_t& rng() const
+  { return listener -> rng(); }
+
+  bool roll( action_t* action )
+  {
+    if ( rppm.get_frequency() > 0 )
+      return rppm.trigger();
+    else if ( ppm > 0 )
+      return rng().roll( action -> ppm_proc_chance( ppm ) );
+    else if ( proc_chance > 0 )
+      return rng().roll( proc_chance );
+
+    assert( false );
+    return false;
+  }
+
+  /**
+   * Base rules for proc execution.
+   * 1) If we proc a buff, trigger it
+   * 2a) If the buff triggered and is at max stack, and we have an action,
+   *     execute the action on the target of the action that triggered this 
+   *     proc.
+   * 2b) If we have no buff, trigger the action on the target of the action 
+   *     that triggered this proc.
+   *
+   * TODO: Ticking buffs, though that'd be better served by fusing tick_buff_t
+   * into buff_t.
+   * TODO: Proc delay
+   * TODO: Buff cooldown hackery for expressions. Is this really needed or can
+   * we do it in a smarter way (better expression support?)
+   */
+  virtual void execute( action_t* /* a */, action_state_t* state )
+  {
+    bool triggered = proc_buff == 0;
+    if ( proc_buff )
+      triggered = proc_buff -> trigger();
+
+    if ( triggered && proc_action && 
+         ( ! proc_buff || proc_buff -> check() == proc_buff -> max_stack() ) )
+    {
+      action_state_t* proc_state = proc_action -> get_state();
+      proc_state -> target = state -> target;
+      proc_action -> snapshot_state( proc_state, proc_action -> type == ACTION_HEAL ? HEAL_DIRECT : DMG_DIRECT );
+      proc_action -> schedule_execute( proc_state );
+
+      // Decide whether to expire the buff even with 1 max stack
+      if ( proc_buff && proc_buff -> max_stack() > 1 )
       {
-        callback -> buff -> cooldown -> reset( false );
-        callback -> buff -> trigger();
-        new ( sim() ) tick_stack_t( *p(), callback );
+        proc_buff -> expire();
       }
     }
-  };
-
-  T_BUFF* buff;
-
-  buff_proc_callback_t( player_t* p, const special_effect_t& data, T_BUFF* b = nullptr, const spell_data_t* driver = spell_data_t::nil() ) :
-    proc_callback_t<T_CALLDATA>( p, data, driver ), buff( b )
-  {
-    if ( this -> proc_data.max_stacks == 0 ) this -> proc_data.max_stacks = 1;
-    if ( this -> proc_data.proc_chance == 0 ) this -> proc_data.proc_chance = 1;
-  }
-
-  void execute( action_t* action, T_CALLDATA* /* call_data */ )
-  {
-    assert( buff );
-    // Since buff procs allow tracking of cooldown (by having the cooldown
-    // duplicated in the buff, as well as in proc_callback_t), we reset the CD
-    // before triggering the buff to ensure that the buff can actually proc.
-    // Without the reset, the simulator may use a sequence where the cooldown
-    // of the buff is still up, while the cooldown of the proc_calllback_t
-    // object is not, causing the actual buff to not trigger.
-    buff -> cooldown -> reset( false );
-    buff -> trigger( this -> proc_data.reverse ? this -> proc_data.max_stacks : 1 );
-
-    if ( this -> proc_data.tick != timespan_t::zero() ) // The buff stacks over time.
-    {
-      timespan_t initial_delay;
-      if ( buff -> delay )
-        initial_delay = buff -> delay -> remains();
-      new ( *this -> listener -> sim ) tick_stack_t( *action -> player, this, initial_delay );
-    }
-  }
-};
-
-template <typename T_ACTION, typename T_CALLDATA = action_state_t>
-struct discharge_proc_t : public proc_callback_t<T_CALLDATA>
-{
-  int       discharge_stacks;
-  T_ACTION* discharge_action;
-  proc_t*   discharge_proc;
-  proc_t*   discharge_proc_stack;
-
-  discharge_proc_t( player_t* p, const special_effect_t& data, T_ACTION* a, const spell_data_t* driver = spell_data_t::nil() ) :
-    proc_callback_t<T_CALLDATA>( p, data, driver ),
-    discharge_stacks( 0 ), discharge_action( a ),
-    discharge_proc( proc_callback_t<T_CALLDATA>::listener -> get_proc( data.name_str ) ),
-    discharge_proc_stack( this -> proc_data.max_stacks > 1 ? proc_callback_t<T_CALLDATA>::listener -> get_proc( data.name_str + "_stacks" ) : 0 )
-  {
-    // Discharge Procs have a delay by default
-    this -> proc_data.proc_delay = true;
-  }
-
-  void reset()
-  {
-    proc_callback_t<T_CALLDATA>::reset();
-    discharge_stacks = 0;
-  }
-
-  void execute( action_t* action, T_CALLDATA* /* call_data */ )
-  {
-    assert( discharge_action );
-    if ( ++discharge_stacks >= this -> proc_data.max_stacks )
-    {
-      discharge_stacks = 0;
-      if ( this -> listener -> sim -> debug )
-        this -> listener -> sim -> out_debug.printf( "%s procs %s", action -> name(), discharge_action -> name() );
-      discharge_action -> execute();
-      discharge_proc -> occur();
-    }
-
-    if ( discharge_proc_stack )
-      discharge_proc_stack -> occur();
   }
 };
 
@@ -6140,10 +6204,8 @@ struct travel_event_t : public event_t
 
 namespace item_database
 {
-bool     download_slot(      item_t& item );
 bool     download_item(      item_t& item );
 bool     download_glyph(     player_t* player, std::string& glyph_name, const std::string& glyph_id );
-unsigned parse_gem(          item_t& item, unsigned gem_id );
 bool     initialize_item_sources( item_t& item, std::vector<std::string>& source_list );
 
 int      random_suffix_type( item_t& item );
@@ -6158,7 +6220,6 @@ uint32_t weapon_dmg_max(     item_t& item );
 uint32_t weapon_dmg_max(     const item_data_t*, const dbc_t&, unsigned item_level = 0 );
 
 bool     load_item_from_data( item_t& item );
-bool     parse_gems(          item_t&      item );
 
 // Parse anything relating to the use of ItemSpellEnchantment.dbc. This includes
 // enchants, and engineering addons.
@@ -6172,46 +6233,71 @@ int scaled_stat( const item_data_t& item, const dbc_t& dbc, size_t idx, unsigned
 
 unsigned upgrade_ilevel( const item_data_t& item, unsigned upgrade_level );
 stat_pair_t item_enchantment_effect_stats( const item_enchantment_data_t& enchantment, int index );
+stat_pair_t item_enchantment_effect_stats( player_t* player, const item_enchantment_data_t& enchantment, int index );
 double item_budget( const item_t* item, unsigned max_ilevel );
 
 inline bool heroic( unsigned f ) { return ( f & RAID_TYPE_HEROIC ) == RAID_TYPE_HEROIC; }
 inline bool lfr( unsigned f ) { return ( f & RAID_TYPE_LFR ) == RAID_TYPE_LFR; }
 inline bool flex( unsigned f ) { return ( f & RAID_TYPE_FLEXIBLE ) == RAID_TYPE_FLEXIBLE; }
 inline bool elite( unsigned f ) { return ( f & RAID_TYPE_ELITE ) == RAID_TYPE_ELITE; }
+
+struct token_t
+{
+  std::string full;
+  std::string name;
+  double value;
+  std::string value_str;
+};
+size_t parse_tokens( std::vector<token_t>& tokens, const std::string& encoded_str );
+}
+
+// Procs ====================================================================
+
+namespace proc
+{
+  bool parse_special_effect_encoding( special_effect_t& effect, const item_t& item, const std::string& str );
+  bool usable_proc( const special_effect_t& effect );
+}
+
+// Enchants =================================================================
+
+namespace enchant
+{
+  struct enchant_db_item_t
+  {
+    const char* enchant_name;
+    unsigned    enchant_id;
+  };
+
+  unsigned find_enchant_id( const std::string& name );
+  std::string find_enchant_name( unsigned enchant_id );
+  std::string encoded_enchant_name( const dbc_t&, const item_enchantment_data_t& );
+
+  const item_enchantment_data_t& find_item_enchant( const dbc_t& dbc, const std::string& name );
+  const item_enchantment_data_t& find_meta_gem( const dbc_t& dbc, const std::string& encoding );
+  meta_gem_e meta_gem_type( const dbc_t& dbc, const item_enchantment_data_t& );
+  bool passive_enchant( item_t& item, unsigned spell_id );
+
+  bool initialize_item_enchant( item_t& item, std::vector< stat_pair_t >& stats, special_effect_source_e source, const item_enchantment_data_t& enchant );
+  item_socket_color initialize_gem( item_t& item, unsigned gem_id );
 }
 
 // Unique Gear ==============================================================
 
 namespace unique_gear
 {
+  struct special_effect_db_item_t
+  {
+    unsigned    spell_id;
+    const char* encoded_options;
+    //const std::function<void(special_effect_t&, const item_t&, const special_effect_db_item_t&)> custom_cb;
+    void (*custom_cb)(special_effect_t&, const item_t&, const special_effect_db_item_t&);
+  };
+
 void init( player_t* );
 
-action_callback_t* register_stat_proc( player_t*, special_effect_t& );
-action_callback_t* register_cost_reduction_proc( player_t*, special_effect_t& );
-
-action_callback_t* register_discharge_proc( player_t*, special_effect_t& );
-
-action_callback_t* register_chance_discharge_proc( player_t*, special_effect_t& );
-
-action_callback_t* register_stat_discharge_proc( player_t*, special_effect_t& );
-
-action_callback_t* register_discharge_proc( item_t&, special_effect_t& );
-action_callback_t* register_chance_discharge_proc( item_t&, special_effect_t& );
-action_callback_t* register_stat_discharge_proc( item_t&, special_effect_t& );
-
-bool get_equip_encoding( std::string& encoding,
-                         const std::string& item_name,
-                         unsigned type_flags,
-                         bool ptr,
-                         unsigned item_id = 0 );
-
-bool get_use_encoding( std::string& encoding,
-                       const std::string& item_name,
-                       unsigned type_flags,
-                       bool ptr,
-                       unsigned item_id = 0 );
-
-void initialize_special_effects( player_t* player );
+const special_effect_db_item_t& find_special_effect_db_item( unsigned spell_id );
+bool initialize_special_effect( special_effect_t& effect, const item_t& item, unsigned spell_id );
 };
 
 // Consumable ===============================================================
@@ -6221,17 +6307,6 @@ namespace consumable
 action_t* create_action( player_t*, const std::string& name, const std::string& options );
 }
 
-// Report ===================================================================
-
-namespace report
-{
-// In the end we will restore the simplicity of the code structure, but for now these are duplicated here.
-void print_spell_query( sim_t*, unsigned level );
-void print_profiles( sim_t* );
-void print_text( FILE*, sim_t*, bool detail );
-void print_suite( sim_t* );
-};
-
 // Wowhead  =================================================================
 
 namespace wowhead
@@ -6239,19 +6314,35 @@ namespace wowhead
 enum wowhead_e
 {
   LIVE,
-  PTR
+  PTR,
+  BETA
 };
 
-bool download_slot( item_t&, wowhead_e source = LIVE,
-                    cache::behavior_e b = cache::items() );
 bool download_item( item_t&, wowhead_e source = LIVE, cache::behavior_e b = cache::items() );
 bool download_glyph( player_t* player, std::string& glyph_name, const std::string& glyph_id,
                      wowhead_e source = LIVE, cache::behavior_e b = cache::items() );
-gem_e parse_gem( item_t& item, unsigned gem_id,
-                 wowhead_e source = LIVE, cache::behavior_e b = cache::items() );
 bool download_item_data( item_t&            item,
                          cache::behavior_e  caching,
                          wowhead_e          source );
+
+std::string domain_str( wowhead_e domain );
+std::string decorated_spell_name( const std::string& name,
+                                  unsigned spell_id,
+                                  const std::string& spell_name,
+                                  wowhead_e domain,
+                                  const std::string& href_parm = std::string(),
+                                  bool affix = true );
+
+std::string decorated_action_name( const std::string& name,
+                                  action_t* action,
+                                  wowhead_e domain,
+                                  const std::string& href_parm = std::string(),
+                                  bool affix = true );
+std::string decorated_buff_name( const std::string& name,
+                                 buff_t* buff,
+                                 wowhead_e domain,
+                                 const std::string& href_parm = std::string(),
+                                 bool affix = true );
 }
 // Blizzard Community Platform API ==========================================
 
@@ -6283,9 +6374,6 @@ bool download_item( item_t&, cache::behavior_e b = cache::items() );
 
 bool download_glyph( player_t* player, std::string& glyph_name, const std::string& glyph_id,
                      cache::behavior_e b = cache::items() );
-
-bool download_slot( item_t& item, cache::behavior_e b = cache::items() );
-gem_e parse_gem( item_t& item, unsigned gem_id, cache::behavior_e b = cache::items() );
 }
 
 // HTTP Download  ===========================================================
@@ -6581,7 +6669,8 @@ public:
     ab::tick_may_crit = false;
     ab::hasted_ticks  = false;
     ab::may_crit = false;
-    ab::tick_power_mod = 0;
+    ab::attack_power_mod.tick = 0;
+    ab::spell_power_mod.tick = 0;
     ab::dot_behavior  = DOT_REFRESH;
   }
 
@@ -6636,7 +6725,8 @@ struct residual_dot_action : public Action
     Action::tick_may_crit = false;
     Action::hasted_ticks  = false;
     Action::may_crit = false;
-    Action::tick_power_mod = 0;
+    Action::attack_power_mod.tick = 0;
+    Action::spell_power_mod.tick = 0;
     Action::may_multistrike = false;
     Action::dot_behavior  = DOT_REFRESH;
   }

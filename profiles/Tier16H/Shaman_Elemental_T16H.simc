@@ -4,7 +4,7 @@ race=orc
 role=spell
 position=back
 professions=blacksmithing=600/engineering=600
-talents=http://us.battle.net/wow/en/tool/talent-calculator#Wa!...2.0
+talents=http://us.battle.net/wow/en/tool/talent-calculator#Wa!...2.0.
 glyphs=chain_lightning
 spec=elemental
 
@@ -66,7 +66,6 @@ actions.single+=/lightning_bolt
 # Multi target action priority list
 
 actions.aoe=lava_beam
-actions.aoe+=/magma_totem,if=active_enemies>2&!totem.fire.active
 actions.aoe+=/searing_totem,if=active_enemies<=2&!totem.fire.active
 actions.aoe+=/lava_burst,if=active_enemies<3&dot.flame_shock.remains>cast_time&cooldown_react
 actions.aoe+=/flame_shock,cycle_targets=1,if=!ticking&active_enemies<3
@@ -75,36 +74,35 @@ actions.aoe+=/thunderstorm,if=mana.pct_nonproc<80
 actions.aoe+=/chain_lightning,if=mana.pct_nonproc>10
 actions.aoe+=/lightning_bolt
 
-head=headpiece_of_celestial_harmony,id=99332,upgrade=2,gems=sinister_primal_80int_160haste_180int
-neck=necklace_of_fading_light,id=105473,upgrade=2,reforge=spi_mastery
-shoulders=shoulderwraps_of_celestial_harmony,id=99334,upgrade=2,gems=80int_160haste_80int_160haste_120int,enchant=200int_100crit,reforge=crit_mastery
-back=xingho_breath_of_yulon,id=102246,upgrade=2,gems=80int_160haste_60int,enchant=180int,addon=goblin_glider
-chest=hauberk_of_celestial_harmony,id=99344,upgrade=2,gems=80int_160haste_80int_160haste_80int_160haste_180int,enchant=80all,reforge=crit_haste
-wrists=bracers_of_the_pristine_purifier,id=105598,upgrade=2,gems=320haste,enchant=180int
-hands=grips_of_tidal_force,id=105501,upgrade=2,gems=80int_160haste_320haste_320haste_120int,enchant=170haste,addon=synapse_springs_mark_ii,reforge=crit_haste
-waist=chitinlink_chain_belt,id=105597,upgrade=2,gems=80int_160haste_320haste_320haste_120int,reforge=spi_haste
-legs=leggings_of_celestial_harmony,id=99333,upgrade=2,gems=320haste_320haste_120int,enchant=285int_165crit,reforge=spi_haste
-feet=powderstained_totemic_treads,id=105618,upgrade=2,gems=160haste_160spi_60spi,enchant=140mastery
-finger1=signet_of_the_dinomancers,id=105606,upgrade=2,gems=80int_160haste_60spi
-finger2=laserslice_signet,id=105520,upgrade=2,gems=320haste_60spi,reforge=spi_mastery
+head=headpiece_of_celestial_harmony,id=99332,upgrade=2,gems=sinister_primal_4int_8haste_9int
+neck=necklace_of_fading_light,id=105473,upgrade=2
+shoulders=shoulderwraps_of_celestial_harmony,id=99334,upgrade=2,gems=4int_8haste_4int_8haste_6int,enchant=10int_5crit
+back=xingho_breath_of_yulon,id=102246,upgrade=2,gems=4int_8haste_3int,enchant=9int,addon=goblin_glider
+chest=hauberk_of_celestial_harmony,id=99344,upgrade=2,gems=4int_8haste_4int_8haste_4int_8haste_9int,enchant=4all
+wrists=bracers_of_the_pristine_purifier,id=105598,upgrade=2,enchant=9int
+hands=grips_of_tidal_force,id=105501,upgrade=2,gems=4int_8haste_16haste_6int,enchant=9haste,addon=synapse_springs_mark_ii
+waist=chitinlink_chain_belt,id=105597,upgrade=2,gems=4int_8haste_16haste_16haste_6int
+legs=leggings_of_celestial_harmony,id=99333,upgrade=2,gems=16haste_16haste_6int,enchant=14int_8crit
+feet=powderstained_totemic_treads,id=105618,upgrade=2,gems=8haste_8crit_3spi,enchant=7mastery
+finger1=signet_of_the_dinomancers,id=105606,upgrade=2,gems=4int_8haste_3spi
+finger2=laserslice_signet,id=105520,upgrade=2,gems=16haste_3spi
 trinket1=purified_bindings_of_immerseus,id=105422,upgrade=2
 trinket2=kardris_toxic_totem,id=105540,upgrade=2
-main_hand=kardris_scepter,id=105541,upgrade=2,gems=80int_160haste_60int,enchant=jade_spirit,reforge=spi_haste
-off_hand=revelations_of_yshaarj,id=105650,upgrade=2,gems=80int_160haste_60int,enchant=165int
+main_hand=kardris_scepter,id=105541,upgrade=2,gems=4int_8haste_3int,enchant=jade_spirit
+off_hand=revelations_of_yshaarj,id=105650,upgrade=2,gems=4int_8haste_3int,enchant=8int
 
 # Gear Summary
-# gear_strength=80
-# gear_agility=80
-# gear_stamina=39030
-# gear_intellect=27432
-# gear_spirit=4686
-# gear_spell_power=15321
-# gear_crit_rating=3777
-# gear_haste_rating=17041
-# gear_mastery_rating=13272
-# gear_armor=30844
+# gear_strength=4
+# gear_agility=4
+# gear_stamina=1534
+# gear_intellect=1083
+# gear_spirit=91
+# gear_spell_power=590
+# gear_crit_rating=347
+# gear_haste_rating=585
+# gear_mastery_rating=506
+# gear_armor=718
+# gear_multistrike_rating=99
 # meta_gem=sinister_primal
 # tier16_2pc_caster=1
 # tier16_4pc_caster=1
-# hands=grips_of_tidal_force,heroic=1,elite=1,addon=synapse_springs_mark_ii
-# main_hand=kardris_scepter,heroic=1,elite=1,weapon=mace_2.40speed_5651min_10496max,enchant=jade_spirit

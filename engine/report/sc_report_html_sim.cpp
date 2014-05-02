@@ -1407,7 +1407,7 @@ void print_html_contents( report::sc_html_stream& os, sim_t* sim )
 
 // print_html_sim_summary ===================================================
 
-void print_html_sim_summary( report::sc_html_stream& os, sim_t* sim, sim_t::report_information_t& ri )
+void print_html_sim_summary( report::sc_html_stream& os, sim_t* sim, sim_report_information_t& ri )
 {
   os << "\t\t\t\t<div id=\"sim-info\" class=\"section\">\n";
 
@@ -1470,19 +1470,19 @@ void print_html_sim_summary( report::sc_html_stream& os, sim_t* sim, sim_t::repo
     "\t\t\t\t\t\t\t\t<th>CPU Seconds:</th>\n"
     "\t\t\t\t\t\t\t\t<td>%.4f</td>\n"
     "\t\t\t\t\t\t\t</tr>\n",
-    sim -> elapsed_cpu.total_seconds() );
+    sim -> elapsed_cpu );
   os.printf(
     "\t\t\t\t\t\t\t<tr class=\"left\">\n"
     "\t\t\t\t\t\t\t\t<th>Physical Seconds:</th>\n"
     "\t\t\t\t\t\t\t\t<td>%.4f</td>\n"
     "\t\t\t\t\t\t\t</tr>\n",
-    sim -> elapsed_time.total_seconds() );
+    sim -> elapsed_time );
   os.printf(
     "\t\t\t\t\t\t\t<tr class=\"left\">\n"
     "\t\t\t\t\t\t\t\t<th>Speed Up:</th>\n"
     "\t\t\t\t\t\t\t\t<td>%.0f</td>\n"
     "\t\t\t\t\t\t\t</tr>\n",
-    sim -> iterations * sim -> simulation_length.mean() / sim -> elapsed_cpu.total_seconds() );
+    sim -> iterations * sim -> simulation_length.mean() / sim -> elapsed_cpu );
 
   os << "\t\t\t\t\t\t\t<tr class=\"left\">\n"
      << "\t\t\t\t\t\t\t\t<td><h2>Settings:</h2></td>\n"
@@ -1770,7 +1770,7 @@ void print_html_raw_ability_summary( report::sc_html_stream& os, sim_t* sim )
 
 // print_html_raid_summary ==================================================
 
-void print_html_raid_summary( report::sc_html_stream& os, sim_t* sim, sim_t::report_information_t& ri )
+void print_html_raid_summary( report::sc_html_stream& os, sim_t* sim, sim_report_information_t& ri )
 {
   os << "\t\t<div id=\"raid-summary\" class=\"section section-open\">\n\n";
 
@@ -1922,7 +1922,7 @@ void print_html_raid_imagemap( report::sc_html_stream& os, sim_t* sim, size_t nu
     imgid, mapid, imgid, mapid, mapid );
 }
 
-void print_html_raid_imagemaps( report::sc_html_stream& os, sim_t* sim, sim_t::report_information_t& ri )
+void print_html_raid_imagemaps( report::sc_html_stream& os, sim_t* sim, sim_report_information_t& ri )
 {
 
   os << "\t\t<script type=\"text/javascript\">\n"
@@ -1967,6 +1967,28 @@ void print_html_scale_factors( report::sc_html_stream& os, sim_t* sim )
 
   os << "\t\t\t\t<table class=\"sc\">\n";
 
+  // this next part is used to determine which columns to suppress
+  std::vector<double> stat_effect_is_nonzero;
+
+    //initialize accumulator to zero
+  for ( stat_e j = STAT_NONE; j < STAT_MAX; j++ )
+  {
+    stat_effect_is_nonzero.push_back( 0.0 );
+  }
+
+  // cycle through players
+  for ( size_t i = 0, players = sim -> players_by_name.size(); i < players; i++ )
+  {
+    player_t* p = sim -> players_by_name[ i ];
+
+    // add the absolute value of their stat weights to accumulator element
+    for ( stat_e j = STAT_NONE; j < STAT_MAX; j++ )
+    {
+      stat_effect_is_nonzero[ j ] += std::abs( p -> scaling.get_stat( j ) );
+    }
+  }
+  // end column suppression section
+
   player_e prev_type = PLAYER_NONE;
 
   for ( size_t i = 0, players = sim -> players_by_name.size(); i < players; i++ )
@@ -1981,12 +2003,12 @@ void print_html_scale_factors( report::sc_html_stream& os, sim_t* sim )
          << "\t\t\t\t\t\t<th class=\"left small\">Profile</th>\n";
       for ( stat_e j = STAT_NONE; j < STAT_MAX; j++ )
       {
-        if ( sim -> scaling -> stats.get_stat( j ) != 0 )
+        if ( sim -> scaling -> stats.get_stat( j ) != 0 && stat_effect_is_nonzero[ j ] > 0 )
         {
           os << "\t\t\t\t\t\t<th class=\"small\">" << util::stat_type_abbrev( j ) << "</th>\n";
         }
       }
-      os << "\t\t\t\t\t\t<th class=\"small\">wowhead</th>\n"
+      os << "\t\t\t\t\t\t<th colspan=\"2\" class=\"small\">wowhead</th>\n"
          << "\t\t\t\t\t\t<th class=\"small\">lootrank</th>\n"
          << "\t\t\t\t\t</tr>\n";
     }
@@ -2002,7 +2024,7 @@ void print_html_scale_factors( report::sc_html_stream& os, sim_t* sim )
       p -> name() );
     for ( stat_e j = STAT_NONE; j < STAT_MAX; j++ )
     {
-      if ( sim -> scaling -> stats.get_stat( j ) != 0 )
+      if ( sim -> scaling -> stats.get_stat( j ) != 0 && stat_effect_is_nonzero[ j ] > 0 )
       {
         if ( p -> scaling.get_stat( j ) == 0 )
         {
@@ -2048,6 +2070,13 @@ void print_html_help_boxes( report::sc_html_stream& os, sim_t* sim )
      << "\t\t\t<div class=\"help-box\">\n"
      << "\t\t\t\t<h3>APM</h3>\n"
      << "\t\t\t\t<p>Average number of actions executed per minute.</p>\n"
+     << "\t\t\t</div>\n"
+     << "\t\t</div>\n";
+
+  os << "\t\t<div id=\"help-aps\">\n"
+     << "\t\t\t<div class=\"help-box\">\n"
+     << "\t\t\t\t<h3>HPS</h3>\n"
+     << "\t\t\t\t<p>Average absorption per active player duration.</p>\n"
      << "\t\t\t</div>\n"
      << "\t\t</div>\n";
 
@@ -2145,7 +2174,7 @@ void print_html_help_boxes( report::sc_html_stream& os, sim_t* sim )
   os << "\t\t<div id=\"help-hps\">\n"
      << "\t\t\t<div class=\"help-box\">\n"
      << "\t\t\t\t<h3>HPS</h3>\n"
-     << "\t\t\t\t<p>Average healing (or absorption) per active player duration.</p>\n"
+     << "\t\t\t\t<p>Average healing (and absorption) per active player duration.</p>\n"
      << "\t\t\t</div>\n"
      << "\t\t</div>\n";
 
@@ -2180,7 +2209,29 @@ void print_html_help_boxes( report::sc_html_stream& os, sim_t* sim )
   os << "\t\t<div id=\"help-tmi\">\n"
      << "\t\t\t<div class=\"help-box\">\n"
      << "\t\t\t\t<h3>Theck-Meloree Index</h3>\n"
-     << "\t\t\t\t<p>Measure of damage smoothness, calculated over entire fight length.  Lower is better.</p>\n"
+     << "\t\t\t\t<p>Measure of damage smoothness, calculated over entire fight length. Related to max spike damage, 1k TMI is roughly equivalent to 1% of your health. TMI ignores external healing and absorbs. Lower is better.</p>\n"
+     << "\t\t\t</div>\n"
+     << "\t\t</div>\n";
+
+  os << "\t\t<div id=\"help-tmirange\">\n"
+     << "\t\t\t<div class=\"help-box\">\n"
+     << "\t\t\t\t<h3>TMI Range</h3>\n"
+     << "\t\t\t\t<p>This is the range of TMI values containing " << sim -> confidence * 100 << "% of the data, roughly centered on the mean.</p>\n"
+     << "\t\t\t</div>\n"
+     << "\t\t</div>\n";
+
+  os << "\t\t<div id=\"help-msd\">\n"
+     << "\t\t\t<div class=\"help-box\">\n"
+     << "\t\t\t\t<h3>Max Spike Damage</h3>\n"
+     << "\t\t\t\t<p>Maximum amount of net damage taken in any " << sim -> tmi_window_global << "-second period, expressed as a percentage of max health. Calculated independently for each iteration. "
+     << "'MSD Min/Mean/Max' are the lowest/average/highest MSDs out of all iterations.</p>\n"
+     << "\t\t\t</div>\n"
+     << "\t\t</div>\n";
+
+  os << "\t\t<div id=\"help-msd-freq\">\n"
+     << "\t\t\t<div class=\"help-box\">\n"
+     << "\t\t\t\t<h3>Max Spike Damage Frequency</h3>\n"
+     << "\t\t\t\t<p>This is roughly how many spikes as large as MSD Mean you take per iteration. Calculated from TMI and MSD values.</p>\n"
      << "\t\t\t</div>\n"
      << "\t\t</div>\n";
 
@@ -2194,7 +2245,7 @@ void print_html_help_boxes( report::sc_html_stream& os, sim_t* sim )
   os << "\t\t<div id=\"help-error\">\n"
      << "\t\t\t<div class=\"help-box\">\n"
      << "\t\t\t\t<h3>Error</h3>\n"
-     << "\t\t\t\t<p>Estimator for the " << sim -> confidence * 100.0 << "confidence intervall.</p>\n"
+     << "\t\t\t\t<p>Estimator for the " << sim -> confidence * 100.0 << "% confidence interval.</p>\n"
      << "\t\t\t</div>\n"
      << "\t\t</div>\n";
 
@@ -2278,7 +2329,7 @@ void print_html_help_boxes( report::sc_html_stream& os, sim_t* sim )
   os << "\t\t<div id=\"help-range\">\n"
      << "\t\t\t<div class=\"help-box\">\n"
      << "\t\t\t\t<h3>Range</h3>\n"
-     << "\t\t\t\t<p>( dps.percentile( 0.95 ) - dps.percentile( 0.05 ) / 2</p>\n"
+     << "\t\t\t\t<p>This is the range of values containing " << sim -> confidence * 100 << "% of the data, roughly centered on the mean.</p>\n"
      << "\t\t\t</div>\n"
      << "\t\t</div>\n";
 
@@ -2434,10 +2485,10 @@ void print_html_styles( report::sc_html_stream& os, sim_t* sim )
        << "\t\t\th3.open {background-position: 0 7px; }\n"
        << "\t\t\th4.toggle {margin: 0 0 8px 0;padding-left: 12px;background: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAoAAAAVCAIAAADw0OikAAAABGdBTUEAANbY1E9YMgAAABl0RVh0U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAD8SURBVHjavJHLjkRAGIUbRaxd3oAQ8QouifDSFmysPICNIBZ2EhuJuM6ZMdFR3T3LOYtKqk79/3/qKybLsrZteZ5/3DXPs67rxLbtvu+bprluHMexrqumaZZlMdhM05SmaVVVhBBst20zDMN1XRR822erJEnKsmQYxjRNz/M4jsM5ORsKguD7/r7vqHAc5/Sg3+orDsuyGHGd3OxXsY8/9R92XdfjOH60i6IAODzsvQ0sgApw1I0nAZACVGAAPlEU6WigDaLoEcfxleNN8mEY8Id0c2hZFlmWgyDASlefXhiGqqrS0eApihJFkSRJt0nHj/I877rueNGXAAMAKcaTc/aCM/4AAAAASUVORK5CYII=) 0 -8px no-repeat; }\n"
        << "\t\t\th4.open {background-position: 0 6px; }\n"
-       << "\t\t\ta.toggle-details {margin: 0 0 8px 0;padding-left: 12px;background: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAkAAAAXCAYAAADZTWX7AAAABGdBTUEAANbY1E9YMgAAABl0RVh0U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAADiSURBVHjaYvz//z/DrFmzGBkYGLqBeG5aWtp1BjTACFIEAkCFZ4AUNxC7ARU+RlbEhMT+BMQaQLwOqEESlyIYMIEqlMenCAQsgLiakKILQNwF47AgSfyH0leA2B/o+EfYTOID4gdA7IusAK4IGk7ngNgPqOABut3I1uUDFfzA5kB4YOIDTAxEgOGtiAUY2vlA2hCIf2KRZwXie6AQPwzEFUAsgUURSGMQEzAqQHFmB8R30BS8BWJXoPw2sJuAjNug2Afi+1AFH4A4DCh+GMXhQIEboHQExKeAOAbI3weTAwgwAIZTQ9CyDvuYAAAAAElFTkSuQmCC) 0 4px no-repeat; }\n"
-       << "\t\t\ta.open {background-position: 0 -11px; }\n"
-       << "\t\t\ttd.small a.toggle-details {background-position: 0 2px; }\n"
-       << "\t\t\ttd.small a.open {background-position: 0 -13px; }\n"
+       << "\t\t\ta.toggle-details, span.toggle-details {margin: 0 0 8px 0;padding-left: 12px;background: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAkAAAAXCAYAAADZTWX7AAAABGdBTUEAANbY1E9YMgAAABl0RVh0U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAADiSURBVHjaYvz//z/DrFmzGBkYGLqBeG5aWtp1BjTACFIEAkCFZ4AUNxC7ARU+RlbEhMT+BMQaQLwOqEESlyIYMIEqlMenCAQsgLiakKILQNwF47AgSfyH0leA2B/o+EfYTOID4gdA7IusAK4IGk7ngNgPqOABut3I1uUDFfzA5kB4YOIDTAxEgOGtiAUY2vlA2hCIf2KRZwXie6AQPwzEFUAsgUURSGMQEzAqQHFmB8R30BS8BWJXoPw2sJuAjNug2Afi+1AFH4A4DCh+GMXhQIEboHQExKeAOAbI3weTAwgwAIZTQ9CyDvuYAAAAAElFTkSuQmCC) 0 4px no-repeat; }\n"
+       << "\t\t\ta.open, span.open {background-position: 0 -11px; }\n"
+       << "\t\t\ttd.small a.toggle-details, span.toggle-details {background-position: 0 2px; }\n"
+       << "\t\t\ttd.small a.open, span.open {background-position: 0 -13px; }\n"
        << "\t\t\t#active-help, .help-box {display: none; }\n"
        << "\t\t\t#active-help {position: absolute;width: 350px;padding: 3px;background: #fff;z-index: 10; }\n"
        << "\t\t\t#active-help-dynamic {padding: 6px 6px 18px 6px;background: #eeeef5;outline: 1px solid #ddd;font-size: 13px; }\n"
@@ -2546,10 +2597,10 @@ void print_html_styles( report::sc_html_stream& os, sim_t* sim )
        << "\t\t\th3.open {background-position: 0 7px; }\n"
        << "\t\t\th4.toggle {margin: 0 0 8px 0;padding-left: 12px;background: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAoAAAAVCAIAAADw0OikAAAABGdBTUEAANbY1E9YMgAAABl0RVh0U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAD8SURBVHjavJHLjkRAGIUbRaxd3oAQ8QouifDSFmysPICNIBZ2EhuJuM6ZMdFR3T3LOYtKqk79/3/qKybLsrZteZ5/3DXPs67rxLbtvu+bprluHMexrqumaZZlMdhM05SmaVVVhBBst20zDMN1XRR822erJEnKsmQYxjRNz/M4jsM5ORsKguD7/r7vqHAc5/Sg3+orDsuyGHGd3OxXsY8/9R92XdfjOH60i6IAODzsvQ0sgApw1I0nAZACVGAAPlEU6WigDaLoEcfxleNN8mEY8Id0c2hZFlmWgyDASlefXhiGqqrS0eApihJFkSRJt0nHj/I877rueNGXAAMAKcaTc/aCM/4AAAAASUVORK5CYII=) 0 -8px no-repeat; }\n"
        << "\t\t\th4.open {background-position: 0 6px; }\n"
-       << "\t\t\ta.toggle-details {margin: 0 0 8px 0;padding-left: 12px;background: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAoAAAAWCAYAAAD5Jg1dAAAABGdBTUEAANbY1E9YMgAAABl0RVh0U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAADpSURBVHjaYvx7QdyLgYGhH4ilgfgPAypgAuIvQBzD+P//f4Z/FyXCgJzZQMyHpvAvEMcx6b9YBlYIAkDFAUBqKRBzQRX9AuJEkCIwD6QQhoHOCADiX0D8F4hjkeXgJsIA0OQYIMUGNGkesjgLAyY4AsTM6IIYJuICTAxEggFUyIIULIpA6jkQ/0AxSf8FhoneQKxJjNVxQLwFiGUJKfwOxFJAvBmakgh6Rh+INwCxBDG+NoEq1iEmeK4A8Rt8iQIEpgJxPjThYpjIhKSoFFkRukJQQK8D4gpoCDDgSo+Tgfg0NDNhAIAAAwD5YVPrQE/ZlwAAAABJRU5ErkJggg==) 0 -9px no-repeat; }\n"
-       << "\t\t\ta.open {background-position: 0 6px; }\n"
-       << "\t\t\ttd.small a.toggle-details {background-position: 0 -10px; }\n"
-       << "\t\t\ttd.small a.open {background-position: 0 5px; }\n"
+       << "\t\t\ta.toggle-details, span.toggle-details {margin: 0 0 8px 0;padding-left: 12px;background: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAoAAAAWCAYAAAD5Jg1dAAAABGdBTUEAANbY1E9YMgAAABl0RVh0U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAADpSURBVHjaYvx7QdyLgYGhH4ilgfgPAypgAuIvQBzD+P//f4Z/FyXCgJzZQMyHpvAvEMcx6b9YBlYIAkDFAUBqKRBzQRX9AuJEkCIwD6QQhoHOCADiX0D8F4hjkeXgJsIA0OQYIMUGNGkesjgLAyY4AsTM6IIYJuICTAxEggFUyIIULIpA6jkQ/0AxSf8FhoneQKxJjNVxQLwFiGUJKfwOxFJAvBmakgh6Rh+INwCxBDG+NoEq1iEmeK4A8Rt8iQIEpgJxPjThYpjIhKSoFFkRukJQQK8D4gpoCDDgSo+Tgfg0NDNhAIAAAwD5YVPrQE/ZlwAAAABJRU5ErkJggg==) 0 -9px no-repeat; }\n"
+       << "\t\t\ta.open, span.open {background-position: 0 6px; }\n"
+       << "\t\t\ttd.small a.toggle-details, span.toggle-details {background-position: 0 -10px; }\n"
+       << "\t\t\ttd.small a.open, span.open {background-position: 0 5px; }\n"
        << "\t\t\t#active-help, .help-box {display: none;-moz-border-radius: 6px;-khtml-border-radius: 6px;-webkit-border-radius: 6px; }\n"
        << "\t\t\t#active-help {position: absolute;width: auto;padding: 3px;background: transparent;z-index: 10; }\n"
        << "\t\t\t#active-help-dynamic {max-width: 400px;padding: 8px 8px 20px 8px;background: #333;font-size: 13px;text-align: left;border: 1px solid #222;-moz-border-radius: 6px;-khtml-border-radius: 6px;-webkit-border-radius: 6px;border-radius: 6px;-moz-box-shadow: 4px 4px 10px #000;-webkit-box-shadow: 4px 4px 10px #000;box-shadow: 4px 4px 10px #000; }\n"
@@ -2670,10 +2721,10 @@ void print_html_styles( report::sc_html_stream& os, sim_t* sim )
        << "\t\t\th3.open {background-position: 0 -17px; }\n"
        << "\t\t\th4.toggle {margin: 0 0 8px 0;padding-left: 12px; }\n"
        << "\t\t\th4.open {background-position: 0 6px; }\n"
-       << "\t\t\ta.toggle-details {margin: 0 0 8px 0;padding-left: 12px;background-size: 11px auto;background-position: 0 3px; }\n"
-       << "\t\t\ta.open {background-position: 0 -13px; }\n"
-       << "\t\t\ttd.small a.toggle-details {background-size: 10px auto;background-position: 0 2px; }\n"
-       << "\t\t\ttd.small a.open {background-position: 0 -12px; }\n"
+       << "\t\t\ta.toggle-details, span.toggle-details {margin: 0 0 8px 0;padding-left: 12px;background-size: 11px auto;background-position: 0 3px; }\n"
+       << "\t\t\ta.open,span.open {background-position: 0 -13px; }\n"
+       << "\t\t\ttd.small a.toggle-details, span.toggle-details {background-size: 10px auto;background-position: 0 2px; }\n"
+       << "\t\t\ttd.small a.open, span.open {background-position: 0 -12px; }\n"
        << "\t\t\t#active-help, .help-box {display: none;-moz-border-radius: 6px;-khtml-border-radius: 6px;-webkit-border-radius: 6px; }\n"
        << "\t\t\t#active-help {position: absolute;width: auto;padding: 3px;background: transparent;z-index: 10; }\n"
        << "\t\t\t#active-help-dynamic {max-width: 400px;padding: 8px 8px 20px 8px;background: #333;font-size: 13px;text-align: left;border: 1px solid #222;-moz-border-radius: 6px;-khtml-border-radius: 6px;-webkit-border-radius: 6px;border-radius: 6px;-moz-box-shadow: 4px 4px 10px #000;-webkit-box-shadow: 4px 4px 10px #000;box-shadow: 4px 4px 10px #000; }\n"

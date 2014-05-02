@@ -9,6 +9,10 @@
 #include "simulationcraft.hpp"
 #include <fstream>
 
+struct player_t;
+struct player_processed_report_information_t;
+struct sim_report_information_t;
+
 #define MAX_PLAYERS_PER_CHART 20
 
 #define LOOTRANK_ENABLED 1
@@ -99,7 +103,7 @@ struct sc_html_stream : public indented_stream
 
 void generate_player_charts         ( player_t*, player_processed_report_information_t& );
 void generate_player_buff_lists     ( player_t*, player_processed_report_information_t& );
-void generate_sim_report_information( sim_t*,       sim_t::report_information_t& );
+void generate_sim_report_information( sim_t*, sim_report_information_t& );
 
 void print_html_sample_data ( report::sc_html_stream&, sim_t*, extended_sample_data_t&, const std::string& name, int& td_counter, int columns = 1 );
 
@@ -111,14 +115,6 @@ void print_html_player ( report::sc_html_stream&, player_t*, int );
 void print_xml         ( sim_t* );
 void print_suite       ( sim_t* );
 void print_csv_data( sim_t* );
-
-struct compare_hat_donor_interval
-{
-  bool operator()( const player_t* l, const player_t* r ) const
-  {
-    return ( l -> procs.hat_donor -> interval_sum.mean() < r -> procs.hat_donor -> interval_sum.mean() );
-  }
-};
 
 struct tabs_t
 {
@@ -164,6 +160,7 @@ struct tabs_t
 static const char* const beta_warnings[] =
 {
   "Beta! Beta! Beta! Beta! Beta! Beta!",
+  "<strong>Placeholder Armor mitigation values in sc_enemy.cpp. FIX BEFORE RELEASE</strong>",
   "Not All classes are yet supported.",
   "Some class models still need tweaking.",
   "Some class action lists need tweaking.",
@@ -173,7 +170,8 @@ static const char* const beta_warnings[] =
   "Beta! Beta! Beta! Beta! Beta! Beta!",
 };
 #endif // SC_BETA
-}
+
+} // reort
 
 std::string pretty_spell_text( const spell_data_t& default_spell, const std::string& text, const player_t& p );
 inline std::string pretty_spell_text( const spell_data_t& default_spell, const char* text, const player_t& p )

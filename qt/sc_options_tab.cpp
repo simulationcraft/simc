@@ -20,9 +20,8 @@ const OptionEntry buffOptions[] =
 {
   { "Toggle All Buffs",             "",                                 "Toggle all buffs on/off"                         },
   { "Attack Power Multiplier",      "override.attack_power_multiplier", "+10% Attack Power Multiplier"                    },
-  { "Attack Speed",                 "override.attack_speed",            "+10% Melee and Ranged Attack Speed"              },
   { "Spell Power Multiplier",       "override.spell_power_multiplier",  "+10% Spell Power Multiplier"                     },
-  { "Spell Haste",                  "override.spell_haste",             "+5% Spell Haste"                                 },
+  { "Haste",                        "override.haste",                   "+5% Haste"                                       },
 
   { "Critical Strike",              "override.critical_strike",         "+5% Melee/Ranged/Spell Critical Strike Chance"   },
   { "Mastery",                      "override.mastery",                 "+5 Mastery"                                      },
@@ -47,13 +46,8 @@ const OptionEntry debuffOptions[] =
   { "Toggle All Debuffs",     "",                                "Toggle all debuffs on/off"      },
 
   { "Bleeding",               "override.bleeding",               "Rip\nRupture\nPiercing Shots"   },
-
   { "Physical Vulnerability", "override.physical_vulnerability", "Physical Vulnerability (+4%)"   },
-  { "Ranged Vulnerability",   "override.ranged_vulnerability",   "Ranged Vulnerability (+5%)"     },
   { "Magic Vulnerability",    "override.magic_vulnerability",    "Magic Vulnerability (+5%)"      },
-
-  { "Weakened Armor",         "override.weakened_armor",         "Weakened Armor (-4% per stack)" },
-  { "Weakened Blows",         "override.weakened_blows",         "Weakened Blows (-10%)"          },
 
   { NULL, NULL, NULL }
 };
@@ -61,10 +55,7 @@ const OptionEntry debuffOptions[] =
 const OptionEntry scalingOptions[] =
 {
   { "Analyze All Stats",                "",         "Scale factors are necessary for gear ranking.\nThey only require an additional simulation for each RELEVANT stat." },
-  {
-    "Use Positive Deltas Only",         "",         "Normally Hit/Expertise use negative scale factors to show DPS lost by reducing that stat.\n"
-    "This option forces a positive scale delta, which is useful for classes with soft caps."
-  },
+  { "Use Positive Deltas Only",         "",         "This option forces a positive scale delta, which is useful for classes with soft caps."  },
   { "Analyze Strength",                 "str",      "Calculate scale factors for Strength"                 },
   { "Analyze Agility",                  "agi",      "Calculate scale factors for Agility"                  },
   { "Analyze Stamina",                  "sta",      "Calculate scale factors for Stamina"                  },
@@ -73,6 +64,8 @@ const OptionEntry scalingOptions[] =
   { "Analyze Spell Power",              "sp",       "Calculate scale factors for Spell Power"              },
   { "Analyze Attack Power",             "ap",       "Calculate scale factors for Attack Power"             },
   { "Analyze Crit Rating",              "crit",     "Calculate scale factors for Crit Rating"              },
+  { "Analyze Multistrike Rating",       "mult",     "Calculate scale factors for Multistrike Rating"       },
+  { "Analyze Readiness Rating",         "CDRecov",  "Calculate scale factors for Readiness Rating"         },
   { "Analyze Haste Rating",             "haste",    "Calculate scale factors for Haste Rating"             },
   { "Analyze Mastery Rating",           "mastery",  "Calculate scale factors for Mastery Rating"           },
   { "Analyze Weapon DPS",               "wdps",     "Calculate scale factors for Weapon DPS"               },
@@ -80,6 +73,7 @@ const OptionEntry scalingOptions[] =
   { "Analyze Off-hand Weapon DPS",      "wohdps",   "Calculate scale factors for Off-hand Weapon DPS"      },
   { "Analyze Off-hand Weapon Speed",    "wohspeed", "Calculate scale factors for Off-hand Weapon Speed"    },
   { "Analyze Armor",                    "armor",    "Calculate scale factors for Armor"                    },
+  { "Analyze Bonus Armor",              "bonusarmor",   "Calculate scale factors for Bonus Armor"              },
   { "Analyze Latency",                  "",         "Calculate scale factors for Latency"                  },
   { NULL, NULL, NULL }
 };
@@ -96,8 +90,11 @@ const OptionEntry plotOptions[] =
   { "Plot Scaling per Crit Rating",      "crit",    "Generate Scaling curve for Crit Rating"      },
   { "Plot Scaling per Haste Rating",     "haste",   "Generate Scaling curve for Haste Rating"     },
   { "Plot Scaling per Mastery Rating",   "mastery", "Generate Scaling curve for Mastery Rating"   },
+  { "Plot Scaling per Multistrike Rating", "mult",  "Generate Scaling curve for Multistrike Rating" },
+  { "Plot Scaling per Readiness Rating", "CDRecov", "Generate Scaling curve for Readiness Rating" },
   { "Plot Scaling per Weapon DPS",       "wdps",    "Generate Scaling curve for Weapon DPS"       },
   { "Plot Scaling per Armor",            "armor",   "Generate Scaling curve for Armor"            },
+  { "Plot Scaling per Bonus Armor",      "bonusarmor",  "Generate Scaling curve for Bonus Armor"      },
   { NULL, NULL, NULL }
 };
 
@@ -107,6 +104,8 @@ const OptionEntry reforgePlotOptions[] =
   { "Plot Reforge Options for Crit Rating",      "crit",    "Generate reforge plot data for Crit Rating"      },
   { "Plot Reforge Options for Haste Rating",     "haste",   "Generate reforge plot data for Haste Rating"     },
   { "Plot Reforge Options for Mastery Rating",   "mastery", "Generate reforge plot data for Mastery Rating"   },
+  { "Plot Reforge Options for Multistrike Rating", "mult",  "Generate reforge plot data for Multistrike Rating" },
+  { "Plot Reforge Options for Readiness Rating", "CDRecov", "Generate reforge plot data for Readiness Rating" },
 
   { "Plot Reforge Options for Strength",         "str",     "Generate reforge plot data for Intellect"        },
   { "Plot Reforge Options for Agility",          "agi",     "Generate reforge plot data for Agility"          },
@@ -114,7 +113,7 @@ const OptionEntry reforgePlotOptions[] =
   { "Plot Reforge Options for Intellect",        "int",     "Generate reforge plot data for Intellect"        },
   { NULL, NULL, NULL }
 };
-const int reforgePlotOption_cut = 4; // separate between secondary and primary stats
+const int reforgePlotOption_cut = 6; // separate between secondary and primary stats
 
 QComboBox* createChoice( int count, ... )
 {
@@ -346,10 +345,10 @@ void SC_OptionsTab::createPlotsTab()
   plotsLayout -> setFieldGrowthPolicy( QFormLayout::FieldsStayAtSizeHint );
 
   // Create Combo Boxes
-  choice.plots_points = addValidatorToComboBox( 1, INT_MAX, createChoice( 4, "20", "30", "40", "50" ) );
+  choice.plots_points = addValidatorToComboBox( 1, INT_MAX, createChoice( 4, "10", "20", "30", "40" ) );
   plotsLayout -> addRow( tr( "Number of Plot Points" ), choice.plots_points );
 
-  choice.plots_step = addValidatorToComboBox( 1, INT_MAX, createChoice( 6, "25", "50", "100", "200", "250", "500" ) );
+  choice.plots_step = addValidatorToComboBox( 1, INT_MAX, createChoice( 6, "50", "100", "150", "200", "250", "300" ) );
   plotsLayout -> addRow( tr( "Plot Step Amount" ), choice.plots_step );
 
   plotsButtonGroup = new QButtonGroup();
@@ -376,10 +375,10 @@ void SC_OptionsTab::createReforgePlotsTab()
   reforgePlotsLayout -> setFieldGrowthPolicy( QFormLayout::FieldsStayAtSizeHint );
 
   // Create Combo Boxes
-  choice.reforgeplot_amount = addValidatorToComboBox( 1, INT_MAX, createChoice( 10, "100", "200", "250", "500", "750", "1000", "1500", "2000", "3000", "5000" ) );
+  choice.reforgeplot_amount = addValidatorToComboBox( 1, INT_MAX, createChoice( 10, "250", "500", "750", "1000", "1250", "1500", "2000", "2500", "3000", "5000" ) );
   reforgePlotsLayout -> addRow( tr( "Reforge Amount" ), choice.reforgeplot_amount );
 
-  choice.reforgeplot_step = addValidatorToComboBox( 1, INT_MAX, createChoice( 6, "25", "50", "100", "200", "250", "500" ) );
+  choice.reforgeplot_step = addValidatorToComboBox( 1, INT_MAX, createChoice( 6, "50", "100", "200", "500", "750", "1000" ) );
   reforgePlotsLayout -> addRow( tr( "Step Amount" ), choice.reforgeplot_step );
 
   QLabel* messageText = new QLabel( tr( "A maximum of three stats may be ran at once.\n" ) );
@@ -541,11 +540,11 @@ void SC_OptionsTab::decodeOptions()
   load_setting( settings, "center_scale_delta", choice.center_scale_delta, "No" );
   load_setting( settings, "scale_over", choice.scale_over );
 
-  load_setting( settings, "plot_points", choice.plots_points );
+  load_setting( settings, "plot_points", choice.plots_points, "10" );
   load_setting( settings, "plot_step", choice.plots_step, "100" );
 
 
-  load_setting( settings, "reforgeplot_amount", choice.reforgeplot_amount, "200" );
+  load_setting( settings, "reforgeplot_amount", choice.reforgeplot_amount, "500" );
   load_setting( settings, "reforgeplot_step", choice.reforgeplot_step, "50" );
 
 
@@ -748,9 +747,9 @@ void SC_OptionsTab::createToolTips()
                                       "It is currently used to extend the cooldown duration of user executable abilities "
                                       " that have a cooldown.\n"
                                       "Each setting adds an amount of 'lag' with a default standard deviation of 10%:" ) + "\n" +
-                                  tr( "    'Low'   : %1ms" ).arg( 100 ) + "\n" +
-                                  tr( "    'Medium': %1ms" ).arg( 300 ) + "\n" +
-                                  tr( "    'High'  : %1ms" ).arg( 500 ) );
+                                  tr( "    'Low'   : %1ms" ).arg( 50 ) + "\n" +
+                                  tr( "    'Medium': %1ms" ).arg( 150 ) + "\n" +
+                                  tr( "    'High'  : %1ms" ).arg( 300 ) );
 
   choice.aura_delay -> setToolTip( tr( "Aura Lag represents the server latency which occurs when buffs are applied.\n"
                                        "This value is given by Blizzard server reaction time and not influenced by your latency.\n"
@@ -781,7 +780,7 @@ QString SC_OptionsTab::get_globalSettings()
     options += "dps_plot_iterations=1000\n";
   }
 
-  const char *world_lag[] = { "0.1", "0.3", "0.5" };
+  const char *world_lag[] = { "0.05", "0.15", "0.3" };
   options += "default_world_lag=";
   options += world_lag[ choice.world_lag->currentIndex() ];
   options += "\n";

@@ -336,14 +336,15 @@ std::string stat_color( stat_e type )
     case STAT_SPIRIT:                   return color::darker_silver;
     case STAT_ATTACK_POWER:             return class_color( ROGUE );
     case STAT_SPELL_POWER:              return class_color( WARLOCK );
-    case STAT_HIT_RATING:               return class_color( DEATH_KNIGHT );
+    case STAT_READINESS_RATING:         return class_color( DEATH_KNIGHT );
     case STAT_CRIT_RATING:              return class_color( PALADIN );
     case STAT_HASTE_RATING:             return class_color( SHAMAN );
     case STAT_MASTERY_RATING:           return class_color( ROGUE );
-    case STAT_EXPERTISE_RATING:         return color::mix( color::red, color::tan );
+    case STAT_MULTISTRIKE_RATING:       return color::mix( color::red, color::tan );
     case STAT_DODGE_RATING:             return class_color( MONK );
     case STAT_PARRY_RATING:             return color::teal;
     case STAT_ARMOR:                    return class_color( PRIEST );
+    case STAT_BONUS_ARMOR:              return class_color( PRIEST );
     default:                            return std::string();
   }
 }
@@ -1473,7 +1474,7 @@ std::string chart::scaling_dps( player_t* p )
   }
   else if ( p -> sim -> plot -> dps_plot_negative )
   {
-    const int start = - ( p -> sim -> plot -> dps_plot_points * p -> sim -> plot -> dps_plot_step );
+    const int start = (int) - ( p -> sim -> plot -> dps_plot_points * p -> sim -> plot -> dps_plot_step );
     snprintf( buffer, sizeof( buffer ), "chxl=0:|%d|%.0f|%.0f|%.0f|0|1:|%.0f|%.0f", start, start * 0.75, start * 0.5, start * 0.25, min_dps, max_dps ); s += buffer;
   }
   else
@@ -2052,6 +2053,7 @@ std::string chart::gear_weights_lootrank( player_t* p )
       case STAT_HASTE_RATING:             name = "mh";   break;
       case STAT_MASTERY_RATING:           name = "Mr";   break;
       case STAT_ARMOR:                    name = "Arm";  break;
+      case STAT_BONUS_ARMOR:              name = "bar";  break;
       case STAT_WEAPON_DPS:
         if ( HUNTER == p -> type ) name = "rdps"; else name = "dps";  break;
       case STAT_WEAPON_OFFHAND_DPS:       name = "odps"; break;
@@ -2224,6 +2226,7 @@ std::string chart::gear_weights_wowhead( player_t* p, bool hit_expertise )
       case STAT_PARRY_RATING:             id = 46;  break;
       case STAT_HASTE_RATING:             id = 103; break;
       case STAT_ARMOR:                    id = 41;  break;
+      case STAT_BONUS_ARMOR:              id = 109; break;
       case STAT_MASTERY_RATING:           id = 170; break;
       case STAT_WEAPON_DPS:
         if ( HUNTER == p -> type ) id = 138; else id = 32;  break;
@@ -2471,6 +2474,7 @@ std::string chart::gear_weights_pawn( player_t* p,
       case STAT_HASTE_RATING:             name = "HasteRating";      if ( value * 20 > maxY ) maxY = value * 20; break;
       case STAT_MASTERY_RATING:           name = "MasteryRating";    if ( value * 20 > maxY ) maxY = value * 20; break;
       case STAT_ARMOR:                    name = "Armor";            break;
+      case STAT_BONUS_ARMOR:              name = "BonusArmor";      break;
       case STAT_WEAPON_DPS:
         if ( HUNTER == p -> type ) name = "RangedDps"; else name = "MeleeDps";  break;
       default: break;

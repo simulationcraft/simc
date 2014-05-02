@@ -9,12 +9,12 @@
 // Event Memory Management
 // ==========================================================================
 
-void* core_event_t::allocate( std::size_t size, core_sim_t& sim )
+void* core_event_t::allocate( std::size_t size, core_sim_t::event_managment_t& em )
 {
   static const std::size_t SIZE = 2 * sizeof( core_event_t );
   assert( SIZE > size ); ( void ) size;
 
-  core_event_t*& list = sim.em.recycled_event_list;
+  core_event_t*& list = em.recycled_event_list;
 
   core_event_t* e = list;
 
@@ -32,7 +32,7 @@ void* core_event_t::allocate( std::size_t size, core_sim_t& sim )
     }
     else
     {
-      sim.em.all_events_ever_created.push_back( e );
+      em.all_events_ever_created.push_back( e );
     }
   }
 

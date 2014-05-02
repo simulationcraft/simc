@@ -43,71 +43,6 @@ static std::shared_ptr<xml_node_t> download_id( sim_t*             sim,
   return node;
 }
 
-// wowhead::parse_gem =======================================================
-
-gem_e wowhead::parse_gem( item_t&           item,
-                          unsigned          gem_id,
-                          wowhead_e         source,
-                          cache::behavior_e caching )
-{
-  if ( gem_id == 0 )
-    return GEM_NONE;
-
-  std::shared_ptr<xml_node_t> node = download_id( item.sim, gem_id, caching, source );
-  if ( ! node )
-  {
-    if ( caching != cache::ONLY )
-      item.sim -> errorf( "Player %s unable to download gem id %u from wowhead\n", item.player -> name(), gem_id );
-    return GEM_NONE;
-  }
-
-  gem_e type = GEM_NONE;
-
-  std::string color_str;
-  if ( node -> get_value( color_str, "subclass/cdata" ) )
-  {
-    std::string::size_type pos = color_str.find( ' ' );
-    if ( pos != std::string::npos ) color_str.erase( pos );
-    util::tokenize( color_str );
-    type = util::parse_gem_type( color_str );
-
-    if ( type == GEM_META )
-    {
-      std::string name_str;
-      if ( node -> get_value( name_str, "name/cdata" ) )
-      {
-        std::string::size_type new_pos = name_str.find( " Diamond" );
-        if ( new_pos != std::string::npos ) name_str.erase( new_pos );
-        util::tokenize( name_str );
-        meta_gem_e meta_type = util::parse_meta_gem_type( name_str );
-        if ( meta_type != META_GEM_NONE )
-          item.player -> meta_gem = meta_type;
-      }
-    }
-    else
-    {
-      std::string stats_str;
-      if ( node -> get_value( stats_str, "jsonEquip/cdata" ) )
-      {
-        stats_str = "{" + stats_str + "}";
-        js::js_node_t js = js::create( item.sim, stats_str );
-        std::vector<js::js_node_t> children = js::get_children( js );
-        for ( size_t i = 0; i < children.size(); i++ )
-        {
-          stat_e stat_type = util::parse_stat_type( js::get_name( children[ i ] ) );
-          if ( stat_type == STAT_NONE || stat_type == STAT_ARMOR || util::translate_stat( stat_type ) == ITEM_MOD_NONE )
-            continue;
-          int amount = 0;
-          js::get_value( amount, children[ i ] );
-          item.parsed.gem_stats.push_back( stat_pair_t( stat_type, amount ) );
-        }
-      }
-    }
-  }
-
-  return type;
-}
-
 // wowhead::download_glyph ==================================================
 
 bool wowhead::download_glyph( player_t*          player,
@@ -324,19 +259,113 @@ bool wowhead::download_item( item_t&            item,
   return ret;
 }
 
-// wowhead::download_slot ===================================================
-
-bool wowhead::download_slot( item_t&           item,
-                             wowhead_e         source,
-                             cache::behavior_e caching )
+std::string wowhead::decorated_spell_name( const std::string& name,
+                                           unsigned spell_id,
+                                           const std::string& spell_name,
+                                           wowhead_e domain,
+                                           const std::string& href_parm,
+                                           bool affix )
 {
-  if ( ! download_item_data( item, caching, source ) )
-    return false;
+  std::string decorated_name, base_href, prefix, suffix;
 
-  item_database::parse_gems( item );
+  if ( spell_id > 1 )
+  {
+    base_href = "http://" + domain_str( domain ) + ".wowhead.com/spell=" + util::to_string( spell_id );
 
-  item.source_str = "Wowhead";
+    if ( affix )
+    {
+      std::string::size_type affix_offset = name.find( spell_name );
 
-  return true;
+      // Add an affix to the name, if the name does not match the 
+      // spell name. Affix is either the prefix- or suffix portion of the 
+      // non matching parts of the stats name.
+      if ( affix_offset != std::string::npos && spell_name != name )
+      {
+        // Suffix
+        if ( affix_offset == 0 )
+          suffix += " (" + name.substr( spell_name.size() ) + ")";
+        // Prefix
+        else if ( affix_offset > 0 )
+          prefix += " (" + name.substr( 0, affix_offset ) + ")";
+      }
+      else if ( affix_offset == std::string::npos )
+        suffix += " (" + name + ")";
+    }
+  }
+
+  if ( ! base_href.empty() )
+  {
+    if ( ! prefix.empty() )
+      decorated_name += prefix + "&nbsp;";
+
+    decorated_name += "<a href=\"" + base_href + "\" " + href_parm.c_str() + ">" + name + "</a>";
+
+    if ( ! suffix.empty() )
+      decorated_name += suffix;
+  }
+  else
+    decorated_name = name;
+
+  return decorated_name;
 }
 
+std::string wowhead::decorated_action_name( const std::string& name,
+                                            action_t* action,
+                                            wowhead_e domain, 
+                                            const std::string& href_parm,
+                                            bool affix )
+{
+  std::string spell_name;
+  unsigned spell_id = 0;
+
+  // Kludge auto attack decorations
+  attack_t* a = dynamic_cast< attack_t* >( action );
+  if ( a && a -> auto_attack )
+  {
+    spell_id = 6603;
+    if ( a -> weapon )
+      spell_name = "Auto Attack";
+  }
+  else
+  {
+    spell_id = action -> id;
+    if ( spell_id > 1 )
+      spell_name = action -> s_data -> name_cstr();
+  }
+
+  util::tokenize( spell_name );
+
+  return decorated_spell_name( name, spell_id, spell_name, domain, href_parm, affix );
+}
+
+std::string wowhead::decorated_buff_name( const std::string& name,
+                                          buff_t* buff,
+                                          wowhead_e domain, 
+                                          const std::string& href_parm,
+                                          bool affix )
+{
+  std::string spell_name;
+  unsigned spell_id = 0;
+
+  if ( buff -> data().id() > 0 )
+  {
+    spell_id = buff -> data().id();
+    spell_name = buff -> data().name_cstr();
+  }
+
+  util::tokenize( spell_name );
+
+  return decorated_spell_name( name, spell_id, spell_name, domain, href_parm, affix );
+}
+
+std::string wowhead::domain_str( wowhead_e domain )
+{
+  switch ( domain )
+  {
+    case PTR: return "ptr";
+#if SC_BETA
+    case BETA: return SC_BETA_STR;
+#endif
+    default: return "www";
+  }
+}

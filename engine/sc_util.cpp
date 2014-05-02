@@ -549,39 +549,6 @@ attribute_e util::parse_attribute_type( const std::string& name )
   return parse_enum<attribute_e, ATTRIBUTE_NONE, ATTRIBUTE_MAX, attribute_type_string>( name );
 }
 
-// gem_type_string ==========================================================
-
-const char* util::gem_type_string( gem_e type )
-{
-  switch ( type )
-  {
-    case GEM_META:      return "meta";
-    case GEM_PRISMATIC: return "prismatic";
-    case GEM_RED:       return "red";
-    case GEM_YELLOW:    return "yellow";
-    case GEM_BLUE:      return "blue";
-    case GEM_ORANGE:    return "orange";
-    case GEM_GREEN:     return "green";
-    case GEM_PURPLE:    return "purple";
-    case GEM_COGWHEEL:  return "cogwheel";
-    case GEM_HYDRAULIC: return "hydraulic";
-    default:            return "unknown";
-  }
-}
-
-// parse_gem_type ===========================================================
-
-gem_e util::parse_gem_type( const std::string& name )
-{
-  return parse_enum<gem_e, GEM_NONE, GEM_MAX, gem_type_string>( name );
-}
-
-// parse_gem_stat ===========================================================
-
-stat_e util::parse_gem_stat( const std::string& name )
-{
-  return parse_enum<stat_e, STAT_NONE, STAT_MAX, stat_type_gem>( name );
-}
 // meta_gem_type_string =====================================================
 
 const char* util::meta_gem_type_string( meta_gem_e type )
@@ -1346,6 +1313,7 @@ const char* util::cache_type_string( cache_e c )
     case CACHE_BLOCK:        return "block";
     case CACHE_ARMOR:        return "armor";
     case CACHE_MULTISTRIKE:  return "multistrike";
+    case CACHE_READINESS:    return "readiness";
 
     default: return "unknown";
   }
@@ -1404,6 +1372,33 @@ const char* util::proc_type2_string( proc_types2 type )
   }
 }
 
+// special_effect_string ====================================================
+
+const char* util::special_effect_string( special_effect_e type )
+{
+  switch ( type )
+  {
+    case SPECIAL_EFFECT_EQUIP: return "equip";
+    case SPECIAL_EFFECT_USE:   return "use";
+    case SPECIAL_EFFECT_CUSTOM: return "custom";
+    default:                   return "unknown";
+  }
+}
+
+// special_effect_source_string =============================================
+
+const char* util::special_effect_source_string( special_effect_source_e type )
+{
+  switch ( type )
+  {
+    case SPECIAL_EFFECT_SOURCE_ITEM:    return "item";
+    case SPECIAL_EFFECT_SOURCE_ENCHANT: return "enchant";
+    case SPECIAL_EFFECT_SOURCE_ADDON:   return "addon";
+    case SPECIAL_EFFECT_SOURCE_GEM:     return "gem";
+    default:                            return "unknown";
+  }
+}
+
 // stat_type_string =========================================================
 
 const char* util::stat_type_string( stat_e stat )
@@ -1447,6 +1442,7 @@ const char* util::stat_type_string( stat_e stat )
     case STAT_WEAPON_OFFHAND_SPEED:  return "weapon_offhand_speed";
 
     case STAT_ARMOR:             return "armor";
+    case STAT_BONUS_ARMOR:       return "bonus_armor";
     case STAT_RESILIENCE_RATING: return "resilience_rating";
     case STAT_DODGE_RATING:      return "dodge_rating";
     case STAT_PARRY_RATING:      return "parry_rating";
@@ -1457,6 +1453,7 @@ const char* util::stat_type_string( stat_e stat )
 
     case STAT_PVP_POWER: return "pvp_power";
     case STAT_MULTISTRIKE_RATING: return "multistrike_rating";
+    case STAT_READINESS_RATING: return "readiness_rating";
 
     case STAT_ALL: return "all";
 
@@ -1507,6 +1504,7 @@ const char* util::stat_type_abbrev( stat_e stat )
     case STAT_WEAPON_OFFHAND_SPEED:  return "WOHspeed";
 
     case STAT_ARMOR:             return "Armor";
+    case STAT_BONUS_ARMOR:       return "BonusArmor";
     case STAT_RESILIENCE_RATING: return "Resil";
     case STAT_DODGE_RATING:      return "Dodge";
     case STAT_PARRY_RATING:      return "Parry";
@@ -1518,6 +1516,8 @@ const char* util::stat_type_abbrev( stat_e stat )
     case STAT_PVP_POWER: return "PvPP";
 
     case STAT_MULTISTRIKE_RATING: return "Mult";
+
+    case STAT_READINESS_RATING: return "CDRecov";
 
     case STAT_ALL: return "All";
 
@@ -1660,28 +1660,6 @@ stat_e util::parse_stat_type( const std::string& name )
   return STAT_NONE;
 }
 
-// parse_reforge_type =======================================================
-
-stat_e util::parse_reforge_type( const std::string& name )
-{
-  stat_e s = parse_stat_type( name );
-
-  switch ( s )
-  {
-    case STAT_EXPERTISE_RATING:
-    case STAT_HIT_RATING:
-    case STAT_CRIT_RATING:
-    case STAT_HASTE_RATING:
-    case STAT_MASTERY_RATING:
-    case STAT_SPIRIT:
-    case STAT_DODGE_RATING:
-    case STAT_PARRY_RATING:
-      return s;
-    default:
-      return STAT_NONE;
-  }
-}
-
 // parse_origin =============================================================
 
 bool util::parse_origin( std::string& region_str,
@@ -1763,6 +1741,7 @@ int util::class_id( player_e type )
     case PLAYER_SPECIAL_SCALE2: return 13;
     case PLAYER_SPECIAL_SCALE3: return 14;
     case PLAYER_SPECIAL_SCALE4: return 15;
+    case PLAYER_SPECIAL_SCALE5: return 16;
     default:           return 0;
   }
 }
@@ -1929,10 +1908,11 @@ stat_e util::translate_item_mod( int item_mod )
     case ITEM_MOD_RANGED_ATTACK_POWER: return STAT_ATTACK_POWER;
     case ITEM_MOD_SPELL_POWER:         return STAT_SPELL_POWER;
     case ITEM_MOD_MASTERY_RATING:      return STAT_MASTERY_RATING;
-    case ITEM_MOD_EXTRA_ARMOR:         return STAT_ARMOR;
+    case ITEM_MOD_EXTRA_ARMOR:         return STAT_BONUS_ARMOR;
     case ITEM_MOD_RESILIENCE_RATING:   return STAT_RESILIENCE_RATING;
     case ITEM_MOD_PVP_POWER:           return STAT_PVP_POWER;
     case ITEM_MOD_MULTISTRIKE_RATING:  return STAT_MULTISTRIKE_RATING;
+    case ITEM_MOD_READINESS_RATING:    return STAT_READINESS_RATING;
     default:                           return STAT_NONE;
   }
 }
@@ -1956,10 +1936,11 @@ int util::translate_stat( stat_e stat )
     case STAT_ATTACK_POWER:      return ITEM_MOD_ATTACK_POWER;
     case STAT_SPELL_POWER:       return ITEM_MOD_SPELL_POWER;
     case STAT_MASTERY_RATING:    return ITEM_MOD_MASTERY_RATING;
-    case STAT_ARMOR:       return ITEM_MOD_EXTRA_ARMOR;
+    case STAT_BONUS_ARMOR:       return ITEM_MOD_EXTRA_ARMOR;
     case STAT_RESILIENCE_RATING: return ITEM_MOD_RESILIENCE_RATING;
     case STAT_PVP_POWER:         return ITEM_MOD_PVP_POWER;
     case STAT_MULTISTRIKE_RATING:return ITEM_MOD_MULTISTRIKE_RATING;
+    case STAT_READINESS_RATING:  return ITEM_MOD_READINESS_RATING;
     default:                     return ITEM_MOD_NONE;
   }
 }
@@ -1985,7 +1966,7 @@ stat_e util::translate_rating_mod( unsigned ratings )
     return STAT_MASTERY_RATING;
   else if ( ratings & RATING_MOD_PVP_POWER )
     return STAT_PVP_POWER;
-  // TODO: WOW-MULTISTRIKE
+  // TODO: WOW-MULTISTRIKE and READINESS.
 
   return STAT_NONE;
 }
@@ -2096,21 +2077,9 @@ slot_e util::translate_invtype( inventory_type inv_type )
 
 // socket_gem_match =========================================================
 
-bool util::socket_gem_match( gem_e socket, unsigned gem )
+bool util::socket_gem_match( item_socket_color socket, item_socket_color gem )
 {
-  if ( socket == GEM_NONE      ) return true;
-
-  if ( socket == GEM_PRISMATIC ) return ( gem & SOCKET_COLOR_PRISMATIC ) != 0;
-
-  if ( socket == GEM_HYDRAULIC ) return ( gem == SOCKET_COLOR_HYDRAULIC );
-  if ( socket == GEM_COGWHEEL  ) return ( gem == SOCKET_COLOR_COGWHEEL );
-  if ( socket == GEM_META      ) return ( gem == SOCKET_COLOR_META );
-
-  if ( socket == GEM_RED       ) return ( gem & SOCKET_COLOR_RED ) != 0 ;
-  if ( socket == GEM_YELLOW    ) return ( gem & SOCKET_COLOR_YELLOW  ) != 0;
-  if ( socket == GEM_BLUE      ) return ( gem & SOCKET_COLOR_BLUE  ) != 0;
-
-  return false;
+  return ( gem & socket ) != 0;
 }
 
 // string_split =============================================================
@@ -2215,23 +2184,6 @@ std::string& util::erase_all( std::string& s, const std::string& from )
   return s;
 }
 
-// translate_gem_color ======================================================
-
-gem_e util::translate_socket_color( item_socket_color c )
-{
-  switch ( c )
-  {
-    case SOCKET_COLOR_BLUE:      return GEM_BLUE;
-    case SOCKET_COLOR_META:      return GEM_META;
-    case SOCKET_COLOR_PRISMATIC: return GEM_PRISMATIC;
-    case SOCKET_COLOR_RED:       return GEM_RED;
-    case SOCKET_COLOR_YELLOW:    return GEM_YELLOW;
-    case SOCKET_COLOR_COGWHEEL:  return GEM_COGWHEEL;
-    case SOCKET_COLOR_NONE:
-    default:                     return GEM_NONE;
-  }
-}
-
 // item_quality_string ======================================================
 
 const char* util::item_quality_string( int quality )
@@ -2289,6 +2241,13 @@ const char* util::specialization_string( specialization_e spec )
     case DRUID_RESTORATION:   return "Restoration Druid";
     default:                  return "Unknown";
   }
+}
+
+// parse_position_type ======================================================
+
+specialization_e util::parse_specialization_type( const std::string &name )
+{
+  return parse_enum<specialization_e, SPEC_NONE, static_cast<specialization_e>(DRUID_RESTORATION+1), specialization_string>( name );
 }
 
 // parse_item_quality =======================================================
@@ -3045,6 +3004,7 @@ double stat_itemization_weight( stat_e s )
     case STAT_HIT_RATING:
     case STAT_MASTERY_RATING:
     case STAT_MULTISTRIKE_RATING:
+    case STAT_READINESS_RATING:
     case STAT_SPIRIT:
       return 2;
     default:

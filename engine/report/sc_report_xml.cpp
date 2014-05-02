@@ -18,7 +18,7 @@ void print_xml_targets( sim_t* sim, xml_writer_t & writer );
 void print_xml_buffs( sim_t* sim, xml_writer_t & writer );
 void print_xml_hat_donors( sim_t* sim, xml_writer_t & writer );
 void print_xml_performance( sim_t* sim, xml_writer_t & writer );
-void print_xml_summary( sim_t* sim, xml_writer_t & writer, sim_t::report_information_t& );
+void print_xml_summary( sim_t* sim, xml_writer_t & writer, sim_report_information_t& );
 void print_xml_player( sim_t* sim, xml_writer_t & writer, player_t * p, player_t * owner );
 
 void print_xml_player_stats( xml_writer_t & writer, player_t * p );
@@ -33,6 +33,14 @@ void print_xml_player_scale_factors( xml_writer_t & writer, player_t * p, player
 void print_xml_player_dps_plots( xml_writer_t & writer, player_t * p );
 void print_xml_player_charts( xml_writer_t & writer, player_processed_report_information_t& );
 void print_xml_player_gear( xml_writer_t & writer, player_t* p );
+
+struct compare_hat_donor_interval
+{
+  bool operator()( const player_t* l, const player_t* r ) const
+  {
+    return ( l -> procs.hat_donor -> interval_sum.mean() < r -> procs.hat_donor -> interval_sum.mean() );
+  }
+};
 
 void print_xml_errors( sim_t* sim, xml_writer_t & writer )
 {
@@ -260,7 +268,7 @@ void print_xml_player_gear( xml_writer_t & writer, player_t* p )
   double n_items = 0;
   unsigned ilevel = 0;
   writer.begin_tag( "items" );
-  for ( int i = 0, end = p -> items.size(); i < end; i++ )
+  for ( size_t i = 0, end = p -> items.size(); i < end; i++ )
   {
     item_t* item = &( p -> items[ i ] );
     if ( ! item -> active() )
@@ -279,7 +287,7 @@ void print_xml_player_gear( xml_writer_t & writer, player_t* p )
   if ( n_items > 0 )
     writer.print_attribute( "average_ilevel", util::to_string( util::round( ilevel / n_items, 3 ) ) );
 
-  for ( int i = 0, end = p -> items.size(); i < end; i++ )
+  for ( size_t i = 0, end = p -> items.size(); i < end; i++ )
   {
     item_t* item = &( p -> items[ i ] );
     if ( ! item -> active() )
@@ -841,7 +849,7 @@ void print_xml_hat_donors( sim_t* sim, xml_writer_t & writer )
   int num_donors = ( int ) hat_donors.size();
   if ( num_donors )
   {
-    range::sort( hat_donors, report::compare_hat_donor_interval()  );
+    range::sort( hat_donors, compare_hat_donor_interval()  );
 
     writer.begin_tag( "honor_among_thieves" );
 
@@ -868,8 +876,8 @@ void print_xml_performance( sim_t* sim, xml_writer_t & writer )
   writer.print_tag( "max_event_queue", util::to_string( sim -> max_events_remaining ) );
   writer.print_tag( "target_health", util::to_string( sim -> target -> resources.base[ RESOURCE_HEALTH ], 0 ) );
   writer.print_tag( "sim_seconds", util::to_string( sim -> iterations * sim -> simulation_length.mean(), 0 ) );
-  writer.print_tag( "cpu_seconds", util::to_string( sim -> elapsed_cpu.total_seconds(), 3 ) );
-  writer.print_tag( "speed_up", util::to_string( sim -> iterations * sim -> simulation_length.mean() / sim -> elapsed_cpu.total_seconds(), 0 ) );
+  writer.print_tag( "cpu_seconds", util::to_string( sim -> elapsed_cpu ) );
+  writer.print_tag( "speed_up", util::to_string( sim -> iterations * sim -> simulation_length.mean() / sim -> elapsed_cpu, 0 ) );
 
   writer.end_tag( "performance" );
 }
@@ -889,7 +897,7 @@ void print_xml_config( sim_t* sim, xml_writer_t & writer )
   writer.end_tag( "config" );
 }
 
-void print_xml_summary( sim_t* sim, xml_writer_t & writer, sim_t::report_information_t& ri )
+void print_xml_summary( sim_t* sim, xml_writer_t & writer, sim_report_information_t& ri )
 {
   writer.begin_tag( "summary" );
 
@@ -920,7 +928,7 @@ void print_xml_summary( sim_t* sim, xml_writer_t & writer, sim_t::report_informa
 
   writer.print_tag( "fight_style", sim -> fight_style );
 
-  writer.print_tag( "elapsed_cpu_sec", util::to_string( sim -> elapsed_cpu.total_seconds() ) );
+  writer.print_tag( "elapsed_cpu_sec", util::to_string( sim -> elapsed_cpu ) );
 
   writer.begin_tag( "lag" );
   writer.print_attribute( "type", "world" );
@@ -1081,11 +1089,12 @@ void print_xml_player_action_definitions( xml_writer_t & writer, player_t * p )
         {
           writer.print_tag( "description", util::encode_html( a -> data().desc() ).c_str() );
         }
-        if ( a -> direct_power_mod || a -> base_dd_min || a -> base_dd_max )
+        if ( a -> attack_power_mod.direct || a -> spell_power_mod.direct || a -> base_dd_min || a -> base_dd_max )
         {
           writer.begin_tag( "direct_damage" );
           writer.print_tag( "may_crit", a -> may_crit ? "true" : "false" );
-          writer.print_tag( "direct_power_mod", util::to_string( a -> direct_power_mod ) );
+          writer.print_tag( "attack_power_mod.direct", util::to_string( a -> attack_power_mod.direct ) );
+          writer.print_tag( "spell_power_mod.direct", util::to_string( a -> spell_power_mod.direct ) );
           writer.begin_tag( "base" );
           writer.print_attribute( "min", util::to_string( a -> base_dd_min ) );
           writer.print_attribute( "max", util::to_string( a -> base_dd_max ) );
@@ -1098,7 +1107,8 @@ void print_xml_player_action_definitions( xml_writer_t & writer, player_t * p )
           writer.begin_tag( "damage_over_time" );
           writer.print_tag( "tick_may_crit", a -> tick_may_crit ? "true" : "false" );
           writer.print_tag( "tick_zero", a -> tick_zero ? "true" : "false" );
-          writer.print_tag( "tick_power_mod", util::to_string( a -> tick_power_mod ) );
+          writer.print_tag( "attack_power_mod.tick", util::to_string( a -> attack_power_mod.tick ) );
+          writer.print_tag( "spell_power_mod.tick", util::to_string( a -> spell_power_mod.tick ) );
           writer.print_tag( "base", util::to_string( a -> base_td ) );
           writer.print_tag( "num_ticks", util::to_string( a -> num_ticks ) );
           writer.print_tag( "base_tick_time", util::to_string( a -> base_tick_time.total_seconds() ) );

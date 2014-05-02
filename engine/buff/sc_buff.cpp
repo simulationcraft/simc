@@ -59,6 +59,8 @@ struct tick_t : public buff_event_t
 
   void execute()
   {
+    buff -> tick_event = 0;
+
     // For tick number calculations, always include the +1ms so we get correct
     // tick number labeling on the last tick, just before the buff expires.
     timespan_t elapsed = buff -> elapsed( buff -> sim -> current_time ) + timespan_t::from_millis( 1 ),
@@ -88,8 +90,6 @@ struct tick_t : public buff_event_t
         period -= timespan_t::from_millis( 1 );
       buff -> tick_event = new ( *buff -> sim ) tick_t( buff, period, current_value, current_stacks );
     }
-    else
-      buff -> tick_event = 0;
   }
 };
 
@@ -259,9 +259,6 @@ buff_t::buff_t( const buff_creation::buff_creator_basics_t& params ) :
   if ( params._activated != -1 )
     activated = params._activated != 0;
 
-  if ( params._behavior != BUFF_TICK_NONE )
-    tick_behavior = params._behavior;
-
   if ( params._period > timespan_t::zero() )
     buff_period = params._period;
   else
@@ -289,6 +286,13 @@ buff_t::buff_t( const buff_creation::buff_creator_basics_t& params ) :
       }
     }
   }
+
+  if ( params._behavior != BUFF_TICK_NONE )
+    tick_behavior = params._behavior;
+  // If period is set, buf no buff tick behavior, set the behavior
+  // automatically to clipped ticks
+  else if ( buff_period > timespan_t::zero() && params._behavior == BUFF_TICK_NONE )
+    tick_behavior = BUFF_TICK_CLIP;
 
   if ( params._tick_callback )
     tick_callback = params._tick_callback;
@@ -681,7 +685,7 @@ void buff_t::start( int        stacks,
       if ( tick_time == d )
         tick_time -= timespan_t::from_millis( 1 );
       assert( ! tick_event );
-      tick_event = new ( *sim ) tick_t( this, tick_time, current_value, stacks );
+      tick_event = new ( *sim ) tick_t( this, tick_time, current_value, reverse ? 1 : stacks );
     }
   }
 }
@@ -853,18 +857,18 @@ void buff_t::expire( timespan_t delay )
     {
       timespan_t start_time = timespan_t::from_seconds( last_start.total_millis() / 1000 ) ;
       timespan_t end_time = timespan_t::from_seconds( sim -> current_time.total_millis() / 1000 );
-      double begin_uptime = ( 1000 - last_start.total_millis() % 1000 ) / 1000.0;
-      double end_uptime = ( sim -> current_time.total_millis() % 1000 ) / 1000.0;
+      timespan_t begin_uptime = (( timespan_t::from_seconds( 1 ) - last_start ) % timespan_t::from_seconds( 1 ) );
+      timespan_t end_uptime = (sim -> current_time % timespan_t::from_seconds( 1 ));
 
-      if ( last_start.total_millis() % 1000 == 0 )
-        begin_uptime = 1.0;
+      if ( last_start % timespan_t::from_seconds( 1 ) == timespan_t::zero() )
+        begin_uptime = timespan_t::from_seconds( 1 );
 
-      uptime_array.add( start_time, begin_uptime );
+      uptime_array.add( start_time, begin_uptime.total_seconds() );
       for ( timespan_t i = start_time + timespan_t::from_millis( 1000 ); i < end_time; i = i + timespan_t::from_millis( 1000 ) )
         uptime_array.add( i, 1 );
 
-      if ( end_uptime != 0 )
-        uptime_array.add( end_time, end_uptime );
+      if ( end_uptime != timespan_t::zero() )
+        uptime_array.add( end_time, end_uptime.total_seconds() );
     }
   }
 
@@ -1240,13 +1244,13 @@ stat_buff_t::stat_buff_t( const stat_buff_creator_t& params ) :
       else if ( effect.subtype() == A_MOD_DAMAGE_DONE && effect.misc_value1() == 126 )
         s = STAT_SPELL_POWER;
       else if ( effect.subtype() == A_MOD_RESISTANCE )
-        s = STAT_ARMOR;
+        s = STAT_BONUS_ARMOR;
       else if ( ! has_ap && ( effect.subtype() == A_MOD_ATTACK_POWER || effect.subtype() == A_MOD_RANGED_ATTACK_POWER ) )
       {
         s = STAT_ATTACK_POWER;
         has_ap = true;
       }
-      else if ( effect.subtype() == A_MOD_INCREASE_HEALTH_2 )
+      else if ( effect.subtype() == A_MOD_INCREASE_HEALTH_2 || effect.subtype() == A_MOD_INCREASE_HEALTH )
         s = STAT_MAX_HEALTH;
 
       if ( params.item )

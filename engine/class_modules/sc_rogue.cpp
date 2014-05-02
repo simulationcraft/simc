@@ -459,18 +459,32 @@ struct rogue_attack_t : public melee_attack_t
   virtual double calculate_weapon_damage( double attack_power );
   virtual double target_armor( player_t* ) const;
 
-  virtual double direct_power_coefficient( const action_state_t* s ) const
+  virtual double attack_direct_power_coefficient( const action_state_t* s ) const
   {
     if ( requires_combo_points )
-      return direct_power_mod * cast_state( s ) -> cp;
-    return melee_attack_t::direct_power_coefficient( s );
+      return attack_power_mod.direct * cast_state( s ) -> cp;
+    return melee_attack_t::attack_direct_power_coefficient( s );
   }
 
-  virtual double tick_power_coefficient( const action_state_t* s ) const
+  virtual double attack_tick_power_coefficient( const action_state_t* s ) const
   {
     if ( requires_combo_points )
-      return tick_power_mod * cast_state( s ) -> cp;
-    return melee_attack_t::tick_power_coefficient( s );
+      return attack_power_mod.tick * cast_state( s ) -> cp;
+    return melee_attack_t::attack_tick_power_coefficient( s );
+  }
+
+  virtual double spell_direct_power_coefficient( const action_state_t* s ) const
+  {
+    if ( requires_combo_points )
+      return spell_power_mod.direct * cast_state( s ) -> cp;
+    return melee_attack_t::spell_direct_power_coefficient( s );
+  }
+
+  virtual double spell_tick_power_coefficient( const action_state_t* s ) const
+  {
+    if ( requires_combo_points )
+      return spell_power_mod.tick * cast_state( s ) -> cp;
+    return melee_attack_t::spell_tick_power_coefficient( s );
   }
 
   virtual double bonus_da( const action_state_t* s ) const
@@ -1099,7 +1113,7 @@ struct melee_t : public rogue_attack_t
     timespan_t t = rogue_attack_t::execute_time();
     if ( first )
     {
-      return ( weapon -> slot == SLOT_OFF_HAND ) ? ( sync_weapons ? std::min( t / 2, timespan_t::from_seconds( 0.01 ) ) : t / 2 ) : timespan_t::from_seconds( 0.01 );
+      return ( weapon -> slot == SLOT_OFF_HAND ) ? ( sync_weapons ? std::min( t / 2, timespan_t::zero() ) : t / 2 ) : timespan_t::zero();
     }
     return t;
   }
@@ -1371,7 +1385,7 @@ struct envenom_t : public rogue_attack_t
   {
     weapon = &( p -> main_hand_weapon );
     requires_combo_points  = true;
-    direct_power_mod       = 0.134;
+    attack_power_mod.direct       = 0.134;
     num_ticks              = 0;
     base_dd_min            = base_dd_max = 0.213 * p -> dbc.spell_scaling( p -> type, p -> level );
     weapon_multiplier = weapon_power_mod = 0.0;
@@ -1433,7 +1447,7 @@ struct eviscerate_t : public rogue_attack_t
     weapon = &( player -> main_hand_weapon );
     weapon_multiplier = weapon_power_mod = 0;
 
-    direct_power_mod = 0.18;
+    attack_power_mod.direct = 0.18;
   }
 
   timespan_t gcd() const
@@ -1476,9 +1490,6 @@ struct expose_armor_t : public rogue_attack_t
 
     if ( result_is_hit( execute_state -> result ) )
     {
-      if ( ! sim -> overrides.weakened_armor )
-        target -> debuffs.weakened_armor -> trigger( p() -> glyph.expose_armor -> ok() ? 3 : 1 );
-
       rogue_td_t* td = this -> td( target );
       td -> combo_points.add( 1 );
     }
@@ -1494,20 +1505,9 @@ struct fan_of_knives_t : public rogue_attack_t
   {
     weapon = &( p -> main_hand_weapon );
     weapon_multiplier = weapon_power_mod = 0;
-    direct_power_mod = data().extra_coeff();
     aoe              = -1;
   }
 
-  void impact( action_state_t* s )
-  {
-    rogue_attack_t::impact( s );
-
-    if ( result_is_hit( s -> result ) )
-    {
-      if ( p() -> glyph.sharp_knives -> ok() && ! sim -> overrides.weakened_armor )
-        target -> debuffs.weakened_armor -> trigger();
-    }
-  }
 };
 
 // Crimson Tempest ==========================================================
@@ -1532,7 +1532,7 @@ struct crimson_tempest_t : public rogue_attack_t
   {
     aoe = -1;
     requires_combo_points = true;
-    direct_power_mod = 0.0275;
+    attack_power_mod.direct = 0.0275;
     weapon = &( p -> main_hand_weapon );
     weapon_power_mod = weapon_multiplier = 0;
     ct_dot = new crimson_tempest_dot_t( p );
@@ -1562,7 +1562,7 @@ struct garrote_t : public rogue_attack_t
   {
     may_crit          = false;
     requires_stealth  = true;
-    tick_power_mod    = 0.078;
+    attack_power_mod.tick    = 0.078;
   }
 
   void impact( action_state_t* state )
@@ -2020,7 +2020,6 @@ struct shuriken_toss_t : public rogue_attack_t
   shuriken_toss_t( rogue_t* p, const std::string& options_str ) :
     rogue_attack_t( "shuriken_toss", p, p -> find_talent_spell( "Shuriken Toss" ), options_str )
   {
-    direct_power_mod    = data().extra_coeff();
     adds_combo_points = 1; // it has an effect but with no base value :rollseyes:
   }
 };
@@ -2423,7 +2422,6 @@ struct venomous_wound_t : public rogue_poison_t
   {
     background       = true;
     proc             = true;
-    direct_power_mod = data().extra_coeff();
   }
 
   double composite_da_multiplier() const
@@ -2445,7 +2443,6 @@ struct deadly_poison_t : public rogue_poison_t
     deadly_poison_dd_t( rogue_t* p ) :
       rogue_poison_t( "deadly_poison_instant", p, p -> find_spell( 113780 ) )
     {
-      direct_power_mod = data().extra_coeff();
       harmful          = true;
     }
   };
@@ -2458,7 +2455,6 @@ struct deadly_poison_t : public rogue_poison_t
       may_crit       = false;
       harmful        = true;
       tick_may_crit  = true;
-      tick_power_mod = data().extra_coeff();
       dot_behavior   = DOT_REFRESH;
     }
   };
@@ -2515,7 +2511,6 @@ struct wound_poison_t : public rogue_poison_t
     wound_poison_dd_t( rogue_t* p ) :
       rogue_poison_t( "wound_poison", p, p -> find_class_spell( "Wound Poison" ) -> effectN( 1 ).trigger() )
     {
-      direct_power_mod = data().extra_coeff();
       harmful          = true;
     }
 
@@ -3190,7 +3185,7 @@ void rogue_t::init_action_list()
     // Rotation
     def -> add_action( this, "Slice and Dice", "if=buff.slice_and_dice.remains<2|(buff.slice_and_dice.remains<15&buff.bandits_guile.stack=11&combo_points>=4)" );
 
-    def -> add_talent( this, "Marked for Death", "if=combo_points=0&dot.revealing_strike.ticking" );
+    def -> add_talent( this, "Marked for Death", "if=combo_points<=1&dot.revealing_strike.ticking" );
 
     // Generate combo points, or use combo points
     def -> add_action( "run_action_list,name=generator,if=combo_points<5|(talent.anticipation.enabled&anticipation_charges<=4&!dot.revealing_strike.ticking)" );
@@ -3384,9 +3379,9 @@ void rogue_t::init_base_stats()
 {
   player_t::init_base_stats();
 
-  base.stats.attack_power = ( level * 2 );
+  //base.stats.attack_power = ( level * 2 ); Gone in WoD, double check later.
   base.attack_power_per_strength = 1.0;
-  base.attack_power_per_agility  = 2.0;
+  base.attack_power_per_agility  = 1.0;
 
   resources.base[ RESOURCE_ENERGY ] = 100;
   if ( main_hand_weapon.type == WEAPON_DAGGER && off_hand_weapon.type == WEAPON_DAGGER )
@@ -3775,7 +3770,7 @@ void rogue_t::arise()
 {
   player_t::arise();
 
-  if ( ! sim -> overrides.attack_speed && dbc.spell( 113742 ) -> is_level( level ) ) sim -> auras.attack_speed -> trigger();
+  if ( ! sim -> overrides.haste && dbc.spell( 113742 ) -> is_level( level ) ) sim -> auras.haste -> trigger();
 }
 
 // rogue_t::energy_regen_per_second =========================================
@@ -3897,6 +3892,33 @@ set_e rogue_t::decode_set( const item_t& item ) const
   return SET_NONE;
 }
 
+/* Report Extension Class
+ * Here you can define class specific report extensions/overrides
+ */
+class rogue_report_t : public player_report_extension_t
+{
+public:
+  rogue_report_t( rogue_t& player ) :
+      p( player )
+  {
+
+  }
+
+  virtual void html_customsection( report::sc_html_stream& /* os*/ ) override
+  {
+    /*// Custom Class Section
+    os << "\t\t\t\t<div class=\"player-section custom_section\">\n"
+        << "\t\t\t\t\t<h3 class=\"toggle open\">Custom Section</h3>\n"
+        << "\t\t\t\t\t<div class=\"toggle-content\">\n";
+
+    os << p.name();
+
+    os << "\t\t\t\t\t\t</div>\n" << "\t\t\t\t\t</div>\n";*/
+  }
+private:
+  rogue_t& p;
+};
+
 // ROGUE MODULE INTERFACE ===================================================
 
 struct rogue_module_t : public module_t
@@ -3905,7 +3927,9 @@ struct rogue_module_t : public module_t
 
   virtual player_t* create_player( sim_t* sim, const std::string& name, race_e r = RACE_NONE ) const
   {
-    return new rogue_t( sim, name, r );
+    rogue_t* p = new rogue_t( sim, name, r );
+    p -> report_extension = std::shared_ptr<player_report_extension_t>( new rogue_report_t( *p ) );
+    return p;
   }
 
   virtual bool valid() const

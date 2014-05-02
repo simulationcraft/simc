@@ -4,7 +4,7 @@ race=troll
 role=attack
 position=back
 professions=Blacksmithing=600/engineering=600
-talents=http://us.battle.net/wow/en/tool/talent-calculator#cb!200002
+talents=http://us.battle.net/wow/en/tool/talent-calculator#cb!200002.
 spec=subtlety
 
 # This default action priority list is automatically created based on your character.
@@ -34,7 +34,6 @@ actions+=/use_item,slot=hands,if=buff.shadow_dance.up
 actions+=/blood_fury,if=buff.shadow_dance.up
 actions+=/berserking,if=buff.shadow_dance.up
 actions+=/arcane_torrent,if=energy<60
-actions+=/shadow_blades
 actions+=/premeditation,if=combo_points<=4
 actions+=/pool_resource,for_next=1
 actions+=/ambush,if=combo_points<5|(talent.anticipation.enabled&anticipation_charges<3)|(buff.sleight_of_hand.up&buff.sleight_of_hand.remains<=gcd)
@@ -69,41 +68,38 @@ actions.finisher+=/run_action_list,name=pool
 
 actions.pool=preparation,if=!buff.vanish.up&cooldown.vanish.remains>60
 
-head=helmet_of_the_barbed_assassin,id=99348,upgrade=2,gems=capacitive_primal_160agi_180agi,reforge=mastery_crit
+head=helmet_of_the_barbed_assassin,id=99348,upgrade=2,gems=capacitive_primal_8agi_9agi
 neck=gleaming_eye_of_the_devilsaur,id=105602,upgrade=2
-shoulders=spaulders_of_the_barbed_assassin,id=99350,upgrade=2,gems=160agi_160agi_120agi,enchant=200agi_100crit,reforge=exp_hit
-back=fenyu_fury_of_xuen,id=102248,upgrade=2,gems=160agi_60agi,enchant=180crit,reforge=mastery_exp
-chest=tunic_of_the_barbed_assassin,id=99356,upgrade=2,gems=160agi_160agi_160agi_180agi,enchant=80all,reforge=mastery_crit
-wrists=bombers_blackened_wristwatch,id=105616,upgrade=2,gems=160agi,enchant=180agi,reforge=mastery_exp
-hands=gloves_of_the_barbed_assassin,id=99355,upgrade=2,gems=160agi_160agi__160agi_120agi,enchant=170haste,addon=synapse_springs_2,reforge=mastery_crit
-waist=cord_of_black_dreams,id=105635,upgrade=2,gems=160agi_80agi_160haste_160agi_120agi,reforge=crit_hit
-legs=rious_vigilant_leggings,id=105529,upgrade=2,gems=80agi_160hit_80agi_160hit_120agi,enchant=285agi_165crit,reforge=mastery_haste
-feet=stonetoes_tormented_treads,id=105431,upgrade=2,gems=160agi_60mastery,enchant=140agi,reforge=hit_crit
-finger1=kilruks_band_of_ascendancy,id=105624,upgrade=2,gems=160agi_60crit,reforge=mastery_hit
-finger2=swift_serpent_signet,id=105483,upgrade=2,gems=80agi_160haste_60crit,reforge=mastery_haste
+shoulders=spaulders_of_the_barbed_assassin,id=99350,upgrade=2,gems=8agi_8agi_6agi,enchant=10agi_5crit
+back=fenyu_fury_of_xuen,id=102248,upgrade=2,gems=8agi_3agi,enchant=9crit
+chest=tunic_of_the_barbed_assassin,id=99356,upgrade=2,gems=8agi_8agi_8agi_9agi,enchant=4all
+wrists=bombers_blackened_wristwatch,id=105616,upgrade=2,gems=8agi,enchant=9agi
+hands=gloves_of_the_barbed_assassin,id=99355,upgrade=2,gems=8agi_8agi__8agi_6agi,enchant=9haste,addon=synapse_springs_2
+waist=cord_of_black_dreams,id=105635,upgrade=2,gems=8agi_4agi_8haste_8agi_6agi
+legs=rious_vigilant_leggings,id=105529,upgrade=2,gems=4agi_8crit_4agi_8crit_6agi,enchant=14agi_8crit
+feet=stonetoes_tormented_treads,id=105431,upgrade=2,gems=8agi_3mastery,enchant=7agi
+finger1=kilruks_band_of_ascendancy,id=105624,upgrade=2,gems=8agi_3crit
+finger2=swift_serpent_signet,id=105483,upgrade=2,gems=4agi_8haste_3crit
 trinket1=assurance_of_consequence,id=105472,upgrade=2
 trinket2=haromms_talisman,id=105527,upgrade=2
-main_hand=hvitserks_formidable_shanker,id=105601,upgrade=2,gems=160agi_60agi,enchant=dancing_steel,reforge=mastery_hit
-off_hand=hvitserks_formidable_shanker,id=105601,upgrade=2,gems=160agi_60agi,enchant=dancing_steel,reforge=mastery_exp
+main_hand=hvitserks_formidable_shanker,id=105601,upgrade=2,gems=8agi_3agi,enchant=dancing_steel
+off_hand=hvitserks_formidable_shanker,id=105601,upgrade=2,gems=8agi_3agi,enchant=dancing_steel
 
 # Gear Summary
-# gear_strength=80
-# gear_agility=29001
-# gear_stamina=38571
-# gear_intellect=80
-# gear_spirit=80
-# gear_expertise_rating=2541
-# gear_hit_rating=2550
-# gear_crit_rating=7478
-# gear_haste_rating=15030
-# gear_mastery_rating=6854
-# gear_armor=22619
+# gear_strength=4
+# gear_agility=1164
+# gear_stamina=1514
+# gear_intellect=4
+# gear_spirit=4
+# gear_crit_rating=364
+# gear_haste_rating=545
+# gear_mastery_rating=434
+# gear_armor=414
+# gear_multistrike_rating=99
+# gear_readiness_rating=99
 # meta_gem=capacitive_primal
 # tier16_2pc_melee=1
 # tier16_4pc_melee=1
-# hands=gloves_of_the_barbed_assassin,heroic=1,addon=synapse_springs_2
-# main_hand=hvitserks_formidable_shanker,heroic=1,elite=1,weapon=dagger_1.80speed_8476min_15744max,enchant=dancing_steel
-# off_hand=hvitserks_formidable_shanker,heroic=1,elite=1,weapon=dagger_1.80speed_8476min_15744max,enchant=dancing_steel
 # These values represent the avg HAT donor interval of the raid.
 # A negative value will make the Rogue use a programmed default interval.
 # A zero value will disable virtual HAT procs and assume a real raid is being simulated.

@@ -5,7 +5,7 @@
 
 #include "simulationcraft.hpp"
 
-namespace { // UNNAMED NAMESPACE ==========================================
+namespace { // UNNAMED NAMESPACE ============================================
 
 // parse_ptr ================================================================
 
@@ -868,7 +868,7 @@ sim_t::sim_t( sim_t* p, int index ) :
   save_prefix_str( "save_" ),
   save_talent_str( 0 ),
   talent_format( TALENT_FORMAT_UNCHANGED ),
-  auto_ready_trigger( 0 ), stat_cache( 1 ), max_aoe_enemies( 20 ), tmi_actor_only( 0 ), tmi_window_global( 0 ), new_tmi( 0 ), tmi_filter( 1.0 ),
+  auto_ready_trigger( 0 ), stat_cache( 1 ), max_aoe_enemies( 20 ), show_etmi( 0 ), tmi_window_global( 0 ),
   target_death_pct( 0 ), rel_target_level( 3 ), target_level( -1 ), target_adds( 0 ), desired_targets( 0 ),
   challenge_mode( false ), scale_to_itemlevel ( -1 ),
   active_enemies( 0 ), active_allies( 0 ),
@@ -882,7 +882,9 @@ sim_t::sim_t( sim_t* p, int index ) :
   scaling( new scaling_t( this ) ),
   plot( new plot_t( this ) ),
   reforge_plot( new reforge_plot_t( this ) ),
-  elapsed_cpu( timespan_t::zero() ), elapsed_time( timespan_t::zero() ), iteration_dmg( 0 ), iteration_heal( 0 ), iteration_absorb( 0 ),
+  elapsed_cpu( 0.0 ),
+  elapsed_time( 0.0 ),
+  iteration_dmg( 0 ), iteration_heal( 0 ), iteration_absorb( 0 ),
   raid_dps(), total_dmg(), raid_hps(), total_heal(), total_absorb(), raid_aps(),
   simulation_length( "Simulation Length", false ),
   report_progress( 1 ),
@@ -897,7 +899,7 @@ sim_t::sim_t( sim_t* p, int index ) :
   allow_flasks( true ),
   solo_raid( false ),
   global_item_upgrade_level( 0 ),
-  report_information( report_information_t() ),
+  report_information(),
   // Multi-Threading
   threads( 0 ), thread_index( index ), thread_priority( sc_thread_t::NORMAL ), work_queue(),
   spell_query( 0 ), spell_query_level( MAX_LEVEL ),
@@ -1022,14 +1024,13 @@ void sim_t::combat_begin()
     t -> combat_begin();
   }
 
-  if ( overrides.attack_speed            ) auras.attack_speed            -> override_buff();
   if ( overrides.attack_power_multiplier ) auras.attack_power_multiplier -> override_buff();
   if ( overrides.critical_strike         ) auras.critical_strike         -> override_buff();
 
   if ( overrides.mastery                 )
     auras.mastery -> override_buff( 1, dbc.effect_average( dbc.spell( 116956 ) -> effectN( 1 ).id(), max_player_level ) );
 
-  if ( overrides.spell_haste             ) auras.spell_haste             -> override_buff();
+  if ( overrides.haste                   ) auras.haste                   -> override_buff();
   if ( overrides.spell_power_multiplier  ) auras.spell_power_multiplier  -> override_buff();
   if ( overrides.stamina                 ) auras.stamina                 -> override_buff();
   if ( overrides.str_agi_int             ) auras.str_agi_int             -> override_buff();
@@ -1037,13 +1038,9 @@ void sim_t::combat_begin()
   for ( size_t i = 0; i < target_list.size(); ++i )
   {
     player_t* t = target_list[ i ];
-    if ( overrides.slowed_casting         ) t -> debuffs.slowed_casting         -> override_buff();
     if ( overrides.magic_vulnerability    ) t -> debuffs.magic_vulnerability    -> override_buff();
-    if ( overrides.ranged_vulnerability   ) t -> debuffs.ranged_vulnerability   -> override_buff();
     if ( overrides.mortal_wounds          ) t -> debuffs.mortal_wounds          -> override_buff();
     if ( overrides.physical_vulnerability ) t -> debuffs.physical_vulnerability -> override_buff();
-    if ( overrides.weakened_armor         ) t -> debuffs.weakened_armor         -> override_buff( 3 );
-    if ( overrides.weakened_blows         ) t -> debuffs.weakened_blows         -> override_buff();
     if ( overrides.bleeding               ) t -> debuffs.bleeding               -> override_buff( 1, 1.0 );
   }
 
@@ -1250,12 +1247,6 @@ bool sim_t::init()
 
   // MoP aura initialization
 
-  // Attack and Ranged speed, value from Swiftblade's Cunning (id=113742) (Rogue)
-  auras.attack_speed = buff_creator_t( this, "attack_speed" )
-                       .max_stack( 100 )
-                       .default_value( dbc.spell( 113742 ) -> effectN( 1 ).percent() )
-                       .add_invalidate( CACHE_HASTE );
-
   // Attack Power Multiplier, value from Trueshot Aura (id=19506) (Hunter)
   auras.attack_power_multiplier = buff_creator_t( this, "attack_power_multiplier" )
                                   .max_stack( 100 )
@@ -1274,8 +1265,8 @@ bool sim_t::init()
                   .default_value( dbc.spell( 116956 ) -> effectN( 1 ).base_value() )
                   .add_invalidate( CACHE_MASTERY );
 
-  // Spell Haste, value from Mind Quickening (id=49868) (Priest)
-  auras.spell_haste = buff_creator_t( this, "spell_haste" )
+  // Haste, value from Mind Quickening (id=49868) (Priest)
+  auras.haste = buff_creator_t( this, "haste" )
                       .max_stack( 100 )
                       .default_value( dbc.spell( 49868 ) -> effectN( 1 ).percent() )
                       .add_invalidate( CACHE_HASTE );
@@ -1342,8 +1333,6 @@ bool sim_t::init()
     if ( healers > 0 )
       heal_target = module_t::heal_enemy() -> create_player( this, "Healing Target" );
   }
-
-
 
   if ( max_player_level < 0 )
   {
@@ -1692,8 +1681,8 @@ bool sim_t::execute()
 
   analyze();
 
-  elapsed_cpu = timespan_t::from_seconds( ( util::cpu_time() - start_cpu_time ) );
-  elapsed_time = timespan_t::from_seconds( util::wall_time() - start_time );
+  elapsed_cpu =  util::cpu_time() - start_cpu_time;
+  elapsed_time =  util::wall_time() - start_time;
 
   return true;
 }
@@ -1750,22 +1739,17 @@ void sim_t::use_optimal_buffs_and_debuffs( int value )
 {
   optimal_raid = value;
 
-  overrides.attack_speed            = optimal_raid;
   overrides.attack_power_multiplier = optimal_raid;
   overrides.critical_strike         = optimal_raid;
   overrides.mastery                 = optimal_raid;
-  overrides.spell_haste             = optimal_raid;
+  overrides.haste             = optimal_raid;
   overrides.spell_power_multiplier  = optimal_raid;
   overrides.stamina                 = optimal_raid;
   overrides.str_agi_int             = optimal_raid;
 
-  overrides.slowed_casting          = optimal_raid;
   overrides.magic_vulnerability     = optimal_raid;
-  overrides.ranged_vulnerability    = optimal_raid;
   overrides.mortal_wounds           = optimal_raid;
   overrides.physical_vulnerability  = optimal_raid;
-  overrides.weakened_armor          = optimal_raid;
-  overrides.weakened_blows          = optimal_raid;
   overrides.bleeding                = optimal_raid;
 
   overrides.bloodlust               = optimal_raid;
@@ -1876,21 +1860,16 @@ void sim_t::create_options()
     opt_int( "max_aoe_enemies", max_aoe_enemies ),
     // Raid buff overrides
     opt_func( "optimal_raid", parse_optimal_raid ),
-    opt_int( "override.attack_speed", overrides.attack_speed ),
     opt_int( "override.attack_power_multiplier", overrides.attack_power_multiplier ),
     opt_int( "override.critical_strike", overrides.critical_strike ),
     opt_int( "override.mastery", overrides.mastery ),
-    opt_int( "override.spell_haste", overrides.spell_haste ),
+    opt_int( "override.haste", overrides.haste ),
     opt_int( "override.spell_power_multiplier", overrides.spell_power_multiplier ),
     opt_int( "override.stamina", overrides.stamina ),
     opt_int( "override.str_agi_int", overrides.str_agi_int ),
-    opt_int( "override.slowed_casting", overrides.slowed_casting ),
     opt_int( "override.magic_vulnerability", overrides.magic_vulnerability ),
-    opt_int( "override.ranged_vulnerability", overrides.ranged_vulnerability ),
     opt_int( "override.mortal_wounds", overrides.mortal_wounds ),
     opt_int( "override.physical_vulnerability", overrides.physical_vulnerability ),
-    opt_int( "override.weakened_armor", overrides.weakened_armor ),
-    opt_int( "override.weakened_blows", overrides.weakened_blows ),
     opt_int( "override.bleeding", overrides.bleeding ),
     opt_func( "override.spell_data", parse_override_spell_data ),
     opt_float( "override.target_health", overrides.target_health ),
@@ -1963,10 +1942,8 @@ void sim_t::create_options()
     opt_bool( "challenge_mode", challenge_mode ),
     opt_int( "scale_to_itemlevel", scale_to_itemlevel ),
     opt_int( "desired_targets", desired_targets ),
-    opt_bool( "tmi_actor_only", tmi_actor_only ),
+    opt_bool( "show_etmi", show_etmi ),
     opt_float( "tmi_window_global", tmi_window_global ),
-    opt_int( "new_tmi", new_tmi ),
-    opt_float( "tmi_filter", tmi_filter),
     // Character Creation
     opt_func( "death_knight", parse_player ),
     opt_func( "deathknight", parse_player ),

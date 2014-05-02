@@ -8,6 +8,14 @@
 
 namespace { // UNNAMED NAMESPACE ==========================================
 
+struct compare_hat_donor_interval
+{
+  bool operator()( const player_t* l, const player_t* r ) const
+  {
+    return ( l -> procs.hat_donor -> interval_sum.mean() < r -> procs.hat_donor -> interval_sum.mean() );
+  }
+};
+
 void simplify_html( std::string& buffer )
 {
   util::replace_all( buffer, "&lt;", "<" );
@@ -320,8 +328,8 @@ void print_text_core_stats( FILE* file, player_t* p )
                  buffed_stats.attribute[ ATTR_STAMINA   ], p -> stamina(),   p -> initial.stats.get_stat( STAT_STAMINA   ),
                  buffed_stats.attribute[ ATTR_INTELLECT ], p -> intellect(), p -> initial.stats.get_stat( STAT_INTELLECT ),
                  buffed_stats.attribute[ ATTR_SPIRIT    ], p -> spirit(),    p -> initial.stats.get_stat( STAT_SPIRIT    ),
-                 100.0 * buffed_stats.mastery_value , 100.0 * p -> composite_mastery(), p -> initial.stats.get_stat( STAT_MASTERY_RATING ),
-                 100.0 * buffed_stats.multistrike , 100.0 * p -> composite_multistrike(), p -> initial.stats.get_stat( STAT_MULTISTRIKE_RATING ),
+                 100.0 * buffed_stats.mastery_value , 100.0 * p -> cache.mastery_value(), p -> initial.stats.get_stat( STAT_MASTERY_RATING ),
+                 100.0 * buffed_stats.multistrike , 100.0 * p -> cache.multistrike(), p -> initial.stats.get_stat( STAT_MULTISTRIKE_RATING ),
                  buffed_stats.resource[ RESOURCE_HEALTH ], p -> resources.max[ RESOURCE_HEALTH ],
                  buffed_stats.resource[ RESOURCE_MANA   ], p -> resources.max[ RESOURCE_MANA   ] );
 }
@@ -562,9 +570,9 @@ void print_text_performance( FILE* file, sim_t* sim )
                  ( long ) sim -> max_events_remaining,
                  sim -> target -> resources.base[ RESOURCE_HEALTH ],
                  sim -> iterations * sim -> simulation_length.mean(),
-                 sim -> elapsed_cpu.total_seconds(),
-                 sim -> elapsed_time.total_seconds(),
-                 sim -> iterations * sim -> simulation_length.mean() / sim -> elapsed_cpu.total_seconds(),
+                 sim -> elapsed_cpu,
+                 sim -> elapsed_time,
+                 sim -> iterations * sim -> simulation_length.mean() / sim -> elapsed_cpu,
                  date_str.c_str(),
                  as<long int>(cur_time) );
 }
@@ -792,7 +800,7 @@ void print_text_hat_donors( FILE* file, sim_t* sim )
   int num_donors = ( int ) hat_donors.size();
   if ( num_donors )
   {
-    range::sort( hat_donors, report::compare_hat_donor_interval() );
+    range::sort( hat_donors, compare_hat_donor_interval() );
 
     util::fprintf( file, "\nHonor Among Thieves Donor Report:\n" );
 

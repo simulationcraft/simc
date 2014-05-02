@@ -96,6 +96,7 @@ enum proc_flag
   PF_SPELL_TAKEN          = 1 << PROC1_SPELL_TAKEN,
   PF_PERIODIC             = 1 << PROC1_PERIODIC, // Any periodic ability landed
   PF_PERIODIC_TAKEN       = 1 << PROC1_PERIODIC_TAKEN,
+
   PF_ANY_DAMAGE_TAKEN     = 1 << PROC1_ANY_DAMAGE_TAKEN,
 
   // Irrelevant ones for us
@@ -103,6 +104,17 @@ enum proc_flag
   PF_OFFHAND                  = 0x00800000,
   PF_DEATH                    = 0x01000000,
   PF_JUMP                     = 0x02000000,
+
+  // Helper types
+  PF_ALL_DAMAGE               = PF_MELEE | PF_MELEE_ABILITY |
+                                PF_RANGED | PF_RANGED_ABILITY |
+                                PF_AOE_SPELL | PF_SPELL,
+  PF_ALL_HEAL                 = PF_AOE_HEAL | PF_HEAL,
+
+  PF_DAMAGE_TAKEN         = PF_MELEE_TAKEN | PF_MELEE_ABILITY_TAKEN |
+                            PF_RANGED_TAKEN | PF_RANGED_ABILITY_TAKEN |
+                            PF_AOE_SPELL_TAKEN | PF_SPELL_TAKEN,
+  PF_ALL_HEAL_TAKEN       = PF_AOE_HEAL_TAKEN | PF_HEAL_TAKEN,
 };
 
 // Qualifier on what result / advanced type allows a proc trigger
@@ -240,6 +252,19 @@ enum item_subclass_armor
     ITEM_SUBCLASS_ARMOR_SIGIL                 = 11
 };
 
+enum item_subclass_consumable
+{
+    ITEM_SUBCLASS_CONSUMABLE                    = 0,
+    ITEM_SUBCLASS_POTION                        = 1,
+    ITEM_SUBCLASS_ELIXIR                        = 2,
+    ITEM_SUBCLASS_FLASK                         = 3,
+    ITEM_SUBCLASS_SCROLL                        = 4,
+    ITEM_SUBCLASS_FOOD                          = 5,
+    ITEM_SUBCLASS_ITEM_ENHANCEMENT              = 6,
+    ITEM_SUBCLASS_BANDAGE                       = 7,
+    ITEM_SUBCLASS_CONSUMABLE_OTHER              = 8
+};
+
 enum inventory_type
 {
     INVTYPE_NON_EQUIP                         = 0,
@@ -297,6 +322,7 @@ enum item_spell_trigger_type
     ITEM_SPELLTRIGGER_LEARN_SPELL_ID  = 6
 };
 
+/* If you add socket colors here, update dbc::valid_gem_color() too */
 enum item_socket_color
 {
   SOCKET_COLOR_NONE                 = 0,
@@ -304,6 +330,9 @@ enum item_socket_color
   SOCKET_COLOR_RED                  = 2,
   SOCKET_COLOR_YELLOW               = 4,
   SOCKET_COLOR_BLUE                 = 8,
+  SOCKET_COLOR_ORANGE               = SOCKET_COLOR_RED | SOCKET_COLOR_YELLOW,
+  SOCKET_COLOR_PURPLE               = SOCKET_COLOR_RED | SOCKET_COLOR_BLUE,
+  SOCKET_COLOR_GREEN                = SOCKET_COLOR_BLUE | SOCKET_COLOR_YELLOW,
   SOCKET_COLOR_HYDRAULIC            = 16,
   SOCKET_COLOR_PRISMATIC            = SOCKET_COLOR_RED | SOCKET_COLOR_YELLOW | SOCKET_COLOR_BLUE,
   SOCKET_COLOR_COGWHEEL             = 32,
@@ -374,7 +403,14 @@ enum item_mod_type {
   ITEM_MOD_NATURE_RESISTANCE        = 55,
   ITEM_MOD_ARCANE_RESISTANCE        = 56,
   ITEM_MOD_PVP_POWER                = 57,
-  ITEM_MOD_MULTISTRIKE_RATING       = 999 // TODO: WOD-MULTISTRIKE
+  ITEM_MOD_MULTISTRIKE_RATING       = 59,
+  ITEM_MOD_READINESS_RATING         = 60,
+  ITEM_MOD_WOD_1                    = 61,
+  ITEM_MOD_WOD_2                    = 62,
+  ITEM_MOD_WOD_3                    = 63,
+  ITEM_MOD_WOD_4                    = 64,
+  ITEM_MOD_WOD_5                    = 65,
+  ITEM_MOD_WOD_6                    = 66,
 };
 
 enum rating_mod_type {
@@ -386,6 +422,8 @@ enum rating_mod_type {
   RATING_MOD_CRIT_MELEE   = 0x00000100,
   RATING_MOD_CRIT_RANGED  = 0x00000200,
   RATING_MOD_CRIT_SPELL   = 0x00000400,
+  RATING_MOD_MULTISTRIKE  = 0x00000800,
+  RATING_MOD_READINESS    = 0x00001000,
   RATING_MOD_RESILIENCE   = 0x00008000,
   RATING_MOD_HASTE_MELEE  = 0x00020000,
   RATING_MOD_HASTE_RANGED = 0x00040000,
@@ -427,6 +465,7 @@ enum property_type_t {
   P_PROC_FREQUENCY    = 26,
   P_DAMAGE_TAKEN      = 27,
   P_DISPEL_CHANCE     = 28,
+  P_EFFECT_4          = 32,
   P_MAX               = 29,
 };
 
@@ -1020,6 +1059,15 @@ enum effect_subtype_t {
     A_421 = 421,
     A_423 = 423,
     A_424 = 424,
+    A_429 = 429,
+    A_441 = 441,
+    A_443 = 443,
+    A_447 = 447,
+    A_451 = 451,
+    A_453 = 453,
+    A_454 = 454,
+    A_464 = 464,
+    A_466 = 466,
     A_MAX
 };
 
@@ -1034,7 +1082,7 @@ enum spell_attribute_e
   SPELL_ATTR_UNK4, // 4 isAbility
   SPELL_ATTR_TRADESPELL, // 5 trade spells, will be added by client to a sublist of profession spell
   SPELL_ATTR_PASSIVE, // 6 Passive spell
-  SPELL_ATTR_UNK7, // 7 can't be linked in chat?
+  SPELL_ATTR_HIDDEN, // 7 can't be linked in chat?
   SPELL_ATTR_UNK8, // 8 hide created item in tooltip (for effect=24)
   SPELL_ATTR_UNK9, // 9
   SPELL_ATTR_ON_NEXT_SWING_2, // 10 on next swing 2

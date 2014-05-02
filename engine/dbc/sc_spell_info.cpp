@@ -111,7 +111,9 @@ const char * _property_type_strings[] =
   "Spell Cast Time",       "Spell Cooldown",        "Spell Effect 2",         0,                     "Spell Resource Cost",   // 10
   "Spell Critical Damage", "Spell Penetration",     "Spell Targets",          "Spell Proc Chance",   "Unknown 2",             // 15
   "Spell Target Bonus",    "Spell Global Cooldown", "Spell Periodic Damage",  "Spell Effect 3",      "Spell Power",           // 20
-  0,                       "Spell Proc Frequency",  "Spell Damage Taken",     "Spell Dispel Chance", 0                        // 25
+  0,                       "Spell Proc Frequency",  "Spell Damage Taken",     "Spell Dispel Chance", 0,                       // 25
+  0,                       0,                       "Spell Effect 4",         0,                     0,                       // 30
+  0,                       0,                       0,                        0,                     0                        // 35
 };
 
 const char * _effect_type_strings[] =
@@ -147,7 +149,7 @@ const char * _effect_type_strings[] =
   0,                    0,                          "Trigger Spell w/ Value", "Apply Owner Area Aura",    0,                       // 140
   0,                    "Activate Rune",            0,                      0,                          0,                       // 145
   0,                    "Trigger Spell",            0,                      0,                          0,                       // 150
-  "Titan Grip",         0,                          "Create Item",          0,                          0,                       // 155
+  "Titan Grip",         "Add Socket",               "Create Item",          0,                          0,                       // 155
   0,                    0,                          0,                      0,                          0,                       // 160
   0,                    0,                          0,                                                                           // 165
 };
@@ -212,7 +214,7 @@ const char * _effect_subtype_strings[] =
   0,                            0,                          0,                      0,                          0,                       // 275
   0,                            0,                          0,                      0,                          0,                       // 280
   0,                            0,                          0,                      0,                          0,                       // 285
-  0,                            0,                          0,                      0,                          0,                       // 290
+  "Modify Critical Strike%",    0,                          0,                      0,                          0,                       // 290
   0,                            0,                          0,                      0,                          0,                       // 295
   0,                            0,                          0,                      0,                          0,                       // 300
   0,                            0,                          0,                      0,                          0,                       // 305
@@ -229,6 +231,21 @@ const char * _effect_subtype_strings[] =
   0,                            0,                          0,                      0,                          0,                       // 360
   0,                            "Override Spell Power per Attack Power%",                          0,                      0,                          0,                       // 365
   0,                            0,                          0,                      0,                          0,                       // 370
+  0,                            0,                          0,                      0,                          0,                       // 375
+  0,                            0,                          0,                      0,                          0,                       // 380
+  0,                            0,                          0,                      0,                          0,                       // 385
+  0,                            0,                          0,                      0,                          0,                       // 390
+  0,                            0,                          0,                      0,                          0,                       // 395
+  0,                            0,                          0,                      0,                          0,                       // 400
+  0,                            0,                          0,                      0,                          0,                       // 405
+  0,                            0,                          0,                      0,                          0,                       // 410
+  0,                            0,                          0,                      0,                          0,                       // 415
+  0,                            0,                          0,                      0,                          0,                       // 420
+  0,                            0,                          0,                      0,                          0,                       // 425
+  0,                            0,                          0,                      0,                          0,                       // 430
+  0,                            0,                          0,                      0,                          0,                       // 435
+  0,                            "Modify Multistrike%",      0,                      0,                          0,                       // 440
+  0,                            0,                          0,                      0,                          0,                       // 445
 };
 
 std::string spell_flags( const spell_data_t* spell )
@@ -245,6 +262,9 @@ std::string spell_flags( const spell_data_t* spell )
 
   if ( spell -> flags( SPELL_ATTR_PASSIVE ) )
     s << "Passive, ";
+
+  if ( spell -> flags( SPELL_ATTR_HIDDEN ) )
+    s << "Hidden, ";
 
   if ( s.tellp() > 1 )
   {
@@ -410,8 +430,14 @@ std::ostringstream& spell_info::effect_to_str( const dbc_t& dbc,
 
   if ( e -> coeff() != 0 )
   {
-    snprintf( tmp_buffer, sizeof( tmp_buffer ), "%.3f", e -> coeff() );
+    snprintf( tmp_buffer, sizeof( tmp_buffer ), "%.5f", e -> coeff() );
     s << " | Coefficient: " << tmp_buffer;
+  }
+
+  if ( e -> ap_coeff() != 0 )
+  {
+    snprintf( tmp_buffer, sizeof( tmp_buffer ), "%.5f", e -> ap_coeff() );
+    s << " | AP Coefficient: " << tmp_buffer;
   }
 
   if ( e -> chain_multiplier() != 0 && e -> chain_multiplier() != 1.0 )
@@ -453,17 +479,19 @@ std::ostringstream& spell_info::effect_to_str( const dbc_t& dbc,
 
   s << std::endl;
 
-  /*
   std::stringstream affect_str;
   std::vector< const spell_data_t* > affected_spells = dbc.effect_affects_spells( spell -> class_family(), e );
   if ( affected_spells.size() > 0 )
   {
-    s << "                   Affected Spells:";
-    s << std::endl;
+    s << "                   Affected Spells: ";
     for ( size_t i = 0, end = affected_spells.size(); i < end; i++ )
-      s << "                   " << affected_spells[ i ] -> name_cstr() << " (" << affected_spells[ i ] -> id() << ")" << std::endl;
+    {
+      s << affected_spells[ i ] -> name_cstr() << " (" << affected_spells[ i ] -> id() << ")";
+      if ( i < end - 1 )
+        s << ", ";
+    }
+    s << std::endl;
   }
-  */
 
   return s;
 }
@@ -499,19 +527,19 @@ std::string spell_info::to_str( const dbc_t& dbc, const spell_data_t* spell, int
     if ( dbc.is_specialization_ability( spell -> id() ) )
     {
       std::vector<specialization_e> spec_list;
-      std::vector<specialization_e>::iterator iter;
+      std::vector<specialization_e>::const_iterator iter;
       dbc.ability_specialization( spell -> id(), spec_list );
 
       for ( iter = spec_list.begin(); iter != spec_list.end(); ++iter )
       {
-        if ( *iter == PET_FEROCITY || *iter == PET_CUNNING || *iter == PET_TENACITY )
+        if ( *iter == PET_FEROCIOUS_VERSATILITY || *iter == PET_CUNNING_VERSATILITY || *iter == PET_TENACIOUS_VERSATILITY )
           pet_ability = true;
         s << util::inverse_tokenize( dbc::specialization_string( *iter ) ) << " ";
       }
       spec_list.clear();
     }
 
-    for ( unsigned int i = 0; i < 12; i++ )
+    for ( unsigned int i = 1; i < 12; i++ )
     {
       if ( spell -> class_mask() & ( 1 << ( i - 1 ) ) )
       {
@@ -628,6 +656,12 @@ std::string spell_info::to_str( const dbc_t& dbc, const spell_data_t* spell, int
     if ( spell -> max_level() > 0 )
       s << " (max " << ( int ) spell -> max_level() << ")";
 
+    s << std::endl;
+  }
+
+  if ( spell -> max_scaling_level() > 0 )
+  {
+    s << "Max Scaling Level: " << ( int ) spell -> max_scaling_level();
     s << std::endl;
   }
 
@@ -762,9 +796,6 @@ std::string spell_info::to_str( const dbc_t& dbc, const spell_data_t* spell, int
     s << std::endl;
   }
 
-  if ( spell -> extra_coeff() > 0 )
-    s << "Coefficient      : " << spell -> extra_coeff() << std::endl;
-
   if ( spell -> class_family() > 0 )
   {
     std::vector< const spelleffect_data_t* > affecting_effects = dbc.effects_affecting_spell( spell );
@@ -861,10 +892,10 @@ std::string spell_info::talent_to_str( const dbc_t& /* dbc */, const talent_data
 
   s << "Column       : " << talent -> col() + 1    << std::endl;
   s << "Row          : " << talent -> row() + 1    << std::endl;
-  s << "Spell : "        << talent -> spell_id()   << std::endl;
+  s << "Spell        : "        << talent -> spell_id()   << std::endl;
   if ( talent -> replace_id() > 0 )
-    s << "Replaces : "   << talent -> replace_id() << std::endl;
-
+    s << "Replaces     : "   << talent -> replace_id() << std::endl;
+  s << "Spec         : " << util::specialization_string( talent -> specialization() ) << std::endl;
   s << std::endl;
 
   return s.str();
@@ -1065,7 +1096,7 @@ void spell_info::to_xml( const dbc_t& dbc, const spell_data_t* spell, xml_node_t
         xml_node_t* spec_node = node -> add_child( "spec" );
         spec_node -> add_parm( "id", *iter );
         spec_node -> add_parm( "name", dbc::specialization_string( *iter ) );
-        if ( *iter == PET_FEROCITY || *iter == PET_CUNNING || *iter == PET_TENACITY )
+        if ( *iter == PET_FEROCIOUS_VERSATILITY || *iter == PET_CUNNING_VERSATILITY || *iter == PET_TENACIOUS_VERSATILITY )
         {
           pet_ability = true;
         }

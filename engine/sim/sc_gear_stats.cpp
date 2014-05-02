@@ -49,6 +49,7 @@ void gear_stats_t::add_stat( stat_e stat,
     case STAT_CRIT_RATING:  crit_rating  += value; break;
     case STAT_HASTE_RATING: haste_rating += value; break;
     case STAT_MULTISTRIKE_RATING: multistrike_rating += value; break;
+    case STAT_READINESS_RATING: readiness_rating += value; break;
 
     case STAT_WEAPON_DPS:   weapon_dps   += value; break;
     case STAT_WEAPON_SPEED: weapon_speed += value; break;
@@ -57,6 +58,7 @@ void gear_stats_t::add_stat( stat_e stat,
     case STAT_WEAPON_OFFHAND_SPEED:  weapon_offhand_speed  += value; break;
 
     case STAT_ARMOR:             armor          += value; break;
+    case STAT_BONUS_ARMOR:       bonus_armor    += value; break;
     case STAT_DODGE_RATING:      dodge_rating   += value; break;
     case STAT_PARRY_RATING:      parry_rating   += value; break;
 
@@ -116,6 +118,7 @@ void gear_stats_t::set_stat( stat_e stat,
     case STAT_CRIT_RATING:  crit_rating  = value; break;
     case STAT_HASTE_RATING: haste_rating = value; break;
     case STAT_MULTISTRIKE_RATING: multistrike_rating = value; break;
+    case STAT_READINESS_RATING: readiness_rating = value; break;
 
     case STAT_WEAPON_DPS:   weapon_dps   = value; break;
     case STAT_WEAPON_SPEED: weapon_speed = value; break;
@@ -124,6 +127,7 @@ void gear_stats_t::set_stat( stat_e stat,
     case STAT_WEAPON_OFFHAND_SPEED:  weapon_offhand_speed  = value; break;
 
     case STAT_ARMOR:             armor          = value; break;
+    case STAT_BONUS_ARMOR:       bonus_armor    = value; break;
     case STAT_DODGE_RATING:      dodge_rating   = value; break;
     case STAT_PARRY_RATING:      parry_rating   = value; break;
 
@@ -182,6 +186,7 @@ double gear_stats_t::get_stat( stat_e stat ) const
     case STAT_CRIT_RATING:  return crit_rating;
     case STAT_HASTE_RATING: return haste_rating;
     case STAT_MULTISTRIKE_RATING: return multistrike_rating;
+    case STAT_READINESS_RATING: return readiness_rating;
 
     case STAT_WEAPON_DPS:   return weapon_dps;
     case STAT_WEAPON_SPEED: return weapon_speed;
@@ -190,6 +195,7 @@ double gear_stats_t::get_stat( stat_e stat ) const
     case STAT_WEAPON_OFFHAND_SPEED:  return weapon_offhand_speed;
 
     case STAT_ARMOR:             return armor;
+    case STAT_BONUS_ARMOR:       return bonus_armor;
     case STAT_DODGE_RATING:      return dodge_rating;
     case STAT_PARRY_RATING:      return parry_rating;
 

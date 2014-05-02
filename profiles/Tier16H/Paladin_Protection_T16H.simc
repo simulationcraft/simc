@@ -4,7 +4,7 @@ race=blood_elf
 role=tank
 position=front
 professions=Blacksmithing=600/Enchanting=600
-talents=http://us.battle.net/wow/en/tool/talent-calculator#bZ!201121
+talents=http://us.battle.net/wow/en/tool/talent-calculator#bZ!201121.
 glyphs=focused_shield/alabaster_shield/divine_protection
 spec=protection
 
@@ -20,7 +20,6 @@ actions.precombat=flask,type=earth
 actions.precombat+=/food,type=chun_tian_spring_rolls
 actions.precombat+=/blessing_of_kings,if=(!aura.str_agi_int.up)&(aura.mastery.up)
 actions.precombat+=/blessing_of_might,if=!aura.mastery.up
-actions.precombat+=/seal_of_insight
 actions.precombat+=/sacred_shield,if=talent.sacred_shield.enabled
 # Snapshot raid buffed stats before combat begins and pre-potting is done.
 actions.precombat+=/snapshot_stats
@@ -31,14 +30,12 @@ actions=/auto_attack
 actions+=/blood_fury
 actions+=/berserking
 actions+=/arcane_torrent
-actions+=/avenging_wrath
 actions+=/holy_avenger,if=talent.holy_avenger.enabled
 actions+=/divine_protection
 actions+=/guardian_of_ancient_kings
 actions+=/eternal_flame,if=talent.eternal_flame.enabled&(buff.eternal_flame.remains<2&buff.bastion_of_glory.react>2&(holy_power>=3|buff.divine_purpose.react|buff.bastion_of_power.react))
 actions+=/eternal_flame,if=talent.eternal_flame.enabled&(buff.bastion_of_power.react&buff.bastion_of_glory.react>=5)
 actions+=/shield_of_the_righteous,if=holy_power>=5|buff.divine_purpose.react|incoming_damage_1500ms>=health.max*0.3
-actions+=/judgment,if=talent.sanctified_wrath.enabled&buff.avenging_wrath.react
 actions+=/wait,sec=cooldown.judgment.remains,if=talent.sanctified_wrath.enabled&cooldown.judgment.remains>0&cooldown.judgment.remains<=0.5
 actions+=/crusader_strike
 actions+=/wait,sec=cooldown.crusader_strike.remains,if=cooldown.crusader_strike.remains>0&cooldown.crusader_strike.remains<=0.5
@@ -54,35 +51,34 @@ actions+=/consecration,if=target.debuff.flying.down&!ticking
 actions+=/holy_prism,if=talent.holy_prism.enabled
 actions+=/sacred_shield,if=talent.sacred_shield.enabled
 
-head=faceguard_of_winged_triumph,id=99370,upgrade=2,gems=indomitable_primal_160exp_160haste_270sta,reforge=parry_mastery
-neck=juggernauts_ignition_keys,id=105513,upgrade=2,reforge=hit_haste
-shoulders=shoulderguards_of_winged_triumph,id=99364,upgrade=2,gems=320haste_320haste,enchant=300sta_100dodge,reforge=exp_haste
-back=qianying_fortitude_of_niuzao,id=102250,upgrade=2,gems=160exp_160haste_90sta,enchant=200sta,reforge=parry_haste
-chest=chestguard_of_winged_triumph,id=99368,upgrade=2,gems=160exp_160haste_160exp_160haste_160exp_160haste_270sta,enchant=300sta,reforge=exp_haste
-wrists=bubbleburst_bracers,id=105411,upgrade=2,gems=320haste,enchant=170mastery
-hands=handguards_of_winged_triumph,id=99369,upgrade=2,gems=320haste_320haste_320haste,enchant=170haste,reforge=exp_hit
-waist=demolishers_reinforced_belt,id=105509,upgrade=2,gems=320haste_320haste_320haste
-legs=legplates_of_unthinking_strife,id=105640,upgrade=2,gems=320haste_320haste_320haste,enchant=430sta_165dodge
-feet=wolfrider_spurs,id=105531,upgrade=2,gems=320haste_60crit,enchant=175haste,reforge=crit_hit
-finger1=asgorathian_blood_seal,id=105620,upgrade=2,gems=160exp_160haste_60haste,enchant=240sta,reforge=exp_mastery
-finger2=seal_of_the_forgotten_kings,id=105589,upgrade=2,gems=160exp_160haste_60haste,enchant=240sta,reforge=crit_mastery
+head=faceguard_of_winged_triumph,id=99370,upgrade=2,gems=indomitable_primal_8haste_8haste_14sta
+neck=juggernauts_ignition_keys,id=105513,upgrade=2
+shoulders=shoulderguards_of_winged_triumph,id=99364,upgrade=2,gems=16haste_16haste,enchant=15sta_5dodge
+back=qianying_fortitude_of_niuzao,id=102250,upgrade=2,gems=8haste_8haste_90sta,enchant=10sta
+chest=chestguard_of_winged_triumph,id=99368,upgrade=2,gems=8haste_8haste_8haste_8haste_8haste_8haste_14sta,enchant=15sta
+wrists=bubbleburst_bracers,id=105411,upgrade=2,enchant=9mastery
+hands=handguards_of_winged_triumph,id=99369,upgrade=2,gems=16haste_16haste,enchant=9haste
+waist=demolishers_reinforced_belt,id=105509,upgrade=2,gems=16haste_16haste_16haste
+legs=legplates_of_unthinking_strife,id=105640,upgrade=2,gems=16haste_16haste_16haste,enchant=22sta_8dodge
+feet=wolfrider_spurs,id=105531,upgrade=2,gems=16haste_3crit,enchant=9haste
+finger1=asgorathian_blood_seal,id=105620,upgrade=2,gems=8haste_8haste_3haste
+finger2=seal_of_the_forgotten_kings,id=105589,upgrade=2,gems=8haste_8haste_3haste
 trinket1=vial_of_living_corruption,id=105568,upgrade=2
 trinket2=thoks_tail_tip,id=105609,upgrade=2
-main_hand=siegecrafters_forge_hammer,id=105621,upgrade=2,gems=320haste,enchant=windsong
-off_hand=bulwark_of_the_fallen_general,id=105556,upgrade=2,gems=320haste,enchant=170parry,reforge=exp_haste
+main_hand=siegecrafters_forge_hammer,id=105621,upgrade=2,gems=16haste,enchant=windsong
+off_hand=bulwark_of_the_fallen_general,id=105556,upgrade=2,gems=16haste,enchant=9parry
 
 # Gear Summary
-# gear_strength=24320
-# gear_stamina=45450
-# gear_expertise_rating=5199
-# gear_hit_rating=2581
-# gear_crit_rating=1432
-# gear_haste_rating=19052
-# gear_mastery_rating=10868
-# gear_armor=64101
-# gear_dodge_rating=265
-# gear_parry_rating=1706
+# gear_strength=928
+# gear_stamina=1877
+# gear_crit_rating=394
+# gear_haste_rating=827
+# gear_mastery_rating=365
+# gear_armor=2041
+# gear_bonus_armor=35
+# gear_dodge_rating=13
+# gear_parry_rating=9
+# gear_readiness_rating=99
 # meta_gem=indomitable_primal
 # tier16_2pc_tank=1
 # tier16_4pc_tank=1
-# main_hand=siegecrafters_forge_hammer,heroic=1,elite=1,weapon=mace_2.60speed_12244min_22741max,enchant=windsong

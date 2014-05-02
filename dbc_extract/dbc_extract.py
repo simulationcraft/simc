@@ -24,12 +24,12 @@ parser.add_option("-t", "--type", dest = "type",
                   help    = "Processing type [spell]", metavar = "TYPE", 
                   default = "spell", action = "store", type = "choice",
                   choices = [ 'spell', 'class_list', 'talent', 'scale', 'view', 
-                              'header', 'patch', 'spec_spell_list', 'mastery_list', 'racial_list', 
+                              'header', 'patch', 'spec_spell_list', 'mastery_list', 'racial_list', 'perk_list',
                               'glyph_list', 'class_flags', 'set_list', 'random_property_points', 'random_suffix',
                               'item_ench', 'weapon_damage', 'item', 'item_armor', 'gem_properties', 'random_suffix_groups', 'spec_enum', 'spec_list', 'item_upgrade', 'rppm_coeff' ]), 
 parser.add_option("-l", "--level", dest = "level", 
-                  help    = "Scaling values up to level [90]", 
-                  default = 90, action = "store", type = "int")
+                  help    = "Scaling values up to level [100]", 
+                  default = 100, action = "store", type = "int")
 parser.add_option("-p", "--path", dest = "path", 
                   help    = "DBC input directory [cwd]", 
                   default = r'.', action = "store", type = "string")
@@ -47,16 +47,19 @@ parser.add_option("--min-ilvl", dest = "min_ilevel",
                   default = 372, action = "store", type = "int" )
 parser.add_option("--max-ilvl", dest = "max_ilevel",
                   help    = "Maximum inclusive ilevel for item-related extraction",
-                  default = 600, action = "store", type = "int" )
+                  default = 800, action = "store", type = "int" )
 parser.add_option("--scale-ilvl", dest = "scale_ilevel",
                   help    = "Maximum inclusive ilevel for game table related extraction",
-                  default = 999, action = "store", type = "int" )
+                  default = 1000, action = "store", type = "int" )
 parser.add_option("--cache", dest = "cache_dir",
                   help    = "World of Warcraft Cache directory.", 
                   default = r'', action = "store", type = "string" )
 parser.add_option("-v", 
                   help    = "World of Warcraft version, in the format <major>.<minor>.<patch>, i.e., 5.3.0",
                   action = "callback", dest = "wowversion", type = "string", default = 0, callback = parse_wow_version )
+parser.add_option("--as", dest = "as_dbc", 
+                  help    = "Treat given DBC file as this option",
+                  action = "store", type = "string", default = '' )
 parser.add_option("--debug", dest = "debug", default = False, action = "store_true")
 (options, args) = parser.parse_args()
 
@@ -227,7 +230,6 @@ elif options.type == 'spec_list':
     if not g.initialize():
         sys.exit(1)
     ids = g.filter()
-
     
     print g.generate(ids)
 elif options.type == 'set_list':
@@ -236,6 +238,13 @@ elif options.type == 'set_list':
         sys.exit(1)
     ids = g.filter()
     
+    print g.generate(ids)
+elif options.type == 'perk_list':
+    g = dbc.generator.PerkSpellGenerator(options)
+    if not g.initialize():
+        sys.exit(1)
+    ids = g.filter()
+
     print g.generate(ids)
 elif options.type == 'header':
     dbcs = [ ]
@@ -281,11 +290,6 @@ elif options.type == 'view':
         record.parse()
         print record
 elif options.type == 'scale':
-#    g = dbc.generator.BaseScalingDataGenerator(options, [ 'gtChanceToMeleeCritBase', 'gtChanceToSpellCritBase' ] )
-#    if not g.initialize():
-#        sys.exit(1)
-#    print g.generate()
-
     g = dbc.generator.LevelScalingDataGenerator(options, [ 'gtOCTHpPerStamina' ] )
     if not g.initialize():
         sys.exit(1)
@@ -297,7 +301,7 @@ elif options.type == 'scale':
     print g.generate()
     
     tables = [ 'gtChanceToMeleeCritBase', 'gtChanceToSpellCritBase', 'gtChanceToMeleeCrit', 'gtChanceToSpellCrit', 'gtRegenMPPerSpt', 'gtOCTBaseHPByClass', 'gtOCTBaseMPByClass' ]
-    g = dbc.generator.ClassScalingDataGenerator(options, tables )
+    g = dbc.generator.ClassScalingDataGenerator(options, tables)
     if not g.initialize():
         sys.exit(1)
     print g.generate()
@@ -312,6 +316,13 @@ elif options.type == 'scale':
         sys.exit(1)
 
     print g.generate()
+
+    g = dbc.generator.MonsterLevelScalingDataGenerator(options, 'gtArmorMitigationByLvl')
+    if not g.initialize():
+        sys.exit(1)
+
+    print g.generate()
+
 elif options.type == 'patch':
     patch = dbc.patch.PatchBuildDBC(args[0], args[1], args[2:])
     patch.initialize()

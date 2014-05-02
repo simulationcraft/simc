@@ -6,6 +6,8 @@
 #include "io.hpp"
 #include "utf8.h"
 #include <cassert>
+#include <cstring>
+#include <cstdarg>
 
 #ifdef SC_WINDOWS
 #include <windows.h>
@@ -44,7 +46,7 @@ std::string narrow( const wchar_t* wstr )
 { return narrow( wstr, wstr + wcslen( wstr ) ); }
 
 std::wstring widen( const char* str )
-{ return widen( str, str + strlen( str ) ); }
+{ return widen( str, str + std::strlen( str ) ); }
 
 std::wstring widen( const std::string& str )
 { return widen( str.c_str(), str.c_str() + str.size() ); }

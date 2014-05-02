@@ -357,7 +357,6 @@ class SpecializationListGenerator(DataGenerator):
         
         return s
 
-
 class BaseScalingDataGenerator(DataGenerator):
     def __init__(self, options, scaling_data):
         if isinstance(scaling_data, str):
@@ -422,6 +421,40 @@ class LevelScalingDataGenerator(DataGenerator):
 
         return s
 
+class MonsterLevelScalingDataGenerator(DataGenerator):
+    def __init__(self, options, scaling_data):
+        if isinstance(scaling_data, str):
+            self._dbc = [ scaling_data ]
+        else:
+            self._dbc = scaling_data
+
+        DataGenerator.__init__(self, options)
+
+    def generate(self, ids = None):
+        s = ''
+
+        for i in self._dbc:
+            s += '// Monster(?) Level scaling data, wow build %d\n' % self._options.build
+            s += 'static double __%s%s%s[%u] = {\n' % ( 
+                self._options.prefix and ('%s_' % self._options.prefix) or '',
+                re.sub(r'([A-Z]+)', r'_\1', i).lower(),
+                self._options.suffix and ('_%s' % self._options.suffix) or '',
+                self._options.level + 3)
+
+            for k in xrange(0, self._options.level + 3):
+                val = getattr(self, '_%s_db' % i.lower())[k]
+
+                s += '%20.10f' % val.gt_value
+                if k < self._options.level + 3 - 1:
+                    s += ', '
+
+                if k > 0 and (k + 1) % 5 == 0:
+                    s += '\n'
+
+            s += '\n};\n\n'
+
+        return s
+
 class IlevelScalingDataGenerator(DataGenerator):
     def __init__(self, options, scaling_data):
         if isinstance(scaling_data, str):
@@ -459,8 +492,8 @@ class CombatRatingsDataGenerator(DataGenerator):
     _combat_ratings = [ 'Dodge',        'Parry',        'Block',       'Melee hit',  'Ranged hit', 
                         'Spell hit',    'Melee crit',   'Ranged crit', 'Spell crit', 'PvP Resilience',
                         'Melee haste',  'Ranged haste', 'Spell haste', 'Expertise',  'Mastery',
-                        'PvP Power'  ]
-    _combat_rating_ids = [ 2, 3, 4, 5, 6, 7, 8, 9, 10, 15, 17, 18, 19, 23, 25, 26 ] 
+                        'PvP Power',    'Multistrike',  'Readiness' ]
+    _combat_rating_ids = [ 2, 3, 4, 5, 6, 7, 8, 9, 10, 15, 17, 18, 19, 23, 25, 26, 11, 12 ] 
     def __init__(self, options):
         # Hardcode these, as we need two different kinds of databases for output, using the same combat rating ids
         self._dbc = [ 'gtCombatRatings' ]
@@ -482,7 +515,7 @@ class CombatRatingsDataGenerator(DataGenerator):
             s += '  // %s rating multipliers\n' % CombatRatingsDataGenerator._combat_ratings[j]
             s += '  {\n'
             m  = CombatRatingsDataGenerator._combat_rating_ids[j]
-            for k in xrange(m * 100, m * 100 + self._options.level, 5):
+            for k in xrange(m * 123, m * 123 + self._options.level, 5):
                 s += '    %20.15f, %20.15f, %20.15f, %20.15f, %20.15f,\n' % (
                     db[k].gt_value, db[k + 1].gt_value, db[k + 2].gt_value,
                     db[k + 3].gt_value, db[k + 4].gt_value )
@@ -545,7 +578,7 @@ class ClassScalingDataGenerator(DataGenerator):
                     s += '  // %s\n' % self._class_names[j]
             
                 s += '  {\n'
-                for k in xrange((j - 1) * 100, (j - 1) * 100 + self._options.level, 5):
+                for k in xrange((j - 1) * 123, (j - 1) * 123 + self._options.level, 5):
                     s += '    %20.15f, %20.15f, %20.15f, %20.15f, %20.15f,\n' % (
                         db[k].gt_value, db[k + 1].gt_value, db[k + 2].gt_value, 
                         db[k + 3].gt_value, db[k + 4].gt_value
@@ -582,7 +615,7 @@ class SpellScalingDataGenerator(DataGenerator):
                 s += '  // Constant scaling\n'
         
             s += '  {\n'
-            for k in xrange((j - 1) * 100, (j - 1) * 100 + self._options.level, 5):
+            for k in xrange((j - 1) * 123, (j - 1) * 123 + self._options.level, 5):
                 s += '    %20.15f, %20.15f, %20.15f, %20.15f, %20.15f,\n' % (
                     db[k].gt_value, db[k + 1].gt_value, db[k + 2].gt_value, 
                     db[k + 3].gt_value, db[k + 4].gt_value
@@ -639,29 +672,15 @@ class TalentDataGenerator(DataGenerator):
                 continue
 
             if( index % 20 == 0 ):
-                s += '//{ Name                                ,    Id, Flgs,  Class,  Pet, IsPet, Col, Row, SpellID, ReplaceID, S1 },\n'
+                s += '//{ Name                                ,    Id, Flgs,  Class, Spc, Col, Row, SpellID, ReplaceID, S1 },\n'
 
             fields = spell.field('name')
             fields += talent.field('id')
             fields += [ '%#.2x' % 0 ]
-            # These are now the pet talents
-            if talent.spec_id > 0:
-                fields += [ '%#.04x' % 0 ]
-                # Do this ugly for now
-                # _pet_names   = [ None, 'Ferocity', 'Tenacity', None, 'Cunning' ]
-                # _pet_masks   = [ None, 0x1,        0x2,        None, 0x4       ]
-                if talent.spec_id == 74:
-                    fields += [ '%#.02x' % 0x1 ]
-                elif talent.spec_id == 79:
-                    fields += [ '%#.02x' % 0x2 ]
-                elif talent.spec_id == 81:
-                    fields += [ '%#.02x' % 0x4 ]
-            else:
-                fields += [ '%#.04x' % (DataGenerator._class_masks[talent.class_id] or 0) ]
-                fields += [ '%#.02x' % 0 ]
+            fields += [ '%#.04x' % (DataGenerator._class_masks[talent.class_id] or 0) ]
+            fields += talent.field('spec_id')
                            
-            fields += talent.field('pet','col','row')
-            fields += talent.field( 'id_spell', 'id_replace' )
+            fields += talent.field('col','row', 'id_spell', 'id_replace' )
             # Pad struct with empty pointers for direct rank based spell data access
             fields += [ ' 0' ]
         
@@ -754,7 +773,7 @@ class ItemDataGenerator(DataGenerator):
     }
 
     def __init__(self, options):
-        self._dbc = [ 'Item-sparse', 'Item', 'ItemDisplayInfo', 'SpellEffect', 'Spell', 'JournalEncounterItem', 'ItemNameDescription' ]
+        self._dbc = [ 'Item-sparse', 'Item', 'ItemEffect', 'SpellEffect', 'Spell', 'JournalEncounterItem', 'ItemNameDescription' ]
 
         DataGenerator.__init__(self, options)
 
@@ -776,6 +795,15 @@ class ItemDataGenerator(DataGenerator):
         for id, journal_item_data in self._journalencounteritem_db.iteritems():
             if self._item_sparse_db[journal_item_data.id_item]:
                 self._item_sparse_db[journal_item_data.id_item].journal = journal_item_data
+
+        # For WoD, map ItemEffect to Item-sparse
+        for is_id,data in self._itemeffect_db.iteritems():
+            item = self._item_sparse_db[data.id_item]
+            if not item.id:
+                continue
+            
+            item.spells.append(data)
+
         return True
     
     def filter(self):
@@ -796,24 +824,53 @@ class ItemDataGenerator(DataGenerator):
 
             filter_ilevel = True
 
+            # Item no longer in game
+            if data.flags & 0x10:
+                continue
+
             # Gems
             if classdata.classs == 3:
                 if data.gem_props == 0:
                     continue
                 else:
                     filter_ilevel = False
-            # Permanent Item Enchants (not strictly needed for simc, but 
-            # paperdoll will like them)
+            # Consumables
             elif classdata.classs == 0:
-                if classdata.subclass != 6:
-                    continue
-                else:
+                # Potions, Elixirs, Flasks. Simple spells only.
+                if classdata.has_value('subclass', [1, 2, 3]):
+                    for item_effect in data.spells:
+                        spell = self._spell_db[item_effect.id_spell]
+                        if not spell.has_effect('type', 6):
+                            continue
+
+                        # Grants armor, stats, or rating
+                        if not spell.has_effect('sub_type', [13, 22, 29, 99, 189]):
+                            continue
+
+                        filter_ilevel = False
+                # Food
+                elif classdata.has_value('subclass', 5):
+                    for item_effect in data.spells:
+                        spell = self._spell_db[item_effect.id_spell]
+                        for effect in spell._effects:
+                            if not effect:
+                                continue
+
+                            if effect.sub_type == 23:
+                                filter_ilevel = False
+                elif classdata.subclass == 3:
                     filter_ilevel = False
+                # Permanent Item Enchants (not strictly needed for simc, but 
+                # paperdoll will like them)
+                elif classdata.subclass == 6:
+                   filter_ilevel = False 
+                else:
+                    continue
             # Only very select quest-item permanent item enchantments
             elif classdata.classs == 12:
                 valid = False
-                for i in xrange(1, 6):
-                    spell_id = getattr(data, 'id_spell_%d' % i)
+                for spell in data.spells:
+                    spell_id = spell.id_spell
                     if spell_id == 0:
                         continue
 
@@ -829,9 +886,6 @@ class ItemDataGenerator(DataGenerator):
                     filter_ilevel = False
                 else:
                     continue
-            # Items no longer in game
-            elif data.flags & 0x10:
-                continue
             # All glyphs
             elif classdata.classs == 16:
                 filter_ilevel = False
@@ -873,7 +927,6 @@ class ItemDataGenerator(DataGenerator):
         for id in ids + [ 0 ]:
             item = self._item_sparse_db[id]
             item2 = self._item_db[id]
-            item_display = self._itemdisplayinfo_db[item2.id_display]
             
             if not item.id and id > 0:
                 sys.stderr.write('Item id %d not found\n' % id) 
@@ -886,10 +939,9 @@ class ItemDataGenerator(DataGenerator):
                 item2.subclass = 6
 
             if(index % 20 == 0):
-                s += '//{    Id, Name                                                   , Icon                                    ,     Flags1,     Flags2, Type,Level,ReqL,ReqSk, RSkL,Qua,Inv,Cla,SCl,Bnd, Delay, DmgRange, Modifier,  ClassMask,   RaceMask, { ST1, ST2, ST3, ST4, ST5, ST6, ST7, ST8, ST9, ST10}, {  SV1,  SV2,  SV3,  SV4,  SV5,  SV6,  SV7,  SV8,  SV9, SV10 }, {  SId1,  SId2,  SId3,  SId4,  SId5 }, {TId1,TId2,TId3,TId4,TId5 }, {    CdS1,    CdS2,    CdS3,    CdS4,    CdS5 }, { CdCat1, CdCat2, CdCat3, CdCat4, CdCat5 }, {Soc1,Soc2,Soc3 }, GemP,IdSBon,IdSet,IdSuf },\n'
+                s += '//{    Id, Name                                                   ,     Flags1,     Flags2, Type,Level,ReqL,ReqSk, RSkL,Qua,Inv,Cla,SCl,Bnd, Delay, DmgRange, Modifier,  ClassMask,   RaceMask, { ST1, ST2, ST3, ST4, ST5, ST6, ST7, ST8, ST9, ST10}, {  SV1,  SV2,  SV3,  SV4,  SV5,  SV6,  SV7,  SV8,  SV9, SV10 }, {  SId1,  SId2,  SId3,  SId4,  SId5 }, {Soc1,Soc2,Soc3 }, GemP,IdSBon,IdSet,IdSuf },\n'
 
             fields = item.field('id', 'name')
-            fields += item_display.field('icon')
             fields += item.field('flags', 'flags_2')
 
             flag_types = 0x00
@@ -900,7 +952,7 @@ class ItemDataGenerator(DataGenerator):
                 elif item.journal.flags_1 == 0xC:
                     flag_types |= self._type_flags['Heroic']
 
-            desc = self._itemnamedescription_db[item.id]
+            desc = self._itemnamedescription_db[item.id_name_desc]
             flag_types |= self._type_flags.get(desc.desc, 0)
 
             fields += [ '%#.2x' % flag_types ]
@@ -911,10 +963,28 @@ class ItemDataGenerator(DataGenerator):
             fields += [ '{ %s }' % ', '.join(item.field('stat_val_1', 'stat_val_2', 'stat_val_3', 'stat_val_4', 'stat_val_5', 'stat_val_6', 'stat_val_7', 'stat_val_8', 'stat_val_9', 'stat_val_10')) ]
             fields += [ '{ %s }' % ', '.join(item.field('stat_alloc_1', 'stat_alloc_2', 'stat_alloc_3', 'stat_alloc_4', 'stat_alloc_5', 'stat_alloc_6', 'stat_alloc_7', 'stat_alloc_8', 'stat_alloc_9', 'stat_alloc_10')) ]
             fields += [ '{ %s }' % ', '.join(item.field('stat_socket_mul_1', 'stat_socket_mul_2', 'stat_socket_mul_3', 'stat_socket_mul_4', 'stat_socket_mul_5', 'stat_socket_mul_6', 'stat_socket_mul_7', 'stat_socket_mul_8', 'stat_socket_mul_9', 'stat_socket_mul_10')) ]
-            fields += [ '{ %s }' % ', '.join(item.field('id_spell_1', 'id_spell_2', 'id_spell_3', 'id_spell_4', 'id_spell_5')) ]
-            fields += [ '{ %s }' % ', '.join(item.field('trg_spell_1', 'trg_spell_2', 'trg_spell_3', 'trg_spell_4', 'trg_spell_5')) ]
-            fields += [ '{ %s }' % ', '.join(item.field('cd_spell_1', 'cd_spell_2', 'cd_spell_3', 'cd_spell_4', 'cd_spell_5')) ]
-            fields += [ '{ %s }' % ', '.join(item.field('cdc_spell_1', 'cdc_spell_2', 'cdc_spell_3', 'cdc_spell_4', 'cdc_spell_5')) ]
+
+            spells = self._itemeffect_db[0].field('id_spell') * 5
+            trigger_types = self._itemeffect_db[0].field('trigger_type') * 5
+            cooldown_category = self._itemeffect_db[0].field('cooldown_category') * 5
+            cooldown_value = self._itemeffect_db[0].field('cooldown_category_duration') * 5
+            cooldown_group = self._itemeffect_db[0].field('cooldown_group') * 5
+            cooldown_shared = self._itemeffect_db[0].field('cooldown_group_duration') * 5
+            for spell in item.spells:
+                spells[ spell.index ] = spell.field('id_spell')[ 0 ]
+                trigger_types[ spell.index ] = spell.field('trigger_type')[ 0 ]
+                cooldown_category[ spell.index ] = spell.field('cooldown_category')[ 0 ]
+                cooldown_value[ spell.index ] = spell.field('cooldown_category_duration')[ 0 ]
+                cooldown_group[ spell.index ] = spell.field('cooldown_group')[ 0 ]
+                cooldown_shared[ spell.index ] = spell.field('cooldown_group_duration')[ 0 ]
+
+            fields += [ '{ %s }' % ', '.join(trigger_types) ]
+            fields += [ '{ %s }' % ', '.join(spells) ]
+            fields += [ '{ %s }' % ', '.join(cooldown_category) ]
+            fields += [ '{ %s }' % ', '.join(cooldown_value) ]
+            fields += [ '{ %s }' % ', '.join(cooldown_group) ]
+            fields += [ '{ %s }' % ', '.join(cooldown_shared) ]
+
             fields += [ '{ %s }' % ', '.join(item.field('socket_color_1', 'socket_color_2', 'socket_color_3')) ]
             fields += item.field('gem_props', 'socket_bonus', 'item_set', 'rand_suffix' )
 
@@ -1163,14 +1233,16 @@ class SpellDataGenerator(DataGenerator):
          120032, 142530,            # Dancing Steel
          104993,                    # Jade Spirit
          116631,                    # Colossus
+         105617,                    # Alchemist's Flask
+         137596,                    # Capacitance
         ),
         
         # Warrior:
         (
             ( 118340, 0 ),          # Impending Victory Heal
-            ( 21156,  0 ),          # Battle stance passive
             ( 118779, 0, False ),   # Victory Rush heal is not directly activatable
             ( 144500, 0 ),          # T16 tank 4pc proc
+            ( 156321, 0 )           # Shield Charge for Gladiator Stance
         ),
         
         # Paladin:
@@ -1324,7 +1396,10 @@ class SpellDataGenerator(DataGenerator):
           ( 144770, 1, False ), ( 144772, 1, False ), # Balance Tier 16 2pc spells
           ( 150017, 5 ),       # Rake for Treants
           ( 146874, 0 ),       # Feral Rage (T16 4pc feral bonus)
-          ( 124991, 0 ), ( 124998, 0 ), # Nature's Vigil
+          ( 124991, 0 ), ( 124988, 0 ), # Nature's Vigil
+	  ( 155580, 0 ),       # Lunar Inspiration
+	  ( 155627, 0 ),       # Lunar Inspiration
+	  ( 155625, 0 ),       # Lunar Inspiration Moonfire
         ), 
     ]
 
@@ -1543,13 +1618,8 @@ class SpellDataGenerator(DataGenerator):
             'SpellDuration', 'SpellPower', 'SpellLevels', 'SpellCategories', 'Talent', 
             'SkillLineAbility', 'SpellAuraOptions', 'SpellRuneCost', 'SpellRadius', 'GlyphProperties',
             'SpellCastTimes', 'ItemSet', 'SpellDescriptionVariables', 'SpellItemEnchantment', 'Item-sparse',
-            'Item', 'SpellEquippedItems', 'SpellIcon', 'SpecializationSpells', 'ChrSpecialization', 'SpellEffectScaling' ]
-        
-        if options.build >= 15589:
-            self._dbc.append( 'SpellMisc' )
-
-        if options.build >= 17227:
-            self._dbc.append( 'SpellProcsPerMinute' )
+            'Item', 'SpellEquippedItems', 'SpellIcon', 'SpecializationSpells', 'ChrSpecialization', 'SpellEffectScaling',
+            'SpellMisc', 'SpellProcsPerMinute', 'ItemSetSpell', 'ItemEffect', 'MinorTalent' ]
 
     def initialize(self):
         DataGenerator.initialize(self)
@@ -1597,6 +1667,23 @@ class SpellDataGenerator(DataGenerator):
                 continue
             
             spell.add_misc(spell_misc_data)
+
+        # For WoD, map ItemSetSpell.dbc to ItemSet.dbc
+        for isb_id, data in self._itemsetspell_db.iteritems():
+            item_set = self._itemset_db[data.id_item_set]
+            if not item_set.id:
+                continue
+            
+            item_set.bonus.append(data)
+
+        # For WoD, map ItemEffect to Item-sparse
+        for is_id,data in self._itemeffect_db.iteritems():
+            item = self._item_sparse_db[data.id_item]
+            if not item.id:
+                continue
+            
+            item.spells.append(data)
+
         
         return True
     
@@ -1764,6 +1851,17 @@ class SpellDataGenerator(DataGenerator):
                 mask_class = DataGenerator._class_masks[talent_data.class_id]
                 self.process_spell(getattr(talent_data, 'id_spell'), ids, mask_class, 0)
 
+        # Get all perks
+        for perk_id, perk_data in self._minortalent_db.iteritems():
+            if perk_data.id_spell == 0:
+                continue
+
+            spec_data = self._chrspecialization_db[perk_data.id_spec]
+            if spec_data.id == 0:
+                continue
+
+            self.process_spell(perk_data.id_spell, ids, DataGenerator._class_masks[spec_data.class_id], 0)
+
         # Get base skills from SkillLineAbility
         for ability_id, ability_data in self._skilllineability_db.iteritems():
             mask_class_category = 0
@@ -1825,6 +1923,22 @@ class SpellDataGenerator(DataGenerator):
         
 
         # Get spells relating to item enchants, so we can populate a (nice?) list
+        for enchant_id, enchant_data in self._spellitemenchantment_db.iteritems():
+            for i in xrange(1, 4):
+                type_field_str = 'type_%d' % i
+                id_field_str = 'id_property_%d' % i
+
+                # "combat spell", "equip spell", "use spell"
+                if getattr(enchant_data, type_field_str) not in [ 1, 3, 7 ]:
+                    continue
+                
+                spell_id = getattr(enchant_data, id_field_str)
+                if not spell_id:
+                    continue
+                
+                self.process_spell(spell_id, ids, 0, 0)
+
+        # Get spells that create item enchants
         for ability_id, ability_data in self._skilllineability_db.iteritems():
             if ability_data.id_skill not in self._profession_enchant_categories:
                 continue;
@@ -1846,8 +1960,8 @@ class SpellDataGenerator(DataGenerator):
                     if not item.id or item.gem_props == 0:
                         continue
 
-                    for i in xrange(1, 6):
-                        id_spell = getattr(item, 'id_spell_%d' % i)
+                    for spell in item.spells:
+                        id_spell = spell.id_spell
                         enchant_spell = self._spell_db[id_spell]
                         for enchant_effect in enchant_spell._effects:
                             if not enchant_effect or (enchant_effect.type != 53 and enchant_effect.type != 6):
@@ -1894,8 +2008,8 @@ class SpellDataGenerator(DataGenerator):
             # Grab relevant spells from quest items, this in essence only 
             # includes certain permanent enchants
             if classdata.classs == 12:
-                for i in xrange(1, 6):
-                    spell_id = getattr(data, 'id_spell_%d' % i)
+                for spell in data.spells:
+                    spell_id = spell.id_spell
                     if spell_id == 0:
                         continue
 
@@ -1904,37 +2018,25 @@ class SpellDataGenerator(DataGenerator):
                         if not effect or effect.type != 53:
                             continue
                         
-                        self.process_spell(enchant_spell_id, ids, 0, 0)
+                        self.process_spell(spell_id, ids, 0, 0)
             # Grab relevant spells from consumables as well
             elif classdata.classs == 0:
-                for i in xrange(1, 6):
-                    spell_id = getattr(data, 'id_spell_%d' % i)
-                    if spell_id == 0:
+                for item_effect in data.spells:
+                    spell = self._spell_db[item_effect.id_spell]
+                    if not spell.id:
                         continue
-                    
-                    include_spell = False
-                    spell = self._spell_db[spell_id]
-                    for effect in spell._effects:
-                        if not effect:
-                            continue
 
-                        # Potions and Elixirs need to apply attributes, rating 
-                        # or armor
-                        if classdata.subclass == 1 or classdata.subclass == 2:
-                            if effect.type == 6 and (effect.sub_type == 22 or effect.sub_type == 29 or effect.sub_type == 189):
-                                include_spell = True
-                        # Food needs to have a periodically triggering effect
-                        # (presumed to be always a stat giving effect)
-                        elif classdata.subclass == 5:
-                            if effect.sub_type == 23:
-                                include_spell = True
-                        # Permanent enchants need to have "enchant item" effect
-                        elif classdata.subclass == 6:
-                            if effect.sub_type == 53:
-                                include_spell = True
-
-                    if include_spell:
-                        self.process_spell(spell_id, ids, 0, 0)
+                    # Potions and Elixirs need to apply attributes, rating or
+                    # armor
+                    if classdata.has_value('subclass', [1, 2, 3]) and spell.has_effect('sub_type', [13, 22, 29, 99, 189]):
+                        self.process_spell(spell.id, ids, 0, 0)
+                    # Food needs to have a periodically triggering effect
+                    # (presumed to be always a stat giving effect)
+                    elif classdata.has_value('subclass', 5) and spell.has_effect('sub_type', 23):
+                        self.process_spell(spell.id, ids, 0, 0)
+                    # Permanent enchants
+                    elif classdata.has_value('subclass', 6):
+                        self.process_spell(spell.id, ids, 0, 0)
         
         # Item sets, loop through ItemSet.dbc getting class-specific tier sets and add 
         # their bonuses to the spell list
@@ -1952,11 +2054,15 @@ class SpellDataGenerator(DataGenerator):
             if not mask_class_category:
                 continue
 
+            if not itemset_data.bonus:
+                continue
+
             # Item set is a tier set, we want informations.
-            for id_spell_field in xrange(1, 9):
-                spell_id = getattr(itemset_data, 'id_spell_%d' % id_spell_field)
-                if spell_id:
-                    self.process_spell(spell_id, ids, mask_class_category, 0)
+            for item_set_bonus in itemset_data.bonus:
+                if not item_set_bonus.id_spell:
+                    continue
+
+                self.process_spell(item_set_bonus.id_spell, ids, mask_class_category, 0)
 
         # Glyph effects, need to do trickery here to get actual effect from spellbook data
         for ability_id, ability_data in self._skilllineability_db.iteritems():
@@ -1981,7 +2087,6 @@ class SpellDataGenerator(DataGenerator):
 
         # Item enchantments that use a spell
         for eid, data in self._spellitemenchantment_db.iteritems():
-            filter_list = { }
             for attr_id in xrange(1, 4):
                 attr_type = getattr(data, 'type_%d' % attr_id)
                 if attr_type == 1 or attr_type == 3 or attr_type == 7:
@@ -1995,25 +2100,11 @@ class SpellDataGenerator(DataGenerator):
                (data.ilevel < self._options.min_ilevel or data.ilevel > self._options.max_ilevel):
                 continue
             
-            filter_list = { }
-            for stat_id in xrange(1, 6):
-                sid = getattr(data, 'id_spell_%d' % stat_id)
-                if sid > 0:
-                    self.process_spell(sid, ids, 0, 0)
-                
-                # The spell is a valid spell that we want, kludge in the on-use
-                # cooldown if the spell is of on-use type in the item. This 
-                # should work as long as there are no two on-use effects (unlikely)
-                # or Blizzard does not decide to reduce the on-use cooldown 
-                # based on item type (lfr, normal, heroic, etc.)
-                stype = getattr(data, 'trg_spell_%d' % stat_id)
-                if ids.get(sid) and stype == 0 and getattr(data, 'cd_spell_%d' % stat_id) > 0:
-                    # Put in the new cooldown to the spell id data that is 
-                    # passed to generate()
-                    if ids[sid].get('cooldown'):
-                        self.debug('Spell id %d already has a cooldown set' % sid)
-                    else:
-                        ids[sid]['cooldown'] = getattr(data, 'cd_spell_%d' % stat_id)
+            for spell in data.spells:
+                if spell.id_spell == 0:
+                    continue
+
+                self.process_spell(spell.id_spell, ids, 0, 0)
         
         # Last, get the explicitly defined spells in _spell_id_list on a class basis and the 
         # generic spells from SpellDataGenerator._spell_id_list[0]
@@ -2088,7 +2179,7 @@ class SpellDataGenerator(DataGenerator):
                 powers.add( power )
 
             if index % 20 == 0:
-              s += '//{ Name                                ,     Id,Flags,PrjSp,  Sch, Class,  Race,Sca,MSL,ExtraCoeff,SpLv,MxL,MinRange,MaxRange,Cooldown,  GCD,  Cat,  Duration,  RCost, RPG,Stac, PCh,PCr, ProcFlags,EqpCl, EqpInvType,EqpSubclass,CastMn,CastMx,Div,       Scaling,SLv, RplcId, {      Attr1,      Attr2,      Attr3,      Attr4,      Attr5,      Attr6,      Attr7,      Attr8,      Attr9,     Attr10,     Attr11,     Attr12 }, {     Flags1,     Flags2,     Flags3,     Flags4 }, Family, Description, Tooltip, Description Variable, Icon, ActiveIcon, Effect1, Effect2, Effect3 },\n'
+              s += '//{ Name                                ,     Id,Flags,PrjSp,  Sch, Class,  Race,Sca,MSL,SpLv,MxL,MinRange,MaxRange,Cooldown,  GCD,  Cat,  Duration,  RCost, RPG,Stac, PCh,PCr, ProcFlags,EqpCl, EqpInvType,EqpSubclass,CastMn,CastMx,Div,       Scaling,SLv, RplcId, {      Attr1,      Attr2,      Attr3,      Attr4,      Attr5,      Attr6,      Attr7,      Attr8,      Attr9,     Attr10,     Attr11,     Attr12 }, {     Flags1,     Flags2,     Flags3,     Flags4 }, Family, Description, Tooltip, Description Variable, Icon, ActiveIcon, Effect1, Effect2, Effect3 },\n'
             
             fields = spell.field('name', 'id') 
             fields += [ '%#.2x' % 0 ]
@@ -2101,15 +2192,12 @@ class SpellDataGenerator(DataGenerator):
             # Set the scaling index for the spell
             fields += self._spellscaling_db[spell.id_scaling].field('id_class', 'max_scaling_level')
 
-            fields += spell.field('extra_coeff')
+            #fields += spell.field('extra_coeff')
 
             fields += self._spelllevels_db[spell.id_levels].field('base_level', 'max_level')
             fields += self._spellrange_db[self._spellmisc_db[spell.id_misc].id_range].field('min_range')
             fields += self._spellrange_db[self._spellmisc_db[spell.id_misc].id_range].field('max_range')
-            if ids.get(id, { }).get('cooldown') == None:
-                fields += self._spellcooldowns_db[spell.id_cooldowns].field('cooldown_duration', 'gcd_cooldown')
-            else:
-                fields += [ '%7u' % ids[id]['cooldown'], '%4u' % 0 ]
+            fields += self._spellcooldowns_db[spell.id_cooldowns].field('cooldown_duration', 'gcd_cooldown')
 
             fields += self._spellcategories_db[spell.id_categories].field('category')
             fields += self._spellduration_db[self._spellmisc_db[spell.id_misc].id_duration].field('duration_1')
@@ -2198,7 +2286,7 @@ class SpellDataGenerator(DataGenerator):
                 continue
 
             if index % 20 == 0:
-                s += '//{     Id,Flags,   SpId,Idx, EffectType                  , EffectSubType                              ,       Average,         Delta,       Unknown,   Coefficient,  Ampl,  Radius,  RadMax,   BaseV,   MiscV,  MiscV2, {     Flags1,     Flags2,     Flags3,     Flags4 }, Trigg,   DmgMul,  CboP, RealP,Die, 0, 0 },\n'
+                s += '//{     Id,Flags,   SpId,Idx, EffectType                  , EffectSubType                              ,       Average,         Delta,       Unknown,   Coefficient, APCoefficient,  Ampl,  Radius,  RadMax,   BaseV,   MiscV,  MiscV2, {     Flags1,     Flags2,     Flags3,     Flags4 }, Trigg,   DmgMul,  CboP, RealP,Die, 0, 0 },\n'
 
             fields = effect.field('id')
             fields += [ '%#.2x' % 0 ] 
@@ -2221,7 +2309,7 @@ class SpellDataGenerator(DataGenerator):
                 fields += self._spelleffectscaling_db[0].field('average', 'delta', 'bonus')
             else:
                 fields += effect.scaling.field('average', 'delta', 'bonus')
-            fields += effect.field('coefficient', 'amplitude')
+            fields += effect.field('coefficient', 'ap_coefficient', 'amplitude')
             fields += self._spellradius_db[effect.id_radius].field('radius_1')
             fields += self._spellradius_db[effect.id_radius_max].field('radius_1')
             fields += effect.field('base_value', 'misc_value', 'misc_value_2')
@@ -2495,6 +2583,9 @@ class SpecializationSpellGenerator(DataGenerator):
         
         for ssid, data in self._specializationspells_db.iteritems():
             chrspec = self._chrspecialization_db[data.spec_id]
+            if chrspec.id == 0:
+                continue
+
             spell = self._spell_db[data.spell_id]
             if spell.id == 0:
                 continue
@@ -2533,6 +2624,83 @@ class SpecializationSpellGenerator(DataGenerator):
                 s += '    {\n'
                 for ability in sorted(keys[cls][tree], key = lambda i: i[0]):
                     s += '      %6u, // %s\n' % ( ability[1], ability[0] )
+
+                if len(keys[cls][tree]) < max_ids:
+                    s += '      %6u,\n' % 0
+
+                s += '    },\n'
+            s += '  },\n'
+        s += '};\n'
+
+        return s
+
+class PerkSpellGenerator(DataGenerator):
+    def __init__(self, options):
+        self._dbc = [ 'ChrSpecialization', 'MinorTalent', 'Spell' ]
+        
+        DataGenerator.__init__(self, options)
+    
+    def generate(self, ids = None):
+        max_ids = 0
+        keys = [ 
+            [ [], [], [], [] ], 
+            [ [], [], [], [] ], 
+            [ [], [], [], [] ], 
+            [ [], [], [], [] ], 
+            [ [], [], [], [] ], 
+            [ [], [], [], [] ], 
+            [ [], [], [], [] ], 
+            [ [], [], [], [] ], 
+            [ [], [], [], [] ], 
+            [ [], [], [], [] ], 
+            [ [], [], [], [] ], 
+            [ [], [], [], [] ] 
+        ]
+
+        spec_map = { }
+        
+        for ssid, data in self._chrspecialization_db.iteritems():
+            spec_map[ssid] = (data.class_id, data.spec_id, data.name)
+
+        for mtid, data in self._minortalent_db.iteritems():
+            spec = data.id_spec
+
+            pos_data = spec_map[spec]
+            spell = self._spell_db[data.id_spell]
+
+            keys[pos_data[0]][pos_data[1]].append((data.index, data.id_spell, pos_data[2], spell.name))
+
+        # Figure out tree with most abilities
+        for cls in xrange(0, len(keys)):
+            for tree in xrange(0, len(keys[cls])):
+                if len(keys[cls][tree]) > max_ids:
+                    max_ids = len(keys[cls][tree])
+
+        data_str = "%sperk%s" % (
+            self._options.prefix and ('%s_' % self._options.prefix) or '',
+            self._options.suffix and ('_%s' % self._options.suffix) or '',
+        )
+
+        s = '#define %s_SIZE (%d)\n\n' % (
+            data_str.upper(),
+            max_ids
+        )
+
+        s += '// Perk specialization abilities, wow build %d\n' % self._options.build 
+        s += 'static unsigned __%s_data[][MAX_SPECS_PER_CLASS][%s_SIZE] = {\n' % (
+            data_str,
+            data_str.upper(),
+        )
+
+        for cls in xrange(0, len(keys)):
+            s += '  {\n'
+
+            for tree in xrange(0, len(keys[cls])):
+                if len(keys[cls][tree]) > 0:
+                    s += '    // %s\n' % keys[cls][tree][0][2]
+                s += '    {\n'
+                for ability in sorted(keys[cls][tree], key = lambda i: i[0]):
+                    s += '      %6u, // %d: %s\n' % ( ability[1], ability[0], ability[3] )
 
                 if len(keys[cls][tree]) < max_ids:
                     s += '      %6u,\n' % 0
@@ -3073,8 +3241,8 @@ class ItemSetListGenerator(SpellDataGenerator):
                 continue
 
             # Item set is a tier set, we want informations.
-            for id_spell_field in xrange(1, 9):
-                spell_id = getattr(itemset_data, 'id_spell_%d' % id_spell_field)
+            for bonus in itemset_data.bonus:
+                spell_id = bonus.id_spell
                 if spell_id:
                     f = { }
                     self.process_spell(spell_id, f, mask_class_category, 0)
@@ -3086,7 +3254,7 @@ class ItemSetListGenerator(SpellDataGenerator):
                         'mask_class': mask_class_category,
                         'set'       : itemset_data.name,
                         'tier'      : tier_id,
-                        'n_bonus'   : getattr(itemset_data, 'n_items_%d' % id_spell_field)
+                        'n_bonus'   : bonus.n_req_items
                     }
 
         return ids
@@ -3262,10 +3430,6 @@ class SpellItemEnchantmentGenerator(RandomSuffixGenerator):
                 if not effect or effect.type != 53:
                     continue
 
-                # No level-based scaling on enchant, skip
-                if data.id_scaling == 0:
-                    continue
-
                 item_ench = self._spellitemenchantment_db[effect.misc_value]
                 if item_ench.id == 0:
                     continue
@@ -3300,10 +3464,7 @@ class SpellItemEnchantmentGenerator(RandomSuffixGenerator):
             fields += [ '{ %s }' % ', '.join(ench_data.field('type_1', 'type_2', 'type_3')) ]
             fields += [ '{ %s }' % ', '.join(ench_data.field('amount_1', 'amount_2', 'amount_3')) ]
             fields += [ '{ %s }' % ', '.join(ench_data.field('id_property_1', 'id_property_2', 'id_property_3')) ]
-            if self.dbc_version(50400, 17056):
-                fields += [ '{ %s }' % ', '.join(ench_data.field('coeff_1', 'coeff_2', 'coeff_3')) ]
-            else:
-                fields += [ '{ 0, 0, 0 }' ]
+            fields += [ '{ %s }' % ', '.join(ench_data.field('coeff_1', 'coeff_2', 'coeff_3')) ]
             if hasattr(ench_data, '_spells'):
                 fields += ench_data._spells[ 0 ].field('id')
             else:

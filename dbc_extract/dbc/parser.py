@@ -73,9 +73,10 @@ class DBCParser(object):
             hdr_size = 48
 
         if hdr != DBC_HDR and hdr != DB2_HDR and hdr != WC2_HDR:
-            sys.stderr.write('%s: Not a World of Warcraft DBC/DB2/WCH2 File\n' % os.path.abspath(self._fname))
+            #sys.stderr.write('%s: Not a World of Warcraft DBC/DB2/WCH2 File\n' % os.path.abspath(self._fname))
             f.close()
-            sys.exit(1)
+            #sys.exit(1)
+            return
 
         first_id = 0
         last_id = 0
@@ -116,9 +117,14 @@ class DBCParser(object):
         statinfo                = os.fstat(f.fileno())
         
         # Figure out a valid class for us from data, now that we know the DBC is sane
-        if '%s%d' % ( os.path.basename(self._fname).split('.')[0].replace('-', '_'), self._options.build ) in dir(data):
-            self._class = getattr(data, '%s%d' % ( 
-                os.path.basename(self._fname.replace('-', '_')).split('.')[0], self._options.build ) )
+        table_name = None
+        if len(self._options.as_dbc) > 0:
+            table_name = self._options.as_dbc
+        else:
+            table_name = os.path.basename(self._fname).split('.')[0].replace('-', '_')
+
+        if '%s%d' % ( table_name, self._options.build ) in dir(data):
+            self._class = getattr(data, '%s%d' % ( table_name, self._options.build ) )
         
         # Sanity check file size
         if statinfo[stat.ST_SIZE] != size:

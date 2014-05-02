@@ -1056,7 +1056,7 @@ void report::generate_player_charts( player_t* p, player_processed_report_inform
   ri.charts_generated = true;
 }
 
-void report::generate_sim_report_information( sim_t* s , sim_t::report_information_t& ri )
+void report::generate_sim_report_information( sim_t* s , sim_report_information_t& ri )
 {
   if ( ri.charts_generated )
     return;

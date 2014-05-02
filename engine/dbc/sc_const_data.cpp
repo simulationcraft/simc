@@ -243,10 +243,10 @@ tokenized_map_t<talent_data_t> tokenized_talent_map;
 } // ANONYMOUS namespace ====================================================
 
 int dbc::build_level( bool ptr )
-{ return maybe_ptr( ptr ) ? 17345 : 17898; }
+{ return maybe_ptr( ptr ) ? 17345 : 18179; }
 
 const char* dbc::wow_version( bool ptr )
-{ return maybe_ptr( ptr ) ? "5.4.0" : "5.4.7"; }
+{ return maybe_ptr( ptr ) ? "5.4.0" : "6.0.1"; }
 
 const char* dbc::wow_ptr_status( bool ptr )
 { return ( maybe_ptr( ptr ) ?
@@ -283,6 +283,43 @@ size_t dbc::n_items( bool ptr )
   return n;
 }
 
+const item_enchantment_data_t* dbc::item_enchantments( bool ptr )
+{
+  ( void )ptr;
+
+  const item_enchantment_data_t* p = __spell_item_ench_data;
+#if SC_USE_PTR
+  if ( ptr )
+    p = __ptr_spell_item_ench_data;
+#endif
+  return p;
+}
+
+size_t dbc::n_item_enchantments( bool ptr )
+{
+  ( void )ptr;
+
+  size_t n = SPELL_ITEM_ENCH_SIZE;
+#if SC_USE_PTR
+  if ( ptr )
+    n = PTR_SPELL_ITEM_ENCH_SIZE;
+#endif
+
+  return n;
+}
+
+const gem_property_data_t* dbc::gem_properties( bool ptr )
+{
+  ( void )ptr;
+
+  const gem_property_data_t* p = __gem_property_data;
+#if SC_USE_PTR
+  if ( ptr )
+    p = __ptr_gem_property_data;
+#endif
+  return p;
+}
+
 /* Here we modify the spell data to match in-game values if the data differs thanks to bugs or hotfixes.
  *
  */
@@ -305,48 +342,8 @@ void dbc::apply_hotfixes()
     s -> _internal_cooldown = 250;
   
   // Hunter, hotfixes from 2013-09-23
-  // Explosive Shot
-  s = spell_data_t::find( 53301, false );
-  const_cast<spelleffect_data_t&>( s -> effectN( 3 ) )._base_value = 391 * 1.1;
-
-  // Chimera Shot (untested)
-  s = spell_data_t::find( 53209, false );
-  const_cast<spelleffect_data_t&>( s -> effectN( 3 ) )._base_value = 265 * 1.5;
-  const_cast<spelleffect_data_t&>( s -> effectN( 2 ) )._m_avg = 1.25 * 1.5;
-
-  // 6/1/2014: Aspect of the Hawk now increases ranged attack power by 35% (up from 25%). 
-  s = spell_data_t::find( 13165, false );
-  assert( s -> effectN( 1 ).base_value() != 35 && "Out of date hotfix for Aspect of the Hawk" );
-  const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._base_value = 35;
-
-  // 6/1/2014: Aspect of the Iron Hawk now increases ranged attack power by 35% (up from 25%). 
-  s = spell_data_t::find( 109260, false );
-  assert( s -> effectN( 1 ).base_value() != 35 && "Out of date hotfix for Aspect of the Iron Hawk" );
-  const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._base_value = 35;
 
   // Mage
-
-  // Ice Lance damage has been increased by 20%
-  s = spell_data_t::find( 30455, false );
-  assert( s -> effectN( 1 ).m_average() != 0.335 * 1.2 && "Out of date hotfix for Ice Lance" );
-  const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._m_avg = 0.335 * 1.2;
-  const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._coeff = 0.335 * 1.2;
-
-  s = spell_data_t::find( 131080, false );
-  assert( s -> effectN( 1 ).m_average() != 0.335 * 1.2 && "Out of date hotfix for Ice Lance" );
-  const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._m_avg = 0.335 * 1.2;
-  const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._coeff = 0.335 * 1.2;
-
-  // Waterbolt's damage has been increased by 10%
-  s = spell_data_t::find( 31707, false );
-  assert( s -> effectN( 1 ).m_average() != 0.5 * 1.1 && "Out of date hotfix for Waterbolt" );
-  const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._m_avg = 0.5 * 1.1;
-  const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._coeff = 0.5 * 1.1;
-
-  s = spell_data_t::find( 131581, false );
-  assert( s -> effectN( 1 ).m_average() != 0.5 * 1.1 && "Out of date hotfix for Waterbolt" );
-  const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._m_avg = 0.5 * 1.1;
-  const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._coeff = 0.5 * 1.1;
 
   // Paladin
   // Build Last Checked: 16309
@@ -369,17 +366,6 @@ void dbc::apply_hotfixes()
 
   // Priest
 
-  // Shadow Word: Pain damage reduced by 15%
-  // TODO: Changed both mastery/normal version, is this correct?
-  s = spell_data_t::find( 589, false );
-  assert( s -> effectN( 1 ).m_average() != 0.743 * 0.85 && "Out of date hotfix for Shadow Word: Pain" );
-  const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._m_avg = 0.743 * 0.85;
-  const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._coeff = 0.366 * 0.85;
-
-  s = spell_data_t::find( 124464, false );
-  const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._m_avg = 0.743 * 0.85;
-  const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._coeff = 0.366 * 0.85;
-
   // Hack to get proper tooltip text in reports
   s = spell_data_t::find( 64904, false ); // Hymn of Hope (buff)
   s -> _desc = "$@spelldesc64901";
@@ -394,137 +380,16 @@ void dbc::apply_hotfixes()
 
   // Shaman
 
-  // Lightning bolt damage increased by 10%
-  s = spell_data_t::find( 403, false );
-  assert( s -> effectN( 1 ).m_average() != 1.14 * 1.1 && "Out of date hotfix for Lightning Bolt" );
-  const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._m_avg = 1.14 * 1.1;
-  const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._coeff = 0.739 * 1.1;
-
-  s = spell_data_t::find( 45284, false );
-  assert( s -> effectN( 1 ).m_average() != 0.855 * 1.1 && "Out of date hotfix for Lightning Bolt Overload" );
-  const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._m_avg = 0.855 * 1.1;
-  const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._coeff = 0.554 * 1.1;
-
-  // T15 4pc set bonus to 1.5 seconds
-  s = spell_data_t::find( 138144, false );
-  const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._base_value = 1500;
-  if ( SC_USE_PTR )
-  {
-    s = spell_data_t::find( 138144, true );
-    const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._base_value = 1500;
-  }
-
   // Warlock
 
-
-  // Fel Firebolt damage decreased by 30%
-  s = spell_data_t::find( 104318, false );
-  assert( s -> effectN( 1 ).m_average() != 0.345 * 0.7 && "Out of date hotfix for Fel Firebolt" );
-  const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._m_avg = 0.345 * 0.7;
-  const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._coeff = 0.345 * 0.7;
-
-  // Immolate damage increased by 10% (apparently, in reality it's 30%)
-  s = spell_data_t::find( 348, false );
-  assert( s -> effectN( 1 ).m_average() != 0.47 * 1.3 && "Out of date hotfix for Immolate" );
-  const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._m_avg = 0.47 * 1.3;
-  const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._coeff = 0.47 * 1.3;
-  const_cast<spelleffect_data_t&>( s -> effectN( 2 ) )._m_avg = 0.47 * 1.3;
-  const_cast<spelleffect_data_t&>( s -> effectN( 2 ) )._coeff = 0.47 * 1.3;
-
-  s = spell_data_t::find( 108686, false );
-  assert( s -> effectN( 1 ).m_average() != 0.47 * 1.3 && "Out of date hotfix for Immolate" );
-  const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._m_avg = 0.47 * 1.3;
-  const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._coeff = 0.47 * 1.3;
-  const_cast<spelleffect_data_t&>( s -> effectN( 2 ) )._m_avg = 0.47 * 1.3;
-  const_cast<spelleffect_data_t&>( s -> effectN( 2 ) )._coeff = 0.47 * 1.3;
-
-  // Incinerate damage increased by 5% (apparently, in reality it's 15%)
-  s = spell_data_t::find( 29722, false );
-  assert( s -> effectN( 1 ).m_average() != 1.54 * 1.15 && "Out of date hotfix for Incinerate" );
-  const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._m_avg = 1.54 * 1.15;
-  const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._coeff = 1.54 * 1.15;
-
-  s = spell_data_t::find( 114654, false );
-  assert( s -> effectN( 1 ).m_average() != 1.568 * 1.15 && "Out of date hotfix for Incinerate" );
-  const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._m_avg = 1.568 * 1.15;
-  const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._coeff = 1.568 * 1.15;
-
-  // Agony was nerfed by 15%. Hotfix from 2013-10-02
-  s = spell_data_t::find( 980, false );
-  assert( s -> effectN( 1 ).m_average() != 0.03 * 0.85 && "Out of date hotfix for Agony" );
-  const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._m_avg = 0.03 * 0.85;
-  const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._coeff = 0.03 * 0.85;
-
-  
-  
   // Warrior
-  // Hotfixes from 2013-09-23
-  // Raging blow -- Buffed from 190% weapon damage to 228% weapon damage.
-  s = spell_data_t::find( 96103, false );
-  const_cast<spelleffect_data_t&>( s -> effectN( 2 ) )._base_value = 228;
-  // Raging blow off-hand.
-  s = spell_data_t::find( 85384, false );
-  const_cast<spelleffect_data_t&>( s -> effectN( 2 ) )._base_value = 228;
-
-  //Bloodthirst -- Buffed from 90% weapon damage to 108% weapon damage.
-  s = spell_data_t::find( 23881, false );
-  const_cast<spelleffect_data_t&>( s -> effectN( 2 ) )._base_value = 108;
-
 
   // Druid
 
-  // Hotfixes from 2013-09-23
-  // Rip -- Damage has been increased by 20%.
-  s = spell_data_t::find( 1079, false );
-  const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._m_avg = 0.103 * 1.2;
-  const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._m_unk = 0.292 * 1.2;
-
-
   // Death Knight
-
-  // Monk
-  // Zen Sphere -- Damage done buffed by 15%
-  s = spell_data_t::find( 124098, false );
-  const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._m_avg = 0.104 * 1.15;
-  s = spell_data_t::find( 125033, false );
-  const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._m_avg = 0.423 * 1.15;
-  // Zen Sphere -- Healing done buffed by 15%
-  s = spell_data_t::find( 124081, false );
-  const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._m_avg = 0.104 * 1.15;
-  s = spell_data_t::find( 124101, false );
-  const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._m_avg = 0.269 * 1.15;
-
 
   // Misc
 
-
-  // Legendary gems are buffs in game, hack them to become +500 / +550 stat gems
-  item_enchantment_data_t* e = item_enchantment_data_index.get( false, 4996 );
-  assert( e );
-  e -> ench_type[ 0 ] = ITEM_ENCHANTMENT_STAT; e -> ench_prop[ 0 ] = ITEM_MOD_AGILITY;
-
-  e = item_enchantment_data_index.get( false, 4997 );
-  assert( e );
-  e -> ench_type[ 0 ] = ITEM_ENCHANTMENT_STAT; e -> ench_prop[ 0 ] = ITEM_MOD_STRENGTH;
-
-  e = item_enchantment_data_index.get( false, 4998 );
-  assert( e );
-  e -> ench_type[ 0 ] = ITEM_ENCHANTMENT_STAT; e -> ench_prop[ 0 ] = ITEM_MOD_INTELLECT;
-
-  if ( SC_USE_PTR )
-  {
-    e = item_enchantment_data_index.get( true, 4996 );
-    assert( e );
-    e -> ench_type[ 0 ] = ITEM_ENCHANTMENT_STAT; e -> ench_prop[ 0 ] = ITEM_MOD_AGILITY;
-
-    e = item_enchantment_data_index.get( true, 4997 );
-    assert( e );
-    e -> ench_type[ 0 ] = ITEM_ENCHANTMENT_STAT; e -> ench_prop[ 0 ] = ITEM_MOD_STRENGTH;
-
-    e = item_enchantment_data_index.get( true, 4998 );
-    assert( e );
-    e -> ench_type[ 0 ] = ITEM_ENCHANTMENT_STAT; e -> ench_prop[ 0 ] = ITEM_MOD_INTELLECT;
-  }
 }
 
 static void generate_class_flags_index( bool ptr = false )
@@ -604,6 +469,28 @@ void dbc::de_init()
   }
 }
 
+/* Validate gem color */
+bool dbc::valid_gem_color( unsigned color )
+{
+  switch ( color )
+  {
+    case SOCKET_COLOR_NONE:
+    case SOCKET_COLOR_META:
+    case SOCKET_COLOR_RED:
+    case SOCKET_COLOR_YELLOW:
+    case SOCKET_COLOR_BLUE:
+    case SOCKET_COLOR_ORANGE:
+    case SOCKET_COLOR_PURPLE:
+    case SOCKET_COLOR_GREEN:
+    case SOCKET_COLOR_HYDRAULIC:
+    case SOCKET_COLOR_PRISMATIC:
+    case SOCKET_COLOR_COGWHEEL:
+      return true;
+    default:
+      return false;
+  }
+}
+
 std::vector< const spell_data_t* > dbc_t::effect_affects_spells( unsigned family, const spelleffect_data_t* effect ) const
 {
   std::vector< const spell_data_t* > affected_spells;
@@ -623,9 +510,9 @@ std::vector< const spell_data_t* > dbc_t::effect_affects_spells( unsigned family
   for ( size_t i = 0, end = l -> size(); i < end; i++ )
   {
     const spell_data_t* s = l -> at( i );
-    for ( size_t j = 0, vend = NUM_CLASS_FAMILY_FLAGS * 32; j < vend; j++ )
+    for ( unsigned int j = 0, vend = NUM_CLASS_FAMILY_FLAGS * 32; j < vend; j++ )
     {
-      if ( effect -> class_flag( j ) && s -> class_flag( j ) )
+      if ( effect -> class_flag(j ) && s -> class_flag( j ) )
       {
         if ( std::find( affected_spells.begin(), affected_spells.end(), s ) == affected_spells.end() )
           affected_spells.push_back( s );
@@ -666,7 +553,7 @@ std::vector< const spelleffect_data_t* > dbc_t::effects_affecting_spell( const s
       const spelleffect_data_t& effect = s -> effectN( idx );
 
       // Match spell family flags
-      for ( size_t j = 0, vend = NUM_CLASS_FAMILY_FLAGS * 32; j < vend; j++ )
+      for ( unsigned int j = 0, vend = NUM_CLASS_FAMILY_FLAGS * 32; j < vend; j++ )
       {
         if ( ! ( effect.class_flag( j ) && spell -> class_flag( j ) ) )
           continue;
@@ -927,9 +814,9 @@ std::string dbc::specialization_string( specialization_e spec )
     case DRUID_FERAL: return "feral";
     case DRUID_GUARDIAN: return "guardian";
     case DRUID_RESTORATION: return "restoration";
-    case PET_FEROCITY: return "ferocity";
-    case PET_TENACITY: return "tenacity";
-    case PET_CUNNING: return "cunning";
+    case PET_FEROCIOUS_VERSATILITY: return "ferocity";
+    case PET_TENACIOUS_VERSATILITY: return "tenacity";
+    case PET_CUNNING_VERSATILITY: return "cunning";
     default: return "unknown";
   }
 }
@@ -1146,7 +1033,7 @@ double dbc_t::melee_crit_base( player_e t, unsigned level ) const
   assert( class_id < dbc_t::class_max_size() && level > 0 && level <= MAX_LEVEL );
 #if SC_USE_PTR
   return ptr ? __ptr_gt_chance_to_melee_crit_base[ class_id ][ level - 1 ]
-             : __gt_chance_to_melee_crit_base[ class_id ][ level - 1 ];
+    : __gt_chance_to_melee_crit_base[ class_id ][ level - 1 ];
 #else
   return __gt_chance_to_melee_crit_base[ class_id ][ level - 1 ];
 #endif
@@ -1169,7 +1056,7 @@ double dbc_t::spell_crit_base( player_e t, unsigned level ) const
   return __gt_chance_to_spell_crit_base[ class_id ][ level - 1 ];
 #endif
 }
-
+ 
 double dbc_t::spell_crit_base( pet_e t, unsigned level ) const
 {
   return spell_crit_base( util::pet_class_type( t ), level );
@@ -1229,12 +1116,12 @@ double dbc_t::melee_crit_scaling( player_e t, unsigned level ) const
   return __gt_chance_to_melee_crit[ class_id ][ level - 1 ];
 #endif
 }
-
+ 
 double dbc_t::melee_crit_scaling( pet_e t, unsigned level ) const
 {
   return melee_crit_scaling( util::pet_class_type( t ), level );
 }
-
+ 
 double dbc_t::spell_crit_scaling( player_e t, unsigned level ) const
 {
   uint32_t class_id = util::class_id( t );
@@ -1247,7 +1134,7 @@ double dbc_t::spell_crit_scaling( player_e t, unsigned level ) const
   return __gt_chance_to_spell_crit[ class_id ][ level - 1 ];
 #endif
 }
-
+ 
 double dbc_t::spell_crit_scaling( pet_e t, unsigned level ) const
 {
   return spell_crit_scaling( util::pet_class_type( t ), level );
@@ -1412,6 +1299,20 @@ unsigned dbc_t::specialization_ability( unsigned class_id, unsigned tree_id, uns
 #endif
 }
 
+unsigned dbc_t::perk_ability( unsigned class_id, unsigned tree_id, unsigned n ) const
+{
+  assert( class_id < dbc_t::class_max_size() );
+  assert( tree_id < specialization_max_per_class() );
+  assert( n < perk_ability_size() );
+
+#if SC_USE_PTR
+  return ptr ? __ptr_perk_data[ class_id ][ tree_id ][ n ]
+             : __perk_data[ class_id ][ tree_id ][ n ];
+#else
+  return __perk_data[ class_id ][ tree_id ][ n ];
+#endif
+}
+
 unsigned dbc_t::mastery_ability( unsigned class_id, unsigned specialization, unsigned n ) const
 {
   assert( class_id < dbc_t::class_max_size() );
@@ -1518,6 +1419,15 @@ unsigned dbc_t::specialization_ability_size() const
   return ptr ? PTR_TREE_SPECIALIZATION_SIZE : TREE_SPECIALIZATION_SIZE;
 #else
   return TREE_SPECIALIZATION_SIZE;
+#endif
+}
+
+unsigned dbc_t::perk_ability_size() const
+{
+#if SC_USE_PTR
+  return ptr ? PTR_PERK_SIZE : PERK_SIZE;
+#else
+  return PERK_SIZE;
 #endif
 }
 
@@ -1687,6 +1597,16 @@ const item_armor_type_data_t& dbc_t::item_armor_total( unsigned ilevel ) const
 #else
   assert( ilevel > 0 && ( ilevel <= RAND_PROP_POINTS_SIZE ) );
   return __itemarmortotal_data[ ilevel - 1 ];
+#endif
+}
+
+double dbc_t::enemy_armor_mitigation( unsigned level ) const
+{
+  assert( level > 0 && level <= ( MAX_LEVEL + 3 ) );
+#if SC_USE_PTR
+  return ptr ? __ptr___gt_armor_mitigation_by_lvl[ level - 1 ] : __gt_armor_mitigation_by_lvl[ level - 1 ];
+#else
+  return __gt_armor_mitigation_by_lvl[ level - 1 ];
 #endif
 }
 
@@ -2040,16 +1960,33 @@ spelleffect_data_t* spelleffect_data_t::find( unsigned id, bool ptr )
 }
 
 
-talent_data_t* talent_data_t::find( player_e c, unsigned int row, unsigned int col, bool ptr )
+talent_data_t* talent_data_t::find( player_e c, unsigned int row, unsigned int col, specialization_e spec, bool ptr )
 {
   talent_data_t* talent_data = talent_data_t::list( ptr );
 
   for ( unsigned k = 0; talent_data[ k ].name_cstr(); k++ )
   {
     talent_data_t& td = talent_data[ k ];
-    if ( td.is_class( c ) && ( row == td.row() ) && ( col == td.col() ) )
+    if ( td.is_class( c ) && ( row == td.row() ) && ( col == td.col() ) && spec == td.specialization() )
     {
       return &td;
+    }
+  }
+
+  // Second round to check all talents, either with a none spec, or no spec check at all,
+  // depending on what the caller gave in "spec" parameter
+  for ( unsigned k = 0; talent_data[ k ].name_cstr(); k++ )
+  {
+    talent_data_t& td = talent_data[ k ];
+    if ( spec != SPEC_NONE )
+    {
+      if ( td.is_class( c ) && ( row == td.row() ) && ( col == td.col() ) && td.specialization() == SPEC_NONE )
+        return &td;
+    }
+    else
+    {
+      if ( td.is_class( c ) && ( row == td.row() ) && ( col == td.col() ) )
+        return &td;
     }
   }
 
@@ -2073,11 +2010,11 @@ talent_data_t* talent_data_t::find( unsigned id, const char* confirmation, bool 
   return p;
 }
 
-talent_data_t* talent_data_t::find( const char* name_cstr, bool ptr )
+talent_data_t* talent_data_t::find( const char* name_cstr, specialization_e spec, bool ptr )
 {
   for ( talent_data_t* p = talent_data_t::list( ptr ); p -> name_cstr(); ++p )
   {
-    if ( ! strcmp( name_cstr, p -> name_cstr() ) )
+    if ( ! strcmp( name_cstr, p -> name_cstr() ) && p -> specialization() == spec )
     {
       return p;
     }
@@ -2181,8 +2118,6 @@ double dbc_t::effect_average( unsigned effect_id, unsigned level ) const
       scaling_level = std::min( scaling_level, e -> _spell -> max_scaling_level() );
     double m_scale = spell_scaling( e -> _spell -> scaling_class(), scaling_level );
 
-    assert( m_scale != 0 );
-
     return e -> m_average() * m_scale;
   }
   else if ( e -> real_ppl() != 0 )
@@ -2214,8 +2149,6 @@ double dbc_t::effect_delta( unsigned effect_id, unsigned level ) const
       scaling_level = std::min( scaling_level, e -> _spell -> max_scaling_level() );
     double m_scale = spell_scaling( e -> _spell -> scaling_class(), scaling_level );
 
-    assert( m_scale != 0 );
-
     return e -> m_average() * e -> m_delta() * m_scale;
   }
   else if ( ( e -> m_average() == 0.0 ) && ( e -> m_delta() == 0.0 ) && ( e -> die_sides() != 0 ) )
@@ -2239,8 +2172,6 @@ double dbc_t::effect_bonus( unsigned effect_id, unsigned level ) const
     if ( e -> _spell -> max_scaling_level() > 0 )
       scaling_level = std::min( scaling_level, e -> _spell -> max_scaling_level() );
     double m_scale = spell_scaling( e -> _spell -> scaling_class(), scaling_level );
-
-    assert( m_scale != 0 );
 
     return e -> m_unk() * m_scale;
   }
@@ -2334,7 +2265,7 @@ double dbc_t::effect_max( unsigned effect_id, unsigned level ) const
   return result;
 }
 
-unsigned dbc_t::talent_ability_id( player_e c, const char* spell_name, bool name_tokenized ) const
+unsigned dbc_t::talent_ability_id( player_e c, specialization_e spec, const char* spell_name, bool name_tokenized ) const
 {
   uint32_t cid = util::class_id( c );
 
@@ -2347,7 +2278,11 @@ unsigned dbc_t::talent_ability_id( player_e c, const char* spell_name, bool name
   if ( name_tokenized )
     t = talent_data_t::find_tokenized( spell_name, ptr );
   else
-    t = talent_data_t::find( spell_name, ptr );
+  {
+    t = talent_data_t::find( spell_name, spec, ptr ); // first try finding with the given spec
+    if ( !t )
+      t = talent_data_t::find( spell_name, SPEC_NONE, ptr ); // now with SPEC_NONE
+  }
 
   if ( t && t -> is_class( c ) && ! replaced_id( t -> spell_id() ) )
   {
@@ -2613,6 +2548,62 @@ bool dbc_t::ability_specialization( uint32_t spell_id, std::vector<specializatio
   }
 
   return ! spec_list.empty();
+}
+
+unsigned dbc_t::perk_ability_id( specialization_e spec_id, size_t perk_idx ) const
+{
+  unsigned class_idx = -1;
+  unsigned spec_index = -1;
+
+  if ( perk_idx >= perk_ability_size() )
+    return 0;
+
+  if ( ! spec_idx( spec_id, class_idx, spec_index ) )
+    return 0;
+
+  assert( ( int )class_idx >= 0 && class_idx < specialization_max_class() &&
+          ( int )spec_index >= 0 && spec_index < specialization_max_per_class() );
+
+  return perk_ability( class_idx, spec_index, static_cast<unsigned int>(perk_idx) );
+}
+
+unsigned dbc_t::perk_ability_id( specialization_e spec_id, const char* spell_name ) const
+{
+  unsigned class_idx = -1;
+  unsigned spec_index = -1;
+
+  assert( spell_name && spell_name[ 0 ] );
+
+  if ( ! spec_idx( spec_id, class_idx, spec_index ) )
+    return 0;
+
+  assert( ( int )class_idx >= 0 && class_idx < specialization_max_class() &&
+          ( int )spec_index >= 0 && spec_index < specialization_max_per_class() );
+
+  for ( unsigned n = 0; n < perk_ability_size(); n++ )
+  {
+    unsigned spell_id;
+    if ( ! ( spell_id = perk_ability( class_idx, spec_index, n ) ) )
+      break;
+
+    if ( ! spell( spell_id ) -> id() )
+      continue;
+
+    if ( util::str_compare_ci( spell( spell_id ) -> name_cstr(), spell_name ) )
+    {
+      // Spell has been replaced by another, so don't return id
+      if ( ! replaced_id( spell_id ) )
+      {
+        return spell_id;
+      }
+      else
+      {
+        return 0;
+      }
+    }
+  }
+
+  return 0;
 }
 
 unsigned dbc_t::glyph_spell_id( player_e c, const char* spell_name ) const

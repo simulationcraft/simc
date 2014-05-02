@@ -28,9 +28,7 @@ const sdata_field_t _talent_data_fields[] =
   { SD_TYPE_UNSIGNED, "flags"         },
   { SD_TYPE_UNSIGNED, "tab"           },
   { SD_TYPE_UNSIGNED, ""              }, // Class (spell_class_expr_t)
-  { SD_TYPE_UNSIGNED, ""              }, // Pet class (spell_pet_class_expr_t)
-  { SD_TYPE_UNSIGNED, "dependence"    },
-  { SD_TYPE_UNSIGNED, "depend_rank"   },
+  { SD_TYPE_UNSIGNED, ""              }, // Spec
   { SD_TYPE_UNSIGNED, "col"           },
   { SD_TYPE_UNSIGNED, "row"           },
   { SD_TYPE_UNSIGNED, ""              }, // Talent rank spell ids, unused for now
@@ -50,6 +48,7 @@ const sdata_field_t _effect_data_fields[] =
   { SD_TYPE_DOUBLE,   "m_delta"        },
   { SD_TYPE_DOUBLE,   "m_bonus"        },
   { SD_TYPE_DOUBLE,   "coefficient"    },
+  { SD_TYPE_DOUBLE,   "ap_coefficient" },
   { SD_TYPE_DOUBLE,   "amplitude"      },
   { SD_TYPE_DOUBLE,   "radius"         },
   { SD_TYPE_DOUBLE,   "max_radius"     },
@@ -78,7 +77,6 @@ const sdata_field_t _spell_data_fields[] =
   { SD_TYPE_UNSIGNED, ""              }, // Race (spell_race_expr_t)
   { SD_TYPE_INT,      "scaling"       },
   { SD_TYPE_UNSIGNED, "max_scaling_level" },
-  { SD_TYPE_DOUBLE,   "extra_coeff"   },
   { SD_TYPE_UNSIGNED, "level"         },
   { SD_TYPE_UNSIGNED, "max_level"     },
   { SD_TYPE_DOUBLE,   "min_range"     },
@@ -189,7 +187,8 @@ const struct expr_data_map_t
   { "mastery", DATA_MASTERY_SPELL },
   { "spec_spell", DATA_SPECIALIZATION_SPELL },
   { "glyph", DATA_GLYPH_SPELL },
-  { "set_bonus", DATA_SET_BONUS_SPELL }
+  { "set_bonus", DATA_SET_BONUS_SPELL },
+  { "perk_spell", DATA_PERK_SPELL },
 };
 
 expr_data_e parse_data_type( const std::string& name )
@@ -239,25 +238,6 @@ unsigned race_str_to_mask( const std::string& str )
   }
 
   return 1 << ( ( race_id < 1 ) ? 0 : race_id - 1 );
-}
-
-unsigned pet_class_str_to_mask( const std::string& str )
-{
-  int cls_id = -1;
-
-  for ( unsigned int i = 0; i < sizeof( _pet_class_strings ) / sizeof( std::string ); i++ )
-  {
-    if ( _pet_class_strings[ i ].empty() )
-      continue;
-
-    if ( ! util::str_compare_ci( _pet_class_strings[ i ], str ) )
-      continue;
-
-    cls_id = i;
-    break;
-  }
-
-  return 1 << ( ( cls_id < 1 ) ? 0 : cls_id - 1 );
 }
 
 unsigned school_str_to_mask( const std::string& str )
@@ -429,6 +409,24 @@ struct spell_list_expr_t : public spell_data_expr_t
             for ( unsigned n = 0; n < sim -> dbc.set_bonus_spell_size(); n++ )
             {
               if ( ! ( spell_id = sim -> dbc.set_bonus_spell( cls, tier, n ) ) )
+                continue;
+
+              result_spell_list.push_back( spell_id );
+            }
+          }
+        }
+        break;
+      }
+
+      case DATA_PERK_SPELL:
+      {
+        for ( unsigned cls = 0; cls < sim -> dbc.specialization_max_class(); cls++ )
+        {
+          for ( unsigned tree = 0; tree < sim -> dbc.specialization_max_per_class(); tree++ )
+          {
+          for ( unsigned n = 0; n < sim -> dbc.perk_ability_size(); n++ )
+          {
+              if ( ! ( spell_id = sim -> dbc.perk_ability( cls, tree, n ) ) )
                 continue;
 
               result_spell_list.push_back( spell_id );
@@ -1022,61 +1020,6 @@ struct spell_class_expr_t : public spell_list_expr_t
   }
 };
 
-struct spell_pet_class_expr_t : public spell_list_expr_t
-{
-  spell_pet_class_expr_t( sim_t* sim, expr_data_e type ) : spell_list_expr_t( sim, "pet_class", type ) { }
-
-  virtual std::vector<uint32_t> operator==( const spell_data_expr_t& other )
-  {
-    std::vector<uint32_t> res;
-    uint32_t              class_mask;
-
-    // Pet class is only stored in talent data
-    if ( data_type != DATA_TALENT )
-      return res;
-
-    if ( other.result_tok == TOK_STR )
-      class_mask = pet_class_str_to_mask( other.result_str );
-    // Other types will not be allowed, e.g. you cannot do class=list
-    else
-      return res;
-
-    for ( std::vector<uint32_t>::const_iterator i = result_spell_list.begin(); i != result_spell_list.end(); ++i )
-    {
-      if ( ! sim -> dbc.talent( *i ) )
-        continue;
-
-      if ( sim -> dbc.talent( *i ) -> mask_pet() & class_mask )
-        res.push_back( *i );
-    }
-
-    return res;
-  }
-
-  virtual std::vector<uint32_t> operator!=( const spell_data_expr_t& other )
-  {
-    std::vector<uint32_t> res;
-    uint32_t              class_mask;
-
-    if ( other.result_tok == TOK_STR )
-      class_mask = pet_class_str_to_mask( other.result_str );
-    // Other types will not be allowed, e.g. you cannot do class=list
-    else
-      return res;
-
-    for ( std::vector<uint32_t>::const_iterator i = result_spell_list.begin(); i != result_spell_list.end(); ++i )
-    {
-      if ( ! sim -> dbc.talent( *i ) )
-        continue;
-
-      if ( ( sim -> dbc.talent( *i ) -> mask_pet() & class_mask ) == 0 )
-        res.push_back( *i );
-    }
-
-    return res;
-  }
-};
-
 struct spell_race_expr_t : public spell_list_expr_t
 {
   spell_race_expr_t( sim_t* sim, expr_data_e type ) : spell_list_expr_t( sim, "race", type ) { }
@@ -1314,8 +1257,6 @@ spell_data_expr_t* spell_data_expr_t::create_spell_expression( sim_t* sim, const
     return new spell_race_expr_t( sim, data_type );
   else if ( util::str_compare_ci( splits[ 1 ], "attribute" ) )
     return new spell_attribute_expr_t( sim, data_type );
-  else if ( data_type == DATA_TALENT && util::str_compare_ci( splits[ 1 ], "pet_class" ) )
-    return new spell_pet_class_expr_t( sim, data_type );
   else if ( data_type != DATA_TALENT && util::str_compare_ci( splits[ 1 ], "school" ) )
     return new spell_school_expr_t( sim, data_type );
   else if ( data_type != DATA_TALENT && util::str_compare_ci( splits[ 1 ], "rune" ) )

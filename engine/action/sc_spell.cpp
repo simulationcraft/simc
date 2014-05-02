@@ -32,7 +32,6 @@ spell_base_t::spell_base_t( action_e at,
   action_t( at, token, p, s ),
   procs_courageous_primal_diamond( true )
 {
-  base_spell_power_multiplier = 1.0;
 
   dot_behavior      = DOT_REFRESH;
 
@@ -147,17 +146,17 @@ proc_types spell_base_t::proc_type() const
 {
   if ( ! is_aoe() )
   {
-    if ( harmful )
+    if ( type == ACTION_SPELL )
       return PROC1_SPELL;
     // Only allow non-harmful abilities with "an amount" to count as heals
-    else if ( base_dd_min > 0 )
+    else if ( ( type == ACTION_HEAL || type == ACTION_ABSORB ) && has_amount_result() )
       return PROC1_HEAL;
   }
   else
   {
-    if ( harmful )
+    if ( type == ACTION_SPELL )
       return PROC1_AOE_SPELL;
-    else if ( base_dd_min > 0 )
+    else if ( ( type == ACTION_HEAL || type == ACTION_ABSORB ) && has_amount_result() )
       return PROC1_AOE_HEAL;
   }
 
@@ -179,10 +178,12 @@ spell_t::spell_t( const std::string&  token,
 double spell_t::miss_chance( double hit, player_t* t ) const
 {
   // base spell miss chance is 6% - treat this as base.miss + 3%
-  double miss = 0.03 + t -> cache.miss();
+  double miss = t -> cache.miss();
 
-  // adjustment for level differential
-  miss += ( t -> level - player -> level ) * 0.03;
+  // TODO-WOD: Miss chance increase per 4+ level delta?
+  if ( t -> level - player -> level > 3 )
+  {
+  }
 
   // subtract player's hit
   miss -= hit;
@@ -372,6 +373,17 @@ void heal_t::assess_damage( dmg_e heal_type,
 
     if ( ! result_is_multistrike( s -> result ) || callbacks )
       action_callback_t::trigger( player -> callbacks.tick_heal[ school ], this, s );
+  }
+
+  // New callback system; proc spells on impact. 
+  // Note: direct_tick_callbacks should not be used with the new system, 
+  // override action_t::proc_type() instead
+  if ( callbacks )
+  {
+    proc_types pt = s -> proc_type();
+    proc_types2 pt2 = s -> impact_proc_type2();
+    if ( pt != PROC1_INVALID && pt2 != PROC2_INVALID )
+      action_callback_t::trigger( player -> callbacks.procs[ pt ][ pt2 ], this, s );
   }
 
   stats -> add_result( s -> result_amount, s -> result_total, ( direct_tick ? HEAL_OVER_TIME : heal_type ), s -> result, s -> block_result, s -> target );

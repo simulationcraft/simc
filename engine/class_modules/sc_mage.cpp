@@ -57,7 +57,7 @@ public:
   // Benefits
   struct benefits_t
   {
-    benefit_t* arcane_charge[ 7 ];
+    benefit_t* arcane_charge[ 4 ]; // CHANGED 2014/4/15 - Arcane Charges max stack is 4 now, not 7.
     benefit_t* dps_rotation;
     benefit_t* dpm_rotation;
     benefit_t* water_elemental;
@@ -82,7 +82,7 @@ public:
     buff_t* pyroblast;
     buff_t* rune_of_power;
     buff_t* tier13_2pc;
-    buff_t* alter_time;
+    //buff_t* alter_time;
     absorb_buff_t* incanters_ward;
     buff_t* incanters_absorption;
     buff_t* tier15_2pc_haste;
@@ -107,7 +107,6 @@ public:
   {
     gain_t* evocation;
     gain_t* incanters_ward_passive;
-    gain_t* mana_gem;
     gain_t* rune_of_power;
   } gains;
 
@@ -124,7 +123,6 @@ public:
     const spell_data_t* inferno_blast;
     const spell_data_t* living_bomb;
     const spell_data_t* loose_mana;
-    const spell_data_t* mana_gem;
     const spell_data_t* mirror_image;
     const spell_data_t* splitting_ice;
 
@@ -151,7 +149,6 @@ public:
   // Procs
   struct procs_t
   {
-    proc_t* mana_gem;
     proc_t* test_for_crit_hotstreak;
     proc_t* crit_for_hotstreak;
     proc_t* hotstreak;
@@ -235,7 +232,6 @@ public:
   } talents;
 
 public:
-  int mana_gem_charges;
   int current_arcane_charges;
 
   mage_t( sim_t* sim, const std::string& name, race_e r = RACE_NIGHT_ELF ) :
@@ -257,7 +253,6 @@ public:
     spells( spells_t() ),
     spec( specializations_t() ),
     talents( talents_list_t() ),
-    mana_gem_charges( 0 ),
     current_arcane_charges()
   {
     // Cooldowns
@@ -289,6 +284,7 @@ public:
   virtual double    mana_regen_per_second() const;
   virtual double    composite_player_multiplier( school_e school ) const;
   virtual void invalidate_cache( cache_e );
+  virtual double    composite_multistrike() const;
   virtual double    composite_spell_crit() const;
   virtual double    composite_spell_haste() const;
   virtual double    matching_gear_multiplier( attribute_e attr ) const;
@@ -315,13 +311,6 @@ public:
   void add_action( std::string action, std::string options = "", std::string alist = "default" );
   void add_action( const spell_data_t* s, std::string options = "", std::string alist = "default" );
 
-  int max_mana_gem_charges() const
-  {
-    if ( glyphs.mana_gem -> ok() )
-      return glyphs.mana_gem -> effectN( 2 ).base_value();
-    else
-      return 3;
-  }
 };
 
 namespace pets {
@@ -358,7 +347,7 @@ struct water_elemental_pet_t : public pet_t
   struct mini_waterbolt_t : public spell_t
   {
     mini_waterbolt_t( water_elemental_pet_t* p , int bolt_count = 1 ) :
-      spell_t( "mini_waterbolt", p, p -> find_spell( 131581 ) )
+      spell_t( "mini_waterbolt", p, p -> find_spell( 31707 ) )
     {
       may_crit = true;
       background = true;
@@ -741,7 +730,7 @@ struct mage_state_t
 
 } // alter_time namespace
 
-struct alter_time_t : public buff_t
+/*struct alter_time_t : public buff_t
 {
   alter_time::mage_state_t mage_state;
 
@@ -784,7 +773,7 @@ struct alter_time_t : public buff_t
     mage_state.clear_state();
   }
 };
-
+*/
 // Arcane Power Buff ========================================================
 
 struct arcane_power_t : public buff_t
@@ -1021,7 +1010,6 @@ public:
 
     return c;
   }
-
   virtual timespan_t execute_time() const
   {
     timespan_t t = spell_t::execute_time();
@@ -1031,7 +1019,18 @@ public:
 
     return t;
   }
-
+  // Ensures mastery for Arcane is only added to spells which call mage_spell_t, so things like the Legendary Cloak do not get modified. Added 4/15/2014
+  virtual double action_multiplier() const
+  {
+    double am=spell_t::action_multiplier();
+    if ( p() -> specialization() == MAGE_ARCANE )
+    {
+      double mana_pct= p() -> resources.pct( RESOURCE_MANA );
+      am *= 1.0 + mana_pct * p() -> composite_mastery_value();
+    }
+    return am;
+  }
+  //
   virtual void schedule_execute( action_state_t* state = 0 )
   {
     spell_t::schedule_execute( state );
@@ -1320,8 +1319,7 @@ static void trigger_icicle_gain( action_state_t* state )
 struct ignite_t : public residual_dot_action< mage_spell_t >
 {
   ignite_t( mage_t* player ) :
-    residual_dot_action_t( "ignite", player, player -> dbc.spell( 12654 )  )
-    // Acessed through dbc.spell because it is a level 99 spell which will not be parsed with find_spell
+    residual_dot_action_t( "ignite", player, player -> find_spell( 12846 ) )
   {
   }
 };
@@ -1805,31 +1803,6 @@ struct cone_of_cold_t : public mage_spell_t
   }
 };
 
-// Conjure Mana Gem Spell ===================================================
-
-struct conjure_mana_gem_t : public mage_spell_t
-{
-  conjure_mana_gem_t( mage_t* p, const std::string& options_str ) :
-    mage_spell_t( "conjure_mana_gem", p, p -> find_class_spell( "Conjure Mana Gem" ) )
-  {
-    parse_options( NULL, options_str );
-  }
-
-  virtual void execute()
-  {
-    mage_spell_t::execute();
-    p() -> mana_gem_charges = p() -> max_mana_gem_charges();
-  }
-
-  virtual bool ready()
-  {
-    if ( p() -> mana_gem_charges >= p() -> max_mana_gem_charges() )
-      return false;
-
-    return mage_spell_t::ready();
-  }
-};
-
 // Counterspell Spell =======================================================
 
 struct counterspell_t : public mage_spell_t
@@ -2047,7 +2020,7 @@ struct fireball_t : public mage_spell_t
 struct flamestrike_t : public mage_spell_t
 {
   flamestrike_t( mage_t* p, const std::string& options_str ) :
-    mage_spell_t( "flamestrike", p, p -> find_class_spell( "Flamestrike" ) )
+    mage_spell_t( "flamestrike", p, p -> find_specialization_spell( "Flamestrike" ) )
   {
     parse_options( NULL, options_str );
 
@@ -2154,7 +2127,7 @@ struct frost_bomb_t : public mage_spell_t
 struct mini_frostbolt_t : public mage_spell_t
 {
   mini_frostbolt_t( mage_t* p, int bolt_count = 1 ) :
-    mage_spell_t( "mini_frostbolt", p, p -> find_spell( 131079 ) )
+    mage_spell_t( "mini_frostbolt", p, p -> find_spell( 31707 ) )
   {
     background = true;
     //dual = true;
@@ -2585,7 +2558,7 @@ struct mini_ice_lance_t : public mage_spell_t
 {
 
   mini_ice_lance_t( mage_t* p , int bolt_count = 1 ) :
-    mage_spell_t( "mini_ice_lance", p, p -> find_spell( 131080 ) )
+    mage_spell_t( "mini_ice_lance", p, p -> find_spell( 30455 ) )
   {
     background = true;
     //dual = true;
@@ -3000,79 +2973,12 @@ struct mage_armor_t : public mage_spell_t
   }
 };
 
-// Mana Gem =================================================================
-
-class mana_gem_t : public mage_spell_t
-{
-  class mana_gem_tick_t : public mage_spell_t
-  {
-    double min;
-    double max;
-
-  public:
-    mana_gem_tick_t( mage_t* p ) : mage_spell_t( "mana_gem_tick", p, p -> find_spell( 5405 ) )
-    {
-      harmful = may_hit = may_crit = tick_may_crit = false;
-      background = dual = proc = true;
-
-      int n = ( p -> glyphs.loose_mana -> ok() ? 2 : 1 );
-      min = data().effectN( n ).min( p );
-      max = data().effectN( n ).max( p );
-    }
-
-    virtual void execute()
-    {
-      double gain = rng().range( min, max );
-      if ( p() -> passives.nether_attunement -> ok() )
-        gain /= p() -> cache.spell_speed();
-      player -> resource_gain( RESOURCE_MANA, gain, p() -> gains.mana_gem );
-
-      mage_spell_t::execute();
-    }
-  };
-
-public:
-  mana_gem_t( mage_t* p, const std::string& options_str ) :
-    mage_spell_t( "mana_gem", p, p -> find_spell( 5405 ) )
-  {
-    parse_options( NULL, options_str );
-
-    harmful = may_hit = may_crit = tick_may_crit = hasted_ticks = false;
-
-    dynamic_tick_action = true;
-    tick_action = new mana_gem_tick_t( p );
-
-    if ( p -> glyphs.loose_mana -> ok() )
-    {
-      base_tick_time = data().effectN( 2 ).period();
-      num_ticks = as<int>( p -> glyphs.loose_mana -> effectN( 1 ).time_value() / base_tick_time );
-    }
-    else
-      tick_zero = true;
-  }
-
-  virtual void execute()
-  {
-    p() -> procs.mana_gem -> occur();
-    p() -> mana_gem_charges--;
-    mage_spell_t::execute();
-  }
-
-  virtual bool ready()
-  {
-    if ( p() -> mana_gem_charges <= 0 )
-      return false;
-
-    return mage_spell_t::ready();
-  }
-};
-
 // Mirror Image Spell =======================================================
 
 struct mirror_image_t : public mage_spell_t
 {
   mirror_image_t( mage_t* p, const std::string& options_str ) :
-    mage_spell_t( "mirror_image", p, p -> find_class_spell( "Mirror Image" ) )
+    mage_spell_t( "mirror_image", p, p -> find_spell( 55342 ) )
   {
     parse_options( NULL, options_str );
     num_ticks = 0;
@@ -3655,12 +3561,6 @@ struct choose_rotation_t : public action_t
       double consumption_rate = ( p -> rotation.dps_mana_loss / p -> rotation.dps_time.total_seconds() ) - regen_rate;
       double available_mana = p -> resources.current[ RESOURCE_MANA ];
 
-      // Mana Gem, if we have uses left
-      if ( p -> mana_gem_charges > 0 )
-      {
-        available_mana += p -> dbc.effect_max( 16856, p -> level );
-      }
-
       // If this will be the last evocation then figure out how much of it we can actually burn before end and adjust appropriately.
 
       timespan_t evo_cooldown = timespan_t::from_seconds( 240.0 );
@@ -3732,13 +3632,13 @@ struct choose_rotation_t : public action_t
     return true;
   }
 };
-
+/*
 // Alter Time Spell =========================================================
 
 struct alter_time_t : public mage_spell_t
 {
   alter_time_t( mage_t* p, const std::string& options_str ) :
-    mage_spell_t( "alter_time_activate", p, p -> find_class_spell( "Alter Time" ) )
+    mage_spell_t( "alter_time_activate", p, p -> find_spell( 108978 ) )
   {
     parse_options( NULL, options_str );
 
@@ -3774,7 +3674,7 @@ struct alter_time_t : public mage_spell_t
     return mage_spell_t::ready();
   }
 };
-
+*/
 // Incanters_ward Spell =====================================================
 
 struct incanters_ward_t : public mage_spell_t
@@ -3858,7 +3758,6 @@ action_t* mage_t::create_action( const std::string& name,
   if ( name == "cold_snap"         ) return new               cold_snap_t( this, options_str );
   if ( name == "combustion"        ) return new              combustion_t( this, options_str );
   if ( name == "cone_of_cold"      ) return new            cone_of_cold_t( this, options_str );
-  if ( name == "conjure_mana_gem"  ) return new        conjure_mana_gem_t( this, options_str );
   if ( name == "counterspell"      ) return new            counterspell_t( this, options_str );
   if ( name == "dragons_breath"    ) return new          dragons_breath_t( this, options_str );
   if ( name == "evocation"         ) return new               evocation_t( this, options_str );
@@ -3891,7 +3790,6 @@ action_t* mage_t::create_action( const std::string& name,
       return new nether_tempest_t( this, options_str );
     }
   }
-  if ( name == "mana_gem"          ) return new                mana_gem_t( this, options_str );
   if ( name == "mirror_image"      ) return new            mirror_image_t( this, options_str );
   if ( name == "molten_armor"      ) return new            molten_armor_t( this, options_str );
   if ( name == "nether_tempest"    ) return new          nether_tempest_t( this, options_str );
@@ -3907,7 +3805,7 @@ action_t* mage_t::create_action( const std::string& name,
   if ( name == "slow"              ) return new                    slow_t( this, options_str );
   if ( name == "time_warp"         ) return new               time_warp_t( this, options_str );
   if ( name == "water_elemental"   ) return new  summon_water_elemental_t( this, options_str );
-  if ( name == "alter_time"        ) return new              alter_time_t( this, options_str );
+  //if ( name == "alter_time"        ) return new              alter_time_t( this, options_str );
   if ( name == "incanters_ward"    ) return new          incanters_ward_t( this, options_str );
 
   return player_t::create_action( name, options_str );
@@ -4005,7 +3903,6 @@ void mage_t::init_spells()
   glyphs.inferno_blast       = find_glyph_spell( "Glyph of Inferno Blast" );
   glyphs.living_bomb         = find_glyph_spell( "Glyph of Living Bomb" );
   glyphs.loose_mana          = find_glyph_spell( "Glyph of Loose Mana" );
-  glyphs.mana_gem            = find_glyph_spell( "Glyph of Mana Gem" );
   glyphs.mirror_image        = find_glyph_spell( "Glyph of Mirror Image" );
   glyphs.splitting_ice       = find_glyph_spell( "Glyph of Splitting Ice" );
 
@@ -4034,7 +3931,7 @@ void mage_t::init_base_stats()
 
   base.spell_power_per_intellect = 1.0;
 
-  base.stats.attack_power = -10;
+  //base.stats.attack_power = -10; Removed in WoD
   base.attack_power_per_strength = 1.0;
 
   diminished_kfactor    = 0.009830;
@@ -4077,7 +3974,7 @@ void mage_t::create_buffs()
   buffs.fingers_of_frost     = buff_creator_t( this, "fingers_of_frost", find_spell( 112965 ) ).chance( find_spell( 112965 ) -> effectN( 1 ).percent() )
                                .duration( timespan_t::from_seconds( 15.0 ) )
                                .max_stack( 2 );
-  buffs.frost_armor          = buff_creator_t( this, "frost_armor", find_spell( 7302 ) ).add_invalidate( CACHE_SPELL_HASTE );
+  buffs.frost_armor          = buff_creator_t( this, "frost_armor", find_spell( 7302 ) ).add_invalidate( CACHE_MULTISTRIKE );
   buffs.icy_veins            = new buffs::icy_veins_t( this );
   buffs.ice_floes            = buff_creator_t( this, "ice_floes", talents.ice_floes );
   buffs.invokers_energy      = buff_creator_t( this, "invokers_energy", find_spell( 116257 ) )
@@ -4097,7 +3994,7 @@ void mage_t::create_buffs()
                                .spell( find_spell( 105785 ) )
                                .chance( sets.has_set_bonus( SET_T13_2PC_CASTER ) ? 0.5 : 0.0 );
 
-  buffs.alter_time           = new buffs::alter_time_t( this );
+  //buffs.alter_time           = new buffs::alter_time_t( this );
   buffs.incanters_ward       = new buffs::incanters_ward_t( this );
   buffs.incanters_absorption  = buff_creator_t( this, "incanters_absorption" )
                                 .spell( find_spell( 116267 ) )
@@ -4129,7 +4026,6 @@ void mage_t::init_gains()
 
   gains.evocation              = get_gain( "evocation"              );
   gains.incanters_ward_passive = get_gain( "incanters_ward_passive" );
-  gains.mana_gem               = get_gain( "mana_gem"               );
   gains.rune_of_power          = get_gain( "rune_of_power"          );
 }
 
@@ -4139,7 +4035,6 @@ void mage_t::init_procs()
 {
   player_t::init_procs();
 
-  procs.mana_gem                = get_proc( "mana_gem"                );
   procs.test_for_crit_hotstreak = get_proc( "test_for_crit_hotstreak" );
   procs.crit_for_hotstreak      = get_proc( "crit_test_hotstreak"     );
   procs.hotstreak               = get_proc( "hotstreak"               );
@@ -4249,21 +4144,12 @@ void mage_t::init_action_list()
     // Counterspell
     add_action( "Counterspell", "if=target.debuff.casting.react" );
 
-    // Prevent unsafe Alter Time teleport while moving
-    // FIXME: realistically for skilled players using DBM, warning would be available to suppress Alter Time for 6 seconds before moving
-    action_list_str += "/cancel_buff,name=alter_time,moving=1";
-
     // Cold Snap
     if ( talents.cold_snap -> ok() )
     {
       add_action( "Cold Snap", "if=health.pct<30" );
     }
 
-    // Refresh Gem during invuln phases
-    if ( level >= 47 )
-    {
-      add_action( "Conjure Mana Gem", "if=mana_gem_charges<3&target.debuff.invulnerable.react" );
-    }
 
     //not useful if bloodlust is check in option.
     if ( level >= 85 )
@@ -4291,7 +4177,6 @@ void mage_t::init_action_list()
       }
 
       action_list_str += "/mirror_image";
-      action_list_str += "/mana_gem,if=mana.pct<80&buff.alter_time.down";
 
       //check for Arcane power glyph for use with time_to_bloodlust and Alter Time
       if (glyphs.arcane_power -> ok())
@@ -4316,29 +4201,21 @@ void mage_t::init_action_list()
       // The arcane action list for < 87 is terribly gimped, level instead
       if ( level >= 87 )
       {
-        if ( race == RACE_ORC )         action_list_str += "/blood_fury,if=buff.alter_time.down&(buff.arcane_power.up|cooldown.arcane_power.remains>15|target.time_to_die<18)";
-        else if ( race == RACE_TROLL )  action_list_str += "/berserking,if=buff.alter_time.down&(buff.arcane_power.up|target.time_to_die<18)";
+        if ( race == RACE_ORC )         action_list_str += "/blood_fury,if=(buff.arcane_power.up|cooldown.arcane_power.remains>15|target.time_to_die<18)";
+        else if ( race == RACE_TROLL )  action_list_str += "/berserking,if=(buff.arcane_power.up|target.time_to_die<18)";
 
-        if ( sim -> allow_potions )      action_list_str += "/jade_serpent_potion,if=buff.alter_time.down&(buff.arcane_power.up|target.time_to_die<50)";
-
-        action_list_str += init_use_item_actions( ",sync=alter_time_activate,if=buff.alter_time.down" );
-
-        action_list_str += "/alter_time,if=buff.alter_time.down&buff.arcane_power.up";
+        if ( sim -> allow_potions )      action_list_str += "/jade_serpent_potion,if=(buff.arcane_power.up|target.time_to_die<50)";
 
         if ( talents.rune_of_power -> ok() )
-          action_list_str += init_use_item_actions( ",if=(cooldown.alter_time_activate.remains>45|target.time_to_die<25)&buff.rune_of_power.remains>20" );
+          action_list_str += init_use_item_actions( ",if=target.time_to_die<25&buff.rune_of_power.remains>20" );
         else if ( talents.invocation -> ok() )
-          action_list_str += init_use_item_actions( ",if=(cooldown.alter_time_activate.remains>45|target.time_to_die<25)&buff.invokers_energy.remains>20" );
+          action_list_str += init_use_item_actions( ",if=target.time_to_die<25&buff.invokers_energy.remains>20" );
         else
-          action_list_str += init_use_item_actions( ",if=cooldown.alter_time_activate.remains>45|target.time_to_die<25" );
+          action_list_str += init_use_item_actions( ",if=target.time_to_die<25" );
 
         //decide between single_target and aoe rotation
         action_list_str += "/run_action_list,name=aoe,if=active_enemies>=6";
         action_list_str += "/run_action_list,name=single_target,if=active_enemies<6";
-
-        st_list_str += "/arcane_barrage,if=buff.alter_time.up&buff.alter_time.remains<2";
-        st_list_str += "/arcane_missiles,if=buff.alter_time.up";
-        st_list_str += "/arcane_blast,if=buff.alter_time.up";
         
         //modify APL for T16 4p
         st_list_str += "/arcane_blast,if=buff.profound_magic.up&buff.arcane_charge.stack>3&mana.pct>93";
@@ -4361,11 +4238,8 @@ void mage_t::init_action_list()
 
       st_list_str += "/arcane_barrage,moving=1";
       st_list_str += "/fire_blast,moving=1";
-      st_list_str += "/ice_lance,moving=1";
 
       //AoE
-
-      aoe_list_str = "/flamestrike";
 
       if ( talents.nether_tempest -> ok() )   aoe_list_str += "/nether_tempest,cycle_targets=1,if=(!ticking|remains<tick_time)&target.time_to_die>6";
       else if ( talents.living_bomb -> ok() ) aoe_list_str += "/living_bomb,cycle_targets=1,if=(!ticking|remains<tick_time)&target.time_to_die>tick_time*3";
@@ -4380,75 +4254,60 @@ void mage_t::init_action_list()
     {
       if ( talents.rune_of_power -> ok() )
       {
-        action_list_str += "/rune_of_power,if=buff.rune_of_power.remains<cast_time&buff.alter_time.down";
-        action_list_str += "/rune_of_power,if=cooldown.alter_time_activate.remains=0&buff.rune_of_power.remains<6";
+        action_list_str += "/rune_of_power,if=buff.rune_of_power.remains<cast_time";
+        action_list_str += "/rune_of_power,if=buff.rune_of_power.remains<6";
       }
       else if ( talents.invocation -> ok() )
       {
-        action_list_str += "/evocation,if=(buff.invokers_energy.down|mana.pct<20)&buff.alter_time.down";
-        action_list_str += "/evocation,if=cooldown.alter_time_activate.remains=0&buff.invokers_energy.remains<6";
+        action_list_str += "/evocation,if=(buff.invokers_energy.down|mana.pct<20)";
+        action_list_str += "/evocation,if=buff.invokers_energy.remains<6";
       }
       else
       {
         if ( level > 87 )
-          action_list_str += "/evocation,if=buff.alter_time.down&mana.pct<20,interrupt_if=mana.pct>95";
+          action_list_str += "/evocation,if=mana.pct<20,interrupt_if=mana.pct>95";
         else
           action_list_str += "/evocation,if=mana.pct<20,interrupt_if=mana.pct>95";
       }
 
       if ( level > 87 )
       {
-        if ( race == RACE_ORC )                 action_list_str += "/blood_fury,if=buff.alter_time.down&(cooldown.alter_time_activate.remains>30|target.time_to_die<18)";
-        else if ( race == RACE_TROLL )          action_list_str += "/berserking,if=buff.alter_time.down&target.time_to_die<18";
+        if ( race == RACE_ORC )                 action_list_str += "/blood_fury";
+        else if ( race == RACE_TROLL )          action_list_str += "/berserking";
       }
 
       if ( sim -> allow_potions && level > 87 )
-        action_list_str += "/jade_serpent_potion,if=buff.alter_time.down&target.time_to_die<45";
+        action_list_str += "/jade_serpent_potion,if=target.time_to_die<45";
 
-      action_list_str += init_use_profession_actions( level >= 87 ? ",if=buff.alter_time.down&(cooldown.alter_time_activate.remains>30|target.time_to_die<25)" : "" );
+      action_list_str += init_use_profession_actions( level >= 87 ? ",if=target.time_to_die<25)" : "" );
       action_list_str += "/mirror_image";
 
 //hardcoding this calculation for improving performance ???
       action_list_str += "/combustion,if=target.time_to_die<22";
       action_list_str += "/combustion,if=dot.ignite.tick_dmg>=((3*action.pyroblast.crit_damage)*mastery_value*0.5)";
-      action_list_str += "/combustion,if=dot.ignite.tick_dmg>=((action.fireball.crit_damage+action.inferno_blast.crit_damage+action.pyroblast.hit_damage)*mastery_value*0.5)&dot.pyroblast.ticking&buff.alter_time.down&buff.pyroblast.down";
+      action_list_str += "/combustion,if=dot.ignite.tick_dmg>=((action.fireball.crit_damage+action.inferno_blast.crit_damage+action.pyroblast.hit_damage)*mastery_value*0.5)&dot.pyroblast.ticking&buff.pyroblast.down";
       if ( talents.presence_of_mind -> ok() )
         action_list_str += "&buff.presence_of_mind.down";
 
       if ( race == RACE_ORC )
       {
         action_list_str += "/blood_fury";
-        if ( level >= 87 )
-          action_list_str += ",sync=alter_time_activate,if=buff.alter_time.down";
       }
       else if ( race == RACE_TROLL )
       {
         action_list_str += "/berserking";
-        if ( level >= 87 )
-          action_list_str += ",sync=alter_time_activate,if=buff.alter_time.down";
       }
 
       if ( talents.presence_of_mind -> ok() )
       {
         action_list_str += "/presence_of_mind";
-        if ( level >= 87 )
-          action_list_str += ",sync=alter_time_activate,if=buff.alter_time.down";
       }
       if ( sim -> allow_potions )
       {
         action_list_str += "/jade_serpent_potion";
-        if ( level >= 87 )
-          action_list_str += ",sync=alter_time_activate,if=buff.alter_time.down";
       }
 
-      action_list_str += init_use_item_actions( ",sync=alter_time_activate" );
-      action_list_str += init_use_profession_actions( level >= 87 ? ",sync=alter_time_activate,if=buff.alter_time.down" : "" );
-      //add time_to_bloodlust condition
-      if ( level >= 87 )
-        action_list_str += "/alter_time,if=time_to_bloodlust>180&buff.alter_time.down&buff.pyroblast.react";
-      action_list_str += init_use_item_actions( ",if=cooldown.alter_time_activate.remains>40|target.time_to_die<12" );
-
-      if ( talents.presence_of_mind -> ok() ) action_list_str += "/presence_of_mind,if=cooldown.alter_time_activate.remains>60|target.time_to_die<5";
+      if ( talents.presence_of_mind -> ok() ) action_list_str += "/presence_of_mind,if=target.time_to_die<5";
 
       action_list_str += "/flamestrike,if=active_enemies>=5";
 
@@ -4470,12 +4329,12 @@ void mage_t::init_action_list()
     {
       if ( talents.rune_of_power -> ok() )
       {
-        action_list_str += "/rune_of_power,if=buff.rune_of_power.remains<cast_time&buff.alter_time.down";
+        action_list_str += "/rune_of_power,if=buff.rune_of_power.remains<cast_time";
         action_list_str += "/rune_of_power,if=cooldown.icy_veins.remains=0&buff.rune_of_power.remains<20";
       }
       else if ( talents.invocation -> ok() )
       {
-        action_list_str += "/evocation,if=(buff.invokers_energy.down|mana.pct<20)&buff.alter_time.down";
+        action_list_str += "/evocation,if=(buff.invokers_energy.down|mana.pct<20)";
         action_list_str += "/evocation,if=cooldown.icy_veins.remains=0&buff.invokers_energy.remains<20";
       }
       else
@@ -4498,24 +4357,18 @@ void mage_t::init_action_list()
         action_list_str += "/jade_serpent_potion,if=buff.icy_veins.up|target.time_to_die<45";
 
       if ( talents.presence_of_mind -> ok() ) action_list_str += "/presence_of_mind,if=buff.icy_veins.up|cooldown.icy_veins.remains>15|target.time_to_die<15";
-
-      action_list_str += init_use_item_actions( level >= 87 ? ",sync=alter_time_activate,if=buff.alter_time.down" : "" );
-      if ( level >= 87 )
-        action_list_str += "/alter_time,if=buff.alter_time.down&buff.icy_veins.up";
-
+      
       if ( talents.rune_of_power -> ok() )
-        action_list_str += init_use_item_actions( ",if=(cooldown.alter_time_activate.remains>45&buff.rune_of_power.remains>20)|target.time_to_die<25" );
+        action_list_str += init_use_item_actions( ",if=buff.rune_of_power.remains>20|target.time_to_die<25" );
       else if ( talents.invocation -> ok() )
-        action_list_str += init_use_item_actions( ",if=(cooldown.alter_time_activate.remains>45&buff.invokers_energy.remains>20)|target.time_to_die<25" );
+        action_list_str += init_use_item_actions( ",if=buff.invokers_energy.remains>20|target.time_to_die<25" );
       else
-        action_list_str += init_use_item_actions( ",if=cooldown.alter_time_activate.remains>45|target.time_to_die<25" );
-
-      action_list_str += "/flamestrike,if=active_enemies>=5";
+        action_list_str += init_use_item_actions( ",if=target.time_to_die<25" );
 
       if ( level >= 87 )
       {
-        action_list_str += "/frostfire_bolt,if=buff.alter_time.up&buff.brain_freeze.up";
-        action_list_str += "/ice_lance,if=buff.alter_time.up&buff.fingers_of_frost.up";
+        action_list_str += "/frostfire_bolt,if=buff.brain_freeze.up";
+        action_list_str += "/ice_lance,if=buff.fingers_of_frost.up";
       }
 
       if ( talents.nether_tempest -> ok() )   action_list_str += "/nether_tempest,cycle_targets=1,if=(!ticking|remains<tick_time)&target.time_to_die>6";
@@ -4527,7 +4380,6 @@ void mage_t::init_action_list()
       //with 2pT16, keep 1 FoF to use with Frozen Thoughts
       action_list_str += "/ice_lance,if=buff.frozen_thoughts.react&buff.fingers_of_frost.up";
       action_list_str += "/ice_lance,if=buff.fingers_of_frost.up&(buff.fingers_of_frost.remains<2|(buff.fingers_of_frost.stack>1&cooldown.icy_veins.remains>2))";
-      //action_list_str += "/ice_lance,if=buff.fingers_of_frost.react&cooldown.icy_veins.remains>2";
       action_list_str += "/frostbolt";
 
       if ( talents.ice_floes -> ok() ) action_list_str += "/ice_floes,moving=1";
@@ -4591,17 +4443,12 @@ double mage_t::composite_player_multiplier( school_e school ) const
     m *= 1.0 + buffs.incanters_absorption -> value() * buffs.incanters_absorption -> data().effectN( 1 ).percent();
   }
 
-  if ( spec.mana_adept -> ok() )
-  {
-    double mana_pct = resources.pct( RESOURCE_MANA );
-    m *= 1.0 + mana_pct * cache.mastery_value();
-  }
-
   if ( specialization() == MAGE_ARCANE )
     cache.player_mult_valid[ school ] = false;
 
   return m;
 }
+
 
 void mage_t::invalidate_cache( cache_e c )
 {
@@ -4635,16 +4482,23 @@ double mage_t::composite_spell_crit() const
   return c;
 }
 
+//mage_t::composite_multistrike =============================================
+
+double mage_t::composite_multistrike() const
+{
+  double ms = player_t::composite_multistrike();
+
+  if ( buffs.frost_armor -> up() )
+    ms += buffs.frost_armor -> data().effectN( 1 ).percent();
+
+  return ms;
+}
+
 // mage_t::composite_spell_haste ============================================
 
 double mage_t::composite_spell_haste() const
 {
   double h = player_t::composite_spell_haste();
-
-  if ( buffs.frost_armor -> up() )
-  {
-    h *= 1.0 / ( 1.0 + buffs.frost_armor -> data().effectN( 1 ).percent() );
-  }
 
   if ( buffs.icy_veins -> up() && !glyphs.icy_veins -> ok() )
   {
@@ -4663,6 +4517,8 @@ double mage_t::matching_gear_multiplier( attribute_e attr ) const
   return 0.0;
 }
 
+
+}
 // mage_t::reset ============================================================
 
 void mage_t::reset()
@@ -4672,7 +4528,6 @@ void mage_t::reset()
   rotation.reset();
   icicles.clear();
   core_event_t::cancel( icicle_event );
-  mana_gem_charges = max_mana_gem_charges();
   active_living_bomb_targets = 0;
   last_bomb_target = 0;
 }
@@ -4707,8 +4562,7 @@ double mage_t::resource_gain( resource_e resource,
 
   if ( resource == RESOURCE_MANA )
   {
-    if ( source != gains.evocation &&
-         source != gains.mana_gem )
+    if ( source != gains.evocation )
     {
       rotation.mana_gain += actual_amount;
     }
@@ -4785,9 +4639,6 @@ expr_t* mage_t::create_expression( action_t* a, const std::string& name_str )
   if ( name_str == "dpm" )
     return new rotation_expr_t( name_str, *this, ROTATION_DPM );
 
-  if ( name_str == "mana_gem_charges" )
-    return make_ref_expr( name_str, mana_gem_charges );
-
   if ( name_str == "burn_mps" )
   {
     struct burn_mps_expr_t : public mage_expr_t
@@ -4849,7 +4700,7 @@ expr_t* mage_t::create_expression( action_t* a, const std::string& name_str )
         if ( mage.icicles.size() == 0 )
           return 0;
         else if ( mage.sim -> current_time - mage.icicles[ 0 ].first < mage.spells.icicles_driver -> duration() )
-          return mage.icicles.size();
+          return static_cast<double>(mage.icicles.size());
         else
         {
           size_t icicles = 0;
@@ -4861,7 +4712,7 @@ expr_t* mage_t::create_expression( action_t* a, const std::string& name_str )
             icicles++;
           }
 
-          return icicles;
+          return static_cast<double>(icicles);
         }
       }
     };
@@ -4900,6 +4751,33 @@ set_e mage_t::decode_set( const item_t& item ) const
   return SET_NONE;
 }
 
+/* Report Extension Class
+ * Here you can define class specific report extensions/overrides
+ */
+class mage_report_t : public player_report_extension_t
+{
+public:
+  mage_report_t( mage_t& player ) :
+      p( player )
+  {
+
+  }
+
+  virtual void html_customsection( report::sc_html_stream& /* os*/ ) override
+  {
+    /*// Custom Class Section
+    os << "\t\t\t\t<div class=\"player-section custom_section\">\n"
+        << "\t\t\t\t\t<h3 class=\"toggle open\">Custom Section</h3>\n"
+        << "\t\t\t\t\t<div class=\"toggle-content\">\n";
+
+    os << p.name();
+
+    os << "\t\t\t\t\t\t</div>\n" << "\t\t\t\t\t</div>\n";*/
+  }
+private:
+  mage_t& p;
+};
+
 // MAGE MODULE INTERFACE ====================================================
 
 struct mage_module_t : public module_t
@@ -4908,7 +4786,9 @@ struct mage_module_t : public module_t
 
   virtual player_t* create_player( sim_t* sim, const std::string& name, race_e r = RACE_NONE ) const
   {
-    return new mage_t( sim, name, r );
+    mage_t* p = new mage_t( sim, name, r );
+    p -> report_extension = std::shared_ptr<player_report_extension_t>( new mage_report_t( *p ) );
+    return p;
   }
   virtual bool valid() const { return true; }
   virtual void init        ( sim_t* ) const {}
@@ -4916,7 +4796,7 @@ struct mage_module_t : public module_t
   virtual void combat_end  ( sim_t* ) const {}
 };
 
-} // UNNAMED NAMESPACE
+ // UNNAMED NAMESPACE
 
 const module_t* module_t::mage()
 {

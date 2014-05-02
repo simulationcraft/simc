@@ -46,13 +46,16 @@ const char* wow_version( bool ptr );
 const char* wow_ptr_status( bool ptr );
 const item_data_t* items( bool ptr );
 std::size_t        n_items( bool ptr );
+const item_enchantment_data_t* item_enchantments( bool ptr );
+std::size_t        n_item_enchantments( bool ptr );
+const gem_property_data_t* gem_properties( bool ptr );
 specialization_e translate_spec_str   ( player_e ptype, const std::string& spec_str );
 std::string specialization_string     ( specialization_e spec );
 double fmt_value( double v, effect_type_t type, effect_subtype_t sub_type );
 const std::string& get_token( unsigned int id_spell );
 bool add_token( unsigned int id_spell, const std::string& token_name, bool ptr );
 unsigned int get_token_id( const std::string& token );
-
+bool valid_gem_color( unsigned color );
 }
 
 // ==========================================================================
@@ -154,6 +157,7 @@ public:
   double           _m_unk;           // Unused effect scaling multiplier
   //
   double           _coeff;           // Effect coefficient
+  double           _ap_coeff;        // Effect attack power coefficient
   double           _amplitude;       // Effect amplitude (e.g., tick time)
   // SpellRadius.dbc
   double           _radius;          // Minimum spell radius
@@ -247,6 +251,9 @@ public:
   double coeff() const
   { return _coeff; }
 
+  double ap_coeff() const
+  { return _ap_coeff; }
+
   timespan_t period() const
   { return timespan_t::from_millis( _amplitude ); }
 
@@ -284,6 +291,11 @@ public:
   double delta( const item_t* item ) const;
   double min( const item_t* item ) const;
   double max( const item_t* item ) const;
+
+  double average( const item_t& item ) const { return average( &item ); }
+  double delta( const item_t& item ) const { return delta( &item ); }
+  double min( const item_t& item ) const { return min( &item ); }
+  double max( const item_t& item ) const { return max( &item ); }
 
   bool override_field( const std::string& field, double value );
 
@@ -327,7 +339,6 @@ public:
   unsigned    _race_mask;          // Racial mask for the spell
   int         _scaling_type;       // Array index for gtSpellScaling.dbc. -1 means the first non-class-specific sub array, and so on, 0 disabled
   unsigned    _max_scaling_level;  // Max scaling level(?), 0 == no restrictions, otherwise min( player_level, max_scaling_level )
-  double      _extra_coeff;        // An "extra" coefficient (used for some spells to indicate AP based coefficient)
   // SpellLevels.dbc
   unsigned    _spell_level;        // Spell learned on level. NOTE: Only accurate for "class abilities"
   unsigned    _max_level;          // Maximum level for scaling
@@ -400,7 +411,7 @@ public:
   { return timespan_t::from_millis( _duration ); }
 
   double extra_coeff() const
-  { return _extra_coeff; }
+  { return 0; }
 
   timespan_t gcd() const
   { return timespan_t::from_millis( _gcd ); }
@@ -733,8 +744,7 @@ public:
   unsigned     _id;          // Talent id
   unsigned     _flags;       // Unused for now, 0x00 for all
   unsigned     _m_class;     // Class mask
-  unsigned     _m_pet;       // Pet mask
-  unsigned     _is_pet;      // Is Pet?
+  unsigned     _spec;        // Specialization
   unsigned     _col;         // Talent column
   unsigned     _row;         // Talent row
   unsigned     _spell_id;    // Talent spell
@@ -765,8 +775,11 @@ public:
   unsigned mask_class() const
   { return _m_class; }
 
-  unsigned mask_pet() const
-  { return _m_pet; }
+  unsigned spec() const
+  { return _spec; }
+
+  specialization_e specialization() const
+  { return static_cast<specialization_e>( _spec ); }
 
   // composite access functions
 
@@ -783,23 +796,13 @@ public:
     return ( ( _m_class & mask ) == mask );
   }
 
-  bool is_pet( pet_e p ) const
-  {
-    unsigned mask = util::pet_mask( p );
-
-    if ( mask == 0 )
-      return false;
-
-    return ( ( _m_pet & mask ) == mask );
-  }
-
   // static functions
   static talent_data_t* nil();
   static talent_data_t* find( unsigned, bool ptr = false );
   static talent_data_t* find( unsigned, const char* confirmation, bool ptr = false );
-  static talent_data_t* find( const char* name, bool ptr = false );
+  static talent_data_t* find( const char* name, specialization_e spec, bool ptr = false );
   static talent_data_t* find_tokenized( const char* name, bool ptr = false );
-  static talent_data_t* find( player_e c, unsigned int row, unsigned int col, bool ptr = false );
+  static talent_data_t* find( player_e c, unsigned int row, unsigned int col, specialization_e spec, bool ptr = false );
   static talent_data_t* list( bool ptr = false );
   static void           link( bool ptr = false );
 };
@@ -861,6 +864,15 @@ public:
   std::size_t n_items() const
   { return dbc::n_items( ptr ); }
 
+  const item_enchantment_data_t* item_enchantments() const
+  { return dbc::item_enchantments( ptr ); }
+
+  std::size_t n_item_enchantments() const
+  { return dbc::n_item_enchantments( ptr ); }
+
+  const gem_property_data_t* gem_properties() const
+  { return dbc::gem_properties( ptr ); }
+
   bool add_token( unsigned int id_spell, const std::string& token_name ) const
   { return dbc::add_token( id_spell, token_name, ptr ); }
 
@@ -890,6 +902,7 @@ public:
   double health_per_stamina( unsigned level ) const;
   double item_socket_cost( unsigned ilevel ) const;
   double real_ppm_coefficient( specialization_e, unsigned ) const;
+  double enemy_armor_mitigation( unsigned level ) const;
 
   double combat_rating( unsigned combat_rating_id, unsigned level ) const;
   double oct_combat_rating( unsigned combat_rating_id, player_e t ) const;
@@ -959,6 +972,9 @@ public:
   unsigned specialization_max_class() const;
   bool     ability_specialization( uint32_t spell_id, std::vector<specialization_e>& spec_list ) const;
 
+  unsigned perk_ability_size() const;
+  unsigned perk_ability( unsigned class_id, unsigned tree_id, unsigned n ) const;
+
   unsigned mastery_ability( unsigned class_id, unsigned tree_id, unsigned n ) const;
   unsigned mastery_ability_size() const;
   int      mastery_ability_tree( player_e c, uint32_t spell_id ) const;
@@ -980,11 +996,13 @@ public:
   double   effect_max( unsigned effect_id, unsigned level ) const;
   double   effect_bonus( unsigned effect_id, unsigned level ) const;
 
-  unsigned talent_ability_id( player_e c, const char* spell_name, bool name_tokenized = false ) const;
+  unsigned talent_ability_id( player_e c, specialization_e spec_id, const char* spell_name, bool name_tokenized = false ) const;
   unsigned class_ability_id( player_e c, specialization_e spec_id, const char* spell_name ) const;
   unsigned pet_ability_id( player_e c, const char* spell_name ) const;
   unsigned race_ability_id( player_e c, race_e r, const char* spell_name ) const;
   unsigned specialization_ability_id( specialization_e spec_id, const char* spell_name ) const;
+  unsigned perk_ability_id( specialization_e spec_id, const char* spell_name ) const;
+  unsigned perk_ability_id( specialization_e spec_id, size_t perk_index ) const;
   unsigned mastery_ability_id( specialization_e spec, const char* spell_name ) const;
   unsigned mastery_ability_id( specialization_e spec, uint32_t idx ) const;
   specialization_e mastery_specialization( const player_e c, uint32_t spell_id ) const;
