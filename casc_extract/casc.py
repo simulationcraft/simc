@@ -260,19 +260,34 @@ class BLTEExtract(object):
 		self.close()
 		
 		return file.output_data
-			
-	def extract_file(self, file_key, file_md5sum, file_output, data_file_number, data_file_offset, blte_file_size):	
-		output_path = os.path.join(self.options.output, file_output)
-		if not os.access(os.path.dirname(output_path), os.W_OK):
-			self.options.parser.error('Output file %s is not writable' % output_path)
+	
+	def extract_file(self, file_key, file_md5sum, file_output, data_file_number, data_file_offset, blte_file_size):
+		output_path = ''
+		if file_output:
+			output_path = os.path.join(self.options.output, file_output)
+		else:
+			if file_key:
+				output_path = os.path.join(self.options.output, file_key.encode('hex'))
+			elif file_md5sum:
+				output_path = os.path.join(self.options.output, file_md5sum.encode('hex'))
+		
+		output_dir = os.path.dirname(os.path.abspath(output_path))
+		try:
+			if not os.path.exists(output_dir):
+				os.makedirs(output_dir)
+		except os.error, e:
+			self.options.parser.error('Output "%s" is not writable: %s' % (output_path, e.strerror))
 			
 		data = self.extract_data(file_key, file_md5sum, data_file_number, data_file_offset, blte_file_size)
 		if not data:
 			return False
 		
-		with open(output_path, 'wb') as output_file:
-			output_file.write(data)
-
+		try:
+			with open(output_path, 'wb') as output_file:
+				output_file.write(data)
+		except IOError, e:
+			self.options.parser.error('Output "%s" is not writable: %s' % (output_path, e.strerror))
+		
 		return True
 
 class CASCDataIndexFile(object):

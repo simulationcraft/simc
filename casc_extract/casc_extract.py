@@ -109,5 +109,5 @@ if __name__ == '__main__':
 		
 		blte = casc.BLTEExtract(opts)
 		
-		if not blte.extract_file(keys[0], md5s and md5s.decode('hex') or None, opts.output, *file_location):
+		if not blte.extract_file(keys[0], md5s and md5s.decode('hex') or None, None, *file_location):
 			sys.exit(1)
