@@ -5016,9 +5016,7 @@ struct warrior_module_t : public module_t
     {
       player_t* p = sim -> actor_list[ i ];
 
-      p -> buffs.stampeding_roar    = buff_creator_t( p, "stampeding_roar", p -> find_spell( 122294 ) )
-                                      .max_stack( 1 )
-                                      .duration( timespan_t::from_seconds( 8.0 ) );
+      p -> buffs.stampeding_roar    = buff_creator_t( p, "stampeding_roar", p -> find_spell( 122294 ) );
     }
   }
 
