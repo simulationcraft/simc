@@ -105,10 +105,10 @@ struct counter_t
       return std::min( sim -> iterations, sim -> threads );
   }
 
-  double mean()
+  double mean() const
   { return value / divisor(); }
 
-  double interval_mean()
+  double interval_mean() const
   { return interval / divisor(); }
 
   void merge( const counter_t& other )
@@ -6382,13 +6382,25 @@ public:
       }
     }
 
-    os.printf("<tr><td>Total</td>");
+    os.printf("<tr><td>Total casts</td>");
 
     for ( size_t i = 0, end = total_mw_used.size() - 1; i < end; i++ )
       os.printf("<td>%.1f (%.2f%%)</td>",
           total_mw_used[ i ], 100 * total_mw_used[ i ] / total_mw_used[ MAX_MAELSTROM_STACK + 1 ] );
 
     os.printf("<td>%.1f</td>", total_mw_used[ MAX_MAELSTROM_STACK + 1 ] );
+
+    os.printf("<tr><td>Total charges</td>");
+
+    double total_charges = 0;
+    for ( size_t i = 0, end = total_mw_used.size() - 1; i < end; i++ )
+    {
+      os.printf("<td>%.1f</td>",
+          total_mw_used[ i ] * i );
+      total_charges += total_mw_used[ i ] * i;
+    }
+
+    os.printf("<td>%.1f</td>", total_charges );
 
     os << "</tr>\n";
   }
