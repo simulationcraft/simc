@@ -395,7 +395,7 @@ public:
   virtual role_e    primary_role() const;
   virtual void      assess_damage( school_e, dmg_e, action_state_t* s );
   virtual void      copy_from( player_t* source );
-  virtual void      warrior_t::merge( player_t& other ) override 
+  virtual void      merge( player_t& other ) override 
   {
    warrior_t& other_p = dynamic_cast<warrior_t&>( other );
    
