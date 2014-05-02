@@ -395,12 +395,17 @@ public:
   virtual role_e    primary_role() const;
   virtual void      assess_damage( school_e, dmg_e, action_state_t* s );
   virtual void      copy_from( player_t* source );
-  virtual simple_sample_data_t   value_t( const warrior_t& other ) {
-  cs_damage.merge( other.cs_damage );
-  priority_damage.merge( other.priority_damage );
-  all_damage.merge( other.all_damage );
-  return simple_sample_data_t();
-  }
+  virtual void      warrior_t::merge( player_t& other ) override 
+  {
+   warrior_t& other_p = dynamic_cast<warrior_t&>( other );
+   
+   cs_damage.merge( other_p.cs_damage  );
+   all_damage.merge( other_p.all_damage  );
+   priority_damage.merge( other_p.priority_damage  );
+
+   player_t::merge( other ); 
+
+   }
 
   // Custom Warrior Functions
   void enrage();
