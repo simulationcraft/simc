@@ -451,7 +451,7 @@ void item_t::encoded_item( xml_writer_t& writer )
   if ( parsed.enchant_stats.size() > 0 || ! parsed.encoded_enchant.empty() )
     writer.print_attribute( "enchant", encoded_enchant() );
 
-  if ( parsed.addon_stats.size() > 0 || ! has_special_effect( SPECIAL_EFFECT_SOURCE_ADDON ) )
+  if ( parsed.addon_stats.size() > 0 || ! parsed.encoded_addon.empty() )
     writer.print_attribute( "addon", encoded_addon() );
 
   writer.end_tag( "item" );
@@ -508,7 +508,7 @@ std::string item_t::encoded_item()
     s << ",enchant=" << encoded_enchant();
 
   if ( ! option_addon_str.empty() || parsed.addon_stats.size() > 0 ||
-       has_special_effect( SPECIAL_EFFECT_SOURCE_ADDON ) )
+       ! parsed.encoded_addon.empty() )
     s << ",addon=" << encoded_addon();
 
   if ( ! option_equip_str.empty() )
@@ -633,11 +633,10 @@ std::string item_t::encoded_addon()
   if ( ! option_addon_str.empty() )
     return option_addon_str;
 
-  std::string stats_str = stat_pairs_to_str( parsed.addon_stats );
-  if ( stats_str.empty() )
-    stats_str = special_effect( SPECIAL_EFFECT_SOURCE_ADDON ).encoding_str;
+  if ( ! parsed.encoded_addon.empty() )
+    return parsed.encoded_addon;
 
-  return stats_str;
+  return stat_pairs_to_str( parsed.addon_stats );
 }
 
 // item_t::encoded_upgrade_level ============================================
