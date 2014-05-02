@@ -659,7 +659,7 @@ private:
 public:
   typedef shaman_spell_base_t<Base> base_t;
 
-  std::vector<counter_t*> maelstrom_weapon_used;
+  std::vector<counter_t*> maelstrom_weapon_cast, maelstrom_weapon_executed;
 
   shaman_spell_base_t( const std::string& n, shaman_t* player,
                        const spell_data_t* s = spell_data_t::nil() ) :
@@ -671,7 +671,10 @@ public:
     ab::init();
 
     for ( size_t i = 0; i < MAX_MAELSTROM_STACK + 2; i++ )
-      maelstrom_weapon_used.push_back( new counter_t( ab::p() ) );
+    {
+      maelstrom_weapon_cast.push_back( new counter_t( ab::p() ) );
+      maelstrom_weapon_executed.push_back( new counter_t( ab::p() ) );
+    }
   }
 
   void execute();
@@ -2300,7 +2303,7 @@ void shaman_spell_base_t<Base>::schedule_execute( action_state_t* state )
   }
 
   if ( ab::instant_eligibility() && ! use_ancestral_swiftness() && p -> specialization() == SHAMAN_ENHANCEMENT )
-    maelstrom_weapon_used[ p -> buff.maelstrom_weapon -> check() ] -> add( 1 );
+    maelstrom_weapon_cast[ p -> buff.maelstrom_weapon -> check() ] -> add( 1 );
 }
 
 // shaman_spell_base_t::execute =============================================
@@ -2352,7 +2355,10 @@ void shaman_spell_base_t<Base>::execute()
   }
 
   if ( eligible_for_instant && ! as_cast && p -> specialization() == SHAMAN_ENHANCEMENT )
+  {
+    maelstrom_weapon_executed[ p -> buff.maelstrom_weapon -> check() ] -> add( 1 );
     p -> buff.maelstrom_weapon -> expire();
+  }
 
   p -> buff.spiritwalkers_grace -> up();
 }
@@ -6246,6 +6252,7 @@ public:
     os << "<table class=\"sc\" style=\"float: left;\">\n"
          << "<tr>\n"
            << "<th>Ability</th>\n"
+           << "<th>Event</th>\n"
            << "<th>0</th><th>1</th><th>2</th><th>3</th><th>4</th><th>5</th><th>Total</th>\n"
          << "</tr>\n";
   }
@@ -6313,17 +6320,22 @@ public:
 
   void mwuse_table_contents( report::sc_html_stream& os )
   {
-    std::vector<double> total_mw_used( MAX_MAELSTROM_STACK + 2 );
+    std::vector<double> total_mw_cast( MAX_MAELSTROM_STACK + 2 );
+    std::vector<double> total_mw_executed( MAX_MAELSTROM_STACK + 2 );
     int n = 0;
+    std::string row_class_str = "";
 
     for ( size_t i = 0, end = p.action_list.size(); i < end; i++ )
     {
       if ( shaman_spell_t* s = dynamic_cast<shaman_spell_t*>( p.action_list[ i ] ) )
       {
-        for ( size_t j = 0, end2 = s -> maelstrom_weapon_used.size() - 1; j < end2; j++ )
+        for ( size_t j = 0, end2 = s -> maelstrom_weapon_cast.size() - 1; j < end2; j++ )
         {
-          total_mw_used[ j ] += s -> maelstrom_weapon_used[ j ] -> mean();
-          total_mw_used[ MAX_MAELSTROM_STACK + 1 ] += s -> maelstrom_weapon_used[ j ] -> mean();
+          total_mw_cast[ j ] += s -> maelstrom_weapon_cast[ j ] -> mean();
+          total_mw_cast[ MAX_MAELSTROM_STACK + 1 ] += s -> maelstrom_weapon_cast[ j ] -> mean();
+
+          total_mw_executed[ j ] += s -> maelstrom_weapon_executed[ j ] -> mean();
+          total_mw_executed[ MAX_MAELSTROM_STACK + 1 ] += s -> maelstrom_weapon_executed[ j ] -> mean();
         }
       }
     }
@@ -6331,27 +6343,31 @@ public:
     for ( size_t i = 0, end = p.stats_list.size(); i < end; i++ )
     {
       stats_t* stats = p.stats_list[ i ];
-      std::vector<double> n_used( MAX_MAELSTROM_STACK + 2 );
-      bool has_used = false;
+      std::vector<double> n_cast( MAX_MAELSTROM_STACK + 2 );
+      std::vector<double> n_executed( MAX_MAELSTROM_STACK + 2 );
+      bool has_data = false;
 
       for ( size_t j = 0, end2 = stats -> action_list.size(); j < end2; j++ )
       {
         if ( shaman_spell_t* s = dynamic_cast<shaman_spell_t*>( stats -> action_list[ j ] ) )
         {
-          for ( size_t k = 0, end3 = s -> maelstrom_weapon_used.size() - 1; k < end3; k++ )
+          for ( size_t k = 0, end3 = s -> maelstrom_weapon_cast.size() - 1; k < end3; k++ )
           {
-            if ( s -> maelstrom_weapon_used[ k ] -> mean() > 0 )
-              has_used = true;
+            if ( s -> maelstrom_weapon_cast[ k ] -> mean() > 0 || s -> maelstrom_weapon_executed[ k ] -> mean() > 0 )
+              has_data = true;
 
-            n_used[ k ] += s -> maelstrom_weapon_used[ k ] -> mean();
-            n_used[ MAX_MAELSTROM_STACK + 1 ] += s -> maelstrom_weapon_used[ k ] -> mean();
+            n_cast[ k ] += s -> maelstrom_weapon_cast[ k ] -> mean();
+            n_cast[ MAX_MAELSTROM_STACK + 1 ] += s -> maelstrom_weapon_cast[ k ] -> mean();
+
+            n_executed[ k ] += s -> maelstrom_weapon_executed[ k ] -> mean();
+            n_executed[ MAX_MAELSTROM_STACK + 1 ] += s -> maelstrom_weapon_executed[ k ] -> mean();
           }
         }
       }
 
-      if ( has_used )
+      if ( has_data )
       {
-        std::string row_class_str = "";
+        row_class_str = "";
         if ( ++n & 1 )
           row_class_str = " class=\"odd\"";
 
@@ -6363,44 +6379,77 @@ public:
           name_str += "</a>";
         }
 
-        os.printf("<tr%s><td style=\"text-align:left;\">%s</td>",
+        os.printf("<tr%s><td rowspan=\"2\" style=\"vertical-align: top;text-align:left;\">%s</td>",
             row_class_str.c_str(), name_str.c_str() );
 
-        for ( size_t j = 0, end2 = n_used.size(); j < end2; j++ )
+        os << "<td style=\"text-align: left;\">Cast</td>\n";
+
+        for ( size_t j = 0, end2 = n_cast.size(); j < end2; j++ )
         {
           double pct = 0;
-          if ( total_mw_used[ j ] > 0 )
-            pct = 100.0 * n_used[ j ] / n_used[ MAX_MAELSTROM_STACK + 1 ];
+          if ( total_mw_cast[ j ] > 0 )
+            pct = 100.0 * n_cast[ j ] / n_cast[ MAX_MAELSTROM_STACK + 1 ];
 
           if ( j < end2 - 1 )
-            os.printf("<td>%.1f (%.2f%%)</td>", n_used[ j ], pct );
+            os.printf("<td>%.1f (%.1f%%)</td>", util::round( n_cast[ j ], 1 ), util::round( pct, 1 ) );
           else
-            os.printf("<td>%.1f</td>", n_used[ j ] );
+            os.printf("<td>%.1f</td>", util::round( n_cast[ j ], 1 ) );
+        }
+
+        os << "</tr>\n";
+
+        row_class_str = "";
+        if ( ++n & 1 )
+          row_class_str = " class=\"odd\"";
+
+        os.printf("<tr%s>", row_class_str.c_str() );
+
+        os << "<td style=\"text-align: left;\">Execute</td>\n";
+
+        for ( size_t j = 0, end2 = n_executed.size(); j < end2; j++ )
+        {
+          double pct = 0;
+          if ( total_mw_executed[ j ] > 0 )
+            pct = 100.0 * n_executed[ j ] / n_executed[ MAX_MAELSTROM_STACK + 1 ];
+
+          if ( j < end2 - 1 )
+            os.printf("<td>%.1f (%.1f%%)</td>", util::round( n_executed[ j ], 1 ), util::round( pct, 1 ) );
+          else
+            os.printf("<td>%.1f</td>", util::round( n_executed[ j ], 1 ) );
         }
 
         os << "</tr>\n";
       }
     }
 
-    os.printf("<tr><td>Total casts</td>");
+    row_class_str = "";
+    if ( ++n & 1 )
+      row_class_str = " class=\"odd\"";
 
-    for ( size_t i = 0, end = total_mw_used.size() - 1; i < end; i++ )
-      os.printf("<td>%.1f (%.2f%%)</td>",
-          total_mw_used[ i ], 100 * total_mw_used[ i ] / total_mw_used[ MAX_MAELSTROM_STACK + 1 ] );
+    os.printf( "<tr%s><td style=\"text-align: left;\">Total casts</td><td>&nbsp;</td>", row_class_str.c_str() );
 
-    os.printf("<td>%.1f</td>", total_mw_used[ MAX_MAELSTROM_STACK + 1 ] );
+    for ( size_t i = 0, end = total_mw_cast.size() - 1; i < end; i++ )
+      os.printf("<td>%.1f (%.1f%%)</td>",
+          util::round( total_mw_cast[ i ], 1 ), 
+          util::round( 100 * total_mw_cast[ i ] / total_mw_cast[ MAX_MAELSTROM_STACK + 1 ], 1 ) );
 
-    os.printf("<tr><td>Total charges</td>");
+    os.printf("<td>%.1f</td>", util::round( total_mw_cast[ MAX_MAELSTROM_STACK + 1 ], 1 ) );
+
+    row_class_str = "";
+    if ( ++n & 1 )
+      row_class_str = " class=\"odd\"";
+
+    os.printf( "<tr%s><td style=\"text-align: left;\">Total charges</td><td>&nbsp;</td>", row_class_str.c_str() );
 
     double total_charges = 0;
-    for ( size_t i = 0, end = total_mw_used.size() - 1; i < end; i++ )
+    for ( size_t i = 0, end = total_mw_cast.size() - 1; i < end; i++ )
     {
       os.printf("<td>%.1f</td>",
-          total_mw_used[ i ] * i );
-      total_charges += total_mw_used[ i ] * i;
+          util::round( total_mw_cast[ i ] * i, 1 ) );
+      total_charges += total_mw_cast[ i ] * i;
     }
 
-    os.printf("<td>%.1f</td>", total_charges );
+    os.printf("<td>%.1f</td>", util::round( total_charges, 1 ) );
 
     os << "</tr>\n";
   }
