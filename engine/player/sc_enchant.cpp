@@ -245,9 +245,14 @@ bool enchant::initialize_item_enchant( item_t& item,
         // name, instead of a bunch of stats.
         if ( passive_enchant( item, enchant.ench_prop[ i ] ) )
         {
-          item.parsed.encoded_enchant = encoded_enchant_name( item.player -> dbc, enchant );
+          if ( source == SPECIAL_EFFECT_SOURCE_ENCHANT )
+            item.parsed.encoded_enchant = encoded_enchant_name( item.player -> dbc, enchant );
+          else if ( source == SPECIAL_EFFECT_SOURCE_ADDON )
+            item.parsed.encoded_addon = encoded_enchant_name( item.player -> dbc, enchant );
           continue;
         }
+        else
+          effect.type = SPECIAL_EFFECT_EQUIP;
         break;
       case ITEM_ENCHANTMENT_USE_SPELL:
         effect.type = SPECIAL_EFFECT_USE;
@@ -265,14 +270,18 @@ bool enchant::initialize_item_enchant( item_t& item,
 
     // First phase initialize the spell effect
     if ( effect.type != SPECIAL_EFFECT_NONE && 
-         unique_gear::initialize_special_effect( effect, item, enchant.ench_prop[ i ] ) )
+         ! unique_gear::initialize_special_effect( effect, item, enchant.ench_prop[ i ] ) )
+      return false;
 
     // If this enchant has any kind of special effect, we need to encode it's
     // name in the saved profiles, so when the profile is loaded, it's loaded
     // through the enchant init system.
     if ( effect.type != SPECIAL_EFFECT_NONE )
     {
-      effect.encoding_str = encoded_enchant_name( item.player -> dbc, enchant );
+      if ( source == SPECIAL_EFFECT_SOURCE_ENCHANT )
+        item.parsed.encoded_enchant = encoded_enchant_name( item.player -> dbc, enchant );
+      else if ( source == SPECIAL_EFFECT_SOURCE_ADDON )
+        item.parsed.encoded_addon = encoded_enchant_name( item.player -> dbc, enchant );
       item.parsed.special_effects.push_back( effect );
     }
   }
