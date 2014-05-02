@@ -2205,7 +2205,7 @@ struct unleash_wind_t : public shaman_attack_t
     shaman_attack_t( name, player, player -> dbc.spell( 73681 ) )
   {
     background = true;
-    may_proc_primal_wisdom = may_dodge = may_parry = false;
+    may_proc_maelstrom = may_proc_primal_wisdom = may_dodge = may_parry = false;
     normalize_weapon_speed = true;
 
     // Unleash wind implicitly uses main hand weapon of the player to perform
