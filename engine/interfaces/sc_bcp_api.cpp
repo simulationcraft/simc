@@ -41,14 +41,15 @@ js::js_node_t download_id( sim_t* sim,
 // parse_profession =========================================================
 
 void parse_profession( std::string&               professions_str,
-                       const rapidjson::Document& profile,
+                       const rapidjson::Value&    profile,
                        int                        index )
 {
   if ( ! profile.HasMember( "primary" ) )
     return;
 
   const rapidjson::Value& professions = profile[ "primary" ];
-  if ( professions.Size() == rapidjson::SizeType( index + 1 ) )
+
+  if ( professions.Size() >= rapidjson::SizeType( index + 1 ) )
   {
     const rapidjson::Value& profession = professions[ index ];
     if ( ! profession.HasMember( "id" ) || ! profession.HasMember( "rank" ) )
@@ -58,6 +59,7 @@ void parse_profession( std::string&               professions_str,
       professions_str += '/';
 
     professions_str += util::profession_type_string( util::translate_profession_id( profession[ "id" ].GetUint() ) );
+    professions_str += "=";
     professions_str += util::to_string( profession[ "rank" ].GetUint() );
   }
 }
@@ -372,8 +374,11 @@ player_t* parse_player( sim_t*             sim,
     p -> report_information.thumbnail_url = "http://" + p -> region_str + ".battle.net/static-render/" +
                                             p -> region_str + '/' + profile[ "thumbnail" ].GetString();
 
-  parse_profession( p -> professions_str, profile, 0 );
-  parse_profession( p -> professions_str, profile, 1 );
+  if ( profile.HasMember( "professions" ) )
+  {
+    parse_profession( p -> professions_str, profile[ "professions" ], 0 );
+    parse_profession( p -> professions_str, profile[ "professions" ], 1 );
+  }
 
   if ( ! parse_talents( p, profile[ "talents" ], player.talent_spec ) )
     return 0;

@@ -238,16 +238,21 @@ bool enchant::initialize_item_enchant( item_t& item,
         effect.proc_flags_ = PF_MELEE | PF_MELEE_ABILITY | PF_RANGED | PF_RANGED_ABILITY;
         break;
       case ITEM_ENCHANTMENT_EQUIP_SPELL:
+        // Gems dont get encoded names, otherwise, encode the name so we can
+        // handle the enchant properly when importing from .simc files
+        // (profiles)
+        if ( source != SPECIAL_EFFECT_SOURCE_GEM ) 
+          item.parsed.encoded_enchant = encoded_enchant_name( item.player -> dbc, enchant );
+
         // Passive enchants get a special treatment. In essence, we only support
         // a couple, and they are handled without special effect initialization
         // for now. Unfortunately, they do need to be added to the special
         // effect list, so we can output them in saved profiles as the enchant
         // name, instead of a bunch of stats.
         if ( passive_enchant( item, enchant.ench_prop[ i ] ) )
-        {
-          item.parsed.encoded_enchant = encoded_enchant_name( item.player -> dbc, enchant );
           continue;
-        }
+        else
+          effect.type = SPECIAL_EFFECT_EQUIP;
         break;
       case ITEM_ENCHANTMENT_USE_SPELL:
         effect.type = SPECIAL_EFFECT_USE;
