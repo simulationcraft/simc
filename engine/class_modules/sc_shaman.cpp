@@ -1023,6 +1023,7 @@ struct feral_spirit_pet_t : public pet_t
     melee_t( feral_spirit_pet_t* player ) :
       melee_attack_t( "melee", player, spell_data_t::nil() )
     {
+      auto_attack = true;
       weapon = &( player -> main_hand_weapon );
       base_execute_time = weapon -> swing_time;
       background = true;
@@ -1156,6 +1157,7 @@ struct earth_elemental_pet_t : public pet_t
     melee_t( earth_elemental_pet_t* player ) :
       melee_attack_t( "earth_melee", player, spell_data_t::nil() )
     {
+      auto_attack = true;
       school            = SCHOOL_PHYSICAL;
       may_crit          = true;
       background        = true;
@@ -1344,6 +1346,7 @@ struct fire_elemental_t : public pet_t
     fire_melee_t( fire_elemental_t* player ) :
       melee_attack_t( "fire_melee", player, spell_data_t::nil() )
     {
+      auto_attack = true;
       special                      = false;
       may_crit                     = true;
       background                   = true;
@@ -2501,6 +2504,7 @@ struct melee_t : public shaman_attack_t
     shaman_attack_t( name, player, s ), sync_weapons( sw ),
     first( true ), swing_timer_variance( stv )
   {
+    auto_attack = true;
     may_proc_windfury = background = repeating = may_glance = true;
     special           = false;
     trigger_gcd       = timespan_t::zero();
@@ -2586,7 +2590,7 @@ struct auto_attack_t : public shaman_attack_t
 
     assert( p() -> main_hand_weapon.type != WEAPON_NONE );
 
-    p() -> melee_mh      = new melee_t( "melee_main_hand", spell_data_t::nil(), player, &( p() -> main_hand_weapon ), sync_weapons, swing_timer_variance );
+    p() -> melee_mh      = new melee_t( "auto_attack_mh", spell_data_t::nil(), player, &( p() -> main_hand_weapon ), sync_weapons, swing_timer_variance );
     p() -> melee_mh      -> school = SCHOOL_PHYSICAL;
     p() -> ascendance_mh = new windlash_t( "wind_lash_mh", player -> find_spell( 114089 ), player, &( p() -> main_hand_weapon ), swing_timer_variance );
 
@@ -2596,7 +2600,7 @@ struct auto_attack_t : public shaman_attack_t
     {
       if ( ! p() -> dual_wield() ) return;
 
-      p() -> melee_oh = new melee_t( "melee_off_hand", spell_data_t::nil(), player, &( p() -> off_hand_weapon ), sync_weapons, swing_timer_variance );
+      p() -> melee_oh = new melee_t( "auto_attack_oh", spell_data_t::nil(), player, &( p() -> off_hand_weapon ), sync_weapons, swing_timer_variance );
       p() -> melee_oh -> school = SCHOOL_PHYSICAL;
       p() -> ascendance_oh = new windlash_t( "wind_lash_offhand", player -> find_spell( 114093 ), player, &( p() -> off_hand_weapon ), swing_timer_variance );
 
@@ -6333,19 +6337,18 @@ public:
 
       if ( n_generated > 0 || n_wasted > 0 )
       {
-        std::string name_str = stats -> name_str.c_str();
-        if ( stats -> action_list[ 0 ] -> id > 1 )
-        {
-          name_str = "<a href=\"http://wod.wowhead.com/spell=" + util::to_string( stats -> action_list[ 0 ] -> id ) + "\">";
-          name_str += stats -> name_str.c_str();
-          name_str += "</a>";
-        }
+        wowhead::wowhead_e domain = SC_BETA ? wowhead::BETA : wowhead::LIVE;
+        if ( ! SC_BETA && p.dbc.ptr )
+          domain = wowhead::PTR;
 
+        std::string name_str = wowhead::decorated_action_name( stats -> name_str, 
+                                                               stats -> action_list[ 0 ],
+                                                               domain );
         std::string row_class_str = "";
         if ( ++n & 1 )
           row_class_str = " class=\"odd\"";
 
-        os.printf("<tr%s><td class=\"left\">%s</td><td class=\"right\">%.2f</td><td class=\"right\">%.2f (%.2f%%)</td></tr>",
+        os.printf("<tr%s><td class=\"left\">%s</td><td class=\"right\">%.2f</td><td class=\"right\">%.2f (%.2f%%)</td></tr>\n",
             row_class_str.c_str(),
             name_str.c_str(),
             util::round( n_generated, 2 ),
@@ -6353,7 +6356,7 @@ public:
       }
     }
 
-    os.printf("<tr><td class=\"left\">Total</td><td class=\"right\">%.2f</td><td class=\"right\">%.2f (%.2f%%)</td>",
+    os.printf("<tr><td class=\"left\">Total</td><td class=\"right\">%.2f</td><td class=\"right\">%.2f (%.2f%%)</td></tr>\n",
         total_generated, total_wasted, 100.0 * total_wasted / total_generated );
   }
 
@@ -6415,18 +6418,18 @@ public:
         if ( ++n & 1 )
           row_class_str = " class=\"odd\"";
 
-        std::string name_str = stats -> name_str.c_str();
-        if ( stats -> action_list[ 0 ] -> id > 1 )
-        {
-          name_str = "<a href=\"http://wod.wowhead.com/spell=" + util::to_string( stats -> action_list[ 0 ] -> id ) + "\">";
-          name_str += stats -> name_str.c_str();
-          name_str += "</a>";
-        }
+        wowhead::wowhead_e domain = SC_BETA ? wowhead::BETA : wowhead::LIVE;
+        if ( ! SC_BETA && p.dbc.ptr )
+          domain = wowhead::PTR;
+
+        std::string name_str = wowhead::decorated_action_name( stats -> name_str.c_str(), 
+                                                               stats -> action_list[ 0 ],
+                                                               domain );
 
         os.printf("<tr%s><td rowspan=\"2\" class=\"left\" style=\"vertical-align: top;\">%s</td>",
             row_class_str.c_str(), name_str.c_str() );
 
-        os << "<td class=\"left\">Cast</td>\n";
+        os << "<td class=\"left\">Cast</td>";
 
         for ( size_t j = 0, end2 = n_cast.size(); j < end2; j++ )
         {
@@ -6447,7 +6450,7 @@ public:
 
         os.printf("<tr%s>", row_class_str.c_str() );
 
-        os << "<td class=\"left\">Execute</td>\n";
+        os << "<td class=\"left\">Execute</td>";
 
         for ( size_t j = 0, end2 = n_executed.size(); j < end2; j++ )
         {
