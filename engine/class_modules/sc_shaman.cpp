@@ -49,6 +49,7 @@ struct shaman_heal_t;
 struct shaman_totem_pet_t;
 struct totem_pulse_event_t;
 struct totem_pulse_action_t;
+struct maelstrom_weapon_buff_t;
 
 struct shaman_td_t : public actor_pair_t
 {
@@ -174,7 +175,7 @@ public:
     buff_t* lava_surge;
     buff_t* spew_lava;
     buff_t* lightning_shield;
-    buff_t* maelstrom_weapon;
+    maelstrom_weapon_buff_t* maelstrom_weapon;
     buff_t* shamanistic_rage;
     buff_t* shocking_lava;
     buff_t* spirit_walk;
@@ -541,7 +542,56 @@ shaman_td_t::shaman_td_t( player_t* target, shaman_t* p ) :
                           .chance( static_cast< double >( p -> sets.has_set_bonus( SET_T16_2PC_CASTER ) ) );
 }
 
-// Template for common shaman action code. See priest_action_t.
+// ==========================================================================
+// Shaman Custom Buff Declaration
+// ==========================================================================
+
+struct maelstrom_weapon_buff_t : public buff_t
+{
+  std::vector<shaman_attack_t*> trigger_actions;
+
+  maelstrom_weapon_buff_t( shaman_t* player ) :
+    buff_t( buff_creator_t( player, 53817, "maelstrom_weapon" ) )
+  { activated = false; }
+
+  using buff_t::trigger;
+
+  bool trigger( shaman_attack_t* action, int stacks, double chance );
+  void execute( int stacks, double value, timespan_t duration );
+  void reset();
+};
+
+struct ascendance_buff_t : public buff_t
+{
+  action_t* lava_burst;
+
+  ascendance_buff_t( shaman_t* p ) :
+    buff_t( buff_creator_t( p, 114051, "ascendance" ) ),
+    lava_burst( 0 )
+  { }
+
+  void ascendance( attack_t* mh, attack_t* oh, timespan_t lvb_cooldown );
+  bool trigger( int stacks, double value, double chance, timespan_t duration );
+  void expire_override();
+};
+
+struct unleash_flame_buff_t : public buff_t
+{
+  core_event_t* expiration_delay;
+
+  unleash_flame_buff_t( shaman_t* p ) :
+    buff_t( buff_creator_t( p, 73683, "unleash_flame" ) ),
+    expiration_delay( 0 )
+  { }
+
+  void expire_override();
+  void reset();
+};
+
+// ==========================================================================
+// Shaman Action Base Template
+// ==========================================================================
+
 template <class Base>
 struct shaman_action_t : public Base
 {
@@ -651,6 +701,52 @@ public:
   }
 };
 
+// ==========================================================================
+// Shaman Attack
+// ==========================================================================
+
+struct shaman_attack_t : public shaman_action_t<melee_attack_t>
+{
+private:
+  typedef shaman_action_t<melee_attack_t> ab;
+public:
+  bool may_proc_windfury;
+  bool may_proc_flametongue;
+  bool may_proc_primal_wisdom;
+
+  // Maelstrom Weapon functionality
+  bool        may_proc_maelstrom;
+  counter_t*  maelstrom_procs;
+  counter_t*  maelstrom_procs_wasted;
+
+  shaman_attack_t( const std::string& token, shaman_t* p, const spell_data_t* s ) :
+    base_t( token, p, s ),
+    may_proc_windfury( false ), may_proc_flametongue( true ), may_proc_primal_wisdom( true ),
+    may_proc_maelstrom( p -> spec.maelstrom_weapon -> ok() ),
+    maelstrom_procs( 0 ), maelstrom_procs_wasted( 0 )
+  {
+    special = may_crit = true;
+    may_glance = false;
+  }
+
+  void init()
+  {
+    ab::init();
+
+    if ( may_proc_maelstrom )
+    {
+      maelstrom_procs = new counter_t( p() );
+      maelstrom_procs_wasted = new counter_t( p() );
+    }
+  }
+
+  void impact( action_state_t* );
+};
+
+// ==========================================================================
+// Shaman Base Spell
+// ==========================================================================
+
 template <class Base>
 struct shaman_spell_base_t : public shaman_action_t<Base>
 {
@@ -725,48 +821,6 @@ public:
     return ab::instant_eligibility() && p -> buff.ancestral_swiftness -> check() &&
            p -> buff.maelstrom_weapon -> check() * p -> buff.maelstrom_weapon -> data().effectN( 1 ).percent() < 1.0;
   }
-};
-
-// ==========================================================================
-// Shaman Attack
-// ==========================================================================
-
-struct shaman_attack_t : public shaman_action_t<melee_attack_t>
-{
-private:
-  typedef shaman_action_t<melee_attack_t> ab;
-public:
-  bool may_proc_windfury;
-  bool may_proc_flametongue;
-  bool may_proc_primal_wisdom;
-
-  // Maelstrom Weapon functionality
-  bool        may_proc_maelstrom;
-  counter_t*  maelstrom_procs;
-  counter_t*  maelstrom_procs_wasted;
-
-  shaman_attack_t( const std::string& token, shaman_t* p, const spell_data_t* s ) :
-    base_t( token, p, s ),
-    may_proc_windfury( false ), may_proc_flametongue( true ), may_proc_primal_wisdom( true ),
-    may_proc_maelstrom( p -> spec.maelstrom_weapon -> ok() ),
-    maelstrom_procs( 0 ), maelstrom_procs_wasted( 0 )
-  {
-    special = may_crit = true;
-    may_glance = false;
-  }
-
-  void init()
-  {
-    ab::init();
-
-    if ( may_proc_maelstrom )
-    {
-      maelstrom_procs = new counter_t( p() );
-      maelstrom_procs_wasted = new counter_t( p() );
-    }
-  }
-
-  void impact( action_state_t* );
 };
 
 // ==========================================================================
@@ -1483,28 +1537,15 @@ static bool trigger_maelstrom_weapon( shaman_attack_t* a )
 {
   assert( a -> weapon );
 
-  bool procced = false;
-  int mwstack = a -> p() -> buff.maelstrom_weapon -> check();
+  if ( a -> player -> specialization() != SHAMAN_ENHANCEMENT )
+    return false;
 
   double chance = a -> weapon -> proc_chance_on_swing( 10.0 );
 
   if ( a -> p() -> sets.has_set_bonus( SET_PVP_2PC_MELEE ) )
     chance *= 1.2;
 
-  if ( a -> p() -> specialization() == SHAMAN_ENHANCEMENT &&
-       ( procced = a -> p() -> buff.maelstrom_weapon -> trigger( 1, buff_t::DEFAULT_VALUE(), chance ) ) )
-  {
-    if ( mwstack == a -> p() -> buff.maelstrom_weapon -> total_stack() )
-    {
-      if ( a -> maelstrom_procs_wasted )
-        a -> maelstrom_procs_wasted -> add( 1 );
-    }
-
-    if ( a -> maelstrom_procs )
-      a -> maelstrom_procs -> add( 1 );
-  }
-
-  return procced;
+  return a -> p() -> buff.maelstrom_weapon -> trigger( a, 1, chance );
 }
 
 // trigger_flametongue_weapon ===============================================
@@ -2687,24 +2728,9 @@ struct stormstrike_t : public shaman_attack_t
 
     if ( result_is_hit( execute_state -> result ) && p() -> sets.has_set_bonus( SET_T15_2PC_MELEE ) )
     {
-      int mwstack = p() -> buff.maelstrom_weapon -> total_stack();
       int bonus = p() -> sets.set( SET_T15_2PC_MELEE ) -> effectN( 1 ).base_value();
 
-      p() -> buff.maelstrom_weapon -> trigger( bonus, buff_t::DEFAULT_VALUE(), 1.0 );
-
-      for ( int i = 0; i < ( mwstack + bonus ) - p() -> buff.maelstrom_weapon -> max_stack(); i++ )
-      {
-        p() -> proc.wasted_t15_2pc_melee -> occur();
-        if ( maelstrom_procs_wasted )
-          maelstrom_procs_wasted -> add( 1 );
-      }
-
-      for ( int i = 0; i < bonus; i++ )
-      {
-        p() -> proc.t15_2pc_melee -> occur();
-        if ( maelstrom_procs )
-          maelstrom_procs -> add( 1 );
-      }
+      p() -> buff.maelstrom_weapon -> trigger( this, bonus, 1.0 );
     }
   }
 
@@ -2776,23 +2802,9 @@ struct windstrike_t : public shaman_attack_t
 
     if ( result_is_hit( execute_state -> result ) && p() -> sets.has_set_bonus( SET_T15_2PC_MELEE ) )
     {
-      int mwstack = p() -> buff.maelstrom_weapon -> total_stack();
       int bonus = p() -> sets.set( SET_T15_2PC_MELEE ) -> effectN( 1 ).base_value();
 
-      p() -> buff.maelstrom_weapon -> trigger( bonus, buff_t::DEFAULT_VALUE(), 1.0 );
-      for ( int i = 0; i < ( mwstack + bonus ) - p() -> buff.maelstrom_weapon -> max_stack(); i++ )
-      {
-        p() -> proc.wasted_t15_2pc_melee -> occur();
-        if ( maelstrom_procs_wasted )
-          maelstrom_procs_wasted -> add( 1 );
-      }
-
-      for ( int i = 0; i < bonus; i++ )
-      {
-        p() -> proc.t15_2pc_melee -> occur();
-        if ( maelstrom_procs )
-          maelstrom_procs -> add( 1 );
-      }
+      p() -> buff.maelstrom_weapon -> trigger( this, bonus, 1.0 );
     }
   }
 
@@ -4681,194 +4693,219 @@ struct water_shield_t : public shaman_spell_t
 };
 
 // ==========================================================================
-// Shaman Custom Discharge Procs
+// Shaman Custom Buff implementation
 // ==========================================================================
 
-// ==========================================================================
-// Shaman Passive Buffs
-// ==========================================================================
-
-struct unleash_flame_buff_t : public buff_t
+inline bool maelstrom_weapon_buff_t::trigger( shaman_attack_t* action, int stacks, double chance )
 {
-  struct unleash_flame_expiration_delay_t : public event_t
+  int cur_stack = current_stack;
+
+  if ( ! buff_t::trigger( stacks, buff_t::DEFAULT_VALUE(), chance, timespan_t::min() ) )
+    return false;
+
+  if ( delay )
+    for ( int i = 0; i < stacks; i++ )
+      trigger_actions.push_back( action );
+  else
   {
-    unleash_flame_buff_t* buff;
-
-    unleash_flame_expiration_delay_t( shaman_t& player, unleash_flame_buff_t* b ) :
-      event_t( player, "unleash_flame_expiration_delay" ), buff( b )
+    for ( int i = 0; i < stacks; i++ )
     {
-      add_event( sim().rng().gauss( player.uf_expiration_delay, player.uf_expiration_delay_stddev ) );
+      if ( action -> maelstrom_procs )
+        action -> maelstrom_procs -> add( 1 );
+
+      if ( ( cur_stack + i ) >= max_stack() && action -> maelstrom_procs_wasted )
+        action -> maelstrom_procs_wasted -> add( 1 );
     }
-
-    virtual void execute()
-    {
-      // Call real expire after a delay
-      buff -> buff_t::expire();
-      buff -> expiration_delay = 0;
-    }
-  };
-
-  core_event_t* expiration_delay;
-
-  unleash_flame_buff_t( shaman_t* p ) :
-    buff_t( buff_creator_t( p, 73683, "unleash_flame" ) ),
-    expiration_delay( 0 )
-  {}
-
-  void reset()
-  {
-    buff_t::reset();
-    core_event_t::cancel( expiration_delay );
   }
 
-  void expire_override()
-  {
-    if ( current_stack == 1 && ! expiration && ! expiration_delay && ! player -> is_sleeping() )
-    {
-      shaman_t* p = debug_cast< shaman_t* >( player );
-      p -> proc.uf_wasted -> occur();
-    }
+  return true;
+}
 
-    // Active player's Unleash Flame buff has a short aura expiration delay, which allows
-    // "Double Casting" with a single buff
-    if ( ! player -> is_sleeping() )
-    {
-      if ( current_stack <= 0 ) return;
-      if ( expiration_delay ) return;
-      // If there's an expiration event going on, we are prematurely canceling the buff, so delay expiration
-      if ( expiration )
-        expiration_delay = new ( *sim ) unleash_flame_expiration_delay_t( *debug_cast< shaman_t* >( player ), this );
-      else
-        buff_t::expire_override();
-    }
-    // If the p() is sleeping, make sure the existing buff behavior works (i.e., a call to
-    // expire) and additionally, make _absolutely sure_ that any pending expiration delay
-    // is canceled
-    else
-    {
-      buff_t::expire_override();
-      core_event_t::cancel( expiration_delay );
-    }
+inline void maelstrom_weapon_buff_t::execute( int stacks, double value, timespan_t duration )
+{
+  int cur_stack = current_stack;
+
+  buff_t::execute( stacks, value, duration );
+
+  for ( size_t i = 0, end = trigger_actions.size(); i < end; i++ )
+  {
+    shaman_attack_t* a = trigger_actions[ i ];
+    if ( a -> maelstrom_procs )
+      a -> maelstrom_procs -> add( 1 );
+
+    if ( static_cast<int>( cur_stack + i ) >= max_stack() )
+      a -> maelstrom_procs_wasted -> add( 1 );
+  }
+
+  trigger_actions.clear();
+}
+
+inline void maelstrom_weapon_buff_t::reset() 
+{
+  buff_t::reset();
+  trigger_actions.clear();
+}
+
+struct unleash_flame_expiration_delay_t : public event_t
+{
+  unleash_flame_buff_t* buff;
+
+  unleash_flame_expiration_delay_t( shaman_t& player, unleash_flame_buff_t* b ) :
+    event_t( player, "unleash_flame_expiration_delay" ), buff( b )
+  {
+    add_event( sim().rng().gauss( player.uf_expiration_delay, player.uf_expiration_delay_stddev ) );
+  }
+
+  virtual void execute()
+  {
+    // Call real expire after a delay
+    buff -> buff_t::expire();
+    buff -> expiration_delay = 0;
   }
 };
 
-class ascendance_buff_t : public buff_t
+inline void unleash_flame_buff_t::expire_override()
 {
-  action_t* lava_burst;
-
-  void ascendance( attack_t* mh, attack_t* oh, timespan_t lvb_cooldown )
+  if ( current_stack == 1 && ! expiration && ! expiration_delay && ! player -> is_sleeping() )
   {
-    // Presume that ascendance trigger and expiration will not reset the swing
-    // timer, so we need to cancel and reschedule autoattack with the
-    // remaining swing time of main/off hands
-    if ( player -> specialization() == SHAMAN_ENHANCEMENT )
+    shaman_t* p = debug_cast< shaman_t* >( player );
+    p -> proc.uf_wasted -> occur();
+  }
+
+  // Active player's Unleash Flame buff has a short aura expiration delay, which allows
+  // "Double Casting" with a single buff
+  if ( ! player -> is_sleeping() )
+  {
+    if ( current_stack <= 0 ) return;
+    if ( expiration_delay ) return;
+    // If there's an expiration event going on, we are prematurely canceling the buff, so delay expiration
+    if ( expiration )
+      expiration_delay = new ( *sim ) unleash_flame_expiration_delay_t( *debug_cast< shaman_t* >( player ), this );
+    else
+      buff_t::expire_override();
+  }
+  // If the p() is sleeping, make sure the existing buff behavior works (i.e., a call to
+  // expire) and additionally, make _absolutely sure_ that any pending expiration delay
+  // is canceled
+  else
+  {
+    buff_t::expire_override();
+    core_event_t::cancel( expiration_delay );
+  }
+}
+
+inline void unleash_flame_buff_t::reset()
+{
+  buff_t::reset();
+  core_event_t::cancel( expiration_delay );
+}
+
+void ascendance_buff_t::ascendance( attack_t* mh, attack_t* oh, timespan_t lvb_cooldown )
+{
+  // Presume that ascendance trigger and expiration will not reset the swing
+  // timer, so we need to cancel and reschedule autoattack with the
+  // remaining swing time of main/off hands
+  if ( player -> specialization() == SHAMAN_ENHANCEMENT )
+  {
+    bool executing = false;
+    timespan_t time_to_hit = timespan_t::zero();
+    if ( player -> main_hand_attack && player -> main_hand_attack -> execute_event )
     {
-      bool executing = false;
-      timespan_t time_to_hit = timespan_t::zero();
-      if ( player -> main_hand_attack && player -> main_hand_attack -> execute_event )
+      executing = true;
+      time_to_hit = player -> main_hand_attack -> execute_event -> remains();
+#ifndef NDEBUG
+      if ( time_to_hit < timespan_t::zero() )
+      {
+        sim -> out_error.printf( "Ascendance %s time_to_hit=%f", player -> main_hand_attack -> name(), time_to_hit.total_seconds() );
+        assert( 0 );
+      }
+#endif
+      core_event_t::cancel( player -> main_hand_attack -> execute_event );
+    }
+
+    player -> main_hand_attack = mh;
+    if ( executing )
+    {
+      // Kick off the new main hand attack, by instantly scheduling
+      // and rescheduling it to the remaining time to hit. We cannot use
+      // normal reschedule mechanism here (i.e., simply use
+      // event_t::reschedule() and leave it be), because the rescheduled
+      // event would be triggered before the full swing time (of the new
+      // auto attack) in most cases.
+      player -> main_hand_attack -> base_execute_time = timespan_t::zero();
+      player -> main_hand_attack -> schedule_execute();
+      player -> main_hand_attack -> base_execute_time = player -> main_hand_attack -> weapon -> swing_time;
+      player -> main_hand_attack -> execute_event -> reschedule( time_to_hit );
+    }
+
+    if ( player -> off_hand_attack )
+    {
+      time_to_hit = timespan_t::zero();
+      executing = false;
+
+      if ( player -> off_hand_attack -> execute_event )
       {
         executing = true;
-        time_to_hit = player -> main_hand_attack -> execute_event -> remains();
+        time_to_hit = player -> off_hand_attack -> execute_event -> remains();
 #ifndef NDEBUG
         if ( time_to_hit < timespan_t::zero() )
         {
-          sim -> out_error.printf( "Ascendance %s time_to_hit=%f", player -> main_hand_attack -> name(), time_to_hit.total_seconds() );
+          sim -> out_error.printf( "Ascendance %s time_to_hit=%f", player -> off_hand_attack -> name(), time_to_hit.total_seconds() );
           assert( 0 );
         }
 #endif
-        core_event_t::cancel( player -> main_hand_attack -> execute_event );
+        core_event_t::cancel( player -> off_hand_attack -> execute_event );
       }
 
-      player -> main_hand_attack = mh;
+      player -> off_hand_attack = oh;
       if ( executing )
       {
-        // Kick off the new main hand attack, by instantly scheduling
+        // Kick off the new off hand attack, by instantly scheduling
         // and rescheduling it to the remaining time to hit. We cannot use
         // normal reschedule mechanism here (i.e., simply use
         // event_t::reschedule() and leave it be), because the rescheduled
         // event would be triggered before the full swing time (of the new
         // auto attack) in most cases.
-        player -> main_hand_attack -> base_execute_time = timespan_t::zero();
-        player -> main_hand_attack -> schedule_execute();
-        player -> main_hand_attack -> base_execute_time = player -> main_hand_attack -> weapon -> swing_time;
-        player -> main_hand_attack -> execute_event -> reschedule( time_to_hit );
-      }
-
-      if ( player -> off_hand_attack )
-      {
-        time_to_hit = timespan_t::zero();
-        executing = false;
-
-        if ( player -> off_hand_attack -> execute_event )
-        {
-          executing = true;
-          time_to_hit = player -> off_hand_attack -> execute_event -> remains();
-#ifndef NDEBUG
-          if ( time_to_hit < timespan_t::zero() )
-          {
-            sim -> out_error.printf( "Ascendance %s time_to_hit=%f", player -> off_hand_attack -> name(), time_to_hit.total_seconds() );
-            assert( 0 );
-          }
-#endif
-          core_event_t::cancel( player -> off_hand_attack -> execute_event );
-        }
-
-        player -> off_hand_attack = oh;
-        if ( executing )
-        {
-          // Kick off the new off hand attack, by instantly scheduling
-          // and rescheduling it to the remaining time to hit. We cannot use
-          // normal reschedule mechanism here (i.e., simply use
-          // event_t::reschedule() and leave it be), because the rescheduled
-          // event would be triggered before the full swing time (of the new
-          // auto attack) in most cases.
-          player -> off_hand_attack -> base_execute_time = timespan_t::zero();
-          player -> off_hand_attack -> schedule_execute();
-          player -> off_hand_attack -> base_execute_time = player -> off_hand_attack -> weapon -> swing_time;
-          player -> off_hand_attack -> execute_event -> reschedule( time_to_hit );
-        }
-      }
-    }
-    // Elemental simply changes the Lava Burst cooldown, Lava Beam replacement
-    // will be handled by action list and ready() in Chain Lightning / Lava
-    // Beam
-    else if ( player -> specialization() == SHAMAN_ELEMENTAL )
-    {
-      if ( lava_burst )
-      {
-        lava_burst -> cooldown -> duration = lvb_cooldown;
-        lava_burst -> cooldown -> reset( false );
+        player -> off_hand_attack -> base_execute_time = timespan_t::zero();
+        player -> off_hand_attack -> schedule_execute();
+        player -> off_hand_attack -> base_execute_time = player -> off_hand_attack -> weapon -> swing_time;
+        player -> off_hand_attack -> execute_event -> reschedule( time_to_hit );
       }
     }
   }
-
-public:
-  ascendance_buff_t( shaman_t* p ) :
-    buff_t( buff_creator_t( p, 114051, "ascendance" ) ),
-    lava_burst( 0 )
-  {}
-
-  bool trigger( int stacks, double value, double chance, timespan_t duration )
+  // Elemental simply changes the Lava Burst cooldown, Lava Beam replacement
+  // will be handled by action list and ready() in Chain Lightning / Lava
+  // Beam
+  else if ( player -> specialization() == SHAMAN_ELEMENTAL )
   {
-    shaman_t* p = debug_cast< shaman_t* >( player );
-
-    if ( player -> specialization() == SHAMAN_ELEMENTAL && ! lava_burst )
+    if ( lava_burst )
     {
-      lava_burst = player -> find_action( "lava_burst" );
+      lava_burst -> cooldown -> duration = lvb_cooldown;
+      lava_burst -> cooldown -> reset( false );
     }
-
-    ascendance( p -> ascendance_mh, p -> ascendance_oh, timespan_t::zero() );
-    return buff_t::trigger( stacks, value, chance, duration );
   }
+}
 
-  void expire_override()
+inline bool ascendance_buff_t::trigger( int stacks, double value, double chance, timespan_t duration )
+{
+  shaman_t* p = debug_cast< shaman_t* >( player );
+
+  if ( player -> specialization() == SHAMAN_ELEMENTAL && ! lava_burst )
   {
-    shaman_t* p = debug_cast< shaman_t* >( player );
-
-    ascendance( p -> melee_mh, p -> melee_oh, lava_burst ? lava_burst -> data().cooldown() : timespan_t::zero() );
-    buff_t::expire_override();
+    lava_burst = player -> find_action( "lava_burst" );
   }
-};
+
+  ascendance( p -> ascendance_mh, p -> ascendance_oh, timespan_t::zero() );
+  return buff_t::trigger( stacks, value, chance, duration );
+}
+
+inline void ascendance_buff_t::expire_override()
+{
+  shaman_t* p = debug_cast< shaman_t* >( player );
+
+  ascendance( p -> melee_mh, p -> melee_oh, lava_burst ? lava_burst -> data().cooldown() : timespan_t::zero() );
+  buff_t::expire_override();
+}
 
 // ==========================================================================
 // Shaman Character Definition
@@ -5308,9 +5345,10 @@ void shaman_t::create_buffs()
                                              ? static_cast< int >( spec.rolling_thunder -> effectN( 1 ).base_value() + perk.improved_lightning_shield -> effectN( 1 ).base_value() )
                                              : find_class_spell( "Lightning Shield" ) -> initial_stacks() )
                                  .cd( timespan_t::zero() );
-  buff.maelstrom_weapon        = buff_creator_t( this, "maelstrom_weapon",  spec.maelstrom_weapon -> effectN( 1 ).trigger() )
-                                 .chance( spec.maelstrom_weapon -> proc_chance() )
-                                 .activated( false );
+  //buff.maelstrom_weapon        = buff_creator_t( this, "maelstrom_weapon",  spec.maelstrom_weapon -> effectN( 1 ).trigger() )
+  //                               .chance( spec.maelstrom_weapon -> proc_chance() )
+  //                               .activated( false );
+  buff.maelstrom_weapon        = new maelstrom_weapon_buff_t( this );
   buff.shamanistic_rage        = buff_creator_t( this, "shamanistic_rage",  spec.shamanistic_rage );
   buff.shocking_lava           = buff_creator_t( this, "shocking_lava", find_spell( 157174 ) )
                                  .chance( talent.shocking_lava -> ok() );
@@ -6250,11 +6288,12 @@ public:
   void mwuse_table_header( report::sc_html_stream& os )
   {
     os << "<table class=\"sc\" style=\"float: left;\">\n"
-         << "<tr>\n"
-           << "<th>Ability</th>\n"
-           << "<th>Event</th>\n"
-           << "<th>0</th><th>1</th><th>2</th><th>3</th><th>4</th><th>5</th><th>Total</th>\n"
-         << "</tr>\n";
+         << "<tr style=\"vertical-align: bottom;\">\n"
+           << "<th rowspan=\"2\">Ability</th>\n"
+           << "<th rowspan=\"2\">Event</th>\n"
+           << "<th rowspan=\"2\">0</th rowspan=\"2\"><th rowspan=\"2\">1</th><th rowspan=\"2\">2</th><th rowspan=\"2\">3</th><th rowspan=\"2\">4</th><th rowspan=\"2\">5</th><th colspan=\"2\">Total</th>\n"
+         << "</tr>\n"
+         << "<tr><th>casts</th><th>charges</th></tr>\n";
   }
 
   void mwgen_table_footer( report::sc_html_stream& os )
@@ -6306,7 +6345,7 @@ public:
         if ( ++n & 1 )
           row_class_str = " class=\"odd\"";
 
-        os.printf("<tr%s><td style=\"text-align:left;\">%s</td><td>%.2f</td><td>%.2f (%.2f%%)</td></tr>",
+        os.printf("<tr%s><td class=\"left\">%s</td><td class=\"right\">%.2f</td><td class=\"right\">%.2f (%.2f%%)</td></tr>",
             row_class_str.c_str(),
             name_str.c_str(),
             util::round( n_generated, 2 ),
@@ -6314,7 +6353,7 @@ public:
       }
     }
 
-    os.printf("<tr><td style=\"text-align: left;\">Total</td><td>%.2f</td><td>%.2f (%.2f%%)</td>",
+    os.printf("<tr><td class=\"left\">Total</td><td class=\"right\">%.2f</td><td class=\"right\">%.2f (%.2f%%)</td>",
         total_generated, total_wasted, 100.0 * total_wasted / total_generated );
   }
 
@@ -6345,6 +6384,7 @@ public:
       stats_t* stats = p.stats_list[ i ];
       std::vector<double> n_cast( MAX_MAELSTROM_STACK + 2 );
       std::vector<double> n_executed( MAX_MAELSTROM_STACK + 2 );
+      double n_cast_charges = 0, n_executed_charges = 0;
       bool has_data = false;
 
       for ( size_t j = 0, end2 = stats -> action_list.size(); j < end2; j++ )
@@ -6359,8 +6399,12 @@ public:
             n_cast[ k ] += s -> maelstrom_weapon_cast[ k ] -> mean();
             n_cast[ MAX_MAELSTROM_STACK + 1 ] += s -> maelstrom_weapon_cast[ k ] -> mean();
 
+            n_cast_charges += s -> maelstrom_weapon_cast[ k ] -> mean() * k;
+
             n_executed[ k ] += s -> maelstrom_weapon_executed[ k ] -> mean();
             n_executed[ MAX_MAELSTROM_STACK + 1 ] += s -> maelstrom_weapon_executed[ k ] -> mean();
+
+            n_executed_charges += s -> maelstrom_weapon_executed[ k ] -> mean() * k;
           }
         }
       }
@@ -6379,10 +6423,10 @@ public:
           name_str += "</a>";
         }
 
-        os.printf("<tr%s><td rowspan=\"2\" style=\"vertical-align: top;text-align:left;\">%s</td>",
+        os.printf("<tr%s><td rowspan=\"2\" class=\"left\" style=\"vertical-align: top;\">%s</td>",
             row_class_str.c_str(), name_str.c_str() );
 
-        os << "<td style=\"text-align: left;\">Cast</td>\n";
+        os << "<td class=\"left\">Cast</td>\n";
 
         for ( size_t j = 0, end2 = n_cast.size(); j < end2; j++ )
         {
@@ -6391,20 +6435,19 @@ public:
             pct = 100.0 * n_cast[ j ] / n_cast[ MAX_MAELSTROM_STACK + 1 ];
 
           if ( j < end2 - 1 )
-            os.printf("<td>%.1f (%.1f%%)</td>", util::round( n_cast[ j ], 1 ), util::round( pct, 1 ) );
+            os.printf("<td class=\"right\">%.1f (%.1f%%)</td>", util::round( n_cast[ j ], 1 ), util::round( pct, 1 ) );
           else
-            os.printf("<td>%.1f</td>", util::round( n_cast[ j ], 1 ) );
+          {
+            os.printf("<td class=\"right\">%.1f</td>", util::round( n_cast[ j ], 1 ) );
+            os.printf("<td class=\"right\">%.1f</td>", util::round( n_cast_charges, 1 ) );
+          }
         }
 
         os << "</tr>\n";
 
-        row_class_str = "";
-        if ( ++n & 1 )
-          row_class_str = " class=\"odd\"";
-
         os.printf("<tr%s>", row_class_str.c_str() );
 
-        os << "<td style=\"text-align: left;\">Execute</td>\n";
+        os << "<td class=\"left\">Execute</td>\n";
 
         for ( size_t j = 0, end2 = n_executed.size(); j < end2; j++ )
         {
@@ -6413,45 +6456,17 @@ public:
             pct = 100.0 * n_executed[ j ] / n_executed[ MAX_MAELSTROM_STACK + 1 ];
 
           if ( j < end2 - 1 )
-            os.printf("<td>%.1f (%.1f%%)</td>", util::round( n_executed[ j ], 1 ), util::round( pct, 1 ) );
+            os.printf("<td class=\"right\">%.1f (%.1f%%)</td>", util::round( n_executed[ j ], 1 ), util::round( pct, 1 ) );
           else
-            os.printf("<td>%.1f</td>", util::round( n_executed[ j ], 1 ) );
+          {
+            os.printf("<td class=\"right\">%.1f</td>", util::round( n_executed[ j ], 1 ) );
+            os.printf("<td class=\"right\">%.1f</td>", util::round( n_executed_charges, 1 ) );
+          }
         }
 
         os << "</tr>\n";
       }
     }
-
-    row_class_str = "";
-    if ( ++n & 1 )
-      row_class_str = " class=\"odd\"";
-
-    os.printf( "<tr%s><td style=\"text-align: left;\">Total casts</td><td>&nbsp;</td>", row_class_str.c_str() );
-
-    for ( size_t i = 0, end = total_mw_cast.size() - 1; i < end; i++ )
-      os.printf("<td>%.1f (%.1f%%)</td>",
-          util::round( total_mw_cast[ i ], 1 ), 
-          util::round( 100 * total_mw_cast[ i ] / total_mw_cast[ MAX_MAELSTROM_STACK + 1 ], 1 ) );
-
-    os.printf("<td>%.1f</td>", util::round( total_mw_cast[ MAX_MAELSTROM_STACK + 1 ], 1 ) );
-
-    row_class_str = "";
-    if ( ++n & 1 )
-      row_class_str = " class=\"odd\"";
-
-    os.printf( "<tr%s><td style=\"text-align: left;\">Total charges</td><td>&nbsp;</td>", row_class_str.c_str() );
-
-    double total_charges = 0;
-    for ( size_t i = 0, end = total_mw_cast.size() - 1; i < end; i++ )
-    {
-      os.printf("<td>%.1f</td>",
-          util::round( total_mw_cast[ i ] * i, 1 ) );
-      total_charges += total_mw_cast[ i ] * i;
-    }
-
-    os.printf("<td>%.1f</td>", util::round( total_charges, 1 ) );
-
-    os << "</tr>\n";
   }
 
   virtual void html_customsection( report::sc_html_stream& os ) override
