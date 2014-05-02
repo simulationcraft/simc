@@ -2369,40 +2369,21 @@ void print_html_player_buff( report::sc_html_stream& os, buff_t* b, int report_d
   os << ">\n";
   if ( report_details )
   {
-    if ( b -> data().ok() )
+    wowhead::wowhead_e domain = SC_BETA ? wowhead::BETA : wowhead::LIVE;
+    if ( ! SC_BETA )
     {
-      std::string href;
-      if ( b -> data().id() )
-      {
-        href = "http://";
-        if ( b -> sim -> dbc.ptr )
-          href += "ptr";
-        else
-          href += "wod";
-        href += ".wowhead.com/spell=";
-        href += util::to_string( b -> data().id() );
-      }
-
-      std::string affix;
-      std::string buff_spell_name = b -> data().name_cstr();
-      util::tokenize( buff_spell_name );
-      if ( buff_spell_name != buff_name )
-        affix = " (" +  buff_name + ")";
-
-      os.printf(
-        "\t\t\t\t\t\t\t\t<td class=\"left\"><a href=\"%s\" class=\"toggle-details\">%s</a>%s</td>\n",
-          href.c_str(), buff_name.c_str(), affix.c_str(), b -> player -> level );
+      if ( b -> player )
+        domain = b -> player -> dbc.ptr ? wowhead::PTR : wowhead::LIVE;
+      else
+        domain = b -> sim -> dbc.ptr ? wowhead::PTR : wowhead::LIVE;
     }
-    else
-    {
-      os.printf(
-        "\t\t\t\t\t\t\t\t<td class=\"left\"><a href=\"#\" class=\"toggle-details\">%s</a></td>\n", buff_name.c_str() );
-    }
+
+    buff_name = wowhead::decorated_buff_name( buff_name, b, domain );
+    os.printf( "\t\t\t\t\t\t\t\t<td class=\"left\"><span class=\"toggle-details\">%s</span></td>\n", buff_name.c_str() );
   }
   else
-    os.printf(
-      "\t\t\t\t\t\t\t\t<td class=\"left\">%s</td>\n",
-      buff_name.c_str() );
+    os.printf( "\t\t\t\t\t\t\t\t<td class=\"left\">%s</td>\n", buff_name.c_str() );
+
   if ( !constant_buffs )
     os.printf(
       "\t\t\t\t\t\t\t\t<td class=\"right\">%.1f</td>\n"

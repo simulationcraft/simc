@@ -259,37 +259,14 @@ bool wowhead::download_item( item_t&            item,
   return ret;
 }
 
-std::string wowhead::decorated_action_name( const std::string& name,
-                                            action_t* action,
-                                            wowhead_e domain, 
-                                            bool affix )
+std::string wowhead::decorated_spell_name( const std::string& name,
+                                           unsigned spell_id,
+                                           const std::string& spell_name,
+                                           wowhead_e domain,
+                                           const std::string& href_parm,
+                                           bool affix )
 {
-  std::string decorated_name, base_href, prefix, suffix, spell_name;
-  unsigned spell_id = 0;
-
-  // Kludge auto attack decorations
-  if ( action -> type == ACTION_ATTACK )
-  {
-    attack_t* a = debug_cast< attack_t* >( action );
-    if ( a -> auto_attack )
-    {
-      spell_id = 6603;
-      if ( a -> weapon )
-        spell_name = "Auto Attack";
-    }
-    else
-    {
-      spell_id = action -> id;
-      if ( spell_id > 1 )
-        spell_name = action -> s_data -> name_cstr();
-    }
-  }
-  else
-  {
-    spell_id = action -> id;
-    if ( spell_id > 1 )
-      spell_name = action -> s_data -> name_cstr();
-  }
+  std::string decorated_name, base_href, prefix, suffix;
 
   if ( spell_id > 1 )
   {
@@ -297,7 +274,6 @@ std::string wowhead::decorated_action_name( const std::string& name,
 
     if ( affix )
     {
-      util::tokenize( spell_name );
       std::string::size_type affix_offset = name.find( spell_name );
 
       // Add an affix to the name, if the name does not match the 
@@ -322,7 +298,7 @@ std::string wowhead::decorated_action_name( const std::string& name,
     if ( ! prefix.empty() )
       decorated_name += prefix + "&nbsp;";
 
-    decorated_name += "<a href=\"" + base_href + "\">" + name + "</a>";
+    decorated_name += "<a href=\"" + base_href + "\" " + href_parm.c_str() + ">" + name + "</a>";
 
     if ( ! suffix.empty() )
       decorated_name += suffix;
@@ -331,6 +307,55 @@ std::string wowhead::decorated_action_name( const std::string& name,
     decorated_name = name;
 
   return decorated_name;
+}
+
+std::string wowhead::decorated_action_name( const std::string& name,
+                                            action_t* action,
+                                            wowhead_e domain, 
+                                            const std::string& href_parm,
+                                            bool affix )
+{
+  std::string spell_name;
+  unsigned spell_id = 0;
+
+  // Kludge auto attack decorations
+  attack_t* a = dynamic_cast< attack_t* >( action );
+  if ( a && a -> auto_attack )
+  {
+    spell_id = 6603;
+    if ( a -> weapon )
+      spell_name = "Auto Attack";
+  }
+  else
+  {
+    spell_id = action -> id;
+    if ( spell_id > 1 )
+      spell_name = action -> s_data -> name_cstr();
+  }
+
+  util::tokenize( spell_name );
+
+  return decorated_spell_name( name, spell_id, spell_name, domain, href_parm, affix );
+}
+
+std::string wowhead::decorated_buff_name( const std::string& name,
+                                          buff_t* buff,
+                                          wowhead_e domain, 
+                                          const std::string& href_parm,
+                                          bool affix )
+{
+  std::string spell_name;
+  unsigned spell_id = 0;
+
+  if ( buff -> data().id() > 0 )
+  {
+    spell_id = buff -> data().id();
+    spell_name = buff -> data().name_cstr();
+  }
+
+  util::tokenize( spell_name );
+
+  return decorated_spell_name( name, spell_id, spell_name, domain, href_parm, affix );
 }
 
 std::string wowhead::domain_str( wowhead_e domain )

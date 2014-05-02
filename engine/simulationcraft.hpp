@@ -6326,10 +6326,23 @@ bool download_item_data( item_t&            item,
                          wowhead_e          source );
 
 std::string domain_str( wowhead_e domain );
+std::string decorated_spell_name( const std::string& name,
+                                  unsigned spell_id,
+                                  const std::string& spell_name,
+                                  wowhead_e domain,
+                                  const std::string& href_parm = std::string(),
+                                  bool affix = true );
+
 std::string decorated_action_name( const std::string& name,
                                   action_t* action,
-                                  wowhead_e domain = BETA,
+                                  wowhead_e domain,
+                                  const std::string& href_parm = std::string(),
                                   bool affix = true );
+std::string decorated_buff_name( const std::string& name,
+                                 buff_t* buff,
+                                 wowhead_e domain,
+                                 const std::string& href_parm = std::string(),
+                                 bool affix = true );
 }
 // Blizzard Community Platform API ==========================================
 
