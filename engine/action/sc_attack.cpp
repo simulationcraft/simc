@@ -17,6 +17,7 @@ attack_t::attack_t( const std::string&  n,
                     const spell_data_t* s ) :
   action_t( ACTION_ATTACK, n, p, s ),
   base_attack_expertise( 0 ),
+  auto_attack( false ),
   num_results( 0 ), attack_table_sum( std::numeric_limits<double>::min() )
 {
   crit_bonus = 1.0;

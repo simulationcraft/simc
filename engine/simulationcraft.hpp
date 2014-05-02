@@ -9,6 +9,7 @@
 #define SC_MINOR_VERSION "1"
 #define SC_USE_PTR ( 0 )
 #define SC_BETA ( 1 )
+#define SC_BETA_STR "wod"
 
 #define SC_VERSION ( SC_MAJOR_VERSION "-" SC_MINOR_VERSION )
 
@@ -5600,6 +5601,7 @@ struct action_state_t : public noncopyable
 struct attack_t : public action_t
 {
   double base_attack_expertise;
+  bool auto_attack;
 
   attack_t( const std::string& token, player_t* p, const spell_data_t* s = spell_data_t::nil() );
 
@@ -6312,7 +6314,8 @@ namespace wowhead
 enum wowhead_e
 {
   LIVE,
-  PTR
+  PTR,
+  BETA
 };
 
 bool download_item( item_t&, wowhead_e source = LIVE, cache::behavior_e b = cache::items() );
@@ -6321,6 +6324,12 @@ bool download_glyph( player_t* player, std::string& glyph_name, const std::strin
 bool download_item_data( item_t&            item,
                          cache::behavior_e  caching,
                          wowhead_e          source );
+
+std::string domain_str( wowhead_e domain );
+std::string decorated_action_name( const std::string& name,
+                                  action_t* action,
+                                  wowhead_e domain = BETA,
+                                  bool affix = true );
 }
 // Blizzard Community Platform API ==========================================
 

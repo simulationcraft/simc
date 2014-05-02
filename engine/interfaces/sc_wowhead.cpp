@@ -259,3 +259,88 @@ bool wowhead::download_item( item_t&            item,
   return ret;
 }
 
+std::string wowhead::decorated_action_name( const std::string& name,
+                                            action_t* action,
+                                            wowhead_e domain, 
+                                            bool affix )
+{
+  std::string decorated_name, base_href, prefix, suffix, spell_name;
+  unsigned spell_id = 0;
+
+  // Kludge auto attack decorations
+  if ( action -> type == ACTION_ATTACK )
+  {
+    attack_t* a = debug_cast< attack_t* >( action );
+    if ( a -> auto_attack )
+    {
+      spell_id = 6603;
+      if ( a -> weapon )
+        spell_name = "Auto Attack";
+    }
+    else
+    {
+      spell_id = action -> id;
+      if ( spell_id > 1 )
+        spell_name = action -> s_data -> name_cstr();
+    }
+  }
+  else
+  {
+    spell_id = action -> id;
+    if ( spell_id > 1 )
+      spell_name = action -> s_data -> name_cstr();
+  }
+
+  if ( spell_id > 1 )
+  {
+    base_href = "http://" + domain_str( domain ) + ".wowhead.com/spell=" + util::to_string( spell_id );
+
+    if ( affix )
+    {
+      util::tokenize( spell_name );
+      std::string::size_type affix_offset = name.find( spell_name );
+
+      // Add an affix to the name, if the name does not match the 
+      // spell name. Affix is either the prefix- or suffix portion of the 
+      // non matching parts of the stats name.
+      if ( affix_offset != std::string::npos && spell_name != name )
+      {
+        // Suffix
+        if ( affix_offset == 0 )
+          suffix += " (" + name.substr( spell_name.size() ) + ")";
+        // Prefix
+        else if ( affix_offset > 0 )
+          prefix += " (" + name.substr( 0, affix_offset ) + ")";
+      }
+      else if ( affix_offset == std::string::npos )
+        suffix += " (" + name + ")";
+    }
+  }
+
+  if ( ! base_href.empty() )
+  {
+    if ( ! prefix.empty() )
+      decorated_name += prefix + "&nbsp;";
+
+    decorated_name += "<a href=\"" + base_href + "\">" + name + "</a>";
+
+    if ( ! suffix.empty() )
+      decorated_name += suffix;
+  }
+  else
+    decorated_name = name;
+
+  return decorated_name;
+}
+
+std::string wowhead::domain_str( wowhead_e domain )
+{
+  switch ( domain )
+  {
+    case PTR: return "ptr";
+#if SC_BETA
+    case BETA: return SC_BETA_STR;
+#endif
+    default: return "www";
+  }
+}
