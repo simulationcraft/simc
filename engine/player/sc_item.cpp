@@ -1588,4 +1588,3 @@ bool item_t::download_glyph( player_t* player, std::string& glyph_name, const st
   return success;
 }
 
-

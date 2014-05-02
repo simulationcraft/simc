@@ -336,6 +336,7 @@ enum item_socket_color
   SOCKET_COLOR_HYDRAULIC            = 16,
   SOCKET_COLOR_PRISMATIC            = SOCKET_COLOR_RED | SOCKET_COLOR_YELLOW | SOCKET_COLOR_BLUE,
   SOCKET_COLOR_COGWHEEL             = 32,
+  SOCKET_COLOR_MAX
 };
 
 enum item_bind_type

@@ -22,20 +22,22 @@ struct player_spec_t
 
 // download_id ==============================================================
 
-js::js_node_t download_id( sim_t* sim,
-                        const std::string& region,
-                        unsigned item_id,
-                        cache::behavior_e caching )
+bool download_id( rapidjson::Document& d, 
+                  const std::string& region,
+                  unsigned item_id,
+                  cache::behavior_e caching )
 {
-  if ( item_id == 0 ) return js::js_node_t();
+  if ( item_id == 0 )
+    return false;
 
   std::string url = "http://" + region + ".battle.net/api/wow/item/" + util::to_string( item_id ) + "?locale=en_US";
 
   std::string result;
   if ( ! http::get( result, url, caching ) )
-    return js::js_node_t();
+    return false;
 
-  return js::create( sim, result );
+  d.Parse< 0 >( result.c_str() );
+  return true;
 }
 
 // parse_profession =========================================================
@@ -389,153 +391,158 @@ player_t* parse_player( sim_t*             sim,
   if ( profile.HasMember( "items" ) && ! parse_items( p, profile[ "items" ] ) )
     return 0;
 
-/*
-
   if ( ! p -> server_str.empty() )
     p -> armory_extensions( p -> region_str, p -> server_str, player.name, caching );
 
-  return p;
-  */
   return p;
 }
 
 // download_item_data =======================================================
 
-js::js_node_t download_item_data( item_t& item, cache::behavior_e caching )
+bool download_item_data( item_t& item, cache::behavior_e caching )
 {
-  js::js_node_t js = download_id( item.sim, item.sim -> default_region_str, item.parsed.data.id, caching );
-  if ( ! js )
+  rapidjson::Document js;
+  if ( ! download_id( js, item.sim -> default_region_str, item.parsed.data.id, caching ) || 
+       js.HasParseError() )
   {
     if ( caching != cache::ONLY )
     {
       item.sim -> errorf( "BCP API: Player '%s' unable to download item id '%u' at slot %s.\n",
                           item.player -> name(), item.parsed.data.id, item.slot_name() );
     }
-    return js;
+    return false;
   }
+
   if ( item.sim -> debug )
-    item.sim -> out_debug.raw() << js;
+  {
+    rapidjson::StringBuffer b;
+    rapidjson::PrettyWriter< rapidjson::StringBuffer > writer( b );
+
+    js.Accept( writer );
+    item.sim -> out_debug.raw() << b.GetString();
+  }
 
   try
   {
-    {
-      int id;
-      if ( ! js::get_value( id, js, "id" ) ) throw( "id" );
-      item.parsed.data.id = id;
-    }
+    if ( ! js.HasMember( "id" ) ) throw( "id" );
+    if ( ! js.HasMember( "itemLevel" ) ) throw( "item level" );
+    if ( ! js.HasMember( "quality" ) ) throw( "quality" );
+    if ( ! js.HasMember( "inventoryType" ) ) throw( "inventory type" );
+    if ( ! js.HasMember( "itemClass" ) ) throw( "item class" );
+    if ( ! js.HasMember( "itemSubClass" ) ) throw( "item subclass" );
+    if ( ! js.HasMember( "name" ) ) throw( "name" );
 
-    if ( ! js::get_value( item.name_str, js, "name" ) ) throw( "name" );
+    item.parsed.data.id = js[ "id" ].GetUint();
+    item.parsed.data.level = js[ "itemLevel" ].GetUint();
+    item.parsed.data.quality = js[ "quality" ].GetUint();
+    item.parsed.data.inventory_type = js[ "inventoryType" ].GetUint();
+    item.parsed.data.item_class = js[ "itemClass" ].GetUint();
+    item.parsed.data.item_subclass = js[ "itemSubClass" ].GetUint();
+    item.name_str = js[ "name" ].GetString();
 
     util::tokenize( item.name_str );
 
-    js::get_value( item.icon_str, js, "icon" );
+    if ( js.HasMember( "icon" ) ) item.icon_str = js[ "icon" ].GetString();
+    if ( js.HasMember( "requiredLevel" ) ) item.parsed.data.req_level = js[ "requiredLevel" ].GetUint();
+    if ( js.HasMember( "requiredSkill" ) ) item.parsed.data.req_skill = js[ "requiredSkill" ].GetUint();
+    if ( js.HasMember( "requiredSkillRank" ) ) item.parsed.data.req_skill_level = js[ "requiredSkillRank" ].GetUint();
+    if ( js.HasMember( "itemBind" ) ) item.parsed.data.bind_type = js[ "itemBind" ].GetUint();
 
-    if ( ! js::get_value( item.parsed.data.level, js, "itemLevel" ) ) throw( "level" );
-
-    js::get_value( item.parsed.data.req_level, js, "requiredLevel" );
-    js::get_value( item.parsed.data.req_skill, js, "requiredSkill" );
-    js::get_value( item.parsed.data.req_skill_level, js, "requiredSkillRank" );
-
-    if ( ! js::get_value( item.parsed.data.quality, js, "quality" ) ) throw( "quality" );
-
-    if ( ! js::get_value( item.parsed.data.inventory_type, js, "inventoryType" ) ) throw( "inventory type" );
-    if ( ! js::get_value( item.parsed.data.item_class, js, "itemClass" ) ) throw( "item class" );
-    if ( ! js::get_value( item.parsed.data.item_subclass, js, "itemSubClass" ) ) throw( "item subclass" );
-    js::get_value( item.parsed.data.bind_type, js, "itemBind" );
-
-    if ( js::js_node_t w = js::get_child( js, "weaponInfo" ) )
+    if ( js.HasMember( "weaponInfo" ) )
     {
-      double minDmg, maxDmg;
-      double speed, dps;
-      if ( ! js::get_value( dps, w, "dps" ) ) throw( "dps" );
-      if ( ! js::get_value( speed, w, "weaponSpeed" ) ) throw( "weapon speed" );
-      if ( ! js::get_value( minDmg, w, "damage/exactMin" ) ) throw( "weapon minimum damage" );
-      if ( ! js::get_value( maxDmg, w, "damage/exactMax" ) ) throw( "weapon maximum damage" );
-      item.parsed.data.delay = speed * 1000.0;
-      // Estimate damage range from the min damage blizzard gives us. Note that this is not exact, as the min dps is actually floored
-      item.parsed.data.dmg_range = 2 - 2 * minDmg / ( dps * speed );
+      const rapidjson::Value& weaponInfo = js[ "weaponInfo" ];
+      if ( ! weaponInfo.HasMember( "dps" ) ) throw( "dps" );
+      if ( ! weaponInfo.HasMember( "weaponSpeed" ) ) throw( "weapon speed" );
+      if ( ! weaponInfo.HasMember( "damage" ) ) throw( "damage" );
+
+      const rapidjson::Value& damage = weaponInfo[ "damage" ];
+      if ( ! damage.HasMember( "exactMin" ) ) throw( "weapon minimum damage" );
+
+      item.parsed.data.delay = static_cast< unsigned >( weaponInfo[ "weaponSpeed" ].GetDouble() * 1000.0 );
+      item.parsed.data.dmg_range = 2 - 2 * damage[ "exactMin" ].GetDouble() / ( weaponInfo[ "dps" ].GetDouble() * weaponInfo[ "weaponSpeed" ].GetDouble() );
     }
 
-    if ( js::js_node_t classes = js::get_child( js, "allowableClasses" ) )
+    if ( js.HasMember( "allowableClasses" ) )
     {
-      std::vector<js::js_node_t> nodes = js::get_children( classes );
-      for ( size_t i = 0, n = nodes.size(); i < n; ++i )
-      {
-        int cid;
-        if ( js::get_value( cid, nodes[ i ] ) )
-          item.parsed.data.class_mask |= 1 << ( cid - 1 );
-      }
+      for ( rapidjson::SizeType i = 0, n = js[ "allowableClasses" ].Size(); i < n; ++i )
+        item.parsed.data.class_mask |= ( 1 << ( js[ "allowableClasses" ][ i ].GetInt() - 1 ) );
     }
     else
       item.parsed.data.class_mask = -1;
 
-    if ( js::js_node_t races = js::get_child( js, "allowableRaces" ) )
+    if ( js.HasMember( "allowableRaces" ) )
     {
-      std::vector<js::js_node_t> nodes = js::get_children( races );
-      for ( size_t i = 0, n = nodes.size(); i < n; ++i )
-      {
-        int rid;
-        if ( js::get_value( rid, nodes[ i ] ) )
-          item.parsed.data.race_mask |= 1 << ( rid - 1 );
-      }
+      for ( rapidjson::SizeType i = 0, n = js[ "allowableRaces" ].Size(); i < n; ++i )
+        item.parsed.data.race_mask |= ( 1 << ( js[ "allowableRaces" ][ i ].GetInt() - 1 ) );
     }
     else
       item.parsed.data.race_mask = -1;
 
-    if ( js::js_node_t stats = js::get_child( js, "bonusStats" ) )
+    if ( js.HasMember( "bonusStats" ) )
     {
-      std::vector<js::js_node_t> nodes = js::get_children( stats );
-      for ( size_t i = 0, n = std::min( nodes.size(), sizeof_array( item.parsed.data.stat_type_e ) ); i < n; ++i )
+      for ( rapidjson::SizeType i = 0, n = js[ "bonusStats" ].Size(); i < n; ++i )
       {
-        if ( ! js::get_value( item.parsed.data.stat_type_e[ i ], nodes[ i ], "stat"   ) ) throw( "bonus stat" );
-        if ( ! js::get_value( item.parsed.data.stat_val   [ i ], nodes[ i ], "amount" ) ) throw( "bonus stat amount" );
+        const rapidjson::Value& stat = js[ "bonusStats" ][ i ];
+        if ( ! stat.HasMember( "stat" ) ) throw( "bonus stat" );
+        if ( ! stat.HasMember( "amount" ) ) throw( "bonus stat amount" );
 
-        // Soo, weapons need a flag to indicate caster weapon for correct DPS calculation.
-        if ( item.parsed.data.delay > 0 && ( item.parsed.data.stat_type_e[ i ] == ITEM_MOD_INTELLECT || item.parsed.data.stat_type_e[ i ] == ITEM_MOD_SPIRIT || item.parsed.data.stat_type_e[ i ] == ITEM_MOD_SPELL_POWER ) )
+        item.parsed.data.stat_type_e[ i ] = stat[ "stat" ].GetInt();
+        item.parsed.data.stat_val[ i ] =  stat[ "amount" ].GetInt();
+
+        if ( js.HasMember( "weaponInfo" ) && 
+             ( item.parsed.data.stat_type_e[ i ] == ITEM_MOD_INTELLECT ||
+               item.parsed.data.stat_type_e[ i ] == ITEM_MOD_SPIRIT ||
+               item.parsed.data.stat_type_e[ i ] == ITEM_MOD_SPELL_POWER ) )
           item.parsed.data.flags_2 |= ITEM_FLAG2_CASTER_WEAPON;
       }
     }
 
-    if ( js::js_node_t sockets = js::get_node( js, "socketInfo/sockets" ) )
+    if ( js.HasMember( "socketInfo" ) && js[ "socketInfo" ].HasMember( "sockets" ) )
     {
-      std::vector<js::js_node_t> nodes = js::get_children( sockets );
-      for ( size_t i = 0, n = std::min( nodes.size(), sizeof_array( item.parsed.data.socket_color ) ); i < n; ++i )
+      const rapidjson::Value& sockets = js[ "socketInfo" ][ "sockets" ];
+
+      for ( rapidjson::SizeType i = 0, n = std::min( static_cast< unsigned long >( sockets.Size() ), sizeof_array( item.parsed.data.socket_color ) ); i < n; ++i )
       {
-        std::string color;
-        if ( js::get_value( color, nodes[ i ], "type" ) )
-        {
-          if ( color == "META" )
-            item.parsed.data.socket_color[ i ] = SOCKET_COLOR_META;
-          else if ( color == "RED" )
-            item.parsed.data.socket_color[ i ] = SOCKET_COLOR_RED;
-          else if ( color == "YELLOW" )
-            item.parsed.data.socket_color[ i ] = SOCKET_COLOR_YELLOW;
-          else if ( color == "BLUE" )
-            item.parsed.data.socket_color[ i ] = SOCKET_COLOR_BLUE;
-          else if ( color == "PRISMATIC" )
-            item.parsed.data.socket_color[ i ] = SOCKET_COLOR_PRISMATIC;
-          else if ( color == "COGWHEEL" )
-            item.parsed.data.socket_color[ i ] = SOCKET_COLOR_COGWHEEL;
-          else if ( color == "HYDRAULIC" )
-            item.parsed.data.socket_color[ i ] = SOCKET_COLOR_HYDRAULIC;
-        }
+        if ( ! sockets[ i ].HasMember( "type" ) )
+          continue;
+
+        std::string color = sockets[ i ][ "type" ].GetString();
+
+        if ( color == "META" )
+          item.parsed.data.socket_color[ i ] = SOCKET_COLOR_META;
+        else if ( color == "RED" )
+          item.parsed.data.socket_color[ i ] = SOCKET_COLOR_RED;
+        else if ( color == "YELLOW" )
+          item.parsed.data.socket_color[ i ] = SOCKET_COLOR_YELLOW;
+        else if ( color == "BLUE" )
+          item.parsed.data.socket_color[ i ] = SOCKET_COLOR_BLUE;
+        else if ( color == "PRISMATIC" )
+          item.parsed.data.socket_color[ i ] = SOCKET_COLOR_PRISMATIC;
+        else if ( color == "COGWHEEL" )
+          item.parsed.data.socket_color[ i ] = SOCKET_COLOR_COGWHEEL;
+        else if ( color == "HYDRAULIC" )
+          item.parsed.data.socket_color[ i ] = SOCKET_COLOR_HYDRAULIC;
       }
 
-      std::string socketBonus;
-      if ( js::get_value( socketBonus, js, "socketInfo/socketBonus" ) )
+      if ( js[ "socketInfo" ].HasMember( "socketBonus" ) )
       {
+        std::string socketBonus = js[ "socketInfo" ][ "socketBonus" ].GetString();
         std::string stat;
         util::fuzzy_stats( stat, socketBonus );
         std::vector<stat_pair_t> bonus = item_t::str_to_stat_pair( stat );
-        item.parsed.socket_bonus_stats = bonus;
+        item.parsed.socket_bonus_stats.insert( item.parsed.socket_bonus_stats.end(), bonus.begin(), bonus.end() );
       }
     }
 
-    js::get_value( item.parsed.data.id_set, js, "itemSet" );
-
-    std::string nameDescription;
-    if ( js::get_value( nameDescription, js, "nameDescription" ) )
+    if ( js.HasMember( "itemSet" ) && js[ "itemSet" ].HasMember( "id" ) )
     {
+      item.parsed.data.id_set = js[ "itemSet" ][ "id" ].GetUint();
+    }
+
+    if ( js.HasMember( "nameDescription" ) )
+    {
+      std::string nameDescription = js[ "nameDescription" ].GetString();
+
       if ( util::str_in_str_ci( nameDescription, "heroic" ) )
         item.parsed.data.type_flags |= RAID_TYPE_HEROIC;
       else if ( util::str_in_str_ci( nameDescription, "raid finder" ) )
@@ -553,44 +560,48 @@ js::js_node_t download_item_data( item_t& item, cache::behavior_e caching )
         item.parsed.data.type_flags |= RAID_TYPE_ELITE;
     }
 
-    js::js_node_t item_spell = js::get_node( js, "itemSpells" );
-    std::vector<js::js_node_t> nodes = js::get_children( item_spell );
-    size_t spell_idx = 0;
-    for ( size_t i = 0; i < nodes.size() && spell_idx < sizeof_array( item.parsed.data.id_spell ); i++ )
+    if ( js.HasMember( "itemSpells" ) )
     {
-      int spell_id = 0;
-      int trigger_type = -1;
-      std::string spell_trigger;
-      js::get_value( spell_id, nodes[ i ], "spellId" );
-      js::get_value( spell_trigger, nodes[ i ], "trigger" );
-
-      if ( util::str_compare_ci( spell_trigger, "ON_EQUIP" ) )
-        trigger_type = ITEM_SPELLTRIGGER_ON_EQUIP;
-      else if ( util::str_compare_ci( spell_trigger, "ON_USE" ) )
-        trigger_type = ITEM_SPELLTRIGGER_ON_USE;
-      else if ( util::str_compare_ci( spell_trigger, "ON_PROC" ) )
-        trigger_type = ITEM_SPELLTRIGGER_CHANCE_ON_HIT;
-
-      if ( trigger_type != -1 && spell_id > 0 )
+      const rapidjson::Value& spells = js[ "itemSpells" ];
+      size_t spell_idx = 0;
+      for ( rapidjson::SizeType i = 0, n = spells.Size(); i < n && spell_idx < sizeof_array( item.parsed.data.id_spell ); ++i )
       {
-        item.parsed.data.id_spell[ spell_idx ] = spell_id;
-        item.parsed.data.trigger_spell[ spell_idx ] = trigger_type;
-        spell_idx++;
+        const rapidjson::Value& spell = spells[ i ];
+        if ( ! spell.HasMember( "spellId" ) || ! spell.HasMember( "trigger" ) )
+          continue;
+
+        int spell_id = spell[ "spellId" ].GetInt();
+        int trigger_type = -1;
+
+        if ( util::str_compare_ci( spell[ "trigger" ].GetString(), "ON_EQUIP" ) )
+          trigger_type = ITEM_SPELLTRIGGER_ON_EQUIP;
+        else if ( util::str_compare_ci( spell[ "trigger" ].GetString(), "ON_USE" ) )
+          trigger_type = ITEM_SPELLTRIGGER_ON_USE;
+        else if ( util::str_compare_ci( spell[ "trigger" ].GetString(), "ON_PROC" ) )
+          trigger_type = ITEM_SPELLTRIGGER_CHANCE_ON_HIT;
+
+        if ( trigger_type != -1 && spell_id > 0 )
+        {
+          item.parsed.data.id_spell[ spell_idx ] = spell_id;
+          item.parsed.data.trigger_spell[ spell_idx ] = trigger_type;
+          spell_idx++;
+        }
       }
     }
   }
   catch ( const char* fieldname )
   {
     std::string error_str;
-    js::get_value( error_str, js, "reason" );
+    if ( js.HasMember( "reason" ) )
+      error_str = js[ "reason" ].GetString();
 
     if ( caching != cache::ONLY )
       item.sim -> errorf( "BCP API: Player '%s' unable to parse item '%u' %s at slot '%s': %s\n",
                           item.player -> name(), item.parsed.data.id, fieldname, item.slot_name(), error_str.c_str() );
-    return js::js_node_t();
+    return false;
   }
 
-  return js;
+  return true;
 }
 
 // download_roster ==========================================================
@@ -675,7 +686,7 @@ player_t* bcp_api::from_local_json( sim_t*             sim,
 
 bool bcp_api::download_item( item_t& item, cache::behavior_e caching )
 {
-  bool ret = download_item_data( item, caching ) != NULL;
+  bool ret = download_item_data( item, caching );
   if ( ret )
     item.source_str = "Blizzard";
   return ret;
@@ -692,13 +703,11 @@ bool bcp_api::download_guild( sim_t* sim,
                               int max_rank,
                               cache::behavior_e caching )
 {
-  std::cout << "foo\n";
   js::js_node_t js = download_roster( sim, region, server, name, caching );
   if ( !js ) return false;
 
   std::vector<std::string> names;
   std::vector<js::js_node_t> characters = js::get_children( js );
-  std::cout << "foo\n";
 
   for ( std::size_t i = 0, n = characters.size(); i < n; ++i )
   {
@@ -723,7 +732,6 @@ bool bcp_api::download_guild( sim_t* sim,
   }
 
   if ( names.empty() ) return true;
-  std::cout << "foo\n";
 
   range::sort( names );
 
@@ -741,7 +749,6 @@ bool bcp_api::download_guild( sim_t* sim,
       // Just ignore invalid players
     }
   }
-  std::cout << "foo\n";
 
   return true;
 }
@@ -757,13 +764,15 @@ bool bcp_api::download_glyph( player_t*          player,
     ( player -> region_str.empty() ? player -> sim -> default_region_str : player -> region_str );
 
   unsigned glyphid = strtoul( glyph_id.c_str(), 0, 10 );
-  js::js_node_t item = download_id( player -> sim, region, glyphid, caching );
-  if ( ! item || ! js::get_value( glyph_name, item, "name" ) )
+  rapidjson::Document js;
+  if ( ! download_id( js, region, glyphid, caching ) || js.HasParseError() || ! js.HasMember( "name" ) )
   {
     if ( caching != cache::ONLY )
       player -> sim -> errorf( "BCP API: Unable to download glyph id '%s'\n", glyph_id.c_str() );
     return false;
   }
+
+  glyph_name = js[ "name" ].GetString();
 
   return true;
 }
