@@ -219,7 +219,11 @@ struct flask_t : public action_t
                       player -> name(), type_str.c_str() );
       }
       else
-        p -> buffs.flask = stat_buff_creator_t( p, type_str, spell );
+      {
+        std::string buff_name = spell -> name_cstr();
+        util::tokenize( buff_name );
+        p -> buffs.flask = stat_buff_creator_t( p, buff_name, spell );
+      }
     }
     // Alch flask, special handle
     else
