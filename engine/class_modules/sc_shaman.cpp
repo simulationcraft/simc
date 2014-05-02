@@ -2588,7 +2588,7 @@ struct auto_attack_t : public shaman_attack_t
 
     p() -> melee_mh      = new melee_t( "melee_main_hand", spell_data_t::nil(), player, &( p() -> main_hand_weapon ), sync_weapons, swing_timer_variance );
     p() -> melee_mh      -> school = SCHOOL_PHYSICAL;
-    p() -> ascendance_mh = new windlash_t( "windlash_main_hand", player -> find_spell( 114089 ), player, &( p() -> main_hand_weapon ), swing_timer_variance );
+    p() -> ascendance_mh = new windlash_t( "wind_lash_mh", player -> find_spell( 114089 ), player, &( p() -> main_hand_weapon ), swing_timer_variance );
 
     p() -> main_hand_attack = p() -> melee_mh;
 
@@ -2598,7 +2598,7 @@ struct auto_attack_t : public shaman_attack_t
 
       p() -> melee_oh = new melee_t( "melee_off_hand", spell_data_t::nil(), player, &( p() -> off_hand_weapon ), sync_weapons, swing_timer_variance );
       p() -> melee_oh -> school = SCHOOL_PHYSICAL;
-      p() -> ascendance_oh = new windlash_t( "windlash_off_hand", player -> find_spell( 114093 ), player, &( p() -> off_hand_weapon ), swing_timer_variance );
+      p() -> ascendance_oh = new windlash_t( "wind_lash_offhand", player -> find_spell( 114093 ), player, &( p() -> off_hand_weapon ), swing_timer_variance );
 
       p() -> off_hand_attack = p() -> melee_oh;
 
@@ -2717,7 +2717,7 @@ struct stormstrike_t : public shaman_attack_t
 
     if ( p() -> off_hand_weapon.type != WEAPON_NONE )
     {
-      stormstrike_oh = new stormstrike_attack_t( "stormstrike_oh", player, data().effectN( 3 ).trigger(), &( player -> off_hand_weapon ) );
+      stormstrike_oh = new stormstrike_attack_t( "stormstrike_offhand", player, data().effectN( 3 ).trigger(), &( player -> off_hand_weapon ) );
       add_child( stormstrike_oh );
     }
   }
@@ -2789,7 +2789,7 @@ struct windstrike_t : public shaman_attack_t
 
     if ( p() -> off_hand_weapon.type != WEAPON_NONE )
     {
-      windstrike_oh = new windstrike_attack_t( "windstrike_oh", player, data().effectN( 3 ).trigger(), &( player -> off_hand_weapon ) );
+      windstrike_oh = new windstrike_attack_t( "windstrike_offhand", player, data().effectN( 3 ).trigger(), &( player -> off_hand_weapon ) );
       windstrike_oh -> normalize_weapon_speed = true;
       windstrike_oh -> school = SCHOOL_PHYSICAL;
       add_child( windstrike_oh );
@@ -4490,10 +4490,10 @@ struct flametongue_weapon_t : public shaman_spell_t
     may_miss     = false;
 
     if ( main )
-      player -> flametongue_mh = new flametongue_weapon_spell_t( "flametongue_mh", player, &( player -> main_hand_weapon ) );
+      player -> flametongue_mh = new flametongue_weapon_spell_t( "flametongue_attack_mh", player, &( player -> main_hand_weapon ) );
 
     if ( off )
-      player -> flametongue_oh = new flametongue_weapon_spell_t( "flametongue_oh", player, &( player -> off_hand_weapon ) );
+      player -> flametongue_oh = new flametongue_weapon_spell_t( "flametongue_attack_oh", player, &( player -> off_hand_weapon ) );
   }
 
   virtual void execute()
@@ -4575,10 +4575,10 @@ struct windfury_weapon_t : public shaman_spell_t
     may_miss     = false;
 
     if ( main )
-      player -> windfury_mh = new windfury_weapon_melee_attack_t( "windfury_mh", player, &( player -> main_hand_weapon ) );
+      player -> windfury_mh = new windfury_weapon_melee_attack_t( "windfury_attack_mh", player, &( player -> main_hand_weapon ) );
 
     if ( off )
-      player -> windfury_oh = new windfury_weapon_melee_attack_t( "windfury_oh", player, &( player -> off_hand_weapon ) );
+      player -> windfury_oh = new windfury_weapon_melee_attack_t( "windfury_attack_oh", player, &( player -> off_hand_weapon ) );
   }
 
   virtual void execute()
