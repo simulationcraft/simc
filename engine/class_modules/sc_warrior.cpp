@@ -609,15 +609,6 @@ struct warrior_attack_t : public warrior_action_t< melee_attack_t >
 
     if ( ! p.buff.bloodbath -> check() ) return;
 
-    if ( td -> debuffs_colossus_smash -> up() && dmg > 0)
-      p.cs_damage.add( p.buff.bloodbath -> data().effectN( 1 ).percent() * dmg  );
-
-    if ( ( t -> target == sim -> target ) && dmg > 0 )
-      p.priority_damage.add( p.buff.bloodbath -> data().effectN( 1 ).percent() * dmg  );
-
-    if ( dmg > 0 )
-      p.all_damage.add( p.buff.bloodbath -> data().effectN( 1 ).percent() * dmg  );
-
     ignite::trigger_pct_based(
       p.active_bloodbath_dot, // ignite spell
       t, // target
@@ -690,6 +681,26 @@ struct bloodbath_dot_t : public ignite::pct_based_action_t< attack_t >
     background = true;
     dual = true;
   }
+
+
+  void assess_damage(dmg_e type,
+               action_state_t* s)
+  {
+    pct_based_action_t::assess_damage( type, s );
+
+    warrior_t* p = static_cast<warrior_t*>( player );
+    warrior_td_t* td = p -> get_target_data( s -> target );
+
+    if ( td -> debuffs_colossus_smash -> up() && s -> result_amount > 0)
+      p -> cs_damage.add( s -> result_amount );
+
+    if ( ( s -> target == sim -> target ) && s -> result_amount > 0 )
+      p -> priority_damage.add( s -> result_amount );
+
+    if ( s -> result_amount > 0 )
+      p -> all_damage.add( s -> result_amount );
+  }
+
 };
 
 // ==========================================================================
@@ -4807,7 +4818,7 @@ void warrior_t::create_options()
   option_t::copy( options, warrior_options );
 }
 
-// Specialized flurry of xuen so that armor reduction from colossus smash will function
+// Specialized attacks
 
 struct warrior_flurry_of_xuen_t : public warrior_attack_t
 {
@@ -4823,11 +4834,22 @@ struct warrior_flurry_of_xuen_t : public warrior_attack_t
 
 };
 
+struct warrior_lightning_strike_t : public warrior_attack_t
+{
+  warrior_lightning_strike_t( warrior_t* p ) :
+    warrior_attack_t( "lightning_strike", p, p -> find_spell( 137597 ) )
+  {
+    background = true;
+    may_dodge = may_parry = false;
+  }
+};
+ 
 // warrior_t::create_proc_action =============================================
 
 action_t* warrior_t::create_proc_action( const std::string& name )
 {
   if ( name == "flurry_of_xuen" ) return new warrior_flurry_of_xuen_t( this );
+  if ( name == "lightning_strike" ) return new warrior_lightning_strike_t( this );
 
   return 0;
 }
