@@ -673,14 +673,13 @@ public:
   bool instant_eligibility() const
   { return ab::data().school_mask() & SCHOOL_MASK_NATURE && ab::base_execute_time != timespan_t::zero(); }
 
-  void impact( action_state_t* state )
+  void execute()
   {
-    ab::impact( state );
+    ab::execute();
 
     if ( p() -> talent.echo_of_the_elements -> ok() &&
          may_proc_eoe && 
-         ab::result_is_hit( state -> result ) && 
-         ! ab::is_aoe() && 
+         ab::result_is_hit( ab::execute_state -> result ) && 
          p() -> rppm_echo_of_the_elements.trigger() )
     {
       p() -> buff.echo_of_the_elements -> trigger();
@@ -2707,6 +2706,7 @@ struct stormstrike_t : public shaman_attack_t
 
     parse_options( NULL, options_str );
 
+    may_proc_eoe         = true;
     weapon               = &( p() -> main_hand_weapon );
     weapon_multiplier    = 0.0;
     may_crit             = false;
@@ -2777,6 +2777,7 @@ struct windstrike_t : public shaman_attack_t
 
     parse_options( NULL, options_str );
 
+    may_proc_eoe         = true;
     school               = SCHOOL_PHYSICAL;
     weapon               = &( p() -> main_hand_weapon );
     weapon_multiplier    = 0.0;
@@ -3597,8 +3598,9 @@ struct unleash_elements_t : public shaman_spell_t
     shaman_spell_t( "unleash_elements", player, player -> find_class_spell( "Unleash Elements" ), options_str ),
     wind( 0 ), flame( 0 )
   {
-    may_crit    = false;
-    may_miss    = false;
+    may_crit     = false;
+    may_miss     = false;
+    may_proc_eoe = true;
 
     wind = new unleash_wind_t( "unleash_wind", player );
     flame = new unleash_flame_t( "unleash_flame", player );

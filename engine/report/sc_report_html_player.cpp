@@ -159,75 +159,29 @@ std::string output_action_name( stats_t* s, player_t* actor )
   std::string href = "#";
   std::string rel = " rel=\"lvl=" + util::to_string( s -> player -> level ) + "\"";
   std::string prefix, suffix, class_attr;
-  unsigned id = 0;
+  action_t* a = 0;
 
   if ( s -> player -> sim -> report_details )
     class_attr = " class=\"toggle-details\"";
 
   for ( size_t i = 0; i < s -> action_list.size(); i++ )
   {
-    if ( ( id = s -> action_list[ i ] -> id ) > 1 )
+    if ( ( a = s -> action_list[ i ] ) -> id > 1 )
       break;
   }
 
-  if ( id > 1 )
-  {
-    href = "http://";
-    href += ( s -> player -> dbc.ptr ? "ptr" : "wod" );
-    href += ".wowhead.com/spell=";
-    href += util::to_string( id );
+  wowhead::wowhead_e domain = SC_BETA ? wowhead::BETA : wowhead::LIVE;
+  if ( ! SC_BETA )
+    domain = a -> player -> dbc.ptr ? wowhead::PTR : wowhead::LIVE;
 
-    std::string name = s -> player -> dbc.spell( id ) -> name_cstr();
-    util::tokenize( name );
-    std::string::size_type offset = s -> name_str.find( name );
-    // Add an affix to the name, if the name does not match the 
-    // spell name. Affix is either the prefix- or suffix portion of the 
-    // non matching parts of the stats name.
-    if ( offset != std::string::npos && name != s -> name_str )
-    {
-      // Suffix
-      if ( offset == 0 )
-      {
-        std::string::size_type cut_pos = name.size();
-        //if ( s -> name_str[ cut_pos ] == '_' )
-        //  cut_pos++;
-
-        suffix += " (" + s -> name_str.substr( cut_pos ) + ")";
-      }
-      // Prefix
-      else if ( offset > 0 )
-      {
-        // if ( s -> name_str[ offset - 1 ] == '_' )
-        //   offset--;
-
-        prefix += " (" + s -> name_str.substr( 0, offset ) + ")";
-      }
-    }
-    else if ( offset == std::string::npos )
-      suffix += " (" + s -> name_str + ")";
-  }
+  std::string name = wowhead::decorated_action_name( s -> name_str, a, domain );
 
   // If we are printing a stats object that belongs to a pet, for an actual
   // actor, print out the pet name too
   if ( actor && ! actor -> is_pet() && s -> player -> is_pet() )
-    suffix += " (" + s -> player -> name_str + ")";
+    name += " (" + s -> player -> name_str + ")";
 
-  std::string name;
-  if ( s -> player -> sim -> report_details )
-  {
-    name += prefix + "&nbsp;";
-    name += "<a href=\"" + href + "\"" + class_attr;
-    //if ( id > 1 )
-    //  name += rel;
-    name += ">";
-    name += s -> name_str;
-    name += "</a>";
-    name += suffix;
-  }
-  else
-    name = s -> name_str;
-
-  return name;
+  return "<span " + class_attr + ">" + name + "</span>";
 }
 
 // print_html_action_info =================================================
