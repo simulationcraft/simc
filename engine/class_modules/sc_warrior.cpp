@@ -4999,13 +4999,13 @@ public:
     os << p.name()<<"\n<br>";
     os << "\t\t\t\t\t<p>Percentage of damage dealt to primary target</p>\n";
     os << "%"<<( ( priority_damage / all_damage ) * 100 );
-    if ( !WARRIOR_PROTECTION )
+    if ( p.specialization() !=  WARRIOR_PROTECTION )
     {
       os << "\t\t\t\t\t<p>Percentage of primary target damage that occurs inside of Colossus Smash</p>\n";
       os << "%"<<( ( cs_damage / priority_damage ) * 100 );
     }
     os << "\t\t\t\t\t<p> Dps done to primary target </p>\n";
-    if ( WARRIOR_ARMS )
+    if ( p.specialization() == WARRIOR_ARMS )
       os << "\t\t\t\t\t<p> Assumes that SS/OS bounces between adds/main target, likely 10-30% overestimation on 3-8 targets</p> \n";
     os << ( ( priority_damage / all_damage ) * p.collected_data.dps.mean() );
 
