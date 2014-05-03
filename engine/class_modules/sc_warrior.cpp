@@ -3135,7 +3135,7 @@ struct shield_barrier_t : public warrior_action_t<absorb_t>
     double amount;
     const warrior_t& p = *cast();
 
-    amount = p.cache.attack_power() * data().effectN(1).ap_coeff() * rage_cost / 60; // I think this is right? 
+    amount = p.cache.attack_power() * data().effectN(1).ap_coeff() * rage_cost / 60; // I think this is right?
 
     if ( ! sim -> average_range ) amount = floor( amount + rng().real() );
 
@@ -4999,17 +4999,15 @@ public:
     os << p.name()<<"\n<br>";
     os << "\t\t\t\t\t<p>Percentage of damage dealt to primary target</p>\n";
     os << "%"<<( ( priority_damage / all_damage ) * 100 );
-    os << "\t\t\t\t\t<p>Percentage of primary target damage that occurs inside of Colossus Smash</p>\n";
-    os << "%"<<( ( cs_damage / priority_damage ) * 100 );
+    if ( !WARRIOR_PROTECTION )
+    {
+      os << "\t\t\t\t\t<p>Percentage of primary target damage that occurs inside of Colossus Smash</p>\n";
+      os << "%"<<( ( cs_damage / priority_damage ) * 100 );
+    }
     os << "\t\t\t\t\t<p> Dps done to primary target </p>\n";
+    if ( WARRIOR_ARMS )
+      os << "\t\t\t\t\t<p> Assumes that SS/OS bounces between adds/main target, likely 10-30% overestimation on 3-8 targets</p> \n";
     os << ( ( priority_damage / all_damage ) * p.collected_data.dps.mean() );
-    os << "\t\t\t\t\t<p> =============== DEBUG OUTPUT ================== </p>\n";
-    os << "\t\t\t\t\t<p> Colossus Smash Sum over all Iterations</p>"<<cs_damage;
-    os << "\t\t\t\t\t<p> Colossus Smash Sum average on one iteration</p>"<<( cs_damage / p.sim -> iterations );
-    os << "\t\t\t\t\t<p> Overall Damage Sum over all Iterations</p>"<<( all_damage );
-    os << "\t\t\t\t\t<p> Overall Damage Sum average on one iteration</p>"<<( all_damage / p.sim -> iterations );
-    os << "\t\t\t\t\t<p> Priority Target Sum over all Iterations</p>"<<( priority_damage );
-    os << "\t\t\t\t\t<p> Priority Target Sum average on one Iteration</p>"<<( priority_damage / p.sim -> iterations );
 
     os << "\t\t\t\t\t\t</div>\n" << "\t\t\t\t\t</div>\n";
   }
