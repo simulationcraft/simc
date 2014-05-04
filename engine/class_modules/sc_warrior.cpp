@@ -1442,15 +1442,6 @@ struct colossus_smash_t : public warrior_attack_t
                           p -> gain.colossus_smash );
     }
   }
-
-  /*virtual void update_ready( timespan_t cd_duration )
-  {
-    warrior_t* p = cast();
-
-    cd_duration = cooldown -> duration / ( 1 + ( player -> cache.readiness() * p -> cdr_mult ) );
-
-    warrior_attack_t::update_ready( cd_duration );
-  }*/
 };
 
 // Demoralizing Shout =======================================================
