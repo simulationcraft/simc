@@ -73,7 +73,9 @@ static const rapidjson::Value* choose_talent_spec( const rapidjson::Value& talen
 {
   const rapidjson::Value& spec_1 = talents[ 0u ];
   const rapidjson::Value& spec_2 = talents[ 1u ];
-  bool spec1_is_active = spec_1[ "selected" ].GetBool() ? true : false;
+  bool spec1_is_active = false;
+  if ( spec_1.HasMember( "selected" ) )
+    spec1_is_active = spec_1[ "selected" ].GetBool();
 
   const rapidjson::Value* spec = 0;
 
@@ -606,29 +608,39 @@ bool download_item_data( item_t& item, cache::behavior_e caching )
 
 // download_roster ==========================================================
 
-js::js_node_t download_roster( sim_t* sim,
-                            const std::string& region,
-                            const std::string& server,
-                            const std::string& name,
-                            cache::behavior_e  caching )
+bool download_roster( rapidjson::Document& d,
+                      sim_t* sim,
+                      const std::string& region,
+                      const std::string& server,
+                      const std::string& name,
+                      cache::behavior_e  caching )
 {
   std::string url = "http://" + region + ".battle.net/api/wow/guild/" + server + '/' +
                     name + "?fields=members";
 
   std::string result;
-  if ( ! http::get( result, url, caching, "\"members\"" ) )
+  if ( ! http::get( result, url, caching ) )
+    return false;
+
+  d.Parse< 0 >( result.c_str() );
+  if ( d.HasParseError() )
   {
-    sim -> errorf( "BCP API: Unable to download guild %s|%s|%s.\n", region.c_str(), server.c_str(), name.c_str() );
-    return js::js_node_t();
-  }
-  js::js_node_t js = js::create( sim, result );
-  if ( ! js || ! ( js = js::get_child( js, "members" ) ) )
-  {
-    sim -> errorf( "BCP API: Unable to get members of guild %s|%s|%s.\n", region.c_str(), server.c_str(), name.c_str() );
-    return js::js_node_t();
+    sim -> errorf( "BCP API: Unable to parse guild from '%s': Parse error '%s' @ %u\n",
+      url.c_str(), d.GetParseError(), d.GetErrorOffset() );
+
+    return false;
   }
 
-  return js;
+  if ( sim -> debug )
+  {
+    rapidjson::StringBuffer b;
+    rapidjson::PrettyWriter< rapidjson::StringBuffer > writer( b );
+
+    d.Accept( writer );
+    sim -> out_debug.raw() << b.GetString();
+  }
+
+  return true;
 }
 
 } // close anonymous namespace ==============================================
@@ -703,32 +715,49 @@ bool bcp_api::download_guild( sim_t* sim,
                               int max_rank,
                               cache::behavior_e caching )
 {
-  js::js_node_t js = download_roster( sim, region, server, name, caching );
-  if ( !js ) return false;
+  rapidjson::Document js;
+
+  if ( ! download_roster( js, sim, region, server, name, caching ) )
+    return false;
+
+  if ( ! js.HasMember( "members" ) )
+  {
+    sim -> errorf( "No members in guild %s,%s,%s", region.c_str(), server.c_str(), name.c_str() );
+    return false;
+  }
 
   std::vector<std::string> names;
-  std::vector<js::js_node_t> characters = js::get_children( js );
 
-  for ( std::size_t i = 0, n = characters.size(); i < n; ++i )
+  for ( rapidjson::SizeType i = 0, end = js[ "members" ].Size(); i < end; i++ )
   {
-    int level;
-    if ( ! js::get_value( level, characters[ i ], "character/level" ) || level < 85 )
+    const rapidjson::Value& member = js[ "members" ][ i ];
+    if ( ! member.HasMember( "character" ) )
       continue;
 
-    int cid;
-    if ( ! js::get_value( cid, characters[ i ], "character/class" ) ||
-         ( player_filter != PLAYER_NONE && player_filter != util::translate_class_id( cid ) ) )
+    if ( ! member.HasMember( "rank" ) )
       continue;
 
-    int rank;
-    if ( ! js::get_value( rank, characters[ i ], "rank" ) ||
-         ( ( max_rank > 0 ) && ( rank > max_rank ) ) ||
+    int rank = member[ "rank" ].GetInt();
+    if ( ( max_rank > 0 && rank > max_rank ) || 
          ( ! ranks.empty() && range::find( ranks, rank ) == ranks.end() ) )
       continue;
 
-    std::string cname;
-    if ( ! js::get_value( cname, characters[ i ], "character/name" ) ) continue;
-    names.push_back( cname );
+    const rapidjson::Value& character = member[ "character" ];
+
+    if ( ! character.HasMember( "level" ) || character[ "level" ].GetUint() < 85 )
+      continue;
+
+    if ( ! character.HasMember( "class" ) )
+      continue;
+
+    if ( ! character.HasMember( "name" ) )
+      continue;
+
+    if ( player_filter != PLAYER_NONE &&
+         player_filter != util::translate_class_id( character[ "class" ].GetInt() ) )
+      continue;
+
+    names.push_back( character[ "name" ].GetString() );
   }
 
   if ( names.empty() ) return true;
@@ -738,16 +767,8 @@ bool bcp_api::download_guild( sim_t* sim,
   for ( std::size_t i = 0, n = names.size(); i < n; ++i )
   {
     const std::string& cname = names[ i ];
-    util::printf( "Downloading character: %s\n", cname.c_str() );
-    player_t* player = download_player( sim, region, server, cname, "active", caching );
-    if ( !player )
-    {
-      sim -> errorf( "BCP API: Failed to download player '%s' trying Wowhead instead\n", cname.c_str() );
-      //player = wowhead::download_player( sim, region, server, cname, "active", wowhead::LIVE, caching );
-      //if ( !player )
-      //  sim -> errorf( "Wowhead: Failed to download player '%s'\n", cname.c_str() );
-      // Just ignore invalid players
-    }
+    sim -> out_std.printf( "Downloading character: %s\n", cname.c_str() );
+    download_player( sim, region, server, cname, "active", caching );
   }
 
   return true;

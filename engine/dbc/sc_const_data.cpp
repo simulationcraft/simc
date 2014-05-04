@@ -1095,7 +1095,7 @@ double dbc_t::spell_scaling( player_e t, unsigned level ) const
 {
   uint32_t class_id = util::class_id( t );
 
-  assert( class_id < dbc_t::class_max_size() + 4 && level > 0 && level <= MAX_LEVEL );
+  assert( class_id < dbc_t::class_max_size() + 5 && level > 0 && level <= MAX_LEVEL );
 #if SC_USE_PTR
   return ptr ? __ptr_gt_spell_scaling[ class_id ][ level - 1 ]
              : __gt_spell_scaling[ class_id ][ level - 1 ];
