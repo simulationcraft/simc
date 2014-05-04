@@ -532,29 +532,6 @@ struct warrior_attack_t : public warrior_action_t< melee_attack_t >
     if ( p -> main_hand_weapon.group() == WEAPON_2H && p -> spec.seasoned_soldier )
       am *= 1.0 + p -> spec.seasoned_soldier -> effectN( 1 ).percent();
 
-    // --- Enrages ---
-    if ( p -> buff.enrage -> up() )
-      {
-        am *= 1.0 + p -> buff.enrage -> data().effectN( 2 ).percent();
-
-        if ( p -> mastery.unshackled_fury -> ok() )
-          am *= 1.0 + p -> cache.mastery_value();
-      }
-
-    // --- Passive Talents ---
-    if ( p -> spec.single_minded_fury -> ok() && p -> dual_wield() )
-    {
-      if (  p -> main_hand_weapon .group() == WEAPON_1H &&
-            p -> off_hand_weapon .group() == WEAPON_1H )
-      {
-        am *= 1.0 + p -> spec.single_minded_fury -> effectN( 1 ).percent();
-      }
-    }
-
-    // --- Buffs / Procs ---
-    if ( p -> buff.rude_interruption -> up() )
-      am *= 1.0 + p -> buff.rude_interruption -> value();
-
     return am;
   }
 
@@ -3018,19 +2995,6 @@ struct deep_wounds_t : public warrior_spell_t
     if ( p -> main_hand_weapon.group() == WEAPON_2H && p -> spec.seasoned_soldier )
       am *= 1.0 + p -> spec.seasoned_soldier -> effectN( 1 ).percent();
 
-    // --- Enrages ---
-      if ( p -> buff.enrage -> up() )
-      {
-        am *= 1.0 + p -> buff.enrage -> data().effectN( 2 ).percent();
-
-        if ( p -> mastery.unshackled_fury -> ok() )
-          am *= 1.0 + p -> cache.mastery_value();
-      }
-
-    // --- Buffs / Procs ---
-    if ( p -> buff.rude_interruption -> up() )
-      am *= 1.0 + p -> buff.rude_interruption -> value();
-
     return am;
   }
 
@@ -3839,7 +3803,6 @@ void warrior_t::apl_smf_fury()
   default_list -> add_action( this, "Recklessness", "if=!talent.bloodbath.enabled&(((cooldown.colossus_smash.remains<2|debuff.colossus_smash.remains>=5)&target.time_to_die>192)|target.health.pct<20)|buff.bloodbath.up&(target.time_to_die>192|target.health.pct<20)|target.time_to_die<=12",
                               "This incredibly long line can be translated to 'Use recklessness on cooldown with colossus smash; unless the boss will die before the ability is usable again, and then combine with execute instead.'" );
   default_list -> add_talent( this, "Avatar" , "if=(buff.recklessness.up|target.time_to_die<=25)" );
-  default_list -> add_action( this, "Berserker Rage", "if=buff.enrage.down" );
 
   for ( size_t i = 0; i < racial_actions.size(); i++ )
     default_list -> add_action( racial_actions[ i ] + ",if=buff.bloodbath.up|(!talent.bloodbath.enabled&debuff.colossus_smash.up)|buff.recklessness.up" );
@@ -3957,7 +3920,6 @@ void warrior_t::apl_tg_fury()
   default_list -> add_action( this, "Recklessness", "if=!talent.bloodbath.enabled&(((cooldown.colossus_smash.remains<2|debuff.colossus_smash.remains>=5)&target.time_to_die>192)|target.health.pct<20)|buff.bloodbath.up&(target.time_to_die>192|target.health.pct<20)|target.time_to_die<=12",
                               "This incredibly long line can be translated to 'Use recklessness on cooldown with colossus smash; unless the boss will die before the ability is usable again, and then combine with execute instead.'" );
   default_list -> add_talent( this, "Avatar" , "if=(buff.recklessness.up|target.time_to_die<=25)" );
-  default_list -> add_action( this, "Berserker Rage", "if=buff.enrage.down" );
 
   for ( size_t i = 0; i < racial_actions.size(); i++ )
     default_list -> add_action( racial_actions[ i ] + ",if=buff.bloodbath.up|(!talent.bloodbath.enabled&debuff.colossus_smash.up)|buff.recklessness.up" );
@@ -4066,7 +4028,6 @@ void warrior_t::apl_arms()
 
   default_list -> add_action( this, "charge" );
   default_list -> add_action( "auto_attack" );
-  default_list -> add_action( this, "Berserker Rage", "if=buff.enrage.down" );
   
   if ( sim -> allow_potions && level >= 80 )
     default_list -> add_action( "mogu_power_potion,if=(target.health.pct<20&buff.recklessness.up)|buff.bloodlust.react|target.time_to_die<=25" );
@@ -4127,7 +4088,6 @@ void warrior_t::apl_prot()
 
   default_list -> add_action( this, "charge" );
   default_list -> add_action( "auto_attack" );
-  default_list -> add_action( this, "Berserker Rage", "if=buff.enrage.down" );
   
   if ( sim -> allow_potions && level >= 80 )
     default_list -> add_action( "mountains_potion,if=incoming_damage_2500ms>health.max*0.6&(buff.shield_wall.down&buff.last_stand.down)" );
@@ -4168,7 +4128,6 @@ void warrior_t::apl_gladiator()
 
   default_list -> add_action( this, "charge" );
   default_list -> add_action( "auto_attack" );
-  default_list -> add_action( this, "Berserker Rage", "if=buff.enrage.down" );
   for ( size_t i = 0; i < racial_actions.size(); i++ )
     default_list -> add_action( racial_actions[ i ] + ",if=buff.bloodbath.up|buff.avatar.up|buff.shield_charge.up" );
   
@@ -4267,7 +4226,8 @@ void warrior_t::create_buffs()
   buff.defensive_stance = buff_creator_t( this, "defensive_stance", find_class_spell( "Defensive Stance" ) );
 
   buff.enrage           = buff_creator_t( this, "enrage",           find_spell( 12880 ) )
-                          .activated( false ) ; //Account for delay in buff application.
+                          .activated( false ) //Account for delay in buff application.
+                          .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
 
   buff.enraged_regeneration = buff_creator_t( this, "enraged_regeneration",   talents.enraged_regeneration );
 
@@ -4343,7 +4303,8 @@ void warrior_t::create_buffs()
 
   buff.rude_interruption = buff_creator_t( this, "rude_interruption", glyphs.rude_interruption )
                            .chance( glyphs.rude_interruption -> ok() ? 1 : 0 )
-                           .default_value( glyphs.rude_interruption -> effectN( 1 ).percent() );
+                           .default_value( glyphs.rude_interruption -> effectN( 1 ).percent() )
+                           .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
 
   buff.shield_barrier = absorb_buff_creator_t( this, "shield_barrier", find_spell( 112048 ) )
                         .source( get_stats( "shield_barrier" ) );
@@ -4518,6 +4479,30 @@ double warrior_t::composite_player_multiplier( school_e school ) const
 
   if ( buff.avatar -> up() )
     m *= 1.0 + buff.avatar -> data().effectN( 1 ).percent();
+
+  // --- Enrages ---
+  if ( buff.enrage -> up() )
+    {
+      m *= 1.0 + buff.enrage -> data().effectN( 2 ).percent();
+
+      if ( mastery.unshackled_fury -> ok() )
+        m *= 1.0 + cache.mastery_value();
+    }
+
+   // --- Passive Talents ---
+  if ( spec.single_minded_fury -> ok() && dual_wield() )
+  {
+   if ( main_hand_weapon .group() == WEAPON_1H &&
+        off_hand_weapon .group() == WEAPON_1H )
+    {
+      m *= 1.0 + spec.single_minded_fury -> effectN( 1 ).percent();
+    }
+  }
+
+  // --- Buffs / Procs ---
+  if ( buff.rude_interruption -> up() )
+    m *= 1.0 + buff.rude_interruption -> value();
+
 
   if ( active_stance == STANCE_GLADIATOR )
     m *= 1.0 + buff.gladiator_stance -> data().effectN( 1 ).percent();
@@ -4947,7 +4932,7 @@ set_e warrior_t::decode_set( const item_t& item ) const
 
 void warrior_t::enrage()
 {
-  // Crit BT/MS/CS/Block and Berserker Rage give rage, 1 charge of Raging Blow, and refreshes the enrage
+  // Crit BT/MS/CS/Block give rage, 1 charge of Raging Blow, and refreshes the enrage
 
   if ( specialization() == WARRIOR_FURY )
   {
