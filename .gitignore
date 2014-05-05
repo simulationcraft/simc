@@ -56,4 +56,5 @@ CMakeCache.txt
 *.swp
 *.pyc
 *.ld_*
-
+Win32OpenSSL_Light-*
+Win64OpenSSL_Light-*
