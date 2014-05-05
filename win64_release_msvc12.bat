@@ -29,19 +29,19 @@ xcopy %redist%\msvcp120.dll %install%\
 xcopy %redist%\msvcr120.dll %install%\
 xcopy %redist%\vccorlib120.dll %install%\
 xcopy %qt_dir%\bin\Qt5Core.dll %install%\
-#xcopy %qt_dir%\bin\Qt5OpenGL.dll %install%\
-#xcopy %qt_dir%\bin\Qt5PrintSupport.dll %install%\
-#xcopy %qt_dir%\bin\Qt5Quick.dll %install%\
-#xcopy %qt_dir%\bin\Qt5Qml.dll %install%\
-#xcopy %qt_dir%\bin\Qt5Sql.dll %install%\
+xcopy %qt_dir%\bin\Qt5OpenGL.dll %install%\
+xcopy %qt_dir%\bin\Qt5Quick.dll %install%\
+xcopy %qt_dir%\bin\Qt5PrintSupport.dll %install%\
+xcopy %qt_dir%\bin\Qt5Qml.dll %install%\
+xcopy %qt_dir%\bin\Qt5Sql.dll %install%\
 xcopy %qt_dir%\bin\Qt5Gui.dll %install%\
 xcopy %qt_dir%\bin\Qt5Widgets.dll %install%\
 xcopy %qt_dir%\bin\Qt5Network.dll %install%\
 xcopy %qt_dir%\bin\Qt5WebKit.dll %install%\
 xcopy %qt_dir%\bin\Qt5WebKitWidgets.dll %install%\
-#xcopy %qt_dir%\bin\Qt5Multimedia.dll %install%\
-#xcopy %qt_dir%\bin\Qt5MultimediaWidgets.dll %install%\
-#xcopy %qt_dir%\bin\Qt5Sensors.dll %install%\
+xcopy %qt_dir%\bin\Qt5Multimedia.dll %install%\
+xcopy %qt_dir%\bin\Qt5MultimediaWidgets.dll %install%\
+xcopy %qt_dir%\bin\Qt5Sensors.dll %install%\
 
 xcopy %qt_dir%\bin\libGLESv2.dll %install%\
 xcopy %qt_dir%\bin\icudt52.dll %install%\
@@ -64,4 +64,5 @@ xcopy Examples.simc %install%\
 xcopy Error.html %install%\
 xcopy COPYING %install%\
 xcopy Profiles %install%\profiles\ /s /e
-xcopy Win64OpenSSL_Light-1_0_1g.exe %install%\
+xcopy C:\OpenSSL-Win64\bin\libeay32.dll %install%\
+xcopy C:\OpenSSL-Win64\bin\ssleay32.dll %install%\
