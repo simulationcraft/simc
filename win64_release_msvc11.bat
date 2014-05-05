@@ -11,6 +11,7 @@
 :: Update the qt_dir as necessary
 set qt_dir=C:\Qt\5.2.1\5.2.1\msvc2012_64
 set install=simc-win64-release
+set redist="C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\redist\x64\Microsoft.VC110.CRT"
 
 :: IMPORTANT NOTE FOR DEBUGGING
 :: This script will ONLY copy the optimized Qt dlls
@@ -18,32 +19,36 @@ set install=simc-win64-release
 :: This script needs to be smarter if you wish to use the interactive debugger in the Qt SDK
 :: The debug Qt dlls are named: Qt___d4.dll
 
+:: Delete old folder/files
+
+rd %install% /s /q
 :: Copying new dlls
 
-xcopy /I %qt_dir%\plugins\imageformats %install%\imageformats
-xcopy %qt_dir%\bin\phonon5.dll %install%\qtdll\
-xcopy %qt_dir%\bin\Qt5Core.dll %install%\qtdll\
-xcopy %qt_dir%\bin\Qt5OpenGL.dll %install%\qtdll\
-xcopy %qt_dir%\bin\Qt5PrintSupport.dll %install%\qtdll\
-xcopy %qt_dir%\bin\Qt5Quick.dll %install%\qtdll\
-xcopy %qt_dir%\bin\Qt5Qml.dll %install%\qtdll\
-xcopy %qt_dir%\bin\Qt5V8.dll %install%\qtdll\
-xcopy %qt_dir%\bin\Qt5Sql.dll %install%\qtdll\
-xcopy %qt_dir%\bin\Qt5Gui.dll %install%\qtdll\
-xcopy %qt_dir%\bin\Qt5Widgets.dll %install%\qtdll\
-xcopy %qt_dir%\bin\Qt5Network.dll %install%\qtdll\
-xcopy %qt_dir%\bin\Qt5WebKit.dll %install%\qtdll\
-xcopy %qt_dir%\bin\Qt5WebKitWidgets.dll %install%\qtdll\
-xcopy %qt_dir%\bin\Qt5Multimedia.dll %install%\qtdll\
-xcopy %qt_dir%\bin\Qt5MultimediaWidgets.dll %install%\qtdll\
-xcopy %qt_dir%\bin\Qt5Sensors.dll %install%\qtdll\
+xcopy %qt_dir%\plugins\imageformats %install%\imageformats\
+xcopy %redist%\msvcp110.dll %install%\
+xcopy %redist%\msvcr110.dll %install%\
+xcopy %redist%\vccorlib110.dll %install%\
+xcopy %qt_dir%\bin\Qt5Core.dll %install%\
+#xcopy %qt_dir%\bin\Qt5OpenGL.dll %install%\
+#xcopy %qt_dir%\bin\Qt5PrintSupport.dll %install%\
+#xcopy %qt_dir%\bin\Qt5Quick.dll %install%\
+#xcopy %qt_dir%\bin\Qt5Qml.dll %install%\
+#xcopy %qt_dir%\bin\Qt5Sql.dll %install%\
+xcopy %qt_dir%\bin\Qt5Gui.dll %install%\
+xcopy %qt_dir%\bin\Qt5Widgets.dll %install%\
+xcopy %qt_dir%\bin\Qt5Network.dll %install%\
+xcopy %qt_dir%\bin\Qt5WebKit.dll %install%\
+xcopy %qt_dir%\bin\Qt5WebKitWidgets.dll %install%\
+#xcopy %qt_dir%\bin\Qt5Multimedia.dll %install%\
+#xcopy %qt_dir%\bin\Qt5MultimediaWidgets.dll %install%\
+#xcopy %qt_dir%\bin\Qt5Sensors.dll %install%\
 
-xcopy %qt_dir%\bin\libGLESv2.dll %install%\qtdll\
-xcopy %qt_dir%\bin\icudt51.dll %install%\qtdll\
-xcopy %qt_dir%\bin\icuin51.dll %install%\qtdll\
-xcopy %qt_dir%\bin\icuuc51.dll %install%\qtdll\
-xcopy %qt_dir%\bin\libEGL.dll %install%\qtdll\
-xcopy %qt_dir%\bin\D3DCompiler_46.dll %install%\qtdll\
+xcopy %qt_dir%\bin\libGLESv2.dll %install%\
+xcopy %qt_dir%\bin\icudt51.dll %install%\
+xcopy %qt_dir%\bin\icuin51.dll %install%\
+xcopy %qt_dir%\bin\icuuc51.dll %install%\
+xcopy %qt_dir%\bin\libEGL.dll %install%\
+xcopy %qt_dir%\bin\D3DCompiler_46.dll %install%\
 
 xcopy %qt_dir%\plugins\platforms\qminimal.dll %install%\platforms\
 xcopy %qt_dir%\plugins\platforms\qwindows.dll %install%\platforms\
@@ -59,3 +64,4 @@ xcopy Examples.simc %install%\
 xcopy Error.html %install%\
 xcopy COPYING %install%\
 xcopy Profiles %install%\profiles\ /s /e
+xcopy Win64OpenSSL_Light-1_0_1g.exe %install%\
