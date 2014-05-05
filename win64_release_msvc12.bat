@@ -20,42 +20,42 @@ set install=simc-win64-release
 
 :: Copying new dlls
 
-xcopy /I %qt_dir%\plugins\imageformats simc-release\imageformats
-xcopy %qt_dir%\bin\phonon5.dll simc-release\qtdll\
-xcopy %qt_dir%\bin\Qt5Core.dll simc-release\qtdll\
-xcopy %qt_dir%\bin\Qt5OpenGL.dll simc-release\qtdll\
-xcopy %qt_dir%\bin\Qt5PrintSupport.dll simc-release\qtdll\
-xcopy %qt_dir%\bin\Qt5Quick.dll simc-release\qtdll\
-xcopy %qt_dir%\bin\Qt5Qml.dll simc-release\qtdll\
-xcopy %qt_dir%\bin\Qt5V8.dll simc-release\qtdll\
-xcopy %qt_dir%\bin\Qt5Sql.dll simc-release\qtdll\
-xcopy %qt_dir%\bin\Qt5Gui.dll simc-release\qtdll\
-xcopy %qt_dir%\bin\Qt5Widgets.dll simc-release\qtdll\
-xcopy %qt_dir%\bin\Qt5Network.dll simc-release\qtdll\
-xcopy %qt_dir%\bin\Qt5WebKit.dll simc-release\qtdll\
-xcopy %qt_dir%\bin\Qt5WebKitWidgets.dll simc-release\qtdll\
-xcopy %qt_dir%\bin\Qt5Multimedia.dll simc-release\qtdll\
-xcopy %qt_dir%\bin\Qt5MultimediaWidgets.dll simc-release\qtdll\
-xcopy %qt_dir%\bin\Qt5Sensors.dll simc-release\qtdll\
+xcopy /I %qt_dir%\plugins\imageformats %install%\imageformats
+xcopy %qt_dir%\bin\phonon5.dll %install%\qtdll\
+xcopy %qt_dir%\bin\Qt5Core.dll %install%\qtdll\
+xcopy %qt_dir%\bin\Qt5OpenGL.dll %install%\qtdll\
+xcopy %qt_dir%\bin\Qt5PrintSupport.dll %install%\qtdll\
+xcopy %qt_dir%\bin\Qt5Quick.dll %install%\qtdll\
+xcopy %qt_dir%\bin\Qt5Qml.dll %install%\qtdll\
+xcopy %qt_dir%\bin\Qt5V8.dll %install%\qtdll\
+xcopy %qt_dir%\bin\Qt5Sql.dll %install%\qtdll\
+xcopy %qt_dir%\bin\Qt5Gui.dll %install%\qtdll\
+xcopy %qt_dir%\bin\Qt5Widgets.dll %install%\qtdll\
+xcopy %qt_dir%\bin\Qt5Network.dll %install%\qtdll\
+xcopy %qt_dir%\bin\Qt5WebKit.dll %install%\qtdll\
+xcopy %qt_dir%\bin\Qt5WebKitWidgets.dll %install%\qtdll\
+xcopy %qt_dir%\bin\Qt5Multimedia.dll %install%\qtdll\
+xcopy %qt_dir%\bin\Qt5MultimediaWidgets.dll %install%\qtdll\
+xcopy %qt_dir%\bin\Qt5Sensors.dll %install%\qtdll\
 
-xcopy %qt_dir%\bin\libGLESv2.dll simc-release\qtdll\
-xcopy %qt_dir%\bin\icudt52.dll simc-release\qtdll\
-xcopy %qt_dir%\bin\icuin52.dll simc-release\qtdll\
-xcopy %qt_dir%\bin\icuuc52.dll simc-release\qtdll\
-xcopy %qt_dir%\bin\libEGL.dll simc-release\qtdll\
-xcopy %qt_dir%\bin\D3DCompiler_47.dll simc-release\qtdll\
+xcopy %qt_dir%\bin\libGLESv2.dll %install%\qtdll\
+xcopy %qt_dir%\bin\icudt52.dll %install%\qtdll\
+xcopy %qt_dir%\bin\icuin52.dll %install%\qtdll\
+xcopy %qt_dir%\bin\icuuc52.dll %install%\qtdll\
+xcopy %qt_dir%\bin\libEGL.dll %install%\qtdll\
+xcopy %qt_dir%\bin\D3DCompiler_47.dll %install%\qtdll\
 
-xcopy %qt_dir%\plugins\platforms\qminimal.dll simc-release\platforms\
-xcopy %qt_dir%\plugins\platforms\qwindows.dll simc-release\platforms\
+xcopy %qt_dir%\plugins\platforms\qminimal.dll %install%\platforms\
+xcopy %qt_dir%\plugins\platforms\qwindows.dll %install%\platforms\
 
 
 :: Copy other relevant files for windows release
-xcopy Welcome.html simc-release\
-xcopy Welcome.png simc-release\
-xcopy Simulationcraft.exe simc-release\
-xcopy simc64.exe simc-release\
-xcopy READ_ME_FIRST.txt simc-release\
-xcopy Examples.simc simc-release\
-xcopy Error.html simc-release\
-xcopy COPYING simc-release\
-xcopy Profiles simc-release\profiles\ /s /e
+xcopy Welcome.html %install%\
+xcopy Welcome.png %install%\
+xcopy Simulationcraft.exe %install%\
+xcopy simc64.exe %install%\
+xcopy READ_ME_FIRST.txt %install%\
+xcopy Examples.simc %install%\
+xcopy Error.html %install%\
+xcopy COPYING %install%\
+xcopy Profiles %install%\profiles\ /s /e
