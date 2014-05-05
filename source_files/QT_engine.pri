@@ -48,6 +48,8 @@
  SOURCES += engine/player/sc_pet.cpp
  SOURCES += engine/player/sc_item.cpp
  SOURCES += engine/player/sc_consumable.cpp
+ SOURCES += engine/player/sc_enchant.cpp
+ SOURCES += engine/player/sc_proc.cpp
  SOURCES += engine/interfaces/sc_xml.cpp
  SOURCES += engine/interfaces/sc_wowhead.cpp
  SOURCES += engine/interfaces/sc_http.cpp

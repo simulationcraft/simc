@@ -27,7 +27,6 @@ actions.precombat+=/mountains_potion
 
 actions=charge
 actions+=/auto_attack
-actions+=/berserker_rage,if=buff.enrage.down
 actions+=/mountains_potion,if=incoming_damage_2500ms>health.max*0.6&(buff.shield_wall.down&buff.last_stand.down)
 actions+=/heroic_strike,if=buff.ultimatum.up
 actions+=/shield_block

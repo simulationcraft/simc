@@ -532,29 +532,6 @@ struct warrior_attack_t : public warrior_action_t< melee_attack_t >
     if ( p -> main_hand_weapon.group() == WEAPON_2H && p -> spec.seasoned_soldier )
       am *= 1.0 + p -> spec.seasoned_soldier -> effectN( 1 ).percent();
 
-    // --- Enrages ---
-    if ( p -> buff.enrage -> up() )
-      {
-        am *= 1.0 + p -> buff.enrage -> data().effectN( 2 ).percent();
-
-        if ( p -> mastery.unshackled_fury -> ok() )
-          am *= 1.0 + p -> cache.mastery_value();
-      }
-
-    // --- Passive Talents ---
-    if ( p -> spec.single_minded_fury -> ok() && p -> dual_wield() )
-    {
-      if (  p -> main_hand_weapon .group() == WEAPON_1H &&
-            p -> off_hand_weapon .group() == WEAPON_1H )
-      {
-        am *= 1.0 + p -> spec.single_minded_fury -> effectN( 1 ).percent();
-      }
-    }
-
-    // --- Buffs / Procs ---
-    if ( p -> buff.rude_interruption -> up() )
-      am *= 1.0 + p -> buff.rude_interruption -> value();
-
     return am;
   }
 
@@ -608,15 +585,6 @@ struct warrior_attack_t : public warrior_action_t< melee_attack_t >
     warrior_td_t* td = cast_td( t -> target );
 
     if ( ! p.buff.bloodbath -> check() ) return;
-
-    if ( td -> debuffs_colossus_smash -> up() && dmg > 0)
-      p.cs_damage.add( p.buff.bloodbath -> data().effectN( 1 ).percent() * dmg  );
-
-    if ( ( t -> target == sim -> target ) && dmg > 0 )
-      p.priority_damage.add( p.buff.bloodbath -> data().effectN( 1 ).percent() * dmg  );
-
-    if ( dmg > 0 )
-      p.all_damage.add( p.buff.bloodbath -> data().effectN( 1 ).percent() * dmg  );
 
     ignite::trigger_pct_based(
       p.active_bloodbath_dot, // ignite spell
@@ -690,6 +658,26 @@ struct bloodbath_dot_t : public ignite::pct_based_action_t< attack_t >
     background = true;
     dual = true;
   }
+
+
+  void assess_damage(dmg_e type,
+               action_state_t* s)
+  {
+    pct_based_action_t::assess_damage( type, s );
+
+    warrior_t* p = static_cast<warrior_t*>( player );
+    warrior_td_t* td = p -> get_target_data( s -> target );
+
+    if ( td -> debuffs_colossus_smash -> up() && s -> result_amount > 0)
+      p -> cs_damage.add( s -> result_amount );
+
+    if ( ( s -> target == sim -> target ) && s -> result_amount > 0 )
+      p -> priority_damage.add( s -> result_amount );
+
+    if ( s -> result_amount > 0 )
+      p -> all_damage.add( s -> result_amount );
+  }
+
 };
 
 // ==========================================================================
@@ -1431,15 +1419,6 @@ struct colossus_smash_t : public warrior_attack_t
                           p -> gain.colossus_smash );
     }
   }
-
-  /*virtual void update_ready( timespan_t cd_duration )
-  {
-    warrior_t* p = cast();
-
-    cd_duration = cooldown -> duration / ( 1 + ( player -> cache.readiness() * p -> cdr_mult ) );
-
-    warrior_attack_t::update_ready( cd_duration );
-  }*/
 };
 
 // Demoralizing Shout =======================================================
@@ -3016,19 +2995,6 @@ struct deep_wounds_t : public warrior_spell_t
     if ( p -> main_hand_weapon.group() == WEAPON_2H && p -> spec.seasoned_soldier )
       am *= 1.0 + p -> spec.seasoned_soldier -> effectN( 1 ).percent();
 
-    // --- Enrages ---
-      if ( p -> buff.enrage -> up() )
-      {
-        am *= 1.0 + p -> buff.enrage -> data().effectN( 2 ).percent();
-
-        if ( p -> mastery.unshackled_fury -> ok() )
-          am *= 1.0 + p -> cache.mastery_value();
-      }
-
-    // --- Buffs / Procs ---
-    if ( p -> buff.rude_interruption -> up() )
-      am *= 1.0 + p -> buff.rude_interruption -> value();
-
     return am;
   }
 
@@ -3124,7 +3090,7 @@ struct shield_barrier_t : public warrior_action_t<absorb_t>
     double amount;
     const warrior_t& p = *cast();
 
-    amount = p.cache.attack_power() * data().effectN(1).ap_coeff() * rage_cost / 60; // I think this is right? 
+    amount = p.cache.attack_power() * data().effectN(1).ap_coeff() * rage_cost / 60; // I think this is right?
 
     if ( ! sim -> average_range ) amount = floor( amount + rng().real() );
 
@@ -3837,7 +3803,6 @@ void warrior_t::apl_smf_fury()
   default_list -> add_action( this, "Recklessness", "if=!talent.bloodbath.enabled&(((cooldown.colossus_smash.remains<2|debuff.colossus_smash.remains>=5)&target.time_to_die>192)|target.health.pct<20)|buff.bloodbath.up&(target.time_to_die>192|target.health.pct<20)|target.time_to_die<=12",
                               "This incredibly long line can be translated to 'Use recklessness on cooldown with colossus smash; unless the boss will die before the ability is usable again, and then combine with execute instead.'" );
   default_list -> add_talent( this, "Avatar" , "if=(buff.recklessness.up|target.time_to_die<=25)" );
-  default_list -> add_action( this, "Berserker Rage", "if=buff.enrage.down" );
 
   for ( size_t i = 0; i < racial_actions.size(); i++ )
     default_list -> add_action( racial_actions[ i ] + ",if=buff.bloodbath.up|(!talent.bloodbath.enabled&debuff.colossus_smash.up)|buff.recklessness.up" );
@@ -3955,7 +3920,6 @@ void warrior_t::apl_tg_fury()
   default_list -> add_action( this, "Recklessness", "if=!talent.bloodbath.enabled&(((cooldown.colossus_smash.remains<2|debuff.colossus_smash.remains>=5)&target.time_to_die>192)|target.health.pct<20)|buff.bloodbath.up&(target.time_to_die>192|target.health.pct<20)|target.time_to_die<=12",
                               "This incredibly long line can be translated to 'Use recklessness on cooldown with colossus smash; unless the boss will die before the ability is usable again, and then combine with execute instead.'" );
   default_list -> add_talent( this, "Avatar" , "if=(buff.recklessness.up|target.time_to_die<=25)" );
-  default_list -> add_action( this, "Berserker Rage", "if=buff.enrage.down" );
 
   for ( size_t i = 0; i < racial_actions.size(); i++ )
     default_list -> add_action( racial_actions[ i ] + ",if=buff.bloodbath.up|(!talent.bloodbath.enabled&debuff.colossus_smash.up)|buff.recklessness.up" );
@@ -4064,7 +4028,6 @@ void warrior_t::apl_arms()
 
   default_list -> add_action( this, "charge" );
   default_list -> add_action( "auto_attack" );
-  default_list -> add_action( this, "Berserker Rage", "if=buff.enrage.down" );
   
   if ( sim -> allow_potions && level >= 80 )
     default_list -> add_action( "mogu_power_potion,if=(target.health.pct<20&buff.recklessness.up)|buff.bloodlust.react|target.time_to_die<=25" );
@@ -4125,7 +4088,6 @@ void warrior_t::apl_prot()
 
   default_list -> add_action( this, "charge" );
   default_list -> add_action( "auto_attack" );
-  default_list -> add_action( this, "Berserker Rage", "if=buff.enrage.down" );
   
   if ( sim -> allow_potions && level >= 80 )
     default_list -> add_action( "mountains_potion,if=incoming_damage_2500ms>health.max*0.6&(buff.shield_wall.down&buff.last_stand.down)" );
@@ -4166,7 +4128,6 @@ void warrior_t::apl_gladiator()
 
   default_list -> add_action( this, "charge" );
   default_list -> add_action( "auto_attack" );
-  default_list -> add_action( this, "Berserker Rage", "if=buff.enrage.down" );
   for ( size_t i = 0; i < racial_actions.size(); i++ )
     default_list -> add_action( racial_actions[ i ] + ",if=buff.bloodbath.up|buff.avatar.up|buff.shield_charge.up" );
   
@@ -4265,7 +4226,8 @@ void warrior_t::create_buffs()
   buff.defensive_stance = buff_creator_t( this, "defensive_stance", find_class_spell( "Defensive Stance" ) );
 
   buff.enrage           = buff_creator_t( this, "enrage",           find_spell( 12880 ) )
-                          .activated( false ) ; //Account for delay in buff application.
+                          .activated( false ) //Account for delay in buff application.
+                          .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
 
   buff.enraged_regeneration = buff_creator_t( this, "enraged_regeneration",   talents.enraged_regeneration );
 
@@ -4341,7 +4303,8 @@ void warrior_t::create_buffs()
 
   buff.rude_interruption = buff_creator_t( this, "rude_interruption", glyphs.rude_interruption )
                            .chance( glyphs.rude_interruption -> ok() ? 1 : 0 )
-                           .default_value( glyphs.rude_interruption -> effectN( 1 ).percent() );
+                           .default_value( glyphs.rude_interruption -> effectN( 1 ).percent() )
+                           .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
 
   buff.shield_barrier = absorb_buff_creator_t( this, "shield_barrier", find_spell( 112048 ) )
                         .source( get_stats( "shield_barrier" ) );
@@ -4516,6 +4479,30 @@ double warrior_t::composite_player_multiplier( school_e school ) const
 
   if ( buff.avatar -> up() )
     m *= 1.0 + buff.avatar -> data().effectN( 1 ).percent();
+
+  // --- Enrages ---
+  if ( buff.enrage -> up() )
+    {
+      m *= 1.0 + buff.enrage -> data().effectN( 2 ).percent();
+
+      if ( mastery.unshackled_fury -> ok() )
+        m *= 1.0 + cache.mastery_value();
+    }
+
+   // --- Passive Talents ---
+  if ( spec.single_minded_fury -> ok() && dual_wield() )
+  {
+   if ( main_hand_weapon .group() == WEAPON_1H &&
+        off_hand_weapon .group() == WEAPON_1H )
+    {
+      m *= 1.0 + spec.single_minded_fury -> effectN( 1 ).percent();
+    }
+  }
+
+  // --- Buffs / Procs ---
+  if ( buff.rude_interruption -> up() )
+    m *= 1.0 + buff.rude_interruption -> value();
+
 
   if ( active_stance == STANCE_GLADIATOR )
     m *= 1.0 + buff.gladiator_stance -> data().effectN( 1 ).percent();
@@ -4807,7 +4794,7 @@ void warrior_t::create_options()
   option_t::copy( options, warrior_options );
 }
 
-// Specialized flurry of xuen so that armor reduction from colossus smash will function
+// Specialized attacks
 
 struct warrior_flurry_of_xuen_t : public warrior_attack_t
 {
@@ -4823,11 +4810,22 @@ struct warrior_flurry_of_xuen_t : public warrior_attack_t
 
 };
 
+struct warrior_lightning_strike_t : public warrior_attack_t
+{
+  warrior_lightning_strike_t( warrior_t* p ) :
+    warrior_attack_t( "lightning_strike", p, p -> find_spell( 137597 ) )
+  {
+    background = true;
+    may_dodge = may_parry = false;
+  }
+};
+ 
 // warrior_t::create_proc_action =============================================
 
 action_t* warrior_t::create_proc_action( const std::string& name )
 {
   if ( name == "flurry_of_xuen" ) return new warrior_flurry_of_xuen_t( this );
+  if ( name == "lightning_strike" ) return new warrior_lightning_strike_t( this );
 
   return 0;
 }
@@ -4934,7 +4932,7 @@ set_e warrior_t::decode_set( const item_t& item ) const
 
 void warrior_t::enrage()
 {
-  // Crit BT/MS/CS/Block and Berserker Rage give rage, 1 charge of Raging Blow, and refreshes the enrage
+  // Crit BT/MS/CS/Block give rage, 1 charge of Raging Blow, and refreshes the enrage
 
   if ( specialization() == WARRIOR_FURY )
   {
@@ -4977,17 +4975,15 @@ public:
     os << p.name()<<"\n<br>";
     os << "\t\t\t\t\t<p>Percentage of damage dealt to primary target</p>\n";
     os << "%"<<( ( priority_damage / all_damage ) * 100 );
-    os << "\t\t\t\t\t<p>Percentage of primary target damage that occurs inside of Colossus Smash</p>\n";
-    os << "%"<<( ( cs_damage / priority_damage ) * 100 );
+    if ( p.specialization() !=  WARRIOR_PROTECTION )
+    {
+      os << "\t\t\t\t\t<p>Percentage of primary target damage that occurs inside of Colossus Smash</p>\n";
+      os << "%"<<( ( cs_damage / priority_damage ) * 100 );
+    }
     os << "\t\t\t\t\t<p> Dps done to primary target </p>\n";
+    if ( p.specialization() == WARRIOR_ARMS )
+      os << "\t\t\t\t\t<p> Assumes that SS/OS bounces between adds/main target, likely 10-30% overestimation on 3-8 targets</p> \n";
     os << ( ( priority_damage / all_damage ) * p.collected_data.dps.mean() );
-    os << "\t\t\t\t\t<p> =============== DEBUG OUTPUT ================== </p>\n";
-    os << "\t\t\t\t\t<p> Colossus Smash Sum over all Iterations</p>"<<cs_damage;
-    os << "\t\t\t\t\t<p> Colossus Smash Sum average on one iteration</p>"<<( cs_damage / p.sim -> iterations );
-    os << "\t\t\t\t\t<p> Overall Damage Sum over all Iterations</p>"<<( all_damage );
-    os << "\t\t\t\t\t<p> Overall Damage Sum average on one iteration</p>"<<( all_damage / p.sim -> iterations );
-    os << "\t\t\t\t\t<p> Priority Target Sum over all Iterations</p>"<<( priority_damage );
-    os << "\t\t\t\t\t<p> Priority Target Sum average on one Iteration</p>"<<( priority_damage / p.sim -> iterations );
 
     os << "\t\t\t\t\t\t</div>\n" << "\t\t\t\t\t</div>\n";
   }

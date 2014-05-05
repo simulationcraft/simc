@@ -2564,10 +2564,7 @@ struct multi_shot_t : public hunter_ranged_attack_t
 
     pets::hunter_main_pet_t* pet = p() -> active.pet;
     if ( pet && p() -> specs.beast_cleave -> ok() )
-    {
-      p() -> buffs.beast_cleave -> trigger(); //Added so action lists can be based on beast cleave. The pet buff actions do not seem to be working. 8/29/13
       pet -> buffs.beast_cleave -> trigger();
-    }
 
     if ( result_is_hit( execute_state -> result ) ) {
       trigger_tier15_4pc_melee( p() -> procs.tier15_4pc_melee_multi_shot, p() -> action_lightning_arrow_multi_shot );
@@ -3421,8 +3418,6 @@ void hunter_t::create_buffs()
 {
   player_t::create_buffs();
 
-  buffs.beast_cleave                = buff_creator_t( this, 118455, "beast_cleave" );
-
   buffs.beast_within                = buff_creator_t( this, 34471, "beast_within" )
                                       .chance( specs.the_beast_within -> ok() )
                                       .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
@@ -3605,7 +3600,7 @@ void hunter_t::init_action_list()
         action_list_str += "/dire_beast,if=enabled";
         action_list_str += "/fervor,if=enabled&focus<=65";
         action_list_str += "/bestial_wrath,if=focus>60&!buff.beast_within.up";
-        action_list_str += "/multi_shot,if=active_enemies>5|(active_enemies>1&buff.beast_cleave.down)";
+        action_list_str += "/multi_shot,if=active_enemies>5|(active_enemies>1&pet.cat.buff.beast_cleave.down)";
 
         action_list_str += "/stampede,if=enabled&(trinket.stat.agility.up|target.time_to_die<=20|(trinket.stacking_stat.agility.stack>10&trinket.stat.agility.cooldown_remains<=3))";
 

@@ -7248,7 +7248,7 @@ expr_t* player_t::create_expression( action_t* a,
     return new race_expr_t( *this, splits[ 1 ] );
   }
 
-  if ( splits[ 0 ] == "pet" && splits.size() == 3 )
+  if ( splits[ 0 ] == "pet" && splits.size() >= 3 )
   {
     struct pet_expr_t : public expr_t
     {
