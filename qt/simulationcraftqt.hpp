@@ -20,6 +20,8 @@
 #include <QtWebKitWidgets/QtWebKitWidgets>
 #endif
 
+
+
 class SC_MainWindow;
 class SC_SearchBox;
 class SC_TextEdit;
