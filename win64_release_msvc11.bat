@@ -33,6 +33,7 @@ xcopy %qt_dir%\bin\Qt5OpenGL.dll %install%\
 xcopy %qt_dir%\bin\Qt5PrintSupport.dll %install%\
 xcopy %qt_dir%\bin\Qt5Quick.dll %install%\
 xcopy %qt_dir%\bin\Qt5Qml.dll %install%\
+xcopy %qt_dir%\bin\Qt5Positioning.dll %install%\
 xcopy %qt_dir%\bin\Qt5Sql.dll %install%\
 xcopy %qt_dir%\bin\Qt5Gui.dll %install%\
 xcopy %qt_dir%\bin\Qt5Widgets.dll %install%\

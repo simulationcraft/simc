@@ -29,6 +29,7 @@ xcopy %redist%\msvcp110.dll %install%\
 xcopy %redist%\msvcr110.dll %install%\
 xcopy %redist%\vccorlib110.dll %install%\
 xcopy %qt_dir%\bin\Qt5Core.dll %install%\
+xcopy %qt_dir%\bin\Qt5Positioning.dll %install%\
 xcopy %qt_dir%\bin\Qt5OpenGL.dll %install%\
 xcopy %qt_dir%\bin\Qt5Quick.dll %install%\
 xcopy %qt_dir%\bin\Qt5PrintSupport.dll %install%\
