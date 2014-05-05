@@ -1512,6 +1512,10 @@ bool item_t::download_item( item_t& item )
         success = wowhead::download_item( item, wowhead::LIVE, cache::ONLY );
       else if ( sources[ i ] == "ptrhead" )
         success = wowhead::download_item( item, wowhead::PTR, cache::ONLY );
+#if SC_BETA
+      else if ( sources[ i ] == SC_BETA_STR "head" )
+        success = wowhead::download_item( item, wowhead::BETA, cache::ONLY );
+#endif
       else if ( sources[ i ] == "bcpapi" )
         success = bcp_api::download_item( item, cache::ONLY );
     }
@@ -1526,6 +1530,10 @@ bool item_t::download_item( item_t& item )
         success = wowhead::download_item( item, wowhead::LIVE );
       else if ( sources[ i ] == "ptrhead" )
         success = wowhead::download_item( item, wowhead::PTR );
+#if SC_BETA
+      else if ( sources[ i ] == SC_BETA_STR "head" )
+        success = wowhead::download_item( item, wowhead::BETA );
+#endif
       else if ( sources[ i ] == "bcpapi" )
         success = bcp_api::download_item( item );
     }
@@ -1563,6 +1571,10 @@ bool item_t::download_glyph( player_t* player, std::string& glyph_name, const st
         success = wowhead::download_glyph( player, glyph_name, glyph_id, wowhead::LIVE, cache::ONLY );
       else if ( src == "ptrhead" )
         success = wowhead::download_glyph( player, glyph_name, glyph_id, wowhead::PTR, cache::ONLY );
+#if SC_BETA
+      else if ( src == SC_BETA_STR "head" )
+        success = wowhead::download_glyph( player, glyph_name, glyph_id, wowhead::BETA, cache::ONLY );
+#endif
       else if ( src == "bcpapi" )
         success = bcp_api::download_glyph( player, glyph_name, glyph_id, cache::ONLY );
     }
@@ -1578,6 +1590,10 @@ bool item_t::download_glyph( player_t* player, std::string& glyph_name, const st
         success = wowhead::download_glyph( player, glyph_name, glyph_id, wowhead::LIVE );
       else if ( src == "ptrhead" )
         success = wowhead::download_glyph( player, glyph_name, glyph_id, wowhead::PTR );
+#if SC_BETA
+      else if ( src == SC_BETA_STR "head" )
+        success = wowhead::download_glyph( player, glyph_name, glyph_id, wowhead::BETA );
+#endif
       else if ( src == "bcpapi" )
         success = bcp_api::download_glyph( player, glyph_name, glyph_id );
     }

@@ -608,6 +608,9 @@ bool parse_spell_query( sim_t*             sim,
 const char* const default_item_db_sources[] =
 {
   "local", "bcpapi", "wowhead", "ptrhead"
+#if SC_BETA
+  , SC_BETA_STR "head"
+#endif
 };
 
 bool parse_item_sources( sim_t*             sim,

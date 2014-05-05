@@ -16,6 +16,9 @@ static std::string source_str( wowhead::wowhead_e source )
   switch ( source )
   {
     case wowhead::PTR:  return "ptr";
+#if SC_BETA
+    case wowhead::BETA: SC_BETA_STR;
+#endif
     default:   return "www";
   }
 }
@@ -25,6 +28,9 @@ static std::string source_desc_str( wowhead::wowhead_e source )
   switch ( source )
   {
     case wowhead::PTR:  return "PTR";
+#if SC_BETA
+    case wowhead::BETA: return "Beta";
+#endif
     default:   return "Live";
   }
 }

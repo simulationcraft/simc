@@ -49,7 +49,7 @@ macx {
 
     Resources.files = Welcome.html Welcome.png Error.html
     Resources.path = Contents/Resources
-    Profiles.files = profiles/PreRaid profiles/Tier15N profiles/Tier15H profiles/Tier16N profiles/Tier16H
+    Profiles.files = profiles/Tier16H profiles/Tier17N
     Profiles.path = Contents/Resources/profiles
     QMAKE_BUNDLE_DATA += Profiles Resources
     QMAKE_DISTCLEAN += simc *.dmg
