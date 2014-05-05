@@ -151,6 +151,21 @@ bool wowhead::download_item_data( item_t&            item,
     if ( json.HasMember( "reqlevel" ) )
       item.parsed.data.req_level = json[ "reqlevel" ].GetInt();
 
+    if ( json.HasMember( "heroic" ) )
+      item.parsed.data.type_flags |= RAID_TYPE_HEROIC;
+
+    if ( json.HasMember( "flexible" ) )
+      item.parsed.data.type_flags |= RAID_TYPE_FLEXIBLE;
+
+    if ( json.HasMember( "raidfinder" ) )
+      item.parsed.data.type_flags |= RAID_TYPE_LFR;
+
+    if ( json.HasMember( "warforged" ) )
+      item.parsed.data.type_flags |= RAID_TYPE_ELITE;
+
+    if ( json.HasMember( "thunderforged" ) )
+      item.parsed.data.type_flags |= RAID_TYPE_ELITE;
+
     if ( item.parsed.data.item_class == ITEM_CLASS_WEAPON )
     {
       if ( ! jsonequip.HasMember( "dmgrange" ) )
@@ -222,24 +237,9 @@ bool wowhead::download_item_data( item_t&            item,
     if ( jsonequip.HasMember( "itemset" ) )
       item.parsed.data.id_set = jsonequip[ "itemset" ].GetUint();
 
-    if ( jsonequip.HasMember( "heroic" ) )
-      item.parsed.data.type_flags |= RAID_TYPE_HEROIC;
-
     // Sad to the face
     std::string htmltooltip;
     xml -> get_value( htmltooltip, "htmlTooltip/cdata" );
-
-    if ( util::str_in_str_ci( htmltooltip, ">Raid Finder<" ) )
-      item.parsed.data.type_flags |= RAID_TYPE_LFR;
-    else if ( util::str_in_str_ci( htmltooltip, ">Flexible<" ) ) 
-      item.parsed.data.type_flags |= RAID_TYPE_FLEXIBLE;
-
-    if ( util::str_in_str_ci( htmltooltip, "Thunderforged<" ) )
-      item.parsed.data.type_flags |= RAID_TYPE_ELITE;
-    if ( util::str_in_str_ci( htmltooltip, "Warforged<" ) )
-      item.parsed.data.type_flags |= RAID_TYPE_ELITE;
-    if ( util::str_in_str_ci( htmltooltip, "Timeless<" ) )
-      item.parsed.data.type_flags |= RAID_TYPE_ELITE;
 
     // Parse out Equip: and On use: strings
     int spell_idx = 0;
