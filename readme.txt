@@ -1,6 +1,6 @@
-Confused on where to start? For most people who are newer to SimulationCraft, the easiest way to get started is to load up the file named ‘Simulationcraft.exe’ in this folder. 
+Confused on where to start? For most people who are newer to SimulationCraft, the easiest way to get started is to load up the file named "Simulationcraft.exe" in this folder. 
 
-We also have an excellent starter’s guide on our wiki, which is located at: 
+We also have an excellent starters guide on our wiki, which is located at: 
 https://code.google.com/p/simulationcraft/wiki/StartersGuide
 
 The full Table of Contents for our Wiki is located at: 
