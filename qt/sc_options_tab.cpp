@@ -570,7 +570,7 @@ void SC_OptionsTab::decodeOptions()
       {
         if ( ! item_db_order[ i ].compare( itemDbOrder -> item( k ) -> data( Qt::UserRole ).toString() ) )
         {
-          itemDbOrder -> addItem( itemDbOrder -> takeItem( k ) );
+          itemDbOrder -> insertItem( i, itemDbOrder -> takeItem( k ) );
         }
       }
 
