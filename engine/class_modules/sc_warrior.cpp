@@ -83,6 +83,7 @@ public:
     buff_t* ignite_weapon;
     buff_t* gladiator_stance;
     buff_t* heroic_leap_glyph;
+    buff_t* hold_the_line;
     buff_t* last_stand;
     buff_t* meat_cleaver;
     buff_t* riposte;
@@ -174,7 +175,9 @@ public:
     const spell_data_t* colossus_smash;
     const spell_data_t* death_from_above;
     const spell_data_t* enraged_speed;
+    const spell_data_t* heavy_repercussions; 
     const spell_data_t* heroic_leap;
+    const spell_data_t* hold_the_line;
     const spell_data_t* long_charge;
     const spell_data_t* raging_blow;
     const spell_data_t* raging_wind;
@@ -2172,6 +2175,9 @@ struct revenge_t : public warrior_attack_t
     if( p -> buff.shield_charge -> up() )
       am *= 1.0 + p -> buff.shield_charge -> default_value;
 
+    if( p -> buff.hold_the_line -> up() )
+      am*= 1.0 + 0.5; // am*= 1.0 + buff.hold_the_line -> effectN( 1 ).percent();
+
     return am;
   }
 
@@ -2207,6 +2213,8 @@ struct revenge_t : public warrior_attack_t
 
       if ( rng().roll( p -> sets.set( SET_T15_2PC_TANK ) -> proc_chance() ) )
         p -> buff.tier15_2pc_tank -> trigger();
+
+      p -> buff.hold_the_line -> expire();
 
     }
   }
@@ -2342,6 +2350,9 @@ struct shield_slam_t : public warrior_attack_t
 
     if( p -> buff.shield_charge -> up() )
       am *= 1.0 + p -> buff.shield_charge -> default_value;
+
+    if( p -> buff.shield_block -> up() )
+      am *= 1.0 + 0.5; // am *= 1.0 + p -> glyphs.heavy_repercussions -> effectN( 1 ).percent();
 
     return am;
   }
@@ -3645,7 +3656,9 @@ void warrior_t::init_spells()
   glyphs.cleave                 = find_glyph_spell( "Glyph of Cleave"              );
   glyphs.death_from_above       = find_glyph_spell( "Glyph of Death From Above"    );
   glyphs.enraged_speed          = find_glyph_spell( "Glyph of Enraged Speed"       );
+  glyphs.heavy_repercussions    = find_glyph_spell( "Glyph of Heavy Repercussions" );
   glyphs.heroic_leap            = find_glyph_spell( "Glyph of Heroic Leap"         );
+  glyphs.hold_the_line          = find_glyph_spell( "Glyph of Hold the Line"       );
   glyphs.long_charge            = find_glyph_spell( "Glyph of Long Charge"         );
   glyphs.raging_blow            = find_glyph_spell( "Glyph of Raging Blow"         );
   glyphs.raging_wind            = find_glyph_spell( "Glyph of Raging Wind"         );
@@ -4243,6 +4256,9 @@ void warrior_t::create_buffs()
   buff.heroic_leap_glyph = buff_creator_t( this, "heroic_leap_glyph", glyphs.heroic_leap )
                            .chance( glyphs.heroic_leap -> ok() ? 1 : 0 );
 
+  buff.hold_the_line     = buff_creator_t( this, "hold_the_line" /* , glyphs.hold_the_line */ )
+                           .chance( 1 ) /* .chance( glyphs.hold_the_line -> ok() ? 1 : 0 )*/;
+
   buff.meat_cleaver     = buff_creator_t( this, "meat_cleaver",     spec.meat_cleaver -> effectN( 1 ).trigger() )
                           .max_stack( find_spell( 85739 ) -> max_stacks() );
 
@@ -4741,6 +4757,9 @@ void warrior_t::assess_damage( school_e school,
 
   if ( s -> result == RESULT_DODGE || s -> result == RESULT_PARRY )
     cooldown.revenge -> reset( true );
+
+  if ( s -> result == RESULT_PARRY )
+    buff.hold_the_line -> trigger();
 
   if ( s -> result == RESULT_PARRY && buff.riposte -> up() )
     buff.riposte -> expire();
