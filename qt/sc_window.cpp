@@ -1582,13 +1582,6 @@ void SC_MainWindow::forwardButtonClicked( bool /* checked */ )
     visibleWebView->forward();
     visibleWebView->setFocus();
   }
-  else
-  {
-    switch ( mainTab->currentIndex() )
-    {
-    default: break;
-    }
-  }
 }
 
 void SC_MainWindow::reloadButtonClicked( bool )

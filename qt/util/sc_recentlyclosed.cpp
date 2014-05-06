@@ -212,10 +212,10 @@ void SC_RecentlyClosedTabItemModel::rowsAboutToBeRemovedSlot( const QModelIndex&
   {
     QModelIndex sibling = index( row, 0 );
     QWidget* widget = sibling.data( Qt::UserRole ).value< QWidget* >();
-    QWidget* parent = sibling.data( Qt::UserRole + 1 ).value< QWidget* >();
+    QWidget* par = sibling.data( Qt::UserRole + 1 ).value< QWidget* >();
     emit( removePreview( widget ) );
     Q_ASSERT( parent != nullptr );
-    delete parent;
+    delete par;
 
     setData( sibling, QVariant::fromValue< QWidget* >( nullptr ), Qt::UserRole );
     setData( sibling, QVariant::fromValue< QWidget* >( nullptr ), Qt::UserRole + 1 );
