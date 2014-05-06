@@ -25,7 +25,7 @@ _DIFF_DATA = {
             ( 'unk_wod_1', _ADD_FIELD, 'cost' )
         ],
         'GlyphProperties.dbc': [
-            ( 'unk_wod_1', _ADD_FIELD, 'unk_3' )
+            ( 'id_exclusive_category', _ADD_FIELD, 'unk_3' )
         ],
         'ChrSpecialization.dbc': [
             ( 'unk_wod_1', _ADD_FIELD, 'unk_15699' ),
@@ -154,6 +154,9 @@ _DBC_FIELDS = {
     ],
     'GlyphRequiredSpec.db2': [
           'id', 'id_glyph_property', 'id_spec',
+    ],
+    'GlyphExclusiveCategory.db2': [
+          'id', 'ofs_desc'
     ],
     'Item.db2' : [
           'id',      ( 'classs', '%2d' ), ( 'subclass', '%2d' ), ( 'unk_3', '%d' ), ( 'material', '%d' ),
@@ -959,6 +962,22 @@ class SkillLine(DBCRecord):
         return s
 
 class Talent(DBCRecord):
+    def parse(self):
+        DBCRecord.parse(self)
+
+        if self.ofs_desc != 0:
+            self.desc = self._dbc_parser.get_string_block(self.ofs_desc)
+        else:
+            self.desc = ''
+    
+    def __str__(self):
+        s = DBCRecord.__str__(self)
+        if self.desc:
+            s += 'desc=\"%s\" ' % self.desc
+
+        return s
+
+class GlyphExclusiveCategory(DBCRecord):
     def parse(self):
         DBCRecord.parse(self)
 
