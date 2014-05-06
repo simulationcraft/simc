@@ -60,8 +60,7 @@ xcopy Welcome.html %install%\
 xcopy Welcome.png %install%\
 xcopy Simulationcraft.exe %install%\
 xcopy simc.exe %install%\
-xcopy READ_ME_FIRST.txt %install%\
-xcopy Examples.simc %install%\
+xcopy readme.txt %install%\
 xcopy Error.html %install%\
 xcopy COPYING %install%\
 xcopy Profiles %install%\profiles\ /s /e
