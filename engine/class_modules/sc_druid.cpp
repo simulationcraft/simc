@@ -1698,7 +1698,7 @@ public:
         break;
       case DRUID_BALANCE:
       case DRUID_RESTORATION:
-        if ( p.buff.cat_form -> check() || p.buff.cat_form -> check() )
+        if ( p.buff.cat_form -> check() )
           return 1.1;
         break;
       default:

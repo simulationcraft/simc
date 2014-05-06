@@ -3597,7 +3597,7 @@ struct hammer_of_wrath_t : public paladin_melee_attack_t
   {
     // not available if target is above 20% health unless Sword of Light present and Avenging Wrath up
     // Improved HoW perk raises the threshold to 35%
-    double threshold = 20 + p() -> perk.empowered_hammer_of_wrath -> ok() ? 15 : 0;
+    double threshold = ( p() -> perk.empowered_hammer_of_wrath -> ok() ? 15 : 0 ) + 20;
     if ( target -> health_percentage() > threshold && ! ( p() -> passives.sword_of_light -> ok() && p() -> buffs.avenging_wrath -> check() ) )
       return false;
 
