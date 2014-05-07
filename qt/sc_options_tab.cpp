@@ -39,6 +39,9 @@ const OptionEntry itemSourceOptions[] =
   { "Blizzard API",        "bcpapi",  "Remote Blizzard Community Platform API source" },
   { "Wowhead.com",         "wowhead", "Remote Wowhead.com item data source" },
   { "Wowhead.com (PTR)",   "ptrhead", "Remote Wowhead.com PTR item data source" },
+#if SC_BETA
+  { "Wowhead.com (Beta)",  SC_BETA_STR "head", "Remote Wowhead.com Beta item data source" },
+#endif
 };
 
 const OptionEntry debuffOptions[] =
@@ -567,7 +570,7 @@ void SC_OptionsTab::decodeOptions()
       {
         if ( ! item_db_order[ i ].compare( itemDbOrder -> item( k ) -> data( Qt::UserRole ).toString() ) )
         {
-          itemDbOrder -> addItem( itemDbOrder -> takeItem( k ) );
+          itemDbOrder -> insertItem( i, itemDbOrder -> takeItem( k ) );
         }
       }
 

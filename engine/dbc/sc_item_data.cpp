@@ -466,8 +466,6 @@ bool item_database::load_item_from_data( item_t& item )
   item.parsed.data.name = item.name_str.c_str();
 
   util::tokenize( item.name_str );
-  
-  // Socket bonus needs to be added separately ...
 
   return true;
 }

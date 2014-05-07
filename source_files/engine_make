@@ -51,7 +51,6 @@ SRC += \
     player$(PATHSEP)sc_consumable.cpp \
     interfaces$(PATHSEP)sc_xml.cpp \
     interfaces$(PATHSEP)sc_wowhead.cpp \
-    interfaces$(PATHSEP)sc_js.cpp \
     interfaces$(PATHSEP)sc_http.cpp \
     interfaces$(PATHSEP)sc_bcp_api.cpp \
     dbc$(PATHSEP)sc_spell_info.cpp \

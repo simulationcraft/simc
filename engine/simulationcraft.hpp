@@ -6601,28 +6601,6 @@ public:
   }
 };
 
-
-// Java Script ==============================================================
-
-namespace js
-{
-struct internal_js_node_t;
-typedef std::shared_ptr<js::internal_js_node_t> js_node_t;
-js_node_t get_child( const js_node_t& root, const std::string& name );
-js_node_t get_node ( const js_node_t& root, const std::string& path );
-std::vector<js_node_t> get_children( const js_node_t& root );
-int  get_value( std::vector<std::string>& value, const js_node_t& root, const std::string& path = std::string() );
-bool get_value( std::string& value, const js_node_t& root, const std::string& path = std::string() );
-bool get_value( int&         value, const js_node_t& root, const std::string& path = std::string() );
-bool get_value( unsigned&    value, const js_node_t& root, const std::string& path = std::string() );
-bool get_value( double&      value, const js_node_t& root, const std::string& path = std::string() );
-js_node_t create( sim_t* sim, const std::string& input );
-js_node_t create( sim_t* sim, FILE* input );
-std::ostream& print( std::ostream&, const js_node_t&, int spacing = 0 );
-std::ostream& operator<<( std::ostream& s, const js_node_t& n );
-const char* get_name( const js_node_t& root );
-};
-
 // Handy Actions ============================================================
 
 struct wait_action_base_t : public action_t

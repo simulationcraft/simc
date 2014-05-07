@@ -52,7 +52,6 @@
  SOURCES += engine/player/sc_proc.cpp
  SOURCES += engine/interfaces/sc_xml.cpp
  SOURCES += engine/interfaces/sc_wowhead.cpp
- SOURCES += engine/interfaces/sc_js.cpp
  SOURCES += engine/interfaces/sc_http.cpp
  SOURCES += engine/interfaces/sc_bcp_api.cpp
  SOURCES += engine/dbc/sc_spell_info.cpp

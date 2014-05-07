@@ -5,6 +5,10 @@
 
 #include "simulationcraft.hpp"
 
+#include "rapidjson/document.h"
+#include "rapidjson/stringbuffer.h"
+#include "rapidjson/prettywriter.h"
+
 // source_str ===============================================================
 
 static std::string source_str( wowhead::wowhead_e source )
@@ -12,6 +16,9 @@ static std::string source_str( wowhead::wowhead_e source )
   switch ( source )
   {
     case wowhead::PTR:  return "ptr";
+#if SC_BETA
+    case wowhead::BETA: SC_BETA_STR;
+#endif
     default:   return "www";
   }
 }
@@ -21,6 +28,9 @@ static std::string source_desc_str( wowhead::wowhead_e source )
   switch ( source )
   {
     case wowhead::PTR:  return "PTR";
+#if SC_BETA
+    case wowhead::BETA: return "Beta";
+#endif
     default:   return "Live";
   }
 }
@@ -91,104 +101,151 @@ bool wowhead::download_item_data( item_t&            item,
 
     if ( ! xml -> get_value( item.parsed.data.level, "level/." ) ) throw( "level" );
 
+    if ( ! xml -> get_value( item.parsed.data.quality, "quality/id" ) ) throw( "quality" );
+
     std::string jsonequipdata, jsondata;
     xml -> get_value( jsonequipdata, "jsonEquip/cdata" );
     jsonequipdata = "{" + jsonequipdata + "}";
     xml -> get_value( jsondata, "json/cdata" );
     jsondata = "{" + jsondata + "}";
 
-    js::js_node_t json = js::create( item.sim, jsondata );
-    js::js_node_t jsonequip = js::create( item.sim, jsonequipdata );
+    rapidjson::Document json, jsonequip;
+    json.Parse< 0 >( jsondata.c_str() );
+    jsonequip.Parse< 0 >( jsonequipdata.c_str() );
+
+    if ( json.HasParseError() )
+    {
+      item.sim -> errorf( "Unable to parse JSON data for item id '%u': %s", 
+          id, json.GetParseError() );
+      return false;
+    }
+
+    if ( jsonequip.HasParseError() )
+    {
+      item.sim -> errorf( "Unable to parse JSON data for item id '%u': %s", 
+          id, jsonequip.GetParseError() );
+      return false;
+    }
 
     if ( item.sim -> debug )
-      item.sim -> out_debug.raw() << json;
+    {
+      rapidjson::StringBuffer b;
+      rapidjson::PrettyWriter< rapidjson::StringBuffer > writer( b );
 
-    if ( item.sim -> debug )
-      item.sim -> out_debug.raw() << jsonequip;
+      json.Accept( writer );
+      item.sim -> out_debug.raw() << b.GetString();
 
-    js::get_value( item.parsed.data.req_level, json, "reqlevel" );
-    js::get_value( item.parsed.data.req_skill, jsonequip, "reqskill" );
-    js::get_value( item.parsed.data.req_skill_level, jsonequip, "reqskillrank" );
+      jsonequip.Accept( writer );
+      item.sim -> out_debug.raw() << b.GetString();
+    }
 
-    if ( ! xml -> get_value( item.parsed.data.quality, "quality/id" ) ) throw( "quality" );
+    if ( ! json.HasMember( "slot" ) )
+      throw( "inventory type" );
 
-    if ( ! js::get_value( item.parsed.data.inventory_type, json, "slot" ) ) throw( "inventory type" );
-    if ( ! js::get_value( item.parsed.data.item_class, json, "classs" ) ) throw( "item class" );
-    if ( ! js::get_value( item.parsed.data.item_subclass, json, "subclass" ) ) throw( "item subclass" );
-    if ( item.parsed.data.item_subclass < 0 ) item.parsed.data.item_subclass = 0;
+    if ( ! json.HasMember( "classs" ) )
+      throw( "item class" );
+
+    if ( ! json.HasMember( "subclass" ) )
+      throw( "item subclass" );
+
+    item.parsed.data.inventory_type = json[ "slot" ].GetInt();
+    item.parsed.data.item_class = json[ "classs" ].GetInt();
+    item.parsed.data.item_subclass = json[ "subclass" ].GetInt();
+    if ( item.parsed.data.item_subclass < 0 )
+      item.parsed.data.item_subclass = 0;
+
+    if ( json.HasMember( "reqlevel" ) )
+      item.parsed.data.req_level = json[ "reqlevel" ].GetInt();
+
+    if ( json.HasMember( "heroic" ) )
+      item.parsed.data.type_flags |= RAID_TYPE_HEROIC;
+
+    if ( json.HasMember( "flexible" ) )
+      item.parsed.data.type_flags |= RAID_TYPE_FLEXIBLE;
+
+    if ( json.HasMember( "raidfinder" ) )
+      item.parsed.data.type_flags |= RAID_TYPE_LFR;
+
+    if ( json.HasMember( "warforged" ) )
+      item.parsed.data.type_flags |= RAID_TYPE_ELITE;
+
+    if ( json.HasMember( "thunderforged" ) )
+      item.parsed.data.type_flags |= RAID_TYPE_ELITE;
+
+    if ( item.parsed.data.item_class == ITEM_CLASS_WEAPON )
+    {
+      if ( ! jsonequip.HasMember( "dmgrange" ) )
+        throw( "weapon damage range" );
+
+      if ( ! jsonequip.HasMember( "speed" ) )
+        throw( "weapon speed" );
+    }
+
+    if ( jsonequip.HasMember( "reqskill" ) )
+      item.parsed.data.req_skill = jsonequip[ "reqskill" ].GetInt();
+
+    if ( jsonequip.HasMember( "reqskillrank" ) )
+      item.parsed.data.req_skill_level = jsonequip[ "reqskillrank" ].GetInt();
 
     // Todo binding type, needs htmlTooltip parsing
     if ( item.parsed.data.item_class == ITEM_CLASS_WEAPON )
     {
-      int minDmg, maxDmg;
-      double speed, dps;
-      if ( ! js::get_value( dps, jsonequip, "dps" ) ) throw( "dps" );
-      if ( ! js::get_value( speed, jsonequip, "speed" ) ) throw( "weapon speed" );
-      if ( ! js::get_value( minDmg, jsonequip, "dmgmin1" ) ) throw( "weapon minimum damage" );
-      if ( ! js::get_value( maxDmg, jsonequip, "dmgmax1" ) ) throw( "weapon maximum damage" );
-      if ( dps && speed )
-      {
-        item.parsed.data.delay = speed * 1000.0;
-        // Estimate damage range from the min damage blizzard gives us. Note that this is not exact, as the min dps is actually floored
-        item.parsed.data.dmg_range = 2 - 2 * minDmg / ( dps * speed );
-      }
+      item.parsed.data.delay = jsonequip[ "speed" ].GetDouble() * 1000.0;
+      item.parsed.data.dmg_range = jsonequip[ "dmgrange" ].GetDouble();
     }
 
     int races = -1;
-    js::get_value( races, jsonequip, "races" );
+    if ( jsonequip.HasMember( "races" ) )
+      races = jsonequip[ "races" ].GetInt();
     item.parsed.data.race_mask = races;
 
     int classes = -1;
-    js::get_value( classes, jsonequip, "classes" );
+    if ( jsonequip.HasMember( "classes" ) )
+      classes = jsonequip[ "classes" ].GetInt();
     item.parsed.data.class_mask = classes;
 
-    std::vector<js::js_node_t> jsonequip_children = js::get_children( jsonequip );
     size_t n = 0;
-    for ( size_t i = 0; i < jsonequip_children.size() && n < sizeof_array( item.parsed.data.stat_type_e ); i++ )
+    for ( rapidjson::Value::ConstMemberIterator i = jsonequip.MemberBegin(); 
+          i != jsonequip.MemberEnd() && n < sizeof_array( item.parsed.data.stat_type_e ); i++ )
     {
-      stat_e type = util::parse_stat_type( js::get_name( jsonequip_children[ i ] ) );
-      if ( type == STAT_NONE || type == STAT_ARMOR || util::translate_stat( type ) == ITEM_MOD_NONE ) continue;
+      stat_e type = util::parse_stat_type( i -> name.GetString() );
+      if ( type == STAT_NONE || type == STAT_ARMOR || util::translate_stat( type ) == ITEM_MOD_NONE ) 
+        continue;
 
       item.parsed.data.stat_type_e[ n ] = util::translate_stat( type );
-      js::get_value( item.parsed.data.stat_val[ n ], jsonequip_children[ i ] );
+      item.parsed.data.stat_val[ n ] = i -> value.GetInt();
       n++;
 
       // Soo, weapons need a flag to indicate caster weapon for correct DPS calculation.
-      if ( item.parsed.data.delay > 0 && ( item.parsed.data.stat_type_e[ i ] == ITEM_MOD_INTELLECT || item.parsed.data.stat_type_e[ i ] == ITEM_MOD_SPIRIT || item.parsed.data.stat_type_e[ i ] == ITEM_MOD_SPELL_POWER ) )
+      if ( item.parsed.data.delay > 0 && ( 
+           item.parsed.data.stat_type_e[ n - 1 ] == ITEM_MOD_INTELLECT || 
+           item.parsed.data.stat_type_e[ n - 1 ] == ITEM_MOD_SPIRIT ||
+           item.parsed.data.stat_type_e[ n - 1 ] == ITEM_MOD_SPELL_POWER ) )
         item.parsed.data.flags_2 |= ITEM_FLAG2_CASTER_WEAPON;
     }
 
     int n_sockets = 0;
-    js::get_value( n_sockets, jsonequip, "nsockets" );
-    assert( n_sockets <= ( int ) sizeof_array( item.parsed.data.socket_color ) );
+    if ( jsonequip.HasMember( "nsockets" ) )
+      n_sockets = jsonequip[ "nsockets" ].GetUint();
+    
+    assert( n_sockets <= static_cast< int >( sizeof_array( item.parsed.data.socket_color ) ) );
     char socket_str[32];
     for ( int i = 0; i < n_sockets; i++ )
     {
       snprintf( socket_str, sizeof( socket_str ), "socket%d", i + 1 );
-      js::get_value( item.parsed.data.socket_color[ i ], jsonequip, socket_str );
+      if ( jsonequip.HasMember( socket_str ) )
+        item.parsed.data.socket_color[ i ] = jsonequip[ socket_str ].GetUint();
     }
 
-    js::get_value( item.parsed.data.id_set, jsonequip, "itemset" );
-    js::get_value( item.parsed.data.id_socket_bonus, jsonequip, "socketbonus" );
+    if ( jsonequip.HasMember( "socketbonus" ) )
+      item.parsed.data.id_socket_bonus = jsonequip[ "socketbonus" ].GetUint();
+
+    if ( jsonequip.HasMember( "itemset" ) )
+      item.parsed.data.id_set = std::fabs( jsonequip[ "itemset" ].GetInt() );
 
     // Sad to the face
     std::string htmltooltip;
     xml -> get_value( htmltooltip, "htmlTooltip/cdata" );
-
-    // Search for ">Heroic<", ">Raid Finder<", ">Heroic Thunderforged<" :/
-    if ( util::str_in_str_ci( htmltooltip, ">Heroic<" ) || util::str_in_str_ci( htmltooltip, ">Heroic Thunderforged<" ) )
-      item.parsed.data.type_flags |= RAID_TYPE_HEROIC;
-    else if ( util::str_in_str_ci( htmltooltip, ">Raid Finder<" ) )
-      item.parsed.data.type_flags |= RAID_TYPE_LFR;
-    else if ( util::str_in_str_ci( htmltooltip, ">Flexible<" ) ) 
-      item.parsed.data.type_flags |= RAID_TYPE_FLEXIBLE;
-
-    if ( util::str_in_str_ci( htmltooltip, "Thunderforged<" ) )
-      item.parsed.data.type_flags |= RAID_TYPE_ELITE;
-    if ( util::str_in_str_ci( htmltooltip, "Warforged<" ) )
-      item.parsed.data.type_flags |= RAID_TYPE_ELITE;
-    if ( util::str_in_str_ci( htmltooltip, "Timeless<" ) )
-      item.parsed.data.type_flags |= RAID_TYPE_ELITE;
 
     // Parse out Equip: and On use: strings
     int spell_idx = 0;
