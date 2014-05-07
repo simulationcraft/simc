@@ -3603,7 +3603,7 @@ private:
   mutable double _attack_crit, _spell_crit;
   mutable double _attack_haste, _spell_haste;
   mutable double _attack_speed, _spell_speed;
-  mutable double _dodge, _parry, _block, _crit_block, _armor;
+  mutable double _dodge, _parry, _block, _crit_block, _armor, _bonus_armor;
   mutable double _mastery_value, _crit_avoidance, _miss, _multistrike, _readiness;
   mutable double _player_mult[SCHOOL_MAX + 1], _player_heal_mult[SCHOOL_MAX + 1];
 public:
@@ -3640,6 +3640,7 @@ public:
   double mastery_value() const;
   double multistrike() const;
   double readiness() const;
+  double bonus_armor() const;
   double player_multiplier( school_e ) const;
   double player_heal_multiplier( school_e ) const;
 #else
@@ -3825,7 +3826,7 @@ struct player_collected_data_t
 
     double spell_power, spell_hit, spell_crit, manareg_per_second;
     double attack_power,  attack_hit,  mh_attack_expertise,  oh_attack_expertise, attack_crit;
-    double armor, miss, crit, dodge, parry, block;
+    double armor, miss, crit, dodge, parry, block, bonus_armor;
     double spell_haste, spell_speed, attack_haste, attack_speed;
     double mastery_value, multistrike, readiness;
   } buffed_stats_snapshot;
@@ -4510,6 +4511,7 @@ public:
   virtual double composite_mastery_value() const;
   virtual double composite_multistrike() const;
   virtual double composite_readiness() const;
+  virtual double composite_bonus_armor() const;
 
   virtual double composite_armor() const;
   virtual double composite_armor_multiplier() const;
@@ -4991,6 +4993,9 @@ public:
 
   virtual double composite_readiness() const
   { return owner -> cache.readiness(); }
+
+  virtual double composite_bonus_armor() const
+  { return owner -> cache.bonus_armor(); }
 
   virtual double composite_melee_attack_power() const;
 

@@ -1259,6 +1259,18 @@ void print_html_stats ( report::sc_html_stream& os, player_t* a )
     j++;
     os.printf(
       "\t\t\t\t\t\t\t\t\t<tr%s>\n"
+      "\t\t\t\t\t\t\t\t\t\t<th class=\"left\">Bonus Armor</th>\n"
+      "\t\t\t\t\t\t\t\t\t\t<td class=\"right\">%.0f</td>\n"
+      "\t\t\t\t\t\t\t\t\t\t<td class=\"right\">%.0f</td>\n"
+      "\t\t\t\t\t\t\t\t\t\t<td class=\"right\">%.0f</td>\n"
+      "\t\t\t\t\t\t\t\t\t</tr>\n",
+      ( j % 2 == 1 ) ? " class=\"odd\"" : "",
+      buffed_stats.bonus_armor,
+      a -> composite_bonus_armor(),
+      a -> initial.stats.bonus_armor );
+    j++;
+    os.printf(
+      "\t\t\t\t\t\t\t\t\t<tr%s>\n"
       "\t\t\t\t\t\t\t\t\t\t<th class=\"left\">Tank-Miss</th>\n"
       "\t\t\t\t\t\t\t\t\t\t<td class=\"right\">%.2f%%</td>\n"
       "\t\t\t\t\t\t\t\t\t\t<td class=\"right\">%.2f%%</td>\n"

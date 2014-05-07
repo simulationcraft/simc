@@ -109,6 +109,7 @@ const OptionEntry reforgePlotOptions[] =
   { "Plot Reforge Options for Mastery Rating",   "mastery", "Generate reforge plot data for Mastery Rating"   },
   { "Plot Reforge Options for Multistrike Rating", "mult",  "Generate reforge plot data for Multistrike Rating" },
   { "Plot Reforge Options for Readiness Rating", "readiness", "Generate reforge plot data for Readiness Rating" },
+  { "Plot Reforge Options for Bonus Armor Rating", "bonusarmor", "Generate reforge plot data for Bonus Armor" },
 
   { "Plot Reforge Options for Strength",         "str",     "Generate reforge plot data for Intellect"        },
   { "Plot Reforge Options for Agility",          "agi",     "Generate reforge plot data for Agility"          },
@@ -116,7 +117,7 @@ const OptionEntry reforgePlotOptions[] =
   { "Plot Reforge Options for Intellect",        "int",     "Generate reforge plot data for Intellect"        },
   { NULL, NULL, NULL }
 };
-const int reforgePlotOption_cut = 6; // separate between secondary and primary stats
+const int reforgePlotOption_cut = 7; // separate between secondary and primary stats
 
 QComboBox* createChoice( int count, ... )
 {

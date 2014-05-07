@@ -1946,7 +1946,7 @@ void player_t::init_scaling()
 
     bool attack = ( role == ROLE_ATTACK || role == ROLE_HYBRID || role == ROLE_TANK );
     bool spell  = ( role == ROLE_SPELL  || role == ROLE_HYBRID || role == ROLE_HEAL );
-    bool tank   =   role == ROLE_TANK;
+    bool tank   = ( role == ROLE_TANK || specialization() == WARRIOR_PROTECTION ); // Warrior_protection is special case for gladiator stance.
 
     scales_with[ STAT_STRENGTH  ] = attack;
     scales_with[ STAT_AGILITY   ] = attack;
@@ -2800,6 +2800,15 @@ double player_t::composite_readiness() const
   return rd;
 }
 
+// player_t::composite_bonus_armor =========================================
+
+double player_t::composite_bonus_armor() const
+{
+  double ba = current.stats.bonus_armor;
+
+  return ba;
+}
+
 // player_t::composite_player_multiplier ====================================
 
 double player_t::composite_player_multiplier( school_e /* school */ ) const
@@ -3091,7 +3100,7 @@ void player_t::invalidate_cache( cache_e c )
       invalidate_cache( CACHE_SPELL_SPEED );
       break;
     case CACHE_BONUS_ARMOR:
-      if ( primary_role() == ROLE_TANK )
+      if ( primary_role() == ROLE_TANK || specialization() == WARRIOR_PROTECTION ) //Gladiator Stance
         invalidate_cache( CACHE_ATTACK_POWER );
     default: break;
   }
@@ -5595,6 +5604,7 @@ struct snapshot_stats_t : public action_t
     buffed_stats.mastery_value = p -> cache.mastery_value();
     buffed_stats.multistrike = p -> cache.multistrike();
     buffed_stats.readiness = p -> cache.readiness();
+    buffed_stats.bonus_armor = p -> composite_bonus_armor();
 
     buffed_stats.spell_power  = util::round( p -> cache.spell_power( SCHOOL_MAX ) * p -> composite_spell_power_multiplier() );
     buffed_stats.spell_hit    = p -> cache.spell_hit();
@@ -8245,6 +8255,7 @@ void player_t::create_options()
     opt_float( "gear_mastery_rating",   gear.mastery_rating ),
     opt_float( "gear_multistrike_rating", gear.multistrike_rating ),
     opt_float( "gear_readiness_rating", gear.readiness_rating ),
+    opt_float( "gear_bonus_armor",      gear.bonus_armor ),
 
     // Stat Enchants
     opt_float( "enchant_strength",         enchant.attribute[ ATTR_STRENGTH  ] ),
@@ -8262,6 +8273,7 @@ void player_t::create_options()
     opt_float( "enchant_mastery_rating",   enchant.mastery_rating ),
     opt_float( "enchant_multistrike_rating", enchant.multistrike_rating ),
     opt_float( "enchant_readiness_rating", enchant.readiness_rating ),
+    opt_float( "enchant_bonus_armor",      enchant.bonus_armor ),
     opt_float( "enchant_health",           enchant.resource[ RESOURCE_HEALTH ] ),
     opt_float( "enchant_mana",             enchant.resource[ RESOURCE_MANA   ] ),
     opt_float( "enchant_rage",             enchant.resource[ RESOURCE_RAGE   ] ),
@@ -9281,6 +9293,17 @@ double player_stat_cache_t::readiness() const
   }
   else assert( _readiness == player -> composite_readiness() );
   return _readiness;
+}
+
+double player_stat_cache_t::bonus_armor() const
+{
+  if ( ! active || ! valid[ CACHE_BONUS_ARMOR ] )
+  {
+    valid[ CACHE_BONUS_ARMOR ] = true;
+    _bonus_armor = player -> composite_bonus_armor();
+  }
+  else assert( _bonus_armor == player -> composite_bonus_armor() );
+  return _bonus_armor;
 }
 
 // player_stat_cache_t::mastery =============================================
