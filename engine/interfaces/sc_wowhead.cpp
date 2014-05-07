@@ -241,7 +241,7 @@ bool wowhead::download_item_data( item_t&            item,
       item.parsed.data.id_socket_bonus = jsonequip[ "socketbonus" ].GetUint();
 
     if ( jsonequip.HasMember( "itemset" ) )
-      item.parsed.data.id_set = std::fabs( jsonequip[ "itemset" ].GetInt() );
+      item.parsed.data.id_set =  std::abs( jsonequip[ "itemset" ].GetInt() );
 
     // Sad to the face
     std::string htmltooltip;
