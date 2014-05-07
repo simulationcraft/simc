@@ -62,9 +62,9 @@ actions.aoe+=/storm_bolt,if=talent.storm_bolt.enabled&((buff.bloodbath.up|cooldo
 actions.aoe+=/devastate
 
 head=helmet_of_the_prehistoric_marauder,id=99418,upgrade=2,gems=16crit_8haste_8crit
-neck=malkoroks_tainted_dog_tags,id=105566,upgrade=2
+neck=choker_of_the_final_word,id=105480,upgrade=2
 shoulders=spaulders_of_the_fallen_warchief,id=104645,upgrade=2,gems=16crit_16crit,enchant=10str_5crit
-back=tigerclaw_cape,id=98147,upgrade=2,gems=8haste_8crit,enchant=9crit
+back=qianying_fortitude_of_niuzao,id=102250,upgrade=2,gems=16haste_5sta,enchant=9crit
 chest=breastplate_of_shamanic_mirrors,id=105532,upgrade=2,gems=8haste_8crit_8haste_8crit_16crit,enchant=3all
 shirt=precious_ribbon,id=52019
 wrists=bracers_of_blind_hatred,id=105456,upgrade=2,gems=16crit,enchant=9mastery
@@ -72,23 +72,23 @@ hands=gauntlets_of_the_prehistoric_marauder,id=99412,upgrade=2,gems=8haste_8crit
 waist=demolishers_reinforced_belt,id=104513,upgrade=2,gems=8haste_8crit_16crit_16crit
 legs=legplates_of_willful_doom,id=104569,upgrade=2,gems=16crit_16crit_16crit,enchant=14str_8crit
 feet=greaves_of_sublime_superiority,id=105478,upgrade=2,gems=8haste_8crit,enchant=7mastery
-finger1=seal_of_the_forgotten_kings,id=105589,upgrade=2,gems=16crit
-finger2=sorrowpath_signet,id=105436,upgrade=2
+finger1=galakrond_control_band,id=105492,upgrade=2,gems=8haste_8crit_3crit
+finger2=ring_of_the_iron_tomb,id=105536,upgrade=2,gems=8haste_8mastery_3crit
 trinket1=evil_eye_of_galakras,id=105491,upgrade=2
 trinket2=thoks_tail_tip,id=105609,upgrade=2
 main_hand=encapsulated_essence_of_immerseus,id=105417,upgrade=2
 off_hand=shield_of_mockery,id=105481,upgrade=2
 
 # Gear Summary
-# gear_strength=955
+# gear_strength=951
 # gear_agility=3
-# gear_stamina=1528
+# gear_stamina=1533
 # gear_intellect=3
 # gear_spirit=3
-# gear_crit_rating=879
-# gear_haste_rating=297
-# gear_mastery_rating=420
+# gear_crit_rating=787
+# gear_haste_rating=252
+# gear_mastery_rating=430
 # gear_armor=2037
-# gear_bonus_armor=36
+# gear_bonus_armor=180
 # gear_readiness_rating=99
 # tier16_2pc_melee=1
