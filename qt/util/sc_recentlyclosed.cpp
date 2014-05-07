@@ -214,7 +214,7 @@ void SC_RecentlyClosedTabItemModel::rowsAboutToBeRemovedSlot( const QModelIndex&
     QWidget* widget = sibling.data( Qt::UserRole ).value< QWidget* >();
     QWidget* par = sibling.data( Qt::UserRole + 1 ).value< QWidget* >();
     emit( removePreview( widget ) );
-    Q_ASSERT( parent != nullptr );
+    Q_ASSERT( par != nullptr );
     delete par;
 
     setData( sibling, QVariant::fromValue< QWidget* >( nullptr ), Qt::UserRole );
