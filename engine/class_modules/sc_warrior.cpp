@@ -4589,7 +4589,7 @@ double warrior_t::composite_melee_expertise( weapon_t * w ) const
 
 double warrior_t::composite_parry() const
 {
-  double parryriposte = current.stats.parry_rating / current_rating().parry;
+  double parryriposte = player_t::composite_parry();
 
   if ( buff.riposte -> up() )
     parryriposte += cache.attack_crit();

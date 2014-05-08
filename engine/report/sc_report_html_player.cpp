@@ -1046,67 +1046,135 @@ void print_html_stats ( report::sc_html_stream& os, player_t* a )
           0.0 );
       j++;
     }
-
-    os.printf(
-      "\t\t\t\t\t\t\t\t\t<tr%s>\n"
-      "\t\t\t\t\t\t\t\t\t\t<th class=\"left\">Spell Power</th>\n"
-      "\t\t\t\t\t\t\t\t\t\t<td class=\"right\">%.0f</td>\n"
-      "\t\t\t\t\t\t\t\t\t\t<td class=\"right\">%.0f</td>\n"
-      "\t\t\t\t\t\t\t\t\t\t<td class=\"right\">%.0f</td>\n"
-      "\t\t\t\t\t\t\t\t\t</tr>\n",
-      ( j % 2 == 1 ) ? " class=\"odd\"" : "",
-      buffed_stats.spell_power,
-      a -> composite_spell_power( SCHOOL_MAX ) * a -> composite_spell_power_multiplier(),
-      a -> initial.stats.spell_power );
-    j++;
-    os.printf(
-      "\t\t\t\t\t\t\t\t\t<tr%s>\n"
-      "\t\t\t\t\t\t\t\t\t\t<th class=\"left\">Spell Hit</th>\n"
-      "\t\t\t\t\t\t\t\t\t\t<td class=\"right\">%.2f%%</td>\n"
-      "\t\t\t\t\t\t\t\t\t\t<td class=\"right\">%.2f%%</td>\n"
-      "\t\t\t\t\t\t\t\t\t\t<td class=\"right\">%.0f</td>\n"
-      "\t\t\t\t\t\t\t\t\t</tr>\n",
-      ( j % 2 == 1 ) ? " class=\"odd\"" : "",
-      100 * buffed_stats.spell_hit,
-      100 * a -> composite_spell_hit(),
-      a -> initial.stats.hit_rating  );
-    j++;
-    os.printf(
-      "\t\t\t\t\t\t\t\t\t<tr%s>\n"
-      "\t\t\t\t\t\t\t\t\t\t<th class=\"left\">Spell Crit</th>\n"
-      "\t\t\t\t\t\t\t\t\t\t<td class=\"right\">%.2f%%</td>\n"
-      "\t\t\t\t\t\t\t\t\t\t<td class=\"right\">%.2f%%</td>\n"
-      "\t\t\t\t\t\t\t\t\t\t<td class=\"right\">%.0f</td>\n"
-      "\t\t\t\t\t\t\t\t\t</tr>\n",
-      ( j % 2 == 1 ) ? " class=\"odd\"" : "",
-      100 * buffed_stats.spell_crit,
-      100 * a -> composite_spell_crit(),
-      a -> initial.stats.crit_rating );
-    j++;
-    os.printf(
-      "\t\t\t\t\t\t\t\t\t<tr%s>\n"
-      "\t\t\t\t\t\t\t\t\t\t<th class=\"left\">Spell Haste</th>\n"
-      "\t\t\t\t\t\t\t\t\t\t<td class=\"right\">%.2f%%</td>\n"
-      "\t\t\t\t\t\t\t\t\t\t<td class=\"right\">%.2f%%</td>\n"
-      "\t\t\t\t\t\t\t\t\t\t<td class=\"right\">%.0f</td>\n"
-      "\t\t\t\t\t\t\t\t\t</tr>\n",
-      ( j % 2 == 1 ) ? " class=\"odd\"" : "",
-      100 * ( 1 / buffed_stats.spell_haste - 1 ),
-      100 * ( 1 / a -> composite_spell_haste() - 1 ),
-      a -> initial.stats.haste_rating );
-    j++;
-    os.printf(
-      "\t\t\t\t\t\t\t\t\t<tr%s>\n"
-      "\t\t\t\t\t\t\t\t\t\t<th class=\"left\">Spell Speed</th>\n"
-      "\t\t\t\t\t\t\t\t\t\t<td class=\"right\">%.2f%%</td>\n"
-      "\t\t\t\t\t\t\t\t\t\t<td class=\"right\">%.2f%%</td>\n"
-      "\t\t\t\t\t\t\t\t\t\t<td class=\"right\">%.0f</td>\n"
-      "\t\t\t\t\t\t\t\t\t</tr>\n",
-      ( j % 2 == 1 ) ? " class=\"odd\"" : "",
-      100 * ( 1 / buffed_stats.spell_speed - 1 ),
-      100 * ( 1 / a -> composite_spell_speed() - 1 ),
-      a -> initial.stats.haste_rating );
-    j++;
+    if ( buffed_stats.spell_power > 0 )
+    {
+      os.printf(
+        "\t\t\t\t\t\t\t\t\t<tr%s>\n"
+        "\t\t\t\t\t\t\t\t\t\t<th class=\"left\">Spell Power</th>\n"
+        "\t\t\t\t\t\t\t\t\t\t<td class=\"right\">%.0f</td>\n"
+        "\t\t\t\t\t\t\t\t\t\t<td class=\"right\">%.0f</td>\n"
+        "\t\t\t\t\t\t\t\t\t\t<td class=\"right\">%.0f</td>\n"
+        "\t\t\t\t\t\t\t\t\t</tr>\n",
+        ( j % 2 == 1 ) ? " class=\"odd\"" : "",
+        buffed_stats.spell_power,
+        a -> composite_spell_power( SCHOOL_MAX ) * a -> composite_spell_power_multiplier(),
+        a -> initial.stats.spell_power );
+      j++;
+    }
+    if ( a -> composite_melee_crit() == a -> composite_spell_crit() )
+    {
+      os.printf(
+        "\t\t\t\t\t\t\t\t\t<tr%s>\n"
+        "\t\t\t\t\t\t\t\t\t\t<th class=\"left\">Crit</th>\n"
+        "\t\t\t\t\t\t\t\t\t\t<td class=\"right\">%.2f%%</td>\n"
+        "\t\t\t\t\t\t\t\t\t\t<td class=\"right\">%.2f%%</td>\n"
+        "\t\t\t\t\t\t\t\t\t\t<td class=\"right\">%.0f</td>\n"
+        "\t\t\t\t\t\t\t\t\t</tr>\n",
+        ( j % 2 == 1 ) ? " class=\"odd\"" : "",
+        100 * buffed_stats.attack_crit,
+        100 * a -> composite_melee_crit(),
+        a -> initial.stats.crit_rating );
+      j++;
+    }
+    else
+    {
+      os.printf(
+        "\t\t\t\t\t\t\t\t\t<tr%s>\n"
+        "\t\t\t\t\t\t\t\t\t\t<th class=\"left\">Melee Crit</th>\n"
+        "\t\t\t\t\t\t\t\t\t\t<td class=\"right\">%.2f%%</td>\n"
+        "\t\t\t\t\t\t\t\t\t\t<td class=\"right\">%.2f%%</td>\n"
+        "\t\t\t\t\t\t\t\t\t\t<td class=\"right\">%.0f</td>\n"
+        "\t\t\t\t\t\t\t\t\t</tr>\n",
+        ( j % 2 == 1 ) ? " class=\"odd\"" : "",
+        100 * buffed_stats.attack_crit,
+        100 * a -> composite_melee_crit(),
+        a -> initial.stats.crit_rating );
+      j++;
+      os.printf(
+        "\t\t\t\t\t\t\t\t\t<tr%s>\n"
+        "\t\t\t\t\t\t\t\t\t\t<th class=\"left\">Spell Crit</th>\n"
+        "\t\t\t\t\t\t\t\t\t\t<td class=\"right\">%.2f%%</td>\n"
+        "\t\t\t\t\t\t\t\t\t\t<td class=\"right\">%.2f%%</td>\n"
+        "\t\t\t\t\t\t\t\t\t\t<td class=\"right\">%.0f</td>\n"
+        "\t\t\t\t\t\t\t\t\t</tr>\n",
+        ( j % 2 == 1 ) ? " class=\"odd\"" : "",
+        100 * buffed_stats.spell_crit,
+        100 * a -> composite_spell_crit(),
+        a -> initial.stats.crit_rating );
+      j++;
+    }
+    if ( a -> composite_melee_haste() == a -> composite_spell_haste() )
+    {
+      os.printf(
+        "\t\t\t\t\t\t\t\t\t<tr%s>\n"
+        "\t\t\t\t\t\t\t\t\t\t<th class=\"left\">Haste</th>\n"
+        "\t\t\t\t\t\t\t\t\t\t<td class=\"right\">%.2f%%</td>\n"
+        "\t\t\t\t\t\t\t\t\t\t<td class=\"right\">%.2f%%</td>\n"
+        "\t\t\t\t\t\t\t\t\t\t<td class=\"right\">%.0f</td>\n"
+        "\t\t\t\t\t\t\t\t\t</tr>\n",
+        ( j % 2 == 1 ) ? " class=\"odd\"" : "",
+        100 * ( 1 / buffed_stats.attack_haste - 1 ), // Melee/Spell haste have been merged into a single stat.
+        100 * ( 1 / a -> composite_melee_haste() - 1 ),
+        a -> initial.stats.haste_rating );
+      j++;
+    }
+    else
+    {
+      os.printf(
+        "\t\t\t\t\t\t\t\t\t<tr%s>\n"
+        "\t\t\t\t\t\t\t\t\t\t<th class=\"left\">Melee Haste</th>\n"
+        "\t\t\t\t\t\t\t\t\t\t<td class=\"right\">%.2f%%</td>\n"
+        "\t\t\t\t\t\t\t\t\t\t<td class=\"right\">%.2f%%</td>\n"
+        "\t\t\t\t\t\t\t\t\t\t<td class=\"right\">%.0f</td>\n"
+        "\t\t\t\t\t\t\t\t\t</tr>\n",
+        ( j % 2 == 1 ) ? " class=\"odd\"" : "",
+        100 * ( 1 / buffed_stats.attack_haste - 1 ),
+        100 * ( 1 / a -> composite_melee_haste() - 1 ),
+        a -> initial.stats.haste_rating );
+      j++;
+      os.printf(
+        "\t\t\t\t\t\t\t\t\t<tr%s>\n"
+        "\t\t\t\t\t\t\t\t\t\t<th class=\"left\">Spell Haste</th>\n"
+        "\t\t\t\t\t\t\t\t\t\t<td class=\"right\">%.2f%%</td>\n"
+        "\t\t\t\t\t\t\t\t\t\t<td class=\"right\">%.2f%%</td>\n"
+        "\t\t\t\t\t\t\t\t\t\t<td class=\"right\">%.0f</td>\n"
+        "\t\t\t\t\t\t\t\t\t</tr>\n",
+        ( j % 2 == 1 ) ? " class=\"odd\"" : "",
+        100 * ( 1 / buffed_stats.spell_haste - 1 ),
+        100 * ( 1 / a -> composite_spell_haste() - 1 ),
+        a -> initial.stats.haste_rating );
+      j++;
+    }
+    if ( a -> composite_spell_speed() != a -> composite_spell_haste() )
+    {
+      os.printf(
+        "\t\t\t\t\t\t\t\t\t<tr%s>\n"
+        "\t\t\t\t\t\t\t\t\t\t<th class=\"left\">Spell Speed</th>\n"
+        "\t\t\t\t\t\t\t\t\t\t<td class=\"right\">%.2f%%</td>\n"
+        "\t\t\t\t\t\t\t\t\t\t<td class=\"right\">%.2f%%</td>\n"
+        "\t\t\t\t\t\t\t\t\t\t<td class=\"right\">%.0f</td>\n"
+        "\t\t\t\t\t\t\t\t\t</tr>\n",
+        ( j % 2 == 1 ) ? " class=\"odd\"" : "",
+        100 * ( 1 / buffed_stats.spell_speed - 1 ),
+        100 * ( 1 / a -> composite_spell_speed() - 1 ),
+        a -> initial.stats.haste_rating );
+      j++;
+    }
+    if ( a -> composite_melee_speed() != a -> composite_melee_haste() )
+    {
+      os.printf(
+        "\t\t\t\t\t\t\t\t\t<tr%s>\n"
+        "\t\t\t\t\t\t\t\t\t\t<th class=\"left\">Swing Speed</th>\n"
+        "\t\t\t\t\t\t\t\t\t\t<td class=\"right\">%.2f%%</td>\n"
+        "\t\t\t\t\t\t\t\t\t\t<td class=\"right\">%.2f%%</td>\n"
+        "\t\t\t\t\t\t\t\t\t\t<td class=\"right\">%.0f</td>\n"
+        "\t\t\t\t\t\t\t\t\t</tr>\n",
+        ( j % 2 == 1 ) ? " class=\"odd\"" : "",
+        100 * ( 1 / buffed_stats.attack_speed - 1 ),
+        100 * ( 1 / a -> composite_melee_speed() - 1 ),
+        a -> initial.stats.haste_rating );
+      j++;
+    }
     os.printf(
       "\t\t\t\t\t\t\t\t\t<tr%s>\n"
       "\t\t\t\t\t\t\t\t\t\t<th class=\"left\">Multistrike</th>\n"
@@ -1131,77 +1199,35 @@ void print_html_stats ( report::sc_html_stream& os, player_t* a )
       100 * a -> composite_readiness(),
       a -> initial.stats.readiness_rating );
     j++;
-    os.printf(
-      "\t\t\t\t\t\t\t\t\t<tr%s>\n"
-      "\t\t\t\t\t\t\t\t\t\t<th class=\"left\">ManaReg per Second</th>\n"
-      "\t\t\t\t\t\t\t\t\t\t<td class=\"right\">%.0f</td>\n"
-      "\t\t\t\t\t\t\t\t\t\t<td class=\"right\">%.0f</td>\n"
-      "\t\t\t\t\t\t\t\t\t\t<td class=\"right\">0</td>\n"
-      "\t\t\t\t\t\t\t\t\t</tr>\n",
-      ( j % 2 == 1 ) ? " class=\"odd\"" : "",
-      buffed_stats.manareg_per_second,
-      a -> mana_regen_per_second() );
+    if ( buffed_stats.manareg_per_second > 0 )
+    {
+      os.printf(
+        "\t\t\t\t\t\t\t\t\t<tr%s>\n"
+        "\t\t\t\t\t\t\t\t\t\t<th class=\"left\">ManaReg per Second</th>\n"
+        "\t\t\t\t\t\t\t\t\t\t<td class=\"right\">%.0f</td>\n"
+        "\t\t\t\t\t\t\t\t\t\t<td class=\"right\">%.0f</td>\n"
+        "\t\t\t\t\t\t\t\t\t\t<td class=\"right\">0</td>\n"
+        "\t\t\t\t\t\t\t\t\t</tr>\n",
+        ( j % 2 == 1 ) ? " class=\"odd\"" : "",
+        buffed_stats.manareg_per_second,
+        a -> mana_regen_per_second() );
+    }
     j++;
-    os.printf(
-      "\t\t\t\t\t\t\t\t\t<tr%s>\n"
-      "\t\t\t\t\t\t\t\t\t\t<th class=\"left\">Attack Power</th>\n"
-      "\t\t\t\t\t\t\t\t\t\t<td class=\"right\">%.0f</td>\n"
-      "\t\t\t\t\t\t\t\t\t\t<td class=\"right\">%.0f</td>\n"
-      "\t\t\t\t\t\t\t\t\t\t<td class=\"right\">%.0f</td>\n"
-      "\t\t\t\t\t\t\t\t\t</tr>\n",
-      ( j % 2 == 1 ) ? " class=\"odd\"" : "",
-      buffed_stats.attack_power,
-      a -> composite_melee_attack_power() * a -> composite_attack_power_multiplier(),
-      a -> initial.stats.attack_power );
-    j++;
-    os.printf(
-      "\t\t\t\t\t\t\t\t\t<tr%s>\n"
-      "\t\t\t\t\t\t\t\t\t\t<th class=\"left\">Melee Hit</th>\n"
-      "\t\t\t\t\t\t\t\t\t\t<td class=\"right\">%.2f%%</td>\n"
-      "\t\t\t\t\t\t\t\t\t\t<td class=\"right\">%.2f%%</td>\n"
-      "\t\t\t\t\t\t\t\t\t\t<td class=\"right\">%.0f</td>\n"
-      "\t\t\t\t\t\t\t\t\t</tr>\n",
-      ( j % 2 == 1 ) ? " class=\"odd\"" : "",
-      100 * buffed_stats.attack_hit,
-      100 * a -> composite_melee_hit(),
-      a -> initial.stats.hit_rating );
-    j++;
-    os.printf(
-      "\t\t\t\t\t\t\t\t\t<tr%s>\n"
-      "\t\t\t\t\t\t\t\t\t\t<th class=\"left\">Melee Crit</th>\n"
-      "\t\t\t\t\t\t\t\t\t\t<td class=\"right\">%.2f%%</td>\n"
-      "\t\t\t\t\t\t\t\t\t\t<td class=\"right\">%.2f%%</td>\n"
-      "\t\t\t\t\t\t\t\t\t\t<td class=\"right\">%.0f</td>\n"
-      "\t\t\t\t\t\t\t\t\t</tr>\n",
-      ( j % 2 == 1 ) ? " class=\"odd\"" : "",
-      100 * buffed_stats.attack_crit,
-      100 * a -> composite_melee_crit(),
-      a -> initial.stats.crit_rating );
-    j++;
-    os.printf(
-      "\t\t\t\t\t\t\t\t\t<tr%s>\n"
-      "\t\t\t\t\t\t\t\t\t\t<th class=\"left\">Melee Haste</th>\n"
-      "\t\t\t\t\t\t\t\t\t\t<td class=\"right\">%.2f%%</td>\n"
-      "\t\t\t\t\t\t\t\t\t\t<td class=\"right\">%.2f%%</td>\n"
-      "\t\t\t\t\t\t\t\t\t\t<td class=\"right\">%.0f</td>\n"
-      "\t\t\t\t\t\t\t\t\t</tr>\n",
-      ( j % 2 == 1 ) ? " class=\"odd\"" : "",
-      100 * ( 1 / buffed_stats.attack_haste - 1 ),
-      100 * ( 1 / a -> composite_melee_haste() - 1 ),
-      a -> initial.stats.haste_rating );
-    j++;
-    os.printf(
-      "\t\t\t\t\t\t\t\t\t<tr%s>\n"
-      "\t\t\t\t\t\t\t\t\t\t<th class=\"left\">Swing Speed</th>\n"
-      "\t\t\t\t\t\t\t\t\t\t<td class=\"right\">%.2f%%</td>\n"
-      "\t\t\t\t\t\t\t\t\t\t<td class=\"right\">%.2f%%</td>\n"
-      "\t\t\t\t\t\t\t\t\t\t<td class=\"right\">%.0f</td>\n"
-      "\t\t\t\t\t\t\t\t\t</tr>\n",
-      ( j % 2 == 1 ) ? " class=\"odd\"" : "",
-      100 * ( 1 / buffed_stats.attack_speed - 1 ),
-      100 * ( 1 / a -> composite_melee_speed() - 1 ),
-      a -> initial.stats.haste_rating );
-    j++;
+    if ( buffed_stats.attack_power > 0 )
+    {
+      os.printf(
+        "\t\t\t\t\t\t\t\t\t<tr%s>\n"
+        "\t\t\t\t\t\t\t\t\t\t<th class=\"left\">Attack Power</th>\n"
+        "\t\t\t\t\t\t\t\t\t\t<td class=\"right\">%.0f</td>\n"
+        "\t\t\t\t\t\t\t\t\t\t<td class=\"right\">%.0f</td>\n"
+        "\t\t\t\t\t\t\t\t\t\t<td class=\"right\">%.0f</td>\n"
+        "\t\t\t\t\t\t\t\t\t</tr>\n",
+        ( j % 2 == 1 ) ? " class=\"odd\"" : "",
+        buffed_stats.attack_power,
+        a -> composite_melee_attack_power() * a -> composite_attack_power_multiplier(),
+        a -> initial.stats.attack_power );
+      j++;
+    }
     os.printf(
       "\t\t\t\t\t\t\t\t\t<tr%s>\n"
       "\t\t\t\t\t\t\t\t\t\t<th class=\"left\">Mastery</th>\n"
@@ -1229,6 +1255,7 @@ void print_html_stats ( report::sc_html_stream& os, player_t* a )
         100 * a -> composite_melee_expertise( &( a -> main_hand_weapon ) ),
         100 * a -> composite_melee_expertise( &( a -> off_hand_weapon ) ),
         a -> initial.stats.expertise_rating );
+      j++;
     }
     else
     {
@@ -1243,8 +1270,8 @@ void print_html_stats ( report::sc_html_stream& os, player_t* a )
         100 * buffed_stats.mh_attack_expertise,
         100 * a -> composite_melee_expertise( &( a -> main_hand_weapon ) ),
         a -> initial.stats.expertise_rating );
+      j++;
     }
-    j++;
     os.printf(
       "\t\t\t\t\t\t\t\t\t<tr%s>\n"
       "\t\t\t\t\t\t\t\t\t\t<th class=\"left\">Armor</th>\n"
@@ -1257,78 +1284,84 @@ void print_html_stats ( report::sc_html_stream& os, player_t* a )
       a -> composite_armor(),
       a -> initial.stats.armor );
     j++;
-    os.printf(
-      "\t\t\t\t\t\t\t\t\t<tr%s>\n"
-      "\t\t\t\t\t\t\t\t\t\t<th class=\"left\">Bonus Armor</th>\n"
-      "\t\t\t\t\t\t\t\t\t\t<td class=\"right\">%.0f</td>\n"
-      "\t\t\t\t\t\t\t\t\t\t<td class=\"right\">%.0f</td>\n"
-      "\t\t\t\t\t\t\t\t\t\t<td class=\"right\">%.0f</td>\n"
-      "\t\t\t\t\t\t\t\t\t</tr>\n",
-      ( j % 2 == 1 ) ? " class=\"odd\"" : "",
-      buffed_stats.bonus_armor,
-      a -> composite_bonus_armor(),
-      a -> initial.stats.bonus_armor );
-    j++;
-    os.printf(
-      "\t\t\t\t\t\t\t\t\t<tr%s>\n"
-      "\t\t\t\t\t\t\t\t\t\t<th class=\"left\">Tank-Miss</th>\n"
-      "\t\t\t\t\t\t\t\t\t\t<td class=\"right\">%.2f%%</td>\n"
-      "\t\t\t\t\t\t\t\t\t\t<td class=\"right\">%.2f%%</td>\n"
-      "\t\t\t\t\t\t\t\t\t\t<td class=\"right\">%.0f</td>\n"
-      "\t\t\t\t\t\t\t\t\t</tr>\n",
-      ( j % 2 == 1 ) ? " class=\"odd\"" : "",
-      100 * buffed_stats.miss,
-      100 * ( a -> cache.miss() ),
-      0.0  );
-    j++;
-    os.printf(
-      "\t\t\t\t\t\t\t\t\t<tr%s>\n"
-      "\t\t\t\t\t\t\t\t\t\t<th class=\"left\">Tank-Dodge</th>\n"
-      "\t\t\t\t\t\t\t\t\t\t<td class=\"right\">%.2f%%</td>\n"
-      "\t\t\t\t\t\t\t\t\t\t<td class=\"right\">%.2f%%</td>\n"
-      "\t\t\t\t\t\t\t\t\t\t<td class=\"right\">%.0f</td>\n"
-      "\t\t\t\t\t\t\t\t\t</tr>\n",
-      ( j % 2 == 1 ) ? " class=\"odd\"" : "",
-      100 * buffed_stats.dodge,
-      100 * ( a -> composite_dodge() ),
-      a -> initial.stats.dodge_rating );
-    j++;
-    os.printf(
-      "\t\t\t\t\t\t\t\t\t<tr%s>\n"
-      "\t\t\t\t\t\t\t\t\t\t<th class=\"left\">Tank-Parry</th>\n"
-      "\t\t\t\t\t\t\t\t\t\t<td class=\"right\">%.2f%%</td>\n"
-      "\t\t\t\t\t\t\t\t\t\t<td class=\"right\">%.2f%%</td>\n"
-      "\t\t\t\t\t\t\t\t\t\t<td class=\"right\">%.0f</td>\n"
-      "\t\t\t\t\t\t\t\t\t</tr>\n",
-      ( j % 2 == 1 ) ? " class=\"odd\"" : "",
-      100 * buffed_stats.parry,
-      100 * ( a -> composite_parry() ),
-      a -> initial.stats.parry_rating );
-    j++;
-    os.printf(
-      "\t\t\t\t\t\t\t\t\t<tr%s>\n"
-      "\t\t\t\t\t\t\t\t\t\t<th class=\"left\">Tank-Block</th>\n"
-      "\t\t\t\t\t\t\t\t\t\t<td class=\"right\">%.2f%%</td>\n"
-      "\t\t\t\t\t\t\t\t\t\t<td class=\"right\">%.2f%%</td>\n"
-      "\t\t\t\t\t\t\t\t\t\t<td class=\"right\">%.0f</td>\n"
-      "\t\t\t\t\t\t\t\t\t</tr>\n",
-      ( j % 2 == 1 ) ? " class=\"odd\"" : "",
-      100 * buffed_stats.block,
-      100 * a -> composite_block(),
-      a -> initial.stats.block_rating );
-    j++;
-    os.printf(
-      "\t\t\t\t\t\t\t\t\t<tr%s>\n"
-      "\t\t\t\t\t\t\t\t\t\t<th class=\"left\">Tank-Crit</th>\n"
-      "\t\t\t\t\t\t\t\t\t\t<td class=\"right\">%.2f%%</td>\n"
-      "\t\t\t\t\t\t\t\t\t\t<td class=\"right\">%.2f%%</td>\n"
-      "\t\t\t\t\t\t\t\t\t\t<td class=\"right\">%.0f</td>\n"
-      "\t\t\t\t\t\t\t\t\t</tr>\n",
-      ( j % 2 == 1 ) ? " class=\"odd\"" : "",
-      100 * buffed_stats.crit,
-      100 * a -> cache.crit_avoidance(),
-      0.0 );
-    j++;
+    if ( buffed_stats.bonus_armor > 0 )
+    {
+      os.printf(
+        "\t\t\t\t\t\t\t\t\t<tr%s>\n"
+        "\t\t\t\t\t\t\t\t\t\t<th class=\"left\">Bonus Armor</th>\n"
+        "\t\t\t\t\t\t\t\t\t\t<td class=\"right\">%.0f</td>\n"
+        "\t\t\t\t\t\t\t\t\t\t<td class=\"right\">%.0f</td>\n"
+        "\t\t\t\t\t\t\t\t\t\t<td class=\"right\">%.0f</td>\n"
+        "\t\t\t\t\t\t\t\t\t</tr>\n",
+        ( j % 2 == 1 ) ? " class=\"odd\"" : "",
+        buffed_stats.bonus_armor,
+        a -> composite_bonus_armor(),
+        a -> initial.stats.bonus_armor );
+      j++;
+    }
+    if ( a -> primary_role() == ROLE_TANK )
+    {
+      os.printf(
+        "\t\t\t\t\t\t\t\t\t<tr%s>\n"
+        "\t\t\t\t\t\t\t\t\t\t<th class=\"left\">Tank-Miss</th>\n"
+        "\t\t\t\t\t\t\t\t\t\t<td class=\"right\">%.2f%%</td>\n"
+        "\t\t\t\t\t\t\t\t\t\t<td class=\"right\">%.2f%%</td>\n"
+        "\t\t\t\t\t\t\t\t\t\t<td class=\"right\">%.0f</td>\n"
+        "\t\t\t\t\t\t\t\t\t</tr>\n",
+        ( j % 2 == 1 ) ? " class=\"odd\"" : "",
+        100 * buffed_stats.miss,
+        100 * ( a -> cache.miss() ),
+        0.0 );
+      j++;
+      os.printf(
+        "\t\t\t\t\t\t\t\t\t<tr%s>\n"
+        "\t\t\t\t\t\t\t\t\t\t<th class=\"left\">Tank-Dodge</th>\n"
+        "\t\t\t\t\t\t\t\t\t\t<td class=\"right\">%.2f%%</td>\n"
+        "\t\t\t\t\t\t\t\t\t\t<td class=\"right\">%.2f%%</td>\n"
+        "\t\t\t\t\t\t\t\t\t\t<td class=\"right\">%.0f</td>\n"
+        "\t\t\t\t\t\t\t\t\t</tr>\n",
+        ( j % 2 == 1 ) ? " class=\"odd\"" : "",
+        100 * buffed_stats.dodge,
+        100 * ( a -> composite_dodge() ),
+        a -> initial.stats.dodge_rating );
+      j++;
+      os.printf(
+        "\t\t\t\t\t\t\t\t\t<tr%s>\n"
+        "\t\t\t\t\t\t\t\t\t\t<th class=\"left\">Tank-Parry</th>\n"
+        "\t\t\t\t\t\t\t\t\t\t<td class=\"right\">%.2f%%</td>\n"
+        "\t\t\t\t\t\t\t\t\t\t<td class=\"right\">%.2f%%</td>\n"
+        "\t\t\t\t\t\t\t\t\t\t<td class=\"right\">%.0f</td>\n"
+        "\t\t\t\t\t\t\t\t\t</tr>\n",
+        ( j % 2 == 1 ) ? " class=\"odd\"" : "",
+        100 * buffed_stats.parry,
+        100 * ( a -> composite_parry() ),
+        a -> initial.stats.parry_rating );
+      j++;
+      os.printf(
+        "\t\t\t\t\t\t\t\t\t<tr%s>\n"
+        "\t\t\t\t\t\t\t\t\t\t<th class=\"left\">Tank-Block</th>\n"
+        "\t\t\t\t\t\t\t\t\t\t<td class=\"right\">%.2f%%</td>\n"
+        "\t\t\t\t\t\t\t\t\t\t<td class=\"right\">%.2f%%</td>\n"
+        "\t\t\t\t\t\t\t\t\t\t<td class=\"right\">%.0f</td>\n"
+        "\t\t\t\t\t\t\t\t\t</tr>\n",
+        ( j % 2 == 1 ) ? " class=\"odd\"" : "",
+        100 * buffed_stats.block,
+        100 * a -> composite_block(),
+        a -> initial.stats.block_rating );
+      j++;
+      os.printf(
+        "\t\t\t\t\t\t\t\t\t<tr%s>\n"
+        "\t\t\t\t\t\t\t\t\t\t<th class=\"left\">Tank-Crit</th>\n"
+        "\t\t\t\t\t\t\t\t\t\t<td class=\"right\">%.2f%%</td>\n"
+        "\t\t\t\t\t\t\t\t\t\t<td class=\"right\">%.2f%%</td>\n"
+        "\t\t\t\t\t\t\t\t\t\t<td class=\"right\">%.0f</td>\n"
+        "\t\t\t\t\t\t\t\t\t</tr>\n",
+        ( j % 2 == 1 ) ? " class=\"odd\"" : "",
+        100 * buffed_stats.crit,
+        100 * a -> cache.crit_avoidance(),
+        0.0 );
+      j++;
+    }
 
     os << "\t\t\t\t\t\t\t\t</table>\n"
        << "\t\t\t\t\t\t\t</div>\n"
