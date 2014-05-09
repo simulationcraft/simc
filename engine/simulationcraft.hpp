@@ -4317,16 +4317,15 @@ public:
     buff_t* beacon_of_light;
     buff_t* blood_fury;
     buff_t* body_and_soul;
+    buff_t* darkflight;
     buff_t* devotion_aura;
     buff_t* earth_shield;
     buff_t* exhaustion;
     buff_t* grace;
     buff_t* guardian_spirit;
     buff_t* hand_of_sacrifice;
-    buff_t* heroic_presence;
     buff_t* illuminated_healing;
     buff_t* innervate;
-    buff_t* lifeblood;
     buff_t* mongoose_mh;
     buff_t* mongoose_oh;
     buff_t* nitro_boosts;
@@ -4350,9 +4349,6 @@ public:
     buff_t* courageous_primal_diamond_lucidity;
     buff_t* tempus_repit;
     buff_t* fortitude;
-
-    // 5.4 trinkets
-    buff_t* cooldown_reduction;
 
     stat_buff_t* flask;
   } buffs;
@@ -4428,6 +4424,17 @@ public:
   {
     const spell_data_t* quickness;
     const spell_data_t* command;
+    const spell_data_t* arcane_acuity;
+    const spell_data_t* heroic_presence;
+    const spell_data_t* might_of_the_mountain;
+    const spell_data_t* expansive_mind;
+    const spell_data_t* nimble_fingers;
+    const spell_data_t* time_is_money;
+    const spell_data_t* the_human_spirit;
+    const spell_data_t* touch_of_elune;
+    const spell_data_t* brawn;
+    const spell_data_t* endurance;
+    const spell_data_t* viciousness;
   } racials;
 
   bool active_during_iteration;
@@ -4440,7 +4447,6 @@ public:
   virtual void init();
   virtual void override_talent( std::string override_str );
   virtual void init_meta_gem( gear_stats_t& );
-  virtual bool weapon_racial( const weapon_t* ) const;
   virtual void init_resources( bool force = false );
   virtual std::string init_use_item_actions( const std::string& append = std::string() );
   virtual std::string init_use_profession_actions( const std::string& append = std::string() );

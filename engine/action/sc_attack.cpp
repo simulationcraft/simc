@@ -258,9 +258,6 @@ void attack_t::init()
 
   if ( special )
     may_glance = false;
-
-  if ( player -> weapon_racial( weapon ) )
-    base_attack_expertise += 0.01;
 }
 
 // attack_t::reschedule_auto_attack =========================================

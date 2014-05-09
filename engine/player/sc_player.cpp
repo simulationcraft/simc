@@ -987,13 +987,12 @@ void player_t::init_base_stats()
   {
     resources.base_multiplier[ RESOURCE_MANA ] *= 1.02;
   }
-  if ( race == RACE_GNOME )
-  {
-    resources.base_multiplier[ RESOURCE_MANA ] *= 1.05;
-    resources.base_multiplier[ RESOURCE_RAGE ] *= 1.05;
-    resources.base_multiplier[ RESOURCE_ENERGY ] *= 1.05;
-    resources.base_multiplier[ RESOURCE_RUNIC_POWER ] *= 1.05;
-  }
+
+  resources.base_multiplier[ RESOURCE_MANA ] *= 1 + racials.expansive_mind -> effectN( 1 ).percent();
+  resources.base_multiplier[ RESOURCE_RAGE ] *= 1 + racials.expansive_mind -> effectN( 1 ).percent();
+  resources.base_multiplier[ RESOURCE_ENERGY ] *= 1 + racials.expansive_mind -> effectN( 1 ).percent();
+  resources.base_multiplier[ RESOURCE_RUNIC_POWER ] *= 1 + racials.expansive_mind -> effectN( 1 ).percent();
+
 
   if ( level >= 50 && matching_gear )
   {
@@ -1024,32 +1023,6 @@ void player_t::init_base_stats()
 
 }
 
-double stat_gain_mining( int level )
-{
-  if      ( level >= 600 ) return 480.0;
-  else if ( level >= 525 ) return 120.0;
-  else if ( level >= 450 ) return  60.0;
-  else if ( level >= 375 ) return  30.0;
-  else if ( level >= 300 ) return  10.0;
-  else if ( level >= 225 ) return   7.0;
-  else if ( level >= 150 ) return   5.0;
-  else if ( level >=  75 ) return   3.0;
-  return 0.0;
-}
-
-double stat_gain_skinning( int level )
-{
-  if      ( level >= 600 ) return 480.0;
-  else if ( level >= 525 ) return  80.0;
-  else if ( level >= 450 ) return  40.0;
-  else if ( level >= 375 ) return  20.0;
-  else if ( level >= 300 ) return  12.0;
-  else if ( level >= 225 ) return   9.0;
-  else if ( level >= 150 ) return   6.0;
-  else if ( level >=  75 ) return   3.0;
-  return 0.0;
-}
-
 /* Initialzies initial variable from base + gear
  * After player_t::init_initial is executed, you can modify the initial member until combat starts
  */
@@ -1074,16 +1047,6 @@ void player_t::init_initial_stats()
   initial.stats += total_gear;
   if ( sim -> debug )
     sim -> out_debug.printf( "%s: Generic Initial Stats: %s", name(), initial.to_string().c_str() );
-
-
-
-  // Profession bonus
-
-  // Miners gain additional stamina
-  initial.stats.attribute[ ATTR_STAMINA ] += stat_gain_mining( profession[ PROF_MINING ] );
-
-  // Skinners gain additional crit rating
-  initial.stats.crit_rating += stat_gain_skinning( profession[ PROF_SKINNING ] );
 }
 // player_t::init_items =====================================================
 
@@ -1257,13 +1220,6 @@ void player_t::init_race()
       race_str = util::race_type_string( race );
     }
   }
-}
-
-// player_t::weapon_racial ==================================================
-
-bool player_t::weapon_racial( const weapon_t* ) const // Remove completely for WoD
-{
-  return false;
 }
 
 // player_t::init_defense ===================================================
@@ -1557,27 +1513,13 @@ std::vector<std::string> player_t::get_item_actions()
 std::string player_t::init_use_profession_actions( const std::string& append )
 {
   std::string buffer;
-
-  // Lifeblood
-  if ( profession[ PROF_HERBALISM ] >= 1 )
-  {
-    buffer += "/lifeblood";
-
-    if ( ! append.empty() )
-    {
-      buffer += append;
-    }
-  }
-
+  
   return buffer;
 }
 
 std::vector<std::string> player_t::get_profession_actions()
 {
   std::vector<std::string> actions;
-
-  if ( profession[ PROF_HERBALISM ] >= 1 )
-    actions.push_back( "lifeblood" );
 
   return actions;
 }
@@ -1831,8 +1773,19 @@ void player_t::init_spells()
   if ( sim -> debug )
     sim -> out_debug.printf( "Initializing spells for player (%s)", name() );
 
-  racials.quickness = find_racial_spell( "Quickness" );
-  racials.command   = find_racial_spell( "Command" );
+  racials.quickness               = find_racial_spell( "Quickness" );
+  racials.command                 = find_racial_spell( "Command" );
+  racials.arcane_acuity           = find_racial_spell( "Arcane Acuity" );
+  racials.heroic_presence         = find_racial_spell( "Heroic Presence" );
+  racials.might_of_the_mountain   = find_racial_spell( "Might of the Mountain" );
+  racials.expansive_mind          = find_racial_spell( "Expansive Mind" );
+  racials.nimble_fingers          = find_racial_spell( "Nimble Fingers" );
+  racials.time_is_money           = find_racial_spell( "Time is Money" );
+  racials.the_human_spirit        = find_racial_spell( "The Human Spirit" );
+  racials.touch_of_elune          = find_racial_spell( "Touch of Elune" );
+  racials.brawn                   = find_racial_spell( "Brawn" );
+  racials.endurance               = find_racial_spell( "Endurance" );
+  racials.viciousness             = find_racial_spell( "Viciousness" );
 
   if ( ! is_enemy() )
   {
@@ -2285,7 +2238,6 @@ void player_t::create_buffs()
     {
       // Racials
       buffs.berserking                = haste_buff_creator_t( this, "berserking", find_spell( 26297 ) ).add_invalidate( CACHE_HASTE );
-      buffs.heroic_presence           = buff_creator_t( this, "heroic_presence" ).max_stack( 1 ).add_invalidate( CACHE_HIT );
       buffs.stoneform                 = buff_creator_t( this, "stoneform", find_spell( 65116 ) );
       buffs.blood_fury                = stat_buff_creator_t( this, "blood_fury" )
                                         .spell( find_racial_spell( "Blood Fury" ) )
@@ -2296,32 +2248,6 @@ void player_t::create_buffs()
 
       // Legendary meta haste buff
       buffs.tempus_repit              = buff_creator_t( this, "tempus_repit", find_spell( 137590 ) ).add_invalidate( CACHE_HASTE ).activated( false );
-
-      // Profession buffs
-      double lb_amount = 0.0;
-      if      ( profession[ PROF_HERBALISM ] >= 600 )
-        lb_amount = 2880;
-      else if ( profession[ PROF_HERBALISM ] >= 525 )
-        lb_amount = 480;
-      else if ( profession[ PROF_HERBALISM ] >= 450 )
-        lb_amount = 240;
-      else if ( profession[ PROF_HERBALISM ] >= 375 )
-        lb_amount = 120;
-      else if ( profession[ PROF_HERBALISM ] >= 300 )
-        lb_amount = 70;
-      else if ( profession[ PROF_HERBALISM ] >= 225 )
-        lb_amount = 55;
-      else if ( profession[ PROF_HERBALISM ] >= 150 )
-        lb_amount = 35;
-      else if ( profession[ PROF_HERBALISM ] >= 75 )
-        lb_amount = 15;
-      else if ( profession[ PROF_HERBALISM ] >= 1 )
-        lb_amount = 5;
-
-      buffs.lifeblood = stat_buff_creator_t( this, "lifeblood" )
-                        .max_stack( 1 )
-                        .duration( timespan_t::from_seconds( 20.0 ) )
-                        .add_stat( STAT_HASTE_RATING, lb_amount );
 
       // Vengeance
       buffs.vengeance = buff_creator_t( this, "vengeance" )
@@ -2372,11 +2298,10 @@ void player_t::create_buffs()
       potion_buffs.virmens_bite = potion_buff_creator( this, "virmens_bite_potion" )
                                   .spell( find_spell( 105697 ) );
 
-    buffs.cooldown_reduction = buff_creator_t( this, "cooldown_reduction" )
-                               .chance( 0 )
-                               .default_value( 1 );
+    buffs.darkflight         = buff_creator_t( this, "darkflight", find_racial_spell( "darkflight" ) );
 
     buffs.nitro_boosts       = buff_creator_t( this, "nitro_boosts", find_spell( 54861 ) );
+
     debuffs.dazed            = buff_creator_t( this, "dazed", find_spell( 15571 ) );
     }
 
@@ -2471,8 +2396,9 @@ double player_t::composite_melee_haste() const
     if ( buffs.berserking -> up() )
       h *= 1.0 / ( 1.0 + buffs.berserking -> data().effectN( 1 ).percent() );
 
-    if ( race == RACE_GOBLIN || race == RACE_GNOME )
-      h *= 1.0 / ( 1.0 + 0.01 );
+    h *= 1.0 / ( 1.0 + racials.nimble_fingers -> effectN( 1 ).percent() );
+    h *= 1.0 / ( 1.0 + racials.time_is_money -> effectN( 1 ).percent() );
+    // h *= 1.0 / ( 1.0 + racials.touch_of_elune -> effectN( 1 ).percent() );
 
   }
 
@@ -2481,7 +2407,7 @@ double player_t::composite_melee_haste() const
 
 // player_t::composite_attack_speed =========================================
 
-double player_t::composite_melee_speed() const // Attack speed buff has been changed to attack haste.
+double player_t::composite_melee_speed() const 
 {
   double h = composite_melee_haste();
 
@@ -2494,7 +2420,7 @@ double player_t::composite_melee_attack_power() const
 {
   double ap = current.stats.attack_power;
 
-  ap += current.attack_power_per_strength * ( cache.strength() - 10 );
+  ap += current.attack_power_per_strength * ( cache.strength() - 10 ); //Check to see if 10 is still subtracted in WoD.
   ap += current.attack_power_per_agility  * ( cache.agility() - 10 );
   
   return ap;
@@ -2524,8 +2450,10 @@ double player_t::composite_melee_crit() const
   if ( ! is_pet() && ! is_enemy() && ! is_add() && sim -> auras.critical_strike -> check() )
     ac += sim -> auras.critical_strike -> value();
 
-  if ( race == RACE_WORGEN || race == RACE_BLOOD_ELF )
-    ac += 0.01;
+
+    ac += racials.viciousness -> effectN( 1 ).percent();
+    ac += racials.arcane_acuity -> effectN( 1 ).percent();
+ // ac += racials.touch_of_elune -> effectN( 1 ).percent();
 
   return ac;
 }
@@ -2703,9 +2631,10 @@ double player_t::composite_spell_haste() const
     if ( sim -> auras.haste -> check() )
       h *= 1.0 / ( 1.0 + sim -> auras.haste -> value() );
 
-    if ( race == RACE_GOBLIN || race == RACE_GNOME )
-      h *= 1.0 / ( 1.0 + 0.01 );
 
+    h *= 1.0 / ( 1.0 + racials.nimble_fingers -> effectN( 1 ).percent() );
+    h *= 1.0 / ( 1.0 + racials.time_is_money -> effectN( 1 ).percent() );
+  //h *= 1.0 / ( 1.0 + racials.touch_of_elune -> effectN( 1 ).percent() );
   }
 
   return h;
@@ -2726,7 +2655,7 @@ double player_t::composite_spell_power( school_e /* school */ ) const
 {
   double sp = current.stats.spell_power;
 
-  sp += current.spell_power_per_intellect * ( cache.intellect() - 10 ); // The spellpower is always lower by 10, cata beta build 12803
+  sp += current.spell_power_per_intellect * ( cache.intellect() - 10 ); // Check in WoD if 10 is subtracted still.
 
   return sp;
 }
@@ -2760,9 +2689,9 @@ double player_t::composite_spell_crit() const
       sc += sim -> auras.critical_strike -> value();
   }
 
-  if ( race == RACE_WORGEN || race == RACE_BLOOD_ELF )
-    sc += 0.01;
-
+  sc += racials.viciousness -> effectN( 1 ).percent();
+  sc += racials.arcane_acuity -> effectN( 1 ).percent();
+  // sc += racials.touch_of_elune -> effectN( 1 ).percent();
   return sc;
 }
 
@@ -2850,8 +2779,8 @@ double player_t::composite_player_critical_damage_multiplier() const
 {
   double m = 1.0;
 
-  if ( race == RACE_TAUREN || race == RACE_DWARF )
-    m += 0.02;
+  m += racials.brawn -> effectN( 1 ).percent();
+  m += racials.might_of_the_mountain -> effectN( 1 ).percent();
 
   return m;
 }
@@ -2860,8 +2789,8 @@ double player_t::composite_player_critical_healing_multiplier() const
 {
   double m = 1.0;
 
-  if ( race == RACE_TAUREN || race == RACE_DWARF )
-    m += 0.02;
+  m += racials.brawn -> effectN( 1 ).percent();
+  m += racials.might_of_the_mountain -> effectN( 1 ).percent();
 
   return m;
 }
@@ -2875,6 +2804,9 @@ double player_t::composite_player_critical_healing_multiplier() const
 double player_t::temporary_movement_modifier() const
 {
   double temporary = 0;
+
+  if ( buffs.darkflight -> up() )
+    temporary = std::max( buffs.darkflight -> data().effectN( 1 ).percent(), temporary );
 
   if ( buffs.nitro_boosts -> up() )
     temporary = std::max( buffs.nitro_boosts -> data().effectN( 1 ).percent(), temporary );
@@ -2897,6 +2829,8 @@ double player_t::passive_movement_modifier() const
 {
   double passive = passive_modifier;
 
+  passive += racials.quickness -> effectN( 2 ).percent();
+
   return passive;
 }
 
@@ -2908,22 +2842,15 @@ double player_t::composite_movement_speed() const
 
   double temporary = temporary_movement_modifier();
 
-  // From http://www.wowpedia.org/Movement_speed_effects
-  // Additional items looked up
-
   // Pursuit of Justice, Quickening: 8%/15%
 
   // DK: Unholy Presence: 15%
-
-  // Druid: Feral Swiftness: 15%/30%
 
   // Aspect of the Cheetah/Pack: 30%, with talent Pathfinding +34%/38%
 
   // Shaman Ghost Wolf: 30%, with Glyph 35%
 
   // Druid: Travel Form 40%
-
-  // Druid: Dash: 50/60/70
 
   // Mage: Blazing Speed: 5%/10% chance after being hit for 50% for 8 sec
   //       Improved Blink: 35%/70% for 3 sec after blink
@@ -2952,20 +2879,16 @@ double player_t::composite_attribute( attribute_e attr ) const
   switch ( attr )
   {
     case ATTR_INTELLECT:
-     if ( race == RACE_DRAENEI )
-        a += 300; // Placeholder value, until we know more.
+        a += racials.heroic_presence -> effectN( 3 ).base_value();
       break;
     case ATTR_STRENGTH:
-      if ( race == RACE_DRAENEI )
-        a += 300;
+        a += racials.heroic_presence -> effectN( 1 ).base_value();
       break;
     case ATTR_AGILITY:
-      if ( race == RACE_DRAENEI )
-        a += 300;
+        a += racials.heroic_presence -> effectN( 2 ).base_value();
       break;
     case ATTR_STAMINA:
-      if ( race == RACE_TAUREN )
-        a += 450;
+        a += racials.endurance -> effectN( 1 ).base_value();
       break;
     default:
       break;
@@ -3808,9 +3731,6 @@ void player_t::arise()
     sim -> active_allies++;
     sim -> player_non_sleeping_list.push_back( this );
   }
-
-  if ( ! is_enemy() && ! is_pet() )
-    buffs.cooldown_reduction -> trigger();
 
   if ( has_foreground_actions( *this ) )
     schedule_ready();
@@ -5415,6 +5335,24 @@ struct blood_fury_t : public racial_spell_t
   }
 };
 
+// Darkflight ==============================================================
+
+struct darkflight_t : public racial_spell_t
+{
+  darkflight_t( player_t* p, const std::string& options_str ) :
+    racial_spell_t( p, "darkflight", p -> find_racial_spell( "Darkflight" ), options_str )
+  {
+    parse_options( NULL, options_str );
+  }
+
+  virtual void execute()
+  {
+    racial_spell_t::execute();
+
+    player -> buffs.darkflight -> trigger();
+  }
+};
+
 // Rocket Barrage ===========================================================
 
 struct rocket_barrage_t : public racial_spell_t
@@ -5441,48 +5379,6 @@ struct stoneform_t : public racial_spell_t
     racial_spell_t::execute();
 
     player -> buffs.stoneform -> trigger();
-  }
-};
-
-// Lifeblood ================================================================
-
-struct lifeblood_t : public spell_t
-{
-  lifeblood_t( player_t* player, const std::string& options_str ) :
-    spell_t( "lifeblood", player )
-  {
-    parse_options( NULL, options_str );
-    harmful = false;
-    trigger_gcd = timespan_t::zero();
-    cooldown -> duration = timespan_t::from_seconds( 120 );
-  }
-
-  void init()
-  {
-    spell_t::init();
-
-    if ( player -> profession[ PROF_HERBALISM ] < 450 )
-    {
-      sim -> errorf( "Player %s attempting to execute action %s without Herbalism.\n",
-                     player -> name(), name() );
-
-      background = true; // prevent action from being executed
-    }
-  }
-
-  virtual void execute()
-  {
-    spell_t::execute();
-
-    player -> buffs.lifeblood -> trigger();
-  }
-
-  virtual bool ready()
-  {
-    if ( player -> profession[ PROF_HERBALISM ] < 450 )
-      return false;
-
-    return spell_t::ready();
   }
 };
 
@@ -6157,11 +6053,11 @@ action_t* player_t::create_action( const std::string& name,
   if ( name == "arcane_torrent"     ) return new     arcane_torrent_t( this, options_str );
   if ( name == "berserking"         ) return new         berserking_t( this, options_str );
   if ( name == "blood_fury"         ) return new         blood_fury_t( this, options_str );
+  if ( name == "darkflight"         ) return new         darkflight_t( this, options_str );
   if ( name == "shadowmeld"         ) return new         shadowmeld_t( this, options_str );
   if ( name == "cancel_buff"        ) return new        cancel_buff_t( this, options_str );
   if ( name == "swap_action_list"   ) return new   swap_action_list_t( this, options_str );
   if ( name == "run_action_list"    ) return new    run_action_list_t( this, options_str );
-  if ( name == "lifeblood"          ) return new          lifeblood_t( this, options_str );
   if ( name == "restart_sequence"   ) return new   restart_sequence_t( this, options_str );
   if ( name == "restore_mana"       ) return new       restore_mana_t( this, options_str );
   if ( name == "rocket_barrage"     ) return new     rocket_barrage_t( this, options_str );

@@ -253,10 +253,6 @@ double pet_t::hit_exp() const
 
   h_e += owner -> cache.attack_expertise();
 
-  if ( owner -> weapon_racial( &( owner -> main_hand_weapon ) ) ||
-       owner -> weapon_racial( &( owner ->  off_hand_weapon ) ) )
-    h_e += 0.01;
-
   return h_e * 0.50; // attack and spell hit are equal in MoP
 }
 
