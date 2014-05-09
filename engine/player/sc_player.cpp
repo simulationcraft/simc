@@ -2377,6 +2377,7 @@ void player_t::create_buffs()
                                .default_value( 1 );
 
     buffs.nitro_boosts       = buff_creator_t( this, "nitro_boosts", find_spell( 54861 ) );
+    debuffs.dazed            = buff_creator_t( this, "dazed", find_spell( 15571 ) );
     }
 
   }
@@ -2396,7 +2397,6 @@ void player_t::create_buffs()
   buffs.self_movement = buff_creator_t( this, "self_movement" ).max_stack( 1 );
 
   // Infinite-Stacking Buffs and De-Buffs
-
   buffs.stunned        = buff_creator_t( this, "stunned" ).max_stack( 1 );
   debuffs.bleeding     = buff_creator_t( this, "bleeding" ).max_stack( 1 );
   debuffs.casting      = buff_creator_t( this, "casting" ).max_stack( 1 ).quiet( 1 );
@@ -2933,7 +2933,13 @@ double player_t::composite_movement_speed() const
 
   // Swiftness Potion: 50%
 
-  return speed * ( 1 + passive + temporary );
+  speed *= ( 1 + passive + temporary );
+
+  // Movement speed snares are multiplicative, works similarly to temporary speed boosts in that only the highest value counts. 
+  if ( debuffs.dazed -> up() )
+    speed *= debuffs.dazed -> data().effectN( 1 ).percent();
+
+  return speed;
   }
 
 // player_t::composite_attribute ============================================

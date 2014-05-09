@@ -1372,6 +1372,9 @@ void action_t::assess_damage( dmg_e    type,
   if ( sim -> debug )
     s -> debug();
 
+  if ( s -> result_total > 0 && s -> target -> buffs.aspect_of_the_pack -> check() ) // Aspect of the daze.
+    s -> target -> debuffs.dazed -> trigger();
+
   if ( type == DMG_DIRECT )
   {
     if ( sim -> log )

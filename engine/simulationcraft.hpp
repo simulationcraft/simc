@@ -4381,6 +4381,7 @@ public:
     debuff_t* forbearance;
     debuff_t* invulnerable;
     debuff_t* vulnerable;
+    debuff_t* dazed;
 
     // MoP debuffs
     debuff_t* magic_vulnerability;
