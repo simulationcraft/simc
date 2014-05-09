@@ -1239,7 +1239,9 @@ void player_t::init_defense()
   if ( ! is_pet() && primary_role() == ROLE_TANK )
   {
     collected_data.health_changes.collect = true;
+    collected_data.health_changes.set_bin_size( sim -> tmi_bin_size );
     collected_data.health_changes_tmi.collect = true;
+    collected_data.health_changes_tmi.set_bin_size( sim -> tmi_bin_size );
   }
 
   // Armor Coefficient
@@ -9527,7 +9529,7 @@ double player_collected_data_t::calculate_tmi( const health_changes_timeline_t& 
 
   for ( size_t j = 0, size = weighted_value.size(); j < size; j++ )
   {
-    // weighted_value is the moving average (i.e. 1-second), so multiplly by window size to get damage in "window" seconds
+    // weighted_value is the moving average (i.e. 1-second), so multiply by window size to get damage in "window" seconds
     weighted_value[ j ] *= window;
 
     // calculate exponentially-weighted contribution of this data point using filter strength D
@@ -9539,8 +9541,9 @@ double player_collected_data_t::calculate_tmi( const health_changes_timeline_t& 
 
   // multiply by vertical offset factor c2
   tmi *= c2;
-  // normalize for fight length
+  // normalize for fight length - should be equivalent to dividing by tl.timeline_normalized.data().size()
   tmi /= f_length;
+  tmi *= tl.get_bin_size();
   // take log of result
   tmi = std::log( tmi );
   // multiply by health decade scale factor
@@ -9632,7 +9635,7 @@ void player_collected_data_t::collect_data( const player_t& p )
       if ( f_length )
       {
         // define constants and variables
-        int window = (int) std::floor( ( p.tmi_window ) / 1.0 + 0.5 ); // window size, bin time replaces 1 eventually
+        int window = (int) std::floor( p.tmi_window / health_changes_tmi.get_bin_size() + 0.5 ); // window size, bin time replaces 1 eventually
 
         // Standard TMI uses health_changes_tmi, ignoring externals - use health_changes_tmi
         tmi = calculate_tmi( health_changes_tmi, window, f_length, p );

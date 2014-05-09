@@ -87,12 +87,23 @@ struct sc_timeline_t : public timeline_t
 {
   typedef timeline_t base_t;
   using timeline_t::add;
+  double bin_size;
 
-  sc_timeline_t() : timeline_t() {}
+  sc_timeline_t() : timeline_t(), bin_size( 1.0 ) {}
+
+  // methods to modify/retrieve the bin size
+  void set_bin_size( double bin )
+  {
+    bin_size = bin;
+  }
+  double get_bin_size() const
+  {
+    return bin_size;
+  }
 
   // Add 'value' at the corresponding time
   void add( timespan_t current_time, double value )
-  { base_t::add( static_cast<size_t>( current_time.total_millis() / 1000 ), value ); }
+  { base_t::add( static_cast<size_t>( current_time.total_millis() / 1000 / bin_size ), value ); }
 
   void build_derivative_timeline( sc_timeline_t& out ) const
   { base_t::build_sliding_average_timeline( out, 20 ); }
@@ -2443,6 +2454,7 @@ struct sim_t : public core_sim_t, private sc_thread_t
   int         max_aoe_enemies;
   bool        show_etmi;
   double      tmi_window_global;
+  double      tmi_bin_size;
 
   // Target options
   double      target_death_pct;
@@ -3800,6 +3812,24 @@ struct player_collected_data_t
     sc_timeline_t merged_timeline;
     bool collect; // whether we collect all this or not.
     health_changes_timeline_t() : previous_loss_level( 0.0 ), previous_gain_level( 0.0 ), collect( false ) {}
+
+    void set_bin_size( double bin )
+    {
+      timeline.set_bin_size( bin );
+      timeline_normalized.set_bin_size( bin );
+      merged_timeline.set_bin_size( bin );
+    }
+
+    double get_bin_size() const
+    {
+      if ( timeline.get_bin_size() != timeline_normalized.get_bin_size() || timeline.get_bin_size() != merged_timeline.get_bin_size() )
+      {
+        assert( false );
+        return 0.0;
+      }
+      else
+        return timeline.get_bin_size();
+    }           
   };
 
   health_changes_timeline_t health_changes;     //records all health changes
