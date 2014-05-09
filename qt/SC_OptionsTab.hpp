@@ -50,7 +50,7 @@ public:
     QComboBox* default_role;
     QComboBox* tmi_boss;
     QComboBox* tmi_window;
-    QComboBox* tmi_actor_only;
+    QComboBox* show_etmi;
     QComboBox* debug;
     QComboBox* report_pets;
     QComboBox* print_style;
