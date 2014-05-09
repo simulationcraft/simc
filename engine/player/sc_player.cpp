@@ -9460,8 +9460,8 @@ void player_collected_data_t::analyze( const player_t& p )
   health_changes_tmi.merged_timeline.adjust( p.sim -> divisor_timeline );
 }
 
-//TODO: Figure out if this is still needed, and if so, how to make it useful given that it has no way to distinguish between TMI and ETMI calls of calculate_tmi()
-void player_collected_data_t::print_tmi_debug_csv( const sc_timeline_t* ma, const sc_timeline_t* nma, const std::vector<double>& wv, const player_t& p )
+//This is pretty much only useful for dev debugging at this point, would need to modify to make it useful to users
+void player_collected_data_t::print_tmi_debug_csv( const sc_timeline_t* nma, const std::vector<double>& wv, const player_t& p )
 {
   if ( ! p.tmi_debug_file_str.empty() )
   {
@@ -9470,7 +9470,7 @@ void player_collected_data_t::print_tmi_debug_csv( const sc_timeline_t* ma, cons
     // write elements to CSV
     f << p.name_str << " TMI data:\n";
 
-    f << "damage,healing,health chg,norm health chg,mov avg,norm mov avg, weighted val\n";
+    f << "damage,healing,health chg,norm health chg,norm mov avg, weighted val\n";
 
     for ( size_t i = 0; i < health_changes.timeline.data().size(); i++ )
     {
@@ -9478,7 +9478,6 @@ void player_collected_data_t::print_tmi_debug_csv( const sc_timeline_t* ma, cons
           timeline_healing_taken.data()[ i ],
           health_changes.timeline.data()[ i ],
           health_changes.timeline_normalized.data()[ i ],
-          ma -> data()[ i ],
           nma -> data()[ i ],
           wv[ i ] );
     }
@@ -9554,7 +9553,7 @@ double player_collected_data_t::calculate_tmi( const health_changes_timeline_t& 
 
   // if an output file has been defined, write to it 
   if ( ! p.tmi_debug_file_str.empty() )
-    print_tmi_debug_csv( &sliding_average_tl, &sliding_average_tl, weighted_value, p );
+    print_tmi_debug_csv( &sliding_average_tl, weighted_value, p );
 
   return tmi;
 
