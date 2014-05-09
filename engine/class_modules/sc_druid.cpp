@@ -2060,9 +2060,10 @@ public:
       if ( td( s.target ) -> dots.rip -> ticking &&
            td( s.target ) -> dots.rip -> added_ticks < 4 )
       {
-        // In-game adds 3 seconds per extend, to model we'll add 1/2/1 ticks. Can't use extend_duration_seconds for this since it rounds down to ticks.
+        /*// In-game adds 3 seconds per extend, to model we'll add 1/2/1 ticks. Can't use extend_duration_seconds for this since it rounds down to ticks.
         int extra_ticks = ( td( s.target ) -> dots.rip -> added_ticks % 3 ) ? 2 : 1;
-        td( s.target ) -> dots.rip -> extend_duration( extra_ticks, false, 0 );
+        td( s.target ) -> dots.rip -> extend_duration( extra_ticks, false, 0 );*/
+        td( s.target ) -> dots.rip -> extend_duration( timespan_t::from_seconds( 3.0 ), timespan_t::min(), 0 );
       }
     }
   }
@@ -4068,7 +4069,7 @@ struct druid_spell_t : public druid_spell_base_t<spell_t>
          && p() -> spec.eclipse -> ok()
          && dot -> ticking )
 
-      dot -> extend_duration_seconds( timespan_t::from_seconds( 2 ), STATE_HASTE );
+      dot -> extend_duration( timespan_t::from_seconds( 2 ), STATE_HASTE );
   }
 
   void trigger_t16_2pc_balance( bool nature = false )

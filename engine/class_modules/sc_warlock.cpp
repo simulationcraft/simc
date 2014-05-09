@@ -1713,14 +1713,12 @@ public:
     dot -> state = tmp_state;
   }
 
-  void extend_dot( dot_t* dot, int ticks )
+  void extend_dot( dot_t* dot, timespan_t extend_duration )
   {
     if ( dot -> ticking )
     {
       //FIXME: This is roughly how it works, but we need more testing
-      int max_ticks = ( int ) util::ceil( dot -> current_action -> hasted_num_ticks( p() -> cache.spell_speed() ) * 1.5 );
-      int extend_ticks = std::min( ticks, max_ticks - dot -> ticks() );
-      if ( extend_ticks > 0 ) dot -> extend_duration( extend_ticks );
+      dot -> extend_duration( extend_duration, dot -> current_action -> dot_duration * 1.5 );
     }
   }
 
@@ -3180,7 +3178,7 @@ struct touch_of_chaos_t : public warlock_spell_t
     if ( result_is_hit( s -> result ) )
     {
       trigger_soul_leech( p(), s -> result_amount * p() -> talents.soul_leech -> effectN( 1 ).percent() );
-      extend_dot( td( s -> target ) -> dots_corruption, 4 );
+      extend_dot( td( s -> target ) -> dots_corruption, 4 * base_tick_time );
     }
   }
 

@@ -5177,6 +5177,7 @@ struct action_t : public noncopyable
   } attack_power_mod, spell_power_mod;
   timespan_t base_execute_time;
   timespan_t base_tick_time;
+  timespan_t dot_duration;
   std::array< double, RESOURCE_MAX > base_costs;
   std::array< int, RESOURCE_MAX > costs_per_second;
   double base_dd_min, base_dd_max, base_td;
@@ -5828,23 +5829,26 @@ public:
   int num_ticks, current_tick, added_ticks;
   bool ticking;
   timespan_t added_seconds;
-  timespan_t ready;
   timespan_t miss_time;
   timespan_t time_to_tick;
+  timespan_t last_start;
+  timespan_t current_duration;
   const std::string name_str;
   double tick_amount;
 
   dot_t( const std::string& n, player_t* target, player_t* source );
 
   void   cancel();
-  void   extend_duration( int extra_ticks, bool cap = false, uint32_t state_flags = -1 );
-  void   extend_duration_seconds( timespan_t extra_seconds, uint32_t state_flags = -1 );
-  void   recalculate_ready();
+  void   extend_duration( timespan_t extra_seconds, timespan_t max_total_time = timespan_t::min(), uint32_t state_flags = -1 );
+  void   extend_duration( timespan_t extra_seconds, uint32_t state_flags )
+  { extend_duration( extra_seconds, timespan_t::min(), state_flags ); }
   void   refresh_duration( uint32_t state_flags = -1 );
   void   reset();
   void   last_tick();
+  void   tick();
   void   schedule_tick();
-  int    ticks();
+  void   start( timespan_t duration );
+  int    ticks_left();
   void   copy( player_t* destination );
   bool   is_higher_priority_action_available();
 
@@ -5852,7 +5856,7 @@ public:
   {
     if ( ! current_action ) return timespan_t::zero();
     if ( ! ticking ) return timespan_t::zero();
-    return ready - sim.current_time;
+    return last_start + current_duration - sim.current_time;
   };
 
   expr_t* create_expression( action_t* action, const std::string& name_str, bool dynamic );
@@ -6682,8 +6686,8 @@ public:
     ab::impact( s );
 
     dot_t* dot = ab::get_dot( s -> target );
-    assert( dot -> ticking && dot -> ticks() && "No dot has been triggered for ignite_pct_based_action!" );
-    ab::base_td = saved_impact_dmg / dot -> ticks();
+    assert( dot -> ticking && dot -> ticks_left() && "No dot has been triggered for ignite_pct_based_action!" );
+    ab::base_td = saved_impact_dmg / dot -> ticks_left();
   }
 
   virtual timespan_t travel_time() const
@@ -6751,12 +6755,12 @@ struct residual_dot_action : public Action
     assert( ! Action::tick_zero );
     dot_t* dot = Action::get_dot( s -> target );
     if ( dot -> ticking )
-      dot -> tick_amount *= dot -> ticks();
+      dot -> tick_amount *= dot -> ticks_left();
     else
       dot -> tick_amount = 0;
     dot -> tick_amount += s -> result_amount;
     Action::trigger_dot( s );
-    dot -> tick_amount /= dot -> ticks();
+    dot -> tick_amount /= dot -> ticks_left();
   }
 
   virtual timespan_t travel_time() const

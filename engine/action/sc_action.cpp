@@ -304,6 +304,7 @@ action_t::action_t( action_e       ty,
   spell_power_mod(),
   base_execute_time( timespan_t::zero() ),
   base_tick_time( timespan_t::zero() ),
+  dot_duration( timespan_t::zero() ),
   time_to_execute( timespan_t::zero() ),
   time_to_travel( timespan_t::zero() ),
   target_specific_dot( false ),
@@ -543,6 +544,7 @@ void action_t::parse_effect_data( const spelleffect_data_t& spelleffect_data )
           {
             base_tick_time   = spelleffect_data.period();
             num_ticks        = ( int ) ( spelleffect_data.spell() -> duration() / base_tick_time );
+            dot_duration = spelleffect_data.spell() -> duration();
           }
           break;
         case A_SCHOOL_ABSORB:
@@ -1223,8 +1225,6 @@ void action_t::multistrike( action_state_t* state, dmg_e type )
 
 void action_t::tick( dot_t* d )
 {
-  if ( sim -> debug )
-    sim -> out_debug.printf( "%s ticks (%d of %d)", name(), d -> current_tick, d -> num_ticks );
 
   if ( tick_action )
   {
@@ -2472,13 +2472,8 @@ void action_t::trigger_dot( action_state_t* s )
       else b -> start( 1, 1.0 );
     }
 
-    dot -> schedule_tick();
+    dot -> start( dot_duration );
   }
-  dot -> recalculate_ready();
-
-  if ( sim -> debug )
-    sim -> out_debug.printf( "%s extends dot-ready to %.2f for %s (%s)",
-                   player -> name(), dot -> ready.total_seconds(), name(), dot -> name() );
 }
 
 bool action_t::has_travel_events_for( const player_t* target ) const

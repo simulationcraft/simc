@@ -2789,7 +2789,7 @@ struct inferno_blast_t : public mage_spell_t
         {
           if ( td( t ) -> dots.ignite -> ticking ) //is already ticking on target spell, so merge it
           {
-            p() -> active_ignite -> trigger( t, ignite_dot -> state -> result_amount * ignite_dot -> ticks() );
+            p() -> active_ignite -> trigger( t, ignite_dot -> state -> result_amount * ignite_dot -> ticks_left() );
           }
           else
           {

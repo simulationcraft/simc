@@ -1794,15 +1794,17 @@ struct shadowy_apparition_spell_t final : public priest_spell_t
       priest_td_t& td = get_td( s -> target);
       priest.procs.t15_2pc_caster -> occur();
 
+      timespan_t extend_duration = timespan_t::from_seconds( priest.sets.set( SET_T15_2PC_CASTER ) -> effectN( 2 ).base_value() );
+
       if ( td.dots.shadow_word_pain -> ticking )
       {
-        td.dots.shadow_word_pain -> extend_duration( 1 );
+        td.dots.shadow_word_pain -> extend_duration( extend_duration );
         priest.procs.t15_2pc_caster_shadow_word_pain -> occur();
       }
 
       if ( td.dots.vampiric_touch -> ticking )
       {
-        td.dots.vampiric_touch -> extend_duration( 1 );
+        td.dots.vampiric_touch -> extend_duration( extend_duration);
         priest.procs.t15_2pc_caster_vampiric_touch -> occur();
       }
 
@@ -2390,7 +2392,7 @@ struct devouring_plague_t final : public priest_spell_t
       if ( saved_impact_dmg > 0.0 )
       {
         dot_t* dot = get_dot();
-        base_ta_adder = saved_impact_dmg / dot -> ticks();
+        base_ta_adder = saved_impact_dmg / dot -> ticks_left();
         if ( sim -> debug )
           sim -> out_debug.printf( "%s DP still ticking. Added %.2f damage / %.2f per tick to new dot", player -> name(), saved_impact_dmg, base_ta_adder );
       }
@@ -2465,7 +2467,7 @@ struct devouring_plague_t final : public priest_spell_t
     {
       const shadow_orb_state_t& state = static_cast<const shadow_orb_state_t&>( *dot -> state );
       // Take the old damage without the orb multiplier
-      previous_dp_dmg += state.result_amount / state.orbs_used * dot -> ticks();
+      previous_dp_dmg += state.result_amount / state.orbs_used * dot -> ticks_left();
 
       if ( sim -> debug )
         sim -> out_debug.printf( "%s DP still ticking. Added %.2f damage to new dot", player -> name(), previous_dp_dmg );
@@ -4240,7 +4242,7 @@ struct renew_t final : public priest_heal_t
       d -> state -> result = RESULT_HIT;
       double tick_dmg = calculate_tick_amount( d -> state );
       d -> state -> result = r;
-      tick_dmg *= d -> ticks(); // Gets multiplied by the hasted amount of ticks
+      tick_dmg *= d -> ticks_left(); // Gets multiplied by the hasted amount of ticks
       rr -> trigger( s, tick_dmg );
     }
   }

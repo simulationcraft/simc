@@ -2653,8 +2653,8 @@ struct stagger_self_damage_t : public ignite::pct_based_action_t<monk_spell_t>
     dot_t* d = get_dot();
     double damage_remaining = 0.0;
     if ( d -> ticking )
-      damage_remaining += d -> ticks() * base_td; // Assumes base_td == damage, no modifiers or crits
- 
+      damage_remaining += d -> ticks_left() * base_td; // Assumes base_td == damage, no modifiers or crits
+
     cancel();
     d -> cancel();
  
@@ -2932,6 +2932,10 @@ struct renewing_mist_t : public monk_heal_t
     base_costs[ RESOURCE_MANA ] = p.find_spell( 115151 ) -> cost( POWER_MANA ) * p.resources.base[ RESOURCE_MANA ];
  
     cooldown -> duration = p.find_spell( 115151 ) -> cooldown();
+
+
+    // Improved Renewing Mist
+    dot_duration += p.perk.improved_renewing_mist -> effectN( 1 ).time_value();
   }
  
   virtual void execute()
@@ -3310,8 +3314,6 @@ monk_td_t::monk_td_t( player_t* target, monk_t* p ) :
  
   dots.enveloping_mist   = target -> get_dot( "enveloping_mist", p );
   dots.renewing_mist     = target -> get_dot( "renewing_mist",   p );
-  // Improved Renewing Mist
-  dots.renewing_mist -> extend_duration( p -> perk.improved_renewing_mist -> effectN( 1 ).base_value() );
   dots.soothing_mist     = target -> get_dot( "soothing_mist",   p );
   dots.zen_sphere        = target -> get_dot( "zen_sphere",      p );
 }
