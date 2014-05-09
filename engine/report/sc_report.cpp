@@ -1027,11 +1027,11 @@ void report::generate_player_charts( player_t* p, player_processed_report_inform
                        max_buckets );
 
     sc_timeline_t sliding_average_tl;
-    cd.health_changes.merged_timeline.build_sliding_average_timeline( sliding_average_tl, 6 );
+    cd.health_changes.merged_timeline.build_sliding_average_timeline( sliding_average_tl, p -> tmi_window );
     ri.health_change_sliding_chart =
       chart::timeline( p,
                        sliding_average_tl.data(),
-                       encoded_name + ' ' + "Health Change (moving average, 6s window)",
+                       encoded_name + ' ' + "Health Change (" + util::to_string( p -> tmi_window, 2 ) + "s moving avg.)",
                        sliding_average_tl.mean(),
                        chart::resource_color( RESOURCE_HEALTH ),
                        max_buckets );
