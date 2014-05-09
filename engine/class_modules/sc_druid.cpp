@@ -6511,7 +6511,7 @@ double druid_t::composite_melee_expertise( weapon_t* w ) const
   return exp;
 }
 
-// druid_t::active_movement_modifier =========================================
+// druid_t::temporary_movement_modifier =========================================
 
 double druid_t::temporary_movement_modifier() const
 {
