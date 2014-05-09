@@ -2220,13 +2220,30 @@ void print_html_help_boxes( report::sc_html_stream& os, sim_t* sim )
      << "\t\t\t</div>\n"
      << "\t\t</div>\n";
 
-  os << "\t\t<div id=\"help-msd\">\n"
+  os << "\t\t<div id=\"help-tmiwin\">\n"
      << "\t\t\t<div class=\"help-box\">\n"
-     << "\t\t\t\t<h3>Max Spike Damage</h3>\n"
-     << "\t\t\t\t<p>Maximum amount of net damage taken in any " << sim -> tmi_window_global << "-second period, expressed as a percentage of max health. Calculated independently for each iteration. "
-     << "'MSD Min/Mean/Max' are the lowest/average/highest MSDs out of all iterations.</p>\n"
+     << "\t\t\t\t<h3>TMI/MSD Window</h3>\n"
+     << "\t\t\t\t<p>Window length used to calculate TMI and MSD, in seconds.</p>\n"
      << "\t\t\t</div>\n"
      << "\t\t</div>\n";
+
+  os << "\t\t<div id=\"help-tmibin\">\n"
+     << "\t\t\t<div class=\"help-box\">\n"
+     << "\t\t\t\t<h3>TMI bin size</h3>\n"
+     << "\t\t\t\t<p>Time bin size used to calculate TMI and MSD, in seconds.</p>\n"
+     << "\t\t\t</div>\n"
+     << "\t\t</div>\n";
+
+  for ( size_t i = 0; i < sim -> actor_list.size(); i++ )
+  {
+    os << "\t\t<div id=\"help-msd" << sim -> actor_list[ i ] -> actor_index << "\">\n"
+      << "\t\t\t<div class=\"help-box\">\n"
+      << "\t\t\t\t<h3>Max Spike Damage</h3>\n"
+      << "\t\t\t\t<p>Maximum amount of net damage taken in any " << sim -> actor_list[ i ] -> tmi_window << "-second period, expressed as a percentage of max health. Calculated independently for each iteration. "
+      << "'MSD Min/Mean/Max' are the lowest/average/highest MSDs out of all iterations.</p>\n"
+      << "\t\t\t</div>\n"
+      << "\t\t</div>\n";
+  }
 
   os << "\t\t<div id=\"help-msd-freq\">\n"
      << "\t\t\t<div class=\"help-box\">\n"

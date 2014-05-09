@@ -2844,10 +2844,13 @@ void print_html_player_results_spec_gear( report::sc_html_stream& os, sim_t* sim
        << "\t\t\t\t\t\t\t\t<th><a href=\"#help-tmi\" class=\"help\">TMI Max</a></th>\n"
        << "\t\t\t\t\t\t\t\t<th><a href=\"#help-tmirange\" class=\"help\">TMI Range</a></th>\n"
        << "\t\t\t\t\t\t\t\t<th>&nbsp</th>\n"
-       << "\t\t\t\t\t\t\t\t<th><a href=\"#help-msd\" class=\"help\">MSD Mean</a></th>\n"
-       << "\t\t\t\t\t\t\t\t<th><a href=\"#help-msd\" class=\"help\">MSD Min</a></th>\n"
-       << "\t\t\t\t\t\t\t\t<th><a href=\"#help-msd\" class=\"help\">MSD Max</a></th>\n"
+       << "\t\t\t\t\t\t\t\t<th><a href=\"#help-msd" << p -> actor_index << "\" class=\"help\">MSD Mean</a></th>\n"
+       << "\t\t\t\t\t\t\t\t<th><a href=\"#help-msd" << p -> actor_index << "\" class=\"help\">MSD Min</a></th>\n"
+       << "\t\t\t\t\t\t\t\t<th><a href=\"#help-msd" << p -> actor_index << "\" class=\"help\">MSD Max</a></th>\n"
        << "\t\t\t\t\t\t\t\t<th><a href=\"#help-msd-freq\" class=\"help\">MSD Freq.</a></th>\n"
+       << "\t\t\t\t\t\t\t\t<th>&nbsp</th>\n"
+       << "\t\t\t\t\t\t\t\t<th><a href=\"#help-tmiwin\" class=\"help\">Window</a></th>\n"
+       << "\t\t\t\t\t\t\t\t<th><a href=\"#help-tmibin\" class=\"help\">Bin Size</a></th>\n"
        << "\t\t\t\t\t\t\t</tr>\n" // end second row
        << "\t\t\t\t\t\t\t<tr>\n"; // start third row
 
@@ -2918,6 +2921,13 @@ void print_html_player_results_spec_gear( report::sc_html_stream& os, sim_t* sim
     
     // print rough estimate of spike frequency
     os.printf( "\t\t\t\t\t\t\t\t<td>%.1f</td>\n", cd.theck_meloree_index.mean() ? std::exp( cd.theck_meloree_index.mean() / 1e3 / cd.max_spike_amount.mean() ) : 0.0 );
+    
+    // spacer
+    os << "\t\t\t\t\t\t\t\t<td>&nbsp&nbsp&nbsp&nbsp&nbsp</td>\n";
+
+    // print TMI window and bin size
+    os.printf( "\t\t\t\t\t\t\t\t<td>%.2fs</td>\n", p -> tmi_window);
+    os.printf( "\t\t\t\t\t\t\t\t<td>%.2fs</td>\n", sim -> tmi_bin_size );
 
     // End defensive table
     os << "\t\t\t\t\t\t\t</tr>\n"
