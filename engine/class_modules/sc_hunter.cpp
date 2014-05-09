@@ -59,6 +59,7 @@ public:
   // Buffs
   struct buffs_t
   {
+    buff_t* aspect_of_the_pack;
     buff_t* beast_cleave;
     buff_t* beast_within;
     buff_t* bombardment;
@@ -2736,6 +2737,66 @@ public:
   }
 };
 
+
+struct aspect_of_the_pack_t : public hunter_spell_t 
+{
+  std::string toggle;
+  bool tog;
+  aspect_of_the_pack_t( hunter_t* player, const std::string& options_str ) :
+    hunter_spell_t( "aspect_of_the_pack", player, player -> find_class_spell( "Aspect of the Pack" ) ),
+    toggle( "" ), tog( true )
+  {
+    option_t options[] =
+    {
+      opt_string( "toggle", toggle ),
+      opt_null()
+    };
+
+  parse_options( options, options_str );
+
+    if ( ! toggle.empty() )
+    {
+      if ( toggle == "on" )
+        tog = true;
+      else if ( toggle == "off" )
+        tog = false;
+    }
+
+    harmful     = false;
+    trigger_gcd = timespan_t::zero();
+  }
+
+  virtual void execute()
+  {
+
+  if( tog == true )
+    for ( size_t i = 0; i < sim -> player_non_sleeping_list.size(); ++i )
+    {
+      player_t* p = sim -> player_non_sleeping_list[ i ];
+        if( p -> is_enemy() || p -> type == PLAYER_GUARDIAN )
+        break;
+          p -> buffs.stampeding_roar -> trigger();
+    }
+
+  if( tog == false  )
+    for ( size_t i = 0; i < sim -> player_non_sleeping_list.size(); ++i )
+    {
+      player_t* p = sim -> player_non_sleeping_list[ i ];
+        if( p -> is_enemy() || p -> type == PLAYER_GUARDIAN )
+        break;
+          p -> buffs.stampeding_roar -> expire();
+    }
+  }
+
+  virtual bool ready()
+  {
+    if ( ( p() -> buffs.aspect_of_the_pack -> check() && tog == true ) || 
+       ( !p() -> buffs.aspect_of_the_pack -> check() && tog == false ) )
+      return false;
+
+    return hunter_spell_t::ready();
+  }
+};
 // Barrage ==================================================================
 
 // This is a spell because that's the only way to support "channeled" effects
@@ -3187,6 +3248,7 @@ action_t* hunter_t::create_action( const std::string& name,
   if ( name == "summon_pet"            ) return new             summon_pet_t( this, options_str );
   if ( name == "cobra_shot"            ) return new             cobra_shot_t( this, options_str );
   if ( name == "a_murder_of_crows"     ) return new                    moc_t( this, options_str );
+  if ( name == "aspect_of_the_pack"    ) return new     aspect_of_the_pack_t( this, options_str );
   if ( name == "powershot"             ) return new              powershot_t( this, options_str );
   if ( name == "stampede"              ) return new               stampede_t( this, options_str );
   if ( name == "glaive_toss"           ) return new            glaive_toss_t( this, options_str );
@@ -4136,7 +4198,15 @@ struct hunter_module_t : public module_t
   }
 
   virtual bool valid() const { return true; }
-  virtual void init        ( sim_t* ) const {}
+  virtual void init( sim_t* sim ) const
+  {
+    for ( size_t i = 0; i < sim -> actor_list.size(); i++ )
+    {
+      player_t* p = sim -> actor_list[ i ];
+
+      p -> buffs.aspect_of_the_pack    = buff_creator_t( p, "aspect_of_the_pack", p -> find_class_spell( "Aspect of the Pack" ) );
+    }
+  }
   virtual void combat_begin( sim_t* ) const {}
   virtual void combat_end  ( sim_t* ) const {}
 };

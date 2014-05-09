@@ -4250,7 +4250,7 @@ void warrior_t::create_buffs()
   buff.gladiator_stance = buff_creator_t( this, "gladiator_stance",   find_spell( 156291 ) )
                           .add_invalidate( CACHE_EXP );
 
-  buff.heroic_leap_glyph = buff_creator_t( this, "heroic_leap_glyph", glyphs.heroic_leap )
+  buff.heroic_leap_glyph = buff_creator_t( this, "heroic_leap_glyph", find_spell( 133278 ) )
                            .chance( glyphs.heroic_leap -> ok() ? 1 : 0 );
 
   buff.hold_the_line     = buff_creator_t( this, "hold_the_line" /* , spec.hold_the_line */ )
