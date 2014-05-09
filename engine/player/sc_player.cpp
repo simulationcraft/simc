@@ -4801,6 +4801,9 @@ void player_t::assess_damage( school_e school,
   account_parry_haste( *this, s );
 
   target_mitigation( school, type, s );
+  
+  if ( s -> result_total > 0 && s -> target -> buffs.aspect_of_the_pack -> check() ) // Aspect of the daze.
+    s -> target -> debuffs.dazed -> trigger();
 
   // store post-mitigation, pre-absorb value
   s -> result_mitigated = s -> result_amount;
