@@ -3075,7 +3075,7 @@ bool is_output_stat( unsigned mask, bool child, const stats_t* s )
   if ( ! ( ( 1 << s -> type ) & mask ) )
     return false;
 
-  if ( s -> num_executes.mean() <= 1 && s -> compound_amount == 0 && ! s -> player -> sim -> debug )
+  if ( s -> num_executes.mean() <= 0.001 && s -> compound_amount == 0 && ! s -> player -> sim -> debug )
     return false;
 
   // If we are checking output on a non-child stats object, only return false
