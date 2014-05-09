@@ -152,6 +152,7 @@ public:
     buff_t* barkskin;
     buff_t* bear_form;
     buff_t* cat_form;
+    buff_t* dash;
     buff_t* cenarion_ward;
     buff_t* dream_of_cenarius;
     buff_t* frenzied_regeneration;
@@ -487,7 +488,8 @@ public:
   virtual double    composite_melee_crit() const;
   virtual double    composite_melee_hit() const;
   virtual double    composite_melee_expertise( weapon_t* ) const;
-  virtual double    composite_movement_speed() const;
+  virtual double    active_movement_modifier() const;
+  virtual double    passive_movement_modifier() const;
   virtual double    composite_player_multiplier( school_e school ) const;
   virtual double    composite_player_td_multiplier( school_e,  const action_t* ) const;
   virtual double    composite_player_heal_multiplier( school_e school ) const;
@@ -5724,6 +5726,7 @@ void druid_t::create_buffs()
   buff.bear_form             = new bear_form_t( *this );
   buff.berserk               = new berserk_buff_t( *this );
   buff.cat_form              = new cat_form_t( *this );
+  buff.dash                  = buff_creator_t( this, "dash", find_class_spell( "Dash" ) );
   buff.frenzied_regeneration = buff_creator_t( this, "frenzied_regeneration", find_class_spell( "Frenzied Regeneration" ) );
   buff.moonkin_form          = new moonkin_form_t( *this );
   buff.omen_of_clarity       = buff_creator_t( this, "omen_of_clarity", spec.omen_of_clarity -> effectN( 1 ).trigger() )
@@ -6508,35 +6511,35 @@ double druid_t::composite_melee_expertise( weapon_t* w ) const
   return exp;
 }
 
-// druid_t::composite_movement_speed ========================================
+// druid_t::active_movement_modifier =========================================
 
-double druid_t::composite_movement_speed() const
+double druid_t::active_movement_modifier() const
 {
-  double ms = player_t::composite_movement_speed();
+  double active = active_movement_modifier();
 
-  // Only the highest temporary effect applies.
-  double temp_ms = 0.0;
+   if( buff.dash -> up() )
+     active = std::max( active, buff.dash -> data().effectN( 1 ).percent() );
+
+  return active;
+}
+
+// druid_t::passive_movement_modifier ========================================
+
+double druid_t::passive_movement_modifier() const
+{
+  double ms = player_t::passive_movement_modifier();
 
   if ( buff.cat_form -> up() )
   {
     ms += find_spell( 113636 ) -> effectN( 1 ).percent();
     if ( perk.enhanced_cat_form -> ok() )
       ms += perk.enhanced_cat_form -> effectN( 1 ).percent();
-    /* TODO: Implement
-    if ( buff.dash -> ok() )
-      temp_ms = std::max( temp_ms, buff.dash -> data().effectN( 1 ).percent() ); */
     if ( buff.prowl -> up() && ! perk.enhanced_prowl -> ok() )
       ms += buff.prowl -> data().effectN( 2 ).percent();
   }
 
   if ( talent.feline_swiftness -> ok() )
     ms += talent.feline_swiftness -> effectN( 1 ).percent();
-
-  /* TODO: Implement
-  if ( buff.stampeding_roar -> up() )
-    temp_ms = std::max( temp_ms, buff.stampeding_roar -> data().effectN( 1 ).percent() ); */
-
-  ms += temp_ms;
 
   return ms;
 }

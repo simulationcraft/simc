@@ -478,7 +478,7 @@ public:
   virtual void      init_action_list();
   virtual void      moving();
   virtual void      invalidate_cache( cache_e c );
-  virtual double    composite_movement_speed() const;
+  virtual double    temporary_movement_modifier() const;
   virtual double    composite_melee_haste() const;
   virtual double    composite_melee_speed() const;
   virtual double    composite_melee_crit() const;
@@ -5881,14 +5881,14 @@ double shaman_t::composite_spell_crit() const
   return crit;
 }
 
-// shaman_t::composite_movement_speed =======================================
+// shaman_t::temporary_movement_modifier =======================================
 
-double shaman_t::composite_movement_speed() const
+double shaman_t::temporary_movement_modifier() const
 {
-  double ms = player_t::composite_movement_speed();
+  double ms = player_t::temporary_movement_modifier();
 
   if ( buff.spirit_walk -> up() )
-    ms *= 1.0 + buff.spirit_walk -> data().effectN( 1 ).percent();
+    ms += buff.spirit_walk -> data().effectN( 1 ).percent();
 
   return ms;
 }

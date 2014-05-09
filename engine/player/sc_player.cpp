@@ -463,7 +463,7 @@ player_t::player_t( sim_t*             s,
   // Scaling
   scaling_lag( 0 ), scaling_lag_error( 0 ),
   // Movement & Position
-  base_movement_speed( 7.0 ), base_movement_speed_multiplier( 1.0 ), 
+  base_movement_speed( 7.0 ), passive_modifier( 0 ), active_modifier( 0 ),
   x_position( 0.0 ), y_position( 0.0 ),
   buffs( buffs_t() ),
   potion_buffs( potion_buffs_t() ),
@@ -2871,28 +2871,42 @@ double player_t::composite_player_critical_healing_multiplier() const
 // Permanent and Temporary, both which stack additively. Permanent buffs include movement speed enchant, unholy presence, cat form
 // and generally anything that has the ability to be kept active all fight. These permanent buffs do stack with each other. 
 // Temporary includes all other speed bonuses, however, only the highest temporary bonus will be added on top.
-// We'll have to add in a system to deal with this in the future.
+
+double player_t::temporary_movement_modifier() const
+{
+  double temporary = active_modifier;
+
+  if ( buffs.nitro_boosts -> up() )
+    temporary = std::max( buffs.nitro_boosts -> data().effectN( 1 ).percent(), temporary );
+
+  if ( buffs.stampeding_roar -> up() )
+    temporary = std::max( buffs.stampeding_roar -> data().effectN( 1 ).percent(), temporary );
+
+  if ( buffs.stampeding_shout -> up() )
+    temporary = std::max( buffs.stampeding_shout -> data().effectN( 1 ).percent(), temporary );
+
+  temporary = std::max( buffs.body_and_soul -> current_value, temporary );
+
+  if ( buffs.aspect_of_the_pack -> up() )
+    temporary = std::max( buffs.aspect_of_the_pack -> data().effectN( 1 ).percent(), temporary );
+
+  return temporary;
+}
+
+double player_t::passive_movement_modifier() const
+{
+  double passive = passive_modifier;
+
+  return passive;
+}
 
 double player_t::composite_movement_speed() const
 {
   double speed = base_movement_speed;
 
-  double m = base_movement_speed_multiplier;
+  double passive = passive_movement_modifier();
 
-  if ( buffs.nitro_boosts -> up() )
-    m += buffs.nitro_boosts -> data().effectN( 1 ).percent();
-
-  if ( buffs.stampeding_roar -> up() )
-    m += buffs.stampeding_roar -> data().effectN( 1 ).percent();
-
-  if ( buffs.stampeding_shout -> up() )
-    m += buffs.stampeding_shout -> data().effectN( 1 ).percent();
-
-  // Commenting this out for now. How will we take the daze aspect into account?
-  //if ( buffs.aspect_of_the_pack -> up() )
-  //speed *= 1.0 + buffs.aspect_of_the_pack -> data().effectN( 1 ).percent();
-
-  m += buffs.body_and_soul -> current_value;
+  double temporary = temporary_movement_modifier();
 
   // From http://www.wowpedia.org/Movement_speed_effects
   // Additional items looked up
@@ -2919,8 +2933,8 @@ double player_t::composite_movement_speed() const
 
   // Swiftness Potion: 50%
 
-  return speed * m;
-}
+  return speed * ( 1 + passive + temporary );
+  }
 
 // player_t::composite_attribute ============================================
 
@@ -7540,7 +7554,7 @@ expr_t* player_t::create_expression( action_t* a,
           double evaluate()
           {
             if ( player -> current.distance_to_move > 0 )
-              return player -> current.distance_to_move / player -> composite_movement_speed();
+              return ( player -> current.distance_to_move / player -> composite_movement_speed() );
             else
               return player -> buffs.raid_movement -> remains().total_seconds();
           }

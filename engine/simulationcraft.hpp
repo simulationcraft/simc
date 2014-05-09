@@ -4308,7 +4308,8 @@ public:
 
   // Movement & Position
   double base_movement_speed;
-  double base_movement_speed_multiplier; // _PASSIVE_ movement speed multipliers
+  double passive_modifier; // _PASSIVE_ movement speed modifiers
+  double active_modifier; // Active movement speed modifiers
   double x_position, y_position;
 
   struct buffs_t
@@ -4543,6 +4544,8 @@ public:
 
   virtual double composite_mitigation_multiplier( school_e ) const;
 
+  virtual double temporary_movement_modifier() const;
+  virtual double passive_movement_modifier() const;
   virtual double composite_movement_speed() const;
 
   virtual double composite_attribute( attribute_e attr ) const;

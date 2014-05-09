@@ -323,7 +323,7 @@ public:
   virtual double    composite_melee_crit() const override;
   virtual double    composite_player_multiplier( school_e school ) const override;
   virtual double    composite_player_heal_multiplier( school_e school ) const override;
-  virtual double    composite_movement_speed() const override;
+  virtual double    temporary_movement_modifier() const;
   virtual double    composite_attribute_multiplier( attribute_e attr ) const override;
   virtual double    matching_gear_multiplier( attribute_e attr ) const override;
   virtual void      target_mitigation( school_e, dmg_e, action_state_t* ) override;
@@ -4684,14 +4684,14 @@ double priest_t::composite_player_heal_multiplier( school_e s ) const
   return m;
 }
 
-// priest_t::composite_movement_speed =======================================
+// priest_t::temporary_movement_modifier =======================================
 
-double priest_t::composite_movement_speed() const
+double priest_t::temporary_movement_modifier() const
 {
-  double speed = base_t::composite_movement_speed();
+  double speed = player_t::temporary_movement_modifier();
 
   if ( glyphs.free_action -> ok() && buffs.dispersion -> check() ) {
-    speed *= 1.0 + glyphs.free_action -> effectN( 1 ).percent();
+    speed += glyphs.free_action -> effectN( 1 ).percent();
   }
 
   return speed;

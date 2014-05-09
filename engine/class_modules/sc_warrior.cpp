@@ -381,7 +381,8 @@ public:
   virtual action_t* create_proc_action( const std::string& name );
   virtual bool      create_profile( std::string& profile_str, save_e type, bool save_html );
   virtual void      invalidate_cache( cache_e );
-  virtual double    composite_movement_speed() const;
+  virtual double    passive_movement_modifier() const;
+  virtual double    temporary_movement_modifier() const;
 
   void              apl_precombat();
   void              apl_default();
@@ -4660,17 +4661,27 @@ double warrior_t::composite_melee_speed() const
   return s;
 }
 
-// warrior_t::composite_movement_speed =====================================
+// warrior_t::temporary_movement_modifier ==================================
 
-double warrior_t::composite_movement_speed() const
+double warrior_t::temporary_movement_modifier() const
 {
-  double ms = player_t::composite_movement_speed();
+  double temporary = player_t::temporary_movement_modifier();
+
+  if ( buff.heroic_leap_glyph -> up () )
+    temporary = std::max( 1 + buff.heroic_leap_glyph -> data().effectN( 1 ).percent(), temporary );
+
+  return temporary;
+
+}
+
+// warrior_t::passive_movement_modiefier===================================
+
+double warrior_t::passive_movement_modifier() const
+{
+  double ms = player_t::passive_movement_modifier();
 
   if ( buff.enraged_speed -> up() )
     ms += buff.enraged_speed -> data().effectN( 1 ).percent();
-
-  if ( buff.heroic_leap_glyph -> up() )
-    ms += buff.heroic_leap_glyph -> data().effectN( 1 ).percent();
 
   return ms;
 }
