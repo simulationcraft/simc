@@ -2648,6 +2648,9 @@ void print_html_player_description( report::sc_html_stream& os, sim_t* sim, play
         os.printf( ", %.3fk ETMI", etmi_display / 1.0e3 );
       else
         os.printf( ", %.1fk ETMI", etmi_display / 1.0e3 );
+      // if we're using a non-standard window, append that to the label appropriately (i.e. TMI-4.0 for a 4.0-second window)
+      if ( p -> tmi_window != 6.0 )
+        os.printf( "-%1.1f", p -> tmi_window );
     }
 
     os << "\n";

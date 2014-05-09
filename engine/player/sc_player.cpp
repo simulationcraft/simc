@@ -4147,7 +4147,7 @@ stat_e player_t::normalize_by() const
   role_e role = primary_role();
   if ( role == ROLE_SPELL || role == ROLE_HEAL )
     return STAT_INTELLECT;
-  else if ( role == ROLE_TANK && ( so == "tmi" || so == "dtps" || so == "dmg_taken" || so == "deaths" || so == "theck_meloree_index" ) )
+  else if ( role == ROLE_TANK && ( so == "tmi" || so == "etmi" || so == "dtps" || so == "dmg_taken" || so == "deaths" || so == "theck_meloree_index" ) )
     return STAT_STAMINA;
   else if ( type == DRUID || type == HUNTER || type == SHAMAN || type == ROGUE || type == MONK )
     return STAT_AGILITY;
@@ -8456,6 +8456,9 @@ player_t::scales_over_t player_t::scales_over()
   if ( so == "theck_meloree_index" || so == "tmi" )
     return q -> collected_data.theck_meloree_index;
 
+  if ( so == "etmi" )
+    return q -> collected_data.effective_theck_meloree_index;
+
   if ( q -> primary_role() == ROLE_HEAL || so == "hps" )
     return q -> collected_data.hps;
 
@@ -9332,7 +9335,7 @@ player_collected_data_t::player_collected_data_t( const std::string& player_name
   absorb_taken( player_name + " Absorb Taken", s.statistics_level < 2 ),
   deaths( player_name + " Deaths", s.statistics_level < 2 ),
   theck_meloree_index( player_name + " Theck-Meloree Index", s.statistics_level < 1 ),
-  effective_theck_meloree_index( player_name + "Effective Theck-Meloree Index", s.statistics_level < 1 ),
+  effective_theck_meloree_index( player_name + " Effective Theck-Meloree Index", s.statistics_level < 1 ),
   max_spike_amount( player_name + " Max Spike Value", s.statistics_level < 1 ),
   resource_timelines(),
   combat_end_resource( RESOURCE_MAX ),

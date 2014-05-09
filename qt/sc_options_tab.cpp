@@ -333,7 +333,7 @@ void SC_OptionsTab::createScalingTab()
   QFormLayout* scalingLayout2 = new QFormLayout();
   scalingLayout2 -> setFieldGrowthPolicy( QFormLayout::FieldsStayAtSizeHint );
   scalingLayout2 -> addRow( tr( "Center Scale Delta" ),  choice.center_scale_delta = createChoice( 2, "Yes", "No" ) );
-  scalingLayout2 -> addRow( tr( "Scale Over" ),  choice.scale_over = createChoice( 8, "default", "dps", "hps", "dtps", "htps", "raid_dps", "raid_hps", "tmi" ) );
+  scalingLayout2 -> addRow( tr( "Scale Over" ),  choice.scale_over = createChoice( 9, "default", "dps", "hps", "dtps", "htps", "raid_dps", "raid_hps", "tmi", "etmi" ) );
 
   scalingLayout -> addLayout( scalingLayout2 );
 
