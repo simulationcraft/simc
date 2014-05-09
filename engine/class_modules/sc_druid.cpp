@@ -488,7 +488,7 @@ public:
   virtual double    composite_melee_crit() const;
   virtual double    composite_melee_hit() const;
   virtual double    composite_melee_expertise( weapon_t* ) const;
-  virtual double    active_movement_modifier() const;
+  virtual double    temporary_movement_modifier() const;
   virtual double    passive_movement_modifier() const;
   virtual double    composite_player_multiplier( school_e school ) const;
   virtual double    composite_player_td_multiplier( school_e,  const action_t* ) const;
@@ -6513,9 +6513,9 @@ double druid_t::composite_melee_expertise( weapon_t* w ) const
 
 // druid_t::active_movement_modifier =========================================
 
-double druid_t::active_movement_modifier() const
+double druid_t::temporary_movement_modifier() const
 {
-  double active = active_movement_modifier();
+  double active = player_t::temporary_movement_modifier();
 
    if( buff.dash -> up() )
      active = std::max( active, buff.dash -> data().effectN( 1 ).percent() );

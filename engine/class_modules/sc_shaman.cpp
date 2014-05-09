@@ -5888,7 +5888,7 @@ double shaman_t::temporary_movement_modifier() const
   double ms = player_t::temporary_movement_modifier();
 
   if ( buff.spirit_walk -> up() )
-    ms += buff.spirit_walk -> data().effectN( 1 ).percent();
+    ms = std::max( buff.spirit_walk -> data().effectN( 1 ).percent(), ms );
 
   return ms;
 }

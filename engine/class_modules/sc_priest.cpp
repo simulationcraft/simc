@@ -4691,7 +4691,7 @@ double priest_t::temporary_movement_modifier() const
   double speed = player_t::temporary_movement_modifier();
 
   if ( glyphs.free_action -> ok() && buffs.dispersion -> check() ) {
-    speed += glyphs.free_action -> effectN( 1 ).percent();
+    speed = std::max( speed, glyphs.free_action -> effectN( 1 ).percent() );
   }
 
   return speed;

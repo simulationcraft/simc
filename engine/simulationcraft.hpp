@@ -4309,7 +4309,6 @@ public:
   // Movement & Position
   double base_movement_speed;
   double passive_modifier; // _PASSIVE_ movement speed modifiers
-  double active_modifier; // Active movement speed modifiers
   double x_position, y_position;
 
   struct buffs_t

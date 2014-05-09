@@ -4668,13 +4668,12 @@ double warrior_t::temporary_movement_modifier() const
   double temporary = player_t::temporary_movement_modifier();
 
   if ( buff.heroic_leap_glyph -> up () )
-    temporary = std::max( 1 + buff.heroic_leap_glyph -> data().effectN( 1 ).percent(), temporary );
+    temporary = std::max( buff.heroic_leap_glyph -> data().effectN( 1 ).percent(), temporary );
 
   return temporary;
-
 }
 
-// warrior_t::passive_movement_modiefier===================================
+// warrior_t::passive_movement_modifier===================================
 
 double warrior_t::passive_movement_modifier() const
 {

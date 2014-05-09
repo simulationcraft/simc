@@ -463,7 +463,7 @@ player_t::player_t( sim_t*             s,
   // Scaling
   scaling_lag( 0 ), scaling_lag_error( 0 ),
   // Movement & Position
-  base_movement_speed( 7.0 ), passive_modifier( 0 ), active_modifier( 0 ),
+  base_movement_speed( 7.0 ), passive_modifier( 0 ),
   x_position( 0.0 ), y_position( 0.0 ),
   buffs( buffs_t() ),
   potion_buffs( potion_buffs_t() ),
@@ -2868,13 +2868,13 @@ double player_t::composite_player_critical_healing_multiplier() const
 
 // player_t::composite_movement_speed =======================================
 // There are 2 categories of movement speed buffs in WoD
-// Permanent and Temporary, both which stack additively. Permanent buffs include movement speed enchant, unholy presence, cat form
+// Passive and Temporary, both which stack additively. Passive buffs include movement speed enchant, unholy presence, cat form
 // and generally anything that has the ability to be kept active all fight. These permanent buffs do stack with each other. 
 // Temporary includes all other speed bonuses, however, only the highest temporary bonus will be added on top.
 
 double player_t::temporary_movement_modifier() const
 {
-  double temporary = active_modifier;
+  double temporary = 0;
 
   if ( buffs.nitro_boosts -> up() )
     temporary = std::max( buffs.nitro_boosts -> data().effectN( 1 ).percent(), temporary );
