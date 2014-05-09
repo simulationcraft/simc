@@ -30,7 +30,7 @@ namespace { // UNNAMED NAMESPACE
 
 struct warrior_t;
 
-enum warrior_stance { STANCE_BATTLE = 1, STANCE_DEFENSE = 4, STANCE_GLADIATOR };
+enum warrior_stance { STANCE_BATTLE = 1, STANCE_DEFENSE = 4, STANCE_GLADIATOR = 5 };
 
 struct warrior_td_t : public actor_pair_t
 {
