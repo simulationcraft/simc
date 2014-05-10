@@ -1240,37 +1240,40 @@ void print_html_stats ( report::sc_html_stream& os, player_t* a )
       100.0 * a -> cache.mastery_value(),
       a -> initial.stats.mastery_rating );
     j++;
-    if ( a -> dual_wield() )
+    if ( buffed_stats.mh_attack_expertise > 0 )
     {
-      os.printf(
-        "\t\t\t\t\t\t\t\t\t<tr%s>\n"
-        "\t\t\t\t\t\t\t\t\t\t<th class=\"left\">Expertise</th>\n"
-        "\t\t\t\t\t\t\t\t\t\t<td class=\"right\">%.2f%% / %.2f%%</td>\n"
-        "\t\t\t\t\t\t\t\t\t\t<td class=\"right\">%.2f%% / %.2f%% </td>\n"
-        "\t\t\t\t\t\t\t\t\t\t<td class=\"right\">%.0f </td>\n"
-        "\t\t\t\t\t\t\t\t\t</tr>\n",
-        ( j % 2 == 1 ) ? " class=\"odd\"" : "",
-        100 * buffed_stats.mh_attack_expertise,
-        100 * buffed_stats.oh_attack_expertise,
-        100 * a -> composite_melee_expertise( &( a -> main_hand_weapon ) ),
-        100 * a -> composite_melee_expertise( &( a -> off_hand_weapon ) ),
-        a -> initial.stats.expertise_rating );
-      j++;
-    }
-    else
-    {
-      os.printf(
-        "\t\t\t\t\t\t\t\t\t<tr%s>\n"
-        "\t\t\t\t\t\t\t\t\t\t<th class=\"left\">Expertise</th>\n"
-        "\t\t\t\t\t\t\t\t\t\t<td class=\"right\">%.2f%%</td>\n"
-        "\t\t\t\t\t\t\t\t\t\t<td class=\"right\">%.2f%% </td>\n"
-        "\t\t\t\t\t\t\t\t\t\t<td class=\"right\">%.0f </td>\n"
-        "\t\t\t\t\t\t\t\t\t</tr>\n",
-        ( j % 2 == 1 ) ? " class=\"odd\"" : "",
-        100 * buffed_stats.mh_attack_expertise,
-        100 * a -> composite_melee_expertise( &( a -> main_hand_weapon ) ),
-        a -> initial.stats.expertise_rating );
-      j++;
+      if ( a -> dual_wield() )
+      {
+        os.printf(
+          "\t\t\t\t\t\t\t\t\t<tr%s>\n"
+          "\t\t\t\t\t\t\t\t\t\t<th class=\"left\">Expertise</th>\n"
+          "\t\t\t\t\t\t\t\t\t\t<td class=\"right\">%.2f%% / %.2f%%</td>\n"
+          "\t\t\t\t\t\t\t\t\t\t<td class=\"right\">%.2f%% / %.2f%% </td>\n"
+          "\t\t\t\t\t\t\t\t\t\t<td class=\"right\">%.0f </td>\n"
+          "\t\t\t\t\t\t\t\t\t</tr>\n",
+          ( j % 2 == 1 ) ? " class=\"odd\"" : "",
+          100 * buffed_stats.mh_attack_expertise,
+          100 * buffed_stats.oh_attack_expertise,
+          100 * a -> composite_melee_expertise( &( a -> main_hand_weapon ) ),
+          100 * a -> composite_melee_expertise( &( a -> off_hand_weapon ) ),
+          a -> initial.stats.expertise_rating );
+        j++;
+      }
+      else
+      {
+        os.printf(
+          "\t\t\t\t\t\t\t\t\t<tr%s>\n"
+          "\t\t\t\t\t\t\t\t\t\t<th class=\"left\">Expertise</th>\n"
+          "\t\t\t\t\t\t\t\t\t\t<td class=\"right\">%.2f%%</td>\n"
+          "\t\t\t\t\t\t\t\t\t\t<td class=\"right\">%.2f%% </td>\n"
+          "\t\t\t\t\t\t\t\t\t\t<td class=\"right\">%.0f </td>\n"
+          "\t\t\t\t\t\t\t\t\t</tr>\n",
+          ( j % 2 == 1 ) ? " class=\"odd\"" : "",
+          100 * buffed_stats.mh_attack_expertise,
+          100 * a -> composite_melee_expertise( &( a -> main_hand_weapon ) ),
+          a -> initial.stats.expertise_rating );
+        j++;
+      }
     }
     os.printf(
       "\t\t\t\t\t\t\t\t\t<tr%s>\n"
