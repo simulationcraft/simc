@@ -18,10 +18,6 @@
       <Platform>x64</Platform>
     </ProjectConfiguration>
   </ItemGroup>
-  <ItemGroup>
-    <ClCompile Include="..\engine\player\sc_enchant.cpp" />
-    <ClCompile Include="..\engine\player\sc_proc.cpp" />
-  </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{D963926C-4A85-4600-8626-51FA12FDF5C1}</ProjectGuid>
     <RootNamespace>simc</RootNamespace>
