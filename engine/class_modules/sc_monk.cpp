@@ -34,7 +34,6 @@
   - Black Ox Statue
   - Gift of the Ox
  
-  - Avert Harm
   - Zen Meditation
   - Cache stagger_pct
 */

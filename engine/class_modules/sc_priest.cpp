@@ -5131,7 +5131,6 @@ void priest_t::apl_default()
   if ( find_class_spell( "Shadowfiend" ) -> ok() )
   {
     def -> add_action( this, "Shadowfiend", ",if=mana.pct<50" );
-    def -> add_action( this, "Hymn of Hope", ",if=pet.shadowfiend.active&time>200" );
   }
   if ( race == RACE_TROLL )  def -> add_action( "berserking" );
   if ( race == RACE_BLOOD_ELF ) def -> add_action( "arcane_torrent,if=mana.pct<=90" );
@@ -5243,9 +5242,6 @@ void priest_t::apl_disc_heal()
     a += "mana.pct<70";
     def -> add_action( a );
   }
-
-  def -> add_action( this, "Hymn of Hope", "if=mana.pct<60" + std::string( ( level >= 42 ) ? "&(pet.mindbender.active|pet.shadowfiend.active)" : "" ) );
-
 
   if ( race != RACE_BLOOD_ELF )
   {
@@ -5359,7 +5355,7 @@ void priest_t::apl_holy_heal()
   std::string fiend_cond = ",if=mana.pct<30";
   if ( find_class_spell( "Shadowfiend" ) -> ok() )
     fiend_cond = ",if=(pet.mindbender.active|pet.shadowfiend.active)&mana.pct<=20";
-  def -> add_action( this, "Hymn of Hope", fiend_cond );
+
 
   std::string racial_condition;
   if ( race == RACE_BLOOD_ELF )
@@ -5416,8 +5412,6 @@ void priest_t::apl_holy_dmg()
     def -> add_action( "mindbender,if=talent.mindbender.enabled" );
     def -> add_action( "shadowfiend,if=!talent.mindbender.enabled" );
   }
-
-  def -> add_action( this, "Hymn of Hope", level >= 42 ? ",if=(pet.mindbender.active|pet.shadowfiend.active)&mana.pct<=20" : ",if=mana.pct<30" );
 
   def -> add_action( this, "Chakra: Chastise", ",if=buff.chakra_chastise.down" );
 
