@@ -384,6 +384,7 @@ player_t::player_t( sim_t*             s,
 
   // (static) attributes
   race( r ),
+  nightelf( "night" ), //Set to Night by Default, user can override.
   role( ROLE_HYBRID ),
   level( default_level ),
   party( 0 ),
@@ -2370,7 +2371,6 @@ double player_t::mana_regen_per_second() const
   return current.mana_regen_per_second + cache.spirit() * current.mana_regen_per_spirit * current.mana_regen_from_spirit_multiplier;
 }
 
-// Night elf passive will change from 1% crit during the day, to 1% haste during the night. 
 // Need a way to include human racial.
 // player_t::composite_attack_haste =========================================
 
@@ -2401,7 +2401,7 @@ double player_t::composite_melee_haste() const
     h *= 1.0 / ( 1.0 + racials.nimble_fingers -> effectN( 1 ).percent() );
     h *= 1.0 / ( 1.0 + racials.time_is_money -> effectN( 1 ).percent() );
 
-    if ( current.rating.attack_haste > current.rating.attack_crit ) // Probably the best we can do unless someone wants to add in "Is it daytime?" to the sim.
+    if ( nightelf == "night" || nightelf == "nighttime" )
        h *= 1.0 / ( 1.0 + racials.touch_of_elune -> effectN( 1 ).percent() );
 
   }
@@ -2457,7 +2457,7 @@ double player_t::composite_melee_crit() const
 
     ac += racials.viciousness -> effectN( 1 ).percent();
     ac += racials.arcane_acuity -> effectN( 1 ).percent();
-    if ( current.rating.attack_crit > current.rating.attack_haste ) // Probably the best we can do unless someone wants to add in "Is it daytime?" to the sim.
+    if ( nightelf == "day" || nightelf == "daytime" )
        ac += racials.touch_of_elune -> effectN( 1 ).percent();
 
   return ac;
@@ -2640,7 +2640,7 @@ double player_t::composite_spell_haste() const
     h *= 1.0 / ( 1.0 + racials.nimble_fingers -> effectN( 1 ).percent() );
     h *= 1.0 / ( 1.0 + racials.time_is_money -> effectN( 1 ).percent() );
 
-    if ( current.rating.spell_haste > current.rating.spell_crit ) // Probably the best we can do unless someone wants to add in "Is it daytime?" to the sim.
+    if ( nightelf == "nighttime" || nightelf == "night" )
        h *= 1.0 / ( 1.0 + racials.touch_of_elune -> effectN( 1 ).percent() );
 
   }
@@ -2700,7 +2700,7 @@ double player_t::composite_spell_crit() const
   sc += racials.viciousness -> effectN( 1 ).percent();
   sc += racials.arcane_acuity -> effectN( 1 ).percent();
 
-  if ( current.rating.attack_haste > current.rating.attack_crit ) // Probably the best we can do unless someone wants to add in "Is it daytime?" to the sim.
+  if ( nightelf == "day" || nightelf == "daytime")
     sc += racials.touch_of_elune -> effectN( 1 ).percent();
 
   return sc;
@@ -8017,6 +8017,7 @@ void player_t::copy_from( player_t* source )
   origin_str = source -> origin_str;
   level = source -> level;
   race_str = source -> race_str;
+  nightelf = source -> nightelf;
   race = source -> race;
   role = source -> role;
   _spec = source -> _spec;
@@ -8058,6 +8059,7 @@ void player_t::create_options()
     opt_func( "talent_override", parse_talent_override ),
     opt_string( "glyphs", glyphs_str ),
     opt_string( "race", race_str ),
+    opt_string( "timeofday", nightelf ),
     opt_int( "level", level ),
     opt_bool( "ready_trigger", ready_type ),
     opt_func( "role", parse_role_string ),
