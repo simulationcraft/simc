@@ -9,7 +9,7 @@ race=orc
 spec=beast_mastery
 position=ranged_back
 role=attack
-talents=000211
+talents=0002111
 professions=enchanting=600/engineering=600
 chest=ancient_archers_chestguard,id=105585,gems=8agi_8agi_4agi_8mastery_9agi,enchant=4all,reforge=crit_haste,upgrade=2
 waist=arrowflight_girdle,id=105584,gems=8agi_4agi_8mastery_8agi_6agi,reforge=crit_exp,upgrade=2
@@ -35,7 +35,7 @@ race=orc
 spec=marksmanship
 position=ranged_back
 role=attack
-talents=000111
+talents=0001111
 professions=enchanting=600/alchemy=600
 head=headguard_of_the_unblinking_vigil,id=99402,upgrade=2,gems=capacitive_primal_8agi_9agi
 neck=gleaming_eye_of_the_devilsaur,id=105602,upgrade=2,reforge=haste_hit
@@ -61,7 +61,7 @@ race=orc
 spec=survival
 position=ranged_back
 role=attack
-talents=000311
+talents=0003113
 professions=enchanting=600/alchemy=600
 head=headguard_of_the_unblinking_vigil,id=99402,upgrade=2,gems=capacitive_primal_8agi_9agi
 neck=gleaming_eye_of_the_devilsaur,id=105602,upgrade=2,reforge=haste_hit

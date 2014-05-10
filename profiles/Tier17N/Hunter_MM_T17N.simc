@@ -4,7 +4,7 @@ race=orc
 role=attack
 position=ranged_back
 professions=enchanting=600/alchemy=600
-talents=http://us.battle.net/wow/en/tool/talent-calculator#YZ!...000.
+talents=http://us.battle.net/wow/en/tool/talent-calculator#YZ!...0000
 spec=marksmanship
 
 # This default action priority list is automatically created based on your character.
@@ -38,10 +38,11 @@ actions+=/glaive_toss,if=enabled
 actions+=/barrage,if=enabled
 actions+=/chimera_shot
 actions+=/steady_shot,if=buff.steady_focus.remains<(action.steady_shot.cast_time+1)&!in_flight
+actions+=/focusing_shot,if=enabled&focus<50
 actions+=/kill_shot
 actions+=/multi_shot,if=active_enemies>=4
 actions+=/aimed_shot,if=buff.master_marksman_fire.react
-actions+=/aimed_shot)
+actions+=/aimed_shot
 actions+=/steady_shot
 
 actions.careful_aim=chimera_shot

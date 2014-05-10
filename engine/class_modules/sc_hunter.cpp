@@ -10,6 +10,8 @@ namespace { // UNNAMED NAMESPACE
 // ==========================================================================
 // Hunter
 // To do: WoD implementation of serpent sting.
+// Implement Versatility talent
+// Improve lone wolf implementation -- Need to add a dismiss pet function.
 // ==========================================================================
 
 struct hunter_t;
@@ -97,6 +99,7 @@ public:
     gain_t* thrill_of_the_hunt;
     gain_t* steady_shot;
     gain_t* steady_focus;
+    gain_t* focusing_shot;
     gain_t* cobra_shot;
     gain_t* aimed_shot;
     gain_t* dire_beast;
@@ -1816,6 +1819,9 @@ struct auto_shot_t : public ranged_t
 {
   auto_shot_t( hunter_t* p ) : ranged_t( p, "auto_shot", p -> find_class_spell( "Auto Shot" ) )
   {
+    school = SCHOOL_PHYSICAL;
+    if ( p -> talents.flaming_shots -> ok() )
+      school = SCHOOL_FIRE;
   }
 };
 
@@ -2246,7 +2252,8 @@ struct cobra_shot_t : public hunter_ranged_attack_t
     hunter_ranged_attack_t( "cobra_shot", player, player -> find_class_spell( "Cobra Shot" ) )
   {
     parse_options( NULL, options_str );
-
+    if ( p() -> talents.focusing_shot -> ok() )
+      background = true;
     focus_gain = p() -> dbc.spell( 91954 ) -> effectN( 1 ).base_value();
 
     // Needs testing
@@ -2636,6 +2643,40 @@ struct multi_shot_t : public hunter_ranged_attack_t
   }
 };
 
+// Focusing Shot ============================================================
+
+struct focusing_shot_t : public hunter_ranged_attack_t
+{
+  double focus_gain;
+  double steady_focus_gain;
+
+  focusing_shot_t( hunter_t* player, const std::string& options_str ) :
+    hunter_ranged_attack_t( "focusing_shot", player, player -> talents.focusing_shot )
+  {
+    parse_options( NULL, options_str );
+
+    focus_gain = data().effectN( 2 ).base_value();
+    steady_focus_gain = p() -> buffs.steady_focus -> data().effectN( 2 ).base_value();
+  }
+
+  virtual void trigger_steady_focus()
+  {
+    p() -> buffs.pre_steady_focus -> trigger( 1 );
+  }
+
+  virtual void execute()
+  {
+    hunter_ranged_attack_t::execute();
+
+    if ( result_is_hit( execute_state -> result ) )
+    {
+      p() -> resource_gain( RESOURCE_FOCUS, focus_gain, p() -> gains.focusing_shot );
+      if ( p() -> buffs.steady_focus -> up() )
+        p() -> resource_gain( RESOURCE_FOCUS, steady_focus_gain, p() -> gains.steady_focus );
+    }
+  }
+};
+
 // Steady Shot Attack =======================================================
 
 struct steady_shot_t : public hunter_ranged_attack_t
@@ -2647,6 +2688,8 @@ struct steady_shot_t : public hunter_ranged_attack_t
     hunter_ranged_attack_t( "steady_shot", player, player -> find_class_spell( "Steady Shot" ) )
   {
     parse_options( NULL, options_str );
+    if ( p() -> talents.focusing_shot -> ok() )
+      background = true;
 
     focus_gain = p() -> dbc.spell( 77443 ) -> effectN( 1 ).base_value();
     steady_focus_gain = p() -> buffs.steady_focus -> data().effectN( 2 ).base_value();
@@ -3199,7 +3242,6 @@ struct summon_pet_t : public hunter_spell_t
     pet( 0 )
   {
     harmful = false;
-
     std::string pet_name = options_str.empty() ? p() -> summon_pet_str : options_str;
     pet = p() -> find_pet( pet_name );
     if ( ! pet )
@@ -3221,7 +3263,7 @@ struct summon_pet_t : public hunter_spell_t
 
   virtual bool ready()
   {
-    if ( p() -> active.pet == pet )
+    if ( p() -> active.pet == pet || p() -> talents.lone_wolf -> ok() ) // For now, don't summon a pet if lone wolf talent is used.
       return false;
 
     return hunter_spell_t::ready();
@@ -3285,6 +3327,7 @@ action_t* hunter_t::create_action( const std::string& name,
   if ( name == "kill_shot"             ) return new              kill_shot_t( this, options_str );
   if ( name == "multi_shot"            ) return new             multi_shot_t( this, options_str );
   if ( name == "steady_shot"           ) return new            steady_shot_t( this, options_str );
+  if ( name == "focusing_shot"         ) return new          focusing_shot_t( this, options_str );
   if ( name == "summon_pet"            ) return new             summon_pet_t( this, options_str );
   if ( name == "cobra_shot"            ) return new             cobra_shot_t( this, options_str );
   if ( name == "a_murder_of_crows"     ) return new                    moc_t( this, options_str );
@@ -3596,6 +3639,7 @@ void hunter_t::init_gains()
   gains.thrill_of_the_hunt   = get_gain( "thrill_of_the_hunt_savings"   );
   gains.steady_shot          = get_gain( "steady_shot"          );
   gains.steady_focus         = get_gain( "steady_focus"         );
+  gains.focusing_shot        = get_gain( "focusing_shot"        );
   gains.cobra_shot           = get_gain( "cobra_shot"           );
   gains.aimed_shot           = get_gain( "aimed_shot"           );
   gains.dire_beast           = get_gain( "dire_beast"           );
@@ -3737,6 +3781,7 @@ void hunter_t::init_action_list()
         action_list_str += "/barrage,if=enabled&active_enemies>5";
         action_list_str += "/kill_shot";
         action_list_str += "/kill_command";
+        action_list_str += "/focusing_shot,if=enabled&focus<50";
         action_list_str += "/a_murder_of_crows,if=enabled&!ticking";
         action_list_str += "/glaive_toss,if=enabled";
         action_list_str += "/barrage,if=enabled";
@@ -3782,20 +3827,12 @@ void hunter_t::init_action_list()
         action_list_str += "/barrage,if=enabled";
         action_list_str += "/chimera_shot";
         action_list_str += "/steady_shot,if=buff.steady_focus.remains<(action.steady_shot.cast_time+1)&!in_flight";
+        action_list_str += "/focusing_shot,if=enabled&focus<50";
         action_list_str += "/kill_shot";
         action_list_str += "/multi_shot,if=active_enemies>=4";
         action_list_str += "/aimed_shot,if=buff.master_marksman_fire.react";
 
         action_list_str += "/aimed_shot";
-        if ( race == RACE_TROLL )
-          action_list_str += "&!buff.berserking.up)";
-        if ( sets.has_set_bonus( SET_T13_4PC_MELEE ) )
-        {
-          action_list_str += "/aimed_shot,if=(cooldown.chimera_shot.remains>5|focus>=80)&(buff.bloodlust.react|buff.tier13_4pc.react|cooldown.buff_tier13_4pc.remains>0)|buff.rapid_fire.up";
-        }
-        else
-          action_list_str += ")";
-
         action_list_str += "/steady_shot";
         break;
 
@@ -3810,6 +3847,7 @@ void hunter_t::init_action_list()
         action_list_str += "/explosive_shot,if=cooldown_react";
         action_list_str += "/black_arrow,if=!ticking&target.time_to_die>=8";
         action_list_str += "/multi_shot,if=active_enemies>3";
+        action_list_str += "/focusing_shot,if=enabled&focus<50";
         action_list_str += "/multi_shot,if=buff.thrill_of_the_hunt.react";
         action_list_str += "/arcane_shot,if=buff.thrill_of_the_hunt.react";
         action_list_str += "/dire_beast,if=enabled";
@@ -3926,6 +3964,9 @@ double hunter_t::composite_player_multiplier( school_e school ) const
     m *= 1.0 + cache.mastery_value();
   }
 
+  if ( talents.lone_wolf && !active.pet )
+    m *= 1.0 + talents.lone_wolf -> effectN( 1 ).percent();
+
   if ( buffs.beast_within -> up() )
     m *= 1.0 + buffs.beast_within -> data().effectN( 2 ).percent();
   
@@ -3992,27 +4033,6 @@ void hunter_t::create_options()
 bool hunter_t::create_profile( std::string& profile_str, save_e stype, bool save_html )
 {
   player_t::create_profile( profile_str, stype, save_html );
-
-#if 0
-  for ( pet_t* pet = pet_list; pet; pet = pet -> next_pet )
-  {
-    hunter_main_pet_t* cast = ( hunter_main_pet_t* ) pet;
-
-    if ( pet -> talents_str.empty() )
-    {
-      for ( int j = 0; j < MAX_TALENT_TREES; j++ )
-        for ( int k = 0; k < ( int ) pet -> talent_trees[ j ].size(); k++ )
-          pet -> talents_str += ( char ) ( pet -> talent_trees[ j ][ k ] -> ok() + ( int ) '0' );
-    }
-
-    profile_str += "pet=";
-    profile_str += util::pet_type_string( cast -> pet_type );
-    profile_str += ",";
-    profile_str += cast -> name_str + "\n";
-    profile_str += "talents=" + cast -> talents_str + "\n";
-    profile_str += "active=owner\n";
-  }
-#endif
 
   profile_str += "summon_pet=" + summon_pet_str + "\n";
 
@@ -4123,15 +4143,6 @@ void hunter_t::armory_extensions( const std::string& /* region */,
         pet_name += '_';
         pet_name += js_t::get_name( pet_records[ i ] );
       }
-
-      // Pets can have zero talents also, we should probably support it.
-      /*
-      bool all_zeros = true;
-      for ( int j=pet_talents.size()-1; j >=0 && all_zeros; j-- )
-        if ( pet_talents[ j ] != '0' )
-          all_zeros = false;
-      if ( all_zeros ) continue;
-      */
 
       if ( pet_family > num_families || pet_types[ pet_family ] == PET_NONE )
       {
