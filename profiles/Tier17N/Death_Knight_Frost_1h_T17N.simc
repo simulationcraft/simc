@@ -34,7 +34,6 @@ actions+=/empower_rune_weapon,if=target.time_to_die<=60&(buff.mogu_power_potion.
 actions+=/blood_fury
 actions+=/berserking
 actions+=/arcane_torrent
-actions+=/use_item,slot=hands
 actions+=/run_action_list,name=aoe,if=active_enemies>=3
 actions+=/run_action_list,name=single_target,if=active_enemies<3
 

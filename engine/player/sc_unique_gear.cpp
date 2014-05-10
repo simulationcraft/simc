@@ -30,7 +30,6 @@ namespace enchant
 namespace profession
 {
   void nitro_boosts( special_effect_t&, const item_t&, const special_effect_db_item_t& );
-  void synapse_springs( special_effect_t&, const item_t&, const special_effect_db_item_t& );
   void zen_alchemist_stone( special_effect_t&, const item_t&, const special_effect_db_item_t& );
 }
 
@@ -290,8 +289,6 @@ static const special_effect_db_item_t __special_effect_db[] = {
   {  75177, "OnAttackHit",                                      0 }, /* Swordguard Embroidery Rank 2 */
   {  55776, "OnAttackHit",                                      0 }, /* Swordguard Embroidery Rank 1 */
   { 105574, 0,                    profession::zen_alchemist_stone }, /* Zen Alchemist Stone (stat proc) */
-  { 141331, 0,                        profession::synapse_springs },
-  { 126734, 0,                        profession::synapse_springs },
   {  55004, 0,                           profession::nitro_boosts },
 
   /**
@@ -542,14 +539,6 @@ struct nitro_boosts_action_t : public action_t
     player -> buffs.nitro_boosts-> trigger();
   }
 
-  virtual bool ready()
-  {
-    //To do: Add the various other spells that block nitro boost from being used.
-    if ( player -> buffs.stampeding_roar -> check() || player -> buffs.stampeding_shout -> check() ) // Cannot use nitro boosts when stampeding roar/shout buffs are up.
-      return false;
-
-    return ready();
-  }
 };
 
 void profession::nitro_boosts( special_effect_t& effect, 
@@ -560,26 +549,6 @@ void profession::nitro_boosts( special_effect_t& effect,
   effect.type = SPECIAL_EFFECT_USE;
   effect.execute_action = new nitro_boosts_action_t( item.player );
 };
-
-void profession::synapse_springs( special_effect_t& effect, 
-                                  const item_t& item,
-                                  const special_effect_db_item_t& dbitem )
-{
-  const spell_data_t* use_spell = item.player -> find_spell( dbitem.spell_id );
-  const spell_data_t* buff_spell = item.player -> find_spell( 96228 );
-
-  double value = use_spell -> effectN( 1 ).average( item.player );
-
-  stat_buff_t* buff  = stat_buff_creator_t( item.player, effect.name(), buff_spell )
-                       .add_stat( STAT_STRENGTH, value, select_attr<std::greater>() )
-                       .add_stat( STAT_INTELLECT, value, select_attr<std::greater>() )
-                       .add_stat( STAT_AGILITY,  value, select_attr<std::greater>() );
-
-  effect.type = SPECIAL_EFFECT_USE;
-  effect.cooldown_ = use_spell -> cooldown();
-
-  effect.custom_buff = buff;
-}
 
 void profession::zen_alchemist_stone( special_effect_t& effect,
                                       const item_t& item,
