@@ -1812,6 +1812,11 @@ expr_t* sim_t::create_expression( action_t* a,
     return target -> create_expression( a, rest );
   }
 
+  if ( splits.size() == 1 && splits[ 0 ] == "target" )
+  {
+    return make_ref_expr( name_str, target -> actor_index );
+  }
+
   return 0;
 }
 

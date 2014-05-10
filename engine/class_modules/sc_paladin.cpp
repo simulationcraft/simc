@@ -5805,6 +5805,18 @@ expr_t* paladin_t::create_expression( action_t* a,
     return new seal_expr_t( name_str, *this, s );
   }
 
+  struct double_jeopardy_expr_t : public paladin_expr_t
+  {
+    double_jeopardy_expr_t( const std::string& n, paladin_t& p ) :
+      paladin_expr_t( n, p ) {}
+    virtual double evaluate() { return paladin.last_judgement_target ? paladin.last_judgement_target -> actor_index : -1; }
+  };
+
+  if ( splits[ 0 ] == "last_judgment_target" )
+  {
+    return new double_jeopardy_expr_t( name_str, *this );
+  }
+
   return player_t::create_expression( a, name_str );
 }
 
