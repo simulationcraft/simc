@@ -2400,7 +2400,9 @@ double player_t::composite_melee_haste() const
 
     h *= 1.0 / ( 1.0 + racials.nimble_fingers -> effectN( 1 ).percent() );
     h *= 1.0 / ( 1.0 + racials.time_is_money -> effectN( 1 ).percent() );
-    // h *= 1.0 / ( 1.0 + racials.touch_of_elune -> effectN( 1 ).percent() );
+
+    if ( current.rating.attack_haste > current.rating.attack_crit ) // Probably the best we can do unless someone wants to add in "Is it daytime?" to the sim.
+       h *= 1.0 / ( 1.0 + racials.touch_of_elune -> effectN( 1 ).percent() );
 
   }
 
@@ -2455,7 +2457,8 @@ double player_t::composite_melee_crit() const
 
     ac += racials.viciousness -> effectN( 1 ).percent();
     ac += racials.arcane_acuity -> effectN( 1 ).percent();
- // ac += racials.touch_of_elune -> effectN( 1 ).percent();
+    if ( current.rating.attack_crit > current.rating.attack_haste ) // Probably the best we can do unless someone wants to add in "Is it daytime?" to the sim.
+       ac += racials.touch_of_elune -> effectN( 1 ).percent();
 
   return ac;
 }
@@ -2636,7 +2639,10 @@ double player_t::composite_spell_haste() const
 
     h *= 1.0 / ( 1.0 + racials.nimble_fingers -> effectN( 1 ).percent() );
     h *= 1.0 / ( 1.0 + racials.time_is_money -> effectN( 1 ).percent() );
-  //h *= 1.0 / ( 1.0 + racials.touch_of_elune -> effectN( 1 ).percent() );
+
+    if ( current.rating.spell_haste > current.rating.spell_crit ) // Probably the best we can do unless someone wants to add in "Is it daytime?" to the sim.
+       h *= 1.0 / ( 1.0 + racials.touch_of_elune -> effectN( 1 ).percent() );
+
   }
 
   return h;
@@ -2693,7 +2699,10 @@ double player_t::composite_spell_crit() const
 
   sc += racials.viciousness -> effectN( 1 ).percent();
   sc += racials.arcane_acuity -> effectN( 1 ).percent();
-  // sc += racials.touch_of_elune -> effectN( 1 ).percent();
+
+  if ( current.rating.attack_haste > current.rating.attack_crit ) // Probably the best we can do unless someone wants to add in "Is it daytime?" to the sim.
+    sc += racials.touch_of_elune -> effectN( 1 ).percent();
+
   return sc;
 }
 
