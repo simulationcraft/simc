@@ -49,6 +49,7 @@ actions.careful_aim=chimera_shot
 actions.careful_aim+=/steady_shot,if=buff.pre_steady_focus.up&buff.steady_focus.remains<6
 actions.careful_aim+=/aimed_shot
 actions.careful_aim+=/glaive_toss,if=enabled
+actions.careful_aim+=/focusing_shot,if=enabled&focus<60
 actions.careful_aim+=/steady_shot
 
 head=headguard_of_the_unblinking_vigil,id=99402,upgrade=2,gems=capacitive_primal_8agi_9agi

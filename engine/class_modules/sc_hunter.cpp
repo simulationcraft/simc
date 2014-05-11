@@ -10,7 +10,6 @@ namespace { // UNNAMED NAMESPACE
 // ==========================================================================
 // Hunter
 // To do: WoD implementation of serpent sting.
-// Implement Versatility talent
 // Improve lone wolf implementation -- Need to add a dismiss pet function.
 // ==========================================================================
 
@@ -879,6 +878,9 @@ public:
 
     // Pet combat experience
     m *= 1.0 + specs.combat_experience -> effectN( 2 ).percent();
+
+    if ( o() -> talents.versatility -> ok() )
+      m *= 1.0 + 0.2; // No spell data for the 20% from versatility.
 
     return m;
   }
@@ -2661,7 +2663,7 @@ struct focusing_shot_t : public hunter_ranged_attack_t
 
   virtual void trigger_steady_focus()
   {
-    p() -> buffs.pre_steady_focus -> trigger( 1 );
+    p() -> buffs.pre_steady_focus -> trigger( 2 );
   }
 
   virtual void execute()
@@ -3818,6 +3820,7 @@ void hunter_t::init_action_list()
           CA_actions += "/steady_shot,if=buff.pre_steady_focus.up&buff.steady_focus.remains<6";
           CA_actions += "/aimed_shot";
           CA_actions += "/glaive_toss,if=enabled";
+          CA_actions += "/focusing_shot,if=enabled&focus<60";
           CA_actions += "/steady_shot";
         }
 
