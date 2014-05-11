@@ -877,10 +877,10 @@ public:
       m *= 1.0 + buffs.tier16_4pc_bm_brutal_kinship -> stack() * buffs.tier16_4pc_bm_brutal_kinship -> data().effectN( 1 ).percent();
 
     // Pet combat experience
-    m *= 1.0 + specs.combat_experience -> effectN( 2 ).percent();
-
     if ( o() -> talents.versatility -> ok() )
-      m *= 1.0 + 0.2; // No spell data for the 20% from versatility.
+      m *= 1.0 + ( specs.combat_experience -> effectN( 2 ).percent() + 0.2 );  // No spell data for the 20% from versatility.
+    else
+      m *= 1.0 + specs.combat_experience -> effectN( 2 ).percent();
 
     return m;
   }
@@ -3603,7 +3603,7 @@ void hunter_t::create_buffs()
                                       .add_invalidate( CACHE_ATTACK_POWER );
   buffs.steady_focus                = buff_creator_t( this, 53220, "steady_focus" )
                                       .chance( specs.steady_focus -> ok() )
-                                      .add_invalidate( CACHE_ATTACK_SPEED );
+                                      .add_invalidate( CACHE_ATTACK_HASTE );
   buffs.thrill_of_the_hunt          = buff_creator_t( this, 34720, "thrill_of_the_hunt" ).chance( talents.thrill_of_the_hunt -> proc_chance() );
   buffs.lock_and_load               = buff_creator_t( this, 56453, "lock_and_load" )
                                       .chance( specs.lock_and_load -> effectN( 1 ).percent() )
@@ -3923,6 +3923,7 @@ double hunter_t::composite_melee_haste() const
 {
   double h = player_t::composite_melee_haste();
   h *= 1.0 / ( 1.0 + buffs.tier13_4pc -> up() * buffs.tier13_4pc -> data().effectN( 1 ).percent() );
+  h *= 1.0 / ( 1.0 + buffs.steady_focus -> value() );
   h *= ranged_haste_multiplier();
   return h;
 }
@@ -3948,7 +3949,7 @@ double hunter_t::ranged_haste_multiplier() const
 double hunter_t::ranged_speed_multiplier() const
 {
   double h = 1.0;
-  h *= 1.0 / ( 1.0 + buffs.steady_focus -> value() );
+
   return h;
 }
 
