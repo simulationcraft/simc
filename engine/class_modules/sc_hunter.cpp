@@ -1918,7 +1918,7 @@ struct aimed_shot_t : public hunter_ranged_attack_t
     parse_options( NULL, options_str );
 
     normalize_weapon_speed = true;
-
+    base_multiplier *= 1.0 + p -> perks.improved_aimed_shot -> effectN( 1 ).percent();
     as_mm -> background = true;
   }
 
@@ -1976,7 +1976,13 @@ struct aimed_shot_t : public hunter_ranged_attack_t
     hunter_ranged_attack_t::impact( s );
 
     if ( s -> result == RESULT_CRIT )
+    {
       trigger_piercing_shots( s -> target, s -> result_amount );
+
+      p() -> resource_gain( RESOURCE_FOCUS, 
+                            p() -> perks.enhanced_aimed_shot -> effectN( 1 ).resource( RESOURCE_FOCUS ),
+                            p() -> gains.aimed_shot );
+    }
   }
 };
 
