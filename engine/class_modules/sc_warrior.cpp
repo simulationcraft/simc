@@ -466,6 +466,76 @@ public:
 
     return true;
   }
+
+  void assess_damage(dmg_e type,
+               action_state_t* s)
+  {
+    ab::assess_damage( type, s );
+
+    warrior_t* p  = cast();
+    warrior_td_t* td = cast_td( s -> target );
+
+    if ( td -> debuffs_colossus_smash -> up() && s -> result_amount > 0)
+      p -> cs_damage.add( s -> result_amount );
+
+    if ( ( s -> target == sim -> target ) && s -> result_amount > 0 )
+      p -> priority_damage.add( s -> result_amount );
+
+    if ( s -> result_amount > 0 )
+      p -> all_damage.add( s -> result_amount );
+  }
+
+  void consume_resource()
+  {
+    ab::consume_resource();
+
+    warrior_t* p = cast();
+
+    if ( proc )
+      return;
+
+    double rage = resource_consumed;
+
+    if ( rage > 0 && p -> talents.anger_management -> ok() )
+    {
+      rage /= 30; //Anger management takes the amount of rage spent and reduces the cooldown of abilities by 1 second per 30 rage.
+      rage *= -1;
+      p -> cooldown.heroic_leap -> adjust( timespan_t::from_seconds( rage ) ); //All specs
+
+      if ( p -> specialization() == WARRIOR_FURY || p -> specialization() == WARRIOR_ARMS )
+      {
+      // Fourth Tier Talents
+        if ( p -> talents.storm_bolt -> ok() ) 
+          p -> cooldown.storm_bolt -> adjust( timespan_t::from_seconds( rage ) );
+        else if ( p -> talents.dragon_roar -> ok() )
+          p -> cooldown.dragon_roar -> adjust( timespan_t::from_seconds( rage ) );
+        else if ( p -> talents.shockwave -> ok() )
+          p -> cooldown.shockwave -> adjust( timespan_t::from_seconds( rage ) );
+      // Sixth tier talents
+        if ( p -> talents.bladestorm -> ok() )
+          p -> cooldown.bladestorm -> adjust( timespan_t::from_seconds( rage ) );
+        else if ( p -> talents.bloodbath -> ok() )
+          p -> cooldown.bloodbath -> adjust( timespan_t::from_seconds( rage ) );
+        else if ( p -> talents.avatar -> ok() )
+          p -> cooldown.avatar -> adjust( timespan_t::from_seconds( rage ) );
+
+        p -> cooldown.recklessness -> adjust( timespan_t::from_seconds( rage ) );
+      }
+      else if ( p -> specialization() == WARRIOR_PROTECTION )
+      {
+        p -> cooldown.demoralizing_shout -> adjust( timespan_t::from_seconds( rage ) );
+        p -> cooldown.last_stand -> adjust( timespan_t::from_seconds( rage ) );
+        p -> cooldown.shield_wall -> adjust( timespan_t::from_seconds( rage ) ); 
+      }
+    }
+    // Warrior attacks (non-AoE) which are are avoided by the target consume only 20%
+    if ( resource_consumed > 0 && ! aoe && result_is_miss( execute_state -> result ) )
+    {
+      double rage_restored = resource_consumed * 0.80;
+      p -> resource_gain( RESOURCE_RAGE, rage_restored, p -> gain.avoided_attacks );
+    }
+  }
+
 };
 
 // ==========================================================================
@@ -491,8 +561,6 @@ struct warrior_attack_t : public warrior_action_t< melee_attack_t >
 
     return a;
   }
-
-  virtual void   consume_resource();
 
   virtual void   execute();
 
@@ -520,24 +588,6 @@ struct warrior_attack_t : public warrior_action_t< melee_attack_t >
       }
     }
     return dmg;
-  }
-
-  void assess_damage(dmg_e type,
-               action_state_t* s)
-  {
-    attack_t::assess_damage( type, s );
-
-    warrior_t* p  = cast();
-    warrior_td_t* td = cast_td( s -> target );
-
-    if ( td -> debuffs_colossus_smash -> up() && s -> result_amount > 0)
-      p -> cs_damage.add( s -> result_amount );
-
-    if ( ( s -> target == sim -> target ) && s -> result_amount > 0 )
-      p -> priority_damage.add( s -> result_amount );
-
-    if ( s -> result_amount > 0 )
-      p -> all_damage.add( s -> result_amount );
   }
 
   virtual double composite_crit() const
@@ -646,8 +696,7 @@ struct bloodbath_dot_t : public ignite::pct_based_action_t< attack_t >
     background = true;
     dual = true;
   }
-
-
+  
   void assess_damage(dmg_e type,
                action_state_t* s)
   {
@@ -856,58 +905,6 @@ static void trigger_flurry( warrior_attack_t* a, int stacks )
 // ==========================================================================
 // Warrior Attacks
 // ==========================================================================
-
-// warrior_attack_t::consume_resource =======================================
-
-void warrior_attack_t::consume_resource()
-{
-  base_t::consume_resource();
-  warrior_t* p = cast();
-
-  if ( proc )
-    return;
-
-  double rage = resource_consumed;
-
-  if ( rage > 0 && p -> talents.anger_management -> ok() )
-  {
-    rage /= 30; //Anger management takes the amount of rage spent and reduces the cooldown of abilities by 1 second per 30 rage.
-    rage *= -1;
-    p -> cooldown.heroic_leap -> adjust( timespan_t::from_seconds( rage ) ); //All specs
-
-    if ( p -> specialization() == WARRIOR_FURY || p -> specialization() == WARRIOR_ARMS )
-    {
-    // Fourth Tier Talents
-      if ( p -> talents.storm_bolt -> ok() ) 
-        p -> cooldown.storm_bolt -> adjust( timespan_t::from_seconds( rage ) );
-      else if ( p -> talents.dragon_roar -> ok() )
-        p -> cooldown.dragon_roar -> adjust( timespan_t::from_seconds( rage ) );
-      else if ( p -> talents.shockwave -> ok() )
-        p -> cooldown.shockwave -> adjust( timespan_t::from_seconds( rage ) );
-    // Sixth tier talents
-      if ( p -> talents.bladestorm -> ok() )
-        p -> cooldown.bladestorm -> adjust( timespan_t::from_seconds( rage ) );
-      else if ( p -> talents.bloodbath -> ok() )
-        p -> cooldown.bloodbath -> adjust( timespan_t::from_seconds( rage ) );
-      else if ( p -> talents.avatar -> ok() )
-        p -> cooldown.avatar -> adjust( timespan_t::from_seconds( rage ) );
-
-      p -> cooldown.recklessness -> adjust( timespan_t::from_seconds( rage ) );
-    }
-    else if ( p -> specialization() == WARRIOR_PROTECTION )
-    {
-      p -> cooldown.demoralizing_shout -> adjust( timespan_t::from_seconds( rage ) );
-      p -> cooldown.last_stand -> adjust( timespan_t::from_seconds( rage ) );
-      p -> cooldown.shield_wall -> adjust( timespan_t::from_seconds( rage ) ); 
-    }
-  }
-  // Warrior attacks (non-AoE) which are are avoided by the target consume only 20%
-  if ( resource_consumed > 0 && ! aoe && result_is_miss( execute_state -> result ) )
-  {
-    double rage_restored = resource_consumed * 0.80;
-    p -> resource_gain( RESOURCE_RAGE, rage_restored, p -> gain.avoided_attacks );
-  }
-}
 
 // warrior_attack_t::execute ================================================
 
@@ -2815,24 +2812,6 @@ struct warrior_spell_t : public warrior_action_t< spell_t >
     use_off_gcd = true;
   }
 
-  void assess_damage(dmg_e type,
-               action_state_t* s)
-  {
-    spell_t::assess_damage( type, s );
-
-    warrior_t* p  = cast();
-    warrior_td_t* td = cast_td( s -> target );
-
-    if ( td -> debuffs_colossus_smash -> up() && s -> result_amount > 0)
-      p -> cs_damage.add( s -> result_amount );
-
-    if ( ( s -> target == sim -> target ) && s -> result_amount > 0 )
-      p -> priority_damage.add( s -> result_amount );
-
-    if ( s -> result_amount > 0 )
-      p -> all_damage.add( s -> result_amount );
-  }
-
 };
 
 // Avatar ===================================================================
@@ -3049,6 +3028,7 @@ struct shield_barrier_t : public warrior_action_t<absorb_t>
   virtual void consume_resource()
   {
     resource_consumed = rage_cost;
+    base_t::consume_resource();
     player -> resource_loss( current_resource(), resource_consumed, 0, this );
 
     if ( sim -> log )
