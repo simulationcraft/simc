@@ -522,19 +522,6 @@ struct warrior_attack_t : public warrior_action_t< melee_attack_t >
     return dmg;
   }
 
-
-  virtual double action_multiplier() const
-  {
-    double am = base_t::action_multiplier();
-
-    const warrior_t* p = cast();
-
-    if ( p -> main_hand_weapon.group() == WEAPON_2H && p -> spec.seasoned_soldier )
-      am *= 1.0 + p -> spec.seasoned_soldier -> effectN( 1 ).percent();
-
-    return am;
-  }
-
   void assess_damage(dmg_e type,
                action_state_t* s)
   {
@@ -572,7 +559,8 @@ struct warrior_attack_t : public warrior_action_t< melee_attack_t >
     const warrior_t* p = cast();
 
     if( special && p -> buff.recklessness -> up() )
-      cd += p -> buff.recklessness -> data().effectN( 2 ).percent();
+      cd += ( p -> buff.recklessness -> data().effectN( 2 ).percent() * 
+            ( p -> glyphs.recklessness -> ok() ? p -> glyphs.recklessness -> effectN( 1 ).percent() : 1 ) );
 
     return cd;
   }
@@ -1799,7 +1787,7 @@ struct impending_victory_heal_t : public heal_t
   virtual double calculate_direct_amount( action_state_t* state )
   {
     warrior_t* p = static_cast<warrior_t*>( player );
-    double pct_heal = 0.20;
+    double pct_heal = 0.15;
 
     if ( p -> buff.tier15_2pc_tank -> up() )
     {
@@ -2992,18 +2980,6 @@ struct deep_wounds_t : public warrior_spell_t
     hasted_ticks  = false;
     dynamic_tick_action = true;
     dot_behavior = DOT_REFRESH;
-  }
-
-  virtual double action_multiplier() const
-  {
-    double am = base_t::action_multiplier();
-
-    const warrior_t* p = cast();
-
-    if ( p -> main_hand_weapon.group() == WEAPON_2H && p -> spec.seasoned_soldier )
-      am *= 1.0 + p -> spec.seasoned_soldier -> effectN( 1 ).percent();
-
-    return am;
   }
 
 };
@@ -4492,6 +4468,9 @@ double warrior_t::composite_player_multiplier( school_e school ) const
 
   if ( buff.avatar -> up() )
     m *= 1.0 + buff.avatar -> data().effectN( 1 ).percent();
+
+  if ( main_hand_weapon.group() == WEAPON_2H && spec.seasoned_soldier )
+    m *= 1.0 + spec.seasoned_soldier -> effectN( 1 ).percent();
 
   // --- Enrages ---
   if ( buff.enrage -> up() )

@@ -2258,9 +2258,7 @@ struct cobra_shot_t : public hunter_ranged_attack_t
     // Needs testing
     if ( p() -> sets.has_set_bonus( SET_T13_2PC_MELEE ) )
       focus_gain *= 2.0;
-
-    attack_power_mod.direct = 0.017;
-    attack_power_mod.direct *= p() -> perks.improved_cobra_shot -> effectN( 1 ).percent();
+    base_multiplier *= 1 + p() -> perks.improved_cobra_shot -> effectN ( 1 ).percent();
   }
 
   virtual bool usable_moving() const
