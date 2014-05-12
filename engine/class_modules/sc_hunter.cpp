@@ -3457,7 +3457,7 @@ void hunter_t::init_spells()
   glyphs.tame_beast          = find_glyph_spell( "Glyph of Tame Beast"  );
   glyphs.the_cheetah         = find_glyph_spell( "Glyph of the Cheetah"  );
 
-  specs.critical_strikes     = find_specialization_spell( "Critical Strikes" );
+  specs.critical_strikes     = find_spell( 157443 );
   specs.piercing_shots       = find_specialization_spell( "Piercing Shots" );
   specs.steady_focus         = find_specialization_spell( "Steady Focus" );
   specs.go_for_the_throat    = find_specialization_spell( "Go for the Throat" );
