@@ -1900,7 +1900,10 @@ struct aimed_shot_t : public hunter_ranged_attack_t
       if ( s -> result == RESULT_CRIT )
       {
         trigger_piercing_shots( s -> target, s -> result_amount );
-        p() -> resource_gain( RESOURCE_FOCUS, p() -> perks.enhanced_aimed_shot -> effectN( 1 ).base_value() , p() -> gains.aimed_shot );
+
+        p() -> resource_gain( RESOURCE_FOCUS, 
+                              p() -> perks.enhanced_aimed_shot -> effectN( 1 ).resource( RESOURCE_FOCUS ),
+                              p() -> gains.aimed_shot );
       }
     }
   };
