@@ -2148,57 +2148,45 @@ struct black_arrow_t : public hunter_ranged_attack_t
   }
 };
 
-// Explosive Trap ===========================================================
+// Explosive Trap ==============================================================
 
-struct explosive_trap_effect_t : public hunter_ranged_attack_t
+struct explosive_trap_tick_t : public hunter_ranged_attack_t
 {
-  explosive_trap_effect_t( hunter_t* player ) :
-    hunter_ranged_attack_t( "explosive_trap", player, player -> find_spell( 13812 ) )
+  explosive_trap_tick_t( hunter_t* player, const std::string& name ) :
+    hunter_ranged_attack_t( name , player, player -> find_spell( 13812 ) )
   {
-    aoe = -1;
-    background = true;
-
-    cooldown -> duration += p() -> specs.trap_mastery -> effectN( 4 ).time_value();
+    aoe           = -1;
+    background    = true;
+    direct_tick   = true;
     base_multiplier *= 1.0 + p() -> specs.trap_mastery -> effectN( 2 ).percent();
-
-    may_miss = false;
-    may_crit = false;
-    tick_may_crit = true;
   }
 };
 
 struct explosive_trap_t : public hunter_ranged_attack_t
 {
-  attack_t* trap_effect;
-  int trap_launcher;
-
+  attack_t* explosive_trap_tick;
   explosive_trap_t( hunter_t* player, const std::string& options_str ) :
-    hunter_ranged_attack_t( "explosive_trap", player, player -> find_spell( 13813 ) ),
-    trap_effect( new explosive_trap_effect_t( p() ) ),
-    trap_launcher( 0 )
+    hunter_ranged_attack_t( "explosive_trap", player, player -> find_class_spell( "Explosive Trap" ) ),
+    explosive_trap_tick( new explosive_trap_tick_t( player, "explosive_trap_tick" ) )
   {
-    option_t options[] =
-    {
-      opt_bool( "trap_launcher", trap_launcher ),
-      opt_null()
-    };
-    parse_options( options, options_str );
-
-    //TODO: Split traps cooldown into fire/frost/snakes
-    cooldown = p() -> get_cooldown( "traps" );
+    parse_options( NULL, options_str );
+    
     cooldown -> duration = data().cooldown();
-    cooldown -> duration *= p() -> perks.enhanced_traps -> effectN( 1 ).percent();
+    cooldown -> duration += p() -> specs.trap_mastery -> effectN( 4 ).time_value();
+    if ( p() -> perks.enhanced_traps -> ok() )
+      cooldown -> duration *= ( -1 * p() -> perks.enhanced_traps -> effectN( 1 ).percent() );
 
-    may_miss = false;
-
-    add_child( trap_effect );
+    tick_zero     = true;
+    hasted_ticks  = false;
+    harmful       = false;
+    add_child( explosive_trap_tick );
   }
 
-  virtual void execute()
+  virtual void tick( dot_t* d )
   {
-    hunter_ranged_attack_t::execute();
+    hunter_ranged_attack_t::tick( d );
 
-    trap_effect -> execute();
+    explosive_trap_tick -> execute();
   }
 };
 
