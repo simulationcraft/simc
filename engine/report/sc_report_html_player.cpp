@@ -172,7 +172,7 @@ std::string output_action_name( stats_t* s, player_t* actor )
 
   wowhead::wowhead_e domain = SC_BETA ? wowhead::BETA : wowhead::LIVE;
   if ( ! SC_BETA )
-    domain = a -> player -> dbc.ptr ? wowhead::PTR : wowhead::LIVE;
+    domain = s -> player -> dbc.ptr ? wowhead::PTR : wowhead::LIVE;
 
   std::string name = wowhead::decorated_action_name( s -> name_str, a, domain );
 
