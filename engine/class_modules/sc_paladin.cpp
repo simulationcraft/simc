@@ -249,6 +249,10 @@ public:
     const spell_data_t* empowered_seals;
     const spell_data_t* seraphim;
     const spell_data_t* holy_shield;
+    const spell_data_t* final_verdict;
+    const spell_data_t* beacon_of_faith;
+    const spell_data_t* beacon_of_insight;
+    const spell_data_t* saved_by_the_light;
   } talents;
 
   // Glyphs
@@ -4051,25 +4055,34 @@ struct shield_of_the_righteous_t : public paladin_melee_attack_t
   }
 };
 
-// Templar's Verdict ========================================================
+// Templar's Verdict / Final Verdict ========================================================
 
 struct templars_verdict_t : public paladin_melee_attack_t
 {
   templars_verdict_t( paladin_t* p, const std::string& options_str )
-    : paladin_melee_attack_t( "templars_verdict", p, p -> find_class_spell( "Templar's Verdict" ), true )
+    : paladin_melee_attack_t( ( p -> talents.final_verdict -> ok() ? "final_verdict" : "templars_verdict" ), 
+                              p, 
+                              ( p -> talents.final_verdict -> ok() ? p -> find_talent_spell( "Final Verdict" ) : p -> find_class_spell( "Templar's Verdict" ) ), 
+                              true )
   {
     parse_options( NULL, options_str );
     sanctity_of_battle = true;
     trigger_seal       = true;
   }
 
+  virtual school_e get_school() const
+  {
+    // T15 Retribution 4-piece proc turns damage from physical into Holy damage
+    if ( p() -> buffs.tier15_4pc_melee -> up() )
+      return SCHOOL_HOLY;
+    else
+      paladin_melee_attack_t::get_school();
+  }
+
   virtual void execute ()
   {
     // store cost for potential refunding (see below)
     double c = cost();
-
-    // T15 Retribution 4-piece proc turns damage from physical into Holy damage
-    school = p() -> buffs.tier15_4pc_melee -> up() ? SCHOOL_HOLY : SCHOOL_PHYSICAL;
 
     paladin_melee_attack_t::execute();
 
@@ -4264,6 +4277,7 @@ action_t* paladin_t::create_action( const std::string& name, const std::string& 
   if ( name == "execution_sentence"        ) return new execution_sentence_t       ( this, options_str );
   if ( name == "exorcism"                  ) return new exorcism_t                 ( this, options_str );
   if ( name == "fist_of_justice"           ) return new fist_of_justice_t          ( this, options_str );
+  if ( name == "final_verdict"             ) return new templars_verdict_t         ( this, options_str );
   if ( name == "hand_of_purity"            ) return new hand_of_purity_t           ( this, options_str );
   if ( name == "hand_of_sacrifice"         ) return new hand_of_sacrifice_t        ( this, options_str );
   if ( name == "hammer_of_justice"         ) return new hammer_of_justice_t        ( this, options_str );
@@ -5128,7 +5142,11 @@ void paladin_t::init_spells()
   talents.empowered_seals         = find_talent_spell( "Empowered Seals" );
   talents.seraphim                = find_talent_spell( "Seraphim" );
   talents.holy_shield             = find_talent_spell( "Holy Shield" );
-  
+  talents.final_verdict           = find_talent_spell( "Final Verdict" );
+  talents.beacon_of_faith         = find_talent_spell( "Beacon of Faith" );
+  talents.beacon_of_insight       = find_talent_spell( "Beacon of Insight" );
+  talents.saved_by_the_light      = find_talent_spell( "Saved by the Light" );
+
   // Spells
   spells.holy_light                    = find_specialization_spell( "Holy Light" );
   spells.sanctified_wrath              = find_spell( 114232 );  // spec-specific effects for Sanctified Wrath
