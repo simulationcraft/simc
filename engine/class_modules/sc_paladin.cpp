@@ -68,6 +68,7 @@ public:
   action_t* active_censure;  // this is the Censure dot application
   heal_t*   active_enlightened_judgments;
   action_t* active_hand_of_light_proc;
+  action_t* active_holy_shield_proc;
   absorb_t* active_illuminated_healing;
   heal_t*   active_protector_of_the_innocent;
   action_t* active_seal_of_insight_proc;
@@ -246,6 +247,9 @@ public:
     const spell_data_t* holy_prism;
     const spell_data_t* lights_hammer;
     const spell_data_t* execution_sentence;
+    const spell_data_t* empowered_seals;
+    const spell_data_t* seraphim;
+    const spell_data_t* holy_shield;
   } talents;
 
   // Glyphs
@@ -304,6 +308,7 @@ public:
     active_censure                     = 0;
     active_enlightened_judgments       = 0;
     active_hand_of_light_proc          = 0;
+    active_holy_shield_proc            = 0;
     active_illuminated_healing         = 0;
     active_protector_of_the_innocent   = 0;
     active_seal                        = SEAL_NONE;
@@ -367,6 +372,7 @@ public:
   double  jotp_haste();
   void    trigger_grand_crusader();
   void    trigger_shining_protector( action_state_t* );
+  void    trigger_holy_shield();
   void    generate_action_prio_list_prot();
   void    generate_action_prio_list_ret();
   void    generate_action_prio_list_holy();
@@ -2044,6 +2050,22 @@ struct holy_light_t : public paladin_heal_t
 
     return am;
   }
+};
+
+// Holy Shield proc ===========================================================
+
+struct holy_shield_proc_t : public paladin_spell_t
+{
+  holy_shield_proc_t( paladin_t* p )
+    : paladin_spell_t( "holy_shield", p, p -> find_spell( 157122 ) ) // damage data stored in 157122
+  {
+    background = true;
+    proc = true;
+    may_miss = false;
+    // may_crit = true; TODO: test?
+    // may_multistrike = false; TODO: test?
+  }
+
 };
 
 // Holy Prism ===============================================================
@@ -4309,8 +4331,17 @@ void paladin_t::trigger_shining_protector( action_state_t* s )
     active_shining_protector_proc -> base_dd_max = active_shining_protector_proc -> base_dd_min = s -> result_amount;
     active_shining_protector_proc -> schedule_execute();
   }
+}
 
+void paladin_t::trigger_holy_shield()
+{
+  // escape if we don't have Holy Shield
+  if ( ! talents.holy_shield -> ok() )
+    return;
 
+  // Check for proc
+  if ( rng().roll( talents.holy_shield -> proc_chance() ) )
+    active_holy_shield_proc -> schedule_execute();
 }
 
 // paladin_t::init_defense ==================================================
@@ -5050,7 +5081,7 @@ void paladin_t::init_action_list()
         generate_action_prio_list_prot(); // PROT
         break;
       case PALADIN_HOLY:
-        generate_action_prio_list_holy(); // HOLY, not supported at this time
+        generate_action_prio_list_holy(); // HOLY
         break;
       default:
         if ( level > 80 )
@@ -5096,7 +5127,10 @@ void paladin_t::init_spells()
   talents.holy_prism              = find_talent_spell( "Holy Prism" );
   talents.lights_hammer           = find_talent_spell( "Light's Hammer" );
   talents.execution_sentence      = find_talent_spell( "Execution Sentence" );
-
+  talents.empowered_seals         = find_talent_spell( "Empowered Seals" );
+  talents.seraphim                = find_talent_spell( "Seraphim" );
+  talents.holy_shield             = find_talent_spell( "Holy Shield" );
+  
   // Spells
   spells.holy_light                    = find_specialization_spell( "Holy Light" );
   spells.sanctified_wrath              = find_spell( 114232 );  // spec-specific effects for Sanctified Wrath
@@ -5206,6 +5240,9 @@ void paladin_t::init_spells()
 
   if ( passives.shining_protector -> ok() )
     active_shining_protector_proc = new shining_protector_t( this );
+
+  if ( talents.holy_shield -> ok() )
+    active_holy_shield_proc = new holy_shield_proc_t( this );
 
   // TODO: check if this benefit is only for the paladin (as coded) or for all targets
   debuffs.forbearance -> buff_duration += timespan_t::from_millis( perk.improved_forbearance -> effectN( 1 ).base_value() );
@@ -5455,6 +5492,9 @@ double paladin_t::composite_block() const
   // Improved Block perk (assuming for now that it's not affected by DR
   b += perk.improved_block -> effectN( 1 ).percent();
 
+  // Holy Shield (assuming for now that it's not affected by DR)
+  b += talents.holy_shield -> effectN( 1 ).percent();
+
   return b;
 }
 
@@ -5663,11 +5703,13 @@ void paladin_t::assess_damage( school_e school,
     return;
   }
 
-  // On a block event, trigger Alabaster Shield
+  // On a block event, trigger Alabaster Shield & Holy Shield
   if ( s -> block_result == BLOCK_RESULT_BLOCKED )
   {
     if ( glyphs.alabaster_shield -> ok() )
       buffs.alabaster_shield -> trigger();
+    
+    trigger_holy_shield();
   }
 
   // Also trigger Grand Crusader on an avoidance event
