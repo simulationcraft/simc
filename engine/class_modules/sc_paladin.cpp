@@ -129,7 +129,6 @@ public:
     // Holy Power
     gain_t* hp_blessed_life;
     gain_t* hp_crusader_strike;
-    gain_t* hp_divine_plea;
     gain_t* hp_exorcism;
     gain_t* hp_grand_crusader;
     gain_t* hp_hammer_of_the_righteous;
@@ -4435,24 +4434,23 @@ void paladin_t::init_gains()
   gains.glyph_divine_shield         = get_gain( "glyph_of_divine_shield" );
 
   // Holy Power
-  gains.hp_blessed_life             = get_gain( "holy_power_blessed_life" );
-  gains.hp_crusader_strike          = get_gain( "holy_power_crusader_strike" );
-  gains.hp_divine_plea              = get_gain( "holy_power_divine_plea" );
-  gains.hp_exorcism                 = get_gain( "holy_power_exorcism" );
-  gains.hp_grand_crusader           = get_gain( "holy_power_grand_crusader" );
-  gains.hp_hammer_of_the_righteous  = get_gain( "holy_power_hammer_of_the_righteous" );
-  gains.hp_hammer_of_wrath          = get_gain( "holy_power_hammer_of_wrath" );
-  gains.hp_holy_avenger             = get_gain( "holy_power_holy_avenger" );
-  gains.hp_holy_shock               = get_gain( "holy_power_holy_shock" );
-  gains.hp_judgments_of_the_bold    = get_gain( "holy_power_judgments_of_the_bold" );
-  gains.hp_judgments_of_the_wise    = get_gain( "holy_power_judgments_of_the_wise" );
-  gains.hp_pursuit_of_justice       = get_gain( "holy_power_pursuit_of_justice" );
-  gains.hp_sanctified_wrath         = get_gain( "holy_power_sanctified_wrath" );
-  gains.hp_selfless_healer          = get_gain( "holy_power_selfless_healer" );
-  gains.hp_templars_verdict_refund  = get_gain( "holy_power_templars_verdict_refund" );
-  gains.hp_tower_of_radiance        = get_gain( "holy_power_tower_of_radiance" );
-  gains.hp_judgment                 = get_gain( "holy_power_judgment" );
-  gains.hp_t15_4pc_tank             = get_gain( "holy_power_t15_4pc_tank" );
+  gains.hp_blessed_life             = get_gain( "blessed_life" );
+  gains.hp_crusader_strike          = get_gain( "crusader_strike" );
+  gains.hp_exorcism                 = get_gain( "exorcism" );
+  gains.hp_grand_crusader           = get_gain( "grand_crusader" );
+  gains.hp_hammer_of_the_righteous  = get_gain( "hammer_of_the_righteous" );
+  gains.hp_hammer_of_wrath          = get_gain( "hammer_of_wrath" );
+  gains.hp_holy_avenger             = get_gain( "holy_avenger" );
+  gains.hp_holy_shock               = get_gain( "holy_shock" );
+  gains.hp_judgments_of_the_bold    = get_gain( "judgments_of_the_bold" );
+  gains.hp_judgments_of_the_wise    = get_gain( "judgments_of_the_wise" );
+  gains.hp_pursuit_of_justice       = get_gain( "pursuit_of_justice" );
+  gains.hp_sanctified_wrath         = get_gain( "sanctified_wrath" );
+  gains.hp_selfless_healer          = get_gain( "selfless_healer" );
+  gains.hp_templars_verdict_refund  = get_gain( "templars_verdict_refund" );
+  gains.hp_tower_of_radiance        = get_gain( "tower_of_radiance" );
+  gains.hp_judgment                 = get_gain( "judgment" );
+  gains.hp_t15_4pc_tank             = get_gain( "t15_4pc_tank" );
 }
 
 // paladin_t::init_procs ====================================================
