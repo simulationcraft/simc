@@ -979,8 +979,7 @@ struct melee_t : public warrior_attack_t
     school      = SCHOOL_PHYSICAL;
     may_glance  = true;
     special     = false;
-    background  = true;
-    repeating   = true;
+    background  = repeating = auto_attack = true;;
     trigger_gcd = timespan_t::zero();
 
     if ( p -> dual_wield() ) base_hit -= 0.19;
