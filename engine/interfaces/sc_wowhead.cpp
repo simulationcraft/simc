@@ -374,6 +374,8 @@ std::string wowhead::decorated_action_name( const std::string& name,
 {
   std::string spell_name;
   unsigned spell_id = 0;
+  if ( ! action )
+    return name;
 
   // Kludge auto attack decorations
   attack_t* a = dynamic_cast< attack_t* >( action );

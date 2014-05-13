@@ -3487,22 +3487,6 @@ void print_html_( report::sc_html_stream& os, sim_t* sim )
 
   print_html_styles( os, sim );
 
-  os.printf( "\t\t<script type=\"text/javascript\">\n"
-             "\t\tfunction HighlightText(obj){\n"
-             "\t\t\tif (document.selection) {\n"
-             "\t\t\t\tvar r1 = document.body.createTextRange();\n"
-             "\t\t\t\tr1.moveToElementText(document.getElementById(obj));\n"
-             "\t\t\t\tr1.select();\n"
-             "\t\t\t} else {\n"
-             "\t\t\t\tvar s = window.getSelection();\n"
-             "\t\t\t\tvar r1 = document.createRange();\n"
-             "\t\t\t\tr1.setStartBefore(document.getElementById(obj));\n"
-             "\t\t\t\tr1.setEndAfter(document.getElementById(obj));\n"
-             "\t\t\t\ts.addRange(r1);\n"
-             "\t\t\t}\n"
-             "\t\t}\n"
-             "\t\t</script>\n" );
-
   os << "\t</head>\n\n";
 
   os << "\t<body>\n";
