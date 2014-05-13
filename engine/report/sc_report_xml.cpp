@@ -1066,7 +1066,7 @@ void print_xml_player_action_definitions( xml_writer_t & writer, player_t * p )
         writer.begin_tag( "action_detail" );
         writer.print_attribute( "id", util::to_string( a -> id ) );
         writer.print_attribute( "name", a -> name() );
-        writer.print_tag( "school", util::school_type_string( a-> school ) );
+        writer.print_tag( "school", util::school_type_string( a -> get_school() ) );
         writer.print_tag( "resource", util::resource_type_string( a -> current_resource() ) );
         writer.print_tag( "range", util::to_string( a -> range ) );
         writer.print_tag( "travel_speed", util::to_string( a -> travel_speed ) );

@@ -205,17 +205,17 @@ void spell_t::assess_damage( dmg_e type,
     {
       if ( direct_tick_callbacks )
       {
-        action_callback_t::trigger( player -> callbacks.spell_tick_damage[ school ], this, s );
+        action_callback_t::trigger( player -> callbacks.spell_tick_damage[ get_school() ], this, s );
       }
       else
       {
-        if ( callbacks ) action_callback_t::trigger( player -> callbacks.spell_direct_damage[ school ], this, s );
+        if ( callbacks ) action_callback_t::trigger( player -> callbacks.spell_direct_damage[ get_school() ], this, s );
       }
     }
   }
   else // DMG_OVER_TIME
   {
-    if ( callbacks && s -> result_amount > 0.0 ) action_callback_t::trigger( player -> callbacks.spell_tick_damage[ school ], this, s );
+    if ( callbacks && s -> result_amount > 0.0 ) action_callback_t::trigger( player -> callbacks.spell_tick_damage[ get_school() ], this, s );
   }
 }
 
@@ -341,7 +341,7 @@ void heal_t::execute()
 void heal_t::assess_damage( dmg_e heal_type,
                             action_state_t* s )
 {
-  s -> target -> assess_heal( school, heal_type, s );
+  s -> target -> assess_heal( get_school() , heal_type, s );
 
   if ( heal_type == HEAL_DIRECT )
   {
@@ -355,8 +355,8 @@ void heal_t::assess_damage( dmg_e heal_type,
 
     if ( ! result_is_multistrike( s -> result ) )
     {
-      if ( callbacks && ! direct_tick_callbacks ) action_callback_t::trigger( player -> callbacks.direct_heal[ school ], this, s );
-      if ( direct_tick_callbacks ) action_callback_t::trigger( player -> callbacks.tick_heal[ school ], this, s );
+      if ( callbacks && ! direct_tick_callbacks ) action_callback_t::trigger( player -> callbacks.direct_heal[ get_school() ], this, s );
+      if ( direct_tick_callbacks ) action_callback_t::trigger( player -> callbacks.tick_heal[ get_school() ], this, s );
     }
   }
   else // HEAL_OVER_TIME
@@ -372,7 +372,7 @@ void heal_t::assess_damage( dmg_e heal_type,
     }
 
     if ( ! result_is_multistrike( s -> result ) || callbacks )
-      action_callback_t::trigger( player -> callbacks.tick_heal[ school ], this, s );
+      action_callback_t::trigger( player -> callbacks.tick_heal[ get_school() ], this, s );
   }
 
   // New callback system; proc spells on impact. 

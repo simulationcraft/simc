@@ -6928,7 +6928,7 @@ expr_t* player_t::create_expression( action_t* a,
       action_t& action;
       multiplier_expr_t( player_t& p, action_t* a ) :
         player_expr_t( "multiplier", p ), action( *a ) { assert( a ); }
-      virtual double evaluate() { return player.cache.player_multiplier( action.school ); }
+      virtual double evaluate() { return player.cache.player_multiplier( action.get_school() ); }
     };
     return new multiplier_expr_t( *this, a );
   }

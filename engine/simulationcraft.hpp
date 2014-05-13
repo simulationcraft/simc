@@ -5320,6 +5320,7 @@ struct action_t : public noncopyable
   void   check_spec( specialization_e );
   void   check_spell( const spell_data_t* );
   const char* name() const { return name_str.c_str(); }
+  virtual school_e get_school() const { return school; };
 
   static bool result_is_hit( result_e r )
   {
@@ -5438,9 +5439,9 @@ public:
   virtual double composite_haste() const { return 1.0; }
   virtual double composite_attack_power() const { return base_attack_power + player -> cache.attack_power(); }
   virtual double composite_spell_power() const
-  { return base_spell_power + player -> cache.spell_power( school ); }
+  { return base_spell_power + player -> cache.spell_power( get_school() ); }
   virtual double composite_target_crit( player_t* /* target */ ) const;
-  virtual double composite_target_multiplier( player_t* target ) const { return target -> composite_player_vulnerability( school ); }
+  virtual double composite_target_multiplier( player_t* target ) const { return target -> composite_player_vulnerability( get_school() ); }
   virtual double composite_multistrike() const { return player -> cache.multistrike(); }
   virtual double composite_readiness() const { return player -> cache.readiness(); }
 
@@ -5453,14 +5454,14 @@ public:
   virtual double composite_da_multiplier() const
   {
     return action_multiplier() * action_da_multiplier() *
-           player -> cache.player_multiplier( school ) *
-           player -> composite_player_dd_multiplier( school, this );
+           player -> cache.player_multiplier( get_school() ) *
+           player -> composite_player_dd_multiplier( get_school() , this );
   }
   virtual double composite_ta_multiplier() const
   {
     return action_multiplier() * action_ta_multiplier() *
-           player -> cache.player_multiplier( school ) *
-           player -> composite_player_td_multiplier( school, this );
+           player -> cache.player_multiplier( get_school() ) *
+           player -> composite_player_td_multiplier( get_school() , this );
   }
 
 
@@ -5795,14 +5796,14 @@ public:
   virtual double composite_da_multiplier() const
   {
     return action_multiplier() * action_da_multiplier() *
-           player -> cache.player_heal_multiplier( school ) *
-           player -> composite_player_dh_multiplier( school );
+           player -> cache.player_heal_multiplier( get_school() ) *
+           player -> composite_player_dh_multiplier( get_school() );
   }
   virtual double composite_ta_multiplier() const
   {
     return action_multiplier() * action_ta_multiplier() *
-           player -> cache.player_heal_multiplier( school ) *
-           player -> composite_player_th_multiplier( school );
+           player -> cache.player_heal_multiplier( get_school() ) *
+           player -> composite_player_th_multiplier( get_school() );
   }
 
   virtual double composite_player_critical_multiplier() const
@@ -5827,12 +5828,12 @@ struct absorb_t : public spell_base_t
   virtual double composite_da_multiplier() const
   {
     return action_multiplier() * action_da_multiplier() *
-           player -> composite_player_absorb_multiplier( school );
+           player -> composite_player_absorb_multiplier( get_school() );
   }
   virtual double composite_ta_multiplier() const
   {
     return action_multiplier() * action_ta_multiplier() *
-           player -> composite_player_absorb_multiplier( school );
+           player -> composite_player_absorb_multiplier( get_school() );
   }
 };
 

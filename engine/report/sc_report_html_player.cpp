@@ -733,7 +733,7 @@ void print_html_action_info( report::sc_html_stream& os, unsigned stats_mask, st
         "\t\t\t\t\t\t\t\t\t\t</ul>\n"
         "\t\t\t\t\t\t\t\t\t</div>\n",
         a -> id,
-        util::school_type_string( a-> school ),
+        util::school_type_string( a -> get_school() ),
         util::resource_type_string( a -> current_resource() ),
         a -> range,
         a -> travel_speed,
