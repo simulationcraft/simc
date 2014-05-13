@@ -482,7 +482,7 @@ public:
     if ( td -> debuffs_colossus_smash -> up() && s -> result_amount > 0)
       p -> cs_damage.add( s -> result_amount );
 
-    if ( ( s -> target == sim -> target ) && s -> result_amount > 0 )
+    if ( ( s -> target == p -> sim -> target ) && s -> result_amount > 0 )
       p -> priority_damage.add( s -> result_amount );
 
     if ( s -> result_amount > 0 )
@@ -495,10 +495,10 @@ public:
 
     warrior_t* p = cast();
 
-    if ( proc )
+    if ( ab::proc )
       return;
 
-    double rage = resource_consumed;
+    double rage = ab::resource_consumed;
 
     if ( rage > 0 && p -> talents.anger_management -> ok() )
     {
@@ -533,9 +533,9 @@ public:
       }
     }
     // Warrior attacks (non-AoE) which are are avoided by the target consume only 20%
-    if ( resource_consumed > 0 && ! aoe && result_is_miss( execute_state -> result ) )
+    if ( ab::resource_consumed > 0 && ! ab::is_aoe() && ab::result_is_miss( ab::execute_state -> result ) )
     {
-      double rage_restored = resource_consumed * 0.80;
+      double rage_restored = ab::resource_consumed * 0.80;
       p -> resource_gain( RESOURCE_RAGE, rage_restored, p -> gain.avoided_attacks );
     }
   }
