@@ -1662,10 +1662,9 @@ struct hunter_ranged_attack_t : public hunter_action_t<ranged_attack_t>
 
     special                = true;
     may_crit               = true;
-    may_parry			   = false;
-    may_block			   = false;
+    may_parry              = false;
+    may_block              = false;
     tick_may_crit          = true;
-    normalize_weapon_speed = true;
     dot_behavior           = DOT_REFRESH;
   }
 
@@ -1794,7 +1793,6 @@ struct ranged_t : public hunter_ranged_attack_t
     weapon = &( player -> main_hand_weapon );
     base_execute_time = weapon -> swing_time;
 
-    normalize_weapon_speed = false;
     background  = true;
     repeating   = true;
     special     = false;
@@ -1877,7 +1875,6 @@ struct aimed_shot_t : public hunter_ranged_attack_t
       // Don't know why these values aren't 0 in the database.
       base_execute_time = timespan_t::zero();
       base_multiplier *= 1.0 + p -> perks.improved_aimed_shot -> effectN( 1 ).percent();
-      normalize_weapon_speed = true;
     }
 
     virtual double composite_target_crit( player_t* t ) const
@@ -1925,7 +1922,6 @@ struct aimed_shot_t : public hunter_ranged_attack_t
     check_spec ( HUNTER_MARKSMANSHIP );
     parse_options( NULL, options_str );
 
-    normalize_weapon_speed = true;
     base_multiplier *= 1.0 + p -> perks.improved_aimed_shot -> effectN( 1 ).percent();
     as_mm -> background = true;
   }
@@ -2004,7 +2000,6 @@ struct glaive_toss_strike_t : public ranged_attack_t
     ranged_attack_t( "glaive_toss_strike", player, player -> find_spell( 120761 ) )
   {
     repeating   = false;
-    normalize_weapon_speed = true;
     background = true;
     dual = true;
     may_crit = true;    special = true;
@@ -2414,8 +2409,6 @@ struct kill_shot_t : public hunter_ranged_attack_t
     parse_options( NULL, options_str );
 
     cd_glyph_kill_shot -> duration = player -> dbc.spell( 90967 ) -> duration();
-
-    normalize_weapon_speed = true;
   }
 
   virtual void execute()
@@ -2449,6 +2442,7 @@ struct serpent_sting_t : public hunter_ranged_attack_t
     proc = true;
     tick_may_crit = true;
     hasted_ticks = false;
+    tick_zero = true;
     dot_behavior = DOT_REFRESH;
   }
 
@@ -2691,7 +2685,6 @@ struct wild_quiver_shot_t : public ranged_t
   {
     repeating   = false;
     proc = true;
-    normalize_weapon_speed = true;
   }
 
   virtual void trigger_wild_quiver( double /*multiplier = 1.0*/ )
