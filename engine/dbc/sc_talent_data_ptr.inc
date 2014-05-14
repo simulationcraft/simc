@@ -1,6 +1,6 @@
 #define PTR_TALENT_SIZE (198)
 
-// 198 talents, wow build 17345
+// 198 talents, wow build 18224
 static struct talent_data_t __ptr_talent_data[] = {
 //{ Name                                ,    Id, Flgs,  Class,  Pet, IsPet, Col, Row, SpellID, ReplaceID, S1 },
   { "Second Wind"                       , 15757, 0x00, 0x0001, 0x00,     0,   1,   1,   29838,         0,  0 },
