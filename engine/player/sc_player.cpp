@@ -6625,7 +6625,8 @@ const spell_data_t* player_t::find_talent_spell( const std::string& n,
 
   if ( !spell_id && sim -> debug )
     sim -> out_debug.printf( "Player %s: Can't find talent with name %s.\n",
-                   name(), n.c_str() );
+                   name(), n.c_str() ); // Note for future travelers, if this is happening, make sure the talent name is 100% correct, including
+                                        // apostrophes, commas, semi-colons, colons, etc.
 
   if ( ! spell_id )
     return spell_data_t::not_found();
