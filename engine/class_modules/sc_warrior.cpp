@@ -3396,7 +3396,7 @@ void warrior_t::init_spells()
   talents.anger_management      = find_talent_spell( "Anger Management"            );
   talents.ravager               = find_talent_spell( "Ravager"                     );
   talents.ignite_weapon         = find_talent_spell( "Ignite Weapon"               );
-  talents.gladiators_resolve    = find_talent_spell( "Gladiators Resolve"          );
+  talents.gladiators_resolve    = find_talent_spell( "Gladiator's Resolve"         );
 
   //Perks
   perk.improved_charge               = find_perk_spell( "Improved Charge"               );
