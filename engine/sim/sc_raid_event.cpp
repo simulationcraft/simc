@@ -84,7 +84,7 @@ struct adds_event_t : public raid_event_t
   virtual void _start()
   {
     for ( size_t i = 0; i < adds.size(); i++ )
-      adds[ i ] -> summon();
+      adds[ i ] -> summon( saved_duration );
   }
 
   virtual void _finish()

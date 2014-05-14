@@ -552,6 +552,24 @@ struct add_t : public pet_t
     pet_t::init_action_list();
   }
 
+  double health_percentage() const
+  {
+    timespan_t remainder = timespan_t::zero();
+    timespan_t divisor = timespan_t::zero();
+    if ( duration > timespan_t::zero() )
+    {
+      remainder = expiration -> remains();
+      divisor = duration;
+    }
+    else
+    {
+      remainder = std::max( timespan_t::zero(), sim -> expected_iteration_time - sim -> current_time );
+      divisor = sim -> expected_iteration_time;
+    }
+
+    return remainder / divisor * 100.0;
+  }
+
   virtual resource_e primary_resource() const
   { return RESOURCE_HEALTH; }
 
