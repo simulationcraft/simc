@@ -1834,18 +1834,6 @@ struct cat_attack_t : public druid_attack_t<melee_attack_t>
     parse_special_effect_data();
   }
 
-  cat_attack_t( druid_t* p, const spell_data_t* s = spell_data_t::nil(),
-                const std::string& options = std::string() ) :
-    base_t( "", p, s ),
-    requires_stealth_( false ),
-    requires_combo_points( false ), adds_combo_points( 0 ),
-    base_dd_bonus( 0 ), base_td_bonus( 0 )
-  {
-    parse_options( 0, options );
-
-    parse_special_effect_data();
-  }
-
 private:
   void parse_special_effect_data()
   {
@@ -2152,7 +2140,7 @@ struct ferocious_bite_t : public cat_attack_t
   double ap_per_point;
 
   ferocious_bite_t( druid_t* p, const std::string& options_str ) :
-    cat_attack_t( p, p -> find_class_spell( "Ferocious Bite" ), options_str ),
+    cat_attack_t( "ferocious_bite", p, p -> find_class_spell( "Ferocious Bite" ), options_str ),
     excess_energy( 0 ), max_excess_energy( 0 ), ap_per_point( 0.0 )
   {
     ap_per_point          = 0.196; // FIXME: Figure out where the hell this is in the spell data...
@@ -2256,7 +2244,7 @@ struct ferocious_bite_t : public cat_attack_t
 struct maim_t : public cat_attack_t
 {
   maim_t( druid_t* player, const std::string& options_str ) :
-    cat_attack_t( player, player -> find_class_spell( "Maim" ), options_str )
+    cat_attack_t( "maim", player, player -> find_class_spell( "Maim" ), options_str )
   {
     requires_combo_points = true;
     special               = true;
@@ -2281,7 +2269,7 @@ struct pounce_bleed_t : public cat_attack_t
 struct pounce_t : public cat_attack_t
 {
   pounce_t( druid_t* p, const std::string& options_str ) :
-    cat_attack_t( p, p -> find_class_spell( "Pounce" ), options_str )
+    cat_attack_t( "pounce", p, p -> find_class_spell( "Pounce" ), options_str )
   {
     special = true;
     execute_action = new pounce_bleed_t( p );
@@ -2312,7 +2300,7 @@ struct rake_t : public cat_attack_t
   action_t* rake_bleed;
 
   rake_t( druid_t* p, const std::string& options_str ) :
-    cat_attack_t( p, p -> find_class_spell( "Rake" ), options_str )
+    cat_attack_t( "rake", p, p -> find_class_spell( "Rake" ), options_str )
   {
     special                 = true;
     attack_power_mod.direct = data().effectN( 1 ).ap_coeff();
@@ -2357,7 +2345,7 @@ struct ravage_t : public cat_attack_t
   double extra_crit_threshold;
 
   ravage_t( druid_t* player, const std::string& options_str ) :
-    cat_attack_t( player, player -> find_class_spell( "Ravage" ) ),
+    cat_attack_t( "ravage", player, player -> find_class_spell( "Ravage" ) ),
     extends_rip( 0 ), extra_crit_amount( 0.0 ), extra_crit_threshold( 0.0 )
   {
     option_t options[] =
@@ -2455,7 +2443,7 @@ struct rip_t : public cat_attack_t
   double ap_per_point;
 
   rip_t( druid_t* p, const std::string& options_str ) :
-    cat_attack_t( p, p -> find_class_spell( "Rip" ), options_str ),
+    cat_attack_t( "rip", p, p -> find_class_spell( "Rip" ), options_str ),
     ap_per_point( 0.0 )
   {
     ap_per_point          = data().effectN( 1 ).ap_coeff();
@@ -2478,7 +2466,7 @@ struct savage_roar_t : public cat_attack_t
   timespan_t seconds_per_combo;
 
   savage_roar_t( druid_t* p, const std::string& options_str ) :
-    cat_attack_t( p, p -> find_class_spell( "Savage Roar" ), options_str ),
+    cat_attack_t( "savage_roar", p, p -> find_class_spell( "Savage Roar" ), options_str ),
     seconds_per_combo( timespan_t::from_seconds( 6.0 ) ) // plus 6s per cp used. Must change this value in cat_attack_t::trigger_savagery() as well.
   {
     may_miss              = false;
@@ -2527,7 +2515,7 @@ struct shred_t : public cat_attack_t
   int extends_rip;
 
   shred_t( druid_t* p, const std::string& options_str ) :
-    cat_attack_t( p, p -> find_class_spell( "Shred" ) ),
+    cat_attack_t( "shred", p, p -> find_class_spell( "Shred" ) ),
     extends_rip( 0 )
   {
     option_t options[] =
@@ -2604,7 +2592,7 @@ struct shred_t : public cat_attack_t
 struct skull_bash_cat_t : public cat_attack_t
 {
   skull_bash_cat_t( druid_t* p, const std::string& options_str ) :
-    cat_attack_t( p, p -> find_specialization_spell( "Skull Bash" ), options_str )
+    cat_attack_t( "skull_bash_cat", p, p -> find_specialization_spell( "Skull Bash" ), options_str )
   {
     may_miss = may_glance = may_block = may_dodge = may_parry = may_crit = false;
 
@@ -2626,7 +2614,7 @@ struct skull_bash_cat_t : public cat_attack_t
 struct swipe_t : public cat_attack_t
 {
   swipe_t( druid_t* player, const std::string& options_str ) :
-    cat_attack_t( player, player -> find_class_spell( "Swipe" ), options_str )
+    cat_attack_t( "swipe", player, player -> find_class_spell( "Swipe" ), options_str )
   {
     aoe     = -1;
     special = true;
@@ -2739,7 +2727,7 @@ struct thrash_cat_t : public cat_attack_t
 struct tigers_fury_t : public cat_attack_t
 {
   tigers_fury_t( druid_t* p, const std::string& options_str ) :
-    cat_attack_t( p, p -> find_specialization_spell( "Tiger's Fury" ), options_str )
+    cat_attack_t( "tigers_fury", p, p -> find_specialization_spell( "Tiger's Fury" ), options_str )
   {
     harmful = false;
     special = false;
@@ -3290,20 +3278,7 @@ struct druid_heal_t : public druid_spell_base_t<heal_t>
     weapon_multiplier = 0;
     harmful           = false;
   }
-
-  druid_heal_t( druid_t* p, const spell_data_t* s = spell_data_t::nil(),
-                const std::string& options = std::string() ) :
-    base_t( "", p, s ),
-    living_seed( nullptr )
-  {
-    parse_options( 0, options );
-
-    dot_behavior      = DOT_REFRESH;
-    may_miss          = false;
-    weapon_multiplier = 0;
-    harmful           = false;
-  }
-
+    
 protected:
   void init_living_seed();
 
@@ -3413,7 +3388,7 @@ public:
 struct living_seed_t : public druid_heal_t
 {
   living_seed_t( druid_t* player ) :
-    druid_heal_t( player, player -> find_specialization_spell( "Living Seed" ) )
+    druid_heal_t( "living_seed", player, player -> find_specialization_spell( "Living Seed" ) )
   {
     background = true;
     may_crit   = false;
@@ -3440,7 +3415,7 @@ struct frenzied_regeneration_t : public druid_heal_t
   double maximum_rage_cost;
 
   frenzied_regeneration_t( druid_t* p, const std::string& options_str ) :
-    druid_heal_t( p, p -> find_class_spell( "Frenzied Regeneration" ), options_str ),
+    druid_heal_t( "frenzied_regeneration", p, p -> find_class_spell( "Frenzied Regeneration" ), options_str ),
     maximum_rage_cost( 0.0 )
   {
     base_dd_min = base_dd_max = attack_power_mod.direct = spell_power_mod.direct = 0.0;
@@ -3526,7 +3501,7 @@ struct frenzied_regeneration_t : public druid_heal_t
 struct healing_touch_t : public druid_heal_t
 {
   healing_touch_t( druid_t* p, const std::string& options_str ) :
-    druid_heal_t( p, p -> find_class_spell( "Healing Touch" ), options_str )
+    druid_heal_t( "healing_touch", p, p -> find_class_spell( "Healing Touch" ), options_str )
   {
     consume_ooc      = true;
     base_multiplier *= 1.0 + p -> perk.improved_healing_touch -> effectN( 1 ).percent();
@@ -3673,7 +3648,7 @@ struct lifebloom_t : public druid_heal_t
   lifebloom_bloom_t* bloom;
 
   lifebloom_t( druid_t* p, const std::string& options_str ) :
-    druid_heal_t( p, p -> find_class_spell( "Lifebloom" ), options_str ),
+    druid_heal_t( "lifebloom", p, p -> find_class_spell( "Lifebloom" ), options_str ),
     bloom( new lifebloom_bloom_t( p ) )
   {
     may_crit   = false;
@@ -3729,7 +3704,7 @@ struct lifebloom_t : public druid_heal_t
 struct regrowth_t : public druid_heal_t
 {
   regrowth_t( druid_t* p, const std::string& options_str ) :
-    druid_heal_t( p, p -> find_class_spell( "Regrowth" ), options_str )
+    druid_heal_t( "regrowth", p, p -> find_class_spell( "Regrowth" ), options_str )
   {
     base_crit   += 0.6;
     consume_ooc  = true;
@@ -3780,7 +3755,7 @@ struct regrowth_t : public druid_heal_t
 struct rejuvenation_t : public druid_heal_t
 {
   rejuvenation_t( druid_t* p, const std::string& options_str ) :
-    druid_heal_t( p, p -> find_class_spell( "Rejuvenation" ), options_str )
+    druid_heal_t( "rejuvenation", p, p -> find_class_spell( "Rejuvenation" ), options_str )
   {
     tick_zero = true;
   }
@@ -3852,7 +3827,7 @@ struct swiftmend_t : public druid_heal_t
   swiftmend_aoe_heal_t* aoe_heal;
 
   swiftmend_t( druid_t* p, const std::string& options_str ) :
-    druid_heal_t( p, p -> find_class_spell( "Swiftmend" ), options_str ),
+    druid_heal_t( "swiftmend", p, p -> find_class_spell( "Swiftmend" ), options_str ),
     aoe_heal( new swiftmend_aoe_heal_t( p, &data() ) )
   {
     consume_ooc = true;
@@ -3891,7 +3866,7 @@ struct swiftmend_t : public druid_heal_t
 struct tranquility_t : public druid_heal_t
 {
   tranquility_t( druid_t* p, const std::string& options_str ) :
-    druid_heal_t( p, p -> find_class_spell( "Tranquility" ), options_str )
+    druid_heal_t( "tranquility", p, p -> find_class_spell( "Tranquility" ), options_str )
   {
     aoe               = data().effectN( 3 ).base_value(); // Heals 5 targets
     base_execute_time = data().duration();
@@ -3909,7 +3884,7 @@ struct tranquility_t : public druid_heal_t
 struct wild_growth_t : public druid_heal_t
 {
   wild_growth_t( druid_t* p, const std::string& options_str ) :
-    druid_heal_t( p, p -> find_class_spell( "Wild Growth" ), options_str )
+    druid_heal_t( "wild_growth", p, p -> find_class_spell( "Wild Growth" ), options_str )
   {
     aoe = data().effectN( 3 ).base_value() + p -> glyph.wild_growth -> effectN( 1 ).base_value();
     cooldown -> duration = data().cooldown() + p -> glyph.wild_growth -> effectN( 2 ).time_value();
@@ -3942,13 +3917,6 @@ struct druid_spell_t : public druid_spell_base_t<spell_t>
                  const spell_data_t* s = spell_data_t::nil(),
                  const std::string& options = std::string() ) :
     base_t( token, p, s )
-  {
-    parse_options( 0, options );
-  }
-
-  druid_spell_t( druid_t* p, const spell_data_t* s = spell_data_t::nil(),
-                 const std::string& options = std::string() ) :
-    base_t( "", p, s )
   {
     parse_options( 0, options );
   }
@@ -4380,7 +4348,7 @@ struct cenarion_ward_t : public druid_spell_t
 struct faerie_fire_t : public druid_spell_t
 {
   faerie_fire_t( druid_t* player, const std::string& options_str ) :
-    druid_spell_t( player, player -> find_class_spell( "Faerie Fire" ) )
+    druid_spell_t( "faerie_fire", player, player -> find_class_spell( "Faerie Fire" ) )
   {
     parse_options( NULL, options_str );
     cooldown -> duration = timespan_t::from_seconds( 6.0 );
@@ -4978,7 +4946,7 @@ struct starsurge_t : public druid_spell_t
 struct prowl_t : public druid_spell_t
 {
   prowl_t( druid_t* player, const std::string& options_str ) :
-    druid_spell_t( player, player -> find_class_spell( "Prowl" )  )
+    druid_spell_t( "prowl", player, player -> find_class_spell( "Prowl" )  )
   {
     parse_options( NULL, options_str );
 
@@ -5114,7 +5082,7 @@ struct sunfire_t : public druid_spell_t
 struct survival_instincts_t : public druid_spell_t
 {
   survival_instincts_t( druid_t* player, const std::string& options_str ) :
-    druid_spell_t( player, player -> find_specialization_spell( "Survival Instincts" ), options_str )
+    druid_spell_t( "survival_instincts", player, player -> find_specialization_spell( "Survival Instincts" ), options_str )
   {
     harmful = false;
     use_off_gcd = true;

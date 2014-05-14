@@ -376,13 +376,15 @@ action_t::action_t( action_e       ty,
 
   range::fill( base_costs, 0.0 );
   range::fill( costs_per_second, 0 );
-
+  
+  /////////////////////////////////////////////////////////////////////////////
+  // empty name strings are no longer supported in 6.0
+  // for now, just spit out errors for them to help us catch violations
+  // eventually, we will remove the "if" block and just leave the "assert( ! name_str.empty() )"
   if ( name_str.empty() )
   {
     assert( data().ok() );
-
     name_str = dbc::get_token( data().id() );
-
     if ( name_str.empty() )
     {
       name_str = data().name_cstr();
@@ -390,11 +392,14 @@ action_t::action_t( action_e       ty,
       assert( ! name_str.empty() );
       player -> dbc.add_token( data().id(), name_str );
     }
+
+    sim -> errorf( "Ability %s violates empty action name rule.", name_str.c_str() );
+
+    assert( ! name_str.empty() );
   }
-  else
-  {
-    util::tokenize( name_str );
-  }
+
+  util::tokenize( name_str );
+  /////////////////////////////////////////////////////////////////////////////
 
   if ( sim -> debug )
     sim -> out_debug.printf( "Player %s creates action %s (%d)", player -> name(), name(), ( s_data -> ok() ? s_data -> id() : -1 ) );
@@ -433,6 +438,16 @@ action_t::action_t( action_e       ty,
 
     background = true; // prevent action from being executed
   }
+
+  if ( s_data == spell_data_t::not_found() )
+  {
+    // this is super-spammy, may just want to disable this after we're sure this section is working as intended.
+    if ( sim -> debug )
+      sim -> errorf( "Player %s attempting to use action %s without the required talent, spec, class, or race; ignoring.\n", 
+                   player -> name(), name() );
+    background = true;
+  }
+
   spec_list.clear();
 }
 
