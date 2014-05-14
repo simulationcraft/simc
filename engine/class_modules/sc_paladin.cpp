@@ -4076,7 +4076,7 @@ struct templars_verdict_t : public paladin_melee_attack_t
     if ( p() -> buffs.tier15_4pc_melee -> up() )
       return SCHOOL_HOLY;
     else
-      paladin_melee_attack_t::get_school();
+      return paladin_melee_attack_t::get_school();
   }
 
   virtual void execute ()
