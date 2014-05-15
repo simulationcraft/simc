@@ -262,7 +262,9 @@ void SC_MainWindow::saveHistory()
   settings.setValue( "maximized", bool( windowState() & Qt::WindowMaximized ) );
   settings.endGroup();
 
-  http::cache_save( ( TmpDir.toStdString() + "/" + "simc_cache.dat" ).c_str() );
+  QString cache_file = TmpDir + "/simc_cache.dat";
+  std::string cache_file_str = cache_file.toStdString();
+  http::cache_save( cache_file_str.c_str() );
 
 
   settings.beginGroup( "user_data" );
