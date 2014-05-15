@@ -377,29 +377,9 @@ action_t::action_t( action_e       ty,
   range::fill( base_costs, 0.0 );
   range::fill( costs_per_second, 0 );
   
-  /////////////////////////////////////////////////////////////////////////////
-  // empty name strings are no longer supported in 6.0
-  // for now, just spit out errors for them to help us catch violations
-  // eventually, we will remove the "if" block and just leave the "assert( ! name_str.empty() )"
-  if ( name_str.empty() )
-  {
-    assert( data().ok() );
-    name_str = dbc::get_token( data().id() );
-    if ( name_str.empty() )
-    {
-      name_str = data().name_cstr();
-      util::tokenize( name_str );
-      assert( ! name_str.empty() );
-      player -> dbc.add_token( data().id(), name_str );
-    }
-
-    sim -> errorf( "Ability %s violates empty action name rule.", name_str.c_str() );
-
-    assert( ! name_str.empty() );
-  }
+  assert( ! name_str.empty() && "Abilities must have valid name_str entries!!" );
 
   util::tokenize( name_str );
-  /////////////////////////////////////////////////////////////////////////////
 
   if ( sim -> debug )
     sim -> out_debug.printf( "Player %s creates action %s (%d)", player -> name(), name(), ( s_data -> ok() ? s_data -> id() : -1 ) );
