@@ -6605,8 +6605,12 @@ void player_t::replace_spells()
 }
 
 
-// player_t::find_talent_spell ==============================================
-
+/* Retrieves the Spell Data Associated with a given talent.
+ * If the player does not have have the talent activated, or the talent is not found,
+ * spell_data_t::not_found() is returned.
+ *
+ * The talent search by name is case sensitive, including all special characters!
+ */
 const spell_data_t* player_t::find_talent_spell( const std::string& n,
                                                  const std::string& token,
                                                  specialization_e s,
@@ -6625,8 +6629,7 @@ const spell_data_t* player_t::find_talent_spell( const std::string& n,
 
   if ( !spell_id && sim -> debug )
     sim -> out_debug.printf( "Player %s: Can't find talent with name %s.\n",
-                   name(), n.c_str() ); // Note for future travelers, if this is happening, make sure the talent name is 100% correct, including
-                                        // apostrophes, commas, semi-colons, colons, etc.
+                   name(), n.c_str() );
 
   if ( ! spell_id )
     return spell_data_t::not_found();
