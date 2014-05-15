@@ -5237,7 +5237,6 @@ void warlock_t::apl_affliction()
 
   add_action( "Life Tap",
               "if=buff.dark_soul.down&buff.bloodlust.down&mana.pct<50" );
-  add_action( "Drain Soul", "chain=1,interrupt_if=target.health.pct<=20" );
   add_action( "Life Tap",
               "moving=1,if=mana.pct<80&mana.pct<target.health.pct" );
 

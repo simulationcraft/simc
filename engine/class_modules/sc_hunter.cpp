@@ -78,6 +78,7 @@ public:
     buff_t* master_marksman_fire;
     buff_t* pre_steady_focus;
     buff_t* stampede;
+    buff_t* rapid_fire;
     buff_t* tier13_4pc;
     buff_t* tier16_4pc_mm_keen_eye;
     buff_t* tier16_4pc_bm_brutal_kinship;
@@ -87,6 +88,7 @@ public:
   struct cooldowns_t
   {
     cooldown_t* explosive_shot;
+    cooldown_t* rapid_fire;
     cooldown_t* viper_venom;
   } cooldowns;
 
@@ -314,6 +316,7 @@ public:
   {
     // Cooldowns
     cooldowns.explosive_shot = get_cooldown( "explosive_shot" );
+    cooldowns.rapid_fire     = get_cooldown( "rapid_fire" );
     cooldowns.viper_venom    = get_cooldown( "viper_venom" );
 
     cdr_mult = 11.5;
@@ -2084,6 +2087,13 @@ struct powershot_t : public hunter_ranged_attack_t
 
     return am;
   }
+
+  virtual void update_ready( timespan_t cd_duration )
+  {
+    cd_duration = cooldown -> duration / ( 1 + ( player -> cache.readiness() * p() -> cdr_mult ) );
+
+    hunter_ranged_attack_t::update_ready( cd_duration );
+  }
 };
 
 // Black Arrow ==============================================================
@@ -2182,6 +2192,13 @@ struct explosive_trap_t : public hunter_ranged_attack_t
     hunter_ranged_attack_t::tick( d );
 
     explosive_trap_tick -> execute();
+  }
+
+  virtual void update_ready( timespan_t cd_duration )
+  {
+    cd_duration = cooldown -> duration / ( 1 + ( player -> cache.readiness() * p() -> cdr_mult ) );
+
+    hunter_ranged_attack_t::update_ready( cd_duration );
   }
 };
 
@@ -2872,6 +2889,13 @@ struct barrage_t : public hunter_spell_t
   {
     return true;
   }
+
+  virtual void update_ready( timespan_t cd_duration )
+  {
+    cd_duration = cooldown -> duration / ( 1 + ( player -> cache.readiness() * p() -> cdr_mult ) );
+
+    hunter_spell_t::update_ready( cd_duration );
+  }
 };
 
 // A Murder of Crows ========================================================
@@ -2996,6 +3020,13 @@ struct dire_beast_t : public hunter_spell_t
     timespan_t duration = base_attacks_per_summon * swing_time;
     beast -> summon( duration );
   }
+
+  virtual void update_ready( timespan_t cd_duration )
+  {
+    cd_duration = cooldown -> duration / ( 1 + ( player -> cache.readiness() * p() -> cdr_mult ) );
+
+    hunter_spell_t::update_ready( cd_duration );
+  }
 };
 
 // Bestial Wrath ============================================================
@@ -3072,6 +3103,13 @@ struct fervor_t : public hunter_spell_t
 
     if ( p() -> active.pet )
       p() -> active.pet -> resource_gain( RESOURCE_FOCUS, tick_gain, p() -> active.pet -> gains.fervor );
+  }
+
+  virtual void update_ready( timespan_t cd_duration )
+  {
+    cd_duration = cooldown -> duration / ( 1 + ( player -> cache.readiness() * p() -> cdr_mult ) );
+
+    hunter_spell_t::update_ready( cd_duration );
   }
 };
 
@@ -3158,6 +3196,36 @@ struct kill_command_t : public hunter_spell_t
   virtual bool ready()
   {
     return p() -> active.pet && hunter_spell_t::ready();
+  }
+};
+
+
+// Rapid Fire ===============================================================
+
+struct rapid_fire_t : public hunter_spell_t
+{
+  rapid_fire_t( hunter_t* player, const std::string& options_str ) :
+    hunter_spell_t( "rapid_fire", player, spell_data_t::nil() /*player -> find_class_spell( "Rapid Fire" )*/ )
+  {
+    parse_options( NULL, options_str );
+    cooldown -> duration = timespan_t::from_seconds( 180 );
+    check_spec ( HUNTER_MARKSMANSHIP );
+    harmful = false;
+  }
+
+  virtual void execute()
+  {
+    double value =  0.40; /*data().effectN( 1 ).percent();*/
+    p() -> buffs.rapid_fire -> trigger( 1, value );
+
+    hunter_spell_t::execute();
+  }
+
+  virtual void update_ready( timespan_t cd_duration )
+  {
+    cd_duration = cooldown -> duration / ( 1 + ( player -> cache.readiness() * p() -> cdr_mult ) );
+
+    hunter_spell_t::update_ready( cd_duration );
   }
 };
 
@@ -3264,6 +3332,7 @@ action_t* hunter_t::create_action( const std::string& name,
   if ( name == "kill_command"          ) return new           kill_command_t( this, options_str );
   if ( name == "kill_shot"             ) return new              kill_shot_t( this, options_str );
   if ( name == "multi_shot"            ) return new             multi_shot_t( this, options_str );
+  if ( name == "rapid_fire"            ) return new             rapid_fire_t( this, options_str );
   if ( name == "steady_shot"           ) return new            steady_shot_t( this, options_str );
   if ( name == "focusing_shot"         ) return new          focusing_shot_t( this, options_str );
   if ( name == "summon_pet"            ) return new             summon_pet_t( this, options_str );
@@ -3551,11 +3620,15 @@ void hunter_t::create_buffs()
 
   buffs.master_marksman             = buff_creator_t( this, 82925, "master_marksman" ).chance( specs.master_marksman -> proc_chance() );
   buffs.master_marksman_fire        = buff_creator_t( this, 82926, "master_marksman_fire" );
-
   buffs.stampede          = buff_creator_t( this, 130201, "stampede" ) // To allow action lists to react to stampede, rather than doing it in a roundabout way.
                            .activated( true )
                            .duration( timespan_t::from_seconds(20) );
-                           /*.quiet( true )*/;
+
+  buffs.rapid_fire                  = buff_creator_t( this, "rapid_fire" )
+                                      .duration( timespan_t::from_seconds( 15 ) )
+                                      .add_invalidate( CACHE_ATTACK_HASTE );
+  buffs.rapid_fire -> cooldown -> duration = timespan_t::zero();
+
   buffs.pre_steady_focus            = buff_creator_t( this, "pre_steady_focus" ).max_stack( 2 ).quiet( true );
 
   buffs.tier13_4pc                  = buff_creator_t( this, 105919, "tier13_4pc" )
@@ -3744,6 +3817,7 @@ void hunter_t::init_action_list()
 
         action_list_str += "/powershot,if=enabled";
         action_list_str += "/fervor,if=enabled&focus<=50";
+        action_list_str += "/rapid_fire,if=!buff.rapid_fire.up";
 
         action_list_str += "/stampede,if=enabled&(trinket.stat.agility.up|target.time_to_die<=20|(trinket.stacking_stat.agility.stack>10&trinket.stat.agility.cooldown_remains<=3))";
 
@@ -3890,6 +3964,7 @@ double hunter_t::ranged_haste_multiplier() const
 {
   double h = 1.0;
   h *= 1.0 / ( 1.0 + buffs.focus_fire -> value() );
+  h *= 1.0 / ( 1.0 + buffs.rapid_fire -> value() );
   return h;
 }
 
