@@ -89,7 +89,9 @@ void SC_MainWindow::loadHistory()
     showMaximized();
 
 
-  http::cache_load( ( TmpDir.toStdString() + "/" + "simc_cache.dat" ).c_str() );
+  QString cache_file = TmpDir + "/simc_cache.dat";
+  std::string cache_file_str = cache_file.toStdString();
+  http::cache_load( cache_file_str.c_str() );
 
 
   QVariant simulateHistory = settings.value( "user_data/simulateHistory");
