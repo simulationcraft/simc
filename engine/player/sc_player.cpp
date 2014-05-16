@@ -766,7 +766,7 @@ bool player_t::init( sim_t* sim )
   range::for_each( sim -> actor_list, std::mem_fn( &player_t::init_character_properties ) );
 
   range::for_each( sim -> actor_list, std::mem_fn( &player_t::init_items ) );
-
+  if ( sim -> is_canceled() ) {return false;} // Temporary fix for assert caused by incomplete item initialization
   range::for_each( sim -> actor_list, std::mem_fn( &player_t::init_spells ) );
 
   range::for_each( sim -> actor_list, std::mem_fn( &player_t::init_base_stats ) );
@@ -1140,11 +1140,18 @@ void player_t::init_items()
   // Adding stats from items into ``gear''. If for a given stat,
   // the value in gear is different than 0, it means that this stat
   // value was overridden by a command line option.
+  // This is also where the conversion of hybrid primary stats into 
+  // STR, AGI, or INT happens, via convert_hybrid_stat()
   for ( stat_e i = STAT_NONE; i < STAT_MAX; i++ )
   {
     if ( gear.get_stat( i ) == 0 )
-      gear.add_stat( i, item_stats.get_stat( i ) );
+        gear.add_stat( convert_hybrid_stat( i ), item_stats.get_stat( i ) );
   }
+
+  // Sanity check - there should be no more hybrid STR/INT, AGI/STR, or AGI/INT stats leftover here!
+  assert( gear.get_stat( STAT_AGI_INT ) == 0 );
+  assert( gear.get_stat( STAT_STR_AGI ) == 0 );
+  assert( gear.get_stat( STAT_STR_INT )  == 0 );
 
   if ( sim -> debug )
   {

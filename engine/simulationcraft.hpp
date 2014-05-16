@@ -318,7 +318,7 @@ enum stats_e { STATS_DMG, STATS_HEAL, STATS_ABSORB, STATS_NEUTRAL };
 
 enum dot_behavior_e { DOT_CLIP, DOT_REFRESH, DOT_EXTEND };
 
-enum attribute_e { ATTRIBUTE_NONE = 0, ATTR_STRENGTH, ATTR_AGILITY, ATTR_STAMINA, ATTR_INTELLECT, ATTR_SPIRIT, ATTRIBUTE_MAX };
+enum attribute_e { ATTRIBUTE_NONE = 0, ATTR_STRENGTH, ATTR_AGILITY, ATTR_STAMINA, ATTR_INTELLECT, ATTR_SPIRIT, ATTR_AGI_INT, ATTR_STR_AGI, ATTR_STR_INT, ATTRIBUTE_MAX };
 
 enum resource_e
 {
@@ -677,6 +677,7 @@ enum stat_e
 {
   STAT_NONE = 0,
   STAT_STRENGTH, STAT_AGILITY, STAT_STAMINA, STAT_INTELLECT, STAT_SPIRIT,
+  STAT_AGI_INT, STAT_STR_AGI, STAT_STR_INT,
   STAT_HEALTH, STAT_MANA, STAT_RAGE, STAT_ENERGY, STAT_FOCUS, STAT_RUNIC,
   STAT_MAX_HEALTH, STAT_MAX_MANA, STAT_MAX_RAGE, STAT_MAX_ENERGY, STAT_MAX_FOCUS, STAT_MAX_RUNIC,
   STAT_SPELL_POWER,
@@ -697,6 +698,9 @@ check( AGILITY );
 check( STAMINA );
 check( INTELLECT );
 check( SPIRIT );
+check( AGI_INT );
+check( STR_AGI );
+check( STR_INT );
 #undef check
 
 inline stat_e stat_from_attr( attribute_e a )
@@ -709,6 +713,7 @@ enum cache_e
 {
   CACHE_NONE = 0,
   CACHE_STRENGTH, CACHE_AGILITY, CACHE_STAMINA, CACHE_INTELLECT, CACHE_SPIRIT,
+  CACHE_AGI_INT, CACHE_STR_AGI, CACHE_STR_INT,
   CACHE_SPELL_POWER, CACHE_ATTACK_POWER,
   CACHE_EXP,   CACHE_ATTACK_EXP,
   CACHE_HIT,   CACHE_ATTACK_HIT,   CACHE_SPELL_HIT,
@@ -731,6 +736,9 @@ check( AGILITY );
 check( STAMINA );
 check( INTELLECT );
 check( SPIRIT );
+check( AGI_INT );
+check( STR_AGI );
+check( STR_INT );
 #undef check
 
 inline cache_e cache_from_stat( stat_e st )
@@ -1258,6 +1266,7 @@ player_e translate_class_str( std::string& s );
 race_e translate_race_id( int rid );
 stat_e translate_item_mod( int stat_mod );
 int translate_stat( stat_e stat );
+stat_e translate_attribute( attribute_e attribute );
 stat_e translate_rating_mod( unsigned ratings );
 slot_e translate_invtype( inventory_type inv_type );
 weapon_e translate_weapon_subclass( int weapon_subclass );
@@ -4667,6 +4676,7 @@ public:
   void collect_resource_timeline_information();
   virtual resource_e primary_resource() const { return RESOURCE_NONE; }
   virtual role_e   primary_role() const;
+  virtual stat_e convert_hybrid_stat( stat_e s ) const { return s; }
   specialization_e specialization() const { return _spec; }
   const char* primary_tree_name() const;
   virtual stat_e normalize_by() const;

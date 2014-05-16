@@ -394,6 +394,7 @@ public:
   virtual set_e     decode_set( const item_t& ) const;
   virtual resource_e primary_resource() const { return RESOURCE_MANA; }
   virtual role_e    primary_role() const     { return ROLE_SPELL; }
+  virtual stat_e    convert_hybrid_stat( stat_e s ) const;
   virtual double    matching_gear_multiplier( attribute_e attr ) const;
   virtual double    composite_player_multiplier( school_e school ) const;
   virtual void      invalidate_cache( cache_e );
@@ -5545,6 +5546,30 @@ set_e warlock_t::decode_set( const item_t& item ) const
   if ( strstr( s, "_gladiators_felweave_"   ) ) return SET_PVP_CASTER;
 
   return SET_NONE;
+}
+
+// warlock_t::convert_hybrid_stat ==============================================
+
+stat_e warlock_t::convert_hybrid_stat( stat_e s ) const
+{
+  // this converts hybrid stats that either morph based on spec or only work
+  // for certain specs into the appropriate "basic" stats
+  switch ( s )
+  {
+  // This is all a guess at how the hybrid primaries will work, since they
+  // don't actually appear on cloth gear yet. TODO: confirm behavior
+  case STAT_AGI_INT: 
+    return STAT_INTELLECT; 
+  case STAT_STR_AGI:
+    return STAT_NONE;
+  case STAT_STR_INT:
+    return STAT_INTELLECT;
+  case STAT_SPIRIT:
+      return STAT_NONE;
+  case STAT_BONUS_ARMOR:
+      return STAT_NONE;     
+  default: return s; 
+  }
 }
 
 expr_t* warlock_t::create_expression( action_t* a, const std::string& name_str )

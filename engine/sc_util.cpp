@@ -538,6 +538,9 @@ const char* util::attribute_type_string( attribute_e type )
     case ATTR_STAMINA:   return "stamina";
     case ATTR_INTELLECT: return "intellect";
     case ATTR_SPIRIT:    return "spirit";
+    case ATTR_AGI_INT:   return "agility/intellect";
+    case ATTR_STR_AGI:   return "strength/agility";
+    case ATTR_STR_INT:   return "strength/intellect";
     default:             return "unknown";
   }
 }
@@ -1411,6 +1414,10 @@ const char* util::stat_type_string( stat_e stat )
     case STAT_INTELLECT: return "intellect";
     case STAT_SPIRIT:    return "spirit";
 
+    case STAT_AGI_INT:   return "agiint";
+    case STAT_STR_AGI:   return "stragi";
+    case STAT_STR_INT:   return "strint";
+
     case STAT_HEALTH: return "health";
     case STAT_MAX_HEALTH: return "maximum_health";
     case STAT_MANA:   return "mana";
@@ -1472,6 +1479,10 @@ const char* util::stat_type_abbrev( stat_e stat )
     case STAT_STAMINA:   return "Sta";
     case STAT_INTELLECT: return "Int";
     case STAT_SPIRIT:    return "Spi";
+
+    case STAT_AGI_INT:   return "AgiInt";
+    case STAT_STR_AGI:   return "StrAgi";
+    case STAT_STR_INT:   return "StrInt";
 
     case STAT_HEALTH: return "Health";
     case STAT_MAX_HEALTH: return "MaxHealth";
@@ -1537,6 +1548,11 @@ const char* util::stat_type_wowhead( stat_e stat )
     case STAT_INTELLECT: return "int";
     case STAT_SPIRIT:    return "spr";
 
+    // WOD-TODO: Complete guess, must check on wowhead once available
+    case STAT_AGI_INT:   return "agiint";
+    case STAT_STR_AGI:   return "stragi";
+    case STAT_STR_INT:   return "strint";
+
     case STAT_HEALTH: return "health";
     case STAT_MANA:   return "mana";
     case STAT_RAGE:   return "rage";
@@ -1556,12 +1572,15 @@ const char* util::stat_type_wowhead( stat_e stat )
     case STAT_WEAPON_DPS:   return "__dps";
     case STAT_WEAPON_SPEED: return "__speed";
 
-    case STAT_ARMOR:             return "armor";
+    case STAT_ARMOR:             return "armor"; // WOD-TODO: wowhead currently doesn't discriminate between armor and bonus armor
     case STAT_RESILIENCE_RATING: return "resilRating";
     case STAT_DODGE_RATING:      return "dodgeRating";
     case STAT_PARRY_RATING:      return "parryRating";
 
     case STAT_MASTERY_RATING: return "masteryRating";
+
+    case STAT_MULTISTRIKE_RATING: return "multistrike";
+    case STAT_READINESS_RATING:   return "readiness";
 
     case STAT_MAX: return "__all";
     default: return "unknown";
@@ -1620,6 +1639,8 @@ const char* util::stat_type_askmrrobot( stat_e stat )
     case STAT_PVP_POWER: return "PvpPower";
     case STAT_WEAPON_DPS: return "MainHandDps";
     case STAT_WEAPON_OFFHAND_DPS: return "OffHandDPS";
+
+    //WOD-TODO: add bonus armor, multistrike, readiness, hybrid primaries
 
     default: return "unknown";
 
@@ -1913,6 +1934,9 @@ stat_e util::translate_item_mod( int item_mod )
     case ITEM_MOD_PVP_POWER:           return STAT_PVP_POWER;
     case ITEM_MOD_MULTISTRIKE_RATING:  return STAT_MULTISTRIKE_RATING;
     case ITEM_MOD_READINESS_RATING:    return STAT_READINESS_RATING;
+    case ITEM_MOD_AGILITY_INTELLECT:   return STAT_AGI_INT;
+    case ITEM_MOD_STRENGTH_AGILITY:    return STAT_STR_AGI;
+    case ITEM_MOD_STRENGTH_INTELLECT:  return STAT_STR_INT;
     default:                           return STAT_NONE;
   }
 }
@@ -1922,28 +1946,32 @@ int util::translate_stat( stat_e stat )
 {
   switch ( stat )
   {
-    case STAT_AGILITY:           return ITEM_MOD_AGILITY;
-    case STAT_STRENGTH:          return ITEM_MOD_STRENGTH;
-    case STAT_INTELLECT:         return ITEM_MOD_INTELLECT;
-    case STAT_SPIRIT:            return ITEM_MOD_SPIRIT;
-    case STAT_STAMINA:           return ITEM_MOD_STAMINA;
-    case STAT_DODGE_RATING:      return ITEM_MOD_DODGE_RATING;
-    case STAT_PARRY_RATING:      return ITEM_MOD_PARRY_RATING;
-    case STAT_HIT_RATING:        return ITEM_MOD_HIT_RATING;
-    case STAT_CRIT_RATING:       return ITEM_MOD_CRIT_RATING;
-    case STAT_HASTE_RATING:      return ITEM_MOD_HASTE_RATING;
-    case STAT_EXPERTISE_RATING:  return ITEM_MOD_EXPERTISE_RATING;
-    case STAT_ATTACK_POWER:      return ITEM_MOD_ATTACK_POWER;
-    case STAT_SPELL_POWER:       return ITEM_MOD_SPELL_POWER;
-    case STAT_MASTERY_RATING:    return ITEM_MOD_MASTERY_RATING;
-    case STAT_BONUS_ARMOR:       return ITEM_MOD_EXTRA_ARMOR;
-    case STAT_RESILIENCE_RATING: return ITEM_MOD_RESILIENCE_RATING;
-    case STAT_PVP_POWER:         return ITEM_MOD_PVP_POWER;
-    case STAT_MULTISTRIKE_RATING:return ITEM_MOD_MULTISTRIKE_RATING;
-    case STAT_READINESS_RATING:  return ITEM_MOD_READINESS_RATING;
-    default:                     return ITEM_MOD_NONE;
+    case STAT_AGILITY:            return ITEM_MOD_AGILITY;
+    case STAT_STRENGTH:           return ITEM_MOD_STRENGTH;
+    case STAT_INTELLECT:          return ITEM_MOD_INTELLECT;
+    case STAT_SPIRIT:             return ITEM_MOD_SPIRIT;
+    case STAT_STAMINA:            return ITEM_MOD_STAMINA;
+    case STAT_DODGE_RATING:       return ITEM_MOD_DODGE_RATING;
+    case STAT_PARRY_RATING:       return ITEM_MOD_PARRY_RATING;
+    case STAT_HIT_RATING:         return ITEM_MOD_HIT_RATING;
+    case STAT_CRIT_RATING:        return ITEM_MOD_CRIT_RATING;
+    case STAT_HASTE_RATING:       return ITEM_MOD_HASTE_RATING;
+    case STAT_EXPERTISE_RATING:   return ITEM_MOD_EXPERTISE_RATING;
+    case STAT_ATTACK_POWER:       return ITEM_MOD_ATTACK_POWER;
+    case STAT_SPELL_POWER:        return ITEM_MOD_SPELL_POWER;
+    case STAT_MASTERY_RATING:     return ITEM_MOD_MASTERY_RATING;
+    case STAT_BONUS_ARMOR:        return ITEM_MOD_EXTRA_ARMOR;
+    case STAT_RESILIENCE_RATING:  return ITEM_MOD_RESILIENCE_RATING;
+    case STAT_PVP_POWER:          return ITEM_MOD_PVP_POWER;
+    case STAT_MULTISTRIKE_RATING: return ITEM_MOD_MULTISTRIKE_RATING;
+    case STAT_READINESS_RATING:   return ITEM_MOD_READINESS_RATING;
+    case STAT_AGI_INT:            return ITEM_MOD_AGILITY_INTELLECT;
+    case STAT_STR_AGI:            return ITEM_MOD_STRENGTH_AGILITY;
+    case STAT_STR_INT:            return ITEM_MOD_STRENGTH_INTELLECT;
+    default:                      return ITEM_MOD_NONE;
   }
 }
+
 // translate_rating_mod =====================================================
 
 stat_e util::translate_rating_mod( unsigned ratings )
@@ -2885,6 +2913,8 @@ void util::fuzzy_stats( std::string&       encoding_str,
   stat_search( encoding_str, splits, STAT_DODGE_RATING,     "dodge rating" );
   stat_search( encoding_str, splits, STAT_PARRY_RATING,     "parry rating" );
   stat_search( encoding_str, splits, STAT_BLOCK_RATING,     "block_rating" );
+  // WOD-TODO: bonus armor
+  // WOD-TODO: hybrid primary stats?
   // TODO: WOW-MULTISTRIKE
 }
 

@@ -363,9 +363,10 @@ public:
   virtual void      create_options();
   virtual double    matching_gear_multiplier( attribute_e attr ) const;
   virtual action_t* create_action( const std::string& name, const std::string& options_str );
-  virtual set_e       decode_set( const item_t& ) const;
+  virtual set_e     decode_set( const item_t& ) const;
   virtual resource_e primary_resource() const { return RESOURCE_MANA; }
-  virtual role_e primary_role() const;
+  virtual role_e    primary_role() const;
+  virtual stat_e    convert_hybrid_stat( stat_e s ) const;
   virtual void      regen( timespan_t periodicity );
   virtual void      combat_begin();
 
@@ -5298,6 +5299,39 @@ role_e paladin_t::primary_role() const
   return ROLE_HYBRID;
 }
 
+// paladin_t::convert_hybrid_stat ===========================================
+stat_e paladin_t::convert_hybrid_stat( stat_e s ) const
+{
+  // this converts hybrid stats that either morph based on spec or only work
+  // for certain specs into the appropriate "basic" stats
+  switch ( s )
+  {
+  // Guess at how AGI/INT mail or leather will be handled for plate - probably INT?
+  case STAT_AGI_INT: 
+    return STAT_INTELLECT;
+  // This is a guess at how AGI/STR gear will work for Holy, TODO: confirm  
+  case STAT_STR_AGI:
+    return STAT_STRENGTH;
+  case STAT_STR_INT:
+    if ( specialization() == PALADIN_HOLY )
+      return STAT_INTELLECT;
+    else
+      return STAT_STRENGTH;
+  case STAT_SPIRIT:
+    if ( specialization() == PALADIN_HOLY )
+      return s;
+    else
+      return STAT_NONE;
+  case STAT_BONUS_ARMOR:
+    if ( specialization() == PALADIN_PROTECTION )
+      return s;
+    else
+      return STAT_NONE;
+  default:
+    return s; 
+  }
+}
+
 // paladin_t::composite_attribute_multiplier ================================
 
 double paladin_t::composite_attribute_multiplier( attribute_e attr ) const
@@ -5867,7 +5901,7 @@ expr_t* paladin_t::create_expression( action_t* a,
   {
     double_jeopardy_expr_t( const std::string& n, paladin_t& p ) :
       paladin_expr_t( n, p ) {}
-    virtual double evaluate() { return paladin.last_judgement_target ? paladin.last_judgement_target -> actor_index : -1; }
+    virtual double evaluate() { return paladin.last_judgement_target ? (double)paladin.last_judgement_target -> actor_index : -1; }
   };
 
   if ( splits[ 0 ] == "last_judgment_target" )

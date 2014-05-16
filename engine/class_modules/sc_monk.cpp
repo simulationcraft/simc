@@ -368,6 +368,7 @@ public:
   virtual void      copy_from( player_t* );
   virtual resource_e primary_resource() const;
   virtual role_e    primary_role() const;
+  virtual stat_e    convert_hybrid_stat( stat_e s ) const;
   virtual void      pre_analyze_hook();
   virtual void      combat_begin();
   virtual void      assess_damage( school_e, dmg_e, action_state_t* s );
@@ -4111,6 +4112,40 @@ role_e monk_t::primary_role() const
     return ROLE_DPS;
  
   return ROLE_HYBRID;
+}
+
+// monk_t::convert_hybrid_stat ==============================================
+
+stat_e monk_t::convert_hybrid_stat( stat_e s ) const
+{
+  // this converts hybrid stats that either morph based on spec or only work
+  // for certain specs into the appropriate "basic" stats
+  switch ( s )
+  {
+  case STAT_AGI_INT: 
+    if ( specialization() == MONK_MISTWEAVER )
+      return STAT_INTELLECT;
+    else
+      return STAT_AGILITY; 
+  // This is a guess at how AGI/STR gear will work for MW/WW, TODO: confirm  
+  case STAT_STR_AGI:
+    return STAT_AGILITY;
+  // This is a guess at how STR/INT gear will work for BM/WW, TODO: confirm  
+  // this should probably never come up since monks can't equip plate, but....
+  case STAT_STR_INT:
+    return STAT_INTELLECT;
+  case STAT_SPIRIT:
+    if ( specialization() == MONK_MISTWEAVER )
+      return s;
+    else
+      return STAT_NONE;
+  case STAT_BONUS_ARMOR:
+    if ( specialization() == MONK_BREWMASTER )
+      return s;
+    else
+      return STAT_NONE;     
+  default: return s; 
+  }
 }
  
 // monk_t::pre_analyze_hook  ================================================

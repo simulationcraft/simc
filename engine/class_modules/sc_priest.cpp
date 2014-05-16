@@ -313,7 +313,8 @@ public:
   virtual void      copy_from( player_t* source ) override;
   virtual set_e       decode_set( const item_t& ) const override;
   virtual resource_e primary_resource() const override { return RESOURCE_MANA; }
-  virtual role_e primary_role() const override;
+  virtual role_e    primary_role() const override;
+  virtual stat_e    convert_hybrid_stat( stat_e s ) const;
   virtual void      combat_begin() override;
   virtual double    composite_armor() const override;
   virtual double    composite_spell_haste() const override;
@@ -4549,6 +4550,30 @@ role_e priest_t::primary_role() const
   }
 
   return ROLE_SPELL;
+}
+
+// priest_t::convert_hybrid_stat ==============================================
+
+stat_e priest_t::convert_hybrid_stat( stat_e s ) const
+{
+  // this converts hybrid stats that either morph based on spec or only work
+  // for certain specs into the appropriate "basic" stats
+  switch ( s )
+  {
+  // This is all a guess at how the hybrid primaries will work, since they
+  // don't actually appear on cloth gear yet. TODO: confirm behavior
+  case STAT_AGI_INT: 
+    return STAT_INTELLECT; 
+  case STAT_STR_AGI:
+    return STAT_NONE;
+  case STAT_STR_INT:
+    return STAT_INTELLECT;
+  case STAT_SPIRIT:
+      return STAT_NONE;
+  case STAT_BONUS_ARMOR:
+      return STAT_NONE;     
+  default: return s; 
+  }
 }
 
 // priest_t::combat_begin ===================================================

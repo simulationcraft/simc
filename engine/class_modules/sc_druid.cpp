@@ -511,6 +511,7 @@ public:
   virtual set_e     decode_set( const item_t& ) const;
   virtual resource_e primary_resource() const;
   virtual role_e    primary_role() const;
+  virtual stat_e    convert_hybrid_stat( stat_e s ) const;
   virtual void      assess_damage( school_e school, dmg_e, action_state_t* );
   virtual void      assess_heal( school_e, dmg_e, action_state_t* );
   virtual void      create_options();
@@ -6910,6 +6911,40 @@ role_e druid_t::primary_role() const
   }
 
   return player_t::primary_role();
+}
+
+// druid_t::convert_hybrid_stat ==============================================
+
+stat_e druid_t::convert_hybrid_stat( stat_e s ) const
+{
+  // this converts hybrid stats that either morph based on spec or only work
+  // for certain specs into the appropriate "basic" stats
+  switch ( s )
+  {
+  case STAT_AGI_INT: 
+    if ( specialization() == DRUID_BALANCE || specialization() == DRUID_RESTORATION )
+      return STAT_INTELLECT;
+    else
+      return STAT_AGILITY; 
+  // This is a guess at how AGI/STR gear will work for Balance/Resto, TODO: confirm  
+  case STAT_STR_AGI:
+    return STAT_AGILITY;
+  // This is a guess at how STR/INT gear will work for Feral/Guardian, TODO: confirm  
+  // This should probably never come up since druids can't equip plate, but....
+  case STAT_STR_INT:
+    return STAT_INTELLECT;
+  case STAT_SPIRIT:
+    if ( specialization() == DRUID_RESTORATION )
+      return s;
+    else
+      return STAT_NONE;
+  case STAT_BONUS_ARMOR:
+    if ( specialization() == DRUID_GUARDIAN )
+      return s;
+    else
+      return STAT_NONE;     
+  default: return s; 
+  }
 }
 
 // druid_t::primary_resource ================================================

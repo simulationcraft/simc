@@ -2371,6 +2371,27 @@ void print_html_help_boxes( report::sc_html_stream& os, sim_t* sim )
      << "\t\t\t</div>\n"
      << "\t\t</div>\n";
 
+  os << "\t\t<div id=\"help-stats-gear\">\n"
+     << "\t\t\t<div class=\"help-box\">\n"
+     << "\t\t\t\t<h3>Gear Amount</h3>\n"
+     << "\t\t\t\t<p>Amount from raw gear, before class or buff modifiers. Amount from hybrid primary stats (i.e. Agility/Intellect) shown in parentheses.</p>\n"
+     << "\t\t\t</div>\n"
+     << "\t\t</div>\n";
+
+  os << "\t\t<div id=\"help-stats-raid-buffed\">\n"
+     << "\t\t\t<div class=\"help-box\">\n"
+     << "\t\t\t\t<h3>Gear Amount</h3>\n"
+     << "\t\t\t\t<p>Amount after all static buffs have been accounted for. Dynamic buffs (i.e. trinkets, potions) not included.</p>\n"
+     << "\t\t\t</div>\n"
+     << "\t\t</div>\n";
+
+  os << "\t\t<div id=\"help-stats-unbuffed\">\n"
+     << "\t\t\t<div class=\"help-box\">\n"
+     << "\t\t\t\t<h3>Gear Amount</h3>\n"
+     << "\t\t\t\t<p>Amount after class modifiers and effects, but before buff modifiers.</p>\n"
+     << "\t\t\t</div>\n"
+     << "\t\t</div>\n";
+
   os << "\t\t<div id=\"help-ticks\">\n"
      << "\t\t\t<div class=\"help-box\">\n"
      << "\t\t\t\t<h3>Ticks</h3>\n"

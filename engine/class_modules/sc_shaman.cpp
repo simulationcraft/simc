@@ -500,6 +500,7 @@ public:
   virtual set_e       decode_set( const item_t& ) const;
   virtual resource_e primary_resource() const { return RESOURCE_MANA; }
   virtual role_e primary_role() const;
+  virtual stat_e convert_hybrid_stat( stat_e s ) const;
   virtual void      arise();
   virtual void      reset();
   virtual void      merge( player_t& other );
@@ -6269,6 +6270,34 @@ role_e shaman_t::primary_role() const
     return ROLE_SPELL;
 
   return player_t::primary_role();
+}
+
+// shaman_t::convert_hybrid_stat ===========================================
+stat_e shaman_t::convert_hybrid_stat( stat_e s ) const
+{  
+  switch ( s )
+  {
+  case STAT_AGI_INT: 
+    if ( specialization() == SHAMAN_ENHANCEMENT )
+      return STAT_AGILITY;
+    else
+      return STAT_INTELLECT; 
+  // This is a guess at how AGI/STR gear will work for Resto/Elemental, TODO: confirm  
+  case STAT_STR_AGI:
+    return STAT_AGILITY;
+  // This is a guess at how STR/INT gear will work for Enhance, TODO: confirm  
+  // this should probably never come up since shamans can't equip plate, but....
+  case STAT_STR_INT:
+    return STAT_INTELLECT;
+  case STAT_SPIRIT:
+    if ( specialization() == SHAMAN_RESTORATION )
+      return s;
+    else
+      return STAT_NONE;
+  case STAT_BONUS_ARMOR:
+      return STAT_NONE;     
+  default: return s; 
+  }
 }
 
 /* Report Extension Class
