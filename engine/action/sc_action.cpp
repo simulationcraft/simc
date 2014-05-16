@@ -1922,6 +1922,19 @@ expr_t* action_t::create_expression( const std::string& name_str )
   }
   else if ( name_str == "cast_time" )
     return make_mem_fn_expr( name_str, *this, &action_t::execute_time );
+  else if ( name_str == "execute_time" )
+  {
+    struct execute_time_expr_t : public action_expr_t
+    {
+      execute_time_expr_t( action_t& a ) : action_expr_t( "execute_time", a )
+      { }
+
+      double evaluate()
+      { return std::max( action.execute_time().total_seconds(), action.gcd().total_seconds() ); }
+    };
+
+    return new execute_time_expr_t( *this );
+  }
   else if ( name_str == "cooldown" )
     return make_ref_expr( name_str, cooldown -> duration );
   else if ( name_str == "tick_time" )
