@@ -208,7 +208,8 @@ public:
   {
     cooldown_t* ancestral_swiftness;
     cooldown_t* ascendance;
-    cooldown_t* elemental_totem;
+    cooldown_t* fire_elemental_totem;
+    cooldown_t* earth_elemental_totem;
     cooldown_t* feral_spirits;
     cooldown_t* lava_burst;
     cooldown_t* lava_lash;
@@ -441,7 +442,8 @@ public:
     // Cooldowns
     cooldown.ancestral_swiftness  = get_cooldown( "ancestral_swiftness"   );
     cooldown.ascendance           = get_cooldown( "ascendance"            );
-    cooldown.elemental_totem      = get_cooldown( "elemental_totem"       );
+    cooldown.earth_elemental_totem= get_cooldown( "earth_elemental_totem" );
+    cooldown.fire_elemental_totem = get_cooldown( "fire_elemental_totem"  );
     cooldown.feral_spirits        = get_cooldown( "feral_spirit"          );
     cooldown.lava_burst           = get_cooldown( "lava_burst"            );
     cooldown.lava_lash            = get_cooldown( "lava_lash"             );
@@ -4382,18 +4384,8 @@ struct earth_elemental_totem_spell_t : public shaman_totem_t
   {
     shaman_totem_t::execute();
 
-    p() -> cooldown.elemental_totem -> duration = data().duration();
-    p() -> cooldown.elemental_totem -> start();
+    p() -> cooldown.fire_elemental_totem -> start( data().duration() );
   }
-
-  bool ready()
-  {
-    if ( p() -> cooldown.elemental_totem -> down() )
-      return false;
-
-    return shaman_totem_t::ready();
-  }
-
 };
 
 // Fire Elemental Totem Spell ===============================================
@@ -4429,16 +4421,7 @@ struct fire_elemental_totem_spell_t : public shaman_totem_t
   {
     shaman_totem_t::execute();
 
-    p() -> cooldown.elemental_totem -> duration = data().duration();
-    p() -> cooldown.elemental_totem -> start();
-  }
-
-  bool ready()
-  {
-    if ( p() -> cooldown.elemental_totem -> down() )
-      return false;
-
-    return shaman_totem_t::ready();
+    p() -> cooldown.earth_elemental_totem -> start( data().duration() );
   }
 };
 
