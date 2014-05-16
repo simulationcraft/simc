@@ -208,7 +208,8 @@ public:
   {
     cooldown_t* ancestral_swiftness;
     cooldown_t* ascendance;
-    cooldown_t* elemental_totem;
+    cooldown_t* fire_elemental_totem;
+    cooldown_t* earth_elemental_totem;
     cooldown_t* feral_spirits;
     cooldown_t* lava_burst;
     cooldown_t* lava_lash;
@@ -441,7 +442,8 @@ public:
     // Cooldowns
     cooldown.ancestral_swiftness  = get_cooldown( "ancestral_swiftness"   );
     cooldown.ascendance           = get_cooldown( "ascendance"            );
-    cooldown.elemental_totem      = get_cooldown( "elemental_totem"       );
+    cooldown.earth_elemental_totem= get_cooldown( "earth_elemental_totem" );
+    cooldown.fire_elemental_totem = get_cooldown( "fire_elemental_totem"  );
     cooldown.feral_spirits        = get_cooldown( "feral_spirit"          );
     cooldown.lava_burst           = get_cooldown( "lava_burst"            );
     cooldown.lava_lash            = get_cooldown( "lava_lash"             );
@@ -698,6 +700,67 @@ public:
     }
 
     ab::update_ready( cd );
+  }
+
+  virtual expr_t* create_expression( const std::string& name )
+  {
+    if ( ! util::str_compare_ci( name, "cooldown.higher_priority.min_remains" ) )
+      return ab::create_expression( name );
+
+    struct hprio_cd_min_remains_expr_t : public expr_t
+    {
+      action_t* action_;
+      std::vector<cooldown_t*> cd_;
+
+      // TODO: Line_cd support
+      hprio_cd_min_remains_expr_t( action_t* a ) :
+        expr_t( "min_remains" ), action_( a )
+      {
+        action_priority_list_t* list = a -> player -> get_action_priority_list( a -> action_list );
+        for ( size_t i = 0, end = list -> foreground_action_list.size(); i < end; i++ )
+        {
+          action_t* list_action = list -> foreground_action_list[ i ];
+          // Jump out when we reach this action
+          if ( list_action == action_ )
+            break;
+
+          // Skip if this action's cooldown is the same as the list action's cooldown
+          if ( list_action -> cooldown == action_ -> cooldown )
+            continue;
+
+          // Skip actions with no cooldown
+          if ( list_action -> cooldown && list_action -> cooldown -> duration == timespan_t::zero() )
+            continue;
+
+          // Skip cooldowns that are already accounted for
+          if ( std::find( cd_.begin(), cd_.end(), list_action -> cooldown ) != cd_.end() )
+            continue;
+
+          //std::cout << "Appending " << list_action -> name() << " to check list" << std::endl;
+          cd_.push_back( list_action -> cooldown );
+        }
+      }
+
+      double evaluate()
+      {
+        if ( cd_.size() == 0 )
+          return 0;
+
+        timespan_t min_cd = cd_[ 0 ] -> remains();
+        for ( size_t i = 1, end = cd_.size(); i < end; i++ )
+        {
+          timespan_t remains = cd_[ i ] -> remains();
+          //std::cout << "cooldown.higher_priority.min_remains " << cd_[ i ] -> name_str << " remains=" << remains.total_seconds() << std::endl;
+          if ( remains < min_cd )
+            min_cd = remains;
+        }
+
+        //std::cout << "cooldown.higher_priority.min_remains=" << min_cd.total_seconds() << std::endl;
+        return min_cd.total_seconds();
+      }
+    };
+
+    return new hprio_cd_min_remains_expr_t( this );
   }
 };
 
@@ -4322,18 +4385,9 @@ struct earth_elemental_totem_spell_t : public shaman_totem_t
   {
     shaman_totem_t::execute();
 
-    p() -> cooldown.elemental_totem -> duration = data().duration();
-    p() -> cooldown.elemental_totem -> start();
+    if ( p() -> cooldown.fire_elemental_totem -> up() )
+      p() -> cooldown.fire_elemental_totem -> start( data().duration() );
   }
-
-  bool ready()
-  {
-    if ( p() -> cooldown.elemental_totem -> down() )
-      return false;
-
-    return shaman_totem_t::ready();
-  }
-
 };
 
 // Fire Elemental Totem Spell ===============================================
@@ -4369,16 +4423,8 @@ struct fire_elemental_totem_spell_t : public shaman_totem_t
   {
     shaman_totem_t::execute();
 
-    p() -> cooldown.elemental_totem -> duration = data().duration();
-    p() -> cooldown.elemental_totem -> start();
-  }
-
-  bool ready()
-  {
-    if ( p() -> cooldown.elemental_totem -> down() )
-      return false;
-
-    return shaman_totem_t::ready();
+    if ( p() -> cooldown.earth_elemental_totem -> up() )
+      p() -> cooldown.earth_elemental_totem -> start( data().duration() );
   }
 };
 
