@@ -270,7 +270,7 @@ public:
     options(),
     glyphs()
   {
-    base.distance = 27.0;
+    base.distance = 27.0; //Halo
 
     create_cooldowns();
     create_gains();
@@ -5276,6 +5276,16 @@ void priest_t::init_spells()
 
   active_spells.surge_of_darkness = talents.from_darkness_comes_light -> ok() ? find_spell( 87160 ) : spell_data_t::not_found();
 
+  // Range Based on Talents
+  if (talents.cascade -> ok())
+    base.distance = 30.0;
+  else if (talents.divine_star -> ok())
+    base.distance = 24.0;
+  else if (talents.halo -> ok())
+    base.distance = 27.0;
+  else
+    base.distance = 27.0;
+
   // Set Bonuses
   static const set_bonus_description_t set_bonuses =
   {
@@ -5499,9 +5509,9 @@ void priest_t::apl_shadow()
   def -> add_action( this, "Vampiric Embrace", "if=shadow_orb=3&health.pct<=40" );
   def -> add_action( this, "Devouring Plague", "if=shadow_orb=3&ticks_remain<=1" );
   def -> add_action( this, "Mind Spike", "if=active_enemies<=5&buff.surge_of_darkness.react=2" );
-  def -> add_action( "halo,if=talent.halo.enabled" );
-  def -> add_action( "cascade_damage,if=talent.cascade.enabled" );
-  def -> add_action( "divine_star,if=talent.divine_star.enabled" );
+  def -> add_action( "halo,if=talent.halo.enabled&target.distance<=30&target.distance>=17" );
+  def -> add_action( "cascade_damage,if=talent.cascade.enabled&(active_enemies>1|(target.distance>=25&stat.mastery_rating<15000)|target.distance>=28)&target.distance<=40&target.distance>=11" );
+  def -> add_action( "divine_star,if=talent.divine_star.enabled&(active_enemies>1|stat.mastery_rating<3500)&target.distance<=24" );
   def -> add_action( "wait,sec=cooldown.shadow_word_death.remains,if=target.health.pct<20&cooldown.shadow_word_death.remains<0.5&active_enemies<=1" );
   def -> add_action( "wait,sec=cooldown.mind_blast.remains,if=cooldown.mind_blast.remains<0.5&active_enemies<=1" );
   def -> add_action( "mind_spike,if=buff.surge_of_darkness.react&active_enemies<=5" );
@@ -5509,6 +5519,8 @@ void priest_t::apl_shadow()
   def -> add_action( this, "Mind Flay", "chain=1,interrupt=1" );
   def -> add_action( this, "Shadow Word: Death", "moving=1" );
   def -> add_action( this, "Mind Blast", "moving=1,if=buff.divine_insight_shadow.react&cooldown_react" );
+  def -> add_action( "divine_star,moving=1,if=talent.divine_star.enabled&target.distance<=28" );
+  def -> add_action( "cascade_damage,moving=1,if=talent.cascade.enabled&target.distance<=40" );
   def -> add_action( this, "Shadow Word: Pain", "moving=1" );
   def -> add_action( this, "Dispersion" );
 
