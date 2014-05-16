@@ -4384,7 +4384,8 @@ struct earth_elemental_totem_spell_t : public shaman_totem_t
   {
     shaman_totem_t::execute();
 
-    p() -> cooldown.fire_elemental_totem -> start( data().duration() );
+    if ( p() -> cooldown.fire_elemental_totem -> up() )
+      p() -> cooldown.fire_elemental_totem -> start( data().duration() );
   }
 };
 
@@ -4421,7 +4422,8 @@ struct fire_elemental_totem_spell_t : public shaman_totem_t
   {
     shaman_totem_t::execute();
 
-    p() -> cooldown.earth_elemental_totem -> start( data().duration() );
+    if ( p() -> cooldown.earth_elemental_totem -> up() )
+      p() -> cooldown.earth_elemental_totem -> start( data().duration() );
   }
 };
 
