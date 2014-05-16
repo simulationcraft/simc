@@ -7511,6 +7511,9 @@ expr_t* player_t::create_expression( action_t* a,
 
   if ( splits.size() >= 2 && splits[ 0 ] == "target" )
   {
+    if (splits[1] == "distance")
+      return make_ref_expr( name_str, this->base.distance );
+
     std::string rest = splits[1];
     for ( size_t i = 2; i < splits.size(); ++i )
       rest += '.' + splits[ i ];
