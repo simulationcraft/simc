@@ -1722,7 +1722,7 @@ struct impending_victory_heal_t : public heal_t
 {
   double heal_pct;
   impending_victory_heal_t( warrior_t* p ) :
-    heal_t( "impending_victory_heal", p, p -> talents.impending_victory )
+    heal_t( "impending_victory_heal", p, p -> find_spell( 118340 ) )
   {
     // Implemented as an actual heal because of spell callbacks ( for Hurricane, etc. )
     background = true;
@@ -1739,7 +1739,6 @@ struct impending_victory_heal_t : public heal_t
     if ( p -> buff.tier15_2pc_tank -> up() )
     {
       pct_heal += p -> buff.tier15_2pc_tank -> value();
-      pct_heal *= ( 1 + p -> glyphs.victory_rush -> effectN( 1 ).percent() );
     }
 
     double amount = state -> target -> resources.max[ RESOURCE_HEALTH ] * pct_heal;

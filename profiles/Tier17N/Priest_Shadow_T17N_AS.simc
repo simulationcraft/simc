@@ -63,6 +63,7 @@ actions+=/divine_star,moving=1,if=talent.divine_star.enabled&target.distance<=28
 actions+=/cascade_damage,moving=1,if=talent.cascade.enabled&target.distance<=40
 actions+=/shadow_word_pain,moving=1
 actions+=/dispersion
+
 head=hood_of_the_ternion_glory,id=99360,upgrade=2
 neck=necklace_of_fading_light,id=105473,upgrade=2
 shoulders=shoulderguards_of_the_ternion_glory,id=99363,upgrade=2
@@ -83,7 +84,6 @@ off_hand=revelations_of_yshaarj,id=105650,upgrade=2
 # Gear Summary
 # gear_stamina=1532
 # gear_intellect=932
-# gear_spirit=78
 # gear_spell_power=590
 # gear_crit_rating=210
 # gear_haste_rating=577
