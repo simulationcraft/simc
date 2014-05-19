@@ -1307,8 +1307,7 @@ bool sim_t::init_parties()
 
 // init_items ===============================================================
 // This is a helper function that loops through each actor and calls its respective
-// player_t::init_items() method. Note that it's in the anonymous namespace, and
-// thus restricted to the sim_t object.
+// player_t::init_items() method. 
 
 bool sim_t::init_items()
 {  
@@ -1320,6 +1319,23 @@ bool sim_t::init_items()
       success = false;
   }
   return success;
+}
+
+// init_actions =============================================================
+// This is a helper function that loops through each actor and calls its respective
+// player_t::init_actions() method.
+
+bool sim_t::init_actions()
+{
+  bool success = true;
+
+  for ( size_t i = 0; i < actor_list.size(); i++ )
+  {
+    if ( ! actor_list[ i ] -> init_actions() )
+      success = false;
+  }
+  return success;
+  
 }
 
 // sim_t::init_actors =======================================================
@@ -1365,6 +1381,8 @@ bool sim_t::init_actors()
   // This next section handles all the ugly details of initialization. Ideally, each of these
   // init_* methods will eventually return a bool to indicate success or failure, from which
   // we can either continue or halt initialization.
+  // For now, we're only enforcing this condition for the particular init_* methods that can
+  // lead to a sim -> cancel() result ( player_t::init_items() and player_t::init_actions() ).
 
   // Determine Spec, Talents, Professions, Glyphs
   range::for_each( actor_list, std::mem_fn( &player_t::init_target ) );
@@ -1374,16 +1392,20 @@ bool sim_t::init_actors()
   if ( ! init_items() )
     return false;
 
-  // Initialize spells
+  // Initialize spells, base/initial stats, defense, buffs, scaling, special effects
   range::for_each( actor_list, std::mem_fn( &player_t::init_spells ) );
-
   range::for_each( actor_list, std::mem_fn( &player_t::init_base_stats ) );
   range::for_each( actor_list, std::mem_fn( &player_t::init_initial_stats ) );
   range::for_each( actor_list, std::mem_fn( &player_t::init_defense ) );
   range::for_each( actor_list, std::mem_fn( &player_t::create_buffs ) ); // keep here for now
   range::for_each( actor_list, std::mem_fn( &player_t::init_scaling ) );
   range::for_each( actor_list, std::mem_fn( &player_t::init_special_effects ) ); // Must be before init_actions
-  range::for_each( actor_list, std::mem_fn( &player_t::init_actions ) );
+
+  // Initialize each actor's actions
+  if ( ! init_actions() )
+    return false;
+
+  // Initialize gains, procs, uptimes, benefits, rng, stats
   range::for_each( actor_list, std::mem_fn( &player_t::init_gains ) );
   range::for_each( actor_list, std::mem_fn( &player_t::init_procs ) );
   range::for_each( actor_list, std::mem_fn( &player_t::init_uptimes ) );

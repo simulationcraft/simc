@@ -2642,6 +2642,7 @@ public:
   bool      init_actors();
  private: 
   bool      init_items();
+  bool      init_actions();
  public: 
   bool      init();
   void      analyze();
@@ -4531,7 +4532,7 @@ public:
   virtual void init_stats();
   virtual void register_callbacks();
 
-  void init_actions();
+  bool init_actions();
 
   virtual void reset();
   virtual void combat_begin();

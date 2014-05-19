@@ -1860,7 +1860,7 @@ void player_t::init_scaling()
 
 // player_t::init_actions ==================================================
 
-void player_t::init_actions()
+bool player_t::init_actions()
 {
   if ( action_list_str.empty() )
     no_action_list_provided = true;
@@ -2000,7 +2000,7 @@ void player_t::init_actions()
       {
         sim -> errorf( "Player %s unable to create action: %s\n", name(), action_str.c_str() );
         sim -> cancel();
-        return;
+        return false;
       }
     }
   }
@@ -2046,6 +2046,8 @@ void player_t::init_actions()
   int capacity = std::max( 1200, static_cast<int>( sim -> max_time.total_seconds() / 2.0 ) );
   collected_data.action_sequence.reserve( capacity );
   collected_data.action_sequence.clear();
+
+  return true;
 }
 
 // player_t::create_buffs ===================================================
