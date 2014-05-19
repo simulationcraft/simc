@@ -1218,6 +1218,182 @@ void sim_t::datacollection_end()
   raid_aps.add( current_time != timespan_t::zero() ? iteration_absorb / current_time.total_seconds() : 0 );
 }
 
+// sim_t::check_actors() ========================================================
+// This function just checks that the sim has at least 1 active player, and sets
+// fixed_time automatically if the only role present is a ROLE_HEAL.  Called in sim_t::init_actors()
+
+bool sim_t::check_actors()
+{
+  bool too_quiet = true; // Check for at least 1 active player
+  bool zero_dds = true; // Check for at least 1 player != TANK/HEAL
+
+  for ( size_t i = 0; i < actor_list.size(); i++ )
+  {
+    player_t* p = actor_list[ i ];
+    if ( p -> is_pet() || p -> is_enemy() ) continue;
+    if ( p -> type == HEALING_ENEMY ) continue;
+    if ( ! p -> quiet ) too_quiet = false;
+    if ( p -> primary_role() != ROLE_HEAL && ! p -> is_pet() ) zero_dds = false;
+  }
+  
+  if ( too_quiet && ! debug )
+  {
+    errorf( "No active players in sim!" );
+    return false;
+  }
+
+  // Set Fixed_Time when there are no DD's present
+  if ( zero_dds && ! debug )
+    fixed_time = true;
+
+  return true;
+}
+
+// sim_t::init_parties =============================================================
+// This function... builds parties? I guess it assigns each player in player_list to
+// a party based on party_encoding. Called in sim_t::init_actors()
+
+bool sim_t::init_parties()
+{
+  // Parties
+  if ( debug )
+    out_debug.printf( "Building Parties." );
+
+  int party_index = 0;
+  for ( size_t i = 0; i < party_encoding.size(); i++ )
+  {
+    std::string& party_str = party_encoding[ i ];
+
+    if ( party_str == "reset" )
+    {
+      party_index = 0;
+      for ( size_t j = 0; j < player_list.size(); ++j )
+        player_list[ j ] -> party = 0;
+    }
+    else if ( party_str == "all" )
+    {
+      for ( size_t j = 0; j < player_list.size(); ++j )
+      {
+        player_t* p = player_list[ j ];
+        p -> party = 1;
+      }
+    }
+    else
+    {
+      party_index++;
+
+      std::vector<std::string> player_names = util::string_split( party_str, ",;/" );
+
+      for ( size_t j = 0; j < player_names.size(); j++ )
+      {
+        player_t* p = find_player( player_names[ j ] );
+        if ( ! p )
+        {
+          errorf( "Unable to find player %s for party creation.\n", player_names[ j ].c_str() );
+          return false;
+        }
+        p -> party = party_index;
+        for ( size_t k = 0; k < p -> pet_list.size(); ++k )
+        {
+          pet_t* pet = p -> pet_list[ k ];
+          pet -> party = party_index;
+        }
+      }
+    }
+  }
+
+  return true;
+}
+
+// sim_t::init_actors =======================================================
+// This method handles the bulk of player initialization. Order is pretty 
+// critical here. Called in sim_t::init()
+
+bool sim_t::init_actors()
+{
+  
+  // create actor entries for pets
+  if ( debug )
+    out_debug.printf( "Creating Pets." );
+
+  for ( size_t i = 0; i < actor_list.size(); i++ )
+  {
+    player_t* p = actor_list[i];
+    p -> create_pets();    
+  }
+
+  // initialize class/enemy modules
+  for ( player_e i = PLAYER_NONE; i < PLAYER_MAX; ++i )
+  {
+    const module_t* m = module_t::get( i );
+    if ( m ) m -> init( this );
+  }
+
+  if ( debug )
+    out_debug.printf( "Initializing Players." );
+
+  // call each actor's init() function; mostly does APL stuff, see player_t::init()
+  for ( size_t i = 0; i < actor_list.size(); i++ )
+  {
+    player_t* p = actor_list[ i ];
+    if ( default_actions && ! p -> is_pet() )
+    {
+      p -> clear_action_priority_lists();
+      p -> action_list_str.clear();
+    };
+    p -> init();
+    p -> initialized = true;
+  }
+
+  // This next section handles all the ugly details of initialization. Ideally, each of these
+  // init_* methods will eventually return a bool to indicate success or failure, from which
+  // we can either continue or halt initialization.
+
+  // Determine Spec, Talents, Professions, Glyphs
+  range::for_each( actor_list, std::mem_fn( &player_t::init_target ) );
+  range::for_each( actor_list, std::mem_fn( &player_t::init_character_properties ) );
+
+  // Initialize items, construct gear information & stats
+  range::for_each( actor_list, std::mem_fn( &player_t::init_items ) );
+  if ( is_canceled() ) {return false;} // Temporary fix for assert caused by incomplete item initialization
+  range::for_each( actor_list, std::mem_fn( &player_t::init_spells ) );
+
+  range::for_each( actor_list, std::mem_fn( &player_t::init_base_stats ) );
+  range::for_each( actor_list, std::mem_fn( &player_t::init_initial_stats ) );
+  range::for_each( actor_list, std::mem_fn( &player_t::init_defense ) );
+  range::for_each( actor_list, std::mem_fn( &player_t::create_buffs ) ); // keep here for now
+  range::for_each( actor_list, std::mem_fn( &player_t::init_scaling ) );
+  range::for_each( actor_list, std::mem_fn( &player_t::init_special_effects ) ); // Must be before init_actions
+  range::for_each( actor_list, std::mem_fn( &player_t::init_actions ) );
+  range::for_each( actor_list, std::mem_fn( &player_t::init_gains ) );
+  range::for_each( actor_list, std::mem_fn( &player_t::init_procs ) );
+  range::for_each( actor_list, std::mem_fn( &player_t::init_uptimes ) );
+  range::for_each( actor_list, std::mem_fn( &player_t::init_benefits ) );
+  range::for_each( actor_list, std::mem_fn( &player_t::init_rng ) );
+  range::for_each( actor_list, std::mem_fn( &player_t::init_stats ) );
+
+  // check that we have at least one active player
+  if ( ! check_actors() )
+    return false;
+
+  // organize parties if necessary
+  if ( ! init_parties() )
+    return false;
+
+  // Callbacks
+  if ( debug )
+    out_debug.printf( "Registering Callbacks." );
+
+  for ( size_t i = 0; i < actor_list.size(); i++ )
+  {
+    player_t* p = actor_list[ i ];
+    p -> register_callbacks();
+  }
+
+  // If we make it here, everything initialized properly and we can return true to sim_t::init()
+  return true;
+}
+
 // sim_t::init ==============================================================
 
 bool sim_t::init()
@@ -1349,7 +1525,8 @@ bool sim_t::init()
 
   raid_event_t::init( this );
 
-  if ( ! player_t::init( this ) ) return false;
+  // Initialize actors
+  if ( ! init_actors() ) return false;
 
   if ( report_precision < 0 ) report_precision = 2;
 

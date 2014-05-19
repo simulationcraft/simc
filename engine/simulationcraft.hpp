@@ -2637,6 +2637,9 @@ public:
   void      datacollection_begin();
   void      datacollection_end();
   void      reset();
+  bool      check_actors();
+  bool      init_parties();
+  bool      init_actors();
   bool      init();
   void      analyze();
   void      merge( sim_t& other_sim );
@@ -4524,9 +4527,9 @@ public:
   virtual void init_rng();
   virtual void init_stats();
   virtual void register_callbacks();
-private:
-  void _init_actions();
-public:
+
+  void init_actions();
+
   virtual void reset();
   virtual void combat_begin();
   virtual void combat_end();

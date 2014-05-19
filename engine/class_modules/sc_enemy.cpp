@@ -873,9 +873,7 @@ void enemy_t::init_action_list()
   player_t::init_action_list();
 }
 
-/* Hack to get this executed after player_t::_init_actions.
- * Notice the difference between init_actions and _init_actions
- */
+// Hack to get this executed after player_t::init_action_list.
 void enemy_t::init_stats()
 {
   player_t::init_stats();

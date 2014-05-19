@@ -615,193 +615,6 @@ std::string player_t::base_initial_current_t::to_string()
   return s.str();
 }
 
-static bool check_actors( sim_t* sim )
-{
-  bool too_quiet = true; // Check for at least 1 active player
-  bool zero_dds = true; // Check for at least 1 player != TANK/HEAL
-
-  for ( size_t i = 0; i < sim -> actor_list.size(); i++ )
-  {
-    player_t* p = sim -> actor_list[ i ];
-    if ( p -> is_pet() || p -> is_enemy() ) continue;
-    if ( p -> type == HEALING_ENEMY ) continue;
-    if ( ! p -> quiet ) too_quiet = false;
-    if ( p -> primary_role() != ROLE_HEAL && ! p -> is_pet() ) zero_dds = false;
-  }
-  
-  if ( too_quiet && ! sim -> debug )
-  {
-    sim -> errorf( "No active players in sim!" );
-    return false;
-  }
-
-  // Set Fixed_Time when there are no DD's present
-  if ( zero_dds && ! sim -> debug )
-    sim -> fixed_time = true;
-
-  return true;
-}
-
-// init_debuffs =============================================================
-
-static bool init_debuffs( sim_t* sim )
-{
-  if ( sim -> debug )
-    sim -> out_debug.printf( "Initializing Auras, Buffs, and De-Buffs." );
-
-  for ( size_t i = 0; i < sim -> actor_list.size(); i++ )
-  {
-    player_t* p = sim -> actor_list[i];
-    // MOP Debuffs
-    p -> debuffs.magic_vulnerability     = buff_creator_t( p, "magic_vulnerability", p -> find_spell( 104225 ) )
-                                           .default_value( p -> find_spell( 104225 ) -> effectN( 1 ).percent() );
-
-    p -> debuffs.physical_vulnerability  = buff_creator_t( p, "physical_vulnerability", p -> find_spell( 81326 ) )
-                                           .default_value( p -> find_spell( 81326 ) -> effectN( 1 ).percent() );
-
-    p -> debuffs.mortal_wounds           = buff_creator_t( p, "mortal_wounds", p -> find_spell( 115804 ) )
-                                           .default_value( std::fabs( p -> find_spell( 115804 ) -> effectN( 1 ).percent() ) );
-  }
-
-  return true;
-}
-
-// init_parties =============================================================
-
-static bool init_parties( sim_t* sim )
-{
-  // Parties
-  if ( sim -> debug )
-    sim -> out_debug.printf( "Building Parties." );
-
-  int party_index = 0;
-  for ( size_t i = 0; i < sim -> party_encoding.size(); i++ )
-  {
-    std::string& party_str = sim -> party_encoding[ i ];
-
-    if ( party_str == "reset" )
-    {
-      party_index = 0;
-      for ( size_t j = 0; j < sim -> player_list.size(); ++j )
-        sim -> player_list[ j ] -> party = 0;
-    }
-    else if ( party_str == "all" )
-    {
-      for ( size_t j = 0; j < sim -> player_list.size(); ++j )
-      {
-        player_t* p = sim -> player_list[ j ];
-        p -> party = 1;
-      }
-    }
-    else
-    {
-      party_index++;
-
-      std::vector<std::string> player_names = util::string_split( party_str, ",;/" );
-
-      for ( size_t j = 0; j < player_names.size(); j++ )
-      {
-        player_t* p = sim -> find_player( player_names[ j ] );
-        if ( ! p )
-        {
-          sim -> errorf( "Unable to find player %s for party creation.\n", player_names[ j ].c_str() );
-          return false;
-        }
-        p -> party = party_index;
-        for ( size_t k = 0; k < p -> pet_list.size(); ++k )
-        {
-          pet_t* pet = p -> pet_list[ k ];
-          pet -> party = party_index;
-        }
-      }
-    }
-  }
-
-  return true;
-}
-
-// player_t::init ===========================================================
-
-bool player_t::init( sim_t* sim )
-{
-  // FIXME! This should probably move to sc_sim.cpp
-  // Having two versions of player_t::init is confusing.
-
-  if ( sim -> debug )
-    sim -> out_debug.printf( "Creating Pets." );
-
-  for ( size_t i = 0; i < sim -> actor_list.size(); i++ )
-  {
-    player_t* p = sim -> actor_list[i];
-    p -> create_pets();
-  }
-
-  if ( ! init_debuffs( sim ) )
-    return false;
-
-  for ( player_e i = PLAYER_NONE; i < PLAYER_MAX; ++i )
-  {
-    const module_t* m = module_t::get( i );
-    if ( m ) m -> init( sim );
-  }
-
-  if ( sim -> debug )
-    sim -> out_debug.printf( "Initializing Players." );
-
-  for ( size_t i = 0; i < sim -> actor_list.size(); i++ )
-  {
-    player_t* p = sim -> actor_list[ i ];
-    if ( sim -> default_actions && ! p -> is_pet() )
-    {
-      p -> clear_action_priority_lists();
-      p -> action_list_str.clear();
-    };
-    p -> init();
-    p -> initialized = true;
-  }
-
-
-  // Determine Spec, Talents, Professions, Glyphs
-  range::for_each( sim -> actor_list, std::mem_fn( &player_t::init_target ) );
-  range::for_each( sim -> actor_list, std::mem_fn( &player_t::init_character_properties ) );
-
-  range::for_each( sim -> actor_list, std::mem_fn( &player_t::init_items ) );
-  if ( sim -> is_canceled() ) {return false;} // Temporary fix for assert caused by incomplete item initialization
-  range::for_each( sim -> actor_list, std::mem_fn( &player_t::init_spells ) );
-
-  range::for_each( sim -> actor_list, std::mem_fn( &player_t::init_base_stats ) );
-  range::for_each( sim -> actor_list, std::mem_fn( &player_t::init_initial_stats ) );
-  range::for_each( sim -> actor_list, std::mem_fn( &player_t::init_defense ) );
-  range::for_each( sim -> actor_list, std::mem_fn( &player_t::create_buffs ) ); // keep here for now
-  range::for_each( sim -> actor_list, std::mem_fn( &player_t::init_scaling ) );
-  range::for_each( sim -> actor_list, std::mem_fn( &player_t::init_special_effects ) ); // Must be before _init_actions
-  range::for_each( sim -> actor_list, std::mem_fn( &player_t::_init_actions ) );
-  range::for_each( sim -> actor_list, std::mem_fn( &player_t::init_gains ) );
-  range::for_each( sim -> actor_list, std::mem_fn( &player_t::init_procs ) );
-  range::for_each( sim -> actor_list, std::mem_fn( &player_t::init_uptimes ) );
-  range::for_each( sim -> actor_list, std::mem_fn( &player_t::init_benefits ) );
-  range::for_each( sim -> actor_list, std::mem_fn( &player_t::init_rng ) );
-  range::for_each( sim -> actor_list, std::mem_fn( &player_t::init_stats ) );
-
-  if ( ! check_actors( sim ) )
-    return false;
-
-  if ( ! init_parties( sim ) )
-    return false;
-
-  // Callbacks
-  if ( sim -> debug )
-    sim -> out_debug.printf( "Registering Callbacks." );
-
-  for ( size_t i = 0; i < sim -> actor_list.size(); i++ )
-  {
-    player_t* p = sim -> actor_list[ i ];
-    p -> register_callbacks();
-  }
-
-  return true;
-}
-
 void player_t::register_callbacks()
 {
   for ( size_t i = 0, end = callbacks.all_callbacks.size(); i < end; i++ )
@@ -2045,9 +1858,9 @@ void player_t::init_scaling()
   }
 }
 
-// player_t::_init_actions ==================================================
+// player_t::init_actions ==================================================
 
-void player_t::_init_actions()
+void player_t::init_actions()
 {
   if ( action_list_str.empty() )
     no_action_list_provided = true;
@@ -2240,7 +2053,7 @@ void player_t::_init_actions()
 void player_t::create_buffs()
 {
   if ( sim -> debug )
-    sim -> out_debug.printf( "Creating buffs for player (%s)", name() );
+    sim -> out_debug.printf( "Creating Auras, Buffs, and Debuffs for player (%s)", name() );
 
   if ( ! is_enemy() && type != PLAYER_GUARDIAN )
   {
@@ -2338,6 +2151,17 @@ void player_t::create_buffs()
   debuffs.invulnerable = buff_creator_t( this, "invulnerable" ).max_stack( 1 );
   debuffs.vulnerable   = buff_creator_t( this, "vulnerable" ).max_stack( 1 );
   debuffs.flying       = buff_creator_t( this, "flying" ).max_stack( 1 );
+
+  // stuff moved from old init_debuffs method
+  debuffs.magic_vulnerability     = buff_creator_t( this, "magic_vulnerability", find_spell( 104225 ) )
+                                    .default_value( find_spell( 104225 ) -> effectN( 1 ).percent() );
+
+  debuffs.physical_vulnerability  = buff_creator_t( this, "physical_vulnerability", find_spell( 81326 ) )
+                                    .default_value( find_spell( 81326 ) -> effectN( 1 ).percent() );
+
+  debuffs.mortal_wounds           = buff_creator_t( this, "mortal_wounds", find_spell( 115804 ) )
+                                    .default_value( std::fabs( find_spell( 115804 ) -> effectN( 1 ).percent() ) );
+
 }
 
 // player_t::find_item ======================================================
