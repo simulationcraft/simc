@@ -3359,7 +3359,10 @@ void warrior_t::apl_precombat()
   if ( sim -> allow_flasks && level >= 80 )
   {
     std::string flask_action = "flask,type=";
-    if ( primary_role() == ROLE_ATTACK )
+    if ( specialization() == WARRIOR_FURY && 
+         main_hand_weapon.swing_time > timespan_t::from_seconds( 3.0 ) )
+      flask_action = "elixir,type=mad_hozen"; // TG crit value is out of control at this point. 
+    else if ( primary_role() == ROLE_ATTACK )
       flask_action += "winters_bite";
     else if ( primary_role() == ROLE_TANK )
       flask_action += "earth";

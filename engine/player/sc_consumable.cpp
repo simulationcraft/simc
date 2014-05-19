@@ -114,6 +114,8 @@ const food_data_t food_data[] =
   { FOOD_LAVASCALE_FILLET,             STAT_MASTERY_RATING,    90 },
   { FOOD_LAVASCALE_FILLET,             STAT_STAMINA,           90 },
 
+  { FOOD_MANGO_ICE,                    STAT_MASTERY_RATING,   300 },
+
   { FOOD_MOGU_FISH_STEW,               STAT_INTELLECT,        300 },
 
   { FOOD_MUSHROOM_SAUCE_MUDFISH,       STAT_DODGE_RATING,      90 },

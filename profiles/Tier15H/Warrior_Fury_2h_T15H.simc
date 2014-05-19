@@ -16,7 +16,7 @@ spec=fury
 
 # Executed before combat begins. Accepts non-harmful actions only.
 
-actions.precombat=flask,type=winters_bite
+actions.precombat=elixir,type=mad_hozen
 actions.precombat+=/food,type=black_pepper_ribs_and_shrimp
 # Snapshot raid buffed stats before combat begins and pre-potting is done.
 actions.precombat+=/snapshot_stats

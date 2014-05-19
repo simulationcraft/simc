@@ -1061,6 +1061,7 @@ const char* util::food_type_string( food_e food )
     case FOOD_GREEN_CURRY_FISH:             return "green_curry_fish";
     case FOOD_GRILLED_DRAGON:               return "grilled_dragon";
     case FOOD_LAVASCALE_FILLET:             return "lavascale_fillet";
+    case FOOD_MANGO_ICE:                    return "mango_ice";
     case FOOD_MOGU_FISH_STEW:               return "mogu_fish_stew";
     case FOOD_MUSHROOM_SAUCE_MUDFISH:       return "mushroom_sauce_mudfish";
     case FOOD_PANDAREN_BANQUET:             return "pandaren_banquet";
