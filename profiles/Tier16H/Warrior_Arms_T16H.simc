@@ -27,7 +27,6 @@ actions.precombat+=/mogu_power_potion
 
 actions=charge
 actions+=/auto_attack
-actions+=/berserker_rage,if=buff.enrage.down
 actions+=/mogu_power_potion,if=(target.health.pct<20&buff.recklessness.up)|buff.bloodlust.react|target.time_to_die<=25
 # This incredibly long line (Due to differing talent choices) says 'Use recklessness on cooldown with colossus smash, unless the boss will die before the ability is usable again, and then use it with execute.'
 actions+=/recklessness,if=!talent.bloodbath.enabled&((cooldown.colossus_smash.remains<2|debuff.colossus_smash.remains>=5)&(target.time_to_die>192|target.health.pct<20))|buff.bloodbath.up&(target.time_to_die>192|target.health.pct<20)|target.time_to_die<=12
@@ -89,11 +88,10 @@ trinket2=thoks_tail_tip,id=105609,upgrade=2
 main_hand=xalatoh_desecrated_image_of_gorehowl,id=105644,upgrade=2,gems=8haste_8crit_3str,enchant=dancing_steel
 
 # Gear Summary
-# gear_strength=1006
+# gear_strength=1012
 # gear_agility=3
 # gear_stamina=1531
 # gear_intellect=3
-# gear_spirit=3
 # gear_crit_rating=866
 # gear_haste_rating=305
 # gear_mastery_rating=465

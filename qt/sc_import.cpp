@@ -87,7 +87,7 @@ void ImportThread::run()
 
   if ( player )
   {
-    player -> role = util::parse_role_type( m_role.toStdString() );
+    player -> role = util::parse_role_type( m_role.toUtf8().constData() );
 
     if ( sim->init() )
     {

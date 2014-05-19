@@ -336,6 +336,7 @@ enum item_socket_color
   SOCKET_COLOR_HYDRAULIC            = 16,
   SOCKET_COLOR_PRISMATIC            = SOCKET_COLOR_RED | SOCKET_COLOR_YELLOW | SOCKET_COLOR_BLUE,
   SOCKET_COLOR_COGWHEEL             = 32,
+  SOCKET_COLOR_MAX
 };
 
 enum item_bind_type
@@ -411,6 +412,9 @@ enum item_mod_type {
   ITEM_MOD_WOD_4                    = 64,
   ITEM_MOD_WOD_5                    = 65,
   ITEM_MOD_WOD_6                    = 66,
+  ITEM_MOD_AGILITY_INTELLECT        = 73,
+  ITEM_MOD_STRENGTH_INTELLECT       = 74,
+  ITEM_MOD_STRENGTH_AGILITY         = 75, // WOD-TODO: This is a guess, verify once an item with this stat exists
 };
 
 enum rating_mod_type {

@@ -608,6 +608,9 @@ bool parse_spell_query( sim_t*             sim,
 const char* const default_item_db_sources[] =
 {
   "local", "bcpapi", "wowhead", "ptrhead"
+#if SC_BETA
+  , SC_BETA_STR "head"
+#endif
 };
 
 bool parse_item_sources( sim_t*             sim,
@@ -868,7 +871,7 @@ sim_t::sim_t( sim_t* p, int index ) :
   save_prefix_str( "save_" ),
   save_talent_str( 0 ),
   talent_format( TALENT_FORMAT_UNCHANGED ),
-  auto_ready_trigger( 0 ), stat_cache( 1 ), max_aoe_enemies( 20 ), show_etmi( 0 ), tmi_window_global( 0 ),
+  auto_ready_trigger( 0 ), stat_cache( 1 ), max_aoe_enemies( 20 ), show_etmi( 0 ), tmi_window_global( 0 ), tmi_bin_size( 0.5 ),
   target_death_pct( 0 ), rel_target_level( 3 ), target_level( -1 ), target_adds( 0 ), desired_targets( 0 ),
   challenge_mode( false ), scale_to_itemlevel ( -1 ),
   active_enemies( 0 ), active_allies( 0 ),
@@ -1809,6 +1812,11 @@ expr_t* sim_t::create_expression( action_t* a,
     return target -> create_expression( a, rest );
   }
 
+  if ( splits.size() == 1 && splits[ 0 ] == "target" )
+  {
+    return make_ref_expr( name_str, target -> actor_index );
+  }
+
   return 0;
 }
 
@@ -1944,6 +1952,7 @@ void sim_t::create_options()
     opt_int( "desired_targets", desired_targets ),
     opt_bool( "show_etmi", show_etmi ),
     opt_float( "tmi_window_global", tmi_window_global ),
+    opt_float( "tmi_bin_size", tmi_bin_size ),
     // Character Creation
     opt_func( "death_knight", parse_player ),
     opt_func( "deathknight", parse_player ),

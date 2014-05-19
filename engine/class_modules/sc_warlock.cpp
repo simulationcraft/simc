@@ -2,14 +2,19 @@
 // Dedmonwakeen's DPS-DPM Simulator.
 // Send questions to natehieter@gmail.com
 // ==========================================================================
+
 #include "simulationcraft.hpp"
 
-
-/*TODO for 5.4:
-
- Implement demonic breath talent 
- */
+// ==========================================================================
+//
+// TODO: complete WoD overhaul
+// WoD Warlock changes: http://wod.wowhead.com/guide=2295
+// ==========================================================================
 namespace { // unnamed namespace
+
+// ==========================================================================
+// Warlock
+// ==========================================================================
 
 static const int META_FURY_MINIMUM = 40;
 
@@ -21,16 +26,16 @@ struct wild_imp_pet_t;
 
 struct warlock_td_t : public actor_pair_t
 {
-  dot_t*  dots_corruption;
-  dot_t*  dots_unstable_affliction;
   dot_t*  dots_agony;
+  dot_t*  dots_corruption;
   dot_t*  dots_doom;
-  dot_t*  dots_immolate;
-  dot_t*  dots_shadowflame;
-  dot_t*  dots_malefic_grasp;
-  dot_t*  dots_seed_of_corruption;
-  dot_t*  dots_soulburn_seed_of_corruption;
+  dot_t*  dots_drain_soul;
   dot_t*  dots_haunt;
+  dot_t*  dots_immolate;
+  dot_t*  dots_seed_of_corruption;
+  dot_t*  dots_shadowflame;
+  dot_t*  dots_soulburn_seed_of_corruption;
+  dot_t*  dots_unstable_affliction;
 
   buff_t* debuffs_haunt;
 
@@ -56,7 +61,7 @@ struct warlock_t : public player_t
 public:
 
   player_t* havoc_target;
-  player_t* latest_corruption_target; //pointer to the latest corruption target
+  player_t* latest_corruption_target;
 
   // Active Pet
   struct pets_t
@@ -66,6 +71,190 @@ public:
     static const int WILD_IMP_LIMIT = 25;
     std::array<pets::wild_imp_pet_t*,WILD_IMP_LIMIT> wild_imps;
   } pets;
+
+  // Talents
+  struct talents_t
+  {
+    const spell_data_t* dark_regeneration;
+    const spell_data_t* soul_leech;
+    const spell_data_t* harvest_life;
+
+    const spell_data_t* howl_of_terror;
+    const spell_data_t* mortal_coil;
+    const spell_data_t* shadowfury;
+
+    const spell_data_t* soul_link;
+    const spell_data_t* sacrificial_pact;
+    const spell_data_t* dark_bargain;
+
+    const spell_data_t* blood_horror;
+    const spell_data_t* burning_rush;
+    const spell_data_t* unbound_will;
+
+    const spell_data_t* grimoire_of_supremacy;
+    const spell_data_t* grimoire_of_service;
+    const spell_data_t* grimoire_of_sacrifice;
+
+    const spell_data_t* archimondes_darkness;
+    const spell_data_t* kiljaedens_cunning;
+    const spell_data_t* mannoroths_fury;
+
+    const spell_data_t* soulburn_haunt; //Affliction only
+    const spell_data_t* demonbolt; // Demonology only
+    const spell_data_t* charred_remains; // Destruction only
+    const spell_data_t* cataclysm;
+    const spell_data_t* demonic_servitude;
+  } talents;
+
+  // Glyphs
+  struct glyphs_t
+  {
+    // Major Glyphs
+    // All Specs
+    const spell_data_t* curse_of_elements;
+    const spell_data_t* curses;
+    const spell_data_t* dark_soul;
+    const spell_data_t* demon_training;
+    const spell_data_t* demonic_circle;
+    const spell_data_t* drain_life;
+    const spell_data_t* eternal_resolve;
+    const spell_data_t* fear;
+    const spell_data_t* healthstone;
+    const spell_data_t* life_pact;
+    const spell_data_t* life_tap;
+    const spell_data_t* siphon_life;
+    const spell_data_t* soul_consumption;
+    const spell_data_t* soul_swap;
+    const spell_data_t* soulstone;
+    const spell_data_t* strengthened_resolve;
+    const spell_data_t* twilight_ward;
+    const spell_data_t* unending_resolve;
+    // Affliction only
+    const spell_data_t* curse_of_exhaustion;
+    const spell_data_t* unstable_affliction;
+    // Demonology only
+    const spell_data_t* demon_hunting;
+    const spell_data_t* imp_swarm;
+    const spell_data_t* shadowflame;
+    // Destruction only
+    const spell_data_t* conflagrate;
+    const spell_data_t* ember_tap;
+    const spell_data_t* flames_of_xoroth;
+    const spell_data_t* havoc;
+    const spell_data_t* supernova;
+
+    // Minor Glyphs
+    // All Specs
+    const spell_data_t* crimson_banish;
+    const spell_data_t* enslave_demon;
+    const spell_data_t* eye_of_kilrogg;
+    const spell_data_t* gateway_attunement;
+    const spell_data_t* health_funnel;
+    const spell_data_t* nightmares;
+    const spell_data_t* soulwell;
+    const spell_data_t* unending_breath;
+    //Affliction and Destruction
+    const spell_data_t* verdant_spheres;
+    // Affliction only
+    const spell_data_t* subtlety;
+    // Demonology only
+    const spell_data_t* carrion_swarm;
+    const spell_data_t* falling_meteor;
+    const spell_data_t* felguard;
+    const spell_data_t* hand_of_guldan;
+    const spell_data_t* metamorphosis;
+    const spell_data_t* shadow_bolt;
+  } glyphs;
+
+  // Mastery Spells
+  struct mastery_spells_t
+  {
+    const spell_data_t* potent_afflictions;
+    const spell_data_t* master_demonologist;
+    const spell_data_t* emberstorm;
+  } mastery_spells;
+
+  // Perks
+  struct
+  {
+    // All Specs
+    const spell_data_t* improved_demons;
+    // Afflictin and Demonology
+    const spell_data_t* empowered_drain_life;
+    // Affliction only
+    const spell_data_t* empowered_agony;
+    const spell_data_t* enhanced_haunt;
+    const spell_data_t* enhanced_nightfall;
+    const spell_data_t* improved_corruption;
+    const spell_data_t* improved_drain_soul;
+    const spell_data_t* improved_life_tap;
+    const spell_data_t* improved_unstable_affliction;
+    // Demonology only
+    const spell_data_t* empowered_demons;
+    const spell_data_t* empowered_doom;
+    const spell_data_t* enhanced_corruption;
+    const spell_data_t* enhanced_hand_of_guldan;
+    const spell_data_t* improved_molten_core;
+    const spell_data_t* improved_shadow_bolt;
+    const spell_data_t* improved_touch_of_chaos;
+    // Destruction only
+    const spell_data_t* empowered_immolate;
+    const spell_data_t* empowered_incinerate;
+    const spell_data_t* enhanced_backklash;
+    const spell_data_t* enhanced_chaos_bolt;
+    const spell_data_t* enhanced_drain_life;
+    const spell_data_t* improved_conflagrate;
+    const spell_data_t* improved_ember_tap;
+    const spell_data_t* improved_shadowburn;
+  } perk;
+
+  // Cooldowns
+  struct cooldowns_t
+  {
+    cooldown_t* demonic_calling;
+    cooldown_t* infernal;
+    cooldown_t* doomguard;
+    cooldown_t* imp_swarm;
+    cooldown_t* hand_of_guldan;
+  } cooldowns;
+
+  // Passives
+  struct specs_t
+  {
+    // All Specs
+    const spell_data_t* dark_soul;
+    const spell_data_t* fel_armor;
+    const spell_data_t* nethermancy;
+
+    // Affliction only
+    const spell_data_t* improved_fear;
+    const spell_data_t* nightfall;
+    const spell_data_t* readyness_affliction;
+
+    // Demonology only
+    const spell_data_t* chaos_wave;
+    const spell_data_t* decimation;
+    const spell_data_t* demonic_fury;
+    const spell_data_t* demonic_rebirth;
+    const spell_data_t* doom;
+    const spell_data_t* immolation_aura;
+    const spell_data_t* imp_swarm;
+    const spell_data_t* metamorphosis;
+    const spell_data_t* touch_of_chaos;
+    const spell_data_t* molten_core;
+    const spell_data_t* readyness_demonology;
+    const spell_data_t* wild_imps;
+
+    // Destruction only
+    const spell_data_t* aftermath;
+    const spell_data_t* backdraft;
+    const spell_data_t* backlash;
+    const spell_data_t* burning_embers;
+    const spell_data_t* chaotic_energy;
+    const spell_data_t* fire_and_brimstone;
+    const spell_data_t* readyness_destruction;
+
+  } spec;
 
   // Buffs
   struct buffs_t
@@ -89,73 +278,6 @@ public:
     buff_t* tier16_2pc_fiery_wrath;
 
   } buffs;
-
-  // Cooldowns
-  struct cooldowns_t
-  {
-    cooldown_t* demonic_calling;
-    cooldown_t* infernal;
-    cooldown_t* doomguard;
-    cooldown_t* imp_swarm;
-    cooldown_t* hand_of_guldan;
-  } cooldowns;
-
-  // Talents
-
-  struct talents_t
-  {
-    const spell_data_t* soul_leech;
-    const spell_data_t* harvest_life;
-    const spell_data_t* mortal_coil;
-    const spell_data_t* shadowfury;
-    const spell_data_t* soul_link;
-    const spell_data_t* grimoire_of_supremacy;
-    const spell_data_t* grimoire_of_service;
-    const spell_data_t* grimoire_of_sacrifice;
-    const spell_data_t* archimondes_darkness;
-    const spell_data_t* kiljaedens_cunning;
-    const spell_data_t* mannoroths_fury;
-  } talents;
-
-  // Specialization Spells
-  struct specs_t
-  {
-    // General
-    const spell_data_t* dark_soul;
-    const spell_data_t* nethermancy;
-    const spell_data_t* fel_armor;
-    const spell_data_t* pandemic;
-    const spell_data_t* imp_swarm;
-
-    // Affliction
-    const spell_data_t* nightfall;
-
-    // Demonology
-    const spell_data_t* decimation;
-    const spell_data_t* demonic_fury;
-    const spell_data_t* metamorphosis;
-    const spell_data_t* molten_core;
-    const spell_data_t* doom;
-    const spell_data_t* touch_of_chaos;
-    const spell_data_t* chaos_wave;
-    const spell_data_t* demonic_rebirth;
-    const spell_data_t* wild_imps;
-
-    // Destruction
-    const spell_data_t* aftermath;
-    const spell_data_t* backdraft;
-    const spell_data_t* burning_embers;
-    const spell_data_t* chaotic_energy;
-    const spell_data_t* fire_and_brimstone;
-
-  } spec;
-
-  struct mastery_spells_t
-  {
-    const spell_data_t* potent_afflictions;
-    const spell_data_t* master_demonologist;
-    const spell_data_t* emberstorm;
-  } mastery_spells;
 
   // Gains
   struct gains_t
@@ -184,21 +306,6 @@ public:
   {
     proc_t* wild_imp;
   } procs;
-
-  struct glyphs_t
-  {
-    const spell_data_t* conflagrate;
-    const spell_data_t* curse_of_elements;
-    const spell_data_t* demon_training;
-    const spell_data_t* havoc;
-    const spell_data_t* life_tap;
-    const spell_data_t* imp_swarm;
-    const spell_data_t* soul_shards;
-    const spell_data_t* burning_embers;
-    const spell_data_t* shadow_bolt;
-    const spell_data_t* siphon_life;
-    const spell_data_t* unstable_affliction;
-  } glyphs;
 
   struct spells_t
   {
@@ -290,22 +397,23 @@ public:
   virtual void      create_pets();
   virtual bool      create_profile( std::string& profile_str, save_e = SAVE_ALL, bool save_html = false );
   virtual void      copy_from( player_t* source );
-  virtual set_e       decode_set( const item_t& ) const;
+  virtual set_e     decode_set( const item_t& ) const;
   virtual resource_e primary_resource() const { return RESOURCE_MANA; }
-  virtual role_e primary_role() const     { return ROLE_SPELL; }
+  virtual role_e    primary_role() const     { return ROLE_SPELL; }
+  virtual stat_e    convert_hybrid_stat( stat_e s ) const;
   virtual double    matching_gear_multiplier( attribute_e attr ) const;
-  virtual double composite_player_multiplier( school_e school ) const;
-  virtual void invalidate_cache( cache_e );
-  virtual double composite_spell_crit() const;
-  virtual double composite_spell_haste() const;
-  virtual double composite_mastery() const;
-  virtual double resource_gain( resource_e, double, gain_t* = 0, action_t* = 0 );
-  virtual double mana_regen_per_second() const;
-  virtual double composite_armor() const;
+  virtual double    composite_player_multiplier( school_e school ) const;
+  virtual void      invalidate_cache( cache_e );
+  virtual double    composite_spell_crit() const;
+  virtual double    composite_spell_haste() const;
+  virtual double    composite_mastery() const;
+  virtual double    resource_gain( resource_e, double, gain_t* = 0, action_t* = 0 );
+  virtual double    mana_regen_per_second() const;
+  virtual double    composite_armor() const;
 
-  virtual void halt();
-  virtual void combat_begin();
-  virtual expr_t* create_expression( action_t* a, const std::string& name_str );
+  virtual void      halt();
+  virtual void      combat_begin();
+  virtual expr_t*   create_expression( action_t* a, const std::string& name_str );
 
   double emberstorm_e3_from_e1() const
   { return mastery_spells.emberstorm -> effectN( 3 ).coeff() / mastery_spells.emberstorm -> effectN( 1 ).coeff(); }
@@ -341,8 +449,8 @@ void parse_spell_coefficient( action_t& a )
   }
 }
 
+// Pets
 namespace pets {
-// PETS
 
 struct warlock_pet_t : public pet_t
 {
@@ -1384,8 +1492,7 @@ struct terrorguard_pet_t : public warlock_pet_t
 
 } // end namespace pets
 
-// SPELLS
-
+// Spells
 namespace actions {
 
 struct warlock_heal_t : public heal_t
@@ -1838,7 +1945,6 @@ struct agony_t : public warlock_spell_t
     warlock_spell_t( p, "Agony" )
   {
     may_crit = false;
-    if ( p -> spec.pandemic -> ok() ) dot_behavior = DOT_EXTEND;
     base_multiplier *= 1.0 + p -> sets.set( SET_T13_4PC_CASTER ) -> effectN( 1 ).percent();
   }
 
@@ -1881,7 +1987,6 @@ struct doom_t : public warlock_spell_t
     warlock_spell_t( "doom", p, p -> spec.doom )
   {
     may_crit = false;
-    if ( p -> spec.pandemic -> ok() ) dot_behavior = DOT_EXTEND;
   }
 
   virtual void tick( dot_t* d )
@@ -2236,8 +2341,7 @@ struct corruption_t : public warlock_spell_t
   {
     may_crit = false;
     generate_fury = 4;
-    if ( p -> spec.pandemic -> ok() ) dot_behavior = DOT_EXTEND;
-     base_multiplier *= 1.0 + p -> sets.set( SET_T14_2PC_CASTER ) -> effectN( 1 ).percent();
+    base_multiplier *= 1.0 + p -> sets.set( SET_T14_2PC_CASTER ) -> effectN( 1 ).percent();
     base_multiplier *= 1.0 + p -> sets.set( SET_T13_4PC_CASTER ) -> effectN( 1 ).percent();
   };
 
@@ -2380,7 +2484,6 @@ struct unstable_affliction_t : public warlock_spell_t
     warlock_spell_t( p, "Unstable Affliction" )
   {
     may_crit   = false;
-    if ( p -> spec.pandemic -> ok() ) dot_behavior = DOT_EXTEND;
     
     if ( p -> glyphs.unstable_affliction -> ok() )
       base_execute_time *= 1.0 + p -> glyphs.unstable_affliction -> effectN( 1 ).percent();
@@ -2495,9 +2598,6 @@ struct immolate_t : public warlock_spell_t
   void init()
   {
     warlock_spell_t::init();
-
-    if ( p() -> spec.pandemic -> ok() )
-      dot_behavior = DOT_EXTEND;
   }
 
   void schedule_execute( action_state_t* state )
@@ -3014,9 +3114,9 @@ struct activate_melee_t : public warlock_spell_t
 };
 
 
-struct metamorphosis_t : public warlock_spell_t
+struct t : public warlock_spell_t
 {
-  metamorphosis_t( warlock_t* p ) :
+  t( warlock_t* p ) :
     warlock_spell_t( p, "Metamorphosis" )
   {
     trigger_gcd = timespan_t::zero();
@@ -3043,15 +3143,15 @@ struct metamorphosis_t : public warlock_spell_t
   }
 };
 
-struct activate_metamorphosis_t : public warlock_spell_t
+struct activate_t : public warlock_spell_t
 {
-  activate_metamorphosis_t( warlock_t* p ) :
+  activate_t( warlock_t* p ) :
     warlock_spell_t( "activate_metamorphosis", p )
   {
     trigger_gcd = timespan_t::zero();
     harmful = false;
 
-    if ( ! p -> spells.metamorphosis ) p -> spells.metamorphosis = new metamorphosis_t( p );
+    if ( ! p -> spells.metamorphosis ) p -> spells.metamorphosis = new t( p );
   }
 
   virtual void execute()
@@ -3071,9 +3171,9 @@ struct activate_metamorphosis_t : public warlock_spell_t
   }
 };
 
-struct cancel_metamorphosis_t : public warlock_spell_t
+struct cancel_t : public warlock_spell_t
 {
-  cancel_metamorphosis_t( warlock_t* p ) :
+  cancel_t( warlock_t* p ) :
     warlock_spell_t( "cancel_metamorphosis", p )
   {
     trigger_gcd = timespan_t::zero();
@@ -3221,10 +3321,10 @@ struct touch_of_chaos_t : public warlock_spell_t
   }
 };
 
-struct malefic_grasp_t : public warlock_spell_t
+struct drain_soul_t : public warlock_spell_t
 {
-  malefic_grasp_t( warlock_t* p ) :
-    warlock_spell_t( p, "Malefic Grasp" )
+  drain_soul_t( warlock_t* p ) :
+    warlock_spell_t( p, "Drain Soul" )
   {
     channeled    = true;
     hasted_ticks = false;
@@ -4304,7 +4404,6 @@ warlock_td_t::warlock_td_t( player_t* target, warlock_t* p ) :
   dots_doom                = target -> get_dot( "doom", p );
   dots_immolate            = target -> get_dot( "immolate", p );
   dots_shadowflame         = target -> get_dot( "shadowflame", p );
-  dots_malefic_grasp       = target -> get_dot( "malefic_grasp", p );
   dots_seed_of_corruption  = target -> get_dot( "seed_of_corruption", p );
   dots_soulburn_seed_of_corruption  = target -> get_dot( "soulburn_seed_of_corruption", p );
   dots_haunt               = target -> get_dot( "haunt", p );
@@ -4520,9 +4619,8 @@ action_t* warlock_t::create_action( const std::string& action_name,
   else if ( action_name == "immolate"              ) a = new              immolate_t( this );
   else if ( action_name == "incinerate"            ) a = new            incinerate_t( this );
   else if ( action_name == "life_tap"              ) a = new              life_tap_t( this );
-  else if ( action_name == "malefic_grasp"         ) a = new         malefic_grasp_t( this );
-  else if ( action_name == "metamorphosis"         ) a = new activate_metamorphosis_t( this );
-  else if ( action_name == "cancel_metamorphosis"  ) a = new  cancel_metamorphosis_t( this );
+  else if ( action_name == "metamorphosis"         ) a = new activate_t( this );
+  else if ( action_name == "cancel_metamorphosis"  ) a = new  cancel_t( this );
   else if ( action_name == "melee"                 ) a = new        activate_melee_t( this );
   else if ( action_name == "mortal_coil"           ) a = new           mortal_coil_t( this );
   else if ( action_name == "shadow_bolt"           ) a = new           shadow_bolt_t( this );
@@ -4655,63 +4753,145 @@ void warlock_t::init_spells()
   sets.register_spelldata( set_bonuses );
 
   // General
-  spec.nethermancy = find_spell( 86091 );
   spec.fel_armor   = find_spell( 104938 );
-  spec.pandemic    = find_spell( 131973 );
+  spec.nethermancy = find_spell( 86091 );
+
+  // Spezialization Spells
+  spec.aftermath              = find_specialization_spell( "Aftermath" );
+  spec.backdraft              = find_specialization_spell( "Backdraft" );
+  spec.backlash               = find_specialization_spell( "Backlash" );
+  spec.burning_embers         = find_specialization_spell( "Burning Embers" );
+  spec.chaotic_energy         = find_specialization_spell( "Chaotic Energy" );
+  spec.decimation             = find_specialization_spell( "Decimation" );
+  spec.demonic_fury           = find_specialization_spell( "Demonic Fury" );
+  spec.demonic_rebirth        = find_specialization_spell( "Demonic Rebirth" );
+  spec.fire_and_brimstone     = find_specialization_spell( "Fire and Brimstone" );
+  spec.immolation_aura        = find_specialization_spell( "Metamorphosis: Immolation Aura" );
+  spec.imp_swarm              = find_specialization_spell( "Imp Swarm" );
+  spec.improved_fear          = find_specialization_spell( "Improved Fear" );
+  spec.metamorphosis          = find_specialization_spell( "Metamorphosis" );
+  spec.molten_core            = find_specialization_spell( "Molten core" );
+  spec.nightfall              = find_specialization_spell( "Nightfall" );
+  spec.readyness_affliction   = find_specialization_spell( "Readyness: Affliction" );
+  spec.readyness_demonology   = find_specialization_spell( "Readyness: Demonology" );
+  spec.readyness_destruction  = find_specialization_spell( "Readyness: Destruction" );
+  spec.wild_imps              = find_specialization_spell( "Wild Imps" );
+
+  spec.chaos_wave             = ( find_specialization_spell( "Metamorphosis: Chaos Wave"     ) -> ok() ) ? find_spell( 124916 ) : spell_data_t::not_found();
+  spec.doom                   = ( find_specialization_spell( "Metamorphosis: Doom"           ) -> ok() ) ? find_spell( 603 )    : spell_data_t::not_found();
+  spec.touch_of_chaos         = ( find_specialization_spell( "Metamorphosis: Touch of Chaos" ) -> ok() ) ? find_spell( 103964 ) : spell_data_t::not_found();
 
   spec.dark_soul = find_specialization_spell( "Dark Soul: Instability", "dark_soul" );
   if ( ! spec.dark_soul -> ok() ) spec.dark_soul = find_specialization_spell( "Dark Soul: Knowledge", "dark_soul" );
   if ( ! spec.dark_soul -> ok() ) spec.dark_soul = find_specialization_spell( "Dark Soul: Misery", "dark_soul" );
 
-  // Affliction
-  spec.nightfall     = find_specialization_spell( "Nightfall" );
-
-  // Demonology
-  spec.decimation      = find_specialization_spell( "Decimation" );
-  spec.demonic_fury    = find_specialization_spell( "Demonic Fury" );
-  spec.metamorphosis   = find_specialization_spell( "Metamorphosis" );
-  spec.molten_core     = find_specialization_spell( "Molten Core" );
-  spec.demonic_rebirth = find_specialization_spell( "Demonic Rebirth" );
-  spec.wild_imps       = find_specialization_spell( "Wild Imps" );
-
-  spec.doom           = ( find_specialization_spell( "Metamorphosis: Doom"           ) -> ok() ) ? find_spell( 603 )    : spell_data_t::not_found();
-  spec.touch_of_chaos = ( find_specialization_spell( "Metamorphosis: Touch of Chaos" ) -> ok() ) ? find_spell( 103964 ) : spell_data_t::not_found();
-  spec.chaos_wave     = ( find_specialization_spell( "Metamorphosis: Chaos Wave"     ) -> ok() ) ? find_spell( 124916 ) : spell_data_t::not_found();
-
-  // Destruction
-  spec.aftermath      = find_specialization_spell( "Aftermath" );
-  spec.backdraft      = find_specialization_spell( "Backdraft" );
-  spec.burning_embers = find_specialization_spell( "Burning Embers" );
-  spec.chaotic_energy = find_specialization_spell( "Chaotic Energy" );
-  spec.fire_and_brimstone = find_specialization_spell( "Fire and Brimstone" );
-
+  // Mastery
   mastery_spells.emberstorm          = find_mastery_spell( WARLOCK_DESTRUCTION );
   mastery_spells.potent_afflictions  = find_mastery_spell( WARLOCK_AFFLICTION );
   mastery_spells.master_demonologist = find_mastery_spell( WARLOCK_DEMONOLOGY );
 
+  // Talents
+  talents.dark_regeneration     = find_talent_spell( "Dark Regeneration" );
   talents.soul_leech            = find_talent_spell( "Soul Leech" );
   talents.harvest_life          = find_talent_spell( "Harvest Life" );
+
+  talents.howl_of_terror        = find_talent_spell( "Howl of Terror" );
   talents.mortal_coil           = find_talent_spell( "Mortal Coil" );
   talents.shadowfury            = find_talent_spell( "Shadowfury" );
+
   talents.soul_link             = find_talent_spell( "Soul Link" );
+  talents.sacrificial_pact      = find_talent_spell( "Sacrificial Pact" );
+  talents.dark_bargain          = find_talent_spell( "Dark Bargain" );
+
+  talents.blood_horror          = find_talent_spell( "Blood Horror" );
+  talents.burning_rush          = find_talent_spell( "Burning Rush" );
+  talents.unbound_will          = find_talent_spell( "Unbound Will" );
+
   talents.grimoire_of_supremacy = find_talent_spell( "Grimoire of Supremacy" );
   talents.grimoire_of_service   = find_talent_spell( "Grimoire of Service" );
   talents.grimoire_of_sacrifice = find_talent_spell( "Grimoire of Sacrifice" );
+
   talents.archimondes_darkness  = find_talent_spell( "Archimonde's Darkness" );
   talents.kiljaedens_cunning    = find_talent_spell( "Kil'jaeden's Cunning" );
   talents.mannoroths_fury       = find_talent_spell( "Mannoroth's Fury" );
 
+  talents.soulburn_haunt        = find_talent_spell( "Soulburn: Haunt" );
+  talents.demonbolt             = find_talent_spell( "Demonbolt" );
+  talents.charred_remains       = find_talent_spell( "Charred Remains" );
+  talents.cataclysm             = find_talent_spell( "Cataclysm" );
+  talents.demonic_servitude     = find_talent_spell( "Demonic Servitude" );
+
+  // Perks
+  perk.empowered_agony              = find_perk_spell( "Empowered Agony" );
+  perk.empowered_demons             = find_perk_spell( "Empowered Demons" );
+  perk.empowered_doom               = find_perk_spell( "Empowered Doom" );
+  perk.empowered_drain_life         = find_perk_spell( "Empowered Drain Life" );
+  perk.empowered_immolate           = find_perk_spell( "Empowered Immolate" );
+  perk.empowered_incinerate         = find_perk_spell( "Empowered Incinerate" );
+  perk.enhanced_backklash           = find_perk_spell( "Enhanced Backklash" );
+  perk.enhanced_chaos_bolt          = find_perk_spell( "Enhanced Chaos Bolt" );
+  perk.enhanced_corruption          = find_perk_spell( "Enhanced Corruption" );
+  perk.enhanced_drain_life          = find_perk_spell( "Enhanced Drain Life" );
+  perk.enhanced_hand_of_guldan      = find_perk_spell( "Enhanced Hand of Gul'dan" );
+  perk.enhanced_haunt               = find_perk_spell( "Enhanced Haunt" );
+  perk.enhanced_nightfall           = find_perk_spell( "Enhanced Nightfall" );
+  perk.improved_conflagrate         = find_perk_spell( "Improved Conflagrate" );
+  perk.improved_corruption          = find_perk_spell( "Improved Corruption" );
+  perk.improved_demons              = find_perk_spell( "Improved Demons" );
+  perk.improved_drain_soul          = find_perk_spell( "Improved Drain Soul" );
+  perk.improved_ember_tap           = find_perk_spell( "Improved Ember Tap" );
+  perk.improved_life_tap            = find_perk_spell( "Improved Life Tap" );
+  perk.improved_molten_core         = find_perk_spell( "Improved Molten Core" );
+  perk.improved_shadow_bolt         = find_perk_spell( "Improved Shadow Bolt" );
+  perk.improved_shadowburn          = find_perk_spell( "Improved Shadowburn" );
+  perk.improved_touch_of_chaos      = find_perk_spell( "Improved Touch of Chaos" );
+  perk.improved_unstable_affliction = find_perk_spell( "Improved Unstable Affliction" );
+
+  // Glyphs  
+  glyphs.carrion_swarm          = find_glyph_spell( "Glyph of Carrion Swarm" );
   glyphs.conflagrate            = find_glyph_spell( "Glyph of Conflagrate" );
-  glyphs.curse_of_elements      = find_glyph_spell( "Glyph of Curse of the Elements" );
+  glyphs.crimson_banish         = find_glyph_spell( "Glyph of Crimson Banish" );
+  glyphs.curse_of_elements      = find_glyph_spell( "Glyph of Curse Of Elements" );
+  glyphs.curse_of_exhaustion    = find_glyph_spell( "Glyph of Curse of Exhaustion" );
+  glyphs.curses                 = find_glyph_spell( "Glyph of Curses" );
+  glyphs.dark_soul              = find_glyph_spell( "Glyph of Dark Soul" );
+  glyphs.demon_hunting          = find_glyph_spell( "Glyph of Demon Hunting" );
   glyphs.demon_training         = find_glyph_spell( "Glyph of Demon Training" );
+  glyphs.demonic_circle         = find_glyph_spell( "Glyph of Demonic Circle" );
+  glyphs.drain_life             = find_glyph_spell( "Glyph of Drain Life" );
+  glyphs.ember_tap              = find_glyph_spell( "Glyph of Ember Tap" );
+  glyphs.enslave_demon          = find_glyph_spell( "Glyph of Enslave Demon" );
+  glyphs.eternal_resolve        = find_glyph_spell( "Glyph of Eternal Resolve" );
+  glyphs.eye_of_kilrogg         = find_glyph_spell( "Glyph of Eye of Kilrogg" );
+  glyphs.falling_meteor         = find_glyph_spell( "Glyph of Falling Meteor" );
+  glyphs.fear                   = find_glyph_spell( "Glyph of Fear" );
+  glyphs.felguard               = find_glyph_spell( "Glyph of Felguard" );
+  glyphs.flames_of_xoroth       = find_glyph_spell( "Glyph of Flames of Xoroth" );
+  glyphs.gateway_attunement     = find_glyph_spell( "Glyph of Gateway Attunement" );
+  glyphs.hand_of_guldan         = find_glyph_spell( "Glyph of Hand of Gul'dan" );
   glyphs.havoc                  = find_glyph_spell( "Glyph of Havoc" );
-  glyphs.life_tap               = find_glyph_spell( "Glyph of Life Tap" );
+  glyphs.health_funnel          = find_glyph_spell( "Glyph of Health Funnel" );
+  glyphs.healthstone            = find_glyph_spell( "Glyph of Healthstone" );
   glyphs.imp_swarm              = find_glyph_spell( "Glyph of Imp Swarm" );
-  glyphs.soul_shards            = find_glyph_spell( "Glyph of Soul Shards" );
-  glyphs.burning_embers         = find_glyph_spell( "Glyph of Burning Embers" );
+  glyphs.life_pact              = find_glyph_spell( "Glyph of Life Pact" );
+  glyphs.life_tap               = find_glyph_spell( "Glyph of Life Tap" );
+  glyphs.metamorphosis          = find_glyph_spell( "Glyph of Metamorphosis" );
+  glyphs.nightmares             = find_glyph_spell( "Glyph of Nightmares" );
   glyphs.shadow_bolt            = find_glyph_spell( "Glyph of Shadow Bolt" );
+  glyphs.shadowflame            = find_glyph_spell( "Glyph of Shadowflame" );
   glyphs.siphon_life            = find_glyph_spell( "Glyph of Siphon Life" );
+  glyphs.soul_consumption       = find_glyph_spell( "Glyph of Soul Consumption" );
+  glyphs.soul_swap              = find_glyph_spell( "Glyph of Soul Swap" );
+  glyphs.soulstone              = find_glyph_spell( "Glyph of Soulstone" );
+  glyphs.soulwell               = find_glyph_spell( "Glyph of Soulwell" );
+  glyphs.strengthened_resolve   = find_glyph_spell( "Glyph of Strengthened Resolve" );
+  glyphs.subtlety               = find_glyph_spell( "Glyph of Subtlety" );
+  glyphs.supernova              = find_glyph_spell( "Glyph of Supernova" );
+  glyphs.twilight_ward          = find_glyph_spell( "Glyph of Twilight Ward" );
+  glyphs.unending_breath        = find_glyph_spell( "Glyph of Unending Breath" );
+  glyphs.unending_resolve       = find_glyph_spell( "Glyph of Unending Resolve" );
   glyphs.unstable_affliction    = find_glyph_spell( "Glyph of Unstable Affliction" );
+  glyphs.verdant_spheres        = find_glyph_spell( "Glyph of Verdant Spheres" );
 
   spec.imp_swarm = ( glyphs.imp_swarm -> ok() ) ? find_spell( 104316 ) : spell_data_t::not_found();
 
@@ -5014,52 +5194,34 @@ void warlock_t::apl_affliction()
   add_action(
       "Haunt",
       "if=!in_flight_to_target&remains<cast_time+travel_time+tick_time&shard_react&target.health.pct<=20" );
-  if ( spec.pandemic->ok() )
+  add_action(
+      "Haunt",
+      "if=!in_flight_to_target&remains<cast_time+travel_time+tick_time&shard_react" );
+
+  add_action(
+      "Agony",
+      "if=(tick_damage*n_ticks*(100+crit_pct_current)>4*dot.agony.tick_dmg*dot.agony.ticks_remain*(100+dot.agony.crit_pct))&miss_react" );
+
+  if ( has_unerring_vision_of_leishen )
   {
-    add_action(
-        "Haunt",
-        "if=!in_flight_to_target&remains<cast_time+travel_time+tick_time&shard_react" );
-
-    add_action(
-        "Agony",
-        "if=(tick_damage*n_ticks*(100+crit_pct_current)>4*dot.agony.tick_dmg*dot.agony.ticks_remain*(100+dot.agony.crit_pct))&miss_react" );
-
-    if ( has_unerring_vision_of_leishen )
-    {
-
-      add_action(
-          "Corruption",
-          "if=((stat.spell_power>spell_power&ticks_remain<add_ticks%2)|(stat.spell_power>spell_power*1.5)|remains<gcd)&miss_react&dot.corruption.crit_pct<100" );
-      add_action(
-          "Unstable Affliction",
-          "if=((stat.spell_power>spell_power&ticks_remain<add_ticks%2)|(stat.spell_power>spell_power*1.5)|remains<cast_time+gcd)&miss_react&dot.unstable_affliction.crit_pct<100" );
-    } else
-    {
-      add_action(
-          "Corruption",
-          "if=((stat.spell_power>spell_power&ticks_remain<add_ticks%2)|(stat.spell_power>spell_power*1.5)|remains<gcd)&miss_react" );
-      add_action(
-          "Unstable Affliction",
-          "if=((stat.spell_power>spell_power&ticks_remain<add_ticks%2)|(stat.spell_power>spell_power*1.5)|remains<cast_time+gcd)&miss_react" );
-
-    }
-  } else
-  {
-    add_action( "Soulburn", "line_cd=15,if=buff.dark_soul.up&shard_react" );
-    add_action(
-        "Agony",
-        "cycle_targets=1,if=!ticking") ;
     add_action(
         "Corruption",
-        "cycle_targets=1,if=(!ticking|remains<tick_time)&target.time_to_die>=6&miss_react" );
+        "if=((stat.spell_power>spell_power&ticks_remain<add_ticks%2)|(stat.spell_power>spell_power*1.5)|remains<gcd)&miss_react&dot.corruption.crit_pct<100" );
     add_action(
         "Unstable Affliction",
-        "cycle_targets=1,if=(!ticking|remains<(cast_time+tick_time))&target.time_to_die>=5&miss_react" );
+        "if=((stat.spell_power>spell_power&ticks_remain<add_ticks%2)|(stat.spell_power>spell_power*1.5)|remains<cast_time+gcd)&miss_react&dot.unstable_affliction.crit_pct<100" );
+  } else
+  {
+    add_action(
+        "Corruption",
+        "if=((stat.spell_power>spell_power&ticks_remain<add_ticks%2)|(stat.spell_power>spell_power*1.5)|remains<gcd)&miss_react" );
+    add_action(
+        "Unstable Affliction",
+        "if=((stat.spell_power>spell_power&ticks_remain<add_ticks%2)|(stat.spell_power>spell_power*1.5)|remains<cast_time+gcd)&miss_react" );
   }
 
   add_action( "Life Tap",
               "if=buff.dark_soul.down&buff.bloodlust.down&mana.pct<50" );
-  add_action( "Malefic Grasp", "chain=1,interrupt_if=target.health.pct<=20" );
   add_action( "Life Tap",
               "moving=1,if=mana.pct<80&mana.pct<target.health.pct" );
 
@@ -5196,15 +5358,9 @@ void warlock_t::apl_destruction()
     add_action(
         "Chaos Bolt",
         "if=ember_react&target.health.pct>20&buff.perfect_aim.react&buff.perfect_aim.remains>cast_time" );
-  if ( spec.pandemic->ok() )
-  {
-    add_action(
-        "Immolate",
-        "cycle_targets=1,if=n_ticks*crit_pct_current>3*dot.immolate.ticks_remain*dot.immolate.crit_pct&miss_react" );
-  } else
-    add_action(
-        "Immolate",
-        "cycle_targets=1,if=(!ticking|remains<(action.incinerate.cast_time+cast_time))&target.time_to_die>=5&miss_react" );
+  add_action(
+      "Immolate",
+      "cycle_targets=1,if=n_ticks*crit_pct_current>3*dot.immolate.ticks_remain*dot.immolate.crit_pct&miss_react" );
   add_action( "Conflagrate", "if=charges=2&buff.havoc.stack=0" );
   add_action( "Rain of Fire", "if=!ticking&!in_flight,moving=1" );
   add_action(
@@ -5368,6 +5524,30 @@ set_e warlock_t::decode_set( const item_t& item ) const
   if ( strstr( s, "_gladiators_felweave_"   ) ) return SET_PVP_CASTER;
 
   return SET_NONE;
+}
+
+// warlock_t::convert_hybrid_stat ==============================================
+
+stat_e warlock_t::convert_hybrid_stat( stat_e s ) const
+{
+  // this converts hybrid stats that either morph based on spec or only work
+  // for certain specs into the appropriate "basic" stats
+  switch ( s )
+  {
+  // This is all a guess at how the hybrid primaries will work, since they
+  // don't actually appear on cloth gear yet. TODO: confirm behavior
+  case STAT_AGI_INT: 
+    return STAT_INTELLECT; 
+  case STAT_STR_AGI:
+    return STAT_NONE;
+  case STAT_STR_INT:
+    return STAT_INTELLECT;
+  case STAT_SPIRIT:
+      return STAT_NONE;
+  case STAT_BONUS_ARMOR:
+      return STAT_NONE;     
+  default: return s; 
+  }
 }
 
 expr_t* warlock_t::create_expression( action_t* a, const std::string& name_str )

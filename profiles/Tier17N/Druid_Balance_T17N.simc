@@ -76,10 +76,9 @@ off_hand=revelations_of_yshaarj,id=105650,upgrade=2,gems=4int_8crit_3int,enchant
 
 # Gear Summary
 # gear_strength=4
-# gear_agility=4
+# gear_agility=8
 # gear_stamina=1536
-# gear_intellect=1065
-# gear_spirit=49
+# gear_intellect=1073
 # gear_spell_power=590
 # gear_crit_rating=654
 # gear_haste_rating=402

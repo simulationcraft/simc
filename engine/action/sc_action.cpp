@@ -376,25 +376,10 @@ action_t::action_t( action_e       ty,
 
   range::fill( base_costs, 0.0 );
   range::fill( costs_per_second, 0 );
+  
+  assert( ! name_str.empty() && "Abilities must have valid name_str entries!!" );
 
-  if ( name_str.empty() )
-  {
-    assert( data().ok() );
-
-    name_str = dbc::get_token( data().id() );
-
-    if ( name_str.empty() )
-    {
-      name_str = data().name_cstr();
-      util::tokenize( name_str );
-      assert( ! name_str.empty() );
-      player -> dbc.add_token( data().id(), name_str );
-    }
-  }
-  else
-  {
-    util::tokenize( name_str );
-  }
+  util::tokenize( name_str );
 
   if ( sim -> debug )
     sim -> out_debug.printf( "Player %s creates action %s (%d)", player -> name(), name(), ( s_data -> ok() ? s_data -> id() : -1 ) );
@@ -433,6 +418,16 @@ action_t::action_t( action_e       ty,
 
     background = true; // prevent action from being executed
   }
+
+  if ( s_data == spell_data_t::not_found() )
+  {
+    // this is super-spammy, may just want to disable this after we're sure this section is working as intended.
+    if ( sim -> debug )
+      sim -> errorf( "Player %s attempting to use action %s without the required talent, spec, class, or race; ignoring.\n", 
+                   player -> name(), name() );
+    background = true;
+  }
+
   spec_list.clear();
 }
 
@@ -660,7 +655,7 @@ double action_t::cost() const
 
   double c = base_costs[ cr ];
 
-  c -= player -> current.resource_reduction[ school ];
+  c -= player -> current.resource_reduction[ get_school() ];
 
   if ( cr == RESOURCE_MANA && player -> buffs.courageous_primal_diamond_lucidity -> check() )
     c = 0;
@@ -1271,7 +1266,7 @@ void action_t::tick( dot_t* d )
 
 void action_t::last_tick( dot_t* d )
 {
-  if ( school == SCHOOL_PHYSICAL )
+  if ( get_school() == SCHOOL_PHYSICAL )
   {
     buff_t* b = d -> state -> target -> debuffs.bleeding;
     if ( b -> current_value > 0 ) b -> current_value -= 1.0;
@@ -1323,7 +1318,7 @@ void action_t::update_vengeance( dmg_e type,
       double new_amount = veng_pct * raw_damage; // new vengeance from hit
 
       // modify according to damage type; spell damage gives 2.5x as much Vengeance
-      new_amount *= ( school == SCHOOL_PHYSICAL ? 1.0 : 2.5 );
+      new_amount *= ( get_school() == SCHOOL_PHYSICAL ? 1.0 : 2.5 );
 
       // apply diminishing returns according to position on actor list
       if ( ! sim -> challenge_mode  )
@@ -1367,7 +1362,7 @@ void action_t::assess_damage( dmg_e    type,
   // hook up vengeance here, before armor mitigation, avoidance, and dmg reduction effects, etc.
   update_vengeance( type, s );
 
-  s -> target -> assess_damage( school, type, s );
+  s -> target -> assess_damage( get_school(), type, s );
 
   if ( sim -> debug )
     s -> debug();
@@ -1379,7 +1374,7 @@ void action_t::assess_damage( dmg_e    type,
       sim -> out_log.printf( "%s %s hits %s for %.0f %s damage (%s)",
                      player -> name(), name(),
                      s -> target -> name(), s -> result_amount,
-                     util::school_type_string( school ),
+                     util::school_type_string( get_school() ),
                      util::result_type_string( s -> result ) );
     }
 
@@ -1387,16 +1382,16 @@ void action_t::assess_damage( dmg_e    type,
     {
       if ( direct_tick_callbacks )
       {
-        action_callback_t::trigger( player -> callbacks.tick_damage[ school ], this, s );
+        action_callback_t::trigger( player -> callbacks.tick_damage[ get_school() ], this, s );
       }
       else
       {
         if ( callbacks )
         {
-          action_callback_t::trigger( player -> callbacks.direct_damage[ school ], this, s );
+          action_callback_t::trigger( player -> callbacks.direct_damage[ get_school() ], this, s );
           if ( s -> result == RESULT_CRIT )
           {
-            action_callback_t::trigger( player -> callbacks.direct_crit[ school ], this, s );
+            action_callback_t::trigger( player -> callbacks.direct_crit[ get_school() ], this, s );
           }
         }
       }
@@ -1411,12 +1406,12 @@ void action_t::assess_damage( dmg_e    type,
                      player -> name(), name(),
                      dot -> current_tick, dot -> num_ticks,
                      s -> target -> name(), s -> result_amount,
-                     util::school_type_string( school ),
+                     util::school_type_string( get_school() ),
                      util::result_type_string( s -> result ) );
     }
 
     if ( ! result_is_multistrike( s -> result ) && callbacks && s -> result_amount > 0.0 )
-      action_callback_t::trigger( player -> callbacks.tick_damage[ school ], this, s );
+      action_callback_t::trigger( player -> callbacks.tick_damage[ get_school() ], this, s );
   }
 
   // New callback system; proc spells on impact. 
@@ -1696,7 +1691,7 @@ void action_t::init()
     stats -> action_list.push_back( tick_action );
   }
 
-  stats -> school      = school;
+  stats -> school      = get_school() ;
 
   if ( quiet ) stats -> quiet = true;
 
@@ -1891,7 +1886,7 @@ expr_t* action_t::create_expression( const std::string& name_str )
       {
         state -> result_amount = action.calculate_direct_amount( state );
         if ( amount_type == DMG_DIRECT )
-          state -> target -> target_mitigation( action.school, amount_type, state );
+          state -> target -> target_mitigation( action.get_school(), amount_type, state );
         return state -> result_amount;
       }
     }
@@ -1927,6 +1922,19 @@ expr_t* action_t::create_expression( const std::string& name_str )
   }
   else if ( name_str == "cast_time" )
     return make_mem_fn_expr( name_str, *this, &action_t::execute_time );
+  else if ( name_str == "execute_time" )
+  {
+    struct execute_time_expr_t : public action_expr_t
+    {
+      execute_time_expr_t( action_t& a ) : action_expr_t( "execute_time", a )
+      { }
+
+      double evaluate()
+      { return std::max( action.execute_time().total_seconds(), action.gcd().total_seconds() ); }
+    };
+
+    return new execute_time_expr_t( *this );
+  }
   else if ( name_str == "cooldown" )
     return make_ref_expr( name_str, cooldown -> duration );
   else if ( name_str == "tick_time" )
@@ -2319,10 +2327,10 @@ void action_t::snapshot_internal( action_state_t* state, uint32_t flags, dmg_e r
     state -> target_crit = composite_target_crit( state -> target ) * composite_crit_multiplier();
 
   if ( flags & STATE_TGT_MITG_DA )
-    state -> target_mitigation_da_multiplier = composite_target_mitigation( state -> target, school );
+    state -> target_mitigation_da_multiplier = composite_target_mitigation( state -> target, get_school() );
 
   if ( flags & STATE_TGT_MITG_TA )
-    state -> target_mitigation_ta_multiplier = composite_target_mitigation( state -> target, school );
+    state -> target_mitigation_ta_multiplier = composite_target_mitigation( state -> target, get_school() );
 }
 
 void action_t::consolidate_snapshot_flags()
@@ -2462,7 +2470,7 @@ void action_t::trigger_dot( action_state_t* s )
   }
   else
   {
-    if ( school == SCHOOL_PHYSICAL )
+    if ( get_school() == SCHOOL_PHYSICAL )
     {
       buff_t* b = s -> target -> debuffs.bleeding;
       if ( b -> current_value > 0 )

@@ -384,6 +384,7 @@ player_t::player_t( sim_t*             s,
 
   // (static) attributes
   race( r ),
+  nightelf( "night" ), //Set to Night by Default, user can override.
   role( ROLE_HYBRID ),
   level( default_level ),
   party( 0 ),
@@ -463,7 +464,7 @@ player_t::player_t( sim_t*             s,
   // Scaling
   scaling_lag( 0 ), scaling_lag_error( 0 ),
   // Movement & Position
-  base_movement_speed( 7.0 ), base_movement_speed_multiplier( 1.0 ), 
+  base_movement_speed( 7.0 ), passive_modifier( 0 ),
   x_position( 0.0 ), y_position( 0.0 ),
   buffs( buffs_t() ),
   potion_buffs( potion_buffs_t() ),
@@ -765,7 +766,7 @@ bool player_t::init( sim_t* sim )
   range::for_each( sim -> actor_list, std::mem_fn( &player_t::init_character_properties ) );
 
   range::for_each( sim -> actor_list, std::mem_fn( &player_t::init_items ) );
-
+  if ( sim -> is_canceled() ) {return false;} // Temporary fix for assert caused by incomplete item initialization
   range::for_each( sim -> actor_list, std::mem_fn( &player_t::init_spells ) );
 
   range::for_each( sim -> actor_list, std::mem_fn( &player_t::init_base_stats ) );
@@ -987,13 +988,12 @@ void player_t::init_base_stats()
   {
     resources.base_multiplier[ RESOURCE_MANA ] *= 1.02;
   }
-  if ( race == RACE_GNOME )
-  {
-    resources.base_multiplier[ RESOURCE_MANA ] *= 1.05;
-    resources.base_multiplier[ RESOURCE_RAGE ] *= 1.05;
-    resources.base_multiplier[ RESOURCE_ENERGY ] *= 1.05;
-    resources.base_multiplier[ RESOURCE_RUNIC_POWER ] *= 1.05;
-  }
+
+  resources.base_multiplier[ RESOURCE_MANA ] *= 1 + racials.expansive_mind -> effectN( 1 ).percent();
+  resources.base_multiplier[ RESOURCE_RAGE ] *= 1 + racials.expansive_mind -> effectN( 1 ).percent();
+  resources.base_multiplier[ RESOURCE_ENERGY ] *= 1 + racials.expansive_mind -> effectN( 1 ).percent();
+  resources.base_multiplier[ RESOURCE_RUNIC_POWER ] *= 1 + racials.expansive_mind -> effectN( 1 ).percent();
+
 
   if ( level >= 50 && matching_gear )
   {
@@ -1024,32 +1024,6 @@ void player_t::init_base_stats()
 
 }
 
-double stat_gain_mining( int level )
-{
-  if      ( level >= 600 ) return 480.0;
-  else if ( level >= 525 ) return 120.0;
-  else if ( level >= 450 ) return  60.0;
-  else if ( level >= 375 ) return  30.0;
-  else if ( level >= 300 ) return  10.0;
-  else if ( level >= 225 ) return   7.0;
-  else if ( level >= 150 ) return   5.0;
-  else if ( level >=  75 ) return   3.0;
-  return 0.0;
-}
-
-double stat_gain_skinning( int level )
-{
-  if      ( level >= 600 ) return 480.0;
-  else if ( level >= 525 ) return  80.0;
-  else if ( level >= 450 ) return  40.0;
-  else if ( level >= 375 ) return  20.0;
-  else if ( level >= 300 ) return  12.0;
-  else if ( level >= 225 ) return   9.0;
-  else if ( level >= 150 ) return   6.0;
-  else if ( level >=  75 ) return   3.0;
-  return 0.0;
-}
-
 /* Initialzies initial variable from base + gear
  * After player_t::init_initial is executed, you can modify the initial member until combat starts
  */
@@ -1074,16 +1048,6 @@ void player_t::init_initial_stats()
   initial.stats += total_gear;
   if ( sim -> debug )
     sim -> out_debug.printf( "%s: Generic Initial Stats: %s", name(), initial.to_string().c_str() );
-
-
-
-  // Profession bonus
-
-  // Miners gain additional stamina
-  initial.stats.attribute[ ATTR_STAMINA ] += stat_gain_mining( profession[ PROF_MINING ] );
-
-  // Skinners gain additional crit rating
-  initial.stats.crit_rating += stat_gain_skinning( profession[ PROF_SKINNING ] );
 }
 // player_t::init_items =====================================================
 
@@ -1176,11 +1140,18 @@ void player_t::init_items()
   // Adding stats from items into ``gear''. If for a given stat,
   // the value in gear is different than 0, it means that this stat
   // value was overridden by a command line option.
+  // This is also where the conversion of hybrid primary stats into 
+  // STR, AGI, or INT happens, via convert_hybrid_stat()
   for ( stat_e i = STAT_NONE; i < STAT_MAX; i++ )
   {
     if ( gear.get_stat( i ) == 0 )
-      gear.add_stat( i, item_stats.get_stat( i ) );
+        gear.add_stat( convert_hybrid_stat( i ), item_stats.get_stat( i ) );
   }
+
+  // Sanity check - there should be no more hybrid STR/INT, AGI/STR, or AGI/INT stats leftover here!
+  assert( gear.get_stat( STAT_AGI_INT ) == 0 );
+  assert( gear.get_stat( STAT_STR_AGI ) == 0 );
+  assert( gear.get_stat( STAT_STR_INT )  == 0 );
 
   if ( sim -> debug )
   {
@@ -1259,13 +1230,6 @@ void player_t::init_race()
   }
 }
 
-// player_t::weapon_racial ==================================================
-
-bool player_t::weapon_racial( const weapon_t* ) const // Remove completely for WoD
-{
-  return false;
-}
-
 // player_t::init_defense ===================================================
 
 void player_t::init_defense()
@@ -1283,7 +1247,9 @@ void player_t::init_defense()
   if ( ! is_pet() && primary_role() == ROLE_TANK )
   {
     collected_data.health_changes.collect = true;
+    collected_data.health_changes.set_bin_size( sim -> tmi_bin_size );
     collected_data.health_changes_tmi.collect = true;
+    collected_data.health_changes_tmi.set_bin_size( sim -> tmi_bin_size );
   }
 
   // Armor Coefficient
@@ -1557,27 +1523,13 @@ std::vector<std::string> player_t::get_item_actions()
 std::string player_t::init_use_profession_actions( const std::string& append )
 {
   std::string buffer;
-
-  // Lifeblood
-  if ( profession[ PROF_HERBALISM ] >= 1 )
-  {
-    buffer += "/lifeblood";
-
-    if ( ! append.empty() )
-    {
-      buffer += append;
-    }
-  }
-
+  
   return buffer;
 }
 
 std::vector<std::string> player_t::get_profession_actions()
 {
   std::vector<std::string> actions;
-
-  if ( profession[ PROF_HERBALISM ] >= 1 )
-    actions.push_back( "lifeblood" );
 
   return actions;
 }
@@ -1831,8 +1783,19 @@ void player_t::init_spells()
   if ( sim -> debug )
     sim -> out_debug.printf( "Initializing spells for player (%s)", name() );
 
-  racials.quickness = find_racial_spell( "Quickness" );
-  racials.command   = find_racial_spell( "Command" );
+  racials.quickness               = find_racial_spell( "Quickness" );
+  racials.command                 = find_racial_spell( "Command" );
+  racials.arcane_acuity           = find_racial_spell( "Arcane Acuity" );
+  racials.heroic_presence         = find_racial_spell( "Heroic Presence" );
+  racials.might_of_the_mountain   = find_racial_spell( "Might of the Mountain" );
+  racials.expansive_mind          = find_racial_spell( "Expansive Mind" );
+  racials.nimble_fingers          = find_racial_spell( "Nimble Fingers" );
+  racials.time_is_money           = find_racial_spell( "Time is Money" );
+  racials.the_human_spirit        = find_racial_spell( "The Human Spirit" );
+  racials.touch_of_elune          = find_racial_spell( "Touch of Elune" );
+  racials.brawn                   = find_racial_spell( "Brawn" );
+  racials.endurance               = find_racial_spell( "Endurance" );
+  racials.viciousness             = find_racial_spell( "Viciousness" );
 
   if ( ! is_enemy() )
   {
@@ -1946,7 +1909,7 @@ void player_t::init_scaling()
 
     bool attack = ( role == ROLE_ATTACK || role == ROLE_HYBRID || role == ROLE_TANK );
     bool spell  = ( role == ROLE_SPELL  || role == ROLE_HYBRID || role == ROLE_HEAL );
-    bool tank   =   role == ROLE_TANK;
+    bool tank   = ( role == ROLE_TANK || specialization() == WARRIOR_PROTECTION ); // Warrior_protection is special case for gladiator stance.
 
     scales_with[ STAT_STRENGTH  ] = attack;
     scales_with[ STAT_AGILITY   ] = attack;
@@ -2285,7 +2248,6 @@ void player_t::create_buffs()
     {
       // Racials
       buffs.berserking                = haste_buff_creator_t( this, "berserking", find_spell( 26297 ) ).add_invalidate( CACHE_HASTE );
-      buffs.heroic_presence           = buff_creator_t( this, "heroic_presence" ).max_stack( 1 ).add_invalidate( CACHE_HIT );
       buffs.stoneform                 = buff_creator_t( this, "stoneform", find_spell( 65116 ) );
       buffs.blood_fury                = stat_buff_creator_t( this, "blood_fury" )
                                         .spell( find_racial_spell( "Blood Fury" ) )
@@ -2296,32 +2258,6 @@ void player_t::create_buffs()
 
       // Legendary meta haste buff
       buffs.tempus_repit              = buff_creator_t( this, "tempus_repit", find_spell( 137590 ) ).add_invalidate( CACHE_HASTE ).activated( false );
-
-      // Profession buffs
-      double lb_amount = 0.0;
-      if      ( profession[ PROF_HERBALISM ] >= 600 )
-        lb_amount = 2880;
-      else if ( profession[ PROF_HERBALISM ] >= 525 )
-        lb_amount = 480;
-      else if ( profession[ PROF_HERBALISM ] >= 450 )
-        lb_amount = 240;
-      else if ( profession[ PROF_HERBALISM ] >= 375 )
-        lb_amount = 120;
-      else if ( profession[ PROF_HERBALISM ] >= 300 )
-        lb_amount = 70;
-      else if ( profession[ PROF_HERBALISM ] >= 225 )
-        lb_amount = 55;
-      else if ( profession[ PROF_HERBALISM ] >= 150 )
-        lb_amount = 35;
-      else if ( profession[ PROF_HERBALISM ] >= 75 )
-        lb_amount = 15;
-      else if ( profession[ PROF_HERBALISM ] >= 1 )
-        lb_amount = 5;
-
-      buffs.lifeblood = stat_buff_creator_t( this, "lifeblood" )
-                        .max_stack( 1 )
-                        .duration( timespan_t::from_seconds( 20.0 ) )
-                        .add_stat( STAT_HASTE_RATING, lb_amount );
 
       // Vengeance
       buffs.vengeance = buff_creator_t( this, "vengeance" )
@@ -2372,11 +2308,11 @@ void player_t::create_buffs()
       potion_buffs.virmens_bite = potion_buff_creator( this, "virmens_bite_potion" )
                                   .spell( find_spell( 105697 ) );
 
-    buffs.cooldown_reduction = buff_creator_t( this, "cooldown_reduction" )
-                               .chance( 0 )
-                               .default_value( 1 );
+    buffs.darkflight         = buff_creator_t( this, "darkflight", find_racial_spell( "darkflight" ) );
 
     buffs.nitro_boosts       = buff_creator_t( this, "nitro_boosts", find_spell( 54861 ) );
+
+    debuffs.dazed            = buff_creator_t( this, "dazed", find_spell( 15571 ) );
     }
 
   }
@@ -2396,7 +2332,6 @@ void player_t::create_buffs()
   buffs.self_movement = buff_creator_t( this, "self_movement" ).max_stack( 1 );
 
   // Infinite-Stacking Buffs and De-Buffs
-
   buffs.stunned        = buff_creator_t( this, "stunned" ).max_stack( 1 );
   debuffs.bleeding     = buff_creator_t( this, "bleeding" ).max_stack( 1 );
   debuffs.casting      = buff_creator_t( this, "casting" ).max_stack( 1 ).quiet( 1 );
@@ -2443,7 +2378,6 @@ double player_t::mana_regen_per_second() const
   return current.mana_regen_per_second + cache.spirit() * current.mana_regen_per_spirit * current.mana_regen_from_spirit_multiplier;
 }
 
-// Night elf passive will change from 1% crit during the day, to 1% haste during the night. 
 // Need a way to include human racial.
 // player_t::composite_attack_haste =========================================
 
@@ -2471,8 +2405,11 @@ double player_t::composite_melee_haste() const
     if ( buffs.berserking -> up() )
       h *= 1.0 / ( 1.0 + buffs.berserking -> data().effectN( 1 ).percent() );
 
-    if ( race == RACE_GOBLIN || race == RACE_GNOME )
-      h *= 1.0 / ( 1.0 + 0.01 );
+    h *= 1.0 / ( 1.0 + racials.nimble_fingers -> effectN( 1 ).percent() );
+    h *= 1.0 / ( 1.0 + racials.time_is_money -> effectN( 1 ).percent() );
+
+    if ( nightelf == "night" || nightelf == "nighttime" )
+       h *= 1.0 / ( 1.0 + racials.touch_of_elune -> effectN( 1 ).percent() );
 
   }
 
@@ -2481,7 +2418,7 @@ double player_t::composite_melee_haste() const
 
 // player_t::composite_attack_speed =========================================
 
-double player_t::composite_melee_speed() const // Attack speed buff has been changed to attack haste.
+double player_t::composite_melee_speed() const 
 {
   double h = composite_melee_haste();
 
@@ -2494,7 +2431,7 @@ double player_t::composite_melee_attack_power() const
 {
   double ap = current.stats.attack_power;
 
-  ap += current.attack_power_per_strength * ( cache.strength() - 10 );
+  ap += current.attack_power_per_strength * ( cache.strength() - 10 ); //Check to see if 10 is still subtracted in WoD.
   ap += current.attack_power_per_agility  * ( cache.agility() - 10 );
   
   return ap;
@@ -2524,8 +2461,11 @@ double player_t::composite_melee_crit() const
   if ( ! is_pet() && ! is_enemy() && ! is_add() && sim -> auras.critical_strike -> check() )
     ac += sim -> auras.critical_strike -> value();
 
-  if ( race == RACE_WORGEN || race == RACE_BLOOD_ELF )
-    ac += 0.01;
+
+    ac += racials.viciousness -> effectN( 1 ).percent();
+    ac += racials.arcane_acuity -> effectN( 1 ).percent();
+    if ( nightelf == "day" || nightelf == "daytime" )
+       ac += racials.touch_of_elune -> effectN( 1 ).percent();
 
   return ac;
 }
@@ -2703,8 +2643,12 @@ double player_t::composite_spell_haste() const
     if ( sim -> auras.haste -> check() )
       h *= 1.0 / ( 1.0 + sim -> auras.haste -> value() );
 
-    if ( race == RACE_GOBLIN || race == RACE_GNOME )
-      h *= 1.0 / ( 1.0 + 0.01 );
+
+    h *= 1.0 / ( 1.0 + racials.nimble_fingers -> effectN( 1 ).percent() );
+    h *= 1.0 / ( 1.0 + racials.time_is_money -> effectN( 1 ).percent() );
+
+    if ( nightelf == "nighttime" || nightelf == "night" )
+       h *= 1.0 / ( 1.0 + racials.touch_of_elune -> effectN( 1 ).percent() );
 
   }
 
@@ -2726,7 +2670,7 @@ double player_t::composite_spell_power( school_e /* school */ ) const
 {
   double sp = current.stats.spell_power;
 
-  sp += current.spell_power_per_intellect * ( cache.intellect() - 10 ); // The spellpower is always lower by 10, cata beta build 12803
+  sp += current.spell_power_per_intellect * ( cache.intellect() - 10 ); // Check in WoD if 10 is subtracted still.
 
   return sp;
 }
@@ -2760,8 +2704,11 @@ double player_t::composite_spell_crit() const
       sc += sim -> auras.critical_strike -> value();
   }
 
-  if ( race == RACE_WORGEN || race == RACE_BLOOD_ELF )
-    sc += 0.01;
+  sc += racials.viciousness -> effectN( 1 ).percent();
+  sc += racials.arcane_acuity -> effectN( 1 ).percent();
+
+  if ( nightelf == "day" || nightelf == "daytime")
+    sc += racials.touch_of_elune -> effectN( 1 ).percent();
 
   return sc;
 }
@@ -2798,6 +2745,15 @@ double player_t::composite_readiness() const
   double rd = composite_readiness_rating() / current.rating.readiness;
 
   return rd;
+}
+
+// player_t::composite_bonus_armor =========================================
+
+double player_t::composite_bonus_armor() const
+{
+  double ba = current.stats.bonus_armor;
+
+  return ba;
 }
 
 // player_t::composite_player_multiplier ====================================
@@ -2841,8 +2797,8 @@ double player_t::composite_player_critical_damage_multiplier() const
 {
   double m = 1.0;
 
-  if ( race == RACE_TAUREN || race == RACE_DWARF )
-    m += 0.02;
+  m += racials.brawn -> effectN( 1 ).percent();
+  m += racials.might_of_the_mountain -> effectN( 1 ).percent();
 
   return m;
 }
@@ -2851,56 +2807,68 @@ double player_t::composite_player_critical_healing_multiplier() const
 {
   double m = 1.0;
 
-  if ( race == RACE_TAUREN || race == RACE_DWARF )
-    m += 0.02;
+  m += racials.brawn -> effectN( 1 ).percent();
+  m += racials.might_of_the_mountain -> effectN( 1 ).percent();
 
   return m;
 }
 
 // player_t::composite_movement_speed =======================================
 // There are 2 categories of movement speed buffs in WoD
-// Permanent and Temporary, both which stack additively. Permanent buffs include movement speed enchant, unholy presence, cat form
+// Passive and Temporary, both which stack additively. Passive buffs include movement speed enchant, unholy presence, cat form
 // and generally anything that has the ability to be kept active all fight. These permanent buffs do stack with each other. 
 // Temporary includes all other speed bonuses, however, only the highest temporary bonus will be added on top.
-// We'll have to add in a system to deal with this in the future.
+
+double player_t::temporary_movement_modifier() const
+{
+  double temporary = 0;
+
+  if ( buffs.darkflight -> up() )
+    temporary = std::max( buffs.darkflight -> data().effectN( 1 ).percent(), temporary );
+
+  if ( buffs.nitro_boosts -> up() )
+    temporary = std::max( buffs.nitro_boosts -> data().effectN( 1 ).percent(), temporary );
+
+  if ( buffs.stampeding_roar -> up() )
+    temporary = std::max( buffs.stampeding_roar -> data().effectN( 1 ).percent(), temporary );
+
+  if ( buffs.stampeding_shout -> up() )
+    temporary = std::max( buffs.stampeding_shout -> data().effectN( 1 ).percent(), temporary );
+
+  temporary = std::max( buffs.body_and_soul -> current_value, temporary );
+
+  if ( buffs.aspect_of_the_pack -> up() )
+    temporary = std::max( buffs.aspect_of_the_pack -> data().effectN( 1 ).percent(), temporary );
+
+  return temporary;
+}
+
+double player_t::passive_movement_modifier() const
+{
+  double passive = passive_modifier;
+
+  passive += racials.quickness -> effectN( 2 ).percent();
+
+  return passive;
+}
 
 double player_t::composite_movement_speed() const
 {
   double speed = base_movement_speed;
 
-  double m = base_movement_speed_multiplier;
+  double passive = passive_movement_modifier();
 
-  if ( buffs.nitro_boosts -> up() )
-    m += buffs.nitro_boosts -> data().effectN( 1 ).percent();
-
-  if ( buffs.stampeding_roar -> up() )
-    m += buffs.stampeding_roar -> data().effectN( 1 ).percent();
-
-  if ( buffs.stampeding_shout -> up() )
-    m += buffs.stampeding_shout -> data().effectN( 1 ).percent();
-
-  // Commenting this out for now. How will we take the daze aspect into account?
-  //if ( buffs.aspect_of_the_pack -> up() )
-  //speed *= 1.0 + buffs.aspect_of_the_pack -> data().effectN( 1 ).percent();
-
-  m += buffs.body_and_soul -> current_value;
-
-  // From http://www.wowpedia.org/Movement_speed_effects
-  // Additional items looked up
+  double temporary = temporary_movement_modifier();
 
   // Pursuit of Justice, Quickening: 8%/15%
 
   // DK: Unholy Presence: 15%
-
-  // Druid: Feral Swiftness: 15%/30%
 
   // Aspect of the Cheetah/Pack: 30%, with talent Pathfinding +34%/38%
 
   // Shaman Ghost Wolf: 30%, with Glyph 35%
 
   // Druid: Travel Form 40%
-
-  // Druid: Dash: 50/60/70
 
   // Mage: Blazing Speed: 5%/10% chance after being hit for 50% for 8 sec
   //       Improved Blink: 35%/70% for 3 sec after blink
@@ -2910,8 +2878,14 @@ double player_t::composite_movement_speed() const
 
   // Swiftness Potion: 50%
 
-  return speed * m;
-}
+  speed *= ( 1 + passive + temporary );
+
+  // Movement speed snares are multiplicative, works similarly to temporary speed boosts in that only the highest value counts. 
+  if ( debuffs.dazed -> up() )
+    speed *= debuffs.dazed -> data().effectN( 1 ).percent();
+
+  return speed;
+  }
 
 // player_t::composite_attribute ============================================
 
@@ -2923,20 +2897,16 @@ double player_t::composite_attribute( attribute_e attr ) const
   switch ( attr )
   {
     case ATTR_INTELLECT:
-     if ( race == RACE_DRAENEI )
-        a += 300; // Placeholder value, until we know more.
+        a += racials.heroic_presence -> effectN( 3 ).base_value();
       break;
     case ATTR_STRENGTH:
-      if ( race == RACE_DRAENEI )
-        a += 300;
+        a += racials.heroic_presence -> effectN( 1 ).base_value();
       break;
     case ATTR_AGILITY:
-      if ( race == RACE_DRAENEI )
-        a += 300;
+        a += racials.heroic_presence -> effectN( 2 ).base_value();
       break;
     case ATTR_STAMINA:
-      if ( race == RACE_TAUREN )
-        a += 450;
+        a += racials.endurance -> effectN( 1 ).base_value();
       break;
     default:
       break;
@@ -3091,7 +3061,7 @@ void player_t::invalidate_cache( cache_e c )
       invalidate_cache( CACHE_SPELL_SPEED );
       break;
     case CACHE_BONUS_ARMOR:
-      if ( primary_role() == ROLE_TANK )
+      if ( primary_role() == ROLE_TANK || specialization() == WARRIOR_PROTECTION ) //Gladiator Stance
         invalidate_cache( CACHE_ATTACK_POWER );
     default: break;
   }
@@ -3780,9 +3750,6 @@ void player_t::arise()
     sim -> player_non_sleeping_list.push_back( this );
   }
 
-  if ( ! is_enemy() && ! is_pet() )
-    buffs.cooldown_reduction -> trigger();
-
   if ( has_foreground_actions( *this ) )
     schedule_ready();
 
@@ -4196,7 +4163,7 @@ stat_e player_t::normalize_by() const
   role_e role = primary_role();
   if ( role == ROLE_SPELL || role == ROLE_HEAL )
     return STAT_INTELLECT;
-  else if ( role == ROLE_TANK && ( so == "tmi" || so == "dtps" || so == "dmg_taken" || so == "deaths" || so == "theck_meloree_index" ) )
+  else if ( role == ROLE_TANK && ( so == "tmi" || so == "etmi" || so == "dtps" || so == "dmg_taken" || so == "deaths" || so == "theck_meloree_index" ) )
     return STAT_STAMINA;
   else if ( type == DRUID || type == HUNTER || type == SHAMAN || type == ROGUE || type == MONK )
     return STAT_AGILITY;
@@ -4772,6 +4739,9 @@ void player_t::assess_damage( school_e school,
   account_parry_haste( *this, s );
 
   target_mitigation( school, type, s );
+  
+  if ( s -> result_total > 0 && buffs.aspect_of_the_pack -> check() ) // Aspect of the daze.
+    debuffs.dazed -> trigger();
 
   // store post-mitigation, pre-absorb value
   s -> result_mitigated = s -> result_amount;
@@ -5329,6 +5299,7 @@ struct arcane_torrent_t : public racial_spell_t
       case RESOURCE_FOCUS:
       case RESOURCE_RAGE:
       case RESOURCE_RUNIC_POWER:
+      case RESOURCE_HOLY_POWER:
         gain = data().effectN( 2 ).resource( resource );
         break;
       default:
@@ -5383,6 +5354,24 @@ struct blood_fury_t : public racial_spell_t
   }
 };
 
+// Darkflight ==============================================================
+
+struct darkflight_t : public racial_spell_t
+{
+  darkflight_t( player_t* p, const std::string& options_str ) :
+    racial_spell_t( p, "darkflight", p -> find_racial_spell( "Darkflight" ), options_str )
+  {
+    parse_options( NULL, options_str );
+  }
+
+  virtual void execute()
+  {
+    racial_spell_t::execute();
+
+    player -> buffs.darkflight -> trigger();
+  }
+};
+
 // Rocket Barrage ===========================================================
 
 struct rocket_barrage_t : public racial_spell_t
@@ -5409,48 +5398,6 @@ struct stoneform_t : public racial_spell_t
     racial_spell_t::execute();
 
     player -> buffs.stoneform -> trigger();
-  }
-};
-
-// Lifeblood ================================================================
-
-struct lifeblood_t : public spell_t
-{
-  lifeblood_t( player_t* player, const std::string& options_str ) :
-    spell_t( "lifeblood", player )
-  {
-    parse_options( NULL, options_str );
-    harmful = false;
-    trigger_gcd = timespan_t::zero();
-    cooldown -> duration = timespan_t::from_seconds( 120 );
-  }
-
-  void init()
-  {
-    spell_t::init();
-
-    if ( player -> profession[ PROF_HERBALISM ] < 450 )
-    {
-      sim -> errorf( "Player %s attempting to execute action %s without Herbalism.\n",
-                     player -> name(), name() );
-
-      background = true; // prevent action from being executed
-    }
-  }
-
-  virtual void execute()
-  {
-    spell_t::execute();
-
-    player -> buffs.lifeblood -> trigger();
-  }
-
-  virtual bool ready()
-  {
-    if ( player -> profession[ PROF_HERBALISM ] < 450 )
-      return false;
-
-    return spell_t::ready();
   }
 };
 
@@ -5595,6 +5542,7 @@ struct snapshot_stats_t : public action_t
     buffed_stats.mastery_value = p -> cache.mastery_value();
     buffed_stats.multistrike = p -> cache.multistrike();
     buffed_stats.readiness = p -> cache.readiness();
+    buffed_stats.bonus_armor = p -> composite_bonus_armor();
 
     buffed_stats.spell_power  = util::round( p -> cache.spell_power( SCHOOL_MAX ) * p -> composite_spell_power_multiplier() );
     buffed_stats.spell_hit    = p -> cache.spell_hit();
@@ -6124,11 +6072,11 @@ action_t* player_t::create_action( const std::string& name,
   if ( name == "arcane_torrent"     ) return new     arcane_torrent_t( this, options_str );
   if ( name == "berserking"         ) return new         berserking_t( this, options_str );
   if ( name == "blood_fury"         ) return new         blood_fury_t( this, options_str );
+  if ( name == "darkflight"         ) return new         darkflight_t( this, options_str );
   if ( name == "shadowmeld"         ) return new         shadowmeld_t( this, options_str );
   if ( name == "cancel_buff"        ) return new        cancel_buff_t( this, options_str );
   if ( name == "swap_action_list"   ) return new   swap_action_list_t( this, options_str );
   if ( name == "run_action_list"    ) return new    run_action_list_t( this, options_str );
-  if ( name == "lifeblood"          ) return new          lifeblood_t( this, options_str );
   if ( name == "restart_sequence"   ) return new   restart_sequence_t( this, options_str );
   if ( name == "restore_mana"       ) return new       restore_mana_t( this, options_str );
   if ( name == "rocket_barrage"     ) return new     rocket_barrage_t( this, options_str );
@@ -6664,8 +6612,12 @@ void player_t::replace_spells()
 }
 
 
-// player_t::find_talent_spell ==============================================
-
+/* Retrieves the Spell Data Associated with a given talent.
+ * If the player does not have have the talent activated, or the talent is not found,
+ * spell_data_t::not_found() is returned.
+ *
+ * The talent search by name is case sensitive, including all special characters!
+ */
 const spell_data_t* player_t::find_talent_spell( const std::string& n,
                                                  const std::string& token,
                                                  specialization_e s,
@@ -6987,7 +6939,7 @@ expr_t* player_t::create_expression( action_t* a,
       action_t& action;
       multiplier_expr_t( player_t& p, action_t* a ) :
         player_expr_t( "multiplier", p ), action( *a ) { assert( a ); }
-      virtual double evaluate() { return player.cache.player_multiplier( action.school ); }
+      virtual double evaluate() { return player.cache.player_multiplier( action.get_school() ); }
     };
     return new multiplier_expr_t( *this, a );
   }
@@ -7248,7 +7200,7 @@ expr_t* player_t::create_expression( action_t* a,
     return new race_expr_t( *this, splits[ 1 ] );
   }
 
-  if ( splits[ 0 ] == "pet" && splits.size() == 3 )
+  if ( splits[ 0 ] == "pet" && splits.size() >= 3 )
   {
     struct pet_expr_t : public expr_t
     {
@@ -7530,7 +7482,7 @@ expr_t* player_t::create_expression( action_t* a,
           double evaluate()
           {
             if ( player -> current.distance_to_move > 0 )
-              return player -> current.distance_to_move / player -> composite_movement_speed();
+              return ( player -> current.distance_to_move / player -> composite_movement_speed() );
             else
               return player -> buffs.raid_movement -> remains().total_seconds();
           }
@@ -7559,6 +7511,9 @@ expr_t* player_t::create_expression( action_t* a,
 
   if ( splits.size() >= 2 && splits[ 0 ] == "target" )
   {
+    if (splits[1] == "distance")
+      return make_ref_expr( name_str, this->base.distance );
+
     std::string rest = splits[1];
     for ( size_t i = 2; i < splits.size(); ++i )
       rest += '.' + splits[ i ];
@@ -8077,6 +8032,7 @@ void player_t::copy_from( player_t* source )
   origin_str = source -> origin_str;
   level = source -> level;
   race_str = source -> race_str;
+  nightelf = source -> nightelf;
   race = source -> race;
   role = source -> role;
   _spec = source -> _spec;
@@ -8118,6 +8074,7 @@ void player_t::create_options()
     opt_func( "talent_override", parse_talent_override ),
     opt_string( "glyphs", glyphs_str ),
     opt_string( "race", race_str ),
+    opt_string( "timeofday", nightelf ),
     opt_int( "level", level ),
     opt_bool( "ready_trigger", ready_type ),
     opt_func( "role", parse_role_string ),
@@ -8245,6 +8202,7 @@ void player_t::create_options()
     opt_float( "gear_mastery_rating",   gear.mastery_rating ),
     opt_float( "gear_multistrike_rating", gear.multistrike_rating ),
     opt_float( "gear_readiness_rating", gear.readiness_rating ),
+    opt_float( "gear_bonus_armor",      gear.bonus_armor ),
 
     // Stat Enchants
     opt_float( "enchant_strength",         enchant.attribute[ ATTR_STRENGTH  ] ),
@@ -8262,6 +8220,7 @@ void player_t::create_options()
     opt_float( "enchant_mastery_rating",   enchant.mastery_rating ),
     opt_float( "enchant_multistrike_rating", enchant.multistrike_rating ),
     opt_float( "enchant_readiness_rating", enchant.readiness_rating ),
+    opt_float( "enchant_bonus_armor",      enchant.bonus_armor ),
     opt_float( "enchant_health",           enchant.resource[ RESOURCE_HEALTH ] ),
     opt_float( "enchant_mana",             enchant.resource[ RESOURCE_MANA   ] ),
     opt_float( "enchant_rage",             enchant.resource[ RESOURCE_RAGE   ] ),
@@ -8522,6 +8481,9 @@ player_t::scales_over_t player_t::scales_over()
 
   if ( so == "theck_meloree_index" || so == "tmi" )
     return q -> collected_data.theck_meloree_index;
+
+  if ( so == "etmi" )
+    return q -> collected_data.effective_theck_meloree_index;
 
   if ( q -> primary_role() == ROLE_HEAL || so == "hps" )
     return q -> collected_data.hps;
@@ -9283,6 +9245,17 @@ double player_stat_cache_t::readiness() const
   return _readiness;
 }
 
+double player_stat_cache_t::bonus_armor() const
+{
+  if ( ! active || ! valid[ CACHE_BONUS_ARMOR ] )
+  {
+    valid[ CACHE_BONUS_ARMOR ] = true;
+    _bonus_armor = player -> composite_bonus_armor();
+  }
+  else assert( _bonus_armor == player -> composite_bonus_armor() );
+  return _bonus_armor;
+}
+
 // player_stat_cache_t::mastery =============================================
 
 double player_stat_cache_t::player_multiplier( school_e s ) const
@@ -9388,7 +9361,7 @@ player_collected_data_t::player_collected_data_t( const std::string& player_name
   absorb_taken( player_name + " Absorb Taken", s.statistics_level < 2 ),
   deaths( player_name + " Deaths", s.statistics_level < 2 ),
   theck_meloree_index( player_name + " Theck-Meloree Index", s.statistics_level < 1 ),
-  effective_theck_meloree_index( player_name + "Effective Theck-Meloree Index", s.statistics_level < 1 ),
+  effective_theck_meloree_index( player_name + " Effective Theck-Meloree Index", s.statistics_level < 1 ),
   max_spike_amount( player_name + " Max Spike Value", s.statistics_level < 1 ),
   resource_timelines(),
   combat_end_resource( RESOURCE_MAX ),
@@ -9513,8 +9486,8 @@ void player_collected_data_t::analyze( const player_t& p )
   health_changes_tmi.merged_timeline.adjust( p.sim -> divisor_timeline );
 }
 
-//TODO: Figure out if this is still needed, and if so, how to make it useful given that it has no way to distinguish between TMI and ETMI calls of calculate_tmi()
-void player_collected_data_t::print_tmi_debug_csv( const sc_timeline_t* ma, const sc_timeline_t* nma, const std::vector<double>& wv, const player_t& p )
+//This is pretty much only useful for dev debugging at this point, would need to modify to make it useful to users
+void player_collected_data_t::print_tmi_debug_csv( const sc_timeline_t* nma, const std::vector<double>& wv, const player_t& p )
 {
   if ( ! p.tmi_debug_file_str.empty() )
   {
@@ -9523,7 +9496,7 @@ void player_collected_data_t::print_tmi_debug_csv( const sc_timeline_t* ma, cons
     // write elements to CSV
     f << p.name_str << " TMI data:\n";
 
-    f << "damage,healing,health chg,norm health chg,mov avg,norm mov avg, weighted val\n";
+    f << "damage,healing,health chg,norm health chg,norm mov avg, weighted val\n";
 
     for ( size_t i = 0; i < health_changes.timeline.data().size(); i++ )
     {
@@ -9531,7 +9504,6 @@ void player_collected_data_t::print_tmi_debug_csv( const sc_timeline_t* ma, cons
           timeline_healing_taken.data()[ i ],
           health_changes.timeline.data()[ i ],
           health_changes.timeline_normalized.data()[ i ],
-          ma -> data()[ i ],
           nma -> data()[ i ],
           wv[ i ] );
     }
@@ -9585,7 +9557,7 @@ double player_collected_data_t::calculate_tmi( const health_changes_timeline_t& 
 
   for ( size_t j = 0, size = weighted_value.size(); j < size; j++ )
   {
-    // weighted_value is the moving average (i.e. 1-second), so multiplly by window size to get damage in "window" seconds
+    // weighted_value is the moving average (i.e. 1-second), so multiply by window size to get damage in "window" seconds
     weighted_value[ j ] *= window;
 
     // calculate exponentially-weighted contribution of this data point using filter strength D
@@ -9597,8 +9569,9 @@ double player_collected_data_t::calculate_tmi( const health_changes_timeline_t& 
 
   // multiply by vertical offset factor c2
   tmi *= c2;
-  // normalize for fight length
+  // normalize for fight length - should be equivalent to dividing by tl.timeline_normalized.data().size()
   tmi /= f_length;
+  tmi *= tl.get_bin_size();
   // take log of result
   tmi = std::log( tmi );
   // multiply by health decade scale factor
@@ -9606,7 +9579,7 @@ double player_collected_data_t::calculate_tmi( const health_changes_timeline_t& 
 
   // if an output file has been defined, write to it 
   if ( ! p.tmi_debug_file_str.empty() )
-    print_tmi_debug_csv( &sliding_average_tl, &sliding_average_tl, weighted_value, p );
+    print_tmi_debug_csv( &sliding_average_tl, weighted_value, p );
 
   return tmi;
 
@@ -9690,7 +9663,7 @@ void player_collected_data_t::collect_data( const player_t& p )
       if ( f_length )
       {
         // define constants and variables
-        int window = (int) std::floor( ( p.tmi_window ) / 1.0 + 0.5 ); // window size, bin time replaces 1 eventually
+        int window = (int) std::floor( p.tmi_window / health_changes_tmi.get_bin_size() + 0.5 ); // window size, bin time replaces 1 eventually
 
         // Standard TMI uses health_changes_tmi, ignoring externals - use health_changes_tmi
         tmi = calculate_tmi( health_changes_tmi, window, f_length, p );

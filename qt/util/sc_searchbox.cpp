@@ -118,8 +118,7 @@ SC_SearchBox::SC_SearchBox( QWidget* parent,
     first = second;
     second = tmp;
   }
-  if ( direction != QBoxLayout::LeftToRight ||
-       direction != QBoxLayout::RightToLeft )
+  else
     direction = QBoxLayout::LeftToRight;
 
   QBoxLayout* searchBoxLayout = new QBoxLayout( direction );

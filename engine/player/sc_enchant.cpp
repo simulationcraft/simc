@@ -330,7 +330,7 @@ bool enchant::passive_enchant( item_t& item, unsigned spell_id )
         break;
       // Clump all movement speed enchants additively into "passive_movement_speed"
       case A_MOD_SPEED_ALWAYS:
-        item.player -> base_movement_speed_multiplier += effect.percent();
+        item.player -> passive_modifier += effect.percent();
         ret = true;
         break;
       default:

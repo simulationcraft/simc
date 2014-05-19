@@ -291,7 +291,7 @@ public:
     options(),
     glyphs()
   {
-    base.distance = 27.0;
+    base.distance = 27.0; //Halo
 
     create_cooldowns();
     create_gains();
@@ -313,7 +313,8 @@ public:
   virtual void      copy_from( player_t* source ) override;
   virtual set_e       decode_set( const item_t& ) const override;
   virtual resource_e primary_resource() const override { return RESOURCE_MANA; }
-  virtual role_e primary_role() const override;
+  virtual role_e    primary_role() const override;
+  virtual stat_e    convert_hybrid_stat( stat_e s ) const;
   virtual void      combat_begin() override;
   virtual double    composite_armor() const override;
   virtual double    composite_spell_haste() const override;
@@ -323,7 +324,7 @@ public:
   virtual double    composite_melee_crit() const override;
   virtual double    composite_player_multiplier( school_e school ) const override;
   virtual double    composite_player_heal_multiplier( school_e school ) const override;
-  virtual double    composite_movement_speed() const override;
+  virtual double    temporary_movement_modifier() const;
   virtual double    composite_attribute_multiplier( attribute_e attr ) const override;
   virtual double    matching_gear_multiplier( attribute_e attr ) const override;
   virtual void      target_mitigation( school_e, dmg_e, action_state_t* ) override;
@@ -3252,7 +3253,11 @@ public:
     if ( ab::data().ok() )
     {
       // Reparse the correct effect number, because we have two competing ones ( were 2 > 1 always wins out )
-      ab::parse_effect_data( ab::data().effectN( scaling_effect_index ) );
+
+      // Commented out for now, was causing asserts. Doesn't look like this
+      // is needed any more, but don't want to totally remove it just in case.
+      // -- Twintop / 2014-05-16
+      //ab::parse_effect_data( ab::data().effectN( scaling_effect_index ) );
     }
 
     ab::proc = ab::background = true;
@@ -3313,8 +3318,11 @@ struct divine_star_t final : public priest_spell_t
   {
     priest_spell_t::execute();
 
-    damage_spell -> execute();
-    heal_spell -> execute();
+    if ( damage_spell )
+      damage_spell -> execute();
+
+    if ( heal_spell )
+      heal_spell -> execute();
   }
 };
 
@@ -4551,6 +4559,30 @@ role_e priest_t::primary_role() const
   return ROLE_SPELL;
 }
 
+// priest_t::convert_hybrid_stat ==============================================
+
+stat_e priest_t::convert_hybrid_stat( stat_e s ) const
+{
+  // this converts hybrid stats that either morph based on spec or only work
+  // for certain specs into the appropriate "basic" stats
+  switch ( s )
+  {
+  // This is all a guess at how the hybrid primaries will work, since they
+  // don't actually appear on cloth gear yet. TODO: confirm behavior
+  case STAT_AGI_INT: 
+    return STAT_INTELLECT; 
+  case STAT_STR_AGI:
+    return STAT_NONE;
+  case STAT_STR_INT:
+    return STAT_INTELLECT;
+  case STAT_SPIRIT:
+      return STAT_NONE;
+  case STAT_BONUS_ARMOR:
+      return STAT_NONE;     
+  default: return s; 
+  }
+}
+
 // priest_t::combat_begin ===================================================
 
 void priest_t::combat_begin()
@@ -4684,14 +4716,14 @@ double priest_t::composite_player_heal_multiplier( school_e s ) const
   return m;
 }
 
-// priest_t::composite_movement_speed =======================================
+// priest_t::temporary_movement_modifier =======================================
 
-double priest_t::composite_movement_speed() const
+double priest_t::temporary_movement_modifier() const
 {
-  double speed = base_t::composite_movement_speed();
+  double speed = player_t::temporary_movement_modifier();
 
   if ( glyphs.free_action -> ok() && buffs.dispersion -> check() ) {
-    speed *= 1.0 + glyphs.free_action -> effectN( 1 ).percent();
+    speed = std::max( speed, glyphs.free_action -> effectN( 1 ).percent() );
   }
 
   return speed;
@@ -4974,6 +5006,16 @@ void priest_t::init_spells()
 
   active_spells.surge_of_darkness = talents.from_darkness_comes_light -> ok() ? find_spell( 87160 ) : spell_data_t::not_found();
 
+  // Range Based on Talents
+  if (talents.cascade -> ok())
+    base.distance = 30.0;
+  else if (talents.divine_star -> ok())
+    base.distance = 24.0;
+  else if (talents.halo -> ok())
+    base.distance = 27.0;
+  else
+    base.distance = 27.0;
+
   // Set Bonuses
   static const set_bonus_description_t set_bonuses =
   {
@@ -5131,7 +5173,6 @@ void priest_t::apl_default()
   if ( find_class_spell( "Shadowfiend" ) -> ok() )
   {
     def -> add_action( this, "Shadowfiend", ",if=mana.pct<50" );
-    def -> add_action( this, "Hymn of Hope", ",if=pet.shadowfiend.active&time>200" );
   }
   if ( race == RACE_TROLL )  def -> add_action( "berserking" );
   if ( race == RACE_BLOOD_ELF ) def -> add_action( "arcane_torrent,if=mana.pct<=90" );
@@ -5194,16 +5235,19 @@ void priest_t::apl_shadow()
   def -> add_action( this, "Vampiric Embrace", "if=shadow_orb=3&health.pct<=40" );
   def -> add_action( this, "Devouring Plague", "if=shadow_orb=3&ticks_remain<=1" );
   def -> add_action( this, "Mind Spike", "if=active_enemies<=5&buff.surge_of_darkness.react=2" );
-  def -> add_action( "halo,if=talent.halo.enabled" );
-  def -> add_action( "cascade_damage,if=talent.cascade.enabled" );
-  def -> add_action( "divine_star,if=talent.divine_star.enabled" );
+  def -> add_action( "halo,if=talent.halo.enabled&target.distance<=30&target.distance>=17" ); //When coefficients change, update minimum distance!
+  def -> add_action( "cascade_damage,if=talent.cascade.enabled&(active_enemies>1|target.distance>=28)&target.distance<=40&target.distance>=11" ); //When coefficients change, update minimum distance!
+  def -> add_action( "divine_star,if=talent.divine_star.enabled&(active_enemies>1|target.distance<=24)" );
   def -> add_action( "wait,sec=cooldown.shadow_word_death.remains,if=target.health.pct<20&cooldown.shadow_word_death.remains&cooldown.shadow_word_death.remains<0.5&active_enemies<=1" );
   def -> add_action( "wait,sec=cooldown.mind_blast.remains,if=cooldown.mind_blast.remains<0.5&cooldown.mind_blast.remains&active_enemies<=1" );
   def -> add_action( "mind_spike,if=buff.surge_of_darkness.react&active_enemies<=5" );
+  def -> add_action( "divine_star,if=talent.divine_star.enabled&target.distance<=28&active_enemies>1" );
   def -> add_action( this, "Mind Sear", "chain=1,interrupt=1,if=active_enemies>=3" );
   def -> add_action( this, "Mind Flay", "chain=1,interrupt=1" );
   def -> add_action( this, "Shadow Word: Death", "moving=1" );
   def -> add_action( this, "Mind Blast", "moving=1,if=buff.divine_insight_shadow.react&cooldown_react" );
+  def -> add_action( "divine_star,moving=1,if=talent.divine_star.enabled&target.distance<=28" );
+  def -> add_action( "cascade_damage,moving=1,if=talent.cascade.enabled&target.distance<=40" );
   def -> add_action( this, "Shadow Word: Pain", "moving=1" );
   def -> add_action( this, "Dispersion" );
 
@@ -5243,9 +5287,6 @@ void priest_t::apl_disc_heal()
     a += "mana.pct<70";
     def -> add_action( a );
   }
-
-  def -> add_action( this, "Hymn of Hope", "if=mana.pct<60" + std::string( ( level >= 42 ) ? "&(pet.mindbender.active|pet.shadowfiend.active)" : "" ) );
-
 
   if ( race != RACE_BLOOD_ELF )
   {
@@ -5359,7 +5400,7 @@ void priest_t::apl_holy_heal()
   std::string fiend_cond = ",if=mana.pct<30";
   if ( find_class_spell( "Shadowfiend" ) -> ok() )
     fiend_cond = ",if=(pet.mindbender.active|pet.shadowfiend.active)&mana.pct<=20";
-  def -> add_action( this, "Hymn of Hope", fiend_cond );
+
 
   std::string racial_condition;
   if ( race == RACE_BLOOD_ELF )
@@ -5416,8 +5457,6 @@ void priest_t::apl_holy_dmg()
     def -> add_action( "mindbender,if=talent.mindbender.enabled" );
     def -> add_action( "shadowfiend,if=!talent.mindbender.enabled" );
   }
-
-  def -> add_action( this, "Hymn of Hope", level >= 42 ? ",if=(pet.mindbender.active|pet.shadowfiend.active)&mana.pct<=20" : ",if=mana.pct<30" );
 
   def -> add_action( this, "Chakra: Chastise", ",if=buff.chakra_chastise.down" );
 

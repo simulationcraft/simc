@@ -1242,7 +1242,10 @@ class SpellDataGenerator(DataGenerator):
             ( 118340, 0 ),          # Impending Victory Heal
             ( 118779, 0, False ),   # Victory Rush heal is not directly activatable
             ( 144500, 0 ),          # T16 tank 4pc proc
-            ( 156321, 0 )           # Shield Charge for Gladiator Stance
+            ( 156321, 0 ),          # Shield Charge for Gladiator Stance
+            ( 58364, 0 ),           # Glyph of Hold the Line
+            ( 84619, 0 ),           # Buff for Glyph of Hold the Line
+            ( 58388, 0 )            # Glyph of Heavy Repercussions
         ),
         
         # Paladin:

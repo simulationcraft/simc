@@ -34,7 +34,6 @@
   - Black Ox Statue
   - Gift of the Ox
  
-  - Avert Harm
   - Zen Meditation
   - Cache stagger_pct
 */
@@ -369,6 +368,7 @@ public:
   virtual void      copy_from( player_t* );
   virtual resource_e primary_resource() const;
   virtual role_e    primary_role() const;
+  virtual stat_e    convert_hybrid_stat( stat_e s ) const;
   virtual void      pre_analyze_hook();
   virtual void      combat_begin();
   virtual void      assess_damage( school_e, dmg_e, action_state_t* s );
@@ -824,14 +824,6 @@ struct monk_melee_attack_t : public monk_action_t<melee_attack_t>
     return a;
   }
  
-  virtual void init()
-  {
-    base_t::init();
- 
-    if ( ! base_t::weapon && player -> weapon_racial( mh ) )
-      base_attack_expertise += 0.01;
-  }
- 
   // Special Monk Attack Weapon damage collection, if the pointers mh or oh are set, instead of the classical action_t::weapon
   // Damage is divided instead of multiplied by the weapon speed, AP portion is not multiplied by weapon speed.
   // Both MH and OH are directly weaved into one damage number
@@ -941,6 +933,9 @@ struct jab_t : public monk_melee_attack_t
     base_multiplier = 2.091; // hardcoded into tooltip
 
     base_costs[ RESOURCE_ENERGY ] += p -> active_stance_data( FIERCE_TIGER ).effectN( 7 ).base_value();
+ 
+    if ( player -> specialization() == MONK_BREWMASTER )
+      weapon_power_mod = 1 / 11.0;
   }
  
   double combo_breaker_chance()
@@ -965,10 +960,9 @@ struct jab_t : public monk_melee_attack_t
       return;
  
     double cb_chance = combo_breaker_chance();
-    // FIX ME
-    //if ( p() -> talent.chi_explosion_ww -> ok() )
-    //  p() -> buff.combo_breaker_ce -> trigger( 1, buff_t::DEFAULT_VALUE(), cb_chance );
-    //else
+    if ( p() -> talent.chi_explosion_ww -> ok() )
+      p() -> buff.combo_breaker_ce -> trigger( 1, buff_t::DEFAULT_VALUE(), cb_chance );
+    else
       p() -> buff.combo_breaker_bok -> trigger( 1, buff_t::DEFAULT_VALUE(), cb_chance );
     p() -> buff.combo_breaker_tp  -> trigger( 1, buff_t::DEFAULT_VALUE(), cb_chance );
  
@@ -1012,10 +1006,13 @@ struct tiger_palm_t : public monk_melee_attack_t
     base_dd_min = base_dd_max = attack_power_mod.direct = spell_power_mod.direct = 0.0;//  deactivate parsed spelleffect1
     mh = &( player -> main_hand_weapon ) ;
     oh = &( player -> off_hand_weapon ) ;
-    base_multiplier = 4.183; // hardcoded into tooltip
+    base_multiplier = 3.0; // hardcoded into tooltip
  
     if ( p -> spec.brewmaster_training -> ok() )
       base_costs[ RESOURCE_CHI ] = 0.0;
+ 
+    if ( player -> specialization() == MONK_BREWMASTER )
+      weapon_power_mod = 1 / 11.0;
   }
  
   virtual double action_multiplier() const
@@ -1112,6 +1109,9 @@ struct blackout_kick_t : public monk_melee_attack_t
     oh = &( player -> off_hand_weapon );
     base_multiplier = 9.929; // hardcoded into tooltip
 
+    if ( player -> specialization() == MONK_BREWMASTER )
+      weapon_power_mod = 1 / 11.0;
+ 
     if ( p -> spec.teachings_of_the_monastery -> ok() )
     {
       aoe = 1 + p -> spec.teachings_of_the_monastery -> effectN( 4 ).base_value();
@@ -1277,6 +1277,9 @@ struct chi_explosion_t : public monk_melee_attack_t
     mh = &( player -> main_hand_weapon );
     oh = &( player -> off_hand_weapon );
     school = SCHOOL_NATURE;
+    if ( player -> specialization() == MONK_BREWMASTER )
+      weapon_power_mod = 1 / 11.0;
+ 
   }
  
   virtual void impact( action_state_t* s )
@@ -1489,6 +1492,9 @@ struct spinning_crane_kick_t : public monk_melee_attack_t
       mh = &( player -> main_hand_weapon ) ;
       oh = &( player -> off_hand_weapon ) ;
       school = SCHOOL_PHYSICAL;
+ 
+      if ( player -> specialization() == MONK_BREWMASTER )
+        weapon_power_mod = 1 / 11.0;
     }
   };
  
@@ -1506,6 +1512,9 @@ struct spinning_crane_kick_t : public monk_melee_attack_t
       mh = &( player -> main_hand_weapon ) ;
       oh = &( player -> off_hand_weapon ) ;
       school = SCHOOL_PHYSICAL;
+ 
+      if ( player -> specialization() == MONK_BREWMASTER )
+        weapon_power_mod = 1 / 11.0;
     }
   };
  
@@ -1723,7 +1732,7 @@ struct hurricane_strike_t : public monk_melee_attack_t
  
 struct melee_t : public monk_melee_attack_t
 {
-
+ 
   int sync_weapons;
   bool first;
  
@@ -1757,7 +1766,7 @@ struct melee_t : public monk_melee_attack_t
     timespan_t t = monk_melee_attack_t::execute_time();
  
     if ( first )
-      return ( weapon -> slot == SLOT_OFF_HAND ) ? ( sync_weapons ? std::min( t / 2, timespan_t::from_seconds( 0.01 ) ) : t / 2 ) : timespan_t::from_seconds( 0.01 );
+      return ( weapon -> slot == SLOT_OFF_HAND ) ? ( sync_weapons ? std::min( t / 2, timespan_t::zero() ) : t / 2 ) : timespan_t::zero();
     else
       return t;
   }
@@ -1884,6 +1893,7 @@ struct keg_smash_t : public monk_melee_attack_t
     oh = &( player -> off_hand_weapon ) ;
  
     base_multiplier = 10.00; // hardcoded into tooltip
+    weapon_power_mod = 1 / 11.0; // BM AP -> DPS conversion is with ap/11
   }
  
   virtual double action_multiplier() const
@@ -1940,6 +1950,9 @@ struct expel_harm_t : public monk_melee_attack_t
 
     if ( p -> glyph.targeted_expulsion -> ok() )
       base_multiplier *= 1.0 - p -> glyph.targeted_expulsion -> effectN( 2 ).percent();
+ 
+    if ( player -> specialization() == MONK_BREWMASTER )
+      weapon_power_mod = 1 / 11.0;
   }
 
 
@@ -3594,7 +3607,7 @@ void monk_t::create_buffs()
   buff.combo_breaker_tp  = buff_creator_t( this, "combo_breaker_tp"    ).spell( find_spell( 118864 ) );
   buff.combo_breaker_ce  = buff_creator_t( this, "combo_breaker_ce"    ).spell( find_spell( 159407 ) );
   buff.energizing_brew   = buff_creator_t( this, "energizing_brew" ).spell( find_class_spell( "Energizing Brew" ) )
-                            .add_invalidate( CACHE_MULTISTRIKE );
+                           .add_invalidate( CACHE_MULTISTRIKE );
   buff.energizing_brew -> buff_duration += sets.set( SET_T14_4PC_MELEE ) -> effectN( 1 ).time_value(); //verify working
   buff.tigereye_brew     = buff_creator_t( this, "tigereye_brew"       ).spell( find_spell( 125195 ) );
   buff.tigereye_brew_use = buff_creator_t( this, "tigereye_brew_use"   ).spell( find_spell( 116740 ) ).add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
@@ -4099,6 +4112,40 @@ role_e monk_t::primary_role() const
     return ROLE_DPS;
  
   return ROLE_HYBRID;
+}
+
+// monk_t::convert_hybrid_stat ==============================================
+
+stat_e monk_t::convert_hybrid_stat( stat_e s ) const
+{
+  // this converts hybrid stats that either morph based on spec or only work
+  // for certain specs into the appropriate "basic" stats
+  switch ( s )
+  {
+  case STAT_AGI_INT: 
+    if ( specialization() == MONK_MISTWEAVER )
+      return STAT_INTELLECT;
+    else
+      return STAT_AGILITY; 
+  // This is a guess at how AGI/STR gear will work for MW/WW, TODO: confirm  
+  case STAT_STR_AGI:
+    return STAT_AGILITY;
+  // This is a guess at how STR/INT gear will work for BM/WW, TODO: confirm  
+  // this should probably never come up since monks can't equip plate, but....
+  case STAT_STR_INT:
+    return STAT_INTELLECT;
+  case STAT_SPIRIT:
+    if ( specialization() == MONK_MISTWEAVER )
+      return s;
+    else
+      return STAT_NONE;
+  case STAT_BONUS_ARMOR:
+    if ( specialization() == MONK_BREWMASTER )
+      return s;
+    else
+      return STAT_NONE;     
+  default: return s; 
+  }
 }
  
 // monk_t::pre_analyze_hook  ================================================
