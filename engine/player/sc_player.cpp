@@ -864,9 +864,9 @@ void player_t::init_initial_stats()
 }
 // player_t::init_items =====================================================
 
-void player_t::init_items()
+bool player_t::init_items()
 {
-  if ( is_pet() ) return;
+  if ( is_pet() ) return true;
 
   if ( sim -> debug )
     sim -> out_debug.printf( "Initializing items for player (%s)", name() );
@@ -909,22 +909,19 @@ void player_t::init_items()
     {
       sim -> errorf( "Unable to initialize item '%s' on player '%s'\n", item.name(), name() );
       sim -> cancel();
-      return;
+      return false;
     }
 
     if ( ! item.is_valid_type() )
     {
       sim -> errorf( "Item '%s' on player '%s' is of invalid type\n", item.name(), name() );
       sim -> cancel();
-      return;
+      return false;
     }
-
-
-
+    
     slots[ item.slot ] = item.is_matching_type();
 
     item_stats += item.stats;
-
   }
 
 
@@ -964,7 +961,7 @@ void player_t::init_items()
   // Sanity check - there should be no more hybrid STR/INT, AGI/STR, or AGI/INT stats leftover here!
   assert( gear.get_stat( STAT_AGI_INT ) == 0 );
   assert( gear.get_stat( STAT_STR_AGI ) == 0 );
-  assert( gear.get_stat( STAT_STR_INT )  == 0 );
+  assert( gear.get_stat( STAT_STR_INT ) == 0 );
 
   if ( sim -> debug )
   {
@@ -973,8 +970,11 @@ void player_t::init_items()
 
   sets.init( *this );
 
-  init_weapon ( main_hand_weapon );
+  // these initialize the weapons, but don't have a return value (yet?)
+  init_weapon( main_hand_weapon );
   init_weapon( off_hand_weapon );
+
+  return true;
 }
 
 // player_t::init_meta_gem ==================================================

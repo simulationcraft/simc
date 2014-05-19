@@ -2640,6 +2640,9 @@ public:
   bool      check_actors();
   bool      init_parties();
   bool      init_actors();
+ private: 
+  bool      init_items();
+ public: 
   bool      init();
   void      analyze();
   void      merge( sim_t& other_sim );
@@ -4510,7 +4513,7 @@ public:
   virtual void init_position();
   virtual void init_professions();
   virtual void init_spells();
-  virtual void init_items();
+  virtual bool init_items();
   virtual void init_weapon( weapon_t& );
   virtual void init_base_stats();
   virtual void init_initial_stats();

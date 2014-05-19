@@ -1305,6 +1305,23 @@ bool sim_t::init_parties()
   return true;
 }
 
+// init_items ===============================================================
+// This is a helper function that loops through each actor and calls its respective
+// player_t::init_items() method. Note that it's in the anonymous namespace, and
+// thus restricted to the sim_t object.
+
+bool sim_t::init_items()
+{  
+  bool success = true;
+
+  for ( size_t i = 0; i < actor_list.size(); i++ )
+  {
+    if ( ! actor_list[ i ] -> init_items() )
+      success = false;
+  }
+  return success;
+}
+
 // sim_t::init_actors =======================================================
 // This method handles the bulk of player initialization. Order is pretty 
 // critical here. Called in sim_t::init()
@@ -1353,9 +1370,11 @@ bool sim_t::init_actors()
   range::for_each( actor_list, std::mem_fn( &player_t::init_target ) );
   range::for_each( actor_list, std::mem_fn( &player_t::init_character_properties ) );
 
-  // Initialize items, construct gear information & stats
-  range::for_each( actor_list, std::mem_fn( &player_t::init_items ) );
-  if ( is_canceled() ) {return false;} // Temporary fix for assert caused by incomplete item initialization
+  // Initialize each actor's items, construct gear information & stats
+  if ( ! init_items() )
+    return false;
+
+  // Initialize spells
   range::for_each( actor_list, std::mem_fn( &player_t::init_spells ) );
 
   range::for_each( actor_list, std::mem_fn( &player_t::init_base_stats ) );
