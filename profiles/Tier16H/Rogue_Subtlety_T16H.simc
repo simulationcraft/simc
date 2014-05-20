@@ -69,35 +69,35 @@ actions.finisher+=/run_action_list,name=pool
 
 actions.pool=preparation,if=!buff.vanish.up&cooldown.vanish.remains>60
 
-head=helmet_of_the_barbed_assassin,id=99348,upgrade=2,gems=capacitive_primal_160agi_180agi,reforge=mastery_crit
-neck=gleaming_eye_of_the_devilsaur,id=105602,upgrade=2
-shoulders=spaulders_of_the_barbed_assassin,id=99350,upgrade=2,gems=160agi_160agi_120agi,enchant=200agi_100crit,reforge=exp_hit
-back=fenyu_fury_of_xuen,id=102248,upgrade=2,gems=160agi_60agi,enchant=180crit,reforge=mastery_exp
-chest=tunic_of_the_barbed_assassin,id=99356,upgrade=2,gems=160agi_160agi_160agi_180agi,enchant=80all,reforge=mastery_crit
-wrists=bombers_blackened_wristwatch,id=105616,upgrade=2,gems=160agi,enchant=180agi,reforge=mastery_exp
-hands=gloves_of_the_barbed_assassin,id=99355,upgrade=2,gems=160agi_160agi__160agi_120agi,enchant=170haste,addon=synapse_springs_2,reforge=mastery_crit
-waist=cord_of_black_dreams,id=105635,upgrade=2,gems=160agi_80agi_160haste_160agi_120agi,reforge=crit_hit
-legs=rious_vigilant_leggings,id=105529,upgrade=2,gems=80agi_160hit_80agi_160hit_120agi,enchant=285agi_165crit,reforge=mastery_haste
-feet=stonetoes_tormented_treads,id=105431,upgrade=2,gems=160agi_60mastery,enchant=140agi,reforge=hit_crit
-finger1=kilruks_band_of_ascendancy,id=105624,upgrade=2,gems=160agi_60crit,reforge=mastery_hit
-finger2=swift_serpent_signet,id=105483,upgrade=2,gems=80agi_160haste_60crit,reforge=mastery_haste
-trinket1=assurance_of_consequence,id=105472,upgrade=2
-trinket2=haromms_talisman,id=105527,upgrade=2
-main_hand=hvitserks_formidable_shanker,id=105601,upgrade=2,gems=160agi_60agi,enchant=dancing_steel,reforge=mastery_hit
-off_hand=hvitserks_formidable_shanker,id=105601,upgrade=2,gems=160agi_60agi,enchant=dancing_steel,reforge=mastery_exp
+head=helmet_of_the_barbed_assassin,id=99348,upgrade=4,gems=capacitive_primal_160agi_180agi,reforge=mastery_crit
+neck=gleaming_eye_of_the_devilsaur,id=105602,upgrade=4
+shoulders=spaulders_of_the_barbed_assassin,id=99350,upgrade=4,gems=160agi_160agi_120agi,enchant=200agi_100crit,reforge=exp_hit
+back=fenyu_fury_of_xuen,id=102248,upgrade=4,gems=160agi_60agi,enchant=180crit,reforge=mastery_exp
+chest=tunic_of_the_barbed_assassin,id=99356,upgrade=4,gems=160agi_160agi_160agi_180agi,enchant=80all,reforge=mastery_crit
+wrists=bombers_blackened_wristwatch,id=105616,upgrade=4,gems=160agi,enchant=180agi,reforge=mastery_exp
+hands=gloves_of_the_barbed_assassin,id=99355,upgrade=4,gems=160agi_160agi__160agi_120agi,enchant=170haste,addon=synapse_springs_2,reforge=mastery_crit
+waist=cord_of_black_dreams,id=105635,upgrade=4,gems=160agi_80agi_160haste_160agi_120agi,reforge=crit_hit
+legs=rious_vigilant_leggings,id=105529,upgrade=4,gems=80agi_160hit_80agi_160hit_120agi,enchant=285agi_165crit,reforge=mastery_haste
+feet=stonetoes_tormented_treads,id=105431,upgrade=4,gems=160agi_60mastery,enchant=140agi,reforge=hit_crit
+finger1=kilruks_band_of_ascendancy,id=105624,upgrade=4,gems=160agi_60crit,reforge=mastery_hit
+finger2=swift_serpent_signet,id=105483,upgrade=4,gems=80agi_160haste_60crit,reforge=mastery_haste
+trinket1=assurance_of_consequence,id=105472,upgrade=4
+trinket2=haromms_talisman,id=105527,upgrade=4
+main_hand=hvitserks_formidable_shanker,id=105601,upgrade=4,gems=160agi_60agi,enchant=dancing_steel,reforge=mastery_hit
+off_hand=hvitserks_formidable_shanker,id=105601,upgrade=4,gems=160agi_60agi,enchant=dancing_steel,reforge=mastery_exp
 
 # Gear Summary
 # gear_strength=80
-# gear_agility=29001
-# gear_stamina=38571
+# gear_agility=30990
+# gear_stamina=41549
 # gear_intellect=80
 # gear_spirit=80
-# gear_expertise_rating=2541
-# gear_hit_rating=2550
-# gear_crit_rating=7478
-# gear_haste_rating=15030
-# gear_mastery_rating=6854
-# gear_armor=22619
+# gear_expertise_rating=2749
+# gear_hit_rating=2734
+# gear_crit_rating=8014
+# gear_haste_rating=16209
+# gear_mastery_rating=7407
+# gear_armor=23082
 # meta_gem=capacitive_primal
 # tier16_2pc_melee=1
 # tier16_4pc_melee=1

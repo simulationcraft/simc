@@ -77,34 +77,34 @@ actions.aoe+=/thunderstorm,if=mana.pct_nonproc<80
 actions.aoe+=/chain_lightning,if=mana.pct_nonproc>10
 actions.aoe+=/lightning_bolt
 
-head=headpiece_of_celestial_harmony,id=99332,upgrade=2,gems=sinister_primal_80int_160haste_180int
-neck=necklace_of_fading_light,id=105473,upgrade=2,reforge=spi_mastery
-shoulders=shoulderwraps_of_celestial_harmony,id=99334,upgrade=2,gems=80int_160haste_80int_160haste_120int,enchant=200int_100crit,reforge=crit_mastery
-back=xingho_breath_of_yulon,id=102246,upgrade=2,gems=80int_160haste_60int,enchant=180int,addon=goblin_glider
-chest=hauberk_of_celestial_harmony,id=99344,upgrade=2,gems=80int_160haste_80int_160haste_80int_160haste_180int,enchant=80all,reforge=crit_haste
-wrists=bracers_of_the_pristine_purifier,id=105598,upgrade=2,gems=320haste,enchant=180int
-hands=grips_of_tidal_force,id=105501,upgrade=2,gems=80int_160haste_320haste_320haste_120int,enchant=170haste,addon=synapse_springs_mark_ii,reforge=crit_haste
-waist=chitinlink_chain_belt,id=105597,upgrade=2,gems=80int_160haste_320haste_320haste_120int,reforge=spi_haste
-legs=leggings_of_celestial_harmony,id=99333,upgrade=2,gems=320haste_320haste_120int,enchant=285int_165crit,reforge=spi_haste
-feet=powderstained_totemic_treads,id=105618,upgrade=2,gems=160haste_160spi_60spi,enchant=140mastery
-finger1=signet_of_the_dinomancers,id=105606,upgrade=2,gems=80int_160haste_60spi
-finger2=laserslice_signet,id=105520,upgrade=2,gems=320haste_60spi,reforge=spi_mastery
-trinket1=purified_bindings_of_immerseus,id=105422,upgrade=2
-trinket2=kardris_toxic_totem,id=105540,upgrade=2
-main_hand=kardris_scepter,id=105541,upgrade=2,gems=80int_160haste_60int,enchant=jade_spirit,reforge=spi_haste
-off_hand=revelations_of_yshaarj,id=105650,upgrade=2,gems=80int_160haste_60int,enchant=165int
+head=headpiece_of_celestial_harmony,id=99332,upgrade=4,gems=sinister_primal_80int_160haste_180int
+neck=necklace_of_fading_light,id=105473,upgrade=4,reforge=spi_mastery
+shoulders=shoulderwraps_of_celestial_harmony,id=99334,upgrade=4,gems=80int_160haste_80int_160haste_120int,enchant=200int_100crit,reforge=crit_mastery
+back=xingho_breath_of_yulon,id=102246,upgrade=4,gems=80int_160haste_60int,enchant=180int,addon=goblin_glider
+chest=hauberk_of_celestial_harmony,id=99344,upgrade=4,gems=80int_160haste_80int_160haste_80int_160haste_180int,enchant=80all,reforge=crit_haste
+wrists=bracers_of_the_pristine_purifier,id=105598,upgrade=4,gems=320haste,enchant=180int
+hands=grips_of_tidal_force,id=105501,upgrade=4,gems=80int_160haste_320haste_320haste_120int,enchant=170haste,addon=synapse_springs_mark_ii,reforge=crit_haste
+waist=chitinlink_chain_belt,id=105597,upgrade=4,gems=80int_160haste_320haste_320haste_120int,reforge=spi_haste
+legs=leggings_of_celestial_harmony,id=99333,upgrade=4,gems=320haste_320haste_120int,enchant=285int_165crit,reforge=spi_haste
+feet=powderstained_totemic_treads,id=105618,upgrade=4,gems=160haste_160spi_60spi,enchant=140mastery
+finger1=signet_of_the_dinomancers,id=105606,upgrade=4,gems=80int_160haste_60spi
+finger2=laserslice_signet,id=105520,upgrade=4,gems=320haste_60spi,reforge=spi_mastery
+trinket1=purified_bindings_of_immerseus,id=105422,upgrade=4
+trinket2=kardris_toxic_totem,id=105540,upgrade=4
+main_hand=kardris_scepter,id=105541,upgrade=4,gems=80int_160haste_60int,enchant=jade_spirit,reforge=spi_haste
+off_hand=revelations_of_yshaarj,id=105650,upgrade=4,gems=80int_160haste_60int,enchant=165int
 
 # Gear Summary
 # gear_strength=80
 # gear_agility=80
-# gear_stamina=39030
-# gear_intellect=27432
-# gear_spirit=4686
-# gear_spell_power=15321
-# gear_crit_rating=3777
-# gear_haste_rating=17041
-# gear_mastery_rating=13272
-# gear_armor=30844
+# gear_stamina=42045
+# gear_intellect=29446
+# gear_spirit=5029
+# gear_spell_power=16509
+# gear_crit_rating=4038
+# gear_haste_rating=18032
+# gear_mastery_rating=14342
+# gear_armor=31476
 # meta_gem=sinister_primal
 # tier16_2pc_caster=1
 # tier16_4pc_caster=1

@@ -64,35 +64,35 @@ actions+=/cascade_damage,moving=1,if=talent.cascade.enabled&target.distance<=40
 actions+=/shadow_word_pain,moving=1
 actions+=/dispersion
 
-head=hood_of_the_ternion_glory,id=99360,upgrade=2,gems=sinister_primal_80int_160mastery_180int
-neck=necklace_of_fading_light,id=105473,upgrade=2
-shoulders=shoulderguards_of_the_ternion_glory,id=99363,upgrade=2,gems=80int_160mastery_80int_160mastery_120int,enchant=200int_100crit
-back=xingho_breath_of_yulon,id=102246,upgrade=2,gems=80int_160haste_60int,enchant=180int
-chest=raiment_of_the_ternion_glory,id=99362,upgrade=2,gems=80int_160haste_80int_160haste_80int_160haste_180int,enchant=80all,reforge=crit_haste
-wrists=bracers_of_sonic_projection,id=105626,upgrade=2,gems=320mastery,enchant=180int
-hands=gloves_of_the_ternion_glory,id=99359,upgrade=2,gems=80int_160mastery_80int_160mastery_320mastery_120int,enchant=170haste,addon=synapse_springs_mark_ii
-waist=belt_of_the_broken_pact,id=105646,upgrade=2,gems=80int_160mastery_320mastery_320haste_120int,reforge=mastery_haste
-legs=leggings_of_furious_flame,id=105516,upgrade=2,gems=320spi_320spi_120int,enchant=285int_165crit
-feet=boneinlaid_sandals,id=105493,upgrade=2,gems=320haste_60int,enchant=175haste
-finger1=signet_of_the_dinomancers,id=105606,upgrade=2,gems=80int_160mastery_60hit
-finger2=laserslice_signet,id=105520,upgrade=2,gems=320mastery_60spi
-trinket1=purified_bindings_of_immerseus,id=105422,upgrade=2
-trinket2=kardris_toxic_totem,id=105540,upgrade=2
-main_hand=horned_mace_of_the_old_ones,id=105649,upgrade=2,gems=80int_160mastery_60int,enchant=jade_spirit
-off_hand=revelations_of_yshaarj,id=105650,upgrade=2,gems=80int_160mastery_60int,enchant=165int
+head=hood_of_the_ternion_glory,id=99360,upgrade=4,gems=sinister_primal_80int_160mastery_180int
+neck=necklace_of_fading_light,id=105473,upgrade=4
+shoulders=shoulderguards_of_the_ternion_glory,id=99363,upgrade=4,gems=80int_160mastery_80int_160mastery_120int,enchant=200int_100crit
+back=xingho_breath_of_yulon,id=102246,upgrade=4,gems=80int_160haste_60int,enchant=180int
+chest=raiment_of_the_ternion_glory,id=99362,upgrade=4,gems=80int_160haste_80int_160haste_80int_160haste_180int,enchant=80all,reforge=crit_haste
+wrists=bracers_of_sonic_projection,id=105626,upgrade=4,gems=320mastery,enchant=180int
+hands=gloves_of_the_ternion_glory,id=99359,upgrade=4,gems=80int_160mastery_80int_160mastery_320mastery_120int,enchant=170haste,addon=synapse_springs_mark_ii
+waist=belt_of_the_broken_pact,id=105646,upgrade=4,gems=80int_160mastery_320mastery_320haste_120int,reforge=mastery_haste
+legs=leggings_of_furious_flame,id=105516,upgrade=4,gems=320spi_320spi_120int,enchant=285int_165crit
+feet=boneinlaid_sandals,id=105493,upgrade=4,gems=320haste_60int,enchant=175haste
+finger1=signet_of_the_dinomancers,id=105606,upgrade=4,gems=80int_160mastery_60hit
+finger2=laserslice_signet,id=105520,upgrade=4,gems=320mastery_60spi
+trinket1=purified_bindings_of_immerseus,id=105422,upgrade=4
+trinket2=kardris_toxic_totem,id=105540,upgrade=4
+main_hand=horned_mace_of_the_old_ones,id=105649,upgrade=4,gems=80int_160mastery_60int,enchant=jade_spirit
+off_hand=revelations_of_yshaarj,id=105650,upgrade=4,gems=80int_160mastery_60int,enchant=165int
 
 # Gear Summary
 # gear_strength=80
 # gear_agility=80
-# gear_stamina=39087
-# gear_intellect=27610
-# gear_spirit=4678
-# gear_spell_power=15321
+# gear_stamina=42105
+# gear_intellect=29626
+# gear_spirit=4994
+# gear_spell_power=16509
 # gear_hit_rating=60
-# gear_crit_rating=5552
-# gear_haste_rating=16479
-# gear_mastery_rating=12091
-# gear_armor=18104
+# gear_crit_rating=5959
+# gear_haste_rating=17684
+# gear_mastery_rating=12848
+# gear_armor=18475
 # meta_gem=sinister_primal
 # tier16_2pc_caster=1
 # tier16_4pc_caster=1
