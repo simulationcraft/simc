@@ -54,34 +54,34 @@ actions+=/consecration,if=target.debuff.flying.down&!ticking
 actions+=/holy_prism,if=talent.holy_prism.enabled
 actions+=/sacred_shield,if=talent.sacred_shield.enabled
 
-head=faceguard_of_winged_triumph,id=99370,upgrade=2,gems=indomitable_primal_160exp_160haste_270sta,reforge=parry_mastery
-neck=juggernauts_ignition_keys,id=105513,upgrade=2,reforge=hit_haste
-shoulders=shoulderguards_of_winged_triumph,id=99364,upgrade=2,gems=320haste_320haste,enchant=300sta_100dodge,reforge=exp_haste
-back=qianying_fortitude_of_niuzao,id=102250,upgrade=2,gems=160exp_160haste_90sta,enchant=200sta,reforge=parry_haste
-chest=chestguard_of_winged_triumph,id=99368,upgrade=2,gems=160exp_160haste_160exp_160haste_160exp_160haste_270sta,enchant=300sta,reforge=exp_haste
-wrists=bubbleburst_bracers,id=105411,upgrade=2,gems=320haste,enchant=170mastery
-hands=handguards_of_winged_triumph,id=99369,upgrade=2,gems=320haste_320haste_320haste,enchant=170haste,reforge=exp_hit
-waist=demolishers_reinforced_belt,id=105509,upgrade=2,gems=320haste_320haste_320haste
-legs=legplates_of_unthinking_strife,id=105640,upgrade=2,gems=320haste_320haste_320haste,enchant=430sta_165dodge
-feet=wolfrider_spurs,id=105531,upgrade=2,gems=320haste_60crit,enchant=175haste,reforge=crit_hit
-finger1=asgorathian_blood_seal,id=105620,upgrade=2,gems=160exp_160haste_60haste,enchant=240sta,reforge=exp_mastery
-finger2=seal_of_the_forgotten_kings,id=105589,upgrade=2,gems=160exp_160haste_60haste,enchant=240sta,reforge=crit_mastery
-trinket1=vial_of_living_corruption,id=105568,upgrade=2
-trinket2=thoks_tail_tip,id=105609,upgrade=2
-main_hand=siegecrafters_forge_hammer,id=105621,upgrade=2,gems=320haste,enchant=windsong
-off_hand=bulwark_of_the_fallen_general,id=105556,upgrade=2,gems=320haste,enchant=170parry,reforge=exp_haste
+head=faceguard_of_winged_triumph,id=99370,upgrade=4,gems=indomitable_primal_160exp_160haste_270sta,reforge=parry_mastery
+neck=juggernauts_ignition_keys,id=105513,upgrade=4
+shoulders=shoulderguards_of_winged_triumph,id=99364,upgrade=4,gems=320haste_320haste,enchant=300sta_100dodge,reforge=exp_haste
+back=qianying_fortitude_of_niuzao,id=102250,upgrade=4,gems=160exp_160haste_90sta,enchant=200sta,reforge=exp_haste
+chest=chestguard_of_winged_triumph,id=99368,upgrade=4,gems=160exp_160haste_160exp_160haste_160exp_160haste_270sta,enchant=300sta,reforge=exp_haste
+wrists=bubbleburst_bracers,id=105411,upgrade=4,gems=320haste,enchant=170mastery,reforge=hit_mastery
+hands=handguards_of_winged_triumph,id=99369,upgrade=4,gems=320haste_320haste_320haste,enchant=150sta,reforge=exp_mastery
+waist=demolishers_reinforced_belt,id=105509,upgrade=4,gems=320haste_320haste_320haste
+legs=legplates_of_unthinking_strife,id=105640,upgrade=4,gems=320haste_320haste_320haste,enchant=430sta_165dodge
+feet=wolfrider_spurs,id=105531,upgrade=4,gems=320haste_60crit,enchant=150sta,reforge=crit_mastery
+finger1=asgorathian_blood_seal,id=105620,upgrade=4,gems=320haste,enchant=240sta,reforge=exp_mastery
+finger2=seal_of_the_forgotten_kings,id=105589,upgrade=4,gems=160haste_120sta,enchant=240sta,reforge=crit_hit
+trinket1=vial_of_living_corruption,id=105568,upgrade=4
+trinket2=thoks_tail_tip,id=105609,upgrade=4
+main_hand=siegecrafters_forge_hammer,id=105621,upgrade=4,gems=320haste,enchant=windsong,reforge=mastery_hit
+off_hand=bulwark_of_the_fallen_general,id=105556,upgrade=4,gems=320haste,enchant=170parry,reforge=exp_haste
 
 # Gear Summary
-# gear_strength=24320
-# gear_stamina=45450
-# gear_expertise_rating=5199
-# gear_hit_rating=2581
-# gear_crit_rating=1432
-# gear_haste_rating=19052
-# gear_mastery_rating=10868
-# gear_armor=64101
+# gear_strength=26336
+# gear_stamina=49181
+# gear_expertise_rating=4787
+# gear_hit_rating=2550
+# gear_crit_rating=1543
+# gear_haste_rating=19336
+# gear_mastery_rating=12417
+# gear_armor=65415
 # gear_dodge_rating=265
-# gear_parry_rating=1706
+# gear_parry_rating=2259
 # meta_gem=indomitable_primal
 # tier16_2pc_tank=1
 # tier16_4pc_tank=1

@@ -64,34 +64,34 @@ actions+=/divine_storm,if=active_enemies>=2&buff.inquisition.remains>4
 actions+=/templars_verdict,if=buff.inquisition.remains>4
 actions+=/holy_prism,if=talent.holy_prism.enabled
 
-head=helmet_of_winged_triumph,id=99379,upgrade=2,gems=capacitive_primal_160exp_160haste_180str
-neck=juggernauts_ignition_keys,id=105513,upgrade=2,reforge=hit_haste
-shoulders=pauldrons_of_winged_triumph,id=99373,upgrade=2,gems=160exp_160haste_160exp_160haste_120str,enchant=200str_100crit,reforge=exp_haste
-back=gonglu_strength_of_xuen,id=102249,upgrade=2,gems=80str_160haste_60str,enchant=180hit
-chest=battleplate_of_winged_triumph,id=99387,upgrade=2,gems=160exp_160haste_160exp_160haste_160exp_160haste_180str,enchant=80all
-wrists=bubbleburst_bracers,id=105411,upgrade=2,gems=320haste,enchant=180str,reforge=hit_mastery
-hands=gauntlets_of_winged_triumph,id=99380,upgrade=2,gems=80str_160haste_80str_160haste_320haste_120str,enchant=170str,addon=synapse_springs_mark_ii,reforge=hit_mastery
-waist=demolishers_reinforced_belt,id=105509,upgrade=2,gems=160exp_160haste_320haste_320haste_120str
-legs=legplates_of_unthinking_strife,id=105640,upgrade=2,gems=160hit_160haste_160hit_160haste_160exp_160haste_180str,enchant=285str_165crit
-feet=wolfrider_spurs,id=105531,upgrade=2,gems=320haste_60crit,enchant=175haste,reforge=crit_mastery
-finger1=asgorathian_blood_seal,id=105620,upgrade=2,gems=80str_160haste_60haste,reforge=exp_hit
-finger2=seal_of_the_forgotten_kings,id=105589,upgrade=2,gems=80str_160haste_60haste,reforge=crit_mastery
-trinket1=evil_eye_of_galakras,id=105491,upgrade=2
-trinket2=thoks_tail_tip,id=105609,upgrade=2
-main_hand=britomarts_jagged_pike,id=105610,upgrade=2,gems=320haste_60str,enchant=dancing_steel
+head=helmet_of_winged_triumph,id=99379,upgrade=4,gems=capacitive_primal_160exp_160haste_180str,reforge=mastery_crit
+neck=juggernauts_ignition_keys,id=105513,upgrade=4,reforge=hit_crit
+shoulders=pauldrons_of_winged_triumph,id=99373,upgrade=4,gems=160exp_160haste_160exp_160haste_120str,enchant=200str_100crit,reforge=exp_haste
+back=gonglu_strength_of_xuen,id=102249,upgrade=4,gems=80str_160haste_60str,enchant=180crit
+chest=battleplate_of_winged_triumph,id=99387,upgrade=4,gems=160exp_160haste_160exp_160haste_160exp_160haste_180str,enchant=80all,reforge=mastery_crit
+wrists=bubbleburst_bracers,id=105411,upgrade=4,gems=320haste,enchant=180str,reforge=hit_crit
+hands=gauntlets_of_winged_triumph,id=99380,upgrade=4,gems=80str_160haste_160exp_160crit_320haste_120str,enchant=170str,addon=synapse_springs_mark_ii,reforge=hit_crit
+waist=demolishers_reinforced_belt,id=105509,upgrade=4,gems=160exp_160crit_320haste_320haste_120str,reforge=mastery_crit
+legs=legplates_of_unthinking_strife,id=105640,upgrade=4,gems=160hit_160haste_160hit_160haste_160str_160crit_180str,enchant=285str_165crit,reforge=mastery_crit
+feet=wolfrider_spurs,id=105531,upgrade=4,gems=160haste_160hit_60crit,enchant=175haste
+finger1=asgorathian_blood_seal,id=105620,upgrade=4,gems=320haste,reforge=exp_crit
+finger2=seal_of_the_forgotten_kings,id=105589,upgrade=4,gems=160crit_160hit
+trinket1=evil_eye_of_galakras,id=105491,upgrade=4
+trinket2=thoks_tail_tip,id=105609,upgrade=4
+main_hand=britomarts_jagged_pike,id=105610,upgrade=4,gems=320haste_60str,enchant=dancing_steel,reforge=mastery_crit
 
 # Gear Summary
-# gear_strength=26774
+# gear_strength=28712
 # gear_agility=80
-# gear_stamina=39144
+# gear_stamina=42167
 # gear_intellect=80
 # gear_spirit=80
-# gear_expertise_rating=2554
-# gear_hit_rating=2682
-# gear_crit_rating=3012
-# gear_haste_rating=19470
-# gear_mastery_rating=12488
-# gear_armor=41582
+# gear_expertise_rating=2659
+# gear_hit_rating=2595
+# gear_crit_rating=10043
+# gear_haste_rating=19475
+# gear_mastery_rating=8326
+# gear_armor=42433
 # meta_gem=capacitive_primal
 # tier16_2pc_melee=1
 # tier16_4pc_melee=1
