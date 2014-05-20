@@ -3217,7 +3217,7 @@ void flurry_of_xuen( item_t* item )
   special_effect_t effect;
   effect.name_str   = name;
   effect.ppm        = -1.0 * driver -> real_ppm();
-  effect.ppm       *= item_database::approx_scale_coefficient( item -> parsed.data.level, item -> item_level() );
+  effect.ppm       *= item_database::approx_scale_coefficient( item -> parsed.data.level, std::min( 608U, item -> item_level() ) );
   effect.rppm_scale = RPPM_HASTE;
   effect.cooldown   = driver -> internal_cooldown();
 
@@ -3290,7 +3290,7 @@ void essence_of_yulon( item_t* item )
   special_effect_t effect;
   effect.name_str = name;
   effect.ppm = -1.0 * driver -> real_ppm();
-  effect.ppm        *= item_database::approx_scale_coefficient( item -> parsed.data.level, item -> item_level() );
+  effect.ppm        *= item_database::approx_scale_coefficient( item -> parsed.data.level, std::min( 608U, item -> item_level() ) );
   effect.rppm_scale = RPPM_HASTE;
 
   essence_of_yulon_cb_t* cb = new essence_of_yulon_cb_t( item, effect, driver );
