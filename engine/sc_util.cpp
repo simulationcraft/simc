@@ -1572,7 +1572,8 @@ const char* util::stat_type_wowhead( stat_e stat )
     case STAT_WEAPON_DPS:   return "__dps";
     case STAT_WEAPON_SPEED: return "__speed";
 
-    case STAT_ARMOR:             return "armor"; // WOD-TODO: wowhead currently doesn't discriminate between armor and bonus armor
+    case STAT_ARMOR:             return "armor"; 
+    case STAT_BONUS_ARMOR:       return "armorbonus";
     case STAT_RESILIENCE_RATING: return "resilRating";
     case STAT_DODGE_RATING:      return "dodgeRating";
     case STAT_PARRY_RATING:      return "parryRating";
