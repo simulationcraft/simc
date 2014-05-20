@@ -240,10 +240,10 @@ tokenized_map_t<talent_data_t> tokenized_talent_map;
 } // ANONYMOUS namespace ====================================================
 
 int dbc::build_level( bool ptr )
-{ return maybe_ptr( ptr ) ? 18224 : 17898; }
+{ return maybe_ptr( ptr ) ? 18224 : 18274; }
 
 const char* dbc::wow_version( bool ptr )
-{ return maybe_ptr( ptr ) ? "5.4.8" : "5.4.7"; }
+{ return maybe_ptr( ptr ) ? "5.4.8" : "5.4.8"; }
 
 const char* dbc::wow_ptr_status( bool ptr )
 { return ( maybe_ptr( ptr ) ?
