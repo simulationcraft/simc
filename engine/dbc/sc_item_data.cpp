@@ -120,7 +120,11 @@ int item_database::scaled_stat( const item_data_t& item, const dbc_t& dbc, size_
   // Precise stat scaling formula for ilevel increase, stats should be
   // spot on.
   if ( item.stat_alloc[ idx ] > 0 /* && orig_budget > 0 */ && item_budget > 0 )
-    return static_cast<int>( util::round( ( item.stat_alloc[ idx ] / 10000.0 ) * item_budget - item.stat_socket_mul[ idx ] * dbc.item_socket_cost( new_ilevel ) /* * ( item_budget / orig_budget ) */ ) );
+  {
+    double v_raw = util::round( item.stat_alloc[ idx ] * item_budget / 10000.0 );
+    double v_socket_penalty = util::round( item.stat_socket_mul[ idx ] * dbc.item_socket_cost( new_ilevel ) );
+    return static_cast<int>( v_raw - v_socket_penalty );
+  }
   // TODO(?): Should we warn the user that we are using an approximation of
   // the upgraded stats, and that certain stats may be off by one?
   else
