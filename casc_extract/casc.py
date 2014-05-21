@@ -513,7 +513,7 @@ class CASCRootFile(object):
 		
 		file_locations = []
 		for key in keys:
-			file_locations.append((key, self.build.root_file().decode('hex')) + self.index.GetIndexData(key)[0])
+			file_locations.append((key, self.build.root_file().decode('hex')) + self.index.GetIndexData(key))
 		
 		if len(file_locations) == 0:
 			self.options.parser.error('Could not find root file location in data')
