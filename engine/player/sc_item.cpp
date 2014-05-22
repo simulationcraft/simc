@@ -403,6 +403,9 @@ bool item_t::parse_options()
     opt_string( "ilevel", option_ilevel_str ),
     opt_string( "quality", option_quality_str ),
     opt_string( "source", option_data_source_str ),
+    opt_string( "gem_id", option_gem_id_str ),
+    opt_string( "enchant_id", option_enchant_id_str ),
+    opt_string( "addon_id", option_addon_id_str ),
     opt_null()
   };
 
@@ -425,6 +428,25 @@ bool item_t::parse_options()
   util::tolower( option_armor_type_str       );
   util::tolower( option_ilevel_str           );
   util::tolower( option_quality_str          );
+
+  if ( ! option_gem_id_str.empty() )
+  {
+    std::vector<std::string> spl = util::string_split( option_gem_id_str, "/" );
+    for ( size_t i = 0, end = std::min( sizeof_array( parsed.gem_id ), spl.size() ); i < end; i++ )
+    {
+      unsigned gem_id = util::to_unsigned( spl[ i ] );
+      if ( gem_id == 0 )
+        continue;
+
+      parsed.gem_id[ i ] = gem_id;
+    }
+  }
+
+  if ( ! option_enchant_id_str.empty() )
+    parsed.enchant_id = util::to_unsigned( option_enchant_id_str );
+
+  if ( ! option_addon_id_str.empty() )
+    parsed.addon_id = util::to_unsigned( option_addon_id_str );
 
   return true;
 }
@@ -499,17 +521,37 @@ std::string item_t::encoded_item()
   if ( ! option_weapon_str.empty() )
     s << ",weapon=" << encoded_weapon();
 
-  if ( ! option_gems_str.empty() || parsed.gem_stats.size() > 0 ||
-       ( slot == SLOT_HEAD && player -> meta_gem != META_GEM_NONE ) )
+  // If gems= is given, always print it out
+  if ( ! option_gems_str.empty() )
+    s << ",gems=" << encoded_gems();
+  // Print out gems= string to profiles, if there is no gem_id= given, and
+  // there are gems to spit out.  Note that gem_id= option is also always
+  // printed below, and if present, the gems= string will be found in "gear
+  // comments" (enabled by save_gear_comments=1 option).
+  else if ( option_gem_id_str.empty() && ( parsed.gem_stats.size() > 0 ||
+      ( slot == SLOT_HEAD && player -> meta_gem != META_GEM_NONE ) ) )
     s << ",gems=" << encoded_gems();
 
-  if ( ! option_enchant_str.empty() || parsed.enchant_stats.size() > 0 ||
-       ! parsed.encoded_enchant.empty() )
+  if ( ! option_gem_id_str.empty() )
+    s << ",gem_id=" << option_gem_id_str;
+
+  if ( ! option_enchant_str.empty() )
+    s << ",enchant=" << encoded_enchant();
+  else if ( option_enchant_id_str.empty() && 
+            ( parsed.enchant_stats.size() > 0 || ! parsed.encoded_enchant.empty() ) )
     s << ",enchant=" << encoded_enchant();
 
-  if ( ! option_addon_str.empty() || parsed.addon_stats.size() > 0 ||
-       ! parsed.encoded_addon.empty() )
+  if ( ! option_enchant_id_str.empty() )
+    s << ",enchant_id=" << option_enchant_id_str;
+
+  if ( ! option_addon_str.empty() )
     s << ",addon=" << encoded_addon();
+  else if (  option_addon_id_str.empty() &&
+        ( parsed.addon_stats.size() > 0 || ! parsed.encoded_addon.empty() ) )
+    s << ",addon=" << encoded_addon();
+
+  if ( ! option_addon_id_str.empty() )
+    s << ",addon_id=" << option_addon_id_str;
 
   if ( ! option_equip_str.empty() )
     s << ",equip=" << option_equip_str;
@@ -557,6 +599,20 @@ std::string item_t::encoded_comment()
 
   if ( option_weapon_str.empty() && ! encoded_weapon().empty() )
     s << "weapon=" << encoded_weapon() << ",";
+
+  // Print out encoded comment string if there's no gems= option given, and we
+  // have something relevant to spit out
+  if ( option_gems_str.empty() && ( parsed.gem_stats.size() > 0 ||
+      ( slot == SLOT_HEAD && player -> meta_gem != META_GEM_NONE ) ) )
+    s << "gems=" << encoded_gems() << ",";
+
+  if ( option_enchant_str.empty() &&
+       ( parsed.enchant_stats.size() > 0 || ! parsed.encoded_enchant.empty() ) )
+    s << "enchant=" << encoded_enchant() << ",";
+
+  if ( option_addon_str.empty() &&
+       ( parsed.addon_stats.size() > 0 || ! parsed.encoded_addon.empty() ) )
+    s << "enchant=" << encoded_addon() << ",";
 
   if ( option_equip_str.empty() )
   {

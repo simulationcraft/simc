@@ -3271,6 +3271,9 @@ struct item_t
   std::string option_ilevel_str;
   std::string option_quality_str;
   std::string option_data_source_str;
+  std::string option_enchant_id_str;
+  std::string option_addon_id_str;
+  std::string option_gem_id_str;
 
   // Extracted data
   gear_stats_t base_stats, stats;
