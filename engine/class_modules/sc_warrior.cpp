@@ -283,7 +283,6 @@ public:
     //Arms only
     const spell_data_t* enhanced_sweeping_strikes;
     const spell_data_t* improved_mortal_strike;
-    const spell_data_t* enhanced_slam;
     const spell_data_t* improved_overpower;
     //Fury only
     const spell_data_t* improved_meat_cleaver;
@@ -638,6 +637,9 @@ struct warrior_attack_t : public warrior_action_t< melee_attack_t >
 
     rage_gain = floor( rage_gain * 10 ) / 10.0;
 
+    if ( p() -> specialization() == WARRIOR_ARMS && target -> health_percentage() < 20 )
+       rage_gain += 40; // Check spell data.
+
     p() -> resource_gain( RESOURCE_RAGE,
                        rage_gain,
                        w -> slot == SLOT_OFF_HAND ? p() -> gain.melee_off_hand : p() -> gain.melee_main_hand );
@@ -732,8 +734,6 @@ static  void trigger_sweeping_strikes( action_state_t* s )
       weapon_multiplier          = 0;
       base_costs[ RESOURCE_RAGE] = 0;     //Resource consumption already accounted for in the buff application.
       cooldown -> duration = timespan_t::zero(); // Cooldown accounted for in the buff.
-      pct_damage   = data().effectN( 1 ).percent();
-      pct_damage  += p -> find_spell( 137049 ) -> effectN( 2 ).percent(); // They haven't removed the hotfix yet.
     }
 
   virtual double target_armor( player_t* ) const
@@ -974,17 +974,6 @@ struct melee_t : public warrior_attack_t
       }
     }
   }
-
-
-  virtual double action_multiplier() const
-  {
-    double am = warrior_attack_t::action_multiplier();
-
-    if ( p() -> specialization() == WARRIOR_FURY )
-      am *= 1.0 + p() -> spec.crazed_berserker -> effectN( 3 ).percent();
-
-    return am;
-  }
 };
 
 // Off-hand test attack =====================================================
@@ -1073,11 +1062,8 @@ struct bladestorm_tick_t : public warrior_attack_t
     background  = true;
     direct_tick = true;
     aoe         = -1;
-    if ( p -> specialization() == WARRIOR_ARMS )       //Bladestorm does 1.5x more damage as Arms with 5.4
+    if ( p -> specialization() == WARRIOR_ARMS )
       weapon_multiplier *= 1.5;
-
-    if ( p -> specialization() == WARRIOR_PROTECTION ) //Bladestorm does 4/3 more damage as protection with 5.4
-      weapon_multiplier *= 4/3;
   }
 };
 
@@ -1187,7 +1173,6 @@ struct bloodthirst_t : public warrior_attack_t
     weapon           = &( p -> main_hand_weapon );
     bloodthirst_heal = new bloodthirst_heal_t( p );
 
-    base_multiplier *= 1.0 + p -> find_spell( 137047 ) -> effectN( 1 ).percent(); // Hotfix still applies. CHECK ME. - 5-13-14
     base_multiplier *= 1.0 + p -> perk.improved_bloodthirst -> effectN( 1 ).percent();
     base_multiplier += p -> sets.set( SET_T14_2PC_MELEE ) -> effectN( 2 ).percent();
   }
@@ -1296,6 +1281,16 @@ struct colossus_smash_t : public warrior_attack_t
   {
     // Dirty hack to ensure you can fit 3 x 1.5 + 2 x 1s abilities into the colossus smash window, like you can in-game
     return timespan_t::from_millis( 250 );
+  }
+
+  virtual double action_multiplier() const
+  {
+    double am = warrior_attack_t::action_multiplier();
+
+    if ( p() -> specialization() == WARRIOR_ARMS )
+      am *= 1 + p() -> cache.mastery_value();
+
+    return am;
   }
 
   virtual void impact( action_state_t* s )
@@ -1442,22 +1437,61 @@ struct dragon_roar_t : public warrior_attack_t
 
 // Execute ==================================================================
 
+struct execute_off_hand_t : public warrior_attack_t
+{
+  execute_off_hand_t( warrior_t* p, const char* name, const spell_data_t* s ) :
+    warrior_attack_t( name, p, s )
+  {
+    weapon_multiplier *= 1.0 + p -> perk.empowered_execute -> effectN( 1 ).percent();
+    background = true;
+
+    weapon = &( p -> off_hand_weapon );
+  }
+};
+
 struct execute_t : public warrior_attack_t
 {
+  execute_off_hand_t* oh_attack;
   execute_t( warrior_t* p, const std::string& options_str ) :
-    warrior_attack_t( "execute", p, p -> find_class_spell( "Execute" ) )
+    warrior_attack_t( "execute", p, ( p -> specialization() == WARRIOR_ARMS ? // Arms has a seperate execute now.
+                                      p -> find_spell( 163201 ) : p -> find_class_spell( "Execute" ) ) )
   {
     parse_options( NULL, options_str );
 
-    attack_power_mod.direct  = data().effectN( 1 ).ap_coeff();
-    attack_power_mod.direct *= 1.0 + p -> perk.empowered_execute -> effectN( 1 ).percent();
+    weapon_multiplier *= 1.0 + p -> perk.empowered_execute -> effectN( 1 ).percent();
+
+    if ( p -> specialization() == WARRIOR_FURY )
+    {
+      oh_attack = new execute_off_hand_t( p, "execute_oh", p -> find_class_spell( "Execute" ) ); // p -> find_spell( 163558 ) 
+      add_child( oh_attack );
+    }
   }
+
+  virtual double action_multiplier() const
+  {
+    double am = warrior_attack_t::action_multiplier();
+
+    if ( p() -> specialization() == WARRIOR_ARMS )
+      am *= 1.0 + p() -> cache.mastery_value();
+
+    if ( p() -> spec.single_minded_fury -> ok() && p() -> dual_wield() )
+    {
+      if ( p() -> main_hand_weapon.group() == WEAPON_1H &&
+           p() -> off_hand_weapon.group() == WEAPON_1H )
+      {
+        am *= 1.0 + 0.15; // p() -> spec.single_minded_fury -> effectN( 3 ).percent();
+      }
+    }
+
+    return am;
+  }
+
 
   virtual double cost() const
   {
     double c = warrior_attack_t::cost();
 
-    if ( p() -> buff.death_sentence -> check() && target -> health_percentage() < 20) //Tier 16 4 piece bonus
+    if ( p() -> buff.death_sentence -> check() && target -> health_percentage() < 20 ) //Tier 16 4 piece bonus
       c = 0;
 
     return c;
@@ -1465,20 +1499,25 @@ struct execute_t : public warrior_attack_t
 
   virtual bool ready()
   {
+    if ( p() -> specialization() == WARRIOR_ARMS ) // Arms can execute at any time. 
+      return true;
 
     if ( target -> health_percentage() > 20 && ! p() -> buff.death_sentence -> check() ) // Tier 16 4 piece bonus
       return false;
 
     return warrior_attack_t::ready();
   }
+
   virtual void execute()
   {
     warrior_attack_t::execute();
 
-    p() -> buff.sudden_execute -> trigger();
+    if ( p() -> specialization() == WARRIOR_FURY && result_is_hit( execute_state -> result ) ) // Check later, total guess that it's going to act like storm bolt.
+      oh_attack -> execute();
 
     p() -> buff.death_sentence -> expire();
   }
+
 };
 
 // Ignite Weapon ============================================================
@@ -1763,7 +1802,6 @@ struct mortal_strike_t : public warrior_attack_t
     warrior_attack_t( "mortal_strike", p, p -> find_specialization_spell( "Mortal Strike" ) )
   {
     parse_options( NULL, options_str );
-    base_multiplier += p -> find_spell( 137049 ) -> effectN( 1 ).percent(); //Hotfix still in, check later.
     base_multiplier += p -> sets.set( SET_T14_2PC_MELEE ) -> effectN( 1 ).percent();
   }
 
@@ -1889,7 +1927,6 @@ struct raging_blow_attack_t : public warrior_attack_t
     may_miss = may_dodge = may_parry = false;
     background = true;
     base_multiplier *= 1.0 + p -> perk.improved_raging_blow -> effectN( 1 ).percent();
-    base_multiplier *= 1.0 + p -> find_spell( 137047 ) -> effectN( 1 ).percent(); //Check later.
   }
 
   virtual void execute()
@@ -2287,85 +2324,25 @@ struct shockwave_t : public warrior_attack_t
   }
 };
 
-// Slam AoE Cleave =========================================================
-struct slam_sweeping_strikes_attack_t : public warrior_attack_t
-{
-  slam_sweeping_strikes_attack_t( warrior_t* p ) :
-  warrior_attack_t( "slam_sweeping_strikes", p , p -> find_specialization_spell( "Slam" ))
-  {
-    may_miss = may_crit = may_dodge = may_parry = proc = callbacks = false;
-    background = true;
-    aoe        = -1;
-    weapon_multiplier = 0;             // Do not add weapon damage
-    base_costs[ RESOURCE_RAGE ] = 0; // Slam cost already factored in.
-  }
-
-  // Armor has already been taken into account from the parent attack.
-  virtual double target_armor( player_t* ) const
-  {
-    return 0;
-  }
-
-  virtual void execute()
-  {
-    base_dd_max *= data().effectN( 2 ).percent(); //Deals 35% of original damage
-    base_dd_min *= data().effectN( 2 ).percent();
-
-    warrior_attack_t::execute();
-
-  }
-
-  size_t available_targets( std::vector< player_t* >& tl ) const
-  {
-    tl.clear();
-
-    for ( size_t i = 0, actors = sim -> actor_list.size(); i < actors; i++ )
-    {
-      player_t* t = sim -> actor_list[ i ];
-
-      if ( ! t -> is_sleeping() && t -> is_enemy() && ( t != target ) )
-        tl.push_back( t );
-    }
-    return tl.size();
-  }
-};
-
 // Slam =====================================================================
 
 struct slam_t : public warrior_attack_t
 {
-  slam_sweeping_strikes_attack_t* extra_sweep;
-  
   slam_t( warrior_t* p, const std::string& options_str ) :
     warrior_attack_t( "slam", p, p -> find_specialization_spell( "Slam" ) )
   {
     parse_options( NULL, options_str );
 
     weapon = &( p -> main_hand_weapon );
-
-    extra_sweep = new slam_sweeping_strikes_attack_t( p );
-    add_child( extra_sweep );
   }
 
-  virtual double composite_target_multiplier( player_t* t ) const
+  virtual double action_multiplier() const
   {
-    double am = warrior_attack_t::composite_target_multiplier( t );
-    if ( td( t ) -> debuffs_colossus_smash )
-      am *= 1 + p() -> spec.colossus_smash -> effectN( 5 ).percent();
+    double am = warrior_attack_t::action_multiplier();
+
+    am *= 1 + p() -> cache.mastery_value();
 
     return am;
-  }
-  
-  virtual void impact( action_state_t* s )
-  {
-    warrior_attack_t::impact( s );
-
-    if ( p() -> buff.sweeping_strikes -> up() )
-    {
-      extra_sweep -> base_dd_min = s -> result_amount;
-      extra_sweep -> base_dd_max = s -> result_amount;
-      extra_sweep -> execute();
-    }
   }
 };
 
@@ -2441,8 +2418,6 @@ struct thunder_clap_t : public warrior_attack_t
 
     if ( p -> spec.unwavering_sentinel -> ok() && p -> active_stance != STANCE_GLADIATOR )
       base_costs[ current_resource() ] *= 1.0 + p -> spec.unwavering_sentinel -> effectN( 2 ).percent();
-    if ( p -> spec.seasoned_soldier -> ok() )
-      base_costs[ current_resource() ] *= 1.0 + p -> spec.seasoned_soldier -> effectN( 2 ).percent();
 
     if ( p -> glyphs.resonating_power -> ok() )
     {
@@ -2451,8 +2426,10 @@ struct thunder_clap_t : public warrior_attack_t
     }
 
     attack_power_mod.direct *= 1.0 + p -> perk.improved_thunder_clap -> effectN( 1 ).percent();
+
     if ( p -> glyphs.resonating_power -> ok() )
       attack_power_mod.direct *= 1.0 + p -> glyphs.resonating_power -> effectN( 1 ).percent();
+
     if ( p -> spec.blood_and_thunder -> ok() )
       attack_power_mod.direct *= 1.0 + p -> spec.blood_and_thunder -> effectN( 2 ).percent();
   }
@@ -2574,11 +2551,7 @@ struct whirlwind_t : public warrior_attack_t
     oh_attack -> execute();
 
     if ( result_is_hit( execute_state -> result ) )
-    {
       p() -> buff.meat_cleaver -> trigger();
-      if ( p() -> perk.improved_meat_cleaver -> ok() )
-        p() -> buff.meat_cleaver -> trigger();
-    }
 
     p() -> buff.raging_wind -> expire();
 
@@ -3353,7 +3326,6 @@ void warrior_t::init_spells()
 
   perk.enhanced_sweeping_strikes     = find_perk_spell( "Enhanced Sweeping Strikes"     );
   perk.improved_mortal_strike        = find_perk_spell( "Improved Mortal Strike"        );
-  perk.enhanced_slam                 = find_perk_spell( "Enhanced Slam"                 );
   perk.improved_overpower            = find_perk_spell( "Improved Overpower"            );
   perk.improved_die_by_the_sword     = find_perk_spell( "Improved Die by The Sword"     );
   perk.empowered_execute             = find_perk_spell( "Empowered Execute"             );
@@ -3498,7 +3470,7 @@ void warrior_t::apl_precombat()
 
   if ( specialization() != WARRIOR_PROTECTION )
     precombat -> add_action( "stance,choose=battle" );
-  else if ( primary_role() == ROLE_ATTACK ) // Fix later, add in talent check for gladiator.
+  else if ( primary_role() == ROLE_ATTACK && talents.gladiators_resolve -> ok() )
     precombat -> add_action( "stance,choose=gladiator" );
   else
     precombat -> add_action( "stance,choose=defensive" );
@@ -3978,7 +3950,7 @@ void warrior_t::create_buffs()
                            .chance( 1 ) /* .chance( spec.hold_the_line -> ok() ? 1 : 0 )*/;
 
   buff.meat_cleaver     = buff_creator_t( this, "meat_cleaver",     spec.meat_cleaver -> effectN( 1 ).trigger() )
-                          .max_stack( find_spell( 85739 ) -> max_stacks() );
+                          .max_stack( find_spell( 85739 ) -> max_stacks() + perk.improved_meat_cleaver -> effectN( 1 ).base_value() );
 
   buff.raging_blow      = buff_creator_t( this, "raging_blow",      find_spell( 131116 ) )
                           .max_stack( find_spell( 131116 ) -> effectN( 1 ).base_value() );
@@ -4014,8 +3986,7 @@ void warrior_t::create_buffs()
                           .cd( timespan_t::zero() );
 
   buff.sudden_death     = buff_creator_t( this, "sudden_death",  spec.sudden_death )
-                          .chance( spec.sudden_death -> effectN( 2 ).percent() )
-                          .duration( spec.sudden_death -> effectN( 1 ).time_value() );
+                          .chance( spec.sudden_death -> effectN( 2 ).percent() );
 
   buff.sudden_execute   = buff_creator_t( this, "sudden_execute", find_class_spell( "Sudden Execute" ) );
 
