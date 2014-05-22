@@ -8,9 +8,6 @@
 // ==========================================================================
 //
 // TODO: Check WoD mechanics whenever alpha/beta roll around:
-
-// Sweeping strikes + opportunity strike proccing off each other (They'll redo arms mastery, I think)
-//
 // Raging Blow: Will the parent still fail if either MH/OH parry. (Not incredibly important anymore, but it'd be nice to know)
 //
 // Dragon Roar: Does it still have diminishing returns on more than 1 target
@@ -59,7 +56,6 @@ public:
   action_t* active_bloodbath_dot;
   action_t* active_blood_craze;
   action_t* active_deep_wounds;
-  action_t* active_opportunity_strike;
   action_t* active_second_wind;
   attack_t* active_sweeping_strikes;
 
@@ -131,7 +127,6 @@ public:
     cooldown_t* shield_wall;
     cooldown_t* shockwave;
     cooldown_t* storm_bolt;
-    cooldown_t* strikes_of_opportunity;
   } cooldown;
 
   // Gains
@@ -200,7 +195,6 @@ public:
   struct procs_t
   {
     proc_t* raging_blow_wasted;
-    proc_t* strikes_of_opportunity;
     proc_t* sudden_death;
     proc_t* taste_for_blood_wasted;
 
@@ -322,7 +316,6 @@ public:
     active_bloodbath_dot      = 0;
     active_blood_craze        = 0;
     active_deep_wounds        = 0;
-    active_opportunity_strike = 0;
     active_second_wind        = 0;
     active_sweeping_strikes   = 0;
     active_t16_2pc            = 0;
@@ -342,7 +335,6 @@ public:
     cooldown.shield_wall              = get_cooldown( "shield_wall"               );
     cooldown.shockwave                = get_cooldown( "shockwave"                 );
     cooldown.storm_bolt               = get_cooldown( "storm_bolt"                );
-    cooldown.strikes_of_opportunity   = get_cooldown( "strikes_of_opportunity"    );
     cooldown.recklessness             = get_cooldown( "recklessness"              );
     cooldown.revenge                  = get_cooldown( "revenge"                   );
     cooldown.rage_from_crit_block     = get_cooldown( "rage_from_crit_block"      );
@@ -725,46 +717,6 @@ static void trigger_sudden_death( warrior_attack_t* a, double chance )
   }
 }
 
-// trigger_strikes_of_opportunity ===========================================
-
-struct opportunity_strike_t : public warrior_attack_t
-{
-  opportunity_strike_t( warrior_t* p ) :
-    warrior_attack_t( "opportunity_strike", p, p -> find_spell( 76858 ) )
-  {
-   background = true;
-  }
-};
-
-static void trigger_strikes_of_opportunity( warrior_attack_t* a )
-{
-  if ( a -> proc )
-    return;
-
-  warrior_t* p = a -> p();
-
-  if ( ! p -> mastery.strikes_of_opportunity -> ok() )
-    return;
-
-  if ( p -> cooldown.strikes_of_opportunity -> down() )
-    return;
-
-  double chance = p -> cache.mastery_value();
-
-  if ( ! p -> rng().roll( chance ) )
-    return;
-
-  p -> cooldown.strikes_of_opportunity -> start( timespan_t::from_seconds( 0.1 ) ); //Tested 8/29/13, confirmed in game data.
-
-  assert( p -> active_opportunity_strike );
-
-  if ( p -> sim -> debug )
-    p -> sim -> out_debug.printf( "Opportunity Strike procced from %s", a -> name() );
-
-  p -> proc.strikes_of_opportunity -> occur();
-  p -> active_opportunity_strike -> execute();
-}
-
 // trigger_sweeping_strikes =================================================
 static  void trigger_sweeping_strikes( action_state_t* s )
 {
@@ -800,8 +752,6 @@ static  void trigger_sweeping_strikes( action_state_t* s )
 
   virtual timespan_t travel_time() const
   {
-  // It's possible for sweeping strikes and opportunity strikes to proc off each other into infinity as long as the rng.roll on opportunity strikes returns true. 
-  // Sweeping strikes has a 1 second "travel time" in game. 
     return timespan_t::from_seconds( 1 );
   }
 
@@ -924,7 +874,6 @@ void warrior_attack_t::impact( action_state_t* s )
 
   if ( result_is_hit( s -> result ) && !proc && s -> result_amount > 0 && this -> id != 147891 ) // Flurry of Xuen
   {
-    trigger_strikes_of_opportunity( this );
     if ( p() -> buff.sweeping_strikes -> up() && ( !aoe || this -> id == 78 ) ) // Heroic strike exception due to glyph that turns it into 2-target cleave.
       trigger_sweeping_strikes( execute_state );
     if ( special )
@@ -933,7 +882,7 @@ void warrior_attack_t::impact( action_state_t* s )
         trigger_bloodbath_dot( s -> target, s -> result_amount );
       /*if ( p() -> sets.has_set_bonus( SET_T16_2PC_MELEE ) && td ->  debuffs_colossus_smash -> up() && // Melee tier 16 2 piece.
          ( this ->  weapon == &( p() -> main_hand_weapon ) || this -> id == 100130 ) &&    // Only procs once per ability used.
-           this -> id != 12328 && this -> id != 76858 )                                  // Doesn't proc from opportunity strikes or sweeping strikes.
+           this -> id != 12328 )                                  // Doesn't proc from sweeping strikes.
         p() -> resource_gain( RESOURCE_RAGE,
                             p() -> sets.set( SET_T16_2PC_MELEE ) -> effectN( 1 ).base_value(), 
                             p() -> gain.tier16_2pc_melee );*/
@@ -3455,9 +3404,6 @@ void warrior_t::init_spells()
   active_second_wind   = new second_wind_t( this );
   active_t16_2pc       = new tier16_2pc_tank_heal_t( this );
 
-  if ( mastery.strikes_of_opportunity -> ok() )
-    active_opportunity_strike = new opportunity_strike_t( this );
-
   static const set_bonus_description_t set_bonuses =
   {
     //  C2P    C4P     M2P     M4P     T2P     T4P    H2P    H4P
@@ -4149,7 +4095,6 @@ void warrior_t::init_procs()
 {
   player_t::init_procs();
 
-  proc.strikes_of_opportunity  = get_proc( "strikes_of_opportunity"  );
   proc.sudden_death            = get_proc( "sudden_death"            );
   proc.taste_for_blood_wasted  = get_proc( "taste_for_blood_wasted"  );
   proc.raging_blow_wasted      = get_proc( "raging_blow_wasted"      );
