@@ -283,7 +283,6 @@ public:
     //Arms only
     const spell_data_t* enhanced_sweeping_strikes;
     const spell_data_t* improved_mortal_strike;
-    const spell_data_t* improved_overpower;
     //Fury only
     const spell_data_t* improved_meat_cleaver;
     const spell_data_t* improved_wild_strike;
@@ -1846,49 +1845,6 @@ struct mortal_strike_t : public warrior_attack_t
   }
 };
 
-// Overpower ================================================================
-
-struct overpower_t : public warrior_attack_t
-{
-  overpower_t( warrior_t* p, const std::string& options_str ) :
-    warrior_attack_t( "overpower", p, p -> find_specialization_spell( "Overpower" ) )
-  {
-    parse_options( NULL, options_str );
-    base_multiplier *= 1.0 + p -> perk.improved_overpower -> effectN( 1 ).percent();
-    may_dodge = may_parry = may_block = false;
-  }
-
-  virtual void execute()
-  {
-    warrior_attack_t::execute();
-
-    p() -> buff.taste_for_blood -> decrement();
-  }
-
-  virtual double cost() const
-  {
-    double c = warrior_attack_t::cost();
-
-    if ( p() -> buff.sudden_execute -> check() )
-      c = 0;
-
-    return c;
-  }
-
-  virtual double crit_chance( double crit, int delta_level ) const
-  {
-    return warrior_attack_t::crit_chance( crit, delta_level ) + data().effectN( 3 ).percent();
-  }
-
-  virtual bool ready()
-  {
-    if ( ! p() -> buff.taste_for_blood -> check() )
-      return false;
-
-    return warrior_attack_t::ready();
-  }
-};
-
 // Pummel ===================================================================
 
 struct pummel_t : public warrior_attack_t
@@ -3230,7 +3186,6 @@ action_t* warrior_t::create_action( const std::string& name,
 
   if ( name == "last_stand"         ) return new last_stand_t         ( this, options_str );
   if ( name == "mortal_strike"      ) return new mortal_strike_t      ( this, options_str );
-  if ( name == "overpower"          ) return new overpower_t          ( this, options_str );
   if ( name == "pummel"             ) return new pummel_t             ( this, options_str );
   if ( name == "raging_blow"        ) return new raging_blow_t        ( this, options_str );
   if ( name == "ravager"            ) return new ravager_t            ( this, options_str );
@@ -3326,7 +3281,6 @@ void warrior_t::init_spells()
 
   perk.enhanced_sweeping_strikes     = find_perk_spell( "Enhanced Sweeping Strikes"     );
   perk.improved_mortal_strike        = find_perk_spell( "Improved Mortal Strike"        );
-  perk.improved_overpower            = find_perk_spell( "Improved Overpower"            );
   perk.improved_die_by_the_sword     = find_perk_spell( "Improved Die by The Sword"     );
   perk.empowered_execute             = find_perk_spell( "Empowered Execute"             );
   perk.improved_colossus_smash       = find_perk_spell( "Improved Colossus Smash"       );
@@ -3758,9 +3712,7 @@ void warrior_t::apl_arms()
   single_target -> add_talent( this, "Storm Bolt", "if=debuff.colossus_smash.up" );
   single_target -> add_talent( this, "Dragon Roar", "if=debuff.colossus_smash.down" );
   single_target -> add_action( this, "Execute", "if=buff.taste_for_blood.down|rage>90|target.time_to_die<12" );
-  single_target -> add_action( this, "Slam", "if=target.health.pct>=20&(trinket.stacking_stat.crit.stack>=10|buff.recklessness.up)",
-                                     "Slam is preferable to overpower with crit procs/recklessness." );
-  single_target -> add_action( this, "Overpower", "if=target.health.pct>=20&rage<100" );
+  single_target -> add_action( this, "Slam", "if=target.health.pct>=20&(trinket.stacking_stat.crit.stack>=10|buff.recklessness.up)" );
   single_target -> add_action( this, "Execute" );
   single_target -> add_action( this, "Slam", "if=target.health.pct>=20" );
 
@@ -3772,11 +3724,9 @@ void warrior_t::apl_arms()
   aoe -> add_talent( this, "Dragon Roar", "if=debuff.colossus_smash.down" );
   aoe -> add_action( this, "Colossus Smash", "if=debuff.colossus_smash.remains<1" );
   aoe -> add_action( this, "Thunder Clap" );
-  aoe -> add_action( this, "Mortal Strike", "if=active_enemies=2|rage<50" );
-  aoe -> add_action( this, "Execute", "if=active_enemies=2" );
-  aoe -> add_action( this, "Slam", "if=buff.sweeping_strikes.up&debuff.colossus_smash.up" );
-  aoe -> add_action( this, "Overpower", "if=active_enemies=2" );
-  aoe -> add_action( this, "Slam", "if=buff.sweeping_strikes.up" );
+  aoe -> add_action( this, "Mortal Strike" );
+  aoe -> add_action( this, "Execute", "if=active_enemies<4" );
+  aoe -> add_action( this, "Slam", "if=debuff.colossus_smash.up" );
 
 }
 
