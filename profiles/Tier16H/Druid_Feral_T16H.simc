@@ -180,10 +180,10 @@ main_hand=halberd_of_inner_shadows,id=105560,upgrade=4,gems=80agi_160crit_60agi,
 # gear_intellect=80
 # gear_spirit=80
 # gear_expertise_rating=2757
-# gear_hit_rating=2708
+# gear_hit_rating=2707
 # gear_crit_rating=10792
-# gear_haste_rating=10842
-# gear_mastery_rating=10859
+# gear_haste_rating=10841
+# gear_mastery_rating=10858
 # gear_armor=23082
 # meta_gem=capacitive_primal
 # tier16_2pc_melee=1

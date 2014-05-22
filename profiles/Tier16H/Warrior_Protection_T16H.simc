@@ -81,12 +81,12 @@ off_hand=shield_of_mockery,id=105481,upgrade=4,gems=320parry_60str,enchant=170pa
 # Gear Summary
 # gear_strength=26896
 # gear_stamina=53213
-# gear_expertise_rating=5513
+# gear_expertise_rating=5512
 # gear_hit_rating=2696
 # gear_mastery_rating=4323
 # gear_armor=65429
-# gear_dodge_rating=11999
-# gear_parry_rating=18509
+# gear_dodge_rating=11998
+# gear_parry_rating=18508
 # meta_gem=indomitable_primal
 # tier16_2pc_tank=1
 # tier16_4pc_tank=1

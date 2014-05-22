@@ -71,9 +71,9 @@ main_hand=hiseks_reserve_longbow,id=105623,upgrade=4,gems=160agi_60agi,enchant=l
 # gear_agility=31342
 # gear_stamina=42167
 # gear_expertise_rating=2761
-# gear_hit_rating=2762
-# gear_crit_rating=16714
-# gear_haste_rating=11804
+# gear_hit_rating=2761
+# gear_crit_rating=16713
+# gear_haste_rating=11803
 # gear_mastery_rating=3314
 # gear_armor=31496
 # meta_gem=capacitive_primal

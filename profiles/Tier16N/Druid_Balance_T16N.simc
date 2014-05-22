@@ -76,15 +76,15 @@ main_hand=hellscreams_warmace,id=104402,weapon=mace_2.4speed_5100min_9473max,gem
 off_hand=purehearted_cricket_cage,id=103801,enchant=165int,reforge=spi_mastery
 
 # Gear Summary
-# gear_stamina=31677
-# gear_intellect=21945
-# gear_spirit=3076
-# gear_spell_power=12841
+# gear_stamina=31789
+# gear_intellect=22019
+# gear_spirit=3114
+# gear_spell_power=13831
 # gear_expertise_rating=960
 # gear_hit_rating=441
 # gear_crit_rating=11084
 # gear_haste_rating=5401
-# gear_mastery_rating=11434
+# gear_mastery_rating=11490
 # gear_armor=21335
 # meta_gem=sinister_primal
 # tier16_2pc_caster=1
