@@ -1510,8 +1510,8 @@ struct execute_t : public warrior_attack_t
 
   virtual bool ready()
   {
-    if ( p() -> specialization() == WARRIOR_ARMS && p() -> resources.current[ RESOURCE_RAGE ] >= 60 ) // Arms can execute at any time. 
-      return true;
+    if ( p() -> specialization() == WARRIOR_ARMS ) // Arms can execute at any time. 
+      return warrior_attack_t::ready();
 
     if ( target -> health_percentage() > 20 && ! p() -> buff.death_sentence -> check() ) // Tier 16 4 piece bonus
       return false;
