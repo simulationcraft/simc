@@ -849,8 +849,6 @@ void warrior_attack_t::execute()
   base_t::execute();
 
   if ( proc ) return;
-  // Slam sweeping strikes may actually result in a situation, where there are 
-  // no targets to hit. In this case, there will be no execute state.
   if ( ! execute_state ) return;
 
   if ( execute_state -> result == RESULT_DODGE && p() -> specialization() == WARRIOR_ARMS )
@@ -1447,10 +1445,10 @@ struct execute_off_hand_t : public warrior_attack_t
   execute_off_hand_t( warrior_t* p, const char* name, const spell_data_t* s ) :
     warrior_attack_t( name, p, s )
   {
-    attack_power_mod.direct = 0; // Remove
     weapon_multiplier = 2.1; // Remove
-    weapon_multiplier *= 1.0 + p -> perk.empowered_execute -> effectN( 1 ).percent();
+    weapon_multiplier *= 1.0 + 0.2;//+ p -> perk.empowered_execute -> effectN( 1 ).percent();
     background = true;
+    base_costs[RESOURCE_RAGE] = 0;
 
     weapon = &( p -> off_hand_weapon );
   }
@@ -1460,17 +1458,22 @@ struct execute_t : public warrior_attack_t
 {
   execute_off_hand_t* oh_attack;
   execute_t( warrior_t* p, const std::string& options_str ) :
-    warrior_attack_t( "execute", p, ( p -> specialization() == WARRIOR_ARMS ? // Arms has a seperate execute now.
-                                      p -> find_spell( 163201 ) : p -> find_class_spell( "Execute" ) ) )
+    warrior_attack_t( "execute", p, ( /* p -> specialization() == WARRIOR_ARMS ? // Arms has a seperate execute now.
+                                      p -> find_spell( 163201 ) */ p -> find_specialization_spell( "Slam" ) ) )
   {
     parse_options( NULL, options_str );
-    attack_power_mod.direct = 0; // Remove
+
+    base_costs[RESOURCE_RAGE] = 30;
+
+    if( p -> specialization() == WARRIOR_ARMS )
+      base_costs[RESOURCE_RAGE] = 60;
+
     weapon_multiplier = 2.1; // Remove
-    weapon_multiplier *= 1.0 + p -> perk.empowered_execute -> effectN( 1 ).percent();
+    weapon_multiplier *= 1.0 + 0.2; //p -> perk.empowered_execute -> effectN( 1 ).percent();
 
     if ( p -> specialization() == WARRIOR_FURY )
     {
-      oh_attack = new execute_off_hand_t( p, "execute_oh", p -> find_class_spell( "Execute" ) ); // p -> find_spell( 163558 ) 
+      oh_attack = new execute_off_hand_t( p, "execute_oh", p -> find_specialization_spell( "Slam" ) ); // p -> find_spell( 163558 ) 
       add_child( oh_attack );
     }
   }
@@ -1507,7 +1510,7 @@ struct execute_t : public warrior_attack_t
 
   virtual bool ready()
   {
-    if ( p() -> specialization() == WARRIOR_ARMS ) // Arms can execute at any time. 
+    if ( p() -> specialization() == WARRIOR_ARMS && p() -> resources.current[ RESOURCE_RAGE ] >= 60 ) // Arms can execute at any time. 
       return true;
 
     if ( target -> health_percentage() > 20 && ! p() -> buff.death_sentence -> check() ) // Tier 16 4 piece bonus
