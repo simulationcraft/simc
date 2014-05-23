@@ -1289,7 +1289,7 @@ struct colossus_smash_t : public warrior_attack_t
     double am = warrior_attack_t::action_multiplier();
 
     if ( p() -> specialization() == WARRIOR_ARMS )
-      am *= 1 + p() -> cache.mastery_value();
+      am *= 1.0 + ( p() -> cache.mastery_value() * 1.136 );
 
     return am;
   }
@@ -1483,7 +1483,7 @@ struct execute_t : public warrior_attack_t
     double am = warrior_attack_t::action_multiplier();
 
     if ( p() -> specialization() == WARRIOR_ARMS )
-      am *= 1.0 + p() -> cache.mastery_value();
+      am *= 1.0 + ( p() -> cache.mastery_value() * 1.136 );
 
     if ( p() -> spec.single_minded_fury -> ok() && p() -> dual_wield() )
     {
@@ -2317,7 +2317,7 @@ struct slam_t : public warrior_attack_t
   {
     double am = warrior_attack_t::action_multiplier();
 
-    am *= 1 + p() -> cache.mastery_value();
+    am *= 1.0 + ( p() -> cache.mastery_value() * 1.136 );
 
     return am;
   }
