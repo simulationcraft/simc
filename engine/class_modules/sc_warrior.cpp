@@ -733,6 +733,7 @@ static  void trigger_sweeping_strikes( action_state_t* s )
       weapon_multiplier          = 0;
       base_costs[ RESOURCE_RAGE] = 0;     //Resource consumption already accounted for in the buff application.
       cooldown -> duration = timespan_t::zero(); // Cooldown accounted for in the buff.
+      pct_damage = 0.5; // Remove
     }
 
   virtual double target_armor( player_t* ) const
@@ -1061,6 +1062,7 @@ struct bladestorm_tick_t : public warrior_attack_t
     background  = true;
     direct_tick = true;
     aoe         = -1;
+    weapon_multiplier = 0.6; // Remove
     if ( p -> specialization() == WARRIOR_ARMS )
       weapon_multiplier *= 1.5;
   }
@@ -1170,6 +1172,7 @@ struct bloodthirst_t : public warrior_attack_t
     parse_options( NULL, options_str );
 
     weapon           = &( p -> main_hand_weapon );
+    weapon_multiplier = 0.6; // Remove
     bloodthirst_heal = new bloodthirst_heal_t( p );
 
     base_multiplier *= 1.0 + p -> perk.improved_bloodthirst -> effectN( 1 ).percent();
@@ -1274,6 +1277,7 @@ struct colossus_smash_t : public warrior_attack_t
     parse_options( NULL, options_str );
 
     weapon = &( player -> main_hand_weapon );
+    weapon_multiplier = 0.5; // Remove
   }
 
   virtual timespan_t travel_time() const
@@ -1353,6 +1357,7 @@ struct devastate_t : public warrior_attack_t
     warrior_attack_t( "devastate", p, p -> find_specialization_spell( "Devastate" ) )
   {
     parse_options( NULL, options_str );
+    weapon_multiplier = 2; // Remove
   }
 
   virtual void execute()
@@ -1391,6 +1396,7 @@ struct dragon_roar_t : public warrior_attack_t
     parse_options( NULL, options_str );
     aoe = -1;
     may_dodge = may_parry = may_block = false;
+    attack_power_mod.direct = 1.65; // Remove
   }
 
   double calculate_direct_amount( action_state_t* state )
@@ -1441,6 +1447,8 @@ struct execute_off_hand_t : public warrior_attack_t
   execute_off_hand_t( warrior_t* p, const char* name, const spell_data_t* s ) :
     warrior_attack_t( name, p, s )
   {
+    attack_power_mod.direct = 0; // Remove
+    weapon_multiplier = 2.1; // Remove
     weapon_multiplier *= 1.0 + p -> perk.empowered_execute -> effectN( 1 ).percent();
     background = true;
 
@@ -1456,7 +1464,8 @@ struct execute_t : public warrior_attack_t
                                       p -> find_spell( 163201 ) : p -> find_class_spell( "Execute" ) ) )
   {
     parse_options( NULL, options_str );
-
+    attack_power_mod.direct = 0; // Remove
+    weapon_multiplier = 2.1; // Remove
     weapon_multiplier *= 1.0 + p -> perk.empowered_execute -> effectN( 1 ).percent();
 
     if ( p -> specialization() == WARRIOR_FURY )
@@ -1530,6 +1539,7 @@ struct ignite_weapon_t : public warrior_attack_t
 
     weapon  = &( player -> main_hand_weapon );
 
+    weapon_multiplier = 0.65; // Remove
     // The 140% is hardcoded in the tooltip
     if ( weapon -> group() == WEAPON_1H ||
          weapon -> group() == WEAPON_SMALL )
@@ -1565,6 +1575,8 @@ struct heroic_strike_t : public warrior_attack_t
     if ( p -> talents.ignite_weapon -> ok() )
       background = true;
     weapon  = &( player -> main_hand_weapon );
+
+    weapon_multiplier = 0.75; // Remove
 
     // The 140% is hardcoded in the tooltip
     if ( weapon -> group() == WEAPON_1H ||
@@ -1801,6 +1813,7 @@ struct mortal_strike_t : public warrior_attack_t
     warrior_attack_t( "mortal_strike", p, p -> find_specialization_spell( "Mortal Strike" ) )
   {
     parse_options( NULL, options_str );
+    weapon_multiplier = 1.8; // Remove
     base_multiplier += p -> sets.set( SET_T14_2PC_MELEE ) -> effectN( 1 ).percent();
   }
 
@@ -1882,6 +1895,7 @@ struct raging_blow_attack_t : public warrior_attack_t
   {
     may_miss = may_dodge = may_parry = false;
     background = true;
+    weapon_multiplier = 1.15; // Remove
     base_multiplier *= 1.0 + p -> perk.improved_raging_blow -> effectN( 1 ).percent();
   }
 
@@ -1965,6 +1979,7 @@ struct ravager_tick_t : public warrior_attack_t
     aoe           = -1;
     background    = true;
     direct_tick   = true;
+    attack_power_mod.direct = 1.0; // Remove
   }
 };
 
@@ -2013,6 +2028,7 @@ struct revenge_t : public warrior_attack_t
     aoe = 3;
     rage_gain = data().effectN( 2 ).resource( RESOURCE_RAGE );
     attack_power_mod.direct  = data().effectN( 1 ).ap_coeff();
+    attack_power_mod.direct = 1.85; // Remove
     attack_power_mod.direct *= 1.0 + p -> perk.improved_revenge -> effectN( 1 ).percent();
   }
 
@@ -2177,7 +2193,7 @@ struct shield_slam_t : public warrior_attack_t
     parse_options( NULL, options_str );
 
     rage_gain = data().effectN( 3 ).resource( RESOURCE_RAGE );
-    attack_power_mod.direct = 2.8; // Hard coded 4/14/14 as DBC doesn't show this.
+    attack_power_mod.direct = 3.291; // Hard coded 5/22/14 as DBC doesn't show this.
 
     attack_power_mod.direct *= 1.0 + p -> perk.improved_shield_slam -> effectN( 1 ).percent();
   }
@@ -2258,6 +2274,7 @@ struct shockwave_t : public warrior_attack_t
     parse_options( NULL, options_str );
 
     attack_power_mod.direct  = data().effectN( 3 ).percent();
+    attack_power_mod.direct = 1.25; // Remove
     may_dodge         = false;
     may_parry         = false;
     may_block         = false;
@@ -2290,6 +2307,7 @@ struct slam_t : public warrior_attack_t
     parse_options( NULL, options_str );
 
     weapon = &( p -> main_hand_weapon );
+    weapon_multiplier = 1.3; // Remove
   }
 
   virtual double action_multiplier() const
@@ -2312,7 +2330,7 @@ struct storm_bolt_off_hand_t : public warrior_attack_t
     background = true;
 
     weapon = &( p -> off_hand_weapon );
-
+    weapon_multiplier = 0.6; // Remove
     // assume the target is stun-immune
     base_multiplier = 4.00;
   }
@@ -2329,6 +2347,7 @@ struct storm_bolt_t : public warrior_attack_t
     may_dodge = false;
     may_parry = false;
     may_block = false;
+    weapon_multiplier = 0.6; // Remove
     // Assuming that our target is stun immune
     base_multiplier = 4.00;
 
@@ -2371,6 +2390,7 @@ struct thunder_clap_t : public warrior_attack_t
     may_block         = false;
 
     attack_power_mod.direct = data().effectN( 1 ).ap_coeff();
+    attack_power_mod.direct = 0.477; // Remove
 
     if ( p -> spec.unwavering_sentinel -> ok() && p -> active_stance != STANCE_GLADIATOR )
       base_costs[ current_resource() ] *= 1.0 + p -> spec.unwavering_sentinel -> effectN( 2 ).percent();
@@ -2471,6 +2491,7 @@ struct whirlwind_off_hand_t : public warrior_attack_t
     background = true;
     aoe = -1;
     weapon = &( p -> off_hand_weapon );
+    weapon_multiplier = 0.45; // Remove
   }
 };
 
@@ -2488,6 +2509,7 @@ struct whirlwind_t : public warrior_attack_t
     add_child( oh_attack );
 
     weapon = &( p -> main_hand_weapon );
+    weapon_multiplier = 0.45; // Remove
   }
 
   virtual double action_multiplier() const
@@ -2527,6 +2549,7 @@ struct wild_strike_t : public warrior_attack_t
     base_multiplier *= 1.0 + p -> perk.improved_wild_strike -> effectN( 1 ).percent();
     if ( player -> off_hand_weapon.type == WEAPON_NONE )
       background = true;
+    weapon_multiplier = 1.5; // Remove
   }
 
   virtual double cost() const
