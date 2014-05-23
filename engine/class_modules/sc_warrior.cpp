@@ -1445,8 +1445,9 @@ struct execute_off_hand_t : public warrior_attack_t
   execute_off_hand_t( warrior_t* p, const char* name, const spell_data_t* s ) :
     warrior_attack_t( name, p, s )
   {
+    attack_power_mod.direct = 0; // Remove
     weapon_multiplier = 2.1; // Remove
-    weapon_multiplier *= 1.0 + 0.2;//+ p -> perk.empowered_execute -> effectN( 1 ).percent();
+    weapon_multiplier *= 1.0 + 0.2; //p -> perk.empowered_execute -> effectN( 1 ).percent();
     background = true;
     base_costs[RESOURCE_RAGE] = 0;
 
@@ -1459,21 +1460,21 @@ struct execute_t : public warrior_attack_t
   execute_off_hand_t* oh_attack;
   execute_t( warrior_t* p, const std::string& options_str ) :
     warrior_attack_t( "execute", p, ( /* p -> specialization() == WARRIOR_ARMS ? // Arms has a seperate execute now.
-                                      p -> find_spell( 163201 ) */ p -> find_specialization_spell( "Slam" ) ) )
+                                      p -> find_spell( 163201 ) */ p -> find_class_spell( "Execute" ) ) )
   {
     parse_options( NULL, options_str );
-
-    base_costs[RESOURCE_RAGE] = 30;
 
     if( p -> specialization() == WARRIOR_ARMS )
       base_costs[RESOURCE_RAGE] = 60;
 
+    attack_power_mod.direct = 0; // Remove
+    weapon = &( p -> main_hand_weapon );
     weapon_multiplier = 2.1; // Remove
     weapon_multiplier *= 1.0 + 0.2; //p -> perk.empowered_execute -> effectN( 1 ).percent();
 
     if ( p -> specialization() == WARRIOR_FURY )
     {
-      oh_attack = new execute_off_hand_t( p, "execute_oh", p -> find_specialization_spell( "Slam" ) ); // p -> find_spell( 163558 ) 
+      oh_attack = new execute_off_hand_t( p, "execute_oh", p -> find_class_spell( "Execute" ) ); // p -> find_spell( 163558 ) 
       add_child( oh_attack );
     }
   }
@@ -1493,7 +1494,6 @@ struct execute_t : public warrior_attack_t
         am *= 1.0 + 0.15; // p() -> spec.single_minded_fury -> effectN( 3 ).percent();
       }
     }
-
     return am;
   }
 
@@ -1675,6 +1675,7 @@ struct heroic_leap_t : public warrior_attack_t
 
     const spell_data_t* dmg_spell = p -> spell.heroic_leap -> effectN( 2 ).trigger();
     attack_power_mod.direct = dmg_spell -> effectN( 1 ).ap_coeff();
+    attack_power_mod.direct = 0.52; // Remove
 
     cooldown -> duration = p -> cooldown.heroic_leap -> duration;
 
@@ -1766,6 +1767,7 @@ struct impending_victory_t : public warrior_attack_t
     parse_options( NULL, options_str );
 
     weapon            = &( player -> main_hand_weapon );
+    attack_power_mod.direct = 0.74; // Remove
   }
 
   virtual void execute()
@@ -2718,6 +2720,7 @@ struct deep_wounds_t : public warrior_spell_t
     tick_may_crit = true;
     hasted_ticks  = false;
     dot_behavior = DOT_REFRESH;
+    attack_power_mod.tick = 0.6; // Remove
   }
 
 };
