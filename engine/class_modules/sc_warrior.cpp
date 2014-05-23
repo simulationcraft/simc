@@ -1540,6 +1540,9 @@ struct ignite_weapon_t : public warrior_attack_t
   {
     parse_options( NULL, options_str );
 
+    if ( p -> specialization() == WARRIOR_ARMS )
+      background = true;
+
     weapon  = &( player -> main_hand_weapon );
 
     weapon_multiplier = 0.65; // Remove
@@ -1575,7 +1578,7 @@ struct heroic_strike_t : public warrior_attack_t
     warrior_attack_t( "heroic_strike", p, p -> find_class_spell( "Heroic Strike" ) )
   {
     parse_options( NULL, options_str );
-    if ( p -> talents.ignite_weapon -> ok() )
+    if ( p -> talents.ignite_weapon -> ok() || p -> specialization() == WARRIOR_ARMS )
       background = true;
     weapon  = &( player -> main_hand_weapon );
 
@@ -1847,7 +1850,7 @@ struct mortal_strike_t : public warrior_attack_t
         p() -> buff.death_sentence -> trigger();
 
       p() -> resource_gain( RESOURCE_RAGE,
-                          data().effectN( 4 ).resource( RESOURCE_RAGE ),
+                          20, //data().effectN( 4 ).resource( RESOURCE_RAGE ),
                           p() -> gain.mortal_strike );
 
       if ( s -> result == RESULT_CRIT )
@@ -2313,6 +2316,7 @@ struct slam_t : public warrior_attack_t
 
     weapon = &( p -> main_hand_weapon );
     weapon_multiplier = 1.3; // Remove
+    base_costs[RESOURCE_RAGE] = 15; // Remove
   }
 
   virtual double action_multiplier() const
@@ -3730,32 +3734,25 @@ void warrior_t::apl_arms()
   default_list -> add_action( "run_action_list,name=aoe,if=active_enemies>=2" );
   default_list -> add_action( "run_action_list,name=single_target,if=active_enemies<2" );
 
-  single_target -> add_action( this, "Heroic Strike", "if=rage>115" ) ;
-  single_target -> add_talent( this, "Ignite Weapon", "if=(rage>100&target.health.pct>20)|buff.ignite_weapon.down" );
-  single_target -> add_action( this, "Mortal Strike", "if=dot.deep_wounds.remains<1.0|buff.enrage.down|rage<10" ) ;
+  single_target -> add_action( this, "Mortal Strike" );
   single_target -> add_action( this, "Colossus Smash", "if=debuff.colossus_smash.remains<1.0" );
   single_target -> add_talent( this, "Ravager" );
   single_target -> add_action("bladestorm,if=enabled,interrupt_if=!cooldown.colossus_smash.remains",
                               "Use cancelaura (in-game) to stop bladestorm if CS comes off cooldown during it for any reason." );
-  single_target -> add_action( this, "Mortal Strike" );
   single_target -> add_talent( this, "Storm Bolt", "if=debuff.colossus_smash.up" );
   single_target -> add_talent( this, "Dragon Roar", "if=debuff.colossus_smash.down" );
-  single_target -> add_action( this, "Execute", "if=buff.taste_for_blood.down|rage>90|target.time_to_die<12" );
-  single_target -> add_action( this, "Slam", "if=target.health.pct>=20&(trinket.stacking_stat.crit.stack>=10|buff.recklessness.up)" );
-  single_target -> add_action( this, "Execute" );
-  single_target -> add_action( this, "Slam", "if=target.health.pct>=20" );
+  single_target -> add_action( this, "Execute", "if=(debuff.colossus_smash.up&rage>75)|rage>100" );
+  single_target -> add_action( this, "Slam" );
 
   aoe -> add_action( this, "Sweeping Strikes" );
-  aoe -> add_action( this, "Heroic Strike", "if=rage>100" );
-  aoe -> add_talent( this, "Ignite Weapon", "if=buff.ignite_weapon.down|rage>100" );
   aoe -> add_talent( this, "Ravager" );
-  aoe -> add_talent( this, "Bladestorm", "if=buff.enrage.remains>4" );
+  aoe -> add_talent( this, "Bladestorm" );
   aoe -> add_talent( this, "Dragon Roar", "if=debuff.colossus_smash.down" );
   aoe -> add_action( this, "Colossus Smash", "if=debuff.colossus_smash.remains<1" );
   aoe -> add_action( this, "Thunder Clap" );
   aoe -> add_action( this, "Mortal Strike" );
-  aoe -> add_action( this, "Execute", "if=active_enemies<4" );
-  aoe -> add_action( this, "Slam", "if=debuff.colossus_smash.up" );
+  aoe -> add_action( this, "Execute", "if=rage>90&debuff.colossus_smash.up" );
+  aoe -> add_action( this, "Slam", "if=debuff.colossus_smash.up|rage>45" );
 
 }
 
@@ -4707,8 +4704,6 @@ public:
       os << "%"<<( ( cs_damage / priority_damage ) * 100 );
     }
     os << "\t\t\t\t\t<p> Dps done to primary target </p>\n";
-    if ( p.specialization() == WARRIOR_ARMS )
-      os << "\t\t\t\t\t<p> Assumes that SS/OS bounces between adds/main target, likely 10-30% overestimation on 3-8 targets</p> \n";
     os << ( ( priority_damage / all_damage ) * p.collected_data.dps.mean() );
 
     os << "\t\t\t\t\t\t</div>\n" << "\t\t\t\t\t</div>\n";
