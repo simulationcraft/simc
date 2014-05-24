@@ -12,11 +12,8 @@
 //
 // Dragon Roar: Does it still have diminishing returns on more than 1 target
 //
-// Find a better way to select gladiator stance action list based on user input. I'm not sure if 
-// relying on people to select their primary role as dps while importing a protection warrior is the
-// best way to do it, but I have no idea how to make it work otherwise. 
-//
 // Someone who is knowledgable about prot warrior mechanics/changes should look over the defensive abilities.
+// Check shield barrier ap coefficient, as well as how it works with varying amounts of rage.
 // ==========================================================================
 
 namespace { // UNNAMED NAMESPACE
@@ -97,7 +94,6 @@ public:
     buff_t* sudden_execute;
     buff_t* sweeping_strikes;
     buff_t* sword_and_board;
-    buff_t* taste_for_blood;
     buff_t* ultimatum;
 
     haste_buff_t* flurry;
@@ -159,6 +155,8 @@ public:
     const spell_data_t* charge;
     const spell_data_t* intervene;
     const spell_data_t* heroic_leap;
+    const spell_data_t* hold_the_line;
+    const spell_data_t* heavy_repercussions;
   } spell;
 
   // Glyphs
@@ -187,7 +185,7 @@ public:
   struct mastery_t
   {
     const spell_data_t* critical_block; //Protection
-    const spell_data_t* strikes_of_opportunity; //Arms
+    const spell_data_t* weapons_master; //Arms
     const spell_data_t* unshackled_fury; //Fury
   } mastery;
 
@@ -196,7 +194,6 @@ public:
   {
     proc_t* raging_blow_wasted;
     proc_t* sudden_death;
-    proc_t* taste_for_blood_wasted;
 
     //Tier bonuses
     proc_t* t15_2pc_melee;
@@ -208,10 +205,10 @@ public:
   struct spec_t
   {
   //Arms-only
+    const spell_data_t* executioner;
     const spell_data_t* readiness_arms;
     const spell_data_t* seasoned_soldier;
     const spell_data_t* sudden_death;
-    const spell_data_t* taste_for_blood;
   //Arms and Prot
     const spell_data_t* blood_and_thunder;
   //Arms and Fury
@@ -228,8 +225,6 @@ public:
     const spell_data_t* bastion_of_defense;
     const spell_data_t* bladed_armor;
     const spell_data_t* blood_craze;
-    //const spell_data_t* heavy_repercussions;
-    //const spell_data_t* hold_the_line;
     const spell_data_t* readiness_protection;
     const spell_data_t* riposte;
     const spell_data_t* sword_and_board;
@@ -341,10 +336,9 @@ public:
     cooldown.stance_swap              -> duration = timespan_t::from_seconds( 1.5 );
 
     initial_rage = 0;
-    cdr_mult = 11.0; // Listed in spell effect #1 for readiness.
+    cdr_mult = 11.0;
 
     base.distance = 3.0;
-    base.distance_to_move = 20.0; // Warriors almost always charge into combat.
   }
 
   // Character Definition
@@ -488,7 +482,8 @@ public:
 
     if ( rage > 0 && p() -> talents.anger_management -> ok() )
     {
-      rage /= 30; //Anger management takes the amount of rage spent and reduces the cooldown of abilities by 1 second per 30 rage.
+      //Anger management takes the amount of rage spent and reduces the cooldown of abilities by 1 second per 30 rage.
+      rage /= p() -> talents.anger_management -> effectN( 1 ).base_value(); 
       rage *= -1;
       p() -> cooldown.heroic_leap -> adjust( timespan_t::from_seconds( rage ) ); //All specs
 
@@ -634,22 +629,12 @@ struct warrior_attack_t : public warrior_action_t< melee_attack_t >
 
     rage_gain = floor( rage_gain * 10 ) / 10.0;
 
-    if ( p() -> specialization() == WARRIOR_ARMS && target -> health_percentage() < 20 )
-       rage_gain += 40; // Check spell data for effect
+    if ( p() -> spec.executioner -> ok() && target -> health_percentage() < 20 )
+       rage_gain += p() -> spec.executioner -> effectN( 1 ).base_value();
 
     p() -> resource_gain( RESOURCE_RAGE,
                        rage_gain,
                        w -> slot == SLOT_OFF_HAND ? p() -> gain.melee_off_hand : p() -> gain.melee_main_hand );
-  }
-
-  void trigger_taste_for_blood( int stacks_to_increase )
-  {
-    int stacks_wasted = stacks_to_increase - ( p() -> buff.taste_for_blood -> max_stack() - p() -> buff.taste_for_blood -> check() );
-
-    for ( int i = 0; i < stacks_wasted; ++i )
-      p() -> proc.taste_for_blood_wasted -> occur();
-
-    p() -> buff.taste_for_blood -> trigger( stacks_to_increase );
   }
 
   virtual timespan_t gcd() const
@@ -850,10 +835,6 @@ void warrior_attack_t::execute()
   if ( proc ) return;
   if ( ! execute_state ) return;
 
-  if ( execute_state -> result == RESULT_DODGE && p() -> specialization() == WARRIOR_ARMS )
-  {
-    trigger_taste_for_blood( p() -> spec.taste_for_blood -> effectN( 1 ).base_value() );
-  }
 }
 // warrior_attack_t::impact =================================================
 
@@ -1221,9 +1202,10 @@ struct bloodthirst_t : public warrior_attack_t
 
 struct charge_t : public warrior_attack_t
 {
-
+  bool first_charge;
   charge_t( warrior_t* p, const std::string& options_str ) :
-    warrior_attack_t( "charge", p, p -> spell.charge )
+    warrior_attack_t( "charge", p, p -> spell.charge ),
+    first_charge( true )
   {
     parse_options( NULL , options_str );
     base_teleport_distance = data().max_range();
@@ -1241,6 +1223,9 @@ struct charge_t : public warrior_attack_t
   {
     warrior_attack_t::execute();
 
+    if ( first_charge == true )
+      first_charge = !first_charge;
+
     if ( p() -> glyphs.bull_rush -> ok() )
       p() -> resource_gain( RESOURCE_RAGE,
                         p() -> glyphs.bull_rush -> effectN( 2 ).resource( RESOURCE_RAGE ) + 
@@ -1252,8 +1237,18 @@ struct charge_t : public warrior_attack_t
                         p() -> gain.charge );
   }
 
+  void reset()
+  {
+    action_t::reset();
+
+    first_charge = true;
+  }
+
   virtual bool ready()
   {
+    if ( first_charge == true ) // Assumes that we charge into combat, instead of setting initial distance to 20 yards.
+      return warrior_attack_t::ready();
+
     if ( p() -> current.distance_to_move > base_teleport_distance || 
          p() -> current.distance_to_move < data().min_range() ) // Cannot charge unless target is in range.
       return false;
@@ -1284,8 +1279,8 @@ struct colossus_smash_t : public warrior_attack_t
   {
     double am = warrior_attack_t::action_multiplier();
 
-    if ( p() -> specialization() == WARRIOR_ARMS )
-      am *= 1.0 + ( p() -> cache.mastery_value() );
+    if ( p() -> mastery.weapons_master -> ok() )
+      am *= 1.0 + p() -> cache.mastery_value();
 
     return am;
   }
@@ -1458,7 +1453,7 @@ struct execute_t : public warrior_attack_t
     weapon = &( p -> main_hand_weapon );
     weapon_multiplier *= 1.0 + p -> perk.empowered_execute -> effectN( 1 ).percent();
 
-    if ( p -> specialization() == WARRIOR_FURY )
+    if ( p -> spec.crazed_berserker -> ok() )
     {
       oh_attack = new execute_off_hand_t( p, "execute_oh", p -> find_class_spell( "Execute" ) );
       add_child( oh_attack );
@@ -1469,8 +1464,8 @@ struct execute_t : public warrior_attack_t
   {
     double am = warrior_attack_t::action_multiplier();
 
-    if ( p() -> specialization() == WARRIOR_ARMS )
-      am *= 1.0 + ( p() -> cache.mastery_value() );
+    if ( p() -> mastery.weapons_master -> ok() )
+      am *= 1.0 + p() -> cache.mastery_value();
 
     if ( p() -> spec.single_minded_fury -> ok() && p() -> dual_wield() )
     {
@@ -1496,7 +1491,7 @@ struct execute_t : public warrior_attack_t
 
   virtual bool ready()
   {
-    if ( p() -> specialization() == WARRIOR_ARMS ) // Arms can execute at any time. 
+    if ( p() -> spec.executioner -> ok() ) // Arms can execute at any time. 
       return warrior_attack_t::ready();
 
     if ( target -> health_percentage() > 20 && ! p() -> buff.death_sentence -> check() ) // Tier 16 4 piece bonus
@@ -1509,7 +1504,7 @@ struct execute_t : public warrior_attack_t
   {
     warrior_attack_t::execute();
 
-    if ( p() -> specialization() == WARRIOR_FURY && result_is_hit( execute_state -> result ) ) // Check later, total guess that it's going to act like storm bolt.
+    if ( p() -> spec.crazed_berserker -> ok() && result_is_hit( execute_state -> result ) ) // Check later, total guess that it's going to act like storm bolt.
       oh_attack -> execute();
 
     p() -> buff.death_sentence -> expire();
@@ -1549,6 +1544,16 @@ struct ignite_weapon_t : public warrior_attack_t
     cd_duration = cooldown -> duration * player -> cache.attack_haste();
 
     warrior_attack_t::update_ready( cd_duration );
+  }
+
+  virtual double action_multiplier() const
+  {
+    double am = warrior_attack_t::action_multiplier();
+
+    if ( p() -> mastery.weapons_master -> ok() )
+      am *= 1.0 + p() -> cache.mastery_value();
+
+    return am;
   }
 };
 
@@ -1812,7 +1817,6 @@ struct mortal_strike_t : public warrior_attack_t
     {
       p() -> active_deep_wounds -> target = execute_state -> target;
       p() -> active_deep_wounds -> execute();
-      trigger_taste_for_blood( p() -> spec.taste_for_blood -> effectN( 2 ).base_value() );
     }
   }
 
@@ -2024,7 +2028,7 @@ struct revenge_t : public warrior_attack_t
       am *= 1.0 + p() -> buff.shield_charge -> default_value;
 
     if( p() -> buff.hold_the_line -> up() )
-      am*= 1.0 + 0.5; // am*= 1.0 + buff.hold_the_line -> effectN( 1 ).percent();
+      am*= 1.0 + p() -> buff.hold_the_line -> default_value;
 
     return am;
   }
@@ -2190,7 +2194,7 @@ struct shield_slam_t : public warrior_attack_t
       am *= 1.0 + p() -> buff.shield_charge -> default_value;
 
     if( p() -> buff.shield_block -> up() )
-      am *= 1.0 + 0.5; // am *= 1.0 + p -> spec.heavy_repercussions -> effectN( 1 ).percent();
+      am *= 1.0 + p() -> spell.heavy_repercussions -> effectN( 1 ).percent();
 
     return am;
   }
@@ -2296,7 +2300,8 @@ struct slam_t : public warrior_attack_t
   {
     double am = warrior_attack_t::action_multiplier();
 
-    am *= 1.0 + ( p() -> cache.mastery_value() );
+    if ( p() -> mastery.weapons_master -> ok() )
+      am *= 1.0 + p() -> cache.mastery_value();
 
     return am;
   }
@@ -3216,7 +3221,7 @@ void warrior_t::init_spells()
 
   // Mastery
   mastery.critical_block         = find_mastery_spell( WARRIOR_PROTECTION          );
-  mastery.strikes_of_opportunity = find_mastery_spell( WARRIOR_ARMS                );
+  mastery.weapons_master         = find_mastery_spell( WARRIOR_ARMS                );
   mastery.unshackled_fury        = find_mastery_spell( WARRIOR_FURY                );
 
   // Spec Passives
@@ -3227,9 +3232,8 @@ void warrior_t::init_spells()
   spec.bloodsurge               = find_specialization_spell( "Bloodsurge"            );
   spec.colossus_smash           = find_specialization_spell( "Colossus Smash"        );
   spec.crazed_berserker         = find_specialization_spell( "Crazed Berserker"      );
+  spec.executioner              = find_specialization_spell( "Executioner"           );
   spec.flurry                   = find_specialization_spell( "Flurry"                );
-  //spec.hold_the_line            = find_specialization_spell( "Hold The Line"         );
-  //spec.heavy_repercussions      = find_specialization_spell( "Heavy Repercussions"   );
   spec.meat_cleaver             = find_specialization_spell( "Meat Cleaver"          );
   spec.readiness_arms           = find_specialization_spell( "Readiness: Arms"       );
   spec.readiness_fury           = find_specialization_spell( "Readiness: Fury"       );
@@ -3240,7 +3244,6 @@ void warrior_t::init_spells()
   spec.single_minded_fury       = find_specialization_spell( "Single-Minded Fury"    );
   spec.sword_and_board          = find_specialization_spell( "Sword and Board"       );
   spec.sudden_death             = find_specialization_spell( "Sudden Death"          );
-  spec.taste_for_blood          = find_specialization_spell( "Taste for Blood"       );
   spec.ultimatum                = find_specialization_spell( "Ultimatum"             );
   spec.unwavering_sentinel      = find_specialization_spell( "Unwavering Sentinel"   );
 
@@ -3320,7 +3323,8 @@ void warrior_t::init_spells()
   spell.charge                  = find_class_spell( "Charge"                       );
   spell.intervene               = find_class_spell( "Intervene"                    );
   spell.heroic_leap             = find_class_spell( "Heroic Leap"                  );
-
+  spell.heavy_repercussions     = find_spell( "Glyph of Heavy Repercussions"       ); //See if blizzard changes the name.
+  spell.hold_the_line           = find_spell( "Glyph of Hold the Line"             );
 
   // Active spells
   active_deep_wounds   = new deep_wounds_t( this );
@@ -3820,7 +3824,6 @@ void warrior_t::apl_default()
   default_list -> add_action( this, "Heroic Strike" );
 }
 
-
 // warrior_t::init_scaling ==================================================
 
 void warrior_t::init_scaling()
@@ -3889,8 +3892,9 @@ void warrior_t::create_buffs()
   buff.heroic_leap_glyph = buff_creator_t( this, "heroic_leap_glyph", find_spell( 133278 ) )
                            .chance( glyphs.heroic_leap -> ok() ? 1 : 0 );
 
-  buff.hold_the_line     = buff_creator_t( this, "hold_the_line" /* , spec.hold_the_line */ )
-                           .chance( 1 ) /* .chance( spec.hold_the_line -> ok() ? 1 : 0 )*/;
+  buff.hold_the_line     = buff_creator_t( this, "hold_the_line", spell.hold_the_line -> effectN( 1 ).trigger() )
+                           .default_value( spell.hold_the_line -> effectN( 1 ).trigger() -> effectN( 1 ).percent() )
+                           .chance( 1 );
 
   buff.meat_cleaver     = buff_creator_t( this, "meat_cleaver",     spec.meat_cleaver -> effectN( 1 ).trigger() )
                           .max_stack( find_spell( 85739 ) -> max_stacks() + perk.improved_meat_cleaver -> effectN( 1 ).base_value() );
@@ -3914,9 +3918,6 @@ void warrior_t::create_buffs()
 
   buff.riposte         = buff_creator_t( this, "riposte",      find_spell( 145674 ) )
                          .add_invalidate( CACHE_PARRY );
-
-  buff.taste_for_blood = buff_creator_t( this, "taste_for_blood" )
-                         .spell( find_spell( 60503 ) );
 
   buff.shield_block     = buff_creator_t( this, "shield_block" ).spell( find_spell( 132404 ) )
                          .add_invalidate( CACHE_BLOCK );
@@ -4011,7 +4012,6 @@ void warrior_t::init_procs()
   player_t::init_procs();
 
   proc.sudden_death            = get_proc( "sudden_death"            );
-  proc.taste_for_blood_wasted  = get_proc( "taste_for_blood_wasted"  );
   proc.raging_blow_wasted      = get_proc( "raging_blow_wasted"      );
   proc.t15_2pc_melee           = get_proc( "t15_2pc_melee"           );
 }
@@ -4104,10 +4104,9 @@ void warrior_t::combat_begin()
 
   if ( specialization() == WARRIOR_PROTECTION && active_stance == STANCE_DEFENSE )
     vengeance_start();
-  
+
   if ( find_specialization_spell( "Bladed Armor" ) )
     buff.bladed_armor -> trigger();
-    
 }
 
 // warrior_t::reset =========================================================
