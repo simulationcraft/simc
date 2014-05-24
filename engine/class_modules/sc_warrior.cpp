@@ -614,8 +614,9 @@ struct warrior_attack_t : public warrior_action_t< melee_attack_t >
 
   void trigger_rage_gain()
   {
-    // MoP: base rage gain is 1.75 * weaponspeed and half that for off-hand
-    // Battle stance: +100%
+    // Check rage gain per swing, they removed the +100% from battle stance
+    // Likely just because berserker stance doesn't exist, but eh, never know.
+    // MoP: base rage gain is 3.5 * weaponspeed and half that for off-hand
     // Defensive/Gladiator stance: -100%
 
     if (  proc )
@@ -626,10 +627,7 @@ struct warrior_attack_t : public warrior_action_t< melee_attack_t >
     if ( p() -> active_stance == STANCE_DEFENSE || p() -> active_stance == STANCE_GLADIATOR )
       return;
 
-    double rage_gain = 1.75 * w -> swing_time.total_seconds();
-
-    if ( p() -> active_stance == STANCE_BATTLE )
-      rage_gain *= 1.0 + p() -> buff.battle_stance -> data().effectN( 1 ).percent();
+    double rage_gain = 3.5 * w -> swing_time.total_seconds();
 
     if ( w -> slot == SLOT_OFF_HAND )
       rage_gain /= 2.0;
@@ -1441,11 +1439,11 @@ struct execute_off_hand_t : public warrior_attack_t
   execute_off_hand_t( warrior_t* p, const char* name, const spell_data_t* s ) :
     warrior_attack_t( name, p, s )
   {
-    weapon_multiplier *= 1.0 + p -> perk.empowered_execute -> effectN( 1 ).percent();
     background = true;
     base_costs[RESOURCE_RAGE] = 0;
 
     weapon = &( p -> off_hand_weapon );
+    weapon_multiplier *= 1.0 + p -> perk.empowered_execute -> effectN( 1 ).percent();
   }
 };
 
@@ -1453,8 +1451,7 @@ struct execute_t : public warrior_attack_t
 {
   execute_off_hand_t* oh_attack;
   execute_t( warrior_t* p, const std::string& options_str ) :
-    warrior_attack_t( "execute", p, ( p -> specialization() == WARRIOR_ARMS ? // Arms has a seperate execute now.
-                                      p -> find_spell( 163201 ) : p -> find_spell( 163558 ) ) )
+    warrior_attack_t( "execute", p, p -> find_class_spell( "Execute" ) )
   {
     parse_options( NULL, options_str );
 
@@ -1463,7 +1460,7 @@ struct execute_t : public warrior_attack_t
 
     if ( p -> specialization() == WARRIOR_FURY )
     {
-      oh_attack = new execute_off_hand_t( p, "execute_oh", p -> find_spell( "163558" ) );
+      oh_attack = new execute_off_hand_t( p, "execute_oh", p -> find_class_spell( "Execute" ) );
       add_child( oh_attack );
     }
   }
@@ -1529,9 +1526,6 @@ struct ignite_weapon_t : public warrior_attack_t
   {
     parse_options( NULL, options_str );
 
-    if ( p -> specialization() == WARRIOR_ARMS )
-      background = true;
-
     weapon  = &( player -> main_hand_weapon );
 
     // The 140% is hardcoded in the tooltip
@@ -1566,8 +1560,10 @@ struct heroic_strike_t : public warrior_attack_t
     warrior_attack_t( "heroic_strike", p, p -> find_class_spell( "Heroic Strike" ) )
   {
     parse_options( NULL, options_str );
+
     if ( p -> talents.ignite_weapon -> ok() || p -> specialization() == WARRIOR_ARMS )
       background = true;
+
     weapon  = &( player -> main_hand_weapon );
 
     // The 140% is hardcoded in the tooltip
