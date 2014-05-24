@@ -1995,7 +1995,9 @@ stat_e util::translate_rating_mod( unsigned ratings )
     return STAT_MASTERY_RATING;
   else if ( ratings & RATING_MOD_PVP_POWER )
     return STAT_PVP_POWER;
-  // TODO: WOW-MULTISTRIKE and READINESS.
+  else if ( ratings & RATING_MOD_MULTISTRIKE )
+    return STAT_MULTISTRIKE_RATING;
+  // TODO-WOD: READINESS.
 
   return STAT_NONE;
 }
