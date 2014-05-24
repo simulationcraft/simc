@@ -2223,7 +2223,11 @@ unsigned dbc_t::talent_ability_id( player_e c, specialization_e spec, const char
 
   talent_data_t* t;
   if ( name_tokenized )
+  {
     t = talent_data_t::find_tokenized( spell_name, spec, ptr );
+    if ( ! t )
+      t = talent_data_t::find_tokenized( spell_name, SPEC_NONE, ptr );
+  }
   else
   {
     t = talent_data_t::find( spell_name, spec, ptr ); // first try finding with the given spec
