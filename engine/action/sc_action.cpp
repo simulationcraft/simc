@@ -1145,7 +1145,7 @@ result_e action_t::calculate_multistrike_result( action_state_t* s )
   if ( ! harmful ) return RESULT_NONE;
 
   result_e r = RESULT_NONE;
-  if ( rng().roll( composite_multistrike() / 2.0 ) )
+  if ( rng().roll( composite_multistrike() ) )
   {
     r = RESULT_MULTISTRIKE;
 
