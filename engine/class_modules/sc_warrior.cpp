@@ -3941,7 +3941,8 @@ void warrior_t::create_buffs()
 
   buff.recklessness     = buff_creator_t( this, "recklessness",     spec.recklessness )
                           .duration( spec.recklessness -> duration() * 
-                          ( 1.0 + ( glyphs.recklessness -> ok() ? glyphs.recklessness -> effectN( 2 ).percent() : 0 )  ) );
+                          ( 1.0 + ( glyphs.recklessness -> ok() ? glyphs.recklessness -> effectN( 2 ).percent() : 0 )  ) )
+                          .cd( timespan_t::zero() ); //Necessary for readiness.
 
 
   buff.riposte         = buff_creator_t( this, "riposte",      find_spell( 145674 ) )
