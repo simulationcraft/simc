@@ -380,7 +380,6 @@ void enchant::mark_of_warsong( special_effect_t& effect,
   effect.type = SPECIAL_EFFECT_EQUIP;
   effect.trigger_spell_id = 159675;
   effect.reverse = true;
-  effect.ppm_ = -10.0;
   
   new dbc_proc_callback_t( item, effect );
 }
