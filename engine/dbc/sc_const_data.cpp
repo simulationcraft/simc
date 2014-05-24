@@ -2323,29 +2323,6 @@ unsigned dbc_t::class_ability_id( player_e c, specialization_e spec_id, const ch
       spec_index++;
     }
 
-    // Test general spells
-    for ( unsigned n = 0; n < class_ability_size(); n++ )
-    {
-      if ( ! ( spell_id = class_ability( cid, 0, n ) ) )
-        break;
-
-      if ( ! spell( spell_id ) -> id() )
-        continue;
-
-      if ( util::str_compare_ci( spell( spell_id ) -> name_cstr(), spell_name ) )
-      {
-        // Spell has been replaced by another, so don't return id
-        if ( ! replaced_id( spell_id ) )
-        {
-          return spell_id;
-        }
-        else
-        {
-          return 0;
-        }
-      }
-    }
-
     // Now test spec based class abilities.
     for ( unsigned n = 0; n < class_ability_size(); n++ )
     {
