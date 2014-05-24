@@ -801,7 +801,7 @@ public:
   static talent_data_t* find( unsigned, bool ptr = false );
   static talent_data_t* find( unsigned, const char* confirmation, bool ptr = false );
   static talent_data_t* find( const char* name, specialization_e spec, bool ptr = false );
-  static talent_data_t* find_tokenized( const char* name, bool ptr = false );
+  static talent_data_t* find_tokenized( const char* name, specialization_e spec, bool ptr = false );
   static talent_data_t* find( player_e c, unsigned int row, unsigned int col, specialization_e spec, bool ptr = false );
   static talent_data_t* list( bool ptr = false );
   static void           link( bool ptr = false );
