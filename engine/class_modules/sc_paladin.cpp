@@ -76,6 +76,7 @@ public:
   action_t* active_seal_of_righteousness_proc;
   action_t* active_seal_of_truth_proc;
   heal_t*   active_shining_protector_proc;
+  heal_t*   active_uthers_insight_trigger;
   player_t* last_judgement_target;
 
   struct active_actions_t
@@ -108,10 +109,14 @@ public:
     buff_t* hand_of_purity;
     buff_t* holy_avenger;
     buff_t* infusion_of_light;
+    buff_t* liadrins_righteousness;
+    buff_t* maraads_truth;
     buff_t* sacred_shield;  // dummy buff for APL simplicity
     buff_t* selfless_healer;
     buff_t* shield_of_glory; // t15_2pc_tank
     buff_t* shield_of_the_righteous;
+    buff_t* turalyons_justice;
+    buff_t* uthers_insight;
     buff_t* warrior_of_the_light; // t16_2pc_melee
     buff_t* tier15_2pc_melee;
     buff_t* tier15_4pc_melee;
@@ -320,6 +325,7 @@ public:
     active_seal_of_righteousness_proc  = 0;
     active_seal_of_truth_proc          = 0;
     active_shining_protector_proc      = 0;
+    active_uthers_insight_trigger      = 0;
     bok_up                             = false;
     bom_up                             = false;
 
@@ -347,6 +353,7 @@ public:
   virtual double    composite_melee_crit() const;
   virtual double    composite_melee_expertise( weapon_t* weapon ) const;
   virtual double    composite_melee_haste() const;
+  virtual double    composite_melee_speed() const;
   virtual double    composite_spell_crit() const;
   virtual double    composite_spell_haste() const;
   virtual double    composite_player_multiplier( school_e school ) const;
@@ -356,6 +363,7 @@ public:
   virtual double    composite_block() const;
   virtual double    composite_crit_avoidance() const;
   virtual double    composite_dodge() const;
+  virtual double    temporary_movement_modifier() const;
   virtual void      assess_damage( school_e, dmg_e, action_state_t* );
   virtual void      assess_heal( school_e, dmg_e, action_state_t* );
   virtual void      target_mitigation( school_e, dmg_e, action_state_t* );
@@ -2852,6 +2860,38 @@ struct shining_protector_t : public paladin_heal_t
 
 };
 
+// Uther's Insight ==========================================================
+// This is the healing buff from Empowered Seals
+
+struct uthers_insight_t : public paladin_heal_t
+{
+  uthers_insight_t( paladin_t* p )
+    : paladin_heal_t( "uthers_insight", p, p -> find_spell( 156988 ) )
+  {
+    background = true;
+    proc = true;
+    target = player;
+    may_multistrike = true; // guess: test
+    may_crit = true; // guess, TODO: test
+  }
+
+  virtual void execute()
+  {
+    p() -> buffs.uthers_insight -> trigger();
+
+    paladin_heal_t::execute(); // TODO: is there a direct heal? does this matter?
+  }
+
+  virtual void tick( dot_t* d )
+  {
+    pct_heal = data().effectN( 1 ).percent();
+
+    base_td = p() -> resources.max[ RESOURCE_HEALTH ] * pct_heal;
+
+    paladin_heal_t::tick( d );
+  }  
+};
+
 // Word of Glory  ===========================================================
 
 struct word_of_glory_t : public paladin_heal_t
@@ -3777,6 +3817,18 @@ struct judgment_t : public paladin_melee_attack_t
     // Selfless Healer talent
     if ( p() -> talents.selfless_healer -> ok() )
       p() -> buffs.selfless_healer -> trigger();
+
+    // Empowered Seals
+    if ( p() -> talents.empowered_seals -> ok() )
+    {
+      switch ( p() -> active_seal )
+      {
+        case SEAL_OF_JUSTICE:        p() -> buffs.turalyons_justice -> trigger(); break; // this one is sort of pointless?
+        case SEAL_OF_RIGHTEOUSNESS:  p() -> buffs.liadrins_righteousness -> trigger(); break;
+        case SEAL_OF_TRUTH:          p() -> buffs.maraads_truth -> trigger(); break;
+        case SEAL_OF_INSIGHT:        p() -> active_uthers_insight_trigger -> schedule_execute(); break;
+      }
+    }
   }
 
   virtual double action_multiplier() const
@@ -3792,7 +3844,7 @@ struct judgment_t : public paladin_melee_attack_t
       am *= 1.0 + p() -> buffs.holy_avenger -> data().effectN( 4 ).percent();
     }
 
-    // Double Jeopardy damage boost, only if we hit a different target with it
+    // Double Jeopardy damage boost only if we hit a different target with it
     // this gets called before impact(), so last_judgment_target won't be updated until after this resolves
     if (  p() -> glyphs.double_jeopardy -> ok()              // glyph equipped
           && target != p() -> last_judgement_target      // current target is different than last_j_target
@@ -4654,6 +4706,12 @@ void paladin_t::create_buffs()
   buffs.sacred_shield          = buff_creator_t( this, "sacred_shield", find_talent_spell( "Sacred Shield" ) )
                                  .duration( timespan_t::from_seconds( 60 ) ); // arbitrarily high since this is just a placeholder, we expire() on last_tick()
   buffs.selfless_healer        = buff_creator_t( this, "selfless_healer", find_spell( 114250 ) );
+  buffs.liadrins_righteousness = buff_creator_t( this, "liadrins_righteousness", find_spell( 156989 ) )
+                                 .add_invalidate( CACHE_ATTACK_SPEED );
+  buffs.maraads_truth          = buff_creator_t( this, "maraads_truth", find_spell( 156990 ) )
+                                 .add_invalidate( CACHE_ATTACK_POWER );
+  buffs.turalyons_justice      = buff_creator_t( this, "turalyons_justice", find_spell( 156987 ) );
+  buffs.uthers_insight         = buff_creator_t( this, "uthers_insight", find_spell( 156988 ) );
 
   // General
   buffs.avenging_wrath         = new buffs::avenging_wrath_buff_t( this );
@@ -5258,6 +5316,9 @@ void paladin_t::init_spells()
   if ( passives.shining_protector -> ok() )
     active_shining_protector_proc = new shining_protector_t( this );
 
+  if ( talents.empowered_seals -> ok() )
+    active_uthers_insight_trigger = new uthers_insight_t( this );
+
   if ( talents.holy_shield -> ok() )
     active_holy_shield_proc = new holy_shield_proc_t( this );
 
@@ -5388,6 +5449,20 @@ double paladin_t::composite_melee_haste() const
   return h;
 }
 
+// paladin_t::composite_melee_speed =========================================
+
+double paladin_t::composite_melee_speed() const
+{
+  double h = player_t::composite_melee_speed();
+
+  // Empowered Seals
+  if ( buffs.liadrins_righteousness -> check() )
+    h /= 1.0 + buffs.liadrins_righteousness -> data().effectN( 1 ).percent(); // TODO: check that it's multiplicative
+
+  return h;
+
+}
+
 // paladin_t::composite_spell_crit ==========================================
 
 double paladin_t::composite_spell_crit() const
@@ -5498,10 +5573,13 @@ double paladin_t::composite_melee_attack_power() const
 
 double paladin_t::composite_attack_power_multiplier() const
 {
-  double ap = player_t::composite_spell_power_multiplier();
+  double ap = player_t::composite_attack_power_multiplier();
 
   if ( passives.divine_bulwark -> ok () )
     ap += get_divine_bulwark(); // TODO: check if additive or multiplicative
+
+  if ( buffs.maraads_truth -> up() )
+    ap += buffs.maraads_truth -> data().effectN( 1 ).percent(); // TODO: check if additive or multiplicative
 
   return ap;
 }
@@ -5566,6 +5644,16 @@ double paladin_t::composite_dodge() const
   d += passives.sanctuary -> effectN( 3 ).percent();
 
   return d;
+}
+
+double paladin_t::temporary_movement_modifier() const
+{
+  double temporary = player_t::temporary_movement_modifier();
+  
+  if ( buffs.turalyons_justice -> check() )
+    temporary = std::max( buffs.turalyons_justice-> data().effectN( 1 ).percent(), temporary );
+
+  return temporary;
 }
 
 // paladin_t::target_mitigation =============================================
