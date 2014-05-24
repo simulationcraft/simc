@@ -1,4 +1,6 @@
-import ConfigParser, os, glob, sys, StringIO, collections
+BASE_URL = "http://dist.blizzard.com.edgesuite.net/tpr/wow/config"
+
+import ConfigParser, os, glob, sys, StringIO, collections, urllib2
 
 import jenkins
 
@@ -74,7 +76,7 @@ class BuildCfg(object):
 		self.build_cfg_file = line_split[2]
 		self.cdn_domain = line_split[7]
 		self.cdn_dir = line_split[6]
-		
+	
 		if len(self.build_cfg_file) == 0:
 			self.options.parser.error('Could not deduce build configuration from .build.info file')
 		

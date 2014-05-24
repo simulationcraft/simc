@@ -57,3 +57,4 @@ CMakeCache.txt
 *.pyc
 *.ld_*
 
+casc_extract/cache/

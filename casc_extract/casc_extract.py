@@ -1,8 +1,9 @@
-import optparse, time, sys
+import optparse, time, sys, os
 
 import build_cfg, casc, jenkins
 
 parser = optparse.OptionParser( usage = 'Usage: %prog -d wow_install_dir [options] file_path ...')
+parser.add_option( '--online', dest = 'online', action = 'store_true' )
 parser.add_option( '-m', '--mode', dest = 'mode', choices = [ 'dbc', 'unpack', 'extract' ],
                    help = 'Extraction mode: "root" for root/encoding file extraction, "dbc" for DBC file extraction' )
 parser.add_option( '-b', '--dbfile', dest = 'dbfile', type = 'string', default = 'dbfile', 
@@ -15,6 +16,7 @@ parser.add_option( '-d', '--datadir', dest = 'data_dir', type = 'string',
 				   help = 'World of Warcraft install directory' )
 parser.add_option( '-o', '--output', type = 'string', dest = 'output',
 				   help = "Output directory for dbc mode" )
+parser.add_option( '-x', '--cache', type = 'string', dest = 'cache', default = 'cache' )
 
 if __name__ == '__main__':
 	(opts, args) = parser.parse_args()
@@ -24,52 +26,93 @@ if __name__ == '__main__':
 		if not opts.output:
 			parser.error("DBC mode requires an output directory for the files")
 			sys.exit(1)
-			
-		build = build_cfg.BuildCfg(opts)
-		if not build.open():
-			sys.exit(1)
-		
+					
 		fname_db = build_cfg.DBFileList(opts)
 		if not fname_db.open():
 			sys.exit(1)
 		
-		encoding = casc.CASCEncodingFile(opts, build)
-		if not encoding.open():
-			sys.exit(1)
-		
-		index = casc.CASCDataIndex(opts)
-		if not index.open():
-			sys.exit(1)
-
-		root = casc.CASCRootFile(opts, build, encoding, index)
-		if not root.open():
-			sys.exit(1)
-		
-		blte = casc.BLTEExtract(opts)
-	
-		for file_hash, file_name in fname_db.iteritems():
-			extract_data = None
-			
-			file_md5s = root.GetFileHashMD5(file_hash)
-			file_keys = []
-			for md5s in file_md5s:
-				file_keys = encoding.GetFileKeys(md5s)
-
-				file_locations = []
-				for file_key in file_keys:
-					file_location = index.GetIndexData(file_key)
-					if file_location[0] > -1:
-						extract_data = (file_key, md5s, file_name) + file_location
-						break
-			
-			if not extract_data:
-				continue
-			
-			print 'Extracting %s ...' % file_name
-		
-			if not blte.extract_file(*extract_data):
+		if not opts.online:
+			build = build_cfg.BuildCfg(opts)
+			if not build.open():
 				sys.exit(1)
+
+			encoding = casc.CASCEncodingFile(opts, build)
+			if not encoding.open():
+				sys.exit(1)
+			
+			index = None
+			index = casc.CASCDataIndex(opts)
+			if not index.open():
+				sys.exit(1)
+
+			root = casc.CASCRootFile(opts, build, encoding, index)
+			if not root.open():
+				sys.exit(1)
+			
+			blte = casc.BLTEExtract(opts)
 		
+			for file_hash, file_name in fname_db.iteritems():
+				extract_data = None
+				
+				file_md5s = root.GetFileHashMD5(file_hash)
+				file_keys = []
+				for md5s in file_md5s:
+					file_keys = encoding.GetFileKeys(md5s)
+
+					file_locations = []
+					for file_key in file_keys:
+						file_location = index.GetIndexData(file_key)
+						if file_location[0] > -1:
+							extract_data = (file_key, md5s, file_name) + file_location
+							break
+				
+				if not extract_data:
+					continue
+				
+				print 'Extracting %s ...' % file_name
+			
+				if not blte.extract_file(*extract_data):
+					sys.exit(1)
+		else:
+			blte = casc.BLTEExtract(opts)
+
+			cdn = casc.CDNIndex(opts)
+			if not cdn.open():
+				sys.exit(1)
+			
+			output_path = os.path.join(opts.output, cdn.build())		
+			encoding = casc.CASCEncodingFile(opts, cdn)
+			if not encoding.open():
+				sys.exit(1)
+			
+			root = casc.CASCRootFile(opts, cdn, encoding, None)
+			if not root.open():
+				sys.exit(1)
+			
+			for file_hash, file_name in fname_db.iteritems():
+				file_md5s = root.GetFileHashMD5(file_hash)
+				if not file_md5s:
+					continue
+				
+				if len(file_md5s) > 1:
+					print 'Duplicate files found (%d) for %s, selecting first one ...' % (len(file_md5s), file_name)
+				
+				file_keys = encoding.GetFileKeys(file_md5s[0])
+				
+				if len(file_keys) == 0:
+					continue
+				
+				if len(file_keys) > 1:
+					print 'More than one key found for %s, selecting first one ...' % file_name
+			
+				print 'Extracting %s ...' % file_name
+				
+				data = cdn.fetch_file(file_keys[0])
+				if not data:
+					print 'No data for a given key %s' % file_keys[0].encode('hex')
+				
+				blte.extract_buffer_to_file(data, os.path.join(output_path, file_name))
+				
 	elif opts.mode == 'unpack':
 		blte = casc.BLTEExtract(opts)
 		for file in args:
