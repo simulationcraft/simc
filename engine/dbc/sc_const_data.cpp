@@ -243,7 +243,7 @@ tokenized_map_t<talent_data_t> tokenized_talent_map;
 } // ANONYMOUS namespace ====================================================
 
 int dbc::build_level( bool ptr )
-{ return maybe_ptr( ptr ) ? 17345 : 18179; }
+{ return maybe_ptr( ptr ) ? 17345 : 18197; }
 
 const char* dbc::wow_version( bool ptr )
 { return maybe_ptr( ptr ) ? "5.4.0" : "6.0.1"; }
@@ -814,9 +814,9 @@ std::string dbc::specialization_string( specialization_e spec )
     case DRUID_FERAL: return "feral";
     case DRUID_GUARDIAN: return "guardian";
     case DRUID_RESTORATION: return "restoration";
-    case PET_FEROCIOUS_VERSATILITY: return "ferocity";
-    case PET_TENACIOUS_VERSATILITY: return "tenacity";
-    case PET_CUNNING_VERSATILITY: return "cunning";
+    case PET_FEROCITY: return "ferocity";
+    case PET_TENACITY: return "tenacity";
+    case PET_CUNNING: return "cunning";
     default: return "unknown";
   }
 }

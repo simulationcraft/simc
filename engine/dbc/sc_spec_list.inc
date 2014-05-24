@@ -4,9 +4,9 @@
 static specialization_e __class_spec_id[MAX_SPEC_CLASS][MAX_SPECS_PER_CLASS] = 
 {
   {
-    PET_FEROCIOUS_VERSATILITY,
-    PET_TENACIOUS_VERSATILITY,
-    PET_CUNNING_VERSATILITY,
+    PET_FEROCITY,
+    PET_TENACITY,
+    PET_CUNNING,
     SPEC_NONE,
   },
   {
