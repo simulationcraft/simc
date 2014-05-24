@@ -572,7 +572,7 @@ struct warrior_attack_t : public warrior_action_t< melee_attack_t >
       {
         if ( p() -> main_hand_weapon.group() == WEAPON_1H &&
              p() -> off_hand_weapon.group() == WEAPON_1H )
-          dmg *= 1.0 + p() -> spec.single_minded_fury -> effectN( 2 ).percent();
+          dmg *= 1.0 + 0.2; //p() -> spec.single_minded_fury -> effectN( 2 ).percent();
       }
     }
     return dmg;
@@ -4181,7 +4181,7 @@ double warrior_t::composite_player_multiplier( school_e school ) const
    if ( main_hand_weapon .group() == WEAPON_1H &&
         off_hand_weapon .group() == WEAPON_1H )
     {
-      m *= 1.0 + spec.single_minded_fury -> effectN( 1 ).percent();
+      m *= 1.0 + 0.2;//spec.single_minded_fury -> effectN( 1 ).percent();
     }
   }
 
