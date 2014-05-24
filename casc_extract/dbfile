@@ -1,3 +1,13 @@
+DBFilesClient\GarrClassSpec.db2
+DBFilesClient\GarrFollItemSet.db2
+DBFilesClient\GarrFollItemSetMember.db2
+DBFilesClient\ItemAppearance.db2
+DBFilesClient\LFGRoleRequirement.db2
+DBFilesClient\SpellAuraRestrictionsDifficulty.db2
+DBFilesClient\SpellPowerDifficulty.db2
+DBFilesClient\TextureFileData.db2
+DBFilesClient\WeaponTrail.db2
+DBFilesClient\ItemModifiedAppearance.db2
 DBFilesClient\NameGen.dbc
 DBFilesClient\JournalEncounterCreature.dbc
 DBFilesClient\ItemBagFamily.dbc
@@ -9,7 +19,7 @@ DBFilesClient\Criteria.dbc
 DBFilesClient\UiTextureAtlas.db2
 DBFilesClient\Resistances.dbc
 DBFilesClient\WeaponSwingSounds2.dbc
-DBFilesClient\LfgDungeons.dbc
+DBFilesClient\LFGDungeons.dbc
 DBFilesClient\SpellRange.dbc
 DBFilesClient\ChatProfanity.dbc
 DBFilesClient\HelmetAnimScaling.dbc
@@ -182,7 +192,7 @@ DBFilesClient\FactionGroup.dbc
 DBFilesClient\GarrUiAnimClassInfo.dbc
 DBFilesClient\WorldStateExpression.dbc
 DBFilesClient\WeaponImpactSounds.dbc
-DBFilesClient\world_PVP_Area.dbc
+DBFilesClient\World_PVP_Area.dbc
 DBFilesClient\ArmorLocation.dbc
 DBFilesClient\GarrMechanic.db2
 DBFilesClient\HolidayNames.dbc
@@ -426,7 +436,7 @@ DBFilesClient\GuildColorEmblem.dbc
 DBFilesClient\SpellEquippedItems.dbc
 DBFilesClient\LightParams.dbc
 DBFilesClient\DestructibleModelData.dbc
-DBFilesClient\LfgDungeonGroup.dbc
+DBFilesClient\LFGDungeonGroup.dbc
 DBFilesClient\SoundFilter.dbc
 DBFilesClient\CameraShakes.dbc
 DBFilesClient\SpellKeyboundOverride.dbc
