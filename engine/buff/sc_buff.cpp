@@ -524,13 +524,17 @@ void buff_t::execute( int stacks, double value, timespan_t duration )
   }
   last_trigger = sim -> current_time;
 
-  if ( reverse && current_stack > 0 )
-  {
-    decrement( stacks, value );
-  }
+  // If the buff has a tick event ongoing, the rules change a bit for ongoing
+  // ticking buffs, we treat executes as another "normal trigger", which
+  // refreshes the buff
+  if ( tick_event )
+    increment( stacks == 1 ? ( reverse ? _max_stack : stacks ) : stacks, value, duration );
   else
   {
-    increment( stacks == 1 ? ( reverse ? _max_stack : stacks ) : stacks, value, duration );
+    if ( reverse && current_stack > 0 )
+      decrement( stacks, value );
+    else
+      increment( stacks == 1 ? ( reverse ? _max_stack : stacks ) : stacks, value, duration );
   }
 
   // new buff cooldown impl
@@ -742,7 +746,7 @@ void buff_t::refresh( int        stacks,
       // Reorder the last tick to happen 1ms before expiration
       if ( tick_time == d )
         tick_time -= timespan_t::from_millis( 1 );
-      tick_event = new ( *sim ) tick_t( this, tick_time, current_value, stacks );
+      tick_event = new ( *sim ) tick_t( this, tick_time, current_value, reverse ? 1 : stacks );
     }
   }
 }
