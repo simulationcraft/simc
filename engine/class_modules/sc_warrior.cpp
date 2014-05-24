@@ -719,6 +719,7 @@ static void trigger_sudden_death( warrior_attack_t* a, double chance )
 }
 
 // trigger_sweeping_strikes =================================================
+
 static  void trigger_sweeping_strikes( action_state_t* s )
 {
   struct sweeping_strikes_attack_t : public warrior_attack_t
@@ -2401,7 +2402,7 @@ struct thunder_clap_t : public warrior_attack_t
     attack_power_mod.direct = data().effectN( 1 ).ap_coeff();
     attack_power_mod.direct = 0.477; // Remove
 
-    if ( p -> spec.unwavering_sentinel -> ok() && p -> active_stance != STANCE_GLADIATOR )
+    if ( p -> spec.unwavering_sentinel -> ok() && p -> active_stance == STANCE_DEFENSE )
       base_costs[ current_resource() ] *= 1.0 + p -> spec.unwavering_sentinel -> effectN( 2 ).percent();
 
     if ( p -> glyphs.resonating_power -> ok() )
@@ -3902,7 +3903,9 @@ void warrior_t::create_buffs()
   buff.bloodsurge       = buff_creator_t( this, "bloodsurge",       spec.bloodsurge -> effectN( 1 ).trigger() )
                           .chance( spec.bloodsurge -> effectN( 1 ).percent() );
 
-  buff.defensive_stance = buff_creator_t( this, "defensive_stance", find_class_spell( "Defensive Stance" ) );
+  buff.defensive_stance = buff_creator_t( this, "defensive_stance", find_class_spell( "Defensive Stance" ) )
+                          .add_invalidate( CACHE_EXP )
+                          .add_invalidate( CACHE_CRIT_AVOIDANCE );
 
   buff.enrage           = buff_creator_t( this, "enrage",           find_spell( 12880 ) )
                           .activated( false ) //Account for delay in buff application.
@@ -3916,8 +3919,7 @@ void warrior_t::create_buffs()
 
   buff.ignite_weapon    = buff_creator_t( this, "ignite_weapon", talents.ignite_weapon );
 
-  buff.gladiator_stance = buff_creator_t( this, "gladiator_stance",   find_spell( 156291 ) )
-                          .add_invalidate( CACHE_EXP );
+  buff.gladiator_stance = buff_creator_t( this, "gladiator_stance",   find_spell( 156291 ) );
 
   buff.heroic_leap_glyph = buff_creator_t( this, "heroic_leap_glyph", find_spell( 133278 ) )
                            .chance( glyphs.heroic_leap -> ok() ? 1 : 0 );
@@ -4190,7 +4192,7 @@ double warrior_t::composite_player_multiplier( school_e school ) const
     m *= 1.0 + buff.rude_interruption -> value();
 
 
-  if ( active_stance == STANCE_GLADIATOR )
+  if ( active_stance == STANCE_GLADIATOR && school == SCHOOL_PHYSICAL )
     m *= 1.0 + buff.gladiator_stance -> data().effectN( 1 ).percent();
 
   return m;
@@ -4253,7 +4255,7 @@ double warrior_t::composite_melee_expertise( weapon_t * w ) const
 {
   double expertise = player_t::composite_melee_expertise ( w );
 
-  if ( spec.unwavering_sentinel -> ok() && active_stance != STANCE_GLADIATOR )
+  if ( spec.unwavering_sentinel -> ok() && active_stance == STANCE_DEFENSE )
     expertise += spec.unwavering_sentinel -> effectN( 5 ).percent();
 
   return expertise;
@@ -4292,7 +4294,7 @@ double warrior_t::composite_crit_block() const
 {
   double b = player_t::composite_crit_block();
 
-  if ( mastery.critical_block -> ok() && active_stance != STANCE_GLADIATOR )
+  if ( mastery.critical_block -> ok() && active_stance == STANCE_DEFENSE )
     b += cache.mastery_value();
 
   return b;
@@ -4304,7 +4306,7 @@ double warrior_t::composite_crit_avoidance() const
 {
   double c = player_t::composite_crit_avoidance();
 
-  if ( spec.unwavering_sentinel -> ok() && active_stance != STANCE_GLADIATOR )
+  if ( spec.unwavering_sentinel -> ok() && active_stance == STANCE_DEFENSE )
     c += spec.unwavering_sentinel -> effectN( 4 ).percent();
 
   return c;
