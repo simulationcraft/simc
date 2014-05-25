@@ -327,7 +327,10 @@ class CASCObject(object):
 			dir = os.path.join(self.options.cache, path)
 		
 		if not os.path.exists(dir):
-			os.makedirs(dir)
+			try:
+				os.makedirs(dir)
+			except os.error, e:
+				self.options.parser('Unable to make %s: %s' % (dir, e.strerror))
 		
 		return dir
 
@@ -433,7 +436,7 @@ class CDNIndex(CASCObject):
 			self.build_info[mobj.group(1)] = data
 		
 	def open_archives(self):
-		print 'Parsing CDN index files ...'
+		sys.stdout.write('Parsing CDN index files ... ')
 
 		index_cache = self.cache_dir('index')
 		for idx in xrange(0, len(self.archives)):
@@ -445,6 +448,8 @@ class CDNIndex(CASCObject):
 			if not self.parse_archive(handle, idx):
 				self.options.parser.error('Unable to parse index file %s, aborting ...' % index_file_name)
 	
+		sys.stdout.write('%u entries\n' % len(self.cdn_index.keys()))
+
 	def parse_archive(self, handle, idx):
 		handle.seek(-12, os.SEEK_END)
 		record_count = struct.unpack('<i', handle.read(4))[0]
@@ -626,7 +631,7 @@ class CASCEncodingFile(CASCObject):
 			if md5str != self.build.encoding_file():
 				data = self.__bootstrap()
 		
-		print 'Parsing encoding file %s ...' % self.build.encoding_file()
+		sys.stdout.write('Parsing encoding file %s ... ' % self.build.encoding_file())
 
 		offset = 0
 		fsize = os.stat(self.encoding_path()).st_size
@@ -641,7 +646,9 @@ class CASCEncodingFile(CASCObject):
 		
 		for hash_entry in xrange(0, hash_table_size):
 			md5_file = data[offset:offset + 16]; offset += 16
-			md5_sum = data[offset:offset + 16]; offset += 16
+			#md5_sum = data[offset:offset + 16];
+			# Skip the second MD5sum, we don't use it for anything
+			offset += 16
 			self.first_entries.append(md5_file)
 
 		for hash_block in xrange(0, hash_table_size):
@@ -683,6 +690,8 @@ class CASCEncodingFile(CASCObject):
 				if byte != '\x00':
 					self.options.parser.error('Invalid padding byte %u at the end of block %u, pos %u, expected 0, got %#x' % (pad_idx, hash_block, offset, ord(byte)))
 					return False
+		
+		sys.stdout.write('%u entries\n' % len(self.md5_map.keys()))
 	
 		# Rest of the encoding file is unnecessary for now
 		
@@ -738,7 +747,6 @@ class CASCRootFile(CASCObject):
 		if len(keys) == 0:
 			self.options.parser.error('Could not find root file with mdsum %s from data' % self.build.root_file())
 		
-		print 'Parsing root file %s ...' % self.build.root_file()
 		blte = BLTEExtract(self.options)
 		# Extract from local files
 		if not self.options.online:
@@ -789,7 +797,9 @@ class CASCRootFile(CASCObject):
 			if md5str != self.build.root_file():
 				data = self.__bootstrap()
 	
+		sys.stdout.write('Parsing root file %s ... ' % self.build.root_file())
 		offset = 0
+		n_md5s = 0
 		while offset < len(data):
 			n_entries, unk_1, flags = struct.unpack('<iII', data[offset:offset + 12])
 			#if flags == 0xFFFFFFFF or flags & 0x2:
@@ -816,5 +826,7 @@ class CASCRootFile(CASCObject):
 				
 				#print unk_data[entry_idx], file_name_hash.encode('hex'), md5s.encode('hex')
 				self.hash_map[val].append(md5s)
+				n_md5s += 1
 
+		sys.stdout.write('%u entries\n' % n_md5s)
 		return True
