@@ -36,11 +36,9 @@ struct dot_tick_event_t : public event_t
     dot -> tick_event = nullptr;
     dot -> current_tick++;
 
-    timespan_t tick_time = dot -> current_action -> tick_time( dot -> state -> haste );
-
     if ( dot -> current_action -> player -> current.skill < 1.0 &&
          dot -> current_action -> channeled &&
-         dot -> remains() >= tick_time )
+         dot -> remains() >= dot -> current_action -> tick_time( dot -> state -> haste ) )
     {
       if ( rng().roll( dot -> current_action -> player -> current.skill ) )
       {
@@ -55,7 +53,7 @@ struct dot_tick_event_t : public event_t
     if ( dot -> ticking )
     {
       expr_t* expr = dot -> current_action -> interrupt_if_expr;
-      if ( dot -> remains() < tick_time
+      if ( dot -> remains() < dot -> current_action -> tick_time( dot -> state -> haste )
            || ( dot -> current_action -> channeled
                 && dot -> current_action -> player -> gcd_ready <= sim().current_time
                 && ( dot -> current_action -> interrupt || ( expr && expr -> success() ) )
@@ -240,7 +238,8 @@ void dot_t::start( timespan_t duration )
 {
   if ( ticking )
   {
-    current_duration = std::min( 1.3* duration, remains() ) + duration;
+    current_duration = std::min( current_action -> tick_time( state -> haste ), remains() ) + duration;
+    //current_duration = std::min( 1.3* duration, remains() ) + duration;
 
     last_start = sim.current_time;
   }
@@ -403,7 +402,7 @@ expr_t* dot_t::create_expression( action_t* action,
         dot_t* dot = this->dot();
         if ( ! dot -> state ) return 0;
         double haste = dot -> state -> haste;
-        return ( dot -> current_action -> num_ticks * dot -> current_action -> tick_time( haste ) ).total_seconds();
+        return dot -> current_action -> dot_duration.total_seconds();
       }
     };
     return new duration_expr_t( this, action, dynamic );

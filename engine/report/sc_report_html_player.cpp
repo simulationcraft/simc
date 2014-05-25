@@ -787,7 +787,7 @@ void print_html_action_info( report::sc_html_stream& os, unsigned stats_mask, st
           a -> base_dd_min,
           a -> base_dd_max );
       }
-      if ( a -> num_ticks )
+      if ( a -> dot_duration > timespan_t::zero() )
       {
         os.printf(
           "\t\t\t\t\t\t\t\t\t<div class=\"float\">\n"
@@ -798,7 +798,7 @@ void print_html_action_info( report::sc_html_stream& os, unsigned stats_mask, st
           "\t\t\t\t\t\t\t\t\t\t\t<li><span class=\"label\">attack_power_mod.tick:</span>%.6f</li>\n"
           "\t\t\t\t\t\t\t\t\t\t\t<li><span class=\"label\">spell_power_mod.tick:</span>%.6f</li>\n"
           "\t\t\t\t\t\t\t\t\t\t\t<li><span class=\"label\">base_td:</span>%.2f</li>\n"
-          "\t\t\t\t\t\t\t\t\t\t\t<li><span class=\"label\">num_ticks:</span>%i</li>\n"
+          "\t\t\t\t\t\t\t\t\t\t\t<li><span class=\"label\">dot_duration:</span>%.2f</li>\n"
           "\t\t\t\t\t\t\t\t\t\t\t<li><span class=\"label\">base_tick_time:</span>%.2f</li>\n"
           "\t\t\t\t\t\t\t\t\t\t\t<li><span class=\"label\">hasted_ticks:</span>%s</li>\n"
           "\t\t\t\t\t\t\t\t\t\t\t<li><span class=\"label\">dot_behavior:</span>%s</li>\n"
@@ -809,7 +809,7 @@ void print_html_action_info( report::sc_html_stream& os, unsigned stats_mask, st
           a -> attack_power_mod.tick,
           a -> spell_power_mod.tick,
           a -> base_td,
-          a -> num_ticks,
+          a -> dot_duration.total_seconds(),
           a -> base_tick_time.total_seconds(),
           a -> hasted_ticks ? "true" : "false",
           util::dot_behavior_type_string( a -> dot_behavior ) );

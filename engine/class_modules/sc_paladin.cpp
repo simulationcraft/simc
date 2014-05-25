@@ -957,7 +957,7 @@ struct beacon_of_light_t : public paladin_heal_t
     }
 
     // Remove the 'dot'
-    num_ticks = 0;
+    dot_duration = timespan_t::zero();
   }
 
   virtual void execute()
@@ -1070,7 +1070,8 @@ struct blessing_of_the_guardians_t : public paladin_heal_t
     
     // spell info not yet returning proper details, should heal for X every 1 sec for 10 sec.
     base_tick_time = timespan_t::from_seconds( 1 );
-    num_ticks = 10;
+
+    dot_duration = timespan_t::from_seconds( 10.0 );
 
     // initialize accumulator
     accumulated_damage = 0.0;
@@ -2573,7 +2574,7 @@ struct lights_hammer_t : public paladin_spell_t
     school = SCHOOL_HOLY; // Setting this allows the tick_action to benefit from Inquistion
 
     base_tick_time = p -> find_spell( 114918 ) -> effectN( 1 ).period();
-    num_ticks      = ( int ) ( ( p -> find_spell( 122773 ) -> duration() - travel_time_ ) / base_tick_time );
+    dot_duration      = p -> find_spell( 122773 ) -> duration() - travel_time_;
     cooldown -> duration = p -> find_spell( 114158 ) -> cooldown();
     hasted_ticks   = false;
 

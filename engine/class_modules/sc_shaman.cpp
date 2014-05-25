@@ -3216,7 +3216,7 @@ struct earthquake_t : public shaman_spell_t
 
     base_td = base_dd_min = base_dd_max = attack_power_mod.direct = spell_power_mod.direct = 0;
     harmful = true;
-    num_ticks = ( int ) data().duration().total_seconds();
+    dot_duration = data().duration();
     base_tick_time = data().effectN( 2 ).period();
 
     dynamic_tick_action = true;
@@ -4017,7 +4017,7 @@ struct healing_rain_t : public shaman_heal_t
     shaman_heal_t( player, player -> find_class_spell( "Healing Rain" ), options_str )
   {
     base_tick_time = data().effectN( 2 ).period();
-    num_ticks = ( int ) ( data().duration() / data().effectN( 2 ).period() );
+    dot_duration = data().duration();
     hasted_ticks = false;
     tick_action = new healing_rain_aoe_tick_t( player );
   }
@@ -4198,7 +4198,7 @@ struct spew_lava_action_t : public totem_pulse_action_t
     spell_power_mod.tick = data().effectN( 1 ).coeff();
     spell_power_mod.direct = 0;
     base_tick_time = p -> find_spell( 152255 ) -> effectN( 1 ).period();
-    num_ticks = p -> find_spell( 152255 ) -> duration().total_seconds() / base_tick_time.total_seconds();
+    dot_duration = p -> find_spell( 152255 ) -> duration();
     base_dd_min = base_dd_max = 0;
     hasted_ticks = false;
   }
@@ -4270,7 +4270,7 @@ struct spew_lava_t: public shaman_spell_t
     shaman_spell_t( "spew_lava", player, player -> find_talent_spell( "Spew Lava" ), options_str )
   {
     harmful = false;
-    num_ticks = 0;
+    dot_duration = timespan_t::zero();
     base_tick_time = timespan_t::zero();
   }
 

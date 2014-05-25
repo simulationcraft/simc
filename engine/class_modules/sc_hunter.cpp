@@ -2029,7 +2029,7 @@ struct glaive_toss_t : public hunter_ranged_attack_t
     primary_strike -> stats = stats;
     // FIXME add different attacks and stats for each glaive
     // suppress ticks, since they are only for the slow effect
-    num_ticks = 0;
+    dot_duration = timespan_t::zero();
   }
 
   virtual void execute()
@@ -2279,7 +2279,7 @@ struct explosive_shot_t : public hunter_ranged_attack_t
     attack_power_mod.direct = attack_power_mod.tick;
 
     // the inital impact is not part of the rolling dot
-    num_ticks = 0;
+    dot_duration = timespan_t::zero();
 
   }
 

@@ -2223,7 +2223,7 @@ struct blood_craze_t : public heal_t
   blood_craze_t( warrior_t* p ) :
     heal_t( "blood_craze", p , p -> spec.blood_craze )
   {
-    num_ticks = 3;
+    dot_duration = timespan_t::from_seconds( 3.0 );
     base_tick_time = timespan_t::from_seconds( 1.0 );
     hasted_ticks = false;
     tick_may_crit = false;
@@ -2279,7 +2279,7 @@ struct enraged_regeneration_t : public heal_t
     parse_options( NULL, options_str );
     hasted_ticks = tick_may_crit = harmful = false;
     tick_zero = true;
-    num_ticks = 5;
+    dot_duration = timespan_t::from_seconds( 5.0 );
     base_tick_time = timespan_t::from_seconds( 1.0 );
     target = p;
   }

@@ -1386,7 +1386,7 @@ struct envenom_t : public rogue_attack_t
     weapon = &( p -> main_hand_weapon );
     requires_combo_points  = true;
     attack_power_mod.direct       = 0.134;
-    num_ticks              = 0;
+    dot_duration = timespan_t::zero();
     base_dd_min            = base_dd_max = 0.213 * p -> dbc.spell_scaling( p -> type, p -> level );
     weapon_multiplier = weapon_power_mod = 0.0;
   }
@@ -1598,7 +1598,7 @@ struct hemorrhage_t : public rogue_attack_t
       weapon_multiplier *= 1.45; // number taken from spell description
 
     base_tick_time = p -> find_spell( 89775 ) -> effectN( 1 ).period();
-    num_ticks = ( int ) ( p -> find_spell( 89775 ) -> duration().total_seconds() / base_tick_time.total_seconds() );
+    dot_duration = p -> find_spell( 89775 ) -> duration();
     dot_behavior = DOT_REFRESH;
   }
 
@@ -1659,7 +1659,7 @@ struct killing_spree_t : public rogue_attack_t
     rogue_attack_t( "killing_spree", p, p -> find_class_spell( "Killing Spree" ), options_str ),
     attack_mh( 0 ), attack_oh( 0 )
   {
-    num_ticks = 6;
+    dot_duration = 6 * base_tick_time;
     may_miss  = false;
     may_crit  = false;
     channeled = true;
@@ -2099,7 +2099,7 @@ struct slice_and_dice_t : public rogue_attack_t
   {
     requires_combo_points = true;
     harmful               = false;
-    num_ticks             = 0;
+    dot_duration = timespan_t::zero();
   }
 
   timespan_t gcd() const

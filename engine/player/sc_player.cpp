@@ -328,7 +328,7 @@ void ignite::trigger_pct_based( action_t* ignite_action,
 
       double new_total_ignite_dmg = additional_ignite_dmg;
 
-      assert( action -> num_ticks > 0 );
+      assert( action -> dot_duration > timespan_t::zero() );
 
       if ( dot -> ticking )
         new_total_ignite_dmg += action -> base_td * dot -> ticks_left();

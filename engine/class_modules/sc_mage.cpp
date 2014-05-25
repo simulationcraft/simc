@@ -1503,7 +1503,7 @@ struct arcane_missiles_t : public mage_spell_t
     may_proc_missiles = false;
 
     base_tick_time    = timespan_t::from_seconds( 0.4 );
-    num_ticks         = 5;
+    dot_duration      = timespan_t::from_seconds( 2.0 );
     channeled         = true;
     hasted_ticks      = false;
 
@@ -1705,7 +1705,7 @@ struct combustion_t : public mage_spell_t
     // The "tick" portion of spell is specified in the DBC data in an alternate version of Combustion
     const spell_data_t& tick_spell = *p -> find_spell( 83853, "combustion_dot" );
     base_tick_time = tick_spell.effectN( 1 ).period();
-    num_ticks      = static_cast<int>( tick_spell.duration() / base_tick_time );
+    dot_duration      = tick_spell.duration();
     tick_may_crit  = true;
 
     if ( p -> sets.has_set_bonus( SET_T14_4PC_CASTER ) )
@@ -1715,7 +1715,7 @@ struct combustion_t : public mage_spell_t
 
     if ( p -> glyphs.combustion -> ok() )
     {
-      num_ticks = static_cast<int>( num_ticks * ( 1.0 + p -> glyphs.combustion -> effectN( 1 ).percent() ) );
+      dot_duration *= ( 1.0 + p -> glyphs.combustion -> effectN( 1 ).percent() );
       cooldown -> duration *= 1.0 + p -> glyphs.combustion -> effectN( 2 ).percent();
       base_dd_multiplier *= 1.0 + p -> glyphs.combustion -> effectN( 3 ).percent();
     }
@@ -1867,7 +1867,7 @@ public:
       duration       *= 1.0 + p -> talents.invocation -> effectN( 2 ).percent();
     }
 
-    num_ticks = ( int ) ( duration / base_tick_time );
+    dot_duration = duration;
   }
 
   virtual void tick( dot_t* d )
@@ -2084,7 +2084,7 @@ struct frost_bomb_t : public mage_spell_t
   {
     parse_options( NULL, options_str );
     base_tick_time = data().duration();
-    num_ticks = 1; // Fake a tick, so we can trigger the explosion at the end of it
+    dot_duration = 1 * base_tick_time; // Fake a tick, so we can trigger the explosion at the end of it
     hasted_ticks = true; // Haste decreases the 'tick' time to explosion
 
     dynamic_tick_action = true;
@@ -2517,7 +2517,7 @@ struct frozen_orb_t : public mage_spell_t
 
     hasted_ticks = false;
     base_tick_time = timespan_t::from_seconds( 1.0 );
-    num_ticks      = ( int ) ( data().duration() / base_tick_time );
+    dot_duration      = data().duration();
     may_miss       = false;
     may_crit       = false;
 
@@ -2981,7 +2981,7 @@ struct mirror_image_t : public mage_spell_t
     mage_spell_t( "mirror_image", p, p -> find_spell( 55342 ) )
   {
     parse_options( NULL, options_str );
-    num_ticks = 0;
+    dot_duration = timespan_t::zero();
     harmful = false;
   }
 

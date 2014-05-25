@@ -493,7 +493,7 @@ private:
       parse_options( NULL, options_str );
  
       // for future compatibility, we may want to grab Xuen and our tick spell and build this data from those (Xuen summon duration, for example)
-      num_ticks = 45;
+      dot_duration = timespan_t::from_seconds( 45.0 );
       hasted_ticks = false;
       may_miss = false; // this driver may NOT miss
       tick_zero = true; // trigger tick when t == 0
@@ -2137,7 +2137,7 @@ struct energizing_brew_t : public monk_spell_t
     parse_options( nullptr, options_str );
  
     harmful   = false;
-    num_ticks = 0;
+    dot_duration = timespan_t::zero();
   }
  
   virtual void update_ready( timespan_t cd_duration )
@@ -2295,7 +2295,7 @@ struct chi_wave_t : public monk_spell_t
   {
     parse_options( nullptr, options_str );
     hasted_ticks   = false;
-    num_ticks = 7;
+    dot_duration = timespan_t::from_seconds( 7.0 );
     base_tick_time = timespan_t::from_seconds( 1.0 );
     add_child( heal );
     add_child( damage );
@@ -2631,7 +2631,7 @@ struct stagger_self_damage_t : public ignite::pct_based_action_t<monk_spell_t>
   stagger_self_damage_t( monk_t* p ) :
     base_t( "stagger_self_damage", p, p -> find_spell( 124255 ) )
   {
-    num_ticks = 10;
+    dot_duration = timespan_t::from_seconds( 10.0 );
     target = p;
    
     proc = true; // Don't proc effects like Dancing Steel, trinkets, etc.
@@ -3149,7 +3149,7 @@ struct chi_wave_heal_t : public monk_heal_t
     monk_heal_t( "chi_wave", p, p.talent.chi_wave )
   {
     parse_options( nullptr, options_str );
-    num_ticks = 3;
+    dot_duration = timespan_t::from_seconds( 3.0 );
     hasted_ticks   = false;
     time_to_travel = timespan_t::from_seconds( 1.0 );
     base_tick_time = timespan_t::from_seconds( 2.0 );

@@ -781,7 +781,7 @@ struct immolation_t : public warlock_pet_spell_t
   {
     parse_options( 0, options_str );
 
-    num_ticks    = 1;
+    dot_duration = 1 * base_tick_time;
     hasted_ticks = false;
 
     dynamic_tick_action = true;
@@ -1789,7 +1789,7 @@ struct curse_of_the_elements_t : public warlock_spell_t
   {
     havoc_consume = 1;
     background = ( sim -> overrides.magic_vulnerability != 0 );
-    num_ticks = 0;
+    dot_duration = timespan_t::zero();
     aoe = p -> glyphs.curse_of_elements -> ok() ? 3 : 0;
     may_crit = false;
   }
@@ -2441,7 +2441,7 @@ struct haunt_t : public warlock_spell_t
     if ( p() -> sets.has_set_bonus( SET_T15_2PC_CASTER ) && p() -> buffs.dark_soul -> check() )
       duration += p() -> spells.tier15_2pc -> effectN( 1 ).time_value();
 
-    num_ticks = ( int ) ( duration / base_tick_time );
+    dot_duration = duration;
     warlock_spell_t::impact( s );
 
     if ( result_is_hit( s -> result ) )
@@ -2905,7 +2905,7 @@ struct chaos_bolt_t : public warlock_spell_t
     hasted_ticks = false;
     
     if ( p -> talents.grimoire_of_sacrifice -> ok() )
-      num_ticks = (int) ( p -> talents.grimoire_of_sacrifice -> effectN( 12 ).time_value().total_seconds() / data().effectN( 2 ).period().total_seconds() );
+      dot_duration += p -> talents.grimoire_of_sacrifice -> effectN( 12 ).time_value();
   }
 
   virtual double crit_chance( double /* crit */, int /* delta_level */ ) const

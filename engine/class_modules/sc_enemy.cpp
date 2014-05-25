@@ -322,7 +322,7 @@ struct spell_dot_t : public spell_t
   {
     school = SCHOOL_FIRE;
     base_tick_time = timespan_t::from_seconds( 1.0 );
-    num_ticks = 10;
+    dot_duration = timespan_t::from_seconds( 10.0 );
     base_td = 5000;
 
     cooldown = player -> get_cooldown( name_str + "_" + target -> name() );
@@ -332,7 +332,7 @@ struct spell_dot_t : public spell_t
     {
       opt_float( "damage", base_td ),
       opt_timespan( "tick_time", base_tick_time ),
-      opt_int( "num_ticks", num_ticks ),
+      opt_timespan( "dot_duration", dot_duration ),
       opt_timespan( "cooldown",     cooldown -> duration ),
       opt_bool( "aoe_tanks", aoe_tanks ),
       opt_null()

@@ -332,7 +332,6 @@ action_t::action_t( action_e       ty,
   crit_bonus_multiplier          = 1.0;
   base_dd_adder                  = 0.0;
   base_ta_adder                  = 0.0;
-  num_ticks                      = 0;
   weapon                         = NULL;
   weapon_multiplier              = 1.0;
   base_add_multiplier            = 1.0;
@@ -543,7 +542,6 @@ void action_t::parse_effect_data( const spelleffect_data_t& spelleffect_data )
           if ( spelleffect_data.period() > timespan_t::zero() )
           {
             base_tick_time   = spelleffect_data.period();
-            num_ticks        = ( int ) ( spelleffect_data.spell() -> duration() / base_tick_time );
             dot_duration = spelleffect_data.spell() -> duration();
           }
           break;
@@ -1094,7 +1092,7 @@ void action_t::execute()
     do_teleport( execute_state );
 
   /* Miss reaction handling for dot executes */
-  if ( num_ticks > 0 && result_is_miss( execute_state -> result ) )
+  if ( dot_duration > timespan_t::zero() && result_is_miss( execute_state -> result ) )
   {
     dot_t* dot = get_dot( execute_state -> target );
     last_reaction_time = player -> total_reaction_time();
@@ -1707,7 +1705,7 @@ void action_t::init()
   if ( may_crit || tick_may_crit )
     snapshot_flags |= STATE_CRIT | STATE_TGT_CRIT;
 
-  if ( spell_power_mod.tick > 0 || num_ticks > 0 )
+  if ( spell_power_mod.tick > 0 || dot_duration > timespan_t::zero() )
     snapshot_flags |= STATE_MUL_TA | STATE_TGT_MUL_TA;
 
   if ( ( spell_power_mod.direct > 0 || attack_power_mod.direct > 0 ) || weapon_multiplier > 0 )
@@ -1719,7 +1717,7 @@ void action_t::init()
   if ( ( weapon_power_mod > 0 || attack_power_mod.direct > 0 || attack_power_mod.tick > 0 ) )
     snapshot_flags |= STATE_AP;
 
-  if ( num_ticks > 0 && ( hasted_ticks || channeled ) )
+  if ( dot_duration > timespan_t::zero() && ( hasted_ticks || channeled ) )
     snapshot_flags |= STATE_HASTE;
 
   // WOD: Dot Snapshoting is gone
@@ -2424,7 +2422,7 @@ void action_t::impact( action_state_t* s )
 
 void action_t::trigger_dot( action_state_t* s )
 {
-  if ( num_ticks <= 0 && ! tick_zero )
+  if ( dot_duration <= timespan_t::zero() && ! tick_zero )
     return;
 
   dot_t* dot = get_dot( s -> target );

@@ -688,7 +688,7 @@ struct ursocs_vigor_t : public heal_t
     base_td = 0;
     
     base_tick_time = timespan_t::from_seconds( 1.0 );
-    num_ticks = 8;
+    dot_duration = 8 * base_tick_time;
 
     // store healing multiplier
     ap_coefficient = p -> find_spell( 144887 ) -> effectN( 1 ).percent();
@@ -792,8 +792,8 @@ struct yseras_gift_t : public heal_t
   yseras_gift_t( druid_t* p ) :
     heal_t( "yseras_gift", p, p -> find_talent_spell( "Ysera's Gift" ) )
   {
-    num_ticks      = 1;
     base_tick_time = data().effectN( 1 ).period();
+    dot_duration = base_tick_time;
     hasted_ticks   = false;
     tick_may_crit  = false;
     harmful        = false;
@@ -2463,7 +2463,7 @@ struct rip_t : public cat_attack_t
     dot_behavior          = DOT_REFRESH;
     special               = true;
 
-    num_ticks += ( int ) (  player -> sets.set( SET_T14_4PC_MELEE ) -> effectN( 1 ).time_value() / base_tick_time );
+    dot_duration += player -> sets.set( SET_T14_4PC_MELEE ) -> effectN( 1 ).time_value();
   }
 
   double attack_tick_power_coefficient( const action_state_t* state ) const
@@ -2483,7 +2483,7 @@ struct savage_roar_t : public cat_attack_t
     may_miss              = false;
     harmful               = false;
     requires_combo_points = true;
-    num_ticks             = 0;
+    dot_duration             = timespan_t::zero();
     special               = false;
   }
 
@@ -3640,7 +3640,7 @@ struct lifebloom_bloom_t : public druid_heal_t
   {
     background       = true;
     dual             = true;
-    num_ticks        = 0;
+    dot_duration        = timespan_t::zero();
     base_td          = 0;
     attack_power_mod.tick   = 0;
     base_dd_min      = data().effectN( 2 ).min( p );
@@ -3737,7 +3737,7 @@ struct regrowth_t : public druid_heal_t
     {
       base_crit += p -> glyph.regrowth -> effectN( 1 ).percent();
       base_td    = 0;
-      num_ticks  = 0;
+      dot_duration  = timespan_t::zero();
     }
 
     init_living_seed();
@@ -3842,7 +3842,7 @@ struct swiftmend_t : public druid_heal_t
       base_tick_time = timespan_t::from_seconds( 1.0 );
       hasted_ticks   = true;
       may_crit       = false;
-      num_ticks      = ( int ) p -> spell.swiftmend -> duration().total_seconds();
+      dot_duration      = p -> spell.swiftmend -> duration();
       proc           = true;
       tick_may_crit  = false;
     }
@@ -4595,7 +4595,7 @@ struct moonfire_t : public druid_spell_t
       may_crit = false;
       may_miss = true; // Bug?
 
-      num_ticks += ( int ) (  player -> sets.set( SET_T14_4PC_CASTER ) -> effectN( 1 ).time_value() / base_tick_time );
+      dot_duration += player -> sets.set( SET_T14_4PC_CASTER ) -> effectN( 1 ).time_value();
 
       // Does no direct damage, costs no mana
       attack_power_mod.direct = 0;
@@ -4622,7 +4622,7 @@ struct moonfire_t : public druid_spell_t
 
     dot_behavior = DOT_REFRESH;
 
-    num_ticks += ( int ) (  player -> sets.set( SET_T14_4PC_CASTER ) -> effectN( 1 ).time_value() / base_tick_time );
+    dot_duration +=   player -> sets.set( SET_T14_4PC_CASTER ) -> effectN( 1 ).time_value();
 
     if ( player -> specialization() == DRUID_BALANCE )
       sunfire = new sunfire_CA_t( player );
@@ -4854,7 +4854,7 @@ struct starfall_t : public druid_spell_t
   {
     parse_options( NULL, options_str );
 
-    num_ticks      = 10;
+    dot_duration      = timespan_t::from_seconds( 10.0 );
     base_tick_time = timespan_t::from_seconds( 1.0 );
     hasted_ticks   = false;
 
@@ -5020,7 +5020,7 @@ struct sunfire_t : public druid_spell_t
       may_crit = false;
       may_miss = true; // Bug?
 
-      num_ticks += ( int ) (  player -> sets.set( SET_T14_4PC_CASTER ) -> effectN( 1 ).time_value() / base_tick_time );
+      num_ticks += player -> sets.set( SET_T14_4PC_CASTER ) -> effectN( 1 ).time_value() / base_tick_time;
 
       // Does no direct damage, costs no mana
       attack_power_mod.direct = 0;
@@ -5046,7 +5046,7 @@ struct sunfire_t : public druid_spell_t
 
     dot_behavior = DOT_REFRESH;
 
-    num_ticks += ( int ) (  player -> sets.set( SET_T14_4PC_CASTER ) -> effectN( 1 ).time_value() / base_tick_time );
+    dot_duration += player -> sets.set( SET_T14_4PC_CASTER ) -> effectN( 1 ).time_value();
 
     if ( player -> specialization() == DRUID_BALANCE )
       moonfire = new moonfire_CA_t( player );

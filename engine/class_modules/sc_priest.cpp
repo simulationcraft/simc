@@ -1540,7 +1540,7 @@ struct dispersion_t final : public priest_spell_t
     parse_options( nullptr, options_str );
 
     base_tick_time    = timespan_t::from_seconds( 1.0 );
-    num_ticks         = 6;
+    dot_duration = timespan_t::from_seconds( 6.0 );
 
     channeled         = true;
     harmful           = false;
@@ -2417,8 +2417,9 @@ struct devouring_plague_t final : public priest_spell_t
   {
     parse_options( nullptr, options_str );
 
-    base_td = num_ticks = 0;
+    base_td = 0;
     base_tick_time = timespan_t::zero();
+    dot_duration = timespan_t::zero();
 
     add_child( dot_spell );
   }
@@ -2508,7 +2509,6 @@ struct mind_flay_base_t : public priest_spell_t
 
     if ( priest.perks.enhanced_mind_flay -> ok() )
     {
-      num_ticks += 1;
       base_tick_time *= 1.0 + priest.perks.enhanced_mind_flay -> effectN( 1 ).percent();
     }
   }
@@ -2579,7 +2579,7 @@ struct shadow_word_pain_t final : public priest_spell_t
 
     base_crit   += p.sets.set( SET_T14_2PC_CASTER ) -> effectN( 1 ).percent();
 
-    num_ticks += ( int ) ( ( p.sets.set( SET_T14_4PC_CASTER ) -> effectN( 1 ).base_value() / 1000.0 ) / base_tick_time.total_seconds() );
+    dot_duration += p.sets.set( SET_T14_4PC_CASTER ) -> effectN( 1 ).time_value();
 
     if ( priest.specs.shadowy_apparitions -> ok() )
     {
@@ -2652,7 +2652,7 @@ struct vampiric_touch_t final : public priest_spell_t
 
     base_multiplier *= 1.0 + p.perks.improved_vampiric_touch -> effectN( 1 ).percent();
 
-    num_ticks += ( int ) ( ( p.sets.set( SET_T14_4PC_CASTER ) -> effectN( 1 ).base_value() / 1000.0 ) / base_tick_time.total_seconds() );
+    dot_duration += p.sets.set( SET_T14_4PC_CASTER ) -> effectN( 1 ).time_value();
 
     if ( priest.specs.shadowy_apparitions -> ok() )
       proc_shadowy_apparition = new shadowy_apparition_spell_t( p );
@@ -2791,7 +2791,7 @@ struct penance_t final : public priest_spell_t
     may_miss       = false;
     channeled      = true;
     tick_zero      = true;
-    num_ticks      = 2;
+    dot_duration = timespan_t::from_seconds( 2.0 );
     base_tick_time = timespan_t::from_seconds( 1.0 );
     hasted_ticks   = false;
     castable_in_shadowform = false;
@@ -3506,7 +3506,7 @@ struct echo_of_light_t final : public ignite::pct_based_action_t<priest_heal_t>
     base_t( "echo_of_light", p, p.find_spell( 77489 ) )
   {
     base_tick_time = timespan_t::from_seconds( 1.0 );
-    num_ticks      = as<int>( data().duration() / base_tick_time );
+    dot_duration = data().duration();
   }
 };
 
@@ -3704,7 +3704,7 @@ struct holy_word_sanctuary_t final : public priest_heal_t
     may_crit     = false;
 
     base_tick_time = timespan_t::from_seconds( 2.0 );
-    num_ticks = 9;
+    dot_duration = timespan_t::from_seconds( 18.0 );
 
     tick_action = new holy_word_sanctuary_tick_t( p );
 
@@ -3956,7 +3956,7 @@ struct penance_heal_t final : public priest_heal_t
     may_crit       = false;
     channeled      = true;
     tick_zero      = true;
-    num_ticks      = 2;
+    dot_duration = timespan_t::from_seconds( 2.0 );
     base_tick_time = timespan_t::from_seconds( 1.0 );
     hasted_ticks   = false;
     dynamic_tick_action = true;
@@ -4216,7 +4216,7 @@ struct renew_t final : public priest_heal_t
     }
 
     base_multiplier *= 1.0 + p.glyphs.renew -> effectN( 1 ).percent();
-    num_ticks       += ( int ) ( p.glyphs.renew -> effectN( 2 ).time_value() / base_tick_time );
+    dot_duration       += p.glyphs.renew -> effectN( 2 ).time_value();
 
     castable_in_shadowform = true;
   }

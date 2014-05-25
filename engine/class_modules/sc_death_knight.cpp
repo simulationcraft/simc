@@ -3103,7 +3103,7 @@ struct death_and_decay_t : public death_knight_spell_t
     attack_power_mod.tick   = 0.064;
     base_td          = data().effectN( 2 ).average( p );
     base_tick_time   = timespan_t::from_seconds( 1.0 );
-    num_ticks        = ( int ) ( data().duration().total_seconds() / base_tick_time.total_seconds() ); // 11 with tick_zero
+    dot_duration = data().duration(); // 11 with tick_zero
     tick_may_crit    = true;
     tick_zero        = true;
     hasted_ticks     = false;
@@ -4337,7 +4337,7 @@ struct summon_gargoyle_t : public death_knight_spell_t
   {
     rp_gain = 0.0;  // For some reason, the inc file thinks we gain RP for this spell
     parse_options( NULL, options_str );
-    num_ticks = 0;
+    dot_duration = timespan_t::zero();
     harmful = false;
   }
 
@@ -4404,7 +4404,7 @@ struct unholy_frenzy_t : public death_knight_spell_t
     if ( target -> is_enemy() || target -> is_add() )
       target = p;
     harmful = false;
-    num_ticks = 0;
+    dot_duration = timespan_t::zero();
   }
 
   virtual void execute()
