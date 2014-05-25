@@ -2054,11 +2054,11 @@ public:
     if ( result_is_hit( s.result ) )
     {
       if ( td( s.target ) -> dots.rip -> is_ticking() &&
-           td( s.target ) -> dots.rip -> added_ticks < 4 )
+           td( s.target ) -> dots.rip -> extended_time < timespan_t::from_seconds( 6.0 ) )
       {
         /*// In-game adds 3 seconds per extend, to model we'll add 1/2/1 ticks. Can't use extend_duration_seconds for this since it rounds down to ticks.
-        int extra_ticks = ( td( s.target ) -> dots.rip -> added_ticks % 3 ) ? 2 : 1;
-        td( s.target ) -> dots.rip -> extend_duration( extra_ticks, false, 0 );*/
+        int extra_ticks = ( td( s.target ) -> dots.rip -> added_ticks % 3 ) ? 2 : 1; */
+        // TODO: WOD, Check if extends by 2s or 3s.
         td( s.target ) -> dots.rip -> extend_duration( timespan_t::from_seconds( 3.0 ), timespan_t::min(), 0 );
       }
     }
@@ -2426,7 +2426,7 @@ struct ravage_t : public cat_attack_t
   {
     if ( extends_rip )
       if ( ! td( target ) -> dots.rip -> is_ticking() ||
-           ( td( target ) -> dots.rip -> added_ticks == 4 ) )
+           ( td( target ) -> dots.rip -> extended_time >= timespan_t::from_seconds( 6.0 ) ) )
         return false;
 
     return cat_attack_t::ready();
@@ -2587,7 +2587,7 @@ struct shred_t : public cat_attack_t
   {
     if ( extends_rip )
       if ( ! td( target ) -> dots.rip -> is_ticking() ||
-           ( td( target ) -> dots.rip -> added_ticks == 4 ) )
+           ( td( target ) -> dots.rip -> extended_time >= timespan_t::from_seconds( 6.0 ) ) )
         return false;
 
     return cat_attack_t::ready();

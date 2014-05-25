@@ -3858,14 +3858,13 @@ struct immolation_aura_t : public warlock_spell_t
   {
     dot_t* d = get_dot();
     bool add_ticks = d -> is_ticking();
-    int remaining_ticks = d -> num_ticks - d -> current_tick;
 
     warlock_spell_t::impact( s );
 
     if ( result_is_hit( s -> result ) )
     {
       if ( add_ticks )
-        d -> num_ticks = ( int ) std::min( remaining_ticks + 0.9 * num_ticks, 2.1 * num_ticks );
+        d -> num_ticks = ( int ) std::min( d -> ticks_left() + 0.9 * num_ticks, 2.1 * num_ticks );
 
       if ( ! cost_event ) cost_event = new ( *sim ) cost_event_t( p(), this );
     }
@@ -3883,7 +3882,7 @@ struct immolation_aura_t : public warlock_spell_t
     if ( ! p() -> buffs.metamorphosis -> check() ) r = false;
 
     dot_t* d = get_dot();
-    if ( d -> is_ticking() && d -> num_ticks - d -> current_tick > num_ticks * 1.2 )  r = false;
+    if ( d -> is_ticking() && d -> ticks_left() > num_ticks * 1.2 )  r = false;
 
     return r;
   }

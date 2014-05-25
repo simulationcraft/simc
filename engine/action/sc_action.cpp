@@ -1903,7 +1903,7 @@ expr_t* action_t::create_expression( const std::string& name_str )
         dot_t* dot = action.get_dot();
         int n_ticks = action.hasted_num_ticks( action.player -> cache.spell_speed() );
         if ( action.dot_behavior == DOT_EXTEND && dot -> is_ticking() )
-          n_ticks += std::min( ( int ) ( n_ticks / 2 ), dot -> num_ticks - dot -> current_tick );
+          n_ticks += std::min( ( int ) ( n_ticks / 2 ), dot -> ticks_left() );
         return n_ticks;
       }
     };
@@ -2435,17 +2435,12 @@ void action_t::trigger_dot( action_state_t* s )
 
   dot_t* dot = get_dot( s -> target );
 
-  int remaining_ticks = dot -> num_ticks - dot -> current_tick;
   if ( dot_behavior == DOT_CLIP ) dot -> cancel();
 
   dot -> current_action = this;
-  dot -> current_tick = 0;
-  dot -> added_ticks = 0;
-  dot -> added_seconds = timespan_t::zero();
 
   if ( ! dot -> state ) dot -> state = get_state();
   dot -> state -> copy_state( s );
-  dot -> num_ticks = hasted_num_ticks( dot -> state -> haste );
 
   if ( !dot -> is_ticking() )
   {

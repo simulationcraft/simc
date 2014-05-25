@@ -69,11 +69,21 @@ struct dot_t::dot_tick_event_t : public event_t
 };
 
 dot_t::dot_t( const std::string& n, player_t* t, player_t* s ) :
-  sim( *( t -> sim ) ), target( t ), source( s ), current_action( 0 ), state( 0 ), tick_event( nullptr ),
-  num_ticks( 0 ), current_tick( 0 ), added_ticks( 0 ), ticking( false ),
+  sim( *( t -> sim ) ),
+  ticking( false ),
+  target( t ),
+  source( s ),
+  current_action( 0 ),
+  state( 0 ),
+  tick_event( nullptr ),
+  num_ticks( 0 ),
+  current_tick( 0 ),
   added_seconds( timespan_t::zero() ),
-  miss_time( timespan_t::min() ), time_to_tick( timespan_t::zero() ),
-  name_str( n ), tick_amount( 0.0 )
+  miss_time( timespan_t::min() ),
+  time_to_tick( timespan_t::zero() ),
+  extended_time( timespan_t::zero() ),
+  tick_amount( 0.0 ),
+  name_str( n )
 {}
 
 bool dot_t::is_higher_priority_action_available()
@@ -155,7 +165,7 @@ void dot_t::refresh_duration( uint32_t state_flags )
   current_action -> snapshot_internal( state, state_flags, current_action -> type == ACTION_HEAL ? HEAL_OVER_TIME : DMG_OVER_TIME );
 
   current_tick = 0;
-  added_ticks = 0;
+  extended_time = timespan_t::zero();
   added_seconds = timespan_t::zero();
 
   num_ticks = current_action -> hasted_num_ticks( state -> haste );
@@ -175,7 +185,7 @@ void dot_t::reset()
 {
   core_event_t::cancel( tick_event );
   current_tick = 0;
-  added_ticks = 0;
+  extended_time = timespan_t::zero();
   ticking = false;
   added_seconds = timespan_t::zero();
   miss_time = timespan_t::min();
@@ -190,6 +200,10 @@ void dot_t::reset()
 
 void dot_t::trigger( timespan_t duration )
 {
+  current_tick = 0;
+  extended_time = timespan_t::zero();
+  added_seconds = timespan_t::zero();
+
   if ( ticking )
   {
     refresh( duration );
@@ -198,15 +212,6 @@ void dot_t::trigger( timespan_t duration )
   {
     start( duration );
   }
-}
-
-// dot_t::ticks =============================================================
-
-int dot_t::ticks_left()
-{
-  if ( ! current_action ) return 0;
-  if ( ! ticking ) return 0;
-  return ( num_ticks - current_tick );
 }
 
 /* Caller needs to handle logic if the source dot was ticking or not!!!
@@ -266,15 +271,15 @@ expr_t* dot_t::create_expression( action_t* action,
     };
     return new ticks_expr_t( this, action, dynamic );
   }
-  else if ( name_str == "ticks_added" )
+  else if ( name_str == "extended_time" )
   {
-    struct ticks_added_expr_t : public dot_expr_t
+    struct extended_time_expr_t : public dot_expr_t
     {
-      ticks_added_expr_t( dot_t* d, action_t* a, bool dynamic ) :
-        dot_expr_t( "ticks_added", d, a, dynamic ) {}
-      virtual double evaluate() { return dot() -> added_ticks; }
+      extended_time_expr_t( dot_t* d, action_t* a, bool dynamic ) :
+        dot_expr_t( "extended_time", d, a, dynamic ) {}
+      virtual double evaluate() { return dot() -> extended_time.total_seconds(); }
     };
-    return new ticks_added_expr_t( this, action, dynamic );
+    return new extended_time_expr_t( this, action, dynamic );
   }
   else if ( name_str == "duration" )
   {
@@ -440,6 +445,20 @@ expr_t* dot_t::create_expression( action_t* action,
   return 0;
 }
 
+timespan_t dot_t::remains() const
+{
+  if ( ! current_action ) return timespan_t::zero();
+  if ( ! ticking ) return timespan_t::zero();
+  return last_start + current_duration - sim.current_time;
+}
+
+int dot_t::ticks_left() const
+{
+  if ( ! current_action ) return 0;
+  if ( ! ticking ) return 0;
+  return ( num_ticks - current_tick );
+}
+
 /* Called on Dot start if dot action has tick_zero = true set.
  */
 void dot_t::tick_zero()
@@ -481,7 +500,7 @@ void dot_t::last_tick()
   if ( state )
     action_state_t::release( state );
   current_tick = 0;
-  added_ticks = 0;
+  added_seconds = timespan_t::zero();
   last_start = timespan_t::min();
   current_duration = timespan_t::min();
 

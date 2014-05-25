@@ -1525,7 +1525,7 @@ struct ignite_weapon_t : public warrior_attack_t
          weapon -> group() == WEAPON_SMALL )
       base_multiplier *= 1.40;
 
-    num_ticks = 0; // Effect 4 shows up as periodic damage on target, but the actual "dot" shows up on autoattacks.
+    dot_duration = timespan_t::zero(); // Effect 4 shows up as periodic damage on target, but the actual "dot" shows up on autoattacks.
   }
 
   virtual void execute()

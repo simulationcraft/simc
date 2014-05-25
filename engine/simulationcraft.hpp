@@ -5887,48 +5887,43 @@ struct dot_t : public noncopyable
 {
 private:
   sim_t& sim;
+  bool ticking;
+  timespan_t current_duration;
+  timespan_t last_start;
 public:
   player_t* const target;
   player_t* const source;
   action_t* current_action;
   action_state_t* state;
   core_event_t* tick_event;
-  int num_ticks, current_tick, added_ticks;
+  int num_ticks, current_tick;
   timespan_t added_seconds;
   timespan_t miss_time;
   timespan_t time_to_tick;
-  timespan_t last_start;
-  timespan_t current_duration;
-  const std::string name_str;
+  timespan_t extended_time; // Added time per extend_duration for the current dot application
   double tick_amount;
+  std::string name_str;
 
   dot_t( const std::string& n, player_t* target, player_t* source );
 
-  void   cancel();
   void   extend_duration( timespan_t extra_seconds, timespan_t max_total_time = timespan_t::min(), uint32_t state_flags = -1 );
   void   extend_duration( timespan_t extra_seconds, uint32_t state_flags )
   { extend_duration( extra_seconds, timespan_t::min(), state_flags ); }
   void   refresh_duration( uint32_t state_flags = -1 );
   void   reset();
+  void   cancel();
   void   trigger( timespan_t duration );
-  int    ticks_left();
   void   copy( player_t* destination );
+  expr_t* create_expression( action_t* action, const std::string& name_str, bool dynamic );
+
+  timespan_t remains() const;
+  int    ticks_left() const;
+  const char* name() const
+  { return name_str.c_str(); }
   bool is_ticking() const
   { return ticking; }
 
-  timespan_t remains() const
-  {
-    if ( ! current_action ) return timespan_t::zero();
-    if ( ! ticking ) return timespan_t::zero();
-    return last_start + current_duration - sim.current_time;
-  };
-
-  expr_t* create_expression( action_t* action, const std::string& name_str, bool dynamic );
-
-  const char* name() const { return name_str.c_str(); }
-
 private:
-  bool ticking;
 
   struct dot_tick_event_t;
   void tick();
