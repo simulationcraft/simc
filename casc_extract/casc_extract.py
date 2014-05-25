@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 import optparse, sys, os
 
 import build_cfg, casc
