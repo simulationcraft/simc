@@ -165,6 +165,7 @@ public:
     const spell_data_t* boundless_conviction;
     const spell_data_t* daybreak;
     const spell_data_t* divine_bulwark;
+    const spell_data_t* exorcism; // for cooldown reset
     const spell_data_t* grand_crusader;
     const spell_data_t* guarded_by_the_light;
     const spell_data_t* hand_of_light;
@@ -174,14 +175,14 @@ public:
     const spell_data_t* judgments_of_the_bold;
     const spell_data_t* judgments_of_the_wise;
     const spell_data_t* plate_specialization;
+    const spell_data_t* resolve;
+    const spell_data_t* riposte;
     const spell_data_t* sanctity_of_battle;
     const spell_data_t* sanctuary;
-    const spell_data_t* shining_protector; // TODO: hook up to heals
+    const spell_data_t* shining_protector; 
     const spell_data_t* seal_of_insight;
     const spell_data_t* sword_of_light;
     const spell_data_t* sword_of_light_value;
-    const spell_data_t* the_art_of_war;
-    const spell_data_t* vengeance;
   } passives;
 
   // Perks
@@ -223,8 +224,8 @@ public:
     proc_t* divine_crusader;
     proc_t* eternal_glory;
     proc_t* judgments_of_the_bold;
-    proc_t* the_art_of_war;
-    proc_t* wasted_art_of_war;
+    proc_t* exorcism_cd_reset;
+    proc_t* wasted_exorcism_cd_reset;
   } procs;
 
   // Spells
@@ -363,6 +364,7 @@ public:
   virtual double    composite_block() const;
   virtual double    composite_crit_avoidance() const;
   virtual double    composite_dodge() const;
+  virtual double    composite_parry() const;
   virtual double    temporary_movement_modifier() const;
   virtual void      assess_damage( school_e, dmg_e, action_state_t* );
   virtual void      assess_heal( school_e, dmg_e, action_state_t* );
@@ -432,7 +434,7 @@ struct avenging_wrath_buff_t : public buff_t
     }
     else // we're Holy
     {
-      damage_modifier = data().effectN( 6 ).percent();
+      damage_modifier = data().effectN( 5 ).percent();
       healing_modifier = data().effectN( 3 ).percent();
       crit_bonus = data().effectN( 2 ).percent();
       haste_bonus = data().effectN( 1 ).percent();
@@ -1139,11 +1141,12 @@ struct censure_t : public paladin_spell_t
     background       = true;
     proc             = true;
     tick_may_crit    = true;
+    hasted_ticks     = true; // unnecessary, as spell_base_t does this automatically; here in case we ever transition it back to a melee attack
 
-    //Undocumented: 80% weaker for protection
-    if ( p -> specialization() == PALADIN_PROTECTION )
+    //5x stronger for Ret/Holy (see tooltip)
+    if ( ! p -> specialization() == PALADIN_PROTECTION )
     {
-      spell_power_mod.tick /= 5;
+      spell_power_mod.tick *= 5;
     }
 
     // Glyph of Immediate Truth reduces DoT damage
@@ -1152,14 +1155,7 @@ struct censure_t : public paladin_spell_t
       base_multiplier *= 1.0 + p -> glyphs.immediate_truth -> effectN( 2 ).percent();
     }
   }
-
-  virtual void init()
-  {
-    paladin_spell_t::init();
-    // snapshot haste when we apply the debuff, this modifies the tick interval dynamically on every refresh
-    snapshot_flags |= STATE_HASTE;
-  }
-
+  
   virtual void impact( action_state_t* s )
   {
     if ( result_is_hit( s -> result ) )
@@ -1586,6 +1582,9 @@ struct eternal_flame_t : public paladin_heal_t
     // The 25% buff is already in paladin_heal_t, so we need to divide by that first & then apply 50%
     am /= 1.0 + p() -> passives.holy_insight -> effectN( 6 ).percent();
     am *= 1.0 + p() -> passives.holy_insight -> effectN( 9 ).percent();
+    
+    // Sword of light
+    am *= 1.0 + p() -> passives.sword_of_light -> effectN( 3 ).percent();
 
     return am;
   }
@@ -1840,6 +1839,9 @@ struct flash_of_light_t : public paladin_heal_t
 
     // Improved Flash of Light perk
     am *= 1.0 + p() -> perk.improved_flash_of_light -> effectN( 1 ).percent();
+
+    // Sword of light
+    am *= 1.0 + p() -> passives.sword_of_light -> effectN( 6 ).percent();
 
     // Selfless healer has two effects
     if ( p() -> talents.selfless_healer -> ok() )
@@ -2474,9 +2476,8 @@ struct holy_wrath_t : public paladin_spell_t
     split_aoe_damage = true;
 
     //Holy Wrath is an oddball - spell database entry doesn't properly contain damage details
-    //Tooltip formula is wrong as well.  We're gong to hardcode it here based on empirical testing
-    //see http://maintankadin.failsafedesign.com/forum/viewtopic.php?p=743800#p743800
-    attack_power_mod.direct =  0.91;         // 0.91 AP scaling
+    //Tooltip formula is suspect (has been wrong before) TODO: test
+    spell_power_mod.direct = 2.686;      
 
   }
 
@@ -2774,10 +2775,9 @@ struct seal_of_insight_proc_t : public paladin_heal_t
     trigger_gcd = timespan_t::zero();
     may_crit = false; //cannot crit
 
-
     // spell database info is in tooltip
-    attack_power_mod.direct = 0.15;
-    spell_power_mod.direct  = 0.15;
+    attack_power_mod.direct = 0.236;
+    spell_power_mod.direct  = 0.236;
 
     // Battle Healer glyph
     if ( p -> glyphs.battle_healer -> ok() ) {
@@ -2789,8 +2789,8 @@ struct seal_of_insight_proc_t : public paladin_heal_t
     weapon = &( p -> main_hand_weapon );
     weapon_multiplier = 0.0;
     
-    // proc chance is now 20 PPM, spell database info still says 15.
-    // Best guess is that the 4th effect describes the additional 5 PPM.
+    // proc chance is now 20 PPM, spell database info still says 15.  //TODO: was this nerfed to 10 PPM? both effects are now 5
+    // Best guess is that the 2nd effect describes the additional 5 PPM.
     proc_chance = ppm_proc_chance( data().effectN( 1 ).base_value() + data().effectN( 2 ).base_value() );
 
     target = player;
@@ -2979,6 +2979,9 @@ struct word_of_glory_t : public paladin_heal_t
     // The 25% buff is already in paladin_heal_t, so we need to divide by that first & then apply 50%
     am /= 1.0 + p() -> passives.holy_insight -> effectN( 6 ).percent();
     am *= 1.0 + p() -> passives.holy_insight -> effectN( 9 ).percent();
+
+    // Sword of light
+    am *= 1.0 + p() -> passives.sword_of_light -> effectN( 3 ).percent();
 
     return am;
   }
@@ -3210,16 +3213,16 @@ struct melee_t : public paladin_melee_attack_t
     if ( result_is_hit( execute_state -> result ) )
     {
       // Check for Art of War procs
-      if ( p() -> passives.the_art_of_war -> ok() && rng().roll( p() -> passives.the_art_of_war -> proc_chance() ) )
+      if ( p() -> passives.exorcism -> ok() && rng().roll( p() -> passives.exorcism -> proc_chance() ) )
       {
         // if Exorcism was already off-cooldown, count the proc as wasted
         if ( p() -> cooldowns.exorcism -> remains() <= timespan_t::zero() )
         {
-          p() -> procs.wasted_art_of_war -> occur();
+          p() -> procs.wasted_exorcism_cd_reset -> occur();
         }
 
         // trigger proc, reset Exorcism cooldown
-        p() -> procs.the_art_of_war -> occur();
+        p() -> procs.exorcism_cd_reset -> occur();
         p() -> cooldowns.exorcism -> reset( true );
 
         // activate T16 2-piece bonus
@@ -3321,7 +3324,7 @@ struct crusader_strike_t : public paladin_melee_attack_t
     if ( result_is_hit( s -> result ) )
     {
       // Holy Power gains, only relevant if CS connects
-      int g = 1; // default is a gain of 1 Holy Power
+      int g = data().effectN( 3 ).base_value(); // default is a gain of 1 Holy Power
       p() -> resource_gain( RESOURCE_HOLY_POWER, g, p() -> gains.hp_crusader_strike ); // apply gain, record as due to CS
 
       // If Holy Avenger active, grant 2 more
@@ -3551,7 +3554,7 @@ struct hammer_of_the_righteous_t : public paladin_melee_attack_t
     if ( result_is_hit( s -> result ) )
     {
       // Holy Power gains, only relevant if CS connects
-      int g = 1; // default is a gain of 1 Holy Power
+      int g = data().effectN( 3 ).base_value(); // default is a gain of 1 Holy Power
       p() -> resource_gain( RESOURCE_HOLY_POWER, g, p() -> gains.hp_hammer_of_the_righteous ); // apply gain, record as due to CS
 
       // If Holy Avenger active, grant 2 more
@@ -4530,8 +4533,8 @@ void paladin_t::init_procs()
   procs.divine_crusader          = get_proc( "divine_crusader"                );
   procs.eternal_glory            = get_proc( "eternal_glory"                  );
   procs.judgments_of_the_bold    = get_proc( "judgments_of_the_bold"          );
-  procs.the_art_of_war           = get_proc( "the_art_of_war"                 );
-  procs.wasted_art_of_war        = get_proc( "wasted_art_of_war"              );
+  procs.exorcism_cd_reset        = get_proc( "exorcism_cd_reset"              );
+  procs.wasted_exorcism_cd_reset = get_proc( "wasted_exorcism_cd_reset"       );
 }
 
 // paladin_t::init_scaling ==================================================
@@ -5229,18 +5232,19 @@ void paladin_t::init_spells()
   passives.infusion_of_light      = find_specialization_spell( "Infusion of Light" );
 
   // Prot Passives
-  passives.judgments_of_the_wise  = find_specialization_spell( "Judgments of the Wise" );
+  passives.grand_crusader         = find_specialization_spell( "Grand Crusader" );
   passives.guarded_by_the_light   = find_specialization_spell( "Guarded by the Light" );
-  passives.vengeance              = find_specialization_spell( "Vengeance" );
+  passives.judgments_of_the_wise  = find_specialization_spell( "Judgments of the Wise" );
   passives.sanctuary              = find_specialization_spell( "Sanctuary" );
   passives.shining_protector      = find_specialization_spell( "Shining Protector" );
-  passives.grand_crusader         = find_specialization_spell( "Grand Crusader" );
+  passives.resolve                = find_specialization_spell( "Resolve" );
+  passives.riposte                = find_specialization_spell( "Riposte" );
 
   // Ret Passives
   passives.judgments_of_the_bold  = find_specialization_spell( "Judgments of the Bold" );
   passives.sword_of_light         = find_specialization_spell( "Sword of Light" );
   passives.sword_of_light_value   = find_spell( passives.sword_of_light -> ok() ? 20113 : 0 );
-  passives.the_art_of_war         = find_specialization_spell( "The Art of War" );
+  passives.exorcism               = find_spell( passives.sword_of_light -> ok() ? 87138 : 0 );
 
   // Perks
   // Multiple
@@ -5646,6 +5650,17 @@ double paladin_t::composite_dodge() const
   return d;
 }
 
+double paladin_t::composite_parry() const
+{
+  double p = player_t::composite_parry();
+
+  // add Riposte
+  if ( passives.riposte -> ok() )
+    p += composite_melee_crit_rating() / current_rating().attack_crit;
+
+  return p;
+}
+
 double paladin_t::temporary_movement_modifier() const
 {
   double temporary = player_t::temporary_movement_modifier();
@@ -5914,8 +5929,8 @@ void paladin_t::combat_begin()
 
   resources.current[ RESOURCE_HOLY_POWER ] = 0;
 
-  if ( passives.vengeance -> ok() )
-    vengeance_start();
+  if ( passives.resolve -> ok() )
+    // resolve_start();  TODO: turn this on when Resolve is implemented
 
   if ( find_specialization_spell( "Bladed Armor" ) )
     buffs.bladed_armor -> trigger();
