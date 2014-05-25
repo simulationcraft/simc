@@ -257,7 +257,7 @@ void core_sim_t::add_event( core_event_t* e,
   if ( em.events_remaining > max_events_remaining ) max_events_remaining = em.events_remaining;
 
   if ( debug )
-    out_debug.printf( "Add Event: %s %.2f %.2f %d %s",
+    out_debug.printf( "Add Event: %s time=%.4f rs-time=%.4f id=%d actor=%s",
                     e -> name, e -> time.total_seconds(),
                     e -> reschedule_time.total_seconds(),
                     e -> id, e -> actor ? e -> actor -> name() : "" );

@@ -1154,7 +1154,7 @@ struct priest_heal_t : public priest_action_t<heal_t>
         trigger_divine_aegis( s );
         trigger_echo_of_light( this, s );
 
-        if ( priest.buffs.chakra_serenity -> up() && get_td( target ).dots.renew -> ticking )
+        if ( priest.buffs.chakra_serenity -> up() && get_td( target ).dots.renew -> is_ticking() )
         {
           get_td( target ).dots.renew -> refresh_duration();
         }
@@ -1420,7 +1420,7 @@ namespace spells {
 
 void cancel_dot( dot_t& dot )
 {
-  if ( dot.ticking )
+  if ( dot.is_ticking() )
   {
     dot.cancel();
     dot.reset();
@@ -1797,13 +1797,13 @@ struct shadowy_apparition_spell_t final : public priest_spell_t
 
       timespan_t extend_duration = timespan_t::from_seconds( priest.sets.set( SET_T15_2PC_CASTER ) -> effectN( 2 ).base_value() );
 
-      if ( td.dots.shadow_word_pain -> ticking )
+      if ( td.dots.shadow_word_pain -> is_ticking() )
       {
         td.dots.shadow_word_pain -> extend_duration( extend_duration );
         priest.procs.t15_2pc_caster_shadow_word_pain -> occur();
       }
 
-      if ( td.dots.vampiric_touch -> ticking )
+      if ( td.dots.vampiric_touch -> is_ticking() )
       {
         td.dots.vampiric_touch -> extend_duration( extend_duration);
         priest.procs.t15_2pc_caster_vampiric_touch -> occur();
@@ -2465,7 +2465,7 @@ struct devouring_plague_t final : public priest_spell_t
 
     double previous_dp_dmg = 0;
 
-    if ( dot -> ticking )
+    if ( dot -> is_ticking() )
     {
       const shadow_orb_state_t& state = static_cast<const shadow_orb_state_t&>( *dot -> state );
       // Take the old damage without the orb multiplier
@@ -2549,7 +2549,7 @@ struct mind_flay_insanity_t final : public mind_flay_base_t<true>
   virtual bool ready() override
   {
     priest_td_t& td = get_td( target );
-    if (!( priest.talents.solace_and_insanity -> ok() && td.dots.devouring_plague_tick -> ticking ))
+    if (!( priest.talents.solace_and_insanity -> ok() && td.dots.devouring_plague_tick -> is_ticking() ))
       return false;
 
     const shadow_orb_state_t* dp_state = debug_cast<const shadow_orb_state_t*>( td.dots.devouring_plague_tick -> state );
@@ -2920,9 +2920,9 @@ struct smite_t final : public priest_spell_t
 
     priest_td_t& td = get_td( t );
     if ( priest.talents.solace_and_insanity -> ok() )
-      glyph_benefit = priest.glyphs.smite -> ok() && td. dots.power_word_solace -> ticking;
+      glyph_benefit = priest.glyphs.smite -> ok() && td. dots.power_word_solace -> is_ticking();
     else
-      glyph_benefit = priest.glyphs.smite -> ok() && td.dots.holy_fire -> ticking;
+      glyph_benefit = priest.glyphs.smite -> ok() && td.dots.holy_fire -> is_ticking();
 
     return glyph_benefit;
   }

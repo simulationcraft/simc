@@ -9,12 +9,9 @@
 // Dot
 // ==========================================================================
 
-namespace { // anonymous namespace
-
-
 // DoT Tick Event ===========================================================
 
-struct dot_tick_event_t : public event_t
+struct dot_t::dot_tick_event_t : public event_t
 {
   dot_t* dot;
 
@@ -23,7 +20,7 @@ struct dot_tick_event_t : public event_t
       event_t( *d -> source, "DoT Tick" ), dot( d )
   {
     if ( sim().debug )
-      sim().out_debug.printf( "New DoT Tick Event: %s %s %d-of-%d %.2f",
+      sim().out_debug.printf( "New DoT Tick Event: %s %s %d-of-%d %.4f",
                   p() -> name(), dot -> name(), dot -> current_tick + 1, dot -> num_ticks, time_to_tick.total_seconds() );
 
     sim().add_event( this, time_to_tick );
@@ -71,8 +68,6 @@ struct dot_tick_event_t : public event_t
   }
 };
 
-} // end anonymous namespace
-
 dot_t::dot_t( const std::string& n, player_t* t, player_t* s ) :
   sim( *( t -> sim ) ), target( t ), source( s ), current_action( 0 ), state( 0 ), tick_event( nullptr ),
   num_ticks( 0 ), current_tick( 0 ), added_ticks( 0 ), ticking( false ),
@@ -96,47 +91,6 @@ bool dot_t::is_higher_priority_action_available()
     }
   }
   return false;
-}
-
-void dot_t::tick()
-{
-  if ( sim.debug )
-    sim.out_debug.printf( "%s ticks (%d of %d). last_start=%.4f, dur=%.4f tt=%.4f",
-                          name(), current_tick, num_ticks, last_start.total_seconds(),
-                          current_duration.total_seconds(), time_to_tick.total_seconds() );
-
-  current_action -> tick( this );
-}
-
-void dot_t::last_tick()
-{
-  time_to_tick = timespan_t::zero();
-
-  ticking = false;
-  core_event_t::cancel( tick_event );
-
-  if ( sim.debug )
-    sim.out_debug.printf( "%s fades from %s", name(), state -> target -> name() );
-
-  // call action_t::last_tick
-  current_action -> last_tick( this );
-
-  // reset variables
-  if ( state )
-    action_state_t::release( state );
-  current_tick = 0;
-  added_ticks = 0;
-  last_start = timespan_t::min();
-  current_duration = timespan_t::min();
-
-  // If channeled, bring player back to life
-  if ( current_action -> channeled )
-  {
-    if ( current_action -> player -> readying )
-      sim.out_error << "Danger Will Robinson!  Danger! " << name();
-
-    current_action -> player -> schedule_ready( timespan_t::zero() );
-  }
 }
 
 // dot_t::cancel ============================================================
@@ -234,80 +188,15 @@ void dot_t::reset()
 
 // dot_t::schedule_tick =====================================================
 
-void dot_t::start( timespan_t duration )
+void dot_t::trigger( timespan_t duration )
 {
   if ( ticking )
   {
-    current_duration = std::min( current_action -> tick_time( state -> haste ), remains() ) + duration;
-    //current_duration = std::min( 1.3* duration, remains() ) + duration;
-
-    last_start = sim.current_time;
+    refresh( duration );
   }
   else
   {
-    current_duration = duration;
-    last_start = sim.current_time;
-    ticking = true;
-  }
-  if ( sim.debug )
-    sim.out_debug.printf( "%s starts dot for %s on %s. duration=%f remains()=%f", source -> name(), name(), target -> name(), duration.total_seconds(), remains().total_seconds() );
-
-  if ( current_action -> tick_zero )
-  {
-    time_to_tick = timespan_t::zero();
-    tick();
-    if ( remains() <= timespan_t::zero() )
-    {
-      last_tick();
-      return;
-    }
-  }
-
-  schedule_tick();
-}
-void dot_t::schedule_tick()
-{
-  if ( sim.debug )
-    sim.out_debug.printf( "%s schedules tick for %s on %s", source -> name(), name(), target -> name() );
-
-  time_to_tick = current_action -> tick_time( state -> haste );
-
-  // Recalculate num_ticks:
-  num_ticks = current_tick + remains() / time_to_tick;
-
-  tick_event = new ( sim ) dot_tick_event_t( this, time_to_tick );
-
-  ticking = true;
-
-  if ( current_action -> channeled )
-  {
-    // FIXME: Find some way to make this more realistic - the actor shouldn't have to recast quite this early
-    // Response: "Have to"?  It might be good to recast early - since the GCD will end sooner. Depends on the situation. -ersimont
-    expr_t* expr = current_action -> early_chain_if_expr;
-    if ( ( ( current_action -> chain && current_tick + 1 == num_ticks )
-           || ( current_tick > 0
-                && expr
-                && expr -> success()
-                && current_action -> player -> gcd_ready <= sim.current_time ) )
-         && current_action -> ready()
-         && !is_higher_priority_action_available() )
-    {
-      // FIXME: We can probably use "source" instead of "action->player"
-
-      current_action -> player -> channeling = 0;
-      current_action -> player -> gcd_ready = sim.current_time + current_action -> gcd();
-      current_action -> execute();
-      if ( current_action -> result_is_hit( current_action -> execute_state -> result ) )
-      {
-        current_action -> player -> channeling = current_action;
-      }
-      else
-        cancel();
-    }
-    else
-    {
-      current_action -> player -> channeling = current_action;
-    }
+    start( duration );
   }
 }
 
@@ -320,14 +209,11 @@ int dot_t::ticks_left()
   return ( num_ticks - current_tick );
 }
 
-// dot_t::copy ==============================================================
-
+/* Caller needs to handle logic if the source dot was ticking or not!!!
+ */
 void dot_t::copy( player_t* other_target )
 {
   assert( target != other_target );
-
-  if ( ! ticking )
-    return;
 
   dot_t* other_dot = current_action -> get_dot( other_target );
 
@@ -552,4 +438,148 @@ expr_t* dot_t::create_expression( action_t* action,
   }
 
   return 0;
+}
+
+/* Called on Dot start if dot action has tick_zero = true set.
+ */
+void dot_t::tick_zero()
+{
+  if ( sim.debug )
+    sim.out_debug.printf( "%s zero-tick.", name() );
+
+  tick();
+}
+
+/* Called each time the dot ticks.
+ */
+void dot_t::tick()
+{
+  if ( sim.debug )
+    sim.out_debug.printf( "%s ticks (%d of %d). last_start=%.4f, dur=%.4f tt=%.4f",
+                          name(), current_tick, num_ticks, last_start.total_seconds(),
+                          current_duration.total_seconds(), time_to_tick.total_seconds() );
+
+  current_action -> tick( this );
+}
+
+/* Called when the dot expires, after the last tick() call.
+ */
+void dot_t::last_tick()
+{
+  time_to_tick = timespan_t::zero();
+
+  ticking = false;
+  core_event_t::cancel( tick_event );
+
+  if ( sim.debug )
+    sim.out_debug.printf( "%s fades from %s", name(), state -> target -> name() );
+
+  // call action_t::last_tick
+  current_action -> last_tick( this );
+
+  // reset variables
+  if ( state )
+    action_state_t::release( state );
+  current_tick = 0;
+  added_ticks = 0;
+  last_start = timespan_t::min();
+  current_duration = timespan_t::min();
+
+  // If channeled, bring player back to life
+  if ( current_action -> channeled )
+  {
+    if ( current_action -> player -> readying )
+      sim.out_error << "Danger Will Robinson!  Danger! " << name();
+
+    current_action -> player -> schedule_ready( timespan_t::zero() );
+  }
+}
+
+void dot_t::schedule_tick()
+{
+  if ( sim.debug )
+    sim.out_debug.printf( "%s schedules tick for %s on %s", source -> name(), name(), target -> name() );
+
+  time_to_tick = current_action -> tick_time( state -> haste );
+
+  // Recalculate num_ticks:
+  num_ticks = current_tick + remains() / time_to_tick;
+
+  tick_event = new ( sim ) dot_t::dot_tick_event_t( this, time_to_tick );
+
+ // ticking = true;
+
+  if ( current_action -> channeled )
+  {
+    // FIXME: Find some way to make this more realistic - the actor shouldn't have to recast quite this early
+    // Response: "Have to"?  It might be good to recast early - since the GCD will end sooner. Depends on the situation. -ersimont
+    expr_t* expr = current_action -> early_chain_if_expr;
+    if ( ( ( current_action -> chain && current_tick + 1 == num_ticks )
+           || ( current_tick > 0
+                && expr
+                && expr -> success()
+                && current_action -> player -> gcd_ready <= sim.current_time ) )
+         && current_action -> ready()
+         && !is_higher_priority_action_available() )
+    {
+      // FIXME: We can probably use "source" instead of "action->player"
+
+      current_action -> player -> channeling = 0;
+      current_action -> player -> gcd_ready = sim.current_time + current_action -> gcd();
+      current_action -> execute();
+      if ( current_action -> result_is_hit( current_action -> execute_state -> result ) )
+      {
+        current_action -> player -> channeling = current_action;
+      }
+      else
+        cancel();
+    }
+    else
+    {
+      current_action -> player -> channeling = current_action;
+    }
+  }
+}
+
+void dot_t::start( timespan_t duration )
+{
+  current_duration = duration;
+    last_start = sim.current_time;
+    ticking = true;
+
+    if ( sim.debug )
+      sim.out_debug.printf( "%s starts dot for %s on %s. duration=%f remains()=%f", source -> name(), name(), target -> name(), duration.total_seconds(), remains().total_seconds() );
+
+    check_tick_zero();
+
+    schedule_tick();
+}
+
+void dot_t::refresh( timespan_t duration )
+{
+  current_duration = std::min( current_action -> tick_time( state -> haste ), remains() ) + duration;
+   //current_duration = std::min( 1.3* duration, remains() ) + duration;
+
+   last_start = sim.current_time;
+
+   if ( sim.debug )
+     sim.out_debug.printf( "%s refreshes dot for %s on %s. duration=%f remains()=%f", source -> name(), name(), target -> name(), duration.total_seconds(), remains().total_seconds() );
+
+   check_tick_zero();
+}
+
+void dot_t::check_tick_zero()
+{
+  if ( current_action -> tick_zero )
+  {
+    time_to_tick = timespan_t::zero();
+    // Recalculate num_ticks:
+    num_ticks = current_tick + remains() / current_action -> tick_time( state -> haste );
+    tick_zero();
+    if ( remains() <= timespan_t::zero() )
+    {
+      last_tick();
+      return;
+    }
+  }
 }

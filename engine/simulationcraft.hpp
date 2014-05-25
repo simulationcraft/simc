@@ -5894,7 +5894,6 @@ public:
   action_state_t* state;
   core_event_t* tick_event;
   int num_ticks, current_tick, added_ticks;
-  bool ticking;
   timespan_t added_seconds;
   timespan_t miss_time;
   timespan_t time_to_tick;
@@ -5911,13 +5910,11 @@ public:
   { extend_duration( extra_seconds, timespan_t::min(), state_flags ); }
   void   refresh_duration( uint32_t state_flags = -1 );
   void   reset();
-  void   last_tick();
-  void   tick();
-  void   schedule_tick();
-  void   start( timespan_t duration );
+  void   trigger( timespan_t duration );
   int    ticks_left();
   void   copy( player_t* destination );
-  bool   is_higher_priority_action_available();
+  bool is_ticking() const
+  { return ticking; }
 
   timespan_t remains() const
   {
@@ -5929,6 +5926,19 @@ public:
   expr_t* create_expression( action_t* action, const std::string& name_str, bool dynamic );
 
   const char* name() const { return name_str.c_str(); }
+
+private:
+  bool ticking;
+
+  struct dot_tick_event_t;
+  void tick();
+  void tick_zero();
+  void last_tick();
+  void schedule_tick();
+  void start( timespan_t duration );
+  void refresh( timespan_t duration );
+  void check_tick_zero();
+  bool   is_higher_priority_action_available();
 };
 
 // "Real" 'Procs per Minute' helper class =====================================
@@ -6731,7 +6741,7 @@ public:
     ab::impact( s );
 
     dot_t* dot = ab::get_dot( s -> target );
-    assert( dot -> ticking && dot -> ticks_left() && "No dot has been triggered for ignite_pct_based_action!" );
+    assert( dot -> is_ticking() && dot -> ticks_left() && "No dot has been triggered for ignite_pct_based_action!" );
     ab::base_td = saved_impact_dmg / dot -> ticks_left();
   }
 
@@ -6799,7 +6809,7 @@ struct residual_dot_action : public Action
     // Amortize damage AFTER dot initialized so we know how many ticks. Only works if tick_zero=false.
     assert( ! Action::tick_zero );
     dot_t* dot = Action::get_dot( s -> target );
-    if ( dot -> ticking )
+    if ( dot -> is_ticking() )
       dot -> tick_amount *= dot -> ticks_left();
     else
       dot -> tick_amount = 0;

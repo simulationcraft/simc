@@ -101,10 +101,10 @@ struct druid_td_t : public actor_pair_t
 
   bool hot_ticking()
   {
-    return dots.regrowth      -> ticking ||
-           dots.rejuvenation  -> ticking ||
-           dots.lifebloom     -> ticking ||
-           dots.wild_growth   -> ticking;
+    return dots.regrowth      -> is_ticking() ||
+           dots.rejuvenation  -> is_ticking() ||
+           dots.lifebloom     -> is_ticking() ||
+           dots.wild_growth   -> is_ticking();
   }
 
   void reset()
@@ -704,7 +704,7 @@ struct ursocs_vigor_t : public heal_t
   {
     if ( dot_t* dot = get_dot() )
     {
-      if ( dot -> ticking )
+      if ( dot -> is_ticking() )
       {
         // Adjust the current healing remaining to be spread over the total duration of the hot.
         base_td *= dot -> remains() / dot_duration;
@@ -2053,7 +2053,7 @@ public:
   {
     if ( result_is_hit( s.result ) )
     {
-      if ( td( s.target ) -> dots.rip -> ticking &&
+      if ( td( s.target ) -> dots.rip -> is_ticking() &&
            td( s.target ) -> dots.rip -> added_ticks < 4 )
       {
         /*// In-game adds 3 seconds per extend, to model we'll add 1/2/1 ticks. Can't use extend_duration_seconds for this since it rounds down to ticks.
@@ -2199,7 +2199,7 @@ struct ferocious_bite_t : public cat_attack_t
 
       if ( state -> target -> health_percentage() <= health_percentage )
       {
-        if ( td( state -> target ) -> dots.rip -> ticking )
+        if ( td( state -> target ) -> dots.rip -> is_ticking() )
           td( state -> target ) -> dots.rip -> refresh_duration( 0 );
       }
     }
@@ -2425,7 +2425,7 @@ struct ravage_t : public cat_attack_t
   virtual bool ready()
   {
     if ( extends_rip )
-      if ( ! td( target ) -> dots.rip -> ticking ||
+      if ( ! td( target ) -> dots.rip -> is_ticking() ||
            ( td( target ) -> dots.rip -> added_ticks == 4 ) )
         return false;
 
@@ -2586,7 +2586,7 @@ struct shred_t : public cat_attack_t
   virtual bool ready()
   {
     if ( extends_rip )
-      if ( ! td( target ) -> dots.rip -> ticking ||
+      if ( ! td( target ) -> dots.rip -> is_ticking() ||
            ( td( target ) -> dots.rip -> added_ticks == 4 ) )
         return false;
 
@@ -3370,7 +3370,7 @@ public:
   {
     druid_td_t& td = *this -> td( s -> target );
 
-    if ( td.dots.lifebloom -> ticking )
+    if ( td.dots.lifebloom -> is_ticking() )
     {
       td.dots.lifebloom -> refresh_duration();
 
@@ -3742,7 +3742,7 @@ struct regrowth_t : public druid_heal_t
     druid_heal_t::tick( d );
 
     if ( d -> state -> target -> health_percentage() <= p() -> spell.regrowth -> effectN( 1 ).percent() &&
-         td( d -> state -> target ) -> dots.regrowth -> ticking )
+         td( d -> state -> target ) -> dots.regrowth -> is_ticking() )
     {
       td( d -> state -> target )-> dots.regrowth -> refresh_duration();
     }
@@ -3860,8 +3860,8 @@ struct swiftmend_t : public druid_heal_t
     player_t* t = ( execute_state ) ? execute_state -> target : target;
 
     // Note: with the glyph you can use other people's regrowth/rejuv
-    if ( ! ( td( t ) -> dots.regrowth -> ticking ||
-             td( t ) -> dots.rejuvenation -> ticking ) )
+    if ( ! ( td( t ) -> dots.regrowth -> is_ticking() ||
+             td( t ) -> dots.rejuvenation -> is_ticking() ) )
       return false;
 
     return druid_heal_t::ready();
@@ -4043,7 +4043,7 @@ struct druid_spell_t : public druid_spell_base_t<spell_t>
   {
     if ( s -> result == RESULT_CRIT
          && p() -> spec.eclipse -> ok()
-         && dot -> ticking )
+         && dot -> is_ticking() )
 
       dot -> extend_duration( timespan_t::from_seconds( 2 ), STATE_HASTE );
   }

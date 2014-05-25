@@ -330,12 +330,12 @@ void ignite::trigger_pct_based( action_t* ignite_action,
 
       assert( action -> dot_duration > timespan_t::zero() );
 
-      if ( dot -> ticking )
+      if ( dot -> is_ticking() )
         new_total_ignite_dmg += action -> base_td * dot -> ticks_left();
 
       if ( sim().debug )
       {
-        if ( dot -> ticking )
+        if ( dot -> is_ticking() )
         {
           sim().out_debug.printf( "ignite_delay_event::execute(): additional_damage=%f current_ignite_tick=%f ticks_left=%d new_ignite_dmg=%f",
                       additional_ignite_dmg, action -> base_td, dot -> ticks_left(), new_total_ignite_dmg );

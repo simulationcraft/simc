@@ -661,7 +661,7 @@ struct legion_strike_t : public warlock_pet_melee_attack_t
 
   virtual bool ready()
   {
-    if ( p() -> special_action -> get_dot() -> ticking ) return false;
+    if ( p() -> special_action -> get_dot() -> is_ticking() ) return false;
 
     return warlock_pet_melee_attack_t::ready();
   }
@@ -786,7 +786,7 @@ struct mortal_cleave_t : public warlock_pet_melee_attack_t
 
   virtual bool ready()
   {
-    if ( p() -> special_action -> get_dot() -> ticking ) return false;
+    if ( p() -> special_action -> get_dot() -> is_ticking() ) return false;
 
     return warlock_pet_melee_attack_t::ready();
   }
@@ -1066,7 +1066,7 @@ timespan_t warlock_pet_t::available() const
 void warlock_pet_t::schedule_ready( timespan_t delta_time, bool waiting )
 {
   dot_t* d;
-  if ( melee_attack && ! melee_attack -> execute_event && ! ( special_action && ( d = special_action -> get_dot() ) && d -> ticking ) )
+  if ( melee_attack && ! melee_attack -> execute_event && ! ( special_action && ( d = special_action -> get_dot() ) && d -> is_ticking() ) )
   {
     melee_attack -> schedule_execute();
   }
@@ -1749,7 +1749,7 @@ public:
   void trigger_seed_of_corruption( warlock_td_t* td, warlock_t* p, double amount )
   {
     if ( ( ( td -> dots_seed_of_corruption -> current_action && id == td -> dots_seed_of_corruption -> current_action -> id )
-           || td -> dots_seed_of_corruption -> ticking ) && td -> soc_trigger > 0 )
+           || td -> dots_seed_of_corruption -> is_ticking() ) && td -> soc_trigger > 0 )
     {
       td -> soc_trigger -= amount;
       if ( td -> soc_trigger <= 0 )
@@ -1759,7 +1759,7 @@ public:
       }
     }
     if ( ( ( td -> dots_soulburn_seed_of_corruption -> current_action && id == td -> dots_soulburn_seed_of_corruption -> current_action -> id )
-           || td -> dots_soulburn_seed_of_corruption -> ticking ) && td -> soulburn_soc_trigger > 0 )
+           || td -> dots_soulburn_seed_of_corruption -> is_ticking() ) && td -> soulburn_soc_trigger > 0 )
     {
       td -> soulburn_soc_trigger -= amount;
       if ( td -> soulburn_soc_trigger <= 0 )
@@ -1795,7 +1795,7 @@ public:
 
   void trigger_extra_tick( dot_t* dot, double multiplier, bool tick_from_mg ) //if tick_from_mg == true, then MG created the tick, otherwise DS created the tick
   {
-    if ( ! dot -> ticking ) return;
+    if ( ! dot -> is_ticking() ) return;
 
     assert( multiplier != 0.0 );
 
@@ -1822,7 +1822,7 @@ public:
 
   void extend_dot( dot_t* dot, timespan_t extend_duration )
   {
-    if ( dot -> ticking )
+    if ( dot -> is_ticking() )
     {
       //FIXME: This is roughly how it works, but we need more testing
       dot -> extend_duration( extend_duration, dot -> current_action -> dot_duration * 1.5 );
@@ -2056,7 +2056,7 @@ struct shadowflame_t : public warlock_spell_t
   {
     if ( result_is_hit( s -> result ) )
     {
-      if ( td( s -> target ) -> dots_shadowflame -> ticking )
+      if ( td( s -> target ) -> dots_shadowflame -> is_ticking() )
         td( s -> target ) -> shadowflame_stack++;
       else
         td( s -> target ) -> shadowflame_stack = 1;
@@ -3718,7 +3718,7 @@ struct rain_of_fire_t : public warlock_spell_t
   {
     double m = warlock_spell_t::composite_target_ta_multiplier( t );
 
-    if ( td( t ) -> dots_immolate -> ticking )
+    if ( td( t ) -> dots_immolate -> is_ticking() )
       m *= 1.5;
 
     return m;
@@ -3857,7 +3857,7 @@ struct immolation_aura_t : public warlock_spell_t
   virtual void impact( action_state_t* s )
   {
     dot_t* d = get_dot();
-    bool add_ticks = d -> ticking;
+    bool add_ticks = d -> is_ticking();
     int remaining_ticks = d -> num_ticks - d -> current_tick;
 
     warlock_spell_t::impact( s );
@@ -3883,7 +3883,7 @@ struct immolation_aura_t : public warlock_spell_t
     if ( ! p() -> buffs.metamorphosis -> check() ) r = false;
 
     dot_t* d = get_dot();
-    if ( d -> ticking && d -> num_ticks - d -> current_tick > num_ticks * 1.2 )  r = false;
+    if ( d -> is_ticking() && d -> num_ticks - d -> current_tick > num_ticks * 1.2 )  r = false;
 
     return r;
   }
@@ -3934,26 +3934,22 @@ struct soul_swap_t : public warlock_spell_t
       
       if ( p() -> soul_swap_buffer.agony_was_inhaled )
       {
-        p() -> soul_swap_buffer.agony -> ticking = true; //so that copy works properly
         p() -> soul_swap_buffer.agony -> copy( target );
         p() -> soul_swap_buffer.agony_was_inhaled = false;
       }
 
       if ( p() -> soul_swap_buffer.corruption_was_inhaled )
       {
-        p() -> soul_swap_buffer.corruption -> ticking = true; //so that copy works properly
         p() -> soul_swap_buffer.corruption -> copy( target );
         p() -> soul_swap_buffer.corruption_was_inhaled = false;
       }
       if ( p() -> soul_swap_buffer.unstable_affliction_was_inhaled )
       {
-        p() -> soul_swap_buffer.unstable_affliction -> ticking = true; //so that copy works properly
         p() -> soul_swap_buffer.unstable_affliction -> copy( target );
         p() -> soul_swap_buffer.unstable_affliction_was_inhaled = false;
       }
       if ( p() -> soul_swap_buffer.seed_of_corruption_was_inhaled )
       {
-        p() -> soul_swap_buffer.seed_of_corruption -> ticking = true; //so that copy works properly
         p() -> soul_swap_buffer.seed_of_corruption -> copy( target );
         p() -> soul_swap_buffer.seed_of_corruption_was_inhaled = false;
       }
@@ -3978,25 +3974,25 @@ struct soul_swap_t : public warlock_spell_t
 
       p() -> soul_swap_buffer.source              = target;
 
-      if ( td( target ) -> dots_corruption -> ticking)
+      if ( td( target ) -> dots_corruption -> is_ticking() )
       {
         p() -> soul_swap_buffer.corruption_was_inhaled = true; //dot is ticking, so copy the state into our buffer dot
         p() -> soul_swap_buffer.inhale_dot(td( target ) -> dots_corruption, p() -> soul_swap_buffer.corruption);
       }
 
-      if ( td( target ) -> dots_unstable_affliction -> ticking)
+      if ( td( target ) -> dots_unstable_affliction -> is_ticking() )
       {
         p() -> soul_swap_buffer.unstable_affliction_was_inhaled = true; //dot is ticking, so copy the state into our buffer dot
         p() -> soul_swap_buffer.inhale_dot(td( target ) -> dots_unstable_affliction, p() -> soul_swap_buffer.unstable_affliction);
       }
 
-      if ( td( target ) -> dots_agony -> ticking)
+      if ( td( target ) -> dots_agony -> is_ticking() )
       {
         p() -> soul_swap_buffer.agony_was_inhaled = true; //dot is ticking, so copy the state into our buffer dot
         p() -> soul_swap_buffer.inhale_dot(td( target ) -> dots_agony, p() -> soul_swap_buffer.agony);
       }
 
-      if ( td( target ) -> dots_seed_of_corruption -> ticking)
+      if ( td( target ) -> dots_seed_of_corruption -> is_ticking() )
       {
         p() -> soul_swap_buffer.seed_of_corruption_was_inhaled = true; //dot is ticking, so copy the state into our buffer dot
         p() -> soul_swap_buffer.inhale_dot(td( target ) -> dots_seed_of_corruption, p() -> soul_swap_buffer.seed_of_corruption);
@@ -4015,10 +4011,10 @@ struct soul_swap_t : public warlock_spell_t
     }
     else if ( ! p() -> buffs.soulburn -> check() )
     {
-      if ( ! td( target ) -> dots_agony               -> ticking
-           && ! td( target ) -> dots_corruption          -> ticking
-           && ! td( target ) -> dots_unstable_affliction -> ticking
-           && ! td( target ) -> dots_seed_of_corruption  -> ticking )
+      if ( ! td( target ) -> dots_agony               -> is_ticking()
+           && ! td( target ) -> dots_corruption          -> is_ticking()
+           && ! td( target ) -> dots_unstable_affliction -> is_ticking()
+           && ! td( target ) -> dots_seed_of_corruption  -> is_ticking() )
         r = false;
     }
 
@@ -5579,7 +5575,7 @@ expr_t* warlock_t::create_expression( action_t* a, const std::string& name_str )
       pets::warlock_pet_t* felguard;
       felstorm_is_ticking_expr_t( pets::warlock_pet_t* f ) :
         expr_t( "felstorm_is_ticking" ), felguard( f ) { }
-      virtual double evaluate() { return ( felguard ) ? felguard -> special_action -> get_dot() -> ticking : false; }
+      virtual double evaluate() { return ( felguard ) ? felguard -> special_action -> get_dot() -> is_ticking() : false; }
     };
     return new felstorm_is_ticking_expr_t( debug_cast<pets::warlock_pet_t*>( find_pet( "felguard" ) ) );
   }

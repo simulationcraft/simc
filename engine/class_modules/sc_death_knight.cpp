@@ -132,8 +132,8 @@ struct death_knight_td_t : public actor_pair_t
   int diseases() const
   {
     int disease_count = 0;
-    if ( dots_blood_plague -> ticking ) disease_count++;
-    if ( dots_frost_fever  -> ticking ) disease_count++;
+    if ( dots_blood_plague -> is_ticking() ) disease_count++;
+    if ( dots_frost_fever  -> is_ticking() ) disease_count++;
     return disease_count;
   }
 
@@ -885,8 +885,8 @@ struct dancing_rune_weapon_td_t : public actor_pair_t
   int diseases() const
   {
     int disease_count = 0;
-    if ( dots_blood_plague -> ticking ) disease_count++;
-    if ( dots_frost_fever  -> ticking ) disease_count++;
+    if ( dots_blood_plague -> is_ticking() ) disease_count++;
+    if ( dots_frost_fever  -> is_ticking() ) disease_count++;
     return disease_count;
   }
 
@@ -1075,13 +1075,13 @@ struct dancing_rune_weapon_pet_t : public pet_t
 
       if ( result_is_hit( s -> result ) )
       {
-        if ( td( target ) -> dots_blood_plague -> ticking )
+        if ( td( target ) -> dots_blood_plague -> is_ticking() )
         {
           p() -> drw_blood_plague -> target = s -> target;
           p() -> drw_blood_plague -> execute();
         }
 
-        if ( td( target ) -> dots_frost_fever -> ticking )
+        if ( td( target ) -> dots_frost_fever -> is_ticking() )
         {
           p() -> drw_frost_fever -> target = s -> target;
           p() -> drw_frost_fever -> execute();
@@ -2282,7 +2282,7 @@ void death_knight_melee_attack_t::execute()
   if ( ! result_is_hit( execute_state -> result ) && ! always_consume && resource_consumed > 0 )
     p() -> resource_gain( RESOURCE_RUNIC_POWER, resource_consumed * RUNIC_POWER_REFUND, p() -> gains.power_refund );
 
-  if ( result_is_hit( execute_state -> result ) && td( execute_state -> target ) -> dots_blood_plague -> ticking )
+  if ( result_is_hit( execute_state -> result ) && td( execute_state -> target ) -> dots_blood_plague -> is_ticking() )
     p() -> buffs.crimson_scourge -> trigger();
 
   trigger_t15_2pc_melee();
@@ -2669,10 +2669,10 @@ struct blood_boil_t : public death_knight_spell_t
 
     if ( p() -> spec.scarlet_fever -> ok() )
     {
-      if ( td( s -> target ) -> dots_blood_plague -> ticking )
+      if ( td( s -> target ) -> dots_blood_plague -> is_ticking() )
         td( s -> target ) -> dots_blood_plague -> refresh_duration();
 
-      if ( td( s -> target ) -> dots_frost_fever -> ticking )
+      if ( td( s -> target ) -> dots_frost_fever -> is_ticking() )
         td( s -> target ) -> dots_frost_fever -> refresh_duration();
     }
 
@@ -3958,12 +3958,12 @@ struct pestilence_t : public death_knight_spell_t
 
     if ( result_is_hit( s -> result ) )
     {
-      if ( td( s -> target ) -> dots_blood_plague -> ticking )
+      if ( td( s -> target ) -> dots_blood_plague -> is_ticking() )
       {
         p() -> active_spells.blood_plague -> target = s -> target;
         p() -> active_spells.blood_plague -> execute();
       }
-      if ( td( s -> target ) -> dots_frost_fever -> ticking )
+      if ( td( s -> target ) -> dots_frost_fever -> is_ticking() )
       {
         p() -> active_spells.frost_fever -> target = s -> target;
         p() -> active_spells.frost_fever -> execute();
@@ -4455,8 +4455,8 @@ struct plague_leech_t : public death_knight_spell_t
 
   bool ready()
   {
-    if ( ! td( target ) -> dots_frost_fever -> ticking ||
-         ! td( target ) -> dots_blood_plague -> ticking )
+    if ( ! td( target ) -> dots_frost_fever -> is_ticking() ||
+         ! td( target ) -> dots_blood_plague -> is_ticking() )
       return false;
 
     bool rd = death_knight_spell_t::ready();

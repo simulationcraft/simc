@@ -330,10 +330,10 @@ inline bool rogue_td_t::sanguinary_veins()
 {
   rogue_t* r = debug_cast<rogue_t*>( source );
 
-  return dots.garrote -> ticking ||
-         dots.rupture -> ticking ||
-         dots.crimson_tempest -> ticking ||
-         ( r -> glyph.hemorrhaging_veins -> ok() && dots.hemorrhage -> ticking );
+  return dots.garrote -> is_ticking() ||
+         dots.rupture -> is_ticking() ||
+         dots.crimson_tempest -> is_ticking() ||
+         ( r -> glyph.hemorrhaging_veins -> ok() && dots.hemorrhage -> is_ticking() );
 }
 
 namespace actions { // namespace actions
@@ -541,7 +541,7 @@ struct rogue_attack_t : public melee_attack_t
     rogue_td_t* td = this -> td( target );
     if ( requires_combo_points )
     {
-      if ( td -> dots.revealing_strike -> ticking )
+      if ( td -> dots.revealing_strike -> is_ticking() )
         m *= 1.0 + td -> dots.revealing_strike -> current_action -> data().effectN( 3 ).percent();
       else if ( p() -> specialization() == ROGUE_COMBAT )
         p() -> procs.no_revealing_strike -> occur();
@@ -1582,7 +1582,7 @@ struct garrote_t : public rogue_attack_t
     rogue_attack_t::tick( d );
 
     rogue_td_t* td = this -> td( d -> state -> target );
-    if ( ! td -> dots.rupture -> ticking )
+    if ( ! td -> dots.rupture -> is_ticking() )
       trigger_venomous_wounds( this );
   }
 };
@@ -2085,7 +2085,7 @@ struct sinister_strike_t : public rogue_attack_t
       p() -> buffs.bandits_guile -> trigger();
 
       rogue_td_t* td = this -> td( state -> target );
-      if ( td -> dots.revealing_strike -> ticking &&
+      if ( td -> dots.revealing_strike -> is_ticking() &&
           rng().roll( td -> dots.revealing_strike -> current_action -> data().proc_chance() ) )
       {
         td -> combo_points.add( 1, "sinister_strike" );
@@ -2481,7 +2481,7 @@ struct deadly_poison_t : public rogue_poison_t
 
   virtual void impact( action_state_t* state )
   {
-    bool is_up = ( td( state -> target ) -> dots.deadly_poison -> ticking != 0 );
+    bool is_up = ( td( state -> target ) -> dots.deadly_poison -> is_ticking() != 0 );
 
     rogue_poison_t::impact( state );
 

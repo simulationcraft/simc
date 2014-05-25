@@ -753,7 +753,7 @@ public:
       for ( size_t i = 0, actors = p() -> sim -> player_non_sleeping_list.size(); i < actors; ++i )
       {
         player_t* t = p() -> sim -> player_non_sleeping_list[ i ];
-        if ( td( t ) -> dots.soothing_mist -> ticking )
+        if ( td( t ) -> dots.soothing_mist -> is_ticking() )
         {
           td( t ) -> dots.soothing_mist -> cancel();
           p() -> buff.channeling_soothing_mist -> expire();
@@ -2644,7 +2644,7 @@ struct stagger_self_damage_t : public ignite::pct_based_action_t<monk_spell_t>
   {
     dot_t* d = get_dot();
     double damage_remaining = 0.0;
-    if ( d -> ticking )
+    if ( d -> is_ticking() )
       damage_remaining += d -> ticks_left() * base_td; // Assumes base_td == damage, no modifiers or crits
 
     cancel();
@@ -2656,7 +2656,7 @@ struct stagger_self_damage_t : public ignite::pct_based_action_t<monk_spell_t>
   bool stagger_ticking()
   {
     dot_t* d = get_dot();
-    return d -> ticking;
+    return d -> is_ticking();
   }
 };
  
@@ -2990,7 +2990,7 @@ struct soothing_mist_t : public monk_heal_t
  
     player_t* t = ( execute_state ) ? execute_state -> target : target;
  
-    if ( td( t ) -> dots.enveloping_mist -> ticking )
+    if ( td( t ) -> dots.enveloping_mist -> is_ticking() )
     {
       tm *= 1.0 + p() -> passives.enveloping_mist -> effectN( 2 ).percent();
     }
@@ -3704,7 +3704,7 @@ void monk_t::interrupt()
     for ( size_t i = 0, actors = sim -> player_non_sleeping_list.size(); i < actors; ++i )
     {
       player_t* t = sim -> player_non_sleeping_list[ i ];
-      if ( get_target_data( t ) -> dots.soothing_mist -> ticking )
+      if ( get_target_data( t ) -> dots.soothing_mist -> is_ticking() )
       {
         get_target_data( t ) -> dots.soothing_mist -> cancel();
         buff.channeling_soothing_mist -> expire();

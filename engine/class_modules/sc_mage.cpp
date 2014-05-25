@@ -1741,7 +1741,7 @@ struct combustion_t : public mage_spell_t
     dot_t* ignite_dot     = this_td -> dots.ignite;
     dot_t* combustion_dot = this_td -> dots.combustion;
 
-    if ( ignite_dot -> ticking )
+    if ( ignite_dot -> is_ticking() )
     {
       mage_spell_t::trigger_dot( s );
 
@@ -2786,9 +2786,9 @@ struct inferno_blast_t : public mage_spell_t
         if ( t -> is_sleeping() || ! t -> is_enemy() || ( t == s -> target ) )
           continue;
 
-        if ( ignite_dot -> ticking )
+        if ( ignite_dot -> is_ticking() )
         {
-          if ( td( t ) -> dots.ignite -> ticking ) //is already ticking on target spell, so merge it
+          if ( td( t ) -> dots.ignite -> is_ticking() ) //is already ticking on target spell, so merge it
           {
             p() -> active_ignite -> trigger( t, ignite_dot -> state -> result_amount * ignite_dot -> ticks_left() );
           }
@@ -2797,11 +2797,11 @@ struct inferno_blast_t : public mage_spell_t
             ignite_dot -> copy( t );
           }
         }
-        if ( combustion_dot -> ticking ) //just copy, regardless of target dots. This is the actual ingame behavior as of 22.03.13
+        if ( combustion_dot -> is_ticking() ) //just copy, regardless of target dots. This is the actual ingame behavior as of 22.03.13
         {
           combustion_dot -> copy( t );
         }
-        if ( pyroblast_dot -> ticking ) //just copy, regardless of target dots. This is the actual ingame behavior as of 22.03.13
+        if ( pyroblast_dot -> is_ticking() ) //just copy, regardless of target dots. This is the actual ingame behavior as of 22.03.13
         {
           pyroblast_dot -> copy( t );
         }
@@ -2883,7 +2883,7 @@ struct living_bomb_t : public mage_spell_t
     if ( result_is_hit( s -> result ) )
     {
       dot_t* dot = get_dot( s -> target );
-      if ( dot -> ticking && dot -> remains() < dot -> current_action -> base_tick_time )
+      if ( dot -> is_ticking() && dot -> remains() < dot -> current_action -> base_tick_time )
       {
         explosion_spell -> execute();
         mage_t& p = *this -> p();

@@ -1810,7 +1810,7 @@ void action_t::interrupt_action()
   if ( player -> channeling == this )
   {
     dot_t* dot = get_dot();
-    if ( dot -> ticking ) last_tick( dot );
+    if ( dot -> is_ticking() ) last_tick( dot );
     player -> channeling = nullptr;
     dot -> reset();
   }
@@ -1902,7 +1902,7 @@ expr_t* action_t::create_expression( const std::string& name_str )
       {
         dot_t* dot = action.get_dot();
         int n_ticks = action.hasted_num_ticks( action.player -> cache.spell_speed() );
-        if ( action.dot_behavior == DOT_EXTEND && dot -> ticking )
+        if ( action.dot_behavior == DOT_EXTEND && dot -> is_ticking() )
           n_ticks += std::min( ( int ) ( n_ticks / 2 ), dot -> num_ticks - dot -> current_tick );
         return n_ticks;
       }
@@ -1943,7 +1943,7 @@ expr_t* action_t::create_expression( const std::string& name_str )
       virtual double evaluate()
       {
         dot_t* dot = action.get_dot();
-        if ( dot -> ticking )
+        if ( dot -> is_ticking() )
           return action.tick_time( action.composite_haste() ).total_seconds();
         else
           return 0;
@@ -2447,26 +2447,7 @@ void action_t::trigger_dot( action_state_t* s )
   dot -> state -> copy_state( s );
   dot -> num_ticks = hasted_num_ticks( dot -> state -> haste );
 
-  if ( dot -> ticking )
-  {
-    assert( dot -> tick_event );
-
-    if ( dot_behavior == DOT_EXTEND ) dot -> num_ticks += std::min( ( int ) ( dot -> num_ticks / 2 ), remaining_ticks );
-
-    // Recasting a dot while it's still ticking gives it an extra tick in total
-    dot -> num_ticks++;
-
-    // tick_zero dots tick again when reapplied
-    if ( tick_zero )
-    {
-      // this is hacky, but otherwise uptime gets messed up
-      timespan_t saved_tick_time = dot -> time_to_tick;
-      dot -> time_to_tick = timespan_t::zero();
-      tick( dot );
-      dot -> time_to_tick = saved_tick_time;
-    }
-  }
-  else
+  if ( !dot -> is_ticking() )
   {
     if ( get_school() == SCHOOL_PHYSICAL )
     {
@@ -2477,9 +2458,9 @@ void action_t::trigger_dot( action_state_t* s )
       }
       else b -> start( 1, 1.0 );
     }
-
-    dot -> start( composite_dot_duration( s ) );
   }
+
+  dot -> trigger( composite_dot_duration( s ) );
 }
 
 bool action_t::has_travel_events_for( const player_t* target ) const

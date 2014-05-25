@@ -1782,7 +1782,7 @@ static bool trigger_improved_lava_lash( shaman_attack_t* a )
         for ( size_t i = 0; i < target_cache.list.size(); i++ )
         {
           shaman_td_t* td = this -> td( target_cache.list[ i ] );
-          if ( td -> dot.flame_shock -> ticking )
+          if ( td -> dot.flame_shock -> is_ticking() )
           {
             target_cache.list.erase( target_cache.list.begin() + i );
             removed = true;
@@ -1811,9 +1811,9 @@ static bool trigger_improved_lava_lash( shaman_attack_t* a )
                        state -> target -> name() );
 
       dot_t* dot = td( target ) -> dot.flame_shock;
-      if ( dot -> ticking )
+      if ( dot -> is_ticking() )
       {
-        if ( ! td( state -> target ) -> dot.flame_shock -> ticking )
+        if ( ! td( state -> target ) -> dot.flame_shock -> is_ticking() )
           p() -> active_flame_shocks++;
         dot -> copy( state -> target );
       }
@@ -1824,7 +1824,7 @@ static bool trigger_improved_lava_lash( shaman_attack_t* a )
   if ( a -> sim -> num_enemies == 1 )
     return false;
 
-  if ( ! a -> td( a -> target ) -> dot.flame_shock -> ticking )
+  if ( ! a -> td( a -> target ) -> dot.flame_shock -> is_ticking() )
     return false;
 
   shaman_t* p = a -> p();
@@ -2732,7 +2732,7 @@ struct lava_lash_t : public shaman_attack_t
 
     if ( result_is_hit( state -> result ) )
     {
-      if ( td( state -> target ) -> dot.flame_shock -> ticking )
+      if ( td( state -> target ) -> dot.flame_shock -> is_ticking() )
         trigger_improved_lava_lash( this );
 
       p() -> buff.shocking_lava -> trigger();
@@ -3203,7 +3203,7 @@ struct fire_nova_t : public shaman_spell_t
 
   bool ready()
   {
-    if ( ! td( target ) -> dot.flame_shock -> ticking )
+    if ( ! td( target ) -> dot.flame_shock -> is_ticking() )
       return false;
 
     return shaman_spell_t::ready();
@@ -3228,7 +3228,7 @@ struct fire_nova_t : public shaman_spell_t
       if ( ! e -> is_enemy() )
         continue;
 
-      if ( td( e ) -> dot.flame_shock -> ticking )
+      if ( td( e ) -> dot.flame_shock -> is_ticking() )
         target_cache.list.push_back( e );
     }
 
@@ -3846,7 +3846,7 @@ struct flame_shock_t : public shaman_spell_t
 
   void execute()
   {
-    if ( ! td( target ) -> dot.flame_shock -> ticking )
+    if ( ! td( target ) -> dot.flame_shock -> is_ticking() )
       p() -> active_flame_shocks++;
 
     if ( p() -> buff.unleash_flame -> check() )
@@ -4055,7 +4055,7 @@ struct chain_heal_t : public shaman_heal_t
   {
     double m = shaman_heal_t::composite_target_da_multiplier( t );
 
-    if ( td( t ) -> heal.riptide -> ticking )
+    if ( td( t ) -> heal.riptide -> is_ticking() )
       m *= 1.0 + p() -> spec.riptide -> effectN( 3 ).percent();
 
     return m;
