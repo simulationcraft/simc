@@ -1087,7 +1087,7 @@ void action_t::execute()
     do_teleport( execute_state );
 
   /* Miss reaction handling for dot executes */
-  if ( dot_duration > timespan_t::zero() && result_is_miss( execute_state -> result ) )
+  if ( composite_dot_duration( execute_state ) > timespan_t::zero() && result_is_miss( execute_state -> result ) )
   {
     dot_t* dot = get_dot( execute_state -> target );
     last_reaction_time = player -> total_reaction_time();
@@ -2430,7 +2430,7 @@ void action_t::impact( action_state_t* s )
 
 void action_t::trigger_dot( action_state_t* s )
 {
-  if ( dot_duration <= timespan_t::zero() && ! tick_zero )
+  if ( composite_dot_duration( s ) <= timespan_t::zero() && ! tick_zero )
     return;
 
   dot_t* dot = get_dot( s -> target );
@@ -2478,7 +2478,7 @@ void action_t::trigger_dot( action_state_t* s )
       else b -> start( 1, 1.0 );
     }
 
-    dot -> start( dot_duration );
+    dot -> start( composite_dot_duration( s ) );
   }
 }
 

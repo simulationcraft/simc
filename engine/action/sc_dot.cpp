@@ -401,8 +401,7 @@ expr_t* dot_t::create_expression( action_t* action,
         // FIXME: What exactly is this supposed to be calculating?
         dot_t* dot = this->dot();
         if ( ! dot -> state ) return 0;
-        double haste = dot -> state -> haste;
-        return dot -> current_action -> dot_duration.total_seconds();
+        return dot -> current_action -> composite_dot_duration( dot -> state ).total_seconds();
       }
     };
     return new duration_expr_t( this, action, dynamic );
