@@ -435,6 +435,8 @@ class CDNIndex(CASCObject):
 				data = data.split(' ')
 			self.build_info[mobj.group(1)] = data
 		
+		print 'CDN current build: %s' % self.build()
+		
 	def open_archives(self):
 		sys.stdout.write('Parsing CDN index files ... ')
 
@@ -474,6 +476,14 @@ class CDNIndex(CASCObject):
 		
 		return True
 	
+	def CheckVersion(self):
+		self.open_cdns()
+		self.open_version()
+		self.open_cdn_build_cfg()
+		self.open_build_cfg()
+		
+		return True
+
 	def open(self):
 		self.open_cdns()
 		self.open_version()

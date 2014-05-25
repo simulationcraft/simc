@@ -21,8 +21,12 @@ parser.add_option( '-x', '--cache', type = 'string', dest = 'cache', default = '
 if __name__ == '__main__':
 	(opts, args) = parser.parse_args()
 	opts.parser = parser
-
-	if opts.mode == 'dbc':
+	
+	if not opts.mode and opts.online:
+		cdn = casc.CDNIndex(opts)
+		cdn.CheckVersion()
+		sys.exit(0)
+	elif opts.mode == 'dbc':
 		if not opts.output:
 			parser.error("DBC mode requires an output directory for the files")
 			sys.exit(1)
