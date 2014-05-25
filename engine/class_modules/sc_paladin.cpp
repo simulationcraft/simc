@@ -2677,7 +2677,7 @@ struct sacred_shield_t : public paladin_heal_t
     // treat this as a HoT that spawns an absorb bubble on each tick() call rather than healing
     // unfortunately, this spell info is split between effects and tooltip 
     base_td = data().effectN( 1 ).average( p ); 
-    spell_power_mod.tick = 0.819; // in tooltip, hardcoding
+    spell_power_mod.tick = 1.229; // in tooltip, hardcoding
 
     // redirect HoT to self if not specified
     if ( target -> is_enemy() || target -> type == HEALING_ENEMY )
@@ -2687,7 +2687,7 @@ struct sacred_shield_t : public paladin_heal_t
     if ( ! ( p -> talents.sacred_shield -> ok() ) )
       background = true;
 
-    // Spell data reflects protection values; Ret and Holy are 30% larger
+    // Spell data reflects protection values; Ret and Holy are 30% larger TODO: test if this is still the case
     if ( ( p -> specialization() == PALADIN_RETRIBUTION || p -> specialization() == PALADIN_HOLY ) )
     {
       base_td /= 0.7;
@@ -5751,7 +5751,7 @@ void paladin_t::target_mitigation( school_e school,
 
     if ( s -> result_amount > 0 && s -> result_amount >= resources.current[ RESOURCE_HEALTH ] )
     {
-      // Ardent defender is a little odd - it doesn't heal you *for* 15%, it heals you *to* 15%.
+      // Ardent defender is a little odd - it doesn't heal you *for* 12%, it heals you *to* 12%.
       // It does this by either absorbing all damage and healing you for the difference between 15% and your current health (if current < 15%)
       // or absorbing any damage that would take you below 15% (if current > 15%).
       // To avoid complications with absorb modeling, we're just going to kludge it by adjusting the amount gained or lost accordingly.
