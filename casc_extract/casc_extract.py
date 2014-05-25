@@ -1,6 +1,6 @@
-import optparse, time, sys, os
+import optparse, sys, os
 
-import build_cfg, casc, jenkins
+import build_cfg, casc
 
 parser = optparse.OptionParser( usage = 'Usage: %prog -d wow_install_dir [options] file_path ...')
 parser.add_option( '--cdn', dest = 'online', action = 'store_true', help = 'Fetch data from Blizzard CDN [only used for mode=dbc]' )
@@ -42,7 +42,6 @@ if __name__ == '__main__':
 			if not encoding.open():
 				sys.exit(1)
 			
-			index = None
 			index = casc.CASCDataIndex(opts)
 			if not index.open():
 				sys.exit(1)

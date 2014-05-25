@@ -360,9 +360,6 @@ class CDNIndex(CASCObject):
 		self.build_info = {}
 		self.cdn_index = {}
 	
-	def get_key_info(self, key):
-		return self.cdn_index.get(key, None)
-	
 	def build(self):
 		return self.build_info['build-name']
 	
