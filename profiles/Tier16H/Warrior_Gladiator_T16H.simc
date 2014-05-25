@@ -20,7 +20,7 @@ actions.precombat=flask,type=winters_bite
 actions.precombat+=/food,type=black_pepper_ribs_and_shrimp
 # Snapshot raid buffed stats before combat begins and pre-potting is done.
 actions.precombat+=/snapshot_stats
-actions.precombat+=/stance,choose=gladiator
+actions.precombat+=/stance,choose=defensive
 actions.precombat+=/mogu_power_potion
 
 # Executed every time the actor is available.
@@ -80,13 +80,12 @@ main_hand=encapsulated_essence_of_immerseus,id=105417,upgrade=2
 off_hand=shield_of_mockery,id=105481,upgrade=2
 
 # Gear Summary
-# gear_strength=997
+# gear_strength=1003
 # gear_agility=3
 # gear_stamina=1528
 # gear_intellect=3
-# gear_spirit=3
 # gear_crit_rating=863
-# gear_haste_rating=297
+# gear_haste_rating=296
 # gear_mastery_rating=420
 # gear_armor=2037
 # gear_bonus_armor=36

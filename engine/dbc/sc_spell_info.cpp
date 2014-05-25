@@ -532,7 +532,7 @@ std::string spell_info::to_str( const dbc_t& dbc, const spell_data_t* spell, int
 
       for ( iter = spec_list.begin(); iter != spec_list.end(); ++iter )
       {
-        if ( *iter == PET_FEROCIOUS_VERSATILITY || *iter == PET_CUNNING_VERSATILITY || *iter == PET_TENACIOUS_VERSATILITY )
+        if ( *iter == PET_FEROCITY || *iter == PET_CUNNING || *iter == PET_TENACITY )
           pet_ability = true;
         s << util::inverse_tokenize( dbc::specialization_string( *iter ) ) << " ";
       }
@@ -1096,7 +1096,7 @@ void spell_info::to_xml( const dbc_t& dbc, const spell_data_t* spell, xml_node_t
         xml_node_t* spec_node = node -> add_child( "spec" );
         spec_node -> add_parm( "id", *iter );
         spec_node -> add_parm( "name", dbc::specialization_string( *iter ) );
-        if ( *iter == PET_FEROCIOUS_VERSATILITY || *iter == PET_CUNNING_VERSATILITY || *iter == PET_TENACIOUS_VERSATILITY )
+        if ( *iter == PET_FEROCITY || *iter == PET_CUNNING || *iter == PET_TENACITY )
         {
           pet_ability = true;
         }

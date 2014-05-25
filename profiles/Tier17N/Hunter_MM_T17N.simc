@@ -4,7 +4,7 @@ race=orc
 role=attack
 position=ranged_back
 professions=enchanting=600/alchemy=600
-talents=http://us.battle.net/wow/en/tool/talent-calculator#YZ!...000.
+talents=http://us.battle.net/wow/en/tool/talent-calculator#YZ!...0000
 spec=marksmanship
 
 # This default action priority list is automatically created based on your character.
@@ -29,6 +29,7 @@ actions+=/explosive_trap,if=active_enemies>1
 actions+=/blood_fury
 actions+=/powershot,if=enabled
 actions+=/fervor,if=enabled&focus<=50
+actions+=/rapid_fire,if=!buff.rapid_fire.up
 actions+=/stampede,if=enabled&(trinket.stat.agility.up|target.time_to_die<=20|(trinket.stacking_stat.agility.stack>10&trinket.stat.agility.cooldown_remains<=3))
 actions+=/a_murder_of_crows,if=enabled&!ticking
 actions+=/dire_beast,if=enabled
@@ -38,16 +39,18 @@ actions+=/glaive_toss,if=enabled
 actions+=/barrage,if=enabled
 actions+=/chimera_shot
 actions+=/steady_shot,if=buff.steady_focus.remains<(action.steady_shot.cast_time+1)&!in_flight
+actions+=/focusing_shot,if=enabled&focus<50
 actions+=/kill_shot
 actions+=/multi_shot,if=active_enemies>=4
 actions+=/aimed_shot,if=buff.master_marksman_fire.react
-actions+=/aimed_shot)
+actions+=/aimed_shot
 actions+=/steady_shot
 
 actions.careful_aim=chimera_shot
 actions.careful_aim+=/steady_shot,if=buff.pre_steady_focus.up&buff.steady_focus.remains<6
 actions.careful_aim+=/aimed_shot
 actions.careful_aim+=/glaive_toss,if=enabled
+actions.careful_aim+=/focusing_shot,if=enabled&focus<60
 actions.careful_aim+=/steady_shot
 
 head=headguard_of_the_unblinking_vigil,id=99402,upgrade=2,gems=capacitive_primal_8agi_9agi
@@ -72,7 +75,7 @@ main_hand=hiseks_reserve_longbow,id=105623,upgrade=2,gems=8agi_3agi,enchant=lord
 # gear_hit_rating=9
 # gear_crit_rating=644
 # gear_haste_rating=531
-# gear_mastery_rating=170
+# gear_mastery_rating=169
 # gear_armor=720
 # gear_multistrike_rating=99
 # gear_readiness_rating=99

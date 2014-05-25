@@ -92,7 +92,9 @@ public:
 #define static_assert( condition, message )
 #endif
 
-#define USE_TR1_NAMESPACE ( ! (! defined( SC_OSX ) && ( defined( SC_VS ) || __cplusplus >= 201103L || defined(__GXX_EXPERIMENTAL_CXX0X__) )) )
+#if ( ! ( ! defined( SC_OSX ) && ( defined( SC_VS ) || __cplusplus >= 201103L || defined(__GXX_EXPERIMENTAL_CXX0X__) ) ) )
+#define USE_TR1_NAMESPACE 1
+#endif
 
 
 

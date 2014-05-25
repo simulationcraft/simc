@@ -301,7 +301,8 @@ struct rogue_t : public player_t
   virtual expr_t*   create_expression( action_t* a, const std::string& name_str );
   virtual set_e       decode_set( const item_t& ) const;
   virtual resource_e primary_resource() const { return RESOURCE_ENERGY; }
-  virtual role_e primary_role() const  { return ROLE_ATTACK; }
+  virtual role_e    primary_role() const  { return ROLE_ATTACK; }
+  virtual stat_e    convert_hybrid_stat( stat_e s ) const;
   virtual bool      create_profile( std::string& profile_str, save_e = SAVE_ALL, bool save_html = false );
   virtual void      copy_from( player_t* source );
 
@@ -3890,6 +3891,30 @@ set_e rogue_t::decode_set( const item_t& item ) const
   if ( util::str_in_str_ci( s, "_barbed_assassin" ) ) return SET_T16_MELEE;
 
   return SET_NONE;
+}
+
+// rogue_t::convert_hybrid_stat ==============================================
+
+stat_e rogue_t::convert_hybrid_stat( stat_e s ) const
+{
+  // this converts hybrid stats that either morph based on spec or only work
+  // for certain specs into the appropriate "basic" stats
+  switch ( s )
+  {
+  case STAT_AGI_INT: 
+    return STAT_AGILITY; 
+  case STAT_STR_AGI:
+    return STAT_AGILITY;
+  // This is a guess at how STR/INT gear will work for Rogues, TODO: confirm  
+  // This should probably never come up since rogues can't equip plate, but....
+  case STAT_STR_INT:
+    return STAT_NONE;
+  case STAT_SPIRIT:
+      return STAT_NONE;
+  case STAT_BONUS_ARMOR:
+      return STAT_NONE;     
+  default: return s; 
+  }
 }
 
 /* Report Extension Class

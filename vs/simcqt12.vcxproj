@@ -43,8 +43,6 @@
     </CustomBuild>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\engine\player\sc_enchant.cpp" />
-    <ClCompile Include="..\engine\player\sc_proc.cpp" />
     <ClCompile Include="..\qrc_simcqt.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NotUsing</PrecompiledHeader>

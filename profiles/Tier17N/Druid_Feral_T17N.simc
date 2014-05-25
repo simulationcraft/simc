@@ -27,8 +27,7 @@ actions.precombat+=/virmens_bite_potion
 
 # Executed every time the actor is available.
 
-actions=pounce,if=buff.prowl.up
-actions+=/auto_attack
+actions=auto_attack
 # Keep Rip from falling off during execute range.
 actions+=/ferocious_bite,cycle_targets=1,if=dot.rip.ticking&dot.rip.remains<=3&target.health.pct<=25
 actions+=/faerie_fire,cycle_targets=1,if=debuff.physical_vulnerability.down
@@ -61,7 +60,6 @@ actions+=/faerie_fire,cycle_targets=1,if=debuff.physical_vulnerability.remains>0
 
 # Pool energy for Ravage.
 actions.filler=pool_resource,for_next=1
-actions.filler+=/ravage
 # Pool energy for Swipe.
 actions.filler+=/pool_resource,for_next=1
 actions.filler+=/swipe,if=active_enemies>1
@@ -87,14 +85,13 @@ main_hand=halberd_of_inner_shadows,id=105560,upgrade=2,gems=4agi_8crit_3agi,ench
 
 # Gear Summary
 # gear_strength=4
-# gear_agility=1229
+# gear_agility=1237
 # gear_stamina=1539
-# gear_intellect=4
-# gear_spirit=4
+# gear_intellect=8
 # gear_hit_rating=9
 # gear_crit_rating=470
-# gear_haste_rating=374
-# gear_mastery_rating=528
+# gear_haste_rating=372
+# gear_mastery_rating=527
 # gear_armor=414
 # gear_multistrike_rating=99
 # meta_gem=capacitive_primal

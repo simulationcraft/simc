@@ -208,7 +208,8 @@ public:
   {
     cooldown_t* ancestral_swiftness;
     cooldown_t* ascendance;
-    cooldown_t* elemental_totem;
+    cooldown_t* fire_elemental_totem;
+    cooldown_t* earth_elemental_totem;
     cooldown_t* feral_spirits;
     cooldown_t* lava_burst;
     cooldown_t* lava_lash;
@@ -441,7 +442,8 @@ public:
     // Cooldowns
     cooldown.ancestral_swiftness  = get_cooldown( "ancestral_swiftness"   );
     cooldown.ascendance           = get_cooldown( "ascendance"            );
-    cooldown.elemental_totem      = get_cooldown( "elemental_totem"       );
+    cooldown.earth_elemental_totem= get_cooldown( "earth_elemental_totem" );
+    cooldown.fire_elemental_totem = get_cooldown( "fire_elemental_totem"  );
     cooldown.feral_spirits        = get_cooldown( "feral_spirit"          );
     cooldown.lava_burst           = get_cooldown( "lava_burst"            );
     cooldown.lava_lash            = get_cooldown( "lava_lash"             );
@@ -478,7 +480,7 @@ public:
   virtual void      init_action_list();
   virtual void      moving();
   virtual void      invalidate_cache( cache_e c );
-  virtual double    composite_movement_speed() const;
+  virtual double    temporary_movement_modifier() const;
   virtual double    composite_melee_haste() const;
   virtual double    composite_melee_speed() const;
   virtual double    composite_melee_crit() const;
@@ -500,6 +502,7 @@ public:
   virtual set_e       decode_set( const item_t& ) const;
   virtual resource_e primary_resource() const { return RESOURCE_MANA; }
   virtual role_e primary_role() const;
+  virtual stat_e convert_hybrid_stat( stat_e s ) const;
   virtual void      arise();
   virtual void      reset();
   virtual void      merge( player_t& other );
@@ -697,6 +700,67 @@ public:
     }
 
     ab::update_ready( cd );
+  }
+
+  virtual expr_t* create_expression( const std::string& name )
+  {
+    if ( ! util::str_compare_ci( name, "cooldown.higher_priority.min_remains" ) )
+      return ab::create_expression( name );
+
+    struct hprio_cd_min_remains_expr_t : public expr_t
+    {
+      action_t* action_;
+      std::vector<cooldown_t*> cd_;
+
+      // TODO: Line_cd support
+      hprio_cd_min_remains_expr_t( action_t* a ) :
+        expr_t( "min_remains" ), action_( a )
+      {
+        action_priority_list_t* list = a -> player -> get_action_priority_list( a -> action_list );
+        for ( size_t i = 0, end = list -> foreground_action_list.size(); i < end; i++ )
+        {
+          action_t* list_action = list -> foreground_action_list[ i ];
+          // Jump out when we reach this action
+          if ( list_action == action_ )
+            break;
+
+          // Skip if this action's cooldown is the same as the list action's cooldown
+          if ( list_action -> cooldown == action_ -> cooldown )
+            continue;
+
+          // Skip actions with no cooldown
+          if ( list_action -> cooldown && list_action -> cooldown -> duration == timespan_t::zero() )
+            continue;
+
+          // Skip cooldowns that are already accounted for
+          if ( std::find( cd_.begin(), cd_.end(), list_action -> cooldown ) != cd_.end() )
+            continue;
+
+          //std::cout << "Appending " << list_action -> name() << " to check list" << std::endl;
+          cd_.push_back( list_action -> cooldown );
+        }
+      }
+
+      double evaluate()
+      {
+        if ( cd_.size() == 0 )
+          return 0;
+
+        timespan_t min_cd = cd_[ 0 ] -> remains();
+        for ( size_t i = 1, end = cd_.size(); i < end; i++ )
+        {
+          timespan_t remains = cd_[ i ] -> remains();
+          //std::cout << "cooldown.higher_priority.min_remains " << cd_[ i ] -> name_str << " remains=" << remains.total_seconds() << std::endl;
+          if ( remains < min_cd )
+            min_cd = remains;
+        }
+
+        //std::cout << "cooldown.higher_priority.min_remains=" << min_cd.total_seconds() << std::endl;
+        return min_cd.total_seconds();
+      }
+    };
+
+    return new hprio_cd_min_remains_expr_t( this );
   }
 };
 
@@ -4321,18 +4385,9 @@ struct earth_elemental_totem_spell_t : public shaman_totem_t
   {
     shaman_totem_t::execute();
 
-    p() -> cooldown.elemental_totem -> duration = data().duration();
-    p() -> cooldown.elemental_totem -> start();
+    if ( p() -> cooldown.fire_elemental_totem -> up() )
+      p() -> cooldown.fire_elemental_totem -> start( data().duration() );
   }
-
-  bool ready()
-  {
-    if ( p() -> cooldown.elemental_totem -> down() )
-      return false;
-
-    return shaman_totem_t::ready();
-  }
-
 };
 
 // Fire Elemental Totem Spell ===============================================
@@ -4368,16 +4423,8 @@ struct fire_elemental_totem_spell_t : public shaman_totem_t
   {
     shaman_totem_t::execute();
 
-    p() -> cooldown.elemental_totem -> duration = data().duration();
-    p() -> cooldown.elemental_totem -> start();
-  }
-
-  bool ready()
-  {
-    if ( p() -> cooldown.elemental_totem -> down() )
-      return false;
-
-    return shaman_totem_t::ready();
+    if ( p() -> cooldown.earth_elemental_totem -> up() )
+      p() -> cooldown.earth_elemental_totem -> start( data().duration() );
   }
 };
 
@@ -5881,14 +5928,14 @@ double shaman_t::composite_spell_crit() const
   return crit;
 }
 
-// shaman_t::composite_movement_speed =======================================
+// shaman_t::temporary_movement_modifier =======================================
 
-double shaman_t::composite_movement_speed() const
+double shaman_t::temporary_movement_modifier() const
 {
-  double ms = player_t::composite_movement_speed();
+  double ms = player_t::temporary_movement_modifier();
 
   if ( buff.spirit_walk -> up() )
-    ms *= 1.0 + buff.spirit_walk -> data().effectN( 1 ).percent();
+    ms = std::max( buff.spirit_walk -> data().effectN( 1 ).percent(), ms );
 
   return ms;
 }
@@ -6269,6 +6316,34 @@ role_e shaman_t::primary_role() const
     return ROLE_SPELL;
 
   return player_t::primary_role();
+}
+
+// shaman_t::convert_hybrid_stat ===========================================
+stat_e shaman_t::convert_hybrid_stat( stat_e s ) const
+{  
+  switch ( s )
+  {
+  case STAT_AGI_INT: 
+    if ( specialization() == SHAMAN_ENHANCEMENT )
+      return STAT_AGILITY;
+    else
+      return STAT_INTELLECT; 
+  // This is a guess at how AGI/STR gear will work for Resto/Elemental, TODO: confirm  
+  case STAT_STR_AGI:
+    return STAT_AGILITY;
+  // This is a guess at how STR/INT gear will work for Enhance, TODO: confirm  
+  // this should probably never come up since shamans can't equip plate, but....
+  case STAT_STR_INT:
+    return STAT_INTELLECT;
+  case STAT_SPIRIT:
+    if ( specialization() == SHAMAN_RESTORATION )
+      return s;
+    else
+      return STAT_NONE;
+  case STAT_BONUS_ARMOR:
+      return STAT_NONE;     
+  default: return s; 
+  }
 }
 
 /* Report Extension Class

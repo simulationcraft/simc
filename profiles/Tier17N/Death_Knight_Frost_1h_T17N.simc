@@ -34,7 +34,6 @@ actions+=/empower_rune_weapon,if=target.time_to_die<=60&(buff.mogu_power_potion.
 actions+=/blood_fury
 actions+=/berserking
 actions+=/arcane_torrent
-actions+=/use_item,slot=hands
 actions+=/run_action_list,name=aoe,if=active_enemies>=3
 actions+=/run_action_list,name=single_target,if=active_enemies<3
 
@@ -91,15 +90,14 @@ main_hand=xifeng_longblade_of_the_titanic_guardian,id=105460,upgrade=2,gems=4str
 off_hand=xifeng_longblade_of_the_titanic_guardian,id=105460,upgrade=2,gems=4str_8mastery_3str,enchant=rune_of_razorice
 
 # Gear Summary
-# gear_strength=1066
+# gear_strength=1074
 # gear_agility=4
 # gear_stamina=1514
 # gear_intellect=4
-# gear_spirit=4
 # gear_expertise_rating=3
 # gear_crit_rating=510
 # gear_haste_rating=210
-# gear_mastery_rating=815
+# gear_mastery_rating=813
 # gear_armor=1191
 # gear_readiness_rating=99
 # meta_gem=capacitive_primal

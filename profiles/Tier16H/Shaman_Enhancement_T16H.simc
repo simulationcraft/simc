@@ -31,7 +31,6 @@ actions=wind_shear
 # Bloodlust casting behavior mirrors the simulator settings for proxy bloodlust. See options 'bloodlust_percent', and 'bloodlust_time'. 
 actions+=/bloodlust,if=target.health.pct<25|time>5
 actions+=/auto_attack
-actions+=/use_item,name=grips_of_celestial_harmony
 # In-combat potion is linked to Primal or Greater Fire Elemental Totem, after the first 60 seconds of combat.
 actions+=/virmens_bite_potion,if=time>60&(pet.primal_fire_elemental.active|pet.greater_fire_elemental.active|target.time_to_die<=60)
 actions+=/blood_fury
@@ -42,7 +41,6 @@ actions+=/elemental_mastery,if=talent.elemental_mastery.enabled&(talent.primal_e
 actions+=/elemental_mastery,if=talent.elemental_mastery.enabled&!talent.primal_elementalist.enabled
 actions+=/fire_elemental_totem,if=!active
 actions+=/ascendance,if=cooldown.strike.remains>=3
-actions+=/lifeblood,if=(glyph.fire_elemental_totem.enabled&(pet.primal_fire_elemental.active|pet.greater_fire_elemental.active))|!glyph.fire_elemental_totem.enabled
 # If only one enemy, priority follows the 'single' action list.
 actions+=/run_action_list,name=single,if=active_enemies=1
 # On multiple enemies, the priority follows the 'aoe' action list.
@@ -112,11 +110,10 @@ off_hand=korvens_crimson_crescent,id=105625,upgrade=2,gems=8haste_8mastery_3agi,
 
 # Gear Summary
 # gear_strength=4
-# gear_agility=1021
+# gear_agility=1029
 # gear_stamina=1512
-# gear_intellect=4
-# gear_spirit=4
-# gear_crit_rating=241
+# gear_intellect=8
+# gear_crit_rating=240
 # gear_haste_rating=593
 # gear_mastery_rating=765
 # gear_armor=719

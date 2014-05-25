@@ -432,8 +432,9 @@ public:
   virtual void      create_pets();
   virtual set_e     decode_set( const item_t& ) const;
   virtual resource_e primary_resource() const { return RESOURCE_RUNIC_POWER; }
-  virtual role_e primary_role() const;
-  virtual void invalidate_cache( cache_e );
+  virtual role_e    primary_role() const;
+  virtual stat_e    convert_hybrid_stat( stat_e s ) const;
+  virtual void      invalidate_cache( cache_e );
 
   void      trigger_runic_empowerment();
   int       runes_count( rune_type rt, bool include_death, int position );
@@ -6352,6 +6353,32 @@ role_e death_knight_t::primary_role() const
     return ROLE_TANK;
 
   return ROLE_ATTACK;
+}
+
+// death_knight_t::convert_hybrid_stat ==============================================
+
+stat_e death_knight_t::convert_hybrid_stat( stat_e s ) const
+{
+  // this converts hybrid stats that either morph based on spec or only work
+  // for certain specs into the appropriate "basic" stats
+  switch ( s )
+  {
+  // This is a guess at how AGI/INT will work for DKs, TODO: confirm
+  case STAT_AGI_INT: 
+    return STAT_NONE; 
+  case STAT_STR_AGI:
+    return STAT_STRENGTH;
+  case STAT_STR_INT:
+    return STAT_STRENGTH;
+  case STAT_SPIRIT:
+      return STAT_NONE;
+  case STAT_BONUS_ARMOR:
+    if ( specialization() == DEATH_KNIGHT_BLOOD )
+      return s;
+    else
+      return STAT_NONE;     
+  default: return s; 
+  }
 }
 
 // death_knight_t::regen ====================================================

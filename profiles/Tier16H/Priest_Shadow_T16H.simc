@@ -48,16 +48,19 @@ actions+=/vampiric_touch,cycle_targets=1,max_cycle_targets=5,if=remains<cast_tim
 actions+=/vampiric_embrace,if=shadow_orb=3&health.pct<=40
 actions+=/devouring_plague,if=shadow_orb=3&ticks_remain<=1
 actions+=/mind_spike,if=active_enemies<=5&buff.surge_of_darkness.react=2
-actions+=/halo,if=talent.halo.enabled
-actions+=/cascade_damage,if=talent.cascade.enabled
-actions+=/divine_star,if=talent.divine_star.enabled
+actions+=/halo,if=talent.halo.enabled&target.distance<=30&target.distance>=17
+actions+=/cascade_damage,if=talent.cascade.enabled&(active_enemies>1|target.distance>=28)&target.distance<=40&target.distance>=11
+actions+=/divine_star,if=talent.divine_star.enabled&(active_enemies>1|target.distance<=24)
 actions+=/wait,sec=cooldown.shadow_word_death.remains,if=target.health.pct<20&cooldown.shadow_word_death.remains&cooldown.shadow_word_death.remains<0.5&active_enemies<=1
 actions+=/wait,sec=cooldown.mind_blast.remains,if=cooldown.mind_blast.remains<0.5&cooldown.mind_blast.remains&active_enemies<=1
 actions+=/mind_spike,if=buff.surge_of_darkness.react&active_enemies<=5
+actions+=/divine_star,if=talent.divine_star.enabled&target.distance<=28&active_enemies>1
 actions+=/mind_sear,chain=1,interrupt=1,if=active_enemies>=3
 actions+=/mind_flay,chain=1,interrupt=1
 actions+=/shadow_word_death,moving=1
 actions+=/mind_blast,moving=1,if=buff.divine_insight_shadow.react&cooldown_react
+actions+=/divine_star,moving=1,if=talent.divine_star.enabled&target.distance<=28
+actions+=/cascade_damage,moving=1,if=talent.cascade.enabled&target.distance<=40
 actions+=/shadow_word_pain,moving=1
 actions+=/dispersion
 
@@ -82,12 +85,11 @@ off_hand=revelations_of_yshaarj,id=105650,upgrade=2,gems=4int_8mastery_3int,ench
 # gear_strength=4
 # gear_agility=4
 # gear_stamina=1536
-# gear_intellect=1092
-# gear_spirit=117
+# gear_intellect=1100
 # gear_spell_power=590
 # gear_hit_rating=3
 # gear_crit_rating=239
-# gear_haste_rating=825
+# gear_haste_rating=824
 # gear_mastery_rating=512
 # gear_armor=284
 # gear_multistrike_rating=99

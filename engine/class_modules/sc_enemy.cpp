@@ -577,6 +577,24 @@ struct add_t : public pet_t
     pet_t::init_action_list();
   }
 
+  double health_percentage() const
+  {
+    timespan_t remainder = timespan_t::zero();
+    timespan_t divisor = timespan_t::zero();
+    if ( duration > timespan_t::zero() )
+    {
+      remainder = expiration -> remains();
+      divisor = duration;
+    }
+    else
+    {
+      remainder = std::max( timespan_t::zero(), sim -> expected_iteration_time - sim -> current_time );
+      divisor = sim -> expected_iteration_time;
+    }
+
+    return remainder / divisor * 100.0;
+  }
+
   virtual resource_e primary_resource() const
   { return RESOURCE_HEALTH; }
 
@@ -828,15 +846,15 @@ void enemy_t::init_action_list()
         switch ( tmi_boss_enum )
         {
           case TMI_NONE:
-            action_list_str += "/auto_attack,damage=" + util::to_string( 11000 * level_mult ) + ",attack_speed=2,aoe_tanks=1";
-            action_list_str += "/spell_dot,damage=" + util::to_string( 4000 * level_mult ) + ",tick_time=2,num_ticks=10,cooldown=40,aoe_tanks=1,if=!ticking";
-            action_list_str += "/spell_nuke,damage=" + util::to_string( 8000 * level_mult ) + ",cooldown=35,attack_speed=3,aoe_tanks=1";
-            action_list_str += "/melee_nuke,damage=" + util::to_string( 14000 * level_mult ) + ",cooldown=27,attack_speed=3,aoe_tanks=1";
+            action_list_str += "/auto_attack,damage=" + util::to_string( 15000 * level_mult ) + ",attack_speed=2,aoe_tanks=1";
+            action_list_str += "/spell_dot,damage=" + util::to_string( 6000 * level_mult ) + ",tick_time=2,num_ticks=10,cooldown=40,aoe_tanks=1,if=!ticking";
+            action_list_str += "/spell_nuke,damage=" + util::to_string( 10000 * level_mult ) + ",cooldown=35,attack_speed=3,aoe_tanks=1";
+            action_list_str += "/melee_nuke,damage=" + util::to_string( 16000 * level_mult ) + ",cooldown=27,attack_speed=3,aoe_tanks=1";
             break;
           default:
             // boss damage information ( could move outside this function and make a constant )
-            int aa_damage [ 9 ] =  { 0, 5500, 7500, 9000, 12500, 15500, 19000, 23000, 30000 };
-            int dot_damage [ 9 ] = { 0,  2700,  3750,  4500,   6250,   7750,   9500,  11500,  15000 };
+            int aa_damage [ 9 ] =  { 0, 5500, 7500, 9000, 12500, 15000, 25000, 45000, 100000 };
+            int dot_damage [ 9 ] = { 0,  2700,  3750,  4500,   6250,   10000,   15000,  35000,  60000 };
             action_list_str += "/auto_attack,damage=" + util::to_string( aa_damage[ tmi_boss_enum ] ) + ",attack_speed=1.5";
             action_list_str += "/spell_dot,damage=" + util::to_string( dot_damage[ tmi_boss_enum ] ) + ",tick_time=2,num_ticks=15,aoe_tanks=1,if=!ticking";
         }
@@ -855,9 +873,7 @@ void enemy_t::init_action_list()
   player_t::init_action_list();
 }
 
-/* Hack to get this executed after player_t::_init_actions.
- * Notice the difference between init_actions and _init_actions
- */
+// Hack to get this executed after player_t::init_action_list.
 void enemy_t::init_stats()
 {
   player_t::init_stats();

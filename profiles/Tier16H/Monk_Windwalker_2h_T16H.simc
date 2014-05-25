@@ -74,13 +74,12 @@ main_hand=trident_of_corrupted_waters,id=105408,upgrade=2,gems=4agi_8crit_3agi,e
 
 # Gear Summary
 # gear_strength=13
-# gear_agility=1100
+# gear_agility=1108
 # gear_stamina=1537
-# gear_intellect=4
-# gear_spirit=4
-# gear_crit_rating=811
-# gear_haste_rating=452
-# gear_mastery_rating=286
+# gear_intellect=8
+# gear_crit_rating=812
+# gear_haste_rating=453
+# gear_mastery_rating=285
 # gear_armor=413
 # gear_multistrike_rating=99
 # meta_gem=capacitive_primal

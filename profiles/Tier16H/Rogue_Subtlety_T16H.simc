@@ -30,7 +30,6 @@ actions.precombat+=/slice_and_dice
 actions=virmens_bite_potion,if=buff.bloodlust.react|target.time_to_die<40
 actions+=/auto_attack
 actions+=/kick
-actions+=/use_item,slot=hands,if=buff.shadow_dance.up
 actions+=/blood_fury,if=buff.shadow_dance.up
 actions+=/berserking,if=buff.shadow_dance.up
 actions+=/arcane_torrent,if=energy<60
@@ -87,12 +86,11 @@ off_hand=hvitserks_formidable_shanker,id=105601,upgrade=2,gems=8agi_3agi,enchant
 
 # Gear Summary
 # gear_strength=4
-# gear_agility=1164
+# gear_agility=1172
 # gear_stamina=1514
 # gear_intellect=4
-# gear_spirit=4
 # gear_crit_rating=364
-# gear_haste_rating=545
+# gear_haste_rating=543
 # gear_mastery_rating=434
 # gear_armor=414
 # gear_multistrike_rating=99

@@ -145,13 +145,12 @@ main_hand=xalatoh_desecrated_image_of_gorehowl,id=105644,upgrade=2,gems=8haste_8
 off_hand=xalatoh_desecrated_image_of_gorehowl,id=105644,upgrade=2,gems=8haste_8crit,enchant=dancing_steel
 
 # Gear Summary
-# gear_strength=1062
+# gear_strength=1068
 # gear_agility=3
 # gear_stamina=1688
 # gear_intellect=3
-# gear_spirit=3
 # gear_crit_rating=950
-# gear_haste_rating=313
+# gear_haste_rating=312
 # gear_mastery_rating=537
 # gear_armor=1187
 # gear_readiness_rating=99

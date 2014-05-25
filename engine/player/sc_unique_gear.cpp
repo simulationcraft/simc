@@ -17,10 +17,15 @@ namespace { // UNNAMED NAMESPACE
 
 namespace enchant
 {
+  void mark_of_the_thunderlord( special_effect_t&, const item_t&, const special_effect_db_item_t& );
+  void mark_of_the_shattered_hand( special_effect_t&, const item_t&, const special_effect_db_item_t& );
+  void mark_of_the_frostwolf( special_effect_t&, const item_t&, const special_effect_db_item_t& );
+  void mark_of_shadowmoon( special_effect_t&, const item_t&, const special_effect_db_item_t& );
+  void mark_of_blackrock( special_effect_t&, const item_t&, const special_effect_db_item_t& );
+  void mark_of_warsong( special_effect_t&, const item_t&, const special_effect_db_item_t& );
   void dancing_steel( special_effect_t&, const item_t&, const special_effect_db_item_t& );
   void jade_spirit( special_effect_t&, const item_t&, const special_effect_db_item_t& );
   void windsong( special_effect_t&, const item_t&, const special_effect_db_item_t& );
-  void elemental_force( special_effect_t&, const item_t&, const special_effect_db_item_t& );
   void rivers_song( special_effect_t&, const item_t&, const special_effect_db_item_t& );
   void colossus( special_effect_t&, const item_t&, const special_effect_db_item_t& );
   void executioner( special_effect_t&, const item_t&, const special_effect_db_item_t& );
@@ -30,7 +35,6 @@ namespace enchant
 namespace profession
 {
   void nitro_boosts( special_effect_t&, const item_t&, const special_effect_db_item_t& );
-  void synapse_springs( special_effect_t&, const item_t&, const special_effect_db_item_t& );
   void zen_alchemist_stone( special_effect_t&, const item_t&, const special_effect_db_item_t& );
 }
 
@@ -251,6 +255,14 @@ static const special_effect_db_item_t __special_effect_db[] = {
    * Enchants
    */
 
+  /* Warlords of Draenor */
+  { 159236, 0,                enchant::mark_of_the_shattered_hand },
+  { 159243, 0,                   enchant::mark_of_the_thunderlord },
+  { 159682, 0,                           enchant::mark_of_warsong },
+  { 159683, 0,                     enchant::mark_of_the_frostwolf },
+  { 159684, 0,                        enchant::mark_of_shadowmoon },
+  { 159685, 0,                         enchant::mark_of_blackrock },
+
   /* Mists of Pandaria */
   { 118333, 0,                             enchant::dancing_steel },
   { 142531, 0,                             enchant::dancing_steel }, /* Bloody Dancing Steel */
@@ -259,7 +271,7 @@ static const special_effect_db_item_t __special_effect_db[] = {
   { 104561, 0,                                  enchant::windsong },
   { 104428, "rppmhaste",                                        0 }, /* Elemental Force */
   { 104441, 0,                               enchant::rivers_song },
-  { 118314, 0,                        enchant::colossus }, /* Colossus */
+  { 118314, 0,                                  enchant::colossus },
 
   /* Cataclysm */
   {  94747, 0,                           enchant::hurricane_spell },
@@ -290,8 +302,6 @@ static const special_effect_db_item_t __special_effect_db[] = {
   {  75177, "OnAttackHit",                                      0 }, /* Swordguard Embroidery Rank 2 */
   {  55776, "OnAttackHit",                                      0 }, /* Swordguard Embroidery Rank 1 */
   { 105574, 0,                    profession::zen_alchemist_stone }, /* Zen Alchemist Stone (stat proc) */
-  { 141331, 0,                        profession::synapse_springs },
-  { 126734, 0,                        profession::synapse_springs },
   {  55004, 0,                           profession::nitro_boosts },
 
   /**
@@ -310,6 +320,111 @@ static const special_effect_db_item_t __special_effect_db[] = {
 
 
 // Enchants ================================================================
+
+void enchant::mark_of_shadowmoon( special_effect_t& effect, 
+                                  const item_t& item,
+                                  const special_effect_db_item_t& )
+{
+  effect.type = SPECIAL_EFFECT_EQUIP;
+
+  struct mos_proc_callback_t : public dbc_proc_callback_t
+  {
+    mos_proc_callback_t( const item_t& i, const special_effect_t& effect ) :
+      dbc_proc_callback_t( i, effect )
+    { }
+
+    void trigger( action_t* a, void* call_data )
+    {
+      if ( listener -> resources.pct( RESOURCE_MANA ) > 0.5 )
+        return;
+
+      dbc_proc_callback_t::trigger( a, call_data );
+    }
+  };
+
+  new mos_proc_callback_t( item, effect );
+}
+
+void enchant::mark_of_blackrock( special_effect_t& effect, 
+                                 const item_t& item,
+                                 const special_effect_db_item_t& )
+{
+  effect.type = SPECIAL_EFFECT_EQUIP;
+
+  struct mob_proc_callback_t : public dbc_proc_callback_t
+  {
+    mob_proc_callback_t( const item_t& i, const special_effect_t& effect ) :
+      dbc_proc_callback_t( i, effect )
+    { }
+
+    void trigger( action_t* a, void* call_data )
+    {
+      if ( listener -> resources.pct( RESOURCE_HEALTH ) > 0.5 )
+        return;
+
+      dbc_proc_callback_t::trigger( a, call_data );
+    }
+  };
+
+  new mob_proc_callback_t( item, effect );
+}
+
+void enchant::mark_of_warsong( special_effect_t& effect, 
+                               const item_t& item,
+                               const special_effect_db_item_t& )
+{
+  // Custom callback to help the special effect initialization, we can use
+  // generic initialization for the enchant, but the game client data does not
+  // link driver to the procced spell, so we do it here.
+ 
+  effect.type = SPECIAL_EFFECT_EQUIP;
+  effect.trigger_spell_id = 159675;
+  effect.reverse = true;
+  
+  new dbc_proc_callback_t( item, effect );
+}
+
+void enchant::mark_of_the_thunderlord( special_effect_t& effect, 
+                                       const item_t& item,
+                                       const special_effect_db_item_t& )
+{
+  // Custom callback to help the special effect initialization, we can use
+  // generic initialization for the enchant, but the game client data does not
+  // link driver to the procced spell, so we do it here.
+ 
+  effect.type = SPECIAL_EFFECT_EQUIP;
+  effect.trigger_spell_id = 159234;
+  
+  new dbc_proc_callback_t( item, effect );
+}
+
+void enchant::mark_of_the_frostwolf( special_effect_t& effect, 
+                                     const item_t& item,
+                                     const special_effect_db_item_t& )
+{
+  // Custom callback to help the special effect initialization, we can use
+  // generic initialization for the enchant, but the game client data does not
+  // link driver to the procced spell, so we do it here.
+ 
+  effect.type = SPECIAL_EFFECT_EQUIP;
+  effect.trigger_spell_id = 159676;
+  
+  new dbc_proc_callback_t( item, effect );
+}
+
+void enchant::mark_of_the_shattered_hand( special_effect_t& effect, 
+                                          const item_t& item,
+                                          const special_effect_db_item_t& )
+{
+  // Custom callback to help the special effect initialization, we can use
+  // generic initialization for the enchant, but the game client data does not
+  // link driver to the procced spell, so we do it here.
+ 
+  effect.type = SPECIAL_EFFECT_EQUIP;
+  effect.trigger_spell_id = 159238;
+  
+  new dbc_proc_callback_t( item, effect );
+}
 
 void enchant::colossus( special_effect_t& effect, const item_t& item,
                         const special_effect_db_item_t& /* dbitem */)
@@ -542,14 +657,6 @@ struct nitro_boosts_action_t : public action_t
     player -> buffs.nitro_boosts-> trigger();
   }
 
-  virtual bool ready()
-  {
-    //To do: Add the various other spells that block nitro boost from being used.
-    if ( player -> buffs.stampeding_roar -> check() || player -> buffs.stampeding_shout -> check() ) // Cannot use nitro boosts when stampeding roar/shout buffs are up.
-      return false;
-
-    return ready();
-  }
 };
 
 void profession::nitro_boosts( special_effect_t& effect, 
@@ -560,26 +667,6 @@ void profession::nitro_boosts( special_effect_t& effect,
   effect.type = SPECIAL_EFFECT_USE;
   effect.execute_action = new nitro_boosts_action_t( item.player );
 };
-
-void profession::synapse_springs( special_effect_t& effect, 
-                                  const item_t& item,
-                                  const special_effect_db_item_t& dbitem )
-{
-  const spell_data_t* use_spell = item.player -> find_spell( dbitem.spell_id );
-  const spell_data_t* buff_spell = item.player -> find_spell( 96228 );
-
-  double value = use_spell -> effectN( 1 ).average( item.player );
-
-  stat_buff_t* buff  = stat_buff_creator_t( item.player, effect.name(), buff_spell )
-                       .add_stat( STAT_STRENGTH, value, select_attr<std::greater>() )
-                       .add_stat( STAT_INTELLECT, value, select_attr<std::greater>() )
-                       .add_stat( STAT_AGILITY,  value, select_attr<std::greater>() );
-
-  effect.type = SPECIAL_EFFECT_USE;
-  effect.cooldown_ = use_spell -> cooldown();
-
-  effect.custom_buff = buff;
-}
 
 void profession::zen_alchemist_stone( special_effect_t& effect,
                                       const item_t& item,

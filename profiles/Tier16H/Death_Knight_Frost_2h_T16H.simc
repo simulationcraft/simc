@@ -34,7 +34,6 @@ actions+=/empower_rune_weapon,if=target.time_to_die<=60&(buff.mogu_power_potion.
 actions+=/blood_fury
 actions+=/berserking
 actions+=/arcane_torrent
-actions+=/use_item,slot=hands
 actions+=/run_action_list,name=aoe,if=active_enemies>=3
 actions+=/run_action_list,name=single_target,if=active_enemies<3
 
@@ -95,15 +94,14 @@ trinket2=thoks_tail_tip,id=105609,upgrade=2
 main_hand=xalatoh_desecrated_image_of_gorehowl,id=105644,upgrade=2,gems=4str_8crit_3str,enchant=rune_of_the_fallen_crusader
 
 # Gear Summary
-# gear_strength=1089
+# gear_strength=1097
 # gear_agility=4
 # gear_stamina=1537
 # gear_intellect=4
-# gear_spirit=4
 # gear_expertise_rating=3
 # gear_crit_rating=765
-# gear_haste_rating=310
-# gear_mastery_rating=461
+# gear_haste_rating=309
+# gear_mastery_rating=460
 # gear_armor=1190
 # gear_readiness_rating=99
 # meta_gem=capacitive_primal

@@ -359,6 +359,8 @@ struct proc_spell_t : public spell_t
     spell_t( token, p, s )
   {
     background = true;
+    // Periodic procs shouldnt ever haste ticks, probably
+    hasted_ticks = false;
   }
 };
 
@@ -369,6 +371,8 @@ struct proc_heal_t : public heal_t
     heal_t( token, p, s )
   {
     background = true;
+    // Periodic procs shouldnt ever haste ticks, probably
+    hasted_ticks = false;
   }
 };
 

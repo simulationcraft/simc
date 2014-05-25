@@ -36,7 +36,7 @@ actions+=/summon_doomguard
 actions+=/rain_of_fire,if=!ticking&!in_flight&active_enemies>1
 actions+=/havoc,target=2,if=active_enemies>1
 actions+=/shadowburn,if=ember_react&(burning_ember>3.5|mana.pct<=20|target.time_to_die<20|buff.havoc.stack>=1|trinket.proc.intellect.react|(trinket.stacking_proc.intellect.remains<cast_time*4&trinket.stacking_proc.intellect.remains>cast_time))
-actions+=/immolate,cycle_targets=1,if=(!ticking|remains<(action.incinerate.cast_time+cast_time))&target.time_to_die>=5&miss_react
+actions+=/immolate,cycle_targets=1,if=n_ticks*crit_pct_current>3*dot.immolate.ticks_remain*dot.immolate.crit_pct&miss_react
 actions+=/conflagrate,if=charges=2&buff.havoc.stack=0
 actions+=/rain_of_fire,if=!ticking&!in_flight,moving=1
 actions+=/chaos_bolt,if=ember_react&target.health.pct>20&(buff.backdraft.stack<3|level<86|(active_enemies>1&action.incinerate.cast_time<1))&(burning_ember>(4.5-active_enemies)|(trinket.proc.intellect.react&trinket.proc.intellect.remains>cast_time)|(trinket.stacking_proc.intellect.remains<cast_time*2.5&trinket.stacking_proc.intellect.remains>cast_time))
@@ -73,8 +73,7 @@ off_hand=revelations_of_yshaarj,id=105650,upgrade=2,gems=8exp_8mastery_3int,ench
 # gear_strength=4
 # gear_agility=4
 # gear_stamina=1534
-# gear_intellect=1030
-# gear_spirit=4
+# gear_intellect=1038
 # gear_spell_power=590
 # gear_expertise_rating=96
 # gear_hit_rating=3

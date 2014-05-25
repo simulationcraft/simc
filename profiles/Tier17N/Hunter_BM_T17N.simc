@@ -4,7 +4,7 @@ race=orc
 role=attack
 position=ranged_back
 professions=enchanting=600/engineering=600
-talents=http://us.battle.net/wow/en/tool/talent-calculator#Ya!...100.
+talents=http://us.battle.net/wow/en/tool/talent-calculator#Ya!...1000
 spec=beast_mastery
 
 # This default action priority list is automatically created based on your character.
@@ -35,6 +35,7 @@ actions+=/stampede,if=enabled&(trinket.stat.agility.up|target.time_to_die<=20|(t
 actions+=/barrage,if=enabled&active_enemies>5
 actions+=/kill_shot
 actions+=/kill_command
+actions+=/focusing_shot,if=enabled&focus<50
 actions+=/a_murder_of_crows,if=enabled&!ticking
 actions+=/glaive_toss,if=enabled
 actions+=/barrage,if=enabled
@@ -63,14 +64,13 @@ main_hand=korkron_hand_cannon,id=105559,upgrade=2,gems=8agi_3agi,enchant=lord_bl
 
 # Gear Summary
 # gear_strength=4
-# gear_agility=1157
+# gear_agility=1165
 # gear_stamina=1539
 # gear_intellect=4
-# gear_spirit=4
 # gear_hit_rating=9
-# gear_crit_rating=487
+# gear_crit_rating=486
 # gear_haste_rating=483
-# gear_mastery_rating=504
+# gear_mastery_rating=503
 # gear_armor=721
 # gear_readiness_rating=99
 # meta_gem=capacitive_primal

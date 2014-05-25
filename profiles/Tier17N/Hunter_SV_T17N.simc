@@ -4,7 +4,7 @@ race=orc
 role=attack
 position=ranged_back
 professions=enchanting=600/alchemy=600
-talents=http://us.battle.net/wow/en/tool/talent-calculator#Yb!...200.
+talents=http://us.battle.net/wow/en/tool/talent-calculator#Yb!...2002
 spec=survival
 
 # This default action priority list is automatically created based on your character.
@@ -36,7 +36,7 @@ actions+=/barrage,if=enabled
 actions+=/explosive_shot,if=cooldown_react
 actions+=/black_arrow,if=!ticking&target.time_to_die>=8
 actions+=/multi_shot,if=active_enemies>3
-actions+=/multi_shot,if=buff.thrill_of_the_hunt.react
+actions+=/focusing_shot,if=enabled&focus<50
 actions+=/arcane_shot,if=buff.thrill_of_the_hunt.react
 actions+=/dire_beast,if=enabled
 actions+=/stampede,if=enabled&(trinket.stat.agility.up|target.time_to_die<=20|(trinket.stacking_stat.agility.stack>10&trinket.stat.agility.cooldown_remains<=3))
@@ -66,7 +66,7 @@ main_hand=hiseks_reserve_longbow,id=105623,upgrade=2,gems=8agi_3agi,enchant=lord
 # gear_hit_rating=9
 # gear_crit_rating=644
 # gear_haste_rating=531
-# gear_mastery_rating=170
+# gear_mastery_rating=169
 # gear_armor=720
 # gear_multistrike_rating=99
 # gear_readiness_rating=99

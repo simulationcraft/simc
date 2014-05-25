@@ -144,13 +144,12 @@ main_hand=malkoroks_skullcleaver,id=105567,upgrade=2,gems=8haste_8crit,enchant=d
 off_hand=malkoroks_skullcleaver,id=105567,upgrade=2,gems=8haste_8crit,enchant=dancing_steel
 
 # Gear Summary
-# gear_strength=940
+# gear_strength=946
 # gear_agility=3
 # gear_stamina=1506
 # gear_intellect=3
-# gear_spirit=3
 # gear_crit_rating=880
-# gear_haste_rating=371
+# gear_haste_rating=370
 # gear_mastery_rating=393
 # gear_armor=1187
 # gear_readiness_rating=99

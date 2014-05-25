@@ -280,10 +280,11 @@ public:
   virtual void      create_pets();
   virtual set_e       decode_set( const item_t& item ) const;
   virtual resource_e primary_resource() const { return RESOURCE_MANA; }
-  virtual role_e primary_role() const { return ROLE_SPELL; }
+  virtual role_e    primary_role() const { return ROLE_SPELL; }
+  virtual stat_e    convert_hybrid_stat( stat_e s ) const;
   virtual double    mana_regen_per_second() const;
   virtual double    composite_player_multiplier( school_e school ) const;
-  virtual void invalidate_cache( cache_e );
+  virtual void      invalidate_cache( cache_e );
   virtual double    composite_multistrike() const;
   virtual double    composite_spell_crit() const;
   virtual double    composite_spell_haste() const;
@@ -4749,6 +4750,30 @@ set_e mage_t::decode_set( const item_t& item ) const
   if ( strstr( s, "gladiators_silk_"  ) ) return SET_PVP_CASTER;
 
   return SET_NONE;
+}
+
+// mage_t::convert_hybrid_stat ==============================================
+
+stat_e mage_t::convert_hybrid_stat( stat_e s ) const
+{
+  // this converts hybrid stats that either morph based on spec or only work
+  // for certain specs into the appropriate "basic" stats
+  switch ( s )
+  {
+  // This is all a guess at how the hybrid primaries will work, since they
+  // don't actually appear on cloth gear yet. TODO: confirm behavior
+  case STAT_AGI_INT: 
+    return STAT_INTELLECT; 
+  case STAT_STR_AGI:
+    return STAT_NONE;
+  case STAT_STR_INT:
+    return STAT_INTELLECT;
+  case STAT_SPIRIT:
+      return STAT_NONE;
+  case STAT_BONUS_ARMOR:
+      return STAT_NONE;     
+  default: return s; 
+  }
 }
 
 /* Report Extension Class

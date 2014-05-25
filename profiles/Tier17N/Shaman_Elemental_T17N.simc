@@ -45,8 +45,7 @@ actions+=/run_action_list,name=aoe,if=active_enemies>1
 
 # Single target action priority list
 
-actions.single=use_item,name=grips_of_tidal_force,if=((cooldown.ascendance.remains>10|level<87)&cooldown.fire_elemental_totem.remains>10)|buff.ascendance.up|buff.bloodlust.up|totem.fire_elemental_totem.active
-actions.single+=/unleash_elements,if=talent.unleashed_fury.enabled&!buff.ascendance.up
+actions.single=unleash_elements,if=talent.unleashed_fury.enabled&!buff.ascendance.up
 actions.single+=/spiritwalkers_grace,moving=1,if=buff.ascendance.up
 actions.single+=/lava_burst,if=dot.flame_shock.remains>cast_time&(buff.ascendance.up|cooldown_react)
 actions.single+=/flame_shock,if=ticks_remain<2
@@ -93,14 +92,13 @@ off_hand=revelations_of_yshaarj,id=105650,upgrade=2,gems=4int_8haste_3int,enchan
 
 # Gear Summary
 # gear_strength=4
-# gear_agility=4
+# gear_agility=8
 # gear_stamina=1534
-# gear_intellect=1083
-# gear_spirit=91
+# gear_intellect=1091
 # gear_spell_power=590
 # gear_crit_rating=347
-# gear_haste_rating=585
-# gear_mastery_rating=506
+# gear_haste_rating=584
+# gear_mastery_rating=507
 # gear_armor=718
 # gear_multistrike_rating=99
 # meta_gem=sinister_primal

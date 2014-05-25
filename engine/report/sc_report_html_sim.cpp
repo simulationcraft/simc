@@ -2220,13 +2220,30 @@ void print_html_help_boxes( report::sc_html_stream& os, sim_t* sim )
      << "\t\t\t</div>\n"
      << "\t\t</div>\n";
 
-  os << "\t\t<div id=\"help-msd\">\n"
+  os << "\t\t<div id=\"help-tmiwin\">\n"
      << "\t\t\t<div class=\"help-box\">\n"
-     << "\t\t\t\t<h3>Max Spike Damage</h3>\n"
-     << "\t\t\t\t<p>Maximum amount of net damage taken in any " << sim -> tmi_window_global << "-second period, expressed as a percentage of max health. Calculated independently for each iteration. "
-     << "'MSD Min/Mean/Max' are the lowest/average/highest MSDs out of all iterations.</p>\n"
+     << "\t\t\t\t<h3>TMI/MSD Window</h3>\n"
+     << "\t\t\t\t<p>Window length used to calculate TMI and MSD, in seconds.</p>\n"
      << "\t\t\t</div>\n"
      << "\t\t</div>\n";
+
+  os << "\t\t<div id=\"help-tmibin\">\n"
+     << "\t\t\t<div class=\"help-box\">\n"
+     << "\t\t\t\t<h3>TMI bin size</h3>\n"
+     << "\t\t\t\t<p>Time bin size used to calculate TMI and MSD, in seconds.</p>\n"
+     << "\t\t\t</div>\n"
+     << "\t\t</div>\n";
+
+  for ( size_t i = 0; i < sim -> actor_list.size(); i++ )
+  {
+    os << "\t\t<div id=\"help-msd" << sim -> actor_list[ i ] -> actor_index << "\">\n"
+      << "\t\t\t<div class=\"help-box\">\n"
+      << "\t\t\t\t<h3>Max Spike Damage</h3>\n"
+      << "\t\t\t\t<p>Maximum amount of net damage taken in any " << sim -> actor_list[ i ] -> tmi_window << "-second period, expressed as a percentage of max health. Calculated independently for each iteration. "
+      << "'MSD Min/Mean/Max' are the lowest/average/highest MSDs out of all iterations.</p>\n"
+      << "\t\t\t</div>\n"
+      << "\t\t</div>\n";
+  }
 
   os << "\t\t<div id=\"help-msd-freq\">\n"
      << "\t\t\t<div class=\"help-box\">\n"
@@ -2351,6 +2368,27 @@ void print_html_help_boxes( report::sc_html_stream& os, sim_t* sim )
      << "\t\t\t<div class=\"help-box\">\n"
      << "\t\t\t\t<h3>Scale Factors</h3>\n"
      << "\t\t\t\t<p>Gain per unit stat increase except for <b>Hit/Expertise</b> which represent <b>Loss</b> per unit stat <b>decrease</b>.</p>\n"
+     << "\t\t\t</div>\n"
+     << "\t\t</div>\n";
+
+  os << "\t\t<div id=\"help-stats-gear\">\n"
+     << "\t\t\t<div class=\"help-box\">\n"
+     << "\t\t\t\t<h3>Gear Amount</h3>\n"
+     << "\t\t\t\t<p>Amount from raw gear, before class or buff modifiers. Amount from hybrid primary stats (i.e. Agility/Intellect) shown in parentheses.</p>\n"
+     << "\t\t\t</div>\n"
+     << "\t\t</div>\n";
+
+  os << "\t\t<div id=\"help-stats-raid-buffed\">\n"
+     << "\t\t\t<div class=\"help-box\">\n"
+     << "\t\t\t\t<h3>Gear Amount</h3>\n"
+     << "\t\t\t\t<p>Amount after all static buffs have been accounted for. Dynamic buffs (i.e. trinkets, potions) not included.</p>\n"
+     << "\t\t\t</div>\n"
+     << "\t\t</div>\n";
+
+  os << "\t\t<div id=\"help-stats-unbuffed\">\n"
+     << "\t\t\t<div class=\"help-box\">\n"
+     << "\t\t\t\t<h3>Gear Amount</h3>\n"
+     << "\t\t\t\t<p>Amount after class modifiers and effects, but before buff modifiers.</p>\n"
      << "\t\t\t</div>\n"
      << "\t\t</div>\n";
 
@@ -3469,22 +3507,6 @@ void print_html_( report::sc_html_stream& os, sim_t* sim )
      << "\t\t<script>var wowhead_tooltips = { \"colorlinks\": true, \"iconizelinks\": true, \"renamelinks\": true }</script>\n";
 
   print_html_styles( os, sim );
-
-  os.printf( "\t\t<script type=\"text/javascript\">\n"
-             "\t\tfunction HighlightText(obj){\n"
-             "\t\t\tif (document.selection) {\n"
-             "\t\t\t\tvar r1 = document.body.createTextRange();\n"
-             "\t\t\t\tr1.moveToElementText(document.getElementById(obj));\n"
-             "\t\t\t\tr1.select();\n"
-             "\t\t\t} else {\n"
-             "\t\t\t\tvar s = window.getSelection();\n"
-             "\t\t\t\tvar r1 = document.createRange();\n"
-             "\t\t\t\tr1.setStartBefore(document.getElementById(obj));\n"
-             "\t\t\t\tr1.setEndAfter(document.getElementById(obj));\n"
-             "\t\t\t\ts.addRange(r1);\n"
-             "\t\t\t}\n"
-             "\t\t}\n"
-             "\t\t</script>\n" );
 
   os << "\t</head>\n\n";
 

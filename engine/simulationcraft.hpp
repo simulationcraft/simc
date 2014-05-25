@@ -87,12 +87,23 @@ struct sc_timeline_t : public timeline_t
 {
   typedef timeline_t base_t;
   using timeline_t::add;
+  double bin_size;
 
-  sc_timeline_t() : timeline_t() {}
+  sc_timeline_t() : timeline_t(), bin_size( 1.0 ) {}
+
+  // methods to modify/retrieve the bin size
+  void set_bin_size( double bin )
+  {
+    bin_size = bin;
+  }
+  double get_bin_size() const
+  {
+    return bin_size;
+  }
 
   // Add 'value' at the corresponding time
   void add( timespan_t current_time, double value )
-  { base_t::add( static_cast<size_t>( current_time.total_millis() / 1000 ), value ); }
+  { base_t::add( static_cast<size_t>( current_time.total_millis() / 1000 / bin_size ), value ); }
 
   void build_derivative_timeline( sc_timeline_t& out ) const
   { base_t::build_sliding_average_timeline( out, 20 ); }
@@ -307,7 +318,7 @@ enum stats_e { STATS_DMG, STATS_HEAL, STATS_ABSORB, STATS_NEUTRAL };
 
 enum dot_behavior_e { DOT_CLIP, DOT_REFRESH, DOT_EXTEND };
 
-enum attribute_e { ATTRIBUTE_NONE = 0, ATTR_STRENGTH, ATTR_AGILITY, ATTR_STAMINA, ATTR_INTELLECT, ATTR_SPIRIT, ATTRIBUTE_MAX };
+enum attribute_e { ATTRIBUTE_NONE = 0, ATTR_STRENGTH, ATTR_AGILITY, ATTR_STAMINA, ATTR_INTELLECT, ATTR_SPIRIT, ATTR_AGI_INT, ATTR_STR_AGI, ATTR_STR_INT, ATTRIBUTE_MAX };
 
 enum resource_e
 {
@@ -666,6 +677,7 @@ enum stat_e
 {
   STAT_NONE = 0,
   STAT_STRENGTH, STAT_AGILITY, STAT_STAMINA, STAT_INTELLECT, STAT_SPIRIT,
+  STAT_AGI_INT, STAT_STR_AGI, STAT_STR_INT,
   STAT_HEALTH, STAT_MANA, STAT_RAGE, STAT_ENERGY, STAT_FOCUS, STAT_RUNIC,
   STAT_MAX_HEALTH, STAT_MAX_MANA, STAT_MAX_RAGE, STAT_MAX_ENERGY, STAT_MAX_FOCUS, STAT_MAX_RUNIC,
   STAT_SPELL_POWER,
@@ -686,6 +698,9 @@ check( AGILITY );
 check( STAMINA );
 check( INTELLECT );
 check( SPIRIT );
+check( AGI_INT );
+check( STR_AGI );
+check( STR_INT );
 #undef check
 
 inline stat_e stat_from_attr( attribute_e a )
@@ -698,6 +713,7 @@ enum cache_e
 {
   CACHE_NONE = 0,
   CACHE_STRENGTH, CACHE_AGILITY, CACHE_STAMINA, CACHE_INTELLECT, CACHE_SPIRIT,
+  CACHE_AGI_INT, CACHE_STR_AGI, CACHE_STR_INT,
   CACHE_SPELL_POWER, CACHE_ATTACK_POWER,
   CACHE_EXP,   CACHE_ATTACK_EXP,
   CACHE_HIT,   CACHE_ATTACK_HIT,   CACHE_SPELL_HIT,
@@ -720,6 +736,9 @@ check( AGILITY );
 check( STAMINA );
 check( INTELLECT );
 check( SPIRIT );
+check( AGI_INT );
+check( STR_AGI );
+check( STR_INT );
 #undef check
 
 inline cache_e cache_from_stat( stat_e st )
@@ -1247,6 +1266,7 @@ player_e translate_class_str( std::string& s );
 race_e translate_race_id( int rid );
 stat_e translate_item_mod( int stat_mod );
 int translate_stat( stat_e stat );
+stat_e translate_attribute( attribute_e attribute );
 stat_e translate_rating_mod( unsigned ratings );
 slot_e translate_invtype( inventory_type inv_type );
 weapon_e translate_weapon_subclass( int weapon_subclass );
@@ -2443,6 +2463,7 @@ struct sim_t : public core_sim_t, private sc_thread_t
   int         max_aoe_enemies;
   bool        show_etmi;
   double      tmi_window_global;
+  double      tmi_bin_size;
 
   // Target options
   double      target_death_pct;
@@ -2616,6 +2637,13 @@ public:
   void      datacollection_begin();
   void      datacollection_end();
   void      reset();
+  bool      check_actors();
+  bool      init_parties();
+  bool      init_actors();
+ private: 
+  bool      init_items();
+  bool      init_actions();
+ public: 
   bool      init();
   void      analyze();
   void      merge( sim_t& other_sim );
@@ -3243,6 +3271,9 @@ struct item_t
   std::string option_ilevel_str;
   std::string option_quality_str;
   std::string option_data_source_str;
+  std::string option_enchant_id_str;
+  std::string option_addon_id_str;
+  std::string option_gem_id_str;
 
   // Extracted data
   gear_stats_t base_stats, stats;
@@ -3603,7 +3634,7 @@ private:
   mutable double _attack_crit, _spell_crit;
   mutable double _attack_haste, _spell_haste;
   mutable double _attack_speed, _spell_speed;
-  mutable double _dodge, _parry, _block, _crit_block, _armor;
+  mutable double _dodge, _parry, _block, _crit_block, _armor, _bonus_armor;
   mutable double _mastery_value, _crit_avoidance, _miss, _multistrike, _readiness;
   mutable double _player_mult[SCHOOL_MAX + 1], _player_heal_mult[SCHOOL_MAX + 1];
 public:
@@ -3640,6 +3671,7 @@ public:
   double mastery_value() const;
   double multistrike() const;
   double readiness() const;
+  double bonus_armor() const;
   double player_multiplier( school_e ) const;
   double player_heal_multiplier( school_e ) const;
 #else
@@ -3799,6 +3831,24 @@ struct player_collected_data_t
     sc_timeline_t merged_timeline;
     bool collect; // whether we collect all this or not.
     health_changes_timeline_t() : previous_loss_level( 0.0 ), previous_gain_level( 0.0 ), collect( false ) {}
+
+    void set_bin_size( double bin )
+    {
+      timeline.set_bin_size( bin );
+      timeline_normalized.set_bin_size( bin );
+      merged_timeline.set_bin_size( bin );
+    }
+
+    double get_bin_size() const
+    {
+      if ( timeline.get_bin_size() != timeline_normalized.get_bin_size() || timeline.get_bin_size() != merged_timeline.get_bin_size() )
+      {
+        assert( false );
+        return 0.0;
+      }
+      else
+        return timeline.get_bin_size();
+    }           
   };
 
   health_changes_timeline_t health_changes;     //records all health changes
@@ -3825,7 +3875,7 @@ struct player_collected_data_t
 
     double spell_power, spell_hit, spell_crit, manareg_per_second;
     double attack_power,  attack_hit,  mh_attack_expertise,  oh_attack_expertise, attack_crit;
-    double armor, miss, crit, dodge, parry, block;
+    double armor, miss, crit, dodge, parry, block, bonus_armor;
     double spell_haste, spell_speed, attack_haste, attack_speed;
     double mastery_value, multistrike, readiness;
   } buffed_stats_snapshot;
@@ -3835,7 +3885,7 @@ struct player_collected_data_t
   void merge( const player_collected_data_t& );
   void analyze( const player_t& );
   void collect_data( const player_t& );
-  void print_tmi_debug_csv( const sc_timeline_t* ma, const sc_timeline_t* nma, const std::vector<double>& weighted_value, const player_t& p );
+  void print_tmi_debug_csv( const sc_timeline_t* nma, const std::vector<double>& weighted_value, const player_t& p );
   double calculate_tmi( const health_changes_timeline_t& tl, int window, double f_length, const player_t& p );
   double calculate_max_spike_damage( const health_changes_timeline_t& tl, int window );
   std::ostream& data_str( std::ostream& s ) const;
@@ -4068,7 +4118,7 @@ struct player_t : public actor_t
 
   std::string talents_str, glyphs_str, id_str, target_str;
   std::string region_str, server_str, origin_str;
-  std::string race_str, professions_str, position_str;
+  std::string race_str, professions_str, position_str, nightelf;
   timespan_t  gcd_ready, base_gcd, started_waiting;
   std::vector<pet_t*> pet_list;
   std::vector<pet_t*> active_pets;
@@ -4307,7 +4357,7 @@ public:
 
   // Movement & Position
   double base_movement_speed;
-  double base_movement_speed_multiplier; // _PASSIVE_ movement speed multipliers
+  double passive_modifier; // _PASSIVE_ movement speed modifiers
   double x_position, y_position;
 
   struct buffs_t
@@ -4316,16 +4366,15 @@ public:
     buff_t* beacon_of_light;
     buff_t* blood_fury;
     buff_t* body_and_soul;
+    buff_t* darkflight;
     buff_t* devotion_aura;
     buff_t* earth_shield;
     buff_t* exhaustion;
     buff_t* grace;
     buff_t* guardian_spirit;
     buff_t* hand_of_sacrifice;
-    buff_t* heroic_presence;
     buff_t* illuminated_healing;
     buff_t* innervate;
-    buff_t* lifeblood;
     buff_t* mongoose_mh;
     buff_t* mongoose_oh;
     buff_t* nitro_boosts;
@@ -4349,9 +4398,6 @@ public:
     buff_t* courageous_primal_diamond_lucidity;
     buff_t* tempus_repit;
     buff_t* fortitude;
-
-    // 5.4 trinkets
-    buff_t* cooldown_reduction;
 
     stat_buff_t* flask;
   } buffs;
@@ -4380,6 +4426,7 @@ public:
     debuff_t* forbearance;
     debuff_t* invulnerable;
     debuff_t* vulnerable;
+    debuff_t* dazed;
 
     // MoP debuffs
     debuff_t* magic_vulnerability;
@@ -4426,6 +4473,17 @@ public:
   {
     const spell_data_t* quickness;
     const spell_data_t* command;
+    const spell_data_t* arcane_acuity;
+    const spell_data_t* heroic_presence;
+    const spell_data_t* might_of_the_mountain;
+    const spell_data_t* expansive_mind;
+    const spell_data_t* nimble_fingers;
+    const spell_data_t* time_is_money;
+    const spell_data_t* the_human_spirit;
+    const spell_data_t* touch_of_elune;
+    const spell_data_t* brawn;
+    const spell_data_t* endurance;
+    const spell_data_t* viciousness;
   } racials;
 
   bool active_during_iteration;
@@ -4438,7 +4496,6 @@ public:
   virtual void init();
   virtual void override_talent( std::string override_str );
   virtual void init_meta_gem( gear_stats_t& );
-  virtual bool weapon_racial( const weapon_t* ) const;
   virtual void init_resources( bool force = false );
   virtual std::string init_use_item_actions( const std::string& append = std::string() );
   virtual std::string init_use_profession_actions( const std::string& append = std::string() );
@@ -4460,7 +4517,7 @@ public:
   virtual void init_position();
   virtual void init_professions();
   virtual void init_spells();
-  virtual void init_items();
+  virtual bool init_items();
   virtual void init_weapon( weapon_t& );
   virtual void init_base_stats();
   virtual void init_initial_stats();
@@ -4477,9 +4534,9 @@ public:
   virtual void init_rng();
   virtual void init_stats();
   virtual void register_callbacks();
-private:
-  void _init_actions();
-public:
+
+  bool init_actions();
+
   virtual void reset();
   virtual void combat_begin();
   virtual void combat_end();
@@ -4510,6 +4567,7 @@ public:
   virtual double composite_mastery_value() const;
   virtual double composite_multistrike() const;
   virtual double composite_readiness() const;
+  virtual double composite_bonus_armor() const;
 
   virtual double composite_armor() const;
   virtual double composite_armor_multiplier() const;
@@ -4541,6 +4599,8 @@ public:
 
   virtual double composite_mitigation_multiplier( school_e ) const;
 
+  virtual double temporary_movement_modifier() const;
+  virtual double passive_movement_modifier() const;
   virtual double composite_movement_speed() const;
 
   virtual double composite_attribute( attribute_e attr ) const;
@@ -4626,6 +4686,7 @@ public:
   void collect_resource_timeline_information();
   virtual resource_e primary_resource() const { return RESOURCE_NONE; }
   virtual role_e   primary_role() const;
+  virtual stat_e convert_hybrid_stat( stat_e s ) const { return s; }
   specialization_e specialization() const { return _spec; }
   const char* primary_tree_name() const;
   virtual stat_e normalize_by() const;
@@ -4992,6 +5053,9 @@ public:
   virtual double composite_readiness() const
   { return owner -> cache.readiness(); }
 
+  virtual double composite_bonus_armor() const
+  { return owner -> cache.bonus_armor(); }
+
   virtual double composite_melee_attack_power() const;
 
   virtual double composite_spell_power( school_e school ) const;
@@ -5277,6 +5341,7 @@ struct action_t : public noncopyable
   void   check_spec( specialization_e );
   void   check_spell( const spell_data_t* );
   const char* name() const { return name_str.c_str(); }
+  virtual school_e get_school() const { return school; };
 
   static bool result_is_hit( result_e r )
   {
@@ -5395,9 +5460,9 @@ public:
   virtual double composite_haste() const { return 1.0; }
   virtual double composite_attack_power() const { return base_attack_power + player -> cache.attack_power(); }
   virtual double composite_spell_power() const
-  { return base_spell_power + player -> cache.spell_power( school ); }
+  { return base_spell_power + player -> cache.spell_power( get_school() ); }
   virtual double composite_target_crit( player_t* /* target */ ) const;
-  virtual double composite_target_multiplier( player_t* target ) const { return target -> composite_player_vulnerability( school ); }
+  virtual double composite_target_multiplier( player_t* target ) const { return target -> composite_player_vulnerability( get_school() ); }
   virtual double composite_multistrike() const { return player -> cache.multistrike(); }
   virtual double composite_readiness() const { return player -> cache.readiness(); }
 
@@ -5410,14 +5475,14 @@ public:
   virtual double composite_da_multiplier() const
   {
     return action_multiplier() * action_da_multiplier() *
-           player -> cache.player_multiplier( school ) *
-           player -> composite_player_dd_multiplier( school, this );
+           player -> cache.player_multiplier( get_school() ) *
+           player -> composite_player_dd_multiplier( get_school() , this );
   }
   virtual double composite_ta_multiplier() const
   {
     return action_multiplier() * action_ta_multiplier() *
-           player -> cache.player_multiplier( school ) *
-           player -> composite_player_td_multiplier( school, this );
+           player -> cache.player_multiplier( get_school() ) *
+           player -> composite_player_td_multiplier( get_school() , this );
   }
 
 
@@ -5752,14 +5817,14 @@ public:
   virtual double composite_da_multiplier() const
   {
     return action_multiplier() * action_da_multiplier() *
-           player -> cache.player_heal_multiplier( school ) *
-           player -> composite_player_dh_multiplier( school );
+           player -> cache.player_heal_multiplier( get_school() ) *
+           player -> composite_player_dh_multiplier( get_school() );
   }
   virtual double composite_ta_multiplier() const
   {
     return action_multiplier() * action_ta_multiplier() *
-           player -> cache.player_heal_multiplier( school ) *
-           player -> composite_player_th_multiplier( school );
+           player -> cache.player_heal_multiplier( get_school() ) *
+           player -> composite_player_th_multiplier( get_school() );
   }
 
   virtual double composite_player_critical_multiplier() const
@@ -5784,12 +5849,12 @@ struct absorb_t : public spell_base_t
   virtual double composite_da_multiplier() const
   {
     return action_multiplier() * action_da_multiplier() *
-           player -> composite_player_absorb_multiplier( school );
+           player -> composite_player_absorb_multiplier( get_school() );
   }
   virtual double composite_ta_multiplier() const
   {
     return action_multiplier() * action_ta_multiplier() *
-           player -> composite_player_absorb_multiplier( school );
+           player -> composite_player_absorb_multiplier( get_school() );
   }
 };
 
@@ -6603,28 +6668,6 @@ public:
 
     return v;
   }
-};
-
-
-// Java Script ==============================================================
-
-namespace js
-{
-struct internal_js_node_t;
-typedef std::shared_ptr<js::internal_js_node_t> js_node_t;
-js_node_t get_child( const js_node_t& root, const std::string& name );
-js_node_t get_node ( const js_node_t& root, const std::string& path );
-std::vector<js_node_t> get_children( const js_node_t& root );
-int  get_value( std::vector<std::string>& value, const js_node_t& root, const std::string& path = std::string() );
-bool get_value( std::string& value, const js_node_t& root, const std::string& path = std::string() );
-bool get_value( int&         value, const js_node_t& root, const std::string& path = std::string() );
-bool get_value( unsigned&    value, const js_node_t& root, const std::string& path = std::string() );
-bool get_value( double&      value, const js_node_t& root, const std::string& path = std::string() );
-js_node_t create( sim_t* sim, const std::string& input );
-js_node_t create( sim_t* sim, FILE* input );
-std::ostream& print( std::ostream&, const js_node_t&, int spacing = 0 );
-std::ostream& operator<<( std::ostream& s, const js_node_t& n );
-const char* get_name( const js_node_t& root );
 };
 
 // Handy Actions ============================================================

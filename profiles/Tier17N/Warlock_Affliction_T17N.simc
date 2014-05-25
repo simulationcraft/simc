@@ -41,10 +41,10 @@ actions+=/soulburn,if=(dot.unstable_affliction.ticks_remain<=1|dot.corruption.ti
 actions+=/soul_swap,if=active_enemies>1&buff.soul_swap.down&(buff.dark_soul.up|trinket.proc.intellect.react|trinket.stacking_proc.intellect.react>6)
 actions+=/soul_swap,cycle_targets=1,if=active_enemies>1&buff.soul_swap.up&(dot.agony.ticks_remain<=action.agony.add_ticks%2|dot.corruption.ticks_remain<=action.corruption.add_ticks%2|dot.unstable_affliction.ticks_remain<=action.unstable_affliction.add_ticks%2)&shard_react
 actions+=/haunt,if=!in_flight_to_target&remains<cast_time+travel_time+tick_time&shard_react&target.health.pct<=20
-actions+=/soulburn,line_cd=15,if=buff.dark_soul.up&shard_react
-actions+=/agony,cycle_targets=1,if=!ticking
-actions+=/corruption,cycle_targets=1,if=(!ticking|remains<tick_time)&target.time_to_die>=6&miss_react
-actions+=/unstable_affliction,cycle_targets=1,if=(!ticking|remains<(cast_time+tick_time))&target.time_to_die>=5&miss_react
+actions+=/haunt,if=!in_flight_to_target&remains<cast_time+travel_time+tick_time&shard_react
+actions+=/agony,if=(tick_damage*n_ticks*(100+crit_pct_current)>4*dot.agony.tick_dmg*dot.agony.ticks_remain*(100+dot.agony.crit_pct))&miss_react
+actions+=/corruption,if=((stat.spell_power>spell_power&ticks_remain<add_ticks%2)|(stat.spell_power>spell_power*1.5)|remains<gcd)&miss_react
+actions+=/unstable_affliction,if=((stat.spell_power>spell_power&ticks_remain<add_ticks%2)|(stat.spell_power>spell_power*1.5)|remains<cast_time+gcd)&miss_react
 actions+=/life_tap,if=buff.dark_soul.down&buff.bloodlust.down&mana.pct<50
 actions+=/life_tap,moving=1,if=mana.pct<80&mana.pct<target.health.pct
 actions+=/life_tap
@@ -78,8 +78,7 @@ off_hand=revelations_of_yshaarj,id=105650,upgrade=2,gems=4int_8haste_3int,enchan
 # gear_strength=4
 # gear_agility=4
 # gear_stamina=1554
-# gear_intellect=1056
-# gear_spirit=4
+# gear_intellect=1064
 # gear_spell_power=590
 # gear_expertise_rating=48
 # gear_hit_rating=3

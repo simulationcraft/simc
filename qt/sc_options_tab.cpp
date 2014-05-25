@@ -39,6 +39,9 @@ const OptionEntry itemSourceOptions[] =
   { "Blizzard API",        "bcpapi",  "Remote Blizzard Community Platform API source" },
   { "Wowhead.com",         "wowhead", "Remote Wowhead.com item data source" },
   { "Wowhead.com (PTR)",   "ptrhead", "Remote Wowhead.com PTR item data source" },
+#if SC_BETA
+  { "Wowhead.com (Beta)",  SC_BETA_STR "head", "Remote Wowhead.com Beta item data source" },
+#endif
 };
 
 const OptionEntry debuffOptions[] =
@@ -65,7 +68,7 @@ const OptionEntry scalingOptions[] =
   { "Analyze Attack Power",             "ap",       "Calculate scale factors for Attack Power"             },
   { "Analyze Crit Rating",              "crit",     "Calculate scale factors for Crit Rating"              },
   { "Analyze Multistrike Rating",       "mult",     "Calculate scale factors for Multistrike Rating"       },
-  { "Analyze Readiness Rating",         "CDRecov",  "Calculate scale factors for Readiness Rating"         },
+  { "Analyze Readiness Rating",         "readiness",  "Calculate scale factors for Readiness Rating"         },
   { "Analyze Haste Rating",             "haste",    "Calculate scale factors for Haste Rating"             },
   { "Analyze Mastery Rating",           "mastery",  "Calculate scale factors for Mastery Rating"           },
   { "Analyze Weapon DPS",               "wdps",     "Calculate scale factors for Weapon DPS"               },
@@ -91,7 +94,7 @@ const OptionEntry plotOptions[] =
   { "Plot Scaling per Haste Rating",     "haste",   "Generate Scaling curve for Haste Rating"     },
   { "Plot Scaling per Mastery Rating",   "mastery", "Generate Scaling curve for Mastery Rating"   },
   { "Plot Scaling per Multistrike Rating", "mult",  "Generate Scaling curve for Multistrike Rating" },
-  { "Plot Scaling per Readiness Rating", "CDRecov", "Generate Scaling curve for Readiness Rating" },
+  { "Plot Scaling per Readiness Rating", "readiness", "Generate Scaling curve for Readiness Rating" },
   { "Plot Scaling per Weapon DPS",       "wdps",    "Generate Scaling curve for Weapon DPS"       },
   { "Plot Scaling per Armor",            "armor",   "Generate Scaling curve for Armor"            },
   { "Plot Scaling per Bonus Armor",      "bonusarmor",  "Generate Scaling curve for Bonus Armor"      },
@@ -105,7 +108,8 @@ const OptionEntry reforgePlotOptions[] =
   { "Plot Reforge Options for Haste Rating",     "haste",   "Generate reforge plot data for Haste Rating"     },
   { "Plot Reforge Options for Mastery Rating",   "mastery", "Generate reforge plot data for Mastery Rating"   },
   { "Plot Reforge Options for Multistrike Rating", "mult",  "Generate reforge plot data for Multistrike Rating" },
-  { "Plot Reforge Options for Readiness Rating", "CDRecov", "Generate reforge plot data for Readiness Rating" },
+  { "Plot Reforge Options for Readiness Rating", "readiness", "Generate reforge plot data for Readiness Rating" },
+  { "Plot Reforge Options for Bonus Armor Rating", "bonusarmor", "Generate reforge plot data for Bonus Armor" },
 
   { "Plot Reforge Options for Strength",         "str",     "Generate reforge plot data for Intellect"        },
   { "Plot Reforge Options for Agility",          "agi",     "Generate reforge plot data for Agility"          },
@@ -113,7 +117,7 @@ const OptionEntry reforgePlotOptions[] =
   { "Plot Reforge Options for Intellect",        "int",     "Generate reforge plot data for Intellect"        },
   { NULL, NULL, NULL }
 };
-const int reforgePlotOption_cut = 6; // separate between secondary and primary stats
+const int reforgePlotOption_cut = 7; // separate between secondary and primary stats
 
 QComboBox* createChoice( int count, ... )
 {
@@ -157,7 +161,7 @@ SC_OptionsTab::SC_OptionsTab( SC_MainWindow* parent ) :
   connect( choice.default_role,       SIGNAL( currentIndexChanged( int ) ), this, SLOT( _optionsChanged() ) );
   connect( choice.tmi_boss,           SIGNAL( currentIndexChanged( int ) ), this, SLOT( _optionsChanged() ) );
   connect( choice.tmi_window,         SIGNAL( currentIndexChanged( int ) ), this, SLOT( _optionsChanged() ) );
-  connect( choice.tmi_actor_only,     SIGNAL( currentIndexChanged( int ) ), this, SLOT( _optionsChanged() ) );
+  connect( choice.show_etmi,          SIGNAL( currentIndexChanged( int ) ), this, SLOT( _optionsChanged() ) );
   connect( choice.deterministic_rng,  SIGNAL( currentIndexChanged( int ) ), this, SLOT( _optionsChanged() ) );
   connect( choice.fight_length,       SIGNAL( currentIndexChanged( int ) ), this, SLOT( _optionsChanged() ) );
   connect( choice.fight_style,        SIGNAL( currentIndexChanged( int ) ), this, SLOT( _optionsChanged() ) );
@@ -219,7 +223,7 @@ void SC_OptionsTab::createGlobalsTab()
   globalsLayout_left -> addRow( tr(  "Default Role" ),   choice.default_role = createChoice( 4, "auto", "dps", "heal", "tank" ) );
   globalsLayout_left -> addRow( tr( "TMI Standard Boss" ),   choice.tmi_boss = createChoice( 8, "custom", "T17Q", "T16H25", "T16H10", "T16N25", "T16N10", "T15H25", "T15N25", "T15LFR" ) );
   globalsLayout_left -> addRow( tr( "TMI Window (sec)" ),  choice.tmi_window = createChoice( 10, "0", "2", "3", "4", "5", "6", "7", "8", "9", "10" ) );
-  globalsLayout_left -> addRow( tr( "Actor-only TMI" ), choice.tmi_actor_only = createChoice( 2, "Disabled", "Enabled" ) );
+  globalsLayout_left -> addRow( tr( "Show ETMI" ),          choice.show_etmi = createChoice( 2, "Only when in group", "Always" ) );
 
   QGroupBox* globalsGroupBox_left = new QGroupBox( tr( "Basic Options" ) );
   globalsGroupBox_left -> setLayout( globalsLayout_left );
@@ -329,7 +333,7 @@ void SC_OptionsTab::createScalingTab()
   QFormLayout* scalingLayout2 = new QFormLayout();
   scalingLayout2 -> setFieldGrowthPolicy( QFormLayout::FieldsStayAtSizeHint );
   scalingLayout2 -> addRow( tr( "Center Scale Delta" ),  choice.center_scale_delta = createChoice( 2, "Yes", "No" ) );
-  scalingLayout2 -> addRow( tr( "Scale Over" ),  choice.scale_over = createChoice( 8, "default", "dps", "hps", "dtps", "htps", "raid_dps", "raid_hps", "tmi" ) );
+  scalingLayout2 -> addRow( tr( "Scale Over" ),  choice.scale_over = createChoice( 9, "default", "dps", "hps", "dtps", "htps", "raid_dps", "raid_hps", "tmi", "etmi" ) );
 
   scalingLayout -> addLayout( scalingLayout2 );
 
@@ -526,7 +530,7 @@ void SC_OptionsTab::decodeOptions()
   load_setting( settings, "default_role", choice.default_role );
   load_setting( settings, "tmi_boss", choice.tmi_boss );
   load_setting( settings, "tmi_window_global", choice.tmi_window, "6" );
-  load_setting( settings, "tmi_actor_only", choice.tmi_actor_only );
+  load_setting( settings, "show_etmi", choice.show_etmi );
   load_setting( settings, "world_lag", choice.world_lag );
   load_setting( settings, "target_level", choice.target_level );
   load_setting( settings, "aura_delay", choice.aura_delay, "500ms" );
@@ -567,7 +571,7 @@ void SC_OptionsTab::decodeOptions()
       {
         if ( ! item_db_order[ i ].compare( itemDbOrder -> item( k ) -> data( Qt::UserRole ).toString() ) )
         {
-          itemDbOrder -> addItem( itemDbOrder -> takeItem( k ) );
+          itemDbOrder -> insertItem( i, itemDbOrder -> takeItem( k ) );
         }
       }
 
@@ -623,7 +627,7 @@ void SC_OptionsTab::encodeOptions()
   settings.setValue( "default_role", choice.default_role -> currentText() );
   settings.setValue( "tmi_boss", choice.tmi_boss -> currentText() );
   settings.setValue( "tmi_window_global", choice.tmi_window -> currentText() );
-  settings.setValue( "tmi_actor_only", choice.tmi_actor_only -> currentText() );
+  settings.setValue( "show_etmi", choice.show_etmi -> currentText() );
   settings.setValue( "world_lag", choice.world_lag -> currentText() );
   settings.setValue( "target_level", choice.target_level -> currentText() );
   settings.setValue( "aura_delay", choice.aura_delay -> currentText() );
@@ -719,8 +723,9 @@ void SC_OptionsTab::createToolTips()
                                        "Reducing this increases the metric's sensitivity to shorter damage spikes.\n"
                                        "Set to 0 if you want to vary on a per-player basis in the Simulate tab using \"tmi_window=#\"." ) );
 
-  choice.tmi_actor_only -> setToolTip( tr( "Ignore external healing for TMI calculations.\n"
-                                           "Note that this will apply to all actors." ) );
+  choice.show_etmi -> setToolTip( tr( "Controls when ETMI is displayed in the HTML report.\n"
+                                      "TMI only includes damage taken and self-healing/absorbs, and treats overhealing as effective healing.\n"
+                                      "ETMI includes all sources of healing and absorption, and ignores overhealing." ) );
 
   choice.report_pets -> setToolTip( tr( "Specify if pets get reported separately in detail." ) );
 
@@ -803,8 +808,8 @@ QString SC_OptionsTab::get_globalSettings()
   if ( choice.challenge_mode -> currentIndex() > 0 )
     options += "challenge_mode=1\n";
 
-  if ( choice.tmi_actor_only -> currentIndex() != 0 )
-    options += "tmi_actor_only=1\n";
+  if ( choice.show_etmi -> currentIndex() != 0 )
+    options += "show_etmi=1\n";
 
   if ( choice.tmi_window -> currentIndex() != 0 )
     options += "tmi_window_global=" + choice.tmi_window-> currentText() + "\n";

@@ -5,6 +5,10 @@
 
 #include "simulationcraft.hpp"
 
+#include "rapidjson/document.h"
+#include "rapidjson/stringbuffer.h"
+#include "rapidjson/prettywriter.h"
+
 // ==========================================================================
 // Blizzard Community Platform API
 // ==========================================================================
@@ -18,105 +22,102 @@ struct player_spec_t
 
 // download_id ==============================================================
 
-js::js_node_t download_id( sim_t* sim,
-                        const std::string& region,
-                        unsigned item_id,
-                        cache::behavior_e caching )
+bool download_id( rapidjson::Document& d, 
+                  const std::string& region,
+                  unsigned item_id,
+                  cache::behavior_e caching )
 {
-  if ( item_id == 0 ) return js::js_node_t();
+  if ( item_id == 0 )
+    return false;
 
   std::string url = "http://" + region + ".battle.net/api/wow/item/" + util::to_string( item_id ) + "?locale=en_US";
 
   std::string result;
   if ( ! http::get( result, url, caching ) )
-    return js::js_node_t();
+    return false;
 
-  return js::create( sim, result );
+  d.Parse< 0 >( result.c_str() );
+  return true;
 }
 
 // parse_profession =========================================================
 
-void parse_profession( std::string& professions_str,
-                       const js::js_node_t& profile,
-                       int index )
+void parse_profession( std::string&               professions_str,
+                       const rapidjson::Value&    profile,
+                       int                        index )
 {
-  std::string key = "professions/primary/" + util::to_string( index );
-  if ( js::js_node_t profession = js::get_node( profile, key ) )
+  if ( ! profile.HasMember( "primary" ) )
+    return;
+
+  const rapidjson::Value& professions = profile[ "primary" ];
+
+  if ( professions.Size() >= rapidjson::SizeType( index + 1 ) )
   {
-    int id;
-    std::string rank;
-    if ( js::get_value( id, profession, "id" ) && js::get_value( rank, profession, "rank" ) )
-    {
-      if ( professions_str.length() > 0 )
-        professions_str += '/';
-      professions_str += util::profession_type_string( util::translate_profession_id( id ) );
-      professions_str += '=' + rank;
-    }
+    const rapidjson::Value& profession = professions[ index ];
+    if ( ! profession.HasMember( "id" ) || ! profession.HasMember( "rank" ) )
+      return;
+
+    if ( professions_str.length() > 0 )
+      professions_str += '/';
+
+    professions_str += util::profession_type_string( util::translate_profession_id( profession[ "id" ].GetUint() ) );
+    professions_str += "=";
+    professions_str += util::to_string( profession[ "rank" ].GetUint() );
   }
-}
-
-// pick_talents =============================================================
-
-js::js_node_t pick_talents( const js::js_node_t& talents,
-                         const std::string& specifier )
-{
-  js::js_node_t spec1 = js::get_child( talents, "0" );
-  js::js_node_t spec2 = js::get_child( talents, "1" );
-
-  assert( spec1 );
-
-  bool spec1_is_active = js::get_child( spec1, "selected" ) != 0;
-
-  if ( util::str_compare_ci( specifier, "active" ) )
-    return spec1_is_active ? spec1 : spec2;
-
-  if ( util::str_compare_ci( specifier, "inactive" ) )
-    return spec1_is_active ? spec2 : spec1;
-
-  if ( util::str_compare_ci( specifier, "primary" ) )
-    return spec1;
-
-  if ( util::str_compare_ci( specifier, "secondary" ) )
-    return spec2;
-
-  std::string spec_name;
-  if ( ! js::get_value( spec_name, spec1, "name" ) )
-    return js::js_node_t();
-  if ( util::str_prefix_ci( spec_name, specifier ) )
-    return spec1;
-
-  if ( spec2 && js::get_value( spec_name, spec2, "name" ) )
-  {
-    if ( util::str_prefix_ci( spec_name, specifier ) )
-      return spec2;
-  }
-
-  return js::js_node_t();
 }
 
 // parse_talents ============================================================
 
-bool parse_talents( player_t*  p,
-                    const js::js_node_t& talents )
+static const rapidjson::Value* choose_talent_spec( const rapidjson::Value& talents,
+                                                   const std::string& specifier )
 {
-  std::string buffer;
-  if ( js::get_value( buffer, talents, "calcSpec" ) )
-  {
-    char stag = buffer[0];
-    unsigned sid;
-    switch ( stag )
-    {
-      case 'a': sid = 0; break;
-      case 'Z': sid = 1; break;
-      case 'b': sid = 2; break;
-      case 'Y': sid = 3; break;
-      default:  sid = 99; break;
-    }
-    p -> _spec = p -> dbc.spec_by_idx( p -> type, sid );
-  }
+  const rapidjson::Value& spec_1 = talents[ 0u ];
+  const rapidjson::Value& spec_2 = talents[ 1u ];
+  bool spec1_is_active = false;
+  if ( spec_1.HasMember( "selected" ) )
+    spec1_is_active = spec_1[ "selected" ].GetBool();
 
-  std::string talent_encoding;
-  js::get_value( talent_encoding, talents, "calcTalent" );
+  const rapidjson::Value* spec = 0;
+
+  if ( util::str_compare_ci( specifier, "active" ) )
+    spec = spec1_is_active ? &spec_1 : &spec_2;
+  else if ( util::str_compare_ci( specifier, "inactive" ) )
+    spec = spec1_is_active ? &spec_2 : &spec_1;
+  else if ( util::str_compare_ci( specifier, "primary" ) )
+    spec = &spec_1;
+  else if ( util::str_compare_ci( specifier, "secondary" ) )
+    spec = &spec_2;
+
+  return spec;
+}
+
+bool parse_talents( player_t*  p,
+                    const rapidjson::Value& talents,
+                    const std::string& specifier )
+{
+  if ( talents.Size() != 2 )
+    return false;
+
+  const rapidjson::Value* spec = choose_talent_spec( talents, specifier );
+  if ( ! spec )
+    return false;
+
+  if ( ! spec -> HasMember( "calcSpec" ) || ! spec -> HasMember( "calcTalent" ) )
+    return false;
+
+  const char* buffer = (*spec)[ "calcSpec" ].GetString();
+  unsigned sid;
+  switch ( buffer[ 0 ] )
+  {
+    case 'a': sid = 0; break;
+    case 'Z': sid = 1; break;
+    case 'b': sid = 2; break;
+    case 'Y': sid = 3; break;
+    default:  sid = 99; break;
+  }
+  p -> _spec = p -> dbc.spec_by_idx( p -> type, sid );
+
+  std::string talent_encoding = (*spec)[ "calcTalent" ].GetString();
 
   for ( size_t i = 0; i < talent_encoding.size(); ++i )
   {
@@ -149,38 +150,42 @@ bool parse_talents( player_t*  p,
 
 // parse_glyphs =============================================================
 
-bool parse_glyphs( player_t* p, const js::js_node_t& build )
+bool parse_glyphs( player_t* p,
+                   const rapidjson::Value& talents,
+                   const std::string& specifier )
 {
   static const char* const glyph_e_names[] =
   {
-    "glyphs/major", "glyphs/minor"
+    "major", "minor"
   };
+
+  const rapidjson::Value* spec = choose_talent_spec( talents, specifier );
+  if ( ! spec || ! spec -> HasMember( "glyphs" ) )
+    return false;
+
+  const rapidjson::Value& glyphs = (*spec)[ "glyphs" ];
 
   for ( std::size_t i = 0; i < sizeof_array( glyph_e_names ); ++i )
   {
-    if ( js::js_node_t glyphs = js::get_node( build, glyph_e_names[ i ] ) )
-    {
-      std::vector<js::js_node_t> children = js::get_children( glyphs );
-      if ( !children.empty() )
-      {
-        for ( std::size_t j = 0; j < children.size(); ++j )
-        {
-          std::string glyph_name;
-          if ( ! js::get_value( glyph_name, children[ j ], "name" ) )
-          {
-            std::string glyph_id;
-            if ( js::get_value( glyph_id, children[ j ], "item" ) )
-              item_t::download_glyph( p, glyph_name, glyph_id );
-          }
+    if ( ! glyphs.HasMember( glyph_e_names[ i ] ) )
+      continue;
 
-          util::glyph_name( glyph_name );
-          if ( ! glyph_name.empty() )
-          {
-            if ( ! p -> glyphs_str.empty() )
-              p -> glyphs_str += '/';
-            p -> glyphs_str += glyph_name;
-          }
-        }
+    const rapidjson::Value& glyphs_type = glyphs[ glyph_e_names[ i ] ];
+    for ( rapidjson::SizeType j = 0; j < glyphs_type.Size(); j++ )
+    {
+      std::string glyph_name;
+      if ( glyphs_type[ j ].HasMember( "name" ) )
+          glyph_name = glyphs_type[ j ][ "name" ].GetString();
+      else if ( glyphs_type[ j ].HasMember( "item" ) )
+        item_t::download_glyph( p, glyph_name,
+                                util::to_string( glyphs_type[ j ][ "item" ].GetString() ) );
+
+      util::glyph_name( glyph_name );
+      if ( ! glyph_name.empty() )
+      {
+        if ( ! p -> glyphs_str.empty() )
+          p -> glyphs_str += '/';
+        p -> glyphs_str += glyph_name;
       }
     }
   }
@@ -191,10 +196,8 @@ bool parse_glyphs( player_t* p, const js::js_node_t& build )
 // parse_items ==============================================================
 
 bool parse_items( player_t*  p,
-                  const js::js_node_t& items )
+                  const rapidjson::Value& items )
 {
-  if ( !items ) return true;
-
   static const char* const slot_map[] =
   {
     "head",
@@ -224,19 +227,32 @@ bool parse_items( player_t*  p,
   {
     item_t& item = p -> items[ i ];
 
-    js::js_node_t js = js::get_child( items, slot_map[ i ] );
-    if ( ! js ) continue;
-
-    if ( ! js::get_value( item.parsed.data.id, js, "id" ) )
+    if ( ! items.HasMember( slot_map[ i ] ) )
       continue;
 
-    js::get_value( item.parsed.gem_id[ 0 ], js, "tooltipParams/gem0" );
-    js::get_value( item.parsed.gem_id[ 1 ], js, "tooltipParams/gem1" );
-    js::get_value( item.parsed.gem_id[ 2 ], js, "tooltipParams/gem2" );
-    js::get_value( item.parsed.enchant_id, js, "tooltipParams/enchant" );
-    js::get_value( item.parsed.addon_id, js, "tooltipParams/tinker" );
-    js::get_value( item.parsed.suffix_id, js, "tooltipParams/suffix" );
-    js::get_value( item.parsed.upgrade_level, js, "tooltipParams/upgrade/current" );
+    const rapidjson::Value& data = items[ slot_map[ i ] ];
+    if ( ! data.HasMember( "id" ) )
+      continue;
+    else
+      item.parsed.data.id = data[ "id" ].GetUint();
+    
+    if ( ! data.HasMember( "tooltipParams" ) )
+      continue;
+
+    const rapidjson::Value& params = data[ "tooltipParams" ];
+
+    if ( params.HasMember( "gem0" ) ) item.parsed.gem_id[ 0 ] = params[ "gem0" ].GetUint();
+    if ( params.HasMember( "gem1" ) ) item.parsed.gem_id[ 1 ] = params[ "gem1" ].GetUint();
+    if ( params.HasMember( "gem2" ) ) item.parsed.gem_id[ 2 ] = params[ "gem2" ].GetUint();
+    if ( params.HasMember( "enchant" ) ) item.parsed.enchant_id = params[ "enchant" ].GetUint();
+    if ( params.HasMember( "tinker" ) ) item.parsed.addon_id = params[ "tinker" ].GetUint();
+    if ( params.HasMember( "suffix" ) ) item.parsed.suffix_id = params[ "suffix" ].GetInt();
+
+    if ( params.HasMember( "upgrade" ) )
+    {
+      const rapidjson::Value& upgrade = params[ "upgrade" ];
+      if ( upgrade.HasMember( "current" ) ) item.parsed.upgrade_level = upgrade[ "current" ].GetUint();
+    }
   }
 
   return true;
@@ -265,63 +281,61 @@ player_t* parse_player( sim_t*             sim,
                    ( std::istreambuf_iterator<char>()    ) );
   }
 
-  // if ( sim -> debug ) util::fprintf( sim -> output_file, "%s\n%s\n", url.c_str(), result.c_str() );
-  js::js_node_t profile = js::create( sim, result );
-  if ( ! profile )
+  rapidjson::Document profile;
+  profile.Parse< 0 >( result.c_str() );
+
+  if ( profile.HasParseError() )
   {
     sim -> errorf( "BCP API: Unable to download player from '%s'\n", player.url.c_str() );
     return 0;
   }
+
   if ( sim -> debug )
-    sim -> out_debug.raw() << profile;
-
-  std::string status, reason;
-  if ( js::get_value( status, profile, "status" ) && util::str_compare_ci( status, "nok" ) )
   {
-    js::get_value( reason, profile, "reason" );
+    rapidjson::StringBuffer b;
+    rapidjson::PrettyWriter< rapidjson::StringBuffer > writer( b );
 
+    profile.Accept( writer );
+    sim -> out_debug.raw() << b.GetString();
+  }
+
+  if ( profile.HasMember( "status" ) && util::str_compare_ci( profile[ "status" ].GetString(), "nok" ) )
+  {
     sim -> errorf( "BCP API: Unable to download player from '%s', reason: %s\n",
                    player.url.c_str(),
-                   reason.c_str() );
+                   profile[ "reason" ].GetString() );
     return 0;
   }
 
-  std::string name;
-  if ( js::get_value( name, profile, "name"  ) )
-    player.name = name;
-  else
-    name = player.name;
-  if ( player.talent_spec != "active" && ! player.talent_spec.empty() )
-  {
-    name += '_';
-    name += player.talent_spec;
-  }
-  if ( ! name.empty() )
-    sim -> current_name = name;
+  if ( profile.HasMember( "name" ) )
+    player.name = profile[ "name" ].GetString();
 
-  int level;
-  if ( ! js::get_value( level, profile, "level"  ) )
+  if ( ! profile.HasMember( "level" ) )
   {
     sim -> errorf( "BCP API: Unable to extract player level from '%s'.\n", player.url.c_str() );
     return 0;
   }
 
-  int cid;
-  if ( ! js::get_value( cid, profile, "class" ) )
+  if ( ! profile.HasMember( "class" ) )
   {
     sim -> errorf( "BCP API: Unable to extract player class from '%s'.\n", player.url.c_str() );
     return 0;
   }
-  std::string class_name = util::player_type_string( util::translate_class_id( cid ) );
 
-  int rid;
-  if ( ! js::get_value( rid, profile, "race" ) )
+  if ( ! profile.HasMember( "race" ) )
   {
     sim -> errorf( "BCP API: Unable to extract player race from '%s'.\n", player.url.c_str() );
     return 0;
   }
-  race_e race = util::translate_race_id( rid );
 
+  if ( ! profile.HasMember( "talents" ) )
+  {
+    sim -> errorf( "BCP API: Unable to extract player talents from '%s'.\n", player.url.c_str() );
+    return 0;
+  }
+
+  std::string class_name = util::player_type_string( util::translate_class_id( profile[ "class" ].GetUint() ) );
+  race_e race = util::translate_race_id( profile[ "race" ].GetUint() );
   const module_t* module = module_t::get( class_name );
 
   if ( ! module || ! module -> valid() )
@@ -329,6 +343,18 @@ player_t* parse_player( sim_t*             sim,
     sim -> errorf( "\nModule for class %s is currently not available.\n", class_name.c_str() );
     return 0;
   }
+
+  std::string name = player.name;
+
+  if ( player.talent_spec != "active" && ! player.talent_spec.empty() )
+  {
+    name += '_';
+    name += player.talent_spec;
+  }
+
+  if ( ! name.empty() )
+    sim -> current_name = name;
+
   player_t* p = sim -> active_player = module -> create_player( sim, name, race );
 
   if ( ! p )
@@ -338,47 +364,33 @@ player_t* parse_player( sim_t*             sim,
     return 0;
   }
 
-  p -> level = level;
+  p -> level = profile[ "level" ].GetUint();
   p -> region_str = player.region.empty() ? sim -> default_region_str : player.region;
-
-  if ( ! js::get_value( p -> server_str, profile, "realm" ) && ! player.server.empty() )
+  if ( ! profile.HasMember( "realm" ) && ! player.server.empty() )
     p -> server_str = player.server;
+  else
+    p -> server_str = profile[ "realm" ].GetString();
 
   if ( ! player.origin.empty() )
     p -> origin_str = player.origin;
 
-  if ( js::get_value( p -> report_information.thumbnail_url, profile, "thumbnail" ) )
-  {
+  if ( profile.HasMember( "thumbnail" ) )
     p -> report_information.thumbnail_url = "http://" + p -> region_str + ".battle.net/static-render/" +
-                                            p -> region_str + '/' + p -> report_information.thumbnail_url;
-  }
+                                            p -> region_str + '/' + profile[ "thumbnail" ].GetString();
 
-  parse_profession( p -> professions_str, profile, 0 );
-  parse_profession( p -> professions_str, profile, 1 );
-
-  js::js_node_t build = js::get_node( profile, "talents" );
-  if ( ! build )
+  if ( profile.HasMember( "professions" ) )
   {
-    sim -> errorf( "BCP API: Player '%s' from URL '%s' has no talents.\n",
-                   name.c_str(), player.url.c_str() );
-    return 0;
+    parse_profession( p -> professions_str, profile[ "professions" ], 0 );
+    parse_profession( p -> professions_str, profile[ "professions" ], 1 );
   }
 
-  build = pick_talents( build, player.talent_spec );
-  if ( ! build )
-  {
-    sim -> errorf( "BCP API: Invalid talent spec '%s' for player '%s'.\n",
-                   player.talent_spec.c_str(), name.c_str() );
-    return 0;
-  }
-
-  if ( ! parse_talents( p, build ) )
+  if ( ! parse_talents( p, profile[ "talents" ], player.talent_spec ) )
     return 0;
 
-  if ( ! parse_glyphs( p, build ) )
+  if ( ! parse_glyphs( p, profile[ "talents" ], player.talent_spec ) )
     return 0;
 
-  if ( ! parse_items( p, js::get_child( profile, "items" ) ) )
+  if ( profile.HasMember( "items" ) && ! parse_items( p, profile[ "items" ] ) )
     return 0;
 
   if ( ! p -> server_str.empty() )
@@ -389,141 +401,150 @@ player_t* parse_player( sim_t*             sim,
 
 // download_item_data =======================================================
 
-js::js_node_t download_item_data( item_t& item, cache::behavior_e caching )
+bool download_item_data( item_t& item, cache::behavior_e caching )
 {
-  js::js_node_t js = download_id( item.sim, item.sim -> default_region_str, item.parsed.data.id, caching );
-  if ( ! js )
+  rapidjson::Document js;
+  if ( ! download_id( js, item.sim -> default_region_str, item.parsed.data.id, caching ) || 
+       js.HasParseError() )
   {
     if ( caching != cache::ONLY )
     {
       item.sim -> errorf( "BCP API: Player '%s' unable to download item id '%u' at slot %s.\n",
                           item.player -> name(), item.parsed.data.id, item.slot_name() );
     }
-    return js;
+    return false;
   }
+
   if ( item.sim -> debug )
-    item.sim -> out_debug.raw() << js;
+  {
+    rapidjson::StringBuffer b;
+    rapidjson::PrettyWriter< rapidjson::StringBuffer > writer( b );
+
+    js.Accept( writer );
+    item.sim -> out_debug.raw() << b.GetString();
+  }
 
   try
   {
-    {
-      int id;
-      if ( ! js::get_value( id, js, "id" ) ) throw( "id" );
-      item.parsed.data.id = id;
-    }
+    if ( ! js.HasMember( "id" ) ) throw( "id" );
+    if ( ! js.HasMember( "itemLevel" ) ) throw( "item level" );
+    if ( ! js.HasMember( "quality" ) ) throw( "quality" );
+    if ( ! js.HasMember( "inventoryType" ) ) throw( "inventory type" );
+    if ( ! js.HasMember( "itemClass" ) ) throw( "item class" );
+    if ( ! js.HasMember( "itemSubClass" ) ) throw( "item subclass" );
+    if ( ! js.HasMember( "name" ) ) throw( "name" );
 
-    if ( ! js::get_value( item.name_str, js, "name" ) ) throw( "name" );
+    item.parsed.data.id = js[ "id" ].GetUint();
+    item.parsed.data.level = js[ "itemLevel" ].GetUint();
+    item.parsed.data.quality = js[ "quality" ].GetUint();
+    item.parsed.data.inventory_type = js[ "inventoryType" ].GetUint();
+    item.parsed.data.item_class = js[ "itemClass" ].GetUint();
+    item.parsed.data.item_subclass = js[ "itemSubClass" ].GetUint();
+    item.name_str = js[ "name" ].GetString();
 
     util::tokenize( item.name_str );
 
-    js::get_value( item.icon_str, js, "icon" );
+    if ( js.HasMember( "icon" ) ) item.icon_str = js[ "icon" ].GetString();
+    if ( js.HasMember( "requiredLevel" ) ) item.parsed.data.req_level = js[ "requiredLevel" ].GetUint();
+    if ( js.HasMember( "requiredSkill" ) ) item.parsed.data.req_skill = js[ "requiredSkill" ].GetUint();
+    if ( js.HasMember( "requiredSkillRank" ) ) item.parsed.data.req_skill_level = js[ "requiredSkillRank" ].GetUint();
+    if ( js.HasMember( "itemBind" ) ) item.parsed.data.bind_type = js[ "itemBind" ].GetUint();
 
-    if ( ! js::get_value( item.parsed.data.level, js, "itemLevel" ) ) throw( "level" );
-
-    js::get_value( item.parsed.data.req_level, js, "requiredLevel" );
-    js::get_value( item.parsed.data.req_skill, js, "requiredSkill" );
-    js::get_value( item.parsed.data.req_skill_level, js, "requiredSkillRank" );
-
-    if ( ! js::get_value( item.parsed.data.quality, js, "quality" ) ) throw( "quality" );
-
-    if ( ! js::get_value( item.parsed.data.inventory_type, js, "inventoryType" ) ) throw( "inventory type" );
-    if ( ! js::get_value( item.parsed.data.item_class, js, "itemClass" ) ) throw( "item class" );
-    if ( ! js::get_value( item.parsed.data.item_subclass, js, "itemSubClass" ) ) throw( "item subclass" );
-    js::get_value( item.parsed.data.bind_type, js, "itemBind" );
-
-    if ( js::js_node_t w = js::get_child( js, "weaponInfo" ) )
+    if ( js.HasMember( "weaponInfo" ) )
     {
-      double minDmg, maxDmg;
-      double speed, dps;
-      if ( ! js::get_value( dps, w, "dps" ) ) throw( "dps" );
-      if ( ! js::get_value( speed, w, "weaponSpeed" ) ) throw( "weapon speed" );
-      if ( ! js::get_value( minDmg, w, "damage/exactMin" ) ) throw( "weapon minimum damage" );
-      if ( ! js::get_value( maxDmg, w, "damage/exactMax" ) ) throw( "weapon maximum damage" );
-      item.parsed.data.delay = speed * 1000.0;
-      // Estimate damage range from the min damage blizzard gives us. Note that this is not exact, as the min dps is actually floored
-      item.parsed.data.dmg_range = 2 - 2 * minDmg / ( dps * speed );
+      const rapidjson::Value& weaponInfo = js[ "weaponInfo" ];
+      if ( ! weaponInfo.HasMember( "dps" ) ) throw( "dps" );
+      if ( ! weaponInfo.HasMember( "weaponSpeed" ) ) throw( "weapon speed" );
+      if ( ! weaponInfo.HasMember( "damage" ) ) throw( "damage" );
+
+      const rapidjson::Value& damage = weaponInfo[ "damage" ];
+      if ( ! damage.HasMember( "exactMin" ) ) throw( "weapon minimum damage" );
+
+      item.parsed.data.delay = static_cast< unsigned >( weaponInfo[ "weaponSpeed" ].GetDouble() * 1000.0 );
+      item.parsed.data.dmg_range = 2 - 2 * damage[ "exactMin" ].GetDouble() / ( weaponInfo[ "dps" ].GetDouble() * weaponInfo[ "weaponSpeed" ].GetDouble() );
     }
 
-    if ( js::js_node_t classes = js::get_child( js, "allowableClasses" ) )
+    if ( js.HasMember( "allowableClasses" ) )
     {
-      std::vector<js::js_node_t> nodes = js::get_children( classes );
-      for ( size_t i = 0, n = nodes.size(); i < n; ++i )
-      {
-        int cid;
-        if ( js::get_value( cid, nodes[ i ] ) )
-          item.parsed.data.class_mask |= 1 << ( cid - 1 );
-      }
+      for ( rapidjson::SizeType i = 0, n = js[ "allowableClasses" ].Size(); i < n; ++i )
+        item.parsed.data.class_mask |= ( 1 << ( js[ "allowableClasses" ][ i ].GetInt() - 1 ) );
     }
     else
       item.parsed.data.class_mask = -1;
 
-    if ( js::js_node_t races = js::get_child( js, "allowableRaces" ) )
+    if ( js.HasMember( "allowableRaces" ) )
     {
-      std::vector<js::js_node_t> nodes = js::get_children( races );
-      for ( size_t i = 0, n = nodes.size(); i < n; ++i )
-      {
-        int rid;
-        if ( js::get_value( rid, nodes[ i ] ) )
-          item.parsed.data.race_mask |= 1 << ( rid - 1 );
-      }
+      for ( rapidjson::SizeType i = 0, n = js[ "allowableRaces" ].Size(); i < n; ++i )
+        item.parsed.data.race_mask |= ( 1 << ( js[ "allowableRaces" ][ i ].GetInt() - 1 ) );
     }
     else
       item.parsed.data.race_mask = -1;
 
-    if ( js::js_node_t stats = js::get_child( js, "bonusStats" ) )
+    if ( js.HasMember( "bonusStats" ) )
     {
-      std::vector<js::js_node_t> nodes = js::get_children( stats );
-      for ( size_t i = 0, n = std::min( nodes.size(), sizeof_array( item.parsed.data.stat_type_e ) ); i < n; ++i )
+      for ( rapidjson::SizeType i = 0, n = js[ "bonusStats" ].Size(); i < n; ++i )
       {
-        if ( ! js::get_value( item.parsed.data.stat_type_e[ i ], nodes[ i ], "stat"   ) ) throw( "bonus stat" );
-        if ( ! js::get_value( item.parsed.data.stat_val   [ i ], nodes[ i ], "amount" ) ) throw( "bonus stat amount" );
+        const rapidjson::Value& stat = js[ "bonusStats" ][ i ];
+        if ( ! stat.HasMember( "stat" ) ) throw( "bonus stat" );
+        if ( ! stat.HasMember( "amount" ) ) throw( "bonus stat amount" );
 
-        // Soo, weapons need a flag to indicate caster weapon for correct DPS calculation.
-        if ( item.parsed.data.delay > 0 && ( item.parsed.data.stat_type_e[ i ] == ITEM_MOD_INTELLECT || item.parsed.data.stat_type_e[ i ] == ITEM_MOD_SPIRIT || item.parsed.data.stat_type_e[ i ] == ITEM_MOD_SPELL_POWER ) )
+        item.parsed.data.stat_type_e[ i ] = stat[ "stat" ].GetInt();
+        item.parsed.data.stat_val[ i ] =  stat[ "amount" ].GetInt();
+
+        if ( js.HasMember( "weaponInfo" ) && 
+             ( item.parsed.data.stat_type_e[ i ] == ITEM_MOD_INTELLECT ||
+               item.parsed.data.stat_type_e[ i ] == ITEM_MOD_SPIRIT ||
+               item.parsed.data.stat_type_e[ i ] == ITEM_MOD_SPELL_POWER ) )
           item.parsed.data.flags_2 |= ITEM_FLAG2_CASTER_WEAPON;
       }
     }
 
-    if ( js::js_node_t sockets = js::get_node( js, "socketInfo/sockets" ) )
+    if ( js.HasMember( "socketInfo" ) && js[ "socketInfo" ].HasMember( "sockets" ) )
     {
-      std::vector<js::js_node_t> nodes = js::get_children( sockets );
-      for ( size_t i = 0, n = std::min( nodes.size(), sizeof_array( item.parsed.data.socket_color ) ); i < n; ++i )
+      const rapidjson::Value& sockets = js[ "socketInfo" ][ "sockets" ];
+
+      for ( rapidjson::SizeType i = 0, n = std::min( static_cast< size_t >( sockets.Size() ), sizeof_array( item.parsed.data.socket_color ) ); i < n; ++i )
       {
-        std::string color;
-        if ( js::get_value( color, nodes[ i ], "type" ) )
-        {
-          if ( color == "META" )
-            item.parsed.data.socket_color[ i ] = SOCKET_COLOR_META;
-          else if ( color == "RED" )
-            item.parsed.data.socket_color[ i ] = SOCKET_COLOR_RED;
-          else if ( color == "YELLOW" )
-            item.parsed.data.socket_color[ i ] = SOCKET_COLOR_YELLOW;
-          else if ( color == "BLUE" )
-            item.parsed.data.socket_color[ i ] = SOCKET_COLOR_BLUE;
-          else if ( color == "PRISMATIC" )
-            item.parsed.data.socket_color[ i ] = SOCKET_COLOR_PRISMATIC;
-          else if ( color == "COGWHEEL" )
-            item.parsed.data.socket_color[ i ] = SOCKET_COLOR_COGWHEEL;
-          else if ( color == "HYDRAULIC" )
-            item.parsed.data.socket_color[ i ] = SOCKET_COLOR_HYDRAULIC;
-        }
+        if ( ! sockets[ i ].HasMember( "type" ) )
+          continue;
+
+        std::string color = sockets[ i ][ "type" ].GetString();
+
+        if ( color == "META" )
+          item.parsed.data.socket_color[ i ] = SOCKET_COLOR_META;
+        else if ( color == "RED" )
+          item.parsed.data.socket_color[ i ] = SOCKET_COLOR_RED;
+        else if ( color == "YELLOW" )
+          item.parsed.data.socket_color[ i ] = SOCKET_COLOR_YELLOW;
+        else if ( color == "BLUE" )
+          item.parsed.data.socket_color[ i ] = SOCKET_COLOR_BLUE;
+        else if ( color == "PRISMATIC" )
+          item.parsed.data.socket_color[ i ] = SOCKET_COLOR_PRISMATIC;
+        else if ( color == "COGWHEEL" )
+          item.parsed.data.socket_color[ i ] = SOCKET_COLOR_COGWHEEL;
+        else if ( color == "HYDRAULIC" )
+          item.parsed.data.socket_color[ i ] = SOCKET_COLOR_HYDRAULIC;
       }
 
-      std::string socketBonus;
-      if ( js::get_value( socketBonus, js, "socketInfo/socketBonus" ) )
+      if ( js[ "socketInfo" ].HasMember( "socketBonus" ) )
       {
+        std::string socketBonus = js[ "socketInfo" ][ "socketBonus" ].GetString();
         std::string stat;
         util::fuzzy_stats( stat, socketBonus );
         std::vector<stat_pair_t> bonus = item_t::str_to_stat_pair( stat );
-        item.parsed.socket_bonus_stats = bonus;
+        item.parsed.socket_bonus_stats.insert( item.parsed.socket_bonus_stats.end(), bonus.begin(), bonus.end() );
       }
     }
 
-    js::get_value( item.parsed.data.id_set, js, "itemSet" );
-
-    std::string nameDescription;
-    if ( js::get_value( nameDescription, js, "nameDescription" ) )
+    if ( js.HasMember( "itemSet" ) && js[ "itemSet" ].HasMember( "id" ) )
     {
+      item.parsed.data.id_set = js[ "itemSet" ][ "id" ].GetUint();
+    }
+
+    if ( js.HasMember( "nameDescription" ) )
+    {
+      std::string nameDescription = js[ "nameDescription" ].GetString();
+
       if ( util::str_in_str_ci( nameDescription, "heroic" ) )
         item.parsed.data.type_flags |= RAID_TYPE_HEROIC;
       else if ( util::str_in_str_ci( nameDescription, "raid finder" ) )
@@ -541,71 +562,85 @@ js::js_node_t download_item_data( item_t& item, cache::behavior_e caching )
         item.parsed.data.type_flags |= RAID_TYPE_ELITE;
     }
 
-    js::js_node_t item_spell = js::get_node( js, "itemSpells" );
-    std::vector<js::js_node_t> nodes = js::get_children( item_spell );
-    size_t spell_idx = 0;
-    for ( size_t i = 0; i < nodes.size() && spell_idx < sizeof_array( item.parsed.data.id_spell ); i++ )
+    if ( js.HasMember( "itemSpells" ) )
     {
-      int spell_id = 0;
-      int trigger_type = -1;
-      std::string spell_trigger;
-      js::get_value( spell_id, nodes[ i ], "spellId" );
-      js::get_value( spell_trigger, nodes[ i ], "trigger" );
-
-      if ( util::str_compare_ci( spell_trigger, "ON_EQUIP" ) )
-        trigger_type = ITEM_SPELLTRIGGER_ON_EQUIP;
-      else if ( util::str_compare_ci( spell_trigger, "ON_USE" ) )
-        trigger_type = ITEM_SPELLTRIGGER_ON_USE;
-      else if ( util::str_compare_ci( spell_trigger, "ON_PROC" ) )
-        trigger_type = ITEM_SPELLTRIGGER_CHANCE_ON_HIT;
-
-      if ( trigger_type != -1 && spell_id > 0 )
+      const rapidjson::Value& spells = js[ "itemSpells" ];
+      size_t spell_idx = 0;
+      for ( rapidjson::SizeType i = 0, n = spells.Size(); i < n && spell_idx < sizeof_array( item.parsed.data.id_spell ); ++i )
       {
-        item.parsed.data.id_spell[ spell_idx ] = spell_id;
-        item.parsed.data.trigger_spell[ spell_idx ] = trigger_type;
-        spell_idx++;
+        const rapidjson::Value& spell = spells[ i ];
+        if ( ! spell.HasMember( "spellId" ) || ! spell.HasMember( "trigger" ) )
+          continue;
+
+        int spell_id = spell[ "spellId" ].GetInt();
+        int trigger_type = -1;
+
+        if ( util::str_compare_ci( spell[ "trigger" ].GetString(), "ON_EQUIP" ) )
+          trigger_type = ITEM_SPELLTRIGGER_ON_EQUIP;
+        else if ( util::str_compare_ci( spell[ "trigger" ].GetString(), "ON_USE" ) )
+          trigger_type = ITEM_SPELLTRIGGER_ON_USE;
+        else if ( util::str_compare_ci( spell[ "trigger" ].GetString(), "ON_PROC" ) )
+          trigger_type = ITEM_SPELLTRIGGER_CHANCE_ON_HIT;
+
+        if ( trigger_type != -1 && spell_id > 0 )
+        {
+          item.parsed.data.id_spell[ spell_idx ] = spell_id;
+          item.parsed.data.trigger_spell[ spell_idx ] = trigger_type;
+          spell_idx++;
+        }
       }
     }
   }
   catch ( const char* fieldname )
   {
     std::string error_str;
-    js::get_value( error_str, js, "reason" );
+    if ( js.HasMember( "reason" ) )
+      error_str = js[ "reason" ].GetString();
 
     if ( caching != cache::ONLY )
       item.sim -> errorf( "BCP API: Player '%s' unable to parse item '%u' %s at slot '%s': %s\n",
                           item.player -> name(), item.parsed.data.id, fieldname, item.slot_name(), error_str.c_str() );
-    return js::js_node_t();
+    return false;
   }
 
-  return js;
+  return true;
 }
 
 // download_roster ==========================================================
 
-js::js_node_t download_roster( sim_t* sim,
-                            const std::string& region,
-                            const std::string& server,
-                            const std::string& name,
-                            cache::behavior_e  caching )
+bool download_roster( rapidjson::Document& d,
+                      sim_t* sim,
+                      const std::string& region,
+                      const std::string& server,
+                      const std::string& name,
+                      cache::behavior_e  caching )
 {
   std::string url = "http://" + region + ".battle.net/api/wow/guild/" + server + '/' +
                     name + "?fields=members";
 
   std::string result;
-  if ( ! http::get( result, url, caching, "\"members\"" ) )
+  if ( ! http::get( result, url, caching ) )
+    return false;
+
+  d.Parse< 0 >( result.c_str() );
+  if ( d.HasParseError() )
   {
-    sim -> errorf( "BCP API: Unable to download guild %s|%s|%s.\n", region.c_str(), server.c_str(), name.c_str() );
-    return js::js_node_t();
-  }
-  js::js_node_t js = js::create( sim, result );
-  if ( ! js || ! ( js = js::get_child( js, "members" ) ) )
-  {
-    sim -> errorf( "BCP API: Unable to get members of guild %s|%s|%s.\n", region.c_str(), server.c_str(), name.c_str() );
-    return js::js_node_t();
+    sim -> errorf( "BCP API: Unable to parse guild from '%s': Parse error '%s' @ %u\n",
+      url.c_str(), d.GetParseError(), d.GetErrorOffset() );
+
+    return false;
   }
 
-  return js;
+  if ( sim -> debug )
+  {
+    rapidjson::StringBuffer b;
+    rapidjson::PrettyWriter< rapidjson::StringBuffer > writer( b );
+
+    d.Accept( writer );
+    sim -> out_debug.raw() << b.GetString();
+  }
+
+  return true;
 }
 
 } // close anonymous namespace ==============================================
@@ -663,7 +698,7 @@ player_t* bcp_api::from_local_json( sim_t*             sim,
 
 bool bcp_api::download_item( item_t& item, cache::behavior_e caching )
 {
-  bool ret = download_item_data( item, caching ) != NULL;
+  bool ret = download_item_data( item, caching );
   if ( ret )
     item.source_str = "Blizzard";
   return ret;
@@ -680,56 +715,61 @@ bool bcp_api::download_guild( sim_t* sim,
                               int max_rank,
                               cache::behavior_e caching )
 {
-  std::cout << "foo\n";
-  js::js_node_t js = download_roster( sim, region, server, name, caching );
-  if ( !js ) return false;
+  rapidjson::Document js;
+
+  if ( ! download_roster( js, sim, region, server, name, caching ) )
+    return false;
+
+  if ( ! js.HasMember( "members" ) )
+  {
+    sim -> errorf( "No members in guild %s,%s,%s", region.c_str(), server.c_str(), name.c_str() );
+    return false;
+  }
 
   std::vector<std::string> names;
-  std::vector<js::js_node_t> characters = js::get_children( js );
-  std::cout << "foo\n";
 
-  for ( std::size_t i = 0, n = characters.size(); i < n; ++i )
+  for ( rapidjson::SizeType i = 0, end = js[ "members" ].Size(); i < end; i++ )
   {
-    int level;
-    if ( ! js::get_value( level, characters[ i ], "character/level" ) || level < 85 )
+    const rapidjson::Value& member = js[ "members" ][ i ];
+    if ( ! member.HasMember( "character" ) )
       continue;
 
-    int cid;
-    if ( ! js::get_value( cid, characters[ i ], "character/class" ) ||
-         ( player_filter != PLAYER_NONE && player_filter != util::translate_class_id( cid ) ) )
+    if ( ! member.HasMember( "rank" ) )
       continue;
 
-    int rank;
-    if ( ! js::get_value( rank, characters[ i ], "rank" ) ||
-         ( ( max_rank > 0 ) && ( rank > max_rank ) ) ||
+    int rank = member[ "rank" ].GetInt();
+    if ( ( max_rank > 0 && rank > max_rank ) || 
          ( ! ranks.empty() && range::find( ranks, rank ) == ranks.end() ) )
       continue;
 
-    std::string cname;
-    if ( ! js::get_value( cname, characters[ i ], "character/name" ) ) continue;
-    names.push_back( cname );
+    const rapidjson::Value& character = member[ "character" ];
+
+    if ( ! character.HasMember( "level" ) || character[ "level" ].GetUint() < 85 )
+      continue;
+
+    if ( ! character.HasMember( "class" ) )
+      continue;
+
+    if ( ! character.HasMember( "name" ) )
+      continue;
+
+    if ( player_filter != PLAYER_NONE &&
+         player_filter != util::translate_class_id( character[ "class" ].GetInt() ) )
+      continue;
+
+    names.push_back( character[ "name" ].GetString() );
   }
 
   if ( names.empty() ) return true;
-  std::cout << "foo\n";
 
   range::sort( names );
 
   for ( std::size_t i = 0, n = names.size(); i < n; ++i )
   {
     const std::string& cname = names[ i ];
-    util::printf( "Downloading character: %s\n", cname.c_str() );
-    player_t* player = download_player( sim, region, server, cname, "active", caching );
-    if ( !player )
-    {
-      sim -> errorf( "BCP API: Failed to download player '%s' trying Wowhead instead\n", cname.c_str() );
-      //player = wowhead::download_player( sim, region, server, cname, "active", wowhead::LIVE, caching );
-      //if ( !player )
-      //  sim -> errorf( "Wowhead: Failed to download player '%s'\n", cname.c_str() );
-      // Just ignore invalid players
-    }
+    sim -> out_std.printf( "Downloading character: %s\n", cname.c_str() );
+    download_player( sim, region, server, cname, "active", caching );
   }
-  std::cout << "foo\n";
 
   return true;
 }
@@ -745,13 +785,15 @@ bool bcp_api::download_glyph( player_t*          player,
     ( player -> region_str.empty() ? player -> sim -> default_region_str : player -> region_str );
 
   unsigned glyphid = strtoul( glyph_id.c_str(), 0, 10 );
-  js::js_node_t item = download_id( player -> sim, region, glyphid, caching );
-  if ( ! item || ! js::get_value( glyph_name, item, "name" ) )
+  rapidjson::Document js;
+  if ( ! download_id( js, region, glyphid, caching ) || js.HasParseError() || ! js.HasMember( "name" ) )
   {
     if ( caching != cache::ONLY )
       player -> sim -> errorf( "BCP API: Unable to download glyph id '%s'\n", glyph_id.c_str() );
     return false;
   }
+
+  glyph_name = js[ "name" ].GetString();
 
   return true;
 }
