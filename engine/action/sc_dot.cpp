@@ -557,21 +557,25 @@ void dot_t::start( timespan_t duration )
 
 void dot_t::refresh( timespan_t duration )
 {
-  current_duration = std::min( current_action -> tick_time( state -> haste ), remains() ) + duration;
-   //current_duration = std::min( 1.3* duration, remains() ) + duration;
+  //current_duration = std::min( current_action -> tick_time( state -> haste ), remains() ) + duration;
+  current_duration = std::min( duration * 0.3, remains() ) + duration;
 
-   last_start = sim.current_time;
+  last_start = sim.current_time;
 
-   if ( sim.debug )
-     sim.out_debug.printf( "%s refreshes dot for %s on %s. duration=%f remains()=%f", source -> name(), name(), target -> name(), duration.total_seconds(), remains().total_seconds() );
+  if ( sim.debug )
+    sim.out_debug.printf( "%s refreshes dot for %s on %s. duration=%f remains()=%f", source -> name(), name(), target -> name(), current_duration.total_seconds(), remains().total_seconds() );
 
-   check_tick_zero();
+  check_tick_zero();
+
+  // Recalculate num_ticks:
+  num_ticks = current_tick + remains() / current_action -> tick_time( state -> haste );
 }
 
 void dot_t::check_tick_zero()
 {
   if ( current_action -> tick_zero )
   {
+    timespan_t previous_ttt = time_to_tick;
     time_to_tick = timespan_t::zero();
     // Recalculate num_ticks:
     num_ticks = current_tick + remains() / current_action -> tick_time( state -> haste );
@@ -581,5 +585,6 @@ void dot_t::check_tick_zero()
       last_tick();
       return;
     }
+    time_to_tick = previous_ttt;
   }
 }
