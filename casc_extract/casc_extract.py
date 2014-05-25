@@ -3,20 +3,20 @@ import optparse, time, sys, os
 import build_cfg, casc, jenkins
 
 parser = optparse.OptionParser( usage = 'Usage: %prog -d wow_install_dir [options] file_path ...')
-parser.add_option( '--online', dest = 'online', action = 'store_true' )
+parser.add_option( '--cdn', dest = 'online', action = 'store_true', help = 'Fetch data from Blizzard CDN [only used for mode=dbc]' )
 parser.add_option( '-m', '--mode', dest = 'mode', choices = [ 'dbc', 'unpack', 'extract' ],
-                   help = 'Extraction mode: "root" for root/encoding file extraction, "dbc" for DBC file extraction' )
+                   help = 'Extraction mode: "dbc" for DBC file extraction, "unpack" for BLTE file unpack, "extract" for key or MD5 based file extract from local game client files' )
 parser.add_option( '-b', '--dbfile', dest = 'dbfile', type = 'string', default = 'dbfile', 
-					help = "A textual file containing a list of file paths to extract [default dbfile]" )
+					help = "A textual file containing a list of file paths to extract [default dbfile, only needed for mode=dbc]" )
 parser.add_option( '-r', '--root', dest = 'root_file', type = 'string', default = 'root',
-                   help = 'Root file path location.' )
+                   help = 'Root file path location [default CACHE_DIR/root, only needed if --cdn is not set]' )
 parser.add_option( '-e', '--encoding', dest = 'encoding_file', type = 'string', default = 'encoding',
-				   help = 'Encoding file path location.' )
+				   help = 'Encoding file path location [default CACHE_DIR/encoding, only needed if --cdn is not set]' )
 parser.add_option( '-d', '--datadir', dest = 'data_dir', type = 'string',
-				   help = 'World of Warcraft install directory' )
+				   help = 'World of Warcraft install directory [only needed if --cdn is not set]' )
 parser.add_option( '-o', '--output', type = 'string', dest = 'output',
-				   help = "Output directory for dbc mode" )
-parser.add_option( '-x', '--cache', type = 'string', dest = 'cache', default = 'cache' )
+				   help = "Output directory for dbc mode, output file name for unpack mode" )
+parser.add_option( '-x', '--cache', type = 'string', dest = 'cache', default = 'cache', help = 'Cache directory [default cache]' )
 
 if __name__ == '__main__':
 	(opts, args) = parser.parse_args()
@@ -30,6 +30,8 @@ if __name__ == '__main__':
 		fname_db = build_cfg.DBFileList(opts)
 		if not fname_db.open():
 			sys.exit(1)
+		
+		blte = casc.BLTEExtract(opts)
 		
 		if not opts.online:
 			build = build_cfg.BuildCfg(opts)
@@ -49,8 +51,6 @@ if __name__ == '__main__':
 			if not root.open():
 				sys.exit(1)
 			
-			blte = casc.BLTEExtract(opts)
-		
 			for file_hash, file_name in fname_db.iteritems():
 				extract_data = None
 				
@@ -74,13 +74,10 @@ if __name__ == '__main__':
 				if not blte.extract_file(*extract_data):
 					sys.exit(1)
 		else:
-			blte = casc.BLTEExtract(opts)
-
 			cdn = casc.CDNIndex(opts)
 			if not cdn.open():
 				sys.exit(1)
-			
-			output_path = os.path.join(opts.output, cdn.build())		
+					
 			encoding = casc.CASCEncodingFile(opts, cdn)
 			if not encoding.open():
 				sys.exit(1)
@@ -89,6 +86,7 @@ if __name__ == '__main__':
 			if not root.open():
 				sys.exit(1)
 			
+			output_path = os.path.join(opts.output, cdn.build())
 			for file_hash, file_name in fname_db.iteritems():
 				file_md5s = root.GetFileHashMD5(file_hash)
 				if not file_md5s:

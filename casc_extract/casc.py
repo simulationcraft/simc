@@ -1,5 +1,5 @@
 # CASC file formats, based on the work of Caali et al. @ http://www.ownedcore.com/forums/world-of-warcraft/world-of-warcraft-model-editing/471104-analysis-of-casc-filesystem.html
-import os, sys, mmap, md5, stat, struct, zlib, glob, re, urllib2, collections
+import os, sys, mmap, md5, stat, struct, zlib, glob, re, urllib2, collections, cStringIO
 
 import jenkins
 
@@ -301,10 +301,60 @@ class BLTEExtract(object):
 		
 		return True
 
-class CDNIndex(object):
+class CASCObject(object):
 	def __init__(self, options):
 		self.options = options
+	
+	def get_url(self, url, headers = None):
+		try:
+			req = urllib2.Request(url)
+			if headers:
+				for k, v in headers.iteritems():
+					req.add_header(k, v)
+			
+			print 'Fetching %s ...' % url
+			f = urllib2.urlopen(req, timeout = 5)
+			if f.getcode() not in [200, 206]:
+				self.options.parser.error('HTTP request for %s returns %u' % (url, f.getcode()))
+		except urllib2.URLError, e:
+			self.options.parser.error('Unable to fetch %s: %s' % (url, e.reason))
+		
+		return f	
+	
+	def cache_dir(self, path = None):
+		dir = self.options.cache
+		if path:
+			dir = os.path.join(self.options.cache, path)
+		
+		if not os.path.exists(dir):
+			os.makedirs(dir)
+		
+		return dir
+
+	def cached_open(self, file, url, headers = None):
+		handle = None
+		
+		if not os.path.exists(file):
+			handle = self.get_url(url, headers)
+			data = handle.read()
+			with open(file, 'wb') as f:
+				f.write(data)
+			
+			handle = cStringIO.StringIO(data)
+		else:
+			handle = open(file, 'rb')
+		
+		return handle
+
+class CDNIndex(CASCObject):
+	PATCH_BASE_URL = 'http://us.patch.battle.net:1119/wow_beta'
+
+	def __init__(self, options):
+		CASCObject.__init__(self, options)
+
 		self.cdn_hash = None
+		self.cdn_host = None
+		self.cdn_path = None
 		self.build_cfg_hash = None
 		self.archives = []
 		self.build_info = {}
@@ -323,49 +373,43 @@ class CDNIndex(object):
 		return self.build_info['encoding'][0]
 	
 	def encoding_blte_url(self):
-		fname = self.build_info['encoding'][1]
-		
-		return 'http://dist.blizzard.com.edgesuite.net/tpr/wow/data/%s/%s/%s' % (
-			fname[:2], fname[2:4], fname )
+		return self.cdn_url('data', self.build_info['encoding'][1])
 	
-	def cache_dir(self, path):
-		dir = os.path.join(self.options.cache, path)
-		if not os.path.exists(dir):
-			os.makedirs(dir)
+	def open_cdns(self):
+		cdns_url = '%s/cdns' % CDNIndex.PATCH_BASE_URL
+		handle = self.get_url(cdns_url)
 		
-		return dir
+		data = handle.read().strip().split('\n')
+		if len(data) != 2:
+			self.options.parser.error('Invalid cdns file')
+		
+		data_split = data[-1].split('|')
+		self.cdn_path = data_split[1]
+		self.cdn_host = data_split[2]
+	
+	def cdn_base_url(self):
+		return 'http://%s/%s' % (self.cdn_host, self.cdn_path)
+	
+	def cdn_url(self, type, file):
+		return '%s/%s/%s/%s/%s' % (self.cdn_base_url(), type, file[:2], file[2:4], file)
 	
 	def open_version(self):
-		version_url =  'http://us.patch.battle.net:1119/wow_beta/versions'
-		try:
-			print 'Fetching %s ...' % version_url
-			f = urllib2.urlopen(version_url, timeout = 5)
-			if f.getcode() != 200:
-				self.options.parser.error('HTTP request for %s returns %u' % (version_url, f.getcode()))
-		except urllib2.URLError, e:
-			self.options.parser.error('Unable to fetch %s: %s' % (version_url, e.reason))		
+		version_url =  '%s/versions' % CDNIndex.PATCH_BASE_URL
+		handle = self.get_url(version_url)	
 	
-		version_data = f.readlines()
+		version_data = handle.readlines()
 		if len(version_data) != 2:
 			self.options.parser.error('Invalid version file')
 		
 		data_split = version_data[1].split('|')
-		# The CDN url is what we want at this point
+		# The CDN hash name is what we want at this point
 		self.cdn_hash = data_split[2]
 	
 	def open_cdn_build_cfg(self):
-		url = 'http://dist.blizzard.com.edgesuite.net/tpr/wow/config/%s/%s/%s' % (
-			self.cdn_hash[:2], self.cdn_hash[2:4], self.cdn_hash )
+		path = os.path.join(self.cache_dir('config'), self.cdn_hash)
+		url = self.cdn_url('config', self.cdn_hash)
 		
-		try:
-			print 'Fetching CDN configuration %s ...' % url
-			f = urllib2.urlopen(url, timeout = 5)
-			if f.getcode() != 200:
-				self.options.parser.error('HTTP request for %s returns %u' % (url, f.getcode()))
-		except urllib2.URLError, e:
-			self.options.parser.error('Unable to fetch %s: %s' % (url, e.reason))
-		
-		for line in f:
+		for line in self.cached_open(path, url):
 			mobj = re.match('^archives = (.+)', line)
 			if mobj:
 				self.archives = mobj.group(1).split(' ')
@@ -378,18 +422,10 @@ class CDNIndex(object):
 				continue
 	
 	def open_build_cfg(self):
-		url = 'http://dist.blizzard.com.edgesuite.net/tpr/wow/config/%s/%s/%s' % (
-			self.build_cfg_hash[:2], self.build_cfg_hash[2:4], self.build_cfg_hash )
+		path = os.path.join(self.cache_dir('config'), self.build_cfg_hash)
+		url = self.cdn_url('config', self.build_cfg_hash)
 		
-		try:
-			print 'Fetching build configuration %s ...' % url
-			f = urllib2.urlopen(url, timeout = 5)
-			if f.getcode() != 200:
-				self.options.parser.error('HTTP request for %s returns %u' % (url, f.getcode()))
-		except urllib2.URLError, e:
-			self.options.parser.error('Unable to fetch %s: %s' % (url, e.reason))
-		
-		for line in f:
+		for line in self.cached_open(path, url):
 			mobj = re.match('^([^ ]+)[ ]*=[^A-z0-9]*(.+)', line)
 			if not mobj:
 				continue
@@ -400,31 +436,17 @@ class CDNIndex(object):
 			self.build_info[mobj.group(1)] = data
 		
 	def open_archives(self):
+		print 'Parsing CDN index files ...'
+
 		index_cache = self.cache_dir('index')
 		for idx in xrange(0, len(self.archives)):
 			index_file_name = '%s.index' % self.archives[idx]
 			index_file_path = os.path.join(index_cache, index_file_name)
+			index_file_url = self.cdn_url('data', index_file_name)
 			
-			# Download index data
-			if not os.path.exists(index_file_path):
-				url = 'http://dist.blizzard.com.edgesuite.net/tpr/wow/data/%s/%s/%s' % (
-					index_file_name[:2], index_file_name[2:4], index_file_name )
-			
-				try:
-					print 'Fetching index file %s ...' % url
-					f = urllib2.urlopen(url, timeout = 5)
-					if f.getcode() != 200:
-						self.options.parser.error('HTTP request for %s returns %u' % (url, f.getcode()))
-				except urllib2.URLError, e:
-					self.options.parser.error('Unable to fetch %s: %s' % (url, e.reason))
-				
-				fout = open(os.path.join(index_cache, index_file_name), 'wb')
-				fout.write(f.read())
-				fout.close()
-			
-			with open(index_file_path, 'rb') as f:
-				if not self.parse_archive(f, idx):
-					self.options.parser.error('Unable to parse index file %s, aborting ...' % index_file_name)
+			handle = self.cached_open(index_file_path, index_file_url)
+			if not self.parse_archive(handle, idx):
+				self.options.parser.error('Unable to parse index file %s, aborting ...' % index_file_name)
 	
 	def parse_archive(self, handle, idx):
 		handle.seek(-12, os.SEEK_END)
@@ -439,10 +461,10 @@ class CDNIndex(object):
 			
 			if key in self.cdn_index:
 				print >>sys.stderr, 'Key %s, %d, %d, %d exists in index @ (%s, %d, %d, %d)' % (
-					key.encode('hex'), idx, size, offset, self.archives[ self.cdn_index[ key ].index ], 
-					self.cdn_index[ key ].size, self.cdn_index[ key ].offset )
+					key.encode('hex'), idx, size, offset, self.archives[self.cdn_index[key].index], 
+					self.cdn_index[key].size, self.cdn_index[ key ].offset )
 
-			self.cdn_index[key] = CDNIndexRecord( idx, size, offset )
+			self.cdn_index[key] = CDNIndexRecord(idx, size, offset)
 			
 			block_bytes_left = 4096 - handle.tell() % 4096
 			if block_bytes_left < 24:
@@ -451,6 +473,7 @@ class CDNIndex(object):
 		return True
 	
 	def open(self):
+		self.open_cdns()
 		self.open_version()
 		self.open_cdn_build_cfg()
 		self.open_build_cfg()
@@ -459,44 +482,15 @@ class CDNIndex(object):
 		return True
 
 	def fetch_file(self, key):
-		data_cache = self.cache_dir('data')
-		key_file_path = os.path.join(data_cache, key.encode('hex'))
-		data = None
-	
-		if os.access(key_file_path, os.R_OK):
-			with open(key_file_path, 'rb') as f:
-				data = f.read()
-		else:
-			if key not in self.cdn_index:
-				print >>sys.stderr, 'Key %s not found in index' % key.encode('hex')
-				return None
-			
-			key_info = self.cdn_index[key]
-			archive_name = self.archives[key_info.index]
-			url = 'http://dist.blizzard.com.edgesuite.net/tpr/wow/data/%s/%s/%s' % (
-				archive_name[:2], archive_name[2:4], archive_name )
-			
-			req = urllib2.Request(url, headers = {
-				'Range': 'bytes=%d-%d' % (key_info.offset, key_info.offset + key_info.size - 1)
-			})
-			
-			try:
-				print "Fetching data file %s from %s (size=%d) ..." % (
-					key.encode('hex'), url, key_info.size)
-				
-				f = urllib2.urlopen(req, timeout = 5)
-				if f.getcode() not in [200, 206]:
-					self.options.parser.error('HTTP request for %s returns %u' % (url, f.getcode()))
-			except urllib2.URLError, e:
-				self.options.parser.error('Unable to fetch %s: %s' % (url, e.reason))
-			
-			data = f.read()
-			
-			# Cache the file
-			with open(key_file_path, 'wb') as fout:
-				fout.write(data)
+		key_info = self.cdn_index.get(key, None)
+		if not key_info:
+			return None
 
-		return data
+		key_file_path = os.path.join(self.cache_dir('data'), key.encode('hex'))
+		key_file_url = self.cdn_url('data', self.archives[key_info.index])
+		
+		handle = self.cached_open(key_file_path, key_file_url, {'Range': 'bytes=%d-%d' % (key_info.offset, key_info.offset + key_info.size - 1)})
+		return handle.read()
 		
 class CASCDataIndexFile(object):
 	def __init__(self, options, index, version, file):
@@ -587,22 +581,12 @@ class CASCDataIndex(object):
 		
 		return True
 
-class CASCEncodingFile(object):
+class CASCEncodingFile(CASCObject):
 	def __init__(self, options, build):
-		self.options = options
+		CASCObject.__init__(self, options)
 		self.build = build
 		self.first_entries = []
 		self.md5_map = { }
-
-	def cache_dir(self, path = None):
-		dir = self.options.cache
-		if path:
-			dir = os.path.join(self.options.cache, path)
-
-		if not os.path.exists(dir):
-			os.makedirs(dir)
-		
-		return dir
 
 	def encoding_path(self):
 		return os.path.join(self.cache_dir(), 'encoding')
@@ -611,15 +595,9 @@ class CASCEncodingFile(object):
 		if not os.access(self.cache_dir(), os.W_OK):
 			self.options.parser.error('Error bootstrapping CASCEncodingFile, "%s" is not writable' % self.cache_dir())
 		
-		try:
-			print 'Fetching encoding file %s ...' % self.build.encoding_blte_url()
-			f = urllib2.urlopen(self.build.encoding_blte_url(), timeout = 5)
-			if f.getcode() != 200:
-				self.options.parser.error('HTTP request for %s returns %u' % (self.build.encoding_blte_url(), f.getcode()))
-		except urllib2.URLError, e:
-			self.options.parser.error('Unable to fetch %s: %s' % (self.build.encoding_blte_url(), e.reason))
-		
-		blte = BLTEFile(f.read())
+		handle = self.get_url(self.build.encoding_blte_url())
+
+		blte = BLTEFile(handle.read())
 		if not blte.extract():
 			self.options.parser.error('Unable to uncompress BLTE data for encoding file')
 	
@@ -651,6 +629,8 @@ class CASCEncodingFile(object):
 			if md5str != self.build.encoding_file():
 				data = self.__bootstrap()
 		
+		print 'Parsing encoding file %s ...' % self.build.encoding_file()
+
 		offset = 0
 		fsize = os.stat(self.encoding_path()).st_size
 		locale = data[offset:offset + 2]; offset += 2
@@ -706,10 +686,8 @@ class CASCEncodingFile(object):
 				if byte != '\x00':
 					self.options.parser.error('Invalid padding byte %u at the end of block %u, pos %u, expected 0, got %#x' % (pad_idx, hash_block, offset, ord(byte)))
 					return False
-		
-		###
+	
 		# Rest of the encoding file is unnecessary for now
-		#
 		
 		#for i in xrange(0, unk_hash_count):
 		#	tmp = offset
@@ -739,23 +717,18 @@ class CASCEncodingFile(object):
 		
 		return True
 		
-class CASCRootFile(object):
+class CASCRootFile(CASCObject):
+	# en_US locale
+	LOCALE = 0x02
+	LOCALE_ALL = 0xFFFFFFFF
+
 	def __init__(self, options, build, encoding, index):
+		CASCObject.__init__(self, options)
+		
 		self.build = build
 		self.index = index
 		self.encoding = encoding
-		self.options = options
 		self.hash_map = {}
-	
-	def cache_dir(self, path = None):
-		dir = self.options.cache
-		if path:
-			dir = os.path.join(self.options.cache, path)
-
-		if not os.path.exists(dir):
-			os.makedirs(dir)
-		
-		return dir
 	
 	def root_path(self):
 		return os.path.join(self.cache_dir(), 'root')
@@ -768,7 +741,7 @@ class CASCRootFile(object):
 		if len(keys) == 0:
 			self.options.parser.error('Could not find root file with mdsum %s from data' % self.build.root_file())
 		
-		print 'Extracting root file %s ...' % self.build.root_file()
+		print 'Parsing root file %s ...' % self.build.root_file()
 		blte = BLTEExtract(self.options)
 		# Extract from local files
 		if not self.options.online:
@@ -788,7 +761,11 @@ class CASCRootFile(object):
 			if len(keys) > 1:
 				print 'Duplicate root key found for %s, using first one ...' % self.build.root_file()
 			
-			data = blte.extract_buffer(self.build.fetch_file(keys[0]))
+			blte_data = self.build.fetch_file(keys[0])
+			if not blte_data:
+				self.options.parser.error('Unable to fetch root file %s from CDN' % keys[0])
+			
+			data = blte.extract_buffer(blte_data)
 		
 		with open(self.root_path(), 'wb') as f:
 			f.write(data)
@@ -834,7 +811,7 @@ class CASCRootFile(object):
 				val = struct.unpack('Q', file_name_hash)[0]
 				
 				# Only grab enUS and "all" locales
-				if flags != 0xFFFFFFFF and not (flags & 0x2):
+				if flags != CASCRootFile.LOCALE_ALL and not (flags & CASCRootFile.LOCALE):
 					continue
 
 				if not val in self.hash_map:
