@@ -1547,7 +1547,7 @@ struct crimson_tempest_t : public rogue_attack_t
     {
       ct_dot -> pre_execute_state = ct_dot -> get_state( s );
       ct_dot -> target = s -> target;
-      ct_dot -> base_td = s -> result_amount * ct_dot -> data().effectN( 1 ).percent() / ct_dot -> num_ticks;
+      ct_dot -> base_td = s -> result_amount * ct_dot -> data().effectN( 1 ).percent() * ct_dot -> dot_duration / ct_dot -> base_tick_time;
       ct_dot -> execute();
     }
   }
@@ -1605,7 +1605,7 @@ struct hemorrhage_t : public rogue_attack_t
   virtual void impact( action_state_t* state )
   {
     if ( result_is_hit( state -> result ) )
-      base_td = state -> result_amount * data().effectN( 4 ).percent() / num_ticks;
+      base_td = state -> result_amount * data().effectN( 4 ).percent() * dot_duration / base_tick_time;
 
     rogue_attack_t::impact( state );
   }

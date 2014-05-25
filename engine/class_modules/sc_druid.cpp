@@ -699,15 +699,20 @@ struct ursocs_vigor_t : public heal_t
 
   void trigger_hot( double rage_consumed = 60.0 )
   {
-    // Adjust the current healing remaining to be spread over the total duration of the hot.
-    base_td *= (double) ticks_remain / (double) num_ticks;
+    if ( dot_t* dot = get_dot() )
+    {
+      if ( dot -> ticking )
+      {
+        // Adjust the current healing remaining to be spread over the total duration of the hot.
+        base_td *= dot -> remains() / dot_duration );
+      }
+    }
+
     // Add the new amount of healing
     base_td += p() -> composite_melee_attack_power() * p() -> composite_attack_power_multiplier()
                * ap_coefficient
                * rage_consumed / 60
-               / num_ticks;
-    // Set the number of ticks remaining back to full
-    ticks_remain = num_ticks;
+               * dot_duration / base_tick_time;
 
     execute();
   }
@@ -5020,7 +5025,7 @@ struct sunfire_t : public druid_spell_t
       may_crit = false;
       may_miss = true; // Bug?
 
-      num_ticks += player -> sets.set( SET_T14_4PC_CASTER ) -> effectN( 1 ).time_value() / base_tick_time;
+      dot_duration += player -> sets.set( SET_T14_4PC_CASTER ) -> effectN( 1 ).time_value();
 
       // Does no direct damage, costs no mana
       attack_power_mod.direct = 0;

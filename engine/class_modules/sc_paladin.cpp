@@ -1091,7 +1091,7 @@ struct blessing_of_the_guardians_t : public paladin_heal_t
 
   virtual void execute()
   {
-    base_td = healing_multiplier * accumulated_damage / num_ticks;
+    base_td = healing_multiplier * accumulated_damage * dot_duration / base_tick_time;
 
     paladin_heal_t::execute();
 
@@ -1637,7 +1637,6 @@ struct stay_of_execution_t : public paladin_heal_t
       spell_power_mod.tick = p -> find_spell( 114916 ) -> effectN( 2 ).base_value() / 1000.0 * 0.0374151195;
     }
 
-    assert( as<unsigned>( num_ticks ) < sizeof_array( soe_tick_multiplier ) );
     // this is reversed from Execution Sentence's tick order
     soe_tick_multiplier[ 10 ] = 1.0;
     for ( int i = 9; i > 0 ; --i )
@@ -1650,7 +1649,7 @@ struct stay_of_execution_t : public paladin_heal_t
   {
     double m = paladin_heal_t::composite_target_multiplier( target );
 
-    m *= soe_tick_multiplier[ td( target ) -> dots.stay_of_execution -> current_tick ];
+    m *= soe_tick_multiplier.at( td( target ) -> dots.stay_of_execution -> current_tick );
 
     return m;
   }
@@ -1684,9 +1683,8 @@ struct execution_sentence_t : public paladin_spell_t
       spell_power_mod.tick = p -> find_spell( 114916 ) -> effectN( 2 ).base_value() / 1000.0 * 0.0374151195;
     }
 
-    assert( as<unsigned>( num_ticks ) < sizeof_array( tick_multiplier ) );
     tick_multiplier[ 0 ] = 1.0;
-    for ( int i = 1; i < num_ticks; ++i )
+    for ( int i = 1; i < dot_duration / base_tick_time; ++i )
       tick_multiplier[ i ] = tick_multiplier[ i - 1 ] * 1.1;
     tick_multiplier[ 10 ] = tick_multiplier[ 9 ] * 5;
 
@@ -1702,7 +1700,7 @@ struct execution_sentence_t : public paladin_spell_t
   {
     double m = paladin_spell_t::composite_target_multiplier( target );
 
-    m *= tick_multiplier[ td( target ) -> dots.execution_sentence -> current_tick ];
+    m *= tick_multiplier.at( td( target ) -> dots.execution_sentence -> current_tick );
 
     return m;
   }

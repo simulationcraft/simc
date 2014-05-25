@@ -2787,7 +2787,7 @@ struct barrage_t : public hunter_spell_t
     if ( p() -> main_hand_attack && p() -> main_hand_attack -> execute_event )
     {
       timespan_t time_to_next_hit = p() -> main_hand_attack -> execute_event -> remains();
-      time_to_next_hit += num_ticks * tick_time( p() -> cache.attack_speed() );
+      time_to_next_hit += dot_duration;
       p() -> main_hand_attack -> execute_event -> reschedule( time_to_next_hit );
     }
     trigger_tier16_bm_4pc_melee();
