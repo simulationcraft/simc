@@ -79,7 +79,6 @@ public:
     buff_t* hold_the_line;
     buff_t* last_stand;
     buff_t* meat_cleaver;
-    buff_t* riposte;
     buff_t* raging_blow;
     buff_t* raging_blow_glyph;
     buff_t* raging_wind;
@@ -943,8 +942,6 @@ struct melee_t : public warrior_attack_t
 
     if ( p() -> specialization() == WARRIOR_PROTECTION && p() -> active_stance == STANCE_DEFENSE )
     {
-      if ( s -> result == RESULT_CRIT )
-        p() -> buff.riposte -> trigger();
       if ( s -> result == RESULT_MULTISTRIKE || s -> result == RESULT_MULTISTRIKE_CRIT )
       {
         p() -> buff.blood_craze -> trigger();
@@ -3915,10 +3912,6 @@ void warrior_t::create_buffs()
                           ( 1.0 + ( glyphs.recklessness -> ok() ? glyphs.recklessness -> effectN( 2 ).percent() : 0 )  ) )
                           .cd( timespan_t::zero() ); //Necessary for readiness.
 
-
-  buff.riposte         = buff_creator_t( this, "riposte",      find_spell( 145674 ) )
-                         .add_invalidate( CACHE_PARRY );
-
   buff.shield_block     = buff_creator_t( this, "shield_block" ).spell( find_spell( 132404 ) )
                          .add_invalidate( CACHE_BLOCK );
 
@@ -4213,6 +4206,7 @@ double warrior_t::composite_melee_attack_power() const
   return ap;
 }
 
+
 //warrior_t::composite_melee_expertise =======================================
 
 double warrior_t::composite_melee_expertise( weapon_t * w ) const
@@ -4231,8 +4225,8 @@ double warrior_t::composite_parry() const
 {
   double parryriposte = player_t::composite_parry();
 
-  if ( buff.riposte -> up() )
-    parryriposte += cache.attack_crit();
+  if ( spec.riposte -> ok() )
+    parryriposte += composite_melee_crit_rating() / current_rating().attack_crit;
 
   if ( buff.ravager -> up() )
     parryriposte += talents.ravager -> effectN( 2 ).percent();
@@ -4431,10 +4425,6 @@ void warrior_t::assess_damage( school_e school,
 
   if ( s -> result == RESULT_PARRY )
     buff.hold_the_line -> trigger();
-
-  if ( s -> result == RESULT_PARRY && buff.riposte -> up() )
-    buff.riposte -> expire();
-
 
   player_t::assess_damage( school, dtype, s );
 
