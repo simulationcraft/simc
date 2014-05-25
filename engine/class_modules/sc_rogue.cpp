@@ -1878,11 +1878,16 @@ struct recuperate_t : public rogue_attack_t
     harmful = false;
   }
 
+  virtual timespan_t composite_dot_duration( const action_state_t* s ) const override
+  {
+    rogue_td_t* td = this->td( s->target );
+    return 2 * td->combo_points.count * base_tick_time;
+  }
+
   virtual void execute()
   {
-    rogue_td_t* td = this -> td( target );
-    num_ticks = 2 * td -> combo_points.count;
     rogue_attack_t::execute();
+
     p() -> buffs.recuperate -> trigger();
   }
 
@@ -1962,13 +1967,13 @@ struct rupture_t : public rogue_attack_t
     return t;
   }
 
-  virtual void execute()
+  virtual timespan_t composite_dot_duration( const action_state_t* s ) const override
   {
-    num_ticks = 2 + 2 * td( target ) -> combo_points.count;
+    int num_ticks = 2 + 2 * td( s -> target ) -> combo_points.count;
     if ( p() -> sets.has_set_bonus( SET_T15_2PC_MELEE ) )
       num_ticks += 2;
 
-    rogue_attack_t::execute();
+    return num_ticks * base_tick_time;
   }
 
   virtual void tick( dot_t* d )
