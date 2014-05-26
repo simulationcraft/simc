@@ -477,7 +477,6 @@ class CDNIndex(CASCObject):
 		return True
 	
 	def CheckVersion(self):
-		self.open_cdns()
 		self.open_version()
 		self.open_cdn_build_cfg()
 		self.open_build_cfg()
