@@ -2356,13 +2356,26 @@ double player_t::composite_miss() const
 }
 
 // player_t::composite_block ===========================================
+// two overloaded methods here; the one with no arguments is for use in class modules
+// (for example, to override and add spec/talent/etc.-based block contributions).
+// The method accepting a dobule handles base block and diminishing returns.
 
 double player_t::composite_block() const
 {
+  return player_t::composite_block( 0.0 );
+}
+
+double player_t::composite_block( double extra_block ) const
+{
+  // block_by_rating is pre-DR block percentage from all sources subject to DR
   double block_by_rating = composite_block_rating() / current.rating.block;
 
+  block_by_rating += extra_block;
+
+  // start with base block
   double b = current.block;
 
+  // add post-DR block from sources subect to DR
   if ( block_by_rating > 0 )
   {
     //the block by rating gets rounded because that's how blizzard rolls...

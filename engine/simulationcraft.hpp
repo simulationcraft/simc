@@ -4575,6 +4575,7 @@ public:
   virtual double composite_dodge() const;
   virtual double composite_parry() const;
   virtual double composite_block() const;
+  virtual double composite_block( double extra_block ) const;
   virtual double composite_block_reduction() const;
   virtual double composite_crit_block() const;
   virtual double composite_crit_avoidance() const;

@@ -5598,27 +5598,15 @@ double paladin_t::composite_spell_power_multiplier() const
   return player_t::composite_spell_power_multiplier();
 }
 
-// paladin_t::composite_tank_block ==========================================
+// paladin_t::composite_block ==========================================
 
 double paladin_t::composite_block() const
 {
-  // need to reproduce most of player_t::composite_block() because mastery -> block conversion is affected by DR
-  // could modify player_t::composite_block() to take one argument if willing to change references in all other files
-  double block_by_rating = current.stats.block_rating / current_rating().block;
+  // this handles base block and and all block subject to diminishing returns
+  double block_subject_to_dr = get_divine_bulwark();
+  double b = player_t::composite_block( block_subject_to_dr );
 
-  // add block from Divine Bulwark
-  block_by_rating += get_divine_bulwark();
-
-  double b = current.block;
-
-  // calculate diminishing returns and add to b
-  if ( block_by_rating > 0 )
-  {
-    //the block by rating gets rounded because that's how blizzard rolls...
-    b += 1 / ( 1 / diminished_block_cap + diminished_kfactor / ( util::round( 12800 * block_by_rating ) / 12800 ) );
-  }
-
-  // Guarded by the Light block not affected by diminishing returns
+ // Guarded by the Light block not affected by diminishing returns
   b += passives.guarded_by_the_light -> effectN( 6 ).percent();
 
   // Improved Block perk (assuming for now that it's not affected by DR

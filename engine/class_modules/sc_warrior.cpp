@@ -4173,20 +4173,11 @@ double warrior_t::matching_gear_multiplier( attribute_e attr ) const
 
 double warrior_t::composite_block() const
 {
-  double block_by_rating = current.stats.block_rating / current_rating().block;
+  // this handles base block and and all block subject to diminishing returns
+  double block_subject_to_dr = composite_mastery()  * mastery.critical_block -> effectN( 2 ).mastery_value();
+  double b = player_t::composite_block( block_subject_to_dr );
 
-  // add mastery block to block_by_rating so we can have DR on it.
-  if ( mastery.critical_block -> ok() )
-    block_by_rating += composite_mastery()  * mastery.critical_block -> effectN( 2 ).mastery_value();
-
-  double b = initial.block;
-
-  if ( block_by_rating > 0 ) // Formula taken from player_t::composite_tank_block
-  {
-    //the block by rating gets rounded because that's how blizzard rolls...
-    b += 1 / ( 1 / diminished_block_cap + diminished_kfactor / ( util::round( 12800 * block_by_rating ) / 12800 ) );
-  }
-
+  // add in spec- and perk-specific block bonuses not subject to DR
   b += spec.bastion_of_defense -> effectN( 1 ).percent();
   b += perk.improved_bastion_of_defense -> effectN( 1 ).percent();
 
