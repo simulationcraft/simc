@@ -936,8 +936,8 @@ struct melee_t : public warrior_attack_t
       if ( p() -> specialization() == WARRIOR_ARMS ) trigger_sudden_death( this,  p() -> spec.sudden_death -> proc_chance() );
       trigger_t15_2pc_melee( this );
     }
-    // Any attack that hits or is dodged/blocked/parried generates rage
-    if ( s -> result != RESULT_MISS )
+    // Any attack that hits or is dodged/blocked/parried generates rage. Multistrikes do not grant rage.
+    if ( s -> result != RESULT_MISS && s -> result != RESULT_MULTISTRIKE && s -> result != RESULT_MULTISTRIKE_CRIT )
       trigger_rage_gain();
 
     if ( p() -> specialization() == WARRIOR_PROTECTION && p() -> active_stance == STANCE_DEFENSE )
