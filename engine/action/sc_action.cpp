@@ -1016,15 +1016,18 @@ block_result_e action_t::calculate_block_result( action_state_t* s )
   {
     double block_total = block_chance( s );
 
-    double crit_block = crit_block_chance( s );
-
-    // Roll once for block, then again for crit block if the block succeeds
-    if ( rng().roll( block_total ) )
+    if ( block_total > 0 )
     {
-      if ( rng().roll( crit_block ) )
-        block_result = BLOCK_RESULT_CRIT_BLOCKED;
-      else
-        block_result = BLOCK_RESULT_BLOCKED;
+      double crit_block = crit_block_chance( s );
+
+      // Roll once for block, then again for crit block if the block succeeds
+      if ( rng().roll( block_total ) )
+      {
+        if ( rng().roll( crit_block ) )
+          block_result = BLOCK_RESULT_CRIT_BLOCKED;
+        else
+          block_result = BLOCK_RESULT_BLOCKED;
+      }
     }
   }
 
