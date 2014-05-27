@@ -1144,7 +1144,7 @@ struct censure_t : public paladin_spell_t
     hasted_ticks     = true; // unnecessary, as spell_base_t does this automatically; here in case we ever transition it back to a melee attack
 
     //5x stronger for Ret/Holy (see tooltip)
-    if ( ! p -> specialization() == PALADIN_PROTECTION )
+    if ( p -> specialization() != PALADIN_PROTECTION )
     {
       spell_power_mod.tick *= 5;
     }
