@@ -2204,6 +2204,18 @@ double player_t::mana_regen_per_second() const
   return current.mana_regen_per_second + cache.spirit() * current.mana_regen_per_spirit * current.mana_regen_from_spirit_multiplier;
 }
 
+// player_t::may_block ======================================================
+// This method is used to incorporate target properties into action resolution.
+// Similar methods for dodge and parry may be implemented eventually.
+
+bool player_t::may_block( action_e a ) const
+{
+  if ( a == ACTION_ATTACK )
+    return true;
+
+  return false;
+}
+
 // Need a way to include human racial.
 // player_t::composite_attack_haste =========================================
 
@@ -2431,8 +2443,6 @@ double player_t::composite_parry() const
   }
   return p; //this is the post-DR parry value
 }
-
-
 
 // player_t::composite_block_reduction =================================
 

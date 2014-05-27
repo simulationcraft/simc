@@ -4200,6 +4200,7 @@ struct player_t : public actor_t
 
   // Defense Mechanics
   double diminished_dodge_cap, diminished_parry_cap, diminished_block_cap, diminished_kfactor;
+  virtual bool may_block( action_e ) const;
 
   // Weapons
   weapon_t main_hand_weapon;
@@ -5311,7 +5312,7 @@ struct action_t : public noncopyable
   virtual timespan_t travel_time() const;
   virtual result_e calculate_result( action_state_t* /* state */ ) { assert( false ); return RESULT_UNKNOWN; }
   virtual result_e calculate_multistrike_result( action_state_t* /* state */ );
-  virtual block_result_e calculate_block_result( action_state_t* /* state */ ) { assert ( false ); return BLOCK_RESULT_UNKNOWN; }
+  virtual block_result_e calculate_block_result( action_state_t* s );
   virtual double calculate_direct_amount( action_state_t* state );
   virtual double calculate_tick_amount( action_state_t* state );
 
@@ -5368,12 +5369,13 @@ struct action_t : public noncopyable
     return( r == BLOCK_RESULT_BLOCKED || r == BLOCK_RESULT_CRIT_BLOCKED );
   }
 
-  virtual double   miss_chance( double /* hit */, player_t* /* target */ ) const { return 0; }
-  virtual double  dodge_chance( double /* expertise */, player_t* /* target */ ) const { return 0; }
-  virtual double  parry_chance( double /* expertise */, player_t* /* target */ ) const { return 0; }
-  virtual double glance_chance( int /* delta_level */ ) const { return 0; }
-  virtual double  block_chance( player_t* /* target */ ) const { return 0; }
-  virtual double   crit_chance( double /* crit */, int /* delta_level */ ) const;
+  virtual double       miss_chance( double /* hit */, player_t* /* target */ ) const { return 0; }
+  virtual double      dodge_chance( double /* expertise */, player_t* /* target */ ) const { return 0; }
+  virtual double      parry_chance( double /* expertise */, player_t* /* target */ ) const { return 0; }
+  virtual double     glance_chance( int /* delta_level */ ) const { return 0; }
+  virtual double      block_chance( action_state_t* /* state */ ) const { return 0; }  
+  virtual double crit_block_chance( action_state_t* /* state */  ) const { return 0; }
+  virtual double       crit_chance( double /* crit */, int /* delta_level */ ) const;
 
   virtual double total_crit_bonus() const; // Check if we want to move this into the stateless system.
 
@@ -5676,12 +5678,11 @@ struct attack_t : public action_t
   virtual timespan_t execute_time() const;
   virtual void execute();
   virtual result_e calculate_result( action_state_t* );
-  virtual block_result_e calculate_block_result( action_state_t* );
   virtual void   init();
 
   virtual double  miss_chance( double hit, player_t* t ) const;
-  virtual double  block_chance( player_t* t ) const;
-  virtual double  crit_block_chance( player_t* t ) const;
+  virtual double  block_chance( action_state_t* s ) const;
+  virtual double  crit_block_chance( action_state_t* s ) const;
 
   virtual double composite_hit() const
   { return action_t::composite_hit() + player -> cache.attack_hit(); }
@@ -5759,7 +5760,6 @@ struct spell_base_t : public action_t
   virtual timespan_t execute_time() const;
   virtual timespan_t tick_time( double haste ) const;
   virtual result_e   calculate_result( action_state_t* );
-  virtual block_result_e calculate_block_result( action_state_t* ) { return BLOCK_RESULT_UNBLOCKED; }
   virtual void   execute();
   virtual void   schedule_execute( action_state_t* execute_state = 0 );
 
@@ -5786,6 +5786,7 @@ public:
   virtual void   assess_damage( dmg_e, action_state_t* );
   virtual void   execute();
   virtual double miss_chance( double hit, player_t* t ) const;
+  virtual double block_chance( action_state_t* s ) const;
   virtual void   init();
   virtual double composite_hit() const
   { return action_t::composite_hit() + player -> cache.spell_hit(); }

@@ -173,6 +173,7 @@ spell_t::spell_t( const std::string&  token,
   spell_base_t( ACTION_SPELL, token, p, s )
 {
   may_miss = true;
+  may_block = true;
 }
 
 double spell_t::miss_chance( double hit, player_t* t ) const
@@ -189,6 +190,21 @@ double spell_t::miss_chance( double hit, player_t* t ) const
   miss -= hit;
 
   return miss;
+}
+
+double spell_t::block_chance( action_state_t* s ) const
+{
+  // if for some reason the target isn't allowed to block this type of action, return 0
+  if ( ! s -> target -> may_block( s -> action -> type ) )
+    return 0;
+
+  // cache.block() contains the target's block chance (3.0 base for bosses, more for shield tanks)
+  double block = s -> target -> cache.block();
+
+  // add or subtract 1.5% per level difference
+  block += ( s -> target -> level - player -> level ) * 0.015;
+
+  return block;
 }
 
 void spell_t::assess_damage( dmg_e type,

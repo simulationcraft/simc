@@ -1002,6 +1002,38 @@ player_t* action_t::find_target_by_number( int number ) const
   return 0;
 }
 
+// action_t::calculate_block_result =========================================
+// moved here now that we found out that spells can be blocked (Holy Shield)
+// block_chance() and crit_block_chance() govern whether any given attack can
+// be blocked or not (zero return if not)
+
+block_result_e action_t::calculate_block_result( action_state_t* s )
+{
+  block_result_e block_result = BLOCK_RESULT_UNBLOCKED;
+
+  // Blocks also get a their own roll, and glances/crits can be blocked.
+  if ( result_is_hit( s -> result ) && may_block && ( player -> position() == POSITION_FRONT ) && ! ( s -> result == RESULT_NONE ) )
+  {
+    double block_total = block_chance( s );
+
+    double crit_block = crit_block_chance( s );
+
+    // Roll once for block, then again for crit block if the block succeeds
+    if ( rng().roll( block_total ) )
+    {
+      if ( rng().roll( crit_block ) )
+        block_result = BLOCK_RESULT_CRIT_BLOCKED;
+      else
+        block_result = BLOCK_RESULT_BLOCKED;
+    }
+  }
+
+  if ( sim -> debug )
+    sim -> out_debug.printf( "%s result for %s is %s", player -> name(), name(), util::block_result_type_string( block_result ) );
+
+  return block_result;
+}
+
 // action_t::execute ========================================================
 
 void action_t::execute()

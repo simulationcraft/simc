@@ -366,6 +366,7 @@ public:
   virtual double    composite_dodge() const;
   virtual double    composite_parry() const;
   virtual double    temporary_movement_modifier() const;
+  virtual bool      may_block( action_e a ) const;
   virtual void      assess_damage( school_e, dmg_e, action_state_t* );
   virtual void      assess_heal( school_e, dmg_e, action_state_t* );
   virtual void      target_mitigation( school_e, dmg_e, action_state_t* );
@@ -5657,6 +5658,18 @@ double paladin_t::temporary_movement_modifier() const
     temporary = std::max( buffs.turalyons_justice-> data().effectN( 1 ).percent(), temporary );
 
   return temporary;
+}
+
+// paladin_t::may_block =====================================================
+
+bool paladin_t::may_block( action_e a ) const
+{
+  
+  if ( a == ACTION_SPELL && talents.holy_shield -> ok() )
+    return true;
+
+  return player_t::may_block( a );
+
 }
 
 // paladin_t::target_mitigation =============================================
