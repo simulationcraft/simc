@@ -113,6 +113,7 @@ public:
     buff_t* maraads_truth;
     buff_t* sacred_shield;  // dummy buff for APL simplicity
     buff_t* selfless_healer;
+    buff_t* seraphim;
     buff_t* shield_of_glory; // t15_2pc_tank
     buff_t* shield_of_the_righteous;
     buff_t* turalyons_justice;
@@ -348,8 +349,14 @@ public:
   virtual void      init_action_list();
   virtual void      reset();
   virtual expr_t*   create_expression( action_t*, const std::string& name );
+  
+  // player stat functions
   virtual double    composite_attribute_multiplier( attribute_e attr ) const;
   virtual double    composite_attack_power_multiplier() const;
+  virtual double    composite_mastery() const;
+  virtual double    composite_multistrike() const;
+  virtual double    composite_readiness() const;
+  virtual double    composite_bonus_armor() const;
   virtual double    composite_melee_attack_power() const;
   virtual double    composite_melee_crit() const;
   virtual double    composite_melee_expertise( weapon_t* weapon ) const;
@@ -361,15 +368,18 @@ public:
   virtual double    composite_player_heal_multiplier( school_e school ) const;
   virtual double    composite_spell_power( school_e school ) const;
   virtual double    composite_spell_power_multiplier() const;
-  virtual double    composite_block() const;
   virtual double    composite_crit_avoidance() const;
   virtual double    composite_dodge() const;
   virtual double    composite_parry() const;
+  virtual double    composite_block() const;
   virtual double    temporary_movement_modifier() const;
+
+  // combat outcome functions
   virtual bool      may_block( action_e a ) const;
   virtual void      assess_damage( school_e, dmg_e, action_state_t* );
   virtual void      assess_heal( school_e, dmg_e, action_state_t* );
   virtual void      target_mitigation( school_e, dmg_e, action_state_t* );
+
   virtual void      invalidate_cache( cache_e );
   virtual void      create_options();
   virtual double    matching_gear_multiplier( attribute_e attr ) const;
@@ -2820,6 +2830,28 @@ struct seal_of_insight_proc_t : public paladin_heal_t
   }
 };
 
+// Seraphim =================================================================
+
+struct seraphim_t : public paladin_spell_t 
+{
+  seraphim_t( paladin_t* p, const std::string& options_str  ) 
+    : paladin_spell_t( "seraphim", p, p -> find_talent_spell( "Seraphim" ) )
+  {
+    parse_options( NULL, options_str );
+
+    may_miss = false;
+    may_multistrike = false; //necessary?
+  }
+
+  virtual void execute()
+  {
+    paladin_spell_t::execute();
+
+    p() -> buffs.seraphim -> trigger();
+
+  }
+};
+
 // Shining Protector ========================================================
 // This is a protection-specific multistrike effect
 
@@ -4350,6 +4382,7 @@ action_t* paladin_t::create_action( const std::string& name, const std::string& 
   if ( name == "light_of_dawn"             ) return new light_of_dawn_t            ( this, options_str );
   if ( name == "lights_hammer"             ) return new lights_hammer_t            ( this, options_str );
   if ( name == "rebuke"                    ) return new rebuke_t                   ( this, options_str );
+  if ( name == "seraphim"                  ) return new seraphim_t                 ( this, options_str );
   if ( name == "shield_of_the_righteous"   ) return new shield_of_the_righteous_t  ( this, options_str );
   if ( name == "templars_verdict"          ) return new templars_verdict_t         ( this, options_str );
   if ( name == "holy_prism"                ) return new holy_prism_t               ( this, options_str );
@@ -4735,6 +4768,11 @@ void paladin_t::create_buffs()
   buffs.guardian_of_ancient_kings      = buff_creator_t( this, "guardian_of_ancient_kings", find_specialization_spell( "Guardian of Ancient Kings" ) )
                                           .cd( timespan_t::zero() ); // let the ability handle the CD
   buffs.grand_crusader                 = buff_creator_t( this, "grand_crusader" ).spell( passives.grand_crusader -> effectN( 1 ).trigger() ).chance( passives.grand_crusader -> proc_chance() );
+  buffs.seraphim                       = buff_creator_t( this, "seraphim", find_talent_spell( "Seraphim" ) )
+                                         .cd( timespan_t::zero() ) // Let the ability handle the CD
+                                         .add_invalidate( CACHE_HASTE ).add_invalidate( CACHE_CRIT )
+                                         .add_invalidate( CACHE_MASTERY ).add_invalidate( CACHE_MULTISTRIKE )
+                                         .add_invalidate( CACHE_READINESS ).add_invalidate( CACHE_BONUS_ARMOR );
   buffs.shield_of_the_righteous        = buff_creator_t( this, "shield_of_the_righteous" ).spell( find_spell( 132403 ) );
   buffs.ardent_defender                = buff_creator_t( this, "ardent_defender" ).spell( find_specialization_spell( "Ardent Defender" ) );
   buffs.shield_of_glory                = buff_creator_t( this, "shield_of_glory" ).spell( find_spell( 138242 ) );
@@ -5423,6 +5461,10 @@ double paladin_t::composite_melee_crit() const
   if ( buffs.avenging_wrath -> check() )
     m += buffs.avenging_wrath -> get_crit_bonus();
 
+  // Seraphim adds 30% crit TODO: check if multiplicative
+  if ( buffs.seraphim -> check() )
+    m += buffs.seraphim -> data().effectN( 1 ).percent();
+
   return m;
 }
 
@@ -5451,6 +5493,10 @@ double paladin_t::composite_melee_haste() const
   // Infusion of Light (Holy) adds 10% haste
   h /= 1.0 + passives.infusion_of_light -> effectN( 2 ).percent();
 
+  // Seraphim adds 30% haste TODO: check if multiplicative
+  if ( buffs.seraphim -> check() )
+    h /= 1.0 + buffs.seraphim -> data().effectN( 1 ).percent();
+
   return h;
 }
 
@@ -5477,6 +5523,10 @@ double paladin_t::composite_spell_crit() const
   // This should only give a nonzero boost for Holy
   if ( buffs.avenging_wrath -> check() )
     m += buffs.avenging_wrath -> get_crit_bonus();
+
+  // Seraphim adds 30% crit TODO: check if multiplicative
+  if ( buffs.seraphim -> check() )
+    m += buffs.seraphim -> data().effectN( 1 ).percent();
   
   return m;
 }
@@ -5493,8 +5543,64 @@ double paladin_t::composite_spell_haste() const
 
   // Infusion of Light (Holy) adds 10% haste
   h /= 1.0 + passives.infusion_of_light -> effectN( 2 ).percent();
+
+  // Seraphim adds 30% haste TODO: check if multiplicative
+  if ( buffs.seraphim -> check() )
+    h /= 1.0 + buffs.seraphim -> data().effectN( 1 ).percent();
   
   return h;
+}
+
+// paladin_t::composite_mastery =============================================
+
+double paladin_t::composite_mastery() const
+{
+  double m = player_t::composite_mastery();
+  
+  // Seraphim adds 30% mastery TODO: check if multiplicative
+  if ( buffs.seraphim -> check() )
+    m += buffs.seraphim -> data().effectN( 1 ).base_value();
+
+  return m;
+}
+
+// paladin_t::composite_multistrike =========================================
+
+double paladin_t::composite_multistrike() const
+{
+  double m = player_t::composite_multistrike();
+  
+  // Seraphim adds 30% multistrike TODO: check if multiplicative
+  if ( buffs.seraphim -> check() )
+    m += buffs.seraphim -> data().effectN( 1 ).percent();
+
+  return m;
+}
+
+// paladin_t::composite_readiness =========================================
+
+double paladin_t::composite_readiness() const
+{
+  double rd = player_t::composite_readiness();
+  
+  // Seraphim adds 30% readiness TODO: check if multiplicative
+  if ( buffs.seraphim -> check() )
+    rd += buffs.seraphim -> data().effectN( 1 ).percent();
+
+  return rd;
+}
+
+// paladin_t::composite_bonus_armor =========================================
+
+double paladin_t::composite_bonus_armor() const
+{
+  double ba = player_t::composite_bonus_armor();
+  
+  // Seraphim adds 30% bonus armor TODO: check if multiplicative
+  if ( buffs.seraphim -> check() )
+    ba *= 1.0 + buffs.seraphim -> data().effectN( 1 ).percent();
+
+  return ba;
 }
 
 // paladin_t::composite_player_multiplier ===================================
