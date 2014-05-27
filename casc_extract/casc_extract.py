@@ -123,18 +123,29 @@ if __name__ == '__main__':
 				sys.exit(1)
 	
 	elif opts.mode == 'extract':
-		build = build_cfg.BuildCfg(opts)
-		if not build.open():
-			sys.exit(1)
+		build = None
+		index = None
+		if not opts.online:
+			build = build_cfg.BuildCfg(opts)
+			if not build.open():
+				sys.exit(1)
+
+			index = casc.CASCDataIndex(opts)
+			if not index.open():
+				sys.exit(1)
+		else:
+			build = casc.CDNIndex(opts)
+			if not build.open():
+				sys.exit(1)
 		
 		encoding = casc.CASCEncodingFile(opts, build)
 		if not encoding.open():
 			sys.exit(1)
 		
-		index = casc.CASCDataIndex(opts)
-		if not index.open():
+		root = casc.CASCRootFile(opts, build, encoding, index)
+		if not root.open():
 			sys.exit(1)
-		
+			
 		keys = []
 		md5s = None
 		if 'key:' in args[0]:
@@ -144,6 +155,10 @@ if __name__ == '__main__':
 			keys = encoding.GetFileKeys(args[0][4:].decode('hex'))
 			if len(keys) == 0:
 				parser.error('No file found with md5sum %s' % args[0][4:])		
+		else:
+			file_md5s = root.GetFileMD5(args[0])
+			print args[0], len(file_md5s) and file_md5s[0] or 0
+			sys.exit(0)
 		
 		if len(keys) > 1:
 			parser.error('Found multiple file keys with %s' % args[0])
