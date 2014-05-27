@@ -2356,16 +2356,17 @@ double player_t::composite_miss() const
 }
 
 // player_t::composite_block ===========================================
-// two overloaded methods here; the one with no arguments is for use in class modules
-// (for example, to override and add spec/talent/etc.-based block contributions).
-// The method accepting a dobule handles base block and diminishing returns.
+// Two methods here.  The first has no arguments and is the method we override in 
+// class modules (for example, to add spec/talent/etc.-based block contributions).
+// The second method accepts a dobule and handles base block and diminishing returns.
+// See paladin_t::composite_block() to see how this works.
 
 double player_t::composite_block() const
 {
-  return player_t::composite_block( 0.0 );
+  return player_t::composite_block_dr( 0.0 );
 }
 
-double player_t::composite_block( double extra_block ) const
+double player_t::composite_block_dr( double extra_block ) const
 {
   // block_by_rating is pre-DR block percentage from all sources subject to DR
   double block_by_rating = composite_block_rating() / current.rating.block;

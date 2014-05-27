@@ -4175,7 +4175,7 @@ double warrior_t::composite_block() const
 {
   // this handles base block and and all block subject to diminishing returns
   double block_subject_to_dr = composite_mastery()  * mastery.critical_block -> effectN( 2 ).mastery_value();
-  double b = player_t::composite_block( block_subject_to_dr );
+  double b = player_t::composite_block_dr( block_subject_to_dr );
 
   // add in spec- and perk-specific block bonuses not subject to DR
   b += spec.bastion_of_defense -> effectN( 1 ).percent();

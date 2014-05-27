@@ -5604,7 +5604,7 @@ double paladin_t::composite_block() const
 {
   // this handles base block and and all block subject to diminishing returns
   double block_subject_to_dr = get_divine_bulwark();
-  double b = player_t::composite_block( block_subject_to_dr );
+  double b = player_t::composite_block_dr( block_subject_to_dr );
 
  // Guarded by the Light block not affected by diminishing returns
   b += passives.guarded_by_the_light -> effectN( 6 ).percent();
