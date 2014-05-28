@@ -70,6 +70,7 @@ public:
   heal_t*   active_beacon_of_light;
   action_t* active_censure;  // this is the Censure dot application
   heal_t*   active_enlightened_judgments;
+  action_t* active_hammer_of_the_righteous_aoe;
   action_t* active_hand_of_light_proc;
   action_t* active_holy_shield_proc;
   absorb_t* active_illuminated_healing;
@@ -326,6 +327,7 @@ public:
     active_beacon_of_light             = 0;
     active_censure                     = 0;
     active_enlightened_judgments       = 0;
+    active_hammer_of_the_righteous_aoe = 0;
     active_hand_of_light_proc          = 0;
     active_holy_shield_proc            = 0;
     active_illuminated_healing         = 0;
@@ -3632,9 +3634,8 @@ struct hammer_of_the_righteous_t : public paladin_melee_attack_t
     // HotR triggers all seals
     trigger_seal = true;
 
-    // Implement AoE proc
-    impact_action = new hammer_of_the_righteous_aoe_t( p );
-    add_child( impact_action );
+    // Attach AoE proc as a child
+    add_child( p -> active_hammer_of_the_righteous_aoe );
   }
 
   virtual void update_ready( timespan_t cd_duration )
@@ -3683,6 +3684,10 @@ struct hammer_of_the_righteous_t : public paladin_melee_attack_t
 
       // Trigger Hand of Light procs
       trigger_hand_of_light( s );
+
+      // trigger the AoE if there are any other targets to hit
+      if ( available_targets( target_list() ) > 1 )
+        p() -> active_hammer_of_the_righteous_aoe -> schedule_execute();
     }
   }
 };
@@ -5443,6 +5448,9 @@ void paladin_t::init_spells()
 
   if ( find_class_spell( "Beacon of Light" ) -> ok() )
     active_beacon_of_light = new beacon_of_light_heal_t( this );
+
+  if ( find_specialization_spell( "Hammer of the Righteous" ) -> ok() )
+    active_hammer_of_the_righteous_aoe = new hammer_of_the_righteous_aoe_t( this );
 
   if ( passives.illuminated_healing -> ok() )
     active_illuminated_healing = new illuminated_healing_t( this );
