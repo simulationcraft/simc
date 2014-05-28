@@ -4140,7 +4140,9 @@ struct antimagic_shell_t : public death_knight_spell_t
       double absorbed = std::min( damage * data().effectN( 1 ).percent(),
                                   p() -> resources.max[ RESOURCE_HEALTH ] * data().effectN( 2 ).percent() );
 
-      p() -> buffs.antimagic_shell -> trigger( 1, absorbed / 1000.0 / data().duration().total_seconds() );
+      double generated = 2 * ( absorbed / p() -> resources.max[ RESOURCE_HEALTH ] );
+
+      p() -> buffs.antimagic_shell -> trigger( 1, generated / data().duration().total_seconds() );
     }
     else
       p() -> buffs.antimagic_shell -> trigger();
@@ -4247,6 +4249,8 @@ struct rune_tap_t : public death_knight_heal_t
 };
 
 // Death Pact
+
+// TODO-WOD: Healing absorb kludge
 
 struct death_pact_t : public death_knight_heal_t
 {
@@ -5707,11 +5711,13 @@ void death_knight_t::assess_damage_imminent( school_e school, dmg_e, action_stat
     double absorbed = std::min( s -> result_amount * spell.antimagic_shell -> effectN( 1 ).percent(),
                                 resources.max[ RESOURCE_HEALTH ] * spell.antimagic_shell -> effectN( 2 ).percent() );
 
+    double generated = 2 * ( absorbed / resources.max[ RESOURCE_HEALTH ] );
+
     s -> result_amount -= absorbed;
     s -> result_absorbed -= absorbed;
 
     gains.antimagic_shell -> add( RESOURCE_HEALTH, absorbed );
-    buffs.antimagic_shell -> current_value += absorbed / 1000.0 / spell.antimagic_shell -> duration().total_seconds();
+    buffs.antimagic_shell -> current_value += generated / spell.antimagic_shell -> duration().total_seconds();
   }
 }
 
