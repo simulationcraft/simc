@@ -86,23 +86,6 @@ dot_t::dot_t( const std::string& n, player_t* t, player_t* s ) :
   name_str( n )
 {}
 
-bool dot_t::is_higher_priority_action_available() const
-{
-  action_priority_list_t* active_actions = current_action -> player -> active_action_list;
-  size_t num_actions = active_actions -> foreground_action_list.size();
-  for ( size_t i = 0; i < num_actions && active_actions -> foreground_action_list[ i ] != current_action; ++i )
-  {
-    action_t* a = active_actions -> foreground_action_list[ i ];
-    // FIXME Why not interrupt a channel for the same spell higher up the action list?
-    //if ( a -> id == current_action -> id ) continue;
-    if ( a -> ready() )
-    {
-      return true;
-    }
-  }
-  return false;
-}
-
 // dot_t::cancel ============================================================
 
 void dot_t::cancel()
@@ -155,31 +138,15 @@ void dot_t::refresh_duration( uint32_t state_flags )
 
   if ( state_flags == ( uint32_t ) - 1 ) state_flags = current_action -> snapshot_flags;
 
-  // Make sure this DoT is still ticking......
-  assert( tick_event );
-
-  if ( sim.log )
-    sim.out_log.printf( "%s refreshes duration of %s on %s", source -> name(), name(), target -> name() );
-
-  assert( state );
   current_action -> snapshot_internal( state, state_flags, current_action -> type == ACTION_HEAL ? HEAL_OVER_TIME : DMG_OVER_TIME );
 
-  current_tick = 0;
-  extended_time = timespan_t::zero();
-
-  num_ticks = current_action -> hasted_num_ticks( state -> haste );
-
-  // tick zero dots tick when refreshed
-  if ( current_action -> tick_zero )
-  {
-    tick();
-  }
+  refresh( current_action -> dot_duration );
 
   current_action -> stats -> add_refresh( state -> target );
 }
 
-// dot_t::reset =============================================================
-
+/* Reset Dot
+ */
 void dot_t::reset()
 {
   core_event_t::cancel( tick_event );
@@ -193,8 +160,9 @@ void dot_t::reset()
     action_state_t::release( state );
 }
 
-// dot_t::schedule_tick =====================================================
-
+/* Trigger a dot with given duration.
+ * Main function to start/refresh a dot
+ */
 void dot_t::trigger( timespan_t duration )
 {
   assert( duration > timespan_t::zero() && "Dot Trigger with duration <= 0 seconds." );
@@ -457,6 +425,8 @@ expr_t* dot_t::create_expression( action_t* action,
   return 0;
 }
 
+/* Remaining dot tick time
+ */
 timespan_t dot_t::remains() const
 {
   if ( ! current_action ) return timespan_t::zero();
@@ -464,6 +434,9 @@ timespan_t dot_t::remains() const
   return last_start + current_duration - sim.current_time;
 }
 
+/* Returns the ticks left based on the current estimated number of max ticks minus elapsed ticks.
+ * Beware: This value may change over time, giving higher or lower values depending on the tick time of the dot!
+ */
 int dot_t::ticks_left() const
 {
   if ( ! current_action ) return 0;
@@ -584,6 +557,8 @@ void dot_t::start( timespan_t duration )
   schedule_tick();
 }
 
+/* Precondition: ticking == true
+ */
 void dot_t::refresh( timespan_t duration )
 {
   current_duration = std::min( duration * 0.3, remains() ) + duration; // New WoD Formula: Get no malus during the last 30% of the dot.
@@ -617,4 +592,21 @@ void dot_t::check_tick_zero()
     }
     time_to_tick = previous_ttt;
   }
+}
+
+bool dot_t::is_higher_priority_action_available() const
+{
+  action_priority_list_t* active_actions = current_action -> player -> active_action_list;
+  size_t num_actions = active_actions -> foreground_action_list.size();
+  for ( size_t i = 0; i < num_actions && active_actions -> foreground_action_list[ i ] != current_action; ++i )
+  {
+    action_t* a = active_actions -> foreground_action_list[ i ];
+    // FIXME Why not interrupt a channel for the same spell higher up the action list?
+    //if ( a -> id == current_action -> id ) continue;
+    if ( a -> ready() )
+    {
+      return true;
+    }
+  }
+  return false;
 }
