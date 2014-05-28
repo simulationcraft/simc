@@ -766,9 +766,6 @@ void rune_t::regen_rune( death_knight_t* p, timespan_t periodicity, bool rc )
   // linearly scales regen rate -- 100% haste means a rune regens in 5
   // seconds, etc.
   double runes_per_second = 1.0 / 10.0 / p -> cache.attack_haste();
-
-  runes_per_second *= 1.0 + p -> spec.improved_blood_presence -> effectN( 1 ).percent();
-
   double regen_amount = periodicity.total_seconds() * runes_per_second;
 
   // record rune gains and overflow
@@ -5917,6 +5914,8 @@ double death_knight_t::composite_player_multiplier( school_e school ) const
   if ( mastery.frozen_heart -> ok() && dbc::is_school( school, SCHOOL_FROST )  )
     m *= 1.0 + cache.mastery_value();
 
+  m *= 1.0 + spec.improved_blood_presence -> effectN( 2 ).percent();
+
   return m;
 }
 
@@ -5950,7 +5949,7 @@ double death_knight_t::composite_crit_avoidance() const
 {
   double c = player_t::composite_crit_avoidance();
 
-  c += spec.improved_blood_presence -> effectN( 5 ).percent();
+  c += spec.improved_blood_presence -> effectN( 1 ).percent();
 
   return c;
 }
