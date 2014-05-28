@@ -998,8 +998,6 @@ struct avengers_shield_t : public paladin_spell_t
 
 struct avenging_wrath_t : public paladin_heal_t
 {
-  double tick_pct;
-
   avenging_wrath_t( paladin_t* p, const std::string& options_str )
     : paladin_heal_t( "avenging_wrath", p, p -> specialization() == PALADIN_RETRIBUTION ? p -> find_spell( 31884 ) : p -> find_spell( 31842 ) )
   {
@@ -1027,16 +1025,17 @@ struct avenging_wrath_t : public paladin_heal_t
       tick_may_crit = false;
       may_multistrike = false;
       target = p;
-      tick_pct = p -> find_spell( 115547 ) -> effectN( 1 ).percent();
+      if ( p -> glyphs.avenging_wrath -> ok() )
+        tick_pct_heal = p -> find_spell( 115547 ) -> effectN( 1 ).percent();
     }
   }
 
   virtual void tick( dot_t* d )
   {
+    // override for this just in case Avenging Wrath were to get canceled or removed
+    // early, or if there's a duration mismatch (unlikely, but...)
     if ( p() -> buffs.avenging_wrath -> up() )
     {
-      base_td = p() -> resources.max[ RESOURCE_HEALTH ] * tick_pct;
-
       // call tick()
       heal_t::tick( d );
     }
