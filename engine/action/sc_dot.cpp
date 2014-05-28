@@ -71,21 +71,22 @@ struct dot_t::dot_tick_event_t : public event_t
 dot_t::dot_t( const std::string& n, player_t* t, player_t* s ) :
   sim( *( t -> sim ) ),
   ticking( false ),
+  current_duration( timespan_t::zero() ),
+  last_start( timespan_t::min() ),
+  extended_time( timespan_t::zero() ),
+  tick_event( nullptr ),
   target( t ),
   source( s ),
-  current_action( 0 ),
-  state( 0 ),
-  tick_event( nullptr ),
+  current_action( nullptr ),
+  state( nullptr ),
   num_ticks( 0 ),
   current_tick( 0 ),
-  added_seconds( timespan_t::zero() ),
   miss_time( timespan_t::min() ),
   time_to_tick( timespan_t::zero() ),
-  extended_time( timespan_t::zero() ),
   name_str( n )
 {}
 
-bool dot_t::is_higher_priority_action_available()
+bool dot_t::is_higher_priority_action_available() const
 {
   action_priority_list_t* active_actions = current_action -> player -> active_action_list;
   size_t num_actions = active_actions -> foreground_action_list.size();
@@ -134,7 +135,7 @@ void dot_t::extend_duration( timespan_t extra_seconds, timespan_t max_total_time
       extra_seconds -= over_cap;
   }
   current_duration += extra_seconds;
-  added_seconds += extra_seconds;
+  extended_time += extra_seconds;
 
   if ( sim.log )
   {
@@ -165,7 +166,6 @@ void dot_t::refresh_duration( uint32_t state_flags )
 
   current_tick = 0;
   extended_time = timespan_t::zero();
-  added_seconds = timespan_t::zero();
 
   num_ticks = current_action -> hasted_num_ticks( state -> haste );
 
@@ -186,7 +186,6 @@ void dot_t::reset()
   current_tick = 0;
   extended_time = timespan_t::zero();
   ticking = false;
-  added_seconds = timespan_t::zero();
   miss_time = timespan_t::min();
   last_start = timespan_t::min();
   current_duration = timespan_t::min();
@@ -200,7 +199,6 @@ void dot_t::trigger( timespan_t duration )
 {
   current_tick = 0;
   extended_time = timespan_t::zero();
-  added_seconds = timespan_t::zero();
 
   if ( ticking )
   {
@@ -222,14 +220,26 @@ void dot_t::copy( player_t* other_target )
 
   if ( ! other_dot -> state ) other_dot -> state = current_action -> get_state();
 
-  other_dot -> state -> copy_state( state );
-  other_dot -> state -> target = other_target;
-  other_dot -> current_action = current_action;
-  other_dot -> current_tick = current_tick;
-  other_dot -> last_start = last_start;
-  other_dot -> current_duration = current_duration;
-  other_dot -> num_ticks = num_ticks;
-  if ( ! other_dot -> ticking ) other_dot -> schedule_tick();
+  other_dot -> copy( this );
+
+  if ( ! other_dot -> ticking )
+    other_dot -> schedule_tick();
+}
+
+/* Caller needs to handle logic if the source dot was ticking or not!!!
+ */
+void dot_t::copy( dot_t* other_dot )
+{
+  if ( ! state )
+    state = other_dot -> current_action -> get_state();
+
+  state -> copy_state( other_dot -> state );
+  state -> target = other_dot -> target;
+  current_action = other_dot -> current_action;
+  current_tick = other_dot -> current_tick;
+  last_start = other_dot -> last_start;
+  current_duration = other_dot -> current_duration;
+  num_ticks = other_dot -> num_ticks;
 }
 
 // dot_t::create_expression =================================================
@@ -497,7 +507,7 @@ void dot_t::last_tick()
   if ( state )
     action_state_t::release( state );
   current_tick = 0;
-  added_seconds = timespan_t::zero();
+  extended_time = timespan_t::zero();
   last_start = timespan_t::min();
   current_duration = timespan_t::min();
 

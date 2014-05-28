@@ -335,17 +335,11 @@ public:
     bool seed_of_corruption_was_inhaled;
     dot_t* seed_of_corruption;
 
-    static void inhale_dot(dot_t* to_inhale, dot_t* soul_swap_buffer_target)//copies over the state
+    static void inhale_dot(dot_t* to_inhale, dot_t* soul_swap_buffer_target )//copies over the state
     {
         soul_swap_buffer_target -> cancel(); //clear any previous versions in the buffer;
 
-        if (soul_swap_buffer_target -> state == NULL )
-			soul_swap_buffer_target -> state = to_inhale -> current_action -> get_state(); //make sure we have memory allocated for the state
-
-        soul_swap_buffer_target -> state -> copy_state(to_inhale -> state); //copy state and the other stuff
-        soul_swap_buffer_target -> current_action = to_inhale -> current_action;
-        soul_swap_buffer_target -> current_tick = to_inhale -> current_tick;
-        soul_swap_buffer_target -> num_ticks = to_inhale -> num_ticks;
+        soul_swap_buffer_target -> copy( to_inhale );
 
     }
   } soul_swap_buffer;

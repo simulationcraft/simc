@@ -5890,17 +5890,16 @@ private:
   bool ticking;
   timespan_t current_duration;
   timespan_t last_start;
+  timespan_t extended_time; // Added time per extend_duration for the current dot application
+  core_event_t* tick_event;
 public:
   player_t* const target;
   player_t* const source;
   action_t* current_action;
   action_state_t* state;
-  core_event_t* tick_event;
   int num_ticks, current_tick;
-  timespan_t added_seconds;
   timespan_t miss_time;
   timespan_t time_to_tick;
-  timespan_t extended_time; // Added time per extend_duration for the current dot application
   std::string name_str;
 
   dot_t( const std::string& n, player_t* target, player_t* source );
@@ -5913,6 +5912,7 @@ public:
   void   cancel();
   void   trigger( timespan_t duration );
   void   copy( player_t* destination );
+  void   copy( dot_t* other_dot );
   expr_t* create_expression( action_t* action, const std::string& name_str, bool dynamic );
 
   timespan_t remains() const;
@@ -5921,9 +5921,10 @@ public:
   { return name_str.c_str(); }
   bool is_ticking() const
   { return ticking; }
+  timespan_t get_extended_time() const
+  { return extended_time; }
 
 private:
-
   struct dot_tick_event_t;
   void tick();
   void tick_zero();
@@ -5932,7 +5933,7 @@ private:
   void start( timespan_t duration );
   void refresh( timespan_t duration );
   void check_tick_zero();
-  bool   is_higher_priority_action_available();
+  bool is_higher_priority_action_available() const;
 };
 
 // "Real" 'Procs per Minute' helper class =====================================
