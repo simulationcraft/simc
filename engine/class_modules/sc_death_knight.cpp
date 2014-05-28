@@ -2929,6 +2929,44 @@ struct death_strike_heal_t : public death_knight_heal_t
     background = true;
     target     = p;
   }
+
+  double action_multiplier() const
+  {
+    double m = death_knight_heal_t::action_multiplier();
+
+    m *= 1.0 + p() -> buffs.scent_of_blood -> check() * p() -> buffs.scent_of_blood -> data().effectN( 1 ).percent();
+
+    return m;
+  }
+
+  void impact( action_state_t* state )
+  {
+    death_knight_heal_t::impact( state );
+
+    trigger_blood_shield( state );
+  }
+
+  void trigger_blood_shield( action_state_t* state )
+  {
+    if ( p() -> specialization() != DEATH_KNIGHT_BLOOD )
+      return;
+
+    double amount = p() -> buffs.blood_shield -> current_value;
+
+    if ( p() -> mastery.blood_shield -> ok() )
+      amount += state -> result_amount * p() -> cache.mastery_value();
+
+    amount = std::min( p() -> resources.max[ RESOURCE_HEALTH ], amount );
+
+    if ( sim -> debug )
+      sim -> out_debug.printf( "%s Blood Shield buff trigger, old_value=%f added_value=%f new_value=%f",
+                     player -> name(), p() -> buffs.blood_shield -> current_value,
+                     state -> result_amount * p() -> cache.mastery_value(),
+                     amount );
+
+    p() -> buffs.blood_shield -> trigger( 1, amount );
+  }
+
 };
 
 struct death_strike_t : public death_knight_melee_attack_t
@@ -2975,48 +3013,6 @@ struct death_strike_t : public death_knight_melee_attack_t
     return death_knight_melee_attack_t::cost();
   }
 
-  void trigger_death_strike_heal()
-  {
-    double amount = p() -> compute_incoming_damage();
-
-    amount = std::max( p() -> resources.max[ RESOURCE_HEALTH ] * data().effectN( 3 ).percent(),
-                       amount * data().effectN( 1 ).chain_multiplier() / 100.0 );
-
-    // Note that the Scent of Blood bonus is calculated here, so we can get
-    // it to Blood Shield. Apparently any other healing bonus that the DKs get
-    // does not affect the size of the blood shield
-    amount *= 1.0 + p() -> buffs.scent_of_blood -> check() * p() -> buffs.scent_of_blood -> data().effectN( 1 ).percent();
-
-    if ( sim -> debug )
-      sim -> out_debug.printf( "%s Death Strike heal, incoming_damage=%f incoming_heal=%f min_heal=%f",
-                     p() -> name(), p() -> compute_incoming_damage(),
-                     amount, p() -> resources.max[ RESOURCE_HEALTH ] * data().effectN( 3 ).percent() );
-
-    heal -> base_dd_min = heal -> base_dd_max = amount;
-    heal -> schedule_execute();
-  }
-
-  void trigger_blood_shield()
-  {
-    if ( p() -> specialization() != DEATH_KNIGHT_BLOOD )
-      return;
-
-    double amount = p() -> buffs.blood_shield -> current_value;
-
-    if ( p() -> mastery.blood_shield -> ok() )
-      amount += heal -> base_dd_min * p() -> cache.mastery_value();
-
-    amount = std::min( p() -> resources.max[ RESOURCE_HEALTH ], amount );
-
-    if ( sim -> debug )
-      sim -> out_debug.printf( "%s Blood Shield buff trigger, old_value=%f added_value=%f new_value=%f",
-                     player -> name(), p() -> buffs.blood_shield -> current_value,
-                     heal -> base_dd_min * p() -> cache.mastery_value(),
-                     amount );
-
-    p() -> buffs.blood_shield -> trigger( 1, amount );
-  }
-
   virtual void execute()
   {
     death_knight_melee_attack_t::execute();
@@ -3027,11 +3023,12 @@ struct death_strike_t : public death_knight_melee_attack_t
     if ( p() -> buffs.dancing_rune_weapon -> check() )
       p() -> pets.dancing_rune_weapon -> drw_death_strike -> execute();
 
-    trigger_death_strike_heal();
-    trigger_blood_shield();
-
     if ( result_is_hit( execute_state -> result ) )
+    {
       trigger_t16_2pc_tank();
+
+      heal -> schedule_execute();
+    }
 
     p() -> buffs.scent_of_blood -> expire();
     p() -> buffs.deathbringer -> decrement();
@@ -5992,6 +5989,8 @@ double death_knight_t::composite_melee_attack_power() const
 
   ap += buffs.bladed_armor -> data().effectN( 1 ).percent() * current.stats.get_stat( STAT_BONUS_ARMOR );
 
+  ap *= 1.0 + mastery.blood_shield -> effectN( 3 ).mastery_value() * composite_mastery();
+
   return ap;
 }
 
@@ -6025,6 +6024,8 @@ void death_knight_t::invalidate_cache( cache_e c )
   {
     case CACHE_MASTERY:
       player_t::invalidate_cache( CACHE_PLAYER_DAMAGE_MULTIPLIER );
+      if ( specialization() == DEATH_KNIGHT_BLOOD )
+        player_t::invalidate_cache( CACHE_ATTACK_POWER );
       break;
     default: break;
   }
