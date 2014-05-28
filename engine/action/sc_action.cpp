@@ -1072,11 +1072,11 @@ void action_t::execute()
     player -> in_combat = true;
   }
 
+  size_t num_targets;
   if ( is_aoe() ) // aoe
   {
     std::vector< player_t* >& tl = target_list();
-
-    size_t num_targets = ( n_targets() < 0 ) ? tl.size() : n_targets();
+    num_targets = ( n_targets() < 0 ) ? tl.size() : n_targets();
     for ( size_t t = 0, max_targets = tl.size(); t < num_targets && t < max_targets; t++ )
     {
       action_state_t* s = get_state( pre_execute_state );
@@ -1100,6 +1100,8 @@ void action_t::execute()
   }
   else // single target
   {
+    num_targets = 1;
+
     action_state_t* s = get_state( pre_execute_state );
     s -> target = target;
     s -> n_targets = 1;
@@ -1118,21 +1120,6 @@ void action_t::execute()
     multistrike( execute_state, type == ACTION_HEAL ? HEAL_DIRECT : DMG_DIRECT );
   }
 
-  if ( composite_teleport_distance( execute_state ) > 0 )
-    do_teleport( execute_state );
-
-  /* Miss reaction handling for dot executes */
-  if ( num_ticks > 0 && result_is_miss( execute_state -> result ) )
-  {
-    dot_t* dot = get_dot( execute_state -> target );
-    last_reaction_time = player -> total_reaction_time();
-    if ( sim -> debug )
-      sim -> out_debug.printf( "%s pushes out re-cast (%.2f) on miss for %s (%s)",
-                      player -> name(), last_reaction_time.total_seconds(), name(), dot -> name() );
-
-    dot -> miss_time = sim -> current_time + time_to_travel;
-  }
-
   consume_resource();
 
   update_ready();
@@ -1140,32 +1127,48 @@ void action_t::execute()
   if ( ! dual ) stats -> add_execute( time_to_execute, target );
 
   if ( pre_execute_state )
-  {
     action_state_t::release( pre_execute_state );
-  }
 
-  if ( execute_action && result_is_hit( execute_state -> result ) )
+  // The rest of the execution depends on actually executing on target
+  if ( num_targets > 0 )
   {
-    assert( ! execute_action -> pre_execute_state );
-    execute_action -> schedule_execute( execute_action -> get_state( execute_state ) );
-  }
+    if ( composite_teleport_distance( execute_state ) > 0 )
+      do_teleport( execute_state );
 
-  // New callback system; proc abilities on execute. 
-  // TODO: Not used for now.
-  // Note: direct_tick_callbacks should not be used with the new system, 
-  // override action_t::proc_type() instead
-  if ( callbacks )
-  {
-    proc_types pt = execute_state -> proc_type();
-    proc_types2 pt2 = execute_state -> execute_proc_type2();
+    /* Miss reaction handling for dot executes */
+    if ( num_ticks > 0 && result_is_miss( execute_state -> result ) )
+    {
+      dot_t* dot = get_dot( execute_state -> target );
+      last_reaction_time = player -> total_reaction_time();
+      if ( sim -> debug )
+        sim -> out_debug.printf( "%s pushes out re-cast (%.2f) on miss for %s (%s)",
+                        player -> name(), last_reaction_time.total_seconds(), name(), dot -> name() );
 
-    // "On spell cast"
-    if ( ! background && pt != PROC1_INVALID )
-      action_callback_t::trigger( player -> callbacks.procs[ pt ][ PROC2_CAST ], this, execute_state );
+      dot -> miss_time = sim -> current_time + time_to_travel;
+    }
 
-    // "On an execute result"
-    if ( pt != PROC1_INVALID && pt2 != PROC2_INVALID )
-      action_callback_t::trigger( player -> callbacks.procs[ pt ][ pt2 ], this, execute_state );
+    if ( execute_action && result_is_hit( execute_state -> result ) )
+    {
+      assert( ! execute_action -> pre_execute_state );
+      execute_action -> schedule_execute( execute_action -> get_state( execute_state ) );
+    }
+
+    // New callback system; proc abilities on execute. 
+    // Note: direct_tick_callbacks should not be used with the new system, 
+    // override action_t::proc_type() instead
+    if ( callbacks )
+    {
+      proc_types pt = execute_state -> proc_type();
+      proc_types2 pt2 = execute_state -> execute_proc_type2();
+
+      // "On spell cast"
+      if ( ! background && pt != PROC1_INVALID )
+        action_callback_t::trigger( player -> callbacks.procs[ pt ][ PROC2_CAST ], this, execute_state );
+
+      // "On an execute result"
+      if ( pt != PROC1_INVALID && pt2 != PROC2_INVALID )
+        action_callback_t::trigger( player -> callbacks.procs[ pt ][ pt2 ], this, execute_state );
+    }
   }
 
   if ( repeating && ! proc ) schedule_execute();
