@@ -410,9 +410,13 @@ public:
   virtual double    composite_melee_speed() const;
   virtual double    composite_melee_haste() const;
   virtual double    composite_spell_haste() const;
+  virtual double    composite_melee_crit() const;
+  virtual double    composite_spell_crit() const;
   virtual double    composite_attribute_multiplier( attribute_e attr ) const;
   virtual double    matching_gear_multiplier( attribute_e attr ) const;
   virtual double    composite_parry() const;
+  virtual double    composite_multistrike() const;
+  virtual double    composite_melee_expertise( weapon_t* ) const;
   virtual double    composite_player_multiplier( school_e school ) const;
   virtual double    composite_crit_avoidance() const;
   virtual void      regen( timespan_t periodicity );
@@ -4634,6 +4638,8 @@ double death_knight_t::composite_melee_haste() const
 
   haste *= 1.0 / ( 1.0 + buffs.unholy_presence -> value() );
 
+  haste *= 1.0 / ( 1.0 + spec.veteran_of_the_third_war -> effectN( 6 ).percent() );
+
   return haste;
 }
 
@@ -4645,7 +4651,31 @@ double death_knight_t::composite_spell_haste() const
 
   haste *= 1.0 / ( 1.0 + buffs.unholy_presence -> value() );
 
+  haste *= 1.0 / ( 1.0 + spec.veteran_of_the_third_war -> effectN( 6 ).percent() );
+
   return haste;
+}
+
+// death_knight_t::composite_attack_crit() =================================
+
+double death_knight_t::composite_melee_crit() const
+{
+  double crit = player_t::composite_melee_crit();
+
+  crit += spec.veteran_of_the_third_war -> effectN( 4 ).percent();
+
+  return crit;
+}
+
+// death_knight_t::composite_spell_crit() ==================================
+
+double death_knight_t::composite_spell_crit() const
+{
+  double crit= player_t::composite_spell_crit();
+
+  crit += spec.veteran_of_the_third_war -> effectN( 4 ).percent();
+
+  return crit;
 }
 
 // death_knight_t::init_rng =================================================
@@ -5851,6 +5881,28 @@ double death_knight_t::matching_gear_multiplier( attribute_e attr ) const
       return spec.plate_specialization -> effectN( 1 ).percent();
 
   return 0.0;
+}
+
+// death_knight_t::composite_multistrike ===================================
+
+double death_knight_t::composite_multistrike() const
+{
+  double multistrike = player_t::composite_multistrike();
+
+  multistrike += spec.veteran_of_the_third_war -> effectN( 5 ).percent();
+
+  return multistrike;
+}
+
+// death_knight_t::composite_melee_expertise ===============================
+
+double death_knight_t::composite_melee_expertise( weapon_t* ) const
+{
+  double expertise = player_t::composite_melee_expertise( 0 );
+
+  expertise += spec.veteran_of_the_third_war -> effectN( 3 ).percent();
+
+  return expertise;
 }
 
 // death_knight_t::composite_tank_parry =====================================
