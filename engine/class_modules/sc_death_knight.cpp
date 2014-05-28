@@ -2400,7 +2400,10 @@ struct blood_plague_t : public death_knight_spell_t
     may_miss         = false;
     may_crit         = false;
     hasted_ticks     = false;
-    base_multiplier += p -> spec.ebon_plaguebringer -> effectN( 2 ).percent();
+
+    // TODO-WOD: Check if multiplicative
+    base_multiplier *= 1.0 + p -> spec.ebon_plaguebringer -> effectN( 2 ).percent();
+    base_multiplier *= 1.0 + p -> spec.crimson_scourge -> effectN( 3 ).percent();
     if ( p -> glyph.enduring_infection -> ok() )
       base_multiplier += p -> find_spell( 58671 ) -> effectN( 1 ).percent();
   }
@@ -3114,9 +3117,12 @@ struct frost_fever_t : public death_knight_spell_t
     background       = true;
     tick_may_crit    = true;
     dot_behavior     = DOT_REFRESH;
-    base_multiplier += p -> spec.ebon_plaguebringer -> effectN( 2 ).percent();
+
+    // TODO-WOD: Check if multiplicative
+    base_multiplier *= 1.0 + p -> spec.ebon_plaguebringer -> effectN( 2 ).percent();
+    base_multiplier *= 1.0 + p -> spec.crimson_scourge -> effectN( 3 ).percent();
     if ( p -> glyph.enduring_infection -> ok() )
-      base_multiplier += p -> find_spell( 58671 ) -> effectN( 1 ).percent();
+      base_multiplier *= 1.0 + p -> find_spell( 58671 ) -> effectN( 1 ).percent();
   }
 
   virtual double composite_crit() const
