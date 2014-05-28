@@ -2854,8 +2854,6 @@ struct death_coil_t : public death_knight_spell_t
     parse_options( NULL, options_str );
 
     attack_power_mod.direct = 0.514;
-
-    base_costs[ RESOURCE_RUNIC_POWER ] *= 1.0 + p -> spec.sudden_doom -> effectN( 1 ).percent();
   }
 
   virtual double cost() const
