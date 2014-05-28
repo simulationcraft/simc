@@ -11,13 +11,12 @@
 
 // DoT Tick Event ===========================================================
 
-struct dot_t::dot_tick_event_t : public event_t
+struct dot_t::dot_tick_event_t final : public event_t
 {
-  dot_t* dot;
-
-  dot_tick_event_t( dot_t* d,
-                    timespan_t time_to_tick ) :
-      event_t( *d -> source, "DoT Tick" ), dot( d )
+public:
+  dot_tick_event_t( dot_t* d, timespan_t time_to_tick ) :
+      event_t( *d -> source, "DoT Tick" ),
+      dot( d )
   {
     if ( sim().debug )
       sim().out_debug.printf( "New DoT Tick Event: %s %s %d-of-%d %.4f",
@@ -26,15 +25,14 @@ struct dot_t::dot_tick_event_t : public event_t
     sim().add_event( this, time_to_tick );
   }
 
-  // dot_tick_event_t::execute ==============================================
-
-  virtual void execute()
+private:
+  virtual void execute() override
   {
     dot -> tick_event = nullptr;
     dot -> current_tick++;
 
-    if ( dot -> current_action -> player -> current.skill < 1.0 &&
-         dot -> current_action -> channeled &&
+    if ( dot -> current_action -> channeled &&
+         dot -> current_action -> player -> current.skill < 1.0 &&
          dot -> remains() >= dot -> current_action -> tick_time( dot -> state -> haste ) )
     {
       if ( rng().roll( dot -> current_action -> player -> current.skill ) )
@@ -47,25 +45,24 @@ struct dot_t::dot_tick_event_t : public event_t
       dot -> tick();
     }
 
-    if ( dot -> ticking )
+    assert ( dot -> ticking );
+    expr_t* expr = dot -> current_action -> interrupt_if_expr;
+    if ( dot -> remains() < dot -> current_action -> tick_time( dot -> state -> haste )
+        || ( dot -> current_action -> channeled
+            && dot -> current_action -> player -> gcd_ready <= sim().current_time
+            && ( dot -> current_action -> interrupt || ( expr && expr -> success() ) )
+            && dot -> is_higher_priority_action_available() ) )
     {
-      expr_t* expr = dot -> current_action -> interrupt_if_expr;
-      if ( dot -> remains() < dot -> current_action -> tick_time( dot -> state -> haste )
-           || ( dot -> current_action -> channeled
-                && dot -> current_action -> player -> gcd_ready <= sim().current_time
-                && ( dot -> current_action -> interrupt || ( expr && expr -> success() ) )
-                && dot -> is_higher_priority_action_available() ) )
-      {
-        // cancel dot
-        dot -> last_tick();
-      }
-      else
-      {
-        // continue ticking
-        dot -> schedule_tick();
-      }
+      // cancel dot
+      dot -> last_tick();
+    }
+    else
+    {
+      // continue ticking
+      dot -> schedule_tick();
     }
   }
+  dot_t* dot;
 };
 
 dot_t::dot_t( const std::string& n, player_t* t, player_t* s ) :
