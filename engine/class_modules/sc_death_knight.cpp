@@ -302,7 +302,7 @@ public:
   // Talents
   struct talents_t
   {
-    const spell_data_t* plaguebringer;
+    const spell_data_t* plaguebearer;
     const spell_data_t* plague_leech;
     const spell_data_t* unholy_blight;
 
@@ -436,6 +436,7 @@ public:
   virtual void      invalidate_cache( cache_e );
 
   void      trigger_runic_empowerment();
+  void      trigger_plaguebearer( action_state_t* state );
   int       runes_count( rune_type rt, bool include_death, int position );
   double    runes_cooldown_any( rune_type rt, bool include_death, int position );
   double    runes_cooldown_all( rune_type rt, bool include_death, int position );
@@ -2887,6 +2888,7 @@ struct death_coil_t : public death_knight_spell_t
       p() -> trigger_runic_empowerment();
       p() -> buffs.blood_charge -> trigger( 2 );
       p() -> trigger_runic_corruption();
+      p() -> trigger_plaguebearer( s );
 
       if ( p() -> sets.has_set_bonus( SET_T16_4PC_MELEE ) && p() -> buffs.dark_transformation -> check() )
         p() -> buffs.dark_transformation -> extend_duration( p(), timespan_t::from_millis( p() -> sets.set( SET_T16_4PC_MELEE ) -> effectN( 1 ).base_value() ) );
@@ -3209,6 +3211,7 @@ struct frost_strike_t : public death_knight_melee_attack_t
       p() -> trigger_runic_empowerment();
       p() -> buffs.blood_charge -> trigger( 2 );
       p() -> trigger_runic_corruption();
+      p() -> trigger_plaguebearer( s );
     }
   }
 
@@ -4837,7 +4840,7 @@ void death_knight_t::init_spells()
   mastery.dreadblade              = find_mastery_spell( DEATH_KNIGHT_UNHOLY );
 
   // Talents
-  talent.plaguebringer            = find_talent_spell( "Plaguebringer" );
+  talent.plaguebearer             = find_talent_spell( "Plaguebearer" );
   talent.plague_leech             = find_talent_spell( "Plague Leech" );
   talent.unholy_blight            = find_talent_spell( "Unholy Blight" );
 
@@ -6238,6 +6241,22 @@ void death_knight_t::trigger_runic_empowerment()
     // If there were no available runes to refresh
     procs.runic_empowerment_wasted -> occur();
     gains.runic_empowerment -> add ( RESOURCE_RUNE, 0, 1 );
+  }
+}
+
+// death_knight_t::trigger_plaguebearer =====================================
+
+void death_knight_t::trigger_plaguebearer( action_state_t* s )
+{
+  timespan_t pb_extend = timespan_t::from_seconds( talent.plaguebearer -> effectN( 1 ).base_value() );
+  if ( pb_extend != timespan_t::zero() )
+  {
+    death_knight_td_t* tdata = get_target_data( s -> target );
+    if ( tdata -> dots_blood_plague -> ticking )
+      tdata -> dots_blood_plague -> extend_duration_seconds( pb_extend );
+
+    if ( tdata -> dots_frost_fever -> ticking )
+      tdata -> dots_frost_fever -> extend_duration_seconds( pb_extend );
   }
 }
 
