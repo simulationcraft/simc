@@ -3988,17 +3988,12 @@ struct scourge_strike_t : public death_knight_melee_attack_t
 
   struct scourge_strike_shadow_t : public death_knight_spell_t
   {
-    double   disease_coeff;
-
     scourge_strike_shadow_t( death_knight_t* p ) :
-      death_knight_spell_t( "scourge_strike_shadow", p, p -> find_spell( 70890 ) ),
-      disease_coeff( 0 )
+      death_knight_spell_t( "scourge_strike_shadow", p, p -> find_spell( 70890 ) )
     {
-      may_miss = may_parry = may_dodge = may_crit = false;
+      may_miss = may_parry = may_dodge = false;
       special = proc = background = true;
       weapon = &( player -> main_hand_weapon );
-      weapon_multiplier = 0;
-      disease_coeff = p -> find_class_spell( "Scourge Strike" ) -> effectN( 3 ).percent();
       dual = true;
     }
 
@@ -4006,15 +4001,6 @@ struct scourge_strike_t : public death_knight_melee_attack_t
     {
       death_knight_spell_t::init();
       stats = p() -> get_stats( name(), this );
-    }
-
-    double composite_target_multiplier( player_t* t ) const
-    {
-      double m = death_knight_spell_t::composite_target_multiplier( t );
-
-      m *= disease_coeff * td( t ) -> diseases();
-
-      return m;
     }
   };
 
@@ -4027,19 +4013,7 @@ struct scourge_strike_t : public death_knight_melee_attack_t
     special = true;
     base_multiplier += p -> sets.set( SET_T14_2PC_MELEE ) -> effectN( 1 ).percent();
 
-    scourge_strike_shadow = new scourge_strike_shadow_t( p );
-    add_child( scourge_strike_shadow );
-  }
-
-  void impact( action_state_t* s )
-  {
-    death_knight_melee_attack_t::impact( s );
-
-    if ( result_is_hit( s -> result ) && td( s -> target ) -> diseases() > 0 )
-    {
-      scourge_strike_shadow -> base_dd_max = scourge_strike_shadow -> base_dd_min = s -> result_amount;
-      scourge_strike_shadow -> execute();
-    }
+    execute_action = new scourge_strike_shadow_t( p );
   }
 };
 
