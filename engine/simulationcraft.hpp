@@ -5800,6 +5800,7 @@ public:
   typedef spell_base_t base_t;
   bool group_only;
   double pct_heal;
+  double tick_pct_heal;
   gain_t* heal_gain;
 
   heal_t( const std::string& name, player_t* p, const spell_data_t* s = spell_data_t::nil() );
@@ -5808,6 +5809,7 @@ public:
   virtual size_t available_targets( std::vector< player_t* >& ) const;
   virtual void init_target_cache();
   virtual double calculate_direct_amount( action_state_t* state );
+  virtual double calculate_tick_amount( action_state_t* state );
   virtual void execute();
   player_t* find_greatest_difference_player();
   player_t* find_lowest_player();

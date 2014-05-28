@@ -2977,21 +2977,19 @@ struct shining_protector_t : public paladin_heal_t
 
 struct uthers_insight_t : public paladin_heal_t
 {
-  double tick_pct;
-
   uthers_insight_t( paladin_t* p )
     : paladin_heal_t( "uthers_insight", p, p -> find_spell( 156988 ) )
   {
     background = true;
     proc = true;
     target = player;
-    may_multistrike = true; // guess: test
+    may_multistrike = false; // guess: test
     may_crit = tick_may_crit = false; // guess, TODO: test
 
     // spell info isn't parsing out of the effect well
     base_tick_time = timespan_t::from_millis( data().effectN( 1 )._amplitude );
     num_ticks = data().duration() / base_tick_time ;
-    tick_pct = data().effectN( 1 ).percent();
+    tick_pct_heal = data().effectN( 1 ).percent();
   }
 
   virtual void execute()
@@ -3000,11 +2998,9 @@ struct uthers_insight_t : public paladin_heal_t
 
     paladin_heal_t::execute(); // TODO: is there a direct heal? does this matter?
   }
-
+  
   virtual void tick( dot_t* d )
   {
-    base_td = p() -> resources.max[ RESOURCE_HEALTH ] * tick_pct;
-
     paladin_heal_t::tick( d );
   }  
 };
