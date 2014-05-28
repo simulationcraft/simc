@@ -344,7 +344,6 @@ public:
     std::array< pet_t*, 10 > fallen_zandalari;
     pets::dancing_rune_weapon_pet_t* dancing_rune_weapon;
     pet_t* ghoul_pet;
-    pet_t* ghoul_guardian;
     pet_t* gargoyle;
   } pets;
 
@@ -3870,7 +3869,7 @@ struct unholy_presence_t : public presence_t
 struct raise_dead_t : public death_knight_spell_t
 {
   raise_dead_t( death_knight_t* p, const std::string& options_str ) :
-    death_knight_spell_t( "raise_dead", p, p -> find_class_spell( "Raise Dead" ) )
+    death_knight_spell_t( "raise_dead", p, p -> find_specialization_spell( "Raise Dead" ) )
   {
     parse_options( NULL, options_str );
 
@@ -3881,16 +3880,12 @@ struct raise_dead_t : public death_knight_spell_t
   {
     death_knight_spell_t::execute();
 
-    if ( p() -> specialization() == DEATH_KNIGHT_UNHOLY )
-      p() -> pets.ghoul_pet -> summon( timespan_t::zero() );
-    else
-      p() -> pets.ghoul_guardian -> summon( p() -> dbc.spell( data().effectN( 1 ).base_value() ) -> duration() );
+    p() -> pets.ghoul_pet -> summon( timespan_t::zero() );
   }
 
   virtual bool ready()
   {
-    if ( ( p() -> pets.ghoul_pet && ! p() -> pets.ghoul_pet -> is_sleeping() ) ||
-         ( p() -> pets.ghoul_guardian && ! p() -> pets.ghoul_guardian -> is_sleeping() ) )
+    if ( p() -> pets.ghoul_pet && ! p() -> pets.ghoul_pet -> is_sleeping() )
       return false;
 
     return death_knight_spell_t::ready();
@@ -4268,17 +4263,6 @@ struct death_pact_t : public death_knight_heal_t
 
   double base_da_max( const action_state_t* ) const
   { return p() -> resources.max[ RESOURCE_HEALTH ] * data().effectN( 3 ).percent(); }
-
-  bool ready()
-  {
-    if ( p() -> specialization() == DEATH_KNIGHT_UNHOLY && p() -> pets.ghoul_pet -> is_sleeping() )
-      return false;
-
-    if ( p() -> specialization() != DEATH_KNIGHT_UNHOLY && p() -> pets.ghoul_guardian -> is_sleeping() )
-      return false;
-
-    return death_knight_heal_t::ready();
-  }
 };
 
 // Buffs ====================================================================
@@ -4601,8 +4585,6 @@ void death_knight_t::create_pets()
     pets.gargoyle             = create_pet( "gargoyle" );
     pets.ghoul_pet            = create_pet( "ghoul_pet" );
   }
-  else
-    pets.ghoul_guardian       = create_pet( "ghoul_guardian" );
 
   if ( specialization() == DEATH_KNIGHT_BLOOD )
     pets.dancing_rune_weapon = new pets::dancing_rune_weapon_pet_t( sim, this );
@@ -4625,7 +4607,6 @@ pet_t* death_knight_t::create_pet( const std::string& pet_name,
 
   if ( pet_name == "gargoyle"       ) return new pets::gargoyle_pet_t( sim, this );
   if ( pet_name == "ghoul_pet"      ) return new pets::ghoul_pet_t   ( sim, this, "ghoul", false );
-  if ( pet_name == "ghoul_guardian" ) return new pets::ghoul_pet_t   ( sim, this, "ghoul", true );
 
   return 0;
 }
@@ -4898,7 +4879,6 @@ void death_knight_t::default_apl_blood()
     def -> add_action( this, "Icebound Fortitude", "if=health.pct<30&buff.army_of_the_dead.down&buff.dancing_rune_weapon.down&buff.bone_shield.down&buff.vampiric_blood.down" );
     def -> add_action( this, "Rune Tap", "if=health.pct<90" );
     def -> add_action( this, "Dancing Rune Weapon", "if=health.pct<80&buff.army_of_the_dead.down&buff.icebound_fortitude.down&buff.bone_shield.down&buff.vampiric_blood.down" );
-    def -> add_action( this, "Raise Dead", "if=health.pct<50" );
     def -> add_talent( this, "Death Pact", "if=health.pct<50" );
     def -> add_action( this, "Outbreak", "if=(dot.frost_fever.remains<=2|dot.blood_plague.remains<=2)|(!dot.blood_plague.ticking&!dot.frost_fever.ticking)" );
     def -> add_action( this, "Plague Strike", "if=!dot.blood_plague.ticking" );
@@ -4922,7 +4902,6 @@ void death_knight_t::default_apl_blood()
     def -> add_action( this, "Icebound Fortitude", "if=health.pct<30&buff.dancing_rune_weapon.down&buff.bone_shield.down&buff.vampiric_blood.down" );
     def -> add_action( this, "Rune Tap", "if=health.pct<90" );
     def -> add_action( this, "Dancing Rune Weapon" );
-    def -> add_action( this, "Raise Dead", "if=time>10" );
     def -> add_talent( this, "Death Pact", "if=health.pct<50" );
     def -> add_action( this, "Outbreak", "if=buff.dancing_rune_weapon.up" );
     def -> add_action( this, "Death Strike", "if=unholy=2|frost=2" );
@@ -5028,7 +5007,6 @@ void death_knight_t::init_action_list()
     {
       // Frost specific precombat stuff
       precombat -> add_action( this, "Pillar of Frost" );
-      precombat -> add_action( this, "Raise Dead" );
 
       def -> add_action( this, "Pillar of Frost" );
 
