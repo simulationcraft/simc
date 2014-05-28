@@ -995,26 +995,6 @@ struct dancing_rune_weapon_pet_t : public pet_t
     }
   };
 
-  struct drw_heart_strike_t : public drw_melee_attack_t
-  {
-    drw_heart_strike_t( dancing_rune_weapon_pet_t* p ) :
-      drw_melee_attack_t( "heart_strike", p, p -> owner -> find_spell( 55050 ) )
-    {
-      weapon = &( p -> main_hand_weapon );
-      aoe = 3;
-      base_add_multiplier = 0.75;
-    }
-
-    virtual double composite_target_multiplier( player_t* t ) const
-    {
-      double ctm = drw_melee_attack_t::composite_target_multiplier( t );
-
-      ctm *= 1.0 + td( t ) -> diseases() * data().effectN( 3 ).percent();
-
-      return ctm;
-    }
-  };
-
   struct drw_icy_touch_t : public drw_spell_t
   {
     drw_icy_touch_t( dancing_rune_weapon_pet_t* p ) :
@@ -1190,7 +1170,6 @@ struct dancing_rune_weapon_pet_t : public pet_t
   spell_t*        drw_pestilence;
 
   melee_attack_t* drw_death_strike;
-  melee_attack_t* drw_heart_strike;
   melee_attack_t* drw_necrotic_strike;
   melee_attack_t* drw_plague_strike;
   melee_attack_t* drw_soul_reaper;
@@ -1202,7 +1181,7 @@ struct dancing_rune_weapon_pet_t : public pet_t
     drw_death_coil( nullptr ),
     drw_death_siphon( nullptr ), drw_icy_touch( nullptr ),
     drw_outbreak( nullptr ), drw_pestilence( nullptr ),
-    drw_death_strike( nullptr ), drw_heart_strike( nullptr ),
+    drw_death_strike( nullptr ), 
     drw_necrotic_strike( nullptr ), drw_plague_strike( nullptr ),
     drw_soul_reaper( nullptr ), drw_melee( nullptr )
   {
@@ -1246,7 +1225,6 @@ struct dancing_rune_weapon_pet_t : public pet_t
     drw_pestilence    = new drw_pestilence_t   ( this );
 
     drw_death_strike  = new drw_death_strike_t ( this );
-    drw_heart_strike  = new drw_heart_strike_t ( this );
     drw_necrotic_strike = new drw_necrotic_strike_t( this );
     drw_plague_strike = new drw_plague_strike_t( this );
     drw_soul_reaper   = new drw_soul_reaper_t  ( this );
@@ -3235,44 +3213,6 @@ struct frost_strike_t : public death_knight_melee_attack_t
   }
 };
 
-// Heart Strike =============================================================
-
-struct heart_strike_t : public death_knight_melee_attack_t
-{
-  heart_strike_t( death_knight_t* p, const std::string& options_str ) :
-    death_knight_melee_attack_t( "heart_strike", p, p -> find_class_spell( "Heart Strike" ) )
-  {
-    parse_options( NULL, options_str );
-
-    special = true;
-
-    aoe = 3;
-    base_add_multiplier = 0.75;
-  }
-
-  void execute()
-  {
-    death_knight_melee_attack_t::execute();
-
-    if ( result_is_hit( execute_state -> result ) )
-    {
-      if ( p() -> buffs.dancing_rune_weapon -> check() )
-        p() -> pets.dancing_rune_weapon -> drw_heart_strike -> execute();
-
-      trigger_t16_2pc_tank();
-    }
-  }
-
-  virtual double composite_target_multiplier( player_t* t ) const
-  {
-    double ctm = death_knight_melee_attack_t::composite_target_multiplier( t );
-
-    ctm *= 1.0 + td( t ) -> diseases() * data().effectN( 3 ).percent();
-
-    return ctm;
-  }
-};
-
 // Horn of Winter============================================================
 
 struct horn_of_winter_t : public death_knight_spell_t
@@ -4493,7 +4433,6 @@ action_t* death_knight_t::create_action( const std::string& name, const std::str
   if ( name == "blood_strike"             ) return new blood_strike_t             ( this, options_str );
   if ( name == "blood_tap"                ) return new blood_tap_t                ( this, options_str );
   if ( name == "dancing_rune_weapon"      ) return new dancing_rune_weapon_t      ( this, options_str );
-  if ( name == "heart_strike"             ) return new heart_strike_t             ( this, options_str );
   if ( name == "pestilence"               ) return new pestilence_t               ( this, options_str );
   if ( name == "rune_tap"                 ) return new rune_tap_t                 ( this, options_str );
   if ( name == "vampiric_blood"           ) return new vampiric_blood_t           ( this, options_str );
