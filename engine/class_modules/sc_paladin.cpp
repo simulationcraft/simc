@@ -1018,6 +1018,7 @@ struct avenging_wrath_t : public paladin_heal_t
     // hack in Glyph of Avenging Wrath behavior
     if ( p -> glyphs.avenging_wrath -> ok() )
     {
+      parse_effect_data( p -> find_spell( 115547 ) -> effectN( 1 ) );
       // this info is very poorly encoded in the spell data; simpler just to hardcode
       base_tick_time = timespan_t::from_seconds( 3.0 );
       num_ticks = p -> buffs.avenging_wrath -> buff_duration / base_tick_time;
@@ -1025,8 +1026,6 @@ struct avenging_wrath_t : public paladin_heal_t
       tick_may_crit = false;
       may_multistrike = false;
       target = p;
-      if ( p -> glyphs.avenging_wrath -> ok() )
-        tick_pct_heal = p -> find_spell( 115547 ) -> effectN( 1 ).percent();
     }
   }
 
@@ -1474,9 +1473,28 @@ struct divine_protection_t : public paladin_spell_t
 };
 
 // Divine Shield ============================================================
+struct glyph_of_divine_shield_t : public paladin_heal_t
+{
+  glyph_of_divine_shield_t( paladin_t* p )
+    : paladin_heal_t( "glyph_of_divine_shield", p, p -> find_glyph_spell( "Glyph of Divine Shield" ) )
+  {
+    pct_heal = 0.0;
+    background = true;
+    target = p;
+  }
+
+  void set_num_destroyed( int n )
+  {
+    pct_heal = std::min( data().effectN( 1 ).percent() * n,
+                         data().effectN( 1 ).percent() * data().effectN( 2 ).base_value() );
+  }
+
+};
 
 struct divine_shield_t : public paladin_spell_t
 {
+  glyph_of_divine_shield_t* glyph_heal; 
+
   divine_shield_t( paladin_t* p, const std::string& options_str ) :
     paladin_spell_t( "divine_shield", p, p -> find_class_spell( "Divine Shield" ) )
   {
@@ -1487,7 +1505,10 @@ struct divine_shield_t : public paladin_spell_t
     // unbreakable spirit reduces cooldown
     if ( p -> talents.unbreakable_spirit -> ok() )
       cooldown -> duration = data().cooldown() * ( 1 + p -> talents.unbreakable_spirit -> effectN( 1 ).percent() );
-
+    
+    // glyph of divine shield heals
+    if ( p -> glyphs.divine_shield -> ok() )
+      glyph_heal = new glyph_of_divine_shield_t( p );
   }
 
   virtual void execute()
@@ -1500,28 +1521,25 @@ struct divine_shield_t : public paladin_spell_t
 
     // in this sim, the only debuffs we care about are enemy DoTs.
     // Check for them and remove them when cast, and apply Glyph of Divine Shield appropriately
+    int num_destroyed = 0;
     for ( size_t i = 0, size = p() -> dot_list.size(); i < size; i++ )
     {
       dot_t* d = p() -> dot_list[ i ];
-      int num_destroyed = 0;
 
-      if ( d -> source != p() )
+      if ( d -> source != p() && d -> source -> is_enemy() && d -> ticking )
       {
         d -> cancel();
         num_destroyed++;
       }
-
-      // glyph of divine shield heals
-      if ( p() -> glyphs.divine_shield -> ok() )
-      {
-        double amount = std::min( num_destroyed * p() -> glyphs.divine_shield -> effectN( 1 ).percent(),
-                                  p() -> glyphs.divine_shield -> effectN( 1 ).percent() * p() -> glyphs.divine_shield -> effectN( 2 ).base_value() );
-
-        amount *= p() -> resources.max[ RESOURCE_HEALTH ];
-
-        p() -> resource_gain( RESOURCE_HEALTH, amount, p() -> gains.glyph_divine_shield, this );
-      }
     }
+
+    // glyph of divine shield heals
+    if ( p() -> glyphs.divine_shield -> ok() )
+    {
+      glyph_heal -> set_num_destroyed( num_destroyed );
+      glyph_heal -> schedule_execute();
+    }
+
     // trigger forbearance
     p() -> debuffs.forbearance -> trigger();
   }
@@ -2620,11 +2638,8 @@ struct lay_on_hands_t : public paladin_heal_t
 
     use_off_gcd = true;
     trigger_gcd = timespan_t::zero();
-  }
 
-  virtual double calculate_direct_amount( action_state_t* )
-  {
-    return p() -> resources.max[ RESOURCE_HEALTH ];
+    pct_heal = 1.0;
   }
 
   virtual void execute()
@@ -2988,7 +3003,8 @@ struct uthers_insight_t : public paladin_heal_t
     // spell info isn't parsing out of the effect well
     base_tick_time = timespan_t::from_millis( data().effectN( 1 )._amplitude );
     num_ticks = data().duration() / base_tick_time ;
-    tick_pct_heal = data().effectN( 1 ).percent();
+    // pick up the % heal amount from effect #1
+    parse_effect_data( data().effectN( 1 ) );
   }
 
   virtual void execute()
@@ -3458,13 +3474,25 @@ struct crusader_strike_t : public paladin_melee_attack_t
 };
 
 // Divine Storm =============================================================
+struct glyph_of_divine_storm_t : public paladin_heal_t
+{
+  glyph_of_divine_storm_t( paladin_t* p )
+    : paladin_heal_t( "glyph_of_divine_storm", p, p -> find_glyph_spell( "Glyph of Divine Storm" ) )
+  {     
+    // heal amount is stored in spell 115515 for whatever reason
+    parse_effect_data( p -> find_spell( 115515 ) -> effectN( 1 ) );
+    background = true;
+    target = p;
+  }
+
+};
 
 struct divine_storm_t : public paladin_melee_attack_t
 {
-  double heal_percentage;
+  glyph_of_divine_storm_t* glyph_heal;
 
   divine_storm_t( paladin_t* p, const std::string& options_str )
-    : paladin_melee_attack_t( "divine_storm", p, p -> find_class_spell( "Divine Storm" ) ), heal_percentage( 0.0 )
+    : paladin_melee_attack_t( "divine_storm", p, p -> find_class_spell( "Divine Storm" ) )
   {
     parse_options( NULL, options_str );
 
@@ -3477,8 +3505,7 @@ struct divine_storm_t : public paladin_melee_attack_t
 
     if ( p -> glyphs.divine_storm -> ok() )
     {
-      // heal amount is stored in spell 115515 for whatever reason
-      heal_percentage = p -> find_spell( 115515 ) -> effectN( 1 ).percent();
+      glyph_heal = new glyph_of_divine_storm_t( p );
     }
   }
 
@@ -3526,7 +3553,7 @@ struct divine_storm_t : public paladin_melee_attack_t
       trigger_hand_of_light( s );
       if ( p() -> glyphs.divine_storm -> ok() )
       {
-        p() -> resource_gain( RESOURCE_HEALTH, heal_percentage * p() -> resources.max[ RESOURCE_HEALTH ], p() -> gains.glyph_divine_storm, this );
+        glyph_heal -> schedule_execute();
       }
     }
   }
@@ -4626,9 +4653,6 @@ void paladin_t::init_gains()
   // Mana
   gains.divine_plea                 = get_gain( "divine_plea"            );
   gains.extra_regen                 = get_gain( ( specialization() == PALADIN_RETRIBUTION ) ? "sword_of_light" : "guarded_by_the_light" );
-  gains.seal_of_insight             = get_gain( "seal_of_insight"        );
-  gains.glyph_divine_storm          = get_gain( "glyph_of_divine_storm"  );
-  gains.glyph_divine_shield         = get_gain( "glyph_of_divine_shield" );
 
   // Holy Power
   gains.hp_blessed_life             = get_gain( "blessed_life" );

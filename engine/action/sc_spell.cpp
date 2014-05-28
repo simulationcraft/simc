@@ -304,10 +304,10 @@ void heal_t::parse_effect_data( const spelleffect_data_t& e )
   {
     if ( e.type() == E_HEAL_PCT )
     {
-      pct_heal = e.average( player );
+      pct_heal = e.percent();
     }
     else if ( e.subtype() == A_OBS_MOD_HEALTH )
-      tick_pct_heal = e.average( player );
+      tick_pct_heal = e.percent();
   }
 }
 
