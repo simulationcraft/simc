@@ -180,6 +180,7 @@ public:
     buff_t* will_of_the_necropolis_rt;
 
     absorb_buff_t* blood_shield;
+    absorb_buff_t* rune_tap;
     stat_buff_t* death_shroud;
     stat_buff_t* riposte;
   } buffs;
@@ -4200,13 +4201,12 @@ struct rune_tap_t : public death_knight_heal_t
     death_knight_heal_t( "rune_tap", p, p -> find_specialization_spell( "Rune Tap" ) )
   {
     parse_options( NULL, options_str );
+
+    cooldown -> charges = 2;
+    cooldown -> duration = data().duration();
+
+    attack_power_mod.direct = 0;
   }
-
-  double base_da_min( const action_state_t* ) const
-  { return p() -> resources.max[ RESOURCE_HEALTH ] * data().effectN( 1 ).percent(); }
-
-  double base_da_max( const action_state_t* ) const
-  { return p() -> resources.max[ RESOURCE_HEALTH ] * data().effectN( 1 ).percent(); }
 
   void consume_resource()
   {
@@ -4214,6 +4214,17 @@ struct rune_tap_t : public death_knight_heal_t
       return;
 
     death_knight_heal_t::consume_resource();
+  }
+
+  void execute()
+  {
+    death_knight_heal_t::execute();
+
+    double amount = ( p() -> resources.max[ RESOURCE_HEALTH ] - p() -> resources.current[ RESOURCE_HEALTH ] ) * data().effectN( 1 ).percent();
+
+    p() -> buffs.rune_tap -> trigger( 1, amount );
+
+    p() -> buffs.will_of_the_necropolis_rt -> expire();
   }
 
   double cost() const
@@ -4588,6 +4599,9 @@ void death_knight_t::create_pets()
   }
   else
     pets.ghoul_guardian       = create_pet( "ghoul_guardian" );
+
+  if ( specialization() == DEATH_KNIGHT_BLOOD )
+    pets.dancing_rune_weapon = new pets::dancing_rune_weapon_pet_t( sim, this );
 
   for ( int i = 0; i < 8; i++ )
     pets.army_ghoul[ i ] = new pets::army_ghoul_pet_t( sim, this );
@@ -5491,6 +5505,9 @@ void death_knight_t::create_buffs()
                               .school( SCHOOL_PHYSICAL )
                               .source( get_stats( "blood_shield" ) )
                               .gain( get_gain( "blood_shield" ) );
+  buffs.rune_tap            = absorb_buff_creator_t( this, "rune_tap", find_specialization_spell( "Rune Tap" ) )
+                              .source( get_stats( "rune_tap" ) )
+                              .gain( get_gain( "rune_tap" ) );
 
   buffs.antimagic_shell     = buff_creator_t( this, "antimagic_shell", find_class_spell( "Anti-Magic Shell" ) )
                               .cd( timespan_t::zero() );
