@@ -160,7 +160,7 @@ const char * _effect_subtype_strings[] =
   "Confuse",                    "Charm",                    "Fear",                 "Periodic Heal",            "Attack Speed",                       // 5
   "Threat",                     "Taunt",                    "Stun",                 "Damage Done",              "Damage Taken",                       // 10
   "Damage Shield",              "Stealth",                  "Stealth Detection",    "Invisibility",             "Invisibility Detection",             // 15
-  0,                            0,                          "Resistance",           "Periodic Trigger Spell",   "Periodic Energize Power",            // 20
+  "Periodic Heal%",             0,                          "Resistance",           "Periodic Trigger Spell",   "Periodic Energize Power",            // 20
   "Pacify",                     "Root",                     "Silence",              "Spell Reflection",         "Attribute",                          // 25
   "Skill",                      "Increase Speed%",          "Increase Mounted Speed%", "Decrease Movement Speed%", "Increase Health",                 // 30
   "Increase Energy",            "Shapeshift",               "Immunity Against External Movement", 0,            "School Immunity",                    // 35
@@ -346,6 +346,7 @@ std::ostringstream& spell_info::effect_to_str( const dbc_t& dbc,
         case A_PERIODIC_HEAL:
         case A_PERIODIC_ENERGIZE:
         case A_PERIODIC_DUMMY:
+        case A_OBS_MOD_HEALTH:
           if ( e -> period() != timespan_t::zero() )
             s << ": every " << e -> period().total_seconds() << " seconds";
           break;
