@@ -5901,7 +5901,6 @@ public:
   timespan_t miss_time;
   timespan_t time_to_tick;
   timespan_t extended_time; // Added time per extend_duration for the current dot application
-  double tick_amount;
   std::string name_str;
 
   dot_t( const std::string& n, player_t* target, player_t* source );
@@ -6767,9 +6766,33 @@ void trigger_pct_based( action_t* ignite_action,
 
 }  // namespace ignite
 
+struct residual_dot_action_state : public action_state_t
+{
+  double tick_amount;
+
+  residual_dot_action_state( action_t* a, player_t* t ) :
+    action_state_t( a, t ),
+    tick_amount( 0 )
+  { }
+
+  std::ostringstream& debug_str( std::ostringstream& s ) override
+  { action_state_t::debug_str( s ) << " tick_amount=" << tick_amount; return s; }
+
+  void initialize() override
+  { action_state_t::initialize(); tick_amount = 0; }
+
+  void copy_state( const action_state_t* o ) override
+  {
+    action_state_t::copy_state( o );
+    const residual_dot_action_state* dps_t = debug_cast<const residual_dot_action_state*>( o );
+    tick_amount = dps_t -> tick_amount;
+  }
+};
+
 template <typename Action>
 struct residual_dot_action : public Action
 {
+
   typedef residual_dot_action< Action > residual_dot_action_t;
 
   template <typename Player>
@@ -6786,31 +6809,54 @@ struct residual_dot_action : public Action
     Action::dot_behavior  = DOT_REFRESH;
   }
 
+  virtual action_state_t* new_state() override
+  { return new residual_dot_action_state( this, Action::target ); }
+
+  virtual action_state_t* get_state( const action_state_t* s = nullptr ) override
+  {
+    action_state_t* s_ = Action::get_state( s );
+
+    if ( !s )
+    {
+      residual_dot_action_state* ds_ = static_cast<residual_dot_action_state*>( s_ );
+      ds_ -> tick_amount = 0.0;
+    }
+
+    return s_;
+  }
+
   virtual void execute() { assert( 0 ); }
 
   // Never need to update the state.
-  virtual void snapshot_state( action_state_t*, dmg_e ) { }
+  virtual void snapshot_state( action_state_t* state, dmg_e type ) override
+  { }
   virtual void update_state( action_state_t*, dmg_e ) { }
 
   virtual double calculate_tick_amount( action_state_t* s )
   {
     dot_t* d = Action::find_dot( s -> target );
-    s -> result_amount =  d ? d -> tick_amount : 0.0;
+    residual_dot_action_state* rd_state = debug_cast<residual_dot_action_state*>( s );
+
+    s -> result_amount =  d ? rd_state -> tick_amount : 0.0;
     return s -> result_amount;
   }
 
   virtual void impact( action_state_t* s )
   {
     // Amortize damage AFTER dot initialized so we know how many ticks. Only works if tick_zero=false.
+    residual_dot_action_state* rd_state = debug_cast<residual_dot_action_state*>( s );
+
     assert( ! Action::tick_zero );
     dot_t* dot = Action::get_dot( s -> target );
     if ( dot -> is_ticking() )
-      dot -> tick_amount *= dot -> ticks_left();
+      rd_state -> tick_amount *= dot -> ticks_left();
     else
-      dot -> tick_amount = 0;
-    dot -> tick_amount += s -> result_amount;
+      rd_state -> tick_amount = 0;
+    rd_state -> tick_amount += s -> result_amount;
+
     Action::trigger_dot( s );
-    dot -> tick_amount /= dot -> ticks_left();
+
+    rd_state -> tick_amount /= dot -> ticks_left();
   }
 
   virtual timespan_t travel_time() const

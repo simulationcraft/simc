@@ -346,7 +346,6 @@ public:
         soul_swap_buffer_target -> current_action = to_inhale -> current_action;
         soul_swap_buffer_target -> current_tick = to_inhale -> current_tick;
         soul_swap_buffer_target -> num_ticks = to_inhale -> num_ticks;
-        soul_swap_buffer_target -> tick_amount = to_inhale -> tick_amount;
 
     }
   } soul_swap_buffer;

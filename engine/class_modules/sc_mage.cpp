@@ -1727,7 +1727,11 @@ struct combustion_t : public mage_spell_t
     double a = 0.0;
 
     if ( dot_t* d = find_dot( s -> target ) )
-      a += d -> tick_amount;
+    {
+
+      const residual_dot_action_state* dps_t = debug_cast<const residual_dot_action_state*>( d -> state );
+      a += dps_t -> tick_amount;
+    }
 
     if ( s -> result == RESULT_CRIT )
       a *= 1.0 + total_crit_bonus();
@@ -1745,7 +1749,9 @@ struct combustion_t : public mage_spell_t
     {
       mage_spell_t::trigger_dot( s );
 
-      combustion_dot -> tick_amount = ignite_dot -> tick_amount * 0.2; // 0.2 modifier hardcoded into tooltip 2013/08/14 PTR
+      residual_dot_action_state* combustion_dot_state_t = debug_cast<residual_dot_action_state*>( combustion_dot -> state );
+      const residual_dot_action_state* ignite_dot_state_t = debug_cast<const residual_dot_action_state*>( ignite_dot -> state );
+      combustion_dot_state_t -> tick_amount = ignite_dot_state_t -> tick_amount * 0.2; // 0.2 modifier hardcoded into tooltip 2013/08/14 PTR
     }
   }
 
