@@ -197,6 +197,8 @@ void dot_t::reset()
 
 void dot_t::trigger( timespan_t duration )
 {
+  assert( duration > timespan_t::zero() && "Dot Trigger with duration <= 0 seconds." );
+
   current_tick = 0;
   extended_time = timespan_t::zero();
 
@@ -223,7 +225,7 @@ void dot_t::copy( player_t* other_target )
   other_dot -> copy( this );
 
   if ( ! other_dot -> ticking )
-    other_dot -> schedule_tick();
+    other_dot -> trigger( other_dot -> current_duration );
 }
 
 /* Caller needs to handle logic if the source dot was ticking or not!!!
@@ -232,6 +234,9 @@ void dot_t::copy( dot_t* other_dot )
 {
   if ( ! state )
     state = other_dot -> current_action -> get_state();
+
+  assert( other_dot -> current_duration > timespan_t::zero() );
+  assert( other_dot -> ticking );
 
   state -> copy_state( other_dot -> state );
   state -> target = other_dot -> target;
@@ -509,7 +514,7 @@ void dot_t::last_tick()
   current_tick = 0;
   extended_time = timespan_t::zero();
   last_start = timespan_t::min();
-  current_duration = timespan_t::min();
+  current_duration = timespan_t::zero();
 
   // If channeled, bring player back to life
   if ( current_action -> channeled )
@@ -532,8 +537,6 @@ void dot_t::schedule_tick()
   num_ticks = current_tick + remains() / time_to_tick;
 
   tick_event = new ( sim ) dot_t::dot_tick_event_t( this, time_to_tick );
-
- // ticking = true;
 
   if ( current_action -> channeled )
   {
@@ -570,26 +573,27 @@ void dot_t::schedule_tick()
 void dot_t::start( timespan_t duration )
 {
   current_duration = duration;
-    last_start = sim.current_time;
-    ticking = true;
+  last_start = sim.current_time;
+  ticking = true;
 
-    if ( sim.debug )
-      sim.out_debug.printf( "%s starts dot for %s on %s. duration=%f remains()=%f", source -> name(), name(), target -> name(), duration.total_seconds(), remains().total_seconds() );
+  if ( sim.debug )
+    sim.out_debug.printf( "%s starts dot for %s on %s. duration=%f remains()=%f", source -> name(), name(), target -> name(), duration.total_seconds(), remains().total_seconds() );
 
-    check_tick_zero();
+  check_tick_zero();
 
-    schedule_tick();
+  schedule_tick();
 }
 
 void dot_t::refresh( timespan_t duration )
 {
-  //current_duration = std::min( current_action -> tick_time( state -> haste ), remains() ) + duration;
-  current_duration = std::min( duration * 0.3, remains() ) + duration;
+  current_duration = std::min( duration * 0.3, remains() ) + duration; // New WoD Formula: Get no malus during the last 30% of the dot.
 
   last_start = sim.current_time;
 
   if ( sim.debug )
-    sim.out_debug.printf( "%s refreshes dot for %s on %s. duration=%f remains()=%f", source -> name(), name(), target -> name(), current_duration.total_seconds(), remains().total_seconds() );
+    sim.out_debug.printf( "%s refreshes dot for %s on %s. duration=%f remains()=%f",
+                          source -> name(), name(), target -> name(),
+                          current_duration.total_seconds(), remains().total_seconds() );
 
   check_tick_zero();
 
