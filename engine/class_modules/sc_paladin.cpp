@@ -70,7 +70,6 @@ public:
   heal_t*   active_beacon_of_light;
   action_t* active_censure;  // this is the Censure dot application
   heal_t*   active_enlightened_judgments;
-  action_t* active_hammer_of_the_righteous_aoe;
   action_t* active_hand_of_light_proc;
   action_t* active_holy_shield_proc;
   absorb_t* active_illuminated_healing;
@@ -80,7 +79,6 @@ public:
   action_t* active_seal_of_righteousness_proc;
   action_t* active_seal_of_truth_proc;
   heal_t*   active_shining_protector_proc;
-  heal_t*   active_uthers_insight_trigger;
   player_t* last_judgement_target;
 
   struct active_actions_t
@@ -327,7 +325,6 @@ public:
     active_beacon_of_light             = 0;
     active_censure                     = 0;
     active_enlightened_judgments       = 0;
-    active_hammer_of_the_righteous_aoe = 0;
     active_hand_of_light_proc          = 0;
     active_holy_shield_proc            = 0;
     active_illuminated_healing         = 0;
@@ -338,7 +335,6 @@ public:
     active_seal_of_righteousness_proc  = 0;
     active_seal_of_truth_proc          = 0;
     active_shining_protector_proc      = 0;
-    active_uthers_insight_trigger      = 0;
     bok_up                             = false;
     bom_up                             = false;
 
@@ -2990,8 +2986,11 @@ struct uthers_insight_t : public paladin_heal_t
     proc = true;
     target = player;
     may_multistrike = true; // guess: test
-    may_crit = true; // guess, TODO: test
+    may_crit = tick_may_crit = false; // guess, TODO: test
 
+    // spell info isn't parsing out of the effect well
+    base_tick_time = timespan_t::from_millis( data().effectN( 1 )._amplitude );
+    num_ticks = data().duration() / base_tick_time ;
     tick_pct = data().effectN( 1 ).percent();
   }
 
@@ -3004,7 +3003,7 @@ struct uthers_insight_t : public paladin_heal_t
 
   virtual void tick( dot_t* d )
   {
-    base_td = p() -> resources.max[ RESOURCE_HEALTH ] * pct_heal;
+    base_td = p() -> resources.max[ RESOURCE_HEALTH ] * tick_pct;
 
     paladin_heal_t::tick( d );
   }  
@@ -3619,6 +3618,8 @@ struct hammer_of_the_righteous_aoe_t : public paladin_melee_attack_t
 
 struct hammer_of_the_righteous_t : public paladin_melee_attack_t
 {
+  hammer_of_the_righteous_aoe_t* hotr_aoe;
+
   hammer_of_the_righteous_t( paladin_t* p, const std::string& options_str )
     : paladin_melee_attack_t( "hammer_of_the_righteous", p, p -> find_class_spell( "Hammer of the Righteous" ), true ) 
   {
@@ -3634,8 +3635,10 @@ struct hammer_of_the_righteous_t : public paladin_melee_attack_t
     // HotR triggers all seals
     trigger_seal = true;
 
+    hotr_aoe = new hammer_of_the_righteous_aoe_t( p );
+
     // Attach AoE proc as a child
-    add_child( p -> active_hammer_of_the_righteous_aoe );
+    add_child( hotr_aoe );
   }
 
   virtual void update_ready( timespan_t cd_duration )
@@ -3687,7 +3690,7 @@ struct hammer_of_the_righteous_t : public paladin_melee_attack_t
 
       // trigger the AoE if there are any other targets to hit
       if ( available_targets( target_list() ) > 1 )
-        p() -> active_hammer_of_the_righteous_aoe -> schedule_execute();
+        hotr_aoe -> schedule_execute();
     }
   }
 };
@@ -3840,6 +3843,7 @@ struct hand_of_light_proc_t : public paladin_melee_attack_t
 
 struct judgment_t : public paladin_melee_attack_t
 {
+  uthers_insight_t* uthers_insight;
   double cooldown_mult; // used to handle Sanctified Wrath cooldown reduction
 
   judgment_t( paladin_t* p, const std::string& options_str )
@@ -3875,6 +3879,9 @@ struct judgment_t : public paladin_melee_attack_t
 
     // damage multiplier from T14 Retribution 4-piece bonus
     base_multiplier *= 1.0 + p -> sets.set( SET_T14_4PC_MELEE ) -> effectN( 1 ).percent();
+
+    if ( p -> talents.empowered_seals -> ok() )
+      uthers_insight = new uthers_insight_t( p );
   }
 
   virtual void execute()
@@ -3953,7 +3960,7 @@ struct judgment_t : public paladin_melee_attack_t
         case SEAL_OF_JUSTICE:        p() -> buffs.turalyons_justice -> trigger(); break; // this one is sort of pointless?
         case SEAL_OF_RIGHTEOUSNESS:  p() -> buffs.liadrins_righteousness -> trigger(); break;
         case SEAL_OF_TRUTH:          p() -> buffs.maraads_truth -> trigger(); break;
-        case SEAL_OF_INSIGHT:        p() -> active_uthers_insight_trigger -> schedule_execute(); break;
+        case SEAL_OF_INSIGHT:        uthers_insight -> schedule_execute(); break;
       }
     }
   }
@@ -5449,18 +5456,12 @@ void paladin_t::init_spells()
   if ( find_class_spell( "Beacon of Light" ) -> ok() )
     active_beacon_of_light = new beacon_of_light_heal_t( this );
 
-  if ( find_specialization_spell( "Hammer of the Righteous" ) -> ok() )
-    active_hammer_of_the_righteous_aoe = new hammer_of_the_righteous_aoe_t( this );
-
   if ( passives.illuminated_healing -> ok() )
     active_illuminated_healing = new illuminated_healing_t( this );
 
   if ( passives.shining_protector -> ok() )
     active_shining_protector_proc = new shining_protector_t( this );
-
-  if ( talents.empowered_seals -> ok() )
-    active_uthers_insight_trigger = new uthers_insight_t( this );
-
+  
   if ( talents.holy_shield -> ok() )
     active_holy_shield_proc = new holy_shield_proc_t( this );
 
