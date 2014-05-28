@@ -169,7 +169,6 @@ public:
     buff_t* killing_machine;
     buff_t* pillar_of_frost;
     buff_t* rime;
-    buff_t* rune_strike;
     buff_t* runic_corruption;
     buff_t* scent_of_blood;
     buff_t* shadow_infusion;
@@ -3893,42 +3892,6 @@ struct raise_dead_t : public death_knight_spell_t
   }
 };
 
-// Rune Strike ==============================================================
-
-struct rune_strike_t : public death_knight_melee_attack_t
-{
-  rune_strike_t( death_knight_t* p, const std::string& options_str ) :
-    death_knight_melee_attack_t( "rune_strike", p, p -> find_specialization_spell( "Rune Strike" ) )
-  {
-    parse_options( NULL, options_str );
-
-    special          = true;
-    may_dodge = may_block = may_parry = false;
-
-    weapon = &( p -> main_hand_weapon );
-  }
-
-  void execute()
-  {
-    death_knight_melee_attack_t::execute();
-
-    if ( result_is_hit( execute_state -> result ) )
-      trigger_t16_2pc_tank();
-  }
-
-  virtual void impact( action_state_t* s )
-  {
-    death_knight_melee_attack_t::impact( s );
-
-    if ( result_is_hit( s -> result ) )
-    {
-      p() -> trigger_runic_empowerment();
-      p() -> buffs.blood_charge -> trigger( 2 );
-      p() -> trigger_runic_corruption();
-    }
-  }
-};
-
 // Scourge Strike ===========================================================
 
 struct scourge_strike_t : public death_knight_melee_attack_t
@@ -4443,7 +4406,6 @@ action_t* death_knight_t::create_action( const std::string& name, const std::str
   if ( name == "mind_freeze"              ) return new mind_freeze_t              ( this, options_str );
   if ( name == "obliterate"               ) return new obliterate_t               ( this, options_str );
   if ( name == "pillar_of_frost"          ) return new pillar_of_frost_t          ( this, options_str );
-  if ( name == "rune_strike"              ) return new rune_strike_t              ( this, options_str );
 
   // Unholy Actions
   if ( name == "army_of_the_dead"         ) return new army_of_the_dead_t         ( this, options_str );
@@ -4898,8 +4860,6 @@ void death_knight_t::default_apl_blood()
     def -> add_action( this, "Plague Strike", "if=!dot.blood_plague.ticking" );
     def -> add_action( this, "Icy Touch", "if=!dot.frost_fever.ticking" );
     def -> add_action( this, "Soul Reaper", "if=target.health.pct-3*(target.health.pct%target.time_to_die)<=" + srpct + "&blood>=1" );
-    def -> add_action( this, "Heart Strike", "if=blood>=1" );
-    def -> add_action( this, "Rune Strike" );
     def -> add_talent( this, "Blood Tap" );
     def -> add_action( this, "Horn of Winter" );
     def -> add_action( this, "Death Strike", "if=(unholy=2|frost=2)&incoming_damage_5s>=health.max*0.4" );
@@ -4922,13 +4882,10 @@ void death_knight_t::default_apl_blood()
     def -> add_talent( this, "Death Pact", "if=health.pct<50" );
     def -> add_action( this, "Outbreak", "if=buff.dancing_rune_weapon.up" );
     def -> add_action( this, "Death Strike", "if=unholy=2|frost=2" );
-    def -> add_action( this, "Rune Strike", "if=runic_power>=80" );
     def -> add_action( this, "Plague Strike", "if=!dot.blood_plague.ticking" );
     def -> add_action( this, "Icy Touch", "if=!dot.frost_fever.ticking" );
     def -> add_action( this, "Soul Reaper", "if=target.health.pct-3*(target.health.pct%target.time_to_die)<=" + srpct );
     def -> add_action( this, "Death Strike" );
-    def -> add_action( this, "Heart Strike", "if=(blood>1&target.health.pct<" + srpct + ")|blood>=1" );
-    def -> add_action( this, "Rune Strike" );
     def -> add_talent( this, "Blood Tap" );
     def -> add_action( this, "Horn of Winter" );
     def -> add_action( this, "Empower Rune Weapon", "if=!blood&!unholy&!frost" );
@@ -5236,13 +5193,11 @@ void death_knight_t::init_action_list()
 	    aoe -> add_action( this, "Summon Gargoyle" );
 	    aoe -> add_action( this, "Dark Transformation" );
 	    aoe -> add_talent( this, "Blood Tap", "if=buff.shadow_infusion.stack=5" );
-	    aoe -> add_action( this, "Blood Boil", "if=blood=2|death=2" );
 	    aoe -> add_action( this, "Death and Decay", "if=unholy=1" );
 	    aoe -> add_action( this, "Soul Reaper", "if=unholy=2&target.health.pct-3*(target.health.pct%target.time_to_die)<=" + soul_reaper_pct );
 	    aoe -> add_action( this, "Scourge Strike", "if=unholy=2" );
 	    aoe -> add_talent( this, "Blood Tap", "if=buff.blood_charge.stack>10" );
 	    aoe -> add_action( this, "Death Coil", "if=runic_power>90|buff.sudden_doom.react|(buff.dark_transformation.down&rune.unholy<=1)" );
-	    aoe -> add_action( this, "Blood Boil" );
 	    aoe -> add_action( this, "Icy Touch" );
 	    aoe -> add_action( this, "Soul Reaper", "if=unholy=1&target.health.pct-3*(target.health.pct%target.time_to_die)<=" + soul_reaper_pct );
 	    aoe -> add_action( this, "Scourge Strike", "if=unholy=1" );
