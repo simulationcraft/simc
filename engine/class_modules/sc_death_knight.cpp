@@ -220,6 +220,7 @@ public:
   struct gains_t
   {
     gain_t* antimagic_shell;
+    gain_t* blood_rites;
     gain_t* butchery;
     gain_t* chill_of_the_grave;
     gain_t* frost_presence;
@@ -260,7 +261,6 @@ public:
     const spell_data_t* plate_specialization;
 
     // Blood
-    const spell_data_t* blood_parasite;
     const spell_data_t* blood_rites;
     const spell_data_t* veteran_of_the_third_war;
     const spell_data_t* scent_of_blood;
@@ -317,9 +317,9 @@ public:
   struct spells_t
   {
     const spell_data_t* antimagic_shell;
-    const spell_data_t* blood_parasite;
     const spell_data_t* t15_4pc_tank;
     const spell_data_t* t16_4pc_melee;
+    const spell_data_t* blood_rites;
   } spell;
 
   // Glyphs
@@ -351,7 +351,6 @@ public:
   // Procs
   struct procs_t
   {
-    proc_t* blood_parasite;
     proc_t* runic_empowerment;
     proc_t* runic_empowerment_wasted;
     proc_t* oblit_killing_machine;
@@ -2208,6 +2207,15 @@ struct melee_t : public death_knight_melee_attack_t
 
     if ( result_is_hit( s -> result ) )
     {
+      if ( p() -> spec.blood_rites -> ok() )
+      {
+        double chance = 1.0; // TODO: Blood Rites proc chance?
+        if ( rng().roll( chance ) )
+          p() -> resource_gain( RESOURCE_RUNIC_POWER,
+                                p() -> spell.blood_rites -> effectN( 1 ).resource( RESOURCE_RUNIC_POWER ),
+                                p() -> gains.blood_rites );
+      }
+
       if ( weapon -> slot == SLOT_MAIN_HAND )
       {
         // T13 2pc gives 2 stacks of SD, otherwise we can only ever have one
@@ -2905,6 +2913,7 @@ struct death_strike_offhand_t : public death_knight_melee_attack_t
   {
     background       = true;
     weapon           = &( p -> off_hand_weapon );
+    base_multiplier  = 1.0 + p -> spec.veteran_of_the_third_war -> effectN( 7 ).percent();
   }
 };
 
@@ -2931,7 +2940,7 @@ struct death_strike_t : public death_knight_melee_attack_t
     parse_options( NULL, options_str );
     special = true;
     may_parry = false;
-    base_multiplier = 1.0 + p -> spec.blood_rites -> effectN( 2 ).percent();
+    base_multiplier = 1.0 + p -> spec.veteran_of_the_third_war -> effectN( 7 ).percent();
 
     always_consume = true; // Death Strike always consumes runes, even if doesn't hit
 
@@ -4836,9 +4845,9 @@ void death_knight_t::init_spells()
 
   // Generic spells
   spell.antimagic_shell           = find_class_spell( "Anti-Magic Shell" );
-  spell.blood_parasite            = find_spell( 50452 );
   spell.t15_4pc_tank              = find_spell( 138214 );
   spell.t16_4pc_melee             = find_spell( 144909 );
+  spell.blood_rites               = find_spell( 163948 );
 
   // Active Spells
   active_spells.blood_plague = new blood_plague_t( this );
@@ -5668,6 +5677,7 @@ void death_knight_t::init_gains()
   player_t::init_gains();
 
   gains.antimagic_shell                  = get_gain( "antimagic_shell"            );
+  gains.blood_rites                      = get_gain( "blood_rites"                );
   gains.butchery                         = get_gain( "butchery"                   );
   gains.chill_of_the_grave               = get_gain( "chill_of_the_grave"         );
   gains.frost_presence                   = get_gain( "frost_presence"             );
@@ -5706,7 +5716,6 @@ void death_knight_t::init_procs()
 {
   player_t::init_procs();
 
-  procs.blood_parasite           = get_proc( "blood_parasite"              );
   procs.runic_empowerment        = get_proc( "runic_empowerment"            );
   procs.runic_empowerment_wasted = get_proc( "runic_empowerment_wasted"     );
   procs.oblit_killing_machine    = get_proc( "oblit_killing_machine"        );
