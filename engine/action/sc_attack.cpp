@@ -76,26 +76,30 @@ double attack_t::miss_chance( double hit, player_t* t ) const
   return miss;
 }
 
-double attack_t::block_chance( player_t* t ) const
+double attack_t::block_chance( action_state_t* s ) const
 {
+  // if for some reason the target isn't allowed to block this type of action, return 0
+  if ( ! s -> target -> may_block( s -> action -> type ) )
+    return 0;
+
   // cache.block() contains the target's block chance (3.0 base for bosses, more for shield tanks)
-  double block = t -> cache.block();
+  double block = s -> target -> cache.block();
 
   // add or subtract 1.5% per level difference
-  block += ( t-> level - player -> level ) * 0.015;
+  block += ( s -> target -> level - player -> level ) * 0.015;
 
   return block;
 }
 
 // attack_t::crit_block_chance ==============================================
 
-double attack_t::crit_block_chance( player_t* t ) const
+double attack_t::crit_block_chance( action_state_t* s ) const
 {
   // This function is probably unnecessary, as we could just query cache.crit_block() directly.
   // I'm leaving it for consistency with *_chance() and in case future changes modify crit block mechanics
 
   // Crit Block does not suffer from level-based suppression, return cached value directly
-  return t -> cache.crit_block();
+  return s -> target -> cache.crit_block();
 }
 
 // attack_t::build_table ====================================================
@@ -167,35 +171,6 @@ void attack_t::build_table( double miss_chance, double dodge_chance,
     results[ num_results ] = RESULT_HIT;
     num_results++;
   }
-}
-
-// attack_t::calculate_block_result =========================================
-
-block_result_e attack_t::calculate_block_result( action_state_t* s )
-{
-  block_result_e block_result = BLOCK_RESULT_UNBLOCKED;
-
-  // Blocks also get a their own roll, and glances/crits can be blocked.
-  if ( result_is_hit( s -> result ) && may_block && ( player -> position() == POSITION_FRONT ) && ! ( s -> result == RESULT_NONE ) )
-  {
-    double block_total = block_chance( s -> target );
-
-    double crit_block = crit_block_chance( s -> target );
-
-    // Roll once for block, then again for crit block if the block succeeds
-    if ( rng().roll( block_total ) )
-    {
-      if ( rng().roll( crit_block ) )
-        block_result = BLOCK_RESULT_CRIT_BLOCKED;
-      else
-        block_result = BLOCK_RESULT_BLOCKED;
-    }
-  }
-
-  if ( sim -> debug )
-    sim -> out_debug.printf( "%s result for %s is %s", player -> name(), name(), util::block_result_type_string( block_result ) );
-
-  return block_result;
 }
 
 // attack_t::calculate_result ===============================================

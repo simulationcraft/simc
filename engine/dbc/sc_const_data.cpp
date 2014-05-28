@@ -1539,7 +1539,7 @@ const item_armor_type_data_t& dbc_t::item_armor_total( unsigned ilevel ) const
 #endif
 }
 
-double dbc_t::enemy_armor_mitigation( unsigned level ) const
+double dbc_t::armor_mitigation_constant( unsigned level ) const
 {
   assert( level > 0 && level <= ( MAX_LEVEL + 3 ) );
 #if SC_USE_PTR

@@ -173,6 +173,7 @@ spell_t::spell_t( const std::string&  token,
   spell_base_t( ACTION_SPELL, token, p, s )
 {
   may_miss = true;
+  may_block = true;
 }
 
 double spell_t::miss_chance( double hit, player_t* t ) const
@@ -189,6 +190,21 @@ double spell_t::miss_chance( double hit, player_t* t ) const
   miss -= hit;
 
   return miss;
+}
+
+double spell_t::block_chance( action_state_t* s ) const
+{
+  // if for some reason the target isn't allowed to block this type of action, return 0
+  if ( ! s -> target -> may_block( s -> action -> type ) )
+    return 0;
+
+  // cache.block() contains the target's block chance (3.0 base for bosses, more for shield tanks)
+  double block = s -> target -> cache.block();
+
+  // add or subtract 1.5% per level difference
+  block += ( s -> target -> level - player -> level ) * 0.015;
+
+  return block;
 }
 
 void spell_t::assess_damage( dmg_e type,
@@ -258,6 +274,7 @@ heal_t::heal_t( const std::string&  token,
   spell_base_t( ACTION_HEAL, token, p, s ),
   group_only(),
   pct_heal(),
+  tick_pct_heal(),
   heal_gain( p -> get_gain( name() ) )
 {
   if ( sim -> heal_target && target == sim -> target )
@@ -289,6 +306,8 @@ void heal_t::parse_effect_data( const spelleffect_data_t& e )
     {
       pct_heal = e.average( player );
     }
+    else if ( e.subtype() == A_OBS_MOD_HEALTH )
+      tick_pct_heal = e.average( player );
   }
 }
 
@@ -316,6 +335,43 @@ double heal_t::calculate_direct_amount( action_state_t* state )
 
   return base_t::calculate_direct_amount( state );
 }
+
+// heal_t::calculate_tick_amount ============================================
+
+double heal_t::calculate_tick_amount( action_state_t* state )
+{
+  if ( tick_pct_heal )
+  {
+    double amount = state -> target -> resources.max[ RESOURCE_HEALTH ] * tick_pct_heal;
+
+    // Record initial amount to state
+    state -> result_raw = amount;
+
+    if ( state -> result == RESULT_CRIT )
+    {
+      amount *= 1.0 + total_crit_bonus();
+    }
+
+    // Record total amount to state
+    state -> result_total = amount;
+
+    // replicate debug output of calculate_tick_amount
+    if ( sim -> debug )
+    {
+      sim -> out_debug.printf( "%s amount for %s on %s: ta=%.0f pct=%.3f b_ta=%.0f bonus_ta=%.0f s_mod=%.2f s_power=%.0f a_mod=%.2f a_power=%.0f mult=%.2f",
+        player -> name(), name(), target -> name(), amount,
+        tick_pct_heal, base_ta( state ), bonus_ta( state ),
+        spell_tick_power_coefficient( state ), state -> composite_spell_power(),
+        attack_tick_power_coefficient( state ), state -> composite_attack_power(),
+        state -> composite_ta_multiplier() );
+    }
+
+    return amount;
+  }
+
+  return base_t::calculate_tick_amount( state );
+}
+
 // heal_t::execute ==========================================================
 
 void heal_t::execute()

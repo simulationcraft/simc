@@ -849,7 +849,8 @@ void warrior_attack_t::impact( action_state_t* s )
       p() -> active_second_wind -> execute();
     }
 
-  if ( result_is_hit( s -> result ) && !proc && s -> result_amount > 0 && this -> id != 147891 ) // Flurry of Xuen
+  if ( ( result_is_hit( s -> result ) || result_is_multistrike( s -> result ) && 
+         !proc && s -> result_amount > 0 && this -> id != 147891 ) ) // Flurry of Xuen
   {
     if ( p() -> buff.sweeping_strikes -> up() && ( !aoe || this -> id == 78 ) ) // Heroic strike exception due to glyph that turns it into 2-target cleave.
       trigger_sweeping_strikes( execute_state );
@@ -936,13 +937,13 @@ struct melee_t : public warrior_attack_t
       if ( p() -> specialization() == WARRIOR_ARMS ) trigger_sudden_death( this,  p() -> spec.sudden_death -> proc_chance() );
       trigger_t15_2pc_melee( this );
     }
-    // Any attack that hits or is dodged/blocked/parried generates rage
-    if ( s -> result != RESULT_MISS )
+    // Any attack that hits or is dodged/blocked/parried generates rage. Multistrikes do not grant rage.
+    if ( s -> result != RESULT_MISS && !result_is_multistrike( s -> result ) )
       trigger_rage_gain();
 
     if ( p() -> specialization() == WARRIOR_PROTECTION && p() -> active_stance == STANCE_DEFENSE )
     {
-      if ( s -> result == RESULT_MULTISTRIKE || s -> result == RESULT_MULTISTRIKE_CRIT )
+      if ( result_is_multistrike( s -> result ) )
       {
         p() -> buff.blood_craze -> trigger();
         p() -> active_blood_craze -> execute();
@@ -3831,7 +3832,6 @@ void warrior_t::init_scaling()
   {
     scales_with[ STAT_WEAPON_OFFHAND_DPS   ] = true;
     scales_with[ STAT_WEAPON_OFFHAND_SPEED ] = sim -> weapon_speed_scale_factors != 0;
-    scales_with[ STAT_MULTISTRIKE_RATING   ] = true;
   }
 
 }
@@ -3908,7 +3908,7 @@ void warrior_t::create_buffs()
   buff.ravager          = buff_creator_t( this, "ravager", talents.ravager );
 
   buff.recklessness     = buff_creator_t( this, "recklessness",     spec.recklessness )
-                          .duration( spec.recklessness -> duration() * 
+                          .duration( spec.recklessness -> duration() *
                           ( 1.0 + ( glyphs.recklessness -> ok() ? glyphs.recklessness -> effectN( 2 ).percent() : 0 )  ) )
                           .cd( timespan_t::zero() ); //Necessary for readiness.
 
@@ -3929,8 +3929,9 @@ void warrior_t::create_buffs()
   buff.sudden_execute   = buff_creator_t( this, "sudden_execute", find_class_spell( "Sudden Execute" ) );
 
   buff.sweeping_strikes = buff_creator_t( this, "sweeping_strikes",   find_specialization_spell( "Sweeping Strikes" )  )
-                          .duration( find_specialization_spell( "Sweeping Strikes" ) -> duration() + 
-                          timespan_t::from_seconds( perk.enhanced_sweeping_strikes -> ok() ? perk.enhanced_sweeping_strikes -> effectN( 1 ).base_value() : 0 ) );
+                          .duration( find_specialization_spell( "Sweeping Strikes" ) -> duration() +
+                          timespan_t::from_seconds( perk.enhanced_sweeping_strikes -> ok() ?
+                                                    perk.enhanced_sweeping_strikes -> effectN( 1 ).base_value() : 0 ) );
 
   buff.sword_and_board  = buff_creator_t( this, "sword_and_board",   find_spell( 50227 ) )
                           .chance( spec.sword_and_board -> effectN( 1 ).percent() );
@@ -3941,7 +3942,7 @@ void warrior_t::create_buffs()
   buff.last_stand       = new buffs::last_stand_t( this, 12975, "last_stand" );
 
   buff.tier15_2pc_tank  = buff_creator_t( this, "tier15_2pc_tank", find_spell( 138279 ) );
-  
+
   buff.tier16_reckless_defense  = buff_creator_t( this, "tier16_reckless_defense", find_spell( 144500 ));
 
   buff.death_sentence   = buff_creator_t( this, "death_sentence", find_spell( 144441 ) ); //T16 4 pc melee buff.
@@ -4172,20 +4173,11 @@ double warrior_t::matching_gear_multiplier( attribute_e attr ) const
 
 double warrior_t::composite_block() const
 {
-  double block_by_rating = current.stats.block_rating / current_rating().block;
+  // this handles base block and and all block subject to diminishing returns
+  double block_subject_to_dr = composite_mastery()  * mastery.critical_block -> effectN( 2 ).mastery_value();
+  double b = player_t::composite_block_dr( block_subject_to_dr );
 
-  // add mastery block to block_by_rating so we can have DR on it.
-  if ( mastery.critical_block -> ok() )
-    block_by_rating += composite_mastery()  * mastery.critical_block -> effectN( 2 ).mastery_value();
-
-  double b = initial.block;
-
-  if ( block_by_rating > 0 ) // Formula taken from player_t::composite_tank_block
-  {
-    //the block by rating gets rounded because that's how blizzard rolls...
-    b += 1 / ( 1 / diminished_block_cap + diminished_kfactor / ( util::round( 12800 * block_by_rating ) / 12800 ) );
-  }
-
+  // add in spec- and perk-specific block bonuses not subject to DR
   b += spec.bastion_of_defense -> effectN( 1 ).percent();
   b += perk.improved_bastion_of_defense -> effectN( 1 ).percent();
 
@@ -4499,7 +4491,7 @@ struct warrior_lightning_strike_t : public warrior_attack_t
     may_dodge = may_parry = false;
   }
 };
- 
+
 // warrior_t::create_proc_action =============================================
 
 action_t* warrior_t::create_proc_action( const std::string& name )
@@ -4621,7 +4613,7 @@ void warrior_t::enrage()
 
     buff.raging_blow -> trigger();
   }
-  resource_gain( RESOURCE_RAGE, 
+  resource_gain( RESOURCE_RAGE,
                  buff.enrage -> data().effectN( 1 ).resource( RESOURCE_RAGE ),
                  gain.enrage );
   buff.enrage -> trigger();

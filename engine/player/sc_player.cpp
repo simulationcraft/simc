@@ -2204,6 +2204,18 @@ double player_t::mana_regen_per_second() const
   return current.mana_regen_per_second + cache.spirit() * current.mana_regen_per_spirit * current.mana_regen_from_spirit_multiplier;
 }
 
+// player_t::may_block ======================================================
+// This method is used to incorporate target properties into action resolution.
+// Similar methods for dodge and parry may be implemented eventually.
+
+bool player_t::may_block( action_e a ) const
+{
+  if ( a == ACTION_ATTACK )
+    return true;
+
+  return false;
+}
+
 // Need a way to include human racial.
 // player_t::composite_attack_haste =========================================
 
@@ -2356,13 +2368,27 @@ double player_t::composite_miss() const
 }
 
 // player_t::composite_block ===========================================
+// Two methods here.  The first has no arguments and is the method we override in 
+// class modules (for example, to add spec/talent/etc.-based block contributions).
+// The second method accepts a dobule and handles base block and diminishing returns.
+// See paladin_t::composite_block() to see how this works.
 
 double player_t::composite_block() const
 {
+  return player_t::composite_block_dr( 0.0 );
+}
+
+double player_t::composite_block_dr( double extra_block ) const
+{
+  // block_by_rating is pre-DR block percentage from all sources subject to DR
   double block_by_rating = composite_block_rating() / current.rating.block;
 
+  block_by_rating += extra_block;
+
+  // start with base block
   double b = current.block;
 
+  // add post-DR block from sources subect to DR
   if ( block_by_rating > 0 )
   {
     //the block by rating gets rounded because that's how blizzard rolls...
@@ -2417,8 +2443,6 @@ double player_t::composite_parry() const
   }
   return p; //this is the post-DR parry value
 }
-
-
 
 // player_t::composite_block_reduction =================================
 
