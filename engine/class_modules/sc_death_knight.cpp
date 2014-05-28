@@ -302,7 +302,7 @@ public:
   // Talents
   struct talents_t
   {
-    const spell_data_t* roiling_blood;
+    const spell_data_t* plaguebringer;
     const spell_data_t* plague_leech;
     const spell_data_t* unholy_blight;
 
@@ -342,7 +342,6 @@ public:
   {
     std::array< pet_t*, 8 > army_ghoul;
     std::array< pet_t*, 10 > fallen_zandalari;
-    std::array< pet_t*, 10 > bloodworms;
     pets::dancing_rune_weapon_pet_t* dancing_rune_weapon;
     pet_t* ghoul_pet;
     pet_t* ghoul_guardian;
@@ -970,27 +969,6 @@ struct dancing_rune_weapon_pet_t : public pet_t
     }
   };
 
-  struct drw_blood_boil_t : public drw_spell_t
-  {
-    drw_blood_boil_t( dancing_rune_weapon_pet_t* p ) :
-      drw_spell_t( "blood_boil", p, p -> owner -> find_class_spell( "Blood Boil" ) )
-    {
-      aoe              = -1;
-      may_crit         = true;
-    }
-
-    double composite_target_multiplier( player_t* t ) const
-    {
-      double m = drw_spell_t::composite_target_multiplier( t );
-
-      // Apparently inherits damage bonus from owner's diseases ...
-      if ( o() -> get_target_data( t ) -> diseases() > 0 )
-          m *= 1.50; // hardcoded into tooltip, 18/12/2012
-
-      return m;
-    }
-  };
-
   struct drw_death_coil_t : public drw_spell_t
   {
     drw_death_coil_t( dancing_rune_weapon_pet_t* p ) :
@@ -1205,7 +1183,6 @@ struct dancing_rune_weapon_pet_t : public pet_t
   spell_t*        drw_blood_plague;
   spell_t*        drw_frost_fever;
 
-  spell_t*        drw_blood_boil;
   spell_t*        drw_death_coil;
   spell_t*        drw_death_siphon;
   spell_t*        drw_icy_touch;
@@ -1222,7 +1199,7 @@ struct dancing_rune_weapon_pet_t : public pet_t
   dancing_rune_weapon_pet_t( sim_t* sim, player_t* owner ) :
     pet_t( sim, owner, "dancing_rune_weapon", true ),
     drw_blood_plague( nullptr ), drw_frost_fever( nullptr ),
-    drw_blood_boil( nullptr ), drw_death_coil( nullptr ),
+    drw_death_coil( nullptr ),
     drw_death_siphon( nullptr ), drw_icy_touch( nullptr ),
     drw_outbreak( nullptr ), drw_pestilence( nullptr ),
     drw_death_strike( nullptr ), drw_heart_strike( nullptr ),
@@ -1262,7 +1239,6 @@ struct dancing_rune_weapon_pet_t : public pet_t
     drw_frost_fever   = new drw_frost_fever_t  ( this );
     drw_blood_plague  = new drw_blood_plague_t ( this );
 
-    drw_blood_boil    = new drw_blood_boil_t   ( this );
     drw_death_coil    = new drw_death_coil_t   ( this );
     drw_death_siphon  = new drw_death_siphon_t ( this );
     drw_icy_touch     = new drw_icy_touch_t    ( this );
@@ -1452,167 +1428,6 @@ struct army_ghoul_pet_t : public death_knight_pet_t
              timespan_t::from_seconds( 0.1 )
            );
   }
-};
-
-// ==========================================================================
-// Bloodworms
-// ==========================================================================
-struct bloodworms_pet_t : public death_knight_pet_t
-{
-  // FIXME: Verify heal amounts, currently uses 15% owner max hp * stacks * 25%
-  struct blood_burst_t : public heal_t
-  {
-    blood_burst_t( bloodworms_pet_t* p ) :
-      heal_t( "blood_burst", p, p -> owner -> find_spell( 81280 ) )
-    {
-      background = true;
-      aoe = -1;
-    }
-
-    double base_da_min( const action_state_t* ) const
-    {
-      death_knight_t* o = debug_cast< death_knight_t* >( p() -> owner );
-      return o -> resources.max[ RESOURCE_HEALTH ] * 0.15 * p() -> blood_gorged -> check() * 0.25;
-    }
-
-    double base_da_max( const action_state_t* ) const
-    {
-      death_knight_t* o = debug_cast< death_knight_t* >( p() -> owner );
-      return o -> resources.max[ RESOURCE_HEALTH ] * 0.15 * p() -> blood_gorged -> check() * 0.25;
-    }
-
-    bloodworms_pet_t* p() const
-    { return debug_cast< bloodworms_pet_t* >( player ); }
-
-    void init()
-    {
-      heal_t::init();
-
-      death_knight_t* o = debug_cast< death_knight_t* >( p() -> owner );
-
-      if ( ! player -> sim -> report_pets_separately && player != o -> pets.bloodworms[ 0 ] )
-        stats = o -> pets.bloodworms[ 0 ] -> get_stats( name_str );
-    }
-  };
-
-  // FIXME: Level 80/85 values
-  struct melee_t : public melee_attack_t
-  {
-    struct blood_burst_event_t : public event_t
-    {
-      blood_burst_event_t( bloodworms_pet_t& p, timespan_t delta_time ) :
-        event_t( p, "blood_burst" )
-      { add_event( delta_time ); }
-
-      void execute()
-      {
-        bloodworms_pet_t& p = static_cast< bloodworms_pet_t& >( *actor );
-        p.blood_burst -> execute();
-        if ( ! p.is_sleeping() )
-          p.dismiss();
-      }
-    };
-
-    melee_t( player_t* player ) :
-      melee_attack_t( "melee", player )
-    {
-      school          = SCHOOL_PHYSICAL;
-      weapon = &( player -> main_hand_weapon );
-      base_execute_time = weapon -> swing_time;
-      base_dd_min = base_dd_max = 1;
-      may_crit    = true;
-      background  = true;
-      repeating   = true;
-    }
-
-    void init()
-    {
-      melee_attack_t::init();
-
-      death_knight_t* o = debug_cast< death_knight_t* >( p() -> owner );
-
-      if ( ! player -> sim -> report_pets_separately && player != o -> pets.bloodworms[ 0 ] )
-        stats = o -> pets.bloodworms[ 0 ] -> get_stats( name_str );
-    }
-
-    void impact( action_state_t* s )
-    {
-      melee_attack_t::impact( s );
-
-      if ( result_is_hit( s -> result ) )
-      {
-        if ( p() -> blood_gorged -> check() > 0 )
-        {
-          death_knight_t* o = debug_cast< death_knight_t* >( p() -> owner );
-
-          double base_proc_chance = pow( p() -> blood_gorged -> check() + 1, 3.0 );
-          double multiplier = 0;
-          if ( o -> health_percentage() >= 100 && p() -> blood_gorged -> check() >= 5 )
-            multiplier = 0.5;
-          else if ( o -> health_percentage() > 60 && o -> health_percentage() < 100 )
-            multiplier = 1.0;
-          else if ( o -> health_percentage() > 30 && o -> health_percentage() <= 60 )
-            multiplier = 1.5;
-          else if ( o -> health_percentage() <= 30 )
-            multiplier = 2.0;
-
-          if ( sim -> debug )
-            sim -> out_debug.printf( "%s-%s burst chance, base=%f multiplier=%f total=%f",
-                           o -> name(), player -> name(), base_proc_chance, multiplier, base_proc_chance * multiplier );
-
-          if ( base_proc_chance * multiplier > rng().range( 0, 999 ) )
-            new ( *sim ) blood_burst_event_t( *p(), timespan_t::zero() );
-          else
-            p() -> blood_gorged -> trigger();
-        }
-        else
-          p() -> blood_gorged -> trigger();
-      }
-    }
-
-    bloodworms_pet_t* p() const
-    { return debug_cast< bloodworms_pet_t* >( player ); }
-  };
-
-  melee_t* melee;
-  buff_t* blood_gorged;
-  blood_burst_t* blood_burst;
-
-  bloodworms_pet_t( sim_t* sim, death_knight_t* owner ) :
-    death_knight_pet_t( sim, owner, "bloodworms", true, true ),
-    melee( nullptr ), blood_gorged( nullptr ), blood_burst( nullptr )
-  {
-    main_hand_weapon.type       = WEAPON_BEAST;
-    main_hand_weapon.min_dmg    = dbc.spell_scaling( o() -> type, level ) * 0.55;
-    main_hand_weapon.max_dmg    = dbc.spell_scaling( o() -> type, level ) * 0.55;
-    main_hand_weapon.swing_time = timespan_t::from_seconds( 2.0 );
-
-    owner_coeff.ap_from_ap = 0.385;
-  }
-
-  void init_spells()
-  {
-    pet_t::init_spells();
-
-    melee = new melee_t( this );
-    blood_burst = new blood_burst_t( this );
-  }
-
-  void create_buffs()
-  {
-    pet_t::create_buffs();
-
-    blood_gorged = buff_creator_t( this, "blood_gorged", find_spell( 81277 ) )
-                   .chance( 1 );
-  }
-
-  virtual void summon( timespan_t duration = timespan_t::zero() )
-  {
-    pet_t::summon( duration );
-    melee -> schedule_execute();
-  }
-
-  virtual resource_e primary_resource() const { return RESOURCE_MANA; }
 };
 
 // ==========================================================================
@@ -2137,30 +1952,6 @@ struct death_knight_melee_attack_t : public death_knight_action_t<melee_attack_t
     }
   }
 
-  void trigger_bloodworms()
-  {
-    death_knight_t* p = this -> p();
-
-    if ( p -> specialization() != DEATH_KNIGHT_BLOOD )
-      return;
-
-    if ( p -> rng().roll( p -> spec.blood_parasite -> proc_chance() ) )
-    {
-      p -> procs.blood_parasite -> occur();
-
-      size_t i;
-      for ( i = 0; i < p -> pets.bloodworms.size(); i++ )
-      {
-        if ( ! p -> pets.bloodworms[ i ] -> is_sleeping() )
-          continue;
-
-        p -> pets.bloodworms[ i ] -> summon( p -> spell.blood_parasite -> duration() );
-        break;
-      }
-      assert( i < p -> pets.bloodworms.size() && "Could not find any non-sleeping bloodworm." );
-    }
-  }
-
   virtual void   consume_resource();
   virtual void   execute();
   virtual void   impact( action_state_t* state );
@@ -2272,7 +2063,6 @@ void death_knight_melee_attack_t::execute()
 
   if ( ! proc && result_is_hit( execute_state -> result ) )
   {
-    trigger_bloodworms();
     if ( dbc::is_school( school, SCHOOL_SHADOW ) || dbc::is_school( school, SCHOOL_FROST ) )
     {
       p() -> runeforge.rune_of_cinderglacier -> decrement();
@@ -2585,110 +2375,6 @@ struct army_of_the_dead_t : public death_knight_spell_t
       return false;
 
     return death_knight_spell_t::ready();
-  }
-};
-
-// Blood Boil ===============================================================
-
-struct blood_boil_t : public death_knight_spell_t
-{
-  death_knight_spell_t* proxy_pestilence;
-
-  blood_boil_t( death_knight_t* p, const std::string& options_str ) :
-    death_knight_spell_t( "blood_boil", p, p -> find_class_spell( "Blood Boil" ) ),
-    proxy_pestilence( 0 )
-  {
-    parse_options( NULL, options_str );
-
-    if ( p -> spec.reaping -> ok() )
-      convert_runes = 1.0;
-
-    aoe                = -1;
-
-    if ( p -> talent.roiling_blood -> ok() )
-    {
-      // Make up a dummy pestilence action that consumes no runes, gives no
-      // runic power, and converts no runes. It is also prohibited to proc
-      // anything by default. It will however show in the reports.
-      proxy_pestilence = static_cast< death_knight_spell_t* >( p -> create_action( "pestilence", std::string() ) );
-      proxy_pestilence -> cost_blood = 0;
-      proxy_pestilence -> cost_unholy = 0;
-      proxy_pestilence -> cost_frost = 0;
-      proxy_pestilence -> rp_gain = 0;
-      proxy_pestilence -> convert_runes = 0;
-      proxy_pestilence -> background = true;
-      proxy_pestilence -> proc = true;
-    }
-  }
-
-  virtual void consume_resource()
-  {
-    if ( p() -> buffs.crimson_scourge -> check() )
-      return;
-
-    death_knight_spell_t::consume_resource();
-  }
-
-  virtual double cost() const
-  {
-    if ( p() -> buffs.crimson_scourge -> check() )
-      return 0;
-    return death_knight_spell_t::cost();
-  }
-
-  virtual void execute()
-  {
-    death_knight_spell_t::execute();
-
-    if ( p() -> buffs.dancing_rune_weapon -> check() )
-      p() -> pets.dancing_rune_weapon -> drw_blood_boil -> execute();
-
-    if ( p() -> buffs.crimson_scourge -> up() )
-      p() -> buffs.crimson_scourge -> expire();
-
-    if ( p() -> talent.roiling_blood -> ok() )
-    {
-      proxy_pestilence -> target = target;
-      proxy_pestilence -> execute();
-    }
-  }
-
-  virtual double composite_target_multiplier( player_t* t ) const
-  {
-    double m = death_knight_spell_t::composite_target_multiplier( t );
-
-    if ( td( t ) -> diseases() > 0 || p() -> glyph.festering_blood -> ok() )
-        m *= 1.50; // hardcoded into tooltip, 18/12/2012
-
-    return m;
-  }
-
-  virtual void impact( action_state_t* s )
-  {
-    death_knight_spell_t::impact( s );
-
-    if ( p() -> spec.scarlet_fever -> ok() )
-    {
-      if ( td( s -> target ) -> dots_blood_plague -> ticking )
-        td( s -> target ) -> dots_blood_plague -> refresh_duration();
-
-      if ( td( s -> target ) -> dots_frost_fever -> ticking )
-        td( s -> target ) -> dots_frost_fever -> refresh_duration();
-    }
-
-    if ( result_is_hit( s -> result ) )
-      trigger_t16_2pc_tank();
-  }
-
-  virtual bool ready()
-  {
-    if ( ! spell_t::ready() )
-      return false;
-
-    if ( ( ! p() -> in_combat && ! harmful ) || p() -> buffs.crimson_scourge -> check() )
-      return group_runes( p(), 0, 0, 0, 0, use );
-    else
-      return group_runes( p(), cost_blood, cost_frost, cost_unholy, cost_death, use );
   }
 };
 
@@ -3937,7 +3623,24 @@ struct pestilence_t : public death_knight_spell_t
     if ( p -> spec.reaping -> ok() )
       convert_runes = 1.0;
 
+    base_multiplier *= 1.0 + p -> spec.crimson_scourge -> effectN( 1 ).percent();
+
     aoe = -1;
+  }
+
+  virtual void consume_resource()
+  {
+    if ( p() -> buffs.crimson_scourge -> check() )
+      return;
+
+    death_knight_spell_t::consume_resource();
+  }
+
+  virtual double cost() const
+  {
+    if ( p() -> buffs.crimson_scourge -> check() )
+      return 0;
+    return death_knight_spell_t::cost();
   }
 
   virtual void execute()
@@ -3946,8 +3649,12 @@ struct pestilence_t : public death_knight_spell_t
 
     if ( p() -> buffs.dancing_rune_weapon -> check() )
       p() -> pets.dancing_rune_weapon -> drw_pestilence -> execute();
+
+      if ( p() -> buffs.crimson_scourge -> up() )
+        p() -> buffs.crimson_scourge -> expire();
   }
 
+  // TODO: each target hit spreads to each target hit ..
   virtual void impact( action_state_t* s )
   {
     death_knight_spell_t::impact( s );
@@ -3977,7 +3684,13 @@ struct pestilence_t : public death_knight_spell_t
       return false;
 
     // BP or FF must be ticking to use
-    return td( target ) -> diseases() > 0;
+    if ( td( target ) -> diseases() == 0 )
+      return false;
+
+    if ( ( ! p() -> in_combat && ! harmful ) || p() -> buffs.crimson_scourge -> check() )
+      return group_runes( p(), 0, 0, 0, 0, use );
+    else
+      return group_runes( p(), cost_blood, cost_frost, cost_unholy, cost_death, use );
   }
 };
 
@@ -4790,7 +4503,6 @@ action_t* death_knight_t::create_action( const std::string& name, const std::str
   if ( name == "icebound_fortitude"       ) return new icebound_fortitude_t       ( this, options_str );
 
   // Blood Actions
-  if ( name == "blood_boil"               ) return new blood_boil_t               ( this, options_str );
   if ( name == "blood_strike"             ) return new blood_strike_t             ( this, options_str );
   if ( name == "blood_tap"                ) return new blood_tap_t                ( this, options_str );
   if ( name == "dancing_rune_weapon"      ) return new dancing_rune_weapon_t      ( this, options_str );
@@ -4992,13 +4704,6 @@ void death_knight_t::create_pets()
   else
     pets.ghoul_guardian       = create_pet( "ghoul_guardian" );
 
-  if ( specialization() == DEATH_KNIGHT_BLOOD )
-  {
-    pets.dancing_rune_weapon  = new pets::dancing_rune_weapon_pet_t ( sim, this );
-    for ( int i = 0; i < 10; i++ )
-      pets.bloodworms[ i ] = new pets::bloodworms_pet_t( sim, this );
-  }
-
   for ( int i = 0; i < 8; i++ )
     pets.army_ghoul[ i ] = new pets::army_ghoul_pet_t( sim, this );
 
@@ -5099,12 +4804,10 @@ void death_knight_t::init_spells()
   spec.plate_specialization       = find_specialization_spell( "Plate Specialization" );
 
   // Blood
-  spec.blood_parasite             = find_specialization_spell( "Blood Parasite" );
   spec.blood_rites                = find_specialization_spell( "Blood Rites" );
   spec.veteran_of_the_third_war   = find_specialization_spell( "Veteran of the Third War" );
   spec.scent_of_blood             = find_specialization_spell( "Scent of Blood" );
   spec.improved_blood_presence    = find_specialization_spell( "Improved Blood Presence" );
-  spec.scarlet_fever              = find_specialization_spell( "Scarlet Fever" );
   spec.crimson_scourge            = find_specialization_spell( "Crimson Scourge" );
   spec.sanguine_fortitude         = find_specialization_spell( "Sanguine Fortitude" );
   spec.will_of_the_necropolis     = find_specialization_spell( "Will of the Necropolis" );
@@ -5134,7 +4837,7 @@ void death_knight_t::init_spells()
   mastery.dreadblade              = find_mastery_spell( DEATH_KNIGHT_UNHOLY );
 
   // Talents
-  talent.roiling_blood            = find_talent_spell( "Roiling Blood" );
+  talent.plaguebringer            = find_talent_spell( "Plaguebringer" );
   talent.plague_leech             = find_talent_spell( "Plague Leech" );
   talent.unholy_blight            = find_talent_spell( "Unholy Blight" );
 
@@ -5272,7 +4975,6 @@ void death_knight_t::default_apl_blood()
     def -> add_action( this, "Plague Strike", "if=!dot.blood_plague.ticking" );
     def -> add_action( this, "Icy Touch", "if=!dot.frost_fever.ticking" );
     def -> add_action( this, "Soul Reaper", "if=target.health.pct-3*(target.health.pct%target.time_to_die)<=" + srpct + "&blood>=1" );
-    def -> add_action( this, "Blood Boil", "if=buff.crimson_scourge.react|(blood>=1&(dot.frost_fever.remains<=10|dot.blood_plague.remains<=10))" );
     def -> add_action( this, "Heart Strike", "if=blood>=1" );
     def -> add_action( this, "Rune Strike" );
     def -> add_talent( this, "Blood Tap" );
@@ -5302,7 +5004,6 @@ void death_knight_t::default_apl_blood()
     def -> add_action( this, "Icy Touch", "if=!dot.frost_fever.ticking" );
     def -> add_action( this, "Soul Reaper", "if=target.health.pct-3*(target.health.pct%target.time_to_die)<=" + srpct );
     def -> add_action( this, "Death Strike" );
-    def -> add_action( this, "Blood Boil", "if=buff.crimson_scourge.react|(blood>=1&(dot.frost_fever.remains<=2|dot.blood_plague.remains<=2))" );
     def -> add_action( this, "Heart Strike", "if=(blood>1&target.health.pct<" + srpct + ")|blood>=1" );
     def -> add_action( this, "Rune Strike" );
     def -> add_talent( this, "Blood Tap" );
