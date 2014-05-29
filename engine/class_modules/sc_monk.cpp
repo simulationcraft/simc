@@ -1481,7 +1481,7 @@ struct spinning_crane_kick_t : public monk_melee_attack_t
   struct spinning_crane_kick_tick_t : public monk_melee_attack_t
   {
     spinning_crane_kick_tick_t( monk_t* p, const spell_data_t* s ) :
-      monk_melee_attack_t( "spinning_crane_kick_tick", p, p -> find_class_spell( "Spinning Crane Kick" ) )
+      monk_melee_attack_t( "spinning_crane_kick_tick", p, s )
     {
       background  = true;
       dual        = true;
@@ -1501,7 +1501,7 @@ struct spinning_crane_kick_t : public monk_melee_attack_t
   struct rushing_jade_wind_tick_t : public monk_melee_attack_t
   {
     rushing_jade_wind_tick_t( monk_t* p, const spell_data_t* s ) :
-      monk_melee_attack_t( "rushing_jade_wind_tick", p, p -> find_talent_spell( "Rushing Jade Wind" ) )
+      monk_melee_attack_t( "rushing_jade_wind_tick", p, s )
     {
       background  = true;
       dual        = true;
@@ -2276,9 +2276,10 @@ struct chi_wave_dmg_tick_t : public monk_spell_t
  
 struct chi_wave_t : public monk_spell_t
 {
-  spell_t* damage;
   heal_t* heal;
+  spell_t* damage;
   bool dmg;
+
   chi_wave_t( monk_t* player, const std::string& options_str  ) :
     monk_spell_t( "chi_wave", player, player -> talent.chi_wave ),
     heal( new chi_wave_heal_tick_t( *player, "chi_wave_heal") ),
@@ -3530,9 +3531,7 @@ void monk_t::init_base_stats()
     base.mana_regen_from_spirit_multiplier = spec.mana_meditation -> effectN( 1 ).percent();
  
   // Avoidance diminishing Returns constants/conversions
-  base.miss  = 0.030; //90
-  base.dodge = 0.030; //90
-  base.parry = 0.030; //90
+  // base miss, dodge, parry all set to 3% in player_t::init_base_stats()
  
   // based on http://www.sacredduty.net/2013/08/08/updated-diminishing-returns-coefficients-all-tanks/
   diminished_kfactor   =   1.422000;

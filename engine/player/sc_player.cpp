@@ -141,6 +141,32 @@ bool parse_talent_override( sim_t* sim,
   return true;
 }
 
+// parse_talent_override ====================================================
+
+bool parse_timeofday( sim_t* sim,
+                            const std::string& name,
+                            const std::string& override_str )
+{
+  assert( name == "timeofday" ); ( void )name;
+  assert( sim -> active_player );
+  player_t* p = sim -> active_player;
+
+  if ( util::str_compare_ci( override_str, "night" ) || util::str_compare_ci( override_str, "nighttime" ) )
+  {
+    p -> timeofday = player_t::timeofday_e::NIGHT_TIME;
+  }
+  else if ( util::str_compare_ci( override_str, "day" ) || util::str_compare_ci( override_str, "daytime" ) )
+  {
+    p -> timeofday = player_t::timeofday_e::DAY_TIME;
+  }
+  else
+  {
+    sim -> errorf( "\n%s timeofday string \"%s\" not valid.\n", sim -> active_player-> name(), override_str.c_str() );
+  }
+
+  return true;
+}
+
 // parse_role_string ========================================================
 
 bool parse_role_string( sim_t* sim,
@@ -384,7 +410,6 @@ player_t::player_t( sim_t*             s,
 
   // (static) attributes
   race( r ),
-  nightelf( "night" ), //Set to Night by Default, user can override.
   role( ROLE_HYBRID ),
   level( default_level ),
   party( 0 ),
@@ -400,6 +425,7 @@ player_t::player_t( sim_t*             s,
   initialized( false ), potion_used( false ),
 
   region_str( s -> default_region_str ), server_str( s -> default_server_str ), origin_str(),
+  timeofday( NIGHT_TIME ), //Set to Night by Default, user can override.
   gcd_ready( timespan_t::zero() ), base_gcd( timespan_t::from_seconds( 1.5 ) ), started_waiting( timespan_t::min() ),
   pet_list(), active_pets(),
   vengeance_list( this ),invert_scaling( 0 ),
@@ -559,6 +585,8 @@ player_t::base_initial_current_t::base_initial_current_t() :
   dodge( 0 ),
   parry( 0 ),
   block( 0 ),
+  hit( 0 ),
+  expertise( 0 ),
   spell_crit(),
   attack_crit(),
   block_reduction(),
@@ -792,7 +820,17 @@ void player_t::init_base_stats()
     base.health_per_stamina    = dbc.health_per_stamina( level );
     base.dodge_per_agility     = 1 / 10000.0 / 100.0; // default at L90, modified for druid/monk in class module
     base.parry_per_strength    = 0.0;                 // only certain classes get STR->parry conversions, handle in class module
+
+    // players have a base 7.5% hit/exp 
+    base.hit       = 0.075;
+    base.expertise = 0.075;
   }
+
+  // base dodge, parry, block, and miss are 3% for all characters
+  base.dodge = 0.03;
+  base.parry = 0.03; // overridden in druid module to disable parry
+  base.miss  = 0.03;
+  base.block = 0.0;  // overridden in enemy, paladin, and warrior modules
 
   base.spell_power_multiplier    = 1.0;
   base.attack_power_multiplier   = 1.0;
@@ -1066,33 +1104,7 @@ void player_t::init_defense()
   }
 
   // Armor Coefficient
-  double a, b;
-  if ( level > 85 ) // Probably only works at level 100, assuming that they keep the same damage reduction % as now. (34.9%) Need to figure out the coefficients sometime.
-  { // For now, it's better than everything having 0.1% armor reduction.
-    a = 100;
-    b = -236.87;
-  }
-  //else if ( level > 85 ) // need to update
-  //{
-  // a = 4037.5;
-  // b = -317117.5;
-  // }
-  else if ( level > 80 )
-  {
-    a = 2167.5;
-    b = -158167.5;
-  }
-  else if ( level >= 60 )
-  {
-    a = 467.5;
-    b = -22167.5;
-  }
-  else
-  {
-    a = 85.0;
-    b = 400.0;
-  }
-  initial.armor_coeff = a * level + b;
+  initial.armor_coeff = dbc.armor_mitigation_constant( level );
   if ( sim -> debug )
     sim -> out_debug.printf( "%s: Initial Armor Coeff set to %.4f", name(), initial.armor_coeff );
 
@@ -1333,7 +1345,7 @@ std::vector<std::string> player_t::get_item_actions()
 
 // player_t::init_use_profession_actions ====================================
 
-std::string player_t::init_use_profession_actions( const std::string& append )
+std::string player_t::init_use_profession_actions( const std::string& /* append */ )
 {
   std::string buffer;
   
@@ -2204,18 +2216,6 @@ double player_t::mana_regen_per_second() const
   return current.mana_regen_per_second + cache.spirit() * current.mana_regen_per_spirit * current.mana_regen_from_spirit_multiplier;
 }
 
-// player_t::may_block ======================================================
-// This method is used to incorporate target properties into action resolution.
-// Similar methods for dodge and parry may be implemented eventually.
-
-bool player_t::may_block( action_e a ) const
-{
-  if ( a == ACTION_ATTACK )
-    return true;
-
-  return false;
-}
-
 // Need a way to include human racial.
 // player_t::composite_attack_haste =========================================
 
@@ -2246,7 +2246,7 @@ double player_t::composite_melee_haste() const
     h *= 1.0 / ( 1.0 + racials.nimble_fingers -> effectN( 1 ).percent() );
     h *= 1.0 / ( 1.0 + racials.time_is_money -> effectN( 1 ).percent() );
 
-    if ( nightelf == "night" || nightelf == "nighttime" )
+    if ( timeofday == timeofday_e::NIGHT_TIME )
        h *= 1.0 / ( 1.0 + racials.touch_of_elune -> effectN( 1 ).percent() );
 
   }
@@ -2302,7 +2302,8 @@ double player_t::composite_melee_crit() const
 
     ac += racials.viciousness -> effectN( 1 ).percent();
     ac += racials.arcane_acuity -> effectN( 1 ).percent();
-    if ( nightelf == "day" || nightelf == "daytime" )
+
+    if ( timeofday == timeofday_e::DAY_TIME )
        ac += racials.touch_of_elune -> effectN( 1 ).percent();
 
   return ac;
@@ -2314,6 +2315,8 @@ double player_t::composite_melee_expertise( weapon_t* ) const
 {
   double e = composite_expertise_rating() / current.rating.expertise;
 
+  e += base.expertise;
+
   return e;
 }
 
@@ -2322,6 +2325,8 @@ double player_t::composite_melee_expertise( weapon_t* ) const
 double player_t::composite_melee_hit() const
 {
   double ah = composite_melee_hit_rating() / current.rating.attack_hit;
+
+  ah += base.hit;
 
   return ah;
 }
@@ -2497,7 +2502,7 @@ double player_t::composite_spell_haste() const
     h *= 1.0 / ( 1.0 + racials.nimble_fingers -> effectN( 1 ).percent() );
     h *= 1.0 / ( 1.0 + racials.time_is_money -> effectN( 1 ).percent() );
 
-    if ( nightelf == "nighttime" || nightelf == "night" )
+    if ( timeofday == timeofday_e::NIGHT_TIME )
        h *= 1.0 / ( 1.0 + racials.touch_of_elune -> effectN( 1 ).percent() );
 
   }
@@ -2557,7 +2562,7 @@ double player_t::composite_spell_crit() const
   sc += racials.viciousness -> effectN( 1 ).percent();
   sc += racials.arcane_acuity -> effectN( 1 ).percent();
 
-  if ( nightelf == "day" || nightelf == "daytime")
+  if ( timeofday == timeofday_e::DAY_TIME )
     sc += racials.touch_of_elune -> effectN( 1 ).percent();
 
   return sc;
@@ -7882,7 +7887,7 @@ void player_t::copy_from( player_t* source )
   origin_str = source -> origin_str;
   level = source -> level;
   race_str = source -> race_str;
-  nightelf = source -> nightelf;
+  timeofday = source -> timeofday;
   race = source -> race;
   role = source -> role;
   _spec = source -> _spec;
@@ -7924,7 +7929,7 @@ void player_t::create_options()
     opt_func( "talent_override", parse_talent_override ),
     opt_string( "glyphs", glyphs_str ),
     opt_string( "race", race_str ),
-    opt_string( "timeofday", nightelf ),
+    opt_func( "timeofday", parse_timeofday ),
     opt_int( "level", level ),
     opt_bool( "ready_trigger", ready_type ),
     opt_func( "role", parse_role_string ),

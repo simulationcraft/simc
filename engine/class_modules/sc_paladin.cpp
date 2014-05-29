@@ -383,7 +383,6 @@ public:
   virtual double    temporary_movement_modifier() const;
 
   // combat outcome functions
-  virtual bool      may_block( action_e a ) const;
   virtual void      assess_damage( school_e, dmg_e, action_state_t* );
   virtual void      assess_heal( school_e, dmg_e, action_state_t* );
   virtual void      target_mitigation( school_e, dmg_e, action_state_t* );
@@ -998,8 +997,6 @@ struct avengers_shield_t : public paladin_spell_t
 
 struct avenging_wrath_t : public paladin_heal_t
 {
-  double tick_pct;
-
   avenging_wrath_t( paladin_t* p, const std::string& options_str )
     : paladin_heal_t( "avenging_wrath", p, p -> specialization() == PALADIN_RETRIBUTION ? p -> find_spell( 31884 ) : p -> find_spell( 31842 ) )
   {
@@ -1020,6 +1017,7 @@ struct avenging_wrath_t : public paladin_heal_t
     // hack in Glyph of Avenging Wrath behavior
     if ( p -> glyphs.avenging_wrath -> ok() )
     {
+      parse_effect_data( p -> find_spell( 115547 ) -> effectN( 1 ) );
       // this info is very poorly encoded in the spell data; simpler just to hardcode
       base_tick_time = timespan_t::from_seconds( 3.0 );
       num_ticks = p -> buffs.avenging_wrath -> buff_duration / base_tick_time;
@@ -1027,16 +1025,15 @@ struct avenging_wrath_t : public paladin_heal_t
       tick_may_crit = false;
       may_multistrike = false;
       target = p;
-      tick_pct = p -> find_spell( 115547 ) -> effectN( 1 ).percent();
     }
   }
 
   virtual void tick( dot_t* d )
   {
+    // override for this just in case Avenging Wrath were to get canceled or removed
+    // early, or if there's a duration mismatch (unlikely, but...)
     if ( p() -> buffs.avenging_wrath -> up() )
     {
-      base_td = p() -> resources.max[ RESOURCE_HEALTH ] * tick_pct;
-
       // call tick()
       heal_t::tick( d );
     }
@@ -1476,9 +1473,28 @@ struct divine_protection_t : public paladin_spell_t
 };
 
 // Divine Shield ============================================================
+struct glyph_of_divine_shield_t : public paladin_heal_t
+{
+  glyph_of_divine_shield_t( paladin_t* p )
+    : paladin_heal_t( "glyph_of_divine_shield", p, p -> find_glyph_spell( "Glyph of Divine Shield" ) )
+  {
+    pct_heal = 0.0;
+    background = true;
+    target = p;
+  }
+
+  void set_num_destroyed( int n )
+  {
+    pct_heal = std::min( data().effectN( 1 ).percent() * n,
+                         data().effectN( 1 ).percent() * data().effectN( 2 ).base_value() );
+  }
+
+};
 
 struct divine_shield_t : public paladin_spell_t
 {
+  glyph_of_divine_shield_t* glyph_heal; 
+
   divine_shield_t( paladin_t* p, const std::string& options_str ) :
     paladin_spell_t( "divine_shield", p, p -> find_class_spell( "Divine Shield" ) )
   {
@@ -1489,7 +1505,10 @@ struct divine_shield_t : public paladin_spell_t
     // unbreakable spirit reduces cooldown
     if ( p -> talents.unbreakable_spirit -> ok() )
       cooldown -> duration = data().cooldown() * ( 1 + p -> talents.unbreakable_spirit -> effectN( 1 ).percent() );
-
+    
+    // glyph of divine shield heals
+    if ( p -> glyphs.divine_shield -> ok() )
+      glyph_heal = new glyph_of_divine_shield_t( p );
   }
 
   virtual void execute()
@@ -1502,28 +1521,25 @@ struct divine_shield_t : public paladin_spell_t
 
     // in this sim, the only debuffs we care about are enemy DoTs.
     // Check for them and remove them when cast, and apply Glyph of Divine Shield appropriately
+    int num_destroyed = 0;
     for ( size_t i = 0, size = p() -> dot_list.size(); i < size; i++ )
     {
       dot_t* d = p() -> dot_list[ i ];
-      int num_destroyed = 0;
 
-      if ( d -> source != p() )
+      if ( d -> source != p() && d -> source -> is_enemy() && d -> is_ticking() )
       {
         d -> cancel();
         num_destroyed++;
       }
-
-      // glyph of divine shield heals
-      if ( p() -> glyphs.divine_shield -> ok() )
-      {
-        double amount = std::min( num_destroyed * p() -> glyphs.divine_shield -> effectN( 1 ).percent(),
-                                  p() -> glyphs.divine_shield -> effectN( 1 ).percent() * p() -> glyphs.divine_shield -> effectN( 2 ).base_value() );
-
-        amount *= p() -> resources.max[ RESOURCE_HEALTH ];
-
-        p() -> resource_gain( RESOURCE_HEALTH, amount, p() -> gains.glyph_divine_shield, this );
-      }
     }
+
+    // glyph of divine shield heals
+    if ( p() -> glyphs.divine_shield -> ok() )
+    {
+      glyph_heal -> set_num_destroyed( num_destroyed );
+      glyph_heal -> schedule_execute();
+    }
+
     // trigger forbearance
     p() -> debuffs.forbearance -> trigger();
   }
@@ -2353,7 +2369,7 @@ struct holy_shock_damage_t : public paladin_spell_t
 {
   double crit_increase;
 
-  holy_shock_damage_t( paladin_t* p, const std::string& options_str )
+  holy_shock_damage_t( paladin_t* p )
     : paladin_spell_t( "holy_shock_damage", p, p -> find_spell( 25912 ) ),
       crit_increase( 0.0 )
   {
@@ -2413,7 +2429,7 @@ struct holy_shock_heal_t : public paladin_heal_t
   double crit_increase;
   daybreak_t* daybreak;
 
-  holy_shock_heal_t( paladin_t* p, const std::string& options_str ) :
+  holy_shock_heal_t( paladin_t* p ) :
     paladin_heal_t( "holy_shock_heal", p, p -> find_spell( 25914 ) ),
     crit_increase( 0.0 )
   {
@@ -2502,10 +2518,10 @@ struct holy_shock_t : public paladin_heal_t
     }
 
     // create the damage and healing spell effects, designate them as children for reporting
-    damage = new holy_shock_damage_t( p, options_str );
+    damage = new holy_shock_damage_t( p );
     damage ->crit_increase = crit_increase;
     add_child( damage );
-    heal = new holy_shock_heal_t( p, options_str );
+    heal = new holy_shock_heal_t( p );
     heal ->crit_increase = crit_increase;
     add_child( heal );
 
@@ -2620,11 +2636,8 @@ struct lay_on_hands_t : public paladin_heal_t
 
     use_off_gcd = true;
     trigger_gcd = timespan_t::zero();
-  }
 
-  virtual double calculate_direct_amount( action_state_t* )
-  {
-    return p() -> resources.max[ RESOURCE_HEALTH ];
+    pct_heal = 1.0;
   }
 
   virtual void execute()
@@ -2988,7 +3001,8 @@ struct uthers_insight_t : public paladin_heal_t
     // spell info isn't parsing out of the effect well
     base_tick_time = timespan_t::from_millis( data().effectN( 1 )._amplitude );
     num_ticks = data().duration() / base_tick_time ;
-    tick_pct_heal = data().effectN( 1 ).percent();
+    // pick up the % heal amount from effect #1
+    parse_effect_data( data().effectN( 1 ) );
   }
 
   virtual void execute()
@@ -3458,13 +3472,25 @@ struct crusader_strike_t : public paladin_melee_attack_t
 };
 
 // Divine Storm =============================================================
+struct glyph_of_divine_storm_t : public paladin_heal_t
+{
+  glyph_of_divine_storm_t( paladin_t* p )
+    : paladin_heal_t( "glyph_of_divine_storm", p, p -> find_glyph_spell( "Glyph of Divine Storm" ) )
+  {     
+    // heal amount is stored in spell 115515 for whatever reason
+    parse_effect_data( p -> find_spell( 115515 ) -> effectN( 1 ) );
+    background = true;
+    target = p;
+  }
+
+};
 
 struct divine_storm_t : public paladin_melee_attack_t
 {
-  double heal_percentage;
+  glyph_of_divine_storm_t* glyph_heal;
 
   divine_storm_t( paladin_t* p, const std::string& options_str )
-    : paladin_melee_attack_t( "divine_storm", p, p -> find_class_spell( "Divine Storm" ) ), heal_percentage( 0.0 )
+    : paladin_melee_attack_t( "divine_storm", p, p -> find_class_spell( "Divine Storm" ) )
   {
     parse_options( NULL, options_str );
 
@@ -3477,8 +3503,7 @@ struct divine_storm_t : public paladin_melee_attack_t
 
     if ( p -> glyphs.divine_storm -> ok() )
     {
-      // heal amount is stored in spell 115515 for whatever reason
-      heal_percentage = p -> find_spell( 115515 ) -> effectN( 1 ).percent();
+      glyph_heal = new glyph_of_divine_storm_t( p );
     }
   }
 
@@ -3526,7 +3551,7 @@ struct divine_storm_t : public paladin_melee_attack_t
       trigger_hand_of_light( s );
       if ( p() -> glyphs.divine_storm -> ok() )
       {
-        p() -> resource_gain( RESOURCE_HEALTH, heal_percentage * p() -> resources.max[ RESOURCE_HEALTH ], p() -> gains.glyph_divine_storm, this );
+        glyph_heal -> schedule_execute();
       }
     }
   }
@@ -3956,6 +3981,7 @@ struct judgment_t : public paladin_melee_attack_t
         case SEAL_OF_RIGHTEOUSNESS:  p() -> buffs.liadrins_righteousness -> trigger(); break;
         case SEAL_OF_TRUTH:          p() -> buffs.maraads_truth -> trigger(); break;
         case SEAL_OF_INSIGHT:        uthers_insight -> schedule_execute(); break;
+        default: break;
       }
     }
   }
@@ -4468,7 +4494,7 @@ action_t* paladin_t::create_action( const std::string& name, const std::string& 
   if ( name == "holy_avenger"              ) return new holy_avenger_t             ( this, options_str );
   if ( name == "holy_radiance"             ) return new holy_radiance_t            ( this, options_str );
   if ( name == "holy_shock"                ) return new holy_shock_t               ( this, options_str );
-  if ( name == "holy_shock_heal"           ) return new holy_shock_heal_t          ( this, options_str );
+  // if ( name == "holy_shock_heal"           ) return new holy_shock_heal_t          ( this, options_str ); TODO: doesn't make sense to have a background action in the action list
   if ( name == "holy_wrath"                ) return new holy_wrath_t               ( this, options_str );
   if ( name == "guardian_of_ancient_kings" ) return new guardian_of_ancient_kings_t( this, options_str );
   if ( name == "judgment"                  ) return new judgment_t                 ( this, options_str );
@@ -4565,11 +4591,13 @@ void paladin_t::init_base_stats()
   resources.base[ RESOURCE_HOLY_POWER ] = 3 + passives.boundless_conviction -> effectN( 1 ).base_value();
 
   // Avoidance diminishing Returns constants/conversions
-  base.miss    = 0.030;
-  base.dodge   = 0.030;  //90
-  base.parry   = 0.030;  //90
+  // base miss, dodge, parry all set to 3% in player_t::init_base_stats()
   base.block   = 0.030;  //90
-  base.block_reduction = 0.3;
+  base.block_reduction = 0.3 + perk.improved_block -> effectN( 1 ).percent();
+  // add Sanctuary dodge
+  base.dodge += passives.sanctuary -> effectN( 3 ).percent();
+  // add Sanctuary expertise
+  base.expertise += passives.sanctuary -> effectN( 4 ).percent();
 
   // based on http://sacredduty.net/2012/09/14/avoidance-diminishing-returns-in-mop-followup/
   diminished_kfactor    = 0.886;
@@ -4626,9 +4654,6 @@ void paladin_t::init_gains()
   // Mana
   gains.divine_plea                 = get_gain( "divine_plea"            );
   gains.extra_regen                 = get_gain( ( specialization() == PALADIN_RETRIBUTION ) ? "sword_of_light" : "guarded_by_the_light" );
-  gains.seal_of_insight             = get_gain( "seal_of_insight"        );
-  gains.glyph_divine_storm          = get_gain( "glyph_of_divine_storm"  );
-  gains.glyph_divine_shield         = get_gain( "glyph_of_divine_shield" );
 
   // Holy Power
   gains.hp_blessed_life             = get_gain( "blessed_life" );
@@ -5569,9 +5594,6 @@ double paladin_t::composite_melee_expertise( weapon_t* w ) const
 {
   double expertise = player_t::composite_melee_expertise( w );
 
-  if ( passives.sanctuary -> ok() )
-    expertise += passives.sanctuary -> effectN( 4 ).percent();
-
   return expertise;
 }
 
@@ -5811,9 +5833,6 @@ double paladin_t::composite_block() const
  // Guarded by the Light block not affected by diminishing returns
   b += passives.guarded_by_the_light -> effectN( 6 ).percent();
 
-  // Improved Block perk (assuming for now that it's not affected by DR
-  b += perk.improved_block -> effectN( 1 ).percent();
-
   // Holy Shield (assuming for now that it's not affected by DR)
   b += talents.holy_shield -> effectN( 1 ).percent();
 
@@ -5833,9 +5852,6 @@ double paladin_t::composite_crit_avoidance() const
 double paladin_t::composite_dodge() const
 {
   double d = player_t::composite_dodge();
-
-  // add Sanctuary dodge
-  d += passives.sanctuary -> effectN( 3 ).percent();
 
   return d;
 }
@@ -5859,18 +5875,6 @@ double paladin_t::temporary_movement_modifier() const
     temporary = std::max( buffs.turalyons_justice-> data().effectN( 1 ).percent(), temporary );
 
   return temporary;
-}
-
-// paladin_t::may_block =====================================================
-
-bool paladin_t::may_block( action_e a ) const
-{
-  
-  if ( a == ACTION_SPELL && talents.holy_shield -> ok() )
-    return true;
-
-  return player_t::may_block( a );
-
 }
 
 // paladin_t::target_mitigation =============================================
@@ -5946,6 +5950,16 @@ void paladin_t::target_mitigation( school_e school,
       sim -> out_debug.printf( "Damage to %s after SotR mitigation is %f", s -> target -> name(), s -> result_amount );
   }
 
+  // Holy Shield will go here
+  if ( talents.holy_shield -> ok() && ! ( school == SCHOOL_PHYSICAL ) )
+  {
+    // for now hack this in as mitigation, even though it'll show up as an absorb
+    s -> result_amount *= 1.0 - composite_block_reduction();
+
+    if ( sim -> debug && s -> action && ! s -> target -> is_enemy() && ! s -> target -> is_add() )
+      sim -> out_debug.printf( "Damage to %s after Holy Shield mitigation is %f", s -> target -> name(), s -> result_amount );
+  }
+
   // Ardent Defender
   if ( buffs.ardent_defender -> check() )
   {
@@ -5996,6 +6010,9 @@ void paladin_t::invalidate_cache( cache_e c )
   {
     player_t::invalidate_cache( CACHE_SPELL_POWER );
   }
+
+  if ( c == CACHE_ATTACK_CRIT && specialization() == PALADIN_PROTECTION )
+    player_t::invalidate_cache( CACHE_PARRY );
 
   if ( c == CACHE_MASTERY && passives.divine_bulwark -> ok() )
     player_t::invalidate_cache( CACHE_BLOCK );

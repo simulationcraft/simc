@@ -4118,7 +4118,8 @@ struct player_t : public actor_t
 
   std::string talents_str, glyphs_str, id_str, target_str;
   std::string region_str, server_str, origin_str;
-  std::string race_str, professions_str, position_str, nightelf;
+  std::string race_str, professions_str, position_str;
+  enum timeofday_e { NIGHT_TIME, DAY_TIME, } timeofday; // Specify InGame time of day to determine Night Elf racial
   timespan_t  gcd_ready, base_gcd, started_waiting;
   std::vector<pet_t*> pet_list;
   std::vector<pet_t*> active_pets;
@@ -4168,6 +4169,7 @@ struct player_t : public actor_t
     double mana_regen_per_spirit, mana_regen_from_spirit_multiplier, health_per_stamina;
     std::array<double, SCHOOL_MAX> resource_reduction;
     double miss, dodge, parry, block;
+    double hit, expertise;
     double spell_crit, attack_crit, block_reduction, mastery;
     double skill, distance;
     double distance_to_move;
@@ -4200,7 +4202,6 @@ struct player_t : public actor_t
 
   // Defense Mechanics
   double diminished_dodge_cap, diminished_parry_cap, diminished_block_cap, diminished_kfactor;
-  virtual bool may_block( action_e ) const;
 
   // Weapons
   weapon_t main_hand_weapon;
@@ -5684,6 +5685,7 @@ struct attack_t : public action_t
   virtual void   init();
 
   virtual double  miss_chance( double hit, player_t* t ) const;
+  virtual double  dodge_chance( double /* expertise */, player_t* t ) const;
   virtual double  block_chance( action_state_t* s ) const;
   virtual double  crit_block_chance( action_state_t* s ) const;
 
@@ -5726,7 +5728,6 @@ struct melee_attack_t : public attack_t
 
   // Melee Attack Overrides
   virtual void init();
-  virtual double  dodge_chance( double /* expertise */, player_t* t ) const;
   virtual double  parry_chance( double /* expertise */, player_t* t ) const;
   virtual double glance_chance( int delta_level ) const;
 
@@ -5740,9 +5741,6 @@ struct ranged_attack_t : public attack_t
   ranged_attack_t( const std::string& token, player_t* p, const spell_data_t* s = spell_data_t::nil() );
 
   // Ranged Attack Overrides
-  virtual double  dodge_chance( double /* expertise */, player_t* t ) const;
-  virtual double  parry_chance( double /* expertise */, player_t* t ) const;
-  virtual double glance_chance( int delta_level ) const;
   virtual double composite_target_multiplier( player_t* ) const;
   virtual void schedule_execute( action_state_t* execute_state = 0 );
 
@@ -5789,7 +5787,6 @@ public:
   virtual void   assess_damage( dmg_e, action_state_t* );
   virtual void   execute();
   virtual double miss_chance( double hit, player_t* t ) const;
-  virtual double block_chance( action_state_t* s ) const;
   virtual void   init();
   virtual double composite_hit() const
   { return action_t::composite_hit() + player -> cache.spell_hit(); }
@@ -6838,9 +6835,9 @@ struct residual_dot_action : public Action
   virtual void execute() { assert( 0 ); }
 
   // Never need to update the state.
-  virtual void snapshot_state( action_state_t* state, dmg_e type ) override
+  virtual void snapshot_state( action_state_t*, dmg_e ) override
   { }
-  virtual void update_state( action_state_t*, dmg_e ) { }
+  virtual void update_state( action_state_t*, dmg_e ) override { }
 
   virtual double calculate_tick_amount( action_state_t* s, double dmg_multiplier )
   {

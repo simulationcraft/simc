@@ -849,8 +849,8 @@ void warrior_attack_t::impact( action_state_t* s )
       p() -> active_second_wind -> execute();
     }
 
-  if ( ( result_is_hit( s -> result ) || result_is_multistrike( s -> result ) && 
-         !proc && s -> result_amount > 0 && this -> id != 147891 ) ) // Flurry of Xuen
+  if ( result_is_hit( s -> result ) ||
+      ( result_is_multistrike( s -> result ) && !proc && s -> result_amount > 0 && this -> id != 147891 ) ) // Flurry of Xuen
   {
     if ( p() -> buff.sweeping_strikes -> up() && ( !aoe || this -> id == 78 ) ) // Heroic strike exception due to glyph that turns it into 2-target cleave.
       trigger_sweeping_strikes( execute_state );
@@ -2273,10 +2273,12 @@ struct shockwave_t : public warrior_attack_t
 
     if ( result_is_hit( execute_state -> result ) )
       if ( execute_state -> n_targets >= 3 )
+      {
         if ( cd_duration > timespan_t::from_seconds( 20 ) )
           cd_duration += timespan_t::from_seconds( -20 );
         else
           cd_duration = timespan_t::zero();
+      }
 
     warrior_attack_t::update_ready( cd_duration );
   }
@@ -3367,9 +3369,7 @@ void warrior_t::init_base_stats()
   //base.stats.attack_power = level * ( level > 80 ? 3.0 : 2.0 ); Remove later, I think base attack power is gone in WoD.
 
   // Avoidance diminishing Returns constants/conversions
-  base.miss            = 0.030;
-  base.dodge           = 0.030; //90
-  base.parry           = 0.030; //90
+  // base miss, dodge, parry all set to 3% in player_t::init_base_stats()
   base.block           = 0.030; //90
   base.block_reduction = 0.300;
 
