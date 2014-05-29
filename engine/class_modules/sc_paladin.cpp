@@ -4593,7 +4593,7 @@ void paladin_t::init_base_stats()
   // Avoidance diminishing Returns constants/conversions
   // base miss, dodge, parry all set to 3% in player_t::init_base_stats()
   base.block   = 0.030;  //90
-  base.block_reduction = 0.3;
+  base.block_reduction = 0.3 + perk.improved_block -> effectN( 1 ).percent();
   // add Sanctuary dodge
   base.dodge += passives.sanctuary -> effectN( 3 ).percent();
   // add Sanctuary expertise
@@ -5833,9 +5833,6 @@ double paladin_t::composite_block() const
  // Guarded by the Light block not affected by diminishing returns
   b += passives.guarded_by_the_light -> effectN( 6 ).percent();
 
-  // Improved Block perk (assuming for now that it's not affected by DR
-  b += perk.improved_block -> effectN( 1 ).percent();
-
   // Holy Shield (assuming for now that it's not affected by DR)
   b += talents.holy_shield -> effectN( 1 ).percent();
 
@@ -5951,6 +5948,16 @@ void paladin_t::target_mitigation( school_e school,
 
     if ( sim -> debug && s -> action && ! s -> target -> is_enemy() && ! s -> target -> is_add() )
       sim -> out_debug.printf( "Damage to %s after SotR mitigation is %f", s -> target -> name(), s -> result_amount );
+  }
+
+  // Holy Shield will go here
+  if ( talents.holy_shield -> ok() && ! ( school == SCHOOL_PHYSICAL ) )
+  {
+    // for now hack this in as mitigation, even though it'll show up as an absorb
+    s -> result_amount *= 1.0 - composite_block_reduction();
+
+    if ( sim -> debug && s -> action && ! s -> target -> is_enemy() && ! s -> target -> is_add() )
+      sim -> out_debug.printf( "Damage to %s after Holy Shield mitigation is %f", s -> target -> name(), s -> result_amount );
   }
 
   // Ardent Defender
