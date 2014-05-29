@@ -4248,7 +4248,7 @@ struct renew_t final : public priest_heal_t
       dot_t* d = get_dot( s -> target );
       result_e r = d -> state -> result;
       d -> state -> result = RESULT_HIT;
-      double tick_dmg = calculate_tick_amount( d -> state );
+      double tick_dmg = calculate_tick_amount( d -> state, 1.0 );
       d -> state -> result = r;
       tick_dmg *= d -> ticks_left(); // Gets multiplied by the hasted amount of ticks
       rr -> trigger( s, tick_dmg );

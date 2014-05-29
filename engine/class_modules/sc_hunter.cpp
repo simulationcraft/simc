@@ -2404,7 +2404,7 @@ struct explosive_shot_t : public hunter_ranged_attack_t
       // Force damage calculation to be hit based always
       result_e r = s -> result;
       s -> result = RESULT_HIT;
-      double damage = calculate_tick_amount( s );
+      double damage = calculate_tick_amount( s , 1.0);
       s -> result = r;
       ignite::trigger_pct_based(
         p() -> active.explosive_ticks, // ignite spell

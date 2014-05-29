@@ -106,7 +106,7 @@ void core_event_t::cancel( core_event_t*& e )
     {
       e -> _sim.out_error.printf( "event_t::cancel assertion error: e -> player -> events < 0, event %s from %s.\n",
                        e -> name, e -> actor -> name() );
-      assert( 0 );
+      assert( false );
     }
   }
 

@@ -338,7 +338,7 @@ double heal_t::calculate_direct_amount( action_state_t* state )
 
 // heal_t::calculate_tick_amount ============================================
 
-double heal_t::calculate_tick_amount( action_state_t* state )
+double heal_t::calculate_tick_amount( action_state_t* state, double dmg_multiplier )
 {
   if ( tick_pct_heal )
   {
@@ -351,6 +351,8 @@ double heal_t::calculate_tick_amount( action_state_t* state )
     {
       amount *= 1.0 + total_crit_bonus();
     }
+
+    amount *= dmg_multiplier; // dot tick multiplier
 
     // Record total amount to state
     state -> result_total = amount;
@@ -369,7 +371,7 @@ double heal_t::calculate_tick_amount( action_state_t* state )
     return amount;
   }
 
-  return base_t::calculate_tick_amount( state );
+  return base_t::calculate_tick_amount( state, dmg_multiplier );
 }
 
 // heal_t::execute ==========================================================

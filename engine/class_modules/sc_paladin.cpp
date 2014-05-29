@@ -2799,7 +2799,7 @@ struct sacred_shield_t : public paladin_heal_t
   {
     // Kludge to swap the heal for an absorb
     // calculate the tick amount
-    double ss_tick_amount = calculate_tick_amount( d -> state );
+    double ss_tick_amount = calculate_tick_amount( d -> state, d -> get_last_tick_factor() );
 
     // if an existing absorb bubble is still hanging around, kill it
     td( d -> state -> target ) -> buffs.sacred_shield_tick -> expire();

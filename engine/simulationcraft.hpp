@@ -5315,7 +5315,7 @@ struct action_t : public noncopyable
   virtual result_e calculate_multistrike_result( action_state_t* /* state */ );
   virtual block_result_e calculate_block_result( action_state_t* s );
   virtual double calculate_direct_amount( action_state_t* state );
-  virtual double calculate_tick_amount( action_state_t* state );
+  virtual double calculate_tick_amount( action_state_t* state, double multiplier );
 
   virtual double calculate_weapon_damage( double attack_power );
   virtual double target_armor( player_t* t ) const
@@ -5325,7 +5325,7 @@ struct action_t : public noncopyable
   virtual int n_targets() const { return aoe; }
   bool is_aoe() const { return n_targets() == -1 || n_targets() > 0; }
   virtual void   execute();
-  virtual void   multistrike( action_state_t* state, dmg_e type );
+  virtual void   multistrike( action_state_t* state, dmg_e type, double dmg_multiplier = 1.0 );
   virtual void   tick( dot_t* d );
   virtual void   last_tick( dot_t* d );
   virtual void   update_vengeance( dmg_e, action_state_t* assess_state );
@@ -5812,7 +5812,7 @@ public:
   virtual size_t available_targets( std::vector< player_t* >& ) const;
   virtual void init_target_cache();
   virtual double calculate_direct_amount( action_state_t* state );
-  virtual double calculate_tick_amount( action_state_t* state );
+  virtual double calculate_tick_amount( action_state_t* state, double dmg_multiplier );
   virtual void execute();
   player_t* find_greatest_difference_player();
   player_t* find_lowest_player();
@@ -5896,6 +5896,8 @@ private:
   timespan_t last_start;
   timespan_t extended_time; // Added time per extend_duration for the current dot application
   core_event_t* tick_event;
+  core_event_t* end_event;
+  double last_tick_factor;
 public:
   player_t* const target;
   player_t* const source;
@@ -5927,9 +5929,12 @@ public:
   { return ticking; }
   timespan_t get_extended_time() const
   { return extended_time; }
+  double get_last_tick_factor() const
+  { return last_tick_factor; }
 
 private:
   struct dot_tick_event_t;
+  struct dot_end_event_t;
   void tick();
   void tick_zero();
   void last_tick();
@@ -6837,12 +6842,12 @@ struct residual_dot_action : public Action
   { }
   virtual void update_state( action_state_t*, dmg_e ) { }
 
-  virtual double calculate_tick_amount( action_state_t* s )
+  virtual double calculate_tick_amount( action_state_t* s, double dmg_multiplier )
   {
     dot_t* d = Action::find_dot( s -> target );
     residual_dot_action_state* rd_state = debug_cast<residual_dot_action_state*>( s );
 
-    s -> result_amount =  d ? rd_state -> tick_amount : 0.0;
+    s -> result_amount =  d ? rd_state -> tick_amount * dmg_multiplier: 0.0;
     return s -> result_amount;
   }
 

@@ -47,8 +47,7 @@ private:
 
     assert ( dot -> ticking );
     expr_t* expr = dot -> current_action -> interrupt_if_expr;
-    if ( dot -> remains() < dot -> current_action -> tick_time( dot -> state -> haste )
-        || ( dot -> current_action -> channeled
+    if ( ( dot -> current_action -> channeled
             && dot -> current_action -> player -> gcd_ready <= sim().current_time
             && ( dot -> current_action -> interrupt || ( expr && expr -> success() ) )
             && dot -> is_higher_priority_action_available() ) )
@@ -65,6 +64,33 @@ private:
   dot_t* dot;
 };
 
+// DoT Tick Event ===========================================================
+
+struct dot_t::dot_end_event_t final : public event_t
+{
+public:
+  dot_end_event_t( dot_t* d, timespan_t time_to_tick ) :
+      event_t( *d -> source, "DoT End" ),
+      dot( d )
+  {
+    if ( sim().debug )
+      sim().out_debug.printf( "New DoT End Event: %s %s %d-of-%d %.4f",
+                  p() -> name(), dot -> name(), dot -> current_tick + 1, dot -> num_ticks, time_to_tick.total_seconds() );
+
+    sim().add_event( this, time_to_tick );
+  }
+
+private:
+  virtual void execute() override
+  {
+    dot -> end_event = nullptr;
+    dot -> current_tick++;
+    dot -> tick();
+    dot -> last_tick();
+  }
+  dot_t* dot;
+};
+
 dot_t::dot_t( const std::string& n, player_t* t, player_t* s ) :
   sim( *( t -> sim ) ),
   ticking( false ),
@@ -72,6 +98,8 @@ dot_t::dot_t( const std::string& n, player_t* t, player_t* s ) :
   last_start( timespan_t::min() ),
   extended_time( timespan_t::zero() ),
   tick_event( nullptr ),
+  end_event( nullptr ),
+  last_tick_factor( -1.0 ),
   target( t ),
   source( s ),
   current_action( nullptr ),
@@ -147,12 +175,14 @@ void dot_t::refresh_duration( uint32_t state_flags )
 void dot_t::reset()
 {
   core_event_t::cancel( tick_event );
+  core_event_t::cancel( end_event );
   current_tick = 0;
   extended_time = timespan_t::zero();
   ticking = false;
   miss_time = timespan_t::min();
   last_start = timespan_t::min();
   current_duration = timespan_t::min();
+  last_tick_factor = -1.0;
   if ( state )
     action_state_t::release( state );
 }
@@ -166,6 +196,7 @@ void dot_t::trigger( timespan_t duration )
 
   current_tick = 0;
   extended_time = timespan_t::zero();
+  last_tick_factor = 1.0;
 
   if ( ticking )
   {
@@ -470,6 +501,7 @@ void dot_t::last_tick()
   time_to_tick = timespan_t::zero();
 
   ticking = false;
+  core_event_t::cancel( end_event );
   core_event_t::cancel( tick_event );
 
   if ( sim.debug )
@@ -485,6 +517,7 @@ void dot_t::last_tick()
   extended_time = timespan_t::zero();
   last_start = timespan_t::min();
   current_duration = timespan_t::zero();
+  last_tick_factor = -1.0;
 
   // If channeled, bring player back to life
   if ( current_action -> channeled )
@@ -504,7 +537,8 @@ void dot_t::schedule_tick()
   time_to_tick = current_action -> tick_time( state -> haste );
 
   // Recalculate num_ticks:
-  num_ticks = current_tick + remains() / time_to_tick;
+  num_ticks = current_tick + ceil( remains() / time_to_tick );
+  last_tick_factor = std::min( 1.0, remains() / time_to_tick );
 
   tick_event = new ( sim ) dot_t::dot_tick_event_t( this, time_to_tick );
 
@@ -544,6 +578,9 @@ void dot_t::start( timespan_t duration )
 {
   current_duration = duration;
   last_start = sim.current_time;
+
+  end_event = new ( sim ) dot_t::dot_end_event_t( this, current_duration );
+
   ticking = true;
 
   if ( sim.debug )
@@ -561,6 +598,9 @@ void dot_t::refresh( timespan_t duration )
   current_duration = std::min( duration * 0.3, remains() ) + duration; // New WoD Formula: Get no malus during the last 30% of the dot.
 
   last_start = sim.current_time;
+
+  event_t::cancel( end_event );
+  end_event = new ( sim ) dot_t::dot_end_event_t( this, current_duration );
 
   if ( sim.debug )
     sim.out_debug.printf( "%s refreshes dot for %s on %s. duration=%f remains()=%f",

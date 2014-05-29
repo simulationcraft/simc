@@ -1722,7 +1722,7 @@ struct combustion_t : public mage_spell_t
     }
   }
 
-  virtual double calculate_tick_amount( action_state_t* s )
+  virtual double calculate_tick_amount( action_state_t* s, double dmg_multiplier )
   {
     double a = 0.0;
 
@@ -1735,6 +1735,9 @@ struct combustion_t : public mage_spell_t
 
     if ( s -> result == RESULT_CRIT )
       a *= 1.0 + total_crit_bonus();
+
+    a *= dmg_multiplier;
+
     return a;
   }
 

@@ -759,7 +759,7 @@ double action_t::calculate_weapon_damage( double attack_power )
 
 // action_t::calculate_tick_amount ==========================================
 
-double action_t::calculate_tick_amount( action_state_t* state )
+double action_t::calculate_tick_amount( action_state_t* state, double dot_multiplier )
 {
   double amount = 0;
 
@@ -786,17 +786,20 @@ double action_t::calculate_tick_amount( action_state_t* state )
   else if ( state -> result == RESULT_MULTISTRIKE_CRIT )
     amount *= 0.3 * ( 1.0 + total_crit_bonus() );
 
+  amount *= dot_multiplier;
+
   // Record total amount to state
   state -> result_total = amount;
 
   if ( sim -> debug )
   {
-    sim -> out_debug.printf( "%s amount for %s on %s: ta=%.0f i_ta=%.0f b_ta=%.0f bonus_ta=%.0f s_mod=%.2f s_power=%.0f a_mod=%.2f a_power=%.0f mult=%.2f",
+    sim -> out_debug.printf( "%s amount for %s on %s: ta=%.0f i_ta=%.0f b_ta=%.0f bonus_ta=%.0f s_mod=%.2f s_power=%.0f a_mod=%.2f a_power=%.0f mult=%.2f, tick_mult=%.2f",
                    player -> name(), name(), target -> name(), amount,
                    init_tick_amount, base_ta( state ), bonus_ta( state ),
                    spell_tick_power_coefficient( state ), state -> composite_spell_power(),
                    attack_tick_power_coefficient( state ), state -> composite_attack_power(),
-                   state -> composite_ta_multiplier() );
+                   state -> composite_ta_multiplier(),
+                   dot_multiplier );
   }
 
   return amount;
@@ -1198,7 +1201,7 @@ result_e action_t::calculate_multistrike_result( action_state_t* s )
 
 // action_t::multistrike ====================================================
 
-void action_t::multistrike( action_state_t* state, dmg_e type )
+void action_t::multistrike( action_state_t* state, dmg_e type, double dmg_multiplier )
 {
   if ( ! may_multistrike )
     return;
@@ -1224,7 +1227,7 @@ void action_t::multistrike( action_state_t* state, dmg_e type )
     }
     else if ( type == DMG_OVER_TIME || type == HEAL_OVER_TIME )
     {
-      ms_state -> result_amount = calculate_tick_amount( ms_state );
+      ms_state -> result_amount = calculate_tick_amount( ms_state, dmg_multiplier );
       assess_damage( ms_state -> result_type, ms_state );
       action_state_t::release( ms_state );
     }
@@ -1245,7 +1248,7 @@ void action_t::multistrike( action_state_t* state, dmg_e type )
     }
     else if ( type == DMG_OVER_TIME || type == HEAL_OVER_TIME )
     {
-      ms_state -> result_amount = calculate_tick_amount( ms_state );
+      ms_state -> result_amount = calculate_tick_amount( ms_state, dmg_multiplier );
       assess_damage( ms_state -> result_type, ms_state );
       action_state_t::release( ms_state );
     }
@@ -1280,7 +1283,7 @@ void action_t::tick( dot_t* d )
     if ( tick_may_crit && rng().roll( crit_chance( d -> state -> composite_crit(), d -> state -> target -> level - player -> level ) ) )
       d -> state -> result = RESULT_CRIT;
 
-    d -> state -> result_amount = calculate_tick_amount( d -> state );
+    d -> state -> result_amount = calculate_tick_amount( d -> state, d -> get_last_tick_factor() );
 
     assess_damage( type == ACTION_HEAL ? HEAL_OVER_TIME : DMG_OVER_TIME, d -> state );
 
@@ -1917,7 +1920,7 @@ expr_t* action_t::create_expression( const std::string& name_str )
       action.snapshot_state( state, amount_type );
       state -> target = action.target;
       if ( amount_type == DMG_OVER_TIME || amount_type == HEAL_OVER_TIME )
-        return action.calculate_tick_amount( state );
+        return action.calculate_tick_amount( state, 1.0 /* Assumes full tick damage calculation */ );
       else
       {
         state -> result_amount = action.calculate_direct_amount( state );
