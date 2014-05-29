@@ -3702,10 +3702,7 @@ struct rain_of_fire_t : public warlock_spell_t
     if ( channeled && d -> current_tick != 0 ) consume_tick_resource( d );
   }
 
-  virtual int hasted_num_ticks( double /*haste*/, timespan_t /*d*/ ) const
-  {
-    return num_ticks;
-  }
+  // TODO: Bring Back dot duration haste scaling ?
 
   virtual double composite_target_ta_multiplier( player_t* t ) const
   {
@@ -3788,10 +3785,8 @@ struct hellfire_t : public warlock_spell_t
     return r;
   }
 
-  virtual int hasted_num_ticks( double /*haste*/, timespan_t /*d*/ ) const
-  {
-    return num_ticks;
-  }
+
+  // TODO: Bring Back dot duration haste scaling ?
 };
 
 
@@ -3856,17 +3851,16 @@ struct immolation_aura_t : public warlock_spell_t
 
     if ( result_is_hit( s -> result ) )
     {
-      if ( add_ticks )
-        d -> num_ticks = ( int ) std::min( d -> ticks_left() + 0.9 * num_ticks, 2.1 * num_ticks );
+      // TODO: Fix/reimplement
+      //if ( add_ticks )
+      //  d -> num_ticks = ( int ) std::min( d -> ticks_left() + 0.9 * num_ticks, 2.1 * num_ticks );
 
       if ( ! cost_event ) cost_event = new ( *sim ) cost_event_t( p(), this );
     }
   }
 
-  virtual int hasted_num_ticks( double /*haste*/, timespan_t /*d*/ ) const
-  {
-    return num_ticks;
-  }
+
+  // TODO: Bring Back dot duration haste scaling ?
 
   virtual bool ready()
   {
@@ -3875,7 +3869,7 @@ struct immolation_aura_t : public warlock_spell_t
     if ( ! p() -> buffs.metamorphosis -> check() ) r = false;
 
     dot_t* d = get_dot();
-    if ( d -> is_ticking() && d -> ticks_left() > num_ticks * 1.2 )  r = false;
+    if ( d -> is_ticking() && d -> remains() > dot_duration * 1.2 )  r = false;
 
     return r;
   }

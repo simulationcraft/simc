@@ -4126,19 +4126,25 @@ struct astral_communion_t : public druid_spell_t
     else
       starting_direction = p() -> eclipse_bar_direction;
 
-    int tmp_ticks = num_ticks;
     if ( p() -> buff.astral_insight -> up() )
     {
-      num_ticks = 0;
       p() -> buff.astral_insight -> expire();
       trigger_eclipse_energy_gain( p() -> buff.astral_insight -> data().effectN( 1 ).base_value() * starting_direction );
       druid_spell_t::execute();
-      num_ticks = tmp_ticks;
     }
     else
     {
       druid_spell_t::execute();
     }
+  }
+
+  virtual timespan_t composite_dot_duration( const action_state_t* s ) const override
+  {
+
+    if ( p() -> buff.astral_insight -> check() )
+      return timespan_t::zero();
+
+    return druid_spell_t::composite_dot_duration( s );
   }
 
   virtual void tick( dot_t* /* d */ )

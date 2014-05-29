@@ -1138,18 +1138,6 @@ void action_t::execute()
     if ( composite_teleport_distance( execute_state ) > 0 )
       do_teleport( execute_state );
 
-    /* Miss reaction handling for dot executes */
-    if ( num_ticks > 0 && result_is_miss( execute_state -> result ) )
-    {
-      dot_t* dot = get_dot( execute_state -> target );
-      last_reaction_time = player -> total_reaction_time();
-      if ( sim -> debug )
-        sim -> out_debug.printf( "%s pushes out re-cast (%.2f) on miss for %s (%s)",
-                        player -> name(), last_reaction_time.total_seconds(), name(), dot -> name() );
-
-      dot -> miss_time = sim -> current_time + time_to_travel;
-    }
-
     if ( execute_action && result_is_hit( execute_state -> result ) )
     {
       assert( ! execute_action -> pre_execute_state );
@@ -1934,32 +1922,7 @@ expr_t* action_t::create_expression( const std::string& name_str )
     { delete state; }
   };
 
-  if ( name_str == "n_ticks" )
-  {
-    struct n_ticks_expr_t : public action_expr_t
-    {
-      n_ticks_expr_t( action_t& a ) : action_expr_t( "n_ticks", a ) {}
-      virtual double evaluate()
-      {
-        dot_t* dot = action.get_dot();
-        int n_ticks = action.hasted_num_ticks( action.player -> cache.spell_speed() );
-        if ( action.dot_behavior == DOT_EXTEND && dot -> is_ticking() )
-          n_ticks += std::min( ( int ) ( n_ticks / 2 ), dot -> ticks_left() );
-        return n_ticks;
-      }
-    };
-    return new n_ticks_expr_t( *this );
-  }
-  else if ( name_str == "add_ticks" )
-  {
-    struct add_ticks_expr_t : public action_expr_t
-    {
-      add_ticks_expr_t( action_t& a ) : action_expr_t( "add_ticks", a ) {}
-      virtual double evaluate() { return action.hasted_num_ticks( action.player -> cache.spell_speed() ); }
-    };
-    return new add_ticks_expr_t( *this );
-  }
-  else if ( name_str == "cast_time" )
+  if ( name_str == "cast_time" )
     return make_mem_fn_expr( name_str, *this, &action_t::execute_time );
   else if ( name_str == "execute_time" )
   {
@@ -2293,43 +2256,6 @@ timespan_t action_t::tick_time( double haste ) const
   return t;
 }
 
-// action_t::hasted_num_ticks ===============================================
-
-int action_t::hasted_num_ticks( double haste, timespan_t d ) const
-{
-  if ( ! hasted_ticks )
-  {
-    if ( d < timespan_t::zero() )
-      return num_ticks;
-    else
-      return static_cast<int>( d / base_tick_time );
-  }
-
-#ifndef NDEBUG
-  if ( haste <= 0.0 )
-  {
-    sim -> errorf( "%s action_t::hasted_num_ticks, action %s haste <= 0.0", player -> name(), name() );
-    assert( false );
-  }
-#endif
-
-  // For the purposes of calculating the number of ticks, the tick time is rounded to the 3rd decimal place.
-  // It's important that we're accurate here so that we model haste breakpoints correctly.
-
-  if ( d < timespan_t::zero() )
-    d = num_ticks * base_tick_time;
-
-  timespan_t t = timespan_t::from_millis( ( int ) ( ( base_tick_time.total_millis() * haste ) + 0.5 ) );
-
-  double n = d / t;
-
-  // banker's rounding
-  if ( n - 0.5 == ( double ) ( int ) n && ( ( int ) n ) % 2 == 0 )
-    return ( int ) ceil ( n - 0.5 );
-
-  return ( int ) floor( n + 0.5 );
-}
-
 // action_t::snapshot_internal ==============================================
 
 void action_t::snapshot_internal( action_state_t* state, uint32_t flags, dmg_e rt )
@@ -2471,7 +2397,8 @@ void action_t::impact( action_state_t* s )
 
 void action_t::trigger_dot( action_state_t* s )
 {
-  if ( composite_dot_duration( s ) <= timespan_t::zero() && ! tick_zero )
+  timespan_t duration = composite_dot_duration( s );
+  if ( duration <= timespan_t::zero() && ! tick_zero )
     return;
 
   dot_t* dot = get_dot( s -> target );
@@ -2496,7 +2423,7 @@ void action_t::trigger_dot( action_state_t* s )
     }
   }
 
-  dot -> trigger( composite_dot_duration( s ) );
+  dot -> trigger( duration );
 }
 
 bool action_t::has_travel_events_for( const player_t* target ) const

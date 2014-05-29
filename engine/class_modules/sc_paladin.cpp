@@ -1020,7 +1020,7 @@ struct avenging_wrath_t : public paladin_heal_t
       parse_effect_data( p -> find_spell( 115547 ) -> effectN( 1 ) );
       // this info is very poorly encoded in the spell data; simpler just to hardcode
       base_tick_time = timespan_t::from_seconds( 3.0 );
-      num_ticks = p -> buffs.avenging_wrath -> buff_duration / base_tick_time;
+      dot_duration = p -> buffs.avenging_wrath -> buff_duration;
       hasted_ticks = false;
       tick_may_crit = false;
       may_multistrike = false;
@@ -1571,7 +1571,7 @@ struct eternal_flame_hot_t : public paladin_heal_t
   {
     paladin_heal_t::impact( s );
 
-    td( s -> target ) -> buffs.eternal_flame -> trigger( 1, buff_t::DEFAULT_VALUE(), -1, s -> action -> hasted_num_ticks( s -> haste ) * s -> action -> tick_time( s -> haste ) + timespan_t::from_millis( 1 ) );
+    td( s -> target ) -> buffs.eternal_flame -> trigger( 1, buff_t::DEFAULT_VALUE(), -1, dot_duration + timespan_t::from_millis( 1 ) );
   }
   
   virtual void last_tick( dot_t* d )
@@ -3000,7 +3000,7 @@ struct uthers_insight_t : public paladin_heal_t
 
     // spell info isn't parsing out of the effect well
     base_tick_time = timespan_t::from_millis( data().effectN( 1 )._amplitude );
-    num_ticks = data().duration() / base_tick_time ;
+    dot_duration = data().duration();
     // pick up the % heal amount from effect #1
     parse_effect_data( data().effectN( 1 ) );
   }

@@ -2318,17 +2318,23 @@ struct army_of_the_dead_t : public death_knight_spell_t
     p() -> buffs.army_of_the_dead -> trigger( 1, p() -> cache.dodge() + p() -> cache.parry() );
   }
 
+  virtual timespan_t composite_dot_duration( const action_state_t* s ) const override
+  {
+
+    if ( ! p() -> in_combat )
+      return timespan_t::zero();
+
+    return death_knight_spell_t::composite_dot_duration( s );
+  }
+
   virtual void execute()
   {
     if ( ! p() -> in_combat )
     {
       // Pre-casting it before the fight
-      int saved_ticks = num_ticks;
-      num_ticks = 0;
       channeled = false;
       death_knight_spell_t::execute();
       channeled = true;
-      num_ticks = saved_ticks;
       // Because of the new rune regen system in 4.0, it only makes
       // sense to cast ghouls 7-10s before a fight begins so you don't
       // waste rune regen and enter the fight depleted.  So, the time

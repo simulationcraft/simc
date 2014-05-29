@@ -5254,7 +5254,6 @@ struct action_t : public noncopyable
   double crit_multiplier, crit_bonus_multiplier, crit_bonus;
   double base_dd_adder;
   double base_ta_adder;
-  int num_ticks;
   weapon_t* weapon;
   double weapon_multiplier;
   double base_add_multiplier;
@@ -5310,7 +5309,6 @@ struct action_t : public noncopyable
   virtual timespan_t gcd() const;
   virtual timespan_t execute_time() const { return base_execute_time; }
   virtual timespan_t tick_time( double haste ) const;
-  virtual int    hasted_num_ticks( double haste, timespan_t d = timespan_t::min() ) const;
   virtual timespan_t travel_time() const;
   virtual result_e calculate_result( action_state_t* /* state */ ) { assert( false ); return RESULT_UNKNOWN; }
   virtual result_e calculate_multistrike_result( action_state_t* /* state */ );

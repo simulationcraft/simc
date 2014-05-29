@@ -1548,10 +1548,7 @@ struct spinning_crane_kick_t : public monk_melee_attack_t
     dynamic_tick_action = true;
   }
  
-  virtual int hasted_num_ticks( double /*haste*/, timespan_t /*d*/ ) const
-  {
-    return num_ticks;
-  }
+  // TODO: Bring Back dot duration haste scaling ?
  
   virtual double action_multiplier() const
   {
