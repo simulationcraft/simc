@@ -4118,7 +4118,8 @@ struct player_t : public actor_t
 
   std::string talents_str, glyphs_str, id_str, target_str;
   std::string region_str, server_str, origin_str;
-  std::string race_str, professions_str, position_str, nightelf;
+  std::string race_str, professions_str, position_str;
+  enum timeofday_e { NIGHT_TIME, DAY_TIME, } timeofday; // Specify InGame time of day to determine Night Elf racial
   timespan_t  gcd_ready, base_gcd, started_waiting;
   std::vector<pet_t*> pet_list;
   std::vector<pet_t*> active_pets;

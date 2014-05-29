@@ -141,6 +141,32 @@ bool parse_talent_override( sim_t* sim,
   return true;
 }
 
+// parse_talent_override ====================================================
+
+bool parse_timeofday( sim_t* sim,
+                            const std::string& name,
+                            const std::string& override_str )
+{
+  assert( name == "timeofday" ); ( void )name;
+  assert( sim -> active_player );
+  player_t* p = sim -> active_player;
+
+  if ( util::str_compare_ci( override_str, "night" ) || util::str_compare_ci( override_str, "nighttime" ) )
+  {
+    p -> timeofday = player_t::timeofday_e::NIGHT_TIME;
+  }
+  else if ( util::str_compare_ci( override_str, "day" ) || util::str_compare_ci( override_str, "daytime" ) )
+  {
+    p -> timeofday = player_t::timeofday_e::DAY_TIME;
+  }
+  else
+  {
+    sim -> errorf( "\n%s timeofday string \"%s\" not valid.\n", sim -> active_player-> name(), override_str.c_str() );
+  }
+
+  return true;
+}
+
 // parse_role_string ========================================================
 
 bool parse_role_string( sim_t* sim,
@@ -384,7 +410,6 @@ player_t::player_t( sim_t*             s,
 
   // (static) attributes
   race( r ),
-  nightelf( "night" ), //Set to Night by Default, user can override.
   role( ROLE_HYBRID ),
   level( default_level ),
   party( 0 ),
@@ -400,6 +425,7 @@ player_t::player_t( sim_t*             s,
   initialized( false ), potion_used( false ),
 
   region_str( s -> default_region_str ), server_str( s -> default_server_str ), origin_str(),
+  timeofday( NIGHT_TIME ), //Set to Night by Default, user can override.
   gcd_ready( timespan_t::zero() ), base_gcd( timespan_t::from_seconds( 1.5 ) ), started_waiting( timespan_t::min() ),
   pet_list(), active_pets(),
   vengeance_list( this ),invert_scaling( 0 ),
@@ -2220,7 +2246,7 @@ double player_t::composite_melee_haste() const
     h *= 1.0 / ( 1.0 + racials.nimble_fingers -> effectN( 1 ).percent() );
     h *= 1.0 / ( 1.0 + racials.time_is_money -> effectN( 1 ).percent() );
 
-    if ( nightelf == "night" || nightelf == "nighttime" )
+    if ( timeofday == timeofday_e::NIGHT_TIME )
        h *= 1.0 / ( 1.0 + racials.touch_of_elune -> effectN( 1 ).percent() );
 
   }
@@ -2276,7 +2302,8 @@ double player_t::composite_melee_crit() const
 
     ac += racials.viciousness -> effectN( 1 ).percent();
     ac += racials.arcane_acuity -> effectN( 1 ).percent();
-    if ( nightelf == "day" || nightelf == "daytime" )
+
+    if ( timeofday == timeofday_e::DAY_TIME )
        ac += racials.touch_of_elune -> effectN( 1 ).percent();
 
   return ac;
@@ -2475,7 +2502,7 @@ double player_t::composite_spell_haste() const
     h *= 1.0 / ( 1.0 + racials.nimble_fingers -> effectN( 1 ).percent() );
     h *= 1.0 / ( 1.0 + racials.time_is_money -> effectN( 1 ).percent() );
 
-    if ( nightelf == "nighttime" || nightelf == "night" )
+    if ( timeofday == timeofday_e::NIGHT_TIME )
        h *= 1.0 / ( 1.0 + racials.touch_of_elune -> effectN( 1 ).percent() );
 
   }
@@ -2535,7 +2562,7 @@ double player_t::composite_spell_crit() const
   sc += racials.viciousness -> effectN( 1 ).percent();
   sc += racials.arcane_acuity -> effectN( 1 ).percent();
 
-  if ( nightelf == "day" || nightelf == "daytime")
+  if ( timeofday == timeofday_e::DAY_TIME )
     sc += racials.touch_of_elune -> effectN( 1 ).percent();
 
   return sc;
@@ -7860,7 +7887,7 @@ void player_t::copy_from( player_t* source )
   origin_str = source -> origin_str;
   level = source -> level;
   race_str = source -> race_str;
-  nightelf = source -> nightelf;
+  timeofday = source -> timeofday;
   race = source -> race;
   role = source -> role;
   _spec = source -> _spec;
@@ -7902,7 +7929,7 @@ void player_t::create_options()
     opt_func( "talent_override", parse_talent_override ),
     opt_string( "glyphs", glyphs_str ),
     opt_string( "race", race_str ),
-    opt_string( "timeofday", nightelf ),
+    opt_func( "timeofday", parse_timeofday ),
     opt_int( "level", level ),
     opt_bool( "ready_trigger", ready_type ),
     opt_func( "role", parse_role_string ),
