@@ -5681,6 +5681,7 @@ struct attack_t : public action_t
   virtual void   init();
 
   virtual double  miss_chance( double hit, player_t* t ) const;
+  virtual double  dodge_chance( double /* expertise */, player_t* t ) const;
   virtual double  block_chance( action_state_t* s ) const;
   virtual double  crit_block_chance( action_state_t* s ) const;
 
@@ -5723,7 +5724,6 @@ struct melee_attack_t : public attack_t
 
   // Melee Attack Overrides
   virtual void init();
-  virtual double  dodge_chance( double /* expertise */, player_t* t ) const;
   virtual double  parry_chance( double /* expertise */, player_t* t ) const;
   virtual double glance_chance( int delta_level ) const;
 
@@ -5737,9 +5737,6 @@ struct ranged_attack_t : public attack_t
   ranged_attack_t( const std::string& token, player_t* p, const spell_data_t* s = spell_data_t::nil() );
 
   // Ranged Attack Overrides
-  virtual double  dodge_chance( double /* expertise */, player_t* t ) const;
-  virtual double  parry_chance( double /* expertise */, player_t* t ) const;
-  virtual double glance_chance( int delta_level ) const;
   virtual double composite_target_multiplier( player_t* ) const;
   virtual void schedule_execute( action_state_t* execute_state = 0 );
 

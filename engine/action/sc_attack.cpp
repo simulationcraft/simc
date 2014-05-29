@@ -78,6 +78,24 @@ double attack_t::miss_chance( double hit, player_t* t ) const
   return miss;
 }
 
+// attack_t::dodge_chance ===================================================
+
+double attack_t::dodge_chance( double expertise, player_t* t ) const
+{
+  // cache.dodge() contains the target's dodge chance (3.0 base, plus spec bonuses and rating)
+  double dodge = t -> cache.dodge();
+
+  // WoD mechanics are unchanged from MoP
+  // add or subtract 1.5% per level difference
+  dodge += ( t -> level - player -> level ) * 0.015; 
+
+  // subtract the player's expertise chance
+  dodge -= expertise;
+
+
+  return dodge;
+}
+
 double attack_t::block_chance( action_state_t* s ) const
 {
   // cache.block() contains the target's block chance (3.0 base for bosses, more for shield tanks)
@@ -292,23 +310,6 @@ void melee_attack_t::init()
     may_glance = false;
 }
 
-// melee_attack_t::dodge_chance =============================================
-
-double melee_attack_t::dodge_chance( double expertise, player_t* t ) const
-{
-  // cache.dodge() contains the target's dodge chance (3.0 base, plus spec bonuses and rating)
-  double dodge = t -> cache.dodge();
-
-  // WoD mechanics are unchanged from MoP
-  // add or subtract 1.5% per level difference
-  dodge += ( t -> level - player -> level ) * 0.015; 
-
-  // subtract the player's expertise chance
-  dodge -= expertise;
-
-  return dodge;
-}
-
 // melee_attack_t::parry_chance =============================================
 
 double melee_attack_t::parry_chance( double expertise, player_t* t ) const
@@ -382,46 +383,8 @@ ranged_attack_t::ranged_attack_t( const std::string& token,
   may_dodge = true;
 }
 
-// ranged_attack_t::dodge_chance ============================================
-
-double ranged_attack_t::dodge_chance( double expertise, player_t* t ) const
-{
-  // cache.dodge() contains the target's dodge chance (3.0 base, plus spec bonuses and rating)
-  double dodge = t -> cache.dodge();
-
-  // TODO-WOD: Dodge chance increase per 4+ level delta?
-  if ( t -> level - player -> level > 3 )
-  {
-  }
-
-  // subtract the player's expertise chance
-  dodge -= expertise;
-
-  return dodge;
-}
-
-// ranged_attack_t::parry_chance ============================================
-
-double ranged_attack_t::parry_chance( double /* expertise */, player_t* /* target */ ) const
-{
-  // Assumed impossible to parry ranged. Needs checking.
-  // TODO: Ranged parries used to exist as "Deflects" - may need re-testing post-MoP
-  return 0.0;
-}
-
-// ranged_attack_t::glance_chance ===========================================
-
-double ranged_attack_t::glance_chance( int delta_level ) const
-{
-  double glance = 0;
-
-  // TODO-WOD: Glance chance increase per 4+ level delta?
-  if ( delta_level > 3 )
-  {
-  }
-
-  return glance;
-}
+// Ranged attacks are identical to melee attacks, but cannot be parried or dodged.
+// all of the inherited *_chance() methods are accurate.
 
 double ranged_attack_t::composite_target_multiplier( player_t* target ) const
 {
