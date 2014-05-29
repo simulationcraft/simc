@@ -752,28 +752,29 @@ void enemy_t::init_defense()
   {
     double& a = initial.stats.armor;
 
-    switch ( level )
-    {
-      case 90: a = 1047; break; // From DBC Data. Reia will likely replace this with automation magic at some point.
-      case 91: a = 1185; break;
-      case 92: a = 1342; break;
-//      case 93: a = 1518; break;
-      case 93: a = 5234; break; // WOD-TODO: Dummy value to not mess up level 90 sims in the interim period of WoD alpha/beta.
-      case 94: a = 1718; break;
-      case 95: a = 1945; break;
-      case 96: a = 2201; break;
-      case 97: a = 2419; break;
-      case 98: a = 2819; break;
-      case 99: a = 3190; break;
-      case 100: a = 3610; break;
-      case 101: a = 4086; break;
-      case 102: a = 4624; break;
-      case 103: a = 5234; break;
-      default: if ( level < 90 )
-          a = ( int ) floor ( ( level * 10 ) + 147 );
-        break;
-    }
+    // a wild equation appears. It's super effective.
+    if ( level < 100 )
+      a = std::floor( 0.006464588162215 * std::exp( 0.123782410252464 * level ) + 0.5 );
+    else
+      a = 134*level-11864;
   }
+    
+  // for future reference, the equations above fit the given values 
+  // in the first colum table below. These numbers are magically accurate.
+  // Level  P/W/R   Mage
+  //   90     445    403
+  //   91     504    457
+  //   92     571    517
+  //   93     646    585
+  //   94     731    662
+  //   95     827    749
+  //   96     936    847
+  //   97    1059    959
+  //   98    1199   1086
+  //   99    1357   1129
+  //   100   1536   1336
+  //   101   1670   1443
+  //   102   1804   1550
 }
 
 // enemy_t::init_buffs ======================================================

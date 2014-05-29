@@ -1066,33 +1066,7 @@ void player_t::init_defense()
   }
 
   // Armor Coefficient
-  double a, b;
-  if ( level > 85 ) // Probably only works at level 100, assuming that they keep the same damage reduction % as now. (34.9%) Need to figure out the coefficients sometime.
-  { // For now, it's better than everything having 0.1% armor reduction.
-    a = 100;
-    b = -236.87;
-  }
-  //else if ( level > 85 ) // need to update
-  //{
-  // a = 4037.5;
-  // b = -317117.5;
-  // }
-  else if ( level > 80 )
-  {
-    a = 2167.5;
-    b = -158167.5;
-  }
-  else if ( level >= 60 )
-  {
-    a = 467.5;
-    b = -22167.5;
-  }
-  else
-  {
-    a = 85.0;
-    b = 400.0;
-  }
-  initial.armor_coeff = a * level + b;
+  initial.armor_coeff = dbc.armor_mitigation_constant( level );
   if ( sim -> debug )
     sim -> out_debug.printf( "%s: Initial Armor Coeff set to %.4f", name(), initial.armor_coeff );
 
