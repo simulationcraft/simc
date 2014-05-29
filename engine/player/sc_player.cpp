@@ -153,11 +153,11 @@ bool parse_timeofday( sim_t* sim,
 
   if ( util::str_compare_ci( override_str, "night" ) || util::str_compare_ci( override_str, "nighttime" ) )
   {
-    p -> timeofday = player_t::timeofday_e::NIGHT_TIME;
+    p -> timeofday = player_t::NIGHT_TIME;
   }
   else if ( util::str_compare_ci( override_str, "day" ) || util::str_compare_ci( override_str, "daytime" ) )
   {
-    p -> timeofday = player_t::timeofday_e::DAY_TIME;
+    p -> timeofday = player_t::DAY_TIME;
   }
   else
   {
@@ -2246,7 +2246,7 @@ double player_t::composite_melee_haste() const
     h *= 1.0 / ( 1.0 + racials.nimble_fingers -> effectN( 1 ).percent() );
     h *= 1.0 / ( 1.0 + racials.time_is_money -> effectN( 1 ).percent() );
 
-    if ( timeofday == timeofday_e::NIGHT_TIME )
+    if ( timeofday == NIGHT_TIME )
        h *= 1.0 / ( 1.0 + racials.touch_of_elune -> effectN( 1 ).percent() );
 
   }
@@ -2303,7 +2303,7 @@ double player_t::composite_melee_crit() const
     ac += racials.viciousness -> effectN( 1 ).percent();
     ac += racials.arcane_acuity -> effectN( 1 ).percent();
 
-    if ( timeofday == timeofday_e::DAY_TIME )
+    if ( timeofday == DAY_TIME )
        ac += racials.touch_of_elune -> effectN( 1 ).percent();
 
   return ac;
@@ -2313,9 +2313,9 @@ double player_t::composite_melee_crit() const
 
 double player_t::composite_melee_expertise( weapon_t* ) const
 {
-  double e = composite_expertise_rating() / current.rating.expertise;
+  double e = current.expertise;
 
-  e += base.expertise;
+  e += composite_expertise_rating() / current.rating.expertise;
 
   return e;
 }
@@ -2324,9 +2324,9 @@ double player_t::composite_melee_expertise( weapon_t* ) const
 
 double player_t::composite_melee_hit() const
 {
-  double ah = composite_melee_hit_rating() / current.rating.attack_hit;
+  double ah = current.hit;
 
-  ah += base.hit;
+  ah += composite_melee_hit_rating() / current.rating.attack_hit;
 
   return ah;
 }
@@ -2502,7 +2502,7 @@ double player_t::composite_spell_haste() const
     h *= 1.0 / ( 1.0 + racials.nimble_fingers -> effectN( 1 ).percent() );
     h *= 1.0 / ( 1.0 + racials.time_is_money -> effectN( 1 ).percent() );
 
-    if ( timeofday == timeofday_e::NIGHT_TIME )
+    if ( timeofday == NIGHT_TIME )
        h *= 1.0 / ( 1.0 + racials.touch_of_elune -> effectN( 1 ).percent() );
 
   }
@@ -2562,7 +2562,7 @@ double player_t::composite_spell_crit() const
   sc += racials.viciousness -> effectN( 1 ).percent();
   sc += racials.arcane_acuity -> effectN( 1 ).percent();
 
-  if ( timeofday == timeofday_e::DAY_TIME )
+  if ( timeofday == DAY_TIME )
     sc += racials.touch_of_elune -> effectN( 1 ).percent();
 
   return sc;

@@ -183,6 +183,7 @@ public:
     absorb_buff_t* rune_tap;
     stat_buff_t* death_shroud;
     stat_buff_t* riposte;
+    buff_t* shadow_of_death;
   } buffs;
 
   struct runeforge_t
@@ -336,6 +337,37 @@ public:
     const spell_data_t* shifting_presences;
     const spell_data_t* vampiric_blood;
   } glyph;
+
+  // Perks
+  struct perks_t
+  {
+    // Shared
+    const spell_data_t* improved_diseases;
+    const spell_data_t* improved_soul_reaper;
+    
+    // Blood
+    const spell_data_t* enhanced_bone_shield;
+    const spell_data_t* enhanced_death_coil_blood;
+    const spell_data_t* enhanced_rune_tap;
+    const spell_data_t* enhanced_will_of_the_necropolis;
+    const spell_data_t* improved_death_strike_blood;
+    const spell_data_t* improved_pestilence;
+
+    // Frost
+    const spell_data_t* improved_death_strike_frost;
+    const spell_data_t* empowered_icebound_fortitude;
+    const spell_data_t* empowered_pillar_of_frost;
+    const spell_data_t* empowered_rime;
+    const spell_data_t* improved_runeforges;
+
+    // Unholy
+    const spell_data_t* empowered_gargoyle;
+    const spell_data_t* enhanced_dark_transformation;
+    const spell_data_t* enhanced_death_coil_unholy;
+    const spell_data_t* enhanced_fallen_crusader;
+    const spell_data_t* improved_festering_strike;
+    const spell_data_t* improved_scourge_strike;
+  } perk;
 
   // Pets and Guardians
   struct pets_t
@@ -1755,6 +1787,35 @@ struct fallen_zandalari_t : public death_knight_pet_t
 
 namespace { // UNNAMED NAMESPACE
 
+struct shadow_of_death_t : public buff_t
+{
+  int health_gain;
+
+  shadow_of_death_t( death_knight_t* p ) :
+    buff_t( buff_creator_t( p, "shadow_of_death", p -> find_spell( 164047 ) ).chance( p -> perk.enhanced_death_coil_blood -> ok() ) ),
+    health_gain( 0 )
+  { }
+
+  virtual bool trigger( int stacks, double value, double chance, timespan_t duration )
+  {
+    timespan_t new_duration = data().duration();
+    if ( current_stack > 0 )
+      new_duration += remains();
+
+    health_gain = ( int ) floor( player -> resources.max[ RESOURCE_HEALTH ] * data().effectN( 1 ).percent() );
+    player -> stat_gain( STAT_MAX_HEALTH, health_gain );
+
+    return buff_t::trigger( stacks, value, chance, new_duration );
+  }
+
+  virtual void expire_override()
+  {
+    player -> stat_loss( STAT_MAX_HEALTH, health_gain );
+
+    buff_t::expire_override();
+  }
+};
+
 // Template for common death knight action code. See priest_action_t.
 template <class Base>
 struct death_knight_action_t : public Base
@@ -2384,6 +2445,7 @@ struct blood_plague_t : public death_knight_spell_t
     base_multiplier *= 1.0 + p -> spec.crimson_scourge -> effectN( 3 ).percent();
     if ( p -> glyph.enduring_infection -> ok() )
       base_multiplier += p -> find_spell( 58671 ) -> effectN( 1 ).percent();
+    base_multiplier *= 1.0 + p -> perk.improved_diseases -> effectN( 1 ).percent();
   }
 
   virtual double composite_crit() const
@@ -2473,6 +2535,7 @@ struct soul_reaper_dot_t : public death_knight_melee_attack_t
     special = background = may_crit = proc = true;
     may_miss = may_dodge = may_parry = may_block = false;
     weapon_multiplier = 0;
+    base_multiplier *= 1.0 + p -> perk.improved_soul_reaper -> effectN( 1 ).percent();
   }
 
   virtual void init()
@@ -2498,6 +2561,8 @@ struct soul_reaper_t : public death_knight_melee_attack_t
     dynamic_tick_action = true;
     tick_action = new soul_reaper_dot_t( p );
     add_child( tick_action );
+    
+    base_multiplier *= 1.0 + p -> perk.improved_soul_reaper -> effectN( 1 ).percent();
   }
 
   virtual double composite_crit() const
@@ -2731,7 +2796,10 @@ struct dancing_rune_weapon_t : public death_knight_spell_t
     if ( p() -> sets.has_set_bonus( SET_T16_4PC_TANK ) )
     {
       for ( int i = 2; i < RUNE_SLOT_MAX; ++i )
+      {
         p() -> _runes.slot[ i ].type |= RUNE_TYPE_DEATH;
+        p() -> _runes.slot[ i ].fill_rune();
+      }
 
       p() -> buffs.deathbringer -> trigger( p() -> buffs.deathbringer -> data().initial_stacks() );
     }
@@ -2864,6 +2932,8 @@ struct death_coil_t : public death_knight_spell_t
 
     if ( ! p() -> buffs.dark_transformation -> check() )
       p() -> buffs.shadow_infusion -> trigger(); // Doesn't stack while your ghoul is empowered
+
+    p() -> buffs.shadow_of_death -> trigger();
   }
 
   void impact( action_state_t* s )
@@ -3098,6 +3168,7 @@ struct frost_fever_t : public death_knight_spell_t
     base_multiplier *= 1.0 + p -> spec.crimson_scourge -> effectN( 3 ).percent();
     if ( p -> glyph.enduring_infection -> ok() )
       base_multiplier *= 1.0 + p -> find_spell( 58671 ) -> effectN( 1 ).percent();
+    base_multiplier *= 1.0 + p -> perk.improved_diseases -> effectN( 1 ).percent();
   }
 
   virtual double composite_crit() const
@@ -4204,7 +4275,7 @@ struct rune_tap_t : public death_knight_heal_t
     parse_options( NULL, options_str );
 
     cooldown -> charges = 2;
-    cooldown -> duration = data().duration();
+    cooldown -> duration = data().duration() + p -> perk.enhanced_rune_tap -> effectN( 1 ).time_value();
 
     attack_power_mod.direct = 0;
   }
@@ -4263,10 +4334,10 @@ struct death_pact_t : public death_knight_heal_t
   }
 
   double base_da_min( const action_state_t* ) const
-  { return p() -> resources.max[ RESOURCE_HEALTH ] * data().effectN( 3 ).percent(); }
+  { return p() -> resources.max[ RESOURCE_HEALTH ] * data().effectN( 1 ).percent(); }
 
   double base_da_max( const action_state_t* ) const
-  { return p() -> resources.max[ RESOURCE_HEALTH ] * data().effectN( 3 ).percent(); }
+  { return p() -> resources.max[ RESOURCE_HEALTH ] * data().effectN( 1 ).percent(); }
 };
 
 // Buffs ====================================================================
@@ -4776,6 +4847,35 @@ void death_knight_t::init_spells()
   spell.t15_4pc_tank              = find_spell( 138214 );
   spell.t16_4pc_melee             = find_spell( 144909 );
   spell.blood_rites               = find_spell( 163948 );
+
+  // Perks
+  
+  // Shared
+  perk.improved_diseases               = find_perk_spell( "Improved Diseases" );
+  perk.improved_soul_reaper            = find_perk_spell( "Improved Soul Reaper" );
+    
+  // Blood
+  perk.enhanced_bone_shield            = find_perk_spell( "Enhanced Bone Shield" );
+  perk.enhanced_death_coil_blood       = find_perk_spell( "Enhanced Death Coil", DEATH_KNIGHT_BLOOD );
+  perk.enhanced_rune_tap               = find_perk_spell( "Enhanced Rune Tap" );
+  perk.enhanced_will_of_the_necropolis = find_perk_spell( "Enhanced Will of the Necropolis" );
+  perk.improved_death_strike_blood     = find_perk_spell( "Improved Death Strike", DEATH_KNIGHT_BLOOD );
+  perk.improved_pestilence             = find_perk_spell( "Improved Pestilence" );
+
+  // Frost
+  perk.improved_death_strike_frost     = find_perk_spell( "Improved Death Strike", DEATH_KNIGHT_FROST );
+  perk.empowered_icebound_fortitude    = find_perk_spell( "Empowered Icebound Fortitude" );
+  perk.empowered_pillar_of_frost       = find_perk_spell( "Empowered Pillar of Frost" );
+  perk.empowered_rime                  = find_perk_spell( "Empowered Rime" );
+  perk.improved_runeforges             = find_perk_spell( "Improved Runeforges" );
+
+  // Unholy
+  perk.empowered_gargoyle             = find_perk_spell( "Empowered Gargoyle" );
+  perk.enhanced_dark_transformation   = find_perk_spell( "Enhanced Dark Transformation" );
+  perk.enhanced_death_coil_unholy     = find_perk_spell( "Enhanced Death Coil", DEATH_KNIGHT_UNHOLY );
+  perk.enhanced_fallen_crusader       = find_perk_spell( "Enhanced Fallen Crusader" );
+  perk.improved_festering_strike      = find_perk_spell( "Improved Festering Strike" );
+  perk.improved_scourge_strike        = find_perk_spell( "Improved Scourge Strike" );
 
   // Active Spells
   active_spells.blood_plague = new blood_plague_t( this );
@@ -5530,7 +5630,7 @@ void death_knight_t::create_buffs()
   buffs.bone_shield         = buff_creator_t( this, "bone_shield", find_specialization_spell( "Bone Shield" ) )
                               .cd( timespan_t::zero() )
                               .max_stack( specialization() == DEATH_KNIGHT_BLOOD ? ( find_specialization_spell( "Bone Shield" ) -> initial_stacks() +
-                                          find_spell( 144948 ) -> max_stacks() ) : -1 );
+                                          find_spell( 144948 ) -> max_stacks() + perk.enhanced_bone_shield -> effectN( 1 ).base_value() ) : -1 );
   buffs.bone_wall           = buff_creator_t( this, "bone_wall", find_spell( 144948 ) )
                               .chance( sets.has_set_bonus( SET_T16_2PC_TANK ) );
   buffs.crimson_scourge     = buff_creator_t( this, "crimson_scourge" ).spell( find_spell( 81141 ) )
@@ -5572,6 +5672,8 @@ void death_knight_t::create_buffs()
   buffs.runic_corruption    = new runic_corruption_buff_t( this );
   buffs.scent_of_blood      = buff_creator_t( this, "scent_of_blood", spec.scent_of_blood -> effectN( 1 ).trigger() )
                               .chance( spec.scent_of_blood -> proc_chance() );
+  // Trick simulator into recalculating health when this buff goes up/down.
+  buffs.shadow_of_death     = new shadow_of_death_t( this );
   buffs.sudden_doom         = buff_creator_t( this, "sudden_doom", find_spell( 81340 ) )
                               .max_stack( ( sets.has_set_bonus( SET_T13_2PC_MELEE ) ) ? 2 : 1 )
                               .cd( timespan_t::zero() )
@@ -5586,9 +5688,9 @@ void death_knight_t::create_buffs()
                               .add_invalidate( CACHE_HASTE );
   buffs.vampiric_blood      = new vampiric_blood_buff_t( this );
   buffs.will_of_the_necropolis_dr = buff_creator_t( this, "will_of_the_necropolis_dr", find_spell( 81162 ) )
-                                    .cd( timespan_t::from_seconds( 45 ) );
+                                    .cd( timespan_t::from_seconds( 45 ) + perk.enhanced_will_of_the_necropolis -> effectN( 1 ).time_value() );
   buffs.will_of_the_necropolis_rt = buff_creator_t( this, "will_of_the_necropolis_rt", find_spell( 96171 ) )
-                                    .cd( timespan_t::from_seconds( 45 ) );
+                                    .cd( timespan_t::from_seconds( 45 ) + perk.enhanced_will_of_the_necropolis -> effectN( 1 ).time_value() );
 }
 
 // death_knight_t::init_gains ===============================================
