@@ -64,11 +64,13 @@ double attack_t::miss_chance( double hit, player_t* t ) const
 {
   // cache.miss() contains the target's miss chance (3.0 base in almost all cases)
   double miss = t -> cache.miss();
+  
+  // add or subtract 1.5% per level difference
+  miss += ( t -> level - player -> level ) * 0.015;
 
-  // TODO-WOD: Miss chance increase per 4+ level delta?
-  if ( t -> level - player -> level > 3 )
-  {
-  }
+  // asymmetric hit penalty for npcs attacking higher-level players
+  if ( ! t -> is_enemy() )
+    miss += std::max( t -> level - player -> level - 3, 0 ) * 0.015;
 
   // subtract the player's hit chance
   miss -= hit;
@@ -78,10 +80,6 @@ double attack_t::miss_chance( double hit, player_t* t ) const
 
 double attack_t::block_chance( action_state_t* s ) const
 {
-  // if for some reason the target isn't allowed to block this type of action, return 0
-  if ( ! s -> target -> may_block( s -> action -> type ) )
-    return 0;
-
   // cache.block() contains the target's block chance (3.0 base for bosses, more for shield tanks)
   double block = s -> target -> cache.block();
 
@@ -301,10 +299,9 @@ double melee_attack_t::dodge_chance( double expertise, player_t* t ) const
   // cache.dodge() contains the target's dodge chance (3.0 base, plus spec bonuses and rating)
   double dodge = t -> cache.dodge();
 
-  // TODO-WOD: Dodge chance increase per 4+ level delta?
-  if ( t -> level - player -> level > 3 )
-  {
-  }
+  // WoD mechanics are unchanged from MoP
+  // add or subtract 1.5% per level difference
+  dodge += ( t -> level - player -> level ) * 0.015; 
 
   // subtract the player's expertise chance
   dodge -= expertise;
@@ -318,18 +315,17 @@ double melee_attack_t::parry_chance( double expertise, player_t* t ) const
 {
   // cache.parry() contains the target's parry chance (3.0 base, plus spec bonuses and rating)
   double parry = t -> cache.parry();
+  
+  // WoD mechanics are similar to MoP
+  // add or subtract 1.5% per level difference
+  parry += ( t -> level - player -> level ) * 0.015; 
 
-  // TODO-WOD: Parry chance increase per 4+ level delta?
-  if ( t -> level - player -> level > 3 )
-  {
-  }
-
-  // 3% additional parry change from front
-  if ( player -> position() == POSITION_FRONT )
+  // 3% additional parry for attacking a level+3 or higher NPC
+  if ( t -> is_enemy() && ( t -> level - player -> level ) > 2 )
     parry += 0.03;
 
-  // subtract the player's expertise chance
-  parry += std::min( 0.0, dodge_chance( expertise, t ) );
+  // subtract the player's expertise chance - no longer depends on dodge
+  parry -= expertise;
 
   return parry;
 }
@@ -343,6 +339,7 @@ double melee_attack_t::glance_chance( int delta_level ) const
   // TODO-WOD: Glance chance increase per 4+ level delta?
   if ( delta_level > 3 )
   {
+    glance += 0.10 + 0.10 * delta_level;
   }
 
   return glance;

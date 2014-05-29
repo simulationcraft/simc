@@ -3528,9 +3528,7 @@ void monk_t::init_base_stats()
     base.mana_regen_from_spirit_multiplier = spec.mana_meditation -> effectN( 1 ).percent();
  
   // Avoidance diminishing Returns constants/conversions
-  base.miss  = 0.030; //90
-  base.dodge = 0.030; //90
-  base.parry = 0.030; //90
+  // base miss, dodge, parry all set to 3% in player_t::init_base_stats()
  
   // based on http://www.sacredduty.net/2013/08/08/updated-diminishing-returns-coefficients-all-tanks/
   diminished_kfactor   =   1.422000;

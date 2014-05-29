@@ -3367,9 +3367,7 @@ void warrior_t::init_base_stats()
   //base.stats.attack_power = level * ( level > 80 ? 3.0 : 2.0 ); Remove later, I think base attack power is gone in WoD.
 
   // Avoidance diminishing Returns constants/conversions
-  base.miss            = 0.030;
-  base.dodge           = 0.030; //90
-  base.parry           = 0.030; //90
+  // base miss, dodge, parry all set to 3% in player_t::init_base_stats()
   base.block           = 0.030; //90
   base.block_reduction = 0.300;
 

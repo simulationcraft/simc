@@ -5656,8 +5656,7 @@ void druid_t::init_base_stats()
   base.spell_power_per_intellect = 1.0;
 
   // Avoidance diminishing Returns constants/conversions
-  base.miss  = 0.030;
-  base.dodge = 0.030;
+  // base miss and dodge are set to 3.0% in in player_t::init_base_stats()
   base.parry = 0.000;
 
   // based on http://www.sacredduty.net/2013/08/08/updated-diminishing-returns-coefficients-all-tanks/

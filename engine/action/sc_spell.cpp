@@ -173,38 +173,25 @@ spell_t::spell_t( const std::string&  token,
   spell_base_t( ACTION_SPELL, token, p, s )
 {
   may_miss = true;
-  may_block = true;
+  may_block = false;
 }
 
 double spell_t::miss_chance( double hit, player_t* t ) const
 {
-  // base spell miss chance is 6% - treat this as base.miss + 3%
-  double miss = t -> cache.miss();
+  // spell miss is still a little hazy. We know that there's an 11% miss penalty per level
+  // for a player attacking a L+4 NPC. It's not clear if this is symmetric.
+  // Base spell miss seems to be zero.
+  
+  double miss = 0.0;
+  //double miss = t -> cache.miss();
 
-  // TODO-WOD: Miss chance increase per 4+ level delta?
-  if ( t -> level - player -> level > 3 )
-  {
-  }
+  // 11% level-dependent miss for level+4
+  miss += 0.11 * std::max( t -> level - player -> level - 3, 0 );
 
-  // subtract player's hit
-  miss -= hit;
+  // player's hit seems to be irrelevant for spells now
+  // miss -= hit;
 
   return miss;
-}
-
-double spell_t::block_chance( action_state_t* s ) const
-{
-  // if for some reason the target isn't allowed to block this type of action, return 0
-  if ( ! s -> target -> may_block( s -> action -> type ) )
-    return 0;
-
-  // cache.block() contains the target's block chance (3.0 base for bosses, more for shield tanks)
-  double block = s -> target -> cache.block();
-
-  // add or subtract 1.5% per level difference
-  block += ( s -> target -> level - player -> level ) * 0.015;
-
-  return block;
 }
 
 void spell_t::assess_damage( dmg_e type,

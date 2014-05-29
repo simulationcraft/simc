@@ -4691,10 +4691,8 @@ void death_knight_t::init_base_stats()
   base_gcd = timespan_t::from_seconds( 1.0 );
 
   // Avoidance diminishing Returns constants/conversions
-  base.dodge   = 0.0300 + spec.veteran_of_the_third_war -> effectN( 2 ).percent();
-  base.miss    = 0.0300;
-  base.parry   = 0.0300;
-  base.block   = 0.0000;
+  // base miss, dodge, parry all set to 3% in player_t::init_base_stats()
+  base.dodge += 0.0300 + spec.veteran_of_the_third_war -> effectN( 2 ).percent();
 
   // based on http://www.sacredduty.net/2013/08/08/updated-diminishing-returns-coefficients-all-tanks/
   diminished_kfactor   = 0.956;

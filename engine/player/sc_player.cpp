@@ -559,6 +559,8 @@ player_t::base_initial_current_t::base_initial_current_t() :
   dodge( 0 ),
   parry( 0 ),
   block( 0 ),
+  hit( 0 ),
+  expertise( 0 ),
   spell_crit(),
   attack_crit(),
   block_reduction(),
@@ -792,7 +794,17 @@ void player_t::init_base_stats()
     base.health_per_stamina    = dbc.health_per_stamina( level );
     base.dodge_per_agility     = 1 / 10000.0 / 100.0; // default at L90, modified for druid/monk in class module
     base.parry_per_strength    = 0.0;                 // only certain classes get STR->parry conversions, handle in class module
+
+    // players have a base 7.5% hit/exp 
+    base.hit       = 0.075;
+    base.expertise = 0.075;
   }
+
+  // base dodge, parry, block, and miss are 3% for all characters
+  base.dodge = 0.03;
+  base.parry = 0.03; // overridden in druid module to disable parry
+  base.miss  = 0.03;
+  base.block = 0.0;  // overridden in enemy, paladin, and warrior modules
 
   base.spell_power_multiplier    = 1.0;
   base.attack_power_multiplier   = 1.0;
@@ -2178,18 +2190,6 @@ double player_t::mana_regen_per_second() const
   return current.mana_regen_per_second + cache.spirit() * current.mana_regen_per_spirit * current.mana_regen_from_spirit_multiplier;
 }
 
-// player_t::may_block ======================================================
-// This method is used to incorporate target properties into action resolution.
-// Similar methods for dodge and parry may be implemented eventually.
-
-bool player_t::may_block( action_e a ) const
-{
-  if ( a == ACTION_ATTACK )
-    return true;
-
-  return false;
-}
-
 // Need a way to include human racial.
 // player_t::composite_attack_haste =========================================
 
@@ -2288,6 +2288,8 @@ double player_t::composite_melee_expertise( weapon_t* ) const
 {
   double e = composite_expertise_rating() / current.rating.expertise;
 
+  e += base.expertise;
+
   return e;
 }
 
@@ -2296,6 +2298,8 @@ double player_t::composite_melee_expertise( weapon_t* ) const
 double player_t::composite_melee_hit() const
 {
   double ah = composite_melee_hit_rating() / current.rating.attack_hit;
+
+  ah += base.hit;
 
   return ah;
 }

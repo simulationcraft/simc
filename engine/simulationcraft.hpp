@@ -4168,6 +4168,7 @@ struct player_t : public actor_t
     double mana_regen_per_spirit, mana_regen_from_spirit_multiplier, health_per_stamina;
     std::array<double, SCHOOL_MAX> resource_reduction;
     double miss, dodge, parry, block;
+    double hit, expertise;
     double spell_crit, attack_crit, block_reduction, mastery;
     double skill, distance;
     double distance_to_move;
@@ -4200,7 +4201,6 @@ struct player_t : public actor_t
 
   // Defense Mechanics
   double diminished_dodge_cap, diminished_parry_cap, diminished_block_cap, diminished_kfactor;
-  virtual bool may_block( action_e ) const;
 
   // Weapons
   weapon_t main_hand_weapon;
@@ -5786,7 +5786,6 @@ public:
   virtual void   assess_damage( dmg_e, action_state_t* );
   virtual void   execute();
   virtual double miss_chance( double hit, player_t* t ) const;
-  virtual double block_chance( action_state_t* s ) const;
   virtual void   init();
   virtual double composite_hit() const
   { return action_t::composite_hit() + player -> cache.spell_hit(); }

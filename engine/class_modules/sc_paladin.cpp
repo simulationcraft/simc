@@ -383,7 +383,6 @@ public:
   virtual double    temporary_movement_modifier() const;
 
   // combat outcome functions
-  virtual bool      may_block( action_e a ) const;
   virtual void      assess_damage( school_e, dmg_e, action_state_t* );
   virtual void      assess_heal( school_e, dmg_e, action_state_t* );
   virtual void      target_mitigation( school_e, dmg_e, action_state_t* );
@@ -4592,11 +4591,13 @@ void paladin_t::init_base_stats()
   resources.base[ RESOURCE_HOLY_POWER ] = 3 + passives.boundless_conviction -> effectN( 1 ).base_value();
 
   // Avoidance diminishing Returns constants/conversions
-  base.miss    = 0.030;
-  base.dodge   = 0.030;  //90
-  base.parry   = 0.030;  //90
+  // base miss, dodge, parry all set to 3% in player_t::init_base_stats()
   base.block   = 0.030;  //90
   base.block_reduction = 0.3;
+  // add Sanctuary dodge
+  base.dodge += passives.sanctuary -> effectN( 3 ).percent();
+  // add Sanctuary expertise
+  base.expertise += passives.sanctuary -> effectN( 4 ).percent();
 
   // based on http://sacredduty.net/2012/09/14/avoidance-diminishing-returns-in-mop-followup/
   diminished_kfactor    = 0.886;
@@ -5593,9 +5594,6 @@ double paladin_t::composite_melee_expertise( weapon_t* w ) const
 {
   double expertise = player_t::composite_melee_expertise( w );
 
-  if ( passives.sanctuary -> ok() )
-    expertise += passives.sanctuary -> effectN( 4 ).percent();
-
   return expertise;
 }
 
@@ -5858,9 +5856,6 @@ double paladin_t::composite_dodge() const
 {
   double d = player_t::composite_dodge();
 
-  // add Sanctuary dodge
-  d += passives.sanctuary -> effectN( 3 ).percent();
-
   return d;
 }
 
@@ -5883,18 +5878,6 @@ double paladin_t::temporary_movement_modifier() const
     temporary = std::max( buffs.turalyons_justice-> data().effectN( 1 ).percent(), temporary );
 
   return temporary;
-}
-
-// paladin_t::may_block =====================================================
-
-bool paladin_t::may_block( action_e a ) const
-{
-  
-  if ( a == ACTION_SPELL && talents.holy_shield -> ok() )
-    return true;
-
-  return player_t::may_block( a );
-
 }
 
 // paladin_t::target_mitigation =============================================

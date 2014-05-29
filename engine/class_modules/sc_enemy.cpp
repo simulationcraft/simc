@@ -736,11 +736,10 @@ void enemy_t::init_base_stats()
     initial_health_percentage = 100.0;
   }
 
-  // TODO-WOD: Base block?
-//  base.miss  = 0.030; //90, level differential handled in miss_chance()
-//  base.dodge = 0.030; //90, level differential handled in dodge_chance()
-//  base.parry = 0.030; //90, level differential handled in parry_chance()
-  base.block = 0.030; //90, level differential handled in block_chance()
+  // Override base block. Note that these are only the base values, the level 
+  // differentials are handled in action_t::miss_chance(), dodge_chance(), parry_chance(), block_chance()
+  // base miss, dodge, parry all set to 3% in player_t::init_base_stats()
+  base.block = 0.030; 
   base.block_reduction = 0.3;
 }
 
