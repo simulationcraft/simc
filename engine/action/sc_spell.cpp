@@ -176,7 +176,7 @@ spell_t::spell_t( const std::string&  token,
   may_block = false;
 }
 
-double spell_t::miss_chance( double hit, player_t* t ) const
+double spell_t::miss_chance( double /* hit */, player_t* t ) const
 {
   // spell miss is still a little hazy. We know that there's an 11% miss penalty per level
   // for a player attacking a L+4 NPC. It's not clear if this is symmetric.

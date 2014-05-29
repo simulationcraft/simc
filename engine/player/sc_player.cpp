@@ -1345,7 +1345,7 @@ std::vector<std::string> player_t::get_item_actions()
 
 // player_t::init_use_profession_actions ====================================
 
-std::string player_t::init_use_profession_actions( const std::string& append )
+std::string player_t::init_use_profession_actions( const std::string& /* append */ )
 {
   std::string buffer;
   

@@ -2370,7 +2370,7 @@ struct holy_shock_damage_t : public paladin_spell_t
 {
   double crit_increase;
 
-  holy_shock_damage_t( paladin_t* p, const std::string& options_str )
+  holy_shock_damage_t( paladin_t* p )
     : paladin_spell_t( "holy_shock_damage", p, p -> find_spell( 25912 ) ),
       crit_increase( 0.0 )
   {
@@ -2430,7 +2430,7 @@ struct holy_shock_heal_t : public paladin_heal_t
   double crit_increase;
   daybreak_t* daybreak;
 
-  holy_shock_heal_t( paladin_t* p, const std::string& options_str ) :
+  holy_shock_heal_t( paladin_t* p ) :
     paladin_heal_t( "holy_shock_heal", p, p -> find_spell( 25914 ) ),
     crit_increase( 0.0 )
   {
@@ -2519,10 +2519,10 @@ struct holy_shock_t : public paladin_heal_t
     }
 
     // create the damage and healing spell effects, designate them as children for reporting
-    damage = new holy_shock_damage_t( p, options_str );
+    damage = new holy_shock_damage_t( p );
     damage ->crit_increase = crit_increase;
     add_child( damage );
-    heal = new holy_shock_heal_t( p, options_str );
+    heal = new holy_shock_heal_t( p );
     heal ->crit_increase = crit_increase;
     add_child( heal );
 
@@ -3982,6 +3982,7 @@ struct judgment_t : public paladin_melee_attack_t
         case SEAL_OF_RIGHTEOUSNESS:  p() -> buffs.liadrins_righteousness -> trigger(); break;
         case SEAL_OF_TRUTH:          p() -> buffs.maraads_truth -> trigger(); break;
         case SEAL_OF_INSIGHT:        uthers_insight -> schedule_execute(); break;
+        default: break;
       }
     }
   }
@@ -4494,7 +4495,7 @@ action_t* paladin_t::create_action( const std::string& name, const std::string& 
   if ( name == "holy_avenger"              ) return new holy_avenger_t             ( this, options_str );
   if ( name == "holy_radiance"             ) return new holy_radiance_t            ( this, options_str );
   if ( name == "holy_shock"                ) return new holy_shock_t               ( this, options_str );
-  if ( name == "holy_shock_heal"           ) return new holy_shock_heal_t          ( this, options_str );
+  // if ( name == "holy_shock_heal"           ) return new holy_shock_heal_t          ( this, options_str ); TODO: doesn't make sense to have a background action in the action list
   if ( name == "holy_wrath"                ) return new holy_wrath_t               ( this, options_str );
   if ( name == "guardian_of_ancient_kings" ) return new guardian_of_ancient_kings_t( this, options_str );
   if ( name == "judgment"                  ) return new judgment_t                 ( this, options_str );

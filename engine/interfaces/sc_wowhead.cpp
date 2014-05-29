@@ -17,7 +17,7 @@ static std::string source_str( wowhead::wowhead_e source )
   {
     case wowhead::PTR:  return "ptr";
 #if SC_BETA
-    case wowhead::BETA: SC_BETA_STR;
+    case wowhead::BETA: return SC_BETA_STR;
 #endif
     default:   return "www";
   }
