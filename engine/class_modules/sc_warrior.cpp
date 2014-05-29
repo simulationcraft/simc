@@ -849,8 +849,8 @@ void warrior_attack_t::impact( action_state_t* s )
       p() -> active_second_wind -> execute();
     }
 
-  if ( result_is_hit( s -> result ) ||
-      ( result_is_multistrike( s -> result ) && !proc && s -> result_amount > 0 && this -> id != 147891 ) ) // Flurry of Xuen
+  if ( ( result_is_hit( s -> result ) || result_is_multistrike( s -> result ) ) &&
+      !proc && s -> result_amount > 0 && this -> id != 147891 ) // Flurry of Xuen
   {
     if ( p() -> buff.sweeping_strikes -> up() && ( !aoe || this -> id == 78 ) ) // Heroic strike exception due to glyph that turns it into 2-target cleave.
       trigger_sweeping_strikes( execute_state );
