@@ -1797,8 +1797,8 @@ struct shadowy_apparition_spell_t final : public priest_spell_t
     travel_speed      = 6.0;
     if ( ! priest.talents.auspicious_spirits -> ok() )
     {
-      spell_power_mod.direct  = 0.375;
-      base_dd_min = base_dd_max = 393;
+      spell_power_mod.direct  = 0.45;
+      base_dd_min = base_dd_max = 0;
     }
     school            = SCHOOL_SHADOW;
   }
@@ -2005,6 +2005,8 @@ struct mind_spike_t final : public priest_spell_t
     casted_with_surge_of_darkness( false )
   {
     parse_options( nullptr, options_str );
+
+	base_multiplier *= 1.0 + player.perks.improved_mind_spike -> effectN( 1 ).percent();
   }
 
   virtual action_state_t* new_state() override
@@ -2074,6 +2076,9 @@ struct mind_spike_t final : public priest_spell_t
 
         priest.buffs.glyph_mind_spike -> trigger();
       }
+
+	  priest.buffs.divine_insight_shadow -> trigger();
+
     }
   }
 
@@ -2109,9 +2114,7 @@ struct mind_spike_t final : public priest_spell_t
   virtual double composite_da_multiplier() const override
   {
     double d = priest_spell_t::composite_da_multiplier();
-
-    d *= 1.0 + priest.perks.improved_shadow_word_pain -> effectN( 1 ).percent();
-
+	
     if ( casted_with_surge_of_darkness )
     {
       d *= 1.0 + priest.active_spells.surge_of_darkness -> effectN( 4 ).percent();
@@ -2329,6 +2332,10 @@ struct shadow_word_death_t final : public priest_spell_t
     if ( priest.buffs.empowered_shadows -> check() )
         d *= 1.0 + priest.buffs.empowered_shadows -> current_value *  priest.buffs.empowered_shadows -> check();
 
+	priest_td_t& td = get_td( target );
+    if ( priest.talents.clarity_of_power -> ok() && !td.dots.shadow_word_pain -> is_ticking() && !td.dots.vampiric_touch -> is_ticking() )
+        d *= 1.0 + priest.talents.clarity_of_power -> effectN( 1 ).percent();
+
     return d;
   }
 
@@ -2446,7 +2453,9 @@ struct devouring_plague_t final : public priest_spell_t
     {
       priest_spell_t::tick( d );
 
-      double a = (0.025 / 3) * shadow_orbs_to_consume() * priest.resources.max[ RESOURCE_HEALTH ];
+	  const devouring_plague_state_t& dp_state = static_cast<const devouring_plague_state_t&>( *d -> state );
+
+      double a = (0.025 / 3) * dp_state.orbs_used * priest.resources.max[ RESOURCE_HEALTH ];
       priest.resource_gain( RESOURCE_HEALTH, a, priest.gains.devouring_plague_health );
 
       trigger_surge_of_darkness();
@@ -3374,6 +3383,8 @@ struct void_entropy_t : public priest_spell_t
      priest_spell_t( "void_entropy", p, p.talents.void_entropy )
   {
      parse_options( nullptr, options_str );
+
+	 spell_power_mod.tick /= 3.0;
   }
 
   virtual void consume_resource() override
@@ -3399,7 +3410,7 @@ struct void_entropy_t : public priest_spell_t
   {
     double m = priest_spell_t::action_ta_multiplier();
 
-    m *= shadow_orbs_to_consume() / 3;
+    m *= shadow_orbs_to_consume();
 
     return m;
   }
@@ -4720,7 +4731,7 @@ double priest_t::composite_player_multiplier( school_e school ) const
 {
   double m = base_t::composite_player_multiplier( school );
 
-  if ( specs.shadowform -> ok() && dbc::is_school( SCHOOL_SHADOW, school ) )
+  if ( specs.shadowform -> ok() && dbc::is_school( SCHOOL_SHADOWFROST, school ) )
   {
     m *= 1.0 + buffs.shadowform -> check() * specs.shadowform -> effectN( 2 ).percent();
   }
@@ -5108,7 +5119,7 @@ void priest_t::create_buffs()
                          .chance( talents.surge_of_light -> effectN( 1 ).percent() );
 
   buffs.surge_of_darkness = buff_creator_t( this, "surge_of_darkness" )
-                            .spell( find_spell( 162448 ) )
+                            .spell( find_spell( 87160 ) )
                             .chance( talents.surge_of_darkness -> effectN( 1 ).percent() );
 
   // Discipline
