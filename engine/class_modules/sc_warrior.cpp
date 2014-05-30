@@ -486,7 +486,7 @@ public:
       rage *= -1;
       p() -> cooldown.heroic_leap -> adjust( timespan_t::from_seconds( rage ) ); //All specs
 
-      if ( p() -> specialization() == WARRIOR_FURY || p() -> specialization() == WARRIOR_ARMS )
+      if ( p() -> specialization() != WARRIOR_PROTECTION )
       {
       // Fourth Tier Talents
         if ( p() -> talents.storm_bolt -> ok() ) 
@@ -934,7 +934,8 @@ struct melee_t : public warrior_attack_t
 
     if ( result_is_hit( s -> result ) )
     {
-      if ( p() -> specialization() == WARRIOR_ARMS ) trigger_sudden_death( this,  p() -> spec.sudden_death -> proc_chance() );
+      if ( p() -> specialization() == WARRIOR_ARMS )
+        trigger_sudden_death( this,  p() -> spec.sudden_death -> proc_chance() );
       trigger_t15_2pc_melee( this );
     }
     // Any attack that hits or is dodged/blocked/parried generates rage. Multistrikes do not grant rage.
@@ -1083,7 +1084,7 @@ struct bladestorm_t : public warrior_attack_t
 
   virtual void update_ready( timespan_t cd_duration )
   {
-    if ( p() -> specialization() == WARRIOR_FURY || p() -> specialization() == WARRIOR_ARMS )
+    if ( p() -> specialization() != WARRIOR_PROTECTION )
       cd_duration = cooldown -> duration / ( 1 + ( player -> cache.readiness() * p() -> cdr_mult ) );
 
     warrior_attack_t::update_ready( cd_duration );
@@ -1414,7 +1415,7 @@ struct dragon_roar_t : public warrior_attack_t
 
   virtual void update_ready( timespan_t cd_duration )
   {
-    if ( p() -> specialization() == WARRIOR_FURY || p() -> specialization() == WARRIOR_ARMS )
+    if ( p() -> specialization() != WARRIOR_PROTECTION )
       cd_duration = cooldown -> duration / ( 1 + ( player -> cache.readiness() * p() -> cdr_mult ) );
 
     warrior_attack_t::update_ready( cd_duration );
@@ -2248,7 +2249,7 @@ struct shockwave_t : public warrior_attack_t
 
   virtual void update_ready( timespan_t cd_duration )
   {
-    if ( p() -> specialization() == WARRIOR_FURY || p() -> specialization() == WARRIOR_ARMS )
+    if ( p() -> specialization() != WARRIOR_PROTECTION )
       cd_duration = cooldown -> duration / ( 1 + ( player -> cache.readiness() * p() -> cdr_mult ) );
 
     if ( result_is_hit( execute_state -> result ) )
@@ -2334,7 +2335,7 @@ struct storm_bolt_t : public warrior_attack_t
 
   virtual void update_ready( timespan_t cd_duration )
   {
-    if ( p() -> specialization() == WARRIOR_FURY || p() -> specialization() == WARRIOR_ARMS )
+    if ( p() -> specialization() != WARRIOR_PROTECTION )
       cd_duration = cooldown -> duration / ( 1 + ( player -> cache.readiness() * p() -> cdr_mult ) );
 
     warrior_attack_t::update_ready( cd_duration );
@@ -2576,7 +2577,7 @@ struct avatar_t : public warrior_spell_t
 
   virtual void update_ready( timespan_t cd_duration )
   {
-    if ( p() -> specialization() == WARRIOR_FURY || p() -> specialization() == WARRIOR_ARMS )
+    if ( p() -> specialization() != WARRIOR_PROTECTION )
       cd_duration = cooldown -> duration / ( 1 + ( player -> cache.readiness() * p() -> cdr_mult ) );
 
     warrior_spell_t::update_ready( cd_duration );
@@ -2639,7 +2640,7 @@ struct bloodbath_t : public warrior_spell_t
 
   virtual void update_ready( timespan_t cd_duration )
   {
-    if ( p() -> specialization() == WARRIOR_FURY || p() -> specialization() == WARRIOR_ARMS )
+    if ( p() -> specialization() != WARRIOR_PROTECTION )
       cd_duration = cooldown -> duration / ( 1 + ( player -> cache.readiness() * p() -> cdr_mult ) );
 
     warrior_spell_t::update_ready( cd_duration );
@@ -4080,7 +4081,7 @@ void warrior_t::combat_begin()
   if ( specialization() == WARRIOR_PROTECTION && active_stance == STANCE_DEFENSE )
     vengeance_start();
 
-  if ( find_specialization_spell( "Bladed Armor" ) )
+  if ( spec.bladed_armor )
     buff.bladed_armor -> trigger();
 }
 
@@ -4141,7 +4142,7 @@ double warrior_t::composite_player_multiplier( school_e school ) const
 
 double warrior_t::matching_gear_multiplier( attribute_e attr ) const
 {
-  if ( ( attr == ATTR_STRENGTH ) && ( specialization() == WARRIOR_ARMS || specialization() == WARRIOR_FURY ) )
+  if ( ( attr == ATTR_STRENGTH ) && ( specialization() != WARRIOR_PROTECTION ) )
     return 0.05;
 
   if ( ( attr == ATTR_STAMINA ) && ( specialization() == WARRIOR_PROTECTION ) )
