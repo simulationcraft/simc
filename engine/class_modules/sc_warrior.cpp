@@ -2101,7 +2101,7 @@ struct enraged_regeneration_t : public heal_t
     base_pct_heal( 0 ), base_tick_pct_heal ( 0 )
   {
     parse_options( NULL, options_str );
-    hasted_ticks = tick_may_crit = may_multistrike = false;
+    hasted_ticks = tick_may_crit = may_crit = may_multistrike = false;
     num_ticks = 5; //dot_duration = timespan_t::from_seconds( 5.0 );
     base_tick_time = timespan_t::from_seconds( 1.0 );
     target = p;
