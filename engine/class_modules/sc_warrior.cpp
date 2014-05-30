@@ -730,7 +730,6 @@ static  void trigger_sweeping_strikes( action_state_t* s )
     base_dd_min *= pct_damage;
 
     warrior_attack_t::execute();
-
   }
 
   virtual timespan_t travel_time() const
@@ -835,6 +834,7 @@ void warrior_attack_t::execute()
   if ( ! execute_state ) return;
 
 }
+
 // warrior_attack_t::impact =================================================
 
 void warrior_attack_t::impact( action_state_t* s )
@@ -1096,10 +1096,11 @@ struct bladestorm_t : public warrior_attack_t
 
 struct bloodthirst_heal_t : public heal_t
 {
-  double pct_heal;
+  double base_pct_heal;
 
   bloodthirst_heal_t( warrior_t* p ) :
-    heal_t( "bloodthirst_heal", p, p -> find_spell( 117313 ) )
+    heal_t( "bloodthirst_heal", p, p -> find_spell( 117313 ) ),
+    base_pct_heal( 0 )
   {
     // Implemented as an actual heal because of spell callbacks ( for Hurricane, etc. )
     background = true;
@@ -1108,6 +1109,7 @@ struct bloodthirst_heal_t : public heal_t
     pct_heal   = data().effectN( 1 ).percent();
     pct_heal  *= 1.0 + p -> perk.improved_bloodthirst -> effectN( 1 ).percent();
     pct_heal  *= 1.0 + p -> glyphs.bloodthirst -> effectN( 2 ).percent();
+    base_pct_heal = pct_heal;
   }
 
   virtual resource_e current_resource() const { return RESOURCE_NONE; }
@@ -1116,20 +1118,15 @@ struct bloodthirst_heal_t : public heal_t
   {
     warrior_t* p = static_cast<warrior_t*>( player );
 
-    if( p -> buff.raging_blow_glyph -> up() )
-      pct_heal *= 1.0 + p -> glyphs.raging_blow -> effectN( 1 ).percent();
+    pct_heal = base_pct_heal;
 
-    double amount = state -> target -> resources.max[ RESOURCE_HEALTH ] * pct_heal;
-    // Record initial amount to state
-    state -> result_raw = state -> result_total = amount;
-
-    if( p -> buff.raging_blow_glyph -> up() )
+    if ( p -> buff.raging_blow_glyph -> up() )
     {
-      pct_heal /= 1.0 + p -> glyphs.raging_blow -> effectN( 1 ).percent();
+      pct_heal *= 1.0 + p -> glyphs.raging_blow -> effectN( 1 ).percent();
       p -> buff.raging_blow_glyph -> expire();
     }
 
-    return amount;
+   return heal_t::calculate_direct_amount( state );
   }
 
 };
@@ -1168,8 +1165,7 @@ struct bloodthirst_t : public warrior_attack_t
 
     if ( result_is_hit( s -> result ) )
     {
-      if ( bloodthirst_heal )
-        bloodthirst_heal -> execute();
+      bloodthirst_heal -> execute();
 
       p() -> active_deep_wounds -> target = s -> target;
       p() -> active_deep_wounds -> execute();
@@ -1669,7 +1665,7 @@ struct heroic_leap_t : public warrior_attack_t
     if ( p -> glyphs.death_from_above -> ok() ) //decreases cd
       cooldown -> duration += p -> glyphs.death_from_above -> effectN( 1 ).time_value();
   }
-  
+
   virtual void impact( action_state_t* s )
   {
 
@@ -1689,8 +1685,8 @@ struct heroic_leap_t : public warrior_attack_t
 
     warrior_attack_t::update_ready( cd_duration );
   }
-
 };
+
 // 2 Piece Tier 16 Tank Set Bonus ===========================================
 
 struct tier16_2pc_tank_heal_t : public heal_t
@@ -1710,7 +1706,7 @@ struct tier16_2pc_tank_heal_t : public heal_t
 
 struct impending_victory_heal_t : public heal_t
 {
-  double heal_pct;
+  double base_pct_heal;
   impending_victory_heal_t( warrior_t* p ) :
     heal_t( "impending_victory_heal", p, p -> find_spell( 118340 ) )
   {
@@ -1718,29 +1714,23 @@ struct impending_victory_heal_t : public heal_t
     background = true;
     may_crit   = false;
     target     = p;
-    heal_pct   = data().effectN( 1 ).percent();
+    pct_heal   = data().effectN( 1 ).percent();
+    base_pct_heal = pct_heal;
   }
 
   virtual double calculate_direct_amount( action_state_t* state )
   {
     warrior_t* p = static_cast<warrior_t*>( player );
-    double pct_heal = heal_pct;
+
+    pct_heal = base_pct_heal;
 
     if ( p -> buff.tier15_2pc_tank -> up() )
-    {
       pct_heal += p -> buff.tier15_2pc_tank -> value();
-    }
 
-    double amount = state -> target -> resources.max[ RESOURCE_HEALTH ] * pct_heal;
-
-    // Record initial amount to state
-    state -> result_raw = state -> result_total = amount;
-
-    return amount;
+    return heal_t::calculate_direct_amount( state );
   }
 
   virtual resource_e current_resource() const { return RESOURCE_NONE; }
-
 };
 
 struct impending_victory_t : public warrior_attack_t
@@ -1765,9 +1755,9 @@ struct impending_victory_t : public warrior_attack_t
 
     p() -> buff.tier15_2pc_tank -> decrement();
   }
+
   virtual bool ready()
   {
-
     if ( p()-> talents.impending_victory -> ok() && p() -> buff.tier15_2pc_tank -> check() )
       return true;
 
@@ -1776,6 +1766,10 @@ struct impending_victory_t : public warrior_attack_t
 };
 
 // Intervene ===============================================================
+// Note: Conveniently ignores that you can only intervene a friendly target.
+// For the time being, we're just going to assume that there is a friendly near the target
+// that we can intervene to. Maybe in the future with a more complete movement system, we will
+// fix this to work in a raid simulation that includes multiple melee.
 
 struct intervene_t : public warrior_attack_t
 {
@@ -1865,14 +1859,6 @@ struct pummel_t : public warrior_attack_t
 
     p() -> buff.rude_interruption -> trigger();
   }
-
-  virtual bool ready()
-  {
-    if ( ! target -> debuffs.casting -> check() )
-      return false;
-
-    return warrior_attack_t::ready();
-  }
 };
 
 // Raging Blow ==============================================================
@@ -1944,9 +1930,9 @@ struct raging_blow_t : public warrior_attack_t
            oh_attack -> execute_state -> result == RESULT_CRIT )
            p() -> buff.raging_blow_glyph -> trigger();
       p() -> buff.raging_wind -> trigger();
-      p() -> buff.meat_cleaver -> expire();
+      p() -> buff.meat_cleaver -> expire(); // Meat cleaver will only expire if the attack lands.
     }
-    p() -> buff.raging_blow -> decrement();
+    p() -> buff.raging_blow -> decrement(); // Raging blow buff decrements even if the attack is parried.
   }
 
   virtual bool ready()
@@ -2071,27 +2057,16 @@ struct blood_craze_t : public heal_t
   blood_craze_t( warrior_t* p ) :
     heal_t( "blood_craze", p , p -> spec.blood_craze )
   {
-    num_ticks = 3;
-    base_tick_time = timespan_t::from_seconds( 1.0 );
     hasted_ticks = false;
     tick_may_crit = false;
     tick_zero = true;
     background = true;
     target = p;
     dot_behavior = DOT_EXTEND;
+    pct_heal = 0.01; // Currently no spell data for this.
   }
-
-  virtual void tick( dot_t* d )
-  {
-    warrior_t* p = static_cast<warrior_t*>( player );
-
-    base_td = p -> resources.max[ RESOURCE_HEALTH ] * 0.01;
-
-    // call tick()
-    heal_t::tick( d );
-  }
-
 };
+
 // Second Wind ==============================================================
 
 struct second_wind_t : public heal_t
@@ -2117,23 +2092,20 @@ struct second_wind_t : public heal_t
 
 struct enraged_regeneration_t : public heal_t
 {
-  bool first_tick;
+  double base_pct_heal;
+  double base_tick_pct_heal;
   enraged_regeneration_t( warrior_t* p, const std::string& options_str ) :
     heal_t( "enraged_regeneration", p, p -> talents.enraged_regeneration ),
-    first_tick( true )
+    base_pct_heal( 0 ), base_tick_pct_heal ( 0 )
   {
     parse_options( NULL, options_str );
     hasted_ticks = tick_may_crit = false;
-    tick_zero = true;
-    num_ticks = 5;
-    base_tick_time = timespan_t::from_seconds( 1.0 );
     target = p;
-  }
+    pct_heal = data().effectN( 1 ).percent();
+    tick_pct_heal = data().effectN( 2 ).percent();
 
-  virtual void impact( action_state_t* s )
-  {
-    first_tick = true;
-    heal_t::impact( s );
+    base_pct_heal = pct_heal;
+    base_tick_pct_heal = tick_pct_heal;
   }
 
   virtual void execute()
@@ -2145,22 +2117,26 @@ struct enraged_regeneration_t : public heal_t
     heal_t::execute();
   }
 
-  virtual void tick( dot_t* d )
+  virtual void impact( action_state_t* s )
   {
     warrior_t* p = static_cast<warrior_t*>( player );
 
-    if ( first_tick )
-    {
-      pct_heal = data().effectN( 1 ).percent();
-      first_tick = false;
-    }
-    else
-      pct_heal = data().effectN( 2 ).percent();
+    pct_heal = base_pct_heal;
 
     if ( p -> buff.enrage -> up() )
       pct_heal *= 2;
 
-    base_td = p -> resources.max[ RESOURCE_HEALTH ] * pct_heal;
+    heal_t::impact( s );
+  }
+
+  virtual void tick( dot_t* d )
+  {
+    warrior_t* p = static_cast<warrior_t*>( player );
+
+    tick_pct_heal = base_tick_pct_heal;
+
+    if ( p -> buff.enrage -> up() )
+      tick_pct_heal *= 2;
 
     heal_t::tick( d );
   }
@@ -2308,6 +2284,7 @@ struct slam_t : public warrior_attack_t
 };
 
 // Storm Bolt ===============================================================
+
 struct storm_bolt_off_hand_t : public warrior_attack_t
 {
   storm_bolt_off_hand_t( warrior_t* p, const char* name, const spell_data_t* s ) :
