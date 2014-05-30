@@ -210,7 +210,7 @@ class BLTEExtract(object):
 		return file
 	
 	def extract_buffer_to_file(self, data, fname):
-		dirname = os.path.dirname(fname)
+		dirname = os.path.dirname(os.path.normpath(fname))
 		if not os.path.exists(dirname):
 			os.makedirs(dirname)
 		
@@ -380,12 +380,14 @@ class CDNIndex(CASCObject):
 		handle = self.get_url(cdns_url)
 		
 		data = handle.read().strip().split('\n')
-		if len(data) != 2:
-			self.options.parser.error('Invalid cdns file')
-		
-		data_split = data[-1].split('|')
-		self.cdn_path = data_split[1]
-		self.cdn_host = data_split[2]
+		for line in data:
+			data_split = line.split('|')
+			if data_split[0] != 'us':
+				continue
+
+			self.cdn_path = data_split[1]
+			self.cdn_host = data_split[2]
+
 	
 	def cdn_base_url(self):
 		return 'http://%s/%s' % (self.cdn_host, self.cdn_path)
