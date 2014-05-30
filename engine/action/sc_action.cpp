@@ -1748,6 +1748,11 @@ void action_t::init()
   update_flags |= snapshot_flags;
   update_flags &= ~STATE_MUL_DA;
   update_flags &= ~STATE_MUL_TA;
+  if ( channeled )
+  {
+    // Channeled dots get haste snapshoted
+    update_flags &= ~STATE_HASTE;
+  }
 
   if ( pre_combat || action_list == "precombat" )
   {
@@ -2306,6 +2311,16 @@ void action_t::consolidate_snapshot_flags()
   if ( tick_action    ) snapshot_flags |= tick_action    -> snapshot_flags;
   if ( execute_action ) snapshot_flags |= execute_action -> snapshot_flags;
   if ( impact_action  ) snapshot_flags |= impact_action  -> snapshot_flags;
+}
+
+timespan_t action_t::composite_dot_duration( const action_state_t* s ) const
+{
+  if ( channeled )
+  {
+    return dot_duration * ( tick_time( s -> haste ) / base_tick_time );
+  }
+
+  return dot_duration;
 }
 
 double action_t::composite_target_crit( player_t* target ) const
