@@ -6231,9 +6231,6 @@ double druid_t::composite_armor_multiplier() const
       bearMod += glyph.ursols_defense -> effectN( 1 ).percent(); // Non-guardian glyph that adds to bear form multiplier.
     a *= 1.0 + bearMod;
 
-    // Mastery: Nature's Guardian
-    if ( mastery.primal_tenacity -> ok() )
-      a *= 1.0 + cache.mastery_value();
   }
   return a;
 }
