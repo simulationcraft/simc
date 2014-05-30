@@ -6,14 +6,13 @@
 #include "simulationcraft.hpp"
 
 // ==========================================================================
-//
 // TODO: Check WoD mechanics whenever alpha/beta roll around:
 // Raging Blow: Will the parent still fail if either MH/OH parry. (Not incredibly important anymore, but it'd be nice to know)
 //
 // Dragon Roar: Does it still have diminishing returns on more than 1 target
 //
 // Someone who is knowledgable about prot warrior mechanics/changes should look over the defensive abilities.
-// Check shield barrier ap coefficient, as well as how it works with varying amounts of rage.
+// Check shield barrier ap coefficient.
 // ==========================================================================
 
 namespace { // UNNAMED NAMESPACE
@@ -48,8 +47,8 @@ public:
   simple_sample_data_t cs_damage;
   simple_sample_data_t priority_damage;
   simple_sample_data_t all_damage;
-  // Active
 
+  // Active
   action_t* active_bloodbath_dot;
   action_t* active_blood_craze;
   action_t* active_deep_wounds;
@@ -357,10 +356,8 @@ public:
   virtual double    composite_parry() const;
   virtual double    composite_attack_power_multiplier() const;
   virtual double    composite_melee_attack_power() const;
-  virtual double    composite_melee_expertise( weapon_t* ) const;
   virtual double    composite_crit_block() const;
   virtual double    composite_crit_avoidance() const;
-  virtual double    composite_dodge() const;
   virtual double    composite_melee_speed() const;
   virtual void      reset();
   virtual void      regen( timespan_t periodicity );
@@ -391,9 +388,9 @@ public:
   {
    warrior_t& other_p = dynamic_cast<warrior_t&>( other );
    
-   cs_damage.merge( other_p.cs_damage  );
-   all_damage.merge( other_p.all_damage  );
-   priority_damage.merge( other_p.priority_damage  );
+   cs_damage.merge( other_p.cs_damage );
+   all_damage.merge( other_p.all_damage );
+   priority_damage.merge( other_p.priority_damage );
 
    player_t::merge( other ); 
 
@@ -466,14 +463,14 @@ public:
     if ( ( s -> target == p() -> sim -> target ) && s -> result_amount > 0 )
       p() -> priority_damage.add( s -> result_amount );
 
-    if ( s -> result_amount > 0 )
+    if ( s -> result_amount > 0 && target != p() )
       p() -> all_damage.add( s -> result_amount );
   }
 
   void consume_resource()
   {
     ab::consume_resource();
-  
+
     if ( ab::proc )
       return;
 
@@ -519,7 +516,21 @@ public:
       p() -> resource_gain( RESOURCE_RAGE, rage_restored, p() -> gain.avoided_attacks );
     }
   }
+};
 
+// ==========================================================================
+// Warrior Heals
+// ==========================================================================
+
+struct warrior_heal_t : public warrior_action_t< heal_t >
+{
+  warrior_heal_t( const std::string& n, warrior_t* p, const spell_data_t* s = spell_data_t::nil() ) :
+    base_t( n, p, s )
+  {
+    may_crit = tick_may_crit = may_multistrike = hasted_ticks = false;
+    background = proc = true;
+    target = p;
+  }
 };
 
 // ==========================================================================
@@ -603,7 +614,6 @@ struct warrior_attack_t : public warrior_action_t< melee_attack_t >
       p() -> active_bloodbath_dot, // ignite spell
       t, // target
       p() -> buff.bloodbath -> data().effectN( 1 ).percent() * dmg );
-
   }
 
   void trigger_rage_gain()
@@ -646,7 +656,6 @@ struct warrior_attack_t : public warrior_action_t< melee_attack_t >
 
       return t;
   }
-
 };
 
 // trigger_bloodbath ========================================================
@@ -677,7 +686,6 @@ struct bloodbath_dot_t : public ignite::pct_based_action_t< attack_t >
     if ( s -> result_amount > 0 )
       p -> all_damage.add( s -> result_amount );
   }
-
 };
 
 // ==========================================================================
@@ -714,9 +722,9 @@ static  void trigger_sweeping_strikes( action_state_t* s )
       background                 = true;
       aoe                        = 1;
       weapon_multiplier          = 0;
-      base_costs[ RESOURCE_RAGE] = 0;     //Resource consumption already accounted for in the buff application.
+      base_costs[ RESOURCE_RAGE] = 0;            //Resource consumption already accounted for in the buff application.
       cooldown -> duration = timespan_t::zero(); // Cooldown accounted for in the buff.
-      pct_damage = 0.5; // Find effect number
+      pct_damage = data().effectN( 1 ).percent();
     }
 
   virtual double target_armor( player_t* ) const
@@ -841,32 +849,35 @@ void warrior_attack_t::impact( action_state_t* s )
 {
   base_t::impact( s );
 
-  if ( s -> result_amount > 0 )
-    if ( p() -> talents.second_wind -> ok() &&  p() -> resources.current[ RESOURCE_HEALTH ] < p() -> resources.max[ RESOURCE_HEALTH ] * 0.35 )
+  if ( s -> result_amount > 0 && 
+     ( result_is_hit( s -> result ) || result_is_multistrike( s -> result ) ) )
+  {
+    if ( p() -> talents.second_wind -> ok() &&
+      p() -> resources.current[RESOURCE_HEALTH] < p() -> resources.max[RESOURCE_HEALTH] * 0.35 )
     {
       p() -> active_second_wind -> base_dd_min = s -> result_amount;
       p() -> active_second_wind -> base_dd_max = s -> result_amount;
       p() -> active_second_wind -> execute();
     }
 
-  if ( ( result_is_hit( s -> result ) || result_is_multistrike( s -> result ) ) &&
-      !proc && s -> result_amount > 0 && this -> id != 147891 ) // Flurry of Xuen
-  {
-    if ( p() -> buff.sweeping_strikes -> up() && ( !aoe || this -> id == 78 ) ) // Heroic strike exception due to glyph that turns it into 2-target cleave.
-      trigger_sweeping_strikes( execute_state );
-    if ( special )
+    if ( !proc ) // No procs allowed.
     {
-      if( p() -> buff.bloodbath -> up() )
-        trigger_bloodbath_dot( s -> target, s -> result_amount );
-      /*if ( p() -> sets.has_set_bonus( SET_T16_2PC_MELEE ) && td ->  debuffs_colossus_smash -> up() && // Melee tier 16 2 piece.
-         ( this ->  weapon == &( p() -> main_hand_weapon ) || this -> id == 100130 ) &&    // Only procs once per ability used.
+      if ( p() -> buff.sweeping_strikes -> up() && !aoe )
+        trigger_sweeping_strikes( execute_state );
+      if ( special )
+      {
+        if ( p() -> buff.bloodbath -> up() )
+          trigger_bloodbath_dot( s -> target, s -> result_amount );
+        /*if ( p() -> sets.has_set_bonus( SET_T16_2PC_MELEE ) && td ->  debuffs_colossus_smash -> up() && // Melee tier 16 2 piece.
+           ( this ->  weapon == &( p() -> main_hand_weapon ) || this -> id == 100130 ) &&    // Only procs once per ability used.
            this -> id != 12328 )                                  // Doesn't proc from sweeping strikes.
-        p() -> resource_gain( RESOURCE_RAGE,
-                            p() -> sets.set( SET_T16_2PC_MELEE ) -> effectN( 1 ).base_value(), 
-                            p() -> gain.tier16_2pc_melee );*/
-    }
+           p() -> resource_gain( RESOURCE_RAGE,
+           p() -> sets.set( SET_T16_2PC_MELEE ) -> effectN( 1 ).base_value(),
+           p() -> gain.tier16_2pc_melee );*/
+      }
 
-    trigger_flurry( this, 3 );
+      trigger_flurry( this, 3 );
+    }
   }
 }
 
@@ -920,12 +931,10 @@ struct melee_t : public warrior_attack_t
 
   virtual school_e get_school() const
   {
-
     if ( p() -> buff.ignite_weapon -> up() )
      return SCHOOL_FIRE;
     else
      return warrior_attack_t::get_school();
-
   }
 
   virtual void impact( action_state_t* s )
@@ -974,7 +983,6 @@ struct off_hand_test_attack_t : public warrior_attack_t
     warrior_attack_t::execute();
     last_result = execute_state -> result;
   }
-
 };
 
 // Auto Attack ==============================================================
@@ -1013,7 +1021,6 @@ struct auto_attack_t : public warrior_attack_t
 
   virtual void execute()
   {
-
     p() -> main_hand_attack -> schedule_execute();
 
     if ( p() -> off_hand_attack )
@@ -1095,18 +1102,14 @@ struct bladestorm_t : public warrior_attack_t
 
 // Bloodthirst Heal =========================================================
 
-struct bloodthirst_heal_t : public heal_t
+struct bloodthirst_heal_t : public warrior_heal_t
 {
   double base_pct_heal;
 
   bloodthirst_heal_t( warrior_t* p ) :
-    heal_t( "bloodthirst_heal", p, p -> find_spell( 117313 ) ),
+    warrior_heal_t( "bloodthirst_heal", p, p -> find_spell( 117313 ) ),
     base_pct_heal( 0 )
   {
-    // Implemented as an actual heal because of spell callbacks ( for Hurricane, etc. )
-    background = true;
-    target     = p;
-    may_crit = may_multistrike = false;
     pct_heal   = data().effectN( 1 ).percent();
     pct_heal  *= 1.0 + p -> perk.improved_bloodthirst -> effectN( 1 ).percent();
     pct_heal  *= 1.0 + p -> glyphs.bloodthirst -> effectN( 2 ).percent();
@@ -1117,19 +1120,16 @@ struct bloodthirst_heal_t : public heal_t
 
   virtual double calculate_direct_amount( action_state_t* state )
   {
-    warrior_t* p = static_cast<warrior_t*>( player );
-
     pct_heal = base_pct_heal;
 
-    if ( p -> buff.raging_blow_glyph -> up() )
+    if ( p() -> buff.raging_blow_glyph -> up() )
     {
-      pct_heal *= 1.0 + p -> glyphs.raging_blow -> effectN( 1 ).percent();
-      p -> buff.raging_blow_glyph -> expire();
+      pct_heal *= 1.0 + p() -> glyphs.raging_blow -> effectN( 1 ).percent();
+      p() -> buff.raging_blow_glyph -> expire();
     }
 
-   return heal_t::calculate_direct_amount( state );
+   return warrior_heal_t::calculate_direct_amount( state );
   }
-
 };
 
 // Bloodthirst ==============================================================
@@ -1330,7 +1330,6 @@ struct demoralizing_shout : public warrior_attack_t
 
     warrior_attack_t::update_ready( cd_duration );
   }
-
 };
 
 // Devastate ================================================================
@@ -1366,7 +1365,6 @@ struct devastate_t : public warrior_attack_t
     if ( s -> result == RESULT_CRIT )
       p() -> enrage();
   }
-
 };
 
 // Dragon Roar ==============================================================
@@ -1473,7 +1471,6 @@ struct execute_t : public warrior_attack_t
     return am;
   }
 
-
   virtual double cost() const
   {
     double c = warrior_attack_t::cost();
@@ -1499,12 +1496,11 @@ struct execute_t : public warrior_attack_t
   {
     warrior_attack_t::execute();
 
-    if ( p() -> spec.crazed_berserker -> ok() && result_is_hit( execute_state -> result ) ) // Check later, total guess that it's going to act like storm bolt.
+    if ( p() -> spec.crazed_berserker -> ok() && result_is_hit( execute_state -> result ) ) // Check later, total guess that it's going to function simliarly to storm bolt.
       oh_attack -> execute();
 
     p() -> buff.death_sentence -> expire();
   }
-
 };
 
 // Ignite Weapon ============================================================
@@ -1669,7 +1665,6 @@ struct heroic_leap_t : public warrior_attack_t
 
   virtual void impact( action_state_t* s )
   {
-
   if( p() -> current.distance_to_move >  // Hack so that heroic leap doesn't deal damage if the target is far away.
     ( p() -> spell.heroic_leap -> effectN( 2 ).trigger() -> effectN( 1 ).radius() + 
       p() -> perk.improved_heroic_leap -> effectN( 1 ).base_value() ) )
@@ -1690,45 +1685,35 @@ struct heroic_leap_t : public warrior_attack_t
 
 // 2 Piece Tier 16 Tank Set Bonus ===========================================
 
-struct tier16_2pc_tank_heal_t : public heal_t
+struct tier16_2pc_tank_heal_t : public warrior_heal_t
 {
   tier16_2pc_tank_heal_t( warrior_t* p ) :
-  heal_t( "tier16_2pc_tank_heal", p )
+  warrior_heal_t( "tier16_2pc_tank_heal", p )
   {
-    // Implemented as an actual heal because of spell callbacks ( for Hurricane, etc. )
-    background       = true;
-    may_crit         = false;
-    target           = p;
   }
   virtual resource_e current_resource() const { return RESOURCE_NONE; }
 };
 
 // Impending Victory ========================================================
 
-struct impending_victory_heal_t : public heal_t
+struct impending_victory_heal_t : public warrior_heal_t
 {
   double base_pct_heal;
   impending_victory_heal_t( warrior_t* p ) :
-    heal_t( "impending_victory_heal", p, p -> find_spell( 118340 ) )
+    warrior_heal_t( "impending_victory_heal", p, p -> find_spell( 118340 ) )
   {
-    // Implemented as an actual heal because of spell callbacks ( for Hurricane, etc. )
-    background = true;
-    may_crit = may_multistrike = false;
-    target     = p;
     pct_heal   = data().effectN( 1 ).percent();
     base_pct_heal = pct_heal;
   }
 
   virtual double calculate_direct_amount( action_state_t* state )
   {
-    warrior_t* p = static_cast<warrior_t*>( player );
-
     pct_heal = base_pct_heal;
 
-    if ( p -> buff.tier15_2pc_tank -> up() )
-      pct_heal += p -> buff.tier15_2pc_tank -> value();
+    if ( p() -> buff.tier15_2pc_tank -> up() )
+      pct_heal += p() -> buff.tier15_2pc_tank -> value();
 
-    return heal_t::calculate_direct_amount( state );
+    return warrior_heal_t::calculate_direct_amount( state );
   }
 
   virtual resource_e current_resource() const { return RESOURCE_NONE; }
@@ -1929,7 +1914,7 @@ struct raging_blow_t : public warrior_attack_t
       oh_attack -> execute();
       if ( mh_attack -> execute_state -> result == RESULT_CRIT &&
            oh_attack -> execute_state -> result == RESULT_CRIT )
-           p() -> buff.raging_blow_glyph -> trigger();
+        p() -> buff.raging_blow_glyph -> trigger();
       p() -> buff.raging_wind -> trigger();
       p() -> buff.meat_cleaver -> expire(); // Meat cleaver will only expire if the attack lands.
     }
@@ -2046,24 +2031,20 @@ struct revenge_t : public warrior_attack_t
         p() -> buff.tier15_2pc_tank -> trigger();
 
       p() -> buff.hold_the_line -> expire();
-
     }
   }
 };
 
 // Blood Craze ==============================================================
 
-struct blood_craze_t : public heal_t
+struct blood_craze_t : public warrior_heal_t
 {
   blood_craze_t( warrior_t* p ) :
-    heal_t( "blood_craze", p , p -> spec.blood_craze )
+    warrior_heal_t( "blood_craze", p , p -> spec.blood_craze )
   {
     num_ticks = 3; //dot_duration = timespan_t::from_seconds( 3.0 );
     base_tick_time = timespan_t::from_seconds( 1.0 );
-    hasted_ticks = tick_may_crit = may_multistrike = false;
     tick_zero = true;
-    background = true;
-    target = p;
     dot_behavior = DOT_EXTEND;
     tick_pct_heal = 0.01; // Currently no spell data for this.
   }
@@ -2071,14 +2052,12 @@ struct blood_craze_t : public heal_t
 
 // Second Wind ==============================================================
 
-struct second_wind_t : public heal_t
+struct second_wind_t : public warrior_heal_t
 {
   second_wind_t( warrior_t* p ) :
-    heal_t( "second_wind", p, p -> talents.second_wind )
+    warrior_heal_t( "second_wind", p, p -> talents.second_wind )
   {
-    may_crit = may_multistrike = false;
-    background     = true;
-    target         = p;
+    proc = false;
   }
 
   virtual void execute()
@@ -2086,26 +2065,25 @@ struct second_wind_t : public heal_t
     base_dd_max *= 0.1; //Heals for 10% of original damage
     base_dd_min *= 0.1;
 
-    heal_t::execute();
-
+    warrior_heal_t::execute();
   }
 };
 
 // Enraged Regeneration ===============================================
 
-struct enraged_regeneration_t : public heal_t
+struct enraged_regeneration_t : public warrior_heal_t
 {
   double base_pct_heal;
   double base_tick_pct_heal;
   enraged_regeneration_t( warrior_t* p, const std::string& options_str ) :
-    heal_t( "enraged_regeneration", p, p -> talents.enraged_regeneration ),
+    warrior_heal_t( "enraged_regeneration", p, p -> talents.enraged_regeneration ),
     base_pct_heal( 0 ), base_tick_pct_heal ( 0 )
   {
     parse_options( NULL, options_str );
-    hasted_ticks = tick_may_crit = may_crit = may_multistrike = false;
+    background = false;
     num_ticks = 5; //dot_duration = timespan_t::from_seconds( 5.0 );
     base_tick_time = timespan_t::from_seconds( 1.0 );
-    target = p;
+
     pct_heal = data().effectN( 1 ).percent();
     tick_pct_heal = data().effectN( 2 ).percent();
 
@@ -2115,35 +2093,29 @@ struct enraged_regeneration_t : public heal_t
 
   virtual void execute()
   {
-    warrior_t* p = static_cast<warrior_t*>( player );
+    p() -> buff.enraged_regeneration -> trigger();
 
-    p -> buff.enraged_regeneration -> trigger();
-
-    heal_t::execute();
+    warrior_heal_t::execute();
   }
 
   virtual void impact( action_state_t* s )
   {
-    warrior_t* p = static_cast<warrior_t*>( player );
-
     pct_heal = base_pct_heal;
 
-    if ( p -> buff.enrage -> up() )
+    if ( p() -> buff.enrage -> up() )
       pct_heal *= 2;
 
-    heal_t::impact( s );
+    warrior_heal_t::impact( s );
   }
 
   virtual void tick( dot_t* d )
   {
-    warrior_t* p = static_cast<warrior_t*>( player );
-
     tick_pct_heal = base_tick_pct_heal;
 
-    if ( p -> buff.enrage -> up() )
+    if ( p() -> buff.enrage -> up() )
       tick_pct_heal *= 2;
 
-    heal_t::tick( d );
+    warrior_heal_t::tick( d );
   }
 };
 
@@ -2241,9 +2213,7 @@ struct shockwave_t : public warrior_attack_t
     parse_options( NULL, options_str );
 
     attack_power_mod.direct  = data().effectN( 3 ).percent();
-    may_dodge         = false;
-    may_parry         = false;
-    may_block         = false;
+    may_dodge = may_parry = may_block = false;
     aoe               = -1;
   }
 
@@ -2312,9 +2282,7 @@ struct storm_bolt_t : public warrior_attack_t
     warrior_attack_t( "storm_bolt", p, p -> talents.storm_bolt )
   {
     parse_options( NULL, options_str );
-    may_dodge = false;
-    may_parry = false;
-    may_block = false;
+    may_dodge = may_parry = may_block = false;
     // Assuming that our target is stun immune
     base_multiplier = 4.00;
 
@@ -2352,9 +2320,7 @@ struct thunder_clap_t : public warrior_attack_t
     parse_options( NULL, options_str );
 
     aoe               = -1;
-    may_dodge         = false;
-    may_parry         = false;
-    may_block         = false;
+    may_dodge = may_parry = may_block = false;
 
     attack_power_mod.direct = data().effectN( 1 ).ap_coeff();
 
@@ -2400,16 +2366,12 @@ struct thunder_clap_t : public warrior_attack_t
 
 // Victory Rush =============================================================
 
-struct victory_rush_heal_t : public heal_t
+struct victory_rush_heal_t : public warrior_heal_t
 {
   victory_rush_heal_t( warrior_t* p ) :
-    heal_t( "victory_rush_heal", p, p -> find_spell( 118779 ) )
+    warrior_heal_t( "victory_rush_heal", p, p -> find_spell( 118779 ) )
   {
-    // Implemented as an actual heal because of spell callbacks ( for Hurricane, etc. )
-    background = true;
-    may_crit = may_multistrike = false;
-    target     = p;
-    pct_heal   = data().effectN( 1 ).percent() * ( 1 + p -> glyphs.victory_rush -> effectN( 1 ).percent() );
+    pct_heal = data().effectN( 1 ).percent() * ( 1 + p -> glyphs.victory_rush -> effectN( 1 ).percent() );
   }
   virtual resource_e current_resource() const { return RESOURCE_NONE; }
 };
@@ -2496,7 +2458,6 @@ struct whirlwind_t : public warrior_attack_t
       p() -> buff.meat_cleaver -> trigger();
 
     p() -> buff.raging_wind -> expire();
-
   }
 };
 
@@ -2541,7 +2502,6 @@ struct wild_strike_t : public warrior_attack_t
 
     p() -> buff.bloodsurge -> decrement();
   }
-
 };
 
 // ==========================================================================
@@ -2555,7 +2515,6 @@ struct warrior_spell_t : public warrior_action_t< spell_t >
   {
     may_miss = may_glance = may_block = may_dodge = may_parry = may_crit = false;
   }
-
 };
 
 // Avatar ===================================================================
@@ -2679,7 +2638,6 @@ struct deep_wounds_t : public warrior_spell_t
     hasted_ticks  = false;
     dot_behavior = DOT_REFRESH;
   }
-
 };
 
 // Recklessness =============================================================
@@ -3369,12 +3327,11 @@ void warrior_t::init_base_stats()
   base.attack_power_per_strength = 1.0;
   base.attack_power_per_agility  = 0.0;
 
-  //base.stats.attack_power = level * ( level > 80 ? 3.0 : 2.0 ); Remove later, I think base attack power is gone in WoD.
-
   // Avoidance diminishing Returns constants/conversions
   // base miss, dodge, parry all set to 3% in player_t::init_base_stats()
   base.block           = 0.030; //90
   base.block_reduction = 0.300;
+  base.dodge += spec.bastion_of_defense -> effectN( 3 ).percent();
 
   // updated from http://sacredduty.net/2012/09/14/avoidance-diminishing-returns-in-mop-followup/
   // re-confirmed http://www.sacredduty.net/2013/08/09/updated-diminishing-returns-coefficients-all-tanks/
@@ -3382,15 +3339,16 @@ void warrior_t::init_base_stats()
   diminished_block_cap = 1.5037594692967;
   diminished_dodge_cap = 0.906425;
   diminished_parry_cap = 2.37186;
-  
+
   // note that these conversions are level-specific; these are L90 values
   base.dodge_per_agility  = 1 / 10000.0 / 100.0; // empirically tested
   base.parry_per_strength = 1 / 95115.8596; // exact value given by Blizzard
 
-  if ( spec.unwavering_sentinel -> ok() && active_stance != STANCE_GLADIATOR )
+  if ( spec.unwavering_sentinel -> ok() && primary_role() != ROLE_ATTACK ) // Currently the only way we can catch gladiator-dps is by setting the primary role.
   {
     base.attribute_multiplier[ ATTR_STAMINA ] *= 1.0 + spec.unwavering_sentinel -> effectN( 1 ).percent();
     base.armor_multiplier *= 1.0 + spec.unwavering_sentinel -> effectN( 3 ).percent() + perk.improved_unwavering_sentinel -> effectN( 1 ).percent();
+    base.expertise += spec.unwavering_sentinel -> effectN( 5 ).percent();
   }
 
   base_gcd = timespan_t::from_seconds( 1.5 );
@@ -4201,19 +4159,6 @@ double warrior_t::composite_melee_attack_power() const
   return ap;
 }
 
-
-//warrior_t::composite_melee_expertise =======================================
-
-double warrior_t::composite_melee_expertise( weapon_t * w ) const
-{
-  double expertise = player_t::composite_melee_expertise ( w );
-
-  if ( spec.unwavering_sentinel -> ok() && active_stance == STANCE_DEFENSE )
-    expertise += spec.unwavering_sentinel -> effectN( 5 ).percent();
-
-  return expertise;
-}
-
 // warrior_t::composite_parry ==========================================
 
 double warrior_t::composite_parry() const
@@ -4265,18 +4210,6 @@ double warrior_t::composite_crit_avoidance() const
   return c;
 }
 
-// warrior_t::composite_dodge ==========================================
-
-double warrior_t::composite_dodge() const
-{
-  double d = player_t::composite_dodge();
-
-  if( spec.bastion_of_defense -> ok() )
-    d += spec.bastion_of_defense -> effectN( 3 ).percent();
-
-  return d;
-}
-
 // warrior_t::composite_attack_speed ========================================
 
 double warrior_t::composite_melee_speed() const
@@ -4313,6 +4246,8 @@ double warrior_t::passive_movement_modifier() const
   return ms;
 }
 
+// warrior_t::invalidate_cache ==============================================
+
 void warrior_t::invalidate_cache( cache_e c )
 {
   player_t::invalidate_cache( c );
@@ -4323,7 +4258,6 @@ void warrior_t::invalidate_cache( cache_e c )
     player_t::invalidate_cache( CACHE_CRIT_BLOCK );
     player_t::invalidate_cache( CACHE_ATTACK_POWER );
   }
-
 }
 
 // warrior_t::regen =========================================================
@@ -4390,7 +4324,7 @@ void warrior_t::assess_damage( school_e school,
   {
     if ( active_stance == STANCE_DEFENSE )
       s -> result_amount *= ( 1.0 + buff.defensive_stance -> data().effectN( 1 ).percent() +
-        (  talents.gladiators_resolve -> ok() ? talents.gladiators_resolve -> effectN( 2 ).percent() : 0 ) );
+        ( talents.gladiators_resolve -> ok() ? talents.gladiators_resolve -> effectN( 2 ).percent() : 0 ) );
 
     warrior_td_t* td = get_target_data( s -> action -> player );
 
@@ -4482,7 +4416,6 @@ struct warrior_flurry_of_xuen_t : public warrior_attack_t
     aoe = 5;
     special = may_miss = may_parry = may_block = may_dodge = may_crit = true;
   }
-
 };
 
 struct warrior_lightning_strike_t : public warrior_attack_t
@@ -4596,12 +4529,10 @@ set_e warrior_t::decode_set( const item_t& item ) const
     if ( is_tank  ) return SET_T16_TANK;
   }
 
-
   if ( strstr( s, "_gladiators_plate_"   ) ) return SET_PVP_MELEE;
 
   return SET_NONE;
 }
-
 
 // warrior_t::enrage ========================================================
 
@@ -4623,7 +4554,6 @@ void warrior_t::enrage()
 
   buff.enraged_speed -> trigger();
 }
-
 
 /* Report Extension Class
  * Here you can define class specific report extensions/overrides

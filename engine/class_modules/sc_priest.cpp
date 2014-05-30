@@ -4865,8 +4865,6 @@ void priest_t::init_base_stats()
 {
   base_t::init_base_stats();
 
-  base.stats.attack_power = 0.0;
-
   if ( specs.shadow_orbs -> ok() )
   {
     resources.base[ RESOURCE_SHADOW_ORB ] = 3.0;

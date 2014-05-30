@@ -4909,7 +4909,6 @@ void warlock_t::init_base_stats()
 {
   player_t::init_base_stats();
 
-  //base.stats.attack_power += -10; Remove in WoD
   base.attack_power_per_strength = 1.0;
   base.spell_power_per_intellect = 1.0;
 

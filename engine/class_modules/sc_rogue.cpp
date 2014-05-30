@@ -3380,7 +3380,6 @@ void rogue_t::init_base_stats()
 {
   player_t::init_base_stats();
 
-  //base.stats.attack_power = ( level * 2 ); Gone in WoD, double check later.
   base.attack_power_per_strength = 1.0;
   base.attack_power_per_agility  = 1.0;
 
@@ -3394,7 +3393,7 @@ void rogue_t::init_base_stats()
 
   base_gcd = timespan_t::from_seconds( 1.0 );
 
-  diminished_kfactor    = 0.009880;
+  diminished_kfactor   = 0.009880;
   diminished_dodge_cap = 0.006870;
   diminished_parry_cap = 0.006870;
 }

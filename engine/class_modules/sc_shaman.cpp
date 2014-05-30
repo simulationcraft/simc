@@ -5325,7 +5325,6 @@ void shaman_t::init_base_stats()
 {
   player_t::init_base_stats();
 
-  //base.stats.attack_power = ( level * 2 ) - 30; Gone in WoD, double check later.
   base.attack_power_per_strength = 0.0;
   base.attack_power_per_agility  = 1.0;
   base.spell_power_per_intellect = 1.0;
@@ -5336,7 +5335,7 @@ void shaman_t::init_base_stats()
   base.distance = ( specialization() == SHAMAN_ENHANCEMENT ) ? 3 : 30;
   base.mana_regen_from_spirit_multiplier = spec.meditation -> effectN( 1 ).percent();
 
-  diminished_kfactor    = 0.009880;
+  diminished_kfactor   = 0.009880;
   diminished_dodge_cap = 0.006870;
   diminished_parry_cap = 0.006870;
 

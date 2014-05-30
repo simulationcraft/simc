@@ -5649,8 +5649,6 @@ void druid_t::init_base_stats()
 {
   player_t::init_base_stats();
 
-  //base.stats.attack_power = level * ( level > 80 ? 3.0 : 2.0 ); Removed in WoD, double check later.
-
   // TODO: Confirm that all druid specs get both of these things.
   base.attack_power_per_agility  = 0.0; // This is adjusted in cat_form_t and bear_form_t
   base.spell_power_per_intellect = 1.0;
