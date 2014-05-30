@@ -2572,7 +2572,11 @@ double player_t::composite_spell_crit() const
 
 double player_t::composite_spell_hit() const
 {
-  double sh = composite_spell_hit_rating() / current.rating.spell_hit;
+  double sh = current.hit;
+
+  sh += composite_spell_hit_rating() / current.rating.spell_hit;
+
+  sh += composite_melee_expertise();
 
   return sh;
 }
