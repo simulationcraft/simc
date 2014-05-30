@@ -4,7 +4,7 @@
 #ifndef MAX_CLASS
 #define MAX_CLASS (12)
 #endif
-// Class based active abilities, wow build 18297
+// Class based active abilities, wow build 18322
 static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SIZE] = {
   {
     {
@@ -886,7 +886,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
         6795, // Growl
         5185, // Healing Touch
         2637, // Hibernate
-       16914, // Hurricane
+       16914, // Hurricane (Solar)
       102560, // Incarnation: Chosen of Elune (Talent, Shapeshift)
       102543, // Incarnation: King of the Jungle (Talent, Shapeshift)
       102558, // Incarnation: Son of Ursoc (Talent, Shapeshift)
@@ -897,7 +897,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
         1126, // Mark of the Wild
         6807, // Maul
       106922, // Might of Ursoc
-        8921, // Moonfire
+        8921, // Moonfire (Lunar)
        16689, // Nature's Grasp
         5215, // Prowl
         1822, // Rake
@@ -910,10 +910,10 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
        40120, // Swift Flight Form (Shapeshift)
       106785, // Swipe
          783, // Travel Form (Shapeshift)
-        5176, // Wrath
+        5176, // Wrath (Solar)
            0,
     },
-    // Balance tree, 13 abilities
+    // Balance tree, 12 abilities
     {
       127663, // Astral Communion
       106996, // Astral Storm (Balance)
@@ -922,12 +922,11 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
       132158, // Nature's Swiftness
         2782, // Remove Corruption
        78675, // Solar Beam
-       48505, // Starfall
-        2912, // Starfire
-       78674, // Starsurge
-       93402, // Sunfire
+       48505, // Starfall (Lunar)
+        2912, // Starfire (Lunar)
+       78674, // Starsurge (Lunar and Solar)
+       93402, // Sunfire (Solar)
        88747, // Wild Mushroom
-       88751, // Wild Mushroom: Detonate
            0,
     },
     // Feral tree, 6 abilities
@@ -974,9 +973,9 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
   },
 };
 
-#define TREE_SPECIALIZATION_SIZE (28)
+#define TREE_SPECIALIZATION_SIZE (29)
 
-// Talent tree specialization abilities, wow build 18297
+// Talent tree specialization abilities, wow build 18322
 static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZATION_SIZE] = {
   // Specialization abilities for Hunter pets
   {
@@ -1060,6 +1059,7 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
         1719, // Recklessness
        12712, // Seasoned Soldier
         1464, // Slam
+      162698, // Stat Negation Aura - Strength DPS
        29725, // Sudden Death
        12328, // Sweeping Strikes
         6343, // Thunder Clap
@@ -1083,6 +1083,7 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
       145991, // Readiness: Fury
         1719, // Recklessness
        81099, // Single-Minded Fury
+      162698, // Stat Negation Aura - Strength DPS
        46917, // Titan's Grip
       143268, // Unbridled Wrath
         1680, // Whirlwind
@@ -1110,6 +1111,7 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
         2565, // Shield Block
        23922, // Shield Slam
          871, // Shield Wall
+      162702, // Stat Negation Aura - Strength Tank
        46953, // Sword and Board
         6343, // Thunder Clap
       122509, // Ultimatum
@@ -1144,6 +1146,7 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
       145975, // Readiness: Holy
        53551, // Sacred Cleansing
       148040, // Sacred Shield Overridde (Holy)
+      162701, // Stat Negation Aura - Intellect Healer
        85512, // Tower of Radiance
            0,
     },
@@ -1168,6 +1171,7 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
       105805, // Sanctuary
        53600, // Shield of the Righteous
       159374, // Shining Protector
+      162702, // Stat Negation Aura - Strength Tank
            0,
     },
     // Specialization abilities for Retribution
@@ -1186,6 +1190,7 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
        86539, // Plate Specialization
       145978, // Readiness: Retribution
        20164, // Seal of Justice
+      162698, // Stat Negation Aura - Strength DPS
        53503, // Sword of Light
        20113, // Sword of Light part two (Do not display)
        85256, // Templar's Verdict
@@ -1249,6 +1254,7 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
        76658, // Mastery: Essence of the Viper
       145966, // Readiness: Survival
        87935, // Serpent Sting
+      164856, // Survivalist
        63458, // Trap Mastery
       118976, // Viper Venom
            0,
@@ -1347,6 +1353,7 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
       145981, // Readiness: Discipline
       109964, // Spirit Shell
        87336, // Spiritual Healing
+      162701, // Stat Negation Aura - Intellect Healer
        89488, // Strength of Soul
        92297, // Train of Thought
     },
@@ -1378,6 +1385,7 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
        63733, // Serendipity
        20711, // Spirit of Redemption
        87336, // Spiritual Healing
+      162701, // Stat Negation Aura - Intellect Healer
            0,
     },
     // Specialization abilities for Shadow
@@ -1397,6 +1405,7 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
        15473, // Shadowform
        78203, // Shadowy Apparitions
        15487, // Silence
+      162699, // Stat Negation Aura - Intellect DPS
        15286, // Vampiric Embrace
        34914, // Vampiric Touch
       114884, // Vampiric Touch <DND>
@@ -1418,7 +1427,7 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
        49028, // Dancing Rune Weapon
       137008, // Hotfix Passive
        50371, // Improved Blood Presence
-       77513, // Mastery: Bloody Shields
+       77513, // Mastery: Blood Shield
        86537, // Plate Specialization
       155522, // Power of the Grave
       145958, // Readiness: Blood
@@ -1428,6 +1437,7 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
        81127, // Sanguine Fortitude
        49509, // Scent of Blood
       114866, // Soul Reaper
+      162702, // Stat Negation Aura - Strength Tank
        55233, // Vampiric Blood
        50029, // Veteran of the Third War
        81164, // Will of the Necropolis
@@ -1453,6 +1463,7 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
       145959, // Readiness: Frost
        59057, // Rime
       130735, // Soul Reaper
+      162698, // Stat Negation Aura - Strength DPS
        66192, // Threat of Thassarian
        55610, // Unholy Aura
            0,
@@ -1473,6 +1484,7 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
        55090, // Scourge Strike
        49572, // Shadow Infusion
       130736, // Soul Reaper
+      162698, // Stat Negation Aura - Strength DPS
        49530, // Sudden Doom
        49206, // Summon Gargoyle
        55610, // Unholy Aura
@@ -1504,6 +1516,7 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
        62099, // Shamanism
        30823, // Shamanistic Rage
       123099, // Spiritual Insight
+      162699, // Stat Negation Aura - Intellect DPS
        51490, // Thunderstorm
            0,
     },
@@ -1526,6 +1539,7 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
       145986, // Readiness: Enhancement
        30823, // Shamanistic Rage
        58875, // Spirit Walk
+      162697, // Stat Negation Aura - Agility DPS
        17364, // Stormstrike
        30809, // Unleashed Rage
         8232, // Windfury Weapon
@@ -1551,6 +1565,7 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
        61295, // Riptide
        98008, // Spirit Link Totem
       112858, // Spiritual Insight
+      162701, // Stat Negation Aura - Intellect Healer
        55453, // Telluric Currents
        51564, // Tidal Waves
        52127, // Water Shield
@@ -1752,6 +1767,7 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
       116645, // Teachings of the Monastery
       116680, // Thunder Focus Tea
       116670, // Uplift
+           0,
     },
     // Specialization abilities for Windwalker
     {
@@ -1786,29 +1802,28 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
     // Specialization abilities for Balance
     {
       127663, // Astral Communion
+       33605, // Astral Showers
       106732, // Balance Overrides Passive
       112071, // Celestial Alignment
        79577, // Eclipse
-       81062, // Euphoria
       137013, // Hotfix Passive
       108299, // Killer Instinct
        86104, // Leather Specialization
-       33605, // Lunar Shower
        77492, // Mastery: Total Eclipse
        24858, // Moonkin Form
       112857, // Natural Insight
       132158, // Nature's Swiftness
        48393, // Owlkin Frenzy
       151021, // Readiness: Balance
+      163102, // Rebalance
         2782, // Remove Corruption
        93399, // Shooting Stars
        78675, // Solar Beam
        48505, // Starfall
         2912, // Starfire
        78674, // Starsurge
-       93402, // Sunfire
+      162699, // Stat Negation Aura - Intellect DPS
        88747, // Wild Mushroom
-       88751, // Wild Mushroom: Detonate
            0,
     },
     // Specialization abilities for Feral
@@ -1830,6 +1845,7 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
         1079, // Rip
        52610, // Savage Roar
       106839, // Skull Bash
+      162697, // Stat Negation Aura - Agility DPS
       106832, // Thrash
         5217, // Tiger's Fury
            0,
@@ -1853,6 +1869,7 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
         1079, // Rip
        62606, // Savage Defense
       106839, // Skull Bash
+      162700, // Stat Negation Aura - Agility Tank
        16931, // Thick Hide
       106832, // Thrash
       135288, // Tooth and Claw
@@ -1881,6 +1898,7 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
       145963, // Readiness: Restoration
         8936, // Regrowth
       106735, // Restoration Overrides Passive
+      162701, // Stat Negation Aura - Intellect Healer
        18562, // Swiftmend
          740, // Tranquility
        48438, // Wild Growth
@@ -1894,7 +1912,7 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
 
 #define CLASS_MASTERY_ABILITY_SIZE (1)
 
-// Class mastery abilities, wow build 18297
+// Class mastery abilities, wow build 18322
 static unsigned __class_mastery_ability_data[MAX_CLASS][MAX_SPECS_PER_CLASS][CLASS_MASTERY_ABILITY_SIZE] = {
   {
     {
@@ -2004,7 +2022,7 @@ static unsigned __class_mastery_ability_data[MAX_CLASS][MAX_SPECS_PER_CLASS][CLA
   {
     // Masteries for Blood specialization
     {
-      77513, // Mastery: Bloody Shields
+      77513, // Mastery: Blood Shield
     },
     // Masteries for Frost specialization
     {
@@ -2117,7 +2135,7 @@ static unsigned __class_mastery_ability_data[MAX_CLASS][MAX_SPECS_PER_CLASS][CLA
 #define MAX_RACE (28)
 #endif
 
-// Racial abilities, wow build 18297
+// Racial abilities, wow build 18322
 static unsigned __race_ability_data[MAX_RACE][MAX_CLASS][RACE_ABILITY_SIZE] = {
   {
     {     0, },
@@ -2840,7 +2858,7 @@ static unsigned __race_ability_data[MAX_RACE][MAX_CLASS][RACE_ABILITY_SIZE] = {
 
 #define GLYPH_ABILITIES_SIZE (40)
 
-// Glyph spells for classes, wow build 18297
+// Glyph spells for classes, wow build 18322
 static unsigned __glyph_abilities_data[][3][GLYPH_ABILITIES_SIZE] = {
   {
     {
@@ -2977,7 +2995,7 @@ static unsigned __glyph_abilities_data[][3][GLYPH_ABILITIES_SIZE] = {
   },
   // Glyph spells for Hunter
   {
-    // Major Glyphs (24 spells)
+    // Major Glyphs (25 spells)
     {
        20895, // Glyph of Animal Bond
       109263, // Glyph of Black Ice
@@ -2986,6 +3004,7 @@ static unsigned __glyph_abilities_data[][3][GLYPH_ABILITIES_SIZE] = {
       159467, // Glyph of Deep Frost
        56850, // Glyph of Deterrence
        56844, // Glyph of Disengage
+      123632, // Glyph of Distracting Shot
       119410, // Glyph of Endless Wrath
       148475, // Glyph of Enduring Deceit
       119403, // Glyph of Explosive Trap
@@ -3144,14 +3163,13 @@ static unsigned __glyph_abilities_data[][3][GLYPH_ABILITIES_SIZE] = {
   },
   // Glyph spells for Death Knight
   {
-    // Major Glyphs (29 spells)
+    // Major Glyphs (28 spells)
     {
       159415, // Glyph of Absorb Magic
        58623, // Glyph of Anti-Magic Shell
        58620, // Glyph of Chains of Ice
        63330, // Glyph of Dancing Rune Weapon
        63331, // Glyph of Dark Simulacrum
-       96279, // Glyph of Dark Succor
        63333, // Glyph of Death Coil
        62259, // Glyph of Death Grip
        58629, // Glyph of Death and Decay
@@ -3370,9 +3388,8 @@ static unsigned __glyph_abilities_data[][3][GLYPH_ABILITIES_SIZE] = {
   },
   // Glyph spells for Monk
   {
-    // Major Glyphs (32 spells)
+    // Major Glyphs (31 spells)
     {
-      125676, // Glyph of Afterlife
       123394, // Glyph of Breath of Fire
       146954, // Glyph of Detox
       120482, // Glyph of Enduring Healing Sphere
@@ -3494,7 +3511,7 @@ static unsigned __glyph_abilities_data[][3][GLYPH_ABILITIES_SIZE] = {
 
 #define TIER_BONUSES_TIER_BASE (13)
 
-// Tier item set bonuses for class, wow build 18297
+// Tier item set bonuses for class, wow build 18322
 static unsigned __tier_bonuses_data[][TIER_BONUSES_MAX_TIER][TIER_BONUSES_SIZE] = {
   {
     {
@@ -3919,7 +3936,7 @@ static unsigned __tier_bonuses_data[][TIER_BONUSES_MAX_TIER][TIER_BONUSES_SIZE] 
 
 #define PERK_SIZE (9)
 
-// Perk specialization abilities, wow build 18297
+// Perk specialization abilities, wow build 18322
 static unsigned __perk_data[][MAX_SPECS_PER_CLASS][PERK_SIZE] = {
   {
     {
@@ -4349,7 +4366,7 @@ static unsigned __perk_data[][MAX_SPECS_PER_CLASS][PERK_SIZE] = {
     // Balance
     {
       157233, // 0: Empowered Starfall
-      157229, // 1: Enhanced Frenzy
+      157229, // 1: Enhanced Owlkin Frenzy
       157227, // 2: Enhanced Moonkin Form
       157225, // 3: Enhanced Mushrooms
       157232, // 4: Enhanced Starsurge

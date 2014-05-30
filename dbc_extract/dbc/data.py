@@ -109,6 +109,11 @@ _DIFF_DATA = {
             ( 'id_display', _REMOVE_FIELD )
         ]
     },
+    18322: {
+        'SpellMisc.dbc': [
+            ( 'unk_18322', _ADD_FIELD, 'prj_speed' )
+        ]
+    }
 }
 
 # Base DBC/DB2 fields, works for WoW build 17898 (Mists of Pandaria/5.4.7)
