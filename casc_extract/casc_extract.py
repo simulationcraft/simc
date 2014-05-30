@@ -4,11 +4,11 @@ import optparse, sys, os
 import build_cfg, casc
 
 parser = optparse.OptionParser( usage = 'Usage: %prog -d wow_install_dir [options] file_path ...')
-parser.add_option( '--cdn', dest = 'online', action = 'store_true', help = 'Fetch data from Blizzard CDN [only used for mode=dbc]' )
-parser.add_option( '-m', '--mode', dest = 'mode', choices = [ 'dbc', 'unpack', 'extract' ],
-                   help = 'Extraction mode: "dbc" for DBC file extraction, "unpack" for BLTE file unpack, "extract" for key or MD5 based file extract from local game client files' )
+parser.add_option( '--cdn', dest = 'online', action = 'store_true', help = 'Fetch data from Blizzard CDN [only used for mode=batch/extract]' )
+parser.add_option( '-m', '--mode', dest = 'mode', choices = [ 'batch', 'unpack', 'extract' ],
+                   help = 'Extraction mode: "batch" for file extraction, "unpack" for BLTE file unpack, "extract" for key or MD5 based file extract from local game client files' )
 parser.add_option( '-b', '--dbfile', dest = 'dbfile', type = 'string', default = 'dbfile', 
-					help = "A textual file containing a list of file paths to extract [default dbfile, only needed for mode=dbc]" )
+					help = "A textual file containing a list of file paths to extract [default dbfile, only needed for mode=batch]" )
 parser.add_option( '-r', '--root', dest = 'root_file', type = 'string', default = 'root',
                    help = 'Root file path location [default CACHE_DIR/root, only needed if --cdn is not set]' )
 parser.add_option( '-e', '--encoding', dest = 'encoding_file', type = 'string', default = 'encoding',
@@ -27,9 +27,9 @@ if __name__ == '__main__':
 		cdn = casc.CDNIndex(opts)
 		cdn.CheckVersion()
 		sys.exit(0)
-	elif opts.mode == 'dbc':
+	elif opts.mode == 'batch':
 		if not opts.output:
-			parser.error("DBC mode requires an output directory for the files")
+			parser.error("Batch mode requires an output directory for the files")
 			sys.exit(1)
 					
 		fname_db = build_cfg.DBFileList(opts)
