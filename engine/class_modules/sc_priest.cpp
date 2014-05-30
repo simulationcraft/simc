@@ -4237,7 +4237,7 @@ struct renew_t final : public priest_heal_t
       proc       = true;
     }
 
-    void trigger( action_state_t* s, double /* amount * )
+    void trigger( action_state_t* s, double /* amount */ )
     {
       target = s -> target;
       execute();
@@ -4299,7 +4299,7 @@ struct renew_t final : public priest_heal_t
 struct clarity_of_will_t final : public priest_heal_t
 {
   clarity_of_will_t( priest_t& p, const std::string& options_str ) :
-    priest_heal_t( "clarity_of_will", p, p.find_spell( 0 /*p.talents.divine_clarity */ ) )
+    priest_heal_t( "clarity_of_will", p, p.find_spell( 0 /*p.talents.divine_clarity  ) )
   {
     parse_options( nullptr, options_str );
     // TODO: implement mechanic
@@ -4868,7 +4868,7 @@ action_t* priest_t::create_action( const std::string& name,
   if ( name == "renew"                  ) return new renew_t                 ( *this, options_str );
   if ( name == "cascade_heal"           ) return new cascade_heal_t          ( *this, options_str );
   if ( name == "clarity_of_will"        ) return new clarity_of_will_t       ( *this, options_str );
-  if ( name == "clarity_of_purpose"     ) return new clarity_of_purpose_t    ( *this, options_str );
+  //if ( name == "clarity_of_purpose"     ) return new clarity_of_purpose_t    ( *this, options_str );
   if ( name == "saving_grace"           ) return new saving_grace_t          ( *this, options_str );
 
   if ( find_class_spell( "Lightwell" ) -> ok() )
