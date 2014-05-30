@@ -1436,20 +1436,6 @@ struct priest_spell_t : public priest_action_t<spell_t>
         priest.procs.surge_of_darkness -> occur();
     }
   }
-
-  void trigger_divine_insight_shadow()
-  {
-    int stack = priest.buffs.divine_insight_shadow -> check();
-    if ( priest.buffs.divine_insight_shadow -> trigger() )
-    {
-      if ( priest.buffs.divine_insight_shadow -> check() == stack )
-        priest.procs.divine_insight_shadow_overflow -> occur();
-      else
-        priest.procs.divine_insight_shadow -> occur();
-
-      priest.cooldowns.mind_blast -> reset( true ); //This could probably sit under 'else', but doesn't hurt if it happens for every event
-    }
-  }
 };
 
 namespace spells {
@@ -2659,10 +2645,9 @@ struct shadow_word_pain_t final : public priest_spell_t
         proc_shadowy_apparition -> trigger();
       }
     }
+
     if ( d -> state -> result_amount > 0 )
-    {
-      trigger_divine_insight_shadow();
-    }
+      priest.buffs.divine_insight_shadow -> trigger();
   }
 };
 
@@ -4463,12 +4448,18 @@ struct divine_insight_shadow_t final : public priest_buff_t<buff_t>
 
   virtual bool trigger( int stacks, double value, double chance, timespan_t duration ) override
   {
+    int stack = priest.buffs.divine_insight_shadow -> check();
+
     bool success = base_t::trigger( stacks, value, chance, duration );
 
     if ( success )
     {
       priest.cooldowns.mind_blast -> reset( true );
-      priest.procs.divine_insight_shadow -> occur();
+
+      if ( priest.buffs.divine_insight_shadow -> check() == stack )
+        priest.procs.divine_insight_shadow_overflow -> occur();
+      else
+        priest.procs.divine_insight_shadow -> occur();
     }
 
     return success;
