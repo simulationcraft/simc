@@ -2731,6 +2731,20 @@ struct bear_attack_t : public druid_attack_t<melee_attack_t>
 
     p() -> resource_gain( RESOURCE_RAGE, rage, p() -> gain.bear_melee );
   }
+
+  virtual timespan_t gcd() const
+  {
+    if ( p() -> specialization() != DRUID_GUARDIAN )
+      return action_t::gcd();
+
+    timespan_t t = action_t::gcd();
+    if ( t == timespan_t::zero() ) return timespan_t::zero();
+
+    t *= player -> cache.attack_haste();
+    if ( t < min_gcd ) t = min_gcd;
+
+    return t;
+  }
 }; // end druid_bear_attack_t
 
 // Bear Melee Attack ========================================================
