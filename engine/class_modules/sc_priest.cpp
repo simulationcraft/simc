@@ -4299,7 +4299,7 @@ struct renew_t final : public priest_heal_t
 struct clarity_of_will_t final : public priest_heal_t
 {
   clarity_of_will_t( priest_t& p, const std::string& options_str ) :
-    priest_heal_t( "clarity_of_will", p, p.find_spell( 0 /*p.talents.divine_clarity  ) )
+    priest_heal_t( "clarity_of_will", p, p.find_spell( 0 /*p.talents.divine_clarity*/  ) )
   {
     parse_options( nullptr, options_str );
     // TODO: implement mechanic
