@@ -618,7 +618,7 @@ struct warrior_attack_t : public warrior_action_t< melee_attack_t >
 
     weapon_t*  w = weapon;
 
-    if ( p() -> active_stance == STANCE_DEFENSE || p() -> active_stance == STANCE_GLADIATOR )
+    if ( p() -> active_stance != STANCE_BATTLE )
       return;
 
     double rage_gain = 3.5 * w -> swing_time.total_seconds();
@@ -2929,11 +2929,13 @@ struct stampeding_roar_t : public warrior_spell_t
 
 // The swap/damage taken options are intended to make it easier for players to simulate possible gains/losses from
 // swapping stances while in combat, without having to create a bunch of messy actions for it.
+// (Instead, we have a bunch of messy code!)
 // Stance ==============================================================
 struct stance_t : public warrior_spell_t
 {
   warrior_stance switch_to_stance;
   warrior_stance starting_stance;
+  warrior_stance original_switch;
   std::string stance_str;
   double swap;
 
@@ -2949,24 +2951,36 @@ struct stance_t : public warrior_spell_t
     };
     parse_options( options, options_str );
 
-    starting_stance = p -> active_stance;
-    
+    if ( p -> specialization() != WARRIOR_PROTECTION )
+      starting_stance = STANCE_BATTLE;
+    else if ( p -> primary_role() == ROLE_ATTACK && p -> talents.gladiators_resolve )
+      starting_stance = STANCE_GLADIATOR;
+    else
+      starting_stance = STANCE_DEFENSE;
+
     if ( ! stance_str.empty() )
     {
       if ( stance_str == "battle" )
+      {
         switch_to_stance = STANCE_BATTLE;
+        original_switch = switch_to_stance;
+      }
       else if ( stance_str == "def" || stance_str == "defensive" )
+      {
         switch_to_stance = STANCE_DEFENSE;
-      else if (stance_str == "glad" || stance_str == "gladiator" )
+        original_switch = switch_to_stance;
+      }
+      else if ( stance_str == "glad" || stance_str == "gladiator" )
+      {
         switch_to_stance = STANCE_GLADIATOR;
+        original_switch = switch_to_stance;
+      }
     }
 
     if( swap == 0 )
       cooldown -> duration = p -> cooldown.stance_swap -> duration;
     else
       cooldown -> duration = (timespan_t::from_seconds( swap ) );
-
-    starting_stance = p -> active_stance;
 
     use_off_gcd = true;
     harmful     = false;
@@ -2980,7 +2994,13 @@ struct stance_t : public warrior_spell_t
       switch ( p() -> active_stance )
       {
         case STANCE_BATTLE:     p() -> buff.battle_stance    -> expire(); break;
-        case STANCE_DEFENSE:    p() -> buff.defensive_stance -> expire(); break;
+        case STANCE_DEFENSE:
+        {
+          p() -> buff.defensive_stance -> expire();
+          if ( p() -> specialization() == WARRIOR_PROTECTION )
+            p() -> vengeance_stop(); //Vengeance only works inside of defensive stance.
+          break;
+        }
         case STANCE_GLADIATOR:  p() -> buff.gladiator_stance -> expire(); break;
       }
       p() -> active_stance = switch_to_stance;
@@ -2988,7 +3008,13 @@ struct stance_t : public warrior_spell_t
       switch ( p() -> active_stance )
       {
         case STANCE_BATTLE:     p() -> buff.battle_stance    -> trigger(); break;
-        case STANCE_DEFENSE:    p() -> buff.defensive_stance -> trigger(); break;
+        case STANCE_DEFENSE:
+        {
+          p() -> buff.defensive_stance -> trigger();
+          if ( p() -> specialization() == WARRIOR_PROTECTION )
+            p() -> vengeance_start();
+          break;
+        }
         case STANCE_GLADIATOR:  p() -> buff.gladiator_stance -> trigger(); break;
       }
     p() -> cooldown.stance_swap -> start();
@@ -3002,12 +3028,7 @@ struct stance_t : public warrior_spell_t
         cooldown -> start();
       if( swap >= 3.0 && p() -> active_stance == starting_stance )
       {
-        if ( stance_str == "battle" )
-          switch_to_stance = STANCE_BATTLE;
-        else if ( stance_str == "def" || stance_str == "defensive" )
-          switch_to_stance = STANCE_DEFENSE;
-        else if ( stance_str == "glad" || stance_str == "gladiator" )
-          switch_to_stance = STANCE_GLADIATOR;
+        switch_to_stance = original_switch;
         cooldown -> start();
         cooldown -> adjust( -1 * p() -> cooldown.stance_swap -> duration );
       }
@@ -3018,7 +3039,7 @@ struct stance_t : public warrior_spell_t
   {
     if ( p() -> cooldown.stance_swap -> down() ||
          cooldown -> down() ||
-         ( swap == 0 && p() -> active_stance == switch_to_stance ) ||
+       ( swap == 0 && p() -> active_stance == switch_to_stance ) ||
          p() -> buff.gladiator_stance -> check() )
       return false;
 
@@ -3852,7 +3873,9 @@ void warrior_t::create_buffs()
 
   buff.defensive_stance = buff_creator_t( this, "defensive_stance", find_class_spell( "Defensive Stance" ) )
                           .add_invalidate( CACHE_EXP )
-                          .add_invalidate( CACHE_CRIT_AVOIDANCE );
+                          .add_invalidate( CACHE_CRIT_AVOIDANCE )
+                          .add_invalidate( CACHE_CRIT_BLOCK )
+                          .add_invalidate( CACHE_BLOCK );
 
   buff.enrage           = buff_creator_t( this, "enrage",           find_spell( 12880 ) )
                           .activated( false ) //Account for delay in buff application.
@@ -3887,7 +3910,8 @@ void warrior_t::create_buffs()
   buff.raging_wind      = buff_creator_t( this, "raging_wind",      glyphs.raging_wind -> effectN( 1 ).trigger() )
                           .chance( glyphs.raging_wind -> ok() ? 1 : 0 );
 
-  buff.ravager          = buff_creator_t( this, "ravager", talents.ravager );
+  buff.ravager          = buff_creator_t( this, "ravager", talents.ravager )
+                          .add_invalidate( CACHE_PARRY );
 
   buff.recklessness     = buff_creator_t( this, "recklessness",     spec.recklessness )
                           .duration( spec.recklessness -> duration() *
@@ -4050,7 +4074,7 @@ void warrior_t::init_action_list()
       apl_arms();
       break;
     case WARRIOR_PROTECTION:
-      if ( primary_role() == ROLE_ATTACK )
+      if ( primary_role() == ROLE_ATTACK && talents.gladiators_resolve )
         apl_gladiator();
       else
         apl_prot();
@@ -4077,9 +4101,6 @@ void warrior_t::combat_begin()
 
   if ( active_stance == STANCE_BATTLE && ! buff.battle_stance -> check() )
     buff.battle_stance -> trigger();
-
-  if ( specialization() == WARRIOR_PROTECTION && active_stance == STANCE_DEFENSE )
-    vengeance_start();
 
   if ( spec.bladed_armor )
     buff.bladed_armor -> trigger();
@@ -4302,6 +4323,9 @@ void warrior_t::invalidate_cache( cache_e c )
     player_t::invalidate_cache( CACHE_CRIT_BLOCK );
     player_t::invalidate_cache( CACHE_ATTACK_POWER );
   }
+
+  if ( c == CACHE_CRIT && spec.riposte -> ok() )
+    player_t::invalidate_cache( CACHE_PARRY );
 
 }
 
