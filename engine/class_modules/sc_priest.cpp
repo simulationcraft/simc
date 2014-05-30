@@ -1939,10 +1939,9 @@ struct mind_blast_t final : public priest_spell_t
     }
 
 
-    // Train of Thought
-    if ( priest.specs.train_of_thought -> ok() )
-      priest.cooldowns.penance -> adjust ( - priest.specs.train_of_thought -> effectN( 2 ).time_value() );
-    cd_duration -= timespan_t::from_seconds( priest.talents.clarity_of_power -> effectN( 2 ).base_value() );
+    // Clarity of Power
+    if ( priest.talents.clarity_of_power -> ok() )
+      cd_duration -= timespan_t::from_seconds( priest.talents.clarity_of_power -> effectN( 2 ).base_value() );
 
     priest_spell_t::update_ready( cd_duration );
 
