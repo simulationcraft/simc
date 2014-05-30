@@ -406,6 +406,8 @@ class CDNIndex(CASCObject):
 		data_split = version_data[1].split('|')
 		# The CDN hash name is what we want at this point
 		self.cdn_hash = data_split[2]
+
+		print 'Current build version: %s' % data_split[-1].strip()
 	
 	def open_cdn_build_cfg(self):
 		path = os.path.join(self.cache_dir('config'), self.cdn_hash)
@@ -437,7 +439,7 @@ class CDNIndex(CASCObject):
 				data = data.split(' ')
 			self.build_info[mobj.group(1)] = data
 		
-		print 'CDN current build: %s' % self.build()
+		print 'Current CDN version: %s' % self.build()
 		
 	def open_archives(self):
 		sys.stdout.write('Parsing CDN index files ... ')
