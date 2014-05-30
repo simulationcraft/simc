@@ -13,18 +13,18 @@ namespace { // UNNAMED NAMESPACE
 
  /* WoD -- TODO:
     = General =
-	  Dream of Cenarius
-	    Verify Guardian DoC works
-	  Glyphs
-	    Travel
-	  Tranquility
+    Dream of Cenarius
+      Verify Guardian DoC works
+    Glyphs
+      Travel
+    Tranquility
     Dash
     Stampeding Roar
 
     = Feral =
-	  Level 100 Talents
-	    Lunar Inspiration -- Mostly implemented, cannot work until the sim recognizes the talent correctly.
-	  Combo Points as a resource
+    Level 100 Talents
+      Lunar Inspiration -- Mostly implemented, cannot work until the sim recognizes the talent correctly.
+    Combo Points as a resource
 
     = Balance =
     Perks
@@ -242,22 +242,47 @@ public:
   {
     // Multiple Specs
     const spell_data_t* improved_healing_touch;
-    
+
     // Feral
     const spell_data_t* enhanced_berserk;
     const spell_data_t* enhanced_cat_form;
     const spell_data_t* enhanced_prowl;
     const spell_data_t* enhanced_rejuvenation;
     const spell_data_t* enhanced_tigers_fury;
+    const spell_data_t* improved_rake;
     const spell_data_t* improved_ferocious_bite;
     const spell_data_t* improved_pounce;
     const spell_data_t* improved_shred;
 
     // Balance
-    
+    const spell_data_t* enhanced_mushrooms;
+    const spell_data_t* enhanced_storms;
+    const spell_data_t* enhanced_moonkin_form;
+    const spell_data_t* enhanced_owlkin_frenzy;
+    const spell_data_t* improved_starfire;
+    const spell_data_t* improved_wrath;
+    const spell_data_t* enhanced_starsurge;
+    const spell_data_t* empowered_starfall;
+    const spell_data_t* improved_moonfire;
+
     // Guardian
+    const spell_data_t* enhanced_tooth_and_claw;
+    //const spell_data_t* enhanced_bear_hug; //Removed in WoD?
+    const spell_data_t* improved_mangle;
+    const spell_data_t* improved_maul;
+    const spell_data_t* empowered_thrash;
+    const spell_data_t* empowered_bear_form;
+    const spell_data_t* improved_barkskin;
+    const spell_data_t* improved_frenzied_regeneration;
 
     // Restoration
+    const spell_data_t* empowered_rejuvenation;
+    const spell_data_t* enhanced_rebirth;
+    const spell_data_t* empowered_regrowth;
+    const spell_data_t* empowered_ironbark;
+    const spell_data_t* improved_living_seed;
+    const spell_data_t* enhanced_lifebloom;
+
   } perk;
 
   // Glyphs
@@ -5608,15 +5633,47 @@ void druid_t::init_spells()
   mastery.natures_guardian = find_mastery_spell( DRUID_GUARDIAN );
 
   // Perks
-  perk.enhanced_berserk        = find_perk_spell( 0, DRUID_FERAL );
-  perk.enhanced_cat_form       = find_perk_spell( 1, DRUID_FERAL );
-  perk.enhanced_prowl          = find_perk_spell( 2, DRUID_FERAL );
-  perk.enhanced_rejuvenation   = find_perk_spell( 3, DRUID_FERAL );
-  perk.enhanced_tigers_fury    = find_perk_spell( 4, DRUID_FERAL );
-  perk.improved_ferocious_bite = find_perk_spell( 5, DRUID_FERAL );
-  perk.improved_pounce         = find_perk_spell( 6, DRUID_FERAL );
-  perk.improved_shred          = find_perk_spell( 7, DRUID_FERAL );
-  perk.improved_healing_touch  = find_perk_spell( 8, DRUID_FERAL );
+  perk.improved_healing_touch = find_perk_spell( "Improved Healing Touch" );
+
+  // Feral
+  perk.enhanced_berserk = find_perk_spell( "Enhanced Berserk" );
+  perk.enhanced_cat_form = find_perk_spell( "Enhanced Cat Form" );
+  perk.enhanced_prowl = find_perk_spell( "Enhanced Prowl" );
+  perk.enhanced_rejuvenation = find_perk_spell( "Enhanced Rejuvenation" );
+  perk.enhanced_tigers_fury = find_perk_spell( "Enhanced Tigers Fury" );
+  perk.improved_rake = find_perk_spell( "Improved Rake" );
+  perk.improved_ferocious_bite = find_perk_spell( "Improved Ferocious Bite" );
+  perk.improved_pounce = find_perk_spell( "Improved Pounce" );
+  perk.improved_shred = find_perk_spell( "Improved Shred" );
+
+  // Balance
+  perk.enhanced_mushrooms = find_perk_spell( "Enhanced Mushrooms" );
+  perk.enhanced_storms = find_perk_spell( "Enhanced Storms" );
+  perk.enhanced_moonkin_form = find_perk_spell( "Enhanced Moonkin Form" );
+  perk.enhanced_owlkin_frenzy = find_perk_spell( "Enhanced Owlkin Frenzy" );
+  perk.improved_starfire = find_perk_spell( "Improved Starfire" );
+  perk.improved_wrath = find_perk_spell( "Improved Wrath" );
+  perk.enhanced_starsurge = find_perk_spell( "Enhanced Starsurge" );
+  perk.empowered_starfall = find_perk_spell( "Empowered Starfall" );
+  perk.improved_moonfire = find_perk_spell( "Improved Moonfire" );
+
+  // Guardian
+  perk.enhanced_tooth_and_claw = find_perk_spell( "Enhanced Tooth and Claw" );
+  //perk.enhanced_bear_hug = find_perk_spell( "Enhanced Bear Hug" ); //Removed in WoD?
+  perk.improved_mangle = find_perk_spell( "Improved Mangle" );
+  perk.improved_maul = find_perk_spell( "Improved Maul" );
+  perk.empowered_thrash = find_perk_spell( "Empowered Thrash" );
+  perk.empowered_bear_form = find_perk_spell( "Empowered Bear Form" );
+  perk.improved_barkskin = find_perk_spell( "Improved Barkskin" );
+  perk.improved_frenzied_regeneration = find_perk_spell( "Improved Frenzied Regeneration" );
+
+  // Restoration
+  perk.empowered_rejuvenation = find_perk_spell( "Empowered Rejuvenation" );
+  perk.enhanced_rebirth = find_perk_spell( "Enhanced Rebirth" );
+  perk.empowered_regrowth = find_perk_spell( "Empowered Regrowth" );
+  perk.empowered_ironbark = find_perk_spell( "Empowered Ironbark" );
+  perk.improved_living_seed = find_perk_spell( "Improved Living Seed" );
+  perk.enhanced_lifebloom = find_perk_spell( "Enhanced Lifebloom" );
 
   // Glyphs
   glyph.blooming              = find_glyph_spell( "Glyph of Blooming" );
