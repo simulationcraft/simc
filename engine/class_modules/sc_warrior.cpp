@@ -463,7 +463,7 @@ public:
     if ( ( s -> target == p() -> sim -> target ) && s -> result_amount > 0 )
       p() -> priority_damage.add( s -> result_amount );
 
-    if ( s -> result_amount > 0 && target != p() )
+    if ( s -> result_amount > 0 && s -> target != p() )
       p() -> all_damage.add( s -> result_amount );
   }
 
