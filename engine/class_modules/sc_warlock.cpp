@@ -3845,7 +3845,7 @@ struct immolation_aura_t : public warlock_spell_t
   virtual void impact( action_state_t* s )
   {
     dot_t* d = get_dot();
-    bool add_ticks = d -> is_ticking();
+    // bool add_ticks = d -> is_ticking();
 
     warlock_spell_t::impact( s );
 

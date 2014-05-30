@@ -4237,7 +4237,7 @@ struct renew_t final : public priest_heal_t
       proc       = true;
     }
 
-    void trigger( action_state_t* s, double amount )
+    void trigger( action_state_t* s, double /* amount * )
     {
       target = s -> target;
       execute();
