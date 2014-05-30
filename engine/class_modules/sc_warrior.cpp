@@ -1105,7 +1105,7 @@ struct bloodthirst_heal_t : public heal_t
     // Implemented as an actual heal because of spell callbacks ( for Hurricane, etc. )
     background = true;
     target     = p;
-    may_crit   = false;
+    may_crit = may_multistrike = false;
     pct_heal   = data().effectN( 1 ).percent();
     pct_heal  *= 1.0 + p -> perk.improved_bloodthirst -> effectN( 1 ).percent();
     pct_heal  *= 1.0 + p -> glyphs.bloodthirst -> effectN( 2 ).percent();
@@ -1522,7 +1522,7 @@ struct ignite_weapon_t : public warrior_attack_t
          weapon -> group() == WEAPON_SMALL )
       base_multiplier *= 1.40;
 
-    num_ticks = 0; // Effect 4 shows up as periodic damage on target, but the actual "dot" shows up on autoattacks.
+    num_ticks = 0; //dot_duration = timespan_t::zero(); // Effect 4 shows up as periodic damage on target, but the actual "dot" shows up on autoattacks.
   }
 
   virtual void execute()
@@ -1712,7 +1712,7 @@ struct impending_victory_heal_t : public heal_t
   {
     // Implemented as an actual heal because of spell callbacks ( for Hurricane, etc. )
     background = true;
-    may_crit   = false;
+    may_crit = may_multistrike = false;
     target     = p;
     pct_heal   = data().effectN( 1 ).percent();
     base_pct_heal = pct_heal;
@@ -2057,13 +2057,14 @@ struct blood_craze_t : public heal_t
   blood_craze_t( warrior_t* p ) :
     heal_t( "blood_craze", p , p -> spec.blood_craze )
   {
-    hasted_ticks = false;
-    tick_may_crit = false;
+    num_ticks = 3; //dot_duration = timespan_t::from_seconds( 3.0 );
+    base_tick_time = timespan_t::from_seconds( 1.0 );
+    hasted_ticks = tick_may_crit = may_multistrike = false;
     tick_zero = true;
     background = true;
     target = p;
     dot_behavior = DOT_EXTEND;
-    pct_heal = 0.01; // Currently no spell data for this.
+    tick_pct_heal = 0.01; // Currently no spell data for this.
   }
 };
 
@@ -2074,6 +2075,7 @@ struct second_wind_t : public heal_t
   second_wind_t( warrior_t* p ) :
     heal_t( "second_wind", p, p -> talents.second_wind )
   {
+    may_crit = may_multistrike = false;
     background     = true;
     target         = p;
   }
@@ -2099,7 +2101,9 @@ struct enraged_regeneration_t : public heal_t
     base_pct_heal( 0 ), base_tick_pct_heal ( 0 )
   {
     parse_options( NULL, options_str );
-    hasted_ticks = tick_may_crit = false;
+    hasted_ticks = tick_may_crit = may_multistrike = false;
+    num_ticks = 5; //dot_duration = timespan_t::from_seconds( 5.0 );
+    base_tick_time = timespan_t::from_seconds( 1.0 );
     target = p;
     pct_heal = data().effectN( 1 ).percent();
     tick_pct_heal = data().effectN( 2 ).percent();
@@ -2402,7 +2406,7 @@ struct victory_rush_heal_t : public heal_t
   {
     // Implemented as an actual heal because of spell callbacks ( for Hurricane, etc. )
     background = true;
-    may_crit   = false;
+    may_crit = may_multistrike = false;
     target     = p;
     pct_heal   = data().effectN( 1 ).percent() * ( 1 + p -> glyphs.victory_rush -> effectN( 1 ).percent() );
   }
