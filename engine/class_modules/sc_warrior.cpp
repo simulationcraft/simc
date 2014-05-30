@@ -4324,9 +4324,6 @@ void warrior_t::invalidate_cache( cache_e c )
     player_t::invalidate_cache( CACHE_ATTACK_POWER );
   }
 
-  if ( c == CACHE_CRIT && spec.riposte -> ok() )
-    player_t::invalidate_cache( CACHE_PARRY );
-
 }
 
 // warrior_t::regen =========================================================
