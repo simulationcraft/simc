@@ -8,7 +8,7 @@ Death_Knight_Frost_2h_T17N.simc
 Death_Knight_Unholy_T17N.simc
 
 Druid_Feral_T17N.simc
-Druid_Balance_T17N.simc
+#Druid_Balance_T17N.simc // Busted
 
 Hunter_BM_T17N.simc
 Hunter_MM_T17N.simc
@@ -37,7 +37,7 @@ Shaman_Enhancement_T17N.simc
 
 #Warlock_Affliction_T17N.simc //Busted
 Warlock_Destruction_T17N.simc
-Warlock_Demonology_T17N.simc
+#Warlock_Demonology_T17N.simc //Busted
 
 Warrior_Arms_T17N.simc
 Warrior_Fury_1h_T17N.simc
