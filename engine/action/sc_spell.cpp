@@ -176,20 +176,19 @@ spell_t::spell_t( const std::string&  token,
   may_block = false;
 }
 
-double spell_t::miss_chance( double /* hit */, player_t* t ) const
-{
-  // spell miss is still a little hazy. We know that there's an 11% miss penalty per level
-  // for a player attacking a L+4 NPC. It's not clear if this is symmetric.
-  // Base spell miss seems to be zero.
-  
-  double miss = 0.0;
-  //double miss = t -> cache.miss();
+double spell_t::miss_chance( double hit, player_t* t ) const
+{  
+  // base spell miss is double base melee miss
+  double miss = t -> cache.miss();
+  miss *= 2;
 
   // 11% level-dependent miss for level+4
-  miss += 0.11 * std::max( t -> level - player -> level - 3, 0 );
+  miss += 0.03 * ( t -> level - player -> level );
+    
+  miss += 0.08 * std::max( t -> level - player -> level - 3, 0 );
 
-  // player's hit seems to be irrelevant for spells now
-  // miss -= hit;
+  // subtract the player's hit and expertise
+  miss -= hit;
 
   return miss;
 }

@@ -3941,7 +3941,6 @@ void mage_t::init_base_stats()
 
   base.spell_power_per_intellect = 1.0;
 
-  //base.stats.attack_power = -10; Removed in WoD
   base.attack_power_per_strength = 1.0;
 
   diminished_kfactor    = 0.009830;

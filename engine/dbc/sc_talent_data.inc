@@ -1,6 +1,6 @@
 #define TALENT_SIZE (296)
 
-// 296 talents, wow build 18297
+// 296 talents, wow build 18322
 static struct talent_data_t __talent_data[] = {
 //{ Name                                ,    Id, Flgs,  Class, Spc, Col, Row, SpellID, ReplaceID, S1 },
   { "Second Wind"                       , 15757, 0x00, 0x0001,   0,   1,   1,   29838,         0,  0 },
@@ -224,9 +224,9 @@ static struct talent_data_t __talent_data[] = {
   { "Hurricane Strike"                  , 21189, 0x00, 0x0200,   0,   0,   6,  152175,         0,  0 },
   { "Chi Explosion"                     , 21190, 0x00, 0x0200,   0,   1,   6,  152174,    100784,  0 },
   { "Serenity"                          , 21191, 0x00, 0x0200,   0,   2,   6,  152173,         0,  0 },
-  { "Sunfall"                           , 21192, 0x00, 0x0400,   0,   0,   6,  152222,         0,  0 },
-  { "Insect Swarm"                      , 21193, 0x00, 0x0400,   0,   1,   6,  152221,         0,  0 },
-  { "Equinox"                           , 21194, 0x00, 0x0400,   0,   2,   6,  152220,         0,  0 },
+  { "Euphoria"                          , 21192, 0x00, 0x0400,   0,   0,   6,  152222,         0,  0 },
+  { "Stellar Flare"                     , 21193, 0x00, 0x0400,   0,   1,   6,  152221,         0,  0 },
+  { "Balance of Power"                  , 21194, 0x00, 0x0400,   0,   2,   6,  152220,         0,  0 },
   { "Exotic Munitions"                  , 21195, 0x00, 0x0004,   0,   0,   6,  162534,         0,  0 },
   { "Focusing Shot"                     , 21196, 0x00, 0x0004, 255,   1,   6,  152245,     77767,  0 },
   { "Lone Wolf"                         , 21197, 0x00, 0x0004,   0,   2,   6,  155228,         0,  0 },

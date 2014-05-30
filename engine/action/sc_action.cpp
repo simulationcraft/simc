@@ -704,9 +704,11 @@ timespan_t action_t::travel_time() const
 
 // action_t::crit_chance ====================================================
 
-double action_t::crit_chance( double crit, int /* delta_level */ ) const
+double action_t::crit_chance( double crit, int delta_level ) const
 {
   double chance = crit;
+
+  chance -= std::max( delta_level, 0 ) / 100.0;
 
   if ( chance < 0.0 )
     chance = 0.0;

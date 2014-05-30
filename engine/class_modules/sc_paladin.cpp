@@ -1559,6 +1559,7 @@ struct divine_shield_t : public paladin_spell_t
 struct eternal_flame_hot_t : public paladin_heal_t
 {
   double hopo;
+  double base_num_ticks;
 
   eternal_flame_hot_t( paladin_t* p ) :
     paladin_heal_t( "eternal_flame_tick", p, p -> find_spell( 156322 ) )
@@ -1571,7 +1572,8 @@ struct eternal_flame_hot_t : public paladin_heal_t
   {
     paladin_heal_t::impact( s );
 
-    td( s -> target ) -> buffs.eternal_flame -> trigger( 1, buff_t::DEFAULT_VALUE(), -1, dot_duration + timespan_t::from_millis( 1 ) );
+    td( s -> target ) -> buffs.eternal_flame -> trigger( 1, buff_t::DEFAULT_VALUE(), -1, dot_duration );
+
   }
   
   virtual void last_tick( dot_t* d )
@@ -1601,6 +1603,19 @@ struct eternal_flame_hot_t : public paladin_heal_t
     am *= 1.0 + p() -> passives.holy_insight -> effectN( 9 ).percent();
 
     return am;
+  }
+
+  virtual timespan_t composite_dot_duration( const action_state_t* ) const override
+  {
+    // Scale dot duration base on hp here!
+    // scale duration based on holy power spent
+    return dot_duration * hopo;
+  }
+
+  virtual void execute()
+  {
+
+    paladin_heal_t::execute();
   }
 
 };
@@ -4494,7 +4509,6 @@ action_t* paladin_t::create_action( const std::string& name, const std::string& 
   if ( name == "holy_avenger"              ) return new holy_avenger_t             ( this, options_str );
   if ( name == "holy_radiance"             ) return new holy_radiance_t            ( this, options_str );
   if ( name == "holy_shock"                ) return new holy_shock_t               ( this, options_str );
-  // if ( name == "holy_shock_heal"           ) return new holy_shock_heal_t          ( this, options_str ); TODO: doesn't make sense to have a background action in the action list
   if ( name == "holy_wrath"                ) return new holy_wrath_t               ( this, options_str );
   if ( name == "guardian_of_ancient_kings" ) return new guardian_of_ancient_kings_t( this, options_str );
   if ( name == "judgment"                  ) return new judgment_t                 ( this, options_str );
@@ -4584,8 +4598,6 @@ void paladin_t::init_base_stats()
 
   base.attack_power_per_strength = 1.0;
   base.spell_power_per_intellect = 1.0;
-
-  //base.stats.attack_power = level * 3; Gone in WoD, double check later.
 
   // Boundless Conviction raises max holy power to 5
   resources.base[ RESOURCE_HOLY_POWER ] = 3 + passives.boundless_conviction -> effectN( 1 ).base_value();

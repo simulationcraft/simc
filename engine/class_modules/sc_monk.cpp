@@ -3498,48 +3498,47 @@ void monk_t::init_spells()
  
   sets.register_spelldata( set_bonuses );
 }
- 
+
 // monk_t::init_base ========================================================
- 
+
 void monk_t::init_base_stats()
 {
   base_t::init_base_stats();
- 
+
   base.distance = ( specialization() == MONK_MISTWEAVER ) ? 40 : 3;
   base_gcd = timespan_t::from_seconds( 1.0 );
- 
+
   resources.base[  RESOURCE_CHI  ] = 4 + talent.ascension -> effectN( 1 ).base_value();
   // Empowered Chi
   if ( specialization() == MONK_WINDWALKER )
     resources.base[  RESOURCE_CHI  ] += perk.empowered_chi -> effectN( 1 ).base_value();
   resources.base[ RESOURCE_ENERGY ] = 100;
   resources.base_multiplier[ RESOURCE_MANA ] *= 1.0 + talent.ascension -> effectN( 2 ).percent();
- 
+
   base_chi_regen_per_second = 0;
   base_energy_regen_per_second = 10.0;
- 
-  //base.stats.attack_power = level * 2.0; Removed in WoD, double check later.
+
   base.attack_power_per_strength = 0.0;
   base.attack_power_per_agility  = 1.0;
   base.spell_power_per_intellect = 1.0;
- 
+
   // Mistweaver
   if ( spec.mana_meditation -> ok() )
     base.mana_regen_from_spirit_multiplier = spec.mana_meditation -> effectN( 1 ).percent();
- 
+
   // Avoidance diminishing Returns constants/conversions
   // base miss, dodge, parry all set to 3% in player_t::init_base_stats()
- 
+
   // based on http://www.sacredduty.net/2013/08/08/updated-diminishing-returns-coefficients-all-tanks/
   diminished_kfactor   =   1.422000;
   diminished_dodge_cap = 501.25348;
   diminished_parry_cap =  90.64244;
- 
+
   // note that these conversions are level-specific; these are L90 values
   base.dodge_per_agility = 1 / 95115.8596; // exact value given by Blizzard
   base.parry_per_strength = 1 / 10000.0 / 100.0 ; // empirically tested
 }
- 
+
 // monk_t::init_scaling =====================================================
  
 void monk_t::init_scaling()

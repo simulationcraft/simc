@@ -3566,8 +3566,6 @@ void hunter_t::init_base_stats()
 {
   player_t::init_base_stats();
 
-  //base.stats.attack_power = level * 2; Base stats are removed in WoD.
-
   base.attack_power_per_strength = 0.0; // Prevents scaling from strength. Will need to separate melee and ranged AP if this is needed in the future.
   base.attack_power_per_agility  = 1.0;
 
