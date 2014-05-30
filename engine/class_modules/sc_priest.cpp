@@ -173,6 +173,7 @@ public:
     const spell_data_t* enhanced_mind_flay;
     const spell_data_t* enhanced_shadow_orbs;
     const spell_data_t* enhanced_shadow_word_death;
+    const spell_data_t* improved_mind_spike;
     const spell_data_t* improved_shadow_word_pain;
     const spell_data_t* improved_vampiric_touch;
   } perks;
@@ -1217,10 +1218,10 @@ struct priest_heal_t : public priest_action_t<heal_t>
 
   void trigger_surge_of_light()
   {
-    int stack = priest.buffs.surge_of_light -> current_stack;
+    int stack = priest.buffs.surge_of_light -> check();
     if ( priest.buffs.surge_of_light -> trigger() )
     {
-      if ( priest.buffs.surge_of_light -> current_stack == stack )
+      if ( priest.buffs.surge_of_light -> check() == stack )
         priest.procs.surge_of_light_overflow -> occur();
       else
         priest.procs.surge_of_light -> occur();
@@ -1426,10 +1427,10 @@ struct priest_spell_t : public priest_action_t<spell_t>
 
   void trigger_surge_of_darkness()
   {
-    int stack = priest.buffs.surge_of_darkness -> current_stack;
+    int stack = priest.buffs.surge_of_darkness -> check();
     if ( priest.buffs.surge_of_darkness -> trigger() )
     {
-      if ( priest.buffs.surge_of_darkness -> current_stack == stack )
+      if ( priest.buffs.surge_of_darkness -> check() == stack )
         priest.procs.surge_of_darkness_overflow -> occur();
       else
         priest.procs.surge_of_darkness -> occur();
@@ -1438,10 +1439,10 @@ struct priest_spell_t : public priest_action_t<spell_t>
 
   void trigger_divine_insight_shadow()
   {
-    int stack = priest.buffs.divine_insight_shadow -> current_stack;
+    int stack = priest.buffs.divine_insight_shadow -> check();
     if ( priest.buffs.divine_insight_shadow -> trigger() )
     {
-      if ( priest.buffs.divine_insight_shadow -> current_stack == stack )
+      if ( priest.buffs.divine_insight_shadow -> check() == stack )
         priest.procs.divine_insight_shadow_overflow -> occur();
       else
         priest.procs.divine_insight_shadow -> occur();
@@ -1684,7 +1685,7 @@ struct power_infusion_t final : public priest_spell_t
   }
 };
 
-// Shadow Form Spell ========================================================
+// Shadowform Spell ========================================================
 
 struct shadowform_t final : public priest_spell_t
 {
@@ -1730,7 +1731,7 @@ struct spirit_shell_t final : public priest_spell_t
   }
 };
 
-// Per Summon Base Class
+// Pet Summon Base Class
 
 struct summon_pet_t : public priest_spell_t
 {
@@ -1938,6 +1939,9 @@ struct mind_blast_t final : public priest_spell_t
     }
 
 
+    // Train of Thought
+    if ( priest.specs.train_of_thought -> ok() )
+      priest.cooldowns.penance -> adjust ( - priest.specs.train_of_thought -> effectN( 2 ).time_value() );
     cd_duration -= timespan_t::from_seconds( priest.talents.clarity_of_power -> effectN( 2 ).base_value() );
 
     priest_spell_t::update_ready( cd_duration );
@@ -2047,6 +2051,13 @@ struct mind_spike_t final : public priest_spell_t
   {
     priest_spell_t::execute();
 
+    // Clarity of Power
+    if ( priest.talents.clarity_of_power -> ok() )
+    {
+      priest.cooldowns.mind_blast -> adjust ( - priest.talents.clarity_of_power -> effectN( 2 ).time_value() );
+      priest.resource_gain( RESOURCE_MANA, priest.resources.base[ RESOURCE_MANA ] * priest.talents.clarity_of_power -> effectN( 3 ).percent(), priest.gains.clarity_of_power_mind_spike );
+    }
+
     casted_with_surge_of_darkness = false;
   }
 
@@ -2075,11 +2086,6 @@ struct mind_spike_t final : public priest_spell_t
         priest.procs.mind_spike_dot_removal -> occur();
 
         priest.buffs.glyph_mind_spike -> trigger();
-      }
-
-      if ( priest.talents.clarity_of_power -> ok() )
-      {
-        priest.resource_gain( RESOURCE_MANA, priest.resources.base[ RESOURCE_MANA ] * priest.talents.clarity_of_power -> effectN( 3 ).percent(), priest.gains.clarity_of_power_mind_spike );
       }
     }
   }
@@ -2117,6 +2123,8 @@ struct mind_spike_t final : public priest_spell_t
   {
     double d = priest_spell_t::composite_da_multiplier();
 
+    d *= 1.0 + priest.perks.improved_shadow_word_pain -> effectN( 1 ).percent();
+
     if ( casted_with_surge_of_darkness )
     {
       d *= 1.0 + priest.active_spells.surge_of_darkness -> effectN( 4 ).percent();
@@ -2129,6 +2137,10 @@ struct mind_spike_t final : public priest_spell_t
 
     if ( priest.buffs.empowered_shadows -> check() )
       d *= 1.0 + priest.buffs.empowered_shadows->current_value *  priest.buffs.empowered_shadows -> check();
+
+    priest_td_t& td = get_td( target );
+    if ( priest.talents.clarity_of_power -> ok() && !td.dots.shadow_word_pain -> ticking && !td.dots.vampiric_touch -> ticking)
+      d *= 1.0 + priest.talents.clarity_of_power -> effectN( 1 ).percent();
 
     return d;
   }
@@ -2198,6 +2210,10 @@ struct mind_sear_t final : public priest_spell_t
       am *= 1.0 + priest.cache.mastery_value();
     }
 
+    priest_td_t& td = get_td( target );
+    if ( priest.talents.clarity_of_power -> ok() && !td.dots.shadow_word_pain -> ticking && !td.dots.vampiric_touch -> ticking)
+      am *= 1.0 + priest.talents.clarity_of_power -> effectN( 1 ).percent();
+
     return am;
   }
 };
@@ -2250,6 +2266,10 @@ struct shadow_word_death_t final : public priest_spell_t
 
       if ( priest.sets.has_set_bonus( SET_T13_2PC_CASTER ) )
         d *= 0.663587;
+
+      priest_td_t& td = get_td( target );
+      if ( priest.talents.clarity_of_power -> ok() && !td.dots.shadow_word_pain -> ticking && !td.dots.vampiric_touch -> ticking)
+        d *= 1.0 + priest.talents.clarity_of_power -> effectN( 1 ).percent();
 
       return d;
     }
@@ -2371,11 +2391,12 @@ struct devouring_plague_t final : public priest_spell_t
     devouring_plague_dot_t( priest_t& p, priest_spell_t* ) :
       priest_spell_t( "devouring_plague_tick", p, p.find_class_spell( "Devouring Plague" ) )
     {
-      parse_effect_data( data().effectN( 2 ) );
+      parse_effect_data( data().effectN( 1 ) );
 
-      spell_power_mod.tick = 1.0 / 3.0;
       base_tick_time = timespan_t::from_seconds( 1.0 );
       num_ticks = 6.0;
+
+      spell_power_mod.tick = spell_power_mod.direct / 3.0 / num_ticks;
 
       base_dd_min = base_dd_max = spell_power_mod.direct = 0.0;
 
@@ -2419,7 +2440,7 @@ struct devouring_plague_t final : public priest_spell_t
       return m;
     }
 
-    /*virtual void impact( action_state_t* s ) override
+    virtual void impact( action_state_t* s ) override
     {
       double saved_impact_dmg = s -> result_amount; // catch previous remaining dp damage
       s -> result_amount = 0;
@@ -2432,17 +2453,13 @@ struct devouring_plague_t final : public priest_spell_t
         if ( sim -> debug )
           sim -> out_debug.printf( "%s DP still ticking. Added %.2f damage / %.2f per tick to new dot", player -> name(), saved_impact_dmg, base_ta_adder );
       }
-    }*/
+    }
 
     virtual void tick( dot_t* d ) override
     {
       priest_spell_t::tick( d );
 
-      //Should restore a flat 2.5% HP per tick. Need to confirm once alpha/beta access is available. Leaving old code for now. -Twintop 2014-05-30
-      //const devouring_plague_state_t& dp_state = static_cast<const devouring_plague_state_t&>( *d -> state );
-
-      //double a = data().effectN( 2 ).percent() / 100.0 * dp_state.orbs_used * priest.resources.max[ RESOURCE_HEALTH ];
-      double a = 0.025 * priest.resources.max[ RESOURCE_HEALTH ];
+      double a = (0.025 / 3) * shadow_orbs_to_consume() * priest.resources.max[ RESOURCE_HEALTH ];
       priest.resource_gain( RESOURCE_HEALTH, a, priest.gains.devouring_plague_health );
 
       trigger_surge_of_darkness();
@@ -2492,7 +2509,7 @@ struct devouring_plague_t final : public priest_spell_t
   {
     double m = priest_spell_t::action_da_multiplier();
 
-    m *= priest.resources.current[ current_resource() ];
+    m *= shadow_orbs_to_consume();
 
     return m;
   }
@@ -2532,7 +2549,8 @@ struct devouring_plague_t final : public priest_spell_t
   {
     priest_spell_t::impact( s );
 
-    trigger_dp_dot( s -> target );
+    if ( !result_is_multistrike( s -> result ) )
+      trigger_dp_dot( s -> target );
   }
 };
 
@@ -3394,7 +3412,7 @@ struct void_entropy_t : public priest_spell_t
   {
     double m = priest_spell_t::action_ta_multiplier();
 
-    m *= shadow_orbs_to_consume();
+    m *= shadow_orbs_to_consume() / 3;
 
     return m;
   }
@@ -5020,6 +5038,7 @@ void priest_t::init_spells()
   perks.enhanced_mind_flay            = find_perk_spell( "Enhanced Mind Flay" );
   perks.enhanced_shadow_orbs          = find_perk_spell( "Enhanced Shadow Orbs" );
   perks.enhanced_shadow_word_death    = find_perk_spell( "Enhanced Shadow Word: Death" );
+  perks.improved_mind_spike           = find_perk_spell( "Improved Mind Spike" );
   perks.improved_shadow_word_pain     = find_perk_spell( "Improved Shadow Word: Pain" );
   perks.improved_vampiric_touch       = find_perk_spell( "Improved Vampiric Touch" );
 
