@@ -269,7 +269,6 @@ public:
 
     // Guardian
     const spell_data_t* enhanced_tooth_and_claw;
-    //const spell_data_t* enhanced_bear_hug; //Removed in WoD?
     const spell_data_t* improved_mangle;
     const spell_data_t* improved_maul;
     const spell_data_t* empowered_thrash;
@@ -292,34 +291,33 @@ public:
   {
     // DONE
     const spell_data_t* astral_communion;
-    const spell_data_t* blooming;
     const spell_data_t* cat_form;
     const spell_data_t* celestial_alignment;
+    const spell_data_t* dash;
     const spell_data_t* ferocious_bite;
-    const spell_data_t* frenzied_regeneration;
-    const spell_data_t* healing_touch;
     const spell_data_t* maim;
     const spell_data_t* maul;
-    const spell_data_t* master_shapeshifter;
-    const spell_data_t* moonwarding;
-    const spell_data_t* ninth_life;
-
     const spell_data_t* savage_roar;
-    const spell_data_t* shapemender;
     const spell_data_t* skull_bash;
-
     const spell_data_t* survival_instincts;
     const spell_data_t* stampeding_roar;
-    const spell_data_t* ursols_defense;
-    const spell_data_t* wild_growth;
 
     // NYI / Needs checking
+    const spell_data_t* blooming;
+    const spell_data_t* healing_touch;
+    const spell_data_t* moonwarding;
+    const spell_data_t* natures_grasp;
     const spell_data_t* omens;
     const spell_data_t* sudden_eclipse;
     const spell_data_t* lifebloom;
+    const spell_data_t* master_shapeshifter;
     const spell_data_t* might_of_ursoc;
+    const spell_data_t* ninth_life;
+    const spell_data_t* shapemender;
     const spell_data_t* regrowth;
     const spell_data_t* rejuvenation;
+    const spell_data_t* ursols_defense;
+    const spell_data_t* wild_growth;
   } glyph;
 
   // Masteries
@@ -351,7 +349,6 @@ public:
   // Class Specializations
   struct specializations_t
   {
-    // DONE
     // Generic
     const spell_data_t* leather_specialization;
     const spell_data_t* omen_of_clarity; // Feral and Resto have this
@@ -363,6 +360,7 @@ public:
     const spell_data_t* leader_of_the_pack;
     const spell_data_t* predatory_swiftness;
     const spell_data_t* critical_strikes;
+    const spell_data_t* berserk;
 
     // Balance
     const spell_data_t* astral_showers;
@@ -373,9 +371,9 @@ public:
     const spell_data_t* shooting_stars;
 
     // Guardian
+    const spell_data_t* bladed_armor;
     const spell_data_t* thick_hide;
     const spell_data_t* tooth_and_claw;
-    const spell_data_t* bladed_armor;
     const spell_data_t* ursa_major;
 
     // Restoration
@@ -3309,10 +3307,7 @@ struct frenzied_regeneration_t : public druid_heal_t
     special = false;
     use_off_gcd = true;
 
-    if ( p -> glyph.frenzied_regeneration -> ok() )
-      base_costs[ RESOURCE_RAGE ] = p -> glyph.frenzied_regeneration -> effectN( 3 ).resource( RESOURCE_RAGE );
-    else
-      base_costs[ RESOURCE_RAGE ] = 0;
+    base_costs[ RESOURCE_RAGE ] = 0;
 
     if ( p -> sets.has_set_bonus( SET_T16_2PC_TANK ) )
       p -> active.ursocs_vigor = new ursocs_vigor_t( p );
@@ -3322,18 +3317,14 @@ struct frenzied_regeneration_t : public druid_heal_t
 
   virtual double cost() const
   {
-    if ( ! p() -> glyph.frenzied_regeneration -> ok() )
-      const_cast<frenzied_regeneration_t*>(this) -> base_costs[ RESOURCE_RAGE ] = std::min( p() -> resources.current[ RESOURCE_RAGE ],
-                                              maximum_rage_cost );
+    const_cast<frenzied_regeneration_t*>(this) -> base_costs[ RESOURCE_RAGE ] = std::min( p() -> resources.current[ RESOURCE_RAGE ],
+                                                maximum_rage_cost );
 
     return druid_heal_t::cost();
   }
 
   virtual double base_da_min( const action_state_t* ) const
   {
-      if ( p() -> glyph.frenzied_regeneration -> ok() )
-        return 0.0;
-
       // max(2.2*(AP - 2*Agi), 2.5*Sta)
       double ap      = p() -> composite_melee_attack_power() * p() -> composite_attack_power_multiplier();
       double agility = p() -> composite_attribute( ATTR_AGILITY ) * p() -> composite_attribute_multiplier( ATTR_AGILITY );
@@ -3345,9 +3336,6 @@ struct frenzied_regeneration_t : public druid_heal_t
 
   virtual double base_da_max( const action_state_t* ) const
   {
-      if ( p() -> glyph.frenzied_regeneration -> ok() )
-        return 0.0;
-
       // max(2.2*(AP - 2*Agi), 2.5*Sta)
       double ap      = p() -> composite_melee_attack_power() * p() -> composite_attack_power_multiplier();
       double agility = p() -> composite_attribute( ATTR_AGILITY ) * p() -> composite_attribute_multiplier( ATTR_AGILITY );
@@ -3359,10 +3347,7 @@ struct frenzied_regeneration_t : public druid_heal_t
 
   virtual void execute()
   {
-    if ( p() -> glyph.frenzied_regeneration -> ok() )
-      p() -> buff.frenzied_regeneration -> trigger();
-    else
-      p() -> buff.tier15_2pc_tank -> expire();
+    p() -> buff.tier15_2pc_tank -> expire();
 
     druid_heal_t::execute();
 
@@ -5393,7 +5378,6 @@ void druid_t::init_spells()
 
   // Guardian
   perk.enhanced_tooth_and_claw = find_perk_spell( "Enhanced Tooth and Claw" );
-  //perk.enhanced_bear_hug = find_perk_spell( "Enhanced Bear Hug" ); //Removed in WoD?
   perk.improved_mangle = find_perk_spell( "Improved Mangle" );
   perk.improved_maul = find_perk_spell( "Improved Maul" );
   perk.empowered_thrash = find_perk_spell( "Empowered Thrash" );
@@ -5414,8 +5398,8 @@ void druid_t::init_spells()
   glyph.blooming              = find_glyph_spell( "Glyph of Blooming" );
   glyph.cat_form              = find_glyph_spell( "Glyph of Cat Form" );
   glyph.celestial_alignment   = find_glyph_spell( "Glyph of Celestial Alignment" );
+  glyph.dash                  = find_glyph_spell( "Glyph of Dash" );
   glyph.ferocious_bite        = find_glyph_spell( "Glyph of Ferocious Bite" );
-  glyph.frenzied_regeneration = find_glyph_spell( "Glyph of Frenzied Regeneration" );
   glyph.healing_touch         = find_glyph_spell( "Glyph of Healing Touch" );
   glyph.lifebloom             = find_glyph_spell( "Glyph of Lifebloom" );
   glyph.maim                  = find_glyph_spell( "Glyph of Maim" );
@@ -5424,7 +5408,7 @@ void druid_t::init_spells()
   glyph.might_of_ursoc        = find_glyph_spell( "Glyph of Might of Ursoc" );
   glyph.moonwarding           = find_glyph_spell( "Glyph of Moonwarding" );
   glyph.ninth_life            = find_glyph_spell( "Glyph of the Ninth Life" );
-  glyph.omens                 = find_glyph_spell( "Glyph of Omens"    );
+  glyph.omens                 = find_glyph_spell( "Glyph of Omens" );
   glyph.sudden_eclipse        = find_glyph_spell( "Glyph of Sudden Eclipse" );
   glyph.regrowth              = find_glyph_spell( "Glyph of Regrowth" );
   glyph.rejuvenation          = find_glyph_spell( "Glyph of Rejuvenation" );
@@ -6785,7 +6769,7 @@ void druid_t::assess_heal( school_e school,
                            dmg_e    dmg_type,
                            action_state_t* s )
 {
-  s -> result_amount *= 1.0 + buff.frenzied_regeneration -> check() * glyph.frenzied_regeneration -> effectN( 1 ).percent();
+  s -> result_amount *= 1.0 + buff.frenzied_regeneration -> check();
   s -> result_amount *= 1.0 + buff.cat_form -> check() * glyph.cat_form -> effectN( 1 ).percent();
 
   player_t::assess_heal( school, dmg_type, s );
