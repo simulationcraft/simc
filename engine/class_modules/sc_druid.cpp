@@ -169,13 +169,12 @@ public:
     buff_t* astral_showers;
     buff_t* celestial_alignment;
     buff_t* chosen_of_elune;
-    buff_t* eclipse_lunar;
-    buff_t* eclipse_solar;
+    buff_t* lunar_eclipse;
+    buff_t* solar_eclipse;
     buff_t* lunar_empowerment;
     buff_t* solar_empowerment;
     buff_t* enhanced_owlkin_frenzy;
     buff_t* moonkin_form;
-    buff_t* natures_grace;
     buff_t* owlkin_frenzy;
     buff_t* shooting_stars;
     buff_t* starfall;
@@ -1354,15 +1353,6 @@ struct celestial_alignment_t : public druid_buff_t < buff_t >
   {
     cooldown -> duration = timespan_t::zero(); // CD is managed by the spell
   }
-
-  virtual void expire_override()
-  {
-    buff_t::expire_override();
-
-    druid_t* p = static_cast<druid_t*>( player );
-    p -> buff.eclipse_lunar -> expire();
-    p -> buff.eclipse_solar -> expire();
-  }
 };
 
 // Bear Form
@@ -1519,48 +1509,6 @@ struct moonkin_form_t : public druid_buff_t< buff_t >
 
     if ( ! sim -> overrides.haste )
       sim -> auras.haste -> trigger();
-  }
-};
-
-// Eclipse (Lunar) Buff =================================================
-
-struct eclipse_lunar_t : public druid_buff_t < buff_t >
-{
-  eclipse_lunar_t( druid_t& p ) :
-    base_t( p, buff_creator_t( &p, "lunar_eclipse", p.find_spell( 48518 ) )
-               .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER ) )
-  {}
-
-  druid_t* p() const
-  { return static_cast<druid_t*>( player ); }
-
-  virtual bool trigger( int stacks, double value, double chance, timespan_t duration )
-  {
-    if ( p() -> talent.dream_of_cenarius -> ok() )
-      p() -> buff.dream_of_cenarius -> trigger();
-
-    return druid_buff_t<buff_t>::trigger( stacks, value, chance, duration );
-  }
-};
-
-// Eclipse (Solar) Buff =================================================
-
-struct eclipse_solar_t : public druid_buff_t < buff_t >
-{
-  eclipse_solar_t( druid_t& p ) :
-    base_t( p, buff_creator_t( &p, "solar_eclipse", p.find_spell( 48517 ) )
-               .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER ) )
-  {}
-
-  druid_t* p() const
-  { return static_cast<druid_t*>( player ); }
-
-  virtual bool trigger( int stacks, double value, double chance, timespan_t duration )
-  {
-    if ( p() -> talent.dream_of_cenarius -> ok() )
-      p() -> buff.dream_of_cenarius -> trigger();
-
-    return druid_buff_t<buff_t>::trigger( stacks, value, chance, duration );
   }
 };
 
@@ -3124,8 +3072,6 @@ public:
   {
     double h = ab::composite_haste();
 
-    h *= 1.0 / ( 1.0 +  this -> p() -> buff.natures_grace -> data().effectN( 1 ).percent() );
-
     return h;
   }
 
@@ -3832,14 +3778,14 @@ struct druid_spell_t : public druid_spell_base_t<spell_t>
       return;
     if ( nature )
     {
-      if ( p() -> buff.eclipse_solar -> check() )
+      if ( p() -> buff.solar_eclipse -> check() )
       {
         p() -> t16_2pc_sun_bolt -> execute();
       }
     }
     else
     {
-      if ( p() -> buff.eclipse_lunar -> check() )
+      if ( p() -> buff.lunar_eclipse -> check() )
       {
         p() -> t16_2pc_starfall_bolt -> execute();
       }
@@ -5373,6 +5319,10 @@ void druid_t::create_buffs()
   buff.lunar_empowerment         = buff_creator_t( this, "lunar_empowerment", find_spell( 164547 ) )
                                    .max_stack( 2 );
 
+  buff.lunar_eclipse             = buff_creator_t( this, "lunar_eclipse" );
+
+  buff.solar_eclipse             = buff_creator_t( this, "solar_eclipse" );
+
   buff.owlkin_frenzy             = buff_creator_t( this, "owlkin_frenzy", spec.owlkin_frenzy -> effectN( 1 ).trigger() )
                                    .chance( spec.owlkin_frenzy -> proc_chance() )
                                    .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
@@ -5614,17 +5564,16 @@ void druid_t::apl_balance()
     action_list_str += init_use_racial_actions();
   action_list_str += init_use_item_actions( ",if=buff.celestial_alignment.up|cooldown.celestial_alignment.remains>30" );
   action_list_str += init_use_profession_actions( ",if=buff.celestial_alignment.up|cooldown.celestial_alignment.remains>30" );
-  action_list_str += "/wild_mushroom_detonate,moving=0,if=buff.wild_mushroom.stack>0&buff.solar_eclipse.up";
   action_list_str += "/healing_touch,if=talent.dream_of_cenarius.enabled&buff.dream_of_cenarius.up&mana.pct>25&cooldown.starsurge.remains>10"; // FIXME: DPS gain or not?
   action_list_str += "/incarnation,if=talent.incarnation.enabled&(buff.lunar_eclipse.up|buff.solar_eclipse.up)";
   action_list_str += "/celestial_alignment,if=(!buff.lunar_eclipse.up&!buff.solar_eclipse.up)&(buff.chosen_of_elune.up|!talent.incarnation.enabled|cooldown.incarnation.remains>10)";
   action_list_str += "/natures_vigil,if=talent.natures_vigil.enabled";
   add_action( "Starsurge", "if=buff.shooting_stars.react&(active_enemies<5|!buff.solar_eclipse.up)" );
-  action_list_str += "/moonfire,cycle_targets=1,if=buff.lunar_eclipse.up&(remains<(buff.natures_grace.remains-2+2*set_bonus.tier14_4pc_caster))";
-  action_list_str += "/sunfire,cycle_targets=1,if=buff.solar_eclipse.up&(remains<(buff.natures_grace.remains-2+2*set_bonus.tier14_4pc_caster))";
-  action_list_str += "/hurricane,if=active_enemies>4&buff.solar_eclipse.up&buff.natures_grace.up";
-  action_list_str += "/moonfire,cycle_targets=1,if=active_enemies<5&(remains<(buff.natures_grace.remains-2+2*set_bonus.tier14_4pc_caster))";
-  action_list_str += "/sunfire,cycle_targets=1,if=active_enemies<5&(remains<(buff.natures_grace.remains-2+2*set_bonus.tier14_4pc_caster))";
+  action_list_str += "/moonfire,cycle_targets=1,if=buff.lunar_eclipse.up";
+  action_list_str += "/sunfire,cycle_targets=1,if=buff.solar_eclipse.up";
+  action_list_str += "/hurricane,if=active_enemies>4&buff.solar_eclipse.up";
+  action_list_str += "/moonfire,cycle_targets=1,if=active_enemies<5";
+  action_list_str += "/sunfire,cycle_targets=1,if=active_enemies<5";
   action_list_str += "/hurricane,if=active_enemies>5&buff.solar_eclipse.up&mana.pct>25";
   action_list_str += "/moonfire,cycle_targets=1,if=buff.lunar_eclipse.up&ticks_remain<2";
   action_list_str += "/sunfire,cycle_targets=1,if=buff.solar_eclipse.up&ticks_remain<2";
@@ -5968,25 +5917,25 @@ double druid_t::composite_player_multiplier( school_e school ) const
 
     if ( dbc::is_school( school, SCHOOL_SPELLSTORM ) )
     {
-      if ( buff.eclipse_lunar -> up() || buff.eclipse_solar -> up() )
+      if ( buff.lunar_eclipse -> up() || buff.solar_eclipse -> up() )
       {
-        m *= 1.0 + buff.eclipse_lunar -> data().effectN( 1 ).percent()
+        m *= 1.0 + buff.lunar_eclipse -> data().effectN( 1 ).percent()
                  + mastery.total_eclipse -> ok() * cache.mastery_value();
       }
     }
     else if ( dbc::is_school( school, SCHOOL_ARCANE ) )
     {
-      if ( buff.eclipse_lunar -> up() )
+      if ( buff.lunar_eclipse -> up() )
       {
-        m *= 1.0 + buff.eclipse_lunar -> data().effectN( 1 ).percent()
+        m *= 1.0 + buff.lunar_eclipse -> data().effectN( 1 ).percent()
                  + mastery.total_eclipse -> ok() * cache.mastery_value();
       }
     }
     else if ( dbc::is_school( school, SCHOOL_NATURE ) )
     {
-      if ( buff.eclipse_solar -> up() )
+      if ( buff.solar_eclipse -> up() )
       {
-        m *= 1.0 + buff.eclipse_solar -> data().effectN( 1 ).percent()
+        m *= 1.0 + buff.solar_eclipse -> data().effectN( 1 ).percent()
                  + mastery.total_eclipse -> ok() * cache.mastery_value();
       }
     }
@@ -5998,7 +5947,7 @@ double druid_t::composite_player_multiplier( school_e school ) const
 
       // BUG? Incarnation won't apply during CA!
       if ( buff.chosen_of_elune -> up() &&
-           ( buff.eclipse_lunar -> check() || buff.eclipse_solar -> check() ) )
+           ( buff.lunar_eclipse -> check() || buff.solar_eclipse -> check() ) )
       {
         m *= 1.0 + buff.chosen_of_elune -> data().effectN( 1 ).percent();
       }

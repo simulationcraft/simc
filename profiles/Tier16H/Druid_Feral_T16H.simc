@@ -44,12 +44,12 @@ actions+=/thrash_cat,if=buff.omen_of_clarity.react&dot.thrash_cat.remains<3
 actions+=/rip,cycle_targets=1,if=dot.rip.remains<2&combo_points>=5
 # Apply the strongest possible Rip during execute.
 actions+=/rip,cycle_targets=1,if=target.health.pct<25&combo_points>=5&action.rip.tick_multiplier>dot.rip.multiplier
-actions+=/rake,cycle_targets=1,if=!talent.bloody_thrash.enabled&dot.rake.remains<3
-actions+=/rake,cycle_targets=1,if=!talent.bloody_thrash.enabled&action.rake.tick_multiplier>dot.rake.multiplier
+actions+=/rake,cycle_targets=1,if=dot.rake.remains<3
+actions+=/rake,cycle_targets=1,if=action.rake.tick_multiplier>dot.rake.multiplier
 actions+=/moonfire,cycle_targets=1,if=talent.lunar_inspiration.enabled&dot.moonfire.remains<3
 # Pool energy for Thrash.
 actions+=/pool_resource,for_next=1
-actions+=/thrash_cat,cycle_targets=1,if=talent.bloody_thrash.enabled&(dot.rake.remains<3|action.rake.tick_multiplier>dot.rake.multiplier)
+actions+=/thrash_cat,cycle_targets=1,if=(dot.rake.remains<3|action.rake.tick_multiplier>dot.rake.multiplier)
 actions+=/ferocious_bite,if=combo_points>=5&(energy.time_to_max<=1|buff.berserk.up)&dot.rip.remains>=4
 # Cast a CP generator.
 actions+=/run_action_list,name=filler,if=combo_points<5
@@ -57,10 +57,8 @@ actions+=/natures_vigil,if=talent.natures_vigil.enabled
 actions+=/healing_touch,if=buff.natures_vigil.up&buff.predatory_swiftness.up
 actions+=/faerie_fire,cycle_targets=1,if=debuff.physical_vulnerability.remains>0
 
-# Pool energy for Ravage.
-actions.filler=pool_resource,for_next=1
 # Pool energy for Swipe.
-actions.filler+=/pool_resource,for_next=1
+actions.filler=pool_resource,for_next=1
 actions.filler+=/swipe,if=active_enemies>1
 # Rake for CP if it hits harder than Shred.
 actions.filler+=/rake,if=action.rake.hit_damage>=action.shred.hit_damage

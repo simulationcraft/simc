@@ -3882,7 +3882,6 @@ void warrior_t::create_buffs()
   buff.shield_charge    = buff_creator_t( this, "shield_charge" , find_spell( 156321 ) )
                           .default_value( find_spell( 156321 ) -> effectN( 2 ).percent() );
 
-
   buff.shield_wall      = buff_creator_t( this, "shield_wall", find_class_spell( "Shield Wall" ) )
                           .default_value( find_class_spell( "Shield Wall" )-> effectN( 1 ).percent() )
                           .cd( timespan_t::zero() );
