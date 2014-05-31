@@ -44,7 +44,6 @@ actions.single_target+=/revenge,if=buff.shield_charge.up&rage<100
 actions.single_target+=/execute,if=rage>100|target.time_to_die<12|(rage>50&(buff.bloodbath.up|buff.avatar.up))
 actions.single_target+=/storm_bolt,if=talent.storm_bolt.enabled&((buff.bloodbath.up|cooldown.bloodbath.remains>7)|!talent.bloodbath.enabled)
 actions.single_target+=/dragon_roar,if=talent.dragon_roar.enabled&((buff.bloodbath.up|cooldown.bloodbath.remains>10)|!talent.bloodbath.enabled)
-actions.single_target+=/thunder_clap
 actions.single_target+=/devastate
 
 actions.aoe=bloodbath,if=talent.bloodbath.enabled
