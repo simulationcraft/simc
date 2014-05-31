@@ -171,6 +171,8 @@ public:
     buff_t* chosen_of_elune;
     buff_t* eclipse_lunar;
     buff_t* eclipse_solar;
+    buff_t* lunar_empowerment;
+    buff_t* solar_empowerment;
     buff_t* enhanced_owlkin_frenzy;
     buff_t* moonkin_form;
     buff_t* natures_grace;
@@ -1497,7 +1499,7 @@ struct cat_form_t : public druid_buff_t< buff_t >
 struct moonkin_form_t : public druid_buff_t< buff_t >
 {
   moonkin_form_t( druid_t& p ) :
-    base_t( p, buff_creator_t( &p, "moonkin_form", p.find_class_spell( "Moonkin Form" ) )
+    base_t( p, buff_creator_t( &p, "moonkin_form", p.spec.moonkin_form )
                .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER ) )
   { }
 
@@ -3880,11 +3882,8 @@ struct auto_attack_t : public melee_attack_t
 
 struct astral_communion_t : public druid_spell_t
 {
-  int starting_direction;
-
   astral_communion_t( druid_t* player, const std::string& options_str ) :
-    druid_spell_t( "astral_communion", player, player -> find_class_spell( "Astral Communion" ), options_str ),
-    starting_direction( 0 )
+    druid_spell_t( "astral_communion", player, player -> spec.astral_communion , options_str )
   {
     harmful      = false;
     hasted_ticks = false;
@@ -3897,21 +3896,7 @@ struct astral_communion_t : public druid_spell_t
 
   virtual void execute()
   {
-    if ( p() -> eclipse_bar_direction == 0 )
-      starting_direction = 1;
-    else
-      starting_direction = p() -> eclipse_bar_direction;
-
-    if ( p() -> buff.astral_insight -> up() )
-    {
-      p() -> buff.astral_insight -> expire();
-      trigger_eclipse_energy_gain( p() -> buff.astral_insight -> data().effectN( 1 ).base_value() * starting_direction );
-      druid_spell_t::execute();
-    }
-    else
-    {
-      druid_spell_t::execute();
-    }
+    //Re-do
   }
 
   virtual timespan_t composite_dot_duration( const action_state_t* s ) const override
@@ -3922,7 +3907,6 @@ struct astral_communion_t : public druid_spell_t
 
     return druid_spell_t::composite_dot_duration( s );
   }
-
 };
 
 // Barkskin =================================================================
@@ -4043,7 +4027,7 @@ struct cat_form_t : public druid_spell_t
 struct celestial_alignment_t : public druid_spell_t
 {
   celestial_alignment_t( druid_t* player, const std::string& options_str ) :
-    druid_spell_t( "celestial_alignment", player, player -> find_class_spell( "Celestial Alignment" ), options_str )
+    druid_spell_t( "celestial_alignment", player, player -> spec.celestial_alignment , options_str )
   {
     parse_options( NULL, options_str );
 
@@ -4061,7 +4045,7 @@ struct celestial_alignment_t : public druid_spell_t
 struct cenarion_ward_t : public druid_spell_t
 {
   cenarion_ward_t( druid_t* p, const std::string& options_str ) :
-    druid_spell_t( "cenarion_ward", p, p -> find_talent_spell( "Cenarion Ward" ), options_str )
+    druid_spell_t( "cenarion_ward", p, p -> talent.cenarion_ward,  options_str )
   {
     harmful    = false;
   }
@@ -4263,7 +4247,7 @@ struct moonfire_t : public druid_spell_t
   struct sunfire_CA_t : public druid_spell_t
   {
     sunfire_CA_t( druid_t* player ) :
-      druid_spell_t( "sunfire", player, player -> find_class_spell( "Sunfire" ) )
+      druid_spell_t( "sunfire", player, player -> spec.sunfire )
     {
       assert( player -> specialization() == DRUID_BALANCE );
 
@@ -4293,8 +4277,7 @@ struct moonfire_t : public druid_spell_t
   action_t* sunfire;
 
   moonfire_t( druid_t* player, const std::string& options_str ) :
-    druid_spell_t( "moonfire", player, player -> find_class_spell( "Moonfire" ) ),
-    // player -> talent.lunar_inspiration -> ok() ? player -> find_spell( 155625 ) : player -> find_class_spell( "Moonfire" )
+    druid_spell_t( "moonfire", player, player -> talent.lunar_inspiration -> ok() ? player -> find_spell( 155625 ) : player -> find_class_spell( "Moonfire" ) ),
     sunfire( nullptr )
   {
     parse_options( NULL, options_str );
@@ -4385,7 +4368,7 @@ struct moonfire_t : public druid_spell_t
 struct moonkin_form_t : public druid_spell_t
 {
   moonkin_form_t( druid_t* player, const std::string& options_str ) :
-    druid_spell_t( "moonkin_form", player, player -> find_class_spell( "Moonkin Form" )  )
+    druid_spell_t( "moonkin_form", player, player -> spec.moonkin_form )
   {
     parse_options( NULL, options_str );
 
@@ -4413,7 +4396,7 @@ struct moonkin_form_t : public druid_spell_t
 struct druids_swiftness_t : public druid_spell_t
 {
   druids_swiftness_t( druid_t* player, const std::string& options_str ) :
-    druid_spell_t( "natures_swiftness", player, player -> find_specialization_spell( "Nature's Swiftness" ) )
+    druid_spell_t( "natures_swiftness", player, player -> spec.natures_swiftness )
   {
     parse_options( NULL, options_str );
 
@@ -4443,7 +4426,7 @@ struct druids_swiftness_t : public druid_spell_t
 struct natures_vigil_t : public druid_spell_t
 {
   natures_vigil_t( druid_t* player, const std::string& options_str ) :
-    druid_spell_t( "natures_vigil", player, player -> find_spell( 124974 ) )
+    druid_spell_t( "natures_vigil", player, player -> talent.natures_vigil )
   {
     parse_options( NULL, options_str );
     harmful = false;
@@ -4463,7 +4446,7 @@ struct natures_vigil_t : public druid_spell_t
 struct starfire_t : public druid_spell_t
 {
   starfire_t( druid_t* player, const std::string& options_str ) :
-    druid_spell_t( "starfire", player, player -> find_class_spell( "Starfire" ) )
+    druid_spell_t( "starfire", player, player -> spec.starfire )
   {
     parse_options( NULL, options_str );
 
@@ -4502,7 +4485,7 @@ struct starfall_star_t : public druid_spell_t
 struct starfall_t : public druid_spell_t
 {
   starfall_t( druid_t* player, const std::string& options_str ) :
-    druid_spell_t( "starfall", player, player -> find_class_spell( "Starfall" ) )
+    druid_spell_t( "starfall", player, player -> spec.starfall )
   {
     parse_options( NULL, options_str );
 
@@ -4541,7 +4524,7 @@ struct starfall_t : public druid_spell_t
 struct starsurge_t : public druid_spell_t
 {
   starsurge_t( druid_t* player, const std::string& options_str ) :
-    druid_spell_t( "starsurge", player, player -> find_class_spell( "Starsurge" ) )
+    druid_spell_t( "starsurge", player, player -> spec.starsurge )
   {
     parse_options( NULL, options_str );
 
@@ -4555,8 +4538,9 @@ struct starsurge_t : public druid_spell_t
   }
 
   virtual void execute()
-  {
-   //Re-do
+  { //To-do: Trigger based on current position of balance bar.
+    p() -> buff.lunar_empowerment -> trigger( 2 );
+    p() -> buff.solar_empowerment -> trigger( 3 );
   }
 
   virtual void schedule_execute( action_state_t* state = 0 )
@@ -4592,7 +4576,7 @@ struct starsurge_t : public druid_spell_t
 struct prowl_t : public druid_spell_t
 {
   prowl_t( druid_t* player, const std::string& options_str ) :
-    druid_spell_t( "prowl", player, player -> find_class_spell( "Prowl" )  )
+    druid_spell_t( "prowl", player, player -> find_class_spell( "Prowl" ) )
   {
     parse_options( NULL, options_str );
 
@@ -4656,7 +4640,7 @@ struct sunfire_t : public druid_spell_t
   action_t* moonfire;
 
   sunfire_t( druid_t* player, const std::string& options_str ) :
-    druid_spell_t( "sunfire", player, player -> find_class_spell( "Sunfire" ) ),
+    druid_spell_t( "sunfire", player, player -> spec.sunfire ),
     moonfire( nullptr )
   {
     parse_options( NULL, options_str );
@@ -4903,8 +4887,6 @@ struct wrath_t : public druid_spell_t
 
 } // end namespace spells
 
-
-
 // ==========================================================================
 // Druid Character Definition
 // ==========================================================================
@@ -4913,13 +4895,18 @@ void druid_t::trigger_shooting_stars( result_e result )
 {
   if ( result == RESULT_CRIT )
   {
-    int stack = buff.shooting_stars -> check();
-    if ( buff.shooting_stars -> trigger() )
+    if ( rng().roll( spec.shooting_stars -> proc_chance() ) )
     {
-      if ( stack == buff.shooting_stars -> check() )
+      if ( cooldown.starfallsurge -> charges == 3 )
         proc.shooting_stars_wasted -> occur();
       cooldown.starfallsurge -> reset( true );
     }
+  }
+  else if ( rng().roll( spec.shooting_stars -> proc_chance() / 2 ) )
+  {
+    if ( cooldown.starfallsurge -> charges == 3 )
+      proc.shooting_stars_wasted -> occur();
+    cooldown.starfallsurge -> reset( true );
   }
 }
 
@@ -5379,6 +5366,12 @@ void druid_t::create_buffs()
   buff.celestial_alignment       = new celestial_alignment_t( *this );
 
   buff.astral_showers              = buff_creator_t( this, "astral_showers",   spec.astral_showers -> effectN( 1 ).trigger() );
+
+  buff.solar_empowerment         = buff_creator_t( this, "solar_empowerment", find_spell( 164545 ) )
+                                   .max_stack( 3 );
+
+  buff.lunar_empowerment         = buff_creator_t( this, "lunar_empowerment", find_spell( 164547 ) )
+                                   .max_stack( 2 );
 
   buff.owlkin_frenzy             = buff_creator_t( this, "owlkin_frenzy", spec.owlkin_frenzy -> effectN( 1 ).trigger() )
                                    .chance( spec.owlkin_frenzy -> proc_chance() )
@@ -5844,6 +5837,14 @@ void druid_t::regen( timespan_t periodicity )
     resource_gain( RESOURCE_MANA, mana_regen_per_second() * periodicity.total_seconds(), gains.mp5_regen );
   if ( primary_resource() != RESOURCE_ENERGY && energy_regen_per_second() )
     resource_gain( RESOURCE_ENERGY, energy_regen_per_second() * periodicity.total_seconds(), gains.energy_regen );
+
+  if ( buff.moonkin_form -> check() ) //Boomkins get 150% increase mana regeneration, scaling with haste.
+  {
+    double regen;
+    regen = buff.moonkin_form -> data().effectN( 5 ).percent();
+    regen += cache.spell_haste();
+    resource_gain( RESOURCE_MANA, ( 1 + regen ) * mana_regen_per_second() * periodicity.total_seconds(), gains.mp5_regen );
+  }
 }
 
 // druid_t::available =======================================================
@@ -5940,11 +5941,10 @@ double druid_t::composite_armor_multiplier() const
     else if ( specialization() != DRUID_GUARDIAN )
       bearMod += glyph.ursols_defense -> effectN( 1 ).percent(); // Non-guardian glyph that adds to bear form multiplier.
     a *= 1.0 + bearMod;
-
   }
 
   if ( buff.moonkin_form -> check() )
-    a *= 1.0 + perk.enhanced_moonkin_form -> effectN( 1 ).percent();
+    a *= 1.0 + + buff.moonkin_form -> data().effectN( 3 ).percent() + perk.enhanced_moonkin_form -> effectN( 1 ).percent();
 
   return a;
 }
