@@ -291,23 +291,31 @@ public:
   struct glyphs_t
   {
     // DONE
+    const spell_data_t* astral_communion;
     const spell_data_t* blooming;
     const spell_data_t* cat_form;
+    const spell_data_t* celestial_alignment;
     const spell_data_t* ferocious_bite;
     const spell_data_t* frenzied_regeneration;
     const spell_data_t* healing_touch;
     const spell_data_t* maim;
     const spell_data_t* maul;
+    const spell_data_t* master_shapeshifter;
+    const spell_data_t* moonwarding;
     const spell_data_t* ninth_life;
-    const spell_data_t* omens;
+
     const spell_data_t* savage_roar;
+    const spell_data_t* shapemender;
     const spell_data_t* skull_bash;
-    const spell_data_t* sudden_eclipse;
+
+    const spell_data_t* survival_instincts;
     const spell_data_t* stampeding_roar;
     const spell_data_t* ursols_defense;
     const spell_data_t* wild_growth;
 
     // NYI / Needs checking
+    const spell_data_t* omens;
+    const spell_data_t* sudden_eclipse;
     const spell_data_t* lifebloom;
     const spell_data_t* might_of_ursoc;
     const spell_data_t* regrowth;
@@ -385,7 +393,7 @@ public:
     const spell_data_t* bear_form; // Bear form bonuses
     const spell_data_t* combo_point; // Combo point spell
     const spell_data_t* eclipse; // Eclipse mana gain
-    const spell_data_t* heart_of_the_wild; // HotW INT/AGI bonus
+    const spell_data_t* heart_of_the_wild;
     const spell_data_t* leader_of_the_pack; // LotP aura
     const spell_data_t* mangle; // Mangle cooldown reset
     const spell_data_t* moonkin_form; // Moonkin form bonuses
@@ -517,8 +525,6 @@ public:
   virtual double    composite_armor_multiplier() const;
   virtual double    composite_melee_attack_power() const;
   virtual double    composite_melee_crit() const;
-  virtual double    composite_melee_hit() const;
-  virtual double    composite_melee_expertise( weapon_t* ) const;
   virtual double    composite_attack_power_multiplier() const;
   virtual double    temporary_movement_modifier() const;
   virtual double    passive_movement_modifier() const;
@@ -526,7 +532,6 @@ public:
   virtual double    composite_player_td_multiplier( school_e,  const action_t* ) const;
   virtual double    composite_player_heal_multiplier( school_e school ) const;
   virtual double    composite_spell_crit() const;
-  virtual double    composite_spell_hit() const;
   virtual double    composite_spell_power( school_e school ) const;
   virtual double    composite_attribute( attribute_e attr ) const;
   virtual double    composite_attribute_multiplier( attribute_e attr ) const;
@@ -1348,12 +1353,6 @@ public:
     base_t( p, buff_creator_t( &p, "bear_form", p.find_class_spell( "Bear Form" ) ) ),
     rage_spell( p.find_spell( 17057 ) )
   {
-    // HOTW will require invalidation of hit
-    if ( druid.talent.heart_of_the_wild -> ok() )
-    {
-      add_invalidate( CACHE_HIT );
-      add_invalidate( CACHE_EXP );
-    }
     add_invalidate( CACHE_AGILITY );
     add_invalidate( CACHE_ATTACK_POWER );
     add_invalidate( CACHE_HASTE );
@@ -1442,13 +1441,6 @@ struct cat_form_t : public druid_buff_t< buff_t >
   cat_form_t( druid_t& p ) :
     base_t( p, buff_creator_t( &p, "cat_form", p.find_class_spell( "Cat Form" ) ) )
   {
-    // HOTW will require invalidation of various things, as the actor may
-    // change shapeshift forms during HoTW, that affects the stats
-    if ( druid.talent.heart_of_the_wild -> ok() )
-    {
-      add_invalidate( CACHE_HIT );
-      add_invalidate( CACHE_EXP );
-    }
     add_invalidate( CACHE_AGILITY );
     add_invalidate( CACHE_ATTACK_POWER );
     add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
@@ -1630,9 +1622,6 @@ public:
     base_t( p, buff_creator_t( &p, "heart_of_the_wild" )
             .spell( select_spell( p ) ) )
   {
-    add_invalidate( CACHE_AGILITY );
-    add_invalidate( CACHE_HIT );
-    add_invalidate( CACHE_EXP );
     add_invalidate( CACHE_PLAYER_HEAL_MULTIPLIER );
   }
 
@@ -1684,70 +1673,6 @@ public:
     return m;
   }
 
-  double attack_hit_expertise()
-  {
-    if ( ! check() ) return 0.0;
-
-    druid_t& p = this -> p();
-    switch ( p.specialization() )
-    {
-      case DRUID_FERAL:
-        if ( ! p.buff.bear_form -> check() ) return 0.0;
-        break;
-      case DRUID_GUARDIAN:
-        if ( ! p.buff.cat_form  -> check() ) return 0.0;
-        break;
-      case DRUID_BALANCE:
-      case DRUID_RESTORATION:
-        if ( ! p.buff.bear_form -> check() && ! p.buff.cat_form -> check() ) return 0.0;
-        break;
-      default:
-        return 0.0;
-    }
-    return 0.15;
-  }
-
-  double spell_hit()
-  {
-    if ( ! check() ) return 0.0;
-
-    switch ( player -> specialization() )
-    {
-      case DRUID_FERAL:
-      case DRUID_GUARDIAN:
-      case DRUID_RESTORATION:
-        return 0.15;
-      default:
-        return 0.0;
-    }
-  }
-
-  double agility_multiplier()
-  {
-    if ( ! check() ) return 0.0;
-
-    druid_t& p = this -> p();
-    switch ( p.specialization() )
-    {
-      case DRUID_FERAL:
-        if ( p.buff.bear_form -> check() )
-          return 0.5;
-        break;
-      case DRUID_GUARDIAN:
-        if ( p.buff.cat_form -> check() )
-          return 1.1;
-        break;
-      case DRUID_BALANCE:
-      case DRUID_RESTORATION:
-        if ( p.buff.cat_form -> check() )
-          return 1.1;
-        break;
-      default:
-        break;
-    }
-
-    return 0.0;
-  }
 };
 } // end namespace buffs
 
@@ -5420,7 +5345,7 @@ void druid_t::init_spells()
   spell.berserk_cat                     = find_class_spell( "Berserk"                     ) -> ok() ? find_spell( 106951 ) : spell_data_t::not_found(); // Berserk cat resource cost reducer
   spell.combo_point                     = find_class_spell( "Cat Form"                    ) -> ok() ? find_spell( 34071  ) : spell_data_t::not_found(); // Combo point add "spell", weird
   spell.eclipse                         = spec.eclipse -> ok() ? find_spell( 81070  ) : spell_data_t::not_found(); // Eclipse mana gain trigger
-  spell.heart_of_the_wild               = talent.heart_of_the_wild -> ok() ? find_spell( 17005  ) : spell_data_t::not_found(); // HotW INT/AGI bonus
+  spell.heart_of_the_wild               = talent.heart_of_the_wild -> ok() ? find_spell( 17005  ) : spell_data_t::not_found();
   spell.leader_of_the_pack              = spec.leader_of_the_pack -> ok() ? find_spell( 24932  ) : spell_data_t::not_found(); // LotP aura
   spell.mangle                          = find_class_spell( "Lacerate"                    ) -> ok() ||
                                           find_specialization_spell( "Thrash"             ) -> ok() ? find_spell( 93622  ) : spell_data_t::not_found(); // Lacerate mangle cooldown reset
@@ -5485,15 +5410,19 @@ void druid_t::init_spells()
   perk.enhanced_lifebloom = find_perk_spell( "Enhanced Lifebloom" );
 
   // Glyphs
+  glyph.astral_communion      = find_glyph_spell( "Glyph of Astral Communion" );
   glyph.blooming              = find_glyph_spell( "Glyph of Blooming" );
   glyph.cat_form              = find_glyph_spell( "Glyph of Cat Form" );
+  glyph.celestial_alignment   = find_glyph_spell( "Glyph of Celestial Alignment" );
   glyph.ferocious_bite        = find_glyph_spell( "Glyph of Ferocious Bite" );
   glyph.frenzied_regeneration = find_glyph_spell( "Glyph of Frenzied Regeneration" );
   glyph.healing_touch         = find_glyph_spell( "Glyph of Healing Touch" );
   glyph.lifebloom             = find_glyph_spell( "Glyph of Lifebloom" );
   glyph.maim                  = find_glyph_spell( "Glyph of Maim" );
   glyph.maul                  = find_glyph_spell( "Glyph of Maul" );
+  glyph.master_shapeshifter   = find_glyph_spell( "Glyph of the Master Shapeshifter" );
   glyph.might_of_ursoc        = find_glyph_spell( "Glyph of Might of Ursoc" );
+  glyph.moonwarding           = find_glyph_spell( "Glyph of Moonwarding" );
   glyph.ninth_life            = find_glyph_spell( "Glyph of the Ninth Life" );
   glyph.omens                 = find_glyph_spell( "Glyph of Omens"    );
   glyph.sudden_eclipse        = find_glyph_spell( "Glyph of Sudden Eclipse" );
@@ -5501,7 +5430,10 @@ void druid_t::init_spells()
   glyph.rejuvenation          = find_glyph_spell( "Glyph of Rejuvenation" );
   glyph.savage_roar           = find_glyph_spell( "Glyph of Savage Roar" );
   glyph.skull_bash            = find_glyph_spell( "Glyph of Skull Bash" );
+  glyph.shapemender           = find_glyph_spell( "Glyph of the Shapemender" );
   glyph.stampeding_roar       = find_glyph_spell( "Glyph of Stampeding Roar" );
+  glyph.sudden_eclipse        = find_glyph_spell( "Glyph of Sudden Eclipse" );
+  glyph.survival_instincts    = find_glyph_spell( "Glyph of Survival Instincts" );
   glyph.ursols_defense        = find_glyph_spell( "Glyph of Ursol's Defense" );
   glyph.wild_growth           = find_glyph_spell( "Glyph of Wild Growth" );
 
@@ -6349,31 +6281,6 @@ double druid_t::composite_melee_crit() const
   return crit;
 }
 
-// druid_t::composite_attack_hit ============================================
-
-double druid_t::composite_melee_hit() const
-{
-  double hit = player_t::composite_melee_hit();
-
-  if ( spec.balance_of_power -> ok() )
-    hit += ( cache.spirit() - base.stats.get_stat( STAT_SPIRIT ) ) * ( spec.balance_of_power -> effectN( 1 ).percent() ) / current_rating().spell_hit;
-
-  hit += buff.heart_of_the_wild -> attack_hit_expertise();
-
-  return hit;
-}
-
-// druid_t::composite_attack_expertise ======================================
-
-double druid_t::composite_melee_expertise( weapon_t* w ) const
-{
-  double exp = player_t::composite_melee_expertise( w );
-
-  exp += buff.heart_of_the_wild -> attack_hit_expertise();
-
-  return exp;
-}
-
 // druid_t::temporary_movement_modifier =========================================
 
 double druid_t::temporary_movement_modifier() const
@@ -6416,20 +6323,6 @@ double druid_t::composite_spell_crit() const
   crit *= 1.0 + spec.critical_strikes -> effectN( 1 ).percent();
 
   return crit;
-}
-
-// druid_t::composite_spell_hit =============================================
-
-double druid_t::composite_spell_hit() const
-{
-  double hit = player_t::composite_spell_hit();
-
-  if ( spec.balance_of_power -> ok() )
-    hit += ( cache.spirit() - base.stats.get_stat( STAT_SPIRIT ) ) * ( spec.balance_of_power -> effectN( 1 ).percent() ) / current_rating().spell_hit;
-
-  hit += buff.heart_of_the_wild -> spell_hit();
-
-  return hit;
 }
 
 // druid_t::composite_spell_power ===========================================
@@ -6481,9 +6374,6 @@ double druid_t::composite_attribute_multiplier( attribute_e attr ) const
     case ATTR_STAMINA:
       if ( buff.bear_form -> check() )
         m *= 1.0 + spell.bear_form -> effectN( 2 ).percent();
-      break;
-    case ATTR_AGILITY:
-      m *= 1.0 + buff.heart_of_the_wild -> agility_multiplier();
       break;
     default:
       break;
