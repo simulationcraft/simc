@@ -5792,7 +5792,7 @@ void druid_t::regen( timespan_t periodicity )
     double regen;
     regen = buff.moonkin_form -> data().effectN( 5 ).percent();
     regen += cache.spell_haste();
-    resource_gain( RESOURCE_MANA, ( 1 + regen ) * mana_regen_per_second() * periodicity.total_seconds(), gains.mp5_regen );
+    resource_gain( RESOURCE_MANA, regen * mana_regen_per_second() * periodicity.total_seconds(), gains.mp5_regen );
   }
 }
 
