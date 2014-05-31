@@ -3014,7 +3014,7 @@ struct sweeping_strikes_t : public warrior_spell_t
   {
     parse_options( NULL, options_str );    
     cooldown -> duration = data().cooldown();
-    cooldown -> duration += timespan_t::from_seconds( p -> perk.enhanced_sweeping_strikes -> effectN( 2 ).base_value() );
+    cooldown -> duration += timespan_t::from_millis( p -> perk.enhanced_sweeping_strikes -> effectN( 2 ).base_value() );
   }
 
   virtual void execute()
@@ -3894,8 +3894,8 @@ void warrior_t::create_buffs()
 
   buff.sweeping_strikes = buff_creator_t( this, "sweeping_strikes",   find_specialization_spell( "Sweeping Strikes" )  )
                           .duration( find_specialization_spell( "Sweeping Strikes" ) -> duration() +
-                          timespan_t::from_seconds( perk.enhanced_sweeping_strikes -> ok() ?
-                                                    perk.enhanced_sweeping_strikes -> effectN( 1 ).base_value() : 0 ) );
+                          timespan_t::from_millis( perk.enhanced_sweeping_strikes -> ok() ?
+                                                   perk.enhanced_sweeping_strikes -> effectN( 1 ).base_value() : 0 ) );
 
   buff.sword_and_board  = buff_creator_t( this, "sword_and_board",   find_spell( 50227 ) )
                           .chance( spec.sword_and_board -> effectN( 1 ).percent() );
