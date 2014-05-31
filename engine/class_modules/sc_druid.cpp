@@ -170,8 +170,10 @@ public:
     buff_t* chosen_of_elune;
     buff_t* eclipse_lunar;
     buff_t* eclipse_solar;
+    buff_t* enhanced_owlkin_frenzy;
     buff_t* moonkin_form;
     buff_t* natures_grace;
+    buff_t* owlkin_frenzy;
     buff_t* shooting_stars;
     buff_t* starfall;
 
@@ -3799,8 +3801,16 @@ struct druid_spell_t : public druid_spell_base_t<spell_t>
 
   virtual double cost() const
   {
+    double cost = base_t::cost();
+
     if ( harmful && p() -> buff.heart_of_the_wild -> damage_spells_are_free() )
       return 0;
+
+    if ( p() -> buff.enhanced_owlkin_frenzy -> up() && cost > 0 )
+    {
+      p() -> buff.enhanced_owlkin_frenzy -> expire();
+      return 0;
+    }
 
     return base_t::cost();
   }
@@ -5354,6 +5364,14 @@ void druid_t::create_buffs()
 
   buff.astral_showers              = buff_creator_t( this, "astral_showers",   spec.astral_showers -> effectN( 1 ).trigger() );
 
+  buff.owlkin_frenzy             = buff_creator_t( this, "owlkin_frenzy", spec.owlkin_frenzy -> effectN( 1 ).trigger() )
+                                   .chance( spec.owlkin_frenzy -> proc_chance() )
+                                   .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
+
+  buff.enhanced_owlkin_frenzy    = buff_creator_t( this, "enhanced_owlkin_frenzy", perk.enhanced_owlkin_frenzy )
+                                   .duration( spec.owlkin_frenzy -> effectN( 1 ).trigger() -> duration() )
+                                   .chance( 1 );
+
   buff.shooting_stars            = buff_creator_t( this, "shooting_stars", spec.shooting_stars -> effectN( 1 ).trigger() )
                                    .chance( spec.shooting_stars -> proc_chance() + sets.set( SET_T16_4PC_CASTER ) -> effectN( 1 ).percent() );
   buff.starfall                  = buff_creator_t( this, "starfall",       find_specialization_spell( "Starfall" ) )
@@ -5908,6 +5926,10 @@ double druid_t::composite_armor_multiplier() const
     a *= 1.0 + bearMod;
 
   }
+
+  if ( buff.moonkin_form -> check() )
+    a *= 1.0 + perk.enhanced_moonkin_form -> effectN( 1 ).percent();
+
   return a;
 }
 
@@ -5925,6 +5947,9 @@ double druid_t::composite_player_multiplier( school_e school ) const
 
   if ( specialization() == DRUID_BALANCE )
   {
+    if ( buff.owlkin_frenzy -> up() )
+      m *= 1.0 + buff.owlkin_frenzy -> data().effectN( 2 ).percent();
+
     if ( dbc::is_school( school, SCHOOL_SPELLSTORM ) )
     {
       if ( buff.eclipse_lunar -> up() || buff.eclipse_solar -> up() )
@@ -6503,6 +6528,10 @@ void druid_t::assess_damage( school_e school,
 
   if ( buff.cenarion_ward -> up() && s -> result_amount > 0 )
      active.cenarion_ward_hot -> execute();
+
+  if ( buff.moonkin_form -> up() && s -> result_amount > 0 )
+    if ( buff.owlkin_frenzy -> trigger() )
+      buff.enhanced_owlkin_frenzy -> trigger();
 
   // Call here to benefit from -10% physical damage before SD is taken into account
   player_t::assess_damage( school, dtype, s );
