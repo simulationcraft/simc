@@ -5787,11 +5787,11 @@ void druid_t::regen( timespan_t periodicity )
   if ( primary_resource() != RESOURCE_ENERGY && energy_regen_per_second() )
     resource_gain( RESOURCE_ENERGY, energy_regen_per_second() * periodicity.total_seconds(), gains.energy_regen );
 
-  if ( buff.moonkin_form -> check() ) //Boomkins get 150% increase mana regeneration, scaling with haste.
+  if ( buff.moonkin_form -> check() ) //Boomkins get 150% increased mana regeneration, scaling with haste.
   {
     double regen;
     regen = buff.moonkin_form -> data().effectN( 5 ).percent();
-    regen += cache.spell_haste();
+    regen += ( 1 / cache.spell_haste() );
     resource_gain( RESOURCE_MANA, regen * mana_regen_per_second() * periodicity.total_seconds(), gains.mp5_regen );
   }
 }

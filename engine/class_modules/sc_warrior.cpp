@@ -89,7 +89,6 @@ public:
     buff_t* shield_charge;
     buff_t* shield_wall;
     buff_t* sudden_death;
-    buff_t* sudden_execute;
     buff_t* sweeping_strikes;
     buff_t* sword_and_board;
     buff_t* ultimatum;
@@ -151,6 +150,7 @@ public:
   struct spells_t
   {
     const spell_data_t* charge;
+    const spell_data_t* enrage;
     const spell_data_t* intervene;
     const spell_data_t* heroic_leap;
     const spell_data_t* hold_the_line;
@@ -207,6 +207,7 @@ public:
     const spell_data_t* readiness_arms;
     const spell_data_t* seasoned_soldier;
     const spell_data_t* sudden_death;
+    const spell_data_t* sweeping_strikes;
   //Arms and Prot
     const spell_data_t* blood_and_thunder;
   //Arms and Fury
@@ -1084,9 +1085,7 @@ struct bladestorm_t : public warrior_attack_t
     bladestorm_mh -> execute();
 
     if ( bladestorm_mh -> result_is_hit( execute_state -> result ) && bladestorm_oh )
-    {
       bladestorm_oh -> execute();
-    }
   }
 
   virtual void update_ready( timespan_t cd_duration )
@@ -1221,15 +1220,10 @@ struct charge_t : public warrior_attack_t
     if ( first_charge == true )
       first_charge = !first_charge;
 
-    if ( p() -> glyphs.bull_rush -> ok() )
-      p() -> resource_gain( RESOURCE_RAGE,
-                        p() -> glyphs.bull_rush -> effectN( 2 ).resource( RESOURCE_RAGE ) + 
-                        data().effectN( 2 ).resource( RESOURCE_RAGE ),
-                        p() -> gain.charge );
-    else
-      p() -> resource_gain( RESOURCE_RAGE,
-                        data().effectN( 2 ).resource( RESOURCE_RAGE ),
-                        p() -> gain.charge );
+    p() -> resource_gain( RESOURCE_RAGE,
+                      p() -> glyphs.bull_rush -> effectN( 2 ).resource( RESOURCE_RAGE ) + 
+                      data().effectN( 2 ).resource( RESOURCE_RAGE ),
+                      p() -> gain.charge );
   }
 
   void reset()
@@ -1318,10 +1312,7 @@ struct demoralizing_shout : public warrior_attack_t
   {
     warrior_attack_t::impact( s );
     if ( result_is_hit( s -> result ) )
-    {
-
       td( s -> target ) -> debuffs_demoralizing_shout -> trigger( 1, data().effectN( 1 ).percent() );
-    }
   }
 
   virtual void update_ready( timespan_t cd_duration )
@@ -1349,9 +1340,7 @@ struct devastate_t : public warrior_attack_t
     if ( result_is_hit( execute_state -> result ) )
     {
       if ( p() -> buff.sword_and_board -> trigger() )
-      {
         p() -> cooldown.shield_slam -> reset( true );
-      }
     }
 
     p() -> active_deep_wounds -> target = execute_state -> target;
@@ -1460,14 +1449,9 @@ struct execute_t : public warrior_attack_t
     if ( p() -> mastery.weapons_master -> ok() )
       am *= 1.0 + p() -> cache.mastery_value();
 
-    if ( p() -> spec.single_minded_fury -> ok() && p() -> dual_wield() )
-    {
       if ( p() -> main_hand_weapon.group() == WEAPON_1H &&
            p() -> off_hand_weapon.group() == WEAPON_1H )
-      {
         am *= 1.0 + p() -> spec.single_minded_fury -> effectN( 3 ).percent();
-      }
-    }
     return am;
   }
 
@@ -1626,15 +1610,14 @@ struct heroic_throw_t : public warrior_attack_t
   {
     parse_options( NULL, options_str );
     may_dodge = may_parry = may_block = false;
+    if ( p -> perk.improved_heroic_throw -> ok() )
+      cooldown -> duration = timespan_t::zero();
   }
 
   virtual bool ready()
   {
     if ( p() -> current.distance_to_move > data().max_range() || p() -> current.distance_to_move < data().min_range() ) // Cannot heroic throw unless target is in range.
       return false;
-
-    if ( p() -> perk.improved_heroic_throw -> ok() )
-      return true;
 
     return warrior_attack_t::ready();
   }
@@ -1658,9 +1641,7 @@ struct heroic_leap_t : public warrior_attack_t
     attack_power_mod.direct = dmg_spell -> effectN( 1 ).ap_coeff();
 
     cooldown -> duration = p -> cooldown.heroic_leap -> duration;
-
-    if ( p -> glyphs.death_from_above -> ok() ) //decreases cd
-      cooldown -> duration += p -> glyphs.death_from_above -> effectN( 1 ).time_value();
+    cooldown -> duration += p -> glyphs.death_from_above -> effectN( 1 ).time_value();
   }
 
   virtual void impact( action_state_t* s )
@@ -1744,7 +1725,7 @@ struct impending_victory_t : public warrior_attack_t
 
   virtual bool ready()
   {
-    if ( p()-> talents.impending_victory -> ok() && p() -> buff.tier15_2pc_tank -> check() )
+    if ( p() -> buff.tier15_2pc_tank -> check() )
       return true;
 
     return warrior_attack_t::ready();
@@ -1918,7 +1899,7 @@ struct raging_blow_t : public warrior_attack_t
       p() -> buff.raging_wind -> trigger();
       p() -> buff.meat_cleaver -> expire(); // Meat cleaver will only expire if the attack lands.
     }
-    p() -> buff.raging_blow -> decrement(); // Raging blow buff decrements even if the attack is parried.
+    p() -> buff.raging_blow -> decrement(); // Raging blow buff decrements even if the attack doesn't land.
   }
 
   virtual bool ready()
@@ -2009,7 +1990,7 @@ struct revenge_t : public warrior_attack_t
 
     if ( result_is_hit( execute_state -> result ) )
     {
-      if ( p() -> active_stance == STANCE_DEFENSE || p() -> active_stance == STANCE_GLADIATOR )
+      if ( p() -> active_stance != STANCE_BATTLE )
       {
         p() -> resource_gain( RESOURCE_RAGE, rage_gain, p() -> gain.revenge );
 
@@ -2040,10 +2021,8 @@ struct revenge_t : public warrior_attack_t
 struct blood_craze_t : public warrior_heal_t
 {
   blood_craze_t( warrior_t* p ) :
-    warrior_heal_t( "blood_craze", p , p -> spec.blood_craze )
+    warrior_heal_t( "blood_craze", p , p -> spec.blood_craze -> effectN( 1 ).trigger() )
   {
-    dot_duration = timespan_t::from_seconds( 3.0 );
-    base_tick_time = timespan_t::from_seconds( 1.0 );
     tick_zero = true;
     dot_behavior = DOT_EXTEND;
     tick_pct_heal = 0.01; // Currently no spell data for this.
@@ -2080,9 +2059,9 @@ struct enraged_regeneration_t : public warrior_heal_t
     base_pct_heal( 0 ), base_tick_pct_heal ( 0 )
   {
     parse_options( NULL, options_str );
-    dot_duration = timespan_t::from_seconds( 5.0 );
+    dot_duration = data().duration();
+    base_tick_time = timespan_t::from_seconds( 1 );
     background = false;
-    base_tick_time = timespan_t::from_seconds( 1.0 );
 
     pct_heal = data().effectN( 1 ).percent();
     tick_pct_heal = data().effectN( 2 ).percent();
@@ -2158,7 +2137,7 @@ struct shield_slam_t : public warrior_attack_t
 
     if ( result_is_hit( execute_state -> result ) )
     {
-      if ( p() -> active_stance == STANCE_DEFENSE || p() -> active_stance == STANCE_GLADIATOR )
+      if ( p() -> active_stance != STANCE_BATTLE )
       {
         p() -> resource_gain( RESOURCE_RAGE,
                             rage_gain,
@@ -2321,25 +2300,17 @@ struct thunder_clap_t : public warrior_attack_t
 
     aoe               = -1;
     may_dodge = may_parry = may_block = false;
-
     attack_power_mod.direct = data().effectN( 1 ).ap_coeff();
 
-    if ( p -> spec.unwavering_sentinel -> ok() && p -> active_stance == STANCE_DEFENSE )
+    if ( p -> active_stance == STANCE_DEFENSE )
       base_costs[ current_resource() ] *= 1.0 + p -> spec.unwavering_sentinel -> effectN( 2 ).percent();
 
-    if ( p -> glyphs.resonating_power -> ok() )
-    {
-      cooldown -> duration = data().cooldown();
-      cooldown -> duration *= 1 + p -> glyphs.resonating_power -> effectN( 2 ).percent();
-    }
+    cooldown -> duration = data().cooldown();
+    cooldown -> duration *= 1 + p -> glyphs.resonating_power -> effectN( 2 ).percent();
 
     attack_power_mod.direct *= 1.0 + p -> perk.improved_thunder_clap -> effectN( 1 ).percent();
-
-    if ( p -> glyphs.resonating_power -> ok() )
-      attack_power_mod.direct *= 1.0 + p -> glyphs.resonating_power -> effectN( 1 ).percent();
-
-    if ( p -> spec.blood_and_thunder -> ok() )
-      attack_power_mod.direct *= 1.0 + p -> spec.blood_and_thunder -> effectN( 2 ).percent();
+    attack_power_mod.direct *= 1.0 + p -> glyphs.resonating_power -> effectN( 1 ).percent();
+    attack_power_mod.direct *= 1.0 + p -> spec.blood_and_thunder -> effectN( 2 ).percent();
   }
 
   virtual void impact( action_state_t* s )
@@ -2654,8 +2625,7 @@ struct recklessness_t : public warrior_spell_t
 
     bonus_crit = data().effectN( 1 ).percent();
 
-    if ( p -> glyphs.recklessness -> ok() )
-      bonus_crit *= ( 1 - p -> glyphs.recklessness -> effectN( 1 ).percent() );
+    bonus_crit *= ( 1 - p -> glyphs.recklessness -> effectN( 1 ).percent() );
 
     cooldown -> duration = data().cooldown();
     cooldown -> duration += p -> sets.set( SET_T14_4PC_MELEE ) -> effectN( 1 ).time_value();
@@ -2759,8 +2729,6 @@ struct shield_block_t : public warrior_spell_t
     warrior_spell_t( "shield_block", p, p -> find_class_spell( "Shield Block" ) )
   {
     parse_options( NULL, options_str );
-    if ( p -> active_stance == STANCE_GLADIATOR )
-      background = true;
     cooldown -> duration = timespan_t::from_seconds( 9.0 );
     cooldown -> charges = 2;
   }
@@ -2783,6 +2751,14 @@ struct shield_block_t : public warrior_spell_t
     else
       p() -> buff.shield_block -> trigger();
   }
+
+  virtual bool ready()
+  {
+    if ( p() -> active_stance == STANCE_GLADIATOR )
+      return false;
+
+    return warrior_spell_t::ready();
+  }
 };
 
 // Shield Charge ============================================================
@@ -2793,8 +2769,6 @@ struct shield_charge_t : public warrior_spell_t
     warrior_spell_t( "shield_charge", p, p -> find_spell( 156321 )  )
   {
     parse_options( NULL, options_str );
-    if ( p -> active_stance == STANCE_DEFENSE )
-      background = true;
 
     base_teleport_distance = data().max_range();
     movement_directionality = MOVEMENT_OMNI;
@@ -2815,12 +2789,14 @@ struct shield_charge_t : public warrior_spell_t
 
   virtual bool ready()
   {
+    if ( p() -> active_stance != STANCE_GLADIATOR )
+      return false;
+
     if ( p() -> current.distance_to_move > base_teleport_distance )
       return false;
 
     return warrior_spell_t::ready();
   }
-
 };
 
 // Shield Wall ==============================================================
@@ -2833,11 +2809,8 @@ struct shield_wall_t : public warrior_spell_t
     parse_options( NULL, options_str );
 
     cooldown -> duration = data().cooldown();
-
-    if ( p -> spec.bastion_of_defense -> ok() )
-      cooldown -> duration += p -> spec.bastion_of_defense -> effectN( 2 ).time_value();
-
-    cooldown -> duration += ( p -> glyphs.shield_wall -> ok() ? p -> glyphs.shield_wall -> effectN( 1 ).time_value() : timespan_t::zero() );
+    cooldown -> duration += p -> spec.bastion_of_defense -> effectN( 2 ).time_value();
+    cooldown -> duration += p -> glyphs.shield_wall -> effectN( 1 ).time_value();
   }
 
   virtual void execute()
@@ -2846,8 +2819,7 @@ struct shield_wall_t : public warrior_spell_t
 
     double value = p() -> buff.shield_wall -> data().effectN( 1 ).percent();
 
-    if ( p() -> glyphs.shield_wall -> ok() )
-      value += p() -> glyphs.shield_wall -> effectN( 2 ).percent();
+    value += p() -> glyphs.shield_wall -> effectN( 2 ).percent();
 
     p() -> buff.shield_wall -> trigger( 1, value );
   }
@@ -3013,8 +2985,8 @@ struct sweeping_strikes_t : public warrior_spell_t
     warrior_spell_t( "sweeping_strikes", p, p -> find_specialization_spell( "Sweeping Strikes" ) )
   {
     parse_options( NULL, options_str );    
-    cooldown -> duration = data().cooldown();
-    cooldown -> duration += timespan_t::from_millis( p -> perk.enhanced_sweeping_strikes -> effectN( 2 ).base_value() );
+    cooldown -> duration  = data().cooldown();
+    cooldown -> duration += p -> perk.enhanced_sweeping_strikes -> effectN( 2 ).time_value();
   }
 
   virtual void execute()
@@ -3114,9 +3086,9 @@ warrior_td_t::warrior_td_t( player_t* target, warrior_t* p  ) :
   dots_ravager     = target -> get_dot( "ravager",     p );
 
   debuffs_colossus_smash     = buff_creator_t( *this, "colossus_smash" )
-                               .duration( p -> glyphs.colossus_smash -> ok() ?
-                               ( timespan_t::from_seconds( p -> glyphs.colossus_smash -> effectN( 1 ).base_value() ) + p -> spec.colossus_smash -> duration() ) :
-                               p -> spec.colossus_smash -> duration() );
+                               .duration( p -> glyphs.colossus_smash -> effectN( 1 ).time_value() +
+                                          p -> spec.colossus_smash -> duration() );
+
   debuffs_demoralizing_shout = new buffs::debuff_demo_shout_t( *this );
 
 }
@@ -3204,6 +3176,7 @@ void warrior_t::init_spells()
   spec.seasoned_soldier         = find_specialization_spell( "Seasoned Soldier"      );
   spec.single_minded_fury       = find_specialization_spell( "Single-Minded Fury"    );
   spec.sword_and_board          = find_specialization_spell( "Sword and Board"       );
+  spec.sweeping_strikes         = find_specialization_spell( "Sweeping Strikes"      );
   spec.sudden_death             = find_specialization_spell( "Sudden Death"          );
   spec.ultimatum                = find_specialization_spell( "Ultimatum"             );
   spec.unwavering_sentinel      = find_specialization_spell( "Unwavering Sentinel"   );
@@ -3282,6 +3255,7 @@ void warrior_t::init_spells()
 
   // Generic spells
   spell.charge                  = find_class_spell( "Charge"                       );
+  spell.enrage                  = find_class_spell( "Enrage"                       );
   spell.intervene               = find_class_spell( "Intervene"                    );
   spell.heroic_leap             = find_class_spell( "Heroic Leap"                  );
   spell.heavy_repercussions     = find_spell( "Glyph of Heavy Repercussions"       ); //See if blizzard changes the name.
@@ -3344,10 +3318,13 @@ void warrior_t::init_base_stats()
   base.dodge_per_agility  = 1 / 10000.0 / 100.0; // empirically tested
   base.parry_per_strength = 1 / 95115.8596; // exact value given by Blizzard
 
-  if ( spec.unwavering_sentinel -> ok() && primary_role() != ROLE_ATTACK ) // Currently the only way we can catch gladiator-dps is by setting the primary role.
+  if ( spec.unwavering_sentinel -> ok() && 
+     ( primary_role() != ROLE_ATTACK || !talents.gladiators_resolve -> ok() ) )
+     // Currently the only way we can catch gladiator-dps is by setting the primary role.
   {
     base.attribute_multiplier[ ATTR_STAMINA ] *= 1.0 + spec.unwavering_sentinel -> effectN( 1 ).percent();
-    base.armor_multiplier *= 1.0 + spec.unwavering_sentinel -> effectN( 3 ).percent() + perk.improved_unwavering_sentinel -> effectN( 1 ).percent();
+    base.armor_multiplier *= 1.0 + spec.unwavering_sentinel -> effectN( 3 ).percent() +
+                                   perk.improved_unwavering_sentinel -> effectN( 1 ).percent();
     base.expertise += spec.unwavering_sentinel -> effectN( 5 ).percent();
   }
 
@@ -3812,10 +3789,9 @@ void warrior_t::create_buffs()
   buff.avatar           = buff_creator_t( this, "avatar",           talents.avatar )
                           .cd( timespan_t::zero() )
                           .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
-  buff.battle_stance    = buff_creator_t( this, "battle_stance",    find_class_spell( "Battle Stance" ) );
+  buff.battle_stance    = buff_creator_t( this, "battle_stance",   find_class_spell( "Battle Stance" ) );
 
-  buff.berserker_rage   = buff_creator_t( this, "berserker_rage",   find_class_spell( "Berserker Rage" ) )
-                          .cd( timespan_t::zero() );
+  buff.berserker_rage   = buff_creator_t( this, "berserker_rage",   find_class_spell( "Berserker Rage" ) );
 
   buff.bladed_armor     = buff_creator_t( this, "bladed_armor", spec.bladed_armor )
                           .add_invalidate( CACHE_ATTACK_POWER );
@@ -3823,8 +3799,7 @@ void warrior_t::create_buffs()
   buff.bloodbath        = buff_creator_t( this, "bloodbath",        talents.bloodbath )
                           .cd( timespan_t::zero() );
 
-  buff.blood_craze      = buff_creator_t( this, "blood_craze",      spec.blood_craze )
-                          .duration( find_spell( 159363 ) -> duration() );
+  buff.blood_craze      = buff_creator_t( this, "blood_craze", spec.blood_craze -> effectN( 1 ).trigger() );
 
   buff.bloodsurge       = buff_creator_t( this, "bloodsurge",       spec.bloodsurge -> effectN( 1 ).trigger() )
                           .chance( spec.bloodsurge -> effectN( 1 ).percent() );
@@ -3835,22 +3810,22 @@ void warrior_t::create_buffs()
                           .add_invalidate( CACHE_CRIT_BLOCK )
                           .add_invalidate( CACHE_BLOCK );
 
-  buff.enrage           = buff_creator_t( this, "enrage",           find_spell( 12880 ) )
+  buff.enrage           = buff_creator_t( this, "enrage", spell.enrage -> effectN( 1 ).trigger() )
                           .activated( false ) //Account for delay in buff application.
                           .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
 
   buff.enraged_regeneration = buff_creator_t( this, "enraged_regeneration",   talents.enraged_regeneration );
 
   buff.enraged_speed    = buff_creator_t( this, "enraged_speed",    glyphs.enraged_speed )
-                          .chance( glyphs.enraged_speed -> ok() ? 1 : 0 )
-                          .duration( timespan_t::from_seconds( 6 ) );
+                          .chance( glyphs.enraged_speed -> ok() )
+                          .duration( buff.enrage -> data().duration() );
 
   buff.ignite_weapon    = buff_creator_t( this, "ignite_weapon", talents.ignite_weapon );
 
   buff.gladiator_stance = buff_creator_t( this, "gladiator_stance",   find_spell( 156291 ) );
 
-  buff.heroic_leap_glyph = buff_creator_t( this, "heroic_leap_glyph", find_spell( 133278 ) )
-                           .chance( glyphs.heroic_leap -> ok() ? 1 : 0 );
+  buff.heroic_leap_glyph = buff_creator_t( this, "heroic_leap_glyph", glyphs.heroic_leap )
+                           .chance( glyphs.heroic_leap -> ok() );
 
   buff.hold_the_line     = buff_creator_t( this, "hold_the_line", spell.hold_the_line -> effectN( 1 ).trigger() )
                            .default_value( spell.hold_the_line -> effectN( 1 ).trigger() -> effectN( 1 ).percent() )
@@ -3863,17 +3838,17 @@ void warrior_t::create_buffs()
                           .max_stack( find_spell( 131116 ) -> effectN( 1 ).base_value() );
 
   buff.raging_blow_glyph = buff_creator_t( this, "raging_blow_glyph",  glyphs.raging_blow )
-                          .chance( glyphs.raging_blow -> ok() ? 1 : 0 );
+                          .chance( glyphs.raging_blow -> ok() );
 
-  buff.raging_wind      = buff_creator_t( this, "raging_wind",      glyphs.raging_wind -> effectN( 1 ).trigger() )
-                          .chance( glyphs.raging_wind -> ok() ? 1 : 0 );
+  buff.raging_wind      = buff_creator_t( this, "raging_wind",  glyphs.raging_wind -> effectN( 1 ).trigger() )
+                          .chance( glyphs.raging_wind -> ok() );
 
   buff.ravager          = buff_creator_t( this, "ravager", talents.ravager )
                           .add_invalidate( CACHE_PARRY );
 
   buff.recklessness     = buff_creator_t( this, "recklessness",     spec.recklessness )
                           .duration( spec.recklessness -> duration() *
-                          ( 1.0 + ( glyphs.recklessness -> ok() ? glyphs.recklessness -> effectN( 2 ).percent() : 0 )  ) )
+                          ( 1.0 + glyphs.recklessness -> effectN( 2 ).percent() ) )
                           .cd( timespan_t::zero() ); //Necessary for readiness.
 
   buff.shield_block     = buff_creator_t( this, "shield_block" ).spell( find_spell( 132404 ) )
@@ -3889,18 +3864,15 @@ void warrior_t::create_buffs()
   buff.sudden_death     = buff_creator_t( this, "sudden_death",  spec.sudden_death )
                           .chance( spec.sudden_death -> effectN( 2 ).percent() );
 
-  buff.sudden_execute   = buff_creator_t( this, "sudden_execute", find_class_spell( "Sudden Execute" ) );
-
-  buff.sweeping_strikes = buff_creator_t( this, "sweeping_strikes",   find_specialization_spell( "Sweeping Strikes" )  )
-                          .duration( find_specialization_spell( "Sweeping Strikes" ) -> duration() +
-                          timespan_t::from_millis( perk.enhanced_sweeping_strikes -> ok() ?
-                                                   perk.enhanced_sweeping_strikes -> effectN( 1 ).base_value() : 0 ) );
+  buff.sweeping_strikes = buff_creator_t( this, "sweeping_strikes", spec.sweeping_strikes )
+                          .duration( spec.sweeping_strikes -> duration() +
+                          perk.enhanced_sweeping_strikes -> effectN( 1 ).time_value() );
 
   buff.sword_and_board  = buff_creator_t( this, "sword_and_board",   find_spell( 50227 ) )
                           .chance( spec.sword_and_board -> effectN( 1 ).percent() );
 
   buff.ultimatum        = buff_creator_t( this, "ultimatum",   spec.ultimatum -> effectN( 1 ).trigger() )
-                          .chance( spec.ultimatum -> ok() ? spec.ultimatum -> proc_chance() : 0 );
+                          .chance( spec.ultimatum -> proc_chance() );
 
   buff.last_stand       = new buffs::last_stand_t( this, 12975, "last_stand" );
 
@@ -3911,7 +3883,7 @@ void warrior_t::create_buffs()
   buff.death_sentence   = buff_creator_t( this, "death_sentence", find_spell( 144441 ) ); //T16 4 pc melee buff.
 
   buff.rude_interruption = buff_creator_t( this, "rude_interruption", glyphs.rude_interruption )
-                           .chance( glyphs.rude_interruption -> ok() ? 1 : 0 )
+                           .chance( glyphs.rude_interruption -> ok() )
                            .default_value( glyphs.rude_interruption -> effectN( 1 ).percent() )
                            .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
 
@@ -4095,20 +4067,13 @@ double warrior_t::composite_player_multiplier( school_e school ) const
         m *= 1.0 + cache.mastery_value();
     }
 
-   // --- Passive Talents ---
-  if ( spec.single_minded_fury -> ok() && dual_wield() )
-  {
-   if ( main_hand_weapon .group() == WEAPON_1H &&
-        off_hand_weapon .group() == WEAPON_1H )
-    {
-      m *= 1.0 + spec.single_minded_fury -> effectN( 1 ).percent();
-    }
-  }
+  if ( main_hand_weapon.group() == WEAPON_1H &&
+       off_hand_weapon.group() == WEAPON_1H )
+    m *= 1.0 + spec.single_minded_fury -> effectN( 1 ).percent();
 
   // --- Buffs / Procs ---
   if ( buff.rude_interruption -> up() )
     m *= 1.0 + buff.rude_interruption -> value();
-
 
   if ( active_stance == STANCE_GLADIATOR && school == SCHOOL_PHYSICAL )
     m *= 1.0 + buff.gladiator_stance -> data().effectN( 1 ).percent();
@@ -4227,7 +4192,7 @@ double warrior_t::temporary_movement_modifier() const
 {
   double temporary = player_t::temporary_movement_modifier();
 
-  if ( buff.heroic_leap_glyph -> up () )
+  if ( buff.heroic_leap_glyph -> up() )
     temporary = std::max( buff.heroic_leap_glyph -> data().effectN( 1 ).percent(), temporary );
 
   return temporary;
@@ -4322,8 +4287,8 @@ void warrior_t::assess_damage( school_e school,
        s -> result == RESULT_GLANCE )
   {
     if ( active_stance == STANCE_DEFENSE )
-      s -> result_amount *= ( 1.0 + buff.defensive_stance -> data().effectN( 1 ).percent() +
-        ( talents.gladiators_resolve -> ok() ? talents.gladiators_resolve -> effectN( 2 ).percent() : 0 ) );
+      s -> result_amount *= 1.0 + ( buff.defensive_stance -> data().effectN( 1 ).percent() +
+                                    talents.gladiators_resolve -> effectN( 2 ).percent() );
 
     warrior_td_t* td = get_target_data( s -> action -> player );
 
