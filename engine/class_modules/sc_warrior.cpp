@@ -774,6 +774,13 @@ static  void trigger_sweeping_strikes( action_state_t* s )
     return 0; // Armor accounted for in previous attack.
   }
 
+  virtual double composite_player_multiplier()
+  {
+
+  return 1; // No double dipping
+
+  }
+
   virtual void execute()
   {
     base_dd_max *= pct_damage; //Deals 50% of original damage
