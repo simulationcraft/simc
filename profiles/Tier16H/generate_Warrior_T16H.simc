@@ -31,7 +31,6 @@ main_hand=xalatoh_desecrated_image_of_gorehowl,id=105644,upgrade=2,gems=8haste_8
 
 save=Warrior_Arms_T16H.simc
 
-
 # Warrior Fury 1h T16H
 warrior="Warrior_Fury_1h_T16H"
 level=90
@@ -62,9 +61,6 @@ main_hand=malkoroks_skullcleaver,id=105567,upgrade=2,gems=8haste_8crit_3str,ench
 off_hand=malkoroks_skullcleaver,id=105567,upgrade=2,gems=8haste_8crit_3str,enchant=dancing_steel
 save=Warrior_Fury_1h_T16H.simc
 
-
-
-
 # Warrior Fury 2h T16H
 warrior="Warrior_Fury_2h_T16H"
 level=90
@@ -93,8 +89,6 @@ trinket2=thoks_tail_tip,id=105609,upgrade=2
 main_hand=xalatoh_desecrated_image_of_gorehowl,id=105644,upgrade=2,gems=8haste_8crit_3str,enchant=dancing_steel
 off_hand=xalatoh_desecrated_image_of_gorehowl,id=105644,upgrade=2,gems=8haste_8crit_3str,enchant=dancing_steel
 save=Warrior_Fury_2h_T16H.simc
-
-
 
 # Warrior Protection T16H
 warrior="Warrior_Protection_T16H"
@@ -125,33 +119,3 @@ trinket2=thoks_tail_tip,id=105609,upgrade=2
 main_hand=encapsulated_essence_of_immerseus,id=105417,upgrade=2
 off_hand=shield_of_mockery,id=105481,upgrade=2
 save=Warrior_Protection_T16H.simc
-
-
-# Warrior Protection T16H
-warrior="Warrior_Gladiator_T16H"
-level=90
-race=orc
-role=attack
-position=back
-talents=011221
-glyphs=unending_rage
-professions=enchanting=600/inscription=600
-spec=prot
-head=helmet_of_the_prehistoric_marauder,id=99418,upgrade=2,gems=capacitive_primal_16crit_8haste_8crit_9str
-neck=malkoroks_tainted_dog_tags,id=105566,upgrade=2
-shoulders=spaulders_of_the_fallen_warchief,id=104645,upgrade=2,gems=16crit_16crit_6str,enchant=10str_5crit
-back=gonglu_strength_of_xuen,id=102249,upgrade=2,gems=8haste_8crit_3str,enchant=9crit
-chest=breastplate_of_shamanic_mirrors,id=105532,upgrade=2,gems=8haste_8crit_8haste_8crit_16crit_6str,enchant=3all
-shirt=precious_ribbon,id=52019
-wrists=bracers_of_blind_hatred,id=105456,upgrade=2,enchant=9mastery
-hands=gauntlets_of_the_prehistoric_marauder,id=99412,upgrade=2,gems=8haste_8crit_8haste_8crit_6str,enchant=9mastery
-waist=demolishers_reinforced_belt,id=104513,upgrade=2,gems=8haste_8crit_16crit_16crit_6str
-legs=legplates_of_willful_doom,id=104569,upgrade=2,gems=16crit_16crit_16crit,enchant=14str_8crit
-feet=greaves_of_sublime_superiority,id=105478,upgrade=2,gems=8haste_8crit_3str,enchant=7mastery
-finger1=seal_of_the_forgotten_kings,id=105589,upgrade=2,gems=16crit_3str
-finger2=sorrowpath_signet,id=105436,upgrade=2
-trinket1=evil_eye_of_galakras,id=105491,upgrade=2
-trinket2=thoks_tail_tip,id=105609,upgrade=2
-main_hand=encapsulated_essence_of_immerseus,id=105417,upgrade=2
-off_hand=shield_of_mockery,id=105481,upgrade=2
-save=Warrior_Gladiator_T16H.simc
