@@ -752,7 +752,7 @@ static void trigger_sudden_death( warrior_attack_t* a, double chance )
 
 // trigger_sweeping_strikes =================================================
 
-static  void trigger_sweeping_strikes( action_state_t* s )
+static void trigger_sweeping_strikes( action_state_t* s )
 {
   struct sweeping_strikes_attack_t : public warrior_attack_t
   {
@@ -1090,13 +1090,20 @@ struct auto_attack_t : public warrior_attack_t
 struct bladestorm_tick_t : public warrior_attack_t
 {
   bladestorm_tick_t( warrior_t* p, const std::string& name ) :
-    warrior_attack_t( name, p, p -> find_spell( 50622 ) )
+    warrior_attack_t( name, p, p -> talents.bladestorm -> effectN ( 1 ).trigger() )
   {
     background  = true;
     direct_tick = true;
     aoe         = -1;
     if ( p -> specialization() == WARRIOR_ARMS )
       weapon_multiplier *= 1.5;
+  }
+
+  virtual void execute()
+  {
+    warrior_attack_t::execute();
+    if ( p() -> buff.sweeping_strikes -> up() )
+      trigger_sweeping_strikes( execute_state );
   }
 };
 
