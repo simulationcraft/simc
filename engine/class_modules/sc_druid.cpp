@@ -28,6 +28,7 @@ namespace { // UNNAMED NAMESPACE
     Perks
     Incarnation
     New balance bar system
+    Check sunfire mechanics
 
     = Guardian =
     Perks
@@ -211,6 +212,7 @@ public:
   // Cooldowns
   struct cooldowns_t
   {
+    cooldown_t* empowered_starfall;
     cooldown_t* natures_swiftness;
     cooldown_t* mangle;
     cooldown_t* pvp_4pc_melee;
@@ -507,6 +509,8 @@ public:
         pet_force_of_nature[i] = nullptr;
     }
 
+    cooldown.empowered_starfall  = get_cooldown( "empowered starfall" );
+    cooldown.empowered_starfall -> duration = timespan_t::from_seconds( 5.0 );
     cooldown.natures_swiftness   = get_cooldown( "natures_swiftness"   );
     cooldown.mangle              = get_cooldown( "mangle"              );
     cooldown.pvp_4pc_melee       = get_cooldown( "pvp_4pc_melee"       );
@@ -4275,6 +4279,7 @@ struct moonfire_t : public druid_spell_t
       attack_power_mod.direct = 0;
       base_dd_min = base_dd_max = 0;
       range::fill( base_costs, 0 );
+      base_multiplier *= 1.0 + player -> perk.improved_moonfire -> effectN( 1 ).percent();
     }
 
     virtual void tick( dot_t* d )
@@ -4461,6 +4466,8 @@ struct starfire_t : public druid_spell_t
     druid_spell_t( "starfire", player, player -> find_class_spell( "Starfire" ) )
   {
     parse_options( NULL, options_str );
+
+    base_multiplier *= 1.0 + player -> perk.improved_starfire -> effectN( 1 ).percent();
   }
 
   virtual double action_multiplier() const
@@ -4519,6 +4526,11 @@ struct starfall_t : public druid_spell_t
 
   virtual void execute()
   {
+    if ( p() -> cooldown.empowered_starfall -> up() )
+    {
+      aoe++;
+      p() -> cooldown.empowered_starfall -> start();
+    }
     druid_spell_t::execute();
     p() -> buff.starfall -> trigger();
   }
@@ -4629,6 +4641,8 @@ struct sunfire_t : public druid_spell_t
       attack_power_mod.direct = 0;
       base_dd_min = base_dd_max = 0;
       range::fill( base_costs, 0 );
+
+      base_multiplier *= 1.0 + player -> perk.improved_moonfire -> effectN( 1 ).percent();
     }
 
     virtual void tick( dot_t* d )
@@ -4653,6 +4667,7 @@ struct sunfire_t : public druid_spell_t
 
     if ( player -> specialization() == DRUID_BALANCE )
       moonfire = new moonfire_CA_t( player );
+    base_multiplier *= 1.0 + player -> perk.improved_moonfire -> effectN( 1 ).percent();
   }
 
   virtual double action_da_multiplier() const
@@ -4855,6 +4870,7 @@ struct wrath_t : public druid_spell_t
     druid_spell_t( "wrath", player, player -> find_class_spell( "Wrath" ) )
   {
     parse_options( NULL, options_str );
+    base_multiplier *= 1.0 + player -> perk.improved_wrath -> effectN( 1 ).percent();
   }
 
   virtual double action_multiplier() const
