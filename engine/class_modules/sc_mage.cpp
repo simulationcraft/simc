@@ -4351,6 +4351,11 @@ void mage_t::init_action_list()
         action_list_str += "/run_action_list,name=single_target,if=active_enemies<6";
 
         st_list_str += "/arcane_barrage,if=buff.alter_time.up&buff.alter_time.remains<2";
+
+        if ( talents.nether_tempest -> ok() )   st_list_str += "/nether_tempest,cycle_targets=1,if=(!ticking|remains<tick_time)&target.time_to_die>6";
+        else if ( talents.living_bomb -> ok() ) st_list_str += "/living_bomb,cycle_targets=1,if=(!ticking|remains<tick_time)&target.time_to_die>tick_time*3";
+        else if ( talents.frost_bomb -> ok() )  st_list_str += "/frost_bomb,if=!ticking&target.time_to_die>cast_time+tick_time";
+
         st_list_str += "/arcane_missiles,if=buff.alter_time.up";
         st_list_str += "/arcane_blast,if=buff.alter_time.up";
         
@@ -4360,10 +4365,6 @@ void mage_t::init_action_list()
       }
 
       st_list_str += "/arcane_missiles,if=(buff.arcane_missiles.stack=2&cooldown.arcane_power.remains>0)|(buff.arcane_charge.stack>=4&cooldown.arcane_power.remains>8)";
-
-      if ( talents.nether_tempest -> ok() )   st_list_str += "/nether_tempest,cycle_targets=1,if=(!ticking|remains<tick_time)&target.time_to_die>6";
-      else if ( talents.living_bomb -> ok() ) st_list_str += "/living_bomb,cycle_targets=1,if=(!ticking|remains<tick_time)&target.time_to_die>tick_time*3";
-      else if ( talents.frost_bomb -> ok() )  st_list_str += "/frost_bomb,if=!ticking&target.time_to_die>cast_time+tick_time";
 
       st_list_str += "/arcane_barrage,if=buff.arcane_charge.stack>=4&mana.pct<95";
 
