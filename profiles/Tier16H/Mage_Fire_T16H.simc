@@ -61,7 +61,7 @@ back=xingho_breath_of_yulon,id=102246,upgrade=4,gems=160crit_160exp_60int,enchan
 chest=mantid_viziers_robes,id=105592,upgrade=4,gems=160crit_160exp_160crit_160exp_320crit_180int,enchant=80all
 wrists=bracers_of_sonic_projection,id=105626,upgrade=4,enchant=180int
 hands=chronomancer_gloves,id=99397,upgrade=4,gems=160crit_160exp_160crit_160exp_120int,enchant=170haste,addon=synapse_springs_mark_ii
-waist=miasmic_skullbelt,id=105569,upgrade=4,gems=160crit_160exp_320crit_120int,reforge=hit_haste
+waist=miasmic_skullbelt,id=105569,upgrade=4,gems=160crit_160exp_320crit__320crit_120int,reforge=hit_haste
 legs=chronomancer_leggings,id=99399,upgrade=4,gems=320crit_320crit_120int,enchant=285int_165crit,reforge=mastery_hit
 feet=toxic_tornado_treads,id=105537,upgrade=4,gems=160crit_160hit_60hit,enchant=140mastery,reforge=mastery_haste
 finger1=petrified_pennyroyal_ring,id=105443,upgrade=4,reforge=hit_haste
@@ -80,7 +80,7 @@ off_hand=juggernauts_power_core,id=105521,upgrade=4,gems=320crit_60int,enchant=1
 # gear_spell_power=16509
 # gear_expertise_rating=1760
 # gear_hit_rating=3576
-# gear_crit_rating=20513
+# gear_crit_rating=20833
 # gear_haste_rating=15459
 # gear_mastery_rating=3234
 # gear_armor=18480
