@@ -7179,6 +7179,8 @@ expr_t* player_t::create_expression( action_t* a,
       case STAT_HIT_RATING:       return make_ref_expr( name_str, temporary.hit_rating );
       case STAT_CRIT_RATING:      return make_ref_expr( name_str, temporary.crit_rating );
       case STAT_HASTE_RATING:     return make_ref_expr( name_str, temporary.haste_rating );
+      case STAT_READINESS_RATING: return make_ref_expr( name_str, temporary.readiness_rating );
+      case STAT_MULTISTRIKE_RATING:return make_ref_expr( name_str, temporary.multistrike_rating );
       case STAT_ARMOR:            return make_ref_expr( name_str, temporary.armor );
       case STAT_BONUS_ARMOR:      return make_ref_expr( name_str, temporary.bonus_armor );
       case STAT_DODGE_RATING:     return make_ref_expr( name_str, temporary.dodge_rating );
@@ -7245,6 +7247,8 @@ expr_t* player_t::create_expression( action_t* a,
       case STAT_HIT_RATING:       return make_mem_fn_expr( name_str, *this, &player_t::composite_melee_hit_rating );
       case STAT_CRIT_RATING:      return make_mem_fn_expr( name_str, *this, &player_t::composite_melee_crit_rating );
       case STAT_HASTE_RATING:     return make_mem_fn_expr( name_str, *this, &player_t::composite_melee_haste_rating );
+      case STAT_READINESS_RATING:  return make_mem_fn_expr( name_str, *this, &player_t::composite_readiness_rating );
+      case STAT_MULTISTRIKE_RATING: return make_mem_fn_expr( name_str, *this, &player_t::composite_multistrike_rating );
       case STAT_ARMOR:            return make_ref_expr( name_str, current.stats.armor );
       case STAT_BONUS_ARMOR:      return make_ref_expr( name_str, current.stats.bonus_armor );
       case STAT_DODGE_RATING:     return make_mem_fn_expr( name_str, *this, &player_t::composite_dodge_rating );
@@ -7859,25 +7863,68 @@ bool player_t::create_profile( std::string& profile_str, save_e stype, bool save
       }
     }
 
-    if ( enchant.attribute[ ATTR_STRENGTH  ] != 0 )  profile_str += "enchant_strength="         + util::to_string( enchant.attribute[ ATTR_STRENGTH  ] ) + term;
-    if ( enchant.attribute[ ATTR_AGILITY   ] != 0 )  profile_str += "enchant_agility="          + util::to_string( enchant.attribute[ ATTR_AGILITY   ] ) + term;
-    if ( enchant.attribute[ ATTR_STAMINA   ] != 0 )  profile_str += "enchant_stamina="          + util::to_string( enchant.attribute[ ATTR_STAMINA   ] ) + term;
-    if ( enchant.attribute[ ATTR_INTELLECT ] != 0 )  profile_str += "enchant_intellect="        + util::to_string( enchant.attribute[ ATTR_INTELLECT ] ) + term;
-    if ( enchant.attribute[ ATTR_SPIRIT    ] != 0 )  profile_str += "enchant_spirit="           + util::to_string( enchant.attribute[ ATTR_SPIRIT    ] ) + term;
-    if ( enchant.spell_power                 != 0 )  profile_str += "enchant_spell_power="      + util::to_string( enchant.spell_power ) + term;
-    if ( enchant.attack_power                != 0 )  profile_str += "enchant_attack_power="     + util::to_string( enchant.attack_power ) + term;
-    if ( enchant.expertise_rating            != 0 )  profile_str += "enchant_expertise_rating=" + util::to_string( enchant.expertise_rating ) + term;
-    if ( enchant.armor                       != 0 )  profile_str += "enchant_armor="            + util::to_string( enchant.armor ) + term;
-    if ( enchant.haste_rating                != 0 )  profile_str += "enchant_haste_rating="     + util::to_string( enchant.haste_rating ) + term;
-    if ( enchant.hit_rating                  != 0 )  profile_str += "enchant_hit_rating="       + util::to_string( enchant.hit_rating ) + term;
-    if ( enchant.crit_rating                 != 0 )  profile_str += "enchant_crit_rating="      + util::to_string( enchant.crit_rating ) + term;
-    if ( enchant.mastery_rating              != 0 )  profile_str += "enchant_mastery_rating="   + util::to_string( enchant.mastery_rating ) + term;
-    if ( enchant.resource[ RESOURCE_HEALTH ] != 0 )  profile_str += "enchant_health="           + util::to_string( enchant.resource[ RESOURCE_HEALTH ] ) + term;
-    if ( enchant.resource[ RESOURCE_MANA   ] != 0 )  profile_str += "enchant_mana="             + util::to_string( enchant.resource[ RESOURCE_MANA   ] ) + term;
-    if ( enchant.resource[ RESOURCE_RAGE   ] != 0 )  profile_str += "enchant_rage="             + util::to_string( enchant.resource[ RESOURCE_RAGE   ] ) + term;
-    if ( enchant.resource[ RESOURCE_ENERGY ] != 0 )  profile_str += "enchant_energy="           + util::to_string( enchant.resource[ RESOURCE_ENERGY ] ) + term;
-    if ( enchant.resource[ RESOURCE_FOCUS  ] != 0 )  profile_str += "enchant_focus="            + util::to_string( enchant.resource[ RESOURCE_FOCUS  ] ) + term;
-    if ( enchant.resource[ RESOURCE_RUNIC_POWER  ] != 0 )  profile_str += "enchant_runic="            + util::to_string( enchant.resource[ RESOURCE_RUNIC_POWER  ] ) + term;
+    if ( enchant.attribute[ ATTR_STRENGTH  ] != 0 )  profile_str += "enchant_strength="
+         + util::to_string( enchant.attribute[ ATTR_STRENGTH  ] ) + term;
+
+    if ( enchant.attribute[ ATTR_AGILITY   ] != 0 )  profile_str += "enchant_agility="
+         + util::to_string( enchant.attribute[ ATTR_AGILITY   ] ) + term;
+
+    if ( enchant.attribute[ ATTR_STAMINA   ] != 0 )  profile_str += "enchant_stamina="
+         + util::to_string( enchant.attribute[ ATTR_STAMINA   ] ) + term;
+
+    if ( enchant.attribute[ ATTR_INTELLECT ] != 0 )  profile_str += "enchant_intellect="
+         + util::to_string( enchant.attribute[ ATTR_INTELLECT ] ) + term;
+
+    if ( enchant.attribute[ ATTR_SPIRIT    ] != 0 )  profile_str += "enchant_spirit="
+         + util::to_string( enchant.attribute[ ATTR_SPIRIT    ] ) + term;
+
+    if ( enchant.spell_power                 != 0 )  profile_str += "enchant_spell_power="
+         + util::to_string( enchant.spell_power ) + term;
+
+    if ( enchant.attack_power                != 0 )  profile_str += "enchant_attack_power="
+         + util::to_string( enchant.attack_power ) + term;
+
+    if ( enchant.expertise_rating            != 0 )  profile_str += "enchant_expertise_rating="
+         + util::to_string( enchant.expertise_rating ) + term;
+
+    if ( enchant.armor                       != 0 )  profile_str += "enchant_armor="
+         + util::to_string( enchant.armor ) + term;
+
+    if ( enchant.haste_rating                != 0 )  profile_str += "enchant_haste_rating="
+         + util::to_string( enchant.haste_rating ) + term;
+
+    if ( enchant.hit_rating                  != 0 )  profile_str += "enchant_hit_rating="
+         + util::to_string( enchant.hit_rating ) + term;
+
+    if ( enchant.crit_rating                 != 0 )  profile_str += "enchant_crit_rating="
+         + util::to_string( enchant.crit_rating ) + term;
+
+    if ( enchant.mastery_rating              != 0 )  profile_str += "enchant_mastery_rating="
+         + util::to_string( enchant.mastery_rating ) + term;
+
+    if ( enchant.readiness_rating            != 0 )  profile_str += "enchant_readiness_rating="
+         + util::to_string( enchant.readiness_rating ) + term;
+
+    if ( enchant.multistrike_rating          != 0 )  profile_str += "enchant_multistrike_rating="
+         + util::to_string( enchant.multistrike_rating ) + term;
+
+    if ( enchant.resource[ RESOURCE_HEALTH ] != 0 )  profile_str += "enchant_health="
+         + util::to_string( enchant.resource[ RESOURCE_HEALTH ] ) + term;
+
+    if ( enchant.resource[ RESOURCE_MANA   ] != 0 )  profile_str += "enchant_mana="
+         + util::to_string( enchant.resource[ RESOURCE_MANA   ] ) + term;
+
+    if ( enchant.resource[ RESOURCE_RAGE   ] != 0 )  profile_str += "enchant_rage="
+         + util::to_string( enchant.resource[ RESOURCE_RAGE   ] ) + term;
+
+    if ( enchant.resource[ RESOURCE_ENERGY ] != 0 )  profile_str += "enchant_energy="
+         + util::to_string( enchant.resource[ RESOURCE_ENERGY ] ) + term;
+
+    if ( enchant.resource[ RESOURCE_FOCUS  ] != 0 )  profile_str += "enchant_focus="
+         + util::to_string( enchant.resource[ RESOURCE_FOCUS  ] ) + term;
+
+    if ( enchant.resource[ RESOURCE_RUNIC_POWER  ] != 0 )  profile_str += "enchant_runic="
+         + util::to_string( enchant.resource[ RESOURCE_RUNIC_POWER  ] ) + term;
   }
 
   return true;
