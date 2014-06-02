@@ -4936,7 +4936,7 @@ double priest_t::composite_player_multiplier( school_e school ) const
 {
   double m = base_t::composite_player_multiplier( school );
 
-  if ( specs.shadowform -> ok() && dbc::is_school( SCHOOL_SHADOW, school ) )
+  if ( specs.shadowform -> ok() && dbc::is_school( school, SCHOOL_SHADOW ) )
   {
     m *= 1.0 + buffs.shadowform -> check() * specs.shadowform -> effectN( 2 ).percent();
   }
