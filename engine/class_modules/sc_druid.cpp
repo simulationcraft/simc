@@ -178,8 +178,6 @@ public:
     buff_t* astral_showers;
     buff_t* celestial_alignment;
     buff_t* chosen_of_elune;
-    buff_t* lunar_eclipse;
-    buff_t* solar_eclipse;
     buff_t* lunar_empowerment;
     buff_t* solar_empowerment;
     buff_t* enhanced_owlkin_frenzy;
@@ -4550,6 +4548,16 @@ struct starfire_t : public druid_spell_t
     return m;
   }
 
+  virtual timespan_t execute_time() const
+  {
+    timespan_t casttime = druid_spell_t::execute_time();
+
+    if ( p() -> buff.lunar_empowerment -> up() && p() -> talent.euphoria -> ok() )
+      casttime /= 1 + std::abs( p() -> talent.euphoria -> effectN( 2 ).percent() );
+
+    return casttime;
+  }
+
   virtual void execute()
   {
     druid_spell_t::execute();
@@ -4629,6 +4637,7 @@ struct starsurge_t : public druid_spell_t
 
     base_crit += p() -> sets.set( SET_T15_2PC_CASTER ) -> effectN( 1 ).percent();
     cooldown = player -> cooldown.starfallsurge;
+    base_execute_time = timespan_t::zero();
   }
 
   virtual void execute()
@@ -4870,6 +4879,16 @@ struct wrath_t : public druid_spell_t
     }
 
     return m;
+  }
+
+  virtual timespan_t execute_time() const
+  {
+    timespan_t casttime = druid_spell_t::execute_time();
+
+    if ( p() -> buff.solar_empowerment -> up() && p() -> talent.euphoria -> ok() )
+      casttime /= 1 + std::abs( p() -> talent.euphoria -> effectN( 2 ).percent() );
+
+    return casttime;
   }
 
   virtual void schedule_execute( action_state_t* state = 0 )
@@ -5390,10 +5409,6 @@ void druid_t::create_buffs()
 
   buff.lunar_empowerment         = buff_creator_t( this, "lunar_empowerment", find_spell( 164547 ) )
                                    .max_stack( 2 );
-
-  buff.lunar_eclipse             = buff_creator_t( this, "lunar_eclipse" );
-
-  buff.solar_eclipse             = buff_creator_t( this, "solar_eclipse" );
 
   buff.owlkin_frenzy             = buff_creator_t( this, "owlkin_frenzy", spec.owlkin_frenzy -> effectN( 1 ).trigger() )
                                    .chance( spec.owlkin_frenzy -> proc_chance() )
@@ -6664,8 +6679,8 @@ void druid_t::balance_tracker()
 
   last_check = sim -> current_time - last_check;
 
-  if ( talent.euphoria -> ok() ) // Euphoria speeds up the cycle by 50%/reduces by 33%.
-    last_check *= 1.5;  //To-do: Check if/how it stacks with astral communion/celestial.
+  if ( talent.euphoria -> ok() ) // Euphoria speeds up the cycle to 20 seconds.
+    last_check *= 2;  //To-do: Check if/how it stacks with astral communion/celestial.
 
   if ( buff.astral_communion -> up() )
     last_check *= 1 + buff.astral_communion -> data().effectN( 1 ).percent();

@@ -35,7 +35,7 @@ level=100
 race=troll
 spec=balance
 professions=engineering=600/blacksmithing=600
-talents=010201
+talents=0102012
 shoulders=shoulderwraps_of_the_shattered_vale,id=99428,gems=4int_8crit_4int_8crit_6int,enchant=10int_5crit,reforge=haste_mastery,upgrade=2
 wrists=bracers_of_purified_spirit,id=105425,enchant=9int,reforge=spi_mastery,upgrade=2
 back=xingho_breath_of_yulon,id=102246,gems=4int_8crit_3int,enchant=9int,reforge=haste_spi,upgrade=2
