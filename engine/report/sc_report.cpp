@@ -147,7 +147,7 @@ class tooltip_parser_t
     else if ( ( player && effect.type() == E_SCHOOL_DAMAGE && ( spell.get_school_type() & SCHOOL_MAGIC_MASK ) != 0 ) ||
               ( player && effect.type() == E_HEAL ) )
     {
-      double power = effect.coeff() * player -> initial.stats.spell_power;
+      double power = effect.sp_coeff() * player -> initial.stats.spell_power;
       s_min += power;
       s_max += power;
       show_scale_factor = false;
@@ -158,10 +158,10 @@ class tooltip_parser_t
       result += " to ";
       result += util::to_string( util::round( multiplier * s_max ) );
     }
-    if ( show_scale_factor && effect.coeff() )
+    if ( show_scale_factor && effect.sp_coeff() )
     {
       result += " + ";
-      result += util::to_string( 100 * multiplier * effect.coeff(), 1 );
+      result += util::to_string( 100 * multiplier * effect.sp_coeff(), 1 );
       result += '%';
     }
 

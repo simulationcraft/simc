@@ -410,7 +410,7 @@ public:
   virtual expr_t*   create_expression( action_t* a, const std::string& name_str );
 
   double emberstorm_e3_from_e1() const
-  { return mastery_spells.emberstorm -> effectN( 3 ).coeff() / mastery_spells.emberstorm -> effectN( 1 ).coeff(); }
+  { return mastery_spells.emberstorm -> effectN( 3 ).sp_coeff() / mastery_spells.emberstorm -> effectN( 1 ).sp_coeff(); }
 
   target_specific_t<warlock_td_t*> target_data;
 
@@ -3610,7 +3610,7 @@ struct seed_of_corruption_t : public warlock_spell_t
   soulburn_seed_of_corruption_t* soulburn_spell;
 
   seed_of_corruption_t( warlock_t* p ) :
-    warlock_spell_t( "seed_of_corruption", p, p -> find_spell( 27243 ) ), soulburn_spell( new soulburn_seed_of_corruption_t( p, data().effectN( 3 ).coeff() ) )
+    warlock_spell_t( "seed_of_corruption", p, p -> find_spell( 27243 ) ), soulburn_spell( new soulburn_seed_of_corruption_t( p, data().effectN( 3 ).sp_coeff() ) )
   {
     may_crit = false;
 
@@ -3626,7 +3626,7 @@ struct seed_of_corruption_t : public warlock_spell_t
     warlock_spell_t::impact( s );
 
     if ( result_is_hit( s -> result ) )
-      td( s -> target ) -> soc_trigger = data().effectN( 3 ).average( p() ) + s -> composite_spell_power() * data().effectN( 3 ).coeff();
+      td( s -> target ) -> soc_trigger = data().effectN( 3 ).average( p() ) + s -> composite_spell_power() * data().effectN( 3 ).sp_coeff();
   }
 
   virtual void execute()

@@ -2913,7 +2913,7 @@ struct renewing_mist_t : public monk_heal_t
     stancemask = WISE_SERPENT;
     may_crit = may_miss = false;
  
-    spell_power_mod.tick = p.find_spell( 115151 ) -> effectN( 3 ).coeff();
+    spell_power_mod.tick = p.find_spell( 115151 ) -> effectN( 3 ).sp_coeff();
  
     trigger_gcd = p.find_spell( 115151 ) -> gcd();
     base_execute_time = p.find_spell( 115151 ) -> cast_time( p.level );

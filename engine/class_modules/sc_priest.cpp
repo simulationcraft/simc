@@ -55,6 +55,7 @@ struct priest_t final : public player_t
 public:
   typedef player_t base_t;
 
+  // Buffs
   struct
   {
     // Talents
@@ -132,8 +133,6 @@ public:
   // Specialization Spells
   struct
   {
-    // General
-
     // Discipline
     const spell_data_t* archangel;
     const spell_data_t* atonement;
@@ -168,7 +167,8 @@ public:
     const spell_data_t* mental_anguish;
   } mastery_spells;
 
-  struct perk_spells_t
+  // Perk Spells
+  struct
   {
     const spell_data_t* enhanced_mind_flay;
     const spell_data_t* enhanced_shadow_orbs;
@@ -257,7 +257,7 @@ public:
   } options;
 
   // Glyphs
-  struct glyphs_t
+  struct
   {
     const spell_data_t* circle_of_healing;
     const spell_data_t* dark_binding;
@@ -284,8 +284,6 @@ public:
 
   priest_t( sim_t* sim, const std::string& name, race_e r ) :
     player_t( sim, PRIEST, name, r ),
-    // initialize containers. For POD containers this sets all elements to 0.
-    // use eg. buffs( buffs_t() ) instead of buffs() to help certain old compilers circumvent their bugs
     buffs(),
     talents(),
     specs(),
@@ -300,7 +298,7 @@ public:
     options(),
     glyphs()
   {
-    base.distance = 27.0; //Halo
+    base.distance = 27.0; // Halo
 
     create_cooldowns();
     create_gains();
@@ -308,7 +306,7 @@ public:
     create_benefits();
   }
 
-  // Function Definitions
+  // player_t overrides
   virtual void      init_base_stats() override;
   virtual void      init_spells() override;
   virtual void      create_buffs() override;
@@ -323,7 +321,7 @@ public:
   virtual set_e       decode_set( const item_t& ) const override;
   virtual resource_e primary_resource() const override { return RESOURCE_MANA; }
   virtual role_e    primary_role() const override;
-  virtual stat_e    convert_hybrid_stat( stat_e s ) const;
+  virtual stat_e    convert_hybrid_stat( stat_e s ) const override;
   virtual void      combat_begin() override;
   virtual double    composite_armor() const override;
   virtual double    composite_spell_haste() const override;
@@ -342,7 +340,6 @@ public:
   virtual priest_td_t* get_target_data( player_t* target ) const override;
 
 private:
-  // Construction helper functions for priest_t members
   void create_cooldowns();
   void create_gains();
   void create_procs();
@@ -356,7 +353,7 @@ private:
   void apl_holy_dmg();
   void fixup_atonement_stats( const std::string& trigger_spell_name, const std::string& atonement_spell_name );
 
-  target_specific_t<priest_td_t*> target_data;
+  target_specific_t<priest_td_t*> _target_data;
 };
 
 namespace pets {
@@ -392,7 +389,7 @@ struct priest_pet_t : public pet_t
     owner_coeff.ap_from_sp = 1.0;
     owner_coeff.sp_from_sp = 1.0;
 
-    // Base Stats, same for all pets. Depend on level
+    // Base Stats, same for all pets. Depends on level
     static const _stat_list_t pet_base_stats[] =
     {
       //   none, str, agi, sta, int, spi
@@ -795,9 +792,14 @@ void base_fiend_pet_t::init_action_list()
 
   if ( action_list_str.empty() )
   {
-    action_list_str += "/snapshot_stats";
-    action_list_str += "/shadowcrawl";
-    action_list_str += "/wait_for_shadowcrawl";
+    action_priority_list_t* precombat = get_action_priority_list( "precombat" );
+    // Snapshot stats
+    precombat -> add_action( "snapshot_stats", "Snapshot raid buffed stats before combat begins and pre-potting is done." );
+
+
+    action_priority_list_t* def = get_action_priority_list( "default" );
+    def -> add_action( "shadowcrawl" );
+    def -> add_action( "wait_for_shadowcrawl" );
   }
 
   priest_pet_t::init_action_list();
@@ -841,9 +843,8 @@ public:
   priest_action_t( const std::string& n, priest_t& p,
                    const spell_data_t* s = spell_data_t::nil() ) :
     ab( n, &p, s ),
-    sform( p.buffs.shadowform ),
-    min_interval( p.get_cooldown( "min_interval_" + ab::name_str ) ),
-    priest( p )
+    priest( p ),
+    _min_interval( p.get_cooldown( "min_interval_" + ab::name_str ) )
   {
     ab::may_crit          = true;
     ab::tick_may_crit     = true;
@@ -854,20 +855,6 @@ public:
 
     can_cancel_shadowform = p.options.autoUnshift;
     castable_in_shadowform = true;
-  }
-
-  bool check_shadowform() const
-  {
-    return ( castable_in_shadowform || can_cancel_shadowform || ( sform -> current_stack == 0 ) );
-  }
-
-  void cancel_shadowform()
-  {
-    if ( ! castable_in_shadowform )
-    {
-      // FIX-ME: Needs to drop haste aura too.
-      sform  -> expire();
-    }
   }
 
   double shadow_orbs_to_consume() const
@@ -893,7 +880,7 @@ public:
     if ( ! check_shadowform() )
       return false;
 
-    return ( min_interval -> remains() <= timespan_t::zero() );
+    return ( _min_interval -> remains() <= timespan_t::zero() );
   }
 
   virtual double cost() const override
@@ -922,7 +909,7 @@ public:
   {
     const option_t base_options[] =
     {
-      opt_timespan( "min_interval", ( min_interval -> duration ) ),
+      opt_timespan( "min_interval", ( _min_interval -> duration ) ),
       opt_null()
     };
 
@@ -934,19 +921,15 @@ public:
   {
     ab::update_ready( cd_duration );
 
-    if ( min_interval -> duration > timespan_t::zero() && ! this -> dual )
+    if ( _min_interval -> duration > timespan_t::zero() && ! this -> dual )
     {
-      min_interval -> start( timespan_t::min(), timespan_t::zero() );
+      _min_interval -> start( timespan_t::min(), timespan_t::zero() );
 
       if ( ab::sim -> debug )
         ab::sim -> out_debug.printf( "%s starts min_interval for %s (%s). Will be ready at %.4f",
-                               priest.name(), this -> name(), min_interval -> name(), min_interval -> ready.total_seconds() );
+                               priest.name(), this -> name(), _min_interval -> name(), _min_interval -> ready.total_seconds() );
     }
   }
-private:
-  typedef Base ab; // typedef for the templated action type, eg. spell_t, attack_t, heal_t
-  buff_t* sform;
-  cooldown_t* min_interval; // Minimal interval / Forced cooldown of the action. Specifiable through option
 protected:
   bool castable_in_shadowform;
   bool can_cancel_shadowform;
@@ -958,6 +941,24 @@ protected:
   priest_t& priest;
 
   typedef priest_action_t base_t; // typedef for priest_action_t<action_base_t>
+
+private:
+  typedef Base ab; // typedef for the templated action type, eg. spell_t, attack_t, heal_t
+  cooldown_t* _min_interval; // Minimal interval / Forced cooldown of the action. Specifiable through option
+
+  bool check_shadowform() const
+  {
+    return ( castable_in_shadowform || can_cancel_shadowform || ( !priest.buffs.shadowform -> check() ) );
+  }
+
+  void cancel_shadowform()
+  {
+    if ( ! castable_in_shadowform )
+    {
+      priest.buffs.shadowform  -> expire();
+    }
+  }
+
 };
 
 // ==========================================================================
@@ -1176,7 +1177,7 @@ struct priest_heal_t : public priest_action_t<heal_t>
     }
   }
 
-  virtual void tick( dot_t* d ) override /* override */
+  virtual void tick( dot_t* d ) override
   {
     base_t::tick( d );
     trigger_divine_aegis( d -> state );
@@ -1689,14 +1690,6 @@ struct shadowform_t final : public priest_spell_t
 
     priest.buffs.shadowform -> trigger();
   }
-
-  virtual bool ready() override
-  {
-    if (  priest.buffs.shadowform -> check() )
-      return false;
-
-    return priest_spell_t::ready();
-  }
 };
 
 // Spirit Shell Spell =======================================================
@@ -1713,6 +1706,7 @@ struct spirit_shell_t final : public priest_spell_t
   virtual void execute() override
   {
     priest_spell_t::execute();
+
     priest.buffs.spirit_shell -> trigger();
   }
 };
@@ -1797,8 +1791,9 @@ struct shadowy_apparition_spell_t final : public priest_spell_t
     travel_speed      = 6.0;
     if ( ! priest.talents.auspicious_spirits -> ok() )
     {
-      spell_power_mod.direct  = 0.45;
-      base_dd_min = base_dd_max = 0;
+      const spell_data_t* dmg_data = p.find_spell( 148859 ); // Hardcoded into tooltip 2014/06/01
+
+      parse_effect_data( dmg_data -> effectN( 1 ) );
     }
     school            = SCHOOL_SHADOW;
   }
@@ -2044,7 +2039,8 @@ struct mind_spike_t final : public priest_spell_t
     if ( priest.talents.clarity_of_power -> ok() )
     {
       priest.cooldowns.mind_blast -> adjust ( - priest.talents.clarity_of_power -> effectN( 2 ).time_value() );
-      priest.resource_gain( RESOURCE_MANA, priest.resources.base[ RESOURCE_MANA ] * priest.talents.clarity_of_power -> effectN( 3 ).percent(), priest.gains.clarity_of_power_mind_spike );
+      priest.resource_gain( RESOURCE_MANA, priest.resources.base[ RESOURCE_MANA ] * priest.talents.clarity_of_power -> effectN( 3 ).percent(),
+                            priest.gains.clarity_of_power_mind_spike );
     }
 
     casted_with_surge_of_darkness = false;
@@ -2164,15 +2160,14 @@ struct mind_spike_t final : public priest_spell_t
 
 struct mind_sear_tick_t final : public priest_spell_t
 {
-  mind_sear_tick_t( priest_t& p ) :
-    priest_spell_t( "mind_sear_tick", p, p.find_class_spell( "Mind Sear" ) -> effectN( 1 ).trigger() )
+  mind_sear_tick_t( priest_t& p, const spell_data_t* mind_sear ) :
+    priest_spell_t( "mind_sear_tick", p, mind_sear -> effectN( 1 ).trigger() )
   {
     background  = true;
     dual        = true;
     aoe         = -1;
     callbacks   = false;
     direct_tick = true;
-
   }
 };
 
@@ -2188,7 +2183,7 @@ struct mind_sear_t final : public priest_spell_t
     hasted_ticks = false;
     dynamic_tick_action = true;
 
-    tick_action = new mind_sear_tick_t( p );
+    tick_action = new mind_sear_tick_t( p, p.find_class_spell( "Mind Sear" ) );
   }
 
   virtual double action_multiplier() const override
@@ -2246,9 +2241,6 @@ struct shadow_word_death_t final : public priest_spell_t
 
     virtual double composite_spell_power() const override
     { return spellpower; }
-
-    virtual double composite_spell_power_multiplier()
-    { return 1.0; }
 
     virtual double composite_da_multiplier() const override
     {
@@ -2898,7 +2890,7 @@ struct penance_t final : public priest_spell_t
 
 struct smite_t final : public priest_spell_t
 {
-  struct state_t : public action_state_t
+  struct state_t final : public action_state_t
   {
     bool glyph_benefit;
     state_t( action_t* a, player_t* t ) : action_state_t( a, t ),
@@ -3652,12 +3644,12 @@ struct guardian_spirit_t final : public priest_heal_t
   }
 };
 
-// Greater Heal Spell =======================================================
+// Heal Spell =======================================================
 
-struct greater_heal_t final : public priest_heal_t
+struct _heal_t final : public priest_heal_t
 {
-  greater_heal_t( priest_t& p, const std::string& options_str ) :
-    priest_heal_t( "greater_heal", p, p.find_class_spell( "Greater Heal" ) )
+  _heal_t( priest_t& p, const std::string& options_str ) :
+    priest_heal_t( "heal", p, p.find_class_spell( "Heal" ) )
   {
     parse_options( nullptr, options_str );
     can_trigger_spirit_shell = true;
@@ -4197,7 +4189,7 @@ struct prayer_of_mending_t final : public priest_heal_t
     };
     parse_options( options, options_str );
 
-    spell_power_mod.direct = data().effectN( 1 ).coeff();
+    spell_power_mod.direct = data().effectN( 1 ).sp_coeff();
     base_dd_min = base_dd_max = data().effectN( 1 ).min( &p );
 
     divine_aegis_trigger_mask = 0;
@@ -4869,7 +4861,7 @@ action_t* priest_t::create_action( const std::string& name,
   if ( name == "circle_of_healing"      ) return new circle_of_healing_t     ( *this, options_str );
   if ( name == "divine_hymn"            ) return new divine_hymn_t           ( *this, options_str );
   if ( name == "flash_heal"             ) return new flash_heal_t            ( *this, options_str );
-  if ( name == "greater_heal"           ) return new greater_heal_t          ( *this, options_str );
+  if ( name == "greater_heal"           ) return new _heal_t          ( *this, options_str );
   if ( name == "guardian_spirit"        ) return new guardian_spirit_t       ( *this, options_str );
   if ( name == "holy_word"              ) return new holy_word_t             ( *this, options_str );
   if ( name == "penance_heal"           ) return new penance_heal_t          ( *this, options_str );
@@ -5221,7 +5213,7 @@ void priest_t::apl_precombat()
   }
 
   precombat -> add_action( this, "Power Word: Fortitude", "if=!aura.stamina.up" );
-  precombat -> add_action( this, "Shadowform" );
+  precombat -> add_action( this, "Shadowform", "if=!buff.shadowform.up" );
   // Snapshot stats
   precombat -> add_action( "snapshot_stats", "Snapshot raid buffed stats before combat begins and pre-potting is done." );
 
@@ -5256,7 +5248,7 @@ void priest_t::apl_shadow()
 {
   action_priority_list_t* def = get_action_priority_list( "default" );
 
-  def -> add_action( this, "Shadowform" );
+  def -> add_action( this, "Shadowform", "if=!buff.shadowform.up" );
 
   // On-Use Items
   std::vector<std::string> item_actions = get_item_actions();
@@ -5370,10 +5362,10 @@ void priest_t::apl_disc_heal()
   def -> add_action( this, "Power Word: Shield" );
   def -> add_action( this, "Renew", "if=buff.borrowed_time.up&(!ticking|remains<tick_time)" );
   def -> add_action( "penance_heal,if=buff.borrowed_time.up|target.buff.grace.stack<3" );
-  def -> add_action( this, "Greater Heal", "if=buff.inner_focus.up" );
+  def -> add_action( this, "Heal", "if=buff.inner_focus.up" );
   def -> add_action( "penance_heal" );
   def -> add_action( this, "Flash Heal", "if=buff.surge_of_light.react" );
-  def -> add_action( this, "Greater Heal", "if=buff.power_infusion.up|mana.pct>20" );
+  def -> add_action( this, "Heal", "if=buff.power_infusion.up|mana.pct>20" );
   def -> add_action( "power_word_solace,if=talent.power_word_solace.enabled" );
   // DEFAULT END
 }
@@ -5483,7 +5475,7 @@ void priest_t::apl_holy_heal()
   def -> add_action( this, "Chakra: Serenity" );
   def -> add_action( this, "Renew", ",if=!ticking" );
   def -> add_action( this, "Holy Word", ",if=buff.chakra_serenity.up" );
-  def -> add_action( this, "Greater Heal", ",if=buff.serendipity.react>=2&mana.pct>40" );
+  def -> add_action( this, "Heal", ",if=buff.serendipity.react>=2&mana.pct>40" );
   def -> add_action( this, "Flash Heal", ",if=buff.surge_of_light.up" );
 }
 
@@ -5549,7 +5541,7 @@ void priest_t::apl_holy_dmg()
  */
 priest_td_t* priest_t::get_target_data( player_t* target ) const
 {
-  priest_td_t*& td = target_data[ target ];
+  priest_td_t*& td = _target_data[ target ];
   if ( ! td )
   {
     td = new priest_td_t( target, const_cast<priest_t&>(*this) );

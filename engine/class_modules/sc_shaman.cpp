@@ -4259,7 +4259,7 @@ struct spew_lava_action_t : public totem_pulse_action_t
     tick_may_crit = true;
     aoe = -1;
     travel_speed = 0;
-    spell_power_mod.tick = data().effectN( 1 ).coeff();
+    spell_power_mod.tick = data().effectN( 1 ).sp_coeff();
     spell_power_mod.direct = 0;
     base_tick_time = p -> find_spell( 152255 ) -> effectN( 1 ).period();
     dot_duration = p -> find_spell( 152255 ) -> duration();

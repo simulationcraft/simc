@@ -497,7 +497,7 @@ void action_t::parse_effect_data( const spelleffect_data_t& spelleffect_data )
     case E_HEAL:
     case E_SCHOOL_DAMAGE:
     case E_HEALTH_LEECH:
-      spell_power_mod.direct = spelleffect_data.coeff();
+      spell_power_mod.direct = spelleffect_data.sp_coeff();
       attack_power_mod.direct = spelleffect_data.ap_coeff(); // change to ap_coeff
       base_dd_min      = player -> dbc.effect_min( spelleffect_data.id(), player -> level );
       base_dd_max      = player -> dbc.effect_max( spelleffect_data.id(), player -> level );
@@ -524,7 +524,7 @@ void action_t::parse_effect_data( const spelleffect_data_t& spelleffect_data )
         case A_PERIODIC_DAMAGE:
         case A_PERIODIC_LEECH:
         case A_PERIODIC_HEAL:
-          spell_power_mod.tick = spelleffect_data.coeff();
+          spell_power_mod.tick = spelleffect_data.sp_coeff();
           attack_power_mod.tick = spelleffect_data.ap_coeff(); // change to ap_coeff
           base_td          = player -> dbc.effect_average( spelleffect_data.id(), player -> level );
         case A_PERIODIC_ENERGIZE:
@@ -541,7 +541,7 @@ void action_t::parse_effect_data( const spelleffect_data_t& spelleffect_data )
           }
           break;
         case A_SCHOOL_ABSORB:
-          spell_power_mod.direct = spelleffect_data.coeff();
+          spell_power_mod.direct = spelleffect_data.sp_coeff();
           attack_power_mod.direct = spelleffect_data.ap_coeff(); // change to ap_coeff
           base_dd_min      = player -> dbc.effect_min( spelleffect_data.id(), player -> level );
           base_dd_max      = player -> dbc.effect_max( spelleffect_data.id(), player -> level );

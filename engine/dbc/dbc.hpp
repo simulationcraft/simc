@@ -156,7 +156,7 @@ public:
   double           _m_delta;         // Effect delta spell scaling multiplier
   double           _m_unk;           // Unused effect scaling multiplier
   //
-  double           _coeff;           // Effect coefficient
+  double           _sp_coeff;           // Effect coefficient
   double           _ap_coeff;        // Effect attack power coefficient
   double           _amplitude;       // Effect amplitude (e.g., tick time)
   // SpellRadius.dbc
@@ -225,7 +225,7 @@ public:
   }
 
   double mastery_value() const
-  { return _coeff * ( 1 / 100.0 ); }
+  { return _sp_coeff * ( 1 / 100.0 ); }
 
   int misc_value1() const
   { return _misc_value; }
@@ -248,8 +248,8 @@ public:
   double m_unk() const
   { return _m_unk; }
 
-  double coeff() const
-  { return _coeff; }
+  double sp_coeff() const
+  { return _sp_coeff; }
 
   double ap_coeff() const
   { return _ap_coeff; }

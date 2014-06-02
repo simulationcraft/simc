@@ -3337,13 +3337,13 @@ struct healing_touch_t : public druid_heal_t
   {
     if ( p() -> specialization() == DRUID_GUARDIAN && p() -> buff.dream_of_cenarius -> check() )
       return 0.0;
-    return data().effectN( 1 ).coeff();
+    return data().effectN( 1 ).sp_coeff();
   }
 
   double attack_direct_power_coefficient( const action_state_t* /* state */ ) const
   {
     if ( p() -> specialization() == DRUID_GUARDIAN && p() -> buff.dream_of_cenarius -> check() )
-      return data().effectN( 1 ).coeff();
+      return data().effectN( 1 ).sp_coeff();
     return 0.0;
   }
 
@@ -3445,7 +3445,7 @@ struct lifebloom_bloom_t : public druid_heal_t
     attack_power_mod.tick   = 0;
     base_dd_min      = data().effectN( 2 ).min( p );
     base_dd_max      = data().effectN( 2 ).max( p );
-    attack_power_mod.direct = data().effectN( 2 ).coeff();
+    attack_power_mod.direct = data().effectN( 2 ).sp_coeff();
   }
 
   virtual double composite_target_multiplier( player_t* target ) const
