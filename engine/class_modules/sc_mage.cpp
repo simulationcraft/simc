@@ -4339,7 +4339,7 @@ void mage_t::init_action_list()
 
         action_list_str += "/alter_time,if=buff.alter_time.down&buff.arcane_power.up&trinket.stat.intellect.cooldown_remains>15";
 
-		action_list_str += "/cancel_buff,name=alter_time,if=buff.alter_time.remains<trinket.stat.intellect.cooldown_remains-109";
+        action_list_str += "/cancel_buff,name=alter_time,if=buff.alter_time.remains<trinket.stat.intellect.cooldown_remains-109";
 
         if ( talents.rune_of_power -> ok() )
           action_list_str += init_use_item_actions( ",if=(cooldown.alter_time_activate.remains>45|target.time_to_die<25)&buff.rune_of_power.remains>20" );
