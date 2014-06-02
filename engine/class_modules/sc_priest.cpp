@@ -3149,12 +3149,11 @@ struct cascade_t final : public cascade_base_t<priest_spell_t>
 {
   cascade_t( priest_t& p, const std::string& options_str ) :
     base_t( "cascade", p, options_str, get_spell_data( p ) ),
-    _target_list_source( p.specialization() == PRIEST_SHADOW ? sim -> target_list : sim -> player_list )
+    _target_list_source( get_target_list_source( p ) )
   {}
 
   virtual void populate_target_list() override
   {
-
     for ( size_t i = 0; i < _target_list_source.size(); ++i )
     {
       player_t* t = _target_list_source[i];
@@ -3168,6 +3167,16 @@ private:
     unsigned id = p.specialization() == PRIEST_SHADOW ? 127628 : 121148;
     return p.find_spell( id );
   }
+  const vector_with_callback<player_t*>& get_target_list_source( priest_t& p ) const
+  {
+    if ( p.specialization() == PRIEST_SHADOW )
+    {
+      return sim -> target_list;
+    }
+    {
+      return sim -> player_list;
+    }
+  }
 
   const vector_with_callback<player_t*>& _target_list_source;
 };
@@ -3176,7 +3185,7 @@ private:
 
 // This is the background halo spell which does the actual damage
 // Templated so we can base it on priest_spell_t or priest_heal_t
-template <class Base, int spell_nr>
+template <class Base>
 struct halo_base_t final : public Base
 {
 private:
@@ -3184,8 +3193,8 @@ private:
 public:
   typedef halo_base_t base_t; // typedef for halo_base_t<ab>
 
-  halo_base_t( const std::string& n, priest_t& p ) :
-    ab( n, p, p.find_spell( spell_nr ) )
+  halo_base_t( const std::string& n, priest_t& p, const spell_data_t* s ) :
+    ab( n, p, s )
   {
     ab::aoe = -1;
     ab::background = true;
@@ -3216,56 +3225,36 @@ public:
 
 struct halo_t final : public priest_spell_t
 {
-  /* Go through some hoops to dynamically choose the correct halo sub-spell
-   * dynamically depending on the talent spell, without having to create
-   * two separate halo_t versions
-   */
-  typedef halo_base_t<priest_spell_t, 120696> halo_damage_t;
-  typedef halo_base_t<priest_heal_t, 120692> halo_heal_t;
-
-  halo_damage_t* damage_spell;
-  halo_heal_t* heal_spell;
-
-  halo_damage_t* get_damage_spell( const spell_data_t* talent_spell, priest_t& p ) const
-  {
-    if ( talent_spell->id() == 120644 ) { // shadow version
-      return new halo_damage_t( "halo_dmg", p );
-    }
-    else
-      return nullptr;
-  }
-  halo_heal_t* get_heal_spell( const spell_data_t* talent_spell, priest_t& p ) const
-  {
-    if ( talent_spell -> id() == 120517 ) { // holy/disc
-      return new halo_heal_t( "halo_heal", p );
-    }
-    else
-      return nullptr;
-  }
   halo_t( priest_t& p, const std::string& options_str ) :
     priest_spell_t( "halo", p, p.talents.halo ),
-    damage_spell( get_damage_spell( p.talents.halo, p ) ),
-    heal_spell( get_heal_spell( p.talents.halo, p ) )
+    _base_spell( get_base_spell( p ) )
   {
     parse_options( nullptr, options_str );
 
-    if ( heal_spell )
-      add_child( heal_spell );
-
-    if ( damage_spell )
-      add_child( damage_spell );
+    add_child( _base_spell );
   }
 
   virtual void execute() override
   {
     priest_spell_t::execute();
 
-    if ( damage_spell )
-      damage_spell -> execute();
-
-    if ( heal_spell )
-      heal_spell -> execute();
+    _base_spell -> execute();
   }
+private:
+  action_t* _base_spell;
+
+  action_t* get_base_spell( priest_t& p ) const
+  {
+    if ( p.specialization() == PRIEST_SHADOW )
+    {
+      return new halo_base_t<priest_spell_t>( "halo_damage", p, p.find_spell( 120696 ) );
+    }
+    else
+    {
+      return new halo_base_t<priest_heal_t>( "halo_heal", p, p.find_spell( 120692 ) );
+    }
+  }
+
 };
 
 // Divine Star spell
@@ -3313,36 +3302,37 @@ public:
 
 struct divine_star_t final : public priest_spell_t
 {
-  typedef divine_star_base_t<priest_spell_t> ds_damage_t;
-  typedef divine_star_base_t<priest_heal_t> ds_heal_t;
-
-  action_t* base_spell;
-
   divine_star_t( priest_t& p, const std::string& options_str ) :
     priest_spell_t( "divine_star", p, p.talents.divine_star ),
-    base_spell( nullptr )
+    _base_spell( get_base_spell( p ) )
   {
     parse_options( nullptr, options_str );
 
-    if ( priest.specialization() == PRIEST_SHADOW )
-    {
-      base_spell = new ds_damage_t( "divine_star_damage", p, data().effectN( 1 ).trigger() );
-    }
-    else
-    {
-       base_spell = new ds_heal_t( "divine_star_heal", p, data().effectN( 1 ).trigger() );
-    }
     dot_duration = base_tick_time = timespan_t::zero();
 
-    add_child( base_spell );
+    add_child( _base_spell );
   }
 
   virtual void execute() override
   {
     priest_spell_t::execute();
 
-    base_spell -> execute();
+    _base_spell -> execute();
 
+  }
+private:
+  action_t* _base_spell;
+
+  action_t* get_base_spell( priest_t& p ) const
+  {
+    if ( priest.specialization() == PRIEST_SHADOW )
+    {
+      return new divine_star_base_t<priest_spell_t>( "divine_star_damage", p, data().effectN( 1 ).trigger() );
+    }
+    else
+    {
+       return new divine_star_base_t<priest_heal_t>( "divine_star_heal", p, data().effectN( 1 ).trigger() );
+    }
   }
 };
 
