@@ -4333,11 +4333,13 @@ void mage_t::init_action_list()
         if ( race == RACE_ORC )         action_list_str += "/blood_fury,if=buff.alter_time.down&(buff.arcane_power.up|cooldown.arcane_power.remains>15|target.time_to_die<18)";
         else if ( race == RACE_TROLL )  action_list_str += "/berserking,if=buff.alter_time.down&(buff.arcane_power.up|target.time_to_die<18)";
 
-        if ( sim -> allow_potions )      action_list_str += "/jade_serpent_potion,if=buff.alter_time.down&(buff.arcane_power.up|target.time_to_die<50)";
+        if ( sim -> allow_potions )      action_list_str += "/jade_serpent_potion,if=buff.alter_time.down&((cooldown.alter_time.remains=0&buff.arcane_power.up)|target.time_to_die<50)";
 
         action_list_str += init_use_item_actions( ",sync=alter_time_activate,if=buff.alter_time.down" );
 
-        action_list_str += "/alter_time,if=buff.alter_time.down&buff.arcane_power.up";
+        action_list_str += "/alter_time,if=buff.alter_time.down&buff.arcane_power.up&trinket.stat.intellect.cooldown_remains>15";
+
+		action_list_str += "/cancel_buff,name=alter_time,if=buff.alter_time.remains<trinket.stat.intellect.cooldown_remains-109";
 
         if ( talents.rune_of_power -> ok() )
           action_list_str += init_use_item_actions( ",if=(cooldown.alter_time_activate.remains>45|target.time_to_die<25)&buff.rune_of_power.remains>20" );
@@ -4350,7 +4352,7 @@ void mage_t::init_action_list()
         action_list_str += "/run_action_list,name=aoe,if=active_enemies>=6";
         action_list_str += "/run_action_list,name=single_target,if=active_enemies<6";
 
-        st_list_str += "/arcane_barrage,if=buff.alter_time.up&buff.alter_time.remains<2";
+        st_list_str += "/arcane_barrage,if=buff.alter_time.up&buff.alter_time.remains<action.arcane_blast.cast_time";
 
         if ( talents.nether_tempest -> ok() )   st_list_str += "/nether_tempest,cycle_targets=1,if=(!ticking|remains<tick_time)&target.time_to_die>6";
         else if ( talents.living_bomb -> ok() ) st_list_str += "/living_bomb,cycle_targets=1,if=(!ticking|remains<tick_time)&target.time_to_die>tick_time*3";
