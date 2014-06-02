@@ -3939,6 +3939,8 @@ void mage_t::init_base_stats()
 {
   player_t::init_base_stats();
 
+  resources.infinite_resource[RESOURCE_MANA] = true; // REMOVE LATER *~*~*~*~*~**~*// ~***$_@*$%_@
+
   base.spell_power_per_intellect = 1.0;
 
   base.attack_power_per_strength = 1.0;

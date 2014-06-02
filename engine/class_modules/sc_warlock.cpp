@@ -1000,6 +1000,10 @@ void warlock_pet_t::init_base_stats()
   resources.base[ RESOURCE_ENERGY ] = 200;
   base_energy_regen_per_second = 10;
 
+
+  resources.infinite_resource[RESOURCE_MANA] = true; // REMOVE LATER *~*~*~*~*~**~*// ~***$_@*$%_@
+
+
   // We only care about intellect - no other primary attribute affects anything interesting
   base.stats.attribute[ ATTR_INTELLECT ] = util::ability_rank( owner -> level, 74, 90, 72, 89, 71, 88, 70, 87, 69, 85, 0, 1 );
   // We don't have the data below level 85, so let's make a rough estimate
