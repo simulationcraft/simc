@@ -22,6 +22,8 @@ enum rune_type
   RUNE_TYPE_NONE = 0, RUNE_TYPE_BLOOD, RUNE_TYPE_FROST, RUNE_TYPE_UNHOLY, RUNE_TYPE_DEATH, RUNE_TYPE_WASDEATH = 8
 };
 
+enum disease_type { DISEASE_NONE = 0, DISEASE_BLOOD_PLAGUE, DISEASE_FROST_FEVER };
+
 const char * const rune_symbols = "!bfu!!";
 
 const int RUNE_TYPE_MASK = 3;
@@ -336,7 +338,6 @@ public:
     const spell_data_t* enduring_infection;
     const spell_data_t* festering_blood;
     const spell_data_t* icebound_fortitude;
-    const spell_data_t* loud_horn;
     const spell_data_t* outbreak;
     const spell_data_t* regenerative_magic;
     const spell_data_t* shifting_presences;
@@ -476,6 +477,7 @@ public:
 
   void      trigger_runic_empowerment();
   void      trigger_plaguebearer( action_state_t* state );
+  void      apply_diseases( action_state_t* state, unsigned diseases );
   int       runes_count( rune_type rt, bool include_death, int position );
   double    runes_cooldown_any( rune_type rt, bool include_death, int position );
   double    runes_cooldown_all( rune_type rt, bool include_death, int position );
@@ -3413,9 +3415,6 @@ struct horn_of_winter_t : public death_knight_spell_t
     parse_options( NULL, options_str );
 
     harmful = false;
-    if( p -> glyph.loud_horn -> ok() )
-      rp_gain = data().runic_power_gain() + p -> find_spell( 147078 ) -> effectN( 1 ).resource( RESOURCE_RUNIC_POWER );
-
   }
 
   virtual void execute()
@@ -3424,12 +3423,6 @@ struct horn_of_winter_t : public death_knight_spell_t
 
     if ( ! sim -> overrides.attack_power_multiplier )
       sim -> auras.attack_power_multiplier -> trigger( 1, buff_t::DEFAULT_VALUE(), -1.0, data().duration() );
-
-    if ( ! p() -> in_combat )
-    {
-      // RP decay for 1.5 second GCD
-      p() -> resource_loss( RESOURCE_RUNIC_POWER, p() -> runic_power_decay_rate * 1.5, 0, 0 );
-    }
   }
 };
 
@@ -3488,18 +3481,7 @@ struct howling_blast_t : public death_knight_spell_t
     death_knight_spell_t::impact( s );
 
     if ( result_is_hit( s -> result ) )
-    {
-      if ( ! p() -> talent.necrotic_plague -> ok() )
-      {
-        p() -> active_spells.frost_fever -> target = s -> target;
-        p() -> active_spells.frost_fever -> execute();
-      }
-      else
-      {
-        p() -> active_spells.necrotic_plague -> target = s -> target;
-        p() -> active_spells.necrotic_plague -> execute();
-      }
-    }
+      p() -> apply_diseases( s, DISEASE_FROST_FEVER );
   }
 
   virtual bool ready()
@@ -3575,18 +3557,7 @@ struct icy_touch_t : public death_knight_spell_t
     death_knight_spell_t::impact( s );
 
     if ( result_is_hit( s -> result ) )
-    {
-      if ( ! p() -> talent.necrotic_plague -> ok() )
-      {
-        p() -> active_spells.frost_fever -> target = s -> target;
-        p() -> active_spells.frost_fever -> execute();
-      }
-      else
-      {
-        p() -> active_spells.necrotic_plague -> target = s -> target;
-        p() -> active_spells.necrotic_plague -> execute();
-      }
-    }
+      p() -> apply_diseases( s, DISEASE_FROST_FEVER );
   }
 
   virtual bool ready()
@@ -3777,21 +3748,7 @@ struct outbreak_t : public death_knight_spell_t
     death_knight_spell_t::execute();
 
     if ( result_is_hit( execute_state -> result ) )
-    {
-      if ( ! p() -> talent.necrotic_plague -> ok() )
-      {
-        p() -> active_spells.blood_plague -> target = target;
-        p() -> active_spells.blood_plague -> execute();
-
-        p() -> active_spells.frost_fever -> target = target;
-        p() -> active_spells.frost_fever -> execute();
-      }
-      else
-      {
-        p() -> active_spells.necrotic_plague -> target = target;
-        p() -> active_spells.necrotic_plague -> execute();
-      }
-    }
+      p() -> apply_diseases( execute_state, DISEASE_BLOOD_PLAGUE | DISEASE_FROST_FEVER );
 
     if ( p() -> buffs.dancing_rune_weapon -> check() )
       p() -> pets.dancing_rune_weapon -> drw_outbreak -> execute();
@@ -3853,19 +3810,20 @@ struct pestilence_t : public death_knight_spell_t
 
     if ( result_is_hit( s -> result ) )
     {
-      if ( td( s -> target ) -> dots_blood_plague -> is_ticking() )
+      if ( td( target ) -> dots_blood_plague -> is_ticking() )
       {
         p() -> active_spells.blood_plague -> target = s -> target;
         p() -> active_spells.blood_plague -> execute();
       }
-      if ( td( s -> target ) -> dots_frost_fever -> is_ticking() )
+
+      if ( td( target ) -> dots_frost_fever -> is_ticking() )
       {
         p() -> active_spells.frost_fever -> target = s -> target;
         p() -> active_spells.frost_fever -> execute();
       }
 
       // TODO-WOD: Pestilence does exactly .. what? to necrotic plague
-      if ( td( s -> target ) -> dots_necrotic_plague -> is_ticking() )
+      if ( td( target ) -> dots_necrotic_plague -> is_ticking() )
       {
         p() -> active_spells.necrotic_plague -> target = s -> target;
         p() -> active_spells.necrotic_plague -> execute();
@@ -3941,22 +3899,11 @@ struct plague_strike_offhand_t : public death_knight_melee_attack_t
 
     if ( result_is_hit( s -> result ) )
     {
-      if ( ! p() -> talent.necrotic_plague -> ok() )
-      {
-        p() -> active_spells.blood_plague -> target = s -> target;
-        p() -> active_spells.blood_plague -> execute();
+      unsigned diseases = DISEASE_BLOOD_PLAGUE;
+      if ( p() -> spec.ebon_plaguebringer -> ok() )
+        diseases |= DISEASE_FROST_FEVER;
 
-        if ( p() -> spec.ebon_plaguebringer -> ok() )
-        {
-          p() -> active_spells.frost_fever -> target = s -> target;
-          p() -> active_spells.frost_fever -> execute();
-        }
-      }
-      else
-      {
-        p() -> active_spells.necrotic_plague -> target = s -> target;
-        p() -> active_spells.necrotic_plague -> execute();
-      }
+      p() -> apply_diseases( s, diseases );
     }
   }
 };
@@ -4000,22 +3947,11 @@ struct plague_strike_t : public death_knight_melee_attack_t
 
     if ( result_is_hit( s -> result ) )
     {
-      if ( ! p() -> talent.necrotic_plague -> ok() )
-      {
-        p() -> active_spells.blood_plague -> target = s -> target;
-        p() -> active_spells.blood_plague -> execute();
+      unsigned diseases = DISEASE_BLOOD_PLAGUE;
+      if ( p() -> spec.ebon_plaguebringer -> ok() )
+        diseases |= DISEASE_FROST_FEVER;
 
-        if ( p() -> spec.ebon_plaguebringer -> ok() )
-        {
-          p() -> active_spells.frost_fever -> target = s -> target;
-          p() -> active_spells.frost_fever -> execute();
-        }
-      }
-      else
-      {
-        p() -> active_spells.necrotic_plague -> target = s -> target;
-        p() -> active_spells.necrotic_plague -> execute();
-      }
+      p() -> apply_diseases( s, diseases );
     }
   }
 };
@@ -4227,20 +4163,8 @@ struct unholy_blight_tick_t : public death_knight_spell_t
   {
     death_knight_spell_t::impact( s );
 
-    if ( ! p() -> talent.necrotic_plague -> ok() )
-    {
-      p() -> active_spells.blood_plague -> target = s -> target;
-      p() -> active_spells.blood_plague -> execute();
-
-      p() -> active_spells.frost_fever -> target = s -> target;
-      p() -> active_spells.frost_fever -> execute();
-    }
     // TODO-WOD: Unholy Blight functionality with Necrotic Plague?
-    else
-    {
-      p() -> active_spells.necrotic_plague -> target = s -> target;
-      p() -> active_spells.necrotic_plague -> execute();
-    }
+    p() -> apply_diseases( s, DISEASE_BLOOD_PLAGUE | DISEASE_FROST_FEVER );
   }
 };
 
@@ -4321,12 +4245,14 @@ struct plague_leech_t : public death_knight_spell_t
 
     td( state -> target ) -> dots_frost_fever -> cancel();
     td( state -> target ) -> dots_blood_plague -> cancel();
+    td( state -> target ) -> dots_necrotic_plague -> cancel();
   }
 
   bool ready()
   {
-    if ( ! td( target ) -> dots_frost_fever -> is_ticking() ||
-         ! td( target ) -> dots_blood_plague -> is_ticking() )
+    if ( ( ! td( target ) -> dots_frost_fever -> is_ticking() ||
+         ! td( target ) -> dots_blood_plague -> is_ticking() ) &&
+         ! td( target ) -> dots_necrotic_plague -> is_ticking() )
       return false;
 
     bool rd = death_knight_spell_t::ready();
@@ -5035,7 +4961,6 @@ void death_knight_t::init_spells()
   glyph.enduring_infection        = find_glyph_spell( "Glyph of Enduring Infection" );
   glyph.festering_blood           = find_glyph_spell( "Glyph of Festering Blood" );
   glyph.icebound_fortitude        = find_glyph_spell( "Glyph of Icebound Fortitude" );
-  glyph.loud_horn                 = find_glyph_spell( "Glyph of Loud Horn" );
   glyph.outbreak                  = find_glyph_spell( "Glyph of Outbreak" );
   glyph.regenerative_magic        = find_glyph_spell( "Glyph of Regenerative Magic" );
   glyph.shifting_presences        = find_glyph_spell( "Glyph of Shifting Presences" );
@@ -5187,7 +5112,6 @@ void death_knight_t::default_apl_blood()
     def -> add_action( this, "Icy Touch", "if=!dot.frost_fever.ticking" );
     def -> add_action( this, "Soul Reaper", "if=target.health.pct-3*(target.health.pct%target.time_to_die)<=" + srpct + "&blood>=1" );
     def -> add_talent( this, "Blood Tap" );
-    def -> add_action( this, "Horn of Winter" );
     def -> add_action( this, "Death Strike", "if=(unholy=2|frost=2)&incoming_damage_5s>=health.max*0.4" );
     def -> add_action( this, "Empower Rune Weapon", "if=!blood&!unholy&!frost" );
   }
@@ -5212,7 +5136,6 @@ void death_knight_t::default_apl_blood()
     def -> add_action( this, "Soul Reaper", "if=target.health.pct-3*(target.health.pct%target.time_to_die)<=" + srpct );
     def -> add_action( this, "Death Strike" );
     def -> add_talent( this, "Blood Tap" );
-    def -> add_action( this, "Horn of Winter" );
     def -> add_action( this, "Empower Rune Weapon", "if=!blood&!unholy&!frost" );
   }
 
@@ -5368,7 +5291,6 @@ void death_knight_t::init_action_list()
         // Regenerate resources
         st -> add_action( this, "Frost Strike", "if=talent.runic_empowerment.enabled&(frost=0|unholy=0|blood=0)" );
         st -> add_action( this, "Frost Strike", "if=talent.blood_tap.enabled&buff.blood_charge.stack<=10" );
-        st -> add_action( this, "Horn of Winter" );
 
         // Normal stuff
         st -> add_action( this, "Obliterate" );
@@ -5416,7 +5338,6 @@ void death_knight_t::init_action_list()
 
         // Better than waiting
         st -> add_action( this, "Frost Strike", "if=runic_power>=40" );
-        st -> add_action( this, "Horn of Winter" );
         st -> add_talent( this, "Blood Tap" );
         st -> add_talent( this, "Plague Leech" );
         st -> add_action( this, "Empower Rune Weapon" );
@@ -5433,7 +5354,6 @@ void death_knight_t::init_action_list()
       aoe -> add_action( this, "Plague Strike", "if=unholy=2" );
       aoe -> add_talent( this, "Blood Tap" );
       aoe -> add_action( this, "Frost Strike" );
-      aoe -> add_action( this, "Horn of Winter" );
       aoe -> add_talent( this, "Plague Leech", "if=unholy=1" );
       aoe -> add_action( this, "Plague Strike", "if=unholy=1" );
       aoe -> add_action( this, "Empower Rune Weapon" );
@@ -5502,7 +5422,6 @@ void death_knight_t::init_action_list()
 		  st -> add_action( this, "Scourge Strike" );
 		  st -> add_talent( this, "Plague Leech", "if=cooldown.outbreak.remains<1" );
 		  st -> add_action( this, "Festering Strike" );
-		  st -> add_action( this, "Horn of Winter" );
 		  st -> add_action( this, "Death Coil" );
 
 	    // Less waiting
@@ -5528,7 +5447,6 @@ void death_knight_t::init_action_list()
 	    aoe -> add_action( this, "Death Coil" );
 	    aoe -> add_talent( this, "Blood Tap" );
 	    aoe -> add_talent( this, "Plague Leech", "if=unholy=1" );
-	    aoe -> add_action( this, "Horn of Winter" );
 	    aoe -> add_action( this, "Empower Rune Weapon" );
 
 	    break;
@@ -6494,6 +6412,29 @@ void death_knight_t::trigger_plaguebearer( action_state_t* s )
 
     if ( tdata -> dots_frost_fever -> is_ticking() )
       tdata -> dots_frost_fever -> extend_duration( pb_extend );
+  }
+}
+
+void death_knight_t::apply_diseases( action_state_t* state, unsigned diseases )
+{
+  if ( ! talent.necrotic_plague -> ok() )
+  {
+    if ( diseases & DISEASE_BLOOD_PLAGUE )
+    {
+      active_spells.blood_plague -> target = state -> target;
+      active_spells.blood_plague -> execute();
+    }
+
+    if ( diseases & DISEASE_FROST_FEVER )
+    {
+      active_spells.frost_fever -> target = state -> target;
+      active_spells.frost_fever -> execute();
+    }
+  }
+  else
+  {
+    active_spells.necrotic_plague -> target = state -> target;
+    active_spells.necrotic_plague -> execute();
   }
 }
 
