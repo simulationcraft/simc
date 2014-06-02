@@ -7,8 +7,7 @@
 
 /* WOD TODO (when new dbc is up):
  *
- * - Greater Heal has been renamed Heal.
- * - Cascade, Divine Star, and Halo no longer heal allies but are instant cast
+ * - (Cascade), Divine Star, and Halo no longer heal allies but are instant cast
  *   for Shadow Priests, or damage enemies for Discipline or Holy Priests.
  */
 namespace { // UNNAMED NAMESPACE
@@ -3146,36 +3145,31 @@ public:
   }
 };
 
-struct cascade_damage_t final : public cascade_base_t<priest_spell_t>
+struct cascade_t final : public cascade_base_t<priest_spell_t>
 {
-  cascade_damage_t( priest_t& p, const std::string& options_str ) :
-    base_t( "cascade_damage", p, options_str, p.find_spell( p.specialization() == PRIEST_SHADOW ? 127628 : 120785 ) )
+  cascade_t( priest_t& p, const std::string& options_str ) :
+    base_t( "cascade", p, options_str, get_spell_data( p ) ),
+    _target_list_source( p.specialization() == PRIEST_SHADOW ? sim -> target_list : sim -> player_list )
   {}
 
   virtual void populate_target_list() override
   {
-    for ( size_t i = 0; i < sim -> target_list.size(); ++i )
+
+    for ( size_t i = 0; i < _target_list_source.size(); ++i )
     {
-      player_t* t = sim -> target_list[ i ];
-      if ( t != target ) targets.push_back( t );
+      player_t* t = _target_list_source[i];
+      if ( t != target )
+        targets.push_back( t );
     }
   }
-};
-
-struct cascade_heal_t final : public cascade_base_t<priest_heal_t>
-{
-  cascade_heal_t( priest_t& p, const std::string& options_str ) :
-    base_t( "cascade_heal", p, options_str, p.find_spell( p.specialization() == PRIEST_SHADOW ? 127629 : 121148 ) )
-  { }
-
-  virtual void populate_target_list() override
+private:
+  const spell_data_t* get_spell_data( priest_t& p ) const
   {
-    for ( size_t i = 0; i < sim -> player_list.size(); ++i )
-    {
-      player_t* t = sim -> player_list[ i ];
-      if ( t != target ) targets.push_back( t );
-    }
+    unsigned id = p.specialization() == PRIEST_SHADOW ? 127628 : 121148;
+    return p.find_spell( id );
   }
+
+  const vector_with_callback<player_t*>& _target_list_source;
 };
 
 // Halo Spell
@@ -4851,7 +4845,7 @@ action_t* priest_t::create_action( const std::string& name,
       return new holy_fire_t  ( *this, options_str );
   }
   if ( name == "vampiric_touch"         ) return new vampiric_touch_t        ( *this, options_str );
-  if ( name == "cascade_damage"         ) return new cascade_damage_t        ( *this, options_str );
+  if ( name == "cascade"                ) return new cascade_t               ( *this, options_str );
   if ( name == "halo"                   ) return new halo_t                  ( *this, options_str );
   if ( name == "divine_star"            ) return new divine_star_t           ( *this, options_str );
   if ( name == "void_entropy"           ) return new void_entropy_t          ( *this, options_str );
@@ -4869,7 +4863,6 @@ action_t* priest_t::create_action( const std::string& name,
   if ( name == "prayer_of_healing"      ) return new prayer_of_healing_t     ( *this, options_str );
   if ( name == "prayer_of_mending"      ) return new prayer_of_mending_t     ( *this, options_str );
   if ( name == "renew"                  ) return new renew_t                 ( *this, options_str );
-  if ( name == "cascade_heal"           ) return new cascade_heal_t          ( *this, options_str );
   if ( name == "clarity_of_will"        ) return new clarity_of_will_t       ( *this, options_str );
   //if ( name == "clarity_of_purpose"     ) return new clarity_of_purpose_t    ( *this, options_str );
   if ( name == "saving_grace"           ) return new saving_grace_t          ( *this, options_str );
@@ -5298,7 +5291,7 @@ void priest_t::apl_shadow()
   def -> add_action( this, "Devouring Plague", "if=shadow_orb>=3&ticks_remain<=1" );
   def -> add_action( this, "Mind Spike", "if=active_enemies<=5&buff.surge_of_darkness.react=3" );
   def -> add_action( "halo,if=talent.halo.enabled&target.distance<=30&target.distance>=17" ); //When coefficients change, update minimum distance!
-  def -> add_action( "cascade_damage,if=talent.cascade.enabled&(active_enemies>1|target.distance>=28)&target.distance<=40&target.distance>=11" ); //When coefficients change, update minimum distance!
+  def -> add_talent( this, "Cascade", "if=(active_enemies>1|target.distance>=28)&target.distance<=40&target.distance>=11" ); //When coefficients change, update minimum distance!
   def -> add_action( "divine_star,if=talent.divine_star.enabled&(active_enemies>1|target.distance<=24)" );
   def -> add_action( "wait,sec=cooldown.shadow_word_death.remains,if=target.health.pct<20&cooldown.shadow_word_death.remains&cooldown.shadow_word_death.remains<0.5&active_enemies<=1" );
   def -> add_action( "wait,sec=cooldown.mind_blast.remains,if=cooldown.mind_blast.remains<0.5&cooldown.mind_blast.remains&active_enemies<=1" );
@@ -5309,7 +5302,7 @@ void priest_t::apl_shadow()
   def -> add_action( this, "Shadow Word: Death", "moving=1" );
   def -> add_action( this, "Mind Blast", "moving=1,if=buff.divine_insight_shadow.react&cooldown_react" );
   def -> add_action( "divine_star,moving=1,if=talent.divine_star.enabled&target.distance<=28" );
-  def -> add_action( "cascade_damage,moving=1,if=talent.cascade.enabled&target.distance<=40" );
+  def -> add_talent( this, "Cascade", "moving=1,if=target.distance<=40" );
   def -> add_action( this, "Shadow Word: Pain", "moving=1" );
   def -> add_action( this, "Dispersion" );
 
@@ -5427,7 +5420,7 @@ void priest_t::apl_disc_dmg()
 
   def -> add_action( "halo,if=talent.halo.enabled&active_enemies>3" );
   def -> add_action( "divine_star,if=talent.divine_star.enabled&active_enemies>2" );
-  def -> add_action( "cascade_damage,if=talent.cascade.enabled&active_enemies>3" );
+  def -> add_talent( this, "Cascade", "if=active_enemies>3" );
   def -> add_action( this, "Smite", "if=glyph.smite.enabled&dot.power_word_solace.remains>cast_time" );
   def -> add_action( this, "Smite", "if=!talent.twist_of_fate.enabled&mana.pct>15" );
   def -> add_action( this, "Smite", "if=talent.twist_of_fate.enabled&target.health.pct<35&mana.pct>target.health.pct" );
