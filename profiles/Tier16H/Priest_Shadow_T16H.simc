@@ -19,14 +19,14 @@ spec=shadow
 actions.precombat=flask,type=warm_sun
 actions.precombat+=/food,type=mogu_fish_stew
 actions.precombat+=/power_word_fortitude,if=!aura.stamina.up
-actions.precombat+=/shadowform
+actions.precombat+=/shadowform,if=!buff.shadowform.up
 # Snapshot raid buffed stats before combat begins and pre-potting is done.
 actions.precombat+=/snapshot_stats
 actions.precombat+=/jade_serpent_potion
 
 # Executed every time the actor is available.
 
-actions=shadowform
+actions=shadowform,if=!buff.shadowform.up
 actions+=/jade_serpent_potion,if=buff.bloodlust.react|target.time_to_die<=40
 actions+=/mindbender,if=talent.mindbender.enabled
 actions+=/shadowfiend,if=!talent.mindbender.enabled
@@ -50,7 +50,7 @@ actions+=/vampiric_embrace,if=shadow_orb>=3&health.pct<=40
 actions+=/devouring_plague,if=shadow_orb>=3&ticks_remain<=1
 actions+=/mind_spike,if=active_enemies<=5&buff.surge_of_darkness.react=3
 actions+=/halo,if=talent.halo.enabled&target.distance<=30&target.distance>=17
-actions+=/cascade_damage,if=talent.cascade.enabled&(active_enemies>1|target.distance>=28)&target.distance<=40&target.distance>=11
+actions+=/cascade,if=talent.cascade.enabled&((active_enemies>1|target.distance>=28)&target.distance<=40&target.distance>=11)
 actions+=/divine_star,if=talent.divine_star.enabled&(active_enemies>1|target.distance<=24)
 actions+=/wait,sec=cooldown.shadow_word_death.remains,if=target.health.pct<20&cooldown.shadow_word_death.remains&cooldown.shadow_word_death.remains<0.5&active_enemies<=1
 actions+=/wait,sec=cooldown.mind_blast.remains,if=cooldown.mind_blast.remains<0.5&cooldown.mind_blast.remains&active_enemies<=1
@@ -61,7 +61,7 @@ actions+=/mind_flay,chain=1,interrupt=1
 actions+=/shadow_word_death,moving=1
 actions+=/mind_blast,moving=1,if=buff.divine_insight_shadow.react&cooldown_react
 actions+=/divine_star,moving=1,if=talent.divine_star.enabled&target.distance<=28
-actions+=/cascade_damage,moving=1,if=talent.cascade.enabled&target.distance<=40
+actions+=/cascade,moving=1,if=talent.cascade.enabled&target.distance<=40
 actions+=/shadow_word_pain,moving=1
 actions+=/dispersion
 

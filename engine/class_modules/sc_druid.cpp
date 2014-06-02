@@ -6,7 +6,6 @@
 #include "simulationcraft.hpp"
 
 namespace { // UNNAMED NAMESPACE
-
 // ==========================================================================
 // Druid
 // ==========================================================================
@@ -119,7 +118,16 @@ struct druid_td_t : public actor_pair_t
 struct druid_t : public player_t
 {
 public:
+  timespan_t balance_time; // Balance power's current time, after accounting for celestial alignment/astral communion.
 
+  timespan_t last_check; // Last time balance power was updated.
+
+  double eclipse_amount; // Current balance power.
+
+  int eclipse_direction; // 1 = Going upwards, ie: Lunar ---> Solar
+  // -1 = Downward, ie: Solar ---> Lunar
+
+  double eclipse_change; // Amount of seconds until eclipse changes.
   // Active
   action_t* t16_2pc_starfall_bolt;
   action_t* t16_2pc_sun_bolt;
@@ -165,6 +173,7 @@ public:
     buff_t* stampeding_shout;
 
     // Balance
+    buff_t* astral_communion;
     buff_t* astral_insight;
     buff_t* astral_showers;
     buff_t* celestial_alignment;
@@ -343,6 +352,7 @@ public:
     proc_t* combo_points;
     proc_t* combo_points_wasted;
     proc_t* shooting_stars_wasted;
+    proc_t* shooting_stars;
     proc_t* tier15_2pc_melee;
     proc_t* tooth_and_claw;
   } proc;
@@ -422,13 +432,6 @@ public:
     const spell_data_t* survival_instincts; // Survival instincts aura
   } spell;
 
-  // Eclipse Management
-  int eclipse_bar_value; // Tracking the current value of the eclipse bar
-  int eclipse_bar_direction; // Tracking the current direction of the eclipse bar
-
-  int initial_eclipse;
-  int default_initial_eclipse;
-
   // Talents
   struct talents_t
   {
@@ -481,6 +484,11 @@ public:
 
   druid_t( sim_t* sim, const std::string& name, race_e r = RACE_NIGHT_ELF ) :
     player_t( sim, DRUID, name, r ),
+    balance_time( timespan_t::zero() ),
+    last_check( timespan_t::zero() ),
+    eclipse_amount( 0 ),
+    eclipse_direction( -1 ),
+    eclipse_change( 0 ),
     t16_2pc_starfall_bolt( nullptr ),
     t16_2pc_sun_bolt( nullptr ),
     active( active_actions_t() ),
@@ -499,12 +507,6 @@ public:
     t16_2pc_starfall_bolt = 0;
     t16_2pc_sun_bolt      = 0;
 
-    eclipse_bar_value     = 0;
-    eclipse_bar_direction = 0;
-    
-    initial_eclipse = 65535;
-    default_initial_eclipse = -75;
-
     for (size_t i = 0; i < sizeof_array(pet_force_of_nature); i++)
     {
         pet_force_of_nature[i] = nullptr;
@@ -518,6 +520,7 @@ public:
     cooldown.pvp_4pc_melee -> duration = timespan_t::from_seconds( 30.0 );
     cooldown.starfallsurge       = get_cooldown( "starfallsurge"       );
     cooldown.starfallsurge -> charges = 3;
+    cooldown.starfallsurge -> duration = timespan_t::from_seconds( 30 );
     cooldown.swiftmend           = get_cooldown( "swiftmend"           );
 
 
@@ -595,6 +598,7 @@ public:
     return td;
   }
 
+  void balance_tracker();
   void trigger_shooting_stars( result_e );
   void trigger_soul_of_the_forest();
 
@@ -805,8 +809,6 @@ struct cenarion_ward_hot_t : public heal_t
 
     p() -> buff.cenarion_ward -> expire();
   }
-
-  // FIXME: AP is snapshotted with the trigger buff is applied NOT when the hot is applied.
 };
 
 // Leader of the Pack =======================================================
@@ -855,7 +857,7 @@ struct leader_of_the_pack_t : public heal_t
 struct yseras_gift_t : public heal_t
 {
   yseras_gift_t( druid_t* p ) :
-    heal_t( "yseras_gift", p, p -> find_talent_spell( "Ysera's Gift" ) )
+    heal_t( "yseras_gift", p, p -> talent.yseras_gift )
   {
     base_tick_time = data().effectN( 1 ).period();
     dot_duration = base_tick_time;
@@ -883,7 +885,7 @@ struct yseras_gift_t : public heal_t
 struct tooth_and_claw_t : public absorb_t
 {
   tooth_and_claw_t( druid_t* p ) :
-    absorb_t( "tooth_and_claw", p, p -> find_specialization_spell( "Tooth and Claw" ) )
+    absorb_t( "tooth_and_claw", p, p -> spec.tooth_and_claw )
   {
     harmful = false;
     special = false;
@@ -1344,6 +1346,27 @@ struct barkskin_t : public druid_buff_t < buff_t >
   }
 };
 
+// Astral Communion Buff =================================================
+
+struct astral_communion_t : public druid_buff_t < buff_t >
+{
+  astral_communion_t( druid_t& p ) :
+    base_t( p, buff_creator_t( &p, "astral_communion", p.find_class_spell( "Astral Communion" ) ) )
+  {
+    cooldown -> duration = timespan_t::zero(); // CD is managed by the spell
+  }
+
+  virtual void expire_override()
+  {
+    base_t::expire_override();
+
+    druid.last_check = sim -> current_time - druid.last_check;
+    druid.last_check *= 1 + druid.buff.astral_communion -> data().effectN( 1 ).percent();
+    druid.balance_time += druid.last_check;
+    druid.last_check = sim -> current_time;
+  }
+};
+
 // Celestial Alignment Buff =================================================
 
 struct celestial_alignment_t : public druid_buff_t < buff_t >
@@ -1352,6 +1375,14 @@ struct celestial_alignment_t : public druid_buff_t < buff_t >
     base_t( p, buff_creator_t( &p, "celestial_alignment", p.find_class_spell( "Celestial Alignment" ) ) )
   {
     cooldown -> duration = timespan_t::zero(); // CD is managed by the spell
+    add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
+  }
+
+  virtual void expire_override()
+  {
+    base_t::expire_override();
+
+    druid.last_check = sim -> current_time;
   }
 };
 
@@ -1366,8 +1397,6 @@ public:
   {
     add_invalidate( CACHE_AGILITY );
     add_invalidate( CACHE_ATTACK_POWER );
-    add_invalidate( CACHE_HASTE );
-    add_invalidate( CACHE_CRIT );
     add_invalidate( CACHE_STAMINA );
     add_invalidate( CACHE_ARMOR );
   }
@@ -3751,6 +3780,41 @@ struct druid_spell_t : public druid_spell_base_t<spell_t>
     consume_ooc = harmful;
   }
 
+  virtual void execute()
+  {
+    p() -> balance_tracker();
+
+    spell_t::execute();
+  }
+
+  virtual double action_multiplier() const
+  {
+    double damageincrease = druid_spell_base_t::action_multiplier();
+
+    if ( p() -> buff.moonkin_form -> up() )
+    {
+      double balance;
+      balance = p() -> eclipse_amount;
+      if ( balance > 100 )
+        balance = 100;
+      if ( balance < -100 )
+        balance = -100;
+
+      double mastery;
+      mastery = p() -> cache.mastery_value();
+
+      if ( ( school == SCHOOL_NATURE || school == SCHOOL_ARCANE ) && p() -> buff.celestial_alignment -> up() )
+        damageincrease *= 1.0 + mastery;
+      else if ( ( school == SCHOOL_NATURE || school == SCHOOL_SPELLSTORM ) && balance > 0 )
+        damageincrease *= 1.0 + mastery / 2 + mastery * balance / 200;
+      else if ( ( school == SCHOOL_ARCANE || school == SCHOOL_SPELLSTORM ) && balance <= 0 )
+        damageincrease *= 1.0 + mastery / 2 + mastery * std::abs( balance ) / 200;
+      else if ( school == SCHOOL_ARCANE || school == SCHOOL_NATURE )
+        damageincrease *= 1.0 + mastery / 2 - mastery * std::abs( balance ) / 200;
+    }
+    return damageincrease;
+  }
+
   virtual double cost() const
   {
     double cost = base_t::cost();
@@ -3763,33 +3827,14 @@ struct druid_spell_t : public druid_spell_base_t<spell_t>
       p() -> buff.enhanced_owlkin_frenzy -> expire();
       return 0;
     }
-
     return base_t::cost();
   }
 
-  void trigger_eclipse_energy_gain( int gain )
+  virtual bool ready()
   {
-    // New eclipse bar.
-  }
+    p() -> balance_tracker();
 
-  void trigger_t16_2pc_balance( bool nature = false )
-  {
-    if ( ! p() -> sets.has_set_bonus( SET_T16_2PC_CASTER ) )
-      return;
-    if ( nature )
-    {
-      if ( p() -> buff.solar_eclipse -> check() )
-      {
-        p() -> t16_2pc_sun_bolt -> execute();
-      }
-    }
-    else
-    {
-      if ( p() -> buff.lunar_eclipse -> check() )
-      {
-        p() -> t16_2pc_starfall_bolt -> execute();
-      }
-    }
+    return druid_spell_base_t::ready();
   }
 }; // end druid_spell_t
 
@@ -3831,10 +3876,10 @@ struct astral_communion_t : public druid_spell_t
   astral_communion_t( druid_t* player, const std::string& options_str ) :
     druid_spell_t( "astral_communion", player, player -> spec.astral_communion , options_str )
   {
-    harmful      = false;
-    hasted_ticks = false;
-    channeled    = true;
-    may_miss     = false;
+    harmful = proc = hasted_ticks = false;
+    channeled = true;
+
+    base_tick_time = timespan_t::from_millis( 100 );
   }
 
   virtual double composite_haste() const
@@ -3842,16 +3887,20 @@ struct astral_communion_t : public druid_spell_t
 
   virtual void execute()
   {
-    //Re-do
+    druid_spell_t::execute(); // Do not move the buff trigger in front of this.
+    p() -> buff.astral_communion -> trigger();
   }
 
-  virtual timespan_t composite_dot_duration( const action_state_t* s ) const override
+  virtual void tick( dot_t* d )
   {
+    druid_spell_t::tick( d );
+    p() -> balance_tracker();
+  }
 
-    if ( p() -> buff.astral_insight -> check() )
-      return timespan_t::zero();
-
-    return druid_spell_t::composite_dot_duration( s );
+  virtual void interrupt_action()
+  {
+    druid_spell_t::interrupt_action();
+    p() -> buff.astral_communion -> expire();
   }
 };
 
@@ -3982,7 +4031,8 @@ struct celestial_alignment_t : public druid_spell_t
 
   virtual void execute()
   {
-    //Re-do.
+    druid_spell_t::execute();
+    p() -> buff.celestial_alignment -> trigger();
   }
 };
 
@@ -4085,7 +4135,7 @@ struct hurricane_tick_t : public druid_spell_t
 struct hurricane_t : public druid_spell_t
 {
   hurricane_t( druid_t* player, const std::string& options_str ) :
-    druid_spell_t( "hurricane", player, player -> find_class_spell( "Hurricane" ) )
+    druid_spell_t( "hurricane", player, player -> find_spell( 16914 ) )
   {
     parse_options( NULL, options_str );
     channeled   = true;
@@ -4169,7 +4219,6 @@ struct mark_of_the_wild_t : public druid_spell_t
     parse_options( NULL, options_str );
 
     trigger_gcd = timespan_t::zero();
-    //base_costs[ current_resource() ]  *= 1.0 + p -> glyph.mark_of_the_wild -> mod_additive( P_RESOURCE_COST ) / 100.0;
     harmful     = false;
     background  = ( sim -> overrides.str_agi_int != 0 );
   }
@@ -4185,128 +4234,212 @@ struct mark_of_the_wild_t : public druid_spell_t
   }
 };
 
-// Moonfire Spell ===========================================================
+// Sunfire Spell ===========================================================
 
-struct moonfire_t : public druid_spell_t
-{
-  // Moonfire also applies the Sunfire DoT during Celestial Alignment.
-  struct sunfire_CA_t : public druid_spell_t
+  struct sunfire_t : public druid_spell_t
   {
-    sunfire_CA_t( druid_t* player ) :
-      druid_spell_t( "sunfire", player, player -> spec.sunfire )
+    // Sunfire also applies the Moonfire DoT during Celestial Alignment.
+    struct moonfire_CA_t : public druid_spell_t
     {
-      assert( player -> specialization() == DRUID_BALANCE );
+      moonfire_CA_t( druid_t* player ) :
+        druid_spell_t( "moonfire", player, player -> find_spell( 8921 ) )
+      {
+        const spell_data_t* dmg_spell = player -> find_spell( 164812 );
+        dot_duration = timespan_t::from_seconds( 20 ); // dmg_spell -> duration();
+        base_tick_time = dmg_spell -> effectN( 2 ).period();
+        spell_power_mod.tick = dmg_spell-> effectN( 2 ).sp_coeff();
 
+        dot_duration += player -> sets.set( SET_T14_4PC_CASTER ) -> effectN( 1 ).time_value();
+        dot_duration *= 1 + player -> spec.astral_showers -> effectN( 2 ).percent();
+
+        spell_power_mod.tick *= 1.0 + player -> spec.astral_showers -> effectN( 1 ).percent();
+        base_multiplier      *= 1.0 + player -> perk.improved_moonfire -> effectN( 1 ).percent();
+
+        dot_behavior = DOT_REFRESH;
+        // Does no direct damage, costs no mana
+        attack_power_mod.direct = 0;
+        base_dd_min = base_dd_max = 0;
+        range::fill( base_costs, 0 );
+      }
+
+      virtual void tick( dot_t* d )
+      {
+        druid_spell_t::tick( d );
+        p() -> trigger_shooting_stars( d -> state -> result );
+      }
+    };
+
+    action_t* moonfire;
+    sunfire_t( druid_t* player, const std::string& options_str ) :
+      druid_spell_t( "sunfire", player, player -> find_spell( 93402 ) )
+    {
+      parse_options( NULL, options_str );
       dot_behavior = DOT_REFRESH;
 
-      background = true;
-      may_crit = false;
-      may_miss = true; // Bug?
+      const spell_data_t* dmg_spell = player -> find_spell( 164815 );
+      dot_duration = timespan_t::from_seconds( 20 ); // dmg_spell -> duration();
+      base_tick_time = dmg_spell -> effectN( 2 ).period();
+      spell_power_mod.direct = dmg_spell-> effectN( 1 ).sp_coeff();
+      spell_power_mod.tick = dmg_spell-> effectN( 2 ).sp_coeff();
 
       dot_duration += player -> sets.set( SET_T14_4PC_CASTER ) -> effectN( 1 ).time_value();
 
-      // Does no direct damage, costs no mana
-      attack_power_mod.direct = 0;
-      base_dd_min = base_dd_max = 0;
-      range::fill( base_costs, 0 );
+      spell_power_mod.direct *= 1.0 + player -> spec.astral_showers -> effectN( 3 ).percent();
       base_multiplier *= 1.0 + player -> perk.improved_moonfire -> effectN( 1 ).percent();
+
+      if ( player -> specialization() == DRUID_BALANCE )
+        moonfire = new moonfire_CA_t( player );
+    }
+
+    virtual void execute()
+    {
+      if ( p() -> spec.astral_showers -> ok() )
+        aoe = 1;
+      druid_spell_t::execute();
+    }
+
+    virtual void tick( dot_t* d )
+    {
+      if ( p() -> spec.astral_showers -> ok() )
+        aoe = -1;
+
+      druid_spell_t::tick( d );
+      p() -> trigger_shooting_stars( d -> state -> result );
+    }
+
+    virtual void impact( action_state_t* s )
+    {
+      if ( moonfire && result_is_hit( s -> result ) )
+      {
+        if ( p() -> buff.celestial_alignment -> check() )
+        {
+          moonfire -> target = s -> target;
+          moonfire -> execute();
+        }
+      }
+      druid_spell_t::impact( s );
+    }
+
+    virtual bool ready()
+    {
+      bool ready = druid_spell_t::ready();
+
+      if ( p() -> buff.celestial_alignment -> up() )
+        return ready;
+
+      if ( p() -> eclipse_amount <= 0 )
+        return false;
+
+      return ready;
+    }
+  };
+
+// Moonfire spell ===============================================================
+
+  struct moonfire_t : public druid_spell_t
+  {
+    // Moonfire also applies the Sunfire DoT during Celestial Alignment.
+    struct sunfire_CA_t : public druid_spell_t
+    {
+      sunfire_CA_t( druid_t* player ) :
+        druid_spell_t( "sunfire", player, player -> find_spell( 93402 ) )
+      {
+        const spell_data_t* dmg_spell = player -> find_spell( 164815 );
+        dot_duration = timespan_t::from_seconds( 20 );  // dmg_spell -> duration();
+        base_tick_time = dmg_spell -> effectN( 2 ).period();
+        spell_power_mod.tick = dmg_spell-> effectN( 2 ).sp_coeff();
+        dot_behavior = DOT_REFRESH;
+
+        dot_duration += player -> sets.set( SET_T14_4PC_CASTER ) -> effectN( 1 ).time_value();
+        base_multiplier *= 1.0 + player -> perk.improved_moonfire -> effectN( 1 ).percent();
+        // Does no direct damage, costs no mana
+        attack_power_mod.direct = 0;
+        base_dd_min = base_dd_max = 0;
+        range::fill( base_costs, 0 );
+      }
+
+      virtual void tick( dot_t* d )
+      {
+        if ( p() -> spec.astral_showers -> ok() )
+          aoe = -1;
+
+        druid_spell_t::tick( d );
+        p() -> trigger_shooting_stars( d -> state -> result );
+      }
+    };
+
+    action_t* sunfire;
+    moonfire_t( druid_t* player, const std::string& options_str ) :
+      druid_spell_t( "moonfire", player, player -> find_spell( 8921 ) )
+    {
+      parse_options( NULL, options_str );
+
+      const spell_data_t* dmg_spell = player -> find_spell( 164812 );
+
+      dot_duration = timespan_t::from_seconds( 20 ); // dmg_spell -> duration();
+      base_tick_time = dmg_spell -> effectN( 2 ).period();
+      spell_power_mod.direct = dmg_spell-> effectN( 1 ).sp_coeff();
+      spell_power_mod.tick = dmg_spell-> effectN( 2 ).sp_coeff();
+      dot_behavior = DOT_REFRESH;
+
+      dot_duration += player -> sets.set( SET_T14_4PC_CASTER ) -> effectN( 1 ).time_value();
+      dot_duration *= 1 + player -> spec.astral_showers -> effectN( 2 ).percent();
+
+      spell_power_mod.tick *= 1.0 + player -> spec.astral_showers -> effectN( 1 ).percent();
+      base_multiplier *= 1.0 + player -> perk.improved_moonfire -> effectN( 1 ).percent();
+
+      if ( player -> specialization() == DRUID_BALANCE )
+        sunfire = new sunfire_CA_t( player );
     }
 
     virtual void tick( dot_t* d )
     {
       druid_spell_t::tick( d );
-      // Todo: Does this sunfire proc SS?
       p() -> trigger_shooting_stars( d -> state -> result );
     }
-  };
 
-  action_t* sunfire;
-
-  moonfire_t( druid_t* player, const std::string& options_str ) :
-    druid_spell_t( "moonfire", player, player -> talent.lunar_inspiration -> ok() ? player -> find_spell( 155625 ) : player -> find_class_spell( "Moonfire" ) ),
-    sunfire( nullptr )
-  {
-    parse_options( NULL, options_str );
-
-    dot_behavior = DOT_REFRESH;
-
-    dot_duration +=   player -> sets.set( SET_T14_4PC_CASTER ) -> effectN( 1 ).time_value();
-
-    if ( player -> specialization() == DRUID_BALANCE )
-      sunfire = new sunfire_CA_t( player );
-  }
-
-  virtual double action_da_multiplier() const
-  {
-    double m = druid_spell_t::action_da_multiplier();
-
-    m *= 1.0 + ( p() -> buff.astral_showers -> data().effectN( 1 ).percent() * p() -> buff.astral_showers -> check() );
-
-    return m;
-  }
-
-  virtual void tick( dot_t* d )
-  {
-    druid_spell_t::tick( d );
-    p() -> trigger_shooting_stars( d -> state -> result );
-  }
-
-  virtual void execute()
-  {
-    p() -> buff.astral_showers -> up();
-
-    druid_spell_t::execute();
-
-    if ( result_is_hit( execute_state -> result ) )
+    virtual void schedule_execute( action_state_t* state = 0 )
     {
-      if ( p() -> spec.astral_showers -> ok() )
-      {
-        p() -> buff.astral_showers -> trigger();
-      }
+      druid_spell_t::schedule_execute( state );
+
+      p() -> buff.bear_form -> expire();
+      if ( ! p() -> talent.lunar_inspiration -> ok() )
+        p() -> buff.cat_form -> expire();
     }
 
-    trigger_t16_2pc_balance( false );
-  }
-
-  virtual void schedule_execute( action_state_t* state = 0 )
-  {
-    druid_spell_t::schedule_execute( state );
-    
-    p() -> buff.bear_form -> expire();
-    if ( ! p() -> talent.lunar_inspiration -> ok() )
-      p() -> buff.cat_form -> expire();
-  }
-
-  virtual void impact( action_state_t* s )
-  {
-    // The Sunfire hits BEFORE the moonfire!
-    if ( sunfire && result_is_hit( s -> result ) )
+    virtual void impact( action_state_t* s )
     {
-      if ( p() -> buff.celestial_alignment -> check() )
+      // The Sunfire hits BEFORE the moonfire!
+      if ( sunfire && result_is_hit( s -> result ) )
       {
-        sunfire -> target = s -> target;
-        sunfire -> execute();
+        if ( p() -> buff.celestial_alignment -> check() )
+        {
+          sunfire -> target = s -> target;
+          sunfire -> execute();
+        }
       }
-    }
-    druid_spell_t::impact( s );
+      druid_spell_t::impact( s );
 
-    if ( p() -> talent.lunar_inspiration -> ok() && result_is_hit( s -> result ) )
+      if ( p() -> talent.lunar_inspiration -> ok() && result_is_hit( s -> result ) )
       {
         int cp = data().effectN( 3 ).base_value(); // Since this isn't in cat_attack_t, we need to account for the base combo points.
         if ( p() -> spell.primal_fury -> ok() && s -> result == RESULT_CRIT )
           cp += p() -> find_spell( 16953 ) -> effectN( 1 ).base_value();
         td( s -> target ) -> combo_points.add( cp, &name_str );
       }
-  }
+    }
 
-  virtual double cost_reduction() const
-  {
-    double cr = druid_spell_t::cost_reduction();
+    virtual bool ready()
+    {
+      bool ready = druid_spell_t::ready();
 
-    cr += ( p() -> buff.astral_showers -> data().effectN( 2 ).percent() * p() -> buff.astral_showers -> check() );
+      if ( p() -> buff.celestial_alignment -> up() )
+        return ready;
+      if ( p() -> eclipse_amount > 0 )
+        return false;
 
-    return cr;
-  }
+      return ready;
+    }
 };
 
 // Moonkin Form Spell =======================================================
@@ -4402,15 +4535,20 @@ struct starfire_t : public druid_spell_t
   virtual double action_multiplier() const
   {
     double m = druid_spell_t::action_multiplier();
-
-    m *= 1.0 + p() -> sets.set( SET_T13_2PC_CASTER ) -> effectN( 1 ).percent();
-
+    if ( p() -> buff.lunar_empowerment -> up() )
+    {
+      m *= 1.0 + p() -> buff.lunar_empowerment -> data().effectN( 1 ).percent();
+      p() -> buff.lunar_empowerment -> decrement();
+    }
     return m;
   }
 
   virtual void execute()
   {
-    //Re-do
+    druid_spell_t::execute();
+
+    if ( p() -> eclipse_amount >= 0 && !p() -> buff.celestial_alignment -> up() )
+      p() -> proc.wrong_eclipse_starfire -> occur();
   }
 };
 
@@ -4424,44 +4562,40 @@ struct starfall_star_t : public druid_spell_t
     background  = true;
     direct_tick = true;
     aoe         = 2;
-    cooldown -> charges = player -> cooldown.starfallsurge -> charges;
-  }
-};
-
-struct starfall_t : public druid_spell_t
-{
-  starfall_t( druid_t* player, const std::string& options_str ) :
-    druid_spell_t( "starfall", player, player -> spec.starfall )
-  {
-    parse_options( NULL, options_str );
-
-    dot_duration      = timespan_t::from_seconds( 10.0 );
-    base_tick_time = timespan_t::from_seconds( 1.0 );
-    hasted_ticks   = false;
-
-    harmful = false;
-
-    base_multiplier *= 1.0 + player -> sets.set( SET_T14_2PC_CASTER ) -> effectN( 1 ).percent();
-
-    // Starfall triggers a spell each second, that triggers the damage spell.
-    const spell_data_t* stars_trigger_spell = data().effectN( 1 ).trigger();
-    if ( ! stars_trigger_spell -> ok() )
-    {
-      background = true;
-    }
-    dynamic_tick_action = true;
-    tick_action = new starfall_star_t( player, stars_trigger_spell -> effectN( 1 ).base_value() );
   }
 
   virtual void execute()
   {
     if ( p() -> cooldown.empowered_starfall -> up() )
     {
-      aoe++;
+      aoe = 3;
       p() -> cooldown.empowered_starfall -> start();
     }
     druid_spell_t::execute();
     p() -> buff.starfall -> trigger();
+  }
+};
+
+struct starfall_t : public druid_spell_t
+{
+  starfall_t( druid_t* player, const std::string& options_str ) :
+    druid_spell_t( "starfall", player, player -> find_spell( 160836 ) )
+  {
+    parse_options( NULL, options_str );
+
+    hasted_ticks = harmful = false;
+    cooldown = player -> cooldown.starfallsurge;
+
+    base_multiplier *= 1.0 + player -> sets.set( SET_T14_2PC_CASTER ) -> effectN( 1 ).percent();
+
+    // Starfall triggers a spell each second, that triggers the damage spell.
+    const spell_data_t* stars_trigger_spell = player -> find_spell( 50288 );
+    if ( ! stars_trigger_spell -> ok() )
+    {
+      background = true;
+    }
+    dynamic_tick_action = true;
+    tick_action = new starfall_star_t( player, stars_trigger_spell -> effectN( 1 ).base_value() );
   }
 };
 
@@ -4474,47 +4608,23 @@ struct starsurge_t : public druid_spell_t
   {
     parse_options( NULL, options_str );
 
-    cooldown -> duration += player -> sets.set( SET_T13_4PC_CASTER ) -> effectN( 1 ).time_value();
     base_multiplier *= 1.0 + player -> sets.set( SET_T13_4PC_CASTER ) -> effectN( 2 ).percent();
 
     base_multiplier *= 1.0 + p() -> sets.set( SET_T13_2PC_CASTER ) -> effectN( 1 ).percent();
 
     base_crit += p() -> sets.set( SET_T15_2PC_CASTER ) -> effectN( 1 ).percent();
-    cooldown -> charges = player -> cooldown.starfallsurge -> charges;
+    cooldown = player -> cooldown.starfallsurge;
   }
 
   virtual void execute()
-  { //To-do: Trigger based on current position of balance bar.
-    p() -> buff.lunar_empowerment -> trigger( 2 );
-    p() -> buff.solar_empowerment -> trigger( 3 );
-  }
-
-  virtual void schedule_execute( action_state_t* state = 0 )
   {
-    p() -> buff.shooting_stars -> up();
+    druid_spell_t::execute();
+    if ( p() -> eclipse_amount > 0 || p() -> buff.celestial_alignment -> up() )
+      p() -> buff.solar_empowerment -> trigger( 2 );
 
-    druid_spell_t::schedule_execute( state );
-
-    p() -> buff.shooting_stars -> expire();
+    if ( p() -> eclipse_amount <= 0 || p() -> buff.celestial_alignment -> up() )
+      p() -> buff.lunar_empowerment -> trigger( 3 );
   }
-
-  virtual timespan_t execute_time() const
-  {
-    if ( p() -> buff.shooting_stars -> check() )
-      return timespan_t::zero();
-
-    return druid_spell_t::execute_time();
-  }
-
-  virtual bool ready()
-  {
-    // Druids can only have 1 Starsurge in the air at a time
-    if ( p() -> inflight_starsurge )
-      return false;
-
-    return druid_spell_t::ready();
-  }
-
 };
 
 // Prowl ==================================================================
@@ -4544,115 +4654,6 @@ struct prowl_t : public druid_spell_t
       return false;
 
     return druid_spell_t::ready();
-  }
-};
-
-// Sunfire Spell ============================================================
-
-struct sunfire_t : public druid_spell_t
-{
-  // Sunfire also applies the Moonfire DoT during Celestial Alignment.
-  struct moonfire_CA_t : public druid_spell_t
-  {
-    moonfire_CA_t( druid_t* player ) :
-      druid_spell_t( "moonfire", player, player -> find_class_spell( "Moonfire" ) )
-    {
-      assert( player -> specialization() == DRUID_BALANCE );
-
-      dot_behavior = DOT_REFRESH;
-
-      background = true;
-      may_crit = false;
-      may_miss = true; // Bug?
-
-      dot_duration += player -> sets.set( SET_T14_4PC_CASTER ) -> effectN( 1 ).time_value();
-
-      // Does no direct damage, costs no mana
-      attack_power_mod.direct = 0;
-      base_dd_min = base_dd_max = 0;
-      range::fill( base_costs, 0 );
-
-      base_multiplier *= 1.0 + player -> perk.improved_moonfire -> effectN( 1 ).percent();
-    }
-
-    virtual void tick( dot_t* d )
-    {
-      druid_spell_t::tick( d );
-      // Todo: Does this dot proc SS?
-      p() -> trigger_shooting_stars( d -> state -> result );
-    }
-  };
-
-  action_t* moonfire;
-
-  sunfire_t( druid_t* player, const std::string& options_str ) :
-    druid_spell_t( "sunfire", player, player -> spec.sunfire ),
-    moonfire( nullptr )
-  {
-    parse_options( NULL, options_str );
-
-    dot_behavior = DOT_REFRESH;
-
-    dot_duration += player -> sets.set( SET_T14_4PC_CASTER ) -> effectN( 1 ).time_value();
-
-    if ( player -> specialization() == DRUID_BALANCE )
-      moonfire = new moonfire_CA_t( player );
-    base_multiplier *= 1.0 + player -> perk.improved_moonfire -> effectN( 1 ).percent();
-  }
-
-  virtual double action_da_multiplier() const
-  {
-    double m = druid_spell_t::action_da_multiplier();
-
-    m *= 1.0 + ( p() -> buff.astral_showers -> data().effectN( 1 ).percent() * p() -> buff.astral_showers -> check() );
-
-    return m;
-  }
-
-  virtual void tick( dot_t* d )
-  {
-    druid_spell_t::tick( d );
-
-    p() -> trigger_shooting_stars( d -> state -> result );
-  }
-
-  virtual void execute()
-  {
-    p() -> buff.astral_showers -> up();
-
-    druid_spell_t::execute();
-
-    if ( result_is_hit( execute_state -> result ) )
-    {
-      if ( p() -> spec.astral_showers -> ok() )
-      {
-        p() -> buff.astral_showers -> trigger( 1 );
-      }
-    }
-
-    trigger_t16_2pc_balance( true );
-  }
-
-  virtual void impact( action_state_t* s )
-  {
-    if ( moonfire && result_is_hit( s -> result ) )
-    {
-      if ( p() -> buff.celestial_alignment -> check() )
-      {
-        moonfire -> target = s -> target;
-        moonfire -> execute();
-      }
-    }
-    druid_spell_t::impact( s );
-  }
-
-  virtual double cost_reduction() const
-  {
-    double cr = druid_spell_t::cost_reduction();
-
-    cr += ( p() -> buff.astral_showers -> data().effectN( 2 ).percent() * p() -> buff.astral_showers -> check() );
-
-    return cr;
   }
 };
 
@@ -4814,12 +4815,13 @@ struct wrath_t : public druid_spell_t
     if ( p() -> talent.dream_of_cenarius && p() -> specialization() == DRUID_RESTORATION )
       m *= 1.0 + p() -> talent.dream_of_cenarius -> effectN( 1 ).percent();
 
-    return m;
-  }
+    if ( p() -> buff.solar_empowerment -> up() )
+    {
+      m *= 1.0 + p() -> buff.solar_empowerment -> data().effectN( 1 ).percent();
+      p() -> buff.solar_empowerment -> decrement();
+    }
 
-  virtual void execute()
-  {
-    // Re-do
+    return m;
   }
 
   virtual void schedule_execute( action_state_t* state = 0 )
@@ -4828,6 +4830,14 @@ struct wrath_t : public druid_spell_t
 
     p() -> buff.cat_form  -> expire();
     p() -> buff.bear_form -> expire();
+  }
+
+  virtual void execute()
+  {
+    druid_spell_t::execute();
+
+    if ( p() -> eclipse_amount < 0 && !p() -> buff.celestial_alignment -> up() )
+      p() -> proc.wrong_eclipse_wrath -> occur();
   }
 };
 
@@ -4843,16 +4853,18 @@ void druid_t::trigger_shooting_stars( result_e result )
   {
     if ( rng().roll( spec.shooting_stars -> proc_chance() ) )
     {
-      if ( cooldown.starfallsurge -> charges == 3 )
+      if ( cooldown.starfallsurge -> current_charge == 3 )
         proc.shooting_stars_wasted -> occur();
       cooldown.starfallsurge -> reset( true );
+      proc.shooting_stars -> occur();
     }
   }
   else if ( rng().roll( spec.shooting_stars -> proc_chance() / 2 ) )
   {
-    if ( cooldown.starfallsurge -> charges == 3 )
+    if ( cooldown.starfallsurge -> current_charge == 3 )
       proc.shooting_stars_wasted -> occur();
     cooldown.starfallsurge -> reset( true );
+    proc.shooting_stars -> occur();
   }
 }
 
@@ -4896,6 +4908,7 @@ action_t* druid_t::create_action( const std::string& name,
   if ( name == "maul"                   ) return new                   maul_t( this, options_str );
   if ( name == "might_of_ursoc"         ) return new         might_of_ursoc_t( this, options_str );
   if ( name == "moonfire"               ) return new               moonfire_t( this, options_str );
+  if ( name == "sunfire"                ) return new                sunfire_t( this, options_str ); // Moonfire and Sunfire are selected based on how much balance energy the player has.
   if ( name == "moonkin_form"           ) return new           moonkin_form_t( this, options_str );
   if ( name == "natures_swiftness"      ) return new       druids_swiftness_t( this, options_str );
   if ( name == "natures_vigil"          ) return new          natures_vigil_t( this, options_str );
@@ -4914,7 +4927,6 @@ action_t* druid_t::create_action( const std::string& name,
   if ( name == "starfall"               ) return new               starfall_t( this, options_str );
   if ( name == "starsurge"              ) return new              starsurge_t( this, options_str );
   if ( name == "prowl"                  ) return new                  prowl_t( this, options_str );
-  if ( name == "sunfire"                ) return new                sunfire_t( this, options_str );
   if ( name == "survival_instincts"     ) return new     survival_instincts_t( this, options_str );
   if ( name == "swipe"                  ) return new                  swipe_t( this, options_str );
   if ( name == "swiftmend"              ) return new              swiftmend_t( this, options_str );
@@ -5202,6 +5214,8 @@ void druid_t::init_base_stats()
 {
   player_t::init_base_stats();
 
+  resources.infinite_resource[RESOURCE_MANA] = true; // REMOVE LATER *~*~*~*~*~**~*// ~***$_@*$%_@
+
   // TODO: Confirm that all druid specs get both of these things.
   base.attack_power_per_agility  = 0.0; // This is adjusted in cat_form_t and bear_form_t
   base.spell_power_per_intellect = 1.0;
@@ -5305,6 +5319,8 @@ void druid_t::create_buffs()
   buff.heart_of_the_wild  = new heart_of_the_wild_buff_t( *this );
 
   // Balance
+
+  buff.astral_communion          = new astral_communion_t( *this );
 
   buff.astral_insight            = buff_creator_t( this, "astral_insight", talent.soul_of_the_forest -> ok() ? find_spell( 145138 ) : spell_data_t::not_found() )
                                    .chance( 0.08 );
@@ -5418,8 +5434,6 @@ void druid_t::apl_precombat()
 
   // Mark of the Wild
   precombat -> add_action( this, "Mark of the Wild", "if=!aura.str_agi_int.up" );
-
-  precombat -> add_action( this, "Wild Mushroom", "if=buff.wild_mushroom.stack<buff.wild_mushroom.max_stack" );
 
   // Forms
   if ( ( specialization() == DRUID_FERAL && primary_role() == ROLE_ATTACK ) || primary_role() == ROLE_ATTACK )
@@ -5551,44 +5565,44 @@ void druid_t::apl_feral()
 
 void druid_t::apl_balance()
 {
+  std::vector<std::string> racial_actions     = get_racial_actions();
+
+  action_priority_list_t* default_list        = get_action_priority_list( "default" );
+  action_priority_list_t* single_target       = get_action_priority_list( "single_target" );
+  action_priority_list_t* aoe                 = get_action_priority_list( "aoe" );
+
   if ( sim -> allow_potions && level >= 80 )
-  {
-    action_list_str += ( level > 85 ) ? "/jade_serpent_potion" : "/volcanic_potion";
-    action_list_str += ",if=buff.bloodlust.react|target.time_to_die<=40|buff.celestial_alignment.up";
-  }
-  action_list_str += "/starfall,if=!buff.starfall.up";
-  action_list_str += "/force_of_nature,if=talent.force_of_nature.enabled";
-  if ( race == RACE_TROLL && level >= 68 )
-    action_list_str += "/berserking,if=buff.celestial_alignment.up";
-  else
-    action_list_str += init_use_racial_actions();
-  action_list_str += init_use_item_actions( ",if=buff.celestial_alignment.up|cooldown.celestial_alignment.remains>30" );
-  action_list_str += init_use_profession_actions( ",if=buff.celestial_alignment.up|cooldown.celestial_alignment.remains>30" );
-  action_list_str += "/healing_touch,if=talent.dream_of_cenarius.enabled&buff.dream_of_cenarius.up&mana.pct>25&cooldown.starsurge.remains>10"; // FIXME: DPS gain or not?
-  action_list_str += "/incarnation,if=talent.incarnation.enabled&(buff.lunar_eclipse.up|buff.solar_eclipse.up)";
-  action_list_str += "/celestial_alignment,if=(!buff.lunar_eclipse.up&!buff.solar_eclipse.up)&(buff.chosen_of_elune.up|!talent.incarnation.enabled|cooldown.incarnation.remains>10)";
-  action_list_str += "/natures_vigil,if=talent.natures_vigil.enabled";
-  add_action( "Starsurge", "if=buff.shooting_stars.react&(active_enemies<5|!buff.solar_eclipse.up)" );
-  action_list_str += "/moonfire,cycle_targets=1,if=buff.lunar_eclipse.up";
-  action_list_str += "/sunfire,cycle_targets=1,if=buff.solar_eclipse.up";
-  action_list_str += "/hurricane,if=active_enemies>4&buff.solar_eclipse.up";
-  action_list_str += "/moonfire,cycle_targets=1,if=active_enemies<5";
-  action_list_str += "/sunfire,cycle_targets=1,if=active_enemies<5";
-  action_list_str += "/hurricane,if=active_enemies>5&buff.solar_eclipse.up&mana.pct>25";
-  action_list_str += "/moonfire,cycle_targets=1,if=buff.lunar_eclipse.up&ticks_remain<2";
-  action_list_str += "/sunfire,cycle_targets=1,if=buff.solar_eclipse.up&ticks_remain<2";
-  action_list_str += "/hurricane,if=active_enemies>4&buff.solar_eclipse.up&mana.pct>25";
-  action_list_str += "/starsurge,if=cooldown_react";
-  action_list_str += "/starfire,if=buff.celestial_alignment.up&cast_time<buff.celestial_alignment.remains";
-  action_list_str += "/wrath,if=buff.celestial_alignment.up&cast_time<buff.celestial_alignment.remains";
-  action_list_str += "/starfire,if=eclipse_dir=1|(eclipse_dir=0&eclipse>0)";
-  action_list_str += "/wrath,if=eclipse_dir=-1|(eclipse_dir=0&eclipse<=0)";
-  action_list_str += "/moonfire,moving=1,cycle_targets=1,if=ticks_remain<2";
-  action_list_str += "/sunfire,moving=1,cycle_targets=1,if=ticks_remain<2";
-  action_list_str += "/wild_mushroom,moving=1,if=buff.wild_mushroom.stack<buff.wild_mushroom.max_stack";
-  action_list_str += "/starsurge,moving=1,if=buff.shooting_stars.react";
-  action_list_str += "/moonfire,moving=1,if=buff.lunar_eclipse.up";
-  action_list_str += "/sunfire,moving=1";
+    default_list -> add_action( "jade_serpent_potion,if=buff.bloodlust.react|target.time_to_die<=40|buff.celestial_alignment.up" );
+
+  for ( size_t i = 0; i < racial_actions.size(); i++ )
+    default_list -> add_action( racial_actions[i] + ",if=buff.bloodlust.react|target.time_to_die<=40|buff.celestial_alignment.up" );
+
+  default_list -> add_action( "run_action_list,name=single_target,if=active_enemies=1" );
+  default_list -> add_action( "run_action_list,name=aoe,if=active_enemies>1" );
+  default_list -> add_talent( this, "Force of Nature" );
+  default_list -> add_talent( this, "Incarnation" );
+
+
+  single_target -> add_action( this, "Celestial Alignment", "if=(eclipse_change<8&eclipse_dir=1)|!dot.sunfire.ticking" );
+  single_target -> add_action( this, "Starsurge", "if=charges=3" );
+  single_target -> add_action( this, "Moonfire" , "if=!dot.moonfire.ticking|(eclipse_change<10&eclipse>100)" );
+  single_target -> add_action( this, "Sunfire", "if=!dot.sunfire.ticking|(eclipse_change<10&eclipse>@100)|buff.celestial_alignment.up" );
+  single_target -> add_action( this, "Wrath", "if=buff.celestial_alignment.up&buff.solar_empowerment.up" );
+  single_target -> add_action( this, "Starfire", "if=buff.celestial_alignment.up&buff.lunar_empowerment.up" );
+  single_target -> add_action( this, "Starsurge", "if=buff.celestial_alignment.up" );
+  single_target -> add_action( this, "Starsurge", "if=buff.solar_empowerment.down&buff.lunar_empowerment.down&((eclipse>75&eclipse_dir=1)|(eclipse<-75&eclipse_dir=-1))" );
+  single_target -> add_action( this, "Wrath", "if=eclipse>0" );
+  single_target -> add_action( this, "Starfire", "if=eclipse<0" );
+
+  aoe -> add_action( this, "Celestial Alignment" );
+  aoe -> add_action( this, "Starfall", "if=charges=3" );
+  aoe -> add_action( this, "Moonfire", "if=!dot.moonfire.ticking|eclipse_change<3|(eclipse<=-100&dot.moonfire.ticks>3)" );
+  aoe -> add_action( this, "Sunfire", "if=!dot.sunfire.ticking|eclipse_change<3|(eclipse<=-100&dot.sunfire.ticks>3)" );
+  aoe -> add_action( this, "Wrath", "if=buff.celestial_alignment.up&buff.solar_empowerment.up" );
+  aoe -> add_action( this, "Starfire", "if=buff.celestial_alignment.up&buff.lunar_empowerment.up" );
+  aoe -> add_action( this, "Starfall" );
+  aoe -> add_action( this, "Wrath", "if=eclipse>0" );
+  aoe -> add_action( this, "Starfire", "if=eclipse<0" );
 }
 
 // Guardian Combat Action Priority List ==============================
@@ -5704,6 +5718,7 @@ void druid_t::init_procs()
   proc.combo_points             = get_proc( "combo_points" );
   proc.combo_points_wasted      = get_proc( "combo_points_wasted" );
   proc.shooting_stars_wasted    = get_proc( "Shooting Stars overflow (buff already up)" );
+  proc.shooting_stars           = get_proc( "Shooting Stars"         );
   proc.tier15_2pc_melee         = get_proc( "tier15_2pc_melee"       );
   proc.tooth_and_claw           = get_proc( "tooth_and_claw"         );
 }
@@ -5760,8 +5775,12 @@ void druid_t::reset()
 
   inflight_starsurge = false;
 
-  eclipse_bar_value     = 0;
-  eclipse_bar_direction = 0;
+  eclipse_amount = 0;
+  eclipse_direction = -1;
+  eclipse_change = 0;
+  last_check = timespan_t::zero();
+  balance_time = timespan_t::zero();
+
   base_gcd = timespan_t::from_seconds( 1.5 );
 
   // Restore main hand attack / weapon to normal state
@@ -5904,6 +5923,9 @@ double druid_t::composite_player_multiplier( school_e school ) const
 {
   double m = player_t::composite_player_multiplier( school );
 
+  if ( buff.celestial_alignment -> up() )
+    m *= 1.0 + buff.celestial_alignment -> data().effectN( 2 ).percent();
+
   if ( dbc::is_school( school, SCHOOL_PHYSICAL ) && buff.cat_form -> up() )
   {
     m *= 1.0 + buff.tigers_fury -> value();
@@ -5914,31 +5936,6 @@ double druid_t::composite_player_multiplier( school_e school ) const
   {
     if ( buff.owlkin_frenzy -> up() )
       m *= 1.0 + buff.owlkin_frenzy -> data().effectN( 2 ).percent();
-
-    if ( dbc::is_school( school, SCHOOL_SPELLSTORM ) )
-    {
-      if ( buff.lunar_eclipse -> up() || buff.solar_eclipse -> up() )
-      {
-        m *= 1.0 + buff.lunar_eclipse -> data().effectN( 1 ).percent()
-                 + mastery.total_eclipse -> ok() * cache.mastery_value();
-      }
-    }
-    else if ( dbc::is_school( school, SCHOOL_ARCANE ) )
-    {
-      if ( buff.lunar_eclipse -> up() )
-      {
-        m *= 1.0 + buff.lunar_eclipse -> data().effectN( 1 ).percent()
-                 + mastery.total_eclipse -> ok() * cache.mastery_value();
-      }
-    }
-    else if ( dbc::is_school( school, SCHOOL_NATURE ) )
-    {
-      if ( buff.solar_eclipse -> up() )
-      {
-        m *= 1.0 + buff.solar_eclipse -> data().effectN( 1 ).percent()
-                 + mastery.total_eclipse -> ok() * cache.mastery_value();
-      }
-    }
 
     if ( dbc::is_school( school, SCHOOL_ARCANE ) || dbc::is_school( school, SCHOOL_NATURE ) )
     {
@@ -6178,13 +6175,21 @@ double druid_t::composite_rating_multiplier( rating_e rating ) const
 
 expr_t* druid_t::create_expression( action_t* a, const std::string& name_str )
 {
-  if ( name_str == "eclipse" )
+
+  if ( util::str_compare_ci( name_str, "eclipse" ) )
   {
-    return make_ref_expr( "eclipse", eclipse_bar_value );
+    balance_tracker();
+    return make_ref_expr( name_str, eclipse_amount );
   }
   else if ( name_str == "eclipse_dir" )
   {
-    return make_ref_expr( "eclipse_dir", eclipse_bar_direction );
+    balance_tracker();
+    return make_ref_expr( "eclipse_dir", eclipse_direction );
+  }
+  else if ( name_str == "eclipse_change" )
+  {
+    balance_tracker();
+    return make_ref_expr( "eclipse_change", eclipse_change );
   }
   else if ( util::str_compare_ci( name_str, "combo_points" ) )
   {
@@ -6216,19 +6221,6 @@ void druid_t::create_options()
 bool druid_t::create_profile( std::string& profile_str, save_e type, bool save_html )
 {
   player_t::create_profile( profile_str, type, save_html );
-
-  if ( type == SAVE_ALL )
-  {
-    if ( specialization() == DRUID_BALANCE )
-    {
-      if ( initial_eclipse != 65535 )
-      {
-        profile_str += "initial_eclipse=";
-        profile_str += util::to_string( initial_eclipse );
-        profile_str += "\n";
-      }
-    }
-  }
 
   return true;
 }
@@ -6602,6 +6594,38 @@ int combo_points_t::consume( const std::string* source_name )
   int tmp_count = count;
   count = 0;
   return tmp_count;
+}
+
+void druid_t::balance_tracker()
+{
+  if ( last_check == sim -> current_time ) 
+    return;
+
+  if ( buff.celestial_alignment -> up() )
+    return;
+
+  last_check = sim -> current_time - last_check;
+  if ( buff.astral_communion -> up() )
+    last_check *= 1 + buff.astral_communion -> data().effectN( 1 ).percent();
+  balance_time += last_check;
+  last_check = sim -> current_time;
+
+  double direction;
+  direction = eclipse_amount;
+
+  eclipse_amount = 110 * sin( -2 * M_PI * timespan_t::to_native( balance_time ) / 40000 );
+
+  if ( direction > eclipse_amount )
+    eclipse_direction = -1;
+  else
+    eclipse_direction = 1;
+
+  if ( eclipse_direction == 1 && eclipse_amount < 0 )
+    eclipse_change = std::abs( eclipse_amount ) / 110 * 10;
+  else if ( eclipse_direction == -1 && eclipse_amount > 0 )
+    eclipse_change = eclipse_amount / 110 * 10;
+  else
+    eclipse_change = ( 110 - std::abs( eclipse_amount ) ) / 110 * 20;
 }
 
 /* Report Extension Class

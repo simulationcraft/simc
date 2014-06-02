@@ -53,7 +53,6 @@ actions.aoe+=/scourge_strike,if=unholy=1
 actions.aoe+=/death_coil
 actions.aoe+=/blood_tap,if=talent.blood_tap.enabled
 actions.aoe+=/plague_leech,if=talent.plague_leech.enabled&unholy=1
-actions.aoe+=/horn_of_winter
 actions.aoe+=/empower_rune_weapon
 
 actions.single_target=outbreak,if=stat.attack_power>(dot.blood_plague.attack_power*1.1)&time>15&!(cooldown.unholy_blight.remains>79)
@@ -77,7 +76,6 @@ actions.single_target+=/death_coil,if=buff.sudden_doom.react|(buff.dark_transfor
 actions.single_target+=/scourge_strike
 actions.single_target+=/plague_leech,if=talent.plague_leech.enabled&cooldown.outbreak.remains<1
 actions.single_target+=/festering_strike
-actions.single_target+=/horn_of_winter
 actions.single_target+=/death_coil
 actions.single_target+=/blood_tap,if=talent.blood_tap.enabled&buff.blood_charge.stack>=8
 actions.single_target+=/empower_rune_weapon
