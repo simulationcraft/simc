@@ -5339,7 +5339,7 @@ void druid_t::create_buffs()
 
   // http://mop.wowhead.com/spell=122114 Chosen of Elune
   buff.chosen_of_elune    = buff_creator_t( this, "chosen_of_elune"   , talent.incarnation -> ok() ? find_spell( 102560 ) : spell_data_t::not_found() )
-                            .default_value( find_spell( 122114) -> effectN( 1 ).base_value() )
+                            .default_value( find_spell( 122114) -> effectN( 1 ).percent() )
                             .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
 
   // http://mop.wowhead.com/spell=102548 Incarnation: King of the Jungle
