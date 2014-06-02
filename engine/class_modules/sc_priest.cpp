@@ -3270,7 +3270,7 @@ struct halo_t final : public priest_spell_t
 
 // Divine Star spell
 
-template <class Base, int scaling_effect_index>
+template <class Base>
 struct divine_star_base_t final : public Base
 {
 private:
@@ -3286,16 +3286,6 @@ public:
     return_spell( ( is_return_spell ? nullptr : new divine_star_base_t( n, p, spell_data, true ) ) )
   {
     ab::aoe = -1;
-
-    if ( ab::data().ok() )
-    {
-      // Reparse the correct effect number, because we have two competing ones ( were 2 > 1 always wins out )
-
-      // Commented out for now, was causing asserts. Doesn't look like this
-      // is needed any more, but don't want to totally remove it just in case.
-      // -- Twintop / 2014-05-16
-      //ab::parse_effect_data( ab::data().effectN( scaling_effect_index ) );
-    }
 
     ab::proc = ab::background = true;
   }
@@ -3323,43 +3313,36 @@ public:
 
 struct divine_star_t final : public priest_spell_t
 {
-  typedef divine_star_base_t<priest_spell_t, 1> ds_damage_t;
-  typedef divine_star_base_t<priest_heal_t, 2> ds_heal_t;
+  typedef divine_star_base_t<priest_spell_t> ds_damage_t;
+  typedef divine_star_base_t<priest_heal_t> ds_heal_t;
 
-  ds_damage_t* damage_spell;
-  ds_heal_t* heal_spell;
+  action_t* base_spell;
 
   divine_star_t( priest_t& p, const std::string& options_str ) :
-    priest_spell_t( "divine_star", p, p.talents.divine_star -> ok() ? p.find_spell( p.specialization() == PRIEST_SHADOW ? 122121 : 110744 ) : spell_data_t::not_found() ),
-    damage_spell( new ds_damage_t( "divine_star_damage", p, data().effectN( 1 ).trigger() ) ),
-    heal_spell( new ds_heal_t( "divine_star_heal", p, data().effectN( 1 ).trigger() ) )
+    priest_spell_t( "divine_star", p, p.talents.divine_star ),
+    base_spell( nullptr )
   {
-    parse_options( 0, options_str );
+    parse_options( nullptr, options_str );
 
-    // Disable ticking (There is a periodic effect described in the base spell
-    // that does no damage. I assume the Star checks every 250 milliseconds for
-    // new targets coming into range).
-
-    //num_ticks = 0;
-    //base_tick_time = timespan_t::zero();
-
-    // Have the primary DS spell take on the stats that are most appropriate to the player's role
-    // so it shows up nicely in the DPET chart.
-    if ( p.primary_role() == ROLE_HEAL )
-      add_child( heal_spell );
+    if ( priest.specialization() == PRIEST_SHADOW )
+    {
+      base_spell = new ds_damage_t( "divine_star_damage", p, data().effectN( 1 ).trigger() );
+    }
     else
-      add_child( damage_spell );
+    {
+       base_spell = new ds_heal_t( "divine_star_heal", p, data().effectN( 1 ).trigger() );
+    }
+    dot_duration = base_tick_time = timespan_t::zero();
+
+    add_child( base_spell );
   }
 
   virtual void execute() override
   {
     priest_spell_t::execute();
 
-    if ( damage_spell )
-      damage_spell -> execute();
+    base_spell -> execute();
 
-    if ( heal_spell )
-      heal_spell -> execute();
   }
 };
 
