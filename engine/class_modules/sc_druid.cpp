@@ -124,7 +124,7 @@ public:
 
   double eclipse_amount; // Current balance power.
 
-  int eclipse_direction; // 1 = Going upwards, ie: Lunar ---> Solar
+  double eclipse_direction; // 1 = Going upwards, ie: Lunar ---> Solar
   // -1 = Downward, ie: Solar ---> Lunar
 
   double eclipse_change; // Amount of seconds until eclipse changes.
@@ -3782,6 +3782,12 @@ struct druid_spell_t : public druid_spell_base_t<spell_t>
   {
     p() -> balance_tracker();
 
+    if ( sim -> log || sim -> debug )
+      sim -> out_debug.printf( "Eclipse Position: %f Eclipse Direction: %f Time till next Eclipse Change: %f",
+      p() -> eclipse_amount,
+      p() -> eclipse_direction,
+      p() -> eclipse_change );
+
     spell_t::execute();
   }
 
@@ -3811,6 +3817,8 @@ struct druid_spell_t : public druid_spell_base_t<spell_t>
       else if ( dbc::is_school( school, SCHOOL_ARCANE ) || dbc::is_school( school, SCHOOL_NATURE ) )
         damageincrease *= 1.0 + mastery / 2 - mastery * std::abs( balance ) / 200;
     }
+    if ( sim -> log || sim -> debug )
+      sim -> out_debug.printf( "Total Action Multiplier: %f", damageincrease );
     return damageincrease;
   }
 
@@ -4027,7 +4035,7 @@ struct celestial_alignment_t : public druid_spell_t
     druid_spell_t( "celestial_alignment", player, player -> spec.celestial_alignment , options_str )
   {
     parse_options( NULL, options_str );
-
+    dot_duration = timespan_t::zero();
     harmful = false;
   }
 
@@ -5650,12 +5658,12 @@ void druid_t::apl_balance()
 
   default_list -> add_action( "run_action_list,name=single_target,if=active_enemies=1" );
   default_list -> add_action( "run_action_list,name=aoe,if=active_enemies>1" );
-  default_list -> add_action( this, "Force of Nature" );
-  default_list -> add_action( this, "Incarnation" );
+  default_list -> add_action( "force_of_nature" );
+  default_list -> add_action( "incarnation" );
 
   single_target -> add_action( this, "Celestial Alignment", "if=(eclipse_change<8&eclipse_dir=1)|!dot.sunfire.ticking" );
   single_target -> add_action( this, "Starsurge", "if=charges=3" );
-  single_target -> add_action( this, "Stellar Flare", "if=@eclipse<10&!dot.stellar_flare.ticking" );
+  single_target -> add_action( "stellar_flare,if=@eclipse<10&!dot.stellar_flare.ticking" );
   single_target -> add_action( this, "Moonfire" , "if=!dot.moonfire.ticking|(eclipse_change<10&eclipse<-100)" );
   single_target -> add_action( this, "Sunfire", "if=!dot.sunfire.ticking|(eclipse_change<10&eclipse>100)|buff.celestial_alignment.up" );
   single_target -> add_action( this, "Wrath", "if=buff.celestial_alignment.up&buff.solar_empowerment.up" );
