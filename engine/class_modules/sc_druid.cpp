@@ -4968,20 +4968,23 @@ action_t* druid_t::create_action( const std::string& name,
   using namespace heals;
   using namespace spells;
 
-  if ( name == "astral_communion"       ) return new       astral_communion_t( this, options_str );
+  if ( name == "astral_communion" || 
+       name == "ac")                      return new       astral_communion_t( this, options_str );
   if ( name == "auto_attack"            ) return new            auto_attack_t( this, options_str );
   if ( name == "barkskin"               ) return new               barkskin_t( this, options_str );
   if ( name == "berserk"                ) return new                berserk_t( this, options_str );
   if ( name == "bear_form"              ) return new              bear_form_t( this, options_str );
   if ( name == "cat_form"               ) return new               cat_form_t( this, options_str );
-  if ( name == "celestial_alignment"    ) return new    celestial_alignment_t( this, options_str );
+  if ( name == "celestial_alignment" ||
+       name == "ca"                     ) return new    celestial_alignment_t( this, options_str );
   if ( name == "cenarion_ward"          ) return new          cenarion_ward_t( this, options_str );
   if ( name == "faerie_fire"            ) return new            faerie_fire_t( this, options_str );
   if ( name == "ferocious_bite"         ) return new         ferocious_bite_t( this, options_str );
   if ( name == "frenzied_regeneration"  ) return new  frenzied_regeneration_t( this, options_str );
   if ( name == "healing_touch"          ) return new          healing_touch_t( this, options_str );
   if ( name == "hurricane"              ) return new              hurricane_t( this, options_str );
-  if ( name == "heart_of_the_wild"      ) return new      heart_of_the_wild_t( this, options_str );
+  if ( name == "heart_of_the_wild"  ||
+       name == "hotw"                   ) return new      heart_of_the_wild_t( this, options_str );
   if ( name == "incarnation"            ) return new            incarnation_t( this, options_str );
   if ( name == "lacerate"               ) return new               lacerate_t( this, options_str );
   if ( name == "lifebloom"              ) return new              lifebloom_t( this, options_str );
@@ -5658,30 +5661,31 @@ void druid_t::apl_balance()
 
   default_list -> add_action( "run_action_list,name=single_target,if=active_enemies=1" );
   default_list -> add_action( "run_action_list,name=aoe,if=active_enemies>1" );
-  default_list -> add_action( "force_of_nature" );
-  default_list -> add_action( "incarnation" );
+  default_list -> add_talent( this, "Force of Nature" );
+  default_list -> add_talent( this, "Incarnation" );
 
-  single_target -> add_action( this, "Celestial Alignment", "if=(eclipse_change<8&eclipse_dir=1)|!dot.sunfire.ticking" );
-  single_target -> add_action( this, "Starsurge", "if=charges=3" );
-  single_target -> add_action( "stellar_flare,if=@eclipse<10&!dot.stellar_flare.ticking" );
-  single_target -> add_action( this, "Moonfire" , "if=!dot.moonfire.ticking|(eclipse_change<10&eclipse<-100)" );
-  single_target -> add_action( this, "Sunfire", "if=!dot.sunfire.ticking|(eclipse_change<10&eclipse>100)|buff.celestial_alignment.up" );
-  single_target -> add_action( this, "Wrath", "if=buff.celestial_alignment.up&buff.solar_empowerment.up" );
-  single_target -> add_action( this, "Starfire", "if=buff.celestial_alignment.up&buff.lunar_empowerment.up" );
+  single_target -> add_action( this, "Celestial Alignment" );
+  single_target -> add_action( this, "Starsurge", "if=charges=3|(eclipse_change>4&eclipse_dir=1)|(eclipse<=-75&eclipse_dir=-1)" );
+  single_target -> add_action( this, "Stellar Flare", "if=@eclipse<10&!dot.stellar_flare.ticking" );
+  single_target -> add_action( this, "Moonfire" , "if=!dot.moonfire.ticking|(dot.moonfire.remains<=8&eclipse_change<=12&eclipse=-100&eclipse_change>=8)|(buff.celestial_alignment.up&dot.moonfire.ticking&dot.sunfire.ticking&dot.sunfire.remains<=6)" );
+  single_target -> add_action( this, "Sunfire", "if=!dot.sunfire.ticking|(eclipse>=0&dot.sunfire.remains<=8)" );
+  single_target -> add_action( this, "Wrath", "if=buff.celestial_alignment.up&buff.solar_empowerment.up&eclipse>0" );
+  single_target -> add_action( this, "Starfire", "if=buff.celestial_alignment.up&buff.lunar_empowerment.up&eclipse<=0" );
   single_target -> add_action( this, "Starsurge", "if=buff.celestial_alignment.up" );
   single_target -> add_action( this, "Starsurge", "if=buff.solar_empowerment.down&buff.lunar_empowerment.down&((eclipse>75&eclipse_dir=1)|(eclipse<-75&eclipse_dir=-1))" );
-  single_target -> add_action( this, "Wrath", "if=eclipse>0" );
-  single_target -> add_action( this, "Starfire", "if=eclipse<0" );
+  single_target -> add_action( this, "Starfire", "if=eclipse<0|(eclipse>0&eclipse_change<2)" );
+  single_target -> add_action( this, "Wrath" );
 
   aoe -> add_action( this, "Celestial Alignment" );
   aoe -> add_action( this, "Starfall", "if=charges=3" );
-  aoe -> add_action( this, "Moonfire", "if=!dot.moonfire.ticking|eclipse_change<3|(eclipse<=-100&dot.moonfire.ticks>3)" );
-  aoe -> add_action( this, "Sunfire", "if=!dot.sunfire.ticking|eclipse_change<3|(eclipse<=-100&dot.sunfire.ticks>3)" );
-  aoe -> add_action( this, "Wrath", "if=buff.celestial_alignment.up&buff.solar_empowerment.up" );
-  aoe -> add_action( this, "Starfire", "if=buff.celestial_alignment.up&buff.lunar_empowerment.up" );
+  aoe -> add_action( this, "Stellar Flare", "if=@eclipse<10&!dot.stellar_flare.ticking" );
+  aoe -> add_action( this, "Moonfire", "if=!dot.moonfire.ticking|(dot.moonfire.remains<=8&eclipse_change<=12&eclipse=-100&eclipse_change>=8)|(buff.celestial_alignment.up&dot.moonfire.ticking&dot.sunfire.ticking&dot.sunfire.remains<=6)" );
+  aoe -> add_action( this, "Sunfire", "if=!dot.sunfire.ticking|(eclipse>=0&dot.sunfire.remains<=8)" );
+  aoe -> add_action( this, "Wrath", "if=buff.celestial_alignment.up&buff.solar_empowerment.up&eclipse>0" );
+  aoe -> add_action( this, "Starfire", "if=buff.celestial_alignment.up&buff.lunar_empowerment.up&eclipse<=0" );
   aoe -> add_action( this, "Starfall" );
-  aoe -> add_action( this, "Wrath", "if=eclipse>0" );
-  aoe -> add_action( this, "Starfire", "if=eclipse<0" );
+  aoe -> add_action( this, "Starfire", "if=eclipse<0|(eclipse>0&eclipse_change<2)" );
+  aoe -> add_action( this, "Wrath" );
 }
 
 // Guardian Combat Action Priority List ==============================
@@ -6679,33 +6683,38 @@ int combo_points_t::consume( const std::string* source_name )
 
 void druid_t::balance_tracker()
 {
-  if ( last_check == sim -> current_time ) 
+  if ( last_check == sim -> current_time ) // No need to re-check balance if the time hasn't changed.
     return;
 
-  if ( buff.celestial_alignment -> up() )
+  if ( buff.celestial_alignment -> up() ) // Balance is locked while celestial alignment is active.
     return;
 
   last_check = sim -> current_time - last_check;
+  // Subtract current time by the last time we checked to get the amount of time elapsed
 
   if ( talent.euphoria -> ok() ) // Euphoria speeds up the cycle to 20 seconds.
     last_check *= 2;  //To-do: Check if/how it stacks with astral communion/celestial.
+  // Effectively, time moves twice as fast, so we'll just double the amount of time since the last check.
 
   if ( buff.astral_communion -> up() )
     last_check *= 1 + buff.astral_communion -> data().effectN( 1 ).percent();
+  // Similarly, when astral communion is running, we will just multiply elapsed time by 3.
 
-  balance_time += last_check;
-  last_check = sim -> current_time;
+  balance_time += last_check; // Add the amount of elapsed time to balance_time
+  last_check = sim -> current_time; // Set current time for last check.
 
-  double direction;
-  direction = eclipse_amount;
+  eclipse_direction = eclipse_amount;// This is what eclipse was last set at
 
-  eclipse_amount = 110 * sin( -2 * M_PI * timespan_t::to_native( balance_time ) / 40000 );
+  eclipse_amount = -110 * sin( -2 * M_PI * timespan_t::to_native( balance_time ) / 40000 ); // Re-calculate eclipse
 
-  if ( direction > eclipse_amount )
+  if ( eclipse_direction > eclipse_amount )  // Compare current eclipse with the last eclipse to find out what direction we are heading.
     eclipse_direction = -1;
   else
     eclipse_direction = 1;
+  // To-do: This will be incorrect in rare cases around 110/-110, fix.
 
+  // This takes the current direction along with the current amount to find out if we are heading towards 0 or 100/-100, 
+  // and then calculates the time till we reach 0. Just like the above, it will be incorrect in some cases around 110/-110 eclipse.
   if ( eclipse_direction == 1 && eclipse_amount < 0 )
     eclipse_change = std::abs( eclipse_amount ) / 110 * 10;
   else if ( eclipse_direction == -1 && eclipse_amount > 0 )
