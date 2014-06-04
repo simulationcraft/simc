@@ -2342,13 +2342,13 @@ struct shadow_word_death_t final : public priest_spell_t
   }
 };
 
-// Devouring Plague State ===================================================
+// Shadow Orb State ===================================================
 
-struct devouring_plague_state_t final : public action_state_t
+struct shadow_orb_state_t final : public action_state_t
 {
   int orbs_used;
 
-  devouring_plague_state_t( action_t* a, player_t* t ) :
+  shadow_orb_state_t( action_t* a, player_t* t ) :
     action_state_t( a, t ),
     orbs_used ( 0 )
   { }
@@ -2362,7 +2362,7 @@ struct devouring_plague_state_t final : public action_state_t
   void copy_state( const action_state_t* o ) override
   {
     action_state_t::copy_state( o );
-    const devouring_plague_state_t* dps_t = static_cast<const devouring_plague_state_t*>( o );
+    const shadow_orb_state_t* dps_t = static_cast<const shadow_orb_state_t*>( o );
     orbs_used = dps_t -> orbs_used;
   }
 };
@@ -2392,7 +2392,7 @@ struct devouring_plague_t final : public priest_spell_t
     { priest_spell_t::reset(); base_ta_adder = 0; }
 
     virtual action_state_t* new_state() override
-    { return new devouring_plague_state_t( this, target ); }
+    { return new shadow_orb_state_t( this, target ); }
 
     virtual action_state_t* get_state( const action_state_t* s = nullptr ) override
     {
@@ -2400,7 +2400,7 @@ struct devouring_plague_t final : public priest_spell_t
 
       if ( !s )
       {
-        devouring_plague_state_t* ds_ = static_cast<devouring_plague_state_t*>( s_ );
+        shadow_orb_state_t* ds_ = static_cast<shadow_orb_state_t*>( s_ );
         ds_ -> orbs_used = 0;
       }
 
@@ -2409,7 +2409,7 @@ struct devouring_plague_t final : public priest_spell_t
 
     virtual void snapshot_state( action_state_t* state, dmg_e type ) override
     {
-      devouring_plague_state_t& dp_state = static_cast<devouring_plague_state_t&>( *state );
+      shadow_orb_state_t& dp_state = static_cast<shadow_orb_state_t&>( *state );
 
       dp_state.orbs_used = as<int>( shadow_orbs_to_consume() );
 
@@ -2444,7 +2444,7 @@ struct devouring_plague_t final : public priest_spell_t
     {
       priest_spell_t::tick( d );
 
-	  const devouring_plague_state_t& dp_state = static_cast<const devouring_plague_state_t&>( *d -> state );
+	  const shadow_orb_state_t& dp_state = static_cast<const shadow_orb_state_t&>( *d -> state );
 
       double a = (0.025 / 3) * dp_state.orbs_used * priest.resources.max[ RESOURCE_HEALTH ];
       priest.resource_gain( RESOURCE_HEALTH, a, priest.gains.devouring_plague_health );
@@ -2513,7 +2513,7 @@ struct devouring_plague_t final : public priest_spell_t
 
     if ( dot -> is_ticking() )
     {
-      const devouring_plague_state_t& state = static_cast<const devouring_plague_state_t&>( *dot -> state );
+      const shadow_orb_state_t& state = static_cast<const shadow_orb_state_t&>( *dot -> state );
       // Take the old damage without the orb multiplier
       previous_dp_dmg += state.result_amount / state.orbs_used * dot -> ticks_left();
 
@@ -2577,11 +2577,9 @@ struct mind_flay_base_t : public priest_spell_t
 struct mind_flay_insanity_t final : public mind_flay_base_t<true>
 {
   typedef mind_flay_base_t<true> base_t;
-  int orbs_used;
 
   mind_flay_insanity_t( priest_t& p, const std::string& options_str ) :
-    base_t( p, options_str, "mind_flay_insanity" ),
-      orbs_used( 0 )
+    base_t( p, options_str, "mind_flay_insanity" )
   {
   }
 
@@ -2589,7 +2587,10 @@ struct mind_flay_insanity_t final : public mind_flay_base_t<true>
   {
     double am = base_t::composite_persistent_multiplier( s );
 
-    am *= 1.0 + orbs_used / 3.0;
+    priest_td_t& td = get_td( target );
+    const shadow_orb_state_t* dp_state = debug_cast<const shadow_orb_state_t*>( td.dots.devouring_plague_tick -> state );
+
+    am *= 1.0 + dp_state -> orbs_used / 3.0;
 
     return am;
   }
@@ -2597,11 +2598,9 @@ struct mind_flay_insanity_t final : public mind_flay_base_t<true>
   virtual bool ready() override
   {
     priest_td_t& td = get_td( target );
-    if (!( priest.talents.insanity -> ok() && td.dots.devouring_plague_tick -> is_ticking() ))
+    if (!( priest.talents.insanity -> ok() && td.dots.devouring_plague_tick -> is_ticking() ) )
       return false;
 
-    const devouring_plague_state_t* dp_state = debug_cast<const devouring_plague_state_t*>( td.dots.devouring_plague_tick -> state );
-    orbs_used = dp_state -> orbs_used;
 
     return base_t::ready();
   }
