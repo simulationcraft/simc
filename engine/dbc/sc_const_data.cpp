@@ -327,7 +327,7 @@ void dbc::apply_hotfixes()
 
   // Druid
   s = spell_data_t::find( 164812, false );
-  assert( s -> duration() == 20000 && "Check Druid Dot Duration" );
+  assert( s -> duration() == timespan_t::from_millis( 20000 ) && "Check Druid Dot Duration" );
   s -> _duration = 20000;
   if ( SC_USE_PTR )
   {
