@@ -1789,9 +1789,6 @@ void action_t::reset()
   }
   cooldown -> reset( false );
   line_cooldown.reset( false );
-  // FIXME! Is this really necessary? All DOTs get reset during player_t::reset()
-  dot_t* dot = find_dot( target );
-  if ( dot ) dot -> reset();
   execute_event = 0;
   travel_events.clear();
 }
@@ -1805,7 +1802,7 @@ void action_t::cancel()
 
   if ( channeled )
   {
-    if ( dot_t* d = get_dot( target ) )
+    if ( dot_t* d = find_dot( target ) )
       d -> cancel();
   }
 
@@ -1849,9 +1846,8 @@ void action_t::interrupt_action()
   if ( player -> channeling == this )
   {
     dot_t* dot = get_dot();
-    if ( dot -> is_ticking() ) last_tick( dot );
-    player -> channeling = nullptr;
-    dot -> reset();
+    assert( dot -> is_ticking() );
+    dot -> cancel();
   }
 
   core_event_t::cancel( execute_event );

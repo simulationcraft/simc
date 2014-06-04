@@ -1445,7 +1445,6 @@ void cancel_dot( dot_t& dot )
   if ( dot.is_ticking() )
   {
     dot.cancel();
-    dot.reset();
   }
 }
 

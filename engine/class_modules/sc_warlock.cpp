@@ -900,7 +900,10 @@ struct immolation_t : public warlock_pet_spell_t
   virtual void cancel()
   {
     dot_t* dot = find_dot( target );
-    if ( dot ) dot -> reset();
+    if ( dot && dot -> is_ticking() )
+      {
+      dot -> cancel();
+      }
     action_t::cancel();
   }
 };

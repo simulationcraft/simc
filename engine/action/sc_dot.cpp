@@ -69,15 +69,15 @@ private:
 struct dot_t::dot_end_event_t final : public event_t
 {
 public:
-  dot_end_event_t( dot_t* d, timespan_t time_to_tick ) :
+  dot_end_event_t( dot_t* d, timespan_t time_to_end ) :
       event_t( *d -> source, "DoT End" ),
       dot( d )
   {
     if ( sim().debug )
       sim().out_debug.printf( "New DoT End Event: %s %s %d-of-%d %.4f",
-                  p() -> name(), dot -> name(), dot -> current_tick + 1, dot -> num_ticks, time_to_tick.total_seconds() );
+                  p() -> name(), dot -> name(), dot -> current_tick + 1, dot -> num_ticks, time_to_end.total_seconds() );
 
-    sim().add_event( this, time_to_tick );
+    sim().add_event( this, time_to_end );
   }
 
 private:
@@ -176,6 +176,8 @@ void dot_t::reset()
 {
   core_event_t::cancel( tick_event );
   core_event_t::cancel( end_event );
+  time_to_tick = timespan_t::zero();
+  ticking = false;
   current_tick = 0;
   extended_time = timespan_t::zero();
   ticking = false;
@@ -498,26 +500,13 @@ void dot_t::tick()
  */
 void dot_t::last_tick()
 {
-  time_to_tick = timespan_t::zero();
-
-  ticking = false;
-  core_event_t::cancel( end_event );
-  core_event_t::cancel( tick_event );
-
   if ( sim.debug )
     sim.out_debug.printf( "%s fades from %s", name(), state -> target -> name() );
 
   // call action_t::last_tick
   current_action -> last_tick( this );
 
-  // reset variables
-  if ( state )
-    action_state_t::release( state );
-  current_tick = 0;
-  extended_time = timespan_t::zero();
-  last_start = timespan_t::min();
-  current_duration = timespan_t::zero();
-  last_tick_factor = -1.0;
+  reset();
 
   // If channeled, bring player back to life
   if ( current_action -> channeled )
@@ -647,3 +636,4 @@ bool dot_t::is_higher_priority_action_available() const
   }
   return false;
 }
+
