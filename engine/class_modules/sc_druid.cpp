@@ -24,10 +24,7 @@ namespace { // UNNAMED NAMESPACE
     Glyph of Savage Roar
 
     = Balance =
-    Perks
-    Incarnation
-    New balance bar system
-    Check sunfire mechanics
+    Just verify stuff.
 
     = Guardian =
     Perks
@@ -119,17 +116,14 @@ struct druid_t : public player_t
 {
 public:
   timespan_t balance_time; // Balance power's current time, after accounting for celestial alignment/astral communion.
-
   timespan_t last_check; // Last time balance power was updated.
-
   double eclipse_amount; // Current balance power.
-
+  double clamped_eclipse_amount;
   double eclipse_direction; // 1 = Going upwards, ie: Lunar ---> Solar
   // -1 = Downward, ie: Solar ---> Lunar
-
   double eclipse_max; // Amount of seconds until eclipse reaches maximum power.
-
   double eclipse_change; // Amount of seconds until eclipse changes.
+
   // Active
   action_t* t16_2pc_starfall_bolt;
   action_t* t16_2pc_sun_bolt;
@@ -319,7 +313,7 @@ public:
     const spell_data_t* moonwarding;
     const spell_data_t* natures_grasp;
     const spell_data_t* omens;
-    const spell_data_t* sudden_eclipse;
+    // const spell_data_t* sudden_eclipse;
     const spell_data_t* lifebloom;
     const spell_data_t* master_shapeshifter;
     const spell_data_t* might_of_ursoc;
@@ -486,9 +480,10 @@ public:
     balance_time( timespan_t::zero() ),
     last_check( timespan_t::zero() ),
     eclipse_amount( 0 ),
-    eclipse_direction( -1 ),
-    eclipse_change( 0 ),
-    eclipse_max( 20 ),
+    eclipse_direction( 1 ),
+    eclipse_change( 20 ),
+    eclipse_max( 10 ),
+    clamped_eclipse_amount( 0 ),
     t16_2pc_starfall_bolt( nullptr ),
     t16_2pc_sun_bolt( nullptr ),
     active( active_actions_t() ),
@@ -600,6 +595,7 @@ public:
   }
 
   void balance_tracker();
+  void balance_expressions();
   void trigger_shooting_stars( result_e );
   void trigger_soul_of_the_forest();
 
@@ -3786,7 +3782,7 @@ struct druid_spell_t : public druid_spell_base_t<spell_t>
     p() -> balance_tracker();
 
     if ( sim -> log || sim -> debug )
-      sim -> out_debug.printf( "Eclipse Position: %f Eclipse Direction: %f Time till next Eclipse Change: %f",
+      sim -> out_debug.printf( "Eclipse Position: %f Eclipse Direction: %f Time till next Eclipse Change: %f Time Till Maximum Eclipse: %f",
       p() -> eclipse_amount,
       p() -> eclipse_direction,
       p() -> eclipse_change,
@@ -3803,11 +3799,7 @@ struct druid_spell_t : public druid_spell_base_t<spell_t>
     if ( p() -> buff.moonkin_form -> up() )
     {
       double balance;
-      balance = p() -> eclipse_amount;
-      if ( balance > 100 )
-        balance = 100;
-      if ( balance < -100 )
-        balance = -100;
+      balance = p() -> clamped_eclipse_amount;
 
       double mastery;
       mastery = p() -> cache.mastery_value();
@@ -4057,7 +4049,7 @@ struct celestial_alignment_t : public druid_spell_t
 
   virtual void execute()
   {
-    druid_spell_t::execute();
+    druid_spell_t::execute(); // Do not change the order here. 
     p() -> buff.celestial_alignment -> trigger();
   }
 };
@@ -4272,7 +4264,6 @@ struct mark_of_the_wild_t : public druid_spell_t
       {
         const spell_data_t* dmg_spell = player -> find_spell( 164812 );
         dot_behavior = DOT_REFRESH;
-        dot_duration                  = timespan_t::from_seconds( 20 ); // dmg_spell -> duration();
         dot_duration                 *= 1 + player -> spec.astral_showers -> effectN( 2 ).percent();
         dot_duration                 += player -> sets.set( SET_T14_4PC_CASTER ) -> effectN( 1 ).time_value();
         base_tick_time                = dmg_spell -> effectN( 2 ).period();
@@ -4301,7 +4292,6 @@ struct mark_of_the_wild_t : public druid_spell_t
       parse_options( NULL, options_str );
       dot_behavior = DOT_REFRESH;
       const spell_data_t* dmg_spell = player -> find_spell( 164815 );
-      dot_duration = timespan_t::from_seconds( 20 ); // dmg_spell -> duration();
       dot_duration += player -> sets.set( SET_T14_4PC_CASTER ) -> effectN( 1 ).time_value();
       base_tick_time = dmg_spell -> effectN( 2 ).period();
 
@@ -4346,7 +4336,7 @@ struct mark_of_the_wild_t : public druid_spell_t
       if ( p() -> buff.celestial_alignment -> up() )
         return ready;
 
-      if ( p() -> eclipse_amount <= 0 )
+      if ( p() -> eclipse_amount >= 0 )
         return false;
 
       return ready;
@@ -4365,7 +4355,6 @@ struct mark_of_the_wild_t : public druid_spell_t
       {
         const spell_data_t* dmg_spell = player -> find_spell( 164815 );
         dot_behavior = DOT_REFRESH;
-        dot_duration = timespan_t::from_seconds( 20 );  // dmg_spell -> duration();
         dot_duration += player -> sets.set( SET_T14_4PC_CASTER ) -> effectN( 1 ).time_value();
         base_tick_time = dmg_spell -> effectN( 2 ).period();
 
@@ -4397,7 +4386,6 @@ struct mark_of_the_wild_t : public druid_spell_t
       const spell_data_t* dmg_spell = player -> find_spell( 164812 );
 
       dot_behavior = DOT_REFRESH;
-      dot_duration = timespan_t::from_seconds( 20 ); // dmg_spell -> duration();
       dot_duration *= 1 + player -> spec.astral_showers -> effectN( 2 ).percent();
       dot_duration += player -> sets.set( SET_T14_4PC_CASTER ) -> effectN( 1 ).time_value();
       base_tick_time = dmg_spell -> effectN( 2 ).period();
@@ -4457,7 +4445,7 @@ struct mark_of_the_wild_t : public druid_spell_t
 
       if ( p() -> buff.celestial_alignment -> up() )
         return ready;
-      if ( p() -> eclipse_amount > 0 )
+      if ( p() -> eclipse_amount < 0 )
         return false;
 
       return ready;
@@ -4579,7 +4567,7 @@ struct starfire_t : public druid_spell_t
   {
     druid_spell_t::execute();
 
-    if ( p() -> eclipse_amount > 0 && !p() -> buff.celestial_alignment -> up() )
+    if ( p() -> eclipse_amount < 0 && !p() -> buff.celestial_alignment -> up() )
       p() -> proc.wrong_eclipse_starfire -> occur();
   }
 
@@ -4660,10 +4648,10 @@ struct starsurge_t : public druid_spell_t
   virtual void execute()
   {
     druid_spell_t::execute();
-    if ( p() -> eclipse_amount > 0 || p() -> buff.celestial_alignment -> up() )
+    if ( p() -> eclipse_amount < 0 || p() -> buff.celestial_alignment -> up() )
       p() -> buff.solar_empowerment -> trigger( 2 );
 
-    if ( p() -> eclipse_amount <= 0 || p() -> buff.celestial_alignment -> up() )
+    if ( p() -> eclipse_amount >= 0 || p() -> buff.celestial_alignment -> up() )
       p() -> buff.lunar_empowerment -> trigger( 3 );
   }
 };
@@ -4676,7 +4664,6 @@ struct stellar_flare_t : public druid_spell_t
     druid_spell_t( "stellar_flare", player, player -> talent.stellar_flare )
   {
     parse_options( NULL, options_str );
-    dot_duration = timespan_t::from_seconds( 20 );
   }
 
   virtual double action_multiplier() const
@@ -4686,11 +4673,7 @@ struct stellar_flare_t : public druid_spell_t
     if ( p() -> buff.moonkin_form -> up() )
     {
       double balance;
-      balance = p() -> eclipse_amount;
-      if ( balance > 100 )
-        balance = 100;
-      else if ( balance < -100 )
-        balance = -100;
+      balance = p() -> clamped_eclipse_amount;
 
       balance = std::abs( balance );
 
@@ -4922,7 +4905,7 @@ struct wrath_t : public druid_spell_t
   {
     druid_spell_t::execute();
 
-    if ( p() -> eclipse_amount <= 0 && !p() -> buff.celestial_alignment -> up() )
+    if ( p() -> eclipse_amount > 0 && !p() -> buff.celestial_alignment -> up() )
       p() -> proc.wrong_eclipse_wrath -> occur();
   }
 
@@ -5276,7 +5259,7 @@ void druid_t::init_spells()
   glyph.moonwarding           = find_glyph_spell( "Glyph of Moonwarding" );
   glyph.ninth_life            = find_glyph_spell( "Glyph of the Ninth Life" );
   glyph.omens                 = find_glyph_spell( "Glyph of Omens" );
-  glyph.sudden_eclipse        = find_glyph_spell( "Glyph of Sudden Eclipse" );
+  //glyph.sudden_eclipse        = find_glyph_spell( "Glyph of Sudden Eclipse" );
   glyph.regrowth              = find_glyph_spell( "Glyph of Regrowth" );
   glyph.rejuvenation          = find_glyph_spell( "Glyph of Rejuvenation" );
   glyph.savage_roar           = find_glyph_spell( "Glyph of Savage Roar" );
@@ -5676,26 +5659,26 @@ void druid_t::apl_balance()
   default_list -> add_talent( this, "Incarnation" );
 
   single_target -> add_action( this, "Celestial Alignment" );
-  single_target -> add_action( this, "Starsurge", "if=charges=3|(eclipse_change>4&eclipse_dir=1)|(eclipse_energy<=-75&eclipse_dir=-1)" );
-  single_target -> add_action( this, "Stellar Flare", "if=@eclipse_energy<10&!dot.stellar_flare.ticking" );
-  single_target -> add_action( this, "Moonfire" , "if=!dot.moonfire.ticking|(dot.moonfire.remains<=8&eclipse_change<=12&eclipse_energy=-100&eclipse_change>=8)|(buff.celestial_alignment.up&dot.moonfire.ticking&dot.sunfire.ticking&dot.sunfire.remains<=6)" );
-  single_target -> add_action( this, "Sunfire", "if=!dot.sunfire.ticking|(eclipse_energy>=0&dot.sunfire.remains<=8)" );
-  single_target -> add_action( this, "Wrath", "if=buff.celestial_alignment.up&buff.solar_empowerment.up&eclipse_energy>0" );
-  single_target -> add_action( this, "Starfire", "if=buff.celestial_alignment.up&buff.lunar_empowerment.up&eclipse_energy<=0" );
+  single_target -> add_action( this, "Starsurge", "if=charges=3|(eclipse_change>4&eclipse_dir.lunar)|(eclipse_energy<=75&eclipse_dir.lunar)" );
+  single_target -> add_talent( this, "Stellar Flare", "if=@eclipse_energy<10&!dot.stellar_flare.ticking" );
+  single_target -> add_action( this, "Moonfire" , "if=!dot.moonfire.ticking|(dot.moonfire.remains<=8&eclipse_change<=12&eclipse_energy=100&eclipse_change>=8)|(buff.celestial_alignment.up&dot.moonfire.ticking&dot.sunfire.ticking&dot.sunfire.remains<=6)" );
+  single_target -> add_action( this, "Sunfire", "if=!dot.sunfire.ticking|(eclipse_energy<0&dot.sunfire.remains<=8)" );
+  single_target -> add_action( this, "Wrath", "if=buff.celestial_alignment.up&buff.solar_empowerment.up&eclipse_energy<0" );
+  single_target -> add_action( this, "Starfire", "if=buff.celestial_alignment.up&buff.lunar_empowerment.up&eclipse_energy>=0" );
   single_target -> add_action( this, "Starsurge", "if=buff.celestial_alignment.up" );
-  single_target -> add_action( this, "Starsurge", "if=buff.solar_empowerment.down&buff.lunar_empowerment.down&((eclipse_energy>75&eclipse_dir=1)|(eclipse_energy<-75&eclipse_dir=-1))" );
-  single_target -> add_action( this, "Starfire", "if=eclipse_energy<0|(eclipse_energy>0&eclipse_change<2)" );
+  single_target -> add_action( this, "Starsurge", "if=buff.solar_empowerment.down&buff.lunar_empowerment.down&((eclipse_energy>75&eclipse_dir.lunar)|(eclipse_energy<-75&eclipse_dir.solar))" );
+  single_target -> add_action( this, "Starfire", "if=eclipse_energy>0|(eclipse_energy<0&eclipse_change<2)" );
   single_target -> add_action( this, "Wrath" );
 
   aoe -> add_action( this, "Celestial Alignment" );
   aoe -> add_action( this, "Starfall", "if=charges=3" );
-  aoe -> add_action( this, "Stellar Flare", "if=@eclipse_energy<10&!dot.stellar_flare.ticking" );
-  aoe -> add_action( this, "Moonfire", "if=!dot.moonfire.ticking|(dot.moonfire.remains<=8&eclipse_change<=12&eclipse_energy=-100&eclipse_change>=8)|(buff.celestial_alignment.up&dot.moonfire.ticking&dot.sunfire.ticking&dot.sunfire.remains<=6)" );
-  aoe -> add_action( this, "Sunfire", "if=!dot.sunfire.ticking|(eclipse_energy>=0&dot.sunfire.remains<=8)" );
-  aoe -> add_action( this, "Wrath", "if=buff.celestial_alignment.up&buff.solar_empowerment.up&eclipse_energy>0" );
-  aoe -> add_action( this, "Starfire", "if=buff.celestial_alignment.up&buff.lunar_empowerment.up&eclipse_energy<=0" );
+  aoe -> add_talent( this, "Stellar Flare", "if=@eclipse_energy<10&!dot.stellar_flare.ticking" );
+  aoe -> add_action( this, "Moonfire", "if=!dot.moonfire.ticking|(dot.moonfire.remains<=8&eclipse_change<=12&eclipse_energy=100&eclipse_change>=8)|(buff.celestial_alignment.up&dot.moonfire.ticking&dot.sunfire.ticking&dot.sunfire.remains<=6)" );
+  aoe -> add_action( this, "Sunfire", "if=!dot.sunfire.ticking|(eclipse_energy<0&dot.sunfire.remains<=8)" );
+  aoe -> add_action( this, "Wrath", "if=buff.celestial_alignment.up&buff.solar_empowerment.up&eclipse_energy<0" );
+  aoe -> add_action( this, "Starfire", "if=buff.celestial_alignment.up&buff.lunar_empowerment.up&eclipse_energy>=0" );
   aoe -> add_action( this, "Starfall" );
-  aoe -> add_action( this, "Starfire", "if=eclipse_energy<0|(eclipse_energy>0&eclipse_change<2)" );
+  aoe -> add_action( this, "Starfire", "if=eclipse_energy>0|(eclipse_energy<0&eclipse_change<2)" );
   aoe -> add_action( this, "Wrath" );
 }
 
@@ -5870,9 +5853,10 @@ void druid_t::reset()
   inflight_starsurge = false;
 
   eclipse_amount = 0;
-  eclipse_direction = -1;
-  eclipse_change = 0;
-  eclipse_max = 20;
+  eclipse_direction = 1;
+  eclipse_change = talent.euphoria -> ok() ? 10 : 20;
+  eclipse_max = talent.euphoria -> ok() ? 5 : 10;
+  clamped_eclipse_amount = 0;
   last_check = timespan_t::zero();
   balance_time = timespan_t::zero();
 
@@ -6272,35 +6256,53 @@ double druid_t::composite_rating_multiplier( rating_e rating ) const
 
 expr_t* druid_t::create_expression( action_t* a, const std::string& name_str )
 {
+  struct druid_expr_t : public expr_t
+  {
+    druid_t& druid;
+    druid_expr_t( const std::string& n, druid_t& p ) :
+      expr_t( n ), druid( p )
+    {
+    }
+  };
 
-  if ( util::str_compare_ci( name_str, "eclipse_energy" ) )
+  struct eclipse_expr_t : public druid_expr_t
   {
-    balance_tracker();
-    return make_ref_expr( name_str, eclipse_amount );
+    int rt;
+    eclipse_expr_t( const std::string& n, druid_t& p, int r ) :
+      druid_expr_t( n, p ), rt( r )
+    {
+    }
+    virtual double evaluate() { return druid.eclipse_direction == rt; }
+  };
+
+  std::vector<std::string> splits = util::string_split( name_str, "." );
+
+  if ( ( splits.size() == 2 ) && ( splits[0] == "eclipse_dir" ) )
+  {
+    int e;
+    if ( splits[1] == "lunar" ) e = 1;
+    else if ( splits[1] == "solar" ) e = -1;
+    return new eclipse_expr_t( name_str, *this, e );
   }
-  else if ( name_str == "eclipse_dir" )
+  else if ( util::str_compare_ci( name_str, "eclipse_energy" ) )
   {
-    balance_tracker();
-    return make_ref_expr( "eclipse_dir", eclipse_direction );
+    return make_ref_expr( name_str, clamped_eclipse_amount );
   }
-  else if ( name_str == "eclipse_change" )
+  else if ( util::str_compare_ci( name_str, "eclipse_change" ) )
   {
-    balance_tracker();
     return make_ref_expr( "eclipse_change", eclipse_change );
   }
-  else if ( name_str == "eclipse_max" )
+  else if ( util::str_compare_ci( name_str, "eclipse_max" ) )
   {
-    balance_tracker();
     return make_ref_expr( "eclipse_max", eclipse_max );
   }
   else if ( util::str_compare_ci( name_str, "combo_points" ) )
   {
     // If an action targets the druid, but checks for combo points, check
     // sim -> target instead. Quick fix so HT can use combo_points
-    druid_td_t* td = get_target_data( ( a -> target == this ) ? sim -> target : a -> target  );
+    druid_td_t* td = get_target_data( ( a -> target == this ) ? sim -> target : a -> target );
     return td -> combo_points.count_expr();
   }
-
   return player_t::create_expression( a, name_str );
 }
 
@@ -6703,8 +6705,17 @@ void druid_t::balance_tracker()
   if ( last_check == sim -> current_time ) // No need to re-check balance if the time hasn't changed.
     return;
 
-  if ( buff.celestial_alignment -> up() ) // Balance is locked while celestial alignment is active.
+  if ( buff.celestial_alignment -> up() ) // Balance power is locked while celestial alignment is active.
+  { // We should still update the expressions to account for the length of time that celestial alignment is up.
+    balance_expressions();
+
+    double ca_remains;
+    ca_remains = buff.celestial_alignment -> remains() / timespan_t::from_millis( 1000 );
+
+    eclipse_change += ca_remains;
+    eclipse_max += ca_remains;
     return;
+  }
 
   last_check = sim -> current_time - last_check;
   // Subtract current time by the last time we checked to get the amount of time elapsed
@@ -6720,9 +6731,14 @@ void druid_t::balance_tracker()
   balance_time += last_check; // Add the amount of elapsed time to balance_time
   last_check = sim -> current_time; // Set current time for last check.
 
-  eclipse_amount = -110 * sin( -2 * M_PI * balance_time / timespan_t::from_millis( 40000 ) ); // Re-calculate eclipse
+  eclipse_amount = 110 * sin( 2 * M_PI * balance_time / timespan_t::from_millis( 40000 ) ); // Re-calculate eclipse
 
-  eclipse_direction = -110 * sin( -2 * M_PI * ( balance_time + timespan_t::from_millis( 1 ) ) / timespan_t::from_millis( 40000 ) );
+  if ( eclipse_amount > 100 )
+    clamped_eclipse_amount = 100;
+  else if ( eclipse_amount < -100 )
+    clamped_eclipse_amount = -100;
+
+  eclipse_direction = 110 * sin( 2 * M_PI * ( balance_time + timespan_t::from_millis( 1 ) ) / timespan_t::from_millis( 40000 ) );
   // Add 1 millisecond to eclipse in order to find the direction we are going.
 
   if ( eclipse_amount > eclipse_direction )  // Compare current eclipse with the last eclipse to find out what direction we are heading.
@@ -6730,22 +6746,29 @@ void druid_t::balance_tracker()
   else
     eclipse_direction = 1;
 
-  // This takes the current direction along with the current amount to find out if we are heading towards 0 or 100/-100, 
-  // and then calculates the time till we reach 0.
-  if ( eclipse_direction == 1 && eclipse_amount < 0 )
+  balance_expressions();
+}
+
+void druid_t::balance_expressions()
+{
+  if ( eclipse_direction == 1 && eclipse_amount <= 0 )
   {
     eclipse_change = std::abs( eclipse_amount ) / 110 * ( talent.euphoria ? 5 : 10 );
-    eclipse_max = eclipse_change + 20;
+    eclipse_max = eclipse_change + ( talent.euphoria ? 2.5 : 7.5 );
   }
-  else if ( eclipse_direction == -1 && eclipse_amount > 0 )
+  else if ( eclipse_direction == -1 && eclipse_amount >= 0 )
   {
-    eclipse_change = eclipse_amount / 110 * ( talent.euphoria ? 5 : 10 );;
-    eclipse_max = eclipse_change + 20;
+    eclipse_change = eclipse_amount / 110 * ( talent.euphoria ? 5 : 10 );
+    eclipse_max = eclipse_change + ( talent.euphoria ? 2.5 : 7.5 );
   }
   else
   {
-    eclipse_change = ( 110 - std::abs( eclipse_amount ) ) / 110 * 20;
-    eclipse_max = std::abs( eclipse_amount ) / 110 * ( talent.euphoria ? 10 : 20 );
+    eclipse_change = ( 110 - std::abs( eclipse_amount ) ) / 110 * ( talent.euphoria ? 5 : 10 ) +
+      ( talent.euphoria ? 5 : 10 );
+    if ( std::abs( eclipse_amount ) >= 100 )
+      eclipse_max = 0;
+    else
+      eclipse_max = ( 110 - std::abs( eclipse_amount ) ) / 110 * ( talent.euphoria ? 2.5 : 7.5 );
   }
 }
 

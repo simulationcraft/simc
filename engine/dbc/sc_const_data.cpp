@@ -326,7 +326,28 @@ void dbc::apply_hotfixes()
   // Warrior
 
   // Druid
-
+  s = spell_data_t::find( 164812, false );
+  assert( s -> duration() == 20000 && "Check Druid Dot Duration" );
+  s -> _duration = 20000;
+  if ( SC_USE_PTR )
+  {
+    s = spell_data_t::find( 164812, true );
+    s -> _duration = 20000;
+  }
+  s = spell_data_t::find( 164815, false );
+  s -> _duration = 20000;
+  if ( SC_USE_PTR )
+  {
+    s = spell_data_t::find( 164815, true );
+    s -> _duration = 20000;
+  }
+  s = spell_data_t::find( 152221, false );
+  s -> _duration = 20000;
+  if ( SC_USE_PTR )
+  {
+    s = spell_data_t::find( 152221, true );
+    s -> _duration = 20000;
+  }
   // Death Knight
 
   // Misc
