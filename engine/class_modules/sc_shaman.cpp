@@ -897,10 +897,14 @@ struct shaman_spell_t : public shaman_spell_base_t<spell_t>
   shaman_spell_t* overload_spell;
   double   overload_chance_multiplier;
 
+  // Unleash flame
+  bool     may_unleash_flame;
+
   shaman_spell_t( const std::string& token, shaman_t* p,
                   const spell_data_t* s = spell_data_t::nil(), const std::string& options = std::string() ) :
     base_t( token, p, s ),
-    overload( false ), overload_spell( 0 ), overload_chance_multiplier( 1.0 )
+    overload( false ), overload_spell( 0 ), overload_chance_multiplier( 1.0 ),
+    may_unleash_flame( dbc::is_school( school, SCHOOL_FIRE ) )
   {
     parse_options( 0, options );
 
@@ -981,6 +985,16 @@ struct shaman_spell_t : public shaman_spell_base_t<spell_t>
 
     if ( p() -> buff.elemental_focus -> up() )
       m *= 1.0 + p() -> buff.elemental_focus -> data().effectN( 2 ).percent();
+
+    return m;
+  }
+
+  virtual double composite_persistent_multiplier( const action_state_t* state ) const
+  {
+    double m = base_t::composite_persistent_multiplier( state );
+
+    if ( may_unleash_flame && p() -> buff.unleash_flame -> up() )
+      m *= 1.0 + p() -> buff.unleash_flame -> data().effectN( 2 ).percent();
 
     return m;
   }
@@ -1982,16 +1996,6 @@ struct lava_burst_overload_t : public shaman_spell_t
     base_execute_time    = timespan_t::zero();
   }
 
-  virtual double composite_da_multiplier() const
-  {
-    double m = shaman_spell_t::composite_da_multiplier();
-
-    if ( p() -> buff.unleash_flame -> check() )
-      m *= 1.0 + p() -> buff.unleash_flame -> data().effectN( 2 ).percent();
-
-    return m;
-  }
-
   virtual double composite_target_multiplier( player_t* target ) const
   {
     double m = shaman_spell_t::composite_target_multiplier( target );
@@ -2105,16 +2109,6 @@ struct lava_beam_overload_t : public shaman_spell_t
     base_add_multiplier  = data().effectN( 1 ).chain_multiplier();
   }
 
-  virtual double composite_da_multiplier() const
-  {
-    double m = shaman_spell_t::composite_da_multiplier();
-
-    if ( p() -> buff.unleash_flame -> up() )
-      m *= 1.0 + p() -> buff.unleash_flame -> data().effectN( 2 ).percent();
-
-    return m;
-  }
-
   void impact( action_state_t* state )
   {
     shaman_spell_t::impact( state );
@@ -2135,16 +2129,6 @@ struct elemental_blast_overload_t : public shaman_spell_t
     overload             = true;
     background           = true;
     base_execute_time    = timespan_t::zero();
-  }
-
-  virtual double composite_da_multiplier() const
-  {
-    double m = shaman_spell_t::composite_da_multiplier();
-
-    if ( p() -> buff.unleash_flame -> check() )
-      m *= 1.0 + p() -> buff.unleash_flame -> data().effectN( 2 ).percent();
-
-    return m;
   }
 };
 
@@ -2221,6 +2205,7 @@ struct flametongue_weapon_spell_t : public shaman_spell_t
   flametongue_weapon_spell_t( const std::string& n, shaman_t* player, weapon_t* w ) :
     shaman_spell_t( n, player, player -> find_spell( 10444 ) )
   {
+    may_unleash_flame = false;
     may_crit = background = true;
 
     if ( player -> specialization() == SHAMAN_ENHANCEMENT )
@@ -2911,7 +2896,7 @@ void shaman_spell_t::execute()
 {
   base_t::execute();
 
-  if ( ! totem && ! background && ! proc && ( data().school_mask() & SCHOOL_MASK_FIRE ) )
+  if ( ! background && may_unleash_flame )
     p() -> buff.unleash_flame -> expire();
 
 }
@@ -3047,16 +3032,6 @@ struct lava_beam_t : public shaman_spell_t
     add_child( overload_spell );
   }
 
-  virtual double composite_da_multiplier() const
-  {
-    double m = shaman_spell_t::composite_da_multiplier();
-
-    if ( p() -> buff.unleash_flame -> check() )
-      m *= 1.0 + p() -> buff.unleash_flame -> data().effectN( 2 ).percent();
-
-    return m;
-  }
-
   void execute()
   {
     shaman_spell_t::execute();
@@ -3155,16 +3130,6 @@ struct fire_nova_explosion_t : public shaman_spell_t
     shaman_spell_t::init();
 
     stats = player -> get_stats( "fire_nova" );
-  }
-
-  double composite_da_multiplier() const
-  {
-    double m = shaman_spell_t::composite_da_multiplier();
-
-    if ( p() -> buff.unleash_flame -> check() )
-      m *= 1.0 + p() -> buff.unleash_flame -> data().effectN( 2 ).percent();
-
-    return m;
   }
 
   // Fire nova does not damage the main target.
@@ -3299,16 +3264,6 @@ struct lava_burst_t : public shaman_spell_t
     uses_eoe = player -> specialization() == SHAMAN_ELEMENTAL;
     overload_spell          = new lava_burst_overload_t( player );
     add_child( overload_spell );
-  }
-
-  virtual double composite_da_multiplier() const
-  {
-    double m = shaman_spell_t::composite_da_multiplier();
-
-    if ( p() -> buff.unleash_flame -> check() )
-      m *= 1.0 + p() -> buff.unleash_flame -> data().effectN( 2 ).percent();
-
-    return m;
   }
 
   virtual double composite_hit() const
@@ -3541,16 +3496,6 @@ struct elemental_blast_t : public shaman_spell_t
     if ( sim -> debug ) s -> debug();
 
     return result;
-  }
-
-  virtual double composite_da_multiplier() const
-  {
-    double m = shaman_spell_t::composite_da_multiplier();
-
-    if ( p() -> buff.unleash_flame -> check() )
-      m *= 1.0 + p() -> buff.unleash_flame -> data().effectN( 2 ).percent();
-
-    return m;
   }
 
   virtual double composite_hit() const
@@ -3838,7 +3783,6 @@ struct flame_shock_t : public shaman_spell_t
   {
     double m = shaman_spell_t::action_multiplier();
 
-    m *= 1.0 + p() -> buff.unleash_flame -> stack() * p() -> buff.unleash_flame -> data().effectN( 2 ).percent();
     m *= 1.0 + p() -> buff.shocking_lava -> stack() * p() -> buff.shocking_lava -> data().effectN( 1 ).percent();
 
     return m;
@@ -4195,7 +4139,7 @@ struct shaman_totem_t : public shaman_spell_t
     totem_duration( data().duration() )
   {
     totem = true;
-    harmful = callbacks = may_miss = may_crit = false;
+    harmful = callbacks = may_miss = may_crit = may_unleash_flame = false;
     totem_pet      = dynamic_cast< shaman_totem_pet_t* >( player -> find_pet( name() ) );
     assert( totem_pet != 0 );
   }
