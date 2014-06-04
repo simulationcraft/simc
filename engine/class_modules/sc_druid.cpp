@@ -3796,7 +3796,7 @@ struct druid_spell_t : public druid_spell_base_t<spell_t>
   {
     double m = base_t::composite_persistent_multiplier( state );
 
-    if ( p() -> buff.moonkin_form -> up() )
+    if ( p() -> specialization() == DRUID_BALANCE )
     {
       double balance;
       balance = p() -> clamped_eclipse_amount;
@@ -4672,18 +4672,16 @@ struct stellar_flare_t : public druid_spell_t
   {
     double m = base_t::composite_persistent_multiplier( state );
 
-    if ( p() -> buff.moonkin_form -> up() )
-    {
-      double balance;
-      balance = p() -> clamped_eclipse_amount;
+    double balance;
+    balance = p() -> clamped_eclipse_amount;
 
-      balance = std::abs( balance );
+    balance = std::abs( balance );
 
-      double mastery;
-      mastery = p() -> cache.mastery_value();
+    double mastery;
+    mastery = p() -> cache.mastery_value();
 
-      m *= 1.0 + mastery * ( 100 - balance ) / 100;
-    }
+    m *= 1.0 + mastery * ( 100 - balance ) / 100;
+
     if ( sim -> log || sim -> debug )
       sim -> out_debug.printf( "Action modifier %f", m );
     return m;
