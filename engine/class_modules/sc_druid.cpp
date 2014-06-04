@@ -83,6 +83,7 @@ struct druid_td_t : public actor_pair_t
     dot_t* regrowth;
     dot_t* rejuvenation;
     dot_t* rip;
+    dot_t* stellar_flare;
     dot_t* sunfire;
     dot_t* wild_growth;
   } dots;
@@ -4667,9 +4668,9 @@ struct stellar_flare_t : public druid_spell_t
     parse_options( NULL, options_str );
   }
 
-  virtual double action_multiplier() const
+  virtual double composite_persistent_multiplier( const action_state_t* state ) const
   {
-    double damageincrease = druid_spell_base_t::action_multiplier();
+    double m = base_t::composite_persistent_multiplier( state );
 
     if ( p() -> buff.moonkin_form -> up() )
     {
@@ -4681,9 +4682,11 @@ struct stellar_flare_t : public druid_spell_t
       double mastery;
       mastery = p() -> cache.mastery_value();
 
-      damageincrease *= 1.0 + mastery * ( 100 - balance ) / 100;
+      m *= 1.0 + mastery * ( 100 - balance ) / 100;
     }
-    return damageincrease;
+    if ( sim -> log || sim -> debug )
+      sim -> out_debug.printf( "Action modifier %f", m );
+    return m;
   }
 };
 
@@ -6621,6 +6624,7 @@ druid_td_t::druid_td_t( player_t& target, druid_t& source )
   dots.lacerate     = target.get_dot( "lacerate",     &source );
   dots.lifebloom    = target.get_dot( "lifebloom",    &source );
   dots.moonfire     = target.get_dot( "moonfire",     &source );
+  dots.stellar_flare = target.get_dot( "stellar_flare", &source );
   dots.rake         = target.get_dot( "rake",         &source );
   dots.regrowth     = target.get_dot( "regrowth",     &source );
   dots.rejuvenation = target.get_dot( "rejuvenation", &source );
