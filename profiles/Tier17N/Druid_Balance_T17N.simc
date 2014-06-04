@@ -34,24 +34,24 @@ actions+=/run_action_list,name=aoe,if=active_enemies>1
 actions+=/force_of_nature,if=talent.force_of_nature.enabled
 
 actions.single_target=celestial_alignment
-actions.single_target+=/starsurge,if=charges=3|(eclipse_change>4&eclipse_dir=1)|(eclipse<=-75&eclipse_dir=-1)
-actions.single_target+=/moonfire,if=!dot.moonfire.ticking|(dot.moonfire.remains<=8&eclipse_change<=12&eclipse=-100&eclipse_change>=8)|(buff.celestial_alignment.up&dot.moonfire.ticking&dot.sunfire.ticking&dot.sunfire.remains<=6)
-actions.single_target+=/sunfire,if=!dot.sunfire.ticking|(eclipse>=0&dot.sunfire.remains<=8)
-actions.single_target+=/wrath,if=buff.celestial_alignment.up&buff.solar_empowerment.up&eclipse>0
-actions.single_target+=/starfire,if=buff.celestial_alignment.up&buff.lunar_empowerment.up&eclipse<=0
+actions.single_target+=/starsurge,if=charges=3|(eclipse_change>4&eclipse_dir=1)|(eclipse_energy<=-75&eclipse_dir=-1)
+actions.single_target+=/moonfire,if=!dot.moonfire.ticking|(dot.moonfire.remains<=8&eclipse_change<=12&eclipse_energy=-100&eclipse_change>=8)|(buff.celestial_alignment.up&dot.moonfire.ticking&dot.sunfire.ticking&dot.sunfire.remains<=6)
+actions.single_target+=/sunfire,if=!dot.sunfire.ticking|(eclipse_energy>=0&dot.sunfire.remains<=8)
+actions.single_target+=/wrath,if=buff.celestial_alignment.up&buff.solar_empowerment.up&eclipse_energy>0
+actions.single_target+=/starfire,if=buff.celestial_alignment.up&buff.lunar_empowerment.up&eclipse_energy<=0
 actions.single_target+=/starsurge,if=buff.celestial_alignment.up
-actions.single_target+=/starsurge,if=buff.solar_empowerment.down&buff.lunar_empowerment.down&((eclipse>75&eclipse_dir=1)|(eclipse<-75&eclipse_dir=-1))
-actions.single_target+=/starfire,if=eclipse<0|(eclipse>0&eclipse_change<2)
+actions.single_target+=/starsurge,if=buff.solar_empowerment.down&buff.lunar_empowerment.down&((eclipse_energy>75&eclipse_dir=1)|(eclipse_energy<-75&eclipse_dir=-1))
+actions.single_target+=/starfire,if=eclipse_energy<0|(eclipse_energy>0&eclipse_change<2)
 actions.single_target+=/wrath
 
 actions.aoe=celestial_alignment
 actions.aoe+=/starfall,if=charges=3
-actions.aoe+=/moonfire,if=!dot.moonfire.ticking|(dot.moonfire.remains<=8&eclipse_change<=12&eclipse=-100&eclipse_change>=8)|(buff.celestial_alignment.up&dot.moonfire.ticking&dot.sunfire.ticking&dot.sunfire.remains<=6)
-actions.aoe+=/sunfire,if=!dot.sunfire.ticking|(eclipse>=0&dot.sunfire.remains<=8)
-actions.aoe+=/wrath,if=buff.celestial_alignment.up&buff.solar_empowerment.up&eclipse>0
-actions.aoe+=/starfire,if=buff.celestial_alignment.up&buff.lunar_empowerment.up&eclipse<=0
+actions.aoe+=/moonfire,if=!dot.moonfire.ticking|(dot.moonfire.remains<=8&eclipse_change<=12&eclipse_energy=-100&eclipse_change>=8)|(buff.celestial_alignment.up&dot.moonfire.ticking&dot.sunfire.ticking&dot.sunfire.remains<=6)
+actions.aoe+=/sunfire,if=!dot.sunfire.ticking|(eclipse_energy>=0&dot.sunfire.remains<=8)
+actions.aoe+=/wrath,if=buff.celestial_alignment.up&buff.solar_empowerment.up&eclipse_energy>0
+actions.aoe+=/starfire,if=buff.celestial_alignment.up&buff.lunar_empowerment.up&eclipse_energy<=0
 actions.aoe+=/starfall
-actions.aoe+=/starfire,if=eclipse<0|(eclipse>0&eclipse_change<2)
+actions.aoe+=/starfire,if=eclipse_energy<0|(eclipse_energy>0&eclipse_change<2)
 actions.aoe+=/wrath
 
 head=darkfang_mask,id=105542,upgrade=2,gems=sinister_primal_16crit_9int
