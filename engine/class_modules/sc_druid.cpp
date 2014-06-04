@@ -6281,9 +6281,10 @@ expr_t* druid_t::create_expression( action_t* a, const std::string& name_str )
 
   if ( ( splits.size() == 2 ) && ( splits[0] == "eclipse_dir" ) )
   {
-    int e;
+    int e = -1;
     if ( splits[1] == "lunar" ) e = 1;
     else if ( splits[1] == "solar" ) e = -1;
+    // TODO: What if splits[1] is invalid, i.e., not lunar or solar?
     return new eclipse_expr_t( name_str, *this, e );
   }
   else if ( util::str_compare_ci( name_str, "eclipse_energy" ) )
