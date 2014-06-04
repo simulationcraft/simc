@@ -1993,6 +1993,7 @@ struct lava_burst_overload_t : public shaman_spell_t
     base_multiplier     *= 1.0 + player -> perk.improved_lava_burst -> effectN( 1 ).percent();
     overload             = true;
     background           = true;
+    may_unleash_flame    = false;
     base_execute_time    = timespan_t::zero();
   }
 
@@ -2102,6 +2103,7 @@ struct lava_beam_overload_t : public shaman_spell_t
   {
     overload             = true;
     background           = true;
+    may_unleash_flame    = false;
     base_execute_time    = timespan_t::zero();
     base_costs[ RESOURCE_MANA ] = 0;
     base_multiplier     += p() -> spec.shamanism -> effectN( 2 ).percent();
@@ -2128,6 +2130,7 @@ struct elemental_blast_overload_t : public shaman_spell_t
   {
     overload             = true;
     background           = true;
+    may_unleash_flame    = false;
     base_execute_time    = timespan_t::zero();
   }
 };
