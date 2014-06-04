@@ -579,8 +579,6 @@ void dot_t::start( timespan_t duration )
   current_duration = duration;
   last_start = sim.current_time;
 
-  end_event = new ( sim ) dot_t::dot_end_event_t( this, current_duration );
-
   ticking = true;
 
   if ( sim.debug )
@@ -589,6 +587,8 @@ void dot_t::start( timespan_t duration )
   check_tick_zero();
 
   schedule_tick();
+
+  end_event = new ( sim ) dot_t::dot_end_event_t( this, current_duration );
 }
 
 /* Precondition: ticking == true
@@ -599,9 +599,6 @@ void dot_t::refresh( timespan_t duration )
 
   last_start = sim.current_time;
 
-  event_t::cancel( end_event );
-  end_event = new ( sim ) dot_t::dot_end_event_t( this, current_duration );
-
   if ( sim.debug )
     sim.out_debug.printf( "%s refreshes dot for %s on %s. duration=%f remains()=%f",
                           source -> name(), name(), target -> name(),
@@ -611,6 +608,9 @@ void dot_t::refresh( timespan_t duration )
 
   // Recalculate num_ticks:
   num_ticks = current_tick + remains() / current_action -> tick_time( state -> haste );
+
+  event_t::cancel( end_event );
+  end_event = new ( sim ) dot_t::dot_end_event_t( this, current_duration );
 }
 
 void dot_t::check_tick_zero()
