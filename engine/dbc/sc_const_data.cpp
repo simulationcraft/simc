@@ -343,10 +343,12 @@ void dbc::apply_hotfixes()
   }
   s = spell_data_t::find( 152221, false );
   s -> _duration = 20000;
+  s -> _prj_speed = 0;
   if ( SC_USE_PTR )
   {
     s = spell_data_t::find( 152221, true );
     s -> _duration = 20000;
+    s -> _prj_speed = 0;
   }
   // Death Knight
 
