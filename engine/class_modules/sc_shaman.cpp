@@ -1923,16 +1923,6 @@ struct lava_burst_overload_t : public shaman_spell_t
     base_execute_time    = timespan_t::zero();
   }
 
-  virtual double composite_da_multiplier() const
-  {
-    double m = shaman_spell_t::composite_da_multiplier();
-
-    if ( p() -> buff.unleash_flame -> check() )
-      m *= 1.0 + p() -> buff.unleash_flame -> data().effectN( 2 ).percent();
-
-    return m;
-  }
-
   virtual double composite_target_multiplier( player_t* target ) const
   {
     double m = shaman_spell_t::composite_target_multiplier( target );
@@ -2045,16 +2035,6 @@ struct lava_beam_overload_t : public shaman_spell_t
     base_add_multiplier  = data().effectN( 1 ).chain_multiplier();
   }
 
-  virtual double composite_da_multiplier() const
-  {
-    double m = shaman_spell_t::composite_da_multiplier();
-
-    if ( p() -> buff.unleash_flame -> up() )
-      m *= 1.0 + p() -> buff.unleash_flame -> data().effectN( 2 ).percent();
-
-    return m;
-  }
-
   void impact( action_state_t* state )
   {
     shaman_spell_t::impact( state );
@@ -2075,16 +2055,6 @@ struct elemental_blast_overload_t : public shaman_spell_t
     overload             = true;
     background           = true;
     base_execute_time    = timespan_t::zero();
-  }
-
-  virtual double composite_da_multiplier() const
-  {
-    double m = shaman_spell_t::composite_da_multiplier();
-
-    if ( p() -> buff.unleash_flame -> check() )
-      m *= 1.0 + p() -> buff.unleash_flame -> data().effectN( 2 ).percent();
-
-    return m;
   }
 };
 
