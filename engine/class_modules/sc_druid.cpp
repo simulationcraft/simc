@@ -6287,7 +6287,7 @@ expr_t* druid_t::create_expression( action_t* a, const std::string& name_str )
     else
     {
       sim -> errorf( "Invalid eclipse_direction 'split[1]', valid values are 'lunar' or 'solar'" );
-      return new eclipse_expr_t( name_str, *this, e );
+      return player_t::create_expression( a, name_str );
     }
     return new eclipse_expr_t( name_str, *this, e );
   }
