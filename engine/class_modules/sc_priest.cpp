@@ -2416,9 +2416,9 @@ struct devouring_plague_t final : public priest_spell_t
       priest_spell_t::snapshot_state( state, type );
     }
 
-    virtual double action_ta_multiplier() const override
+    virtual double composite_persistent_multiplier( const action_state_t* s ) const override
     {
-      double m = priest_spell_t::action_ta_multiplier();
+      double m = priest_spell_t::composite_persistent_multiplier( s );
 
       m *= shadow_orbs_to_consume();
 
@@ -2585,11 +2585,12 @@ struct mind_flay_insanity_t final : public mind_flay_base_t<true>
   {
   }
 
-  virtual double action_multiplier() const override
+  virtual double composite_persistent_multiplier( const action_state_t* s ) const override
   {
-    double am = base_t::action_multiplier();
+    double am = base_t::composite_persistent_multiplier( s );
 
     am *= 1.0 + orbs_used / 3.0;
+
     return am;
   }
 
@@ -3365,9 +3366,9 @@ struct void_entropy_t : public priest_spell_t
     stats -> consume_resource( current_resource(), resource_consumed );
   }
 
-  virtual double action_ta_multiplier() const override
+  virtual double composite_persistent_multiplier( const action_state_t* s ) const override
   {
-    double m = priest_spell_t::action_ta_multiplier();
+    double m = priest_spell_t::composite_persistent_multiplier( s );
 
     m *= shadow_orbs_to_consume();
 
