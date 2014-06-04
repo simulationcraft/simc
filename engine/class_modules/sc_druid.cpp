@@ -6735,6 +6735,8 @@ void druid_t::balance_tracker()
     clamped_eclipse_amount = 100;
   else if ( eclipse_amount < -100 )
     clamped_eclipse_amount = -100;
+  else
+    clamped_eclipse_amount = eclipse_amount;
 
   eclipse_direction = 110 * sin( 2 * M_PI * ( balance_time + timespan_t::from_millis( 1 ) ) / timespan_t::from_millis( 40000 ) );
   // Add 1 millisecond to eclipse in order to find the direction we are going.
