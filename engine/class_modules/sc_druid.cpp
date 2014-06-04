@@ -3808,11 +3808,11 @@ struct druid_spell_t : public druid_spell_base_t<spell_t>
       {
         m *= 1.0 + mastery;
       }
-      else if ( dbc::is_school( school, SCHOOL_NATURE ) && balance > 0 )
+      else if ( dbc::is_school( school, SCHOOL_NATURE ) && balance < 0 )
       {
         m *= 1.0 + mastery / 2 + mastery * balance / 200;
       }
-      else if ( dbc::is_school( school, SCHOOL_ARCANE ) && balance <= 0 )
+      else if ( dbc::is_school( school, SCHOOL_ARCANE ) && balance >= 0 )
       {
         m *= 1.0 + mastery / 2 + mastery * std::abs( balance ) / 200;
       }
@@ -3820,6 +3820,9 @@ struct druid_spell_t : public druid_spell_base_t<spell_t>
       {
         m *= 1.0 + mastery / 2 - mastery * std::abs( balance ) / 200;
       }
+
+      if ( sim -> log || sim -> debug )
+        sim -> out_debug.printf( "Action modifier %f", m );
     }
 
     return m;
