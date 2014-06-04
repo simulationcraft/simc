@@ -3798,7 +3798,7 @@ struct druid_spell_t : public druid_spell_base_t<spell_t>
   virtual double action_multiplier() const
   {
     double damageincrease = druid_spell_base_t::action_multiplier();
-    double balancemultiplier;
+    double balancemultiplier = 1;
 
     if ( p() -> buff.moonkin_form -> up() )
     {
@@ -6731,7 +6731,7 @@ void druid_t::balance_tracker()
   eclipse_direction = -110 * sin( -2 * M_PI * ( balance_time + timespan_t::from_millis( 1 ) ) / timespan_t::from_millis( 40000 ) );
   // Add 1 millisecond to eclipse in order to find the direction we are going.
 
-  if ( eclipse_direction > eclipse_amount )  // Compare current eclipse with the last eclipse to find out what direction we are heading.
+  if ( eclipse_amount > eclipse_direction )  // Compare current eclipse with the last eclipse to find out what direction we are heading.
     eclipse_direction = -1;
   else
     eclipse_direction = 1;
