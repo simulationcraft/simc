@@ -3797,7 +3797,7 @@ struct druid_spell_t : public druid_spell_base_t<spell_t>
 
   virtual double action_multiplier() const
   {
-    double damageincrease = druid_spell_base_t::action_multiplier();
+    double damageincrease = base_t::action_multiplier();
     double balancemultiplier = 1;
 
     if ( p() -> buff.moonkin_form -> up() )
@@ -4052,7 +4052,6 @@ struct celestial_alignment_t : public druid_spell_t
     druid_spell_t( "celestial_alignment", player, player -> spec.celestial_alignment , options_str )
   {
     parse_options( NULL, options_str );
-    dot_duration = timespan_t::zero();
     harmful = false;
   }
 
@@ -4272,20 +4271,19 @@ struct mark_of_the_wild_t : public druid_spell_t
         druid_spell_t( "moonfire", player, player -> find_spell( 8921 ) )
       {
         const spell_data_t* dmg_spell = player -> find_spell( 164812 );
+        dot_behavior = DOT_REFRESH;
         dot_duration                  = timespan_t::from_seconds( 20 ); // dmg_spell -> duration();
+        dot_duration                 *= 1 + player -> spec.astral_showers -> effectN( 2 ).percent();
+        dot_duration                 += player -> sets.set( SET_T14_4PC_CASTER ) -> effectN( 1 ).time_value();
         base_tick_time                = dmg_spell -> effectN( 2 ).period();
+
         spell_power_mod.tick          = dmg_spell-> effectN( 2 ).sp_coeff();
         spell_power_mod.tick         *= 1.0 + player -> talent.balance_of_power -> effectN( 3 ).percent();
+        spell_power_mod.tick         *= 1.0 + player -> perk.improved_moonfire -> effectN( 1 ).percent();
 
-        dot_duration                 += player -> sets.set( SET_T14_4PC_CASTER ) -> effectN( 1 ).time_value();
-        dot_duration                 *= 1 + player -> spec.astral_showers -> effectN( 2 ).percent();
-
-        base_multiplier              *= 1.0 + player -> perk.improved_moonfire -> effectN( 1 ).percent();
-
-        dot_behavior = DOT_REFRESH;
         // Does no direct damage, costs no mana
         attack_power_mod.direct = 0;
-        base_dd_min = base_dd_max = 0;
+        spell_power_mod.direct = 0;
         range::fill( base_costs, 0 );
       }
 
@@ -4302,35 +4300,28 @@ struct mark_of_the_wild_t : public druid_spell_t
     {
       parse_options( NULL, options_str );
       dot_behavior = DOT_REFRESH;
-
       const spell_data_t* dmg_spell = player -> find_spell( 164815 );
       dot_duration = timespan_t::from_seconds( 20 ); // dmg_spell -> duration();
+      dot_duration += player -> sets.set( SET_T14_4PC_CASTER ) -> effectN( 1 ).time_value();
       base_tick_time = dmg_spell -> effectN( 2 ).period();
+
       spell_power_mod.direct = dmg_spell-> effectN( 1 ).sp_coeff();
+      spell_power_mod.direct *= 1.0 + player -> spec.astral_showers -> effectN( 3 ).percent();
+      spell_power_mod.direct *= 1.0 + player -> perk.improved_moonfire -> effectN( 1 ).percent();
+
       spell_power_mod.tick = dmg_spell-> effectN( 2 ).sp_coeff();
       spell_power_mod.tick *= 1.0 + player -> talent.balance_of_power -> effectN( 3 ).percent();
+      spell_power_mod.tick *= 1.0 + player -> perk.improved_moonfire -> effectN( 1 ).percent();
 
-      dot_duration += player -> sets.set( SET_T14_4PC_CASTER ) -> effectN( 1 ).time_value();
-
-      spell_power_mod.direct *= 1.0 + player -> spec.astral_showers -> effectN( 3 ).percent();
-      base_multiplier *= 1.0 + player -> perk.improved_moonfire -> effectN( 1 ).percent();
+      if ( p() -> spec.astral_showers -> ok() )
+        aoe = -1;
 
       if ( player -> specialization() == DRUID_BALANCE )
         moonfire = new moonfire_CA_t( player );
     }
 
-    virtual void execute()
-    {
-      if ( p() -> spec.astral_showers -> ok() )
-        aoe = 1;
-      druid_spell_t::execute();
-    }
-
     virtual void tick( dot_t* d )
     {
-      if ( p() -> spec.astral_showers -> ok() )
-        aoe = -1;
-
       druid_spell_t::tick( d );
       p() -> trigger_shooting_stars( d -> state -> result );
     }
@@ -4373,25 +4364,26 @@ struct mark_of_the_wild_t : public druid_spell_t
         druid_spell_t( "sunfire", player, player -> find_spell( 93402 ) )
       {
         const spell_data_t* dmg_spell = player -> find_spell( 164815 );
+        dot_behavior = DOT_REFRESH;
         dot_duration = timespan_t::from_seconds( 20 );  // dmg_spell -> duration();
+        dot_duration += player -> sets.set( SET_T14_4PC_CASTER ) -> effectN( 1 ).time_value();
         base_tick_time = dmg_spell -> effectN( 2 ).period();
+
         spell_power_mod.tick = dmg_spell-> effectN( 2 ).sp_coeff();
         spell_power_mod.tick *= 1.0 + player -> talent.balance_of_power -> effectN( 3 ).percent();
-        dot_behavior = DOT_REFRESH;
+        spell_power_mod.tick *= 1.0 + player -> perk.improved_moonfire -> effectN( 1 ).percent();
 
-        dot_duration += player -> sets.set( SET_T14_4PC_CASTER ) -> effectN( 1 ).time_value();
-        base_multiplier *= 1.0 + player -> perk.improved_moonfire -> effectN( 1 ).percent();
         // Does no direct damage, costs no mana
         attack_power_mod.direct = 0;
-        base_dd_min = base_dd_max = 0;
+        spell_power_mod.direct = 0;
         range::fill( base_costs, 0 );
+
+        if ( p() -> spec.astral_showers -> ok() )
+          aoe = -1;
       }
 
       virtual void tick( dot_t* d )
       {
-        if ( p() -> spec.astral_showers -> ok() )
-          aoe = -1;
-
         druid_spell_t::tick( d );
         p() -> trigger_shooting_stars( d -> state -> result );
       }
@@ -4402,21 +4394,21 @@ struct mark_of_the_wild_t : public druid_spell_t
       druid_spell_t( "moonfire", player, player -> find_spell( 8921 ) )
     {
       parse_options( NULL, options_str );
-
       const spell_data_t* dmg_spell = player -> find_spell( 164812 );
 
+      dot_behavior = DOT_REFRESH;
       dot_duration = timespan_t::from_seconds( 20 ); // dmg_spell -> duration();
+      dot_duration *= 1 + player -> spec.astral_showers -> effectN( 2 ).percent();
+      dot_duration += player -> sets.set( SET_T14_4PC_CASTER ) -> effectN( 1 ).time_value();
       base_tick_time = dmg_spell -> effectN( 2 ).period();
-      spell_power_mod.direct = dmg_spell-> effectN( 1 ).sp_coeff();
+
       spell_power_mod.tick = dmg_spell-> effectN( 2 ).sp_coeff();
       spell_power_mod.tick *= 1.0 + player -> talent.balance_of_power -> effectN( 3 ).percent();
-      dot_behavior = DOT_REFRESH;
+      spell_power_mod.tick *= 1.0 + player -> perk.improved_moonfire -> effectN( 1 ).percent();
 
-      dot_duration += player -> sets.set( SET_T14_4PC_CASTER ) -> effectN( 1 ).time_value();
-      dot_duration *= 1 + player -> spec.astral_showers -> effectN( 2 ).percent();
-
+      spell_power_mod.direct = dmg_spell-> effectN( 1 ).sp_coeff();
       spell_power_mod.direct *= 1.0 + player -> spec.astral_showers -> effectN( 1 ).percent();
-      base_multiplier *= 1.0 + player -> perk.improved_moonfire -> effectN( 1 ).percent();
+      spell_power_mod.direct *= 1.0 + player -> perk.improved_moonfire -> effectN( 1 ).percent();
 
       if ( player -> specialization() == DRUID_BALANCE )
         sunfire = new sunfire_CA_t( player );
@@ -4697,13 +4689,15 @@ struct stellar_flare_t : public druid_spell_t
       balance = p() -> eclipse_amount;
       if ( balance > 100 )
         balance = 100;
-      if ( balance < -100 )
+      else if ( balance < -100 )
         balance = -100;
+
+      balance = std::abs( balance );
 
       double mastery;
       mastery = p() -> cache.mastery_value();
 
-      damageincrease *= 1.0 + ( mastery * 1 - balance / 100 );
+      damageincrease *= 1.0 + mastery * ( 100 - balance ) / 100;
     }
     return damageincrease;
   }
@@ -4883,7 +4877,7 @@ struct wrath_t : public druid_spell_t
     druid_spell_t( "wrath", player, player -> find_class_spell( "Wrath" ) )
   {
     parse_options( NULL, options_str );
-    base_multiplier *= 1.0 + player -> perk.improved_wrath -> effectN( 1 ).percent();
+    spell_power_mod.direct *= 1.0 + player -> perk.improved_wrath -> effectN( 1 ).percent();
   }
 
   virtual double action_multiplier() const
