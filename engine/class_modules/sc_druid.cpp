@@ -3791,10 +3791,9 @@ struct druid_spell_t : public druid_spell_base_t<spell_t>
     spell_t::execute();
   }
 
-  virtual double action_multiplier() const
+  virtual double composite_persistent_multiplier( const action_state_t* state ) const
   {
-    double damageincrease = base_t::action_multiplier();
-    double balancemultiplier = 1;
+    double m = base_t::composite_persistent_multiplier( state );
 
     if ( p() -> buff.moonkin_form -> up() )
     {
@@ -3807,28 +3806,23 @@ struct druid_spell_t : public druid_spell_base_t<spell_t>
       if ( ( dbc::is_school( school, SCHOOL_ARCANE ) || dbc::is_school( school, SCHOOL_NATURE ) ) &&
         p() -> buff.celestial_alignment -> up() )
       {
-        balancemultiplier = 1.0 + mastery;
-        damageincrease *= balancemultiplier;
+        m *= 1.0 + mastery;
       }
       else if ( dbc::is_school( school, SCHOOL_NATURE ) && balance > 0 )
       {
-        balancemultiplier = 1.0 + mastery / 2 + mastery * balance / 200;
-        damageincrease *= balancemultiplier;
+        m *= 1.0 + mastery / 2 + mastery * balance / 200;
       }
       else if ( dbc::is_school( school, SCHOOL_ARCANE ) && balance <= 0 )
       {
-        balancemultiplier = 1.0 + mastery / 2 + mastery * std::abs( balance ) / 200;
-        damageincrease *= balancemultiplier;
+        m *= 1.0 + mastery / 2 + mastery * std::abs( balance ) / 200;
       }
       else if ( dbc::is_school( school, SCHOOL_ARCANE ) || dbc::is_school( school, SCHOOL_NATURE ) )
       {
-        balancemultiplier = 1.0 + mastery / 2 - mastery * std::abs( balance ) / 200;
-        damageincrease *= balancemultiplier;
+        m *= 1.0 + mastery / 2 - mastery * std::abs( balance ) / 200;
       }
     }
-    if ( sim -> log || sim -> debug )
-      sim -> out_debug.printf( "Total Action Multiplier: %f Mastery Action Multiplier: %f", damageincrease, balancemultiplier );
-    return damageincrease;
+
+    return m;
   }
 
   virtual double cost() const

@@ -1732,10 +1732,10 @@ void action_t::init()
     snapshot_flags |= STATE_CRIT | STATE_TGT_CRIT;
 
   if ( spell_power_mod.tick > 0 || dot_duration > timespan_t::zero() )
-    snapshot_flags |= STATE_MUL_TA | STATE_TGT_MUL_TA;
+    snapshot_flags |= STATE_MUL_TA | STATE_TGT_MUL_TA | STATE_MUL_PERSISTENT;
 
   if ( ( spell_power_mod.direct > 0 || attack_power_mod.direct > 0 ) || weapon_multiplier > 0 )
-    snapshot_flags |= STATE_MUL_DA | STATE_TGT_MUL_DA;
+    snapshot_flags |= STATE_MUL_DA | STATE_TGT_MUL_DA | STATE_MUL_PERSISTENT;
 
   if ( ( spell_power_mod.direct > 0 || spell_power_mod.tick > 0 ) )
     snapshot_flags |= STATE_SP;
@@ -1748,11 +1748,14 @@ void action_t::init()
 
   // WOD: Dot Snapshoting is gone
   update_flags |= snapshot_flags;
-  update_flags &= ~STATE_MUL_DA;
-  update_flags &= ~STATE_MUL_TA;
+
+  // WOD: Yank out persistent multiplier from update flags, so they get
+  // snapshot once at the application of the spell
+  update_flags &= ~STATE_MUL_PERSISTENT;
+
+  // Channeled dots get haste snapshoted
   if ( channeled )
   {
-    // Channeled dots get haste snapshoted
     update_flags &= ~STATE_HASTE;
   }
 
@@ -2288,6 +2291,9 @@ void action_t::snapshot_internal( action_state_t* state, uint32_t flags, dmg_e r
 
   if ( flags & STATE_MUL_TA )
     state -> ta_multiplier = composite_ta_multiplier();
+
+  if ( flags & STATE_MUL_PERSISTENT )
+    state -> persistent_multiplier = composite_persistent_multiplier( state );
 
   if ( flags & STATE_TGT_MUL_DA )
     state -> target_da_multiplier = composite_target_da_multiplier( state -> target );

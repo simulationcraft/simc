@@ -84,6 +84,7 @@ void action_state_t::copy_state( const action_state_t* o )
 
   da_multiplier = o -> da_multiplier;
   ta_multiplier = o -> ta_multiplier;
+  persistent_multiplier = o -> persistent_multiplier;
 
   target_da_multiplier = o -> target_da_multiplier;
   target_ta_multiplier = o -> target_ta_multiplier;
@@ -100,7 +101,7 @@ action_state_t::action_state_t( action_t* a, player_t* t ) :
   result_absorbed( 0 ), result_amount( 0 ), blocked_amount( 0 ), self_absorb_amount( 0 ),
   haste( 0 ), crit( 0 ), target_crit( 0 ),
   attack_power( 0 ), spell_power( 0 ),
-  da_multiplier( 1.0 ), ta_multiplier( 1.0 ),
+  da_multiplier( 1.0 ), ta_multiplier( 1.0 ), persistent_multiplier( 1.0 ),
   target_da_multiplier( 1.0 ), target_ta_multiplier( 1.0 ),
   target_mitigation_da_multiplier( 1.0 ), target_mitigation_ta_multiplier( 1.0 )
 {
@@ -147,6 +148,7 @@ std::ostringstream& action_state_t::debug_str( std::ostringstream& s )
   s << " tgt_crit=" << target_crit;
   s << " da_mul=" << da_multiplier;
   s << " ta_mul=" << ta_multiplier;
+  s << " per_mul=" << persistent_multiplier;
   s << " tgt_da_mul=" << target_da_multiplier;
   s << " tgt_ta_mul=" << target_ta_multiplier;
 

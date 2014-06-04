@@ -923,6 +923,7 @@ enum snapshot_state_e
   STATE_TGT_CRIT      = 0x000100,
   STATE_TGT_MUL_DA    = 0x000200,
   STATE_TGT_MUL_TA    = 0x000400,
+  STATE_MUL_PERSISTENT = 0x000800, // Persistent modifier for the few abilities that snapshot
 
   STATE_USER_1        = 0x000800,
   STATE_USER_2        = 0x001000,
@@ -4590,6 +4591,9 @@ public:
   virtual double composite_player_multiplier   ( school_e ) const;
   virtual double composite_player_dd_multiplier( school_e,  const action_t* /* a */ = NULL ) const { return 1; }
   virtual double composite_player_td_multiplier( school_e,  const action_t* a = NULL ) const;
+  // Persistent multipliers that are snapshot at the beginning of the spell application/execution
+  virtual double composite_persistent_multiplier( school_e ) const
+  { return 1.0; }
 
   virtual double composite_player_heal_multiplier( school_e school ) const;
   virtual double composite_player_dh_multiplier( school_e /* school */ ) const { return 1; }
@@ -5481,6 +5485,8 @@ public:
            player -> cache.player_multiplier( get_school() ) *
            player -> composite_player_dd_multiplier( get_school() , this );
   }
+
+  // Normal ticking modifiers that are updated every tick
   virtual double composite_ta_multiplier() const
   {
     return action_multiplier() * action_ta_multiplier() *
@@ -5488,6 +5494,9 @@ public:
            player -> composite_player_td_multiplier( get_school() , this );
   }
 
+  // Persistent modifiers that are snapshot at the start of the spell cast
+  virtual double composite_persistent_multiplier( const action_state_t* ) const
+  { return player -> composite_persistent_multiplier( get_school() ); }
 
   virtual double composite_target_mitigation( player_t* t, school_e s ) const
   { return t -> composite_mitigation_multiplier( s ); }
@@ -5569,6 +5578,7 @@ struct action_state_t : public noncopyable
   // Snapshotted multipliers
   double          da_multiplier;
   double          ta_multiplier;
+  double          persistent_multiplier;
   double          target_da_multiplier;
   double          target_ta_multiplier;
   // Target mitigation multipliers
@@ -5596,10 +5606,10 @@ struct action_state_t : public noncopyable
   { return spell_power; }
 
   virtual double composite_da_multiplier() const
-  { return da_multiplier * target_da_multiplier; }
+  { return da_multiplier * persistent_multiplier * target_da_multiplier; }
 
   virtual double composite_ta_multiplier() const
-  { return ta_multiplier * target_ta_multiplier; }
+  { return ta_multiplier * persistent_multiplier * target_ta_multiplier; }
 
   virtual double composite_target_mitigation_da_multiplier() const
   { return target_mitigation_da_multiplier; }
