@@ -756,6 +756,8 @@ public:
 
     // Use buff to indicate whether the pet is a stampede summon
     buffs.stampede          = buff_creator_t( this, 130201, "stampede" )
+                              .duration( timespan_t::from_millis( 20027 ) )
+                              // Added 0.027 seconds to properly reflect haste threshholds seen in game.
                               .activated( true )
                               /*.quiet( true )*/;
 
@@ -3289,7 +3291,8 @@ struct stampede_t : public hunter_spell_t
 
     for ( unsigned int i = 0; i < p() -> hunter_main_pets.size() && i < 5; ++i )
     {
-      p() -> hunter_main_pets[ i ] -> stampede_summon( data().duration() );
+      p() -> hunter_main_pets[ i ] -> stampede_summon( timespan_t::from_millis( 20027 ) );
+      // Added 0.027 seconds to properly reflect haste threshholds seen in game.
     }
   }
 
@@ -3628,6 +3631,11 @@ void hunter_t::create_buffs()
                                       .add_invalidate( CACHE_ATTACK_HASTE );
   buffs.rapid_fire -> cooldown -> duration = timespan_t::zero();
 
+  buffs.stampede          = buff_creator_t( this, 130201, "stampede" ) // To allow action lists to react to stampede, rather than doing it in a roundabout way.
+                           .activated( true )
+                           .duration( timespan_t::from_millis( 20027 ) ); 
+                           // Added 0.027 seconds to properly reflect haste threshholds seen in game.
+                           /*.quiet( true )*/;
   buffs.pre_steady_focus            = buff_creator_t( this, "pre_steady_focus" ).max_stack( 2 ).quiet( true );
 
   buffs.tier13_4pc                  = buff_creator_t( this, 105919, "tier13_4pc" )

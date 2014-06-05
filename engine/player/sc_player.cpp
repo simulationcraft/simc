@@ -7273,8 +7273,10 @@ expr_t* player_t::create_expression( action_t* a,
     else if ( splits[ 0 ] == "cooldown" )
     {
       cooldown_t* cooldown = get_cooldown( splits[ 1 ] );
-      if ( cooldown && splits[ 2 ] == "remains" )
-        return make_mem_fn_expr( name_str, *cooldown, &cooldown_t::remains );
+      if ( cooldown )
+      {
+        return cooldown -> create_expression( a, splits[ 2 ] );
+      }
     }
     else if ( splits[ 0 ] == "dot" )
     {

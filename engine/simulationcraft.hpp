@@ -824,6 +824,7 @@ enum food_e
   FOOD_GREEN_CURRY_FISH,
   FOOD_GRILLED_DRAGON,
   FOOD_LAVASCALE_FILLET,
+  FOOD_MANGO_ICE,
   FOOD_MOGU_FISH_STEW,
   FOOD_MUSHROOM_SAUCE_MUDFISH,
   FOOD_PANDAREN_BANQUET,
@@ -3527,6 +3528,7 @@ struct cooldown_t
 
   void set_recharge_multiplier( double );
 
+  expr_t* create_expression( action_t* a, const std::string& name_str );
 private:
   static timespan_t ready_init()
   { return timespan_t::from_seconds( -60 * 60 ); }
