@@ -6,6 +6,7 @@
 #include "simulationcraft.hpp"
 #include "simulationcraftqt.hpp"
 #include "SC_OptionsTab.hpp"
+#include "util/sc_mainwindowcommandline.hpp"
 
 namespace { // unnamed namespace
 
