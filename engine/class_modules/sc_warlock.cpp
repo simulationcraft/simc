@@ -3278,7 +3278,7 @@ struct touch_of_chaos_t : public warlock_spell_t
   }
 
   virtual double action_multiplier() const
-  {
+  { 
     double m = warlock_spell_t::action_multiplier();
 
     m *= 1.0 + p() -> talents.grimoire_of_sacrifice -> effectN( 4 ).percent() * p() -> buffs.grimoire_of_sacrifice -> stack();
@@ -4039,7 +4039,7 @@ struct soul_swap_t : public warlock_spell_t
   cooldown_t* glyph_cooldown;
 
   soul_swap_t( warlock_t* p ) :
-    warlock_spell_t( p, "Soul Swap" ),
+    warlock_spell_t( "Soul Swap", p, p -> find_spell( 86121 ) ),
     agony( new agony_t( p ) ),
     corruption( new corruption_t( p ) ),
     unstable_affliction( new unstable_affliction_t( p ) ),
@@ -4058,7 +4058,6 @@ struct soul_swap_t : public warlock_spell_t
     seed_of_corruption  -> background = true;
     seed_of_corruption  -> dual       = true;
     seed_of_corruption  -> base_costs[ RESOURCE_MANA ] = 0;
-
   }
 
   virtual void execute()
