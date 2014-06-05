@@ -2180,7 +2180,6 @@ struct lightning_charge_t : public shaman_spell_t
   }
 };
 
-// TODO: Does unleash flame benefit from Unleash Flame +firedamage bonus?
 struct unleash_flame_t : public shaman_spell_t
 {
   unleash_flame_t( const std::string& name, shaman_t* player ) :
