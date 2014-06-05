@@ -1322,6 +1322,12 @@ struct ignite_t : public residual_dot_action< mage_spell_t >
   ignite_t( mage_t* player ) :
     residual_dot_action_t( "ignite", player, player -> find_spell( 12846 ) )
   {
+    // Amazingly horrible hack to get around a level check in the code
+    int level_ = player -> level;
+    player -> level = 123456;
+    dot_duration = player -> find_spell( 12654 ) -> duration();
+    base_tick_time = player -> find_spell( 12654 ) -> effectN( 1 ).period();
+    player -> level = level_;
   }
 };
 
@@ -1711,7 +1717,7 @@ struct combustion_t : public mage_spell_t
 
     if ( p -> sets.has_set_bonus( SET_T14_4PC_CASTER ) )
     {
-      cooldown -> duration *= 0.8;
+      cooldown -> duration = data().cooldown() * 0.8;
     }
 
     if ( p -> glyphs.combustion -> ok() )
@@ -1721,6 +1727,9 @@ struct combustion_t : public mage_spell_t
       base_dd_multiplier *= 1.0 + p -> glyphs.combustion -> effectN( 3 ).percent();
     }
   }
+
+  action_state_t* new_state()
+  { return new residual_dot_action_state( this, target ); }
 
   virtual double calculate_tick_amount( action_state_t* s, double dmg_multiplier )
   {
