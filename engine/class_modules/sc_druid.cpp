@@ -4043,6 +4043,8 @@ struct celestial_alignment_t : public druid_spell_t
   {
     parse_options( NULL, options_str );
     harmful = false;
+    dot_duration = timespan_t::zero();
+    data().duration() = timespan_t::zero();
   }
 
   virtual void execute()
@@ -4651,10 +4653,10 @@ struct starsurge_t : public druid_spell_t
   {
     druid_spell_t::execute();
     if ( p() -> eclipse_amount < 0 || p() -> buff.celestial_alignment -> up() )
-      p() -> buff.solar_empowerment -> trigger( 2 );
+      p() -> buff.solar_empowerment -> trigger( 3 );
 
     if ( p() -> eclipse_amount >= 0 || p() -> buff.celestial_alignment -> up() )
-      p() -> buff.lunar_empowerment -> trigger( 3 );
+      p() -> buff.lunar_empowerment -> trigger( 2 );
   }
 };
 
@@ -4680,7 +4682,10 @@ struct stellar_flare_t : public druid_spell_t
     double mastery;
     mastery = p() -> cache.mastery_value();
 
-    m *= 1.0 + mastery * ( 100 - balance ) / 100;
+    if ( p() -> buff.celestial_alignment -> up() )
+      m *= 1.0 + mastery;
+    else
+      m *= 1.0 + mastery * ( 100 - balance ) / 100;
 
     if ( sim -> log || sim -> debug )
       sim -> out_debug.printf( "Action modifier %f", m );
@@ -6286,7 +6291,8 @@ expr_t* druid_t::create_expression( action_t* a, const std::string& name_str )
     else if ( splits[1] == "solar" ) e = -1;
     else
     {
-      sim -> errorf( "Invalid eclipse_direction 'split[1]', valid values are 'lunar' or 'solar'" );
+      std::string error_str = "Invalid eclipse_direction value '" + splits[1] + "', valid values are 'lunar' or 'solar'";
+      error_str.c_str();
       return player_t::create_expression( a, name_str );
     }
     return new eclipse_expr_t( name_str, *this, e );
@@ -6761,12 +6767,12 @@ void druid_t::balance_tracker()
 
 void druid_t::balance_expressions()
 {
-  if ( eclipse_direction == 1 && eclipse_amount <= 0 )
+  if ( eclipse_direction == 1 && eclipse_amount < 0 )
   {
     eclipse_change = std::abs( eclipse_amount ) / 110 * ( talent.euphoria ? 5 : 10 );
     eclipse_max = eclipse_change + ( talent.euphoria ? 2.5 : 7.5 );
   }
-  else if ( eclipse_direction == -1 && eclipse_amount >= 0 )
+  else if ( eclipse_direction == -1 && eclipse_amount > 0 )
   {
     eclipse_change = eclipse_amount / 110 * ( talent.euphoria ? 5 : 10 );
     eclipse_max = eclipse_change + ( talent.euphoria ? 2.5 : 7.5 );
