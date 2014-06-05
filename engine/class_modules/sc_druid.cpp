@@ -4162,10 +4162,13 @@ struct hurricane_t : public druid_spell_t
     dynamic_tick_action = true;
   }
 
-  virtual double action_multiplier() const
+  virtual double composite_persistent_multiplier( const action_state_t* state ) const
   {
-    return druid_spell_t::action_multiplier()
-           * ( 1.0 + p() -> buff.heart_of_the_wild -> damage_spell_multiplier() );
+    double m = druid_spell_t::composite_persistent_multiplier( state );
+
+    m *= 1.0 + p() -> buff.heart_of_the_wild -> damage_spell_multiplier();
+
+    return m;
   }
 
   virtual void schedule_execute( action_state_t* state = 0 )
@@ -4546,9 +4549,10 @@ struct starfire_t : public druid_spell_t
     base_multiplier *= 1.0 + player -> perk.improved_starfire -> effectN( 1 ).percent();
   }
 
-  virtual double action_multiplier() const
+  virtual double composite_persistent_multiplier( const action_state_t* state ) const
   {
-    double m = druid_spell_t::action_multiplier();
+    double m = druid_spell_t::composite_persistent_multiplier( state );
+
     if ( p() -> buff.lunar_empowerment -> up() )
     {
       m *= 1.0 + p() -> buff.lunar_empowerment -> data().effectN( 1 ).percent();
@@ -4870,9 +4874,9 @@ struct wrath_t : public druid_spell_t
     spell_power_mod.direct *= 1.0 + player -> perk.improved_wrath -> effectN( 1 ).percent();
   }
 
-  virtual double action_multiplier() const
+  virtual double composite_persistent_multiplier( const action_state_t* state ) const
   {
-    double m = druid_spell_t::action_multiplier();
+    double m = druid_spell_t::composite_persistent_multiplier( state );
 
     m *= 1.0 + p() -> sets.set( SET_T13_2PC_CASTER ) -> effectN( 1 ).percent();
 
@@ -6769,22 +6773,22 @@ void druid_t::balance_expressions()
 {
   if ( eclipse_direction == 1 && eclipse_amount < 0 )
   {
-    eclipse_change = std::abs( eclipse_amount ) / 110 * ( talent.euphoria ? 5 : 10 );
-    eclipse_max = eclipse_change + ( talent.euphoria ? 2.5 : 7.5 );
+    eclipse_change = std::abs( eclipse_amount ) / 110 * ( talent.euphoria -> ok() ? 5 : 10 );
+    eclipse_max = eclipse_change + ( talent.euphoria -> ok() ? 2.5 : 7.5 );
   }
   else if ( eclipse_direction == -1 && eclipse_amount > 0 )
   {
-    eclipse_change = eclipse_amount / 110 * ( talent.euphoria ? 5 : 10 );
-    eclipse_max = eclipse_change + ( talent.euphoria ? 2.5 : 7.5 );
+    eclipse_change = eclipse_amount / 110 * ( talent.euphoria -> ok() ? 5 : 10 );
+    eclipse_max = eclipse_change + ( talent.euphoria -> ok() ? 2.5 : 7.5 );
   }
   else
   {
-    eclipse_change = ( 110 - std::abs( eclipse_amount ) ) / 110 * ( talent.euphoria ? 5 : 10 ) +
-      ( talent.euphoria ? 5 : 10 );
+    eclipse_change = ( 110 - std::abs( eclipse_amount ) ) / 110 * ( talent.euphoria -> ok() ? 5 : 10 ) +
+      ( talent.euphoria -> ok() ? 5 : 10 );
     if ( std::abs( eclipse_amount ) >= 100 )
       eclipse_max = 0;
     else
-      eclipse_max = ( 110 - std::abs( eclipse_amount ) ) / 110 * ( talent.euphoria ? 2.5 : 7.5 );
+      eclipse_max = ( 110 - std::abs( eclipse_amount ) ) / 110 * ( talent.euphoria -> ok() ? 2.5 : 7.5 );
   }
 }
 
