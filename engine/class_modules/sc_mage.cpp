@@ -1322,12 +1322,8 @@ struct ignite_t : public residual_dot_action< mage_spell_t >
   ignite_t( mage_t* player ) :
     residual_dot_action_t( "ignite", player, player -> find_spell( 12846 ) )
   {
-    // Amazingly horrible hack to get around a level check in the code
-    int level_ = player -> level;
-    player -> level = 123456;
-    dot_duration = player -> find_spell( 12654 ) -> duration();
-    base_tick_time = player -> find_spell( 12654 ) -> effectN( 1 ).period();
-    player -> level = level_;
+    dot_duration = player -> dbc.spell( 12654 ) -> duration();
+    base_tick_time = player -> dbc.spell( 12654 ) -> effectN( 1 ).period();
   }
 };
 
