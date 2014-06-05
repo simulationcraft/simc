@@ -4217,8 +4217,6 @@ void mage_t::init_action_list()
 
         if ( sim -> allow_potions )      action_list_str += "/jade_serpent_potion,if=(buff.arcane_power.up|target.time_to_die<50)";
 
-        action_list_str += "/cancel_buff,name=alter_time,if=buff.alter_time.remains<trinket.stat.intellect.cooldown_remains-109";
-
         if ( talents.rune_of_power -> ok() )
           action_list_str += init_use_item_actions( ",if=target.time_to_die<25&buff.rune_of_power.remains>20" );
         else if ( talents.invocation -> ok() )
