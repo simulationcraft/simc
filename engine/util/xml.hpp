@@ -5,6 +5,24 @@
 
 #pragma once
 
+#include "../config.hpp"
+
+#if USE_TR1_NAMESPACE
+  #include <tr1/memory>
+#else
+  #include <memory>
+#endif
+
+#include <string>
+#include <vector>
+#include <sstream>
+#include <stack>
+
+#include "cache.hpp"
+#include "io.hpp"
+
+struct sim_t;
+
 // XML ======================================================================
 
 // XML Reader ==================================================================

@@ -2,6 +2,7 @@
 # To change the list of source files, update the QT_ files and run synchronize.py
 
 
+ HEADERS += engine/util/xml.hpp
  HEADERS += engine/util/timeline.hpp
  HEADERS += engine/util/sc_resourcepaths.hpp
  HEADERS += engine/util/sample_data.hpp
