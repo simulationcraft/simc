@@ -6792,6 +6792,27 @@ void druid_t::balance_expressions()
     eclipse_change = ( 40 / M_PI * asin( 110 / 110 ) ) - ( 40 / M_PI / 2 * asin( eclipse_amount / -110 ) );
     eclipse_max = ( 40 / ( 2 * M_PI ) * asin( eclipse_amount / 110 ) ) - ( 40 / ( 2 * M_PI ) * asin( -200 / 110 ) );
   }
+
+  if ( buff.astral_communion -> up() )
+  {
+    double ac;
+    ac = buff.astral_communion -> remains() / timespan_t::from_millis( 1000 ) * 3;
+    if ( eclipse_max > ac )
+      eclipse_max -= ac; 
+    else
+      eclipse_max /= 3;
+
+    if ( eclipse_change > ac )
+      eclipse_change -= ac;
+    else
+      eclipse_change /= 3;
+  }
+
+  if ( talent.euphoria -> ok() )
+  {
+    eclipse_change /= 2;
+    eclipse_max /= 2;
+  }
 }
 
 /* Report Extension Class
