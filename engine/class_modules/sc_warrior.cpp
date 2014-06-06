@@ -2826,7 +2826,7 @@ struct shield_charge_t : public warrior_spell_t
     base_teleport_distance = data().max_range();
     movement_directionality = MOVEMENT_OMNI;
 
-    cooldown -> duration = timespan_t::from_seconds( 9.0 );
+    cooldown -> duration = timespan_t::from_seconds( 15.0 );
     cooldown -> charges = 2;
   }
 
