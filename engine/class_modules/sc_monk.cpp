@@ -81,8 +81,7 @@ private:
   stance_e _active_stance;
 public:
   typedef player_t base_t;
-  double cdr_mult;
- 
+
   struct active_actions_t
   {
     action_t* blackout_kick_dot;
@@ -330,8 +329,6 @@ public:
     // Cooldowns
     //cooldown.rising_sun_kick   = get_cooldown( "rising_sun_kick" );
     //cooldown.fists_of_fury     = get_cooldown( "fists_of_fury" );
-
-    cdr_mult = 11.646747608030;
   }
  
   // player_t overrides
@@ -1663,14 +1660,6 @@ struct fists_of_fury_t : public monk_melee_attack_t
     return m;
   }
 
-  virtual void update_ready( timespan_t cd_duration )
-  {
-    if ( p() -> specialization() == MONK_WINDWALKER )
-      cd_duration = cooldown -> duration / ( 1 + ( player -> cache.readiness() * p() -> cdr_mult ) );
- 
-    monk_melee_attack_t::update_ready( cd_duration );
-  }
- 
   virtual void consume_resource()
   {
     monk_melee_attack_t::consume_resource();
@@ -2127,14 +2116,6 @@ struct energizing_brew_t : public monk_spell_t
  
     harmful   = false;
     dot_duration = timespan_t::zero();
-  }
- 
-  virtual void update_ready( timespan_t cd_duration )
-  {
-    if ( p() -> specialization() == MONK_WINDWALKER )
-      cd_duration = cooldown -> duration / ( 1 + ( player -> cache.readiness() * p() -> cdr_mult ) );
- 
-    monk_spell_t::update_ready( cd_duration );
   }
 
   virtual void execute()

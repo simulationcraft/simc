@@ -36,8 +36,7 @@ struct hunter_t : public player_t
 public:
   // Active
   std::vector<pets::hunter_main_pet_t*> hunter_main_pets;
-  double cdr_mult; // Allow the user to select the multiplier on CDR rating ---> percentage conversion.
-                   // At least until we find out what the actual multiplier is.
+
   double locknload;// Select the chance for black arrow ticks to proc lock n load until Blizzard reveals the chance. Default is 15%.
   struct actives_t
   {
@@ -319,7 +318,6 @@ public:
     cooldowns.rapid_fire     = get_cooldown( "rapid_fire" );
     cooldowns.viper_venom    = get_cooldown( "viper_venom" );
 
-    cdr_mult = 11.5;
     locknload = 0.15;
     summon_pet_str = "";
     base.distance = 40;
@@ -2091,12 +2089,6 @@ struct powershot_t : public hunter_ranged_attack_t
     return am;
   }
 
-  virtual void update_ready( timespan_t cd_duration )
-  {
-    cd_duration = cooldown -> duration / ( 1 + ( player -> cache.readiness() * p() -> cdr_mult ) );
-
-    hunter_ranged_attack_t::update_ready( cd_duration );
-  }
 };
 
 // Black Arrow ==============================================================
@@ -2148,12 +2140,6 @@ struct black_arrow_t : public hunter_ranged_attack_t
 
   }
 
-  virtual void update_ready( timespan_t cd_duration )
-  {
-    cd_duration = cooldown -> duration / ( 1 + ( player -> cache.readiness() * p() -> cdr_mult ) );
-
-    hunter_ranged_attack_t::update_ready( cd_duration );
-  }
 };
 
 // Explosive Trap ==============================================================
@@ -2197,12 +2183,6 @@ struct explosive_trap_t : public hunter_ranged_attack_t
     explosive_trap_tick -> execute();
   }
 
-  virtual void update_ready( timespan_t cd_duration )
-  {
-    cd_duration = cooldown -> duration / ( 1 + ( player -> cache.readiness() * p() -> cdr_mult ) );
-
-    hunter_ranged_attack_t::update_ready( cd_duration );
-  }
 };
 
 // Chimera Shot =============================================================
@@ -2893,12 +2873,6 @@ struct barrage_t : public hunter_spell_t
     return true;
   }
 
-  virtual void update_ready( timespan_t cd_duration )
-  {
-    cd_duration = cooldown -> duration / ( 1 + ( player -> cache.readiness() * p() -> cdr_mult ) );
-
-    hunter_spell_t::update_ready( cd_duration );
-  }
 };
 
 // A Murder of Crows ========================================================
@@ -2963,12 +2937,6 @@ struct moc_t : public ranged_attack_t
     ranged_attack_t::execute();
   }
 
-  virtual void update_ready( timespan_t cd_duration )
-  {
-    cd_duration = cooldown -> duration / ( 1 + ( player -> cache.readiness() * p() -> cdr_mult ) );
-
-    ranged_attack_t::update_ready( cd_duration );
-  }
 };
 
 // Dire Beast ===============================================================
@@ -3024,12 +2992,6 @@ struct dire_beast_t : public hunter_spell_t
     beast -> summon( duration );
   }
 
-  virtual void update_ready( timespan_t cd_duration )
-  {
-    cd_duration = cooldown -> duration / ( 1 + ( player -> cache.readiness() * p() -> cdr_mult ) );
-
-    hunter_spell_t::update_ready( cd_duration );
-  }
 };
 
 // Bestial Wrath ============================================================
@@ -3059,12 +3021,6 @@ struct bestial_wrath_t : public hunter_spell_t
     return hunter_spell_t::ready();
   }
 
-  virtual void update_ready( timespan_t cd_duration )
-  {
-    cd_duration = cooldown -> duration / ( 1 + ( player -> cache.readiness() * p() -> cdr_mult ) );
-
-    hunter_spell_t::update_ready( cd_duration );
-  }
 };
 
 // Fervor ===================================================================
@@ -3108,12 +3064,6 @@ struct fervor_t : public hunter_spell_t
       p() -> active.pet -> resource_gain( RESOURCE_FOCUS, tick_gain, p() -> active.pet -> gains.fervor );
   }
 
-  virtual void update_ready( timespan_t cd_duration )
-  {
-    cd_duration = cooldown -> duration / ( 1 + ( player -> cache.readiness() * p() -> cdr_mult ) );
-
-    hunter_spell_t::update_ready( cd_duration );
-  }
 };
 
 // Focus Fire ===============================================================
@@ -3224,12 +3174,6 @@ struct rapid_fire_t : public hunter_spell_t
     hunter_spell_t::execute();
   }
 
-  virtual void update_ready( timespan_t cd_duration )
-  {
-    cd_duration = cooldown -> duration / ( 1 + ( player -> cache.readiness() * p() -> cdr_mult ) );
-
-    hunter_spell_t::update_ready( cd_duration );
-  }
 };
 
 // Summon Pet ===============================================================
@@ -3296,15 +3240,7 @@ struct stampede_t : public hunter_spell_t
     }
   }
 
- virtual void update_ready( timespan_t cd_duration )
-  {
-    cd_duration = cooldown -> duration / ( 1 + ( player -> cache.readiness() * p() -> cdr_mult ) );
-
-    hunter_spell_t::update_ready( cd_duration );
-  }
-
 };
-
 }
 
 hunter_td_t::hunter_td_t( player_t* target, hunter_t* p ) :
@@ -4057,7 +3993,6 @@ void hunter_t::create_options()
   {
     opt_string( "summon_pet", summon_pet_str ),
     opt_float( "merge_piercing_shots", merge_piercing_shots ),
-    opt_float( "cdr_mult", cdr_mult ),
     opt_float( "locknload", locknload ),
     opt_null()
   };
@@ -4086,7 +4021,6 @@ void hunter_t::copy_from( player_t* source )
 
   summon_pet_str = p -> summon_pet_str;
   merge_piercing_shots = p -> merge_piercing_shots;
-  cdr_mult = p -> cdr_mult;
   locknload = p -> locknload;
 }
 

@@ -42,8 +42,7 @@ struct warrior_t : public player_t
 {
 public:
   int initial_rage;
-  double cdr_mult; // Allow the user to select the multiplier on CDR rating ---> percentage conversion.
-                   // At least until we find out what the actual multiplier is.
+
   simple_sample_data_t cs_damage;
   simple_sample_data_t priority_damage;
   simple_sample_data_t all_damage;
@@ -373,7 +372,6 @@ public:
     cooldown.stance_swap              -> duration = timespan_t::from_seconds( 1.5 );
 
     initial_rage = 0;
-    cdr_mult = 11.0;
 
     base.distance = 3.0;
   }
@@ -1146,7 +1144,7 @@ struct bladestorm_t : public warrior_attack_t
   virtual void update_ready( timespan_t cd_duration )
   {
     if ( p() -> specialization() != WARRIOR_PROTECTION )
-      cd_duration = cooldown -> duration / ( 1 + ( player -> cache.readiness() * p() -> cdr_mult ) );
+      cd_duration = cooldown -> duration / ( 1 + player -> cache.readiness() );
 
     warrior_attack_t::update_ready( cd_duration );
   }
@@ -1372,7 +1370,7 @@ struct demoralizing_shout : public warrior_attack_t
 
   virtual void update_ready( timespan_t cd_duration )
   {
-    cd_duration = cooldown -> duration / ( 1 + ( player -> cache.readiness() * p() -> cdr_mult ) );
+    cd_duration = cooldown -> duration / ( 1 + player -> cache.readiness() );
 
     warrior_attack_t::update_ready( cd_duration );
   }
@@ -1458,7 +1456,7 @@ struct dragon_roar_t : public warrior_attack_t
   virtual void update_ready( timespan_t cd_duration )
   {
     if ( p() -> specialization() != WARRIOR_PROTECTION )
-      cd_duration = cooldown -> duration / ( 1 + ( player -> cache.readiness() * p() -> cdr_mult ) );
+      cd_duration = cooldown -> duration / ( 1 + player -> cache.readiness() );
 
     warrior_attack_t::update_ready( cd_duration );
   }
@@ -1713,7 +1711,7 @@ struct heroic_leap_t : public warrior_attack_t
 
   virtual void update_ready( timespan_t cd_duration )
   {
-    cd_duration = cooldown -> duration / ( 1 + ( player -> cache.readiness() * p() -> cdr_mult ) );
+    cd_duration = cooldown -> duration / ( 1 + player -> cache.readiness() );
 
     warrior_attack_t::update_ready( cd_duration );
   }
@@ -2254,7 +2252,7 @@ struct shockwave_t : public warrior_attack_t
   virtual void update_ready( timespan_t cd_duration )
   {
     if ( p() -> specialization() != WARRIOR_PROTECTION )
-      cd_duration = cooldown -> duration / ( 1 + ( player -> cache.readiness() * p() -> cdr_mult ) );
+      cd_duration = cooldown -> duration / ( 1 + player -> cache.readiness() );
 
     if ( result_is_hit( execute_state -> result ) )
       if ( execute_state -> n_targets >= 3 )
@@ -2338,7 +2336,7 @@ struct storm_bolt_t : public warrior_attack_t
   virtual void update_ready( timespan_t cd_duration )
   {
     if ( p() -> specialization() != WARRIOR_PROTECTION )
-      cd_duration = cooldown -> duration / ( 1 + ( player -> cache.readiness() * p() -> cdr_mult ) );
+      cd_duration = cooldown -> duration / ( 1 + player -> cache.readiness() );
 
     warrior_attack_t::update_ready( cd_duration );
   }
@@ -2563,7 +2561,7 @@ struct avatar_t : public warrior_spell_t
   virtual void update_ready( timespan_t cd_duration )
   {
     if ( p() -> specialization() != WARRIOR_PROTECTION )
-      cd_duration = cooldown -> duration / ( 1 + ( player -> cache.readiness() * p() -> cdr_mult ) );
+      cd_duration = cooldown -> duration / ( 1 + player -> cache.readiness() );
 
     warrior_spell_t::update_ready( cd_duration );
   }
@@ -2626,7 +2624,7 @@ struct bloodbath_t : public warrior_spell_t
   virtual void update_ready( timespan_t cd_duration )
   {
     if ( p() -> specialization() != WARRIOR_PROTECTION )
-      cd_duration = cooldown -> duration / ( 1 + ( player -> cache.readiness() * p() -> cdr_mult ) );
+      cd_duration = cooldown -> duration / ( 1 + player -> cache.readiness() );
 
     warrior_spell_t::update_ready( cd_duration );
   }
@@ -2695,7 +2693,7 @@ struct recklessness_t : public warrior_spell_t
 
   virtual void update_ready( timespan_t cd_duration )
   {
-    cd_duration = cooldown -> duration / ( 1 + ( player -> cache.readiness() * p() -> cdr_mult ) );
+    cd_duration = cooldown -> duration / ( 1 + player -> cache.readiness() );
 
     warrior_spell_t::update_ready( cd_duration );
   }
@@ -2881,7 +2879,7 @@ struct shield_wall_t : public warrior_spell_t
 
   virtual void update_ready( timespan_t cd_duration )
   {
-    cd_duration = cooldown -> duration / ( 1 + ( player -> cache.readiness() * p() -> cdr_mult ) );
+    cd_duration = cooldown -> duration / ( 1 + player -> cache.readiness() );
 
     warrior_spell_t::update_ready( cd_duration );
   }
@@ -3072,7 +3070,7 @@ struct last_stand_t : public warrior_spell_t
 
   virtual void update_ready( timespan_t cd_duration )
   {
-    cd_duration = cooldown -> duration / ( 1 + ( player -> cache.readiness() * p() -> cdr_mult ) );
+    cd_duration = cooldown -> duration / ( 1 + player -> cache.readiness() );
 
     warrior_spell_t::update_ready( cd_duration );
   }
@@ -4422,7 +4420,6 @@ void warrior_t::create_options()
   option_t warrior_options[] =
   {
     opt_int( "initial_rage", initial_rage ),
-    opt_float( "cdr_mult", cdr_mult ),
     opt_null()
   };
 
@@ -4483,7 +4480,6 @@ void warrior_t::copy_from( player_t* source )
   warrior_t* p = debug_cast<warrior_t*>( source );
 
   initial_rage = p -> initial_rage;
-  cdr_mult = p -> cdr_mult;
 }
 
 // warrior_t::decode_set ====================================================
