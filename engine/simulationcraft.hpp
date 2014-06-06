@@ -4250,6 +4250,7 @@ struct player_t : public actor_t
   // Events
   action_t* executing;
   action_t* channeling;
+  action_t* strict_sequence; // Strict sequence of actions currently being executed
   core_event_t*  readying;
   core_event_t*  off_gcd;
   bool      in_combat;
@@ -5889,6 +5890,21 @@ struct sequence_t : public action_t
   void restart() { current_action = 0; restarted = true; last_restart = sim -> current_time; }
   bool can_restart()
   { return ! restarted && last_restart < sim -> current_time; }
+};
+
+struct strict_sequence_t : public action_t
+{
+  size_t current_action;
+  std::vector<action_t*> sub_actions;
+  std::string seq_name_str;
+
+  strict_sequence_t( player_t*, const std::string& opts );
+
+  bool ready();
+  void reset();
+  void cancel();
+  void interrupt_action();
+  void schedule_execute( action_state_t* execute_state = 0 );
 };
 
 // DoT ======================================================================

@@ -3394,6 +3394,7 @@ void player_t::reset()
   executing = 0;
   channeling = 0;
   readying = 0;
+  strict_sequence = 0;
   off_gcd = 0;
   in_combat = false;
 
@@ -3685,6 +3686,12 @@ void player_t::interrupt()
   if ( executing  ) executing  -> interrupt_action();
   if ( channeling ) channeling -> interrupt_action();
 
+  if ( strict_sequence )
+  {
+    strict_sequence -> cancel();
+    strict_sequence = 0;
+  }
+
   if ( buffs.stunned -> check() )
   {
     if ( readying ) core_event_t::cancel( readying );
@@ -3756,21 +3763,27 @@ action_t* player_t::execute_action()
 
   action_t* action = 0;
 
-  for ( size_t i = 0, num_actions = active_action_list -> foreground_action_list.size(); i < num_actions; ++i )
+  if ( ! strict_sequence )
   {
-    action_t* a = active_action_list -> foreground_action_list[ i ];
-
-    if ( a -> background ) continue;
-
-    if ( a -> wait_on_ready == 1 )
-      break;
-
-    if ( a -> ready() )
+    for ( size_t i = 0, num_actions = active_action_list -> foreground_action_list.size(); i < num_actions; ++i )
     {
-      action = a;
-      break;
+      action_t* a = active_action_list -> foreground_action_list[ i ];
+
+      if ( a -> background ) continue;
+
+      if ( a -> wait_on_ready == 1 )
+        break;
+
+      if ( a -> ready() )
+      {
+        action = a;
+        break;
+      }
     }
   }
+  // Committed to a strict sequence of actions, just perform them instead of a priority list
+  else
+    action = strict_sequence;
 
   last_foreground_action = action;
 
@@ -5940,6 +5953,7 @@ action_t* player_t::create_action( const std::string& name,
   if ( name == "restore_mana"       ) return new       restore_mana_t( this, options_str );
   if ( name == "rocket_barrage"     ) return new     rocket_barrage_t( this, options_str );
   if ( name == "sequence"           ) return new           sequence_t( this, options_str );
+  if ( name == "strict_sequence"    ) return new    strict_sequence_t( this, options_str );
   if ( name == "snapshot_stats"     ) return new     snapshot_stats_t( this, options_str );
   if ( name == "start_moving"       ) return new       start_moving_t( this, options_str );
   if ( name == "stoneform"          ) return new          stoneform_t( this, options_str );

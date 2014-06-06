@@ -126,3 +126,128 @@ bool sequence_t::ready()
 
   return false;
 }
+
+// ==========================================================================
+// Strict Sequence Action
+// ==========================================================================
+
+strict_sequence_t::strict_sequence_t( player_t* p, const std::string& sub_action_str ) :
+  action_t( ACTION_SEQUENCE, "strict_sequence", p ),
+  current_action( 0 )
+{
+  trigger_gcd = timespan_t::zero();
+
+  std::vector<std::string> splits = util::string_split( sub_action_str, ":" );
+  if ( ! splits.empty() )
+  {
+    option_t options[] =
+    {
+      opt_string( "name", seq_name_str ),
+      opt_null()
+    };
+    parse_options( options, splits[ 0 ] );
+  }
+
+  // First token is sequence options, so skip
+  for ( size_t i = 1; i < splits.size(); ++i )
+  {
+    std::string::size_type cut_pt = splits[ i ].find( ',' );
+    std::string action_name( splits[ i ], 0, cut_pt );
+    std::string action_options;
+
+    if ( cut_pt != std::string::npos )
+      action_options.assign( splits[ i ], cut_pt + 1, std::string::npos );
+
+    action_t* a = p -> create_action( action_name, action_options );
+    if ( ! a )
+    {
+      sim -> errorf( "Player %s has unknown strict sequence '%s' action: %s\n", p -> name(), seq_name_str.c_str(), splits[ i ].c_str() );
+      sim -> cancel();
+      continue;
+    }
+
+    a -> sequence = true;
+    sub_actions.push_back( a );
+  }
+}
+
+void strict_sequence_t::cancel()
+{
+  action_t::cancel();
+
+  if ( player -> strict_sequence == this )
+    player -> strict_sequence = 0;
+
+  current_action = 0;
+}
+
+void strict_sequence_t::reset()
+{
+  action_t::reset();
+
+  if ( player -> strict_sequence == this )
+    player -> strict_sequence = 0;
+
+  current_action = 0;
+}
+
+void strict_sequence_t::interrupt_action()
+{
+  action_t::interrupt_action();
+
+  if ( player -> strict_sequence == this )
+    player -> strict_sequence = 0;
+
+  current_action = 0;
+}
+
+bool strict_sequence_t::ready()
+{
+  if ( sub_actions.empty() ) return false;
+  if ( ! action_t::ready() ) return false;
+
+  // Strict sequences need all actions to be usable before it commits
+  for ( size_t i = 0, end = sub_actions.size(); i < end; i++ )
+  {
+    if ( ! sub_actions[ i ] -> ready() )
+      return false;
+  }
+
+  return true;
+}
+
+void strict_sequence_t::schedule_execute( action_state_t* state )
+{
+  assert( ( current_action == 0 && ! player -> strict_sequence ) ||
+          ( current_action < sub_actions.size() && player -> strict_sequence ) );
+
+  if ( sim -> log )
+    sim -> out_log.printf( "Player %s executes strict_sequence '%s' action #%d \"%s\"",
+                   player -> name(), seq_name_str.c_str(), current_action, sub_actions[ current_action ] -> name() );
+
+  if ( current_action == 0 )
+    player -> strict_sequence = this;
+
+  // Sanity check the strict sequence, so that it does not get stuck
+  // mid-sequence. People are expected to write strict_sequences that cannot
+  // have this happen, but it's bound to be a problem if some buff for example
+  // fades between the first, and last cast (and it's needed by the last cast).
+  if ( ! sub_actions[ current_action ] -> ready() )
+  {
+    if ( sim -> debug )
+      sim -> out_debug.printf( "Player %s strict_sequence '%s' action #%d \"%s\" is no longer ready, aborting sequence",
+        player -> name(), seq_name_str.c_str(), current_action, sub_actions[ current_action ] -> name() );
+    cancel();
+    return;
+  }
+
+  sub_actions[ current_action++ ] -> schedule_execute( state );
+
+  // Strict sequence is over, normal APL commences on the next ready event
+  if ( current_action == sub_actions.size() )
+  {
+    player -> strict_sequence = 0;
+    current_action = 0;
+  }
+}
+
