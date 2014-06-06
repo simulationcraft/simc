@@ -6773,18 +6773,23 @@ void druid_t::balance_expressions()
 {
   if ( eclipse_direction == 1 && eclipse_amount < 0 )
   {
-    eclipse_change = ( sin( M_PI / 2 * ( 0 / 110 ) ) - sin( M_PI / 2 * ( eclipse_amount / 110 ) ) ) * ( talent.euphoria -> ok() ? 5 : 10 );
-    eclipse_max = ( sin( M_PI / 2 * ( 100 / 110 ) ) - sin( M_PI / 2 * ( eclipse_amount / 110 ) ) ) * ( talent.euphoria -> ok() ? 5 : 10 );
+    eclipse_change = ( 40 / M_PI / 2* asin( eclipse_amount / -110 ) );
+    eclipse_max = ( 40 / ( 2 * M_PI ) * asin( 200 / 110 ) ) - ( 40 / ( 2 * M_PI ) * asin( eclipse_amount / 110 ) );
+  }
+  else if ( eclipse_direction == 1 && eclipse_amount >= 0 )
+  {
+    eclipse_change = ( 40 / M_PI * asin( 110 / 110 ) ) - ( 40 / ( 2 * M_PI ) * asin( eclipse_amount / 110 ) );
+    eclipse_max = ( 40 / ( 2 * M_PI ) * asin( 200 / 110 ) ) - ( 40 / ( 2 * M_PI ) * asin( eclipse_amount / 110 ) );
   }
   else if ( eclipse_direction == -1 && eclipse_amount > 0 )
   {
-    eclipse_change = ( sin( M_PI / 2 * ( eclipse_amount / 110 ) ) - sin( M_PI / 2 * ( 0 / 110 ) ) ) * ( talent.euphoria -> ok() ? 5 : 10 );
-    eclipse_max = ( sin( M_PI / 2 * ( eclipse_amount / 110 ) ) - sin( M_PI / 2 * ( -100 / 110 ) ) ) * ( talent.euphoria -> ok() ? 5 : 10 );
+    eclipse_change = ( 40 / M_PI / 2 * asin( eclipse_amount / 110 ) );
+    eclipse_max = ( 40 / ( 2 * M_PI ) * asin( eclipse_amount / 110 ) ) - ( 40 / ( 2 * M_PI ) * asin( -200 / 110 ) );
   }
-  else
+  else if ( eclipse_direction == -1 && eclipse_amount <= 0 )
   {
-    eclipse_change = ( sin( M_PI / 2 * ( ( 110 - std::abs( eclipse_amount ) ) / 110 ) ) - sin( M_PI / 2 ) ) * ( talent.euphoria -> ok() ? 5 : 10 );
-    eclipse_max = ( sin( M_PI / 2 * ( -100 / -110 ) ) - sin( M_PI / 2 * ( eclipse_amount / -110 ) ) ) * ( talent.euphoria -> ok() ? 5 : 10 );
+    eclipse_change = ( 40 / M_PI * asin( 110 / 110 ) ) - ( 40 / M_PI / 2 * asin( eclipse_amount / -110 ) );
+    eclipse_max = ( 40 / ( 2 * M_PI ) * asin( eclipse_amount / 110 ) ) - ( 40 / ( 2 * M_PI ) * asin( -200 / 110 ) );
   }
 }
 
