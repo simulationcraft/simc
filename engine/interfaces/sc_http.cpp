@@ -538,7 +538,7 @@ void put( std::ostream& os, const char* s )
 { os.write( s, std::strlen( s ) + 1 ); }
 }
 
-void http::cache_load( const char* file_name )
+void http::cache_load( const std::string& file_name )
 {
   auto_lock_t lock( cache_mutex );
 
@@ -581,7 +581,7 @@ void http::cache_load( const char* file_name )
 
 // http::cache_save =========================================================
 
-void http::cache_save( const char* file_name )
+void http::cache_save( const std::string& file_name )
 {
   auto_lock_t lock( cache_mutex );
 

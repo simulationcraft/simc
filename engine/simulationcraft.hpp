@@ -948,67 +948,7 @@ enum rppm_scale_e
 };
 
 // Cache Control ============================================================
-
-namespace cache {
-
-typedef int era_t;
-static const era_t INVALID_ERA = -1;
-static const era_t IN_THE_BEGINNING = 0;  // A time before any other possible era;
-// used to mark persistent caches at load.
-
-enum behavior_e
-{
-  ANY,      // * Use any version present in the cache, retrieve if not present.
-  CURRENT,  // * Use only current info from the cache; validate old versions as needed.
-  ONLY,     // * Use any version present in the cache, fail if not present.
-};
-
-class cache_control_t
-{
-private:
-  era_t current_era;
-  behavior_e player_cache_behavior;
-  behavior_e item_cache_behavior;
-
-public:
-  cache_control_t() :
-    current_era( IN_THE_BEGINNING ),
-    player_cache_behavior( CURRENT ),
-    item_cache_behavior( ANY )
-  {}
-
-  era_t era() const { return current_era; }
-  void advance_era() { ++current_era; }
-
-  behavior_e cache_players() const { return player_cache_behavior; }
-  void cache_players( behavior_e b ) { player_cache_behavior = b; }
-
-  behavior_e cache_items() const { return item_cache_behavior; }
-  void cache_items( behavior_e b ) { item_cache_behavior = b; }
-
-  static cache_control_t singleton;
-};
-
-// Caching system's global notion of the current time.
-inline era_t era()
-{ return cache_control_t::singleton.era(); }
-
-// Time marches on.
-inline void advance_era()
-{ cache_control_t::singleton.advance_era(); }
-
-// Get/Set default cache behaviors.
-inline behavior_e players()
-{ return cache_control_t::singleton.cache_players(); }
-inline void players( behavior_e b )
-{ cache_control_t::singleton.cache_players( b ); }
-
-inline behavior_e items()
-{ return cache_control_t::singleton.cache_items(); }
-inline void items( behavior_e b )
-{ cache_control_t::singleton.cache_items( b ); }
-
-} // cache
+#include "util/cache.hpp"
 
 struct stat_data_t
 {
@@ -6416,42 +6356,8 @@ action_t* create_action( player_t*, const std::string& name, const std::string& 
 }
 
 // Wowhead  =================================================================
+#include "interfaces/sc_wowhead.hpp"
 
-namespace wowhead
-{
-enum wowhead_e
-{
-  LIVE,
-  PTR,
-  BETA
-};
-
-bool download_item( item_t&, wowhead_e source = LIVE, cache::behavior_e b = cache::items() );
-bool download_glyph( player_t* player, std::string& glyph_name, const std::string& glyph_id,
-                     wowhead_e source = LIVE, cache::behavior_e b = cache::items() );
-bool download_item_data( item_t&            item,
-                         cache::behavior_e  caching,
-                         wowhead_e          source );
-
-std::string domain_str( wowhead_e domain );
-std::string decorated_spell_name( const std::string& name,
-                                  unsigned spell_id,
-                                  const std::string& spell_name,
-                                  wowhead_e domain,
-                                  const std::string& href_parm = std::string(),
-                                  bool affix = true );
-
-std::string decorated_action_name( const std::string& name,
-                                  action_t* action,
-                                  wowhead_e domain,
-                                  const std::string& href_parm = std::string(),
-                                  bool affix = true );
-std::string decorated_buff_name( const std::string& name,
-                                 buff_t* buff,
-                                 wowhead_e domain,
-                                 const std::string& href_parm = std::string(),
-                                 bool affix = true );
-}
 // Blizzard Community Platform API ==========================================
 
 namespace bcp_api
@@ -6496,8 +6402,8 @@ struct proxy_t
 };
 void set_proxy( const std::string& type, const std::string& host, const unsigned port );
 
-void cache_load( const char* file_name );
-void cache_save( const char* file_name );
+void cache_load( const std::string& file_name );
+void cache_save( const std::string& file_name );
 bool clear_cache( sim_t*, const std::string& name, const std::string& value );
 
 bool get( std::string& result, const std::string& url, cache::behavior_e b,

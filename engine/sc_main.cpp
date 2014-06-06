@@ -131,9 +131,9 @@ struct dbc_initializer_t {
 struct cache_initializer_t {
   cache_initializer_t( const std::string& fn ) :
     _file_name( fn )
-  { http::cache_load( _file_name.c_str() ); }
+  { http::cache_load( _file_name ); }
   ~cache_initializer_t()
-  { http::cache_save( _file_name.c_str() ); }
+  { http::cache_save( _file_name ); }
 private:
   std::string _file_name;
 };

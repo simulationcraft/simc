@@ -9,6 +9,8 @@ SRC += \
     util$(PATHSEP)io.hpp \
     util$(PATHSEP)generic.hpp \
     util$(PATHSEP)concurrency.hpp \
+    util$(PATHSEP)cache.hpp \
+    interfaces$(PATHSEP)sc_wowhead.hpp \
     dbc$(PATHSEP)specialization.hpp \
     dbc$(PATHSEP)dbc.hpp \
     simulationcraft.hpp \

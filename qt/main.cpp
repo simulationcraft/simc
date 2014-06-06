@@ -1,14 +1,35 @@
 #include "simulationcraft.hpp"
 #include "simulationcraftqt.hpp"
 #include <QLocale>
-#ifdef QT_VERSION_5
-#include <QtGui/QGuiApplication>
-#else
-#include <QtGui/QApplication>
-#endif
+#include <QApplication>
 #include <locale>
-#ifndef SIMC_NO_AUTOUPDATE
-#endif /* SIMC_NO_AUTOUPDATE */
+
+/* Parse additional arguments
+ * 1. Argument is parsed as a file name, complete content goes into simulate tab.
+ * Following arguments are appended as new lines.
+ */
+void parse_additional_args( SC_MainWindow& w, QStringList args )
+{
+  if ( args.size() > 1 )
+  {
+    for ( int i = 1; i < args.size(); ++i )
+    {
+      if ( i > 1 )
+        w.simulateTab -> current_Text() -> append( "\n" );
+
+      QFile file( args[ i ] );
+      if ( file.open( QIODevice::ReadOnly | QIODevice::Text ) )
+      {
+        QTextStream ts( &file );
+        ts.setCodec( "UTF-8" );
+        ts.setAutoDetectUnicode( true );
+        w.simulateTab -> current_Text() -> append( ts.readAll() );
+        file.close();
+      }
+    }
+    w.mainTab -> setCurrentTab( TAB_SIMULATE );
+  }
+}
 
 int main( int argc, char *argv[] )
 {
@@ -25,7 +46,6 @@ int main( int argc, char *argv[] )
   QCoreApplication::setOrganizationDomain( "http://code.google.com/p/simulationcraft/" );
   QCoreApplication::setOrganizationName( "SimulationCraft" );
   QSettings::setDefaultFormat( QSettings::IniFormat ); // Avoid Registry entries on Windows
-
 
   QNetworkProxyFactory::setUseSystemConfiguration( true );
 
@@ -52,28 +72,7 @@ int main( int argc, char *argv[] )
 
   SC_MainWindow w;
 
-  {
-    QStringList args = a.arguments();
-    if ( args.size() > 1 )
-    {
-      for ( int i = 1; i < args.size(); ++i )
-      {
-        if ( i > 1 )
-          w.simulateTab -> current_Text() -> append( "\n" );
-
-        QFile file( args[ i ] );
-        if ( file.open( QIODevice::ReadOnly | QIODevice::Text ) )
-        {
-          QTextStream ts( &file );
-          ts.setCodec( "UTF-8" );
-          ts.setAutoDetectUnicode( true );
-          w.simulateTab -> current_Text() -> append( ts.readAll() );
-          file.close();
-        }
-      }
-      w.mainTab -> setCurrentTab( TAB_SIMULATE );
-    }
-  }
+  parse_additional_args( w, a.arguments() );
 
   return a.exec();
 }
