@@ -25,6 +25,12 @@ To change the list of source files, update the QT_ files and run synchronize.py
 		<ClInclude Include="..\engine\utf8\core.h" />
 		<ClInclude Include="..\engine\utf8\checked.h" />
 		<ClInclude Include="..\engine\utf8.h" />
+		<ClCompile Include="..\engine\util\xml.cpp">
+			
+		</ClCompile>
+		<ClCompile Include="..\engine\util\xml.cpp">
+			
+		</ClCompile>
 		<ClCompile Include="..\engine\util\rng.cpp">
 			<PrecompiledHeader>NotUsing</PrecompiledHeader>
 		</ClCompile>
@@ -110,9 +116,6 @@ To change the list of source files, update the QT_ files and run synchronize.py
 			
 		</ClCompile>
 		<ClCompile Include="..\engine\player\sc_consumable.cpp">
-			
-		</ClCompile>
-		<ClCompile Include="..\engine\interfaces\sc_xml.cpp">
 			
 		</ClCompile>
 		<ClCompile Include="..\engine\interfaces\sc_wowhead.cpp">

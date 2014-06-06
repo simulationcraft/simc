@@ -23,6 +23,8 @@
  HEADERS += engine/utf8/core.h
  HEADERS += engine/utf8/checked.h
  HEADERS += engine/utf8.h
+ SOURCES += engine/util/xml.cpp
+ SOURCES += engine/util/xml.cpp
  SOURCES += engine/util/rng.cpp
  SOURCES += engine/util/io.cpp
  SOURCES += engine/util/concurrency.cpp
@@ -52,7 +54,6 @@
  SOURCES += engine/player/sc_item.cpp
  SOURCES += engine/player/sc_enchant.cpp
  SOURCES += engine/player/sc_consumable.cpp
- SOURCES += engine/interfaces/sc_xml.cpp
  SOURCES += engine/interfaces/sc_wowhead.cpp
  SOURCES += engine/interfaces/sc_http.cpp
  SOURCES += engine/interfaces/sc_bcp_api.cpp

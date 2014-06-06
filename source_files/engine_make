@@ -22,6 +22,8 @@ SRC += \
     utf8$(PATHSEP)core.h \
     utf8$(PATHSEP)checked.h \
     utf8.h \
+    util$(PATHSEP)xml.cpp \
+    util$(PATHSEP)xml.cpp \
     util$(PATHSEP)rng.cpp \
     util$(PATHSEP)io.cpp \
     util$(PATHSEP)concurrency.cpp \
@@ -51,7 +53,6 @@ SRC += \
     player$(PATHSEP)sc_item.cpp \
     player$(PATHSEP)sc_enchant.cpp \
     player$(PATHSEP)sc_consumable.cpp \
-    interfaces$(PATHSEP)sc_xml.cpp \
     interfaces$(PATHSEP)sc_wowhead.cpp \
     interfaces$(PATHSEP)sc_http.cpp \
     interfaces$(PATHSEP)sc_bcp_api.cpp \

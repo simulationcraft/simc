@@ -5,6 +5,8 @@
 
 #include "simulationcraft.hpp"
 
+// XML Reader ==================================================================
+
 namespace { // UNNAMED NAMESPACE =========================================
 
 struct xml_cache_entry_t
@@ -34,11 +36,11 @@ void simplify_xml( std::string& buffer )
 bool is_white_space( char c )
 {
   return( c == ' '  ||
-          c == '\t' ||
-          c == '\n' ||
-          c == '\r' ||
-          // FIX-ME: Need proper UTF-8 support
-          c < 0 );
+      c == '\t' ||
+      c == '\n' ||
+      c == '\r' ||
+      // FIX-ME: Need proper UTF-8 support
+      c < 0 );
 }
 
 // is_name_char =============================================================
@@ -53,8 +55,8 @@ bool is_name_char( char c )
 // parse_name ===============================================================
 
 bool parse_name( std::string&            name_str,
-                        const std::string&      input,
-                        std::string::size_type& index )
+                 const std::string&      input,
+                 std::string::size_type& index )
 {
   name_str.clear();
 
@@ -107,8 +109,8 @@ void xml_node_t::create_parameter( const std::string&      input,
 // xml_node_t::create_node ==================================================
 
 std::shared_ptr<xml_node_t> xml_node_t::create_node( sim_t*                  sim,
-                                     const std::string&      input,
-                                     std::string::size_type& index )
+                                                     const std::string&      input,
+                                                     std::string::size_type& index )
 {
   char c = input[ index ];
   if ( c == '?' ) index++;
@@ -306,9 +308,9 @@ xml_node_t* xml_node_t::split_path( std::string&       key,
 // xml_node_t::get ==========================================================
 
 std::shared_ptr<xml_node_t> xml_node_t::get( sim_t*             sim,
-                             const std::string& url,
-                             cache::behavior_e  caching,
-                             const std::string& confirmation )
+                                             const std::string& url,
+                                             cache::behavior_e  caching,
+                                             const std::string& confirmation )
 {
   auto_lock_t lock( xml_mutex );
 
@@ -336,7 +338,7 @@ std::shared_ptr<xml_node_t> xml_node_t::get( sim_t*             sim,
 // xml_node_t::create =======================================================
 
 std::shared_ptr<xml_node_t> xml_node_t::create( sim_t* sim,
-                                const std::string& input )
+                                                const std::string& input )
 {
   std::shared_ptr<xml_node_t> root = std::shared_ptr<xml_node_t>( new xml_node_t( "root" ) );
 
@@ -439,8 +441,8 @@ std::vector<xml_node_t*> xml_node_t::get_nodes( const std::string& path )
 // xml_node_t::get_nodes ====================================================
 
 std::vector<xml_node_t*> xml_node_t::get_nodes( const std::string&        path,
-                           const std::string&        parm_name,
-                           const std::string&        parm_value )
+                                                const std::string&        parm_name,
+                                                const std::string&        parm_value )
 {
   std::vector<xml_node_t*> nodes;
   if ( path.empty() || path == name_str )
@@ -616,4 +618,139 @@ xml_node_t* xml_node_t::add_child( const std::string& name )
   if ( node )
     children.push_back( node );
   return node.get();
+}
+
+// XML Writer ================================================================
+
+xml_writer_t::xml_writer_t( const std::string & filename ) :
+            file( filename, "w" ),
+            tabulation( "  " ), current_state( NONE )
+{
+}
+
+bool xml_writer_t::ready() const
+{
+  return file != NULL;
+}
+
+int xml_writer_t::printf( const char *format, ... ) const
+{
+  va_list fmtargs;
+  va_start( fmtargs, format );
+
+  int retcode = vfprintf( file, format, fmtargs );
+
+  va_end( fmtargs );
+
+  return retcode;
+}
+
+void xml_writer_t::init_document( const std::string & stylesheet_file )
+{
+  assert( current_state == NONE );
+
+  printf( "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n" );
+  if ( !stylesheet_file.empty() )
+  {
+    printf( "<?xml-stylesheet type=\"text/xml\" href=\"%s\"?>", stylesheet_file.c_str() );
+  }
+
+  current_state = TEXT;
+}
+
+void xml_writer_t::begin_tag( const std::string & tag )
+{
+  assert( current_state != NONE );
+
+  if ( current_state != TEXT )
+  {
+    printf( ">" );
+  }
+
+  printf( "\n%s<%s", indentation.c_str(), tag.c_str() );
+
+  current_tags.push( tag );
+  indentation += tabulation;
+
+  current_state = TAG;
+}
+
+void xml_writer_t::end_tag( const std::string & tag )
+{
+  assert( current_state != NONE );
+  assert( ! current_tags.empty() );
+  assert( indentation.size() == tabulation.size() * current_tags.size() );
+
+  assert( tag == current_tags.top() );
+  current_tags.pop();
+
+  indentation.resize( indentation.size() - tabulation.size() );
+
+  if ( current_state == TAG )
+  {
+    printf( "/>" );
+  }
+  else if ( current_state == TEXT )
+  {
+    printf( "\n%s</%s>", indentation.c_str(), tag.c_str() );
+  }
+
+  current_state = TEXT;
+}
+
+void xml_writer_t::print_attribute( const std::string & name, const std::string & value )
+{ print_attribute_unescaped( name, sanitize( value ) ); }
+
+void xml_writer_t::print_attribute_unescaped( const std::string & name, const std::string & value )
+{
+  assert( current_state != NONE );
+
+  if ( current_state == TAG )
+  {
+    printf( " %s=\"%s\"", name.c_str(), value.c_str() );
+  }
+}
+
+void xml_writer_t::print_tag( const std::string & name, const std::string & inner_value )
+{
+  assert( current_state != NONE );
+
+  if ( current_state != TEXT )
+  {
+    printf( ">" );
+  }
+
+  printf( "\n%s<%s>%s</%s>", indentation.c_str(), name.c_str(), sanitize( inner_value ).c_str(), name.c_str() );
+
+  current_state = TEXT;
+}
+
+void xml_writer_t::print_text( const std::string & input )
+{
+  assert( current_state != NONE );
+
+  if ( current_state != TEXT )
+  {
+    printf( ">" );
+  }
+
+  printf( "\n%s", sanitize( input ).c_str() );
+
+  current_state = TEXT;
+}
+
+std::string xml_writer_t::sanitize( std::string v )
+{
+  static const replacement replacements[] =
+  {
+      { "&", "&amp;" },
+      { "\"", "&quot;" },
+      { "<", "&lt;" },
+      { ">", "&gt;" },
+  };
+
+  for ( unsigned int i = 0; i < sizeof_array( replacements ); ++i )
+    util::replace_all( v, replacements[ i ].from, replacements[ i ].to );
+
+  return v;
 }
