@@ -526,7 +526,7 @@ void dot_t::schedule_tick()
   time_to_tick = current_action -> tick_time( state -> haste );
 
   // Recalculate num_ticks:
-  num_ticks = current_tick + ceil( remains() / time_to_tick );
+  num_ticks = current_tick + as<int>(std::ceil( remains() / time_to_tick ));
   last_tick_factor = std::min( 1.0, remains() / time_to_tick );
 
   tick_event = new ( sim ) dot_t::dot_tick_event_t( this, time_to_tick );
@@ -596,7 +596,7 @@ void dot_t::refresh( timespan_t duration )
   check_tick_zero();
 
   // Recalculate num_ticks:
-  num_ticks = current_tick + remains() / current_action -> tick_time( state -> haste );
+  num_ticks = current_tick + as<int>(std::ceil(remains() / current_action->tick_time(state->haste) ) );
 
   event_t::cancel( end_event );
   end_event = new ( sim ) dot_t::dot_end_event_t( this, current_duration );
@@ -609,7 +609,7 @@ void dot_t::check_tick_zero()
     timespan_t previous_ttt = time_to_tick;
     time_to_tick = timespan_t::zero();
     // Recalculate num_ticks:
-    num_ticks = current_tick + remains() / current_action -> tick_time( state -> haste );
+	num_ticks = current_tick + as<int>(std::ceil(remains() / current_action->tick_time(state->haste)));
     tick_zero();
     if ( remains() <= timespan_t::zero() )
     {

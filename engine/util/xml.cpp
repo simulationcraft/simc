@@ -3,7 +3,6 @@
 // Send questions to natehieter@gmail.com
 // ==========================================================================
 
-#include "xml.hpp"
 #include "simulationcraft.hpp"
 
 // XML Reader ==================================================================
