@@ -3371,8 +3371,6 @@ void warrior_t::init_base_stats()
     base.expertise += spec.unwavering_sentinel -> effectN( 5 ).percent();
   }
 
-  sim -> regen_periodicity = timespan_t::from_seconds( 3 );
-
   base_gcd = timespan_t::from_seconds( 1.5 );
 }
 
@@ -4271,7 +4269,7 @@ void warrior_t::regen( timespan_t periodicity )
   player_t::regen( periodicity );
 
   if ( active_stance == STANCE_DEFENSE || active_stance == STANCE_GLADIATOR )
-    player_t::resource_gain( RESOURCE_RAGE, ( periodicity.total_seconds() ), gain.defensive_stance );
+    player_t::resource_gain( RESOURCE_RAGE, ( periodicity.total_seconds() / 3.0 ), gain.defensive_stance );
 }
 
 // warrior_t::primary_role() ================================================
