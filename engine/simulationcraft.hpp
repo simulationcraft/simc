@@ -3105,8 +3105,10 @@ struct special_effect_t
   // Buff related functionality
   buff_t* create_buff() const;
   special_effect_buff_e buff_type() const;
+  int max_stack() const;
 
   bool is_stat_buff() const;
+  stat_e stat_type() const;
   stat_buff_t* initialize_stat_buff() const;
 
   bool is_absorb_buff() const;

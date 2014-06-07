@@ -236,6 +236,44 @@ bool special_effect_t::is_stat_buff() const
   return false;
 }
 
+// special_effect_t::stat ===================================================
+
+stat_e special_effect_t::stat_type() const
+{
+  if ( stat != STAT_NONE )
+    return stat;
+
+  for ( size_t i = 1, end = trigger() -> effect_count(); i <= end; i++ )
+  {
+    const spelleffect_data_t& effect = trigger() -> effectN( i );
+    if ( effect.id() == 0 )
+      continue;
+
+    stat_e type = stat_buff_type( effect );
+    if ( type != STAT_NONE )
+      return type;
+  }
+
+  return STAT_NONE;
+}
+
+// special_effect_t::max_stack ==============================================
+
+int special_effect_t::max_stack() const
+{
+  if ( max_stacks != -1 )
+    return max_stacks;
+
+  if ( trigger() -> max_stacks() > 0 )
+    return trigger() -> max_stacks();
+
+  if ( driver() -> max_stacks() > 0 )
+    return driver() -> max_stacks();
+
+  return -1;
+}
+
+
 // special_effect_t::initialize_stat_buff ===================================
 
 stat_buff_t* special_effect_t::initialize_stat_buff() const

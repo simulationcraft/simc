@@ -1400,6 +1400,7 @@ bool sim_t::init_actors()
   range::for_each( actor_list, std::mem_fn( &player_t::create_buffs ) ); // keep here for now
   range::for_each( actor_list, std::mem_fn( &player_t::init_scaling ) );
   range::for_each( actor_list, std::mem_fn( &player_t::init_special_effects ) ); // Must be before init_actions
+  range::for_each( actor_list, std::mem_fn( &player_t::register_callbacks ) ); // Must be before init_actions
 
   // Initialize each actor's actions
   if ( ! init_actions() )
@@ -1420,7 +1421,7 @@ bool sim_t::init_actors()
   // organize parties if necessary
   if ( ! init_parties() )
     return false;
-
+/*
   // Callbacks
   if ( debug )
     out_debug.printf( "Registering Callbacks." );
@@ -1430,7 +1431,7 @@ bool sim_t::init_actors()
     player_t* p = actor_list[ i ];
     p -> register_callbacks();
   }
-
+*/
   // If we make it here, everything initialized properly and we can return true to sim_t::init()
   return true;
 }
