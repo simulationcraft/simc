@@ -81,63 +81,63 @@ To change the list of source files, update the QT_ files and run synchronize.py
 	<ItemGroup>
 		<CustomBuild Include="..\qt\util\sc_textedit.hpp">
 			<AdditionalInputs>$(QTDIR)\bin\moc.exe</AdditionalInputs>
-			<Message>Moc%27ing %(Identity)... QTDIR:$(QTDIR)</Message>
+			<Message>Moc%27ing %(Identity)... $(QTDIR)\bin\moc.exe $(IntDir)moc_%(Filename).cpp</Message>
 			<Command>"$(QTDIR)\bin\moc.exe" $(MOC_DEFINES) -I"$(QTDIR)\include" -I"(SolutionDir)engine" -I"$(QTDIR)\mkspecs\default" "%(Identity)" -o "$(IntDir)moc_%(Filename).cpp" </Command>
 			<AdditionalInputs>Rem;..\qt\util\sc_textedit.hpp;%(AdditionalInputs)</AdditionalInputs>
 			<Outputs>$(IntDir)\moc_%(Filename).cpp</Outputs>
 		</CustomBuild>
 		<CustomBuild Include="..\qt\util\sc_tabbar.hpp">
 			<AdditionalInputs>$(QTDIR)\bin\moc.exe</AdditionalInputs>
-			<Message>Moc%27ing %(Identity)... QTDIR:$(QTDIR)</Message>
+			<Message>Moc%27ing %(Identity)... $(QTDIR)\bin\moc.exe $(IntDir)moc_%(Filename).cpp</Message>
 			<Command>"$(QTDIR)\bin\moc.exe" $(MOC_DEFINES) -I"$(QTDIR)\include" -I"(SolutionDir)engine" -I"$(QTDIR)\mkspecs\default" "%(Identity)" -o "$(IntDir)moc_%(Filename).cpp" </Command>
 			<AdditionalInputs>Rem;..\qt\util\sc_tabbar.hpp;%(AdditionalInputs)</AdditionalInputs>
 			<Outputs>$(IntDir)\moc_%(Filename).cpp</Outputs>
 		</CustomBuild>
 		<CustomBuild Include="..\qt\util\sc_searchbox.hpp">
 			<AdditionalInputs>$(QTDIR)\bin\moc.exe</AdditionalInputs>
-			<Message>Moc%27ing %(Identity)... QTDIR:$(QTDIR)</Message>
+			<Message>Moc%27ing %(Identity)... $(QTDIR)\bin\moc.exe $(IntDir)moc_%(Filename).cpp</Message>
 			<Command>"$(QTDIR)\bin\moc.exe" $(MOC_DEFINES) -I"$(QTDIR)\include" -I"(SolutionDir)engine" -I"$(QTDIR)\mkspecs\default" "%(Identity)" -o "$(IntDir)moc_%(Filename).cpp" </Command>
 			<AdditionalInputs>Rem;..\qt\util\sc_searchbox.hpp;%(AdditionalInputs)</AdditionalInputs>
 			<Outputs>$(IntDir)\moc_%(Filename).cpp</Outputs>
 		</CustomBuild>
 		<CustomBuild Include="..\qt\util\sc_relativepopup.hpp">
 			<AdditionalInputs>$(QTDIR)\bin\moc.exe</AdditionalInputs>
-			<Message>Moc%27ing %(Identity)... QTDIR:$(QTDIR)</Message>
+			<Message>Moc%27ing %(Identity)... $(QTDIR)\bin\moc.exe $(IntDir)moc_%(Filename).cpp</Message>
 			<Command>"$(QTDIR)\bin\moc.exe" $(MOC_DEFINES) -I"$(QTDIR)\include" -I"(SolutionDir)engine" -I"$(QTDIR)\mkspecs\default" "%(Identity)" -o "$(IntDir)moc_%(Filename).cpp" </Command>
 			<AdditionalInputs>Rem;..\qt\util\sc_relativepopup.hpp;%(AdditionalInputs)</AdditionalInputs>
 			<Outputs>$(IntDir)\moc_%(Filename).cpp</Outputs>
 		</CustomBuild>
 		<CustomBuild Include="..\qt\util\sc_recentlyclosed.hpp">
 			<AdditionalInputs>$(QTDIR)\bin\moc.exe</AdditionalInputs>
-			<Message>Moc%27ing %(Identity)... QTDIR:$(QTDIR)</Message>
+			<Message>Moc%27ing %(Identity)... $(QTDIR)\bin\moc.exe $(IntDir)moc_%(Filename).cpp</Message>
 			<Command>"$(QTDIR)\bin\moc.exe" $(MOC_DEFINES) -I"$(QTDIR)\include" -I"(SolutionDir)engine" -I"$(QTDIR)\mkspecs\default" "%(Identity)" -o "$(IntDir)moc_%(Filename).cpp" </Command>
 			<AdditionalInputs>Rem;..\qt\util\sc_recentlyclosed.hpp;%(AdditionalInputs)</AdditionalInputs>
 			<Outputs>$(IntDir)\moc_%(Filename).cpp</Outputs>
 		</CustomBuild>
 		<CustomBuild Include="..\qt\util\sc_mainwindowcommandline.hpp">
 			<AdditionalInputs>$(QTDIR)\bin\moc.exe</AdditionalInputs>
-			<Message>Moc%27ing %(Identity)... QTDIR:$(QTDIR)</Message>
+			<Message>Moc%27ing %(Identity)... $(QTDIR)\bin\moc.exe $(IntDir)moc_%(Filename).cpp</Message>
 			<Command>"$(QTDIR)\bin\moc.exe" $(MOC_DEFINES) -I"$(QTDIR)\include" -I"(SolutionDir)engine" -I"$(QTDIR)\mkspecs\default" "%(Identity)" -o "$(IntDir)moc_%(Filename).cpp" </Command>
 			<AdditionalInputs>Rem;..\qt\util\sc_mainwindowcommandline.hpp;%(AdditionalInputs)</AdditionalInputs>
 			<Outputs>$(IntDir)\moc_%(Filename).cpp</Outputs>
 		</CustomBuild>
 		<CustomBuild Include="..\qt\util\sc_hoverarea.hpp">
 			<AdditionalInputs>$(QTDIR)\bin\moc.exe</AdditionalInputs>
-			<Message>Moc%27ing %(Identity)... QTDIR:$(QTDIR)</Message>
+			<Message>Moc%27ing %(Identity)... $(QTDIR)\bin\moc.exe $(IntDir)moc_%(Filename).cpp</Message>
 			<Command>"$(QTDIR)\bin\moc.exe" $(MOC_DEFINES) -I"$(QTDIR)\include" -I"(SolutionDir)engine" -I"$(QTDIR)\mkspecs\default" "%(Identity)" -o "$(IntDir)moc_%(Filename).cpp" </Command>
 			<AdditionalInputs>Rem;..\qt\util\sc_hoverarea.hpp;%(AdditionalInputs)</AdditionalInputs>
 			<Outputs>$(IntDir)\moc_%(Filename).cpp</Outputs>
 		</CustomBuild>
 		<CustomBuild Include="..\qt\simulationcraftqt.hpp">
 			<AdditionalInputs>$(QTDIR)\bin\moc.exe</AdditionalInputs>
-			<Message>Moc%27ing %(Identity)... QTDIR:$(QTDIR)</Message>
+			<Message>Moc%27ing %(Identity)... $(QTDIR)\bin\moc.exe $(IntDir)moc_%(Filename).cpp</Message>
 			<Command>"$(QTDIR)\bin\moc.exe" $(MOC_DEFINES) -I"$(QTDIR)\include" -I"(SolutionDir)engine" -I"$(QTDIR)\mkspecs\default" "%(Identity)" -o "$(IntDir)moc_%(Filename).cpp" </Command>
 			<AdditionalInputs>Rem;..\qt\simulationcraftqt.hpp;%(AdditionalInputs)</AdditionalInputs>
 			<Outputs>$(IntDir)\moc_%(Filename).cpp</Outputs>
 		</CustomBuild>
 		<CustomBuild Include="..\qt\SC_OptionsTab.hpp">
 			<AdditionalInputs>$(QTDIR)\bin\moc.exe</AdditionalInputs>
-			<Message>Moc%27ing %(Identity)... QTDIR:$(QTDIR)</Message>
+			<Message>Moc%27ing %(Identity)... $(QTDIR)\bin\moc.exe $(IntDir)moc_%(Filename).cpp</Message>
 			<Command>"$(QTDIR)\bin\moc.exe" $(MOC_DEFINES) -I"$(QTDIR)\include" -I"(SolutionDir)engine" -I"$(QTDIR)\mkspecs\default" "%(Identity)" -o "$(IntDir)moc_%(Filename).cpp" </Command>
 			<AdditionalInputs>Rem;..\qt\SC_OptionsTab.hpp;%(AdditionalInputs)</AdditionalInputs>
 			<Outputs>$(IntDir)\moc_%(Filename).cpp</Outputs>

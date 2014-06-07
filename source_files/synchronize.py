@@ -135,7 +135,7 @@ def create_vs_str( input, gui = False ):
                 prepare += """
 \t\t<CustomBuild Include=\"""" + entry[1] + """\">
 \t\t\t<AdditionalInputs>$(QTDIR)\\bin\moc.exe</AdditionalInputs>
-\t\t\t<Message>Moc%27ing %(Identity)... QTDIR:$(QTDIR)</Message>
+\t\t\t<Message>Moc%27ing %(Identity)... $(QTDIR)\\bin\moc.exe $(IntDir)moc_%(Filename).cpp</Message>
 \t\t\t<Command>"$(QTDIR)\\bin\\moc.exe" $(MOC_DEFINES) -I"$(QTDIR)\\include" -I"(SolutionDir)engine" -I"$(QTDIR)\\mkspecs\\default" "%(Identity)" -o "$(IntDir)moc_%(Filename).cpp" </Command>
 \t\t\t<AdditionalInputs>Rem;""" + entry[1] + """;%(AdditionalInputs)</AdditionalInputs>
 \t\t\t<Outputs>$(IntDir)\\moc_%(Filename).cpp</Outputs>
