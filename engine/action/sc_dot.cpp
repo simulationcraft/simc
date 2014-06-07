@@ -608,8 +608,8 @@ void dot_t::refresh( timespan_t duration )
   // Recalculate num_ticks:
   num_ticks = current_tick + as<int>(std::ceil(remains() / current_action->tick_time(state->haste) ) );
 
-  event_t::cancel( end_event );
-  end_event = new ( sim ) dot_t::dot_end_event_t( this, current_duration );
+  assert( end_event && "Dot is ticking but has no end event." );
+  end_event -> reschedule( current_duration );
 }
 
 void dot_t::check_tick_zero()
