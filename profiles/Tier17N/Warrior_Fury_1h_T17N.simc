@@ -80,7 +80,6 @@ actions.two_targets+=/heroic_strike,if=rage>100
 actions.two_targets+=/ignite_weapon,if=talent.ignite_weapon.enabled&((target.health.pct>=20&rage>100)|buff.ignite_weapon.down)
 actions.two_targets+=/ravager,if=talent.ravager.enabled
 actions.two_targets+=/bladestorm,if=talent.bladestorm.enabled&buff.enrage.remains>4
-# Generally, if an encounter has any type of AoE, Bladestorm will be the better choice than Dragon Roar.
 actions.two_targets+=/dragon_roar,if=talent.dragon_roar.enabled&(!debuff.colossus_smash.up&(buff.bloodbath.up|!talent.bloodbath.enabled))
 actions.two_targets+=/colossus_smash
 # Keep deep wounds on as many targets as possible.
@@ -117,8 +116,6 @@ actions.aoe+=/bladestorm,if=talent.bladestorm.enabled&buff.enrage.remains>4
 actions.aoe+=/bloodthirst,cycle_targets=1,if=!dot.deep_wounds.ticking&buff.enrage.down
 actions.aoe+=/raging_blow,if=buff.meat_cleaver.stack=3
 actions.aoe+=/whirlwind
-# Dragon roar is a poor choice on large-scale AoE as the damage it does is reduced with additional targets. The damage it does per target is reduced by the following amounts:
-# 1/2/3/4/5+ targets ---> 0%/25%/35%/45%/50%
 actions.aoe+=/dragon_roar,if=talent.dragon_roar.enabled&(debuff.colossus_smash.down&(buff.bloodbath.up|!talent.bloodbath.enabled))
 actions.aoe+=/bloodthirst,cycle_targets=1,if=!dot.deep_wounds.ticking
 actions.aoe+=/colossus_smash
