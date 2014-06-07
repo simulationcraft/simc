@@ -4680,17 +4680,15 @@ struct stellar_flare_t : public druid_spell_t
 
     double balance;
     balance = p() -> clamped_eclipse_amount;
-
-    balance = std::abs( balance );
-
     double mastery;
 
     mastery = p() -> cache.mastery_value();
 
+    
     if ( p() -> buff.celestial_alignment -> up() )
-      m *= ( ( 1.0 + mastery) * ( 1.0 * mastery ) );
+      m *= ( 1.0 + mastery ) * ( 1.0 + mastery );
     else
-      m *= ( ( 1.0 + mastery / 2 * ( 100 - balance ) / 100 ) * ( 1.0 + mastery / 2  * ( 200 - balance ) / 100 ) );
+      m *= ( 1.0 + ( mastery * ( 100 - std::abs( balance ) ) / 200 ) ) * ( 1.0 + ( mastery / 2 + mastery * ( std::abs( balance ) / 200 ) ) ); 
 
     if ( sim -> log || sim -> debug )
       sim -> out_debug.printf( "Action modifier %f", m );
