@@ -9,8 +9,6 @@
 // TODO: Check WoD mechanics whenever alpha/beta roll around:
 // Raging Blow: Will the parent still fail if either MH/OH parry. (Not incredibly important anymore, but it'd be nice to know)
 //
-// Dragon Roar: Does it still have diminishing returns on more than 1 target
-//
 // Someone who is knowledgable about prot warrior mechanics/changes should look over the defensive abilities.
 // Check shield barrier ap coefficient.
 // ==========================================================================
@@ -1018,7 +1016,7 @@ struct off_hand_test_attack_t : public warrior_attack_t
   off_hand_test_attack_t( warrior_t* p, const char* name ) :
     warrior_attack_t( name, p ), last_result( RESULT_NONE )
   {
-    background        = true;
+    background = quiet = true;
     weapon            = &( p -> off_hand_weapon );
     trigger_gcd       = timespan_t::zero();
     weapon_multiplier = 0.0;
@@ -1051,13 +1049,13 @@ struct auto_attack_t : public warrior_attack_t
 
     assert( p -> main_hand_weapon.type != WEAPON_NONE );
 
-    p -> main_hand_attack = new melee_t( "melee_main_hand", p, sync_weapons );
+    p -> main_hand_attack = new melee_t( "auto_attack_mh", p, sync_weapons );
     p -> main_hand_attack -> weapon = &( p -> main_hand_weapon );
     p -> main_hand_attack -> base_execute_time = p -> main_hand_weapon.swing_time;
 
     if ( p -> off_hand_weapon.type != WEAPON_NONE )
     {
-      p -> off_hand_attack = new melee_t( "melee_off_hand", p, sync_weapons );
+      p -> off_hand_attack = new melee_t( "auto_attack_oh", p, sync_weapons );
       p -> off_hand_attack -> weapon = &( p -> off_hand_weapon );
       p -> off_hand_attack -> base_execute_time = p -> off_hand_weapon.swing_time;
       p -> off_hand_attack -> id = 1;
@@ -1901,7 +1899,7 @@ struct raging_blow_t : public warrior_attack_t
     mh_attack -> weapon = &( p -> main_hand_weapon );
     add_child( mh_attack );
 
-    oh_attack = new raging_blow_attack_t( p, "raging_blow_oh", data().effectN( 2 ).trigger() );
+    oh_attack = new raging_blow_attack_t( p, "raging_blow_offhand", data().effectN( 2 ).trigger() );
     oh_attack -> weapon = &( p -> off_hand_weapon );
     add_child( oh_attack );
 
@@ -1944,6 +1942,7 @@ struct raging_blow_t : public warrior_attack_t
 };
 
 // Ravager ==============================================================
+
 struct ravager_tick_t : public warrior_attack_t
 {
   ravager_tick_t( warrior_t* p, const std::string& name ) :
@@ -2299,7 +2298,7 @@ struct storm_bolt_t : public warrior_attack_t
 
     if ( p -> specialization() == WARRIOR_FURY )
     {
-      oh_attack = new storm_bolt_off_hand_t( p, "storm_bolt_oh", data().effectN( 4 ).trigger() );
+      oh_attack = new storm_bolt_off_hand_t( p, "storm_bolt_offhand", data().effectN( 4 ).trigger() );
       add_child( oh_attack );
     }
   }
@@ -4580,14 +4579,16 @@ public:
 
     os << p.name()<<"\n<br>";
     os << "\t\t\t\t\t<p>Percentage of damage dealt to primary target</p>\n";
-    os << "%"<<( ( priority_damage / all_damage ) * 100 );
+    os << "%"<<( ( priority_damage / all_damage ) * 100 )<<"</p>\n";
     if ( p.specialization() !=  WARRIOR_PROTECTION )
     {
       os << "\t\t\t\t\t<p>Percentage of primary target damage that occurs inside of Colossus Smash</p>\n";
-      os << "%"<<( ( cs_damage / priority_damage ) * 100 );
+      os << "%"<<( ( cs_damage / priority_damage ) * 100 )<<"</p>\n";
     }
     os << "\t\t\t\t\t<p> Dps done to primary target </p>\n";
-    os << ( ( priority_damage / all_damage ) * p.collected_data.dps.mean() );
+    os << ( ( priority_damage / all_damage ) * p.collected_data.dps.mean() )<<"</p>\n";
+
+    os << "\t\t\t\t\t<p> GCD: "<< ( 1.5 * p.cache.attack_haste() ) <<"</p>\n";
 
     os << "\t\t\t\t\t\t</div>\n" << "\t\t\t\t\t</div>\n";
   }

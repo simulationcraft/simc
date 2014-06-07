@@ -5432,8 +5432,7 @@ void druid_t::create_buffs()
                                    .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
 
   buff.enhanced_owlkin_frenzy    = buff_creator_t( this, "enhanced_owlkin_frenzy", perk.enhanced_owlkin_frenzy )
-                                   .duration( spec.owlkin_frenzy -> effectN( 1 ).trigger() -> duration() )
-                                   .chance( 1 );
+                                   .duration( spec.owlkin_frenzy -> effectN( 1 ).trigger() -> duration() );
 
   buff.shooting_stars            = buff_creator_t( this, "shooting_stars", spec.shooting_stars -> effectN( 1 ).trigger() )
                                    .chance( spec.shooting_stars -> proc_chance() + sets.set( SET_T16_4PC_CASTER ) -> effectN( 1 ).percent() );

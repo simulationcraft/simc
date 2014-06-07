@@ -2126,13 +2126,13 @@ void player_t::create_buffs()
                                 .add_stat( STAT_AGILITY, 1200.0 );
 
       // MoP
-      potion_buffs.jade_serpent = potion_buff_creator( this, "jade_serpent_potion" )
+      potion_buffs.jade_serpent = potion_buff_creator( this, "potion_of_the_jade_serpent" )
                                   .spell( find_spell( 105702 ) );
-      potion_buffs.mountains    = potion_buff_creator( this, "mountains_potion" )
+      potion_buffs.mountains    = potion_buff_creator( this, "potion_of_the_mountains" )
                                   .spell( find_spell( 105698 ) );
-      potion_buffs.mogu_power   = potion_buff_creator( this, "mogu_power_potion" )
+      potion_buffs.mogu_power   = potion_buff_creator( this, "potion_of_mogu_power" )
                                   .spell( find_spell( 105706 ) );
-      potion_buffs.virmens_bite = potion_buff_creator( this, "virmens_bite_potion" )
+      potion_buffs.virmens_bite = potion_buff_creator( this, "virmens_bite" )
                                   .spell( find_spell( 105697 ) );
 
     buffs.darkflight         = buff_creator_t( this, "darkflight", find_racial_spell( "darkflight" ) );
