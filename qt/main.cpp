@@ -1,7 +1,7 @@
 #include "simulationcraft.hpp"
 #include "simulationcraftqt.hpp"
 #include <QLocale>
-#include <QApplication>
+#include <QtWidgets/QApplication>
 #include <locale>
 
 /* Parse additional arguments

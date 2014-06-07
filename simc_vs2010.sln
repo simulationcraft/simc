@@ -1,9 +1,9 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 11.00
 # Visual C++ Express 2010
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "simc10", "vs\simc10.vcxproj", "{D963926C-4A85-4600-8626-51FA12FDF5C1}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "simc10", "vs\simc_vs2010.vcxproj", "{D963926C-4A85-4600-8626-51FA12FDF5C1}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "simcqt10", "vs\simcqt10.vcxproj", "{8B5B7EB0-9B3B-3682-B018-64769C525784}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "simcqt10", "vs\simcqt_vs2010.vcxproj", "{8B5B7EB0-9B3B-3682-B018-64769C525784}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

@@ -88,7 +88,7 @@
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
     <Import Project="OutputDirectories.props" />
     <Import Project="PrecompiledHeaders.props" />
-    <Import Project="Qt_vs12.props" />
+    <Import Project="Qt_vs2013.props" />
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup>
