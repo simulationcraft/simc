@@ -8158,6 +8158,8 @@ expr_t* player_t::create_resource_expression( const std::string& name_str )
         return make_mem_fn_expr( name_str, *this, &player_t::energy_regen_per_second );
       else if ( r == RESOURCE_FOCUS )
         return make_mem_fn_expr( name_str, *this, &player_t::focus_regen_per_second );
+      else if ( r == RESOURCE_MANA )
+        return make_mem_fn_expr( name_str, *this, &player_t::mana_regen_per_second );
     }
 
     else if ( splits[ 1 ] == "time_to_max" )
@@ -8190,7 +8192,23 @@ expr_t* player_t::create_resource_expression( const std::string& name_str )
                    player.focus_regen_per_second();
           }
         };
-        return new time_to_max_focus_expr_t( *this, r );
+        if ( r == RESOURCE_MANA )
+        {
+          struct time_to_max_mana_expr_t : public resource_expr_t
+          {
+            time_to_max_mana_expr_t( player_t& p, resource_e r ) :
+              resource_expr_t( "time_to_max_mana", p, r )
+            {
+            }
+            virtual double evaluate()
+            {
+              return ( player.resources.max[RESOURCE_MANA] -
+                player.resources.current[RESOURCE_MANA] ) /
+                player.mana_regen_per_second();
+            }
+          };
+          return new time_to_max_mana_expr_t( *this, r );
+        }
       }
     }
   }
