@@ -533,6 +533,7 @@ void dot_t::schedule_tick()
     sim.out_debug.printf( "%s schedules tick for %s on %s", source -> name(), name(), target -> name() );
 
   time_to_tick = current_action -> tick_time( state -> haste );
+  assert( time_to_tick > timespan_t::zero() && "A Dot needs a positive tick time!" );
 
   // Recalculate num_ticks:
   num_ticks = current_tick + as<int>(std::ceil( remains() / time_to_tick ));
@@ -618,7 +619,9 @@ void dot_t::check_tick_zero()
     timespan_t previous_ttt = time_to_tick;
     time_to_tick = timespan_t::zero();
     // Recalculate num_ticks:
-	num_ticks = current_tick + as<int>(std::ceil(remains() / current_action->tick_time(state->haste)));
+    timespan_t tick_time = current_action->tick_time(state->haste);
+    assert( tick_time > timespan_t::zero() && "A Dot needs a positive tick time!" );
+	  num_ticks = current_tick + as<int>(std::ceil(remains() / tick_time ) );
     tick_zero();
     if ( remains() <= timespan_t::zero() )
     {
