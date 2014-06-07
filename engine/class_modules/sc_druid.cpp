@@ -443,7 +443,10 @@ public:
     const spell_data_t* typhoon; //pvp
 
     const spell_data_t* soul_of_the_forest; //Re-do for balance when they announce changes for it.
-    const spell_data_t* incarnation; //Check for all specs
+    const spell_data_t* incarnation_tree;
+    const spell_data_t* incarnation_son;
+    const spell_data_t* incarnation_chosen;
+    const spell_data_t* incarnation_king;
     const spell_data_t* force_of_nature; 
 
     const spell_data_t* incapacitating_roar; //pvp
@@ -4185,7 +4188,7 @@ struct hurricane_t : public druid_spell_t
 struct incarnation_t : public druid_spell_t
 {
   incarnation_t( druid_t* player, const std::string& options_str ) :
-    druid_spell_t( "incarnation", player, player -> talent.incarnation, options_str )
+    druid_spell_t( "incarnation", player, player -> find_spell( 102560 ) ) //Fix for all specs.
   {
     parse_options( NULL, options_str );
     harmful = false;
@@ -4555,7 +4558,7 @@ struct starfire_t : public druid_spell_t
 
     if ( p() -> buff.lunar_empowerment -> up() )
     {
-      m *= 1.0 + p() -> buff.lunar_empowerment -> data().effectN( 1 ).percent();
+      m *= 1.0 + p() -> buff.lunar_empowerment -> data().effectN( 1 ).percent() + p() -> talent.soul_of_the_forest -> effectN( 1 ).percent();
       p() -> buff.lunar_empowerment -> decrement();
     }
     return m;
@@ -4886,7 +4889,7 @@ struct wrath_t : public druid_spell_t
 
     if ( p() -> buff.solar_empowerment -> up() )
     {
-      m *= 1.0 + p() -> buff.solar_empowerment -> data().effectN( 1 ).percent();
+      m *= 1.0 + p() -> buff.solar_empowerment -> data().effectN( 1 ).percent() + p() -> talent.soul_of_the_forest -> effectN( 1 ).percent();
       p() -> buff.solar_empowerment -> decrement();
     }
 
@@ -5150,7 +5153,10 @@ void druid_t::init_spells()
   talent.typhoon            = find_talent_spell( "Typhoon" );
 
   talent.soul_of_the_forest = find_talent_spell( "Soul of the Forest" );
-  talent.incarnation        = find_talent_spell( "Incarnation" );
+  talent.incarnation_chosen = find_talent_spell( "Incarnation: Chosen of Elune" );
+  talent.incarnation_king   = find_talent_spell( "Incarnation: King of the Jungle" );
+  talent.incarnation_son    = find_talent_spell( "Incarnation: Son of Ursoc" );
+  talent.incarnation_tree   = find_talent_spell( "Incarnation: Tree of Life" );
   talent.force_of_nature    = find_talent_spell( "Force of Nature" );
 
   talent.incapacitating_roar  = find_talent_spell( "Incapacitating Roar" );
@@ -5372,24 +5378,19 @@ void druid_t::create_buffs()
   buff.cenarion_ward = buff_creator_t( this, "cenarion_ward", find_talent_spell( "Cenarion Ward" ) );
 
   // http://mop.wowhead.com/spell=122114 Chosen of Elune
-  buff.chosen_of_elune    = buff_creator_t( this, "chosen_of_elune"   , talent.incarnation -> ok() ? find_spell( 102560 ) : spell_data_t::not_found() )
+  buff.chosen_of_elune    = buff_creator_t( this, "chosen_of_elune"   , talent.incarnation_chosen -> ok() ? find_spell( 102560 ) : spell_data_t::not_found() )
                             .default_value( find_spell( 122114) -> effectN( 1 ).percent() )
                             .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
 
   // http://mop.wowhead.com/spell=102548 Incarnation: King of the Jungle
-  buff.king_of_the_jungle = buff_creator_t( this, "king_of_the_jungle", talent.incarnation -> ok() ? find_spell( 102543 ) : spell_data_t::not_found() )
-                            .duration( talent.incarnation -> duration() )
-                            .chance( talent.incarnation -> ok() ? ( specialization() == DRUID_FERAL ) : 0.0 );
+  buff.king_of_the_jungle = buff_creator_t( this, "king_of_the_jungle", talent.incarnation_king -> ok() ? find_spell( 102543 ) : spell_data_t::not_found() );
 
   // http://mop.wowhead.com/spell=113711 Incarnation: Son of Ursoc      Passive
-  buff.son_of_ursoc       = buff_creator_t( this, "son_of_ursoc"      , talent.incarnation -> ok() ? find_spell( 102558 ) : spell_data_t::not_found() )
-                            .duration( talent.incarnation -> duration() )
-                            .chance( talent.incarnation -> ok() ?  ( specialization() == DRUID_GUARDIAN ) : 0.0 );
+  buff.son_of_ursoc       = buff_creator_t( this, "son_of_ursoc"      , talent.incarnation_son -> ok() ? find_spell( 102558 ) : spell_data_t::not_found() );
 
   // http://mop.wowhead.com/spell=5420 Incarnation: Tree of Life        Passive
-  buff.tree_of_life       = buff_creator_t( this, "tree_of_life"      , talent.incarnation -> ok() ? find_spell( 5420 ) : spell_data_t::not_found() )
-                            .duration( talent.incarnation -> duration() )
-                            .chance( talent.incarnation -> ok() ?  ( specialization() == DRUID_RESTORATION ) : 0.0 );
+  buff.tree_of_life       = buff_creator_t( this, "tree_of_life"      , talent.incarnation_tree -> ok() ? find_spell( 5420 ) : spell_data_t::not_found() )
+                            .duration( timespan_t::from_seconds( 30 ) );
 
   // Dream of Cenarius
   if ( talent.dream_of_cenarius -> ok() )
@@ -5654,6 +5655,8 @@ void druid_t::apl_balance()
 
   action_priority_list_t* default_list        = get_action_priority_list( "default" );
   action_priority_list_t* single_target       = get_action_priority_list( "single_target" );
+  action_priority_list_t* bop                 = get_action_priority_list( "bop");
+  action_priority_list_t* euphoria            = get_action_priority_list( "euphoria" );
   action_priority_list_t* aoe                 = get_action_priority_list( "aoe" );
 
   if ( sim -> allow_potions && level >= 80 )
@@ -5662,22 +5665,47 @@ void druid_t::apl_balance()
   for ( size_t i = 0; i < racial_actions.size(); i++ )
     default_list -> add_action( racial_actions[i] + ",if=buff.bloodlust.react|target.time_to_die<=40|buff.celestial_alignment.up" );
 
+  default_list -> add_action( "run_action_list,name=euphoria,if=active_enemies=1&talent.euphoria.enabled" );
+  default_list -> add_action( "run_action_list,name=bop,if=active_enemies=1&talent.balance_of_power.enabled" );
   default_list -> add_action( "run_action_list,name=single_target,if=active_enemies=1" );
   default_list -> add_action( "run_action_list,name=aoe,if=active_enemies>1" );
-  default_list -> add_talent( this, "Force of Nature" );
-  default_list -> add_talent( this, "Incarnation" );
 
-  single_target -> add_action( this, "Celestial Alignment" );
-  single_target -> add_action( this, "Starsurge", "if=charges=3|(eclipse_change>4&eclipse_dir.lunar)|(eclipse_energy<=75&eclipse_dir.lunar)" );
-  single_target -> add_talent( this, "Stellar Flare", "if=@eclipse_energy<10&!dot.stellar_flare.ticking" );
-  single_target -> add_action( this, "Moonfire" , "if=!dot.moonfire.ticking|(dot.moonfire.remains<=8&eclipse_change<=12&eclipse_energy=100&eclipse_change>=8)|(buff.celestial_alignment.up&dot.moonfire.ticking&dot.sunfire.ticking&dot.sunfire.remains<=6)" );
-  single_target -> add_action( this, "Sunfire", "if=!dot.sunfire.ticking|(eclipse_energy<0&dot.sunfire.remains<=8)" );
-  single_target -> add_action( this, "Wrath", "if=buff.celestial_alignment.up&buff.solar_empowerment.up&eclipse_energy<0" );
-  single_target -> add_action( this, "Starfire", "if=buff.celestial_alignment.up&buff.lunar_empowerment.up&eclipse_energy>=0" );
-  single_target -> add_action( this, "Starsurge", "if=buff.celestial_alignment.up" );
-  single_target -> add_action( this, "Starsurge", "if=buff.solar_empowerment.down&buff.lunar_empowerment.down&((eclipse_energy>75&eclipse_dir.lunar)|(eclipse_energy<-75&eclipse_dir.solar))" );
-  single_target -> add_action( this, "Starfire", "if=eclipse_energy>0|(eclipse_energy<0&eclipse_change<2)" );
+  single_target -> add_talent( this, "Stellar Flare", "if=eclipse_change<=2|@eclipse_energy<=20|buff.celestial_alignment.up&buff.celestial_alignment.remains<=2" );
+  single_target -> add_talent( this, "Force of Nature", "if=charges>=1" );
+  single_target -> add_action( this, "Celestial Alignment", "if=eclipse_dir.lunar&eclipse_max>=5|@eclipse_energy<=10" );
+  single_target -> add_talent( this, "Incarnation" , "if=eclipse_dir.lunar&eclipse_max>=5|@eclipse_energy<=10" );
+  single_target -> add_action( this, "Starsurge", "if=charges=3&cooldown.celestial_alignment.remains>10" );
+  single_target -> add_action( this, "Moonfire" , "if=!ticking|eclipse_max=0&remains<=25" );
+  single_target -> add_action( this, "Sunfire", "if=!ticking|remains<=6|buff.celestial_alignment.up&buff.celestial_alignment.remains<=2" );
+  single_target -> add_action( this, "Starfire", "if=buff.lunar_empowerment.up" );
+  single_target -> add_action( this, "Wrath", "if=buff.solar_empowerment.up" );
+  single_target -> add_action( this, "Starfire", "if=eclipse_energy>=0|(eclipse_energy<=0&eclipse_change<2)" );
+  single_target -> add_action( this, "Starsurge", "if=buff.celestial_alignment.up|eclipse_max<=3|charges=2&cooldown.celestial_alignment.remains>30" );
   single_target -> add_action( this, "Wrath" );
+
+  euphoria -> add_talent( this, "Force of Nature", "if=charges>=1" );
+  euphoria -> add_talent( this, "Incarnation" , "if=eclipse_dir.lunar&eclipse_max>=5|@eclipse_energy<=10" );
+  euphoria -> add_action( this, "Celestial Alignment", "if=eclipse_dir.lunar&eclipse_max>=5|@eclipse_energy<=10" );
+  euphoria -> add_action( this, "Starsurge", "if=charges=3&cooldown.celestial_alignment.remains>10" );
+  euphoria -> add_action( this, "Moonfire" , "if=!ticking|eclipse_max=0&remains<=16" );
+  euphoria -> add_action( this, "Sunfire", "if=!ticking|eclipse_max=0&remains<=4|buff.celestial_alignment.up&buff.celestial_alignment.remains<=2" );
+  euphoria -> add_action( this, "Starfire", "if=buff.lunar_empowerment.up" );
+  euphoria -> add_action( this, "Wrath", "if=buff.solar_empowerment.up" );
+  euphoria -> add_action( this, "Starfire", "if=eclipse_energy>=0|(eclipse_energy<=0&eclipse_change<2)" );
+  euphoria -> add_action( this, "Starsurge", "if=buff.celestial_alignment.up|eclipse_max<=3|charges=2&cooldown.celestial_alignment.remains>30" );
+  euphoria -> add_action( this, "Wrath" );
+
+  bop -> add_talent( this, "Force of Nature", "if=charges>=1" );
+  bop -> add_talent( this, "Incarnation" , "if=eclipse_dir.lunar&eclipse_max>=5|@eclipse_energy<=10" );
+  bop -> add_action( this, "Celestial Alignment", "if=eclipse_dir.lunar&eclipse_max>=5|@eclipse_energy<=10" );
+  bop -> add_action( this, "Starsurge", "if=charges=3&cooldown.celestial_alignment.remains>10" );
+  bop -> add_action( this, "Moonfire" , "if=!ticking|eclipse_max=0&remains<=16" );
+  bop -> add_action( this, "Sunfire", "if=!ticking|remains<=4|buff.celestial_alignment.up&buff.celestial_alignment.remains<=2" );
+  bop -> add_action( this, "Starfire", "if=buff.lunar_empowerment.up" );
+  bop -> add_action( this, "Wrath", "if=buff.solar_empowerment.up" );
+  bop -> add_action( this, "Starfire", "if=eclipse_energy>=0|(eclipse_energy<=0&eclipse_change<2)" );
+  bop -> add_action( this, "Starsurge", "if=buff.celestial_alignment.up|eclipse_max<=3|charges=2&cooldown.celestial_alignment.remains>30" );
+  bop -> add_action( this, "Wrath" );
 
   aoe -> add_action( this, "Celestial Alignment" );
   aoe -> add_action( this, "Starfall", "if=charges=3" );
@@ -5734,7 +5762,7 @@ void druid_t::apl_restoration()
   action_list_str += init_use_item_actions();
   action_list_str += init_use_profession_actions();
   action_list_str += "/natures_swiftness";
-  if ( talent.incarnation -> ok() )
+  if ( talent.incarnation_tree -> ok() )
     action_list_str += "/incarnation";
   action_list_str += "/healing_touch,if=buff.natures_swiftness.up";
   action_list_str += "/healing_touch,if=buff.omen_of_clarity.up";
