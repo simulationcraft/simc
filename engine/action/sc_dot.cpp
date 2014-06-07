@@ -145,10 +145,19 @@ void dot_t::extend_duration( timespan_t extra_seconds, timespan_t max_total_time
   current_duration += extra_seconds;
   extended_time += extra_seconds;
 
+
   if ( sim.log )
   {
     sim.out_log.printf( "%s extends duration of %s on %s by %.1f second(s).",
                 source -> name(), name(), target -> name(), extra_seconds.total_seconds() );
+  }
+
+  if ( end_event )
+  {
+    timespan_t remains = end_event -> remains();
+    remains += extra_seconds;
+    if ( remains != end_event -> remains() )
+      end_event -> reschedule( remains );
   }
 
   current_action -> stats -> add_refresh( state -> target );
