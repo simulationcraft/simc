@@ -1235,6 +1235,7 @@ class SpellDataGenerator(DataGenerator):
          116631,                    # Colossus
          105617,                    # Alchemist's Flask
          137596,                    # Capacitance
+         104510, 104423             # Windsong Mastery / Haste buffs
         ),
         
         # Warrior:
