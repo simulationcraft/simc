@@ -24,7 +24,6 @@ SRC += \
     util$(PATHSEP)utf8$(PATHSEP)checked.h \
     util$(PATHSEP)utf8.h \
     util$(PATHSEP)xml.cpp \
-    util$(PATHSEP)xml.cpp \
     util$(PATHSEP)rng.cpp \
     util$(PATHSEP)io.cpp \
     util$(PATHSEP)concurrency.cpp \
