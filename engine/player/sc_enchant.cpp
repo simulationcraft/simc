@@ -259,7 +259,7 @@ bool enchant::initialize_item_enchant( item_t& item,
         break;
       case ITEM_ENCHANTMENT_STAT:
       {
-        stat_pair_t stat = item_database::item_enchantment_effect_stats( item.player, enchant, i );
+        stat_pair_t stat = item_database::item_enchantment_effect_stats( item.player, enchant, as<int>(i) );
         if ( stat.stat != STAT_NONE && stat.value != 0 )
           stats.push_back( stat );
         break;

@@ -2990,7 +2990,7 @@ struct chain_lightning_t : public shaman_spell_t
   {
     shaman_spell_t::execute();
 
-    p() -> buff.improved_chain_lightning -> trigger( execute_state -> n_targets );
+    p() -> buff.improved_chain_lightning -> trigger( as<int>(execute_state -> n_targets) );
   }
 
   void impact( action_state_t* state )
@@ -3038,7 +3038,7 @@ struct lava_beam_t : public shaman_spell_t
   {
     shaman_spell_t::execute();
 
-    p() -> buff.improved_chain_lightning -> trigger( execute_state -> n_targets );
+	p()->buff.improved_chain_lightning->trigger(as<int>( execute_state->n_targets ) );
   }
 
   void impact( action_state_t* state )

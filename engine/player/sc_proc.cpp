@@ -625,7 +625,7 @@ timespan_t special_effect_t::tick_time() const
     return tick;
 
   // Search trigger for now, it's not likely that the driver is ticking
-  for ( int i = 1, end = trigger() -> effect_count(); i <= end; i++ )
+  for ( size_t i = 1, end = trigger() -> effect_count(); i <= end; i++ )
   {
     if ( trigger() -> effectN( i ).period() > timespan_t::zero() )
       return trigger() -> effectN( i ).period();
