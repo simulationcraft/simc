@@ -1819,12 +1819,12 @@ struct execution_sentence_t : public paladin_spell_t
     {
       parse_effect_data( ( p -> find_spell( 114916 ) -> effectN( 1 ) ) );
       spell_power_mod.tick = p -> find_spell( 114916 ) -> effectN( 2 ).base_value() / 1000.0 * 0.0374151195;
-    }
 
-    tick_multiplier[ 0 ] = 1.0;
-    for ( int i = 1; i < dot_duration / base_tick_time; ++i )
-      tick_multiplier[ i ] = tick_multiplier[ i - 1 ] * 1.1;
-    tick_multiplier[ 10 ] = tick_multiplier[ 9 ] * 5;
+      tick_multiplier[ 0 ] = 1.0;
+      for ( int i = 1; i < dot_duration / base_tick_time; ++i )
+        tick_multiplier[ i ] = tick_multiplier[ i - 1 ] * 1.1;
+      tick_multiplier[ 10 ] = tick_multiplier[ 9 ] * 5;
+    }
 
     stay_of_execution = new stay_of_execution_t( p, options_str );
     add_child( stay_of_execution );
@@ -6016,7 +6016,7 @@ void paladin_t::invalidate_cache( cache_e c )
 {
   player_t::invalidate_cache( c );
 
-  if ( ( passives.sword_of_light -> ok() || passives.guarded_by_the_light -> ok() )
+  if ( ( passives.sword_of_light -> ok() || passives.guarded_by_the_light -> ok() || passives.divine_bulwark -> ok() )
        && ( c == CACHE_STRENGTH || c == CACHE_ATTACK_POWER )
      )
   {
@@ -6027,7 +6027,11 @@ void paladin_t::invalidate_cache( cache_e c )
     player_t::invalidate_cache( CACHE_PARRY );
 
   if ( c == CACHE_MASTERY && passives.divine_bulwark -> ok() )
+  {
     player_t::invalidate_cache( CACHE_BLOCK );
+    player_t::invalidate_cache( CACHE_ATTACK_POWER );
+    player_t::invalidate_cache( CACHE_SPELL_POWER );
+  }
 }
 
 // paladin_t::matching_gear_multiplier ======================================
