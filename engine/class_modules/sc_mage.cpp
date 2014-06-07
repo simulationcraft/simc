@@ -1732,7 +1732,7 @@ struct combustion_t : public mage_spell_t
     if ( p -> glyphs.combustion -> ok() )
     {
       num_ticks = static_cast<int>( num_ticks * ( 1.0 + p -> glyphs.combustion -> effectN( 1 ).percent() ) );
-      cooldown -> duration *= 1.0 + p -> glyphs.combustion -> effectN( 2 ).percent();
+      cooldown -> duration = data().cooldown() * ( 1.0 + p -> glyphs.combustion -> effectN( 2 ).percent() );
       base_dd_multiplier *= 1.0 + p -> glyphs.combustion -> effectN( 3 ).percent();
     }
   }
