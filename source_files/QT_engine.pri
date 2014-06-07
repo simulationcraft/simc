@@ -20,10 +20,10 @@
  HEADERS += engine/config.hpp
  HEADERS += engine/dbc/data_enums.hh
  HEADERS += engine/dbc/data_definitions.hh
- HEADERS += engine/utf8/unchecked.h
- HEADERS += engine/utf8/core.h
- HEADERS += engine/utf8/checked.h
- HEADERS += engine/utf8.h
+ HEADERS += engine/util/utf8/unchecked.h
+ HEADERS += engine/util/utf8/core.h
+ HEADERS += engine/util/utf8/checked.h
+ HEADERS += engine/util/utf8.h
  SOURCES += engine/util/xml.cpp
  SOURCES += engine/util/xml.cpp
  SOURCES += engine/util/rng.cpp

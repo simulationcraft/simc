@@ -63,7 +63,7 @@ namespace std {using namespace tr1; }
 
 #include "dbc/data_enums.hh"
 #include "dbc/data_definitions.hh"
-#include "utf8.h"
+#include "util/utf8.h"
 
 #define SC_STAT_CACHE
 

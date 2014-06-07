@@ -19,10 +19,10 @@ SRC += \
     config.hpp \
     dbc$(PATHSEP)data_enums.hh \
     dbc$(PATHSEP)data_definitions.hh \
-    utf8$(PATHSEP)unchecked.h \
-    utf8$(PATHSEP)core.h \
-    utf8$(PATHSEP)checked.h \
-    utf8.h \
+    util$(PATHSEP)utf8$(PATHSEP)unchecked.h \
+    util$(PATHSEP)utf8$(PATHSEP)core.h \
+    util$(PATHSEP)utf8$(PATHSEP)checked.h \
+    util$(PATHSEP)utf8.h \
     util$(PATHSEP)xml.cpp \
     util$(PATHSEP)xml.cpp \
     util$(PATHSEP)rng.cpp \
