@@ -49,7 +49,7 @@ public:
   action_t* active_bloodbath_dot;
   action_t* active_blood_craze;
   action_t* active_deep_wounds;
-  action_t* active_defensive_stance;
+  //action_t* active_defensive_stance;
   action_t* active_second_wind;
   attack_t* active_sweeping_strikes;
 
@@ -344,7 +344,7 @@ public:
     active_bloodbath_dot      = 0;
     active_blood_craze        = 0;
     active_deep_wounds        = 0;
-    active_defensive_stance   = 0;
+    //active_defensive_stance   = 0;
     active_second_wind        = 0;
     active_sweeping_strikes   = 0;
     active_t16_2pc            = 0;
@@ -2965,13 +2965,13 @@ struct stance_t : public warrior_spell_t
           p() -> buff.defensive_stance -> expire();
           if ( p() -> specialization() == WARRIOR_PROTECTION )
             p() -> vengeance_stop(); //Vengeance only works inside of defensive stance.
-          p() -> active_defensive_stance -> cancel();
+          //p() -> active_defensive_stance -> cancel();
           break;
         }
         case STANCE_GLADIATOR:
         {
           p() -> buff.gladiator_stance -> expire();
-          p() -> active_defensive_stance -> cancel();
+          //p() -> active_defensive_stance -> cancel();
           break;
         }
       }
@@ -2985,13 +2985,13 @@ struct stance_t : public warrior_spell_t
           p() -> buff.defensive_stance -> trigger();
           if ( p() -> specialization() == WARRIOR_PROTECTION )
             p() -> vengeance_start();
-          p() -> active_defensive_stance -> execute();
+          //p() -> active_defensive_stance -> execute();
           break;
         }
         case STANCE_GLADIATOR:
         {
           p() -> buff.gladiator_stance -> trigger();
-          p() -> active_defensive_stance -> execute();
+          //p() -> active_defensive_stance -> execute();
           break;
         }
       }
@@ -3321,7 +3321,7 @@ void warrior_t::init_spells()
   active_deep_wounds        = new deep_wounds_t( this );
   active_bloodbath_dot      = new bloodbath_dot_t( this );
   active_blood_craze        = new blood_craze_t( this );
-  active_defensive_stance   = new defensive_stance_t( this );
+  //active_defensive_stance   = new defensive_stance_t( this );
   active_second_wind        = new second_wind_t( this );
   active_t16_2pc            = new tier16_2pc_tank_heal_t( this );
 
