@@ -21,6 +21,9 @@ namespace runeforge
   void razorice_debuff( special_effect_t&, const item_t& );
   void fallen_crusader( special_effect_t&, const item_t& );
   void cinderglacier( special_effect_t&, const item_t& );
+  void stoneskin_gargoyle( special_effect_t&, const item_t& );
+  void spellshattering( special_effect_t&, const item_t& );
+  void spellbreaking( special_effect_t&, const item_t& );
 }
 
 // ==========================================================================
@@ -205,14 +208,9 @@ public:
     buff_t* rune_of_cinderglacier;
     buff_t* rune_of_the_fallen_crusader;
     buff_t* rune_of_the_stoneskin_gargoyle;
-    buff_t* rune_of_the_nerubian_carapace;
-    buff_t* rune_of_the_nerubian_carapace_oh;
     buff_t* rune_of_spellshattering;
     buff_t* rune_of_spellbreaking;
     buff_t* rune_of_spellbreaking_oh;
-    buff_t* rune_of_swordshattering;
-    buff_t* rune_of_swordbreaking;
-    buff_t* rune_of_swordbreaking_oh;
   } runeforge;
 
   // Cooldowns
@@ -444,7 +442,6 @@ public:
   // Character Definition
   virtual void      init_spells();
   virtual void      init_action_list();
-  virtual void      register_callbacks();
   virtual bool      init_special_effect( special_effect_t&, const item_t&, unsigned );
   virtual void      init_rng();
   virtual void      init_base_stats();
@@ -5561,20 +5558,43 @@ void runeforge::cinderglacier( special_effect_t& effect,
   new cinderglacier_callback_t( item, effect );
 }
 
+void runeforge::stoneskin_gargoyle( special_effect_t&, const item_t& item )
+{
+  death_knight_t* p = debug_cast<death_knight_t*>( item.player );
+  p -> runeforge.rune_of_the_stoneskin_gargoyle -> default_chance = 1.0;
+}
+
+void runeforge::spellshattering( special_effect_t&, const item_t& item )
+{
+  death_knight_t* p = debug_cast<death_knight_t*>( item.player );
+  p -> runeforge.rune_of_spellshattering -> default_chance = 1.0;
+}
+
+void runeforge::spellbreaking( special_effect_t&, const item_t& item )
+{
+  death_knight_t* p = debug_cast<death_knight_t*>( item.player );
+  if ( item.slot == SLOT_MAIN_HAND )
+    p -> runeforge.rune_of_spellbreaking -> default_chance = 1.0;
+  else if ( item.slot == SLOT_OFF_HAND )
+    p -> runeforge.rune_of_spellbreaking_oh -> default_chance = 1.0;
+}
+
 bool death_knight_t::init_special_effect( special_effect_t& effect,
                                           const item_t&,
                                           unsigned spell_id )
 {
   static unique_gear::special_effect_db_item_t __runeforge_db[] =
   {
-    // Razorice runeforge
-    { 50401, 0, runeforge::razorice_attack },
-    { 51714, 0, runeforge::razorice_debuff },
-    { 53365, 0, runeforge::fallen_crusader },
-    { 53386, 0,   runeforge::cinderglacier },
+    { 50401, 0,    runeforge::razorice_attack },
+    { 51714, 0,    runeforge::razorice_debuff },
+    { 53365, 0,    runeforge::fallen_crusader },
+    { 53386, 0,      runeforge::cinderglacier },
+    { 62157, 0, runeforge::stoneskin_gargoyle },
+    { 53362, 0,    runeforge::spellshattering }, // Damage taken, we don't use the silence reduction
+    { 54449, 0,      runeforge::spellbreaking }, // Damage taken, we don't use the silence reduction
 
     // Last entry must be all zeroes
-    {     0, 0,                          0 },
+    {     0, 0,                             0 },
   };
   
 
@@ -5592,74 +5612,6 @@ bool death_knight_t::init_special_effect( special_effect_t& effect,
   }
 
   return ret;
-}
-
-// death_knight_t::register_callbacks =====================================
-
-// TODO: Broken, fix fix fix
-void death_knight_t::register_callbacks()
-{
-  player_t::register_callbacks();
-
-  const special_effect_t& mh_effect = items[ SLOT_MAIN_HAND ].special_effect( SPECIAL_EFFECT_SOURCE_ENCHANT );
-  const special_effect_t& oh_effect = items[ SLOT_OFF_HAND ].special_effect( SPECIAL_EFFECT_SOURCE_ENCHANT );
-
-  runeforge.rune_of_the_stoneskin_gargoyle = buff_creator_t( this, "rune_of_the_stoneskin_gargoyle", find_spell( 62157 ) )
-                                             .quiet( true )
-                                             .chance( 0 );
-  runeforge.rune_of_the_nerubian_carapace = buff_creator_t( this, "rune_of_the_nerubian_carapace", find_spell( 70163 ) )
-                                           .quiet( true )
-                                           .chance( 0 );
-  runeforge.rune_of_the_nerubian_carapace_oh = buff_creator_t( this, "rune_of_the_nerubian_carapace_oh", find_spell( 70163 ) )
-                                               .quiet( true )
-                                               .chance( 0 );
-
-  runeforge.rune_of_spellshattering = buff_creator_t( this, "rune_of_spellshattering", find_spell( 53362 ) )
-                                      .quiet( true )
-                                      .chance( 0 );
-  runeforge.rune_of_spellbreaking = buff_creator_t( this, "rune_of_spellbreaking", find_spell( 54449 ) )
-                                    .quiet( true )
-                                    .chance( 0 );
-  runeforge.rune_of_spellbreaking_oh = buff_creator_t( this, "rune_of_spellbreaking_oh", find_spell( 54449 ) )
-                                       .quiet( true )
-                                       .chance( 0 );
-
-  runeforge.rune_of_swordshattering = buff_creator_t( this, "rune_of_swordshattering", find_spell( 53387 ) )
-                                      .quiet( true )
-                                      .chance( 0 );
-  runeforge.rune_of_swordbreaking = buff_creator_t( this, "rune_of_swordbreaking", find_spell( 54448 ) )
-                                    .quiet( true )
-                                    .chance( 0 );
-  runeforge.rune_of_swordbreaking_oh = buff_creator_t( this, "rune_of_swordbreaking_oh", find_spell( 54448 ) )
-                                       .quiet( true )
-                                       .chance( 0 );
-
-  if ( mh_effect.name_str == "rune_of_the_stoneskin_gargoyle" )
-    runeforge.rune_of_the_stoneskin_gargoyle -> default_chance = 1.0;
-
-  if ( mh_effect.name_str == "rune_of_the_nerubian_carapace" )
-    runeforge.rune_of_the_nerubian_carapace -> default_chance = 1.0;
-
-  if ( oh_effect.name_str == "rune_of_the_nerubian_carapace" )
-    runeforge.rune_of_the_nerubian_carapace_oh -> default_chance = 1.0;
-
-  if ( mh_effect.name_str == "rune_of_spellshattering" )
-    runeforge.rune_of_spellshattering -> default_chance = 1.0;
-
-  if ( mh_effect.name_str == "rune_of_swordshattering" )
-    runeforge.rune_of_swordshattering -> default_chance = 1.0;
-
-  if ( mh_effect.name_str == "rune_of_spellbreaking" )
-    runeforge.rune_of_spellbreaking -> default_chance = 1.0;
-
-  if ( oh_effect.name_str == "rune_of_spellbreaking" )
-    runeforge.rune_of_spellbreaking_oh -> default_chance = 1.0;
-
-  if ( mh_effect.name_str == "rune_of_swordbreaking" )
-    runeforge.rune_of_swordbreaking -> default_chance = 1.0;
-
-  if ( oh_effect.name_str == "rune_of_swordbreaking" )
-    runeforge.rune_of_swordbreaking_oh -> default_chance = 1.0;
 }
 
 // death_knight_t::init_scaling =============================================
@@ -5824,6 +5776,15 @@ void death_knight_t::create_buffs()
   runeforge.rune_of_cinderglacier       = buff_creator_t( this, "cinderglacier", find_spell( 53386 ) )
                                           .default_value( find_spell( 53386 ) -> effectN( 1 ).percent() )
                                           .max_stack( find_spell( 53386 ) -> initial_stacks() + perk.improved_runeforges -> effectN( 1 ).base_value() );
+
+  runeforge.rune_of_the_stoneskin_gargoyle = buff_creator_t( this, "stoneskin_gargoyle", find_spell( 62157 ) )
+                                             .chance( 0 );
+  runeforge.rune_of_spellshattering = buff_creator_t( this, "rune_of_spellshattering", find_spell( 53362 ) )
+                                      .chance( 0 );
+  runeforge.rune_of_spellbreaking = buff_creator_t( this, "rune_of_spellbreaking", find_spell( 54449 ) )
+                                    .chance( 0 );
+  runeforge.rune_of_spellbreaking_oh = buff_creator_t( this, "rune_of_spellbreaking_oh", find_spell( 54449 ) )
+                                       .chance( 0 );
 
 }
 
@@ -6046,12 +6007,6 @@ double death_knight_t::composite_armor_multiplier() const
   if ( runeforge.rune_of_the_stoneskin_gargoyle -> check() )
     a *= 1.0 + runeforge.rune_of_the_stoneskin_gargoyle -> data().effectN( 1 ).percent();
 
-  if ( runeforge.rune_of_the_nerubian_carapace -> check() )
-    a *= 1.0 + runeforge.rune_of_the_nerubian_carapace -> data().effectN( 1 ).percent();
-
-  if ( runeforge.rune_of_the_nerubian_carapace_oh -> check() )
-    a *= 1.0 + runeforge.rune_of_the_nerubian_carapace_oh -> data().effectN( 1 ).percent();
-
   return a;
 }
 
@@ -6073,12 +6028,6 @@ double death_knight_t::composite_attribute_multiplier( attribute_e attr ) const
 
     if ( runeforge.rune_of_the_stoneskin_gargoyle -> check() )
       m *= 1.0 + runeforge.rune_of_the_stoneskin_gargoyle -> data().effectN( 2 ).percent();
-
-    if ( runeforge.rune_of_the_nerubian_carapace -> check() )
-      m *= 1.0 + runeforge.rune_of_the_nerubian_carapace -> data().effectN( 2 ).percent();
-
-    if ( runeforge.rune_of_the_nerubian_carapace_oh -> check() )
-      m *= 1.0 + runeforge.rune_of_the_nerubian_carapace_oh -> data().effectN( 2 ).percent();
   }
 
   return m;
@@ -6131,15 +6080,6 @@ double death_knight_t::composite_parry() const
 
   if ( buffs.dancing_rune_weapon -> up() )
     parry += buffs.dancing_rune_weapon -> data().effectN( 1 ).percent();
-
-  if ( runeforge.rune_of_swordshattering -> check() )
-    parry += runeforge.rune_of_swordshattering -> data().effectN( 1 ).percent();
-
-  if ( runeforge.rune_of_swordbreaking -> check() )
-    parry += runeforge.rune_of_swordbreaking -> data().effectN( 1 ).percent();
-
-  if ( runeforge.rune_of_swordbreaking_oh -> check() )
-    parry += runeforge.rune_of_swordbreaking_oh -> data().effectN( 1 ).percent();
 
   return parry;
 }
@@ -6607,11 +6547,6 @@ void death_knight_t::arise()
   if ( specialization() == DEATH_KNIGHT_UNHOLY && ! sim -> overrides.haste ) sim -> auras.haste -> trigger();
 
   runeforge.rune_of_the_stoneskin_gargoyle -> trigger();
-  runeforge.rune_of_the_nerubian_carapace -> trigger();
-  runeforge.rune_of_the_nerubian_carapace_oh -> trigger();
-  runeforge.rune_of_swordshattering -> trigger();
-  runeforge.rune_of_swordbreaking -> trigger();
-  runeforge.rune_of_swordbreaking_oh -> trigger();
   runeforge.rune_of_spellshattering -> trigger();
   runeforge.rune_of_spellbreaking -> trigger();
   runeforge.rune_of_spellbreaking_oh -> trigger();
