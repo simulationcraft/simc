@@ -544,12 +544,6 @@ public:
         p() -> cooldown.shield_wall -> adjust( timespan_t::from_seconds( rage ) ); 
       }
     }
-    // Warrior attacks (non-AoE) which are are avoided by the target consume only 20%
-    if ( ab::resource_consumed > 0 && ! ab::is_aoe() && ab::result_is_miss( ab::execute_state -> result ) )
-    {
-      double rage_restored = ab::resource_consumed * 0.80;
-      p() -> resource_gain( RESOURCE_RAGE, rage_restored, p() -> gain.avoided_attacks );
-    }
   }
 };
 
@@ -877,7 +871,15 @@ static void trigger_flurry( warrior_attack_t* a, int stacks )
 
 void warrior_attack_t::execute()
 {
+  double c = cost();
+
   base_t::execute();
+
+  if ( result_is_miss( execute_state -> result ) && c > 0 && !aoe )
+  {
+    c *= 0.8; // Rage refund from miss.
+    p() -> resource_gain( RESOURCE_RAGE, c, p() -> gain.avoided_attacks );
+  }
 }
 
 // warrior_attack_t::impact =================================================
@@ -983,8 +985,8 @@ struct melee_t : public warrior_attack_t
         trigger_sudden_death( this,  p() -> spec.sudden_death -> proc_chance() );
       trigger_t15_2pc_melee( this );
     }
-    // Any attack that hits or is dodged/blocked/parried generates rage. Multistrikes do not grant rage.
-    if ( s -> result != RESULT_MISS && !result_is_multistrike( s -> result ) )
+    // Any attack that hits generates rage. Multistrikes do not grant rage.
+    if ( !result_is_hit( s -> result ) && !result_is_multistrike( s -> result ) )
       trigger_rage_gain();
 
     if ( p() -> specialization() == WARRIOR_PROTECTION && p() -> active_stance == STANCE_DEFENSE )
@@ -1079,7 +1081,7 @@ struct bladestorm_tick_t : public warrior_attack_t
   bladestorm_tick_t( warrior_t* p, const std::string& name ) :
     warrior_attack_t( name, p, p -> talents.bladestorm -> effectN ( 1 ).trigger() )
   {
-    background = direct_tick = true;
+    background = direct_tick = may_miss = may_dodge = may_parry = true;
     aoe         = -1;
     if ( p -> specialization() == WARRIOR_ARMS )
       weapon_multiplier *= 1.5;
