@@ -731,7 +731,7 @@ struct mage_state_t
 
     mage.icicles.clear();
     for ( size_t i = 0, end = icicle_states.size(); i < end; i++ )
-      mage.icicles[ i ] = icicle_states[ i ];
+      mage.icicles.push_back(icicle_states[ i ]);
 
     clear_state();
   }
