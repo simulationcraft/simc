@@ -2585,6 +2585,21 @@ struct necrotic_plague_t : public death_knight_spell_t
     return m;
   }
 
+  // Necrotic Plague duration will not be refreshed if it is already ticking on
+  // the target, only the stack count will go up
+  void trigger_dot( action_state_t* s )
+  {
+    death_knight_td_t* tdata = td( s -> target );
+    if ( tdata -> dots_necrotic_plague -> is_ticking() )
+    {
+      necrotic_plague_state_t* np_state = debug_cast<necrotic_plague_state_t*>( tdata -> dots_necrotic_plague -> state );
+      if ( np_state -> stack < max_stack )
+        np_state -> stack++;
+    }
+    else
+      death_knight_spell_t::trigger_dot( s );
+  }
+
   void tick( dot_t* dot )
   {
     death_knight_spell_t::tick( dot );
@@ -2613,10 +2628,7 @@ struct necrotic_plague_t : public death_knight_spell_t
       }
 
       if ( new_target )
-      {
-        target = new_target;
-        execute();
-      }
+        dot -> copy( new_target );
     }
   }
 };
