@@ -19,6 +19,7 @@ namespace runeforge
 {
   void razorice_attack( special_effect_t&, const item_t& );
   void razorice_debuff( special_effect_t&, const item_t& );
+  void fallen_crusader( special_effect_t&, const item_t& );
 }
 
 // ==========================================================================
@@ -5526,6 +5527,20 @@ void runeforge::razorice_debuff( special_effect_t& effect,
   new razorice_callback_t( item, effect );
 }
 
+void runeforge::fallen_crusader( special_effect_t& effect, 
+                                 const item_t& item )
+{
+  // Fallen Crusader buff is shared between mh/oh
+  buff_t* b = buff_t::find( item.player, "unholy_strength" );
+  if ( ! b )
+    return;
+
+  effect.custom_buff = b;
+  effect.ppm_ = 2.0;
+
+  new dbc_proc_callback_t( item, effect );
+}
+
 bool death_knight_t::init_special_effect( special_effect_t& effect,
                                           const item_t&,
                                           unsigned spell_id )
@@ -5535,6 +5550,7 @@ bool death_knight_t::init_special_effect( special_effect_t& effect,
     // Razorice runeforge
     { 50401, 0, runeforge::razorice_attack },
     { 51714, 0, runeforge::razorice_debuff },
+    { 53365, 0, runeforge::fallen_crusader },
 
     // Last entry must be all zeroes
     {     0, 0,                          0 },
@@ -5587,31 +5603,9 @@ void death_knight_t::register_callbacks()
     }
   };
 
-  // Rune of the Fallen Crusader ============================================
-  struct fallen_crusader_callback_t : public action_callback_t
-  {
-    int slot;
-    buff_t* buff;
-
-    fallen_crusader_callback_t( player_t* p, int s, buff_t* b ) : action_callback_t( p ), slot( s ), buff( b ) {}
-
-    virtual void trigger( action_t* a, void* /* call_data */ )
-    {
-      weapon_t* w = a -> weapon;
-      if ( ! w ) return;
-      if ( w -> slot != slot ) return;
-
-      // RotFC is 2 PPM.
-      buff -> trigger( 1, 0.15, w -> proc_chance_on_swing( 2.0 ) );
-    }
-  };
-
   runeforge.rune_of_cinderglacier       = buff_creator_t( this, "rune_of_cinderglacier", find_spell( 53386 ) )
                                           .default_value( find_spell( 53386 ) -> effectN( 1 ).percent() )
                                           .max_stack( find_spell( 53386 ) -> max_stacks() + perk.improved_runeforges -> effectN( 1 ).base_value() );
-  runeforge.rune_of_the_fallen_crusader = buff_creator_t( this, "rune_of_the_fallen_crusader" ).max_stack( 1 )
-                                          .duration( timespan_t::from_seconds( 15.0 ) )
-                                          .add_invalidate( CACHE_STRENGTH );
 
   runeforge.rune_of_the_stoneskin_gargoyle = buff_creator_t( this, "rune_of_the_stoneskin_gargoyle", find_spell( 62157 ) )
                                              .quiet( true )
@@ -5643,27 +5637,12 @@ void death_knight_t::register_callbacks()
                                        .quiet( true )
                                        .chance( 0 );
 
-  if ( mh_effect.name_str == "rune_of_the_fallen_crusader" )
-  {
-    callbacks.register_attack_callback( RESULT_HIT_MASK, new fallen_crusader_callback_t( this, SLOT_MAIN_HAND, runeforge.rune_of_the_fallen_crusader ) );
-  }
-  else if ( mh_effect.name_str == "rune_of_razorice" )
-  {
-  }
-  else if ( mh_effect.name_str == "rune_of_cinderglacier" )
+  if ( mh_effect.name_str == "rune_of_cinderglacier" )
   {
     callbacks.register_attack_callback( RESULT_HIT_MASK, new cinderglacier_callback_t( this, SLOT_MAIN_HAND, runeforge.rune_of_cinderglacier ) );
   }
 
-  if ( oh_effect.name_str == "rune_of_the_fallen_crusader" )
-  {
-    callbacks.register_attack_callback( RESULT_HIT_MASK, new fallen_crusader_callback_t( this, SLOT_OFF_HAND, runeforge.rune_of_the_fallen_crusader ) );
-  }
-  else if ( oh_effect.name_str == "rune_of_razorice" )
-  {
-    //callbacks.register_attack_callback( RESULT_HIT_MASK, new razorice_callback_t( this, SLOT_OFF_HAND ) );
-  }
-  else if ( oh_effect.name_str == "rune_of_cinderglacier" )
+  if ( oh_effect.name_str == "rune_of_cinderglacier" )
   {
     callbacks.register_attack_callback( RESULT_HIT_MASK, new cinderglacier_callback_t( this, SLOT_OFF_HAND, runeforge.rune_of_cinderglacier ) );
   }
@@ -5851,6 +5830,9 @@ void death_knight_t::create_buffs()
                                     .cd( timespan_t::from_seconds( 45 ) + perk.enhanced_will_of_the_necropolis -> effectN( 1 ).time_value() );
   buffs.will_of_the_necropolis_rt = buff_creator_t( this, "will_of_the_necropolis_rt", find_spell( 96171 ) )
                                     .cd( timespan_t::from_seconds( 45 ) + perk.enhanced_will_of_the_necropolis -> effectN( 1 ).time_value() );
+
+  runeforge.rune_of_the_fallen_crusader = buff_creator_t( this, "unholy_strength", find_spell( 53365 ) )
+                                          .add_invalidate( CACHE_STRENGTH );
 }
 
 // death_knight_t::init_gains ===============================================
