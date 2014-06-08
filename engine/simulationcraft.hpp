@@ -4484,7 +4484,7 @@ public:
   virtual void init_rng();
   virtual void init_stats();
   virtual void register_callbacks();
-  // Class specific hook for first-phase initializing special effects. Returns bool if the class-specific hook initialized something, false otherwise.
+  // Class specific hook for first-phase initializing special effects. Returns true if the class-specific hook initialized something, false otherwise.
   virtual bool init_special_effect( special_effect_t& /* effect */, const item_t& /* item */, unsigned /* spell_id */ ) { return false; }
 
   bool init_actions();
