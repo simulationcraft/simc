@@ -20,6 +20,7 @@ namespace runeforge
   void razorice_attack( special_effect_t&, const item_t& );
   void razorice_debuff( special_effect_t&, const item_t& );
   void fallen_crusader( special_effect_t&, const item_t& );
+  void cinderglacier( special_effect_t&, const item_t& );
 }
 
 // ==========================================================================
@@ -2119,7 +2120,7 @@ void death_knight_melee_attack_t::execute()
 {
   base_t::execute();
 
-  if ( ! proc && result_is_hit( execute_state -> result ) )
+  if ( ! background && result_is_hit( execute_state -> result ) )
   {
     if ( dbc::is_school( school, SCHOOL_SHADOW ) || dbc::is_school( school, SCHOOL_FROST ) )
     {
@@ -2180,7 +2181,7 @@ void death_knight_spell_t::execute()
 {
   base_t::execute();
 
-  if ( result_is_hit( execute_state -> result ) )
+  if ( ! background && result_is_hit( execute_state -> result ) )
   {
     if ( dbc::is_school( school, SCHOOL_SHADOW ) || dbc::is_school( school, SCHOOL_FROST ) )
     {
@@ -5541,6 +5542,25 @@ void runeforge::fallen_crusader( special_effect_t& effect,
   new dbc_proc_callback_t( item, effect );
 }
 
+void runeforge::cinderglacier( special_effect_t& effect, 
+                               const item_t& item )
+{
+  struct cinderglacier_callback_t: public dbc_proc_callback_t
+  {
+    cinderglacier_callback_t( const item_t& item, const special_effect_t& effect ) :
+     dbc_proc_callback_t( item, effect )
+    { }
+
+    void execute( action_t*, action_state_t* )
+    { proc_buff -> trigger( proc_buff -> max_stack() ); }
+  };
+
+  effect.ppm_ = 2.0;
+  effect.custom_buff = buff_t::find( item.player, "cinderglacier" );
+
+  new cinderglacier_callback_t( item, effect );
+}
+
 bool death_knight_t::init_special_effect( special_effect_t& effect,
                                           const item_t&,
                                           unsigned spell_id )
@@ -5551,6 +5571,7 @@ bool death_knight_t::init_special_effect( special_effect_t& effect,
     { 50401, 0, runeforge::razorice_attack },
     { 51714, 0, runeforge::razorice_debuff },
     { 53365, 0, runeforge::fallen_crusader },
+    { 53386, 0,   runeforge::cinderglacier },
 
     // Last entry must be all zeroes
     {     0, 0,                          0 },
@@ -5583,30 +5604,6 @@ void death_knight_t::register_callbacks()
   const special_effect_t& mh_effect = items[ SLOT_MAIN_HAND ].special_effect( SPECIAL_EFFECT_SOURCE_ENCHANT );
   const special_effect_t& oh_effect = items[ SLOT_OFF_HAND ].special_effect( SPECIAL_EFFECT_SOURCE_ENCHANT );
 
-  // Rune of Cinderglacier ==================================================
-  struct cinderglacier_callback_t : public action_callback_t
-  {
-    int slot;
-    buff_t* buff;
-
-    cinderglacier_callback_t( player_t* p, int s, buff_t* b ) : action_callback_t( p ), slot( s ), buff( b ) {}
-
-    virtual void trigger( action_t* a, void* /* call_data */ )
-    {
-      weapon_t* w = a -> weapon;
-      if ( ! w || w -> slot != slot ) return;
-
-      // FIX ME: What is the proc rate? For now assuming the same as FC
-      buff -> trigger( 2, buff_t::DEFAULT_VALUE(), w -> proc_chance_on_swing( 2.0 ) );
-
-      // FIX ME: This should roll the benefit when casting DND, it does not
-    }
-  };
-
-  runeforge.rune_of_cinderglacier       = buff_creator_t( this, "rune_of_cinderglacier", find_spell( 53386 ) )
-                                          .default_value( find_spell( 53386 ) -> effectN( 1 ).percent() )
-                                          .max_stack( find_spell( 53386 ) -> max_stacks() + perk.improved_runeforges -> effectN( 1 ).base_value() );
-
   runeforge.rune_of_the_stoneskin_gargoyle = buff_creator_t( this, "rune_of_the_stoneskin_gargoyle", find_spell( 62157 ) )
                                              .quiet( true )
                                              .chance( 0 );
@@ -5636,16 +5633,6 @@ void death_knight_t::register_callbacks()
   runeforge.rune_of_swordbreaking_oh = buff_creator_t( this, "rune_of_swordbreaking_oh", find_spell( 54448 ) )
                                        .quiet( true )
                                        .chance( 0 );
-
-  if ( mh_effect.name_str == "rune_of_cinderglacier" )
-  {
-    callbacks.register_attack_callback( RESULT_HIT_MASK, new cinderglacier_callback_t( this, SLOT_MAIN_HAND, runeforge.rune_of_cinderglacier ) );
-  }
-
-  if ( oh_effect.name_str == "rune_of_cinderglacier" )
-  {
-    callbacks.register_attack_callback( RESULT_HIT_MASK, new cinderglacier_callback_t( this, SLOT_OFF_HAND, runeforge.rune_of_cinderglacier ) );
-  }
 
   if ( mh_effect.name_str == "rune_of_the_stoneskin_gargoyle" )
     runeforge.rune_of_the_stoneskin_gargoyle -> default_chance = 1.0;
@@ -5833,6 +5820,11 @@ void death_knight_t::create_buffs()
 
   runeforge.rune_of_the_fallen_crusader = buff_creator_t( this, "unholy_strength", find_spell( 53365 ) )
                                           .add_invalidate( CACHE_STRENGTH );
+
+  runeforge.rune_of_cinderglacier       = buff_creator_t( this, "cinderglacier", find_spell( 53386 ) )
+                                          .default_value( find_spell( 53386 ) -> effectN( 1 ).percent() )
+                                          .max_stack( find_spell( 53386 ) -> initial_stacks() + perk.improved_runeforges -> effectN( 1 ).base_value() );
+
 }
 
 // death_knight_t::init_gains ===============================================
