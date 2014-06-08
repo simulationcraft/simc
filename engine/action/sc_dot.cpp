@@ -414,6 +414,16 @@ expr_t* dot_t::create_expression( action_t* action,
     };
     return new dot_multiplier_expr_t( this, action, dynamic );
   }
+  else if ( name_str == "pmultiplier" )
+  {
+    struct dot_pmultiplier_expr_t : public dot_expr_t
+    {
+      dot_pmultiplier_expr_t( dot_t* d, action_t* a, bool dynamic ) :
+        dot_expr_t( "dot_pmultiplier", d, a, dynamic ) {}
+      virtual double evaluate() { return dot() -> state ? dot() -> state -> persistent_multiplier : 0; }
+    };
+    return new dot_pmultiplier_expr_t( this, action, dynamic );
+  }
 
 #if 0
   else if ( name_str == "mastery" )

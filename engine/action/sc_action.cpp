@@ -2039,6 +2039,18 @@ expr_t* action_t::create_expression( const std::string& name_str )
   }
   else if ( name_str == "tick_multiplier" )
     return make_mem_fn_expr( "tick_multiplier", *this, &action_t::composite_ta_multiplier );
+  else if ( name_str == "persistent_multiplier" )
+  {
+    struct persistent_multiplier_expr_t : public expr_t
+    {
+      action_t* action;
+      persistent_multiplier_expr_t( action_t* a ) : expr_t( "persistent_multiplier" ), action( a ) {}
+      virtual double evaluate()
+      { return action -> player -> composite_persistent_multiplier( action -> school ); }
+    };
+
+    return new persistent_multiplier_expr_t( this );
+  }
   else if ( name_str == "charges" )
     return make_ref_expr( name_str, cooldown -> current_charge );
   else if ( name_str == "max_charges" )
