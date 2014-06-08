@@ -7,10 +7,18 @@
 
 namespace { // UNNAMED NAMESPACE
 
+using namespace unique_gear;
+
 struct death_knight_t;
 
 namespace pets {
 struct dancing_rune_weapon_pet_t;
+}
+
+namespace runeforge
+{
+  void razorice_attack( special_effect_t&, const item_t& );
+  void razorice_debuff( special_effect_t&, const item_t& );
 }
 
 // ==========================================================================
@@ -434,7 +442,8 @@ public:
   // Character Definition
   virtual void      init_spells();
   virtual void      init_action_list();
-  virtual void      init_special_effects();
+  virtual void      register_callbacks();
+  virtual bool      init_special_effect( special_effect_t&, const item_t&, unsigned );
   virtual void      init_rng();
   virtual void      init_base_stats();
   virtual void      init_scaling();
@@ -485,6 +494,7 @@ public:
   bool      runes_depleted( rune_type rt, int position );
   void      trigger_runic_corruption();
   void      default_apl_blood();
+
 
   target_specific_t<death_knight_td_t*> target_data;
 
@@ -5460,12 +5470,99 @@ void death_knight_t::init_action_list()
   player_t::init_action_list();
 }
 
-// death_knight_t::init_special_effects =====================================
+// Runeforges
+
+void runeforge::razorice_attack( special_effect_t& effect, 
+                                 const item_t& item )
+{
+  struct razorice_attack_t : public death_knight_melee_attack_t
+  {
+    razorice_attack_t( death_knight_t* player, const item_t& item ) :
+      death_knight_melee_attack_t( "razorice", player , player -> find_spell( 50401 ) )
+    {
+      school      = SCHOOL_FROST;
+      may_miss    = may_crit = callbacks = false;
+      background  = proc = true;
+
+      weapon_multiplier += player -> perk.improved_runeforges -> effectN( 2 ).percent();
+      if ( item.slot == SLOT_OFF_HAND )
+        weapon = &( player -> off_hand_weapon );
+      else if ( item.slot == SLOT_MAIN_HAND )
+        weapon = &( player -> main_hand_weapon );
+    }
+
+    // No double dipping to Frost Vulnerability
+    double composite_target_multiplier( player_t* t ) const
+    {
+      double m = death_knight_melee_attack_t::composite_target_multiplier( t );
+
+      m /= 1.0 + td( t ) -> debuffs_frost_vulnerability -> check() *
+            td( t ) -> debuffs_frost_vulnerability -> data().effectN( 1 ).percent();
+
+      return m;
+    }
+  };
+
+  effect.execute_action = new razorice_attack_t( debug_cast<death_knight_t*>( item.player ), item );
+
+  new dbc_proc_callback_t( item, effect );
+}
+
+void runeforge::razorice_debuff( special_effect_t& effect, 
+                                 const item_t& item )
+{
+  struct razorice_callback_t : public dbc_proc_callback_t
+  {
+    razorice_callback_t( const item_t& item, const special_effect_t& effect ) :
+     dbc_proc_callback_t( item, effect )
+    { }
+
+    void execute( action_t* a, action_state_t* state )
+    {
+      debug_cast< death_knight_t* >( a -> player ) -> get_target_data( state -> target ) -> debuffs_frost_vulnerability -> trigger();
+    }
+  };
+
+  new razorice_callback_t( item, effect );
+}
+
+bool death_knight_t::init_special_effect( special_effect_t& effect,
+                                          const item_t&,
+                                          unsigned spell_id )
+{
+  static unique_gear::special_effect_db_item_t __runeforge_db[] =
+  {
+    // Razorice runeforge
+    { 50401, 0, runeforge::razorice_attack },
+    { 51714, 0, runeforge::razorice_debuff },
+
+    // Last entry must be all zeroes
+    {     0, 0,                          0 },
+  };
+  
+
+  bool ret = false;
+  const special_effect_db_item_t& dbitem = find_special_effect_db_item( __runeforge_db,
+                                                                        sizeof_array( __runeforge_db ),
+                                                                        spell_id );
+
+  // All runeforges defined here will be custom callbacks
+  ret = dbitem.spell_id == spell_id;
+  if ( ret )
+  {
+    effect.custom_init = dbitem.custom_cb;
+    effect.type = SPECIAL_EFFECT_CUSTOM;
+  }
+
+  return ret;
+}
+
+// death_knight_t::register_callbacks =====================================
 
 // TODO: Broken, fix fix fix
-void death_knight_t::init_special_effects()
+void death_knight_t::register_callbacks()
 {
-  player_t::init_special_effects();
+  player_t::register_callbacks();
 
   const special_effect_t& mh_effect = items[ SLOT_MAIN_HAND ].special_effect( SPECIAL_EFFECT_SOURCE_ENCHANT );
   const special_effect_t& oh_effect = items[ SLOT_OFF_HAND ].special_effect( SPECIAL_EFFECT_SOURCE_ENCHANT );
@@ -5506,63 +5603,6 @@ void death_knight_t::init_special_effects()
 
       // RotFC is 2 PPM.
       buff -> trigger( 1, 0.15, w -> proc_chance_on_swing( 2.0 ) );
-    }
-  };
-
-  // Rune of the Razorice ===================================================
-
-  // Damage Proc
-  struct razorice_attack_t : public death_knight_melee_attack_t
-  {
-    razorice_attack_t( death_knight_t* player ) :
-      death_knight_melee_attack_t( "razorice", player, player -> find_spell( 50401 ) )
-    {
-      school      = SCHOOL_FROST;
-      may_miss    = false;
-      may_crit    = false;
-      background  = true;
-      proc        = true;
-      callbacks   = false;
-
-      weapon_multiplier += player -> perk.improved_runeforges -> effectN( 2 ).percent();
-    }
-
-    virtual double composite_target_multiplier( player_t* t ) const
-    {
-      double m = death_knight_melee_attack_t::composite_target_multiplier( t );
-
-      m /= 1.0 + td( t ) -> debuffs_frost_vulnerability -> check() *
-            td( t ) -> debuffs_frost_vulnerability -> data().effectN( 1 ).percent();
-
-      return m;
-    }
-  };
-
-  struct razorice_callback_t : public action_callback_t
-  {
-    int slot;
-    razorice_attack_t* razorice_damage_proc;
-
-    razorice_callback_t( death_knight_t* p, int s ) :
-      action_callback_t( p ), slot( s ), razorice_damage_proc( 0 )
-    {
-      razorice_damage_proc = new razorice_attack_t( p );
-    }
-
-    virtual void trigger( action_t* a, void* /* call_data */ )
-    {
-      weapon_t* w = a -> weapon;
-      if ( ! w || w -> slot != slot )
-        return;
-
-      // http://elitistjerks.com/f72/t64830-dw_builds_3_2_revenge_offhand/p28/#post1332820
-      // double PPM        = 2.0;
-      // double swing_time = a -> time_to_execute;
-      // double chance     = w -> proc_chance_on_swing( PPM, swing_time );
-
-      debug_cast< death_knight_t* >( a -> player ) -> get_target_data( a -> execute_state -> target ) -> debuffs_frost_vulnerability -> trigger();
-      razorice_damage_proc -> weapon = w;
-      razorice_damage_proc -> execute();
     }
   };
 
@@ -5609,7 +5649,6 @@ void death_knight_t::init_special_effects()
   }
   else if ( mh_effect.name_str == "rune_of_razorice" )
   {
-    callbacks.register_attack_callback( RESULT_HIT_MASK, new razorice_callback_t( this, SLOT_MAIN_HAND ) );
   }
   else if ( mh_effect.name_str == "rune_of_cinderglacier" )
   {
@@ -5622,7 +5661,7 @@ void death_knight_t::init_special_effects()
   }
   else if ( oh_effect.name_str == "rune_of_razorice" )
   {
-    callbacks.register_attack_callback( RESULT_HIT_MASK, new razorice_callback_t( this, SLOT_OFF_HAND ) );
+    //callbacks.register_attack_callback( RESULT_HIT_MASK, new razorice_callback_t( this, SLOT_OFF_HAND ) );
   }
   else if ( oh_effect.name_str == "rune_of_cinderglacier" )
   {
@@ -6664,3 +6703,4 @@ const module_t* module_t::death_knight()
   static death_knight_module_t m;
   return &m;
 }
+
