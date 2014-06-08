@@ -6358,7 +6358,45 @@ action_t* create_action( player_t*, const std::string& name, const std::string& 
 }
 
 // Wowhead  =================================================================
-#include "interfaces/sc_wowhead.hpp"
+
+// Wowhead  =================================================================
+
+namespace wowhead
+{
+enum wowhead_e
+{
+  LIVE,
+  PTR,
+  BETA
+};
+
+bool download_item( item_t&, wowhead_e source = LIVE, cache::behavior_e b = cache::items() );
+bool download_glyph( player_t* player, std::string& glyph_name, const std::string& glyph_id,
+                     wowhead_e source = LIVE, cache::behavior_e b = cache::items() );
+bool download_item_data( item_t&            item,
+                         cache::behavior_e  caching,
+                         wowhead_e          source );
+
+std::string domain_str( wowhead_e domain );
+std::string decorated_spell_name( const std::string& name,
+                                  unsigned spell_id,
+                                  const std::string& spell_name,
+                                  wowhead_e domain,
+                                  const std::string& href_parm = std::string(),
+                                  bool affix = true );
+
+std::string decorated_action_name( const std::string& name,
+                                  action_t* action,
+                                  wowhead_e domain,
+                                  const std::string& href_parm = std::string(),
+                                  bool affix = true );
+std::string decorated_buff_name( const std::string& name,
+                                 buff_t* buff,
+                                 wowhead_e domain,
+                                 const std::string& href_parm = std::string(),
+                                 bool affix = true );
+}
+
 
 // Blizzard Community Platform API ==========================================
 
