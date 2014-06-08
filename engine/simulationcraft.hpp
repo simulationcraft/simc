@@ -3085,6 +3085,8 @@ struct special_effect_t
   unsigned spell_id, trigger_spell_id;
   action_t* execute_action; // Allows custom action to be executed on use
   buff_t* custom_buff; // Allows custom action
+  void (*custom_init)(special_effect_t&, const item_t& );
+
 
   special_effect_t( player_t* p ) :
     item( nullptr ), player( p ),
@@ -6343,7 +6345,7 @@ namespace unique_gear
     unsigned    spell_id;
     const char* encoded_options;
     //const std::function<void(special_effect_t&, const item_t&, const special_effect_db_item_t&)> custom_cb;
-    void (*custom_cb)(special_effect_t&, const item_t&, const special_effect_db_item_t&);
+    void (*custom_cb)( special_effect_t&, const item_t& );
   };
 
 void init( player_t* );

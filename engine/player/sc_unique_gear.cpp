@@ -17,45 +17,45 @@ namespace { // UNNAMED NAMESPACE
 
 namespace enchant
 {
-  void mark_of_the_thunderlord( special_effect_t&, const item_t&, const special_effect_db_item_t& );
-  void mark_of_the_shattered_hand( special_effect_t&, const item_t&, const special_effect_db_item_t& );
-  void mark_of_the_frostwolf( special_effect_t&, const item_t&, const special_effect_db_item_t& );
-  void mark_of_shadowmoon( special_effect_t&, const item_t&, const special_effect_db_item_t& );
-  void mark_of_blackrock( special_effect_t&, const item_t&, const special_effect_db_item_t& );
-  void mark_of_warsong( special_effect_t&, const item_t&, const special_effect_db_item_t& );
-  void dancing_steel( special_effect_t&, const item_t&, const special_effect_db_item_t& );
-  void jade_spirit( special_effect_t&, const item_t&, const special_effect_db_item_t& );
-  void windsong( special_effect_t&, const item_t&, const special_effect_db_item_t& );
-  void rivers_song( special_effect_t&, const item_t&, const special_effect_db_item_t& );
-  void colossus( special_effect_t&, const item_t&, const special_effect_db_item_t& );
-  void executioner( special_effect_t&, const item_t&, const special_effect_db_item_t& );
-  void hurricane_spell( special_effect_t&, const item_t&, const special_effect_db_item_t& );
+  void mark_of_the_thunderlord( special_effect_t&, const item_t& );
+  void mark_of_the_shattered_hand( special_effect_t&, const item_t& );
+  void mark_of_the_frostwolf( special_effect_t&, const item_t& );
+  void mark_of_shadowmoon( special_effect_t&, const item_t& );
+  void mark_of_blackrock( special_effect_t&, const item_t& );
+  void mark_of_warsong( special_effect_t&, const item_t& );
+  void dancing_steel( special_effect_t&, const item_t& );
+  void jade_spirit( special_effect_t&, const item_t& );
+  void windsong( special_effect_t&, const item_t& );
+  void rivers_song( special_effect_t&, const item_t& );
+  void colossus( special_effect_t&, const item_t& );
+  void executioner( special_effect_t&, const item_t& );
+  void hurricane_spell( special_effect_t&, const item_t& );
 }
 
 namespace profession
 {
-  void nitro_boosts( special_effect_t&, const item_t&, const special_effect_db_item_t& );
-  void zen_alchemist_stone( special_effect_t&, const item_t&, const special_effect_db_item_t& );
+  void nitro_boosts( special_effect_t&, const item_t& );
+  void zen_alchemist_stone( special_effect_t&, const item_t& );
 }
 
 namespace item
 {
-  void flurry_of_xuen( special_effect_t&, const item_t&, const special_effect_db_item_t& );
-  void essence_of_yulon( special_effect_t&, const item_t&, const special_effect_db_item_t& );
-  void endurance_of_niuzao( special_effect_t&, const item_t&, const special_effect_db_item_t& );
-  void skeers_bloodsoaked_talisman( special_effect_t&, const item_t&, const special_effect_db_item_t& );
-  void black_blood_of_yshaarj( special_effect_t&, const item_t&, const special_effect_db_item_t& );
-  void rune_of_reorigination( special_effect_t&, const item_t&, const special_effect_db_item_t& );
-  void spark_of_zandalar( special_effect_t&, const item_t&, const special_effect_db_item_t& );
-  void unerring_vision_of_leishen( special_effect_t&, const item_t&, const special_effect_db_item_t& );
+  void flurry_of_xuen( special_effect_t&, const item_t& );
+  void essence_of_yulon( special_effect_t&, const item_t& );
+  void endurance_of_niuzao( special_effect_t&, const item_t& );
+  void skeers_bloodsoaked_talisman( special_effect_t&, const item_t& );
+  void black_blood_of_yshaarj( special_effect_t&, const item_t& );
+  void rune_of_reorigination( special_effect_t&, const item_t& );
+  void spark_of_zandalar( special_effect_t&, const item_t& );
+  void unerring_vision_of_leishen( special_effect_t&, const item_t& );
 }
 
 namespace gem
 {
-  void sinister_primal( special_effect_t&, const item_t&, const special_effect_db_item_t& );
-  void indomitable_primal( special_effect_t&, const item_t&, const special_effect_db_item_t& );
-  void capacitive_primal( special_effect_t&, const item_t&, const special_effect_db_item_t& );
-  void courageous_primal( special_effect_t&, const item_t&, const special_effect_db_item_t& );
+  void sinister_primal( special_effect_t&, const item_t& );
+  void indomitable_primal( special_effect_t&, const item_t& );
+  void capacitive_primal( special_effect_t&, const item_t& );
+  void courageous_primal( special_effect_t&, const item_t& );
 }
 
 /**
@@ -323,8 +323,7 @@ static const special_effect_db_item_t __special_effect_db[] = {
 // Enchants ================================================================
 
 void enchant::mark_of_shadowmoon( special_effect_t& effect, 
-                                  const item_t& item,
-                                  const special_effect_db_item_t& )
+                                  const item_t& item )
 {
   effect.type = SPECIAL_EFFECT_EQUIP;
 
@@ -347,8 +346,7 @@ void enchant::mark_of_shadowmoon( special_effect_t& effect,
 }
 
 void enchant::mark_of_blackrock( special_effect_t& effect, 
-                                 const item_t& item,
-                                 const special_effect_db_item_t& )
+                                 const item_t& item )
 {
   effect.type = SPECIAL_EFFECT_EQUIP;
 
@@ -371,8 +369,7 @@ void enchant::mark_of_blackrock( special_effect_t& effect,
 }
 
 void enchant::mark_of_warsong( special_effect_t& effect, 
-                               const item_t& item,
-                               const special_effect_db_item_t& )
+                               const item_t& item )
 {
   // Custom callback to help the special effect initialization, we can use
   // generic initialization for the enchant, but the game client data does not
@@ -386,8 +383,7 @@ void enchant::mark_of_warsong( special_effect_t& effect,
 }
 
 void enchant::mark_of_the_thunderlord( special_effect_t& effect, 
-                                       const item_t& item,
-                                       const special_effect_db_item_t& )
+                                       const item_t& item )
 {
   // Custom callback to help the special effect initialization, we can use
   // generic initialization for the enchant, but the game client data does not
@@ -400,8 +396,7 @@ void enchant::mark_of_the_thunderlord( special_effect_t& effect,
 }
 
 void enchant::mark_of_the_frostwolf( special_effect_t& effect, 
-                                     const item_t& item,
-                                     const special_effect_db_item_t& )
+                                     const item_t& item )
 {
   // Custom callback to help the special effect initialization, we can use
   // generic initialization for the enchant, but the game client data does not
@@ -414,8 +409,7 @@ void enchant::mark_of_the_frostwolf( special_effect_t& effect,
 }
 
 void enchant::mark_of_the_shattered_hand( special_effect_t& effect, 
-                                          const item_t& item,
-                                          const special_effect_db_item_t& )
+                                          const item_t& item )
 {
   // Custom callback to help the special effect initialization, we can use
   // generic initialization for the enchant, but the game client data does not
@@ -427,8 +421,7 @@ void enchant::mark_of_the_shattered_hand( special_effect_t& effect,
   new dbc_proc_callback_t( item, effect );
 }
 
-void enchant::colossus( special_effect_t& effect, const item_t& item,
-                        const special_effect_db_item_t& /* dbitem */)
+void enchant::colossus( special_effect_t& effect, const item_t& item )
 {
   const spell_data_t* spell = item.player->find_spell( 116631 );
 
@@ -446,8 +439,7 @@ void enchant::colossus( special_effect_t& effect, const item_t& item,
 }
 
 void enchant::rivers_song( special_effect_t& effect,
-                           const item_t& item,
-                           const special_effect_db_item_t& /* dbitem */ )
+                           const item_t& item )
 {
   const spell_data_t* spell = item.player -> find_spell( 116660 );
 
@@ -464,11 +456,10 @@ void enchant::rivers_song( special_effect_t& effect,
 }
 
 void enchant::dancing_steel( special_effect_t& effect, 
-                             const item_t& item,
-                             const special_effect_db_item_t& dbitem )
+                             const item_t& item )
 {
   // Account for Bloody Dancing Steel and Dancing Steel buffs
-  const spell_data_t* spell = item.player -> find_spell( dbitem.spell_id == 142531 ? 142530 : 120032 );
+  const spell_data_t* spell = item.player -> find_spell( effect.spell_id == 142531 ? 142530 : 120032 );
 
   double value = spell -> effectN( 1 ).average( item.player );
   
@@ -494,8 +485,7 @@ struct jade_spirit_check_func
 };
 
 void enchant::jade_spirit( special_effect_t& effect, 
-                           const item_t& item,
-                           const special_effect_db_item_t& )
+                           const item_t& item )
 {
   const spell_data_t* spell = item.player -> find_spell( 104993 );
 
@@ -550,8 +540,7 @@ struct windsong_callback_t : public dbc_proc_callback_t
 };
 
 void enchant::windsong( special_effect_t& effect, 
-                        const item_t& item,
-                        const special_effect_db_item_t& /* dbitem */ )
+                        const item_t& item )
 {
   const spell_data_t* mastery = item.player -> find_spell( 104510 );
   const spell_data_t* haste = item.player -> find_spell( 104423 );
@@ -591,8 +580,7 @@ struct hurricane_spell_proc_t : public dbc_proc_callback_t
 };
 
 void enchant::hurricane_spell( special_effect_t& effect, 
-                               const item_t& item,
-                               const special_effect_db_item_t& dbitem )
+                               const item_t& item )
 {
   int n_hurricane_enchants = 0;
 
@@ -614,7 +602,7 @@ void enchant::hurricane_spell( special_effect_t& effect,
   if ( n_hurricane_enchants == 2 && ( ! mh_buff || ! oh_buff ) )
     return;
 
-  const spell_data_t* driver = item.player -> find_spell( dbitem.spell_id );
+  const spell_data_t* driver = item.player -> find_spell( effect.spell_id );
   const spell_data_t* spell = driver -> effectN( 1 ).trigger();
   stat_buff_t* spell_buff = stat_buff_creator_t( item.player, "Hurricane_spell", spell )
                             .activated( false );
@@ -624,10 +612,9 @@ void enchant::hurricane_spell( special_effect_t& effect,
 }
 
 void enchant::executioner( special_effect_t& effect, 
-                           const item_t& item,
-                           const special_effect_db_item_t& dbitem )
+                           const item_t& item )
 {
-  const spell_data_t* spell = item.player -> find_spell( dbitem.spell_id );
+  const spell_data_t* spell = item.player -> find_spell( effect.spell_id );
   stat_buff_t* buff = static_cast<stat_buff_t*>( buff_t::find( item.player, tokenized_name( spell ) ) );
 
   if ( ! buff )
@@ -661,8 +648,7 @@ struct nitro_boosts_action_t : public action_t
 };
 
 void profession::nitro_boosts( special_effect_t& effect, 
-                               const item_t& item,
-                               const special_effect_db_item_t& )
+                               const item_t& item )
 {
   // TODO-WOD: This is stupid, need to find a better way to implement custom on-use items
   effect.type = SPECIAL_EFFECT_USE;
@@ -670,8 +656,7 @@ void profession::nitro_boosts( special_effect_t& effect,
 };
 
 void profession::zen_alchemist_stone( special_effect_t& effect,
-                                      const item_t& item,
-                                      const special_effect_db_item_t& /* dbitem */ )
+                                      const item_t& item )
 {
   struct zen_alchemist_stone_callback : public dbc_proc_callback_t
   {
@@ -729,8 +714,7 @@ void profession::zen_alchemist_stone( special_effect_t& effect,
 }
 
 void gem::sinister_primal( special_effect_t& effect, 
-                           const item_t& item,
-                           const special_effect_db_item_t& /* dbitem */ )
+                           const item_t& item )
 {
   if ( item.sim -> challenge_mode )
     return;
@@ -741,8 +725,7 @@ void gem::sinister_primal( special_effect_t& effect,
 }
 
 void gem::indomitable_primal( special_effect_t& effect, 
-                              const item_t& item,
-                              const special_effect_db_item_t& /* dbitem */ )
+                              const item_t& item )
 {
   if ( item.sim -> challenge_mode )
     return;
@@ -753,8 +736,7 @@ void gem::indomitable_primal( special_effect_t& effect,
 }
 
 void gem::capacitive_primal( special_effect_t& effect, 
-                             const item_t& item,
-                             const special_effect_db_item_t& /* dbitem */ )
+                             const item_t& item )
 {
   if ( item.sim -> challenge_mode )
     return;
@@ -819,8 +801,7 @@ void gem::capacitive_primal( special_effect_t& effect,
 }
 
 void gem::courageous_primal( special_effect_t& effect, 
-                             const item_t& item,
-                             const special_effect_db_item_t& /* dbitem */ )
+                             const item_t& item )
 {
   if ( item.sim -> challenge_mode )
     return;
@@ -849,8 +830,7 @@ void gem::courageous_primal( special_effect_t& effect,
 // Items ====================================================================
 
 void item::rune_of_reorigination( special_effect_t& effect,
-                                  const item_t& item,
-                                  const special_effect_db_item_t& dbitem )
+                                  const item_t& item )
 {
   struct rune_of_reorigination_callback_t : public dbc_proc_callback_t
   {
@@ -937,7 +917,7 @@ void item::rune_of_reorigination( special_effect_t& effect,
 
   maintenance_check( 502 );
 
-  const spell_data_t* driver = item.player -> find_spell( dbitem.spell_id );
+  const spell_data_t* driver = item.player -> find_spell( effect.spell_id );
   const spell_data_t* spell = item.player -> find_spell( 139120 );
 
   std::string buff_name = spell -> name_cstr();
@@ -957,8 +937,7 @@ void item::rune_of_reorigination( special_effect_t& effect,
 }
 
 void item::spark_of_zandalar( special_effect_t& effect,
-                              const item_t& item,
-                              const special_effect_db_item_t& /* dbitem */ )
+                              const item_t& item )
 {
   maintenance_check( 502 );
 
@@ -1000,8 +979,7 @@ void item::spark_of_zandalar( special_effect_t& effect,
 };
 
 void item::unerring_vision_of_leishen( special_effect_t& effect,
-                                       const item_t& item,
-                                       const special_effect_db_item_t& dbitem )
+                                       const item_t& item )
 {
   struct perfect_aim_buff_t : public buff_t
   {
@@ -1049,7 +1027,7 @@ void item::unerring_vision_of_leishen( special_effect_t& effect,
 
   maintenance_check( 502 );
 
-  const spell_data_t* driver = item.player -> find_spell( dbitem.spell_id );
+  const spell_data_t* driver = item.player -> find_spell( effect.spell_id );
 
   effect.ppm_         = -1.0 * driver -> real_ppm();
   effect.ppm_        *= item_database::approx_scale_coefficient( 528, item.item_level() );
@@ -1060,12 +1038,11 @@ void item::unerring_vision_of_leishen( special_effect_t& effect,
 }
 
 void item::skeers_bloodsoaked_talisman( special_effect_t& effect,
-                                        const item_t& item,
-                                        const special_effect_db_item_t& dbitem )
+                                        const item_t& item )
 {
   maintenance_check( 528 );
 
-  const spell_data_t* driver = item.player -> find_spell( dbitem.spell_id );
+  const spell_data_t* driver = item.player -> find_spell( effect.spell_id );
   const spell_data_t* spell = driver -> effectN( 1 ).trigger();
   // Aura is hidden, thre's no linkage in spell data actual
   const spell_data_t* buff = item.player -> find_spell( 146293 );
@@ -1088,12 +1065,11 @@ void item::skeers_bloodsoaked_talisman( special_effect_t& effect,
 }
 
 void item::black_blood_of_yshaarj( special_effect_t& effect,
-                                   const item_t& item,
-                                   const special_effect_db_item_t& dbitem )
+                                   const item_t& item )
 {
   maintenance_check( 528 );
 
-  const spell_data_t* driver = item.player -> find_spell( dbitem.spell_id );
+  const spell_data_t* driver = item.player -> find_spell( effect.spell_id );
   const spell_data_t* ticker = driver -> effectN( 1 ).trigger();
   const spell_data_t* buff = item.player -> find_spell( 146202 );
 
@@ -1189,8 +1165,7 @@ struct flurry_of_xuen_cb_t : public dbc_proc_callback_t
 };
 
 void item::flurry_of_xuen( special_effect_t& effect,
-                           const item_t& item,
-                           const special_effect_db_item_t& dbitem )
+                           const item_t& item )
 {
   maintenance_check( 600 );
 
@@ -1198,7 +1173,7 @@ void item::flurry_of_xuen( special_effect_t& effect,
     return;
 
   player_t* p = item.player;
-  const spell_data_t* driver = p -> find_spell( dbitem.spell_id );
+  const spell_data_t* driver = p -> find_spell( effect.spell_id );
 
   effect.ppm_        = -1.0 * driver -> real_ppm();
   effect.ppm_       *= item_database::approx_scale_coefficient( item.parsed.data.level, item.item_level() );
@@ -1251,8 +1226,7 @@ struct essence_of_yulon_cb_t : public dbc_proc_callback_t
 };
 
 void item::essence_of_yulon( special_effect_t& effect,
-                             const item_t& item,
-                             const special_effect_db_item_t& dbitem )
+                             const item_t& item )
 {
   maintenance_check( 600 );
 
@@ -1260,7 +1234,7 @@ void item::essence_of_yulon( special_effect_t& effect,
     return;
 
   player_t* p = item.player;
-  const spell_data_t* driver = p -> find_spell( dbitem.spell_id );
+  const spell_data_t* driver = p -> find_spell( effect.spell_id );
 
   effect.ppm_         = -1.0 * driver -> real_ppm();
   effect.ppm_        *= item_database::approx_scale_coefficient( item.parsed.data.level, item.item_level() );
@@ -1271,8 +1245,7 @@ void item::essence_of_yulon( special_effect_t& effect,
 }
 
 void item::endurance_of_niuzao( special_effect_t& /* effect */,
-                                const item_t& item, 
-                                const special_effect_db_item_t& /* dbitem */ )
+                                const item_t& item )
 {
   maintenance_check( 600 );
 
@@ -1317,7 +1290,10 @@ bool unique_gear::initialize_special_effect( special_effect_t& effect,
       // Custom special effect initialization is deferred, and no parsing from
       // spell data is done automatically.
       if ( dbitem.custom_cb != 0 )
+      {
         effect.type = SPECIAL_EFFECT_CUSTOM;
+        effect.custom_init = dbitem.custom_cb;
+      }
 
       // Parse auxilary effect options before doing spell data based parsing
       if ( dbitem.encoded_options != 0 )
@@ -1361,7 +1337,7 @@ const special_effect_db_item_t& unique_gear::find_special_effect_db_item( const 
 {
   for ( size_t i = 0; i < n; i++ )
   {
-    const special_effect_db_item_t* dbitem = __special_effect_db + i;
+    const special_effect_db_item_t* dbitem = start + i;
     if ( dbitem -> spell_id == spell_id )
       return *dbitem;
   }
@@ -1389,10 +1365,8 @@ void unique_gear::init( player_t* p )
 
       if ( effect.type == SPECIAL_EFFECT_CUSTOM )
       {
-        assert( effect.spell_id > 0 );
-        const special_effect_db_item_t& dbitem = find_special_effect_db_item( __special_effect_db, sizeof_array( __special_effect_db ), effect.spell_id );
-        assert( dbitem.custom_cb != 0 );
-        dbitem.custom_cb( effect, item, dbitem );
+        assert( effect.custom_init );
+        effect.custom_init( effect, item );
       }
       else if ( effect.type == SPECIAL_EFFECT_EQUIP )
         new dbc_proc_callback_t( item, effect );

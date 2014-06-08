@@ -178,6 +178,7 @@ void special_effect_t::reset()
 
   execute_action = 0;
   custom_buff = 0;
+  custom_init = 0;
 }
 
 // special_effect_t::driver =================================================
