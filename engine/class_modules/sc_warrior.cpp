@@ -506,10 +506,10 @@ public:
   {
     ab::consume_resource();
 
-    if ( ab::proc )
-      return;
-
     double rage = ab::resource_consumed;
+
+   if ( result_is_miss( execute_state -> result ) && rage > 0 && !aoe )
+     p() -> resource_gain( RESOURCE_RAGE, rage*0.8, p() -> gain.avoided_attacks );
 
     if ( rage > 0 && p() -> talents.anger_management -> ok() )
     {
@@ -871,15 +871,7 @@ static void trigger_flurry( warrior_attack_t* a, int stacks )
 
 void warrior_attack_t::execute()
 {
-  double c = cost();
-
   base_t::execute();
-
-  if ( result_is_miss( execute_state -> result ) && c > 0 && !aoe )
-  {
-    c *= 0.8; // Rage refund from miss.
-    p() -> resource_gain( RESOURCE_RAGE, c, p() -> gain.avoided_attacks );
-  }
 }
 
 // warrior_attack_t::impact =================================================
@@ -986,9 +978,8 @@ struct melee_t : public warrior_attack_t
       trigger_t15_2pc_melee( this );
     }
     // Any attack that hits generates rage. Multistrikes do not grant rage.
-    if ( result_is_hit( s -> result ) && !result_is_multistrike( s -> result ) )
-      if ( s -> result != RESULT_DODGE || s -> result != RESULT_PARRY )
-        trigger_rage_gain();
+    if ( !result_is_miss( s -> result ) && !result_is_multistrike( s -> result ) )
+      trigger_rage_gain();
 
     if ( p() -> specialization() == WARRIOR_PROTECTION && p() -> active_stance == STANCE_DEFENSE )
     {
