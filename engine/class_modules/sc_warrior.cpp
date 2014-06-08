@@ -508,7 +508,7 @@ public:
 
     double rage = ab::resource_consumed;
 
-   if ( result_is_miss( execute_state -> result ) && rage > 0 && !aoe )
+   if ( ab::result_is_miss( ab::execute_state -> result ) && rage > 0 && !ab::aoe )
      p() -> resource_gain( RESOURCE_RAGE, rage*0.8, p() -> gain.avoided_attacks );
 
     if ( rage > 0 && p() -> talents.anger_management -> ok() )
