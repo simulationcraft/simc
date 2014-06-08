@@ -986,8 +986,9 @@ struct melee_t : public warrior_attack_t
       trigger_t15_2pc_melee( this );
     }
     // Any attack that hits generates rage. Multistrikes do not grant rage.
-    if ( !result_is_hit( s -> result ) && !result_is_multistrike( s -> result ) )
-      trigger_rage_gain();
+    if ( result_is_hit( s -> result ) && !result_is_multistrike( s -> result ) )
+      if ( s -> result != RESULT_DODGE || s -> result != RESULT_PARRY )
+        trigger_rage_gain();
 
     if ( p() -> specialization() == WARRIOR_PROTECTION && p() -> active_stance == STANCE_DEFENSE )
     {
@@ -1920,6 +1921,12 @@ struct raging_blow_t : public warrior_attack_t
         p() -> buff.raging_blow_glyph -> trigger();
       p() -> buff.raging_wind -> trigger();
       p() -> buff.meat_cleaver -> expire(); // Meat cleaver will only expire if the attack lands.
+    }
+    else // Refund rage if the parent attack misses.
+    {
+      double c = cost();
+      c *= 0.8;
+      p() -> resource_gain( RESOURCE_RAGE, c, p() -> gain.avoided_attacks );
     }
     p() -> buff.raging_blow -> decrement(); // Raging blow buff decrements even if the attack doesn't land.
   }
@@ -3470,7 +3477,7 @@ void warrior_t::apl_smf_fury()
   single_target -> add_talent( this, "Bloodbath", "if=(cooldown.colossus_smash.remains<2|debuff.colossus_smash.remains>=5|target.time_to_die<=20)",
                                "\n"
                                "# A very brief overview of the fury single target rotation, keep in mind that this does not include various subtle aspects in the action list, and is only intended for newer players.\n"
-                               "# Fury is a priority-based rotation with moderate amounts of rage management. It is  played in a 20-21 second cycle, based around usage of Colossus Smash.\n"
+                               "# Fury is a priority-based rotation with moderate amounts of rage management. It is played in a 20-21 second cycle, based around usage of Colossus Smash.\n"
                                "# Bloodthirst is used on cooldown, raging blow is a higher priority than bloodsurge-buffed wild strikes, and the player should attempt to save up rage by foregoing usage of 'rage dumps' such as\n"
                                "# Heroic strike and non-bloodsurge buffed wild strikes when colossus smash is not applied to the target. The goal is to go into using colossus smash with 100-115~ rage\n"
                                "# and then expend all of this rage by using heroic strike 3-4 times during colossus smash. It's also a good idea to save 1 charge of raging blow to use inside of this 6.5 second window.\n"
@@ -3584,7 +3591,7 @@ void warrior_t::apl_tg_fury()
   single_target -> add_talent( this, "Bloodbath", "if=(cooldown.colossus_smash.remains<2|debuff.colossus_smash.remains>=5|target.time_to_die<=20)",
                                "\n"
                                "# A very brief overview of the fury single target rotation, keep in mind that this does not include various subtle aspects in the action list, and is only intended for newer players.\n"
-                               "# Fury is a priority-based rotation with moderate amounts of rage management. It is  played in a 20-21 second cycle, based around usage of Colossus Smash.\n"
+                               "# Fury is a priority-based rotation with moderate amounts of rage management. It is played in a 20-21 second cycle, based around usage of Colossus Smash.\n"
                                "# Bloodthirst is used on cooldown, raging blow is a higher priority than bloodsurge-buffed wild strikes, and the player should attempt to save up rage by foregoing usage of 'rage dumps' such as\n"
                                "# Heroic strike and non-bloodsurge buffed wild strikes when colossus smash is not applied to the target. The goal is to go into using colossus smash with 100-115~ rage\n"
                                "# and then expend all of this rage by using heroic strike 3-4 times during colossus smash. It's also a good idea to save 1 charge of raging blow to use inside of this 6.5 second window.\n"
