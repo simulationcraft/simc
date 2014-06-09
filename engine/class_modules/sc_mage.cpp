@@ -123,10 +123,8 @@ public:
     const spell_data_t* icy_veins;
     const spell_data_t* inferno_blast;
     const spell_data_t* living_bomb;
-    const spell_data_t* loose_mana;
     const spell_data_t* mirror_image;
     const spell_data_t* splitting_ice;
-
 
     // Minor
     const spell_data_t* arcane_brilliance;
@@ -3875,7 +3873,6 @@ void mage_t::init_spells()
   glyphs.icy_veins           = find_glyph_spell( "Glyph of Icy Veins" );
   glyphs.inferno_blast       = find_glyph_spell( "Glyph of Inferno Blast" );
   glyphs.living_bomb         = find_glyph_spell( "Glyph of Living Bomb" );
-  glyphs.loose_mana          = find_glyph_spell( "Glyph of Loose Mana" );
   glyphs.mirror_image        = find_glyph_spell( "Glyph of Mirror Image" );
   glyphs.splitting_ice       = find_glyph_spell( "Glyph of Splitting Ice" );
 
@@ -4130,7 +4127,6 @@ void mage_t::apl_arcane()
 
   default_list -> add_action( this, "Counterspell", "if=target.debuff.casting.react" );
   default_list -> add_talent( this, "Cold Snap", "if=health.pct<30" );
-  default_list -> add_action( this, "Conjure Mana Gem", "if=mana_gem_charges<3&target.debuff.invulnerable.react" );
   default_list -> add_action( this, "Time Warp", "if=target.health.pct<25|time>5" );
   //not useful if bloodlust is check in option.
 
@@ -4192,7 +4188,6 @@ void mage_t::apl_fire()
 
   default_list -> add_action( this, "Counterspell", "if=target.debuff.casting.react" );
   default_list -> add_talent( this, "Cold Snap", "if=health.pct<30" );
-  default_list -> add_action( this, "Conjure Mana Gem", "if=mana_gem_charges<3&target.debuff.invulnerable.react" );
   default_list -> add_action( this, "Time Warp", "if=target.health.pct<25|time>5" );
   //not useful if bloodlust is check in option.
 
@@ -4238,7 +4233,6 @@ void mage_t::apl_frost()
 
   default_list -> add_action( this, "Counterspell", "if=target.debuff.casting.react" );
   default_list -> add_talent( this, "Cold Snap", "if=health.pct<30" );
-  default_list -> add_action( this, "Conjure Mana Gem", "if=mana_gem_charges<3&target.debuff.invulnerable.react" );
   default_list -> add_action( this, "Time Warp", "if=target.health.pct<25|time>5" );
   //not useful if bloodlust is check in option.
 
@@ -4292,6 +4286,7 @@ void mage_t::apl_default()
 double mage_t::mana_regen_per_second() const
 {
   double mp5 = player_t::mana_regen_per_second();
+  mp5 = 8000; // FIX LATER
 
   if ( passives.nether_attunement -> ok() )
     mp5 /= cache.spell_speed();

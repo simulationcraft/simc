@@ -1,6 +1,32 @@
 
 
 talent_format=armory
+# Guardian Druid T17N
+druid="Druid_Guardian_T17N"
+level=100
+race=troll
+role=tank
+position=front
+professions=engineering=600/alchemy=600
+talents=000302
+glyphs=
+spec=guardian
+head=headpiece_of_the_shattered_vale,id=99328,reforge=mastery_hit,upgrade=2,gems=capacitive_primal_8agi_9agi
+neck=immerseus_crystalline_eye,id=105407,reforge=mastery_crit,upgrade=2
+shoulders=spaulders_of_the_shattered_vale,id=99322,reforge=exp_hit,enchant=10agi_5crit,upgrade=2,gems=8agi_8agi_6agi
+back=fenyu_fury_of_xuen,id=102248,reforge=crit_hit,enchant=9hit,addon=goblin_glider,upgrade=2,gems=8agi_3agi
+chest=raiment_of_the_shattered_vale,id=99326,reforge=crit_exp,enchant=4all,upgrade=2,gems=8agi_8agi_8agi_9agi
+wrists=bombers_blackened_wristwatch,id=105616,reforge=mastery_crit,enchant=9agi,upgrade=2
+hands=grips_of_the_shattered_vale,id=99327,reforge=mastery_haste,enchant=9haste,upgrade=2,gems=8agi_8agi_6agi
+waist=cord_of_black_dreams,id=105635,reforge=crit_hit,addon=nitro_boosts,upgrade=2,gems=8agi_4agi_8crit_8agi_6agi
+legs=rious_vigilant_leggings,id=105529,reforge=mastery_exp,enchant=14agi_8crit,upgrade=2,gems=4agi_8crit_4agi_8crit_6agi
+feet=pandaren_roofsprinters,id=105582,enchant=7agi,upgrade=2,gems=4agi_8crit_3mastery
+finger1=kilruks_band_of_ascendancy,id=105624,reforge=mastery_crit,upgrade=2,gems=8agi_3crit
+finger2=ring_of_restless_energy,id=105558,upgrade=2,gems=8agi_3crit
+trinket1=rune_of_reorigination,id=96918,upgrade=2
+trinket2=haromms_talisman,id=105527,upgrade=2
+main_hand=halberd_of_inner_shadows,id=105560,reforge=mastery_exp,enchant=dancing_steel,upgrade=2,gems=4agi_8crit_3agi
+save=Druid_Guardian_T17N.simc
 
 # Feral Druid T17N
 druid="Druid_Feral_T17N"
