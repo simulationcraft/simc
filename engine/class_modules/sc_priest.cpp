@@ -46,6 +46,7 @@ public:
   priest_t& priest;
 
   priest_td_t( player_t* target, priest_t& p );
+  void reset();
 };
 
 /* Priest class definition
@@ -4580,6 +4581,11 @@ priest_td_t::priest_td_t( player_t* target, priest_t& p ) :
                              .activated( false );
 }
 
+void priest_td_t::reset()
+{
+  glyph_of_mind_harvest_consumed = false;
+}
+
 // ==========================================================================
 // Priest Definitions
 // ==========================================================================
@@ -4693,15 +4699,6 @@ stat_e priest_t::convert_hybrid_stat( stat_e s ) const
 void priest_t::combat_begin()
 {
   base_t::combat_begin();
-
-  // Reset Glyph of Harvest consumed flag
-  for ( size_t i = 0; i < sim -> target_list.size(); ++i )
-  {
-    if ( priest_td_t* td =  find_target_data( sim -> target_list[ i ] ) )
-    {
-      td->glyph_of_mind_harvest_consumed = false;
-    }
-  }
 
   resources.current[ RESOURCE_SHADOW_ORB ] = clamp( as<double>( options.initial_shadow_orbs ), 0.0, resources.base[ RESOURCE_SHADOW_ORB ] );
 }
@@ -5672,6 +5669,15 @@ void priest_t::init_action_list()
 void priest_t::reset()
 {
   base_t::reset();
+
+  // Reset Target Data
+  for ( size_t i = 0; i < sim -> target_list.size(); ++i )
+  {
+    if ( priest_td_t* td =  find_target_data( sim -> target_list[ i ] ) )
+    {
+      td -> reset();
+    }
+  }
 }
 
 /* Copy stats from the trigger spell to the atonement spell
