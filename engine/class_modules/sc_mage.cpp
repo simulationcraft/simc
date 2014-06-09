@@ -4306,9 +4306,7 @@ void mage_t::apl_arcane()
   for( size_t i = 0; i < item_actions.size(); i++ )
   {
     default_list -> add_action( item_actions[i] + ",sync=alter_time_activate,if=buff.alter_time.downpresence_of_mind,if=buff.alter_time.down&buff.arcane_power.up&trinket.stat.intellect.cooldown_remains>15" );
-    default_list -> add_action( item_actions[i] + ",if=talent.rune_of_power.enabled&(cooldown.alter_time_activate.remains>45|target.time_to_die<25)&buff.rune_of_power.remains>20" );
-    default_list -> add_action( item_actions[i] + ",if=talent.invocation.enabled&(cooldown.alter_time_activate.remains>45|target.time_to_die<25)&buff.invokers_energy.remains>20" );
-    default_list -> add_action( item_actions[i] + ",if=(!talent.rune_of_power.enabled&!talent.invocation.enabled)&(cooldown.alter_time_activate.remains>45|target.time_to_die<25)" );
+    default_list -> add_action( item_actions[i] + ",if=(cooldown.alter_time_activate.remains>45|target.time_to_die<25)&(buff.rune_of_power.remains>20|buff.invokers_energy.remains>20|(!talent.rune_of_power.enabled&!talent.invocation.enabled))" );
   }
 
   default_list -> add_talent( this, "Presence of Mind", "if=buff.alter_time.down&buff.arcane_power.up&trinket.stat.intellect.cooldown_remains>15" );
@@ -4331,7 +4329,7 @@ void mage_t::apl_arcane()
   single_target -> add_action( this, "Arcane Barrage", "if=buff.arcane_charge.stack=4&mana.pct<95" );
   single_target -> add_talent( this, "Presence of Mind", "if=cooldown.arcane_power.remains>75" );
   single_target -> add_action( this, "Arcane Blast" );
-  single_target -> add_talent( this, "Ice Foes", "moving=1" );
+  single_target -> add_talent( this, "Ice Floes", "moving=1" );
   single_target -> add_action( this, "Arcane Barrage", "moving=1" );
   single_target -> add_action( this, "Fire Blast", "moving=1" );
   single_target -> add_action( this, "Ice Lance", "moving=1" );
@@ -4446,11 +4444,7 @@ void mage_t::apl_frost()
   default_list -> add_action( this, "Alter Time", "if=buff.alter_time.down&buff.icy_veins.up" );
 
   for( size_t i = 0; i < item_actions.size(); i++ )
-  {
-    default_list -> add_action( item_actions[i] + ",if=talent.rune_of_power.enabled&(cooldown.alter_time_activate.remains>45|target.time_to_die<25)&buff.rune_of_power.remains>20" );
-    default_list -> add_action( item_actions[i] + ",if=talent.invocation.enabled&(cooldown.alter_time_activate.remains>45|target.time_to_die<25)&buff.invokers_energy.remains>20" );
-    default_list -> add_action( item_actions[i] + ",if=(!talent.rune_of_power.enabled&!talent.invocation.enabled)&(cooldown.alter_time_activate.remains>45|target.time_to_die<25)" );
-  }
+    default_list -> add_action( item_actions[i] + ",if=(cooldown.alter_time_activate.remains>45|target.time_to_die<25)&(buff.rune_of_power.remains>20|buff.invokers_energy.remains>20|(!talent.rune_of_power.enabled&!talent.invocation.enabled))" );
 
   default_list -> add_action( this, "Flamestrike", "if=active_enemies>=5" );
   default_list -> add_action( this, "Frostfire Bolt", "if=buff.alter_time.up&buff.brain_freeze.up" );

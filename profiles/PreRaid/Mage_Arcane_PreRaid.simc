@@ -43,9 +43,7 @@ actions+=/berserking,if=buff.alter_time.down&(buff.arcane_power.up|target.time_t
 actions+=/arcane_torrent,if=buff.alter_time.down&(buff.arcane_power.up|target.time_to_die<18)
 actions+=/jade_serpent_potion,if=buff.alter_time.down&((cooldown.alter_time.remains=0&buff.arcane_power.up)|target.time_to_die<50)
 actions+=/use_item,slot=trinket2,sync=alter_time_activate,if=buff.alter_time.downpresence_of_mind,if=buff.alter_time.down&buff.arcane_power.up&trinket.stat.intellect.cooldown_remains>15
-actions+=/use_item,slot=trinket2,if=talent.rune_of_power.enabled&(cooldown.alter_time_activate.remains>45|target.time_to_die<25)&buff.rune_of_power.remains>20
-actions+=/use_item,slot=trinket2,if=talent.invocation.enabled&(cooldown.alter_time_activate.remains>45|target.time_to_die<25)&buff.invokers_energy.remains>20
-actions+=/use_item,slot=trinket2,if=(!talent.rune_of_power.enabled&!talent.invocation.enabled)&(cooldown.alter_time_activate.remains>45|target.time_to_die<25)
+actions+=/use_item,slot=trinket2,if=(cooldown.alter_time_activate.remains>45|target.time_to_die<25)&(buff.rune_of_power.remains>20|buff.invokers_energy.remains>20|(!talent.rune_of_power.enabled&!talent.invocation.enabled))
 actions+=/presence_of_mind,if=talent.presence_of_mind.enabled&(buff.alter_time.down&buff.arcane_power.up&trinket.stat.intellect.cooldown_remains>15)
 actions+=/alter_time,if=buff.alter_time.down&buff.arcane_power.up&trinket.stat.intellect.cooldown_remains>15
 actions+=/presence_of_mind,if=talent.presence_of_mind.enabled&(buff.alter_time.down&buff.arcane_power.up&buff.amplified.down)
@@ -65,6 +63,7 @@ actions.single_target+=/arcane_missiles,if=(buff.arcane_missiles.stack=2&cooldow
 actions.single_target+=/arcane_barrage,if=buff.arcane_charge.stack=4&mana.pct<95
 actions.single_target+=/presence_of_mind,if=talent.presence_of_mind.enabled&cooldown.arcane_power.remains>75
 actions.single_target+=/arcane_blast
+actions.single_target+=/ice_floes,if=talent.ice_floes.enabled
 actions.single_target+=/arcane_barrage,moving=1
 actions.single_target+=/fire_blast,moving=1
 actions.single_target+=/ice_lance,moving=1

@@ -60,6 +60,7 @@ actions.single_target+=/arcane_missiles,if=(buff.arcane_missiles.stack=2&cooldow
 actions.single_target+=/arcane_barrage,if=buff.arcane_charge.stack=4&mana.pct<95
 actions.single_target+=/presence_of_mind,if=talent.presence_of_mind.enabled&cooldown.arcane_power.remains>75
 actions.single_target+=/arcane_blast
+actions.single_target+=/ice_floes,if=talent.ice_floes.enabled
 actions.single_target+=/arcane_barrage,moving=1
 actions.single_target+=/fire_blast,moving=1
 actions.single_target+=/ice_lance,moving=1
