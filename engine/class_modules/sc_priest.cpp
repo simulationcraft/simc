@@ -1898,6 +1898,9 @@ struct mind_blast_t final : public priest_spell_t
   {
     parse_options( nullptr, options_str );
 
+    // Glyph of Mind Harvest
+    if ( priest.glyphs.mind_harvest -> ok() )
+      priest.cooldowns.mind_blast -> duration += timespan_t::from_millis( priest.glyphs.mind_harvest -> effectN( 2 ).base_value() );
   }
 
   virtual void execute() override
