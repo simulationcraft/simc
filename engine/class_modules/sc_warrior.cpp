@@ -495,7 +495,7 @@ struct warrior_attack_t : public warrior_action_t< melee_attack_t >
     // Berserker stance: no change
     // Defensive stance: -100%
 
-    if (  proc )
+    if ( proc )
       return;
 
     warrior_t& p = *cast();
@@ -742,12 +742,10 @@ void warrior_attack_t::consume_resource()
   if ( proc )
     return;
 
-  // Warrior attacks (non-AoE) which are are avoided by the target consume only 20%
-  if ( resource_consumed > 0 && ! aoe && result_is_miss( execute_state -> result ) )
-  {
-    double rage_restored = resource_consumed * 0.80;
-    p -> resource_gain( RESOURCE_RAGE, rage_restored, p -> gain.avoided_attacks );
-  }
+  double rage = resource_consumed;
+
+   if ( result_is_miss( execute_state -> result ) && rage > 0 && !aoe )
+     p -> resource_gain( RESOURCE_RAGE, rage*0.8, p -> gain.avoided_attacks );
 }
 
 // warrior_attack_t::execute ================================================
@@ -854,13 +852,11 @@ struct melee_t : public warrior_attack_t
 
     if ( result_is_hit( s -> result ) )
     {
-      if ( p -> specialization() == WARRIOR_ARMS ) trigger_sudden_death( this,  p -> spec.sudden_death -> proc_chance() );
+      if ( p -> specialization() == WARRIOR_ARMS )
+        trigger_sudden_death( this,  p -> spec.sudden_death -> proc_chance() );
       trigger_t15_2pc_melee( this );
-    }
-    // Any attack that hits or is dodged/blocked/parried generates rage
-    if ( s -> result != RESULT_MISS )
       trigger_rage_gain();
-
+    }
   }
 
   virtual double action_multiplier() const
@@ -963,8 +959,7 @@ struct bladestorm_tick_t : public warrior_attack_t
   bladestorm_tick_t( warrior_t* p, const std::string& name ) :
     warrior_attack_t( name, p, p -> find_spell( 50622 ) )
   {
-    background  = true;
-    direct_tick = true;
+    background = may_miss = may_parry = may_dodge = direct_tick = true;
     aoe         = -1;
     if ( p -> specialization() == WARRIOR_ARMS )       //Bladestorm does 1.5x more damage as Arms with 5.4
       weapon_multiplier *= 1.5;
@@ -1866,6 +1861,12 @@ struct raging_blow_t : public warrior_attack_t
       oh_attack -> execute();
       p -> buff.raging_wind -> trigger();
       p -> buff.meat_cleaver -> expire();
+    }
+    else // Refund rage if the parent attack misses.
+    {
+      double c = cost();
+      c *= 0.8;
+      p -> resource_gain( RESOURCE_RAGE, c, p -> gain.avoided_attacks );
     }
     p -> buff.raging_blow -> decrement();
   }
