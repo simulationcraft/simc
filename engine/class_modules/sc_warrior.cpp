@@ -894,7 +894,6 @@ struct off_hand_test_attack_t : public warrior_attack_t
     warrior_attack_t::execute();
     last_result = execute_state -> result;
   }
-
 };
 
 // Auto Attack ==============================================================
@@ -1862,7 +1861,8 @@ struct raging_blow_t : public warrior_attack_t
       p -> buff.raging_wind -> trigger();
       p -> buff.meat_cleaver -> expire();
     }
-    else // Refund rage if the parent attack misses.
+    else if ( result_is_miss( oh_test -> last_result ) && result_is_hit( execute_state -> result) )
+    // Force a rage refund if oh_test misses and mh hits, as the MH will refund rage if it misses.
     {
       double c = cost();
       c *= 0.8;
