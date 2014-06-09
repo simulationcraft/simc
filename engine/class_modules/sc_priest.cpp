@@ -185,6 +185,7 @@ public:
     const spell_data_t* improved_heal;
 
     const spell_data_t* improved_penance;
+    const spell_data_t* improved_smite;
 
     // Shadow related
     const spell_data_t* enhanced_mind_flay;
@@ -2962,6 +2963,8 @@ struct smite_t final : public priest_spell_t
     castable_in_shadowform = false;
 
     range += priest.glyphs.holy_fire -> effectN( 1 ).base_value();
+
+    base_multiplier *= 1.0 + priest.perks.improved_smite -> effectN( 1 ).percent();
   }
 
   virtual void execute() override
@@ -3579,7 +3582,7 @@ struct flash_heal_t final : public priest_heal_t
     parse_options( nullptr, options_str );
     can_trigger_spirit_shell = true;
 
-    base_multiplier *= 1.0 + priest.perks.improved_flash_heal->effectN( 1 ).percent();
+    base_multiplier *= 1.0 + priest.perks.improved_flash_heal -> effectN( 1 ).percent();
   }
 
   virtual void execute() override
@@ -3666,7 +3669,7 @@ struct _heal_t final : public priest_heal_t
     can_trigger_spirit_shell = true;
 
 
-    base_multiplier *= 1.0 + priest.perks.improved_heal->effectN( 1 ).percent();
+    base_multiplier *= 1.0 + priest.perks.improved_heal -> effectN( 1 ).percent();
   }
 
   virtual void execute() override
@@ -5064,6 +5067,7 @@ void priest_t::init_spells()
   perks.improved_flash_heal           = find_perk_spell( "Improved Flash Heal" );
   perks.improved_heal                 = find_perk_spell( "Improved Heal" );
   perks.improved_penance              = find_perk_spell( "Improved Penance" );
+  perks.improved_smite                = find_perk_spell( "Improved Smite" );
 
 
   perks.enhanced_mind_flay            = find_perk_spell( "Enhanced Mind Flay" );
