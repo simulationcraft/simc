@@ -4408,7 +4408,6 @@ void mage_t::init_action_list()
     use_default_action_list = true;
   }
 
-  player_t::init_action_list();
 }
 
 // mage_t::mana_regen_per_second ============================================
@@ -4534,8 +4533,6 @@ double mage_t::matching_gear_multiplier( attribute_e attr ) const
   return 0.0;
 }
 
-
-}
 // mage_t::reset ============================================================
 
 void mage_t::reset()
