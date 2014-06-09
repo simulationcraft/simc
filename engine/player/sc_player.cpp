@@ -2228,9 +2228,6 @@ double player_t::composite_melee_haste() const
     if ( buffs.bloodlust -> up() )
       h *= 1.0 / ( 1.0 + buffs.bloodlust -> data().effectN( 1 ).percent() );
 
-    if ( buffs.unholy_frenzy -> check() )
-      h *= 1.0 / ( 1.0 + buffs.unholy_frenzy -> value() );
-
     if ( buffs.mongoose_mh && buffs.mongoose_mh -> up() )
       h *= 1.0 / ( 1.0 + 30 / current.rating.attack_haste );
 

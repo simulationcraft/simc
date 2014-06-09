@@ -265,9 +265,6 @@ public:
     gain_t* t15_4pc_tank;
   } gains;
 
-  // Options
-  std::string unholy_frenzy_target_str;
-
   // Specialization
   struct specialization_t
   {
@@ -472,7 +469,6 @@ public:
   virtual void      assess_damage_imminent( school_e, dmg_e, action_state_t* );
   virtual void      target_mitigation( school_e, dmg_e, action_state_t* );
   virtual void      combat_begin();
-  virtual void      create_options();
   virtual action_t* create_action( const std::string& name, const std::string& options );
   virtual expr_t*   create_expression( action_t*, const std::string& name );
   virtual pet_t*    create_pet( const std::string& name, const std::string& type = std::string() );
@@ -4207,31 +4203,6 @@ struct unholy_blight_t : public death_knight_spell_t
   }
 };
 
-// Unholy Frenzy ============================================================
-
-struct unholy_frenzy_t : public death_knight_spell_t
-{
-  unholy_frenzy_t( death_knight_t* p, const std::string& options_str ) :
-    death_knight_spell_t( "unholy_frenzy", p, p -> find_class_spell( "Unholy Frenzy" ) )
-  {
-    parse_options( NULL, options_str );
-
-    // If we don't specify a target, it's defaulted to the mob, so default to the player instead
-    if ( target -> is_enemy() || target -> is_add() )
-      target = p;
-    harmful = false;
-    dot_duration = timespan_t::zero();
-  }
-
-  virtual void execute()
-  {
-    death_knight_spell_t::execute();
-    target -> buffs.unholy_frenzy -> trigger( 1,
-        data().effectN( 1 ).percent() +
-        p() -> sets.set( SET_T14_4PC_MELEE ) -> effectN( 2 ).percent() );
-  }
-};
-
 // Plague Leech =============================================================
 
 struct plague_leech_t : public death_knight_spell_t
@@ -4641,7 +4612,6 @@ action_t* death_knight_t::create_action( const std::string& name, const std::str
   if ( name == "raise_dead"               ) return new raise_dead_t               ( this, options_str );
   if ( name == "scourge_strike"           ) return new scourge_strike_t           ( this, options_str );
   if ( name == "summon_gargoyle"          ) return new summon_gargoyle_t          ( this, options_str );
-  if ( name == "unholy_frenzy"            ) return new unholy_frenzy_t            ( this, options_str );
 
   // Talents
   if ( name == "unholy_blight"            ) return new unholy_blight_t            ( this, options_str );
@@ -5397,8 +5367,6 @@ void death_knight_t::init_action_list()
 	
             if ( sim -> allow_potions && level >= 80 )
               def -> add_action( potion_str + ",if=buff.dark_transformation.up&target.time_to_die<=60" );
-
-            def -> add_action( this, "Unholy Frenzy", "if=time>=4" );
 
 	    //decide between single_target and aoe rotation
 	    def -> add_action( "run_action_list,name=aoe,if=active_enemies>=3" );
@@ -6218,21 +6186,6 @@ void death_knight_t::regen( timespan_t periodicity )
     _runes.slot[i].regen_rune( this, periodicity );
 }
 
-// death_knight_t::create_options ===========================================
-
-void death_knight_t::create_options()
-{
-  player_t::create_options();
-
-  option_t death_knight_options[] =
-  {
-    opt_string( "unholy_frenzy_target", unholy_frenzy_target_str ),
-    opt_null()
-  };
-
-  option_t::copy( options, death_knight_options );
-}
-
 // death_knight_t::decode_set ===============================================
 
 set_e death_knight_t::decode_set( const item_t& item ) const
@@ -6604,15 +6557,8 @@ struct death_knight_module_t : public module_t
     p -> report_extension = std::shared_ptr<player_report_extension_t>( new death_knight_report_t( *p ) );
     return p;
   }
+  virtual void init( sim_t* ) const {}
   virtual bool valid() const { return true; }
-  virtual void init( sim_t* sim ) const
-  {
-    for ( size_t i = 0; i < sim -> actor_list.size(); i++ )
-    {
-      player_t* p = sim -> actor_list[i];
-      p -> buffs.unholy_frenzy = haste_buff_creator_t( p, "unholy_frenzy", p -> find_spell( 49016 ) ).add_invalidate( CACHE_HASTE ).cd( timespan_t::zero() );
-    }
-  }
   virtual void combat_begin( sim_t* ) const {}
   virtual void combat_end( sim_t* ) const {}
 };

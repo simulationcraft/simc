@@ -4342,7 +4342,6 @@ public:
 
     haste_buff_t* berserking;
     haste_buff_t* bloodlust;
-    haste_buff_t* unholy_frenzy;
 
     // Legendary meta stuff
     buff_t* courageous_primal_diamond_lucidity;
