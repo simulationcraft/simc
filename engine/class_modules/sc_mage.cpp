@@ -1967,7 +1967,7 @@ struct flamestrike_t : public mage_spell_t
 struct frost_armor_t : public mage_spell_t
 {
   frost_armor_t( mage_t* p, const std::string& options_str ) :
-    mage_spell_t( "frost_armor", p, p -> find_class_spell( "Frost Armor" ) )
+    mage_spell_t( "frost_armor", p, p -> find_specialization_spell( "Frost Armor" ) )
   {
     parse_options( NULL, options_str );
     harmful = false;
@@ -2883,7 +2883,7 @@ struct living_bomb_t : public mage_spell_t
 struct mage_armor_t : public mage_spell_t
 {
   mage_armor_t( mage_t* p, const std::string& options_str ) :
-    mage_spell_t( "mage_armor", p, p -> find_class_spell( "Mage Armor" ) )
+    mage_spell_t( "mage_armor", p, p -> find_specialization_spell( "Mage Armor" ) )
   {
     parse_options( NULL, options_str );
     harmful = false;
@@ -2951,7 +2951,7 @@ struct mirror_image_t : public mage_spell_t
 struct molten_armor_t : public mage_spell_t
 {
   molten_armor_t( mage_t* p, const std::string& options_str ) :
-    mage_spell_t( "molten_armor", p, p -> find_class_spell( "Molten Armor" ) )
+    mage_spell_t( "molten_armor", p, p -> find_specialization_spell( "Molten Armor" ) )
   {
     parse_options( NULL, options_str );
     harmful = false;
@@ -4089,7 +4089,7 @@ void mage_t::apl_precombat()
   precombat -> add_action( this, "Arcane Brilliance" );
 
   // Armor
-  if ( specialization() == MAGE_ARCANE && !sets.has_set_bonus( SET_T16_4PC_CASTER ) ) // use Frost Armor for arcane mages with 4p T16
+  if ( specialization() == MAGE_ARCANE ) // use Frost Armor for arcane mages with 4p T16
     precombat -> add_action( this, "Mage Armor" );
   else if ( specialization() == MAGE_FIRE )
     precombat -> add_action( this, "Molten Armor" );
