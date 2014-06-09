@@ -183,6 +183,9 @@ public:
     // TODO 2014/06/09: CoP is listed under affected spells. Check what's up with that.
     // http://howtopriest.com/viewtopic.php?f=76&t=5887&p=50469#p50469
     const spell_data_t* improved_heal;
+
+    const spell_data_t* improved_penance;
+
     // Shadow related
     const spell_data_t* enhanced_mind_flay;
     const spell_data_t* enhanced_shadow_orbs;
@@ -4002,6 +4005,8 @@ struct penance_heal_t final : public priest_heal_t
 
       school = SCHOOL_HOLY;
       stats = player.get_stats( "penance_heal", this );
+
+      base_multiplier *= 1.0 + priest.perks.improved_penance -> effectN( 1 ).percent();
     }
 
     virtual void impact( action_state_t* s ) override
@@ -5057,7 +5062,8 @@ void priest_t::init_spells()
   perks.enhanced_power_word_shield    = find_perk_spell( "Enhanced Power Word: Shield" );
   perks.enhanced_strength_of_soul     = find_perk_spell( "Enhanced Strength of Soul" );
   perks.improved_flash_heal           = find_perk_spell( "Improved Flash Heal" );
-  perks.improved_heal           = find_perk_spell( "Improved Heal" );
+  perks.improved_heal                 = find_perk_spell( "Improved Heal" );
+  perks.improved_penance              = find_perk_spell( "Improved Penance" );
 
 
   perks.enhanced_mind_flay            = find_perk_spell( "Enhanced Mind Flay" );
