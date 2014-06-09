@@ -169,6 +169,9 @@ public:
   // Perk Spells
   struct
   {
+    const spell_data_t* enhanced_holy_fire;
+
+    // Shadow related
     const spell_data_t* enhanced_mind_flay;
     const spell_data_t* enhanced_shadow_orbs;
     const spell_data_t* enhanced_shadow_word_death;
@@ -2734,6 +2737,8 @@ struct holy_fire_base_t : public priest_spell_t
     can_trigger_atonement = true;
 
     range += priest.glyphs.holy_fire -> effectN( 1 ).base_value();
+
+    dot_duration += priest.perks.enhanced_holy_fire -> effectN( 1 ).time_value();
   }
 
   virtual void execute() override
@@ -4996,6 +5001,7 @@ void priest_t::init_spells()
   mastery_spells.mental_anguish       = find_mastery_spell( PRIEST_SHADOW );
 
   // Perk Spells
+  perks.enhanced_holy_fire            = find_perk_spell( "Enhanced Holy Fire" );
   perks.enhanced_mind_flay            = find_perk_spell( "Enhanced Mind Flay" );
   perks.enhanced_shadow_orbs          = find_perk_spell( "Enhanced Shadow Orbs" );
   perks.enhanced_shadow_word_death    = find_perk_spell( "Enhanced Shadow Word: Death" );
