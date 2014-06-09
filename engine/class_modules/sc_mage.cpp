@@ -4090,26 +4090,26 @@ void mage_t::add_action( const spell_data_t* s, std::string options, std::string
 
 void mage_t::init_action_list()
 {
-  if ( action_list_str.empty() )
+  if( action_list_str.empty() )
   {
     clear_action_priority_lists();
 
-    bool has_purified_bindings = find_item("purified_bindings_of_immerseus") != nullptr;
+    bool has_purified_bindings = find_item( "purified_bindings_of_immerseus" ) != nullptr;
 
     std::string& precombat = get_action_priority_list( "precombat" ) -> action_list_str;
     std::string& aoe_list_str = get_action_priority_list( "aoe" ) -> action_list_str;
     std::string& st_list_str = get_action_priority_list( "single_target" ) -> action_list_str;
 
-    if ( level >= 80 )
+    if( level >= 80 )
     {
-      if ( sim -> allow_flasks )
+      if( sim -> allow_flasks )
       {
         // Flask
         precombat += "/flask,type=";
         precombat += ( level > 85 ) ? "warm_sun" : "draconic_mind";
       }
 
-      if ( sim -> allow_food )
+      if( sim -> allow_food )
       {
         // Food
         precombat += "/food,type=";
@@ -4121,11 +4121,11 @@ void mage_t::init_action_list()
     add_action( "Arcane Brilliance", "", "precombat" );
 
     // Armor
-    if ( specialization() == MAGE_ARCANE && !sets.has_set_bonus( SET_T16_4PC_CASTER ) ) // use Frost Armor for arcane mages with 4p T16
+    if( specialization() == MAGE_ARCANE && !sets.has_set_bonus( SET_T16_4PC_CASTER ) ) // use Frost Armor for arcane mages with 4p T16
     {
       add_action( "Mage Armor", "", "precombat" );
     }
-    else if ( specialization() == MAGE_FIRE )
+    else if( specialization() == MAGE_FIRE )
     {
       add_action( "Molten Armor", "", "precombat" );
     }
@@ -4135,24 +4135,24 @@ void mage_t::init_action_list()
     }
 
     // Water Elemental
-    if ( specialization() == MAGE_FROST )
+    if( specialization() == MAGE_FROST )
       precombat += "/water_elemental";
 
     // Snapshot Stats
     precombat += "/snapshot_stats";
 
     // Prebuff L90 talents
-    if ( talents.invocation -> ok() )
+    if( talents.invocation -> ok() )
     {
       precombat += "/evocation";
     }
-    else if ( talents.rune_of_power -> ok() )
+    else if( talents.rune_of_power -> ok() )
     {
       precombat += "/rune_of_power";
     }
 
     //Potions
-    if ( ( level >= 80 ) && ( sim -> allow_potions ) )
+    if( ( level >= 80 ) && ( sim -> allow_potions ) )
     {
       precombat += ( level > 85 ) ? "/jade_serpent_potion" : "/volcanic_potion";
     }
@@ -4163,27 +4163,27 @@ void mage_t::init_action_list()
     add_action( "Counterspell", "if=target.debuff.casting.react" );
 
     // Cold Snap
-    if ( talents.cold_snap -> ok() )
+    if( talents.cold_snap -> ok() )
     {
       add_action( "Cold Snap", "if=health.pct<30" );
     }
 
 
     //not useful if bloodlust is check in option.
-    if ( level >= 85 )
+    if( level >= 85 )
       action_list_str += "/time_warp,if=target.health.pct<25|time>5";
 
     // Spec-specific actions
 
     // Arcane
-    if ( specialization() == MAGE_ARCANE )
+    if( specialization() == MAGE_ARCANE )
     {
-      if ( talents.rune_of_power -> ok() )
+      if( talents.rune_of_power -> ok() )
       {
         action_list_str += "/rune_of_power,if=buff.rune_of_power.remains<cast_time";
         action_list_str += "/rune_of_power,if=cooldown.arcane_power.remains<gcd&buff.rune_of_power.remains<buff.arcane_power.duration";
       }
-      else if ( talents.invocation -> ok() )
+      else if( talents.invocation -> ok() )
       {
         action_list_str += "/evocation,if=buff.invokers_energy.down";
         action_list_str += "/evocation,if=cooldown.arcane_power.remains=0&buff.invokers_energy.remains<buff.arcane_power.duration";
@@ -4197,134 +4197,115 @@ void mage_t::init_action_list()
       action_list_str += "/mirror_image";
 
       action_list_str += "/arcane_power,if=time_to_bloodlust>cooldown.arcane_power.duration&((buff.arcane_charge.stack=4)|target.time_to_die<buff.arcane_power.duration+5),moving=0";
-      if ( glyphs.loose_mana -> ok() )
+
+
+      if( race == RACE_ORC )         action_list_str += "/blood_fury,if=(buff.arcane_power.up|cooldown.arcane_power.remains>15|target.time_to_die<18)";
+      else if( race == RACE_TROLL )  action_list_str += "/berserking,if=(buff.arcane_power.up|target.time_to_die<18)";
+
+      if( sim -> allow_potions )      action_list_str += "/jade_serpent_potion,if=(buff.arcane_power.up|target.time_to_die<50)";
+
+
+      if( talents.rune_of_power -> ok() )
+        action_list_str += init_use_item_actions( ",if=target.time_to_die<25&buff.rune_of_power.remains>20" );
+      else if( talents.invocation -> ok() )
+        action_list_str += init_use_item_actions( ",if=target.time_to_die<25&buff.invokers_energy.remains>20" );
+      else
+        action_list_str += init_use_item_actions( ",if=target.time_to_die<25" );
+
+      //decide between single_target and aoe rotation
+      action_list_str += "/run_action_list,name=aoe,if=active_enemies>=6";
+      action_list_str += "/run_action_list,name=single_target,if=active_enemies<6";
+
+      // Arcane Blast/Missiles weaving for 2T16
+      if( sets.has_set_bonus( SET_T16_2PC_CASTER ) )
       {
-        action_list_str += "/mana_gem,if=mana.pct<90&buff.arcane_power.up&buff.arcane_charge.stack=4&buff.alter_time.down";
-      } else {
-        action_list_str += "/mana_gem,if=mana.pct<80&buff.alter_time.down";
-      }
-      // The arcane action list for < 87 is terribly gimped, level instead
-      if ( level >= 87 )
-      {
-        if ( race == RACE_ORC )         action_list_str += "/blood_fury,if=(buff.arcane_power.up|cooldown.arcane_power.remains>15|target.time_to_die<18)";
-        else if ( race == RACE_TROLL )  action_list_str += "/berserking,if=(buff.arcane_power.up|target.time_to_die<18)";
-
-        if ( sim -> allow_potions )      action_list_str += "/jade_serpent_potion,if=(buff.arcane_power.up|target.time_to_die<50)";
-
-          // This following line is a safeguard against PBoI trinket proccing during AT
-          // At the moment this has no chance of happening, due to the conditional for AT activation
-          // action_list_str += "/cancel_buff,name=alter_time,if=buff.alter_time.remains<trinket.stat.intellect.cooldown_remains-109";
-        } else {
-          if ( talents.presence_of_mind -> ok() )
-          {
-            action_list_str += "presence_of_mind,if=buff.alter_time.down&buff.arcane_power.up";
-          }
-
-          action_list_str += "/alter_time,if=buff.alter_time.down&buff.arcane_power.up";
-        }
-
-        if ( talents.rune_of_power -> ok() )
-          action_list_str += init_use_item_actions( ",if=target.time_to_die<25&buff.rune_of_power.remains>20" );
-        else if ( talents.invocation -> ok() )
-          action_list_str += init_use_item_actions( ",if=target.time_to_die<25&buff.invokers_energy.remains>20" );
-        else
-          action_list_str += init_use_item_actions( ",if=target.time_to_die<25" );
-
-        //decide between single_target and aoe rotation
-        action_list_str += "/run_action_list,name=aoe,if=active_enemies>=6";
-        action_list_str += "/run_action_list,name=single_target,if=active_enemies<6";
-
-        // Arcane Blast/Missiles weaving for 2T16
-        if ( sets.has_set_bonus( SET_T16_2PC_CASTER ) )
-        {
-          st_list_str += "/arcane_blast,if=buff.arcane_missiles.stack<2&buff.arcane_charge.stack=4&buff.profound_magic.stack>=2&mana.pct>90";
-          st_list_str += "/arcane_blast,if=buff.arcane_missiles.stack<2&buff.arcane_charge.stack=4&buff.profound_magic.up&mana.pct>93";
-        }
+        st_list_str += "/arcane_blast,if=buff.arcane_missiles.stack<2&buff.arcane_charge.stack=4&buff.profound_magic.stack>=2&mana.pct>90";
+        st_list_str += "/arcane_blast,if=buff.arcane_missiles.stack<2&buff.arcane_charge.stack=4&buff.profound_magic.up&mana.pct>93";
       }
 
       st_list_str += "/arcane_missiles,if=(buff.arcane_missiles.stack=2&cooldown.arcane_power.remains>0)|(buff.arcane_charge.stack=4&cooldown.arcane_power.remains>4*action.arcane_blast.cast_time)";
 
       st_list_str += "/arcane_barrage,if=buff.arcane_charge.stack=4&mana.pct<95";
 
-      if ( talents.presence_of_mind -> ok() )
+      if( talents.presence_of_mind -> ok() )
         st_list_str += "/presence_of_mind,if=cooldown.arcane_power.remains>75";
 
       st_list_str += "/arcane_blast";
 
-      if ( talents.ice_floes -> ok() ) st_list_str += "/ice_floes,moving=1";
+      if( talents.ice_floes -> ok() ) st_list_str += "/ice_floes,moving=1";
 
       st_list_str += "/arcane_barrage,moving=1";
       st_list_str += "/fire_blast,moving=1";
 
       //AoE
 
-      if ( talents.nether_tempest -> ok() )   aoe_list_str += "/nether_tempest,cycle_targets=1,if=(!ticking|remains<tick_time)&target.time_to_die>6";
-      else if ( talents.living_bomb -> ok() ) aoe_list_str += "/living_bomb,cycle_targets=1,if=(!ticking|remains<tick_time)&target.time_to_die>tick_time*3";
-      else if ( talents.frost_bomb -> ok() )  aoe_list_str += "/frost_bomb,if=!ticking&target.time_to_die>cast_time+tick_time";
+      if( talents.nether_tempest -> ok() )   aoe_list_str += "/nether_tempest,cycle_targets=1,if=(!ticking|remains<tick_time)&target.time_to_die>6";
+      else if( talents.living_bomb -> ok() ) aoe_list_str += "/living_bomb,cycle_targets=1,if=(!ticking|remains<tick_time)&target.time_to_die>tick_time*3";
+      else if( talents.frost_bomb -> ok() )  aoe_list_str += "/frost_bomb,if=!ticking&target.time_to_die>cast_time+tick_time";
 
       aoe_list_str += "/arcane_barrage,if=buff.arcane_charge.stack=4";
       aoe_list_str += "/arcane_explosion";
     }
 
     // Fire
-    else if ( specialization() == MAGE_FIRE )
+    else if( specialization() == MAGE_FIRE )
     {
-      if ( talents.rune_of_power -> ok() )
+      if( talents.rune_of_power -> ok() )
       {
         action_list_str += "/rune_of_power,if=buff.rune_of_power.remains<cast_time";
         action_list_str += "/rune_of_power,if=buff.rune_of_power.remains<6";
       }
-      else if ( talents.invocation -> ok() )
+      else if( talents.invocation -> ok() )
       {
         action_list_str += "/evocation,if=(buff.invokers_energy.down|mana.pct<20)";
         action_list_str += "/evocation,if=buff.invokers_energy.remains<6";
       }
       else
       {
-        if ( level > 87 )
+        if( level > 87 )
           action_list_str += "/evocation,if=mana.pct<20,interrupt_if=mana.pct>95";
         else
           action_list_str += "/evocation,if=mana.pct<20,interrupt_if=mana.pct>95";
       }
 
-      if ( level > 87 )
+      if( level > 87 )
       {
-        if ( race == RACE_ORC )                 action_list_str += "/blood_fury";
-        else if ( race == RACE_TROLL )          action_list_str += "/berserking";
+        if( race == RACE_ORC )                 action_list_str += "/blood_fury";
+        else if( race == RACE_TROLL )          action_list_str += "/berserking";
       }
 
-      if ( sim -> allow_potions && level > 87 )
+      if( sim -> allow_potions && level > 87 )
         action_list_str += "/jade_serpent_potion,if=target.time_to_die<45";
 
       action_list_str += init_use_profession_actions( level >= 87 ? ",if=target.time_to_die<25)" : "" );
       action_list_str += "/mirror_image";
 
-//hardcoding this calculation for improving performance ???
+      //hardcoding this calculation for improving performance ???
       action_list_str += "/combustion,if=target.time_to_die<22";
       action_list_str += "/combustion,if=dot.ignite.tick_dmg>=((3*action.pyroblast.crit_damage)*mastery_value*0.5)";
       action_list_str += "/combustion,if=dot.ignite.tick_dmg>=((action.fireball.crit_damage+action.inferno_blast.crit_damage+action.pyroblast.hit_damage)*mastery_value*0.5)&dot.pyroblast.ticking&buff.pyroblast.down";
-      if ( talents.presence_of_mind -> ok() )
+      if( talents.presence_of_mind -> ok() )
         action_list_str += "&buff.presence_of_mind.down";
 
-      if ( race == RACE_ORC )
+      if( race == RACE_ORC )
       {
         action_list_str += "/blood_fury";
       }
-      else if ( race == RACE_TROLL )
+      else if( race == RACE_TROLL )
       {
         action_list_str += "/berserking";
       }
 
-      if ( talents.presence_of_mind -> ok() )
+      if( talents.presence_of_mind -> ok() )
       {
         action_list_str += "/presence_of_mind";
       }
-      if ( sim -> allow_potions )
+      if( sim -> allow_potions )
       {
         action_list_str += "/jade_serpent_potion";
       }
 
-      if ( talents.presence_of_mind -> ok() ) action_list_str += "/presence_of_mind,if=target.time_to_die<5";
+      if( talents.presence_of_mind -> ok() ) action_list_str += "/presence_of_mind,if=target.time_to_die<5";
 
       action_list_str += "/flamestrike,if=active_enemies>=5";
 
@@ -4333,23 +4314,23 @@ void mage_t::init_action_list()
       action_list_str += "/pyroblast,if=buff.pyroblast.react|buff.presence_of_mind.up";
       action_list_str += "/inferno_blast,if=buff.heating_up.react&buff.pyroblast.down";
 
-      if ( talents.nether_tempest -> ok() )   action_list_str += "/nether_tempest,cycle_targets=1,if=(!ticking|remains<tick_time)&target.time_to_die>6";
-      else if ( talents.living_bomb -> ok() ) action_list_str += "/living_bomb,cycle_targets=1,if=(!ticking|remains<tick_time)&target.time_to_die>tick_time*3";
-      else if ( talents.frost_bomb -> ok() )  action_list_str += "/frost_bomb,if=target.time_to_die>cast_time+tick_time";
+      if( talents.nether_tempest -> ok() )   action_list_str += "/nether_tempest,cycle_targets=1,if=(!ticking|remains<tick_time)&target.time_to_die>6";
+      else if( talents.living_bomb -> ok() ) action_list_str += "/living_bomb,cycle_targets=1,if=(!ticking|remains<tick_time)&target.time_to_die>tick_time*3";
+      else if( talents.frost_bomb -> ok() )  action_list_str += "/frost_bomb,if=target.time_to_die>cast_time+tick_time";
 
       action_list_str += "/fireball";
       action_list_str += "/scorch,moving=1";
     }
 
     // Frost
-    else if ( specialization() == MAGE_FROST )
+    else if( specialization() == MAGE_FROST )
     {
-      if ( talents.rune_of_power -> ok() )
+      if( talents.rune_of_power -> ok() )
       {
         action_list_str += "/rune_of_power,if=buff.rune_of_power.remains<cast_time";
         action_list_str += "/rune_of_power,if=cooldown.icy_veins.remains=0&buff.rune_of_power.remains<20";
       }
-      else if ( talents.invocation -> ok() )
+      else if( talents.invocation -> ok() )
       {
         action_list_str += "/evocation,if=(buff.invokers_energy.down|mana.pct<20)";
         action_list_str += "/evocation,if=cooldown.icy_veins.remains=0&buff.invokers_energy.remains<20";
@@ -4367,30 +4348,30 @@ void mage_t::init_action_list()
       action_list_str += "/icy_veins,if=time_to_bloodlust>180&((buff.brain_freeze.react|buff.fingers_of_frost.react)|target.time_to_die<22),moving=0";
 
 
-      if ( race == RACE_ORC )                 action_list_str += "/blood_fury,if=buff.icy_veins.up|cooldown.icy_veins.remains>30|target.time_to_die<18";
-      else if ( race == RACE_TROLL )          action_list_str += "/berserking,if=buff.icy_veins.up|target.time_to_die<18";
+      if( race == RACE_ORC )                 action_list_str += "/blood_fury,if=buff.icy_veins.up|cooldown.icy_veins.remains>30|target.time_to_die<18";
+      else if( race == RACE_TROLL )          action_list_str += "/berserking,if=buff.icy_veins.up|target.time_to_die<18";
 
-      if ( sim -> allow_potions && level > 85 )
+      if( sim -> allow_potions && level > 85 )
         action_list_str += "/jade_serpent_potion,if=buff.icy_veins.up|target.time_to_die<45";
 
-      if ( talents.presence_of_mind -> ok() ) action_list_str += "/presence_of_mind,if=buff.icy_veins.up|cooldown.icy_veins.remains>15|target.time_to_die<15";
-      
-      if ( talents.rune_of_power -> ok() )
+      if( talents.presence_of_mind -> ok() ) action_list_str += "/presence_of_mind,if=buff.icy_veins.up|cooldown.icy_veins.remains>15|target.time_to_die<15";
+
+      if( talents.rune_of_power -> ok() )
         action_list_str += init_use_item_actions( ",if=buff.rune_of_power.remains>20|target.time_to_die<25" );
-      else if ( talents.invocation -> ok() )
+      else if( talents.invocation -> ok() )
         action_list_str += init_use_item_actions( ",if=buff.invokers_energy.remains>20|target.time_to_die<25" );
       else
         action_list_str += init_use_item_actions( ",if=target.time_to_die<25" );
 
-      if ( level >= 87 )
+      if( level >= 87 )
       {
         action_list_str += "/frostfire_bolt,if=buff.brain_freeze.up";
         action_list_str += "/ice_lance,if=buff.fingers_of_frost.up";
       }
 
-      if ( talents.nether_tempest -> ok() )   action_list_str += "/nether_tempest,cycle_targets=1,if=(!ticking|remains<tick_time)&target.time_to_die>6";
-      else if ( talents.living_bomb -> ok() ) action_list_str += "/living_bomb,cycle_targets=1,if=(!ticking|remains<tick_time)&target.time_to_die>tick_time*3";
-      else if ( talents.frost_bomb -> ok() )  action_list_str += "/frost_bomb,if=target.time_to_die>cast_time+tick_time";
+      if( talents.nether_tempest -> ok() )   action_list_str += "/nether_tempest,cycle_targets=1,if=(!ticking|remains<tick_time)&target.time_to_die>6";
+      else if( talents.living_bomb -> ok() ) action_list_str += "/living_bomb,cycle_targets=1,if=(!ticking|remains<tick_time)&target.time_to_die>tick_time*3";
+      else if( talents.frost_bomb -> ok() )  action_list_str += "/frost_bomb,if=target.time_to_die>cast_time+tick_time";
 
       action_list_str += "/frostfire_bolt,if=buff.brain_freeze.react&cooldown.icy_veins.remains>2";
 
@@ -4399,7 +4380,7 @@ void mage_t::init_action_list()
       action_list_str += "/ice_lance,if=buff.fingers_of_frost.up&(buff.fingers_of_frost.remains<2|(buff.fingers_of_frost.stack>1&cooldown.icy_veins.remains>2))";
       action_list_str += "/frostbolt";
 
-      if ( talents.ice_floes -> ok() ) action_list_str += "/ice_floes,moving=1";
+      if( talents.ice_floes -> ok() ) action_list_str += "/ice_floes,moving=1";
 
       action_list_str += "/fire_blast,moving=1";
       action_list_str += "/ice_lance,moving=1";
@@ -4407,7 +4388,7 @@ void mage_t::init_action_list()
 
     use_default_action_list = true;
   }
-
+}
 }
 
 // mage_t::mana_regen_per_second ============================================
