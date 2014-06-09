@@ -12,8 +12,9 @@ namespace { // UNNAMED NAMESPACE
 // ==========================================================================
 
 struct mage_t;
+namespace actions {
 struct ignite_t;
-struct icicle_t;
+} // actions
 
 enum mage_rotation_e { ROTATION_NONE = 0, ROTATION_DPS, ROTATION_DPM, ROTATION_MAX };
 typedef std::pair< timespan_t, double > icicle_data_t;
@@ -45,12 +46,12 @@ struct mage_t : public player_t
 {
 public:
   // Icicles
-  std::vector< icicle_data_t > icicles;
-  icicle_t* icicle;
+  std::vector<icicle_data_t> icicles;
+  action_t* icicle;
   core_event_t* icicle_event;
 
   // Active
-  ignite_t* active_ignite;
+  actions::ignite_t* active_ignite;
   int active_living_bomb_targets;
   player_t* last_bomb_target;
 
@@ -308,6 +309,10 @@ public:
   virtual void   regen( timespan_t periodicity );
   virtual double resource_gain( resource_e, double amount, gain_t* = 0, action_t* = 0 );
   virtual double resource_loss( resource_e, double amount, gain_t* = 0, action_t* = 0 );
+
+  // Public mage functions:
+  double get_icicle_damage();
+  void trigger_icicle( bool chain = false );
 
   void add_action( std::string action, std::string options = "", std::string alist = "default" );
   void add_action( const spell_data_t* s, std::string options = "", std::string alist = "default" );
@@ -930,6 +935,7 @@ struct incanters_ward_t : public absorb_buff_t
 
 } // end buffs namespace
 
+namespace actions {
 // ==========================================================================
 // Mage Spell
 // ==========================================================================
@@ -1072,7 +1078,7 @@ public:
   {
     spell_t::snapshot_internal( s, flags, rt );
     // Shatter's +50% crit bonus needs to be added after multipliers etc
-    if ( flags & STATE_CRIT && frozen && p() -> passives.shatter -> ok() )
+    if ( ( flags & STATE_CRIT ) && frozen && p() -> passives.shatter -> ok() )
       s -> crit += p() -> passives.shatter -> effectN( 2 ).percent();
   }
 
@@ -1125,7 +1131,30 @@ public:
       if ( p -> buffs.heating_up -> up() ) expire_heating_up();
     }
   }
-  // mage_spell_t::execute ==================================================
+
+  void trigger_icicle_gain( action_state_t* state )
+  {
+    if ( ! p() -> spec.icicles -> ok() )
+      return;
+
+    if ( ! result_is_hit( state -> result ) )
+      return;
+
+    // Icicles do not double dip on target based multipliers
+    double amount = state -> result_amount / state -> target_da_multiplier * p() -> cache.mastery_value();
+
+    assert( as<int>( p() -> icicles.size() ) <= p() -> spec.icicles -> effectN( 2 ).base_value() );
+    // Shoot one
+    if ( as<int>( p() -> icicles.size() ) == p() -> spec.icicles -> effectN( 2 ).base_value() )
+      p() -> trigger_icicle();
+    p() -> icicles.push_back( icicle_data_t( p() -> sim -> current_time, amount ) );
+
+    if ( p() -> sim -> debug )
+      p() -> sim -> out_debug.printf( "%s icicle gain, damage=%f, total=%u",
+                                      p() -> name(),
+                                      amount,
+                                      as<unsigned>(p() -> icicles.size() ) );
+  }
 
   virtual void execute()
   {
@@ -1201,119 +1230,6 @@ struct icicle_t : public mage_spell_t
     snapshot_flags &= ~( STATE_MUL_DA | STATE_SP | STATE_CRIT | STATE_TGT_CRIT );
   }
 };
-
-static double icicle_damage( mage_t* mage )
-{
-  if ( mage -> icicles.size() == 0 )
-    return 0;
-
-  timespan_t threshold = mage -> spells.icicles_driver -> duration();
-
-  std::vector< icicle_data_t >::iterator idx = mage -> icicles.begin(),
-                                         end = mage -> icicles.end();
-  for ( ; idx < end; ++idx )
-  {
-    if ( mage -> sim -> current_time - ( *idx ).first < threshold )
-      break;
-  }
-
-  // Set of icicles timed out
-  if ( idx != mage -> icicles.begin() )
-    mage -> icicles.erase( mage -> icicles.begin(), idx );
-
-  if ( mage -> icicles.size() > 0 )
-  {
-    double d = mage -> icicles.front().second;
-    mage -> icicles.erase( mage -> icicles.begin() );
-    return d;
-  }
-
-  return 0;
-}
-
-struct icicle_event_t : public event_t
-{
-  mage_t* mage;
-  double damage;
-
-  icicle_event_t( mage_t& m, double d, bool first = false ) :
-    event_t( m, "icicle_event" ), mage( &m ), damage( d )
-  {
-    double cast_time = first ? 0.25 : 0.75;
-    cast_time *= mage -> cache.spell_speed();
-
-    add_event( timespan_t::from_seconds( cast_time ) );
-  }
-
-  void execute()
-  {
-    mage -> icicle -> base_dd_min = mage -> icicle -> base_dd_max = damage;
-    mage -> icicle -> schedule_execute();
-
-    double d = icicle_damage( mage );
-    if ( d > 0 )
-    {
-      mage -> icicle_event = new ( sim() ) icicle_event_t( *mage, d );
-      if ( mage -> sim -> debug )
-        mage -> sim -> out_debug.printf( "%s icicle use (chained), damage=%f, total=%u",
-                               mage -> name(), d, as<unsigned>( mage -> icicles.size() ) );
-    }
-    else
-      mage -> icicle_event = 0;
-  }
-};
-
-static void trigger_icicle( mage_t* mage, bool chain = false )
-{
-  if ( ! mage -> spec.icicles -> ok() )
-    return;
-
-  if ( mage -> icicles.size() == 0 )
-    return;
-
-  double d = 0;
-
-  if ( chain && ! mage -> icicle_event )
-  {
-    d = icicle_damage( mage );
-    mage -> icicle_event = new ( *mage -> sim ) icicle_event_t( *mage, d, true );
-  }
-  else if ( ! chain )
-  {
-    d = icicle_damage( mage );
-    mage -> icicle -> base_dd_min = mage -> icicle -> base_dd_max = d;
-    mage -> icicle -> schedule_execute();
-  }
-
-  if ( mage -> sim -> debug )
-    mage -> sim -> out_debug.printf( "%s icicle use%s, damage=%f, total=%u",
-                           mage -> name(), chain ? " (chained)" : "", d,
-                           as<unsigned>( mage -> icicles.size() ) );
-}
-
-static void trigger_icicle_gain( action_state_t* state )
-{
-  if ( ! state -> action -> result_is_hit( state -> result ) )
-    return;
-
-  mage_t* mage = debug_cast< mage_t* >( state -> action -> player );
-  if ( ! mage -> spec.icicles -> ok() )
-    return;
-
-  // Icicles do not double dip on target based multipliers
-  double amount = state -> result_amount / state -> target_da_multiplier * mage -> cache.mastery_value();
-
-  assert( as<int>( mage -> icicles.size() ) <= mage -> spec.icicles -> effectN( 2 ).base_value() );
-  // Shoot one
-  if ( as<int>( mage -> icicles.size() ) == mage -> spec.icicles -> effectN( 2 ).base_value() )
-    trigger_icicle( mage );
-  mage -> icicles.push_back( icicle_data_t( mage -> sim -> current_time, amount ) );
-  if ( mage -> sim -> debug )
-    mage -> sim -> out_debug.printf( "%s icicle gain, damage=%f, total=%u",
-                           mage -> name(),
-                           amount,
-                           as<unsigned>( mage -> icicles.size() ) );
-}
 
 // Ignite ===================================================================
 
@@ -2680,7 +2596,7 @@ struct ice_lance_t : public mage_spell_t
 
     p() -> buffs.fingers_of_frost -> decrement();
     p() -> buffs.frozen_thoughts -> expire();
-    trigger_icicle( p(), true );
+    p() -> trigger_icicle( true );
   }
 
   virtual void impact( action_state_t* s )
@@ -3731,6 +3647,43 @@ struct incanters_ward_t : public mage_spell_t
   }
 };
 
+} // namespace actions
+
+namespace events {
+
+struct icicle_event_t : public event_t
+{
+  mage_t* mage;
+  double damage;
+
+  icicle_event_t( mage_t& m, double d, bool first = false ) :
+    event_t( m, "icicle_event" ), mage( &m ), damage( d )
+  {
+    double cast_time = first ? 0.25 : 0.75;
+    cast_time *= mage -> cache.spell_speed();
+
+    add_event( timespan_t::from_seconds( cast_time ) );
+  }
+
+  void execute()
+  {
+    mage -> icicle -> base_dd_min = mage -> icicle -> base_dd_max = damage;
+    mage -> icicle -> schedule_execute();
+
+    double d = mage -> get_icicle_damage();
+    if ( d > 0 )
+    {
+      mage -> icicle_event = new ( sim() ) icicle_event_t( *mage, d );
+      if ( mage -> sim -> debug )
+        mage -> sim -> out_debug.printf( "%s icicle use (chained), damage=%f, total=%u",
+                               mage -> name(), d, as<unsigned>( mage -> icicles.size() ) );
+    }
+    else
+      mage -> icicle_event = 0;
+  }
+};
+
+} // namespace events
 
 // ==========================================================================
 // Mage Character Definition
@@ -3761,6 +3714,8 @@ mage_td_t::mage_td_t( player_t* target, mage_t* mage ) :
 action_t* mage_t::create_action( const std::string& name,
                                  const std::string& options_str )
 {
+  using namespace actions;
+
   if ( name == "arcane_barrage"    ) return new          arcane_barrage_t( this, options_str );
   if ( name == "arcane_blast"      ) return new            arcane_blast_t( this, options_str );
   if ( name == "arcane_brilliance" ) return new       arcane_brilliance_t( this, options_str );
@@ -3933,8 +3888,8 @@ void mage_t::init_spells()
   sets.register_spelldata( set_bonuses );
 
   // Active spells
-  if ( spec.ignite -> ok()  ) active_ignite = new ignite_t( this );
-  if ( spec.icicles -> ok() ) icicle = new icicle_t( this );
+  if ( spec.ignite -> ok()  ) active_ignite = new actions::ignite_t( this );
+  if ( spec.icicles -> ok() ) icicle = new actions::icicle_t( this );
 
 }
 
@@ -4094,7 +4049,7 @@ void mage_t::init_action_list()
   {
     clear_action_priority_lists();
 
-    bool has_purified_bindings = find_item( "purified_bindings_of_immerseus" ) != nullptr;
+    // bool has_purified_bindings = find_item( "purified_bindings_of_immerseus" ) != nullptr;
 
     std::string& precombat = get_action_priority_list( "precombat" ) -> action_list_str;
     std::string& aoe_list_str = get_action_priority_list( "aoe" ) -> action_list_str;
@@ -4388,7 +4343,6 @@ void mage_t::init_action_list()
 
     use_default_action_list = true;
   }
-}
 }
 
 // mage_t::mana_regen_per_second ============================================
@@ -4770,6 +4724,63 @@ stat_e mage_t::convert_hybrid_stat( stat_e s ) const
   }
 }
 
+double mage_t::get_icicle_damage()
+{
+  if ( icicles.size() == 0 )
+    return 0;
+
+  timespan_t threshold = spells.icicles_driver -> duration();
+
+  std::vector< icicle_data_t >::iterator idx = icicles.begin(),
+                                         end = icicles.end();
+  for ( ; idx < end; ++idx )
+  {
+    if ( sim -> current_time - ( *idx ).first < threshold )
+      break;
+  }
+
+  // Set of icicles timed out
+  if ( idx != icicles.begin() )
+    icicles.erase( icicles.begin(), idx );
+
+  if ( icicles.size() > 0 )
+  {
+    double d = icicles.front().second;
+    icicles.erase( icicles.begin() );
+    return d;
+  }
+
+  return 0;
+}
+
+void mage_t::trigger_icicle( bool chain )
+{
+  if ( ! spec.icicles -> ok() )
+    return;
+
+  if (icicles.size() == 0 )
+    return;
+
+  double d = 0;
+
+  if ( chain && ! icicle_event )
+  {
+    d = get_icicle_damage();
+    icicle_event = new ( *sim ) events::icicle_event_t( *this, d, true );
+  }
+  else if ( ! chain )
+  {
+    d = get_icicle_damage();
+    icicle -> base_dd_min = icicle -> base_dd_max = d;
+    icicle -> schedule_execute();
+  }
+
+  if ( sim -> debug )
+    sim -> out_debug.printf( "%s icicle use%s, damage=%f, total=%u",
+                           name(), chain ? " (chained)" : "", d,
+                           as<unsigned>( icicles.size() ) );
+}
+
 /* Report Extension Class
  * Here you can define class specific report extensions/overrides
  */
@@ -4815,7 +4826,7 @@ struct mage_module_t : public module_t
   virtual void combat_end  ( sim_t* ) const {}
 };
 
- // UNNAMED NAMESPACE
+} // UNNAMED NAMESPACE
 
 const module_t* module_t::mage()
 {
