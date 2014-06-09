@@ -3345,7 +3345,7 @@ struct pyroblast_t : public mage_spell_t
     c += p() -> sets.set( SET_T15_4PC_CASTER ) -> effectN( 2 ).percent();
 
     if ( p() -> buffs.fiery_adept -> check() )
-      c += 100.0;
+      c += 1.0;
 
     return c;
   }
