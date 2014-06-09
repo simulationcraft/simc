@@ -4600,18 +4600,6 @@ struct starfall_star_t : public druid_spell_t
   {
     background  = true;
     direct_tick = true;
-    aoe         = 2;
-  }
-
-  virtual void execute()
-  {
-    if ( p() -> cooldown.empowered_starfall -> up() )
-    {
-      aoe = 3;
-      p() -> cooldown.empowered_starfall -> start();
-    }
-    druid_spell_t::execute();
-    p() -> buff.starfall -> trigger();
   }
 };
 
@@ -4626,6 +4614,7 @@ struct starfall_t : public druid_spell_t
     cooldown = player -> cooldown.starfallsurge;
 
     base_multiplier *= 1.0 + player -> sets.set( SET_T14_2PC_CASTER ) -> effectN( 1 ).percent();
+    aoe = -1;
 
     // Starfall triggers a spell each second, that triggers the damage spell.
     const spell_data_t* stars_trigger_spell = player -> find_spell( 50288 );
@@ -4633,8 +4622,15 @@ struct starfall_t : public druid_spell_t
     {
       background = true;
     }
-    dynamic_tick_action = true;
+    dynamic_tick_action = tick_zero = true;
     tick_action = new starfall_star_t( player, stars_trigger_spell -> effectN( 1 ).base_value() );
+  }
+
+  virtual void execute()
+  {
+    p() -> buff.starfall -> trigger();
+
+    druid_spell_t::execute();
   }
 };
 
@@ -5435,9 +5431,8 @@ void druid_t::create_buffs()
 
   buff.shooting_stars            = buff_creator_t( this, "shooting_stars", spec.shooting_stars -> effectN( 1 ).trigger() )
                                    .chance( spec.shooting_stars -> proc_chance() + sets.set( SET_T16_4PC_CASTER ) -> effectN( 1 ).percent() );
-  buff.starfall                  = buff_creator_t( this, "starfall",       find_specialization_spell( "Starfall" ) )
-                                   .cd( timespan_t::zero() );
-  
+  buff.starfall                  = buff_creator_t( this, "starfall",       find_spell( 160836 )  );
+
   // Feral
   buff.tigers_fury           = buff_creator_t( this, "tigers_fury", find_specialization_spell( "Tiger's Fury" ) )
                                .default_value( find_specialization_spell( "Tiger's Fury" ) -> effectN( 1 ).percent() )
