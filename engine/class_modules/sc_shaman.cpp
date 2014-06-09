@@ -3451,8 +3451,6 @@ struct elemental_blast_t : public shaman_spell_t
   {
     if ( ! s -> target ) return RESULT_NONE;
 
-    int delta_level = s -> target -> level - player -> level;
-
     result_e result = RESULT_NONE;
 
     if ( ( result == RESULT_NONE ) && may_miss )
@@ -3486,7 +3484,7 @@ struct elemental_blast_t : public shaman_spell_t
       else
         p() -> buff.elemental_blast_agility -> trigger();
 
-      if ( rng().roll( composite_crit() + composite_target_crit( s -> target ) ) )
+      if ( rng().roll( std::max( composite_crit() + composite_target_crit( s -> target ), 0.0 ) ) )
         result = RESULT_CRIT;
     }
 
