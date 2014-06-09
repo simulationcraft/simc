@@ -1166,7 +1166,7 @@ result_e action_t::calculate_multistrike_result( action_state_t* s )
   {
     r = RESULT_MULTISTRIKE;
 
-    if ( rng().roll( s -> composite_crit() ) )
+    if ( rng().roll( std::max( s -> composite_crit(), 0.0 ) ) )
       r = RESULT_MULTISTRIKE_CRIT;
   }
 
