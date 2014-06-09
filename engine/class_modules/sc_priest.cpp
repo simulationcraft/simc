@@ -169,7 +169,10 @@ public:
   // Perk Spells
   struct
   {
+    // const spell_data_t* enhanced_focus_will;
     const spell_data_t* enhanced_holy_fire;
+    // const spell_data_t* enhanced_leap_of_faith;
+    const spell_data_t* enhanced_power_word_shield;
 
     // Shadow related
     const spell_data_t* enhanced_mind_flay;
@@ -830,6 +833,27 @@ action_t* lightwell_pet_t::create_action( const std::string& name,
 }
 
 } // END pets NAMESPACE
+
+namespace buffs {
+
+struct weakened_soul_t final : public buff_t
+{
+  weakened_soul_t( player_t* p ) :
+    buff_t( buff_creator_t( p, "weakened_soul").spell( p -> find_spell(  6788 ) ) )
+  { }
+
+  /* Use this function to trigger weakened souls, and NOT buff_t::trigger
+   * It automatically deduces the duration with which weakened souls should be applied,
+   * depending on the triggering priest
+   */
+  bool trigger_weakened_souls( priest_t& p )
+  {
+    timespan_t duration = buff_duration + p.perks.enhanced_power_word_shield->effectN( 1 ).time_value();
+
+    return buff_t::trigger( 1, buff_t::DEFAULT_VALUE(), 1.0, duration );
+  }
+};
+} // namespace buffs
 
 namespace actions {
 
@@ -4059,7 +4083,8 @@ struct power_word_shield_t final : public priest_absorb_t
 
   virtual void impact( action_state_t* s ) override
   {
-    s -> target -> buffs.weakened_soul -> trigger();
+    buffs::weakened_soul_t* weakened_soul = debug_cast<buffs::weakened_soul_t*>( s -> target -> buffs.weakened_soul );
+    weakened_soul -> trigger_weakened_souls( priest );
     priest.buffs.borrowed_time -> trigger();
 
     // Glyph
@@ -4461,6 +4486,7 @@ struct spirit_shell_t final : public priest_buff_t<buff_t>
     return success;
   }
 };
+
 } // end namespace buffs
 
 
@@ -5002,6 +5028,7 @@ void priest_t::init_spells()
 
   // Perk Spells
   perks.enhanced_holy_fire            = find_perk_spell( "Enhanced Holy Fire" );
+  perks.enhanced_power_word_shield    = find_perk_spell( "Enhanced Power Word: Shield" );
   perks.enhanced_mind_flay            = find_perk_spell( "Enhanced Mind Flay" );
   perks.enhanced_shadow_orbs          = find_perk_spell( "Enhanced Shadow Orbs" );
   perks.enhanced_shadow_word_death    = find_perk_spell( "Enhanced Shadow Word: Death" );
@@ -5828,7 +5855,7 @@ struct priest_module_t : public module_t
       player_t* p = sim -> actor_list[ i ];
       p -> buffs.guardian_spirit  = buff_creator_t( p, "guardian_spirit", p -> find_spell( 47788 ) ); // Let the ability handle the CD
       p -> buffs.pain_supression  = buff_creator_t( p, "pain_supression", p -> find_spell( 33206 ) ); // Let the ability handle the CD
-      p -> buffs.weakened_soul    = buff_creator_t( p, "weakened_soul",   p -> find_spell(  6788 ) );
+      p -> buffs.weakened_soul    = new buffs::weakened_soul_t( p );
     }
   }
   virtual void combat_begin( sim_t* ) const override {}
