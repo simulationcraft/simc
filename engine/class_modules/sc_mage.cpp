@@ -4094,6 +4094,8 @@ void mage_t::init_action_list()
   {
     clear_action_priority_lists();
 
+    bool has_purified_bindings = find_item("purified_bindings_of_immerseus") != nullptr;
+
     std::string& precombat = get_action_priority_list( "precombat" ) -> action_list_str;
     std::string& aoe_list_str = get_action_priority_list( "aoe" ) -> action_list_str;
     std::string& st_list_str = get_action_priority_list( "single_target" ) -> action_list_str;
@@ -4179,7 +4181,7 @@ void mage_t::init_action_list()
       if ( talents.rune_of_power -> ok() )
       {
         action_list_str += "/rune_of_power,if=buff.rune_of_power.remains<cast_time";
-        action_list_str += "/rune_of_power,if=cooldown.arcane_power.remains=0&buff.rune_of_power.remains<buff.arcane_power.duration";
+        action_list_str += "/rune_of_power,if=cooldown.arcane_power.remains<gcd&buff.rune_of_power.remains<buff.arcane_power.duration";
       }
       else if ( talents.invocation -> ok() )
       {
@@ -4194,26 +4196,13 @@ void mage_t::init_action_list()
 
       action_list_str += "/mirror_image";
 
-      //check for Arcane power glyph for use with time_to_bloodlust and Alter Time
-      if (glyphs.arcane_power -> ok())
+      action_list_str += "/arcane_power,if=time_to_bloodlust>cooldown.arcane_power.duration&((buff.arcane_charge.stack=4)|target.time_to_die<buff.arcane_power.duration+5),moving=0";
+      if ( glyphs.loose_mana -> ok() )
       {
-        if ( talents.rune_of_power -> ok() )
-          action_list_str += "/arcane_power,if=time_to_bloodlust>180&((buff.rune_of_power.remains>=buff.arcane_power.duration&buff.arcane_missiles.stack=2&buff.arcane_charge.stack>2)|target.time_to_die<buff.arcane_power.duration+5),moving=0";
-        else if ( talents.invocation -> ok() )
-          action_list_str += "/arcane_power,if=time_to_bloodlust>180&((buff.invokers_energy.remains>=buff.arcane_power.duration&buff.arcane_missiles.stack=2&buff.arcane_charge.stack>2)|target.time_to_die<buff.arcane_power.duration+5),moving=0";
-        else
-          action_list_str += "/arcane_power,if=time_to_bloodlust>180&((buff.arcane_missiles.stack=2&buff.arcane_charge.stack>2)|target.time_to_die<buff.arcane_power.duration+5),moving=0";
+        action_list_str += "/mana_gem,if=mana.pct<90&buff.arcane_power.up&buff.arcane_charge.stack=4&buff.alter_time.down";
+      } else {
+        action_list_str += "/mana_gem,if=mana.pct<80&buff.alter_time.down";
       }
-      else
-      {
-        if ( talents.rune_of_power -> ok() )
-          action_list_str += "/arcane_power,if=time_to_bloodlust>90&((buff.rune_of_power.remains>=buff.arcane_power.duration&buff.arcane_missiles.stack=2&buff.arcane_charge.stack>2)|target.time_to_die<buff.arcane_power.duration+5),moving=0";
-        else if ( talents.invocation -> ok() )
-          action_list_str += "/arcane_power,if=time_to_bloodlust>90&((buff.invokers_energy.remains>=buff.arcane_power.duration&buff.arcane_missiles.stack=2&buff.arcane_charge.stack>2)|target.time_to_die<buff.arcane_power.duration+5),moving=0";
-        else
-          action_list_str += "/arcane_power,if=time_to_bloodlust>90&((buff.arcane_missiles.stack=2&buff.arcane_charge.stack>2)|target.time_to_die<buff.arcane_power.duration+5),moving=0";
-      }
-
       // The arcane action list for < 87 is terribly gimped, level instead
       if ( level >= 87 )
       {
@@ -4221,6 +4210,18 @@ void mage_t::init_action_list()
         else if ( race == RACE_TROLL )  action_list_str += "/berserking,if=(buff.arcane_power.up|target.time_to_die<18)";
 
         if ( sim -> allow_potions )      action_list_str += "/jade_serpent_potion,if=(buff.arcane_power.up|target.time_to_die<50)";
+
+          // This following line is a safeguard against PBoI trinket proccing during AT
+          // At the moment this has no chance of happening, due to the conditional for AT activation
+          // action_list_str += "/cancel_buff,name=alter_time,if=buff.alter_time.remains<trinket.stat.intellect.cooldown_remains-109";
+        } else {
+          if ( talents.presence_of_mind -> ok() )
+          {
+            action_list_str += "presence_of_mind,if=buff.alter_time.down&buff.arcane_power.up";
+          }
+
+          action_list_str += "/alter_time,if=buff.alter_time.down&buff.arcane_power.up";
+        }
 
         if ( talents.rune_of_power -> ok() )
           action_list_str += init_use_item_actions( ",if=target.time_to_die<25&buff.rune_of_power.remains>20" );
@@ -4232,17 +4233,21 @@ void mage_t::init_action_list()
         //decide between single_target and aoe rotation
         action_list_str += "/run_action_list,name=aoe,if=active_enemies>=6";
         action_list_str += "/run_action_list,name=single_target,if=active_enemies<6";
-        
-        //modify APL for T16 4p
-        st_list_str += "/arcane_blast,if=buff.profound_magic.up&buff.arcane_charge.stack>3&mana.pct>93";
 
+        // Arcane Blast/Missiles weaving for 2T16
+        if ( sets.has_set_bonus( SET_T16_2PC_CASTER ) )
+        {
+          st_list_str += "/arcane_blast,if=buff.arcane_missiles.stack<2&buff.arcane_charge.stack=4&buff.profound_magic.stack>=2&mana.pct>90";
+          st_list_str += "/arcane_blast,if=buff.arcane_missiles.stack<2&buff.arcane_charge.stack=4&buff.profound_magic.up&mana.pct>93";
+        }
       }
 
-      st_list_str += "/arcane_missiles,if=(buff.arcane_missiles.stack=2&cooldown.arcane_power.remains>0)|(buff.arcane_charge.stack>=4&cooldown.arcane_power.remains>8)";
+      st_list_str += "/arcane_missiles,if=(buff.arcane_missiles.stack=2&cooldown.arcane_power.remains>0)|(buff.arcane_charge.stack=4&cooldown.arcane_power.remains>4*action.arcane_blast.cast_time)";
 
-      st_list_str += "/arcane_barrage,if=buff.arcane_charge.stack>=4&mana.pct<95";
+      st_list_str += "/arcane_barrage,if=buff.arcane_charge.stack=4&mana.pct<95";
 
-      if ( talents.presence_of_mind -> ok() ) st_list_str += "/presence_of_mind";
+      if ( talents.presence_of_mind -> ok() )
+        st_list_str += "/presence_of_mind,if=cooldown.arcane_power.remains>75";
 
       st_list_str += "/arcane_blast";
 
@@ -4257,7 +4262,7 @@ void mage_t::init_action_list()
       else if ( talents.living_bomb -> ok() ) aoe_list_str += "/living_bomb,cycle_targets=1,if=(!ticking|remains<tick_time)&target.time_to_die>tick_time*3";
       else if ( talents.frost_bomb -> ok() )  aoe_list_str += "/frost_bomb,if=!ticking&target.time_to_die>cast_time+tick_time";
 
-      aoe_list_str += "/arcane_barrage,if=buff.arcane_charge.stack>=4";
+      aoe_list_str += "/arcane_barrage,if=buff.arcane_charge.stack=4";
       aoe_list_str += "/arcane_explosion";
     }
 

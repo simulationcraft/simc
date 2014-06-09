@@ -651,7 +651,7 @@ struct warrior_attack_t : public warrior_action_t< melee_attack_t >
     // MoP: base rage gain is 3.5 * weaponspeed and half that for off-hand
     // Defensive/Gladiator stance: -100%
 
-    if (  proc )
+    if ( proc )
       return;
 
     weapon_t*  w = weapon;
