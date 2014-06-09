@@ -1913,7 +1913,8 @@ struct raging_blow_t : public warrior_attack_t
       p() -> buff.raging_wind -> trigger();
       p() -> buff.meat_cleaver -> expire(); // Meat cleaver will only expire if the attack lands.
     }
-    else // Refund rage if the parent attack misses.
+    else if( result_is_miss( execute_state -> result ) && result_is_miss( oh_test -> last_result ) ); 
+    // Make sure to refund rage when the MH hits but the OH misses. 
     {
       double c = cost();
       c *= 0.8;
