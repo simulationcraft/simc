@@ -2092,11 +2092,24 @@ expr_t* action_t::create_expression( const std::string& name_str )
     struct crit_pct_current_expr_t : public expr_t
     {
       action_t* action;
-      crit_pct_current_expr_t( action_t* a ) : expr_t( "crit_pct_current" ), action( a ) {}
+      action_state_t* state;
+
+      crit_pct_current_expr_t( action_t* a ) :
+        expr_t( "crit_pct_current" ), action( a ), state( a -> get_state() )
+      {
+        state -> n_targets = 1;
+        state -> chain_target = 0;
+      }
       virtual double evaluate()
       {
-        return action -> composite_crit() * 100.0;
+        state -> target = action -> target;
+        action -> snapshot_state( state, RESULT_TYPE_NONE );
+
+        return std::min( 100.0, state -> composite_crit() * 100.0 );
       }
+
+      virtual ~crit_pct_current_expr_t()
+      { delete state; }
     };
     return new crit_pct_current_expr_t( this );
   }
