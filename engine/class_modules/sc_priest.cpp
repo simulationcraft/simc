@@ -40,6 +40,9 @@ public:
     absorb_buff_t* spirit_shell;
     buff_t* holy_word_serenity;
   } buffs;
+
+  bool glyph_of_mind_harvest_consumed;
+
   priest_t& priest;
 
   priest_td_t( player_t* target, priest_t& p );
@@ -180,6 +183,13 @@ public:
 
     const spell_data_t* improved_flash_heal;
 
+    // TODO 2014/06/09: CoP is listed under affected spells. Check what's up with that.
+    // http://howtopriest.com/viewtopic.php?f=76&t=5887&p=50469#p50469
+    const spell_data_t* improved_heal;
+
+    const spell_data_t* improved_penance;
+    const spell_data_t* improved_smite;
+
     // Shadow related
     const spell_data_t* enhanced_mind_flay;
     const spell_data_t* enhanced_shadow_orbs;
@@ -215,6 +225,7 @@ public:
     gain_t* shadow_orb_mind_blast;
     gain_t* shadow_orb_shadow_word_death;
     gain_t* shadow_orb_auspicious_spirits;
+    gain_t* shadow_orb_mind_harvest;
     gain_t* surge_of_darkness_devouring_plague;
     gain_t* surge_of_darkness_vampiric_touch;
     gain_t* vampiric_touch_mana;
@@ -291,6 +302,7 @@ public:
 
     // WoD
     const spell_data_t* free_action;
+    const spell_data_t* mind_harvest;
   } glyphs;
 
   priest_t( sim_t* sim, const std::string& name, race_e r ) :
@@ -363,6 +375,7 @@ private:
   void apl_holy_heal();
   void apl_holy_dmg();
   void fixup_atonement_stats( const std::string& trigger_spell_name, const std::string& atonement_spell_name );
+  priest_td_t* find_target_data( player_t* target ) const;
 
   target_specific_t<priest_td_t*> _target_data;
 };
@@ -1901,6 +1914,20 @@ struct mind_blast_t final : public priest_spell_t
     {
       generate_shadow_orb( 1, priest.gains.shadow_orb_mind_blast );
 
+      // Glyph of Mind Harvest
+      if ( priest.glyphs.mind_harvest -> ok() )
+      {
+        priest_td_t& td = get_td( s -> target );
+        if ( ! td.glyph_of_mind_harvest_consumed )
+        {
+          td.glyph_of_mind_harvest_consumed = true;
+          generate_shadow_orb( 2, priest.gains.shadow_orb_mind_harvest ); // no sensible spell data available, 2014/06/09
+
+          if ( sim -> debug )
+            sim -> out_debug.printf( "%s consumed Glyph of Mind Harvest on target %s.", priest.name(), s -> target -> name() );
+        }
+      }
+
       priest.buffs.glyph_mind_spike -> expire();
     }
   }
@@ -2956,6 +2983,8 @@ struct smite_t final : public priest_spell_t
     castable_in_shadowform = false;
 
     range += priest.glyphs.holy_fire -> effectN( 1 ).base_value();
+
+    base_multiplier *= 1.0 + priest.perks.improved_smite -> effectN( 1 ).percent();
   }
 
   virtual void execute() override
@@ -3573,7 +3602,7 @@ struct flash_heal_t final : public priest_heal_t
     parse_options( nullptr, options_str );
     can_trigger_spirit_shell = true;
 
-    base_multiplier *= 1.0 + priest.perks.improved_flash_heal->effectN( 1 ).percent();
+    base_multiplier *= 1.0 + priest.perks.improved_flash_heal -> effectN( 1 ).percent();
   }
 
   virtual void execute() override
@@ -3649,6 +3678,8 @@ struct guardian_spirit_t final : public priest_heal_t
 
 // Heal Spell =======================================================
 
+// starts with underscore because of name conflict with heal_t
+
 struct _heal_t final : public priest_heal_t
 {
   _heal_t( priest_t& p, const std::string& options_str ) :
@@ -3656,6 +3687,9 @@ struct _heal_t final : public priest_heal_t
   {
     parse_options( nullptr, options_str );
     can_trigger_spirit_shell = true;
+
+
+    base_multiplier *= 1.0 + priest.perks.improved_heal -> effectN( 1 ).percent();
   }
 
   virtual void execute() override
@@ -3994,6 +4028,8 @@ struct penance_heal_t final : public priest_heal_t
 
       school = SCHOOL_HOLY;
       stats = player.get_stats( "penance_heal", this );
+
+      base_multiplier *= 1.0 + priest.perks.improved_penance -> effectN( 1 ).percent();
     }
 
     virtual void impact( action_state_t* s ) override
@@ -4516,6 +4552,7 @@ priest_td_t::priest_td_t( player_t* target, priest_t& p ) :
   actor_pair_t( target, &p ),
   dots(),
   buffs(),
+  glyph_of_mind_harvest_consumed( false ),
   priest( p )
 {
   dots.holy_fire             = target -> get_dot( "holy_fire",             &p );
@@ -4574,6 +4611,7 @@ void priest_t::create_gains()
   gains.shadow_orb_auspicious_spirits = get_gain( "Shadow Orbs from Auspicious Spirits" );
   gains.shadow_orb_mind_blast         = get_gain( "Shadow Orbs from Mind Blast" );
   gains.shadow_orb_shadow_word_death  = get_gain( "Shadow Orbs from Shadow Word: Death" );
+  gains.shadow_orb_mind_harvest       = get_gain( "Shadow Orbs from Glyph of Mind Harvest" );
   gains.clarity_of_power_mind_spike   = get_gain( "Clarity of Power Mind Spike" );
 }
 
@@ -4655,6 +4693,15 @@ stat_e priest_t::convert_hybrid_stat( stat_e s ) const
 void priest_t::combat_begin()
 {
   base_t::combat_begin();
+
+  // Reset Glyph of Harvest consumed flag
+  for ( size_t i = 0; i < sim -> target_list.size(); ++i )
+  {
+    if ( priest_td_t* td =  find_target_data( sim -> target_list[ i ] ) )
+    {
+      td->glyph_of_mind_harvest_consumed = false;
+    }
+  }
 
   resources.current[ RESOURCE_SHADOW_ORB ] = clamp( as<double>( options.initial_shadow_orbs ), 0.0, resources.base[ RESOURCE_SHADOW_ORB ] );
 }
@@ -5049,6 +5096,9 @@ void priest_t::init_spells()
   perks.enhanced_power_word_shield    = find_perk_spell( "Enhanced Power Word: Shield" );
   perks.enhanced_strength_of_soul     = find_perk_spell( "Enhanced Strength of Soul" );
   perks.improved_flash_heal           = find_perk_spell( "Improved Flash Heal" );
+  perks.improved_heal                 = find_perk_spell( "Improved Heal" );
+  perks.improved_penance              = find_perk_spell( "Improved Penance" );
+  perks.improved_smite                = find_perk_spell( "Improved Smite" );
 
 
   perks.enhanced_mind_flay            = find_perk_spell( "Enhanced Mind Flay" );
@@ -5079,6 +5129,7 @@ void priest_t::init_spells()
   glyphs.shadow_word_death            = find_glyph_spell( "Glyph of Shadow Word: Death" );
   // WoD
   glyphs.free_action                  = find_glyph_spell( "Glyph of Free Action" );
+  glyphs.mind_harvest                 = find_glyph_spell( "Glyph of Mind Harvest" );
 
   if ( mastery_spells.echo_of_light -> ok() )
     active_spells.echo_of_light = new actions::heals::echo_of_light_t( *this );
@@ -5567,6 +5618,13 @@ priest_td_t* priest_t::get_target_data( player_t* target ) const
     td = new priest_td_t( target, const_cast<priest_t&>(*this) );
   }
   return td;
+}
+
+/* Returns targetdata if found, nullptr otherwise
+ */
+priest_td_t* priest_t::find_target_data( player_t* target ) const
+{
+  return _target_data[ target ];
 }
 
 // priest_t::init_actions ===================================================
