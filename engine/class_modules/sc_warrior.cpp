@@ -1407,11 +1407,12 @@ struct dragon_roar_t : public warrior_attack_t
     return 0;
   }
 
-  virtual double crit_chance( double, int ) const
-  {
-    // Dragon Roar always crits
-    return 1.0;
-  }
+  // Dragon Roar always crits
+  virtual double composite_crit() const
+  { return 1.0; }
+
+  virtual double composite_target_crit( player_t* ) const
+  { return 0.0; }
 
   virtual void update_ready( timespan_t cd_duration )
   {
@@ -1588,9 +1589,9 @@ struct heroic_strike_t : public warrior_attack_t
     return c;
   }
 
-  virtual double crit_chance( double crit, int delta_level ) const
+  virtual double composite_crit() const
   {
-    double cc = warrior_attack_t::crit_chance( crit, delta_level );
+    double cc = warrior_attack_t::composite_crit();
 
     if ( p() -> buff.ultimatum -> check() )
       cc += p() -> buff.ultimatum -> data().effectN( 2 ).percent();

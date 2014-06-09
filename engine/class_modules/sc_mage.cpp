@@ -2745,11 +2745,12 @@ struct inferno_blast_t : public mage_spell_t
     }
   }
 
-  virtual double crit_chance( double /* crit */, int /* delta_level */ ) const
-  {
-    // Inferno Blast always crits
-    return 1.0;
-  }
+  // Inferno Blast always crits
+  virtual double composite_crit() const
+  { return 1.0; }
+
+  virtual double composite_target_crit( player_t* ) const
+  { return 0.0; }
 
   virtual double composite_target_multiplier( player_t* t ) const
   {

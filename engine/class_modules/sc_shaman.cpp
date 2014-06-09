@@ -3486,7 +3486,7 @@ struct elemental_blast_t : public shaman_spell_t
       else
         p() -> buff.elemental_blast_agility -> trigger();
 
-      if ( rng().roll( crit_chance( composite_crit() + composite_target_crit( s -> target ), delta_level ) ) )
+      if ( rng().roll( composite_crit() + composite_target_crit( s -> target ) ) )
         result = RESULT_CRIT;
     }
 

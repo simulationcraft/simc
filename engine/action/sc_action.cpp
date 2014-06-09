@@ -702,20 +702,6 @@ timespan_t action_t::travel_time() const
   return timespan_t::from_seconds( t );
 }
 
-// action_t::crit_chance ====================================================
-
-double action_t::crit_chance( double crit, int delta_level ) const
-{
-  double chance = crit;
-
-  chance -= std::max( delta_level, 0 ) / 100.0;
-
-  if ( chance < 0.0 )
-    chance = 0.0;
-
-  return chance;
-}
-
 // action_t::total_crit_bonus ===============================================
 
 double action_t::total_crit_bonus() const
@@ -1180,9 +1166,7 @@ result_e action_t::calculate_multistrike_result( action_state_t* s )
   {
     r = RESULT_MULTISTRIKE;
 
-    int delta_level = s -> target -> level - player -> level;
-    double crit = crit_chance( s -> composite_crit(), delta_level );
-    if ( rng().roll( crit ) )
+    if ( rng().roll( s -> composite_crit() ) )
       r = RESULT_MULTISTRIKE_CRIT;
   }
 
@@ -1270,7 +1254,7 @@ void action_t::tick( dot_t* d )
     d -> state -> result = RESULT_HIT;
     update_state( d -> state, type == ACTION_HEAL ? HEAL_OVER_TIME : DMG_OVER_TIME );
 
-    if ( tick_may_crit && rng().roll( crit_chance( d -> state -> composite_crit(), d -> state -> target -> level - player -> level ) ) )
+    if ( tick_may_crit && rng().roll( d -> state -> composite_crit() ) )
       d -> state -> result = RESULT_CRIT;
 
     d -> state -> result_amount = calculate_tick_amount( d -> state, d -> get_last_tick_factor() );
@@ -2357,16 +2341,7 @@ timespan_t action_t::composite_dot_duration( const action_state_t* s ) const
 
 double action_t::composite_target_crit( player_t* target ) const
 {
-  double c = 0.0;
-
-  // "Crit chances of players against mobs that are higher level than you are reduced by 1% per level difference, in Mists."
-  // Ghostcrawler on 20/6/2012 at http://us.battle.net/wow/en/forum/topic/5889309137?page=5#97
-  if ( ( target -> is_enemy() || target -> is_add() ) && ( target -> level > player -> level ) )
-  {
-    c -= 0.01 * ( target -> level - player -> level );
-  }
-
-  return c;
+  return std::min( player -> level - target -> level, 0 ) / 100.0;
 }
 
 core_event_t* action_t::start_action_execute_event( timespan_t t, action_state_t* execute_event )

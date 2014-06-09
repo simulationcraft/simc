@@ -5327,7 +5327,6 @@ struct action_t : public noncopyable
   virtual double     glance_chance( int /* delta_level */ ) const { return 0; }
   virtual double      block_chance( action_state_t* /* state */ ) const { return 0; }  
   virtual double crit_block_chance( action_state_t* /* state */  ) const { return 0; }
-  virtual double       crit_chance( double /* crit */, int /* delta_level */ ) const;
 
   virtual double total_crit_bonus() const; // Check if we want to move this into the stateless system.
 

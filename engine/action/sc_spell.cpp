@@ -83,9 +83,6 @@ result_e spell_base_t::calculate_result( action_state_t* s )
 
   if ( ! s -> target ) return RESULT_NONE;
 
-  int delta_level = s -> target -> level - player -> level;
-  double crit = crit_chance( s -> composite_crit(), delta_level );
-
   if ( ! harmful || ! may_hit ) return RESULT_NONE;
 
   if ( ( result == RESULT_NONE ) && may_miss )
@@ -102,7 +99,7 @@ result_e spell_base_t::calculate_result( action_state_t* s )
 
     if ( may_crit )
     {
-      if ( rng().roll( crit ) )
+      if ( rng().roll( s -> composite_crit() ) )
         result = RESULT_CRIT;
     }
   }

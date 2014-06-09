@@ -2615,9 +2615,9 @@ struct immolate_t : public warlock_spell_t
     return warlock_spell_t::cost();
   }
 
-  virtual double crit_chance( double crit, int delta_level ) const
+  virtual double composite_crit() const
   {
-    double cc = warlock_spell_t::crit_chance(crit, delta_level);
+    double cc = warlock_spell_t::composite_crit();
 
     if ( p() -> sets.has_set_bonus( SET_T16_2PC_CASTER ) && p() -> buffs.tier16_2pc_destructive_influence -> check() )
       cc += p() -> buffs.tier16_2pc_destructive_influence -> value();
@@ -2824,9 +2824,9 @@ struct incinerate_t : public warlock_spell_t
     return warlock_spell_t::cost();
   }
 
-  virtual double crit_chance( double crit, int delta_level ) const
+  virtual double composite_crit() const
   {
-    double cc = warlock_spell_t::crit_chance( crit, delta_level );
+    double cc = warlock_spell_t::composite_crit();
 
     if ( p() -> sets.has_set_bonus( SET_T16_2PC_CASTER ) && p() -> buffs.tier16_2pc_destructive_influence -> check() )
       cc += p() -> buffs.tier16_2pc_destructive_influence -> value();
@@ -2961,11 +2961,12 @@ struct soul_fire_t : public warlock_spell_t
     return t;
   }
 
-  virtual double crit_chance( double /* crit */, int /* delta_level */ ) const
-  {
-    // Soul fire always crits
-    return 1.0;
-  }
+  // Soul fire always crits
+  virtual double composite_crit() const
+  { return 1.0; }
+
+  virtual double composite_target_crit( player_t* ) const
+  { return 0.0; }
 
   virtual double action_multiplier() const
   {
@@ -3009,11 +3010,11 @@ struct chaos_bolt_t : public warlock_spell_t
       dot_duration = p -> talents.grimoire_of_sacrifice -> effectN( 12 ).time_value();
   }
 
-  virtual double crit_chance( double /* crit */, int /* delta_level */ ) const
-  {
-    // Chaos Bolt always crits
-    return 1.0;
-  }
+  virtual double composite_crit() const
+  { return 1.0; }
+
+  virtual double composite_target_crit( player_t* ) const
+  { return 0.0; }
 
   virtual double cost() const
   {
