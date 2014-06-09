@@ -174,6 +174,10 @@ public:
     // const spell_data_t* enhanced_leap_of_faith;
     const spell_data_t* enhanced_power_word_shield;
 
+    // TODO 2014/06/09: check if it procs per execute or tick, and if it procs from penance_damage as well.
+    // See http://howtopriest.com/viewtopic.php?f=76&t=5887&p=50468#p50468
+    const spell_data_t* enhanced_strength_of_soul;
+
     // Shadow related
     const spell_data_t* enhanced_mind_flay;
     const spell_data_t* enhanced_shadow_orbs;
@@ -3670,6 +3674,7 @@ struct _heal_t final : public priest_heal_t
     priest_heal_t::impact( s );
 
     trigger_grace( s -> target );
+
     if ( ! priest.buffs.spirit_shell -> check() )
       trigger_strength_of_soul( s -> target );
   }
@@ -4024,6 +4029,15 @@ struct penance_heal_t final : public priest_heal_t
 
     return c;
   }
+
+  virtual void impact( action_state_t* s ) override
+  {
+    priest_heal_t::impact( s );
+
+    if ( priest.perks.enhanced_strength_of_soul -> ok() && ! priest.buffs.spirit_shell -> check() )
+      trigger_strength_of_soul( s -> target );
+  }
+
 };
 
 // Power Word: Shield Spell =================================================
@@ -5029,6 +5043,7 @@ void priest_t::init_spells()
   // Perk Spells
   perks.enhanced_holy_fire            = find_perk_spell( "Enhanced Holy Fire" );
   perks.enhanced_power_word_shield    = find_perk_spell( "Enhanced Power Word: Shield" );
+  perks.enhanced_strength_of_soul     = find_perk_spell( "Enhanced Strength of Soul" );
   perks.enhanced_mind_flay            = find_perk_spell( "Enhanced Mind Flay" );
   perks.enhanced_shadow_orbs          = find_perk_spell( "Enhanced Shadow Orbs" );
   perks.enhanced_shadow_word_death    = find_perk_spell( "Enhanced Shadow Word: Death" );
