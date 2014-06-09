@@ -1731,7 +1731,7 @@ void action_t::init()
   if ( may_crit || tick_may_crit )
     snapshot_flags |= STATE_CRIT | STATE_TGT_CRIT;
 
-  if ( spell_power_mod.tick > 0 || dot_duration > timespan_t::zero() )
+  if ( ( spell_power_mod.tick > 0 || attack_power_mod.tick > 0 ) && dot_duration > timespan_t::zero() )
     snapshot_flags |= STATE_MUL_TA | STATE_TGT_MUL_TA | STATE_MUL_PERSISTENT;
 
   if ( ( spell_power_mod.direct > 0 || attack_power_mod.direct > 0 ) || weapon_multiplier > 0 )
@@ -2044,9 +2044,25 @@ expr_t* action_t::create_expression( const std::string& name_str )
     struct persistent_multiplier_expr_t : public expr_t
     {
       action_t* action;
-      persistent_multiplier_expr_t( action_t* a ) : expr_t( "persistent_multiplier" ), action( a ) {}
+      action_state_t* state;
+
+      persistent_multiplier_expr_t( action_t* a ) : 
+        expr_t( "persistent_multiplier" ), action( a ), state( a -> get_state() )
+      {
+        state -> n_targets    = 1;
+        state -> chain_target = 0;
+      }
+
       virtual double evaluate()
-      { return action -> player -> composite_persistent_multiplier( action -> school ); }
+      {
+        action -> snapshot_state( state, RESULT_TYPE_NONE );
+        state -> target = action -> target;
+
+        return action -> composite_persistent_multiplier( state );
+      }
+
+      virtual ~persistent_multiplier_expr_t()
+      { delete state; }
     };
 
     return new persistent_multiplier_expr_t( this );
