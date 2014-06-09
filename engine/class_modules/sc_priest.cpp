@@ -178,6 +178,8 @@ public:
     // See http://howtopriest.com/viewtopic.php?f=76&t=5887&p=50468#p50468
     const spell_data_t* enhanced_strength_of_soul;
 
+    const spell_data_t* improved_flash_heal;
+
     // Shadow related
     const spell_data_t* enhanced_mind_flay;
     const spell_data_t* enhanced_shadow_orbs;
@@ -3570,6 +3572,8 @@ struct flash_heal_t final : public priest_heal_t
   {
     parse_options( nullptr, options_str );
     can_trigger_spirit_shell = true;
+
+    base_multiplier *= 1.0 + priest.perks.improved_flash_heal->effectN( 1 ).percent();
   }
 
   virtual void execute() override
@@ -5044,6 +5048,9 @@ void priest_t::init_spells()
   perks.enhanced_holy_fire            = find_perk_spell( "Enhanced Holy Fire" );
   perks.enhanced_power_word_shield    = find_perk_spell( "Enhanced Power Word: Shield" );
   perks.enhanced_strength_of_soul     = find_perk_spell( "Enhanced Strength of Soul" );
+  perks.improved_flash_heal           = find_perk_spell( "Improved Flash Heal" );
+
+
   perks.enhanced_mind_flay            = find_perk_spell( "Enhanced Mind Flay" );
   perks.enhanced_shadow_orbs          = find_perk_spell( "Enhanced Shadow Orbs" );
   perks.enhanced_shadow_word_death    = find_perk_spell( "Enhanced Shadow Word: Death" );
