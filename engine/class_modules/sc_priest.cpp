@@ -180,6 +180,9 @@ public:
 
     const spell_data_t* improved_flash_heal;
 
+    // TODO 2014/06/09: CoP is listed under affected spells. Check what's up with that.
+    // http://howtopriest.com/viewtopic.php?f=76&t=5887&p=50469#p50469
+    const spell_data_t* improved_heal;
     // Shadow related
     const spell_data_t* enhanced_mind_flay;
     const spell_data_t* enhanced_shadow_orbs;
@@ -3649,6 +3652,8 @@ struct guardian_spirit_t final : public priest_heal_t
 
 // Heal Spell =======================================================
 
+// starts with underscore because of name conflict with heal_t
+
 struct _heal_t final : public priest_heal_t
 {
   _heal_t( priest_t& p, const std::string& options_str ) :
@@ -3656,6 +3661,9 @@ struct _heal_t final : public priest_heal_t
   {
     parse_options( nullptr, options_str );
     can_trigger_spirit_shell = true;
+
+
+    base_multiplier *= 1.0 + priest.perks.improved_heal->effectN( 1 ).percent();
   }
 
   virtual void execute() override
@@ -5049,6 +5057,7 @@ void priest_t::init_spells()
   perks.enhanced_power_word_shield    = find_perk_spell( "Enhanced Power Word: Shield" );
   perks.enhanced_strength_of_soul     = find_perk_spell( "Enhanced Strength of Soul" );
   perks.improved_flash_heal           = find_perk_spell( "Improved Flash Heal" );
+  perks.improved_heal           = find_perk_spell( "Improved Heal" );
 
 
   perks.enhanced_mind_flay            = find_perk_spell( "Enhanced Mind Flay" );
