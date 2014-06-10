@@ -1281,8 +1281,6 @@ struct earth_elemental_pet_t : public pet_t
     if ( owner -> race == RACE_ORC )
       m *= 1.0 + command -> effectN( 1 ).percent();
 
-    m *= 0.1;
-
     return m;
   }
 
