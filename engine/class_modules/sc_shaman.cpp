@@ -899,12 +899,14 @@ struct shaman_spell_t : public shaman_spell_base_t<spell_t>
 
   // Unleash flame
   bool     may_unleash_flame;
+  bool     uses_shocking_lava;
 
   shaman_spell_t( const std::string& token, shaman_t* p,
                   const spell_data_t* s = spell_data_t::nil(), const std::string& options = std::string() ) :
     base_t( token, p, s ),
     overload( false ), overload_spell( 0 ), overload_chance_multiplier( 1.0 ),
-    may_unleash_flame( dbc::is_school( school, SCHOOL_FIRE ) )
+    may_unleash_flame( dbc::is_school( school, SCHOOL_FIRE ) ),
+    uses_shocking_lava( false )
   {
     parse_options( 0, options );
 
@@ -919,6 +921,9 @@ struct shaman_spell_t : public shaman_spell_base_t<spell_t>
 
     if ( harmful && callbacks && ! proc && resource_consumed > 0 && p() -> buff.elemental_focus -> up() )
       p() -> buff.elemental_focus -> decrement();
+
+    if ( uses_shocking_lava )
+      p() -> buff.shocking_lava -> expire();
   }
 
   virtual void impact( action_state_t* state )
@@ -995,6 +1000,9 @@ struct shaman_spell_t : public shaman_spell_base_t<spell_t>
 
     if ( may_unleash_flame && p() -> buff.unleash_flame -> up() )
       m *= 1.0 + p() -> buff.unleash_flame -> data().effectN( 2 ).percent();
+
+    if ( uses_shocking_lava )
+      m *= 1.0 + p() -> buff.shocking_lava -> stack() * p() -> buff.shocking_lava -> data().effectN( 1 ).percent();
 
     return m;
   }
@@ -1151,7 +1159,7 @@ struct feral_spirit_pet_t : public pet_t
     main_hand_weapon.damage     = ( main_hand_weapon.min_dmg + main_hand_weapon.max_dmg ) / 2;
     main_hand_weapon.swing_time = timespan_t::from_seconds( 1.5 );
 
-    owner_coeff.ap_from_ap = 0.50;
+    owner_coeff.ap_from_ap = 0.141; // TODO-WOD: Preliminary value, verify
 
     command = owner -> find_spell( 65222 );
   }
@@ -1187,9 +1195,6 @@ struct feral_spirit_pet_t : public pet_t
       m *= 1.0 + command -> effectN( 1 ).percent();
 
     m *= 1.0 + o() -> perk.improved_feral_spirits -> effectN( 1 ).percent();
-
-    // TODO-WOD: Figure out values for reals, put 100% scaling here for now
-    m *= 2.0;
 
     return m;
   }
@@ -1308,7 +1313,7 @@ struct earth_elemental_pet_t : public pet_t
     if ( o() -> talent.primal_elementalist -> ok() )
       action_list_str += "/pulverize";
 
-    owner_coeff.ap_from_sp = 1.3;
+    owner_coeff.ap_from_sp = 0.13; // TODO-WOD: Preliminary value, verify
     if ( o() -> talent.primal_elementalist -> ok() )
       owner_coeff.ap_from_sp *= 1.0 + o() -> talent.primal_elementalist -> effectN( 1 ).percent();
   }
@@ -1514,10 +1519,10 @@ struct fire_elemental_t : public pet_t
     main_hand_weapon.damage          = ( main_hand_weapon.min_dmg + main_hand_weapon.max_dmg ) / 2;
     main_hand_weapon.swing_time      = timespan_t::from_seconds( 1.4 );
 
-    owner_coeff.sp_from_sp = 0.36;
+    owner_coeff.sp_from_sp = 0.27; // TODO-WOD: Preliminary value, verify
 
     if ( o() -> talent.primal_elementalist -> ok() )
-      owner_coeff.sp_from_sp *= 1.5 * 1.2;
+      owner_coeff.sp_from_sp *= 1.0 + o() -> talent.primal_elementalist -> effectN( 1 ).percent();
   }
 
   void init_action_list()
@@ -3706,17 +3711,9 @@ struct earth_shock_t : public shaman_spell_t
     cooldown             = player -> cooldown.shock;
     cooldown -> duration = data().cooldown() + player -> spec.spiritual_insight -> effectN( 3 ).time_value();
     shock                = true;
+    uses_shocking_lava   = true;
 
     stats -> add_child ( player -> get_stats( "fulmination" ) );
-  }
-
-  double action_multiplier() const
-  {
-    double m = shaman_spell_t::action_multiplier();
-    
-    m *= 1.0 + p() -> buff.shocking_lava -> stack() * p() -> buff.shocking_lava -> data().effectN( 1 ).percent();
-
-    return m;
   }
 
   double composite_target_crit( player_t* target ) const
@@ -3735,8 +3732,6 @@ struct earth_shock_t : public shaman_spell_t
   virtual void execute()
   {
     shaman_spell_t::execute();
-
-    p() -> buff.shocking_lava -> expire();
 
     if ( consume_threshold == 0 )
       return;
@@ -3772,21 +3767,13 @@ struct flame_shock_t : public shaman_spell_t
     cooldown              = player -> cooldown.shock;
     cooldown -> duration  = data().cooldown() + player -> spec.spiritual_insight -> effectN( 3 ).time_value();
     shock                 = true;
+    uses_shocking_lava    = true;
   }
 
   // Override assess_damage, so we can prevent 0 damage hits from reports, when
   // the flame_shock_t object is used with lava lash to spread flame shocks
   void assess_damage( dmg_e type, action_state_t* s )
   { if ( s -> result_amount > 0 ) shaman_spell_t::assess_damage( type, s ); }
-
-  double action_multiplier() const
-  {
-    double m = shaman_spell_t::action_multiplier();
-
-    m *= 1.0 + p() -> buff.shocking_lava -> stack() * p() -> buff.shocking_lava -> data().effectN( 1 ).percent();
-
-    return m;
-  }
 
   void execute()
   {
@@ -3797,8 +3784,6 @@ struct flame_shock_t : public shaman_spell_t
       p() -> proc.uf_flame_shock -> occur();
 
     shaman_spell_t::execute();
-
-    p() -> buff.shocking_lava -> expire();
   }
 
   virtual void tick( dot_t* d )
