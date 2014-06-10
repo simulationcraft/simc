@@ -1161,7 +1161,7 @@ struct feral_spirit_pet_t : public pet_t
     main_hand_weapon.damage     = ( main_hand_weapon.min_dmg + main_hand_weapon.max_dmg ) / 2;
     main_hand_weapon.swing_time = timespan_t::from_seconds( 1.5 );
 
-    owner_coeff.ap_from_ap = 0.141; // TODO-WOD: Preliminary value, verify
+    owner_coeff.ap_from_ap = 1 / 3.0; // TODO-WOD: Preliminary value, verify
 
     command = owner -> find_spell( 65222 );
   }
