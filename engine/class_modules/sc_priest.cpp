@@ -1892,24 +1892,16 @@ struct shadowy_apparition_spell_t final : public priest_spell_t
 struct mind_blast_t final : public priest_spell_t
 {
   bool casted_with_divine_insight;
-  bool mind_harvest;
 
   mind_blast_t( priest_t& player, const std::string& options_str ) :
     priest_spell_t( "mind_blast", player, player.find_class_spell( "Mind Blast" ) ),
-    casted_with_divine_insight( false ),
-    mind_harvest( false )
+    casted_with_divine_insight( false )
   {
     parse_options( nullptr, options_str );
 
     // Glyph of Mind Harvest
     if ( priest.glyphs.mind_harvest -> ok() )
-    {
       priest.cooldowns.mind_blast -> duration += timespan_t::from_millis( priest.glyphs.mind_harvest -> effectN( 2 ).base_value() );
-    }
-    else
-    {
-      mind_harvest = false;
-    }
   }
 
   virtual void execute() override
@@ -2035,18 +2027,6 @@ struct mind_blast_t final : public priest_spell_t
     }
 
     return d;
-  }
-
-  virtual bool evaluate( action_state_t* s ) override
-  {
-    if ( priest.glyphs.mind_harvest && !get_td( s -> target ).glyph_of_mind_harvest_consumed )
-    {
-        return true;
-    }
-    else
-    {
-        return false;
-    }
   }
 };
 
