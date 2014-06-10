@@ -1321,7 +1321,6 @@ class SpellDataGenerator(DataGenerator):
           ( 114093, 0 ),                                # Ascendance: Stormblast, offhand melee swing,
           ( 114074, 0 ), ( 114738, 0 ),                 # Ascendance: Lava Beam, Lava Beam overload
           ( 120687, 0 ), ( 120588, 0 ),                 # Stormlash, Elemental Blast overload
-          ( 58859,  5 ),                                # Spirit Wolf: Spirit Bite
           ( 121617, 0 ),                                # Ancestral Swiftness 5% haste passive
           ( 25504, 0, False ), ( 33750, 0, False ),     # Windfury passives are not directly activatable
           ( 8034, 0, False ),                           # Frostbrand false positive for activatable

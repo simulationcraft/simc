@@ -585,13 +585,15 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
     {
            0,
     },
-    // Pet tree, 5 abilities
+    // Pet tree, 7 abilities
     {
        36213, // Angered Earth
+      157348, // Call Lightning
        57984, // Fire Blast
       117588, // Fire Nova
       118297, // Immolate
       118345, // Pulverize
+      157331, // Wind Gust
            0,
     },
   },
