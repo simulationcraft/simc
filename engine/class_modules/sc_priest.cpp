@@ -1921,21 +1921,6 @@ struct mind_blast_t final : public priest_spell_t
 
   virtual void impact( action_state_t* s ) override
   {
-    //If we have Glyph of Mind Harvest, change the target to one that hasn't let the actor benefit from Glyph of Mind Harvest
-/*    if ( priest.glyphs.mind_harvest -> ok() )
-    {
-      std::vector< player_t* >& tl = target_list();
-
-      for ( size_t i = 0; i < tl.size(); i++ )
-      {
-        if ( !get_td( tl[ i ] ).glyph_of_mind_harvest_consumed )
-        {
-          s -> target = tl[ i ];
-          break;
-        }
-      }
-    }*/
-
     priest_spell_t::impact( s );
 
     if ( result_is_hit( s -> result ) )
