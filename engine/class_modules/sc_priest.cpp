@@ -47,6 +47,7 @@ public:
 
   priest_td_t( player_t* target, priest_t& p );
   void reset();
+  void target_demise();
 };
 
 /* Priest class definition
@@ -4583,11 +4584,23 @@ priest_td_t::priest_td_t( player_t* target, priest_t& p ) :
                              .spell( p.find_spell( 88684 ) )
                              .cd( timespan_t::zero() )
                              .activated( false );
+
+  target -> callbacks_on_demise.push_back( std::bind( &priest_td_t::target_demise, this ) );
 }
 
 void priest_td_t::reset()
 {
   glyph_of_mind_harvest_consumed = false;
+}
+
+void priest_td_t::target_demise()
+{
+  if ( priest.sim -> debug )
+  {
+    priest.sim -> out_debug.printf( "Player %s demised. Priest %s resets targetdata for him.", target -> name(), priest.name() );
+  }
+
+  reset();
 }
 
 // ==========================================================================
