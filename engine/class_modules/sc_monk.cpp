@@ -766,10 +766,8 @@ struct monk_spell_t : public monk_action_t<spell_t>
     double m = base_t::composite_target_multiplier( t );
  
     if ( td( t ) -> buff.rising_sun_kick -> check() )
-    {
       m *= 1.0 + td( t ) -> buff.rising_sun_kick -> data().effectN( 1 ).percent();
-    }
- 
+
     return m;
   }
 };
@@ -862,7 +860,7 @@ struct monk_melee_attack_t : public monk_action_t<melee_attack_t>
       total_dmg += base_t::calculate_weapon_damage( ap );
     else
       total_dmg += weapon_power_mod * ap;
- 
+
     return total_dmg;
   }
  
@@ -870,11 +868,8 @@ struct monk_melee_attack_t : public monk_action_t<melee_attack_t>
   {
     double m = base_t::composite_target_multiplier( t );
 
-
     if( special && td( t ) -> buff.rising_sun_kick -> check() )
-    {
       m *= 1.0 + td( t ) -> buff.rising_sun_kick -> data().effectN( 1 ).percent();
-    }
 
     return m;
   }
