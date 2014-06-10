@@ -3117,9 +3117,7 @@ struct death_coil_t : public death_knight_spell_t
     if ( p() -> buffs.dancing_rune_weapon -> check() )
       p() -> pets.dancing_rune_weapon -> drw_death_coil -> execute();
 
-    if ( ! p() -> buffs.dark_transformation -> check() )
-      p() -> trigger_shadow_infusion( base_costs[ RESOURCE_RUNIC_POWER ] );
-
+    p() -> trigger_shadow_infusion( base_costs[ RESOURCE_RUNIC_POWER ] );
     p() -> buffs.shadow_of_death -> trigger();
   }
 
@@ -4317,6 +4315,7 @@ struct breath_of_sindragosa_tick_t : public death_knight_spell_t
       p() -> trigger_runic_empowerment( base_costs[ RESOURCE_RUNIC_POWER ] );
       p() -> trigger_blood_charge( base_costs[ RESOURCE_RUNIC_POWER ] );
       p() -> trigger_runic_corruption( base_costs[ RESOURCE_RUNIC_POWER ] );
+      p() -> trigger_shadow_infusion( base_costs[ RESOURCE_RUNIC_POWER ] );
 
       td( target ) -> debuffs_mark_of_sindragosa -> trigger();
     }
@@ -6452,6 +6451,9 @@ void death_knight_t::trigger_blood_charge( double rpcost )
 
 void death_knight_t::trigger_shadow_infusion( double rpcost )
 {
+  if ( buffs.dark_transformation -> check() )
+    return;
+
   double multiplier = rpcost / RUNIC_POWER_DIVISOR;
 
   if ( ! spec.shadow_infusion -> ok() )
