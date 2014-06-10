@@ -1451,10 +1451,10 @@ private:
 
 // Berserk Buff ======================================================
 
-struct berserk_buff_t : public druid_buff_t< buff_t >
+struct berserk_buff_t : public druid_buff_t<buff_t>
 {
   berserk_buff_t( druid_t& p ) :
-    druid_buff_t( p, buff_creator_t( &p, "berserk", p.find_specialization_spell( "Berserk" ) ) )
+    druid_buff_t<buff_t>( p, buff_creator_t( &p, "berserk", p.find_specialization_spell( "Berserk" ) ) )
   {}
 
   virtual bool trigger( int stacks, double value, double chance, timespan_t duration )
@@ -1462,7 +1462,7 @@ struct berserk_buff_t : public druid_buff_t< buff_t >
     if ( druid.perk.enhanced_berserk -> ok() )
       player -> resources.max[ RESOURCE_ENERGY ] += druid.perk.enhanced_berserk -> effectN( 1 ).base_value();
 
-    return buff_t::trigger( stacks, value, chance, duration );
+    return druid_buff_t<buff_t>::trigger( stacks, value, chance, duration );
   }
 
   virtual void expire_override()
@@ -1474,7 +1474,7 @@ struct berserk_buff_t : public druid_buff_t< buff_t >
       player -> resources.current[ RESOURCE_ENERGY ] = std::min( player -> resources.current[ RESOURCE_ENERGY ], player -> resources.max[ RESOURCE_ENERGY ]);
     }
 
-    buff_t::expire_override();
+    druid_buff_t<buff_t>::expire_override();
   }
 };
 
@@ -2605,11 +2605,11 @@ namespace bear_attacks {
 // Druid Bear Attack
 // ==========================================================================
 
-struct bear_attack_t : public druid_attack_t< melee_attack_t >
+struct bear_attack_t : public druid_attack_t<melee_attack_t>
 {
   bear_attack_t( const std::string& n, druid_t* p,
-                    const spell_data_t* s = spell_data_t::nil() ) :
-    druid_attack_t( n, p, s )
+                 const spell_data_t* s = spell_data_t::nil() ) :
+    base_t( n, p, s )
   {
     may_crit = special = true;
     may_glance = false;
@@ -2617,7 +2617,7 @@ struct bear_attack_t : public druid_attack_t< melee_attack_t >
 
   virtual void execute()
   {
-   druid_attack_t::execute();
+    base_t::execute();
 
    if( execute_state -> result == RESULT_CRIT )
    {
@@ -3834,7 +3834,7 @@ struct druid_spell_t : public druid_spell_base_t<spell_t>
   {
     p() -> balance_tracker();
 
-    return druid_spell_base_t::ready();
+    return base_t::ready();
   }
 }; // end druid_spell_t
 

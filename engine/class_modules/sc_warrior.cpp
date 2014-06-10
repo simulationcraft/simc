@@ -693,6 +693,7 @@ struct warrior_attack_t : public warrior_action_t< melee_attack_t >
 
 struct bloodbath_dot_t : public ignite::pct_based_action_t< attack_t >
 {
+  typedef  ignite::pct_based_action_t<attack_t> base_t;
   bloodbath_dot_t( warrior_t* p ) :
     base_t( "bloodbath", p, p -> find_spell( 113344 ) )
   {
@@ -702,7 +703,7 @@ struct bloodbath_dot_t : public ignite::pct_based_action_t< attack_t >
   void assess_damage(dmg_e type,
                action_state_t* s)
   {
-    pct_based_action_t::assess_damage( type, s );
+    base_t::assess_damage( type, s );
 
     warrior_t* p = static_cast<warrior_t*>( player );
     warrior_td_t* td = p -> get_target_data( s -> target );
