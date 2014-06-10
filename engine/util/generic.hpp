@@ -418,4 +418,33 @@ void erase_unordered( Sequence& s, typename Sequence::iterator pos )
   s.pop_back();
 }
 
+#if 0
+// Experimental very lightweight callback handler.
+template<class... Args>
+class callback_manager_t
+{
+public:
+  callback_manager_t() = default;
+
+  /* Triggers all registered callbacks
+   */
+  void trigger( Args... a )
+  {
+    for( auto&& callback : _callbacks ) {
+      callback( a... );
+    }
+  }
+
+  /* Register a callback
+   */
+  template<typename Fn>
+  void register_callback( Fn&& f )
+  {
+    _callbacks.push_back( std::forward<Fn>(f) );
+  }
+private:
+  std::vector<std::function<void(Args...)>> _callbacks;
+};
+#endif
+
 #endif // SC_GENERIC_HPP
