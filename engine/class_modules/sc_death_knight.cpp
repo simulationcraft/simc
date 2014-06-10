@@ -145,6 +145,7 @@ struct death_knight_td_t : public actor_pair_t
   dot_t* dots_necrotic_plague;
 
   debuff_t* debuffs_frost_vulnerability;
+  debuff_t* debuffs_mark_of_sindragosa;
 
   int diseases() const
   {
@@ -327,6 +328,7 @@ public:
     const spell_data_t* runic_corruption;
 
     const spell_data_t* necrotic_plague;
+    const spell_data_t* breath_of_sindragosa;
   } talent;
 
   // Spells
@@ -520,6 +522,7 @@ inline death_knight_td_t::death_knight_td_t( player_t* target, death_knight_t* d
   dots_necrotic_plague = target -> get_dot( "necrotic_plague", death_knight );
 
   debuffs_frost_vulnerability = buff_creator_t( *this, "frost_vulnerability", death_knight -> find_spell( 51714 ) );
+  debuffs_mark_of_sindragosa = buff_creator_t( *this, "mark_of_sindragosa", death_knight -> find_spell( 155166 ) );
 }
 
 inline void rune_t::fill_rune()
@@ -4193,7 +4196,6 @@ struct unholy_blight_tick_t : public death_knight_spell_t
   {
     death_knight_spell_t::impact( s );
 
-    // TODO-WOD: Unholy Blight functionality with Necrotic Plague?
     p() -> apply_diseases( s, DISEASE_BLOOD_PLAGUE | DISEASE_FROST_FEVER );
   }
 };
@@ -4275,6 +4277,80 @@ struct plague_leech_t : public death_knight_spell_t
       return rd;
 
     return false;
+  }
+};
+
+// Breath of Sindragosa =====================================================
+
+struct breath_of_sindragosa_tick_t : public death_knight_spell_t
+{
+  breath_of_sindragosa_tick_t( death_knight_t* p ) :
+    death_knight_spell_t( "breath_of_sindragosa_tick", p, p -> find_spell( 155166 ) )
+  {
+    aoe        = -1;
+    background = true;
+    resource_current = RESOURCE_RUNIC_POWER;
+  }
+
+  virtual void impact( action_state_t* s )
+  {
+    death_knight_spell_t::impact( s );
+
+    if ( result_is_hit( s -> result ) )
+    {
+      p() -> trigger_runic_empowerment( base_costs[ RESOURCE_RUNIC_POWER ] );
+      p() -> trigger_blood_charge( base_costs[ RESOURCE_RUNIC_POWER ] );
+      p() -> trigger_runic_corruption( base_costs[ RESOURCE_RUNIC_POWER ] );
+
+      td( target ) -> debuffs_mark_of_sindragosa -> trigger();
+    }
+  }
+};
+
+struct breath_of_sindragosa_t : public death_knight_spell_t
+{
+  breath_of_sindragosa_t( death_knight_t* p, const std::string& options_str ) :
+    death_knight_spell_t( "breath_of_sindragosa", p, p -> find_talent_spell( "Breath of Sindragosa" ) )
+  {
+    parse_options( NULL, options_str );
+
+    may_miss = may_crit = hasted_ticks = callbacks = false;
+    tick_zero = true;
+    dot_duration = timespan_t::from_seconds( 100 );
+
+    tick_action = new breath_of_sindragosa_tick_t( p );
+    tick_action -> base_costs[ RESOURCE_RUNIC_POWER ] = base_costs[ RESOURCE_RUNIC_POWER ];
+    base_costs[ RESOURCE_RUNIC_POWER ] = 0;
+
+    school = tick_action -> school;
+  }
+
+  void execute()
+  {
+    dot_t* d = get_dot( target );
+
+    if ( d -> is_ticking() )
+      d -> cancel();
+    else
+      death_knight_spell_t::execute();
+  }
+
+  void tick( dot_t* dot )
+  {
+    death_knight_spell_t::tick( dot );
+
+    // Really really naughty way of doing cancellation of the spell, but for
+    // now it's the only way to reasonably do it.
+    if ( p() -> resources.current[ RESOURCE_RUNIC_POWER ] < tick_action -> base_costs[ RESOURCE_RUNIC_POWER ] )
+      schedule_execute();
+  }
+
+  void init()
+  {
+    death_knight_spell_t::init();
+
+    snapshot_flags |= STATE_MUL_TA | STATE_TGT_MUL_TA | STATE_MUL_PERSISTENT;
+    update_flags |= STATE_MUL_TA | STATE_TGT_MUL_TA;
   }
 };
 
@@ -4630,6 +4706,7 @@ action_t* death_knight_t::create_action( const std::string& name, const std::str
   if ( name == "unholy_blight"            ) return new unholy_blight_t            ( this, options_str );
   if ( name == "death_siphon"             ) return new death_siphon_t             ( this, options_str );
   if ( name == "death_pact"               ) return new death_pact_t               ( this, options_str );
+  if ( name == "breath_of_sindragosa"     ) return new breath_of_sindragosa_t     ( this, options_str );
 
   return player_t::create_action( name, options_str );
 }
