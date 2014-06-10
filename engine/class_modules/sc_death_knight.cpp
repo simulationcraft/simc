@@ -42,6 +42,7 @@ const char * const rune_symbols = "!bfu!!";
 const int RUNE_TYPE_MASK = 3;
 const int RUNE_SLOT_MAX = 6;
 const double RUNIC_POWER_REFUND = 0.9;
+static const double RUNIC_POWER_DIVISOR = 30.0;
 
 enum rune_state { STATE_DEPLETED, STATE_REGENERATING, STATE_FULL };
 
@@ -166,6 +167,8 @@ public:
   int       active_presence;
   int       t16_tank_2pc_driver;
   double    runic_power_decay_rate;
+  double    blood_charge_counter;
+  double    shadow_infusion_counter;
 
   // Buffs
   struct buffs_t
@@ -479,15 +482,17 @@ public:
   virtual stat_e    convert_hybrid_stat( stat_e s ) const;
   virtual void      invalidate_cache( cache_e );
 
-  void      trigger_runic_empowerment();
+  void      trigger_runic_empowerment( double rpcost );
+  void      trigger_runic_corruption( double rpcost );
   void      trigger_plaguebearer( action_state_t* state );
+  void      trigger_blood_charge( double rpcost );
+  void      trigger_shadow_infusion( double rpcost );
   void      apply_diseases( action_state_t* state, unsigned diseases );
   int       runes_count( rune_type rt, bool include_death, int position );
   double    runes_cooldown_any( rune_type rt, bool include_death, int position );
   double    runes_cooldown_all( rune_type rt, bool include_death, int position );
   double    runes_cooldown_time( rune_t* r );
   bool      runes_depleted( rune_type rt, int position );
-  void      trigger_runic_corruption();
   void      default_apl_blood();
 
 
@@ -3097,7 +3102,7 @@ struct death_coil_t : public death_knight_spell_t
       p() -> pets.dancing_rune_weapon -> drw_death_coil -> execute();
 
     if ( ! p() -> buffs.dark_transformation -> check() )
-      p() -> buffs.shadow_infusion -> trigger(); // Doesn't stack while your ghoul is empowered
+      p() -> trigger_shadow_infusion( base_costs[ RESOURCE_RUNIC_POWER ] );
 
     p() -> buffs.shadow_of_death -> trigger();
   }
@@ -3108,9 +3113,9 @@ struct death_coil_t : public death_knight_spell_t
 
     if ( result_is_hit( s -> result ) )
     {
-      p() -> trigger_runic_empowerment();
-      p() -> buffs.blood_charge -> trigger( 2 );
-      p() -> trigger_runic_corruption();
+      p() -> trigger_runic_empowerment( base_costs[ RESOURCE_RUNIC_POWER ] );
+      p() -> trigger_blood_charge( base_costs[ RESOURCE_RUNIC_POWER ] );
+      p() -> trigger_runic_corruption( base_costs[ RESOURCE_RUNIC_POWER ] );
       p() -> trigger_plaguebearer( s );
 
       if ( p() -> sets.has_set_bonus( SET_T16_4PC_MELEE ) && p() -> buffs.dark_transformation -> check() )
@@ -3405,9 +3410,9 @@ struct frost_strike_t : public death_knight_melee_attack_t
 
     if ( result_is_hit( s -> result ) )
     {
-      p() -> trigger_runic_empowerment();
-      p() -> buffs.blood_charge -> trigger( 2 );
-      p() -> trigger_runic_corruption();
+      p() -> trigger_runic_empowerment( base_costs[ RESOURCE_RUNIC_POWER ] );
+      p() -> trigger_blood_charge( base_costs[ RESOURCE_RUNIC_POWER ] );
+      p() -> trigger_runic_corruption( base_costs[ RESOURCE_RUNIC_POWER ] );
       p() -> trigger_plaguebearer( s );
     }
   }
@@ -3765,7 +3770,15 @@ struct outbreak_t : public death_knight_spell_t
     death_knight_spell_t::execute();
 
     if ( result_is_hit( execute_state -> result ) )
+    {
       p() -> apply_diseases( execute_state, DISEASE_BLOOD_PLAGUE | DISEASE_FROST_FEVER );
+
+      if ( base_costs[ RESOURCE_RUNIC_POWER ] > 0 )
+      {
+        p() -> trigger_runic_empowerment( base_costs[ RESOURCE_RUNIC_POWER ] );
+        p() -> trigger_runic_corruption( base_costs[ RESOURCE_RUNIC_POWER ] );
+      }
+    }
 
     if ( p() -> buffs.dancing_rune_weapon -> check() )
       p() -> pets.dancing_rune_weapon -> drw_outbreak -> execute();
@@ -4638,9 +4651,11 @@ void parse_rune_type( const std::string& rune_str, bool& include_death, rune_typ
     include_death = true;
 }
 
-void death_knight_t::trigger_runic_corruption()
+void death_knight_t::trigger_runic_corruption( double rpcost )
 {
-  if ( ! rng().roll( talent.runic_corruption -> proc_chance() ) )
+  double multiplier = rpcost / RUNIC_POWER_DIVISOR;
+
+  if ( ! rng().roll( talent.runic_corruption -> proc_chance() * multiplier ) )
     return;
 
   timespan_t duration = timespan_t::from_seconds( 3.0 * cache.attack_haste() );
@@ -5847,6 +5862,8 @@ void death_knight_t::reset()
   t16_tank_2pc_driver = 0;
 
   runic_power_decay_rate = 1; // 1 RP per second decay
+  blood_charge_counter = 0;
+  shadow_infusion_counter = 0;
 
   t15_2pc_melee.reset();
 
@@ -6281,9 +6298,11 @@ set_e death_knight_t::decode_set( const item_t& item ) const
 
 // death_knight_t::trigger_runic_empowerment ================================
 
-void death_knight_t::trigger_runic_empowerment()
+void death_knight_t::trigger_runic_empowerment( double rpcost )
 {
-  if ( ! rng().roll( talent.runic_empowerment -> proc_chance() ) )
+  double multiplier = rpcost / RUNIC_POWER_DIVISOR;
+
+  if ( ! rng().roll( talent.runic_empowerment -> proc_chance() * multiplier ) )
     return;
 
   int depleted_runes[RUNE_SLOT_MAX];
@@ -6314,6 +6333,50 @@ void death_knight_t::trigger_runic_empowerment()
     // If there were no available runes to refresh
     procs.runic_empowerment_wasted -> occur();
     gains.runic_empowerment -> add ( RESOURCE_RUNE, 0, 1 );
+  }
+}
+
+void death_knight_t::trigger_blood_charge( double rpcost )
+{
+  double multiplier = rpcost / RUNIC_POWER_DIVISOR;
+
+  if ( ! talent.blood_tap -> ok() )
+    return;
+
+  blood_charge_counter += 2 * multiplier;
+  int stacks = 0;
+  while ( blood_charge_counter >= 1 )
+  {
+    stacks++;
+    blood_charge_counter--;
+  }
+
+  if ( stacks > 0 )
+  {
+    buffs.blood_charge -> trigger( stacks );
+    blood_charge_counter -= stacks;
+  }
+}
+
+void death_knight_t::trigger_shadow_infusion( double rpcost )
+{
+  double multiplier = rpcost / RUNIC_POWER_DIVISOR;
+
+  if ( ! spec.shadow_infusion -> ok() )
+    return;
+
+  shadow_infusion_counter += multiplier;
+  int stacks = 0;
+  while ( shadow_infusion_counter >= 1 )
+  {
+    stacks++;
+    shadow_infusion_counter--;
+  }
+
+  if ( stacks > 0 )
+  {
+    buffs.shadow_infusion -> trigger( stacks );
+    shadow_infusion_counter -= stacks;
   }
 }
 

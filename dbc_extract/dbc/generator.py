@@ -1235,7 +1235,7 @@ class SpellDataGenerator(DataGenerator):
          116631,                    # Colossus
          105617,                    # Alchemist's Flask
          137596,                    # Capacitance
-         104510, 104423             # Windsong Mastery / Haste buffs
+         104510, 104423,            # Windsong Mastery / Haste buffs
         ),
         
         # Warrior:
@@ -1321,11 +1321,11 @@ class SpellDataGenerator(DataGenerator):
           ( 114093, 0 ),                                # Ascendance: Stormblast, offhand melee swing,
           ( 114074, 0 ), ( 114738, 0 ),                 # Ascendance: Lava Beam, Lava Beam overload
           ( 120687, 0 ), ( 120588, 0 ),                 # Stormlash, Elemental Blast overload
-          ( 58859,  5 ),                                # Spirit Wolf: Spirit Bite
           ( 121617, 0 ),                                # Ancestral Swiftness 5% haste passive
           ( 25504, 0, False ), ( 33750, 0, False ),     # Windfury passives are not directly activatable
           ( 8034, 0, False ),                           # Frostbrand false positive for activatable
           ( 145002, 0, False ),                         # Lightning Elemental nuke
+          ( 157348, 5 ), ( 157331, 5 )                  # Storm elemental spells
         ),
         
         # Mage:

@@ -146,6 +146,8 @@ public:
   pet_t* pet_feral_spirit[4];
   pet_t* pet_fire_elemental;
   pet_t* guardian_fire_elemental;
+  pet_t* pet_storm_elemental;
+  pet_t* guardian_storm_elemental;
   pet_t* pet_earth_elemental;
   pet_t* guardian_earth_elemental;
   pet_t* guardian_lightning_elemental[10];
@@ -899,12 +901,14 @@ struct shaman_spell_t : public shaman_spell_base_t<spell_t>
 
   // Unleash flame
   bool     may_unleash_flame;
+  bool     uses_shocking_lava;
 
   shaman_spell_t( const std::string& token, shaman_t* p,
                   const spell_data_t* s = spell_data_t::nil(), const std::string& options = std::string() ) :
     base_t( token, p, s ),
     overload( false ), overload_spell( 0 ), overload_chance_multiplier( 1.0 ),
-    may_unleash_flame( dbc::is_school( school, SCHOOL_FIRE ) )
+    may_unleash_flame( dbc::is_school( school, SCHOOL_FIRE ) ),
+    uses_shocking_lava( false )
   {
     parse_options( 0, options );
 
@@ -919,6 +923,9 @@ struct shaman_spell_t : public shaman_spell_base_t<spell_t>
 
     if ( harmful && callbacks && ! proc && resource_consumed > 0 && p() -> buff.elemental_focus -> up() )
       p() -> buff.elemental_focus -> decrement();
+
+    if ( uses_shocking_lava )
+      p() -> buff.shocking_lava -> expire();
   }
 
   virtual void impact( action_state_t* state )
@@ -995,6 +1002,9 @@ struct shaman_spell_t : public shaman_spell_base_t<spell_t>
 
     if ( may_unleash_flame && p() -> buff.unleash_flame -> up() )
       m *= 1.0 + p() -> buff.unleash_flame -> data().effectN( 2 ).percent();
+
+    if ( uses_shocking_lava )
+      m *= 1.0 + p() -> buff.shocking_lava -> stack() * p() -> buff.shocking_lava -> data().effectN( 1 ).percent();
 
     return m;
   }
@@ -1151,7 +1161,7 @@ struct feral_spirit_pet_t : public pet_t
     main_hand_weapon.damage     = ( main_hand_weapon.min_dmg + main_hand_weapon.max_dmg ) / 2;
     main_hand_weapon.swing_time = timespan_t::from_seconds( 1.5 );
 
-    owner_coeff.ap_from_ap = 0.50;
+    owner_coeff.ap_from_ap = 0.141; // TODO-WOD: Preliminary value, verify
 
     command = owner -> find_spell( 65222 );
   }
@@ -1187,9 +1197,6 @@ struct feral_spirit_pet_t : public pet_t
       m *= 1.0 + command -> effectN( 1 ).percent();
 
     m *= 1.0 + o() -> perk.improved_feral_spirits -> effectN( 1 ).percent();
-
-    // TODO-WOD: Figure out values for reals, put 100% scaling here for now
-    m *= 2.0;
 
     return m;
   }
@@ -1308,7 +1315,7 @@ struct earth_elemental_pet_t : public pet_t
     if ( o() -> talent.primal_elementalist -> ok() )
       action_list_str += "/pulverize";
 
-    owner_coeff.ap_from_sp = 1.3;
+    owner_coeff.ap_from_sp = 0.13; // TODO-WOD: Preliminary value, verify
     if ( o() -> talent.primal_elementalist -> ok() )
       owner_coeff.ap_from_sp *= 1.0 + o() -> talent.primal_elementalist -> effectN( 1 ).percent();
   }
@@ -1514,10 +1521,10 @@ struct fire_elemental_t : public pet_t
     main_hand_weapon.damage          = ( main_hand_weapon.min_dmg + main_hand_weapon.max_dmg ) / 2;
     main_hand_weapon.swing_time      = timespan_t::from_seconds( 1.4 );
 
-    owner_coeff.sp_from_sp = 0.36;
+    owner_coeff.sp_from_sp = 0.27; // TODO-WOD: Preliminary value, verify
 
     if ( o() -> talent.primal_elementalist -> ok() )
-      owner_coeff.sp_from_sp *= 1.5 * 1.2;
+      owner_coeff.sp_from_sp *= 1.0 + o() -> talent.primal_elementalist -> effectN( 1 ).percent();
   }
 
   void init_action_list()
@@ -1549,6 +1556,131 @@ struct fire_elemental_t : public pet_t
     if ( name == "fire_nova"   ) return new fire_nova_t( this, options_str );
     if ( name == "auto_attack" ) return new auto_melee_attack_t( this );
     if ( name == "immolate"    ) return new immolate_t( this, options_str );
+
+    return pet_t::create_action( name, options_str );
+  }
+};
+
+struct storm_elemental_t : public pet_t
+{
+  struct storm_elemental_spell_t : public spell_t
+  {
+    storm_elemental_t* p;
+
+    storm_elemental_spell_t( const std::string& t, storm_elemental_t* p, const spell_data_t* s = spell_data_t::nil(), const std::string& options = std::string() ) :
+      spell_t( t, p, s ), p( p )
+    {
+      parse_options( 0, options );
+
+      may_crit                    = true;
+      base_costs[ RESOURCE_MANA ] = 0;
+      crit_bonus_multiplier      *= 1.0 + p -> o() -> spec.elemental_fury -> effectN( 1 ).percent() + p -> o() -> perk.improved_elemental_fury -> effectN( 1 ).percent();
+    }
+
+    virtual double composite_da_multiplier() const
+    {
+      double m = spell_t::composite_da_multiplier();
+
+      if ( p -> o() -> mastery.enhanced_elements -> ok() )
+        m *= 1.0 + p -> o() -> cache.mastery_value();
+
+      return m;
+    }
+
+    virtual double composite_ta_multiplier() const
+    {
+      double m = spell_t::composite_ta_multiplier();
+
+      if ( p -> o() -> mastery.enhanced_elements -> ok() )
+        m *= 1.0 + p -> o() -> cache.mastery_value();
+
+      return m;
+    }
+  };
+
+  // TODO: Healing
+  struct wind_gust_t : public storm_elemental_spell_t
+  {
+    wind_gust_t( storm_elemental_t* player, const std::string& options ) :
+      storm_elemental_spell_t( "wind_gust", player, player -> find_spell( 157331 ), options )
+    { }
+  };
+
+  struct call_lightning_t : public storm_elemental_spell_t
+  {
+    call_lightning_t( storm_elemental_t* player, const std::string& options ) :
+      storm_elemental_spell_t( "call_lightning", player, player -> find_spell( 157348 ), options )
+    { }
+
+    void execute()
+    {
+      storm_elemental_spell_t::execute();
+
+      p -> call_lightning -> trigger();
+    }
+  };
+
+  shaman_t* o() { return static_cast< shaman_t* >( owner ); }
+
+  const spell_data_t* command;
+  buff_t* call_lightning;
+
+  storm_elemental_t( sim_t* sim, shaman_t* owner, bool guardian ) :
+    pet_t( sim, owner, ( ! guardian ) ? "primal_storm_elemental" : "greater_storm_elemental", guardian )
+  {
+    stamina_per_owner      = 1.0;
+    command = owner -> find_spell( 65222 );
+  }
+
+  virtual void init_base_stats()
+  {
+    pet_t::init_base_stats();
+
+    resources.base[ RESOURCE_HEALTH ] = 32268; // TODO-WOD: FE values, placeholder
+    resources.base[ RESOURCE_MANA   ] = 8908;
+
+    owner_coeff.sp_from_sp = 0.068; // TODO-WOD: Preliminary value, verify
+
+    if ( o() -> talent.primal_elementalist -> ok() )
+      owner_coeff.sp_from_sp *= 1.0 + o() -> talent.primal_elementalist -> effectN( 1 ).percent();
+  }
+
+  void init_action_list()
+  {
+    action_list_str = "call_lightning/wind_gust";
+
+    pet_t::init_action_list();
+  }
+
+  void create_buffs()
+  {
+    pet_t::create_buffs();
+
+    call_lightning = buff_creator_t( this, "call_lightning", find_spell( 157348 ) )
+                     .cd( timespan_t::zero() );
+  }
+
+  virtual resource_e primary_resource() const { return RESOURCE_MANA; }
+
+  double composite_player_multiplier( school_e school ) const
+  {
+    double m = pet_t::composite_player_multiplier( school );
+
+    if ( owner -> race == RACE_ORC )
+      m *= 1.0 + command -> effectN( 1 ).percent();
+
+    // TODO-WOD: Enhance/Elemental has damage, Restoration has healing
+    if ( call_lightning -> up() )
+      m *= 1.0 + call_lightning -> data().effectN( 2 ).percent();
+
+    return m;
+  }
+
+  virtual action_t* create_action( const std::string& name,
+                                   const std::string& options_str )
+  {
+    if ( name == "call_lightning" ) return new call_lightning_t( this, options_str );
+    if ( name == "wind_gust"      ) return new wind_gust_t( this, options_str );
 
     return pet_t::create_action( name, options_str );
   }
@@ -3706,17 +3838,9 @@ struct earth_shock_t : public shaman_spell_t
     cooldown             = player -> cooldown.shock;
     cooldown -> duration = data().cooldown() + player -> spec.spiritual_insight -> effectN( 3 ).time_value();
     shock                = true;
+    uses_shocking_lava   = true;
 
     stats -> add_child ( player -> get_stats( "fulmination" ) );
-  }
-
-  double action_multiplier() const
-  {
-    double m = shaman_spell_t::action_multiplier();
-    
-    m *= 1.0 + p() -> buff.shocking_lava -> stack() * p() -> buff.shocking_lava -> data().effectN( 1 ).percent();
-
-    return m;
   }
 
   double composite_target_crit( player_t* target ) const
@@ -3735,8 +3859,6 @@ struct earth_shock_t : public shaman_spell_t
   virtual void execute()
   {
     shaman_spell_t::execute();
-
-    p() -> buff.shocking_lava -> expire();
 
     if ( consume_threshold == 0 )
       return;
@@ -3772,21 +3894,13 @@ struct flame_shock_t : public shaman_spell_t
     cooldown              = player -> cooldown.shock;
     cooldown -> duration  = data().cooldown() + player -> spec.spiritual_insight -> effectN( 3 ).time_value();
     shock                 = true;
+    uses_shocking_lava    = true;
   }
 
   // Override assess_damage, so we can prevent 0 damage hits from reports, when
   // the flame_shock_t object is used with lava lash to spread flame shocks
   void assess_damage( dmg_e type, action_state_t* s )
   { if ( s -> result_amount > 0 ) shaman_spell_t::assess_damage( type, s ); }
-
-  double action_multiplier() const
-  {
-    double m = shaman_spell_t::action_multiplier();
-
-    m *= 1.0 + p() -> buff.shocking_lava -> stack() * p() -> buff.shocking_lava -> data().effectN( 1 ).percent();
-
-    return m;
-  }
 
   void execute()
   {
@@ -3797,8 +3911,6 @@ struct flame_shock_t : public shaman_spell_t
       p() -> proc.uf_flame_shock -> occur();
 
     shaman_spell_t::execute();
-
-    p() -> buff.shocking_lava -> expire();
   }
 
   virtual void tick( dot_t* d )
@@ -4369,6 +4481,39 @@ struct fire_elemental_totem_spell_t : public shaman_totem_t
 
     if ( p() -> cooldown.earth_elemental_totem -> up() )
       p() -> cooldown.earth_elemental_totem -> start( data().duration() );
+  }
+};
+
+// Storm Elemental Totem Spell ===============================================
+
+struct storm_elemental_totem_t : public shaman_totem_pet_t
+{
+  storm_elemental_totem_t( shaman_t* p ) :
+    shaman_totem_pet_t( p, "storm_elemental_totem", TOTEM_AIR )
+  { }
+
+  void init_spells()
+  {
+    if ( o() -> talent.primal_elementalist -> ok() )
+      summon_pet = o() -> find_pet( "primal_storm_elemental" );
+    else
+      summon_pet = o() -> find_pet( "greater_storm_elemental" );
+    assert( summon_pet != 0 );
+
+    shaman_totem_pet_t::init_spells();
+  }
+};
+
+struct storm_elemental_totem_spell_t : public shaman_totem_t
+{
+  storm_elemental_totem_spell_t( shaman_t* player, const std::string& options_str ) :
+    shaman_totem_t( "storm_elemental_totem", player, options_str, player -> find_talent_spell( "Storm Elemental Totem" ) )
+  { }
+
+  // TODO-WOD: Cooldown sharing with FE/EE?
+  void execute()
+  {
+    shaman_totem_t::execute();
   }
 };
 
@@ -5016,6 +5161,7 @@ action_t* shaman_t::create_action( const std::string& name,
 
   if ( name == "earth_elemental_totem"   ) return new earth_elemental_totem_spell_t( this, options_str );
   if ( name == "fire_elemental_totem"    ) return new  fire_elemental_totem_spell_t( this, options_str );
+  if ( name == "storm_elemental_totem"   ) return new storm_elemental_totem_spell_t( this, options_str );
   if ( name == "magma_totem"             ) return new                shaman_totem_t( "magma_totem", this, options_str, find_specialization_spell( "Magma Totem" ) );
   if ( name == "searing_totem"           ) return new                shaman_totem_t( "searing_totem", this, options_str, find_class_spell( "Searing Totem" ) );
 
@@ -5033,11 +5179,14 @@ pet_t* shaman_t::create_pet( const std::string& pet_name,
 
   if ( pet_name == "fire_elemental_pet"       ) return new fire_elemental_t( sim, this, false );
   if ( pet_name == "fire_elemental_guardian"  ) return new fire_elemental_t( sim, this, true );
+  if ( pet_name == "storm_elemental_pet"      ) return new storm_elemental_t( sim, this, false );
+  if ( pet_name == "storm_elemental_guardian" ) return new storm_elemental_t( sim, this, true );
   if ( pet_name == "earth_elemental_pet"      ) return new earth_elemental_pet_t( sim, this, false );
   if ( pet_name == "earth_elemental_guardian" ) return new earth_elemental_pet_t( sim, this, true );
 
   if ( pet_name == "earth_elemental_totem"   ) return new earth_elemental_totem_t( this );
   if ( pet_name == "fire_elemental_totem"    ) return new fire_elemental_totem_t( this );
+  if ( pet_name == "storm_elemental_totem"   ) return new storm_elemental_totem_t( this );
   if ( pet_name == "magma_totem"             ) return new magma_totem_t( this );
   if ( pet_name == "searing_totem"           ) return new searing_totem_t( this );
 
@@ -5050,6 +5199,8 @@ void shaman_t::create_pets()
 {
   pet_fire_elemental       = create_pet( "fire_elemental_pet"       );
   guardian_fire_elemental  = create_pet( "fire_elemental_guardian"  );
+  pet_storm_elemental      = create_pet( "storm_elemental_pet"      );
+  guardian_storm_elemental = create_pet( "storm_elemental_guardian" );
   pet_earth_elemental      = create_pet( "earth_elemental_pet"      );
   guardian_earth_elemental = create_pet( "earth_elemental_guardian" );
 
@@ -5067,6 +5218,7 @@ void shaman_t::create_pets()
 
   create_pet( "earth_elemental_totem" );
   create_pet( "fire_elemental_totem"  );
+  create_pet( "storm_elemental_totem" );
   create_pet( "magma_totem"           );
   create_pet( "searing_totem"         );
 }
