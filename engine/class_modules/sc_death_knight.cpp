@@ -232,6 +232,7 @@ public:
     spell_t* frost_fever;
     melee_attack_t* frozen_power;
     spell_t* necrotic_plague;
+    spell_t* breath_of_sindragosa;
   } active_spells;
 
   // Gains
@@ -2113,6 +2114,12 @@ void death_knight_melee_attack_t::consume_resource()
 
   if ( result_is_hit( execute_state -> result ) || always_consume )
     consume_runes( p(), use, convert_runes == 0 ? false : rng().roll( convert_runes ) == 1 );
+
+  if ( p() -> active_spells.breath_of_sindragosa &&
+       p() -> resources.current[ RESOURCE_RUNIC_POWER ] < p() -> active_spells.breath_of_sindragosa -> tick_action -> base_costs[ RESOURCE_RUNIC_POWER ] )
+  {
+    p() -> active_spells.breath_of_sindragosa -> get_dot() -> cancel();
+  }
 }
 
 // death_knight_melee_attack_t::execute() ===================================
@@ -2174,6 +2181,12 @@ void death_knight_spell_t::consume_resource()
 
   if ( result_is_hit( execute_state -> result ) )
     consume_runes( p(), use, convert_runes == 0 ? false : rng().roll( convert_runes ) == 1 );
+
+  if ( p() -> active_spells.breath_of_sindragosa &&
+       p() -> resources.current[ RESOURCE_RUNIC_POWER ] < p() -> active_spells.breath_of_sindragosa -> tick_action -> base_costs[ RESOURCE_RUNIC_POWER ] )
+  {
+    p() -> active_spells.breath_of_sindragosa -> get_dot() -> cancel();
+  }
 }
 
 // death_knight_spell_t::execute() ==========================================
@@ -4284,8 +4297,11 @@ struct plague_leech_t : public death_knight_spell_t
 
 struct breath_of_sindragosa_tick_t : public death_knight_spell_t
 {
-  breath_of_sindragosa_tick_t( death_knight_t* p ) :
-    death_knight_spell_t( "breath_of_sindragosa_tick", p, p -> find_spell( 155166 ) )
+  action_t* parent;
+
+  breath_of_sindragosa_tick_t( death_knight_t* p, action_t* parent ) :
+    death_knight_spell_t( "breath_of_sindragosa_tick", p, p -> find_spell( 155166 ) ),
+    parent( parent )
   {
     aoe        = -1;
     background = true;
@@ -4318,7 +4334,7 @@ struct breath_of_sindragosa_t : public death_knight_spell_t
     tick_zero = true;
     dot_duration = timespan_t::from_seconds( 100 );
 
-    tick_action = new breath_of_sindragosa_tick_t( p );
+    tick_action = new breath_of_sindragosa_tick_t( p, this );
     tick_action -> base_costs[ RESOURCE_RUNIC_POWER ] = base_costs[ RESOURCE_RUNIC_POWER ];
     base_costs[ RESOURCE_RUNIC_POWER ] = 0;
 
@@ -4332,17 +4348,16 @@ struct breath_of_sindragosa_t : public death_knight_spell_t
     if ( d -> is_ticking() )
       d -> cancel();
     else
+    {
+      p() -> active_spells.breath_of_sindragosa = this;
       death_knight_spell_t::execute();
+    }
   }
 
-  void tick( dot_t* dot )
+  void last_tick( dot_t* dot )
   {
-    death_knight_spell_t::tick( dot );
-
-    // Really really naughty way of doing cancellation of the spell, but for
-    // now it's the only way to reasonably do it.
-    if ( p() -> resources.current[ RESOURCE_RUNIC_POWER ] < tick_action -> base_costs[ RESOURCE_RUNIC_POWER ] )
-      schedule_execute();
+    death_knight_spell_t::last_tick( dot );
+    p() -> active_spells.breath_of_sindragosa = 0;
   }
 
   void init()
