@@ -1120,6 +1120,12 @@ double dbc_t::regen_base( pet_e t, unsigned level ) const
   return regen_base( util::pet_class_type( t ), level );
 }
 
+int dbc_t::resolve_item_scaling( unsigned level ) const
+{
+  assert( level > 0 && level <= MAX_LEVEL );
+  return __gt_item_scaling[ level - 1 ];
+}
+
 double dbc_t::health_base( player_e t, unsigned level ) const
 {
   uint32_t class_id = util::class_id( t );

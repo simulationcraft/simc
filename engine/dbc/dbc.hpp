@@ -907,6 +907,8 @@ public:
   double combat_rating( unsigned combat_rating_id, unsigned level ) const;
   double oct_combat_rating( unsigned combat_rating_id, player_e t ) const;
 
+  int resolve_item_scaling( unsigned level ) const;
+
 private:
   template <typename T>
   const T* find_by_id( unsigned id ) const
