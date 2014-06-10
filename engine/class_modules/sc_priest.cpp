@@ -359,9 +359,10 @@ public:
   virtual double    composite_attribute_multiplier( attribute_e attr ) const override;
   virtual double    matching_gear_multiplier( attribute_e attr ) const override;
   virtual void      target_mitigation( school_e, dmg_e, action_state_t* ) override;
-  virtual void pre_analyze_hook() override;
+  virtual void      pre_analyze_hook() override;
   virtual void      init_action_list() override;
   virtual priest_td_t* get_target_data( player_t* target ) const override;
+  virtual expr_t*   create_expression( action_t* a, const std::string& name_str );
 
 private:
   void create_cooldowns();
@@ -1891,16 +1892,24 @@ struct shadowy_apparition_spell_t final : public priest_spell_t
 struct mind_blast_t final : public priest_spell_t
 {
   bool casted_with_divine_insight;
+  bool mind_harvest;
 
   mind_blast_t( priest_t& player, const std::string& options_str ) :
     priest_spell_t( "mind_blast", player, player.find_class_spell( "Mind Blast" ) ),
-    casted_with_divine_insight( false )
+    casted_with_divine_insight( false ),
+    mind_harvest( false )
   {
     parse_options( nullptr, options_str );
 
     // Glyph of Mind Harvest
     if ( priest.glyphs.mind_harvest -> ok() )
+    {
       priest.cooldowns.mind_blast -> duration += timespan_t::from_millis( priest.glyphs.mind_harvest -> effectN( 2 ).base_value() );
+    }
+    else
+    {
+      mind_harvest = false;
+    }
   }
 
   virtual void execute() override
@@ -1913,7 +1922,7 @@ struct mind_blast_t final : public priest_spell_t
   virtual void impact( action_state_t* s ) override
   {
     //If we have Glyph of Mind Harvest, change the target to one that hasn't let the actor benefit from Glyph of Mind Harvest
-    if ( priest.glyphs.mind_harvest -> ok() )
+/*    if ( priest.glyphs.mind_harvest -> ok() )
     {
       std::vector< player_t* >& tl = target_list();
 
@@ -1925,7 +1934,7 @@ struct mind_blast_t final : public priest_spell_t
           break;
         }
       }
-    }
+    }*/
 
     priest_spell_t::impact( s );
 
@@ -2041,6 +2050,18 @@ struct mind_blast_t final : public priest_spell_t
     }
 
     return d;
+  }
+
+  virtual bool evaluate( action_state_t* s ) override
+  {
+    if ( priest.glyphs.mind_harvest && !get_td( s -> target ).glyph_of_mind_harvest_consumed )
+    {
+        return true;
+    }
+    else
+    {
+        return false;
+    }
   }
 };
 
@@ -4712,6 +4733,35 @@ stat_e priest_t::convert_hybrid_stat( stat_e s ) const
   }
 }
 
+expr_t* priest_t::create_expression( action_t* a,
+                                     const std::string& name_str )
+{
+  if ( name_str == "mind_harvest" )
+  {
+    struct mind_harvest_expr_t : public expr_t
+    {
+      priest_t& player;
+      action_t& action;
+      mind_harvest_expr_t( priest_t& p, action_t& act ) :
+        expr_t( "mind_harvest" ), player( p ), action( act )
+      {
+      }
+
+      virtual double evaluate()
+      {
+        priest_td_t& td = *player.get_target_data( action.target );
+
+        return td.glyph_of_mind_harvest_consumed;
+      }
+    };
+    return new mind_harvest_expr_t( *this, *a );
+  }
+  else
+  {
+    return player_t::create_expression( a, name_str );
+  }
+}
+
 // priest_t::combat_begin ===================================================
 
 void priest_t::combat_begin()
@@ -5372,6 +5422,7 @@ void priest_t::apl_shadow()
   {
     def -> add_action( this, "Shadow Word: Pain", "cycle_targets=1,max_cycle_targets=8,if=miss_react&buff.perfect_aim.react&crit_pct<100" );
   }
+  def -> add_action( this, "Mind Blast", "if=mind_harvest=0,cycle_targets=1" );
   def -> add_action( this, "Mind Blast", "if=active_enemies<=5&cooldown_react" );
   def -> add_action( "shadow_word_death,if=buff.shadow_word_death_reset_cooldown.stack=0&active_enemies<=5" );
   def -> add_action( "mind_flay_insanity,if=target.dot.devouring_plague_tick.ticks_remain=1,chain=1" );
