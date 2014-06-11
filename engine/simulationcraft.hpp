@@ -3412,30 +3412,32 @@ private:
 
 namespace new_set_bonus {
 
+static const unsigned PVP_OFFSET = 3;
 enum set_tier_e {
-  SET_MIN = -3,
-  PVP_2 = -2,
-  PVP_1 = -1,
-  SET_NONE = 0,
-  TIER_1 = 1,
-  TIER_2 = 2,
-  TIER_3 = 3,
-  TIER_4 = 4,
-  TIER_5 = 5,
-  TIER_6 = 6,
-  TIER_7 = 7,
-  TIER_8 = 8,
-  TIER_9 = 9,
-  TIER_10 = 10,
-  TIER_11 = 11,
-  TIER_12 = 12,
-  TIER_13 = 13,
-  TIER_14 = 14,
-  TIER_15 = 15,
-  TIER_16 = 16,
-  TIER_17 = 17,
-  SET_MAX = 18,
+  SET_MIN = -3 + PVP_OFFSET,
+  PVP_2 = -2 + PVP_OFFSET,
+  PVP_1 = -1 + PVP_OFFSET,
+  TIER_NONE = 0 + PVP_OFFSET,
+  TIER_1 = 1 + PVP_OFFSET,
+  TIER_2 = 2 + PVP_OFFSET,
+  TIER_3 = 3 + PVP_OFFSET,
+  TIER_4 = 4 + PVP_OFFSET,
+  TIER_5 = 5 + PVP_OFFSET,
+  TIER_6 = 6 + PVP_OFFSET,
+  TIER_7 = 7 + PVP_OFFSET,
+  TIER_8 = 8 + PVP_OFFSET,
+  TIER_9 = 9 + PVP_OFFSET,
+  TIER_10 = 10 + PVP_OFFSET,
+  TIER_11 = 11 + PVP_OFFSET,
+  TIER_12 = 12 + PVP_OFFSET,
+  TIER_13 = 13 + PVP_OFFSET,
+  TIER_14 = 14 + PVP_OFFSET,
+  TIER_15 = 15 + PVP_OFFSET,
+  TIER_16 = 16 + PVP_OFFSET,
+  TIER_17 = 17 + PVP_OFFSET,
+  SET_MAX = 18 + PVP_OFFSET,
 };
+
 
 struct set_bonus_t
 {
@@ -3448,14 +3450,21 @@ public:
   void init();
   void copy_from( const set_bonus_t& );
 private:
+  typedef std::array<std::vector<std::vector<const spell_data_t*> >,SET_MAX> spell_data_map_t;
   const spell_data_t* default_value;
-  std::array<std::vector<std::vector<const spell_data_t*> >,SET_MAX> set_bonuses; // [TIERX][SPEC_IDX][PIECES]
+  spell_data_map_t set_bonuses; // [TIERX][SPEC_IDX][PIECES]
   std::array<std::vector<unsigned>, SET_MAX> count; // [TIERX][SPEC_IDX] and unsigned var indicates the number of pieces the player is wearing
   const player_t* p;
 
+
+  bool has_set_bonus( set_tier_e, unsigned pieces, unsigned spec_idx ) const;
+  void decode();
+  static set_tier_e translate_from_old_set_bonus( ::set_e  old_set );
   const spell_data_t* create_set_bonus( uint32_t spell_id );
   set_e decode( const player_t&, const item_t& item ) const;
   uint32_t get_spec_idx( specialization_e ) const;
+  void debug_spell_data_lists( const spell_data_map_t&, std::string type );
+  void build_filtered_spell_data_list( const spell_data_map_t& );
   bool initialized, spelldata_registered; // help avoid initialization order problems
 
 };
@@ -4341,6 +4350,7 @@ public:
   gear_stats_t gear, enchant, temporary;
   gear_stats_t total_gear; // composite of gear, enchant and for non-pets sim -> enchant
   set_bonus_t sets;
+  new_set_bonus::set_bonus_t new_sets;
   meta_gem_e meta_gem;
   bool matching_gear;
   cooldown_t item_cooldown;

@@ -484,6 +484,7 @@ player_t::player_t( sim_t*             s,
   report_information( player_processed_report_information_t() ),
   // Gear
   sets( this ),
+  new_sets( this ),
   meta_gem( META_GEM_NONE ), matching_gear( false ),
   item_cooldown( cooldown_t( "item_cd", *this ) ),
   legendary_tank_cloak_cd( nullptr ),
@@ -1007,6 +1008,7 @@ bool player_t::init_items()
   }
 
   sets.init( *this );
+  new_sets.init();
 
   // these initialize the weapons, but don't have a return value (yet?)
   init_weapon( main_hand_weapon );
