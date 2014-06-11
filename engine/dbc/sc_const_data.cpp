@@ -326,6 +326,7 @@ void dbc::apply_hotfixes()
   // Warrior
 
   // Druid
+  /*
   s = spell_data_t::find( 164812, false );
   assert( s -> duration() != timespan_t::from_millis( 20000 ) && "Check Druid Dot Duration" );
   s -> _duration = 20000;
@@ -350,6 +351,7 @@ void dbc::apply_hotfixes()
     s -> _duration = 20000;
     s -> _prj_speed = 0;
   }
+  */
   // Death Knight
 
   // Misc

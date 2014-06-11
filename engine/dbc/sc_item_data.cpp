@@ -122,9 +122,9 @@ int item_database::scaled_stat( const item_data_t& item, const dbc_t& dbc, size_
   if ( item.stat_alloc[ idx ] > 0 /* && orig_budget > 0 */ && item_budget > 0 )
   {
     double v_raw = util::round( item.stat_alloc[ idx ] * item_budget / 10000.0 );
-    // Socket penalty be gone in Warlords of Draenor, however the items still have values for it
-    //double v_socket_penalty = util::round( item.stat_socket_mul[ idx ] * dbc.item_socket_cost( new_ilevel ) );
-    return static_cast<int>( v_raw );
+    // Socket penalty is supposedly gone in Warlords of Draenor, but it really does not seem so in the latest alpha.
+    double v_socket_penalty = util::round( item.stat_socket_mul[ idx ] * dbc.item_socket_cost( new_ilevel ) );
+    return static_cast<int>( v_raw - v_socket_penalty );
   }
   // TODO(?): Should we warn the user that we are using an approximation of
   // the upgraded stats, and that certain stats may be off by one?
