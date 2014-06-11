@@ -4315,14 +4315,16 @@ struct mark_of_the_wild_t : public druid_spell_t
         range::fill( base_costs, 0 );
       }
 
-      virtual double composite_ta_multiplier()
+      double composite_target_multiplier( player_t* target ) const
       {
-        double ta = druid_spell_t::composite_ta_multiplier();
-        if ( p() -> buff.hurricane -> up() )
-          ta *= 1.0 + p() -> perk.enhanced_storms -> effectN( 1 ).percent();
+        double m = druid_spell_t::composite_target_multiplier( target );
 
-        return ta;
+        if ( p() -> buff.hurricane -> up() )
+          m *= 1.0 + p() -> perk.enhanced_storms -> effectN( 1 ).percent();
+
+        return m;
       }
+
 
       virtual void tick( dot_t* d )
       {
@@ -4357,13 +4359,14 @@ struct mark_of_the_wild_t : public druid_spell_t
         moonfire = new moonfire_CA_t( player );
     }
 
-    virtual double composite_ta_multiplier()
+    double composite_target_multiplier( player_t* target ) const
     {
-      double ta = druid_spell_t::composite_ta_multiplier();
-      if ( p() -> buff.hurricane -> up() )
-        ta *= 1.0 + p() -> perk.enhanced_storms -> effectN( 1 ).percent();
+      double m = druid_spell_t::composite_target_multiplier( target );
 
-      return ta;
+      if ( p() -> buff.hurricane -> up() )
+        m *= 1.0 + p() -> perk.enhanced_storms -> effectN( 1 ).percent();
+
+      return m;
     }
 
     virtual void tick( dot_t* d )
@@ -4428,13 +4431,14 @@ struct mark_of_the_wild_t : public druid_spell_t
           aoe = -1;
       }
 
-      virtual double composite_ta_multiplier()
+      double composite_target_multiplier( player_t* target ) const
       {
-        double ta = druid_spell_t::composite_ta_multiplier();
-        if ( p() -> buff.hurricane -> up() )
-          ta *= 1.0 + p() -> perk.enhanced_storms -> effectN( 1 ).percent();
+        double m = druid_spell_t::composite_target_multiplier( target );
 
-        return ta;
+        if ( p() -> buff.hurricane -> up() )
+          m *= 1.0 + p() -> perk.enhanced_storms -> effectN( 1 ).percent();
+
+        return m;
       }
 
       virtual void tick( dot_t* d )
@@ -4476,13 +4480,14 @@ struct mark_of_the_wild_t : public druid_spell_t
       p() -> trigger_shooting_stars( d -> state -> result );
     }
 
-    virtual double composite_ta_multiplier()
+    double composite_target_multiplier( player_t* target ) const
     {
-      double ta = druid_spell_t::composite_ta_multiplier();
-      if ( p() -> buff.hurricane -> up() )
-        ta *= 1.0 + p() -> perk.enhanced_storms -> effectN( 1 ).percent();
+      double m = druid_spell_t::composite_target_multiplier( target );
 
-      return ta;
+      if ( p() -> buff.hurricane -> up() )
+        m *= 1.0 + p() -> perk.enhanced_storms -> effectN( 1 ).percent();
+
+      return m;
     }
 
     virtual void schedule_execute( action_state_t* state = 0 )
@@ -4672,13 +4677,14 @@ struct starfall_t : public druid_spell_t
     base_multiplier *= 1.0 + player -> perk.empowered_starfall -> effectN( 1 ).percent();
   }
 
-  virtual double composite_ta_multiplier()
+  double composite_target_multiplier( player_t* target ) const
   {
-    double ta = druid_spell_t::composite_ta_multiplier();
-    if ( p() -> buff.hurricane -> up() )
-      ta *= 1.0 + p() -> perk.enhanced_storms -> effectN( 1 ).percent();
+    double m = druid_spell_t::composite_target_multiplier( target );
 
-    return ta;
+    if ( p() -> buff.hurricane -> up() )
+      m *= 1.0 + p() -> perk.enhanced_storms -> effectN( 1 ).percent();
+
+    return m;
   }
 
   virtual void execute()
