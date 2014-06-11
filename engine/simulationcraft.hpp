@@ -3410,6 +3410,42 @@ private:
 
 };
 
+namespace new_set_bonus {
+
+enum set_tier_e {
+  PVP_1 = -1,
+  SET_NONE = 0,
+  TIER_16 = 16,
+  TIER_17 = 17,
+  SET_MAX = 18,
+};
+
+typedef uint32_t set_bonus_description_t[N_TIER][4];
+// using set_bonus_description_t = std::array<std::array<uint32_t,N_TIER_BONUS>,N_TIER>; // Use when we support initializer lists to enforce matching array dimensions
+struct set_bonus_t
+{
+public:
+  set_bonus_t( const player_t* p );
+
+  bool has_set_bonus( set_tier_e, unsigned pieces, specialization_e ) const;
+  const spell_data_t* set( set_tier_e, unsigned pieces, specialization_e ) const;
+
+  void init();
+  void copy_from( const set_bonus_t& );
+private:
+  const spell_data_t* default_value;
+  std::array<std::vector<std::vector<const spell_data_t*> >,SET_MAX> set_bonuses; // [TIERX][SPEC_IDX][PIECES]
+  std::array<std::vector<unsigned>, SET_MAX> count; // [TIERX][SPEC_IDX] and unsigned var indicates the number of pieces the player is wearing
+  const player_t* p;
+
+  const spell_data_t* create_set_bonus( uint32_t spell_id );
+  set_e decode( const player_t&, const item_t& item ) const;
+  uint32_t get_spec_idx( specialization_e ) const;
+  bool initialized, spelldata_registered; // help avoid initialization order problems
+
+};
+
+}
 struct action_sequence_data_t
 {
   action_t* action;

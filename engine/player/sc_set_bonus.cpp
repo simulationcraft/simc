@@ -156,3 +156,81 @@ const spell_data_t* set_bonus_t::set( set_e s ) const
 
 void set_bonus_t::copy_from( const set_bonus_t& s )
 { count = s.count; }
+
+namespace new_set_bonus {
+set_bonus_t::set_bonus_t( const player_t* p ) :
+  default_value( spell_data_t::nil() ),
+  set_bonuses(),
+  count(),
+  p( p ),
+  initialized( false ),
+  spelldata_registered( false )
+{
+  // Fill up count array with default data.
+  for ( size_t i = 0; i < set_bonuses.size(); ++i )
+  {
+    count[i].resize( p -> dbc.specialization_max_per_class() );
+  }
+
+  // Fill up set_bonus array for specs
+  for ( size_t i = 0; i < set_bonuses.size(); ++i )
+  {
+    set_bonuses[i].resize( p -> dbc.specialization_max_per_class() );
+  }
+}
+
+void set_bonus_t::init()
+{
+  // TODO: fill up count array
+
+  // TODO: retrieve all set bonus data, and map it into set_bonus, depending on has_set_bonus
+}
+
+/* Retrieve spec index from given specialization_e enum.
+ * Check if this is a performance bottle-neck or not.
+ */
+uint32_t set_bonus_t::get_spec_idx( specialization_e spec ) const
+{
+  uint32_t class_idx, spec_idx;
+  if ( !p -> dbc.spec_idx( spec, class_idx, spec_idx ) )
+    throw std::logic_error("Could not determine class/spec from specialization_e enum");
+
+  assert( class_idx == util::class_id_mask( p -> type ) && "Trying to get set bonus for spec of wrong class!" );
+  return spec_idx;
+}
+
+const spell_data_t* set_bonus_t::set( set_tier_e tier, unsigned pieces, specialization_e spec ) const
+{
+  assert( initialized && "Attempt to check for set bonus before initialization." );
+
+  const spell_data_t* s = default_value;
+  uint32_t spec_idx = get_spec_idx( spec );
+
+  assert( set_bonuses[ tier ].size() >= spec_idx ); // should be filled in ctor
+  if ( set_bonuses[ tier ][ spec_idx ].size() >= pieces )
+  {
+    s = set_bonuses[ tier ][ spec_idx ][ pieces ];
+
+  }
+  assert( !( has_set_bonus( tier, pieces, spec ) && s == default_value ) && "Player has given set bonus, but no non-nil spell data for it initialized!" );
+
+  return s;
+
+}
+
+bool set_bonus_t::has_set_bonus( set_tier_e tier, unsigned pieces, specialization_e spec ) const
+{
+  assert( initialized && "Attempt to check for set bonus before initialization." );
+
+  uint32_t spec_idx = get_spec_idx( spec );
+
+  assert( count[ tier ].size() >= spec_idx ); // should be filled in ctor
+  if ( count[ tier ][ spec_idx ] >= pieces )
+    return true;
+
+
+  return false;
+}
+
+}
+
