@@ -4057,6 +4057,11 @@ void mage_t::init_base_stats()
   diminished_kfactor    = 0.009830;
   diminished_dodge_cap = 0.006650;
   diminished_parry_cap = 0.006650;
+
+  // Reduce fire mage distance to avoid proc munching at high haste
+  // 2 yards was selected through testing with T16H profile
+  if ( specialization() == MAGE_FIRE )
+    base.distance = 2;
 }
 
 // mage_t::init_scaling =====================================================
