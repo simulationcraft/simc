@@ -4266,6 +4266,10 @@ void warrior_t::invalidate_cache( cache_e c )
     player_t::invalidate_cache( CACHE_CRIT_BLOCK );
     player_t::invalidate_cache( CACHE_ATTACK_POWER );
   }
+  if ( c == CACHE_MASTERY && mastery.unshackled_fury -> ok() )
+  {
+    player_t::invalidate_cache( CACHE_PLAYER_DAMAGE_MULTIPLIER );
+  }
 }
 
 // warrior_t::regen =========================================================

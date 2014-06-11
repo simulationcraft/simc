@@ -4412,7 +4412,8 @@ struct mark_of_the_wild_t : public druid_spell_t
 
     action_t* sunfire;
     moonfire_t( druid_t* player, const std::string& options_str ) :
-      druid_spell_t( "moonfire", player, player -> find_spell( 8921 ) )
+      druid_spell_t( "moonfire", player, player -> specialization() != DRUID_FERAL ? player -> find_spell( 8921 ) : 
+                                                                                     player -> find_spell( 155625 )  )
     {
       parse_options( NULL, options_str );
       const spell_data_t* dmg_spell = player -> find_spell( 164812 );
@@ -6836,7 +6837,7 @@ void druid_t::balance_tracker()
 void druid_t::balance_expressions()
 {
   static const double phi_lunar = asin( 100.0 / 105.0 );
-  static const double phi_zero = asin( 0.0 / 105.0 );
+  static const double phi_zero = 0;
   static const double phi_solar = asin( 100.0 / 105.0 ) + M_PI;
 
   double omega;
@@ -6863,9 +6864,9 @@ void druid_t::balance_expressions()
   eclipse_max = std::min( time_to_next_lunar, time_to_next_solar );
 
   if ( eclipse_amount > 0 )
-    eclipse_change = fmod( ( phi_zero - phi ) + M_PI, M_PI ) / omega / 1000;
+    eclipse_change = fmod( phi + M_PI, M_PI ) / omega / 1000;
   else
-    eclipse_change = fmod( ( phi_zero + M_PI - phi ) + M_PI, M_PI ) / omega / 1000;
+    eclipse_change = fmod( 2 * M_PI - phi, M_PI ) / omega / 1000;
 
   if ( buff.astral_communion -> up() )
   {
