@@ -167,17 +167,20 @@ public:
   struct passives_t
   {
     const spell_data_t* boundless_conviction;
+    const spell_data_t* crit_attunement;
     const spell_data_t* daybreak;
     const spell_data_t* divine_bulwark;
     const spell_data_t* exorcism; // for cooldown reset
     const spell_data_t* grand_crusader;
     const spell_data_t* guarded_by_the_light;
     const spell_data_t* hand_of_light;
+    const spell_data_t* haste_attunement;
     const spell_data_t* holy_insight;
     const spell_data_t* illuminated_healing;
     const spell_data_t* infusion_of_light;
     const spell_data_t* judgments_of_the_bold;
     const spell_data_t* judgments_of_the_wise;
+    const spell_data_t* mastery_attunement;
     const spell_data_t* plate_specialization;
     const spell_data_t* resolve;
     const spell_data_t* riposte;
@@ -360,6 +363,7 @@ public:
   
   // player stat functions
   virtual double    composite_attribute_multiplier( attribute_e attr ) const;
+  virtual double    composite_rating_multiplier( rating_e rating ) const;
   virtual double    composite_attack_power_multiplier() const;
   virtual double    composite_mastery() const;
   virtual double    composite_multistrike() const;
@@ -2382,6 +2386,7 @@ struct holy_radiance_t : public paladin_heal_t
 
 struct holy_shock_damage_t : public paladin_spell_t
 {
+  double crit_chance_multiplier;
   double crit_increase;
 
   holy_shock_damage_t( paladin_t* p )
@@ -2393,7 +2398,7 @@ struct holy_shock_damage_t : public paladin_spell_t
     trigger_gcd = timespan_t::zero();
 
     // this grabs the 25% base crit bonus from 20473
-    base_crit += p -> find_class_spell( "Holy Shock" ) -> effectN( 1 ).percent();
+    crit_chance_multiplier = p -> find_class_spell( "Holy Shock" ) -> effectN( 1 ).base_value() / 10.0;
 
   }
 
@@ -2405,6 +2410,9 @@ struct holy_shock_damage_t : public paladin_spell_t
     {
       cc += crit_increase;
     }
+
+    // effect 1 doubles crit chance
+    cc *= crit_chance_multiplier;
 
     return cc;
   }
@@ -2441,6 +2449,7 @@ struct holy_shock_damage_t : public paladin_spell_t
 
 struct holy_shock_heal_t : public paladin_heal_t
 {
+  double crit_chance_multiplier;
   double crit_increase;
   daybreak_t* daybreak;
 
@@ -2451,8 +2460,8 @@ struct holy_shock_heal_t : public paladin_heal_t
     background = true;
     trigger_gcd = timespan_t::zero();
         
-    // this grabs the 25% base crit bonus from 20473
-    base_crit += p -> find_class_spell( "Holy Shock" ) -> effectN( 1 ).percent();
+    // this grabs the crit multiplier bonus from 20473
+    crit_chance_multiplier = p -> find_class_spell( "Holy Shock" ) -> effectN( 1 ).base_value() / 10.0;
 
     // Daybreak gives this a 75% splash heal
     daybreak = new daybreak_t( p );
@@ -2467,6 +2476,9 @@ struct holy_shock_heal_t : public paladin_heal_t
     {
       cc += crit_increase;
     }
+
+    // effect 1 doubles crit chance
+    cc *= crit_chance_multiplier;
 
     return cc;
   }
@@ -4902,7 +4914,7 @@ void paladin_t::create_buffs()
                                          .cd( timespan_t::zero() ) // Let the ability handle the CD
                                          .add_invalidate( CACHE_HASTE ).add_invalidate( CACHE_CRIT )
                                          .add_invalidate( CACHE_MASTERY ).add_invalidate( CACHE_MULTISTRIKE )
-                                         .add_invalidate( CACHE_READINESS ).add_invalidate( CACHE_BONUS_ARMOR );
+                                         .add_invalidate( CACHE_READINESS ).add_invalidate( CACHE_BONUS_ARMOR ); // WOD-TODO: replace Readiness with versatility
   buffs.shield_of_the_righteous        = buff_creator_t( this, "shield_of_the_righteous" ).spell( find_spell( 132403 ) );
   buffs.ardent_defender                = new buffs::ardent_defender_buff_t( this );
   buffs.shield_of_glory                = buff_creator_t( this, "shield_of_glory" ).spell( find_spell( 138242 ) );
@@ -5399,6 +5411,7 @@ void paladin_t::init_spells()
   passives.daybreak               = find_specialization_spell( "Daybreak" );
   passives.holy_insight           = find_specialization_spell( "Holy Insight" );
   passives.infusion_of_light      = find_specialization_spell( "Infusion of Light" );
+  passives.crit_attunement        = find_specialization_spell( "Critical Strike Attunement" );
 
   // Prot Passives
   passives.grand_crusader         = find_specialization_spell( "Grand Crusader" );
@@ -5408,12 +5421,14 @@ void paladin_t::init_spells()
   passives.shining_protector      = find_specialization_spell( "Shining Protector" );
   passives.resolve                = find_specialization_spell( "Resolve" );
   passives.riposte                = find_specialization_spell( "Riposte" );
+  passives.haste_attunement       = find_specialization_spell( "Haste Attunement" );
 
   // Ret Passives
   passives.judgments_of_the_bold  = find_specialization_spell( "Judgments of the Bold" );
   passives.sword_of_light         = find_specialization_spell( "Sword of Light" );
   passives.sword_of_light_value   = find_spell( passives.sword_of_light -> ok() ? 20113 : 0 );
   passives.exorcism               = find_spell( passives.sword_of_light -> ok() ? 87138 : 0 );
+  passives.mastery_attunement     = find_specialization_spell( "Mastery Attunement" );
 
   // Perks
   // Multiple
@@ -5583,6 +5598,37 @@ double paladin_t::composite_attribute_multiplier( attribute_e attr ) const
   return m;
 }
 
+// paladin_t::composite_rating_multiplier ==================================
+
+double paladin_t::composite_rating_multiplier( rating_e r ) const
+{
+  double m = player_t::composite_rating_multiplier( r );
+
+  switch ( r )
+  {
+    case RATING_MELEE_HASTE:
+    case RATING_RANGED_HASTE:
+    case RATING_SPELL_HASTE:
+      if ( passives.haste_attunement -> ok() ) 
+        m *= 1.0 + passives.haste_attunement -> effectN( 1 ).percent(); 
+      break;
+    case RATING_MASTERY:
+      if ( passives.mastery_attunement -> ok() )
+        m *= 1.0 + passives.mastery_attunement -> effectN( 1 ).percent();
+      break;
+    case RATING_MELEE_CRIT:
+    case RATING_SPELL_CRIT:
+    case RATING_RANGED_CRIT:
+      if ( passives.crit_attunement -> ok() )
+        m *= 1.0 + passives.crit_attunement -> effectN( 1 ).percent();
+    default:
+      break;
+  }
+
+  return m;
+
+};
+
 // paladin_t::composite_melee_crit =========================================
 
 double paladin_t::composite_melee_crit() const
@@ -5706,6 +5752,7 @@ double paladin_t::composite_multistrike() const
   return m;
 }
 
+// WOD-TODO: replace with composite_versatility()
 // paladin_t::composite_readiness =========================================
 
 double paladin_t::composite_readiness() const
