@@ -4304,19 +4304,19 @@ void mage_t::apl_arcane()
   default_list -> add_action( "mana_gem,if=!glyph.loose_mana.enabled&mana.pct<80&buff.alter_time.down" );
 
   for( size_t i = 0; i < racial_actions.size(); i++ )
-    default_list -> add_action( racial_actions[i] + ",if=buff.alter_time.down&(buff.arcane_power.up|target.time_to_die<18)" );
+    default_list -> add_action( racial_actions[i] + ",sync=alter_time_activate,if=buff.alter_time.down" );
 
-  default_list -> add_action( "jade_serpent_potion,if=buff.alter_time.down&((cooldown.alter_time.remains=0&buff.arcane_power.up)|target.time_to_die<50)" );
+  default_list -> add_action( "jade_serpent_potion,sync=alter_time_activate,if=buff.alter_time.down" );
+  default_list -> add_action( "jade_serpent_potion,if=buff.alter_time.down&target.time_to_die<50" );
 
   for( size_t i = 0; i < item_actions.size(); i++ )
   {
-    default_list -> add_action( item_actions[i] + ",sync=alter_time_activate,if=buff.alter_time.downpresence_of_mind,if=buff.alter_time.down&buff.arcane_power.up&trinket.stat.intellect.cooldown_remains>15" );
-    default_list -> add_action( item_actions[i] + ",if=(cooldown.alter_time_activate.remains>45|target.time_to_die<25)&(buff.rune_of_power.remains>20|buff.invokers_energy.remains>20|(!talent.rune_of_power.enabled&!talent.invocation.enabled))" );
+    default_list -> add_action( item_actions[i] + ",sync=alter_time_activate,if=buff.alter_time.down" );
+    default_list -> add_action( item_actions[i] + ",if=(cooldown.alter_time_activate.remains>60|target.time_to_die<25)&(buff.rune_of_power.remains>20|buff.invokers_energy.remains>20|(!talent.rune_of_power.enabled&!talent.invocation.enabled))" );
   }
 
-  default_list -> add_talent( this, "Presence of Mind", "if=buff.alter_time.down&buff.arcane_power.up&trinket.stat.intellect.cooldown_remains>15" );
+  default_list -> add_talent( this, "Presence of Mind", "sync=alter_time_activate,if=talent.presence_of_mind.enabled&buff.alter_time.down" );
   default_list -> add_action( this, "Alter Time", "if=buff.alter_time.down&buff.arcane_power.up&trinket.stat.intellect.cooldown_remains>15" );
-  default_list -> add_talent( this, "Presence of Mind", "if=buff.alter_time.down&buff.arcane_power.up&buff.amplified.down" );
   default_list -> add_action( this, "Alter Time", "if=buff.alter_time.down&buff.arcane_power.up&buff.amplified.down" );
 
   default_list -> add_action( "run_action_list,name=aoe,if=active_enemies>=6" );
@@ -4329,8 +4329,8 @@ void mage_t::apl_arcane()
   single_target -> add_action( this, "Arcane Missiles", "if=buff.alter_time.up" );
   single_target -> add_action( this, "Arcane Blast", "if=buff.alter_time.up" );
   single_target -> add_action( this, "Arcane Blast", "if=set_bonus.tier16_2pc_caster&buff.arcane_missiles.stack<2&buff.arcane_charge.stack=4&buff.profound_magic.stack>=2&mana.pct>90" );
-  single_target -> add_action( this, "Arcane Blast", "if=buff.arcane_missiles.stack<2&buff.arcane_charge.stack=4&buff.profound_magic.up&mana.pct>93" );
-  single_target -> add_action( this, "Arcane Missiles", "if=(buff.arcane_missiles.stack=2&cooldown.arcane_power.remains>0)|(buff.arcane_charge.stack=4&cooldown.arcane_power.remains>4*action.arcane_blast.cast_time)" );
+  single_target -> add_action( this, "Arcane Blast", "if=set_bonus.tier16_2pc_caster&buff.arcane_missiles.stack<2&buff.arcane_charge.stack=4&buff.profound_magic.up&mana.pct>93" );
+  single_target -> add_action( this, "Arcane Missiles", "if=(buff.arcane_missiles.stack=2&cooldown.arcane_power.remains>0)|(buff.arcane_charge.stack=4&cooldown.arcane_power.remains>6*cast_time)" );
   single_target -> add_action( this, "Arcane Barrage", "if=buff.arcane_charge.stack=4&mana.pct<95" );
   single_target -> add_talent( this, "Presence of Mind", "if=cooldown.arcane_power.remains>75" );
   single_target -> add_action( this, "Arcane Blast" );
