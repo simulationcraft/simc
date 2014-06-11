@@ -161,7 +161,7 @@ public:
     proc_t* mana_tea;
     proc_t* tier15_2pc_melee;
     proc_t* tier15_4pc_melee;
-        proc_t* tigereye_brew;
+    proc_t* tigereye_brew;
   } proc;
  
   struct talents_t
@@ -819,7 +819,7 @@ struct monk_melee_attack_t : public monk_action_t<melee_attack_t>
     {
       assert( mh -> slot != SLOT_OFF_HAND );
  
-      double dmg = sim -> averaged_range( mh -> min_dmg, mh -> max_dmg );
+      double dmg = sim -> averaged_range( mh -> min_dmg, mh -> max_dmg ) + mh -> bonus_dmg;
  
       dmg /= mh -> swing_time.total_seconds();
  
@@ -837,7 +837,7 @@ struct monk_melee_attack_t : public monk_action_t<melee_attack_t>
     {
       assert( oh -> slot == SLOT_OFF_HAND );
  
-      double dmg = sim -> averaged_range( oh -> min_dmg, oh -> max_dmg );
+      double dmg = sim -> averaged_range( oh -> min_dmg, oh -> max_dmg ) + oh -> bonus_dmg;
  
       dmg /= oh -> swing_time.total_seconds();
  
@@ -893,7 +893,7 @@ struct jab_t : public monk_melee_attack_t
     mh = &( player -> main_hand_weapon );
     oh = &( player -> off_hand_weapon );
  
-    weapon_power_mod *= 2.091; // hardcoded into tooltip
+    base_multiplier *= 2.091; // hardcoded into tooltip
 
     base_costs[ RESOURCE_ENERGY ] += p -> active_stance_data( FIERCE_TIGER ).effectN( 7 ).base_value();
   }
@@ -962,7 +962,7 @@ struct tiger_palm_t : public monk_melee_attack_t
         stancemask = STURDY_OX | FIERCE_TIGER | SPIRITED_CRANE;
     mh = &( player -> main_hand_weapon ) ;
     oh = &( player -> off_hand_weapon ) ;
-    weapon_power_mod *= 4.183; // hardcoded into tooltip
+    base_multiplier *= 4.183; // hardcoded into tooltip
  
     if ( p -> spec.brewmaster_training -> ok() )
       base_costs[ RESOURCE_CHI ] = 0.0;
@@ -1051,7 +1051,7 @@ struct blackout_kick_t : public monk_melee_attack_t
     parse_options( nullptr, options_str );
     mh = &( player -> main_hand_weapon );
     oh = &( player -> off_hand_weapon );
-    weapon_power_mod *= 8.929; // hardcoded into tooltip
+    base_multiplier *= 8.929; // hardcoded into tooltip
 
     if ( p -> spec.teachings_of_the_monastery -> ok() )
     {
@@ -1346,7 +1346,7 @@ struct rising_sun_kick_t : public monk_melee_attack_t
     stancemask = FIERCE_TIGER;
     mh = &( player -> main_hand_weapon ) ;
     oh = &( player -> off_hand_weapon ) ;
-    weapon_power_mod *= 17.866; // hardcoded into tooltip
+    base_multiplier *= 17.866; // hardcoded into tooltip
   }
  
   virtual void impact ( action_state_t* s )
@@ -1439,13 +1439,13 @@ struct spinning_crane_kick_t : public monk_melee_attack_t
  
     if( p -> talent.rushing_jade_wind -> ok() )
     {
-      weapon_power_mod *= 1.59; // hardcoded into tooltip
+      base_multiplier *= 1.59; // hardcoded into tooltip
       school = SCHOOL_NATURE; // Application is Nature but the actual damage ticks is Physical
       tick_action = new rushing_jade_wind_tick_t( p, p -> find_talent_spell( "Rushing Jade Wind" ) );
     }
     else
     {
-      weapon_power_mod *= 1.59; // hardcoded into tooltip
+      base_multiplier *= 1.59; // hardcoded into tooltip
       school = SCHOOL_PHYSICAL;
       channeled = true;
       tick_action = new spinning_crane_kick_tick_t( p, p -> find_class_spell( "Spinning Crane Kick" ) );
@@ -1515,7 +1515,7 @@ struct fists_of_fury_t : public monk_melee_attack_t
       aoe = -1;
       mh = &( player -> main_hand_weapon );
       oh = &( player -> off_hand_weapon );
-      weapon_power_mod *= 18.5; // hardcoded into tooltip
+      base_multiplier *= 18.5; // hardcoded into tooltip
       split_aoe_damage = false;
       school = SCHOOL_PHYSICAL;
     }
@@ -1585,7 +1585,7 @@ struct hurricane_strike_t : public monk_melee_attack_t
     stancemask = FIERCE_TIGER;
     mh = &( player -> main_hand_weapon ) ;
     oh = &( player -> off_hand_weapon ) ;
-    weapon_power_mod *= 30 * 2.5; // hardcoded into tooltip
+    base_multiplier *= 30 * 2.5; // hardcoded into tooltip
   }
 
  virtual void consume_resource()
@@ -1618,7 +1618,7 @@ struct melee_t : public monk_melee_attack_t
     if ( player -> dual_wield() )
     {
       base_hit -= 0.19;
-      weapon_power_mod *= 1.0 + player -> spec.way_of_the_monk -> effectN( 1 ).percent();
+      base_multiplier *= 1.0 + player -> spec.way_of_the_monk -> effectN( 1 ).percent();
     }
   }
  
@@ -1758,7 +1758,7 @@ struct keg_smash_t : public monk_melee_attack_t
     mh = &( player -> main_hand_weapon ) ;
     oh = &( player -> off_hand_weapon ) ;
  
-    weapon_power_mod *= 10.00; // hardcoded into tooltip
+    base_multiplier *= 10.00; // hardcoded into tooltip
   }
  
   virtual double action_multiplier() const
