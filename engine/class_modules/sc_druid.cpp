@@ -125,8 +125,8 @@ public:
   // -1 = Downward, ie: Solar ---> Lunar
   double eclipse_max; // Amount of seconds until eclipse reaches maximum power.
   double eclipse_change; // Amount of seconds until eclipse changes.
-  double time_to_next_lunar;
-  double time_to_next_solar;
+  double time_to_next_lunar; // Amount of seconds until eclipse energy reaches 100 (Lunar Eclipse)
+  double time_to_next_solar; // Amount of seconds until eclipse energy reaches -100 (Solar Eclipse)
 
   // Active
   action_t* t16_2pc_starfall_bolt;
@@ -6832,63 +6832,94 @@ void druid_t::balance_tracker()
 
 void druid_t::balance_expressions()
 {
+  // Eclipse works off of sine waves, thus it is time for a quick trig lesson
+  // The general form of eclipse energy is E = A * sin( phi ), where phi is the 
+  // phase of the sin wave (corresponding to the phase of our lunar/solar cycle). 
+  // Phi starts at zero (E=0), hits max lunar at phi=pi/2 (E=105), hits zero again at phi=pi (E=0)
+  // hits max solar at phi=3*pi/2 (E=-105), and returns to E=0 at phi=2*pi completing the cycle.
+  // We will exploit some trig properties to efficiently determine certain relevant expression values.
+
+  // phi_lunar is the phase at which we hit the 100-energy lunar cap.
   static const double phi_lunar = asin( 100.0 / 105.0 );
-  static const double phi_zero = 0;
-  static const double phi_solar = asin( 100.0 / 105.0 ) + M_PI;
+  // easily determined by solving 100 = A * sin(phi) for phi
 
-  double omega;
+  // phi_solar is the phase at which we hit the 100-energy solar cap.
+  static const double phi_solar = phi_lunar + M_PI;
+  // note that this not simply asin(-100.0/A); that would give us the time we *leave* solar thanks
+  // to the fact that asin returns values between -pi/2 and pi/2. We want a phase in the third quadrant 
+  // (between phi=pi and phi=3*pi/2).  The easiest way to get it is to just add pi to phi_lunar, since what 
+  // we're looking for is the exact complement at the other side of the cycle
+
+  // omega is the frequency of our cycle, used to determine phi. We go through 2*pi phase every 40 seconds
+  double omega = 2 * M_PI /  40000;
+  // Euphoria doubles the frequency of the cycle (reduces the period to 20 seconds)
   if ( talent.euphoria -> ok() )
-    omega = 2 * M_PI / 20000;
-  else
-    omega = 2 * M_PI / 40000;
-
-  double phi;
+    omega *= 2;
   
-  phi = omega * ( balance_time / timespan_t::from_millis( 1 ) );
+  // phi is the phase, which describes our position in the eclipse cycle, determined by the accumulator balance_time and frequency omega
+  double phi;
+  phi = omega * balance_time.total_millis();
 
+  // since sin is periodic modulo 2*pi (in other words, sin(x+2*pi)=sin(x) ), we can remove any multiple of 2*pi from phi.
+  // This puts phi between 0 and 2*pi, which is convenient
   phi = fmod( phi, 2 * M_PI );
 
+  // if we're already in the lunar max, just return zero
   if ( eclipse_amount > 100 )
     time_to_next_lunar = 0;
   else
-    time_to_next_lunar = fmod( ( phi_lunar - phi ) + 2 * M_PI, 2 * M_PI ) / omega / 1000;
+    // otherwise, we want to know how long it will be until phi reaches phi_lunar. 
+    // phi_lunar - phi gives us what we want when phi < phi_lunar, but gives a negative value if phi > phi_lunar (i.e. we just passed a lunar phase).
+    // Again, since everything is modulo 2*pi, we can add 2*pi (to make everything positive) and then fmod().
+    // This forces the result to be positive and accurately represent the amount of phase until the next lunar cycle.
+    // Divide by omega and 1000 to convert from phase to seconds.
+    time_to_next_lunar = fmod( phi_lunar - phi + 2 * M_PI, 2 * M_PI ) / omega / 1000;
+
+  // Same tricks for solar; if we're already in solar max, return zero, otherwise pull the fmod( phi_solar - phi + 2*pi, 2*pi) trick
   if ( eclipse_amount < -100 )
     time_to_next_solar = 0;
   else
-    time_to_next_solar = fmod( ( phi_solar - phi ) + 2 * M_PI, 2 * M_PI ) / omega / 1000;
+    time_to_next_solar = fmod( phi_solar - phi + 2 * M_PI, 2 * M_PI ) / omega / 1000;
 
-  eclipse_max = std::min( time_to_next_lunar, time_to_next_solar );
+  // eclipse_change is the time until we hit zero eclipse energy. This happens whenever the phase is 0, pi, 2*pi, 3*pi, etc.
+  // The easiest way to get this is to just fmod() our phase to modulo pi and subtract from pi. 
+  // That gives us the amount of phase until we reach the next multiple of pi (same trick as above, just using pi instead of phi_lunar/solar)
+  eclipse_change = ( M_PI - fmod( phi, M_PI ) ) / omega / 1000;
 
-  if ( eclipse_amount > 0 )
-    eclipse_change = fmod( phi + M_PI, M_PI ) / omega / 1000;
-  else
-    eclipse_change = fmod( 2 * M_PI - phi, M_PI ) / omega / 1000;
-
+  // Astral communion essentially speeds up omega by a factor of 4 for 4 seconds. 
+  // In other words, it adds 4*4*omega phase to the cycle over 4 seconds.
+  // Since we'd already be gaining 4*omega phase in this time, this represents an additional 3*4*omega phase.
+  // Another way to view this is that we "fast-forward" the cycle 12 seconds ahead over our 4 second period,
+  // in addition to the 4 seconds of time we'd already be traversing. 
+  // This section handles how that additional phase accrual affects the different time estimates while AC is up.
   if ( buff.astral_communion -> up() )
   {
+    // This is the amount of "fast-forward" time left on Astral Communion; e.g. if there's 3 seconds left, we'll
+    // be adding 3*3=9 seconds worth of phase to the cycle. Done as a time value rather than phase since we want
+    // to subtract off of existing time estimates.
     double ac;
     ac = buff.astral_communion -> remains() / timespan_t::from_millis( 1000 ) * 3;
 
+    // If our estimate is > the fast-forward time, we can just subtract that time from the estimate.
+    // Otherwise, we'll hit the estimate during AC; in that case, just divide by 4 to represent the speed-up.
     if ( eclipse_change > ac )
       eclipse_change -= ac; 
     else
-      eclipse_change /= 3;
-
-    if ( eclipse_max > ac )
-      eclipse_max -= ac; 
-    else
-      eclipse_max /= 3;
+      eclipse_change /= 4;
 
     if ( time_to_next_lunar > ac )
       time_to_next_lunar -= ac; 
     else
-      time_to_next_lunar /= 3;
+      time_to_next_lunar /= 4;
 
     if ( time_to_next_solar > ac )
       time_to_next_solar -= ac; 
     else
-      time_to_next_solar /= 3;
-  }
+      time_to_next_solar /= 4;
+  }  
+
+  // the time to next eclipse (either one) is just the minimum of the individual results
+  eclipse_max = std::min( time_to_next_lunar, time_to_next_solar );
 }
 
 /* Report Extension Class
