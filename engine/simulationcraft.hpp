@@ -3413,15 +3413,30 @@ private:
 namespace new_set_bonus {
 
 enum set_tier_e {
+  SET_MIN = -3,
+  PVP_2 = -2,
   PVP_1 = -1,
   SET_NONE = 0,
+  TIER_1 = 1,
+  TIER_2 = 2,
+  TIER_3 = 3,
+  TIER_4 = 4,
+  TIER_5 = 5,
+  TIER_6 = 6,
+  TIER_7 = 7,
+  TIER_8 = 8,
+  TIER_9 = 9,
+  TIER_10 = 10,
+  TIER_11 = 11,
+  TIER_12 = 12,
+  TIER_13 = 13,
+  TIER_14 = 14,
+  TIER_15 = 15,
   TIER_16 = 16,
   TIER_17 = 17,
   SET_MAX = 18,
 };
 
-typedef uint32_t set_bonus_description_t[N_TIER][4];
-// using set_bonus_description_t = std::array<std::array<uint32_t,N_TIER_BONUS>,N_TIER>; // Use when we support initializer lists to enforce matching array dimensions
 struct set_bonus_t
 {
 public:

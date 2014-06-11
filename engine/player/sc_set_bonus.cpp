@@ -184,6 +184,8 @@ void set_bonus_t::init()
   // TODO: fill up count array
 
   // TODO: retrieve all set bonus data, and map it into set_bonus, depending on has_set_bonus
+
+  initialized = true;
 }
 
 /* Retrieve spec index from given specialization_e enum.
@@ -195,7 +197,7 @@ uint32_t set_bonus_t::get_spec_idx( specialization_e spec ) const
   if ( !p -> dbc.spec_idx( spec, class_idx, spec_idx ) )
     throw std::logic_error("Could not determine class/spec from specialization_e enum");
 
-  assert( class_idx == util::class_id_mask( p -> type ) && "Trying to get set bonus for spec of wrong class!" );
+  assert( class_idx == as<uint32_t>(util::class_id_mask( p -> type )) && "Trying to get set bonus for spec of wrong class!" );
   return spec_idx;
 }
 
