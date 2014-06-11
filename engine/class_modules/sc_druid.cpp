@@ -125,6 +125,8 @@ public:
   // -1 = Downward, ie: Solar ---> Lunar
   double eclipse_max; // Amount of seconds until eclipse reaches maximum power.
   double eclipse_change; // Amount of seconds until eclipse changes.
+  double time_to_next_lunar;
+  double time_to_next_solar;
 
   // Active
   action_t* t16_2pc_starfall_bolt;
@@ -488,6 +490,8 @@ public:
     eclipse_amount( 0 ),
     eclipse_direction( 1 ),
     eclipse_change( 20 ),
+    time_to_next_lunar( 10 ),
+    time_to_next_solar( 30 ),
     eclipse_max( 10 ),
     clamped_eclipse_amount( 0 ),
     t16_2pc_starfall_bolt( nullptr ),
@@ -3768,10 +3772,12 @@ struct druid_spell_t : public druid_spell_base_t<spell_t>
     {
       if( sim -> log || sim -> debug )
       {
-        sim -> out_debug.printf( "Eclipse Position: %f Eclipse Direction: %f Time till next Eclipse Change: %f Time Till Maximum Eclipse: %f",
+        sim -> out_debug.printf( "Eclipse Position: %f Eclipse Direction: %f Time till next Eclipse Change: %f Time to next lunar %f Time to next Solar %f Time Till Maximum Eclipse: %f",
           p() -> eclipse_amount,
           p() -> eclipse_direction,
           p() -> eclipse_change,
+          p() -> time_to_next_lunar,
+          p() -> time_to_next_solar,
           p() -> eclipse_max );
       }
     }
@@ -4032,7 +4038,6 @@ struct celestial_alignment_t : public druid_spell_t
     parse_options( NULL, options_str );
     harmful = false;
     dot_duration = timespan_t::zero();
-    data().duration() = timespan_t::zero();
   }
 
   virtual void execute()
@@ -5904,6 +5909,8 @@ void druid_t::reset()
   eclipse_direction = 1;
   eclipse_change = talent.euphoria -> ok() ? 10 : 20;
   eclipse_max = talent.euphoria -> ok() ? 5 : 10;
+  time_to_next_lunar = eclipse_max;
+  time_to_next_solar = eclipse_change + eclipse_max;
   clamped_eclipse_amount = 0;
   last_check = timespan_t::zero();
   balance_time = timespan_t::zero();
@@ -6769,6 +6776,8 @@ void druid_t::balance_tracker()
 
     eclipse_change += ca_remains;
     eclipse_max += ca_remains;
+    time_to_next_lunar += ca_remains;
+    time_to_next_solar += ca_remains;
     return;
   }
 
@@ -6786,7 +6795,7 @@ void druid_t::balance_tracker()
   balance_time += last_check; // Add the amount of elapsed time to balance_time
   last_check = sim -> current_time; // Set current time for last check.
 
-  eclipse_amount = 110 * sin( 2 * M_PI * balance_time / timespan_t::from_millis( 40000 ) ); // Re-calculate eclipse
+  eclipse_amount = 105 * sin( 2 * M_PI * balance_time / timespan_t::from_millis( 40000 ) ); // Re-calculate eclipse
 
   if ( eclipse_amount > 100 )
     clamped_eclipse_amount = 100;
@@ -6795,7 +6804,7 @@ void druid_t::balance_tracker()
   else
     clamped_eclipse_amount = eclipse_amount;
 
-  eclipse_direction = 110 * sin( 2 * M_PI * ( balance_time + timespan_t::from_millis( 1 ) ) / timespan_t::from_millis( 40000 ) );
+  eclipse_direction = 105 * sin( 2 * M_PI * ( balance_time + timespan_t::from_millis( 1 ) ) / timespan_t::from_millis( 40000 ) );
   // Add 1 millisecond to eclipse in order to find the direction we are going.
 
   if ( eclipse_amount > eclipse_direction )  // Compare current eclipse with the last eclipse to find out what direction we are heading.
@@ -6808,26 +6817,30 @@ void druid_t::balance_tracker()
 
 void druid_t::balance_expressions()
 {
-  if ( eclipse_direction == 1 && eclipse_amount < 0 )
-  {
-    eclipse_change = ( 40 / M_PI / 2* asin( eclipse_amount / -110 ) );
-    eclipse_max = ( 40 / ( 2 * M_PI ) * asin( 200 / 110 ) ) - ( 40 / ( 2 * M_PI ) * asin( eclipse_amount / 110 ) );
-  }
-  else if ( eclipse_direction == 1 && eclipse_amount >= 0 )
-  {
-    eclipse_change = ( 40 / M_PI * asin( 110 / 110 ) ) - ( 40 / ( 2 * M_PI ) * asin( eclipse_amount / 110 ) );
-    eclipse_max = ( 40 / ( 2 * M_PI ) * asin( 200 / 110 ) ) - ( 40 / ( 2 * M_PI ) * asin( eclipse_amount / 110 ) );
-  }
-  else if ( eclipse_direction == -1 && eclipse_amount > 0 )
-  {
-    eclipse_change = ( 40 / M_PI / 2 * asin( eclipse_amount / 110 ) );
-    eclipse_max = ( 40 / ( 2 * M_PI ) * asin( eclipse_amount / 110 ) ) - ( 40 / ( 2 * M_PI ) * asin( -200 / 110 ) );
-  }
-  else if ( eclipse_direction == -1 && eclipse_amount <= 0 )
-  {
-    eclipse_change = ( 40 / M_PI * asin( 110 / 110 ) ) - ( 40 / M_PI / 2 * asin( eclipse_amount / -110 ) );
-    eclipse_max = ( 40 / ( 2 * M_PI ) * asin( eclipse_amount / 110 ) ) - ( 40 / ( 2 * M_PI ) * asin( -200 / 110 ) );
-  }
+  double omega;
+  if ( talent.euphoria -> ok() )
+    omega = 2 * M_PI / 20000;
+  else
+    omega = 2 * M_PI / 40000;
+
+  double phi = omega * ( balance_time / timespan_t::from_millis( 1 ) );
+
+  double phi_lunar = asin( 100.0 / 105.0 );
+  double phi_solar = phi_lunar + M_PI;
+  double phi_zero = asin( 0.0 / 105.0 );
+  phi = fmod( phi, 2 * M_PI );
+  phi_lunar = phi_lunar - phi;
+  phi_solar = phi_solar - phi;
+
+  time_to_next_lunar = fmod( phi_lunar + 2 * M_PI, 2 * M_PI ) / omega / 1000;
+  time_to_next_solar = fmod( phi_solar + 2 * M_PI, 2 * M_PI ) / omega / 1000;
+  eclipse_max = std::min( time_to_next_lunar, time_to_next_solar );
+  if ( eclipse_amount > 0 )
+    phi_zero = phi_zero - phi;
+  else
+    phi_zero = phi_zero + M_PI - phi;
+
+  eclipse_change = fmod( phi_zero + M_PI, M_PI ) / omega / 1000;
 
   if ( buff.astral_communion -> up() )
   {
@@ -6842,12 +6855,6 @@ void druid_t::balance_expressions()
       eclipse_change -= ac;
     else
       eclipse_change /= 3;
-  }
-
-  if ( talent.euphoria -> ok() )
-  {
-    eclipse_change /= 2;
-    eclipse_max /= 2;
   }
 }
 
