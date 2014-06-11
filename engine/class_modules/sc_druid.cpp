@@ -3903,6 +3903,16 @@ struct astral_communion_t : public druid_spell_t
   {
     druid_spell_t::tick( d );
     p() -> balance_tracker();
+    if ( sim -> log || sim -> debug )
+    {
+      sim -> out_debug.printf( "Eclipse Position: %f Eclipse Direction: %f Time till next Eclipse Change: %f Time to next lunar %f Time to next Solar %f Time Till Maximum Eclipse: %f",
+        p() -> eclipse_amount,
+        p() -> eclipse_direction,
+        p() -> eclipse_change,
+        p() -> time_to_next_lunar,
+        p() -> time_to_next_solar,
+        p() -> eclipse_max );
+    }
   }
 
   virtual void last_tick( dot_t* d )
@@ -6353,6 +6363,14 @@ expr_t* druid_t::create_expression( action_t* a, const std::string& name_str )
   {
     return make_ref_expr( "eclipse_change", eclipse_change );
   }
+  else if ( util::str_compare_ci( name_str, "lunar_max" ) )
+  {
+    return make_ref_expr( "lunar_max", time_to_next_lunar );
+  }
+  else if ( util::str_compare_ci( name_str, "solar_max" ) )
+  {
+    return make_ref_expr( "solar_max", time_to_next_solar );
+  }
   else if ( util::str_compare_ci( name_str, "eclipse_max" ) )
   {
     return make_ref_expr( "eclipse_max", eclipse_max );
@@ -6812,49 +6830,67 @@ void druid_t::balance_tracker()
   else
     eclipse_direction = 1;
 
-  balance_expressions();
+  balance_expressions(); // Cue madness
 }
 
 void druid_t::balance_expressions()
 {
+  static const double phi_lunar = asin( 100.0 / 105.0 );
+  static const double phi_zero = asin( 0.0 / 105.0 );
+  static const double phi_solar = asin( 100.0 / 105.0 ) + M_PI;
+
   double omega;
   if ( talent.euphoria -> ok() )
     omega = 2 * M_PI / 20000;
   else
     omega = 2 * M_PI / 40000;
 
-  double phi = omega * ( balance_time / timespan_t::from_millis( 1 ) );
+  double phi;
+  
+  phi = omega * ( balance_time / timespan_t::from_millis( 1 ) );
 
-  double phi_lunar = asin( 100.0 / 105.0 );
-  double phi_solar = phi_lunar + M_PI;
-  double phi_zero = asin( 0.0 / 105.0 );
   phi = fmod( phi, 2 * M_PI );
-  phi_lunar = phi_lunar - phi;
-  phi_solar = phi_solar - phi;
 
-  time_to_next_lunar = fmod( phi_lunar + 2 * M_PI, 2 * M_PI ) / omega / 1000;
-  time_to_next_solar = fmod( phi_solar + 2 * M_PI, 2 * M_PI ) / omega / 1000;
-  eclipse_max = std::min( time_to_next_lunar, time_to_next_solar );
-  if ( eclipse_amount > 0 )
-    phi_zero = phi_zero - phi;
+  if ( eclipse_amount > 100 )
+    time_to_next_lunar = 0;
   else
-    phi_zero = phi_zero + M_PI - phi;
+    time_to_next_lunar = fmod( ( phi_lunar - phi ) + 2 * M_PI, 2 * M_PI ) / omega / 1000;
+  if ( eclipse_amount < -100 )
+    time_to_next_solar = 0;
+  else
+    time_to_next_solar = fmod( ( phi_solar - phi ) + 2 * M_PI, 2 * M_PI ) / omega / 1000;
 
-  eclipse_change = fmod( phi_zero + M_PI, M_PI ) / omega / 1000;
+  eclipse_max = std::min( time_to_next_lunar, time_to_next_solar );
+
+  if ( eclipse_amount > 0 )
+    eclipse_change = fmod( ( phi_zero - phi ) + M_PI, M_PI ) / omega / 1000;
+  else
+    eclipse_change = fmod( ( phi_zero + M_PI - phi ) + M_PI, M_PI ) / omega / 1000;
 
   if ( buff.astral_communion -> up() )
   {
     double ac;
     ac = buff.astral_communion -> remains() / timespan_t::from_millis( 1000 ) * 3;
+
+    if ( eclipse_change > ac )
+      eclipse_change -= ac; 
+    else
+      eclipse_change /= 3;
+
     if ( eclipse_max > ac )
       eclipse_max -= ac; 
     else
       eclipse_max /= 3;
 
-    if ( eclipse_change > ac )
-      eclipse_change -= ac;
+    if ( time_to_next_lunar > ac )
+      time_to_next_lunar -= ac; 
     else
-      eclipse_change /= 3;
+      time_to_next_lunar /= 3;
+
+    if ( time_to_next_solar > ac )
+      time_to_next_solar -= ac; 
+    else
+      time_to_next_solar /= 3;
   }
 }
 
