@@ -1265,12 +1265,8 @@ struct barkskin_t : public druid_buff_t < buff_t >
     frenzied_regeneration_2pc_t( druid_t* p ) :
       heal_t( "frenzied_regeneration", p, p -> find_class_spell( "Frenzied Regeneration" ) )
     {
-      base_dd_min = base_dd_max = attack_power_mod.direct = spell_power_mod.direct = 0.0;
-
-      harmful    = false;
-      special    = false;
-      proc       = true;
-      background = true;
+      harmful = special = false;
+      proc = background = true;
 
       if ( p -> sets.has_set_bonus( SET_T16_2PC_TANK ) )
         p -> active.ursocs_vigor = new ursocs_vigor_t( p );
@@ -1323,7 +1319,7 @@ struct barkskin_t : public druid_buff_t < buff_t >
   action_t* frenzied_regeneration;
 
   barkskin_t( druid_t& p ) :
-    base_t( p, buff_creator_t( &p, "barkskin", p.find_class_spell( "Barkskin" ) ) ),
+    base_t( p, buff_creator_t( &p, "barkskin", p.find_specialization_spell( "Barkskin" ) ) ),
     frenzied_regeneration( nullptr )
   {
     cooldown -> duration = timespan_t::zero(); // CD is managed by the spell
@@ -3928,13 +3924,13 @@ struct astral_communion_t : public druid_spell_t
 struct barkskin_t : public druid_spell_t
 {
   barkskin_t( druid_t* player, const std::string& options_str ) :
-    druid_spell_t( "barkskin", player, player -> find_class_spell( "Barkskin" ), options_str )
+    druid_spell_t( "barkskin", player, player -> find_specialization_spell( "Barkskin" ), options_str )
   {
     harmful = false;
     use_off_gcd = true;
 
-    if ( player -> spec.thick_hide )
-      cooldown -> duration += player -> spec.thick_hide -> effectN( 6 ).time_value();
+    //if ( player -> spec.thick_hide ) -- DBC returns 30 second cooldown on ability already. This will reduce it to 0.
+      //cooldown -> duration += player -> spec.thick_hide -> effectN( 6 ).time_value();
   }
 
   virtual void execute()
