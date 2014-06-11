@@ -281,6 +281,7 @@ public:
     const spell_data_t* elemental_fury;
     const spell_data_t* fulmination;
     const spell_data_t* lava_surge;
+    const spell_data_t* multistrike_attunement;
     const spell_data_t* readiness_elemental;
     const spell_data_t* rolling_thunder;
     const spell_data_t* shamanism;
@@ -289,6 +290,7 @@ public:
     const spell_data_t* critical_strikes;
     const spell_data_t* dual_wield;
     const spell_data_t* flurry;
+    const spell_data_t* haste_attunement;
     const spell_data_t* mental_quickness;
     const spell_data_t* primal_wisdom;
     const spell_data_t* readiness_enhancement;
@@ -395,10 +397,8 @@ public:
   shaman_attack_t* ascendance_oh;
 
   // Weapon Enchants
-  shaman_attack_t* windfury_mh;
-  shaman_attack_t* windfury_oh;
-  shaman_spell_t*  flametongue_mh;
-  shaman_spell_t*  flametongue_oh;
+  shaman_attack_t* windfury;
+  shaman_spell_t*  flametongue;
 
   // Tier16 random imbues
   action_t* t16_wind;
@@ -461,10 +461,8 @@ public:
     ascendance_oh = 0;
 
     // Weapon Enchants
-    windfury_mh    = 0;
-    windfury_oh    = 0;
-    flametongue_mh = 0;
-    flametongue_oh = 0;
+    windfury    = 0;
+    flametongue = 0;
 
     t16_wind = 0;
     t16_flame = 0;
@@ -1161,7 +1159,7 @@ struct feral_spirit_pet_t : public pet_t
     main_hand_weapon.damage     = ( main_hand_weapon.min_dmg + main_hand_weapon.max_dmg ) / 2;
     main_hand_weapon.swing_time = timespan_t::from_seconds( 1.5 );
 
-    owner_coeff.ap_from_ap = 1 / 3.0; // TODO-WOD: Preliminary value, verify
+    owner_coeff.ap_from_ap = 0.5; // TODO-WOD: Preliminary value, verify
 
     command = owner -> find_spell( 65222 );
   }
@@ -1251,19 +1249,6 @@ struct earth_elemental_pet_t : public pet_t
     }
   };
 
-  struct pulverize_t : public melee_attack_t
-  {
-    pulverize_t( earth_elemental_pet_t* player ) :
-      melee_attack_t( "pulverize", player, player -> find_spell( 118345 ) )
-    {
-      school            = SCHOOL_PHYSICAL;
-      may_crit          = true;
-      special           = true;
-      weapon            = &( player -> main_hand_weapon );
-      weapon_multiplier = 0;
-    }
-  };
-
   const spell_data_t* command;
 
   earth_elemental_pet_t( sim_t* sim, shaman_t* owner, bool guardian ) :
@@ -1310,10 +1295,7 @@ struct earth_elemental_pet_t : public pet_t
     // Simple as it gets, travel to target, kick off melee
     action_list_str = "travel/auto_attack,moving=0";
 
-    if ( o() -> talent.primal_elementalist -> ok() )
-      action_list_str += "/pulverize";
-
-    owner_coeff.ap_from_sp = 0.13; // TODO-WOD: Preliminary value, verify
+    owner_coeff.ap_from_sp = 0.1; // TODO-WOD: Preliminary value, verify
     if ( o() -> talent.primal_elementalist -> ok() )
       owner_coeff.ap_from_sp *= 1.0 + o() -> talent.primal_elementalist -> effectN( 1 ).percent();
   }
@@ -1323,7 +1305,6 @@ struct earth_elemental_pet_t : public pet_t
   {
     if ( name == "travel"      ) return new travel_t( this );
     if ( name == "auto_attack" ) return new auto_melee_attack_t ( this );
-    if ( name == "pulverize"   ) return new pulverize_t( this );
 
     return pet_t::create_action( name, options_str );
   }
@@ -1758,18 +1739,6 @@ static bool trigger_maelstrom_weapon( shaman_attack_t* a )
   return a -> p() -> buff.maelstrom_weapon -> trigger( a, 1, chance );
 }
 
-// trigger_flametongue_weapon ===============================================
-
-static void trigger_flametongue_weapon( shaman_attack_t* a )
-{
-  shaman_t* p = a -> p();
-
-  if ( a -> weapon -> slot == SLOT_MAIN_HAND )
-    p -> flametongue_mh -> execute();
-  else
-    p -> flametongue_oh -> execute();
-}
-
 // trigger_windfury_weapon ==================================================
 
 struct windfury_delay_event_t : public event_t
@@ -1787,28 +1756,22 @@ struct windfury_delay_event_t : public event_t
     shaman_t* p = wf -> p();
 
     p -> proc.windfury -> occur();
-    wf -> execute();
-    wf -> execute();
-    wf -> execute();
+    wf -> schedule_execute();
+    wf -> schedule_execute();
+    wf -> schedule_execute();
   }
 };
 
 static bool trigger_windfury_weapon( shaman_attack_t* a )
 {
   shaman_t* p = a -> p();
-  shaman_attack_t* wf = 0;
-
-  if ( a -> weapon -> slot == SLOT_MAIN_HAND )
-    wf = p -> windfury_mh;
-  else
-    wf = p -> windfury_oh;
 
   if ( p -> rng().roll( p -> spell.windfury_driver -> proc_chance() ) )
   {
     p -> cooldown.feral_spirits -> ready -= timespan_t::from_seconds( p -> sets.set( SET_T15_4PC_MELEE ) -> effectN( 1 ).base_value() );
 
     // Delay windfury by some time, up to about a second
-    new ( *p -> sim ) windfury_delay_event_t( wf, p -> rng().gauss( p -> wf_delay, p -> wf_delay_stddev ) );
+    new ( *p -> sim ) windfury_delay_event_t( p -> windfury, p -> rng().gauss( p -> wf_delay, p -> wf_delay_stddev ) );
     return true;
   }
   return false;
@@ -2427,7 +2390,8 @@ struct stormstrike_attack_t : public shaman_attack_t
     double m = shaman_attack_t::action_multiplier();
 
     if ( p() -> buff.lightning_shield -> up() )
-      m *= 1.0 + lightning_shield -> effectN( 3 ).percent();
+      //m *= 1.0 + lightning_shield -> effectN( 3 ).percent();
+      m *= 1.13; // Hardcoding this for now, because the effect is apparnly gone from spell data. For some reason it is still thre in WoD Alpha client though
 
     return m;
   }
@@ -2657,7 +2621,7 @@ void shaman_attack_t::impact( action_state_t* state )
     trigger_windfury_weapon( this );
 
   if ( may_proc_flametongue && weapon && weapon -> buff_type == FLAMETONGUE_IMBUE )
-    trigger_flametongue_weapon( this );
+    p() -> flametongue -> schedule_execute();
 
   if ( may_proc_primal_wisdom && rng().roll( p() -> spec.primal_wisdom -> proc_chance() ) )
   {
@@ -4581,175 +4545,6 @@ struct searing_totem_t : public shaman_totem_pet_t
 // Shaman Weapon Imbues
 // ==========================================================================
 
-// Flametongue Weapon Spell =================================================
-
-struct flametongue_weapon_t : public shaman_spell_t
-{
-  double bonus_power;
-  int    main, off;
-
-  flametongue_weapon_t( shaman_t* player, const std::string& options_str ) :
-    shaman_spell_t( "flametongue_weapon", player, player -> find_specialization_spell( "Flametongue Weapon" ) ),
-    bonus_power( 0 ), main( 0 ), off( 0 )
-  {
-    std::string weapon_str;
-
-    option_t options[] =
-    {
-      opt_string( "weapon", weapon_str ),
-      opt_null()
-    };
-    parse_options( options, options_str );
-
-    if ( weapon_str.empty() )
-    {
-      main = off = 1;
-    }
-    else if ( weapon_str == "main" )
-    {
-      main = 1;
-    }
-    else if ( weapon_str == "off" )
-    {
-      off = 1;
-    }
-    else if ( weapon_str == "both" )
-    {
-      main = 1;
-      off = 1;
-    }
-    else
-    {
-      sim -> errorf( "Player %s: flametongue_weapon: weapon option must be one of main/off/both\n", p() -> name() );
-      sim -> cancel();
-    }
-
-    // Spell damage scaling is defined in "Flametongue Weapon (Passive), id 10400"
-    bonus_power  = player -> dbc.spell( 10400 ) -> effectN( 2 ).percent();
-    harmful      = false;
-    may_miss     = false;
-
-    if ( main )
-      player -> flametongue_mh = new flametongue_weapon_spell_t( "flametongue_attack_mh", player, &( player -> main_hand_weapon ) );
-
-    if ( off )
-      player -> flametongue_oh = new flametongue_weapon_spell_t( "flametongue_attack_oh", player, &( player -> off_hand_weapon ) );
-  }
-
-  virtual void execute()
-  {
-    shaman_spell_t::execute();
-
-    if ( main )
-    {
-      p() -> main_hand_weapon.buff_type  = FLAMETONGUE_IMBUE;
-      p() -> main_hand_weapon.buff_value = bonus_power;
-    }
-    if ( off )
-    {
-      p() -> off_hand_weapon.buff_type  = FLAMETONGUE_IMBUE;
-      p() -> off_hand_weapon.buff_value = bonus_power;
-    }
-    p() -> invalidate_cache( CACHE_PLAYER_DAMAGE_MULTIPLIER );
-  };
-
-  virtual bool ready()
-  {
-    if ( main && ( p() -> main_hand_weapon.buff_type != FLAMETONGUE_IMBUE ) )
-      return true;
-
-    if ( off && ( p() -> off_hand_weapon.buff_type != FLAMETONGUE_IMBUE ) )
-      return true;
-
-    return false;
-  }
-};
-
-// Windfury Weapon Spell ====================================================
-
-struct windfury_weapon_t : public shaman_spell_t
-{
-  double bonus_power;
-  int    main, off;
-
-  windfury_weapon_t( shaman_t* player, const std::string& options_str ) :
-    shaman_spell_t( "windfury_weapon", player, player -> find_specialization_spell( "Windfury Weapon" ) ),
-    bonus_power( 0 ), main( 0 ), off( 0 )
-  {
-    check_spec( SHAMAN_ENHANCEMENT );
-
-    std::string weapon_str;
-
-    option_t options[] =
-    {
-      opt_string( "weapon", weapon_str ),
-      opt_null()
-    };
-    parse_options( options, options_str );
-
-    if ( weapon_str.empty() )
-    {
-      main = off = 1;
-    }
-    else if ( weapon_str == "main" )
-    {
-      main = 1;
-    }
-    else if ( weapon_str == "off" )
-    {
-      off = 1;
-    }
-    else if ( weapon_str == "both" )
-    {
-      main = 1;
-      off = 1;
-    }
-    else
-    {
-      sim -> errorf( "Player %s: windfury_weapon: weapon option must be one of main/off/both\n", p() -> name() );
-      sim -> cancel();
-    }
-
-    bonus_power  = 0;
-    harmful      = false;
-    may_miss     = false;
-
-    if ( main )
-      player -> windfury_mh = new windfury_weapon_melee_attack_t( "windfury_attack_mh", player, &( player -> main_hand_weapon ) );
-
-    if ( off )
-      player -> windfury_oh = new windfury_weapon_melee_attack_t( "windfury_attack_oh", player, &( player -> off_hand_weapon ) );
-  }
-
-  virtual void execute()
-  {
-    shaman_spell_t::execute();
-
-    if ( main )
-    {
-      p() -> main_hand_weapon.buff_type  = WINDFURY_IMBUE;
-      p() -> main_hand_weapon.buff_value = bonus_power;
-    }
-    if ( off )
-    {
-      p() -> off_hand_weapon.buff_type  = WINDFURY_IMBUE;
-      p() -> off_hand_weapon.buff_value = bonus_power;
-    }
-    p() -> invalidate_cache( CACHE_PLAYER_DAMAGE_MULTIPLIER );
-  };
-
-  virtual bool ready()
-  {
-    if ( main && ( p() -> main_hand_weapon.buff_type != WINDFURY_IMBUE ) )
-      return true;
-
-    if ( off && ( p() -> off_hand_weapon.buff_type != WINDFURY_IMBUE ) )
-      return true;
-
-    return false;
-  }
-};
-
 struct earthliving_weapon_t : public shaman_spell_t
 {
   double bonus_power;
@@ -5129,7 +4924,6 @@ action_t* shaman_t::create_action( const std::string& name,
   if ( name == "elemental_mastery"       ) return new        elemental_mastery_t( this, options_str );
   if ( name == "fire_nova"               ) return new                fire_nova_t( this, options_str );
   if ( name == "flame_shock"             ) return new              flame_shock_t( this, options_str );
-  if ( name == "flametongue_weapon"      ) return new       flametongue_weapon_t( this, options_str );
   if ( name == "frost_shock"             ) return new              frost_shock_t( this, options_str );
   if ( name == "lava_beam"               ) return new                lava_beam_t( this, options_str );
   if ( name == "lava_burst"              ) return new               lava_burst_t( this, options_str );
@@ -5148,7 +4942,6 @@ action_t* shaman_t::create_action( const std::string& name,
   if ( name == "unleash_elements"        ) return new         unleash_elements_t( this, options_str );
   if ( name == "water_shield"            ) return new             water_shield_t( this, options_str );
   if ( name == "wind_shear"              ) return new               wind_shear_t( this, options_str );
-  if ( name == "windfury_weapon"         ) return new          windfury_weapon_t( this, options_str );
 
   if ( name == "chain_heal"              ) return new               chain_heal_t( this, options_str );
   if ( name == "greater_healing_wave"    ) return new     greater_healing_wave_t( this, options_str );
@@ -5309,6 +5102,7 @@ void shaman_t::init_spells()
   spec.elemental_fury        = find_specialization_spell( "Elemental Fury" );
   spec.fulmination           = find_specialization_spell( "Fulmination" );
   spec.lava_surge            = find_specialization_spell( "Lava Surge" );
+  spec.multistrike_attunement= find_specialization_spell( "Multistrike Attunement" );
   spec.readiness_elemental   = find_specialization_spell( "Readiness: Elemental" );
   spec.rolling_thunder       = find_specialization_spell( "Rolling Thunder" );
   spec.shamanism             = find_specialization_spell( "Shamanism" );
@@ -5317,6 +5111,7 @@ void shaman_t::init_spells()
   spec.critical_strikes      = find_specialization_spell( "Critical Strikes" );
   spec.dual_wield            = find_specialization_spell( "Dual Wield" );
   spec.flurry                = find_specialization_spell( "Flurry" );
+  spec.haste_attunement      = find_specialization_spell( "Haste Attunement" );
   spec.maelstrom_weapon      = find_specialization_spell( "Maelstrom Weapon" );
   spec.mental_quickness      = find_specialization_spell( "Mental Quickness" );
   spec.primal_wisdom         = find_specialization_spell( "Primal Wisdom" );
@@ -5408,6 +5203,15 @@ void shaman_t::init_spells()
   {
     t16_wind = new unleash_wind_t( "t16_unleash_wind", this );
     t16_flame = new unleash_flame_t( "t16_unleash_flame", this );
+  }
+
+  if ( specialization() == SHAMAN_ENHANCEMENT )
+  {
+    main_hand_weapon.buff_type = WINDFURY_IMBUE;
+    windfury = new windfury_weapon_melee_attack_t( "windfury_attack", this, &( main_hand_weapon ) );
+
+    off_hand_weapon.buff_type  = FLAMETONGUE_IMBUE;
+    flametongue = new flametongue_weapon_spell_t( "flametongue_attack", this, &( off_hand_weapon ) );
   }
 
   player_t::init_spells();
@@ -5693,20 +5497,6 @@ void shaman_t::init_action_list()
       food_action += ( level > 85 ) ? "mogu_fish_stew" : "seafood_magnifique_feast";
 
     precombat -> add_action( food_action );
-  }
-
-  // Weapon Enchants
-  if ( specialization() == SHAMAN_ENHANCEMENT && primary_role() == ROLE_ATTACK )
-  {
-    precombat -> add_action( this, "Windfury Weapon", "weapon=main" );
-    if ( off_hand_weapon.type != WEAPON_NONE )
-      precombat -> add_action( this, "Flametongue Weapon", "weapon=off" );
-  }
-  else
-  {
-    precombat -> add_action( this, "Flametongue Weapon", "weapon=main" );
-    if ( specialization() == SHAMAN_ENHANCEMENT && off_hand_weapon.type != WEAPON_NONE )
-      precombat -> add_action( this, "Flametongue Weapon", "weapon=off" );
   }
 
   // Active Shield, presume any non-restoration / healer wants lightning shield
@@ -6005,6 +5795,9 @@ double shaman_t::composite_spell_haste() const
   if ( buff.elemental_mastery -> up() )
     h *= constant.haste_elemental_mastery;
 
+  if ( spec.haste_attunement -> ok() )
+    h *= 1.0 / ( 1.0 + spec.haste_attunement -> effectN( 1 ).percent() );
+
   if ( buff.tier13_4pc_healer -> up() )
     h *= 1.0 / ( 1.0 + buff.tier13_4pc_healer -> data().effectN( 1 ).percent() );
   return h;
@@ -6044,6 +5837,9 @@ double shaman_t::composite_melee_haste() const
 
   if ( talent.ancestral_swiftness -> ok() )
     h *= constant.haste_ancestral_swiftness;
+
+  if ( spec.haste_attunement -> ok() )
+    h *= 1.0 / ( 1.0 + spec.haste_attunement -> effectN( 1 ).percent() );
 
   if ( buff.tier13_4pc_healer -> up() )
     h *= 1.0 / ( 1.0 + buff.tier13_4pc_healer -> data().effectN( 1 ).percent() );
@@ -6158,6 +5954,9 @@ double shaman_t::composite_multistrike() const
   // TODO-WOD: Flat or multiplicative bonus?
   if ( buff.unleashed_fury_wf -> up() )
     m += buff.unleashed_fury_wf -> data().effectN( 1 ).percent();
+
+  if ( spec.multistrike_attunement -> ok() )
+    m *= 1.0 + spec.multistrike_attunement -> effectN( 1 ).percent();
 
   return m;
 }
