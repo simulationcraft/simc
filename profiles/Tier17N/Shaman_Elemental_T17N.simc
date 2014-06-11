@@ -18,7 +18,6 @@ spec=elemental
 
 actions.precombat=flask,type=warm_sun
 actions.precombat+=/food,type=mogu_fish_stew
-actions.precombat+=/flametongue_weapon,weapon=main
 actions.precombat+=/lightning_shield,if=!buff.lightning_shield.up
 # Snapshot raid buffed stats before combat begins and pre-potting is done.
 actions.precombat+=/snapshot_stats
@@ -45,8 +44,7 @@ actions+=/run_action_list,name=aoe,if=active_enemies>1
 
 # Single target action priority list
 
-actions.single=unleash_elements,if=talent.unleashed_fury.enabled&!buff.ascendance.up
-actions.single+=/spiritwalkers_grace,moving=1,if=buff.ascendance.up
+actions.single=spiritwalkers_grace,moving=1,if=buff.ascendance.up
 actions.single+=/lava_burst,if=dot.flame_shock.remains>cast_time&(buff.ascendance.up|cooldown_react)
 actions.single+=/flame_shock,if=ticks_remain<2
 actions.single+=/elemental_blast,if=talent.elemental_blast.enabled
@@ -59,7 +57,7 @@ actions.single+=/flame_shock,if=time>60&remains<=buff.ascendance.duration&cooldo
 actions.single+=/earth_elemental_totem,if=!active&cooldown.fire_elemental_totem.remains>=60
 # Keep Searing Totem up, unless Fire Elemental Totem is coming off cooldown in the next 20 seconds
 actions.single+=/searing_totem,if=cooldown.fire_elemental_totem.remains>20&!totem.fire.active
-actions.single+=/spiritwalkers_grace,moving=1,if=((talent.elemental_blast.enabled&cooldown.elemental_blast.remains=0)|(cooldown.lava_burst.remains=0&!buff.lava_surge.react))|(buff.raid_movement.duration>=action.unleash_elements.gcd+action.earth_shock.gcd)
+actions.single+=/spiritwalkers_grace,moving=1,if=((talent.elemental_blast.enabled&cooldown.elemental_blast.remains=0)|(cooldown.lava_burst.remains=0&!buff.lava_surge.react))
 actions.single+=/lightning_bolt
 
 # Multi target action priority list
@@ -68,7 +66,6 @@ actions.aoe=lava_beam
 actions.aoe+=/searing_totem,if=active_enemies<=2&!totem.fire.active
 actions.aoe+=/lava_burst,if=active_enemies<3&dot.flame_shock.remains>cast_time&cooldown_react
 actions.aoe+=/flame_shock,cycle_targets=1,if=!ticking&active_enemies<3
-actions.aoe+=/earthquake,if=active_enemies>4
 actions.aoe+=/thunderstorm,if=mana.pct_nonproc<80
 actions.aoe+=/chain_lightning,if=mana.pct_nonproc>10
 actions.aoe+=/lightning_bolt

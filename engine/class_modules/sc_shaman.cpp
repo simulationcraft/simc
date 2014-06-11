@@ -5675,7 +5675,9 @@ void shaman_t::init_action_list()
     single -> add_action( this, "Earth Elemental Totem", "if=!active&cooldown.fire_elemental_totem.remains>=60" );
     single -> add_action( this, "Searing Totem", "if=cooldown.fire_elemental_totem.remains>20&!totem.fire.active",
                           "Keep Searing Totem up, unless Fire Elemental Totem is coming off cooldown in the next 20 seconds" );
-    single -> add_action( this, "Spiritwalker's Grace", "moving=1,if=((talent.elemental_blast.enabled&cooldown.elemental_blast.remains=0)|(cooldown.lava_burst.remains=0&!buff.lava_surge.react))|(buff.raid_movement.duration>=action.unleash_elements.gcd+action.earth_shock.gcd)" );
+    single -> add_action( this, "Spiritwalker's Grace", "moving=1,if=((talent.elemental_blast.enabled&cooldown.elemental_blast.remains=0)|(cooldown.lava_burst.remains=0&!buff.lava_surge.react))" );
+      
+      /*(buff.raid_movement.duration>=action.unleash_elements.gcd+action.earth_shock.gcd)" ); */
 //  single -> add_action( this, "Unleash Elements", "moving=1,if=!glyph.unleashed_lightning.enabled" );
 //  single -> add_action( this, "Earth Shock", "moving=1,if=!glyph.unleashed_lightning.enabled&dot.flame_shock.remains>cooldown",
 //                        "Use Earth Shock when moving if Glyph of Unleashed Lightning is not equipped and there's at least shock cooldown time of Flame Shock duration left" );

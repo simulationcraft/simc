@@ -18,8 +18,6 @@ spec=enhancement
 
 actions.precombat=flask,type=spring_blossoms
 actions.precombat+=/food,type=sea_mist_rice_noodles
-actions.precombat+=/windfury_weapon,weapon=main
-actions.precombat+=/flametongue_weapon,weapon=off
 actions.precombat+=/lightning_shield,if=!buff.lightning_shield.up
 # Snapshot raid buffed stats before combat begins and pre-potting is done.
 actions.precombat+=/snapshot_stats
@@ -64,10 +62,8 @@ actions.single+=/frost_shock,if=glyph.frost_shock.enabled&set_bonus.tier14_4pc_m
 actions.single+=/lightning_bolt,if=buff.maelstrom_weapon.react>=3&!buff.ascendance.up
 actions.single+=/ancestral_swiftness,if=talent.ancestral_swiftness.enabled&buff.maelstrom_weapon.react<2
 actions.single+=/lightning_bolt,if=buff.ancestral_swiftness.up
-actions.single+=/earth_shock,if=(!glyph.frost_shock.enabled|set_bonus.tier14_4pc_melee=1)
 actions.single+=/feral_spirit
 actions.single+=/earth_elemental_totem,if=!active
-actions.single+=/spiritwalkers_grace,moving=1
 actions.single+=/lightning_bolt,if=buff.maelstrom_weapon.react>1&!buff.ascendance.up
 
 # Multi target action priority list
@@ -85,10 +81,8 @@ actions.aoe+=/windstrike
 actions.aoe+=/fire_nova,if=active_flame_shock>=3
 actions.aoe+=/chain_lightning,if=active_enemies>=2&buff.maelstrom_weapon.react>=1
 actions.aoe+=/stormstrike
-actions.aoe+=/earth_shock,if=active_enemies<4
 actions.aoe+=/feral_spirit
 actions.aoe+=/earth_elemental_totem,if=!active&cooldown.fire_elemental_totem.remains>=50
-actions.aoe+=/spiritwalkers_grace,moving=1
 actions.aoe+=/fire_nova,if=active_flame_shock>=1
 
 head=helmet_of_celestial_harmony,id=99341,upgrade=2,gems=capacitive_primal_4agi_8mastery_9agi
