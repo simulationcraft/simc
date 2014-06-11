@@ -2951,7 +2951,7 @@ struct stance_t : public warrior_spell_t
         {
           p() -> buff.defensive_stance -> expire();
           if ( p() -> specialization() == WARRIOR_PROTECTION )
-            p() -> vengeance_stop(); //Vengeance only works inside of defensive stance.
+            p() -> resolve_stop(); //Resolve only works inside of defensive stance.
           //p() -> active_defensive_stance -> cancel();
           break;
         }
@@ -2971,7 +2971,7 @@ struct stance_t : public warrior_spell_t
         {
           p() -> buff.defensive_stance -> trigger();
           if ( p() -> specialization() == WARRIOR_PROTECTION )
-            p() -> vengeance_start();
+            p() -> resolve_start();
           //p() -> active_defensive_stance -> execute();
           break;
         }

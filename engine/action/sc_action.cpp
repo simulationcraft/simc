@@ -1287,36 +1287,36 @@ void action_t::last_tick( dot_t* d )
   }
 }
 
-// action_t::update_vengeance ===============================================
+// action_t::update_resolve ===============================================
 
-void action_t::update_vengeance( dmg_e type,
+void action_t::update_resolve( dmg_e type,
                                  action_state_t* s )
 {
   // Vengenace damage->pct modifier
   double veng_pct = ( ! sim -> challenge_mode ) ? 0.015 : 0.018;  // the new value (0.015) is in spellid 84839, effect#1.  CM value is not.
 
-  // check that the target has vengeance, damage type, and that the executing player is an enemy
-  if ( s -> target -> vengeance_is_started() && ( type == DMG_DIRECT || type == DMG_OVER_TIME ) && s-> action -> player -> is_enemy() )
+  // check that the target has resolve, damage type, and that the executing player is an enemy
+  if ( s -> target -> resolve_is_started() && ( type == DMG_DIRECT || type == DMG_OVER_TIME ) && s-> action -> player -> is_enemy() )
   {
     // bool for auto attack, to make code easier to read
     bool is_auto_attack = ( player -> main_hand_attack && s -> action == player -> main_hand_attack ) || ( player -> off_hand_attack && s -> action == player -> off_hand_attack );
 
-    // On spell/special attacks that miss, we just extend the duration of Vengeance.  This includes all RESULT_MISS events and
-    // dodged/parried attacks that are not auto-attacks; Auto-attack dodges/parries still grant Vengeance normally based on raw damage
-    if ( ( s -> result == RESULT_MISS && ! sim -> challenge_mode ) || // 5.4: misses do not generate Vengeance except in CM
+    // On spell/special attacks that miss, we just extend the duration of Resolve.  This includes all RESULT_MISS events and
+    // dodged/parried attacks that are not auto-attacks; Auto-attack dodges/parries still grant Resolve normally based on raw damage
+    if ( ( s -> result == RESULT_MISS && ! sim -> challenge_mode ) || // 5.4: misses do not generate Resolve except in CM
          ( result_is_miss( s -> result ) && ! is_auto_attack ) )      // Any avoided non-auto-attack
     {
-      //extend duration, but do not add any vengeance
-      s -> target -> buffs.vengeance -> trigger( 1,
-                                                 s -> target -> buffs.vengeance -> value(),
+      //extend duration, but do not add any resolve
+      s -> target -> buffs.resolve -> trigger( 1,
+                                                 s -> target -> buffs.resolve -> value(),
                                                  1.0 ,
                                                  timespan_t::from_seconds( 20.0 ) );
     }
-    else // vengeance from auto attack or successful spell
+    else // resolve from auto attack or successful spell
     {
-      // update the player's vengeance_actor_list
+      // update the player's resolve_actor_list
       if ( ! sim -> challenge_mode )
-        s -> target -> vengeance_list.add( player, player -> get_raw_dps( s ), sim -> current_time );
+        s -> target -> resolve_list.add( player, player -> get_raw_dps( s ), sim -> current_time );
 
       double raw_damage = s -> result_raw;
 
@@ -1327,30 +1327,30 @@ void action_t::update_vengeance( dmg_e type,
       else
         attack_frequency = 1.0 / 60.0;
 
-      // Create new vengeance value
-      double new_amount = veng_pct * raw_damage; // new vengeance from hit
+      // Create new resolve value
+      double new_amount = veng_pct * raw_damage; // new resolve from hit
 
-      // modify according to damage type; spell damage gives 2.5x as much Vengeance
+      // modify according to damage type; spell damage gives 2.5x as much Resolve
       new_amount *= ( get_school() == SCHOOL_PHYSICAL ? 1.0 : 2.5 );
 
       // apply diminishing returns according to position on actor list
       if ( ! sim -> challenge_mode  )
-        new_amount /= s -> target -> vengeance_list.get_actor_rank( player );
+        new_amount /= s -> target -> resolve_list.get_actor_rank( player );
 
       // Perform 20-second decaying average
-      new_amount += s -> target -> buffs.vengeance -> value() *
-                    s -> target -> buffs.vengeance -> remains().total_seconds() / 20.0; // old diminished vengeance
+      new_amount += s -> target -> buffs.resolve -> value() *
+                    s -> target -> buffs.resolve -> remains().total_seconds() / 20.0; // old diminished resolve
 
-      // calculate vengeance equilibrium and engage 50% ramp-up mechanism if appropriate
-      double vengeance_equil = veng_pct * raw_damage * attack_frequency * 20;
-      if ( vengeance_equil / 2.0 > new_amount )
+      // calculate resolve equilibrium and engage 50% ramp-up mechanism if appropriate
+      double resolve_equil = veng_pct * raw_damage * attack_frequency * 20;
+      if ( resolve_equil / 2.0 > new_amount )
       {
         if ( sim -> debug )
         {
-          sim -> out_debug.printf( "%s triggered vengeance ramp-up mechanism due to %s from %s because new amount=%.2f and equilibrium=%.2f.",
-                         s -> target -> name(), s -> action -> name(), s -> action -> player -> name(), new_amount, vengeance_equil );
+          sim -> out_debug.printf( "%s triggered resolve ramp-up mechanism due to %s from %s because new amount=%.2f and equilibrium=%.2f.",
+                         s -> target -> name(), s -> action -> name(), s -> action -> player -> name(), new_amount, resolve_equil );
         }
-        new_amount = vengeance_equil / 2.0;
+        new_amount = resolve_equil / 2.0;
       }
 
       // clamp at max health
@@ -1358,13 +1358,13 @@ void action_t::update_vengeance( dmg_e type,
 
       if ( sim -> debug )
       {
-        sim -> out_debug.printf( "%s updated vengeance due to %s from %s. New vengeance.value=%.2f vengeance.damage=%.2f.",
+        sim -> out_debug.printf( "%s updated resolve due to %s from %s. New resolve.value=%.2f resolve.damage=%.2f.",
                        s -> target -> name(), s -> action -> name(), s -> action -> player -> name() , new_amount, raw_damage );
       }
 
-      s -> target -> buffs.vengeance -> trigger( 1, new_amount, 1, timespan_t::from_seconds( 20.0 ) );
+      s -> target -> buffs.resolve -> trigger( 1, new_amount, 1, timespan_t::from_seconds( 20.0 ) );
     }
-  } // END Vengeance
+  } // END Resolve
 }
 
 // action_t::assess_damage ==================================================
@@ -1372,8 +1372,8 @@ void action_t::update_vengeance( dmg_e type,
 void action_t::assess_damage( dmg_e    type,
                               action_state_t* s )
 {
-  // hook up vengeance here, before armor mitigation, avoidance, and dmg reduction effects, etc.
-  update_vengeance( type, s );
+  // hook up resolve here, before armor mitigation, avoidance, and dmg reduction effects, etc.
+  update_resolve( type, s );
 
   s -> target -> assess_damage( get_school(), type, s );
 

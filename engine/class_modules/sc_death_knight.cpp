@@ -5968,7 +5968,7 @@ void death_knight_t::combat_begin()
   player_t::combat_begin();
 
   if ( specialization() == DEATH_KNIGHT_BLOOD )
-    vengeance_start();
+    resolve_start();
 
   if ( find_specialization_spell( "Bladed Armor" ) )
     buffs.bladed_armor -> trigger();

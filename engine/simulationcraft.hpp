@@ -3715,15 +3715,15 @@ public:
 
 // Player Vengeance
 
-struct player_vengeance_timeline_t
+struct player_resolve_timeline_t
 {
 private:
-  sc_timeline_t& timeline_; // reference to collected_data.vengeance_timeline
+  sc_timeline_t& timeline_; // reference to collected_data.resolve_timeline
   core_event_t* event; // pointer to collection event so we can cancel it at the end of combat.
 
 public:
-  player_vengeance_timeline_t( sc_timeline_t& vengeance_tl ) :
-    timeline_( vengeance_tl ), event( nullptr ) {}
+  player_resolve_timeline_t( sc_timeline_t& resolve_tl ) :
+    timeline_( resolve_tl ), event( nullptr ) {}
 
   void start( player_t& p );
   void stop();
@@ -3739,7 +3739,7 @@ public:
       timeline_.adjust( divisor_timeline );
   }
 
-  void merge( const player_vengeance_timeline_t& other )
+  void merge( const player_resolve_timeline_t& other )
   { timeline_.merge( other.timeline_ ); }
 
   const sc_timeline_t& timeline() const { return timeline_; }
@@ -3805,7 +3805,7 @@ struct player_collected_data_t
   extended_sample_data_t theck_meloree_index;
   extended_sample_data_t effective_theck_meloree_index;
   extended_sample_data_t max_spike_amount;
-  sc_timeline_t vengeance_timeline;
+  sc_timeline_t resolve_timeline;
 
   std::array<simple_sample_data_t,RESOURCE_MAX> resource_lost, resource_gained;
   struct resource_timeline_t
@@ -3975,14 +3975,14 @@ struct actor_t : public noncopyable
   { return name_str.c_str(); }
 };
 
-// Vengeance Actor List =====================================================
+// Resolve Actor List =====================================================
 
-struct vengeance_actor_list_t
+struct resolve_actor_list_t
 {
-  vengeance_actor_list_t( const player_t* p ) : myself( p )
+  resolve_actor_list_t( const player_t* p ) : myself( p )
   { }
 
-  // called after each iteration in player_t::vengeance_stop()
+  // called after each iteration in player_t::resolve_stop()
   void reset()
   { actor_list.clear(); }
 
@@ -3992,7 +3992,7 @@ struct vengeance_actor_list_t
   {
     // pre-condition: actor_list sorted by raw dps
     std::vector<actor_entry_t>::iterator found = find_actor( t );
-    assert( found != actor_list.end() && "Vengeance attacker not found in vengeance list!" );
+    assert( found != actor_list.end() && "Resolve attacker not found in resolve list!" );
     return as<int>(std::distance( actor_list.begin(), found ) + 1);
   }
 
@@ -4132,7 +4132,7 @@ struct player_t : public actor_t
   std::vector<pet_t*> pet_list;
   std::vector<pet_t*> active_pets;
   std::vector<absorb_buff_t*> absorb_buff_list;
-  vengeance_actor_list_t vengeance_list;
+  resolve_actor_list_t resolve_list;
 
   int         invert_scaling;
 
@@ -4314,20 +4314,20 @@ struct player_t : public actor_t
   player_collected_data_t collected_data;
 
 private:
-  player_vengeance_timeline_t vengeance;
+  player_resolve_timeline_t resolve;
 public:
-  void vengeance_start() 
+  void resolve_start() 
   { 
-    vengeance.start( *this ); 
-    vengeance_list.reset();
+    resolve.start( *this ); 
+    resolve_list.reset();
   }
-  void vengeance_stop() 
+  void resolve_stop() 
   { 
-    vengeance.stop(); 
-    vengeance_list.reset();
+    resolve.stop(); 
+    resolve_list.reset();
   }
-  bool vengeance_is_started() const { return vengeance.is_started(); }
-  const sc_timeline_t& vengeance_timeline() const { return vengeance.timeline(); }
+  bool resolve_is_started() const { return resolve.is_started(); }
+  const sc_timeline_t& resolve_timeline() const { return resolve.timeline(); }
 
   // Damage
   double iteration_dmg, iteration_dmg_taken; // temporary accumulators
@@ -4401,7 +4401,7 @@ public:
     buff_t* stunned;
     buff_t* tricks_of_the_trade;
     buff_t* weakened_soul;
-    buff_t* vengeance;
+    buff_t* resolve;
 
     haste_buff_t* berserking;
     haste_buff_t* bloodlust;
@@ -5342,7 +5342,7 @@ struct action_t : public noncopyable
   virtual void   multistrike( action_state_t* state, dmg_e type, double dmg_multiplier = 1.0 );
   virtual void   tick( dot_t* d );
   virtual void   last_tick( dot_t* d );
-  virtual void   update_vengeance( dmg_e, action_state_t* assess_state );
+  virtual void   update_resolve( dmg_e, action_state_t* assess_state );
   virtual void   assess_damage( dmg_e, action_state_t* assess_state );
   virtual void   schedule_execute( action_state_t* execute_state = 0 );
   virtual void   reschedule_execute( timespan_t time );

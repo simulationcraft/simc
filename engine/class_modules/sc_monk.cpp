@@ -3941,7 +3941,7 @@ void monk_t::combat_begin()
   resources.current[ RESOURCE_CHI ] = clamp( as<double>( user_options.initial_chi ), 0.0, resources.max[ RESOURCE_CHI ] );
  
   if ( specialization() == MONK_BREWMASTER )
-    vengeance_start();
+    resolve_start();
  
   if ( talent.power_strikes -> ok() )
   {

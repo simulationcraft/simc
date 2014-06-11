@@ -428,7 +428,7 @@ player_t::player_t( sim_t*             s,
   timeofday( NIGHT_TIME ), //Set to Night by Default, user can override.
   gcd_ready( timespan_t::zero() ), base_gcd( timespan_t::from_seconds( 1.5 ) ), started_waiting( timespan_t::min() ),
   pet_list(), active_pets(),
-  vengeance_list( this ),invert_scaling( 0 ),
+  resolve_list( this ),invert_scaling( 0 ),
   // Reaction
   reaction_offset( timespan_t::from_seconds( 0.1 ) ), reaction_mean( timespan_t::from_seconds( 0.3 ) ), reaction_stddev( timespan_t::zero() ), reaction_nu( timespan_t::from_seconds( 0.25 ) ),
   // Latency
@@ -471,7 +471,7 @@ player_t::player_t( sim_t*             s,
 
   tmi_window( 6.0 ),
   collected_data( player_collected_data_t( name_str, *sim ) ),
-  vengeance( collected_data.vengeance_timeline ),
+  resolve( collected_data.resolve_timeline ),
   // Damage
   iteration_dmg( 0 ), iteration_dmg_taken( 0 ),
   dpr( 0 ),
@@ -2088,12 +2088,11 @@ void player_t::create_buffs()
       // Legendary meta haste buff
       buffs.tempus_repit              = buff_creator_t( this, "tempus_repit", find_spell( 137590 ) ).add_invalidate( CACHE_HASTE ).activated( false );
 
-      // Vengeance
-      buffs.vengeance = buff_creator_t( this, "vengeance" )
+      // Resolve
+      buffs.resolve = buff_creator_t( this, "resolve" )
                         .max_stack( 1 )
-                        .duration( timespan_t::from_seconds( 20.0 ) )
-                        .default_value( 0 )
-                        .add_invalidate( CACHE_ATTACK_POWER );
+                        .duration( timespan_t::zero() )
+                        .default_value( 0 );
 
       // Potions
       struct potion_buff_creator : public stat_buff_creator_t
@@ -3354,8 +3353,8 @@ void player_t::merge( player_t& other )
     }
   }
 
-  // Vengeance Timeline
-  vengeance.merge( other.vengeance );
+  // Resolve Timeline
+  resolve.merge( other.resolve );
 
   // Action Map
   for ( size_t i = 0; i < other.action_list.size(); ++i )
@@ -3651,8 +3650,8 @@ void player_t::demise()
 
   core_event_t::cancel( off_gcd );
 
-  // stops vengeance and clear vengeance_list
-  vengeance_stop();
+  // stops resolve and clear resolve_list
+  resolve_stop();
 
   for ( size_t i = 0; i < buff_list.size(); ++i )
   {
@@ -8359,8 +8358,8 @@ void player_t::analyze( sim_t& s )
   if ( !  quiet && (  is_enemy() ||  is_add() ) && ! (  is_pet() && s.report_pets_separately ) )
     s.targets_by_name.push_back( this );
 
-  // Vengeance Timeline
-  vengeance.adjust( s.divisor_timeline );
+  // Resolve Timeline
+  resolve.adjust( s.divisor_timeline );
 
   // Resources & Gains ======================================================
 
@@ -9241,44 +9240,44 @@ double player_stat_cache_t::player_heal_multiplier( school_e s ) const
 
 #endif
 
-/* Start Vengeance
+/* Start Resolve
  *
  * Call in combat_begin() when it is active during the whole fight,
  * otherwise in a action/buff ( like Druid Bear Form )
  */
 
-void player_vengeance_timeline_t::start( player_t& p )
+void player_resolve_timeline_t::start( player_t& p )
 {
   assert( ! is_started() );
 
   struct collect_event_t : public event_t
   {
-    player_vengeance_timeline_t& vengeance;
-    collect_event_t( player_t& p, player_vengeance_timeline_t& v ) :
-      event_t( p, "vengeance_timeline_collect_event_t" ),
-      vengeance( v )
+    player_resolve_timeline_t& resolve;
+    collect_event_t( player_t& p, player_resolve_timeline_t& v ) :
+      event_t( p, "resolve_timeline_collect_event_t" ),
+      resolve( v )
     {
       sim().add_event( this, timespan_t::from_seconds( 1 ) );
     }
 
     virtual void execute()
     {
-      assert( vengeance.event == this );
-      vengeance.timeline_.add( sim().current_time, p() -> buffs.vengeance -> value() );
-      vengeance.event = new ( sim() ) collect_event_t( *p(), vengeance );
+      assert( resolve.event == this );
+      resolve.timeline_.add( sim().current_time, p() -> buffs.resolve -> value() );
+      resolve.event = new ( sim() ) collect_event_t( *p(), resolve );
     }
   };
 
   event = new ( *p.sim ) collect_event_t( p, *this ); // start timeline
 }
 
-/* Stop Vengeance
+/* Stop Resolve
  *
  * Is automatically called in player_t::demise()
- * If you have dynamic vengeance activation ( like Druid Bear Form ), call it in the buff expiration/etc.
+ * If you have dynamic resolve activation ( like Druid Bear Form ), call it in the buff expiration/etc.
  */
 
-void player_vengeance_timeline_t::stop()
+void player_resolve_timeline_t::stop()
 { core_event_t::cancel( event ); }
 
 player_collected_data_t::action_sequence_data_t::action_sequence_data_t( const action_t* a, const player_t* t, const timespan_t& ts, const player_t* p ) :
