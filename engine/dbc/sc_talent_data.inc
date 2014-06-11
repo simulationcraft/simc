@@ -1,6 +1,6 @@
-#define TALENT_SIZE (296)
+#define TALENT_SIZE (301)
 
-// 296 talents, wow build 18322
+// 301 talents, wow build 18379
 static struct talent_data_t __talent_data[] = {
 //{ Name                                ,    Id, Flgs,  Class, Spc, Col, Row, SpellID, ReplaceID, S1 },
   { "Second Wind"                       , 15757, 0x00, 0x0001,   0,   1,   1,   29838,         0,  0 },
@@ -55,7 +55,7 @@ static struct talent_data_t __talent_data[] = {
   { "Wild Charge"                       , 18571, 0x00, 0x0400,   0,   2,   0,  102401,         0,  0 },
   { "Ysera's Gift"                      , 18572, 0x00, 0x0400,   0,   0,   1,  145108,         0,  0 },
   { "Cenarion Ward"                     , 18574, 0x00, 0x0400,   0,   2,   1,  102351,         0,  0 },
-  { "Faerie Swarm"                      , 18575, 0x00, 0x0400,   0,   0,   2,  106707,         0,  0 },
+  { "Faerie Swarm"                      , 18575, 0x00, 0x0400, 103,   0,   2,  106707,         0,  0 },
   { "Mass Entanglement"                 , 18576, 0x00, 0x0400,   0,   1,   2,  102359,         0,  0 },
   { "Typhoon"                           , 18577, 0x00, 0x0400,   0,   2,   2,  132469,         0,  0 },
   { "Incarnation: Chosen of Elune"      , 18579, 0x00, 0x0400,   0,   1,   3,  102560,         0,  0 },
@@ -114,7 +114,7 @@ static struct talent_data_t __talent_data[] = {
   { "Nature's Guardian"                 , 19262, 0x00, 0x0040,   0,   0,   0,   30884,         0,  0 },
   { "Stone Bulwark Totem"               , 19263, 0x00, 0x0040,   0,   1,   0,  108270,         0,  0 },
   { "Astral Shift"                      , 19264, 0x00, 0x0040,   0,   2,   0,  108271,         0,  0 },
-  { "Unleashed Fury"                    , 19265, 0x00, 0x0040,   0,   0,   5,  117012,         0,  0 },
+  { "Unleashed Fury"                    , 19265, 0x00, 0x0040, 263,   0,   5,  117012,         0,  0 },
   { "Primal Elementalist"               , 19266, 0x00, 0x0040,   0,   1,   5,  117013,         0,  0 },
   { "Elemental Blast"                   , 19267, 0x00, 0x0040,   0,   2,   5,  117014,         0,  0 },
   { "Rushing Streams"                   , 19268, 0x00, 0x0040,   0,   0,   4,  147074,         0,  0 },
@@ -230,9 +230,9 @@ static struct talent_data_t __talent_data[] = {
   { "Exotic Munitions"                  , 21195, 0x00, 0x0004,   0,   0,   6,  162534,         0,  0 },
   { "Focusing Shot"                     , 21196, 0x00, 0x0004, 255,   1,   6,  152245,     77767,  0 },
   { "Lone Wolf"                         , 21197, 0x00, 0x0004,   0,   2,   6,  155228,         0,  0 },
-  { "Shocking Lava"                     , 21198, 0x00, 0x0040,   0,   0,   6,  152257,         0,  0 },
+  { "Elemental Fusion"                  , 21198, 0x00, 0x0040,   0,   0,   6,  152257,         0,  0 },
   { "Storm Elemental Totem"             , 21199, 0x00, 0x0040,   0,   1,   6,  152256,         0,  0 },
-  { "Spew Lava"                         , 21200, 0x00, 0x0040,   0,   2,   6,  152255,         0,  0 },
+  { "Liquid Magma"                      , 21200, 0x00, 0x0040,   0,   2,   6,  152255,         0,  0 },
 //{ Name                                ,    Id, Flgs,  Class, Spc, Col, Row, SpellID, ReplaceID, S1 },
   { "Empowered Seals"                   , 21201, 0x00, 0x0002,   0,   0,   6,  152263,         0,  0 },
   { "Seraphim"                          , 21202, 0x00, 0x0002,   0,   1,   6,  152262,         0,  0 },
@@ -313,5 +313,11 @@ static struct talent_data_t __talent_data[] = {
   { "Divine Insight"                    , 21755, 0x00, 0x0010, 258,   2,   4,  162452,         0,  0 },
   { "Focusing Shot"                     , 21756, 0x00, 0x0004,   0,   1,   6,  163485,     56641,  0 },
   { "Ignite Weapon"                     , 21760, 0x00, 0x0001,  71,   2,   6,  163965,         0,  0 },
+  { "Unleashed Fury"                    , 21772, 0x00, 0x0040, 264,   0,   5,  165479,         0,  0 },
+  { "Unleashed Fury"                    , 21773, 0x00, 0x0040,   0,   0,   5,  165477,         0,  0 },
+  { "Faerie Swarm"                      , 21776, 0x00, 0x0400, 102,   0,   2,  102355,         0,  0 },
+  { "Faerie Swarm"                      , 21777, 0x00, 0x0400, 104,   0,   2,  106707,         0,  0 },
+//{ Name                                ,    Id, Flgs,  Class, Spc, Col, Row, SpellID, ReplaceID, S1 },
+  { "Faerie Swarm"                      , 21778, 0x00, 0x0400,   0,   0,   2,  102355,         0,  0 },
   { 0                                   ,     0, 0x00, 0x0000,   0,   0,   0,       0,         0,  0 },
 };

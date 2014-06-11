@@ -1662,15 +1662,15 @@ class SpellDataGenerator(DataGenerator):
             spell.add_power(spell_power_data)
         
         # For builds 15589+, map SpellMisc.dbc to spell ids
-        for spell_misc_id, spell_misc_data in self._spellmisc_db.iteritems():
-            if not spell_misc_data.id_spell:
-                continue
-            
-            spell = self._spell_db[spell_misc_data.id_spell]
-            if not spell.id:
-                continue
-            
-            spell.add_misc(spell_misc_data)
+        #for spell_misc_id, spell_misc_data in self._spellmisc_db.iteritems():
+        #    if not spell_misc_data.id_spell:
+        #        continue
+        #    
+        #    spell = self._spell_db[spell_misc_data.id_spell]
+        #    if not spell.id:
+        #        continue
+        #    
+        #    spell.add_misc(spell_misc_data)
 
         # For WoD, map ItemSetSpell.dbc to ItemSet.dbc
         for isb_id, data in self._itemsetspell_db.iteritems():
@@ -1687,7 +1687,6 @@ class SpellDataGenerator(DataGenerator):
                 continue
             
             item.spells.append(data)
-
         
         return True
     
@@ -2172,9 +2171,9 @@ class SpellDataGenerator(DataGenerator):
                 sys.stderr.write('Spell id %d not found\n') % id
                 continue
             
-            if len(spell._misc) > 1:
-                sys.stderr.write('Spell id %u (%s) has more than one SpellMisc.dbc entry\n' % ( spell.id, spell.name ) )
-                continue
+            #if len(spell._misc) > 1:
+            #    sys.stderr.write('Spell id %u (%s) has more than one SpellMisc.dbc entry\n' % ( spell.id, spell.name ) )
+            #    continue
 
             for power in spell._powers:
                 if power == None:

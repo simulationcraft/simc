@@ -113,6 +113,14 @@ _DIFF_DATA = {
         'SpellMisc.dbc': [
             ( 'unk_18322', _ADD_FIELD, 'prj_speed' )
         ]
+    },
+    18379: {
+        'SpellMisc.dbc': [
+            ( 'id_spell', _REMOVE_FIELD ),
+            ( 'unk_1', _REMOVE_FIELD ),
+            ( 'unk_18322', _REMOVE_FIELD ),
+            ( 'unk_18379', _ADD_FIELD, 'mask_school' )
+        ]
     }
 }
 
