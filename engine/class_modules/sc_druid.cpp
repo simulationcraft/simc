@@ -178,6 +178,7 @@ public:
     buff_t* astral_showers;
     buff_t* celestial_alignment;
     buff_t* chosen_of_elune;
+    buff_t* hurricane;
     buff_t* lunar_empowerment;
     buff_t* solar_empowerment;
     buff_t* enhanced_owlkin_frenzy;
@@ -220,7 +221,6 @@ public:
   // Cooldowns
   struct cooldowns_t
   {
-    cooldown_t* empowered_starfall;
     cooldown_t* natures_swiftness;
     cooldown_t* mangle;
     cooldown_t* pvp_4pc_melee;
@@ -517,8 +517,6 @@ public:
         pet_force_of_nature[i] = nullptr;
     }
 
-    cooldown.empowered_starfall  = get_cooldown( "empowered starfall" );
-    cooldown.empowered_starfall -> duration = timespan_t::from_seconds( 5.0 );
     cooldown.natures_swiftness   = get_cooldown( "natures_swiftness"   );
     cooldown.mangle              = get_cooldown( "mangle"              );
     cooldown.pvp_4pc_melee       = get_cooldown( "pvp_4pc_melee"       );
@@ -1037,12 +1035,10 @@ struct force_of_nature_feral_t : public pet_t
     druid_t* owner;
 
     rake_t( force_of_nature_feral_t* p ) :
-      melee_attack_t( "rake", p, p -> find_spell( 150017 ) ), owner( 0 )
+      melee_attack_t( "rake", p, p -> find_specialization_spell( "Rake" ) ), owner( 0 )
     {
       dot_behavior     = DOT_REFRESH;
-      special          = true;
-      may_crit         = true;
-      tick_may_crit    = true;
+      special = may_crit = tick_may_crit = true;
       owner            = p -> o();
     }
 
@@ -2211,7 +2207,7 @@ struct ferocious_bite_t : public cat_attack_t
 struct maim_t : public cat_attack_t
 {
   maim_t( druid_t* player, const std::string& options_str ) :
-    cat_attack_t( "maim", player, player -> find_class_spell( "Maim" ), options_str )
+    cat_attack_t( "maim", player, player -> find_specialization_spell( "Maim" ), options_str )
   {
     requires_combo_points = true;
     special               = true;
@@ -2241,7 +2237,7 @@ struct rake_t : public cat_attack_t
   action_t* rake_bleed;
 
   rake_t( druid_t* p, const std::string& options_str ) :
-    cat_attack_t( "rake", p, p -> find_class_spell( "Rake" ), options_str )
+    cat_attack_t( "rake", p, p -> find_specialization_spell( "Rake" ), options_str )
   {
     special                 = true;
     attack_power_mod.direct = data().effectN( 1 ).ap_coeff();
@@ -2284,7 +2280,7 @@ struct rip_t : public cat_attack_t
   double ap_per_point;
 
   rip_t( druid_t* p, const std::string& options_str ) :
-    cat_attack_t( "rip", p, p -> find_class_spell( "Rip" ), options_str ),
+    cat_attack_t( "rip", p, p -> find_specialization_spell( "Rip" ), options_str ),
     ap_per_point( 0.0 )
   {
     ap_per_point          = data().effectN( 1 ).ap_coeff();
@@ -2465,7 +2461,7 @@ struct skull_bash_cat_t : public cat_attack_t
 struct swipe_t : public cat_attack_t
 {
   swipe_t( druid_t* player, const std::string& options_str ) :
-    cat_attack_t( "swipe", player, player -> find_class_spell( "Swipe" ), options_str )
+    cat_attack_t( "swipe", player, player -> find_specialization_spell( "Swipe" ), options_str )
   {
     aoe     = -1;
     special = true;
@@ -2721,7 +2717,7 @@ struct feral_charge_bear_t : public bear_attack_t
 struct lacerate_t : public bear_attack_t
 {
   lacerate_t( druid_t* p, const std::string& options_str ) :
-    bear_attack_t( "lacerate", p, p -> find_class_spell( "Lacerate" ) )
+    bear_attack_t( "lacerate", p, p -> find_specialization_spell( "Lacerate" ) )
   {
     parse_options( NULL, options_str );
     dot_behavior             = DOT_REFRESH;
@@ -2838,7 +2834,7 @@ struct maul_t : public bear_attack_t
 {
   tooth_and_claw_t* absorb;
   maul_t( druid_t* player, const std::string& options_str ) :
-    bear_attack_t( "maul", player, player -> find_class_spell( "Maul" ) )
+    bear_attack_t( "maul", player, player -> find_specialization_spell( "Maul" ) )
   {
     parse_options( NULL, options_str );
     weapon = &( player -> main_hand_weapon );
@@ -3010,7 +3006,7 @@ struct savage_defense_t : public bear_attack_t
 struct might_of_ursoc_t : public bear_attack_t
 {
   might_of_ursoc_t( druid_t* player, const std::string& options_str ) :
-    bear_attack_t( "might_of_ursoc", player, player -> find_class_spell( "Might of Ursoc" ) )
+    bear_attack_t( "might_of_ursoc", player, player -> find_specialization_spell( "Might of Ursoc" ) )
   {
     parse_options( NULL, options_str );
     cooldown -> duration = data().cooldown();
@@ -4155,7 +4151,7 @@ struct hurricane_t : public druid_spell_t
     druid_spell_t( "hurricane", player, player -> find_spell( 16914 ) )
   {
     parse_options( NULL, options_str );
-    channeled   = true;
+    channeled = true;
 
     tick_action = new hurricane_tick_t( player, data().effectN( 3 ).trigger() );
     dynamic_tick_action = true;
@@ -4169,6 +4165,21 @@ struct hurricane_t : public druid_spell_t
 
     return m;
   }
+
+  virtual void execute()
+  {
+    druid_spell_t::execute();
+
+    p() -> buff.hurricane -> trigger();
+
+  }
+
+  virtual void last_tick( dot_t * d )
+  {
+    druid_spell_t::last_tick( d );
+    p() -> buff.hurricane -> expire();
+  }
+
 
   virtual void schedule_execute( action_state_t* state = 0 )
   {
@@ -4304,6 +4315,15 @@ struct mark_of_the_wild_t : public druid_spell_t
         range::fill( base_costs, 0 );
       }
 
+      virtual double composite_ta_multiplier()
+      {
+        double ta = druid_spell_t::composite_ta_multiplier();
+        if ( p() -> buff.hurricane -> up() )
+          ta *= 1.0 + p() -> perk.enhanced_storms -> effectN( 1 ).percent();
+
+        return ta;
+      }
+
       virtual void tick( dot_t* d )
       {
         druid_spell_t::tick( d );
@@ -4335,6 +4355,15 @@ struct mark_of_the_wild_t : public druid_spell_t
 
       if ( player -> specialization() == DRUID_BALANCE )
         moonfire = new moonfire_CA_t( player );
+    }
+
+    virtual double composite_ta_multiplier()
+    {
+      double ta = druid_spell_t::composite_ta_multiplier();
+      if ( p() -> buff.hurricane -> up() )
+        ta *= 1.0 + p() -> perk.enhanced_storms -> effectN( 1 ).percent();
+
+      return ta;
     }
 
     virtual void tick( dot_t* d )
@@ -4399,6 +4428,15 @@ struct mark_of_the_wild_t : public druid_spell_t
           aoe = -1;
       }
 
+      virtual double composite_ta_multiplier()
+      {
+        double ta = druid_spell_t::composite_ta_multiplier();
+        if ( p() -> buff.hurricane -> up() )
+          ta *= 1.0 + p() -> perk.enhanced_storms -> effectN( 1 ).percent();
+
+        return ta;
+      }
+
       virtual void tick( dot_t* d )
       {
         druid_spell_t::tick( d );
@@ -4436,6 +4474,15 @@ struct mark_of_the_wild_t : public druid_spell_t
     {
       druid_spell_t::tick( d );
       p() -> trigger_shooting_stars( d -> state -> result );
+    }
+
+    virtual double composite_ta_multiplier()
+    {
+      double ta = druid_spell_t::composite_ta_multiplier();
+      if ( p() -> buff.hurricane -> up() )
+        ta *= 1.0 + p() -> perk.enhanced_storms -> effectN( 1 ).percent();
+
+      return ta;
     }
 
     virtual void schedule_execute( action_state_t* state = 0 )
@@ -4611,37 +4658,27 @@ struct starfire_t : public druid_spell_t
 
 // Starfall Spell ===========================================================
 
-struct starfall_star_t : public druid_spell_t
-{
-  starfall_star_t( druid_t* player, uint32_t spell_id ) :
-    druid_spell_t( "starfall_star", player, player -> find_spell( spell_id ) )
-  {
-    background  = true;
-    direct_tick = true;
-  }
-};
-
 struct starfall_t : public druid_spell_t
 {
   starfall_t( druid_t* player, const std::string& options_str ) :
-    druid_spell_t( "starfall", player, player -> find_spell( 160836 ) )
+    druid_spell_t( "starfall", player, player -> find_specialization_spell( "Starfall" ) )
   {
     parse_options( NULL, options_str );
 
     hasted_ticks = harmful = false;
-    cooldown = player -> cooldown.starfallsurge;
-
     base_multiplier *= 1.0 + player -> sets.set( SET_T14_2PC_CASTER ) -> effectN( 1 ).percent();
     aoe = -1;
-
-    // Starfall triggers a spell each second, that triggers the damage spell.
-    const spell_data_t* stars_trigger_spell = player -> find_spell( 50288 );
-    if ( ! stars_trigger_spell -> ok() )
-    {
-      background = true;
-    }
     dynamic_tick_action = tick_zero = true;
-    tick_action = new starfall_star_t( player, stars_trigger_spell -> effectN( 1 ).base_value() );
+    base_multiplier *= 1.0 + player -> perk.empowered_starfall -> effectN( 1 ).percent();
+  }
+
+  virtual double composite_ta_multiplier()
+  {
+    double ta = druid_spell_t::composite_ta_multiplier();
+    if ( p() -> buff.hurricane -> up() )
+      ta *= 1.0 + p() -> perk.enhanced_storms -> effectN( 1 ).percent();
+
+    return ta;
   }
 
   virtual void execute()
@@ -4649,6 +4686,15 @@ struct starfall_t : public druid_spell_t
     p() -> buff.starfall -> trigger();
 
     druid_spell_t::execute();
+    p() -> cooldown.starfallsurge -> start();
+  }
+
+  virtual bool ready()
+  {
+    if ( !p() -> cooldown.starfallsurge -> up() )
+      return false;
+
+    return druid_spell_t::ready();
   }
 };
 
@@ -4667,7 +4713,7 @@ struct starsurge_t : public druid_spell_t
 
     base_crit += p() -> sets.set( SET_T15_2PC_CASTER ) -> effectN( 1 ).percent();
     cooldown = player -> cooldown.starfallsurge;
-    base_execute_time = timespan_t::zero();
+    base_execute_time *= 1.0 + player -> perk.enhanced_starsurge -> effectN( 1 ).percent();
   }
 
   virtual void execute()
@@ -4963,7 +5009,7 @@ void druid_t::trigger_shooting_stars( result_e result )
       proc.shooting_stars -> occur();
     }
   }
-  else if ( rng().roll( spec.shooting_stars -> proc_chance() / 2 ) )
+  else if ( rng().roll( spec.shooting_stars -> proc_chance() * 2 ) )
   {
     if ( cooldown.starfallsurge -> current_charge == 3 )
       proc.shooting_stars_wasted -> occur();
@@ -5435,6 +5481,8 @@ void druid_t::create_buffs()
                                    .chance( 0.08 );
 
   buff.celestial_alignment       = new celestial_alignment_t( *this );
+
+  buff.hurricane                 = buff_creator_t( this, "hurricane", find_class_spell( "Hurricane" ) );
 
   buff.astral_showers              = buff_creator_t( this, "astral_showers",   spec.astral_showers -> effectN( 1 ).trigger() );
 
@@ -6301,11 +6349,18 @@ double druid_t::composite_rating_multiplier( rating_e rating ) const
   switch ( rating )
   {
     case RATING_SPELL_HASTE:
+      if ( specialization() == DRUID_RESTORATION )
+        return m * 1.05;
     case RATING_MELEE_HASTE:
     case RATING_RANGED_HASTE:
     case RATING_SPELL_CRIT:
     case RATING_MELEE_CRIT:
+      if ( specialization() == DRUID_FERAL )
+        return m * 1.05;
     case RATING_RANGED_CRIT:
+    case RATING_MASTERY:
+      if ( specialization() == DRUID_BALANCE || specialization() == DRUID_GUARDIAN )
+        return 1.05;
       break;
     default:
       break;

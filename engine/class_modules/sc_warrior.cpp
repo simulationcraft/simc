@@ -386,6 +386,7 @@ public:
   virtual void      init_procs();
   virtual void      init_rng();
   virtual void      combat_begin();
+  virtual double    composite_rating_multiplier( rating_e rating ) const;
   virtual double    composite_player_multiplier( school_e school ) const;
   virtual double    matching_gear_multiplier( attribute_e attr ) const;
   virtual double    composite_block() const;
@@ -4124,6 +4125,30 @@ double warrior_t::composite_player_multiplier( school_e school ) const
 
   return m;
 }
+
+
+// warrior_t::composite_rating_multiplier =====================================
+
+double warrior_t::composite_rating_multiplier( rating_e rating ) const
+{
+  double m = player_t::composite_rating_multiplier( rating );
+
+  switch ( rating )
+  {
+    case RATING_MELEE_CRIT:
+      if ( specialization() == WARRIOR_FURY )
+        return m * 1.05;
+    case RATING_MASTERY:
+      if ( specialization() == WARRIOR_ARMS || specialization() == WARRIOR_PROTECTION )
+        return m * 1.05;
+      break;
+    default:
+      break;
+  }
+
+  return m;
+}
+
 
 // warrior_t::matching_gear_multiplier ======================================
 
