@@ -87,6 +87,8 @@ set_bonus_t::set_bonus_t( const player_t* p ) :
     count[ SET_T15_4PC_CASTER ] = count[ SET_T15_4PC_MELEE ] = count[ SET_T15_4PC_TANK ] = count[ SET_T15_4PC_HEAL ] = -1;
     count[ SET_T16_2PC_CASTER ] = count[ SET_T16_2PC_MELEE ] = count[ SET_T16_2PC_TANK ] = count[ SET_T16_2PC_HEAL ] = -1;
     count[ SET_T16_4PC_CASTER ] = count[ SET_T16_4PC_MELEE ] = count[ SET_T16_4PC_TANK ] = count[ SET_T16_4PC_HEAL ] = -1;
+    count[ SET_T17_2PC_CASTER ] = count[ SET_T17_2PC_MELEE ] = count[ SET_T17_2PC_TANK ] = count[ SET_T17_2PC_HEAL ] = -1;
+    count[ SET_T17_4PC_CASTER ] = count[ SET_T17_4PC_MELEE ] = count[ SET_T17_4PC_TANK ] = count[ SET_T17_4PC_HEAL ] = -1;
     count[ SET_PVP_2PC_CASTER ] = count[ SET_PVP_2PC_MELEE ] = count[ SET_PVP_2PC_TANK ] = count[ SET_PVP_2PC_HEAL ] = -1;
     count[ SET_PVP_4PC_CASTER ] = count[ SET_PVP_4PC_MELEE ] = count[ SET_PVP_4PC_TANK ] = count[ SET_PVP_4PC_HEAL ] = -1;
 }
