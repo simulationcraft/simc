@@ -3412,7 +3412,7 @@ private:
 
 namespace new_set_bonus {
 
-static const unsigned PVP_OFFSET = 3;
+static const int PVP_OFFSET = 3;
 enum set_tier_e {
   SET_MIN = -3 + PVP_OFFSET,
   PVP_2 = -2 + PVP_OFFSET,
@@ -3437,6 +3437,7 @@ enum set_tier_e {
   TIER_17 = 17 + PVP_OFFSET,
   SET_MAX = 18 + PVP_OFFSET,
 };
+static_assert( SET_MIN == 0, "PVP_OFFSET is wrong!" );
 
 
 struct set_bonus_t
