@@ -1200,310 +1200,245 @@ struct feral_spirit_pet_t : public pet_t
   }
 };
 
-struct earth_elemental_pet_t : public pet_t
+// ==========================================================================
+// Primal Elementals
+// ==========================================================================
+
+struct primal_elemental_t : public pet_t
 {
   struct travel_t : public action_t
   {
     travel_t( player_t* player ) : action_t( ACTION_OTHER, "travel", player ) {}
-    virtual void execute() { player -> current.distance = 1; }
-    virtual timespan_t execute_time() const { return timespan_t::from_seconds( player -> current.distance / 10.0 ); }
-    virtual bool ready() { return ( player -> current.distance > 1 ); }
-    virtual bool usable_moving() const { return true; }
-  };
-
-  struct auto_melee_attack_t : public melee_attack_t
-  {
-    auto_melee_attack_t( earth_elemental_pet_t* player ) :
-      melee_attack_t( "auto_attack", player )
-    {
-      assert( player -> main_hand_weapon.type != WEAPON_NONE );
-      player -> main_hand_attack = new melee_t( player );
-
-      trigger_gcd = timespan_t::zero();
-    }
-
-    virtual void execute()
-    {
-      player -> main_hand_attack -> schedule_execute();
-    }
-
-    virtual bool ready()
-    {
-      if ( player -> is_moving() ) return false;
-      return( player -> main_hand_attack -> execute_event == 0 ); // not swinging
-    }
+    void execute() { player -> current.distance = 1; }
+    timespan_t execute_time() const { return timespan_t::from_seconds( player -> current.distance / 10.0 ); }
+    bool ready() { return ( player -> current.distance > 1 ); }
+    bool usable_moving() const { return true; }
   };
 
   struct melee_t : public melee_attack_t
   {
-    melee_t( earth_elemental_pet_t* player ) :
-      melee_attack_t( "earth_melee", player, spell_data_t::nil() )
+    melee_t( primal_elemental_t* player, school_e school_ ) :
+      melee_attack_t( "melee", player, spell_data_t::nil() )
     {
-      auto_attack = true;
-      school            = SCHOOL_PHYSICAL;
-      may_crit          = true;
-      background        = true;
-      repeating         = true;
-      weapon            = &( player -> main_hand_weapon );
-      base_execute_time = weapon -> swing_time;
+      auto_attack = may_crit = background = repeating = true;
+
+      school                 = school_;
+      weapon                 = &( player -> main_hand_weapon );
+      base_execute_time      = weapon -> swing_time;
+      crit_bonus_multiplier *= 1.0 + player -> o() -> spec.elemental_fury -> effectN( 1 ).percent() + player -> o() -> perk.improved_elemental_fury -> effectN( 1 ).percent();
+
+      // Non-physical damage melee is spell powered
+      if ( school != SCHOOL_PHYSICAL )
+        spell_power_mod.direct = 1.0;
+    }
+
+    void execute()
+    {
+      // If we're casting, we should clip a swing
+      if ( time_to_execute > timespan_t::zero() && player -> executing )
+        schedule_execute();
+      else
+        melee_attack_t::execute();
+    }
+  };
+
+  struct auto_attack_t : public melee_attack_t
+  {
+    auto_attack_t( primal_elemental_t* player, school_e school ) :
+      melee_attack_t( "auto_attack", player )
+    {
+      assert( player -> main_hand_weapon.type != WEAPON_NONE );
+      player -> main_hand_attack = new melee_t( player, school );
+    }
+
+    void execute()
+    { player -> main_hand_attack -> schedule_execute(); }
+
+    virtual bool ready()
+    {
+      if ( player -> is_moving() ) return false;
+      return ( player -> main_hand_attack -> execute_event == 0 );
+    }
+  };
+
+  struct primal_elemental_spell_t : public spell_t
+  {
+    primal_elemental_t* p;
+
+    primal_elemental_spell_t( const std::string& t, 
+                              primal_elemental_t* p,
+                              const spell_data_t* s = spell_data_t::nil(),
+                              const std::string& options = std::string() ) :
+      spell_t( t, p, s ), p( p )
+    {
+      parse_options( 0, options );
+
+      may_crit                    = true;
+      base_costs[ RESOURCE_MANA ] = 0;
+      crit_bonus_multiplier      *= 1.0 + p -> o() -> spec.elemental_fury -> effectN( 1 ).percent() + p -> o() -> perk.improved_elemental_fury -> effectN( 1 ).percent();
     }
   };
 
   const spell_data_t* command;
 
-  earth_elemental_pet_t( sim_t* sim, shaman_t* owner, bool guardian ) :
-    pet_t( sim, owner, ( ! guardian ) ? "primal_earth_elemental" : "greater_earth_elemental", guardian /*GUARDIAN*/ )
+  primal_elemental_t( shaman_t* owner, const std::string& name, bool guardian = false ) :
+    pet_t( owner -> sim, owner, name, guardian )
   {
-    stamina_per_owner   = 1.0;
+    stamina_per_owner = 1.0;
+  }
 
-    command = owner -> find_spell( 65222 );
+  shaman_t* o() const
+  { return static_cast< shaman_t* >( owner ); }
+
+  resource_e primary_resource() const
+  { return RESOURCE_MANA; }
+
+  void init_base_stats()
+  {
+    pet_t::init_base_stats();
+
+    if ( o() -> talent.primal_elementalist -> ok() )
+    {
+      double multiplier = 1.0 + o() -> talent.primal_elementalist -> effectN( 1 ).percent();
+
+      owner_coeff.ap_from_ap *= multiplier;
+      owner_coeff.ap_from_sp *= multiplier;
+      owner_coeff.sp_from_sp *= multiplier;
+      owner_coeff.sp_from_ap *= multiplier;
+    }
+  }
+
+  void init_spells()
+  {
+    pet_t::init_spells();
+
+    command = find_spell( 21563 );
+  }
+
+  action_t* create_action( const std::string& name,
+                           const std::string& options_str )
+  {
+    if ( name == "travel"      ) return new travel_t( this );
+
+    return pet_t::create_action( name, options_str );
   }
 
   double composite_player_multiplier( school_e school ) const
   {
     double m = pet_t::composite_player_multiplier( school );
 
-    if ( owner -> race == RACE_ORC )
+    if ( o() -> race == RACE_ORC )
       m *= 1.0 + command -> effectN( 1 ).percent();
+
+    if ( ( dbc::is_school( school, SCHOOL_FIRE ) ||
+           dbc::is_school( school, SCHOOL_FROST ) ||
+           dbc::is_school( school, SCHOOL_NATURE ) ) &&
+         o() -> mastery.enhanced_elements -> ok() )
+      m *= 1.0 + o() -> cache.mastery_value();
 
     return m;
   }
+};
 
-  shaman_t* o() { return static_cast< shaman_t* >( owner ); }
-  //timespan_t available() { return sim -> max_time; }
+// ==========================================================================
+// Earth Elemental
+// ==========================================================================
+
+struct earth_elemental_t : public primal_elemental_t
+{
+  earth_elemental_t( shaman_t* owner, bool guardian ) :
+    primal_elemental_t( owner, ( ! guardian ) ? "primal_earth_elemental" : "greater_earth_elemental", guardian )
+  { }
 
   virtual void init_base_stats()
   {
-    pet_t::init_base_stats();
+    primal_elemental_t::init_base_stats();
 
-    // Approximated from lvl 85, 86 Earth Elementals
     main_hand_weapon.type       = WEAPON_BEAST;
-    main_hand_weapon.min_dmg    = dbc.spell_scaling( o() -> type, level ) * 1.3;
-    main_hand_weapon.max_dmg    = dbc.spell_scaling( o() -> type, level ) * 1.3;
-    main_hand_weapon.damage     = ( main_hand_weapon.min_dmg + main_hand_weapon.max_dmg ) / 2;
     main_hand_weapon.swing_time = timespan_t::from_seconds( 2.0 );
-
-    if ( o() -> talent.primal_elementalist -> ok() )
-    {
-      main_hand_weapon.min_dmg *= 1.5;
-      main_hand_weapon.max_dmg *= 1.5;
-    }
 
     resources.base[ RESOURCE_HEALTH ] = 8000; // Approximated from lvl85 earth elemental in game
     resources.base[ RESOURCE_MANA   ] = 0; //
 
+    owner_coeff.ap_from_sp = 0.1; // TODO-WOD: Preliminary value, verify
+  }
+
+  void init_action_list()
+  {
     // Simple as it gets, travel to target, kick off melee
     action_list_str = "travel/auto_attack,moving=0";
 
-    owner_coeff.ap_from_sp = 0.1; // TODO-WOD: Preliminary value, verify
-    if ( o() -> talent.primal_elementalist -> ok() )
-      owner_coeff.ap_from_sp *= 1.0 + o() -> talent.primal_elementalist -> effectN( 1 ).percent();
+    primal_elemental_t::init_action_list();
   }
 
   virtual action_t* create_action( const std::string& name,
                                    const std::string& options_str )
   {
-    if ( name == "travel"      ) return new travel_t( this );
-    if ( name == "auto_attack" ) return new auto_melee_attack_t ( this );
+    if ( name == "auto_attack" ) return new primal_elemental_t::auto_attack_t ( this, SCHOOL_PHYSICAL );
 
-    return pet_t::create_action( name, options_str );
+    return primal_elemental_t::create_action( name, options_str );
   }
 };
 
-struct fire_elemental_t : public pet_t
+// ==========================================================================
+// Fire Elemental
+// ==========================================================================
+
+struct fire_elemental_t : public primal_elemental_t
 {
-  struct travel_t : public action_t
-  {
-    travel_t( player_t* player ) : action_t( ACTION_OTHER, "travel", player ) {}
-    virtual void execute() { player -> current.distance = 1; }
-    virtual timespan_t execute_time() const { return timespan_t::from_seconds( player -> current.distance / 10.0 ); }
-    virtual bool ready() { return ( player -> current.distance > 1 ); }
-    virtual timespan_t gcd() const { return timespan_t::zero(); }
-    virtual bool usable_moving() const { return true; }
-  };
-
-  struct fire_elemental_spell_t : public spell_t
-  {
-    fire_elemental_t* p;
-
-    fire_elemental_spell_t( const std::string& t, fire_elemental_t* p, const spell_data_t* s = spell_data_t::nil(), const std::string& options = std::string() ) :
-      spell_t( t, p, s ), p( p )
-    {
-      parse_options( 0, options );
-
-      school                      = SCHOOL_FIRE;
-      may_crit                    = true;
-      base_costs[ RESOURCE_MANA ] = 0;
-      crit_bonus_multiplier      *= 1.0 + p -> o() -> spec.elemental_fury -> effectN( 1 ).percent() + p -> o() -> perk.improved_elemental_fury -> effectN( 1 ).percent();
-    }
-
-    virtual double composite_da_multiplier() const
-    {
-      double m = spell_t::composite_da_multiplier();
-
-      if ( p -> o() -> mastery.enhanced_elements -> ok() )
-        m *= 1.0 + p -> o() -> cache.mastery_value();
-
-      return m;
-    }
-
-    virtual double composite_ta_multiplier() const
-    {
-      double m = spell_t::composite_ta_multiplier();
-
-      if ( p -> o() -> mastery.enhanced_elements -> ok() )
-        m *= 1.0 + p -> o() -> cache.mastery_value();
-
-      return m;
-    }
-  };
-
-  struct fire_nova_t  : public fire_elemental_spell_t
+  struct fire_nova_t  : public primal_elemental_spell_t
   {
     fire_nova_t( fire_elemental_t* player, const std::string& options ) :
-      fire_elemental_spell_t( "fire_nova", player, player -> find_spell( 117588 ), options )
+      primal_elemental_spell_t( "fire_nova", player, player -> find_spell( 117588 ), options )
     {
       aoe = -1;
-      base_dd_min        = p -> dbc.spell_scaling( p -> o() -> type, p -> level ) * .65;
-      base_dd_max        = p -> dbc.spell_scaling( p -> o() -> type, p -> level ) * .65;
     }
   };
 
-  struct fire_blast_t : public fire_elemental_spell_t
+  struct fire_blast_t : public primal_elemental_spell_t
   {
     fire_blast_t( fire_elemental_t* player, const std::string& options ) :
-      fire_elemental_spell_t( "fire_blast", player, player -> find_spell( 57984 ), options )
-    {
-      base_dd_min        = p -> dbc.spell_scaling( p -> o() -> type, p -> level ) / 1 / p -> level;
-      base_dd_max        = p -> dbc.spell_scaling( p -> o() -> type, p -> level ) / 1 / p -> level;
-    }
+      primal_elemental_spell_t( "fire_blast", player, player -> find_spell( 57984 ), options )
+    { }
 
-    virtual void execute()
+    void execute()
     {
-      fire_elemental_spell_t::execute();
+      primal_elemental_spell_t::execute();
 
       // Reset swing timer
       if ( player -> main_hand_attack && player -> main_hand_attack -> execute_event )
         player -> main_hand_attack -> execute_event -> reschedule( player -> main_hand_attack -> execute_time() );
     }
 
-    virtual bool usable_moving() const
-    {
-      return true;
-    }
+    bool usable_moving() const
+    { return true; }
   };
 
-  struct immolate_t : public fire_elemental_spell_t
+  struct immolate_t : public primal_elemental_spell_t
   {
     immolate_t( fire_elemental_t* player, const std::string& options ) :
-      fire_elemental_spell_t( "immolate", player, player -> find_spell( 118297 ), options )
+      primal_elemental_spell_t( "immolate", player, player -> find_spell( 118297 ), options )
     {
-      hasted_ticks  = true;
-      tick_may_crit = true;
-      base_costs[ RESOURCE_MANA ] = 0;
+      hasted_ticks = tick_may_crit = true;
     }
   };
 
-  struct fire_melee_t : public melee_attack_t
+  fire_elemental_t( shaman_t* owner, bool guardian ) :
+    primal_elemental_t( owner, ( ! guardian ) ? "primal_fire_elemental" : "greater_fire_elemental", guardian )
+  { }
+
+  void init_base_stats()
   {
-    fire_melee_t( fire_elemental_t* player ) :
-      melee_attack_t( "fire_melee", player, spell_data_t::nil() )
-    {
-      auto_attack = true;
-      special                      = false;
-      may_crit                     = true;
-      background                   = true;
-      repeating                    = true;
-      spell_power_mod.direct       = 1.0;
-      school                       = SCHOOL_FIRE;
-      crit_bonus_multiplier       *= 1.0 + player -> o() -> spec.elemental_fury -> effectN( 1 ).percent() + player -> o() -> perk.improved_elemental_fury -> effectN( 1 ).percent();
-      weapon_power_mod             = 0;
-      base_dd_min                  = player -> dbc.spell_scaling( player -> o() -> type, player -> level );
-      base_dd_max                  = player -> dbc.spell_scaling( player -> o() -> type, player -> level );
-      if ( player -> o() -> talent.primal_elementalist -> ok() )
-      {
-        base_dd_min *= 1.5 * 1.2;
-        base_dd_max *= 1.5 * 1.2;
-      }
-    }
-
-    virtual void execute()
-    {
-      // If we're casting Immolate, we should clip a swing
-      if ( time_to_execute > timespan_t::zero() && player -> executing )
-        schedule_execute();
-      else
-        melee_attack_t::execute();
-    }
-
-    virtual double composite_da_multiplier() const
-    {
-      double m = melee_attack_t::composite_da_multiplier();
-
-      fire_elemental_t* p = static_cast< fire_elemental_t* >( player );
-      if ( p -> o() -> mastery.enhanced_elements -> ok() )
-        m *= 1.0 + p -> o() -> cache.mastery_value();
-
-      return m;
-    }
-  };
-
-  struct auto_melee_attack_t : public melee_attack_t
-  {
-    auto_melee_attack_t( fire_elemental_t* player ) :
-      melee_attack_t( "auto_attack", player )
-    {
-      player -> main_hand_attack = new fire_melee_t( player );
-      player -> main_hand_attack -> weapon = &( player -> main_hand_weapon );
-      player -> main_hand_attack -> base_execute_time = player -> main_hand_weapon.swing_time;
-
-      trigger_gcd = timespan_t::zero();
-    }
-
-    virtual void execute()
-    {
-      player -> main_hand_attack -> schedule_execute();
-    }
-
-    virtual bool ready()
-    {
-      if ( player  -> is_moving() ) return false;
-      return ( player -> main_hand_attack -> execute_event == 0 ); // not swinging
-    }
-  };
-
-  shaman_t* o() { return static_cast< shaman_t* >( owner ); }
-
-  const spell_data_t* command;
-
-  fire_elemental_t( sim_t* sim, shaman_t* owner, bool guardian ) :
-    pet_t( sim, owner, ( ! guardian ) ? "primal_fire_elemental" : "greater_fire_elemental", guardian /*GUARDIAN*/ )
-  {
-    stamina_per_owner      = 1.0;
-    command = owner -> find_spell( 65222 );
-  }
-
-  virtual void init_base_stats()
-  {
-    pet_t::init_base_stats();
+    primal_elemental_t::init_base_stats();
 
     resources.base[ RESOURCE_HEALTH ] = 32268; // Level 85 value
     resources.base[ RESOURCE_MANA   ] = 8908; // Level 85 value
 
-    //mana_per_intellect               = 4.5;
-    //hp_per_stamina = 10.5;
-
     // FE Swings with a weapon, however the damage is "magical"
     main_hand_weapon.type            = WEAPON_BEAST;
-    main_hand_weapon.min_dmg         = 0;
-    main_hand_weapon.max_dmg         = 0;
-    main_hand_weapon.damage          = ( main_hand_weapon.min_dmg + main_hand_weapon.max_dmg ) / 2;
     main_hand_weapon.swing_time      = timespan_t::from_seconds( 1.4 );
 
     owner_coeff.sp_from_sp = 0.27; // TODO-WOD: Preliminary value, verify
-
-    if ( o() -> talent.primal_elementalist -> ok() )
-      owner_coeff.sp_from_sp *= 1.0 + o() -> talent.primal_elementalist -> effectN( 1 ).percent();
   }
 
   void init_action_list()
@@ -1515,138 +1450,80 @@ struct fire_elemental_t : public pet_t
     pet_t::init_action_list();
   }
 
-  virtual resource_e primary_resource() const { return RESOURCE_MANA; }
-
-  double composite_player_multiplier( school_e school ) const
+  action_t* create_action( const std::string& name,
+                           const std::string& options_str )
   {
-    double m = pet_t::composite_player_multiplier( school );
-
-    if ( owner -> race == RACE_ORC )
-      m *= 1.0 + command -> effectN( 1 ).percent();
-
-    return m;
-  }
-
-  virtual action_t* create_action( const std::string& name,
-                                   const std::string& options_str )
-  {
-    if ( name == "travel"      ) return new travel_t( this );
+    if ( name == "auto_attack" ) return new auto_attack_t( this, SCHOOL_FIRE );
     if ( name == "fire_blast"  ) return new fire_blast_t( this, options_str );
     if ( name == "fire_nova"   ) return new fire_nova_t( this, options_str );
-    if ( name == "auto_attack" ) return new auto_melee_attack_t( this );
     if ( name == "immolate"    ) return new immolate_t( this, options_str );
 
-    return pet_t::create_action( name, options_str );
+    return primal_elemental_t::create_action( name, options_str );
   }
 };
 
-struct storm_elemental_t : public pet_t
+// ==========================================================================
+// Storm Elemental
+// ==========================================================================
+
+struct storm_elemental_t : public primal_elemental_t
 {
-  struct storm_elemental_spell_t : public spell_t
-  {
-    storm_elemental_t* p;
-
-    storm_elemental_spell_t( const std::string& t, storm_elemental_t* p, const spell_data_t* s = spell_data_t::nil(), const std::string& options = std::string() ) :
-      spell_t( t, p, s ), p( p )
-    {
-      parse_options( 0, options );
-
-      may_crit                    = true;
-      base_costs[ RESOURCE_MANA ] = 0;
-      crit_bonus_multiplier      *= 1.0 + p -> o() -> spec.elemental_fury -> effectN( 1 ).percent() + p -> o() -> perk.improved_elemental_fury -> effectN( 1 ).percent();
-    }
-
-    virtual double composite_da_multiplier() const
-    {
-      double m = spell_t::composite_da_multiplier();
-
-      if ( p -> o() -> mastery.enhanced_elements -> ok() )
-        m *= 1.0 + p -> o() -> cache.mastery_value();
-
-      return m;
-    }
-
-    virtual double composite_ta_multiplier() const
-    {
-      double m = spell_t::composite_ta_multiplier();
-
-      if ( p -> o() -> mastery.enhanced_elements -> ok() )
-        m *= 1.0 + p -> o() -> cache.mastery_value();
-
-      return m;
-    }
-  };
-
   // TODO: Healing
-  struct wind_gust_t : public storm_elemental_spell_t
+  struct wind_gust_t : public primal_elemental_spell_t
   {
     wind_gust_t( storm_elemental_t* player, const std::string& options ) :
-      storm_elemental_spell_t( "wind_gust", player, player -> find_spell( 157331 ), options )
+      primal_elemental_spell_t( "wind_gust", player, player -> find_spell( 157331 ), options )
     { }
   };
 
-  struct call_lightning_t : public storm_elemental_spell_t
+  struct call_lightning_t : public primal_elemental_spell_t
   {
     call_lightning_t( storm_elemental_t* player, const std::string& options ) :
-      storm_elemental_spell_t( "call_lightning", player, player -> find_spell( 157348 ), options )
+      primal_elemental_spell_t( "call_lightning", player, player -> find_spell( 157348 ), options )
     { }
 
     void execute()
     {
-      storm_elemental_spell_t::execute();
+      primal_elemental_spell_t::execute();
 
-      p -> call_lightning -> trigger();
+      static_cast<storm_elemental_t*>( player ) -> call_lightning -> trigger();
     }
   };
 
-  shaman_t* o() { return static_cast< shaman_t* >( owner ); }
-
-  const spell_data_t* command;
   buff_t* call_lightning;
 
-  storm_elemental_t( sim_t* sim, shaman_t* owner, bool guardian ) :
-    pet_t( sim, owner, ( ! guardian ) ? "primal_storm_elemental" : "greater_storm_elemental", guardian )
-  {
-    stamina_per_owner      = 1.0;
-    command = owner -> find_spell( 65222 );
-  }
+  storm_elemental_t( shaman_t* owner, bool guardian ) :
+    primal_elemental_t( owner, ( ! guardian ) ? "primal_storm_elemental" : "greater_storm_elemental", guardian )
+  { }
 
-  virtual void init_base_stats()
+  void init_base_stats()
   {
-    pet_t::init_base_stats();
+    primal_elemental_t::init_base_stats();
 
     resources.base[ RESOURCE_HEALTH ] = 32268; // TODO-WOD: FE values, placeholder
     resources.base[ RESOURCE_MANA   ] = 8908;
 
     owner_coeff.sp_from_sp = 0.068; // TODO-WOD: Preliminary value, verify
-
-    if ( o() -> talent.primal_elementalist -> ok() )
-      owner_coeff.sp_from_sp *= 1.0 + o() -> talent.primal_elementalist -> effectN( 1 ).percent();
   }
 
   void init_action_list()
   {
     action_list_str = "call_lightning/wind_gust";
 
-    pet_t::init_action_list();
+    primal_elemental_t::init_action_list();
   }
 
   void create_buffs()
   {
-    pet_t::create_buffs();
+    primal_elemental_t::create_buffs();
 
     call_lightning = buff_creator_t( this, "call_lightning", find_spell( 157348 ) )
                      .cd( timespan_t::zero() );
   }
 
-  virtual resource_e primary_resource() const { return RESOURCE_MANA; }
-
   double composite_player_multiplier( school_e school ) const
   {
-    double m = pet_t::composite_player_multiplier( school );
-
-    if ( owner -> race == RACE_ORC )
-      m *= 1.0 + command -> effectN( 1 ).percent();
+    double m = primal_elemental_t::composite_player_multiplier( school );
 
     // TODO-WOD: Enhance/Elemental has damage, Restoration has healing
     if ( call_lightning -> up() )
@@ -1655,17 +1532,15 @@ struct storm_elemental_t : public pet_t
     return m;
   }
 
-  virtual action_t* create_action( const std::string& name,
-                                   const std::string& options_str )
+  action_t* create_action( const std::string& name,
+                           const std::string& options_str )
   {
     if ( name == "call_lightning" ) return new call_lightning_t( this, options_str );
     if ( name == "wind_gust"      ) return new wind_gust_t( this, options_str );
 
-    return pet_t::create_action( name, options_str );
+    return primal_elemental_t::create_action( name, options_str );
   }
 };
-
-// TODO: Orc racial
 
 struct lightning_elemental_t : public pet_t
 {
@@ -4956,12 +4831,12 @@ pet_t* shaman_t::create_pet( const std::string& pet_name,
 
   if ( p ) return p;
 
-  if ( pet_name == "fire_elemental_pet"       ) return new fire_elemental_t( sim, this, false );
-  if ( pet_name == "fire_elemental_guardian"  ) return new fire_elemental_t( sim, this, true );
-  if ( pet_name == "storm_elemental_pet"      ) return new storm_elemental_t( sim, this, false );
-  if ( pet_name == "storm_elemental_guardian" ) return new storm_elemental_t( sim, this, true );
-  if ( pet_name == "earth_elemental_pet"      ) return new earth_elemental_pet_t( sim, this, false );
-  if ( pet_name == "earth_elemental_guardian" ) return new earth_elemental_pet_t( sim, this, true );
+  if ( pet_name == "fire_elemental_pet"       ) return new fire_elemental_t( this, false );
+  if ( pet_name == "fire_elemental_guardian"  ) return new fire_elemental_t( this, true );
+  if ( pet_name == "storm_elemental_pet"      ) return new storm_elemental_t( this, false );
+  if ( pet_name == "storm_elemental_guardian" ) return new storm_elemental_t( this, true );
+  if ( pet_name == "earth_elemental_pet"      ) return new earth_elemental_t( this, false );
+  if ( pet_name == "earth_elemental_guardian" ) return new earth_elemental_t( this, true );
 
   if ( pet_name == "earth_elemental_totem"   ) return new earth_elemental_totem_t( this );
   if ( pet_name == "fire_elemental_totem"    ) return new fire_elemental_totem_t( this );
