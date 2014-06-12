@@ -3632,6 +3632,7 @@ struct player_stat_cache_t
   const player_t* player;
   mutable std::array<bool, CACHE_MAX> valid;
   mutable std::array < bool, SCHOOL_MAX + 1 > spell_power_valid, player_mult_valid, player_heal_mult_valid;
+  mutable std::array < int, SCHOOL_MAX + 1 > player_heal_mult_last_target;
   // 'valid'-states
 private:
   // cached values

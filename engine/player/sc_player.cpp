@@ -2092,7 +2092,8 @@ void player_t::create_buffs()
       buffs.resolve = buff_creator_t( this, "resolve" )
                         .max_stack( 1 )
                         .duration( timespan_t::zero() )
-                        .default_value( 0 );
+                        .default_value( 0 )
+                        .add_invalidate( CACHE_PLAYER_HEAL_MULTIPLIER );
 
       // Potions
       struct potion_buff_creator : public stat_buff_creator_t
@@ -2633,8 +2634,13 @@ double player_t::composite_player_td_multiplier( school_e /* school */,  const a
 
 double player_t::composite_player_heal_multiplier( const action_state_t* s ) const
 {
-  // Resolve goes here
-  return 1.0;
+  double m = 1.0;
+
+  // apply resolve multiplier
+  if ( resolve_is_started() && s -> target == this )
+    m += buffs.resolve -> current_value / 100.0;
+  
+  return m;
 }
 
 // player_t::composite_player_th_multiplier =================================
@@ -2648,8 +2654,13 @@ double player_t::composite_player_th_multiplier( school_e /* school */ ) const
 
 double player_t::composite_player_absorb_multiplier( const action_state_t* s ) const
 {
-  // Resolve goes here
-  return 1.0;
+  double m = 1.0;
+
+  // apply resolve multiplier
+  if ( resolve_is_started() && s -> target == this )
+    m += buffs.resolve -> current_value / 100.0;
+  
+  return m;
 }
 
 double player_t::composite_player_critical_damage_multiplier() const
@@ -4802,11 +4813,7 @@ void player_t::assess_heal( school_e, dmg_e, action_state_t* s )
 {
   if ( buffs.guardian_spirit -> up() )
     s -> result_amount *= 1.0 + buffs.guardian_spirit -> data().effectN( 1 ).percent();
-
-  // apply resolve
-  if ( resolve_is_started() && s -> action -> player == this )
-    s -> result_amount *= 1.0 + buffs.resolve -> current_value / 100.0;
-
+  
   // process heal
   s -> result_amount = resource_gain( RESOURCE_HEALTH, s -> result_amount, 0, s -> action );
 
@@ -8884,6 +8891,7 @@ void player_stat_cache_t::invalidate_all()
   range::fill( spell_power_valid, false );
   range::fill( player_mult_valid, false );
   range::fill( player_heal_mult_valid, false );
+  range::fill( player_heal_mult_last_target, 0 );
 }
 
 /* Invalidate ALL stats
@@ -8900,6 +8908,7 @@ void player_stat_cache_t::invalidate( cache_e c )
       break;
     case CACHE_PLAYER_HEAL_MULTIPLIER:
       range::fill( player_heal_mult_valid, false );
+      range::fill( player_heal_mult_last_target, 0 );
       break;
     default:
       valid[ c ] = false;
@@ -9283,9 +9292,10 @@ double player_stat_cache_t::player_heal_multiplier( const action_state_t* s ) co
 {
   school_e sch = s -> action -> get_school();
 
-  if ( ! active || ! player_heal_mult_valid[ sch ] )
+  if ( ! active || ! player_heal_mult_valid[ sch ] || ! ( player_heal_mult_last_target[ sch ] == s -> target -> index ) )
   {
     player_heal_mult_valid[ sch ] = true;
+    player_heal_mult_last_target[ sch ] = s -> target -> index;
     _player_heal_mult[ sch ] = player -> composite_player_heal_multiplier( s );
   }
   else assert( _player_heal_mult[ sch ] == player -> composite_player_heal_multiplier( s ) );
