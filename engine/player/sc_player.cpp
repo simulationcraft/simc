@@ -2755,16 +2755,16 @@ double player_t::composite_attribute( attribute_e attr ) const
   switch ( attr )
   {
     case ATTR_INTELLECT:
-        a += racials.heroic_presence -> effectN( 3 ).base_value();
+        a += racials.heroic_presence -> effectN( 3 ).average( this );
       break;
     case ATTR_STRENGTH:
-        a += racials.heroic_presence -> effectN( 1 ).base_value();
+        a += racials.heroic_presence -> effectN( 1 ).average( this );
       break;
     case ATTR_AGILITY:
-        a += racials.heroic_presence -> effectN( 2 ).base_value();
+        a += racials.heroic_presence -> effectN( 2 ).average( this );
       break;
     case ATTR_STAMINA:
-        a += racials.endurance -> effectN( 1 ).base_value();
+        a += racials.endurance -> effectN( 1 ).average( this );
       break;
     default:
       break;
