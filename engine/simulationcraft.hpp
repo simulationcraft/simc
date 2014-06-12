@@ -6679,7 +6679,7 @@ public:
     ab::update_flags = ab::snapshot_flags = 0;
   }
 
-  virtual double composite_ta_multiplier() const { return 1.0; } // stateless
+  virtual double composite_ta_multiplier( const action_state_t* /* state */ ) const { return 1.0; } // stateless
 };
 
 // This is a template for Ignite like mechanics, like of course Ignite, Hunter Piercing Shots, Priest Echo of Light, etc.
