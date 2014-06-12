@@ -9,7 +9,7 @@
 :: Qt-Framework: C:\Qt\Qt5.3.0\
 
 :: Update the qt_dir as necessary
-set qt_dir=C:\Qt\5.3.0\5.3\msvc2013
+set qt_dir=C:\Qt\qt5.3.0\5.3\msvc2013
 set install=simc-win32-release
 set redist="C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\redist\x86\Microsoft.VC120.CRT"
 
