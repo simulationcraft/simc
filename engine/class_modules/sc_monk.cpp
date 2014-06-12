@@ -337,7 +337,7 @@ public:
   virtual double    energy_regen_per_second() const;
   virtual double    composite_attribute_multiplier( attribute_e attr ) const override;
   virtual double    composite_player_multiplier( school_e school ) const;
-  virtual double    composite_player_heal_multiplier( action_state_t* s ) const;
+  virtual double    composite_player_heal_multiplier( const action_state_t* s ) const;
   virtual double    composite_melee_expertise( weapon_t* weapon ) const;
   virtual double    composite_melee_attack_power() const;
   virtual double    composite_parry() const;
@@ -3695,7 +3695,7 @@ double monk_t::composite_attribute_multiplier( attribute_e attr ) const
  
 // monk_t::composite_player_heal_multiplier
  
-double monk_t::composite_player_heal_multiplier( action_state_t* s ) const
+double monk_t::composite_player_heal_multiplier( const action_state_t* s ) const
 {
   double m = base_t::composite_player_heal_multiplier( s );
  

@@ -561,7 +561,7 @@ public:
   virtual double    passive_movement_modifier() const;
   virtual double    composite_player_multiplier( school_e school ) const;
   virtual double    composite_player_td_multiplier( school_e,  const action_t* ) const;
-  virtual double    composite_player_heal_multiplier( action_state_t* s ) const;
+  virtual double    composite_player_heal_multiplier( const action_state_t* s ) const;
   virtual double    composite_spell_crit() const;
   virtual double    composite_spell_power( school_e school ) const;
   virtual double    composite_attribute( attribute_e attr ) const;
@@ -6175,7 +6175,7 @@ double druid_t::composite_player_td_multiplier( school_e school,  const action_t
 
 // druid_t::composite_player_heal_multiplier ================================
 
-double druid_t::composite_player_heal_multiplier( action_state_t* s ) const
+double druid_t::composite_player_heal_multiplier( const action_state_t* s ) const
 {
   double m = player_t::composite_player_heal_multiplier( s );
 
