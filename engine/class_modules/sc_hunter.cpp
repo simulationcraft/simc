@@ -3558,9 +3558,6 @@ void hunter_t::create_buffs()
 
   buffs.master_marksman             = buff_creator_t( this, 82925, "master_marksman" ).chance( specs.master_marksman -> proc_chance() );
   buffs.master_marksman_fire        = buff_creator_t( this, 82926, "master_marksman_fire" );
-  buffs.stampede          = buff_creator_t( this, 130201, "stampede" ) // To allow action lists to react to stampede, rather than doing it in a roundabout way.
-                           .activated( true )
-                           .duration( timespan_t::from_seconds(20) );
 
   buffs.rapid_fire                  = buff_creator_t( this, "rapid_fire" )
                                       .duration( timespan_t::from_seconds( 15 ) )
