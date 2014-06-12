@@ -6,9 +6,6 @@
 #include "simulationcraft.hpp"
 
 // ==========================================================================
-// TODO: Check WoD mechanics whenever alpha/beta roll around:
-// Raging Blow: Will the parent still fail if either MH/OH parry. (Not incredibly important anymore, but it'd be nice to know)
-//
 // Someone who is knowledgable about prot warrior mechanics/changes should look over the defensive abilities.
 // Check shield barrier ap coefficient.
 // ==========================================================================
@@ -237,6 +234,7 @@ public:
     const spell_data_t* sweeping_strikes;
   //Arms and Prot
     const spell_data_t* blood_and_thunder;
+    const spell_data_t* mastery_attunement;
     const spell_data_t* thunder_clap;
   //Arms and Fury
     const spell_data_t* recklessness;
@@ -245,6 +243,7 @@ public:
     const spell_data_t* bloodsurge;
     const spell_data_t* bloodthirst;
     const spell_data_t* crazed_berserker;
+    const spell_data_t* crit_attunement;
     const spell_data_t* flurry;
     const spell_data_t* meat_cleaver;
     const spell_data_t* single_minded_fury;
@@ -3214,9 +3213,11 @@ void warrior_t::init_spells()
   spec.bloodthirst              = find_specialization_spell( "Bloodthirst"           );
   spec.colossus_smash           = find_specialization_spell( "Colossus Smash"        );
   spec.crazed_berserker         = find_specialization_spell( "Crazed Berserker"      );
+  spec.crit_attunement          = find_specialization_spell( "Critical Strike Attunement" );
   spec.devastate                = find_specialization_spell( "Devastate"             );
   spec.executioner              = find_specialization_spell( "Executioner"           );
   spec.flurry                   = find_specialization_spell( "Flurry"                );
+  spec.mastery_attunement       = find_specialization_spell( "Mastery Attunement"    );
   spec.meat_cleaver             = find_specialization_spell( "Meat Cleaver"          );
   spec.mortal_strike            = find_specialization_spell( "Mortal Strike"         );
   spec.raging_blow              = find_specialization_spell( "Raging Blow"           );
@@ -4136,11 +4137,9 @@ double warrior_t::composite_rating_multiplier( rating_e rating ) const
   switch ( rating )
   {
     case RATING_MELEE_CRIT:
-      if ( specialization() == WARRIOR_FURY )
-        return m * 1.05;
+      return m *= 1.0 + spec.crit_attunement -> effectN( 1 ).percent();
     case RATING_MASTERY:
-      if ( specialization() == WARRIOR_ARMS || specialization() == WARRIOR_PROTECTION )
-        return m * 1.05;
+      return m *= 1.0 + spec.mastery_attunement -> effectN( 1 ).percent();
       break;
     default:
       break;

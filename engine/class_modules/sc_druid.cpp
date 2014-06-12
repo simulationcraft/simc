@@ -22,6 +22,7 @@ namespace { // UNNAMED NAMESPACE
       Lunar Inspiration -- Mostly implemented, cannot work until the sim recognizes the talent correctly.
     Combo Points as a resource
     Glyph of Savage Roar
+    Oh my god string lookups during sim runtime.
 
     = Balance =
     Just verify stuff.
@@ -318,7 +319,7 @@ public:
     const spell_data_t* moonwarding;
     const spell_data_t* natures_grasp;
     const spell_data_t* omens;
-    // const spell_data_t* sudden_eclipse;
+    const spell_data_t* sudden_eclipse;
     const spell_data_t* lifebloom;
     const spell_data_t* master_shapeshifter;
     const spell_data_t* might_of_ursoc;
@@ -360,8 +361,12 @@ public:
   struct specializations_t
   {
     // Generic
-    const spell_data_t* leather_specialization;
+    const spell_data_t* crit_attunement;
+    const spell_data_t* haste_attunement;
     const spell_data_t* killer_instinct;
+    const spell_data_t* leather_specialization;
+    const spell_data_t* mana_attunement;
+    const spell_data_t* mastery_attunement;
     const spell_data_t* natures_swiftness;
     const spell_data_t* omen_of_clarity; // Feral and Resto have this
 
@@ -1862,9 +1867,9 @@ public:
     if ( p() -> talent.savagery -> ok() )
       return;
 
-    timespan_t base_tick_time = p() -> find_specialization_spell( "Savage Roar" ) -> effectN( 3 ).time_value();
+    timespan_t base_tick_time = p() -> spec.savage_roar -> effectN( 3 ).time_value();
     timespan_t seconds_per_combo = timespan_t::from_seconds( 6.0 );
-    timespan_t duration = p() -> find_specialization_spell( "Savage Roar" ) -> duration();
+    timespan_t duration = p() -> spec.savage_roar -> duration();
 
     if ( p() -> buff.savage_roar -> check() )
     {
@@ -5159,11 +5164,16 @@ void druid_t::init_spells()
 
   // Specializations
   // Generic / Multiple specs
+  spec.crit_attunement        = find_specialization_spell( "Critical Strike Attunement" );
   spec.critical_strikes       = find_specialization_spell( "Critical Strikes" );
+  spec.haste_attunement       = find_specialization_spell( "Haste Attunement" );
   spec.leader_of_the_pack     = find_specialization_spell( "Leader of the Pack" );
   spec.leather_specialization = find_specialization_spell( "Leather Specialization" );
   spec.omen_of_clarity        = find_specialization_spell( "Omen of Clarity" );
   spec.killer_instinct        = find_specialization_spell( "Killer Instinct" );
+  spec.mana_attunement        = find_specialization_spell( "Mana Attunement" );
+  spec.mastery_attunement     = find_specialization_spell( "Mastery Attunement" );
+
   spec.natures_swiftness      = find_specialization_spell( "Nature's Swiftness" );
   spec.nurturing_instinct     = find_specialization_spell( "Nurturing Instinct" );
 
@@ -5354,7 +5364,7 @@ void druid_t::init_spells()
   glyph.moonwarding           = find_glyph_spell( "Glyph of Moonwarding" );
   glyph.ninth_life            = find_glyph_spell( "Glyph of the Ninth Life" );
   glyph.omens                 = find_glyph_spell( "Glyph of Omens" );
-  //glyph.sudden_eclipse        = find_glyph_spell( "Glyph of Sudden Eclipse" );
+  glyph.sudden_eclipse        = find_glyph_spell( "Glyph of Sudden Eclipse" );
   glyph.regrowth              = find_glyph_spell( "Glyph of Regrowth" );
   glyph.rejuvenation          = find_glyph_spell( "Glyph of Rejuvenation" );
   glyph.savage_roar           = find_glyph_spell( "Glyph of Savage Roar" );
@@ -5420,6 +5430,7 @@ void druid_t::init_base_stats()
   // Natural Insight: +400% mana
   resources.base_multiplier[ RESOURCE_MANA ] = 1.0 + spec.natural_insight -> effectN( 1 ).percent();
   base.mana_regen_per_second *= 1.0 + spec.natural_insight -> effectN( 1 ).percent();
+  base.mana_regen_per_second *= 1.0 + spec.mana_attunement -> effectN( 1 ).percent();
 
   base_gcd = timespan_t::from_seconds( 1.5 );
 }
@@ -6355,18 +6366,15 @@ double druid_t::composite_rating_multiplier( rating_e rating ) const
   switch ( rating )
   {
     case RATING_SPELL_HASTE:
-      if ( specialization() == DRUID_RESTORATION )
-        return m * 1.05;
+      return m *= 1.0 + spec.haste_attunement -> effectN( 1 ).percent();
     case RATING_MELEE_HASTE:
     case RATING_RANGED_HASTE:
     case RATING_SPELL_CRIT:
     case RATING_MELEE_CRIT:
-      if ( specialization() == DRUID_FERAL )
-        return m * 1.05;
+      return m *= 1.0 + spec.crit_attunement -> effectN( 1 ).percent();
     case RATING_RANGED_CRIT:
     case RATING_MASTERY:
-      if ( specialization() == DRUID_BALANCE || specialization() == DRUID_GUARDIAN )
-        return 1.05;
+      return m *= 1.0 + spec.mastery_attunement -> effectN( 1 ).percent();
       break;
     default:
       break;
