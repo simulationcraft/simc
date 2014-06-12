@@ -5007,7 +5007,7 @@ void druid_t::trigger_shooting_stars( result_e result )
 {
   if ( result == RESULT_CRIT )
   {
-    if ( rng().roll( spec.shooting_stars -> effectN( 1 ).percent() ) )
+    if ( rng().roll( spec.shooting_stars -> effectN( 1 ).percent() * 2 ) )
     {
       if ( cooldown.starfallsurge -> current_charge == 3 )
         proc.shooting_stars_wasted -> occur();
@@ -5015,7 +5015,7 @@ void druid_t::trigger_shooting_stars( result_e result )
       proc.shooting_stars -> occur();
     }
   }
-  else if ( rng().roll( spec.shooting_stars -> effectN( 1 ).percent() * 2 ) )
+  else if ( rng().roll( spec.shooting_stars -> effectN( 1 ).percent() ) )
   {
     if ( cooldown.starfallsurge -> current_charge == 3 )
       proc.shooting_stars_wasted -> occur();
