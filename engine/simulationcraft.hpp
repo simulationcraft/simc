@@ -3975,7 +3975,83 @@ struct actor_t : public noncopyable
   { return name_str.c_str(); }
 };
 
+// Resolve Event List =====================================================
+// This is the list of the damage events that have occurred in the last ten seconds
+// Used every time Resolve is updated
+
+struct resolve_event_list_t 
+{
+  resolve_event_list_t( const player_t* p ) : myself( p )
+  { }
+
+  // called after each iteration in player_t::resolve_stop()
+  void reset()
+  { event_list.clear(); }
+
+  // get number of relevant events
+  size_t get_num_events( timespan_t current_time )
+  {
+    purge_event_list( current_time );
+
+    return event_list.size();
+  }
+
+  const player_t* get_event_source( size_t i )  { return event_list[ i ].event_player; }
+
+  double get_event_amount( size_t i )  { return event_list[ i ].event_amount; }
+
+  timespan_t get_event_time( size_t i )  { return event_list[ i ].event_time; }
+  
+
+  // this is the method that we use to interact with the structure
+  void add( const player_t* actor, double amount, timespan_t current_time )
+  {
+    // don't count friendly fire
+    if ( actor == myself )
+      return;
+
+    // Add a new entry
+    event_entry_t e;
+    e.event_player = actor;
+    e.event_amount = amount;
+    e.event_time = current_time;
+
+    event_list.push_back( e );
+  }
+
+private:
+  // structure that contains the relevant information for each actor entry in the list
+  struct event_entry_t {
+    const player_t* event_player;
+    double event_amount;
+    timespan_t event_time;
+    
+  };
+  std::vector<event_entry_t> event_list; // vector of actor entries
+  const player_t* myself; // not sure this is strictly necessary, intended to nullify self-veng, but an is_enemy(actor) call might be better
+    
+  // comparator functor for purging inactive players
+  struct too_old {
+    too_old( const timespan_t& current_time ) :
+      current_time( current_time )
+    {}
+    bool operator()( const event_entry_t& e ) const
+    { return current_time - e.event_time > timespan_t::from_seconds( 10.0 ); }
+    const timespan_t& current_time;
+  };
+
+  // method to purge the event list of events older than 10 seconds ago
+  void purge_event_list( timespan_t current_time )
+  {
+    // Erase-remove idiom
+    event_list.erase( std::remove_if( event_list.begin(), event_list.end(), too_old( current_time ) ), event_list.end() );
+  }
+
+};
+
 // Resolve Actor List =====================================================
+// this is the sorted list of actors used to determine Resolve diminishing returns.
+// sorted according to auto-attack DPS
 
 struct resolve_actor_list_t
 {
@@ -4132,7 +4208,9 @@ struct player_t : public actor_t
   std::vector<pet_t*> pet_list;
   std::vector<pet_t*> active_pets;
   std::vector<absorb_buff_t*> absorb_buff_list;
-  resolve_actor_list_t resolve_list;
+  resolve_actor_list_t resolve_source_list;
+  resolve_event_list_t resolve_damage_list;
+  virtual void   update_resolve();
 
   int         invert_scaling;
 
@@ -4319,12 +4397,12 @@ public:
   void resolve_start() 
   { 
     resolve.start( *this ); 
-    resolve_list.reset();
+    resolve_source_list.reset();
   }
   void resolve_stop() 
   { 
     resolve.stop(); 
-    resolve_list.reset();
+    resolve_source_list.reset();
   }
   bool resolve_is_started() const { return resolve.is_started(); }
   const sc_timeline_t& resolve_timeline() const { return resolve.timeline(); }

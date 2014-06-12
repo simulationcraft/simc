@@ -428,7 +428,7 @@ player_t::player_t( sim_t*             s,
   timeofday( NIGHT_TIME ), //Set to Night by Default, user can override.
   gcd_ready( timespan_t::zero() ), base_gcd( timespan_t::from_seconds( 1.5 ) ), started_waiting( timespan_t::min() ),
   pet_list(), active_pets(),
-  resolve_list( this ),invert_scaling( 0 ),
+  resolve_source_list( this ),resolve_damage_list( this ),invert_scaling( 0 ),
   // Reaction
   reaction_offset( timespan_t::from_seconds( 0.1 ) ), reaction_mean( timespan_t::from_seconds( 0.3 ) ), reaction_stddev( timespan_t::zero() ), reaction_nu( timespan_t::from_seconds( 0.25 ) ),
   // Latency
@@ -3650,7 +3650,7 @@ void player_t::demise()
 
   core_event_t::cancel( off_gcd );
 
-  // stops resolve and clear resolve_list
+  // stops resolve and clear resolve_source_list
   resolve_stop();
 
   for ( size_t i = 0; i < buff_list.size(); ++i )
@@ -3844,6 +3844,50 @@ void player_t::regen( timespan_t periodicity )
   if ( gain && base )
     resource_gain( r, base * periodicity.total_seconds(), gain );
 
+}
+
+// player_t::update_resolve ===============================================
+
+void player_t::update_resolve()
+{
+    // Relevant constants
+    double resolve_dmg_mod = 0.25; // multiplier for the resolve damage component
+    double resolve_sta_mod = 1 / 250.0 /  dbc.resolve_item_scaling( level );
+  
+    // cycle through the resolve damage table and add the appropriate amount of Resolve from each event
+    double new_amount = 0;
+
+    size_t num_events = resolve_damage_list.get_num_events( sim -> current_time );
+    
+    // cycle through the Resolve event list, retrieving each event's details
+    for ( size_t i = 0; i < num_events; i++ )
+    {
+      // temp variable for current event's contribution
+      // note that this already includes the 2.5x multiplier for spell damage and the normalization 
+      // by player max health (all of that done in action_t::update_resolve() )
+      double contribution = resolve_damage_list.get_event_amount( i );
+
+      // apply time-based decay
+      double delta_t = ( sim -> current_time.total_seconds() - resolve_damage_list.get_event_time( i ).total_seconds() );
+      contribution *= 2.0 * ( 10.0 - delta_t ) / 10.0;
+
+      // apply diminishing returns
+      int rank = resolve_source_list.get_actor_rank( resolve_damage_list.get_event_source( i ) );
+      contribution /= rank;
+
+      // multiply by damage modifier
+      contribution *= resolve_dmg_mod;
+
+      // add to existing amount
+      new_amount += contribution;
+    }
+
+    // add stamina-based contribution
+    new_amount += get_attribute( ATTR_STAMINA ) * resolve_sta_mod;
+
+    // multiply by 100 for display purposes
+    new_amount *= 100;
+    buffs.resolve -> trigger( 1, new_amount, 1, timespan_t::zero() );
 }
 
 // player_t::collect_resource_timeline_information ==========================
