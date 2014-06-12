@@ -2950,8 +2950,6 @@ struct stance_t : public warrior_spell_t
         case STANCE_DEFENSE:
         {
           p() -> buff.defensive_stance -> expire();
-          if ( p() -> specialization() == WARRIOR_PROTECTION )
-            p() -> resolve_stop(); //Resolve only works inside of defensive stance.
           //p() -> active_defensive_stance -> cancel();
           break;
         }
@@ -2970,8 +2968,6 @@ struct stance_t : public warrior_spell_t
         case STANCE_DEFENSE:
         {
           p() -> buff.defensive_stance -> trigger();
-          if ( p() -> specialization() == WARRIOR_PROTECTION )
-            p() -> resolve_start();
           //p() -> active_defensive_stance -> execute();
           break;
         }
@@ -4060,6 +4056,9 @@ void warrior_t::combat_begin()
 
   if ( active_stance == STANCE_BATTLE && ! buff.battle_stance -> check() )
     buff.battle_stance -> trigger();
+
+  if ( specialization() == WARRIOR_PROTECTION )
+    resolve_start();
 
   if ( spec.bladed_armor )
     buff.bladed_armor -> trigger();
