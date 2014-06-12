@@ -5797,9 +5797,6 @@ double shaman_t::composite_spell_haste() const
   if ( buff.elemental_mastery -> up() )
     h *= constant.haste_elemental_mastery;
 
-  if ( spec.haste_attunement -> ok() )
-    h *= 1.0 / ( 1.0 + spec.haste_attunement -> effectN( 1 ).percent() );
-
   if ( buff.tier13_4pc_healer -> up() )
     h *= 1.0 / ( 1.0 + buff.tier13_4pc_healer -> data().effectN( 1 ).percent() );
   return h;
@@ -5839,9 +5836,6 @@ double shaman_t::composite_melee_haste() const
 
   if ( talent.ancestral_swiftness -> ok() )
     h *= constant.haste_ancestral_swiftness;
-
-  if ( spec.haste_attunement -> ok() )
-    h *= 1.0 / ( 1.0 + spec.haste_attunement -> effectN( 1 ).percent() );
 
   if ( buff.tier13_4pc_healer -> up() )
     h *= 1.0 / ( 1.0 + buff.tier13_4pc_healer -> data().effectN( 1 ).percent() );
@@ -5940,6 +5934,13 @@ double shaman_t::composite_rating_multiplier( rating_e rating ) const
     case RATING_RANGED_HASTE:
       if ( buff.flurry -> up() )
         m *= 1.0 + constant.flurry_rating_multiplier;
+
+      if ( spec.haste_attunement -> ok() )
+        m *= 1.0 + spec.haste_attunement -> effectN( 1 ).percent();
+      break;
+    case RATING_MULTISTRIKE:
+      if ( spec.multistrike_attunement -> ok() )
+        m *= 1.0 + spec.multistrike_attunement -> effectN( 1 ).percent();
       break;
     default: break;
   }
@@ -5956,9 +5957,6 @@ double shaman_t::composite_multistrike() const
   // TODO-WOD: Flat or multiplicative bonus?
   if ( buff.unleashed_fury_wf -> up() )
     m += buff.unleashed_fury_wf -> data().effectN( 1 ).percent();
-
-  if ( spec.multistrike_attunement -> ok() )
-    m *= 1.0 + spec.multistrike_attunement -> effectN( 1 ).percent();
 
   return m;
 }
