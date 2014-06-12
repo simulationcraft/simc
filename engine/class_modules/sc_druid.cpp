@@ -2418,7 +2418,7 @@ struct shred_t : public cat_attack_t
     return m;
   }
 
-  double composite_da_multiplier(action_state_t* state ) const
+  double composite_da_multiplier( const action_state_t* state ) const
   {
     double m = cat_attack_t::composite_da_multiplier( state );
 
