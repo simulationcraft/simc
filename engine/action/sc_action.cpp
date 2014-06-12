@@ -1287,6 +1287,8 @@ void action_t::last_tick( dot_t* d )
   }
 }
 
+// action_t::update_resolve ======================================================
+
 void action_t::update_resolve( dmg_e type,
                                  action_state_t* s )
 {

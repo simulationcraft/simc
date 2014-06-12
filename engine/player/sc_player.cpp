@@ -3875,12 +3875,12 @@ void player_t::update_resolve()
       int rank = resolve_source_list.get_actor_rank( resolve_damage_list.get_event_source( i ) );
       contribution /= rank;
 
-      // multiply by damage modifier
-      contribution *= resolve_dmg_mod;
-
       // add to existing amount
       new_amount += contribution;
     }
+
+    // multiply by damage modifier
+    new_amount *= resolve_dmg_mod;
 
     // add stamina-based contribution
     new_amount += get_attribute( ATTR_STAMINA ) * resolve_sta_mod;
