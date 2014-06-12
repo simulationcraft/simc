@@ -185,3 +185,6 @@ void travel_event_t::execute()
   action_state_t::release( state );
   action -> remove_travel_event( this );
 }
+
+void action_state_t::release( action_state_t*& s )
+{ s -> action -> release_state( s ); s = 0; }

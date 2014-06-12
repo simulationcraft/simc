@@ -5291,6 +5291,105 @@ public:
   const char* name() const { return name_str.c_str(); }
 };
 
+struct action_state_t : public noncopyable
+{
+  // Source action, target actor
+  action_t*       action;
+  player_t*       target;
+  // Execution attributes
+  size_t          n_targets;            // Total number of targets the execution hits.
+  int             chain_target;         // The chain target number, 0 == no chain, 1 == first target, etc.
+  // Execution results
+  dmg_e           result_type;
+  result_e        result;
+  block_result_e  block_result;
+  double          result_raw;           // Base result value, without crit/glance etc.
+  double          result_total;         // Total unmitigated result, including crit bonus, glance penalty, etc.
+  double          result_mitigated;     // Result after mitigation / resist. *NOTENOTENOTE* Only filled after action_t::impact() call
+  double          result_absorbed;      // Result after absorption. *NOTENOTENOTE* Only filled after action_t::impact() call
+  double          result_amount;        // Final (actual) result
+  double          blocked_amount;        // The exact amount of how much damage was reduced via block or critical block
+  double          self_absorb_amount;    // The exqact amount of how much damaga was reduced via personal absorbs such as shield_barrier
+  // Snapshotted stats during execution
+  double          haste;
+  double          crit;
+  double          target_crit;
+  double          attack_power;
+  double          spell_power;
+  // Snapshotted multipliers
+  double          da_multiplier;
+  double          ta_multiplier;
+  double          persistent_multiplier;
+  double          target_da_multiplier;
+  double          target_ta_multiplier;
+  // Target mitigation multipliers
+  double          target_mitigation_da_multiplier;
+  double          target_mitigation_ta_multiplier;
+
+  static void release( action_state_t*& s );
+
+  action_state_t( action_t*, player_t* );
+  virtual ~action_state_t() {}
+
+  virtual void copy_state( const action_state_t* );
+  virtual void initialize();
+
+  virtual std::ostringstream& debug_str( std::ostringstream& debug_str );
+  virtual void debug();
+
+  virtual double composite_crit() const
+  { return crit + target_crit; }
+
+  virtual double composite_attack_power() const
+  { return attack_power; }
+
+  virtual double composite_spell_power() const
+  { return spell_power; }
+
+  virtual double composite_da_multiplier() const
+  { return da_multiplier * persistent_multiplier * target_da_multiplier; }
+
+  virtual double composite_ta_multiplier() const
+  { return ta_multiplier * persistent_multiplier * target_ta_multiplier; }
+
+  virtual double composite_target_mitigation_da_multiplier() const
+  { return target_mitigation_da_multiplier; }
+
+  virtual double composite_target_mitigation_ta_multiplier() const
+  { return target_mitigation_ta_multiplier; }
+
+  // Inlined
+  virtual proc_types proc_type() const;
+  virtual proc_types2 execute_proc_type2() const;
+
+  // Secondary proc type of the impact event (i.e., assess_damage()). Only
+  // triggers the "amount" procs
+  virtual proc_types2 impact_proc_type2() const
+  {
+    // Don't allow impact procs that do not do damage or heal anyone; they 
+    // should all be handled by execute_proc_type2(). Note that this is based
+    // on the _total_ amount done. This is so that fully overhealed heals are
+    // still alowed to proc things.
+    if ( result_total <= 0 )
+      return PROC2_INVALID;
+
+    if ( result == RESULT_HIT )
+      return PROC2_HIT;
+    else if ( result == RESULT_CRIT )
+      return PROC2_CRIT;
+    else if ( result == RESULT_GLANCE )
+      return PROC2_GLANCE;
+    // Multistrike can only generate procs on impact, though this could be 
+    // moved to execute_proc_type2() too.
+    else if ( result == RESULT_MULTISTRIKE )
+      return PROC2_MULTISTRIKE;
+    else if ( result == RESULT_MULTISTRIKE_CRIT )
+      return PROC2_MULTISTRIKE_CRIT;
+
+    return PROC2_INVALID;
+  }
+};
+
 // Action ===================================================================
 
 struct action_t : public noncopyable
@@ -5638,132 +5737,6 @@ public:
   virtual void do_teleport( action_state_t* );
 };
 
-struct action_state_t : public noncopyable
-{
-  // Source action, target actor
-  action_t*       action;
-  player_t*       target;
-  // Execution attributes
-  size_t          n_targets;            // Total number of targets the execution hits.
-  int             chain_target;         // The chain target number, 0 == no chain, 1 == first target, etc.
-  // Execution results
-  dmg_e           result_type;
-  result_e        result;
-  block_result_e  block_result;
-  double          result_raw;           // Base result value, without crit/glance etc.
-  double          result_total;         // Total unmitigated result, including crit bonus, glance penalty, etc.
-  double          result_mitigated;     // Result after mitigation / resist. *NOTENOTENOTE* Only filled after action_t::impact() call
-  double          result_absorbed;      // Result after absorption. *NOTENOTENOTE* Only filled after action_t::impact() call
-  double          result_amount;        // Final (actual) result
-  double          blocked_amount;        // The exact amount of how much damage was reduced via block or critical block
-  double          self_absorb_amount;    // The exqact amount of how much damaga was reduced via personal absorbs such as shield_barrier
-  // Snapshotted stats during execution
-  double          haste;
-  double          crit;
-  double          target_crit;
-  double          attack_power;
-  double          spell_power;
-  // Snapshotted multipliers
-  double          da_multiplier;
-  double          ta_multiplier;
-  double          persistent_multiplier;
-  double          target_da_multiplier;
-  double          target_ta_multiplier;
-  // Target mitigation multipliers
-  double          target_mitigation_da_multiplier;
-  double          target_mitigation_ta_multiplier;
-
-  static void release( action_state_t*& s ) { s -> action -> release_state( s ); s = 0; }
-
-  action_state_t( action_t*, player_t* );
-  virtual ~action_state_t() {}
-
-  virtual void copy_state( const action_state_t* );
-  virtual void initialize();
-
-  virtual std::ostringstream& debug_str( std::ostringstream& debug_str );
-  virtual void debug();
-
-  virtual double composite_crit() const
-  { return crit + target_crit; }
-
-  virtual double composite_attack_power() const
-  { return attack_power; }
-
-  virtual double composite_spell_power() const
-  { return spell_power; }
-
-  virtual double composite_da_multiplier() const
-  { return da_multiplier * persistent_multiplier * target_da_multiplier; }
-
-  virtual double composite_ta_multiplier() const
-  { return ta_multiplier * persistent_multiplier * target_ta_multiplier; }
-
-  virtual double composite_target_mitigation_da_multiplier() const
-  { return target_mitigation_da_multiplier; }
-
-  virtual double composite_target_mitigation_ta_multiplier() const
-  { return target_mitigation_ta_multiplier; }
-
-  // Primary proc type of the result (direct (aoe) damage/heal, periodic
-  // damage/heal)
-  virtual proc_types proc_type() const
-  {
-    if ( result_type == DMG_DIRECT || result_type == HEAL_DIRECT )
-      return action -> proc_type();
-    else if ( result_type == DMG_OVER_TIME )
-      return PROC1_PERIODIC;
-    else if ( result_type == HEAL_OVER_TIME )
-      return PROC1_PERIODIC_HEAL;
-
-    return PROC1_INVALID;
-  }
-
-  // Secondary proc type of the "finished casting" (i.e., execute()). Only
-  // triggers the "landing", dodge, parry, and miss procs
-  virtual proc_types2 execute_proc_type2() const
-  {
-    // Bunch up all non-damaging harmful attacks that land into "hit"
-    if ( action -> harmful && action -> result_is_hit( result ) )
-      return PROC2_LANDED;
-    else if ( result == RESULT_DODGE )
-      return PROC2_DODGE;
-    else if ( result == RESULT_PARRY )
-      return PROC2_PARRY;
-    else if ( result == RESULT_MISS )
-      return PROC2_MISS;
-
-    return PROC2_INVALID;
-  }
-
-  // Secondary proc type of the impact event (i.e., assess_damage()). Only
-  // triggers the "amount" procs
-  virtual proc_types2 impact_proc_type2() const
-  {
-    // Don't allow impact procs that do not do damage or heal anyone; they 
-    // should all be handled by execute_proc_type2(). Note that this is based
-    // on the _total_ amount done. This is so that fully overhealed heals are
-    // still alowed to proc things.
-    if ( result_total <= 0 )
-      return PROC2_INVALID;
-
-    if ( result == RESULT_HIT )
-      return PROC2_HIT;
-    else if ( result == RESULT_CRIT )
-      return PROC2_CRIT;
-    else if ( result == RESULT_GLANCE )
-      return PROC2_GLANCE;
-    // Multistrike can only generate procs on impact, though this could be 
-    // moved to execute_proc_type2() too.
-    else if ( result == RESULT_MULTISTRIKE )
-      return PROC2_MULTISTRIKE;
-    else if ( result == RESULT_MULTISTRIKE_CRIT )
-      return PROC2_MULTISTRIKE_CRIT;
-
-    return PROC2_INVALID;
-  }
-};
-
 // Attack ===================================================================
 
 struct attack_t : public action_t
@@ -5991,6 +5964,37 @@ struct strict_sequence_t : public action_t
   void interrupt_action();
   void schedule_execute( action_state_t* execute_state = 0 );
 };
+
+// Primary proc type of the result (direct (aoe) damage/heal, periodic
+// damage/heal)
+inline proc_types action_state_t::proc_type() const
+{
+  if ( result_type == DMG_DIRECT || result_type == HEAL_DIRECT )
+    return action -> proc_type();
+  else if ( result_type == DMG_OVER_TIME )
+    return PROC1_PERIODIC;
+  else if ( result_type == HEAL_OVER_TIME )
+    return PROC1_PERIODIC_HEAL;
+
+  return PROC1_INVALID;
+}
+
+// Secondary proc type of the "finished casting" (i.e., execute()). Only
+// triggers the "landing", dodge, parry, and miss procs
+inline proc_types2 action_state_t::execute_proc_type2() const
+{
+  // Bunch up all non-damaging harmful attacks that land into "hit"
+  if ( action -> harmful && action -> result_is_hit( result ) )
+    return PROC2_LANDED;
+  else if ( result == RESULT_DODGE )
+    return PROC2_DODGE;
+  else if ( result == RESULT_PARRY )
+    return PROC2_PARRY;
+  else if ( result == RESULT_MISS )
+    return PROC2_MISS;
+
+  return PROC2_INVALID;
+}
 
 // DoT ======================================================================
 

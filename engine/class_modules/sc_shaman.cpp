@@ -1374,7 +1374,7 @@ struct earth_elemental_t : public primal_elemental_t
   virtual action_t* create_action( const std::string& name,
                                    const std::string& options_str )
   {
-    if ( name == "auto_attack" ) return new primal_elemental_t::auto_attack_t ( this, SCHOOL_PHYSICAL );
+    if ( name == "auto_attack" ) return new auto_attack_t ( this, SCHOOL_PHYSICAL );
 
     return primal_elemental_t::create_action( name, options_str );
   }
