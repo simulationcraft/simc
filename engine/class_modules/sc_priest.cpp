@@ -353,7 +353,7 @@ public:
   virtual double    composite_spell_crit() const override;
   virtual double    composite_melee_crit() const override;
   virtual double    composite_player_multiplier( school_e school ) const override;
-  virtual double    composite_player_heal_multiplier( school_e school ) const override;
+  virtual double    composite_player_heal_multiplier( const action_state_t* s ) const override;
   virtual double    temporary_movement_modifier() const;
   virtual double    composite_attribute_multiplier( attribute_e attr ) const override;
   virtual double    matching_gear_multiplier( attribute_e attr ) const override;
@@ -1995,9 +1995,9 @@ struct mind_blast_t final : public priest_spell_t
     casted_with_divine_insight = false;
   }
 
-  virtual double composite_da_multiplier() const override
+  virtual double composite_da_multiplier( action_state_t* state ) const override
   {
-    double d = priest_spell_t::composite_da_multiplier();
+    double d = priest_spell_t::composite_da_multiplier( state );
 
     if ( priest.buffs.empowered_shadows -> check() )
       d *= 1.0 + priest.buffs.empowered_shadows->current_value *  priest.buffs.empowered_shadows -> check();
@@ -2143,9 +2143,9 @@ struct mind_spike_t final : public priest_spell_t
     stats -> consume_resource( current_resource(), resource_consumed );
   }
 
-  virtual double composite_da_multiplier() const override
+  virtual double composite_da_multiplier( action_state_t* state ) const override
   {
-    double d = priest_spell_t::composite_da_multiplier();
+    double d = priest_spell_t::composite_da_multiplier( state );
 	
     if ( casted_with_surge_of_darkness )
     {
@@ -2278,7 +2278,7 @@ struct shadow_word_death_t final : public priest_spell_t
     virtual double composite_spell_power() const override
     { return spellpower; }
 
-    virtual double composite_da_multiplier() const override
+    virtual double composite_da_multiplier( action_state_t* state ) const override
     {
       double d = multiplier;
 
@@ -2353,9 +2353,9 @@ struct shadow_word_death_t final : public priest_spell_t
     priest_spell_t::impact( s );
   }
 
-  virtual double composite_da_multiplier() const override
+  virtual double composite_da_multiplier( action_state_t* state ) const override
   {
-    double d = priest_spell_t::composite_da_multiplier();
+    double d = priest_spell_t::composite_da_multiplier( state );
 
     if ( priest.buffs.empowered_shadows -> check() )
         d *= 1.0 + priest.buffs.empowered_shadows -> current_value *  priest.buffs.empowered_shadows -> check();
@@ -4290,7 +4290,7 @@ struct renew_t final : public priest_heal_t
       execute();
     }
 
-    virtual double composite_da_multiplier() const override
+    virtual double composite_da_multiplier( action_state_t* state ) const override
     { return 1.0; }
   };
   rapid_renewal_t* rr;
@@ -4840,7 +4840,7 @@ double priest_t::composite_player_multiplier( school_e school ) const
 
 // priest_t::composite_player_heal_multiplier ===============================
 
-double priest_t::composite_player_heal_multiplier( school_e s ) const
+double priest_t::composite_player_heal_multiplier( const action_state_t* s ) const
 {
   double m = player_t::composite_player_heal_multiplier( s );
 

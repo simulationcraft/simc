@@ -2277,10 +2277,10 @@ void action_t::snapshot_internal( action_state_t* state, uint32_t flags, dmg_e r
     state -> spell_power = int( composite_spell_power() * player -> composite_spell_power_multiplier() );
 
   if ( flags & STATE_MUL_DA )
-    state -> da_multiplier = composite_da_multiplier();
+    state -> da_multiplier = composite_da_multiplier( state );
 
   if ( flags & STATE_MUL_TA )
-    state -> ta_multiplier = composite_ta_multiplier();
+    state -> ta_multiplier = composite_ta_multiplier( state );
 
   if ( flags & STATE_MUL_PERSISTENT )
     state -> persistent_multiplier = composite_persistent_multiplier( state );

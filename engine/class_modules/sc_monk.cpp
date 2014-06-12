@@ -337,7 +337,7 @@ public:
   virtual double    energy_regen_per_second() const;
   virtual double    composite_attribute_multiplier( attribute_e attr ) const override;
   virtual double    composite_player_multiplier( school_e school ) const;
-  virtual double    composite_player_heal_multiplier( school_e school ) const;
+  virtual double    composite_player_heal_multiplier( action_state_t* s ) const;
   virtual double    composite_melee_expertise( weapon_t* weapon ) const;
   virtual double    composite_melee_attack_power() const;
   virtual double    composite_parry() const;
@@ -3695,9 +3695,9 @@ double monk_t::composite_attribute_multiplier( attribute_e attr ) const
  
 // monk_t::composite_player_heal_multiplier
  
-double monk_t::composite_player_heal_multiplier( school_e school ) const
+double monk_t::composite_player_heal_multiplier( action_state_t* s ) const
 {
-  double m = base_t::composite_player_heal_multiplier( school );
+  double m = base_t::composite_player_heal_multiplier( s );
  
   if ( current_stance() == WISE_SERPENT )
     m *= 1.0 + active_stance_data( WISE_SERPENT ).effectN( 3 ).percent();

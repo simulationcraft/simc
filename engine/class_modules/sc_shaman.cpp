@@ -981,9 +981,9 @@ struct shaman_spell_t : public shaman_spell_base_t<spell_t>
     return m;
   }
 
-  virtual double composite_da_multiplier() const
+  virtual double composite_da_multiplier( action_state_t* state ) const
   {
-    double m = base_t::composite_da_multiplier();
+    double m = base_t::composite_da_multiplier( state );
 
     if ( instant_eligibility() && p() -> buff.maelstrom_weapon -> stack() > 0 )
       m *= 1.0 + p() -> sets.set( SET_T13_2PC_MELEE ) -> effectN( 1 ).percent();
@@ -1052,17 +1052,17 @@ struct shaman_heal_t : public shaman_spell_base_t<heal_t>
     return sp;
   }
 
-  double composite_da_multiplier() const
+  double composite_da_multiplier( action_state_t* state ) const
   {
-    double m = base_t::composite_da_multiplier();
+    double m = base_t::composite_da_multiplier( state );
     m *= 1.0 + p() -> spec.purification -> effectN( 1 ).percent();
     m *= 1.0 + p() -> buff.maelstrom_weapon -> stack() * p() -> glyph.healing_storm -> effectN( 1 ).percent();
     return m;
   }
 
-  double composite_ta_multiplier() const
+  double composite_ta_multiplier( action_state_t* state ) const
   {
-    double m = base_t::composite_da_multiplier();
+    double m = base_t::composite_ta_multiplier( state );
     m *= 1.0 + p() -> spec.purification -> effectN( 1 ).percent();
     m *= 1.0 + p() -> buff.maelstrom_weapon -> stack() * p() -> glyph.healing_storm -> effectN( 1 ).percent();
     return m;
@@ -1840,9 +1840,9 @@ static bool trigger_lightning_strike( const action_state_t* s )
       aoe = -1;
     }
 
-    double composite_da_multiplier() const
+    double composite_da_multiplier( action_state_t* state ) const
     {
-      double m = shaman_spell_t::composite_da_multiplier();
+      double m = shaman_spell_t::composite_da_multiplier( state );
       m *= 1 / static_cast< double >( target_cache.list.size() );
       return m;
     }
@@ -2038,9 +2038,9 @@ struct chain_lightning_overload_t : public shaman_spell_t
     base_add_multiplier  = data().effectN( 1 ).chain_multiplier();
   }
 
-  double composite_da_multiplier() const
+  double composite_da_multiplier( action_state_t* state ) const
   {
-    double m = shaman_spell_t::composite_da_multiplier();
+    double m = shaman_spell_t::composite_da_multiplier( state );
 
     // Glyph of Chain Lightning is bugged on live, and does not reduce the 
     // damage Chain Lightning overloads do. It does provide the extra targets,
@@ -2133,9 +2133,9 @@ struct lightning_charge_t : public shaman_spell_t
     return c;
   }
 
-  virtual double composite_da_multiplier() const
+  virtual double composite_da_multiplier( action_state_t* state ) const
   {
-    double m = shaman_spell_t::composite_da_multiplier();
+    double m = shaman_spell_t::composite_da_multiplier( state );
 
     if ( threshold > 0 )
     {
@@ -2194,9 +2194,9 @@ struct ancestral_awakening_t : public shaman_heal_t
     background = proc = true;
   }
 
-  double composite_da_multiplier() const
+  double composite_da_multiplier( action_state_t* state ) const
   {
-    double m = shaman_heal_t::composite_da_multiplier();
+    double m = shaman_heal_t::composite_da_multiplier( state );
     m *= p() -> spec.ancestral_awakening -> effectN( 1 ).percent();
     return m;
   }
@@ -2920,9 +2920,9 @@ struct chain_lightning_t : public shaman_spell_t
     add_child( overload_spell );
   }
 
-  double composite_da_multiplier() const
+  double composite_da_multiplier( action_state_t* state ) const
   {
-    double m = shaman_spell_t::composite_da_multiplier();
+    double m = shaman_spell_t::composite_da_multiplier( state );
 
     m *= 1.0 + p() -> glyph.chain_lightning -> effectN( 2 ).percent();
 
@@ -3316,9 +3316,9 @@ struct lightning_bolt_t : public shaman_spell_t
     add_child( overload_spell );
   }
 
-  virtual double composite_da_multiplier() const
+  virtual double composite_da_multiplier( action_state_t* state ) const
   {
-    double m = shaman_spell_t::composite_da_multiplier();
+    double m = shaman_spell_t::composite_da_multiplier( state );
 
     m *= 1.0 + p() -> sets.set( SET_T14_2PC_CASTER ) -> effectN( 1 ).percent();
 
@@ -4120,9 +4120,9 @@ struct totem_pulse_action_t : public spell_t
     crit_multiplier *= util::crit_multiplier( totem -> o() -> meta_gem );
   }
 
-  double composite_da_multiplier() const
+  double composite_da_multiplier( action_state_t* state ) const
   {
-    double m = spell_t::composite_da_multiplier();
+    double m = spell_t::composite_da_multiplier( state );
 
     if ( totem -> o() -> buff.elemental_focus -> up() )
       m *= 1.0 + totem -> o() -> buff.elemental_focus -> data().effectN( 2 ).percent();

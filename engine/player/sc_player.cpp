@@ -2631,8 +2631,9 @@ double player_t::composite_player_td_multiplier( school_e /* school */,  const a
 
 // player_t::composite_player_heal_multiplier ===============================
 
-double player_t::composite_player_heal_multiplier( school_e /* school */ ) const
+double player_t::composite_player_heal_multiplier( const action_state_t* s ) const
 {
+  // Resolve goes here
   return 1.0;
 }
 
@@ -2645,8 +2646,9 @@ double player_t::composite_player_th_multiplier( school_e /* school */ ) const
 
 // player_t::composite_player_absorb_multiplier =============================
 
-double player_t::composite_player_absorb_multiplier( school_e /* school */ ) const
+double player_t::composite_player_absorb_multiplier( const action_state_t* s ) const
 {
+  // Resolve goes here
   return 1.0;
 }
 
@@ -9277,15 +9279,17 @@ double player_stat_cache_t::player_multiplier( school_e s ) const
 
 // player_stat_cache_t::mastery =============================================
 
-double player_stat_cache_t::player_heal_multiplier( school_e s ) const
+double player_stat_cache_t::player_heal_multiplier( const action_state_t* s ) const
 {
-  if ( ! active || ! player_heal_mult_valid[ s ] )
+  school_e sch = s -> action -> get_school();
+
+  if ( ! active || ! player_heal_mult_valid[ sch ] )
   {
-    player_heal_mult_valid[ s ] = true;
-    _player_heal_mult[ s ] = player -> composite_player_heal_multiplier( s );
+    player_heal_mult_valid[ sch ] = true;
+    _player_heal_mult[ sch ] = player -> composite_player_heal_multiplier( s );
   }
-  else assert( _player_heal_mult[ s ] == player -> composite_player_heal_multiplier( s ) );
-  return _player_heal_mult[ s ];
+  else assert( _player_heal_mult[ sch ] == player -> composite_player_heal_multiplier( s ) );
+  return _player_heal_mult[ sch ];
 }
 
 #endif

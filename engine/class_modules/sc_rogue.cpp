@@ -514,9 +514,9 @@ struct rogue_attack_t : public melee_attack_t
     return gcd;
   }
 
-  virtual double composite_da_multiplier() const
+  virtual double composite_da_multiplier( action_state_t* state ) const
   {
-    double m = melee_attack_t::composite_da_multiplier();
+    double m = melee_attack_t::composite_da_multiplier( state );
 
     if ( requires_combo_points && p() -> mastery.executioner -> ok() )
       m *= 1.0 + p() -> cache.mastery_value();
@@ -524,9 +524,9 @@ struct rogue_attack_t : public melee_attack_t
     return m;
   }
 
-  virtual double composite_ta_multiplier() const
+  virtual double composite_ta_multiplier( action_state_t* state ) const
   {
-    double m = melee_attack_t::composite_ta_multiplier();
+    double m = melee_attack_t::composite_ta_multiplier( state );
 
     if ( requires_combo_points && p() -> mastery.executioner -> ok() )
       m *= 1.0 + p() -> cache.mastery_value();
@@ -812,9 +812,9 @@ static bool trigger_blade_flurry( action_state_t* s )
       aoe = p -> spec.blade_flurry -> effectN( 4 ).base_value();
     }
 
-    double composite_da_multiplier() const
+    double composite_da_multiplier( action_state_t* state ) const
     {
-      double m = rogue_attack_t::composite_da_multiplier();
+      double m = rogue_attack_t::composite_da_multiplier( state );
 
       m *= p() -> spec.blade_flurry -> effectN( 3 ).percent();
 
@@ -1301,9 +1301,9 @@ struct backstab_t : public rogue_attack_t
       p() -> buffs.sleight_of_hand -> trigger();
   }
 
-  double composite_da_multiplier() const
+  double composite_da_multiplier( action_state_t* state ) const
   {
-    double m = rogue_attack_t::composite_da_multiplier();
+    double m = rogue_attack_t::composite_da_multiplier( state );
 
     m *= 1.0 + p() -> sets.set( SET_T14_2PC_MELEE ) -> effectN( 2 ).percent();
 
@@ -2057,9 +2057,9 @@ struct sinister_strike_t : public rogue_attack_t
     return c;
   }
 
-  double composite_da_multiplier() const
+  double composite_da_multiplier( action_state_t* state ) const
   {
-    double m = rogue_attack_t::composite_da_multiplier();
+    double m = rogue_attack_t::composite_da_multiplier( state );
 
     if ( p() -> fof_p1 || p() -> fof_p2 || p() -> fof_p3 )
       m *= 1.0 + p() -> dbc.spell( 110211 ) -> effectN( 1 ).percent();
@@ -2430,9 +2430,9 @@ struct venomous_wound_t : public rogue_poison_t
     proc             = true;
   }
 
-  double composite_da_multiplier() const
+  double composite_da_multiplier( action_state_t* state ) const
   {
-    double m = rogue_poison_t::composite_da_multiplier();
+    double m = rogue_poison_t::composite_da_multiplier( state );
 
     m *= 1.0 + p() -> sets.set( SET_T14_2PC_MELEE ) -> effectN( 1 ).percent();
 

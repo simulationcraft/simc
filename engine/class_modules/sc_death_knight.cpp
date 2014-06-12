@@ -1519,9 +1519,9 @@ struct gargoyle_pet_t : public death_knight_pet_t
       school             = SCHOOL_SHADOWSTORM;
     }
 
-    double composite_da_multiplier() const
+    double composite_da_multiplier( action_state_t* state ) const
     {
-      double m = spell_t::composite_da_multiplier();
+      double m = spell_t::composite_da_multiplier( state );
 
       death_knight_t* dk = debug_cast< death_knight_t* >( static_cast<gargoyle_pet_t*>(player) -> owner );
       if ( dk -> mastery.dreadblade -> ok() )
@@ -2017,9 +2017,9 @@ struct death_knight_melee_attack_t : public death_knight_action_t<melee_attack_t
   virtual void   execute();
   virtual void   impact( action_state_t* state );
 
-  virtual double composite_da_multiplier() const
+  virtual double composite_da_multiplier( action_state_t* state ) const
   {
-    double m = base_t::composite_da_multiplier();
+    double m = base_t::composite_da_multiplier( state );
 
     if ( player -> main_hand_weapon.group() == WEAPON_2H )
       m *= 1.0 + p() -> spec.might_of_the_frozen_wastes -> effectN( 2 ).percent();
@@ -2058,9 +2058,9 @@ struct death_knight_spell_t : public death_knight_action_t<spell_t>
   virtual void   execute();
   virtual void   impact( action_state_t* state );
 
-  virtual double composite_da_multiplier() const
+  virtual double composite_da_multiplier( action_state_t* state ) const
   {
-    double m = base_t::composite_da_multiplier();
+    double m = base_t::composite_da_multiplier( state );
 
     if ( dbc::is_school( school, SCHOOL_SHADOW ) || dbc::is_school( school, SCHOOL_FROST ) )
     {
@@ -2755,9 +2755,9 @@ struct soul_reaper_t : public death_knight_melee_attack_t
     return cc;
   }
 
-  double composite_ta_multiplier() const
+  double composite_ta_multiplier( action_state_t* state ) const
   {
-    double m = death_knight_melee_attack_t::composite_ta_multiplier();
+    double m = death_knight_melee_attack_t::composite_ta_multiplier( state );
 
     if ( p() -> mastery.dreadblade -> ok() )
       m *= 1.0 + p() -> cache.mastery_value();

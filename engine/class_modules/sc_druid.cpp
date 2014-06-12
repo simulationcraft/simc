@@ -561,7 +561,7 @@ public:
   virtual double    passive_movement_modifier() const;
   virtual double    composite_player_multiplier( school_e school ) const;
   virtual double    composite_player_td_multiplier( school_e,  const action_t* ) const;
-  virtual double    composite_player_heal_multiplier( school_e school ) const;
+  virtual double    composite_player_heal_multiplier( action_state_t* s ) const;
   virtual double    composite_spell_crit() const;
   virtual double    composite_spell_power( school_e school ) const;
   virtual double    composite_attribute( attribute_e attr ) const;
@@ -1059,9 +1059,9 @@ struct force_of_nature_feral_t : public pet_t
         stats = p() -> o() -> pet_force_of_nature[ 0 ] -> get_stats( name(), this );
     }
 
-    virtual double composite_ta_multiplier() const
+    virtual double composite_ta_multiplier( action_state_t* state ) const
     {
-      double m = melee_attack_t::composite_ta_multiplier();
+      double m = melee_attack_t::composite_ta_multiplier( state );
 
       if ( p() -> o() -> buff.cat_form -> check() && p() -> o() -> mastery.razor_claws -> ok() )
         m *= 1.0 + p() -> o() -> cache.mastery_value();
@@ -1071,9 +1071,9 @@ struct force_of_nature_feral_t : public pet_t
 
     // Treat direct damage as "bleed"
     // Must use direct damage because tick_zeroes cannot be blocked, and this attack is going to get blocked occasionally.
-    double composite_da_multiplier() const
+    double composite_da_multiplier( action_state_t* state ) const
     {
-      double m = melee_attack_t::composite_da_multiplier();
+      double m = melee_attack_t::composite_da_multiplier( state );
 
       if ( p() -> o() -> buff.cat_form -> check() && p() -> o() -> mastery.razor_claws -> ok() )
         m *= 1.0 + p() -> o() -> cache.mastery_value();
@@ -2253,9 +2253,9 @@ struct rake_t : public cat_attack_t
   // Treat direct damage as "bleed"
   // Must use direct damage because tick_zeroes cannot be blocked, and
   // this attack can be blocked if the druid is in front of the target.
-  double composite_da_multiplier() const
+  double composite_da_multiplier( action_state_t* state ) const
   {
-    double m = melee_attack_t::composite_da_multiplier();
+    double m = melee_attack_t::composite_da_multiplier( state );
 
     if ( p() -> buff.cat_form -> up() && p() -> mastery.razor_claws -> ok() )
       m *= 1.0 + p() -> cache.mastery_value();
@@ -2418,9 +2418,9 @@ struct shred_t : public cat_attack_t
     return m;
   }
 
-  double composite_da_multiplier() const
+  double composite_da_multiplier(action_state_t* state ) const
   {
-    double m = cat_attack_t::composite_da_multiplier();
+    double m = cat_attack_t::composite_da_multiplier( state );
 
     if ( p() -> buff.feral_fury -> check() )
       m *= 1.0 + p() -> buff.feral_fury -> data().effectN( 1 ).percent();
@@ -2482,9 +2482,9 @@ struct swipe_t : public cat_attack_t
       p() -> buff.tier15_4pc_melee -> decrement();
   }
 
-  double composite_da_multiplier() const
+  double composite_da_multiplier( action_state_t* state ) const
   {
-    double m = cat_attack_t::composite_da_multiplier();
+    double m = cat_attack_t::composite_da_multiplier( state );
 
     if ( p() -> buff.feral_fury -> check() )
       m *= 1.0 + p() -> buff.feral_fury -> data().effectN( 1 ).percent();
@@ -2535,9 +2535,9 @@ struct thrash_cat_t : public cat_attack_t
   }
 
   // Treat direct damage as "bleed"
-  double composite_da_multiplier() const
+  double composite_da_multiplier( action_state_t* state ) const
   {
-    double m = cat_attack_t::composite_da_multiplier();
+    double m = cat_attack_t::composite_da_multiplier( state );
 
     if ( p() -> buff.cat_form -> check() && p() -> mastery.razor_claws -> ok() )
       m *= 1.0 + p() -> cache.mastery_value();
@@ -3243,7 +3243,7 @@ struct living_seed_t : public druid_heal_t
     school     = SCHOOL_NATURE;
   }
 
-  double composite_da_multiplier() const
+  double composite_da_multiplier( action_state_t* state ) const
   {
     return data().effectN( 1 ).percent();
   }
@@ -3467,9 +3467,9 @@ struct lifebloom_bloom_t : public druid_heal_t
     return ctm;
   }
 
-  virtual double composite_da_multiplier() const
+  virtual double composite_da_multiplier( action_state_t* state ) const
   {
-    double cdm = druid_heal_t::composite_da_multiplier();
+    double cdm = druid_heal_t::composite_da_multiplier( state );
 
     cdm *= 1.0 + p() -> glyph.blooming -> effectN( 1 ).percent();
 
@@ -6175,9 +6175,9 @@ double druid_t::composite_player_td_multiplier( school_e school,  const action_t
 
 // druid_t::composite_player_heal_multiplier ================================
 
-double druid_t::composite_player_heal_multiplier( school_e school ) const
+double druid_t::composite_player_heal_multiplier( action_state_t* s ) const
 {
-  double m = player_t::composite_player_heal_multiplier( school );
+  double m = player_t::composite_player_heal_multiplier( s );
 
   m *= 1.0 + buff.heart_of_the_wild -> heal_multiplier();
 

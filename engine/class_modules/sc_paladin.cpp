@@ -377,7 +377,7 @@ public:
   virtual double    composite_spell_crit() const;
   virtual double    composite_spell_haste() const;
   virtual double    composite_player_multiplier( school_e school ) const;
-  virtual double    composite_player_heal_multiplier( school_e school ) const;
+  virtual double    composite_player_heal_multiplier( action_state_t* s ) const;
   virtual double    composite_spell_power( school_e school ) const;
   virtual double    composite_spell_power_multiplier() const;
   virtual double    composite_crit_avoidance() const;
@@ -2807,7 +2807,7 @@ struct sacred_shield_t : public paladin_heal_t
     // unfortunately, this spell info is split between effects and tooltip 
     base_td = data().effectN( 1 ).average( p ); 
     spell_power_mod.tick = 1.229; // in tooltip, hardcoding
-
+    
     // redirect HoT to self if not specified
     if ( target -> is_enemy() || target -> type == HEALING_ENEMY )
       target = p;
@@ -5813,7 +5813,7 @@ double paladin_t::composite_player_multiplier( school_e school ) const
 
 // paladin_t::composite_player_heal_multiplier ==============================
 
-double paladin_t::composite_player_heal_multiplier( school_e s ) const
+double paladin_t::composite_player_heal_multiplier( action_state_t* s ) const
 {
   double m = player_t::composite_player_heal_multiplier( s );
 

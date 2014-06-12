@@ -3681,7 +3681,7 @@ public:
   double readiness() const;
   double bonus_armor() const;
   double player_multiplier( school_e ) const;
-  double player_heal_multiplier( school_e ) const;
+  double player_heal_multiplier( const action_state_t* ) const;
 #else
   // Passthrough cache stat functions for inactive cache
   double strength() const  { return player -> strength();  }
@@ -4684,11 +4684,11 @@ public:
   virtual double composite_persistent_multiplier( school_e ) const
   { return 1.0; }
 
-  virtual double composite_player_heal_multiplier( school_e school ) const;
+  virtual double composite_player_heal_multiplier( const action_state_t* s ) const;
   virtual double composite_player_dh_multiplier( school_e /* school */ ) const { return 1; }
   virtual double composite_player_th_multiplier( school_e school ) const;
 
-  virtual double composite_player_absorb_multiplier( school_e school ) const;
+  virtual double composite_player_absorb_multiplier( const action_state_t* s ) const;
 
   virtual double composite_player_critical_damage_multiplier() const;
   virtual double composite_player_critical_healing_multiplier() const;
@@ -5567,19 +5567,19 @@ public:
   // the tick amount multiplier due to debuffs on the target
   virtual double composite_target_ta_multiplier( player_t* target ) const { return composite_target_multiplier( target ); }
 
-  virtual double composite_da_multiplier() const
+  virtual double composite_da_multiplier( action_state_t* s ) const
   {
     return action_multiplier() * action_da_multiplier() *
-           player -> cache.player_multiplier( get_school() ) *
-           player -> composite_player_dd_multiplier( get_school() , this );
+           player -> cache.player_multiplier( s -> action -> get_school() ) *
+           player -> composite_player_dd_multiplier( s -> action -> get_school() , this );
   }
 
   // Normal ticking modifiers that are updated every tick
-  virtual double composite_ta_multiplier() const
+  virtual double composite_ta_multiplier( action_state_t* s ) const
   {
     return action_multiplier() * action_ta_multiplier() *
-           player -> cache.player_multiplier( get_school() ) *
-           player -> composite_player_td_multiplier( get_school() , this );
+           player -> cache.player_multiplier( s -> action -> get_school() ) *
+           player -> composite_player_td_multiplier( s -> action -> get_school() , this );
   }
 
   // Persistent modifiers that are snapshot at the start of the spell cast
@@ -5912,16 +5912,16 @@ public:
   virtual int num_targets();
   virtual void   parse_effect_data( const spelleffect_data_t& );
 
-  virtual double composite_da_multiplier() const
+  virtual double composite_da_multiplier( action_state_t* s ) const
   {
     return action_multiplier() * action_da_multiplier() *
-           player -> cache.player_heal_multiplier( get_school() ) *
+           player -> cache.player_heal_multiplier( s ) *
            player -> composite_player_dh_multiplier( get_school() );
   }
-  virtual double composite_ta_multiplier() const
+  virtual double composite_ta_multiplier( action_state_t* s ) const
   {
     return action_multiplier() * action_ta_multiplier() *
-           player -> cache.player_heal_multiplier( get_school() ) *
+           player -> cache.player_heal_multiplier( s ) *
            player -> composite_player_th_multiplier( get_school() );
   }
 
@@ -5944,15 +5944,15 @@ struct absorb_t : public spell_base_t
   virtual size_t available_targets( std::vector< player_t* >& ) const;
   virtual int num_targets();
 
-  virtual double composite_da_multiplier() const
+  virtual double composite_da_multiplier( action_state_t* s ) const
   {
     return action_multiplier() * action_da_multiplier() *
-           player -> composite_player_absorb_multiplier( get_school() );
+           player -> composite_player_absorb_multiplier( s );
   }
-  virtual double composite_ta_multiplier() const
+  virtual double composite_ta_multiplier( action_state_t* s ) const
   {
     return action_multiplier() * action_ta_multiplier() *
-           player -> composite_player_absorb_multiplier( get_school() );
+           player -> composite_player_absorb_multiplier( s );
   }
 };
 
