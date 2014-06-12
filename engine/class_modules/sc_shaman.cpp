@@ -2795,18 +2795,6 @@ struct lava_lash_t : public shaman_attack_t
       background        = true; // Do not allow execution.
   }
 
-  // Lava Lash multiplier calculation from
-  // http://elitistjerks.com/f79/t110302-enhsim_cataclysm/p11/#post1935780
-  // MoP: Vastly simplified, most bonuses are gone
-  virtual double action_da_multiplier() const
-  {
-    double m = shaman_attack_t::action_da_multiplier();
-
-    m *= 1.0 + ( weapon -> buff_type == FLAMETONGUE_IMBUE ) * ft_bonus;
-
-    return m;
-  }
-
   void impact( action_state_t* state )
   {
     shaman_attack_t::impact( state );
