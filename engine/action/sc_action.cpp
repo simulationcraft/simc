@@ -1991,7 +1991,33 @@ expr_t* action_t::create_expression( const std::string& name_str )
     return new cast_delay_expr_t( *this );
   }
   else if ( name_str == "tick_multiplier" )
-    return make_mem_fn_expr( "tick_multiplier", *this, &action_t::composite_ta_multiplier );
+  {
+    struct tick_multiplier_expr_t : public expr_t
+    {
+      action_t* action;
+      action_state_t* state;
+
+      tick_multiplier_expr_t( action_t* a ) : 
+        expr_t( "tick_multiplier" ), action( a ), state( a -> get_state() )
+      {
+        state -> n_targets    = 1;
+        state -> chain_target = 0;
+      }
+
+      virtual double evaluate()
+      {
+        action -> snapshot_state( state, RESULT_TYPE_NONE );
+        state -> target = action -> target;
+
+        return action -> composite_ta_multiplier( state );
+      }
+
+      virtual ~tick_multiplier_expr_t()
+      { delete state; }
+    };
+
+    return new tick_multiplier_expr_t( this );
+  }
   else if ( name_str == "persistent_multiplier" )
   {
     struct persistent_multiplier_expr_t : public expr_t
