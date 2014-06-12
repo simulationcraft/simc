@@ -1059,7 +1059,7 @@ struct force_of_nature_feral_t : public pet_t
         stats = p() -> o() -> pet_force_of_nature[ 0 ] -> get_stats( name(), this );
     }
 
-    virtual double composite_ta_multiplier( action_state_t* state ) const
+    virtual double composite_ta_multiplier( const action_state_t* state ) const
     {
       double m = melee_attack_t::composite_ta_multiplier( state );
 
@@ -1071,7 +1071,7 @@ struct force_of_nature_feral_t : public pet_t
 
     // Treat direct damage as "bleed"
     // Must use direct damage because tick_zeroes cannot be blocked, and this attack is going to get blocked occasionally.
-    double composite_da_multiplier( action_state_t* state ) const
+    double composite_da_multiplier( const action_state_t* state ) const
     {
       double m = melee_attack_t::composite_da_multiplier( state );
 
@@ -2253,7 +2253,7 @@ struct rake_t : public cat_attack_t
   // Treat direct damage as "bleed"
   // Must use direct damage because tick_zeroes cannot be blocked, and
   // this attack can be blocked if the druid is in front of the target.
-  double composite_da_multiplier( action_state_t* state ) const
+  double composite_da_multiplier( const action_state_t* state ) const
   {
     double m = melee_attack_t::composite_da_multiplier( state );
 
@@ -2482,7 +2482,7 @@ struct swipe_t : public cat_attack_t
       p() -> buff.tier15_4pc_melee -> decrement();
   }
 
-  double composite_da_multiplier( action_state_t* state ) const
+  double composite_da_multiplier( const action_state_t* state ) const
   {
     double m = cat_attack_t::composite_da_multiplier( state );
 
@@ -2535,7 +2535,7 @@ struct thrash_cat_t : public cat_attack_t
   }
 
   // Treat direct damage as "bleed"
-  double composite_da_multiplier( action_state_t* state ) const
+  double composite_da_multiplier( const action_state_t* state ) const
   {
     double m = cat_attack_t::composite_da_multiplier( state );
 
@@ -3243,7 +3243,7 @@ struct living_seed_t : public druid_heal_t
     school     = SCHOOL_NATURE;
   }
 
-  double composite_da_multiplier( action_state_t* state ) const
+  double composite_da_multiplier( const action_state_t* state ) const
   {
     return data().effectN( 1 ).percent();
   }
@@ -3467,7 +3467,7 @@ struct lifebloom_bloom_t : public druid_heal_t
     return ctm;
   }
 
-  virtual double composite_da_multiplier( action_state_t* state ) const
+  virtual double composite_da_multiplier( const action_state_t* state ) const
   {
     double cdm = druid_heal_t::composite_da_multiplier( state );
 

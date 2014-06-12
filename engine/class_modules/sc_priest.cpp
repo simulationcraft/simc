@@ -1995,7 +1995,7 @@ struct mind_blast_t final : public priest_spell_t
     casted_with_divine_insight = false;
   }
 
-  virtual double composite_da_multiplier( action_state_t* state ) const override
+  virtual double composite_da_multiplier( const action_state_t* state ) const override
   {
     double d = priest_spell_t::composite_da_multiplier( state );
 
@@ -2143,7 +2143,7 @@ struct mind_spike_t final : public priest_spell_t
     stats -> consume_resource( current_resource(), resource_consumed );
   }
 
-  virtual double composite_da_multiplier( action_state_t* state ) const override
+  virtual double composite_da_multiplier( const action_state_t* state ) const override
   {
     double d = priest_spell_t::composite_da_multiplier( state );
 	
@@ -2278,7 +2278,7 @@ struct shadow_word_death_t final : public priest_spell_t
     virtual double composite_spell_power() const override
     { return spellpower; }
 
-    virtual double composite_da_multiplier( action_state_t* state ) const override
+    virtual double composite_da_multiplier( const action_state_t* state ) const override
     {
       double d = multiplier;
 
@@ -2353,7 +2353,7 @@ struct shadow_word_death_t final : public priest_spell_t
     priest_spell_t::impact( s );
   }
 
-  virtual double composite_da_multiplier( action_state_t* state ) const override
+  virtual double composite_da_multiplier( const action_state_t* state ) const override
   {
     double d = priest_spell_t::composite_da_multiplier( state );
 
@@ -4290,7 +4290,7 @@ struct renew_t final : public priest_heal_t
       execute();
     }
 
-    virtual double composite_da_multiplier( action_state_t* state ) const override
+    virtual double composite_da_multiplier( const action_state_t* state ) const override
     { return 1.0; }
   };
   rapid_renewal_t* rr;

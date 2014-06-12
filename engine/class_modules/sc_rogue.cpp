@@ -514,7 +514,7 @@ struct rogue_attack_t : public melee_attack_t
     return gcd;
   }
 
-  virtual double composite_da_multiplier( action_state_t* state ) const
+  virtual double composite_da_multiplier( const action_state_t* state ) const
   {
     double m = melee_attack_t::composite_da_multiplier( state );
 
@@ -524,7 +524,7 @@ struct rogue_attack_t : public melee_attack_t
     return m;
   }
 
-  virtual double composite_ta_multiplier( action_state_t* state ) const
+  virtual double composite_ta_multiplier( const action_state_t* state ) const
   {
     double m = melee_attack_t::composite_ta_multiplier( state );
 
@@ -812,7 +812,7 @@ static bool trigger_blade_flurry( action_state_t* s )
       aoe = p -> spec.blade_flurry -> effectN( 4 ).base_value();
     }
 
-    double composite_da_multiplier( action_state_t* state ) const
+    double composite_da_multiplier( const action_state_t* state ) const
     {
       double m = rogue_attack_t::composite_da_multiplier( state );
 
@@ -1301,7 +1301,7 @@ struct backstab_t : public rogue_attack_t
       p() -> buffs.sleight_of_hand -> trigger();
   }
 
-  double composite_da_multiplier( action_state_t* state ) const
+  double composite_da_multiplier( const action_state_t* state ) const
   {
     double m = rogue_attack_t::composite_da_multiplier( state );
 
@@ -2057,7 +2057,7 @@ struct sinister_strike_t : public rogue_attack_t
     return c;
   }
 
-  double composite_da_multiplier( action_state_t* state ) const
+  double composite_da_multiplier( const action_state_t* state ) const
   {
     double m = rogue_attack_t::composite_da_multiplier( state );
 
@@ -2430,7 +2430,7 @@ struct venomous_wound_t : public rogue_poison_t
     proc             = true;
   }
 
-  double composite_da_multiplier( action_state_t* state ) const
+  double composite_da_multiplier( const action_state_t* state ) const
   {
     double m = rogue_poison_t::composite_da_multiplier( state );
 

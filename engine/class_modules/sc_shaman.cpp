@@ -981,7 +981,7 @@ struct shaman_spell_t : public shaman_spell_base_t<spell_t>
     return m;
   }
 
-  virtual double composite_da_multiplier( action_state_t* state ) const
+  virtual double composite_da_multiplier( const action_state_t* state ) const
   {
     double m = base_t::composite_da_multiplier( state );
 
@@ -1052,7 +1052,7 @@ struct shaman_heal_t : public shaman_spell_base_t<heal_t>
     return sp;
   }
 
-  double composite_da_multiplier( action_state_t* state ) const
+  double composite_da_multiplier( const action_state_t* state ) const
   {
     double m = base_t::composite_da_multiplier( state );
     m *= 1.0 + p() -> spec.purification -> effectN( 1 ).percent();
@@ -1060,7 +1060,7 @@ struct shaman_heal_t : public shaman_spell_base_t<heal_t>
     return m;
   }
 
-  double composite_ta_multiplier( action_state_t* state ) const
+  double composite_ta_multiplier( const action_state_t* state ) const
   {
     double m = base_t::composite_ta_multiplier( state );
     m *= 1.0 + p() -> spec.purification -> effectN( 1 ).percent();
@@ -1840,7 +1840,7 @@ static bool trigger_lightning_strike( const action_state_t* s )
       aoe = -1;
     }
 
-    double composite_da_multiplier( action_state_t* state ) const
+    double composite_da_multiplier( const action_state_t* state ) const
     {
       double m = shaman_spell_t::composite_da_multiplier( state );
       m *= 1 / static_cast< double >( target_cache.list.size() );
@@ -2038,7 +2038,7 @@ struct chain_lightning_overload_t : public shaman_spell_t
     base_add_multiplier  = data().effectN( 1 ).chain_multiplier();
   }
 
-  double composite_da_multiplier( action_state_t* state ) const
+  double composite_da_multiplier( const action_state_t* state ) const
   {
     double m = shaman_spell_t::composite_da_multiplier( state );
 
@@ -2133,7 +2133,7 @@ struct lightning_charge_t : public shaman_spell_t
     return c;
   }
 
-  virtual double composite_da_multiplier( action_state_t* state ) const
+  virtual double composite_da_multiplier( const action_state_t* state ) const
   {
     double m = shaman_spell_t::composite_da_multiplier( state );
 
@@ -2194,7 +2194,7 @@ struct ancestral_awakening_t : public shaman_heal_t
     background = proc = true;
   }
 
-  double composite_da_multiplier( action_state_t* state ) const
+  double composite_da_multiplier( const action_state_t* state ) const
   {
     double m = shaman_heal_t::composite_da_multiplier( state );
     m *= p() -> spec.ancestral_awakening -> effectN( 1 ).percent();
@@ -2920,7 +2920,7 @@ struct chain_lightning_t : public shaman_spell_t
     add_child( overload_spell );
   }
 
-  double composite_da_multiplier( action_state_t* state ) const
+  double composite_da_multiplier( const action_state_t* state ) const
   {
     double m = shaman_spell_t::composite_da_multiplier( state );
 
@@ -3316,7 +3316,7 @@ struct lightning_bolt_t : public shaman_spell_t
     add_child( overload_spell );
   }
 
-  virtual double composite_da_multiplier( action_state_t* state ) const
+  virtual double composite_da_multiplier( const action_state_t* state ) const
   {
     double m = shaman_spell_t::composite_da_multiplier( state );
 
@@ -4120,7 +4120,7 @@ struct totem_pulse_action_t : public spell_t
     crit_multiplier *= util::crit_multiplier( totem -> o() -> meta_gem );
   }
 
-  double composite_da_multiplier( action_state_t* state ) const
+  double composite_da_multiplier( const action_state_t* state ) const
   {
     double m = spell_t::composite_da_multiplier( state );
 
