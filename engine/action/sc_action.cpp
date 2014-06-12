@@ -1294,7 +1294,7 @@ void action_t::update_resolve( dmg_e type,
 {
   // pointers to make life easy
   player_t* source = s -> action -> player;
-  player_t* target = s -> action -> target;
+  player_t* target = s -> target;
 
   // check that the target has Resolve, check for damage type, and check that the source player is an enemy
   if ( target -> resolve_is_started() && ( type == DMG_DIRECT || type == DMG_OVER_TIME ) && source -> is_enemy() )

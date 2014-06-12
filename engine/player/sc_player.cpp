@@ -4801,6 +4801,11 @@ void player_t::assess_heal( school_e, dmg_e, action_state_t* s )
   if ( buffs.guardian_spirit -> up() )
     s -> result_amount *= 1.0 + buffs.guardian_spirit -> data().effectN( 1 ).percent();
 
+  // apply resolve
+  if ( resolve_is_started() && s -> action -> player == this )
+    s -> result_amount *= 1.0 + buffs.resolve -> current_value / 100.0;
+
+  // process heal
   s -> result_amount = resource_gain( RESOURCE_HEALTH, s -> result_amount, 0, s -> action );
 
   // if the target is a tank record this event on damage timeline
@@ -4818,6 +4823,7 @@ void player_t::assess_heal( school_e, dmg_e, action_state_t* s )
       collected_data.health_changes_tmi.timeline_normalized.add( sim -> current_time, - ( s -> result_total ) / resources.max[ RESOURCE_HEALTH ] );
     }    
   }
+
   // store iteration heal taken
   iteration_heal_taken += s -> result_amount;
 }
