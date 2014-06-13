@@ -3983,24 +3983,11 @@ struct resolve_event_list_t
   { event_list.clear(); }
 
   // this is the method that we use to interact with the structure
-  void add( const player_t* actor, double amount, timespan_t current_time )
-  {
-    // don't count friendly fire
-    if ( actor == myself )
-      return;
-
-    // Add a new entry
-    event_entry_t e;
-    e.event_player = actor;
-    e.event_amount = amount;
-    e.event_time = current_time;
-
-    event_list.push_back( e );
-  }
+  void add( const player_t* actor, double amount, timespan_t current_time );
 
   // structure that contains the relevant information for each actor entry in the list
   struct event_entry_t {
-    const player_t* event_player;
+    int actor_spawn_index;
     double event_amount;
     timespan_t event_time;
     
@@ -4025,48 +4012,20 @@ struct resolve_diminishing_returns_list_t
 
   // this returns the integer corresponding to the applied diminishing returns
   // i.e. it returns N for the Nth-strongest attacker
-  int get_actor_rank( const player_t* t )
+  int get_actor_rank( int actor_spawn_index )
   {
     // pre-condition: actor_list sorted by raw dps
-    std::vector<actor_entry_t>::iterator found = find_actor( t );
+    std::vector<actor_entry_t>::iterator found = find_actor( actor_spawn_index );
     assert( found != actor_list.end() && "Resolve attacker not found in resolve list!" );
     return as<int>(std::distance( actor_list.begin(), found ) + 1);
   }
 
   // this is the method that we use to interact with the structure
-  void add( const player_t* actor, double raw_dps, timespan_t current_time )
-  {
-    if ( actor == myself )
-      return;
-
-    std::vector<actor_entry_t>::iterator found = find_actor( actor );
-
-    if ( found != actor_list.end() )
-    {
-      // We already have the actor in the list, update:
-      update_actor_entry( *found, raw_dps, current_time );
-    }
-    else
-    {
-      // We do not have the actor in the list, create new entry:
-      actor_entry_t a;
-      a.player = actor;
-      a.raw_dps = raw_dps;
-      a.last_attack = current_time;
-
-      actor_list.push_back( a );
-    }
-
-    // purge any actors that haven't hit you in 10 seconds or more
-    purge_actor_list( current_time );
-
-    // sort the list
-    sort_list();
-  }
+  void add( const player_t* actor, double raw_dps, timespan_t current_time );
 private:
   // structure that contains the relevant information for each actor entry in the list
   struct actor_entry_t {
-    const player_t* player;
+    int actor_spawn_index;
     double raw_dps;
     timespan_t last_attack;
   };
@@ -4097,12 +4056,12 @@ private:
     actor_list.erase( std::remove_if( actor_list.begin(), actor_list.end(), was_inactive( current_time ) ), actor_list.end() );
   }
 
-  std::vector<actor_entry_t>::iterator find_actor( const player_t* p )
+  std::vector<actor_entry_t>::iterator find_actor( int actor_spawn_index )
   {
     std::vector<actor_entry_t>::iterator iter = actor_list.begin();
     for ( ; iter != actor_list.end(); iter++ )
     {
-      if ( ( *iter ).player == p )
+      if ( ( *iter ).actor_spawn_index == actor_spawn_index )
         return iter;
     }
     return iter;

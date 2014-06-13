@@ -9833,7 +9833,7 @@ void player_t::update_resolve()
         contribution *= 2.0 * ( 10.0 - delta_t ) / 10.0;
 
         // apply diminishing returns
-        int rank = resolve_manager.diminishing_return_list.get_actor_rank( entry.event_player );
+        int rank = resolve_manager.diminishing_return_list.get_actor_rank( entry.actor_spawn_index );
         contribution /= rank;
 
         // add to existing amount
@@ -9856,4 +9856,50 @@ void player_t::update_resolve()
 
     // also add this to the Resolve timeline for accuracy
     resolve_timeline.add( sim -> current_time, buffs.resolve -> value() );
+}
+void resolve_diminishing_returns_list_t::add( const player_t* actor, double raw_dps, timespan_t current_time )
+{
+  if ( actor == myself )
+    return;
+
+  std::vector<actor_entry_t>::iterator found = find_actor( actor -> actor_spawn_index );
+
+  if ( found != actor_list.end() )
+  {
+    // We already have the actor in the list, update:
+    update_actor_entry( *found, raw_dps, current_time );
+  }
+  else
+  {
+    // We do not have the actor in the list, create new entry:
+    actor_entry_t a;
+    a.actor_spawn_index = actor -> actor_spawn_index;
+    a.raw_dps = raw_dps;
+    a.last_attack = current_time;
+
+    actor_list.push_back( a );
+  }
+
+  // purge any actors that haven't hit you in 10 seconds or more
+  purge_actor_list( current_time );
+
+  // sort the list
+  sort_list();
+}
+
+void resolve_event_list_t::add( const player_t* actor, double amount, timespan_t current_time )
+{
+  // don't count friendly fire
+  if ( actor == myself )
+    return;
+
+  assert( actor -> actor_spawn_index >= 0 && "Trying to register resolve damage event from a dead player! Something is seriously broken in player_t::arise/demise." );
+
+  // Add a new entry
+  event_entry_t e;
+  e.actor_spawn_index = actor -> actor_spawn_index;
+  e.event_amount = amount;
+  e.event_time = current_time;
+
+  event_list.push_back( e );
 }
