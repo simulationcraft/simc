@@ -4085,7 +4085,7 @@ struct resolve_manager_t
   void add_damage_event( const player_t* actor, double amount, timespan_t current_time )
   { damage_list.add( actor, amount, current_time ); }
 private:
-  friend player_t;
+  friend struct player_t;
   struct resolve_update_event_t;
   player_t* player;
   core_event_t* update_event;
