@@ -384,11 +384,14 @@ public:
   virtual void      init_procs();
   virtual void      init_rng();
   virtual void      combat_begin();
+  virtual double    composite_attribute( attribute_e attr ) const;
   virtual double    composite_rating_multiplier( rating_e rating ) const;
   virtual double    composite_player_multiplier( school_e school ) const;
   virtual double    matching_gear_multiplier( attribute_e attr ) const;
+  virtual double    composite_armor_multiplier() const;
   virtual double    composite_block() const;
   virtual double    composite_parry() const;
+  virtual double    composite_melee_expertise() const;
   virtual double    composite_attack_power_multiplier() const;
   virtual double    composite_melee_attack_power() const;
   virtual double    composite_crit_block() const;
@@ -971,7 +974,7 @@ struct melee_t : public warrior_attack_t
     if ( !result_is_miss( s -> result ) && !result_is_multistrike( s -> result ) )
       trigger_rage_gain();
 
-    if ( p() -> specialization() == WARRIOR_PROTECTION && p() -> active_stance == STANCE_DEFENSE )
+    if ( p() -> specialization() == WARRIOR_PROTECTION )
     {
       if ( result_is_multistrike( s -> result ) )
       {
@@ -2305,9 +2308,6 @@ struct thunder_clap_t : public warrior_attack_t
     aoe = -1;
     may_dodge = may_parry = may_block = false;
 
-    if ( p -> active_stance == STANCE_DEFENSE )
-      base_costs[ current_resource() ] *= 1.0 + p -> spec.unwavering_sentinel -> effectN( 2 ).percent();
-
     cooldown -> duration = data().cooldown();
     cooldown -> duration *= 1 + p -> glyphs.resonating_power -> effectN( 2 ).percent();
 
@@ -2328,6 +2328,16 @@ struct thunder_clap_t : public warrior_attack_t
         p() -> active_deep_wounds -> execute();
       }
     }
+  }
+
+  virtual double cost() const
+  {
+    double c = warrior_attack_t::cost();
+
+    if ( p() -> active_stance == STANCE_DEFENSE )
+      c *= 1.0 + p() -> spec.unwavering_sentinel -> effectN( 2 ).percent();
+
+    return c;
   }
 
   virtual void update_ready( timespan_t cd_duration )
@@ -3364,16 +3374,6 @@ void warrior_t::init_base_stats()
   base.dodge_per_agility  = 1 / 10000.0 / 100.0; // empirically tested
   base.parry_per_strength = 1 / 95115.8596; // exact value given by Blizzard
 
-  if ( spec.unwavering_sentinel -> ok() &&
-     ( primary_role() != ROLE_ATTACK || !talents.gladiators_resolve -> ok() ) )
-     // Currently the only way we can catch gladiator-dps is by setting the primary role.
-  {
-    base.attribute_multiplier[ ATTR_STAMINA ] *= 1.0 + spec.unwavering_sentinel -> effectN( 1 ).percent();
-    base.armor_multiplier *= 1.0 + spec.unwavering_sentinel -> effectN( 3 ).percent() +
-                                   perk.improved_unwavering_sentinel -> effectN( 1 ).percent();
-    base.expertise += spec.unwavering_sentinel -> effectN( 5 ).percent();
-  }
-
   base_gcd = timespan_t::from_seconds( 1.5 );
 }
 
@@ -3847,21 +3847,18 @@ void warrior_t::create_buffs()
                           .add_invalidate( CACHE_BLOCK );
 
   buff.enrage           = buff_creator_t( this, "enrage",           find_spell( 12880 ) )
-                          .activated( false ) //Account for delay in buff application.
                           .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
 
   buff.enraged_regeneration = buff_creator_t( this, "enraged_regeneration",   talents.enraged_regeneration );
 
   buff.enraged_speed    = buff_creator_t( this, "enraged_speed",    glyphs.enraged_speed )
-                          .chance( glyphs.enraged_speed -> ok() )
                           .duration( buff.enrage -> data().duration() );
 
   buff.ignite_weapon    = buff_creator_t( this, "ignite_weapon",    talents.ignite_weapon );
 
   buff.gladiator_stance = buff_creator_t( this, "gladiator_stance",   find_spell( 156291 ) );
 
-  buff.heroic_leap_glyph = buff_creator_t( this, "heroic_leap_glyph", glyphs.heroic_leap )
-                           .chance( glyphs.heroic_leap -> ok() );
+  buff.heroic_leap_glyph = buff_creator_t( this, "heroic_leap_glyph", glyphs.heroic_leap );
 
   buff.hold_the_line     = buff_creator_t( this, "hold_the_line",   spell.hold_the_line -> effectN( 1 ).trigger() )
                            .default_value( spell.hold_the_line -> effectN( 1 ).trigger() -> effectN( 1 ).percent() )
@@ -4114,6 +4111,51 @@ double warrior_t::composite_player_multiplier( school_e school ) const
   return m;
 }
 
+// warrior_t::composite_attribute =============================================
+
+double warrior_t::composite_attribute( attribute_e attr ) const
+{
+  double a = player_t::composite_attribute( attr );
+
+  switch ( attr )
+  {
+    case ATTR_STAMINA:
+      if ( active_stance == STANCE_DEFENSE )
+        a += spec.unwavering_sentinel -> effectN( 1 ).percent() * player_t::composite_attribute( ATTR_STAMINA );
+      break;
+    default:
+      break;
+  }
+
+  return a;
+}
+
+
+// warrior_t::composite_armor_multiplier ======================================
+
+double warrior_t::composite_armor_multiplier() const
+{
+  double a = player_t::composite_armor_multiplier();
+
+  if ( active_stance == STANCE_DEFENSE )
+    a *= 1.0 + spec.unwavering_sentinel -> effectN( 3 ).percent() + 
+               perk.improved_unwavering_sentinel -> effectN( 1 ).percent();
+
+  return a;
+}
+
+// warrior_t::composite_melee_expertise =====================================
+
+double warrior_t::composite_melee_expertise() const
+{
+  double e = player_t::composite_melee_expertise();
+
+  if ( active_stance == STANCE_DEFENSE )
+    e += spec.unwavering_sentinel -> effectN( 5 ).percent();
+
+  return e;
+}
+
 
 // warrior_t::composite_rating_multiplier =====================================
 
@@ -4124,6 +4166,8 @@ double warrior_t::composite_rating_multiplier( rating_e rating ) const
   switch ( rating )
   {
   case RATING_MELEE_CRIT:
+    return m *= 1.0 + spec.crit_attunement -> effectN( 1 ).percent();
+  case RATING_SPELL_CRIT:
     return m *= 1.0 + spec.crit_attunement -> effectN( 1 ).percent();
   case RATING_MASTERY:
     return m *= 1.0 + spec.mastery_attunement -> effectN( 1 ).percent();
@@ -4211,7 +4255,7 @@ double warrior_t::composite_crit_block() const
 {
   double b = player_t::composite_crit_block();
 
-  if ( mastery.critical_block -> ok() && active_stance == STANCE_DEFENSE )
+  if ( mastery.critical_block -> ok() )
     b += cache.mastery_value();
 
   return b;
@@ -4223,7 +4267,7 @@ double warrior_t::composite_crit_avoidance() const
 {
   double c = player_t::composite_crit_avoidance();
 
-  if ( spec.unwavering_sentinel -> ok() && active_stance == STANCE_DEFENSE )
+  if ( active_stance == STANCE_DEFENSE )
     c += spec.unwavering_sentinel -> effectN( 4 ).percent();
 
   return c;
@@ -4250,6 +4294,9 @@ double warrior_t::temporary_movement_modifier() const
   if ( buff.heroic_leap_glyph -> up() )
     temporary = std::max( buff.heroic_leap_glyph -> data().effectN( 1 ).percent(), temporary );
 
+  if ( buff.enraged_speed -> up() )
+    temporary = std::max( buff.enraged_speed -> data().effectN( 1 ).percent(), temporary );
+
   return temporary;
 }
 
@@ -4258,9 +4305,6 @@ double warrior_t::temporary_movement_modifier() const
 double warrior_t::passive_movement_modifier() const
 {
   double ms = player_t::passive_movement_modifier();
-
-  if ( buff.enraged_speed -> up() )
-    ms += buff.enraged_speed -> data().effectN( 1 ).percent();
 
   return ms;
 }
@@ -4278,9 +4322,7 @@ void warrior_t::invalidate_cache( cache_e c )
     player_t::invalidate_cache( CACHE_ATTACK_POWER );
   }
   if ( c == CACHE_MASTERY && mastery.unshackled_fury -> ok() )
-  {
     player_t::invalidate_cache( CACHE_PLAYER_DAMAGE_MULTIPLIER );
-  }
 }
 
 // warrior_t::regen =========================================================

@@ -2309,7 +2309,7 @@ double player_t::composite_melee_crit() const
   return ac;
 }
 
-// player_t::composite_attack_expertise =====================================
+// player_t::composite_melee_expertise =====================================
 
 double player_t::composite_melee_expertise( weapon_t* ) const
 {

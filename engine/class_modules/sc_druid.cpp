@@ -6122,7 +6122,7 @@ double druid_t::composite_armor_multiplier() const
   }
 
   if ( buff.moonkin_form -> check() )
-    a *= 1.0 + + buff.moonkin_form -> data().effectN( 3 ).percent() + perk.enhanced_moonkin_form -> effectN( 1 ).percent();
+    a *= 1.0 + buff.moonkin_form -> data().effectN( 3 ).percent() + perk.enhanced_moonkin_form -> effectN( 1 ).percent();
 
   return a;
 }
@@ -6337,7 +6337,8 @@ double druid_t::composite_crit_avoidance() const
 {
   double c = player_t::composite_crit_avoidance();
 
-  c += spec.thick_hide -> effectN( 1 ).percent();
+  if ( buff.bear_form -> check() )
+    c += spec.thick_hide -> effectN( 1 ).percent();
 
   return c;
 }
@@ -6365,19 +6366,29 @@ double druid_t::composite_rating_multiplier( rating_e rating ) const
 
   switch ( rating )
   {
-    case RATING_SPELL_HASTE:
-      return m *= 1.0 + spec.haste_attunement -> effectN( 1 ).percent();
-    case RATING_MELEE_HASTE:
-    case RATING_RANGED_HASTE:
-    case RATING_SPELL_CRIT:
-    case RATING_MELEE_CRIT:
-      return m *= 1.0 + spec.crit_attunement -> effectN( 1 ).percent();
-    case RATING_RANGED_CRIT:
-    case RATING_MASTERY:
-      return m *= 1.0 + spec.mastery_attunement -> effectN( 1 ).percent();
-      break;
-    default:
-      break;
+  case RATING_SPELL_HASTE:
+    return m *= 1.0 + spec.haste_attunement -> effectN( 1 ).percent();
+    break;
+  case RATING_MELEE_HASTE:
+    return m *= 1.0 + spec.haste_attunement -> effectN( 1 ).percent();
+    break;
+  case RATING_RANGED_HASTE:
+    return m *= 1.0 + spec.haste_attunement -> effectN( 1 ).percent();
+    break;
+  case RATING_SPELL_CRIT:
+    return m *= 1.0 + spec.crit_attunement -> effectN( 1 ).percent();
+    break;
+  case RATING_MELEE_CRIT:
+    return m *= 1.0 + spec.crit_attunement -> effectN( 1 ).percent();
+    break;
+  case RATING_RANGED_CRIT:
+    return m *= 1.0 + spec.crit_attunement -> effectN( 1 ).percent();
+    break;
+  case RATING_MASTERY:
+    return m *= 1.0 + spec.mastery_attunement -> effectN( 1 ).percent();
+    break;
+  default:
+    break;
   }
 
   return m;
