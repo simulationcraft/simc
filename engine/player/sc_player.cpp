@@ -3900,7 +3900,12 @@ void player_t::update_resolve()
 
     // multiply by 100 for display purposes
     new_amount *= 100;
+
+    // updatee the buff
     buffs.resolve -> trigger( 1, new_amount, 1, timespan_t::zero() );
+
+    // also add this to the Resolve timeline for accuracy
+    //resolve.add( sim -> current_time, buffs.resolve -> value() );
 }
 
 // player_t::collect_resource_timeline_information ==========================
@@ -9321,18 +9326,25 @@ void player_resolve_timeline_t::start( player_t& p )
       event_t( p, "resolve_timeline_collect_event_t" ),
       resolve( v )
     {
-      sim().add_event( this, timespan_t::from_seconds( 1 ) );
+      sim().add_event( this, timespan_t::from_seconds( 1.0 ) ); // this is the automatic resolve update interval
     }
 
     virtual void execute()
     {
       assert( resolve.event == this );
-      resolve.timeline_.add( sim().current_time, p() -> buffs.resolve -> value() );
-      resolve.event = new ( sim() ) collect_event_t( *p(), resolve );
+      p() -> update_resolve(); // update resolve
+      resolve.timeline_.add( sim().current_time, p() -> buffs.resolve -> value() ); // add to timeline
+      resolve.event = new ( sim() ) collect_event_t( *p(), resolve ); // schedule next update/add
     }
+
   };
 
   event = new ( *p.sim ) collect_event_t( p, *this ); // start timeline
+}
+
+void player_resolve_timeline_t::add( timespan_t time, double amount )
+{
+  timeline_.add( time, amount ); // add to timeline
 }
 
 /* Stop Resolve

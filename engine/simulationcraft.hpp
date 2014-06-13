@@ -3727,6 +3727,7 @@ public:
     timeline_( resolve_tl ), event( nullptr ) {}
 
   void start( player_t& p );
+  void add( timespan_t time, double amount );
   void stop();
 
   bool is_initialized() const
@@ -4399,11 +4400,13 @@ public:
   { 
     resolve.start( *this ); 
     resolve_source_list.reset();
+    resolve_damage_list.reset();
   }
   void resolve_stop() 
   { 
     resolve.stop(); 
     resolve_source_list.reset();
+    resolve_damage_list.reset();
   }
   bool resolve_is_started() const { return resolve.is_started(); }
   const sc_timeline_t& resolve_timeline() const { return resolve.timeline(); }
