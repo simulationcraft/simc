@@ -4098,7 +4098,7 @@ struct resolve_actor_list_t
       actor_list.push_back( a );
     }
 
-    // purge any actors that haven't hit you in 5 seconds or more
+    // purge any actors that haven't hit you in 10 seconds or more
     purge_actor_list( current_time );
 
     // sort the list
@@ -4124,7 +4124,7 @@ private:
       current_time( current_time )
     {}
     bool operator()( const actor_entry_t& a ) const
-    { return a.last_attack + timespan_t::from_seconds( 5.0 ) < current_time; }
+    { return a.last_attack + timespan_t::from_seconds( 10.0 ) < current_time; } // true if last attack is not more than 10 seconds ago
     const timespan_t& current_time;
   };
 
