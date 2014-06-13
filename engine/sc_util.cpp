@@ -1318,6 +1318,10 @@ const char* util::cache_type_string( cache_e c )
     case CACHE_ARMOR:        return "armor";
     case CACHE_MULTISTRIKE:  return "multistrike";
     case CACHE_READINESS:    return "readiness";
+    case CACHE_VERSATILITY:  return "versatility";
+    case CACHE_DAMAGE_VERSATILITY:  return "damage_versatility";
+    case CACHE_HEAL_VERSATILITY:  return "heal_versatility";
+    case CACHE_MITIGATION_VERSATILITY:  return "mitigation_versatility";
 
     default: return "unknown";
   }
@@ -1462,6 +1466,7 @@ const char* util::stat_type_string( stat_e stat )
     case STAT_PVP_POWER: return "pvp_power";
     case STAT_MULTISTRIKE_RATING: return "multistrike_rating";
     case STAT_READINESS_RATING: return "readiness_rating";
+    case STAT_VERSATILITY_RATING: return "versatility_rating";
 
     case STAT_ALL: return "all";
 
@@ -1528,6 +1533,7 @@ const char* util::stat_type_abbrev( stat_e stat )
     case STAT_PVP_POWER: return "PvPP";
 
     case STAT_MULTISTRIKE_RATING: return "Mult";
+    case STAT_VERSATILITY_RATING: return "Vers";
 
     case STAT_READINESS_RATING: return "Readiness";
 
@@ -1583,6 +1589,7 @@ const char* util::stat_type_wowhead( stat_e stat )
 
     case STAT_MULTISTRIKE_RATING: return "multistrike";
     case STAT_READINESS_RATING:   return "readiness";
+    case STAT_VERSATILITY_RATING: return "versatility"; // TODO-WOD: Verify
 
     case STAT_MAX: return "__all";
     default: return "unknown";
@@ -1940,6 +1947,7 @@ stat_e util::translate_item_mod( int item_mod )
     case ITEM_MOD_STRENGTH_AGILITY:    return STAT_STR_AGI;
     case ITEM_MOD_STRENGTH_INTELLECT:  return STAT_STR_INT;
     default:                           return STAT_NONE;
+    // TODO-wOD: Versatility rating
   }
 }
 
@@ -1971,6 +1979,8 @@ int util::translate_stat( stat_e stat )
     case STAT_STR_AGI:            return ITEM_MOD_STRENGTH_AGILITY;
     case STAT_STR_INT:            return ITEM_MOD_STRENGTH_INTELLECT;
     default:                      return ITEM_MOD_NONE;
+
+    // TODO-wOD: Versatility rating
   }
 }
 
@@ -1990,6 +2000,8 @@ stat_e util::translate_rating_mod( unsigned ratings )
     return STAT_RESILIENCE_RATING;
   else if ( ratings & ( RATING_MOD_HASTE_MELEE | RATING_MOD_HASTE_RANGED | RATING_MOD_HASTE_SPELL ) )
     return STAT_HASTE_RATING;
+  else if ( ratings & ( RATING_MOD_VERS_DAMAGE | RATING_MOD_VERS_HEAL | RATING_MOD_VERS_MITIG ) )
+    return STAT_VERSATILITY_RATING;
   else if ( ratings & RATING_MOD_EXPERTISE )
     return STAT_EXPERTISE_RATING;
   else if ( ratings & RATING_MOD_MASTERY )
@@ -1998,7 +2010,8 @@ stat_e util::translate_rating_mod( unsigned ratings )
     return STAT_PVP_POWER;
   else if ( ratings & RATING_MOD_MULTISTRIKE )
     return STAT_MULTISTRIKE_RATING;
-  // TODO-WOD: READINESS.
+  else if ( ratings & RATING_MOD_READINESS )
+    return STAT_READINESS_RATING;
 
   return STAT_NONE;
 }
@@ -3039,6 +3052,7 @@ double stat_itemization_weight( stat_e s )
     case STAT_MASTERY_RATING:
     case STAT_MULTISTRIKE_RATING:
     case STAT_READINESS_RATING:
+    case STAT_VERSATILITY_RATING:
     case STAT_SPIRIT:
       return 2;
     default:

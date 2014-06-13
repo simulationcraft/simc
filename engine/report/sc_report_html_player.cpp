@@ -1212,7 +1212,33 @@ void print_html_stats ( report::sc_html_stream& os, player_t* a )
       100 * buffed_stats.readiness,
       100 * a -> composite_readiness(),
       a -> initial.stats.readiness_rating );
+    os.printf(
+      "\t\t\t\t\t\t\t\t\t<tr%s>\n"
+      "\t\t\t\t\t\t\t\t\t\t<th class=\"left\">Damage / Heal Versatility</th>\n"
+      "\t\t\t\t\t\t\t\t\t\t<td class=\"right\">%.2f%%</td>\n"
+      "\t\t\t\t\t\t\t\t\t\t<td class=\"right\">%.2f%%</td>\n"
+      "\t\t\t\t\t\t\t\t\t\t<td class=\"right\">%.0f</td>\n"
+      "\t\t\t\t\t\t\t\t\t</tr>\n",
+      ( j % 2 == 1 ) ? " class=\"odd\"" : "",
+      100 * buffed_stats.damage_versatility,
+      100 * a -> composite_damage_versatility(),
+      a -> initial.stats.versatility_rating );
     j++;
+    if ( a -> role == ROLE_TANK )
+    {
+      os.printf(
+        "\t\t\t\t\t\t\t\t\t<tr%s>\n"
+        "\t\t\t\t\t\t\t\t\t\t<th class=\"left\">Mitigation Versatility</th>\n"
+        "\t\t\t\t\t\t\t\t\t\t<td class=\"right\">%.2f%%</td>\n"
+        "\t\t\t\t\t\t\t\t\t\t<td class=\"right\">%.2f%%</td>\n"
+        "\t\t\t\t\t\t\t\t\t\t<td class=\"right\">%.0f</td>\n"
+        "\t\t\t\t\t\t\t\t\t</tr>\n",
+        ( j % 2 == 1 ) ? " class=\"odd\"" : "",
+        100 * buffed_stats.mitigation_versatility,
+        100 * a -> composite_mitigation_versatility(),
+        a -> initial.stats.versatility_rating );
+      j++;
+    }
     if ( buffed_stats.manareg_per_second > 0 )
     {
       os.printf(

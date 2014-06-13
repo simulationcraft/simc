@@ -1760,6 +1760,7 @@ void player_t::init_scaling()
     scales_with[ STAT_MASTERY_RATING            ] = true;
     scales_with[ STAT_MULTISTRIKE_RATING        ] = true;
     scales_with[ STAT_READINESS_RATING          ] = true;
+    scales_with[ STAT_VERSATILITY_RATING        ] = true;
 
     scales_with[ STAT_WEAPON_DPS   ] = attack;
     scales_with[ STAT_WEAPON_SPEED ] = sim -> weapon_speed_scale_factors ? attack : false;
@@ -2591,27 +2592,42 @@ double player_t::composite_mastery() const
 
 double player_t::composite_multistrike() const
 {
-  double ms = composite_multistrike_rating() / current.rating.multistrike;
-
-  return ms;
+  return composite_multistrike_rating() / current.rating.multistrike;
 }
 
 // player_t::composite_readiness ============================================
 
 double player_t::composite_readiness() const
 {
-  double rd = composite_readiness_rating() / current.rating.readiness;
-
-  return rd;
+  return composite_readiness_rating() / current.rating.readiness;
 }
 
 // player_t::composite_bonus_armor =========================================
 
 double player_t::composite_bonus_armor() const
 {
-  double ba = current.stats.bonus_armor;
+  return current.stats.bonus_armor;
+}
 
-  return ba;
+// player_t::composite_damage_versatility ===================================
+
+double player_t::composite_damage_versatility() const
+{
+  return composite_damage_versatility_rating() / current.rating.damage_versatility;
+}
+
+// player_t::composite_heal_versatility ====================================
+
+double player_t::composite_heal_versatility() const
+{
+  return composite_heal_versatility_rating() / current.rating.heal_versatility;
+}
+
+// player_t::composite_mitigation_versatility ===============================
+
+double player_t::composite_mitigation_versatility() const
+{
+  return composite_mitigation_versatility_rating() / current.rating.mitigation_versatility;
 }
 
 // player_t::composite_player_multiplier ====================================
@@ -2848,6 +2864,10 @@ double player_t::composite_rating( rating_e rating ) const
       if ( ! is_pet() && ! is_enemy() && sim -> auras.mastery -> check() )
         v += sim -> auras.mastery -> value();
       break;
+    case RATING_DAMAGE_VERSATILITY:
+    case RATING_HEAL_VERSATILITY:
+    case RATING_MITIGATION_VERSATILITY:
+      v = current.stats.versatility_rating; break;
     case RATING_EXPERTISE:
       v = current.stats.expertise_rating; break;
     case RATING_DODGE:
@@ -2959,6 +2979,10 @@ void player_t::invalidate_cache( cache_e c )
       invalidate_cache( CACHE_ATTACK_SPEED );
       invalidate_cache( CACHE_SPELL_SPEED  );
       break;
+    case CACHE_VERSATILITY:
+      invalidate_cache( CACHE_DAMAGE_VERSATILITY );
+      invalidate_cache( CACHE_HEAL_VERSATILITY );
+      invalidate_cache( CACHE_MITIGATION_VERSATILITY );
     default:
       cache.invalidate( c );
       break;
@@ -4773,6 +4797,9 @@ void player_t::target_mitigation( school_e school,
       s -> result_amount *= 1.0 + buffs.devotion_aura -> data().effectN( 1 ).percent();
     }
   }
+
+  // TODO-WOD: Where should this be? Or does it matter?
+  s -> result_amount *= 1.0 - cache.mitigation_versatility();
   
   if ( school == SCHOOL_PHYSICAL && dmg_type == DMG_DIRECT )
   {
@@ -5482,6 +5509,9 @@ struct snapshot_stats_t : public action_t
     buffed_stats.multistrike = p -> cache.multistrike();
     buffed_stats.readiness = p -> cache.readiness();
     buffed_stats.bonus_armor = p -> composite_bonus_armor();
+    buffed_stats.damage_versatility = p -> cache.damage_versatility();
+    buffed_stats.heal_versatility = p -> cache.heal_versatility();
+    buffed_stats.mitigation_versatility = p -> cache.mitigation_versatility();
 
     buffed_stats.spell_power  = util::round( p -> cache.spell_power( SCHOOL_MAX ) * p -> composite_spell_power_multiplier() );
     buffed_stats.spell_hit    = p -> cache.spell_hit();
@@ -8222,6 +8252,7 @@ void player_t::create_options()
     opt_float( "gear_mastery_rating",   gear.mastery_rating ),
     opt_float( "gear_multistrike_rating", gear.multistrike_rating ),
     opt_float( "gear_readiness_rating", gear.readiness_rating ),
+    opt_float( "gear_versatility_rating", gear.versatility_rating ),
     opt_float( "gear_bonus_armor",      gear.bonus_armor ),
 
     // Stat Enchants
@@ -8240,6 +8271,7 @@ void player_t::create_options()
     opt_float( "enchant_mastery_rating",   enchant.mastery_rating ),
     opt_float( "enchant_multistrike_rating", enchant.multistrike_rating ),
     opt_float( "enchant_readiness_rating", enchant.readiness_rating ),
+    opt_float( "enchant_versatility_rating", enchant.versatility_rating ),
     opt_float( "enchant_bonus_armor",      enchant.bonus_armor ),
     opt_float( "enchant_health",           enchant.resource[ RESOURCE_HEALTH ] ),
     opt_float( "enchant_mana",             enchant.resource[ RESOURCE_MANA   ] ),
@@ -9276,6 +9308,39 @@ double player_stat_cache_t::bonus_armor() const
   }
   else assert( _bonus_armor == player -> composite_bonus_armor() );
   return _bonus_armor;
+}
+
+double player_stat_cache_t::damage_versatility() const
+{
+  if ( ! active || ! valid[ CACHE_DAMAGE_VERSATILITY ] )
+  {
+    valid[ CACHE_DAMAGE_VERSATILITY ] = true;
+    _damage_versatility = player -> composite_damage_versatility();
+  }
+  else assert( _damage_versatility == player -> composite_damage_versatility() );
+  return _damage_versatility;
+}
+
+double player_stat_cache_t::heal_versatility() const
+{
+  if ( ! active || ! valid[ CACHE_HEAL_VERSATILITY ] )
+  {
+    valid[ CACHE_HEAL_VERSATILITY ] = true;
+    _heal_versatility = player -> composite_heal_versatility();
+  }
+  else assert( _heal_versatility == player -> composite_heal_versatility() );
+  return _heal_versatility;
+}
+
+double player_stat_cache_t::mitigation_versatility() const
+{
+  if ( ! active || ! valid[ CACHE_MITIGATION_VERSATILITY ] )
+  {
+    valid[ CACHE_MITIGATION_VERSATILITY ] = true;
+    _mitigation_versatility = player -> composite_mitigation_versatility();
+  }
+  else assert( _mitigation_versatility == player -> composite_mitigation_versatility() );
+  return _mitigation_versatility;
 }
 
 // player_stat_cache_t::mastery =============================================

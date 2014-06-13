@@ -1677,7 +1677,6 @@ void action_t::init()
 
   if ( quiet ) stats -> quiet = true;
 
-  // TODO: WOD-MULTISTRIKE
   if ( may_multistrike == -1 )
     may_multistrike = may_crit || tick_may_crit;
 
@@ -1685,10 +1684,10 @@ void action_t::init()
     snapshot_flags |= STATE_CRIT | STATE_TGT_CRIT;
 
   if ( ( spell_power_mod.tick > 0 || attack_power_mod.tick > 0 ) && dot_duration > timespan_t::zero() )
-    snapshot_flags |= STATE_MUL_TA | STATE_TGT_MUL_TA | STATE_MUL_PERSISTENT;
+    snapshot_flags |= STATE_MUL_TA | STATE_TGT_MUL_TA | STATE_MUL_PERSISTENT | STATE_VERSATILITY;
 
   if ( ( spell_power_mod.direct > 0 || attack_power_mod.direct > 0 ) || weapon_multiplier > 0 )
-    snapshot_flags |= STATE_MUL_DA | STATE_TGT_MUL_DA | STATE_MUL_PERSISTENT;
+    snapshot_flags |= STATE_MUL_DA | STATE_TGT_MUL_DA | STATE_MUL_PERSISTENT | STATE_VERSATILITY;
 
   if ( ( spell_power_mod.direct > 0 || spell_power_mod.tick > 0 ) )
     snapshot_flags |= STATE_SP;
@@ -2301,6 +2300,9 @@ void action_t::snapshot_internal( action_state_t* state, uint32_t flags, dmg_e r
 
   if ( flags & STATE_SP )
     state -> spell_power = int( composite_spell_power() * player -> composite_spell_power_multiplier() );
+
+  if ( flags & STATE_VERSATILITY )
+    state -> versatility = composite_versatility( state );
 
   if ( flags & STATE_MUL_DA )
     state -> da_multiplier = composite_da_multiplier( state );
