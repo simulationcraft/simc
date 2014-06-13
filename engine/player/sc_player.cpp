@@ -4199,6 +4199,7 @@ void player_t::stat_gain( stat_e    stat,
     case STAT_MASTERY_RATING:
     case STAT_MULTISTRIKE_RATING:
     case STAT_READINESS_RATING:
+    case STAT_VERSATILITY_RATING:
       current.stats.add_stat( stat, amount );
       temporary.add_stat( stat, temp_value * amount );
       invalidate_cache( cache_from_stat( stat ) );
@@ -4321,6 +4322,7 @@ void player_t::stat_loss( stat_e    stat,
     case STAT_MASTERY_RATING:
     case STAT_MULTISTRIKE_RATING:
     case STAT_READINESS_RATING:
+    case STAT_VERSATILITY_RATING:
       current.stats.add_stat( stat, -amount );
       temporary.add_stat( stat, temp_value * -amount );
       invalidate_cache( cache_from_stat( stat ) );
