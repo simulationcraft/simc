@@ -9228,6 +9228,17 @@ double player_stat_cache_t::armor() const
   return _armor;
 }
 
+double player_stat_cache_t::mastery() const
+{
+  if ( ! active || ! valid[ CACHE_MASTERY ] )
+  {
+    valid[ CACHE_MASTERY ] = true;
+    _mastery = player -> composite_mastery();
+  }
+  else assert( _mastery == player -> composite_mastery() );
+  return _mastery;
+}
+
 /* This is composite_mastery * specialization_mastery_coefficient !
  *
  * If you need the pure mastery value, use player_t::composite_mastery
@@ -9814,6 +9825,8 @@ void player_t::update_resolve()
     const resolve_event_list_t::list_t& list= resolve_manager.damage_list.event_list;
     if ( ! list.empty() )
     {
+      std::unordered_map<int,int> diminishing_return_list = resolve_manager.diminishing_return_list.get_actor_ranks( sim -> current_time );
+
       resolve_event_list_t::list_t::const_reverse_iterator i, end;
       for ( i = list.rbegin(), end = list.rend(); i != end; ++i )
       {
@@ -9833,7 +9846,8 @@ void player_t::update_resolve()
         contribution *= 2.0 * ( 10.0 - delta_t ) / 10.0;
 
         // apply diminishing returns
-        int rank = resolve_manager.diminishing_return_list.get_actor_rank( entry.actor_spawn_index );
+        assert( diminishing_return_list.find( entry.actor_spawn_index ) != diminishing_return_list.end() && "could not find a diminishing return entry for resolve actor entry!" );
+        int rank = diminishing_return_list[ entry.actor_spawn_index ];
         contribution /= rank;
 
         // add to existing amount
@@ -9879,12 +9893,25 @@ void resolve_diminishing_returns_list_t::add( const player_t* actor, double raw_
 
     actor_list.push_back( a );
   }
+}
 
+std::unordered_map<int,int> resolve_diminishing_returns_list_t::get_actor_ranks( timespan_t current_time )
+{
   // purge any actors that haven't hit you in 10 seconds or more
   purge_actor_list( current_time );
 
   // sort the list
   sort_list();
+
+  std::unordered_map<int,int> out;
+
+  // Now build the diminishing retrn list of std::pair<actor_spawn_index,diminishing_return_factor>
+  for ( size_t i = 0; i < actor_list.size(); ++i )
+  {
+    out[ actor_list[ i ].actor_spawn_index ] = i + 1;
+  }
+
+  return out;
 }
 
 void resolve_event_list_t::add( const player_t* actor, double amount, timespan_t current_time )

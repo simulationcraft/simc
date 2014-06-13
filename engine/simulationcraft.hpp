@@ -3661,7 +3661,7 @@ private:
   mutable double _attack_haste, _spell_haste;
   mutable double _attack_speed, _spell_speed;
   mutable double _dodge, _parry, _block, _crit_block, _armor, _bonus_armor;
-  mutable double _mastery_value, _crit_avoidance, _miss, _multistrike, _readiness;
+  mutable double _mastery, _mastery_value, _crit_avoidance, _miss, _multistrike, _readiness;
   mutable double _player_mult[SCHOOL_MAX + 1], _player_heal_mult[SCHOOL_MAX + 1];
   mutable double _damage_versatility, _heal_versatility, _mitigation_versatility;
 public:
@@ -3695,6 +3695,7 @@ public:
   double crit_avoidance() const;
   double miss() const;
   double armor() const;
+  double mastery() const;
   double mastery_value() const;
   double multistrike() const;
   double readiness() const;
@@ -3729,6 +3730,7 @@ public:
   double crit_avoidance() const   { return player -> composite_crit_avoidance();       }
   double miss() const             { return player -> composite_miss();       }
   double armor() const            { return player -> composite_armor();           }
+  double mastery() const          { return player -> composite_mastery();   }
   double mastery_value() const    { return player -> composite_mastery_value();   }
   double multistrike() const      { return player -> composite_multistrike(); }
   double readiness() const        { return player -> composite_readiness(); }
@@ -4003,22 +4005,16 @@ struct resolve_event_list_t
 
 struct resolve_diminishing_returns_list_t
 {
-  resolve_diminishing_returns_list_t( const player_t* p ) : myself( p )
+  resolve_diminishing_returns_list_t( const player_t* p ) :
+    myself( p )
   { }
 
   // called after each iteration in player_t::resolve_stop()
   void reset()
   { actor_list.clear(); }
 
-  // this returns the integer corresponding to the applied diminishing returns
-  // i.e. it returns N for the Nth-strongest attacker
-  int get_actor_rank( int actor_spawn_index )
-  {
-    // pre-condition: actor_list sorted by raw dps
-    std::vector<actor_entry_t>::iterator found = find_actor( actor_spawn_index );
-    assert( found != actor_list.end() && "Resolve attacker not found in resolve list!" );
-    return as<int>(std::distance( actor_list.begin(), found ) + 1);
-  }
+  // this returns a list of pairs with actor_spawn_index/diminishing_return_factor currently in the diminshing return list.
+  std::unordered_map<int,int> get_actor_ranks( timespan_t current_time );
 
   // this is the method that we use to interact with the structure
   void add( const player_t* actor, double raw_dps, timespan_t current_time );
