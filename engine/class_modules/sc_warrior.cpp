@@ -391,7 +391,7 @@ public:
   virtual double    composite_armor_multiplier() const;
   virtual double    composite_block() const;
   virtual double    composite_parry() const;
-  virtual double    composite_melee_expertise() const;
+  virtual double    composite_melee_expertise( weapon_t* ) const;
   virtual double    composite_attack_power_multiplier() const;
   virtual double    composite_melee_attack_power() const;
   virtual double    composite_crit_block() const;
@@ -4146,7 +4146,7 @@ double warrior_t::composite_armor_multiplier() const
 
 // warrior_t::composite_melee_expertise =====================================
 
-double warrior_t::composite_melee_expertise() const
+double warrior_t::composite_melee_expertise( weapon_t* ) const
 {
   double e = player_t::composite_melee_expertise();
 
