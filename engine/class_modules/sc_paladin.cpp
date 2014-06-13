@@ -6215,7 +6215,7 @@ void paladin_t::combat_begin()
   resources.current[ RESOURCE_HOLY_POWER ] = 0;
 
   if ( passives.resolve -> ok() )
-    resolve_start();  
+    resolve_manager.start();
 
   if ( find_specialization_spell( "Bladed Armor" ) )
     buffs.bladed_armor -> trigger();

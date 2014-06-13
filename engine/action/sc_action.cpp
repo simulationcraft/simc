@@ -1297,7 +1297,7 @@ void action_t::update_resolve( dmg_e type,
   player_t* target = s -> target;
 
   // check that the target has Resolve, check for damage type, and check that the source player is an enemy
-  if ( target -> resolve_is_started() && ( type == DMG_DIRECT || type == DMG_OVER_TIME ) && source -> is_enemy() )
+  if ( target -> resolve_manager.is_started() && ( type == DMG_DIRECT || type == DMG_OVER_TIME ) && source -> is_enemy() )
   {
 
     // bool for auto attack, to make code easier to read
@@ -1323,10 +1323,10 @@ void action_t::update_resolve( dmg_e type,
       raw_resolve_amount /= target -> resources.max[ RESOURCE_HEALTH ];
 
       // update the player's resolve_actor_list
-      target -> resolve_source_list.add( source, source -> get_raw_dps( s ), sim -> current_time );
+      target -> resolve_manager.diminishing_return_list.add( source, source -> get_raw_dps( s ), sim -> current_time );
 
       // update the player's resolve damage table if the attack did nonzero damage
-      target -> resolve_damage_list.add( source, raw_resolve_amount, sim -> current_time ); 
+      target -> resolve_manager.damage_list.add( source, raw_resolve_amount, sim -> current_time );
     
       // cycle through the resolve damage table and add the appropriate amount of Resolve from each event
       target -> update_resolve();
