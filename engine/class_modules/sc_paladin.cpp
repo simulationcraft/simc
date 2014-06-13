@@ -403,7 +403,6 @@ public:
   virtual void      combat_begin();
 
   int     holy_power_stacks() const;
-  double  get_divine_bulwark() const;
   double  get_hand_of_light();
   double  jotp_haste();
   void    trigger_grand_crusader();
@@ -1647,7 +1646,9 @@ struct eternal_flame_t : public paladin_heal_t
     {
       base_execute_time *= 1 + p -> passives.sword_of_light -> effectN( 9 ).percent();
     }
-
+    // redirect to self if not specified
+    if ( target -> is_enemy() || ( target -> type == HEALING_ENEMY && p -> specialization() == PALADIN_PROTECTION ) )
+      target = p;
     // attach HoT as child object - doesn't seem to work?
     add_child( hot );
   }
@@ -1697,8 +1698,12 @@ struct eternal_flame_t : public paladin_heal_t
 
     if ( target == player )
     {      
-      // grant 10% extra healing per stack of BoG; can't expire() BoG here because it's needed in execute()
-      am *= ( 1.0 + p() -> buffs.bastion_of_glory -> stack() * ( p() -> buffs.bastion_of_glory -> data().effectN( 1 ).percent() + p() -> get_divine_bulwark() ) );
+      // grant extra healing per stack of BoG; can't expire() BoG here because it's needed in execute()
+      double bog_m = p() -> buffs.bastion_of_glory -> data().effectN( 1 ).percent(); // base multiplier is in effect 1 of BoG buff
+      bog_m += p() -> composite_mastery() * p() -> passives.divine_bulwark -> effectN( 3 ).mastery_value(); // add mastery contribution
+      bog_m *= p() -> buffs.bastion_of_glory -> stack(); // multiply by stack size
+
+      am *= ( 1.0 + bog_m );
     }
 
     // Improved Word of Glory perk
@@ -2809,7 +2814,7 @@ struct sacred_shield_t : public paladin_heal_t
     spell_power_mod.tick = 1.229; // in tooltip, hardcoding
     
     // redirect HoT to self if not specified
-    if ( target -> is_enemy() || target -> type == HEALING_ENEMY )
+    if ( target -> is_enemy() || ( target -> type == HEALING_ENEMY && p -> specialization() == PALADIN_PROTECTION ) )
       target = p;
 
     // disable if not talented
@@ -3072,6 +3077,9 @@ struct word_of_glory_t : public paladin_heal_t
     {
       base_execute_time *= 1 + p -> passives.sword_of_light -> effectN( 9 ).percent();
     }
+    // redirect to self if not specified
+    if ( target -> is_enemy() || ( target -> type == HEALING_ENEMY && p -> specialization() == PALADIN_PROTECTION ) )
+      target = p;
   }
 
   virtual void update_ready( timespan_t cd_duration )
@@ -3121,8 +3129,12 @@ struct word_of_glory_t : public paladin_heal_t
 
     if ( p() -> buffs.bastion_of_glory -> up() )
     {
-      // grant 10% extra healing per stack of BoG; can't expire() BoG here because it's needed in execute()
-      am *= ( 1.0 + p() -> buffs.bastion_of_glory -> stack() * ( p() -> buffs.bastion_of_glory -> data().effectN( 1 ).percent() + p() -> get_divine_bulwark() ) );
+      // grant extra healing per stack of BoG; can't expire() BoG here because it's needed in execute()
+      double bog_m = p() -> buffs.bastion_of_glory -> data().effectN( 1 ).percent(); // base multiplier is in effect 1 of BoG buff
+      bog_m += p() -> composite_mastery() * p() -> passives.divine_bulwark -> effectN( 3 ).mastery_value(); // add mastery contribution
+      bog_m *= p() -> buffs.bastion_of_glory -> stack(); // multiply by stack size
+
+      am *= ( 1.0 + bog_m );
     }
 
     // Improved Word of Glory perk
@@ -5863,11 +5875,12 @@ double paladin_t::composite_attack_power_multiplier() const
 {
   double ap = player_t::composite_attack_power_multiplier();
 
-  if ( passives.divine_bulwark -> ok () )
-    ap += get_divine_bulwark(); // TODO: check if additive or multiplicative
-
+  // TODO: check if additive or multiplicative
+  ap += composite_mastery() * passives.divine_bulwark -> effectN( 5 ).mastery_value();
+  
+  // TODO: check if additive or multiplicative
   if ( buffs.maraads_truth -> up() )
-    ap += buffs.maraads_truth -> data().effectN( 1 ).percent(); // TODO: check if additive or multiplicative
+    ap += buffs.maraads_truth -> data().effectN( 1 ).percent(); 
 
   return ap;
 }
@@ -5887,7 +5900,7 @@ double paladin_t::composite_spell_power_multiplier() const
 double paladin_t::composite_block() const
 {
   // this handles base block and and all block subject to diminishing returns
-  double block_subject_to_dr = get_divine_bulwark();
+  double block_subject_to_dr = composite_mastery() * passives.divine_bulwark -> effectN( 1 ).mastery_value();
   double b = player_t::composite_block_dr( block_subject_to_dr );
 
  // Guarded by the Light block not affected by diminishing returns
@@ -6004,7 +6017,11 @@ void paladin_t::target_mitigation( school_e school,
   // Shield of the Righteous
   if ( buffs.shield_of_the_righteous -> check() && school == SCHOOL_PHYSICAL )
   {
-    s -> result_amount *= 1.0 + ( buffs.shield_of_the_righteous -> data().effectN( 1 ).percent() - get_divine_bulwark() ) * ( 1.0 + sets.set( SET_T14_4PC_TANK ) -> effectN( 2 ).percent() );
+    // split his out to make it more readable / easier to debug
+    double sotr_mitigation = buffs.shield_of_the_righteous -> data().effectN( 1 ).percent() + composite_mastery() * passives.divine_bulwark -> effectN( 4 ).mastery_value();
+    sotr_mitigation *= 1.0 + sets.set( SET_T14_4PC_TANK ) -> effectN( 2 ).percent();
+
+    s -> result_amount *= 1.0 + sotr_mitigation; 
 
     if ( sim -> debug && s -> action && ! s -> target -> is_enemy() && ! s -> target -> is_add() )
       sim -> out_debug.printf( "Damage to %s after SotR mitigation is %f", s -> target -> name(), s -> result_amount );
@@ -6231,16 +6248,6 @@ int paladin_t::holy_power_stacks() const
     return std::min( ( int ) 3, ( int ) resources.current[ RESOURCE_HOLY_POWER ] );
   }
   return ( int ) resources.current[ RESOURCE_HOLY_POWER ];
-}
-
-// paladin_t::get_divine_bulwark ============================================
-double paladin_t::get_divine_bulwark() const
-{
-  if ( ! passives.divine_bulwark -> ok() )
-    return 0.0;
-
-  // block rating, 1% per point of mastery
-  return cache.mastery_value();
 }
 
 // paladin_t::get_hand_of_light =============================================
