@@ -2383,6 +2383,7 @@ struct sim_t : public core_sim_t, private sc_thread_t
   player_t*   active_player;
   int         num_players;
   int         num_enemies;
+  int global_spawn_index;
   int         max_player_level;
   timespan_t  queue_lag, queue_lag_stddev;
   timespan_t  gcd_lag, gcd_lag_stddev;
@@ -4166,6 +4167,7 @@ struct player_t : public actor_t
   player_e type;
   int index;
   size_t actor_index;
+  int actor_spawn_index; // a unique identifier for each arise() of the actor
   // (static) attributes - things which should not change during combat
   race_e       race;
   role_e       role;

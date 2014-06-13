@@ -407,6 +407,7 @@ player_t::player_t( sim_t*             s,
   type( t ),
 
   index( -1 ),
+  actor_spawn_index( -1 ),
 
   // (static) attributes
   race( r ),
@@ -3625,8 +3626,11 @@ void player_t::arise()
   if ( current.sleeping )
     return;
 
+  actor_spawn_index = sim -> global_spawn_index++;
+
   if ( sim -> log )
-    sim -> out_log.printf( "%s arises.", name() );
+    sim -> out_log.printf( "%s arises. Spawn Index=", name(), actor_spawn_index );
+
 
   init_resources( true );
 
@@ -3663,7 +3667,9 @@ void player_t::demise()
     return;
 
   if ( sim -> log )
-    sim -> out_log.printf( "%s demises.", name() );
+    sim -> out_log.printf( "%s demises.. Spawn Index=", name(), actor_spawn_index );
+
+  actor_spawn_index = -1;
 
   assert( arise_time >= timespan_t::zero() );
   iteration_fight_length += sim -> current_time - arise_time;

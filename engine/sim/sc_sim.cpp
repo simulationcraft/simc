@@ -852,6 +852,7 @@ sim_t::sim_t( sim_t* p, int index ) :
   active_player( 0 ),
   num_players( 0 ),
   num_enemies( 0 ),
+  global_spawn_index( 0 ),
   max_player_level( -1 ),
   queue_lag( timespan_t::from_seconds( 0.037 ) ), queue_lag_stddev( timespan_t::zero() ),
   gcd_lag( timespan_t::from_seconds( 0.150 ) ), gcd_lag_stddev( timespan_t::zero() ),
