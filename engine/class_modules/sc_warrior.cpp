@@ -4244,7 +4244,7 @@ double warrior_t::composite_attack_power_multiplier() const
   double ap = player_t::composite_attack_power_multiplier();
 
   if ( mastery.critical_block -> ok() )
-    ap += cache.mastery_value();
+    ap += composite_mastery() * mastery.critical_block -> effectN( 5 ).mastery_value();
 
   return ap;
 }
@@ -4256,7 +4256,7 @@ double warrior_t::composite_crit_block() const
   double b = player_t::composite_crit_block();
 
   if ( mastery.critical_block -> ok() )
-    b += cache.mastery_value();
+    b += composite_mastery() * mastery.critical_block -> effectN( 1 ).mastery_value();
 
   return b;
 }
