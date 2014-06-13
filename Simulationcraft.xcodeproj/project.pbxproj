@@ -198,7 +198,6 @@
 		6E392F5413969FCC00649B6A /* Simcraft2.icns in Resources */ = {isa = PBXBuildFile; fileRef = 6E392F5313969FCC00649B6A /* Simcraft2.icns */; };
 		6E392F611396A09700649B6A /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6EC6192B13967883006B7A89 /* main.cpp */; };
 		6E392F621396A09700649B6A /* sc_window.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6EC6192C13967883006B7A89 /* sc_window.cpp */; };
-		6E392F961396A0AD00649B6A /* sc_thread.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6EC618E5139677F0006B7A89 /* sc_thread.cpp */; };
 		6E392F981396A0AD00649B6A /* sc_util.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6EC618E7139677F0006B7A89 /* sc_util.cpp */; };
 		6E3E63F017F8D8B200AB6485 /* sc_core_sim.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6E3E63EF17F8D8B200AB6485 /* sc_core_sim.cpp */; };
 		6E3E63F117F8D8B200AB6485 /* sc_core_sim.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6E3E63EF17F8D8B200AB6485 /* sc_core_sim.cpp */; };
@@ -298,6 +297,16 @@
 		6E9DF0561791A518000462D5 /* Shaman_Elemental_T15H.simc in CopyFiles */ = {isa = PBXBuildFile; fileRef = 6E9DF0501791A4DE000462D5 /* Shaman_Elemental_T15H.simc */; };
 		6E9DF0571791A518000462D5 /* Paladin_Protection_T15H.simc in CopyFiles */ = {isa = PBXBuildFile; fileRef = 6E9DF04E1791A4D6000462D5 /* Paladin_Protection_T15H.simc */; };
 		6E9DF0581791A520000462D5 /* Paladin_Protection_T15N.simc in Copy Files */ = {isa = PBXBuildFile; fileRef = 6E9DF0521791A4E8000462D5 /* Paladin_Protection_T15N.simc */; };
+		6EA67095194BA07B00420710 /* concurrency.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6EA6708D194BA07B00420710 /* concurrency.cpp */; };
+		6EA67096194BA07B00420710 /* concurrency.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6EA6708D194BA07B00420710 /* concurrency.cpp */; };
+		6EA67097194BA07B00420710 /* io.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6EA67090194BA07B00420710 /* io.cpp */; };
+		6EA67098194BA07B00420710 /* io.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6EA67090194BA07B00420710 /* io.cpp */; };
+		6EA67099194BA07B00420710 /* xml.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6EA67093194BA07B00420710 /* xml.cpp */; };
+		6EA6709A194BA07B00420710 /* xml.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6EA67093194BA07B00420710 /* xml.cpp */; };
+		6EA6709D194BA24100420710 /* sc_proc.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6EA6709B194BA24100420710 /* sc_proc.cpp */; };
+		6EA6709E194BA24100420710 /* sc_proc.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6EA6709B194BA24100420710 /* sc_proc.cpp */; };
+		6EA6709F194BA24100420710 /* sc_enchant.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6EA6709C194BA24100420710 /* sc_enchant.cpp */; };
+		6EA670A0194BA24100420710 /* sc_enchant.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6EA6709C194BA24100420710 /* sc_enchant.cpp */; };
 		6EA73B7E15C6C52300D1E7CE /* Rogue_Assassination_PreRaid.simc in CopyFiles */ = {isa = PBXBuildFile; fileRef = 6E41F15C15C68C89002B6836 /* Rogue_Assassination_PreRaid.simc */; };
 		6EA73B7F15C6C52300D1E7CE /* Rogue_Combat_PreRaid.simc in CopyFiles */ = {isa = PBXBuildFile; fileRef = 6E41F15D15C68C89002B6836 /* Rogue_Combat_PreRaid.simc */; };
 		6EA73B8015C6C52300D1E7CE /* Rogue_Subtlety_PreRaid.simc in CopyFiles */ = {isa = PBXBuildFile; fileRef = 6E41F15F15C68C89002B6836 /* Rogue_Subtlety_PreRaid.simc */; };
@@ -307,8 +316,6 @@
 		6EA73B8415C6C52300D1E7CE /* Warlock_Destruction_PreRaid.simc in CopyFiles */ = {isa = PBXBuildFile; fileRef = 6E41F16315C68C89002B6836 /* Warlock_Destruction_PreRaid.simc */; };
 		6EAA687D187DFE2D00789F33 /* sc_spell.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6EAA687C187DFE2D00789F33 /* sc_spell.cpp */; };
 		6EAA687E187DFE2D00789F33 /* sc_spell.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6EAA687C187DFE2D00789F33 /* sc_spell.cpp */; };
-		6EAA6881187DFE5200789F33 /* sc_io.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6EAA687F187DFE5200789F33 /* sc_io.cpp */; };
-		6EAA6882187DFE5200789F33 /* sc_io.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6EAA687F187DFE5200789F33 /* sc_io.cpp */; };
 		6EB654BF1562E39500583BF3 /* sc_const_data.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6EB654B91562E39500583BF3 /* sc_const_data.cpp */; };
 		6EB654C01562E39500583BF3 /* sc_const_data.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6EB654B91562E39500583BF3 /* sc_const_data.cpp */; };
 		6EB654C11562E39500583BF3 /* sc_data.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6EB654BA1562E39500583BF3 /* sc_data.cpp */; };
@@ -339,8 +346,6 @@
 		6EB654F21562E4A800583BF3 /* sc_http.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6EB654E71562E4A800583BF3 /* sc_http.cpp */; };
 		6EB654F91562E4A800583BF3 /* sc_wowhead.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6EB654EB1562E4A800583BF3 /* sc_wowhead.cpp */; };
 		6EB654FA1562E4A800583BF3 /* sc_wowhead.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6EB654EB1562E4A800583BF3 /* sc_wowhead.cpp */; };
-		6EB654FB1562E4A800583BF3 /* sc_xml.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6EB654EC1562E4A800583BF3 /* sc_xml.cpp */; };
-		6EB654FC1562E4A800583BF3 /* sc_xml.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6EB654EC1562E4A800583BF3 /* sc_xml.cpp */; };
 		6EB655051562E4DA00583BF3 /* sc_chart.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6EB654FE1562E4DA00583BF3 /* sc_chart.cpp */; };
 		6EB655061562E4DA00583BF3 /* sc_chart.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6EB654FE1562E4DA00583BF3 /* sc_chart.cpp */; };
 		6EB655071562E4DA00583BF3 /* sc_report_html_player.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6EB654FF1562E4DA00583BF3 /* sc_report_html_player.cpp */; };
@@ -364,7 +369,6 @@
 		6EB655331562E7DB00583BF3 /* sc_warrior.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6EB655281562E7DB00583BF3 /* sc_warrior.cpp */; };
 		6EB655341562E7DB00583BF3 /* sc_warrior.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6EB655281562E7DB00583BF3 /* sc_warrior.cpp */; };
 		6EB6553D1562E9D400583BF3 /* simulationcraftqt.hpp in Sources */ = {isa = PBXBuildFile; fileRef = 6EB6551F1562E5A600583BF3 /* simulationcraftqt.hpp */; };
-		6EC6191E139677F0006B7A89 /* sc_thread.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6EC618E5139677F0006B7A89 /* sc_thread.cpp */; };
 		6EC61920139677F0006B7A89 /* sc_util.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6EC618E7139677F0006B7A89 /* sc_util.cpp */; };
 		6EC6192A13967824006B7A89 /* sc_main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6EC6192913967824006B7A89 /* sc_main.cpp */; };
 		6EDCF304162C4D7400571167 /* sc_import.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6EDCF303162C4D7400571167 /* sc_import.cpp */; };
@@ -788,7 +792,6 @@
 		6E41F16215C68C89002B6836 /* Warlock_Demonology_PreRaid.simc */ = {isa = PBXFileReference; lastKnownFileType = text; path = Warlock_Demonology_PreRaid.simc; sourceTree = "<group>"; };
 		6E41F16315C68C89002B6836 /* Warlock_Destruction_PreRaid.simc */ = {isa = PBXFileReference; lastKnownFileType = text; path = Warlock_Destruction_PreRaid.simc; sourceTree = "<group>"; };
 		6E41F16415C68C89002B6836 /* Warlock_PreRaid.simc */ = {isa = PBXFileReference; lastKnownFileType = text; path = Warlock_PreRaid.simc; sourceTree = "<group>"; };
-		6E41F17F15C68CDF002B6836 /* sc_generic.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; name = sc_generic.hpp; path = engine/sc_generic.hpp; sourceTree = "<group>"; };
 		6E41F18015C68CDF002B6836 /* sc_timespan.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; name = sc_timespan.hpp; path = engine/sc_timespan.hpp; sourceTree = "<group>"; };
 		6E6C54D11396A61C00407A6A /* Welcome.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Welcome.png; sourceTree = "<group>"; };
 		6E6C54D21396A62600407A6A /* Welcome.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = Welcome.html; sourceTree = "<group>"; };
@@ -903,9 +906,19 @@
 		6E9DF0501791A4DE000462D5 /* Shaman_Elemental_T15H.simc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Shaman_Elemental_T15H.simc; sourceTree = "<group>"; };
 		6E9DF0521791A4E8000462D5 /* Paladin_Protection_T15N.simc */ = {isa = PBXFileReference; lastKnownFileType = text; path = Paladin_Protection_T15N.simc; sourceTree = "<group>"; };
 		6E9DF0531791A503000462D5 /* sc_report_csv_data.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = sc_report_csv_data.cpp; path = engine/report/sc_report_csv_data.cpp; sourceTree = "<group>"; };
+		6EA6708B194BA05400420710 /* config.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = config.hpp; path = engine/config.hpp; sourceTree = "<group>"; };
+		6EA6708C194BA07B00420710 /* cache.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = cache.hpp; path = engine/util/cache.hpp; sourceTree = "<group>"; };
+		6EA6708D194BA07B00420710 /* concurrency.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = concurrency.cpp; path = engine/util/concurrency.cpp; sourceTree = "<group>"; };
+		6EA6708E194BA07B00420710 /* concurrency.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = concurrency.hpp; path = engine/util/concurrency.hpp; sourceTree = "<group>"; };
+		6EA6708F194BA07B00420710 /* generic.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = generic.hpp; path = engine/util/generic.hpp; sourceTree = "<group>"; };
+		6EA67090194BA07B00420710 /* io.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = io.cpp; path = engine/util/io.cpp; sourceTree = "<group>"; };
+		6EA67091194BA07B00420710 /* io.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = io.hpp; path = engine/util/io.hpp; sourceTree = "<group>"; };
+		6EA67092194BA07B00420710 /* sc_resourcepaths.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = sc_resourcepaths.hpp; path = engine/util/sc_resourcepaths.hpp; sourceTree = "<group>"; };
+		6EA67093194BA07B00420710 /* xml.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = xml.cpp; path = engine/util/xml.cpp; sourceTree = "<group>"; };
+		6EA67094194BA07B00420710 /* xml.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = xml.hpp; path = engine/util/xml.hpp; sourceTree = "<group>"; };
+		6EA6709B194BA24100420710 /* sc_proc.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = sc_proc.cpp; path = engine/player/sc_proc.cpp; sourceTree = "<group>"; };
+		6EA6709C194BA24100420710 /* sc_enchant.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = sc_enchant.cpp; path = engine/player/sc_enchant.cpp; sourceTree = "<group>"; };
 		6EAA687C187DFE2D00789F33 /* sc_spell.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = sc_spell.cpp; path = engine/action/sc_spell.cpp; sourceTree = "<group>"; };
-		6EAA687F187DFE5200789F33 /* sc_io.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = sc_io.cpp; path = engine/util/sc_io.cpp; sourceTree = "<group>"; };
-		6EAA6880187DFE5200789F33 /* sc_io.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = sc_io.hpp; path = engine/util/sc_io.hpp; sourceTree = "<group>"; };
 		6EB654A81562E34D00583BF3 /* sc_extra_data_ptr.inc */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.pascal; name = sc_extra_data_ptr.inc; path = engine/dbc/sc_extra_data_ptr.inc; sourceTree = "<group>"; };
 		6EB654A91562E34D00583BF3 /* sc_extra_data.inc */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.pascal; name = sc_extra_data.inc; path = engine/dbc/sc_extra_data.inc; sourceTree = "<group>"; };
 		6EB654AA1562E34D00583BF3 /* sc_item_data_ptr.inc */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.pascal; name = sc_item_data_ptr.inc; path = engine/dbc/sc_item_data_ptr.inc; sourceTree = "<group>"; };
@@ -938,7 +951,6 @@
 		6EB654E51562E4A800583BF3 /* sc_bcp_api.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = sc_bcp_api.cpp; path = engine/interfaces/sc_bcp_api.cpp; sourceTree = "<group>"; };
 		6EB654E71562E4A800583BF3 /* sc_http.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = sc_http.cpp; path = engine/interfaces/sc_http.cpp; sourceTree = "<group>"; };
 		6EB654EB1562E4A800583BF3 /* sc_wowhead.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = sc_wowhead.cpp; path = engine/interfaces/sc_wowhead.cpp; sourceTree = "<group>"; };
-		6EB654EC1562E4A800583BF3 /* sc_xml.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = sc_xml.cpp; path = engine/interfaces/sc_xml.cpp; sourceTree = "<group>"; };
 		6EB654FE1562E4DA00583BF3 /* sc_chart.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = sc_chart.cpp; path = engine/report/sc_chart.cpp; sourceTree = "<group>"; };
 		6EB654FF1562E4DA00583BF3 /* sc_report_html_player.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = sc_report_html_player.cpp; path = engine/report/sc_report_html_player.cpp; sourceTree = "<group>"; };
 		6EB655001562E4DA00583BF3 /* sc_report_html_sim.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = sc_report_html_sim.cpp; path = engine/report/sc_report_html_sim.cpp; sourceTree = "<group>"; };
@@ -954,7 +966,6 @@
 		6EB655261562E7DB00583BF3 /* sc_warlock.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = sc_warlock.cpp; path = engine/class_modules/sc_warlock.cpp; sourceTree = "<group>"; };
 		6EB655281562E7DB00583BF3 /* sc_warrior.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = sc_warrior.cpp; path = engine/class_modules/sc_warrior.cpp; sourceTree = "<group>"; };
 		6EC618AB13967766006B7A89 /* simc */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = simc; sourceTree = BUILT_PRODUCTS_DIR; };
-		6EC618E5139677F0006B7A89 /* sc_thread.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = sc_thread.cpp; path = engine/sc_thread.cpp; sourceTree = "<group>"; };
 		6EC618E7139677F0006B7A89 /* sc_util.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = sc_util.cpp; path = engine/sc_util.cpp; sourceTree = "<group>"; };
 		6EC6192913967824006B7A89 /* sc_main.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = sc_main.cpp; path = engine/sc_main.cpp; sourceTree = "<group>"; };
 		6EC6192B13967883006B7A89 /* main.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = main.cpp; path = qt/main.cpp; sourceTree = "<group>"; };
@@ -962,7 +973,6 @@
 		6EC61934139678B9006B7A89 /* checked.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = checked.h; sourceTree = "<group>"; };
 		6EC61935139678B9006B7A89 /* core.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = core.h; sourceTree = "<group>"; };
 		6EC61936139678B9006B7A89 /* unchecked.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = unchecked.h; sourceTree = "<group>"; };
-		6EC61937139678B9006B7A89 /* utf8.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = utf8.h; path = engine/utf8.h; sourceTree = "<group>"; };
 		6EDCF303162C4D7400571167 /* sc_import.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = sc_import.cpp; path = qt/sc_import.cpp; sourceTree = "<group>"; };
 		6EEADF04176F2E8E00543025 /* sc_options_tab.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = sc_options_tab.cpp; path = qt/sc_options_tab.cpp; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -1346,7 +1356,6 @@
 				6EB654E51562E4A800583BF3 /* sc_bcp_api.cpp */,
 				6EB654E71562E4A800583BF3 /* sc_http.cpp */,
 				6EB654EB1562E4A800583BF3 /* sc_wowhead.cpp */,
-				6EB654EC1562E4A800583BF3 /* sc_xml.cpp */,
 			);
 			name = Interfaces;
 			sourceTree = "<group>";
@@ -1404,8 +1413,18 @@
 		6EC618B313967780006B7A89 /* Core */ = {
 			isa = PBXGroup;
 			children = (
-				6EAA687F187DFE5200789F33 /* sc_io.cpp */,
-				6EAA6880187DFE5200789F33 /* sc_io.hpp */,
+				6EA6709B194BA24100420710 /* sc_proc.cpp */,
+				6EA6709C194BA24100420710 /* sc_enchant.cpp */,
+				6EA6708C194BA07B00420710 /* cache.hpp */,
+				6EA6708D194BA07B00420710 /* concurrency.cpp */,
+				6EA6708E194BA07B00420710 /* concurrency.hpp */,
+				6EA6708F194BA07B00420710 /* generic.hpp */,
+				6EA67090194BA07B00420710 /* io.cpp */,
+				6EA67091194BA07B00420710 /* io.hpp */,
+				6EA67092194BA07B00420710 /* sc_resourcepaths.hpp */,
+				6EA67093194BA07B00420710 /* xml.cpp */,
+				6EA67094194BA07B00420710 /* xml.hpp */,
+				6EA6708B194BA05400420710 /* config.hpp */,
 				6EAA687C187DFE2D00789F33 /* sc_spell.cpp */,
 				6E3E63EF17F8D8B200AB6485 /* sc_core_sim.cpp */,
 				6E7EB8F4175F5572001610FA /* rng.cpp */,
@@ -1437,11 +1456,8 @@
 				6E7EB88F175F5531001610FA /* sc_sequence.cpp */,
 				6E7EB891175F5531001610FA /* sc_stats.cpp */,
 				6EC61933139678B9006B7A89 /* utf8 */,
-				6EC61937139678B9006B7A89 /* utf8.h */,
 				6EB6551D1562E57300583BF3 /* simulationcraft.hpp */,
-				6E41F17F15C68CDF002B6836 /* sc_generic.hpp */,
 				6E41F18015C68CDF002B6836 /* sc_timespan.hpp */,
-				6EC618E5139677F0006B7A89 /* sc_thread.cpp */,
 				6EC618E7139677F0006B7A89 /* sc_util.cpp */,
 			);
 			name = Core;
@@ -1765,8 +1781,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				6E21CFFE17DC8D05000FB100 /* SC_OptionsTab.hpp in Sources */,
+				6EA67098194BA07B00420710 /* io.cpp in Sources */,
 				6EB6553D1562E9D400583BF3 /* simulationcraftqt.hpp in Sources */,
-				6E392F961396A0AD00649B6A /* sc_thread.cpp in Sources */,
 				6E392F981396A0AD00649B6A /* sc_util.cpp in Sources */,
 				6E392F621396A09700649B6A /* sc_window.cpp in Sources */,
 				6E392F611396A09700649B6A /* main.cpp in Sources */,
@@ -1785,14 +1801,13 @@
 				6EB654EE1562E4A800583BF3 /* sc_bcp_api.cpp in Sources */,
 				6EB654F21562E4A800583BF3 /* sc_http.cpp in Sources */,
 				6EB654FA1562E4A800583BF3 /* sc_wowhead.cpp in Sources */,
-				6EB654FC1562E4A800583BF3 /* sc_xml.cpp in Sources */,
 				6EB655061562E4DA00583BF3 /* sc_chart.cpp in Sources */,
 				6EB655081562E4DA00583BF3 /* sc_report_html_player.cpp in Sources */,
 				6EB6550A1562E4DA00583BF3 /* sc_report_html_sim.cpp in Sources */,
 				6EB6550C1562E4DA00583BF3 /* sc_report_text.cpp in Sources */,
 				6EB6550E1562E4DA00583BF3 /* sc_report_xml.cpp in Sources */,
+				6EA670A0194BA24100420710 /* sc_enchant.cpp in Sources */,
 				6EB655101562E4DA00583BF3 /* sc_report.cpp in Sources */,
-				6EAA6882187DFE5200789F33 /* sc_io.cpp in Sources */,
 				6EB6552A1562E7DB00583BF3 /* sc_priest.cpp in Sources */,
 				6EB6552C1562E7DB00583BF3 /* sc_rogue.cpp in Sources */,
 				6EB6552E1562E7DB00583BF3 /* sc_shaman.cpp in Sources */,
@@ -1803,6 +1818,7 @@
 				6E7EB899175F5531001610FA /* sc_action.cpp in Sources */,
 				6E7EB89C175F5531001610FA /* sc_attack.cpp in Sources */,
 				6E7EB89F175F5531001610FA /* sc_dot.cpp in Sources */,
+				6EA6709E194BA24100420710 /* sc_proc.cpp in Sources */,
 				6E7EB8A8175F5531001610FA /* sc_sequence.cpp in Sources */,
 				6E7EB8AE175F5531001610FA /* sc_stats.cpp in Sources */,
 				6E7EB8B2175F5540001610FA /* sc_buff.cpp in Sources */,
@@ -1815,6 +1831,7 @@
 				6E7EB8CA175F5552001610FA /* sc_unique_gear.cpp in Sources */,
 				6E7EB8D7175F5565001610FA /* sc_cooldown.cpp in Sources */,
 				6E3E63F117F8D8B200AB6485 /* sc_core_sim.cpp in Sources */,
+				6EA67096194BA07B00420710 /* concurrency.cpp in Sources */,
 				6E7EB8DA175F5565001610FA /* sc_event.cpp in Sources */,
 				6E7EB8DD175F5565001610FA /* sc_expressions.cpp in Sources */,
 				6E7EB8E0175F5565001610FA /* sc_gear_stats.cpp in Sources */,
@@ -1822,6 +1839,7 @@
 				6E7EB8E6175F5565001610FA /* sc_plot.cpp in Sources */,
 				6E7EB8E9175F5565001610FA /* sc_raid_event.cpp in Sources */,
 				6E7EB8EC175F5565001610FA /* sc_reforge_plot.cpp in Sources */,
+				6EA6709A194BA07B00420710 /* xml.cpp in Sources */,
 				6E7EB8EF175F5565001610FA /* sc_scaling.cpp in Sources */,
 				6E7EB8F2175F5565001610FA /* sc_sim.cpp in Sources */,
 				6E7EB8FB175F5572001610FA /* rng.cpp in Sources */,
@@ -1834,10 +1852,11 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				6EC6191E139677F0006B7A89 /* sc_thread.cpp in Sources */,
 				6EC61920139677F0006B7A89 /* sc_util.cpp in Sources */,
+				6EA6709F194BA24100420710 /* sc_enchant.cpp in Sources */,
 				6EC6192A13967824006B7A89 /* sc_main.cpp in Sources */,
 				6EB654BF1562E39500583BF3 /* sc_const_data.cpp in Sources */,
+				6EA67095194BA07B00420710 /* concurrency.cpp in Sources */,
 				6EB654C11562E39500583BF3 /* sc_data.cpp in Sources */,
 				6EB654C31562E39500583BF3 /* sc_item_data.cpp in Sources */,
 				6E3E63F017F8D8B200AB6485 /* sc_core_sim.cpp in Sources */,
@@ -1854,19 +1873,19 @@
 				6EB654ED1562E4A800583BF3 /* sc_bcp_api.cpp in Sources */,
 				6EB654F11562E4A800583BF3 /* sc_http.cpp in Sources */,
 				6EB654F91562E4A800583BF3 /* sc_wowhead.cpp in Sources */,
-				6EB654FB1562E4A800583BF3 /* sc_xml.cpp in Sources */,
 				6EB655051562E4DA00583BF3 /* sc_chart.cpp in Sources */,
+				6EA6709D194BA24100420710 /* sc_proc.cpp in Sources */,
 				6EB655071562E4DA00583BF3 /* sc_report_html_player.cpp in Sources */,
 				6EAA687D187DFE2D00789F33 /* sc_spell.cpp in Sources */,
 				6EB655091562E4DA00583BF3 /* sc_report_html_sim.cpp in Sources */,
 				6EB6550B1562E4DA00583BF3 /* sc_report_text.cpp in Sources */,
 				6EB6550D1562E4DA00583BF3 /* sc_report_xml.cpp in Sources */,
-				6EAA6881187DFE5200789F33 /* sc_io.cpp in Sources */,
 				6EB6550F1562E4DA00583BF3 /* sc_report.cpp in Sources */,
 				6EB655291562E7DB00583BF3 /* sc_priest.cpp in Sources */,
 				6EB6552B1562E7DB00583BF3 /* sc_rogue.cpp in Sources */,
 				6EB6552D1562E7DB00583BF3 /* sc_shaman.cpp in Sources */,
 				6EB655311562E7DB00583BF3 /* sc_warlock.cpp in Sources */,
+				6EA67097194BA07B00420710 /* io.cpp in Sources */,
 				6EB655331562E7DB00583BF3 /* sc_warrior.cpp in Sources */,
 				6E7EB895175F5531001610FA /* sc_action_state.cpp in Sources */,
 				6E7EB898175F5531001610FA /* sc_action.cpp in Sources */,
@@ -1888,6 +1907,7 @@
 				6E7EB8E2175F5565001610FA /* sc_option.cpp in Sources */,
 				6E7EB8E5175F5565001610FA /* sc_plot.cpp in Sources */,
 				6E7EB8E8175F5565001610FA /* sc_raid_event.cpp in Sources */,
+				6EA67099194BA07B00420710 /* xml.cpp in Sources */,
 				6E7EB8EB175F5565001610FA /* sc_reforge_plot.cpp in Sources */,
 				6E7EB8EE175F5565001610FA /* sc_scaling.cpp in Sources */,
 				6E7EB8F1175F5565001610FA /* sc_sim.cpp in Sources */,
@@ -2057,6 +2077,7 @@
 				GCC_WARN_64_TO_32_BIT_CONVERSION = NO;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
+				GENERATE_PROFILING_CODE = YES;
 				INSTALL_PATH = ..;
 				LLVM_LTO = NO;
 				MACOSX_DEPLOYMENT_TARGET = 10.6;
@@ -2065,6 +2086,7 @@
 				SDKROOT = "";
 				SKIP_INSTALL = YES;
 				STRIP_INSTALLED_PRODUCT = NO;
+				USER_HEADER_SEARCH_PATHS = engine;
 			};
 			name = Debug;
 		};
@@ -2073,25 +2095,27 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ARCHS = "$(ARCHS_STANDARD_32_64_BIT)";
-				COPY_PHASE_STRIP = YES;
+				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				FRAMEWORK_SEARCH_PATHS = /Library/Frameworks;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
-				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
 				GCC_PREPROCESSOR_DEFINITIONS = NDEBUG;
 				GCC_UNROLL_LOOPS = YES;
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = NO;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
+				GENERATE_PROFILING_CODE = YES;
 				INSTALL_PATH = ..;
 				LLVM_LTO = YES;
 				MACOSX_DEPLOYMENT_TARGET = 10.6;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = "";
 				SKIP_INSTALL = YES;
-				STRIP_INSTALLED_PRODUCT = YES;
+				STRIP_INSTALLED_PRODUCT = NO;
+				USER_HEADER_SEARCH_PATHS = engine;
 			};
 			name = Release;
 		};
