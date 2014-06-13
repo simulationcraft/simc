@@ -69,6 +69,7 @@ const OptionEntry scalingOptions[] =
   { "Analyze Attack Power",             "ap",       "Calculate scale factors for Attack Power"             },
   { "Analyze Crit Rating",              "crit",     "Calculate scale factors for Crit Rating"              },
   { "Analyze Multistrike Rating",       "mult",     "Calculate scale factors for Multistrike Rating"       },
+  { "Analyze Readiness Rating",         "readiness",  "Calculate scale factors for Readiness Rating"         },
   { "Analyze Versatility Rating",       "vers",     "Calculate scale factors for Versatility Rating"       },
   { "Analyze Haste Rating",             "haste",    "Calculate scale factors for Haste Rating"             },
   { "Analyze Mastery Rating",           "mastery",  "Calculate scale factors for Mastery Rating"           },
@@ -95,6 +96,7 @@ const OptionEntry plotOptions[] =
   { "Plot Scaling per Haste Rating",     "haste",   "Generate Scaling curve for Haste Rating"     },
   { "Plot Scaling per Mastery Rating",   "mastery", "Generate Scaling curve for Mastery Rating"   },
   { "Plot Scaling per Multistrike Rating", "mult",  "Generate Scaling curve for Multistrike Rating" },
+  { "Plot Scaling per Readiness Rating", "readiness", "Generate Scaling curve for Readiness Rating" },
   { "Plot Scaling per Versatility Rating", "vers",  "Generate Scaling curve for Versatility Rating" },
   { "Plot Scaling per Weapon DPS",       "wdps",    "Generate Scaling curve for Weapon DPS"       },
   { "Plot Scaling per Armor",            "armor",   "Generate Scaling curve for Armor"            },
@@ -109,6 +111,7 @@ const OptionEntry reforgePlotOptions[] =
   { "Plot Reforge Options for Haste Rating",     "haste",   "Generate reforge plot data for Haste Rating"     },
   { "Plot Reforge Options for Mastery Rating",   "mastery", "Generate reforge plot data for Mastery Rating"   },
   { "Plot Reforge Options for Multistrike Rating", "mult",  "Generate reforge plot data for Multistrike Rating" },
+  { "Plot Reforge Options for Readiness Rating", "readiness", "Generate reforge plot data for Readiness Rating" },
   { "Plot Reforge Options for Versatility Rating", "vers",  "Generate reforge plot data for Versatility Rating" },
   { "Plot Reforge Options for Bonus Armor Rating", "bonusarmor", "Generate reforge plot data for Bonus Armor" },
 
@@ -118,7 +121,7 @@ const OptionEntry reforgePlotOptions[] =
   { "Plot Reforge Options for Intellect",        "int",     "Generate reforge plot data for Intellect"        },
   { NULL, NULL, NULL }
 };
-const int reforgePlotOption_cut = 7; // separate between secondary and primary stats
+const int reforgePlotOption_cut = 8; // separate between secondary and primary stats
 
 QComboBox* createChoiceFromRange( int lowerInclusive, int upperInclusive ) {
   QComboBox* choice = new QComboBox();

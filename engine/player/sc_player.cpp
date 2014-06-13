@@ -1813,6 +1813,9 @@ void player_t::init_scaling()
           initial.stats.readiness_rating += v;
           break;
 
+        case STAT_VERSATILITY_RATING:
+          initial.stats.versatility_rating += v;
+
         case STAT_WEAPON_DPS:
           if ( main_hand_weapon.damage > 0 )
           {
@@ -7293,6 +7296,7 @@ expr_t* player_t::create_expression( action_t* a,
       case STAT_CRIT_RATING:      return make_ref_expr( name_str, temporary.crit_rating );
       case STAT_HASTE_RATING:     return make_ref_expr( name_str, temporary.haste_rating );
       case STAT_READINESS_RATING: return make_ref_expr( name_str, temporary.readiness_rating );
+      case STAT_VERSATILITY_RATING: return make_ref_expr( name_str, temporary.versatility_rating );
       case STAT_MULTISTRIKE_RATING:return make_ref_expr( name_str, temporary.multistrike_rating );
       case STAT_ARMOR:            return make_ref_expr( name_str, temporary.armor );
       case STAT_BONUS_ARMOR:      return make_ref_expr( name_str, temporary.bonus_armor );
@@ -8042,6 +8046,9 @@ bool player_t::create_profile( std::string& profile_str, save_e stype, bool save
 
     if ( enchant.readiness_rating            != 0 )  profile_str += "enchant_readiness_rating="
          + util::to_string( enchant.readiness_rating ) + term;
+
+    if ( enchant.versatility_rating            != 0 )  profile_str += "enchant_versatility_rating="
+         + util::to_string( enchant.versatility_rating ) + term;
 
     if ( enchant.multistrike_rating          != 0 )  profile_str += "enchant_multistrike_rating="
          + util::to_string( enchant.multistrike_rating ) + term;
