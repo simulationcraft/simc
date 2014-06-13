@@ -86,11 +86,11 @@ int item_database::scaled_stat( const item_data_t& item, const dbc_t& dbc, size_
   if ( idx >= sizeof_array( item.stat_val ) - 1 )
     return -1;
 
-  if ( item.level == 0 || new_ilevel == 0 || item.stat_val[ idx ] <= 0 )
+  if ( item.level == 0 || item.stat_val[ idx ] <= 0 )
     return item.stat_val[ idx ];
 
-  if ( item.level == ( int ) new_ilevel )
-    return item.stat_val[ idx ];
+  //if ( item.level == ( int ) new_ilevel )
+  //  return item.stat_val[ idx ];
 
   int slot_type = random_suffix_type( &item );
   double item_budget = 0/*, orig_budget = 0*/;
