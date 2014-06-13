@@ -1522,7 +1522,7 @@ absorb_buff_t::absorb_buff_t( const absorb_buff_creator_t& params ) :
   if ( absorb_source )
     absorb_source -> type = STATS_ABSORB;
 
-  if ( params._absorb_school == SCHOOL_NONE )
+  if ( params._absorb_school == SCHOOL_CHAOS )
   {
     for ( size_t i = 1, e = data().effect_count(); i <= e; i++ )
     {

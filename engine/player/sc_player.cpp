@@ -4704,8 +4704,8 @@ void player_t::assess_damage( school_e school,
     proc_types pt = s -> proc_type();
     proc_types2 pt2 = s -> execute_proc_type2();
     // For incoming landed abilities, get the impact type for the proc.
-    if ( pt2 == PROC2_LANDED )
-      pt2 = s -> impact_proc_type2();
+    //if ( pt2 == PROC2_LANDED )
+    //  pt2 = s -> impact_proc_type2();
 
     // On damage/heal in. Proc flags are arranged as such that the "incoming"
     // version of the primary proc flag is always follows the outgoing version.
