@@ -9799,31 +9799,42 @@ void player_t::update_resolve()
     // Relevant constants
     static const double resolve_dmg_mod = 0.25; // multiplier for the resolve damage component
     const double resolve_sta_mod = 1 / 250.0 /  dbc.resolve_item_scaling( level );
+    static const timespan_t max_interval = timespan_t::from_seconds( 10.0 );
 
     // cycle through the resolve damage table and add the appropriate amount of Resolve from each event
     double new_amount = 0;
 
-    size_t num_events = resolve_manager.damage_list.get_num_events( sim -> current_time );
-
-    // cycle through the Resolve event list, retrieving each event's details
-    for ( size_t i = 0; i < num_events; i++ )
+    // Iterate through the Resolve event list, retrieving each event's details
+    const resolve_event_list_t::list_t& list= resolve_manager.damage_list.event_list;
+    if ( ! list.empty() )
     {
-      // temp variable for current event's contribution
-      // note that this already includes the 2.5x multiplier for spell damage and the normalization
-      // by player max health (all of that done in action_t::update_resolve() )
-      double contribution = resolve_manager.damage_list.get_event_amount( i );
+      resolve_event_list_t::list_t::const_reverse_iterator i, end;
+      for ( i = list.rbegin(), end = list.rend(); i != end; ++i )
+      {
+        const resolve_event_list_t::event_entry_t& entry = *i;
 
-      // apply time-based decay
-      double delta_t = ( sim -> current_time.total_seconds() - resolve_manager.damage_list.get_event_time( i ).total_seconds() );
-      contribution *= 2.0 * ( 10.0 - delta_t ) / 10.0;
+        // Only loop from the end until we are over the 10s mark, then break the loop
+        if ( ( sim -> current_time - entry.event_time ) > max_interval )
+          break;
 
-      // apply diminishing returns
-      int rank = resolve_manager.diminishing_return_list.get_actor_rank( resolve_manager.damage_list.get_event_source( i ) );
-      contribution /= rank;
+        // temp variable for current event's contribution
+        // note that this already includes the 2.5x multiplier for spell damage and the normalization
+        // by player max health (all of that done in action_t::update_resolve() )
+        double contribution = entry.event_amount;
 
-      // add to existing amount
-      new_amount += contribution;
+        // apply time-based decay
+        double delta_t = ( sim -> current_time - entry.event_time ).total_seconds();
+        contribution *= 2.0 * ( 10.0 - delta_t ) / 10.0;
+
+        // apply diminishing returns
+        int rank = resolve_manager.diminishing_return_list.get_actor_rank( entry.event_player );
+        contribution /= rank;
+
+        // add to existing amount
+        new_amount += contribution;
+      }
     }
+
 
     // multiply by damage modifier
     new_amount *= resolve_dmg_mod;

@@ -3981,21 +3981,6 @@ struct resolve_event_list_t
   void reset()
   { event_list.clear(); }
 
-  // get number of relevant events
-  size_t get_num_events( timespan_t current_time )
-  {
-    purge_event_list( current_time );
-
-    return event_list.size();
-  }
-
-  const player_t* get_event_source( size_t i )  { return event_list[ i ].event_player; }
-
-  double get_event_amount( size_t i )  { return event_list[ i ].event_amount; }
-
-  timespan_t get_event_time( size_t i )  { return event_list[ i ].event_time; }
-  
-
   // this is the method that we use to interact with the structure
   void add( const player_t* actor, double amount, timespan_t current_time )
   {
@@ -4012,7 +3997,6 @@ struct resolve_event_list_t
     event_list.push_back( e );
   }
 
-private:
   // structure that contains the relevant information for each actor entry in the list
   struct event_entry_t {
     const player_t* event_player;
@@ -4020,26 +4004,9 @@ private:
     timespan_t event_time;
     
   };
-  std::vector<event_entry_t> event_list; // vector of actor entries
+  typedef std::vector<event_entry_t> list_t;
+  list_t event_list; // vector of actor entries
   const player_t* myself; // not sure this is strictly necessary, intended to nullify self-veng, but an is_enemy(actor) call might be better
-    
-  // comparator functor for purging inactive players
-  struct too_old {
-    too_old( const timespan_t& current_time ) :
-      current_time( current_time )
-    {}
-    bool operator()( const event_entry_t& e ) const
-    { return current_time - e.event_time > timespan_t::from_seconds( 10.0 ); }
-    const timespan_t& current_time;
-  };
-
-  // method to purge the event list of events older than 10 seconds ago
-  void purge_event_list( timespan_t current_time )
-  {
-    // Erase-remove idiom
-    event_list.erase( std::remove_if( event_list.begin(), event_list.end(), too_old( current_time ) ), event_list.end() );
-  }
-
 };
 
 // Resolve Actor List =====================================================
