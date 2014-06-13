@@ -428,7 +428,8 @@ player_t::player_t( sim_t*             s,
   timeofday( NIGHT_TIME ), //Set to Night by Default, user can override.
   gcd_ready( timespan_t::zero() ), base_gcd( timespan_t::from_seconds( 1.5 ) ), started_waiting( timespan_t::min() ),
   pet_list(), active_pets(),
-  resolve_source_list( this ),resolve_damage_list( this ),invert_scaling( 0 ),
+  resolve_manager( this ),
+  invert_scaling( 0 ),
   // Reaction
   reaction_offset( timespan_t::from_seconds( 0.1 ) ), reaction_mean( timespan_t::from_seconds( 0.3 ) ), reaction_stddev( timespan_t::zero() ), reaction_nu( timespan_t::from_seconds( 0.25 ) ),
   // Latency
@@ -471,7 +472,7 @@ player_t::player_t( sim_t*             s,
 
   tmi_window( 6.0 ),
   collected_data( player_collected_data_t( name_str, *sim ) ),
-  resolve( collected_data.resolve_timeline ),
+  resolve_timeline( collected_data.resolve_timeline ),
   // Damage
   iteration_dmg( 0 ), iteration_dmg_taken( 0 ),
   dpr( 0 ),
@@ -2655,8 +2656,7 @@ double player_t::composite_player_heal_multiplier( const action_state_t* s ) con
 {
   double m = 1.0;
 
-  // apply resolve multiplier
-  if ( resolve_is_started() && s -> target == this )
+  if ( s -> target == this )
     m += buffs.resolve -> current_value / 100.0;
   
   return m;
@@ -2676,7 +2676,7 @@ double player_t::composite_player_absorb_multiplier( const action_state_t* s ) c
   double m = 1.0;
 
   // apply resolve multiplier
-  if ( resolve_is_started() && s -> target == this )
+  if ( s -> target == this )
     m += buffs.resolve -> current_value / 100.0;
   
   return m;
@@ -3394,7 +3394,7 @@ void player_t::merge( player_t& other )
   }
 
   // Resolve Timeline
-  resolve.merge( other.resolve );
+  resolve_timeline.merge( other.resolve_timeline );
 
   // Action Map
   for ( size_t i = 0; i < other.action_list.size(); ++i )
@@ -3691,7 +3691,7 @@ void player_t::demise()
   core_event_t::cancel( off_gcd );
 
   // stops resolve and clear resolve_source_list
-  resolve_stop();
+  resolve_manager.stop();
 
   for ( size_t i = 0; i < buff_list.size(); ++i )
   {
@@ -3884,55 +3884,6 @@ void player_t::regen( timespan_t periodicity )
   if ( gain && base )
     resource_gain( r, base * periodicity.total_seconds(), gain );
 
-}
-
-// player_t::update_resolve ===============================================
-
-void player_t::update_resolve()
-{
-    // Relevant constants
-    double resolve_dmg_mod = 0.25; // multiplier for the resolve damage component
-    double resolve_sta_mod = 1 / 250.0 /  dbc.resolve_item_scaling( level );
-  
-    // cycle through the resolve damage table and add the appropriate amount of Resolve from each event
-    double new_amount = 0;
-
-    size_t num_events = resolve_damage_list.get_num_events( sim -> current_time );
-    
-    // cycle through the Resolve event list, retrieving each event's details
-    for ( size_t i = 0; i < num_events; i++ )
-    {
-      // temp variable for current event's contribution
-      // note that this already includes the 2.5x multiplier for spell damage and the normalization 
-      // by player max health (all of that done in action_t::update_resolve() )
-      double contribution = resolve_damage_list.get_event_amount( i );
-
-      // apply time-based decay
-      double delta_t = ( sim -> current_time.total_seconds() - resolve_damage_list.get_event_time( i ).total_seconds() );
-      contribution *= 2.0 * ( 10.0 - delta_t ) / 10.0;
-
-      // apply diminishing returns
-      int rank = resolve_source_list.get_actor_rank( resolve_damage_list.get_event_source( i ) );
-      contribution /= rank;
-
-      // add to existing amount
-      new_amount += contribution;
-    }
-
-    // multiply by damage modifier
-    new_amount *= resolve_dmg_mod;
-
-    // add stamina-based contribution
-    new_amount += get_attribute( ATTR_STAMINA ) * resolve_sta_mod;
-
-    // multiply by 100 for display purposes
-    new_amount *= 100;
-
-    // updatee the buff
-    buffs.resolve -> trigger( 1, new_amount, 1, timespan_t::zero() );
-
-    // also add this to the Resolve timeline for accuracy
-    resolve.add( sim -> current_time, buffs.resolve -> value() );
 }
 
 // player_t::collect_resource_timeline_information ==========================
@@ -8464,7 +8415,7 @@ void player_t::analyze( sim_t& s )
     s.targets_by_name.push_back( this );
 
   // Resolve Timeline
-  resolve.adjust( s.divisor_timeline );
+  resolve_timeline.adjust( s.divisor_timeline );
 
   // Resources & Gains ======================================================
 
@@ -9383,53 +9334,6 @@ double player_stat_cache_t::player_heal_multiplier( const action_state_t* s ) co
 
 #endif
 
-/* Start Resolve
- *
- * Call in combat_begin() when it is active during the whole fight,
- * otherwise in a action/buff ( like Druid Bear Form )
- */
-
-void player_resolve_timeline_t::start( player_t& p )
-{
-  assert( ! is_started() );
-
-  struct collect_event_t : public event_t
-  {
-    player_resolve_timeline_t& resolve;
-    collect_event_t( player_t& p, player_resolve_timeline_t& v ) :
-      event_t( p, "resolve_timeline_collect_event_t" ),
-      resolve( v )
-    {
-      sim().add_event( this, timespan_t::from_seconds( 1.0 ) ); // this is the automatic resolve update interval
-    }
-
-    virtual void execute()
-    {
-      assert( resolve.event == this );
-      p() -> update_resolve(); // update resolve
-      resolve.timeline_.add( sim().current_time, p() -> buffs.resolve -> value() ); // add to timeline
-      resolve.event = new ( sim() ) collect_event_t( *p(), resolve ); // schedule next update/add
-    }
-
-  };
-
-  event = new ( *p.sim ) collect_event_t( p, *this ); // start timeline
-}
-
-void player_resolve_timeline_t::add( timespan_t time, double amount )
-{
-  timeline_.add( time, amount ); // add to timeline
-}
-
-/* Stop Resolve
- *
- * Is automatically called in player_t::demise()
- * If you have dynamic resolve activation ( like Druid Bear Form ), call it in the buff expiration/etc.
- */
-
-void player_resolve_timeline_t::stop()
-{ core_event_t::cancel( event ); }
-
 player_collected_data_t::action_sequence_data_t::action_sequence_data_t( const action_t* a, const player_t* t, const timespan_t& ts, const player_t* p ) :
   action( a ), target( t ), time( ts )
 {
@@ -9837,4 +9741,113 @@ std::string player_talent_points_t::to_string() const
   ss << " }";
 
   return ss.str();
+}
+
+struct resolve_manager_t::resolve_update_event_t final : public event_t
+{
+  resolve_update_event_t( player_t* p ) :
+    event_t( *p, "resolve_update_event_t" )
+  {
+    sim().add_event( this, timespan_t::from_seconds( 1.0 ) ); // this is the automatic resolve update interval
+  }
+
+  virtual void execute() override
+  {
+    assert( p() -> resolve_manager.update_event == this );
+    p() -> update_resolve(); // update resolve
+    p() -> resolve_manager.update_event = new ( sim() ) resolve_update_event_t( p() ); // schedule next update/add
+  }
+
+};
+
+resolve_manager_t::resolve_manager_t( player_t* p ) :
+    diminishing_return_list( p ),
+    damage_list( p ),
+    player( p ),
+    update_event( nullptr ),
+    _started( false )
+{
+
+}
+
+void resolve_manager_t::start()
+{
+  diminishing_return_list.reset();
+  damage_list.reset();
+
+  // Make sure we get the buff up right now, to activate the stamina part.
+  player -> update_resolve();
+
+  // Start periodic update event
+  update_event = new (*player -> sim) resolve_update_event_t( player );
+
+  _started = true;
+}
+
+void resolve_manager_t::stop()
+{
+  diminishing_return_list.reset();
+  damage_list.reset();
+
+  _started = false;
+}
+
+// player_t::update_resolve ===============================================
+
+void player_t::update_resolve()
+{
+    // Relevant constants
+    static const double resolve_dmg_mod = 0.25; // multiplier for the resolve damage component
+    const double resolve_sta_mod = 1 / 250.0 /  dbc.resolve_item_scaling( level );
+    static const timespan_t max_interval = timespan_t::from_seconds( 10.0 );
+
+    // cycle through the resolve damage table and add the appropriate amount of Resolve from each event
+    double new_amount = 0;
+
+    // Iterate through the Resolve event list, retrieving each event's details
+    const resolve_event_list_t::list_t& list= resolve_manager.damage_list.event_list;
+    if ( ! list.empty() )
+    {
+      resolve_event_list_t::list_t::const_reverse_iterator i, end;
+      for ( i = list.rbegin(), end = list.rend(); i != end; ++i )
+      {
+        const resolve_event_list_t::event_entry_t& entry = *i;
+
+        // Only loop from the end until we are over the 10s mark, then break the loop
+        if ( ( sim -> current_time - entry.event_time ) > max_interval )
+          break;
+
+        // temp variable for current event's contribution
+        // note that this already includes the 2.5x multiplier for spell damage and the normalization
+        // by player max health (all of that done in action_t::update_resolve() )
+        double contribution = entry.event_amount;
+
+        // apply time-based decay
+        double delta_t = ( sim -> current_time - entry.event_time ).total_seconds();
+        contribution *= 2.0 * ( 10.0 - delta_t ) / 10.0;
+
+        // apply diminishing returns
+        int rank = resolve_manager.diminishing_return_list.get_actor_rank( entry.event_player );
+        contribution /= rank;
+
+        // add to existing amount
+        new_amount += contribution;
+      }
+    }
+
+
+    // multiply by damage modifier
+    new_amount *= resolve_dmg_mod;
+
+    // add stamina-based contribution
+    new_amount += get_attribute( ATTR_STAMINA ) * resolve_sta_mod;
+
+    // multiply by 100 for display purposes
+    new_amount *= 100;
+
+    // updatee the buff
+    buffs.resolve -> trigger( 1, new_amount, 1, timespan_t::zero() );
+
+    // also add this to the Resolve timeline for accuracy
+    resolve_timeline.add( sim -> current_time, buffs.resolve -> value() );
 }

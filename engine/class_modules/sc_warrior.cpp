@@ -4059,7 +4059,7 @@ void warrior_t::combat_begin()
     buff.battle_stance -> trigger();
 
   if ( specialization() == WARRIOR_PROTECTION )
-    resolve_start();
+    resolve_manager.start();
 
   if ( spec.bladed_armor )
     buff.bladed_armor -> trigger();

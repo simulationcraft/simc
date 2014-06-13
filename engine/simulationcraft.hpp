@@ -3737,39 +3737,6 @@ public:
 #endif
 };
 
-// Player Vengeance
-
-struct player_resolve_timeline_t
-{
-private:
-  sc_timeline_t& timeline_; // reference to collected_data.resolve_timeline
-  core_event_t* event; // pointer to collection event so we can cancel it at the end of combat.
-
-public:
-  player_resolve_timeline_t( sc_timeline_t& resolve_tl ) :
-    timeline_( resolve_tl ), event( nullptr ) {}
-
-  void start( player_t& p );
-  void add( timespan_t time, double amount );
-  void stop();
-
-  bool is_initialized() const
-  { return ! timeline_.data().empty(); }
-  bool is_started() const
-  { return event != 0; }
-
-  void adjust( const std::vector<int>& divisor_timeline )
-  {
-    if ( timeline_.data().size() > 0 )
-      timeline_.adjust( divisor_timeline );
-  }
-
-  void merge( const player_resolve_timeline_t& other )
-  { timeline_.merge( other.timeline_ ); }
-
-  const sc_timeline_t& timeline() const { return timeline_; }
-};
-
 struct player_processed_report_information_t
 {
   bool charts_generated, buff_lists_generated;
@@ -4014,21 +3981,6 @@ struct resolve_event_list_t
   void reset()
   { event_list.clear(); }
 
-  // get number of relevant events
-  size_t get_num_events( timespan_t current_time )
-  {
-    purge_event_list( current_time );
-
-    return event_list.size();
-  }
-
-  const player_t* get_event_source( size_t i )  { return event_list[ i ].event_player; }
-
-  double get_event_amount( size_t i )  { return event_list[ i ].event_amount; }
-
-  timespan_t get_event_time( size_t i )  { return event_list[ i ].event_time; }
-  
-
   // this is the method that we use to interact with the structure
   void add( const player_t* actor, double amount, timespan_t current_time )
   {
@@ -4045,7 +3997,6 @@ struct resolve_event_list_t
     event_list.push_back( e );
   }
 
-private:
   // structure that contains the relevant information for each actor entry in the list
   struct event_entry_t {
     const player_t* event_player;
@@ -4053,35 +4004,18 @@ private:
     timespan_t event_time;
     
   };
-  std::vector<event_entry_t> event_list; // vector of actor entries
+  typedef std::vector<event_entry_t> list_t;
+  list_t event_list; // vector of actor entries
   const player_t* myself; // not sure this is strictly necessary, intended to nullify self-veng, but an is_enemy(actor) call might be better
-    
-  // comparator functor for purging inactive players
-  struct too_old {
-    too_old( const timespan_t& current_time ) :
-      current_time( current_time )
-    {}
-    bool operator()( const event_entry_t& e ) const
-    { return current_time - e.event_time > timespan_t::from_seconds( 10.0 ); }
-    const timespan_t& current_time;
-  };
-
-  // method to purge the event list of events older than 10 seconds ago
-  void purge_event_list( timespan_t current_time )
-  {
-    // Erase-remove idiom
-    event_list.erase( std::remove_if( event_list.begin(), event_list.end(), too_old( current_time ) ), event_list.end() );
-  }
-
 };
 
 // Resolve Actor List =====================================================
 // this is the sorted list of actors used to determine Resolve diminishing returns.
 // sorted according to auto-attack DPS
 
-struct resolve_actor_list_t
+struct resolve_diminishing_returns_list_t
 {
-  resolve_actor_list_t( const player_t* p ) : myself( p )
+  resolve_diminishing_returns_list_t( const player_t* p ) : myself( p )
   { }
 
   // called after each iteration in player_t::resolve_stop()
@@ -4181,6 +4115,24 @@ private:
   }
 };
 
+/* Encapsulations of Resolve interface so we can keep most things out of player_t (bloated enough)
+ */
+struct resolve_manager_t
+{
+  resolve_manager_t( player_t* );
+  void start();
+  void stop();
+  bool is_started() const
+  { return _started; }
+  resolve_diminishing_returns_list_t diminishing_return_list;
+  resolve_event_list_t damage_list;
+private:
+  struct resolve_update_event_t;
+  player_t* player;
+  core_event_t* update_event;
+  bool _started;
+};
+
 /* Player Report Extension
  * Allows class modules to write extension to the report sections
  * based on the dynamic class of the player
@@ -4234,8 +4186,7 @@ struct player_t : public actor_t
   std::vector<pet_t*> pet_list;
   std::vector<pet_t*> active_pets;
   std::vector<absorb_buff_t*> absorb_buff_list;
-  resolve_actor_list_t resolve_source_list;
-  resolve_event_list_t resolve_damage_list;
+  resolve_manager_t resolve_manager;
   virtual void   update_resolve();
 
   int         invert_scaling;
@@ -4417,23 +4368,8 @@ struct player_t : public actor_t
   // All Data collected during / end of combat
   player_collected_data_t collected_data;
 
-private:
-  player_resolve_timeline_t resolve;
-public:
-  void resolve_start() 
-  { 
-    resolve.start( *this ); 
-    resolve_source_list.reset();
-    resolve_damage_list.reset();
-  }
-  void resolve_stop() 
-  { 
-    resolve.stop(); 
-    resolve_source_list.reset();
-    resolve_damage_list.reset();
-  }
-  bool resolve_is_started() const { return resolve.is_started(); }
-  const sc_timeline_t& resolve_timeline() const { return resolve.timeline(); }
+
+  sc_timeline_t resolve_timeline;
 
   // Damage
   double iteration_dmg, iteration_dmg_taken; // temporary accumulators

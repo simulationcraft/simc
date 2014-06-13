@@ -1417,7 +1417,7 @@ public:
     druid.player_t::recalculate_resource_max( RESOURCE_HEALTH );
 
     if ( druid.specialization() == DRUID_GUARDIAN )
-      druid.resolve_stop();
+      druid.resolve_manager.stop();
 
     druid.current.attack_power_per_agility -= 1.0;
   }
@@ -1428,7 +1428,7 @@ public:
     druid.buff.cat_form -> expire();
 
     if ( druid.specialization() == DRUID_GUARDIAN )
-      druid.resolve_start();
+      druid.resolve_manager.start();
 
     swap_melee( druid.bear_melee_attack, druid.bear_weapon );
 
