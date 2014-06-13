@@ -3905,7 +3905,7 @@ void player_t::update_resolve()
     buffs.resolve -> trigger( 1, new_amount, 1, timespan_t::zero() );
 
     // also add this to the Resolve timeline for accuracy
-    //resolve.add( sim -> current_time, buffs.resolve -> value() );
+    resolve.add( sim -> current_time, buffs.resolve -> value() );
 }
 
 // player_t::collect_resource_timeline_information ==========================
