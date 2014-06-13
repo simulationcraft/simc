@@ -4124,13 +4124,18 @@ struct resolve_manager_t
   void stop();
   bool is_started() const
   { return _started; }
-  resolve_diminishing_returns_list_t diminishing_return_list;
-  resolve_event_list_t damage_list;
+  void add_diminishing_return_entry( const player_t* actor, double raw_dps, timespan_t current_time )
+  { diminishing_return_list.add( actor, raw_dps, current_time ); }
+  void add_damage_event( const player_t* actor, double amount, timespan_t current_time )
+  { damage_list.add( actor, amount, current_time ); }
 private:
+  friend player_t;
   struct resolve_update_event_t;
   player_t* player;
   core_event_t* update_event;
   bool _started;
+  resolve_diminishing_returns_list_t diminishing_return_list;
+  resolve_event_list_t damage_list;
 };
 
 /* Player Report Extension

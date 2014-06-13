@@ -1323,10 +1323,10 @@ void action_t::update_resolve( dmg_e type,
       raw_resolve_amount /= target -> resources.max[ RESOURCE_HEALTH ];
 
       // update the player's resolve_actor_list
-      target -> resolve_manager.diminishing_return_list.add( source, source -> get_raw_dps( s ), sim -> current_time );
+      target -> resolve_manager.add_diminishing_return_entry( source, source -> get_raw_dps( s ), sim -> current_time );
 
       // update the player's resolve damage table if the attack did nonzero damage
-      target -> resolve_manager.damage_list.add( source, raw_resolve_amount, sim -> current_time );
+      target -> resolve_manager.add_damage_event( source, raw_resolve_amount, sim -> current_time );
     
       // cycle through the resolve damage table and add the appropriate amount of Resolve from each event
       target -> update_resolve();

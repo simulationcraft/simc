@@ -9761,11 +9761,11 @@ struct resolve_manager_t::resolve_update_event_t final : public event_t
 };
 
 resolve_manager_t::resolve_manager_t( player_t* p ) :
-    diminishing_return_list( p ),
-    damage_list( p ),
     player( p ),
     update_event( nullptr ),
-    _started( false )
+    _started( false ),
+    diminishing_return_list( p ),
+    damage_list( p )
 {
 
 }
