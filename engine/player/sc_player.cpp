@@ -2653,14 +2653,9 @@ double player_t::composite_player_td_multiplier( school_e /* school */,  const a
 
 // player_t::composite_player_heal_multiplier ===============================
 
-double player_t::composite_player_heal_multiplier( const action_state_t* s ) const
+double player_t::composite_player_heal_multiplier( const action_state_t* ) const
 {
-  double m = 1.0;
-
-  if ( s -> target == this )
-    m += buffs.resolve -> current_value / 100.0;
-  
-  return m;
+  return 1.0;
 }
 
 // player_t::composite_player_th_multiplier =================================
@@ -2672,15 +2667,9 @@ double player_t::composite_player_th_multiplier( school_e /* school */ ) const
 
 // player_t::composite_player_absorb_multiplier =============================
 
-double player_t::composite_player_absorb_multiplier( const action_state_t* s ) const
+double player_t::composite_player_absorb_multiplier( const action_state_t* ) const
 {
-  double m = 1.0;
-
-  // apply resolve multiplier
-  if ( s -> target == this )
-    m += buffs.resolve -> current_value / 100.0;
-  
-  return m;
+  return 1.0;
 }
 
 double player_t::composite_player_critical_damage_multiplier() const
@@ -8894,7 +8883,6 @@ void player_stat_cache_t::invalidate_all()
   range::fill( spell_power_valid, false );
   range::fill( player_mult_valid, false );
   range::fill( player_heal_mult_valid, false );
-  range::fill( player_heal_mult_last_target, 0 );
 }
 
 /* Invalidate ALL stats
@@ -8911,7 +8899,6 @@ void player_stat_cache_t::invalidate( cache_e c )
       break;
     case CACHE_PLAYER_HEAL_MULTIPLIER:
       range::fill( player_heal_mult_valid, false );
-      range::fill( player_heal_mult_last_target, 0 );
       break;
     default:
       valid[ c ] = false;
@@ -9339,10 +9326,9 @@ double player_stat_cache_t::player_heal_multiplier( const action_state_t* s ) co
 {
   school_e sch = s -> action -> get_school();
 
-  if ( ! active || ! player_heal_mult_valid[ sch ] || ! ( player_heal_mult_last_target[ sch ] == s -> target -> index ) )
+  if ( ! active || ! player_heal_mult_valid[ sch ] )
   {
     player_heal_mult_valid[ sch ] = true;
-    player_heal_mult_last_target[ sch ] = s -> target -> index;
     _player_heal_mult[ sch ] = player -> composite_player_heal_multiplier( s );
   }
   else assert( _player_heal_mult[ sch ] == player -> composite_player_heal_multiplier( s ) );

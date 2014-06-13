@@ -3649,7 +3649,6 @@ struct player_stat_cache_t
   const player_t* player;
   mutable std::array<bool, CACHE_MAX> valid;
   mutable std::array < bool, SCHOOL_MAX + 1 > spell_power_valid, player_mult_valid, player_heal_mult_valid;
-  mutable std::array < int, SCHOOL_MAX + 1 > player_heal_mult_last_target;
   // 'valid'-states
 private:
   // cached values
@@ -5844,15 +5843,28 @@ public:
 
   virtual double composite_da_multiplier( const action_state_t* s ) const
   {
-    return action_multiplier() * action_da_multiplier() *
+    double m = action_multiplier() * action_da_multiplier() *
            player -> cache.player_heal_multiplier( s ) *
            player -> composite_player_dh_multiplier( get_school() );
+
+    // apply resolve multiplier
+    if ( player -> resolve_manager.is_started() && s -> target == player )
+      m *= 1.0 + player -> buffs.resolve -> current_value / 100.0;
+
+    return m;
   }
+
   virtual double composite_ta_multiplier( const action_state_t* s ) const
   {
-    return action_multiplier() * action_ta_multiplier() *
+    double m = action_multiplier() * action_ta_multiplier() *
            player -> cache.player_heal_multiplier( s ) *
            player -> composite_player_th_multiplier( get_school() );
+
+    // apply resolve multiplier
+    if ( player -> resolve_manager.is_started() && s -> target == player )
+      m *= 1.0 + player -> buffs.resolve -> current_value / 100.0;
+
+    return m;
   }
 
   virtual double composite_player_critical_multiplier() const
@@ -5879,13 +5891,25 @@ struct absorb_t : public spell_base_t
 
   virtual double composite_da_multiplier( const action_state_t* s ) const
   {
-    return action_multiplier() * action_da_multiplier() *
+    double m = action_multiplier() * action_da_multiplier() *
            player -> composite_player_absorb_multiplier( s );
+
+    // apply resolve multiplier
+    if ( player -> resolve_manager.is_started() && s -> target == player )
+      m *= 1.0 + player -> buffs.resolve -> current_value / 100.0;
+
+    return m;
   }
   virtual double composite_ta_multiplier( const action_state_t* s ) const
   {
-    return action_multiplier() * action_ta_multiplier() *
+    double m = action_multiplier() * action_ta_multiplier() *
            player -> composite_player_absorb_multiplier( s );
+
+    // apply resolve multiplier
+    if ( player -> resolve_manager.is_started() && s -> target == player )
+      m *= 1.0 + player -> buffs.resolve -> current_value / 100.0;
+
+    return m;
   }
   virtual double composite_versatility( const action_state_t* state ) const
   { return spell_base_t::composite_versatility( state ) + player -> cache.heal_versatility(); }
