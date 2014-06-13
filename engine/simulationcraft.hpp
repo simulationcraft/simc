@@ -4014,10 +4014,11 @@ struct resolve_diminishing_returns_list_t
   { actor_list.clear(); }
 
   // this returns a list of pairs with actor_spawn_index/diminishing_return_factor currently in the diminshing return list.
-  std::unordered_map<int,int> get_actor_ranks( timespan_t current_time );
+  int get_diminishing_return_factor( int actor_spawn_index );
 
   // this is the method that we use to interact with the structure
   void add( const player_t* actor, double raw_dps, timespan_t current_time );
+  void update_list( timespan_t current_time );
 private:
   // structure that contains the relevant information for each actor entry in the list
   struct actor_entry_t {

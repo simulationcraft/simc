@@ -9825,7 +9825,7 @@ void player_t::update_resolve()
     const resolve_event_list_t::list_t& list= resolve_manager.damage_list.event_list;
     if ( ! list.empty() )
     {
-      std::unordered_map<int,int> diminishing_return_list = resolve_manager.diminishing_return_list.get_actor_ranks( sim -> current_time );
+      resolve_manager.diminishing_return_list.update_list( sim -> current_time );
 
       resolve_event_list_t::list_t::const_reverse_iterator i, end;
       for ( i = list.rbegin(), end = list.rend(); i != end; ++i )
@@ -9846,8 +9846,7 @@ void player_t::update_resolve()
         contribution *= 2.0 * ( 10.0 - delta_t ) / 10.0;
 
         // apply diminishing returns
-        assert( diminishing_return_list.find( entry.actor_spawn_index ) != diminishing_return_list.end() && "could not find a diminishing return entry for resolve actor entry!" );
-        int rank = diminishing_return_list[ entry.actor_spawn_index ];
+        int rank = resolve_manager.diminishing_return_list.get_diminishing_return_factor( entry.actor_spawn_index );
         contribution /= rank;
 
         // add to existing amount
@@ -9895,7 +9894,7 @@ void resolve_diminishing_returns_list_t::add( const player_t* actor, double raw_
   }
 }
 
-std::unordered_map<int,int> resolve_diminishing_returns_list_t::get_actor_ranks( timespan_t current_time )
+void resolve_diminishing_returns_list_t::update_list( timespan_t current_time )
 {
   // purge any actors that haven't hit you in 10 seconds or more
   purge_actor_list( current_time );
@@ -9903,15 +9902,15 @@ std::unordered_map<int,int> resolve_diminishing_returns_list_t::get_actor_ranks(
   // sort the list
   sort_list();
 
-  std::unordered_map<int,int> out;
+}
 
-  // Now build the diminishing retrn list of std::pair<actor_spawn_index,diminishing_return_factor>
-  for ( size_t i = 0; i < actor_list.size(); ++i )
-  {
-    out[ actor_list[ i ].actor_spawn_index ] = i + 1;
-  }
+// pre-condition: actor_list sorted by raw dps
+int resolve_diminishing_returns_list_t::get_diminishing_return_factor( int actor_spawn_index )
+{
 
-  return out;
+  std::vector<actor_entry_t>::iterator found = find_actor( actor_spawn_index );
+  assert( found != actor_list.end() && "Resolve attacker not found in resolve list!" );
+  return as<int>(std::distance( actor_list.begin(), found ) + 1);
 }
 
 void resolve_event_list_t::add( const player_t* actor, double amount, timespan_t current_time )
