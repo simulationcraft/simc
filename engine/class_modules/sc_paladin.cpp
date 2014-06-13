@@ -3487,12 +3487,14 @@ struct crusader_strike_t : public paladin_melee_attack_t
         p() -> resource_gain( RESOURCE_HOLY_POWER, p() -> buffs.holy_avenger -> value() - g, p() -> gains.hp_holy_avenger );
       }
 
+      // Trigger Hand of Light procs
+      trigger_hand_of_light( s );
+
       // Check for T15 Ret 4-piece bonus proc
       if ( p() -> sets.has_set_bonus( SET_T15_4PC_MELEE ) )
         p() -> buffs.tier15_4pc_melee -> trigger();
+
     }
-    if ( result_is_hit( s -> result ) || result_is_multistrike( s -> result ) ) // Hand of light triggers from normal hits or multistrike hits.
-      trigger_hand_of_light( s );
   }
 };
 
@@ -3571,7 +3573,7 @@ struct divine_storm_t : public paladin_melee_attack_t
   {
     paladin_melee_attack_t::impact( s );
 
-    if ( result_is_hit( s -> result ) || result_is_multistrike( s -> result ) )
+    if ( result_is_hit( s -> result ) )
     {
       trigger_hand_of_light( s );
       if ( p() -> glyphs.divine_storm -> ok() )
@@ -3730,12 +3732,13 @@ struct hammer_of_the_righteous_t : public paladin_melee_attack_t
         p() -> resource_gain( RESOURCE_HOLY_POWER, p() -> buffs.holy_avenger -> value() - g, p() -> gains.hp_holy_avenger );
       }
 
+      // Trigger Hand of Light procs
+      trigger_hand_of_light( s );
+
       // trigger the AoE if there are any other targets to hit
       if ( available_targets( target_list() ) > 1 )
         hotr_aoe -> schedule_execute();
     }
-    if ( result_is_hit( s -> result ) || result_is_multistrike( s -> result ) ) // Hand of light triggers from normal hits or multistrike hits.
-      trigger_hand_of_light( s );
   }
 };
 
@@ -3793,9 +3796,10 @@ struct hammer_of_wrath_t : public paladin_melee_attack_t
           p() -> resource_gain( RESOURCE_HOLY_POWER, p() -> buffs.holy_avenger -> value() - g, p() -> gains.hp_holy_avenger );
         }
       }
-    }
-    if ( result_is_hit( s -> result ) || result_is_multistrike( s -> result ) ) // Hand of light triggers from normal hits or multistrike hits.
+
+      // Trigger Hand of Light procs
       trigger_hand_of_light( s );
+    }
   }
 
   virtual double action_multiplier() const
@@ -4329,7 +4333,7 @@ struct templars_verdict_t : public paladin_melee_attack_t
   {
     paladin_melee_attack_t::impact( s );
 
-    if ( result_is_hit( s -> result ) || result_is_multistrike( s -> result ) )
+    if ( result_is_hit( s -> result ) )
     {
       trigger_hand_of_light( s );
 
