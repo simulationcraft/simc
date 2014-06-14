@@ -3535,7 +3535,6 @@ struct unleash_elements_t : public shaman_spell_t
   {
     shaman_spell_t::execute();
 
-    std::cout << player -> main_hand_weapon.buff_type << " " << player -> off_hand_weapon.buff_type << std::endl;
     if ( player -> main_hand_weapon.buff_type == WINDFURY_IMBUE ||
          player -> off_hand_weapon.buff_type == WINDFURY_IMBUE )
       wind -> execute();
