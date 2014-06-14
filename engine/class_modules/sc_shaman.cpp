@@ -683,7 +683,13 @@ public:
       used_eoe -> occur();
     }
     else if ( hasted_cd )
-      cd *= ab::player -> cache.attack_speed();
+    {
+      if ( cd == timespan_t::min() && ab::cooldown && ab::cooldown -> duration > timespan_t::zero() )
+      {
+        cd = ab::cooldown -> duration;
+        cd *= ab::player -> cache.attack_haste();
+      }
+    }
 
     ab::update_ready( cd );
   }
@@ -797,7 +803,7 @@ public:
 
     if ( p() -> enhancement_revolution )
     {
-      g *= player -> cache.attack_speed();
+      g *= player -> cache.attack_haste();
       if ( g < min_gcd )
         g = min_gcd;
     }
@@ -2497,7 +2503,7 @@ void shaman_attack_t::impact( action_state_t* state )
   if ( may_proc_flametongue && weapon && weapon -> buff_type == FLAMETONGUE_IMBUE )
     p() -> flametongue -> schedule_execute();
 
-  if ( p() -> enhancement_revolution && state -> result == RESULT_CRIT )
+  if ( ! p() -> enhancement_revolution && state -> result == RESULT_CRIT )
     p() -> buff.flurry -> trigger( p() -> buff.flurry -> data().initial_stacks() );
 
   if ( p() -> buff.tier16_2pc_melee -> up() )
@@ -2787,7 +2793,7 @@ struct windstrike_t : public shaman_attack_t
     parse_options( NULL, options_str );
 
     may_proc_eoe         = true;
-    hasted_cd           = player -> enhancement_revolution;
+    hasted_cd            = player -> enhancement_revolution;
     school               = SCHOOL_PHYSICAL;
     weapon               = &( p() -> main_hand_weapon );
     weapon_multiplier    = 0.0;
@@ -3529,6 +3535,7 @@ struct unleash_elements_t : public shaman_spell_t
   {
     shaman_spell_t::execute();
 
+    std::cout << player -> main_hand_weapon.buff_type << " " << player -> off_hand_weapon.buff_type << std::endl;
     if ( player -> main_hand_weapon.buff_type == WINDFURY_IMBUE ||
          player -> off_hand_weapon.buff_type == WINDFURY_IMBUE )
       wind -> execute();
@@ -4990,10 +4997,8 @@ void shaman_t::init_spells()
 
   if ( specialization() == SHAMAN_ENHANCEMENT )
   {
-    main_hand_weapon.buff_type = WINDFURY_IMBUE;
     windfury = new windfury_weapon_melee_attack_t( "windfury_attack", this, &( main_hand_weapon ) );
 
-    off_hand_weapon.buff_type  = FLAMETONGUE_IMBUE;
     flametongue = new flametongue_weapon_spell_t( "flametongue_attack", this, &( off_hand_weapon ) );
   }
 
@@ -5794,6 +5799,12 @@ void shaman_t::arise()
 
   if ( specialization() == SHAMAN_ELEMENTAL && ! sim -> overrides.haste && dbc.spell( 51470 ) -> is_level( level ) )
     sim -> auras.haste  -> trigger();
+
+  if ( main_hand_weapon.type != WEAPON_NONE )
+    main_hand_weapon.buff_type = WINDFURY_IMBUE;
+
+  if ( off_hand_weapon.type != WEAPON_NONE )
+    off_hand_weapon.buff_type = FLAMETONGUE_IMBUE;
 }
 
 // shaman_t::reset ==========================================================
