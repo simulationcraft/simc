@@ -26,6 +26,9 @@ namespace { // UNNAMED NAMESPACE
 
     = Balance =
     Just verify stuff.
+    Add in:
+    Shooting Stars now adds 1 full charge of Starsurge and Starfall when it triggers, and now has a 5% chance 
+    to trigger when the most recent Moonfire or and Sunfire deals periodic damage. This chance is doubled on critical strikes.
 
     = Guardian =
     Perks
@@ -237,7 +240,6 @@ public:
     gain_t* energy_refund;
     gain_t* frenzied_regeneration;
     gain_t* lotp_health;
-    gain_t* lotp_mana;
     gain_t* omen_of_clarity;
     gain_t* primal_fury;
     gain_t* soul_of_the_forest;
@@ -317,9 +319,6 @@ public:
     const spell_data_t* blooming;
     const spell_data_t* healing_touch;
     const spell_data_t* moonwarding;
-    const spell_data_t* natures_grasp;
-    const spell_data_t* omens;
-    const spell_data_t* sudden_eclipse;
     const spell_data_t* lifebloom;
     const spell_data_t* master_shapeshifter;
     const spell_data_t* might_of_ursoc;
@@ -399,7 +398,6 @@ public:
     const spell_data_t* savage_defense;
     const spell_data_t* readiness_guardian;
     const spell_data_t* resolve;
-    const spell_data_t* thick_hide;
     const spell_data_t* tooth_and_claw;
     const spell_data_t* ursa_major;
 
@@ -407,7 +405,6 @@ public:
     const spell_data_t* lifebloom;
     const spell_data_t* living_seed;
     const spell_data_t* genesis;
-    const spell_data_t* innervate;
     const spell_data_t* ironbark;
     const spell_data_t* malfurions_gift;
     const spell_data_t* meditation;
@@ -570,6 +567,7 @@ public:
   virtual double    composite_parry() const { return 0; }
   virtual double    composite_block() const { return 0; }
   virtual double    composite_crit_avoidance() const;
+  virtual double    composite_melee_expertise( weapon_t* ) const;
   virtual double    composite_dodge() const;
   virtual double    composite_rating_multiplier( rating_e rating ) const;
   virtual expr_t*   create_expression( action_t*, const std::string& name );
@@ -829,8 +827,7 @@ struct leader_of_the_pack_t : public heal_t
     heal_t( "leader_of_the_pack", p, p -> find_spell( 17007 ) )
   {
     may_crit = false;
-    background = true;
-    proc = true;
+    background = proc = true;
 
     cooldown -> duration = timespan_t::from_seconds( 6.0 );
   }
@@ -848,17 +845,6 @@ struct leader_of_the_pack_t : public heal_t
   {
     return p() -> resources.max[ RESOURCE_HEALTH ] *
            p() -> spell.leader_of_the_pack -> effectN( 2 ).percent();
-  }
-
-  virtual void execute()
-  {
-    heal_t::execute();
-
-    // Trigger mana gain
-    p() -> resource_gain( RESOURCE_MANA,
-                        p() -> resources.max[ RESOURCE_MANA ] *
-                        data().effectN( 1 ).percent(),
-                        p() -> gain.lotp_mana );
   }
 };
 
@@ -2198,7 +2184,7 @@ struct ferocious_bite_t : public cat_attack_t
     double tc = cat_attack_t::composite_target_crit( t );
 
     if ( t -> debuffs.bleeding -> check() )
-      tc += data().effectN( 2 ).percent();
+      tc *= 2; // Check spell data.
 
     if ( p() -> buff.tier15_4pc_melee -> check() )
       tc += p() -> buff.tier15_4pc_melee -> data().effectN( 1 ).percent();
@@ -2794,20 +2780,6 @@ struct mangle_t : public bear_attack_t
       cooldown -> reset( false );
   }
 
-  virtual void impact( action_state_t* state )
-  {
-    bear_attack_t::impact( state );
-
-    if ( result_is_hit( state -> result ) )
-    {
-      double rage = data().effectN( 3 ).resource( RESOURCE_RAGE );
-
-      rage += p() -> talent.soul_of_the_forest -> effectN( 1 ).resource( RESOURCE_RAGE );
-
-      p() -> resource_gain( RESOURCE_RAGE, rage, p() -> gain.mangle );
-    }
-  }
-
   virtual double action_da_multiplier() const
   {
     double adm = bear_attack_t::action_da_multiplier();
@@ -2823,13 +2795,6 @@ struct mangle_t : public bear_attack_t
       return false;
 
     return bear_attack_t::ready();
-  }
-
-  virtual void update_ready( timespan_t cd_duration )
-  {
-    cd_duration = cooldown -> duration * player -> cache.attack_haste();
-
-    bear_attack_t::update_ready( cd_duration );
   }
 };
 
@@ -3929,9 +3894,6 @@ struct barkskin_t : public druid_spell_t
   {
     harmful = false;
     use_off_gcd = true;
-
-    //if ( player -> spec.thick_hide ) -- DBC returns 30 second cooldown on ability already. This will reduce it to 0.
-      //cooldown -> duration += player -> spec.thick_hide -> effectN( 6 ).time_value();
   }
 
   virtual void execute()
@@ -4081,14 +4043,6 @@ struct faerie_fire_t : public druid_spell_t
   {
     parse_options( NULL, options_str );
     cooldown -> duration = timespan_t::from_seconds( 6.0 );
-  }
-
-  virtual void execute()
-  {
-    druid_spell_t::execute();
-
-    if ( result_is_hit( execute_state -> result ) && ! sim -> overrides.physical_vulnerability )
-      target -> debuffs.physical_vulnerability -> trigger();
   }
 
   virtual void update_ready( timespan_t )
@@ -4350,7 +4304,6 @@ struct mark_of_the_wild_t : public druid_spell_t
       base_tick_time                = dmg_spell -> effectN( 2 ).period();
 
       spell_power_mod.direct        = dmg_spell-> effectN( 1 ).sp_coeff();
-      spell_power_mod.direct       *= 1.0 + player -> spec.astral_showers -> effectN( 3 ).percent();
       spell_power_mod.direct       *= 1.0 + player -> perk.improved_moonfire -> effectN( 1 ).percent();
 
       spell_power_mod.tick          = dmg_spell-> effectN( 2 ).sp_coeff();
@@ -4472,7 +4425,6 @@ struct mark_of_the_wild_t : public druid_spell_t
       spell_power_mod.tick         *= 1.0 + player -> perk.improved_moonfire -> effectN( 1 ).percent();
 
       spell_power_mod.direct        = dmg_spell-> effectN( 1 ).sp_coeff();
-      spell_power_mod.direct       *= 1.0 + player -> spec.astral_showers -> effectN( 1 ).percent();
       spell_power_mod.direct       *= 1.0 + player -> perk.improved_moonfire -> effectN( 1 ).percent();
 
       if ( player -> specialization() == DRUID_BALANCE )
@@ -5204,7 +5156,6 @@ void druid_t::init_spells()
   spec.bladed_armor           = find_specialization_spell( "Bladed Armor" );
   spec.resolve                = find_specialization_spell( "Resolve" );
   spec.savage_defense         = find_specialization_spell( "Savage Defense" );
-  spec.thick_hide             = find_specialization_spell( "Thick Hide" );
   spec.tooth_and_claw         = find_specialization_spell( "Tooth and Claw" );
   spec.ursa_major             = find_specialization_spell( "Ursa Major" );
 
@@ -5212,7 +5163,6 @@ void druid_t::init_spells()
   spec.lifebloom              = find_specialization_spell( "Lifebloom" );
   spec.living_seed            = find_specialization_spell( "Living Seed" );
   spec.genesis                = find_specialization_spell( "Genesis" );
-  spec.innervate              = find_specialization_spell( "Innervate" );
   spec.ironbark               = find_specialization_spell( "Ironbark" );
   spec.malfurions_gift        = find_specialization_spell( "Malfurion's Gift" );
   spec.meditation             = find_specialization_spell( "Meditation" );
@@ -5363,8 +5313,6 @@ void druid_t::init_spells()
   glyph.might_of_ursoc        = find_glyph_spell( "Glyph of Might of Ursoc" );
   glyph.moonwarding           = find_glyph_spell( "Glyph of Moonwarding" );
   glyph.ninth_life            = find_glyph_spell( "Glyph of the Ninth Life" );
-  glyph.omens                 = find_glyph_spell( "Glyph of Omens" );
-  glyph.sudden_eclipse        = find_glyph_spell( "Glyph of Sudden Eclipse" );
   glyph.regrowth              = find_glyph_spell( "Glyph of Regrowth" );
   glyph.rejuvenation          = find_glyph_spell( "Glyph of Rejuvenation" );
   glyph.savage_roar           = find_glyph_spell( "Glyph of Savage Roar" );
@@ -5423,9 +5371,6 @@ void druid_t::init_base_stats()
   resources.base[ RESOURCE_RAGE   ] = 100;
 
   base_energy_regen_per_second = 10;
-
-  if ( specialization() == DRUID_GUARDIAN )
-    base.expertise += spec.thick_hide -> effectN( 7 ).percent();
 
   // Natural Insight: +400% mana
   resources.base_multiplier[ RESOURCE_MANA ] = 1.0 + spec.natural_insight -> effectN( 1 ).percent();
@@ -5685,7 +5630,6 @@ void druid_t::apl_feral()
   def -> add_action( "auto_attack" );
   def -> add_action( this, "Ferocious Bite", "cycle_targets=1,if=dot.rip.ticking&dot.rip.remains<=3&target.health.pct<=25",
                      "Keep Rip from falling off during execute range." );
-  def -> add_action( this, "Faerie Fire", "cycle_targets=1,if=debuff.physical_vulnerability.down" );
   def -> add_action( this, "Savage Roar", "if=buff.savage_roar.remains<3" );
   std::string potion_name = level > 85 ? "virmens_bite_potion" : "tolvir_potion";
   def -> add_action( potion_name + ",if=target.time_to_die<=40" );
@@ -5715,7 +5659,6 @@ void druid_t::apl_feral()
   def -> add_action( this, "Healing Touch", "if=buff.natures_vigil.up&buff.predatory_swiftness.up" );
   if ( perk.enhanced_rejuvenation -> ok() )
     def -> add_action( this, "Rejuvenation", "if=buff.natures_vigil.up&!ticking" );
-  def -> add_action( this, "Faerie Fire", "cycle_targets=1,if=debuff.physical_vulnerability.remains>0" );
 
   filler -> add_action( "pool_resource,for_next=1",
                         "Pool energy for Swipe." );
@@ -5899,7 +5842,6 @@ void druid_t::init_gains()
   gain.glyph_ferocious_bite  = get_gain( "glyph_ferocious_bite"  );
   gain.lacerate              = get_gain( "lacerate"              );
   gain.lotp_health           = get_gain( "lotp_health"           );
-  gain.lotp_mana             = get_gain( "lotp_mana"             );
   gain.mangle                = get_gain( "mangle"                );
   gain.omen_of_clarity       = get_gain( "omen_of_clarity"       );
   gain.primal_fury           = get_gain( "primal_fury"           );
@@ -6111,15 +6053,7 @@ double druid_t::composite_armor_multiplier() const
   double a = player_t::composite_armor_multiplier();
 
   if ( buff.bear_form -> check() )
-  {
-    // Bear Form
-    double bearMod = buff.bear_form -> data().effectN( 3 ).percent();
-    if ( spec.thick_hide -> ok() )
-      bearMod = spec.thick_hide -> effectN( 2 ).percent(); // Thick Hide changes the bear form multiplier TO x%.
-    else if ( specialization() != DRUID_GUARDIAN )
-      bearMod += glyph.ursols_defense -> effectN( 1 ).percent(); // Non-guardian glyph that adds to bear form multiplier.
-    a *= 1.0 + bearMod;
-  }
+    a *= 1.0 +  buff.bear_form -> data().effectN( 3 ).percent();
 
   if ( buff.moonkin_form -> check() )
     a *= 1.0 + buff.moonkin_form -> data().effectN( 3 ).percent() + perk.enhanced_moonkin_form -> effectN( 1 ).percent();
@@ -6173,6 +6107,17 @@ double druid_t::composite_player_td_multiplier( school_e school,  const action_t
   return m;
 }
 
+// druid_t::composite_melee_expertise( weapon_t* ) ==========================
+
+double druid_t::composite_melee_expertise( weapon_t* ) const
+{
+  double exp = player_t::composite_melee_expertise();
+
+  if ( specialization() == DRUID_GUARDIAN && buff.bear_form -> check() )
+    exp += 0.03;
+
+  return exp;
+}
 // druid_t::composite_player_heal_multiplier ================================
 
 double druid_t::composite_player_heal_multiplier( const action_state_t* s ) const
@@ -6337,8 +6282,8 @@ double druid_t::composite_crit_avoidance() const
 {
   double c = player_t::composite_crit_avoidance();
 
-  if ( buff.bear_form -> check() )
-    c += spec.thick_hide -> effectN( 1 ).percent();
+  if ( specialization() == DRUID_GUARDIAN && buff.bear_form -> check() )
+    c += 0.06; // Check
 
   return c;
 }
@@ -6728,7 +6673,7 @@ void druid_t::assess_damage( school_e school,
   if ( glyph.ninth_life -> ok() )
     s -> result_amount *= 1.0 + glyph.ninth_life -> effectN( 1 ).base_value();
 
-  if ( spec.thick_hide -> ok() )
+  if ( specialization() == DRUID_GUARDIAN && buff.bear_form -> check() )
   {
     if ( s -> result == RESULT_DODGE )
     {
@@ -6738,9 +6683,9 @@ void druid_t::assess_damage( school_e school,
       proc.primal_fury -> occur();
      }
     if ( school == SCHOOL_PHYSICAL )
-      s -> result_amount *= 1.0 + spec.thick_hide -> effectN( 5 ).percent();
+      s -> result_amount *= 1.0 - 0.12; // Check
     else if ( dbc::get_school_mask( school ) & SCHOOL_MAGIC_MASK )
-      s -> result_amount *= 1.0 + spec.thick_hide -> effectN( 3 ).percent();
+      s -> result_amount *= 1.0 - 0.25; // Check
   }
 
   if ( buff.cenarion_ward -> up() && s -> result_amount > 0 )
