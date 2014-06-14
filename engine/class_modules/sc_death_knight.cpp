@@ -1195,13 +1195,6 @@ struct dancing_rune_weapon_pet_t : public pet_t
     }
   };
 
-  struct drw_necrotic_strike_t : public drw_melee_attack_t
-  {
-    drw_necrotic_strike_t( dancing_rune_weapon_pet_t* p ) :
-      drw_melee_attack_t( "necrotic_strike", p, p -> owner -> find_class_spell( "Necrotic Strike" ) )
-    { weapon = &( p -> main_hand_weapon ); }
-  };
-
   struct drw_melee_t : public drw_melee_attack_t
   {
     drw_melee_t( dancing_rune_weapon_pet_t* p ) :
@@ -1225,7 +1218,6 @@ struct dancing_rune_weapon_pet_t : public pet_t
   spell_t*        drw_pestilence;
 
   melee_attack_t* drw_death_strike;
-  melee_attack_t* drw_necrotic_strike;
   melee_attack_t* drw_plague_strike;
   melee_attack_t* drw_soul_reaper;
   melee_attack_t* drw_melee;
@@ -1237,7 +1229,7 @@ struct dancing_rune_weapon_pet_t : public pet_t
     drw_death_siphon( nullptr ), drw_icy_touch( nullptr ),
     drw_outbreak( nullptr ), drw_pestilence( nullptr ),
     drw_death_strike( nullptr ), 
-    drw_necrotic_strike( nullptr ), drw_plague_strike( nullptr ),
+    drw_plague_strike( nullptr ),
     drw_soul_reaper( nullptr ), drw_melee( nullptr )
   {
     main_hand_weapon.type       = WEAPON_BEAST_2H;
@@ -1280,7 +1272,6 @@ struct dancing_rune_weapon_pet_t : public pet_t
     drw_pestilence    = new drw_pestilence_t   ( this );
 
     drw_death_strike  = new drw_death_strike_t ( this );
-    drw_necrotic_strike = new drw_necrotic_strike_t( this );
     drw_plague_strike = new drw_plague_strike_t( this );
     drw_soul_reaper   = new drw_soul_reaper_t  ( this );
     drw_melee         = new drw_melee_t        ( this );
@@ -2651,63 +2642,6 @@ struct necrotic_plague_t : public death_knight_spell_t
   }
 };
 
-// Blood Strike =============================================================
-
-struct blood_strike_offhand_t : public death_knight_melee_attack_t
-{
-  blood_strike_offhand_t( death_knight_t* p ) :
-    death_knight_melee_attack_t( "blood_strike_offhand", p, p -> find_spell( 66215 ) )
-  {
-    special          = true;
-    background       = true;
-    weapon           = &( p -> off_hand_weapon );
-    rp_gain          = 0;
-    cost_blood       = 0;
-  }
-
-  virtual double composite_target_multiplier( player_t* t ) const
-  {
-    double ctm = death_knight_melee_attack_t::composite_target_multiplier( t );
-
-    ctm *= 1 + td( t ) -> diseases() * 0.1875; // Currently giving a 18.75% increase per disease instead of expected 12.5
-
-    return ctm;
-  }
-};
-
-struct blood_strike_t : public death_knight_melee_attack_t
-{
-  melee_attack_t* oh_attack;
-
-  blood_strike_t( death_knight_t* p, const std::string& options_str ) :
-    death_knight_melee_attack_t( "blood_strike", p, p -> find_spell( "Blood Strike" ) ), oh_attack( 0 )
-  {
-    parse_options( NULL, options_str );
-
-    special = true;
-
-    weapon = &( p -> main_hand_weapon );
-
-    if ( p -> spec.reaping -> ok() )
-      convert_runes = 1.0;
-
-    if ( p -> specialization() == DEATH_KNIGHT_FROST )
-      convert_runes = 1.0;
-
-    if ( p -> off_hand_weapon.type != WEAPON_NONE )
-      oh_attack = new blood_strike_offhand_t( p );
-  }
-
-  virtual double composite_target_multiplier( player_t* t ) const
-  {
-    double ctm = death_knight_melee_attack_t::composite_target_multiplier( t );
-
-    ctm *= 1 + td( t ) -> diseases() * data().effectN( 3 ).base_value() / 1000.0;
-
-    return ctm;
-  }
-};
-
 // Soul Reaper ==============================================================
 
 struct soul_reaper_dot_t : public death_knight_melee_attack_t
@@ -3629,29 +3563,6 @@ struct mind_freeze_t : public death_knight_spell_t
       return false;
 
     return death_knight_spell_t::ready();
-  }
-};
-
-// Necrotic Strike ==========================================================
-
-struct necrotic_strike_t : public death_knight_melee_attack_t
-{
-  necrotic_strike_t( death_knight_t* p, const std::string& options_str ) :
-    death_knight_melee_attack_t( "necrotic_strike", p, p -> find_class_spell( "Necrotic Strike" ) )
-  {
-    parse_options( NULL, options_str );
-
-    weapon = &( p -> main_hand_weapon );
-
-    special = true;
-  }
-
-  virtual void impact( action_state_t* s )
-  {
-    death_knight_melee_attack_t::impact( s );
-
-    if ( p() -> buffs.dancing_rune_weapon -> check() )
-      p() -> pets.dancing_rune_weapon -> drw_necrotic_strike -> execute();
   }
 };
 
@@ -4685,7 +4596,6 @@ action_t* death_knight_t::create_action( const std::string& name, const std::str
   if ( name == "icebound_fortitude"       ) return new icebound_fortitude_t       ( this, options_str );
 
   // Blood Actions
-  if ( name == "blood_strike"             ) return new blood_strike_t             ( this, options_str );
   if ( name == "blood_tap"                ) return new blood_tap_t                ( this, options_str );
   if ( name == "dancing_rune_weapon"      ) return new dancing_rune_weapon_t      ( this, options_str );
   if ( name == "pestilence"               ) return new pestilence_t               ( this, options_str );
@@ -4711,7 +4621,6 @@ action_t* death_knight_t::create_action( const std::string& name, const std::str
   if ( name == "death_strike"             ) return new death_strike_t             ( this, options_str );
   if ( name == "festering_strike"         ) return new festering_strike_t         ( this, options_str );
   if ( name == "outbreak"                 ) return new outbreak_t                 ( this, options_str );
-  if ( name == "necrotic_strike"          ) return new necrotic_strike_t          ( this, options_str );
   if ( name == "plague_strike"            ) return new plague_strike_t            ( this, options_str );
   if ( name == "raise_dead"               ) return new raise_dead_t               ( this, options_str );
   if ( name == "scourge_strike"           ) return new scourge_strike_t           ( this, options_str );
