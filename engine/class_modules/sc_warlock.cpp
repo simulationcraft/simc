@@ -4999,8 +4999,6 @@ void warlock_t::apl_precombat()
       precombat_list += "/volcanic_potion";
   }
 
-  add_action( "Curse of the Elements", "if=debuff.magic_vulnerability.down" );
-
   // Usable Item
   for ( int i = as<int>( items.size() ) - 1; i >= 0; i-- )
   {

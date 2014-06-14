@@ -5573,7 +5573,6 @@ bool death_knight_t::init_special_effect( special_effect_t& effect,
     // Last entry must be all zeroes
     {     0, 0,                             0 },
   };
-  
 
   bool ret = false;
   const special_effect_db_item_t& dbitem = find_special_effect_db_item( __runeforge_db,

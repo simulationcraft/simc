@@ -662,7 +662,7 @@ public:
       case PET_DEVILSAUR:    return "furious_howl/monstrous_bite";
       case PET_HYENA:        return "cackling_howl";
       case PET_MOTH:         return "";
-      case PET_RAPTOR:       return "tear_armor";
+      case PET_RAPTOR:       return "";
       case PET_SPIRIT_BEAST: return "roar_of_courage";
       case PET_TALLSTRIDER:  return "";
       case PET_WASP:         return "";
@@ -2470,7 +2470,7 @@ struct wild_quiver_shot_t : public ranged_t
 {
   wild_quiver_shot_t( hunter_t* p ) : ranged_t( p, "wild_quiver_shot", p -> find_spell( 76663 ) )
   {
-    repeating   = false;
+    repeating = false;
     proc = true;
   }
 
@@ -2534,7 +2534,7 @@ public:
 };
 
 
-struct aspect_of_the_pack_t : public hunter_spell_t 
+struct aspect_of_the_pack_t : public hunter_spell_t
 {
   std::string toggle;
   bool tog;
@@ -2548,9 +2548,9 @@ struct aspect_of_the_pack_t : public hunter_spell_t
       opt_null()
     };
 
-  parse_options( options, options_str );
+    parse_options( options, options_str );
 
-    if ( ! toggle.empty() )
+    if ( !toggle.empty() )
     {
       if ( toggle == "on" )
         tog = true;
@@ -2558,35 +2558,35 @@ struct aspect_of_the_pack_t : public hunter_spell_t
         tog = false;
     }
 
-    harmful     = false;
+    harmful = false;
     trigger_gcd = timespan_t::zero();
   }
 
   virtual void execute()
   {
 
-  if( tog == true )
-    for ( size_t i = 0; i < sim -> player_non_sleeping_list.size(); ++i )
-    {
-      player_t* p = sim -> player_non_sleeping_list[ i ];
-        if( p -> is_enemy() || p -> type == PLAYER_GUARDIAN )
-        break;
-          p -> buffs.stampeding_roar -> trigger();
-    }
+    if ( tog == true )
+      for ( size_t i = 0; i < sim -> player_non_sleeping_list.size(); ++i )
+      {
+      player_t* p = sim -> player_non_sleeping_list[i];
+      if ( p -> is_enemy() || p -> type == PLAYER_GUARDIAN )
+      break;
+      p -> buffs.stampeding_roar -> trigger();
+      }
 
-  if( tog == false  )
-    for ( size_t i = 0; i < sim -> player_non_sleeping_list.size(); ++i )
-    {
-      player_t* p = sim -> player_non_sleeping_list[ i ];
-        if( p -> is_enemy() || p -> type == PLAYER_GUARDIAN )
-        break;
-          p -> buffs.stampeding_roar -> expire();
-    }
+    if ( tog == false )
+      for ( size_t i = 0; i < sim -> player_non_sleeping_list.size(); ++i )
+      {
+      player_t* p = sim -> player_non_sleeping_list[i];
+      if ( p -> is_enemy() || p -> type == PLAYER_GUARDIAN )
+      break;
+      p -> buffs.stampeding_roar -> expire();
+      }
   }
 
   virtual bool ready()
   {
-    if ( ( p() -> buffs.aspect_of_the_pack -> check() && tog == true ) || 
+    if ( ( p() -> buffs.aspect_of_the_pack -> check() && tog == true ) ||
        ( !p() -> buffs.aspect_of_the_pack -> check() && tog == false ) )
       return false;
 
@@ -2603,10 +2603,9 @@ struct barrage_t : public hunter_spell_t
     barrage_damage_t( hunter_t* player ) :
       attacks::hunter_ranged_attack_t( "barrage_primary", player, player -> talents.barrage -> effectN( 2 ).trigger() )
     {
-      background  = true;
+      background = may_crit = true;
       weapon = &( player -> main_hand_weapon );
       base_execute_time = weapon -> swing_time;
-      may_crit    = true;
 
       // FIXME AoE is just approximate from tooltips
       aoe = -1;
@@ -2659,7 +2658,6 @@ struct barrage_t : public hunter_spell_t
   {
     return true;
   }
-
 };
 
 // A Murder of Crows ========================================================

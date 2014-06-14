@@ -28,8 +28,7 @@ actions.precombat+=/jade_serpent_potion
 
 # Executed every time the actor is available.
 
-actions=curse_of_the_elements,if=debuff.magic_vulnerability.down
-actions+=/jade_serpent_potion,if=buff.bloodlust.react|target.health.pct<=20
+actions=jade_serpent_potion,if=buff.bloodlust.react|target.health.pct<=20
 actions+=/berserking
 actions+=/dark_soul,if=!talent.archimondes_darkness.enabled|(talent.archimondes_darkness.enabled&(charges=2|trinket.proc.intellect.react|trinket.stacking_proc.intellect.react|target.health.pct<=10))
 actions+=/service_pet,if=talent.grimoire_of_service.enabled
