@@ -9763,6 +9763,7 @@ namespace resolve {
 struct manager_t::damage_event_list_t
 {
   damage_event_list_t( const player_t* p ) :
+    event_list(),
     myself( p )
   { }
 
@@ -9920,7 +9921,6 @@ struct manager_t::update_event_t final : public event_t
     p() -> resolve_manager.update(); // update resolve
     p() -> resolve_manager._update_event = new ( sim() ) update_event_t( *p() ); // schedule next update/add
   }
-
 };
 
 manager_t::manager_t( player_t& p ) :
@@ -9939,8 +9939,8 @@ void manager_t::start()
 {
   assert( !_started && "Trying to start a already started Resolve Manager." );
 
-  _diminishing_return_list.reset();
-  _damage_list.reset();
+  _diminishing_return_list -> reset();
+  _damage_list -> reset();
 
   _started = true;
 
@@ -9959,8 +9959,8 @@ void manager_t::stop()
   if ( !_started )
     return;
 
-  _diminishing_return_list.reset();
-  _damage_list.reset();
+  _diminishing_return_list -> reset();
+  _damage_list -> reset();
 
   _started = false;
 }
