@@ -867,7 +867,7 @@ struct paladin_heal_t : public paladin_spell_base_t<heal_t>
 
     // FIXME: This should stack when the buff is present already
 
-    double bubble_value = p() -> cache.mastery_value()
+    double bubble_value = p() -> cache.mastery_value() // Illuminated Healing is in effect 1
                           * s -> result_amount;
 
     p() -> active_illuminated_healing -> base_dd_min = p() -> active_illuminated_healing -> base_dd_max = bubble_value;
@@ -1700,7 +1700,7 @@ struct eternal_flame_t : public paladin_heal_t
     {      
       // grant extra healing per stack of BoG; can't expire() BoG here because it's needed in execute()
       double bog_m = p() -> buffs.bastion_of_glory -> data().effectN( 1 ).percent(); // base multiplier is in effect 1 of BoG buff
-      bog_m += p() -> composite_mastery() * p() -> passives.divine_bulwark -> effectN( 3 ).mastery_value(); // add mastery contribution
+      bog_m += p() -> cache.mastery() * p() -> passives.divine_bulwark -> effectN( 3 ).mastery_value(); // add mastery contribution
       bog_m *= p() -> buffs.bastion_of_glory -> stack(); // multiply by stack size
 
       am *= ( 1.0 + bog_m );
@@ -3131,7 +3131,7 @@ struct word_of_glory_t : public paladin_heal_t
     {
       // grant extra healing per stack of BoG; can't expire() BoG here because it's needed in execute()
       double bog_m = p() -> buffs.bastion_of_glory -> data().effectN( 1 ).percent(); // base multiplier is in effect 1 of BoG buff
-      bog_m += p() -> composite_mastery() * p() -> passives.divine_bulwark -> effectN( 3 ).mastery_value(); // add mastery contribution
+      bog_m += p() -> cache.mastery() * p() -> passives.divine_bulwark -> effectN( 3 ).mastery_value(); // add mastery contribution
       bog_m *= p() -> buffs.bastion_of_glory -> stack(); // multiply by stack size
 
       am *= ( 1.0 + bog_m );
@@ -5850,7 +5850,7 @@ double paladin_t::composite_attack_power_multiplier() const
   double ap = player_t::composite_attack_power_multiplier();
 
   // TODO: check if additive or multiplicative
-  ap += composite_mastery() * passives.divine_bulwark -> effectN( 5 ).mastery_value();
+  ap += cache.mastery() * passives.divine_bulwark -> effectN( 5 ).mastery_value();
   
   // TODO: check if additive or multiplicative
   ap += buffs.maraads_truth -> data().effectN( 1 ).percent(); 
@@ -5873,7 +5873,7 @@ double paladin_t::composite_spell_power_multiplier() const
 double paladin_t::composite_block() const
 {
   // this handles base block and and all block subject to diminishing returns
-  double block_subject_to_dr = composite_mastery() * passives.divine_bulwark -> effectN( 1 ).mastery_value();
+  double block_subject_to_dr = cache.mastery() * passives.divine_bulwark -> effectN( 1 ).mastery_value();
   double b = player_t::composite_block_dr( block_subject_to_dr );
 
  // Guarded by the Light block not affected by diminishing returns
@@ -5991,7 +5991,7 @@ void paladin_t::target_mitigation( school_e school,
   if ( buffs.shield_of_the_righteous -> check() && school == SCHOOL_PHYSICAL )
   {
     // split his out to make it more readable / easier to debug
-    double sotr_mitigation = buffs.shield_of_the_righteous -> data().effectN( 1 ).percent() + composite_mastery() * passives.divine_bulwark -> effectN( 4 ).mastery_value();
+    double sotr_mitigation = buffs.shield_of_the_righteous -> data().effectN( 1 ).percent() + cache.mastery() * passives.divine_bulwark -> effectN( 4 ).mastery_value();
     sotr_mitigation *= 1.0 + sets.set( SET_T14_4PC_TANK ) -> effectN( 2 ).percent();
 
     s -> result_amount *= 1.0 + sotr_mitigation; 
@@ -6229,7 +6229,7 @@ double paladin_t::get_hand_of_light()
 {
   if ( specialization() != PALADIN_RETRIBUTION ) return 0.0;
 
-  return cache.mastery_value();
+  return cache.mastery_value(); // HoL is in effect 1
 }
 
 // player_t::create_expression ==============================================
