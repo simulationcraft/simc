@@ -143,6 +143,7 @@ struct death_knight_td_t : public actor_pair_t
   dot_t* dots_frost_fever;
   dot_t* dots_soul_reaper;
   dot_t* dots_necrotic_plague;
+  dot_t* dots_defile;
 
   debuff_t* debuffs_frost_vulnerability;
   debuff_t* debuffs_mark_of_sindragosa;
@@ -330,6 +331,7 @@ public:
 
     const spell_data_t* necrotic_plague;
     const spell_data_t* breath_of_sindragosa;
+    const spell_data_t* defile;
   } talent;
 
   // Spells
@@ -523,6 +525,7 @@ inline death_knight_td_t::death_knight_td_t( player_t* target, death_knight_t* d
   dots_frost_fever     = target -> get_dot( "frost_fever",     death_knight );
   dots_soul_reaper     = target -> get_dot( "soul_reaper_dot", death_knight );
   dots_necrotic_plague = target -> get_dot( "necrotic_plague", death_knight );
+  dots_defile          = target -> get_dot( "defile",          death_knight );
 
   debuffs_frost_vulnerability = buff_creator_t( *this, "frost_vulnerability", death_knight -> find_spell( 51714 ) );
   debuffs_mark_of_sindragosa = buff_creator_t( *this, "mark_of_sindragosa", death_knight -> find_spell( 155166 ) );
@@ -2968,6 +2971,74 @@ struct death_and_decay_t : public death_knight_spell_t
     if ( ! spell_t::ready() )
       return false;
 
+    if ( p() -> talent.defile -> ok() )
+      return false;
+
+    if ( p() -> buffs.crimson_scourge -> check() )
+      return group_runes( p(), 0, 0, 0, 0, use );
+    else
+      return group_runes( p(), cost_blood, cost_frost, cost_unholy, cost_death, use );
+  }
+};
+
+// Defile ==================================================================
+
+struct defile_t: public death_knight_spell_t
+{
+  defile_t( death_knight_t* p, const std::string& options_str ) :
+    death_knight_spell_t( "defile", p, p -> find_talent_spell( "Defile" ) )
+  {
+    parse_options( NULL, options_str );
+
+    aoe = -1;
+    base_dd_min = base_dd_max = 0;
+    school = p -> find_spell( 156000 ) -> get_school_type();
+    attack_power_mod.tick = p -> find_spell( 156000 ) -> effectN( 1 ).ap_coeff();
+    dot_duration = data().duration();
+    tick_may_crit = tick_zero = true; // Zero tick or not?
+    hasted_ticks = false;
+  }
+
+  virtual void consume_resource()
+  {
+    if ( p() -> buffs.crimson_scourge -> check() )
+      return;
+
+    death_knight_spell_t::consume_resource();
+  }
+
+  virtual double cost() const
+  {
+    if ( p() -> buffs.crimson_scourge -> check() )
+      return 0;
+    return death_knight_spell_t::cost();
+  }
+
+  virtual void execute()
+  {
+    death_knight_spell_t::execute();
+
+    if ( p() -> buffs.crimson_scourge -> up() )
+      p() -> buffs.crimson_scourge -> expire();
+  }
+
+  virtual void impact( action_state_t* s )
+  {
+    if ( s -> target -> debuffs.flying -> check() )
+    {
+      if ( sim -> debug ) sim -> out_debug.printf( "Ground effect %s can not hit flying target %s", name(), s -> target -> name() );
+    }
+    else
+    {
+      death_knight_spell_t::impact( s );
+    }
+  }
+
+  virtual bool ready()
+  {
+    if ( ! spell_t::ready() )
+      return false;
+
     if ( p() -> buffs.crimson_scourge -> check() )
       return group_runes( p(), 0, 0, 0, 0, use );
     else
@@ -4578,6 +4649,7 @@ action_t* death_knight_t::create_action( const std::string& name, const std::str
   if ( name == "death_siphon"             ) return new death_siphon_t             ( this, options_str );
   if ( name == "death_pact"               ) return new death_pact_t               ( this, options_str );
   if ( name == "breath_of_sindragosa"     ) return new breath_of_sindragosa_t     ( this, options_str );
+  if ( name == "defile"                   ) return new defile_t                   ( this, options_str );
 
   return player_t::create_action( name, options_str );
 }
@@ -4907,6 +4979,8 @@ void death_knight_t::init_spells()
   talent.runic_corruption         = find_talent_spell( "Runic Corruption" );
 
   talent.necrotic_plague          = find_talent_spell( "Necrotic Plague" );
+  talent.breath_of_sindragosa     = find_talent_spell( "Breath of Sindragosa" );
+  talent.defile                   = find_talent_spell( "Defile" );
 
   // Glyphs
   glyph.chains_of_ice             = find_glyph_spell( "Glyph of Chains of Ice" );
@@ -5939,6 +6013,13 @@ void death_knight_t::target_mitigation( school_e school, dmg_e type, action_stat
 
   if ( buffs.army_of_the_dead -> check() )
     state -> result_amount *= 1.0 - buffs.army_of_the_dead -> value();
+
+  if ( talent.defile -> ok() )
+  {
+    death_knight_td_t* tdata = get_target_data( state -> action -> player );
+    if ( tdata -> dots_defile -> is_ticking() )
+      state -> result_amount *= 1.0 - talent.defile -> effectN( 4 ).percent();
+  }
 
   player_t::target_mitigation( school, type, state );
 }
