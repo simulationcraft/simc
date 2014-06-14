@@ -4727,7 +4727,7 @@ expr_t* mage_t::create_expression( action_t* a, const std::string& name_str )
   };
 
   std::vector<std::string> splits = util::string_split( name_str, "." );
-  if ( splits.size() == 2 && splits[0] == "last_action" )
+  if ( splits.size() == 2 && splits[0] == "last_spell" )
   {
     std::string action_name = splits[1];
     return new last_spell_t( name_str, *this, action_name );
