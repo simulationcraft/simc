@@ -3047,14 +3047,14 @@ struct last_stand_t : public buff_t
   virtual bool trigger( int stacks, double value, double chance, timespan_t duration )
   {
     health_gain = ( int ) floor( player -> resources.max[ RESOURCE_HEALTH ] * 0.3 );
-    player -> stat_gain( STAT_MAX_HEALTH, health_gain );
+    player -> temporary.resource[ RESOURCE_HEALTH ] += health_gain;
 
     return buff_t::trigger( stacks, value, chance, duration );
   }
 
   virtual void expire_override()
   {
-    player -> stat_loss( STAT_MAX_HEALTH, health_gain );
+    player -> temporary.resource[ RESOURCE_HEALTH ] -= health_gain;
 
     buff_t::expire_override();
   }
@@ -4102,7 +4102,6 @@ double warrior_t::composite_attribute( attribute_e attr ) const
   return a;
 }
 
-
 // warrior_t::composite_armor_multiplier ======================================
 
 double warrior_t::composite_armor_multiplier() const
@@ -4128,7 +4127,6 @@ double warrior_t::composite_melee_expertise( weapon_t* ) const
   return e;
 }
 
-
 // warrior_t::composite_rating_multiplier =====================================
 
 double warrior_t::composite_rating_multiplier( rating_e rating ) const
@@ -4150,7 +4148,6 @@ double warrior_t::composite_rating_multiplier( rating_e rating ) const
 
   return m;
 }
-
 
 // warrior_t::matching_gear_multiplier ======================================
 
