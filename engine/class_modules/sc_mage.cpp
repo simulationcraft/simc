@@ -54,6 +54,8 @@ public:
   int active_living_bomb_targets;
   player_t* last_bomb_target;
 
+  std::string last_spell;
+
   // Benefits
   struct benefits_t
   {
@@ -245,6 +247,7 @@ public:
     active_ignite( 0 ),
     active_living_bomb_targets( 0 ),
     last_bomb_target( 0 ),
+    last_spell( "" ),
     benefits( benefits_t() ),
     buffs( buffs_t() ),
     cooldowns( cooldowns_t() ),
@@ -1050,7 +1053,7 @@ public:
     }
     return am;
   }
-  //
+
   virtual void schedule_execute( action_state_t* state = 0 )
   {
     spell_t::schedule_execute( state );
@@ -1115,7 +1118,7 @@ public:
   {
     mage_t* p = this -> p();
 
-    if ( ! may_hot_streak )
+    if ( !may_hot_streak )
       return;
 
     if ( p -> specialization() != MAGE_FIRE )
@@ -1128,7 +1131,7 @@ public:
       p -> procs.crit_for_hotstreak -> occur();
       // Reference: http://elitistjerks.com/f75/t110326-cataclysm_fire_mage_compendium/p6/#post1831143
 
-      if ( ! p -> buffs.heating_up -> up() )
+      if ( !p -> buffs.heating_up -> up() )
       {
         p -> buffs.heating_up -> trigger();
       }
@@ -1144,6 +1147,7 @@ public:
       if ( p -> buffs.heating_up -> up() ) expire_heating_up();
     }
   }
+
   // mage_spell_t::execute ==================================================
 
   virtual void execute()
@@ -1152,6 +1156,8 @@ public:
     p() -> benefits.dpm_rotation -> update( p() -> rotation.current == ROTATION_DPM );
 
     spell_t::execute();
+    p() -> last_spell = execute_state -> action -> name_str;
+
 
     if ( background )
       return;
@@ -4269,7 +4275,6 @@ void mage_t::apl_precombat()
   precombat -> add_action( this, "Mirror Image" );
 }
 
-
 // Arcane Mage Action List====================================================
 
 void mage_t::apl_arcane()
@@ -4606,6 +4611,7 @@ void mage_t::reset()
   mana_gem_charges = max_mana_gem_charges();
   active_living_bomb_targets = 0;
   last_bomb_target = 0;
+  last_spell = "";
 }
 
 // mage_t::regen  ===========================================================
@@ -4709,6 +4715,23 @@ expr_t* mage_t::create_expression( action_t* a, const std::string& name_str )
       mage_expr_t( n, m ), rt( r ) {}
     virtual double evaluate() { return mage.rotation.current == rt; }
   };
+
+  struct last_spell_t : public mage_expr_t
+  {
+    std::string action;
+    last_spell_t( const std::string& n, mage_t& p, std::string action ) :
+      mage_expr_t( n, p ), action( action )
+    {
+    }
+    virtual double evaluate() { return mage.last_spell == action; }
+  };
+
+  std::vector<std::string> splits = util::string_split( name_str, "." );
+  if ( splits.size() == 2 && splits[0] == "last_action" )
+  {
+    std::string action_name = splits[1];
+    return new last_spell_t( name_str, *this, action_name );
+  }
 
   if ( name_str == "dps" )
     return new rotation_expr_t( name_str, *this, ROTATION_DPS );
