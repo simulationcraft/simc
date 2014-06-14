@@ -327,7 +327,7 @@ void dbc::apply_hotfixes()
 
   // Druid
   s = spell_data_t::find( 50288, false ); // Starfall probably doesn't take 30 seconds to hit the target.
-  assert( s -> _prj_speed() != 0.8 && "Check the speed on Starfall" );
+  assert( s -> _prj_speed == 0.8 && "Check the speed on Starfall" );
   s -> _prj_speed = 20;
   if ( SC_USE_PTR )
   {

@@ -30,6 +30,8 @@ actions+=/arcane_torrent
 actions+=/use_item,slot=waist
 actions+=/auto_attack
 actions+=/skull_bash_bear
+actions+=/frenzied_regeneration,if=health.pct<100&action.savage_defense.charges=0&incoming_damage_5>0.2*health.max
+actions+=/frenzied_regeneration,if=health.pct<100&action.savage_defense.charges>0&incoming_damage_5>0.4*health.max
 actions+=/savage_defense
 actions+=/barkskin
 actions+=/renewal,if=talent.renewal.enabled

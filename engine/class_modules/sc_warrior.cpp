@@ -2676,11 +2676,8 @@ struct recklessness_t : public warrior_spell_t
 
 struct shield_barrier_t : public warrior_action_t<absorb_t>
 {
-  double rage_cost;
-
   shield_barrier_t( warrior_t* p, const std::string& options_str ) :
-    base_t( "shield_barrier", p, p -> find_class_spell( "Shield Barrier" ) ),
-    rage_cost( 0 )
+    base_t( "shield_barrier", p, p -> find_class_spell( "Shield Barrier" ) )
   {
     parse_options( NULL, options_str );
 

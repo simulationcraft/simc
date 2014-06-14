@@ -1242,99 +1242,12 @@ public:
 
 struct barkskin_t : public druid_buff_t < buff_t >
 {
-  druid_t* p() const
-  { return static_cast<druid_t*>( player ); }
-
-  struct frenzied_regeneration_2pc_t : public heal_t
-  {
-    double maximum_rage_cost;
-
-    frenzied_regeneration_2pc_t( druid_t* p ) :
-      heal_t( "frenzied_regeneration", p, p -> find_class_spell( "Frenzied Regeneration" ) )
-    {
-      harmful = special = false;
-      proc = background = true;
-
-      if ( p -> sets.has_set_bonus( SET_T16_2PC_TANK ) )
-        p -> active.ursocs_vigor = new ursocs_vigor_t( p );
-
-      maximum_rage_cost = data().effectN( 1 ).base_value();
-    }
-
-    druid_t* p() const
-    { return static_cast<druid_t*>( player ); }
-
-    virtual double cost() const
-    {
-      return 0.0;
-    }
-
-    virtual double base_da_min( const action_state_t* ) const
-    {
-        // max(2.2*(AP - 2*Agi), 2.5*Sta)
-        double ap      = p() -> composite_melee_attack_power() * p() -> composite_attack_power_multiplier();
-        double agility = p() -> composite_attribute( ATTR_AGILITY ) * p() -> composite_attribute_multiplier( ATTR_AGILITY );
-        double stamina = p() -> composite_attribute( ATTR_STAMINA ) * p() -> composite_attribute_multiplier( ATTR_STAMINA );
-        return std::max( ( ap - 2 * agility ) * data().effectN( 2 ).percent(), stamina * data().effectN( 3 ).percent() )
-               * ( 20 / maximum_rage_cost );
-    }
-
-    virtual double base_da_max( const action_state_t* ) const
-    {
-        // max(2.2*(AP - 2*Agi), 2.5*Sta)
-        double ap      = p() -> composite_melee_attack_power() * p() -> composite_attack_power_multiplier();
-        double agility = p() -> composite_attribute( ATTR_AGILITY ) * p() -> composite_attribute_multiplier( ATTR_AGILITY );
-        double stamina = p() -> composite_attribute( ATTR_STAMINA ) * p() -> composite_attribute_multiplier( ATTR_STAMINA );
-        return std::max( ( ap - 2 * agility ) * data().effectN( 2 ).percent(), stamina * data().effectN( 3 ).percent() )
-               * ( 20 / maximum_rage_cost );
-    }
-
-    virtual void execute()
-    {
-      heal_t::execute();
-
-      if ( p() -> sets.has_set_bonus( SET_T16_4PC_TANK ) )
-        p() -> active.ursocs_vigor -> trigger_hot( 20.0 );
-    }
-
-    virtual bool ready()
-    {
-      return true;
-    }
-  };
-
-  action_t* frenzied_regeneration;
-
   barkskin_t( druid_t& p ) :
-    base_t( p, buff_creator_t( &p, "barkskin", p.find_specialization_spell( "Barkskin" ) ) ),
-    frenzied_regeneration( nullptr )
+    base_t( p, buff_creator_t( &p, "barkskin", p.find_specialization_spell( "Barkskin" ) ) )
   {
     cooldown -> duration = timespan_t::zero(); // CD is managed by the spell
-
-    if ( player -> sets.has_set_bonus( SET_T16_2PC_TANK ) )
-      frenzied_regeneration = new frenzied_regeneration_2pc_t( static_cast<druid_t*>( player ) );
   }
 
-  virtual void expire_override()
-  {
-    buff_t::expire_override();
-
-    if ( p() -> sets.has_set_bonus( SET_T16_2PC_TANK ) )
-    {
-      // Trigger 3 seconds of Savage Defense
-      if ( p() -> buff.savage_defense -> check() )
-        p() -> buff.savage_defense -> extend_duration( p(), timespan_t::from_seconds( 3.0 ) );
-      else
-        p() -> buff.savage_defense -> trigger( 1, buff_t::DEFAULT_VALUE(), 1, timespan_t::from_seconds( 3.0 ) );
-
-      // Trigger 4pc equal to the consumption of 30 rage.
-      if ( p() -> sets.has_set_bonus( SET_T16_4PC_TANK ) )
-        p() -> active.ursocs_vigor -> trigger_hot( 30.0 );
-
-      // Trigger a 20 rage Frenzied Regeneration
-      frenzied_regeneration -> execute();
-    }
-  }
 };
 
 // Astral Communion Buff =================================================
@@ -1766,7 +1679,7 @@ struct cat_attack_state_t : public action_state_t
   }
 };
 
-struct cat_attack_t : public druid_attack_t<melee_attack_t>
+struct cat_attack_t : public druid_attack_t < melee_attack_t >
 {
   bool             requires_stealth_;
   bool             requires_combo_points;
@@ -1827,19 +1740,29 @@ public:
   }
 
   const cat_attack_state_t* cat_state( const action_state_t* st ) const
-  { return debug_cast< const cat_attack_state_t* >( st ); }
+  {
+    return debug_cast<const cat_attack_state_t*>( st );
+  }
 
   cat_attack_state_t* cat_state( action_state_t* st ) const
-  { return debug_cast< cat_attack_state_t* >( st ); }
+  {
+    return debug_cast<cat_attack_state_t*>( st );
+  }
 
   virtual double bonus_ta( const action_state_t* s ) const
-  { return base_td_bonus * ( requires_combo_points ? cat_state( s ) -> cp : 1 ); }
+  {
+    return base_td_bonus * ( requires_combo_points ? cat_state( s ) -> cp : 1 );
+  }
 
   virtual double bonus_da( const action_state_t* s ) const
-  { return base_dd_bonus * ( requires_combo_points ? cat_state( s ) -> cp : 1 ); }
+  {
+    return base_dd_bonus * ( requires_combo_points ? cat_state( s ) -> cp : 1 );
+  }
 
   virtual action_state_t* new_state()
-  { return new cat_attack_state_t( this, target ); }
+  {
+    return new cat_attack_state_t( this, target );
+  }
 
   virtual void snapshot_state( action_state_t* state, dmg_e rt )
   {
@@ -1874,7 +1797,7 @@ public:
   virtual void execute()
   {
     //if ( p() -> buff.prowl -> check() && p() -> glyph.savagery -> ok() )
-      //trigger_savagery(); Glyph is changed in WoD
+    //trigger_savagery(); Glyph is changed in WoD
 
     base_t::execute();
 
@@ -1965,17 +1888,17 @@ public:
 
   virtual bool ready()
   {
-    if ( ! base_t::ready() )
+    if ( !base_t::ready() )
       return false;
 
-    if ( ! p() -> buff.cat_form -> check() )
+    if ( !p() -> buff.cat_form -> check() )
       return false;
 
     if ( requires_stealth() )
-      if ( ! p() -> buff.prowl -> check() )
+      if ( !p() -> buff.prowl -> check() )
         return false;
 
-    if ( requires_combo_points && ! td( target ) -> combo_points.get() )
+    if ( requires_combo_points && !td( target ) -> combo_points.get() )
       return false;
 
     return true;
@@ -2021,9 +1944,7 @@ struct cat_melee_t : public cat_attack_t
     cat_attack_t( "cat_melee", player, spell_data_t::nil(), "" )
   {
     school = SCHOOL_PHYSICAL;
-    may_glance  = true;
-    background  = true;
-    repeating   = true;
+    may_glance = background = repeating = true;
     trigger_gcd = timespan_t::zero();
     special = false;
   }
@@ -2063,12 +1984,7 @@ struct feral_charge_cat_t : public cat_attack_t
   feral_charge_cat_t( druid_t* p, const std::string& options_str ) :
     cat_attack_t( "feral_charge_cat", p, p -> talent.wild_charge, options_str )
   {
-    may_miss   = false;
-    may_dodge  = false;
-    may_parry  = false;
-    may_block  = false;
-    may_glance = false;
-    special = false;
+    may_miss = may_dodge = may_parry = may_block = may_glance = special = false;
   }
 
   virtual bool ready()
@@ -2099,8 +2015,7 @@ struct ferocious_bite_t : public cat_attack_t
   {
     ap_per_point          = 0.196; // FIXME: Figure out where the hell this is in the spell data...
     max_excess_energy     = 25.0;
-    requires_combo_points = true;
-    special               = true;
+    requires_combo_points = special = true;
     base_multiplier      *= 1.0 + p -> perk.improved_ferocious_bite -> effectN( 1 ).percent();
   }
 
@@ -2200,8 +2115,7 @@ struct maim_t : public cat_attack_t
   maim_t( druid_t* player, const std::string& options_str ) :
     cat_attack_t( "maim", player, player -> find_specialization_spell( "Maim" ), options_str )
   {
-    requires_combo_points = true;
-    special               = true;
+    requires_combo_points = special = true;
     base_multiplier      *= 1.0 + player -> glyph.maim -> effectN( 1 ).percent();
   }
 };
@@ -2275,10 +2189,9 @@ struct rip_t : public cat_attack_t
     ap_per_point( 0.0 )
   {
     ap_per_point          = data().effectN( 1 ).ap_coeff();
-    requires_combo_points = true;
+    requires_combo_points = special = true;
     may_crit              = false;
     dot_behavior          = DOT_REFRESH;
-    special               = true;
 
     dot_duration += player -> sets.set( SET_T14_4PC_MELEE ) -> effectN( 1 ).time_value();
   }
@@ -2292,16 +2205,13 @@ struct rip_t : public cat_attack_t
 struct savage_roar_t : public cat_attack_t
 {
   timespan_t seconds_per_combo;
-
   savage_roar_t( druid_t* p, const std::string& options_str ) :
     cat_attack_t( "savage_roar", p, p -> find_class_spell( "Savage Roar" ), options_str ),
     seconds_per_combo( timespan_t::from_seconds( 6.0 ) ) // plus 6s per cp used. Must change this value in cat_attack_t::trigger_savagery() as well.
   {
-    may_miss              = false;
-    harmful               = false;
+    may_miss = harmful = special = false;
     requires_combo_points = true;
-    dot_duration             = timespan_t::zero();
-    special               = false;
+    dot_duration  = timespan_t::zero();
   }
 
   virtual void impact( action_state_t* state )
@@ -2354,7 +2264,7 @@ struct shred_t : public cat_attack_t
     parse_options( options, options_str );
 
     base_multiplier *= 1.0 + p -> perk.improved_shred -> effectN( 1 ).percent() + player -> sets.set( SET_T14_2PC_MELEE ) -> effectN( 1 ).percent();
-    special          = true;
+    special = true;
   }
 
   virtual void execute()
@@ -2379,7 +2289,7 @@ struct shred_t : public cat_attack_t
     double tm = cat_attack_t::composite_target_multiplier( t );
 
     //if ( t -> debuffs.bleeding -> up() )
-      //tm *= 1.0 + p() -> spell.swipe -> effectN( 2 ).percent(); Need to find effect
+    //tm *= 1.0 + p() -> spell.swipe -> effectN( 2 ).percent(); Need to find effect
 
     return tm;
   }
@@ -2417,7 +2327,7 @@ struct shred_t : public cat_attack_t
   virtual bool ready()
   {
     if ( extends_rip )
-      if ( ! td( target ) -> dots.rip -> is_ticking() ||
+      if ( !td( target ) -> dots.rip -> is_ticking() ||
            ( td( target ) -> dots.rip -> get_extended_time() >= timespan_t::from_seconds( 6.0 ) ) )
         return false;
 
@@ -2432,10 +2342,9 @@ struct skull_bash_cat_t : public cat_attack_t
   skull_bash_cat_t( druid_t* p, const std::string& options_str ) :
     cat_attack_t( "skull_bash_cat", p, p -> find_specialization_spell( "Skull Bash" ), options_str )
   {
-    may_miss = may_glance = may_block = may_dodge = may_parry = may_crit = false;
+    may_miss = may_glance = may_block = may_dodge = may_parry = may_crit = special = false;
 
     cooldown -> duration += p -> glyph.skull_bash -> effectN( 1 ).time_value();
-    special = false;
   }
 
   virtual bool ready()
@@ -2517,7 +2426,6 @@ struct thrash_cat_t : public cat_attack_t
     dot_behavior      = DOT_REFRESH;
     special           = true;
     adds_combo_points = 0;
-
   }
 
   // Treat direct damage as "bleed"
@@ -2551,8 +2459,7 @@ struct tigers_fury_t : public cat_attack_t
   tigers_fury_t( druid_t* p, const std::string& options_str ) :
     cat_attack_t( "tigers_fury", p, p -> find_specialization_spell( "Tiger's Fury" ), options_str )
   {
-    harmful = false;
-    special = false;
+    harmful = special = false;
   }
 
   virtual void execute()
@@ -3224,71 +3131,38 @@ void druid_heal_t::init_living_seed()
 
 struct frenzied_regeneration_t : public druid_heal_t
 {
-  double maximum_rage_cost;
-
   frenzied_regeneration_t( druid_t* p, const std::string& options_str ) :
-    druid_heal_t( "frenzied_regeneration", p, p -> find_class_spell( "Frenzied Regeneration" ), options_str ),
-    maximum_rage_cost( 0.0 )
+    druid_heal_t( "frenzied_regeneration", p, p -> find_class_spell( "Frenzied Regeneration" ), options_str )
   {
-    attack_power_mod.direct = spell_power_mod.direct = 0.0;
-
     special = false;
     use_off_gcd = true;
 
-    base_costs[ RESOURCE_RAGE ] = 0;
+    attack_power_mod.direct = data().effectN( 1 ).percent();
+    attack_power_mod.direct *= 1.0 + p -> perk.improved_frenzied_regeneration -> effectN( 1 ).percent();
 
     if ( p -> sets.has_set_bonus( SET_T16_2PC_TANK ) )
       p -> active.ursocs_vigor = new ursocs_vigor_t( p );
-
-    maximum_rage_cost = data().effectN( 1 ).base_value();
   }
 
   virtual double cost() const
   {
-    const_cast<frenzied_regeneration_t*>(this) -> base_costs[ RESOURCE_RAGE ] = std::min( p() -> resources.current[ RESOURCE_RAGE ],
-                                                maximum_rage_cost );
+    double c = druid_heal_t::cost();
 
-    return druid_heal_t::cost();
-  }
-  /* // WE HAVE NO INFORMATION ON HOW MUCH THIS WILL HEAL FOR. HALP ME BEARS.
-  virtual double base_da_min( const action_state_t* ) const
-  {
-      // max(2.2*(AP - 2*Agi), 2.5*Sta)
-      double ap      = p() -> composite_melee_attack_power() * p() -> composite_attack_power_multiplier();
-      double agility = p() -> composite_attribute( ATTR_AGILITY ) * p() -> composite_attribute_multiplier( ATTR_AGILITY );
-      double stamina = p() -> composite_attribute( ATTR_STAMINA ) * p() -> composite_attribute_multiplier( ATTR_STAMINA );
-      return std::max( ( ap - 2 * agility ) * data().effectN( 2 ).percent(), stamina * data().effectN( 3 ).percent() )
-             * ( resource_consumed / maximum_rage_cost )
-             * ( 1.0 + p() -> buff.tier15_2pc_tank -> stack() * p() -> buff.tier15_2pc_tank -> data().effectN( 1 ).percent() );
+    c = std::min( 60.0, std::max( p() -> resources.current[ RESOURCE_RAGE ], c ) );
+
+    return c;
   }
 
-  virtual double base_da_max( const action_state_t* ) const
+  virtual void impact( action_state_t* s )
   {
-      // max(2.2*(AP - 2*Agi), 2.5*Sta)
-      double ap      = p() -> composite_melee_attack_power() * p() -> composite_attack_power_multiplier();
-      double agility = p() -> composite_attribute( ATTR_AGILITY ) * p() -> composite_attribute_multiplier( ATTR_AGILITY );
-      double stamina = p() -> composite_attribute( ATTR_STAMINA ) * p() -> composite_attribute_multiplier( ATTR_STAMINA );
-      return std::max( ( ap - 2 * agility ) * data().effectN( 2 ).percent(), stamina * data().effectN( 3 ).percent() )
-             * ( resource_consumed / maximum_rage_cost )
-             * ( 1.0 + p() -> buff.tier15_2pc_tank -> stack() * p() -> buff.tier15_2pc_tank -> data().effectN( 1 ).percent() );
-  }*/
+    s -> result_amount *= resource_consumed / 20;
 
-  virtual void execute()
-  {
-    p() -> buff.tier15_2pc_tank -> expire();
-
-    druid_heal_t::execute();
-
-    if ( p() -> sets.has_set_bonus( SET_T16_4PC_TANK ) )
-      p() -> active.ursocs_vigor -> trigger_hot( resource_consumed );
+    druid_heal_t::impact( s );
   }
 
   virtual bool ready()
   {
     if ( ! p() -> buff.bear_form -> check() )
-      return false;
-
-    if ( p() -> resources.current[ RESOURCE_RAGE ] < 1 )
       return false;
 
     return druid_heal_t::ready();
@@ -5779,8 +5653,8 @@ void druid_t::apl_guardian()
 
   default_list -> add_action( "auto_attack" );
   default_list -> add_action( "skull_bash_bear" );
-  //default_list -> add_action( this, "Frenzied Regeneration", "if=health.pct<100&action.savage_defense.charges=0&incoming_damage_5>0.2*health.max" );
-  //default_list -> add_action( this, "Frenzied Regeneration", "if=health.pct<100&action.savage_defense.charges>0&incoming_damage_5>0.4*health.max" );
+  default_list -> add_action( this, "Frenzied Regeneration", "if=health.pct<100&action.savage_defense.charges=0&incoming_damage_5>0.2*health.max" );
+  default_list -> add_action( this, "Frenzied Regeneration", "if=health.pct<100&action.savage_defense.charges>0&incoming_damage_5>0.4*health.max" );
   default_list -> add_action( this, "Savage Defense" );
   default_list -> add_action( this, "Barkskin" );
   default_list -> add_talent( this, "Renewal", "incoming_damage_5>0.8*health.max" );
