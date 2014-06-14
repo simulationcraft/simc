@@ -9230,6 +9230,7 @@ double player_stat_cache_t::mastery() const
   {
     valid[ CACHE_MASTERY ] = true;
     _mastery = player -> composite_mastery();
+    _mastery_value = player -> composite_mastery_value();
   }
   else assert( _mastery == player -> composite_mastery() );
   return _mastery;
@@ -9244,6 +9245,7 @@ double player_stat_cache_t::mastery_value() const
   if ( ! active || ! valid[ CACHE_MASTERY ] )
   {
     valid[ CACHE_MASTERY ] = true;
+    _mastery = player -> composite_mastery();
     _mastery_value = player -> composite_mastery_value();
   }
   else assert( _mastery_value == player -> composite_mastery_value() );
