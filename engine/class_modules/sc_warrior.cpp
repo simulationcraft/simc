@@ -4196,7 +4196,7 @@ double warrior_t::matching_gear_multiplier( attribute_e attr ) const
 double warrior_t::composite_block() const
 {
   // this handles base block and and all block subject to diminishing returns
-  double block_subject_to_dr = composite_mastery()  * mastery.critical_block -> effectN( 2 ).mastery_value();
+  double block_subject_to_dr = cache.mastery() * mastery.critical_block -> effectN( 2 ).mastery_value();
   double b = player_t::composite_block_dr( block_subject_to_dr );
 
   // add in spec- and perk-specific block bonuses not subject to DR
@@ -4242,7 +4242,7 @@ double warrior_t::composite_attack_power_multiplier() const
   double ap = player_t::composite_attack_power_multiplier();
 
   if ( mastery.critical_block -> ok() )
-    ap += composite_mastery() * mastery.critical_block -> effectN( 5 ).mastery_value();
+    ap += cache.mastery() * mastery.critical_block -> effectN( 5 ).mastery_value();
 
   return ap;
 }
@@ -4254,7 +4254,7 @@ double warrior_t::composite_crit_block() const
   double b = player_t::composite_crit_block();
 
   if ( mastery.critical_block -> ok() )
-    b += composite_mastery() * mastery.critical_block -> effectN( 1 ).mastery_value();
+    b += cache.mastery() * mastery.critical_block -> effectN( 1 ).mastery_value();
 
   return b;
 }
