@@ -5622,18 +5622,15 @@ double paladin_t::composite_rating_multiplier( rating_e r ) const
     case RATING_MELEE_HASTE:
     case RATING_RANGED_HASTE:
     case RATING_SPELL_HASTE:
-      if ( passives.haste_attunement -> ok() ) 
-        m *= 1.0 + passives.haste_attunement -> effectN( 1 ).percent(); 
+      m *= 1.0 + passives.haste_attunement -> effectN( 1 ).percent(); 
       break;
     case RATING_MASTERY:
-      if ( passives.mastery_attunement -> ok() )
-        m *= 1.0 + passives.mastery_attunement -> effectN( 1 ).percent();
+      m *= 1.0 + passives.mastery_attunement -> effectN( 1 ).percent();
       break;
     case RATING_MELEE_CRIT:
     case RATING_SPELL_CRIT:
     case RATING_RANGED_CRIT:
-      if ( passives.crit_attunement -> ok() )
-        m *= 1.0 + passives.crit_attunement -> effectN( 1 ).percent();
+      m *= 1.0 + passives.crit_attunement -> effectN( 1 ).percent();
     default:
       break;
   }
@@ -5653,8 +5650,7 @@ double paladin_t::composite_melee_crit() const
     m += buffs.avenging_wrath -> get_crit_bonus();
 
   // Seraphim adds 30% crit TODO: check if multiplicative
-  if ( buffs.seraphim -> check() )
-    m += buffs.seraphim -> data().effectN( 1 ).percent();
+  m += buffs.seraphim -> data().effectN( 1 ).percent();
 
   return m;
 }
@@ -5682,8 +5678,7 @@ double paladin_t::composite_melee_haste() const
   h /= 1.0 + passives.infusion_of_light -> effectN( 2 ).percent();
 
   // Seraphim adds 30% haste TODO: check if multiplicative
-  if ( buffs.seraphim -> check() )
-    h /= 1.0 + buffs.seraphim -> data().effectN( 1 ).percent();
+  h /= 1.0 + buffs.seraphim -> data().effectN( 1 ).percent();
 
   return h;
 }
@@ -5695,8 +5690,7 @@ double paladin_t::composite_melee_speed() const
   double h = player_t::composite_melee_speed();
 
   // Empowered Seals
-  if ( buffs.liadrins_righteousness -> check() )
-    h /= 1.0 + buffs.liadrins_righteousness -> data().effectN( 1 ).percent(); // TODO: check that it's multiplicative
+  h /= 1.0 + buffs.liadrins_righteousness -> data().effectN( 1 ).percent(); // TODO: check that it's multiplicative
 
   return h;
 
@@ -5713,8 +5707,7 @@ double paladin_t::composite_spell_crit() const
     m += buffs.avenging_wrath -> get_crit_bonus();
 
   // Seraphim adds 30% crit TODO: check if multiplicative
-  if ( buffs.seraphim -> check() )
-    m += buffs.seraphim -> data().effectN( 1 ).percent();
+  m += buffs.seraphim -> data().effectN( 1 ).percent();
   
   return m;
 }
@@ -5733,8 +5726,7 @@ double paladin_t::composite_spell_haste() const
   h /= 1.0 + passives.infusion_of_light -> effectN( 2 ).percent();
 
   // Seraphim adds 30% haste TODO: check if multiplicative
-  if ( buffs.seraphim -> check() )
-    h /= 1.0 + buffs.seraphim -> data().effectN( 1 ).percent();
+  h /= 1.0 + buffs.seraphim -> data().effectN( 1 ).percent();
   
   return h;
 }
@@ -5746,8 +5738,7 @@ double paladin_t::composite_mastery() const
   double m = player_t::composite_mastery();
   
   // Seraphim adds 30% mastery TODO: check if multiplicative
-  if ( buffs.seraphim -> check() )
-    m += buffs.seraphim -> data().effectN( 1 ).base_value();
+  m += buffs.seraphim -> data().effectN( 1 ).base_value();
 
   return m;
 }
@@ -5759,8 +5750,7 @@ double paladin_t::composite_multistrike() const
   double m = player_t::composite_multistrike();
   
   // Seraphim adds 30% multistrike TODO: check if multiplicative
-  if ( buffs.seraphim -> check() )
-    m += buffs.seraphim -> data().effectN( 1 ).percent();
+  m += buffs.seraphim -> data().effectN( 1 ).percent();
 
   return m;
 }
@@ -5773,8 +5763,7 @@ double paladin_t::composite_readiness() const
   double rd = player_t::composite_readiness();
   
   // Seraphim adds 30% readiness TODO: check if multiplicative
-  if ( buffs.seraphim -> check() )
-    rd += buffs.seraphim -> data().effectN( 1 ).percent();
+  rd += buffs.seraphim -> data().effectN( 1 ).percent();
 
   return rd;
 }
@@ -5786,8 +5775,7 @@ double paladin_t::composite_bonus_armor() const
   double ba = player_t::composite_bonus_armor();
   
   // Seraphim adds 30% bonus armor TODO: check if multiplicative
-  if ( buffs.seraphim -> check() )
-    ba *= 1.0 + buffs.seraphim -> data().effectN( 1 ).percent();
+  ba *= 1.0 + buffs.seraphim -> data().effectN( 1 ).percent();
 
   return ba;
 }
@@ -5800,8 +5788,7 @@ double paladin_t::composite_player_multiplier( school_e school ) const
 
   // These affect all damage done by the paladin
   // Avenging Wrath buffs everything
-  if ( buffs.avenging_wrath -> check() )
-    m *= 1.0 + buffs.avenging_wrath -> get_damage_mod();
+  m *= 1.0 + buffs.avenging_wrath -> get_damage_mod();
 
   // T15_2pc_melee buffs holy damage only
   if ( dbc::is_school( school, SCHOOL_HOLY ) )
@@ -5810,16 +5797,13 @@ double paladin_t::composite_player_multiplier( school_e school ) const
   }
 
   // Divine Shield reduces everything
-  if ( buffs.divine_shield -> up() )
-    m *= 1.0 + buffs.divine_shield -> data().effectN( 1 ).percent();
+  m *= 1.0 + buffs.divine_shield -> data().effectN( 1 ).percent();
 
   // Glyph of Word of Glory buffs everything
-  if ( buffs.glyph_of_word_of_glory -> check() )
-    m *= 1.0 + buffs.glyph_of_word_of_glory -> value();
+  m *= 1.0 + buffs.glyph_of_word_of_glory -> value();
 
   // T16_2pc_melee buffs everything
-  if ( sets.has_set_bonus( SET_T16_2PC_MELEE ) && buffs.warrior_of_the_light -> up() )
-    m *= 1.0 + buffs.warrior_of_the_light -> data().effectN( 1 ).percent();
+  m *= 1.0 + buffs.warrior_of_the_light -> data().effectN( 1 ).percent();
 
   return m;
 }
@@ -5830,8 +5814,7 @@ double paladin_t::composite_player_heal_multiplier( const action_state_t* s ) co
 {
   double m = player_t::composite_player_heal_multiplier( s );
 
-  if ( buffs.avenging_wrath -> check() )
-    m *= 1.0 + buffs.avenging_wrath -> get_healing_mod();
+  m *= 1.0 + buffs.avenging_wrath -> get_healing_mod();
 
   return m;
 
@@ -5879,8 +5862,7 @@ double paladin_t::composite_attack_power_multiplier() const
   ap += composite_mastery() * passives.divine_bulwark -> effectN( 5 ).mastery_value();
   
   // TODO: check if additive or multiplicative
-  if ( buffs.maraads_truth -> up() )
-    ap += buffs.maraads_truth -> data().effectN( 1 ).percent(); 
+  ap += buffs.maraads_truth -> data().effectN( 1 ).percent(); 
 
   return ap;
 }
