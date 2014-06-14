@@ -192,7 +192,6 @@ struct rogue_t : public player_t
   struct spells_t
   {
     const spell_data_t* bandits_guile_value;
-    const spell_data_t* master_poisoner;
     const spell_data_t* relentless_strikes;
     const spell_data_t* ruthlessness_cp;
     const spell_data_t* shadow_focus;
@@ -2487,9 +2486,6 @@ struct deadly_poison_t : public rogue_poison_t
 
     if ( result_is_hit( state -> result ) )
     {
-      if ( ! p() -> sim -> overrides.magic_vulnerability && p() -> spell.master_poisoner -> ok() )
-        state -> target -> debuffs.magic_vulnerability -> trigger( 1, buff_t::DEFAULT_VALUE(), -1.0, p() -> spell.master_poisoner -> duration() );
-
       double chance = proc_chance;
       if ( p() -> buffs.envenom -> up() )
         chance += p() -> buffs.envenom -> data().effectN( 2 ).percent();
@@ -2548,9 +2544,6 @@ struct wound_poison_t : public rogue_poison_t
   void impact( action_state_t* state )
   {
     rogue_poison_t::impact( state );
-
-    if ( ! p() -> sim -> overrides.magic_vulnerability && p() -> spell.master_poisoner -> ok() )
-      state -> target -> debuffs.magic_vulnerability -> trigger( 1, buff_t::DEFAULT_VALUE(), -1.0, p() -> spell.master_poisoner -> duration() );
 
     double chance = proc_chance;
     if ( p() -> buffs.envenom -> up() )
@@ -3442,7 +3435,6 @@ void rogue_t::init_spells()
   mastery.executioner       = find_mastery_spell( ROGUE_SUBTLETY );
 
   // Misc spells
-  spell.master_poisoner     = find_spell( 93068 );
   spell.relentless_strikes  = find_spell( 58423 );
   spell.ruthlessness_cp     = spec.ruthlessness -> effectN( 1 ).trigger();
   spell.shadow_focus        = find_spell( 112942 );

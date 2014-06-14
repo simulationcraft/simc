@@ -1305,9 +1305,6 @@ struct colossus_smash_t : public warrior_attack_t
       else
         td( s -> target ) -> debuffs_colossus_smash -> trigger( 1, data().effectN( 2 ).percent() );
 
-      if ( !sim -> overrides.physical_vulnerability )
-        s -> target -> debuffs.physical_vulnerability -> trigger();
-
       if ( s -> result == RESULT_CRIT )
         p() -> enrage();
 

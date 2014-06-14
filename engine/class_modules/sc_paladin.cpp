@@ -4004,10 +4004,6 @@ struct judgment_t : public paladin_melee_attack_t
     }
     // end Double Jeopardy ==================================================
 
-    // Physical Vulnerability debuff
-    if ( ! sim -> overrides.physical_vulnerability && p() -> passives.judgments_of_the_bold -> ok() )
-      s -> target -> debuffs.physical_vulnerability -> trigger();
-
     // Selfless Healer talent
     if ( p() -> talents.selfless_healer -> ok() )
       p() -> buffs.selfless_healer -> trigger();
@@ -5098,11 +5094,6 @@ void paladin_t::generate_action_prio_list_ret()
 
   // This should<tm> get Censure up before the auto attack lands
   def -> add_action( "auto_attack" );
-
-  /*if ( find_class_spell( "Judgment" ) -> ok() && find_specialization_spell( "Judgments of the Bold" ) -> ok() )
-  {
-  def -> add_action ( this, "Judgment", "if=!target.debuff.physical_vulnerability.up|target.debuff.physical_vulnerability.remains<6" );
-  }*/
 
   // Avenging Wrath
   def -> add_action( this, "Avenging Wrath" );

@@ -292,7 +292,6 @@ public:
     const spell_data_t* icy_talons;
     const spell_data_t* killing_machine;
     const spell_data_t* improved_frost_presence;
-    const spell_data_t* brittle_bones;
     const spell_data_t* rime;
     const spell_data_t* might_of_the_frozen_wastes;
     const spell_data_t* threat_of_thassarian;
@@ -2490,14 +2489,6 @@ struct blood_plague_t : public death_knight_spell_t
   return cc; 
   }
 
-  virtual void impact( action_state_t* s )
-  {
-    death_knight_spell_t::impact( s );
-    
-    if ( ! sim -> overrides.physical_vulnerability && p() -> spec.ebon_plaguebringer -> ok() &&
-         result_is_hit( s -> result ) )
-      s -> target -> debuffs.physical_vulnerability -> trigger();
-  }
 };
 
 // Frost Fever ==============================================================
@@ -2525,15 +2516,6 @@ struct frost_fever_t : public death_knight_spell_t
 
   virtual double composite_crit() const
   { return action_t::composite_crit() + player -> cache.attack_crit(); }
-
-  virtual void impact( action_state_t* s )
-  {
-    death_knight_spell_t::impact( s );
-
-    if ( ! sim -> overrides.physical_vulnerability && p() -> spec.brittle_bones -> ok() &&
-         result_is_hit( s -> result ) )
-      s -> target -> debuffs.physical_vulnerability -> trigger();
-  }
 
 };
 
@@ -4930,7 +4912,6 @@ void death_knight_t::init_spells()
   spec.blood_of_the_north         = find_specialization_spell( "Blood of the North" );
   spec.icy_talons                 = find_specialization_spell( "Icy Talons" );
   spec.improved_frost_presence    = find_specialization_spell( "Improved Frost Presence" );
-  spec.brittle_bones              = find_specialization_spell( "Brittle Bones" );
   spec.rime                       = find_specialization_spell( "Rime" );
   spec.might_of_the_frozen_wastes = find_specialization_spell( "Might of the Frozen Wastes" );
   spec.threat_of_thassarian       = find_specialization_spell( "Threat of Thassarian" );
