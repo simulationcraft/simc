@@ -387,6 +387,7 @@ public:
   virtual double    composite_attribute( attribute_e attr ) const;
   virtual double    composite_rating_multiplier( rating_e rating ) const;
   virtual double    composite_player_multiplier( school_e school ) const;
+  virtual double    composite_player_critical_damage_multiplier() const;
   virtual double    matching_gear_multiplier( attribute_e attr ) const;
   virtual double    composite_armor_multiplier() const;
   virtual double    composite_block() const;
@@ -618,17 +619,6 @@ struct warrior_attack_t : public warrior_action_t< melee_attack_t >
       cc += p() -> buff.recklessness -> value();
 
     return cc;
-  }
-
-  virtual double composite_player_critical_damage_multiplier() const
-  {
-    double cd = base_t::composite_player_critical_multiplier();
-
-    if( special && p() -> buff.recklessness -> up() )
-      cd += ( p() -> buff.recklessness -> data().effectN( 2 ).percent() * 
-            ( p() -> glyphs.recklessness -> ok() ? p() -> glyphs.recklessness -> effectN( 1 ).percent() : 1 ) );
-
-    return cd;
   }
 
   // helper functions
@@ -4110,6 +4100,20 @@ double warrior_t::composite_player_multiplier( school_e school ) const
 
   return m;
 }
+
+// What a name.
+// warrior_t::composite_player_critical_damage_multiplier ====================
+
+double warrior_t::composite_player_critical_damage_multiplier() const
+  {
+    double cdm = player_t::composite_player_critical_damage_multiplier();
+
+    if( buff.recklessness -> up() )
+      cdm += ( buff.recklessness -> data().effectN( 2 ).percent() * 
+            ( glyphs.recklessness -> ok() ? glyphs.recklessness -> effectN( 1 ).percent() : 1 ) );
+
+    return cdm;
+  }
 
 // warrior_t::composite_attribute =============================================
 
