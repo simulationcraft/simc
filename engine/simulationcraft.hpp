@@ -3971,8 +3971,7 @@ struct actor_t : public noncopyable
 };
 
 // Resolve Event List =====================================================
-// This is the list of the damage events that have occurred in the last ten seconds
-// Used every time Resolve is updated
+// This is the list of the damage events that have occurred. Used every time Resolve is updated
 
 struct resolve_event_list_t 
 {
