@@ -160,7 +160,6 @@ struct tabs_t
 static const char* const beta_warnings[] =
 {
   "Beta! Beta! Beta! Beta! Beta! Beta!",
-  "<strong>Placeholder Armor mitigation values in sc_enemy.cpp. FIX BEFORE RELEASE</strong>",
   "Not All classes are yet supported.",
   "Some class models still need tweaking.",
   "Some class action lists need tweaking.",
