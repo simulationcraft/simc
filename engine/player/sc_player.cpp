@@ -1817,6 +1817,7 @@ void player_t::init_scaling()
 
         case STAT_VERSATILITY_RATING:
           initial.stats.versatility_rating += v;
+          break;
 
         case STAT_WEAPON_DPS:
           if ( main_hand_weapon.damage > 0 )
@@ -2976,6 +2977,7 @@ void player_t::invalidate_cache( cache_e c )
       invalidate_cache( CACHE_DAMAGE_VERSATILITY );
       invalidate_cache( CACHE_HEAL_VERSATILITY );
       invalidate_cache( CACHE_MITIGATION_VERSATILITY );
+      break;
     default:
       cache.invalidate( c );
       break;
