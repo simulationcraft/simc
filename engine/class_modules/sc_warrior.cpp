@@ -2694,55 +2694,29 @@ struct shield_barrier_t : public warrior_action_t<absorb_t>
     attack_power_mod.direct *= 1.0 + p -> perk.improved_shield_barrier -> effectN( 1 ).percent();
   }
 
-  virtual void consume_resource()
+  virtual double cost() const
   {
-    resource_consumed = rage_cost;
-    base_t::consume_resource();
-    player -> resource_loss( current_resource(), resource_consumed, 0, this );
+    double c = base_t::cost();
 
-    if ( sim -> log )
-      sim -> out_log.printf( "%s consumes %.1f %s for %s (%.0f)", player -> name(),
-                     resource_consumed, util::resource_type_string( current_resource() ),
-                     name(), player -> resources.current[ current_resource() ] );
+    c = std::min( 60.0, std::max( p() -> resources.current[ RESOURCE_RAGE ], c ) );
 
-    stats -> consume_resource( current_resource(), resource_consumed );
-  }
-
-  virtual void execute()
-  {
-    //get rage so we can use it in calc_direct_amount
-    rage_cost = std::min( 60.0, std::max( p() -> resources.current[ RESOURCE_RAGE ], cost() ) );
-
-    base_t::execute();
-  }
-
-  virtual double calculate_direct_amount( action_state_t* state)
-  {
-    double amount;
-
-    amount = p() -> cache.attack_power() * attack_power_mod.direct * rage_cost / 20;
-
-    if ( sim -> debug )
-    {
-      sim -> out_debug.printf( "%s amount for %s: dd=%.0f",
-                                player -> name(), name(), amount );
-    }
-    // Record initial and total amount to state
-    state -> result_raw = state -> result_total = amount;
-
-    return amount;
+    return c;
   }
 
   virtual void impact( action_state_t* s )
   {
     //1) Buff does not stack with itself.
     //2) Will overwrite existing buff if new one is bigger.
+    double amount;
+
+    amount = s -> result_amount;
+    amount *= resource_consumed / 20;
     if ( ! p() -> buff.shield_barrier -> check() ||
          ( p() -> buff.shield_barrier -> check() && p() -> buff.shield_barrier -> current_value < s -> result_amount )
        )
     {
       p() -> buff.shield_barrier -> trigger( 1, s -> result_amount );
-      stats -> add_result( 0.0, s -> result_amount, ABSORB, s -> result, s -> block_result, p() );
+      stats -> add_result( 0.0, amount , ABSORB, s -> result, s -> block_result, p() );
     }
   }
 };
