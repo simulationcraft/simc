@@ -4954,7 +4954,7 @@ void shaman_t::init_spells()
   perk.improved_maelstrom_weapon     = find_perk_spell( "Improved Maelstrom Weapon" );
   perk.improved_stormstrike          = find_perk_spell( "Improved Stormstrike" );
   perk.improved_lava_lash_2          = find_perk_spell( 7 );
-  perk.improved_feral_spirits        = find_perk_spell( "Improved Feral Spirits" );
+  perk.improved_feral_spirits        = find_perk_spell( "Improved Feral Spirit" );
 
   // Perks - Elemental
   perk.improved_chain_lightning      = find_perk_spell( "Improved Chain Lightning" );
