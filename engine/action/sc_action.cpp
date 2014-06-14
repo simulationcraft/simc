@@ -1328,7 +1328,7 @@ void action_t::update_resolve( dmg_e type,
       target -> resolve_manager.add_damage_event( source, raw_resolve_amount, sim -> current_time );
     
       // cycle through the resolve damage table and add the appropriate amount of Resolve from each event
-      target -> update_resolve();
+      target -> resolve_manager.update();
     }
 
 

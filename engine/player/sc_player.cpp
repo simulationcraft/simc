@@ -109,7 +109,7 @@ bool parse_talent_url( sim_t* sim,
   {
     bool all_digits = true;
     for ( size_t i = 0; i < url.size() && all_digits; i++ )
-      if ( ! isdigit( url[ i ] ) )
+      if ( ! std::isdigit( url[ i ] ) )
         all_digits = false;
 
     if ( all_digits )
@@ -429,7 +429,7 @@ player_t::player_t( sim_t*             s,
   timeofday( NIGHT_TIME ), //Set to Night by Default, user can override.
   gcd_ready( timespan_t::zero() ), base_gcd( timespan_t::from_seconds( 1.5 ) ), started_waiting( timespan_t::min() ),
   pet_list(), active_pets(),
-  resolve_manager( this ),
+  resolve_manager( *this ),
   invert_scaling( 0 ),
   // Reaction
   reaction_offset( timespan_t::from_seconds( 0.1 ) ), reaction_mean( timespan_t::from_seconds( 0.3 ) ), reaction_stddev( timespan_t::zero() ), reaction_nu( timespan_t::from_seconds( 0.25 ) ),
@@ -9755,172 +9755,285 @@ std::string player_talent_points_t::to_string() const
   return ss.str();
 }
 
-struct resolve_manager_t::resolve_update_event_t final : public event_t
+namespace resolve {
+
+// Resolve Event List =====================================================
+// This is the list of the damage events that have occurred. Used every time Resolve is updated
+
+struct manager_t::damage_event_list_t
 {
-  resolve_update_event_t( player_t* p ) :
-    event_t( *p, "resolve_update_event_t" )
+  damage_event_list_t( const player_t* p ) :
+    myself( p )
+  { }
+
+  // called after each iteration in player_t::resolve_stop()
+  void reset()
+  { event_list.clear(); }
+
+  /* Add a damage event to the Resolve Damage Event list
+   */
+  void add( const player_t* actor, double amount, timespan_t current_time )
+  {
+    // don't count friendly fire
+    if ( actor == myself )
+      return;
+
+    assert( actor -> actor_spawn_index >= 0 && "Trying to register resolve damage event from a dead player! Something is seriously broken in player_t::arise/demise." );
+
+    // Add a new entry
+    event_entry_t e;
+    e.actor_spawn_index = actor -> actor_spawn_index;
+    e.event_amount = amount;
+    e.event_time = current_time;
+
+    event_list.push_back( e );
+  }
+
+  // structure that contains the relevant information for each actor entry in the list
+  struct event_entry_t {
+    int actor_spawn_index;
+    double event_amount;
+    timespan_t event_time;
+
+  };
+  typedef std::vector<event_entry_t> list_t;
+  list_t event_list; // vector of actor entries
+  const player_t* myself; // not sure this is strictly necessary, intended to nullify self-veng, but an is_enemy(actor) call might be better
+};
+
+// Resolve Diminishing Returns List =====================================================
+// this is the sorted list of actors used to determine Resolve diminishing returns.
+// sorted according to auto-attack DPS
+
+struct manager_t::diminishing_returns_list_t
+{
+  diminishing_returns_list_t( const player_t* p ) :
+    myself( p )
+  { }
+
+  /* Reset the diminishing return list
+   */
+  void reset()
+  { actor_list.clear(); }
+
+  /* Get the Diminishing Return Divisor for a actor ( given his actor_spawn_index )
+   * pre-condition: actor_list sorted by raw dps
+   */
+  int get_diminishing_return_factor( int actor_spawn_index )
+  {
+
+    std::vector<actor_entry_t>::iterator found = find_actor( actor_spawn_index );
+    assert( found != actor_list.end() && "Resolve attacker not found in resolve list!" );
+    return as<int>(std::distance( actor_list.begin(), found ) + 1);
+  }
+
+  /* Add average auto-attack dps values to the Diminishing Return list
+   */
+  void add( const player_t* actor, double raw_dps, timespan_t current_time )
+  {
+    if ( actor == myself )
+      return;
+
+    std::vector<actor_entry_t>::iterator found = find_actor( actor -> actor_spawn_index );
+
+    if ( found != actor_list.end() )
+    {
+      // We already have the actor in the list, update:
+      update_actor_entry( *found, raw_dps, current_time );
+    }
+    else
+    {
+      // We do not have the actor in the list, create new entry:
+      actor_entry_t a;
+      a.actor_spawn_index = actor -> actor_spawn_index;
+      a.raw_dps = raw_dps;
+      a.last_attack = current_time;
+
+      actor_list.push_back( a );
+    }
+  }
+
+  /* Update the Diminishing Return list by purging old entries and sorting it by DPS
+   */
+  void update_list( timespan_t current_time )
+  {
+    // Purge any actors that haven't hit you in 10 seconds or more
+    actor_list.erase( std::remove_if( actor_list.begin(), actor_list.end(), was_inactive( current_time ) ), actor_list.end() );
+
+    // Sort the list by DPS
+    std::sort( actor_list.begin(), actor_list.end(), compare_DPS );
+  }
+private:
+  // structure that contains the relevant information for each actor entry in the list
+  struct actor_entry_t {
+    int actor_spawn_index;
+    double raw_dps;
+    timespan_t last_attack;
+  };
+  std::vector<actor_entry_t> actor_list; // vector of actor entries
+  const player_t* myself; // not sure this is strictly necessary, intended to nullify self-veng, but an is_enemy(actor) call might be better
+
+  // comparator function for sorting the list
+  static bool compare_DPS( const actor_entry_t &a, const actor_entry_t &b )
+  { return a.raw_dps > b.raw_dps; }
+
+  // comparator functor for purging inactive players
+  struct was_inactive {
+    was_inactive( const timespan_t& current_time ) :
+      current_time( current_time )
+    {}
+    bool operator()( const actor_entry_t& a ) const
+    { return a.last_attack + timespan_t::from_seconds( 10.0 ) < current_time; } // true if last attack is not more than 10 seconds ago
+    const timespan_t& current_time;
+  };
+
+  std::vector<actor_entry_t>::iterator find_actor( int actor_spawn_index )
+  {
+    std::vector<actor_entry_t>::iterator iter = actor_list.begin();
+    for ( ; iter != actor_list.end(); iter++ )
+    {
+      if ( ( *iter ).actor_spawn_index == actor_spawn_index )
+        return iter;
+    }
+    return iter;
+  }
+
+  // update_actor_entry
+  void update_actor_entry( actor_entry_t& a, double raw_dps, timespan_t last_attack )
+  {
+      a.raw_dps = raw_dps;
+      a.last_attack = last_attack;
+  }
+};
+
+struct manager_t::update_event_t final : public event_t
+{
+  update_event_t( player_t& p ) :
+    event_t( p, "resolve_update_event_t" )
   {
     sim().add_event( this, timespan_t::from_seconds( 1.0 ) ); // this is the automatic resolve update interval
   }
 
   virtual void execute() override
   {
-    assert( p() -> resolve_manager.update_event == this );
-    p() -> update_resolve(); // update resolve
-    p() -> resolve_manager.update_event = new ( sim() ) resolve_update_event_t( p() ); // schedule next update/add
+    assert( p() -> resolve_manager._update_event == this );
+    p() -> resolve_manager.update(); // update resolve
+    p() -> resolve_manager._update_event = new ( sim() ) update_event_t( *p() ); // schedule next update/add
   }
 
 };
 
-resolve_manager_t::resolve_manager_t( player_t* p ) :
-    player( p ),
-    update_event( nullptr ),
+manager_t::manager_t( player_t& p ) :
+    _player( p ),
+    _update_event( nullptr ),
     _started( false ),
-    diminishing_return_list( p ),
-    damage_list( p )
+    _diminishing_return_list( new diminishing_returns_list_t( &p ) ),
+    _damage_list( new damage_event_list_t( &p ) )
 {
 
 }
 
-void resolve_manager_t::start()
+/* Start Resolve
+ */
+void manager_t::start()
 {
-  diminishing_return_list.reset();
-  damage_list.reset();
+  assert( !_started && "Trying to start a already started Resolve Manager." );
 
-  // Make sure we get the buff up right now, to activate the stamina part.
-  player -> update_resolve();
-
-  // Start periodic update event
-  update_event = new (*player -> sim) resolve_update_event_t( player );
+  _diminishing_return_list.reset();
+  _damage_list.reset();
 
   _started = true;
+
+  // Make sure we get the buff up right now, to activate the stamina part.
+  update();
+
+  // Start periodic update event
+  _update_event = new (*_player.sim) update_event_t( _player );
+
 }
 
-void resolve_manager_t::stop()
+/* Stop Resolve
+ */
+void manager_t::stop()
 {
-  diminishing_return_list.reset();
-  damage_list.reset();
+  if ( !_started )
+    return;
+
+  _diminishing_return_list.reset();
+  _damage_list.reset();
 
   _started = false;
 }
 
-// player_t::update_resolve ===============================================
-
-void player_t::update_resolve()
+/* Recalculate the resolve value
+ */
+void manager_t::update()
 {
-    // Relevant constants
-    static const double resolve_dmg_mod = 0.25; // multiplier for the resolve damage component
-    const double resolve_sta_mod = 1 / 250.0 /  dbc.resolve_item_scaling( level );
-    static const timespan_t max_interval = timespan_t::from_seconds( 10.0 );
+  assert( _started && "Trying to update Resolve for a unstarted Resolve Manager." );
 
-    // cycle through the resolve damage table and add the appropriate amount of Resolve from each event
-    double new_amount = 0;
+  // Relevant constants
+  static const double resolve_dmg_mod = 0.25; // multiplier for the resolve damage component
+  const double resolve_sta_mod = 1 / 250.0 /  _player.dbc.resolve_item_scaling( _player.level );
+  static const timespan_t max_interval = timespan_t::from_seconds( 10.0 );
 
-    // Iterate through the Resolve event list, retrieving each event's details
-    const resolve_event_list_t::list_t& list= resolve_manager.damage_list.event_list;
-    if ( ! list.empty() )
+  // cycle through the resolve damage table and add the appropriate amount of Resolve from each event
+  double new_amount = 0;
+
+  // Iterate through the Resolve event list, retrieving each event's details
+  const damage_event_list_t::list_t& list= _damage_list -> event_list;
+  if ( ! list.empty() )
+  {
+    _diminishing_return_list -> update_list( _player.sim -> current_time );
+
+    damage_event_list_t::list_t::const_reverse_iterator i, end;
+    for ( i = list.rbegin(), end = list.rend(); i != end; ++i )
     {
-      resolve_manager.diminishing_return_list.update_list( sim -> current_time );
+      // Only loop from the end until we are over the 10s mark, then break the loop
+      if ( ( _player.sim -> current_time - (*i).event_time ) > max_interval )
+        break;
 
-      resolve_event_list_t::list_t::const_reverse_iterator i, end;
-      for ( i = list.rbegin(), end = list.rend(); i != end; ++i )
-      {
-        const resolve_event_list_t::event_entry_t& entry = *i;
+      // temp variable for current event's contribution
+      // note that this already includes the 2.5x multiplier for spell damage and the normalization
+      // by player max health (all of that done in action_t::update_resolve() )
+      double contribution = (*i).event_amount;
 
-        // Only loop from the end until we are over the 10s mark, then break the loop
-        if ( ( sim -> current_time - entry.event_time ) > max_interval )
-          break;
+      // apply time-based decay
+      double delta_t = ( _player.sim -> current_time - (*i).event_time ).total_seconds();
+      contribution *= 2.0 * ( 10.0 - delta_t ) / 10.0;
 
-        // temp variable for current event's contribution
-        // note that this already includes the 2.5x multiplier for spell damage and the normalization
-        // by player max health (all of that done in action_t::update_resolve() )
-        double contribution = entry.event_amount;
+      // apply diminishing returns
+      int rank = _diminishing_return_list -> get_diminishing_return_factor( (*i).actor_spawn_index );
+      contribution /= rank;
 
-        // apply time-based decay
-        double delta_t = ( sim -> current_time - entry.event_time ).total_seconds();
-        contribution *= 2.0 * ( 10.0 - delta_t ) / 10.0;
-
-        // apply diminishing returns
-        int rank = resolve_manager.diminishing_return_list.get_diminishing_return_factor( entry.actor_spawn_index );
-        contribution /= rank;
-
-        // add to existing amount
-        new_amount += contribution;
-      }
+      // add to existing amount
+      new_amount += contribution;
     }
-
-
-    // multiply by damage modifier
-    new_amount *= resolve_dmg_mod;
-
-    // add stamina-based contribution
-    new_amount += get_attribute( ATTR_STAMINA ) * resolve_sta_mod;
-
-    // multiply by 100 for display purposes
-    new_amount *= 100;
-
-    // updatee the buff
-    buffs.resolve -> trigger( 1, new_amount, 1, timespan_t::zero() );
-
-    // also add this to the Resolve timeline for accuracy
-    resolve_timeline.add( sim -> current_time, buffs.resolve -> value() );
-}
-void resolve_diminishing_returns_list_t::add( const player_t* actor, double raw_dps, timespan_t current_time )
-{
-  if ( actor == myself )
-    return;
-
-  std::vector<actor_entry_t>::iterator found = find_actor( actor -> actor_spawn_index );
-
-  if ( found != actor_list.end() )
-  {
-    // We already have the actor in the list, update:
-    update_actor_entry( *found, raw_dps, current_time );
   }
-  else
-  {
-    // We do not have the actor in the list, create new entry:
-    actor_entry_t a;
-    a.actor_spawn_index = actor -> actor_spawn_index;
-    a.raw_dps = raw_dps;
-    a.last_attack = current_time;
 
-    actor_list.push_back( a );
-  }
+  // multiply by damage modifier
+  new_amount *= resolve_dmg_mod;
+
+  // add stamina-based contribution
+  new_amount += _player.get_attribute( ATTR_STAMINA ) * resolve_sta_mod;
+
+  // multiply by 100 for display purposes
+  new_amount *= 100;
+
+  // updatee the buff
+  _player.buffs.resolve -> trigger( 1, new_amount, 1, timespan_t::zero() );
+
+  // also add this to the Resolve timeline for accuracy
+  _player.resolve_timeline.add( _player.sim -> current_time, _player.buffs.resolve -> value() );
 }
 
-void resolve_diminishing_returns_list_t::update_list( timespan_t current_time )
+void manager_t::add_diminishing_return_entry( const player_t* actor, double raw_dps, timespan_t current_time )
 {
-  // purge any actors that haven't hit you in 10 seconds or more
-  purge_actor_list( current_time );
-
-  // sort the list
-  sort_list();
-
+  _diminishing_return_list -> add( actor, raw_dps, current_time );
 }
 
-// pre-condition: actor_list sorted by raw dps
-int resolve_diminishing_returns_list_t::get_diminishing_return_factor( int actor_spawn_index )
+void manager_t::add_damage_event( const player_t* actor, double amount, timespan_t current_time )
 {
-
-  std::vector<actor_entry_t>::iterator found = find_actor( actor_spawn_index );
-  assert( found != actor_list.end() && "Resolve attacker not found in resolve list!" );
-  return as<int>(std::distance( actor_list.begin(), found ) + 1);
+  _damage_list -> add( actor, amount, current_time );
 }
 
-void resolve_event_list_t::add( const player_t* actor, double amount, timespan_t current_time )
-{
-  // don't count friendly fire
-  if ( actor == myself )
-    return;
-
-  assert( actor -> actor_spawn_index >= 0 && "Trying to register resolve damage event from a dead player! Something is seriously broken in player_t::arise/demise." );
-
-  // Add a new entry
-  event_entry_t e;
-  e.actor_spawn_index = actor -> actor_spawn_index;
-  e.event_amount = amount;
-  e.event_time = current_time;
-
-  event_list.push_back( e );
-}
+} // end namespace resolve

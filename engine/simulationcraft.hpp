@@ -3706,36 +3706,36 @@ public:
   double mitigation_versatility() const;
 #else
   // Passthrough cache stat functions for inactive cache
-  double strength() const  { return player -> strength();  }
-  double agility() const   { return player -> agility();   }
-  double stamina() const   { return player -> stamina();   }
-  double intellect() const { return player -> intellect(); }
-  double spirit() const    { return player -> spirit();    }
-  double spell_power( school_e s ) const { return player -> composite_spell_power( s ); }
-  double attack_power() const            { return player -> composite_melee_attack_power();   }
-  double attack_expertise() const { return player -> composite_melee_expertise(); }
-  double attack_hit() const       { return player -> composite_melee_hit();       }
-  double attack_crit() const      { return player -> composite_melee_crit();      }
-  double attack_haste() const     { return player -> composite_melee_haste();     }
-  double attack_speed() const     { return player -> composite_melee_speed();     }
-  double spell_hit() const        { return player -> composite_spell_hit();       }
-  double spell_crit() const       { return player -> composite_spell_crit();      }
-  double spell_haste() const      { return player -> composite_spell_haste();     }
-  double spell_speed() const      { return player -> composite_spell_speed();     }
-  double dodge() const            { return player -> composite_dodge();      }
-  double parry() const            { return player -> composite_parry();      }
-  double block() const            { return player -> composite_block();      }
-  double crit_block() const       { return player -> composite_crit_block(); }
-  double crit_avoidance() const   { return player -> composite_crit_avoidance();       }
-  double miss() const             { return player -> composite_miss();       }
-  double armor() const            { return player -> composite_armor();           }
-  double mastery() const          { return player -> composite_mastery();   }
-  double mastery_value() const    { return player -> composite_mastery_value();   }
-  double multistrike() const      { return player -> composite_multistrike(); }
-  double readiness() const        { return player -> composite_readiness(); }
-  double damage_versatility() const { return player -> composite_damage_versatility(); }
-  double heal_versatility() const { return player -> composite_heal_versatility(); }
-  double mitigation_versatility() const { return player -> composite_mitigation_versatility(); }
+  double strength() const  { return _player -> strength();  }
+  double agility() const   { return _player -> agility();   }
+  double stamina() const   { return _player -> stamina();   }
+  double intellect() const { return _player -> intellect(); }
+  double spirit() const    { return _player -> spirit();    }
+  double spell_power( school_e s ) const { return _player -> composite_spell_power( s ); }
+  double attack_power() const            { return _player -> composite_melee_attack_power();   }
+  double attack_expertise() const { return _player -> composite_melee_expertise(); }
+  double attack_hit() const       { return _player -> composite_melee_hit();       }
+  double attack_crit() const      { return _player -> composite_melee_crit();      }
+  double attack_haste() const     { return _player -> composite_melee_haste();     }
+  double attack_speed() const     { return _player -> composite_melee_speed();     }
+  double spell_hit() const        { return _player -> composite_spell_hit();       }
+  double spell_crit() const       { return _player -> composite_spell_crit();      }
+  double spell_haste() const      { return _player -> composite_spell_haste();     }
+  double spell_speed() const      { return _player -> composite_spell_speed();     }
+  double dodge() const            { return _player -> composite_dodge();      }
+  double parry() const            { return _player -> composite_parry();      }
+  double block() const            { return _player -> composite_block();      }
+  double crit_block() const       { return _player -> composite_crit_block(); }
+  double crit_avoidance() const   { return _player -> composite_crit_avoidance();       }
+  double miss() const             { return _player -> composite_miss();       }
+  double armor() const            { return _player -> composite_armor();           }
+  double mastery() const          { return _player -> composite_mastery();   }
+  double mastery_value() const    { return _player -> composite_mastery_value();   }
+  double multistrike() const      { return _player -> composite_multistrike(); }
+  double readiness() const        { return _player -> composite_readiness(); }
+  double damage_versatility() const { return _player -> composite_damage_versatility(); }
+  double heal_versatility() const { return _player -> composite_heal_versatility(); }
+  double mitigation_versatility() const { return _player -> composite_mitigation_versatility(); }
 #endif
 };
 
@@ -3970,128 +3970,31 @@ struct actor_t : public noncopyable
   { return name_str.c_str(); }
 };
 
-// Resolve Event List =====================================================
-// This is the list of the damage events that have occurred. Used every time Resolve is updated
-
-struct resolve_event_list_t 
-{
-  resolve_event_list_t( const player_t* p ) : myself( p )
-  { }
-
-  // called after each iteration in player_t::resolve_stop()
-  void reset()
-  { event_list.clear(); }
-
-  // this is the method that we use to interact with the structure
-  void add( const player_t* actor, double amount, timespan_t current_time );
-
-  // structure that contains the relevant information for each actor entry in the list
-  struct event_entry_t {
-    int actor_spawn_index;
-    double event_amount;
-    timespan_t event_time;
-    
-  };
-  typedef std::vector<event_entry_t> list_t;
-  list_t event_list; // vector of actor entries
-  const player_t* myself; // not sure this is strictly necessary, intended to nullify self-veng, but an is_enemy(actor) call might be better
-};
-
-// Resolve Actor List =====================================================
-// this is the sorted list of actors used to determine Resolve diminishing returns.
-// sorted according to auto-attack DPS
-
-struct resolve_diminishing_returns_list_t
-{
-  resolve_diminishing_returns_list_t( const player_t* p ) :
-    myself( p )
-  { }
-
-  // called after each iteration in player_t::resolve_stop()
-  void reset()
-  { actor_list.clear(); }
-
-  // this returns a list of pairs with actor_spawn_index/diminishing_return_factor currently in the diminshing return list.
-  int get_diminishing_return_factor( int actor_spawn_index );
-
-  // this is the method that we use to interact with the structure
-  void add( const player_t* actor, double raw_dps, timespan_t current_time );
-  void update_list( timespan_t current_time );
-private:
-  // structure that contains the relevant information for each actor entry in the list
-  struct actor_entry_t {
-    int actor_spawn_index;
-    double raw_dps;
-    timespan_t last_attack;
-  };
-  std::vector<actor_entry_t> actor_list; // vector of actor entries
-  const player_t* myself; // not sure this is strictly necessary, intended to nullify self-veng, but an is_enemy(actor) call might be better
-
-  // comparator function for sorting the list
-  static bool compare_DPS( const actor_entry_t &a, const actor_entry_t &b )
-  { return a.raw_dps > b.raw_dps; }
-
-  // comparator functor for purging inactive players
-  struct was_inactive {
-    was_inactive( const timespan_t& current_time ) :
-      current_time( current_time )
-    {}
-    bool operator()( const actor_entry_t& a ) const
-    { return a.last_attack + timespan_t::from_seconds( 10.0 ) < current_time; } // true if last attack is not more than 10 seconds ago
-    const timespan_t& current_time;
-  };
-
-  // method to sort the list according to raw DPS
-  void sort_list() { std::sort( actor_list.begin(), actor_list.end(), compare_DPS ); }
-
-  // method to purge the actor list of any enemy that hasn't participated in the last 5 seconds
-  void purge_actor_list( timespan_t current_time )
-  {
-    // Erase-remove idiom
-    actor_list.erase( std::remove_if( actor_list.begin(), actor_list.end(), was_inactive( current_time ) ), actor_list.end() );
-  }
-
-  std::vector<actor_entry_t>::iterator find_actor( int actor_spawn_index )
-  {
-    std::vector<actor_entry_t>::iterator iter = actor_list.begin();
-    for ( ; iter != actor_list.end(); iter++ )
-    {
-      if ( ( *iter ).actor_spawn_index == actor_spawn_index )
-        return iter;
-    }
-    return iter;
-  }
-
-  // update_actor_entry
-  void update_actor_entry( actor_entry_t& a, double raw_dps, timespan_t last_attack )
-  {
-      a.raw_dps = raw_dps;
-      a.last_attack = last_attack;
-  }
-};
-
+namespace resolve {
 /* Encapsulations of Resolve interface so we can keep most things out of player_t (bloated enough)
  */
-struct resolve_manager_t
+struct manager_t
 {
-  resolve_manager_t( player_t* );
+  manager_t( player_t& );
   void start();
   void stop();
+  void update();
   bool is_started() const
   { return _started; }
-  void add_diminishing_return_entry( const player_t* actor, double raw_dps, timespan_t current_time )
-  { diminishing_return_list.add( actor, raw_dps, current_time ); }
-  void add_damage_event( const player_t* actor, double amount, timespan_t current_time )
-  { damage_list.add( actor, amount, current_time ); }
+  void add_diminishing_return_entry( const player_t* actor, double raw_dps, timespan_t current_time );
+  void add_damage_event( const player_t* actor, double amount, timespan_t current_time );
 private:
-  friend struct player_t;
-  struct resolve_update_event_t;
-  player_t* player;
-  core_event_t* update_event;
+  struct update_event_t;
+  struct diminishing_returns_list_t;
+  struct damage_event_list_t;
+  player_t& _player;
+  core_event_t* _update_event;
   bool _started;
-  resolve_diminishing_returns_list_t diminishing_return_list;
-  resolve_event_list_t damage_list;
+  std::shared_ptr<diminishing_returns_list_t> _diminishing_return_list;
+  std::shared_ptr<damage_event_list_t >_damage_list;
 };
+
+} // resolve
 
 /* Player Report Extension
  * Allows class modules to write extension to the report sections
@@ -4147,8 +4050,7 @@ struct player_t : public actor_t
   std::vector<pet_t*> pet_list;
   std::vector<pet_t*> active_pets;
   std::vector<absorb_buff_t*> absorb_buff_list;
-  resolve_manager_t resolve_manager;
-  virtual void   update_resolve();
+  resolve::manager_t resolve_manager;
 
   int         invert_scaling;
 
