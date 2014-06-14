@@ -86,7 +86,6 @@ public:
    // Prot only
     buff_t* bladed_armor;
     buff_t* blood_craze;
-    buff_t* hold_the_line;
     buff_t* last_stand;
     absorb_buff_t* shield_barrier;
     buff_t* shield_block;
@@ -168,8 +167,6 @@ public:
     const spell_data_t* headlong_rush;
     const spell_data_t* heroic_leap;
    // Prot Only
-    const spell_data_t* hold_the_line;
-    const spell_data_t* heavy_repercussions;
   } spell;
 
   // Glyphs
@@ -1057,9 +1054,21 @@ struct bladestorm_tick_t : public warrior_attack_t
     warrior_attack_t( name, p, p -> talents.bladestorm -> effectN ( 1 ).trigger() )
   {
     background = direct_tick = may_miss = may_dodge = may_parry = true;
-    aoe         = -1;
+    aoe = -1;
     if ( p -> specialization() == WARRIOR_ARMS )
-      weapon_multiplier *= 1.5;
+      weapon_multiplier *= 2;
+  }
+
+  virtual double action_multiplier() const
+  {
+    double am = warrior_attack_t::action_multiplier();
+
+    if ( p() -> specialization() != WARRIOR_PROTECTION ) 
+      return am;
+    else if ( p() -> has_shield_equipped() ) // Bladestorm does 80% weapon damage, but only when a shield is equipped as a protection warrior.
+      am *= 1.0 + 1 / 3;
+
+    return am;
   }
 
   virtual void execute()
@@ -1976,9 +1985,6 @@ struct revenge_t : public warrior_attack_t
     if( p() -> buff.shield_charge -> up() )
       am *= 1.0 + p() -> buff.shield_charge -> default_value;
 
-    if( p() -> buff.hold_the_line -> up() )
-      am*= 1.0 + p() -> buff.hold_the_line -> default_value;
-
     return am;
   }
 
@@ -2008,8 +2014,6 @@ struct revenge_t : public warrior_attack_t
     {
       if ( rng().roll( p() -> sets.set( SET_T15_2PC_TANK ) -> proc_chance() ) )
         p() -> buff.tier15_2pc_tank -> trigger();
-
-      p() -> buff.hold_the_line -> expire();
     }
   }
 };
@@ -2109,7 +2113,7 @@ struct shield_slam_t : public warrior_attack_t
     parse_options( NULL, options_str );
 
     rage_gain = data().effectN( 3 ).resource( RESOURCE_RAGE );
-    attack_power_mod.direct = 3.291; // Hard coded 5/22/14 as DBC doesn't show this.
+    attack_power_mod.direct = 3.83; // Hard coded 6/14/14 as DBC doesn't show this.
 
     attack_power_mod.direct *= 1.0 + p -> perk.improved_shield_slam -> effectN( 1 ).percent();
   }
@@ -2120,9 +2124,6 @@ struct shield_slam_t : public warrior_attack_t
 
     if( p() -> buff.shield_charge -> up() )
       am *= 1.0 + p() -> buff.shield_charge -> default_value;
-
-    if( p() -> buff.shield_block -> up() )
-      am *= 1.0 + p() -> spell.heavy_repercussions -> effectN( 1 ).percent();
 
     return am;
   }
@@ -2688,6 +2689,7 @@ struct shield_barrier_t : public warrior_action_t<absorb_t>
 
     may_crit = false;
     target   = player;
+    attack_power_mod.direct = 2.5; // Effect #1 is not correct.
 
     attack_power_mod.direct *= 1.0 + p -> perk.improved_shield_barrier -> effectN( 1 ).percent();
   }
@@ -2718,10 +2720,7 @@ struct shield_barrier_t : public warrior_action_t<absorb_t>
   {
     double amount;
 
-    amount = p() -> cache.attack_power() * data().effectN(1).ap_coeff() * rage_cost / 60; // I think this is right?
-
-    if ( ! sim -> average_range ) 
-      amount = floor( amount + rng().real() );
+    amount = p() -> cache.attack_power() * attack_power_mod.direct * rage_cost / 20;
 
     if ( sim -> debug )
     {
@@ -3303,8 +3302,6 @@ void warrior_t::init_spells()
   spell.intervene               = find_class_spell( "Intervene"                    );
   spell.headlong_rush           = find_class_spell( "Headlong Rush"                );
   spell.heroic_leap             = find_class_spell( "Heroic Leap"                  );
-  spell.heavy_repercussions     = find_spell( "Glyph of Heavy Repercussions"       ); //See if blizzard changes the name.
-  spell.hold_the_line           = find_spell( "Glyph of Hold the Line"             );
 
   // Active spells
   active_deep_wounds        = new deep_wounds_t( this );
@@ -3850,10 +3847,6 @@ void warrior_t::create_buffs()
 
   buff.heroic_leap_glyph = buff_creator_t( this, "heroic_leap_glyph", glyphs.heroic_leap );
 
-  buff.hold_the_line     = buff_creator_t( this, "hold_the_line",   spell.hold_the_line -> effectN( 1 ).trigger() )
-                           .default_value( spell.hold_the_line -> effectN( 1 ).trigger() -> effectN( 1 ).percent() )
-                           .chance( 1 );
-
   buff.meat_cleaver     = buff_creator_t( this, "meat_cleaver",     spec.meat_cleaver -> effectN( 1 ).trigger() )
                           .max_stack( find_spell( 85739 ) -> max_stacks() + perk.improved_meat_cleaver -> effectN( 1 ).base_value() );
 
@@ -3861,7 +3854,8 @@ void warrior_t::create_buffs()
 
   buff.raging_blow_glyph = buff_creator_t( this, "raging_blow_glyph",  glyphs.raging_blow );
 
-  buff.raging_wind      = buff_creator_t( this, "raging_wind",      glyphs.raging_wind -> effectN( 1 ).trigger() );
+  buff.raging_wind      = buff_creator_t( this, "raging_wind",      glyphs.raging_wind -> effectN( 1 ).trigger() )
+                          .chance( glyphs.raging_wind -> ok() ? 1 : 0 );
 
   buff.ravager          = buff_creator_t( this, "ravager",          talents.ravager )
                           .add_invalidate( CACHE_PARRY );
@@ -4416,9 +4410,6 @@ void warrior_t::assess_damage( school_e school,
 
   if ( s -> result == RESULT_DODGE || s -> result == RESULT_PARRY )
     cooldown.revenge -> reset( true );
-
-  if ( s -> result == RESULT_PARRY )
-    buff.hold_the_line -> trigger();
 
   player_t::assess_damage( school, dtype, s );
 
