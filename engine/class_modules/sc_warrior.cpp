@@ -1110,7 +1110,7 @@ struct bladestorm_t : public warrior_attack_t
 
     bladestorm_mh -> execute();
 
-    if ( bladestorm_mh -> result_is_hit( execute_state -> result ) && bladestorm_oh )
+    if ( bladestorm_oh )
       bladestorm_oh -> execute();
   }
 

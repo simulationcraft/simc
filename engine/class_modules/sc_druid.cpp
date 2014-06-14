@@ -607,7 +607,7 @@ public:
 
   void balance_tracker();
   void balance_expressions();
-  void trigger_shooting_stars( result_e );
+  void trigger_shooting_stars( action_state_t* state );
   void trigger_soul_of_the_forest();
 
   void init_beast_weapon( weapon_t& w, double swing_time )
@@ -4099,7 +4099,6 @@ struct hurricane_tick_t : public druid_spell_t
   hurricane_tick_t( druid_t* player, const spell_data_t* s  ) :
     druid_spell_t( "hurricane", player, s )
   {
-    background = true;
     aoe = -1;
   }
 };
@@ -4288,7 +4287,7 @@ struct mark_of_the_wild_t : public druid_spell_t
       virtual void tick( dot_t* d )
       {
         druid_spell_t::tick( d );
-        p() -> trigger_shooting_stars( d -> state -> result );
+        p() -> trigger_shooting_stars( d -> state );
       }
     };
 
@@ -4330,7 +4329,7 @@ struct mark_of_the_wild_t : public druid_spell_t
     virtual void tick( dot_t* d )
     {
       druid_spell_t::tick( d );
-      p() -> trigger_shooting_stars( d -> state -> result );
+      p() -> trigger_shooting_stars( d -> state );
     }
 
     virtual void impact( action_state_t* s )
@@ -4402,7 +4401,7 @@ struct mark_of_the_wild_t : public druid_spell_t
       virtual void tick( dot_t* d )
       {
         druid_spell_t::tick( d );
-        p() -> trigger_shooting_stars( d -> state -> result );
+        p() -> trigger_shooting_stars( d -> state );
       }
     };
 
@@ -4434,7 +4433,7 @@ struct mark_of_the_wild_t : public druid_spell_t
     virtual void tick( dot_t* d )
     {
       druid_spell_t::tick( d );
-      p() -> trigger_shooting_stars( d -> state -> result );
+      p() -> trigger_shooting_stars( d -> state );
     }
 
     double composite_target_multiplier( player_t* target ) const
@@ -4620,18 +4619,31 @@ struct starfire_t : public druid_spell_t
 
 // Starfall Spell ===========================================================
 
+struct starfall_pulse_t : public druid_spell_t
+{
+  starfall_pulse_t( druid_t* player, const std::string& name ) :
+    druid_spell_t( name, player, player -> find_spell( 50288 ) )
+  {
+    direct_tick = true;
+    aoe = -1;
+  }
+};
+
 struct starfall_t : public druid_spell_t
 {
+  spell_t* starfall;
   starfall_t( druid_t* player, const std::string& options_str ) :
-    druid_spell_t( "starfall", player, player -> find_specialization_spell( "Starfall" ) )
+    druid_spell_t( "starfall", player, player -> find_specialization_spell( "Starfall" ) ),
+    starfall( new starfall_pulse_t( player, "starfall_pulse" ) )
   {
     parse_options( NULL, options_str );
 
-    hasted_ticks = harmful = false;
+    hasted_ticks = false;
+    tick_zero = true;
+    cooldown = player -> cooldown.starfallsurge;
     base_multiplier *= 1.0 + player -> sets.set( SET_T14_2PC_CASTER ) -> effectN( 1 ).percent();
-    aoe = -1;
-    dynamic_tick_action = tick_zero = true;
     base_multiplier *= 1.0 + player -> perk.empowered_starfall -> effectN( 1 ).percent();
+    add_child( starfall );
   }
 
   double composite_target_multiplier( player_t* target ) const
@@ -4644,17 +4656,21 @@ struct starfall_t : public druid_spell_t
     return m;
   }
 
+  virtual void tick( dot_t *d )
+  {
+    starfall -> execute();
+  }
+
   virtual void execute()
   {
     p() -> buff.starfall -> trigger();
 
     druid_spell_t::execute();
-    p() -> cooldown.starfallsurge -> start();
   }
 
   virtual bool ready()
   {
-    if ( !p() -> cooldown.starfallsurge -> up() )
+    if ( p() -> buff.starfall -> up() )
       return false;
 
     return druid_spell_t::ready();
@@ -4960,9 +4976,13 @@ struct wrath_t : public druid_spell_t
 // Druid Character Definition
 // ==========================================================================
 
-void druid_t::trigger_shooting_stars( result_e result )
+void druid_t::trigger_shooting_stars( action_state_t* s )
 {
-  if ( result == RESULT_CRIT )
+  if ( s -> target != sim -> target )
+    return;
+  // Shooting stars will only proc on the most recent target of your moonfire/sunfire.
+  // For now, assume that the main simulation "Fluffy Pillow" is the most recent target all the time.
+  if ( s -> result == RESULT_CRIT )
   {
     if ( rng().roll( spec.shooting_stars -> effectN( 1 ).percent() * 2 ) )
     {
@@ -5464,7 +5484,7 @@ void druid_t::create_buffs()
   buff.shooting_stars            = buff_creator_t( this, "shooting_stars", spec.shooting_stars -> effectN( 1 ).trigger() )
                                    .chance( spec.shooting_stars -> proc_chance() + sets.set( SET_T16_4PC_CASTER ) -> effectN( 1 ).percent() );
 
-  buff.starfall                  = buff_creator_t( this, "starfall",       find_spell( 160836 )  );
+  buff.starfall                  = buff_creator_t( this, "starfall", spec.starfall  );
 
   // Feral
   buff.tigers_fury           = buff_creator_t( this, "tigers_fury", find_specialization_spell( "Tiger's Fury" ) )
@@ -5733,15 +5753,14 @@ void druid_t::apl_balance()
 
   aoe -> add_action( this, "Celestial Alignment" );
   aoe -> add_action( "incarnation,if=(eclipse_dir.lunar&eclipse_max>=5)|@eclipse_energy<=10" );
-  aoe -> add_action( this, "Starfall", "if=charges=3" );
-  aoe -> add_talent( this, "Stellar Flare", "if=@eclipse_energy<10&!dot.stellar_flare.ticking" );
-  aoe -> add_action( this, "Moonfire", "if=!dot.moonfire.ticking|(dot.moonfire.remains<=8&eclipse_change<=12&eclipse_energy=100&eclipse_change>=8)|(buff.celestial_alignment.up&dot.moonfire.ticking&dot.sunfire.ticking&dot.sunfire.remains<=6)" );
-  aoe -> add_action( this, "Sunfire", "if=!dot.sunfire.ticking|(eclipse_energy<0&dot.sunfire.remains<=8)" );
+  aoe -> add_action( this, "Starfall" );
+  aoe -> add_talent( this, "Stellar Flare", "cycle_targets=1,if=!dot.stellar_flare.ticking" );
+  aoe -> add_action( this, "Moonfire", "cycle_targets=1,if=!dot.moonfire.ticking|(dot.moonfire.remains<=8&eclipse_change<=12&eclipse_energy=100&eclipse_change>=8)|(buff.celestial_alignment.up&dot.moonfire.ticking&dot.sunfire.ticking&dot.sunfire.remains<=6)" );
+  aoe -> add_action( this, "Sunfire", "cycle_targets=1,if=!dot.sunfire.ticking|(eclipse_energy<0&dot.sunfire.remains<=8)" );
   aoe -> add_action( this, "Wrath", "if=buff.celestial_alignment.up&buff.solar_empowerment.up&eclipse_energy<0" );
   aoe -> add_action( this, "Starfire", "if=buff.celestial_alignment.up&buff.lunar_empowerment.up&eclipse_energy>=0" );
-  aoe -> add_action( this, "Starfall" );
-  aoe -> add_action( this, "Starfire", "if=eclipse_energy>0|(eclipse_energy<0&eclipse_change<2)" );
-  aoe -> add_action( this, "Wrath" );
+  aoe -> add_action( this, "Starfire", "if=(eclipse_energy>0&eclipse_change>execute_time)|(eclipse_energy<0&eclipse_change<execute_time)" );
+  aoe -> add_action( this, "Wrath" , "if=(eclipse_energy<0&eclipse_change>execute_time)|(eclipse_energy>0&eclipse_change<execute_time)" );
 }
 
 // Guardian Combat Action Priority List ==============================
@@ -5813,7 +5832,7 @@ void druid_t::init_scaling()
 
   // Technically weapon speed affects stormlash damage for feral and
   // guardian, but not a big enough deal to waste time simming it.
-  scales_with[ STAT_WEAPON_SPEED  ] = false;
+  scales_with[ STAT_WEAPON_SPEED ] = false;
 
   if ( specialization() == DRUID_FERAL )
     scales_with[ STAT_SPIRIT ] = false;
@@ -5962,7 +5981,9 @@ double druid_t::mana_regen_per_second() const
   double mp5 = player_t::mana_regen_per_second();
 
   if ( buff.moonkin_form -> check() ) //Boomkins get 150% increased mana regeneration, scaling with haste.
-    mp5 *= buff.moonkin_form -> data().effectN( 5 ).percent() + ( 1 / cache.spell_haste() );
+    mp5 *= 1.0 + buff.moonkin_form -> data().effectN( 5 ).percent() + ( 1 / cache.spell_haste() );
+
+  mp5 *= 1.0 + spec.mana_attunement -> effectN( 1 ).percent();
 
   return mp5;
 }
