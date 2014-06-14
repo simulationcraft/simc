@@ -126,6 +126,7 @@ public:
   timespan_t ls_reset;
   int        active_flame_shocks;
   bool       lava_surge_during_lvb;
+  bool       enhancement_revolution;
   std::vector<counter_t*> counters;
 
   // Options
@@ -394,7 +395,7 @@ public:
 
   shaman_t( sim_t* sim, const std::string& name, race_e r = RACE_TAUREN ) :
     player_t( sim, SHAMAN, name, r ),
-    ls_reset( timespan_t::zero() ), active_flame_shocks( 0 ), lava_surge_during_lvb( false ),
+    ls_reset( timespan_t::zero() ), active_flame_shocks( 0 ), lava_surge_during_lvb( false ), enhancement_revolution( false ), 
     wf_delay( timespan_t::from_seconds( 0.95 ) ), wf_delay_stddev( timespan_t::from_seconds( 0.25 ) ),
     uf_expiration_delay( timespan_t::from_seconds( 0.3 ) ), uf_expiration_delay_stddev( timespan_t::from_seconds( 0.05 ) ),
     active_lightning_charge( nullptr ),
@@ -591,6 +592,7 @@ public:
   // Misc stuff
   bool        totem;
   bool        shock;
+  bool        hasted_cd;
 
   // Echo of Elements functionality
   bool        may_proc_eoe;
@@ -601,7 +603,7 @@ public:
   shaman_action_t( const std::string& n, shaman_t* player,
                    const spell_data_t* s = spell_data_t::nil() ) :
     ab( n, player, s ),
-    totem( false ), shock( false ),
+    totem( false ), shock( false ), hasted_cd( false ),
     may_proc_eoe( false ), uses_eoe( false )
   {
     ab::may_crit = true;
@@ -680,6 +682,8 @@ public:
       p() -> buff.echo_of_the_elements -> expire();
       used_eoe -> occur();
     }
+    else if ( hasted_cd )
+      cd *= ab::player -> cache.attack_speed();
 
     ab::update_ready( cd );
   }
@@ -782,6 +786,23 @@ public:
       maelstrom_procs = new counter_t( p() );
       maelstrom_procs_wasted = new counter_t( p() );
     }
+  }
+
+  timespan_t gcd() const
+  {
+    timespan_t g = ab::gcd();
+
+    if ( g == timespan_t::zero() )
+      return timespan_t::zero();
+
+    if ( p() -> enhancement_revolution )
+    {
+      g *= player -> cache.attack_speed();
+      if ( g < min_gcd )
+        g = min_gcd;
+    }
+
+    return g;
   }
 
   void impact( action_state_t* );
@@ -2476,7 +2497,7 @@ void shaman_attack_t::impact( action_state_t* state )
   if ( may_proc_flametongue && weapon && weapon -> buff_type == FLAMETONGUE_IMBUE )
     p() -> flametongue -> schedule_execute();
 
-  if ( state -> result == RESULT_CRIT )
+  if ( p() -> enhancement_revolution && state -> result == RESULT_CRIT )
     p() -> buff.flurry -> trigger( p() -> buff.flurry -> data().initial_stacks() );
 
   if ( p() -> buff.tier16_2pc_melee -> up() )
@@ -2630,6 +2651,7 @@ struct lava_lash_t : public shaman_attack_t
     check_spec( SHAMAN_ENHANCEMENT );
     uses_eoe = may_proc_windfury = true;
     school = SCHOOL_FIRE;
+    hasted_cd = player -> enhancement_revolution;
 
     base_multiplier += player -> sets.set( SET_T14_2PC_MELEE ) -> effectN( 1 ).percent();
     base_multiplier *= 1.0 + player -> perk.improved_lava_lash_2 -> effectN( 1 ).percent();
@@ -2640,6 +2662,9 @@ struct lava_lash_t : public shaman_attack_t
 
     if ( weapon -> type == WEAPON_NONE )
       background        = true; // Do not allow execution.
+
+    if ( player -> enhancement_revolution )
+      cooldown -> duration = timespan_t::from_seconds( 10.5 );
   }
 
   void impact( action_state_t* state )
@@ -2687,6 +2712,7 @@ struct stormstrike_t : public shaman_attack_t
     parse_options( NULL, options_str );
 
     may_proc_eoe         = true;
+    hasted_cd           = player -> enhancement_revolution;
     weapon               = &( p() -> main_hand_weapon );
     weapon_multiplier    = 0.0;
     may_crit             = false;
@@ -2704,6 +2730,9 @@ struct stormstrike_t : public shaman_attack_t
       stormstrike_oh = new stormstrike_attack_t( "stormstrike_offhand", player, data().effectN( 3 ).trigger(), &( player -> off_hand_weapon ) );
       add_child( stormstrike_oh );
     }
+
+    if ( player -> enhancement_revolution )
+      cooldown -> duration = timespan_t::from_seconds( 7.5 );
   }
 
   void execute()
@@ -2758,6 +2787,7 @@ struct windstrike_t : public shaman_attack_t
     parse_options( NULL, options_str );
 
     may_proc_eoe         = true;
+    hasted_cd           = player -> enhancement_revolution;
     school               = SCHOOL_PHYSICAL;
     weapon               = &( p() -> main_hand_weapon );
     weapon_multiplier    = 0.0;
@@ -2779,6 +2809,9 @@ struct windstrike_t : public shaman_attack_t
       windstrike_oh -> school = SCHOOL_PHYSICAL;
       add_child( windstrike_oh );
     }
+
+    if ( player -> enhancement_revolution )
+      cooldown -> duration = timespan_t::from_seconds( 7.5 );
   }
 
   void execute()
@@ -3088,8 +3121,12 @@ struct fire_nova_t : public shaman_spell_t
     may_crit = may_miss = callbacks = false;
     uses_eoe  = true;
     aoe       = -1;
+    hasted_cd = player -> enhancement_revolution;
 
     impact_action = new fire_nova_explosion_t( player );
+
+    if ( player -> enhancement_revolution )
+      cooldown -> duration = timespan_t::from_seconds( 4.5 );
   }
 
   // Override assess_damage, as fire_nova_explosion is going to do all the
@@ -3479,6 +3516,7 @@ struct unleash_elements_t : public shaman_spell_t
     may_crit     = false;
     may_miss     = false;
     may_proc_eoe = true;
+    hasted_cd   = player -> enhancement_revolution;
 
     wind = new unleash_wind_t( "unleash_wind", player );
     flame = new unleash_flame_t( "unleash_flame", player );
@@ -3632,6 +3670,7 @@ struct flame_shock_t : public shaman_spell_t
     cooldown -> duration  = data().cooldown() + player -> spec.spiritual_insight -> effectN( 3 ).time_value();
     shock                 = true;
     uses_shocking_lava    = true;
+    hasted_cd            = player -> enhancement_revolution;
   }
 
   // Override assess_damage, so we can prevent 0 damage hits from reports, when
@@ -3697,7 +3736,8 @@ struct frost_shock_t : public shaman_spell_t
     if ( ! player -> perk.improved_frost_shock -> ok() )
       cooldown = player -> cooldown.shock;
 
-    shock    = true;
+    shock      = true;
+    hasted_cd = player -> enhancement_revolution;
   }
 
   void execute()
@@ -4610,6 +4650,7 @@ void shaman_t::create_options()
     opt_timespan( "wf_delay_stddev",            wf_delay_stddev            ),
     opt_timespan( "uf_expiration_delay",        uf_expiration_delay        ),
     opt_timespan( "uf_expiration_delay_stddev", uf_expiration_delay_stddev ),
+    opt_bool( "enhancement_revolution",      enhancement_revolution ),
     opt_null()
   };
 
