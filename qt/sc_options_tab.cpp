@@ -256,7 +256,7 @@ void SC_OptionsTab::createGlobalsTab()
   // Create right side of global options
   QFormLayout* globalsLayout_right = new QFormLayout();
   globalsLayout_right -> setFieldGrowthPolicy( QFormLayout::FieldsStayAtSizeHint );
-  globalsLayout_right -> addRow( tr( "Aura Delay" ),               choice.aura_delay = createChoice( 3, "400ms", "500ms", "600ms" ) );
+  globalsLayout_right -> addRow( tr( "Aura Delay" ),               choice.aura_delay = createChoice( 4, "300ms", "400ms", "500ms", "600ms" ) );
   globalsLayout_right -> addRow( tr( "Generate Debug" ),                choice.debug = createChoice( 3, "None", "Log Only", "Gory Details" ) );
   globalsLayout_right -> addRow( tr( "Report Pets Separately" ),  choice.report_pets = createChoice( 2, "Yes", "No" ) );
   globalsLayout_right -> addRow( tr( "Report Print Style" ),      choice.print_style = createChoice( 3, "MoP", "White", "Classic" ) );
@@ -557,7 +557,7 @@ void SC_OptionsTab::decodeOptions()
   load_setting( settings, "show_etmi", choice.show_etmi );
   load_setting( settings, "world_lag", choice.world_lag );
   load_setting( settings, "target_level", choice.target_level );
-  load_setting( settings, "aura_delay", choice.aura_delay, "500ms" );
+  load_setting( settings, "aura_delay", choice.aura_delay, "300ms" );
   load_setting( settings, "report_pets", choice.report_pets, "No" );
   load_setting( settings, "print_style", choice.print_style );
   load_setting( settings, "statistics_level", choice.statistics_level, "1" );
@@ -814,7 +814,7 @@ QString SC_OptionsTab::get_globalSettings()
   options += "\n";
 
 
-  const char *auradelay[] = { "0.4", "0.5", "0.6" };
+  const char *auradelay[] = { "0.3", "0.4", "0.5", "0.6" };
   options += "default_aura_delay=";
   options += auradelay[ choice.aura_delay->currentIndex() ];
   options += "\n";
@@ -867,7 +867,10 @@ QString SC_OptionsTab::get_globalSettings()
   {
     options += buffOptions[ i ].option;
     options += "=";
-    options += buttons.at( i )->isChecked() ? "1" : "0";
+    if ( util::str_in_str_ci( buffOptions[ i ].option, "stormlash" ) || util::str_in_str_ci( buffOptions[ i ].option, "skull_banner" ) )
+      options += buttons.at( i ) -> isChecked() ? "2" : "0";
+    else
+      options += buttons.at( i )->isChecked() ? "1" : "0";
     options += "\n";
   }
   buttons = debuffsButtonGroup->buttons();
