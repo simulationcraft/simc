@@ -2559,8 +2559,8 @@ struct devouring_plague_t final : public priest_spell_t
       ds -> tick_dmg = saved_impact_dmg / dot -> ticks_left();
       ds -> tick_heal_percent = saved_tick_heal_percent / dot -> ticks_left();
       if ( sim -> debug )
-        sim -> out_debug.printf( "%s DP dot started with total of %.2f damage / %.2f per tick and %.4f%% heal/tick.",
-                                 player -> name(), saved_impact_dmg, ds -> tick_dmg, ds -> tick_heal_percent );
+        sim -> out_debug.printf( "%s DP dot started with total of %.2f damage / %.2f per tick and %.4f%% heal / %.4f%% per tick.",
+                                 player -> name(), saved_impact_dmg, ds -> tick_dmg, saved_tick_heal_percent * 100.0, ds -> tick_heal_percent * 100.0 );
     }
 
     virtual void tick( dot_t* d ) override
