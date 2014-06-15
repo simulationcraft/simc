@@ -829,9 +829,8 @@ void player_t::init_base_stats()
     base.expertise = 0.075;
   }
 
-  // base dodge, parry, block, and miss are 3% for all characters
   base.dodge = 0.03;
-  base.parry = 0.03; // overridden in druid module to disable parry
+  base.parry = 0.0; // No more base parry, it's all from strength.
   base.miss  = 0.03;
   base.block = 0.0;  // overridden in enemy, paladin, and warrior modules
 
@@ -2269,8 +2268,8 @@ double player_t::composite_melee_attack_power() const
 {
   double ap = current.stats.attack_power;
 
-  ap += current.attack_power_per_strength * ( cache.strength() - 10 ); //Check to see if 10 is still subtracted in WoD.
-  ap += current.attack_power_per_agility  * ( cache.agility() - 10 );
+  ap += current.attack_power_per_strength * cache.strength();
+  ap += current.attack_power_per_agility  * cache.agility();
   
   return ap;
 }
@@ -2523,7 +2522,7 @@ double player_t::composite_spell_power( school_e /* school */ ) const
 {
   double sp = current.stats.spell_power;
 
-  sp += current.spell_power_per_intellect * ( cache.intellect() - 10 ); // Check in WoD if 10 is subtracted still.
+  sp += current.spell_power_per_intellect; // Check in WoD if 10 is subtracted still.
 
   return sp;
 }

@@ -5258,11 +5258,8 @@ void druid_t::init_base_stats()
 
   // TODO: Confirm that all druid specs get both of these things.
   base.attack_power_per_agility  = 0.0; // This is adjusted in cat_form_t and bear_form_t
+  base.attack_power_per_strength = 0.0;
   base.spell_power_per_intellect = 1.0;
-
-  // Avoidance diminishing Returns constants/conversions
-  // base miss and dodge are set to 3.0% in in player_t::init_base_stats()
-  base.parry = 0.000;
 
   // based on http://www.sacredduty.net/2013/08/08/updated-diminishing-returns-coefficients-all-tanks/
   diminished_kfactor   = 1.2220000;

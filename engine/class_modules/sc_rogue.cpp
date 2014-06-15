@@ -3378,7 +3378,7 @@ void rogue_t::init_base_stats()
 {
   player_t::init_base_stats();
 
-  base.attack_power_per_strength = 1.0;
+  base.attack_power_per_strength = 0.0;
   base.attack_power_per_agility  = 1.0;
 
   resources.base[ RESOURCE_ENERGY ] = 100;

@@ -635,9 +635,8 @@ public:
     main_hand_weapon.damage     = ( main_hand_weapon.min_dmg + main_hand_weapon.max_dmg ) / 2;
     main_hand_weapon.swing_time = timespan_t::from_seconds( 2.0 );
 
-    stamina_per_owner = 0.45;
+    stamina_per_owner = 0.7;
 
-    //health_per_stamina *= 1.05; // 3.1.0 change # Cunning, Ferocity and Tenacity pets now all have +5% damage, +5% armor and +5% health bonuses
     initial.armor_multiplier *= 1.05;
 
     // FIXME work around assert in pet specs
@@ -699,12 +698,6 @@ public:
   virtual void init_base_stats()
   {
     base_t::init_base_stats();
-
-    //base.stats.attribute[ ATTR_STRENGTH  ] = util::interpolate( level, 0, 162, 331, 476 ); Base stats are gone in WoD, double check later.
-    //base.stats.attribute[ ATTR_AGILITY   ] = util::interpolate( level, 0, 54, 113, 438 );
-    //base.stats.attribute[ ATTR_STAMINA   ] = util::interpolate( level, 0, 307, 361 ); // stamina is different for every pet type
-    //base.stats.attribute[ ATTR_INTELLECT ] = 100; // FIXME: is 61 at lvl 75. Use /script print(UnitStats("pet",x)); 1=str,2=agi,3=stam,4=int,5=spi
-    //base.stats.attribute[ ATTR_SPIRIT    ] = 100; // FIXME: is 101 at lvl 75. Values are equal for a cat and a gorilla.
 
     resources.base[ RESOURCE_HEALTH ] = util::interpolate( level, 0, 4253, 6373 );
     resources.base[ RESOURCE_FOCUS ] = 100 + o() -> specs.kindred_spirits -> effectN( 1 ).resource( RESOURCE_FOCUS );
@@ -3275,7 +3268,7 @@ void hunter_t::init_base_stats()
 {
   player_t::init_base_stats();
 
-  base.attack_power_per_strength = 0.0; // Prevents scaling from strength. Will need to separate melee and ranged AP if this is needed in the future.
+  base.attack_power_per_strength = 0.0;
   base.attack_power_per_agility  = 1.0;
 
   base_focus_regen_per_second = 4;

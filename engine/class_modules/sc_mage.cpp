@@ -3904,9 +3904,10 @@ void mage_t::init_base_stats()
 
   base.spell_power_per_intellect = 1.0;
 
-  base.attack_power_per_strength = 1.0;
+  base.attack_power_per_strength = 0.0;
+  base.attack_power_per_agility = 0.0;
 
-  diminished_kfactor    = 0.009830;
+  diminished_kfactor   = 0.009830;
   diminished_dodge_cap = 0.006650;
   diminished_parry_cap = 0.006650;
 }

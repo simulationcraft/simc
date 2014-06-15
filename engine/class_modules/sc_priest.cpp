@@ -5105,7 +5105,8 @@ void priest_t::init_base_stats()
     resources.base[ RESOURCE_SHADOW_ORB ] += perks.enhanced_shadow_orbs -> effectN( 1 ).base_value();
   }
 
-  base.attack_power_per_strength = 1.0;
+  base.attack_power_per_strength = 0.0;
+  base.attack_power_per_agility = 0.0;
   base.spell_power_per_intellect = 1.0;
 
   // Discipline/Holy

@@ -4841,7 +4841,8 @@ void warlock_t::init_base_stats()
 {
   player_t::init_base_stats();
 
-  base.attack_power_per_strength = 1.0;
+  base.attack_power_per_strength = 0.0;
+  base.attack_power_per_agility = 0.0;
   base.spell_power_per_intellect = 1.0;
 
   base.attribute_multiplier[ ATTR_STAMINA ] *= 1.0 + spec.fel_armor -> effectN( 1 ).percent();
