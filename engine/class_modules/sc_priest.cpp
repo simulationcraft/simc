@@ -150,11 +150,13 @@ public:
     const spell_data_t* spirit_shell;
     const spell_data_t* strength_of_soul;
     const spell_data_t* train_of_thought;
+    const spell_data_t* crit_attunement;
 
     // Holy
     const spell_data_t* meditation_holy;
     const spell_data_t* rapid_renewal;
     const spell_data_t* serendipity;
+    const spell_data_t* multistrike_attunement;
 
     // Shadow
     const spell_data_t* devouring_plague;
@@ -162,6 +164,7 @@ public:
     const spell_data_t* shadowform;
     const spell_data_t* shadowy_apparitions;
     const spell_data_t* shadow_orbs;
+    const spell_data_t* haste_attunement;
   } specs;
 
   // Mastery Spells
@@ -356,6 +359,7 @@ public:
   virtual double    composite_player_heal_multiplier( const action_state_t* s ) const override;
   virtual double    temporary_movement_modifier() const;
   virtual double    composite_attribute_multiplier( attribute_e attr ) const override;
+  virtual double    composite_rating_multiplier( rating_e rating ) const;
   virtual double    matching_gear_multiplier( attribute_e attr ) const override;
   virtual void      target_mitigation( school_e, dmg_e, action_state_t* ) override;
   virtual void      pre_analyze_hook() override;
@@ -4435,6 +4439,9 @@ struct shadowform_t final : public priest_buff_t<buff_t>
     if ( ! sim -> overrides.haste )
       sim -> auras.haste -> trigger();
 
+    if ( ! sim -> overrides.multistrike )
+      sim -> auras.multistrike -> trigger();
+
     return r;
   }
 
@@ -4444,6 +4451,9 @@ struct shadowform_t final : public priest_buff_t<buff_t>
 
     if ( ! sim -> overrides.haste )
       sim -> auras.haste -> decrement();
+
+    if ( ! sim -> overrides.multistrike )
+      sim -> auras.multistrike -> decrement();
   }
 };
 
@@ -4882,6 +4892,32 @@ double priest_t::composite_attribute_multiplier( attribute_e attr ) const
   return m;
 }
 
+// priest_t::composite_rating_multiplier ====================================
+
+double priest_t::composite_rating_multiplier( rating_e rating ) const
+{
+  double m = player_t::composite_rating_multiplier( rating );
+
+  switch ( rating )
+  {
+    case RATING_SPELL_HASTE: //Shadow
+      if ( specs.haste_attunement -> ok() )
+        m *= 1.0 + specs.haste_attunement -> effectN( 1 ).percent();
+      break;
+    case RATING_SPELL_CRIT: //Discipline
+      if ( specs.crit_attunement -> ok() )
+        m *= 1.0 + specs.crit_attunement -> effectN( 1 ).percent();
+      break;
+    case RATING_MULTISTRIKE: //Holy
+      if ( specs.multistrike_attunement -> ok() )
+        m *= 1.0 + specs.multistrike_attunement -> effectN( 1 ).percent();
+      break;
+    default: break;
+  }
+
+  return m;
+}
+
 // priest_t::matching_gear_multiplier =======================================
 
 double priest_t::matching_gear_multiplier( attribute_e attr ) const
@@ -5101,17 +5137,20 @@ void priest_t::init_spells()
   specs.spirit_shell                   = find_specialization_spell( "Spirit Shell" );
   specs.strength_of_soul               = find_specialization_spell( "Strength of Soul" );
   specs.train_of_thought               = find_specialization_spell( "Train of Thought" );
+  specs.crit_attunement                = find_specialization_spell( "Critical Strike Addunement ");
 
   // Holy
   specs.meditation_holy                = find_specialization_spell( "Meditation", "meditation_holy", PRIEST_HOLY );
   specs.serendipity                    = find_specialization_spell( "Serendipity" );
   specs.rapid_renewal                  = find_specialization_spell( "Rapid Renewal" );
+  specs.multistrike_attunement         = find_specialization_spell( "Multistrike Addunement ");
 
   // Shadow
   specs.mind_surge                     = find_specialization_spell( "Mind Surge" );
   specs.shadowform                     = find_class_spell( "Shadowform" );
   specs.shadowy_apparitions            = find_specialization_spell( "Shadowy Apparitions" );
   specs.shadow_orbs                    = find_specialization_spell( "Shadow Orbs" );
+  specs.haste_attunement               = find_specialization_spell( "Haste Addunement ");
 
   // Mastery Spells
   mastery_spells.shield_discipline    = find_mastery_spell( PRIEST_DISCIPLINE );

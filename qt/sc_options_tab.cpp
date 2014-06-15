@@ -23,7 +23,7 @@ const OptionEntry buffOptions[] =
   { "Attack Power Multiplier",      "override.attack_power_multiplier", "+10% Attack Power Multiplier"                    },
   { "Spell Power Multiplier",       "override.spell_power_multiplier",  "+10% Spell Power Multiplier"                     },
   { "Haste",                        "override.haste",                   "+5% Haste"                                       },
-
+  { "Multistrike",                  "override.multistrike",             "+5% Multistrike"                                       },
   { "Critical Strike",              "override.critical_strike",         "+5% Melee/Ranged/Spell Critical Strike Chance"   },
   { "Mastery",                      "override.mastery",                 "+5 Mastery"                                      },
 

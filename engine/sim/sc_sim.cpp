@@ -1035,6 +1035,7 @@ void sim_t::combat_begin()
     auras.mastery -> override_buff( 1, dbc.effect_average( dbc.spell( 116956 ) -> effectN( 1 ).id(), max_player_level ) );
 
   if ( overrides.haste                   ) auras.haste                   -> override_buff();
+  if ( overrides.multistrike             ) auras.multistrike             -> override_buff();
   if ( overrides.spell_power_multiplier  ) auras.spell_power_multiplier  -> override_buff();
   if ( overrides.stamina                 ) auras.stamina                 -> override_buff();
   if ( overrides.str_agi_int             ) auras.str_agi_int             -> override_buff();
@@ -1492,6 +1493,12 @@ bool sim_t::init()
                       .max_stack( 100 )
                       .default_value( dbc.spell( 49868 ) -> effectN( 1 ).percent() )
                       .add_invalidate( CACHE_HASTE );
+
+  // Multistrike, value from Mind Quickening (id=49868) (Priest)
+  auras.multistrike = buff_creator_t( this, "multistrike" )
+                      .max_stack( 100 )
+                      .default_value( dbc.spell( 49868 ) -> effectN( 2 ).percent() )
+                      .add_invalidate( CACHE_MULTISTRIKE );
 
   // Spell Power Multiplier, value from Burning Wrath (id=77747) (Shaman)
   auras.spell_power_multiplier = buff_creator_t( this, "spell_power_multiplier" )
@@ -1965,7 +1972,8 @@ void sim_t::use_optimal_buffs_and_debuffs( int value )
   overrides.attack_power_multiplier = optimal_raid;
   overrides.critical_strike         = optimal_raid;
   overrides.mastery                 = optimal_raid;
-  overrides.haste             = optimal_raid;
+  overrides.haste                   = optimal_raid;
+  overrides.multistrike             = optimal_raid;
   overrides.spell_power_multiplier  = optimal_raid;
   overrides.stamina                 = optimal_raid;
   overrides.str_agi_int             = optimal_raid;
@@ -2092,6 +2100,7 @@ void sim_t::create_options()
     opt_int( "override.critical_strike", overrides.critical_strike ),
     opt_int( "override.mastery", overrides.mastery ),
     opt_int( "override.haste", overrides.haste ),
+    opt_int( "override.multistrike", overrides.multistrike ),
     opt_int( "override.spell_power_multiplier", overrides.spell_power_multiplier ),
     opt_int( "override.stamina", overrides.stamina ),
     opt_int( "override.str_agi_int", overrides.str_agi_int ),

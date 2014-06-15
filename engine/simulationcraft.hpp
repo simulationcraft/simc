@@ -2465,6 +2465,7 @@ public:
     int critical_strike;
     int mastery;
     int haste;
+    int multistrike;
     int spell_power_multiplier;
     int stamina;
     int str_agi_int;
@@ -2488,6 +2489,7 @@ public:
     aura_t* critical_strike;
     aura_t* mastery;
     aura_t* haste;
+    aura_t* multistrike;
     aura_t* spell_power_multiplier;
     aura_t* stamina;
     aura_t* str_agi_int;
@@ -5163,6 +5165,7 @@ struct action_state_t : public noncopyable
   double          target_crit;
   double          attack_power;
   double          spell_power;
+  double          multistrike;
   // Snapshotted multipliers
   double          versatility;
   double          da_multiplier;
