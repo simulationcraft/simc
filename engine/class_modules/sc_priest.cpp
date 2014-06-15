@@ -2385,7 +2385,7 @@ struct shadow_word_death_t final : public priest_spell_t
 
 // Shadow Orb State ===================================================
 
-struct shadow_orb_state_t final : public action_state_t
+struct shadow_orb_state_t : public action_state_t
 {
   int orbs_used;
 
@@ -2405,6 +2405,31 @@ struct shadow_orb_state_t final : public action_state_t
     action_state_t::copy_state( o );
     const shadow_orb_state_t* dps_t = static_cast<const shadow_orb_state_t*>( o );
     orbs_used = dps_t -> orbs_used;
+  }
+};
+// Shadow Orb State ===================================================
+
+struct dp_state_t final : public shadow_orb_state_t
+{
+  double tick_dmg;
+  typedef shadow_orb_state_t base_t;
+
+  dp_state_t( action_t* a, player_t* t ) :
+    base_t( a, t ),
+    tick_dmg( 0.0 )
+  { }
+
+  std::ostringstream& debug_str( std::ostringstream& s ) override
+  { base_t::debug_str( s ) << " direct_dmg=" << tick_dmg; return s; }
+
+  void initialize() override
+  { base_t::initialize(); tick_dmg = 0.0; }
+
+  void copy_state( const action_state_t* o ) override
+  {
+    base_t::copy_state( o );
+    const dp_state_t* dps_t = static_cast<const dp_state_t*>( o );
+    tick_dmg = dps_t -> tick_dmg;
   }
 };
 
@@ -2432,11 +2457,18 @@ struct devouring_plague_t final : public priest_spell_t
       background = true;
     }
 
+    void init() override
+    {
+      priest_spell_t::init();
+
+      snapshot_flags = update_flags = 0;
+    }
+
     virtual void reset() override
     { priest_spell_t::reset(); base_ta_adder = 0; }
 
     virtual action_state_t* new_state() override
-    { return new shadow_orb_state_t( this, target ); }
+    { return new dp_state_t( this, target ); }
 
     virtual action_state_t* get_state( const action_state_t* s = nullptr ) override
     {
@@ -2444,51 +2476,64 @@ struct devouring_plague_t final : public priest_spell_t
 
       if ( !s )
       {
-        shadow_orb_state_t* ds_ = static_cast<shadow_orb_state_t*>( s_ );
+        dp_state_t* ds_ = static_cast<dp_state_t*>( s_ );
         ds_ -> orbs_used = 0;
+        ds_ -> tick_dmg = 0.0;
       }
 
       return s_;
     }
 
-    virtual void snapshot_state( action_state_t* state, dmg_e type ) override
+    double calculate_tick_amount( action_state_t* state, double dot_multiplier ) override
     {
-      shadow_orb_state_t& dp_state = static_cast<shadow_orb_state_t&>( *state );
-
-      dp_state.orbs_used = as<int>( shadow_orbs_to_consume() );
-
-      priest_spell_t::snapshot_state( state, type );
+      // We already got the dmg stored, just return it.
+      const dp_state_t* ds = static_cast<const dp_state_t*>( state );
+      return ds -> tick_dmg * dot_multiplier;
     }
 
-    virtual double composite_persistent_multiplier( const action_state_t* s ) const override
+    /* Precondition: dot is ticking!
+     */
+    void append_damage( double dmg )
     {
-      double m = priest_spell_t::composite_persistent_multiplier( s );
+      dot_t* dot = get_dot();
+      if ( !dot -> is_ticking() )
+      {
+        if ( sim -> debug )
+          sim -> out_debug.printf( "%s could not appended damage because the dot is no longer ticking."
+                                   "( This should only be the case if the dot drops between main impact and multistrike impact. )",
+                                   player -> name() );
+        return;
+      }
 
-      m *= shadow_orbs_to_consume();
+      dp_state_t* ds = static_cast<dp_state_t*>( dot -> state );
+      ds -> tick_dmg += dmg / dot -> ticks_left();
+      if ( sim -> debug )
+        sim -> out_debug.printf( "%s appended %.2f damage / %.2f per tick. New dmg per tick: %.2f",
+                                 player -> name(), dmg, dmg / dot -> ticks_left(), ds -> tick_dmg );
 
-      return m;
     }
 
     virtual void impact( action_state_t* s ) override
     {
       double saved_impact_dmg = s -> result_amount; // catch previous remaining dp damage
+
       s -> result_amount = 0;
       priest_spell_t::impact( s );
 
-      if ( saved_impact_dmg > 0.0 )
-      {
-        dot_t* dot = get_dot();
-        base_ta_adder = saved_impact_dmg / dot -> ticks_left();
-        if ( sim -> debug )
-          sim -> out_debug.printf( "%s DP still ticking. Added %.2f damage / %.2f per tick to new dot", player -> name(), saved_impact_dmg, base_ta_adder );
-      }
+
+      dot_t* dot = get_dot();
+      dp_state_t* ds = static_cast<dp_state_t*>( dot -> state );
+      ds -> tick_dmg = saved_impact_dmg / dot -> ticks_left();
+      if ( sim -> debug )
+        sim -> out_debug.printf( "%s DP dot started with total of %.2f damage / %.2f per tick.",
+                                 player -> name(), saved_impact_dmg, ds -> tick_dmg );
     }
 
     virtual void tick( dot_t* d ) override
     {
       priest_spell_t::tick( d );
 
-	  const shadow_orb_state_t& dp_state = static_cast<const shadow_orb_state_t&>( *d -> state );
+      const shadow_orb_state_t& dp_state = static_cast<const shadow_orb_state_t&>( *d -> state );
 
       double a = (0.025 / 3) * dp_state.orbs_used * priest.resources.max[ RESOURCE_HEALTH ];
       priest.resource_gain( RESOURCE_HEALTH, a, priest.gains.devouring_plague_health );
@@ -2552,40 +2597,52 @@ struct devouring_plague_t final : public priest_spell_t
   // Shortened and modified version of the ignite mechanic
   // Damage from the old dot is added to the new one.
   // Important here that the combined damage then will get multiplicated by the new orb amount.
-  void trigger_dp_dot( player_t* t )
+  void trigger_dp_dot( action_state_t* state )
   {
-    dot_t* dot = dot_spell -> get_dot( t );
+    dot_t* dot = dot_spell -> get_dot( state -> target );
 
-    double previous_dp_dmg = 0;
+    double dmg_to_pass_to_dp = 0.0;
 
     if ( dot -> is_ticking() )
     {
-      const shadow_orb_state_t& state = static_cast<const shadow_orb_state_t&>( *dot -> state );
-      // Take the old damage without the orb multiplier
-      previous_dp_dmg += state.result_amount / state.orbs_used * dot -> ticks_left();
+      const dp_state_t* ds = debug_cast<const dp_state_t*>( dot -> state );
+      dmg_to_pass_to_dp += ds -> tick_dmg * dot -> ticks_left();
 
       if ( sim -> debug )
-        sim -> out_debug.printf( "%s DP still ticking. Added %.2f damage to new dot", player -> name(), previous_dp_dmg );
+        sim -> out_debug.printf( "%s DP was still ticking. Added %.2f damage to new dot", player -> name(), dmg_to_pass_to_dp );
     }
-
 
     // Pass total amount of damage to the ignite dot_spell, and let it divide it by the correct number of ticks!
 
     action_state_t* s = dot_spell -> get_state();
-    s -> target = t;
-    dot_spell -> snapshot_state( s, DMG_OVER_TIME );
+    s -> target = state -> target;
     s -> result = RESULT_HIT;
-    s -> result_amount = previous_dp_dmg; // pass the old remaining dp damage to the dot_spell state, which will be catched in its impact method.
+    s -> result_amount = dmg_to_pass_to_dp; // pass the old remaining dp damage to the dot_spell state, which will be catched in its impact method.
     dot_spell -> schedule_travel( s );
     dot_spell -> stats -> add_execute( timespan_t::zero(), s -> target );
+  }
+
+  void transfer_dmg_to_dot( action_state_t* state )
+  {
+    if ( sim -> debug )
+      sim -> out_debug.printf( "%s DP result %s appends %.2f damage to dot",
+                               player -> name(),
+                               util::result_type_string( state -> result ),
+                               state -> result_amount );
+
+    dot_spell -> append_damage( state -> result_amount );
+
+
   }
 
   virtual void impact( action_state_t* s ) override
   {
     priest_spell_t::impact( s );
 
-    if ( !result_is_multistrike( s -> result ) )
-      trigger_dp_dot( s -> target );
+    if ( ! result_is_multistrike( s -> result ) )
+      trigger_dp_dot( s );
+
+    transfer_dmg_to_dot( s );
   }
 };
 
