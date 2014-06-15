@@ -277,6 +277,7 @@ public:
   {
     // Generic
     const spell_data_t* plate_specialization;
+    const spell_data_t* multistrike_attunement;
 
     // Blood
     const spell_data_t* blood_rites;
@@ -291,21 +292,22 @@ public:
 
     // Frost
     const spell_data_t* blood_of_the_north;
+    const spell_data_t* haste_attunement;
     const spell_data_t* icy_talons;
-    const spell_data_t* killing_machine;
     const spell_data_t* improved_frost_presence;
-    const spell_data_t* rime;
+    const spell_data_t* killing_machine;
     const spell_data_t* might_of_the_frozen_wastes;
+    const spell_data_t* rime;
     const spell_data_t* threat_of_thassarian;
 
     // Unholy
-    const spell_data_t* master_of_ghouls;
-    const spell_data_t* reaping;
-    const spell_data_t* unholy_might;
-    const spell_data_t* shadow_infusion;
-    const spell_data_t* sudden_doom;
     const spell_data_t* ebon_plaguebringer;
     const spell_data_t* improved_unholy_presence;
+    const spell_data_t* master_of_ghouls;
+    const spell_data_t* reaping;
+    const spell_data_t* shadow_infusion;
+    const spell_data_t* sudden_doom;
+    const spell_data_t* unholy_might;
   } spec;
 
   // Mastery
@@ -465,6 +467,7 @@ public:
   virtual double    composite_melee_crit() const;
   virtual double    composite_spell_crit() const;
   virtual double    composite_attribute_multiplier( attribute_e attr ) const;
+  virtual double    composite_rating_multiplier( rating_e ) const;
   virtual double    matching_gear_multiplier( attribute_e attr ) const;
   virtual double    composite_parry() const;
   virtual double    composite_multistrike() const;
@@ -4934,6 +4937,7 @@ void death_knight_t::init_spells()
 
   // Generic
   spec.plate_specialization       = find_specialization_spell( "Plate Specialization" );
+  spec.multistrike_attunement     = find_specialization_spell( "Multistrike Attunement" );
 
   // Blood
   spec.blood_rites                = find_specialization_spell( "Blood Rites" );
@@ -4953,6 +4957,7 @@ void death_knight_t::init_spells()
   spec.might_of_the_frozen_wastes = find_specialization_spell( "Might of the Frozen Wastes" );
   spec.threat_of_thassarian       = find_specialization_spell( "Threat of Thassarian" );
   spec.killing_machine            = find_specialization_spell( "Killing Machine" );
+  spec.haste_attunement           = find_specialization_spell( "Haste Attunement" );
 
   // Unholy
   spec.master_of_ghouls           = find_specialization_spell( "Master of Ghouls" );
@@ -6059,6 +6064,26 @@ double death_knight_t::composite_attribute_multiplier( attribute_e attr ) const
       m *= 1.0 + runeforge.rune_of_the_stoneskin_gargoyle -> data().effectN( 2 ).percent();
   }
 
+  return m;
+}
+
+double death_knight_t::composite_rating_multiplier( rating_e rating ) const
+{
+  double m = player_t::composite_rating_multiplier( rating );
+
+  switch ( rating )
+  {
+    case RATING_MULTISTRIKE:
+      m *= 1.0 * spec.multistrike_attunement -> effectN( 1 ).percent();
+      break;
+    case RATING_SPELL_HASTE:
+    case RATING_MELEE_HASTE:
+    case RATING_RANGED_HASTE:
+      m *= 1.0 + spec.haste_attunement -> effectN( 1 ).percent();
+      break;
+    default:
+      break;
+  }
   return m;
 }
 
