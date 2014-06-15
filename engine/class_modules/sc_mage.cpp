@@ -234,6 +234,15 @@ public:
 
   } talents;
 
+  struct pyro_switch_t
+  {
+	  bool dump_state;	 
+	  void reset() { dump_state = 0; }
+	  pyro_switch_t() { reset(); }
+  } pyro_switch;
+
+
+
 public:
   int mana_gem_charges;
   int current_arcane_charges;
@@ -257,6 +266,7 @@ public:
     spells( spells_t() ),
     spec( specializations_t() ),
     talents( talents_list_t() ),
+	pyro_switch( pyro_switch_t() ),
     mana_gem_charges( 0 ),
     current_arcane_charges()
   {
@@ -3539,7 +3549,41 @@ struct summon_water_elemental_t : public mage_spell_t
   }
 };
 
-// Choose Rotation ==========================================================
+// Choose Rotations ==========================================================
+
+
+struct start_pyro_chain_t : public action_t
+{
+	start_pyro_chain_t( mage_t* p, const std::string& options_str ):
+		action_t( ACTION_USE, "start_pyro_chain", p )
+	{
+        parse_options( NULL, options_str );
+		trigger_gcd = timespan_t::zero();
+		harmful = false;
+	}
+    virtual void execute()
+	{
+		mage_t* p = debug_cast<mage_t*>( player );
+		p -> pyro_switch.dump_state = true;
+	}
+};
+
+struct stop_pyro_chain_t : public action_t
+{
+	stop_pyro_chain_t( mage_t* p, const std::string& options_str ):
+		action_t( ACTION_USE, "stop_pyro_chain", p )
+	{
+		parse_options( NULL, options_str );
+		trigger_gcd = timespan_t::zero();
+		harmful = false;
+	}
+    virtual void execute()
+	{
+		mage_t* p = debug_cast<mage_t*>( player );
+		p -> pyro_switch.dump_state = false;
+	}
+};
+
 
 struct choose_rotation_t : public action_t
 {
@@ -3872,6 +3916,8 @@ action_t* mage_t::create_action( const std::string& name,
   if ( name == "blink"             ) return new                   blink_t( this, options_str );
   if ( name == "blizzard"          ) return new                blizzard_t( this, options_str );
   if ( name == "choose_rotation"   ) return new         choose_rotation_t( this, options_str );
+  if ( name == "start_pyro_chain"  ) return new         start_pyro_chain_t( this, options_str );
+  if ( name == "stop_pyro_chain"  ) return new          stop_pyro_chain_t(  this, options_str );
   if ( name == "cold_snap"         ) return new               cold_snap_t( this, options_str );
   if ( name == "combustion"        ) return new              combustion_t( this, options_str );
   if ( name == "cone_of_cold"      ) return new            cone_of_cold_t( this, options_str );
@@ -4061,7 +4107,7 @@ void mage_t::init_base_stats()
   // Reduce fire mage distance to avoid proc munching at high haste
   // 2 yards was selected through testing with T16H profile
   if ( specialization() == MAGE_FIRE )
-    base.distance = 2;
+    base.distance = 20;
 }
 
 // mage_t::init_scaling =====================================================
@@ -4276,6 +4322,7 @@ void mage_t::apl_arcane()
 {
   std::vector<std::string> item_actions       = get_item_actions();
   std::vector<std::string> racial_actions     = get_racial_actions();
+  std::vector<std::string> profession_actions = get_profession_actions();
 
   action_priority_list_t* default_list        = get_action_priority_list( "default"       );
   action_priority_list_t* single_target       = get_action_priority_list( "single_target" );
@@ -4352,61 +4399,26 @@ void mage_t::apl_arcane()
 void mage_t::apl_fire()
 {
   std::vector<std::string> item_actions = get_item_actions();
+  std::vector<std::string> profession_actions = get_profession_actions();
   std::vector<std::string> racial_actions = get_racial_actions();
 
-  action_priority_list_t* default_list = get_action_priority_list( "default" );
+  action_priority_list_t* proc_builder        = get_action_priority_list( "proc_builder"  );
+  action_priority_list_t* init_pom_combust    = get_action_priority_list( "init_pom_combust" );
+  action_priority_list_t* combust_sequence    = get_action_priority_list( "combust_sequence" );
+  action_priority_list_t* single_target       = get_action_priority_list( "single_target" );
+  action_priority_list_t* aoe                 = get_action_priority_list( "aoe"           );
+
+  single_target -> add_action( this, "Fireball", "Dump_state=false" );
+  single_target -> add_action( this, "Pyroblast", "dump_state=true" );
 
 
-  default_list -> add_action( this, "Counterspell", "if=target.debuff.casting.react" );
-  // Prevent unsafe Alter Time teleport while moving
-  // FIXME: realistically for skilled players using DBM, warning would be available to suppress Alter Time for 6 seconds before moving
-  default_list -> add_action( "cancel_buff,name=alter_time,moving=1" );
-  default_list -> add_talent( this, "Cold Snap", "if=health.pct<30" );
-  default_list -> add_action( this, "Conjure Mana Gem", "if=mana_gem_charges<3&target.debuff.invulnerable.react" );
-  default_list -> add_action( this, "Time Warp", "if=target.health.pct<25|time>5" );
-  //not useful if bloodlust is check in option.
 
-  default_list -> add_talent( this, "Rune of Power", "if=buff.rune_of_power.remains<cast_time&buff.alter_time.down" );
-  default_list -> add_talent( this, "Rune of Power", "if=cooldown.alter_time_activate.remains=0&buff.rune_of_power.remains<6" );
 
-  default_list -> add_action( this, "Evocation", "if=talent.invocation.enabled&(buff.invokers_energy.down|mana.pct<20)&buff.alter_time.down" );
-  default_list -> add_action( this, "Evocation", "if=talent.invocation.enabled&cooldown.alter_time_activate.remains=0&buff.invokers_energy.remains<6" );
-  default_list -> add_action( this, "Evocation", "if=talent.invocation.enabled&mana.pct<50,interrupt_if=mana.pct>95&buff.invokers_energy.remains>10" );
-  default_list -> add_action( this, "Evocation", "if=buff.alter_time.down&mana.pct<20,interrupt_if=mana.pct>95" );
 
-  for( size_t i = 0; i < racial_actions.size(); i++ )
-  {
-    default_list -> add_action( racial_actions[i] + ",sync=alter_time_activate,if=buff.alter_time.down" );
-    default_list -> add_action( racial_actions[i] + ",if=buff.alter_time.down&target.time_to_die<18" );
-  }
 
-  default_list -> add_action( "jade_serpent_potion,if=buff.alter_time.down&target.time_to_die<45" );
-  default_list -> add_action( this, "Mirror Image" );
-  default_list -> add_talent( this, "Presence of Mind", "sync=alter_time_activate,if=buff.alter_time.down" );
 
-  default_list -> add_action( this, "Combustion", "if=target.time_to_die<22" );
-  default_list -> add_action( this, "Combustion", "if=dot.ignite.tick_dmg>=((3*action.pyroblast.crit_damage)*mastery_value*0.5)" );
-  default_list -> add_action( this, "Combustion", "if=dot.ignite.tick_dmg>=((action.fireball.crit_damage+action.inferno_blast.crit_damage+action.pyroblast.hit_damage)*mastery_value*0.5)&dot.pyroblast.ticking&buff.alter_time.down&buff.pyroblast.down&buff.presence_of_mind.down" );
 
-  default_list -> add_action( "jade_serpent_potion,sync=alter_time_activate,if=buff.alter_time.down" );
 
-  for( size_t i = 0; i < item_actions.size(); i++ )
-  {
-    default_list -> add_action( item_actions[i] + ",sync=alter_time_activate" );
-    default_list -> add_action( item_actions[i] + ",if=cooldown.alter_time_activate.remains>40|target.time_to_die<12" );
-  }
-
-  default_list -> add_action( this, "Alter Time", "if=time_to_bloodlust>180&buff.alter_time.down&buff.pyroblast.react" );
-  default_list -> add_talent( this, "Presence of Mind", "if=cooldown.alter_time_activate.remains>60|target.time_to_die<5" );
-  default_list -> add_action( this, "Flamestrike", "if=active_enemies>=5" );
-  default_list -> add_action( this, "Inferno Blast", "if=dot.combustion.ticking&active_enemies>1" );
-  default_list -> add_action( this, "Pyroblast", "if=buff.pyroblast.react|buff.presence_of_mind.up" );
-  default_list -> add_action( this, "Inferno Blast", "if=buff.heating_up.react&buff.pyroblast.down" );
-  default_list -> add_talent( this, "Nether Tempest", "cycle_targets=1,if=(!ticking|remains<tick_time)&target.time_to_die>6" );
-  default_list -> add_talent( this, "Living Bomb", "cycle_targets=1,if=(!ticking|remains<tick_time)&target.time_to_die>tick_time*3" );
-  default_list -> add_talent( this, "Frost Bomb", "if=target.time_to_die>cast_time+tick_time" );
-  default_list -> add_action( this, "Fireball" );
-  default_list -> add_action( this, "Scorch", "moving=1" );
 }
 
 // Frost Mage Action List ==============================================================================================================
@@ -4606,6 +4618,7 @@ void mage_t::reset()
   mana_gem_charges = max_mana_gem_charges();
   active_living_bomb_targets = 0;
   last_bomb_target = 0;
+  pyro_switch.reset();
 }
 
 // mage_t::regen  ===========================================================
@@ -4702,6 +4715,8 @@ expr_t* mage_t::create_expression( action_t* a, const std::string& name_str )
       expr_t( n ), mage( m ) {}
   };
 
+
+
   struct rotation_expr_t : public mage_expr_t
   {
     mage_rotation_e rt;
@@ -4753,6 +4768,21 @@ expr_t* mage_t::create_expression( action_t* a, const std::string& name_str )
       }
     };
     return new regen_mps_expr_t( *this );
+  }
+
+  
+  if ( name_str == "pyro_chain" )
+  {
+    struct pyro_chain_expr_t : public mage_expr_t
+    {
+	  mage_t* mage;
+      pyro_chain_expr_t( mage_t& m ) : mage_expr_t( "pyro_chain", m ), mage( &m )
+      {}
+      virtual double evaluate()
+	  { return mage -> pyro_switch.dump_state; }
+    };
+
+    return new pyro_chain_expr_t( *this );
   }
 
   if ( util::str_compare_ci( name_str, "shooting_icicles" ) )
