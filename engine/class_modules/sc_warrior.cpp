@@ -874,7 +874,7 @@ void warrior_attack_t::impact( action_state_t* s )
     if ( !proc ) // No procs allowed.
     {
       if ( p() -> buff.sweeping_strikes -> up() && !aoe )
-        trigger_sweeping_strikes( execute_state );
+        trigger_sweeping_strikes( s );
       if ( special )
       {
         if ( p() -> buff.bloodbath -> up() )

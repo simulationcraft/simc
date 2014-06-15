@@ -26,16 +26,12 @@ namespace { // UNNAMED NAMESPACE
 
     = Balance =
     Just verify stuff.
-    Add in:
-    Shooting Stars now adds 1 full charge of Starsurge and Starfall when it triggers, and now has a 5% chance 
-    to trigger when the most recent Moonfire or and Sunfire deals periodic damage. This chance is doubled on critical strikes.
 
     = Guardian =
     Perks
     Soul of the Forest
     New mastery: Primary Tenacity
     Ursa Major
-    FRENZIED REGENERATION DOESN'T HEAL AT ALL.
 
     = Restoration =
     Err'thing
