@@ -2992,6 +2992,12 @@ struct shining_protector_t : public paladin_heal_t
     may_crit = false;        // guess, but pretty likely
   }
 
+  // This old implementation was double-dipping on Resolve, SoI, etc.
+  // Ex: A seal of insight proc would be boosted by Resolve & SoI healing bonus, and then
+  // the Shining Protecor proc would also be boosted by both factors. Pretty sure that isn't
+  // how it'll work in-game. TODO: in-game testing for exactly what buffs Shining Protector and how.
+
+  /*
   virtual void init()
   {
     paladin_heal_t::init();
@@ -3005,12 +3011,24 @@ struct shining_protector_t : public paladin_heal_t
 
     return am;
   }
+  */
 
   virtual void execute()
   {
     proc_tracker -> occur();
 
     paladin_heal_t::execute();
+  }
+
+  // new implementation: Assume it double-dips on nothing
+  virtual double calculate_direct_amount( action_state_t* s )
+  {
+    // we don't want this to double dip on anything, so override calculate_direct_amount
+    double amount = sim -> averaged_range( base_da_min( s ), base_da_max( s ) );
+
+    amount *= p() -> passives.shining_protector -> effectN( 1 ).percent();
+
+    return amount;
   }
 
 };
