@@ -2282,7 +2282,7 @@ struct shadow_word_death_t final : public priest_spell_t
     virtual double composite_spell_power() const override
     { return spellpower; }
 
-    virtual double composite_da_multiplier( const action_state_t* state ) const override
+    virtual double composite_da_multiplier( const action_state_t* /* state */ ) const override
     {
       double d = multiplier;
 
@@ -2412,24 +2412,27 @@ struct shadow_orb_state_t : public action_state_t
 struct dp_state_t final : public shadow_orb_state_t
 {
   double tick_dmg;
+  double tick_heal_percent;
   typedef shadow_orb_state_t base_t;
 
   dp_state_t( action_t* a, player_t* t ) :
     base_t( a, t ),
-    tick_dmg( 0.0 )
+    tick_dmg( 0.0 ),
+    tick_heal_percent( 0.0 )
   { }
 
   std::ostringstream& debug_str( std::ostringstream& s ) override
-  { base_t::debug_str( s ) << " direct_dmg=" << tick_dmg; return s; }
+  { base_t::debug_str( s ) << " direct_dmg=" << tick_dmg << " tick_heal_percent=" << tick_heal_percent; return s; }
 
   void initialize() override
-  { base_t::initialize(); tick_dmg = 0.0; }
+  { base_t::initialize(); tick_dmg = 0.0; tick_heal_percent = 0.0; }
 
   void copy_state( const action_state_t* o ) override
   {
     base_t::copy_state( o );
     const dp_state_t* dps_t = static_cast<const dp_state_t*>( o );
     tick_dmg = dps_t -> tick_dmg;
+    tick_heal_percent = dps_t -> tick_heal_percent;
   }
 };
 
@@ -2482,6 +2485,7 @@ struct devouring_plague_t final : public priest_spell_t
         dp_state_t* ds_ = static_cast<dp_state_t*>( s_ );
         ds_ -> orbs_used = 0;
         ds_ -> tick_dmg = 0.0;
+        ds_ -> tick_heal_percent = 0.0;
       }
 
       return s_;
@@ -2515,12 +2519,37 @@ struct devouring_plague_t final : public priest_spell_t
                                  player -> name(), dmg, dmg / dot -> ticks_left(), ds -> tick_dmg );
 
     }
-
-    virtual void impact( action_state_t* s ) override
+    /* Precondition: dot is ticking!
+     */
+    void append_heal( double heal )
     {
-      double saved_impact_dmg = s -> result_amount; // catch previous remaining dp damage
+      dot_t* dot = get_dot();
+      if ( !dot -> is_ticking() )
+      {
+        if ( sim -> debug )
+          sim -> out_debug.printf( "%s could not appended heal because the dot is no longer ticking."
+                                   "( This should only be the case if the dot drops between main impact and multistrike impact. )",
+                                   player -> name() );
+        return;
+      }
 
-      s -> result_amount = 0;
+      dp_state_t* ds = static_cast<dp_state_t*>( dot -> state );
+      ds -> tick_heal_percent += heal / dot -> ticks_left();
+      if ( sim -> debug )
+        sim -> out_debug.printf( "%s appended %.4f%% heal / %.4f%% per tick. New heal per tick: %.4f%%%",
+                                 player -> name(), heal * 100.0, heal / dot -> ticks_left() * 100.0, ds -> tick_heal_percent * 100.0 );
+
+    }
+
+    virtual void impact( action_state_t* state ) override
+    {
+
+      dp_state_t* s = static_cast<dp_state_t*>( state );
+      double saved_impact_dmg = s -> result_amount; // catch previous remaining dp damage
+      double saved_tick_heal_percent = s -> tick_heal_percent;
+
+      s -> result_amount = 0.0;
+      s -> tick_heal_percent = 0.0;
       priest_spell_t::impact( s );
 
 
@@ -2528,18 +2557,19 @@ struct devouring_plague_t final : public priest_spell_t
       dp_state_t* ds = static_cast<dp_state_t*>( dot -> state );
       assert( ds );
       ds -> tick_dmg = saved_impact_dmg / dot -> ticks_left();
+      ds -> tick_heal_percent = saved_tick_heal_percent / dot -> ticks_left();
       if ( sim -> debug )
-        sim -> out_debug.printf( "%s DP dot started with total of %.2f damage / %.2f per tick.",
-                                 player -> name(), saved_impact_dmg, ds -> tick_dmg );
+        sim -> out_debug.printf( "%s DP dot started with total of %.2f damage / %.2f per tick and %.4f%% heal/tick.",
+                                 player -> name(), saved_impact_dmg, ds -> tick_dmg, ds -> tick_heal_percent );
     }
 
     virtual void tick( dot_t* d ) override
     {
       priest_spell_t::tick( d );
 
-      const shadow_orb_state_t& dp_state = static_cast<const shadow_orb_state_t&>( *d -> state );
+      const dp_state_t* ds = static_cast<const dp_state_t*>( d -> state );
 
-      double a = (0.025 / 3) * dp_state.orbs_used * priest.resources.max[ RESOURCE_HEALTH ];
+      double a = ds -> tick_heal_percent * priest.resources.max[ RESOURCE_HEALTH ];
       priest.resource_gain( RESOURCE_HEALTH, a, priest.gains.devouring_plague_health );
 
       trigger_surge_of_darkness();
@@ -2562,6 +2592,31 @@ struct devouring_plague_t final : public priest_spell_t
     dot_duration = timespan_t::zero();
 
     add_child( dot_spell );
+  }
+
+  virtual action_state_t* new_state() override
+  { return new shadow_orb_state_t( this, target ); }
+
+  virtual action_state_t* get_state( const action_state_t* s = nullptr ) override
+  {
+    action_state_t* s_ = priest_spell_t::get_state( s );
+
+    if ( !s )
+    {
+      shadow_orb_state_t* ds_ = static_cast<shadow_orb_state_t*>( s_ );
+      ds_ -> orbs_used = 0;
+    }
+
+    return s_;
+  }
+
+  virtual void snapshot_state( action_state_t* s, dmg_e type ) override
+  {
+    shadow_orb_state_t* ds = static_cast<shadow_orb_state_t*>( s );
+
+    ds -> orbs_used = shadow_orbs_to_consume();
+
+    priest_spell_t::snapshot_state( s, type );
   }
 
   void init() override
@@ -2613,22 +2668,26 @@ struct devouring_plague_t final : public priest_spell_t
     dot_t* dot = dot_spell -> get_dot( state -> target );
 
     double dmg_to_pass_to_dp = 0.0;
+    double heal_percent_to_pass_to_dp = 0.0;
 
     if ( dot -> is_ticking() )
     {
       const dp_state_t* ds = debug_cast<const dp_state_t*>( dot -> state );
       dmg_to_pass_to_dp += ds -> tick_dmg * dot -> ticks_left();
+      heal_percent_to_pass_to_dp += ds -> tick_heal_percent * dot -> ticks_left();
 
       if ( sim -> debug )
-        sim -> out_debug.printf( "%s DP was still ticking. Added %.2f damage to new dot", player -> name(), dmg_to_pass_to_dp );
+        sim -> out_debug.printf( "%s DP was still ticking. Added %.2f damage to new dot, and %.4f%% heal%%/tick.",
+                                 player -> name(), dmg_to_pass_to_dp, dmg_to_pass_to_dp * 100.0 );
     }
 
     // Pass total amount of damage to the ignite dot_spell, and let it divide it by the correct number of ticks!
 
-    action_state_t* s = dot_spell -> get_state();
+    dp_state_t* s = debug_cast<dp_state_t*>( dot_spell -> get_state() );
     s -> target = state -> target;
     s -> result = RESULT_HIT;
     s -> result_amount = dmg_to_pass_to_dp; // pass the old remaining dp damage to the dot_spell state, which will be catched in its impact method.
+    s -> tick_heal_percent = heal_percent_to_pass_to_dp;
     s -> haste = state -> haste;
     dot_spell -> schedule_travel( s );
     dot_spell -> stats -> add_execute( timespan_t::zero(), s -> target );
@@ -2647,6 +2706,22 @@ struct devouring_plague_t final : public priest_spell_t
 
   }
 
+  void transfer_heal_to_dot( action_state_t* state )
+  {
+    const shadow_orb_state_t* s = static_cast<const shadow_orb_state_t*>( state );
+
+    double tick_heal_pct = s -> orbs_used * 0.05;
+    if ( sim -> debug )
+      sim -> out_debug.printf( "%s DP result %s appends %.4f%% heal to dot",
+                               player -> name(),
+                               util::result_type_string( state -> result ),
+                               tick_heal_pct * 100.0 );
+
+    dot_spell -> append_heal( tick_heal_pct );
+
+
+  }
+
   virtual void impact( action_state_t* s ) override
   {
     priest_spell_t::impact( s );
@@ -2655,6 +2730,7 @@ struct devouring_plague_t final : public priest_spell_t
       trigger_dp_dot( s );
 
     transfer_dmg_to_dot( s );
+    transfer_heal_to_dot( s );
   }
 };
 
@@ -4363,7 +4439,7 @@ struct renew_t final : public priest_heal_t
       execute();
     }
 
-    virtual double composite_da_multiplier( const action_state_t* state ) const override
+    virtual double composite_da_multiplier( const action_state_t* /* state */ ) const override
     { return 1.0; }
   };
   rapid_renewal_t* rr;
