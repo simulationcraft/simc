@@ -2522,7 +2522,7 @@ double player_t::composite_spell_power( school_e /* school */ ) const
 {
   double sp = current.stats.spell_power;
 
-  sp += current.spell_power_per_intellect; // Check in WoD if 10 is subtracted still.
+  sp += current.spell_power_per_intellect * cache.intellect();
 
   return sp;
 }
