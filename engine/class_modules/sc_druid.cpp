@@ -4588,10 +4588,9 @@ struct starsurge_t : public druid_spell_t
   virtual void execute()
   {
     druid_spell_t::execute();
-    if ( p() -> eclipse_amount < 0 || p() -> buff.celestial_alignment -> up() )
+    if ( p() -> eclipse_amount < 0 )
       p() -> buff.solar_empowerment -> trigger( 3 );
-
-    if ( p() -> eclipse_amount >= 0 || p() -> buff.celestial_alignment -> up() )
+    else
       p() -> buff.lunar_empowerment -> trigger( 2 );
   }
 };
