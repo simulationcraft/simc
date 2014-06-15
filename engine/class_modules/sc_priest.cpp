@@ -2446,15 +2446,18 @@ struct devouring_plague_t final : public priest_spell_t
 
       base_tick_time = timespan_t::from_seconds( 1.0 );
       dot_duration = timespan_t::from_seconds( 6.0 );
-      hasted_ticks = false;
+      hasted_ticks = true;
       tick_may_crit = false;
       may_multistrike = false;
 
-      spell_power_mod.tick = spell_power_mod.direct / 3.0 / 6.0;
-
-      base_dd_min = base_dd_max = spell_power_mod.direct = 0.0;
+      base_dd_min = base_dd_max = spell_power_mod.tick = spell_power_mod.direct = 0.0;
 
       background = true;
+    }
+
+    timespan_t composite_dot_duration( const action_state_t* s ) const override
+    {
+      return dot_duration * ( tick_time( s -> haste ) / base_tick_time );
     }
 
     void init() override
@@ -2523,6 +2526,7 @@ struct devouring_plague_t final : public priest_spell_t
 
       dot_t* dot = get_dot();
       dp_state_t* ds = static_cast<dp_state_t*>( dot -> state );
+      assert( ds );
       ds -> tick_dmg = saved_impact_dmg / dot -> ticks_left();
       if ( sim -> debug )
         sim -> out_debug.printf( "%s DP dot started with total of %.2f damage / %.2f per tick.",
@@ -2558,6 +2562,13 @@ struct devouring_plague_t final : public priest_spell_t
     dot_duration = timespan_t::zero();
 
     add_child( dot_spell );
+  }
+
+  void init() override
+  {
+    priest_spell_t::init();
+
+    snapshot_flags |= STATE_HASTE;
   }
 
   virtual void consume_resource() override
@@ -2618,6 +2629,7 @@ struct devouring_plague_t final : public priest_spell_t
     s -> target = state -> target;
     s -> result = RESULT_HIT;
     s -> result_amount = dmg_to_pass_to_dp; // pass the old remaining dp damage to the dot_spell state, which will be catched in its impact method.
+    s -> haste = state -> haste;
     dot_spell -> schedule_travel( s );
     dot_spell -> stats -> add_execute( timespan_t::zero(), s -> target );
   }
