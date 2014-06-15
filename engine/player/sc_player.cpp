@@ -2619,7 +2619,7 @@ double player_t::composite_damage_versatility() const
   double cdv = composite_damage_versatility_rating() / current.rating.damage_versatility;
 
   if ( ! is_pet() && ! is_enemy() && sim -> auras.versatility -> check() )
-    cdv *= 1.0 + sim -> auras.versatility -> value();
+    cdv += sim -> auras.versatility -> value();
 
   return cdv;
 }
@@ -2631,7 +2631,7 @@ double player_t::composite_heal_versatility() const
   double chv = composite_heal_versatility_rating() / current.rating.heal_versatility;
 
   if ( ! is_pet() && ! is_enemy() && sim -> auras.versatility -> check() )
-    chv *= 1.0 + sim -> auras.versatility -> value();
+    chv += sim -> auras.versatility -> value();
 
   return chv;
 }
@@ -2640,12 +2640,12 @@ double player_t::composite_heal_versatility() const
 
 double player_t::composite_mitigation_versatility() const
 {
-  double chv = composite_mitigation_versatility_rating() / current.rating.mitigation_versatility;
+  double cmv = composite_mitigation_versatility_rating() / current.rating.mitigation_versatility;
 
   if ( ! is_pet() && ! is_enemy() && sim -> auras.versatility -> check() )
-    chv *= 1.0 + sim -> auras.versatility -> value();
+    cmv += sim -> auras.versatility -> value();
 
-  return chv;
+  return cmv;
 }
 
 // player_t::composite_player_multiplier ====================================
