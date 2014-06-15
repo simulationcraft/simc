@@ -1649,7 +1649,6 @@ void player_t::init_gains()
   gains.essence_of_the_red     = get_gain( "essence_of_the_red" );
   gains.focus_regen            = get_gain( "focus_regen" );
   gains.health                 = get_gain( "external_healing" );
-  gains.innervate              = get_gain( "innervate" );
   gains.mana_potion            = get_gain( "mana_potion" );
   gains.mana_spring_totem      = get_gain( "mana_spring_totem" );
   gains.mp5_regen              = get_gain( "mp5_regen" );
@@ -2176,11 +2175,6 @@ void player_t::create_buffs()
   debuffs.flying       = buff_creator_t( this, "flying" ).max_stack( 1 );
 
   // stuff moved from old init_debuffs method
-  debuffs.magic_vulnerability     = buff_creator_t( this, "magic_vulnerability", find_spell( 104225 ) )
-                                    .default_value( find_spell( 104225 ) -> effectN( 1 ).percent() );
-
-  debuffs.physical_vulnerability  = buff_creator_t( this, "physical_vulnerability", find_spell( 81326 ) )
-                                    .default_value( find_spell( 81326 ) -> effectN( 1 ).percent() );
 
   debuffs.mortal_wounds           = buff_creator_t( this, "mortal_wounds", find_spell( 115804 ) )
                                     .default_value( std::fabs( find_spell( 115804 ) -> effectN( 1 ).percent() ) );
@@ -2304,7 +2298,6 @@ double player_t::composite_melee_crit() const
 
   if ( ! is_pet() && ! is_enemy() && ! is_add() && sim -> auras.critical_strike -> check() )
     ac += sim -> auras.critical_strike -> value();
-
 
     ac += racials.viciousness -> effectN( 1 ).percent();
     ac += racials.arcane_acuity -> effectN( 1 ).percent();
@@ -2504,7 +2497,6 @@ double player_t::composite_spell_haste() const
     if ( sim -> auras.haste -> check() )
       h *= 1.0 / ( 1.0 + sim -> auras.haste -> value() );
 
-
     h *= 1.0 / ( 1.0 + racials.nimble_fingers -> effectN( 1 ).percent() );
     h *= 1.0 / ( 1.0 + racials.time_is_money -> effectN( 1 ).percent() );
 
@@ -2624,21 +2616,36 @@ double player_t::composite_bonus_armor() const
 
 double player_t::composite_damage_versatility() const
 {
-  return composite_damage_versatility_rating() / current.rating.damage_versatility;
+  double cdv = composite_damage_versatility_rating() / current.rating.damage_versatility;
+
+  if ( ! is_pet() && ! is_enemy() && sim -> auras.versatility -> check() )
+    cdv *= 1.0 + sim -> auras.versatility -> value();
+
+  return cdv;
 }
 
 // player_t::composite_heal_versatility ====================================
 
 double player_t::composite_heal_versatility() const
 {
-  return composite_heal_versatility_rating() / current.rating.heal_versatility;
+  double chv = composite_heal_versatility_rating() / current.rating.heal_versatility;
+
+  if ( ! is_pet() && ! is_enemy() && sim -> auras.versatility -> check() )
+    chv *= 1.0 + sim -> auras.versatility -> value();
+
+  return chv;
 }
 
 // player_t::composite_mitigation_versatility ===============================
 
 double player_t::composite_mitigation_versatility() const
 {
-  return composite_mitigation_versatility_rating() / current.rating.mitigation_versatility;
+  double chv = composite_mitigation_versatility_rating() / current.rating.mitigation_versatility;
+
+  if ( ! is_pet() && ! is_enemy() && sim -> auras.versatility -> check() )
+    chv *= 1.0 + sim -> auras.versatility -> value();
+
+  return chv;
 }
 
 // player_t::composite_player_multiplier ====================================
@@ -2890,13 +2897,6 @@ double player_t::composite_rating( rating_e rating ) const
 double player_t::composite_player_vulnerability( school_e school ) const
 {
   double m = 1.0;
-
-  if ( debuffs.magic_vulnerability -> check() &&
-       school != SCHOOL_NONE && school != SCHOOL_PHYSICAL )
-    m *= 1.0 + debuffs.magic_vulnerability -> value();
-  else if ( debuffs.physical_vulnerability -> check() &&
-            ( school == SCHOOL_PHYSICAL ) )
-    m *= 1.0 + debuffs.physical_vulnerability -> value();
 
   if ( debuffs.vulnerable -> check() )
     m *= 1.0 + debuffs.vulnerable -> value();

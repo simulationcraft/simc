@@ -22,13 +22,13 @@ const OptionEntry buffOptions[] =
   { "Toggle All Buffs",             "",                                 "Toggle all buffs on/off"                         },
   { "Attack Power Multiplier",      "override.attack_power_multiplier", "+10% Attack Power Multiplier"                    },
   { "Spell Power Multiplier",       "override.spell_power_multiplier",  "+10% Spell Power Multiplier"                     },
-  { "Haste",                        "override.haste",                   "+5% Haste"                                       },
-  { "Multistrike",                  "override.multistrike",             "+5% Multistrike"                                       },
   { "Critical Strike",              "override.critical_strike",         "+5% Melee/Ranged/Spell Critical Strike Chance"   },
+  { "Haste",                        "override.haste",                   "+5% Haste"                                       },
+  { "Multistrike",                  "override.multistrike",             "+5% Multistrike"                                 },
   { "Mastery",                      "override.mastery",                 "+5 Mastery"                                      },
-
   { "Stamina",                      "override.stamina",                 "+10% Stamina"                                    },
   { "Strength, Agility, Intellect", "override.str_agi_int",             "+5% Strength, Agility, Intellect"                },
+  { "Versatility",                  "override.versatility",             "+3% Versatility"                                 },
 
   { "Bloodlust",                    "override.bloodlust",               "Ancient Hysteria\nBloodlust\nHeroism\nTime Warp" },
   { NULL, NULL, NULL }
@@ -50,8 +50,7 @@ const OptionEntry debuffOptions[] =
   { "Toggle All Debuffs",     "",                                "Toggle all debuffs on/off"      },
 
   { "Bleeding",               "override.bleeding",               "Rip\nRupture\nPiercing Shots"   },
-  { "Physical Vulnerability", "override.physical_vulnerability", "Physical Vulnerability (+5%)"   },
-  { "Magic Vulnerability",    "override.magic_vulnerability",    "Magic Vulnerability (+5%)"      },
+  { "Mortal Wounds",          "override.mortal_wounds",          "Healing Debuff"                 },
 
   { NULL, NULL, NULL }
 };
@@ -68,11 +67,11 @@ const OptionEntry scalingOptions[] =
   { "Analyze Spell Power",              "sp",       "Calculate scale factors for Spell Power"              },
   { "Analyze Attack Power",             "ap",       "Calculate scale factors for Attack Power"             },
   { "Analyze Crit Rating",              "crit",     "Calculate scale factors for Crit Rating"              },
+  { "Analyze Haste Rating",             "haste",    "Calculate scale factors for Haste Rating"             },
+  { "Analyze Mastery Rating",           "mastery",  "Calculate scale factors for Mastery Rating"           },
   { "Analyze Multistrike Rating",       "mult",     "Calculate scale factors for Multistrike Rating"       },
   { "Analyze Readiness Rating",         "readiness",  "Calculate scale factors for Readiness Rating"         },
   { "Analyze Versatility Rating",       "vers",     "Calculate scale factors for Versatility Rating"       },
-  { "Analyze Haste Rating",             "haste",    "Calculate scale factors for Haste Rating"             },
-  { "Analyze Mastery Rating",           "mastery",  "Calculate scale factors for Mastery Rating"           },
   { "Analyze Weapon DPS",               "wdps",     "Calculate scale factors for Weapon DPS"               },
   { "Analyze Weapon Speed",             "wspeed",   "Calculate scale factors for Weapon Speed"             },
   { "Analyze Off-hand Weapon DPS",      "wohdps",   "Calculate scale factors for Off-hand Weapon DPS"      },
@@ -245,7 +244,7 @@ void SC_OptionsTab::createGlobalsTab()
   // Create right side of global options
   QFormLayout* globalsLayout_right = new QFormLayout();
   globalsLayout_right -> setFieldGrowthPolicy( QFormLayout::FieldsStayAtSizeHint );
-  globalsLayout_right -> addRow( tr( "Aura Delay" ),               choice.aura_delay = createChoice( 3, "400ms", "500ms", "600ms" ) );
+  globalsLayout_right -> addRow( tr( "Aura Delay" ),               choice.aura_delay = createChoice( 4, "300ms", "400ms", "500ms", "600ms" ) );
   globalsLayout_right -> addRow( tr( "Generate Debug" ),                choice.debug = createChoice( 3, "None", "Log Only", "Gory Details" ) );
   globalsLayout_right -> addRow( tr( "Report Pets Separately" ),  choice.report_pets = createChoice( 2, "Yes", "No" ) );
   globalsLayout_right -> addRow( tr( "Report Print Style" ),      choice.print_style = createChoice( 3, "MoP", "White", "Classic" ) );
@@ -546,7 +545,7 @@ void SC_OptionsTab::decodeOptions()
   load_setting( settings, "show_etmi", choice.show_etmi );
   load_setting( settings, "world_lag", choice.world_lag );
   load_setting( settings, "target_level", choice.target_level );
-  load_setting( settings, "aura_delay", choice.aura_delay, "500ms" );
+  load_setting( settings, "aura_delay", choice.aura_delay, "300ms" );
   load_setting( settings, "report_pets", choice.report_pets, "No" );
   load_setting( settings, "print_style", choice.print_style );
   load_setting( settings, "statistics_level", choice.statistics_level, "1" );
@@ -804,7 +803,7 @@ QString SC_OptionsTab::get_globalSettings()
   options += "\n";
 
 
-  const char *auradelay[] = { "0.4", "0.5", "0.6" };
+  const char *auradelay[] = { "0.3", "0.4", "0.5", "0.6" };
   options += "default_aura_delay=";
   options += auradelay[ choice.aura_delay->currentIndex() ];
   options += "\n";

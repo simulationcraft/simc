@@ -2469,11 +2469,10 @@ public:
     int spell_power_multiplier;
     int stamina;
     int str_agi_int;
+    int versatility;
 
     // Debuff overrides
-    int magic_vulnerability;
     int mortal_wounds;
-    int physical_vulnerability;
     int bleeding;
 
     // Misc stuff needs resolving
@@ -2493,6 +2492,7 @@ public:
     aura_t* spell_power_multiplier;
     aura_t* stamina;
     aura_t* str_agi_int;
+    aura_t* versatility;
   } auras;
 
   // Auras and De-Buffs
@@ -4294,7 +4294,6 @@ struct player_t : public actor_t
     buff_t* guardian_spirit;
     buff_t* hand_of_sacrifice;
     buff_t* illuminated_healing;
-    buff_t* innervate;
     buff_t* mongoose_mh;
     buff_t* mongoose_oh;
     buff_t* nitro_boosts;
@@ -4348,10 +4347,7 @@ struct player_t : public actor_t
     debuff_t* dazed;
 
     // MoP debuffs
-    debuff_t* magic_vulnerability;
     debuff_t* mortal_wounds;
-    debuff_t* physical_damage;
-    debuff_t* physical_vulnerability;
   } debuffs;
 
   struct gains_t
@@ -4363,9 +4359,7 @@ struct player_t : public actor_t
     gain_t* energy_regen;
     gain_t* essence_of_the_red;
     gain_t* focus_regen;
-    gain_t* glyph_of_innervate;
     gain_t* health;
-    gain_t* innervate;
     gain_t* mana_potion;
     gain_t* mana_spring_totem;
     gain_t* mp5_regen;
