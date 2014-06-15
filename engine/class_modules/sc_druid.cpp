@@ -3131,38 +3131,54 @@ void druid_heal_t::init_living_seed()
 
 struct frenzied_regeneration_t : public druid_heal_t
 {
+  double maximum_rage_cost;
   frenzied_regeneration_t( druid_t* p, const std::string& options_str ) :
-    druid_heal_t( "frenzied_regeneration", p, p -> find_class_spell( "Frenzied Regeneration" ), options_str )
+    druid_heal_t( "frenzied_regeneration", p, p -> find_class_spell( "Frenzied Regeneration" ), options_str ),
+    maximum_rage_cost( 0.0 )
   {
     special = false;
     use_off_gcd = true;
 
-    attack_power_mod.direct = data().effectN( 1 ).percent();
+    attack_power_mod.direct = data().effectN( 1 ).ap_coeff();
     attack_power_mod.direct *= 1.0 + p -> perk.improved_frenzied_regeneration -> effectN( 1 ).percent();
-
+    target = player;
     if ( p -> sets.has_set_bonus( SET_T16_2PC_TANK ) )
       p -> active.ursocs_vigor = new ursocs_vigor_t( p );
+    maximum_rage_cost = data().effectN( 2 ).base_value();
   }
 
   virtual double cost() const
   {
-    double c = druid_heal_t::cost();
+    const_cast<frenzied_regeneration_t*>(this) -> base_costs[ RESOURCE_RAGE ] = std::min( p() -> resources.current[ RESOURCE_RAGE ],
+                                                maximum_rage_cost );
 
-    c = std::min( 60.0, std::max( p() -> resources.current[ RESOURCE_RAGE ], c ) );
-
-    return c;
+    return druid_heal_t::cost();
   }
 
-  virtual void impact( action_state_t* s )
+  virtual double action_multiplier() const
   {
-    s -> result_amount *= resource_consumed / 20;
+    double am = druid_heal_t::action_multiplier();
+    am *= cost() / 60;
 
-    druid_heal_t::impact( s );
+    return am;
+  }
+
+  virtual void execute()
+  {
+    p() -> buff.tier15_2pc_tank -> expire();
+
+    druid_heal_t::execute();
+
+    if ( p() -> sets.has_set_bonus( SET_T16_4PC_TANK ) )
+      p() -> active.ursocs_vigor -> trigger_hot( resource_consumed );
   }
 
   virtual bool ready()
   {
-    if ( ! p() -> buff.bear_form -> check() )
+    if ( !p() -> buff.bear_form -> check() )
+      return false;
+
+    if ( p() -> resources.current[RESOURCE_RAGE ] < 1 )
       return false;
 
     return druid_heal_t::ready();
