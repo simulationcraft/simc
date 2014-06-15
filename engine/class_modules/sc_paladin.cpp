@@ -367,7 +367,6 @@ public:
   virtual double    composite_attack_power_multiplier() const;
   virtual double    composite_mastery() const;
   virtual double    composite_multistrike() const;
-  virtual double    composite_readiness() const;
   virtual double    composite_bonus_armor() const;
   virtual double    composite_melee_attack_power() const;
   virtual double    composite_melee_crit() const;
@@ -5614,14 +5613,36 @@ double paladin_t::composite_rating_multiplier( rating_e r ) const
     case RATING_RANGED_HASTE:
     case RATING_SPELL_HASTE:
       m *= 1.0 + passives.haste_attunement -> effectN( 1 ).percent(); 
+      // Seraphim adds 30% haste. TODO: check if multiplicative w/ attunement
+      if ( buffs.seraphim -> check() )
+        m *= 1.0 + buffs.seraphim -> data().effectN( 1 ).percent();
       break;
     case RATING_MASTERY:
       m *= 1.0 + passives.mastery_attunement -> effectN( 1 ).percent();
+      // Seraphim adds 30% mastery TODO: check if multiplicative w/ attunement
+      if ( buffs.seraphim -> check() )
+        m *= 1.0 + buffs.seraphim -> data().effectN( 1 ).percent();
       break;
     case RATING_MELEE_CRIT:
     case RATING_SPELL_CRIT:
     case RATING_RANGED_CRIT:
       m *= 1.0 + passives.crit_attunement -> effectN( 1 ).percent();
+      // Seraphim adds 30% crit. TODO: check if multiplicative w/ attunement
+      if ( buffs.seraphim -> check() )
+        m *= 1.0 + buffs.seraphim -> data().effectN( 1 ).percent();
+      break;
+    case RATING_MULTISTRIKE:
+      // Seraphim adds 30% multistrike
+      if ( buffs.seraphim -> check() )
+        m *= 1.0 + buffs.seraphim -> data().effectN( 1 ).percent();
+      break;
+    case RATING_DAMAGE_VERSATILITY:
+    case RATING_HEAL_VERSATILITY:
+    case RATING_MITIGATION_VERSATILITY:
+      // Seraphim adds 30% versatility
+      if ( buffs.seraphim -> check() )
+        m *= 1.0 + buffs.seraphim -> data().effectN( 1 ).percent();
+      break;
     default:
       break;
   }
@@ -5639,10 +5660,7 @@ double paladin_t::composite_melee_crit() const
   // This should only give a nonzero boost for Holy
   if ( buffs.avenging_wrath -> check() )
     m += buffs.avenging_wrath -> get_crit_bonus();
-
-  // Seraphim adds 30% crit TODO: check if multiplicative
-  m += buffs.seraphim -> data().effectN( 1 ).percent();
-
+  
   return m;
 }
 
@@ -5668,9 +5686,6 @@ double paladin_t::composite_melee_haste() const
   // Infusion of Light (Holy) adds 10% haste
   h /= 1.0 + passives.infusion_of_light -> effectN( 2 ).percent();
 
-  // Seraphim adds 30% haste TODO: check if multiplicative
-  h /= 1.0 + buffs.seraphim -> data().effectN( 1 ).percent();
-
   return h;
 }
 
@@ -5681,7 +5696,8 @@ double paladin_t::composite_melee_speed() const
   double h = player_t::composite_melee_speed();
 
   // Empowered Seals
-  h /= 1.0 + buffs.liadrins_righteousness -> data().effectN( 1 ).percent(); // TODO: check that it's multiplicative
+  if ( buffs.liadrins_righteousness -> check() )
+    h /= 1.0 + buffs.liadrins_righteousness -> data().effectN( 1 ).percent(); // TODO: check that it's multiplicative
 
   return h;
 
@@ -5696,9 +5712,6 @@ double paladin_t::composite_spell_crit() const
   // This should only give a nonzero boost for Holy
   if ( buffs.avenging_wrath -> check() )
     m += buffs.avenging_wrath -> get_crit_bonus();
-
-  // Seraphim adds 30% crit TODO: check if multiplicative
-  m += buffs.seraphim -> data().effectN( 1 ).percent();
   
   return m;
 }
@@ -5716,9 +5729,6 @@ double paladin_t::composite_spell_haste() const
   // Infusion of Light (Holy) adds 10% haste
   h /= 1.0 + passives.infusion_of_light -> effectN( 2 ).percent();
 
-  // Seraphim adds 30% haste TODO: check if multiplicative
-  h /= 1.0 + buffs.seraphim -> data().effectN( 1 ).percent();
-  
   return h;
 }
 
@@ -5727,9 +5737,6 @@ double paladin_t::composite_spell_haste() const
 double paladin_t::composite_mastery() const
 {
   double m = player_t::composite_mastery();
-  
-  // Seraphim adds 30% mastery TODO: check if multiplicative
-  m += buffs.seraphim -> data().effectN( 1 ).base_value();
 
   return m;
 }
@@ -5739,24 +5746,8 @@ double paladin_t::composite_mastery() const
 double paladin_t::composite_multistrike() const
 {
   double m = player_t::composite_multistrike();
-  
-  // Seraphim adds 30% multistrike TODO: check if multiplicative
-  m += buffs.seraphim -> data().effectN( 1 ).percent();
 
   return m;
-}
-
-// WOD-TODO: replace with composite_versatility()
-// paladin_t::composite_readiness =========================================
-
-double paladin_t::composite_readiness() const
-{
-  double rd = player_t::composite_readiness();
-  
-  // Seraphim adds 30% readiness TODO: check if multiplicative
-  rd += buffs.seraphim -> data().effectN( 1 ).percent();
-
-  return rd;
 }
 
 // paladin_t::composite_bonus_armor =========================================
@@ -5765,8 +5756,9 @@ double paladin_t::composite_bonus_armor() const
 {
   double ba = player_t::composite_bonus_armor();
   
-  // Seraphim adds 30% bonus armor TODO: check if multiplicative
-  ba *= 1.0 + buffs.seraphim -> data().effectN( 1 ).percent();
+  // Seraphim adds 30% bonus armor. TODO: Make sure there are no sources of bonus armor not affected by this.
+  if ( buffs.seraphim -> check() )
+    ba *= 1.0 + buffs.seraphim -> data().effectN( 1 ).percent();
 
   return ba;
 }
@@ -5788,13 +5780,16 @@ double paladin_t::composite_player_multiplier( school_e school ) const
   }
 
   // Divine Shield reduces everything
-  m *= 1.0 + buffs.divine_shield -> data().effectN( 1 ).percent();
+  if ( buffs.divine_shield -> check() )
+    m *= 1.0 + buffs.divine_shield -> data().effectN( 1 ).percent();
 
   // Glyph of Word of Glory buffs everything
-  m *= 1.0 + buffs.glyph_of_word_of_glory -> value();
+  if ( buffs.glyph_of_word_of_glory -> check() )
+    m *= 1.0 + buffs.glyph_of_word_of_glory -> value();
 
   // T16_2pc_melee buffs everything
-  m *= 1.0 + buffs.warrior_of_the_light -> data().effectN( 1 ).percent();
+  if ( buffs.warrior_of_the_light -> check() )
+    m *= 1.0 + buffs.warrior_of_the_light -> data().effectN( 1 ).percent();
 
   return m;
 }
@@ -5805,7 +5800,8 @@ double paladin_t::composite_player_heal_multiplier( const action_state_t* s ) co
 {
   double m = player_t::composite_player_heal_multiplier( s );
 
-  m *= 1.0 + buffs.avenging_wrath -> get_healing_mod();
+  if ( buffs.avenging_wrath -> check() )
+    m *= 1.0 + buffs.avenging_wrath -> get_healing_mod();
 
   return m;
 
@@ -5838,6 +5834,7 @@ double paladin_t::composite_melee_attack_power() const
 {
   double ap = player_t::composite_melee_attack_power();
 
+  // can skip the conditional here, buffs.bladed_armor is a spell_not_found for holy/ret
   ap += buffs.bladed_armor -> data().effectN( 1 ).percent() * current.stats.get_stat( STAT_BONUS_ARMOR );
 
   return ap;
@@ -5853,7 +5850,8 @@ double paladin_t::composite_attack_power_multiplier() const
   ap += cache.mastery() * passives.divine_bulwark -> effectN( 5 ).mastery_value();
   
   // TODO: check if additive or multiplicative
-  ap += buffs.maraads_truth -> data().effectN( 1 ).percent(); 
+  if ( buffs.maraads_truth -> check() )
+    ap += buffs.maraads_truth -> data().effectN( 1 ).percent(); 
 
   return ap;
 }
