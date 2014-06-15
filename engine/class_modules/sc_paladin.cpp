@@ -3906,12 +3906,11 @@ struct hand_of_light_proc_t : public paladin_melee_attack_t
     // not *= since we don't want to double dip, just calling base to initialize variables
     double am = static_cast<paladin_t*>( player ) -> get_hand_of_light();
     
-    //was double dipping on avenging wrath - hand of light is not affected by avenging wrath so that it does not double dip
-    //easier to remove it here than try to add an exception at the global avenging wrath buff level
-    if ( p() -> buffs.avenging_wrath -> check() )
-    {
-      am /= 1.0 + p() -> buffs.avenging_wrath -> get_damage_mod();
-    }
+    // HoL doesn't double dipp on anything in composite_player_multiplier(): avenging wrath, GoWoG, Divine Shield, etc.
+    // easier to remove it here by dividing by the result than to try and hack it into that function.
+    // TODO: is it just easier to override calculate_direct_amount(), as in shining_protector_t?
+    am /= p() -> composite_player_multiplier( SCHOOL_HOLY );
+
     return am;
   }
 };
@@ -5789,7 +5788,8 @@ double paladin_t::composite_player_multiplier( school_e school ) const
 
   // These affect all damage done by the paladin
   // Avenging Wrath buffs everything
-  m *= 1.0 + buffs.avenging_wrath -> get_damage_mod();
+  if ( buffs.avenging_wrath -> check() )
+    m *= 1.0 + buffs.avenging_wrath -> get_damage_mod();
 
   // T15_2pc_melee buffs holy damage only
   if ( dbc::is_school( school, SCHOOL_HOLY ) )
