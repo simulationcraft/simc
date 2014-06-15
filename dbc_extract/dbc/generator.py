@@ -3116,6 +3116,42 @@ class ClassFlagGenerator(SpellDataGenerator):
         
         return s
 
+class GlyphPropertyGenerator(DataGenerator):
+    def __init__(self, options):
+        self._dbc = [ 'GlyphProperties.dbc', 'Spell.dbc' ]
+
+        DataGenerator.__init__(self, options)
+
+    def filter(self):
+        return None
+        
+    def generate(self, ids = None):
+        data_str = "%sglyph_property_data%s" % (
+            self._options.prefix and ('%s_' % self._options.prefix) or '',
+            self._options.suffix and ('_%s' % self._options.suffix) or '',
+        )
+
+        content_str = ''
+        properties = 0
+        for id, data in self._glyphproperties_db.iteritems():
+            if data.id_spell == 0:
+                continue
+
+            if self._spell_db[data.id_spell].id == 0:
+                continue
+
+            content_str += '  { %5u, %6u },\n' % (data.id, data.id_spell)
+            properties += 1
+
+
+        s = '// Glyph properties, wow build %d\n' % self._options.build
+        s += 'static glyph_property_data_t __%s[%d] = {\n' % (data_str, properties + 1)
+        s += content_str
+        s += '  { %5u, %6u }\n' % (0, 0)
+        s += '};\n'
+        
+        return s
+
 class GlyphListGenerator(SpellDataGenerator):
     def __init__(self, options):
 

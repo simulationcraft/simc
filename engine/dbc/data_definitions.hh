@@ -142,6 +142,11 @@ struct gem_property_data_t {
   unsigned min_ilevel;
 };
 
+struct glyph_property_data_t {
+  unsigned id;
+  unsigned spell_id;
+};
+
 #ifdef __OpenBSD__
 #pragma pack()
 #else

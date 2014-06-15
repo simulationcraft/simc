@@ -2549,6 +2549,24 @@ unsigned dbc_t::perk_ability_id( specialization_e spec_id, const char* spell_nam
   return 0;
 }
 
+unsigned dbc_t::glyph_spell_id( unsigned property_id ) const
+{
+#if SC_USE_PTR
+  const glyph_property_data_t* table = ptr ? &__ptr_glyph_property_data[0] : &__glyph_property_data[0];
+#else
+  const glyph_property_data_t* table = &__glyph_property_data[0];
+#endif
+
+  while ( table -> id != 0 )
+  {
+    if ( table -> id == property_id )
+      return table -> spell_id;
+    table++;
+  }
+
+  return 0;
+}
+
 unsigned dbc_t::glyph_spell_id( player_e c, const char* spell_name ) const
 {
   unsigned cid = util::class_id( c );

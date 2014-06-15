@@ -25,7 +25,7 @@ parser.add_option("-t", "--type", dest = "type",
                   default = "spell", action = "store", type = "choice",
                   choices = [ 'spell', 'class_list', 'talent', 'scale', 'view', 
                               'header', 'patch', 'spec_spell_list', 'mastery_list', 'racial_list', 'perk_list',
-                              'glyph_list', 'class_flags', 'set_list', 'random_property_points', 'random_suffix',
+                              'glyph_list', 'glyph_property_list', 'class_flags', 'set_list', 'random_property_points', 'random_suffix',
                               'item_ench', 'weapon_damage', 'item', 'item_armor', 'gem_properties', 'random_suffix_groups', 'spec_enum', 'spec_list', 'item_upgrade', 'rppm_coeff' ]), 
 parser.add_option("-l", "--level", dest = "level", 
                   help    = "Scaling values up to level [100]", 
@@ -207,6 +207,13 @@ elif options.type == 'gem_properties':
     print g.generate(ids)
 elif options.type == 'glyph_list':
     g = dbc.generator.GlyphListGenerator(options)
+    if not g.initialize():
+        sys.exit(1)
+    ids = g.filter()
+    
+    print g.generate(ids)
+elif options.type == 'glyph_property_list':
+    g = dbc.generator.GlyphPropertyGenerator(options)
     if not g.initialize():
         sys.exit(1)
     ids = g.filter()

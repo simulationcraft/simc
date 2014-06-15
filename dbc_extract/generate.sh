@@ -49,6 +49,7 @@ fi
 ./dbc_extract.py -p $INPUT $WOWVERSION -b $BUILD$PTR -t glyph_list             >> $OUTPATH/sc_spell_lists${PTR:+_ptr}.inc
 ./dbc_extract.py -p $INPUT $WOWVERSION -b $BUILD$PTR -t set_list               >> $OUTPATH/sc_spell_lists${PTR:+_ptr}.inc
 ./dbc_extract.py -p $INPUT $WOWVERSION -b $BUILD$PTR -t perk_list              >> $OUTPATH/sc_spell_lists${PTR:+_ptr}.inc
+./dbc_extract.py -p $INPUT $WOWVERSION -b $BUILD$PTR -t glyph_property_list    >> $OUTPATH/sc_spell_lists${PTR:+_ptr}.inc
 ./dbc_extract.py -p $INPUT --cache=$CACHEDIR $WOWVERSION -b $BUILD$PTR -t item > $OUTPATH/sc_item_data${PTR:+_ptr}.inc
 ./dbc_extract.py -p $INPUT $WOWVERSION -b $BUILD$PTR -t random_property_points >> $OUTPATH/sc_item_data${PTR:+_ptr}.inc
 ./dbc_extract.py -p $INPUT $WOWVERSION -b $BUILD$PTR -t random_suffix          >> $OUTPATH/sc_item_data${PTR:+_ptr}.inc

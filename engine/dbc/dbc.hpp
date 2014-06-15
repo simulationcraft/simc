@@ -1010,6 +1010,7 @@ public:
   specialization_e mastery_specialization( const player_e c, uint32_t spell_id ) const;
 
   unsigned glyph_spell_id( player_e c, const char* spell_name ) const;
+  unsigned glyph_spell_id( unsigned property_id ) const;
   unsigned set_bonus_spell_id( player_e c, const char* spell_name, int tier = -1 ) const;
 
   specialization_e class_ability_specialization( const player_e c, uint32_t spell_id ) const;
