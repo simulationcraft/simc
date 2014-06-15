@@ -4473,10 +4473,9 @@ struct starfire_t : public druid_spell_t
     double m = druid_spell_t::composite_persistent_multiplier( state );
 
     if ( p() -> buff.lunar_empowerment -> up() )
-    {
-      m *= 1.0 + p() -> buff.lunar_empowerment -> data().effectN( 1 ).percent() + p() -> talent.soul_of_the_forest -> effectN( 1 ).percent();
-      p() -> buff.lunar_empowerment -> decrement();
-    }
+      m *= 1.0 + p() -> buff.lunar_empowerment -> data().effectN( 1 ).percent() +
+                 p() -> talent.soul_of_the_forest -> effectN( 1 ).percent();
+
     return m;
   }
 
@@ -4496,6 +4495,8 @@ struct starfire_t : public druid_spell_t
 
     if ( p() -> eclipse_amount < 0 && !p() -> buff.celestial_alignment -> up() )
       p() -> proc.wrong_eclipse_starfire -> occur();
+
+    p() -> buff.lunar_empowerment -> decrement();
   }
 
   virtual void impact( action_state_t* s )
@@ -4816,10 +4817,8 @@ struct wrath_t : public druid_spell_t
       m *= 1.0 + p() -> talent.dream_of_cenarius -> effectN( 1 ).percent();
 
     if ( p() -> buff.solar_empowerment -> up() )
-    {
-      m *= 1.0 + p() -> buff.solar_empowerment -> data().effectN( 1 ).percent() + p() -> talent.soul_of_the_forest -> effectN( 1 ).percent();
-      p() -> buff.solar_empowerment -> decrement();
-    }
+      m *= 1.0 + p() -> buff.solar_empowerment -> data().effectN( 1 ).percent() +
+                 p() -> talent.soul_of_the_forest -> effectN( 1 ).percent();
 
     return m;
   }
@@ -4848,6 +4847,8 @@ struct wrath_t : public druid_spell_t
 
     if ( p() -> eclipse_amount > 0 && !p() -> buff.celestial_alignment -> up() )
       p() -> proc.wrong_eclipse_wrath -> occur();
+
+    p() -> buff.solar_empowerment -> decrement();
   }
 
   virtual void impact( action_state_t* s )
@@ -5357,11 +5358,9 @@ void druid_t::create_buffs()
 
   buff.astral_showers              = buff_creator_t( this, "astral_showers",   spec.astral_showers -> effectN( 1 ).trigger() );
 
-  buff.solar_empowerment         = buff_creator_t( this, "solar_empowerment", find_spell( 164545 ) )
-                                   .max_stack( 3 );
+  buff.solar_empowerment         = buff_creator_t( this, "solar_empowerment", find_spell( 164545 ) );
 
-  buff.lunar_empowerment         = buff_creator_t( this, "lunar_empowerment", find_spell( 164547 ) )
-                                   .max_stack( 2 );
+  buff.lunar_empowerment         = buff_creator_t( this, "lunar_empowerment", find_spell( 164547 ) );
 
   buff.owlkin_frenzy             = buff_creator_t( this, "owlkin_frenzy", spec.owlkin_frenzy -> effectN( 1 ).trigger() )
                                    .chance( spec.owlkin_frenzy -> proc_chance() )
