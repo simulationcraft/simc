@@ -1672,10 +1672,18 @@ void action_t::init()
     snapshot_flags |= STATE_MUL_DA | STATE_TGT_MUL_DA | STATE_MUL_PERSISTENT | STATE_VERSATILITY;
 
   if ( ( spell_power_mod.direct > 0 || spell_power_mod.tick > 0 ) )
+  {
     snapshot_flags |= STATE_SP;
+    if ( player -> role == ROLE_TANK )
+      snapshot_flags |= STATE_RESOLVE;
+  }
 
   if ( ( weapon_power_mod > 0 || attack_power_mod.direct > 0 || attack_power_mod.tick > 0 ) )
+  {
     snapshot_flags |= STATE_AP;
+    if ( player -> role == ROLE_TANK )
+      snapshot_flags |= STATE_RESOLVE;
+  }
 
   if ( dot_duration > timespan_t::zero() && ( hasted_ticks || channeled ) )
     snapshot_flags |= STATE_HASTE;
@@ -2309,6 +2317,9 @@ void action_t::snapshot_internal( action_state_t* state, uint32_t flags, dmg_e r
 
   if ( flags & STATE_TGT_MITG_TA )
     state -> target_mitigation_ta_multiplier = composite_target_mitigation( state -> target, get_school() );
+
+  if ( flags & STATE_RESOLVE )
+    state -> resolve = composite_resolve( state );
 }
 
 void action_t::consolidate_snapshot_flags()
