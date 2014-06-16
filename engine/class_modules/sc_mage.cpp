@@ -4423,7 +4423,7 @@ void mage_t::apl_fire()
   default_list -> add_talent( this, "Rune of Power",
                               "if=buff.rune_of_power.remains<cast_time" );
   default_list -> add_action( this, "Evocation",
-                              "if=buff.invokers_energy.remains=0|mana_pct<5" );
+                              "if=buff.invokers_energy.remains=0|mana.pct<5" );
   default_list -> add_action( "cancel_buff,name=alter_time,if=buff.amplified.up&buff.alter_time.up&(trinket.stat.intellect.cooldown_remains-buff.alter_time.remains>109)",
                               "Cancelaura AT if PBoI procs" );
 
