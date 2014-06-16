@@ -4018,6 +4018,32 @@ public:
 
 // Player ===================================================================
 
+enum action_var_e
+{
+  OPERATION_NONE = -1,
+  OPERATION_SET,
+  OPERATION_PRINT,
+  OPERATION_RESET,
+  OPERATION_ADD,
+  OPERATION_SUB
+};
+
+struct action_variable_t
+{
+  std::string name_;
+  double current_value_, default_;
+
+  action_variable_t( const std::string& name, double def = 0 ) :
+    name_( name ), default_( def )
+  { }
+
+  double value() const
+  { return current_value_; }
+
+  void reset()
+  { current_value_ = default_; }
+};
+
 struct player_t : public actor_t
 {
   static const int default_level = 90;
@@ -4771,7 +4797,7 @@ struct player_t : public actor_t
 
   rng_t& rng() { return sim -> rng(); }
   rng_t& rng() const { return sim -> rng(); }
-
+  std::vector<action_variable_t> variables;
   // Add 1ms of time to ensure that we finish this run. This is necessary due 
   // to the millisecond accuracy in our timing system.
   virtual timespan_t time_to_move() const

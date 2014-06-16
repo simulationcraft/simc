@@ -230,6 +230,15 @@ public:
 
   } talents;
 
+  struct pyro_switch_t
+  {
+      bool dump_state;
+      void reset() { dump_state = 0; }
+      pyro_switch_t() { reset(); }
+  } pyro_switch;
+
+
+
 public:
   int current_arcane_charges;
 
@@ -252,6 +261,8 @@ public:
     spells( spells_t() ),
     spec( specializations_t() ),
     talents( talents_list_t() ),
+    pyro_switch( pyro_switch_t() ),
+    mana_gem_charges( 0 ),
     current_arcane_charges()
   {
     // Cooldowns
@@ -3361,7 +3372,42 @@ struct summon_water_elemental_t : public mage_spell_t
   }
 };
 
-// Choose Rotation ==========================================================
+// Combustion Pyroblast Chaining Switch ==========================================================
+
+
+struct start_pyro_chain_t : public action_t
+{
+	start_pyro_chain_t( mage_t* p, const std::string& options_str ):
+		action_t( ACTION_USE, "start_pyro_chain", p )
+	{
+        parse_options( NULL, options_str );
+		trigger_gcd = timespan_t::zero();
+		harmful = false;
+	}
+    virtual void execute()
+	{
+		mage_t* p = debug_cast<mage_t*>( player );
+		p -> pyro_switch.dump_state = true;
+	}
+};
+
+struct stop_pyro_chain_t : public action_t
+{
+	stop_pyro_chain_t( mage_t* p, const std::string& options_str ):
+		action_t( ACTION_USE, "stop_pyro_chain", p )
+	{
+		parse_options( NULL, options_str );
+		trigger_gcd = timespan_t::zero();
+		harmful = false;
+	}
+    virtual void execute()
+	{
+		mage_t* p = debug_cast<mage_t*>( player );
+		p -> pyro_switch.dump_state = false;
+	}
+};
+
+// Choose Rotation =================================================================================
 
 struct choose_rotation_t : public action_t
 {
@@ -3727,6 +3773,8 @@ action_t* mage_t::create_action( const std::string& name,
   if ( name == "blink"             ) return new                   blink_t( this, options_str );
   if ( name == "blizzard"          ) return new                blizzard_t( this, options_str );
   if ( name == "choose_rotation"   ) return new         choose_rotation_t( this, options_str );
+  if ( name == "start_pyro_chain"  ) return new         start_pyro_chain_t( this, options_str );
+  if ( name == "stop_pyro_chain"  ) return new          stop_pyro_chain_t(  this, options_str );
   if ( name == "cold_snap"         ) return new               cold_snap_t( this, options_str );
   if ( name == "combustion"        ) return new              combustion_t( this, options_str );
   if ( name == "cone_of_cold"      ) return new            cone_of_cold_t( this, options_str );
@@ -3910,6 +3958,11 @@ void mage_t::init_base_stats()
   diminished_kfactor   = 0.009830;
   diminished_dodge_cap = 0.006650;
   diminished_parry_cap = 0.006650;
+
+  // Reduce fire mage distance to avoid proc munching at high haste
+  // 2 yards was selected through testing with T16H profile
+  if ( specialization() == MAGE_FIRE )
+    base.distance = 20;
 }
 
 // mage_t::init_scaling =====================================================
@@ -4122,6 +4175,7 @@ void mage_t::apl_arcane()
 {
   std::vector<std::string> item_actions       = get_item_actions();
   std::vector<std::string> racial_actions     = get_racial_actions();
+  std::vector<std::string> profession_actions = get_profession_actions();
 
   action_priority_list_t* default_list        = get_action_priority_list( "default"       );
   action_priority_list_t* single_target       = get_action_priority_list( "single_target" );
@@ -4182,45 +4236,161 @@ void mage_t::apl_arcane()
 
 void mage_t::apl_fire()
 {
-  std::vector<std::string> item_actions = get_item_actions();
-  std::vector<std::string> racial_actions = get_racial_actions();
+  std::vector<std::string> item_actions       = get_item_actions();
+  std::vector<std::string> racial_actions     = get_racial_actions();
+  std::vector<std::string> profession_actions = get_profession_actions();
 
-  action_priority_list_t* default_list = get_action_priority_list( "default" );
+  action_priority_list_t* default_list        = get_action_priority_list( "default"            );
+
+  action_priority_list_t* combust_sequence    = get_action_priority_list( "combust_sequence"   );
+  action_priority_list_t* init_alter_combust  = get_action_priority_list( "init_alter_combust" );
+  action_priority_list_t* init_pom_combustion = get_action_priority_list( "init_pom_combust"   );
+  action_priority_list_t* proc_builder        = get_action_priority_list( "proc_builder"       );
+  action_priority_list_t* aoe                 = get_action_priority_list( "aoe"                );
+  action_priority_list_t* single_target       = get_action_priority_list( "single_target"      );
 
 
-  default_list -> add_action( this, "Counterspell", "if=target.debuff.casting.react" );
-  default_list -> add_talent( this, "Cold Snap", "if=health.pct<30" );
-  default_list -> add_action( this, "Time Warp", "if=target.health.pct<25|time>5" );
-  //not useful if bloodlust is check in option.
+  default_list -> add_action( this, "Counterspell",
+                              "if=target.debuff.casting.react" );
+  default_list -> add_action( "cancel_buff,name=alter_time,moving=1" );
+  default_list -> add_talent( this, "Cold Snap",
+                              "if=health.pct<30" );
+  default_list -> add_action( this, "Time Warp",
+                              "if=buff.alter_time.down" );
+  default_list -> add_talent( this, "Rune of Power",
+                              "if=buff.rune_of_power.remains<cast_time" );
+  default_list -> add_action( "cancel_buff,name=alter_time,if=buff.amplified.up&buff.alter_time.up&(trinket.stat.intellect.cooldown_remains-buff.alter_time.remains>109)",
+                              "Cancelaura AT if PBoI procs" );
 
-  default_list -> add_talent( this, "Rune of Power", "if=buff.rune_of_power.remains<cast_time" );
+  default_list -> add_action( "run_action_list,name=combust_sequence,if=buff.alter_time.up|pyro_chain");
+  default_list -> add_action( "run_action_list,name=init_alter_combust,if=buff.amplified.up&cooldown.alter_time_activate.up&cooldown.combustion.up&(trinket.stat.intellect.cooldown_remains>95|trinket.stat.intellect.cooldown_remains+20>time_to_die)",
+                              "Start AT-POM-Combustion combo if CDs are up; Wait for trinket proc if player has PBoI" );
+  default_list -> add_action( "run_action_list,name=init_alter_combust,if=buff.amplified.down&cooldown.alter_time_activate.up&cooldown.combustion.up" );
+  default_list -> add_action( "run_action_list,name=init_pom_combust,if=buff.amplified.up&cooldown.alter_time_activate.remains>45&cooldown.combustion.up&cooldown.presence_of_mind.up&(trinket.stat.intellect.cooldown_remains>95|trinket.stat.intellect.cooldown_remains+20>time_to_die)",
+                              "Start regular POM-Combustion combo if CDs are up; Wait for trinket proc if player has PBoI" );
+  default_list -> add_action( "run_action_list,name=init_pom_combust,if=buff.amplified.down&cooldown.alter_time_activate.remains>45&cooldown.combustion.up&cooldown.presence_of_mind.up" );
 
-  default_list -> add_action( this, "Evocation", "if=talent.invocation.enabled&(buff.invokers_energy.down|mana.pct<20)" );
-  default_list -> add_action( this, "Evocation", "if=talent.invocation.enabled&buff.invokers_energy.remains<6" );
-  default_list -> add_action( this, "Evocation", "if=talent.invocation.enabled&mana.pct<50,interrupt_if=mana.pct>95&buff.invokers_energy.remains>10" );
-  default_list -> add_action( this, "Evocation", "if=mana.pct<20,interrupt_if=mana.pct>95" );
+  default_list -> add_talent( this, "Rune of Power",
+                              "if=buff.alter_time.down&buff.rune_of_power.remains<4*action.fireball.execute_time&(buff.heating_up.down|buff.pyroblast.down|!action.fireball.in_flight)",
+                              "Cast RoP or MI only when player does not have both HU, Pyro proc and fireball mid flight - this causes Proc munching" );
+  default_list -> add_action( this, "Mirror Image",
+                              "if=buff.alter_time.down&(buff.heating_up.down|buff.pyroblast.down|!action.fireball.in_flight)" );
 
   for( size_t i = 0; i < racial_actions.size(); i++ )
-    default_list -> add_action( racial_actions[i] );
-
+  {
+    default_list -> add_action( racial_actions[i] + ",if=buff.alter_time.down&target.time_to_die<18" );
+  }
   default_list -> add_action( "jade_serpent_potion" );
-  default_list -> add_action( this, "Mirror Image" );
-
-  default_list -> add_action( this, "Combustion", "if=target.time_to_die<22" );
-  default_list -> add_action( this, "Combustion", "if=dot.ignite.tick_dmg>=((3*action.pyroblast.crit_damage)*mastery_value*0.5)" );
-  default_list -> add_action( this, "Combustion", "if=dot.ignite.tick_dmg>=((action.fireball.crit_damage+action.inferno_blast.crit_damage+action.pyroblast.hit_damage)*mastery_value*0.5)&dot.pyroblast.ticking&buff.pyroblast.down&buff.presence_of_mind.down" );
-
   for( size_t i = 0; i < item_actions.size(); i++ )
-    default_list -> add_action( item_actions[i]  );
+  {
+      default_list -> add_action( item_actions[i] + ",if=buff.alter_time.down&(trinket.stat.intellect.cooldown_remains>50|target.time_to_die<12)" );
+  }
+  for( size_t i = 0; i < profession_actions.size(); i++ )
+  {
+      default_list -> add_action( profession_actions[i] + ",if=buff.alter_time.down&(trinket.stat.intellect.cooldown_remains>50|target.time_to_die<12)" );
+  }
 
-  default_list -> add_talent( this, "Presence of Mind" );
-  default_list -> add_action( this, "Flamestrike", "if=active_enemies>=5" );
-  default_list -> add_action( this, "Inferno Blast", "if=dot.combustion.ticking&active_enemies>1" );
-  default_list -> add_action( this, "Pyroblast", "if=buff.pyroblast.react|buff.presence_of_mind.up" );
-  default_list -> add_action( this, "Inferno Blast", "if=buff.heating_up.react&buff.pyroblast.down" );
-  default_list -> add_talent( this, "Living Bomb", "cycle_targets=1,if=(!ticking|remains<tick_time)&target.time_to_die>tick_time*3" );
-  default_list -> add_action( this, "Fireball" );
-  default_list -> add_action( this, "Scorch", "moving=1" );
+  default_list -> add_action( "run_action_list,name=aoe,if=active_enemies>=5" );
+  default_list -> add_action( "run_action_list,name=proc_builder,if=buff.amplified.up&trinket.stat.intellect.cooldown_remains<action.fireball.execute_time",
+                              "Camp for HU/Pyro procs in preparation for combustion combos" );
+  default_list -> add_action( "run_action_list,name=single_target");
+
+
+  combust_sequence -> add_action( "start_pyro_chain,if=!pyro_chain",
+                                  "Pyro-chain combustion sequence" );
+  combust_sequence -> add_talent( this, "Presence of Mind",
+                                  "if=buff.alter_time.down" );
+  combust_sequence -> add_action( this, "Pyroblast",
+                                  "if=execute_time=gcd&buff.alter_time.up",
+                                  "Unload all instant pyros during AT" );
+  combust_sequence -> add_action( this, "Alter Time",
+                                  "if=buff.alter_time.up&action.pyroblast.execute_time>gcd" );
+  combust_sequence -> add_action( this, "Pyroblast",
+                                  "if=buff.pyroblast.up",
+                                  "Unload all HS Pyros first" );
+  combust_sequence -> add_action( this, "Combustion",
+                                  "if=buff.alter_time.down&cooldown.alter_time_activate.remains>150&buff.tempus_repit.up&buff.tempus_repit.remains<gcd",
+                                  "Early combustion if meta gem is about to fade and only POM left" );
+  combust_sequence -> add_action( this, "Pyroblast",
+                                  "if=buff.presence_of_mind.up&buff.pyroblast.down&(travel_time<=dot.ignite.remains-2*(dot.ignite.ticks_remain-1)|((crit_damage*crit_pct_current+hit_damage*(100-crit_pct_current))*0.01*mastery_value>=dot.ignite.tick_dmg))",
+                                  "The next two line uses POM pyro if it is expected to grow the ignite. To do this, it retrieves tick timing for ignite, calculates estimated damage from POM pyro and the potential instant pyro, and compares the ignite from those pyros against the ignite tick size." );
+  combust_sequence -> add_action( this, "Pyroblast",
+                                  "if=buff.presence_of_mind.up&buff.pyroblast.down&(gcd+travel_time<=dot.ignite.remains-2)&(crit_damage*crit_pct_current+hit_damage*(100-crit_pct_current))*0.01*(0.0125*crit_pct_current+1)*mastery_value>=dot.ignite.tick_dmg" );
+  combust_sequence -> add_action( this, "Combustion" );
+  combust_sequence -> add_action( "stop_pyro_chain,if=pyro_chain" );
+
+
+  init_alter_combust -> add_action( "run_action_list,name=proc_builder,if=buff.pyroblast.down|buff.heating_up.down|!action.fireball.in_flight",
+                                    "Initiate AT-POM-Combuistion sequence" );
+  for( size_t i = 0; i < racial_actions.size(); i++ )
+    init_alter_combust -> add_action( racial_actions[i] );
+  init_alter_combust -> add_action( "jade_serpent_potion" );
+  for( size_t i = 0; i < item_actions.size(); i++ )
+      init_alter_combust -> add_action( item_actions[i] );
+  for( size_t i = 0; i < profession_actions.size(); i++ )
+      init_alter_combust -> add_action( profession_actions[i] );
+  init_alter_combust -> add_talent( this, "Presence of Mind" );
+  init_alter_combust -> add_action( this, "Alter Time");
+
+
+  init_pom_combustion -> add_action( "run_action_list,name=proc_builder,if=buff.pyroblast.down|buff.heating_up.down|!action.fireball.in_flight",
+                                     "Initiate regular POM-Combustion sequence" );
+  init_pom_combustion -> add_action( "start_pyro_chain,if=!pyro_chain");
+
+
+  proc_builder -> add_action( this, "Pyroblast",
+                              "if=buff.pyroblast.up&buff.heating_up.up&action.fireball.in_flight",
+                              "Proc building sequence - Generate HS+HU with Pyro camping" );
+  proc_builder -> add_talent( this, "Nether Tempest",
+                              "cycle_targets=1,if=(!ticking|remains<tick_time)&target.time_to_die>6" );
+  proc_builder -> add_talent( this, "Living Bomb",
+                              "cycle_targets=1,if=(!ticking|remains<tick_time)&target.time_to_die>tick_time*3" );
+  proc_builder -> add_talent( this, "Frost Bomb",
+                              "if=!ticking&target.time_to_die>cast_time+tick_time" );
+  proc_builder -> add_action( this, "Inferno Blast",
+                              "if=(buff.pyroblast.down&buff.heating_up.up)|(buff.pyroblast.up&buff.heating_up.down&!action.fireball.in_flight&!action.pyroblast.in_flight)" );
+  proc_builder -> add_action( this, "Fireball" );
+  proc_builder -> add_action( this, "Scorch", "moving=1" );
+
+
+  aoe -> add_action( this, "Inferno Blast",
+                     "if=dot.combustion.ticking",
+                     "Standard AoE sequence" );
+  aoe -> add_action( this, "Flamestrike" );
+  aoe -> add_action( this, "Living Bomb",
+                     "cycle_targets=1,if=(!ticking|remains<tick_time)&target.time_to_die>tick_time*3" );
+  aoe -> add_action( this, "Blizzard" );
+
+
+  single_target -> add_action( this, "Inferno Blast",
+                               "if=dot.combustion.ticking&active_enemies>1",
+                               "Standard single target sequence" );
+  single_target -> add_action( this, "Pyroblast",
+                               "if=buff.pyroblast.up&buff.pyroblast.remains<action.fireball.execute_time",
+                               "Use HS procs before they run out" );
+  single_target -> add_action( this, "Pyroblast",
+                               "if=set_bonus.tier16_2pc_caster&buff.pyroblast.up&buff.potent_flames.stack>=4&buff.potent_flames.remains<action.fireball.execute_time",
+                               "Intentionally sustain 2T16 4 stack or more" );
+  single_target -> add_action( this, "Pyroblast",
+                               "if=buff.pyroblast.up&buff.heating_up.up&action.fireball.in_flight",
+                               "Pyro camp during regular sequence; Do not use Pyro procs without HU and first using fireball" );
+  single_target -> add_talent( this, "Nether Tempest",
+                               "cycle_targets=1,if=(!ticking|remains<tick_time)&target.time_to_die>6" );
+  single_target -> add_talent( this, "Living Bomb",
+                               "cycle_targets=1,if=(!ticking|remains<tick_time)&target.time_to_die>tick_time*3" );
+  single_target -> add_talent( this, "Frost Bomb",
+                               "if=!ticking&target.time_to_die>cast_time+tick_time" );
+  single_target -> add_action( this, "Inferno Blast",
+                               "if=buff.pyroblast.down&buff.heating_up.up" );
+  single_target -> add_action( this, "Pyroblast",
+                               "if=buff.amplified.up&(cooldown.alter_time_activate.remains>0|(buff.amplified.up&trinket.stat.intellect.cooldown_remains>0))&trinket.stacking_proc.intellect.up&trinket.stacking_proc.intellect.remains<3*gcd&execute_time=gcd",
+                               "Mini-pyro chain on last few seconds of BBoY/Wooshoolays" );
+  single_target -> add_action( this, "Pyroblast",
+                               "if=(cooldown.alter_time_activate.remains>0|cooldown.combustion.remains>0)&trinket.stacking_proc.intellect.up&trinket.stacking_proc.intellect.remains<3*gcd&execute_time=gcd" );
+  single_target -> add_action( this, "Inferno Blast",
+                               "if=buff.pyroblast.up&buff.heating_up.down&!action.fireball.in_flight" );
+  single_target -> add_action( this, "Fireball" );
+  single_target -> add_action( this, "Scorch", "moving=1" );
 }
 
 // Frost Mage Action List ==============================================================================================================
@@ -4418,6 +4588,7 @@ void mage_t::reset()
   core_event_t::cancel( icicle_event );
   active_living_bomb_targets = 0;
   last_bomb_target = 0;
+  pyro_switch.reset();
 }
 
 // mage_t::regen  ===========================================================
@@ -4513,6 +4684,8 @@ expr_t* mage_t::create_expression( action_t* a, const std::string& name_str )
       expr_t( n ), mage( m ) {}
   };
 
+
+
   struct rotation_expr_t : public mage_expr_t
   {
     mage_rotation_e rt;
@@ -4561,6 +4734,21 @@ expr_t* mage_t::create_expression( action_t* a, const std::string& name_str )
       }
     };
     return new regen_mps_expr_t( *this );
+  }
+
+
+  if ( name_str == "pyro_chain" )
+  {
+    struct pyro_chain_expr_t : public mage_expr_t
+    {
+	  mage_t* mage;
+      pyro_chain_expr_t( mage_t& m ) : mage_expr_t( "pyro_chain", m ), mage( &m )
+      {}
+      virtual double evaluate()
+	  { return mage -> pyro_switch.dump_state; }
+    };
+
+    return new pyro_chain_expr_t( *this );
   }
 
   if ( util::str_compare_ci( name_str, "shooting_icicles" ) )
