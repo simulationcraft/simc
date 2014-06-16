@@ -58,21 +58,21 @@ professions=tailoring=600/engineering=600
 talents=100022
 glyphs=combustion/counterspell
 
-head=chronomancer_hood,id=99398,gems=sinister_primal_160crit_160exp_180int,reforge=haste_mastery,upgrade=4
-neck=ashflare_Pendant,id=105539,reforge=hit_crit,upgrade=4
-shoulders=chronomancer_mantle,id=99401,gems=160crit_160exp_160crit_160exp_120int,enchant=200int_100crit,upgrade=4
-back=xing-ho_breath_of_yulon,id=102246,gems=160crit_160exp_60int,enchant=lightweave_embroidery_3,upgrade=4
-chest=mantid_viziers_robes,id=105592,gems=160crit_160exp_160crit_160exp_320crit_180int,enchant=80all,upgrade=4
-wrists=bracers_of_sonic_projection,id=105626,enchant=180int,upgrade=4
-hands=chronomancer_gloves,id=99397,gems=160crit_160exp_160crit_160exp_120int,enchant=170haste,addon=synapse_springs_mark_ii,reforge=haste_mastery,upgrade=4
-waist=miasmic_skullbelt,id=105569,gems=160crit_160exp_320crit__320crit_120int,reforge=hit_haste,upgrade=4
-legs=chronomancer_leggings,id=99399,gems=320crit_320crit_120int,enchant=285int_165crit,upgrade=4
-feet=toxic_tornado_treads,id=105537,gems=160crit_160hit_60hit,enchant=140mastery,upgrade=4
-finger1=petrified_pennyroyal_ring,id=105443,upgrade=4
-finger2=signet_of_the_dinomancers,id=105606,gems=160crit_160exp_60haste,reforge=mastery_crit,upgrade=4
-trinket1=purified_bindings_of_immerseus,id=105422,upgrade=4
-trinket2=black_blood_of_yshaarj,id=105648,reforge=haste_crit,upgrade=4
-main_hand=arcweaver_spell_sword,id=105550,gems=160crit_160exp_60int,enchant=jade_spirit,upgrade=4
-off_hand=juggernauts_power_core,id=105521,gems=320crit_60int,enchant=165int,reforge=haste_hit,upgrade=4
+head=hood_of_swirling_senses,id=105420,upgrade=4,gems=sinister_primal_160crit_160hit_180int,reforge=mastery_haste
+neck=untainted_guardians_chain,id=105465,upgrade=4,reforge=hit_crit
+shoulders=chronomancer_mantle,id=99401,upgrade=4,gems=160exp_160crit_160exp_160crit_120int,enchant=200int_100crit,reforge=haste_mastery
+back=xingho_breath_of_yulon,id=102246,upgrade=4,gems=160exp_160crit_60int,enchant=lightweave_embroidery_3
+chest=chronomancer_robes,id=99400,upgrade=4,gems=160exp_160crit_160exp_160crit_160exp_160crit_180int,enchant=80all
+wrists=bracers_of_sonic_projection,id=105626,upgrade=4,enchant=180int
+hands=chronomancer_gloves,id=99397,upgrade=4,gems=160exp_160crit_160exp_160crit_120int,enchant=170haste,addon=synapse_springs_mark_ii
+waist=miasmic_skullbelt,id=105569,upgrade=4,gems=160exp_160crit_320crit_320crit_120int,reforge=hit_haste
+legs=chronomancer_leggings,id=99399,upgrade=4,gems=320crit_320crit_120int,enchant=285int_165crit,reforge=mastery_hit
+feet=toxic_tornado_treads,id=105537,upgrade=4,gems=160crit_160hit_60hit,enchant=140mastery,reforge=mastery_haste
+finger1=signet_of_the_dinomancers,id=105606,upgrade=4,gems=160exp_160crit_60haste,reforge=mastery_crit
+finger2=petrified_pennyroyal_ring,id=105443,upgrade=4,reforge=hit_mastery
+trinket1=black_blood_of_yshaarj,id=105648,upgrade=4,reforge=haste_crit
+trinket2=purified_bindings_of_immerseus,id=105422,upgrade=4
+main_hand=immaculately_preserved_wand,id=105594,upgrade=4,gems=160exp_160crit_60int,enchant=jade_spirit
+off_hand=revelations_of_yshaarj,id=105650,upgrade=4,gems=160exp_160crit_60int,enchant=165int,reforge=mastery_crit
 
 save=Mage_Fire_T16H.simc

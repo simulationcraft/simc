@@ -30,53 +30,109 @@ actions.precombat+=/mirror_image
 actions=counterspell,if=target.debuff.casting.react
 actions+=/cancel_buff,name=alter_time,moving=1
 actions+=/cold_snap,if=talent.cold_snap.enabled&health.pct<30
-actions+=/conjure_mana_gem,if=mana_gem_charges<3&target.debuff.invulnerable.react
-actions+=/time_warp,if=target.health.pct<25|time>5
-actions+=/rune_of_power,if=talent.rune_of_power.enabled&(buff.rune_of_power.remains<cast_time&buff.alter_time.down)
-actions+=/rune_of_power,if=talent.rune_of_power.enabled&(cooldown.alter_time_activate.remains=0&buff.rune_of_power.remains<6)
-actions+=/blood_fury,sync=alter_time_activate,if=buff.alter_time.down
+actions+=/time_warp,if=buff.alter_time.down
+actions+=/rune_of_power,if=talent.rune_of_power.enabled&buff.rune_of_power.remains<cast_time
+# Cancelaura AT if PBoI procs
+actions+=/cancel_buff,name=alter_time,if=buff.amplified.up&buff.alter_time.up&(trinket.stat.intellect.cooldown_remains-buff.alter_time.remains>109)
+actions+=/run_action_list,name=combust_sequence,if=buff.alter_time.up|pyro_chain
+# Start AT-POM-Combustion combo if CDs are up; Wait for trinket proc if player has PBoI
+actions+=/run_action_list,name=init_alter_combust,if=buff.amplified.up&cooldown.alter_time_activate.up&cooldown.combustion.up&(trinket.stat.intellect.cooldown_remains>95|trinket.stat.intellect.cooldown_remains+20>time_to_die)
+actions+=/run_action_list,name=init_alter_combust,if=buff.amplified.down&cooldown.alter_time_activate.up&cooldown.combustion.up
+# Start regular POM-Combustion combo if CDs are up; Wait for trinket proc if player has PBoI
+actions+=/run_action_list,name=init_pom_combust,if=buff.amplified.up&cooldown.alter_time_activate.remains>45&cooldown.combustion.up&cooldown.presence_of_mind.up&(trinket.stat.intellect.cooldown_remains>95|trinket.stat.intellect.cooldown_remains+20>time_to_die)
+actions+=/run_action_list,name=init_pom_combust,if=buff.amplified.down&cooldown.alter_time_activate.remains>45&cooldown.combustion.up&cooldown.presence_of_mind.up
+# Cast RoP or MI only when player does not have both HU, Pyro proc and fireball mid flight - this causes Proc munching
+actions+=/rune_of_power,if=talent.rune_of_power.enabled&(buff.alter_time.down&buff.rune_of_power.remains<4*action.fireball.execute_time&(buff.heating_up.down|buff.pyroblast.down|!action.fireball.in_flight))
+actions+=/mirror_image,if=buff.alter_time.down&(buff.heating_up.down|buff.pyroblast.down|!action.fireball.in_flight)
 actions+=/blood_fury,if=buff.alter_time.down&target.time_to_die<18
-actions+=/berserking,sync=alter_time_activate,if=buff.alter_time.down
 actions+=/berserking,if=buff.alter_time.down&target.time_to_die<18
-actions+=/arcane_torrent,sync=alter_time_activate,if=buff.alter_time.down
 actions+=/arcane_torrent,if=buff.alter_time.down&target.time_to_die<18
 actions+=/jade_serpent_potion,if=buff.alter_time.down&target.time_to_die<45
-actions+=/mirror_image
-actions+=/presence_of_mind,sync=alter_time_activate,if=talent.presence_of_mind.enabled&buff.alter_time.down
-actions+=/combustion,if=target.time_to_die<22
-actions+=/combustion,if=dot.ignite.tick_dmg>=((3*action.pyroblast.crit_damage)*mastery_value*0.5)
-actions+=/combustion,if=dot.ignite.tick_dmg>=((action.fireball.crit_damage+action.inferno_blast.crit_damage+action.pyroblast.hit_damage)*mastery_value*0.5)&dot.pyroblast.ticking&buff.alter_time.down&buff.pyroblast.down&buff.presence_of_mind.down
-actions+=/jade_serpent_potion,sync=alter_time_activate,if=buff.alter_time.down
-actions+=/use_item,slot=hands,sync=alter_time_activate
-actions+=/use_item,slot=hands,if=cooldown.alter_time_activate.remains>40|target.time_to_die<12
-actions+=/alter_time,if=time_to_bloodlust>180&buff.alter_time.down&buff.pyroblast.react
-actions+=/presence_of_mind,if=talent.presence_of_mind.enabled&(cooldown.alter_time_activate.remains>60|target.time_to_die<5)
-actions+=/flamestrike,if=active_enemies>=5
-actions+=/inferno_blast,if=dot.combustion.ticking&active_enemies>1
-actions+=/pyroblast,if=buff.pyroblast.react|buff.presence_of_mind.up
-actions+=/inferno_blast,if=buff.heating_up.react&buff.pyroblast.down
-actions+=/nether_tempest,cycle_targets=1,if=talent.nether_tempest.enabled&((!ticking|remains<tick_time)&target.time_to_die>6)
-actions+=/living_bomb,cycle_targets=1,if=talent.living_bomb.enabled&((!ticking|remains<tick_time)&target.time_to_die>tick_time*3)
-actions+=/frost_bomb,if=talent.frost_bomb.enabled&target.time_to_die>cast_time+tick_time
-actions+=/fireball
-actions+=/scorch,moving=1
+actions+=/use_item,slot=hands,if=buff.alter_time.down&(trinket.stat.intellect.cooldown_remains>50|target.time_to_die<12)
+actions+=/run_action_list,name=aoe,if=active_enemies>=5
+# Camp for HU/Pyro procs in preparation for combustion combos
+actions+=/run_action_list,name=proc_builder,if=buff.amplified.up&trinket.stat.intellect.cooldown_remains<action.fireball.execute_time
+actions+=/run_action_list,name=single_target
 
-head=chronomancer_hood,id=99398,upgrade=4,gems=sinister_primal_160crit_160exp_180int,reforge=haste_mastery
-neck=ashflare_pendant,id=105539,upgrade=4,reforge=hit_crit
-shoulders=chronomancer_mantle,id=99401,upgrade=4,gems=160crit_160exp_160crit_160exp_120int,enchant=200int_100crit
-back=xingho_breath_of_yulon,id=102246,upgrade=4,gems=160crit_160exp_60int,enchant=lightweave_embroidery_3
-chest=mantid_viziers_robes,id=105592,upgrade=4,gems=160crit_160exp_160crit_160exp_320crit_180int,enchant=80all
+# Pyro-chain combustion sequence
+actions.combust_sequence=start_pyro_chain,if=!pyro_chain
+actions.combust_sequence+=/presence_of_mind,if=talent.presence_of_mind.enabled&buff.alter_time.down
+# Unload all instant pyros during AT
+actions.combust_sequence+=/pyroblast,if=execute_time=gcd&buff.alter_time.up
+actions.combust_sequence+=/alter_time,if=buff.alter_time.up&action.pyroblast.execute_time>gcd
+# Unload all HS Pyros first
+actions.combust_sequence+=/pyroblast,if=buff.pyroblast.up
+# Early combustion if meta gem is about to fade and only POM left
+actions.combust_sequence+=/combustion,if=buff.alter_time.down&cooldown.alter_time_activate.remains>150&buff.tempus_repit.up&buff.tempus_repit.remains<gcd
+# The next two line uses POM pyro if it is expected to grow the ignite. To do this, it retrieves tick timing for ignite, calculates estimated damage from POM pyro and the potential instant pyro, and compares the ignite from those pyros against the ignite tick size.
+actions.combust_sequence+=/pyroblast,if=buff.presence_of_mind.up&buff.pyroblast.down&(travel_time<=dot.ignite.remains-2*(dot.ignite.ticks_remain-1)|((crit_damage*crit_pct_current+hit_damage*(100-crit_pct_current))*0.01*mastery_value>=dot.ignite.tick_dmg))
+actions.combust_sequence+=/pyroblast,if=buff.presence_of_mind.up&buff.pyroblast.down&(gcd+travel_time<=dot.ignite.remains-2)&(crit_damage*crit_pct_current+hit_damage*(100-crit_pct_current))*0.01*(0.0125*crit_pct_current+1)*mastery_value>=dot.ignite.tick_dmg
+actions.combust_sequence+=/combustion
+actions.combust_sequence+=/stop_pyro_chain,if=pyro_chain
+
+# Initiate AT-POM-Combuistion sequence
+actions.init_alter_combust=run_action_list,name=proc_builder,if=buff.pyroblast.down|buff.heating_up.down|!action.fireball.in_flight
+actions.init_alter_combust+=/blood_fury
+actions.init_alter_combust+=/berserking
+actions.init_alter_combust+=/arcane_torrent
+actions.init_alter_combust+=/jade_serpent_potion
+actions.init_alter_combust+=/use_item,slot=hands
+actions.init_alter_combust+=/presence_of_mind,if=talent.presence_of_mind.enabled
+actions.init_alter_combust+=/alter_time
+
+# Initiate regular POM-Combustion sequence
+actions.init_pom_combust=run_action_list,name=proc_builder,if=buff.pyroblast.down|buff.heating_up.down|!action.fireball.in_flight
+actions.init_pom_combust+=/start_pyro_chain,if=!pyro_chain
+
+# Proc building sequence - Generate HS+HU with Pyro camping
+actions.proc_builder=pyroblast,if=buff.pyroblast.up&buff.heating_up.up&action.fireball.in_flight
+actions.proc_builder+=/nether_tempest,cycle_targets=1,if=talent.nether_tempest.enabled&((!ticking|remains<tick_time)&target.time_to_die>6)
+actions.proc_builder+=/living_bomb,cycle_targets=1,if=talent.living_bomb.enabled&((!ticking|remains<tick_time)&target.time_to_die>tick_time*3)
+actions.proc_builder+=/frost_bomb,if=talent.frost_bomb.enabled&(!ticking&target.time_to_die>cast_time+tick_time)
+actions.proc_builder+=/inferno_blast,if=(buff.pyroblast.down&buff.heating_up.up)|(buff.pyroblast.up&buff.heating_up.down&!action.fireball.in_flight&!action.pyroblast.in_flight)
+actions.proc_builder+=/fireball
+actions.proc_builder+=/scorch,moving=1
+
+# Standard AoE sequence
+actions.aoe=inferno_blast,if=dot.combustion.ticking
+actions.aoe+=/flamestrike
+actions.aoe+=/blizzard
+
+# Standard single target sequence
+actions.single_target=inferno_blast,if=dot.combustion.ticking&active_enemies>1
+# Use HS procs before they run out
+actions.single_target+=/pyroblast,if=buff.pyroblast.up&buff.pyroblast.remains<action.fireball.execute_time
+# Intentionally sustain 2T16 4 stack or more
+actions.single_target+=/pyroblast,if=set_bonus.tier16_2pc_caster&buff.pyroblast.up&buff.potent_flames.stack>=4&buff.potent_flames.remains<action.fireball.execute_time
+# Pyro camp during regular sequence; Do not use Pyro procs without HU and first using fireball
+actions.single_target+=/pyroblast,if=buff.pyroblast.up&buff.heating_up.up&action.fireball.in_flight
+actions.single_target+=/nether_tempest,cycle_targets=1,if=talent.nether_tempest.enabled&((!ticking|remains<tick_time)&target.time_to_die>6)
+actions.single_target+=/living_bomb,cycle_targets=1,if=talent.living_bomb.enabled&((!ticking|remains<tick_time)&target.time_to_die>tick_time*3)
+actions.single_target+=/frost_bomb,if=talent.frost_bomb.enabled&(!ticking&target.time_to_die>cast_time+tick_time)
+actions.single_target+=/inferno_blast,if=buff.pyroblast.down&buff.heating_up.up
+# Mini-pyro chain on last few seconds of BBoY/Wooshoolays
+actions.single_target+=/pyroblast,if=buff.amplified.up&(cooldown.alter_time_activate.remains>0|(buff.amplified.up&trinket.stat.intellect.cooldown_remains>0))&trinket.stacking_proc.intellect.up&trinket.stacking_proc.intellect.remains<3*gcd&execute_time=gcd
+actions.single_target+=/pyroblast,if=(cooldown.alter_time_activate.remains>0|cooldown.combustion.remains>0)&trinket.stacking_proc.intellect.up&trinket.stacking_proc.intellect.remains<3*gcd&execute_time=gcd
+actions.single_target+=/inferno_blast,if=buff.pyroblast.up&buff.heating_up.down&!action.fireball.in_flight
+actions.single_target+=/fireball
+actions.single_target+=/scorch,moving=1
+
+head=hood_of_swirling_senses,id=105420,upgrade=4,gems=sinister_primal_160crit_160hit_180int,reforge=mastery_haste
+neck=untainted_guardians_chain,id=105465,upgrade=4,reforge=hit_crit
+shoulders=chronomancer_mantle,id=99401,upgrade=4,gems=160exp_160crit_160exp_160crit_120int,enchant=200int_100crit,reforge=haste_mastery
+back=xingho_breath_of_yulon,id=102246,upgrade=4,gems=160exp_160crit_60int,enchant=lightweave_embroidery_3
+chest=chronomancer_robes,id=99400,upgrade=4,gems=160exp_160crit_160exp_160crit_160exp_160crit_180int,enchant=80all
 wrists=bracers_of_sonic_projection,id=105626,upgrade=4,enchant=180int
-hands=chronomancer_gloves,id=99397,upgrade=4,gems=160crit_160exp_160crit_160exp_120int,enchant=170haste,addon=synapse_springs_mark_ii,reforge=haste_mastery
-waist=miasmic_skullbelt,id=105569,upgrade=4,gems=160crit_160exp_320crit__320crit_120int,reforge=hit_haste
-legs=chronomancer_leggings,id=99399,upgrade=4,gems=320crit_320crit_120int,enchant=285int_165crit
-feet=toxic_tornado_treads,id=105537,upgrade=4,gems=160crit_160hit_60hit,enchant=140mastery
-finger1=petrified_pennyroyal_ring,id=105443,upgrade=4
-finger2=signet_of_the_dinomancers,id=105606,upgrade=4,gems=160crit_160exp_60haste,reforge=mastery_crit
-trinket1=purified_bindings_of_immerseus,id=105422,upgrade=4
-trinket2=black_blood_of_yshaarj,id=105648,upgrade=4,reforge=haste_crit
-main_hand=arcweaver_spell_sword,id=105550,upgrade=4,gems=160crit_160exp_60int,enchant=jade_spirit
-off_hand=juggernauts_power_core,id=105521,upgrade=4,gems=320crit_60int,enchant=165int,reforge=haste_hit
+hands=chronomancer_gloves,id=99397,upgrade=4,gems=160exp_160crit_160exp_160crit_120int,enchant=170haste,addon=synapse_springs_mark_ii
+waist=miasmic_skullbelt,id=105569,upgrade=4,gems=160exp_160crit_320crit_320crit_120int,reforge=hit_haste
+legs=chronomancer_leggings,id=99399,upgrade=4,gems=320crit_320crit_120int,enchant=285int_165crit,reforge=mastery_hit
+feet=toxic_tornado_treads,id=105537,upgrade=4,gems=160crit_160hit_60hit,enchant=140mastery,reforge=mastery_haste
+finger1=signet_of_the_dinomancers,id=105606,upgrade=4,gems=160exp_160crit_60haste,reforge=mastery_crit
+finger2=petrified_pennyroyal_ring,id=105443,upgrade=4,reforge=hit_mastery
+trinket1=black_blood_of_yshaarj,id=105648,upgrade=4,reforge=haste_crit
+trinket2=purified_bindings_of_immerseus,id=105422,upgrade=4
+main_hand=immaculately_preserved_wand,id=105594,upgrade=4,gems=160exp_160crit_60int,enchant=jade_spirit
+off_hand=revelations_of_yshaarj,id=105650,upgrade=4,gems=160exp_160crit_60int,enchant=165int,reforge=mastery_crit
 
 # Gear Summary
 # gear_strength=80
@@ -85,15 +141,15 @@ off_hand=juggernauts_power_core,id=105521,upgrade=4,gems=320crit_60int,enchant=1
 # gear_intellect=28426
 # gear_spirit=80
 # gear_spell_power=16509
-# gear_expertise_rating=1760
-# gear_hit_rating=3342
-# gear_crit_rating=20833
-# gear_haste_rating=12856
-# gear_mastery_rating=6131
-# gear_armor=18480
+# gear_expertise_rating=1920
+# gear_hit_rating=3187
+# gear_crit_rating=20096
+# gear_haste_rating=10028
+# gear_mastery_rating=10056
+# gear_armor=18472
 # meta_gem=sinister_primal
 # tier16_2pc_caster=1
 # tier16_4pc_caster=1
 # back=xingho_breath_of_yulon,enchant=lightweave_embroidery_3
 # hands=chronomancer_gloves,heroic=1,addon=synapse_springs_mark_ii
-# main_hand=arcweaver_spell_sword,heroic=1,elite=1,weapon=sword_2.20speed_5180min_9622max,enchant=jade_spirit
+# main_hand=immaculately_preserved_wand,heroic=1,elite=1,weapon=wand,enchant=jade_spirit
