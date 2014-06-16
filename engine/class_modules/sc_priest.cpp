@@ -165,6 +165,7 @@ public:
     const spell_data_t* shadowy_apparitions;
     const spell_data_t* shadow_orbs;
     const spell_data_t* haste_attunement;
+    const spell_data_t* mana_attunement;
   } specs;
 
   // Mastery Spells
@@ -5203,6 +5204,8 @@ void priest_t::init_base_stats()
       specs.meditation_disc -> effectN( 1 ).percent() :
       specs.meditation_holy -> effectN( 1 ).percent();
 
+  base.mana_regen_per_second *= 1.0 + specs.mana_attunement -> effectN( 1 ).percent();
+
   diminished_kfactor   = 0.009830;
   diminished_dodge_cap = 0.006650;
   diminished_parry_cap = 0.006650;
@@ -5297,7 +5300,8 @@ void priest_t::init_spells()
   specs.shadowform                     = find_class_spell( "Shadowform" );
   specs.shadowy_apparitions            = find_specialization_spell( "Shadowy Apparitions" );
   specs.shadow_orbs                    = find_specialization_spell( "Shadow Orbs" );
-  specs.haste_attunement               = find_specialization_spell( "Haste Addunement ");
+  specs.haste_attunement               = find_specialization_spell( "Haste Attunement");
+  specs.mana_attunement                = find_specialization_spell( "Mana Attunement");
 
   // Mastery Spells
   mastery_spells.shield_discipline    = find_mastery_spell( PRIEST_DISCIPLINE );
