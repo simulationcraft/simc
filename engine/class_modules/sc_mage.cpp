@@ -262,7 +262,6 @@ public:
     spec( specializations_t() ),
     talents( talents_list_t() ),
     pyro_switch( pyro_switch_t() ),
-    mana_gem_charges( 0 ),
     current_arcane_charges()
   {
     // Cooldowns
