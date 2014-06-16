@@ -7,7 +7,7 @@ race=troll
 spec=frost
 professions=tailoring=600/engineering=600
 talents=100022
-glyphs=evocation/icy_veins/splitting_ice
+glyphs=icy_veins/splitting_ice
 head=ebon_ritual_hood,id=105647,upgrade=4,gems=sinister_primal_80int_160mastery_180int,reforge=haste_hit
 neck=untainted_guardians_chain,id=105465,upgrade=4,reforge=hit_haste
 shoulders=chronomancer_mantle,id=99401,upgrade=4,gems=80int_160mastery_80int_160mastery_120int,enchant=200int_100crit,reforge=crit_mastery
