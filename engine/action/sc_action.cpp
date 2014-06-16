@@ -1186,45 +1186,28 @@ void action_t::multistrike( action_state_t* state, dmg_e type, double dmg_multip
   if ( ! result_is_hit( state -> result ) )
     return;
 
-  result_e r = calculate_multistrike_result( state );
-  if ( result_is_multistrike( r ) )
+  // multistrike can proc twice
+  for (int i = 0; i < 2; i++) 
   {
-    action_state_t* ms_state = get_state( state );
-    ms_state -> target = state -> target;
-    ms_state -> n_targets = 1;
-    ms_state -> chain_target = 0;
-    ms_state -> result = r;
-    if ( type == DMG_DIRECT || type == HEAL_DIRECT )
+    result_e r = calculate_multistrike_result( state );
+    if ( result_is_multistrike( r ) )
     {
-      ms_state -> result_amount = calculate_direct_amount( ms_state );
-      schedule_multistrike_travel( ms_state );
-    }
-    else if ( type == DMG_OVER_TIME || type == HEAL_OVER_TIME )
-    {
-      ms_state -> result_amount = calculate_tick_amount( ms_state, dmg_multiplier );
-      assess_damage( ms_state -> result_type, ms_state );
-      action_state_t::release( ms_state );
-    }
-  }
-
-  r = calculate_multistrike_result( state );
-  if ( result_is_multistrike( r ) )
-  {
-    action_state_t* ms_state = get_state( state );
-    ms_state -> target = state -> target;
-    ms_state -> n_targets = 1;
-    ms_state -> chain_target = 0;
-    ms_state -> result = r;
-    if ( type == DMG_DIRECT || type == HEAL_DIRECT )
-    {
-      ms_state -> result_amount = calculate_direct_amount( ms_state );
-      schedule_multistrike_travel( ms_state );
-    }
-    else if ( type == DMG_OVER_TIME || type == HEAL_OVER_TIME )
-    {
-      ms_state -> result_amount = calculate_tick_amount( ms_state, dmg_multiplier );
-      assess_damage( ms_state -> result_type, ms_state );
-      action_state_t::release( ms_state );
+      action_state_t* ms_state = get_state( state );
+      ms_state -> target = state -> target;
+      ms_state -> n_targets = 1;
+      ms_state -> chain_target = 0;
+      ms_state -> result = r;
+      if ( type == DMG_DIRECT || type == HEAL_DIRECT )
+      {
+        ms_state -> result_amount = calculate_direct_amount( ms_state );
+        schedule_multistrike_travel( ms_state );
+      }
+      else if ( type == DMG_OVER_TIME || type == HEAL_OVER_TIME )
+      {
+        ms_state -> result_amount = calculate_tick_amount( ms_state, dmg_multiplier );
+        assess_damage( ms_state -> result_type, ms_state );
+        action_state_t::release( ms_state );
+      }
     }
   }
 }
