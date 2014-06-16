@@ -1719,9 +1719,9 @@ class SpellDataGenerator(DataGenerator):
         
         return 0
     
-    def process_spell(self, spell_id, result_dict, mask_class = 0, mask_race = 0):
+    def process_spell(self, spell_id, result_dict, mask_class = 0, mask_race = 0, state = True):
         filter_list = { }
-        lst = self.generate_spell_filter_list(spell_id, mask_class, mask_race, filter_list)
+        lst = self.generate_spell_filter_list(spell_id, mask_class, mask_race, filter_list, state)
         if not lst:
             return
             
@@ -1779,14 +1779,14 @@ class SpellDataGenerator(DataGenerator):
 
         return True
     
-    def generate_spell_filter_list(self, spell_id, mask_class, mask_race, filter_list = { }):
+    def generate_spell_filter_list(self, spell_id, mask_class, mask_race, filter_list = { }, state = True):
         spell = self._spell_db[spell_id]
         enabled_effects = [ True ] * ( spell.max_effect_index + 1 )
 
         if not spell.id:
             return None
             
-        if not self.spell_state(spell, enabled_effects):
+        if state and not self.spell_state(spell, enabled_effects):
             return None
         
         filter_list[spell.id] = { 'mask_class': mask_class, 'mask_race': mask_race, 'effect_list': enabled_effects }
@@ -1853,7 +1853,7 @@ class SpellDataGenerator(DataGenerator):
             # These may now be pet talents
             if talent_data.class_id > 0:
                 mask_class = DataGenerator._class_masks[talent_data.class_id]
-                self.process_spell(getattr(talent_data, 'id_spell'), ids, mask_class, 0)
+                self.process_spell(getattr(talent_data, 'id_spell'), ids, mask_class, 0, False)
 
         # Get all perks
         for perk_id, perk_data in self._minortalent_db.iteritems():
@@ -1864,7 +1864,7 @@ class SpellDataGenerator(DataGenerator):
             if spec_data.id == 0:
                 continue
 
-            self.process_spell(perk_data.id_spell, ids, DataGenerator._class_masks[spec_data.class_id], 0)
+            self.process_spell(perk_data.id_spell, ids, DataGenerator._class_masks[spec_data.class_id], 0, False)
 
         # Get base skills from SkillLineAbility
         for ability_id, ability_data in self._skilllineability_db.iteritems():
@@ -1913,7 +1913,7 @@ class SpellDataGenerator(DataGenerator):
             else:
                 mask_class = DataGenerator._class_masks[3]
             
-            self.process_spell(spell.id, ids, mask_class, 0)
+            self.process_spell(spell.id, ids, mask_class, 0, False)
             if ids.has_key(spell.id):
                 ids[spell.id]['replace_spell_id'] = spec_spell_data.replace_spell_id
         
@@ -1923,7 +1923,7 @@ class SpellDataGenerator(DataGenerator):
                 continue
             
             if self._spellmisc_db[s.id_misc].flags_12694 & 0x20000000:
-                self.process_spell(s.id, ids, DataGenerator._class_masks[spec_data.class_id], 0)
+                self.process_spell(s.id, ids, DataGenerator._class_masks[spec_data.class_id], 0, False)
         
 
         # Get spells relating to item enchants, so we can populate a (nice?) list
