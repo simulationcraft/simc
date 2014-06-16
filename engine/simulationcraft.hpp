@@ -937,6 +937,13 @@ enum snapshot_state_e
 
   STATE_TGT_MITG_DA    = 0x008000,
   STATE_TGT_MITG_TA    = 0x010000,
+
+  // No multiplier herlper, use in action_t::init() (after parent init) by
+  // issuing snapshot_flags &= STATE_NO_MULTIPLIER (and/or update_flags &=
+  // STATE_NO_MULTIPLIER if a dot). This disables all multipliers, including
+  // versatility, resolve, and any/all persistent multipliers the action would
+  // use.
+  STATE_NO_MULTIPLIER  = ~( STATE_MUL_DA | STATE_MUL_TA | STATE_VERSATILITY | STATE_MUL_PERSISTENT | STATE_TGT_MUL_DA | STATE_TGT_MUL_TA )
 };
 
 enum ready_e
