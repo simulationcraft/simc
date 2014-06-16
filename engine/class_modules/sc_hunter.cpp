@@ -1717,17 +1717,32 @@ struct start_attack_t : public hunter_ranged_attack_t
 
 // Aimed Shot ===============================================================
 
-struct aimed_shot_base_t : public hunter_ranged_attack_t
+struct aimed_shot_t : public hunter_ranged_attack_t
 {
-  aimed_shot_base_t( const std::string& n, hunter_t* p,
-                     const spell_data_t* s = spell_data_t::nil() ) 
-    : hunter_ranged_attack_t( n, p, s )
+  aimed_shot_t( hunter_t* p, const std::string& options_str ) :
+    hunter_ranged_attack_t( "aimed_shot", p, p -> find_class_spell( "Aimed Shot" ) )
   {
     check_spec( HUNTER_MARKSMANSHIP );
 
+    parse_options( NULL, options_str );
+
     base_multiplier *= 1.0 + p -> perks.improved_aimed_shot -> effectN( 1 ).percent();
   }
+  
+  virtual double cost() const
+  {
+   return thrill_discount( hunter_ranged_attack_t::cost() );
+  }
 
+  virtual timespan_t execute_time() const
+  {
+    timespan_t cast_time = hunter_ranged_attack_t::execute_time();
+    if ( p() -> buffs.tier16_4pc_mm_keen_eye -> check() )
+      cast_time *= 1.0 + p() -> buffs.tier16_4pc_mm_keen_eye -> data().effectN( 1 ).percent();
+
+    return cast_time;
+  }
+  
   virtual double composite_target_crit( player_t* t ) const
   {
     double cc = hunter_ranged_attack_t::composite_target_crit( t );
@@ -1745,60 +1760,6 @@ struct aimed_shot_base_t : public hunter_ranged_attack_t
         p() -> perks.enhanced_aimed_shot -> effectN( 1 ).resource( RESOURCE_FOCUS ),
         p() -> gains.aimed_shot );
     }
-  }
-};
-
-struct aimed_shot_t : public aimed_shot_base_t
-{
-
-  // Aimed Shot - Master Marksman ===========================================
-
-  struct aimed_shot_mm_t : public aimed_shot_base_t
-  {
-    aimed_shot_mm_t( hunter_t* p ) :
-      aimed_shot_base_t( "aimed_shot_mm", p, p -> find_spell( 82928 ) )
-    {
-      // Don't know why these values aren't 0 in the database.
-      base_execute_time = timespan_t::zero();
-    }
-
-    virtual void execute()
-    {
-      hunter_ranged_attack_t::execute();
-
-      if ( p() -> sets.has_set_bonus( SET_T16_4PC_MELEE ) )
-        p() -> buffs.tier16_4pc_mm_keen_eye -> trigger();
-
-      if ( result_is_hit( execute_state -> result ) )
-        trigger_tier15_4pc_melee( p() -> procs.tier15_4pc_melee_aimed_shot, p() -> action_lightning_arrow_aimed_shot );
-    }
-  };
-
-  aimed_shot_mm_t* as_mm;
-
-  aimed_shot_t( hunter_t* p, const std::string& options_str ) :
-    aimed_shot_base_t( "aimed_shot", p, p -> find_class_spell( "Aimed Shot" ) ),
-    as_mm( new aimed_shot_mm_t( p ) )
-  {
-    parse_options( NULL, options_str );
-
-    as_mm -> background = true;
-  }
-  
-  virtual double cost() const
-  {
-   return thrill_discount( hunter_ranged_attack_t::cost() );
-  }
-
-  virtual timespan_t execute_time() const
-  {
-    timespan_t cast_time = hunter_ranged_attack_t::execute_time();
-    if ( p() -> buffs.tier16_4pc_mm_keen_eye -> check() )
-    {
-      cast_time *= 1.0 + p() -> buffs.tier16_4pc_mm_keen_eye -> data().effectN( 1 ).percent();
-    }
-
-    return cast_time;
   }
 
   virtual void execute()
