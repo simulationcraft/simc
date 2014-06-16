@@ -197,7 +197,9 @@ public:
     const spell_data_t* critical_strikes;
 
     // Shared
-    //const spell_data_t* cobra_shot;
+    const spell_data_t* crit_attunement;
+    const spell_data_t* multistrike_attunement;
+    const spell_data_t* mastery_attunement;
 
     // Beast Mastery
     // const spell_data_t* kill_command;
@@ -335,6 +337,7 @@ public:
   virtual double    composite_melee_speed() const;
   virtual double    ranged_haste_multiplier() const;
   virtual double    ranged_speed_multiplier() const;
+  virtual double    composite_rating_multiplier( rating_e rating ) const;
   virtual double    composite_player_multiplier( school_e school ) const;
   virtual double    matching_gear_multiplier( attribute_e attr ) const;
   virtual void      invalidate_cache( cache_e );
@@ -3173,6 +3176,12 @@ void hunter_t::init_spells()
   glyphs.tame_beast          = find_glyph_spell( "Glyph of Tame Beast"  );
   glyphs.the_cheetah         = find_glyph_spell( "Glyph of the Cheetah"  );
 
+  // Attunments
+  specs.crit_attunement       = find_specialization_spell( "Critical Strike Attunement" );
+  specs.mastery_attunement    = find_specialization_spell( "Mastery Attunement" );
+  specs.multistrike_attunement = find_specialization_spell( "Multistrike Attunement" );
+
+  // Spec spells
   specs.critical_strikes     = find_spell( 157443 );
   specs.go_for_the_throat    = find_specialization_spell( "Go for the Throat" );
   specs.careful_aim          = find_specialization_spell( "Careful Aim" );
@@ -3569,6 +3578,30 @@ void hunter_t::arise()
 
   if ( specs.trueshot_aura -> is_level( level ) && ! sim -> overrides.attack_power_multiplier )
     sim -> auras.attack_power_multiplier -> trigger();
+}
+
+
+// hunter_t::composite_rating_multiplier =====================================
+
+double hunter_t::composite_rating_multiplier( rating_e rating ) const
+{
+  double m = player_t::composite_rating_multiplier( rating );
+
+  switch ( rating )
+  {
+  case RATING_MULTISTRIKE:
+    return m *= 1.0 + specs.multistrike_attunement -> effectN( 1 ).percent();
+  case RATING_MELEE_CRIT:
+    return m *= 1.0 + specs.crit_attunement -> effectN( 1 ).percent();
+  case RATING_SPELL_CRIT:
+    return m *= 1.0 + specs.crit_attunement -> effectN( 1 ).percent();
+  case RATING_MASTERY:
+    return m *= 1.0 + specs.mastery_attunement -> effectN( 1 ).percent();
+  default:
+    break;
+  }
+
+  return m;
 }
 
 // hunter_t::composite_attack_power_multiplier ==============================
