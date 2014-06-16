@@ -977,7 +977,7 @@ public:
     dps_rotation( 0 ),
     dpm_rotation( 0 )
   {
-    may_crit      = ( base_dd_min > 0 ) && ( base_dd_max > 0 );
+    may_crit      = true;
     tick_may_crit = true;
   }
 
@@ -1251,6 +1251,7 @@ struct ignite_t : public residual_dot_action< mage_spell_t >
   {
     dot_duration = player -> dbc.spell( 12654 ) -> duration();
     base_tick_time = player -> dbc.spell( 12654 ) -> effectN( 1 ).period();
+    school = SCHOOL_FIRE;
   }
 };
 
@@ -1754,6 +1755,15 @@ struct counterspell_t : public mage_spell_t
   {
     parse_options( NULL, options_str );
     may_miss = may_crit = false;
+  }
+
+
+  virtual bool ready()
+  {
+    if ( ! target -> debuffs.casting -> check() )
+      return false;
+
+    return mage_spell_t::ready();
   }
 };
 
@@ -3986,7 +3996,8 @@ void mage_t::create_buffs()
   buffs.arcane_charge        = buff_creator_t( this, "arcane_charge", spec.arcane_charge )
                                .max_stack( find_spell( 36032 ) -> max_stacks() )
                                .duration( find_spell( 36032 ) -> duration() );
-  buffs.arcane_missiles      = buff_creator_t( this, "arcane_missiles", find_class_spell( "Arcane Missiles" ) -> ok() ? find_spell( 79683 ) : spell_data_t::not_found() ).chance( 0.3 );
+  buffs.arcane_missiles      = buff_creator_t( this, "arcane_missiles", find_specialization_spell( "Arcane Missiles" ) -> ok() ? find_spell( 79683 ) : spell_data_t::not_found() ).chance( 0.3 );
+
   buffs.arcane_power         = new buffs::arcane_power_t( this );
   buffs.brain_freeze         = buff_creator_t( this, "brain_freeze", spec.brain_freeze )
                                .duration( find_spell( 57761 ) -> duration() )
@@ -4012,8 +4023,8 @@ void mage_t::create_buffs()
                                .duration( timespan_t::from_seconds( 60 ) )
                                .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
 
-  buffs.heating_up           = buff_creator_t( this, "heating_up", find_class_spell( "Pyroblast" ) -> ok() ? find_spell( 48107 ) : spell_data_t::not_found() );
-  buffs.pyroblast            = buff_creator_t( this, "pyroblast",  find_class_spell( "Pyroblast" ) -> ok() ? find_spell( 48108 ) : spell_data_t::not_found() );
+  buffs.heating_up           = buff_creator_t( this, "heating_up", find_specialization_spell( "Pyroblast" ) -> ok() ? find_spell( 48107 ) : spell_data_t::not_found() );
+  buffs.pyroblast            = buff_creator_t( this, "pyroblast",  find_specialization_spell( "Pyroblast" ) -> ok() ? find_spell( 48108 ) : spell_data_t::not_found() );
 
   buffs.tier13_2pc           = stat_buff_creator_t( this, "tier13_2pc" )
                                .spell( find_spell( 105785 ) )
