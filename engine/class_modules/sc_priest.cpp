@@ -2708,8 +2708,9 @@ struct devouring_plague_t final : public priest_spell_t
 
   void transfer_heal_to_dot( action_state_t* state )
   {
+    // Multi Strike transfers 5% per Orb as well ( Source: kaesebrezen, 2014/06/15, WoD alpha )
+    // https://code.google.com/p/simulationcraft/source/detail?r=8e076ce3a98ea393d9415b3f603d093461c984d0&
     const shadow_orb_state_t* s = static_cast<const shadow_orb_state_t*>( state );
-
     double tick_heal_pct = s -> orbs_used * 0.05;
     if ( sim -> debug )
       sim -> out_debug.printf( "%s DP result %s appends %.4f%% heal to dot",
