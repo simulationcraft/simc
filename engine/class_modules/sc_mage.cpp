@@ -4585,33 +4585,34 @@ void mage_t::apl_frost()
   default_list -> add_action( this, "Evocation", "if=talent.invocation.enabled&cooldown.icy_veins.remains=0&buff.invokers_energy.remains<20" );
   default_list -> add_action( this, "Evocation", "if=!talent.invocation.enabled&mana.pct<50,interrupt_if=mana.pct>95" );
   default_list -> add_action( this, "Mirror Image" );
-  default_list -> add_action( this, "Frozen Orb", "if=set_bonus.tier16_2pc_caster" );
-  default_list -> add_action( this, "Icy Veins", "if=time_to_bloodlust>180&((buff.brain_freeze.react|buff.fingers_of_frost.react)|target.time_to_die<22),moving=0" );
+  default_list -> add_action( this, "Frozen Orb", "if=buff.fingers_of_frost.stack<2" );
+  default_list -> add_action( this, "Icy Veins", "if=(time_to_bloodlust>160&(buff.brain_freeze.react|buff.fingers_of_frost.react))|target.time_to_die<22,moving=0" );
 
   for( size_t i = 0; i < racial_actions.size(); i++ )
-    default_list -> add_action( racial_actions[i] + ",if=buff.icy_veins.up|target.time_to_die<18" );
+    default_list -> add_action( racial_actions[i] + ",sync=alter_time_activate,if=buff.icy_veins.up|target.time_to_die<18" );
 
-  default_list -> add_action( "jade_serpent_potion,if=buff.icy_veins.up|target.time_to_die<45" );
-  default_list -> add_talent( this, "Presence of Mind", "if=buff.icy_veins.up|cooldown.icy_veins.remains>15|target.time_to_die<15" );
+  default_list -> add_action( "jade_serpent_potion,sync=alter_time_activate,if=buff.icy_veins.up|target.time_to_die<45" );
+  default_list -> add_talent( this, "Presence of Mind", "sync=alter_time_activate,if=talent.presence_of_mind.enabled" );
 
   for( size_t i = 0; i < item_actions.size(); i++ )
     default_list -> add_action( item_actions[i] + ",sync=alter_time_activate,if=buff.alter_time.down" );
 
-  default_list -> add_action( this, "Alter Time", "if=buff.alter_time.down&buff.icy_veins.up" );
+  default_list -> add_action( this, "Alter Time", "if=buff.alter_time.down&buff.icy_veins.up&trinket.stat.intellect.cooldown_remains>25" );
+  default_list -> add_action( this, "Alter Time", "if=buff.alter_time.down&buff.icy_veins.up&buff.amplified.down" );
 
   for( size_t i = 0; i < item_actions.size(); i++ )
     default_list -> add_action( item_actions[i] + ",if=(cooldown.alter_time_activate.remains>45|target.time_to_die<25)&(buff.rune_of_power.remains>20|buff.invokers_energy.remains>20|(!talent.rune_of_power.enabled&!talent.invocation.enabled))" );
 
   default_list -> add_action( this, "Flamestrike", "if=active_enemies>=5" );
+  default_list -> add_action( this, "Fire Blast", "if=time_to_die<action.ice_lance.travel_time" );
   default_list -> add_action( this, "Frostfire Bolt", "if=buff.alter_time.up&buff.brain_freeze.up" );
-  default_list -> add_action( this, "Ice Lance", "if=buff.alter_time.up&buff.fingers_of_frost.up" );
+  default_list -> add_action( this, "Frostfire Bolt", "if=buff.brain_freeze.react&cooldown.icy_veins.remains>2*action.frostbolt.execute_time" );
   default_list -> add_talent( this, "Nether Tempest", "cycle_targets=1,if=(!ticking|remains<tick_time)&target.time_to_die>6" );
   default_list -> add_talent( this, "Living Bomb", "cycle_targets=1,if=(!ticking|remains<tick_time)&target.time_to_die>tick_time*3" );
   default_list -> add_talent( this, "Frost Bomb", "if=target.time_to_die>cast_time+tick_time" );
-  default_list -> add_action( this, "Frostfire Bolt", "if=buff.brain_freeze.react&cooldown.icy_veins.remains>2" );
-  default_list -> add_action( this, "Ice Lance", "if=buff.frozen_thoughts.react&buff.fingers_of_frost.up" );
-  default_list -> add_action( this, "Ice Lance", "if=buff.fingers_of_frost.up&(buff.fingers_of_frost.remains<2|(buff.fingers_of_frost.stack>1&cooldown.icy_veins.remains>2))" );
-  default_list -> add_action( this, "Ice Lance" "if=!set_bonus.tier16_2pc_caster&buff.fingers_of_frost.react&cooldown.icy_veins.remains>2" );
+  default_list -> add_action( this, "Ice Lance", "if=buff.alter_time.up&buff.fingers_of_frost.up" );
+  default_list -> add_action( this, "Ice Lance", "if=buff.fingers_of_frost.react&cooldown.icy_veins.remains>2*action.frostbolt.execute_time" );
+  default_list -> add_talent( this, "Presence of Mind", "if=cooldown.alter_time_activate.remains>0");
   default_list -> add_action( this, "Frostbolt" );
   default_list -> add_talent( this, "Ice Floes", "moving=1" );
   default_list -> add_action( this, "Fire Blast", "moving=1" );
