@@ -55,6 +55,8 @@ bool spell_data_t::override_field( const std::string& field, double value )
     _cast_min = ( int ) value;
   else if ( util::str_compare_ci( field, "cast_max" ) )
     _cast_max = ( int ) value;
+  else if ( util::str_compare_ci( field, "rppm" ) )
+    _rppm = value;
   else
     return false;
   return true;
