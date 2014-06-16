@@ -20,6 +20,7 @@ namespace { // UNNAMED NAMESPACE
     = Feral =
     Level 100 Talents
       Lunar Inspiration -- Mostly implemented, cannot work until the sim recognizes the talent correctly.
+      Bloodtalons
     Combo Points as a resource
     Glyph of Savage Roar
     Oh my god string lookups during sim runtime.
@@ -4293,8 +4294,7 @@ struct mark_of_the_wild_t : public druid_spell_t
 
     action_t* sunfire;
     moonfire_t( druid_t* player, const std::string& options_str ) :
-      druid_spell_t( "moonfire", player, player -> specialization() != DRUID_FERAL ? player -> find_spell( 8921 ) : 
-                                                                                     player -> find_spell( 155625 )  )
+      druid_spell_t( "moonfire", player, player -> find_spell( 8921 ) )
     {
       parse_options( NULL, options_str );
       const spell_data_t* dmg_spell = player -> find_spell( 164812 );
@@ -4337,8 +4337,7 @@ struct mark_of_the_wild_t : public druid_spell_t
       druid_spell_t::schedule_execute( state );
 
       p() -> buff.bear_form -> expire();
-      if ( ! p() -> talent.lunar_inspiration -> ok() )
-        p() -> buff.cat_form -> expire();
+      p() -> buff.cat_form -> expire();
     }
 
     virtual void impact( action_state_t* s )
@@ -4353,14 +4352,6 @@ struct mark_of_the_wild_t : public druid_spell_t
         }
       }
       druid_spell_t::impact( s );
-
-      if ( p() -> talent.lunar_inspiration -> ok() && result_is_hit( s -> result ) )
-      {
-        int cp = data().effectN( 3 ).base_value(); // Since this isn't in cat_attack_t, we need to account for the base combo points.
-        if ( p() -> spell.primal_fury -> ok() && s -> result == RESULT_CRIT )
-          cp += p() -> find_spell( 16953 ) -> effectN( 1 ).base_value();
-        td( s -> target ) -> combo_points.add( cp, &name_str );
-      }
     }
 
     virtual bool ready()
@@ -4374,6 +4365,37 @@ struct mark_of_the_wild_t : public druid_spell_t
 
       return ready;
     }
+};
+
+// Moonfire (Lunar Inspiration) Spell =======================================
+
+struct moonfire_feral_t : public druid_spell_t
+{
+  moonfire_feral_t( druid_t* player, const std::string& options_str ) :
+    druid_spell_t( "moonfire_feral", player, player -> find_spell( 155625 ) )
+  {
+    parse_options( NULL, options_str );
+  }
+
+  virtual void impact( action_state_t* s )
+  {
+    // Grant combo points
+    if ( result_is_hit( s -> result ) )
+    {
+      int cp = data().effectN( 3 ).base_value(); // Since this isn't in cat_attack_t, we need to account for the base combo points as well.
+      if ( p() -> spell.primal_fury -> ok() && s -> result == RESULT_CRIT )
+        cp += p() -> find_spell( 16953 ) -> effectN( 1 ).base_value();
+      td( s -> target ) -> combo_points.add( cp, &name_str );
+    }
+  }
+
+  virtual bool ready()
+  {
+    if ( ! p() -> talent.lunar_inspiration -> ok() )
+      return false;
+
+    return druid_spell_t::ready();
+  }
 };
 
 // Moonkin Form Spell =======================================================
@@ -4930,6 +4952,7 @@ action_t* druid_t::create_action( const std::string& name,
   if ( name == "might_of_ursoc"         ) return new         might_of_ursoc_t( this, options_str );
   if ( name == "moonfire"               ) return new               moonfire_t( this, options_str );
   if ( name == "sunfire"                ) return new                sunfire_t( this, options_str ); // Moonfire and Sunfire are selected based on how much balance energy the player has.
+  if ( name == "moonfire_feral"         ) return new         moonfire_feral_t( this, options_str );
   if ( name == "moonkin_form"           ) return new           moonkin_form_t( this, options_str );
   if ( name == "natures_swiftness"      ) return new       druids_swiftness_t( this, options_str );
   if ( name == "natures_vigil"          ) return new          natures_vigil_t( this, options_str );
