@@ -24,6 +24,8 @@ namespace { // UNNAMED NAMESPACE
     Combo Points as a resource
     Glyph of Savage Roar
     Oh my god string lookups during sim runtime.
+    Snapshot TF, SR
+    Implement Pounce / Ravage changes
 
     = Balance =
     Just verify stuff.
@@ -1314,8 +1316,6 @@ public:
 
     if ( druid.specialization() == DRUID_GUARDIAN )
       druid.resolve_manager.stop();
-
-    druid.current.attack_power_per_agility -= 1.0;
   }
 
   virtual void start( int stacks, double value, timespan_t duration )
@@ -1339,8 +1339,6 @@ public:
       sim -> auras.critical_strike -> trigger();
 
     druid.player_t::recalculate_resource_max( RESOURCE_HEALTH );
-
-    druid.current.attack_power_per_agility += 1.0;
   }
 private:
   const spell_data_t* rage_spell;
@@ -1394,8 +1392,6 @@ struct cat_form_t : public druid_buff_t< buff_t >
     druid.main_hand_weapon = druid.caster_form_weapon;
 
     sim -> auras.critical_strike -> decrement();
-
-    druid.current.attack_power_per_agility -= 1.0;
   }
 
   virtual void start( int stacks, double value, timespan_t duration )
@@ -1409,8 +1405,6 @@ struct cat_form_t : public druid_buff_t< buff_t >
 
     if ( ! sim -> overrides.critical_strike )
       sim -> auras.critical_strike -> trigger();
-
-    druid.current.attack_power_per_agility += 1.0;
   }
 };
 
@@ -4379,6 +4373,8 @@ struct moonfire_feral_t : public druid_spell_t
 
   virtual void impact( action_state_t* s )
   {
+    druid_spell_t::impact( s );
+
     // Grant combo points
     if ( result_is_hit( s -> result ) )
     {
@@ -5280,7 +5276,7 @@ void druid_t::init_base_stats()
   resources.infinite_resource[RESOURCE_MANA] = true; // REMOVE LATER *~*~*~*~*~**~*// ~***$_@*$%_@
 
   // TODO: Confirm that all druid specs get both of these things.
-  base.attack_power_per_agility  = 0.0; // This is adjusted in cat_form_t and bear_form_t
+  base.attack_power_per_agility  = 1.0;
   base.attack_power_per_strength = 0.0;
   base.spell_power_per_intellect = 1.0;
 
