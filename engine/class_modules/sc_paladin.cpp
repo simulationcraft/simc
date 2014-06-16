@@ -2988,30 +2988,27 @@ struct shining_protector_t : public paladin_heal_t
     background = true;
     proc = true;
     target = player;
-    may_multistrike = false; // guess, almost certain
-    may_crit = false;        // guess, but pretty likely
+    may_multistrike = false; 
+    may_crit = false;        
   }
 
-  // This old implementation was double-dipping on Resolve, SoI, etc.
-  // Ex: A seal of insight proc would be boosted by Resolve & SoI healing bonus, and then
-  // the Shining Protecor proc would also be boosted by both factors. Pretty sure that isn't
-  // how it'll work in-game. TODO: in-game testing for exactly what buffs Shining Protector and how.
-
-  /*
+  // Need to disable multipliers in init() so that it doesn't double-dip on anything  
   virtual void init()
   {
     paladin_heal_t::init();
-    // add snapshot flags to allow for action_multiplier() to be called
-    snapshot_flags |= STATE_MUL_DA | STATE_TGT_MUL_DA;
+    // disable the snapshot_flags for all multipliers, but specifically allow 
+    // action_multiplier() to be called so we can override.
+    snapshot_flags &= STATE_NO_MULTIPLIER;
+    snapshot_flags |= STATE_MUL_DA;
   }
 
-  virtual double action_da_multiplier() const
+  virtual double action_multiplier() const
   {
     double am = p() -> passives.shining_protector -> effectN( 1 ).percent();
 
     return am;
   }
-  */
+  
 
   virtual void execute()
   {
@@ -3019,18 +3016,7 @@ struct shining_protector_t : public paladin_heal_t
 
     paladin_heal_t::execute();
   }
-
-  // new implementation: Assume it double-dips on nothing
-  virtual double calculate_direct_amount( action_state_t* s )
-  {
-    // we don't want this to double dip on anything, so override calculate_direct_amount
-    double amount = sim -> averaged_range( base_da_min( s ), base_da_max( s ) );
-
-    amount *= p() -> passives.shining_protector -> effectN( 1 ).percent();
-
-    return amount;
-  }
-
+  
 };
 
 // Uther's Insight ==========================================================
@@ -3894,21 +3880,37 @@ struct hand_of_light_proc_t : public paladin_melee_attack_t
     trigger_gcd = timespan_t::zero();
     id          = 96172;
 
-    // no weapon multiplier - needs to be done by setting weapon = NULL
-    // setting weapon_multiplier=0.0 prevents STATE_MUL_DA from being added to snapshot_flags because 
-    // both base_dd_min && base_dd_max are zero
-    weapon = NULL;
+    // No weapon multiplier
+    weapon_multiplier = 0.0;
+    // Note that setting weapon_multiplier=0.0 prevents STATE_MUL_DA from being added 
+    // to snapshot_flags because both base_dd_min && base_dd_max are zero, so we need
+    // to do it specifically in init(). 
+    // Alternate solution is to set weapon = NULL, but we have to use init() to disable
+    // other multipliers (Versatility) anyway.
+  }
+
+  // Disable multipliers in init() so that it doesn't double-dip on anything  
+  virtual void init()
+  {
+    paladin_melee_attack_t::init();
+    // Disable the snapshot_flags for all multipliers, but specifically allow factors in
+    // action_state_t::composite_da_multiplier() to be called. This lets us use
+    // action_multiplier() to apply the HoL factor, but we need to divide by the other 
+    // factors in composite_da_multiplier() to make sure we don't double-dip.
+    snapshot_flags &= STATE_NO_MULTIPLIER;
+    snapshot_flags |= STATE_MUL_DA;
+
+    // Note: I've turned off ALL other multipliers here now that CoE is gone. If we need to enable
+    // specific ones later, we'll have to remove the STATE_NO_MULTIPLIER flag and disable 
+    // STATE_VERSATILITY (and any other relevant flags) individually.
   }
 
   virtual double action_multiplier() const
   {
-    //am = melee_attack_t::action_multiplier();
-    // not *= since we don't want to double dip, just calling base to initialize variables
     double am = static_cast<paladin_t*>( player ) -> get_hand_of_light();
     
-    // HoL doesn't double dipp on anything in composite_player_multiplier(): avenging wrath, GoWoG, Divine Shield, etc.
-    // easier to remove it here by dividing by the result than to try and hack it into that function.
-    // TODO: is it just easier to override calculate_direct_amount(), as in shining_protector_t?
+    // HoL doesn't double dip on anything in composite_player_multiplier(): avenging wrath, GoWoG, Divine Shield, etc.
+    // Remove it here by dividing by the resulting multiplier.
     am /= p() -> composite_player_multiplier( SCHOOL_HOLY );
 
     return am;
