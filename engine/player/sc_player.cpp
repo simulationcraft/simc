@@ -4054,6 +4054,9 @@ void player_t::reset()
   item_cooldown.reset( false );
 
   incoming_damage.clear();
+
+  for( size_t i = 0, end = variables.size(); i < end; i++ )
+    variables[ i ].reset();
 }
 
 // player_t::trigger_ready ==================================================
@@ -5682,6 +5685,171 @@ struct stop_moving_t : public action_t
   }
 };
 
+struct variable_t : public action_t
+{
+  action_var_e operation;
+  action_variable_t* var;
+  expr_t* value_expression;
+
+  variable_t( player_t* player, const std::string& options_str ) :
+    action_t( ACTION_OTHER, "variable", player ),
+    operation( OPERATION_SET ), var( 0 ), value_expression( 0 )
+  {
+    quiet = true;
+    harmful = proc = callbacks = may_miss = may_crit = may_block = may_parry = may_dodge = false;
+    trigger_gcd = timespan_t::zero();
+
+    std::string name_;
+    std::string value_;
+    std::string operation_;
+    double default_ = 0;
+    timespan_t delay_;
+
+    option_t options[] =
+    {
+      opt_string( "name", name_ ),
+      opt_string( "value", value_ ),
+      opt_string( "op", operation_ ),
+      opt_float( "default", default_ ),
+      opt_timespan( "delay", delay_ ),
+      opt_null()
+    };
+    parse_options( options, options_str );
+
+    if ( name_.empty() || operation_.empty() )
+    {
+      sim -> errorf( "Player %s unnamed 'variable' action used, or no operation given", player -> name() );
+      background = true;
+      return;
+    }
+
+    // Printing needs a delay, otherwise the action list will not progress
+    if ( operation == OPERATION_PRINT && delay_ == timespan_t::zero() )
+      delay_ = timespan_t::from_seconds( 1.0 );
+
+    // Figure out operation
+    if ( util::str_compare_ci( operation_, "set" ) )
+      operation = OPERATION_SET;
+    else if ( util::str_compare_ci( operation_, "print" ) )
+      operation = OPERATION_PRINT;
+    else if ( util::str_compare_ci( operation_, "reset" ) )
+      operation = OPERATION_RESET;
+    else if ( util::str_compare_ci( operation_, "add" ) )
+      operation = OPERATION_ADD;
+    else if ( util::str_compare_ci( operation_, "sub" ) )
+      operation = OPERATION_SUB;
+    else
+    {
+      sim -> errorf( "Player %s unknown operation '%s' given for variable, valid values are 'set', 'print', and 'reset'.", player -> name(), operation_.c_str() );
+      background = true;
+      return;
+    }
+
+    // Evaluate value expression
+    if ( operation == OPERATION_SET || operation == OPERATION_ADD )
+    {
+      if ( value_.empty() )
+      {
+        sim -> errorf( "Player %s no value expression given for variable '%s'", player -> name(), name_.c_str() );
+        background = true;
+        return;
+      }
+
+      value_expression = expr_t::parse( this, value_ );
+      if ( ! value_expression )
+      {
+        sim -> errorf( "Player %s unable to parse 'variable' value '%s'", player -> name(), value_.c_str() );
+        background = true;
+        return;
+      }
+    }
+
+    // Add a delay
+    if ( delay_ > timespan_t::zero() )
+    {
+      std::string cooldown_name = "variable_actor";
+      cooldown_name += util::to_string( player -> index );
+      cooldown_name += "_";
+      cooldown_name += name_;
+
+      cooldown = player -> get_cooldown( cooldown_name );
+      cooldown -> duration = delay_;
+    }
+
+    // Find the variable
+    for ( size_t i = 0, end = player -> variables.size(); i < end; i++ )
+    {
+      if ( util::str_compare_ci( player -> variables[ i ].name_, name_ ) )
+      {
+        var = &( player -> variables[ i ] );
+        break;
+      }
+    }
+
+    if ( ! var )
+    {
+      player -> variables.push_back( action_variable_t( name_, default_ ) );
+      var = &( player -> variables.back() );
+    }
+  }
+
+  result_e calculate_result( action_state_t* )
+  { return RESULT_HIT; }
+
+  block_result_e calculate_block_result( action_state_t* )
+  { return BLOCK_RESULT_UNBLOCKED; }
+
+  void execute()
+  {
+    action_t::execute();
+
+    switch ( operation )
+    {
+      case OPERATION_SET:
+        var -> current_value_ = value_expression -> eval();
+        break;
+      case OPERATION_ADD:
+        var -> current_value_ += value_expression -> eval();
+        break;
+      case OPERATION_SUB:
+        var -> current_value_ -= value_expression -> eval();
+        break;
+      case OPERATION_PRINT:
+        // Only spit out prints in main thread
+        if ( sim -> parent == 0 )
+          std::cout << "actor=" << player -> name_str << " time=" << sim -> current_time.total_seconds() << " iteration=" << sim -> current_iteration << " variable=" << var -> name_.c_str() << " value=" << var -> current_value_ << std::endl;
+        break;
+      case OPERATION_RESET:
+        var -> reset();
+        break;
+      default:
+        assert( 0 );
+        break;
+    }
+  }
+
+  bool ready()
+  {
+    // For state change operations, return false if the variable would be
+    // unchanged, allows easier way to handle infinite action list issues due
+    // to time not progressing
+    if ( value_expression )
+    {
+      if ( operation == OPERATION_SET && value_expression -> eval() == var -> current_value_ )
+        return false;
+      else if ( ( operation == OPERATION_SUB || operation == OPERATION_ADD ) && value_expression -> eval() == 0 )
+        return false;
+    }
+
+    // For reset, only perform reset if the variable is not at default value.
+    // See above why.
+    if ( operation == OPERATION_RESET && var -> current_value_ == var -> default_ )
+      return false;
+
+    return action_t::ready();
+  }
+};
+
 // ===== Racial Abilities ===================================================
 
 struct racial_spell_t : public spell_t
@@ -6636,6 +6804,7 @@ action_t* player_t::create_action( const std::string& name,
   if ( name == "wait"               ) return new         wait_fixed_t( this, options_str );
   if ( name == "wait_until_ready"   ) return new   wait_until_ready_t( this, options_str );
   if ( name == "pool_resource"      ) return new      pool_resource_t( this, options_str );
+  if ( name == "variable"           ) return new           variable_t( this, options_str );
 
   return consumable::create_action( this, name, options_str );
 }
@@ -7547,6 +7716,39 @@ expr_t* player_t::create_expression( action_t* a,
 
   std::vector<std::string> splits = util::string_split( name_str, "." );
 
+  if ( splits[ 0 ] == "variable" && splits.size() == 2 )
+  {
+    struct variable_expr_t : public expr_t
+    {
+      player_t* player_;
+      const action_variable_t* var_;
+
+      variable_expr_t( player_t* p, const std::string& name ) :
+        expr_t( "variable" ), player_( p ), var_( 0 )
+      {
+        for ( size_t i = 0, end = player_ -> variables.size(); i < end; i++ )
+        {
+          if ( util::str_compare_ci( name, player_ -> variables[ i ].name_ ) )
+          {
+            var_ = &( player_ -> variables[ i ] );
+            break;
+          }
+        }
+      }
+
+      double evaluate()
+      { return var_ -> current_value_; }
+    };
+
+    variable_expr_t* expr = new variable_expr_t( this, splits[ 1 ] );
+    if ( ! expr -> var_ )
+    {
+      sim -> errorf( "Player %s no variable named '%s' found", name(), splits[ 1 ].c_str() );
+      delete expr;
+    }
+    else
+      return expr;
+  }
   // trinket.[12.].(has_|)(stacking_|)proc.<stat>.<buff_expr>
   if ( splits[ 0 ] == "trinket" && splits.size() >= 3 )
   {
