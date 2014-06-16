@@ -32,6 +32,7 @@ actions+=/cancel_buff,name=alter_time,moving=1
 actions+=/cold_snap,if=talent.cold_snap.enabled&health.pct<30
 actions+=/time_warp,if=buff.alter_time.down
 actions+=/rune_of_power,if=talent.rune_of_power.enabled&buff.rune_of_power.remains<cast_time
+actions+=/evocation,if=buff.invokers_energy.remains=0|mana.pct<5
 # Cancelaura AT if PBoI procs
 actions+=/cancel_buff,name=alter_time,if=buff.amplified.up&buff.alter_time.up&(trinket.stat.intellect.cooldown_remains-buff.alter_time.remains>109)
 actions+=/run_action_list,name=combust_sequence,if=buff.alter_time.up|pyro_chain
@@ -41,8 +42,9 @@ actions+=/run_action_list,name=init_alter_combust,if=buff.amplified.down&cooldow
 # Start regular POM-Combustion combo if CDs are up; Wait for trinket proc if player has PBoI
 actions+=/run_action_list,name=init_pom_combust,if=buff.amplified.up&cooldown.alter_time_activate.remains>45&cooldown.combustion.up&cooldown.presence_of_mind.up&(trinket.stat.intellect.cooldown_remains>95|trinket.stat.intellect.cooldown_remains+20>time_to_die)
 actions+=/run_action_list,name=init_pom_combust,if=buff.amplified.down&cooldown.alter_time_activate.remains>45&cooldown.combustion.up&cooldown.presence_of_mind.up
-# Cast RoP or MI only when player does not have both HU, Pyro proc and fireball mid flight - this causes Proc munching
+# Cast RoP/Evoc/MI only when player does not have both HU, Pyro proc and fireball mid flight - this causes Proc munching
 actions+=/rune_of_power,if=talent.rune_of_power.enabled&(buff.alter_time.down&buff.rune_of_power.remains<4*action.fireball.execute_time&(buff.heating_up.down|buff.pyroblast.down|!action.fireball.in_flight))
+actions+=/evocation,if=buff.alter_time.down&buff.invokers_energy.remains<4*action.fireball.execute_time&(buff.heating_up.down|buff.pyroblast.down|!action.fireball.in_flight)
 actions+=/mirror_image,if=buff.alter_time.down&(buff.heating_up.down|buff.pyroblast.down|!action.fireball.in_flight)
 actions+=/blood_fury,if=buff.alter_time.down&target.time_to_die<18
 actions+=/berserking,if=buff.alter_time.down&target.time_to_die<18
