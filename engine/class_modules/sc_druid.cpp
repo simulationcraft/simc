@@ -486,12 +486,12 @@ public:
     balance_time( timespan_t::zero() ),
     last_check( timespan_t::zero() ),
     eclipse_amount( 0 ),
+    clamped_eclipse_amount( 0 ),
     eclipse_direction( 1 ),
+    eclipse_max( 10 ),
     eclipse_change( 20 ),
     time_to_next_lunar( 10 ),
     time_to_next_solar( 30 ),
-    eclipse_max( 10 ),
-    clamped_eclipse_amount( 0 ),
     t16_2pc_starfall_bolt( nullptr ),
     t16_2pc_sun_bolt( nullptr ),
     active( active_actions_t() ),
@@ -3129,7 +3129,7 @@ struct living_seed_t : public druid_heal_t
     school     = SCHOOL_NATURE;
   }
 
-  double composite_da_multiplier( const action_state_t* state ) const
+  double composite_da_multiplier( const action_state_t* ) const
   {
     return data().effectN( 1 ).percent();
   }
@@ -4586,7 +4586,7 @@ struct starfall_t : public druid_spell_t
     return m;
   }
 
-  virtual void tick( dot_t *d )
+  virtual void tick( dot_t* )
   {
     starfall -> execute();
   }

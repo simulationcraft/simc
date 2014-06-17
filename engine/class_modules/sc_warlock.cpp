@@ -3800,7 +3800,7 @@ struct immolation_aura_t : public warlock_spell_t
 
   virtual void impact( action_state_t* s )
   {
-    dot_t* d = get_dot();
+    // dot_t* d = get_dot();
     // bool add_ticks = d -> is_ticking();
 
     warlock_spell_t::impact( s );
@@ -4351,14 +4351,15 @@ warlock_t::warlock_t( sim_t* sim, const std::string& name, race_e r ) :
   havoc_target( 0 ),
   latest_corruption_target( 0 ),
   pets( pets_t() ),
-  buffs( buffs_t() ),
-  cooldowns( cooldowns_t() ),
   talents( talents_t() ),
-  spec( specs_t() ),
+  glyphs( glyphs_t() ),
   mastery_spells( mastery_spells_t() ),
+  perk(),
+  cooldowns( cooldowns_t() ),
+  spec( specs_t() ),
+  buffs( buffs_t() ),
   gains( gains_t() ),
   procs( procs_t() ),
-  glyphs( glyphs_t() ),
   spells( spells_t() ),
   soul_swap_buffer( soul_swap_buffer_t() ),
   demonic_calling_event( 0 ),

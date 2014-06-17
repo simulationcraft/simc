@@ -556,7 +556,8 @@ struct warrior_heal_t : public warrior_action_t< heal_t >
   warrior_heal_t( const std::string& n, warrior_t* p, const spell_data_t* s = spell_data_t::nil() ) :
     base_t( n, p, s )
   {
-    may_crit = tick_may_crit = may_multistrike = hasted_ticks = false;
+    may_crit = tick_may_crit = hasted_ticks = false;
+    may_multistrike = 0;
     background = proc = true;
     target = p;
   }

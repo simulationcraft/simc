@@ -2893,7 +2893,7 @@ double player_t::composite_rating( rating_e rating ) const
 
 // player_t::composite_player_vulnerability =================================
 
-double player_t::composite_player_vulnerability( school_e school ) const
+double player_t::composite_player_vulnerability( school_e /* school */ ) const
 {
   double m = 1.0;
 
