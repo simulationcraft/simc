@@ -2686,7 +2686,6 @@ struct mangle_t : public bear_attack_t
     bear_attack_t( "mangle", player, player -> find_class_spell( "Mangle" ) )
   {
     parse_options( NULL, options_str );
-    attack_power_mod.direct *= 1.0 + player -> perk.improved_mangle -> effectN( 1 ).percent();
   }
 
   virtual void execute()
@@ -2700,13 +2699,14 @@ struct mangle_t : public bear_attack_t
       cooldown -> reset( false );
   }
 
-  virtual double action_da_multiplier() const
+  virtual double action_multiplier() const
   {
-    double adm = bear_attack_t::action_da_multiplier();
+    double am = bear_attack_t::action_multiplier();
 
-    adm *= 1.0 + p() -> talent.soul_of_the_forest -> effectN( 2 ).percent();
+    am *= 1.0 + p() -> talent.soul_of_the_forest -> effectN( 2 ).percent();
+    am *= 1.0 + p() -> perk.improved_mangle -> effectN( 1 ).percent();
 
-    return adm;
+    return am;
   }
 
   virtual bool ready()
