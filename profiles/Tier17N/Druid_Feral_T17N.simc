@@ -27,39 +27,40 @@ actions.precombat+=/virmens_bite_potion
 
 # Executed every time the actor is available.
 
-actions=auto_attack
+actions=rake,if=buff.prowl.up
+actions+=/auto_attack
 # Keep Rip from falling off during execute range.
 actions+=/ferocious_bite,cycle_targets=1,if=dot.rip.ticking&dot.rip.remains<=3&target.health.pct<=25
+actions+=/healing_touch,if=talent.bloodtalons.enabled&buff.predatory_swiftness.up&(combo_points>=4|buff.predatory_swiftness.remains<1.5)
 actions+=/savage_roar,if=buff.savage_roar.remains<3
 actions+=/virmens_bite_potion,if=target.time_to_die<=40
+actions+=/incarnation,if=enabled&energy<25&!buff.omen_of_clarity.react&cooldown.tigers_fury.remains<=1
 actions+=/use_item,slot=waist,sync=tigers_fury
 actions+=/blood_fury,sync=tigers_fury
 actions+=/berserking,sync=tigers_fury
 actions+=/arcane_torrent,sync=tigers_fury
-actions+=/tigers_fury,if=energy<=35&!buff.omen_of_clarity.react
+actions+=/tigers_fury,if=energy<=35&!buff.omen_of_clarity.react&(!talent.incarnation_king_of_the_jungle.enabled|buff.king_of_the_jungle.up|cooldown.incarnation.remains>0)
 actions+=/virmens_bite_potion,sync=berserk,if=target.health.pct<25
 actions+=/berserk,if=buff.tigers_fury.up
-actions+=/thrash_cat,if=buff.omen_of_clarity.react&dot.thrash_cat.remains<3
-actions+=/rip,cycle_targets=1,if=dot.rip.remains<2&combo_points>=5
+actions+=/thrash_cat,if=buff.omen_of_clarity.react&dot.thrash_cat.remains<4.5
+actions+=/rip,cycle_targets=1,if=dot.rip.remains<4.8&combo_points>=5
 # Apply the strongest possible Rip during execute.
 actions+=/rip,cycle_targets=1,if=target.health.pct<25&combo_points>=5&action.rip.tick_multiplier>dot.rip.multiplier
-actions+=/rake,cycle_targets=1,if=dot.rake.remains<3
+actions+=/rake,cycle_targets=1,if=dot.rake.remains<4.5
 actions+=/rake,cycle_targets=1,if=action.rake.tick_multiplier>dot.rake.multiplier
+actions+=/moonfire_feral,cycle_targets=1,if=talent.lunar_inspiration.enabled&dot.moonfire_feral.remains<4.2
 # Pool energy for Thrash.
 actions+=/pool_resource,for_next=1
 actions+=/thrash_cat,cycle_targets=1,if=(dot.rake.remains<3|action.rake.tick_multiplier>dot.rake.multiplier)
-actions+=/ferocious_bite,if=combo_points>=5&(energy.time_to_max<=1|buff.berserk.up)&dot.rip.remains>=4
+actions+=/ferocious_bite,if=combo_points>=5&(energy.time_to_max<=1|buff.berserk.up)&dot.rip.remains>=4.8
 # Cast a CP generator.
 actions+=/run_action_list,name=filler,if=combo_points<5
-actions+=/natures_vigil,if=talent.natures_vigil.enabled
-actions+=/healing_touch,if=buff.natures_vigil.up&buff.predatory_swiftness.up
+actions+=/natures_vigil,if=enabled
 actions+=/rejuvenation,if=buff.natures_vigil.up&!ticking
 
 # Pool energy for Swipe.
 actions.filler=pool_resource,for_next=1
 actions.filler+=/swipe,if=active_enemies>1
-# Rake for CP if it hits harder than Shred.
-actions.filler+=/rake,if=action.rake.hit_damage>=action.shred.hit_damage
 actions.filler+=/shred
 
 head=headpiece_of_the_shattered_vale,id=99328,upgrade=2,gems=capacitive_primal_8agi_9agi
