@@ -12,20 +12,15 @@ namespace { // UNNAMED NAMESPACE
 
  /* WoD -- TODO:
     = General =
-    Dream of Cenarius
-      Verify Guardian DoC works
     Tranquility
     Dash
+    Fix Force of Nature (summons fine, but treants take no actions)
+    Mana Attunement (Feral / Guardian)
+    Secondary Attunements
 
     = Feral =
-    Level 100 Talents
-      Lunar Inspiration -- Mostly implemented, cannot work until the sim recognizes the talent correctly.
-      Bloodtalons
     Combo Points as a resource
-    Glyph of Savage Roar
-    Oh my god string lookups during sim runtime.
-    Snapshot TF, SR
-    Implement Pounce / Ravage changes
+    Verify stuff
 
     = Balance =
     Just verify stuff.
@@ -34,6 +29,7 @@ namespace { // UNNAMED NAMESPACE
     Perks
     Soul of the Forest
     New mastery: Primary Tenacity
+    Verify DoC
     Ursa Major
 
     = Restoration =
@@ -192,13 +188,14 @@ public:
 
     // Feral
     buff_t* berserk;
+    buff_t* bloodtalons;
+    buff_t* feral_fury;
+    buff_t* feral_rage;
     buff_t* king_of_the_jungle;
     buff_t* predatory_swiftness;
     buff_t* savage_roar;
     buff_t* tigers_fury;
     buff_t* tier15_4pc_melee;
-    buff_t* feral_fury;
-    buff_t* feral_rage;
 
     // Guardian
     buff_t* bladed_armor;
@@ -1787,7 +1784,7 @@ public:
   {
     base_t::execute();
 
-    if ( ( cat_state( execute_state ) -> cp > 0 || this -> name_str == "savage_roar" ) && requires_combo_points )
+    if ( cat_state( execute_state ) -> cp > 0 && requires_combo_points )
     {
       if ( p() -> buff.feral_rage -> up() ) // tier16_4pc_melee
       {
@@ -1812,7 +1809,7 @@ public:
       if ( execute_state -> result == RESULT_CRIT )
         trigger_lotp( execute_state );
 
-      if ( ( cat_state( execute_state ) -> cp > 0 || this -> name_str == "savage_roar" ) && requires_combo_points )
+      if ( cat_state( execute_state ) -> cp > 0 && requires_combo_points )
       {
         if ( player -> sets.has_set_bonus( SET_T15_2PC_MELEE ) &&
             rng().roll( cat_state( execute_state ) -> cp * 0.15 ) )
@@ -1826,6 +1823,10 @@ public:
     {
       trigger_energy_refund();
     }
+
+    // TODO: Confirm you still lose a stack on miss
+    if ( p() -> talent.bloodtalons -> ok() && this -> special && this -> harmful )
+      p() -> buff.bloodtalons -> decrement();
 
     if ( harmful )
       p() -> buff.prowl -> expire();
@@ -1899,6 +1900,8 @@ public:
       pm *= 1.0 + p() -> buff.tigers_fury -> value();
       pm *= 1.0 + p() -> buff.savage_roar -> value();
     }
+    if ( p() -> talent.bloodtalons -> ok() && p() -> buff.bloodtalons -> up() && this -> special && this -> harmful )
+      pm *= 1.0 + p() -> buff.bloodtalons -> default_value;
 
     return pm;
   }
@@ -3273,9 +3276,9 @@ struct healing_touch_t : public druid_heal_t
   {
     druid_heal_t::execute();
 
-    /* FIXME: Dream of Cenarius buff states that the cooldown is reset,
-       talent states that the next cast does not trigger cooldown.
-       Sticking to what the buff states for now. */
+    if ( p() -> talent.bloodtalons -> ok() )
+      p() -> buff.bloodtalons -> trigger( 2 );
+
     if ( p() -> buff.dream_of_cenarius -> up() )
       p() -> cooldown.starfallsurge -> reset( false );
 
@@ -5377,6 +5380,12 @@ void druid_t::create_buffs()
   buff.natures_vigil      = buff_creator_t( this, "natures_vigil", talent.natures_vigil -> ok() ? find_spell( 124974 ) : spell_data_t::not_found() );
   buff.heart_of_the_wild  = new heart_of_the_wild_buff_t( *this );
 
+  buff.bloodtalons        = buff_creator_t( this, "bloodtalons", talent.bloodtalons -> ok() ? find_spell( 145152 ) : spell_data_t::not_found() )
+                            .max_stack( 2 )
+                            .chance( 1.0 )
+                            .duration( timespan_t::from_seconds( 30.0 ) )
+                            .default_value( 0.30 );
+
   // Balance
 
   buff.astral_communion          = new astral_communion_t( *this );
@@ -5571,42 +5580,42 @@ void druid_t::apl_feral()
   def -> add_action( "auto_attack" );
   def -> add_action( this, "Ferocious Bite", "cycle_targets=1,if=dot.rip.ticking&dot.rip.remains<=3&target.health.pct<=25",
                      "Keep Rip from falling off during execute range." );
+  def -> add_action( this, "Healing Touch", "if=talent.bloodtalons.enabled&buff.predatory_swiftness.up&(combo_points>=4|buff.predatory_swiftness.remains<1.5)" );
   def -> add_action( this, "Savage Roar", "if=buff.savage_roar.remains<3" );
   std::string potion_name = level > 85 ? "virmens_bite_potion" : "tolvir_potion";
   def -> add_action( potion_name + ",if=target.time_to_die<=40" );
-  def -> add_action( "incarnation,if=talent.incarnation.enabled&energy<25&!buff.omen_of_clarity.react&cooldown.tigers_fury.remains<=1" );
+  def -> add_action( "incarnation,if=enabled&energy<25&!buff.omen_of_clarity.react&cooldown.tigers_fury.remains<=1" );
   // On-Use Items
   for ( size_t i = 0; i < item_actions.size(); i++ )
     def -> add_action( item_actions[ i ] + ",sync=tigers_fury" );
   // Racials
   for ( size_t i = 0; i < racial_actions.size(); i++ )
     def -> add_action( racial_actions[ i ] + ",sync=tigers_fury" );
-  def -> add_action( this, "Tiger's Fury", "if=energy<=35&!buff.omen_of_clarity.react&(!talent.incarnation.enabled|buff.king_of_the_jungle.up|cooldown.incarnation.remains>0)" );
+  def -> add_action( this, "Tiger's Fury", "if=energy<=35&!buff.omen_of_clarity.react&(!talent.incarnation_king_of_the_jungle.enabled|buff.king_of_the_jungle.up|cooldown.incarnation.remains>0)" );
   def -> add_action( potion_name + ",sync=berserk,if=target.health.pct<25" );
   def -> add_action( this, "Berserk", "if=buff.tigers_fury.up" );
-  def -> add_action( "thrash_cat,if=buff.omen_of_clarity.react&dot.thrash_cat.remains<3" );
-  def -> add_action( this, "Rip", "cycle_targets=1,if=dot.rip.remains<2&combo_points>=5" );
+  def -> add_action( "thrash_cat,if=buff.omen_of_clarity.react&dot.thrash_cat.remains<4.5" );
+  def -> add_action( this, "Rip", "cycle_targets=1,if=dot.rip.remains<4.8&combo_points>=5" );
   def -> add_action( this, "Rip", "cycle_targets=1,if=target.health.pct<25&combo_points>=5&action.rip.tick_multiplier>dot.rip.multiplier",
                      "Apply the strongest possible Rip during execute." );
-  def -> add_action( this, "Rake", "cycle_targets=1,if=dot.rake.remains<3" );
+  def -> add_action( this, "Rake", "cycle_targets=1,if=dot.rake.remains<4.5" );
   def -> add_action( this, "Rake", "cycle_targets=1,if=action.rake.tick_multiplier>dot.rake.multiplier" );
-  def -> add_action( this, "Moonfire", "cycle_targets=1,if=talent.lunar_inspiration.enabled&dot.moonfire.remains<3" );
+  def -> add_action( "moonfire_feral,cycle_targets=1,if=talent.lunar_inspiration.enabled&dot.moonfire_feral.remains<4.2" );
   def -> add_action( "pool_resource,for_next=1",
                      "Pool energy for Thrash." );
   def -> add_action( "thrash_cat,cycle_targets=1,if=(dot.rake.remains<3|action.rake.tick_multiplier>dot.rake.multiplier)" );
-  def -> add_action( this, "Ferocious Bite", "if=combo_points>=5&(energy.time_to_max<=1|buff.berserk.up)&dot.rip.remains>=4" );
+  def -> add_action( this, "Ferocious Bite", "if=combo_points>=5&(energy.time_to_max<=1|buff.berserk.up)&dot.rip.remains>=4.8" );
   def -> add_action( "run_action_list,name=filler,if=combo_points<5",
                      "Cast a CP generator." );
-  def -> add_talent( this, "Nature's Vigil" );
-  def -> add_action( this, "Healing Touch", "if=buff.natures_vigil.up&buff.predatory_swiftness.up" );
+  def -> add_action( "natures_vigil,if=enabled" );
   if ( perk.enhanced_rejuvenation -> ok() )
     def -> add_action( this, "Rejuvenation", "if=buff.natures_vigil.up&!ticking" );
 
   filler -> add_action( "pool_resource,for_next=1",
                         "Pool energy for Swipe." );
   filler -> add_action( this, "Swipe", "if=active_enemies>1" );
-  filler -> add_action( this, "Rake", "if=action.rake.hit_damage>=action.shred.hit_damage",
-                        "Rake for CP if it hits harder than Shred." );
+  /* filler -> add_action( this, "Rake", "if=action.rake.hit_damage>=action.shred.hit_damage",
+                        "Rake for CP if it hits harder than Shred." ); */
   filler -> add_action( this, "Shred" );
 }
 
