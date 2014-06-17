@@ -1901,7 +1901,7 @@ public:
       pm *= 1.0 + p() -> buff.savage_roar -> value();
     }
     if ( p() -> talent.bloodtalons -> ok() && p() -> buff.bloodtalons -> up() && this -> special && this -> harmful )
-      pm *= 1.0 + p() -> buff.bloodtalons -> default_value;
+      pm *= 1.0 + p() -> buff.bloodtalons -> data().effectN( 1 ).percent();
 
     return pm;
   }
@@ -3247,6 +3247,8 @@ struct healing_touch_t : public druid_heal_t
       else if ( p() -> specialization() == DRUID_GUARDIAN )
         adm *= 1.0 + p() -> talent.dream_of_cenarius -> effectN( 2 ).percent();
     }
+    if ( p() -> buff.predatory_swiftness -> check() )
+      adm *= 1.0 + p() -> buff.predatory_swiftness -> data().effectN( 4 ).percent();
 
     return adm;
   }
@@ -5212,7 +5214,7 @@ void druid_t::init_spells()
   perk.enhanced_cat_form = find_perk_spell( "Enhanced Cat Form" );
   perk.enhanced_prowl = find_perk_spell( "Enhanced Prowl" );
   perk.enhanced_rejuvenation = find_perk_spell( "Enhanced Rejuvenation" );
-  perk.enhanced_tigers_fury = find_perk_spell( "Enhanced Tigers Fury" );
+  perk.enhanced_tigers_fury = find_perk_spell( "Enhanced Tiger's Fury" );
   perk.improved_rake = find_perk_spell( "Improved Rake" );
   perk.improved_ferocious_bite = find_perk_spell( "Improved Ferocious Bite" );
   perk.improved_shred = find_perk_spell( "Improved Shred" );
@@ -5381,10 +5383,7 @@ void druid_t::create_buffs()
   buff.heart_of_the_wild  = new heart_of_the_wild_buff_t( *this );
 
   buff.bloodtalons        = buff_creator_t( this, "bloodtalons", talent.bloodtalons -> ok() ? find_spell( 145152 ) : spell_data_t::not_found() )
-                            .max_stack( 2 )
-                            .chance( 1.0 )
-                            .duration( timespan_t::from_seconds( 30.0 ) )
-                            .default_value( 0.30 );
+                            .max_stack( 2 );
 
   // Balance
 
@@ -5418,13 +5417,11 @@ void druid_t::create_buffs()
   // Feral
   buff.tigers_fury           = buff_creator_t( this, "tigers_fury", find_specialization_spell( "Tiger's Fury" ) )
                                .default_value( find_specialization_spell( "Tiger's Fury" ) -> effectN( 1 ).percent() )
-                               .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
                                .cd( timespan_t::zero() )
                                .chance( 1.0 )
                                .duration( find_specialization_spell( "Tiger's Fury" ) -> duration() + perk.enhanced_tigers_fury -> effectN( 1 ).time_value() );
   buff.savage_roar           = buff_creator_t( this, "savage_roar", find_specialization_spell( "Savage Roar" ) )
                                .default_value( find_spell( 62071 ) -> effectN( 1 ).percent() )
-                               .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
                                .duration( timespan_t::max() ); // Set base duration to infinite for Savagery talent. All other uses trigger with a set duration.
   buff.predatory_swiftness   = buff_creator_t( this, "predatory_swiftness", spec.predatory_swiftness -> ok() ? find_spell( 69369 ) : spell_data_t::not_found() );
   buff.tier15_4pc_melee      = buff_creator_t( this, "tier15_4pc_melee", find_spell( 138358 ) );
