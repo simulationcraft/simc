@@ -1405,6 +1405,7 @@ class SpellDataGenerator(DataGenerator):
 	  ( 155580, 0 ),       # Lunar Inspiration
 	  ( 155627, 0 ),       # Lunar Inspiration
 	  ( 155625, 0 ),       # Lunar Inspiration Moonfire
+	  ( 145152, 0 ),       # Bloodtalons buff
         ), 
     ]
 
