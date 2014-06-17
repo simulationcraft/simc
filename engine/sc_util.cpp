@@ -1555,9 +1555,8 @@ const char* util::stat_type_wowhead( stat_e stat )
     case STAT_INTELLECT: return "int";
     case STAT_SPIRIT:    return "spr";
 
-    // WOD-TODO: Complete guess, must check on wowhead once available
     case STAT_AGI_INT:   return "agiint";
-    case STAT_STR_AGI:   return "stragi";
+    case STAT_STR_AGI:   return "agistr";
     case STAT_STR_INT:   return "strint";
 
     case STAT_HEALTH: return "health";
