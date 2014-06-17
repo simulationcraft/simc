@@ -1436,7 +1436,7 @@ struct melee_t : public monk_melee_attack_t
 
   melee_t( const std::string& name, monk_t* player, int sw ) :
     monk_melee_attack_t( name, player, spell_data_t::nil() ),
-    sync_weapons( sw ), tsproc( nullptr ), first( true )
+    sync_weapons( sw ), first( true ), tsproc( nullptr )
   {
     background  = true;
     repeating   = true;

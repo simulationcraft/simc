@@ -527,7 +527,7 @@ void print_text_performance( FILE* file, sim_t* sim )
                  sim -> elapsed_time,
                  sim -> iterations * sim -> simulation_length.mean() / sim -> elapsed_cpu,
                  date_str.c_str(),
-                 cur_time );
+                 as<long int>(cur_time) );
 }
 
 // print_text_scale_factors =================================================
