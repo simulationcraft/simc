@@ -1304,21 +1304,6 @@ struct primal_elemental_t : public pet_t
   resource_e primary_resource() const
   { return RESOURCE_MANA; }
 
-  void init_base_stats()
-  {
-    pet_t::init_base_stats();
-
-    if ( o() -> talent.primal_elementalist -> ok() )
-    {
-      double multiplier = 1.0 + o() -> talent.primal_elementalist -> effectN( 1 ).percent();
-
-      owner_coeff.ap_from_ap *= multiplier;
-      owner_coeff.ap_from_sp *= multiplier;
-      owner_coeff.sp_from_sp *= multiplier;
-      owner_coeff.sp_from_ap *= multiplier;
-    }
-  }
-
   void init_spells()
   {
     pet_t::init_spells();
@@ -1332,6 +1317,24 @@ struct primal_elemental_t : public pet_t
     if ( name == "travel"      ) return new travel_t( this );
 
     return pet_t::create_action( name, options_str );
+  }
+
+  double composite_attack_power_multiplier() const
+  {
+    double m = pet_t::composite_attack_power_multiplier();
+
+    m *= 1.0 + o() -> talent.primal_elementalist -> effectN( 1 ).percent();
+
+    return m;
+  }
+
+  double composite_spell_power_multiplier() const
+  {
+    double m = pet_t::composite_spell_power_multiplier();
+
+    m *= 1.0 + o() -> talent.primal_elementalist -> effectN( 1 ).percent();
+
+    return m;
   }
 
   double composite_player_multiplier( school_e school ) const
