@@ -2686,7 +2686,6 @@ struct mangle_t : public bear_attack_t
     bear_attack_t( "mangle", player, player -> find_class_spell( "Mangle" ) )
   {
     parse_options( NULL, options_str );
-    attack_power_mod.direct *= 1.0 + player -> talent.soul_of_the_forest -> effectN( 2 ).percent();
     attack_power_mod.direct *= 1.0 + player -> perk.improved_mangle -> effectN( 1 ).percent();
   }
 
@@ -2744,7 +2743,7 @@ struct maul_t : public bear_attack_t
   {
     double c = bear_attack_t::cost();
 
-    if ( p() -> perk.enhanced_tooth_and_claw -> ok() && () -> buff.tooth_and_claw -> up() )
+    if ( p() -> perk.enhanced_tooth_and_claw -> ok() && p() -> buff.tooth_and_claw -> up() )
       c = 0;
 
     return c;
