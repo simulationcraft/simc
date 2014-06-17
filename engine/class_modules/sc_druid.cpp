@@ -389,9 +389,10 @@ public:
 
     // Guardian
     const spell_data_t* bladed_armor;
-    const spell_data_t* savage_defense;
     const spell_data_t* readiness_guardian;
     const spell_data_t* resolve;
+    const spell_data_t* savage_defense;
+    const spell_data_t* thick_hide;
     const spell_data_t* tooth_and_claw;
     const spell_data_t* ursa_major;
 
@@ -5107,6 +5108,7 @@ void druid_t::init_spells()
   spec.bladed_armor           = find_specialization_spell( "Bladed Armor" );
   spec.resolve                = find_specialization_spell( "Resolve" );
   spec.savage_defense         = find_specialization_spell( "Savage Defense" );
+  spec.thick_hide             = find_specialization_spell( "Thick Hide" );
   spec.tooth_and_claw         = find_specialization_spell( "Tooth and Claw" );
   spec.ursa_major             = find_specialization_spell( "Ursa Major" );
 
@@ -6003,7 +6005,7 @@ double druid_t::composite_armor_multiplier() const
   double a = player_t::composite_armor_multiplier();
 
   if ( buff.bear_form -> check() )
-    a *= 1.0 +  buff.bear_form -> data().effectN( 3 ).percent();
+    a *= 1.0 + buff.bear_form -> data().effectN( 3 ).percent() + spec.thick_hide -> effectN( 2 ).percent();
 
   if ( buff.moonkin_form -> check() )
     a *= 1.0 + buff.moonkin_form -> data().effectN( 3 ).percent() + perk.enhanced_moonkin_form -> effectN( 1 ).percent();
@@ -6057,8 +6059,7 @@ double druid_t::composite_melee_expertise( weapon_t* ) const
 {
   double exp = player_t::composite_melee_expertise();
 
-  if ( specialization() == DRUID_GUARDIAN && buff.bear_form -> check() )
-    exp += 0.03;
+  exp += spec.thick_hide -> effectN( 7 ).percent();
 
   return exp;
 }
@@ -6226,8 +6227,7 @@ double druid_t::composite_crit_avoidance() const
 {
   double c = player_t::composite_crit_avoidance();
 
-  if ( specialization() == DRUID_GUARDIAN && buff.bear_form -> check() )
-    c += 0.06; // Check
+  c += spec.thick_hide -> effectN( 1 ).percent();
 
   return c;
 }
@@ -6627,9 +6627,9 @@ void druid_t::assess_damage( school_e school,
       proc.primal_fury -> occur();
      }
     if ( school == SCHOOL_PHYSICAL )
-      s -> result_amount *= 1.0 - 0.12; // Check
+      s -> result_amount *= 1.0 + spec.thick_hide -> effectN( 5 ).percent();
     else if ( dbc::get_school_mask( school ) & SCHOOL_MAGIC_MASK )
-      s -> result_amount *= 1.0 - 0.25; // Check
+      s -> result_amount *= 1.0 + spec.thick_hide -> effectN( 3 ).percent();
   }
 
   if ( buff.cenarion_ward -> up() && s -> result_amount > 0 )
