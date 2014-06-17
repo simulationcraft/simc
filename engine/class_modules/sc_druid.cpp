@@ -1048,7 +1048,7 @@ struct force_of_nature_feral_t : public pet_t
     {
       double m = melee_attack_t::composite_ta_multiplier( state );
 
-      if ( p() -> o() -> buff.cat_form -> check() && p() -> o() -> mastery.razor_claws -> ok() )
+      if ( p() -> o() -> mastery.razor_claws -> ok() )
         m *= 1.0 + p() -> o() -> cache.mastery_value();
 
       return m;
@@ -1060,7 +1060,7 @@ struct force_of_nature_feral_t : public pet_t
     {
       double m = melee_attack_t::composite_da_multiplier( state );
 
-      if ( p() -> o() -> buff.cat_form -> check() && p() -> o() -> mastery.razor_claws -> ok() )
+      if ( p() -> o() -> mastery.razor_claws -> ok() )
         m *= 1.0 + p() -> o() -> cache.mastery_value();
 
       return m;
@@ -1761,35 +1761,30 @@ public:
     cat_state( state ) -> cp = td( state -> target ) -> combo_points.get();
   }
 
-  void trigger_savagery()
+  void trigger_glyph_of_savage_roar()
   {
-    // Bail out if we have savagery talent, buff should already be up so lets not mess with it.
+    // Bail out if we have Savagery, buff should already be up so lets not mess with it.
     if ( p() -> talent.savagery -> ok() )
       return;
 
-    timespan_t base_tick_time = p() -> spec.savage_roar -> effectN( 3 ).time_value();
-    timespan_t seconds_per_combo = timespan_t::from_seconds( 6.0 );
-    timespan_t duration = p() -> spec.savage_roar -> duration();
+    // Check for stealth! This is here so the logic is consolidated in one place instead of being in several.
+    if ( ! ( p() -> buff.prowl -> up() || p() -> buff.king_of_the_jungle -> up() ) )
+      return;
 
+    timespan_t duration = p() -> spec.savage_roar -> duration() + timespan_t::from_seconds( 6.0 ) * 5;
+    
+    /* Savage Roar behaves like a DoT with DOT_REFRESH and has a maximum duration equal
+       to 130% of the base duration.
+     * Per Alpha testing (6/16/2014), the maximum duration is 130% of the raw duration
+       of the NEW Savage Roar. */
     if ( p() -> buff.savage_roar -> check() )
-    {
-      // Savage Roar behaves like a dot with DOT_REFRESH.
-      // You will not lose your current 'tick' when refreshing.
-      int result = static_cast<int>( p() -> buff.savage_roar -> remains() / base_tick_time );
-      timespan_t carryover = p() -> buff.savage_roar -> remains();
-      carryover -= base_tick_time * result;
-      duration += carryover;
-    }
-    duration += seconds_per_combo * 5;
+      duration += std::min( p() -> buff.savage_roar -> remains(), duration * 0.3 );
 
     p() -> buff.savage_roar -> trigger( 1, buff_t::DEFAULT_VALUE(), -1.0, duration );
   }
 
   virtual void execute()
   {
-    //if ( p() -> buff.prowl -> check() && p() -> glyph.savagery -> ok() )
-    //trigger_savagery(); Glyph is changed in WoD
-
     base_t::execute();
 
     if ( ( cat_state( execute_state ) -> cp > 0 || this -> name_str == "savage_roar" ) && requires_combo_points )
@@ -1893,6 +1888,19 @@ public:
       return false;
 
     return true;
+  }
+
+  virtual double composite_persistent_multiplier( const action_state_t* s ) const
+  {
+    double pm = action_t::composite_persistent_multiplier( s );
+
+    if ( p() -> buff.cat_form -> up() && dbc::is_school( s -> action -> school, SCHOOL_PHYSICAL ) )
+    {
+      pm *= 1.0 + p() -> buff.tigers_fury -> value();
+      pm *= 1.0 + p() -> buff.savage_roar -> value();
+    }
+
+    return pm;
   }
 
   virtual bool   requires_stealth() const
@@ -2112,6 +2120,8 @@ struct maim_t : public cat_attack_t
 };
 
 // Rake DoT =================================================================
+/* TODO: Prevent bleed application from causing a direct hit which halves the average damage
+   in the HTML output.*/
 
 struct rake_bleed_t : public cat_attack_t {
   rake_bleed_t( druid_t* p ) :
@@ -2122,23 +2132,34 @@ struct rake_bleed_t : public cat_attack_t {
     attack_power_mod.tick = data().effectN( 1 ).ap_coeff();
     may_miss = may_dodge = may_parry = false;
   }
+
+  virtual double composite_persistent_multiplier( const action_state_t* s ) const
+  {
+    double pm = cat_attack_t::composite_persistent_multiplier( s );
+
+    // TODO: Confirm that this bonus really is snapshotted.
+    if ( p() -> buff.prowl -> up() || p() -> buff.king_of_the_jungle -> up() )
+      pm *= 1.0 + p() -> perk.improved_rake -> effectN( 2 ).percent();
+
+    return pm;
+  }
 };
 
 // Rake =====================================================================
-/* TODO: Find out whether the direct damage can proc effects BEFORE the periodic damage is applied.
-   This is how it is handled in the sim currently. */
+/* TODO: Confirm whether or not procs can occur in between the direct hit and bleed application,
+   as well as if it aligns with in-game mechanics. */
 
 struct rake_t : public cat_attack_t
 {
-  action_t* rake_bleed;
+  action_t* bleed;
 
   rake_t( druid_t* p, const std::string& options_str ) :
     cat_attack_t( "rake", p, p -> find_specialization_spell( "Rake" ), options_str )
   {
-    special                 = true;
+    special = true;
     attack_power_mod.direct = data().effectN( 1 ).ap_coeff();
 
-    rake_bleed = new rake_bleed_t( p );
+    bleed = new rake_bleed_t( p );
   }
 
   // Treat direct damage as "bleed"
@@ -2148,8 +2169,10 @@ struct rake_t : public cat_attack_t
   {
     double m = melee_attack_t::composite_da_multiplier( state );
 
-    if ( p() -> buff.cat_form -> up() && p() -> mastery.razor_claws -> ok() )
+    if ( p() -> mastery.razor_claws -> ok() )
       m *= 1.0 + p() -> cache.mastery_value();
+    if ( p() -> buff.prowl -> up() || p() -> buff.king_of_the_jungle -> up() )
+      m *= 1.0 + p() -> perk.improved_rake -> effectN( 2 ).percent();
 
     return m;
   }
@@ -2160,9 +2183,17 @@ struct rake_t : public cat_attack_t
 
     if ( result_is_hit( state -> result ) )
     {
-      rake_bleed -> target = state -> target;
-      rake_bleed -> execute();
+      bleed -> target = state -> target;
+      bleed -> execute();
     }
+  }
+
+  virtual void execute()
+  {
+    if ( p() -> glyph.savage_roar -> ok() ) // stealth check is handled inside the trigger function
+      trigger_glyph_of_savage_roar();
+
+    cat_attack_t::execute();
   }
 
   virtual double target_armor( player_t* ) const
@@ -2198,7 +2229,7 @@ struct savage_roar_t : public cat_attack_t
   timespan_t seconds_per_combo;
   savage_roar_t( druid_t* p, const std::string& options_str ) :
     cat_attack_t( "savage_roar", p, p -> find_class_spell( "Savage Roar" ), options_str ),
-    seconds_per_combo( timespan_t::from_seconds( 6.0 ) ) // plus 6s per cp used. Must change this value in cat_attack_t::trigger_savagery() as well.
+    seconds_per_combo( timespan_t::from_seconds( 6.0 ) ) // plus 6s per cp used. Must change this value in cat_attack_t::trigger_glyph_of_savage_roar() as well.
   {
     may_miss = harmful = special = false;
     requires_combo_points = true;
@@ -2209,19 +2240,14 @@ struct savage_roar_t : public cat_attack_t
   {
     cat_attack_t::impact( state );
 
-    timespan_t duration = data().duration();
-
+    timespan_t duration = data().duration() + seconds_per_combo * td( state -> target ) -> combo_points.get();
+    
+    /* Savage Roar behaves like a DoT with DOT_REFRESH and has a maximum duration equal
+        to 130% of the base duration.
+      * Per Alpha testing (6/16/2014), the maximum duration is 130% of the raw duration
+        of the NEW Savage Roar. */
     if ( p() -> buff.savage_roar -> check() )
-    {
-      // Savage Roar behaves like a dot with DOT_REFRESH.
-      // You will not lose your current 'tick' when refreshing.
-      int result = static_cast<int>( p() -> buff.savage_roar -> remains() / base_tick_time );
-      timespan_t carryover = p() -> buff.savage_roar -> remains();
-      carryover -= base_tick_time * result;
-      duration += carryover;
-    }
-    duration += seconds_per_combo * td( state -> target ) -> combo_points.get();
-
+      duration += std::min( p() -> buff.savage_roar -> remains(), duration * 0.3 );
 
     p() -> buff.savage_roar -> trigger( 1, buff_t::DEFAULT_VALUE(), -1.0, duration );
   }
@@ -2230,10 +2256,10 @@ struct savage_roar_t : public cat_attack_t
   {
     if ( p() -> talent.savagery -> ok() )
       return false;
-    else if ( data().duration() + seconds_per_combo * td( target ) -> combo_points.get() > p() -> buff.savage_roar -> remains() )
-      return cat_attack_t::ready();
-    else
+    else if ( data().duration() + seconds_per_combo * td( target ) -> combo_points.get() < p() -> buff.savage_roar -> remains() )
       return false;
+    
+    return cat_attack_t::ready();
   }
 };
 
@@ -2260,12 +2286,12 @@ struct shred_t : public cat_attack_t
 
   virtual void execute()
   {
+    if ( p() -> glyph.savage_roar -> ok() ) // stealth check is handled inside the trigger function
+      trigger_glyph_of_savage_roar();
+
     cat_attack_t::execute();
 
-    p() -> buff.feral_fury -> up();
-
-    if ( p() -> buff.tier15_4pc_melee -> up() )
-      p() -> buff.tier15_4pc_melee -> decrement();
+    p() -> buff.tier15_4pc_melee -> decrement();
   }
 
   virtual void impact( action_state_t* state )
@@ -2279,38 +2305,32 @@ struct shred_t : public cat_attack_t
   {
     double tm = cat_attack_t::composite_target_multiplier( t );
 
-    //if ( t -> debuffs.bleeding -> up() )
-    //tm *= 1.0 + p() -> spell.swipe -> effectN( 2 ).percent(); Need to find effect
+    if ( t -> debuffs.bleeding -> up() )
+      tm *= 1.0 + p() -> find_spell( 106785 ) -> effectN( 2 ).percent();
 
     return tm;
   }
 
-  double composite_target_crit( player_t* t ) const
+  double composite_crit() const
   {
-    double tc = cat_attack_t::composite_target_crit( t );
+    double c = druid_attack_t::composite_crit();
 
-    if ( p() -> buff.tier15_4pc_melee -> check() )
-      tc += p() -> buff.tier15_4pc_melee -> data().effectN( 1 ).percent();
+    if ( p() -> buff.tier15_4pc_melee -> up() )
+      c += p() -> buff.tier15_4pc_melee -> data().effectN( 1 ).percent();
+    if ( p() -> buff.prowl -> up() || p() -> buff.king_of_the_jungle -> up() )
+      c *= 2.0;
 
-    return tc;
+    return c;
   }
 
   double action_multiplier() const
   {
     double m = cat_attack_t::action_multiplier();
 
-    if ( p() -> buff.prowl -> up() )
-      m *= 1.0 + p() -> buff.prowl -> data().effectN( 4 ).percent();
-
-    return m;
-  }
-
-  double composite_da_multiplier( const action_state_t* state ) const
-  {
-    double m = cat_attack_t::composite_da_multiplier( state );
-
-    if ( p() -> buff.feral_fury -> check() )
+    if ( p() -> buff.feral_fury -> up() )
       m *= 1.0 + p() -> buff.feral_fury -> data().effectN( 1 ).percent();
+    if ( p() -> buff.prowl -> check() || p() -> buff.king_of_the_jungle -> up() )
+      m *= 1.0 + p() -> buff.prowl -> data().effectN( 4 ).percent();
 
     return m;
   }
@@ -2424,7 +2444,7 @@ struct thrash_cat_t : public cat_attack_t
   {
     double m = cat_attack_t::composite_da_multiplier( state );
 
-    if ( p() -> buff.cat_form -> check() && p() -> mastery.razor_claws -> ok() )
+    if ( p() -> mastery.razor_claws -> ok() )
       m *= 1.0 + p() -> cache.mastery_value();
 
     return m;
@@ -5547,19 +5567,21 @@ void druid_t::apl_feral()
   std::vector<std::string> item_actions       = get_item_actions();
   std::vector<std::string> racial_actions     = get_racial_actions();
 
+  def -> add_action( this, "Rake", "if=buff.prowl.up" );
   def -> add_action( "auto_attack" );
   def -> add_action( this, "Ferocious Bite", "cycle_targets=1,if=dot.rip.ticking&dot.rip.remains<=3&target.health.pct<=25",
                      "Keep Rip from falling off during execute range." );
   def -> add_action( this, "Savage Roar", "if=buff.savage_roar.remains<3" );
   std::string potion_name = level > 85 ? "virmens_bite_potion" : "tolvir_potion";
   def -> add_action( potion_name + ",if=target.time_to_die<=40" );
+  def -> add_action( "incarnation,if=talent.incarnation.enabled&energy<25&!buff.omen_of_clarity.react&cooldown.tigers_fury.remains<=1" );
   // On-Use Items
   for ( size_t i = 0; i < item_actions.size(); i++ )
     def -> add_action( item_actions[ i ] + ",sync=tigers_fury" );
   // Racials
   for ( size_t i = 0; i < racial_actions.size(); i++ )
     def -> add_action( racial_actions[ i ] + ",sync=tigers_fury" );
-  def -> add_action( this, "Tiger's Fury", "if=energy<=35&!buff.omen_of_clarity.react" );
+  def -> add_action( this, "Tiger's Fury", "if=energy<=35&!buff.omen_of_clarity.react&(!talent.incarnation.enabled|buff.king_of_the_jungle.up|cooldown.incarnation.remains>0)" );
   def -> add_action( potion_name + ",sync=berserk,if=target.health.pct<25" );
   def -> add_action( this, "Berserk", "if=buff.tigers_fury.up" );
   def -> add_action( "thrash_cat,if=buff.omen_of_clarity.react&dot.thrash_cat.remains<3" );
@@ -5991,12 +6013,6 @@ double druid_t::composite_player_multiplier( school_e school ) const
   if ( buff.celestial_alignment -> up() )
     m *= 1.0 + buff.celestial_alignment -> data().effectN( 2 ).percent();
 
-  if ( dbc::is_school( school, SCHOOL_PHYSICAL ) && buff.cat_form -> up() )
-  {
-    m *= 1.0 + buff.tigers_fury -> value();
-    m *= 1.0 + buff.savage_roar -> value();
-  }
-
   if ( specialization() == DRUID_BALANCE )
   {
     if ( buff.owlkin_frenzy -> up() )
@@ -6021,7 +6037,7 @@ double druid_t::composite_player_td_multiplier( school_e school,  const action_t
 {
   double m = player_t::composite_player_td_multiplier( school, a );
 
-  if ( school == SCHOOL_PHYSICAL && mastery.razor_claws -> ok() && buff.cat_form -> up()
+  if ( school == SCHOOL_PHYSICAL && mastery.razor_claws -> ok()
     && a -> id != 146194 ) // Blacklist for Fen-yu Legendary cloak proc
     m *= 1.0 + cache.mastery_value();
 
