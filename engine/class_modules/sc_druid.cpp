@@ -2744,7 +2744,7 @@ struct maul_t : public bear_attack_t
   {
     double c = bear_attack_t::cost();
 
-    if ( p() -> buff.tooth_and_claw -> up() )
+    if ( p() -> perk.enhanced_tooth_and_claw -> ok() && () -> buff.tooth_and_claw -> up() )
       c = 0;
 
     return c;
@@ -5207,46 +5207,46 @@ void druid_t::init_spells()
   mastery.primal_tenacity  = find_mastery_spell( DRUID_GUARDIAN );
 
   // Perks
-  perk.improved_healing_touch = find_perk_spell( "Improved Healing Touch" );
+  perk.improved_healing_touch  = find_perk_spell( "Improved Healing Touch" );
 
   // Feral
-  perk.enhanced_berserk = find_perk_spell( "Enhanced Berserk" );
-  perk.enhanced_cat_form = find_perk_spell( "Enhanced Cat Form" );
-  perk.enhanced_prowl = find_perk_spell( "Enhanced Prowl" );
-  perk.enhanced_rejuvenation = find_perk_spell( "Enhanced Rejuvenation" );
-  perk.enhanced_tigers_fury = find_perk_spell( "Enhanced Tiger's Fury" );
-  perk.improved_rake = find_perk_spell( "Improved Rake" );
+  perk.enhanced_berserk        = find_perk_spell( "Enhanced Berserk" );
+  perk.enhanced_cat_form       = find_perk_spell( "Enhanced Cat Form" );
+  perk.enhanced_prowl          = find_perk_spell( "Enhanced Prowl" );
+  perk.enhanced_rejuvenation   = find_perk_spell( "Enhanced Rejuvenation" );
+  perk.enhanced_tigers_fury    = find_perk_spell( "Enhanced Tiger's Fury" );
+  perk.improved_rake           = find_perk_spell( "Improved Rake" );
   perk.improved_ferocious_bite = find_perk_spell( "Improved Ferocious Bite" );
-  perk.improved_shred = find_perk_spell( "Improved Shred" );
+  perk.improved_shred          = find_perk_spell( "Improved Shred" );
 
   // Balance
-  perk.enhanced_mushrooms = find_perk_spell( "Enhanced Mushrooms" );
-  perk.enhanced_storms = find_perk_spell( "Enhanced Storms" );
-  perk.enhanced_moonkin_form = find_perk_spell( "Enhanced Moonkin Form" );
-  perk.enhanced_owlkin_frenzy = find_perk_spell( "Enhanced Owlkin Frenzy" );
-  perk.improved_starfire = find_perk_spell( "Improved Starfire" );
-  perk.improved_wrath = find_perk_spell( "Improved Wrath" );
-  perk.enhanced_starsurge = find_perk_spell( "Enhanced Starsurge" );
-  perk.empowered_starfall = find_perk_spell( "Empowered Starfall" );
-  perk.improved_moonfire = find_perk_spell( "Improved Moonfire" );
+  perk.enhanced_mushrooms      = find_perk_spell( "Enhanced Mushrooms" );
+  perk.enhanced_storms         = find_perk_spell( "Enhanced Storms" );
+  perk.enhanced_moonkin_form   = find_perk_spell( "Enhanced Moonkin Form" );
+  perk.enhanced_owlkin_frenzy  = find_perk_spell( "Enhanced Owlkin Frenzy" );
+  perk.improved_starfire       = find_perk_spell( "Improved Starfire" );
+  perk.improved_wrath          = find_perk_spell( "Improved Wrath" );
+  perk.enhanced_starsurge      = find_perk_spell( "Enhanced Starsurge" );
+  perk.empowered_starfall      = find_perk_spell( "Empowered Starfall" );
+  perk.improved_moonfire       = find_perk_spell( "Improved Moonfire" );
 
   // Guardian
-  perk.enhanced_tooth_and_claw = find_perk_spell( "Enhanced Tooth and Claw" );
-  perk.improved_mangle = find_perk_spell( "Improved Mangle" );
-  perk.improved_maul = find_perk_spell( "Improved Maul" );
-  perk.empowered_thrash = find_perk_spell( "Empowered Thrash" );
-  perk.empowered_bear_form = find_perk_spell( "Empowered Bear Form" );
-  perk.empowered_berserk = find_perk_spell( "Empowered Berserk" );
-  perk.improved_barkskin = find_perk_spell( "Improved Barkskin" );
+  perk.enhanced_tooth_and_claw        = find_perk_spell( "Enhanced Tooth and Claw" );
+  perk.improved_mangle                = find_perk_spell( "Improved Mangle" );
+  perk.improved_maul                  = find_perk_spell( "Improved Maul" );
+  perk.empowered_thrash               = find_perk_spell( "Empowered Thrash" );
+  perk.empowered_bear_form            = find_perk_spell( "Empowered Bear Form" );
+  perk.empowered_berserk              = find_perk_spell( "Empowered Berserk" );
+  perk.improved_barkskin              = find_perk_spell( "Improved Barkskin" );
   perk.improved_frenzied_regeneration = find_perk_spell( "Improved Frenzied Regeneration" );
 
   // Restoration
   perk.empowered_rejuvenation = find_perk_spell( "Empowered Rejuvenation" );
-  perk.enhanced_rebirth = find_perk_spell( "Enhanced Rebirth" );
-  perk.empowered_regrowth = find_perk_spell( "Empowered Regrowth" );
-  perk.empowered_ironbark = find_perk_spell( "Empowered Ironbark" );
-  perk.improved_living_seed = find_perk_spell( "Improved Living Seed" );
-  perk.enhanced_lifebloom = find_perk_spell( "Enhanced Lifebloom" );
+  perk.enhanced_rebirth       = find_perk_spell( "Enhanced Rebirth" );
+  perk.empowered_regrowth     = find_perk_spell( "Empowered Regrowth" );
+  perk.empowered_ironbark     = find_perk_spell( "Empowered Ironbark" );
+  perk.improved_living_seed   = find_perk_spell( "Improved Living Seed" );
+  perk.enhanced_lifebloom     = find_perk_spell( "Enhanced Lifebloom" );
 
   // Glyphs
   glyph.astral_communion      = find_glyph_spell( "Glyph of Astral Communion" );
