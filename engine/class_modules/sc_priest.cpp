@@ -160,7 +160,6 @@ public:
 
     // Shadow
     const spell_data_t* devouring_plague;
-    const spell_data_t* mind_surge;
     const spell_data_t* shadowform;
     const spell_data_t* shadowy_apparitions;
     const spell_data_t* shadow_orbs;
@@ -1970,10 +1969,9 @@ struct mind_blast_t final : public priest_spell_t
     if ( cd_duration < timespan_t::zero() )
       cd_duration = cooldown -> duration;
 
-    if ( priest.specs.mind_surge -> ok() && ! priest.buffs.divine_insight_shadow -> check() )
-    {
-      cd_duration = cooldown -> duration * composite_haste();
-    }
+    // CD is now always reduced by haste. Documented in the WoD Alpha Patch Notes, unfortunately not in any tooltip!
+    // 2014/06/17
+    cd_duration = cooldown -> duration * composite_haste();
 
     priest_spell_t::update_ready( cd_duration );
 
@@ -5296,7 +5294,6 @@ void priest_t::init_spells()
   specs.multistrike_attunement         = find_specialization_spell( "Multistrike Addunement ");
 
   // Shadow
-  specs.mind_surge                     = find_specialization_spell( "Mind Surge" );
   specs.shadowform                     = find_class_spell( "Shadowform" );
   specs.shadowy_apparitions            = find_specialization_spell( "Shadowy Apparitions" );
   specs.shadow_orbs                    = find_specialization_spell( "Shadow Orbs" );
