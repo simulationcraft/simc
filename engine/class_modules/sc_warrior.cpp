@@ -2024,6 +2024,7 @@ struct blood_craze_t : public warrior_heal_t
     warrior_heal_t( "blood_craze", p , p -> spec.blood_craze -> effectN( 1 ).trigger() )
   {
     tick_zero = true;
+    may_multistrike = 1;
     dot_behavior = DOT_EXTEND;
     tick_pct_heal = 0.01; // Currently no spell data for this.
   }
