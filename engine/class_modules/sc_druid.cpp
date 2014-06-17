@@ -2814,7 +2814,7 @@ struct thrash_bear_t : public bear_attack_t
     dot_behavior      = DOT_REFRESH;
     special           = true;
     rage_gain = p() -> find_spell( 158723 ) -> effectN( 1 ).resource( RESOURCE_RAGE );
-    attack_power_mod.tick *= 1.0 + p() -> perk.empowered_thrash -> effectN( 1 ).percent();
+    base_td_multiplier *= 1.0 + p() -> perk.empowered_thrash -> effectN( 1 ).percent();
   }
 
   virtual void execute()
@@ -3146,7 +3146,7 @@ struct frenzied_regeneration_t : public druid_heal_t
     use_off_gcd = true;
 
     attack_power_mod.direct = data().effectN( 1 ).ap_coeff();
-    attack_power_mod.direct *= 1.0 + p -> perk.improved_frenzied_regeneration -> effectN( 1 ).percent();
+    base_multiplier *= 1.0 + p -> perk.improved_frenzied_regeneration -> effectN( 1 ).percent();
     target = player;
     if ( p -> sets.has_set_bonus( SET_T16_2PC_TANK ) )
       p -> active.ursocs_vigor = new ursocs_vigor_t( p );
@@ -6600,7 +6600,7 @@ void druid_t::assess_damage( school_e school,
     buff.tier15_2pc_tank -> trigger();
 
   if ( buff.barkskin -> up() )
-    s -> result_amount *= 1.0 + ( buff.barkskin -> value() + perk.improved_barkskin -> effectN( 1 ).percent() );
+    s -> result_amount *= 1.0 + buff.barkskin -> value() + perk.improved_barkskin -> effectN( 1 ).percent();
 
   if ( buff.survival_instincts -> up() )
     s -> result_amount *= 1.0 + buff.survival_instincts -> value();
