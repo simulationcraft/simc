@@ -2391,9 +2391,9 @@ struct swipe_t : public cat_attack_t
       p() -> buff.tier15_4pc_melee -> decrement();
   }
 
-  double composite_da_multiplier( const action_state_t* state ) const
+  double action_multiplier() const
   {
-    double m = cat_attack_t::composite_da_multiplier( state );
+    double m = cat_attack_t::action_multiplier();
 
     if ( p() -> buff.feral_fury -> check() )
       m *= 1.0 + p() -> buff.feral_fury -> data().effectN( 1 ).percent();
@@ -2686,6 +2686,9 @@ struct mangle_t : public bear_attack_t
     bear_attack_t( "mangle", player, player -> find_class_spell( "Mangle" ) )
   {
     parse_options( NULL, options_str );
+
+    base_multiplier *= 1.0 + player -> talent.soul_of_the_forest -> effectN( 2 ).percent();
+    base_multiplier *= 1.0 + player -> perk.improved_mangle -> effectN( 1 ).percent();
   }
 
   virtual void execute()
@@ -2697,16 +2700,6 @@ struct mangle_t : public bear_attack_t
 
     if ( p() -> buff.berserk -> check() || p() -> buff.son_of_ursoc -> check() )
       cooldown -> reset( false );
-  }
-
-  virtual double action_multiplier() const
-  {
-    double am = bear_attack_t::action_multiplier();
-
-    am *= 1.0 + p() -> talent.soul_of_the_forest -> effectN( 2 ).percent();
-    am *= 1.0 + p() -> perk.improved_mangle -> effectN( 1 ).percent();
-
-    return am;
   }
 
   virtual bool ready()
@@ -2733,7 +2726,7 @@ struct maul_t : public bear_attack_t
     base_add_multiplier = player -> glyph.maul -> effectN( 3 ).percent();
     use_off_gcd = special = true;
 
-    attack_power_mod.direct *= 1.0 + player -> perk.improved_maul -> effectN( 1 ).percent();
+    base_multiplier *= 1.0 + player -> perk.improved_maul -> effectN( 1 ).percent();
 
     if ( p() -> spec.tooth_and_claw -> ok() )
       absorb = new tooth_and_claw_t( player );
