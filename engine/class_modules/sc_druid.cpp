@@ -2525,7 +2525,7 @@ struct bear_attack_t : public druid_attack_t<melee_attack_t>
   {
     base_t::execute();
 
-   if( execute_state -> result == RESULT_CRIT )
+   if ( execute_state -> result == RESULT_CRIT )
    {
      p() -> resource_gain( RESOURCE_RAGE,
        p() -> spell.primal_fury -> effectN( 1 ).resource( RESOURCE_RAGE ),
@@ -2686,7 +2686,7 @@ struct mangle_t : public bear_attack_t
   {
     parse_options( NULL, options_str );
 
-    rage_gain = data().effectN( 1 ).resource( RESOURCE_RAGE ) + player -> talent.soul_of_the_forest -> effectN( 1 ).resource( RESOURCE_RAGE );
+    rage_gain = data().effectN( 3 ).resource( RESOURCE_RAGE ) + player -> talent.soul_of_the_forest -> effectN( 1 ).resource( RESOURCE_RAGE );
 
     base_multiplier *= 1.0 + player -> talent.soul_of_the_forest -> effectN( 2 ).percent();
     base_multiplier *= 1.0 + player -> perk.improved_mangle -> effectN( 1 ).percent();
