@@ -852,7 +852,7 @@ struct yseras_gift_t : public heal_t
     heal_t( "yseras_gift", p, p -> talent.yseras_gift )
   {
     base_tick_time = data().effectN( 1 ).period();
-    dot_duration = base_tick_time;
+    dot_duration   = base_tick_time;
     hasted_ticks   = false;
     tick_may_crit  = false;
     harmful        = false;
@@ -864,7 +864,7 @@ struct yseras_gift_t : public heal_t
   {
     druid_t* p = static_cast<druid_t*>( player );
 
-    d -> current_tick = 0; // ticks indefinitely
+    d -> refresh_duration(); // ticks indefinitely
 
     base_td = p -> resources.max[ RESOURCE_HEALTH ] * data().effectN( 1 ).percent();
 
