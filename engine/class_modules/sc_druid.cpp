@@ -26,8 +26,6 @@ namespace { // UNNAMED NAMESPACE
     Just verify stuff.
 
     = Guardian =
-    Perks
-    Soul of the Forest
     New mastery: Primary Tenacity
     Verify DoC
     Ursa Major
@@ -2682,10 +2680,13 @@ struct lacerate_t : public bear_attack_t
 
 struct mangle_t : public bear_attack_t
 {
+  double rage_gain;
   mangle_t( druid_t* player, const std::string& options_str ) :
     bear_attack_t( "mangle", player, player -> find_class_spell( "Mangle" ) )
   {
     parse_options( NULL, options_str );
+
+    rage_gain = data().effectN( 1 ).resource( RESOURCE_RAGE ) + player -> talent.soul_of_the_forest -> effectN( 1 ).resource( RESOURCE_RAGE );
 
     base_multiplier *= 1.0 + player -> talent.soul_of_the_forest -> effectN( 2 ).percent();
     base_multiplier *= 1.0 + player -> perk.improved_mangle -> effectN( 1 ).percent();
@@ -2700,6 +2701,14 @@ struct mangle_t : public bear_attack_t
 
     if ( p() -> buff.berserk -> check() || p() -> buff.son_of_ursoc -> check() )
       cooldown -> reset( false );
+  }
+
+  virtual void impact( action_state_t* s )
+  {
+    bear_attack_t::impact( s );
+
+    if ( result_is_hit( s -> result ) )
+      p() -> resource_gain( RESOURCE_RAGE, rage_gain, p() -> gain.mangle );
   }
 
   virtual bool ready()
