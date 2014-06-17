@@ -882,8 +882,6 @@ struct tooth_and_claw_t : public absorb_t
     harmful = false;
     special = false;
     background = true;
-    cooldown -> charges = 2;
-    cooldown -> charges += p -> perk.enhanced_tooth_and_claw -> effectN( 1 ).base_value();
   }
 
   druid_t* p() const
@@ -915,8 +913,6 @@ struct tooth_and_claw_t : public absorb_t
       sim -> out_debug.printf( "%s's Tooth and Claw value post-application: %f",
                      player -> name(),
                      p() -> buff.tooth_and_claw_absorb -> current_value );
-
-    p() -> buff.tooth_and_claw -> expire();
   }
 
   virtual bool ready()
@@ -2817,8 +2813,8 @@ struct maul_t : public bear_attack_t
   {
     double c = bear_attack_t::cost();
 
-    if ( p() -> perk.enhanced_tooth_and_claw -> ok() && p() -> buff.tooth_and_claw -> up() )
-      c = 0;
+    if ( p() -> perk.enhanced_tooth_and_claw -> ok() && p() -> buff.tooth_and_claw -> check() )
+      c *= 1 + p() -> perk.enhanced_tooth_and_claw -> effectN( 2 ).percent();
 
     return c;
   }
@@ -2826,6 +2822,8 @@ struct maul_t : public bear_attack_t
   virtual void execute()
   {
     bear_attack_t::execute();
+
+    p() -> buff.tooth_and_claw -> decrement();
 
     if ( p() -> buff.son_of_ursoc -> check() )
       cooldown -> reset( false );
@@ -5520,7 +5518,8 @@ void druid_t::create_buffs()
   buff.survival_instincts    = buff_creator_t( this, "survival_instincts", find_class_spell( "Survival Instincts" ) )
                                .cd( timespan_t::zero() );
   buff.tier15_2pc_tank       = buff_creator_t( this, "tier15_2pc_tank", find_spell( 138217 ) );
-  buff.tooth_and_claw        = buff_creator_t( this, "tooth_and_claw", find_spell( 135286 ) );
+  buff.tooth_and_claw        = buff_creator_t( this, "tooth_and_claw", find_spell( 135286 ) )
+                               .max_stack( find_spell( 135286 ) -> _max_stack + perk.enhanced_tooth_and_claw -> effectN( 1 ).base_value() );
   buff.tooth_and_claw_absorb = new tooth_and_claw_absorb_t( this );
   buff.ursa_major            = new ursa_major_t( *this );
 
