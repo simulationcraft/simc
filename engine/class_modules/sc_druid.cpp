@@ -26,7 +26,6 @@ namespace { // UNNAMED NAMESPACE
     Just verify stuff.
 
     = Guardian =
-    New mastery: Primary Tenacity
     Verify DoC
 
     = Restoration =
@@ -41,6 +40,7 @@ struct ursocs_vigor_t;
 struct cenarion_ward_hot_t;
 struct leader_of_the_pack_t;
 struct yseras_gift_t;
+struct primal_tenacity_t;
 namespace buffs {
 struct heart_of_the_wild_buff_t;
 }
@@ -135,6 +135,7 @@ public:
     cenarion_ward_hot_t*  cenarion_ward_hot;
     leader_of_the_pack_t* leader_of_the_pack;
     yseras_gift_t*        yseras_gift;
+    primal_tenacity_t*    primal_tenacity;
   } active;
 
   // Pets
@@ -198,6 +199,7 @@ public:
     buff_t* bladed_armor;
     buff_t* lacerate;
     buff_t* might_of_ursoc;
+    absorb_buff_t* primal_tenacity;
     buff_t* savage_defense;
     buff_t* son_of_ursoc;
     buff_t* survival_instincts;
@@ -576,6 +578,7 @@ public:
   virtual stat_e    convert_hybrid_stat( stat_e s ) const;
   virtual double    mana_regen_per_second() const;
   virtual void      assess_damage( school_e school, dmg_e, action_state_t* );
+  virtual void      assess_damage_imminent_pre_absorb( school_e school, dmg_e dtype, action_state_t* s );
   virtual void      assess_heal( school_e, dmg_e, action_state_t* );
   virtual void      create_options();
   virtual bool      create_profile( std::string& profile_str, save_e type = SAVE_ALL, bool save_html = false );
@@ -842,6 +845,57 @@ struct leader_of_the_pack_t : public heal_t
   {
     return p() -> resources.max[ RESOURCE_HEALTH ] *
            p() -> spell.leader_of_the_pack -> effectN( 2 ).percent();
+  }
+};
+
+// Primal Tenacity ==========================================================
+
+struct primal_tenacity_t : public absorb_t
+{
+  primal_tenacity_t( druid_t* p ) :
+    absorb_t( "primal_tenacity", p, p -> mastery.primal_tenacity )
+  {
+    harmful = special = false;
+    background = true;
+    may_crit = false;
+    target = player;
+  }
+
+  void set_incoming_damage( double damage )
+  {
+    // Set dd to incoming damage, this will get automatically get multiplied by mastery and resolve.
+    base_dd_min = base_dd_max = damage;
+  }
+
+  virtual double action_multiplier() const
+  {
+    double am = absorb_t::action_multiplier();
+
+    am *= static_cast<druid_t*>( player ) -> cache.mastery_value();
+
+    return am;
+  }
+
+  virtual void execute()
+  {
+    absorb_t::execute();
+
+    // Clear dd to prevent the absorb from triggering until its been "armed" again.
+    base_dd_min = base_dd_max = 0;
+  }
+
+  virtual void impact( action_state_t* s )
+  {
+    static_cast<druid_t*>( player ) -> buff.primal_tenacity -> trigger( 1, s -> result_amount, 1.0 );
+  }
+
+  virtual bool ready()
+  {
+    // If the incoming damage has not been set then the action is not ready.
+    if ( base_dd_min == 0 )
+      return false;
+
+    return absorb_t::ready();
   }
 };
 
@@ -5191,9 +5245,6 @@ void druid_t::init_spells()
   spec.tranquility            = find_specialization_spell( "Tranquility" );
   spec.wild_growth            = find_specialization_spell( "Wild Growth" );
 
-  if ( spec.leader_of_the_pack -> ok() )
-    active.leader_of_the_pack = new leader_of_the_pack_t( this );
-
   // Talents
   talent.feline_swiftness   = find_talent_spell( "Feline Swiftness" );
   talent.displacer_beast    = find_talent_spell( "Displacer Beast" );
@@ -5241,12 +5292,14 @@ void druid_t::init_spells()
   talent.rampant_growth     = find_talent_spell( "Rampant Growth" );
 
   // Active actions
+  if ( spec.leader_of_the_pack -> ok() )
+    active.leader_of_the_pack = new leader_of_the_pack_t( this );
   if ( talent.natures_vigil -> ok() )
-    active.natures_vigil     = new natures_vigil_proc_t( this );
+    active.natures_vigil      = new natures_vigil_proc_t( this );
   if ( talent.cenarion_ward -> ok() )
-    active.cenarion_ward_hot = new cenarion_ward_hot_t( this );
+    active.cenarion_ward_hot  = new cenarion_ward_hot_t( this );
   if ( talent.yseras_gift -> ok() )
-    active.yseras_gift       = new yseras_gift_t( this );
+    active.yseras_gift        = new yseras_gift_t( this );
 
   // TODO: Check if this is really the passive applied, the actual shapeshift
   // only has data of shift, polymorph immunity and the general armor bonus
@@ -5272,6 +5325,10 @@ void druid_t::init_spells()
   mastery.razor_claws      = find_mastery_spell( DRUID_FERAL );
   mastery.harmony          = find_mastery_spell( DRUID_RESTORATION );
   mastery.primal_tenacity  = find_mastery_spell( DRUID_GUARDIAN );
+
+  // More Active Actions!
+  if ( mastery.primal_tenacity -> ok() )
+    active.primal_tenacity = new primal_tenacity_t( this );
 
   // Perks
   perk.improved_healing_touch  = find_perk_spell( "Improved Healing Touch" );
@@ -5502,6 +5559,10 @@ void druid_t::create_buffs()
   buff.barkskin              = new barkskin_t( *this );
   buff.lacerate              = buff_creator_t( this, "lacerate" , find_class_spell( "Lacerate" ) );
   buff.might_of_ursoc        = new might_of_ursoc_t( *this );
+  buff.primal_tenacity       = absorb_buff_creator_t( this, "primal_tenacity", find_spell( 155784 ) )
+                               .school( SCHOOL_PHYSICAL )
+                               .source( get_stats( "primal_tenacity" ) )
+                               .gain( get_gain( "primal_tenacity" ) );
   buff.savage_defense        = buff_creator_t( this, "savage_defense", find_class_spell( "Savage Defense" ) -> ok() ? find_spell( 132402 ) : spell_data_t::not_found() )
                                .add_invalidate( CACHE_DODGE );
   buff.survival_instincts    = buff_creator_t( this, "survival_instincts", find_class_spell( "Survival Instincts" ) )
@@ -5776,13 +5837,13 @@ void druid_t::apl_guardian()
 
   default_list -> add_action( "auto_attack" );
   default_list -> add_action( "skull_bash_bear" );
+  default_list -> add_action( this, "Maul", "if=buff.tooth_and_claw.react&buff.tooth_and_claw_absorb.down" );
   default_list -> add_action( this, "Frenzied Regeneration", "if=health.pct<100&action.savage_defense.charges=0&incoming_damage_5>0.2*health.max" );
   default_list -> add_action( this, "Frenzied Regeneration", "if=health.pct<100&action.savage_defense.charges>0&incoming_damage_5>0.4*health.max" );
   default_list -> add_action( this, "Savage Defense" );
   default_list -> add_action( this, "Barkskin" );
   default_list -> add_talent( this, "Renewal", "incoming_damage_5>0.8*health.max" );
-  default_list -> add_talent( this, "Natures Vigil", "if=talent.natures_vigil.enabled&(!talent.incarnation.enabled|buff.son_of_ursoc.up|cooldown.incarnation.remains)" );
-  default_list -> add_action( this, "Maul", "if=buff.tooth_and_claw.react&buff.tooth_and_claw_absorb.down" );
+  default_list -> add_talent( this, "Natures Vigil", "if=enabled&(!talent.incarnation.enabled|buff.son_of_ursoc.up|cooldown.incarnation.remains)" );
   default_list -> add_action( this, "Lacerate", "if=((dot.lacerate.remains<3)|(buff.lacerate.stack<3&dot.thrash_bear.remains>3))&(buff.son_of_ursoc.up|buff.berserk.up)" );
   default_list -> add_action( "thrash_bear,if=dot.thrash_bear.remains<3&(buff.son_of_ursoc.up|buff.berserk.up)" );
   default_list -> add_action( this, "Mangle" );
@@ -6059,7 +6120,7 @@ double druid_t::composite_attack_power_multiplier() const
   double ap = player_t::composite_attack_power_multiplier();
 
   if ( mastery.primal_tenacity -> ok() )
-    ap += cache.mastery_value();
+    ap *= 1.0 + cache.mastery_value() * ( find_spell( 159195 ) -> effectN( 1 ).sp_coeff() / mastery.primal_tenacity -> effectN( 1 ).sp_coeff() );
 
   return ap;
 }
@@ -6720,8 +6781,24 @@ void druid_t::assess_damage( school_e school,
     if ( buff.owlkin_frenzy -> trigger() )
       buff.enhanced_owlkin_frenzy -> trigger();
 
-  // Call here to benefit from -10% physical damage before SD is taken into account
   player_t::assess_damage( school, dtype, s );
+
+  /* Trigger primal_tenacity absorb. ready() will only return true if the action has been "armed"
+     by an eligible attack in druid_t::assess_damage_imminent_pre_absorb. */
+  if ( mastery.primal_tenacity -> ok() && school == SCHOOL_PHYSICAL && active.primal_tenacity -> ready() )
+    active.primal_tenacity -> execute();
+}
+
+// druid_t::assess_damage_imminent_pre_absorb ===============================
+
+void druid_t::assess_damage_imminent_pre_absorb( school_e school, dmg_e dtype, action_state_t* s )
+{
+  if ( mastery.primal_tenacity -> ok() && ! buff.primal_tenacity -> check() && school == SCHOOL_PHYSICAL )
+    /* Set the incoming damage for primal_tenacity. This causes ready() to return true so that
+       the absorb may be applied after the damage assessment is complete. */
+    active.primal_tenacity -> set_incoming_damage( s -> result_amount );
+
+  player_t::assess_damage_imminent_pre_absorb( school, dtype, s );
 }
 
 // druid_t::assess_heal =====================================================
