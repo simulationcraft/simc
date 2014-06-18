@@ -1282,6 +1282,7 @@ void action_t::update_resolve( dmg_e type,
   // check that the target has Resolve, check for damage type, and check that the source player is an enemy
   if ( target -> resolve_manager.is_started() && ( type == DMG_DIRECT || type == DMG_OVER_TIME ) && source -> is_enemy() )
   {
+    assert( source -> actor_spawn_index >= 0 && "Trying to register resolve damage event from a dead player! Something is seriously broken in player_t::arise/demise." );
 
     // bool for auto attack, to make code easier to read
     bool is_auto_attack = ( player -> main_hand_attack && s -> action == player -> main_hand_attack ) || ( player -> off_hand_attack && s -> action == player -> off_hand_attack );
@@ -1295,7 +1296,7 @@ void action_t::update_resolve( dmg_e type,
     double raw_resolve_amount = s -> result_raw;
     
     // If the attack does zero damage, it's irrelevant for the purposes
-    // Skip updating the Resolve tabless if the damage is zero to limit unnecessary events
+    // Skip updating the Resolve tables if the damage is zero to limit unnecessary events
     if ( raw_resolve_amount > 0.0 )
     {
       // modify according to damage type; spell damage gives 2.5x as much Resolve
@@ -1307,8 +1308,12 @@ void action_t::update_resolve( dmg_e type,
       // update the player's resolve_actor_list
       target -> resolve_manager.add_diminishing_return_entry( source, source -> get_raw_dps( s ), sim -> current_time );
 
-      // update the player's resolve damage table if the attack did nonzero damage
-      target -> resolve_manager.add_damage_event( source, raw_resolve_amount, sim -> current_time );
+      // apply diminishing returns - done at the time of the event, never recalculated
+      // see http://us.battle.net/wow/en/forum/topic/13087818929?page=6#105
+      int rank = target -> resolve_manager.get_diminsihing_return_rank( source );
+
+      // update the player's resolve damage table 
+      target -> resolve_manager.add_damage_event( raw_resolve_amount / rank, sim -> current_time );
     
       // cycle through the resolve damage table and add the appropriate amount of Resolve from each event
       target -> resolve_manager.update();

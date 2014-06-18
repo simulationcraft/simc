@@ -5348,8 +5348,9 @@ void shaman_t::init_action_list()
     def -> add_talent( this, "Elemental Mastery", "if=talent.primal_elementalist.enabled&glyph.fire_elemental_totem.enabled&(cooldown.fire_elemental_totem.remains=0|cooldown.fire_elemental_totem.remains>=80)" );
     def -> add_talent( this, "Elemental Mastery", "if=talent.primal_elementalist.enabled&!glyph.fire_elemental_totem.enabled&(cooldown.fire_elemental_totem.remains=0|cooldown.fire_elemental_totem.remains>=50)" );
     def -> add_talent( this, "Elemental Mastery", "if=!talent.primal_elementalist.enabled" );
-    def -> add_action( this, "Fire Elemental Totem", "if=!active" );
+    def -> add_action( this, "Fire Elemental Totem" );
     def -> add_action( this, "Ascendance", "if=cooldown.strike.remains>=3" );
+    def -> add_action( this, "Feral Spirit" );
 
     // Need to remove the "/" in front of the profession action(s) for the new default action priority list stuff :/
     def -> add_action( init_use_profession_actions( ",if=(glyph.fire_elemental_totem.enabled&(pet.primal_fire_elemental.active|pet.greater_fire_elemental.active))|!glyph.fire_elemental_totem.enabled" ).erase( 0, 1 ) );
@@ -5361,28 +5362,23 @@ void shaman_t::init_action_list()
     single -> add_action( this, "Unleash Elements", "if=(talent.unleashed_fury.enabled|set_bonus.tier16_2pc_melee=1)" );
     single -> add_talent( this, "Elemental Blast", "if=buff.maelstrom_weapon.react>=1" );
     single -> add_action( this, spec.maelstrom_weapon, "lightning_bolt", "if=buff.maelstrom_weapon.react=5" );
-    single -> add_action( this, "Feral Spirit", "if=set_bonus.tier15_4pc_melee=1" );
     single -> add_action( this, find_class_spell( "Ascendance" ), "windstrike" );
     single -> add_action( this, "Stormstrike" );
     single -> add_action( this, "Primal Strike" );
-    single -> add_action( this, "Flame Shock", "if=buff.unleash_flame.up&!ticking" );
     single -> add_action( this, "Lava Lash" );
-    single -> add_action( this, spec.maelstrom_weapon, "lightning_bolt", "if=set_bonus.tier15_2pc_melee=1&buff.maelstrom_weapon.react>=4&!buff.ascendance.up" );
-    single -> add_action( this, "Flame Shock", "if=(buff.unleash_flame.up&(dot.flame_shock.remains<10|action.flame_shock.tick_damage>dot.flame_shock.tick_dmg))|!ticking" );
+    single -> add_action( this, spec.maelstrom_weapon, "lightning_bolt", "if=buff.maelstrom_weapon.react>=4&!buff.ascendance.up&set_bonus.tier15_2pc_melee=1" );
+    single -> add_action( this, "Flame Shock", "if=buff.unleash_flame.up&(dot.flame_shock.remains<9||!ticking)" );
     single -> add_action( this, "Unleash Elements" );
-    single -> add_action( this, "Frost Shock", "if=glyph.frost_shock.enabled&set_bonus.tier14_4pc_melee=0" );
     single -> add_action( this, spec.maelstrom_weapon, "lightning_bolt", "if=buff.maelstrom_weapon.react>=3&!buff.ascendance.up" );
-    single -> add_talent( this, "Ancestral Swiftness", "if=buff.maelstrom_weapon.react<2" ) ;
+    single -> add_talent( this, "Ancestral Swiftness" ) ;
     single -> add_action( this, "Lightning Bolt", "if=buff.ancestral_swiftness.up" );
-    single -> add_action( this, "Earth Shock", "if=(!glyph.frost_shock.enabled|set_bonus.tier14_4pc_melee=1)" );
-    single -> add_action( this, "Feral Spirit" );
-    single -> add_action( this, "Earth Elemental Totem", "if=!active" );
-    single -> add_action( this, "Spiritwalker's Grace", "moving=1" );
-    single -> add_action( this, spec.maelstrom_weapon, "lightning_bolt", "if=buff.maelstrom_weapon.react>1&!buff.ascendance.up" );
+    single -> add_action( this, "Frost Shock" );
+    single -> add_action( this, "Earth Elemental Totem" );
+    single -> add_action( this, spec.maelstrom_weapon, "lightning_bolt", "if=buff.maelstrom_weapon.react>=1&!buff.ascendance.up" );
 
     // AoE
     aoe -> add_action( this, "Fire Nova", "if=active_flame_shock>=4" );
-    aoe -> add_action( "wait,sec=cooldown.fire_nova.remains,if=active_flame_shock>=4&cooldown.fire_nova.remains<0.67" );
+    aoe -> add_action( "wait,sec=cooldown.fire_nova.remains,if=active_flame_shock>=4&cooldown.fire_nova.remains<=execute_time" );
     aoe -> add_action( this, "Magma Totem", "if=active_enemies>5&!totem.fire.active" );
     aoe -> add_action( this, "Searing Totem", "if=active_enemies<=5&!totem.fire.active" );
     aoe -> add_action( this, "Lava Lash", "if=dot.flame_shock.ticking" );
@@ -5395,10 +5391,8 @@ void shaman_t::init_action_list()
     aoe -> add_action( this, spec.maelstrom_weapon, "chain_lightning", "if=active_enemies>=2&buff.maelstrom_weapon.react>=1" );
     aoe -> add_action( this, "Stormstrike" );
     aoe -> add_action( this, "Primal Strike" );
-    aoe -> add_action( this, "Earth Shock", "if=active_enemies<4" );
-    aoe -> add_action( this, "Feral Spirit" );
-    aoe -> add_action( this, "Earth Elemental Totem", "if=!active&cooldown.fire_elemental_totem.remains>=50" );
-    aoe -> add_action( this, "Spiritwalker's Grace", "moving=1" );
+    aoe -> add_action( this, "Frost Shock", "if=active_enemies<4" );
+    aoe -> add_action( this, "Earth Elemental Totem" );
     aoe -> add_action( this, "Fire Nova", "if=active_flame_shock>=1" );
   }
   else if ( specialization() == SHAMAN_ELEMENTAL && ( primary_role() == ROLE_SPELL || primary_role() == ROLE_DPS ) )

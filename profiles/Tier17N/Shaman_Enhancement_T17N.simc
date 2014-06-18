@@ -37,8 +37,9 @@ actions+=/berserking
 actions+=/elemental_mastery,if=talent.elemental_mastery.enabled&(talent.primal_elementalist.enabled&glyph.fire_elemental_totem.enabled&(cooldown.fire_elemental_totem.remains=0|cooldown.fire_elemental_totem.remains>=80))
 actions+=/elemental_mastery,if=talent.elemental_mastery.enabled&(talent.primal_elementalist.enabled&!glyph.fire_elemental_totem.enabled&(cooldown.fire_elemental_totem.remains=0|cooldown.fire_elemental_totem.remains>=50))
 actions+=/elemental_mastery,if=talent.elemental_mastery.enabled&!talent.primal_elementalist.enabled
-actions+=/fire_elemental_totem,if=!active
+actions+=/fire_elemental_totem
 actions+=/ascendance,if=cooldown.strike.remains>=3
+actions+=/feral_spirit
 # If only one enemy, priority follows the 'single' action list.
 actions+=/run_action_list,name=single,if=active_enemies=1
 # On multiple enemies, the priority follows the 'aoe' action list.
@@ -50,26 +51,23 @@ actions.single=searing_totem,if=!totem.fire.active
 actions.single+=/unleash_elements,if=(talent.unleashed_fury.enabled|set_bonus.tier16_2pc_melee=1)
 actions.single+=/elemental_blast,if=talent.elemental_blast.enabled&buff.maelstrom_weapon.react>=1
 actions.single+=/lightning_bolt,if=buff.maelstrom_weapon.react=5
-actions.single+=/feral_spirit,if=set_bonus.tier15_4pc_melee=1
 actions.single+=/windstrike
 actions.single+=/stormstrike
-actions.single+=/flame_shock,if=buff.unleash_flame.up&!ticking
 actions.single+=/lava_lash
-actions.single+=/lightning_bolt,if=set_bonus.tier15_2pc_melee=1&buff.maelstrom_weapon.react>=4&!buff.ascendance.up
-actions.single+=/flame_shock,if=(buff.unleash_flame.up&(dot.flame_shock.remains<10|action.flame_shock.tick_damage>dot.flame_shock.tick_dmg))|!ticking
+actions.single+=/lightning_bolt,if=buff.maelstrom_weapon.react>=4&!buff.ascendance.up&set_bonus.tier15_2pc_melee=1
+actions.single+=/flame_shock,if=buff.unleash_flame.up&(dot.flame_shock.remains<9||!ticking)
 actions.single+=/unleash_elements
-actions.single+=/frost_shock,if=glyph.frost_shock.enabled&set_bonus.tier14_4pc_melee=0
 actions.single+=/lightning_bolt,if=buff.maelstrom_weapon.react>=3&!buff.ascendance.up
-actions.single+=/ancestral_swiftness,if=talent.ancestral_swiftness.enabled&buff.maelstrom_weapon.react<2
+actions.single+=/ancestral_swiftness,if=talent.ancestral_swiftness.enabled
 actions.single+=/lightning_bolt,if=buff.ancestral_swiftness.up
-actions.single+=/feral_spirit
-actions.single+=/earth_elemental_totem,if=!active
-actions.single+=/lightning_bolt,if=buff.maelstrom_weapon.react>1&!buff.ascendance.up
+actions.single+=/frost_shock
+actions.single+=/earth_elemental_totem
+actions.single+=/lightning_bolt,if=buff.maelstrom_weapon.react>=1&!buff.ascendance.up
 
 # Multi target action priority list
 
 actions.aoe=fire_nova,if=active_flame_shock>=4
-actions.aoe+=/wait,sec=cooldown.fire_nova.remains,if=active_flame_shock>=4&cooldown.fire_nova.remains<0.67
+actions.aoe+=/wait,sec=cooldown.fire_nova.remains,if=active_flame_shock>=4&cooldown.fire_nova.remains<=execute_time
 actions.aoe+=/magma_totem,if=active_enemies>5&!totem.fire.active
 actions.aoe+=/searing_totem,if=active_enemies<=5&!totem.fire.active
 actions.aoe+=/lava_lash,if=dot.flame_shock.ticking
@@ -81,8 +79,8 @@ actions.aoe+=/windstrike
 actions.aoe+=/fire_nova,if=active_flame_shock>=3
 actions.aoe+=/chain_lightning,if=active_enemies>=2&buff.maelstrom_weapon.react>=1
 actions.aoe+=/stormstrike
-actions.aoe+=/feral_spirit
-actions.aoe+=/earth_elemental_totem,if=!active&cooldown.fire_elemental_totem.remains>=50
+actions.aoe+=/frost_shock,if=active_enemies<4
+actions.aoe+=/earth_elemental_totem
 actions.aoe+=/fire_nova,if=active_flame_shock>=1
 
 head=helmet_of_celestial_harmony,id=99341,upgrade=2,gems=capacitive_primal_4agi_8mastery_9agi

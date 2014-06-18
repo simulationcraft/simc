@@ -2573,13 +2573,17 @@ struct necrotic_plague_t : public death_knight_spell_t
     death_knight_spell_t::tick( dot );
 
     necrotic_plague_state_t* np_state = debug_cast<necrotic_plague_state_t*>( dot -> state );
-    if ( np_state -> result_amount > 0 )
+    if ( np_state -> result_amount > 0 && dot -> ticks_left() > 0 )
     {
       if ( np_state -> stack < max_stack )
         np_state -> stack++;
 
       // Choose the first target that has no Necrotic plague, and schedule an execution of Necrotic plague on it
       // TODO-WOD: Randomize target selection.
+      // TODO-WOD: Move to a separate event, so we can cover situations, where
+      // multiple targets are ticking NP at the same time, and one ticks its
+      // last tick. Here, one of the other NPs still ticking should be
+      // spreading its disease to the just-faded target.
       player_t* new_target = 0;
       for ( size_t i = 0, end = sim -> target_non_sleeping_list.size(); i < end; i++ )
       {
@@ -3735,10 +3739,146 @@ struct outbreak_t : public death_knight_spell_t
 
 // Pestilence ===============================================================
 
+
+struct pestilence_spread_t : public death_knight_spell_t
+{
+  dot_t *bp, *ff, *np;
+
+  pestilence_spread_t( death_knight_t* p ) :
+    death_knight_spell_t( "pestilence_spread", p, spell_data_t::nil() ),
+    bp( 0 ), ff( 0 ), np( 0 )
+  {
+    harmful = may_miss = proc = callbacks = may_crit = may_dodge = may_parry = may_glance = false;
+    dual = quiet = background = true;
+    aoe = -1;
+  }
+
+  void select_longest_duration_disease( dot_t*& bp, dot_t*& ff, dot_t*& np ) const
+  {
+    bp = ff = np = 0;
+
+    for ( size_t i = 0, end = sim -> target_non_sleeping_list.size(); i < end; i++ )
+    {
+      player_t* actor = sim -> target_non_sleeping_list[ i ];
+      death_knight_td_t* tdata = td( actor );
+
+      if ( tdata -> dots_blood_plague -> is_ticking() && ( ! bp || tdata -> dots_blood_plague -> remains() > bp -> remains() ) )
+        bp = tdata -> dots_blood_plague;
+
+      if ( tdata -> dots_frost_fever -> is_ticking() && ( ! ff || tdata -> dots_frost_fever -> remains() > ff -> remains() ) )
+        ff = tdata -> dots_frost_fever;
+
+      if ( tdata -> dots_necrotic_plague -> is_ticking() && ( ! np || tdata -> dots_necrotic_plague -> remains() > np -> remains() ) )
+        np = tdata -> dots_necrotic_plague;
+    }
+
+    if ( sim -> debug )
+    {
+      if ( bp )
+        sim -> out_debug.printf( "Player %s longest duration Blood Plague on %s (%.3f seconds left)",
+            player -> name(), bp -> target -> name(), bp -> target -> name(), bp -> remains().total_seconds() );
+
+      if ( ff )
+        sim -> out_debug.printf( "Player %s longest duration Frost Fever on %s (%.3f seconds left)",
+            player -> name(), ff -> target -> name(), ff -> remains().total_seconds() );
+
+      if ( np )
+        sim -> out_debug.printf( "Player %s longest duration Necrotic Plague on %s (%.3f seconds left)",
+            player -> name(), np -> target -> name(), np -> remains().total_seconds() );
+    }
+  }
+
+  void execute()
+  {
+    // Select suitable diseases, with and without Scent of Blood. With Scent of
+    // Blood, it is used to decide if diseases are going to be refreshed,
+    // without, it's used to determine which available disease type is spread
+    // to other targets.
+    select_longest_duration_disease( bp, ff, np );
+
+    death_knight_spell_t::execute();
+  }
+
+  void impact( action_state_t* s )
+  {
+    death_knight_spell_t::impact( s );
+
+    // Scent of Blood adds a NP stack to each target that got hit by the
+    // spread, or simply refreshes BP/FF, if there was a disease type to spread
+    // in the first place
+    if ( p() -> spec.scent_of_blood -> ok() )
+    {
+      // The scent-of-blood based logic ignores main target(?)
+      if ( target == s -> target )
+        return;
+
+      if ( bp )
+      {
+        p() -> active_spells.blood_plague -> target = s -> target;
+        p() -> active_spells.blood_plague -> execute();
+      }
+
+      if ( ff )
+      {
+        p() -> active_spells.frost_fever -> target = s -> target;
+        p() -> active_spells.frost_fever -> execute();
+      }
+
+      if ( np )
+      {
+        p() -> active_spells.necrotic_plague -> target = s -> target;
+        p() -> active_spells.necrotic_plague -> execute();
+      }
+    }
+    // No Scent of Blood -> copy the longest duration BP/FF/NP to all targets.
+    // The dots have (individually) been selected earlier (in execute()).  
+    else
+    {
+      death_knight_td_t* tdata = td( s -> target );
+
+      // Spread Blood Plague
+      if ( bp && bp -> target != s -> target )
+      {
+        if ( sim -> debug )
+          sim -> out_debug.printf( "Player %s spreading Blood Plague from %s to %s",
+              player -> name(), bp -> state -> target -> name(), s -> target -> name() );
+        if ( tdata -> dots_blood_plague -> is_ticking() )
+          tdata -> dots_blood_plague -> cancel();
+        bp -> copy( s -> target );
+      }
+
+      // Spread Frost Fever
+      if ( ff && ff -> target != s -> target )
+      {
+        if ( sim -> debug )
+          sim -> out_debug.printf( "Player %s spreading Frost Fever from %s to %s",
+              player -> name(), ff -> state -> target -> name(), s -> target -> name() );
+        if ( tdata -> dots_frost_fever -> is_ticking() )
+          tdata -> dots_frost_fever -> cancel();
+        ff -> copy( s -> target );
+      }
+
+      // Spread Necrotic Plague
+      if ( np && np -> target != s -> target )
+      {
+        if ( sim -> debug )
+          sim -> out_debug.printf( "Player %s spreading Necrotic Plague from %s to %s",
+              player -> name(), np -> state -> target -> name(), s -> target -> name() );
+        if ( tdata -> dots_necrotic_plague -> is_ticking() )
+          tdata -> dots_necrotic_plague -> cancel();
+        np -> copy( s -> target );
+      }
+    }
+  }
+};
+
 struct pestilence_t : public death_knight_spell_t
 {
+  pestilence_spread_t* spread;
+
   pestilence_t( death_knight_t* p, const std::string& options_str ) :
-    death_knight_spell_t( "pestilence", p, p -> find_class_spell( "Pestilence" ) )
+    death_knight_spell_t( "pestilence", p, p -> find_class_spell( "Pestilence" ) ),
+    spread( new pestilence_spread_t( p ) )
   {
     parse_options( NULL, options_str );
 
@@ -3773,48 +3913,21 @@ struct pestilence_t : public death_knight_spell_t
     if ( p() -> buffs.dancing_rune_weapon -> check() )
       p() -> pets.dancing_rune_weapon -> drw_pestilence -> execute();
 
-      if ( p() -> buffs.crimson_scourge -> up() )
-        p() -> buffs.crimson_scourge -> expire();
-  }
+    if ( p() -> buffs.crimson_scourge -> up() )
+      p() -> buffs.crimson_scourge -> expire();
 
-  // TODO: each target hit spreads to each target hit ..
-  virtual void impact( action_state_t* s )
-  {
-    death_knight_spell_t::impact( s );
-
-    // Doesn't affect the original target
-    if ( s -> target == target )
-      return;
-
-    if ( result_is_hit( s -> result ) )
+    if ( result_is_hit( execute_state -> result ) )
     {
-      if ( td( target ) -> dots_blood_plague -> is_ticking() )
-      {
-        p() -> active_spells.blood_plague -> target = s -> target;
-        p() -> active_spells.blood_plague -> execute();
-      }
-
-      if ( td( target ) -> dots_frost_fever -> is_ticking() )
-      {
-        p() -> active_spells.frost_fever -> target = s -> target;
-        p() -> active_spells.frost_fever -> execute();
-      }
-
-      if ( td( target ) -> dots_necrotic_plague -> is_ticking() )
-      {
-        p() -> active_spells.necrotic_plague -> target = s -> target;
-        p() -> active_spells.necrotic_plague -> execute();
-      }
+      // Just use "main" target for the spread selection, spread logic is fully
+      // implemented in pestilence_spread_t
+      spread -> target = target;
+      spread -> schedule_execute();
     }
   }
 
   virtual bool ready()
   {
     if ( ! death_knight_spell_t::ready() )
-      return false;
-
-    // BP or FF must be ticking to use
-    if ( td( target ) -> diseases() == 0 )
       return false;
 
     if ( ( ! p() -> in_combat && ! harmful ) || p() -> buffs.crimson_scourge -> check() )
