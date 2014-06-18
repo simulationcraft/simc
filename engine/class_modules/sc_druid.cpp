@@ -420,6 +420,7 @@ public:
     const spell_data_t* berserk_cat; // Berserk cat resource cost reducer
     const spell_data_t* cat_form; // Cat form bonuses
     const spell_data_t* combo_point; // Combo point spell
+    const spell_data_t* frenzied_regeneration;
     const spell_data_t* leader_of_the_pack; // LotP aura
     const spell_data_t* mangle; // Mangle cooldown reset
     const spell_data_t* moonkin_form; // Moonkin form bonuses
@@ -869,58 +870,6 @@ struct yseras_gift_t : public heal_t
     base_td = p -> resources.max[ RESOURCE_HEALTH ] * data().effectN( 1 ).percent();
 
     heal_t::tick( d );
-  }
-};
-
-// Tooth and Claw Absorb ===========================================================
-
-struct tooth_and_claw_t : public absorb_t
-{
-  tooth_and_claw_t( druid_t* p ) :
-    absorb_t( "tooth_and_claw", p, p -> spec.tooth_and_claw )
-  {
-    harmful = false;
-    special = false;
-    background = true;
-  }
-
-  druid_t* p() const
-  { return static_cast<druid_t*>( player ); }
-
-  virtual void execute()
-  {
-    absorb_t::execute();
-
-    // max(2.2*(AP - 2*Agi), 2.5*Sta)*0.4
-    double ap         = player -> composite_melee_attack_power() * player -> composite_attack_power_multiplier();
-    double agility    = player -> composite_attribute( ATTR_AGILITY ) * player -> composite_attribute_multiplier( ATTR_AGILITY );
-    double stamina    = player -> composite_attribute( ATTR_STAMINA ) * player -> composite_attribute_multiplier( ATTR_STAMINA );
-    double absorb_amount =  floor(
-                              std::max( ( ap - 2 * agility ) * 2.2, stamina * 2.5 )
-                              * 0.4
-                            );
-
-    double total_absorb = absorb_amount + p() -> buff.tooth_and_claw_absorb -> current_value;
-
-    if ( sim -> debug )
-      sim -> out_debug.printf( "%s's Tooth and Claw value pre-application: %f",
-                     player -> name(),
-                     p() -> buff.tooth_and_claw_absorb -> current_value );
-
-    p() -> buff.tooth_and_claw_absorb -> trigger( 1, total_absorb );
-
-    if ( sim -> debug )
-      sim -> out_debug.printf( "%s's Tooth and Claw value post-application: %f",
-                     player -> name(),
-                     p() -> buff.tooth_and_claw_absorb -> current_value );
-  }
-
-  virtual bool ready()
-  {
-    if ( ! p() -> buff.tooth_and_claw -> check() )
-      return false;
-
-    return absorb_t::ready();
   }
 };
 
@@ -1469,8 +1418,18 @@ struct tooth_and_claw_absorb_t : public absorb_buff_t
   druid_t* p() const
   { return static_cast<druid_t*>( player ); }
 
+  virtual bool trigger( int stacks = 1, double value = 0.0, double chance = (-1.0), timespan_t duration = timespan_t::min() )
+  {
+    // Add the value of any current tooth and claw absorb (stacks)
+    if ( p() -> buff.tooth_and_claw_absorb -> check() )
+      value += p() -> buff.tooth_and_claw_absorb -> current_value;
+
+    return absorb_buff_t::trigger( stacks, value, 1.0, duration );
+  }
+
   virtual void absorb_used( double /* amount */ )
   {
+    // Tooth and Claw expires after ANY amount of the absorb is used.
     p() -> buff.tooth_and_claw_absorb -> expire();
   }
 };
@@ -2791,8 +2750,37 @@ struct mangle_t : public bear_attack_t
 // Maul =====================================================================
 
 struct maul_t : public bear_attack_t
-{
+{ 
+  struct tooth_and_claw_t : public druid_action_t<absorb_t>
+  {
+    tooth_and_claw_t( druid_t* p ) :
+      druid_action_t( "tooth_and_claw", p, p -> spec.tooth_and_claw )
+    {
+      harmful = special = false;
+      background = dual = true;
+      may_crit = false;
+      target = player;
+
+      // Coeff of 4 AP is hardcoded into tooltip, use FR coeff * 0.4 instead.
+      attack_power_mod.direct = 0.4 * p -> spell.frenzied_regeneration -> effectN( 1 ).ap_coeff();
+    }
+
+    virtual void impact( action_state_t* s )
+    {
+      p() -> buff.tooth_and_claw_absorb -> trigger( 1, s -> result_amount );
+    }
+
+    virtual bool ready()
+    {
+      if ( ! p() -> buff.tooth_and_claw -> check() )
+        return false;
+
+      return druid_action_t::ready();
+    }
+  };
+
   tooth_and_claw_t* absorb;
+
   maul_t( druid_t* player, const std::string& options_str ) :
     bear_attack_t( "maul", player, player -> find_specialization_spell( "Maul" ) )
   {
@@ -2805,7 +2793,7 @@ struct maul_t : public bear_attack_t
 
     base_multiplier *= 1.0 + player -> perk.improved_maul -> effectN( 1 ).percent();
 
-    if ( p() -> spec.tooth_and_claw -> ok() )
+    if ( player -> spec.tooth_and_claw -> ok() )
       absorb = new tooth_and_claw_t( player );
   }
 
@@ -5266,8 +5254,9 @@ void druid_t::init_spells()
   spell.bear_form                       = find_class_spell( "Bear Form"                   ) -> ok() ? find_spell( 1178   ) : spell_data_t::not_found(); // This is the passive applied on shapeshift!
   spell.berserk_bear                    = find_class_spell( "Berserk"                     ) -> ok() ? find_spell( 50334  ) : spell_data_t::not_found(); // Berserk bear mangler
   spell.berserk_cat                     = find_class_spell( "Berserk"                     ) -> ok() ? find_spell( 106951 ) : spell_data_t::not_found(); // Berserk cat resource cost reducer
-  spell.cat_form                        = find_class_spell( "Cat Form"                    ) -> ok() ? find_spell( 3025 ) : spell_data_t::not_found();   // Cat form buff
+  spell.cat_form                        = find_class_spell( "Cat Form"                    ) -> ok() ? find_spell( 3025   ) : spell_data_t::not_found();   // Cat form buff
   spell.combo_point                     = find_class_spell( "Cat Form"                    ) -> ok() ? find_spell( 34071  ) : spell_data_t::not_found(); // Combo point add "spell", weird
+  spell.frenzied_regeneration           = find_class_spell( "Frenzied Regeneration"       ) -> ok() ? find_spell( 22842  ) : spell_data_t::not_found();
   spell.leader_of_the_pack              = spec.leader_of_the_pack -> ok() ? find_spell( 24932  ) : spell_data_t::not_found(); // LotP aura
   spell.mangle                          = find_class_spell( "Lacerate"                    ) -> ok() ? find_spell( 93622  ) : spell_data_t::not_found(); // Lacerate mangle cooldown reset
   spell.moonkin_form                    = find_class_spell( "Moonkin Form"                ) -> ok() ? find_spell( 24905  ) : spell_data_t::not_found(); // This is the passive applied on shapeshift!
