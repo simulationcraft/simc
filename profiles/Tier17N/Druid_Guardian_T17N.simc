@@ -30,12 +30,12 @@ actions+=/arcane_torrent
 actions+=/use_item,slot=waist
 actions+=/auto_attack
 actions+=/skull_bash_bear
+actions+=/maul,if=buff.tooth_and_claw.react&buff.tooth_and_claw_absorb.down
 actions+=/frenzied_regeneration,if=health.pct<100&action.savage_defense.charges=0&incoming_damage_5>0.2*health.max
 actions+=/frenzied_regeneration,if=health.pct<100&action.savage_defense.charges>0&incoming_damage_5>0.4*health.max
 actions+=/savage_defense
 actions+=/barkskin
 actions+=/renewal,if=talent.renewal.enabled
-actions+=/maul,if=buff.tooth_and_claw.react&buff.tooth_and_claw_absorb.down
 actions+=/lacerate,if=((dot.lacerate.remains<3)|(buff.lacerate.stack<3&dot.thrash_bear.remains>3))&(buff.son_of_ursoc.up|buff.berserk.up)
 actions+=/thrash_bear,if=dot.thrash_bear.remains<3&(buff.son_of_ursoc.up|buff.berserk.up)
 actions+=/mangle

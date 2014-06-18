@@ -42,16 +42,15 @@ actions+=/arcane_torrent,sync=tigers_fury
 actions+=/tigers_fury,if=energy<=35&!buff.omen_of_clarity.react&(!talent.incarnation_king_of_the_jungle.enabled|buff.king_of_the_jungle.up|cooldown.incarnation.remains>0)
 actions+=/virmens_bite_potion,sync=berserk,if=target.health.pct<25
 actions+=/berserk,if=buff.tigers_fury.up
-actions+=/thrash_cat,if=buff.omen_of_clarity.react&dot.thrash_cat.remains<4.5
+actions+=/thrash_cat,if=buff.omen_of_clarity.react&dot.thrash_cat.remains<4.5&active_enemies>1
 actions+=/rip,cycle_targets=1,if=dot.rip.remains<4.8&combo_points>=5
 # Apply the strongest possible Rip during execute.
 actions+=/rip,cycle_targets=1,if=target.health.pct<25&combo_points>=5&action.rip.tick_multiplier>dot.rip.multiplier
 actions+=/rake,cycle_targets=1,if=dot.rake.remains<4.5
-actions+=/rake,cycle_targets=1,if=action.rake.tick_multiplier>dot.rake.multiplier
-actions+=/moonfire_feral,cycle_targets=1,if=talent.lunar_inspiration.enabled&dot.moonfire_feral.remains<4.2
-# Pool energy for Thrash.
 actions+=/pool_resource,for_next=1
-actions+=/thrash_cat,cycle_targets=1,if=(dot.rake.remains<3|action.rake.tick_multiplier>dot.rake.multiplier)
+actions+=/thrash_cat,if=dot.thrash_cat.remains<4.5&active_enemies>1
+actions+=/rake,cycle_targets=1,if=action.rake.tick_multiplier>dot.rake.multiplier
+actions+=/moonfire_feral,cycle_targets=1,if=talent.lunar_inspiration.enabled&dot.moonfire_feral.remains<4.2&active_enemies=1
 actions+=/ferocious_bite,if=combo_points>=5&(energy.time_to_max<=1|buff.berserk.up)&dot.rip.remains>=4.8
 # Cast a CP generator.
 actions+=/run_action_list,name=filler,if=combo_points<5

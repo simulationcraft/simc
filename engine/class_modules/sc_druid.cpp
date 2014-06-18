@@ -5695,16 +5695,15 @@ void druid_t::apl_feral()
   def -> add_action( this, "Tiger's Fury", "if=energy<=35&!buff.omen_of_clarity.react&(!talent.incarnation_king_of_the_jungle.enabled|buff.king_of_the_jungle.up|cooldown.incarnation.remains>0)" );
   def -> add_action( potion_name + ",sync=berserk,if=target.health.pct<25" );
   def -> add_action( this, "Berserk", "if=buff.tigers_fury.up" );
-  def -> add_action( "thrash_cat,if=buff.omen_of_clarity.react&dot.thrash_cat.remains<4.5" );
+  def -> add_action( "thrash_cat,if=buff.omen_of_clarity.react&dot.thrash_cat.remains<4.5&active_enemies>1" );
   def -> add_action( this, "Rip", "cycle_targets=1,if=dot.rip.remains<4.8&combo_points>=5" );
   def -> add_action( this, "Rip", "cycle_targets=1,if=target.health.pct<25&combo_points>=5&action.rip.tick_multiplier>dot.rip.multiplier",
                      "Apply the strongest possible Rip during execute." );
   def -> add_action( this, "Rake", "cycle_targets=1,if=dot.rake.remains<4.5" );
+  def -> add_action( "pool_resource,for_next=1" );
+  def -> add_action( "thrash_cat,if=dot.thrash_cat.remains<4.5&active_enemies>1" );
   def -> add_action( this, "Rake", "cycle_targets=1,if=action.rake.tick_multiplier>dot.rake.multiplier" );
-  def -> add_action( "moonfire_feral,cycle_targets=1,if=talent.lunar_inspiration.enabled&dot.moonfire_feral.remains<4.2" );
-  def -> add_action( "pool_resource,for_next=1",
-                     "Pool energy for Thrash." );
-  def -> add_action( "thrash_cat,cycle_targets=1,if=(dot.rake.remains<3|action.rake.tick_multiplier>dot.rake.multiplier)" );
+  def -> add_action( "moonfire_feral,cycle_targets=1,if=talent.lunar_inspiration.enabled&dot.moonfire_feral.remains<4.2&active_enemies=1" );
   def -> add_action( this, "Ferocious Bite", "if=combo_points>=5&(energy.time_to_max<=1|buff.berserk.up)&dot.rip.remains>=4.8" );
   def -> add_action( "run_action_list,name=filler,if=combo_points<5",
                      "Cast a CP generator." );
