@@ -2160,19 +2160,19 @@ struct ferocious_bite_t : public cat_attack_t
     return am;
   }
 
-  double composite_target_crit( player_t* t ) const
+  double composite_crit() const
   {
-    double tc = cat_attack_t::composite_target_crit( t );
+    double c = cat_attack_t::composite_crit();
 
     // TODO: Determine which bonus is applied first.
 
-    if ( t -> debuffs.bleeding -> check() )
-      tc *= 2.0;
-
     if ( p() -> buff.tier15_4pc_melee -> check() )
-      tc += p() -> buff.tier15_4pc_melee -> data().effectN( 1 ).percent();
+      c += p() -> buff.tier15_4pc_melee -> data().effectN( 1 ).percent();
 
-    return tc;
+    if ( target -> debuffs.bleeding -> check() )
+      c *= 2.0;
+
+    return c;
   }
 };
 
