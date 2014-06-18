@@ -2079,8 +2079,8 @@ struct ferocious_bite_t : public cat_attack_t
     cat_attack_t( "ferocious_bite", p, p -> find_class_spell( "Ferocious Bite" ), options_str ),
     excess_energy( 0 ), max_excess_energy( 0 ), ap_per_point( 0.0 )
   {
-    ap_per_point          = 0.196; // FIXME: Figure out where the hell this is in the spell data...
-    max_excess_energy     = 25.0;
+    ap_per_point          = 0.357; // FIXME: Figure out where the hell this is in the spell data...
+    max_excess_energy     = data().effectN( 2 ).base_value();
     requires_combo_points = special = true;
     base_multiplier      *= 1.0 + p -> perk.improved_ferocious_bite -> effectN( 1 ).percent();
   }
@@ -2153,19 +2153,21 @@ struct ferocious_bite_t : public cat_attack_t
 
   double action_multiplier() const
   {
-    double dm = cat_attack_t::action_multiplier();
+    double am = cat_attack_t::action_multiplier();
 
-    dm *= 1.0 + excess_energy / max_excess_energy;
+    am *= 1.0 + excess_energy / max_excess_energy;
 
-    return dm;
+    return am;
   }
 
   double composite_target_crit( player_t* t ) const
   {
     double tc = cat_attack_t::composite_target_crit( t );
 
+    // TODO: Determine which bonus is applied first.
+
     if ( t -> debuffs.bleeding -> check() )
-      tc *= 2; // Check spell data.
+      tc *= 2.0;
 
     if ( p() -> buff.tier15_4pc_melee -> check() )
       tc += p() -> buff.tier15_4pc_melee -> data().effectN( 1 ).percent();
@@ -2381,6 +2383,8 @@ struct shred_t : public cat_attack_t
   double composite_crit() const
   {
     double c = druid_attack_t::composite_crit();
+
+    // TODO: Determine which bonus is applied first.
 
     if ( p() -> buff.tier15_4pc_melee -> up() )
       c += p() -> buff.tier15_4pc_melee -> data().effectN( 1 ).percent();
