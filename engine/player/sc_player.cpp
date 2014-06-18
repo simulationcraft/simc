@@ -9973,9 +9973,6 @@ namespace resolve {
 
 struct manager_t::diminishing_returns_list_t
 {
-  // http://us.battle.net/wow/en/forum/topic/13087818929?page=6#105
-  static const double max_history_time_seconds = 5.0;
-
   diminishing_returns_list_t() :
     actor_list()
   { }
@@ -10045,12 +10042,13 @@ private:
   { return a.raw_dps > b.raw_dps; }
 
   // comparator functor for purging inactive players
+  // http://us.battle.net/wow/en/forum/topic/13087818929?page=6#105
   struct was_inactive {
     was_inactive( const timespan_t& current_time ) :
       current_time( current_time )
     {}
     bool operator()( const actor_entry_t& a ) const
-    { return a.last_attack + timespan_t::from_seconds( max_history_time_seconds ) < current_time; } // true if last attack is not more than 10 seconds ago
+    { return a.last_attack + timespan_t::from_seconds( 5.0 ) < current_time; } // true if last attack is not more than 10 seconds ago
     const timespan_t& current_time;
   };
 
@@ -10093,8 +10091,9 @@ struct manager_t::damage_event_list_t
   void add( const player_t* actor, double amount, timespan_t current_time )
   {
     assert( actor -> actor_spawn_index >= 0 && "Trying to register resolve damage event from a dead player! Something is seriously broken in player_t::arise/demise." );
-
-    // apply diminishing returns
+    
+    // apply diminishing returns - done at the time of the event, never recalculated
+    // see http://us.battle.net/wow/en/forum/topic/13087818929?page=6#105
     int rank = resolve_manager.get_diminsihing_return_rank( actor -> actor_spawn_index );
     amount /= rank;
 
