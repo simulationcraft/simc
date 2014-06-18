@@ -5374,7 +5374,6 @@ void shaman_t::init_action_list()
     single -> add_action( this, "Lightning Bolt", "if=buff.ancestral_swiftness.up" );
     single -> add_action( this, "Frost Shock" );
     single -> add_action( this, "Earth Elemental Totem" );
-    single -> add_action( this, "Spiritwalker's Grace", "moving=1" );
     single -> add_action( this, spec.maelstrom_weapon, "lightning_bolt", "if=buff.maelstrom_weapon.react>=1&!buff.ascendance.up" );
 
     // AoE
@@ -5394,7 +5393,6 @@ void shaman_t::init_action_list()
     aoe -> add_action( this, "Primal Strike" );
     aoe -> add_action( this, "Frost Shock", "if=active_enemies<4" );
     aoe -> add_action( this, "Earth Elemental Totem" );
-    aoe -> add_action( this, "Spiritwalker's Grace", "moving=1" );
     aoe -> add_action( this, "Fire Nova", "if=active_flame_shock>=1" );
   }
   else if ( specialization() == SHAMAN_ELEMENTAL && ( primary_role() == ROLE_SPELL || primary_role() == ROLE_DPS ) )
