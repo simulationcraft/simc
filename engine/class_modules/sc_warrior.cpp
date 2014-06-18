@@ -1416,6 +1416,7 @@ struct execute_off_hand_t : public warrior_attack_t
   {
     background = true;
     base_costs[RESOURCE_RAGE] = 0;
+    may_miss = may_dodge = may_parry = false;
 
     weapon = &( p -> off_hand_weapon );
     weapon_multiplier *= 1.0 + p -> perk.empowered_execute -> effectN( 1 ).percent();
@@ -1450,6 +1451,7 @@ struct execute_t : public warrior_attack_t
     if ( p() -> main_hand_weapon.group() == WEAPON_1H &&
          p() -> off_hand_weapon.group() == WEAPON_1H )
       am *= 1.0 + p() -> spec.single_minded_fury -> effectN( 3 ).percent();
+
     return am;
   }
 
@@ -1478,7 +1480,7 @@ struct execute_t : public warrior_attack_t
   {
     warrior_attack_t::execute();
 
-    if ( p() -> spec.crazed_berserker -> ok() )
+    if ( p() -> spec.crazed_berserker -> ok() && result_is_hit( execute_state -> result ) ) // If MH fails to land, OH does not execute.
       oh_attack -> execute();
 
     p() -> buff.death_sentence -> expire();
@@ -1852,11 +1854,10 @@ struct raging_blow_t : public warrior_attack_t
 {
   raging_blow_attack_t* mh_attack;
   raging_blow_attack_t* oh_attack;
-  off_hand_test_attack_t* oh_test;
 
   raging_blow_t( warrior_t* p, const std::string& options_str ) :
     warrior_attack_t( "raging_blow", p, p -> spec.raging_blow ),
-    mh_attack( NULL ), oh_attack( NULL ), oh_test( NULL )
+    mh_attack( NULL ), oh_attack( NULL )
   {
     // Parent attack is only to determine miss/dodge/parry
     weapon_multiplier = attack_power_mod.direct = 0;
@@ -1868,12 +1869,9 @@ struct raging_blow_t : public warrior_attack_t
     mh_attack -> weapon = &( p -> main_hand_weapon );
     add_child( mh_attack );
 
-    oh_attack = new raging_blow_attack_t( p, "raging_blow_offhand", data().effectN( 2 ).trigger() );
+    oh_attack = new raging_blow_attack_t( p, "raging_blow_oh", data().effectN( 2 ).trigger() );
     oh_attack -> weapon = &( p -> off_hand_weapon );
     add_child( oh_attack );
-
-    oh_test = new off_hand_test_attack_t( p, "raging_blow_oh_test" );
-    add_child( oh_test );
 
     // Needs weapons in both hands
     if ( p -> main_hand_weapon.type == WEAPON_NONE ||
@@ -1883,12 +1881,10 @@ struct raging_blow_t : public warrior_attack_t
 
   virtual void execute()
   {
-    oh_test -> execute(); // perform test OH attack, if either OH or MH test rolls fail, the attack will miss completely.
-
-    // check main hand attack
+    // check attack
     attack_t::execute();
 
-    if ( result_is_hit( execute_state -> result ) && result_is_hit( oh_test -> last_result ) )
+    if ( result_is_hit( execute_state -> result ) )
     {
       mh_attack -> execute();
       oh_attack -> execute();
@@ -1897,13 +1893,6 @@ struct raging_blow_t : public warrior_attack_t
         p() -> buff.raging_blow_glyph -> trigger();
       p() -> buff.raging_wind -> trigger();
       p() -> buff.meat_cleaver -> expire(); // Meat cleaver will only expire if the attack lands.
-    }
-    else if ( result_is_miss( execute_state -> result ) && result_is_miss( oh_test -> last_result ) )
-    // Make sure to refund rage when the MH hits but the OH misses. 
-    {
-      double c = cost();
-      c *= 0.8;
-      p() -> resource_gain( RESOURCE_RAGE, c, p() -> gain.avoided_attacks );
     }
     p() -> buff.raging_blow -> decrement(); // Raging blow buff decrements even if the attack doesn't land.
   }
@@ -2241,7 +2230,7 @@ struct storm_bolt_off_hand_t : public warrior_attack_t
   storm_bolt_off_hand_t( warrior_t* p, const char* name, const spell_data_t* s ) :
     warrior_attack_t( name, p, s )
   {
-    may_dodge  = may_parry = may_block = false;
+    may_dodge  = may_parry = may_block = may_miss = false;
     background = true;
 
     weapon = &( p -> off_hand_weapon );
