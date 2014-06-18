@@ -742,7 +742,9 @@ struct paladin_spell_t : public paladin_spell_base_t<spell_t>
   paladin_spell_t( const std::string& n, paladin_t* p,
                    const spell_data_t* s = spell_data_t::nil() ) :
     base_t( n, p, s )
-  {
+  {    
+    // Holy Insight - Holy passive
+    base_multiplier *= 1.0 + p -> passives.holy_insight -> effectN( 6 ).percent();
   }
 };
 
@@ -767,9 +769,6 @@ struct paladin_heal_t : public paladin_spell_base_t<heal_t>
 
     if ( p() -> active_seal == SEAL_OF_INSIGHT && benefits_from_seal_of_insight )
       am *= 1.0 + p() -> passives.seal_of_insight -> effectN( 2 ).percent();
-    
-    // Holy Insight - Holy passive
-    am *= 1.0 + p() -> passives.holy_insight -> effectN( 6 ).percent();
 
     return am;
   }
@@ -932,6 +931,10 @@ struct avengers_shield_t : public paladin_spell_t
     // link needed for trigger_grand_crusader
     cooldown = p -> cooldowns.avengers_shield;
     cooldown -> duration = data().cooldown();
+
+    // Focused Shield gives another multiplicative factor of 1.3 (tested 5/26/2013, multiplicative with HA)
+    if ( p -> glyphs.focused_shield -> ok() )
+      base_multiplier *= 1.0 + p -> glyphs.focused_shield -> effectN( 2 ).percent();
   }
 
   // Multiplicative damage effects
@@ -941,15 +944,7 @@ struct avengers_shield_t : public paladin_spell_t
 
     // Holy Avenger buffs damage if Grand Crusader is active
     if ( p() -> buffs.holy_avenger -> check() && p() -> buffs.grand_crusader -> check() )
-    {
       am *= 1.0 + p() -> buffs.holy_avenger -> data().effectN( 4 ).percent();
-    }
-
-    // Focused Shield gives another multiplicative factor of 1.3 (tested 5/26/2013, multiplicative with HA)
-    if ( p() -> glyphs.focused_shield -> ok() )
-    {
-      am *= 1.0 + p() -> glyphs.focused_shield -> effectN( 2 ).percent();
-    }
 
     return am;
   }
@@ -958,9 +953,7 @@ struct avengers_shield_t : public paladin_spell_t
   virtual void update_ready( timespan_t cd_duration )
   {
     if ( p() -> passives.sanctity_of_battle -> ok() )
-    {
       cd_duration = cooldown -> duration * p() -> cache.attack_haste();
-    }
 
     paladin_spell_t::update_ready( cd_duration );
   }
@@ -1346,6 +1339,9 @@ struct daybreak_t : public paladin_heal_t
     split_aoe_damage = true;
     may_crit = false;
     may_multistrike = false; // guess, TODO: Test
+
+    base_multiplier  = p -> passives.daybreak -> effectN( 1 ).percent();
+    base_multiplier *= 1.0 + p -> perk.improved_daybreak -> effectN( 1 ).percent();
   }
 
   virtual void init()
@@ -1376,11 +1372,8 @@ struct daybreak_t : public paladin_heal_t
 
   virtual double action_multiplier() const
   {
-    double am = p() -> passives.daybreak -> effectN( 1 ).percent();
-
-    am *= 1.0 + p() -> perk.improved_daybreak -> effectN( 1 ).percent();
-
-    return am;
+    // override action_multiplier(), as this amount is set by the triggering Holy Shock
+    return base_multiplier;
   }
   
 };
@@ -1650,6 +1643,17 @@ struct eternal_flame_t : public paladin_heal_t
       target = p;
     // attach HoT as child object - doesn't seem to work?
     add_child( hot );
+        
+    // Improved Word of Glory perk
+    base_multiplier *= 1.0 + p -> perk.improved_word_of_glory -> effectN( 1 ).percent();
+       
+    // Holy Insight buffs all healing by 25% & WoG/EF/LoD by 50%.
+    // The 25% buff is already in paladin_heal_t, so we need to divide by that first & then apply 50%
+    base_multiplier /= 1.0 + p -> passives.holy_insight -> effectN( 6 ).percent();
+    base_multiplier *= 1.0 + p -> passives.holy_insight -> effectN( 9 ).percent();
+    
+    // Sword of light
+    base_multiplier *= 1.0 + p -> passives.sword_of_light -> effectN( 3 ).percent();
   }
 
   virtual void update_ready( timespan_t cd_duration )
@@ -1704,17 +1708,6 @@ struct eternal_flame_t : public paladin_heal_t
 
       am *= ( 1.0 + bog_m );
     }
-
-    // Improved Word of Glory perk
-    am *= 1.0 + p() -> perk.improved_word_of_glory -> effectN( 1 ).percent();
-    
-    // Holy Insight buffs all healing by 25% & WoG/EF/LoD by 50%.
-    // The 25% buff is already in paladin_heal_t, so we need to divide by that first & then apply 50%
-    am /= 1.0 + p() -> passives.holy_insight -> effectN( 6 ).percent();
-    am *= 1.0 + p() -> passives.holy_insight -> effectN( 9 ).percent();
-    
-    // Sword of light
-    am *= 1.0 + p() -> passives.sword_of_light -> effectN( 3 ).percent();
 
     return am;
   }
@@ -1880,6 +1873,8 @@ struct exorcism_t : public paladin_spell_t
       aoe = -1;
       base_aoe_multiplier = 0.25;
     }
+    // Improved Exorcism perk
+    base_multiplier *= 1.0 + p -> perk.improved_exorcism -> effectN( 1 ).percent(); 
 
     cooldown = p -> cooldowns.exorcism;
     cooldown -> duration = data().cooldown();
@@ -1888,10 +1883,7 @@ struct exorcism_t : public paladin_spell_t
   virtual double action_multiplier() const
   {
     double am = paladin_spell_t::action_multiplier();
-
-    // Improved Exorcism perk
-    am *= 1.0 + p() -> perk.improved_exorcism -> effectN( 1 ).percent(); 
-
+    
     // Holy Avenger
     if ( p() -> buffs.holy_avenger -> check() )
     {
@@ -1943,6 +1935,12 @@ struct flash_of_light_t : public paladin_heal_t
     paladin_heal_t( "flash_of_light", p, p -> find_class_spell( "Flash of Light" ) )
   {
     parse_options( NULL, options_str );
+    
+    // Improved Flash of Light perk
+    base_multiplier *= 1.0 + p -> perk.improved_flash_of_light -> effectN( 1 ).percent();
+
+    // Sword of light
+    base_multiplier *= 1.0 + p -> passives.sword_of_light -> effectN( 6 ).percent();
   }
 
   virtual double cost() const
@@ -1964,13 +1962,7 @@ struct flash_of_light_t : public paladin_heal_t
   virtual double action_multiplier() const
   {
     double am = paladin_heal_t::action_multiplier();
-
-    // Improved Flash of Light perk
-    am *= 1.0 + p() -> perk.improved_flash_of_light -> effectN( 1 ).percent();
-
-    // Sword of light
-    am *= 1.0 + p() -> passives.sword_of_light -> effectN( 6 ).percent();
-
+    
     // Selfless healer has two effects
     if ( p() -> talents.selfless_healer -> ok() )
     {
@@ -2155,6 +2147,9 @@ struct holy_light_t : public paladin_heal_t
     paladin_heal_t( "holy_light", p, p -> find_class_spell( "Holy Light" ) )
   {
     parse_options( NULL, options_str );
+
+    // Improved Holy Light perk
+    base_multiplier *= 1.0 + p -> perk.improved_holy_light -> effectN( 1 ).percent();
   }
 
   virtual void execute()
@@ -2184,14 +2179,6 @@ struct holy_light_t : public paladin_heal_t
     p() -> buffs.infusion_of_light -> up(); // Buff uptime tracking
   }
 
-  virtual double action_multiplier() const
-  {
-    double am = paladin_heal_t::action_multiplier();
-    
-    am *= 1.0 + p() -> perk.improved_holy_light -> effectN( 1 ).percent();
-
-    return am;
-  }
 };
 
 // Holy Shield proc ===========================================================
@@ -2404,6 +2391,9 @@ struct holy_shock_damage_t : public paladin_spell_t
     // this grabs the 25% base crit bonus from 20473
     crit_chance_multiplier = p -> find_class_spell( "Holy Shock" ) -> effectN( 1 ).base_value() / 10.0;
 
+    // Empowered Holy Shock
+    base_multiplier *= 1.0 + p -> perk.empowered_holy_shock -> effectN( 1 ).percent();
+
   }
 
   virtual double composite_crit() const
@@ -2437,16 +2427,7 @@ struct holy_shock_damage_t : public paladin_spell_t
       }
     }
   }
-
-  virtual double action_multiplier() const
-  {
-    double am = paladin_spell_t::action_multiplier();
-
-    am *= 1.0 + p() -> perk.empowered_holy_shock -> effectN( 1 ).percent();
-
-    return am;
-  }
-
+  
 };
 
 // Holy Shock Heal Spell ====================================================
@@ -2778,6 +2759,11 @@ struct light_of_dawn_t : public paladin_heal_t
     parse_options( NULL, options_str );
 
     aoe = 6;
+
+    // Holy Insight buffs all healing by 25% & WoG/EF/LoD by 50%.
+    // The 25% buff is already in paladin_heal_t, so we need to divide by that first & then apply 50%
+    base_multiplier /= 1.0 + p -> passives.holy_insight -> effectN( 6 ).percent();
+    base_multiplier *= 1.0 + p -> passives.holy_insight -> effectN( 9 ).percent();
   }
 
   virtual double action_multiplier() const
@@ -2785,11 +2771,6 @@ struct light_of_dawn_t : public paladin_heal_t
     double am = paladin_heal_t::action_multiplier();
 
     am *= p() -> holy_power_stacks();
-
-    // Holy Insight buffs all healing by 25% & WoG/EF/LoD by 50%.
-    // The 25% buff is already in paladin_heal_t, so we need to divide by that first & then apply 50%
-    am /= 1.0 + p() -> passives.holy_insight -> effectN( 6 ).percent();
-    am *= 1.0 + p() -> passives.holy_insight -> effectN( 9 ).percent();
 
     return am;
   }
@@ -3083,6 +3064,19 @@ struct word_of_glory_t : public paladin_heal_t
     // redirect to self if not specified
     if ( target -> is_enemy() || ( target -> type == HEALING_ENEMY && p -> specialization() == PALADIN_PROTECTION ) )
       target = p;
+
+    // passive effects that affect action_multiplier()
+
+    // Improved Word of Glory perk
+    base_multiplier *= 1.0 + p -> perk.improved_word_of_glory -> effectN( 1 ).percent();
+
+    // Holy Insight buffs all healing by 25% & WoG/EF/LoD by 50%.
+    // The 25% buff is already in paladin_heal_t, so we need to divide by that first & then apply 50%
+    base_multiplier /= 1.0 + p -> passives.holy_insight -> effectN( 6 ).percent();
+    base_multiplier *= 1.0 + p -> passives.holy_insight -> effectN( 9 ).percent();
+
+    // Sword of light
+    base_multiplier *= 1.0 + p -> passives.sword_of_light -> effectN( 3 ).percent();
   }
 
   virtual void update_ready( timespan_t cd_duration )
@@ -3139,17 +3133,6 @@ struct word_of_glory_t : public paladin_heal_t
 
       am *= ( 1.0 + bog_m );
     }
-
-    // Improved Word of Glory perk
-    am *= 1.0 + p() -> perk.improved_word_of_glory -> effectN( 1 ).percent();
-
-    // Holy Insight buffs all healing by 25% & WoG/EF/LoD by 50%.
-    // The 25% buff is already in paladin_heal_t, so we need to divide by that first & then apply 50%
-    am /= 1.0 + p() -> passives.holy_insight -> effectN( 6 ).percent();
-    am *= 1.0 + p() -> passives.holy_insight -> effectN( 9 ).percent();
-
-    // Sword of light
-    am *= 1.0 + p() -> passives.sword_of_light -> effectN( 3 ).percent();
 
     return am;
   }
@@ -3211,6 +3194,9 @@ struct harsh_word_t : public paladin_spell_t
       base_execute_time *= 1 + p -> passives.sword_of_light -> effectN( 9 ).percent();
     }
 
+    // Improved Word of Glory perk - sure, why not (TODO: test)
+    base_multiplier *= 1.0 + p -> perk.improved_word_of_glory -> effectN( 1 ).percent();
+
   }
 
   virtual void update_ready( timespan_t cd_duration )
@@ -3231,10 +3217,7 @@ struct harsh_word_t : public paladin_spell_t
 
     // scale the am by holy power spent, can't be more than 3 and Divine Purpose counts as 3
     am *= ( ( p() -> holy_power_stacks() <= 3  && c > 0.0 ) ? p() -> holy_power_stacks() : 3 );
-
-    // Improved Word of Glory perk - sure, why not (TODO: test)
-    am *= 1.0 + p() -> perk.improved_word_of_glory -> effectN( 1 ).percent();
-
+    
     return am;
   }
 
@@ -3289,6 +3272,13 @@ struct paladin_melee_attack_t : public paladin_action_t< melee_attack_t >
     may_crit = true;
     special = true;
     weapon = &( p -> main_hand_weapon );
+    
+    // Sword of Light boosts action_multiplier
+    if ( use2hspec && ( p -> passives.sword_of_light -> ok() ) && ( p -> main_hand_weapon.group() == WEAPON_2H ) )
+    {
+      base_multiplier *= 1.0 + p -> passives.sword_of_light_value -> effectN( 1 ).percent();
+    }
+
   }
 
   virtual timespan_t gcd() const
@@ -3338,18 +3328,6 @@ struct paladin_melee_attack_t : public paladin_action_t< melee_attack_t >
         }
       }
     }
-  }
-
-  virtual double action_multiplier() const
-  {
-    double am = base_t::action_multiplier();
-
-    if ( use2hspec && ( p() -> passives.sword_of_light -> ok() ) && ( p() -> main_hand_weapon.group() == WEAPON_2H ) )
-    {
-      am *= 1.0 + p() -> passives.sword_of_light_value -> effectN( 1 ).percent();
-    }
-
-    return am;
   }
 };
 
@@ -3455,6 +3433,9 @@ struct crusader_strike_t : public paladin_melee_attack_t
     base_costs[ RESOURCE_MANA ] *= 1.0 +  p -> passives.guarded_by_the_light -> effectN( 7 ).percent()
                                        +  p -> passives.sword_of_light -> effectN( 4 ).percent();
     base_costs[ RESOURCE_MANA ] = floor( base_costs[ RESOURCE_MANA ] + 0.5 );
+
+    // Improved Crusader Strike perk
+    base_multiplier *= 1.0 + p -> perk.improved_crusader_strike -> effectN( 1 ).percent();
   }
 
   virtual double action_multiplier() const
@@ -3466,9 +3447,6 @@ struct crusader_strike_t : public paladin_melee_attack_t
     {
       am *= 1.0 + p() -> buffs.holy_avenger -> data().effectN( 4 ).percent();
     }
-
-    // Improved Crusader Strike perk
-    am *= 1.0 + p() -> perk.improved_crusader_strike -> effectN( 1 ).percent();
 
     return am;
   }
@@ -3636,13 +3614,13 @@ struct hammer_of_the_righteous_aoe_t : public paladin_melee_attack_t
     background = true;
     aoe       = -1;
     trigger_gcd = timespan_t::zero(); // doesn't incur GCD (HotR does that already)
+
+    // Improved HotR perk
+    base_multiplier *= 1.0 + p -> perk.improved_hammer_of_the_righteous -> effectN( 1 ).percent();
   }
   virtual double action_multiplier() const
   {
     double am = paladin_melee_attack_t::action_multiplier();
-
-    // Improved HotR perk
-    am *= 1.0 + p() -> perk.improved_hammer_of_the_righteous -> effectN( 1 ).percent();
 
     // Holy Avenger buffs HotR damage by 30% while active
     if ( p() -> buffs.holy_avenger -> check() )
@@ -3699,6 +3677,9 @@ struct hammer_of_the_righteous_t : public paladin_melee_attack_t
 
     hotr_aoe = new hammer_of_the_righteous_aoe_t( p );
 
+    // Improved HotR perk
+    base_multiplier *= 1.0 + p -> perk.improved_hammer_of_the_righteous -> effectN( 1 ).percent();
+
     // Attach AoE proc as a child
     add_child( hotr_aoe );
   }
@@ -3716,9 +3697,6 @@ struct hammer_of_the_righteous_t : public paladin_melee_attack_t
   virtual double action_multiplier() const
   {
     double am = paladin_melee_attack_t::action_multiplier();
-
-    // Improved HotR perk
-    am *= 1.0 + p() -> perk.improved_hammer_of_the_righteous -> effectN( 1 ).percent();
 
     // Holy Avenger buffs HotR damage by 30% while active
     if ( p() -> buffs.holy_avenger -> check() )
@@ -3958,6 +3936,9 @@ struct judgment_t : public paladin_melee_attack_t
     // damage multiplier from T14 Retribution 4-piece bonus
     base_multiplier *= 1.0 + p -> sets.set( SET_T14_4PC_MELEE ) -> effectN( 1 ).percent();
 
+    // Improved Judgment perk
+    base_multiplier *= 1.0 + p -> perk.improved_judgment -> effectN( 1 ).percent();
+
     if ( p -> talents.empowered_seals -> ok() )
       uthers_insight = new uthers_insight_t( p );
   }
@@ -4043,9 +4024,6 @@ struct judgment_t : public paladin_melee_attack_t
   virtual double action_multiplier() const
   {
     double am = paladin_melee_attack_t::action_multiplier();
-
-    // Improved Judgment perk
-    am *= 1.0 + p() -> perk.improved_judgment -> effectN( 1 ).percent();
 
     // Holy Avenger buffs J damage by 30% while active
     if ( p() -> buffs.holy_avenger -> check() )
@@ -4223,25 +4201,19 @@ struct seal_of_truth_proc_t : public paladin_melee_attack_t
           weapon_multiplier /= 5;
         }
       }
-    }
-  }
-
-  virtual double action_multiplier() const
-  {
-    double am = paladin_melee_attack_t::action_multiplier();
+    }    
 
     // Improved SoT perk
-    am *= 1.0 + p() -> perk.empowered_seal_of_truth -> effectN( 1 ).percent();
+    base_multiplier *= 1.0 + p -> perk.empowered_seal_of_truth -> effectN( 1 ).percent();
 
     // Glyph of Immediate Truth increases direct damage
-    if ( p() -> glyphs.immediate_truth -> ok() )
-      am *= 1.0 + p() -> glyphs.immediate_truth -> effectN( 1 ).percent();
+    if ( p -> glyphs.immediate_truth -> ok() )
+      base_multiplier *= 1.0 + p -> glyphs.immediate_truth -> effectN( 1 ).percent();
     
     // Retribution T14 4-piece boosts seal damage
-    am *= 1.0 + p() -> sets.set( SET_T14_4PC_MELEE ) -> effectN( 1 ).percent();
-
-    return am;
+    base_multiplier *= 1.0 + p -> sets.set( SET_T14_4PC_MELEE ) -> effectN( 1 ).percent();
   }
+
 };
 
 // Shield of the Righteous ==================================================
@@ -4330,6 +4302,12 @@ struct templars_verdict_t : public paladin_melee_attack_t
     parse_options( NULL, options_str );
     sanctity_of_battle = true;
     trigger_seal       = true;
+
+    // Tier 13 Retribution 4-piece boosts damage
+    base_multiplier *= 1.0 + p -> sets.set( SET_T13_4PC_MELEE ) -> effectN( 1 ).percent();
+
+    // Tier 14 Retribution 2-piece boosts damage
+    base_multiplier *= 1.0 + p -> sets.set( SET_T14_2PC_MELEE ) -> effectN( 1 ).percent();
   }
 
   virtual school_e get_school() const
@@ -4367,19 +4345,6 @@ struct templars_verdict_t : public paladin_melee_attack_t
       // Remove T15 Retribution 4-piece effect
       p() -> buffs.tier15_4pc_melee -> expire();
     }
-  }
-
-  virtual double action_multiplier() const
-  {
-    double am = paladin_melee_attack_t::action_multiplier();
-
-    // Tier 13 Retribution 4-piece boosts damage
-    am *= 1.0 + p() -> sets.set( SET_T13_4PC_MELEE ) -> effectN( 1 ).percent();
-
-    // Tier 14 Retribution 2-piece boosts damage
-    am *= 1.0 + p() -> sets.set( SET_T14_2PC_MELEE ) -> effectN( 1 ).percent();
-
-    return am;
   }
 };
 
