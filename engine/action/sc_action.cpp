@@ -1305,7 +1305,7 @@ void action_t::update_resolve( dmg_e type,
       // normalize by player's current health, ignoring any temporary health buffs
       raw_resolve_amount /= ( target -> resources.max[ RESOURCE_HEALTH ] - target -> temporary.resource[ RESOURCE_HEALTH ] );
 
-      // update the player's resolve_actor_list
+      // update the player's resolve diminishing return list first!
       target -> resolve_manager.add_diminishing_return_entry( source, source -> get_raw_dps( s ), sim -> current_time );
 
       // apply diminishing returns - done at the time of the event, never recalculated
