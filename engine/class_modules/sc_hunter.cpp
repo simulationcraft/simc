@@ -3451,21 +3451,21 @@ void hunter_t::init_action_list()
       case HUNTER_BEAST_MASTERY:
 
         action_list_str += init_use_racial_actions();
-        action_list_str += "/dire_beast,if=enabled";
-        action_list_str += "/fervor,if=enabled&focus<=65";
+        action_list_str += "/dire_beast";
+        action_list_str += "/fervor,if=focus<=65";
         action_list_str += "/bestial_wrath,if=focus>60&!buff.beast_within.up";
         action_list_str += "/multi_shot,if=active_enemies>5|(active_enemies>1&pet.cat.buff.beast_cleave.down)";
 
-        action_list_str += "/stampede,if=enabled&(trinket.stat.agility.up|target.time_to_die<=20|(trinket.stacking_stat.agility.stack>10&trinket.stat.agility.cooldown_remains<=3))";
+        action_list_str += "/stampede,if=(trinket.stat.agility.up|target.time_to_die<=20|(trinket.stacking_stat.agility.stack>10&trinket.stat.agility.cooldown_remains<=3))";
 
-        action_list_str += "/barrage,if=enabled&active_enemies>5";
+        action_list_str += "/barrage,if=active_enemies>5";
         action_list_str += "/kill_shot";
         action_list_str += "/kill_command";
-        action_list_str += "/focusing_shot,if=enabled&focus<50";
-        action_list_str += "/a_murder_of_crows,if=enabled&!ticking";
-        action_list_str += "/glaive_toss,if=enabled";
-        action_list_str += "/barrage,if=enabled";
-        action_list_str += "/powershot,if=enabled";
+        action_list_str += "/focusing_shot,if=focus<50";
+        action_list_str += "/a_murder_of_crows,if=!ticking";
+        action_list_str += "/glaive_toss";
+        action_list_str += "/barrage";
+        action_list_str += "/powershot";
         action_list_str += "/cobra_shot,if=active_enemies>5";
         action_list_str += "/arcane_shot,if=buff.thrill_of_the_hunt.react|buff.beast_within.up";
         action_list_str += "/focus_fire,five_stacks=1";
@@ -3481,14 +3481,14 @@ void hunter_t::init_action_list()
       case HUNTER_MARKSMANSHIP:
         action_list_str += init_use_racial_actions();
 
-        action_list_str += "/powershot,if=enabled";
-        action_list_str += "/fervor,if=enabled&focus<=50";
+        action_list_str += "/powershot";
+        action_list_str += "/fervor,if=focus<=50";
         action_list_str += "/rapid_fire,if=!buff.rapid_fire.up";
 
-        action_list_str += "/stampede,if=enabled&(trinket.stat.agility.up|target.time_to_die<=20|(trinket.stacking_stat.agility.stack>10&trinket.stat.agility.cooldown_remains<=3))";
+        action_list_str += "/stampede,if=(trinket.stat.agility.up|target.time_to_die<=20|(trinket.stacking_stat.agility.stack>10&trinket.stat.agility.cooldown_remains<=3))";
 
-        action_list_str += "/a_murder_of_crows,if=enabled&!ticking";
-        action_list_str += "/dire_beast,if=enabled";
+        action_list_str += "/a_murder_of_crows,if=!ticking";
+        action_list_str += "/dire_beast";
 
         action_list_str += "/run_action_list,name=careful_aim,if=target.health.pct>";
         action_list_str += util::to_string( dbc.spell( 34483 ) -> effectN( 2 ).base_value() );
@@ -3497,16 +3497,16 @@ void hunter_t::init_action_list()
           std::string& CA_actions = get_action_priority_list( "careful_aim" ) -> action_list_str;
           CA_actions += "/chimera_shot";
           CA_actions += "/aimed_shot";
-          CA_actions += "/glaive_toss,if=enabled";
-          CA_actions += "/focusing_shot,if=enabled&focus<60";
+          CA_actions += "/glaive_toss";
+          CA_actions += "/focusing_shot,if=focus<60";
           CA_actions += "/steady_shot";
         }
 
         // actions for outside the CA phase
-        action_list_str += "/glaive_toss,if=enabled";
-        action_list_str += "/barrage,if=enabled";
+        action_list_str += "/glaive_toss";
+        action_list_str += "/barrage";
         action_list_str += "/chimera_shot";
-        action_list_str += "/focusing_shot,if=enabled&focus<50";
+        action_list_str += "/focusing_shot,if=focus<50";
         action_list_str += "/kill_shot";
         action_list_str += "/multi_shot,if=active_enemies>=4";
         action_list_str += "/aimed_shot";
@@ -3515,20 +3515,20 @@ void hunter_t::init_action_list()
 
         // SURVIVAL
       case HUNTER_SURVIVAL:
-        action_list_str += "/fervor,if=enabled&focus<=50";
-        action_list_str += "/a_murder_of_crows,if=enabled&!ticking";
+        action_list_str += "/fervor,if=focus<=50";
+        action_list_str += "/a_murder_of_crows,if=!ticking";
         action_list_str += "/explosive_shot,if=buff.lock_and_load.react";
-        action_list_str += "/glaive_toss,if=enabled";
-        action_list_str += "/powershot,if=enabled";
-        action_list_str += "/barrage,if=enabled";
+        action_list_str += "/glaive_toss";
+        action_list_str += "/powershot";
+        action_list_str += "/barrage";
         action_list_str += "/explosive_shot,if=cooldown_react";
         action_list_str += "/black_arrow,if=!ticking&target.time_to_die>=8";
         action_list_str += "/multi_shot,if=active_enemies>3";
-        action_list_str += "/focusing_shot,if=enabled&focus<50";
+        action_list_str += "/focusing_shot,if=focus<50";
         action_list_str += "/arcane_shot,if=buff.thrill_of_the_hunt.react";
-        action_list_str += "/dire_beast,if=enabled";
+        action_list_str += "/dire_beast";
 
-        action_list_str += "/stampede,if=enabled&(trinket.stat.agility.up|target.time_to_die<=20|(trinket.stacking_stat.agility.stack>10&trinket.stat.agility.cooldown_remains<=3))";
+        action_list_str += "/stampede,if=(trinket.stat.agility.up|target.time_to_die<=20|(trinket.stacking_stat.agility.stack>10&trinket.stat.agility.cooldown_remains<=3))";
 
         action_list_str += "/arcane_shot,if=focus>=67&active_enemies<2";
         action_list_str += "/multi_shot,if=focus>=67&active_enemies>1";
