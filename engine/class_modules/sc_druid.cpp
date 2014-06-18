@@ -2811,7 +2811,6 @@ struct maul_t : public bear_attack_t
       druid_action_t( "tooth_and_claw", p, p -> spec.tooth_and_claw )
     {
       harmful = special = false;
-      background = dual = true;
       may_crit = false;
       target = player;
 
@@ -2822,14 +2821,6 @@ struct maul_t : public bear_attack_t
     virtual void impact( action_state_t* s )
     {
       p() -> buff.tooth_and_claw_absorb -> trigger( 1, s -> result_amount );
-    }
-
-    virtual bool ready()
-    {
-      if ( ! p() -> buff.tooth_and_claw -> check() )
-        return false;
-
-      return druid_action_t::ready();
     }
   };
 
