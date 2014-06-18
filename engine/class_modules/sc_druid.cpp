@@ -26,11 +26,8 @@ namespace { // UNNAMED NAMESPACE
     Just verify stuff.
 
     = Guardian =
-    Perks
-    Soul of the Forest
     New mastery: Primary Tenacity
     Verify DoC
-    Ursa Major
 
     = Restoration =
     Err'thing
@@ -207,6 +204,7 @@ public:
     buff_t* tier15_2pc_tank;
     buff_t* tooth_and_claw;
     absorb_buff_t* tooth_and_claw_absorb;
+    buff_t* ursa_major;
 
     // Restoration
     buff_t* soul_of_the_forest;
@@ -391,9 +389,10 @@ public:
 
     // Guardian
     const spell_data_t* bladed_armor;
-    const spell_data_t* savage_defense;
     const spell_data_t* readiness_guardian;
     const spell_data_t* resolve;
+    const spell_data_t* savage_defense;
+    const spell_data_t* thick_hide;
     const spell_data_t* tooth_and_claw;
     const spell_data_t* ursa_major;
 
@@ -579,6 +578,7 @@ public:
   virtual void      assess_heal( school_e, dmg_e, action_state_t* );
   virtual void      create_options();
   virtual bool      create_profile( std::string& profile_str, save_e type = SAVE_ALL, bool save_html = false );
+  virtual void      recalculate_resource_max( resource_e resource_type );
 
   void              apl_precombat();
   void              apl_default();
@@ -852,7 +852,7 @@ struct yseras_gift_t : public heal_t
     heal_t( "yseras_gift", p, p -> talent.yseras_gift )
   {
     base_tick_time = data().effectN( 1 ).period();
-    dot_duration = base_tick_time;
+    dot_duration   = base_tick_time;
     hasted_ticks   = false;
     tick_may_crit  = false;
     harmful        = false;
@@ -864,7 +864,7 @@ struct yseras_gift_t : public heal_t
   {
     druid_t* p = static_cast<druid_t*>( player );
 
-    d -> current_tick = 0; // ticks indefinitely
+    d -> refresh_duration(); // ticks indefinitely
 
     base_td = p -> resources.max[ RESOURCE_HEALTH ] * data().effectN( 1 ).percent();
 
@@ -1234,19 +1234,7 @@ public:
   druid_t& p() const { return druid; }
 };
 
-// Barkskin Buff =================================================
-
-struct barkskin_t : public druid_buff_t < buff_t >
-{
-  barkskin_t( druid_t& p ) :
-    base_t( p, buff_creator_t( &p, "barkskin", p.find_specialization_spell( "Barkskin" ) ) )
-  {
-    cooldown -> duration = timespan_t::zero(); // CD is managed by the spell
-  }
-
-};
-
-// Astral Communion Buff =================================================
+// Astral Communion Buff ====================================================
 
 struct astral_communion_t : public druid_buff_t < buff_t >
 {
@@ -1267,26 +1255,19 @@ struct astral_communion_t : public druid_buff_t < buff_t >
   }
 };
 
-// Celestial Alignment Buff =================================================
+// Barkskin Buff ============================================================
 
-struct celestial_alignment_t : public druid_buff_t < buff_t >
+struct barkskin_t : public druid_buff_t < buff_t >
 {
-  celestial_alignment_t( druid_t& p ) :
-    base_t( p, buff_creator_t( &p, "celestial_alignment", p.find_class_spell( "Celestial Alignment" ) ) )
+  barkskin_t( druid_t& p ) :
+    base_t( p, buff_creator_t( &p, "barkskin", p.find_specialization_spell( "Barkskin" ) ) )
   {
     cooldown -> duration = timespan_t::zero(); // CD is managed by the spell
-    add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
   }
 
-  virtual void expire_override()
-  {
-    base_t::expire_override();
-
-    druid.last_check = sim -> current_time;
-  }
 };
 
-// Bear Form
+// Bear Form ================================================================
 
 struct bear_form_t : public druid_buff_t< buff_t >
 {
@@ -1309,7 +1290,7 @@ public:
 
     sim -> auras.critical_strike -> decrement();
 
-    druid.player_t::recalculate_resource_max( RESOURCE_HEALTH );
+    druid.druid_t::recalculate_resource_max( RESOURCE_HEALTH );
 
     if ( druid.specialization() == DRUID_GUARDIAN )
       druid.resolve_manager.stop();
@@ -1335,13 +1316,13 @@ public:
     if ( ! sim -> overrides.critical_strike )
       sim -> auras.critical_strike -> trigger();
 
-    druid.player_t::recalculate_resource_max( RESOURCE_HEALTH );
+    druid.druid_t::recalculate_resource_max( RESOURCE_HEALTH );
   }
 private:
   const spell_data_t* rage_spell;
 };
 
-// Berserk Buff ======================================================
+// Berserk Buff =============================================================
 
 struct berserk_buff_t : public druid_buff_t<buff_t>
 {
@@ -1370,7 +1351,7 @@ struct berserk_buff_t : public druid_buff_t<buff_t>
   }
 };
 
-// Cat Form
+// Cat Form =================================================================
 
 struct cat_form_t : public druid_buff_t< buff_t >
 {
@@ -1405,7 +1386,51 @@ struct cat_form_t : public druid_buff_t< buff_t >
   }
 };
 
-// Moonkin Form
+// Celestial Alignment Buff =================================================
+
+struct celestial_alignment_t : public druid_buff_t < buff_t >
+{
+  celestial_alignment_t( druid_t& p ) :
+    base_t( p, buff_creator_t( &p, "celestial_alignment", p.find_class_spell( "Celestial Alignment" ) ) )
+  {
+    cooldown -> duration = timespan_t::zero(); // CD is managed by the spell
+    add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
+  }
+
+  virtual void expire_override()
+  {
+    base_t::expire_override();
+
+    druid.last_check = sim -> current_time;
+  }
+};
+
+// Might of Ursoc Buff ======================================================
+/* TODO: Does this double dip on Ursa Major or not? Current implementation snapshots
+         20% of max HP post-major and then that value gets buffed by Ursa Major. */
+
+struct might_of_ursoc_t : public druid_buff_t < buff_t >
+{
+  might_of_ursoc_t( druid_t& p ) :
+    druid_buff_t( p, buff_creator_t( &p, "might_of_ursoc", p.find_spell( 106922 ) ) )
+  {}
+
+  virtual void start( int stacks, double value, timespan_t duration )
+  {
+    druid_buff_t::start( stacks, value, duration );
+
+    druid.druid_t::recalculate_resource_max( RESOURCE_HEALTH );
+  }
+
+  virtual void expire_override()
+  {
+    druid_buff_t::expire_override();
+
+    druid.druid_t::recalculate_resource_max( RESOURCE_HEALTH );
+  }
+};
+
+// Moonkin Form =============================================================
 
 struct moonkin_form_t : public druid_buff_t< buff_t >
 {
@@ -1433,37 +1458,7 @@ struct moonkin_form_t : public druid_buff_t< buff_t >
   }
 };
 
-// Might of Ursoc Buff ======================================================
-
-struct might_of_ursoc_t : public buff_t
-{
-  double percent_gain;
-  int health_gain;
-
-  might_of_ursoc_t( druid_t* p, const uint32_t id, const std::string& /* n */ ) :
-    buff_t( buff_creator_t( p, "might_of_ursoc", p -> find_spell( id ) ) ),
-    health_gain( 0 )
-  {
-    percent_gain = data().effectN( 1 ).percent() + p -> glyph.might_of_ursoc -> effectN( 1 ).percent();
-  }
-
-  virtual bool trigger( int stacks, double value, double chance, timespan_t duration )
-  {
-    health_gain = ( int ) floor( player -> resources.max[ RESOURCE_HEALTH ] * percent_gain );
-    player -> stat_gain( STAT_MAX_HEALTH, health_gain );
-
-    return buff_t::trigger( stacks, value, chance, duration );
-  }
-
-  virtual void expire_override()
-  {
-    player -> stat_loss( STAT_MAX_HEALTH, health_gain );
-
-    buff_t::expire_override();
-  }
-};
-
-// Tooth and Claw Absorb Buff
+// Tooth and Claw Absorb Buff ===============================================
 
 struct tooth_and_claw_absorb_t : public absorb_buff_t
 {
@@ -1483,6 +1478,64 @@ struct tooth_and_claw_absorb_t : public absorb_buff_t
     p() -> buff.tooth_and_claw_absorb -> expire();
   }
 };
+
+// Ursa Major Buff ==========================================================
+
+struct ursa_major_t : public druid_buff_t < buff_t >
+{
+  ursa_major_t( druid_t& p ) :
+    druid_buff_t( p, buff_creator_t( &p, "ursa_major", p.find_spell( 159233 ) )
+                  .default_value( p.find_spell( 159233 ) -> effectN( 1 ).percent() )
+    )
+  {}
+
+  virtual void start( int stacks, double value, timespan_t duration )
+  {
+    double health_before = druid.resources.max[ RESOURCE_HEALTH ];
+
+    base_t::start( stacks, value, duration );
+
+    druid.druid_t::recalculate_resource_max( RESOURCE_HEALTH );
+
+    if ( sim -> debug )
+        sim -> out_debug.printf( "%s gains ursa_major -- before HP: %.1f, after HP: %.1f",
+                                 player -> name(),
+                                 health_before,
+                                 druid.resources.max[ RESOURCE_HEALTH ] );
+  }
+
+  virtual void refresh( int stacks, double value, timespan_t duration )
+  {
+    double health_before = druid.resources.max[ RESOURCE_HEALTH ];
+
+    base_t::refresh( stacks, value, duration );
+
+    druid.druid_t::recalculate_resource_max( RESOURCE_HEALTH );
+
+    if ( sim -> debug )
+        sim -> out_debug.printf( "%s refreshes ursa_major -- before HP: %.1f, after HP: %.1f",
+                                 player -> name(),
+                                 health_before,
+                                 druid.resources.max[ RESOURCE_HEALTH ] );
+  }
+
+  virtual void expire_override()
+  {
+    double health_before = druid.resources.max[ RESOURCE_HEALTH ];
+
+    base_t::expire_override();
+
+    druid.druid_t::recalculate_resource_max( RESOURCE_HEALTH );
+
+    if ( sim -> debug )
+        sim -> out_debug.printf( "%s loses ursa_major -- before HP: %.1f, after HP: %.1f",
+                                 player -> name(),
+                                 health_before,
+                                 druid.resources.max[ RESOURCE_HEALTH ] );
+  }
+};
+
+// Heart of the Wild Buff ===================================================
 
 struct heart_of_the_wild_buff_t : public druid_buff_t < buff_t >
 {
@@ -2391,9 +2444,9 @@ struct swipe_t : public cat_attack_t
       p() -> buff.tier15_4pc_melee -> decrement();
   }
 
-  double composite_da_multiplier( const action_state_t* state ) const
+  double action_multiplier() const
   {
-    double m = cat_attack_t::composite_da_multiplier( state );
+    double m = cat_attack_t::action_multiplier();
 
     if ( p() -> buff.feral_fury -> check() )
       m *= 1.0 + p() -> buff.feral_fury -> data().effectN( 1 ).percent();
@@ -2527,7 +2580,7 @@ struct bear_attack_t : public druid_attack_t<melee_attack_t>
   {
     base_t::execute();
 
-   if( execute_state -> result == RESULT_CRIT )
+   if ( execute_state -> result == RESULT_CRIT )
    {
      p() -> resource_gain( RESOURCE_RAGE,
        p() -> spell.primal_fury -> effectN( 1 ).resource( RESOURCE_RAGE ),
@@ -2547,6 +2600,16 @@ struct bear_attack_t : public druid_attack_t<melee_attack_t>
     double rage = 5;
 
     p() -> resource_gain( RESOURCE_RAGE, rage, p() -> gain.bear_melee );
+  }
+
+  void trigger_ursa_major()
+  {
+    if ( p() -> buff.ursa_major -> check() )
+    {
+      double remaining_value = p() -> buff.ursa_major -> value() * ( p() -> buff.ursa_major -> remains() / p() -> buff.ursa_major -> buff_duration );
+      p() -> buff.ursa_major -> trigger( 1, p() -> buff.ursa_major -> default_value + remaining_value );
+    } else
+      p() -> buff.ursa_major -> trigger();
   }
 
   virtual timespan_t gcd() const
@@ -2598,6 +2661,8 @@ struct bear_melee_t : public bear_attack_t
         p() -> proc.tooth_and_claw -> occur();
       }
     }
+    if ( result_is_multistrike( state -> result ) )
+      trigger_ursa_major();
   }
 };
 
@@ -2650,6 +2715,9 @@ struct lacerate_t : public bear_attack_t
     }
 
     bear_attack_t::impact( state );
+
+    if ( result_is_multistrike( state -> result ) )
+      trigger_ursa_major();
   }
 
   virtual double composite_target_ta_multiplier( player_t* t ) const
@@ -2682,12 +2750,16 @@ struct lacerate_t : public bear_attack_t
 
 struct mangle_t : public bear_attack_t
 {
+  double rage_gain;
   mangle_t( druid_t* player, const std::string& options_str ) :
     bear_attack_t( "mangle", player, player -> find_class_spell( "Mangle" ) )
   {
     parse_options( NULL, options_str );
-    attack_power_mod.direct *= 1.0 + player -> talent.soul_of_the_forest -> effectN( 2 ).percent();
-    attack_power_mod.direct *= 1.0 + player -> perk.improved_mangle -> effectN( 1 ).percent();
+
+    rage_gain = data().effectN( 3 ).resource( RESOURCE_RAGE ) + player -> talent.soul_of_the_forest -> effectN( 1 ).resource( RESOURCE_RAGE );
+
+    base_multiplier *= 1.0 + player -> talent.soul_of_the_forest -> effectN( 2 ).percent();
+    base_multiplier *= 1.0 + player -> perk.improved_mangle -> effectN( 1 ).percent();
   }
 
   virtual void execute()
@@ -2701,13 +2773,14 @@ struct mangle_t : public bear_attack_t
       cooldown -> reset( false );
   }
 
-  virtual double action_da_multiplier() const
+  virtual void impact( action_state_t* s )
   {
-    double adm = bear_attack_t::action_da_multiplier();
+    bear_attack_t::impact( s );
 
-    adm *= 1.0 + p() -> talent.soul_of_the_forest -> effectN( 2 ).percent();
-
-    return adm;
+    if ( result_is_hit( s -> result ) )
+      p() -> resource_gain( RESOURCE_RAGE, rage_gain, p() -> gain.mangle );
+    if ( result_is_multistrike( s -> result ) )
+      trigger_ursa_major();
   }
 
   virtual bool ready()
@@ -2734,7 +2807,7 @@ struct maul_t : public bear_attack_t
     base_add_multiplier = player -> glyph.maul -> effectN( 3 ).percent();
     use_off_gcd = special = true;
 
-    attack_power_mod.direct *= 1.0 + player -> perk.improved_maul -> effectN( 1 ).percent();
+    base_multiplier *= 1.0 + player -> perk.improved_maul -> effectN( 1 ).percent();
 
     if ( p() -> spec.tooth_and_claw -> ok() )
       absorb = new tooth_and_claw_t( player );
@@ -2744,7 +2817,7 @@ struct maul_t : public bear_attack_t
   {
     double c = bear_attack_t::cost();
 
-    if ( p() -> buff.tooth_and_claw -> up() )
+    if ( p() -> perk.enhanced_tooth_and_claw -> ok() && p() -> buff.tooth_and_claw -> up() )
       c = 0;
 
     return c;
@@ -2822,7 +2895,7 @@ struct thrash_bear_t : public bear_attack_t
     dot_behavior      = DOT_REFRESH;
     special           = true;
     rage_gain = p() -> find_spell( 158723 ) -> effectN( 1 ).resource( RESOURCE_RAGE );
-    attack_power_mod.tick *= 1.0 + p() -> perk.empowered_thrash -> effectN( 1 ).percent();
+    base_td_multiplier *= 1.0 + p() -> perk.empowered_thrash -> effectN( 1 ).percent();
   }
 
   virtual void execute()
@@ -2910,9 +2983,15 @@ struct might_of_ursoc_t : public bear_attack_t
   {
     bear_attack_t::execute();
 
+    p() -> buff.might_of_ursoc -> trigger( 1, p() -> resources.max[ RESOURCE_HEALTH ] * data().effectN( 1 ).percent() );
+  }
+
+  virtual bool ready()
+  {
     if ( ! p() -> buff.bear_form -> check() )
-      p() -> buff.bear_form -> start();
-    p() -> buff.might_of_ursoc -> trigger();
+      return false;
+
+    return bear_attack_t::ready();
   }
 };
 
@@ -3154,7 +3233,7 @@ struct frenzied_regeneration_t : public druid_heal_t
     use_off_gcd = true;
 
     attack_power_mod.direct = data().effectN( 1 ).ap_coeff();
-    attack_power_mod.direct *= 1.0 + p -> perk.improved_frenzied_regeneration -> effectN( 1 ).percent();
+    base_multiplier *= 1.0 + p -> perk.improved_frenzied_regeneration -> effectN( 1 ).percent();
     target = player;
     if ( p -> sets.has_set_bonus( SET_T16_2PC_TANK ) )
       p -> active.ursocs_vigor = new ursocs_vigor_t( p );
@@ -5106,6 +5185,7 @@ void druid_t::init_spells()
   spec.bladed_armor           = find_specialization_spell( "Bladed Armor" );
   spec.resolve                = find_specialization_spell( "Resolve" );
   spec.savage_defense         = find_specialization_spell( "Savage Defense" );
+  spec.thick_hide             = find_specialization_spell( "Thick Hide" );
   spec.tooth_and_claw         = find_specialization_spell( "Tooth and Claw" );
   spec.ursa_major             = find_specialization_spell( "Ursa Major" );
 
@@ -5207,46 +5287,46 @@ void druid_t::init_spells()
   mastery.primal_tenacity  = find_mastery_spell( DRUID_GUARDIAN );
 
   // Perks
-  perk.improved_healing_touch = find_perk_spell( "Improved Healing Touch" );
+  perk.improved_healing_touch  = find_perk_spell( "Improved Healing Touch" );
 
   // Feral
-  perk.enhanced_berserk = find_perk_spell( "Enhanced Berserk" );
-  perk.enhanced_cat_form = find_perk_spell( "Enhanced Cat Form" );
-  perk.enhanced_prowl = find_perk_spell( "Enhanced Prowl" );
-  perk.enhanced_rejuvenation = find_perk_spell( "Enhanced Rejuvenation" );
-  perk.enhanced_tigers_fury = find_perk_spell( "Enhanced Tiger's Fury" );
-  perk.improved_rake = find_perk_spell( "Improved Rake" );
+  perk.enhanced_berserk        = find_perk_spell( "Enhanced Berserk" );
+  perk.enhanced_cat_form       = find_perk_spell( "Enhanced Cat Form" );
+  perk.enhanced_prowl          = find_perk_spell( "Enhanced Prowl" );
+  perk.enhanced_rejuvenation   = find_perk_spell( "Enhanced Rejuvenation" );
+  perk.enhanced_tigers_fury    = find_perk_spell( "Enhanced Tiger's Fury" );
+  perk.improved_rake           = find_perk_spell( "Improved Rake" );
   perk.improved_ferocious_bite = find_perk_spell( "Improved Ferocious Bite" );
-  perk.improved_shred = find_perk_spell( "Improved Shred" );
+  perk.improved_shred          = find_perk_spell( "Improved Shred" );
 
   // Balance
-  perk.enhanced_mushrooms = find_perk_spell( "Enhanced Mushrooms" );
-  perk.enhanced_storms = find_perk_spell( "Enhanced Storms" );
-  perk.enhanced_moonkin_form = find_perk_spell( "Enhanced Moonkin Form" );
-  perk.enhanced_owlkin_frenzy = find_perk_spell( "Enhanced Owlkin Frenzy" );
-  perk.improved_starfire = find_perk_spell( "Improved Starfire" );
-  perk.improved_wrath = find_perk_spell( "Improved Wrath" );
-  perk.enhanced_starsurge = find_perk_spell( "Enhanced Starsurge" );
-  perk.empowered_starfall = find_perk_spell( "Empowered Starfall" );
-  perk.improved_moonfire = find_perk_spell( "Improved Moonfire" );
+  perk.enhanced_mushrooms      = find_perk_spell( "Enhanced Mushrooms" );
+  perk.enhanced_storms         = find_perk_spell( "Enhanced Storms" );
+  perk.enhanced_moonkin_form   = find_perk_spell( "Enhanced Moonkin Form" );
+  perk.enhanced_owlkin_frenzy  = find_perk_spell( "Enhanced Owlkin Frenzy" );
+  perk.improved_starfire       = find_perk_spell( "Improved Starfire" );
+  perk.improved_wrath          = find_perk_spell( "Improved Wrath" );
+  perk.enhanced_starsurge      = find_perk_spell( "Enhanced Starsurge" );
+  perk.empowered_starfall      = find_perk_spell( "Empowered Starfall" );
+  perk.improved_moonfire       = find_perk_spell( "Improved Moonfire" );
 
   // Guardian
-  perk.enhanced_tooth_and_claw = find_perk_spell( "Enhanced Tooth and Claw" );
-  perk.improved_mangle = find_perk_spell( "Improved Mangle" );
-  perk.improved_maul = find_perk_spell( "Improved Maul" );
-  perk.empowered_thrash = find_perk_spell( "Empowered Thrash" );
-  perk.empowered_bear_form = find_perk_spell( "Empowered Bear Form" );
-  perk.empowered_berserk = find_perk_spell( "Empowered Berserk" );
-  perk.improved_barkskin = find_perk_spell( "Improved Barkskin" );
+  perk.enhanced_tooth_and_claw        = find_perk_spell( "Enhanced Tooth and Claw" );
+  perk.improved_mangle                = find_perk_spell( "Improved Mangle" );
+  perk.improved_maul                  = find_perk_spell( "Improved Maul" );
+  perk.empowered_thrash               = find_perk_spell( "Empowered Thrash" );
+  perk.empowered_bear_form            = find_perk_spell( "Empowered Bear Form" );
+  perk.empowered_berserk              = find_perk_spell( "Empowered Berserk" );
+  perk.improved_barkskin              = find_perk_spell( "Improved Barkskin" );
   perk.improved_frenzied_regeneration = find_perk_spell( "Improved Frenzied Regeneration" );
 
   // Restoration
   perk.empowered_rejuvenation = find_perk_spell( "Empowered Rejuvenation" );
-  perk.enhanced_rebirth = find_perk_spell( "Enhanced Rebirth" );
-  perk.empowered_regrowth = find_perk_spell( "Empowered Regrowth" );
-  perk.empowered_ironbark = find_perk_spell( "Empowered Ironbark" );
-  perk.improved_living_seed = find_perk_spell( "Improved Living Seed" );
-  perk.enhanced_lifebloom = find_perk_spell( "Enhanced Lifebloom" );
+  perk.enhanced_rebirth       = find_perk_spell( "Enhanced Rebirth" );
+  perk.empowered_regrowth     = find_perk_spell( "Empowered Regrowth" );
+  perk.empowered_ironbark     = find_perk_spell( "Empowered Ironbark" );
+  perk.improved_living_seed   = find_perk_spell( "Improved Living Seed" );
+  perk.enhanced_lifebloom     = find_perk_spell( "Enhanced Lifebloom" );
 
   // Glyphs
   glyph.astral_communion      = find_glyph_spell( "Glyph of Astral Communion" );
@@ -5434,7 +5514,7 @@ void druid_t::create_buffs()
 
   buff.barkskin              = new barkskin_t( *this );
   buff.lacerate              = buff_creator_t( this, "lacerate" , find_class_spell( "Lacerate" ) );
-  buff.might_of_ursoc        = new might_of_ursoc_t( this, 106922, "might_of_ursoc" );
+  buff.might_of_ursoc        = new might_of_ursoc_t( *this );
   buff.savage_defense        = buff_creator_t( this, "savage_defense", find_class_spell( "Savage Defense" ) -> ok() ? find_spell( 132402 ) : spell_data_t::not_found() )
                                .add_invalidate( CACHE_DODGE );
   buff.survival_instincts    = buff_creator_t( this, "survival_instincts", find_class_spell( "Survival Instincts" ) )
@@ -5442,6 +5522,7 @@ void druid_t::create_buffs()
   buff.tier15_2pc_tank       = buff_creator_t( this, "tier15_2pc_tank", find_spell( 138217 ) );
   buff.tooth_and_claw        = buff_creator_t( this, "tooth_and_claw", find_spell( 135286 ) );
   buff.tooth_and_claw_absorb = new tooth_and_claw_absorb_t( this );
+  buff.ursa_major            = new ursa_major_t( *this );
 
   // Restoration
   buff.harmony               = buff_creator_t( this, "harmony", mastery.harmony -> ok() ? find_spell( 100977 ) : spell_data_t::not_found() );
@@ -6002,7 +6083,7 @@ double druid_t::composite_armor_multiplier() const
   double a = player_t::composite_armor_multiplier();
 
   if ( buff.bear_form -> check() )
-    a *= 1.0 +  buff.bear_form -> data().effectN( 3 ).percent();
+    a *= 1.0 + buff.bear_form -> data().effectN( 3 ).percent() + spec.thick_hide -> effectN( 2 ).percent();
 
   if ( buff.moonkin_form -> check() )
     a *= 1.0 + buff.moonkin_form -> data().effectN( 3 ).percent() + perk.enhanced_moonkin_form -> effectN( 1 ).percent();
@@ -6056,8 +6137,7 @@ double druid_t::composite_melee_expertise( weapon_t* ) const
 {
   double exp = player_t::composite_melee_expertise();
 
-  if ( specialization() == DRUID_GUARDIAN && buff.bear_form -> check() )
-    exp += 0.03;
+  exp += spec.thick_hide -> effectN( 7 ).percent();
 
   return exp;
 }
@@ -6225,8 +6305,7 @@ double druid_t::composite_crit_avoidance() const
 {
   double c = player_t::composite_crit_avoidance();
 
-  if ( specialization() == DRUID_GUARDIAN && buff.bear_form -> check() )
-    c += 0.06; // Check
+  c += spec.thick_hide -> effectN( 1 ).percent();
 
   return c;
 }
@@ -6280,6 +6359,21 @@ double druid_t::composite_rating_multiplier( rating_e rating ) const
   }
 
   return m;
+}
+
+// druid_t::recalculate_resource_max ========================================
+
+void druid_t::recalculate_resource_max( resource_e resource_type )
+{
+  player_t::recalculate_resource_max( resource_type );
+
+  if ( resource_type == RESOURCE_HEALTH )
+  {
+    if ( buff.might_of_ursoc -> check() )
+      resources.max[ RESOURCE_HEALTH ] += buff.might_of_ursoc -> value();
+    if ( buff.ursa_major -> check() )
+      resources.max[ RESOURCE_HEALTH ] *= 1.0 + buff.ursa_major -> value();
+  }
 }
 
 // druid_t::create_expression ===============================================
@@ -6608,7 +6702,7 @@ void druid_t::assess_damage( school_e school,
     buff.tier15_2pc_tank -> trigger();
 
   if ( buff.barkskin -> up() )
-    s -> result_amount *= 1.0 + ( buff.barkskin -> value() + perk.improved_barkskin -> effectN( 1 ).percent() );
+    s -> result_amount *= 1.0 + buff.barkskin -> value() + perk.improved_barkskin -> effectN( 1 ).percent();
 
   if ( buff.survival_instincts -> up() )
     s -> result_amount *= 1.0 + buff.survival_instincts -> value();
@@ -6626,9 +6720,9 @@ void druid_t::assess_damage( school_e school,
       proc.primal_fury -> occur();
      }
     if ( school == SCHOOL_PHYSICAL )
-      s -> result_amount *= 1.0 - 0.12; // Check
+      s -> result_amount *= 1.0 + spec.thick_hide -> effectN( 5 ).percent();
     else if ( dbc::get_school_mask( school ) & SCHOOL_MAGIC_MASK )
-      s -> result_amount *= 1.0 - 0.25; // Check
+      s -> result_amount *= 1.0 + spec.thick_hide -> effectN( 3 ).percent();
   }
 
   if ( buff.cenarion_ward -> up() && s -> result_amount > 0 )
