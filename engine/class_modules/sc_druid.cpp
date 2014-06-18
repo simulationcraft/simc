@@ -2188,39 +2188,11 @@ struct maim_t : public cat_attack_t
   }
 };
 
-// Rake DoT =================================================================
-/* TODO: Prevent bleed application from causing a direct hit which halves the average damage
-   in the HTML output.*/
-
-struct rake_bleed_t : public cat_attack_t {
-  rake_bleed_t( druid_t* p ) :
-    cat_attack_t( "rake", p, p -> find_spell( 155722 ) )
-  {
-    dual = background     = true;
-    dot_behavior          = DOT_REFRESH;
-    attack_power_mod.tick = data().effectN( 1 ).ap_coeff();
-    may_miss = may_dodge = may_parry = false;
-  }
-
-  virtual double composite_persistent_multiplier( const action_state_t* s ) const
-  {
-    double pm = cat_attack_t::composite_persistent_multiplier( s );
-
-    // TODO: Confirm that this bonus really is snapshotted.
-    if ( p() -> buff.prowl -> up() || p() -> buff.king_of_the_jungle -> up() )
-      pm *= 1.0 + p() -> perk.improved_rake -> effectN( 2 ).percent();
-
-    return pm;
-  }
-};
-
 // Rake =====================================================================
-/* TODO: Confirm whether or not procs can occur in between the direct hit and bleed application,
-   as well as if it aligns with in-game mechanics. */
 
 struct rake_t : public cat_attack_t
 {
-  action_t* bleed;
+  const spell_data_t* bleed_spell;
 
   rake_t( druid_t* p, const std::string& options_str ) :
     cat_attack_t( "rake", p, p -> find_specialization_spell( "Rake" ), options_str )
@@ -2228,34 +2200,39 @@ struct rake_t : public cat_attack_t
     special = true;
     attack_power_mod.direct = data().effectN( 1 ).ap_coeff();
 
-    bleed = new rake_bleed_t( p );
+    bleed_spell = p -> find_spell( 155722 );
+    attack_power_mod.tick = bleed_spell -> effectN( 1 ).ap_coeff();
+    dot_behavior          = DOT_REFRESH;
+    dot_duration          = bleed_spell -> duration();
+    base_tick_time        = bleed_spell -> effectN( 1 ).period();
   }
 
-  // Treat direct damage as "bleed"
-  // Must use direct damage because tick_zeroes cannot be blocked, and
-  // this attack can be blocked if the druid is in front of the target.
+  virtual double composite_persistent_multiplier( const action_state_t* s ) const
+  {
+    double pm = cat_attack_t::composite_persistent_multiplier( s );
+
+    if ( p() -> buff.prowl -> up() || p() -> buff.king_of_the_jungle -> up() )
+      pm *= 1.0 + p() -> perk.improved_rake -> effectN( 2 ).percent();
+
+    return pm;
+  }
+
+  /* Treat direct damage as "bleed"
+     Must use direct damage because tick_zeroes cannot be blocked, and
+     this attack can be blocked if the druid is in front of the target. */
   double composite_da_multiplier( const action_state_t* state ) const
   {
-    double m = melee_attack_t::composite_da_multiplier( state );
+    double dm = cat_attack_t::composite_da_multiplier( state );
 
     if ( p() -> mastery.razor_claws -> ok() )
-      m *= 1.0 + p() -> cache.mastery_value();
-    if ( p() -> buff.prowl -> up() || p() -> buff.king_of_the_jungle -> up() )
-      m *= 1.0 + p() -> perk.improved_rake -> effectN( 2 ).percent();
+      dm *= 1.0 + p() -> cache.mastery_value();
 
-    return m;
+    return dm;
   }
 
-  virtual void impact( action_state_t* state )
-  {
-    cat_attack_t::impact( state );
-
-    if ( result_is_hit( state -> result ) )
-    {
-      bleed -> target = state -> target;
-      bleed -> execute();
-    }
-  }
+  // Bleed damage penetrates armor.
+  virtual double target_armor( player_t* ) const
+  { return 0.0; }
 
   virtual void execute()
   {
@@ -2264,9 +2241,6 @@ struct rake_t : public cat_attack_t
 
     cat_attack_t::execute();
   }
-
-  virtual double target_armor( player_t* ) const
-  { return 0.0; }
 };
 
 // Rip ======================================================================
@@ -4807,6 +4781,9 @@ struct prowl_t : public druid_spell_t
   virtual bool ready()
   {
     if ( p() -> buff.prowl -> check() )
+      return false;
+
+    if ( p() -> in_combat && ! p() -> buff.king_of_the_jungle -> check() )
       return false;
 
     return druid_spell_t::ready();
