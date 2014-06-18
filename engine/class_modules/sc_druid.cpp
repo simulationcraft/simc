@@ -26,6 +26,8 @@ namespace { // UNNAMED NAMESPACE
     Just verify stuff.
 
     = Guardian =
+    Level 100 Talents
+    Starting sim at unbuffed HP
     Verify DoC
 
     = Restoration =
@@ -1466,7 +1468,6 @@ struct tooth_and_claw_absorb_t : public absorb_buff_t
                    .school( SCHOOL_PHYSICAL )
                    .source( p -> get_stats( "tooth_and_claw" ) )
                    .gain( p -> get_gain( "tooth_and_claw" ) )
-                   .chance( 1.0 )
     )
   {}
 
@@ -2976,7 +2977,7 @@ struct savage_defense_t : public bear_attack_t
     parse_options( NULL, options_str );
     harmful = special = false;
     cooldown -> duration = timespan_t::from_seconds( 9.0 );
-    cooldown -> charges = 2;
+    cooldown -> charges = 3;
     use_off_gcd = true;
 
     if ( player -> sets.has_set_bonus( SET_T16_2PC_TANK ) )
@@ -5554,8 +5555,7 @@ void druid_t::create_buffs()
   buff.primal_tenacity       = absorb_buff_creator_t( this, "primal_tenacity", find_spell( 155784 ) )
                                .school( SCHOOL_PHYSICAL )
                                .source( get_stats( "primal_tenacity" ) )
-                               .gain( get_gain( "primal_tenacity" ) )
-                               .chance( 1.0 );
+                               .gain( get_gain( "primal_tenacity" ) );
   buff.savage_defense        = buff_creator_t( this, "savage_defense", find_class_spell( "Savage Defense" ) -> ok() ? find_spell( 132402 ) : spell_data_t::not_found() )
                                .add_invalidate( CACHE_DODGE );
   buff.survival_instincts    = buff_creator_t( this, "survival_instincts", find_class_spell( "Survival Instincts" ) )
