@@ -2580,6 +2580,10 @@ struct necrotic_plague_t : public death_knight_spell_t
 
       // Choose the first target that has no Necrotic plague, and schedule an execution of Necrotic plague on it
       // TODO-WOD: Randomize target selection.
+      // TODO-WOD: Move to a separate event, so we can cover situations, where
+      // multiple targets are ticking NP at the same time, and one ticks its
+      // last tick. Here, one of the other NPs still ticking should be
+      // spreading its disease to the just-faded target.
       player_t* new_target = 0;
       for ( size_t i = 0, end = sim -> target_non_sleeping_list.size(); i < end; i++ )
       {
@@ -3827,8 +3831,7 @@ struct pestilence_spread_t : public death_knight_spell_t
       }
     }
     // No Scent of Blood -> copy the longest duration BP/FF/NP to all targets.
-    // The dots have (individually) been selected earlier (in execute()). State
-    // carries them over from execution to impact.
+    // The dots have (individually) been selected earlier (in execute()).  
     else
     {
       death_knight_td_t* tdata = td( s -> target );
