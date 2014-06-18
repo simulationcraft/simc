@@ -1406,6 +1406,8 @@ class SpellDataGenerator(DataGenerator):
 	  ( 155627, 0 ),       # Lunar Inspiration
 	  ( 155625, 0 ),       # Lunar Inspiration Moonfire
 	  ( 145152, 0 ),       # Bloodtalons buff
+	  ( 135597, 0 ),       # Tooth and Claw absorb buff
+	  ( 155784, 0 ),       # Primal Tenacity buff
         ), 
     ]
 
