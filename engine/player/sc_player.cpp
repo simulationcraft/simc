@@ -10202,7 +10202,7 @@ void manager_t::update()
 
       // temp variable for current event's contribution
       // note that this already includes the 2.5x multiplier for spell damage, diminishing returns,
-      // and the normalization by player max health; all of that done in action_t::update_resolve()
+      // and the normalization by player max health. See action_t::update_resolve() and damage_event_list_t::add()
       double contribution = (*i).event_amount;
 
       // apply time-based decay
