@@ -9967,71 +9967,32 @@ std::string player_talent_points_t::to_string() const
 
 namespace resolve {
 
-// Resolve Event List =====================================================
-// This is the list of the damage events that have occurred. Used every time Resolve is updated
-
-struct manager_t::damage_event_list_t
-{
-  damage_event_list_t( const player_t* p ) :
-    event_list()
-  { }
-
-  // called after each iteration in player_t::resolve_stop()
-  void reset()
-  { event_list.clear(); }
-
-  // Add a damage event to the Resolve Damage Event list
-  void add( double amount, timespan_t current_time )
-  {
-    // Add a new entry
-    event_entry_t e;
-    e.event_amount = amount;
-    e.event_time = current_time;
-
-    event_list.push_back( e );
-  }
-
-  // structure that contains the relevant information for each actor entry in the list
-  struct event_entry_t {
-    double event_amount;
-    timespan_t event_time;
-
-  };
-  typedef std::vector<event_entry_t> list_t;
-  list_t event_list; // vector of actor entries
-};
-
 // Resolve Diminishing Returns List =====================================================
 // this is the sorted list of actors used to determine Resolve diminishing returns.
 // sorted according to auto-attack DPS
 
 struct manager_t::diminishing_returns_list_t
 {
-  diminishing_returns_list_t( const player_t* p ) 
+  // http://us.battle.net/wow/en/forum/topic/13087818929?page=6#105
+  static const double max_history_time_seconds = 5.0;
+
+  diminishing_returns_list_t() :
+    actor_list()
   { }
 
   // Reset the diminishing return list
   void reset()
   { actor_list.clear(); }
 
-  // Get the Diminishing Return Divisor for a actor ( given his actor_spawn_index )
-  // pre-condition: actor_list sorted by raw dps
+  /* Get the Diminishing Return Divisor for a actor ( given his actor_spawn_index )
+   * pre-condition: actor_list sorted by raw dps
+   */
   int get_diminishing_return_factor( int actor_spawn_index )
   {
 
     std::vector<actor_entry_t>::iterator found = find_actor( actor_spawn_index );
     assert( found != actor_list.end() && "Resolve attacker not found in resolve list!" );
     return as<int>(std::distance( actor_list.begin(), found ) + 1);
-  }
-
-  // Update the Diminishing Return list by purging old entries and sorting it by DPS
-  void update_list( timespan_t current_time )
-  {
-    // Purge any actors that haven't hit you in 10 seconds or more
-    actor_list.erase( std::remove_if( actor_list.begin(), actor_list.end(), was_inactive( current_time ) ), actor_list.end() );
-
-    // Sort the list by DPS
-    std::sort( actor_list.begin(), actor_list.end(), compare_DPS );
   }
 
   // Add average auto-attack dps values to the Diminishing Return list. Update every time something is added.
@@ -10056,9 +10017,19 @@ struct manager_t::diminishing_returns_list_t
     }
 
     // sort the list every time we add an entry
-    update_list( current_time );
+    update( current_time );
   }
 
+  /* Update the Diminishing Return list by purging old entries and sorting it by DPS
+   */
+  void update( timespan_t current_time )
+  {
+    // Purge any actors that haven't hit you in 5 seconds or more
+    actor_list.erase( std::remove_if( actor_list.begin(), actor_list.end(), was_inactive( current_time ) ), actor_list.end() );
+
+    // Sort the list by DPS
+    std::sort( actor_list.begin(), actor_list.end(), compare_DPS );
+  }
 private:
   // structure that contains the relevant information for each actor entry in the list
   struct actor_entry_t {
@@ -10079,7 +10050,7 @@ private:
       current_time( current_time )
     {}
     bool operator()( const actor_entry_t& a ) const
-    { return a.last_attack + timespan_t::from_seconds( 5.0 ) < current_time; } // true if last attack is not more than 5 seconds ago
+    { return a.last_attack + timespan_t::from_seconds( max_history_time_seconds ) < current_time; } // true if last attack is not more than 10 seconds ago
     const timespan_t& current_time;
   };
 
@@ -10103,6 +10074,49 @@ private:
   }
 };
 
+// Resolve Event List =====================================================
+// This is the list of the damage events that have occurred. Used every time Resolve is updated
+
+struct manager_t::damage_event_list_t
+{
+  damage_event_list_t( manager_t& rm ) :
+    event_list(),
+    resolve_manager( rm )
+  { }
+
+  // called after each iteration in player_t::resolve_stop()
+  void reset()
+  { event_list.clear(); }
+
+  /* Add a damage event to the Resolve Damage Event list
+   */
+  void add( const player_t* actor, double amount, timespan_t current_time )
+  {
+    assert( actor -> actor_spawn_index >= 0 && "Trying to register resolve damage event from a dead player! Something is seriously broken in player_t::arise/demise." );
+
+    // apply diminishing returns
+    int rank = resolve_manager.get_diminsihing_return_rank( actor -> actor_spawn_index );
+    amount /= rank;
+
+    // Add a new entry
+    event_entry_t e;
+    e.event_amount = amount;
+    e.event_time = current_time;
+
+    event_list.push_back( e );
+  }
+
+  // structure that contains the relevant information for each actor entry in the list
+  struct event_entry_t {
+    double event_amount;
+    timespan_t event_time;
+
+  };
+  typedef std::vector<event_entry_t> list_t;
+  list_t event_list; // vector of actor entries
+  manager_t& resolve_manager;
+};
+
 // periodic update event for resolve
 struct manager_t::update_event_t final : public event_t
 {
@@ -10124,8 +10138,8 @@ manager_t::manager_t( player_t& p ) :
     _player( p ),
     _update_event( nullptr ),
     _started( false ),
-    _diminishing_return_list( new diminishing_returns_list_t( &p ) ),
-    _damage_list( new damage_event_list_t( &p ) )
+    _diminishing_return_list( new diminishing_returns_list_t() ),
+    _damage_list( new damage_event_list_t( *this ) )
 {
 
 }
@@ -10222,15 +10236,15 @@ void manager_t::add_diminishing_return_entry( const player_t* actor, double raw_
   _diminishing_return_list -> add( actor, raw_dps, current_time );
 }
 
-int manager_t::get_diminsihing_return_rank( const player_t* actor )
+int manager_t::get_diminsihing_return_rank( int actor_spawn_index )
 {
-  return _diminishing_return_list -> get_diminishing_return_factor( actor -> actor_spawn_index );
+  return _diminishing_return_list -> get_diminishing_return_factor( actor_spawn_index );
 }
 
-void manager_t::add_damage_event( double amount, timespan_t current_time )
+void manager_t::add_damage_event( const player_t* actor, double amount, timespan_t current_time )
 {
 
-  _damage_list -> add( amount, current_time );
+  _damage_list -> add( actor, amount, current_time );
 }
 
 } // end namespace resolve
