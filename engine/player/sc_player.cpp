@@ -2592,7 +2592,7 @@ double player_t::composite_multistrike() const
   double cm = composite_multistrike_rating() / current.rating.multistrike;
 
   if ( ! is_pet() && ! is_enemy() && sim -> auras.multistrike -> check() )
-    cm *= 1.0 + sim -> auras.multistrike -> value();
+    cm += sim -> auras.multistrike -> value();
 
   return cm;
 }
