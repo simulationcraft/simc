@@ -9973,27 +9973,18 @@ namespace resolve {
 struct manager_t::damage_event_list_t
 {
   damage_event_list_t( const player_t* p ) :
-    event_list(),
-    myself( p )
+    event_list()
   { }
 
   // called after each iteration in player_t::resolve_stop()
   void reset()
   { event_list.clear(); }
 
-  /* Add a damage event to the Resolve Damage Event list
-   */
-  void add( const player_t* actor, double amount, timespan_t current_time )
+  // Add a damage event to the Resolve Damage Event list
+  void add( double amount, timespan_t current_time )
   {
-    // don't count friendly fire
-    if ( actor == myself )
-      return;
-
-    assert( actor -> actor_spawn_index >= 0 && "Trying to register resolve damage event from a dead player! Something is seriously broken in player_t::arise/demise." );
-
     // Add a new entry
     event_entry_t e;
-    e.actor_spawn_index = actor -> actor_spawn_index;
     e.event_amount = amount;
     e.event_time = current_time;
 
@@ -10002,14 +9993,12 @@ struct manager_t::damage_event_list_t
 
   // structure that contains the relevant information for each actor entry in the list
   struct event_entry_t {
-    int actor_spawn_index;
     double event_amount;
     timespan_t event_time;
 
   };
   typedef std::vector<event_entry_t> list_t;
   list_t event_list; // vector of actor entries
-  const player_t* myself; // not sure this is strictly necessary, intended to nullify self-veng, but an is_enemy(actor) call might be better
 };
 
 // Resolve Diminishing Returns List =====================================================
@@ -10018,18 +10007,15 @@ struct manager_t::damage_event_list_t
 
 struct manager_t::diminishing_returns_list_t
 {
-  diminishing_returns_list_t( const player_t* p ) :
-    myself( p )
+  diminishing_returns_list_t( const player_t* p ) 
   { }
 
-  /* Reset the diminishing return list
-   */
+  // Reset the diminishing return list
   void reset()
   { actor_list.clear(); }
 
-  /* Get the Diminishing Return Divisor for a actor ( given his actor_spawn_index )
-   * pre-condition: actor_list sorted by raw dps
-   */
+  // Get the Diminishing Return Divisor for a actor ( given his actor_spawn_index )
+  // pre-condition: actor_list sorted by raw dps
   int get_diminishing_return_factor( int actor_spawn_index )
   {
 
@@ -10038,13 +10024,19 @@ struct manager_t::diminishing_returns_list_t
     return as<int>(std::distance( actor_list.begin(), found ) + 1);
   }
 
-  /* Add average auto-attack dps values to the Diminishing Return list
-   */
+  // Update the Diminishing Return list by purging old entries and sorting it by DPS
+  void update_list( timespan_t current_time )
+  {
+    // Purge any actors that haven't hit you in 10 seconds or more
+    actor_list.erase( std::remove_if( actor_list.begin(), actor_list.end(), was_inactive( current_time ) ), actor_list.end() );
+
+    // Sort the list by DPS
+    std::sort( actor_list.begin(), actor_list.end(), compare_DPS );
+  }
+
+  // Add average auto-attack dps values to the Diminishing Return list. Update every time something is added.
   void add( const player_t* actor, double raw_dps, timespan_t current_time )
   {
-    if ( actor == myself )
-      return;
-
     std::vector<actor_entry_t>::iterator found = find_actor( actor -> actor_spawn_index );
 
     if ( found != actor_list.end() )
@@ -10062,18 +10054,11 @@ struct manager_t::diminishing_returns_list_t
 
       actor_list.push_back( a );
     }
+
+    // sort the list every time we add an entry
+    update_list( current_time );
   }
 
-  /* Update the Diminishing Return list by purging old entries and sorting it by DPS
-   */
-  void update_list( timespan_t current_time )
-  {
-    // Purge any actors that haven't hit you in 10 seconds or more
-    actor_list.erase( std::remove_if( actor_list.begin(), actor_list.end(), was_inactive( current_time ) ), actor_list.end() );
-
-    // Sort the list by DPS
-    std::sort( actor_list.begin(), actor_list.end(), compare_DPS );
-  }
 private:
   // structure that contains the relevant information for each actor entry in the list
   struct actor_entry_t {
@@ -10081,8 +10066,8 @@ private:
     double raw_dps;
     timespan_t last_attack;
   };
+
   std::vector<actor_entry_t> actor_list; // vector of actor entries
-  const player_t* myself; // not sure this is strictly necessary, intended to nullify self-veng, but an is_enemy(actor) call might be better
 
   // comparator function for sorting the list
   static bool compare_DPS( const actor_entry_t &a, const actor_entry_t &b )
@@ -10094,10 +10079,11 @@ private:
       current_time( current_time )
     {}
     bool operator()( const actor_entry_t& a ) const
-    { return a.last_attack + timespan_t::from_seconds( 10.0 ) < current_time; } // true if last attack is not more than 10 seconds ago
+    { return a.last_attack + timespan_t::from_seconds( 5.0 ) < current_time; } // true if last attack is not more than 5 seconds ago
     const timespan_t& current_time;
   };
 
+  // method for finding actor - used while cycling through list
   std::vector<actor_entry_t>::iterator find_actor( int actor_spawn_index )
   {
     std::vector<actor_entry_t>::iterator iter = actor_list.begin();
@@ -10109,7 +10095,7 @@ private:
     return iter;
   }
 
-  // update_actor_entry
+  // method to update_actor_entry
   void update_actor_entry( actor_entry_t& a, double raw_dps, timespan_t last_attack )
   {
       a.raw_dps = raw_dps;
@@ -10117,6 +10103,7 @@ private:
   }
 };
 
+// periodic update event for resolve
 struct manager_t::update_event_t final : public event_t
 {
   update_event_t( player_t& p ) :
@@ -10193,8 +10180,6 @@ void manager_t::update()
   const damage_event_list_t::list_t& list= _damage_list -> event_list;
   if ( ! list.empty() )
   {
-    _diminishing_return_list -> update_list( _player.sim -> current_time );
-
     damage_event_list_t::list_t::const_reverse_iterator i, end;
     for ( i = list.rbegin(), end = list.rend(); i != end; ++i )
     {
@@ -10203,17 +10188,13 @@ void manager_t::update()
         break;
 
       // temp variable for current event's contribution
-      // note that this already includes the 2.5x multiplier for spell damage and the normalization
-      // by player max health (all of that done in action_t::update_resolve() )
+      // note that this already includes the 2.5x multiplier for spell damage, diminishing returns,
+      // and the normalization by player max health; all of that done in action_t::update_resolve()
       double contribution = (*i).event_amount;
 
       // apply time-based decay
       double delta_t = ( _player.sim -> current_time - (*i).event_time ).total_seconds();
       contribution *= 2.0 * ( 10.0 - delta_t ) / 10.0;
-
-      // apply diminishing returns
-      int rank = _diminishing_return_list -> get_diminishing_return_factor( (*i).actor_spawn_index );
-      contribution /= rank;
 
       // add to existing amount
       new_amount += contribution;
@@ -10241,9 +10222,15 @@ void manager_t::add_diminishing_return_entry( const player_t* actor, double raw_
   _diminishing_return_list -> add( actor, raw_dps, current_time );
 }
 
-void manager_t::add_damage_event( const player_t* actor, double amount, timespan_t current_time )
+int manager_t::get_diminsihing_return_rank( const player_t* actor )
 {
-  _damage_list -> add( actor, amount, current_time );
+  return _diminishing_return_list -> get_diminishing_return_factor( actor -> actor_spawn_index );
+}
+
+void manager_t::add_damage_event( double amount, timespan_t current_time )
+{
+
+  _damage_list -> add( amount, current_time );
 }
 
 } // end namespace resolve

@@ -3992,7 +3992,8 @@ struct manager_t
   bool is_started() const
   { return _started; }
   void add_diminishing_return_entry( const player_t* actor, double raw_dps, timespan_t current_time );
-  void add_damage_event( const player_t* actor, double amount, timespan_t current_time );
+  int get_diminsihing_return_rank( const player_t* actor );
+  void add_damage_event( double amount, timespan_t current_time );
 private:
   struct update_event_t;
   struct diminishing_returns_list_t;
