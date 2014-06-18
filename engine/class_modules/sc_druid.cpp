@@ -886,7 +886,7 @@ struct primal_tenacity_t : public absorb_t
 
   virtual void impact( action_state_t* s )
   {
-    static_cast<druid_t*>( player ) -> buff.primal_tenacity -> trigger( 1, s -> result_amount, 1.0 );
+    static_cast<druid_t*>( player ) -> buff.primal_tenacity -> trigger( 1, s -> result_amount );
   }
 
   virtual bool ready()
@@ -1466,6 +1466,7 @@ struct tooth_and_claw_absorb_t : public absorb_buff_t
                    .school( SCHOOL_PHYSICAL )
                    .source( p -> get_stats( "tooth_and_claw" ) )
                    .gain( p -> get_gain( "tooth_and_claw" ) )
+                   .chance( 1.0 )
     )
   {}
 
@@ -1478,7 +1479,7 @@ struct tooth_and_claw_absorb_t : public absorb_buff_t
     if ( p() -> buff.tooth_and_claw_absorb -> check() )
       value += p() -> buff.tooth_and_claw_absorb -> current_value;
 
-    return absorb_buff_t::trigger( stacks, value, 1.0, duration );
+    return absorb_buff_t::trigger( stacks, value, chance, duration );
   }
 
   virtual void absorb_used( double /* amount */ )
@@ -5553,7 +5554,8 @@ void druid_t::create_buffs()
   buff.primal_tenacity       = absorb_buff_creator_t( this, "primal_tenacity", find_spell( 155784 ) )
                                .school( SCHOOL_PHYSICAL )
                                .source( get_stats( "primal_tenacity" ) )
-                               .gain( get_gain( "primal_tenacity" ) );
+                               .gain( get_gain( "primal_tenacity" ) )
+                               .chance( 1.0 );
   buff.savage_defense        = buff_creator_t( this, "savage_defense", find_class_spell( "Savage Defense" ) -> ok() ? find_spell( 132402 ) : spell_data_t::not_found() )
                                .add_invalidate( CACHE_DODGE );
   buff.survival_instincts    = buff_creator_t( this, "survival_instincts", find_class_spell( "Survival Instincts" ) )
