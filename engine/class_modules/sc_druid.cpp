@@ -4799,10 +4799,9 @@ struct survival_instincts_t : public druid_spell_t
   {
     harmful = false;
     use_off_gcd = true;
-    cooldown -> duration = timespan_t::from_seconds( 120.0 ); // Spell data has wrong cooldown, as of 4/12/14
+    cooldown -> duration = timespan_t::from_seconds( 120.0 ); // Spell data has wrong cooldown, as of 6/18/14
 
-    if ( player -> specialization() == DRUID_FERAL || player -> specialization() == DRUID_GUARDIAN )
-      cooldown -> charges = 2;
+    cooldown -> charges = 2;
   }
 
   virtual void execute()
@@ -5887,13 +5886,17 @@ void druid_t::init_scaling()
   scales_with[ STAT_WEAPON_SPEED ] = false;
 
   if ( specialization() == DRUID_FERAL )
+  {
     scales_with[ STAT_SPIRIT ] = false;
+    scales_with[ STAT_STRENGTH ] = false;
+  }
 
   if ( specialization() == DRUID_GUARDIAN )
   {
     scales_with[ STAT_WEAPON_DPS ] = false;
     scales_with[ STAT_PARRY_RATING ] = false;
     scales_with[ STAT_BLOCK_RATING ] = false;
+    scales_with[ STAT_STRENGTH ] = false;
   }
 
   // Save a copy of the weapon
