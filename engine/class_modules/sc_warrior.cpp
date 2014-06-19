@@ -2096,31 +2096,6 @@ struct shockwave_t : public warrior_attack_t
   }
 };
 
-/*
-// Slam =====================================================================
-
-struct slam_t : public warrior_attack_t
-{
-  slam_t( warrior_t* p, const std::string& options_str ) :
-    warrior_attack_t( "slam", p, p -> spec.slam )
-  {
-    parse_options( NULL, options_str );
-
-    weapon = &( p -> main_hand_weapon );
-  }
-
-  virtual double action_multiplier() const
-  {
-    double am = warrior_attack_t::action_multiplier();
-
-    if ( p() -> mastery.weapons_master -> ok() )
-      am *= 1.0 + p() -> cache.mastery_value();
-
-    return am;
-  }
-};
-*/
-
 // Storm Bolt ===============================================================
 
 struct storm_bolt_off_hand_t : public warrior_attack_t
@@ -3082,7 +3057,6 @@ action_t* warrior_t::create_action( const std::string& name,
   if ( name == "shield_wall"          ) return new shield_wall_t          ( this, options_str );
   if ( name == "shield_slam"          ) return new shield_slam_t          ( this, options_str );
   if ( name == "shockwave"            ) return new shockwave_t            ( this, options_str );
-  //if ( name == "slam"                 ) return new slam_t                 ( this, options_str );
   if ( name == "stampeding_roar"      ) return new stampeding_roar_t      ( this, options_str );
   if ( name == "storm_bolt"           ) return new storm_bolt_t           ( this, options_str );
   if ( name == "stance"               ) return new stance_t               ( this, options_str );
@@ -3133,7 +3107,6 @@ void warrior_t::init_spells()
   spec.seasoned_soldier         = find_specialization_spell( "Seasoned Soldier"      );
   spec.shield_slam              = find_specialization_spell( "Shield Slam"           );
   spec.single_minded_fury       = find_specialization_spell( "Single-Minded Fury"    );
-  spec.slam                     = find_specialization_spell( "Slam"                  );
   spec.sword_and_board          = find_specialization_spell( "Sword and Board"       );
   spec.sweeping_strikes         = find_specialization_spell( "Sweeping Strikes"      );
   spec.thunder_clap             = find_specialization_spell( "Thunder Clap"          );
