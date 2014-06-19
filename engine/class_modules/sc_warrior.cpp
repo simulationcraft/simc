@@ -1387,17 +1387,9 @@ struct execute_off_hand_t : public warrior_attack_t
 
     weapon = &( p -> off_hand_weapon );
     weapon_multiplier *= 1.0 + p -> perk.empowered_execute -> effectN( 1 ).percent();
-  }
-
-  virtual double action_multiplier() const
-  {
-    double am = warrior_attack_t::action_multiplier();
-
-    if ( p() -> main_hand_weapon.group() == WEAPON_1H &&
-         p() -> off_hand_weapon.group() == WEAPON_1H )
-      am *= 1.0 + p() -> spec.single_minded_fury -> effectN( 3 ).percent();
-
-    return am;
+    if ( p -> main_hand_weapon.group() == WEAPON_1H &&
+         p -> off_hand_weapon.group() == WEAPON_1H )
+      weapon_multiplier *= 1.0 + p -> spec.single_minded_fury -> effectN( 3 ).percent();
   }
 };
 
@@ -1411,6 +1403,9 @@ struct execute_t : public warrior_attack_t
 
     weapon = &( p -> main_hand_weapon );
     weapon_multiplier *= 1.0 + p -> perk.empowered_execute -> effectN( 1 ).percent();
+    if ( p -> main_hand_weapon.group() == WEAPON_1H &&
+         p -> off_hand_weapon.group() == WEAPON_1H )
+      weapon_multiplier *= 1.0 + p -> spec.single_minded_fury -> effectN( 3 ).percent();
 
     if ( p -> spec.crazed_berserker -> ok() )
     {
@@ -1425,10 +1420,6 @@ struct execute_t : public warrior_attack_t
 
     if ( p() -> mastery.weapons_master -> ok() )
       am *= 1.0 + p() -> cache.mastery_value();
-
-    if ( p() -> main_hand_weapon.group() == WEAPON_1H &&
-         p() -> off_hand_weapon.group() == WEAPON_1H )
-      am *= 1.0 + p() -> spec.single_minded_fury -> effectN( 3 ).percent();
 
     return am;
   }
