@@ -2,7 +2,24 @@
 // Dedmonwakeen's DPS-DPM Simulator.
 // Send questions to natehieter@gmail.com
 // ==========================================================================
-
+// WoD To-do
+// Do perks that effect crit (such as enhanced pyrotechnics) also effect the crit chance of multistrike?
+// BUG IGNITE TRIGGERS ON MISSES. Fixing this breaks icicles. Need to investigate
+// Extensive Test - At a glance, enhanced pyrotechnics works properly. Need to test more in depth though (remember CM interacts with this! or does it? test and find out!)
+// multistrike triggering ignite? - CONFIRMED BY CELESTALON TO INTERACT WITH EACHOTHER
+// change the syntax around frostfirebolts implimentation of Enhanced pyrotechnics to match fireballs
+// The the bonus on Improved Pyorblast additive or Multiplicitive (Assumed additive for now. Must confirm)
+// Arcane Missiles perk was hardcoded into the buff definition. Need to eventually change this so it works correctly for sub-90 characters.
+// Need to add in Improved Scorch
+// Imp. Arcane Barrage needs to be tested.
+// Imp. Arcane Explosion needs to be tested.
+// Shatter is changed Shatter: Now Frost only. Multiplies the critical strike chance of all your spells against frozen targets by 1.5 plus an additional 10%. needs to be coded.
+// Having difficulties implimenting Improved Arcane Missiles.
+// Improved Arcane Power needs to have a check for the perk to exist so it functions pre-90 correctly.
+// Need to Add Improved Blink
+// Make improved evocation only work post 90, and make it not a hardcoded 30 second reduction. Also need to test that it works, with a character template that does not have RoP.
+// Hardcoded Enhanced Fingers of Frost to 3 stacks. Need to fix eventually.
+// Need to test if Improved Frostbolt is being applied correctly during Icy Veins (although, IV will change in WoD. May not actually need to this version, but rather test it's application to multi-strike)
 #include "simulationcraft.hpp"
 
 namespace { // UNNAMED NAMESPACE
@@ -93,6 +110,7 @@ public:
     buff_t* potent_flames;
     buff_t* frozen_thoughts;
     buff_t* fiery_adept;
+    buff_t* enhanced_pyrotechnics;
   } buffs;
 
   // Cooldowns
@@ -137,6 +155,44 @@ public:
     const spell_data_t* nether_attunement;
     const spell_data_t* shatter;
   } passives;
+
+  // Perks
+  struct perks_t
+  {
+      //Arcane
+      const spell_data_t* enhanced_arcane_blast;
+      const spell_data_t* enhanced_arcane_missiles;
+      const spell_data_t* improved_arcane_barrage;
+      const spell_data_t* improved_arcane_blast;
+      const spell_data_t* improved_arcane_explosion;
+      const spell_data_t* improved_arcane_missiles;
+      const spell_data_t* improved_arcane_power;
+      const spell_data_t* improved_evocation;
+      const spell_data_t* improved_blink;
+
+      //Fire
+      const spell_data_t* enhanced_inferno_blast;
+      const spell_data_t* improved_dragons_breath;
+      const spell_data_t* improved_combustion;
+      const spell_data_t* improved_fireball_and_frostfire_bolt;
+      const spell_data_t* enhanced_pyrotechnics;
+      const spell_data_t* improved_flamestrike;
+      const spell_data_t* improved_inferno_blast;
+      const spell_data_t* improved_pyroblast;
+      const spell_data_t* improved_scorch;
+
+      //Frost
+      const spell_data_t* enhanced_fingers_of_frost;
+      const spell_data_t* improved_frostbolt;
+      const spell_data_t* enhanced_frostbolt;
+      const spell_data_t* improved_blizzard;
+      const spell_data_t* improved_frost_nova;
+      const spell_data_t* improved_frostfire_bolt;
+      const spell_data_t* improved_ice_lance;
+      const spell_data_t* improved_water_elemental;
+      const spell_data_t* improved_icy_veins;
+
+  } perks;
 
   // Pets
   struct pets_t
@@ -1021,7 +1077,7 @@ public:
 
     if ( p() -> buffs.arcane_power -> check() )
     {
-      double m = 1.0 + p() -> buffs.arcane_power -> data().effectN( 2 ).percent();
+      double m = 1.0 + p() -> buffs.arcane_power -> data().effectN( 2 ).percent() + p() -> perks.improved_arcane_power -> effectN( 1 ).percent();
 
       c *= m;
     }
@@ -1272,7 +1328,10 @@ struct arcane_barrage_t : public mage_spell_t
   {
     parse_options( NULL, options_str );
 
-    base_aoe_multiplier *= data().effectN( 2 ).percent();
+    if ( p -> perks.improved_arcane_barrage -> ok() )
+        base_aoe_multiplier *= ( p -> perks.improved_arcane_barrage -> effectN( 1 ).percent() + data().effectN( 2 ).percent() );
+    else
+        base_aoe_multiplier *= data().effectN( 2 ).percent();
   }
 
   virtual void execute()
@@ -3901,6 +3960,37 @@ void mage_t::init_spells()
   passives.nether_attunement = ( find_spell( 117957 ) -> is_level( level ) ) ? find_spell( 117957 ) : spell_data_t::not_found();
   passives.shatter           = find_specialization_spell( "Shatter" ); // BUG: Doesn't work at present as Shatter isn't tagged as a spec of Frost.
   passives.shatter           = ( find_spell( 12982 ) -> is_level( level ) ) ? find_spell( 12982 ) : spell_data_t::not_found();
+
+  // Perks - Fire 
+  perks.enhanced_inferno_blast               = find_perk_spell( "Enhanced Inferno Blast" );
+  perks.improved_dragons_breath              = find_perk_spell( "Improved Dragon's Breath");
+  perks.improved_combustion                  = find_perk_spell( "Improved combustion" );
+  perks.improved_fireball_and_frostfire_bolt = find_perk_spell( "Improved Fireball and Frostfire Bolt" );
+  perks.enhanced_pyrotechnics                = find_perk_spell( "Enhanced Pyrotechnics" );
+  perks.improved_flamestrike                 = find_perk_spell( "Improved Flamestrike" );
+  perks.improved_inferno_blast               = find_perk_spell( "Improved Inferno Blast" );
+  perks.improved_pyroblast                   = find_perk_spell( "Improved Pyroblast" );
+  perks.improved_scorch                      = find_perk_spell( "Improved Scorch" );
+  // Perks - Arcane
+  perks.enhanced_arcane_blast                = find_perk_spell( "Enhanced Arcane Blast" );
+  perks.enhanced_arcane_missiles             = find_perk_spell( "Enhanced Arcane Missiles" );
+  perks.improved_arcane_barrage              = find_perk_spell( "Improved Arcane Barrage" );
+  perks.improved_arcane_blast                = find_perk_spell( "Improved Arcane Blast" );
+  perks.improved_arcane_explosion            = find_perk_spell( "Improved Arcane Explosion" );
+  perks.improved_arcane_missiles             = find_perk_spell( "Improved Arcane Missiles" );
+  perks.improved_arcane_power                = find_perk_spell( "Improved Arcane Power" );
+  perks.improved_evocation                   = find_perk_spell( "Improved Evocation" );
+  perks.improved_blink                       = find_perk_spell( "Improved Blink" );
+  // Perks - Frost
+  perks.enhanced_fingers_of_frost            = find_perk_spell( "Enhanced Fingers of Frost" );
+  perks.improved_frostbolt                   = find_perk_spell( "Improved Frostbolt" );
+  perks.enhanced_frostbolt                   = find_perk_spell( "Enhanced Frostbolt" );
+  perks.improved_blizzard                    = find_perk_spell( "Improved Blizzard" );
+  perks.improved_frost_nova                  = find_perk_spell( "Improved Frost Nova" );
+  perks.improved_frostfire_bolt              = find_perk_spell( "Improved FrostFire Bolt" );
+  perks.improved_ice_lance                   = find_perk_spell( "Improved Ice Lance" );
+  perks.improved_water_elemental             = find_perk_spell( "Improved Water Elemental" );
+  perks.improved_icy_veins                   = find_perk_spell( "Improved Icy Veins" );
 
   // Spec Spells
   spec.arcane_charge         = find_specialization_spell( "Arcane Charge" );
