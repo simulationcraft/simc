@@ -621,7 +621,7 @@ static bool group_runes ( const death_knight_t* player, int blood, int frost, in
 {
   assert( blood < 2 && frost < 2 && unholy < 2 && death < 2 );
 
-  std::array<bool,RUNE_SLOT_MAX> use = { false };
+  std::array<bool,RUNE_SLOT_MAX> use = {{ false }};
   int use_slot = -1;
 
   if ( blood )
