@@ -3063,10 +3063,12 @@ action_t* warrior_t::create_action( const std::string& name,
   if ( name == "sweeping_strikes"     ) return new sweeping_strikes_t     ( this, options_str );
   if ( name == "thunder_clap"         ) return new thunder_clap_t         ( this, options_str );
   if ( name == "whirlwind"            ) 
+  {
     if ( specialization() == WARRIOR_FURY )
       return new whirlwind_t            ( this, options_str );
     else if (specialization() == WARRIOR_ARMS )
       return new whirlwind_arms_t       ( this, options_str );
+  }
   if ( name == "wild_strike"          ) return new wild_strike_t          ( this, options_str );
 
   return player_t::create_action( name, options_str );
