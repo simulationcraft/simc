@@ -2533,7 +2533,7 @@ struct melee_t : public shaman_attack_t
     base_execute_time = w -> swing_time;
 
     if ( p() -> specialization() == SHAMAN_ENHANCEMENT && p() -> dual_wield() )
-      base_hit -= 0.19;
+      base_hit -= 26.5; // Effectively 19% miss chance, as characters now have 7.5% hit/expertise baseline.
   }
 
   void reset()
