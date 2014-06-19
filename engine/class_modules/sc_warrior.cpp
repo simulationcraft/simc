@@ -714,7 +714,7 @@ static void trigger_sweeping_strikes( action_state_t* s )
       background                 = true;
       aoe                        = 1;
       weapon_multiplier          = 0;
-      base_costs[ RESOURCE_RAGE] = 0;            //Resource consumption already accounted for in the buff application.
+      base_costs[ RESOURCE_RAGE ] = 0;            //Resource consumption already accounted for in the buff application.
       cooldown -> duration = timespan_t::zero(); // Cooldown accounted for in the buff.
       pct_damage = data().effectN( 1 ).percent();
     }
@@ -1207,10 +1207,24 @@ struct colossus_smash_t : public warrior_attack_t
 
     if ( p -> specialization() == WARRIOR_ARMS ) // Remove
     {
-      weapon_multiplier *= 2.25;
+      weapon_multiplier *= 1.0 + 2.25;
       base_costs[RESOURCE_RAGE] = 30;
     }
   }
+
+  virtual double cost() const
+  {
+    double c = warrior_attack_t::cost();
+
+    if ( p() -> specialization() == WARRIOR_ARMS )
+      c = 30;
+    else 
+      c = 0;
+
+    return c;
+  }
+
+  virtual resource_e current_resource() const { return RESOURCE_RAGE; }
 
   virtual double action_multiplier() const
   {
@@ -1675,6 +1689,17 @@ struct mortal_strike_t : public warrior_attack_t
     weapon_multiplier += p -> sets.set( SET_T14_2PC_MELEE ) -> effectN( 1 ).percent();
     base_costs[ RESOURCE_RAGE] = 30; //Remove
   }
+
+  virtual double cost() const
+  {
+    double c = warrior_attack_t::cost();
+
+    c = 30;
+
+    return c;
+  }
+
+  virtual resource_e current_resource() const { return RESOURCE_RAGE; }
 
   virtual double action_multiplier() const
   {
@@ -2268,17 +2293,14 @@ struct whirlwind_t : public warrior_attack_t
   whirlwind_off_hand_t* oh_attack;
 
   whirlwind_t( warrior_t* p, const std::string& options_str ) :
-    warrior_attack_t( "whirlwind_mh" , p, p -> find_spell( 1680 ) /*p -> spec.whirlwind*/ ) //Remove 
+    warrior_attack_t( "whirlwind_mh" , p, p -> spec.whirlwind )
   {
     parse_options( NULL, options_str );
     aoe = -1;
     weapon_multiplier *= 2;
 
-    if ( p -> specialization() == WARRIOR_FURY )
-    {
-      oh_attack = new whirlwind_off_hand_t( p );
-      add_child( oh_attack );
-    }
+    oh_attack = new whirlwind_off_hand_t( p );
+    add_child( oh_attack );
     weapon = &( p -> main_hand_weapon );
   }
 
@@ -2296,11 +2318,46 @@ struct whirlwind_t : public warrior_attack_t
   {
     warrior_attack_t::execute();
 
-    if ( oh_attack )
-      oh_attack -> execute();
+    oh_attack -> execute();
 
     p() -> buff.raging_wind -> expire();
   }
+
+  virtual bool ready()
+  {
+    if ( p() -> active_stance == STANCE_DEFENSE )
+      return false;
+
+    return warrior_attack_t::ready();
+  }
+};
+
+struct whirlwind_arms_t : public warrior_attack_t
+{
+  whirlwind_arms_t( warrior_t* p, const std::string& options_str ) :
+    warrior_attack_t( "whirlwind_arms" , p, spell_data_t::nil() )
+  {
+    parse_options( NULL, options_str );
+    aoe = -1;
+    weapon_multiplier = 1.5;
+    trigger_gcd = timespan_t::from_seconds( 1.5 );
+    min_gcd = timespan_t::from_seconds( 1.0 );
+    base_costs[ RESOURCE_RAGE ] = 30;
+    school = SCHOOL_PHYSICAL;
+
+    weapon = &( p -> main_hand_weapon );
+  }
+
+  virtual double cost() const
+  {
+    double c = warrior_attack_t::cost();
+
+    c = 30;
+
+    return c;
+  }
+
+  virtual resource_e current_resource() const { return RESOURCE_RAGE; }
 
   virtual bool ready()
   {
@@ -3031,7 +3088,11 @@ action_t* warrior_t::create_action( const std::string& name,
   if ( name == "stance"               ) return new stance_t               ( this, options_str );
   if ( name == "sweeping_strikes"     ) return new sweeping_strikes_t     ( this, options_str );
   if ( name == "thunder_clap"         ) return new thunder_clap_t         ( this, options_str );
-  if ( name == "whirlwind"            ) return new whirlwind_t            ( this, options_str );
+  if ( name == "whirlwind"            ) 
+    if ( specialization() == WARRIOR_FURY )
+      return new whirlwind_t            ( this, options_str );
+    else if (specialization() == WARRIOR_ARMS )
+      return new whirlwind_arms_t       ( this, options_str );
   if ( name == "wild_strike"          ) return new wild_strike_t          ( this, options_str );
 
   return player_t::create_action( name, options_str );
