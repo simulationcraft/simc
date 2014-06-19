@@ -1098,7 +1098,7 @@ struct melee_t : public rogue_attack_t
     may_glance      = true;
 
     if ( p -> dual_wield() )
-      base_hit -= 0.19;
+      base_hit -= 0.265; // Effectively 19% miss chance, as characters now have 7.5% hit/expertise baseline.
   }
 
   void reset()

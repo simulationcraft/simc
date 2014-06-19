@@ -909,7 +909,8 @@ struct melee_t : public warrior_attack_t
     background  = repeating = auto_attack = may_glance = true;
     trigger_gcd = timespan_t::zero();
 
-    if ( p -> dual_wield() ) base_hit -= 0.19;
+    if ( p -> dual_wield() )
+      base_hit -= 0.265; // Effectively 19% miss chance, as characters now have 7.5% hit/expertise baseline.
   }
 
   void reset()

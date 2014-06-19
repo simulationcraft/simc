@@ -2701,8 +2701,6 @@ struct devouring_plague_t final : public priest_spell_t
                                state -> result_amount );
 
     dot_spell -> append_damage( state -> result_amount );
-
-
   }
 
   void transfer_heal_to_dot( action_state_t* state )
@@ -2731,6 +2729,14 @@ struct devouring_plague_t final : public priest_spell_t
 
     transfer_dmg_to_dot( s );
     transfer_heal_to_dot( s );
+  }
+
+  virtual bool ready() override
+  {
+    if (shadow_orbs_to_consume() != 3.0)
+      return false;
+    else
+      return true;
   }
 };
 
