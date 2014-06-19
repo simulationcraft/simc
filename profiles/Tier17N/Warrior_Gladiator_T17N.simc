@@ -35,7 +35,7 @@ actions+=/run_action_list,name=single_target,if=active_enemies<=4
 actions+=/run_action_list,name=aoe,if=active_enemies>3
 
 actions.single_target=shield_charge,if=buff.shield_charge.down
-actions.single_target+=/heroic_strike,if=buff.ultimatum.up|(buff.shield_charge.up&rage>50&target.health.pct>20)|rage>110
+actions.single_target+=/heroic_strike,if=(buff.shield_charge.up&rage>50&target.health.pct>20)|rage>110
 actions.single_target+=/bloodbath,if=talent.bloodbath.enabled
 actions.single_target+=/avatar,if=talent.avatar.enabled
 actions.single_target+=/heroic_leap,if=(buff.bloodbath.up|cooldown.bloodbath.remains>5)|!talent.bloodbath.enabled
@@ -51,7 +51,7 @@ actions.aoe+=/avatar,if=talent.avatar.enabled
 actions.aoe+=/shield_charge,if=buff.shield_charge.down
 actions.aoe+=/thunder_clap,if=!dot.deep_wounds.ticking
 actions.aoe+=/bladestorm,if=talent.bladestorm.enabled
-actions.aoe+=/heroic_strike,if=buff.ultimatum.up|buff.shield_charge.up&rage>50|rage>110
+actions.aoe+=/heroic_strike,if=(buff.shield_charge.up&rage>50)|rage>110
 actions.aoe+=/heroic_leap,if=(buff.bloodbath.up|cooldown.bloodbath.remains>5|!talent.bloodbath.enabled)
 actions.aoe+=/shield_slam
 actions.aoe+=/thunder_clap

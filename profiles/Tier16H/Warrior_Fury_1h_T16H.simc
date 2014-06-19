@@ -31,6 +31,7 @@ actions+=/mogu_power_potion,if=(target.health.pct<20&buff.recklessness.up)|targe
 # This incredibly long line can be translated to 'Use recklessness on cooldown with colossus smash; unless the boss will die before the ability is usable again, and then combine with execute instead.'
 actions+=/recklessness,if=!talent.bloodbath.enabled&(((cooldown.colossus_smash.remains<2|debuff.colossus_smash.remains>=5)&target.time_to_die>192)|target.health.pct<20)|buff.bloodbath.up&(target.time_to_die>192|target.health.pct<20)|target.time_to_die<=12
 actions+=/avatar,if=talent.avatar.enabled&((buff.recklessness.up|target.time_to_die<=25))
+actions+=/berserker_rage,if=!buff.enrage.up
 actions+=/blood_fury,if=buff.bloodbath.up|(!talent.bloodbath.enabled&debuff.colossus_smash.up)|buff.recklessness.up
 actions+=/berserking,if=buff.bloodbath.up|(!talent.bloodbath.enabled&debuff.colossus_smash.up)|buff.recklessness.up
 actions+=/arcane_torrent,if=buff.bloodbath.up|(!talent.bloodbath.enabled&debuff.colossus_smash.up)|buff.recklessness.up
@@ -38,14 +39,6 @@ actions+=/run_action_list,name=single_target,if=active_enemies=1
 actions+=/run_action_list,name=two_targets,if=active_enemies=2
 actions+=/run_action_list,name=three_targets,if=active_enemies=3
 actions+=/run_action_list,name=aoe,if=active_enemies>3
-
-# 
-# A very brief overview of the fury single target rotation, keep in mind that this does not include various subtle aspects in the action list, and is only intended for newer players.
-# Fury is a priority-based rotation with moderate amounts of rage management. It is played in a 20-21 second cycle, based around usage of Colossus Smash.
-# Bloodthirst is used on cooldown, raging blow is a higher priority than bloodsurge-buffed wild strikes, and the player should attempt to save up rage by foregoing usage of 'rage dumps' such as
-# Heroic strike and non-bloodsurge buffed wild strikes when colossus smash is not applied to the target. The goal is to go into using colossus smash with 100-115~ rage
-# and then expend all of this rage by using heroic strike 3-4 times during colossus smash. It's also a good idea to save 1 charge of raging blow to use inside of this 6.5 second window.
-# Cooldowns are stacked whenever possible, and only delayed for the very last use of them.
 
 actions.single_target=bloodbath,if=talent.bloodbath.enabled&((cooldown.colossus_smash.remains<2|debuff.colossus_smash.remains>=5|target.time_to_die<=20))
 actions.single_target+=/heroic_strike,if=((debuff.colossus_smash.up&rage>=40)&target.health.pct>=20)|rage>=100&buff.enrage.up
@@ -57,21 +50,17 @@ actions.single_target+=/raging_blow,if=buff.raging_blow.stack=2&debuff.colossus_
 # Until execute range, Bloodthirst is used on cooldown 95% of the time. When execute range is reached, bloodthirst can be delayed 1-2~ globals as long as the conditions below are met.
 # This is done to lower the amount of heroic strike usage, and to increase the amount of executes used.
 actions.single_target+=/bloodthirst,if=!(target.health.pct<20&debuff.colossus_smash.up&rage>=30&buff.enrage.up)
-# The GCD reduction of the Bloodsurge buff allows 3 Wild Strikes in-between Bloodthirst.
-actions.single_target+=/wild_strike,if=buff.bloodsurge.react&target.health.pct>=20&cooldown.bloodthirst.remains<=1
 actions.single_target+=/dragon_roar,if=talent.dragon_roar.enabled&((!debuff.colossus_smash.up&(buff.bloodbath.up|!talent.bloodbath.enabled)))
-# The debuff from Colossus Smash lasts 6.5 seconds and also has 0.25~ seconds of travel time. This allows 4 1.5 second globals to be used inside of it every time now.
 actions.single_target+=/colossus_smash
 actions.single_target+=/storm_bolt,if=talent.storm_bolt.enabled&cooldown.colossus_smash.remains>3
 actions.single_target+=/execute,if=debuff.colossus_smash.up|rage>70|target.time_to_die<12
 actions.single_target+=/raging_blow,if=target.health.pct<20|buff.raging_blow.stack=2|(debuff.colossus_smash.up|(cooldown.bloodthirst.remains>=1&buff.raging_blow.remains<=3))
 actions.single_target+=/ravager,if=talent.ravager.enabled
 actions.single_target+=/bladestorm,if=enabled,interrupt_if=cooldown.bloodthirst.remains<1
-actions.single_target+=/wild_strike,if=buff.bloodsurge.up
+actions.single_target+=/wild_strike
 # If Colossus Smash is coming up soon, it's a good idea to save 1 charge of raging blow for it.
 actions.single_target+=/raging_blow,if=cooldown.colossus_smash.remains>=3
 actions.single_target+=/shockwave,if=talent.shockwave.enabled
-actions.single_target+=/wild_strike,if=(debuff.colossus_smash.up|(cooldown.colossus_smash.remains>=2&rage>=60))&target.health.pct>=20
 actions.single_target+=/impending_victory,if=talent.impending_victory.enabled&(target.health.pct>=20&cooldown.colossus_smash.remains>=2)
 
 actions.two_targets=bloodbath,if=talent.bloodbath.enabled
@@ -82,14 +71,12 @@ actions.two_targets+=/ravager,if=talent.ravager.enabled
 actions.two_targets+=/bladestorm,if=talent.bladestorm.enabled&buff.enrage.remains>4
 actions.two_targets+=/dragon_roar,if=talent.dragon_roar.enabled&(!debuff.colossus_smash.up&(buff.bloodbath.up|!talent.bloodbath.enabled))
 actions.two_targets+=/colossus_smash
-# Keep deep wounds on as many targets as possible.
-actions.two_targets+=/bloodthirst,cycle_targets=1,if=dot.deep_wounds.remains<5
 actions.two_targets+=/storm_bolt,if=talent.storm_bolt.enabled&debuff.colossus_smash.up
 actions.two_targets+=/bloodthirst
-actions.two_targets+=/raging_blow,if=buff.meat_cleaver.up
-actions.two_targets+=/whirlwind,if=!buff.meat_cleaver.up
-actions.two_targets+=/shockwave,if=talent.shockwave.enabled
+actions.two_targets+=/raging_blow
 actions.two_targets+=/execute
+actions.two_targets+=/whirlwind
+actions.two_targets+=/shockwave,if=talent.shockwave.enabled
 
 actions.three_targets=bloodbath,if=talent.bloodbath.enabled
 actions.three_targets+=/heroic_leap,if=buff.enrage.up
@@ -98,26 +85,22 @@ actions.three_targets+=/heroic_strike,if=rage>100
 actions.three_targets+=/ignite_weapon,if=talent.ignite_weapon.enabled&((target.health.pct>=20&rage>100)|buff.ignite_weapon.down)
 actions.three_targets+=/bladestorm,if=talent.bladestorm.enabled&buff.enrage.remains>4
 actions.three_targets+=/dragon_roar,if=talent.dragon_roar.enabled&(!debuff.colossus_smash.up&(buff.bloodbath.up|!talent.bloodbath.enabled))
-actions.three_targets+=/bloodthirst,cycle_targets=1,if=!dot.deep_wounds.ticking
 actions.three_targets+=/colossus_smash
 actions.three_targets+=/storm_bolt,if=talent.storm_bolt.enabled&debuff.colossus_smash.up
-actions.three_targets+=/raging_blow,if=buff.meat_cleaver.stack=2
+actions.three_targets+=/raging_blow
 actions.three_targets+=/whirlwind
 actions.three_targets+=/shockwave,if=talent.shockwave.enabled
-actions.three_targets+=/raging_blow
 
 actions.aoe=bloodbath,if=talent.bloodbath.enabled
 actions.aoe+=/heroic_leap,if=buff.enrage.up
 actions.aoe+=/heroic_strike,if=rage>100
 actions.aoe+=/ignite_weapon,if=talent.ignite_weapon.enabled&((target.health.pct>=20&rage>100)|buff.ignite_weapon.down)
 actions.aoe+=/ravager,if=talent.ravager.enabled
-actions.aoe+=/bladestorm,if=talent.bladestorm.enabled&buff.enrage.remains>4
-# Enrage overlaps 4 GCDs, which allows bloodthirst to be used mostly to keep enrage up, as rage income is typically not an issue with the aoe rotation.
-actions.aoe+=/bloodthirst,cycle_targets=1,if=!dot.deep_wounds.ticking&buff.enrage.down
-actions.aoe+=/raging_blow,if=buff.meat_cleaver.stack=3
+actions.aoe+=/bladestorm,if=talent.bladestorm.enabled
+actions.aoe+=/bloodthirst,if=buff.enrage.down
+actions.aoe+=/raging_blow
 actions.aoe+=/whirlwind
 actions.aoe+=/dragon_roar,if=talent.dragon_roar.enabled&(debuff.colossus_smash.down&(buff.bloodbath.up|!talent.bloodbath.enabled))
-actions.aoe+=/bloodthirst,cycle_targets=1,if=!dot.deep_wounds.ticking
 actions.aoe+=/colossus_smash
 actions.aoe+=/storm_bolt,if=talent.storm_bolt.enabled
 actions.aoe+=/shockwave,if=talent.shockwave.enabled

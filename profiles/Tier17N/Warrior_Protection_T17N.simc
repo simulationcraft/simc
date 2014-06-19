@@ -28,7 +28,7 @@ actions.precombat+=/mountains_potion
 actions=charge
 actions+=/auto_attack
 actions+=/mountains_potion,if=incoming_damage_2500ms>health.max*0.6&(buff.shield_wall.down&buff.last_stand.down)
-actions+=/heroic_strike,if=buff.ultimatum.up
+actions+=/heroic_strike,if=rage=rage.max
 actions+=/shield_block
 actions+=/shield_barrier,if=incoming_damage_1500ms>health.max*0.3|rage>rage.max-20
 actions+=/shield_wall,if=incoming_damage_2500ms>health.max*0.6
@@ -38,7 +38,7 @@ actions+=/run_action_list,name=normal_rotation
 actions.normal_rotation=shield_slam
 actions.normal_rotation+=/revenge
 actions.normal_rotation+=/enraged_regeneration,if=talent.enraged_regeneration.enabled
-actions.normal_rotation+=/heroic_strike,if=buff.ultimatum.up
+actions.normal_rotation+=/heroic_strike,if=rage=rage.max
 actions.normal_rotation+=/ravager,if=talent.ravager.enabled
 actions.normal_rotation+=/thunder_clap
 actions.normal_rotation+=/demoralizing_shout
