@@ -585,7 +585,11 @@ expr_t* dot_t::create_expression( action_t* action,
     {
       dot_haste_pct_expr_t( dot_t* d, action_t* a, bool dynamic ) :
         dot_expr_t( "dot_haste_pct", d, a, dynamic ) {}
-      virtual double evaluate() { return dot() -> state ? dot() -> state -> haste * 100 : 0; }
+      virtual double evaluate()
+      {
+        return dot() -> state ?
+          ( 1.0 / dot() -> state -> haste - 1.0 ) * 100 : 0;
+      }
     };
     return new dot_haste_pct_expr_t( this, action, dynamic );
   }
