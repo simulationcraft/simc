@@ -2733,10 +2733,11 @@ struct devouring_plague_t final : public priest_spell_t
 
   virtual bool ready() override
   {
-    if (shadow_orbs_to_consume() != 3.0)
+    // WoD Alpha 2014/06/19 added by twintop
+    if ( priest.resources.current[ RESOURCE_SHADOW_ORB ] < 3.0 )
       return false;
-    else
-      return true;
+
+    return priest_spell_t::ready();
   }
 };
 
