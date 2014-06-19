@@ -973,29 +973,6 @@ struct melee_t : public warrior_attack_t
   }
 };
 
-// Off-hand test attack =====================================================
-// This class is used by Raging Blow, but may be needed in the future for others.
-
-struct off_hand_test_attack_t : public warrior_attack_t
-{
-  result_e last_result;
-  off_hand_test_attack_t( warrior_t* p, const char* name ) :
-    warrior_attack_t( name, p ), last_result( RESULT_NONE )
-  {
-    background = quiet = true;
-    weapon            = &( p -> off_hand_weapon );
-    trigger_gcd       = timespan_t::zero();
-    weapon_multiplier = 0.0;
-    proc              = false; // disable all procs for this attack
-  }
-
-  virtual void execute()
-  {
-    warrior_attack_t::execute();
-    last_result = execute_state -> result;
-  }
-};
-
 // Auto Attack ==============================================================
 
 struct auto_attack_t : public warrior_attack_t
@@ -1058,18 +1035,8 @@ struct bladestorm_tick_t : public warrior_attack_t
     aoe = -1;
     if ( p -> specialization() == WARRIOR_ARMS )
       weapon_multiplier *= 2;
-  }
-
-  virtual double action_multiplier() const
-  {
-    double am = warrior_attack_t::action_multiplier();
-
-    if ( p() -> specialization() != WARRIOR_PROTECTION ) 
-      return am;
-    else if ( p() -> has_shield_equipped() ) // Bladestorm does 80% weapon damage, but only when a shield is equipped as a protection warrior.
-      am *= 1.0 + 1 / 3;
-
-    return am;
+    else if ( p -> specialization() == WARRIOR_PROTECTION )
+      weapon_multiplier *= 1.0 + 1 / 3;
   }
 
   virtual void execute()
@@ -1173,8 +1140,8 @@ struct bloodthirst_t : public warrior_attack_t
     weapon           = &( p -> main_hand_weapon );
     bloodthirst_heal = new bloodthirst_heal_t( p );
 
-    base_multiplier *= 1.0 + p -> perk.improved_bloodthirst -> effectN( 1 ).percent();
-    base_multiplier += p -> sets.set( SET_T14_2PC_MELEE ) -> effectN( 2 ).percent();
+    weapon_multiplier *= 1.0 + p -> perk.improved_bloodthirst -> effectN( 1 ).percent();
+    weapon_multiplier += p -> sets.set( SET_T14_2PC_MELEE ) -> effectN( 2 ).percent();
   }
 
   double composite_crit() const
@@ -1420,6 +1387,9 @@ struct execute_off_hand_t : public warrior_attack_t
 
     weapon = &( p -> off_hand_weapon );
     weapon_multiplier *= 1.0 + p -> perk.empowered_execute -> effectN( 1 ).percent();
+    if ( p -> main_hand_weapon.group() == WEAPON_1H &&
+         p -> off_hand_weapon.group() == WEAPON_1H )
+      weapon_multiplier *= 1.0 + p -> spec.single_minded_fury -> effectN( 3 ).percent();
   }
 };
 
@@ -1433,6 +1403,9 @@ struct execute_t : public warrior_attack_t
 
     weapon = &( p -> main_hand_weapon );
     weapon_multiplier *= 1.0 + p -> perk.empowered_execute -> effectN( 1 ).percent();
+    if ( p -> main_hand_weapon.group() == WEAPON_1H &&
+         p -> off_hand_weapon.group() == WEAPON_1H )
+      weapon_multiplier *= 1.0 + p -> spec.single_minded_fury -> effectN( 3 ).percent();
 
     if ( p -> spec.crazed_berserker -> ok() )
     {
@@ -1447,10 +1420,6 @@ struct execute_t : public warrior_attack_t
 
     if ( p() -> mastery.weapons_master -> ok() )
       am *= 1.0 + p() -> cache.mastery_value();
-
-    if ( p() -> main_hand_weapon.group() == WEAPON_1H &&
-         p() -> off_hand_weapon.group() == WEAPON_1H )
-      am *= 1.0 + p() -> spec.single_minded_fury -> effectN( 3 ).percent();
 
     return am;
   }
@@ -1501,7 +1470,7 @@ struct ignite_weapon_t : public warrior_attack_t
     // The 140% is hardcoded in the tooltip
     if ( weapon -> group() == WEAPON_1H ||
          weapon -> group() == WEAPON_SMALL )
-      base_multiplier *= 1.40;
+      weapon_multiplier *= 1.40;
 
     dot_duration = timespan_t::zero(); // Effect 4 shows up as periodic damage on target, but the actual "dot" shows up on autoattacks.
   }
@@ -1549,7 +1518,7 @@ struct heroic_strike_t : public warrior_attack_t
     // The 140% is hardcoded in the tooltip
     if ( weapon -> group() == WEAPON_1H ||
          weapon -> group() == WEAPON_SMALL )
-      base_multiplier *= 1.40;
+      weapon_multiplier *= 1.40;
 
     if ( p -> glyphs.cleave -> ok() )
       aoe = 2;
@@ -1766,7 +1735,7 @@ struct mortal_strike_t : public warrior_attack_t
     warrior_attack_t( "mortal_strike", p, p -> spec.mortal_strike )
   {
     parse_options( NULL, options_str );
-    base_multiplier += p -> sets.set( SET_T14_2PC_MELEE ) -> effectN( 1 ).percent();
+    weapon_multiplier += p -> sets.set( SET_T14_2PC_MELEE ) -> effectN( 1 ).percent();
   }
 
   virtual void execute()
@@ -1838,7 +1807,7 @@ struct raging_blow_attack_t : public warrior_attack_t
   {
     may_miss = may_dodge = may_parry = false;
     background = true;
-    base_multiplier *= 1.0 + p -> perk.improved_raging_blow -> effectN( 1 ).percent();
+    weapon_multiplier *= 1.0 + p -> perk.improved_raging_blow -> effectN( 1 ).percent();
   }
 
   virtual void execute()
@@ -2235,7 +2204,7 @@ struct storm_bolt_off_hand_t : public warrior_attack_t
 
     weapon = &( p -> off_hand_weapon );
     // assume the target is stun-immune
-    base_multiplier = 4.00;
+    weapon_multiplier *= 4.00;
   }
 };
 
@@ -2249,7 +2218,7 @@ struct storm_bolt_t : public warrior_attack_t
     parse_options( NULL, options_str );
     may_dodge = may_parry = may_block = false;
     // Assuming that our target is stun immune
-    base_multiplier = 4.00;
+    weapon_multiplier *= 4.00;
 
     if ( p -> specialization() == WARRIOR_FURY )
     {
@@ -2383,6 +2352,16 @@ struct whirlwind_off_hand_t : public warrior_attack_t
     aoe = -1;
     weapon = &( p -> off_hand_weapon );
   }
+
+  virtual double action_multiplier() const
+  {
+    double am = warrior_attack_t::action_multiplier();
+
+    if ( p() -> buff.raging_wind ->  up() )
+      am *= 1.0 + p() -> buff.raging_wind -> data().effectN( 1 ).percent();
+
+    return am;
+  }
 };
 
 struct whirlwind_t : public warrior_attack_t
@@ -2434,7 +2413,7 @@ struct wild_strike_t : public warrior_attack_t
     parse_options( NULL, options_str );
 
     weapon  = &( player -> off_hand_weapon );
-    base_multiplier *= 1.0 + p -> perk.improved_wild_strike -> effectN( 1 ).percent();
+    weapon_multiplier *= 1.0 + p -> perk.improved_wild_strike -> effectN( 1 ).percent();
     if ( player -> off_hand_weapon.type == WEAPON_NONE )
       background = true;
   }
