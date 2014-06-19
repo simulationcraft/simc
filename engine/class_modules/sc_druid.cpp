@@ -5594,6 +5594,10 @@ void druid_t::apl_precombat()
   // Mark of the Wild
   precombat -> add_action( this, "Mark of the Wild", "if=!aura.str_agi_int.up" );
 
+  // Feral: Bloodtalons
+  if ( specialization() == DRUID_FERAL && level >= 100 )
+    precombat -> add_action( this, "Healing Touch", "if=talent.bloodtalons.enabled" );
+
   // Forms
   if ( ( specialization() == DRUID_FERAL && primary_role() == ROLE_ATTACK ) || primary_role() == ROLE_ATTACK )
   {
@@ -5671,15 +5675,18 @@ void druid_t::apl_default()
 
 void druid_t::apl_feral()
 {
-  action_priority_list_t* def    = get_action_priority_list( "default" );
-  action_priority_list_t* filler = get_action_priority_list( "filler"  );
+  action_priority_list_t* def      = get_action_priority_list( "default"  );
+  action_priority_list_t* filler   = get_action_priority_list( "filler"   );
+  action_priority_list_t* finisher = get_action_priority_list( "finisher" );
 
   std::vector<std::string> item_actions       = get_item_actions();
   std::vector<std::string> racial_actions     = get_racial_actions();
 
+  // Main List =============================================================
+
   def -> add_action( this, "Rake", "if=buff.prowl.up" );
   def -> add_action( "auto_attack" );
-  def -> add_action( this, "Ferocious Bite", "cycle_targets=1,if=dot.rip.ticking&dot.rip.remains<=3&target.health.pct<=25",
+  def -> add_action( this, "Ferocious Bite", "cycle_targets=1,if=dot.rip.ticking&dot.rip.remains<=3&target.health.pct<25",
                      "Keep Rip from falling off during execute range." );
   def -> add_action( this, "Healing Touch", "if=talent.bloodtalons.enabled&buff.predatory_swiftness.up&(combo_points>=4|buff.predatory_swiftness.remains<1.5)" );
   def -> add_action( this, "Savage Roar", "if=buff.savage_roar.remains<3" );
@@ -5696,27 +5703,41 @@ void druid_t::apl_feral()
   def -> add_action( potion_name + ",sync=berserk,if=target.health.pct<25" );
   def -> add_action( this, "Berserk", "if=buff.tigers_fury.up" );
   def -> add_action( "thrash_cat,if=buff.omen_of_clarity.react&dot.thrash_cat.remains<4.5&active_enemies>1" );
-  def -> add_action( this, "Rip", "cycle_targets=1,if=dot.rip.remains<4.8&combo_points>=5" );
-  def -> add_action( this, "Rip", "cycle_targets=1,if=target.health.pct<25&combo_points>=5&action.rip.tick_multiplier>dot.rip.multiplier",
-                     "Apply the strongest possible Rip during execute." );
-  def -> add_action( this, "Rake", "cycle_targets=1,if=dot.rake.remains<4.5" );
+  def -> add_action( "run_action_list,name=finisher,if=combo_points=5",
+                     "Cast a finisher." );
+  def -> add_action( this, "Rake", "cycle_targets=1,if=dot.rake.remains<4.5&active_enemies<9" );
   def -> add_action( "pool_resource,for_next=1" );
   def -> add_action( "thrash_cat,if=dot.thrash_cat.remains<4.5&active_enemies>1" );
-  def -> add_action( this, "Rake", "cycle_targets=1,if=action.rake.tick_multiplier>dot.rake.multiplier" );
+  def -> add_action( this, "Rake", "cycle_targets=1,if=tick_multiplier>dot.rake.multiplier&active_enemies<9" );
   def -> add_action( "moonfire_feral,cycle_targets=1,if=talent.lunar_inspiration.enabled&dot.moonfire_feral.remains<4.2&active_enemies=1" );
-  def -> add_action( this, "Ferocious Bite", "if=combo_points>=5&(energy.time_to_max<=1|buff.berserk.up)&dot.rip.remains>=4.8" );
   def -> add_action( "run_action_list,name=filler,if=combo_points<5",
                      "Cast a CP generator." );
-  def -> add_action( "natures_vigil,if=enabled" );
   if ( perk.enhanced_rejuvenation -> ok() )
+  {
+    def -> add_action( "natures_vigil,if=enabled" );
     def -> add_action( this, "Rejuvenation", "if=buff.natures_vigil.up&!ticking" );
+  }
+
+  // Fillers ===============================================================
 
   filler -> add_action( "pool_resource,for_next=1",
                         "Pool energy for Swipe." );
   filler -> add_action( this, "Swipe", "if=active_enemies>1" );
+  // Disabled until Rake perk + Incarnation is fixed.
   /* filler -> add_action( this, "Rake", "if=action.rake.hit_damage>=action.shred.hit_damage",
                         "Rake for CP if it hits harder than Shred." ); */
   filler -> add_action( this, "Shred" );
+
+  // Finishers =============================================================
+
+  finisher -> add_action( this, "Rip", "cycle_targets=1,if=target.health.pct<25&tick_multiplier>dot.rip.multiplier" ); // very small DPS gain
+  // finisher -> add_action( "pool_resource,for_next=1,extra_amount=25" ); // not currently a DPS gain
+  finisher -> add_action( this, "Ferocious Bite", "cycle_targets=1,if=target.health.pct<25&dot.rip.ticking" );
+  // finisher -> add_action( this, "Rip", "cycle_targets=1,if=tick_multiplier%dot.rip.multiplier>=1.15" ); // not currently a DPS gain
+  finisher -> add_action( this, "Rip", "cycle_targets=1,if=dot.rip.remains<2" );
+  finisher -> add_action( this, "Rip", "cycle_targets=1,if=dot.rip.remains<4.8&energy.time_to_max<=1" );
+  finisher -> add_action( this, "Savage Roar", "if=(energy.time_to_max<=1|buff.berserk.up)&buff.savage_roar.remains<42*0.3" );
+  finisher -> add_action( this, "Ferocious Bite", "if=(energy.time_to_max<=1|buff.berserk.up)" );
 }
 
 // Balance Combat Action Priority List ==============================
