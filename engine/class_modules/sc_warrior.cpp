@@ -910,7 +910,7 @@ struct melee_t : public warrior_attack_t
     trigger_gcd = timespan_t::zero();
 
     if ( p -> dual_wield() )
-      base_hit -= 26.5; // Effectively 19% miss chance, as characters now have 7.5% hit/expertise baseline.
+      base_hit -= 0.265; // Effectively 19% miss chance, as characters now have 7.5% hit/expertise baseline.
   }
 
   void reset()
