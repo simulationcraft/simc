@@ -187,7 +187,7 @@ clean: mostlyclean
 	@$(REMOVE) $(MODULE) sc_http$(MODULE_EXT)
 
 # Unit Tests
-sc_http$(MODULE_EXT): interfaces$(PATHSEP)sc_http.cpp sc_io.cpp sc_thread.cpp sc_util.cpp
+sc_http$(MODULE_EXT): interfaces$(PATHSEP)sc_http.cpp util$(PATHSEP)sc_io.cpp sc_thread.cpp sc_util.cpp
 	-@echo [$@] Linking
 	$(CXX) $(CPP_FLAGS) -std=c++0x -DUNIT_TEST $(OPTS) $(LINK_FLAGS) $^ $(LINK_LIBS) -o $@
 

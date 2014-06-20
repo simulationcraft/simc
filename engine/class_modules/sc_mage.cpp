@@ -4346,12 +4346,48 @@ void mage_t::apl_fire()
   default_list -> add_action( this, "Time Warp", "if=target.health.pct<25|time>5" );
   //not useful if bloodlust is check in option.
 
+#if 0
+<<<<<<< HEAD
   default_list -> add_talent( this, "Rune of Power", "if=buff.rune_of_power.remains<cast_time" );
+=======
+  default_list -> add_action( this, "Counterspell",
+                              "if=target.debuff.casting.react" );
+  default_list -> add_action( "cancel_buff,name=alter_time,moving=1" );
+  default_list -> add_talent( this, "Cold Snap",
+                              "if=health.pct<30" );
+  default_list -> add_action( this, "Time Warp",
+                              "if=buff.alter_time.down" );
+  default_list -> add_talent( this, "Rune of Power",
+                              "if=buff.rune_of_power.remains<cast_time" );
+  default_list -> add_action( this, "Evocation",
+                              "if=(talent.invocation.enabled&buff.invokers_energy.remains=0)|mana.pct<5" );
+  default_list -> add_action( "cancel_buff,name=alter_time,if=buff.amplified.up&buff.alter_time.up&(trinket.stat.intellect.cooldown_remains-buff.alter_time.remains>109)",
+                              "Cancelaura AT if PBoI procs" );
+>>>>>>> refs/heads/master
 
+<<<<<<< HEAD
   default_list -> add_action( this, "Evocation", "if=talent.invocation.enabled&(buff.invokers_energy.down|mana.pct<20)" );
   default_list -> add_action( this, "Evocation", "if=talent.invocation.enabled&buff.invokers_energy.remains<6" );
   default_list -> add_action( this, "Evocation", "if=talent.invocation.enabled&mana.pct<50,interrupt_if=mana.pct>95&buff.invokers_energy.remains>10" );
   default_list -> add_action( this, "Evocation", "if=mana.pct<20,interrupt_if=mana.pct>95" );
+=======
+  default_list -> add_action( "run_action_list,name=combust_sequence,if=buff.alter_time.up|pyro_chain");
+  default_list -> add_action( "run_action_list,name=init_alter_combust,if=buff.amplified.up&cooldown.alter_time_activate.up&cooldown.combustion.up&(trinket.stat.intellect.cooldown_remains>95|trinket.stat.intellect.cooldown_remains+20>time_to_die)",
+                              "Start AT-POM-Combustion combo if CDs are up; Wait for trinket proc if player has PBoI" );
+  default_list -> add_action( "run_action_list,name=init_alter_combust,if=buff.amplified.down&cooldown.alter_time_activate.up&cooldown.combustion.up" );
+  default_list -> add_action( "run_action_list,name=init_pom_combust,if=buff.amplified.up&cooldown.alter_time_activate.remains>45&cooldown.combustion.up&cooldown.presence_of_mind.up&(trinket.stat.intellect.cooldown_remains>95|trinket.stat.intellect.cooldown_remains+20>time_to_die)",
+                              "Start regular POM-Combustion combo if CDs are up; Wait for trinket proc if player has PBoI" );
+  default_list -> add_action( "run_action_list,name=init_pom_combust,if=buff.amplified.down&cooldown.alter_time_activate.remains>45&cooldown.combustion.up&cooldown.presence_of_mind.up" );
+
+  default_list -> add_talent( this, "Rune of Power",
+                              "if=buff.alter_time.down&buff.rune_of_power.remains<4*action.fireball.execute_time&(buff.heating_up.down|buff.pyroblast.down|!action.fireball.in_flight)",
+                              "Cast RoP/Evoc/MI only when player does not have both HU, Pyro proc and fireball mid flight - this causes Proc munching" );
+  default_list -> add_action( this, "Evocation",
+                              "if=talent.invocation.enabled&buff.alter_time.down&buff.invokers_energy.remains<4*action.fireball.execute_time&(buff.heating_up.down|buff.pyroblast.down|!action.fireball.in_flight)" );
+  default_list -> add_action( this, "Mirror Image",
+                              "if=buff.alter_time.down&(buff.heating_up.down|buff.pyroblast.down|!action.fireball.in_flight)" );
+>>>>>>> refs/heads/master
+#endif
 
   for( size_t i = 0; i < racial_actions.size(); i++ )
     default_list -> add_action( racial_actions[i] );
@@ -4397,17 +4433,25 @@ void mage_t::apl_frost()
   default_list -> add_action( this, "Evocation", "if=talent.invocation.enabled&cooldown.icy_veins.remains=0&buff.invokers_energy.remains<20" );
   default_list -> add_action( this, "Evocation", "if=!talent.invocation.enabled&mana.pct<50,interrupt_if=mana.pct>95" );
   default_list -> add_action( this, "Mirror Image" );
-  default_list -> add_action( this, "Frozen Orb", "if=set_bonus.tier16_2pc_caster" );
-  default_list -> add_action( this, "Icy Veins", "if=time_to_bloodlust>180&((buff.brain_freeze.react|buff.fingers_of_frost.react)|target.time_to_die<22),moving=0" );
+  default_list -> add_action( this, "Frozen Orb", "if=buff.fingers_of_frost.stack<2" );
+  default_list -> add_action( this, "Icy Veins", "if=(time_to_bloodlust>160&(buff.brain_freeze.react|buff.fingers_of_frost.react))|target.time_to_die<22,moving=0" );
 
   for( size_t i = 0; i < racial_actions.size(); i++ )
-    default_list -> add_action( racial_actions[i] + ",if=buff.icy_veins.up|target.time_to_die<18" );
+    default_list -> add_action( racial_actions[i] + ",sync=alter_time_activate,if=buff.icy_veins.up|target.time_to_die<18" );
 
-  default_list -> add_action( "jade_serpent_potion,if=buff.icy_veins.up|target.time_to_die<45" );
-  default_list -> add_talent( this, "Presence of Mind", "if=buff.icy_veins.up|cooldown.icy_veins.remains>15|target.time_to_die<15" );
+  default_list -> add_action( "jade_serpent_potion,sync=alter_time_activate,if=buff.icy_veins.up|target.time_to_die<45" );
+  default_list -> add_talent( this, "Presence of Mind", "sync=alter_time_activate,if=talent.presence_of_mind.enabled" );
 
+#if 0
   for( size_t i = 0; i < item_actions.size(); i++ )
+<<<<<<< HEAD
     default_list -> add_action( item_actions[i] );
+=======
+    default_list -> add_action( item_actions[i] + ",sync=alter_time_activate,if=buff.alter_time.down" );
+
+  default_list -> add_action( this, "Alter Time", "if=buff.alter_time.down&buff.icy_veins.up&trinket.stat.intellect.cooldown_remains>25" );
+  default_list -> add_action( this, "Alter Time", "if=buff.alter_time.down&buff.icy_veins.up&buff.amplified.down" );
+>>>>>>> refs/heads/master
 
   for( size_t i = 0; i < item_actions.size(); i++ )
   {
@@ -4417,11 +4461,19 @@ void mage_t::apl_frost()
   }
 
   default_list -> add_action( this, "Flamestrike", "if=active_enemies>=5" );
+<<<<<<< HEAD
+=======
+  default_list -> add_action( this, "Fire Blast", "if=time_to_die<action.ice_lance.travel_time" );
+  default_list -> add_action( this, "Frostfire Bolt", "if=buff.alter_time.up&buff.brain_freeze.up" );
+  default_list -> add_action( this, "Frostfire Bolt", "if=buff.brain_freeze.react&cooldown.icy_veins.remains>2*action.frostbolt.execute_time" );
+  default_list -> add_talent( this, "Nether Tempest", "cycle_targets=1,if=(!ticking|remains<tick_time)&target.time_to_die>6" );
+  default_list -> add_talent( this, "Living Bomb", "cycle_targets=1,if=(!ticking|remains<tick_time)&target.time_to_die>tick_time*3" );
+>>>>>>> refs/heads/master
+#endif
   default_list -> add_talent( this, "Frost Bomb", "if=target.time_to_die>cast_time+tick_time" );
-  default_list -> add_action( this, "Frostfire Bolt", "if=buff.brain_freeze.react&cooldown.icy_veins.remains>2" );
-  default_list -> add_action( this, "Ice Lance", "if=buff.frozen_thoughts.react&buff.fingers_of_frost.up" );
-  default_list -> add_action( this, "Ice Lance", "if=buff.fingers_of_frost.up&(buff.fingers_of_frost.remains<2|(buff.fingers_of_frost.stack>1&cooldown.icy_veins.remains>2))" );
-  default_list -> add_action( this, "Ice Lance" "if=!set_bonus.tier16_2pc_caster&buff.fingers_of_frost.react&cooldown.icy_veins.remains>2" );
+  default_list -> add_action( this, "Ice Lance", "if=buff.alter_time.up&buff.fingers_of_frost.up" );
+  default_list -> add_action( this, "Ice Lance", "if=buff.fingers_of_frost.react&cooldown.icy_veins.remains>2*action.frostbolt.execute_time" );
+  default_list -> add_talent( this, "Presence of Mind", "if=cooldown.alter_time_activate.remains>0");
   default_list -> add_action( this, "Frostbolt" );
   default_list -> add_talent( this, "Ice Floes", "moving=1" );
   default_list -> add_action( this, "Ice Lance", "moving=1" );

@@ -2255,32 +2255,32 @@ void print_html_player_charts( report::sc_html_stream& os, sim_t* sim, player_t*
 
   if ( ! ri.action_dpet_chart.empty() )
   {
-    const char* fmt;
+    std::string chart_str;
     if ( num_players == 1 )
-      fmt = "\t\t\t\t\t\t\t<img src=\"%s\" alt=\"Action DPET Chart\" />\n";
+      chart_str = "\t\t\t\t\t\t\t<img src=\"" + ri.action_dpet_chart + "\" alt=\"Action DPET Chart\" />\n";
     else
-      fmt = "\t\t\t\t\t\t\t<span class=\"chart-action-dpet\" title=\"Action DPET Chart\">%s</span>\n";
-    os.printf( fmt, ri.action_dpet_chart.c_str() );
+      chart_str = "\t\t\t\t\t\t\t<span class=\"chart-action-dpet\" title=\"Action DPET Chart\">" + ri.action_dpet_chart + "</span>\n";
+    os << chart_str;
   }
 
   if ( ! ri.action_dmg_chart.empty() )
   {
-    const char* fmt;
+    std::string chart_str;
     if ( num_players == 1 )
-      fmt = "\t\t\t\t\t\t\t<img src=\"%s\" alt=\"Action Damage Chart\" />\n";
+      chart_str = "\t\t\t\t\t\t\t<img src=\"" + ri.action_dmg_chart + "\" alt=\"Action Damage Chart\" />\n";
     else
-      fmt = "\t\t\t\t\t\t\t<span class=\"chart-action-dmg\" title=\"Action Damage Chart\">%s</span>\n";
-    os.printf( fmt, ri.action_dmg_chart.c_str() );
+      chart_str = "\t\t\t\t\t\t\t<span class=\"chart-action-dmg\" title=\"Action Damage Chart\">" + ri.action_dmg_chart + "</span>\n";
+    os << chart_str;
   }
 
   if ( ! ri.scaling_dps_chart.empty() )
   {
-    const char* fmt;
+    std::string chart_str;
     if ( num_players == 1 )
-      fmt = "\t\t\t\t\t\t\t<img src=\"%s\" alt=\"Scaling DPS Chart\" />\n";
+      chart_str = "\t\t\t\t\t\t\t<img src=\"" + ri.scaling_dps_chart + "\" alt=\"Scaling DPS Chart\" />\n";
     else
-      fmt = "\t\t\t\t\t\t\t<span class=\"chart-scaling-dps\" title=\"Scaling DPS Chart\">%s</span>\n";
-    os.printf( fmt, ri.scaling_dps_chart.c_str() );
+      chart_str = "\t\t\t\t\t\t\t<span class=\"chart-scaling-dps\" title=\"Scaling DPS Chart\">" + ri.scaling_dps_chart + "</span>\n";
+    os << chart_str;
   }
 
   sc_timeline_t timeline_dps_taken;
@@ -2296,15 +2296,15 @@ void print_html_player_charts( report::sc_html_stream& os, sim_t* sim, player_t*
 
   if ( ! ri.reforge_dps_chart.empty() )
   {
-    std::string fmt;
+    std::string chart_str;
     if ( p -> sim -> reforge_plot -> reforge_plot_stat_indices.size() == 2 )
     {
       if ( ri.reforge_dps_chart.length() < 2000 )
       {
         if ( num_players == 1 )
-          fmt = "\t\t\t\t\t\t\t<img src=\"%s\" alt=\"Reforge DPS Chart\" />\n";
+          chart_str = "\t\t\t\t\t\t\t<img src=\"" + ri.reforge_dps_chart + "\" alt=\"Reforge DPS Chart\" />\n";
         else
-          fmt = "\t\t\t\t\t\t\t<span class=\"chart-reforge-dps\" title=\"Reforge DPS Chart\">%s</span>\n";
+          chart_str = "\t\t\t\t\t\t\t<span class=\"chart-reforge-dps\" title=\"Reforge DPS Chart\">" + ri.reforge_dps_chart + "</span>\n";
       }
       else
         os << "<p> Reforge Chart: Can't display charts with more than 2000 characters.</p>\n";
@@ -2312,37 +2312,37 @@ void print_html_player_charts( report::sc_html_stream& os, sim_t* sim, player_t*
     else
     {
       if ( true )
-        fmt = "\t\t\t\t\t\t\t%s";
+        chart_str = "\t\t\t\t\t\t\t" + ri.reforge_dps_chart;
       else
       {
         if ( num_players == 1 )
-          fmt = "\t\t\t\t\t\t\t<iframe>%s</iframe>\n";
+          chart_str = "\t\t\t\t\t\t\t<iframe>" + ri.reforge_dps_chart + "</iframe>\n";
         else
-          fmt = "\t\t\t\t\t\t\t<span class=\"chart-reforge-dps\" title=\"Reforge DPS Chart\">%s</span>\n";
+          chart_str = "\t\t\t\t\t\t\t<span class=\"chart-reforge-dps\" title=\"Reforge DPS Chart\">" + ri.reforge_dps_chart + "</span>\n";
       }
     }
-    if ( ! fmt.empty() )
-      os.printf( fmt.c_str(), ri.reforge_dps_chart.c_str() );
+    if ( ! chart_str.empty() )
+      os << chart_str;
   }
 
   if ( ! ri.scale_factors_chart.empty() )
   {
-    const char* fmt;
+    std::string chart_str;
     if ( num_players == 1 )
-      fmt = "\t\t\t\t\t\t\t<img src=\"%s\" alt=\"Scale Factors Chart\" />\n";
+      chart_str = "\t\t\t\t\t\t\t<img src=\"" + ri.scale_factors_chart + "\" alt=\"Scale Factors Chart\" />\n";
     else
-      fmt = "\t\t\t\t\t\t\t<span class=\"chart-scale-factors\" title=\"Scale Factors Chart\">%s</span>\n";
-    os.printf( fmt, ri.scale_factors_chart.c_str() );
+      chart_str = "\t\t\t\t\t\t\t<span class=\"chart-scale-factors\" title=\"Scale Factors Chart\">" + ri.scale_factors_chart + "</span>\n";
+    os << chart_str;
   }
 
   if ( ! ri.timeline_dps_chart.empty() )
   {
-    const char* fmt;
+    std::string chart_str;
     if ( num_players == 1 )
-      fmt = "\t\t\t\t\t\t\t<img src=\"%s\" alt=\"DPS Timeline Chart\" />\n";
+      chart_str = "\t\t\t\t\t\t\t<img src=\"" + ri.timeline_dps_chart + "\" alt=\"DPS Timeline Chart\" />\n";
     else
-      fmt = "\t\t\t\t\t\t\t<span class=\"chart-timeline-dps\" title=\"DPS Timeline Chart\">%s</span>\n";
-    os.printf( fmt, ri.timeline_dps_chart.c_str() );
+      chart_str = "\t\t\t\t\t\t\t<span class=\"chart-timeline-dps\" title=\"DPS Timeline Chart\">" + ri.timeline_dps_chart + "</span>\n";
+    os << chart_str;
   }
 
   std::string resolve_timeline_chart = chart::timeline( p, p -> resolve_timeline.data(), "resolve", 0, "ff0000", static_cast<size_t>( p -> collected_data.fight_length.max() ) );
@@ -2353,34 +2353,34 @@ void print_html_player_charts( report::sc_html_stream& os, sim_t* sim, player_t*
 
   if ( ! ri.distribution_dps_chart.empty() )
   {
-    const char* fmt;
+    std::string chart_str;
     if ( num_players == 1 )
-      fmt = "\t\t\t\t\t\t\t<img src=\"%s\" alt=\"DPS Distribution Chart\" />\n";
+      chart_str = "\t\t\t\t\t\t\t<img src=\"" + ri.distribution_dps_chart + "\" alt=\"DPS Distribution Chart\" />\n";
     else
-      fmt = "\t\t\t\t\t\t\t<span class=\"chart-distribution-dps\" title=\"DPS Distribution Chart\">%s</span>\n";
-    os.printf( fmt, ri.distribution_dps_chart.c_str() );
+      chart_str = "\t\t\t\t\t\t\t<span class=\"chart-distribution-dps\" title=\"DPS Distribution Chart\">" + ri.distribution_dps_chart + "</span>\n";
+    os << chart_str;
   }
 
   if ( ! ri.time_spent_chart.empty() )
   {
-    const char* fmt;
+    std::string chart_str;
     if ( num_players == 1 )
-      fmt = "\t\t\t\t\t\t\t<img src=\"%s\" alt=\"Time Spent Chart\" />\n";
+      chart_str = "\t\t\t\t\t\t\t<img src=\"" + ri.time_spent_chart + "\" alt=\"Time Spent Chart\" />\n";
     else
-      fmt = "\t\t\t\t\t\t\t<span class=\"chart-time-spent\" title=\"Time Spent Chart\">%s</span>\n";
-    os.printf( fmt, ri.time_spent_chart.c_str() );
+      chart_str = "\t\t\t\t\t\t\t<span class=\"chart-time-spent\" title=\"Time Spent Chart\">" + ri.time_spent_chart + "</span>\n";
+    os << chart_str;
   }
 
   for ( size_t i = 0; i < ri.timeline_stat_chart.size(); ++i )
   {
     if ( ri.timeline_stat_chart[ i ].length() > 0 )
     {
-      const char* fmt;
+      std::string chart_str;
       if ( num_players == 1 )
-        fmt = "\t\t\t\t\t\t\t<img src=\"%s\" alt=\"Stat Chart\" />\n";
+        chart_str = "\t\t\t\t\t\t\t<img src=\"" + ri.timeline_stat_chart[ i ] + "\" alt=\"Stat Chart\" />\n";
       else
-        fmt = "\t\t\t\t\t\t\t<span class=\"chart-scaling-dps\" title=\"Stat Chart\">%s</span>\n";
-      os.printf( fmt, ri.timeline_stat_chart[ i ].c_str() );
+        chart_str = "\t\t\t\t\t\t\t<span class=\"chart-scaling-dps\" title=\"Stat Chart\">" + ri.timeline_stat_chart[ i ] + "</span>\n";
+      os << chart_str;
     }
   }
 

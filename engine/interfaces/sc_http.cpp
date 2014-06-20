@@ -382,13 +382,13 @@ bool download( url_cache_entry_t& entry,
   bool ssl_proxy = ( proxy.type == "https" );
   const bool use_proxy = ( ssl_proxy || proxy.type == "http" );
 
+  url_t split_url;
+  if ( ! url_t::split( split_url, current_url ) )
+    return false;
+
   // get a page and if we find a redirect update current_url and loop
   while ( true )
   {
-    url_t split_url;
-    if ( ! url_t::split( split_url, current_url ) )
-      return false;
-
     bool use_ssl = ssl_proxy || ( ! use_proxy && ( split_url.protocol == "https" ) );
 #ifndef SC_USE_OPENSSL
     if ( use_ssl )
@@ -458,7 +458,20 @@ bool download( url_cache_entry_t& entry,
 
       pos_location += 12;
       std::string::size_type pos_line_end = result.find( "\r\n", pos_location );
-      current_url.assign( result, pos_location, pos_line_end - pos_location );
+
+      std::string redirect_url = result.substr( pos_location, pos_line_end - pos_location );
+      url_t tmp_split_url;
+      if ( url_t::split( tmp_split_url, redirect_url ) )
+      {
+        // Absolute url, move tmp_split_url to split_url
+        split_url = tmp_split_url;
+
+      }
+      else
+      {
+        // Assume Relative URL, just write it into the path part of the already splitted url
+        split_url.path = redirect_url;
+      }
     }
     else
     {
@@ -692,7 +705,7 @@ bool http::get( std::string&       result,
 #include <iostream>
 
 uint32_t dbc::get_school_mask( school_e ) { return 0; }
-int sim_t::errorf( const char*, ... ) { return 0; }
+void sim_t::errorf( const char*, ... ) { }
 
 int main( int argc, char* argv[] )
 {
@@ -731,7 +744,7 @@ int main( int argc, char* argv[] )
     else
       std::cout << "Unable to download armory data.\n";
 
-    if ( http::get( result, "http://www.wowhead.com/item=40328&xml", cache::CURRENT ) )
+    if ( http::get( result, "http://www.wowhead.com/list=1564664", cache::CURRENT ) )
       std::cout << result << '\n';
     else
       std::cout << "Unable to download wowhead data.\n";
