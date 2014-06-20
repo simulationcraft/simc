@@ -20,9 +20,15 @@ struct token_t
 // item_t::item_t ===========================================================
 
 item_t::item_t( player_t* p, const std::string& o ) :
-  sim( p -> sim ), player( p ), slot( SLOT_INVALID ), unique( false ),
-  unique_addon( false ), is_ptr( p -> dbc.ptr ),
-  parsed(), xml(), options_str( o )
+  sim( p -> sim ),
+  player( p ),
+  slot( SLOT_INVALID ),
+  unique( false ),
+  unique_addon( false ),
+  is_ptr( p -> dbc.ptr ),
+  parsed(),
+  xml(),
+  options_str( o )
 {
   parsed.data.name = name_str.c_str();
 }

@@ -1214,7 +1214,8 @@ struct colossus_smash_t : public warrior_attack_t
 
   virtual double cost() const
   {
-    double c = warrior_attack_t::cost();
+    //double c = warrior_attack_t::cost();
+	double c;
 
     if ( p() -> specialization() == WARRIOR_ARMS )
       c = 30;
@@ -1692,9 +1693,8 @@ struct mortal_strike_t : public warrior_attack_t
 
   virtual double cost() const
   {
-    double c = warrior_attack_t::cost();
-
-    c = 30;
+    //double c = warrior_attack_t::cost();
+    double c = 30;
 
     return c;
   }
@@ -2325,9 +2325,8 @@ struct whirlwind_arms_t : public warrior_attack_t
 
   virtual double cost() const
   {
-    double c = warrior_attack_t::cost();
-
-    c = 30;
+    //double c = warrior_attack_t::cost();
+    double c = 30;
 
     return c;
   }

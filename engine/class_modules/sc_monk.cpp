@@ -1276,6 +1276,7 @@ struct chi_explosion_t : public monk_melee_attack_t
     }
     return monk_melee_attack_t::cost();
   }
+
  virtual void consume_resource()
   {
     double savings = base_costs[ RESOURCE_CHI ] - cost();

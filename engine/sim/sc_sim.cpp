@@ -1953,7 +1953,7 @@ player_t* sim_t::find_player( int index )
 
 cooldown_t* sim_t::get_cooldown( const std::string& name )
 {
-  cooldown_t* c = nullptr;
+  cooldown_t* c;
 
   for ( size_t i = 0; i < cooldown_list.size(); ++i )
   {
