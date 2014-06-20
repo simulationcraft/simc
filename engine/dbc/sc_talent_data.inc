@@ -1,6 +1,6 @@
 #define TALENT_SIZE (301)
 
-// 301 talents, wow build 18379
+// 301 talents, wow build 18443
 static struct talent_data_t __talent_data[] = {
 //{ Name                                ,    Id, Flgs,  Class, Spc, Col, Row, SpellID, ReplaceID, S1 },
   { "Second Wind"                       , 15757, 0x00, 0x0001,   0,   1,   1,   29838,         0,  0 },
@@ -312,7 +312,7 @@ static struct talent_data_t __talent_data[] = {
   { "Divine Insight"                    , 21754, 0x00, 0x0010, 256,   2,   4,  162451,         0,  0 },
   { "Divine Insight"                    , 21755, 0x00, 0x0010, 258,   2,   4,  162452,         0,  0 },
   { "Focusing Shot"                     , 21756, 0x00, 0x0004,   0,   1,   6,  163485,     56641,  0 },
-  { "Ignite Weapon"                     , 21760, 0x00, 0x0001,  71,   2,   6,  163965,         0,  0 },
+  { "Ignite Weapon"                     , 21760, 0x00, 0x0001,   0,   2,   6,  163965,         0,  0 },
   { "Unleashed Fury"                    , 21772, 0x00, 0x0040, 264,   0,   5,  165479,         0,  0 },
   { "Unleashed Fury"                    , 21773, 0x00, 0x0040,   0,   0,   5,  165477,         0,  0 },
   { "Faerie Swarm"                      , 21776, 0x00, 0x0400, 102,   0,   2,  102355,         0,  0 },
