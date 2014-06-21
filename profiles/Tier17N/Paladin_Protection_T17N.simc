@@ -55,7 +55,7 @@ actions+=/sacred_shield,if=talent.sacred_shield.enabled
 head=faceguard_of_winged_triumph,id=99370,upgrade=2,gems=16haste_8crit_8haste_14sta
 neck=juggernauts_ignition_keys,id=105513,upgrade=2
 shoulders=shoulderguards_of_winged_triumph,id=99364,upgrade=2,gems=16haste_16haste
-back=qianying_fortitude_of_niuzao,id=102250,upgrade=2,gems=8crit_8haste_9sta
+back=tigerclaw_cape,id=98147,upgrade=2,gems=8haste_8crit,enchant=9crit
 chest=chestguard_of_winged_triumph,id=99368,upgrade=2,gems=8crit_8haste_8crit_8haste_8crit_8haste_14sta
 wrists=bubbleburst_bracers,id=105411,upgrade=2,gems=16haste,enchant=7mastery
 hands=handguards_of_winged_triumph,id=99369,upgrade=2,gems=16haste_16haste_16haste
@@ -71,11 +71,10 @@ off_hand=bulwark_of_the_fallen_general,id=105556,upgrade=2,gems=16haste
 
 # Gear Summary
 # gear_strength=928
-# gear_stamina=1728
-# gear_crit_rating=508
+# gear_stamina=1719
+# gear_crit_rating=552
 # gear_haste_rating=813
 # gear_mastery_rating=362
 # gear_armor=2041
-# gear_bonus_armor=35
 # tier16_2pc_tank=1
 # tier16_4pc_tank=1

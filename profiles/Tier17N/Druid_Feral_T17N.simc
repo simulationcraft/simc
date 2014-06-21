@@ -68,10 +68,10 @@ actions.finisher+=/rip,cycle_targets=1,if=dot.rip.remains<4.8&energy.time_to_max
 actions.finisher+=/savage_roar,if=(energy.time_to_max<=1|buff.berserk.up)&buff.savage_roar.remains<42*0.3
 actions.finisher+=/ferocious_bite,if=(energy.time_to_max<=1|buff.berserk.up)
 
-head=headpiece_of_the_shattered_vale,id=99328,upgrade=2,gems=capacitive_primal_8agi_9agi
+head=headpiece_of_the_shattered_vale,id=99328,upgrade=2,gems=8agi_9agi
 neck=immerseus_crystalline_eye,id=105407,upgrade=2
 shoulders=spaulders_of_the_shattered_vale,id=99322,upgrade=2,gems=8agi_8agi_6agi,enchant=10agi_5crit
-back=fenyu_fury_of_xuen,id=102248,upgrade=2,gems=8agi_3agi,enchant=9hit,addon=goblin_glider
+back=tigerfang_wrap,id=98148,upgrade=2,gems=8agi_3agi,enchant=9hit,addon=goblin_glider
 chest=raiment_of_the_shattered_vale,id=99326,upgrade=2,gems=8agi_8agi_8agi_9agi,enchant=4all
 wrists=bombers_blackened_wristwatch,id=105616,upgrade=2,enchant=9agi
 hands=grips_of_the_shattered_vale,id=99327,upgrade=2,gems=8agi_8agi_6agi,enchant=9haste
@@ -90,11 +90,10 @@ main_hand=halberd_of_inner_shadows,id=105560,upgrade=2,gems=4agi_8crit_3agi,ench
 # gear_stamina=1539
 # gear_intellect=8
 # gear_hit_rating=9
-# gear_crit_rating=470
+# gear_crit_rating=454
 # gear_haste_rating=372
 # gear_mastery_rating=527
 # gear_armor=414
 # gear_multistrike_rating=99
-# meta_gem=capacitive_primal
 # tier16_2pc_melee=1
 # tier16_4pc_melee=1

@@ -14,7 +14,7 @@ glyphs=double_jeopardy/mass_exorcism
 head=helmet_of_winged_triumph,id=99379,upgrade=2,gems=16haste_8crit_8haste_9str
 neck=juggernauts_ignition_keys,id=105513,upgrade=2
 shoulders=pauldrons_of_winged_triumph,id=99373,upgrade=2,gems=8crit_8haste_8crit_8haste_6str
-back=gonglu_strength_of_xuen,id=102249,upgrade=2,gems=8crit_8haste_6str,enchant=8sta
+back=tigerclaw_cape,id=98147,upgrade=2,gems=8haste_8crit,enchant=9crit
 chest=battleplate_of_winged_triumph,id=99387,upgrade=2,gems=8crit_8haste_8crit_8haste_8crit_8haste_9str
 wrists=bubbleburst_bracers,id=105411,upgrade=2,gems=16haste,enchant=18crit
 hands=gauntlets_of_winged_triumph,id=99380,upgrade=2,gems=8crit_8haste_8crit_8haste_6str
@@ -40,7 +40,7 @@ glyphs=focused_shield/alabaster_shield/divine_protection
 head=faceguard_of_winged_triumph,id=99370,upgrade=2,gems=16haste_8crit_8haste_14sta
 neck=juggernauts_ignition_keys,id=105513,upgrade=2
 shoulders=shoulderguards_of_winged_triumph,id=99364,upgrade=2,gems=16haste_16haste
-back=qianying_fortitude_of_niuzao,id=102250,upgrade=2,gems=8crit_8haste_9sta
+back=tigerclaw_cape,id=98147,upgrade=2,gems=8haste_8crit,enchant=9crit
 chest=chestguard_of_winged_triumph,id=99368,upgrade=2,gems=8crit_8haste_8crit_8haste_8crit_8haste_14sta
 wrists=bubbleburst_bracers,id=105411,upgrade=2,gems=16haste,enchant=7mastery
 hands=handguards_of_winged_triumph,id=99369,upgrade=2,gems=16haste_16haste_16haste

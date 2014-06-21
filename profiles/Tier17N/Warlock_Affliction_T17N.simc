@@ -55,10 +55,10 @@ actions.aoe+=/seed_of_corruption,cycle_targets=1,if=(buff.soulburn.down&!in_flig
 actions.aoe+=/haunt,cycle_targets=1,if=!in_flight_to_target&debuff.haunt.remains<cast_time+travel_time&shard_react
 actions.aoe+=/life_tap,if=mana.pct<70
 
-head=flameslingers_fiery_cowl,id=105495,upgrade=2,gems=sinister_primal_16haste_9int
+head=flameslingers_fiery_cowl,id=105495,upgrade=2,gems=16haste_9int
 neck=untainted_guardians_chain,id=105465,upgrade=2
 shoulders=mantle_of_the_horned_nightmare,id=99417,upgrade=2,gems=8exp_8haste_8exp_8haste_6int,enchant=10int_5crit
-back=xingho_breath_of_yulon,id=102246,upgrade=2,gems=4int_8haste_3int,enchant=9crit
+back=jadefire_drape,id=98150,upgrade=2,gems=4int_8haste_3int,enchant=9crit
 chest=robes_of_the_tendered_heart,id=105440,upgrade=2,gems=8exp_8haste_16haste_8haste_8crit_9int,enchant=4all
 wrists=avools_ancestral_bracers,id=105591,upgrade=2,enchant=9int
 hands=gloves_of_the_horned_nightmare,id=99424,upgrade=2,gems=8exp_8haste_8exp_8haste_6int,enchant=9mastery
@@ -80,10 +80,9 @@ off_hand=revelations_of_yshaarj,id=105650,upgrade=2,gems=4int_8haste_3int,enchan
 # gear_spell_power=590
 # gear_expertise_rating=48
 # gear_hit_rating=3
-# gear_crit_rating=390
+# gear_crit_rating=374
 # gear_haste_rating=859
 # gear_mastery_rating=403
 # gear_armor=289
-# meta_gem=sinister_primal
 # tier16_2pc_caster=1
 default_pet=felhunter

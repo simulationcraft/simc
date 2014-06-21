@@ -82,10 +82,10 @@ actions.aoe+=/starfire,if=buff.celestial_alignment.up&buff.lunar_empowerment.up&
 actions.aoe+=/starfire,if=(eclipse_energy>0&eclipse_change>execute_time)|(eclipse_energy<0&eclipse_change<execute_time)
 actions.aoe+=/wrath,if=(eclipse_energy<0&eclipse_change>execute_time)|(eclipse_energy>0&eclipse_change<execute_time)
 
-head=darkfang_mask,id=105542,upgrade=2,gems=sinister_primal_16crit_9int
+head=darkfang_mask,id=105542,upgrade=2,gems=16crit_9int
 neck=untainted_guardians_chain,id=105465,upgrade=2
 shoulders=shoulderwraps_of_the_shattered_vale,id=99428,upgrade=2,gems=4int_8crit_4int_8crit_6int,enchant=10int_5crit
-back=xingho_breath_of_yulon,id=102246,upgrade=2,gems=4int_8crit_3int,enchant=9int
+back=jadefire_drape,id=98150,upgrade=2,gems=4int_8haste_3int,enchant=9crit
 chest=vestment_of_the_shattered_vale,id=99427,upgrade=2,gems=8haste_8crit_8haste_8crit_8haste_8crit_9int,enchant=4all
 wrists=bracers_of_purified_spirit,id=105425,upgrade=2,enchant=9int
 hands=gloves_of_the_shattered_vale,id=99432,upgrade=2,gems=8haste_8crit_8haste_8crit_6int,enchant=9mastery
@@ -103,13 +103,12 @@ off_hand=revelations_of_yshaarj,id=105650,upgrade=2,gems=4int_8crit_3int,enchant
 # gear_strength=4
 # gear_agility=8
 # gear_stamina=1536
-# gear_intellect=1073
+# gear_intellect=1064
 # gear_spell_power=590
-# gear_crit_rating=654
-# gear_haste_rating=402
+# gear_crit_rating=639
+# gear_haste_rating=410
 # gear_mastery_rating=466
 # gear_armor=414
 # gear_multistrike_rating=99
-# meta_gem=sinister_primal
 # tier16_2pc_caster=1
 # tier16_4pc_caster=1

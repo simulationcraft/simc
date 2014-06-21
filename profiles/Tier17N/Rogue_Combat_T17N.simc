@@ -55,10 +55,10 @@ actions.generator+=/sinister_strike
 actions.finisher=crimson_tempest,if=active_enemies>=7&dot.crimson_tempest_dot.ticks_remain<=2
 actions.finisher+=/eviscerate
 
-head=helmet_of_the_barbed_assassin,id=99348,upgrade=2,gems=capacitive_primal_8agi_9agi
+head=helmet_of_the_barbed_assassin,id=99348,upgrade=2,gems=8agi_9agi
 neck=immerseus_crystalline_eye,id=105407,upgrade=2
 shoulders=shoulderguards_of_the_righteous_stand,id=105551,upgrade=2,gems=4agi_8haste_4agi_8haste_6agi,enchant=10agi_5crit
-back=fenyu_fury_of_xuen,id=102248,upgrade=2,gems=8agi_3agi,enchant=9crit
+back=tigerfang_wrap,id=98148,upgrade=2,gems=8agi_3agi,enchant=9hit,addon=goblin_glider
 chest=tunic_of_the_barbed_assassin,id=99356,upgrade=2,gems=8agi_8agi_8agi_9agi,enchant=4all
 wrists=bombers_blackened_wristwatch,id=105616,upgrade=2,gems=8agi,enchant=9agi
 hands=gloves_of_the_barbed_assassin,id=99355,upgrade=2,gems=8agi_8agi_8agi_6agi,enchant=9haste,addon=synapse_springs_2
@@ -77,11 +77,11 @@ off_hand=hvitserks_formidable_shanker,id=105601,upgrade=2,gems=8agi_3agi,enchant
 # gear_agility=1166
 # gear_stamina=1512
 # gear_intellect=4
-# gear_crit_rating=262
+# gear_hit_rating=9
+# gear_crit_rating=237
 # gear_haste_rating=609
 # gear_mastery_rating=477
 # gear_armor=413
 # gear_multistrike_rating=99
-# meta_gem=capacitive_primal
 # tier16_2pc_melee=1
 # tier16_4pc_melee=1

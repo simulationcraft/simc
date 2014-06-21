@@ -56,10 +56,10 @@ actions.single_target+=/tiger_palm,if=buff.combo_breaker_tp.react&(buff.combo_br
 actions.single_target+=/jab,if=chi.max-chi>=2
 actions.single_target+=/blackout_kick,if=energy+energy.regen*cooldown.rising_sun_kick.remains>=40
 
-head=headpiece_of_seven_sacred_seals,id=99393,upgrade=2,gems=capacitive_primal_4agi_8crit_9agi
+head=headpiece_of_seven_sacred_seals,id=99393,upgrade=2,gems=4agi_8crit_9agi
 neck=gleaming_eye_of_the_devilsaur,id=105602,upgrade=2
 shoulders=spaulders_of_seven_sacred_seals,id=99395,upgrade=2,gems=4agi_8crit_4agi_8crit_6agi,enchant=10agi_5crit
-back=fenyu_fury_of_xuen,id=102248,upgrade=2,gems=4agi_8crit_3agi,enchant=9crit
+back=tigerfang_wrap,id=98148,upgrade=2,gems=8agi_3agi,enchant=9hit,addon=goblin_glider
 chest=tunic_of_seven_sacred_seals,id=99396,upgrade=2,gems=4agi_8crit_4agi_8crit_4agi_8crit_9agi,enchant=4all
 wrists=mantid_carapace_augments,id=105583,upgrade=2,enchant=9agi
 hands=gloves_of_the_golden_protector,id=105453,upgrade=2,gems=4agi_8crit_4agi_8crit_6agi,enchant=9str
@@ -74,14 +74,14 @@ main_hand=trident_of_corrupted_waters,id=105408,upgrade=2,gems=4agi_8crit_3agi,e
 
 # Gear Summary
 # gear_strength=13
-# gear_agility=1108
+# gear_agility=1112
 # gear_stamina=1537
 # gear_intellect=8
-# gear_crit_rating=812
+# gear_hit_rating=9
+# gear_crit_rating=779
 # gear_haste_rating=453
 # gear_mastery_rating=285
 # gear_armor=413
 # gear_multistrike_rating=99
-# meta_gem=capacitive_primal
 # tier16_2pc_melee=1
 # tier16_4pc_melee=1

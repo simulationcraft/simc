@@ -69,7 +69,7 @@ actions+=/dispersion
 head=hood_of_the_ternion_glory,id=99360,upgrade=2
 neck=necklace_of_fading_light,id=105473,upgrade=2
 shoulders=shoulderguards_of_the_ternion_glory,id=99363,upgrade=2
-back=xingho_breath_of_yulon,id=102246,upgrade=2
+back=jadefire_drape,id=98150,upgrade=2,gems=4int_8haste_3int,enchant=9crit
 chest=raiment_of_the_ternion_glory,id=99362,upgrade=2
 wrists=bracers_of_sonic_projection,id=105626,upgrade=2
 hands=gloves_of_the_ternion_glory,id=99359,upgrade=2
@@ -85,10 +85,10 @@ off_hand=revelations_of_yshaarj,id=105650,upgrade=2
 
 # Gear Summary
 # gear_stamina=1532
-# gear_intellect=932
+# gear_intellect=939
 # gear_spell_power=590
-# gear_crit_rating=210
-# gear_haste_rating=576
+# gear_crit_rating=219
+# gear_haste_rating=584
 # gear_mastery_rating=408
 # gear_armor=284
 # gear_multistrike_rating=99

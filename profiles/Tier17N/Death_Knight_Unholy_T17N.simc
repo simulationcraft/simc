@@ -80,10 +80,10 @@ actions.single_target+=/death_coil
 actions.single_target+=/blood_tap,if=talent.blood_tap.enabled&buff.blood_charge.stack>=8
 actions.single_target+=/empower_rune_weapon
 
-head=helmet_of_cyclopean_dread,id=99337,upgrade=2,gems=capacitive_primal_4str_8crit_9str
+head=helmet_of_cyclopean_dread,id=99337,upgrade=2,gems=4str_8crit_9str
 neck=malkoroks_tainted_dog_tags,id=105566,upgrade=2
 shoulders=tusks_of_mannoroth,id=105642,upgrade=2,gems=4str_8crit_4str_8crit_4str_8crit_9str,enchant=10str_5crit
-back=gonglu_strength_of_xuen,id=102249,upgrade=2,gems=4str_8crit_3str,enchant=9crit
+back=tigerclaw_cape,id=98147,upgrade=2,gems=8haste_8crit,enchant=9crit
 chest=breastplate_of_shamanic_mirrors,id=105532,upgrade=2,gems=4str_8crit_4str__8crit_16crit_9str,enchant=4all
 wrists=bracers_of_blind_hatred,id=105456,upgrade=2,gems=16crit,enchant=9str
 hands=gauntlets_of_cyclopean_dread,id=99336,upgrade=2,gems=16crit_4str_8crit_4str_8crit_6str,enchant=9str,addon=synapse_springs_mark_ii
@@ -97,14 +97,13 @@ trinket2=thoks_tail_tip,id=105609,upgrade=2
 main_hand=xalatoh_desecrated_image_of_gorehowl,id=105644,upgrade=2,gems=4str_8crit_3str,enchant=rune_of_the_fallen_crusader
 
 # Gear Summary
-# gear_strength=1105
+# gear_strength=1098
 # gear_agility=4
 # gear_stamina=1555
 # gear_intellect=4
 # gear_expertise_rating=3
-# gear_crit_rating=847
-# gear_haste_rating=194
+# gear_crit_rating=831
+# gear_haste_rating=202
 # gear_mastery_rating=521
 # gear_armor=1210
-# meta_gem=capacitive_primal
 # tier16_2pc_melee=1

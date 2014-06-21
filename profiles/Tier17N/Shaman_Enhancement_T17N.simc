@@ -83,10 +83,10 @@ actions.aoe+=/frost_shock,if=active_enemies<4
 actions.aoe+=/earth_elemental_totem
 actions.aoe+=/fire_nova,if=active_flame_shock>=1
 
-head=helmet_of_celestial_harmony,id=99341,upgrade=2,gems=capacitive_primal_4agi_8mastery_9agi
+head=helmet_of_celestial_harmony,id=99341,upgrade=2,gems=4agi_8mastery_9agi
 neck=immerseus_crystalline_eye,id=105407,upgrade=2
 shoulders=quarantine_shoulderguards,id=105455,upgrade=2,gems=8mastery_8crit_8mastery_8crit_6agi,enchant=10agi_5crit
-back=fenyu_fury_of_xuen,id=102248,upgrade=2,gems=4agi_8mastery_3agi,enchant=9crit
+back=tigerfang_wrap,id=98148,upgrade=2,gems=8agi_3agi,enchant=9hit,addon=goblin_glider
 chest=cuirass_of_celestial_harmony,id=99347,upgrade=2,gems=8haste_8mastery_8haste_8mastery_8haste_8mastery_9agi,enchant=4all
 wrists=bracers_of_infinite_pipes,id=105617,upgrade=2,enchant=9agi
 hands=grips_of_celestial_harmony,id=99340,upgrade=2,gems=8haste_8mastery_8haste_8mastery_6agi,enchant=9mastery,addon=synapse_springs_mark_ii
@@ -102,14 +102,14 @@ off_hand=korvens_crimson_crescent,id=105625,upgrade=2,gems=8haste_8mastery_3agi,
 
 # Gear Summary
 # gear_strength=4
-# gear_agility=1029
+# gear_agility=1033
 # gear_stamina=1512
 # gear_intellect=8
-# gear_crit_rating=240
+# gear_hit_rating=9
+# gear_crit_rating=215
 # gear_haste_rating=593
-# gear_mastery_rating=765
+# gear_mastery_rating=757
 # gear_armor=719
 # gear_multistrike_rating=99
-# meta_gem=capacitive_primal
 # tier16_2pc_melee=1
 # tier16_4pc_melee=1

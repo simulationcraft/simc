@@ -49,10 +49,10 @@ actions.careful_aim+=/glaive_toss
 actions.careful_aim+=/focusing_shot,if=focus<60
 actions.careful_aim+=/steady_shot
 
-head=headguard_of_the_unblinking_vigil,id=99402,upgrade=2,gems=capacitive_primal_8agi_9agi
+head=headguard_of_the_unblinking_vigil,id=99402,upgrade=2,gems=8agi_9agi
 neck=gleaming_eye_of_the_devilsaur,id=105602,upgrade=2
 shoulders=spaulders_of_the_unblinking_vigil,id=99404,upgrade=2,gems=8agi_8agi_6agi,enchant=10agi_5crit
-back=fenyu_fury_of_xuen,id=102248,upgrade=2,gems=8agi_3agi,enchant=9hit
+back=tigerfang_wrap,id=98148,upgrade=2,gems=8agi_3agi,enchant=9hit
 chest=tunic_of_the_unblinking_vigil,id=99405,upgrade=2,gems=8agi_8agi_8agi_9agi,enchant=4agi_4sta
 wrists=wristguards_of_ruination,id=105562,upgrade=2,enchant=9agi
 hands=gloves_of_the_unblinking_vigil,id=99406,upgrade=2,gems=8agi_8agi_6agi,enchant=9haste
@@ -69,12 +69,11 @@ main_hand=hiseks_reserve_longbow,id=105623,upgrade=2,gems=8agi_3agi,enchant=lord
 # gear_agility=1162
 # gear_stamina=1539
 # gear_hit_rating=9
-# gear_crit_rating=644
+# gear_crit_rating=628
 # gear_haste_rating=531
 # gear_mastery_rating=169
 # gear_armor=720
 # gear_multistrike_rating=99
-# meta_gem=capacitive_primal
 # tier16_2pc_melee=1
 # tier16_4pc_melee=1
 summon_pet=cat

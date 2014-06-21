@@ -10,10 +10,10 @@ position=back
 professions=blacksmithing=600/engineering=600
 talents=000301
 glyphs=chain_lightning
-head=headpiece_of_celestial_harmony,id=99332,upgrade=2,gems=sinister_primal_4int_8haste_9int
+head=headpiece_of_celestial_harmony,id=99332,upgrade=2,gems=4int_8haste_9int
 neck=necklace_of_fading_light,id=105473,upgrade=2,reforge=spi_mastery
 shoulders=shoulderwraps_of_celestial_harmony,id=99334,upgrade=2,gems=4int_8haste_4int_8haste_6int,enchant=10int_5crit,reforge=crit_mastery
-back=xingho_breath_of_yulon,id=102246,upgrade=2,gems=4int_8haste_3int,enchant=9int,addon=goblin_glider
+back=jadefire_drape,id=98150,upgrade=2,gems=4int_8haste_3int,enchant=9crit
 chest=hauberk_of_celestial_harmony,id=99344,upgrade=2,gems=4int_8haste_4int_8haste_4int_8haste_9int,enchant=4all,reforge=crit_haste
 wrists=bracers_of_the_pristine_purifier,id=105598,upgrade=2,enchant=9int
 hands=grips_of_tidal_force,id=105501,upgrade=2,gems=4int_8haste_16haste_6int,enchant=9haste,addon=synapse_springs_mark_ii,reforge=crit_haste
@@ -39,10 +39,10 @@ position=back
 professions=engineering=600/herbalism=600
 talents=000102
 glyphs=chain_lightning
-head=helmet_of_celestial_harmony,id=99341,upgrade=2,gems=capacitive_primal_4agi_8mastery_9agi
+head=helmet_of_celestial_harmony,id=99341,upgrade=2,gems=4agi_8mastery_9agi
 neck=immerseus_crystalline_eye,id=105407,upgrade=2
 shoulders=quarantine_shoulderguards,id=105455,upgrade=2,gems=8mastery_8crit_8mastery_8crit_6agi,enchant=10agi_5crit
-back=fenyu_fury_of_xuen,id=102248,upgrade=2,gems=4agi_8mastery_3agi,enchant=9crit,reforge=crit_hit
+back=tigerfang_wrap,id=98148,reforge=crit_hit,enchant=9hit,addon=goblin_glider,upgrade=2,gems=8agi_3agi
 chest=cuirass_of_celestial_harmony,id=99347,upgrade=2,gems=8haste_8mastery_8haste_8mastery_8haste_8mastery_9agi,enchant=4all
 wrists=bracers_of_infinite_pipes,id=105617,upgrade=2,enchant=9agi,reforge=mastery_hit
 hands=grips_of_celestial_harmony,id=99340,upgrade=2,gems=8haste_8mastery_8haste_8mastery_6agi,enchant=9mastery,reforge=mastery_hit,addon=synapse_springs_mark_ii

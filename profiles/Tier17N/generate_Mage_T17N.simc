@@ -8,10 +8,10 @@ spec=frost
 professions=tailoring=600/engineering=600
 talents=100022
 glyphs=icy_veins/splitting_ice
-head=chronomancer_hood,id=99398,upgrade=2,gems=sinister_primal_8haste_8mastery_9int,reforge=crit_mastery
+head=chronomancer_hood,id=99398,upgrade=2,gems=8haste_8mastery_9int,reforge=crit_mastery
 neck=untainted_guardians_chain,id=105465,upgrade=2,reforge=hit_haste
 shoulders=chronomancer_mantle,id=99401,upgrade=2,gems=8haste_8mastery_8haste_8mastery_6int,enchant=10int_5crit,reforge=haste_mastery
-back=xingho_breath_of_yulon,id=102246,upgrade=2,gems=4int_8mastery_3int,enchant=9crit,reforge=crit_hit
+back=jadefire_drape,id=98150,upgrade=2,gems=4int_8haste_3int,enchant=9crit
 chest=robes_of_the_tendered_heart,id=105440,upgrade=2,gems=8haste_8mastery_16mastery_8crit_8mastery_9int,enchant=4all,reforge=haste_mastery
 wrists=avools_ancestral_bracers,id=105591,upgrade=2,enchant=9int
 hands=chronomancer_gloves,id=99397,upgrade=2,gems=4int_8mastery_4int_8mastery_6int,enchant=9mastery,reforge=crit_mastery
@@ -33,10 +33,10 @@ spec=arcane
 professions=tailoring=600/engineering=600
 talents=100022
 glyphs=arcane_power
-head=ebon_ritual_hood,id=105647,upgrade=2,gems=sinister_primal_8haste_8mastery_9int,reforge=haste_hit
+head=ebon_ritual_hood,id=105647,upgrade=2,gems=8haste_8mastery_9int,reforge=haste_hit
 neck=untainted_guardians_chain,id=105465,upgrade=2,reforge=hit_haste
 shoulders=chronomancer_mantle,id=99401,upgrade=2,gems=8haste_8mastery_8haste_8mastery_6int,enchant=10int_5crit,reforge=crit_mastery
-back=xingho_breath_of_yulon,id=102246,upgrade=2,gems=4int_8mastery_3int,enchant=9crit,reforge=crit_hit
+back=jadefire_drape,id=98150,upgrade=2,gems=4int_8haste_3int,enchant=9crit
 chest=chronomancer_robes,id=99400,upgrade=2,gems=8haste_8mastery_8haste_8mastery_8haste_8mastery_9int,enchant=4all,reforge=crit_haste
 wrists=avools_ancestral_bracers,id=105591,upgrade=2,enchant=9int
 hands=chronomancer_gloves,id=99397,upgrade=2,gems=8haste_8mastery_8haste_8mastery_6int,enchant=9mastery,reforge=crit_mastery
@@ -59,10 +59,10 @@ professions=tailoring=600/engineering=600
 talents=100022
 glyphs=combustion/counterspell
 
-head=ebon_ritual_hood,id=105647,upgrade=2,gems=sinister_primal_8haste_8mastery_9int
+head=ebon_ritual_hood,id=105647,upgrade=2,gems=8haste_8mastery_9int
 neck=untainted_guardians_chain,id=105465,upgrade=2
 shoulders=chronomancer_mantle,id=99401,upgrade=2,gems=8haste_8mastery_8haste_8mastery_6int,enchant=10int_5crit
-back=xingho_breath_of_yulon,id=102246,upgrade=2,gems=4int_8mastery_3int,enchant=9crit
+back=jadefire_drape,id=98150,upgrade=2,gems=4int_8haste_3int,enchant=9crit
 chest=chronomancer_robes,id=99400,upgrade=2,gems=8haste_8mastery_8haste_8mastery_8haste_8mastery_9int,enchant=4all
 wrists=avools_ancestral_bracers,id=105591,upgrade=2,enchant=9int
 hands=chronomancer_gloves,id=99397,upgrade=2,gems=8haste_8mastery_8haste_8mastery_6int,enchant=9mastery

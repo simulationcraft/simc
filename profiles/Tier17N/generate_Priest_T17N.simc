@@ -15,7 +15,7 @@ glyphs=mind_harvest/mind_flay/dark_archangel/shadowy_friends/shadow_ravens
 head=hood_of_the_ternion_glory,id=99360,upgrade=2
 neck=necklace_of_fading_light,id=105473,upgrade=2
 shoulders=shoulderguards_of_the_ternion_glory,id=99363,upgrade=2
-back=xingho_breath_of_yulon,id=102246,upgrade=2
+back=jadefire_drape,id=98150,upgrade=2,gems=4int_8haste_3int,enchant=9crit
 chest=raiment_of_the_ternion_glory,id=99362,upgrade=2
 wrists=bracers_of_sonic_projection,id=105626,upgrade=2
 hands=gloves_of_the_ternion_glory,id=99359,upgrade=2
