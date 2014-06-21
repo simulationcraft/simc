@@ -175,11 +175,11 @@ public:
     buff_t* elemental_focus;
     buff_t* echo_of_the_elements;
     buff_t* lava_surge;
-    buff_t* spew_lava;
+    buff_t* liquid_magma;
     buff_t* lightning_shield;
     maelstrom_weapon_buff_t* maelstrom_weapon;
     buff_t* shamanistic_rage;
-    buff_t* shocking_lava;
+    buff_t* elemental_fusion;
     buff_t* spirit_walk;
     buff_t* spiritwalkers_grace;
     buff_t* tier16_2pc_melee;
@@ -322,9 +322,9 @@ public:
     const spell_data_t* primal_elementalist;
     const spell_data_t* elemental_blast;
 
-    const spell_data_t* shocking_lava;
+    const spell_data_t* elemental_fusion;
     const spell_data_t* storm_elemental_totem;
-    const spell_data_t* spew_lava;
+    const spell_data_t* liquid_magma;
   } talent;
 
   // Perks
@@ -911,14 +911,14 @@ struct shaman_spell_t : public shaman_spell_base_t<spell_t>
 
   // Unleash flame
   bool     may_unleash_flame;
-  bool     uses_shocking_lava;
+  bool     uses_elemental_fusion;
 
   shaman_spell_t( const std::string& token, shaman_t* p,
                   const spell_data_t* s = spell_data_t::nil(), const std::string& options = std::string() ) :
     base_t( token, p, s ),
     overload( false ), overload_spell( 0 ), overload_chance_multiplier( 1.0 ),
     may_unleash_flame( dbc::is_school( school, SCHOOL_FIRE ) ),
-    uses_shocking_lava( false )
+    uses_elemental_fusion( false )
   {
     parse_options( 0, options );
 
@@ -935,8 +935,8 @@ struct shaman_spell_t : public shaman_spell_base_t<spell_t>
     if ( harmful && callbacks && ! proc && resource_consumed > 0 && p() -> buff.elemental_focus -> up() )
       p() -> buff.elemental_focus -> decrement();
 
-    if ( uses_shocking_lava )
-      p() -> buff.shocking_lava -> expire();
+    if ( uses_elemental_fusion )
+      p() -> buff.elemental_fusion -> expire();
   }
 
   virtual void impact( action_state_t* state )
@@ -1014,8 +1014,8 @@ struct shaman_spell_t : public shaman_spell_base_t<spell_t>
     if ( may_unleash_flame && p() -> buff.unleash_flame -> up() )
       m *= 1.0 + p() -> buff.unleash_flame -> data().effectN( 2 ).percent();
 
-    if ( uses_shocking_lava )
-      m *= 1.0 + p() -> buff.shocking_lava -> stack() * p() -> buff.shocking_lava -> data().effectN( 1 ).percent();
+    if ( uses_elemental_fusion )
+      m *= 1.0 + p() -> buff.elemental_fusion -> stack() * p() -> buff.elemental_fusion -> data().effectN( 1 ).percent();
 
     return m;
   }
@@ -2682,7 +2682,7 @@ struct lava_lash_t : public shaman_attack_t
       if ( td( state -> target ) -> dot.flame_shock -> is_ticking() )
         trigger_improved_lava_lash( this );
 
-      p() -> buff.shocking_lava -> trigger();
+      p() -> buff.elemental_fusion -> trigger();
     }
   }
 };
@@ -3239,7 +3239,7 @@ struct lava_burst_t : public shaman_spell_t
 
     if ( result_is_hit( state -> result ) )
     {
-      p() -> buff.shocking_lava -> trigger();
+      p() -> buff.elemental_fusion -> trigger();
       trigger_fulmination( this );
     }
   }
@@ -3606,7 +3606,7 @@ struct earth_shock_t : public shaman_spell_t
     cooldown             = player -> cooldown.shock;
     cooldown -> duration = data().cooldown() + player -> spec.spiritual_insight -> effectN( 3 ).time_value();
     shock                = true;
-    uses_shocking_lava   = true;
+    uses_elemental_fusion= true;
 
     stats -> add_child ( player -> get_stats( "fulmination" ) );
   }
@@ -3662,7 +3662,7 @@ struct flame_shock_t : public shaman_spell_t
     cooldown              = player -> cooldown.shock;
     cooldown -> duration  = data().cooldown() + player -> spec.spiritual_insight -> effectN( 3 ).time_value();
     shock                 = true;
-    uses_shocking_lava    = true;
+    uses_elemental_fusion = true;
   }
 
   // Override assess_damage, so we can prevent 0 damage hits from reports, when
@@ -3947,15 +3947,15 @@ struct shaman_totem_pet_t : public pet_t
   // Summon related functionality
   pet_t*                summon_pet;
 
-  // Spew Lava
-  buff_t*               spew_lava;
-  action_t*             spew_lava_action;
+  // Liquid Magma 
+  buff_t*               liquid_magma;
+  action_t*             liquid_magma_action;
 
   shaman_totem_pet_t( shaman_t* p, const std::string& n, totem_e tt ) :
     pet_t( p -> sim, p, n, true ),
     totem_type( tt ),
     pulse_action( 0 ), pulse_event( 0 ), pulse_amplitude( timespan_t::zero() ),
-    summon_pet( 0 ), spew_lava( 0 ), spew_lava_action( 0 )
+    summon_pet( 0 ), liquid_magma( 0 ), liquid_magma_action( 0 )
   { }
 
   virtual void summon( timespan_t = timespan_t::zero() );
@@ -4003,7 +4003,7 @@ struct shaman_totem_pet_t : public pet_t
     if ( totem_type != TOTEM_FIRE )
       return;
 
-    spew_lava = buff_creator_t( this, "spew_lava", o() -> find_talent_spell( "Spew Lava" ) );
+    liquid_magma = buff_creator_t( this, "liquid_magma", o() -> find_talent_spell( "Liquid Magma" ) );
   }
 };
 
@@ -4074,10 +4074,10 @@ struct totem_pulse_action_t : public spell_t
   }
 };
 
-struct spew_lava_action_t : public totem_pulse_action_t
+struct liquid_magma_action_t : public totem_pulse_action_t
 {
-  spew_lava_action_t( shaman_totem_pet_t* p ) :
-    totem_pulse_action_t( "spew_lava", p, p -> find_spell( 157501 ) )
+  liquid_magma_action_t( shaman_totem_pet_t* p ) :
+    totem_pulse_action_t( "liquid_magma", p, p -> find_spell( 157501 ) )
   {
     may_miss = may_crit = false;
     tick_may_crit = true;
@@ -4147,15 +4147,15 @@ void shaman_totem_pet_t::init_spells()
   if ( totem_type != TOTEM_FIRE )
     return;
 
-  spew_lava_action = new spew_lava_action_t( this );
+  liquid_magma_action = new liquid_magma_action_t( this );
 }
 
-// Spew Lava Spell =========================================================
+// Liquid Magma Spell =======================================================
 
-struct spew_lava_t: public shaman_spell_t
+struct liquid_magma_t: public shaman_spell_t
 {
-  spew_lava_t( shaman_t* player, const std::string& options_str ) :
-    shaman_spell_t( "spew_lava", player, player -> find_talent_spell( "Spew Lava" ), options_str )
+  liquid_magma_t( shaman_t* player, const std::string& options_str ) :
+    shaman_spell_t( "liquid_magma", player, player -> find_talent_spell( "Liquid Magma" ), options_str )
   {
     harmful = false;
     dot_duration = timespan_t::zero();
@@ -4166,8 +4166,8 @@ struct spew_lava_t: public shaman_spell_t
   {
     shaman_spell_t::execute();
 
-    p() -> totems[ TOTEM_FIRE ] -> spew_lava -> trigger();
-    p() -> totems[ TOTEM_FIRE ] -> spew_lava_action -> schedule_execute();
+    p() -> totems[ TOTEM_FIRE ] -> liquid_magma -> trigger();
+    p() -> totems[ TOTEM_FIRE ] -> liquid_magma_action -> schedule_execute();
   }
 
   bool ready()
@@ -4710,7 +4710,7 @@ action_t* shaman_t::create_action( const std::string& name,
   if ( name == "lightning_shield"        ) return new         lightning_shield_t( this, options_str );
   if ( name == "primal_strike"           ) return new            primal_strike_t( this, options_str );
   if ( name == "shamanistic_rage"        ) return new         shamanistic_rage_t( this, options_str );
-  if ( name == "spew_lava"               ) return new               spew_lava_t( this, options_str );
+  if ( name == "liquid_magma"               ) return new               liquid_magma_t( this, options_str );
   if ( name == "windstrike"              ) return new               windstrike_t( this, options_str );
   if ( name == "feral_spirit"            ) return new       feral_spirit_spell_t( this, options_str );
   if ( name == "spirit_walk"             ) return new              spirit_walk_t( this, options_str );
@@ -4922,9 +4922,9 @@ void shaman_t::init_spells()
   talent.primal_elementalist         = find_talent_spell( "Primal Elementalist"  );
   talent.elemental_blast             = find_talent_spell( "Elemental Blast"      );
 
-  talent.shocking_lava               = find_talent_spell( "Shocking Lava" );
+  talent.elemental_fusion            = find_talent_spell( "Elemental Fusion" );
   talent.storm_elemental_totem       = find_talent_spell( "Storm Elemental Totem" );
-  talent.spew_lava                   = find_talent_spell( "Spew Lava" );
+  talent.liquid_magma                = find_talent_spell( "Liquid Magma" );
 
   // Perks - Shared
   perk.improved_searing_totem        = find_perk_spell( "Improved Searing Totem" );
@@ -5054,8 +5054,8 @@ void shaman_t::create_buffs()
                                  .cd( spec.elemental_focus -> internal_cooldown() );
   buff.echo_of_the_elements    = buff_creator_t( this, "echo_of_the_elements", talent.echo_of_the_elements )
                                  .chance( talent.echo_of_the_elements -> ok() );
-  buff.spew_lava               = buff_creator_t( this, "spew_lava", talent.spew_lava )
-                                 .chance( talent.spew_lava -> ok() );
+  buff.liquid_magma               = buff_creator_t( this, "liquid_magma", talent.liquid_magma )
+                                 .chance( talent.liquid_magma -> ok() );
   buff.lava_surge              = buff_creator_t( this, "lava_surge",        spec.lava_surge )
                                  .activated( false )
                                  .chance( 1.0 ); // Proc chance is handled externally
@@ -5069,8 +5069,8 @@ void shaman_t::create_buffs()
   //                               .activated( false );
   buff.maelstrom_weapon        = new maelstrom_weapon_buff_t( this );
   buff.shamanistic_rage        = buff_creator_t( this, "shamanistic_rage",  spec.shamanistic_rage );
-  buff.shocking_lava           = buff_creator_t( this, "shocking_lava", find_spell( 157174 ) )
-                                 .chance( talent.shocking_lava -> ok() );
+  buff.elemental_fusion        = buff_creator_t( this, "elemental_fusion", find_spell( 157174 ) )
+                                 .chance( talent.elemental_fusion -> ok() );
   buff.spirit_walk             = buff_creator_t( this, "spirit_walk", spec.spirit_walk );
   buff.spiritwalkers_grace     = buff_creator_t( this, "spiritwalkers_grace", find_class_spell( "Spiritwalker's Grace" ) )
                                  .chance( 1.0 )
