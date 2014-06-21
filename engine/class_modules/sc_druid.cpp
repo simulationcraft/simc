@@ -641,13 +641,6 @@ struct gushing_wound_t : public ignite::pct_based_action_t< attack_t >
     base_t( "gushing_wound", p, p -> find_spell( 166638 ) )
   {
     background = dual = true;
-
-    // ph until spell data
-    dot_duration = timespan_t::from_seconds( 6.0 );
-    base_tick_time = timespan_t::from_seconds( 2.0 );
-    school = SCHOOL_PHYSICAL;
-    tick_may_crit = false;
-    may_multistrike = false;
   }
 };
 
@@ -1712,7 +1705,7 @@ public:
     ignite::trigger_pct_based(
       p() -> active.gushing_wound, // ignite spell
       t, // target
-      0.15 * dmg ); // p() -> find_spell( 165432 ) -> effectN( 1 ).percent()
+      p() -> find_spell( 165432 ) -> effectN( 1 ).percent() * dmg );
   }
 };
 
