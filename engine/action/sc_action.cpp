@@ -2474,3 +2474,14 @@ void action_t::do_teleport( action_state_t* state )
 {
   player -> teleport( composite_teleport_distance( state ) );
 }
+
+/* Calculates the new dot length after a refresh
+ * Necessary because we have both pandemic behaviour ( last 30% of the dot are preserved )
+ * and old Cata/MoP behavior ( only time to the next tick is preserved )
+ */
+timespan_t action_t::calculate_dot_refresh_duration( const dot_t* dot, timespan_t triggered_duration ) const
+{
+  // WoD Pandemic
+  return std::min( triggered_duration * 0.3, dot -> remains() ) + triggered_duration; // New WoD Formula: Get no malus during the last 30% of the dot.
+
+}

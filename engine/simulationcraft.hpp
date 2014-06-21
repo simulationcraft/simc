@@ -5621,6 +5621,8 @@ public:
   { return base_teleport_distance; }
 
   virtual void do_teleport( action_state_t* );
+
+  virtual timespan_t calculate_dot_refresh_duration( const dot_t*, timespan_t triggered_duration ) const;
 };
 
 // Attack ===================================================================
@@ -5959,6 +5961,7 @@ public:
   expr_t* create_expression( action_t* action, const std::string& name_str, bool dynamic );
 
   timespan_t remains() const;
+  timespan_t time_to_next_tick() const;
   int    ticks_left() const;
   const char* name() const
   { return name_str.c_str(); }
@@ -6722,6 +6725,12 @@ struct residual_dot_action : public Action
     s -> result_amount = amount;
     s -> target = t;
     Action::schedule_travel( s );
+  }
+
+  virtual timespan_t calculate_dot_refresh_duration( const dot_t* dot, timespan_t triggered_duration ) const override
+  {
+    // Old Mop Dot Behaviour
+    return dot -> time_to_next_tick() + triggered_duration;
   }
 };
 

@@ -1406,6 +1406,10 @@ class SpellDataGenerator(DataGenerator):
 	  ( 145152, 0 ),       # Bloodtalons buff
 	  ( 135597, 0 ),       # Tooth and Claw absorb buff
 	  ( 155784, 0 ),       # Primal Tenacity buff
+	  ( 165431, 0 ),       # tier17_2pc_melee
+	  ( 165432, 0 ),       # tier17_4pc_melee
+	  ( 166638, 0 ),       # tier17_4pc_melee debuff
+	  ( 166639, 0 ),       # tier17_4pc_melee proc driver
         ), 
     ]
 
