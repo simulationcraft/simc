@@ -2209,7 +2209,7 @@ struct victory_rush_t : public warrior_attack_t
 struct whirlwind_off_hand_t : public warrior_attack_t
 {
   whirlwind_off_hand_t( warrior_t* p ) :
-    warrior_attack_t( "whirlwind_oh", p, p -> find_spell( "Whirlwind Offhand" ) )
+    warrior_attack_t( "whirlwind_oh", p, p -> find_spell( 44949 ) )
   {
     background = true;
     aoe = -1;
@@ -3297,6 +3297,7 @@ void warrior_t::apl_smf_fury()
   three_targets -> add_talent( this, "Ravager" );
   three_targets -> add_action( this, "Heroic Strike", "if=rage>100" );
   three_targets -> add_talent( this, "Ignite Weapon", "if=(target.health.pct>=20&rage>100)|buff.ignite_weapon.down" );
+  three_targets -> add_action( this, "Bloodthirst" );
   three_targets -> add_talent( this, "Bladestorm", "if=buff.enrage.remains>4" );
   three_targets -> add_talent( this, "Dragon Roar", "if=!debuff.colossus_smash.up&(buff.bloodbath.up|!talent.bloodbath.enabled)" );
   three_targets -> add_action( this, "Colossus Smash" );
@@ -3311,7 +3312,7 @@ void warrior_t::apl_smf_fury()
   aoe -> add_talent( this, "Ignite Weapon", "if=(target.health.pct>=20&rage>100)|buff.ignite_weapon.down" );
   aoe -> add_talent( this, "Ravager" );
   aoe -> add_talent( this, "Bladestorm" );
-  aoe -> add_action( this, "Bloodthirst", "if=buff.enrage.down" );
+  aoe -> add_action( this, "Bloodthirst" );
   aoe -> add_action( this, "Raging Blow" );
   aoe -> add_action( this, "Whirlwind" );
   aoe -> add_talent( this, "Dragon Roar", "if=debuff.colossus_smash.down&(buff.bloodbath.up|!talent.bloodbath.enabled)" );
@@ -3398,6 +3399,7 @@ void warrior_t::apl_tg_fury()
   three_targets -> add_talent( this, "Ignite Weapon", "if=(target.health.pct>=20&rage>100)|buff.ignite_weapon.down" );
   three_targets -> add_talent( this, "Bladestorm", "if=buff.enrage.remains>4" );
   three_targets -> add_talent( this, "Dragon Roar", "if=!debuff.colossus_smash.up&(buff.bloodbath.up|!talent.bloodbath.enabled)" );
+  three_targets -> add_action( this, "Bloodthirst" );
   three_targets -> add_action( this, "Colossus Smash" );
   three_targets -> add_talent( this, "Storm Bolt", "if=debuff.colossus_smash.up" );
   three_targets -> add_action( this, "Raging Blow" );
@@ -3410,6 +3412,7 @@ void warrior_t::apl_tg_fury()
   aoe -> add_talent( this, "Ignite Weapon", "if=(target.health.pct>=20&rage>100)|buff.ignite_weapon.down" );
   aoe -> add_talent( this, "Ravager" );
   aoe -> add_talent( this, "Bladestorm" );
+  aoe -> add_action( this, "Bloodthirst" );
   aoe -> add_action( this, "Raging Blow" );
   aoe -> add_action( this, "Whirlwind" );
   aoe -> add_talent( this, "Dragon Roar", "if=debuff.colossus_smash.down&(buff.bloodbath.up|!talent.bloodbath.enabled)" );
