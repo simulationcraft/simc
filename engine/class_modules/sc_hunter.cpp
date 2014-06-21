@@ -1933,7 +1933,6 @@ struct explosive_trap_tick_t : public hunter_ranged_attack_t
     background    = true;
     direct_tick   = true;
     base_multiplier *= 1.0 + p() -> specs.trap_mastery -> effectN( 2 ).percent();
-    tick_zero = false;
   }
 };
 
@@ -1951,7 +1950,7 @@ struct explosive_trap_t : public hunter_ranged_attack_t
     if ( p() -> perks.enhanced_traps -> ok() )
       cooldown -> duration *= (1.0 + p() -> perks.enhanced_traps -> effectN( 1 ).percent() );
 
-    //tick_zero     = true; // Fix: Can't have tick zero but no dot duration/tick time!
+    tick_zero     = true;
     hasted_ticks  = false;
     harmful       = false;
     dot_duration  = p() -> find_spell( 13812 ) -> duration();
