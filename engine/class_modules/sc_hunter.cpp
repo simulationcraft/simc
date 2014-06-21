@@ -1953,6 +1953,8 @@ struct explosive_trap_t : public hunter_ranged_attack_t
     tick_zero     = true;
     hasted_ticks  = false;
     harmful       = false;
+    dot_duration  = p() -> find_spell( 13812 ) -> duration();
+    base_tick_time = p() -> find_spell( 13812 ) -> effectN( 2 ).period();
     add_child( explosive_trap_tick );
   }
 

@@ -3466,6 +3466,7 @@ void warrior_t::apl_arms()
   aoe -> add_action( this, "Colossus Smash", "if=debuff.colossus_smash.remains<1" );
   aoe -> add_action( this, "Mortal Strike" );
   aoe -> add_action( this, "Execute", "if=rage>90&debuff.colossus_smash.up" );
+  aoe -> add_action( this, "Whirlwind" );
 
 }
 
