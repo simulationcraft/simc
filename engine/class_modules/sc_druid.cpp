@@ -2044,11 +2044,10 @@ public:
     if ( result_is_hit( s.result ) )
     {
       if ( td( s.target ) -> dots.rip -> is_ticking() &&
-           td( s.target ) -> dots.rip -> get_extended_time() < timespan_t::from_seconds( 6.0 ) )
+           td( s.target ) -> dots.rip -> get_extended_time() < timespan_t::from_seconds( 9.0 ) )
       {
-        /*// In-game adds 3 seconds per extend, to model we'll add 1/2/1 ticks. Can't use extend_duration_seconds for this since it rounds down to ticks.
-        int extra_ticks = ( td( s.target ) -> dots.rip -> added_ticks % 3 ) ? 2 : 1; */
-        // TODO: WOD, Check if extends by 2s or 3s.
+        /* TODO: WOD, determine specific mechanics of Rip extension. It seems to still be extending by more than 2 seconds,
+                 but specifics may assist in modelling it more accurately. */
         td( s.target ) -> dots.rip -> extend_duration( timespan_t::from_seconds( 3.0 ), timespan_t::min(), 0 );
       }
     }
