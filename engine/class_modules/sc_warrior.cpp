@@ -2227,7 +2227,8 @@ struct whirlwind_t : public warrior_attack_t
   whirlwind_off_hand_t* oh_attack;
 
   whirlwind_t( warrior_t* p, const std::string& options_str ) :
-    warrior_attack_t( "whirlwind_mh", p, p -> spec.whirlwind )
+    warrior_attack_t( "whirlwind_mh", p, p -> spec.whirlwind ),
+    oh_attack( 0 )
   {
     parse_options( NULL, options_str );
     aoe = -1;
@@ -2237,6 +2238,9 @@ struct whirlwind_t : public warrior_attack_t
       oh_attack = new whirlwind_off_hand_t( p );
       add_child( oh_attack );
     }
+    else
+      weapon_multiplier *= 2;
+
     weapon = &( p -> main_hand_weapon );
   }
 
