@@ -613,7 +613,7 @@ void dot_t::start( timespan_t duration )
  */
 void dot_t::refresh( timespan_t duration )
 {
-  current_duration = std::min( duration * 0.3, remains() ) + duration; // New WoD Formula: Get no malus during the last 30% of the dot.
+  current_duration = current_action -> calculate_dot_refresh_duration( this, duration );
 
   last_start = sim.current_time;
 
