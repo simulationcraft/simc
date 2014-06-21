@@ -13,9 +13,6 @@ namespace { // UNNAMED NAMESPACE
 
 // ==========================================================================
 // Warrior
-// Patch notes were awful, so check these when spell data is live.
-// Sudden death, Slam, Rage per swing, Deep wounds, whirlwind, wild strike,
-// Rage per swing for arms, colossus smash, mortal strike, thunder clap.
 // ==========================================================================
 
 struct warrior_t;
@@ -1899,7 +1896,6 @@ struct blood_craze_t : public warrior_heal_t
     tick_zero = true;
     may_multistrike = 1;
     dot_behavior = DOT_EXTEND;
-    tick_pct_heal = 0.01; // Currently no spell data for this.
   }
 };
 
@@ -2139,7 +2135,7 @@ struct thunder_clap_t : public warrior_attack_t
   {
     warrior_attack_t::impact( s );
 
-    if ( result_is_hit( s -> result ) )
+    if ( result_is_hit( s -> result ) && p() -> specialization() == WARRIOR_PROTECTION )
     {
       p() -> active_deep_wounds -> target = s -> target;
       p() -> active_deep_wounds -> execute();
@@ -2151,6 +2147,14 @@ struct thunder_clap_t : public warrior_attack_t
     cd_duration = cooldown -> duration * player -> cache.attack_haste();
 
     warrior_attack_t::update_ready( cd_duration );
+  }
+
+  virtual bool ready()
+  {
+    if ( p() -> active_stance == STANCE_BATTLE )
+      return false;
+
+    return warrior_attack_t::ready();
   }
 };
 
