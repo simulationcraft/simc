@@ -9,7 +9,7 @@
 // multistrike triggering ignite? - CONFIRMED BY CELESTALON TO INTERACT WITH EACHOTHER
 // change the syntax around frostfirebolts implimentation of Enhanced pyrotechnics to match fireballs
 // The the bonus on Improved Pyorblast additive or Multiplicitive (Assumed additive for now. Must confirm)
-// Arcane Missiles perk was hardcoded into the buff definition. Need to eventually change this so it works correctly for sub-90 characters.
+// Arcane Missiles perk(+1 stack) was hardcoded into the buff definition. Need to eventually change this so it works correctly for sub-90 characters.
 // Need to add in Improved Scorch
 // Imp. Arcane Barrage needs to be tested.
 // Imp. Arcane Explosion needs to be tested.
@@ -20,6 +20,9 @@
 // Make improved evocation only work post 90, and make it not a hardcoded 30 second reduction. Also need to test that it works, with a character template that does not have RoP.
 // Hardcoded Enhanced Fingers of Frost to 3 stacks. Need to fix eventually.
 // Need to test if Improved Frostbolt is being applied correctly during Icy Veins (although, IV will change in WoD. May not actually need to this version, but rather test it's application to multi-strike)
+// Recheck all perks
+// Check that changing where icicles is inside impact does not ruin them
+// Arcane Blast cast time reduction perk testing?
 #include "simulationcraft.hpp"
 
 namespace { // UNNAMED NAMESPACE
@@ -1368,7 +1371,7 @@ struct arcane_blast_t : public mage_spell_t
     mage_spell_t( "arcane_blast", p, p -> find_class_spell( "Arcane Blast" ) )
   {
     parse_options( NULL, options_str );
-
+    base_multiplier *= 1.0 + p -> perks.improved_arcane_blast -> effectN( 1 ).percent();
     if ( p -> sets.has_set_bonus( SET_PVP_4PC_CASTER ) )
       base_multiplier *= 1.05;
   }
@@ -1418,6 +1421,18 @@ struct arcane_blast_t : public mage_spell_t
 
     return am;
   }
+
+  virtual timespan_t execute_time() const
+  {
+      if ( p() -> buffs.arcane_charge -> check() )
+      {
+          timespan_t t = mage_spell_t::execute_time();
+          t *= ( 1.0 - ( p() -> buffs.arcane_charge -> stack() * p() -> perks.enhanced_arcane_blast -> effectN( 1 ).percent() ) );
+          return t;
+      }
+      else
+          return mage_spell_t::execute_time();
+  }
 };
 
 // Arcane Brilliance Spell ==================================================
@@ -1454,6 +1469,7 @@ struct arcane_explosion_t : public mage_spell_t
     mage_spell_t( "arcane_explosion", p, p -> find_class_spell( "Arcane Explosion" ) )
   {
     parse_options( NULL, options_str );
+    base_aoe_multiplier *= 1.0 + p -> perks.improved_arcane_explosion -> effectN( 1 ).percent();
     aoe = -1;
   }
 
@@ -1507,7 +1523,7 @@ struct arcane_missiles_t : public mage_spell_t
 
     am *= 1.0 + p() -> buffs.arcane_charge -> stack() * p() -> spells.arcane_charge_arcane_blast -> effectN( 1 ).percent() *
           ( 1.0 + p() -> sets.set( SET_T15_4PC_CASTER ) -> effectN( 1 ).percent() );
-
+    am *= 1.0 + p() -> perks.improved_arcane_missiles -> effectN( 1 ).percent();
     if ( p() -> sets.has_set_bonus( SET_T14_2PC_CASTER ) )
     {
       am *= 1.07;
@@ -1868,7 +1884,7 @@ public:
     hasted_ticks      = false;
 
     cooldown = p -> cooldowns.evocation;
-    cooldown -> duration = data().cooldown();
+    cooldown -> duration = data().cooldown() - timespan_t::from_seconds( 30 );
 
     timespan_t duration = data().duration();
 
@@ -2178,7 +2194,9 @@ struct mini_frostbolt_t : public mage_spell_t
   void impact( action_state_t* s )
   {
     mage_spell_t::impact( s );
-    trigger_icicle_gain( s );
+    if ( result_is_hit( s -> result) || result_is_multistrike( s -> result ) )
+        trigger_icicle_gain( s );
+   
   }
 
   virtual timespan_t execute_time() const
@@ -2266,7 +2284,8 @@ struct frostbolt_t : public mage_spell_t
     if ( ! static_cast<const state_t&>( *s ).mini_version ) // Bail out if mini spells get casted
     {
       mage_spell_t::impact( s );
-      trigger_icicle_gain( s );
+      if ( result_is_hit( s -> result ) || result_is_multistrike( s -> result) )
+          trigger_icicle_gain( s );
     }
   }
 
@@ -2312,7 +2331,9 @@ struct mini_frostfire_bolt_t : public mage_spell_t
   void impact( action_state_t* s )
   {
     mage_spell_t::impact( s );
-    trigger_icicle_gain( s );
+
+    if ( result_is_hit( s -> result ) || result_is_multistrike( s -> result) )
+        trigger_icicle_gain( s );
   }
 
   virtual timespan_t execute_time() const
@@ -3260,11 +3281,9 @@ struct pyroblast_t : public mage_spell_t
   {
     mage_spell_t::impact( s );
 
-    trigger_ignite( s );
-
-    if ( result_is_hit( s -> result ) )
+    if ( result_is_hit( s -> result) || result_is_multistrike( s -> result) )
     {
-      p() -> buffs.tier13_2pc -> trigger();
+      trigger_ignite( s );
     }
   }
 
@@ -3363,19 +3382,9 @@ struct scorch_t : public mage_spell_t
   {
     mage_spell_t::impact( s );
 
-    if ( result_is_hit( s -> result ) )
-    {
+    if ( result_is_hit( s -> result) || result_is_multistrike( s -> result) )
       trigger_ignite( s );
-      if ( p() -> specialization() == MAGE_FROST )
-      {
-        double fof_proc_chance = p() -> buffs.fingers_of_frost -> data().effectN( 3 ).percent();
-        if ( p() -> buffs.icy_veins -> up() && p() -> glyphs.icy_veins -> ok() )
-        {
-          fof_proc_chance *= 1.2;
-        }
-        p() -> buffs.fingers_of_frost -> trigger( 1, buff_t::DEFAULT_VALUE(), fof_proc_chance );
-      }
-    }
+    
   }
 
   double composite_crit_multiplier() const
@@ -4128,7 +4137,7 @@ void mage_t::create_buffs()
   buffs.arcane_charge        = buff_creator_t( this, "arcane_charge", spec.arcane_charge )
                                .max_stack( find_spell( 36032 ) -> max_stacks() )
                                .duration( find_spell( 36032 ) -> duration() );
-  buffs.arcane_missiles      = buff_creator_t( this, "arcane_missiles", find_specialization_spell( "Arcane Missiles" ) -> ok() ? find_spell( 79683 ) : spell_data_t::not_found() ).chance( 0.3 );
+  buffs.arcane_missiles      = buff_creator_t( this, "arcane_missiles", find_class_spell( "Arcane Missiles" ) -> ok() ? find_spell( 79683 ) : spell_data_t::not_found() ).chance( 0.3 ).max_stack( 3 );
 
   buffs.arcane_power         = new buffs::arcane_power_t( this );
   buffs.brain_freeze         = buff_creator_t( this, "brain_freeze", spec.brain_freeze )
