@@ -201,7 +201,7 @@ void dot_t::reset()
  */
 void dot_t::trigger( timespan_t duration )
 {
-  assert( duration > timespan_t::zero() && "Dot Trigger with duration <= 0 seconds." );
+  assert( duration > timespan_t::zero() && "Dot Trigger with duration <= 0 seconds. tick_zero set to true, but no dot_duration specified." );
 
   current_tick = 0;
   extended_time = timespan_t::zero();
