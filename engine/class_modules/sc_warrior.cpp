@@ -2204,7 +2204,7 @@ struct victory_rush_t : public warrior_attack_t
 struct whirlwind_off_hand_t : public warrior_attack_t
 {
   whirlwind_off_hand_t( warrior_t* p ) :
-    warrior_attack_t( "whirlwind_oh", p, p -> spec.whirlwind -> effectN( 3 ).trigger() )
+    warrior_attack_t( "whirlwind_oh", p, p -> find_spell( "Whirlwind Offhand" ) )
   {
     background = true;
     aoe = -1;
@@ -2254,7 +2254,8 @@ struct whirlwind_t : public warrior_attack_t
   {
     warrior_attack_t::execute();
 
-    oh_attack -> execute();
+    if ( oh_attack )
+      oh_attack -> execute();
 
     p() -> buff.raging_wind -> expire();
   }
