@@ -2831,7 +2831,7 @@ bool spell_data_t::affected_by( const spell_data_t* spell ) const
   return false;
 };
 
-bool spell_data_t::affected_by( const spelleffect_data_t* effect) const
+bool spell_data_t::affected_by( const spelleffect_data_t* effect ) const
 {
   if ( class_family() != effect -> spell() -> class_family() )
     return false;
@@ -2846,4 +2846,7 @@ bool spell_data_t::affected_by( const spelleffect_data_t* effect) const
   }
 
   return false;
-};
+}
+
+bool spell_data_t::affected_by( const spelleffect_data_t& effect ) const
+{ return affected_by( &effect ); }

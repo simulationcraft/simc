@@ -658,6 +658,7 @@ public:
 
   bool affected_by( const spell_data_t* ) const;
   bool affected_by( const spelleffect_data_t* ) const;
+  bool affected_by( const spelleffect_data_t& ) const;
 
   // static functions
   static spell_data_t* nil();
