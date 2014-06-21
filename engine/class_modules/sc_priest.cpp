@@ -3529,7 +3529,12 @@ struct divine_star_t final : public priest_spell_t
     priest_spell_t::execute();
 
     _base_spell -> execute();
+  }
 
+  virtual bool usable_moving() const override
+  {
+    // Holy/Disc version is usable while moving, Shadow version is instant cast anyway.
+    return true;
   }
 private:
   action_t* _base_spell;
