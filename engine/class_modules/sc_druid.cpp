@@ -2581,6 +2581,7 @@ struct bear_attack_t : public druid_attack_t<melee_attack_t>
   virtual void impact( action_state_t* s )
   {
     base_t::impact( s );
+    trigger_lotp( s );
   }
 
   void trigger_rage_gain()
