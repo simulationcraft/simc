@@ -15,8 +15,6 @@ namespace { // UNNAMED NAMESPACE
     Tranquility
     Dash
     Fix Force of Nature (summons fine, but treants take no actions)
-    Mana Attunement (Feral / Guardian)
-    Secondary Attunements
 
     = Feral =
     Combo Points as a resource
