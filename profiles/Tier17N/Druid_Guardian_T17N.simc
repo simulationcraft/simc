@@ -50,7 +50,7 @@ actions+=/thrash_bear
 head=headpiece_of_the_shattered_vale,id=99328,upgrade=2,gems=8agi_9agi
 neck=immerseus_crystalline_eye,id=105407,upgrade=2
 shoulders=spaulders_of_the_shattered_vale,id=99322,upgrade=2,gems=8agi_8agi_6agi,enchant=10agi_5crit
-back=tigerfang_wrap,id=98148,upgrade=2,gems=8agi_3agi,enchant=9hit,addon=goblin_glider
+back=tigerfang_wrap,id=98148,upgrade=2,gems=8agi_3agi,enchant=9crit,addon=goblin_glider
 chest=raiment_of_the_shattered_vale,id=99326,upgrade=2,gems=8agi_8agi_8agi_9agi,enchant=4all
 wrists=bombers_blackened_wristwatch,id=105616,upgrade=2,enchant=9agi
 hands=grips_of_the_shattered_vale,id=99327,upgrade=2,gems=8agi_8agi_6agi,enchant=9haste
@@ -68,8 +68,7 @@ main_hand=halberd_of_inner_shadows,id=105560,upgrade=2,gems=4agi_8crit_3agi,ench
 # gear_agility=1237
 # gear_stamina=1539
 # gear_intellect=8
-# gear_hit_rating=9
-# gear_crit_rating=454
+# gear_crit_rating=463
 # gear_haste_rating=372
 # gear_mastery_rating=527
 # gear_armor=414

@@ -21,7 +21,7 @@ off_hand=hvitserks_formidable_shanker,id=105601,gems=8agi_3agi,enchant=dancing_s
 hands=gloves_of_the_barbed_assassin,id=99355,gems=8agi_8agi_6agi,enchant=9haste,reforge=mastery_crit,upgrade=2
 waist=cord_of_black_dreams,id=105635,gems=8agi_4agi_8haste_8agi_6agi,upgrade=2
 head=helmet_of_the_barbed_assassin,id=99348,gems=8agi_9agi,reforge=mastery_hit,upgrade=2
-back=tigerfang_wrap,id=98148,reforge=crit_hit,enchant=9hit,addon=goblin_glider,upgrade=2,gems=8agi_3agi
+back=tigerfang_wrap,id=98148,reforge=crit_hit,enchant=9crit,addon=goblin_glider,upgrade=2,gems=8agi_3agi
 finger1=kilruks_band_of_ascendancy,id=105624,gems=8agi_3crit,reforge=mastery_crit,upgrade=2
 finger2=swift_serpent_signet,id=105483,gems=4agi_8haste_3crit,reforge=mastery_haste,upgrade=2
 neck=immerseus_crystalline_eye,id=105407,reforge=mastery_exp,upgrade=2
@@ -47,7 +47,7 @@ off_hand=hvitserks_formidable_shanker,id=105601,gems=8agi_3agi,enchant=dancing_s
 hands=gloves_of_the_barbed_assassin,id=99355,gems=8agi_8agi_8agi_6agi,enchant=9haste,reforge=mastery_crit,upgrade=2,addon=synapse_springs_2
 waist=damrons_belt_of_darkness,id=105528,gems=8agi_4agi_8crit_8agi_6agi,upgrade=2
 head=helmet_of_the_barbed_assassin,id=99348,gems=8agi_9agi,reforge=mastery_crit,upgrade=2
-back=tigerfang_wrap,id=98148,reforge=crit_hit,enchant=9hit,addon=goblin_glider,upgrade=2,gems=8agi_3agi
+back=tigerfang_wrap,id=98148,reforge=crit_hit,enchant=9crit,addon=goblin_glider,upgrade=2,gems=8agi_3agi
 finger1=kilruks_band_of_ascendancy,id=105624,gems=8agi_3crit,reforge=mastery_hit,upgrade=2
 finger2=ring_of_restless_energy,id=105558,gems=8agi_3crit,reforge=mastery_haste,upgrade=2
 feet=stonetoes_tormented_treads,id=105431,gems=8agi_3mastery,enchant=7agi,reforge=hit_exp,upgrade=2
@@ -75,7 +75,7 @@ off_hand=hvitserks_formidable_shanker,id=105601,gems=8agi_3agi,enchant=dancing_s
 waist=cord_of_black_dreams,id=105635,gems=8agi_4agi_8haste_8agi_6agi,reforge=crit_hit,upgrade=2
 head=helmet_of_the_barbed_assassin,id=99348,gems=8agi_9agi,reforge=mastery_crit,upgrade=2
 hands=gloves_of_the_barbed_assassin,id=99355,gems=8agi_8agi__8agi_6agi,enchant=9haste,reforge=mastery_crit,upgrade=2,addon=synapse_springs_2
-back=tigerfang_wrap,id=98148,reforge=crit_hit,enchant=9hit,addon=goblin_glider,upgrade=2,gems=8agi_3agi
+back=tigerfang_wrap,id=98148,reforge=crit_hit,enchant=9crit,addon=goblin_glider,upgrade=2,gems=8agi_3agi
 finger1=kilruks_band_of_ascendancy,id=105624,gems=8agi_3crit,reforge=mastery_hit,upgrade=2
 finger2=swift_serpent_signet,id=105483,gems=4agi_8haste_3crit,reforge=mastery_haste,upgrade=2
 neck=gleaming_eye_of_the_devilsaur,id=105602,upgrade=2

@@ -14,7 +14,7 @@ spec=guardian
 head=headpiece_of_the_shattered_vale,id=99328,reforge=mastery_hit,upgrade=2,gems=8agi_9agi
 neck=immerseus_crystalline_eye,id=105407,reforge=mastery_crit,upgrade=2
 shoulders=spaulders_of_the_shattered_vale,id=99322,reforge=exp_hit,enchant=10agi_5crit,upgrade=2,gems=8agi_8agi_6agi
-back=tigerfang_wrap,id=98148,reforge=crit_hit,enchant=9hit,addon=goblin_glider,upgrade=2,gems=8agi_3agi
+back=tigerfang_wrap,id=98148,reforge=crit_hit,enchant=9crit,addon=goblin_glider,upgrade=2,gems=8agi_3agi
 chest=raiment_of_the_shattered_vale,id=99326,reforge=crit_exp,enchant=4all,upgrade=2,gems=8agi_8agi_8agi_9agi
 wrists=bombers_blackened_wristwatch,id=105616,reforge=mastery_crit,enchant=9agi,upgrade=2
 hands=grips_of_the_shattered_vale,id=99327,reforge=mastery_haste,enchant=9haste,upgrade=2,gems=8agi_8agi_6agi
@@ -41,7 +41,7 @@ spec=feral
 head=headpiece_of_the_shattered_vale,id=99328,reforge=mastery_hit,upgrade=2,gems=8agi_9agi
 neck=immerseus_crystalline_eye,id=105407,reforge=mastery_crit,upgrade=2
 shoulders=spaulders_of_the_shattered_vale,id=99322,reforge=exp_hit,enchant=10agi_5crit,upgrade=2,gems=8agi_8agi_6agi
-back=tigerfang_wrap,id=98148,reforge=crit_hit,enchant=9hit,addon=goblin_glider,upgrade=2,gems=8agi_3agi
+back=tigerfang_wrap,id=98148,reforge=crit_hit,enchant=9crit,addon=goblin_glider,upgrade=2,gems=8agi_3agi
 chest=raiment_of_the_shattered_vale,id=99326,reforge=crit_exp,enchant=4all,upgrade=2,gems=8agi_8agi_8agi_9agi
 wrists=bombers_blackened_wristwatch,id=105616,reforge=mastery_crit,enchant=9agi,upgrade=2
 hands=grips_of_the_shattered_vale,id=99327,reforge=mastery_haste,enchant=9haste,upgrade=2,gems=8agi_8agi_6agi

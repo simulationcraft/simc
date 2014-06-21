@@ -49,7 +49,7 @@ actions+=/cobra_shot
 head=headguard_of_the_unblinking_vigil,id=99402,upgrade=2,gems=8haste_8crit_9agi
 neck=immerseus_crystalline_eye,id=105407,upgrade=2
 shoulders=spaulders_of_the_unblinking_vigil,id=99404,upgrade=2,gems=8agi_8agi_6agi,enchant=10agi_5crit
-back=tigerfang_wrap,id=98148,upgrade=2,gems=8agi_3agi,enchant=9hit,addon=goblin_glider
+back=tigerfang_wrap,id=98148,upgrade=2,gems=8agi_3agi,enchant=9crit,addon=goblin_glider
 chest=ancient_archers_chestguard,id=105585,upgrade=2,gems=8agi_8agi_4agi_8mastery_9agi,enchant=4all
 wrists=bracers_of_infinite_pipes,id=105617,upgrade=2,enchant=9agi
 hands=gloves_of_the_unblinking_vigil,id=99406,upgrade=2,gems=8agi_8agi_6agi,enchant=9haste
@@ -67,8 +67,7 @@ main_hand=korkron_hand_cannon,id=105559,upgrade=2,gems=8agi_3agi,enchant=lord_bl
 # gear_agility=1165
 # gear_stamina=1539
 # gear_intellect=4
-# gear_hit_rating=9
-# gear_crit_rating=470
+# gear_crit_rating=479
 # gear_haste_rating=483
 # gear_mastery_rating=503
 # gear_armor=721

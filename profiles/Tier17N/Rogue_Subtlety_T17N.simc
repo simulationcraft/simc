@@ -70,7 +70,7 @@ actions.pool=preparation,if=!buff.vanish.up&cooldown.vanish.remains>60
 head=helmet_of_the_barbed_assassin,id=99348,upgrade=2,gems=8agi_9agi
 neck=gleaming_eye_of_the_devilsaur,id=105602,upgrade=2
 shoulders=spaulders_of_the_barbed_assassin,id=99350,upgrade=2,gems=8agi_8agi_6agi,enchant=10agi_5crit
-back=tigerfang_wrap,id=98148,upgrade=2,gems=8agi_3agi,enchant=9hit,addon=goblin_glider
+back=tigerfang_wrap,id=98148,upgrade=2,gems=8agi_3agi,enchant=9crit,addon=goblin_glider
 chest=tunic_of_the_barbed_assassin,id=99356,upgrade=2,gems=8agi_8agi_8agi_9agi,enchant=4all
 wrists=bombers_blackened_wristwatch,id=105616,upgrade=2,gems=8agi,enchant=9agi
 hands=gloves_of_the_barbed_assassin,id=99355,upgrade=2,gems=8agi_8agi__8agi_6agi,enchant=9haste,addon=synapse_springs_2
@@ -89,8 +89,7 @@ off_hand=hvitserks_formidable_shanker,id=105601,upgrade=2,gems=8agi_3agi,enchant
 # gear_agility=1172
 # gear_stamina=1514
 # gear_intellect=4
-# gear_hit_rating=9
-# gear_crit_rating=339
+# gear_crit_rating=348
 # gear_haste_rating=543
 # gear_mastery_rating=434
 # gear_armor=414

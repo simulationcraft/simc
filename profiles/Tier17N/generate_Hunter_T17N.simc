@@ -24,7 +24,7 @@ main_hand=korkron_hand_cannon,id=105559,gems=8agi_3agi,enchant=lord_blastingtons
 trinket2=ticking_ebon_detonator,id=105612,upgrade=2,reforge=mastery_haste,upgrade=2
 head=headguard_of_the_unblinking_vigil,id=99402,gems=8haste_8crit_9agi,reforge=crit_hit,upgrade=2
 neck=immerseus_crystalline_eye,id=105407,upgrade=2
-back=tigerfang_wrap,id=98148,reforge=crit_hit,enchant=9hit,addon=goblin_glider,upgrade=2,gems=8agi_3agi
+back=tigerfang_wrap,id=98148,reforge=crit_hit,enchant=9crit,addon=goblin_glider,upgrade=2,gems=8agi_3agi
 trinket1=assurance_of_consequence,id=105472,upgrade=2
 save=Hunter_BM_T17N.simc
 
@@ -40,7 +40,7 @@ professions=enchanting=600/alchemy=600
 head=headguard_of_the_unblinking_vigil,id=99402,upgrade=2,gems=8agi_9agi
 neck=gleaming_eye_of_the_devilsaur,id=105602,upgrade=2,reforge=haste_hit
 shoulder=spaulders_of_the_unblinking_vigil,id=99404,upgrade=2,reforge=exp_crit,gems=8agi_8agi_6agi,enchant=10agi_5crit
-back=tigerfang_wrap,id=98148,reforge=crit_hit,enchant=9hit,upgrade=2,gems=8agi_3agi
+back=tigerfang_wrap,id=98148,reforge=crit_hit,enchant=9crit,upgrade=2,gems=8agi_3agi
 chest=tunic_of_the_unblinking_vigil,id=99405,upgrade=2,reforge=haste_exp,gems=8agi_8agi_8agi_9agi,enchant=4agi_4sta
 wrist=wristguards_of_ruination,id=105562,upgrade=2,enchant=9agi
 hand=gloves_of_the_unblinking_vigil,id=99406,upgrade=2,gems=8agi_8agi_6agi,enchant=9haste
@@ -66,7 +66,7 @@ professions=enchanting=600/alchemy=600
 head=headguard_of_the_unblinking_vigil,id=99402,upgrade=2,gems=8agi_9agi
 neck=gleaming_eye_of_the_devilsaur,id=105602,upgrade=2,reforge=haste_hit
 shoulder=spaulders_of_the_unblinking_vigil,id=99404,upgrade=2,reforge=exp_crit,gems=8agi_8agi_6agi,enchant=10agi_5crit
-back=tigerfang_wrap,id=98148,reforge=crit_hit,enchant=9hit,upgrade=2,gems=8agi_3agi
+back=tigerfang_wrap,id=98148,reforge=crit_hit,enchant=9crit,upgrade=2,gems=8agi_3agi
 chest=tunic_of_the_unblinking_vigil,id=99405,upgrade=2,reforge=haste_exp,gems=8agi_8agi_8agi_9agi,enchant=4agi_4sta
 wrist=wristguards_of_ruination,id=105562,upgrade=2,enchant=9agi
 hand=gloves_of_the_unblinking_vigil,id=99406,upgrade=2,gems=8agi_8agi_6agi,enchant=9haste
