@@ -3451,7 +3451,7 @@ void warrior_t::apl_arms()
   single_target -> add_talent( this, "Ravager" );
   single_target -> add_action( "bladestorm,if=enabled,interrupt_if=!cooldown.colossus_smash.remains",
                                "Use cancelaura (in-game) to stop bladestorm if CS comes off cooldown during it for any reason." );
-  single_target -> add_talent( this, "Storm Bolt", "if=debuff.colossus_smash.up" );
+  single_target -> add_talent( this, "Storm Bolt" );
   single_target -> add_talent( this, "Dragon Roar", "if=debuff.colossus_smash.down" );
   single_target -> add_action( this, "Execute", "if=debuff.colossus_smash.up|rage>80" );
   single_target -> add_action( this, "Whirlwind", "if=(rage>80|debuff.colossus_smash.up&rage>60)&target.health.pct>20" );

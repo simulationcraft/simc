@@ -44,7 +44,7 @@ actions.single_target+=/colossus_smash
 actions.single_target+=/ravager,if=talent.ravager.enabled
 # Use cancelaura (in-game) to stop bladestorm if CS comes off cooldown during it for any reason.
 actions.single_target+=/bladestorm,if=enabled,interrupt_if=!cooldown.colossus_smash.remains
-actions.single_target+=/storm_bolt,if=talent.storm_bolt.enabled&debuff.colossus_smash.up
+actions.single_target+=/storm_bolt,if=talent.storm_bolt.enabled
 actions.single_target+=/dragon_roar,if=talent.dragon_roar.enabled&debuff.colossus_smash.down
 actions.single_target+=/execute,if=debuff.colossus_smash.up|rage>80
 actions.single_target+=/whirlwind,if=(rage>80|debuff.colossus_smash.up&rage>60)&target.health.pct>20

@@ -4,7 +4,7 @@ race=orc
 role=attack
 position=back
 professions=engineering=600/blacksmithing=600
-talents=http://us.battle.net/wow/en/tool/talent-calculator#ZZ!0100212
+talents=http://us.battle.net/wow/en/tool/talent-calculator#ZZ!0100211
 glyphs=unending_rage/death_from_above/cleave
 spec=fury
 
