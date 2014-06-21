@@ -485,6 +485,13 @@ timespan_t dot_t::remains() const
   return last_start + current_duration - sim.current_time;
 }
 
+timespan_t dot_t::time_to_next_tick() const
+{
+  if ( ! current_action ) return timespan_t::zero();
+  if ( ! ticking ) return timespan_t::zero();
+  return tick_event -> remains();
+}
+
 /* Returns the ticks left based on the current estimated number of max ticks minus elapsed ticks.
  * Beware: This value may change over time, giving higher or lower values depending on the tick time of the dot!
  */

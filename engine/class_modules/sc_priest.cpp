@@ -2573,6 +2573,12 @@ struct devouring_plague_t final : public priest_spell_t
 
       trigger_surge_of_darkness();
     }
+
+    virtual timespan_t calculate_dot_refresh_duration( const dot_t* dot, timespan_t triggered_duration ) const override
+    {
+      // Old Mop Dot Behaviour
+      return dot -> time_to_next_tick() + triggered_duration;
+    }
   };
 
   devouring_plague_dot_t* dot_spell;
