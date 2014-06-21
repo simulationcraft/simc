@@ -425,7 +425,6 @@ public:
     const spell_data_t* cat_form; // Cat form bonuses
     const spell_data_t* combo_point; // Combo point spell
     const spell_data_t* frenzied_regeneration;
-    const spell_data_t* leader_of_the_pack; // LotP aura
     const spell_data_t* mangle; // Mangle cooldown reset
     const spell_data_t* moonkin_form; // Moonkin form bonuses
     const spell_data_t* primal_fury; // Primal fury gain
@@ -825,28 +824,26 @@ struct cenarion_ward_hot_t : public heal_t
 
 struct leader_of_the_pack_t : public heal_t
 {
+  double heal_pct;
+
   leader_of_the_pack_t( druid_t* p ) :
-    heal_t( "leader_of_the_pack", p, p -> find_spell( 17007 ) )
+    heal_t( "leader_of_the_pack", p, p -> find_spell( 68285 ) )
   {
     may_crit = false;
     background = proc = true;
 
     cooldown -> duration = timespan_t::from_seconds( 6.0 );
+    heal_pct = data().effectN( 1 ).percent();
   }
 
   druid_t* p() const
   { return static_cast<druid_t*>( player ); }
 
-  virtual double base_da_min( const action_state_t* ) const
+  virtual void execute()
   {
-    return p() -> resources.max[ RESOURCE_HEALTH ] *
-           p() -> spell.leader_of_the_pack -> effectN( 2 ).percent();
-  }
+    base_dd_min = base_dd_max = heal_pct * p() -> resources.max[ RESOURCE_HEALTH ];
 
-  virtual double base_da_max( const action_state_t* ) const
-  {
-    return p() -> resources.max[ RESOURCE_HEALTH ] *
-           p() -> spell.leader_of_the_pack -> effectN( 2 ).percent();
+    heal_t::execute();
   }
 };
 
@@ -1688,6 +1685,14 @@ public:
       this -> p() -> active.natures_vigil -> trigger( *this );
   }
 
+  virtual void impact( action_state_t* s )
+  {
+    ab::impact( s );
+
+    if ( s -> result == RESULT_CRIT && ( this -> p() -> buff.cat_form -> check() || this -> p() -> buff.bear_form -> check() ) )
+      trigger_lotp( s );
+  }
+
   virtual void tick( dot_t* d )
   {
     ab::tick( d );
@@ -1699,7 +1704,10 @@ public:
   void trigger_lotp( const action_state_t* s )
   {
     // Has to do damage and can't be a proc
-    if ( s -> result_amount > 0 && ! ab::proc && this -> p() -> active.leader_of_the_pack -> cooldown -> up() )
+    if ( ab::proc || s -> result_amount == 0 )
+      return;
+
+    if ( this -> p() -> active.leader_of_the_pack -> cooldown -> up() )
       this -> p() -> active.leader_of_the_pack -> execute();
   }
 };
@@ -1869,9 +1877,6 @@ public:
           td( target ) -> combo_points.add( p() -> spell.primal_fury -> effectN( 1 ).base_value(), &name_str );
         }
       }
-
-      if ( execute_state -> result == RESULT_CRIT )
-        trigger_lotp( execute_state );
 
       if ( cat_state( execute_state ) -> cp > 0 && requires_combo_points )
       {
@@ -2576,12 +2581,6 @@ struct bear_attack_t : public druid_attack_t<melee_attack_t>
        p() -> gain.primal_fury );
      p() -> proc.primal_fury -> occur();
    }
-  }
-
-  virtual void impact( action_state_t* s )
-  {
-    base_t::impact( s );
-    trigger_lotp( s );
   }
 
   void trigger_rage_gain()
@@ -5283,7 +5282,6 @@ void druid_t::init_spells()
   spell.cat_form                        = find_class_spell( "Cat Form"                    ) -> ok() ? find_spell( 3025   ) : spell_data_t::not_found();   // Cat form buff
   spell.combo_point                     = find_class_spell( "Cat Form"                    ) -> ok() ? find_spell( 34071  ) : spell_data_t::not_found(); // Combo point add "spell", weird
   spell.frenzied_regeneration           = find_class_spell( "Frenzied Regeneration"       ) -> ok() ? find_spell( 22842  ) : spell_data_t::not_found();
-  spell.leader_of_the_pack              = spec.leader_of_the_pack -> ok() ? find_spell( 24932  ) : spell_data_t::not_found(); // LotP aura
   spell.mangle                          = find_class_spell( "Lacerate"                    ) -> ok() ? find_spell( 93622  ) : spell_data_t::not_found(); // Lacerate mangle cooldown reset
   spell.moonkin_form                    = find_class_spell( "Moonkin Form"                ) -> ok() ? find_spell( 24905  ) : spell_data_t::not_found(); // This is the passive applied on shapeshift!
   spell.regrowth                        = find_class_spell( "Regrowth"                    ) -> ok() ? find_spell( 93036  ) : spell_data_t::not_found(); // Regrowth refresh
