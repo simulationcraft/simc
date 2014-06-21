@@ -42,6 +42,7 @@ actions+=/run_action_list,name=aoe,if=active_enemies>3
 
 actions.single_target=bloodbath,if=talent.bloodbath.enabled&((cooldown.colossus_smash.remains<2|debuff.colossus_smash.remains>=5|target.time_to_die<=20))
 actions.single_target+=/ignite_weapon,if=talent.ignite_weapon.enabled&((target.health.pct>=20&(rage>90|(buff.enrage.up&rage>40)))|buff.ignite_weapon.remains<2)
+actions.single_target+=/heroic_strike,if=((debuff.colossus_smash.up&rage>=40)&target.health.pct>=20)|rage>=100&buff.enrage.up
 actions.single_target+=/heroic_leap,if=debuff.colossus_smash.up
 actions.single_target+=/storm_bolt,if=talent.storm_bolt.enabled&debuff.colossus_smash.up
 # Delay Bloodthirst if 2 stacks of raging blow are available inside Colossus Smash.

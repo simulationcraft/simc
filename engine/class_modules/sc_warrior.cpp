@@ -1436,14 +1436,6 @@ struct ignite_weapon_t : public warrior_attack_t
     p() -> buff.ignite_weapon -> trigger();
   }
 
-  virtual void update_ready( timespan_t cd_duration )
-  {
-    //Head Long Rush reduces the cooldown depending on the amount of haste.
-    cd_duration = cooldown -> duration * player -> cache.attack_haste();
-
-    warrior_attack_t::update_ready( cd_duration );
-  }
-
   virtual double action_multiplier() const
   {
     double am = warrior_attack_t::action_multiplier();
@@ -1452,6 +1444,14 @@ struct ignite_weapon_t : public warrior_attack_t
       am *= 1.0 + p() -> cache.mastery_value();
 
     return am;
+  }
+
+  virtual void update_ready( timespan_t cd_duration )
+  {
+    //Head Long Rush reduces the cooldown depending on the amount of haste.
+    cd_duration = cooldown -> duration * player -> cache.attack_haste();
+
+    warrior_attack_t::update_ready( cd_duration );
   }
 };
 
@@ -1896,6 +1896,7 @@ struct blood_craze_t : public warrior_heal_t
     tick_zero = true;
     may_multistrike = 1;
     dot_behavior = DOT_EXTEND;
+    tick_pct_heal = data().effectN( 1 ).percent();
   }
 };
 
@@ -3353,6 +3354,7 @@ void warrior_t::apl_tg_fury()
 
   single_target -> add_talent( this, "Bloodbath", "if=(cooldown.colossus_smash.remains<2|debuff.colossus_smash.remains>=5|target.time_to_die<=20)" );
   single_target -> add_talent( this, "Ignite Weapon", "if=(target.health.pct>=20&(rage>90|(buff.enrage.up&rage>40)))|buff.ignite_weapon.remains<2" );
+  single_target -> add_action( this, "Heroic Strike", "if=((debuff.colossus_smash.up&rage>=40)&target.health.pct>=20)|rage>=100&buff.enrage.up" );
   single_target -> add_action( this, "Heroic Leap", "if=debuff.colossus_smash.up" );
   single_target -> add_talent( this, "Storm Bolt", "if=debuff.colossus_smash.up" );
   single_target -> add_action( this, "Raging Blow", "if=buff.raging_blow.stack=2&debuff.colossus_smash.up",
