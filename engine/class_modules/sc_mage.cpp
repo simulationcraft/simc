@@ -1697,6 +1697,7 @@ struct combustion_t : public mage_spell_t
     base_tick_time = tick_spell.effectN( 1 ).period();
     dot_duration      = tick_spell.duration();
     tick_may_crit  = true;
+    dot_duration *= 1.0 + p -> perks.improved_combustion -> effectN( 1 ).percent();
 
     if ( p -> sets.has_set_bonus( SET_T14_4PC_CASTER ) )
     {
@@ -1835,6 +1836,7 @@ struct dragons_breath_t : public mage_spell_t
   {
     parse_options( NULL, options_str );
     aoe = -1;
+    base_multiplier *= 1.0 + p -> perks.improved_dragons_breath -> effectN( 1 ).percent();
   }
 };
 
@@ -1964,6 +1966,7 @@ struct fire_blast_t : public mage_spell_t
   {
     parse_options( NULL, options_str );
     may_hot_streak = true;
+
   }
 };
 
@@ -1976,6 +1979,7 @@ struct fireball_t : public mage_spell_t
   {
     parse_options( NULL, options_str );
     may_hot_streak = true;
+    base_multiplier *= 1.0 + p -> perks.improved_fireball_and_frostfire_bolt -> effectN( 1 ).percent();
 
     if ( p -> sets.has_set_bonus( SET_PVP_4PC_CASTER ) )
       base_multiplier *= 1.05;
@@ -2001,7 +2005,25 @@ struct fireball_t : public mage_spell_t
   {
     mage_spell_t::impact( s );
 
-    trigger_ignite( s );
+    if ( result_is_hit( s -> result ) )
+    {
+        if ( s -> result == RESULT_CRIT )
+            p() -> buffs.enhanced_pyrotechnics -> expire();
+        else
+            p() -> buffs.enhanced_pyrotechnics -> trigger();
+    }
+
+    if ( result_is_hit( s -> result) || result_is_multistrike( s -> result) )
+        trigger_ignite( s );
+  }
+
+  virtual double composite_crit() const
+  {
+      double c = mage_spell_t::composite_crit();
+
+      c += ( p() -> buffs.enhanced_pyrotechnics -> check() ) * p() -> perks.enhanced_pyrotechnics -> effectN( 1 ).trigger() -> effectN( 1 ).percent();
+
+      return c;
   }
 
   double composite_crit_multiplier() const
@@ -2034,7 +2056,7 @@ struct flamestrike_t : public mage_spell_t
     mage_spell_t( "flamestrike", p, p -> find_specialization_spell( "Flamestrike" ) )
   {
     parse_options( NULL, options_str );
-
+    cooldown -> duration = timespan_t::zero(); // Flamestrike Perk modifying the cooldown
     aoe = -1;
   }
 };
@@ -2344,7 +2366,7 @@ struct frostfire_bolt_t : public mage_spell_t
     frigid_blast( new frigid_blast_t( p ) )
   {
     parse_options( NULL, options_str );
-
+    base_multiplier *= 1.0 + p -> perks.improved_fireball_and_frostfire_bolt -> effectN( 1 ).percent();
     may_hot_streak = true;
     base_execute_time += p -> glyphs.frostfire -> effectN( 1 ).time_value();
 
@@ -2441,14 +2463,28 @@ struct frostfire_bolt_t : public mage_spell_t
     // target-based damage increases or decreases, except Frostbolt debuff
     // Should also apply to mini version
 
-    if ( result_is_hit( s -> result ) )
-    {
-      p() -> buffs.tier13_2pc -> trigger();
+    if ( s -> result == RESULT_CRIT && p() -> specialization() == MAGE_FIRE )
+        p() -> buffs.enhanced_pyrotechnics -> expire();
+    else
+        p() -> buffs.enhanced_pyrotechnics -> trigger();
+    
 
+    if ( ( result_is_hit( s-> result) || result_is_multistrike( s -> result ) ) && p() -> specialization() == MAGE_FIRE )   
       trigger_ignite( s );
-    }
+    
 
-    trigger_icicle_gain( s );
+
+    if ( ( result_is_hit( s-> result) || result_is_multistrike( s -> result ) ) && p() -> specialization() == MAGE_FROST )
+        trigger_icicle_gain( s );
+  }
+
+  virtual double composite_crit() const
+  {
+      double c = mage_spell_t::composite_crit();
+
+      if ( p() -> specialization() == MAGE_FIRE)  c += ( p() -> buffs.enhanced_pyrotechnics -> check() ) * p() -> perks.enhanced_pyrotechnics -> effectN( 1 ).trigger() -> effectN( 1 ).percent();
+
+      return c;
   }
 
   virtual double composite_crit_multiplier() const
@@ -2771,8 +2807,10 @@ struct inferno_blast_t : public mage_spell_t
     parse_options( NULL, options_str );
     may_hot_streak = true;
     cooldown = p -> cooldowns.inferno_blast;
+    cooldown -> duration = data().cooldown() +  p -> perks.enhanced_inferno_blast -> effectN( 1 ).time_value();
     max_spread_targets = 3;
     max_spread_targets += p -> glyphs.inferno_blast -> ok() ? p -> glyphs.inferno_blast -> effectN( 1 ).base_value() : 0;
+    max_spread_targets += p -> perks.improved_inferno_blast ? p -> perks.improved_inferno_blast -> effectN( 1 ).base_value() : 0;
   }
 
   virtual void impact( action_state_t* s )
@@ -3247,6 +3285,10 @@ struct pyroblast_t : public mage_spell_t
 
     if ( p() -> buffs.fiery_adept -> check() )
       c += 1.0;
+
+    c += p() -> perks.improved_pyroblast -> effectN( 1 ).percent();
+
+
 
     return c;
   }
@@ -4121,6 +4163,7 @@ void mage_t::create_buffs()
                                .chance( sets.has_set_bonus( SET_T13_2PC_CASTER ) ? 0.5 : 0.0 );
 
   //buffs.alter_time           = new buffs::alter_time_t( this );
+  buffs.enhanced_pyrotechnics = buff_creator_t( this, "enhanced_pyrotechnics", find_spell( 157644 ) );
   buffs.incanters_ward       = new buffs::incanters_ward_t( this );
   buffs.incanters_absorption  = buff_creator_t( this, "incanters_absorption" )
                                 .spell( find_spell( 116267 ) )
