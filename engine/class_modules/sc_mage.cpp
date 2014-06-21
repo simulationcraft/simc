@@ -4438,7 +4438,6 @@ void mage_t::apl_fire()
 void mage_t::apl_frost()
 {
   std::vector<std::string> item_actions = get_item_actions();
-  std::vector<std::string> profession_actions = get_profession_actions();
   std::vector<std::string> racial_actions = get_racial_actions();
 
   action_priority_list_t* default_list = get_action_priority_list( "default" );
@@ -4458,15 +4457,10 @@ void mage_t::apl_frost()
   default_list -> add_action( this, "Icy Veins", "if=(time_to_bloodlust>160&(buff.brain_freeze.react|buff.fingers_of_frost.react))|target.time_to_die<22,moving=0" );
 
   for( size_t i = 0; i < racial_actions.size(); i++ )
-    default_list -> add_action( racial_actions[i] + "if=buff.icy_veins.up|target.time_to_die<18" );
-
-
-
+    default_list -> add_action( racial_actions[i] + ",if=buff.icy_veins.up|target.time_to_die<18" );
 
   for( size_t i = 0; i < item_actions.size(); i++ )
-
     default_list -> add_action( item_actions[i] );
-
 
   for( size_t i = 0; i < item_actions.size(); i++ )
   {
@@ -4476,8 +4470,6 @@ void mage_t::apl_frost()
   }
 
   default_list -> add_action( this, "Flamestrike", "if=active_enemies>=5" );
-
-
   default_list -> add_talent( this, "Frost Bomb", "if=target.time_to_die>cast_time+tick_time" );
   default_list -> add_action( this, "Ice Lance", "if=buff.fingers_of_frost.up" );
   default_list -> add_action( this, "Ice Lance", "if=buff.fingers_of_frost.react&cooldown.icy_veins.remains>2*action.frostbolt.execute_time" );

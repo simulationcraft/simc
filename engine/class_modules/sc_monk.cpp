@@ -895,7 +895,7 @@ struct jab_t : public monk_melee_attack_t
  
     base_multiplier *= 2.091; // hardcoded into tooltip
 
-    base_costs[ RESOURCE_ENERGY ] += p -> active_stance_data( FIERCE_TIGER ).effectN( 7 ).base_value();
+    base_costs[ RESOURCE_ENERGY ] += p -> active_stance_data( FIERCE_TIGER ).effectN( 5 ).base_value();
   }
  
   double combo_breaker_chance()

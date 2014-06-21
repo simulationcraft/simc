@@ -3010,8 +3010,6 @@ double rogue_t::composite_player_multiplier( school_e school ) const
 
   m *= 1.0 + buffs.deep_insight -> value();
 
-  m *= 1.0 + buffs.killing_spree -> value();
-
   if ( main_hand_weapon.type == WEAPON_DAGGER && off_hand_weapon.type == WEAPON_DAGGER )
     m *= 1.0 + spec.assassins_resolve -> effectN( 2 ).percent();
 
@@ -3564,11 +3562,8 @@ void rogue_t::create_buffs()
                               .chance( spec.master_of_subtlety -> ok() )
                               .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
   // Killing spree buff has only 2 sec duration, main spell has 3, check.
-  buffs.killing_spree       = buff_creator_t( this, "killing_spree", find_spell( 61851 ) )
-                              .default_value( find_spell( 61851 ) -> effectN( 3 ).percent() )
-                              .duration( find_spell( 61851 ) -> duration() + timespan_t::from_seconds( 0.001 ) )
-                              .chance( spec.killing_spree -> ok() )
-                              .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
+  buffs.killing_spree       = buff_creator_t( this, "killing_spree", spec.killing_spree )
+                              .duration( spec.killing_spree -> duration() + timespan_t::from_seconds( 0.001 ) );
   buffs.shadow_blades      = new buffs::shadow_blades_t( this );
   buffs.shadow_dance       = buff_creator_t( this, "shadow_dance", find_specialization_spell( "Shadow Dance" ) )
                              .cd( timespan_t::zero() )

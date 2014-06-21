@@ -4255,7 +4255,7 @@ struct mark_of_the_wild_t : public druid_spell_t
         const spell_data_t* dmg_spell = player -> find_spell( 164812 );
         dot_behavior = DOT_REFRESH;
         dot_duration                  = dmg_spell -> duration();
-        dot_duration                 *= 1 + player -> spec.astral_showers -> effectN( 2 ).percent();
+        dot_duration                 *= 1 + player -> spec.astral_showers -> effectN( 1 ).percent();
         dot_duration                 += player -> sets.set( SET_T14_4PC_CASTER ) -> effectN( 1 ).time_value();
         base_tick_time                = dmg_spell -> effectN( 2 ).period();
 
@@ -4410,7 +4410,7 @@ struct mark_of_the_wild_t : public druid_spell_t
 
       dot_behavior = DOT_REFRESH;
       dot_duration                  = dmg_spell -> duration(); 
-      dot_duration                 *= 1 + player -> spec.astral_showers -> effectN( 2 ).percent();
+      dot_duration                 *= 1 + player -> spec.astral_showers -> effectN( 1 ).percent();
       dot_duration                 += player -> sets.set( SET_T14_4PC_CASTER ) -> effectN( 1 ).time_value();
       base_tick_time                = dmg_spell -> effectN( 2 ).period();
 
@@ -5493,7 +5493,7 @@ void druid_t::create_buffs()
 
   buff.hurricane                 = buff_creator_t( this, "hurricane", find_class_spell( "Hurricane" ) );
 
-  buff.astral_showers              = buff_creator_t( this, "astral_showers",   spec.astral_showers -> effectN( 1 ).trigger() );
+  buff.astral_showers              = buff_creator_t( this, "astral_showers",   spec.astral_showers );
 
   buff.solar_empowerment         = buff_creator_t( this, "solar_empowerment", find_spell( 164545 ) );
 
