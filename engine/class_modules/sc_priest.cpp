@@ -2724,11 +2724,14 @@ struct devouring_plague_t final : public priest_spell_t
   {
     priest_spell_t::impact( s );
 
-    if ( ! result_is_multistrike( s -> result ) )
+    if ( result_is_hit( s -> result ) && ! result_is_multistrike( s -> result ) )
       trigger_dp_dot( s );
 
-    transfer_dmg_to_dot( s );
-    transfer_heal_to_dot( s );
+    if ( result_is_hit( s -> result ) || result_is_multistrike( s -> result ) )
+    {
+      transfer_dmg_to_dot( s );
+      transfer_heal_to_dot( s );
+    }
   }
 
   virtual bool ready() override
