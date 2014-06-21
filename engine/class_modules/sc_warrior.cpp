@@ -1205,27 +1205,8 @@ struct colossus_smash_t : public warrior_attack_t
 
     weapon = &( player -> main_hand_weapon );
 
-    if ( p -> specialization() == WARRIOR_ARMS ) // Remove
-    {
-      weapon_multiplier *= 1.0 + 2.25;
-      base_costs[RESOURCE_RAGE] = 30;
-    }
   }
 
-  virtual double cost() const
-  {
-    //double c = warrior_attack_t::cost();
-	double c;
-
-    if ( p() -> specialization() == WARRIOR_ARMS )
-      c = 30;
-    else 
-      c = 0;
-
-    return c;
-  }
-
-  virtual resource_e current_resource() const { return RESOURCE_RAGE; }
 
   virtual double action_multiplier() const
   {
@@ -1373,14 +1354,11 @@ struct execute_t : public warrior_attack_t
 {
   execute_off_hand_t* oh_attack;
   execute_t( warrior_t* p, const std::string& options_str ) :
-    warrior_attack_t( "execute", p, p -> find_class_spell( "Execute" ) )
+    warrior_attack_t( "execute", p, p -> find_specialization_spell( "Execute" ) )
   {
     parse_options( NULL, options_str );
 
     weapon = &( p -> main_hand_weapon );
-
-    if ( p -> specialization() == WARRIOR_ARMS ) //Remove
-      base_costs[RESOURCE_RAGE] = 20;
 
     weapon_multiplier *= 1.0 + p -> perk.empowered_execute -> effectN( 1 ).percent();
 
@@ -1390,7 +1368,7 @@ struct execute_t : public warrior_attack_t
 
     if ( p -> spec.crazed_berserker -> ok() )
     {
-      oh_attack = new execute_off_hand_t( p, "execute_oh", p -> find_class_spell( "Execute" ) );
+      oh_attack = new execute_off_hand_t( p, "execute_oh", p -> find_specialization_spell( "Execute" ) );
       add_child( oh_attack );
     }
   }
@@ -1688,18 +1666,7 @@ struct mortal_strike_t : public warrior_attack_t
   {
     parse_options( NULL, options_str );
     weapon_multiplier += p -> sets.set( SET_T14_2PC_MELEE ) -> effectN( 1 ).percent();
-    base_costs[ RESOURCE_RAGE] = 30; //Remove
   }
-
-  virtual double cost() const
-  {
-    //double c = warrior_attack_t::cost();
-    double c = 30;
-
-    return c;
-  }
-
-  virtual resource_e current_resource() const { return RESOURCE_RAGE; }
 
   virtual double action_multiplier() const
   {
@@ -2159,7 +2126,7 @@ struct thunder_clap_t : public warrior_attack_t
 
     aoe = -1;
     may_dodge = may_parry = may_block = false;
-    base_costs[ RESOURCE_RAGE] = 30; //Remove
+
     cooldown -> duration = data().cooldown();
     cooldown -> duration *= 1 + p -> glyphs.resonating_power -> effectN( 2 ).percent();
 
@@ -2184,14 +2151,6 @@ struct thunder_clap_t : public warrior_attack_t
     cd_duration = cooldown -> duration * player -> cache.attack_haste();
 
     warrior_attack_t::update_ready( cd_duration );
-  }
-
-  virtual bool ready() //Remove
-  {
-    if ( p() -> specialization() != WARRIOR_PROTECTION )
-      return false;
-
-    return warrior_attack_t::ready();
   }
 };
 
@@ -2268,14 +2227,16 @@ struct whirlwind_t : public warrior_attack_t
   whirlwind_off_hand_t* oh_attack;
 
   whirlwind_t( warrior_t* p, const std::string& options_str ) :
-    warrior_attack_t( "whirlwind_mh" , p, p -> spec.whirlwind )
+    warrior_attack_t( "whirlwind_mh", p, p -> spec.whirlwind )
   {
     parse_options( NULL, options_str );
     aoe = -1;
-    weapon_multiplier *= 2;
 
-    oh_attack = new whirlwind_off_hand_t( p );
-    add_child( oh_attack );
+    if ( p -> specialization() == WARRIOR_FURY )
+    {
+      oh_attack = new whirlwind_off_hand_t( p );
+      add_child( oh_attack );
+    }
     weapon = &( p -> main_hand_weapon );
   }
 
@@ -2307,41 +2268,6 @@ struct whirlwind_t : public warrior_attack_t
   }
 };
 
-struct whirlwind_arms_t : public warrior_attack_t
-{
-  whirlwind_arms_t( warrior_t* p, const std::string& options_str ) :
-    warrior_attack_t( "whirlwind_arms" , p, spell_data_t::nil() )
-  {
-    parse_options( NULL, options_str );
-    aoe = -1;
-    weapon_multiplier = 1.5;
-    trigger_gcd = timespan_t::from_seconds( 1.5 );
-    min_gcd = timespan_t::from_seconds( 1.0 );
-    base_costs[ RESOURCE_RAGE ] = 30;
-    school = SCHOOL_PHYSICAL;
-
-    weapon = &( p -> main_hand_weapon );
-  }
-
-  virtual double cost() const
-  {
-    //double c = warrior_attack_t::cost();
-    double c = 30;
-
-    return c;
-  }
-
-  virtual resource_e current_resource() const { return RESOURCE_RAGE; }
-
-  virtual bool ready()
-  {
-    if ( p() -> active_stance == STANCE_DEFENSE )
-      return false;
-
-    return warrior_attack_t::ready();
-  }
-};
-
 // Wild Strike ==============================================================
 
 struct wild_strike_t : public warrior_attack_t
@@ -2355,15 +2281,6 @@ struct wild_strike_t : public warrior_attack_t
     weapon_multiplier *= 1.0 + p -> perk.improved_wild_strike -> effectN( 1 ).percent();
     if ( player -> off_hand_weapon.type == WEAPON_NONE )
       background = true;
-  }
-
-  virtual double cost() const //Remove
-  {
-    double c = warrior_attack_t::cost();
-
-    c += p() -> buff.bloodsurge -> data().effectN( 2 ).resource( RESOURCE_RAGE );
-
-    return c;
   }
 
   virtual timespan_t gcd() const
@@ -3061,13 +2978,7 @@ action_t* warrior_t::create_action( const std::string& name,
   if ( name == "stance"               ) return new stance_t               ( this, options_str );
   if ( name == "sweeping_strikes"     ) return new sweeping_strikes_t     ( this, options_str );
   if ( name == "thunder_clap"         ) return new thunder_clap_t         ( this, options_str );
-  if ( name == "whirlwind"            ) 
-  {
-    if ( specialization() == WARRIOR_FURY )
-      return new whirlwind_t            ( this, options_str );
-    else if (specialization() == WARRIOR_ARMS )
-      return new whirlwind_arms_t       ( this, options_str );
-  }
+  if ( name == "whirlwind"            ) return new whirlwind_t            ( this, options_str );
   if ( name == "wild_strike"          ) return new wild_strike_t          ( this, options_str );
 
   return player_t::create_action( name, options_str );
