@@ -37,12 +37,15 @@ namespace { // UNNAMED NAMESPACE
 
 // Forward declarations
 struct druid_t;
-struct natures_vigil_proc_t;
-struct ursocs_vigor_t;
+
+// Active actions
 struct cenarion_ward_hot_t;
+struct gushing_wound_t;
 struct leader_of_the_pack_t;
-struct yseras_gift_t;
+struct natures_vigil_proc_t;
 struct primal_tenacity_t;
+struct ursocs_vigor_t;
+struct yseras_gift_t;
 namespace buffs {
 struct heart_of_the_wild_buff_t;
 }
@@ -75,6 +78,7 @@ struct druid_td_t : public actor_pair_t
 {
   struct dots_t
   {
+    dot_t* gushing_wound;
     dot_t* lacerate;
     dot_t* lifebloom;
     dot_t* moonfire;
@@ -132,12 +136,13 @@ public:
   
   struct active_actions_t
   {
-    natures_vigil_proc_t* natures_vigil;
-    ursocs_vigor_t*       ursocs_vigor;
     cenarion_ward_hot_t*  cenarion_ward_hot;
+    gushing_wound_t*      gushing_wound;
     leader_of_the_pack_t* leader_of_the_pack;
-    yseras_gift_t*        yseras_gift;
+    natures_vigil_proc_t* natures_vigil;
     primal_tenacity_t*    primal_tenacity;
+    ursocs_vigor_t*       ursocs_vigor;
+    yseras_gift_t*        yseras_gift;
   } active;
 
   // Pets
@@ -223,8 +228,9 @@ public:
   // Cooldowns
   struct cooldowns_t
   {
-    cooldown_t* natures_swiftness;
+    cooldown_t* berserk;
     cooldown_t* mangle;
+    cooldown_t* natures_swiftness;
     cooldown_t* pvp_4pc_melee;
     cooldown_t* starfallsurge;
     cooldown_t* swiftmend;
@@ -351,6 +357,7 @@ public:
     proc_t* shooting_stars_wasted;
     proc_t* shooting_stars;
     proc_t* tier15_2pc_melee;
+    proc_t* tier17_2pc_melee;
     proc_t* tooth_and_claw;
   } proc;
 
@@ -517,9 +524,10 @@ public:
     {
         pet_force_of_nature[i] = nullptr;
     }
-
-    cooldown.natures_swiftness   = get_cooldown( "natures_swiftness"   );
+    
+    cooldown.berserk             = get_cooldown( "berserk"             );
     cooldown.mangle              = get_cooldown( "mangle"              );
+    cooldown.natures_swiftness   = get_cooldown( "natures_swiftness"   );
     cooldown.pvp_4pc_melee       = get_cooldown( "pvp_4pc_melee"       );
     cooldown.pvp_4pc_melee -> duration = timespan_t::from_seconds( 30.0 );
     cooldown.starfallsurge       = get_cooldown( "starfallsurge"       );
@@ -621,6 +629,25 @@ public:
     w.max_dmg *= mod;
     w.damage *= mod;
     w.swing_time = timespan_t::from_seconds( swing_time );
+  }
+};
+
+// Gushing Wound (tier17_4pc_melee) ========================================================
+
+struct gushing_wound_t : public ignite::pct_based_action_t< attack_t >
+{
+  typedef  ignite::pct_based_action_t<attack_t> base_t;
+  gushing_wound_t( druid_t* p ) :
+    base_t( "gushing_wound", p, p -> find_spell( 166638 ) )
+  {
+    background = dual = true;
+
+    // ph until spell data
+    dot_duration = timespan_t::from_seconds( 6.0 );
+    base_tick_time = timespan_t::from_seconds( 2.0 );
+    school = SCHOOL_PHYSICAL;
+    tick_may_crit = false;
+    may_multistrike = false;
   }
 };
 
@@ -1325,7 +1352,9 @@ private:
 struct berserk_buff_t : public druid_buff_t<buff_t>
 {
   berserk_buff_t( druid_t& p ) :
-    druid_buff_t<buff_t>( p, buff_creator_t( &p, "berserk", p.find_specialization_spell( "Berserk" ) ) )
+    druid_buff_t<buff_t>( p, buff_creator_t( &p, "berserk", p.find_specialization_spell( "Berserk" ) )
+      .cd( timespan_t::from_seconds( 0.0 ) ) // Cooldown handled by ability
+    )
   {}
 
   virtual bool trigger( int stacks, double value, double chance, timespan_t duration )
@@ -1657,6 +1686,33 @@ public:
     if ( ab::proc ) return false;
 
     return p() -> buff.omen_of_clarity -> trigger();
+  }
+
+  virtual void impact( action_state_t* s )
+  {
+    ab::impact( s );
+    
+    if ( p() -> sets.has_set_bonus( SET_T17_4PC_MELEE ) )
+      trigger_gushing_wound( s -> target, s -> result_amount );
+  }
+
+  virtual void tick( dot_t* d )
+  {
+    ab::tick( d );
+
+    if ( p() -> sets.has_set_bonus( SET_T17_4PC_MELEE ) )
+      trigger_gushing_wound( d -> target, d -> state -> result_amount );
+  }
+
+  void trigger_gushing_wound( player_t* t, double dmg )
+  {
+    if ( ! ( p() -> buff.berserk -> check() && ab::special && ab::harmful ) )
+      return;
+
+    ignite::trigger_pct_based(
+      p() -> active.gushing_wound, // ignite spell
+      t, // target
+      0.15 * dmg ); // p() -> find_spell( 165432 ) -> effectN( 1 ).percent()
   }
 };
 
@@ -2342,11 +2398,17 @@ struct shred_t : public cat_attack_t
     p() -> buff.tier15_4pc_melee -> decrement();
   }
 
-  virtual void impact( action_state_t* state )
+  virtual void impact( action_state_t* s )
   {
-    cat_attack_t::impact( state );
+    cat_attack_t::impact( s );
 
-    extend_rip( *state );
+    extend_rip( *s );
+
+    if ( p() -> sets.has_set_bonus( SET_T17_2PC_MELEE ) && s -> result == RESULT_CRIT )
+    {
+      p() -> cooldown.berserk -> adjust( timespan_t::from_seconds( -5.0 ), true );
+      p() -> proc.tier17_2pc_melee -> occur();
+    }
   }
 
   virtual double composite_target_multiplier( player_t* t ) const
@@ -5272,6 +5334,8 @@ void druid_t::init_spells()
     active.cenarion_ward_hot  = new cenarion_ward_hot_t( this );
   if ( talent.yseras_gift -> ok() )
     active.yseras_gift        = new yseras_gift_t( this );
+  if ( sets.has_set_bonus( SET_T17_4PC_MELEE ) )
+    active.gushing_wound      = new gushing_wound_t( this );
 
   // TODO: Check if this is really the passive applied, the actual shapeshift
   // only has data of shift, polymorph immunity and the general armor bonus
@@ -5936,6 +6000,7 @@ void druid_t::init_procs()
   proc.shooting_stars_wasted    = get_proc( "Shooting Stars overflow (buff already up)" );
   proc.shooting_stars           = get_proc( "Shooting Stars"         );
   proc.tier15_2pc_melee         = get_proc( "tier15_2pc_melee"       );
+  proc.tier17_2pc_melee         = get_proc( "tier17_2pc_melee"       );
   proc.tooth_and_claw           = get_proc( "tooth_and_claw"         );
 }
 
@@ -6815,16 +6880,17 @@ druid_td_t::druid_td_t( player_t& target, druid_t& source )
     lacerate_stack( 1 ),
     combo_points( source, target )
 {
-  dots.lacerate     = target.get_dot( "lacerate",     &source );
-  dots.lifebloom    = target.get_dot( "lifebloom",    &source );
-  dots.moonfire     = target.get_dot( "moonfire",     &source );
+  dots.gushing_wound = target.get_dot( "gushing_wound", &source );
+  dots.lacerate      = target.get_dot( "lacerate",      &source );
+  dots.lifebloom     = target.get_dot( "lifebloom",     &source );
+  dots.moonfire      = target.get_dot( "moonfire",      &source );
   dots.stellar_flare = target.get_dot( "stellar_flare", &source );
-  dots.rake         = target.get_dot( "rake",         &source );
-  dots.regrowth     = target.get_dot( "regrowth",     &source );
-  dots.rejuvenation = target.get_dot( "rejuvenation", &source );
-  dots.rip          = target.get_dot( "rip",          &source );
-  dots.sunfire      = target.get_dot( "sunfire",      &source );
-  dots.wild_growth  = target.get_dot( "wild_growth",  &source );
+  dots.rake          = target.get_dot( "rake",          &source );
+  dots.regrowth      = target.get_dot( "regrowth",      &source );
+  dots.rejuvenation  = target.get_dot( "rejuvenation",  &source );
+  dots.rip           = target.get_dot( "rip",           &source );
+  dots.sunfire       = target.get_dot( "sunfire",       &source );
+  dots.wild_growth   = target.get_dot( "wild_growth",   &source );
 
   buffs.lifebloom = buff_creator_t( *this, "lifebloom", source.find_class_spell( "Lifebloom" ) );
 }
