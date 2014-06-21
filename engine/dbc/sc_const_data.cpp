@@ -2807,3 +2807,43 @@ double dbc_t::rppm_coefficient( specialization_e spec, unsigned spell_id ) const
 
 // DBC
 
+bool spell_data_t::affected_by( const spell_data_t* spell ) const
+{
+  if ( class_family() != spell -> class_family() )
+    return false;
+
+  for ( size_t flag_idx = 0; flag_idx < NUM_CLASS_FAMILY_FLAGS; flag_idx++ )
+  {
+    if ( ! class_flags( flag_idx ) )
+      continue;
+
+    for ( size_t effect_idx = 1, end = spell -> effect_count(); effect_idx <= end; effect_idx++ )
+    {
+      const spelleffect_data_t& effect = spell -> effectN( effect_idx );
+      if ( ! effect.id() )
+        continue;
+
+      if ( class_flags( flag_idx ) & effect.class_flags( flag_idx ) )
+        return true;
+    }
+  }
+
+  return false;
+};
+
+bool spell_data_t::affected_by( const spelleffect_data_t* effect) const
+{
+  if ( class_family() != effect -> spell() -> class_family() )
+    return false;
+
+  for ( size_t flag_idx = 0; flag_idx < NUM_CLASS_FAMILY_FLAGS; flag_idx++ )
+  {
+    if ( ! class_flags( flag_idx ) )
+      continue;
+
+    if ( class_flags( flag_idx ) & effect -> class_flags( flag_idx ) )
+      return true;
+  }
+
+  return false;
+};

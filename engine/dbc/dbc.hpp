@@ -281,6 +281,13 @@ public:
     return ( _class_flags[ index ] & ( 1u << bit ) ) != 0;
   }
 
+  unsigned class_flags( unsigned idx ) const
+  {
+    assert( idx < NUM_CLASS_FAMILY_FLAGS );
+
+    return _class_flags[ idx ];
+  }
+
   double average( const player_t* p, unsigned level = 0 ) const;
   double delta( const player_t* p, unsigned level = 0 ) const;
   double bonus( const player_t* p, unsigned level = 0 ) const;
@@ -648,6 +655,9 @@ public:
     s << " school=" << util::school_type_string( get_school_type() );
     return s.str();
   }
+
+  bool affected_by( const spell_data_t* ) const;
+  bool affected_by( const spelleffect_data_t* ) const;
 
   // static functions
   static spell_data_t* nil();
