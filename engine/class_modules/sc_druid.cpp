@@ -2016,7 +2016,7 @@ public:
       pm *= 1.0 + p() -> buff.tigers_fury -> value();
       pm *= 1.0 + p() -> buff.savage_roar -> value();
     }
-    if ( p() -> talent.bloodtalons -> ok() && p() -> buff.bloodtalons -> up() && this -> special && this -> harmful )
+    if ( p() -> talent.bloodtalons -> ok() && this -> special && this -> harmful && p() -> buff.bloodtalons -> up() )
       pm *= 1.0 + p() -> buff.bloodtalons -> data().effectN( 1 ).percent();
 
     return pm;
