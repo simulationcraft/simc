@@ -1282,7 +1282,7 @@ void action_t::update_resolve( dmg_e type,
   // check that the target has Resolve, check for damage type, and check that the source player is an enemy
   if ( target -> resolve_manager.is_started() && ( type == DMG_DIRECT || type == DMG_OVER_TIME ) && source -> is_enemy() )
   {
-    assert( source -> actor_spawn_index >= 0 && "Trying to register resolve damage event from a dead player! Something is seriously broken in player_t::arise/demise." );
+    assert( source -> actor_spawn_index >= 0 && "Trying to register resolve damage event from a unspawned player! Something is seriously broken in player_t::arise/demise." );
 
     // bool for auto attack, to make code easier to read
     bool is_auto_attack = ( player -> main_hand_attack && s -> action == player -> main_hand_attack ) || ( player -> off_hand_attack && s -> action == player -> off_hand_attack );

@@ -3667,7 +3667,10 @@ void player_t::demise()
   if ( sim -> log )
     sim -> out_log.printf( "%s demises.. Spawn Index=", name(), actor_spawn_index );
 
-  actor_spawn_index = -1;
+  /* Do not reset spawn index, because the player can still have damaging events ( dots ) which
+   * need to be associated with eg. resolve Diminishing Return list.
+   */
+
 
   assert( arise_time >= timespan_t::zero() );
   iteration_fight_length += sim -> current_time - arise_time;
