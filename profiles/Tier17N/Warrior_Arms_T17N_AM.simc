@@ -1,10 +1,10 @@
-warrior="Warrior_Arms_T17N"
+warrior="Warrior_Arms_T17N_AM"
 level=100
 race=orc
 role=attack
 position=back
 professions=engineering=600/blacksmithing=600
-talents=http://us.battle.net/wow/en/tool/talent-calculator#Za!0100211
+talents=http://us.battle.net/wow/en/tool/talent-calculator#Za!0100210
 glyphs=unending_rage/death_from_above/sweeping_strikes/resonating_power
 spec=arms
 
