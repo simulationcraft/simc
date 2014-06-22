@@ -217,20 +217,42 @@ void dot_t::trigger( timespan_t duration )
   }
 }
 
-/* Caller needs to handle logic if the source dot was ticking or not!!!
- */
-void dot_t::copy( player_t* other_target )
+void dot_t::copy( player_t* other_target, dot_copy_e copy_type )
 {
-  assert( target != other_target );
+  // assert( target != other_target );
 
   dot_t* other_dot = current_action -> get_dot( other_target );
-
-  if ( ! other_dot -> state ) other_dot -> state = current_action -> get_state();
+  // If the target actor has a dot ticking, we need to cancel it in any case
+  if ( other_dot -> is_ticking() )
+    other_dot -> cancel();
 
   other_dot -> copy( this );
 
-  if ( ! other_dot -> ticking )
+  if ( copy_type == DOT_COPY_START )
     other_dot -> trigger( other_dot -> current_duration );
+  // If we don't start the copied dot from the beginning, we need to bypass a
+  // lot of the dot scheduling logic, and simply do the minimum amount possible
+  // to get the dot aligned with the source dot, both in terms of state, as
+  // well as the remaining duration, and the remaining ongoing tick time.
+  else
+  {
+    other_dot -> ticking = true;
+    other_dot -> end_event = new ( sim ) dot_t::dot_end_event_t( other_dot, remains() );
+
+    // The clone may happen on tick, or mid tick. If it happens on tick, the
+    // source dot will not have a new tick event scheduled yet, so the tick
+    // time has to be based on the action's tick time. If cloning happens mid
+    // tick, we just use the remaining tick time of the source for the tick
+    // time. Tick time will be recalculated on the next tick, implicitly
+    // syncing it to the source's tick time.
+    timespan_t tick_time;
+    if ( other_dot -> tick_event )
+      tick_time = tick_event -> remains();
+    else
+      tick_time = other_dot -> current_action -> tick_time( other_dot -> state -> haste );
+
+    other_dot -> tick_event = new ( sim ) dot_t::dot_tick_event_t( other_dot, tick_time );
+  }
 }
 
 /* Caller needs to handle logic if the source dot was ticking or not!!!
@@ -244,12 +266,14 @@ void dot_t::copy( dot_t* other_dot )
   assert( other_dot -> ticking );
 
   state -> copy_state( other_dot -> state );
-  state -> target = other_dot -> target;
+  state -> target = target;
   current_action = other_dot -> current_action;
   current_tick = other_dot -> current_tick;
   last_start = other_dot -> last_start;
   current_duration = other_dot -> current_duration;
   num_ticks = other_dot -> num_ticks;
+  extended_time = other_dot -> extended_time;
+  last_tick_factor = other_dot -> last_tick_factor;
 }
 
 // dot_t::create_expression =================================================

@@ -318,6 +318,8 @@ enum stats_e { STATS_DMG, STATS_HEAL, STATS_ABSORB, STATS_NEUTRAL };
 
 enum dot_behavior_e { DOT_CLIP, DOT_REFRESH, DOT_EXTEND };
 
+enum dot_copy_e { DOT_COPY_START, DOT_COPY_CLONE };
+
 enum attribute_e { ATTRIBUTE_NONE = 0, ATTR_STRENGTH, ATTR_AGILITY, ATTR_STAMINA, ATTR_INTELLECT, ATTR_SPIRIT, ATTR_AGI_INT, ATTR_STR_AGI, ATTR_STR_INT, ATTRIBUTE_MAX };
 
 enum resource_e
@@ -5956,7 +5958,7 @@ public:
   void   reset();
   void   cancel();
   void   trigger( timespan_t duration );
-  void   copy( player_t* destination );
+  void   copy( player_t* destination, dot_copy_e = DOT_COPY_START );
   void   copy( dot_t* other_dot );
   expr_t* create_expression( action_t* action, const std::string& name_str, bool dynamic );
 
