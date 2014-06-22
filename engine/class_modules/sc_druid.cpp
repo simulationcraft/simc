@@ -1736,7 +1736,7 @@ public:
   {
     ab::impact( s );
 
-    if ( s -> result == RESULT_CRIT && ( this -> p() -> buff.cat_form -> check() || this -> p() -> buff.bear_form -> check() ) )
+    if ( this -> p() -> spec.leader_of_the_pack -> ok() && s -> result == RESULT_CRIT )
       trigger_lotp( s );
   }
 
@@ -1750,11 +1750,13 @@ public:
 
   void trigger_lotp( const action_state_t* s )
   {
+    // Must be in cat or bear form
+    if ( ! ( this -> p() -> buff.cat_form -> check() || this -> p() -> buff.bear_form -> check() ) )
+      return;
     // Has to do damage and can't be a proc
-    if ( ab::proc || s -> result_amount == 0 )
+    if ( ab::proc || s -> result_amount <= 0 )
       return;
 
-    assert( this -> p() -> active.leader_of_the_pack );
     if ( this -> p() -> active.leader_of_the_pack -> cooldown -> up() )
       this -> p() -> active.leader_of_the_pack -> execute();
   }
