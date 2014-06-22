@@ -975,7 +975,7 @@ struct stat_data_t
 
 // Options ==================================================================
 
-class option_t
+struct option_t
 {
 public:
   typedef bool function_t( sim_t* sim, const std::string& name, const std::string& value );
@@ -1985,16 +1985,8 @@ struct expression_t
 
 // Action expression types ==================================================
 
-class expr_t
+struct expr_t
 {
-  std::string name_;
-
-protected:
-  template <typename T> static double coerce( T t ) { return static_cast<double>( t ); }
-  static double coerce( timespan_t t ) { return t.total_seconds(); }
-
-  virtual double evaluate() = 0;
-
 public:
   expr_t( const std::string& name ) : name_( name ) {}
   virtual ~expr_t() {}
@@ -2005,18 +1997,28 @@ public:
   bool success() { return eval() != 0; }
 
   static expr_t* parse( action_t*, const std::string& expr_str );
+protected:
+  template <typename T> static double coerce( T t ) { return static_cast<double>( t ); }
+  static double coerce( timespan_t t ) { return t.total_seconds(); }
+
+  virtual double evaluate() = 0;
+private:
+  std::string name_;
 };
 
 // Reference Expression - ref_expr_t
 // Class Template to create a expression with a reference ( ref ) of arbitrary type T, and evaluate that reference
 template <typename T>
-class ref_expr_t : public expr_t
+struct ref_expr_t : public expr_t
 {
+public:
+  ref_expr_t( const std::string& name, const T& t_ ) :
+    expr_t( name ), t( t_ )
+  {}
+private:
   const T& t;
   virtual double evaluate() { return coerce( t ); }
 
-public:
-  ref_expr_t( const std::string& name, const T& t_ ) : expr_t( name ), t( t_ ) {}
 };
 
 // Template to return a reference expression
@@ -2027,15 +2029,16 @@ inline expr_t* make_ref_expr( const std::string& name, const T& t )
 // Function Expression - fn_expr_t
 // Class Template to create a function ( fn ) expression with arbitrary functor f, which gets evaluated
 template <typename F>
-class fn_expr_t : public expr_t
+struct fn_expr_t : public expr_t
 {
+public:
+  fn_expr_t( const std::string& name, F f_ ) :
+    expr_t( name ), f( f_ ) {}
+private:
   F f;
 
   virtual double evaluate() { return coerce( f() ); }
 
-public:
-  fn_expr_t( const std::string& name, F f_ ) :
-    expr_t( name ), f( f_ ) {}
 };
 
 // Template to return a function expression
@@ -3995,7 +3998,7 @@ struct manager_t
   { return _started; }
   void add_diminishing_return_entry( const player_t* actor, double raw_dps, timespan_t current_time );
   int get_diminsihing_return_rank( int actor_spawn_index );
-  void add_damage_event( const player_t* actor, double amount, timespan_t current_time );
+  void add_damage_event( double amount, timespan_t current_time );
 private:
   struct update_event_t;
   struct diminishing_returns_list_t;
@@ -4014,7 +4017,7 @@ private:
  * based on the dynamic class of the player
  */
 
-class player_report_extension_t
+struct player_report_extension_t
 {
 public:
   virtual ~player_report_extension_t()

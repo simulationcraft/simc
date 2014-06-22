@@ -9970,12 +9970,16 @@ std::string player_talent_points_t::to_string() const
 
 namespace resolve {
 
-// Resolve Diminishing Returns List =====================================================
-// this is the sorted list of actors used to determine Resolve diminishing returns.
-// sorted according to auto-attack DPS
+/* Resolve Diminishing Returns List
+ * this is the sorted list of actors used to determine Resolve diminishing returns.
+ * sorted according to auto-attack DPS
+ */
 
 struct manager_t::diminishing_returns_list_t
 {
+  // 2014/06/17 http://us.battle.net/wow/en/forum/topic/13087818929?page=6#105
+  static const unsigned purge_entries_after_millis = 5000;
+
   diminishing_returns_list_t() :
     actor_list()
   { }
@@ -9995,7 +9999,9 @@ struct manager_t::diminishing_returns_list_t
     return as<int>(std::distance( actor_list.begin(), found ) + 1);
   }
 
-  // Add average auto-attack dps values to the Diminishing Return list. Update every time something is added.
+  /* Add average auto-attack dps values to the Diminishing Return list.
+   * Update every time something is added.
+   */
   void add( const player_t* actor, double raw_dps, timespan_t current_time )
   {
     std::vector<actor_entry_t>::iterator found = find_actor( actor -> actor_spawn_index );
@@ -10016,7 +10022,6 @@ struct manager_t::diminishing_returns_list_t
       actor_list.push_back( a );
     }
 
-    // sort the list every time we add an entry
     update( current_time );
   }
 
@@ -10045,13 +10050,12 @@ private:
   { return a.raw_dps > b.raw_dps; }
 
   // comparator functor for purging inactive players
-  // http://us.battle.net/wow/en/forum/topic/13087818929?page=6#105
   struct was_inactive {
     was_inactive( const timespan_t& current_time ) :
       current_time( current_time )
     {}
     bool operator()( const actor_entry_t& a ) const
-    { return a.last_attack + timespan_t::from_seconds( 5.0 ) < current_time; } // true if last attack is not more than 10 seconds ago
+    { return a.last_attack + timespan_t::from_millis( purge_entries_after_millis ) < current_time; }
     const timespan_t& current_time;
   };
 
@@ -10075,37 +10079,29 @@ private:
   }
 };
 
-// Resolve Event List =====================================================
-// This is the list of the damage events that have occurred. Used every time Resolve is updated
-
+/* Resolve Event List
+ * This is the list of the damage events that have occurred. Used every time Resolve is updated
+ */
 struct manager_t::damage_event_list_t
 {
-  damage_event_list_t( manager_t& rm ) :
-    event_list(),
-    resolve_manager( rm )
+  damage_event_list_t() :
+    _event_list()
   { }
 
   // called after each iteration in player_t::resolve_stop()
   void reset()
-  { event_list.clear(); }
+  { _event_list.clear(); }
 
   /* Add a damage event to the Resolve Damage Event list
    */
-  void add( const player_t* actor, double amount, timespan_t current_time )
+  void add( double amount, timespan_t current_time )
   {
-    assert( actor -> actor_spawn_index >= 0 && "Trying to register resolve damage event from a dead player! Something is seriously broken in player_t::arise/demise." );
-    
-    // apply diminishing returns - done at the time of the event, never recalculated
-    // see http://us.battle.net/wow/en/forum/topic/13087818929?page=6#105
-    int rank = resolve_manager.get_diminsihing_return_rank( actor -> actor_spawn_index );
-    amount /= rank;
-
     // Add a new entry
     event_entry_t e;
     e.event_amount = amount;
     e.event_time = current_time;
 
-    event_list.push_back( e );
+    _event_list.push_back( e );
   }
 
   // structure that contains the relevant information for each actor entry in the list
@@ -10115,8 +10111,7 @@ struct manager_t::damage_event_list_t
 
   };
   typedef std::vector<event_entry_t> list_t;
-  list_t event_list; // vector of actor entries
-  manager_t& resolve_manager;
+  list_t _event_list; // vector of actor entries
 };
 
 // periodic update event for resolve
@@ -10141,7 +10136,7 @@ manager_t::manager_t( player_t& p ) :
     _update_event( nullptr ),
     _started( false ),
     _diminishing_return_list( new diminishing_returns_list_t() ),
-    _damage_list( new damage_event_list_t( *this ) )
+    _damage_list( new damage_event_list_t() )
 {
 
 }
@@ -10193,28 +10188,25 @@ void manager_t::update()
   double new_amount = 0;
 
   // Iterate through the Resolve event list, retrieving each event's details
-  const damage_event_list_t::list_t& list= _damage_list -> event_list;
-  if ( ! list.empty() )
+  const damage_event_list_t::list_t& list= _damage_list -> _event_list;
+  damage_event_list_t::list_t::const_reverse_iterator i, end;
+  for ( i = list.rbegin(), end = list.rend(); i != end; ++i )
   {
-    damage_event_list_t::list_t::const_reverse_iterator i, end;
-    for ( i = list.rbegin(), end = list.rend(); i != end; ++i )
-    {
-      // Only loop from the end until we are over the 10s mark, then break the loop
-      if ( ( _player.sim -> current_time - (*i).event_time ) > max_interval )
-        break;
+    // Only loop from the end until we are over the 10s mark, then break the loop
+    if ( ( _player.sim -> current_time - (*i).event_time ) > max_interval )
+      break;
 
-      // temp variable for current event's contribution
-      // note that this already includes the 2.5x multiplier for spell damage, diminishing returns,
-      // and the normalization by player max health. See action_t::update_resolve() and damage_event_list_t::add()
-      double contribution = (*i).event_amount;
+    // temp variable for current event's contribution
+    // note that this already includes the 2.5x multiplier for spell damage, diminishing returns,
+    // and the normalization by player max health. See action_t::update_resolve()
+    double contribution = (*i).event_amount;
 
-      // apply time-based decay
-      double delta_t = ( _player.sim -> current_time - (*i).event_time ).total_seconds();
-      contribution *= 2.0 * ( 10.0 - delta_t ) / 10.0;
+    // apply time-based decay
+    double delta_t = ( _player.sim -> current_time - (*i).event_time ).total_seconds();
+    contribution *= 2.0 * ( 10.0 - delta_t ) / 10.0;
 
-      // add to existing amount
-      new_amount += contribution;
-    }
+    // add to existing amount
+    new_amount += contribution;
   }
 
   // multiply by damage modifier
@@ -10229,7 +10221,7 @@ void manager_t::update()
   // updatee the buff
   _player.buffs.resolve -> trigger( 1, new_amount, 1, timespan_t::zero() );
 
-  // also add this to the Resolve timeline for accuracy
+  // Add to the Resolve timeline
   _player.resolve_timeline.add( _player.sim -> current_time, _player.buffs.resolve -> value() );
 }
 
@@ -10243,10 +10235,10 @@ int manager_t::get_diminsihing_return_rank( int actor_spawn_index )
   return _diminishing_return_list -> get_diminishing_return_factor( actor_spawn_index );
 }
 
-void manager_t::add_damage_event( const player_t* actor, double amount, timespan_t current_time )
+void manager_t::add_damage_event( double amount, timespan_t current_time )
 {
 
-  _damage_list -> add( actor, amount, current_time );
+  _damage_list -> add( amount, current_time );
 }
 
 } // end namespace resolve
