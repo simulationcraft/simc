@@ -2500,6 +2500,48 @@ struct frost_fever_t : public death_knight_spell_t
 
 struct necrotic_plague_t : public death_knight_spell_t
 {
+  // Event to spread Necrotic Plague from a source actor to a target actor
+  struct np_spread_event_t : public event_t
+  {
+    dot_t* dot;
+    np_spread_event_t( dot_t* dot_ ) :
+      event_t( *dot_ -> source -> sim, "necrotic_plague_spread" ),
+      dot( dot_ )
+    {
+      sim().add_event( this, timespan_t::zero() );
+    }
+
+    void execute()
+    {
+      // TODO-WOD: Randomize target selection.
+      player_t* new_target = 0;
+      for ( size_t i = 0, end = sim().target_non_sleeping_list.size(); i < end; i++ )
+      {
+        player_t* t = sim().target_non_sleeping_list[ i ];
+        if ( t == dot -> state -> target )
+          continue;
+
+        death_knight_td_t* tdata = debug_cast<death_knight_td_t*>( dot -> source -> get_target_data( t ) );
+        if ( ! tdata -> dots_necrotic_plague -> is_ticking() )
+        {
+          new_target = t;
+          break;
+        }
+      }
+
+      // Dot is cloned to the new target
+      if ( new_target )
+      {
+        if ( sim().debug )
+          sim().out_debug.printf( "Player %s spreading Necrotic Plague from %s to %s",
+              dot -> current_action -> player -> name(),
+              dot -> target -> name(),
+              new_target -> name() );
+        dot -> copy( new_target, DOT_COPY_CLONE );
+      }
+    }
+  };
+
   struct necrotic_plague_state_t : public action_state_t
   {
     int stack;
@@ -2563,7 +2605,8 @@ struct necrotic_plague_t : public death_knight_spell_t
   }
 
   // Necrotic Plague duration will not be refreshed if it is already ticking on
-  // the target, only the stack count will go up
+  // the target, only the stack count will go up. Only Festering Strike is
+  // allowed to extend the duration of the Necrotic Plague dot.
   void trigger_dot( action_state_t* s )
   {
     death_knight_td_t* tdata = td( s -> target );
@@ -2581,36 +2624,13 @@ struct necrotic_plague_t : public death_knight_spell_t
   {
     death_knight_spell_t::tick( dot );
 
-    necrotic_plague_state_t* np_state = debug_cast<necrotic_plague_state_t*>( dot -> state );
-    if ( np_state -> result_amount > 0 && dot -> ticks_left() > 0 && result_is_hit( dot -> state -> result ) )
+    if ( result_is_hit( dot -> state -> result ) && dot -> ticks_left() > 0 )
     {
+      necrotic_plague_state_t* np_state = debug_cast<necrotic_plague_state_t*>( dot -> state );
       if ( np_state -> stack < max_stack )
         np_state -> stack++;
 
-      // Choose the first target that has no Necrotic plague, and schedule an execution of Necrotic plague on it
-      // TODO-WOD: Randomize target selection.
-      // TODO-WOD: Move to a separate event, so we can cover situations, where
-      // multiple targets are ticking NP at the same time, and one ticks its
-      // last tick. Here, one of the other NPs still ticking should be
-      // spreading its disease to the just-faded target.
-      player_t* new_target = 0;
-      for ( size_t i = 0, end = sim -> target_non_sleeping_list.size(); i < end; i++ )
-      {
-        player_t* t = sim -> target_non_sleeping_list[ i ];
-        if ( t == dot -> state -> target )
-          continue;
-
-        death_knight_td_t* tdata = td( t );
-        if ( ! tdata -> dots_necrotic_plague -> is_ticking() )
-        {
-          new_target = t;
-          break;
-        }
-      }
-
-      // Dot is cloned to the new target
-      if ( new_target )
-        dot -> copy( new_target, DOT_COPY_CLONE );
+      new ( *sim ) np_spread_event_t( dot );
     }
   }
 
