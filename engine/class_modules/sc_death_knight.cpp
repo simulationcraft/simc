@@ -2512,7 +2512,7 @@ struct necrotic_plague_t : public death_knight_spell_t
     {
       action_state_t::initialize();
 
-      stack = 0;
+      stack = 1;
     }
 
     void copy_state( const action_state_t* state )
@@ -2521,6 +2521,15 @@ struct necrotic_plague_t : public death_knight_spell_t
 
       const necrotic_plague_state_t* np_state = debug_cast<const necrotic_plague_state_t*>( state );
       stack = np_state -> stack;
+    }
+
+    std::ostringstream& debug_str( std::ostringstream& s )
+    {
+      action_state_t::debug_str( s );
+
+      s << " stack=" << stack;
+
+      return s;
     }
   };
 
@@ -2547,7 +2556,7 @@ struct necrotic_plague_t : public death_knight_spell_t
     {
       necrotic_plague_state_t* np_state = debug_cast<necrotic_plague_state_t*>( tdata -> dots_necrotic_plague -> state );
 
-      m *= 1.0 + np_state -> stack;
+      m *= np_state -> stack;
     }
 
     return m;
@@ -2573,7 +2582,7 @@ struct necrotic_plague_t : public death_knight_spell_t
     death_knight_spell_t::tick( dot );
 
     necrotic_plague_state_t* np_state = debug_cast<necrotic_plague_state_t*>( dot -> state );
-    if ( np_state -> result_amount > 0 && dot -> ticks_left() > 0 )
+    if ( np_state -> result_amount > 0 && dot -> ticks_left() > 0 && result_is_hit( dot -> state -> result ) )
     {
       if ( np_state -> stack < max_stack )
         np_state -> stack++;
@@ -2599,8 +2608,9 @@ struct necrotic_plague_t : public death_knight_spell_t
         }
       }
 
+      // Dot is cloned to the new target
       if ( new_target )
-        dot -> copy( new_target );
+        dot -> copy( new_target, DOT_COPY_CLONE );
     }
   }
 
