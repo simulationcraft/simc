@@ -23,6 +23,7 @@
 // Recheck all perks
 // Check that changing where icicles is inside impact does not ruin them
 // Arcane Blast cast time reduction perk testing?
+// Hardcoded enhanced FoF perk. Need to eventually make it so sub-90 toons do not have this.
 #include "simulationcraft.hpp"
 
 namespace { // UNNAMED NAMESPACE
@@ -2181,7 +2182,8 @@ struct mini_frostbolt_t : public mage_spell_t
     background = true;
     //dual = true;
     base_costs[ RESOURCE_MANA ] = 0;
-
+    if ( p -> perks.improved_frostbolt -> ok() )
+      base_multiplier *= 1.0 + p -> perks.improved_frostbolt -> effectN( 1 ).percent();
     if ( p -> sets.has_set_bonus( SET_PVP_4PC_CASTER ) )
       base_multiplier *= 1.05;
 
@@ -2230,6 +2232,9 @@ struct frostbolt_t : public mage_spell_t
     mini_frostbolt( new mini_frostbolt_t( p ) )
   {
     parse_options( NULL, options_str );
+
+    if ( p -> perks.improved_frostbolt -> ok() )
+      base_multiplier *= 1.0 + p -> perks.improved_frostbolt -> effectN( 1 ).percent();
 
     if ( p -> sets.has_set_bonus( SET_PVP_4PC_CASTER ) )
       base_multiplier *= 1.05;
@@ -2319,6 +2324,9 @@ struct mini_frostfire_bolt_t : public mage_spell_t
     //dual = true;
     base_costs[ RESOURCE_MANA ] = 0;
 
+    if ( p -> perks.improved_frostfire_bolt -> ok() )
+        base_multiplier *= 1.0 + p -> perks.improved_frostfire_bolt -> effectN( 1 ).percent();
+
     if ( p -> sets.has_set_bonus( SET_PVP_4PC_CASTER ) )
       base_multiplier *= 1.05;
 
@@ -2389,6 +2397,8 @@ struct frostfire_bolt_t : public mage_spell_t
     parse_options( NULL, options_str );
     base_multiplier *= 1.0 + p -> perks.improved_fireball_and_frostfire_bolt -> effectN( 1 ).percent();
     may_hot_streak = true;
+    if ( p -> perks.improved_frostfire_bolt -> ok() )
+        base_multiplier *= 1.0 + p -> perks.improved_frostfire_bolt -> effectN( 1 ).percent();
     base_execute_time += p -> glyphs.frostfire -> effectN( 1 ).time_value();
 
     add_child( mini_frostfire_bolt );
@@ -4147,10 +4157,10 @@ void mage_t::create_buffs()
                                       ( talents.nether_tempest -> ok() ? 0.09 :
                                       ( talents.living_bomb    -> ok() ? 0.25 :
                                       ( talents.frost_bomb     -> ok() ? 1.00 : 0.0 ) ) ) : 0 );
-
+  
   buffs.fingers_of_frost     = buff_creator_t( this, "fingers_of_frost", find_spell( 112965 ) ).chance( find_spell( 112965 ) -> effectN( 1 ).percent() )
                                .duration( timespan_t::from_seconds( 15.0 ) )
-                               .max_stack( 2 );
+                               .max_stack( 3 );
   buffs.frost_armor          = buff_creator_t( this, "frost_armor", find_spell( 7302 ) ).add_invalidate( CACHE_MULTISTRIKE );
   buffs.icy_veins            = new buffs::icy_veins_t( this );
   buffs.ice_floes            = buff_creator_t( this, "ice_floes", talents.ice_floes );
