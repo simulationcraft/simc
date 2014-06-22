@@ -1754,6 +1754,7 @@ public:
     if ( ab::proc || s -> result_amount == 0 )
       return;
 
+    assert( this -> p() -> active.leader_of_the_pack );
     if ( this -> p() -> active.leader_of_the_pack -> cooldown -> up() )
       this -> p() -> active.leader_of_the_pack -> execute();
   }
