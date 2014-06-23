@@ -1165,6 +1165,7 @@ struct charge_t: public warrior_attack_t
       cooldown -> charges = 2;
     else if ( p -> talents.juggernaut -> ok() )
       cooldown -> duration += p -> talents.juggernaut -> effectN( 1 ).time_value();
+    use_off_gcd = true;
   }
 
   virtual void execute()
@@ -1254,6 +1255,7 @@ struct demoralizing_shout: public warrior_attack_t
     warrior_attack_t( "demoralizing_shout", p, p -> find_specialization_spell( "Demoralizing Shout" ) )
   {
     parse_options( NULL, options_str );
+    use_off_gcd = true;
   }
 
   virtual void impact( action_state_t* s )
@@ -1440,6 +1442,7 @@ struct ignite_weapon_t: public warrior_attack_t
          weapon_multiplier *= 1.40;
 
     dot_duration = timespan_t::zero(); // Effect 4 shows up as periodic damage on target, but the actual "dot" shows up on autoattacks.
+    use_off_gcd = true;
   }
 
   virtual void execute()
@@ -1489,6 +1492,8 @@ struct heroic_strike_t: public warrior_attack_t
 
     if ( p -> glyphs.cleave -> ok() )
       aoe = 2;
+
+    use_off_gcd = true;
   }
 
   virtual double action_multiplier() const
@@ -1552,6 +1557,7 @@ struct heroic_leap_t: public warrior_attack_t
 
     cooldown -> duration = p -> cooldown.heroic_leap -> duration;
     cooldown -> duration += p -> glyphs.death_from_above -> effectN( 1 ).time_value();
+    use_off_gcd = true; 
   }
 
   virtual void impact( action_state_t* s )
@@ -1656,6 +1662,7 @@ struct intervene_t: public warrior_attack_t
     parse_options( NULL, options_str );
     base_teleport_distance = data().max_range();
     movement_directionality = MOVEMENT_OMNI;
+    use_off_gcd = true;
   }
 
   virtual bool ready()
@@ -1717,6 +1724,7 @@ struct pummel_t: public warrior_attack_t
     parse_options( NULL, options_str );
 
     may_miss = may_glance = may_block = may_dodge = may_parry = may_crit = false;
+    use_off_gcd = true;
   }
 
   virtual void execute()
@@ -1947,6 +1955,7 @@ struct enraged_regeneration_t: public warrior_heal_t
 
     pct_heal = data().effectN( 1 ).percent();
     tick_pct_heal = data().effectN( 2 ).percent();
+    use_off_gcd = true;
   }
 
   virtual void execute()
@@ -2342,6 +2351,7 @@ struct warrior_spell_t: public warrior_action_t < spell_t >
     base_t( n, p, s )
   {
     may_miss = may_glance = may_block = may_dodge = may_parry = may_crit = false;
+    use_off_gcd = true;
   }
 };
 
@@ -2379,6 +2389,7 @@ struct battle_shout_t: public warrior_spell_t
     warrior_spell_t( "battle_shout", p, p -> find_class_spell( "Battle Shout" ) )
   {
     parse_options( NULL, options_str );
+    use_off_gcd = false;
   }
 
   virtual void execute()
@@ -2444,6 +2455,7 @@ struct commanding_shout_t: public warrior_spell_t
     warrior_spell_t( "commanding_shout", p, p -> find_class_spell( "Commanding Shout" ) )
   {
     parse_options( NULL, options_str );
+    use_off_gcd = false;
   }
 
   virtual void execute()
@@ -2692,6 +2704,7 @@ struct stampeding_roar_t: public warrior_spell_t
     warrior_spell_t( "stampeding_roar", p, p -> find_class_spell( "Stampeding Roar" ) )
   {
     parse_options( NULL, options_str );
+    use_off_gcd = false; //Check
   }
 
   virtual void execute()
@@ -2712,7 +2725,9 @@ struct stampeding_roar_t: public warrior_spell_t
 // The swap/damage taken options are intended to make it easier for players to simulate possible gains/losses from
 // swapping stances while in combat, without having to create a bunch of messy actions for it.
 // (Instead, we have a bunch of messy code!)
+
 // Stance ==============================================================
+
 struct stance_t: public warrior_spell_t
 {
   warrior_stance switch_to_stance;
@@ -2764,9 +2779,7 @@ struct stance_t: public warrior_spell_t
     else
       cooldown -> duration = ( timespan_t::from_seconds( swap ) );
 
-    use_off_gcd = true;
     harmful     = false;
-    trigger_gcd = timespan_t::zero();
   }
 
   virtual void execute()
