@@ -1630,12 +1630,13 @@ struct blast_wave_t : public mage_spell_t
 
 
     // Since the target is always going to be the enemy, the damage done by blast_wave needs to get the 100% damage bonus
-    virtual void action_multiplier()
+    virtual double action_multiplier()
     {
         double am = mage_spell_t::action_multiplier();
 
         am *= 1.0 + p() -> talents.blast_wave -> effectN( 1 ).percent();
 
+        return am;
     }
 
 
@@ -2864,12 +2865,14 @@ struct ice_nova_t : public mage_spell_t
 
 
     // Since the target is always going to be the enemy, the damage done by ice nova needs to get the 100% damage bonus
-    virtual void action_multiplier()
+
+    virtual double action_multiplier()
     {
         double am = mage_spell_t::action_multiplier();
 
         am *= 1.0 + p() -> talents.ice_nova -> effectN( 1 ).percent();
 
+        return am;
     }
 
 
@@ -3544,12 +3547,14 @@ struct supernova_t : public mage_spell_t
 
 
     // Since the target is always going to be the enemy, the damage done by supernova needs to get the 100% damage bonus
-    virtual void action_multiplier()
+
+    virtual double action_multiplier()
     {
         double am = mage_spell_t::action_multiplier();
 
         am *= 1.0 + p() -> talents.supernova -> effectN( 1 ).percent();
 
+        return am;
     }
 
 
