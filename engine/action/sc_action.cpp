@@ -875,11 +875,11 @@ double action_t::calculate_direct_amount( action_state_t* state )
   }
   else if ( state -> result == RESULT_MULTISTRIKE )
   {
-    amount *= 0.3;
+    amount *= composite_multistrike_multiplier( state );
   }
   else if ( state -> result == RESULT_MULTISTRIKE_CRIT )
   {
-    amount *= 0.3 * ( 1.0 + total_crit_bonus() );
+    amount *= composite_multistrike_multiplier( state ) * ( 1.0 + total_crit_bonus() );
   }
 
   if ( ! sim -> average_range ) amount = floor( amount + rng().real() );

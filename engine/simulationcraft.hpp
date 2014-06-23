@@ -5514,6 +5514,8 @@ public:
   { snapshot_internal( s, update_flags, rt ); }
   virtual void consolidate_snapshot_flags();
 
+  virtual double composite_multistrike_multiplier( const action_state_t* ) const
+  { return 0.3; }
   virtual timespan_t composite_dot_duration( const action_state_t* ) const;
   virtual double attack_direct_power_coefficient( const action_state_t* ) const
   { return attack_power_mod.direct; }
