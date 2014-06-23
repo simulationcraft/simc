@@ -1630,7 +1630,7 @@ struct blast_wave_t : public mage_spell_t
 
 
     // Since the target is always going to be the enemy, the damage done by blast_wave needs to get the 100% damage bonus
-    virtual double action_multiplier()
+    virtual double action_multiplier() const
     {
         double am = mage_spell_t::action_multiplier();
 
@@ -2866,7 +2866,7 @@ struct ice_nova_t : public mage_spell_t
 
     // Since the target is always going to be the enemy, the damage done by ice nova needs to get the 100% damage bonus
 
-    virtual double action_multiplier()
+    virtual double action_multiplier() const
     {
         double am = mage_spell_t::action_multiplier();
 
@@ -3548,7 +3548,7 @@ struct supernova_t : public mage_spell_t
 
     // Since the target is always going to be the enemy, the damage done by supernova needs to get the 100% damage bonus
 
-    virtual double action_multiplier()
+    virtual double action_multiplier() const
     {
         double am = mage_spell_t::action_multiplier();
 
