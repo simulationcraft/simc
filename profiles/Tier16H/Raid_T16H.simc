@@ -34,9 +34,9 @@ Rogue_Subtlety_T16H.simc
 Shaman_Elemental_T16H.simc
 Shaman_Enhancement_T16H.simc
 
-Warlock_Affliction_T16H.simc
+#Warlock_Affliction_T16H.simc //Busted
 Warlock_Destruction_T16H.simc
-Warlock_Demonology_T16H.simc
+#Warlock_Demonology_T16H.simc //Busted
 
 Warrior_Arms_T16H.simc
 Warrior_Fury_1h_T16H.simc
