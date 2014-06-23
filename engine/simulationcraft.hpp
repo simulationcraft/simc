@@ -3135,6 +3135,7 @@ struct special_effect_t
   const spell_data_t* driver() const;
   const spell_data_t* trigger() const;
   std::string name() const;
+  std::string cooldown_name() const;
 
   // Buff related functionality
   buff_t* create_buff() const;
@@ -6194,8 +6195,6 @@ struct dbc_proc_callback_t : public action_callback_t
 
   void initialize();
 
-  std::string cooldown_name() const;
-
   void reset()
   {
     action_callback_t::reset();
@@ -6429,6 +6428,8 @@ void init( player_t* );
 
 const special_effect_db_item_t& find_special_effect_db_item( const special_effect_db_item_t* start, unsigned n, unsigned spell_id );
 bool initialize_special_effect( special_effect_t& effect, const item_t& item, unsigned spell_id );
+
+expr_t* create_expression( action_t* a, const std::string& name_str );
 };
 
 // Consumable ===============================================================

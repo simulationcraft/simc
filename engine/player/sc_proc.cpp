@@ -1300,7 +1300,7 @@ void dbc_proc_callback_t::initialize()
   // Initialize cooldown, if applicable
   if ( effect.cooldown() > timespan_t::zero() )
   {
-    cooldown = listener -> get_cooldown( cooldown_name() );
+    cooldown = listener -> get_cooldown( effect.cooldown_name() );
     cooldown -> duration = effect.cooldown();
   }
 
@@ -1327,21 +1327,21 @@ void dbc_proc_callback_t::initialize()
  * up use the driver's name, or override it with the special_effect_t name_str
  * if it's defined.
  */
-std::string dbc_proc_callback_t::cooldown_name() const
+std::string special_effect_t::cooldown_name() const
 {
-  if ( ! effect.name_str.empty() )
+  if ( ! name_str.empty() )
   {
-    assert( effect.name_str.size() );
-    return effect.name_str;
+    assert( name_str.size() );
+    return name_str;
   }
 
-  std::string n = effect.driver() -> name_cstr();
+  std::string n = driver() -> name_cstr();
   assert( ! n.empty() );
   util::tokenize( n );
   // Append the spell ID of the driver to the cooldown name. In some cases, the
   // drivers of different trinket procs are actually named identically, causing
   // issues when the trinkets are worn.
-  n += "_" + util::to_string( effect.driver() -> id() );
+  n += "_" + util::to_string( driver() -> id() );
 
   return n;
 }

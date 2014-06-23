@@ -1433,3 +1433,287 @@ void unique_gear::init( player_t* p )
     }
   }
 }
+
+/**
+ * Create "trinket" expressions, or anything relating to special effects.
+ *
+ * Note that this method returns zero (nullptr) when it cannot create an
+ * expression.  The callee (player_t::create_expression) will handle unknown
+ * expression processing.
+ *
+ * Trinket expressions are of the form:
+ * trinket[.12].(has_|)(stacking_|)proc.<stat>.<buff_expr> OR
+ * trinket[.12].(has_|)cooldown.<cooldown_expr>
+ */
+expr_t* unique_gear::create_expression( action_t* a, const std::string& name_str )
+{
+  enum proc_expr_e
+  {
+    PROC_EXISTS,
+    PROC_ENABLED
+  };
+
+  enum proc_type_e
+  {
+    PROC_STAT,
+    PROC_STACKING_STAT,
+    PROC_COOLDOWN,
+  };
+
+  bool trinket1 = false, trinket2 = false;
+  int ptype_idx = 1, stat_idx = 2, expr_idx = 3;
+  enum proc_expr_e pexprtype = PROC_ENABLED;
+  enum proc_type_e ptype = PROC_STAT;
+  stat_e stat = STAT_NONE;
+
+  std::vector<std::string> splits = util::string_split( name_str, "." );
+
+  if ( util::is_number( splits[ 1 ] ) )
+  {
+    if ( splits[ 1 ] == "1" )
+      trinket1 = true;
+    else if ( splits[ 1 ] == "2" )
+      trinket2 = true;
+    else
+      return 0;
+    ptype_idx++;
+
+    stat_idx++;
+    expr_idx++;
+  }
+
+  // No positional parameter given so check both trinkets
+  if ( ! trinket1 && ! trinket2 )
+    trinket1 = trinket2 = true;
+
+  if ( util::str_prefix_ci( splits[ ptype_idx ], "has_" ) )
+    pexprtype = PROC_EXISTS;
+
+  if ( util::str_in_str_ci( splits[ ptype_idx ], "cooldown" ) )
+  {
+    ptype = PROC_COOLDOWN;
+    // Cooldowns dont have stat type for now
+    expr_idx--;
+  }
+
+  if ( util::str_in_str_ci( splits[ ptype_idx ], "stacking_" ) )
+    ptype = PROC_STACKING_STAT;
+
+  if ( ptype != PROC_COOLDOWN )
+  {
+    stat = util::parse_stat_type( splits[ stat_idx ] );
+    if ( stat == STAT_NONE )
+      return 0;
+  }
+
+  if ( pexprtype == PROC_ENABLED && ptype != PROC_COOLDOWN && splits.size() >= 4 )
+  {
+    struct trinket_proc_expr_t : public expr_t
+    {
+      expr_t* bexpr1;
+      expr_t* bexpr2;
+
+      trinket_proc_expr_t( action_t* a, stat_e s, bool t1, bool t2, bool stacking, const std::string& expr ) :
+        expr_t( "trinket_proc" ), bexpr1( 0 ), bexpr2( 0 )
+      {
+        if ( t1 )
+        {
+          const special_effect_t& e = a -> player -> items[ SLOT_TRINKET_1 ].special_effect( SPECIAL_EFFECT_SOURCE_NONE, SPECIAL_EFFECT_EQUIP );
+          if ( e.stat_type() == s && ( ( ! stacking && e.max_stack() <= 1 ) || ( stacking && e.max_stack() > 1 ) ) )
+          {
+            buff_t* b1 = buff_t::find( a -> player, e.name() );
+            if ( b1 ) bexpr1 = buff_t::create_expression( b1 -> name(), a, expr, b1 );
+          }
+        }
+
+        if ( t2 )
+        {
+          const special_effect_t& e = a -> player -> items[ SLOT_TRINKET_2 ].special_effect( SPECIAL_EFFECT_SOURCE_NONE, SPECIAL_EFFECT_EQUIP );
+          if ( e.stat_type() == s && ( ( ! stacking && e.max_stack() <= 1 ) || ( stacking && e.max_stack() > 1 ) ) )
+          {
+            buff_t* b2 = buff_t::find( a -> player, e.name() );
+            if ( b2 ) bexpr2 = buff_t::create_expression( b2 -> name(), a, expr, b2 );
+          }
+        }
+      }
+
+      double evaluate()
+      {
+        double result = 0;
+
+        if ( bexpr1 )
+          result = bexpr1 -> eval();
+
+        if ( bexpr2 )
+        {
+          double b2result = bexpr2 -> eval();
+          if ( b2result > result )
+            result = b2result;
+        }
+
+        return result;
+      }
+
+      virtual ~trinket_proc_expr_t()
+      {
+        delete bexpr1;
+        delete bexpr2;
+      }
+    };
+
+    return new trinket_proc_expr_t( a, stat, trinket1, trinket2, ptype == PROC_STACKING_STAT, splits[ expr_idx ] );
+  }
+  else if ( pexprtype == PROC_ENABLED && ptype == PROC_COOLDOWN && splits.size() >= 3 )
+  {
+    // Note, checks both on-use trinkets (normal cooldown), and equip trinkets (icd)
+    struct trinket_cooldown_expr_t : public expr_t
+    {
+      expr_t* cexpr1;
+      expr_t* cexpr2;
+
+      trinket_cooldown_expr_t( action_t* a, bool t1, bool t2, const std::string& expr ) :
+        expr_t( "trinket_cooldown" ), cexpr1( 0 ), cexpr2( 0 )
+      {
+        if ( t1 )
+        {
+          const special_effect_t& equip = a -> player -> items[ SLOT_TRINKET_1 ].special_effect( SPECIAL_EFFECT_SOURCE_NONE, SPECIAL_EFFECT_EQUIP );
+          if ( equip.cooldown() != timespan_t::zero() )
+          {
+            cooldown_t* cd1 = a -> player -> get_cooldown( equip.cooldown_name() );
+            cexpr1 = cd1 -> create_expression( a, expr );
+          }
+
+          if ( ! cexpr1 )
+          {
+            const special_effect_t& use = a -> player -> items[ SLOT_TRINKET_1 ].special_effect( SPECIAL_EFFECT_SOURCE_NONE, SPECIAL_EFFECT_USE );
+            if ( use.cooldown() != timespan_t::zero() )
+            {
+              cooldown_t* cd1 = a -> player -> get_cooldown( use.cooldown_name() );
+              cexpr1 = cd1 -> create_expression( a, expr );
+            }
+          }
+        }
+
+        if ( t2 )
+        {
+          const special_effect_t& equip = a -> player -> items[ SLOT_TRINKET_2 ].special_effect( SPECIAL_EFFECT_SOURCE_NONE, SPECIAL_EFFECT_EQUIP );
+          if ( equip.cooldown() != timespan_t::zero() )
+          {
+            cooldown_t* cd2 = a -> player -> get_cooldown( equip.cooldown_name() );
+            cexpr2 = cd2 -> create_expression( a, expr );
+          }
+
+          if ( ! cexpr2 )
+          {
+            const special_effect_t& use = a -> player -> items[ SLOT_TRINKET_2 ].special_effect( SPECIAL_EFFECT_SOURCE_NONE, SPECIAL_EFFECT_USE );
+            if ( use.cooldown() != timespan_t::zero() )
+            {
+              cooldown_t* cd2 = a -> player -> get_cooldown( use.cooldown_name() );
+              cexpr2 = cd2 -> create_expression( a, expr );
+            }
+          }
+        }
+      }
+
+      double evaluate()
+      {
+        double result = 0;
+
+        if ( cexpr1 )
+          result = cexpr1 -> eval();
+
+        if ( cexpr2 )
+        {
+          double c2result = cexpr2 -> eval();
+          if ( c2result > result )
+            result = c2result;
+        }
+
+        return result;
+      }
+
+      virtual ~trinket_cooldown_expr_t()
+      {
+        delete cexpr1;
+        delete cexpr2;
+      }
+    };
+
+    return new trinket_cooldown_expr_t( a, trinket1, trinket2, splits[ expr_idx ] );
+  }
+  else if ( pexprtype == PROC_EXISTS )
+  {
+    if ( ptype != PROC_COOLDOWN )
+    {
+      struct trinket_proc_exists_expr_t : public expr_t
+      {
+        bool has_t1;
+        bool has_t2;
+
+        trinket_proc_exists_expr_t( player_t* p, stat_e s, bool t1, bool t2 ) :
+          expr_t( "trinket_proc_exists" ), has_t1( false ), has_t2( false )
+        {
+          if ( t1 )
+          {
+            const special_effect_t& e = p -> items[ SLOT_TRINKET_1 ].special_effect( SPECIAL_EFFECT_SOURCE_NONE, SPECIAL_EFFECT_EQUIP );
+            if ( e.stat_type() == s ) has_t1 = true;
+          }
+
+          if ( t2 )
+          {
+            const special_effect_t& e = p -> items[ SLOT_TRINKET_2 ].special_effect( SPECIAL_EFFECT_SOURCE_NONE, SPECIAL_EFFECT_EQUIP );
+            if ( e.stat_type() == s ) has_t2 = true;
+          }
+        }
+
+        double evaluate()
+        { return has_t1 || has_t2; }
+      };
+
+      return new trinket_proc_exists_expr_t( a -> player, stat, trinket1, trinket2 );
+    }
+    else
+    {
+      // Note, checks both on-use trinkets (normal cooldown), and equip trinkets (icd)
+      struct trinket_cooldown_exists_expr_t : public expr_t
+      {
+        bool has_t1;
+        bool has_t2;
+
+        trinket_cooldown_exists_expr_t( player_t* p, bool t1, bool t2 ) :
+          expr_t( "trinket_cooldown_exists" ), has_t1( false ), has_t2( false )
+        {
+          if ( t1 )
+          {
+            const special_effect_t& equip = p -> items[ SLOT_TRINKET_1 ].special_effect( SPECIAL_EFFECT_SOURCE_NONE, SPECIAL_EFFECT_EQUIP );
+            if ( equip.cooldown() != timespan_t::zero() )
+              has_t1 = true;
+
+            const special_effect_t& use = p -> items[ SLOT_TRINKET_1 ].special_effect( SPECIAL_EFFECT_SOURCE_NONE, SPECIAL_EFFECT_USE );
+            if ( use.cooldown() != timespan_t::zero() )
+              has_t1 = true;
+          }
+
+          if ( t2 )
+          {
+            const special_effect_t& e = p -> items[ SLOT_TRINKET_2 ].special_effect( SPECIAL_EFFECT_SOURCE_NONE, SPECIAL_EFFECT_EQUIP );
+            if ( e.cooldown() != timespan_t::zero() )
+              has_t2 = true;
+
+            const special_effect_t& use = p -> items[ SLOT_TRINKET_2 ].special_effect( SPECIAL_EFFECT_SOURCE_NONE, SPECIAL_EFFECT_USE );
+            if ( use.cooldown() != timespan_t::zero() )
+              has_t2 = true;
+          }
+        }
+
+        double evaluate()
+        { return has_t1 || has_t2; }
+      };
+
+      return new trinket_cooldown_exists_expr_t( a -> player, trinket1, trinket2 );
+    }
+  }
+
+  return 0;
+}
+
