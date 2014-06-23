@@ -24,6 +24,9 @@
 // Check that changing where icicles is inside impact does not ruin them
 // Arcane Blast cast time reduction perk testing?
 // Hardcoded enhanced FoF perk. Need to eventually make it so sub-90 toons do not have this.
+// How does the glyphed Icy Veins effect the Improved IV perk?
+// Need to figure out how to not hard-code 2 charges and their CD for the "nova" spells.
+// All new spells need to have their damage cross-checked with in game values.
 #include "simulationcraft.hpp"
 
 namespace { // UNNAMED NAMESPACE
@@ -287,6 +290,9 @@ public:
     const spell_data_t* invocation;
     const spell_data_t* rune_of_power;
     const spell_data_t* incanters_ward;
+    const spell_data_t* supernova;
+    const spell_data_t* blast_wave;
+    const spell_data_t* ice_nova;
 
   } talents;
 
@@ -1277,6 +1283,10 @@ public:
   }
 
   void trigger_ignite( action_state_t* state );
+
+
+
+
 };
 
 // Icicles ==================================================================
@@ -1597,6 +1607,40 @@ struct arcane_power_t : public mage_spell_t
     p() -> buffs.arcane_power -> trigger( 1, data().effectN( 1 ).percent() );
   }
 };
+
+// Blast Wave Spell ==========================================================
+
+struct blast_wave_t : public mage_spell_t
+{
+    blast_wave_t( mage_t* p, const std::string& options_str ) :
+       mage_spell_t( "blast_wave", p, p -> talents.blast_wave )
+    {
+        parse_options( NULL, options_str );
+        aoe = -1;
+    }
+
+    virtual void init()
+    {
+        mage_spell_t::init();
+
+        // FIXME: Cannot find this info in the spell data, so I had to hard code it.
+        cooldown -> duration = timespan_t::from_seconds( 12.0 );
+        cooldown -> charges = 2;
+    }
+
+
+    // Since the target is always going to be the enemy, the damage done by blast_wave needs to get the 100% damage bonus
+    virtual void action_multiplier()
+    {
+        double am = mage_spell_t::action_multiplier();
+
+        am *= 1.0 + p() -> talents.blast_wave -> effectN( 1 ).percent();
+
+    }
+
+
+};
+
 
 // Blink Spell ==============================================================
 
@@ -2198,7 +2242,7 @@ struct mini_frostbolt_t : public mage_spell_t
     mage_spell_t::impact( s );
     if ( result_is_hit( s -> result) || result_is_multistrike( s -> result ) )
         trigger_icicle_gain( s );
-   
+
   }
 
   virtual timespan_t execute_time() const
@@ -2498,11 +2542,11 @@ struct frostfire_bolt_t : public mage_spell_t
         p() -> buffs.enhanced_pyrotechnics -> expire();
     else
         p() -> buffs.enhanced_pyrotechnics -> trigger();
-    
 
-    if ( ( result_is_hit( s-> result) || result_is_multistrike( s -> result ) ) && p() -> specialization() == MAGE_FIRE )   
+
+    if ( ( result_is_hit( s-> result) || result_is_multistrike( s -> result ) ) && p() -> specialization() == MAGE_FIRE )
       trigger_ignite( s );
-    
+
 
 
     if ( ( result_is_hit( s-> result) || result_is_multistrike( s -> result ) ) && p() -> specialization() == MAGE_FROST )
@@ -2642,6 +2686,9 @@ struct mini_ice_lance_t : public mage_spell_t
     //dual = true;
     base_costs[ RESOURCE_MANA ] = 0;
 
+    if ( p -> perks.improved_ice_lance -> ok() )
+        base_multiplier *= 1.0 + p -> perks.improved_ice_lance -> effectN( 1 ).percent();
+
     if ( p -> glyphs.ice_lance -> ok() )
       aoe = p -> glyphs.ice_lance -> effectN( 1 ).base_value() + 1;
     else if ( p -> glyphs.splitting_ice -> ok() )
@@ -2694,6 +2741,9 @@ struct ice_lance_t : public mage_spell_t
     mini_ice_lance( new mini_ice_lance_t( p ) )
   {
     parse_options( NULL, options_str );
+
+    if ( p -> perks.improved_ice_lance -> ok() )
+        base_multiplier *= 1.0 + p -> perks.improved_ice_lance -> effectN( 1 ).percent();
 
     if ( p -> glyphs.ice_lance -> ok() )
       aoe = p -> glyphs.ice_lance -> effectN( 1 ).base_value() + 1;
@@ -2791,6 +2841,41 @@ struct ice_lance_t : public mage_spell_t
     return am;
   }
 };
+
+// Ice Nova Spell ==========================================================
+
+struct ice_nova_t : public mage_spell_t
+{
+    ice_nova_t( mage_t* p, const std::string& options_str ) :
+       mage_spell_t( "ice_nova", p, p -> talents.ice_nova )
+    {
+        parse_options( NULL, options_str );
+        aoe = -1;
+    }
+
+    virtual void init()
+    {
+        mage_spell_t::init();
+
+        // FIXME: Cannot find this info in the spell data, so I had to hard code it.
+        cooldown -> duration = timespan_t::from_seconds( 12.0 );
+        cooldown -> charges = 2;
+    }
+
+
+    // Since the target is always going to be the enemy, the damage done by ice nova needs to get the 100% damage bonus
+    virtual void action_multiplier()
+    {
+        double am = mage_spell_t::action_multiplier();
+
+        am *= 1.0 + p() -> talents.ice_nova -> effectN( 1 ).percent();
+
+    }
+
+
+};
+
+
 
 // Icy Veins Spell ==========================================================
 
@@ -3394,7 +3479,7 @@ struct scorch_t : public mage_spell_t
 
     if ( result_is_hit( s -> result) || result_is_multistrike( s -> result) )
       trigger_ignite( s );
-    
+
   }
 
   double composite_crit_multiplier() const
@@ -3436,6 +3521,41 @@ struct slow_t : public mage_spell_t
     td( s -> target ) -> debuffs.slow -> trigger();
   }
 };
+
+// Supernova Spell ==========================================================
+
+struct supernova_t : public mage_spell_t
+{
+    supernova_t( mage_t* p, const std::string& options_str ) :
+       mage_spell_t( "supernova", p, p -> talents.supernova )
+    {
+        parse_options( NULL, options_str );
+        aoe = -1;
+    }
+
+    virtual void init()
+    {
+        mage_spell_t::init();
+
+        // FIXME: Cannot find this info in the spell data, so I had to hard code it.
+        cooldown -> duration = timespan_t::from_seconds( 12.0 );
+        cooldown -> charges = 2;
+    }
+
+
+    // Since the target is always going to be the enemy, the damage done by supernova needs to get the 100% damage bonus
+    virtual void action_multiplier()
+    {
+        double am = mage_spell_t::action_multiplier();
+
+        am *= 1.0 + p() -> talents.supernova -> effectN( 1 ).percent();
+
+    }
+
+
+};
+
+
 
 // Time Warp Spell ==========================================================
 
@@ -3952,6 +4072,17 @@ action_t* mage_t::create_action( const std::string& name,
   }
   if ( name == "scorch"            ) return new                  scorch_t( this, options_str );
   if ( name == "slow"              ) return new                    slow_t( this, options_str );
+  if ( name == "supernova"         ) return new               supernova_t( this, options_str );
+  if ( name == "blast_wave"        ) return new              blast_wave_t( this, options_str );
+  if ( name == "ice_nova"          ) return new                ice_nova_t( this, options_str );
+  {
+      if ( talents.supernova -> ok() )
+          return new supernova_t( this, options_str );
+      if ( talents.blast_wave -> ok() )
+          return new blast_wave_t( this, options_str );
+      if ( talents.ice_nova -> ok() )
+          return new ice_nova_t( this, options_str );
+  }
   if ( name == "time_warp"         ) return new               time_warp_t( this, options_str );
   if ( name == "water_elemental"   ) return new  summon_water_elemental_t( this, options_str );
   //if ( name == "alter_time"        ) return new              alter_time_t( this, options_str );
@@ -3998,6 +4129,7 @@ void mage_t::init_spells()
 
   // Talents
   talents.blazing_speed      = find_talent_spell( "Blazing Speed" );
+  talents.blast_wave         = find_talent_spell( "Blast Wave" );
   talents.cauterize          = find_talent_spell( "Cauterize" );
   talents.cold_snap          = find_talent_spell( "Cold Snap" );
   talents.frostjaw           = find_talent_spell( "Frostjaw" );
@@ -4005,6 +4137,7 @@ void mage_t::init_spells()
   talents.greater_invis      = find_talent_spell( "Greater Invisibility" );
   talents.ice_barrier        = find_talent_spell( "Ice Barrier" );
   talents.ice_floes          = find_talent_spell( "Ice Floes" );
+  talents.ice_nova           = find_talent_spell( "Ice Nova" );
   talents.ice_ward           = find_talent_spell( "Ice Ward" );
   talents.incanters_ward     = find_talent_spell( "Incanter's Ward" );
   talents.invocation         = find_talent_spell( "Invocation" );
@@ -4015,6 +4148,8 @@ void mage_t::init_spells()
   talents.rune_of_power      = find_talent_spell( "Rune of Power" );
   talents.scorch             = find_talent_spell( "Scorch" );
   talents.temporal_shield    = find_talent_spell( "Temporal Shield" );
+  talents.supernova          = find_talent_spell( "Supernova" );
+
 
   // Passive Spells
   passives.nether_attunement = find_specialization_spell( "Nether Attunement" ); // BUG: Not in spell lists at present.
@@ -4022,7 +4157,7 @@ void mage_t::init_spells()
   passives.shatter           = find_specialization_spell( "Shatter" ); // BUG: Doesn't work at present as Shatter isn't tagged as a spec of Frost.
   passives.shatter           = ( find_spell( 12982 ) -> is_level( level ) ) ? find_spell( 12982 ) : spell_data_t::not_found();
 
-  // Perks - Fire 
+  // Perks - Fire
   perks.enhanced_inferno_blast               = find_perk_spell( "Enhanced Inferno Blast" );
   perks.improved_dragons_breath              = find_perk_spell( "Improved Dragon's Breath");
   perks.improved_combustion                  = find_perk_spell( "Improved combustion" );
@@ -4157,7 +4292,7 @@ void mage_t::create_buffs()
                                       ( talents.nether_tempest -> ok() ? 0.09 :
                                       ( talents.living_bomb    -> ok() ? 0.25 :
                                       ( talents.frost_bomb     -> ok() ? 1.00 : 0.0 ) ) ) : 0 );
-  
+
   buffs.fingers_of_frost     = buff_creator_t( this, "fingers_of_frost", find_spell( 112965 ) ).chance( find_spell( 112965 ) -> effectN( 1 ).percent() )
                                .duration( timespan_t::from_seconds( 15.0 ) )
                                .max_stack( 3 );
@@ -4881,8 +5016,8 @@ stat_e mage_t::convert_hybrid_stat( stat_e s ) const
   {
   // This is all a guess at how the hybrid primaries will work, since they
   // don't actually appear on cloth gear yet. TODO: confirm behavior
-  case STAT_AGI_INT: 
-    return STAT_INTELLECT; 
+  case STAT_AGI_INT:
+    return STAT_INTELLECT;
   case STAT_STR_AGI:
     return STAT_NONE;
   case STAT_STR_INT:
@@ -4890,8 +5025,8 @@ stat_e mage_t::convert_hybrid_stat( stat_e s ) const
   case STAT_SPIRIT:
       return STAT_NONE;
   case STAT_BONUS_ARMOR:
-      return STAT_NONE;     
-  default: return s; 
+      return STAT_NONE;
+  default: return s;
   }
 }
 
