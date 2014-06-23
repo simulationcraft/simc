@@ -2085,8 +2085,6 @@ struct fireball_t : public mage_spell_t
 
     if ( p() -> talents.kindling -> ok() &&  s -> result == RESULT_CRIT )
         p() -> cooldowns.combustion -> adjust( timespan_t::from_seconds( - p() -> talents.kindling -> effectN( 1 ).base_value() ) );
-	
-
 
     if ( result_is_hit( s -> result) || result_is_multistrike( s -> result) )
         trigger_ignite( s );
@@ -3650,34 +3648,36 @@ struct summon_water_elemental_t : public mage_spell_t
 
 struct start_pyro_chain_t : public action_t
 {
-	start_pyro_chain_t( mage_t* p, const std::string& options_str ):
-		action_t( ACTION_USE, "start_pyro_chain", p )
-	{
+    start_pyro_chain_t( mage_t* p, const std::string& options_str ):
+        action_t( ACTION_USE, "start_pyro_chain", p )
+    {
         parse_options( NULL, options_str );
-		trigger_gcd = timespan_t::zero();
-		harmful = false;
-	}
+        trigger_gcd = timespan_t::zero();
+        harmful = false;
+    }
+
     virtual void execute()
-	{
-		mage_t* p = debug_cast<mage_t*>( player );
-		p -> pyro_switch.dump_state = true;
-	}
+    {
+        mage_t* p = debug_cast<mage_t*>( player );
+        p -> pyro_switch.dump_state = true;
+    }
 };
 
 struct stop_pyro_chain_t : public action_t
 {
-	stop_pyro_chain_t( mage_t* p, const std::string& options_str ):
-		action_t( ACTION_USE, "stop_pyro_chain", p )
-	{
-		parse_options( NULL, options_str );
-		trigger_gcd = timespan_t::zero();
-		harmful = false;
-	}
+    stop_pyro_chain_t( mage_t* p, const std::string& options_str ):
+       action_t( ACTION_USE, "stop_pyro_chain", p )
+    {
+        parse_options( NULL, options_str );
+        trigger_gcd = timespan_t::zero();
+        harmful = false;
+    }
+
     virtual void execute()
-	{
-		mage_t* p = debug_cast<mage_t*>( player );
-		p -> pyro_switch.dump_state = false;
-	}
+    {
+        mage_t* p = debug_cast<mage_t*>( player );
+        p -> pyro_switch.dump_state = false;
+    }
 };
 
 // Choose Rotation =================================================================================
@@ -4945,7 +4945,7 @@ expr_t* mage_t::create_expression( action_t* a, const std::string& name_str )
   {
     struct pyro_chain_expr_t : public mage_expr_t
     {
-	  mage_t* mage;
+      mage_t* mage;
       pyro_chain_expr_t( mage_t& m ) : mage_expr_t( "pyro_chain", m ), mage( &m )
       {}
       virtual double evaluate()
