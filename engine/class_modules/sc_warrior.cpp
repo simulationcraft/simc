@@ -2964,47 +2964,47 @@ actor_pair_t( target, p )
 action_t* warrior_t::create_action( const std::string& name,
                                     const std::string& options_str )
 {
-  if ( name == "auto_attack" ) return new auto_attack_t( this, options_str );
-  if ( name == "avatar" ) return new avatar_t( this, options_str );
-  if ( name == "battle_shout" ) return new battle_shout_t( this, options_str );
-  if ( name == "berserker_rage" ) return new berserker_rage_t( this, options_str );
-  if ( name == "bladestorm" ) return new bladestorm_t( this, options_str );
-  if ( name == "bloodbath" ) return new bloodbath_t( this, options_str );
-  if ( name == "bloodthirst" ) return new bloodthirst_t( this, options_str );
-  if ( name == "charge" ) return new charge_t( this, options_str );
-  if ( name == "colossus_smash" ) return new colossus_smash_t( this, options_str );
-  if ( name == "demoralizing_shout" ) return new demoralizing_shout( this, options_str );
-  if ( name == "devastate" ) return new devastate_t( this, options_str );
-  if ( name == "dragon_roar" ) return new dragon_roar_t( this, options_str );
-  if ( name == "enraged_regeneration" ) return new enraged_regeneration_t( this, options_str );
-  if ( name == "execute" ) return new execute_t( this, options_str );
-  if ( name == "heroic_leap" ) return new heroic_leap_t( this, options_str );
-  if ( name == "heroic_strike" ) return new heroic_strike_t( this, options_str );
-  if ( name == "heroic_throw" ) return new heroic_throw_t( this, options_str );
-  if ( name == "impending_victory" ) return new impending_victory_t( this, options_str );
-  if ( name == "victory_rush" ) return new victory_rush_t( this, options_str );
-  if ( name == "ignite_weapon" ) return new ignite_weapon_t( this, options_str );
-  if ( name == "intervene" ) return new intervene_t( this, options_str );
-  if ( name == "last_stand" ) return new last_stand_t( this, options_str );
-  if ( name == "mortal_strike" ) return new mortal_strike_t( this, options_str );
-  if ( name == "pummel" ) return new pummel_t( this, options_str );
-  if ( name == "raging_blow" ) return new raging_blow_t( this, options_str );
-  if ( name == "ravager" ) return new ravager_t( this, options_str );
-  if ( name == "recklessness" ) return new recklessness_t( this, options_str );
-  if ( name == "revenge" ) return new revenge_t( this, options_str );
-  if ( name == "shield_barrier" ) return new shield_barrier_t( this, options_str );
-  if ( name == "shield_block" ) return new shield_block_t( this, options_str );
-  if ( name == "shield_charge" ) return new shield_charge_t( this, options_str );
-  if ( name == "shield_wall" ) return new shield_wall_t( this, options_str );
-  if ( name == "shield_slam" ) return new shield_slam_t( this, options_str );
-  if ( name == "shockwave" ) return new shockwave_t( this, options_str );
-  if ( name == "stampeding_roar" ) return new stampeding_roar_t( this, options_str );
-  if ( name == "storm_bolt" ) return new storm_bolt_t( this, options_str );
-  if ( name == "stance" ) return new stance_t( this, options_str );
-  if ( name == "sweeping_strikes" ) return new sweeping_strikes_t( this, options_str );
-  if ( name == "thunder_clap" ) return new thunder_clap_t( this, options_str );
-  if ( name == "whirlwind" ) return new whirlwind_t( this, options_str );
-  if ( name == "wild_strike" ) return new wild_strike_t( this, options_str );
+  if ( name == "auto_attack"          ) return new auto_attack_t          ( this, options_str );
+  if ( name == "avatar"               ) return new avatar_t               ( this, options_str );
+  if ( name == "battle_shout"         ) return new battle_shout_t         ( this, options_str );
+  if ( name == "berserker_rage"       ) return new berserker_rage_t       ( this, options_str );
+  if ( name == "bladestorm"           ) return new bladestorm_t           ( this, options_str );
+  if ( name == "bloodbath"            ) return new bloodbath_t            ( this, options_str );
+  if ( name == "bloodthirst"          ) return new bloodthirst_t          ( this, options_str );
+  if ( name == "charge"               ) return new charge_t               ( this, options_str );
+  if ( name == "colossus_smash"       ) return new colossus_smash_t       ( this, options_str );
+  if ( name == "demoralizing_shout"   ) return new demoralizing_shout     ( this, options_str );
+  if ( name == "devastate"            ) return new devastate_t            ( this, options_str );
+  if ( name == "dragon_roar"          ) return new dragon_roar_t          ( this, options_str );
+  if ( name == "enraged_regeneration" ) return new enraged_regeneration_t ( this, options_str );
+  if ( name == "execute"              ) return new execute_t              ( this, options_str );
+  if ( name == "heroic_leap"          ) return new heroic_leap_t          ( this, options_str );
+  if ( name == "heroic_strike"        ) return new heroic_strike_t        ( this, options_str );
+  if ( name == "heroic_throw"         ) return new heroic_throw_t         ( this, options_str );
+  if ( name == "impending_victory"    ) return new impending_victory_t    ( this, options_str );
+  if ( name == "victory_rush"         ) return new victory_rush_t         ( this, options_str );
+  if ( name == "ignite_weapon"        ) return new ignite_weapon_t        ( this, options_str );
+  if ( name == "intervene"            ) return new intervene_t            ( this, options_str );
+  if ( name == "last_stand"           ) return new last_stand_t           ( this, options_str );
+  if ( name == "mortal_strike"        ) return new mortal_strike_t        ( this, options_str );
+  if ( name == "pummel"               ) return new pummel_t               ( this, options_str );
+  if ( name == "raging_blow"          ) return new raging_blow_t          ( this, options_str );
+  if ( name == "ravager"              ) return new ravager_t              ( this, options_str );
+  if ( name == "recklessness"         ) return new recklessness_t         ( this, options_str );
+  if ( name == "revenge"              ) return new revenge_t              ( this, options_str );
+  if ( name == "shield_barrier"       ) return new shield_barrier_t       ( this, options_str );
+  if ( name == "shield_block"         ) return new shield_block_t         ( this, options_str );
+  if ( name == "shield_charge"        ) return new shield_charge_t        ( this, options_str );
+  if ( name == "shield_wall"          ) return new shield_wall_t          ( this, options_str );
+  if ( name == "shield_slam"          ) return new shield_slam_t          ( this, options_str );
+  if ( name == "shockwave"            ) return new shockwave_t            ( this, options_str );
+  if ( name == "stampeding_roar"      ) return new stampeding_roar_t      ( this, options_str );
+  if ( name == "storm_bolt"           ) return new storm_bolt_t           ( this, options_str );
+  if ( name == "stance"               ) return new stance_t               ( this, options_str );
+  if ( name == "sweeping_strikes"     ) return new sweeping_strikes_t     ( this, options_str );
+  if ( name == "thunder_clap"         ) return new thunder_clap_t         ( this, options_str );
+  if ( name == "whirlwind"            ) return new whirlwind_t            ( this, options_str );
+  if ( name == "wild_strike"          ) return new wild_strike_t          ( this, options_str );
 
   return player_t::create_action( name, options_str );
 }
@@ -3140,11 +3140,12 @@ void warrior_t::init_spells()
 
   static const set_bonus_description_t set_bonuses =
   {
-    //  C2P    C4P     M2P     M4P     T2P     T4P    H2P    H4P
-    {0, 0, 105797, 105907, 105908, 105911, 0, 0}, // Tier13
-    {0, 0, 123142, 123144, 123146, 123147, 0, 0}, // Tier14
-    {0, 0, 138120, 138126, 138280, 138281, 0, 0}, // Tier15
-    {0, 0, 144436, 144441, 144503, 144502, 0, 0}, // Tier16
+    // 0's are for healers/casters.
+    //      M2P     M4P     T2P     T4P
+    { 0, 0, 105797, 105907, 105908, 105911, 0, 0 }, // Tier13
+    { 0, 0, 123142, 123144, 123146, 123147, 0, 0 }, // Tier14
+    { 0, 0, 138120, 138126, 138280, 138281, 0, 0 }, // Tier15
+    { 0, 0, 144436, 144441, 144503, 144502, 0, 0 }, // Tier16
   };
 
   sets.register_spelldata( set_bonuses );
@@ -3601,22 +3602,23 @@ void warrior_t::create_buffs()
   player_t::create_buffs();
 
   // Regular buffs
-  buff.avatar           = buff_creator_t( this, "avatar", talents.avatar )
+  buff.avatar = buff_creator_t( this, "avatar", talents.avatar )
     .cd( timespan_t::zero() )
     .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
-  buff.battle_stance    = buff_creator_t( this, "battle_stance", find_class_spell( "Battle Stance" ) );
 
-  buff.berserker_rage   = buff_creator_t( this, "berserker_rage", find_class_spell( "Berserker Rage" ) );
+  buff.battle_stance = buff_creator_t( this, "battle_stance", find_class_spell( "Battle Stance" ) );
 
-  buff.bladed_armor     = buff_creator_t( this, "bladed_armor", spec.bladed_armor )
+  buff.berserker_rage = buff_creator_t( this, "berserker_rage", find_class_spell( "Berserker Rage" ) );
+
+  buff.bladed_armor = buff_creator_t( this, "bladed_armor", spec.bladed_armor )
     .add_invalidate( CACHE_ATTACK_POWER );
 
-  buff.bloodbath        = buff_creator_t( this, "bloodbath", talents.bloodbath )
+  buff.bloodbath = buff_creator_t( this, "bloodbath", talents.bloodbath )
     .cd( timespan_t::zero() );
 
-  buff.blood_craze      = buff_creator_t( this, "blood_craze", spec.blood_craze -> effectN( 1 ).trigger() );
+  buff.blood_craze = buff_creator_t( this, "blood_craze", spec.blood_craze -> effectN( 1 ).trigger() );
 
-  buff.bloodsurge       = buff_creator_t( this, "bloodsurge", spec.bloodsurge -> effectN( 1 ).trigger() )
+  buff.bloodsurge = buff_creator_t( this, "bloodsurge", spec.bloodsurge -> effectN( 1 ).trigger() )
     .chance( spec.bloodsurge -> effectN( 1 ).percent() );
 
   buff.defensive_stance = buff_creator_t( this, "defensive_stance", find_class_spell( "Defensive Stance" ) )
@@ -3625,42 +3627,42 @@ void warrior_t::create_buffs()
     .add_invalidate( CACHE_CRIT_BLOCK )
     .add_invalidate( CACHE_BLOCK );
 
-  buff.enrage           = buff_creator_t( this, "enrage", find_spell( 12880 ) )
+  buff.enrage = buff_creator_t( this, "enrage", find_spell( 12880 ) )
     .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
 
   buff.enraged_regeneration = buff_creator_t( this, "enraged_regeneration", talents.enraged_regeneration );
 
-  buff.enraged_speed    = buff_creator_t( this, "enraged_speed", glyphs.enraged_speed )
+  buff.enraged_speed = buff_creator_t( this, "enraged_speed", glyphs.enraged_speed )
     .duration( buff.enrage -> data().duration() );
 
-  buff.ignite_weapon    = buff_creator_t( this, "ignite_weapon", talents.ignite_weapon );
+  buff.ignite_weapon = buff_creator_t( this, "ignite_weapon", talents.ignite_weapon );
 
   buff.gladiator_stance = buff_creator_t( this, "gladiator_stance", find_spell( 156291 ) );
 
   buff.heroic_leap_glyph = buff_creator_t( this, "heroic_leap_glyph", glyphs.heroic_leap );
 
-  buff.raging_blow      = buff_creator_t( this, "raging_blow", find_spell( 131116 ) );
+  buff.raging_blow = buff_creator_t( this, "raging_blow", find_spell( 131116 ) );
 
   buff.raging_blow_glyph = buff_creator_t( this, "raging_blow_glyph", glyphs.raging_blow );
 
-  buff.raging_wind      = buff_creator_t( this, "raging_wind", glyphs.raging_wind -> effectN( 1 ).trigger() )
+  buff.raging_wind = buff_creator_t( this, "raging_wind", glyphs.raging_wind -> effectN( 1 ).trigger() )
     .chance( glyphs.raging_wind -> ok() ? 1 : 0 );
 
-  buff.ravager          = buff_creator_t( this, "ravager", talents.ravager )
+  buff.ravager = buff_creator_t( this, "ravager", talents.ravager )
     .add_invalidate( CACHE_PARRY );
 
-  buff.recklessness     = buff_creator_t( this, "recklessness", spec.recklessness )
+  buff.recklessness = buff_creator_t( this, "recklessness", spec.recklessness )
     .duration( spec.recklessness -> duration() *
     ( 1.0 + glyphs.recklessness -> effectN( 2 ).percent() ) )
     .cd( timespan_t::zero() ); //Necessary for readiness.
 
-  buff.shield_block     = buff_creator_t( this, "shield_block" ).spell( find_spell( 132404 ) )
+  buff.shield_block = buff_creator_t( this, "shield_block" ).spell( find_spell( 132404 ) )
     .add_invalidate( CACHE_BLOCK );
 
-  buff.shield_charge    = buff_creator_t( this, "shield_charge", find_spell( 156321 ) )
+  buff.shield_charge = buff_creator_t( this, "shield_charge", find_spell( 156321 ) )
     .default_value( find_spell( 156321 ) -> effectN( 2 ).percent() );
 
-  buff.shield_wall      = buff_creator_t( this, "shield_wall", find_class_spell( "Shield Wall" ) )
+  buff.shield_wall = buff_creator_t( this, "shield_wall", find_class_spell( "Shield Wall" ) )
     .default_value( find_class_spell( "Shield Wall" )-> effectN( 1 ).percent() )
     .cd( timespan_t::zero() );
 
@@ -3668,14 +3670,14 @@ void warrior_t::create_buffs()
     .duration( spec.sweeping_strikes -> duration() +
     perk.enhanced_sweeping_strikes -> effectN( 1 ).time_value() );
 
-  buff.sword_and_board  = buff_creator_t( this, "sword_and_board", find_spell( 50227 ) )
+  buff.sword_and_board = buff_creator_t( this, "sword_and_board", find_spell( 50227 ) )
     .chance( spec.sword_and_board -> effectN( 1 ).percent() );
 
-  buff.last_stand       = new buffs::last_stand_t( this, 12975, "last_stand" );
+  buff.last_stand = new buffs::last_stand_t( this, 12975, "last_stand" );
 
-  buff.tier15_2pc_tank  = buff_creator_t( this, "tier15_2pc_tank", find_spell( 138279 ) );
+  buff.tier15_2pc_tank = buff_creator_t( this, "tier15_2pc_tank", find_spell( 138279 ) );
 
-  buff.tier16_reckless_defense  = buff_creator_t( this, "tier16_reckless_defense", find_spell( 144500 ) );
+  buff.tier16_reckless_defense = buff_creator_t( this, "tier16_reckless_defense", find_spell( 144500 ) );
 
   buff.rude_interruption = buff_creator_t( this, "rude_interruption", glyphs.rude_interruption )
     .default_value( glyphs.rude_interruption -> effectN( 1 ).percent() )
