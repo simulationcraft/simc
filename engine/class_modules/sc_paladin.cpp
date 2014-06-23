@@ -143,7 +143,6 @@ public:
     gain_t* hp_hammer_of_wrath;
     gain_t* hp_holy_avenger;
     gain_t* hp_holy_shock;
-    gain_t* hp_judgments_of_the_bold;
     gain_t* hp_judgments_of_the_wise;
     gain_t* hp_pursuit_of_justice;
     gain_t* hp_sanctified_wrath;
@@ -178,7 +177,6 @@ public:
     const spell_data_t* holy_insight;
     const spell_data_t* illuminated_healing;
     const spell_data_t* infusion_of_light;
-    const spell_data_t* judgments_of_the_bold;
     const spell_data_t* judgments_of_the_wise;
     const spell_data_t* mastery_attunement;
     const spell_data_t* plate_specialization;
@@ -230,7 +228,6 @@ public:
     proc_t* divine_purpose;
     proc_t* divine_crusader;
     proc_t* eternal_glory;
-    proc_t* judgments_of_the_bold;
     proc_t* exorcism_cd_reset;
     proc_t* wasted_exorcism_cd_reset;
   } procs;
@@ -359,6 +356,7 @@ public:
   virtual void      init_spells();
   virtual void      init_action_list();
   virtual void      reset();
+  virtual void      arise();
   virtual expr_t*   create_expression( action_t*, const std::string& name );
   
   // player stat functions
@@ -1336,7 +1334,7 @@ struct daybreak_t : public paladin_heal_t
   {
     background = true;
     aoe = -1;
-    split_aoe_damage = true;
+    split_aoe_damage = false;
     may_crit = false;
     may_multistrike = false; // guess, TODO: Test
 
@@ -2498,7 +2496,7 @@ struct holy_shock_heal_t : public paladin_heal_t
       daybreak -> schedule_execute();
       
       // expire the buff
-      p() -> buffs.daybreak -> expire();
+      p() -> buffs.daybreak -> decrement();
     }
   }
 
@@ -3951,10 +3949,10 @@ struct judgment_t : public paladin_melee_attack_t
     if ( result_is_hit( execute_state -> result ) )
     {
       // +1 Holy Power for Ret
-      if ( p() -> passives.judgments_of_the_bold -> ok() )
+      if ( p() -> specialization() == PALADIN_RETRIBUTION )
       {
-        // apply gain, attribute gain to Judgments of the Bold
-        p() -> resource_gain( RESOURCE_HOLY_POWER, 1, p() -> gains.hp_judgments_of_the_bold );
+        // apply gain, attribute gain to Judgment
+        p() -> resource_gain( RESOURCE_HOLY_POWER, 1, p() -> gains.hp_judgment );
 
       }
       // +1 Holy Power for Prot
@@ -3967,14 +3965,6 @@ struct judgment_t : public paladin_melee_attack_t
         if ( p() -> talents.sanctified_wrath -> ok() && p() -> buffs.avenging_wrath -> check() )
           p() -> resource_gain( RESOURCE_HOLY_POWER, 1, p() -> gains.hp_sanctified_wrath );
       }
-      // +1 Holy Power for Holy with Selfless Healer talent
-      else if ( p() -> talents.selfless_healer -> ok() && p() -> specialization() == PALADIN_HOLY )
-      {
-        // apply gain, attribute gain to selfless healer
-        p() -> resource_gain( RESOURCE_HOLY_POWER, 1, p() -> gains.hp_selfless_healer );
-
-      }
-
       // Holy Avenger adds 2 more Holy Power if active
       if ( p() -> buffs.holy_avenger -> check() )
       {
@@ -4681,7 +4671,6 @@ void paladin_t::init_gains()
   gains.hp_hammer_of_wrath          = get_gain( "hammer_of_wrath" );
   gains.hp_holy_avenger             = get_gain( "holy_avenger" );
   gains.hp_holy_shock               = get_gain( "holy_shock" );
-  gains.hp_judgments_of_the_bold    = get_gain( "judgments_of_the_bold" );
   gains.hp_judgments_of_the_wise    = get_gain( "judgments_of_the_wise" );
   gains.hp_pursuit_of_justice       = get_gain( "pursuit_of_justice" );
   gains.hp_sanctified_wrath         = get_gain( "sanctified_wrath" );
@@ -4701,7 +4690,6 @@ void paladin_t::init_procs()
   procs.divine_purpose           = get_proc( "divine_purpose"                 );
   procs.divine_crusader          = get_proc( "divine_crusader"                );
   procs.eternal_glory            = get_proc( "eternal_glory"                  );
-  procs.judgments_of_the_bold    = get_proc( "judgments_of_the_bold"          );
   procs.exorcism_cd_reset        = get_proc( "exorcism_cd_reset"              );
   procs.wasted_exorcism_cd_reset = get_proc( "wasted_exorcism_cd_reset"       );
 }
@@ -5412,7 +5400,6 @@ void paladin_t::init_spells()
   passives.haste_attunement       = find_specialization_spell( "Haste Attunement" );
 
   // Ret Passives
-  passives.judgments_of_the_bold  = find_specialization_spell( "Judgments of the Bold" );
   passives.sword_of_light         = find_specialization_spell( "Sword of Light" );
   passives.sword_of_light_value   = find_spell( passives.sword_of_light -> ok() ? 20113 : 0 );
   passives.exorcism               = find_spell( passives.sword_of_light -> ok() ? 87138 : 0 );
@@ -6263,6 +6250,16 @@ expr_t* paladin_t::create_expression( action_t* a,
   }
 
   return player_t::create_expression( a, name_str );
+}
+
+void paladin_t::arise()
+{
+  player_t::arise();
+
+  // Trigger Sanctity Aura
+  if ( specialization() == PALADIN_RETRIBUTION && ! sim -> overrides.versatility ) 
+    sim -> auras.versatility -> trigger();
+
 }
 
 /* Report Extension Class
