@@ -56,6 +56,7 @@ actions.aoe+=/dragon_roar,if=talent.dragon_roar.enabled&debuff.colossus_smash.do
 actions.aoe+=/colossus_smash,if=debuff.colossus_smash.remains<1
 actions.aoe+=/mortal_strike
 actions.aoe+=/execute,if=rage>90&debuff.colossus_smash.up
+actions.aoe+=/whirlwind
 
 head=helmet_of_the_prehistoric_marauder,id=99418,upgrade=2,gems=16crit_8haste_8crit
 neck=malkoroks_tainted_dog_tags,id=105566,upgrade=2
