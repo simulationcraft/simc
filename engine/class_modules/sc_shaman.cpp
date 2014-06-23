@@ -1809,7 +1809,7 @@ static bool trigger_improved_lava_lash( shaman_attack_t* a )
       {
         if ( ! td( state -> target ) -> dot.flame_shock -> is_ticking() )
           p() -> active_flame_shocks++;
-        dot -> copy( state -> target );
+        dot -> copy( state -> target, DOT_COPY_CLONE );
       }
     }
   };
