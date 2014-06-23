@@ -1243,8 +1243,6 @@ bool item_t::decode_equip_effect()
         parsed.special_effects.push_back( effect );
         effects++;
       }
-      else
-        break;
     }
   }
 
