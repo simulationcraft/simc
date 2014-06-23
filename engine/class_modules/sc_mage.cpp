@@ -28,6 +28,7 @@
 // Need to figure out how to not hard-code 2 charges and their CD for the "nova" spells.
 // All new spells need to have their damage cross-checked with in game values.
 // Is the ignite from Inferno Blast spread?
+// Need to not hardcode Overpowered
 
 #include "simulationcraft.hpp"
 
@@ -298,6 +299,7 @@ public:
     const spell_data_t* blast_wave;
     const spell_data_t* ice_nova;
     const spell_data_t* kindling;
+    const spell_data_t* overpowered;
 
   } talents;
 
@@ -1559,6 +1561,9 @@ struct arcane_missiles_t : public mage_spell_t
     p() -> buffs.arcane_charge   -> trigger(); // Comes before action_t::execute(). See Issue 1189. Changed on 18/12/2012
 
     mage_spell_t::execute();
+
+    if ( p() -> buffs.arcane_power -> check() )
+      p() -> buffs.arcane_power -> extend_duration( p(), timespan_t::from_seconds( 2.0 ) );
 
     p() -> buffs.arcane_missiles -> up();
 
@@ -4174,6 +4179,7 @@ void mage_t::init_spells()
   talents.scorch             = find_talent_spell( "Scorch" );
   talents.temporal_shield    = find_talent_spell( "Temporal Shield" );
   talents.supernova          = find_talent_spell( "Supernova" );
+  talents.overpowered        = find_talent_spell( "Overpowered" );
 
 
   // Passive Spells
