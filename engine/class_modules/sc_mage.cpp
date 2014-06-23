@@ -24,9 +24,11 @@
 // Check that changing where icicles is inside impact does not ruin them
 // Arcane Blast cast time reduction perk testing?
 // Hardcoded enhanced FoF perk. Need to eventually make it so sub-90 toons do not have this.
-// How does the glyphed Icy Veins effect the Improved IV perk?
+// The IV glyph works by making IV gives 35% MS. The perk then improves this to 45% MS.
 // Need to figure out how to not hard-code 2 charges and their CD for the "nova" spells.
 // All new spells need to have their damage cross-checked with in game values.
+// Is the ignite from Inferno Blast spread?
+
 #include "simulationcraft.hpp"
 
 namespace { // UNNAMED NAMESPACE
@@ -126,6 +128,8 @@ public:
     cooldown_t* evocation;
     cooldown_t* inferno_blast;
     cooldown_t* incanters_ward;
+    cooldown_t* combustion;
+
   } cooldowns;
 
   // Gains
@@ -293,6 +297,7 @@ public:
     const spell_data_t* supernova;
     const spell_data_t* blast_wave;
     const spell_data_t* ice_nova;
+    const spell_data_t* kindling;
 
   } talents;
 
@@ -334,6 +339,7 @@ public:
     cooldowns.evocation      = get_cooldown( "evocation"     );
     cooldowns.inferno_blast  = get_cooldown( "inferno_blast" );
     cooldowns.incanters_ward = get_cooldown( "incanters_ward" );
+    cooldowns.combustion     = get_cooldown( "combustion"    );
 
     // Options
     base.distance = 40;
@@ -2071,9 +2077,16 @@ struct fireball_t : public mage_spell_t
     {
         if ( s -> result == RESULT_CRIT )
             p() -> buffs.enhanced_pyrotechnics -> expire();
+
         else
             p() -> buffs.enhanced_pyrotechnics -> trigger();
     }
+
+
+    if ( p() -> talents.kindling -> ok() &&  s -> result == RESULT_CRIT )
+        p() -> cooldowns.combustion -> adjust( timespan_t::from_seconds( - p() -> talents.kindling -> effectN( 1 ).base_value() ) );
+	
+
 
     if ( result_is_hit( s -> result) || result_is_multistrike( s -> result) )
         trigger_ignite( s );
@@ -2977,6 +2990,10 @@ struct inferno_blast_t : public mage_spell_t
           break;
       }
 
+    if ( s -> result == RESULT_CRIT && p() -> talents.kindling -> ok() )
+        p() -> cooldowns.combustion -> adjust( timespan_t::from_seconds( - p() -> talents.kindling -> effectN( 1 ).base_value() ) );
+
+
       trigger_ignite( s ); //Assuming that the ignite from inferno_blast isn't spread by itself
     }
   }
@@ -3380,9 +3397,11 @@ struct pyroblast_t : public mage_spell_t
     mage_spell_t::impact( s );
 
     if ( result_is_hit( s -> result) || result_is_multistrike( s -> result) )
-    {
       trigger_ignite( s );
-    }
+
+    if ( s -> result == RESULT_CRIT && p() -> talents.kindling -> ok() )
+        p() -> cooldowns.combustion -> adjust( timespan_t::from_seconds( - p() -> talents.kindling -> effectN( 1 ).base_value() ) );
+
   }
 
   virtual double composite_crit_multiplier() const
@@ -4146,6 +4165,7 @@ void mage_t::init_spells()
   talents.ice_ward           = find_talent_spell( "Ice Ward" );
   talents.incanters_ward     = find_talent_spell( "Incanter's Ward" );
   talents.invocation         = find_talent_spell( "Invocation" );
+  talents.kindling           = find_talent_spell( "Kindling" );
   talents.living_bomb        = find_talent_spell( "Living Bomb" );
   talents.nether_tempest     = find_talent_spell( "Nether Tempest" );
   talents.presence_of_mind   = find_talent_spell( "Presence of Mind" );
