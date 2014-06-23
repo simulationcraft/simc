@@ -547,9 +547,9 @@ public:
     if ( t == timespan_t::zero() )
       return timespan_t::zero();
 
-    t *= player -> cache.attack_haste();
-    if ( t < min_gcd )
-      t = min_gcd;
+    t *= ab::player -> cache.attack_haste();
+    if ( t < ab::min_gcd )
+      t = ab::min_gcd;
 
     return t;
   }
