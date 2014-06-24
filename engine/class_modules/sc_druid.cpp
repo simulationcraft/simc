@@ -2396,12 +2396,15 @@ struct shred_t : public cat_attack_t
   {
     cat_attack_t::impact( s );
 
-    extend_rip( *s );
-
-    if ( p() -> sets.has_set_bonus( SET_T17_2PC_MELEE ) && s -> result == RESULT_CRIT )
+    if ( result_is_hit( s -> result ) )
     {
-      p() -> cooldown.berserk -> adjust( timespan_t::from_seconds( -5.0 ), true );
-      p() -> proc.tier17_2pc_melee -> occur();
+      extend_rip( *s );
+
+      if ( p() -> sets.has_set_bonus( SET_T17_2PC_MELEE ) && s -> result == RESULT_CRIT )
+      {
+        p() -> cooldown.berserk -> adjust( timespan_t::from_seconds( -5.0 ), true );
+        p() -> proc.tier17_2pc_melee -> occur();
+      }
     }
   }
 
@@ -2877,7 +2880,7 @@ struct maul_t : public bear_attack_t
   {
     bear_attack_t::execute();
 
-    p() -> buff.tooth_and_claw -> decrement();
+    p() -> buff.tooth_and_claw -> decrement(); // TODO: Confirm decrement on miss
 
     if ( p() -> buff.son_of_ursoc -> check() )
       cooldown -> reset( false );
@@ -3375,14 +3378,17 @@ struct healing_touch_t : public druid_heal_t
   virtual void impact( action_state_t* state )
   {
     druid_heal_t::impact( state );
+    
+    if ( result_is_hit( state -> result ) )
+    {
+      if ( ! p() -> glyph.blooming -> ok() )
+        trigger_lifebloom_refresh( state );
 
-    if ( ! p() -> glyph.blooming -> ok() )
-      trigger_lifebloom_refresh( state );
+      if ( state -> result == RESULT_CRIT )
+        trigger_living_seed( state );
 
-    if ( state -> result == RESULT_CRIT )
-      trigger_living_seed( state );
-
-    p() -> cooldown.natures_swiftness -> adjust( timespan_t::from_seconds( - p() -> glyph.healing_touch -> effectN( 1 ).base_value() ) );
+      p() -> cooldown.natures_swiftness -> adjust( timespan_t::from_seconds( - p() -> glyph.healing_touch -> effectN( 1 ).base_value() ) );
+    }
   }
 
   virtual void execute()
@@ -3495,7 +3501,8 @@ struct lifebloom_t : public druid_heal_t
 
     druid_heal_t::impact( state );
 
-    td( state -> target ) -> buffs.lifebloom -> trigger();
+    if ( result_is_hit( state -> result ) )
+      td( state -> target ) -> buffs.lifebloom -> trigger();
   }
 
   virtual void last_tick( dot_t* d )
@@ -3540,11 +3547,14 @@ struct regrowth_t : public druid_heal_t
   {
     druid_heal_t::impact( state );
 
-    if ( ! p() -> glyph.blooming -> ok() )
-      trigger_lifebloom_refresh( state );
+    if ( result_is_hit( state -> result ) )
+    {
+      if ( ! p() -> glyph.blooming -> ok() )
+        trigger_lifebloom_refresh( state );
 
-    if ( state -> result == RESULT_CRIT )
-      trigger_living_seed( state );
+      if ( state -> result == RESULT_CRIT )
+        trigger_living_seed( state );
+    }
   }
 
   virtual void tick( dot_t* d )
@@ -3651,13 +3661,16 @@ struct swiftmend_t : public druid_heal_t
   {
     druid_heal_t::impact( state );
 
-    if ( state -> result == RESULT_CRIT )
-      trigger_living_seed( state );
+    if ( result_is_hit( state -> result ) )
+    {
+      if ( state -> result == RESULT_CRIT )
+        trigger_living_seed( state );
 
-    if ( p() -> talent.soul_of_the_forest -> ok() )
-      p() -> buff.soul_of_the_forest -> trigger();
+      if ( p() -> talent.soul_of_the_forest -> ok() )
+        p() -> buff.soul_of_the_forest -> trigger();
 
-    aoe_heal -> execute();
+      aoe_heal -> execute();
+    }
   }
 
   virtual bool ready()
