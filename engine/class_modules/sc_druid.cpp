@@ -26,7 +26,9 @@ namespace { // UNNAMED NAMESPACE
     = Guardian =
     Level 100 Talents
     Starting sim at unbuffed HP
+    Fix lacerate + ursa_major
     Verify DoC
+    Lacerate buff
 
     = Restoration =
     Err'thing
@@ -2442,9 +2444,9 @@ struct shred_t : public cat_attack_t
 
   virtual bool ready()
   {
-    if ( extends_rip )
+    if ( extends_rip ) // Prevent execution if extends_rip option is specified.
       if ( !td( target ) -> dots.rip -> is_ticking() ||
-           ( td( target ) -> dots.rip -> get_extended_time() >= timespan_t::from_seconds( 6.0 ) ) )
+           ( td( target ) -> dots.rip -> get_extended_time() >= timespan_t::from_seconds( 9.0 ) ) )
         return false;
 
     return cat_attack_t::ready();
@@ -2528,8 +2530,6 @@ struct swipe_t : public cat_attack_t
 
 struct thrash_cat_t : public cat_attack_t
 {
-  action_t* rake_bleed;
-
   thrash_cat_t( druid_t* p, const std::string& options_str ) :
     cat_attack_t( "thrash_cat", p, p -> find_spell( 106830 ), options_str )
   {
@@ -2558,14 +2558,6 @@ struct thrash_cat_t : public cat_attack_t
   // Treat direct damage as "bleed"
   virtual double target_armor( player_t* ) const
   { return 0.0; }
-
-  virtual bool ready()
-  {
-    if ( ! p() -> buff.cat_form -> check() )
-      return false;
-
-    return cat_attack_t::ready();
-  }
 };
 
 // Tiger's Fury =============================================================
@@ -2627,22 +2619,15 @@ struct bear_attack_t : public druid_attack_t<melee_attack_t>
 
   virtual void execute()
   {
-    base_t::execute();
+    druid_attack_t::execute();
 
-   if ( execute_state -> result == RESULT_CRIT )
-   {
-     p() -> resource_gain( RESOURCE_RAGE,
-       p() -> spell.primal_fury -> effectN( 1 ).resource( RESOURCE_RAGE ),
-       p() -> gain.primal_fury );
-     p() -> proc.primal_fury -> occur();
-   }
-  }
-
-  void trigger_rage_gain()
-  {
-    double rage = 5;
-
-    p() -> resource_gain( RESOURCE_RAGE, rage, p() -> gain.bear_melee );
+    if ( execute_state -> result == RESULT_CRIT )
+    {
+      p() -> resource_gain( RESOURCE_RAGE,
+        p() -> spell.primal_fury -> effectN( 1 ).resource( RESOURCE_RAGE ),
+        p() -> gain.primal_fury );
+      p() -> proc.primal_fury -> occur();
+    }
   }
 
   void trigger_ursa_major()
@@ -2658,15 +2643,27 @@ struct bear_attack_t : public druid_attack_t<melee_attack_t>
   virtual timespan_t gcd() const
   {
     if ( p() -> specialization() != DRUID_GUARDIAN )
-      return action_t::gcd();
+      return druid_attack_t::gcd();
 
-    timespan_t t = action_t::gcd();
-    if ( t == timespan_t::zero() ) return timespan_t::zero();
+    timespan_t t = druid_attack_t::gcd();
+
+    if ( t == timespan_t::zero() )
+      return timespan_t::zero();
 
     t *= player -> cache.attack_haste();
-    if ( t < min_gcd ) t = min_gcd;
+
+    if ( t < min_gcd )
+      t = min_gcd;
 
     return t;
+  }
+
+  virtual bool ready() 
+  {
+    if ( ! p() -> buff.bear_form -> check() )
+      return false;
+    
+    return druid_attack_t::ready();
   }
 }; // end druid_bear_attack_t
 
@@ -2678,7 +2675,7 @@ struct bear_melee_t : public bear_attack_t
     bear_attack_t( "bear_melee", player )
   {
     school      = SCHOOL_PHYSICAL;
-    may_glance = background = repeating =true;
+    may_glance  = background = repeating = true;
     trigger_gcd = timespan_t::zero();
     special     = false;
   }
@@ -2697,7 +2694,8 @@ struct bear_melee_t : public bear_attack_t
 
     if ( result_is_hit( state -> result ) )
     {
-      trigger_rage_gain();
+      p() -> resource_gain( RESOURCE_RAGE, 5.0, p() -> gain.bear_melee );
+
       if ( rng().roll( p() -> spec.tooth_and_claw -> proc_chance() ) )
       {
         p() -> buff.tooth_and_claw -> trigger();
@@ -2779,14 +2777,6 @@ struct lacerate_t : public bear_attack_t
     p() -> buff.lacerate -> expire();
     td( target ) -> lacerate_stack = 0;
   }
-
-  virtual bool ready()
-  {
-    if ( ! p() -> buff.bear_form -> check() )
-      return false;
-
-    return bear_attack_t::ready();
-  }
 };
 
 // Mangle ============================================================
@@ -2794,6 +2784,7 @@ struct lacerate_t : public bear_attack_t
 struct mangle_t : public bear_attack_t
 {
   double rage_gain;
+
   mangle_t( druid_t* player, const std::string& options_str ) :
     bear_attack_t( "mangle", player, player -> find_class_spell( "Mangle" ) )
   {
@@ -2824,14 +2815,6 @@ struct mangle_t : public bear_attack_t
       p() -> resource_gain( RESOURCE_RAGE, rage_gain, p() -> gain.mangle );
     if ( result_is_multistrike( s -> result ) )
       trigger_ursa_major();
-  }
-
-  virtual bool ready()
-  {
-    if ( ! p() -> buff.bear_form -> check() )
-      return false;
-
-    return bear_attack_t::ready();
   }
 };
 
@@ -2913,14 +2896,6 @@ struct maul_t : public bear_attack_t
 
     return tm;
   }
-
-  virtual bool ready()
-  {
-    if ( ! p() -> buff.bear_form -> check() )
-      return false;
-
-    return bear_attack_t::ready();
-  }
 };
 
 // Skull Bash (Bear) ========================================================
@@ -2971,14 +2946,6 @@ struct thrash_bear_t : public bear_attack_t
       cooldown -> reset( false );
   }
 
-  virtual void impact( action_state_t* state )
-  {
-    bear_attack_t::impact( state );
-
-    if ( result_is_hit( state -> result ) )
-      p() -> resource_gain( RESOURCE_RAGE, rage_gain, p() -> gain.thrash );
-  }
-
   virtual void tick( dot_t* d )
   {
     bear_attack_t::tick( d );
@@ -2990,12 +2957,15 @@ struct thrash_bear_t : public bear_attack_t
   virtual double target_armor( player_t* ) const
   { return 0.0; }
 
-  virtual bool ready()
+  // Buff by Razor Claws for feral shenanigans
+  double composite_da_multiplier( const action_state_t* state ) const
   {
-    if ( ! p() -> buff.bear_form -> check() )
-      return false;
+    double m = bear_attack_t::composite_da_multiplier( state );
 
-    return bear_attack_t::ready();
+    if ( p() -> mastery.razor_claws -> ok() )
+      m *= 1.0 + p() -> cache.mastery_value();
+
+    return m;
   }
 };
 
@@ -3049,14 +3019,6 @@ struct might_of_ursoc_t : public bear_attack_t
     bear_attack_t::execute();
 
     p() -> buff.might_of_ursoc -> trigger( 1, p() -> resources.max[ RESOURCE_HEALTH ] * data().effectN( 1 ).percent() );
-  }
-
-  virtual bool ready()
-  {
-    if ( ! p() -> buff.bear_form -> check() )
-      return false;
-
-    return bear_attack_t::ready();
   }
 };
 
