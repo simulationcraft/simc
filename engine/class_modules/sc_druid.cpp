@@ -775,7 +775,7 @@ struct ursocs_vigor_t : public heal_t
     background = true;
 
     hasted_ticks = false;
-    may_crit = tick_may_crit = false;
+    may_crit = tick_may_crit = may_multistrike = false;
 
     base_td = 0;
     
@@ -2954,7 +2954,8 @@ struct thrash_bear_t : public bear_attack_t
   {
     bear_attack_t::tick( d );
 
-    p() -> resource_gain( RESOURCE_RAGE, rage_gain, p() -> gain.thrash );
+    if ( result_is_hit( d -> state -> result ) )
+      p() -> resource_gain( RESOURCE_RAGE, rage_gain, p() -> gain.thrash );
   }
 
   // Treat direct damage as "bleed"
@@ -3510,7 +3511,8 @@ struct lifebloom_t : public druid_heal_t
   {
     druid_heal_t::tick( d );
 
-    p() -> buff.omen_of_clarity -> trigger();
+    if ( result_is_hit( d -> state -> result ) )
+      p() -> buff.omen_of_clarity -> trigger();
   }
 };
 
@@ -3549,7 +3551,7 @@ struct regrowth_t : public druid_heal_t
   {
     druid_heal_t::tick( d );
 
-    if ( d -> state -> target -> health_percentage() <= p() -> spell.regrowth -> effectN( 1 ).percent() &&
+    if ( result_is_hit( d -> state -> result ) && d -> state -> target -> health_percentage() <= p() -> spell.regrowth -> effectN( 1 ).percent() &&
          td( d -> state -> target ) -> dots.regrowth -> is_ticking() )
     {
       td( d -> state -> target )-> dots.regrowth -> refresh_duration();
@@ -3573,11 +3575,6 @@ struct rejuvenation_t : public druid_heal_t
     druid_heal_t( "rejuvenation", p, p -> find_class_spell( "Rejuvenation" ), options_str )
   {
     tick_zero = true;
-  }
-
-  virtual void tick( dot_t* d )
-  {
-    druid_heal_t::tick( d );
   }
 
   virtual void schedule_execute( action_state_t* state = 0 )
@@ -3860,7 +3857,7 @@ struct astral_communion_t : public druid_spell_t
   astral_communion_t( druid_t* player, const std::string& options_str ) :
     druid_spell_t( "astral_communion", player, player -> spec.astral_communion, options_str )
   {
-    harmful = proc = hasted_ticks = false;
+    harmful = proc = hasted_ticks = may_multistrike = false;
     channeled = true;
 
     base_tick_time = timespan_t::from_millis( 100 );
@@ -4303,7 +4300,9 @@ struct mark_of_the_wild_t : public druid_spell_t
       virtual void tick( dot_t* d )
       {
         druid_spell_t::tick( d );
-        p() -> trigger_shooting_stars( d -> state );
+
+        if ( result_is_hit( d -> state -> result ) )
+          p() -> trigger_shooting_stars( d -> state );
       }
     };
 
@@ -4345,7 +4344,9 @@ struct mark_of_the_wild_t : public druid_spell_t
     virtual void tick( dot_t* d )
     {
       druid_spell_t::tick( d );
-      p() -> trigger_shooting_stars( d -> state );
+
+      if ( result_is_hit( d -> state -> result ) )
+        p() -> trigger_shooting_stars( d -> state );
     }
 
     virtual void impact( action_state_t* s )
@@ -4417,7 +4418,9 @@ struct mark_of_the_wild_t : public druid_spell_t
       virtual void tick( dot_t* d )
       {
         druid_spell_t::tick( d );
-        p() -> trigger_shooting_stars( d -> state );
+
+        if ( result_is_hit( d -> state -> result ) )
+          p() -> trigger_shooting_stars( d -> state );
       }
     };
 
@@ -4448,7 +4451,9 @@ struct mark_of_the_wild_t : public druid_spell_t
     virtual void tick( dot_t* d )
     {
       druid_spell_t::tick( d );
-      p() -> trigger_shooting_stars( d -> state );
+
+      if ( result_is_hit( d -> state -> result ) )
+        p() -> trigger_shooting_stars( d -> state );
     }
 
     double composite_target_multiplier( player_t* target ) const
@@ -4678,7 +4683,7 @@ struct starfall_t : public druid_spell_t
   {
     parse_options( NULL, options_str );
 
-    hasted_ticks = false;
+    hasted_ticks = may_multistrike = false;
     tick_zero = true;
     cooldown = player -> cooldown.starfallsurge;
     base_multiplier *= 1.0 + player -> sets.set( SET_T14_2PC_CASTER ) -> effectN( 1 ).percent();
