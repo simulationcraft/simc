@@ -2750,7 +2750,7 @@ struct lacerate_t : public bear_attack_t
         td( state -> target ) -> lacerate_stack++;
       p() -> buff.lacerate -> trigger();
 
-      if ( rng().roll( p() -> spell.mangle -> effectN( 1 ).percent() ) )
+      if ( rng().roll( 0.25 ) ) // FIXME: Find in spell data.
         p() -> cooldown.mangle -> reset( true );
     }
 
@@ -2942,12 +2942,12 @@ struct thrash_bear_t : public bear_attack_t
     base_td_multiplier *= 1.0 + p() -> perk.empowered_thrash -> effectN( 1 ).percent();
   }
 
-  virtual void execute()
+  virtual void impact( action_state_t* s )
   {
-    bear_attack_t::execute();
+    bear_attack_t::impact( s );
 
-    if ( p() -> buff.son_of_ursoc -> check() )
-      cooldown -> reset( false );
+    if ( result_is_hit( s -> result ) )
+      p() -> resource_gain( RESOURCE_RAGE, rage_gain, p() -> gain.thrash );
   }
 
   virtual void tick( dot_t* d )
@@ -5305,7 +5305,6 @@ void druid_t::init_spells()
   spell.cat_form                        = find_class_spell( "Cat Form"                    ) -> ok() ? find_spell( 3025   ) : spell_data_t::not_found();   // Cat form buff
   spell.combo_point                     = find_class_spell( "Cat Form"                    ) -> ok() ? find_spell( 34071  ) : spell_data_t::not_found(); // Combo point add "spell", weird
   spell.frenzied_regeneration           = find_class_spell( "Frenzied Regeneration"       ) -> ok() ? find_spell( 22842  ) : spell_data_t::not_found();
-  spell.mangle                          = find_class_spell( "Lacerate"                    ) -> ok() ? find_spell( 93622  ) : spell_data_t::not_found(); // Lacerate mangle cooldown reset
   spell.moonkin_form                    = find_class_spell( "Moonkin Form"                ) -> ok() ? find_spell( 24905  ) : spell_data_t::not_found(); // This is the passive applied on shapeshift!
   spell.regrowth                        = find_class_spell( "Regrowth"                    ) -> ok() ? find_spell( 93036  ) : spell_data_t::not_found(); // Regrowth refresh
 
