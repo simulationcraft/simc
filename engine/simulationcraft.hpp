@@ -6704,22 +6704,21 @@ struct residual_dot_action : public Action
 
   virtual void impact( action_state_t* s )
   {
-    // Amortize damage AFTER dot initialized so we know how many ticks. Only works if tick_zero=false.
-    residual_dot_action_state* rd_state = debug_cast<residual_dot_action_state*>( s );
-
     assert( ! Action::tick_zero );
     dot_t* dot = Action::get_dot( s -> target );
+    double current_amount = 0;
+    residual_dot_action_state* dot_state = debug_cast<residual_dot_action_state*>( dot -> state );
     if ( dot -> is_ticking() )
-      rd_state -> tick_amount *= dot -> ticks_left();
-    else
-      rd_state -> tick_amount = 0;
-    rd_state -> tick_amount += s -> result_amount;
+      current_amount = dot_state -> tick_amount * dot -> ticks_left();
+
+    current_amount += s -> result_amount;
 
     Action::trigger_dot( s );
+    if ( ! dot_state )
+      dot_state = debug_cast<residual_dot_action_state*>( dot -> state );
 
-    residual_dot_action_state* dot_state = debug_cast<residual_dot_action_state*>( dot -> state );
-
-    dot_state -> tick_amount /= dot -> ticks_left();
+    // Amortize damage AFTER dot initialized so we know how many ticks. Only works if tick_zero=false.
+    dot_state -> tick_amount = current_amount / dot -> ticks_left();
   }
 
   virtual timespan_t travel_time() const
