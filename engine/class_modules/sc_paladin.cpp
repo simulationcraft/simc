@@ -1565,7 +1565,7 @@ struct eternal_flame_hot_t : public paladin_heal_t
   {
     paladin_heal_t::impact( s );
 
-    td( s -> target ) -> buffs.eternal_flame -> trigger( 1, buff_t::DEFAULT_VALUE(), -1, dot_duration );
+    td( s -> target ) -> buffs.eternal_flame -> trigger( 1, buff_t::DEFAULT_VALUE(), -1, composite_dot_duration( s ) );
 
   }
   
@@ -1581,8 +1581,8 @@ struct eternal_flame_hot_t : public paladin_heal_t
     // this scales just the ticks
     double am = paladin_heal_t::action_ta_multiplier();
 
-    // Scale based on HP used
-    am *= hopo;
+    // Scale based on HP used - removed in 6/13 patch notes
+    // am *= hopo;
 
     if ( target == player )
     {
