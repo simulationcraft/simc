@@ -6717,7 +6717,9 @@ struct residual_dot_action : public Action
 
     Action::trigger_dot( s );
 
-    rd_state -> tick_amount /= dot -> ticks_left();
+    residual_dot_action_state* dot_state = debug_cast<residual_dot_action_state*>( dot -> state );
+
+    dot_state -> tick_amount /= dot -> ticks_left();
   }
 
   virtual timespan_t travel_time() const
