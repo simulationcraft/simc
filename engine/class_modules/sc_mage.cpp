@@ -30,6 +30,7 @@
 // Is the ignite from Inferno Blast spread?
 // Need to not hardcode Overpowered
 
+
 #include "simulationcraft.hpp"
 
 namespace { // UNNAMED NAMESPACE
@@ -103,7 +104,6 @@ public:
     buff_t* heating_up;
     buff_t* ice_floes;
     buff_t* icy_veins;
-    buff_t* invokers_energy;
     stat_buff_t* mage_armor;
     buff_t* molten_armor;
     buff_t* presence_of_mind;
@@ -111,8 +111,6 @@ public:
     buff_t* rune_of_power;
     buff_t* tier13_2pc;
     //buff_t* alter_time;
-    absorb_buff_t* incanters_ward;
-    buff_t* incanters_absorption;
     buff_t* tier15_2pc_haste;
     buff_t* tier15_2pc_crit;
     buff_t* tier15_2pc_mastery;
@@ -128,7 +126,6 @@ public:
   {
     cooldown_t* evocation;
     cooldown_t* inferno_blast;
-    cooldown_t* incanters_ward;
     cooldown_t* combustion;
 
   } cooldowns;
@@ -137,8 +134,6 @@ public:
   struct gains_t
   {
     gain_t* evocation;
-    gain_t* incanters_ward_passive;
-    gain_t* rune_of_power;
   } gains;
 
   // Glyphs
@@ -294,7 +289,6 @@ public:
     const spell_data_t* frost_bomb;
     const spell_data_t* invocation;
     const spell_data_t* rune_of_power;
-    const spell_data_t* incanters_ward;
     const spell_data_t* supernova;
     const spell_data_t* blast_wave;
     const spell_data_t* ice_nova;
@@ -340,7 +334,6 @@ public:
     // Cooldowns
     cooldowns.evocation      = get_cooldown( "evocation"     );
     cooldowns.inferno_blast  = get_cooldown( "inferno_blast" );
-    cooldowns.incanters_ward = get_cooldown( "incanters_ward" );
     cooldowns.combustion     = get_cooldown( "combustion"    );
 
     // Options
@@ -535,22 +528,11 @@ struct water_elemental_pet_t : public pet_t
     if ( o() -> spec.icicles -> ok() )
       m *= 1.0 + o() -> cache.mastery_value();
 
-    if ( o() -> buffs.invokers_energy -> up() )
-    {
-      m *= 1.0 + o() -> buffs.invokers_energy -> data().effectN( 1 ).percent();
-    }
-    else if ( o() -> buffs.rune_of_power -> check() )
+    if ( o() -> buffs.rune_of_power -> check() )
     {
       m *= 1.0 + o() -> buffs.rune_of_power -> data().effectN( 2 ).percent();
     }
-    else if ( o() -> talents.incanters_ward -> ok() && o() -> cooldowns.incanters_ward -> up() )
-    {
-      m *= 1.0 + find_spell( 118858 ) -> effectN( 1 ).percent();
-    }
-    else if ( o() -> talents.incanters_ward -> ok() )
-    {
-      m *= 1.0 + o() -> buffs.incanters_absorption -> value() * o() -> buffs.incanters_absorption -> data().effectN( 1 ).percent();
-    }
+
 
     // Orc racial
     if ( owner -> race == RACE_ORC )
@@ -906,117 +888,7 @@ struct icy_veins_t : public buff_t
   }
 };
 
-struct incanters_ward_t : public absorb_buff_t
-{
-  double max_absorb;
-  double break_after;
-  double absorbed;
-  gain_t* gain;
 
-  incanters_ward_t( mage_t* p ) :
-    absorb_buff_t( absorb_buff_creator_t( p, "incanters_ward" ).spell( p -> talents.incanters_ward ) ),
-    max_absorb( 0.0 ), break_after ( -1.0 ), absorbed( 0.0 ),
-    gain( p -> get_gain( "incanters_ward mana gain" ) )
-  {}
-
-  mage_t* p() const
-  { return static_cast<mage_t*>( player ); }
-
-  virtual bool trigger( int        stacks,
-                        double    /* value */,
-                        double     chance,
-                        timespan_t duration )
-  {
-    max_absorb = p() -> dbc.effect_average( data().effectN( 1 ).id(), p() -> level );
-    // coeff hardcoded into tooltip
-    max_absorb += p() -> cache.spell_power( SCHOOL_MAX ) * p() -> composite_spell_power_multiplier();
-
-    // If ``break_after'' specified and greater than 1.0, then Incanter's Ward
-    // must be broken early
-    if ( break_after > 1.0 )
-    {
-      return absorb_buff_t::trigger( stacks, max_absorb, chance, p() -> buffs.incanters_ward->data().duration() / break_after );
-    }
-    else
-    {
-      return absorb_buff_t::trigger( stacks, max_absorb, chance, duration );
-    }
-  }
-
-  virtual void absorb_used( double amount )
-  {
-    // if ``break_after'' is specified, then mana will be returned when
-    // the shield wears off.
-    if ( max_absorb > 0 && break_after < 0.0 )
-    {
-      absorbed += amount;
-      double resource_gain = mana_to_return ( amount / max_absorb ) ;
-      p() -> resource_gain( RESOURCE_MANA, resource_gain, gain );
-    }
-  }
-
-  virtual void expire_override()
-  {
-    // Trigger Incanter's Absorption with value between 0 and 1, depending on how
-    // much absorb has been used, or depending on the value of ``break_after''.
-    double absorb_pct;
-    if ( break_after >= 1 )
-    {
-      absorb_pct = 1.0;
-    }
-    else if ( break_after >= 0 )
-    {
-      absorb_pct = break_after;
-    }
-    else if ( max_absorb > 0.0 )
-    {
-      absorb_pct = absorbed / max_absorb;
-    }
-    else
-    {
-      absorb_pct = 0.0;
-    }
-
-    if ( absorb_pct > 0.0 )
-    {
-      p() -> buffs.incanters_absorption -> trigger( 1, absorb_pct );
-
-      // Mana return on expire when ``break_after'' is specified
-      if ( break_after >= 0 )
-      {
-        p() -> resource_gain( RESOURCE_MANA, mana_to_return( absorb_pct ), gain );
-      }
-    }
-
-    absorbed = 0.0;
-    max_absorb = 0.0;
-
-    absorb_buff_t::expire_override();
-  }
-
-  virtual void reset() /* override */
-  {
-    absorb_buff_t::reset();
-
-    absorbed = 0.0;
-    max_absorb = 0.0;
-  }
-
-  void set_break_after ( double break_after_ )
-  {
-    break_after = break_after_;
-  }
-
-  double mana_to_return ( double absorb_pct )
-  {
-    double mana = absorb_pct * 0.18 * p() -> resources.max[ RESOURCE_MANA ];
-
-    if ( p() -> passives.nether_attunement -> ok() )
-      mana /= p() -> cache.spell_speed();
-
-    return mana;
-  }
-};
 
 } // end buffs namespace
 
@@ -1984,29 +1856,11 @@ public:
   virtual void last_tick( dot_t* d )
   {
     mage_spell_t::last_tick( d );
-
-    if ( d -> current_tick == d -> num_ticks ) // only trigger invokers_energy if dot has successfully finished all ticks
-      p() -> buffs.invokers_energy -> trigger();
   }
 
   virtual void execute()
   {
     mage_t& p = *this -> p();
-
-    if ( ! p.in_combat )
-    {
-      if ( p.talents.invocation -> ok() )
-      {
-        // Trigger buff with temporarily reduced duration
-        if ( p.buffs.invokers_energy -> buff_duration - pre_cast > timespan_t::zero() )
-          p.buffs.invokers_energy -> trigger( 1, buff_t::DEFAULT_VALUE(), 1.0,
-                                              p.buffs.invokers_energy -> buff_duration - pre_cast );
-        if ( cooldown -> duration - pre_cast > timespan_t::zero() )
-          cooldown -> start( cooldown -> duration - pre_cast );
-      }
-
-      return;
-    }
 
     arcane_charges = p.buffs.arcane_charge -> check();
     p.buffs.arcane_charge -> expire();
@@ -3932,46 +3786,7 @@ struct alter_time_t : public mage_spell_t
   }
 };
 */
-// Incanters_ward Spell =====================================================
 
-struct incanters_ward_t : public mage_spell_t
-{
-  // Option used to specify the duration of Incanter's Ward and the strength
-  // of the subsequent spell power buff from Incanter's Absorption.
-  // If 0 <= break_after <= 1, then Incanter's Ward breaks after 8 seconds
-  //   and ``break_after'' represents the percentage of the shield that
-  //   has been consumed.
-  // If 1 < break_after, then Incanter's Ward breaks after 8 / break_after
-  // seconds. For example:
-  //   - break_after = 2, Incanter's Ward breaks after 4 seconds;
-  //   - break_after = 4, Incanter's Ward breaks after 2 seconds;
-  //   - break_after = 8, Incanter's Ward breaks after 1 second.
-  // If break_after < 0, then, it has no effect on Incanter's Ward
-  double break_after;
-
-  incanters_ward_t( mage_t* p, const std::string& options_str ) :
-    mage_spell_t( "incanters_ward", p, p -> talents.incanters_ward ), break_after ( -1.0 )
-  {
-    option_t options[] =
-    {
-      opt_float( "break_after", break_after ),
-      opt_null()
-    };
-    parse_options( options, options_str );
-    ( static_cast<buffs::incanters_ward_t*>( p -> buffs.incanters_ward ) ) -> set_break_after( break_after );
-    harmful = false;
-
-    base_dd_min = base_dd_max = 0.0;
-  }
-
-  virtual void execute()
-  {
-    mage_spell_t::execute();
-    p() -> buffs.incanters_ward -> trigger();
-    p() -> invalidate_cache( CACHE_PLAYER_DAMAGE_MULTIPLIER );
-
-  }
-};
 
 } // namespace actions
 
@@ -4115,7 +3930,6 @@ action_t* mage_t::create_action( const std::string& name,
   if ( name == "time_warp"         ) return new               time_warp_t( this, options_str );
   if ( name == "water_elemental"   ) return new  summon_water_elemental_t( this, options_str );
   //if ( name == "alter_time"        ) return new              alter_time_t( this, options_str );
-  if ( name == "incanters_ward"    ) return new          incanters_ward_t( this, options_str );
 
   return player_t::create_action( name, options_str );
 }
@@ -4168,7 +3982,6 @@ void mage_t::init_spells()
   talents.ice_floes          = find_talent_spell( "Ice Floes" );
   talents.ice_nova           = find_talent_spell( "Ice Nova" );
   talents.ice_ward           = find_talent_spell( "Ice Ward" );
-  talents.incanters_ward     = find_talent_spell( "Incanter's Ward" );
   talents.invocation         = find_talent_spell( "Invocation" );
   talents.kindling           = find_talent_spell( "Kindling" );
   talents.living_bomb        = find_talent_spell( "Living Bomb" );
@@ -4330,14 +4143,11 @@ void mage_t::create_buffs()
   buffs.frost_armor          = buff_creator_t( this, "frost_armor", find_spell( 7302 ) ).add_invalidate( CACHE_MULTISTRIKE );
   buffs.icy_veins            = new buffs::icy_veins_t( this );
   buffs.ice_floes            = buff_creator_t( this, "ice_floes", talents.ice_floes );
-  buffs.invokers_energy      = buff_creator_t( this, "invokers_energy", find_spell( 116257 ) )
-                               .chance( talents.invocation -> ok() ? 1.0 : 0 )
-                               .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
   buffs.mage_armor           = stat_buff_creator_t( this, "mage_armor" ).spell( find_spell( 6117 ) );
   buffs.molten_armor         = buff_creator_t( this, "molten_armor", find_spell( 30482 ) ).add_invalidate( CACHE_SPELL_CRIT );
   buffs.presence_of_mind     = buff_creator_t( this, "presence_of_mind", talents.presence_of_mind ).duration( timespan_t::zero() ).activated( true );
   buffs.rune_of_power        = buff_creator_t( this, "rune_of_power", find_spell( 116014 ) )
-                               .duration( timespan_t::from_seconds( 60 ) )
+                               .duration( timespan_t::from_minutes( 3 ) )
                                .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
 
   buffs.heating_up           = buff_creator_t( this, "heating_up", find_specialization_spell( "Pyroblast" ) -> ok() ? find_spell( 48107 ) : spell_data_t::not_found() );
@@ -4349,11 +4159,6 @@ void mage_t::create_buffs()
 
   //buffs.alter_time           = new buffs::alter_time_t( this );
   buffs.enhanced_pyrotechnics = buff_creator_t( this, "enhanced_pyrotechnics", find_spell( 157644 ) );
-  buffs.incanters_ward       = new buffs::incanters_ward_t( this );
-  buffs.incanters_absorption  = buff_creator_t( this, "incanters_absorption" )
-                                .spell( find_spell( 116267 ) )
-                                .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
-
   buffs.tier15_2pc_crit      = stat_buff_creator_t( this, "tier15_2pc_crit", find_spell( 138317 ) )
                                .add_stat( STAT_CRIT_RATING, find_spell( 138317 ) -> effectN( 1 ).base_value() );
   buffs.tier15_2pc_haste     = stat_buff_creator_t( this, "tier15_2pc_haste", find_spell( 138317 ) )
@@ -4379,8 +4184,6 @@ void mage_t::init_gains()
   player_t::init_gains();
 
   gains.evocation              = get_gain( "evocation"              );
-  gains.incanters_ward_passive = get_gain( "incanters_ward_passive" );
-  gains.rune_of_power          = get_gain( "rune_of_power"          );
 }
 
 // mage_t::init_procs =======================================================
@@ -4516,9 +4319,6 @@ void mage_t::apl_arcane()
   default_list -> add_talent( this, "Rune of Power", "if=buff.rune_of_power.remains<cast_time" );
   default_list -> add_talent( this, "Rune of Power", "if=cooldown.arcane_power.remains<gcd&buff.rune_of_power.remains<buff.arcane_power.duration" );
 
-  default_list -> add_action( this, "Evocation", "if=talent.invocation.enabled&buff.invokers_energy.down&talent.invocation.enabled" );
-  default_list -> add_action( this, "Evocation", "if=talent.invocation.enabled&cooldown.arcane_power.remains=0&buff.invokers_energy.remains<buff.arcane_power.duration" );
-  default_list -> add_action( this, "Evocation", "if=talent.invocation.enabled&mana.pct<50,interrupt_if=mana.pct>95&buff.invokers_energy.remains>10" );
 
   default_list -> add_action( this, "Evocation", "if=!talent.invocation.enabled=mana.pct<50,interrupt_if=mana.pct>95" );
   default_list -> add_action( this, "Mirror Image" );
@@ -4532,7 +4332,6 @@ void mage_t::apl_arcane()
   for( size_t i = 0; i < item_actions.size(); i++ )
   {
     default_list -> add_action( item_actions[i] + ",if=talent.rune_of_power.enabled&target.time_to_die<25&buff.rune_of_power.remains>20" );
-    default_list -> add_action( item_actions[i] + ",if=talent.invocation.enabled&target.time_to_die<25&buff.invokers_energy.remains>20" );
     default_list -> add_action( item_actions[i] + ",if=(!talent.rune_of_power.enabled&!talent.invocation.enabled)&(buff.arcane_power.up|target.time_to_die<25)" );
   }
 
@@ -4580,9 +4379,6 @@ void mage_t::apl_fire()
 
 
 
-  default_list -> add_action( this, "Evocation", "if=talent.invocation.enabled&(buff.invokers_energy.down|mana.pct<20)" );
-  default_list -> add_action( this, "Evocation", "if=talent.invocation.enabled&buff.invokers_energy.remains<6" );
-  default_list -> add_action( this, "Evocation", "if=talent.invocation.enabled&mana.pct<50,interrupt_if=mana.pct>95&buff.invokers_energy.remains>10" );
   default_list -> add_action( this, "Evocation", "if=mana.pct<20,interrupt_if=mana.pct>95" );
 
 
@@ -4625,8 +4421,7 @@ void mage_t::apl_frost()
 
   default_list -> add_talent( this, "Rune of Power", "if=buff.rune_of_power.remains<cast_time" );
   default_list -> add_talent( this, "Rune of Power", "if=cooldown.icy_veins.remains=0&buff.rune_of_power.remains<20" );
-  default_list -> add_action( this, "Evocation", "if=talent.invocation.enabled&(buff.invokers_energy.down|mana.pct<20)" );
-  default_list -> add_action( this, "Evocation", "if=talent.invocation.enabled&cooldown.icy_veins.remains=0&buff.invokers_energy.remains<20" );
+
   default_list -> add_action( this, "Evocation", "if=!talent.invocation.enabled&mana.pct<50,interrupt_if=mana.pct>95" );
   default_list -> add_action( this, "Mirror Image" );
   default_list -> add_action( this, "Frozen Orb", "if=buff.fingers_of_frost.stack<2" );
@@ -4641,7 +4436,7 @@ void mage_t::apl_frost()
   for( size_t i = 0; i < item_actions.size(); i++ )
   {
     default_list -> add_action( item_actions[i] + ",if=talent.rune_of_power.enabled&target.time_to_die<25&buff.rune_of_power.remains>20" );
-    default_list -> add_action( item_actions[i] + ",if=talent.invocation.enabled&target.time_to_die<25&buff.invokers_energy.remains>20" );
+
     default_list -> add_action( item_actions[i] + ",if=(!talent.rune_of_power.enabled&!talent.invocation.enabled)&target.time_to_die<25" );
   }
 
@@ -4674,9 +4469,6 @@ double mage_t::mana_regen_per_second() const
     mp5 /= cache.spell_speed();
 
 
-  if ( buffs.invokers_energy -> check() )
-    mp5 *= 1.0 + buffs.invokers_energy -> data().effectN( 3 ).percent();
-
   return mp5;
 }
 
@@ -4696,23 +4488,12 @@ double mage_t::composite_player_multiplier( school_e school ) const
     m *= 1.0 + v;
   }
 
-  if ( buffs.invokers_energy -> up() )
-  {
-    m *= 1.0 + buffs.invokers_energy -> data().effectN( 1 ).percent();
-  }
-  else if ( buffs.rune_of_power -> check() )
+
+  if ( buffs.rune_of_power -> check() )
   {
     m *= 1.0 + buffs.rune_of_power -> data().effectN( 2 ).percent();
   }
-  else if ( talents.incanters_ward -> ok() && cooldowns.incanters_ward -> up() )
-  {
-    m *= 1.0 + find_spell( 118858 ) -> effectN( 1 ).percent();
-  }
-  else if ( buffs.incanters_absorption -> up() )
-  {
-    m *= 1.0 + buffs.incanters_absorption -> value() * buffs.incanters_absorption -> data().effectN( 1 ).percent();
-  }
-
+  
   if ( specialization() == MAGE_ARCANE )
     cache.player_mult_valid[ school ] = false;
 
@@ -4806,15 +4587,6 @@ void mage_t::reset()
 void mage_t::regen( timespan_t periodicity )
 {
   player_t::regen( periodicity );
-
-  if ( buffs.rune_of_power -> up() )
-  {
-    resource_gain( RESOURCE_MANA, mana_regen_per_second() * periodicity.total_seconds() * buffs.rune_of_power -> data().effectN( 1 ).percent(), gains.rune_of_power );
-  }
-  else if ( talents.incanters_ward -> ok() && cooldowns.incanters_ward -> up() )
-  {
-    resource_gain( RESOURCE_MANA, mana_regen_per_second() * periodicity.total_seconds() * find_spell( 118858 ) -> effectN( 2 ).percent(), gains.incanters_ward_passive );
-  }
 
   if ( pets.water_elemental )
     benefits.water_elemental -> update( pets.water_elemental -> is_sleeping() == 0 );
