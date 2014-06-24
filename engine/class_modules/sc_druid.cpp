@@ -1038,7 +1038,7 @@ struct force_of_nature_feral_t : public pet_t
     druid_t* owner;
 
     rake_t( force_of_nature_feral_t* p ) :
-      melee_attack_t( "rake", p, p -> find_specialization_spell( "Rake" ) ), owner( 0 )
+      melee_attack_t( "rake", p, p -> find_spell( 150017 ) ), owner( 0 )
     {
       dot_behavior     = DOT_REFRESH;
       special = may_crit = tick_may_crit = true;
