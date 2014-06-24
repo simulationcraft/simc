@@ -26,7 +26,6 @@ namespace { // UNNAMED NAMESPACE
     = Guardian =
     Level 100 Talents
     Starting sim at unbuffed HP
-    Fix lacerate + ursa_major
     Verify DoC
     Lacerate buff
 
@@ -2756,9 +2755,6 @@ struct lacerate_t : public bear_attack_t
     }
 
     bear_attack_t::impact( state );
-
-    if ( result_is_multistrike( state -> result ) )
-      trigger_ursa_major();
   }
 
   virtual double composite_target_ta_multiplier( player_t* t ) const
@@ -2768,6 +2764,14 @@ struct lacerate_t : public bear_attack_t
     tm *= td( t ) -> lacerate_stack;
 
     return tm;
+  }
+
+  virtual void tick( dot_t* d )
+  {
+    bear_attack_t::tick( d );
+
+    if ( result_is_multistrike( d -> state -> result ) )
+      trigger_ursa_major();
   }
 
   virtual void last_tick( dot_t* d )
