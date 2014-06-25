@@ -3236,8 +3236,9 @@ void warrior_t::apl_precombat()
   else if ( primary_role() == ROLE_ATTACK && talents.gladiators_resolve -> ok() )
     precombat -> add_action( "stance,choose=gladiator" );
   else
-    precombat -> add_action( "stance,choose=defensive", "IF YOU WISH TO SIMULATE YOUR CHARACTER AS GLADIATOR, PLEASE CHANGE ROLE TO DPS IN GLOBAL OPTIONS, SET YOUR CHARACTER TO LEVEL 100, AND ADD GLADIATORS RESOLVE TO YOUR TALENTS.\n"
-    "# EXAMPLE TALENT LINE: THE LAST DIGIT IS THE LEVEL 100 TIER, AND 2 IS GLADIATORS RESOLVE : talents=http://us.battle.net/wow/en/tool/talent-calculator#Zb!0102212");
+    precombat -> add_action( "stance,choose=defensive", "IF YOU WISH TO SIMULATE YOUR CHARACTER AS GLADIATOR, PLEASE CHANGE ROLE TO DPS IN GLOBAL OPTIONS, AND THEN RE-IMPORT FROM BATTLE.NET\n"
+    "# AFTER IMPORTING, MAKE SURE YOUR LEVEL IS SET TO 100 AND GLADIATORS RESOLVE IS TALENTED. \n"
+    "# EXAMPLE TALENT LINE, THE VERY LAST DIGIT (2) IS GLADIATORS RESOLVE: talents=http://us.battle.net/wow/en/tool/talent-calculator#Zb!0102212");
 
   //Pre-pot
   if ( sim -> allow_potions && level >= 80 )

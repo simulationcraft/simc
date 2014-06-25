@@ -20,8 +20,9 @@ actions.precombat=flask,type=earth
 actions.precombat+=/food,type=chun_tian_spring_rolls
 # Snapshot raid buffed stats before combat begins and pre-potting is done.
 actions.precombat+=/snapshot_stats
-# IF YOU WISH TO SIMULATE YOUR CHARACTER AS GLADIATOR, PLEASE CHANGE ROLE TO DPS IN GLOBAL OPTIONS, SET YOUR CHARACTER TO LEVEL 100, AND ADD GLADIATORS RESOLVE TO YOUR TALENTS.
-# EXAMPLE TALENT LINE: THE LAST DIGIT IS THE LEVEL 100 TIER, AND 2 IS GLADIATORS RESOLVE : talents=http://us.battle.net/wow/en/tool/talent-calculator#Zb!0102212
+# IF YOU WISH TO SIMULATE YOUR CHARACTER AS GLADIATOR, PLEASE CHANGE ROLE TO DPS IN GLOBAL OPTIONS, AND THEN RE-IMPORT FROM BATTLE.NET
+# AFTER IMPORTING, MAKE SURE YOUR LEVEL IS SET TO 100 AND GLADIATORS RESOLVE IS TALENTED. 
+# EXAMPLE TALENT LINE, THE VERY LAST DIGIT (2) IS GLADIATORS RESOLVE: talents=http://us.battle.net/wow/en/tool/talent-calculator#Zb!0102212
 actions.precombat+=/stance,choose=defensive
 actions.precombat+=/mountains_potion
 
