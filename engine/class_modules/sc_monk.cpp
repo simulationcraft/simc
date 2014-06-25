@@ -114,7 +114,8 @@ public:
     buff_t* tiger_power;
     buff_t* tiger_strikes;
     buff_t* focus_of_xuen;
-        buff_t* chi_serenity;
+    buff_t* chi_serenity;
+    buff_t* forceful_winds;
  
     //  buff_t* zen_meditation;
     //  buff_t* path_of_blossoms;
@@ -296,6 +297,7 @@ public:
     const spell_data_t* chi_brew_passive;
     const spell_data_t* enveloping_mist;
     const spell_data_t* surging_mist;
+    const spell_data_t* tier17_2pc;
   } passives;
  
   // Options
@@ -345,6 +347,7 @@ public:
   virtual double    composite_crit_avoidance() const;
   virtual double    composite_rating_multiplier( rating_e rating ) const;
   virtual double    composite_multistrike() const;
+//  virtual double    composite_multistrike_multiplier( const action_state_t* s ) const;
   virtual pet_t*    create_pet   ( const std::string& name, const std::string& type = std::string() );
   virtual void      create_pets();
   virtual void      init_spells();
@@ -1563,7 +1566,11 @@ struct fists_of_fury_t : public monk_melee_attack_t
 
     double savings = base_costs[ RESOURCE_CHI ] - cost();
     if ( result_is_hit( execute_state -> result ) )
+    {
       p() -> track_chi_consumption += savings;
+      if ( p() -> sets.has_set_bonus( SET_T17_2PC_MELEE ) )
+        trigger_brew( p() -> passives.tier17_2pc -> effectN( 1 ).base_value() );
+    }
 
     if ( p() -> buff.focus_of_xuen -> up() )
     {
@@ -1931,6 +1938,7 @@ struct tigereye_brew_t : public monk_spell_t
     parse_options( nullptr, options_str );
  
     harmful = false;
+
   }
  
   double value()
@@ -1943,7 +1951,7 @@ struct tigereye_brew_t : public monk_spell_t
     }
     return value;
   }
- 
+
   virtual void execute()
   {
     monk_spell_t::execute();
@@ -1969,6 +1977,9 @@ struct tigereye_brew_t : public monk_spell_t
         p() -> track_focus_of_xuen -= 10.0; // find out if this is additive or resets to zero upon use.
       }
     }
+
+    if ( p() -> sets.has_set_bonus( SET_T17_4PC_MELEE ) )
+      p() -> buff.forceful_winds-> trigger( teb_stacks_used, buff_t::DEFAULT_VALUE(), 100.0 );
  
     p() -> buff.tigereye_brew_use -> trigger( 1, use_value );
     p() -> buff.tigereye_brew -> decrement( max_stacks_consumable );
@@ -3276,6 +3287,7 @@ void monk_t::init_spells()
   passives.chi_brew_passive = find_spell( 145640 );
   passives.enveloping_mist  = find_class_spell( "Enveloping Mist" );
   passives.surging_mist     = find_class_spell( "Surging Mist" );
+  passives.tier17_2pc       = find_spell( 165403 );
  
   // GLYPHS
   glyph.fortifying_brew    = find_glyph( "Glyph of Fortifying Brew"    );
@@ -3290,10 +3302,11 @@ void monk_t::init_spells()
   static const set_bonus_description_t set_bonuses =
   {
     //    C2P      C4P    WW2P    WW4P    BM2P    BM4P    MW2P    MW4P
-    {       0,       0,      0,      0,      0,      0,      0,      0 }, // Tier13
     {       0,       0, 123149, 123150, 123157, 123159, 123152, 123153 }, // Tier14
     {       0,       0, 138177, 138315, 138231, 138236, 138289, 138290 }, // Tier15
     {       0,       0, 145022, 145004, 145049, 145055, 145439, 145449 }, // Tier16
+    {       0,       0, 165403, 165402, 165353, 165352, 165404, 165408 }, // Tier17
+
   };
  
   sets.register_spelldata( set_bonuses );
@@ -3406,7 +3419,8 @@ void monk_t::create_buffs()
   buff.energizing_brew -> buff_duration += sets.set( SET_T14_4PC_MELEE ) -> effectN( 1 ).time_value(); //verify working
   buff.tigereye_brew     = buff_creator_t( this, "tigereye_brew"       ).spell( find_spell( 125195 ) );
   buff.tigereye_brew_use = buff_creator_t( this, "tigereye_brew_use"   ).spell( find_spell( 116740 ) ).add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
-  buff.focus_of_xuen  = buff_creator_t( this, "focus_of_xuen"       ).spell( find_spell( 145024 ) );
+  buff.focus_of_xuen     = buff_creator_t( this, "focus_of_xuen"       ).spell( find_spell( 145024 ) );
+  buff.forceful_winds    = buff_creator_t( this, "forceful_winds"      ).spell( find_spell( 166603 ) );
 }
  
 // monk_t::init_gains =======================================================
@@ -3799,7 +3813,19 @@ double monk_t::composite_multistrike() const
  
   return m;
 }
- 
+
+// TODO: Fix so that composite_multistrike_multiplier works
+/*double monk_t::composite_multistrike_multiplier( const action_state_t* s )
+{
+  //double m = action_t::composite_multistrike_multiplier ( s );
+  double m = 0.3;
+
+  if ( buff.forceful_winds -> up() )
+    m += buff.forceful_winds -> value();
+
+  return m;
+}*/
+
 void monk_t::invalidate_cache( cache_e c )
 {
   base_t::invalidate_cache( c );
