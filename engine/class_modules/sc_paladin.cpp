@@ -135,6 +135,7 @@ public:
     gain_t* glyph_divine_shield;
 
     // Holy Power
+    gain_t* hp_beacon_of_light;
     gain_t* hp_blessed_life;
     gain_t* hp_crusader_strike;
     gain_t* hp_exorcism;
@@ -148,7 +149,6 @@ public:
     gain_t* hp_sanctified_wrath;
     gain_t* hp_selfless_healer;
     gain_t* hp_templars_verdict_refund;
-    gain_t* hp_tower_of_radiance;
     gain_t* hp_judgment;
     gain_t* hp_t15_4pc_tank;
   } gains;
@@ -2009,6 +2009,10 @@ struct flash_of_light_t : public paladin_heal_t
       if ( sim -> debug )
         sim -> out_debug.printf("=================== Flash of Light applies GoFoL buff ====================");      
     }
+        
+    // Grant Holy Power if healing the beacon target
+    if ( s -> target == p() -> beacon_target )
+      p() -> resource_gain( RESOURCE_HOLY_POWER, 1, p() -> gains.hp_beacon_of_light );
   }
 };
 
@@ -2175,6 +2179,15 @@ struct holy_light_t : public paladin_heal_t
     paladin_heal_t::schedule_execute( state );
 
     p() -> buffs.infusion_of_light -> up(); // Buff uptime tracking
+  }
+
+  virtual void impact( action_state_t* s )
+  {
+    paladin_heal_t::impact( s );
+    
+    // Grant Holy Power if healing the beacon target
+    if ( s -> target == p() -> beacon_target )
+      p() -> resource_gain( RESOURCE_HOLY_POWER, 1, p() -> gains.hp_beacon_of_light );
   }
 
 };
@@ -4662,7 +4675,13 @@ void paladin_t::init_gains()
   gains.divine_plea                 = get_gain( "divine_plea"            );
   gains.extra_regen                 = get_gain( ( specialization() == PALADIN_RETRIBUTION ) ? "sword_of_light" : "guarded_by_the_light" );
 
+  // Health
+  gains.seal_of_insight             = get_gain( "seal_of_insight"  );
+  gains.glyph_divine_storm          = get_gain( "glyph_of_divine_storm" );
+  gains.glyph_divine_shield         = get_gain( "glyph_of_divine_shield" );
+
   // Holy Power
+  gains.hp_beacon_of_light          = get_gain( "beacon_of_light" );
   gains.hp_blessed_life             = get_gain( "blessed_life" );
   gains.hp_crusader_strike          = get_gain( "crusader_strike" );
   gains.hp_exorcism                 = get_gain( "exorcism" );
@@ -4676,7 +4695,6 @@ void paladin_t::init_gains()
   gains.hp_sanctified_wrath         = get_gain( "sanctified_wrath" );
   gains.hp_selfless_healer          = get_gain( "selfless_healer" );
   gains.hp_templars_verdict_refund  = get_gain( "templars_verdict_refund" );
-  gains.hp_tower_of_radiance        = get_gain( "tower_of_radiance" );
   gains.hp_judgment                 = get_gain( "judgment" );
   gains.hp_t15_4pc_tank             = get_gain( "t15_4pc_tank" );
 }
