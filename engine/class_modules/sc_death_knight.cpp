@@ -1426,7 +1426,7 @@ struct army_ghoul_pet_t : public death_knight_pet_t
 
   virtual void init_base_stats()
   {
-    initial.stats.attack_power = -20;
+    //initial.stats.attack_power = -20;
 
     // Ghouls don't appear to gain any crit from agi, they may also just have none
     // initial_attack_crit_per_agility = rating_t::interpolate( level, 0.01/25.0, 0.01/40.0, 0.01/83.3 );
@@ -1434,7 +1434,7 @@ struct army_ghoul_pet_t : public death_knight_pet_t
     resources.base[ RESOURCE_ENERGY ] = 100;
     base_energy_regen_per_second  = 10;
 
-    owner_coeff.ap_from_ap = 0.5;
+    owner_coeff.ap_from_ap = 0.0415;
   }
 
   virtual resource_e primary_resource() const { return RESOURCE_ENERGY; }
@@ -1539,7 +1539,7 @@ struct gargoyle_pet_t : public death_knight_pet_t
     action_list_str = "travel/gargoyle_strike";
 
     // As per Blizzard
-    owner_coeff.sp_from_ap = 0.7;
+    owner_coeff.sp_from_ap = 0.46625;
   }
 
   virtual action_t* create_action( const std::string& name,
@@ -1661,11 +1661,11 @@ struct ghoul_pet_t : public death_knight_pet_t
   {
     //assert( owner -> specialization() != SPEC_NONE ); // Is there a reason for this?
 
-    initial.stats.attack_power = -20;
+    //initial.stats.attack_power = -20;
 
     resources.base[ RESOURCE_ENERGY ] = 100;
     base_energy_regen_per_second  = 10;
-    owner_coeff.ap_from_ap = 0.8;
+    owner_coeff.ap_from_ap = 0.2664;
   }
 
   //Ghoul regen doesn't benefit from haste (even bloodlust/heroism)
@@ -3020,7 +3020,7 @@ struct death_and_decay_t : public death_knight_spell_t
 
 // Defile ==================================================================
 
-struct defile_t: public death_knight_spell_t
+struct defile_t : public death_knight_spell_t
 {
   defile_t( death_knight_t* p, const std::string& options_str ) :
     death_knight_spell_t( "defile", p, p -> find_talent_spell( "Defile" ) )
@@ -3034,6 +3034,18 @@ struct defile_t: public death_knight_spell_t
     dot_duration = data().duration();
     tick_may_crit = tick_zero = true; // Zero tick or not?
     hasted_ticks = false;
+  }
+
+  double composite_ta_multiplier( const action_state_t* state ) const
+  {
+    double m = death_knight_spell_t::composite_ta_multiplier( state );
+
+    dot_t* dot = find_dot( state -> target );
+    assert( dot );
+
+    m *= 1.0 + std::pow( data().effectN( 2 ).percent() / 100.0, dot -> current_tick );
+
+    return m;
   }
 
   virtual void consume_resource()
