@@ -6560,78 +6560,17 @@ struct wait_for_cooldown_t : public wait_action_base_t
   virtual timespan_t execute_time() const;
 };
 
-namespace ignite {
-
-// Template for a ignite like action. Not mandatory, but encouraged to use it.
-
-// It makes sure that the travel time corresponds to our ignite model,
-// and sets various flags so as to not further modify the damage with which it gets executed
-
-template <class Base>
-struct pct_based_action_t : public Base
+// Namespace for a ignite like action. Not mandatory, but encouraged to use it.
+namespace residual_action
 {
-private:
-  typedef Base ab; // typedef for the templated action type, spell_t, or heal_t
-public:
-  typedef pct_based_action_t base_t;
-
-  template <typename T>
-  pct_based_action_t( const std::string& n, T& p, const spell_data_t* s ) :
-    ab( n, p, s )
-  {
-    ab::background = true;
-
-    ab::tick_may_crit = false;
-    ab::hasted_ticks  = false;
-    ab::may_crit = false;
-    ab::attack_power_mod.tick = 0;
-    ab::spell_power_mod.tick = 0;
-    ab::dot_behavior  = DOT_REFRESH;
-  }
-
-  virtual void impact( action_state_t* s )
-  {
-    double saved_impact_dmg = s -> result_amount;
-    s -> result_amount = 0;
-    ab::impact( s );
-
-    dot_t* dot = ab::get_dot( s -> target );
-    assert( dot -> is_ticking() && dot -> ticks_left() && "No dot has been triggered for ignite_pct_based_action!" );
-    ab::base_td = saved_impact_dmg / dot -> ticks_left();
-  }
-
-  virtual timespan_t travel_time() const
-  {
-    // Starts directly after ignite amount is calculated
-    return timespan_t::zero();
-  }
-
-  virtual void execute()
-  { assert( 0 ); }
-
-  void init()
-  {
-    ab::init();
-
-    ab::update_flags = ab::snapshot_flags = 0;
-  }
-
-  virtual double composite_ta_multiplier( const action_state_t* /* state */ ) const { return 1.0; } // stateless
-};
-
-// This is a template for Ignite like mechanics, like of course Ignite, Hunter Piercing Shots, Priest Echo of Light, etc.
-// It should get specialized in the class module
-void trigger_pct_based( action_t* ignite_action,
-                        player_t* t,
-                        double dmg );
-
-}  // namespace ignite
-
-struct residual_dot_action_state : public action_state_t
+// Custom state for ignite-like actions. tick_amount contains the current
+// ticking value of the ignite periodic effect, and is adjusted every time
+// residual_periodic_action_t (the ignite spell) impacts on the target.
+struct residual_periodic_state_t : public action_state_t
 {
   double tick_amount;
 
-  residual_dot_action_state( action_t* a, player_t* t ) :
+  residual_periodic_state_t( action_t* a, player_t* t ) :
     action_state_t( a, t ),
     tick_amount( 0 )
   { }
@@ -6645,103 +6584,118 @@ struct residual_dot_action_state : public action_state_t
   void copy_state( const action_state_t* o ) override
   {
     action_state_t::copy_state( o );
-    const residual_dot_action_state* dps_t = debug_cast<const residual_dot_action_state*>( o );
+    const residual_periodic_state_t* dps_t = debug_cast<const residual_periodic_state_t*>( o );
     tick_amount = dps_t -> tick_amount;
   }
 };
 
-template <typename Action>
-struct residual_dot_action : public Action
+template <class Base>
+struct residual_periodic_action_t : public Base
 {
+private:
+  typedef Base ab; // typedef for the templated action type, spell_t, or heal_t
+public:
+  typedef residual_periodic_action_t base_t;
 
-  typedef residual_dot_action< Action > residual_dot_action_t;
-
-  template <typename Player>
-  residual_dot_action( const std::string& n, Player& p, const spell_data_t* s ) :
-    Action( n, p, s )
+  template <typename T>
+  residual_periodic_action_t( const std::string& n, T& p, const spell_data_t* s ) :
+    ab( n, p, s )
   {
-    Action::background = true;
-    Action::tick_may_crit = false;
-    Action::hasted_ticks  = false;
-    Action::may_crit = false;
-    Action::attack_power_mod.tick = 0;
-    Action::spell_power_mod.tick = 0;
-    Action::may_multistrike = false;
-    Action::dot_behavior  = DOT_REFRESH;
+    ab::background = true;
+
+    ab::tick_may_crit = false;
+    ab::hasted_ticks  = false;
+    ab::may_crit = false;
+    ab::attack_power_mod.tick = 0;
+    ab::spell_power_mod.tick = 0;
+    ab::dot_behavior  = DOT_REFRESH;
+    ab::callbacks = false;
+    ab::may_multistrike = false;
   }
 
   virtual action_state_t* new_state() override
-  { return new residual_dot_action_state( this, Action::target ); }
+  { return new residual_periodic_state_t( this, ab::target ); }
 
-  virtual action_state_t* get_state( const action_state_t* s = nullptr ) override
-  {
-    action_state_t* s_ = Action::get_state( s );
-
-    if ( !s )
-    {
-      residual_dot_action_state* ds_ = static_cast<residual_dot_action_state*>( s_ );
-      ds_ -> tick_amount = 0.0;
-    }
-
-    return s_;
-  }
-
-  virtual void execute() { assert( 0 ); }
-
-  // Never need to update the state.
-  virtual void snapshot_state( action_state_t*, dmg_e ) override
-  { }
-  virtual void update_state( action_state_t*, dmg_e ) override { }
-
-  virtual double calculate_tick_amount( action_state_t* s, double dmg_multiplier )
-  {
-    dot_t* d = Action::find_dot( s -> target );
-    residual_dot_action_state* rd_state = debug_cast<residual_dot_action_state*>( s );
-
-    s -> result_amount =  d ? rd_state -> tick_amount * dmg_multiplier: 0.0;
-    return s -> result_amount;
-  }
+  // Residual periodic actions will not be extendeed by the pandemic mechanism,
+  // thus the new maximum length of the dot is the ongoing tick plus the
+  // duration of the dot.
+  virtual timespan_t calculate_dot_refresh_duration( const dot_t* dot, timespan_t triggered_duration ) const override
+  { return dot -> time_to_next_tick() + triggered_duration; }
 
   virtual void impact( action_state_t* s )
   {
-    assert( ! Action::tick_zero );
-    dot_t* dot = Action::get_dot( s -> target );
-    double current_amount = 0;
-    residual_dot_action_state* dot_state = debug_cast<residual_dot_action_state*>( dot -> state );
-    if ( dot -> is_ticking() )
-      current_amount = dot_state -> tick_amount * dot -> ticks_left();
+    // Residual periodic actions + tick_zero does not work
+    assert( ! ab::tick_zero );
 
+    dot_t* dot = ab::get_dot( s -> target );
+    double current_amount = 0, old_amount = 0;
+    int ticks_left = 0;
+    residual_periodic_state_t* dot_state = debug_cast<residual_periodic_state_t*>( dot -> state );
+
+    // If dot is ticking get current residual pool before we overwrite it
+    if ( dot -> is_ticking() )
+    {
+      old_amount = dot_state -> tick_amount;
+      ticks_left = dot -> ticks_left();
+      current_amount = old_amount * dot -> ticks_left();
+    }
+
+    // Add new amount to residual pool
     current_amount += s -> result_amount;
 
-    Action::trigger_dot( s );
+    // Trigger the dot, refreshing it's duration or starting it
+    ab::trigger_dot( s );
+
+    // If the dot is not ticking, dot_state will be nullptr, so get the
+    // residual_periodic_state_t object from the dot again (since it will exist
+    // after trigger_dot() is called)
     if ( ! dot_state )
-      dot_state = debug_cast<residual_dot_action_state*>( dot -> state );
+      dot_state = debug_cast<residual_periodic_state_t*>( dot -> state );
 
-    // Amortize damage AFTER dot initialized so we know how many ticks. Only works if tick_zero=false.
+    // Compute tick damage after refresh, so we divide by the correct number of
+    // ticks
     dot_state -> tick_amount = current_amount / dot -> ticks_left();
+
+    // Spit out debug for what we did
+    if ( ab::sim -> debug )
+      ab::sim -> out_debug.printf( "%s %s residual_action impact amount=%f old_total=%f old_ticks=%d old_tick=%f current_total=%f current_ticks=%d current_tick=%f",
+                  ab::player -> name(), ab::name(), s -> result_amount,
+                  old_amount, ticks_left, ticks_left > 0 ? old_amount / ticks_left : 0,
+                  current_amount, dot -> ticks_left(), dot_state -> tick_amount );
   }
 
+  // The damage of the tick is simply the tick_amount in the state
+  virtual double base_ta( const action_state_t* s ) const
+  {
+    dot_t* d = ab::find_dot( s -> target );
+    residual_periodic_state_t* rd_state = debug_cast<residual_periodic_state_t*>( d -> state );
+
+    return d ? rd_state -> tick_amount : 0.0;
+  }
+
+  // Ensure that not travel time exists for the ignite ability. Delay is
+  // handled in the trigger via a custom event
   virtual timespan_t travel_time() const
-  {
-    return Action::rng().gauss( Action::sim -> default_aura_delay,
-                                 Action::sim -> default_aura_delay_stddev );
-  }
+  { return timespan_t::zero(); }
 
-  void trigger( player_t* t, double amount )
-  {
-    action_state_t* s = Action::get_state();
-    s -> result = RESULT_HIT;
-    s -> result_amount = amount;
-    s -> target = t;
-    Action::schedule_travel( s );
-  }
+  // This object is not "executable" normally. Instead, the custom event
+  // handles the triggering of ignite
+  virtual void execute()
+  { assert( 0 ); }
 
-  virtual timespan_t calculate_dot_refresh_duration( const dot_t* dot, timespan_t triggered_duration ) const override
+  // Ensure that the ignite action snapshots nothing
+  void init()
   {
-    // Old Mop Dot Behaviour
-    return dot -> time_to_next_tick() + triggered_duration;
+    ab::init();
+
+    ab::update_flags = ab::snapshot_flags = 0;
   }
 };
+
+// Trigger a residual periodic action on target t
+void trigger( action_t* residual_action, player_t* t, double amount );
+
+}  // namespace residual_action
 
 // Inlines ==================================================================
 

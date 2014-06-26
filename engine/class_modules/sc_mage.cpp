@@ -33,7 +33,10 @@
 
 #include "simulationcraft.hpp"
 
+using namespace residual_action;
+
 namespace { // UNNAMED NAMESPACE
+
 
 // ==========================================================================
 // Mage
@@ -1169,6 +1172,8 @@ public:
 
 };
 
+typedef residual_action::residual_periodic_action_t< mage_spell_t > residual_action_t;
+
 // Icicles ==================================================================
 
 struct icicle_t : public mage_spell_t
@@ -1194,10 +1199,10 @@ struct icicle_t : public mage_spell_t
 
 // Ignite ===================================================================
 
-struct ignite_t : public residual_dot_action< mage_spell_t >
+struct ignite_t : public residual_action_t
 {
   ignite_t( mage_t* player ) :
-    residual_dot_action_t( "ignite", player, player -> find_spell( 12846 ) )
+    residual_action_t( "ignite", player, player -> find_spell( 12846 ) )
   {
     dot_duration = player -> dbc.spell( 12654 ) -> duration();
     base_tick_time = player -> dbc.spell( 12654 ) -> effectN( 1 ).period();
@@ -1210,7 +1215,7 @@ void mage_spell_t::trigger_ignite( action_state_t* state )
   mage_t& p = *this -> p();
   if ( ! p.active_ignite ) return;
   double amount = state -> result_amount * p.cache.mastery_value();
-  p.active_ignite -> trigger( state -> target, amount );
+  trigger( p.active_ignite, state -> target, amount );
 }
 
 // Arcane Barrage Spell =====================================================
@@ -1658,7 +1663,7 @@ struct combustion_t : public mage_spell_t
   }
 
   action_state_t* new_state()
-  { return new residual_dot_action_state( this, target ); }
+  { return new residual_periodic_state_t( this, target ); }
 
   virtual double calculate_tick_amount( action_state_t* s, double dmg_multiplier )
   {
@@ -1667,7 +1672,7 @@ struct combustion_t : public mage_spell_t
     if ( dot_t* d = find_dot( s -> target ) )
     {
 
-      const residual_dot_action_state* dps_t = debug_cast<const residual_dot_action_state*>( d -> state );
+      const residual_periodic_state_t* dps_t = debug_cast<const residual_periodic_state_t*>( d -> state );
       a += dps_t -> tick_amount;
     }
 
@@ -1690,8 +1695,8 @@ struct combustion_t : public mage_spell_t
     {
       mage_spell_t::trigger_dot( s );
 
-      residual_dot_action_state* combustion_dot_state_t = debug_cast<residual_dot_action_state*>( combustion_dot -> state );
-      const residual_dot_action_state* ignite_dot_state_t = debug_cast<const residual_dot_action_state*>( ignite_dot -> state );
+      residual_periodic_state_t* combustion_dot_state_t = debug_cast<residual_periodic_state_t*>( combustion_dot -> state );
+      const residual_periodic_state_t* ignite_dot_state_t = debug_cast<const residual_periodic_state_t*>( ignite_dot -> state );
       combustion_dot_state_t -> tick_amount = ignite_dot_state_t -> tick_amount * 0.2; // 0.2 modifier hardcoded into tooltip 2013/08/14 PTR
     }
   }
@@ -2827,7 +2832,8 @@ struct inferno_blast_t : public mage_spell_t
         {
           if ( td( t ) -> dots.ignite -> is_ticking() ) //is already ticking on target spell, so merge it
           {
-            p() -> active_ignite -> trigger( t, ignite_dot -> state -> result_amount * ignite_dot -> ticks_left() );
+            residual_periodic_state_t* dot_state = debug_cast<residual_periodic_state_t*>( ignite_dot -> state );
+            residual_action::trigger( p() -> active_ignite, t, dot_state -> tick_amount * ignite_dot -> ticks_left() );
           }
           else
           {

@@ -636,7 +636,7 @@ struct warrior_attack_t: public warrior_action_t < melee_attack_t >
     if ( !p() -> buff.bloodbath -> check() )
       return;
 
-    ignite::trigger_pct_based(
+    residual_action::trigger(
       p() -> active_bloodbath_dot, // ignite spell
       t, // target
       p() -> buff.bloodbath -> data().effectN( 1 ).percent() * dmg );
@@ -676,9 +676,9 @@ struct warrior_attack_t: public warrior_action_t < melee_attack_t >
 
 // trigger_bloodbath ========================================================
 
-struct bloodbath_dot_t: public ignite::pct_based_action_t < attack_t >
+struct bloodbath_dot_t: public residual_action::residual_periodic_action_t < attack_t >
 {
-  typedef  ignite::pct_based_action_t<attack_t> base_t;
+  typedef  residual_action::residual_periodic_action_t<attack_t> base_t;
   bloodbath_dot_t( warrior_t* p ):
     base_t( "bloodbath", p, p -> find_spell( 113344 ) )
   {

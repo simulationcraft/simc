@@ -2040,7 +2040,7 @@ struct cobra_shot_t : public hunter_ranged_attack_t
 
 // Explosive Shot ===========================================================
 
-struct explosive_shot_tick_t : public ignite::pct_based_action_t< attack_t >
+struct explosive_shot_tick_t : public residual_action::residual_periodic_action_t< attack_t >
 {
   explosive_shot_tick_t( hunter_t* p ) :
     base_t( "explosive_shot_tick", p, p -> specs.explosive_shot )
@@ -2163,7 +2163,7 @@ struct explosive_shot_t : public hunter_ranged_attack_t
       double damage = calculate_tick_amount( s , 1.0);
       s -> result = r;
 
-      ignite::trigger_pct_based(
+      residual_action::trigger(
         p() -> active.explosive_ticks, // ignite spell
         s -> target,                   // target
         damage * tick_count);

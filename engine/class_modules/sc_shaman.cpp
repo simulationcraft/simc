@@ -328,7 +328,7 @@ public:
   } talent;
 
   // Perks
-  struct
+  struct perks
   {
     // Elemental
 

@@ -1026,7 +1026,7 @@ struct tiger_palm_t : public monk_melee_attack_t
 // Blackout Kick
 // ==========================================================================
  
-struct dot_blackout_kick_t : public ignite::pct_based_action_t< monk_melee_attack_t >
+struct dot_blackout_kick_t : public residual_action::residual_periodic_action_t< monk_melee_attack_t >
 {
   dot_blackout_kick_t( monk_t* p ) :
     base_t( "blackout_kick_dot", p, p -> find_spell( 128531 ) )
@@ -1042,7 +1042,7 @@ struct blackout_kick_t : public monk_melee_attack_t
   {
     monk_t* p = s -> p();
  
-    ignite::trigger_pct_based(
+    residual_action::trigger(
       p -> active_actions.blackout_kick_dot,
       t,
       dmg );
@@ -1172,7 +1172,7 @@ struct chi_state_t final : public action_state_t
 // ==========================================================================
 // TODO: implement varying Chi values
  
-struct dot_chi_explosion_t : public ignite::pct_based_action_t< monk_melee_attack_t >
+struct dot_chi_explosion_t : public residual_action::residual_periodic_action_t< monk_melee_attack_t >
 {
   dot_chi_explosion_t( monk_t* p ) :
     base_t( "chi_explosion_dot", p, p -> find_spell( 157681 ) )
@@ -1189,7 +1189,7 @@ struct chi_explosion_t : public monk_melee_attack_t
   {
     monk_t* p = s -> p();
  
-    ignite::trigger_pct_based(
+    residual_action::trigger(
       p -> active_actions.chi_explosion_dot,
       t,
       dmg );
@@ -2437,7 +2437,7 @@ struct mana_tea_t : public monk_spell_t
   }
 };
  
-struct stagger_self_damage_t : public ignite::pct_based_action_t<monk_spell_t>
+struct stagger_self_damage_t : public residual_action::residual_periodic_action_t<monk_spell_t>
 {
   stagger_self_damage_t( monk_t* p ) :
     base_t( "stagger_self_damage", p, p -> find_spell( 124255 ) )
@@ -4028,7 +4028,7 @@ void monk_t::assess_damage_imminent_pre_absorb( school_e school,
  
   // Hook up Stagger Mechanism
   if ( stagger_dmg > 0 )
-    ignite::trigger_pct_based( active_actions.stagger_self_damage, this, stagger_dmg );
+    residual_action::trigger( active_actions.stagger_self_damage, this, stagger_dmg );
 }
  
 // Mistweaver Pre-Combat Action Priority List

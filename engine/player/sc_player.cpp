@@ -321,76 +321,68 @@ bool parse_origin( sim_t* sim, const std::string&, const std::string& origin )
 // http://us.battle.net/wow/en/forum/topic/5889309137?page=40#787
 
 // There is still a delay between the impact of the triggering spell and the dot application/refresh and damage calculation.
-void ignite::trigger_pct_based( action_t* ignite_action,
-                                player_t* t,
-                                double dmg )
+void residual_action::trigger( action_t* residual_action, player_t* t, double amount )
 {
   struct delay_event_t : public event_t
   {
-    double additional_ignite_dmg;
+    double additional_residual_amount;
     player_t* target;
     action_t* action;
 
-    delay_event_t( player_t* t, action_t* a, double dmg ) :
-      event_t( *a -> player, "Ignite Sampling Event" ),
-      additional_ignite_dmg( dmg ), target( t ), action( a )
+    delay_event_t( player_t* t, action_t* a, double amount ) :
+      event_t( *a -> player, "residual_action_delay_event" ),
+      additional_residual_amount( amount ), target( t ), action( a )
     {
       // Use same delay as in buff application
       timespan_t delay_duration = sim().rng().gauss( sim().default_aura_delay, sim().default_aura_delay_stddev );
 
       if ( sim().debug )
-        sim().out_debug.printf( "New %s Sampling Event: %s ( delta time: %.4f )",
-                    action -> name(), p() -> name(), delay_duration.total_seconds() );
+        sim().out_debug.printf( "%s %s residual_action delay_event_start amount=%f",
+                    p() -> name(), action -> name(), amount );
 
       sim().add_event( this, delay_duration );
     }
 
     virtual void execute()
     {
+      // Don't ignite on targets that are not active
       if ( target -> is_sleeping() )
         return;
 
       dot_t* dot = action -> get_dot( target );
-
-      double new_total_ignite_dmg = additional_ignite_dmg;
+      residual_periodic_state_t* dot_state = debug_cast<residual_periodic_state_t*>( dot -> state );
 
       assert( action -> dot_duration > timespan_t::zero() );
-
-      if ( dot -> is_ticking() )
-        new_total_ignite_dmg += action -> base_td * dot -> ticks_left();
 
       if ( sim().debug )
       {
         if ( dot -> is_ticking() )
         {
-          sim().out_debug.printf( "ignite_delay_event::execute(): additional_damage=%f current_ignite_tick=%f ticks_left=%d new_ignite_dmg=%f",
-                      additional_ignite_dmg, action -> base_td, dot -> ticks_left(), new_total_ignite_dmg );
+          sim().out_debug.printf( "%s %s residual_action delay_event_execute target=%s amount=%f current_ticks=%d current_tick=%f",
+                      action -> player -> name(), action -> name(), target -> name(),
+                      additional_residual_amount, dot -> ticks_left(), dot_state -> tick_amount );
         }
         else
         {
-          sim().out_debug.printf( "ignite_delay_event::execute(): additional_damage=%f new_ignite_dmg=%f",
-                      additional_ignite_dmg, new_total_ignite_dmg );
+          sim().out_debug.printf( "%s %s residual_action delay_event_execute target=%s amount=%f",
+              action -> player -> name(), action -> name(), target -> name(), additional_residual_amount );
         }
       }
 
       // Pass total amount of damage to the ignite action, and let it divide it by the correct number of ticks!
-
-      // action execute
-      {
-        action_state_t* s = action -> get_state();
-        s -> target = target;
-        s -> result = RESULT_HIT;
-        action -> snapshot_state( s, action -> type == ACTION_HEAL ? HEAL_OVER_TIME : DMG_OVER_TIME );
-        s -> result_amount = new_total_ignite_dmg;
-        action -> schedule_travel( s );
-        if ( ! action -> dual ) action -> stats -> add_execute( timespan_t::zero(), s -> target );
-      }
+      action_state_t* s = action -> get_state();
+      s -> target = target;
+      s -> result = RESULT_HIT;
+      action -> snapshot_state( s, action -> type == ACTION_HEAL ? HEAL_OVER_TIME : DMG_OVER_TIME );
+      s -> result_amount = additional_residual_amount;
+      action -> schedule_travel( s );
+      if ( ! action -> dual ) action -> stats -> add_execute( timespan_t::zero(), s -> target );
     }
   };
 
-  assert( ignite_action );
+  assert( residual_action );
 
-  new ( *ignite_action -> sim ) delay_event_t( t, ignite_action, dmg );
+  new ( *residual_action -> sim ) delay_event_t( t, residual_action, amount );
 }
 
 // ==========================================================================

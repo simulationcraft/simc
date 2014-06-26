@@ -1246,7 +1246,7 @@ struct priest_heal_t : public priest_action_t<heal_t>
     if ( ! p.mastery_spells.echo_of_light -> ok() || ! can_trigger_EoL )
       return;
 
-    ignite::trigger_pct_based(
+    residual_action::trigger(
       p.active_spells.echo_of_light, // ignite spell
       s -> target, // target
       s -> result_amount * p.cache.mastery_value() ); // ignite damage
@@ -3735,7 +3735,7 @@ struct divine_hymn_t final : public priest_heal_t
 
 // Echo of Light
 
-struct echo_of_light_t final : public ignite::pct_based_action_t<priest_heal_t>
+struct echo_of_light_t final : public residual_action::residual_periodic_action_t<priest_heal_t>
 {
   echo_of_light_t( priest_t& p ) :
     base_t( "echo_of_light", p, p.find_spell( 77489 ) )

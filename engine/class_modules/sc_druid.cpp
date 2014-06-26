@@ -633,9 +633,9 @@ public:
 
 // Gushing Wound (tier17_4pc_melee) ========================================================
 
-struct gushing_wound_t : public ignite::pct_based_action_t< attack_t >
+struct gushing_wound_t : public residual_action::residual_periodic_action_t< attack_t >
 {
-  typedef  ignite::pct_based_action_t<attack_t> base_t;
+  typedef  residual_action::residual_periodic_action_t<attack_t> base_t;
   gushing_wound_t( druid_t* p ) :
     base_t( "gushing_wound", p, p -> find_spell( 166638 ) )
   {
@@ -1701,7 +1701,7 @@ public:
     if ( ! ( p() -> buff.berserk -> check() && ab::special && ab::harmful ) )
       return;
 
-    ignite::trigger_pct_based(
+    residual_action::trigger(
       p() -> active.gushing_wound, // ignite spell
       t, // target
       p() -> find_spell( 165432 ) -> effectN( 1 ).percent() * dmg );
