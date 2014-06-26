@@ -2854,32 +2854,9 @@ struct sacred_shield_t : public paladin_heal_t
 
   virtual void execute()
   {
-    // if cast precombat, we need to kludge some things
-    if ( ! p() -> in_combat )
-    {
-      // in theory, we need to tweak the number of ticks and force a new one precombat
-      // in practice, it's ticking immediately when cast precombat for some reason, so we can skip all of that
-      // keeping this code here just in case that behavior changes
+    paladin_heal_t::execute();
 
-      //int orig_ticks = num_ticks;
-      //num_ticks -= 1;
-
-      paladin_heal_t::execute();
-
-      //num_ticks = orig_ticks;
-
-      p() -> buffs.sacred_shield -> trigger();
-
-      // force tick
-      //tick( get_dot( p() ) );
-
-    }
-    else
-    {
-      paladin_heal_t::execute();
-
-      p() -> buffs.sacred_shield -> trigger();
-    }
+    p()->buffs.sacred_shield->trigger();
   }
 };
 
