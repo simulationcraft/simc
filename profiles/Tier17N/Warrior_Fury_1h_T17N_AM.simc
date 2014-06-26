@@ -41,7 +41,6 @@ actions+=/run_action_list,name=three_targets,if=active_enemies=3
 actions+=/run_action_list,name=aoe,if=active_enemies>3
 
 actions.single_target=bloodbath,if=talent.bloodbath.enabled&((cooldown.colossus_smash.remains<2|debuff.colossus_smash.remains>=5|target.time_to_die<=20))
-actions.single_target+=/heroic_strike,if=((debuff.colossus_smash.up&rage>=40)&target.health.pct>=20)|rage>=100&buff.enrage.up
 actions.single_target+=/ignite_weapon,if=talent.ignite_weapon.enabled&((target.health.pct>=20&(rage>90|(buff.enrage.up&rage>40)))|buff.ignite_weapon.remains<2)
 actions.single_target+=/heroic_leap,if=debuff.colossus_smash.up
 actions.single_target+=/storm_bolt,if=talent.storm_bolt.enabled&debuff.colossus_smash.up
@@ -65,7 +64,6 @@ actions.single_target+=/impending_victory,if=talent.impending_victory.enabled&(t
 
 actions.two_targets=bloodbath,if=talent.bloodbath.enabled
 actions.two_targets+=/heroic_leap,if=buff.enrage.up
-actions.two_targets+=/heroic_strike,if=rage>100
 actions.two_targets+=/ignite_weapon,if=talent.ignite_weapon.enabled&((target.health.pct>=20&rage>100)|buff.ignite_weapon.down)
 actions.two_targets+=/ravager,if=talent.ravager.enabled
 actions.two_targets+=/bladestorm,if=talent.bladestorm.enabled&buff.enrage.remains>4
@@ -81,7 +79,6 @@ actions.two_targets+=/shockwave,if=talent.shockwave.enabled
 actions.three_targets=bloodbath,if=talent.bloodbath.enabled
 actions.three_targets+=/heroic_leap,if=buff.enrage.up
 actions.three_targets+=/ravager,if=talent.ravager.enabled
-actions.three_targets+=/heroic_strike,if=rage>100
 actions.three_targets+=/ignite_weapon,if=talent.ignite_weapon.enabled&((target.health.pct>=20&rage>100)|buff.ignite_weapon.down)
 actions.three_targets+=/bloodthirst
 actions.three_targets+=/bladestorm,if=talent.bladestorm.enabled&buff.enrage.remains>4
@@ -94,7 +91,6 @@ actions.three_targets+=/shockwave,if=talent.shockwave.enabled
 
 actions.aoe=bloodbath,if=talent.bloodbath.enabled
 actions.aoe+=/heroic_leap,if=buff.enrage.up
-actions.aoe+=/heroic_strike,if=rage>100
 actions.aoe+=/ignite_weapon,if=talent.ignite_weapon.enabled&((target.health.pct>=20&rage>100)|buff.ignite_weapon.down)
 actions.aoe+=/ravager,if=talent.ravager.enabled
 actions.aoe+=/bladestorm,if=talent.bladestorm.enabled

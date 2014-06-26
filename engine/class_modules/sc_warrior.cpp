@@ -93,6 +93,7 @@ public:
     buff_t* shield_charge;
     buff_t* shield_wall;
     buff_t* sword_and_board;
+    buff_t* ultimatum;
 
     // Tier bonuses
     buff_t* tier15_2pc_tank;
@@ -246,6 +247,7 @@ public:
     const spell_data_t* revenge;
     const spell_data_t* shield_slam;
     const spell_data_t* sword_and_board;
+    const spell_data_t* ultimatum;
     const spell_data_t* unwavering_sentinel;
   } spec;
 
@@ -1504,6 +1506,33 @@ struct heroic_strike_t: public warrior_attack_t
     return am;
   }
 
+  virtual double cost() const
+  {
+    double c = warrior_attack_t::cost();
+
+    if ( p() -> buff.ultimatum -> check() )
+      c *= 1 + p() -> buff.ultimatum -> data().effectN( 1 ).percent();
+
+    return c;
+  }
+
+  virtual double composite_crit() const
+  {
+    double cc = warrior_attack_t::composite_crit();
+
+    if ( p() -> buff.ultimatum -> check() )
+      cc += p() -> buff.ultimatum -> data().effectN( 2 ).percent();
+
+    return cc;
+  }
+
+  virtual void execute()
+  {
+    warrior_attack_t::execute();
+
+    p() -> buff.ultimatum -> expire();
+  }
+
   virtual void update_ready( timespan_t cd_duration )
   {
     //Head Long Rush reduces the cooldown depending on the amount of haste.
@@ -2027,7 +2056,10 @@ struct shield_slam_t: public warrior_attack_t
       p() -> buff.tier15_2pc_tank -> trigger();
 
     if ( s -> result == RESULT_CRIT )
+    {
       p() -> enrage();
+      p() -> buff.ultimatum -> trigger();
+    }
   }
 
   virtual void update_ready( timespan_t cd_duration )
@@ -3059,6 +3091,7 @@ void warrior_t::init_spells()
   spec.unwavering_sentinel      = find_specialization_spell( "Unwavering Sentinel" );
   spec.whirlwind                = find_specialization_spell( "Whirlwind" );
   spec.wild_strike              = find_specialization_spell( "Wild Strike" );
+  spec.ultimatum                = find_specialization_spell( "Ultimatum"             );
 
   // Talents
   talents.juggernaut            = find_talent_spell( "Juggernaut" );
@@ -3512,7 +3545,7 @@ void warrior_t::apl_prot()
   if ( sim -> allow_potions && level >= 80 )
     default_list -> add_action( "mountains_potion,if=incoming_damage_2500ms>health.max*0.6&(buff.shield_wall.down&buff.last_stand.down)" );
 
-  default_list -> add_action( this, "Heroic Strike", "if=rage=rage.max" );
+  default_list -> add_action( this, "Heroic Strike", "if=buff.ultimatum.up" );
   default_list -> add_action( this, "Shield Block" );
   default_list -> add_action( this, "Shield Barrier", "if=incoming_damage_1500ms>health.max*0.3|rage>rage.max-20" );
   default_list -> add_action( this, "Shield Wall", "if=incoming_damage_2500ms>health.max*0.6" );
@@ -3522,7 +3555,7 @@ void warrior_t::apl_prot()
   normal_rotation -> add_action( this, "Shield Slam" );
   normal_rotation -> add_action( this, "Revenge" );
   normal_rotation -> add_talent( this, "Enraged Regeneration" );
-  normal_rotation -> add_action( this, "Heroic Strike", "if=rage=rage.max" );
+  normal_rotation -> add_action( this, "Heroic Strike", "if=buff.ultimatum.up" );
   normal_rotation -> add_talent( this, "Ravager" );
   normal_rotation -> add_action( this, "Thunder Clap" );
   normal_rotation -> add_action( this, "Demoralizing Shout" );
@@ -3558,7 +3591,7 @@ void warrior_t::apl_gladiator()
   default_list -> add_action( "run_action_list,name=aoe,if=active_enemies>3" );
 
   single_target -> add_action( "shield_charge,if=buff.shield_charge.down" );
-  single_target -> add_action( this, "Heroic Strike", "if=(buff.shield_charge.up&rage>50&target.health.pct>20)|rage>110" );
+  single_target -> add_action( this, "Heroic Strike", "if=buff.ultimatum.up|(buff.shield_charge.up&rage>50&target.health.pct>20)|rage>110" );
   single_target -> add_talent( this, "Bloodbath" );
   single_target -> add_talent( this, "Avatar" );
   single_target -> add_action( this, "Heroic Leap", "if=(buff.bloodbath.up|cooldown.bloodbath.remains>5)|!talent.bloodbath.enabled" );
@@ -3574,7 +3607,7 @@ void warrior_t::apl_gladiator()
   aoe -> add_action( "shield_charge,if=buff.shield_charge.down" );
   aoe -> add_action( this, "Thunder Clap", "if=!dot.deep_wounds.ticking" );
   aoe -> add_talent( this, "Bladestorm" );
-  aoe -> add_action( this, "Heroic Strike", "if=(buff.shield_charge.up&rage>50)|rage>110" );
+  aoe -> add_action( this, "Heroic Strike", "if=buff.ultimatum.up|buff.shield_charge.up&rage>50|rage>110" );
   aoe -> add_action( this, "Heroic Leap", "if=(buff.bloodbath.up|cooldown.bloodbath.remains>5|!talent.bloodbath.enabled)" );
   aoe -> add_action( this, "Shield Slam" );
   aoe -> add_action( this, "Thunder Clap" );
@@ -3693,6 +3726,9 @@ void warrior_t::create_buffs()
   buff.tier15_2pc_tank = buff_creator_t( this, "tier15_2pc_tank", find_spell( 138279 ) );
 
   buff.tier16_reckless_defense = buff_creator_t( this, "tier16_reckless_defense", find_spell( 144500 ) );
+
+  buff.ultimatum        = buff_creator_t( this, "ultimatum", spec.ultimatum -> effectN( 1 ).trigger() );
+
 }
 
 // warrior_t::init_gains ====================================================
