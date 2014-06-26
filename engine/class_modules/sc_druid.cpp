@@ -2041,20 +2041,6 @@ public:
 
     player -> resource_gain( RESOURCE_ENERGY, energy_restored, p() -> gain.energy_refund );
   }
-
-  void extend_rip( action_state_t& s )
-  {
-    if ( result_is_hit( s.result ) )
-    {
-      if ( td( s.target ) -> dots.rip -> is_ticking() &&
-           td( s.target ) -> dots.rip -> get_extended_time() < timespan_t::from_seconds( 9.0 ) )
-      {
-        /* TODO: WOD, determine specific mechanics of Rip extension. It seems to still be extending by more than 2 seconds,
-                 but specifics may assist in modelling it more accurately. */
-        td( s.target ) -> dots.rip -> extend_duration( timespan_t::from_seconds( 3.0 ), timespan_t::min(), 0 );
-      }
-    }
-  }
 }; // end druid_cat_attack_t
 
 
@@ -2314,6 +2300,11 @@ struct rip_t : public cat_attack_t
     may_crit              = false;
     dot_behavior          = DOT_REFRESH;
 
+    // Increase Rip duration to 24s: https://twitter.com/Celestalon/status/481920491318288384
+    // TODO: Remove in an upcoming alpha build.
+    if ( dot_duration == timespan_t::from_seconds( 16.0 ) )
+      dot_duration += timespan_t::from_seconds( 8.0 );
+
     dot_duration += player -> sets.set( SET_T14_4PC_MELEE ) -> effectN( 1 ).time_value();
   }
 
@@ -2366,19 +2357,9 @@ struct savage_roar_t : public cat_attack_t
 
 struct shred_t : public cat_attack_t
 {
-  int extends_rip;
-
   shred_t( druid_t* p, const std::string& options_str ) :
-    cat_attack_t( "shred", p, p -> find_class_spell( "Shred" ) ),
-    extends_rip( 0 )
+    cat_attack_t( "shred", p, p -> find_class_spell( "Shred" ) )
   {
-    option_t options[] =
-    {
-      opt_bool( "extend_rip", extends_rip ),
-      opt_null()
-    };
-    parse_options( options, options_str );
-
     base_multiplier *= 1.0 + p -> perk.improved_shred -> effectN( 1 ).percent() + player -> sets.set( SET_T14_2PC_MELEE ) -> effectN( 1 ).percent();
     special = true;
   }
@@ -2399,8 +2380,6 @@ struct shred_t : public cat_attack_t
 
     if ( result_is_hit( s -> result ) )
     {
-      extend_rip( *s );
-
       if ( p() -> sets.has_set_bonus( SET_T17_2PC_MELEE ) && s -> result == RESULT_CRIT )
       {
         p() -> cooldown.berserk -> adjust( timespan_t::from_seconds( -5.0 ), true );
@@ -2443,16 +2422,6 @@ struct shred_t : public cat_attack_t
       m *= 1.0 + p() -> buff.prowl -> data().effectN( 4 ).percent();
 
     return m;
-  }
-
-  virtual bool ready()
-  {
-    if ( extends_rip ) // Prevent execution if extends_rip option is specified.
-      if ( !td( target ) -> dots.rip -> is_ticking() ||
-           ( td( target ) -> dots.rip -> get_extended_time() >= timespan_t::from_seconds( 9.0 ) ) )
-        return false;
-
-    return cat_attack_t::ready();
   }
 };
 
@@ -5746,7 +5715,8 @@ void druid_t::apl_feral()
   def -> add_action( "pool_resource,for_next=1" );
   def -> add_action( "thrash_cat,if=dot.thrash_cat.remains<4.5&active_enemies>1" );
   def -> add_action( this, "Rake", "cycle_targets=1,if=tick_multiplier>dot.rake.multiplier&active_enemies<9" );
-  def -> add_action( "moonfire_feral,cycle_targets=1,if=talent.lunar_inspiration.enabled&dot.moonfire_feral.remains<4.2&active_enemies=1" );
+  if ( level >= 100 )
+    def -> add_action( "moonfire_feral,cycle_targets=1,if=talent.lunar_inspiration.enabled&dot.moonfire_feral.remains<4.2&active_enemies=1" );
   def -> add_action( "run_action_list,name=filler,if=combo_points<5",
                      "Cast a CP generator." );
   if ( perk.enhanced_rejuvenation -> ok() )
@@ -5772,7 +5742,7 @@ void druid_t::apl_feral()
   finisher -> add_action( this, "Ferocious Bite", "cycle_targets=1,if=target.health.pct<25&dot.rip.ticking" );
   // finisher -> add_action( this, "Rip", "cycle_targets=1,if=tick_multiplier%dot.rip.multiplier>=1.15" ); // not currently a DPS gain
   finisher -> add_action( this, "Rip", "cycle_targets=1,if=dot.rip.remains<2" );
-  finisher -> add_action( this, "Rip", "cycle_targets=1,if=dot.rip.remains<4.8&energy.time_to_max<=1" );
+  finisher -> add_action( this, "Rip", "cycle_targets=1,if=dot.rip.remains<7.2&energy.time_to_max<=1" );
   finisher -> add_action( this, "Savage Roar", "if=(energy.time_to_max<=1|buff.berserk.up)&buff.savage_roar.remains<42*0.3" );
   finisher -> add_action( this, "Ferocious Bite", "if=(energy.time_to_max<=1|buff.berserk.up)" );
 }
