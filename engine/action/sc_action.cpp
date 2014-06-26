@@ -2433,6 +2433,11 @@ void action_t::trigger_dot( action_state_t* s )
   if ( duration <= timespan_t::zero() && ! tick_zero )
     return;
 
+  // To simulate precasting HoTs, remove one tick worth of duration if precombat.
+  // We also add a fake zero_tick in dot_t::check_tick_zero().
+  if ( ! harmful && ! player -> in_combat && ! tick_zero )
+    duration -= tick_time( s -> haste );
+
   dot_t* dot = get_dot( s -> target );
 
   if ( dot_behavior == DOT_CLIP ) dot -> cancel();

@@ -71,9 +71,6 @@ timespan_t spell_base_t::execute_time() const
 
 timespan_t spell_base_t::tick_time( double haste ) const
 {
-  if ( ! harmful && ! player -> in_combat )
-    return timespan_t::zero();
-
   return action_t::tick_time( haste );
 }
 
