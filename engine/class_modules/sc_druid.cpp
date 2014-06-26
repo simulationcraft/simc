@@ -337,9 +337,9 @@ public:
   struct masteries_t
   {
     // Done
-    const spell_data_t* total_eclipse;
-    const spell_data_t* razor_claws;
     const spell_data_t* primal_tenacity;
+    const spell_data_t* razor_claws;
+    const spell_data_t* total_eclipse;
 
     // NYI / TODO!
     const spell_data_t* harmony;
@@ -348,39 +348,36 @@ public:
   // Procs
   struct procs_t
   {
-    proc_t* primal_fury;
-    proc_t* wrong_eclipse_wrath;
-    proc_t* wrong_eclipse_starfire;
     proc_t* combo_points;
     proc_t* combo_points_wasted;
-    proc_t* shooting_stars_wasted;
+    proc_t* primal_fury;
     proc_t* shooting_stars;
+    proc_t* shooting_stars_wasted;
     proc_t* tier15_2pc_melee;
     proc_t* tier17_2pc_melee;
     proc_t* tooth_and_claw;
+    proc_t* wrong_eclipse_wrath;
+    proc_t* wrong_eclipse_starfire;
   } proc;
 
   // Class Specializations
   struct specializations_t
   {
     // Generic
-    const spell_data_t* crit_attunement;
-    const spell_data_t* haste_attunement;
-    const spell_data_t* killer_instinct;
-    const spell_data_t* leather_specialization;
-    const spell_data_t* mana_attunement;
-    const spell_data_t* mastery_attunement;
-    const spell_data_t* natures_swiftness;
-    const spell_data_t* omen_of_clarity; // Feral and Resto have this
+    const spell_data_t* critical_strikes;       // Feral & Guardian
+    const spell_data_t* killer_instinct;        // Feral & Guardian
+    const spell_data_t* nurturing_instinct;     // Balance & Restoration
+    const spell_data_t* leather_specialization; // All Specializations
+    const spell_data_t* mana_attunement;        // Feral & Guardian
+    const spell_data_t* omen_of_clarity;        // Feral & Restoration
 
-    // Feral / Guardian
-    const spell_data_t* critical_strikes;
+    // Feral
+    const spell_data_t* sharpened_claws;
     const spell_data_t* leader_of_the_pack;
-    const spell_data_t* nurturing_instinct;
     const spell_data_t* predatory_swiftness;
-    const spell_data_t* savage_roar;
-    const spell_data_t* rip;
     const spell_data_t* readiness_feral;
+    const spell_data_t* rip;
+    const spell_data_t* savage_roar;
     const spell_data_t* tigers_fury;
 
     // Balance
@@ -388,6 +385,7 @@ public:
     const spell_data_t* astral_showers;
     const spell_data_t* celestial_alignment;
     const spell_data_t* celestial_focus;
+    const spell_data_t* lunar_guidance;
     const spell_data_t* moonkin_form;
     const spell_data_t* owlkin_frenzy;
     const spell_data_t* readiness_balance;
@@ -406,16 +404,19 @@ public:
     const spell_data_t* tooth_and_claw;
     const spell_data_t* ursa_major;
 
-    // Restoration (Most not implemented)
+    // Restoration
+    // Done
+    const spell_data_t* naturalist;
+    // NYI / TODO or needs checking
     const spell_data_t* lifebloom;
     const spell_data_t* living_seed;
     const spell_data_t* genesis;
     const spell_data_t* ironbark;
     const spell_data_t* malfurions_gift;
     const spell_data_t* meditation;
-    const spell_data_t* naturalist;
     const spell_data_t* natural_insight;
     const spell_data_t* natures_focus;
+    const spell_data_t* natures_swiftness;
     const spell_data_t* regrowth;
     const spell_data_t* readiness_restoration;
     const spell_data_t* swiftmend;
@@ -5196,24 +5197,22 @@ void druid_t::init_spells()
 
   // Specializations
   // Generic / Multiple specs
-  spec.crit_attunement        = find_specialization_spell( "Critical Strike Attunement" );
   spec.critical_strikes       = find_specialization_spell( "Critical Strikes" );
-  spec.haste_attunement       = find_specialization_spell( "Haste Attunement" );
   spec.leader_of_the_pack     = find_specialization_spell( "Leader of the Pack" );
   spec.leather_specialization = find_specialization_spell( "Leather Specialization" );
   spec.omen_of_clarity        = find_specialization_spell( "Omen of Clarity" );
   spec.killer_instinct        = find_specialization_spell( "Killer Instinct" );
   spec.mana_attunement        = find_specialization_spell( "Mana Attunement" );
-  spec.mastery_attunement     = find_specialization_spell( "Mastery Attunement" );
 
   spec.natures_swiftness      = find_specialization_spell( "Nature's Swiftness" );
   spec.nurturing_instinct     = find_specialization_spell( "Nurturing Instinct" );
 
-  //Boomkin
+  // Boomkin
   spec.astral_communion       = find_specialization_spell( "Astral Communion" );
   spec.astral_showers         = find_specialization_spell( "Astral Showers" );
   spec.celestial_alignment    = find_specialization_spell( "Celestial Alignment" );
   spec.celestial_focus        = find_specialization_spell( "Celestial Focus" );
+  spec.lunar_guidance         = find_specialization_spell( "Lunar Guidance" );
   spec.moonkin_form           = find_specialization_spell( "Moonkin Form" );
   spec.owlkin_frenzy          = find_specialization_spell( "Owlkin Frenzy" );
   spec.readiness_balance      = find_specialization_spell( "Readiness: Balance" );
@@ -5228,6 +5227,7 @@ void druid_t::init_spells()
   spec.nurturing_instinct     = find_specialization_spell( "Nurturing Instinct" );
   spec.predatory_swiftness    = find_specialization_spell( "Predatory Swiftness" );
   spec.savage_roar            = find_specialization_spell( "Savage Roar" );
+  spec.sharpened_claws        = find_specialization_spell( "Sharpened Claws" );
   spec.rip                    = find_specialization_spell( "Rip" );
   spec.readiness_feral        = find_specialization_spell( "Readiness: Feral" );
   spec.tigers_fury            = find_specialization_spell( "Tiger's Fury" );
@@ -6168,7 +6168,7 @@ double druid_t::composite_armor_multiplier() const
   double a = player_t::composite_armor_multiplier();
 
   if ( buff.bear_form -> check() )
-    a *= 1.0 + buff.bear_form -> data().effectN( 3 ).percent() + spec.thick_hide -> effectN( 2 ).percent();
+    a *= 1.0 + buff.bear_form -> data().effectN( 3 ).percent();
 
   if ( buff.moonkin_form -> check() )
     a *= 1.0 + buff.moonkin_form -> data().effectN( 3 ).percent() + perk.enhanced_moonkin_form -> effectN( 1 ).percent();
@@ -6222,7 +6222,8 @@ double druid_t::composite_melee_expertise( weapon_t* ) const
 {
   double exp = player_t::composite_melee_expertise();
 
-  exp += spec.thick_hide -> effectN( 7 ).percent();
+  if ( specialization() == DRUID_GUARDIAN ) // Guardian innate expertise bonus
+    exp += 0.03;
 
   return exp;
 }
@@ -6390,7 +6391,8 @@ double druid_t::composite_crit_avoidance() const
 {
   double c = player_t::composite_crit_avoidance();
 
-  c += spec.thick_hide -> effectN( 1 ).percent();
+  if ( specialization() == DRUID_GUARDIAN ) // Guardian innate crit avoidance
+    c -= 0.06;
 
   return c;
 }
@@ -6419,25 +6421,25 @@ double druid_t::composite_rating_multiplier( rating_e rating ) const
   switch ( rating )
   {
   case RATING_SPELL_HASTE:
-    return m *= 1.0 + spec.haste_attunement -> effectN( 1 ).percent();
+    return m *= 1.0 + spec.naturalist -> effectN( 1 ).percent();
     break;
   case RATING_MELEE_HASTE:
-    return m *= 1.0 + spec.haste_attunement -> effectN( 1 ).percent();
+    return m *= 1.0 + spec.naturalist -> effectN( 1 ).percent();
     break;
   case RATING_RANGED_HASTE:
-    return m *= 1.0 + spec.haste_attunement -> effectN( 1 ).percent();
+    return m *= 1.0 + spec.naturalist -> effectN( 1 ).percent();
     break;
   case RATING_SPELL_CRIT:
-    return m *= 1.0 + spec.crit_attunement -> effectN( 1 ).percent();
+    return m *= 1.0 + spec.sharpened_claws -> effectN( 1 ).percent();
     break;
   case RATING_MELEE_CRIT:
-    return m *= 1.0 + spec.crit_attunement -> effectN( 1 ).percent();
+    return m *= 1.0 + spec.sharpened_claws -> effectN( 1 ).percent();
     break;
   case RATING_RANGED_CRIT:
-    return m *= 1.0 + spec.crit_attunement -> effectN( 1 ).percent();
+    return m *= 1.0 + spec.sharpened_claws -> effectN( 1 ).percent();
     break;
   case RATING_MASTERY:
-    return m *= 1.0 + spec.mastery_attunement -> effectN( 1 ).percent();
+    return m *= 1.0 + spec.lunar_guidance -> effectN( 1 ).percent() + spec.thick_hide -> effectN( 1 ).percent();
     break;
   default:
     break;
@@ -6804,10 +6806,10 @@ void druid_t::assess_damage( school_e school,
         gain.primal_fury );
       proc.primal_fury -> occur();
      }
-    if ( school == SCHOOL_PHYSICAL )
-      s -> result_amount *= 1.0 + spec.thick_hide -> effectN( 5 ).percent();
-    else if ( dbc::get_school_mask( school ) & SCHOOL_MAGIC_MASK )
-      s -> result_amount *= 1.0 + spec.thick_hide -> effectN( 3 ).percent();
+    if ( school == SCHOOL_PHYSICAL ) // Guardian innate physical damage reduction
+      s -> result_amount *= 1.0 - 0.12;
+    else if ( dbc::get_school_mask( school ) & SCHOOL_MAGIC_MASK ) // Guardian innate magic damage reduction
+      s -> result_amount *= 1.0 - 0.25;
   }
 
   if ( buff.cenarion_ward -> up() && s -> result_amount > 0 )
