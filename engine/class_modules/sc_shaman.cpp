@@ -1172,7 +1172,7 @@ struct feral_spirit_pet_t : public pet_t
     main_hand_weapon.damage     = ( main_hand_weapon.min_dmg + main_hand_weapon.max_dmg ) / 2;
     main_hand_weapon.swing_time = timespan_t::from_seconds( 1.5 );
 
-    owner_coeff.ap_from_ap = 0.5; // TODO-WOD: Preliminary value, verify
+    owner_coeff.ap_from_ap = 0.33; // TODO-WOD: Preliminary value, verify
 
     command = owner -> find_spell( 65222 );
   }
@@ -1378,7 +1378,7 @@ struct earth_elemental_t : public primal_elemental_t
     resources.base[ RESOURCE_HEALTH ] = 8000; // Approximated from lvl85 earth elemental in game
     resources.base[ RESOURCE_MANA   ] = 0; //
 
-    owner_coeff.ap_from_sp = 0.1; // TODO-WOD: Preliminary value, verify
+    owner_coeff.ap_from_sp = 0.065; // TODO-WOD: Preliminary value, verify
   }
 
   void init_action_list()
@@ -3427,6 +3427,14 @@ struct elemental_blast_t : public shaman_spell_t
     }
 
     return c;
+  }
+
+  virtual double action_multiplier() const
+  {
+    double m = shaman_spell_t::action_multiplier();
+    if ( player -> specialization() == SHAMAN_ENHANCEMENT && player -> bugs )
+      m *= 0.5;
+    return m;
   }
 };
 
