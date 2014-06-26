@@ -850,7 +850,7 @@ void warrior_attack_t::impact( action_state_t* s )
         trigger_sweeping_strikes( s );
       if ( special )
       {
-        if ( p() -> buff.bloodbath -> up() )
+        if ( p() -> buff.bloodbath -> up() && this -> id != 156287 ) // Ravager does not trigger bloodbath.
           trigger_bloodbath_dot( s -> target, s -> result_amount );
         if ( p() -> sets.has_set_bonus( SET_T16_2PC_MELEE ) && td( s -> target ) ->  debuffs_colossus_smash -> up() && // Melee tier 16 2 piece.
            ( this ->  weapon == &( p() -> main_hand_weapon ) || this -> id == 100130 ) && // Only procs once per ability used.
@@ -1391,8 +1391,8 @@ struct execute_t: public warrior_attack_t
 
     if ( p() -> mastery.weapons_master -> ok() )
     {
+      am *= ( 3.0 * cost() / 50 );
       am *= 1.0 + p() -> cache.mastery_value();
-      am *= ( 3.0 * cost() / 60 );
     }
 
     return am;
@@ -1403,7 +1403,7 @@ struct execute_t: public warrior_attack_t
     double c = warrior_attack_t::cost();
 
     if ( p() -> specialization() == WARRIOR_ARMS )
-      c = std::min( 60.0, std::max( p() -> resources.current[RESOURCE_RAGE], c ) );
+      c = std::min( 50.0, std::max( p() -> resources.current[RESOURCE_RAGE], c ) );
 
     return c;
   }
@@ -1994,7 +1994,6 @@ struct enraged_regeneration_t: public warrior_heal_t
 struct shield_slam_t: public warrior_attack_t
 {
   double rage_gain;
-
   shield_slam_t( warrior_t* p, const std::string& options_str ):
     warrior_attack_t( "shield_slam", p, p -> find_class_spell( "Shield Slam" ) ),
     rage_gain( 0.0 )
@@ -2002,7 +2001,7 @@ struct shield_slam_t: public warrior_attack_t
     parse_options( NULL, options_str );
 
     rage_gain = data().effectN( 3 ).resource( RESOURCE_RAGE );
-    attack_power_mod.direct = 3.83; // Hard coded 6/14/14 as DBC doesn't show this.
+    attack_power_mod.direct = 3.622; // Tested in game... doesn't match any spell data or tooltips... yay.
 
     attack_power_mod.direct *= 1.0 + p -> perk.improved_shield_slam -> effectN( 1 ).percent();
   }
@@ -2192,6 +2191,16 @@ struct thunder_clap_t: public warrior_attack_t
     }
   }
 
+  virtual double cost() const
+  {
+    double c = base_t::cost();
+
+    if ( p() -> active_stance == STANCE_DEFENSE && p() -> specialization() == WARRIOR_PROTECTION )
+      c = 0;
+
+    return c;
+  }
+
   virtual void update_ready( timespan_t cd_duration )
   {
     cd_duration = cooldown -> duration * player -> cache.attack_haste();
@@ -2320,7 +2329,7 @@ struct whirlwind_t: public warrior_attack_t
 
   virtual bool ready()
   {
-    if ( p() -> active_stance == STANCE_DEFENSE )
+    if ( p() -> active_stance != STANCE_BATTLE )
       return false;
 
     return warrior_attack_t::ready();
@@ -2440,8 +2449,8 @@ struct berserker_rage_t: public warrior_spell_t
     warrior_spell_t::execute();
 
     p() -> buff.berserker_rage -> trigger();
-    if ( p() -> specialization() != WARRIOR_ARMS )
-      p() -> enrage();
+    //if ( p() -> specialization() != WARRIOR_ARMS )
+      //p() -> enrage();
   }
 };
 
@@ -2822,11 +2831,7 @@ struct stance_t: public warrior_spell_t
         break;
       }
       case STANCE_GLADIATOR:
-      {
-        p() -> buff.gladiator_stance -> expire();
-        p() -> active_defensive_stance -> cancel();
         break;
-      }
       }
       p() -> active_stance = switch_to_stance;
 
@@ -2840,11 +2845,7 @@ struct stance_t: public warrior_spell_t
         break;
       }
       case STANCE_GLADIATOR:
-      {
-        p() -> buff.gladiator_stance -> trigger();
-        p() -> active_defensive_stance -> execute();
         break;
-      }
       }
       p() -> cooldown.stance_swap -> start();
     }
