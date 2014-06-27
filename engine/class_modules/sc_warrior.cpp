@@ -104,7 +104,9 @@ public:
   struct cooldowns_t
   {
     // All Warriors
+    cooldown_t* charge;
     cooldown_t* heroic_leap;
+    cooldown_t* intervene;
     cooldown_t* stance_swap;
     // Talents
     cooldown_t* avatar;
@@ -119,6 +121,7 @@ public:
     // Prot Only
     cooldown_t* demoralizing_shout;
     cooldown_t* last_stand;
+    cooldown_t* rage_from_charge;
     cooldown_t* rage_from_crit_block;
     cooldown_t* revenge;
     cooldown_t* shield_slam;
@@ -338,15 +341,19 @@ public:
     cooldown.avatar                   = get_cooldown( "avatar" );
     cooldown.bladestorm               = get_cooldown( "bladestorm" );
     cooldown.bloodbath                = get_cooldown( "bloodbath" );
+    cooldown.charge                   = get_cooldown( "charge" );
     cooldown.colossus_smash           = get_cooldown( "colossus_smash" );
     cooldown.demoralizing_shout       = get_cooldown( "demoralizing_shout" );
     cooldown.dragon_roar              = get_cooldown( "dragon_roar" );
     cooldown.heroic_leap              = get_cooldown( "heroic_leap" );
+    cooldown.intervene                = get_cooldown( "intervene" );
     cooldown.last_stand               = get_cooldown( "last_stand" );
     cooldown.shield_slam              = get_cooldown( "shield_slam" );
     cooldown.shield_wall              = get_cooldown( "shield_wall" );
     cooldown.shockwave                = get_cooldown( "shockwave" );
     cooldown.storm_bolt               = get_cooldown( "storm_bolt" );
+    cooldown.rage_from_charge         = get_cooldown( "rage_from_charge" );
+    cooldown.rage_from_charge         -> duration = timespan_t::from_seconds( 12.0 );
     cooldown.rage_from_crit_block     = get_cooldown( "rage_from_crit_block" );
     cooldown.rage_from_crit_block    -> duration = timespan_t::from_seconds( 3.0 );
     cooldown.recklessness             = get_cooldown( "recklessness" );
@@ -1176,10 +1183,14 @@ struct charge_t: public warrior_attack_t
     if ( first_charge == true )
       first_charge = !first_charge;
 
-    p() -> resource_gain( RESOURCE_RAGE,
-                          p() -> glyphs.bull_rush -> effectN( 2 ).resource( RESOURCE_RAGE ) +
-                          data().effectN( 2 ).resource( RESOURCE_RAGE ),
-                          p() -> gain.charge );
+    if ( p() -> cooldown.rage_from_charge -> up() )
+    {
+      p() -> cooldown.rage_from_charge -> start();
+      p() -> resource_gain( RESOURCE_RAGE,
+                            p() -> glyphs.bull_rush -> effectN( 2 ).resource( RESOURCE_RAGE ) +
+                            data().effectN( 2 ).resource( RESOURCE_RAGE ),
+                            p() -> gain.charge );
+    }
   }
 
   void reset()
@@ -1564,6 +1575,61 @@ struct heroic_throw_t: public warrior_attack_t
     return warrior_attack_t::ready();
   }
 };
+
+
+// Heroic Charge  ==============================================================
+
+struct heroic_charge_t: public warrior_attack_t
+{
+  heroic_charge_t( warrior_t* p, const std::string& options_str ):
+    warrior_attack_t( "heroic_charge", p, spell_data_t::nil() )
+  {
+    parse_options( NULL, options_str );
+    proc = false;
+    quiet = special = true;
+  }
+  virtual void schedule_execute( action_state_t* execute_state )
+  {
+    if ( p() -> cooldown.heroic_leap -> up() )
+    {
+      p() -> cooldown.heroic_leap -> start();
+      time_to_execute = timespan_t::from_millis( 500 ); // Pause swing timer for 0.5 seconds.
+      trigger_gcd = time_to_execute;
+    }
+    else if ( p() -> cooldown.intervene -> up() )
+    {
+      p() -> cooldown.intervene -> start();
+      time_to_execute = timespan_t::from_millis( 500 );
+      trigger_gcd = time_to_execute;
+    }
+    else
+    {
+      time_to_execute = timespan_t::from_millis( 1000 ); // Pause swing timer for 1 second, as we'd be walking out.
+      trigger_gcd = time_to_execute;
+    }
+
+    warrior_attack_t::schedule_execute();
+  }
+
+  virtual void execute()
+  {
+    p() -> cooldown.rage_from_charge -> start();
+    p() -> cooldown.charge -> up();
+    p() -> resource_gain( RESOURCE_RAGE,
+                          p() -> glyphs.bull_rush -> effectN( 2 ).resource( RESOURCE_RAGE ) +
+                          data().effectN( 2 ).resource( RESOURCE_RAGE ),
+                          p() -> gain.charge );
+  }
+
+  virtual bool ready()
+  {
+    if ( p() -> cooldown.rage_from_charge -> up() && p() -> cooldown.charge -> up() )
+      return true;
+    else
+      return false;
+  }
+};
+
 
 // Heroic Leap ==============================================================
 
@@ -3021,6 +3087,7 @@ action_t* warrior_t::create_action( const std::string& name,
   if ( name == "dragon_roar"          ) return new dragon_roar_t          ( this, options_str );
   if ( name == "enraged_regeneration" ) return new enraged_regeneration_t ( this, options_str );
   if ( name == "execute"              ) return new execute_t              ( this, options_str );
+  if ( name == "heroic_charge"        ) return new heroic_charge_t        ( this, options_str );
   if ( name == "heroic_leap"          ) return new heroic_leap_t          ( this, options_str );
   if ( name == "heroic_strike"        ) return new heroic_strike_t        ( this, options_str );
   if ( name == "heroic_throw"         ) return new heroic_throw_t         ( this, options_str );
