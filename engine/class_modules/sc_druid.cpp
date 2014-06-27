@@ -19,7 +19,6 @@ namespace { // UNNAMED NAMESPACE
 
     = Feral =
     Combo Points as a resource
-    Swing timers on shapeshift
     Verify stuff, particularly damage checking
 
     = Balance =
@@ -2913,8 +2912,6 @@ struct maul_t : public bear_attack_t
   {
     bear_attack_t::execute();
 
-    p() -> buff.tooth_and_claw -> decrement(); // TODO: Confirm decrement on miss
-
     if ( p() -> buff.son_of_ursoc -> check() )
       cooldown -> reset( false );
   }
@@ -2924,7 +2921,10 @@ struct maul_t : public bear_attack_t
     bear_attack_t::impact( s );
 
     if ( result_is_hit( s -> result ) && p() -> buff.tooth_and_claw -> up() )
+    {
       absorb -> execute();
+      p() -> buff.tooth_and_claw -> decrement(); // Only decrements on hit, tested 6/27/2014 by Zerrahki
+    }
   }
 
   virtual double composite_target_multiplier( player_t* t ) const
