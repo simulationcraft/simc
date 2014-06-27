@@ -1808,6 +1808,7 @@ struct cat_attack_t : public druid_attack_t < melee_attack_t >
   int              adds_combo_points;
   double           base_dd_bonus;
   double           base_td_bonus;
+  bool             consume_ooc;
 
   cat_attack_t( const std::string& token, druid_t* p,
                 const spell_data_t* s = spell_data_t::nil(),
@@ -1815,7 +1816,7 @@ struct cat_attack_t : public druid_attack_t < melee_attack_t >
     base_t( token, p, s ),
     requires_stealth_( false ),
     requires_combo_points( false ), adds_combo_points( 0 ),
-    base_dd_bonus( 0.0 ), base_td_bonus( 0.0 )
+    base_dd_bonus( 0.0 ), base_td_bonus( 0.0 ), consume_ooc( false )
   {
     parse_options( 0, options );
 
@@ -1845,6 +1846,13 @@ private:
     }
   }
 public:
+  virtual void init()
+  {
+    druid_attack_t::init();
+
+    consume_ooc = harmful;
+  }
+
   virtual double cost() const
   {
     double c = base_t::cost();
@@ -1852,7 +1860,7 @@ public:
     if ( c == 0 )
       return 0;
 
-    if ( harmful && p() -> buff.omen_of_clarity -> check() )
+    if ( consume_ooc && p() -> buff.omen_of_clarity -> check() )
       return 0;
 
     if ( p() -> buff.berserk -> check() )
@@ -1985,7 +1993,7 @@ public:
       combo_points_spent = td( execute_state -> target ) -> combo_points.consume( &name_str );
     }
 
-    if ( harmful && p() -> buff.omen_of_clarity -> up() )
+    if ( consume_ooc && p() -> buff.omen_of_clarity -> up() )
     {
       // Treat the savings like a energy gain.
       double amount = melee_attack_t::cost();
@@ -2067,6 +2075,13 @@ struct cat_melee_t : public cat_attack_t
     special = false;
   }
 
+  virtual void init()
+  {
+    cat_attack_t::init();
+
+    consume_ooc = false;
+  }
+
   virtual timespan_t execute_time() const
   {
     if ( ! player -> in_combat )
@@ -2103,6 +2118,13 @@ struct feral_charge_cat_t : public cat_attack_t
     cat_attack_t( "feral_charge_cat", p, p -> talent.wild_charge, options_str )
   {
     may_miss = may_dodge = may_parry = may_block = may_glance = special = false;
+  }
+
+  virtual void init()
+  {
+    cat_attack_t::init();
+
+    consume_ooc = false;
   }
 
   virtual bool ready()
@@ -2445,6 +2467,13 @@ struct skull_bash_cat_t : public cat_attack_t
     may_miss = may_glance = may_block = may_dodge = may_parry = may_crit = special = false;
 
     cooldown -> duration += p -> glyph.skull_bash -> effectN( 1 ).time_value();
+  }
+
+  virtual void init()
+  {
+    cat_attack_t::init();
+
+    consume_ooc = false;
   }
 
   virtual bool ready()
@@ -3040,7 +3069,7 @@ public:
     ab::consume_resource();
     druid_t& p = *this -> p();
 
-    if ( consume_ooc && p.buff.omen_of_clarity -> up() && this -> execute_time() != timespan_t::zero() )
+    if ( consume_ooc && this -> execute_time() != timespan_t::zero() && p.buff.omen_of_clarity -> up() )
     {
       // Treat the savings like a mana gain.
       double amount = ab::cost();
