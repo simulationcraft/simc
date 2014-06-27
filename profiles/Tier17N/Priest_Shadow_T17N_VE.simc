@@ -5,7 +5,7 @@ role=spell
 position=back
 professions=blacksmithing=600/engineering=600
 talents=http://us.battle.net/wow/en/tool/talent-calculator#Xb!0022021
-glyphs=mind_harvest/mind_flay/dark_archangel/shadowy_friends/shadow_ravens
+glyphs=mind_flay/fade/sha
 spec=shadow
 
 # This default action priority list is automatically created based on your character.
@@ -66,31 +66,29 @@ actions+=/cascade,moving=1,if=talent.cascade.enabled&target.distance<=40
 actions+=/shadow_word_pain,moving=1
 actions+=/dispersion
 
-head=hood_of_the_ternion_glory,id=99360,upgrade=2
-neck=necklace_of_fading_light,id=105473,upgrade=2
-shoulders=shoulderguards_of_the_ternion_glory,id=99363,upgrade=2
-back=jadefire_drape,id=98150,upgrade=2,gems=4int_8haste_3int,enchant=9crit
-chest=raiment_of_the_ternion_glory,id=99362,upgrade=2
-wrists=bracers_of_sonic_projection,id=105626,upgrade=2
-hands=gloves_of_the_ternion_glory,id=99359,upgrade=2
-waist=belt_of_the_broken_pact,id=105646,upgrade=2
-legs=leggings_of_furious_flame,id=105516,upgrade=2
-feet=boneinlaid_sandals,id=105493,upgrade=2
-finger1=signet_of_the_dinomancers,id=105606,upgrade=2
-finger2=laserslice_signet,id=105520,upgrade=2
-trinket1=purified_bindings_of_immerseus,id=105422,upgrade=2
-trinket2=kardris_toxic_totem,id=105540,upgrade=2
-main_hand=horned_mace_of_the_old_ones,id=105649,upgrade=2
-off_hand=revelations_of_yshaarj,id=105650,upgrade=2
+head=ph_gladiators_hood_of_prowess,id=111084
+neck=ph_gladiators_pendant_of_cruelty,id=111128
+shoulders=ph_gladiators_amice_of_prowess,id=111087
+back=ph_gladiators_drape_of_cruelty,id=111124
+chest=ph_gladiators_robes_of_prowess,id=111086
+wrists=ph_gladiators_cuffs_of_cruelty,id=111100
+hands=ph_gladiators_handguards_of_cruelty,id=111088
+waist=ph_gladiators_cord_of_victory,id=111095
+legs=ph_gladiators_leggings_of_prowess,id=111085
+feet=ph_gladiators_treads_of_prowess,id=111097
+finger1=ph_gladiators_band_of_cruelty,id=111134
+finger2=ph_gladiators_band_of_prowess,id=111135
+trinket1=ph_gladiators_medallion_of_cruelty,id=111229
+trinket2=ph_gladiators_insignia_of_dominance,id=111228
+main_hand=ph_gladiators_battle_staff,id=111122
 
 # Gear Summary
-# gear_stamina=1532
-# gear_intellect=939
-# gear_spell_power=590
-# gear_crit_rating=219
-# gear_haste_rating=584
-# gear_mastery_rating=408
-# gear_armor=284
-# gear_multistrike_rating=99
-# tier16_2pc_caster=1
-# tier16_4pc_caster=1
+# gear_stamina=3250
+# gear_intellect=2378
+# gear_spell_power=1265
+# gear_crit_rating=999
+# gear_haste_rating=423
+# gear_mastery_rating=872
+# gear_armor=600
+# gear_multistrike_rating=590
+gear_versatility_rating=212
