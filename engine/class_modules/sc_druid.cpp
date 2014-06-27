@@ -2358,7 +2358,7 @@ struct savage_roar_t : public cat_attack_t
 struct shred_t : public cat_attack_t
 {
   shred_t( druid_t* p, const std::string& options_str ) :
-    cat_attack_t( "shred", p, p -> find_class_spell( "Shred" ) )
+    cat_attack_t( "shred", p, p -> find_class_spell( "Shred" ), options_str )
   {
     base_multiplier *= 1.0 + p -> perk.improved_shred -> effectN( 1 ).percent() + player -> sets.set( SET_T14_2PC_MELEE ) -> effectN( 1 ).percent();
     special = true;
