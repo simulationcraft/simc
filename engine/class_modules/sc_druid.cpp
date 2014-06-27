@@ -18,7 +18,7 @@ namespace { // UNNAMED NAMESPACE
 
     = Feral =
     Combo Points as a resource
-    Verify stuff
+    Verify stuff, particularly damage checking
 
     = Balance =
     Just verify stuff.
@@ -658,7 +658,7 @@ struct natures_vigil_proc_t : public spell_t
       heal_coeff( 0.0 ), dmg_coeff( 0.0 )
     {
       background = proc = dual = true;
-      may_crit = may_miss      = false;
+      may_crit = may_multistrike = may_miss = false;
       trigger_gcd              = timespan_t::zero();
       heal_coeff               = p -> talent.natures_vigil -> effectN( 3 ).percent();
       dmg_coeff                = p -> talent.natures_vigil -> effectN( 4 ).percent();
@@ -742,7 +742,7 @@ struct natures_vigil_proc_t : public spell_t
   {
     background = proc = true;
     trigger_gcd       = timespan_t::zero();
-    may_crit = may_miss = false;
+    may_crit = may_multistrike = may_miss = false;
 
     damage  = new natures_vigil_damage_t( p );
     healing = new natures_vigil_heal_t( p );
@@ -849,7 +849,7 @@ struct leader_of_the_pack_t : public heal_t
   leader_of_the_pack_t( druid_t* p ) :
     heal_t( "leader_of_the_pack", p, p -> find_spell( 68285 ) )
   {
-    may_crit = false;
+    may_crit = may_multistrike = false;
     background = proc = true;
 
     cooldown -> duration = timespan_t::from_seconds( 6.0 );
@@ -928,7 +928,7 @@ struct yseras_gift_t : public heal_t
     base_tick_time = data().effectN( 1 ).period();
     dot_duration   = base_tick_time;
     hasted_ticks   = false;
-    tick_may_crit  = false;
+    tick_may_crit  = may_multistrike = false;
     harmful        = false;
     background     = true;
     target         = p;
@@ -2400,7 +2400,7 @@ struct shred_t : public cat_attack_t
 
   double composite_crit() const
   {
-    double c = druid_attack_t::composite_crit();
+    double c = cat_attack_t::composite_crit();
 
     // TODO: Determine which bonus is applied first.
 
