@@ -15,9 +15,11 @@ namespace { // UNNAMED NAMESPACE
     Tranquility
     Dash
     Fix Force of Nature (summons fine, but treants take no actions)
+    Clean up NV implementation (pass values instead of execution states)
 
     = Feral =
     Combo Points as a resource
+    Swing timers on shapeshift
     Verify stuff, particularly damage checking
 
     = Balance =
@@ -26,6 +28,7 @@ namespace { // UNNAMED NAMESPACE
     = Guardian =
     Level 100 Talents
     Starting sim at unbuffed HP
+    tick() isn't called on multistrikes, breaks lacerate Ursa Major trigger
     Verify DoC
     Lacerate buff
 
@@ -1676,9 +1679,19 @@ public:
 
   bool trigger_omen_of_clarity()
   {
-    if ( ab::proc ) return false;
+    if ( ab::proc )
+      return false;
 
-    return p() -> buff.omen_of_clarity -> trigger();
+    if ( p() -> specialization() == DRUID_RESTORATION )
+      return p() -> buff.omen_of_clarity -> trigger(); // Proc chance is handled by buff chance
+    else if ( p() -> specialization() == DRUID_FERAL )
+    {
+      if ( rng().roll( weapon -> proc_chance_on_swing( 3.5 ) ) ) // 3.5 PPM via https://twitter.com/Celestalon/status/482329896404799488
+        return p() -> buff.omen_of_clarity -> trigger();
+      else
+        return false;
+    } else
+      return false;
   }
 
   virtual void impact( action_state_t* s )
@@ -1717,28 +1730,41 @@ private:
   typedef druid_action_t< Base > ab;
 public:
   typedef druid_attack_t base_t;
+  
+  bool consume_bloodtalons;
 
   druid_attack_t( const std::string& n, druid_t* player,
                   const spell_data_t* s = spell_data_t::nil() ) :
-    ab( n, player, s )
+    ab( n, player, s ), consume_bloodtalons( false )
   {
     ab::may_glance    = false;
     ab::special       = true;
+  }
+
+  virtual void init()
+  {
+    ab::init();
+
+    consume_bloodtalons = harmful && special;
   }
 
   virtual void execute()
   {
     ab::execute();
 
-    if ( this -> p() -> buff.natures_vigil -> check() && this -> result_is_hit( this -> execute_state -> result ) )
-      this -> p() -> active.natures_vigil -> trigger( *this );
+    if ( p() -> buff.natures_vigil -> check() && result_is_hit( execute_state -> result ) )
+      p() -> active.natures_vigil -> trigger( *this );
+
+    // TODO: Confirm you still lose a stack on miss
+    if ( p() -> talent.bloodtalons -> ok() && consume_bloodtalons )
+      p() -> buff.bloodtalons -> decrement();
   }
 
   virtual void impact( action_state_t* s )
   {
     ab::impact( s );
 
-    if ( this -> p() -> spec.leader_of_the_pack -> ok() && s -> result == RESULT_CRIT )
+    if ( p() -> spec.leader_of_the_pack -> ok() && s -> result == RESULT_CRIT )
       trigger_lotp( s );
   }
 
@@ -1746,21 +1772,31 @@ public:
   {
     ab::tick( d );
 
-    if ( this -> p() -> buff.natures_vigil -> up() )
-      this -> p() -> active.natures_vigil -> trigger( *this );
+    if ( p() -> buff.natures_vigil -> up() )
+      p() -> active.natures_vigil -> trigger( *this );
+  }
+
+  virtual double composite_persistent_multiplier( const action_state_t* s ) const
+  {
+    double pm = ab::composite_persistent_multiplier( s );
+    
+    if ( p() -> talent.bloodtalons -> ok() && consume_bloodtalons && p() -> buff.bloodtalons -> up() )
+      pm *= 1.0 + p() -> buff.bloodtalons -> data().effectN( 1 ).percent();
+
+    return pm;
   }
 
   void trigger_lotp( const action_state_t* s )
   {
     // Must be in cat or bear form
-    if ( ! ( this -> p() -> buff.cat_form -> check() || this -> p() -> buff.bear_form -> check() ) )
+    if ( ! ( p() -> buff.cat_form -> check() || p() -> buff.bear_form -> check() ) )
       return;
     // Has to do damage and can't be a proc
     if ( ab::proc || s -> result_amount <= 0 )
       return;
 
-    if ( this -> p() -> active.leader_of_the_pack -> cooldown -> up() )
-      this -> p() -> active.leader_of_the_pack -> execute();
+    if ( p() -> active.leader_of_the_pack -> cooldown -> up() )
+      p() -> active.leader_of_the_pack -> execute();
   }
 };
 namespace cat_attacks {
@@ -1798,6 +1834,7 @@ struct cat_attack_t : public druid_attack_t < melee_attack_t >
   int              adds_combo_points;
   double           base_dd_bonus;
   double           base_td_bonus;
+  bool             consume_ooc;
 
   cat_attack_t( const std::string& token, druid_t* p,
                 const spell_data_t* s = spell_data_t::nil(),
@@ -1805,7 +1842,7 @@ struct cat_attack_t : public druid_attack_t < melee_attack_t >
     base_t( token, p, s ),
     requires_stealth_( false ),
     requires_combo_points( false ), adds_combo_points( 0 ),
-    base_dd_bonus( 0.0 ), base_td_bonus( 0.0 )
+    base_dd_bonus( 0.0 ), base_td_bonus( 0.0 ), consume_ooc( false )
   {
     parse_options( 0, options );
 
@@ -1835,6 +1872,13 @@ private:
     }
   }
 public:
+  virtual void init()
+  {
+    base_t::init();
+
+    consume_ooc = harmful;
+  }
+
   virtual double cost() const
   {
     double c = base_t::cost();
@@ -1842,7 +1886,7 @@ public:
     if ( c == 0 )
       return 0;
 
-    if ( harmful && p() -> buff.omen_of_clarity -> check() )
+    if ( consume_ooc && p() -> buff.omen_of_clarity -> check() )
       return 0;
 
     if ( p() -> buff.berserk -> check() )
@@ -1945,10 +1989,6 @@ public:
       trigger_energy_refund();
     }
 
-    // TODO: Confirm you still lose a stack on miss
-    if ( p() -> talent.bloodtalons -> ok() && this -> special && this -> harmful )
-      p() -> buff.bloodtalons -> decrement();
-
     if ( harmful )
       p() -> buff.prowl -> expire();
   }
@@ -1975,7 +2015,7 @@ public:
       combo_points_spent = td( execute_state -> target ) -> combo_points.consume( &name_str );
     }
 
-    if ( harmful && p() -> buff.omen_of_clarity -> up() )
+    if ( consume_ooc && p() -> buff.omen_of_clarity -> up() )
     {
       // Treat the savings like a energy gain.
       double amount = melee_attack_t::cost();
@@ -1996,17 +2036,17 @@ public:
 
   virtual bool ready()
   {
-    if ( !base_t::ready() )
+    if ( ! base_t::ready() )
       return false;
 
-    if ( !p() -> buff.cat_form -> check() )
+    if ( ! p() -> buff.cat_form -> check() )
       return false;
 
     if ( requires_stealth() )
-      if ( !p() -> buff.prowl -> check() )
+      if ( ! p() -> buff.prowl -> check() )
         return false;
 
-    if ( requires_combo_points && !td( target ) -> combo_points.get() )
+    if ( requires_combo_points && ! td( target ) -> combo_points.get() )
       return false;
 
     return true;
@@ -2014,15 +2054,13 @@ public:
 
   virtual double composite_persistent_multiplier( const action_state_t* s ) const
   {
-    double pm = action_t::composite_persistent_multiplier( s );
+    double pm = base_t::composite_persistent_multiplier( s );
 
     if ( p() -> buff.cat_form -> up() && dbc::is_school( s -> action -> school, SCHOOL_PHYSICAL ) )
     {
       pm *= 1.0 + p() -> buff.tigers_fury -> value();
       pm *= 1.0 + p() -> buff.savage_roar -> value();
     }
-    if ( p() -> talent.bloodtalons -> ok() && this -> special && this -> harmful && p() -> buff.bloodtalons -> up() )
-      pm *= 1.0 + p() -> buff.bloodtalons -> data().effectN( 1 ).percent();
 
     return pm;
   }
@@ -2055,6 +2093,13 @@ struct cat_melee_t : public cat_attack_t
     may_glance = background = repeating = true;
     trigger_gcd = timespan_t::zero();
     special = false;
+  }
+
+  virtual void init()
+  {
+    cat_attack_t::init();
+
+    consume_ooc = false;
   }
 
   virtual timespan_t execute_time() const
@@ -2092,7 +2137,15 @@ struct feral_charge_cat_t : public cat_attack_t
   feral_charge_cat_t( druid_t* p, const std::string& options_str ) :
     cat_attack_t( "feral_charge_cat", p, p -> talent.wild_charge, options_str )
   {
-    may_miss = may_dodge = may_parry = may_block = may_glance = special = false;
+    may_miss = may_dodge = may_parry = may_block = may_glance = false;
+  }
+
+  virtual void init()
+  {
+    cat_attack_t::init();
+
+    consume_ooc         = false;
+    consume_bloodtalons = false;
   }
 
   virtual bool ready()
@@ -2121,10 +2174,11 @@ struct ferocious_bite_t : public cat_attack_t
     cat_attack_t( "ferocious_bite", p, p -> find_class_spell( "Ferocious Bite" ), options_str ),
     excess_energy( 0 ), max_excess_energy( 0 ), ap_per_point( 0.0 )
   {
-    ap_per_point          = 0.357; // FIXME: Figure out where the hell this is in the spell data...
-    max_excess_energy     = data().effectN( 2 ).base_value();
-    requires_combo_points = special = true;
-    base_multiplier      *= 1.0 + p -> perk.improved_ferocious_bite -> effectN( 1 ).percent();
+    ap_per_point           = 0.357; // FIXME: Figure out where the hell this is in the spell data...
+    max_excess_energy      = data().effectN( 2 ).base_value();
+    requires_combo_points  = special = true;
+    base_multiplier       *= 1.0 + p -> perk.improved_ferocious_bite -> effectN( 1 ).percent();
+    spell_power_mod.direct = 0;
   }
 
   double attack_direct_power_coefficient( const action_state_t* state ) const
@@ -2321,7 +2375,7 @@ struct savage_roar_t : public cat_attack_t
     cat_attack_t( "savage_roar", p, p -> find_class_spell( "Savage Roar" ), options_str ),
     seconds_per_combo( timespan_t::from_seconds( 6.0 ) ) // plus 6s per cp used. Must change this value in cat_attack_t::trigger_glyph_of_savage_roar() as well.
   {
-    may_miss = harmful = special = false;
+    may_miss = harmful = false;
     requires_combo_points = true;
     dot_duration  = timespan_t::zero();
   }
@@ -2432,9 +2486,17 @@ struct skull_bash_cat_t : public cat_attack_t
   skull_bash_cat_t( druid_t* p, const std::string& options_str ) :
     cat_attack_t( "skull_bash_cat", p, p -> find_specialization_spell( "Skull Bash" ), options_str )
   {
-    may_miss = may_glance = may_block = may_dodge = may_parry = may_crit = special = false;
+    may_miss = may_glance = may_block = may_dodge = may_parry = may_crit = false;
 
     cooldown -> duration += p -> glyph.skull_bash -> effectN( 1 ).time_value();
+  }
+
+  virtual void init()
+  {
+    cat_attack_t::init();
+
+    consume_ooc         = false;
+    consume_bloodtalons = false;
   }
 
   virtual bool ready()
@@ -2453,8 +2515,7 @@ struct swipe_t : public cat_attack_t
   swipe_t( druid_t* player, const std::string& options_str ) :
     cat_attack_t( "swipe", player, player -> find_specialization_spell( "Swipe" ), options_str )
   {
-    aoe     = -1;
-    special = true;
+    aoe = -1;
   }
 
   virtual void execute()
@@ -2505,15 +2566,9 @@ struct thrash_cat_t : public cat_attack_t
   thrash_cat_t( druid_t* p, const std::string& options_str ) :
     cat_attack_t( "thrash_cat", p, p -> find_spell( 106830 ), options_str )
   {
-    aoe                     = -1;
-    attack_power_mod.direct = data().effectN( 1 ).ap_coeff();
-    attack_power_mod.tick   = data().effectN( 2 ).ap_coeff();
-
-    weapon            = &( player -> main_hand_weapon );
-    weapon_multiplier = 0;
-    dot_behavior      = DOT_REFRESH;
-    special           = true;
-    adds_combo_points = 0;
+    aoe                    = -1;
+    dot_behavior           = DOT_REFRESH;
+    spell_power_mod.direct = 0;
   }
 
   // Treat direct damage as "bleed"
@@ -2539,7 +2594,7 @@ struct tigers_fury_t : public cat_attack_t
   tigers_fury_t( druid_t* p, const std::string& options_str ) :
     cat_attack_t( "tigers_fury", p, p -> find_specialization_spell( "Tiger's Fury" ), options_str )
   {
-    harmful = special = false;
+    harmful = false;
   }
 
   virtual void execute()
@@ -2553,7 +2608,7 @@ struct tigers_fury_t : public cat_attack_t
                           p() -> gain.tigers_fury );
 
     if ( p() -> sets.has_set_bonus( SET_T13_4PC_MELEE ) )
-      p() -> buff.omen_of_clarity -> trigger( 1, buff_t::DEFAULT_VALUE(), 1 );
+      p() -> buff.omen_of_clarity -> trigger();
 
     if ( p() -> sets.has_set_bonus( SET_T15_4PC_MELEE ) )
       p() -> buff.tier15_4pc_melee -> trigger( 3 );
@@ -2584,10 +2639,7 @@ struct bear_attack_t : public druid_attack_t<melee_attack_t>
   bear_attack_t( const std::string& n, druid_t* p,
                  const spell_data_t* s = spell_data_t::nil() ) :
     base_t( n, p, s )
-  {
-    may_crit = special = true;
-    may_glance = false;
-  }
+  {}
 
   virtual void execute()
   {
@@ -2604,6 +2656,9 @@ struct bear_attack_t : public druid_attack_t<melee_attack_t>
 
   void trigger_ursa_major()
   {
+    if ( ! p() -> spec.ursa_major -> ok() )
+      return;
+
     if ( p() -> buff.ursa_major -> check() )
     {
       double remaining_value = p() -> buff.ursa_major -> value() * ( p() -> buff.ursa_major -> remains() / p() -> buff.ursa_major -> buff_duration );
@@ -2673,6 +2728,8 @@ struct bear_melee_t : public bear_attack_t
         p() -> buff.tooth_and_claw -> trigger();
         p() -> proc.tooth_and_claw -> occur();
       }
+
+      trigger_omen_of_clarity(); // Omen can trigger in bear form for feral druids.
     }
     if ( result_is_multistrike( state -> result ) )
       trigger_ursa_major();
@@ -2687,9 +2744,16 @@ struct feral_charge_bear_t : public bear_attack_t
     bear_attack_t( "feral_charge", p, p -> talent.wild_charge )
   {
     parse_options( NULL, options_str );
-    may_miss = may_dodge = may_parry = may_block = may_glance = special = false;
+    may_miss = may_dodge = may_parry = may_block = may_glance = false;
     base_teleport_distance = data().max_range();
     movement_directionality = MOVEMENT_OMNI;
+  }
+
+  virtual void init()
+  {
+    bear_attack_t::init();
+
+    consume_bloodtalons = false;
   }
 
   virtual bool ready()
@@ -2710,8 +2774,7 @@ struct lacerate_t : public bear_attack_t
     bear_attack_t( "lacerate", p, p -> find_specialization_spell( "Lacerate" ) )
   {
     parse_options( NULL, options_str );
-    dot_behavior             = DOT_REFRESH;
-    special                  = true;
+    dot_behavior = DOT_REFRESH;
   }
 
   virtual void impact( action_state_t* state )
@@ -2828,7 +2891,7 @@ struct maul_t : public bear_attack_t
 
     aoe = player -> glyph.maul -> effectN( 1 ).base_value();
     base_add_multiplier = player -> glyph.maul -> effectN( 3 ).percent();
-    use_off_gcd = special = true;
+    use_off_gcd = true;
 
     base_multiplier *= 1.0 + player -> perk.improved_maul -> effectN( 1 ).percent();
 
@@ -2884,10 +2947,16 @@ struct skull_bash_bear_t : public bear_attack_t
   {
     parse_options( NULL, options_str );
     may_miss = may_glance = may_block = may_dodge = may_parry = may_crit = false;
-    special = false;
     use_off_gcd = true;
 
     cooldown -> duration += player -> glyph.skull_bash -> effectN( 1 ).time_value();
+  }
+
+  virtual void init()
+  {
+    bear_attack_t::init();
+
+    consume_bloodtalons = false;
   }
 
   virtual bool ready()
@@ -2908,11 +2977,12 @@ struct thrash_bear_t : public bear_attack_t
     bear_attack_t( "thrash_bear", player, player -> find_spell( 77758 ) )
   {
     parse_options( NULL, options_str );
-    aoe               = -1;
-    dot_behavior      = DOT_REFRESH;
-    special           = true;
+    aoe                    = -1;
+    dot_behavior           = DOT_REFRESH;
+    base_td_multiplier    *= 1.0 + p() -> perk.empowered_thrash -> effectN( 1 ).percent();
+    spell_power_mod.direct = 0;
+
     rage_gain = p() -> find_spell( 158723 ) -> effectN( 1 ).resource( RESOURCE_RAGE );
-    base_td_multiplier *= 1.0 + p() -> perk.empowered_thrash -> effectN( 1 ).percent();
   }
 
   virtual void impact( action_state_t* s )
@@ -2955,7 +3025,7 @@ struct savage_defense_t : public bear_attack_t
     bear_attack_t( "savage_defense", player, player -> find_class_spell( "Savage Defense" ) )
   {
     parse_options( NULL, options_str );
-    harmful = special = false;
+    harmful = false;
     cooldown -> duration = timespan_t::from_seconds( 9.0 );
     cooldown -> charges = 3;
     use_off_gcd = true;
@@ -2988,7 +3058,7 @@ struct might_of_ursoc_t : public bear_attack_t
     parse_options( NULL, options_str );
     cooldown -> duration = data().cooldown();
     cooldown -> duration += player -> glyph.might_of_ursoc -> effectN( 2 ).time_value();
-    harmful = special = false;
+    harmful = false;
     use_off_gcd = true;
   }
 
@@ -3025,7 +3095,7 @@ public:
     ab::consume_resource();
     druid_t& p = *this -> p();
 
-    if ( consume_ooc && p.buff.omen_of_clarity -> up() && this -> execute_time() != timespan_t::zero() )
+    if ( consume_ooc && this -> execute_time() != timespan_t::zero() && p.buff.omen_of_clarity -> up() )
     {
       // Treat the savings like a mana gain.
       double amount = ab::cost();
@@ -5449,7 +5519,8 @@ void druid_t::create_buffs()
   buff.frenzied_regeneration = buff_creator_t( this, "frenzied_regeneration", find_class_spell( "Frenzied Regeneration" ) );
   buff.moonkin_form          = new moonkin_form_t( *this );
   buff.omen_of_clarity       = buff_creator_t( this, "omen_of_clarity", spec.omen_of_clarity -> effectN( 1 ).trigger() )
-                               .chance( find_spell( 113043 ) -> proc_chance() );
+                               .chance( specialization() == DRUID_RESTORATION ? find_spell( 113043 ) -> proc_chance()
+                                                                              : find_spell( 16864 ) -> proc_chance() );
   buff.soul_of_the_forest    = buff_creator_t( this, "soul_of_the_forest", talent.soul_of_the_forest -> ok() ? find_spell( 114108 ) : spell_data_t::not_found() )
                                .default_value( find_spell( 114108 ) -> effectN( 1 ).percent() );
   buff.prowl                 = buff_creator_t( this, "prowl", find_class_spell( "Prowl" ) );
@@ -5741,8 +5812,7 @@ void druid_t::apl_feral()
   // finisher -> add_action( "pool_resource,for_next=1,extra_amount=25" ); // not currently a DPS gain
   finisher -> add_action( this, "Ferocious Bite", "cycle_targets=1,if=target.health.pct<25&dot.rip.ticking" );
   // finisher -> add_action( this, "Rip", "cycle_targets=1,if=tick_multiplier%dot.rip.multiplier>=1.15" ); // not currently a DPS gain
-  finisher -> add_action( this, "Rip", "cycle_targets=1,if=dot.rip.remains<2" );
-  finisher -> add_action( this, "Rip", "cycle_targets=1,if=dot.rip.remains<7.2&energy.time_to_max<=1" );
+  finisher -> add_action( this, "Rip", "cycle_targets=1,if=dot.rip.remains<7.2" );
   finisher -> add_action( this, "Savage Roar", "if=(energy.time_to_max<=1|buff.berserk.up)&buff.savage_roar.remains<42*0.3" );
   finisher -> add_action( this, "Ferocious Bite", "if=(energy.time_to_max<=1|buff.berserk.up)" );
 }
