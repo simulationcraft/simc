@@ -29,6 +29,8 @@
 // All new spells need to have their damage cross-checked with in game values.
 // Is the ignite from Inferno Blast spread?
 // Need to not hardcode Overpowered
+// Can Meteor ticks crit and miss?
+// Are Meteor ticks effected by haste?
 
 
 #include "simulationcraft.hpp"
@@ -294,6 +296,8 @@ public:
     const spell_data_t* ice_nova;
     const spell_data_t* kindling;
     const spell_data_t* overpowered;
+    const spell_data_t* arcane_orb;
+    const spell_data_t* meteor;
 
   } talents;
 
@@ -1459,6 +1463,52 @@ struct arcane_missiles_t : public mage_spell_t
     return mage_spell_t::ready();
   }
 };
+
+// Arcane Orb Spell =========================================================
+
+struct arcane_orb_bolt_t : public mage_spell_t
+{
+  arcane_orb_bolt_t( mage_t* p ) :
+    mage_spell_t( "arcane_orb_bolt", p, p -> find_spell( 153640 ) )
+  {
+    aoe = -1;
+    background = true;
+    dual = true;
+    cooldown -> duration = timespan_t::zero(); // dbc has CD of 15 seconds
+  }
+
+  virtual void impact( action_state_t* s )
+  {
+    for ( unsigned i = 0; i < sizeof_array( p() -> benefits.arcane_charge ); i++)
+    {
+      p() -> benefits.arcane_charge[ i ] -> update( as<int>( i ) == p() -> buffs.arcane_charge -> check() );
+    }
+
+    mage_spell_t::impact( s );
+
+    p() -> buffs.arcane_charge -> trigger();
+  }
+};
+
+struct arcane_orb_t : public mage_spell_t
+{
+  arcane_orb_t( mage_t* p, const std::string& options_str ) :
+    mage_spell_t( "arcane_orb", p, p -> find_spell( 153626 ) )
+  {
+    parse_options( NULL, options_str );
+
+    hasted_ticks = false;
+    base_tick_time = timespan_t::from_seconds( 1.0 );
+    dot_duration      = data().duration();
+    may_miss       = false;
+    may_crit       = false;
+
+    dynamic_tick_action = true;
+    tick_action = new arcane_orb_bolt_t( p );
+  }
+};
+
+
 
 // Arcane Power Spell =======================================================
 
@@ -3016,6 +3066,40 @@ struct mage_armor_t : public mage_spell_t
   }
 };
 
+// Meteor Spell ========================================================
+
+
+// Direction Damage Coponent
+struct meteor_t : public mage_spell_t
+{
+  meteor_t( mage_t* p, const std::string& options_str ) :
+    mage_spell_t( "meteor", p, p -> find_spell( 153561 ) )
+  {
+    parse_options( NULL, options_str );
+    aoe = -1;
+    school = SCHOOL_FIRE;
+
+    // Sp_Coeff is stored in 153564 for some reason
+    spell_power_mod.direct = p -> find_spell( 153564 ) -> effectN( 1 ).sp_coeff();
+
+    // Specifying the DoT compoents
+    dot_duration = timespan_t::from_seconds( 8.0 );
+    spell_power_mod.tick = p -> find_spell( 155158 ) -> effectN( 1 ).sp_coeff();
+    base_tick_time = p -> find_spell( 155158 ) -> effectN( 1 ).period();
+    hasted_ticks = false;
+  }
+
+  // Mirroring meteor falling to the ground
+  virtual timespan_t travel_time() const
+  {
+    return timespan_t::from_seconds( 3.0 );
+  }
+
+};
+
+
+
+
 // Mirror Image Spell =======================================================
 
 struct mirror_image_t : public mage_spell_t
@@ -3888,6 +3972,8 @@ action_t* mage_t::create_action( const std::string& name,
   if ( name == "inferno_blast"     ) return new           inferno_blast_t( this, options_str );
   if ( name == "living_bomb"       ) return new             living_bomb_t( this, options_str );
   if ( name == "mage_armor"        ) return new              mage_armor_t( this, options_str );
+  if ( name == "arcane_orb"        ) return new              arcane_orb_t( this, options_str );
+  if (name == "meteor"             ) return new                  meteor_t( this, options_str );
   if ( name == "mage_bomb"         )
   {
     if ( talents.frost_bomb -> ok() )
@@ -3927,6 +4013,7 @@ action_t* mage_t::create_action( const std::string& name,
       if ( talents.ice_nova -> ok() )
           return new ice_nova_t( this, options_str );
   }
+
   if ( name == "time_warp"         ) return new               time_warp_t( this, options_str );
   if ( name == "water_elemental"   ) return new  summon_water_elemental_t( this, options_str );
   //if ( name == "alter_time"        ) return new              alter_time_t( this, options_str );
@@ -3993,6 +4080,7 @@ void mage_t::init_spells()
   talents.temporal_shield    = find_talent_spell( "Temporal Shield" );
   talents.supernova          = find_talent_spell( "Supernova" );
   talents.overpowered        = find_talent_spell( "Overpowered" );
+  talents.arcane_orb         = find_talent_spell( "Arcane Orb" );
 
 
   // Passive Spells
@@ -4493,7 +4581,7 @@ double mage_t::composite_player_multiplier( school_e school ) const
   {
     m *= 1.0 + buffs.rune_of_power -> data().effectN( 2 ).percent();
   }
-  
+
   if ( specialization() == MAGE_ARCANE )
     cache.player_mult_valid[ school ] = false;
 
