@@ -128,11 +128,15 @@ public:
   // Gains
   struct gains_t
   {
-    gain_t* divine_plea;
-    gain_t* extra_regen;
+    // Healing/absorbs
+    gain_t* holy_shield;
     gain_t* seal_of_insight;
     gain_t* glyph_divine_storm;
     gain_t* glyph_divine_shield;
+
+    // Mana
+    gain_t* divine_plea;
+    gain_t* extra_regen;
 
     // Holy Power
     gain_t* hp_beacon_of_light;
@@ -385,6 +389,7 @@ public:
 
   // combat outcome functions
   virtual void      assess_damage( school_e, dmg_e, action_state_t* );
+  virtual void      assess_damage_imminent( school_e, dmg_e, action_state_t* );
   virtual void      assess_heal( school_e, dmg_e, action_state_t* );
   virtual void      target_mitigation( school_e, dmg_e, action_state_t* );
 
@@ -4653,6 +4658,7 @@ void paladin_t::init_gains()
   gains.extra_regen                 = get_gain( ( specialization() == PALADIN_RETRIBUTION ) ? "sword_of_light" : "guarded_by_the_light" );
 
   // Health
+  gains.holy_shield                 = get_gain( "holy_shield" );
   gains.seal_of_insight             = get_gain( "seal_of_insight"  );
   gains.glyph_divine_storm          = get_gain( "glyph_of_divine_storm" );
   gains.glyph_divine_shield         = get_gain( "glyph_of_divine_shield" );
@@ -5965,17 +5971,7 @@ void paladin_t::target_mitigation( school_e school,
     if ( sim -> debug && s -> action && ! s -> target -> is_enemy() && ! s -> target -> is_add() )
       sim -> out_debug.printf( "Damage to %s after SotR mitigation is %f", s -> target -> name(), s -> result_amount );
   }
-
-  // Holy Shield will go here
-  if ( talents.holy_shield -> ok() && ! ( school == SCHOOL_PHYSICAL ) )
-  {
-    // for now hack this in as mitigation, even though it'll show up as an absorb
-    s -> result_amount *= 1.0 - composite_block_reduction();
-
-    if ( sim -> debug && s -> action && ! s -> target -> is_enemy() && ! s -> target -> is_add() )
-      sim -> out_debug.printf( "Damage to %s after Holy Shield mitigation is %f", s -> target -> name(), s -> result_amount );
-  }
-
+  
   // Ardent Defender
   if ( buffs.ardent_defender -> check() )
   {
@@ -6129,6 +6125,50 @@ void paladin_t::assess_damage( school_e school,
   if ( sets.has_set_bonus( SET_T16_2PC_TANK ) && buffs.divine_protection -> check() )
   {
     active.blessing_of_the_guardians -> increment_damage( s -> result_mitigated ); // uses post-mitigation, pre-absorb value
+  }
+}
+
+// paladin_t::assess_damage_imminent ========================================
+
+void paladin_t::assess_damage_imminent( school_e school, dmg_e dmg_type, action_state_t* s )
+{
+  // Holy Shield happens here, after all absorbs are accounted for (see player_t::assess_damage())
+  if ( talents.holy_shield -> ok() && s -> result_amount > 0.0 && school != SCHOOL_PHYSICAL )
+  {
+    // Block code mimics attack_t::block_chance()
+    // cache.block() contains our block chance 
+    double block = cache.block();
+    // add or subtract 1.5% per level difference
+    block += ( level - s -> action -> player -> level ) * 0.015;
+
+    
+    if ( block > 0 )
+    {
+      // Roll for "block"
+      if ( rng().roll( block ) )
+      {
+        double block_amount = s -> result_amount * composite_block_reduction();
+
+        if ( sim->debug )
+          sim -> out_debug.printf( "%s Holy Shield absorbs %f", name(), block_amount );
+
+        // update the relevant counters
+        iteration_absorb_taken += block_amount;
+        s -> result_amount -= block_amount;
+        s -> result_absorbed = s -> result_amount;
+
+        // tally the amount in a gain object
+        gains.holy_shield -> add( RESOURCE_HEALTH, block_amount, 0.0 );
+      }
+      else
+      {        
+        if ( sim->debug )
+          sim -> out_debug.printf( "%s Holy Shield fails to activate", name() );
+      }
+    }
+
+    if ( sim->debug )
+      sim -> out_debug.printf( "Damage to %s after Holy Shield mitigation is %f", name(), s -> result_amount );
   }
 }
 
