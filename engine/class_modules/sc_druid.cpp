@@ -1676,9 +1676,19 @@ public:
 
   bool trigger_omen_of_clarity()
   {
-    if ( ab::proc ) return false;
+    if ( ab::proc )
+      return false;
 
-    return p() -> buff.omen_of_clarity -> trigger();
+    if ( p() -> specialization() == DRUID_RESTORATION )
+      return p() -> buff.omen_of_clarity -> trigger(); // Proc chance is handled by buff chance
+    else if ( p() -> specialization() == DRUID_FERAL )
+    {
+      if ( rng().roll( weapon -> proc_chance_on_swing( 3.5 ) ) ) // 3.5 PPM via https://twitter.com/Celestalon/status/482329896404799488
+        return p() -> buff.omen_of_clarity -> trigger();
+      else
+        return false;
+    } else
+      return false;
   }
 
   virtual void impact( action_state_t* s )
@@ -2553,7 +2563,7 @@ struct tigers_fury_t : public cat_attack_t
                           p() -> gain.tigers_fury );
 
     if ( p() -> sets.has_set_bonus( SET_T13_4PC_MELEE ) )
-      p() -> buff.omen_of_clarity -> trigger( 1, buff_t::DEFAULT_VALUE(), 1 );
+      p() -> buff.omen_of_clarity -> trigger();
 
     if ( p() -> sets.has_set_bonus( SET_T15_4PC_MELEE ) )
       p() -> buff.tier15_4pc_melee -> trigger( 3 );
@@ -2604,6 +2614,9 @@ struct bear_attack_t : public druid_attack_t<melee_attack_t>
 
   void trigger_ursa_major()
   {
+    if ( ! p() -> spec.ursa_major -> ok() )
+      return;
+
     if ( p() -> buff.ursa_major -> check() )
     {
       double remaining_value = p() -> buff.ursa_major -> value() * ( p() -> buff.ursa_major -> remains() / p() -> buff.ursa_major -> buff_duration );
@@ -2673,6 +2686,8 @@ struct bear_melee_t : public bear_attack_t
         p() -> buff.tooth_and_claw -> trigger();
         p() -> proc.tooth_and_claw -> occur();
       }
+
+      trigger_omen_of_clarity(); // Omen can trigger in bear form for feral druids.
     }
     if ( result_is_multistrike( state -> result ) )
       trigger_ursa_major();
@@ -5449,7 +5464,8 @@ void druid_t::create_buffs()
   buff.frenzied_regeneration = buff_creator_t( this, "frenzied_regeneration", find_class_spell( "Frenzied Regeneration" ) );
   buff.moonkin_form          = new moonkin_form_t( *this );
   buff.omen_of_clarity       = buff_creator_t( this, "omen_of_clarity", spec.omen_of_clarity -> effectN( 1 ).trigger() )
-                               .chance( find_spell( 113043 ) -> proc_chance() );
+                               .chance( specialization() == DRUID_RESTORATION ? find_spell( 113043 ) -> proc_chance()
+                                                                              : find_spell( 16864 ) -> proc_chance() );
   buff.soul_of_the_forest    = buff_creator_t( this, "soul_of_the_forest", talent.soul_of_the_forest -> ok() ? find_spell( 114108 ) : spell_data_t::not_found() )
                                .default_value( find_spell( 114108 ) -> effectN( 1 ).percent() );
   buff.prowl                 = buff_creator_t( this, "prowl", find_class_spell( "Prowl" ) );
@@ -5741,8 +5757,7 @@ void druid_t::apl_feral()
   // finisher -> add_action( "pool_resource,for_next=1,extra_amount=25" ); // not currently a DPS gain
   finisher -> add_action( this, "Ferocious Bite", "cycle_targets=1,if=target.health.pct<25&dot.rip.ticking" );
   // finisher -> add_action( this, "Rip", "cycle_targets=1,if=tick_multiplier%dot.rip.multiplier>=1.15" ); // not currently a DPS gain
-  finisher -> add_action( this, "Rip", "cycle_targets=1,if=dot.rip.remains<2" );
-  finisher -> add_action( this, "Rip", "cycle_targets=1,if=dot.rip.remains<7.2&energy.time_to_max<=1" );
+  finisher -> add_action( this, "Rip", "cycle_targets=1,if=dot.rip.remains<7.2" );
   finisher -> add_action( this, "Savage Roar", "if=(energy.time_to_max<=1|buff.berserk.up)&buff.savage_roar.remains<42*0.3" );
   finisher -> add_action( this, "Ferocious Bite", "if=(energy.time_to_max<=1|buff.berserk.up)" );
 }
