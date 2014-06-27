@@ -110,6 +110,7 @@ public:
     buff_t* glyph_of_word_of_glory;
     buff_t* hand_of_purity;
     buff_t* holy_avenger;
+    absorb_buff_t* holy_shield;
     buff_t* infusion_of_light;
     buff_t* liadrins_righteousness;
     buff_t* maraads_truth;
@@ -2197,7 +2198,7 @@ struct holy_light_t : public paladin_heal_t
 
 };
 
-// Holy Shield proc ===========================================================
+// Holy Shield damage proc ====================================================
 
 struct holy_shield_proc_t : public paladin_spell_t
 {
@@ -4864,6 +4865,10 @@ void paladin_t::create_buffs()
   buffs.divine_purpose         = buff_creator_t( this, "divine_purpose", find_talent_spell( "Divine Purpose" ) )
                                  .duration( find_spell( find_talent_spell( "Divine Purpose" ) -> effectN( 1 ).trigger_spell_id() ) -> duration() );
   buffs.holy_avenger           = buff_creator_t( this, "holy_avenger", find_talent_spell( "Holy Avenger" ) ).cd( timespan_t::zero() ); // Let the ability handle the CD
+  buffs.holy_shield            = absorb_buff_creator_t( this, "holy_shield", find_spell( 157121 ) )
+                                 .school( SCHOOL_MAGIC )
+                                 .source( get_stats( "holy_shield" ) )
+                                 .gain( get_gain( "holy_shield" ) );
   buffs.sacred_shield          = buff_creator_t( this, "sacred_shield", find_talent_spell( "Sacred Shield" ) )
                                  .duration( timespan_t::from_seconds( 60 ) ); // arbitrarily high since this is just a placeholder, we expire() on last_tick()
   buffs.selfless_healer        = buff_creator_t( this, "selfless_healer", find_spell( 114250 ) );
@@ -6156,9 +6161,10 @@ void paladin_t::assess_damage_imminent( school_e school, dmg_e dmg_type, action_
         iteration_absorb_taken += block_amount;
         s -> result_amount -= block_amount;
         s -> result_absorbed = s -> result_amount;
-
-        // tally the amount in a gain object
-        gains.holy_shield -> add( RESOURCE_HEALTH, block_amount, 0.0 );
+        
+        // hack to register this on the abilities table
+        buffs.holy_shield -> trigger( 1, block_amount );
+        buffs.holy_shield -> consume( block_amount );
       }
       else
       {        
