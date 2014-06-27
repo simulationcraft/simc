@@ -1619,7 +1619,7 @@ struct heroic_charge_t: public warrior_attack_t
       p() -> cooldown.rage_from_charge -> start();
       p() -> resource_gain( RESOURCE_RAGE,
                             p() -> glyphs.bull_rush -> effectN( 2 ).resource( RESOURCE_RAGE ) +
-                            data().effectN( 2 ).resource( RESOURCE_RAGE ),
+                            p() -> spell.charge -> effectN( 2 ).resource( RESOURCE_RAGE ),
                             p() -> gain.charge );
     }
   }
