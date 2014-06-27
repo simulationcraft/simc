@@ -1613,12 +1613,15 @@ struct heroic_charge_t: public warrior_attack_t
 
   virtual void execute()
   {
-    p() -> cooldown.rage_from_charge -> start();
-    p() -> cooldown.charge -> up();
-    p() -> resource_gain( RESOURCE_RAGE,
-                          p() -> glyphs.bull_rush -> effectN( 2 ).resource( RESOURCE_RAGE ) +
-                          data().effectN( 2 ).resource( RESOURCE_RAGE ),
-                          p() -> gain.charge );
+    p() -> cooldown.charge -> start();
+    if ( p() -> cooldown.rage_from_charge -> up() )
+    {
+      p() -> cooldown.rage_from_charge -> start();
+      p() -> resource_gain( RESOURCE_RAGE,
+                            p() -> glyphs.bull_rush -> effectN( 2 ).resource( RESOURCE_RAGE ) +
+                            data().effectN( 2 ).resource( RESOURCE_RAGE ),
+                            p() -> gain.charge );
+    }
   }
 
   virtual bool ready()
