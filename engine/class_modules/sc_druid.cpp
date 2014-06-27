@@ -1686,7 +1686,7 @@ public:
       return p() -> buff.omen_of_clarity -> trigger(); // Proc chance is handled by buff chance
     else if ( p() -> specialization() == DRUID_FERAL )
     {
-      if ( rng().roll( weapon -> proc_chance_on_swing( 3.5 ) ) ) // 3.5 PPM via https://twitter.com/Celestalon/status/482329896404799488
+      if ( rng().roll( ab::weapon -> proc_chance_on_swing( 3.5 ) ) ) // 3.5 PPM via https://twitter.com/Celestalon/status/482329896404799488
         return p() -> buff.omen_of_clarity -> trigger();
       else
         return false;
@@ -1745,26 +1745,26 @@ public:
   {
     ab::init();
 
-    consume_bloodtalons = harmful && special;
+    consume_bloodtalons = ab::harmful && ab::special;
   }
 
   virtual void execute()
   {
     ab::execute();
 
-    if ( p() -> buff.natures_vigil -> check() && result_is_hit( execute_state -> result ) )
-      p() -> active.natures_vigil -> trigger( *this );
+    if ( ab::p() -> buff.natures_vigil -> check() && ab::result_is_hit( ab::execute_state -> result ) )
+      ab::p() -> active.natures_vigil -> trigger( *this );
 
     // TODO: Confirm you still lose a stack on miss
-    if ( p() -> talent.bloodtalons -> ok() && consume_bloodtalons )
-      p() -> buff.bloodtalons -> decrement();
+    if ( ab::p() -> talent.bloodtalons -> ok() && consume_bloodtalons )
+      ab::p() -> buff.bloodtalons -> decrement();
   }
 
   virtual void impact( action_state_t* s )
   {
     ab::impact( s );
 
-    if ( p() -> spec.leader_of_the_pack -> ok() && s -> result == RESULT_CRIT )
+    if ( ab::p() -> spec.leader_of_the_pack -> ok() && s -> result == RESULT_CRIT )
       trigger_lotp( s );
   }
 
@@ -1772,16 +1772,16 @@ public:
   {
     ab::tick( d );
 
-    if ( p() -> buff.natures_vigil -> up() )
-      p() -> active.natures_vigil -> trigger( *this );
+    if ( ab::p() -> buff.natures_vigil -> up() )
+      ab::p() -> active.natures_vigil -> trigger( *this );
   }
 
   virtual double composite_persistent_multiplier( const action_state_t* s ) const
   {
     double pm = ab::composite_persistent_multiplier( s );
     
-    if ( p() -> talent.bloodtalons -> ok() && consume_bloodtalons && p() -> buff.bloodtalons -> up() )
-      pm *= 1.0 + p() -> buff.bloodtalons -> data().effectN( 1 ).percent();
+    if ( ab::p() -> talent.bloodtalons -> ok() && consume_bloodtalons && p() -> buff.bloodtalons -> up() )
+      pm *= 1.0 + ab::p() -> buff.bloodtalons -> data().effectN( 1 ).percent();
 
     return pm;
   }
@@ -1789,14 +1789,14 @@ public:
   void trigger_lotp( const action_state_t* s )
   {
     // Must be in cat or bear form
-    if ( ! ( p() -> buff.cat_form -> check() || p() -> buff.bear_form -> check() ) )
+    if ( ! ( ab::p() -> buff.cat_form -> check() || ab::p() -> buff.bear_form -> check() ) )
       return;
     // Has to do damage and can't be a proc
     if ( ab::proc || s -> result_amount <= 0 )
       return;
 
-    if ( p() -> active.leader_of_the_pack -> cooldown -> up() )
-      p() -> active.leader_of_the_pack -> execute();
+    if ( ab::p() -> active.leader_of_the_pack -> cooldown -> up() )
+      ab::p() -> active.leader_of_the_pack -> execute();
   }
 };
 namespace cat_attacks {
