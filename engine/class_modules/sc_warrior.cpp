@@ -2533,7 +2533,8 @@ struct defensive_stance_t: public warrior_spell_t
 
   virtual void tick( dot_t* d )
   {
-    d -> refresh_duration(); // ticks indefinitely
+    if ( p() -> in_combat ) // Needed to prevent precombat infininte loop
+      d -> refresh_duration(); // ticks indefinitely
 
     p() -> resource_gain( RESOURCE_RAGE, 1, p() -> gain.defensive_stance );
   }
