@@ -1686,7 +1686,7 @@ public:
       return p() -> buff.omen_of_clarity -> trigger(); // Proc chance is handled by buff chance
     else if ( p() -> specialization() == DRUID_FERAL )
     {
-      if ( rng().roll( ab::weapon -> proc_chance_on_swing( 3.5 ) ) ) // 3.5 PPM via https://twitter.com/Celestalon/status/482329896404799488
+      if ( ab::rng().roll( ab::weapon -> proc_chance_on_swing( 3.5 ) ) ) // 3.5 PPM via https://twitter.com/Celestalon/status/482329896404799488
         return p() -> buff.omen_of_clarity -> trigger();
       else
         return false;
@@ -1780,7 +1780,7 @@ public:
   {
     double pm = ab::composite_persistent_multiplier( s );
     
-    if ( ab::p() -> talent.bloodtalons -> ok() && consume_bloodtalons && p() -> buff.bloodtalons -> up() )
+    if ( ab::p() -> talent.bloodtalons -> ok() && consume_bloodtalons && ab::p() -> buff.bloodtalons -> up() )
       pm *= 1.0 + ab::p() -> buff.bloodtalons -> data().effectN( 1 ).percent();
 
     return pm;
