@@ -2755,10 +2755,7 @@ struct shield_charge_t: public warrior_spell_t
   {
     warrior_spell_t::execute();
 
-    if ( p() -> buff.shield_charge -> up() )
-      p() -> buff.shield_charge -> extend_duration( p(), timespan_t::from_seconds( 6.0 ) );
-    else
-      p() -> buff.shield_charge -> trigger();
+    p() -> buff.shield_charge -> trigger();
   }
 
   virtual bool ready()
