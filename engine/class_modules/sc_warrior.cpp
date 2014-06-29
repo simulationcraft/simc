@@ -3398,12 +3398,11 @@ void warrior_t::apl_smf_fury()
   single_target -> add_action( this, "Colossus Smash" );
   single_target -> add_talent( this, "Storm Bolt", "if=cooldown.colossus_smash.remains>3" );
   single_target -> add_action( this, "Execute", "if=debuff.colossus_smash.up|rage>70|target.time_to_die<12" );
+  single_target -> add_action( this, "Wild Strike", "if=buff.bloodsurge.up|((debuff.colossus_smash.up|rage>70)&target.health.pct>20)" );
   single_target -> add_action( this, "Raging Blow", "if=target.health.pct<20|buff.raging_blow.stack=2|(debuff.colossus_smash.up|(cooldown.bloodthirst.remains>=1&buff.raging_blow.remains<=3))" );
   single_target -> add_talent( this, "Ravager" );
   single_target -> add_action( "bladestorm,if=enabled,interrupt_if=cooldown.bloodthirst.remains<1" );
-  single_target -> add_action( this, "Wild Strike" );
-  single_target -> add_action( this, "Raging Blow", "if=cooldown.colossus_smash.remains>=3",
-                               "If Colossus Smash is coming up soon, it's a good idea to save 1 charge of raging blow for it." );
+  single_target -> add_action( this, "Raging Blow", "if=cooldown.colossus_smash.remains>=1" );
   single_target -> add_talent( this, "Shockwave" );
   single_target -> add_talent( this, "Impending Victory", "if=target.health.pct>=20&cooldown.colossus_smash.remains>=2" );
 
@@ -3497,13 +3496,11 @@ void warrior_t::apl_tg_fury()
   single_target -> add_action( this, "Colossus Smash" );
   single_target -> add_talent( this, "Storm Bolt", "if=cooldown.colossus_smash.remains>3" );
   single_target -> add_action( this, "Execute", "if=debuff.colossus_smash.up|rage>70|target.time_to_die<12" );
+  single_target -> add_action( this, "Wild Strike", "if=buff.bloodsurge.up|((debuff.colossus_smash.up|rage>70)&target.health.pct>20)" );
   single_target -> add_action( this, "Raging Blow", "if=target.health.pct<20|buff.raging_blow.stack=2|(debuff.colossus_smash.up|(cooldown.bloodthirst.remains>=1&buff.raging_blow.remains<=3))" );
   single_target -> add_talent( this, "Ravager" );
   single_target -> add_action( "bladestorm,if=enabled,interrupt_if=cooldown.bloodthirst.remains<1" );
   single_target -> add_action( this, "Raging Blow", "if=cooldown.colossus_smash.remains>=1" );
-  single_target -> add_action( this, "Wild Strike" );
-  single_target -> add_action( this, "Raging Blow", "if=cooldown.colossus_smash.remains>=3",
-                               "If Colossus Smash is coming up soon, it's a good idea to save 1 charge of raging blow for it." );
   single_target -> add_talent( this, "Shockwave" );
   single_target -> add_talent( this, "Impending Victory", "if=target.health.pct>=20&cooldown.colossus_smash.remains>=2" );
 
