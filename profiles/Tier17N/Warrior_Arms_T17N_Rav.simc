@@ -58,30 +58,31 @@ actions.aoe+=/mortal_strike
 actions.aoe+=/execute,if=rage>90&debuff.colossus_smash.up
 actions.aoe+=/whirlwind
 
-head=helmet_of_the_prehistoric_marauder,id=99418,upgrade=2,gems=16crit_8haste_8crit
-neck=malkoroks_tainted_dog_tags,id=105566,upgrade=2
-shoulders=spaulders_of_the_fallen_warchief,id=104645,upgrade=2,gems=16crit_16crit,enchant=10str_5crit
-back=tigerclaw_cape,id=98147,upgrade=2,gems=8haste_8crit,enchant=9crit
-chest=breastplate_of_shamanic_mirrors,id=105532,upgrade=2,gems=8haste_8crit_8haste_8crit_16crit,enchant=3all
-shirt=precious_ribbon,id=52019
-wrists=bracers_of_blind_hatred,id=105456,upgrade=2,gems=16crit,enchant=9mastery
-hands=gauntlets_of_the_prehistoric_marauder,id=99412,upgrade=2,gems=8haste_8crit_8haste_8crit_16crit,enchant=9mastery
-waist=demolishers_reinforced_belt,id=104513,upgrade=2,gems=8haste_8crit_16crit_16crit,addon=nitro_boosts
-legs=legplates_of_willful_doom,id=104569,upgrade=2,gems=16crit_16crit_16crit,enchant=14str_8crit
-feet=greaves_of_sublime_superiority,id=105478,upgrade=2,gems=8haste_8crit,enchant=7mastery
-finger1=seal_of_the_forgotten_kings,id=105589,upgrade=2,gems=16crit
-finger2=sorrowpath_signet,id=105436,upgrade=2
-trinket1=evil_eye_of_galakras,id=105491,upgrade=2
-trinket2=thoks_tail_tip,id=105609,upgrade=2
-main_hand=xalatoh_desecrated_image_of_gorehowl,id=105644,upgrade=2,gems=8haste_8crit,enchant=dancing_steel
+head=ph_gladiators_plate_helm,id=111241
+neck=ph_gladiators_choker_of_cruelty,id=111207
+shoulders=ph_gladiators_plate_shoulders,id=111243,enchant=10str_5crit
+back=ph_gladiators_cloak_of_prowess,id=111206
+chest=ph_gladiators_plate_chestpiece,id=111239,enchant=glorious_stats
+wrists=ph_gladiators_armplates_of_prowess,id=111181,enchant=8mastery
+hands=ph_gladiators_plate_gauntlets,id=111210,enchant=8crit
+waist=ph_gladiators_girdle_of_cruelty,id=111174
+legs=ph_gladiators_plate_legguards,id=111212,enchant=14str_8crit
+feet=ph_gladiators_warboots_of_cruelty,id=111177,enchant=pandarens_step
+finger1=ph_gladiators_signet_of_cruelty,id=111219
+finger2=ph_gladiators_signet_of_accuracy,id=111272
+trinket1=ph_gladiators_badge_of_victory,id=111232
+trinket2=ph_gladiators_insignia_of_victory,id=111233
+main_hand=ph_gladiators_decapitator,id=111202,enchant=dancing_steel
 
 # Gear Summary
-# gear_strength=967
+# gear_strength=2621
 # gear_agility=3
-# gear_stamina=1531
+# gear_stamina=3253
 # gear_intellect=3
-# gear_crit_rating=882
-# gear_haste_rating=304
-# gear_mastery_rating=465
-# gear_armor=1187
-# tier16_2pc_melee=1
+# gear_crit_rating=1388
+# gear_haste_rating=436
+# gear_mastery_rating=687
+# gear_armor=2574
+# gear_multistrike_rating=411
+# pvp_2pc_melee=1
+# pvp_4pc_melee=1
