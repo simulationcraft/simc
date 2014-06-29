@@ -55,7 +55,7 @@ actions+=/rake,cycle_targets=1,if=dot.rake.remains<4.5&active_enemies<9&combo_po
 actions+=/pool_resource,for_next=1
 actions+=/thrash_cat,if=dot.thrash_cat.remains<4.5&active_enemies>1
 actions+=/rake,cycle_targets=1,if=persistent_multiplier>dot.rake.pmultiplier&active_enemies<9&combo_points<5
-actions+=/moonfire,if=dot.moonfire.remains<4.2&active_enemies=1
+actions+=/moonfire,cycle_targets=1,if=dot.moonfire.remains<4.2&active_enemies=1
 actions+=/pool_resource,for_next=1
 actions+=/swipe,if=combo_points<5&active_enemies>1
 actions+=/shred,if=combo_points<5

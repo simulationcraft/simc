@@ -3656,21 +3656,20 @@ void warrior_t::apl_gladiator()
     default_list -> add_action( racial_actions[i] + ",if=buff.bloodbath.up|buff.avatar.up|buff.shield_charge.up" );
 
   if ( sim -> allow_potions && level >= 80 )
-    default_list -> add_action( "mogu_power_potion,if=target.health.pct<20&buff.bloodbath.up|target.time_to_die<=25" );
+    default_list -> add_action( "mogu_power_potion,if=buff.bloodbath.up|target.time_to_die<=25" );
   default_list -> add_action( "run_action_list,name=single_target,if=active_enemies<=4" );
   default_list -> add_action( "run_action_list,name=aoe,if=active_enemies>3" );
 
-  single_target -> add_action( "shield_charge,if=buff.shield_charge.down" );
-  single_target -> add_action( this, "Heroic Strike", "if=buff.ultimatum.up|(buff.shield_charge.up&rage>50&target.health.pct>20)|rage>110" );
+  single_target -> add_action( "shield_charge,if=buff.shield_charge.down&cooldown.shield_slam.remains=0&(cooldown.bloodbath.remains>15|!talent.bloodbath.enabled)" );
+  single_target -> add_action( this, "Heroic Strike", "if=buff.shield_charge.up|buff.ultimatum.up|rage>=85" );
   single_target -> add_talent( this, "Bloodbath" );
   single_target -> add_talent( this, "Avatar" );
-  single_target -> add_action( this, "Heroic Leap", "if=(buff.bloodbath.up|cooldown.bloodbath.remains>5)|!talent.bloodbath.enabled" );
+  single_target -> add_action( this, "Heroic Leap", "if=(buff.bloodbath.up|cooldown.bloodbath.remains>10)|!talent.bloodbath.enabled" );
   single_target -> add_action( this, "Shield Slam" );
-  single_target -> add_action( this, "Revenge", "if=buff.shield_charge.up&rage<100" );
-  single_target -> add_action( this, "Execute", "if=rage>100|target.time_to_die<12|(rage>50&(buff.bloodbath.up|buff.avatar.up))" );
+  single_target -> add_action( this, "Revenge", "if=buff.shield_charge.up&rage<=100" );
   single_target -> add_talent( this, "Storm Bolt", "if=(buff.bloodbath.up|cooldown.bloodbath.remains>7)|!talent.bloodbath.enabled" );
   single_target -> add_talent( this, "Dragon Roar", "if=(buff.bloodbath.up|cooldown.bloodbath.remains>10)|!talent.bloodbath.enabled" );
-  single_target -> add_action( this, "Devastate" );
+  single_target -> add_action( this, "Devastate", "if=cooldown.shield_slam.remains>gcd*0.4" );
 
   aoe -> add_talent( this, "Bloodbath" );
   aoe -> add_talent( this, "Avatar" );

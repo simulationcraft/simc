@@ -30,21 +30,20 @@ actions+=/auto_attack
 actions+=/blood_fury,if=buff.bloodbath.up|buff.avatar.up|buff.shield_charge.up
 actions+=/berserking,if=buff.bloodbath.up|buff.avatar.up|buff.shield_charge.up
 actions+=/arcane_torrent,if=buff.bloodbath.up|buff.avatar.up|buff.shield_charge.up
-actions+=/mogu_power_potion,if=target.health.pct<20&buff.bloodbath.up|target.time_to_die<=25
+actions+=/mogu_power_potion,if=buff.bloodbath.up|target.time_to_die<=25
 actions+=/run_action_list,name=single_target,if=active_enemies<=4
 actions+=/run_action_list,name=aoe,if=active_enemies>3
 
-actions.single_target=shield_charge,if=buff.shield_charge.down
-actions.single_target+=/heroic_strike,if=buff.ultimatum.up|(buff.shield_charge.up&rage>50&target.health.pct>20)|rage>110
+actions.single_target=shield_charge,if=buff.shield_charge.down&cooldown.shield_slam.remains=0&(cooldown.bloodbath.remains>15|!talent.bloodbath.enabled)
+actions.single_target+=/heroic_strike,if=buff.shield_charge.up|buff.ultimatum.up|rage>=85
 actions.single_target+=/bloodbath,if=talent.bloodbath.enabled
 actions.single_target+=/avatar,if=talent.avatar.enabled
-actions.single_target+=/heroic_leap,if=(buff.bloodbath.up|cooldown.bloodbath.remains>5)|!talent.bloodbath.enabled
+actions.single_target+=/heroic_leap,if=(buff.bloodbath.up|cooldown.bloodbath.remains>10)|!talent.bloodbath.enabled
 actions.single_target+=/shield_slam
-actions.single_target+=/revenge,if=buff.shield_charge.up&rage<100
-actions.single_target+=/execute,if=rage>100|target.time_to_die<12|(rage>50&(buff.bloodbath.up|buff.avatar.up))
+actions.single_target+=/revenge,if=buff.shield_charge.up&rage<=100
 actions.single_target+=/storm_bolt,if=talent.storm_bolt.enabled&((buff.bloodbath.up|cooldown.bloodbath.remains>7)|!talent.bloodbath.enabled)
 actions.single_target+=/dragon_roar,if=talent.dragon_roar.enabled&((buff.bloodbath.up|cooldown.bloodbath.remains>10)|!talent.bloodbath.enabled)
-actions.single_target+=/devastate
+actions.single_target+=/devastate,if=cooldown.shield_slam.remains>gcd*0.4
 
 actions.aoe=bloodbath,if=talent.bloodbath.enabled
 actions.aoe+=/avatar,if=talent.avatar.enabled
@@ -60,32 +59,33 @@ actions.aoe+=/dragon_roar,if=talent.dragon_roar.enabled&((buff.bloodbath.up|cool
 actions.aoe+=/storm_bolt,if=talent.storm_bolt.enabled&((buff.bloodbath.up|cooldown.bloodbath.remains>7)|!talent.bloodbath.enabled)
 actions.aoe+=/devastate
 
-head=helmet_of_the_prehistoric_marauder,id=99418,upgrade=2,gems=16crit_8haste_8crit
-neck=choker_of_the_final_word,id=105480,upgrade=2
-shoulders=spaulders_of_the_fallen_warchief,id=104645,upgrade=2,gems=16crit_16crit,enchant=10str_5crit
-back=qianying_fortitude_of_niuzao,id=102250,upgrade=2,gems=16haste_5sta,enchant=9crit
-chest=breastplate_of_shamanic_mirrors,id=105532,upgrade=2,gems=8haste_8crit_8haste_8crit_16crit,enchant=3all
-shirt=precious_ribbon,id=52019
-wrists=bracers_of_blind_hatred,id=105456,upgrade=2,gems=16crit,enchant=9mastery
-hands=gauntlets_of_the_prehistoric_marauder,id=99412,upgrade=2,gems=8haste_8crit_8haste_8crit_16crit,enchant=9mastery
-waist=demolishers_reinforced_belt,id=104513,upgrade=2,gems=8haste_8crit_16crit_16crit
-legs=legplates_of_willful_doom,id=104569,upgrade=2,gems=16crit_16crit_16crit,enchant=14str_8crit
-feet=greaves_of_sublime_superiority,id=105478,upgrade=2,gems=8haste_8crit,enchant=7mastery
-finger1=galakrond_control_band,id=105492,upgrade=2,gems=8haste_8crit_3crit
-finger2=ring_of_the_iron_tomb,id=105536,upgrade=2,gems=8haste_8mastery_3crit
-trinket1=evil_eye_of_galakras,id=105491,upgrade=2
-trinket2=thoks_tail_tip,id=105609,upgrade=2
-main_hand=encapsulated_essence_of_immerseus,id=105417,upgrade=2
-off_hand=shield_of_mockery,id=105481,upgrade=2
+head=ph_gladiators_plate_helm,id=111241
+neck=ph_gladiators_choker_of_cruelty,id=111207
+shoulders=ph_gladiators_plate_shoulders,id=111243,enchant=10str_5crit
+back=ph_gladiators_cloak_of_prowess,id=111206
+chest=ph_gladiators_plate_chestpiece,id=111239,enchant=glorious_stats
+wrists=ph_gladiators_armplates_of_prowess,id=111181,enchant=8mastery
+hands=ph_gladiators_plate_gauntlets,id=111210,enchant=8crit
+waist=ph_gladiators_girdle_of_cruelty,id=111174
+legs=ph_gladiators_plate_legguards,id=111212,enchant=14str_8crit
+feet=ph_gladiators_warboots_of_cruelty,id=111177,enchant=pandarens_step
+finger1=ph_gladiators_signet_of_cruelty,id=111219
+finger2=ph_gladiators_signet_of_accuracy,id=111272
+trinket1=ph_gladiators_badge_of_victory,id=111232
+trinket2=ph_gladiators_insignia_of_victory,id=111233
+main_hand=ph_gladiators_bonecracker,id=111200,enchant=dancing_steel
+off_hand=ph_gladiators_shield_wall,id=111221,enchant=9parry
 
 # Gear Summary
-# gear_strength=957
+# gear_strength=2617
 # gear_agility=3
-# gear_stamina=1533
+# gear_stamina=3248
 # gear_intellect=3
-# gear_crit_rating=786
-# gear_haste_rating=252
-# gear_mastery_rating=430
-# gear_armor=2037
-# gear_bonus_armor=180
-# tier16_2pc_melee=1
+# gear_crit_rating=1386
+# gear_haste_rating=436
+# gear_mastery_rating=685
+# gear_armor=4366
+# gear_parry_rating=9
+# gear_multistrike_rating=411
+# pvp_2pc_melee=1
+# pvp_4pc_melee=1
