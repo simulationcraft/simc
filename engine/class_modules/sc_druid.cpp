@@ -2372,7 +2372,7 @@ struct savage_roar_t : public cat_attack_t
 {
   timespan_t seconds_per_combo;
   savage_roar_t( druid_t* p, const std::string& options_str ) :
-    cat_attack_t( "savage_roar", p, p -> find_class_spell( "Savage Roar" ), options_str ),
+    cat_attack_t( "savage_roar", p, p -> find_specialization_spell( "Savage Roar" ), options_str ),
     seconds_per_combo( timespan_t::from_seconds( 6.0 ) ) // plus 6s per cp used. Must change this value in cat_attack_t::trigger_glyph_of_savage_roar() as well.
   {
     may_miss = harmful = false;
@@ -5603,7 +5603,9 @@ void druid_t::create_buffs()
                                .chance( 1.0 )
                                .duration( find_specialization_spell( "Tiger's Fury" ) -> duration() + perk.enhanced_tigers_fury -> effectN( 1 ).time_value() );
   buff.savage_roar           = buff_creator_t( this, "savage_roar", find_specialization_spell( "Savage Roar" ) )
-                               .default_value( find_spell( 62071 ) -> effectN( 1 ).percent() )
+                               .default_value( talent.savagery -> ok() ?
+                                               talent.savagery -> effectN( 1 ).percent()
+                                             : find_specialization_spell( "Savage Roar" ) -> effectN( 2 ).percent() )
                                .duration( timespan_t::max() ); // Set base duration to infinite for Savagery talent. All other uses trigger with a set duration.
   buff.predatory_swiftness   = buff_creator_t( this, "predatory_swiftness", spec.predatory_swiftness -> ok() ? find_spell( 69369 ) : spell_data_t::not_found() );
   buff.tier15_4pc_melee      = buff_creator_t( this, "tier15_4pc_melee", find_spell( 138358 ) );
