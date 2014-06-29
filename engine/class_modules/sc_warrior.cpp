@@ -3828,7 +3828,6 @@ void warrior_t::init_gains()
   gain.tier16_4pc_tank        = get_gain( "tier16_4pc_tank" );
 }
 
-
 // warrior_t::init_position ====================================================
 
 void warrior_t::init_position()
@@ -3842,6 +3841,10 @@ void warrior_t::init_position()
     if ( sim -> debug )
       sim -> out_debug.printf( "%s: Position adjusted to %s for Gladiator DPS", name(), position_str.c_str() );
   }
+  else if ( specialization() == WARRIOR_PROTECTION )
+    sim -> errorf( "IF YOU WISH TO SIMULATE YOUR CHARACTER AS GLADIATOR, PLEASE CHANGE ROLE TO DPS IN GLOBAL OPTIONS, AND THEN RE - IMPORT FROM BATTLE.NET\n"
+    "# AFTER IMPORTING, MAKE SURE YOUR LEVEL IS SET TO 100 AND GLADIATORS RESOLVE IS TALENTED. \n"
+    "# EXAMPLE TALENT LINE, THE VERY LAST DIGIT (2) IS GLADIATORS RESOLVE: talents=http://us.battle.net/wow/en/tool/talent-calculator#Zb!0102212" );
 }
 
 // warrior_t::init_procs ======================================================
