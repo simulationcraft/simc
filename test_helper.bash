@@ -24,7 +24,7 @@ function class_sim2() {
   for spec in ${PROFILES[@]}; do
     SIMC_PROFILE=${spec}
     for talent in ${PROFILE_TALENTS[@]}; do
-      sim talents=${talent} threads=4 default_actions=1
+      sim talents=${talent} threads=2 default_actions=1
       [ "${status}" -eq 0 ]
     done
   done
