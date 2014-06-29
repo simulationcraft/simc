@@ -30,7 +30,8 @@ actions=counterspell,if=target.debuff.casting.react
 actions+=/cancel_buff,name=alter_time,moving=1
 actions+=/cold_snap,if=talent.cold_snap.enabled&health.pct<30
 actions+=/time_warp,if=buff.alter_time.down
-actions+=/rune_of_power,if=talent.rune_of_power.enabled&buff.rune_of_power.remains<cast_time
+actions+=/mana_gem,if=mana.pct<10
+actions+=/rune_of_power,if=talent.rune_of_power.enabled&buff.rune_of_power.remains=0
 # Cancelaura AT if PBoI procs
 actions+=/cancel_buff,name=alter_time,if=buff.amplified.up&buff.alter_time.up&(trinket.stat.intellect.cooldown_remains-buff.alter_time.remains>109)
 actions+=/run_action_list,name=combust_sequence,if=buff.alter_time.up|pyro_chain
@@ -54,19 +55,22 @@ actions+=/run_action_list,name=single_target
 
 # Pyro-chain combustion sequence
 actions.combust_sequence=start_pyro_chain,if=!pyro_chain
+actions.combust_sequence+=/stop_pyro_chain,if=cooldown.combustion.remains>0&pyro_chain
 actions.combust_sequence+=/presence_of_mind,if=talent.presence_of_mind.enabled&buff.alter_time.down
 # Unload all instant pyros during AT
 actions.combust_sequence+=/pyroblast,if=execute_time=gcd&buff.alter_time.up
 actions.combust_sequence+=/alter_time,if=buff.alter_time.up&action.pyroblast.execute_time>gcd
 # Unload all HS Pyros first
-actions.combust_sequence+=/pyroblast,if=buff.pyroblast.up
+actions.combust_sequence+=/pyroblast,if=talent.presence_of_mind.enabled&buff.presence_of_mind.up&buff.pyroblast.up
+actions.combust_sequence+=/pyroblast,if=!talent.presence_of_mind.enabled&buff.pyroblast.up
 # Early combustion if meta gem is about to fade and only POM left
 actions.combust_sequence+=/combustion,if=buff.alter_time.down&cooldown.alter_time_activate.remains>150&buff.tempus_repit.up&buff.tempus_repit.remains<gcd
-# The next two line uses POM pyro if it is expected to grow the ignite. To do this, it retrieves tick timing for ignite, calculates estimated damage from POM pyro and the potential instant pyro, and compares the ignite from those pyros against the ignite tick size.
-actions.combust_sequence+=/pyroblast,if=buff.presence_of_mind.up&buff.pyroblast.down&(travel_time<=dot.ignite.remains-2*(dot.ignite.ticks_remain-1)|((crit_damage*crit_pct_current+hit_damage*(100-crit_pct_current))*0.01*mastery_value>=dot.ignite.tick_dmg))
-actions.combust_sequence+=/pyroblast,if=buff.presence_of_mind.up&buff.pyroblast.down&(gcd+travel_time<=dot.ignite.remains-2)&(crit_damage*crit_pct_current+hit_damage*(100-crit_pct_current))*0.01*(0.0125*crit_pct_current+1)*mastery_value>=dot.ignite.tick_dmg
+# These next two line uses POM pyro if it is expected to grow the ignite. To do this, it retrieves tick timing for ignite, calculates estimated damage from POM pyro and the potential instant pyro, and compares the ignite from those pyros against the ignite tick size.
+actions.combust_sequence+=/pyroblast,if=buff.presence_of_mind.up&(travel_time+0.15<dot.ignite.remains-4|(crit_damage*crit_pct_current+hit_damage*(100-crit_pct_current))*0.01*mastery_value>dot.ignite.tick_dmg)
+actions.combust_sequence+=/pyroblast,if=buff.presence_of_mind.up&buff.heating_up.up&gcd+travel_time+0.15<dot.ignite.remains-2&(crit_damage*crit_pct_current+hit_damage*(100-crit_pct_current))*0.01*(0.0125*crit_pct_current+1)*mastery_value>dot.ignite.tick_dmg
+# This line handles pyroblasts generated when POM pyro crits and geneartes a new pyro proc.
+actions.combust_sequence+=/pyroblast,if=buff.presence_of_mind.down&buff.pyroblast.up&(travel_time+0.15<dot.ignite.remains-4|(crit_damage*crit_pct_current+hit_damage*(100-crit_pct_current))*0.01*mastery_value>dot.ignite.tick_dmg)
 actions.combust_sequence+=/combustion
-actions.combust_sequence+=/stop_pyro_chain,if=pyro_chain
 
 # Initiate AT-POM-Combuistion sequence
 actions.init_alter_combust=run_action_list,name=proc_builder,if=buff.pyroblast.down|buff.heating_up.down|!action.fireball.in_flight
@@ -101,6 +105,7 @@ actions.single_target=inferno_blast,if=dot.combustion.ticking&active_enemies>1
 actions.single_target+=/pyroblast,if=buff.pyroblast.up&buff.pyroblast.remains<action.fireball.execute_time
 # Intentionally sustain 2T16 4 stack or more
 actions.single_target+=/pyroblast,if=set_bonus.tier16_2pc_caster&buff.pyroblast.up&buff.potent_flames.stack>=4&buff.potent_flames.remains<action.fireball.execute_time
+actions.single_target+=/inferno_blast,if=set_bonus.tier16_2pc_caster&buff.pyroblast.down&buff.potent_flames.stack>=4&buff.potent_flames.remains<action.fireball.execute_time&buff.potent_flames.remains>gcd&(buff.heating_up.up|action.fireball.in_flight|action.pyroblast.in_flight)
 # Pyro camp during regular sequence; Do not use Pyro procs without HU and first using fireball
 actions.single_target+=/pyroblast,if=buff.pyroblast.up&buff.heating_up.up&action.fireball.in_flight
 actions.single_target+=/nether_tempest,cycle_targets=1,if=talent.nether_tempest.enabled&((!ticking|remains<tick_time)&target.time_to_die>6)
@@ -111,6 +116,8 @@ actions.single_target+=/inferno_blast,if=buff.pyroblast.down&buff.heating_up.up
 actions.single_target+=/pyroblast,if=buff.amplified.up&(cooldown.alter_time_activate.remains>0|(buff.amplified.up&trinket.stat.intellect.cooldown_remains>0))&trinket.stacking_proc.intellect.up&trinket.stacking_proc.intellect.remains<3*gcd&execute_time=gcd
 actions.single_target+=/pyroblast,if=(cooldown.alter_time_activate.remains>0|cooldown.combustion.remains>0)&trinket.stacking_proc.intellect.up&trinket.stacking_proc.intellect.remains<3*gcd&execute_time=gcd
 actions.single_target+=/inferno_blast,if=buff.pyroblast.up&buff.heating_up.down&!action.fireball.in_flight
+# Use pyroblast with leftover POMs from pyro-chaining
+actions.single_target+=/pyroblast,if=buff.presence_of_mind.up
 actions.single_target+=/fireball
 actions.single_target+=/scorch,moving=1
 

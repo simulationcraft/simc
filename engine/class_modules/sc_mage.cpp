@@ -4420,8 +4420,9 @@ void mage_t::apl_fire()
                               "if=health.pct<30" );
   default_list -> add_action( this, "Time Warp",
                               "if=buff.alter_time.down" );
+  default_list -> add_action( "mana_gem,if=mana.pct<10" );
   default_list -> add_talent( this, "Rune of Power",
-                              "if=buff.rune_of_power.remains<cast_time" );
+                              "if=buff.rune_of_power.remains=0" );
   default_list -> add_action( this, "Evocation",
                               "if=(talent.invocation.enabled&buff.invokers_energy.remains=0)|mana.pct<5" );
   default_list -> add_action( "cancel_buff,name=alter_time,if=buff.amplified.up&buff.alter_time.up&(trinket.stat.intellect.cooldown_remains-buff.alter_time.remains>109)",
@@ -4465,6 +4466,7 @@ void mage_t::apl_fire()
 
   combust_sequence -> add_action( "start_pyro_chain,if=!pyro_chain",
                                   "Pyro-chain combustion sequence" );
+  combust_sequence -> add_action( "stop_pyro_chain,if=cooldown.combustion.remains>0&pyro_chain" );
   combust_sequence -> add_talent( this, "Presence of Mind",
                                   "if=buff.alter_time.down" );
   combust_sequence -> add_action( this, "Pyroblast",
@@ -4473,18 +4475,22 @@ void mage_t::apl_fire()
   combust_sequence -> add_action( this, "Alter Time",
                                   "if=buff.alter_time.up&action.pyroblast.execute_time>gcd" );
   combust_sequence -> add_action( this, "Pyroblast",
-                                  "if=buff.pyroblast.up",
+                                  "if=talent.presence_of_mind.enabled&buff.presence_of_mind.up&buff.pyroblast.up",
                                   "Unload all HS Pyros first" );
+  combust_sequence -> add_action( this, "Pyroblast",
+                                  "if=!talent.presence_of_mind.enabled&buff.pyroblast.up" );
   combust_sequence -> add_action( this, "Combustion",
                                   "if=buff.alter_time.down&cooldown.alter_time_activate.remains>150&buff.tempus_repit.up&buff.tempus_repit.remains<gcd",
                                   "Early combustion if meta gem is about to fade and only POM left" );
   combust_sequence -> add_action( this, "Pyroblast",
-                                  "if=buff.presence_of_mind.up&buff.pyroblast.down&(travel_time<=dot.ignite.remains-2*(dot.ignite.ticks_remain-1)|((crit_damage*crit_pct_current+hit_damage*(100-crit_pct_current))*0.01*mastery_value>=dot.ignite.tick_dmg))",
-                                  "The next two line uses POM pyro if it is expected to grow the ignite. To do this, it retrieves tick timing for ignite, calculates estimated damage from POM pyro and the potential instant pyro, and compares the ignite from those pyros against the ignite tick size." );
+                                  "if=buff.presence_of_mind.up&(travel_time+0.15<dot.ignite.remains-4|(crit_damage*crit_pct_current+hit_damage*(100-crit_pct_current))*0.01*mastery_value>dot.ignite.tick_dmg)",
+                                  "These next two line uses POM pyro if it is expected to grow the ignite. To do this, it retrieves tick timing for ignite, calculates estimated damage from POM pyro and the potential instant pyro, and compares the ignite from those pyros against the ignite tick size." );
   combust_sequence -> add_action( this, "Pyroblast",
-                                  "if=buff.presence_of_mind.up&buff.pyroblast.down&(gcd+travel_time<=dot.ignite.remains-2)&(crit_damage*crit_pct_current+hit_damage*(100-crit_pct_current))*0.01*(0.0125*crit_pct_current+1)*mastery_value>=dot.ignite.tick_dmg" );
+                                  "if=buff.presence_of_mind.up&buff.heating_up.up&gcd+travel_time+0.15<dot.ignite.remains-2&(crit_damage*crit_pct_current+hit_damage*(100-crit_pct_current))*0.01*(0.0125*crit_pct_current+1)*mastery_value>dot.ignite.tick_dmg" );
+  combust_sequence -> add_action( this, "Pyroblast",
+                                  "if=buff.presence_of_mind.down&buff.pyroblast.up&(travel_time+0.15<dot.ignite.remains-4|(crit_damage*crit_pct_current+hit_damage*(100-crit_pct_current))*0.01*mastery_value>dot.ignite.tick_dmg)",
+                                  "This line handles pyroblasts generated when POM pyro crits and geneartes a new pyro proc." );
   combust_sequence -> add_action( this, "Combustion" );
-  combust_sequence -> add_action( "stop_pyro_chain,if=pyro_chain" );
 
 
   init_alter_combust -> add_action( "run_action_list,name=proc_builder,if=buff.pyroblast.down|buff.heating_up.down|!action.fireball.in_flight",
@@ -4538,6 +4544,8 @@ void mage_t::apl_fire()
   single_target -> add_action( this, "Pyroblast",
                                "if=set_bonus.tier16_2pc_caster&buff.pyroblast.up&buff.potent_flames.stack>=4&buff.potent_flames.remains<action.fireball.execute_time",
                                "Intentionally sustain 2T16 4 stack or more" );
+  single_target -> add_action( this, "Inferno Blast",
+                               "if=set_bonus.tier16_2pc_caster&buff.pyroblast.down&buff.potent_flames.stack>=4&buff.potent_flames.remains<action.fireball.execute_time&buff.potent_flames.remains>gcd&(buff.heating_up.up|action.fireball.in_flight|action.pyroblast.in_flight)" );
   single_target -> add_action( this, "Pyroblast",
                                "if=buff.pyroblast.up&buff.heating_up.up&action.fireball.in_flight",
                                "Pyro camp during regular sequence; Do not use Pyro procs without HU and first using fireball" );
@@ -4556,6 +4564,9 @@ void mage_t::apl_fire()
                                "if=(cooldown.alter_time_activate.remains>0|cooldown.combustion.remains>0)&trinket.stacking_proc.intellect.up&trinket.stacking_proc.intellect.remains<3*gcd&execute_time=gcd" );
   single_target -> add_action( this, "Inferno Blast",
                                "if=buff.pyroblast.up&buff.heating_up.down&!action.fireball.in_flight" );
+  single_target -> add_action( this, "Pyroblast",
+                               "if=buff.presence_of_mind.up",
+                               "Use pyroblast with leftover POMs from pyro-chaining" );
   single_target -> add_action( this, "Fireball" );
   single_target -> add_action( this, "Scorch", "moving=1" );
 }
