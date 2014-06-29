@@ -3160,7 +3160,7 @@ void warrior_t::init_spells()
   spec.unwavering_sentinel      = find_specialization_spell( "Unwavering Sentinel" );
   spec.whirlwind                = find_specialization_spell( "Whirlwind" );
   spec.wild_strike              = find_specialization_spell( "Wild Strike" );
-  spec.ultimatum                = find_specialization_spell( "Ultimatum"             );
+  spec.ultimatum                = find_specialization_spell( "Ultimatum" );
 
   // Talents
   talents.juggernaut            = find_talent_spell( "Juggernaut" );
@@ -3732,7 +3732,7 @@ void warrior_t::create_buffs()
 
   buff.blood_craze = buff_creator_t( this, "blood_craze", spec.blood_craze -> effectN( 1 ).trigger() );
 
-  buff.bloodsurge = buff_creator_t( this, "bloodsurge", spec.bloodsurge -> effectN( 1 ).trigger() )
+  buff.bloodsurge = buff_creator_t( this, "bloodsurge", find_class_spell( "Wild Strike" ) )
     .chance( spec.bloodsurge -> effectN( 1 ).percent() );
 
   buff.defensive_stance = buff_creator_t( this, "defensive_stance", find_class_spell( "Defensive Stance" ) )
