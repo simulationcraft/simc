@@ -20,6 +20,7 @@ namespace { // UNNAMED NAMESPACE
     = Feral =
     Combo Points as a resource
     Verify stuff, particularly damage checking
+    Savagery damage bonus
 
     = Balance =
     Just verify stuff.
@@ -3985,6 +3986,8 @@ struct bear_form_t : public druid_spell_t
       player -> init_beast_weapon( player -> bear_weapon, 2.5 );
       player -> bear_melee_attack = new bear_attacks::bear_melee_t( player );
     }
+
+    base_costs[ RESOURCE_MANA ] *= 1.0 + p() -> glyph.master_shapeshifter -> effectN( 1 ).percent();
   }
 
   virtual void execute()
@@ -4044,6 +4047,8 @@ struct cat_form_t : public druid_spell_t
       player -> init_beast_weapon( player -> cat_weapon, 1.0 );
       player -> cat_melee_attack = new cat_attacks::cat_melee_t( player );
     }
+
+    base_costs[ RESOURCE_MANA ] *= 1.0 + p() -> glyph.master_shapeshifter -> effectN( 1 ).percent();
   }
 
   virtual void execute()
@@ -4597,6 +4602,8 @@ struct moonkin_form_t : public druid_spell_t
     parse_options( NULL, options_str );
 
     harmful           = false;
+
+    base_costs[ RESOURCE_MANA ] *= 1.0 + p() -> glyph.master_shapeshifter -> effectN( 1 ).percent();
   }
 
   virtual void execute()
