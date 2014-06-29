@@ -1246,6 +1246,7 @@ class SpellDataGenerator(DataGenerator):
             ( 144500, 0 ),          # T16 tank 4pc proc
             ( 156321, 0 ),          # Shield Charge for Gladiator Stance
             ( 163558, 0 ),          # Execute off-hand
+            ( 46915,  0 ),          # Bloodsurge
         ),
         
         # Paladin:
