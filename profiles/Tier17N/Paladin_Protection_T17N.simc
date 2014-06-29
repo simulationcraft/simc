@@ -28,6 +28,7 @@ actions.precombat+=/snapshot_stats
 # Executed every time the actor is available.
 
 actions=/auto_attack
+actions+=//use_item,name=ph_gladiators_badge_of_victory
 actions+=/blood_fury
 actions+=/berserking
 actions+=/arcane_torrent
@@ -52,29 +53,31 @@ actions+=/consecration,if=target.debuff.flying.down&!ticking
 actions+=/holy_prism,if=talent.holy_prism.enabled
 actions+=/sacred_shield,if=talent.sacred_shield.enabled
 
-head=faceguard_of_winged_triumph,id=99370,upgrade=2,gems=16haste_8crit_8haste_14sta
-neck=juggernauts_ignition_keys,id=105513,upgrade=2
-shoulders=shoulderguards_of_winged_triumph,id=99364,upgrade=2,gems=16haste_16haste
-back=tigerclaw_cape,id=98147,upgrade=2,gems=8haste_8crit,enchant=9crit
-chest=chestguard_of_winged_triumph,id=99368,upgrade=2,gems=8crit_8haste_8crit_8haste_8crit_8haste_14sta
-wrists=bubbleburst_bracers,id=105411,upgrade=2,gems=16haste,enchant=7mastery
-hands=handguards_of_winged_triumph,id=99369,upgrade=2,gems=16haste_16haste_16haste
-waist=demolishers_reinforced_belt,id=105509,upgrade=2,gems=16haste_16haste_16haste
-legs=legplates_of_unthinking_strife,id=105640,upgrade=2,gems=16haste_16haste_16haste,enchant=10sta
-feet=wolfrider_spurs,id=105531,upgrade=2,gems=16haste_60crit,enchant=7haste
-finger1=asgorathian_blood_seal,id=105620,upgrade=2,gems=8crit_8haste_6haste
-finger2=seal_of_the_forgotten_kings,id=105589,upgrade=2,gems=8crit_8haste_6haste
-trinket1=vial_of_living_corruption,id=105568,upgrade=2
-trinket2=thoks_tail_tip,id=105609,upgrade=2
-main_hand=siegecrafters_forge_hammer,id=105621,upgrade=2,gems=16haste,enchant=windsong
-off_hand=bulwark_of_the_fallen_general,id=105556,upgrade=2,gems=16haste
+head=ph_gladiators_plate_helm,id=111241
+neck=ph_gladiators_choker_of_cruelty,id=111207
+shoulders=ph_gladiators_plate_shoulders,id=111243,enchant=10str_5crit
+back=ph_gladiators_cloak_of_prowess,id=111206
+chest=ph_gladiators_plate_chestpiece,id=111239,enchant=glorious_stats
+wrists=ph_gladiators_armplates_of_prowess,id=111181,enchant=8mastery
+hands=ph_gladiators_plate_gauntlets,id=111210,enchant=8crit
+waist=ph_gladiators_girdle_of_cruelty,id=111174
+legs=ph_gladiators_plate_legguards,id=111212,enchant=14str_8crit
+feet=ph_gladiators_warboots_of_cruelty,id=111177,enchant=pandarens_step
+finger1=ph_gladiators_signet_of_cruelty,id=111219
+finger2=ph_gladiators_signet_of_accuracy,id=111272
+trinket1=ph_gladiators_badge_of_victory,id=111232
+trinket2=ph_gladiators_insignia_of_victory,id=111233
+main_hand=ph_gladiators_bonecracker,id=111200,enchant=dancing_steel
+off_hand=ph_gladiators_shield_wall,id=111221,enchant=9parry
 
 # Gear Summary
-# gear_strength=928
-# gear_stamina=1719
-# gear_crit_rating=552
-# gear_haste_rating=813
-# gear_mastery_rating=362
-# gear_armor=2041
-# tier16_2pc_tank=1
-# tier16_4pc_tank=1
+# gear_strength=2617
+# gear_agility=3
+# gear_stamina=3248
+# gear_intellect=6
+# gear_crit_rating=1386
+# gear_haste_rating=436
+# gear_mastery_rating=685
+# gear_armor=4366
+# gear_parry_rating=9
+# gear_multistrike_rating=411
