@@ -2425,6 +2425,7 @@ struct wild_strike_t: public warrior_attack_t
       background = true;
     trigger_gcd = timespan_t::from_millis( 500 );
     min_gcd = timespan_t::from_millis( 500 );
+    normalize_weapon_speed = true;
   }
 
   virtual double cost() const
@@ -3335,7 +3336,7 @@ void warrior_t::apl_precombat()
 
   if ( specialization() != WARRIOR_PROTECTION )
     precombat -> add_action( "stance,choose=battle" );
-  else if ( primary_role() == ROLE_ATTACK && talents.gladiators_resolve -> ok() )
+  else if ( primary_role() == ROLE_ATTACK )
     precombat -> add_action( "stance,choose=gladiator" );
   else
     precombat -> add_action( "stance,choose=defensive", "IF YOU WISH TO SIMULATE YOUR CHARACTER AS GLADIATOR, PLEASE CHANGE ROLE TO DPS IN GLOBAL OPTIONS, AND THEN RE-IMPORT FROM BATTLE.NET\n"
@@ -3917,7 +3918,7 @@ void warrior_t::init_action_list()
     apl_arms();
     break;
   case WARRIOR_PROTECTION:
-    if ( primary_role() == ROLE_ATTACK && talents.gladiators_resolve )
+    if ( primary_role() == ROLE_ATTACK )
       apl_gladiator();
     else
       apl_prot();
