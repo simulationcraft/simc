@@ -2423,15 +2423,18 @@ struct wild_strike_t: public warrior_attack_t
     weapon_multiplier *= 1.0 + p -> perk.improved_wild_strike -> effectN( 1 ).percent();
     if ( player -> off_hand_weapon.type == WEAPON_NONE )
       background = true;
+    trigger_gcd = timespan_t::from_millis( 500 );
+    min_gcd = timespan_t::from_millis( 500 );
   }
 
-  virtual timespan_t gcd() const
+  virtual double cost() const
   {
-    timespan_t t = timespan_t::from_seconds( 1.0 );
+    double c = warrior_attack_t::cost();
 
-    t *= player -> cache.attack_haste();
+    if ( p() -> buff.bloodsurge -> up() )
+      c = 0;
 
-    return t;
+    return c;
   }
 
   virtual void execute()
@@ -2439,14 +2442,6 @@ struct wild_strike_t: public warrior_attack_t
     warrior_attack_t::execute();
 
     p() -> buff.bloodsurge -> decrement();
-  }
-
-  virtual bool ready()
-  {
-    if ( !p() -> buff.bloodsurge -> up() )
-      return false;
-
-    return warrior_attack_t::ready();
   }
 };
 
