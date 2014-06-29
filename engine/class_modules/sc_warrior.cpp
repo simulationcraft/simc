@@ -3842,9 +3842,11 @@ void warrior_t::init_position()
       sim -> out_debug.printf( "%s: Position adjusted to %s for Gladiator DPS", name(), position_str.c_str() );
   }
   else if ( specialization() == WARRIOR_PROTECTION )
-    sim -> errorf( "IF YOU WISH TO SIMULATE YOUR CHARACTER AS GLADIATOR, PLEASE CHANGE ROLE TO DPS IN GLOBAL OPTIONS, AND THEN RE - IMPORT FROM BATTLE.NET\n"
-    "# AFTER IMPORTING, MAKE SURE YOUR LEVEL IS SET TO 100 AND GLADIATORS RESOLVE IS TALENTED. \n"
-    "# EXAMPLE TALENT LINE, THE VERY LAST DIGIT (2) IS GLADIATORS RESOLVE: talents=http://us.battle.net/wow/en/tool/talent-calculator#Zb!0102212" );
+  {
+    sim -> errorf( "If you wish to simulate your character as Gladiator, please change role to DPS in global options, and then re-import from Battle.net" );
+    sim -> errorf( "After importing, make sure your level is set to 100 and that Gladiators Resolve is talented." );
+    sim -> errorf( "Example talent line, the very last digit (2) is Gladiators Resolve: talents=http://us.battle.net/wow/en/tool/talent-calculator#Zb!0102212" );
+  }
 }
 
 // warrior_t::init_procs ======================================================
