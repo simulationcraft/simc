@@ -64,6 +64,7 @@ public:
     buff_t* berserker_rage;
     buff_t* defensive_stance;
     buff_t* enrage;
+    buff_t* heroic_charge;
     // Talents
     buff_t* avatar;
     buff_t* bloodbath;
@@ -911,7 +912,11 @@ struct melee_t: public warrior_attack_t
     if ( first )
       first = false;
 
-    warrior_attack_t::execute();
+    // If we're casting, we should clip a swing
+    if ( time_to_execute > timespan_t::zero() && player -> executing )
+      schedule_execute();
+    else
+      warrior_attack_t::execute();
   }
 
   virtual school_e get_school() const
@@ -1183,6 +1188,8 @@ struct charge_t: public warrior_attack_t
     if ( first_charge == true )
       first_charge = !first_charge;
 
+    p() -> buff.heroic_charge -> expire();
+
     if ( p() -> cooldown.rage_from_charge -> up() )
     {
       p() -> cooldown.rage_from_charge -> start();
@@ -1202,7 +1209,7 @@ struct charge_t: public warrior_attack_t
 
   virtual bool ready()
   {
-    if ( first_charge == true ) // Assumes that we charge into combat, instead of setting initial distance to 20 yards.
+    if ( first_charge == true || p() -> buff.heroic_charge -> up() ) // Assumes that we charge into combat, instead of setting initial distance to 20 yards.
       return warrior_attack_t::ready();
 
     if ( p() -> current.distance_to_move > base_teleport_distance ||
@@ -1576,64 +1583,6 @@ struct heroic_throw_t: public warrior_attack_t
   }
 };
 
-
-// Heroic Charge  ==============================================================
-
-struct heroic_charge_t: public warrior_attack_t
-{
-  heroic_charge_t( warrior_t* p, const std::string& options_str ):
-    warrior_attack_t( "heroic_charge", p, spell_data_t::nil() )
-  {
-    parse_options( NULL, options_str );
-    proc = false;
-    quiet = special = true;
-  }
-  virtual void schedule_execute( action_state_t* execute_state )
-  {
-    if ( p() -> cooldown.heroic_leap -> up() )
-    {
-      p() -> cooldown.heroic_leap -> start();
-      time_to_execute = timespan_t::from_millis( 500 ); // Pause swing timer for 0.5 seconds.
-      trigger_gcd = time_to_execute;
-    }
-    else if ( p() -> cooldown.intervene -> up() )
-    {
-      p() -> cooldown.intervene -> start();
-      time_to_execute = timespan_t::from_millis( 500 );
-      trigger_gcd = time_to_execute;
-    }
-    else
-    {
-      time_to_execute = timespan_t::from_millis( 1000 ); // Pause swing timer for 1 second, as we'd be walking out.
-      trigger_gcd = time_to_execute;
-    }
-
-    warrior_attack_t::schedule_execute();
-  }
-
-  virtual void execute()
-  {
-    p() -> cooldown.charge -> start();
-    if ( p() -> cooldown.rage_from_charge -> up() )
-    {
-      p() -> cooldown.rage_from_charge -> start();
-      p() -> resource_gain( RESOURCE_RAGE,
-                            p() -> glyphs.bull_rush -> effectN( 2 ).resource( RESOURCE_RAGE ) +
-                            p() -> spell.charge -> effectN( 2 ).resource( RESOURCE_RAGE ),
-                            p() -> gain.charge );
-    }
-  }
-
-  virtual bool ready()
-  {
-    if ( p() -> cooldown.rage_from_charge -> up() && p() -> cooldown.charge -> up() )
-      return true;
-    else
-      return false;
-  }
-};
-
-
 // Heroic Leap ==============================================================
 
 struct heroic_leap_t: public warrior_attack_t
@@ -1767,6 +1716,62 @@ struct intervene_t: public warrior_attack_t
     return warrior_attack_t::ready();
   }
 };
+
+
+// Heroic Charge  ==============================================================
+
+struct heroic_charge_t: public warrior_attack_t
+{
+  action_t*leap;
+  action_t*intervene;
+  action_t*charge;
+  heroic_charge_t( warrior_t* p, const std::string& options_str ):
+    warrior_attack_t( "heroic_charge", p, spell_data_t::nil() )
+  {
+    leap = new heroic_leap_t( p, options_str );
+    intervene = new intervene_t( p, options_str );
+    charge = new charge_t( p, options_str );
+    add_child( leap );
+    add_child( intervene );
+    add_child( charge );
+
+    parse_options( NULL, options_str );
+    proc = false;
+    trigger_gcd = timespan_t::zero();
+  }
+
+  virtual timespan_t execute_time() const
+  {
+    timespan_t time = timespan_t::zero();
+    if ( p() -> cooldown.heroic_leap -> up() || p() -> cooldown.intervene -> up() )
+      time = timespan_t::from_millis( 750 );
+    else
+      time = timespan_t::from_millis( 1250 ); // Pause swing timer for 1.25 second, as we'd be walking out.
+
+    return time;
+  }
+
+  virtual void execute()
+  {
+    if ( p() -> cooldown.heroic_leap -> up() )
+      leap -> execute();
+    else if ( p() -> cooldown.intervene -> up() )
+      intervene -> execute();
+
+    warrior_attack_t::execute();
+    p() -> buff.heroic_charge -> trigger();
+    charge -> execute();
+  }
+
+  virtual bool ready()
+  {
+    if ( p() -> cooldown.rage_from_charge -> up() && p() -> cooldown.charge -> up() )
+      return true;
+    else
+      return false;
+  }
+};
+
 
 // Mortal Strike ============================================================
 
@@ -2750,10 +2755,7 @@ struct shield_charge_t: public warrior_spell_t
   {
     warrior_spell_t::execute();
 
-    if ( p() -> buff.shield_charge -> up() )
-      p() -> buff.shield_charge -> extend_duration( p(), timespan_t::from_seconds( 6.0 ) );
-    else
-      p() -> buff.shield_charge -> trigger();
+    p() -> buff.shield_charge -> trigger();
   }
 
   virtual bool ready()
@@ -3716,6 +3718,8 @@ void warrior_t::init_scaling()
 void warrior_t::create_buffs()
 {
   player_t::create_buffs();
+
+  buff.heroic_charge = buff_creator_t( this, "heroic_charge" );
 
   buff.avatar = buff_creator_t( this, "avatar", talents.avatar )
     .cd( timespan_t::zero() )
