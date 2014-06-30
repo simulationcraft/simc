@@ -1888,12 +1888,13 @@ struct shadowy_apparition_spell_t final : public priest_spell_t
 
 struct mind_blast_t final : public priest_spell_t
 {
+  //TODO: Check and see if there is any sort of Ignite mechanic from Multistrikes or from a recast thanks to a DI proc. Also verify that it doesn't gain ticks (though I'm fairly certain it does not) and that it's duration is hasted. - Twintop 2014/06/30
   struct mind_blast_dot_t : public priest_spell_t
   {
     double mind_blast_dmg;
 
     mind_blast_dot_t( priest_t& p, priest_spell_t* ) :
-      priest_spell_t( "mind_blast_tick", p, p.find_spell( 165623 ) ),
+      priest_spell_t( "mind_blast_dot", p, p.find_spell( 165623 ) ),
       mind_blast_dmg( 0.0 )
     {
       parse_effect_data( data().effectN( 1 ) );
@@ -1903,6 +1904,7 @@ struct mind_blast_t final : public priest_spell_t
       hasted_ticks = true;
       tick_may_crit = false;
       may_multistrike = false;
+      tick_zero = false;
 
       base_dd_min = base_dd_max = spell_power_mod.tick = spell_power_mod.direct = 0.0;
 
@@ -1923,13 +1925,22 @@ struct mind_blast_t final : public priest_spell_t
 
     double calculate_tick_amount( action_state_t* state, double dot_multiplier ) override
     {
-      return mind_blast_dmg * dot_multiplier;
+      return mind_blast_dmg / (dot_duration.total_seconds() / base_tick_time.total_seconds() );
+    }
+
+    timespan_t tick_time( double haste ) const
+    {
+      return base_tick_time * haste;
     }
 
     void set_dmg( int dmg )
     {
       mind_blast_dmg = dmg;
-      base_dd_min = base_dd_max = mind_blast_dmg / 2;
+    }
+
+    virtual void tick( dot_t* d )
+    {
+      priest_spell_t::tick( d );
     }
   };
 
@@ -1958,7 +1969,8 @@ struct mind_blast_t final : public priest_spell_t
   void set_dot( action_state_t* state )
   {
       action_state_t* s = priest_spell_t::get_state( state );
-      s -> result_amount = state -> result_amount * 0.1;
+      s -> result_amount = 0.0;
+      s -> haste = priest.composite_spell_haste();
       s -> result = RESULT_HIT;
       s -> target = state -> target;
       dot_spell -> set_dmg( state -> result_amount * 0.1 );//* priest.sets.set( SET_T17_2PC_CASTER ) -> effectN( 1 ).percent() );
