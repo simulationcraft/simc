@@ -4938,7 +4938,7 @@ void shaman_t::init_spells()
   perk.improved_searing_totem        = find_perk_spell( "Improved Searing Totem" );
 
   // Perks - Enhancement
-  perk.enhanced_unleash_elements     = find_perk_spell( "Enhanced Unleash Elemnts" );
+  perk.enhanced_unleash_elements     = find_perk_spell( "Enhanced Unleash Elements" );
   perk.improved_lava_lash            = find_perk_spell( "Improved Lava Lash" );
   perk.improved_flame_shock          = find_perk_spell( "Improved Flame Shock" );
   perk.improved_maelstrom_weapon     = find_perk_spell( "Improved Maelstrom Weapon" );
