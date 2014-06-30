@@ -8618,7 +8618,8 @@ void player_callbacks_t::add_proc_callback( proc_types type,
 
     // Healing and ticking spells all require "an amount" on landing, so
     // automatically convert a "proc on spell landed" type to "proc on
-    // hit/crit".
+    // hit/crit". Note that periodic multistrikes are skipped here as they by
+    // default generate no procs.
     if ( pt == PROC2_LANDED &&
          ( type == PROC1_PERIODIC || type == PROC1_PERIODIC_TAKEN || 
            type == PROC1_PERIODIC_HEAL || type == PROC1_PERIODIC_HEAL_TAKEN || 

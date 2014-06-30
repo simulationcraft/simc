@@ -5406,11 +5406,13 @@ struct action_t : public noncopyable
   virtual int n_targets() const { return aoe; }
   bool is_aoe() const { return n_targets() == -1 || n_targets() > 0; }
   virtual void   execute();
-  virtual void   multistrike( action_state_t* state, dmg_e type, double dmg_multiplier = 1.0 );
   virtual void   tick( dot_t* d );
+  virtual void   multistrike_tick( const action_state_t* source_state, action_state_t* ms_state, double dmg_multiplier = 1.0 );
+  virtual void   multistrike_direct( const action_state_t* state, action_state_t* ms_state );
   virtual void   last_tick( dot_t* d );
   virtual void   update_resolve( dmg_e, action_state_t* assess_state );
   virtual void   assess_damage( dmg_e, action_state_t* assess_state );
+  virtual int    schedule_multistrike( action_state_t* state, dmg_e type, double dmg_multiplier = 1.0 );
   virtual void   schedule_execute( action_state_t* execute_state = 0 );
   virtual void   reschedule_execute( timespan_t time );
   virtual void   update_ready( timespan_t cd_duration = timespan_t::min() );
@@ -5503,7 +5505,6 @@ private:
 public:
   virtual void do_schedule_travel( action_state_t*, const timespan_t& );
   virtual void schedule_travel( action_state_t* );
-  virtual void schedule_multistrike_travel( action_state_t* );
   virtual void impact( action_state_t* );
   virtual void trigger_dot( action_state_t* );
 
@@ -5604,6 +5605,8 @@ public:
   void remove_travel_event( travel_event_t* e );
   bool has_travel_events() const { return ! travel_events.empty(); }
   bool has_travel_events_for( const player_t* target ) const;
+  const std::vector<travel_event_t*>& current_travel_events() const
+  { return travel_events; }
 
   rng_t& rng() { return sim -> rng(); }
   rng_t& rng() const { return sim -> rng(); }
@@ -5920,7 +5923,7 @@ inline proc_types action_state_t::proc_type() const
 inline proc_types2 action_state_t::execute_proc_type2() const
 {
   // Bunch up all non-damaging harmful attacks that land into "hit"
-  if ( action -> harmful && action -> result_is_hit( result ) )
+  if ( action -> harmful && ( action -> result_is_hit( result ) || action -> result_is_multistrike( result ) ) )
     return PROC2_LANDED;
   else if ( result == RESULT_DODGE )
     return PROC2_DODGE;
