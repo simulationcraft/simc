@@ -202,7 +202,11 @@ struct multistrike_execute_event_t : public event_t
     {
       if ( sim().debug )
         state -> debug();
-      state -> action -> assess_damage( state -> result_type, state );
+
+      if ( state -> result_type == DMG_OVER_TIME || state -> result_type == HEAL_OVER_TIME )
+        state -> action -> assess_damage( state -> result_type, state );
+      else
+        state -> action -> impact( state );
 
       // Multistrike callbacks, if there are any
       if ( state -> action -> callbacks )
