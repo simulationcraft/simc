@@ -2681,11 +2681,7 @@ struct devouring_plague_t final : public priest_spell_t
       dp_state_t* s = static_cast<dp_state_t*>( state );
       double saved_impact_dmg = s -> result_amount; // catch previous remaining dp damage
       double saved_tick_heal_percent = s -> tick_heal_percent;
-<<<<<<< HEAD
       int saved_orbs = s  -> orbs_used;
-=======
-	  int saved_orbs = s  -> orbs_used;
->>>>>>> eaf9bbbdbbf890a2f72ce173195a88b062403530
 
       s -> result_amount = 0.0;
       s -> tick_heal_percent = 0.0;
@@ -2697,11 +2693,8 @@ struct devouring_plague_t final : public priest_spell_t
       assert( ds );
       ds -> tick_dmg = saved_impact_dmg / dot -> ticks_left();
       ds -> tick_heal_percent = saved_tick_heal_percent / dot -> ticks_left();
-<<<<<<< HEAD
       ds -> orbs_used = saved_orbs;
-=======
 	  ds -> orbs_used = saved_orbs;
->>>>>>> eaf9bbbdbbf890a2f72ce173195a88b062403530
       if ( sim -> debug )
         sim -> out_debug.printf( "%s DP dot started with total of %.2f damage / %.2f per tick and %.4f%% heal / %.4f%% per tick.",
                                  player -> name(), saved_impact_dmg, ds -> tick_dmg, saved_tick_heal_percent * 100.0, ds -> tick_heal_percent * 100.0 );
@@ -2839,13 +2832,8 @@ struct devouring_plague_t final : public priest_spell_t
     s -> result_amount = dmg_to_pass_to_dp; // pass the old remaining dp damage to the dot_spell state, which will be catched in its impact method.
     s -> tick_heal_percent = heal_percent_to_pass_to_dp;
     s -> haste = state -> haste;
-<<<<<<< HEAD
     const shadow_orb_state_t* os = static_cast<const shadow_orb_state_t*>(state);
     s -> orbs_used = os -> orbs_used;
-=======
-	const shadow_orb_state_t* os = static_cast<const shadow_orb_state_t*>(state);
-	s -> orbs_used = os -> orbs_used;
->>>>>>> eaf9bbbdbbf890a2f72ce173195a88b062403530
     dot_spell -> schedule_travel( s );
     dot_spell -> stats -> add_execute( timespan_t::zero(), s -> target );
   }
@@ -2882,11 +2870,7 @@ struct devouring_plague_t final : public priest_spell_t
 
     if ( result_is_hit( s -> result ) || result_is_multistrike( s -> result ) )
     {
-<<<<<<< HEAD
       trigger_dp_dot( s );
-=======
-	  trigger_dp_dot(s);
->>>>>>> eaf9bbbdbbf890a2f72ce173195a88b062403530
       transfer_dmg_to_dot( s );
       transfer_heal_to_dot( s );
     }
