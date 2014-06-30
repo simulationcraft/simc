@@ -2900,13 +2900,29 @@ struct inferno_blast_t : public mage_spell_t
 
 struct living_bomb_explosion_t : public mage_spell_t
 {
+  double haste_multiplier;
+
   living_bomb_explosion_t( mage_t* p ) :
-    mage_spell_t( "living_bomb_explosion", p, p -> find_spell( p -> talents.living_bomb -> effectN( 2 ).base_value() ) )
+    mage_spell_t( "living_bomb_explosion", p, p -> find_spell( p -> talents.living_bomb -> effectN( 2 ).base_value() ) ), haste_multiplier(1.0)
   {
     aoe = -1;
     background = true;
 
     base_multiplier *= 4;
+  }
+
+  void scale_damage_by_ticks(int num_ticks)
+  {
+    haste_multiplier = 0.25 * num_ticks;
+  }
+
+  virtual double action_multiplier() const
+  {
+    double am = mage_spell_t::action_multiplier();
+
+    am *= haste_multiplier;
+
+    return am;
   }
 
   virtual resource_e current_resource() const
@@ -2938,6 +2954,7 @@ struct living_bomb_t : public mage_spell_t
       dot_t* dot = get_dot( s -> target );
       if ( dot -> ticking && dot -> remains() < dot -> current_action -> base_tick_time )
       {
+        explosion_spell -> scale_damage_by_ticks( dot -> num_ticks );
         explosion_spell -> execute();
         mage_t& p = *this -> p();
         p.active_living_bomb_targets--;
@@ -2966,6 +2983,7 @@ struct living_bomb_t : public mage_spell_t
     mage_spell_t::last_tick( d );
 
 
+    explosion_spell -> scale_damage_by_ticks( d -> num_ticks );
     explosion_spell -> execute();
     mage_t& p = *this -> p();
     p.active_living_bomb_targets--;
