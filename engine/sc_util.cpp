@@ -1945,6 +1945,7 @@ stat_e util::translate_item_mod( int item_mod )
     case ITEM_MOD_AGILITY_INTELLECT:   return STAT_AGI_INT;
     case ITEM_MOD_STRENGTH_AGILITY:    return STAT_STR_AGI;
     case ITEM_MOD_STRENGTH_INTELLECT:  return STAT_STR_INT;
+    case ITEM_MOD_VERSATILITY_RATING:  return STAT_VERSATILITY_RATING;
     default:                           return STAT_NONE;
     // TODO-wOD: Versatility rating
   }
