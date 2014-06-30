@@ -4938,7 +4938,7 @@ void shaman_t::init_spells()
   perk.improved_searing_totem        = find_perk_spell( "Improved Searing Totem" );
 
   // Perks - Enhancement
-  perk.enhanced_unleash_elements     = find_perk_spell( "Enhanced Unleash Elemnts" );
+  perk.enhanced_unleash_elements     = find_perk_spell( "Enhanced Unleash Elements" );
   perk.improved_lava_lash            = find_perk_spell( "Improved Lava Lash" );
   perk.improved_flame_shock          = find_perk_spell( "Improved Flame Shock" );
   perk.improved_maelstrom_weapon     = find_perk_spell( "Improved Maelstrom Weapon" );
@@ -5251,7 +5251,7 @@ void shaman_t::init_action_list()
   {
     std::string flask_action = "flask,type=";
     if ( primary_role() == ROLE_ATTACK )
-      flask_action += ( ( level > 85 ) ? "spring_blossoms" : ( level >= 80 ) ? "winds" : "" );
+      flask_action += ( ( level > 90 ) ? "greater_draenor_haste_flask" : ( level >= 85 ) ? "spring_blossoms" : ( level >= 80 ) ? "winds" : "" );
     else
       flask_action += ( ( level > 85 ) ? "warm_sun" : ( level >= 80 ) ? "draconic_mind" : "" );
 

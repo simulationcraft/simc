@@ -137,7 +137,13 @@ _DBC_FIELDS = {
         'id', 'id_spec', 'id_spell', 'index'
     ],
     'ItemBonus.db2': [
-        'id', 'f1', 'f2', ( 'f3', '%d' ), 'f4', 'f5'
+        'id', 'f1', 'type', ( 'val1', '%d' ), ( 'val2', '%d' ), 'f5'
+    ],
+    'ItemXBonusTree.db2': [
+        'id', 'id_item', 'id_tree'
+    ],
+    'ItemBonusTreeNode.db2': [
+        'id', 'v1', 'v2', 'v3', 'v4'
     ],
     'ArmorLocation.dbc': [
         ( 'id', '%3u' ), ( 'v_1', '%11.6f' ), ( 'v_2', '%11.6f' ), ( 'v_3', '%11.6f' ), ( 'v_4', '%11.6f' ), ( 'v_5', '%11.6f')
@@ -193,9 +199,6 @@ _DBC_FIELDS = {
     ],
     'ItemArmorTotal.dbc' : [
         'id', ( 'ilevel', '%4u' ), ( 'v_1', '%12.6f' ), ( 'v_2', '%12.6f' ), ( 'v_3', '%12.6f' ), ( 'v_4', '%12.6f' )
-    ],
-    'ItemBonus.db2': [
-        'id', 'f1', 'f2', 'f3', 'f4', 'f5'
     ],
     'ItemClass.dbc' : [
           ( 'id', '%3d' ), 'unk_1', 'unk_2', 'unk_3', 'ofs_name'
