@@ -31,7 +31,7 @@ save=Druid_Guardian_T17N.simc
 # Feral Druid T17N
 druid="Druid_Feral_T17N"
 level=100
-race=troll
+race=night_elf
 role=attack
 position=back
 professions=engineering=600/alchemy=600

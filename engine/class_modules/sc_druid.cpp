@@ -5780,13 +5780,18 @@ void druid_t::apl_feral()
 
   // Main List =============================================================
 
-  def -> add_action( this, "Rake", "if=buff.prowl.up" );
+  if ( race == RACE_NIGHT_ELF )
+    def -> add_action( this, "Rake", "if=buff.prowl.up|buff.shadowmeld.up" );
+  else
+    def -> add_action( this, "Rake", "if=buff.prowl.up" );
   def -> add_action( "auto_attack" );
   if ( glyph.master_shapeshifter -> ok() )
   {
     def -> add_action( this, "Cat Form", "if=prev.thrash_bear" );
     def -> add_action( "thrash_bear" );
   }
+  if ( race == RACE_NIGHT_ELF && glyph.savage_roar -> ok() )
+    def -> add_action( "shadowmeld,if=buff.savage_roar.remains<3|(buff.bloodtalons.up&buff.savage_roar.remains<6)" );
   def -> add_action( this, "Ferocious Bite", "cycle_targets=1,if=dot.rip.ticking&dot.rip.remains<=3&target.health.pct<25",
                      "Keep Rip from falling off during execute range." );
   def -> add_action( this, "Healing Touch", "if=talent.bloodtalons.enabled&buff.predatory_swiftness.up&(combo_points>=4|buff.predatory_swiftness.remains<1.5)" );
