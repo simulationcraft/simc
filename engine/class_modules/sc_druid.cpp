@@ -1833,7 +1833,7 @@ struct cat_attack_state_t : public action_state_t
 
 struct cat_attack_t : public druid_attack_t < melee_attack_t >
 {
-  bool             requires_stealth_;
+  bool             requires_stealth;
   bool             requires_combo_points;
   int              adds_combo_points;
   double           base_dd_bonus;
@@ -1844,7 +1844,7 @@ struct cat_attack_t : public druid_attack_t < melee_attack_t >
                 const spell_data_t* s = spell_data_t::nil(),
                 const std::string& options = std::string() ) :
     base_t( token, p, s ),
-    requires_stealth_( false ),
+    requires_stealth( false ),
     requires_combo_points( false ), adds_combo_points( 0 ),
     base_dd_bonus( 0.0 ), base_td_bonus( 0.0 ), consume_ooc( false )
   {
@@ -1930,14 +1930,15 @@ public:
     cat_state( state ) -> cp = td( state -> target ) -> combo_points.get();
   }
 
+  virtual bool stealthed() const
+  {
+    return p() -> buff.prowl -> up() || p() -> buff.king_of_the_jungle -> up() || p() -> buffs.shadowmeld -> up();
+  }
+
   void trigger_glyph_of_savage_roar()
   {
     // Bail out if we have Savagery, buff should already be up so lets not mess with it.
     if ( p() -> talent.savagery -> ok() )
-      return;
-
-    // Check for stealth! This is here so the logic is consolidated in one place instead of being in several.
-    if ( ! ( p() -> buff.prowl -> up() || p() -> buff.king_of_the_jungle -> up() ) )
       return;
 
     timespan_t duration = p() -> spec.savage_roar -> duration() + timespan_t::from_seconds( 6.0 ) * 5;
@@ -1996,6 +1997,7 @@ public:
     if ( harmful )
     {
       p() -> buff.prowl -> expire();
+      p() -> buffs.shadowmeld -> expire();
       
       // Track benefit of damage buffs
       p() -> buff.tigers_fury -> up();
@@ -2054,9 +2056,8 @@ public:
     if ( ! p() -> buff.cat_form -> check() )
       return false;
 
-    if ( requires_stealth() )
-      if ( ! p() -> buff.prowl -> check() )
-        return false;
+    if ( requires_stealth && ! stealthed() )
+      return false;
 
     if ( requires_combo_points && ! td( target ) -> combo_points.get() )
       return false;
@@ -2075,14 +2076,6 @@ public:
     }
 
     return pm;
-  }
-
-  virtual bool   requires_stealth() const
-  {
-    if ( p() -> buff.king_of_the_jungle -> check() )
-      return false;
-
-    return requires_stealth_;
   }
 
   void trigger_energy_refund()
@@ -2319,7 +2312,7 @@ struct rake_t : public cat_attack_t
   {
     double pm = cat_attack_t::composite_persistent_multiplier( s );
 
-    if ( p() -> buff.prowl -> check() || p() -> buff.king_of_the_jungle -> check() )
+    if ( stealthed() )
       pm *= 1.0 + p() -> perk.improved_rake -> effectN( 2 ).percent();
 
     return pm;
@@ -2344,7 +2337,7 @@ struct rake_t : public cat_attack_t
 
   virtual void execute()
   {
-    if ( p() -> glyph.savage_roar -> ok() ) // stealth check is handled inside the trigger function
+    if ( p() -> glyph.savage_roar -> ok() && stealthed() )
       trigger_glyph_of_savage_roar();
 
     cat_attack_t::execute();
@@ -2435,7 +2428,7 @@ struct shred_t : public cat_attack_t
 
   virtual void execute()
   {
-    if ( p() -> glyph.savage_roar -> ok() ) // stealth check is handled inside the trigger function
+    if ( p() -> glyph.savage_roar -> ok() && stealthed() )
       trigger_glyph_of_savage_roar();
 
     cat_attack_t::execute();
@@ -2478,7 +2471,7 @@ struct shred_t : public cat_attack_t
 
     if ( p() -> buff.tier15_4pc_melee -> up() )
       c += p() -> buff.tier15_4pc_melee -> data().effectN( 1 ).percent();
-    if ( p() -> buff.prowl -> check() || p() -> buff.king_of_the_jungle -> check() )
+    if ( stealthed() )
       c *= 2.0;
 
     return c;
@@ -2490,7 +2483,7 @@ struct shred_t : public cat_attack_t
 
     if ( p() -> buff.feral_fury -> up() )
       m *= 1.0 + p() -> buff.feral_fury -> data().effectN( 1 ).percent();
-    if ( p() -> buff.prowl -> check() || p() -> buff.king_of_the_jungle -> up() )
+    if ( stealthed() )
       m *= 1.0 + p() -> buff.prowl -> data().effectN( 4 ).percent();
 
     return m;
