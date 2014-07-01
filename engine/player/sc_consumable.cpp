@@ -38,111 +38,174 @@ struct food_data_t
 
 const food_data_t food_data[] =
 {
-  // cataclysm
-  { FOOD_BAKED_ROCKFISH,               STAT_CRIT_RATING,       90 },
-  { FOOD_BAKED_ROCKFISH,               STAT_STAMINA,           90 },
+  // Wrath
+  { FOOD_FISH_FEAST,                   STAT_ATTACK_POWER,        19 },
+  { FOOD_FISH_FEAST,                   STAT_SPELL_POWER,         22 },
+  { FOOD_FISH_FEAST,                   STAT_STAMINA,             19 },
 
-  { FOOD_BASILISK_LIVERDOG,            STAT_HASTE_RATING,      90 },
-  { FOOD_BASILISK_LIVERDOG,            STAT_STAMINA,           90 },
+  // Cata
+  { FOOD_BAKED_ROCKFISH,               STAT_CRIT_RATING,         36 },
+  { FOOD_BAKED_ROCKFISH,               STAT_STAMINA,             36 },
 
-  { FOOD_BEER_BASTED_CROCOLISK,        STAT_STRENGTH,          90 },
-  { FOOD_BEER_BASTED_CROCOLISK,        STAT_STAMINA,           90 },
+  { FOOD_BASILISK_LIVERDOG,            STAT_HASTE_RATING,        36 },
+  { FOOD_BASILISK_LIVERDOG,            STAT_STAMINA,             36 },
 
-  { FOOD_BLACK_PEPPER_RIBS_AND_SHRIMP, STAT_STRENGTH,         300 },
+  { FOOD_BEER_BASTED_CROCOLISK,        STAT_STRENGTH,            36 },
+  { FOOD_BEER_BASTED_CROCOLISK,        STAT_STAMINA,             36 },
 
-  { FOOD_BLACKBELLY_SUSHI,             STAT_PARRY_RATING,      90 },
-  { FOOD_BLACKBELLY_SUSHI,             STAT_STAMINA,           90 },
+  { FOOD_BLACKBELLY_SUSHI,             STAT_PARRY_RATING,        36 },
+  { FOOD_BLACKBELLY_SUSHI,             STAT_STAMINA,             36 },
 
-  { FOOD_BLANCHED_NEEDLE_MUSHROOMS,    STAT_DODGE_RATING,     200 },
+  { FOOD_CROCOLISK_AU_GRATIN,          STAT_HASTE_RATING,        36 },
+  { FOOD_CROCOLISK_AU_GRATIN,          STAT_STAMINA,             36 },
 
-  { FOOD_BOILED_SILKWORM_PUPA,         STAT_HIT_RATING,       100 },
+  { FOOD_DELICIOUS_SAGEFISH_TAIL,      STAT_SPIRIT,              36 },
+  { FOOD_DELICIOUS_SAGEFISH_TAIL,      STAT_STAMINA,             36 },
 
-  { FOOD_BRAISED_TURTLE,               STAT_INTELLECT,        275 },
+  { FOOD_GRILLED_DRAGON,               STAT_HIT_RATING,          36 },
+  { FOOD_GRILLED_DRAGON,               STAT_STAMINA,             36 },
 
-  { FOOD_CHARBROILED_TIGER_STEAK,      STAT_STRENGTH,         250 },
+  { FOOD_LAVASCALE_FILLET,             STAT_MASTERY_RATING,      24 },
+  { FOOD_LAVASCALE_FILLET,             STAT_STAMINA,             24 },
 
-  { FOOD_CHUN_TIAN_SPRING_ROLLS,       STAT_STAMINA,          450 },
+  { FOOD_MUSHROOM_SAUCE_MUDFISH,       STAT_DODGE_RATING,        36 },
+  { FOOD_MUSHROOM_SAUCE_MUDFISH,       STAT_STAMINA,             36 },
 
-  { FOOD_CROCOLISK_AU_GRATIN,          STAT_EXPERTISE_RATING,  90 },
-  { FOOD_CROCOLISK_AU_GRATIN,          STAT_STAMINA,           90 },
+  { FOOD_SEVERED_SAGEFISH_HEAD,        STAT_INTELLECT,           36 },
+  { FOOD_SEVERED_SAGEFISH_HEAD,        STAT_STAMINA,             36 },
 
-  { FOOD_DELICIOUS_SAGEFISH_TAIL,      STAT_SPIRIT,            90 },
-  { FOOD_DELICIOUS_SAGEFISH_TAIL,      STAT_STAMINA,           90 },
+  { FOOD_SKEWERED_EEL,                 STAT_AGILITY,             36 },
+  { FOOD_SKEWERED_EEL,                 STAT_STAMINA,             36 },
 
-  { FOOD_DRIED_NEEDLE_MUSHROOMS,       STAT_DODGE_RATING,     100 },
+  // MoP
+  { FOOD_BLACK_PEPPER_RIBS_AND_SHRIMP, STAT_STRENGTH,            34 },
 
-  { FOOD_DRIED_PEACHES,                STAT_PARRY_RATING,     100 },
+  { FOOD_BLANCHED_NEEDLE_MUSHROOMS,    STAT_DODGE_RATING,        23 },
 
-  { FOOD_ETERNAL_BLOSSOM_FISH,         STAT_STRENGTH,         275 },
+  { FOOD_BOILED_SILKWORM_PUPA,         STAT_HIT_RATING,          11 },
 
-  { FOOD_FIRE_SPIRIT_SALMON,           STAT_SPIRIT,           275 },
+  { FOOD_BRAISED_TURTLE,               STAT_INTELLECT,           31 },
 
-  { FOOD_FISH_FEAST,                   STAT_ATTACK_POWER,      80 },
-  { FOOD_FISH_FEAST,                   STAT_SPELL_POWER,       46 },
-  { FOOD_FISH_FEAST,                   STAT_STAMINA,           40 },
+  { FOOD_CHARBROILED_TIGER_STEAK,      STAT_STRENGTH,            28 },
 
-  { FOOD_GREEN_CURRY_FISH,             STAT_CRIT_RATING,      200 },
+  { FOOD_CHUN_TIAN_SPRING_ROLLS,       STAT_STAMINA,             51 },
 
-  { FOOD_GRILLED_DRAGON,               STAT_HIT_RATING,        90 },
-  { FOOD_GRILLED_DRAGON,               STAT_STAMINA,           90 },
+  { FOOD_CRAZY_SNAKE_NOODLES,          STAT_DODGE_RATING,        23 },
 
-  { FOOD_LAVASCALE_FILLET,             STAT_MASTERY_RATING,    90 },
-  { FOOD_LAVASCALE_FILLET,             STAT_STAMINA,           90 },
+  { FOOD_DRIED_NEEDLE_MUSHROOMS,       STAT_DODGE_RATING,        11 },
 
-  { FOOD_MANGO_ICE,                    STAT_MASTERY_RATING,   300 },
+  { FOOD_DRIED_PEACHES,                STAT_PARRY_RATING,        11 },
 
-  { FOOD_MOGU_FISH_STEW,               STAT_INTELLECT,        300 },
+  { FOOD_ETERNAL_BLOSSOM_FISH,         STAT_STRENGTH,            31 },
 
-  { FOOD_MUSHROOM_SAUCE_MUDFISH,       STAT_DODGE_RATING,      90 },
-  { FOOD_MUSHROOM_SAUCE_MUDFISH,       STAT_STAMINA,           90 },
+  { FOOD_FIRE_SPIRIT_SALMON,           STAT_SPIRIT,              31 },
 
-  { FOOD_PEACH_PIE,                    STAT_PARRY_RATING,     200 },
+  { FOOD_GREEN_CURRY_FISH,             STAT_CRIT_RATING,         23 },
 
-  { FOOD_PEARL_MILK_TEA,               STAT_MASTERY_RATING,   200 },
+  { FOOD_GOLDEN_DRAGON_NOODLES,        STAT_HASTE_RATING,        23 },
 
-  { FOOD_POUNDED_RICE_CAKE,            STAT_EXPERTISE_RATING, 100 },
+  { FOOD_HARMONIOUS_RIVER_NOODLES,     STAT_PARRY_RATING,        23 },
 
-  { FOOD_RED_BEAN_BUN,                 STAT_EXPERTISE_RATING, 200 },
+  { FOOD_LUCKY_MUSHROOM_NOODLES,       STAT_CRIT_RATING,         23 },
 
-  { FOOD_RICE_PUDDING,                 STAT_EXPERTISE_RATING, 275 },
+  { FOOD_MANGO_ICE,                    STAT_MASTERY_RATING,      34 },
 
-  { FOOD_ROASTED_BARLEY_TEA,           STAT_MASTERY_RATING,   100 },
+  { FOOD_MOGU_FISH_STEW,               STAT_INTELLECT,           34 },
 
-  { FOOD_SAUTEED_CARROTS,              STAT_AGILITY,          250 },
+  { FOOD_PEACH_PIE,                    STAT_PARRY_RATING,        23 },
 
-  { FOOD_SEA_MIST_RICE_NOODLES,        STAT_AGILITY,          300 },
+  { FOOD_PEARL_MILK_TEA,               STAT_MASTERY_RATING,      23 },
 
-  { FOOD_SEVERED_SAGEFISH_HEAD,        STAT_INTELLECT,         90 },
-  { FOOD_SEVERED_SAGEFISH_HEAD,        STAT_STAMINA,           90 },
+  { FOOD_POUNDED_RICE_CAKE,            STAT_HASTE_RATING,        11 },
 
-  { FOOD_SKEWERED_EEL,                 STAT_AGILITY,           90 },
-  { FOOD_SKEWERED_EEL,                 STAT_STAMINA,           90 },
+  { FOOD_RED_BEAN_BUN,                 STAT_HASTE_RATING,        23 },
 
-  { FOOD_SHRIMP_DUMPLINGS,             STAT_SPIRIT,           250 },
+  { FOOD_RICE_PUDDING,                 STAT_HASTE_RATING,        31 },
 
-  { FOOD_SKEWERED_PEANUT_CHICKEN,      STAT_HIT_RATING,       200 },
+  { FOOD_ROASTED_BARLEY_TEA,           STAT_MASTERY_RATING,      11 },
 
-  { FOOD_SPICY_SALMON,                 STAT_HIT_RATING,       300 },
+  { FOOD_SAUTEED_CARROTS,              STAT_AGILITY,             28 },
 
-  { FOOD_SPICY_VEGETABLE_BOWL,         STAT_EXPERTISE_RATING, 300 },
+  { FOOD_SEA_MIST_RICE_NOODLES,        STAT_AGILITY,             34 },
 
-  { FOOD_STEAMED_CRAB_SURPRISE,        STAT_SPIRIT,           300 },
+  { FOOD_SHRIMP_DUMPLINGS,             STAT_SPIRIT,              28 },
 
-  { FOOD_SWIRLING_MIST_SOUP,           STAT_INTELLECT,        250 },
+  { FOOD_SKEWERED_PEANUT_CHICKEN,      STAT_HIT_RATING,          23 },
 
-  { FOOD_TANGY_YOGURT,                 STAT_HASTE_RATING,     200 },
+  { FOOD_SPICY_SALMON,                 STAT_HIT_RATING,          34 },
 
-  { FOOD_TOASTED_FISH_JERKY,           STAT_CRIT_RATING,      100 },
+  { FOOD_SPICY_MUSHAN_NOODLES,         STAT_HIT_RATING,          23 },
 
-  { FOOD_TWIN_FISH_PLATTER,            STAT_STAMINA,          415 },
+  { FOOD_SPICY_VEGETABLE_CHIPS,        STAT_HASTE_RATING,        34 },
 
-  { FOOD_VALLEY_STIR_FRY,              STAT_AGILITY,          275 },
+  { FOOD_STEAMED_CRAB_SURPRISE,        STAT_SPIRIT,              34 },
 
-  { FOOD_WILDFOWL_GINSENG_SOUP,        STAT_HIT_RATING,       275 },
+  { FOOD_STEAMING_GOAT_NOODLES,        STAT_HASTE_RATING,        23 },
 
-  { FOOD_WILDFOWL_ROAST,               STAT_STAMINA,          375 },
+  { FOOD_SWIRLING_MIST_SOUP,           STAT_INTELLECT,           28 },
 
-  { FOOD_YAK_CHEESE_CURDS,             STAT_HASTE_RATING,     100 },
+  { FOOD_TANGY_YOGURT,                 STAT_HASTE_RATING,        23 },
+
+  { FOOD_TOASTED_FISH_JERKY,           STAT_CRIT_RATING,         11 },
+
+  { FOOD_TWIN_FISH_PLATTER,            STAT_STAMINA,             47 },
+
+  { FOOD_VALLEY_STIR_FRY,              STAT_AGILITY,             31 },
+
+  { FOOD_WILDFOWL_GINSENG_SOUP,        STAT_HIT_RATING,          31 },
+
+  { FOOD_WILDFOWL_ROAST,               STAT_STAMINA,             43 },
+
+  { FOOD_YAK_CHEESE_CURDS,             STAT_HASTE_RATING,        11 },
+
+  // WoD
+  { FOOD_BLACKROCK_BARBECUE,           STAT_CRIT_RATING,        150 },
+
+  { FOOD_BLACKROCK_HAM,                STAT_CRIT_RATING,        125 },
+
+  { FOOD_BRAISED_BASILISK,             STAT_MASTERY_RATING,     125 },
+
+  { FOOD_CALAMARI_CREPES,              STAT_MULTISTRIKE_RATING, 150 },
+
+  { FOOD_CLEFTHOOF_POT_ROAST,          STAT_SPIRIT,             125 },
+
+  { FOOD_CLEFTHOOF_SAUSAGES,           STAT_READINESS_RATING,   125 },
+
+  { FOOD_CRISPY_FRIED_SCORPION,        STAT_ARMOR,              125 },
+
+  { FOOD_DEEP_FRIED_BASILISK,          STAT_ARMOR,              125 },
+
+  { FOOD_FAT_SLEEPER_CAKES,            STAT_MASTERY_RATING,     125 },
+
+  { FOOD_FIERY_CALAMARI,               STAT_MULTISTRIKE_RATING, 125 },
+
+  { FOOD_FROSTY_STEW,                  STAT_HASTE_RATING,       150 },
+
+  { FOOD_GORGROND_CHOWDER,             STAT_READINESS_RATING,   150 },
+
+  { FOOD_GRILLED_GULPER,               STAT_CRIT_RATING,        125 },
+
+  { FOOD_HEARTY_ELEKK_STEAK,           STAT_STAMINA,            187 },
+
+  { FOOD_NAGRAND_TEMPURA,              STAT_ARMOR,              150 },
+
+  { FOOD_PAN_SEARED_TALBUK,            STAT_HASTE_RATING,       125 },
+
+  { FOOD_RYLAK_CREPES,                 STAT_MULTISTRIKE_RATING, 125 },
+
+  { FOOD_SALTED_SKULKER,               STAT_SPIRIT,             125 },
+
+  { FOOD_SLEEPER_SURPRISE,             STAT_MASTERY_RATING,     150 },
+
+  { FOOD_STARFLOWER_SANDWICH,          STAT_SPIRIT,             150 },
+
+  { FOOD_STEAMED_SCORPION,             STAT_STAMINA,            187 },
+
+  { FOOD_STURGEON_STEW,                STAT_HASTE_RATING,       125 },
+
+  { FOOD_TALADOR_SURF_AND_TURF,        STAT_STAMINA,            225 },
+
+  { FOOD_WHIPTAIL_CHOWDER,             STAT_READINESS_RATING,   125 },
 };
 
 struct flask_t : public action_t
@@ -419,6 +482,32 @@ struct food_t : public action_t
     }
   }
 
+  bool is_best_secondary_stat( stat_e checkStat )
+  {
+      player_t* p = player;
+
+      switch ( checkStat )
+      {
+      case STAT_HASTE_RATING:
+      case STAT_CRIT_RATING:
+      case STAT_MASTERY_RATING:
+      case STAT_VERSATILITY_RATING:
+      case STAT_MULTISTRIKE_RATING:
+      case STAT_SPIRIT:
+          if ( checkStat != STAT_HASTE_RATING && p -> current.stats.attribute[ checkStat ] < p -> current.stats.attribute[ STAT_HASTE_RATING ]) { return false; }
+          else if ( checkStat != STAT_CRIT_RATING && p -> current.stats.attribute[ checkStat ] < p -> current.stats.attribute[ STAT_CRIT_RATING ]) { return false; }
+          else if ( checkStat != STAT_MASTERY_RATING && p -> current.stats.attribute[ checkStat ] < p -> current.stats.attribute[ STAT_MASTERY_RATING ]) { return false; }
+          else if ( checkStat != STAT_VERSATILITY_RATING && p -> current.stats.attribute[ checkStat ] < p -> current.stats.attribute[ STAT_VERSATILITY_RATING ]) { return false; }
+          else if ( checkStat != STAT_MULTISTRIKE_RATING && p -> current.stats.attribute[ checkStat ] < p -> current.stats.attribute[ STAT_MULTISTRIKE_RATING ]) { return false; }
+          else if ( checkStat != STAT_SPIRIT && p -> current.stats.attribute[ checkStat ] < p -> current.stats.attribute[ STAT_SPIRIT ]) { return false; }
+          else { return true; }
+          break;
+      default:
+        return false;
+        break;
+      }
+  }
+
   virtual void execute()
   {
     player_t* p = player;
@@ -448,7 +537,6 @@ struct food_t : public action_t
       }
     }
 
-
     double stamina = 0;
     double gain_amount = 0;
 
@@ -457,54 +545,54 @@ struct food_t : public action_t
       case FOOD_FORTUNE_COOKIE:
         if ( p -> current.stats.dodge_rating > 0 )
         {
-          p -> stat_gain( STAT_DODGE_RATING, 90 * food_stat_multiplier );
+          p -> stat_gain( STAT_DODGE_RATING, 36 * food_stat_multiplier );
         }
         else if ( p -> current.stats.attribute[ ATTR_STRENGTH ] >= p -> current.stats.attribute[ ATTR_INTELLECT ] )
         {
           if ( p -> current.stats.attribute[ ATTR_STRENGTH ] >= p -> current.stats.attribute[ ATTR_AGILITY ] )
           {
-            p -> stat_gain( STAT_STRENGTH, 90 * food_stat_multiplier );
+            p -> stat_gain( STAT_STRENGTH, 36 * food_stat_multiplier );
           }
           else
           {
-            p -> stat_gain( STAT_AGILITY, 90 * food_stat_multiplier );
+            p -> stat_gain( STAT_AGILITY, 36 * food_stat_multiplier );
           }
         }
         else if ( p -> current.stats.attribute[ ATTR_INTELLECT ] >= p -> current.stats.attribute[ ATTR_AGILITY ] )
         {
-          p -> stat_gain( STAT_INTELLECT, 90 * food_stat_multiplier, gain, this );
+          p -> stat_gain( STAT_INTELLECT, 36 * food_stat_multiplier, gain, this );
         }
         else
         {
-          p -> stat_gain( STAT_AGILITY, 90 * food_stat_multiplier );
+          p -> stat_gain( STAT_AGILITY, 36 * food_stat_multiplier );
         }
-        stamina = 90 * food_stat_multiplier; p -> stat_gain( STAT_STAMINA, stamina );
+        stamina = 36 * food_stat_multiplier; p -> stat_gain( STAT_STAMINA, stamina );
         break;
       case FOOD_SEAFOOD_MAGNIFIQUE_FEAST:
         if ( p -> current.stats.dodge_rating > 0 )
         {
-          p -> stat_gain( STAT_DODGE_RATING, 90 * food_stat_multiplier );
+          p -> stat_gain( STAT_DODGE_RATING, 36 * food_stat_multiplier );
         }
         else if ( p -> current.stats.attribute[ ATTR_STRENGTH ] >= p -> current.stats.attribute[ ATTR_INTELLECT ] )
         {
           if ( p -> current.stats.attribute[ ATTR_STRENGTH ] >= p -> current.stats.attribute[ ATTR_AGILITY ] )
           {
-            p -> stat_gain( STAT_STRENGTH, 90 * food_stat_multiplier );
+            p -> stat_gain( STAT_STRENGTH, 36 * food_stat_multiplier );
           }
           else
           {
-            p -> stat_gain( STAT_AGILITY, 90 * food_stat_multiplier );
+            p -> stat_gain( STAT_AGILITY, 36 * food_stat_multiplier );
           }
         }
         else if ( p -> current.stats.attribute[ ATTR_INTELLECT ] >= p -> current.stats.attribute[ ATTR_AGILITY ] )
         {
-          p -> stat_gain( STAT_INTELLECT, 90 * food_stat_multiplier, gain, this );
+          p -> stat_gain( STAT_INTELLECT, 36 * food_stat_multiplier, gain, this );
         }
         else
         {
-          p -> stat_gain( STAT_AGILITY, 90 * food_stat_multiplier );
+          p -> stat_gain( STAT_AGILITY, 36 * food_stat_multiplier );
         }
-        stamina = 90 * food_stat_multiplier; p -> stat_gain( STAT_STAMINA, stamina );
+        stamina = 36 * food_stat_multiplier; p -> stat_gain( STAT_STAMINA, stamina );
         break;
       case FOOD_BANQUET_OF_THE_BREW:
       case FOOD_BANQUET_OF_THE_GRILL:
@@ -518,10 +606,14 @@ struct food_t : public action_t
       case FOOD_GREAT_BANQUET_OF_THE_POT:
       case FOOD_GREAT_BANQUET_OF_THE_STEAMER:
       case FOOD_GREAT_BANQUET_OF_THE_WOK:
-        if ( gain_amount <= 0.0 ) gain_amount = 250;
+      case FOOD_NOODLE_SOUP:
+        if ( gain_amount <= 0.0 ) gain_amount = 28;
       case FOOD_PANDAREN_BANQUET:
       case FOOD_GREAT_PANDAREN_BANQUET:
-        if ( gain_amount <= 0.0 ) gain_amount = 275;
+      case FOOD_DELUX_NOODLE_SOUP:
+        if ( gain_amount <= 0.0 ) gain_amount = 31;
+      case FOOD_PANDAREN_TREASURE_NOODLE_SOUP:
+        if ( gain_amount <= 0.0 ) gain_amount = 34;
 
         if ( p -> current.stats.dodge_rating > 0 )
         {
@@ -547,6 +639,39 @@ struct food_t : public action_t
           p -> stat_gain( STAT_AGILITY, gain_amount * food_stat_multiplier );
         }
         break;
+      case FOOD_FEAST_OF_BLOOD:
+      case FOOD_FEAST_OF_THE_WATERS:
+        if ( gain_amount <= 0.0 ) gain_amount = 125;
+
+        if ( p -> current.stats.dodge_rating > 0 )
+        {
+          p -> stat_gain( STAT_DODGE_RATING, gain_amount * food_stat_multiplier );
+        }
+        else if ( is_best_secondary_stat( STAT_HASTE_RATING ) )
+        {
+          p -> stat_gain( STAT_HASTE_RATING, gain_amount * food_stat_multiplier );
+        }
+        else if ( is_best_secondary_stat( STAT_CRIT_RATING ) )
+        {
+          p -> stat_gain( STAT_CRIT_RATING, gain_amount * food_stat_multiplier );
+        }
+        else if ( is_best_secondary_stat( STAT_MASTERY_RATING ) )
+        {
+          p -> stat_gain( STAT_MASTERY_RATING, gain_amount * food_stat_multiplier );
+        }
+        else if ( is_best_secondary_stat( STAT_VERSATILITY_RATING ) )
+        {
+          p -> stat_gain( STAT_VERSATILITY_RATING, gain_amount * food_stat_multiplier );
+        }
+        else if ( is_best_secondary_stat( STAT_MULTISTRIKE_RATING ) )
+        {
+          p -> stat_gain( STAT_MULTISTRIKE_RATING, gain_amount * food_stat_multiplier );
+        }
+        else if ( is_best_secondary_stat( STAT_SPIRIT ) )
+        {
+          p -> stat_gain( STAT_SPIRIT, gain_amount * food_stat_multiplier );
+        }
+        break;
 
       default: break;
     }
@@ -556,8 +681,6 @@ struct food_t : public action_t
       if ( stamina > 0 )
         player -> resource_gain( RESOURCE_HEALTH, player -> resources.max[ RESOURCE_HEALTH ] - player -> resources.current[ RESOURCE_HEALTH ] );
     }
-
-
   }
 
   virtual bool ready()
@@ -816,6 +939,11 @@ action_t* consumable::create_action( player_t*          p,
   if ( name == "mountains_potion"     ) return new  potion_base_t( p, name, p -> potion_buffs.mountains, options_str );
   if ( name == "mogu_power_potion"    ) return new  potion_base_t( p, name, p -> potion_buffs.mogu_power, options_str );
   if ( name == "virmens_bite_potion"  ) return new  potion_base_t( p, name, p -> potion_buffs.virmens_bite, options_str );
+  // new wod potions
+  if ( name == "draenor_agility_potion"     ) return new  potion_base_t( p, name, p -> potion_buffs.draenor_agility, options_str );
+  if ( name == "draenor_armor_potion"       ) return new  potion_base_t( p, name, p -> potion_buffs.draenor_armor, options_str );
+  if ( name == "draenor_intellect_potion"   ) return new  potion_base_t( p, name, p -> potion_buffs.draenor_intellect, options_str );
+  if ( name == "draenor_strength_potion"    ) return new  potion_base_t( p, name, p -> potion_buffs.draenor_strength, options_str );
 
   return 0;
 }

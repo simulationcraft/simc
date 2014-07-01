@@ -2108,37 +2108,46 @@ void player_t::create_buffs()
       };
 
       // Cataclysm
-      potion_buffs.speed      = potion_buff_creator( this, "speed_potion" )
+      potion_buffs.speed      = potion_buff_creator( this, "speed_potion" ) //TODO: What potion is this actually? Need to update the value from 500.0, or, just remove Cata potions. -Twintop 2014/07/01
                                 .duration( timespan_t::from_seconds( 15.0 ) )
                                 .add_stat( STAT_HASTE_RATING, 500.0 );
       potion_buffs.volcanic   = potion_buff_creator( this, "volcanic_potion" )
                                 .duration( timespan_t::from_seconds( 25.0 ) )
-                                .add_stat( STAT_INTELLECT, 1200.0 );
+                                .add_stat( STAT_INTELLECT, 476.0 );
       potion_buffs.earthen    = potion_buff_creator( this, "earthen_potion" )
                                 .duration( timespan_t::from_seconds( 25.0 ) )
-                                .add_stat( STAT_BONUS_ARMOR, 4800.0 );
+                                .add_stat( STAT_BONUS_ARMOR, 330.0 );
       potion_buffs.golemblood = potion_buff_creator( this, "golemblood_potion" )
                                 .duration( timespan_t::from_seconds( 25.0 ) )
-                                .add_stat( STAT_STRENGTH, 1200.0 );
+                                .add_stat( STAT_STRENGTH, 476.0 );
       potion_buffs.tolvir     = potion_buff_creator( this, "tolvir_potion" )
                                 .duration( timespan_t::from_seconds( 25.0 ) )
-                                .add_stat( STAT_AGILITY, 1200.0 );
+                                .add_stat( STAT_AGILITY, 476.0 );
 
       // MoP
       potion_buffs.jade_serpent = potion_buff_creator( this, "potion_of_the_jade_serpent" )
-                                  .spell( find_spell( 105702 ) );
+                                  .spell( find_spell( 109217 ) );
       potion_buffs.mountains    = potion_buff_creator( this, "potion_of_the_mountains" )
                                   .spell( find_spell( 105698 ) );
       potion_buffs.mogu_power   = potion_buff_creator( this, "potion_of_mogu_power" )
                                   .spell( find_spell( 105706 ) );
       potion_buffs.virmens_bite = potion_buff_creator( this, "virmens_bite" )
                                   .spell( find_spell( 105697 ) );
+      // WoD
+      potion_buffs.draenor_agility   = potion_buff_creator( this, "draenor_agility_potion" )
+                                       .spell( find_spell( 156423 ) );
+      potion_buffs.draenor_armor     = potion_buff_creator( this, "draenor_armor_potion" )
+                                       .spell( find_spell( 156430 ) );
+      potion_buffs.draenor_intellect = potion_buff_creator( this, "draenor_intellect_potion" )
+                                       .spell( find_spell( 156426 ) );
+      potion_buffs.draenor_strength  = potion_buff_creator( this, "draenor_strength_potion" )
+                                       .spell( find_spell( 156428 ) );
 
-    buffs.darkflight         = buff_creator_t( this, "darkflight", find_racial_spell( "darkflight" ) );
+      buffs.darkflight         = buff_creator_t( this, "darkflight", find_racial_spell( "darkflight" ) );
 
-    buffs.nitro_boosts       = buff_creator_t( this, "nitro_boosts", find_spell( 54861 ) );
+      buffs.nitro_boosts       = buff_creator_t( this, "nitro_boosts", find_spell( 54861 ) );
 
-    debuffs.dazed            = buff_creator_t( this, "dazed", find_spell( 15571 ) );
+      debuffs.dazed            = buff_creator_t( this, "dazed", find_spell( 15571 ) );
     }
 
   }
@@ -3771,6 +3780,7 @@ void player_t::moving()
   // FIXME! In the future, some movement events may not cause auto-attack to stop.
 
   halt();
+  buffs.shadowmeld -> expire();
 }
 
 // player_t::clear_debuffs===================================================

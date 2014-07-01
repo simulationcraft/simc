@@ -1923,7 +1923,7 @@ struct mind_blast_t final : public priest_spell_t
       snapshot_flags = update_flags = 0;
     }
 
-    double calculate_tick_amount( action_state_t* state, double dot_multiplier ) override
+    double calculate_tick_amount( action_state_t*, double ) override
     {
       return mind_blast_dmg / (dot_duration.total_seconds() / base_tick_time.total_seconds() );
     }
@@ -1950,8 +1950,8 @@ struct mind_blast_t final : public priest_spell_t
 
   mind_blast_t( priest_t& player, const std::string& options_str ) :
     priest_spell_t( "mind_blast", player, player.find_class_spell( "Mind Blast" ) ),
-    casted_with_divine_insight( false ),
-    dot_spell( new mind_blast_dot_t( player, this ) )
+    dot_spell( new mind_blast_dot_t( player, this ) ),
+    casted_with_divine_insight( false )
   {
     parse_options( nullptr, options_str );
 
@@ -5735,7 +5735,14 @@ void priest_t::apl_precombat()
   if ( sim -> allow_flasks && level >= 80 )
   {
     std::string flask_action = "flask,type=";
-    flask_action += ( level > 85 ) ? "warm_sun" : "draconic_mind";
+
+    if ( level > 90 )
+        flask_action += "greater_draenor_haste_flask";
+    else if ( level > 85 )
+        flask_action += "warm_sun";
+    else
+        flask_action += "draconic_mind";
+
     precombat -> add_action( flask_action );
   }
 
@@ -5743,7 +5750,14 @@ void priest_t::apl_precombat()
   if ( sim -> allow_food && level >= 80 )
   {
     std::string food_action = "food,type=";
-    food_action += ( level > 85 ) ? "mogu_fish_stew" : "seafood_magnifique_feast";
+
+    if ( level > 90 )
+        food_action += "frosty_stew";
+    else if ( level > 85 )
+        food_action += "mogu_fish_stew";
+    else
+        food_action += "seafood_magnifique_feast";
+
     precombat -> add_action( food_action );
   }
 
@@ -5753,7 +5767,14 @@ void priest_t::apl_precombat()
   precombat -> add_action( "snapshot_stats", "Snapshot raid buffed stats before combat begins and pre-potting is done." );
 
   if ( sim -> allow_potions && level >= 80 )
-    precombat -> add_action( ( level > 85 ) ? "jade_serpent_potion" : "volcanic_potion" );
+  {
+    if ( level > 90 )
+      precombat -> add_action( "draenor_intellect_potion" );
+    else if ( level > 85 )
+      precombat -> add_action( "jade_serpent_potion" );
+    else
+      precombat -> add_action( "volcanic_potion" );
+  }
 }
 
 // NO Spec Combat Action Priority List
@@ -5801,7 +5822,9 @@ void priest_t::apl_shadow()
   // Potions
   if ( sim -> allow_potions && level >= 80 )
   {
-    if ( level > 85 )
+    if ( level > 90 )
+      default_list -> add_action( "draenor_intellect_potion,if=buff.bloodlust.react|target.time_to_die<=40" );
+    else if ( level > 85 )
       default_list -> add_action( "jade_serpent_potion,if=buff.bloodlust.react|target.time_to_die<=40" );
     else
       default_list -> add_action( "volcanic_potion,if=buff.bloodlust.react|target.time_to_die<=40" );
@@ -6435,6 +6458,7 @@ public:
 
   virtual void html_customsection( report::sc_html_stream& /* os*/ ) override
   {
+    (void) p;
     /*// Custom Class Section
     os << "\t\t\t\t<div class=\"player-section custom_section\">\n"
         << "\t\t\t\t\t<h3 class=\"toggle open\">Custom Section</h3>\n"
