@@ -6531,10 +6531,8 @@ void druid_t::recalculate_resource_max( resource_e resource_type )
 
   if ( resource_type == RESOURCE_HEALTH )
   {
-    if ( buff.might_of_ursoc -> check() )
-      resources.max[ RESOURCE_HEALTH ] += buff.might_of_ursoc -> value();
-    if ( buff.ursa_major -> check() )
-      resources.max[ RESOURCE_HEALTH ] *= 1.0 + buff.ursa_major -> value();
+    resources.max[ RESOURCE_HEALTH ] += buff.might_of_ursoc -> value();
+    resources.max[ RESOURCE_HEALTH ] *= 1.0 + buff.ursa_major -> value();
   }
 }
 
