@@ -6135,7 +6135,7 @@ void paladin_t::assess_damage( school_e school,
 
 // paladin_t::assess_damage_imminent ========================================
 
-void paladin_t::assess_damage_imminent( school_e school, dmg_e dmg_type, action_state_t* s )
+void paladin_t::assess_damage_imminent( school_e school, dmg_e, action_state_t* s )
 {
   // Holy Shield happens here, after all absorbs are accounted for (see player_t::assess_damage())
   if ( talents.holy_shield -> ok() && s -> result_amount > 0.0 && school != SCHOOL_PHYSICAL )
@@ -6317,6 +6317,7 @@ public:
 
   virtual void html_customsection( report::sc_html_stream& /* os*/ ) override
   {
+    (void) p;
     /*// Custom Class Section
     os << "\t\t\t\t<div class=\"player-section custom_section\">\n"
         << "\t\t\t\t\t<h3 class=\"toggle open\">Custom Section</h3>\n"
