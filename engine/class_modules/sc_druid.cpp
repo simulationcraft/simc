@@ -167,14 +167,12 @@ public:
   struct buffs_t
   {
     // General
-    buff_t* barkskin;
     buff_t* bear_form;
     buff_t* cat_form;
     buff_t* dash;
     buff_t* cenarion_ward;
     buff_t* dream_of_cenarius;
     buff_t* frenzied_regeneration;
-    buff_t* natures_swiftness;
     buff_t* natures_vigil;
     buff_t* omen_of_clarity;
     buff_t* prowl;
@@ -207,7 +205,9 @@ public:
     buff_t* tier15_4pc_melee;
 
     // Guardian
+    buff_t* barkskin;
     buff_t* bladed_armor;
+    buff_t* bristling_fur;
     buff_t* lacerate;
     buff_t* might_of_ursoc;
     absorb_buff_t* primal_tenacity;
@@ -220,6 +220,7 @@ public:
     buff_t* ursa_major;
 
     // Restoration
+    buff_t* natures_swiftness;
     buff_t* soul_of_the_forest;
 
     // NYI / Needs checking
@@ -3058,7 +3059,7 @@ struct savage_defense_t : public bear_attack_t
     bear_attack_t::execute();
 
     if ( p() -> buff.savage_defense -> check() )
-      p() -> buff.savage_defense -> extend_duration( p(), timespan_t::from_seconds( 6.0 ) );
+      p() -> buff.savage_defense -> extend_duration( p(), p() -> buff.savage_defense -> buff_duration );
     else
       p() -> buff.savage_defense -> trigger();
 
@@ -4048,6 +4049,24 @@ struct berserk_t : public druid_spell_t
     else if ( p() -> buff.cat_form -> check() )
       p() -> buff.berserk -> trigger( 1, buff_t::DEFAULT_VALUE(), -1.0, ( p() -> spell.berserk_cat -> duration()  +
                                                                         p() -> perk.empowered_berserk -> effectN( 1 ).time_value() ) );
+  }
+};
+
+// Bristling Fur Spell
+
+struct bristling_fur_t : public druid_spell_t
+{
+  bristling_fur_t( druid_t* player, const std::string& options_str ) :
+    druid_spell_t( "bristling_fur", player, player -> talent.bristling_fur, options_str  )
+  {
+    harmful = false;
+  }
+
+  virtual void execute()
+  {
+    druid_spell_t::execute();
+
+    p() -> buff.bristling_fur -> trigger();
   }
 };
 
@@ -5150,6 +5169,7 @@ action_t* druid_t::create_action( const std::string& name,
   if ( name == "barkskin"               ) return new               barkskin_t( this, options_str );
   if ( name == "berserk"                ) return new                berserk_t( this, options_str );
   if ( name == "bear_form"              ) return new              bear_form_t( this, options_str );
+  if ( name == "bristling_fur"          ) return new          bristling_fur_t( this, options_str );
   if ( name == "cat_form"               ) return new               cat_form_t( this, options_str );
   if ( name == "celestial_alignment" ||
        name == "ca"                     ) return new    celestial_alignment_t( this, options_str );
@@ -5559,8 +5579,6 @@ void druid_t::create_buffs()
                                            ? find_class_spell( "Wild Mushroom" ) -> effectN( 2 ).base_value()
                                            : 1 )
                                .quiet( true );
-  buff.natures_swiftness     = buff_creator_t( this, "natures_swiftness", find_specialization_spell( "Nature's Swiftness" ) )
-                               .cd( timespan_t::zero() ); // Cooldown is handled in the spell
 
   // Talent buffs
 
@@ -5636,10 +5654,12 @@ void druid_t::create_buffs()
   buff.feral_rage            = buff_creator_t( this, "feral_rage", find_spell( 146874 ) ); // tier16_4pc_melee
 
   // Guardian
-  buff.bladed_armor           = buff_creator_t( this, "bladed_armor", spec.bladed_armor )
-                                .add_invalidate( CACHE_ATTACK_POWER );
-
   buff.barkskin              = new barkskin_t( *this );
+  buff.bladed_armor          = buff_creator_t( this, "bladed_armor", spec.bladed_armor )
+                               .add_invalidate( CACHE_ATTACK_POWER );
+  buff.bristling_fur         = buff_creator_t( this, "bristling_fur", talent.bristling_fur )
+                               .default_value( talent.bristling_fur -> effectN( 1 ).percent() )\
+                               .cd( timespan_t::zero() );
   buff.lacerate              = buff_creator_t( this, "lacerate" , find_class_spell( "Lacerate" ) );
   buff.might_of_ursoc        = new might_of_ursoc_t( *this );
   buff.primal_tenacity       = absorb_buff_creator_t( this, "primal_tenacity", find_spell( 155784 ) )
@@ -5647,7 +5667,8 @@ void druid_t::create_buffs()
                                .source( get_stats( "primal_tenacity" ) )
                                .gain( get_gain( "primal_tenacity" ) );
   buff.savage_defense        = buff_creator_t( this, "savage_defense", find_class_spell( "Savage Defense" ) -> ok() ? find_spell( 132402 ) : spell_data_t::not_found() )
-                               .add_invalidate( CACHE_DODGE );
+                               .add_invalidate( CACHE_DODGE )
+                               .duration( find_spell( 132402 ) -> duration() + talent.guardian_of_elune -> effectN( 2 ).time_value() );
   buff.survival_instincts    = buff_creator_t( this, "survival_instincts", find_class_spell( "Survival Instincts" ) )
                                .cd( timespan_t::zero() );
   buff.tier15_2pc_tank       = buff_creator_t( this, "tier15_2pc_tank", find_spell( 138217 ) );
@@ -5658,6 +5679,8 @@ void druid_t::create_buffs()
 
   // Restoration
   buff.harmony               = buff_creator_t( this, "harmony", mastery.harmony -> ok() ? find_spell( 100977 ) : spell_data_t::not_found() );
+  buff.natures_swiftness     = buff_creator_t( this, "natures_swiftness", find_specialization_spell( "Nature's Swiftness" ) )
+                               .cd( timespan_t::zero() ); // Cooldown is handled in the spell
 
 }
 
@@ -6482,11 +6505,8 @@ double druid_t::composite_dodge() const
 {
   double d = player_t::composite_dodge();
 
-  if ( buff.savage_defense -> up() )
-  {
-    d += buff.savage_defense -> data().effectN( 1 ).percent();
-    // TODO: Add Savage Defense dodge bonus granted by 4pT14 Guardian bonus.
-  }
+  if ( buff.savage_defense -> check() )
+    d += buff.savage_defense -> data().effectN( 1 ).percent() + talent.guardian_of_elune -> effectN( 1 ).percent();
 
   return d;
 }
@@ -6862,20 +6882,24 @@ void druid_t::assess_damage( school_e school,
                              dmg_e    dtype,
                              action_state_t* s )
 {
+
   if ( sets.has_set_bonus( SET_T15_2PC_TANK ) && s -> result == RESULT_DODGE && buff.savage_defense -> check() )
     buff.tier15_2pc_tank -> trigger();
 
-  if ( buff.barkskin -> up() )
+  if ( buff.barkskin -> check() )
     s -> result_amount *= 1.0 + buff.barkskin -> value() + perk.improved_barkskin -> effectN( 1 ).percent();
 
-  if ( buff.survival_instincts -> up() )
-    s -> result_amount *= 1.0 + buff.survival_instincts -> value();
+  s -> result_amount *= 1.0 + buff.survival_instincts -> value();
 
-  if ( glyph.ninth_life -> ok() )
-    s -> result_amount *= 1.0 + glyph.ninth_life -> effectN( 1 ).base_value();
+  s -> result_amount *= 1.0 + glyph.ninth_life -> effectN( 1 ).base_value();
+
+  s -> result_amount *= 1.0 + buff.bristling_fur -> value();
 
   if ( specialization() == DRUID_GUARDIAN && buff.bear_form -> check() )
   {
+    // Track buff benefit
+    buff.savage_defense -> up();
+
     if ( s -> result == RESULT_DODGE )
     {
       resource_gain( RESOURCE_RAGE,
