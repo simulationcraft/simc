@@ -4301,6 +4301,7 @@ struct magma_totem_pulse_t : public totem_pulse_action_t
     totem_pulse_action_t( "magma_totem", p, p -> find_spell( 8187 ) )
   {
     aoe = -1;
+    base_multiplier *= 1.0 + totem -> o() -> perk.improved_searing_totem -> effectN( 1 ).percent();
   }
 };
 
