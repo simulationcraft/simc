@@ -663,7 +663,8 @@ struct natures_vigil_proc_t : public spell_t
       heal_coeff( 0.0 ), dmg_coeff( 0.0 )
     {
       background = proc = dual = true;
-      may_crit = may_multistrike = may_miss = false;
+      may_crit = may_miss = false;
+      may_multistrike = false;
       trigger_gcd              = timespan_t::zero();
       heal_coeff               = p -> talent.natures_vigil -> effectN( 3 ).percent();
       dmg_coeff                = p -> talent.natures_vigil -> effectN( 4 ).percent();
@@ -747,7 +748,8 @@ struct natures_vigil_proc_t : public spell_t
   {
     background = proc = true;
     trigger_gcd       = timespan_t::zero();
-    may_crit = may_multistrike = may_miss = false;
+    may_crit = may_miss = false;
+    may_multistrike = false;
 
     damage  = new natures_vigil_damage_t( p );
     healing = new natures_vigil_heal_t( p );
@@ -781,7 +783,8 @@ struct ursocs_vigor_t : public heal_t
     background = true;
 
     hasted_ticks = false;
-    may_crit = tick_may_crit = may_multistrike = false;
+    may_crit = tick_may_crit = false;
+    may_multistrike = false;
 
     base_td = 0;
     
@@ -854,7 +857,8 @@ struct leader_of_the_pack_t : public heal_t
   leader_of_the_pack_t( druid_t* p ) :
     heal_t( "leader_of_the_pack", p, p -> find_spell( 68285 ) )
   {
-    may_crit = may_multistrike = false;
+    may_crit = false;
+    may_multistrike = false;
     background = proc = true;
 
     cooldown -> duration = timespan_t::from_seconds( 6.0 );
@@ -933,7 +937,8 @@ struct yseras_gift_t : public heal_t
     base_tick_time = data().effectN( 1 ).period();
     dot_duration   = base_tick_time;
     hasted_ticks   = false;
-    tick_may_crit  = may_multistrike = false;
+    tick_may_crit  = false;
+    may_multistrike = false;
     harmful        = false;
     background     = true;
     target         = p;
@@ -3928,7 +3933,8 @@ struct astral_communion_t : public druid_spell_t
   astral_communion_t( druid_t* player, const std::string& options_str ) :
     druid_spell_t( "astral_communion", player, player -> spec.astral_communion, options_str )
   {
-    harmful = proc = hasted_ticks = may_multistrike = false;
+    harmful = proc = hasted_ticks = false;
+    may_multistrike = false;
     channeled = true;
 
     base_tick_time = timespan_t::from_millis( 100 );
@@ -4760,7 +4766,8 @@ struct starfall_t : public druid_spell_t
   {
     parse_options( NULL, options_str );
 
-    hasted_ticks = may_multistrike = false;
+    hasted_ticks = false;
+    may_multistrike = false;
     tick_zero = true;
     cooldown = player -> cooldown.starfallsurge;
     base_multiplier *= 1.0 + player -> sets.set( SET_T14_2PC_CASTER ) -> effectN( 1 ).percent();
@@ -5165,9 +5172,11 @@ action_t* druid_t::create_action( const std::string& name,
   if ( name == "mark_of_the_wild"       ) return new       mark_of_the_wild_t( this, options_str );
   if ( name == "maul"                   ) return new                   maul_t( this, options_str );
   if ( name == "might_of_ursoc"         ) return new         might_of_ursoc_t( this, options_str );
-  if ( name == "moonfire"               ) 
-  if ( specialization() == DRUID_FERAL )  return new            moonfire_li_t( this, options_str );
-    else                                  return new               moonfire_t( this, options_str );
+  if ( name == "moonfire"               )
+  {
+    if ( specialization() == DRUID_FERAL )  return new            moonfire_li_t( this, options_str );
+    else                                    return new               moonfire_t( this, options_str );
+  }
   if ( name == "sunfire"                ) return new                sunfire_t( this, options_str ); // Moonfire and Sunfire are selected based on how much balance energy the player has.
   if ( name == "moonkin_form"           ) return new           moonkin_form_t( this, options_str );
   if ( name == "natures_swiftness"      ) return new       druids_swiftness_t( this, options_str );
@@ -7170,6 +7179,7 @@ public:
 
   virtual void html_customsection( report::sc_html_stream& /* os*/ ) override
   {
+    (void) p;
     /*// Custom Class Section
     os << "\t\t\t\t<div class=\"player-section custom_section\">\n"
         << "\t\t\t\t\t<h3 class=\"toggle open\">Custom Section</h3>\n"

@@ -1923,7 +1923,7 @@ struct mind_blast_t final : public priest_spell_t
       snapshot_flags = update_flags = 0;
     }
 
-    double calculate_tick_amount( action_state_t* state, double dot_multiplier ) override
+    double calculate_tick_amount( action_state_t*, double ) override
     {
       return mind_blast_dmg / (dot_duration.total_seconds() / base_tick_time.total_seconds() );
     }
@@ -1950,8 +1950,8 @@ struct mind_blast_t final : public priest_spell_t
 
   mind_blast_t( priest_t& player, const std::string& options_str ) :
     priest_spell_t( "mind_blast", player, player.find_class_spell( "Mind Blast" ) ),
-    casted_with_divine_insight( false ),
-    dot_spell( new mind_blast_dot_t( player, this ) )
+    dot_spell( new mind_blast_dot_t( player, this ) ),
+    casted_with_divine_insight( false )
   {
     parse_options( nullptr, options_str );
 
@@ -6435,6 +6435,7 @@ public:
 
   virtual void html_customsection( report::sc_html_stream& /* os*/ ) override
   {
+    (void) p;
     /*// Custom Class Section
     os << "\t\t\t\t<div class=\"player-section custom_section\">\n"
         << "\t\t\t\t\t<h3 class=\"toggle open\">Custom Section</h3>\n"
