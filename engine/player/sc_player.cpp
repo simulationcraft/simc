@@ -3771,7 +3771,7 @@ void player_t::moving()
   // FIXME! In the future, some movement events may not cause auto-attack to stop.
 
   halt();
-  p() -> buffs.shadowmeld -> expire();
+  buffs.shadowmeld -> expire();
 }
 
 // player_t::clear_debuffs===================================================
