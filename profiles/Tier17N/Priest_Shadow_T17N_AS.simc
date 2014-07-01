@@ -3,7 +3,7 @@ level=100
 race=goblin
 role=spell
 position=back
-professions=blacksmithing=600/engineering=600
+professions=enchanting=600/engineering=600
 talents=http://us.battle.net/wow/en/tool/talent-calculator#Xb!0022022
 glyphs=mind_flay/fade/sha
 spec=shadow
@@ -16,18 +16,18 @@ spec=shadow
 
 # Executed before combat begins. Accepts non-harmful actions only.
 
-actions.precombat=flask,type=warm_sun
-actions.precombat+=/food,type=mogu_fish_stew
+actions.precombat=flask,type=greater_draenor_haste_flask
+actions.precombat+=/food,type=frosty_stew
 actions.precombat+=/power_word_fortitude,if=!aura.stamina.up
 actions.precombat+=/shadowform,if=!buff.shadowform.up
 # Snapshot raid buffed stats before combat begins and pre-potting is done.
 actions.precombat+=/snapshot_stats
-actions.precombat+=/jade_serpent_potion
+actions.precombat+=/draenor_intellect_potion
 
 # Executed every time the actor is available.
 
 actions=shadowform,if=!buff.shadowform.up
-actions+=/jade_serpent_potion,if=buff.bloodlust.react|target.time_to_die<=40
+actions+=/draenor_intellect_potion,if=buff.bloodlust.react|target.time_to_die<=40
 actions+=/power_infusion,if=talent.power_infusion.enabled
 actions+=/blood_fury
 actions+=/berserking
@@ -122,27 +122,27 @@ actions.cop_mfi+=/cascade,moving=1,if=talent.cascade.enabled&target.distance<=40
 actions.cop_mfi+=/shadow_word_pain,moving=1,cycle_targets=1,if=primary_target=0
 
 head=ph_gladiators_hood_of_prowess,id=111084
-neck=ph_gladiators_pendant_of_cruelty,id=111128
+neck=ph_gladiators_pendant_of_cruelty,id=111128,enchant=140haste
 shoulders=ph_gladiators_amice_of_prowess,id=111087
-back=ph_gladiators_drape_of_cruelty,id=111124
+back=ph_gladiators_drape_of_cruelty,id=111124,enchant=gift_of_haste
 chest=ph_gladiators_robes_of_prowess,id=111086
 wrists=ph_gladiators_cuffs_of_cruelty,id=111100
 hands=ph_gladiators_handguards_of_cruelty,id=111088
 waist=ph_gladiators_cord_of_victory,id=111095
 legs=ph_gladiators_leggings_of_prowess,id=111085
 feet=ph_gladiators_treads_of_prowess,id=111097
-finger1=ph_gladiators_band_of_cruelty,id=111134
-finger2=ph_gladiators_band_of_prowess,id=111135
+finger1=ph_gladiators_band_of_cruelty,id=111134,enchant=100haste
+finger2=ph_gladiators_band_of_prowess,id=111135,enchant=100haste
 trinket1=ph_gladiators_medallion_of_cruelty,id=111229
 trinket2=ph_gladiators_insignia_of_dominance,id=111228
-main_hand=ph_gladiators_battle_staff,id=111122
+main_hand=ph_gladiators_battle_staff,id=111122,enchant=mark_of_warsong
 
 # Gear Summary
 # gear_stamina=3250
 # gear_intellect=2378
 # gear_spell_power=1265
 # gear_crit_rating=999
-# gear_haste_rating=423
+# gear_haste_rating=963
 # gear_mastery_rating=872
 # gear_armor=600
 # gear_multistrike_rating=590
