@@ -16,10 +16,13 @@ namespace { // UNNAMED NAMESPACE
     Dash
     Fix Force of Nature (summons fine, but treants take no actions)
     Clean up NV implementation (pass values instead of execution states)
+    Glyph of Ursoc's Defense
 
     = Feral =
     Combo Points as a resource
     Verify stuff, particularly damage checking
+    check bitw refresh
+    li + ooc
 
     = Balance =
     Just verify stuff.
@@ -27,9 +30,9 @@ namespace { // UNNAMED NAMESPACE
     = Guardian =
     Level 100 Talents
     Starting sim at unbuffed HP
-    tick() isn't called on multistrikes, breaks lacerate Ursa Major trigger
     Verify DoC
     Lacerate buff
+    Fix ursa_major showing in constant, hides proc interval
 
     = Restoration =
     Err'thing
@@ -2817,12 +2820,11 @@ struct lacerate_t : public bear_attack_t
     return tm;
   }
 
-  virtual void tick( dot_t* d )
+  virtual void multistrike_tick( const action_state_t* src_state, action_state_t* ms_state, double multiplier )
   {
-    bear_attack_t::tick( d );
+    bear_attack_t::multistrike_tick( src_state, ms_state, multiplier );
 
-    if ( result_is_multistrike( d -> state -> result ) )
-      trigger_ursa_major();
+    trigger_ursa_major();
   }
 
   virtual void last_tick( dot_t* d )
@@ -5703,8 +5705,9 @@ void druid_t::apl_precombat()
   // Forms
   if ( ( specialization() == DRUID_FERAL && primary_role() == ROLE_ATTACK ) || primary_role() == ROLE_ATTACK )
   {
-    precombat -> add_action( this, "Cat Form" );
+    precombat -> add_action( this, "Cat Form", "if=active_enemies=1" );
     precombat -> add_action( this, "Prowl" );
+    precombat -> add_action( this, "Bear Form", "if=active_enemies>1" );
   }
   else if ( primary_role() == ROLE_TANK )
   {
@@ -5794,6 +5797,8 @@ void druid_t::apl_feral()
   def -> add_action( this, "Ferocious Bite", "cycle_targets=1,if=dot.rip.ticking&dot.rip.remains<=3&target.health.pct<25",
                      "Keep Rip from falling off during execute range." );
   def -> add_action( this, "Healing Touch", "if=talent.bloodtalons.enabled&buff.predatory_swiftness.up&(combo_points>=4|buff.predatory_swiftness.remains<1.5)" );
+  def -> add_action( "bear_form,if=active_enemies>1&energy.time_to_max>=5.5&(dot.thrash_bear.remains<16*0.3+1.5|(cooldown.tigers_fury.remains>6&cooldown.tigers_fury.remains<8))",
+                     "Maintain Thrash during AoE, clipping before Tiger's Fury comes off cooldown." );
   def -> add_action( this, "Savage Roar", "if=buff.savage_roar.remains<3" );
   std::string potion_name = level > 85 ? "virmens_bite_potion" : "tolvir_potion";
   def -> add_action( potion_name + ",if=target.time_to_die<=40" );

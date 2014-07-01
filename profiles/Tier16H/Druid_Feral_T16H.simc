@@ -19,8 +19,9 @@ spec=feral
 actions.precombat=flask,type=spring_blossoms
 actions.precombat+=/food,type=sea_mist_rice_noodles
 actions.precombat+=/mark_of_the_wild,if=!aura.str_agi_int.up
-actions.precombat+=/cat_form
+actions.precombat+=/cat_form,if=active_enemies=1
 actions.precombat+=/prowl
+actions.precombat+=/bear_form,if=active_enemies>1
 # Snapshot raid buffed stats before combat begins and pre-potting is done.
 actions.precombat+=/snapshot_stats
 actions.precombat+=/virmens_bite_potion
@@ -34,6 +35,8 @@ actions+=/thrash_bear
 # Keep Rip from falling off during execute range.
 actions+=/ferocious_bite,cycle_targets=1,if=dot.rip.ticking&dot.rip.remains<=3&target.health.pct<25
 actions+=/healing_touch,if=talent.bloodtalons.enabled&buff.predatory_swiftness.up&(combo_points>=4|buff.predatory_swiftness.remains<1.5)
+# Maintain Thrash during AoE, clipping before Tiger's Fury comes off cooldown.
+actions+=/bear_form,if=active_enemies>1&energy.time_to_max>=5.5&(dot.thrash_bear.remains<16*0.3+1.5|(cooldown.tigers_fury.remains>6&cooldown.tigers_fury.remains<8))
 actions+=/savage_roar,if=buff.savage_roar.remains<3
 actions+=/virmens_bite_potion,if=target.time_to_die<=40
 actions+=/incarnation,if=energy<25&!buff.omen_of_clarity.react&cooldown.tigers_fury.remains<=1
