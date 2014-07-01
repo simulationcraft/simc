@@ -361,6 +361,7 @@ public:
     proc_t* tier15_2pc_melee;
     proc_t* tier17_2pc_melee;
     proc_t* tooth_and_claw;
+    proc_t* ursa_major;
     proc_t* wrong_eclipse_wrath;
     proc_t* wrong_eclipse_starfire;
   } proc;
@@ -2674,6 +2675,8 @@ struct bear_attack_t : public druid_attack_t<melee_attack_t>
   {
     if ( ! p() -> spec.ursa_major -> ok() )
       return;
+    
+    p() -> proc.ursa_major -> occur();
 
     if ( p() -> buff.ursa_major -> check() )
     {
@@ -6043,16 +6046,17 @@ void druid_t::init_procs()
 {
   player_t::init_procs();
 
+  proc.combo_points             = get_proc( "combo_points"           );
+  proc.combo_points_wasted      = get_proc( "combo_points_wasted"    );
   proc.primal_fury              = get_proc( "primal_fury"            );
-  proc.wrong_eclipse_wrath      = get_proc( "wrong_eclipse_wrath"    );
-  proc.wrong_eclipse_starfire   = get_proc( "wrong_eclipse_starfire" );
-  proc.combo_points             = get_proc( "combo_points" );
-  proc.combo_points_wasted      = get_proc( "combo_points_wasted" );
   proc.shooting_stars_wasted    = get_proc( "Shooting Stars overflow (buff already up)" );
   proc.shooting_stars           = get_proc( "Shooting Stars"         );
   proc.tier15_2pc_melee         = get_proc( "tier15_2pc_melee"       );
   proc.tier17_2pc_melee         = get_proc( "tier17_2pc_melee"       );
   proc.tooth_and_claw           = get_proc( "tooth_and_claw"         );
+  proc.ursa_major               = get_proc( "ursa_major"             );
+  proc.wrong_eclipse_wrath      = get_proc( "wrong_eclipse_wrath"    );
+  proc.wrong_eclipse_starfire   = get_proc( "wrong_eclipse_starfire" );
 }
 
 // druid_t::init_benefits ===================================================
