@@ -59,38 +59,38 @@ actions.finisher=rupture,if=ticks_remain<2&target.time_to_die>=26&(active_enemie
 actions.finisher+=/crimson_tempest,if=active_enemies>=7&dot.crimson_tempest_dot.ticks_remain<=2
 actions.finisher+=/eviscerate
 
-head=helmet_of_the_barbed_assassin,id=99348,gems=capacitive_primal_80agi_160haste_180agi
-neck=immerseus_crystalline_eye,id=105407,reforge=mastery_exp
-shoulders=shoulderguards_of_the_righteous_stand,id=105551,gems=320haste_320haste_120agi,enchant=200agi_100crit,reforge=mastery_exp
+head=helmet_of_the_barbed_assassin,id=99348,upgrade=4,gems=capacitive_primal_80agi_160haste_180agi
+neck=immerseus_crystalline_eye,id=105407,upgrade=4,reforge=mastery_exp
+shoulders=shoulderguards_of_the_righteous_stand,id=105551,upgrade=4,gems=320haste_320haste_120agi,enchant=200agi_100crit,reforge=mastery_exp
 back=fenyu_fury_of_xuen,id=102248,upgrade=4,gems=80agi_160haste_60agi,enchant=180hit,reforge=crit_hit
-chest=tunic_of_the_barbed_assassin,id=99356,gems=80agi_160haste_80agi_160haste_80agi_160haste_180agi,enchant=80all
-wrists=bombers_blackened_wristwatch,id=105616,gems=80agi_160haste,enchant=180agi,reforge=mastery_exp
-hands=gloves_of_the_barbed_assassin,id=99355,gems=80agi_160haste_80agi_160haste_80agi_160haste_120agi,enchant=170haste,addon=synapse_springs_mark_ii,reforge=mastery_hit
-waist=damrons_belt_of_darkness,id=105528,gems=80agi_160haste_160haste_160hit_320haste_120agi,reforge=hit_mastery
-legs=legguards_of_the_barbed_assassin,id=99349,gems=320haste_320haste_120agi,enchant=285agi_165crit,reforge=crit_mastery
-feet=pandaren_roofsprinters,id=105582,gems=320haste,enchant=140agi,reforge=mastery_exp
-finger1=swift_serpent_signet,id=105483,gems=320haste_60crit,reforge=exp_haste
-finger2=kilruks_band_of_ascendancy,id=105624,gems=80agi_160haste_60crit,reforge=mastery_hit
+chest=tunic_of_the_barbed_assassin,id=99356,upgrade=4,gems=80agi_160haste_80agi_160haste_80agi_160haste_180agi,enchant=80all
+wrists=bombers_blackened_wristwatch,id=105616,upgrade=4,gems=80agi_160haste,enchant=180agi,reforge=mastery_exp
+hands=gloves_of_the_barbed_assassin,id=99355,upgrade=4,gems=80agi_160haste_80agi_160haste_80agi_160haste_120agi,enchant=170haste,addon=synapse_springs_mark_ii,reforge=mastery_hit
+waist=damrons_belt_of_darkness,id=105528,upgrade=4,gems=80agi_160haste_160haste_160hit_320haste_120agi,reforge=hit_mastery
+legs=legguards_of_the_barbed_assassin,id=99349,upgrade=4,gems=320haste_320haste_120agi,enchant=285agi_165crit,reforge=crit_mastery
+feet=pandaren_roofsprinters,id=105582,upgrade=4,gems=320haste,enchant=140agi,reforge=mastery_exp
+finger1=swift_serpent_signet,id=105483,upgrade=4,gems=320haste_60crit,reforge=exp_haste
+finger2=kilruks_band_of_ascendancy,id=105624,upgrade=4,gems=80agi_160haste_60crit,reforge=mastery_hit
 trinket1=haromms_talisman,id=105527,upgrade=4
 trinket2=assurance_of_consequence,id=105472,upgrade=4
-main_hand=seismic_bore,id=105504,weapon=mace_2.6speed_14212min_26396max,gems=80agi_160haste_60agi,enchant=dancing_steel,reforge=crit_mastery
-off_hand=seismic_bore,id=105504,weapon=mace_2.6speed_14212min_26396max,gems=80agi_160haste_60agi,enchant=dancing_steel,reforge=crit_mastery
+main_hand=seismic_bore,id=105504,upgrade=4,gems=80agi_160haste_60agi,enchant=dancing_steel,reforge=crit_mastery
+off_hand=seismic_bore,id=105504,upgrade=4,gems=80agi_160haste_60agi,enchant=dancing_steel,reforge=crit_mastery
 
 # Gear Summary
 # gear_strength=80
-# gear_agility=25417
-# gear_stamina=36189
+# gear_agility=28950
+# gear_stamina=41489
 # gear_intellect=80
 # gear_spirit=80
-# gear_expertise_rating=2183
-# gear_hit_rating=2295
-# gear_crit_rating=3100
-# gear_haste_rating=18714
-# gear_mastery_rating=10191
-# gear_armor=22208
+# gear_expertise_rating=2550
+# gear_hit_rating=2558
+# gear_crit_rating=3398
+# gear_haste_rating=20918
+# gear_mastery_rating=11741
+# gear_armor=23075
 # meta_gem=capacitive_primal
 # tier16_2pc_melee=1
 # tier16_4pc_melee=1
 # hands=gloves_of_the_barbed_assassin,heroic=1,addon=synapse_springs_mark_ii
-# main_hand=seismic_bore,heroic=1,elite=1,weapon=mace_2.6speed_14212min_26396max,enchant=dancing_steel
-# off_hand=seismic_bore,heroic=1,elite=1,weapon=mace_2.6speed_14212min_26396max,enchant=dancing_steel
+# main_hand=seismic_bore,heroic=1,elite=1,weapon=mace_2.60speed_12244min_22741max,enchant=dancing_steel
+# off_hand=seismic_bore,heroic=1,elite=1,weapon=mace_2.60speed_12244min_22741max,enchant=dancing_steel
