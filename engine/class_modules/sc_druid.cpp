@@ -29,10 +29,8 @@ namespace { // UNNAMED NAMESPACE
 
     = Guardian =
     Level 100 Talents
-    Starting sim at unbuffed HP
     Verify DoC
     Lacerate buff
-    Fix ursa_major showing in constant, hides proc interval
 
     = Restoration =
     Err'thing

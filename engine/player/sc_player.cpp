@@ -1163,7 +1163,7 @@ void player_t::init_resources( bool force )
 
   resources.current = resources.max = resources.initial;
   if ( type == WARRIOR )
-    resources.current [RESOURCE_RAGE] = 0; //Warriors do not have full resource bars pre-combat.
+    resources.current[ RESOURCE_RAGE ] = 0; // Warriors do not have full resource bars pre-combat.
 
   // Only collect pet resource timelines if they get reported separately
   if ( ! is_pet() || sim -> report_pets_separately )
@@ -4044,8 +4044,14 @@ void player_t::recalculate_resource_max( resource_e resource_type )
     }
     case RESOURCE_HEALTH:
     {
+      // Calculate & set maximum health
       double adjust = ( is_pet() || is_enemy() || is_add() ) ? 0 : std::min( 20, ( int ) floor( stamina() ) );
       resources.max[ resource_type ] += ( floor( stamina() ) - adjust ) * current.health_per_stamina + adjust;
+
+      // Sanity check on current health values
+      if ( ! in_combat )
+        resources.current[ resource_type ] = resources.max[ resource_type ];
+      resources.current[ resource_type ] = std::min( resources.current[ resource_type ], resources.max[ resource_type] );
       break;
     }
     default: break;
