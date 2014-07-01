@@ -5,7 +5,7 @@ talent_format=armory
 # Feral Druid T16H
 druid="Druid_Feral_T16H"
 level=90
-race=troll
+race=night_elf
 role=attack
 position=back
 professions=engineering=600/alchemy=600

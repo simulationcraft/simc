@@ -1,6 +1,6 @@
 druid="Druid_Feral_T16H"
 level=90
-race=troll
+race=night_elf
 role=attack
 position=back
 professions=engineering=600/alchemy=600
@@ -28,10 +28,11 @@ actions.precombat+=/virmens_bite_potion
 
 # Executed every time the actor is available.
 
-actions=rake,if=buff.prowl.up
+actions=rake,if=buff.prowl.up|buff.shadowmeld.up
 actions+=/auto_attack
 actions+=/cat_form,if=prev.thrash_bear
 actions+=/thrash_bear
+actions+=/shadowmeld,if=buff.savage_roar.remains<3|(buff.bloodtalons.up&buff.savage_roar.remains<6)
 # Keep Rip from falling off during execute range.
 actions+=/ferocious_bite,cycle_targets=1,if=dot.rip.ticking&dot.rip.remains<=3&target.health.pct<25
 actions+=/healing_touch,if=talent.bloodtalons.enabled&buff.predatory_swiftness.up&(combo_points>=4|buff.predatory_swiftness.remains<1.5)

@@ -663,7 +663,8 @@ struct natures_vigil_proc_t : public spell_t
       heal_coeff( 0.0 ), dmg_coeff( 0.0 )
     {
       background = proc = dual = true;
-      may_crit = may_multistrike = may_miss = false;
+      may_crit = may_miss = false;
+      may_multistrike = false;
       trigger_gcd              = timespan_t::zero();
       heal_coeff               = p -> talent.natures_vigil -> effectN( 3 ).percent();
       dmg_coeff                = p -> talent.natures_vigil -> effectN( 4 ).percent();
@@ -747,7 +748,8 @@ struct natures_vigil_proc_t : public spell_t
   {
     background = proc = true;
     trigger_gcd       = timespan_t::zero();
-    may_crit = may_multistrike = may_miss = false;
+    may_crit = may_miss = false;
+    may_multistrike = false;
 
     damage  = new natures_vigil_damage_t( p );
     healing = new natures_vigil_heal_t( p );
@@ -781,7 +783,8 @@ struct ursocs_vigor_t : public heal_t
     background = true;
 
     hasted_ticks = false;
-    may_crit = tick_may_crit = may_multistrike = false;
+    may_crit = tick_may_crit = false;
+    may_multistrike = false;
 
     base_td = 0;
     
@@ -854,7 +857,8 @@ struct leader_of_the_pack_t : public heal_t
   leader_of_the_pack_t( druid_t* p ) :
     heal_t( "leader_of_the_pack", p, p -> find_spell( 68285 ) )
   {
-    may_crit = may_multistrike = false;
+    may_crit = false;
+    may_multistrike = false;
     background = proc = true;
 
     cooldown -> duration = timespan_t::from_seconds( 6.0 );
@@ -933,7 +937,8 @@ struct yseras_gift_t : public heal_t
     base_tick_time = data().effectN( 1 ).period();
     dot_duration   = base_tick_time;
     hasted_ticks   = false;
-    tick_may_crit  = may_multistrike = false;
+    tick_may_crit  = false;
+    may_multistrike = false;
     harmful        = false;
     background     = true;
     target         = p;
@@ -1833,7 +1838,7 @@ struct cat_attack_state_t : public action_state_t
 
 struct cat_attack_t : public druid_attack_t < melee_attack_t >
 {
-  bool             requires_stealth_;
+  bool             requires_stealth;
   bool             requires_combo_points;
   int              adds_combo_points;
   double           base_dd_bonus;
@@ -1844,7 +1849,7 @@ struct cat_attack_t : public druid_attack_t < melee_attack_t >
                 const spell_data_t* s = spell_data_t::nil(),
                 const std::string& options = std::string() ) :
     base_t( token, p, s ),
-    requires_stealth_( false ),
+    requires_stealth( false ),
     requires_combo_points( false ), adds_combo_points( 0 ),
     base_dd_bonus( 0.0 ), base_td_bonus( 0.0 ), consume_ooc( false )
   {
@@ -1930,14 +1935,15 @@ public:
     cat_state( state ) -> cp = td( state -> target ) -> combo_points.get();
   }
 
+  virtual bool stealthed() const
+  {
+    return p() -> buff.prowl -> up() || p() -> buff.king_of_the_jungle -> up() || p() -> buffs.shadowmeld -> up();
+  }
+
   void trigger_glyph_of_savage_roar()
   {
     // Bail out if we have Savagery, buff should already be up so lets not mess with it.
     if ( p() -> talent.savagery -> ok() )
-      return;
-
-    // Check for stealth! This is here so the logic is consolidated in one place instead of being in several.
-    if ( ! ( p() -> buff.prowl -> up() || p() -> buff.king_of_the_jungle -> up() ) )
       return;
 
     timespan_t duration = p() -> spec.savage_roar -> duration() + timespan_t::from_seconds( 6.0 ) * 5;
@@ -1996,6 +2002,7 @@ public:
     if ( harmful )
     {
       p() -> buff.prowl -> expire();
+      p() -> buffs.shadowmeld -> expire();
       
       // Track benefit of damage buffs
       p() -> buff.tigers_fury -> up();
@@ -2054,9 +2061,8 @@ public:
     if ( ! p() -> buff.cat_form -> check() )
       return false;
 
-    if ( requires_stealth() )
-      if ( ! p() -> buff.prowl -> check() )
-        return false;
+    if ( requires_stealth && ! stealthed() )
+      return false;
 
     if ( requires_combo_points && ! td( target ) -> combo_points.get() )
       return false;
@@ -2075,14 +2081,6 @@ public:
     }
 
     return pm;
-  }
-
-  virtual bool   requires_stealth() const
-  {
-    if ( p() -> buff.king_of_the_jungle -> check() )
-      return false;
-
-    return requires_stealth_;
   }
 
   void trigger_energy_refund()
@@ -2319,7 +2317,7 @@ struct rake_t : public cat_attack_t
   {
     double pm = cat_attack_t::composite_persistent_multiplier( s );
 
-    if ( p() -> buff.prowl -> check() || p() -> buff.king_of_the_jungle -> check() )
+    if ( stealthed() )
       pm *= 1.0 + p() -> perk.improved_rake -> effectN( 2 ).percent();
 
     return pm;
@@ -2344,7 +2342,7 @@ struct rake_t : public cat_attack_t
 
   virtual void execute()
   {
-    if ( p() -> glyph.savage_roar -> ok() ) // stealth check is handled inside the trigger function
+    if ( p() -> glyph.savage_roar -> ok() && stealthed() )
       trigger_glyph_of_savage_roar();
 
     cat_attack_t::execute();
@@ -2435,7 +2433,7 @@ struct shred_t : public cat_attack_t
 
   virtual void execute()
   {
-    if ( p() -> glyph.savage_roar -> ok() ) // stealth check is handled inside the trigger function
+    if ( p() -> glyph.savage_roar -> ok() && stealthed() )
       trigger_glyph_of_savage_roar();
 
     cat_attack_t::execute();
@@ -2478,7 +2476,7 @@ struct shred_t : public cat_attack_t
 
     if ( p() -> buff.tier15_4pc_melee -> up() )
       c += p() -> buff.tier15_4pc_melee -> data().effectN( 1 ).percent();
-    if ( p() -> buff.prowl -> check() || p() -> buff.king_of_the_jungle -> check() )
+    if ( stealthed() )
       c *= 2.0;
 
     return c;
@@ -2490,7 +2488,7 @@ struct shred_t : public cat_attack_t
 
     if ( p() -> buff.feral_fury -> up() )
       m *= 1.0 + p() -> buff.feral_fury -> data().effectN( 1 ).percent();
-    if ( p() -> buff.prowl -> check() || p() -> buff.king_of_the_jungle -> up() )
+    if ( stealthed() )
       m *= 1.0 + p() -> buff.prowl -> data().effectN( 4 ).percent();
 
     return m;
@@ -3928,7 +3926,8 @@ struct astral_communion_t : public druid_spell_t
   astral_communion_t( druid_t* player, const std::string& options_str ) :
     druid_spell_t( "astral_communion", player, player -> spec.astral_communion, options_str )
   {
-    harmful = proc = hasted_ticks = may_multistrike = false;
+    harmful = proc = hasted_ticks = false;
+    may_multistrike = false;
     channeled = true;
 
     base_tick_time = timespan_t::from_millis( 100 );
@@ -4760,7 +4759,8 @@ struct starfall_t : public druid_spell_t
   {
     parse_options( NULL, options_str );
 
-    hasted_ticks = may_multistrike = false;
+    hasted_ticks = false;
+    may_multistrike = false;
     tick_zero = true;
     cooldown = player -> cooldown.starfallsurge;
     base_multiplier *= 1.0 + player -> sets.set( SET_T14_2PC_CASTER ) -> effectN( 1 ).percent();
@@ -5165,9 +5165,11 @@ action_t* druid_t::create_action( const std::string& name,
   if ( name == "mark_of_the_wild"       ) return new       mark_of_the_wild_t( this, options_str );
   if ( name == "maul"                   ) return new                   maul_t( this, options_str );
   if ( name == "might_of_ursoc"         ) return new         might_of_ursoc_t( this, options_str );
-  if ( name == "moonfire"               ) 
-  if ( specialization() == DRUID_FERAL )  return new            moonfire_li_t( this, options_str );
-    else                                  return new               moonfire_t( this, options_str );
+  if ( name == "moonfire"               )
+  {
+    if ( specialization() == DRUID_FERAL )  return new            moonfire_li_t( this, options_str );
+    else                                    return new               moonfire_t( this, options_str );
+  }
   if ( name == "sunfire"                ) return new                sunfire_t( this, options_str ); // Moonfire and Sunfire are selected based on how much balance energy the player has.
   if ( name == "moonkin_form"           ) return new           moonkin_form_t( this, options_str );
   if ( name == "natures_swiftness"      ) return new       druids_swiftness_t( this, options_str );
@@ -5787,13 +5789,18 @@ void druid_t::apl_feral()
 
   // Main List =============================================================
 
-  def -> add_action( this, "Rake", "if=buff.prowl.up" );
+  if ( race == RACE_NIGHT_ELF )
+    def -> add_action( this, "Rake", "if=buff.prowl.up|buff.shadowmeld.up" );
+  else
+    def -> add_action( this, "Rake", "if=buff.prowl.up" );
   def -> add_action( "auto_attack" );
   if ( glyph.master_shapeshifter -> ok() )
   {
     def -> add_action( this, "Cat Form", "if=prev.thrash_bear" );
     def -> add_action( "thrash_bear" );
   }
+  if ( race == RACE_NIGHT_ELF && glyph.savage_roar -> ok() )
+    def -> add_action( "shadowmeld,if=buff.savage_roar.remains<3|(buff.bloodtalons.up&buff.savage_roar.remains<6)" );
   def -> add_action( this, "Ferocious Bite", "cycle_targets=1,if=dot.rip.ticking&dot.rip.remains<=3&target.health.pct<25",
                      "Keep Rip from falling off during execute range." );
   def -> add_action( this, "Healing Touch", "if=talent.bloodtalons.enabled&buff.predatory_swiftness.up&(combo_points>=4|buff.predatory_swiftness.remains<1.5)" );
@@ -7170,6 +7177,7 @@ public:
 
   virtual void html_customsection( report::sc_html_stream& /* os*/ ) override
   {
+    (void) p;
     /*// Custom Class Section
     os << "\t\t\t\t<div class=\"player-section custom_section\">\n"
         << "\t\t\t\t\t<h3 class=\"toggle open\">Custom Section</h3>\n"
