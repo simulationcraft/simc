@@ -1640,6 +1640,8 @@ public:
   buff_creator_helper_t( sim_t* sim, const std::string& name, const spell_data_t* s = spell_data_t::nil(), const item_t* item = 0 ) :
     buff_creator_basics_t( sim, name, s, item ) {}
 
+  bufftype& actors( actor_pair_t q )
+  { _player = q; return *( static_cast<bufftype*>( this ) ); }
   bufftype& duration( timespan_t d )
   { _duration = d; return *( static_cast<bufftype*>( this ) ); }
   bufftype& period( timespan_t d )
@@ -5891,7 +5893,13 @@ public:
 
 struct absorb_t : public spell_base_t
 {
+  target_specific_t<absorb_buff_t*> target_specific;
+  absorb_buff_creator_t creator_;
+
   absorb_t( const std::string& name, player_t* p, const spell_data_t* s = spell_data_t::nil() );
+
+  virtual absorb_buff_creator_t& creator()
+  { return creator_; }
 
   virtual void execute();
   virtual void assess_damage( dmg_e, action_state_t* );
