@@ -2885,7 +2885,7 @@ struct maul_t : public bear_attack_t
       druid_action_t( "tooth_and_claw", p, p -> spec.tooth_and_claw )
     {
       harmful = special = false;
-      may_crit = false;
+      may_crit = may_multistrike = false; // TODO: Verify...
       target = player;
 
       // Coeff of 4 AP is hardcoded into tooltip, use FR coeff * 0.4 instead.
@@ -6581,6 +6581,22 @@ expr_t* druid_t::create_expression( action_t* a, const std::string& name_str )
     virtual double evaluate() { return druid.eclipse_direction == rt; }
   };
 
+  struct lacerate_stack_expr_t : public druid_expr_t
+  {
+    druid_td_t* td;
+    lacerate_stack_expr_t( const std::string& n, druid_t& p, action_t* a ) :
+      druid_expr_t( n, p )
+    {
+      td = p.get_target_data( a -> target );
+    }
+    virtual double evaluate()
+    {
+      return td -> lacerate_stack ? td -> lacerate_stack : 0;
+    }
+  };
+
+
+
   std::vector<std::string> splits = util::string_split( name_str, "." );
 
   if ( ( splits.size() == 2 ) && ( splits[0] == "eclipse_dir" ) )
@@ -6595,6 +6611,10 @@ expr_t* druid_t::create_expression( action_t* a, const std::string& name_str )
       return player_t::create_expression( a, name_str );
     }
     return new eclipse_expr_t( name_str, *this, e );
+  }
+  else if ( splits.size() == 3 )
+  {
+    return new lacerate_stack_expr_t( name_str, *this, a );
   }
   else if ( util::str_compare_ci( name_str, "eclipse_energy" ) )
   {
