@@ -436,9 +436,9 @@ void parse_spell_coefficient( action_t& a )
   for ( size_t i = 1; i <= a.data()._effects -> size(); i++ )
   {
     if ( a.data().effectN( i ).type() == E_SCHOOL_DAMAGE )
-      a.spell_power_mod.direct = a.data().effectN( i ).m_average();
+      a.spell_power_mod.direct = a.data().effectN( i ).sp_coeff();
     else if ( a.data().effectN( i ).type() == E_APPLY_AURA && a.data().effectN( i ).subtype() == A_PERIODIC_DAMAGE )
-      a.spell_power_mod.tick = a.data().effectN( i ).m_average();
+      a.spell_power_mod.tick = a.data().effectN( i ).sp_coeff();
   }
 }
 

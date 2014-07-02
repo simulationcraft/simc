@@ -827,11 +827,6 @@ bool item_t::init()
     sim -> errorf( "Player %s upgrading item %s at slot %s without quality or ilevel, upgrading will not work\n",
                    player -> name(), name(), slot_name() );
 
-  if ( ! option_enchant_str.empty() && ( slot == SLOT_FINGER_1 || slot == SLOT_FINGER_2 ) &&
-       ! ( player -> profession[ PROF_ENCHANTING ] > 0 ) )
-    sim -> errorf( "Player %s's ring at slot %s has a ring enchant without the enchanting profession\n",
-                   player -> name(), slot_name() );
-
   // Process complex input, and initialize item in earnest
   if ( ! decode_stats()                            ) return false;
   if ( ! decode_gems()                             ) return false;

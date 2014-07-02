@@ -1717,3 +1717,85 @@ expr_t* unique_gear::create_expression( action_t* a, const std::string& name_str
   return 0;
 }
 
+static std::string::size_type match_prefix( const std::string& str, const char* prefixes[] )
+{
+  std::string::size_type offset = std::string::npos;
+
+  while ( *prefixes != 0 && offset == std::string::npos )
+  {
+    offset = str.find( *prefixes );
+    if ( offset != std::string::npos )
+      offset += strlen( *prefixes );
+
+    prefixes++;
+  }
+
+  return offset;
+}
+
+static std::string::size_type match_suffix( const std::string& str, const char* suffixes[] )
+{
+  std::string::size_type offset = std::string::npos;
+
+  while ( *suffixes != 0 && offset == std::string::npos )
+  {
+    offset = str.rfind( *suffixes );
+    suffixes++;
+  }
+
+  return offset;
+}
+
+// Find a consumable of a given subtype, see data_enum.hh for type values.
+// Returns 0 if not found.
+const item_data_t* unique_gear::find_consumable( const dbc_t& dbc,
+                                                 const std::string& name,
+                                                 item_subclass_consumable type )
+{
+  // Poor man's longest matching prefix!
+  static const char* potion_prefixes[] = { "potion_of_the_", "potion_of_", "potion_", 0 };
+  static const char* potion_suffixes[] = { "_potion", 0 };
+
+  const item_data_t* item = 0;
+  std::string consumable_name;
+
+  for ( item = dbc::items( maybe_ptr( dbc.ptr ) ); item -> id != 0; item++ )
+  {
+    if ( item -> item_class != 0 )
+      continue;
+
+    if ( item -> item_subclass != type )
+      continue;
+
+    consumable_name = item -> name;
+
+    util::tokenize( consumable_name );
+
+    if ( util::str_compare_ci( consumable_name, name ) )
+      break;
+
+    if ( type == ITEM_SUBCLASS_POTION )
+    {
+      std::string::size_type prefix_offset = match_prefix( consumable_name, potion_prefixes );
+      std::string::size_type suffix_offset = match_suffix( consumable_name, potion_suffixes );
+
+      if ( prefix_offset == std::string::npos )
+        prefix_offset = 0;
+
+      if ( suffix_offset == std::string::npos )
+        suffix_offset = consumable_name.size();
+      else if ( suffix_offset <= prefix_offset )
+        suffix_offset = consumable_name.size();
+
+      std::string parsed_name = consumable_name.substr( prefix_offset, suffix_offset );
+      if ( util::str_compare_ci( name, parsed_name ) )
+        break;
+    }
+  }
+
+  if ( item -> id != 0 )
+    return item;
+
+  return 0;
+}
+

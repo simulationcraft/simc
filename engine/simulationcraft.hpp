@@ -6495,6 +6495,8 @@ void init( player_t* );
 const special_effect_db_item_t& find_special_effect_db_item( const special_effect_db_item_t* start, unsigned n, unsigned spell_id );
 bool initialize_special_effect( special_effect_t& effect, const item_t& item, unsigned spell_id );
 
+const item_data_t* find_consumable( const dbc_t& dbc, const std::string& name, item_subclass_consumable type );
+
 expr_t* create_expression( action_t* a, const std::string& name_str );
 };
 

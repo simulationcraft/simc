@@ -4301,6 +4301,7 @@ struct magma_totem_pulse_t : public totem_pulse_action_t
     totem_pulse_action_t( "magma_totem", p, p -> find_spell( 8187 ) )
   {
     aoe = -1;
+    base_multiplier *= 1.0 + totem -> o() -> perk.improved_searing_totem -> effectN( 1 ).percent();
   }
 };
 
@@ -5277,13 +5278,29 @@ void shaman_t::init_action_list()
   // Snapshot stats
   precombat -> add_action( "snapshot_stats", "Snapshot raid buffed stats before combat begins and pre-potting is done." );
 
+  std::string potion_name;
   if ( sim -> allow_potions && level >= 80 )
   {
-    // Prepotion (work around for now, until snapshot_stats stop putting things into combat)
     if ( primary_role() == ROLE_ATTACK )
-      precombat -> add_action( level > 85 ? "virmens_bite_potion" : "tolvir_potion" );
+    {
+      if ( level > 90 )
+        potion_name = "draenor_agility";
+      else if ( level > 85 )
+        potion_name = "virmens_bite";
+      else
+        potion_name = "tolvir";
+    }
     else
-      precombat -> add_action( level > 85 ? "jade_serpent_potion" : "volcanic_potion" );
+    {
+      if ( level > 90 )
+        potion_name = "draenor_intellect";
+      else if ( level > 85 )
+        potion_name = "jade_serpent";
+      else
+        potion_name = "volcanic";
+    }
+
+    precombat -> add_action( "potion,name=" + potion_name );
   }
 
   // All Shamans Bloodlust and Wind Shear by default
@@ -5315,13 +5332,7 @@ void shaman_t::init_action_list()
   // In-combat potion
   if ( sim -> allow_potions && level >= 80  )
   {
-    std::string potion_action = "";
-    if ( primary_role() == ROLE_ATTACK )
-      potion_action = level > 85 ? "virmens_bite_potion" : "tolvir_potion";
-    else
-      potion_action = level > 85 ? "jade_serpent_potion" : "volcanic_potion";
-
-    potion_action += ",if=time>60&(pet.primal_fire_elemental.active|pet.greater_fire_elemental.active|target.time_to_die<=60)";
+    std::string potion_action = "potion,name=" + potion_name + ",if=time>60&(pet.primal_fire_elemental.active|pet.greater_fire_elemental.active|target.time_to_die<=60)";
 
     def -> add_action( potion_action, "In-combat potion is linked to Primal or Greater Fire Elemental Totem, after the first 60 seconds of combat." );
   }

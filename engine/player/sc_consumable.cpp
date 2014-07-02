@@ -912,6 +912,119 @@ struct potion_base_t : public action_t
   }
 };
 
+struct dbc_potion_t : public action_t
+{
+  timespan_t pre_pot_time;
+  stat_buff_t* stat_buff;
+  std::string consumable_name_str;
+
+  dbc_potion_t( player_t* p, const std::string& options_str ) :
+    action_t( ACTION_USE, "potion", p ),
+    pre_pot_time( timespan_t::from_seconds( 5.0 ) ),
+    stat_buff( 0 )
+  {
+    harmful = callbacks = may_miss = may_crit = may_block = may_glance = may_dodge = may_parry = false;
+    proc = true;
+    trigger_gcd = timespan_t::zero();
+    target = player;
+
+    option_t options[] =
+    {
+      opt_timespan( "pre_pot_time", pre_pot_time ),
+      opt_string( "name", consumable_name_str ),
+      opt_null()
+    };
+    parse_options( options, options_str );
+
+
+    const item_data_t* item = unique_gear::find_consumable( p -> dbc, consumable_name_str, ITEM_SUBCLASS_POTION );
+    // Cannot find potion by the name given; background the action
+    if ( ! item )
+    {
+      sim -> errorf( "%s: Could not find a potion item with the name '%s'.", player -> name(), consumable_name_str.c_str() );
+      background = true;
+      return;
+    }
+
+    // Setup the stat buff, use the first available spell in the potion item
+    for ( size_t i = 0, end = sizeof_array( item -> id_spell ); i < end; i++ )
+    {
+      if ( item -> id_spell[ i ] > 0 )
+      {
+        const spell_data_t* spell = p -> find_spell( item -> id_spell[ i ] );
+        // Safe cast, as we check for positive above
+        if ( spell -> id() != static_cast< unsigned >( item -> id_spell[ i ] ) )
+          continue;
+
+        std::string spell_name = spell -> name_cstr();
+        util::tokenize( spell_name );
+        buff_t* existing_buff = buff_t::find( p -> buff_list, spell_name );
+        assert( dynamic_cast< stat_buff_t* >( existing_buff ) && "Potion stat buff is not stat_buff_t" );
+        if ( ! existing_buff )
+          stat_buff = stat_buff_creator_t( p, spell_name, spell );
+        else
+          stat_buff = static_cast< stat_buff_t* >( existing_buff );
+        break;
+      }
+    }
+
+    if ( ! stat_buff )
+    {
+      sim -> errorf( "%s: No buff found in potion '%s'.", player -> name(), item -> name );
+      background = true;
+      return;
+    }
+
+    // Setup cooldown
+    cooldown = p -> get_cooldown( "potion" );
+    for ( size_t i = 0, end = sizeof_array( item -> cooldown_category ); i < end; i++ )
+    {
+      if ( item -> cooldown_group[ i ] > 0 && item -> cooldown_group_duration[ i ] > 0 )
+      {
+        cooldown -> duration = timespan_t::from_millis( item -> cooldown_group_duration[ i ] );
+        break;
+      }
+    }
+
+    if ( cooldown -> duration == timespan_t::zero() )
+    {
+      sim -> errorf( "%s: No cooldown found for potion '%s'.", player -> name(), item -> name );
+      background = true;
+      return;
+    }
+
+    // Sanity check pre-pot time at this time so that it's not longer than the duration of the buff
+    pre_pot_time = std::max( timespan_t::zero(), std::min( pre_pot_time, stat_buff -> data().duration() ) );
+  }
+
+  void update_ready( timespan_t cd_duration )
+  {
+    // If the player is in combat, just make a very long CD
+    if ( player -> in_combat )
+      cd_duration = sim -> max_time * 3;
+    else
+      cd_duration = cooldown -> duration - pre_pot_time;
+
+    action_t::update_ready( cd_duration );
+  }
+
+  // Needed to satisfy normal execute conditions
+  result_e calculate_result( action_state_t* )
+  { return RESULT_HIT; }
+
+  void execute()
+  {
+    action_t::execute();
+
+    timespan_t duration = stat_buff -> data().duration();
+
+    if ( ! player -> in_combat )
+      duration -= pre_pot_time;
+
+    stat_buff -> trigger( 1, buff_t::DEFAULT_VALUE(), -1.0, duration );
+  }
+};
+
 } // END UNNAMED NAMESPACE
 
 // ==========================================================================
@@ -922,6 +1035,7 @@ action_t* consumable::create_action( player_t*          p,
                                      const std::string& name,
                                      const std::string& options_str )
 {
+  if ( name == "potion"               ) return new   dbc_potion_t( p, options_str );
   if ( name == "dark_rune"            ) return new    dark_rune_t( p, options_str );
   if ( name == "flask"                ) return new        flask_t( p, options_str );
   if ( name == "elixir"               ) return new       elixir_t( p, options_str );
