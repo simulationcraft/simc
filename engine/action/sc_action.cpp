@@ -1818,7 +1818,7 @@ void action_t::init()
     update_flags &= ~STATE_HASTE;
   }
 
-  if ( pre_combat || action_list == "precombat" )
+  if ( ! ( background || sequence ) && ( pre_combat || action_list == "precombat" ) )
   {
     if ( harmful )
       sim -> errorf( "Player %s attempted to add harmful action %s to precombat action list", player -> name(), name() );
