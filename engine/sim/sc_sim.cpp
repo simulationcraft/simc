@@ -1464,7 +1464,7 @@ bool sim_t::init()
   if ( channel_lag_stddev == timespan_t::zero() ) channel_lag_stddev = channel_lag * 0.25;
   if ( world_lag_stddev    < timespan_t::zero() ) world_lag_stddev   =   world_lag * 0.1;
 
-  if ( challenge_mode && scale_to_itemlevel < 0 ) scale_to_itemlevel = 463;
+  if ( challenge_mode && scale_to_itemlevel < 0 ) scale_to_itemlevel = 620; //Check later
 
 
   // MoP aura initialization

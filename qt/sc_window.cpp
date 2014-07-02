@@ -1824,7 +1824,7 @@ void SimulateThread::run()
     // sim -> setup() opens the output_file_str so there is no detailed information to user about this failure
     sim -> errorf( "Failed to parse text" );
   }
-  if ( sim -> challenge_mode ) sim -> scale_to_itemlevel = 463;
+  if ( sim -> challenge_mode ) sim -> scale_to_itemlevel = 620; //Check
 
   if ( success )
   {

@@ -552,23 +552,19 @@ void SC_OptionsTab::decodeOptions()
   load_setting( settings, "deterministic_rng", choice.deterministic_rng, "No" );
   load_setting( settings, "challenge_mode", choice.challenge_mode );
 
-
   load_setting( settings, "center_scale_delta", choice.center_scale_delta, "No" );
   load_setting( settings, "scale_over", choice.scale_over );
 
   load_setting( settings, "plot_points", choice.plots_points, "10" );
   load_setting( settings, "plot_step", choice.plots_step, "100" );
 
-
   load_setting( settings, "reforgeplot_amount", choice.reforgeplot_amount, "500" );
   load_setting( settings, "reforgeplot_step", choice.reforgeplot_step, "50" );
-
 
   load_buff_debuff_group( settings, "buff_buttons", buffsButtonGroup );
   load_buff_debuff_group( settings, "debuff_buttons", debuffsButtonGroup );
 
   // Default settings
-
 
   load_scaling_groups( settings, "scaling_buttons", scalingButtonGroup );
   load_scaling_groups( settings, "plots_buttons", plotsButtonGroup );

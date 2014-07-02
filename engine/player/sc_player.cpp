@@ -679,94 +679,12 @@ void player_t::init_character_properties()
     tmi_window = sim -> tmi_window_global;
 }
 
-void scale_challenge_mode( player_t& p, const rating_t& rating )
-{
-
-  if ( p.sim -> scale_to_itemlevel != -1 && ! p.is_enemy() && &p != p.sim -> heal_target ) //scale p.gear to itemlevel 463
-  {
-    int old_rating_sum = 0;
-
-    old_rating_sum += ( int ) p.gear.get_stat( STAT_SPIRIT );
-    old_rating_sum += ( int ) p.gear.get_stat( STAT_EXPERTISE_RATING );
-    old_rating_sum += ( int ) p.gear.get_stat( STAT_HIT_RATING );
-    old_rating_sum += ( int ) p.gear.get_stat( STAT_CRIT_RATING );
-    old_rating_sum += ( int ) p.gear.get_stat( STAT_HASTE_RATING );
-    old_rating_sum += ( int ) p.gear.get_stat( STAT_DODGE_RATING );
-    old_rating_sum += ( int ) p.gear.get_stat( STAT_PARRY_RATING );
-    old_rating_sum += ( int ) p.gear.get_stat( STAT_BLOCK_RATING );
-    old_rating_sum += ( int ) p.gear.get_stat( STAT_MASTERY_RATING );
-    old_rating_sum += ( int ) p.gear.get_stat( STAT_MULTISTRIKE_RATING );
-    old_rating_sum += ( int ) p.gear.get_stat( STAT_READINESS_RATING );
-
-    int old_rating_sum_wo_hit_exp = ( int ) ( old_rating_sum - p.gear.get_stat( STAT_EXPERTISE_RATING ) - p.gear.get_stat( STAT_HIT_RATING ) );
-
-    int target_rating_sum_wo_hit_exp = old_rating_sum;
-
-    switch ( p.specialization() )
-    {
-      case WARRIOR_ARMS:
-      case WARRIOR_FURY:
-      case WARRIOR_PROTECTION:
-      case PALADIN_PROTECTION:
-      case PALADIN_RETRIBUTION:
-      case HUNTER_BEAST_MASTERY:
-      case HUNTER_MARKSMANSHIP:
-      case HUNTER_SURVIVAL:
-      case ROGUE_ASSASSINATION:
-      case ROGUE_COMBAT:
-      case ROGUE_SUBTLETY:
-      case DEATH_KNIGHT_BLOOD:
-      case DEATH_KNIGHT_FROST:
-      case DEATH_KNIGHT_UNHOLY:
-      case SHAMAN_ENHANCEMENT:
-      case MONK_BREWMASTER:
-      case MONK_WINDWALKER:
-      case DRUID_FERAL:
-      case DRUID_GUARDIAN: //melee or tank will be set to 7.5/7.5. Tanks also exp to 7.5 as they might not be able to reach exp hard cap
-        p.gear.set_stat( STAT_HIT_RATING, 0.075 * rating.attack_hit );
-        p.gear.set_stat( STAT_EXPERTISE_RATING, 0.075 * rating.expertise );
-        target_rating_sum_wo_hit_exp = ( int ) ( old_rating_sum - 0.075 * rating.attack_hit - 0.075 * rating.expertise );
-        break;
-      case PRIEST_SHADOW:
-      case SHAMAN_ELEMENTAL:
-      case MAGE_ARCANE:
-      case MAGE_FIRE:
-      case MAGE_FROST:
-      case WARLOCK_AFFLICTION:
-      case WARLOCK_DEMONOLOGY:
-      case WARLOCK_DESTRUCTION:
-      case DRUID_BALANCE: //caster are set to 15% spell hit
-        p.gear.set_stat( STAT_HIT_RATING, 0.15 * rating.spell_hit );
-        target_rating_sum_wo_hit_exp = ( int ) ( old_rating_sum - 0.15 * rating.spell_hit );
-
-      default:
-        break;
-    }
-
-    // every secondary stat but hit/exp gets a share of the target_rating_sum according to its previous ratio (without hit/exp)
-
-    if ( old_rating_sum_wo_hit_exp > 0 )
-    {
-      p.gear.set_stat( STAT_SPIRIT, floor( p.gear.get_stat( STAT_SPIRIT ) / old_rating_sum_wo_hit_exp * target_rating_sum_wo_hit_exp ) );
-      p.gear.set_stat( STAT_CRIT_RATING, floor( p.gear.get_stat( STAT_CRIT_RATING ) / old_rating_sum_wo_hit_exp * target_rating_sum_wo_hit_exp ) );
-      p.gear.set_stat( STAT_HASTE_RATING, floor( p.gear.get_stat( STAT_HASTE_RATING ) / old_rating_sum_wo_hit_exp * target_rating_sum_wo_hit_exp ) );
-      p.gear.set_stat( STAT_DODGE_RATING, floor( p.gear.get_stat( STAT_DODGE_RATING ) / old_rating_sum_wo_hit_exp * target_rating_sum_wo_hit_exp ) );
-      p.gear.set_stat( STAT_PARRY_RATING, floor( p.gear.get_stat( STAT_PARRY_RATING ) / old_rating_sum_wo_hit_exp * target_rating_sum_wo_hit_exp ) );
-      p.gear.set_stat( STAT_BLOCK_RATING, floor( p.gear.get_stat( STAT_BLOCK_RATING ) / old_rating_sum_wo_hit_exp * target_rating_sum_wo_hit_exp ) );
-      p.gear.set_stat( STAT_MASTERY_RATING, floor( p.gear.get_stat( STAT_MASTERY_RATING ) / old_rating_sum_wo_hit_exp * target_rating_sum_wo_hit_exp ) );
-      p.gear.set_stat( STAT_MULTISTRIKE_RATING, floor( p.gear.get_stat( STAT_MULTISTRIKE_RATING ) / old_rating_sum_wo_hit_exp * target_rating_sum_wo_hit_exp ) );
-      p.gear.set_stat( STAT_READINESS_RATING, floor( p.gear.get_stat( STAT_READINESS_RATING ) / old_rating_sum_wo_hit_exp * target_rating_sum_wo_hit_exp ) );
-    }
-  }
-
-}
 /* Initialzies base variables from database or other sources
  * After player_t::init_base is executed, you can modify the base member until init_initial is called
  */
 void player_t::init_base_stats()
 {
   if ( sim -> debug ) sim -> out_debug.printf( "Initializing base for player (%s)", name() );
-
 
 #ifndef NDEBUG
   for ( stat_e i = STAT_NONE; i < STAT_MAX; ++i )
@@ -785,8 +703,6 @@ void player_t::init_base_stats()
 
   if ( sim -> debug )
     sim -> out_debug.printf( "%s: Base Ratings initialized: %s", name(), base.rating.to_string().c_str() );
-
-  scale_challenge_mode( *this, base.rating ); // needs initialzied base.rating
 
   total_gear = gear + enchant;
   if (  ! is_pet() ) total_gear += sim -> enchant;

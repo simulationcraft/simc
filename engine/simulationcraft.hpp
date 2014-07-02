@@ -2496,7 +2496,7 @@ struct sim_t : public core_sim_t, private sc_thread_t
   // Default stat enchants
   gear_stats_t enchant;
 
-  bool challenge_mode; // if active, players will get scaled down to 463 and set bonusses are deactivated
+  bool challenge_mode; // if active, players will get scaled down to 620 and set bonusses are deactivated
   int scale_to_itemlevel; //itemlevel to scale to. if -1, we don't scale down
 
   // Actor tracking
