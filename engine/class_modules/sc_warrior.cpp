@@ -888,7 +888,7 @@ struct melee_t: public warrior_attack_t
     trigger_gcd = timespan_t::zero();
 
     if ( p -> dual_wield() )
-      base_hit -= 0.265; // Effectively 19% miss chance, as characters now have 7.5% hit/expertise baseline.
+      base_hit -= 0.19;
   }
 
   void reset()
@@ -912,11 +912,7 @@ struct melee_t: public warrior_attack_t
     if ( first )
       first = false;
 
-    // If we're casting, we should clip a swing
-    if ( time_to_execute > timespan_t::zero() && player -> executing )
-      schedule_execute();
-    else
-      warrior_attack_t::execute();
+    warrior_attack_t::execute();
   }
 
   virtual school_e get_school() const
@@ -1743,10 +1739,11 @@ struct heroic_charge_t: public warrior_attack_t
   virtual timespan_t execute_time() const
   {
     timespan_t time = timespan_t::zero();
+
     if ( p() -> cooldown.heroic_leap -> up() || p() -> cooldown.intervene -> up() )
       time = timespan_t::from_millis( 750 );
     else
-      time = timespan_t::from_millis( 1250 ); // Pause swing timer for 1.25 second, as we'd be walking out.
+      time = timespan_t::from_millis( 1250 );
 
     return time;
   }

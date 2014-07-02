@@ -1120,13 +1120,42 @@ block_result_e action_t::calculate_block_result( action_state_t* s )
 void action_t::execute()
 {
 #ifndef NDEBUG
-  if ( ! initialized )
+  if ( !initialized )
   {
     sim -> errorf( "action_t::execute: action %s from player %s is not initialized.\n", name(), player -> name() );
     assert( 0 );
   }
 #endif
 
+  if ( time_to_execute > timespan_t::zero() && player -> executing )
+  {
+    if ( player -> main_hand_attack || player -> off_hand_attack )
+    {
+      timespan_t time_to_next_hit;
+      // Mainhand
+      if ( player -> main_hand_attack && player -> main_hand_attack -> execute_event )
+      {
+        time_to_next_hit  = player -> main_hand_attack -> execute_event -> occurs();
+        time_to_next_hit -= sim -> current_time;
+        if ( time_to_next_hit < time_to_execute )
+        {
+          time_to_next_hit = time_to_execute;
+          player -> main_hand_attack -> execute_event -> reschedule( time_to_next_hit );
+        }
+      }
+      // Offhand
+      if ( player -> off_hand_attack && player -> off_hand_attack -> execute_event )
+      {
+        time_to_next_hit  = player -> off_hand_attack -> execute_event -> occurs();
+        time_to_next_hit -= sim -> current_time;
+        if ( time_to_next_hit < time_to_execute )
+        {
+          time_to_next_hit = time_to_execute;
+          player -> off_hand_attack -> execute_event -> reschedule( time_to_next_hit );
+        }
+      }
+    }
+  }
   if ( &data() == &spell_data_not_found_t::singleton )
   {
     sim -> errorf( "Player %s could not find spell data for action %s\n", player -> name(), name() );
@@ -1530,29 +1559,6 @@ void action_t::schedule_execute( action_state_t* execute_state )
     if ( player -> action_queued && sim -> strict_gcd_queue )
     {
       player -> gcd_ready -= sim -> queue_gcd_reduction;
-    }
-
-    if ( special && time_to_execute > timespan_t::zero() && ! proc )
-    {
-      // While an ability is casting, the auto_attack is paused
-      // So we simply reschedule the auto_attack by the ability's casttime
-      timespan_t time_to_next_hit;
-      // Mainhand
-      if ( player -> main_hand_attack && player -> main_hand_attack -> execute_event )
-      {
-        time_to_next_hit  = player -> main_hand_attack -> execute_event -> occurs();
-        time_to_next_hit -= sim -> current_time;
-        time_to_next_hit += time_to_execute;
-        player -> main_hand_attack -> execute_event -> reschedule( time_to_next_hit );
-      }
-      // Offhand
-      if ( player -> off_hand_attack && player -> off_hand_attack -> execute_event )
-      {
-        time_to_next_hit  = player -> off_hand_attack -> execute_event -> occurs();
-        time_to_next_hit -= sim -> current_time;
-        time_to_next_hit += time_to_execute;
-        player -> off_hand_attack -> execute_event -> reschedule( time_to_next_hit );
-      }
     }
   }
 }
