@@ -21,7 +21,7 @@ actions.precombat+=/food,type=sea_mist_rice_noodles
 actions.precombat+=/lightning_shield,if=!buff.lightning_shield.up
 # Snapshot raid buffed stats before combat begins and pre-potting is done.
 actions.precombat+=/snapshot_stats
-actions.precombat+=/virmens_bite_potion
+actions.precombat+=/potion,name=virmens_bite
 
 # Executed every time the actor is available.
 
@@ -30,7 +30,7 @@ actions=wind_shear
 actions+=/bloodlust,if=target.health.pct<25|time>5
 actions+=/auto_attack
 # In-combat potion is linked to Primal or Greater Fire Elemental Totem, after the first 60 seconds of combat.
-actions+=/virmens_bite_potion,if=time>60&(pet.primal_fire_elemental.active|pet.greater_fire_elemental.active|target.time_to_die<=60)
+actions+=/potion,name=virmens_bite,if=time>60&(pet.primal_fire_elemental.active|pet.greater_fire_elemental.active|target.time_to_die<=60)
 actions+=/blood_fury
 actions+=/arcane_torrent
 actions+=/berserking
@@ -40,6 +40,7 @@ actions+=/elemental_mastery,if=talent.elemental_mastery.enabled&!talent.primal_e
 actions+=/fire_elemental_totem
 actions+=/ascendance,if=cooldown.strike.remains>=3
 actions+=/feral_spirit
+actions+=/storm_elemental_totem,if=talent.storm_elemental_totem.enabled&(!active&cooldown.fire_elemental_totem.remains>=60)
 # If only one enemy, priority follows the 'single' action list.
 actions+=/run_action_list,name=single,if=active_enemies=1
 # On multiple enemies, the priority follows the 'aoe' action list.
@@ -61,7 +62,6 @@ actions.single+=/lightning_bolt,if=buff.maelstrom_weapon.react>=3&!buff.ascendan
 actions.single+=/ancestral_swiftness,if=talent.ancestral_swiftness.enabled
 actions.single+=/lightning_bolt,if=buff.ancestral_swiftness.up
 actions.single+=/frost_shock
-actions.single+=/earth_elemental_totem
 actions.single+=/lightning_bolt,if=buff.maelstrom_weapon.react>=1&!buff.ascendance.up
 
 # Multi target action priority list
@@ -80,7 +80,6 @@ actions.aoe+=/fire_nova,if=active_flame_shock>=3
 actions.aoe+=/chain_lightning,if=active_enemies>=2&buff.maelstrom_weapon.react>=1
 actions.aoe+=/stormstrike
 actions.aoe+=/frost_shock,if=active_enemies<4
-actions.aoe+=/earth_elemental_totem
 actions.aoe+=/fire_nova,if=active_flame_shock>=1
 
 head=helmet_of_celestial_harmony,id=99341,upgrade=2,gems=capacitive_primal_4agi_8mastery_9agi
