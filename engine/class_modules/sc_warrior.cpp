@@ -221,8 +221,8 @@ public:
     const spell_data_t* readiness_arms;
     const spell_data_t* seasoned_soldier;
     const spell_data_t* sweeping_strikes;
+    const spell_data_t* weapon_mastery;
     //Arms and Prot
-    const spell_data_t* mastery_attunement;
     const spell_data_t* thunder_clap;
     //Arms and Fury
     const spell_data_t* recklessness;
@@ -231,7 +231,7 @@ public:
     const spell_data_t* bloodsurge;
     const spell_data_t* bloodthirst;
     const spell_data_t* crazed_berserker;
-    const spell_data_t* crit_attunement;
+    const spell_data_t* cruelty;
     const spell_data_t* raging_blow;
     const spell_data_t* readiness_fury;
     const spell_data_t* single_minded_fury;
@@ -247,6 +247,7 @@ public:
     const spell_data_t* riposte;
     const spell_data_t* resolve;
     const spell_data_t* revenge;
+    const spell_data_t* shield_mastery;
     const spell_data_t* shield_slam;
     const spell_data_t* sword_and_board;
     const spell_data_t* ultimatum;
@@ -3137,9 +3138,8 @@ void warrior_t::init_spells()
   spec.bloodthirst              = find_specialization_spell( "Bloodthirst" );
   spec.colossus_smash           = find_specialization_spell( "Colossus Smash" );
   spec.crazed_berserker         = find_specialization_spell( "Crazed Berserker" );
-  spec.crit_attunement          = find_specialization_spell( "Critical Strike Attunement" );
+  spec.cruelty                  = find_specialization_spell( "Cruelty" );
   spec.devastate                = find_specialization_spell( "Devastate" );
-  spec.mastery_attunement       = find_specialization_spell( "Mastery Attunement" );
   spec.mortal_strike            = find_specialization_spell( "Mortal Strike" );
   spec.raging_blow              = find_specialization_spell( "Raging Blow" );
   spec.readiness_arms           = find_specialization_spell( "Readiness: Arms" );
@@ -3150,12 +3150,14 @@ void warrior_t::init_spells()
   spec.revenge                  = find_specialization_spell( "Revenge" );
   spec.riposte                  = find_specialization_spell( "Riposte" );
   spec.seasoned_soldier         = find_specialization_spell( "Seasoned Soldier" );
+  spec.shield_mastery           = find_specialization_spell( "Shield Mastery" );
   spec.shield_slam              = find_specialization_spell( "Shield Slam" );
   spec.single_minded_fury       = find_specialization_spell( "Single-Minded Fury" );
   spec.sword_and_board          = find_specialization_spell( "Sword and Board" );
   spec.sweeping_strikes         = find_specialization_spell( "Sweeping Strikes" );
   spec.thunder_clap             = find_specialization_spell( "Thunder Clap" );
   spec.unwavering_sentinel      = find_specialization_spell( "Unwavering Sentinel" );
+  spec.weapon_mastery           = find_specialization_spell( "Weapon Mastery" );
   spec.whirlwind                = find_specialization_spell( "Whirlwind" );
   spec.wild_strike              = find_specialization_spell( "Wild Strike" );
   spec.ultimatum                = find_specialization_spell( "Ultimatum" );
@@ -4059,11 +4061,13 @@ double warrior_t::composite_rating_multiplier( rating_e rating ) const
   switch ( rating )
   {
   case RATING_MELEE_CRIT:
-    return m *= 1.0 + spec.crit_attunement -> effectN( 1 ).percent();
+    return m *= 1.0 + spec.cruelty -> effectN( 1 ).percent();
   case RATING_SPELL_CRIT:
-    return m *= 1.0 + spec.crit_attunement -> effectN( 1 ).percent();
+    return m *= 1.0 + spec.cruelty -> effectN( 1 ).percent();
   case RATING_MASTERY:
-    return m *= 1.0 + spec.mastery_attunement -> effectN( 1 ).percent();
+    m *= 1.0 + spec.weapon_mastery -> effectN( 1 ).percent();
+    m *= 1.0 + spec.shield_mastery -> effectN( 1 ).percent();
+    return m;
     break;
   default:
     break;
