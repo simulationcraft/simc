@@ -5683,7 +5683,12 @@ struct wait_fixed_t : public wait_action_base_t
     };
     parse_options( options, options_str );
 
-    time_expr = std::shared_ptr<expr_t>( create_expression( sec_str ) );
+    time_expr = std::shared_ptr<expr_t>( expr_t::parse( this, sec_str ) );
+    if ( ! time_expr )
+    {
+      sim -> errorf( "%s: Unable to generate wait expression from '%s'", player -> name(), options_str.c_str() );
+      background = true;
+    }
   }
 
   virtual timespan_t execute_time() const
