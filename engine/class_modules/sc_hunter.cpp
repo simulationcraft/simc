@@ -3214,7 +3214,7 @@ void hunter_t::init_spells()
 
   if ( mastery.wild_quiver -> ok() )
   {
-    active.wild_quiver_shot = new attacks::wild_quiver_shot_t( this );
+    //active.wild_quiver_shot = new attacks::wild_quiver_shot_t( this );
   }
 
   action_lightning_arrow_aimed_shot = new attacks::lightning_arrow_t( this, "_aimed_shot" );
@@ -3285,8 +3285,7 @@ void hunter_t::create_buffs()
 
   buffs.thrill_of_the_hunt          = buff_creator_t( this, 34720, "thrill_of_the_hunt" ).chance( talents.thrill_of_the_hunt -> proc_chance() );
   buffs.lock_and_load               = buff_creator_t( this, 56453, "lock_and_load" )
-                                      .chance( locknload ) //Hard-coded until they actually tell us the proc rate.
-                                      .cd( timespan_t::from_seconds( specs.lock_and_load -> effectN( 2 ).base_value() ) ) ;
+                                      .chance( locknload ); //Hard-coded until they actually tell us the proc rate.
   buffs.lock_and_load -> default_chance += sets.set( SET_T14_4PC_MELEE ) -> effectN( 2 ).percent();
 
   buffs.rapid_fire                  = buff_creator_t( this, "rapid_fire" )
