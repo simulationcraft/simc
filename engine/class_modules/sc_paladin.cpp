@@ -6166,6 +6166,9 @@ void paladin_t::assess_damage_imminent( school_e school, dmg_e, action_state_t* 
         // hack to register this on the abilities table
         buffs.holy_shield -> trigger( 1, block_amount );
         buffs.holy_shield -> consume( block_amount );
+
+        // Trigger the damage event
+        trigger_holy_shield();
       }
       else
       {        
