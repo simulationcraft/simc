@@ -133,6 +133,9 @@ class BuildCfg(object):
 		
 		return 'http://%s%s/data/%s/%s/%s' % (self.cdn_domain, self.cdn_dir, blte_file[0:2], blte_file[2:4], blte_file)
 	
+	def cdn_url(self, file_name):
+		return 'http://%s%s/data/%s/%s/%s' % (self.cdn_domain, self.cdn_dir, file_name[0:2], file_name[2:4], file_name)
+	
 	def encoding_blte(self):
 		if not self.cfg and not open():
 			return None

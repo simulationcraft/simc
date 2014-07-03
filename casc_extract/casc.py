@@ -319,7 +319,7 @@ class CASCObject(object):
 		except urllib2.URLError, e:
 			self.options.parser.error('Unable to fetch %s: %s' % (url, e.reason))
 		
-		return f	
+		return f
 	
 	def cache_dir(self, path = None):
 		dir = self.options.cache
@@ -397,7 +397,7 @@ class CDNIndex(CASCObject):
 	
 	def open_version(self):
 		version_url =  '%s/versions' % CDNIndex.PATCH_BASE_URL
-		handle = self.get_url(version_url)	
+		handle = self.get_url(version_url)
 	
 		version_data = handle.readlines()
 		if len(version_data) != 2:
@@ -482,14 +482,15 @@ class CDNIndex(CASCObject):
 	
 	def CheckVersion(self):
 		self.open_version()
+		self.open_cdns()
 		self.open_cdn_build_cfg()
 		self.open_build_cfg()
 		
 		return True
 
 	def open(self):
-		self.open_cdns()
 		self.open_version()
+		self.open_cdns()
 		self.open_cdn_build_cfg()
 		self.open_build_cfg()
 		self.open_archives()
@@ -498,13 +499,15 @@ class CDNIndex(CASCObject):
 
 	def fetch_file(self, key):
 		key_info = self.cdn_index.get(key, None)
-		if not key_info:
-			return None
-
+		handle = None
 		key_file_path = os.path.join(self.cache_dir('data'), key.encode('hex'))
-		key_file_url = self.cdn_url('data', self.archives[key_info.index])
+		if key_info:
+			key_file_url = self.cdn_url('data', self.archives[key_info.index])
 		
-		handle = self.cached_open(key_file_path, key_file_url, {'Range': 'bytes=%d-%d' % (key_info.offset, key_info.offset + key_info.size - 1)})
+			handle = self.cached_open(key_file_path, key_file_url, {'Range': 'bytes=%d-%d' % (key_info.offset, key_info.offset + key_info.size - 1)})
+		else:
+			handle = self.cached_open(key_file_path, self.cdn_url('data', key.encode('hex')))
+
 		return handle.read()
 		
 class CASCDataIndexFile(object):
@@ -743,33 +746,33 @@ class CASCRootFile(CASCObject):
 
 	def __init__(self, options, build, encoding, index):
 		CASCObject.__init__(self, options)
-		
+
 		self.build = build
 		self.index = index
 		self.encoding = encoding
 		self.hash_map = {}
-	
+
 	def root_path(self):
 		return os.path.join(self.cache_dir(), 'root')
-	
+
 	def __bootstrap(self):
 		if not os.access(self.cache_dir(), os.W_OK):
 			self.options.parser.error('Error bootstrapping CASCRootFile, "%s" is not writable' % self.cache_dir())
-		
+
 		keys = self.encoding.GetFileKeys(self.build.root_file().decode('hex'))
 		if len(keys) == 0:
 			self.options.parser.error('Could not find root file with mdsum %s from data' % self.build.root_file())
-		
+
 		blte = BLTEExtract(self.options)
 		# Extract from local files
 		if not self.options.online:
 			file_locations = []
 			for key in keys:
 				file_locations.append((key, self.build.root_file().decode('hex')) + self.index.GetIndexData(key))
-			
+
 			if len(file_locations) == 0:
 				self.options.parser.error('Could not find root file location in data')
-			
+
 			if len(file_locations) > 1:
 				self.options.parser.error('Multiple (%d) file locations for root file in data' % len(file_locations))
 
@@ -778,13 +781,19 @@ class CASCRootFile(CASCObject):
 		else:
 			if len(keys) > 1:
 				print 'Duplicate root key found for %s, using first one ...' % self.build.root_file()
-			
-			blte_data = self.build.fetch_file(keys[0])
-			if not blte_data:
-				self.options.parser.error('Unable to fetch root file %s from CDN' % keys[0])
-			
-			data = blte.extract_buffer(blte_data)
-		
+
+			handle = self.get_url(self.build.cdn_url('data', keys[0].encode('hex')))
+
+			blte = BLTEFile(handle.read())
+			if not blte.extract():
+				self.options.parser.error('Unable to uncompress BLTE data for root file')
+
+			md5s = md5.new(blte.output_data).hexdigest()
+			if md5s != self.build.root_file():
+				self.options.parser.error('Invalid md5sum in root file, expected %s got %s' % (self.build.root_file(), md5s))
+
+			data = blte.output_data
+
 		with open(self.root_path(), 'wb') as f:
 			f.write(data)
 

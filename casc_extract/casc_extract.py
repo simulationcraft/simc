@@ -106,12 +106,13 @@ if __name__ == '__main__':
 				
 				if len(file_keys) > 1:
 					print 'More than one key found for %s, selecting first one ...' % file_name
-			
+
 				print 'Extracting %s ...' % file_name
-				
+
 				data = cdn.fetch_file(file_keys[0])
 				if not data:
 					print 'No data for a given key %s' % file_keys[0].encode('hex')
+					continue
 
 				blte.extract_buffer_to_file(data, os.path.join(output_path, file_name.replace('\\', '/')))
 				
