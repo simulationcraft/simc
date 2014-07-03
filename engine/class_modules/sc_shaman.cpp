@@ -5229,6 +5229,7 @@ void shaman_t::init_action_list()
     def -> add_action( this, "Fire Elemental Totem" );
     def -> add_action( this, "Ascendance", "if=cooldown.strike.remains>=3" );
     def -> add_action( this, "Feral Spirit" );
+    def -> add_talent( this, "Storm Elemental Totem", "if=!active&cooldown.fire_elemental_totem.remains>=60" );
 
     // Need to remove the "/" in front of the profession action(s) for the new default action priority list stuff :/
     def -> add_action( init_use_profession_actions( ",if=(glyph.fire_elemental_totem.enabled&(pet.primal_fire_elemental.active|pet.greater_fire_elemental.active))|!glyph.fire_elemental_totem.enabled" ).erase( 0, 1 ) );
@@ -5251,7 +5252,6 @@ void shaman_t::init_action_list()
     single -> add_talent( this, "Ancestral Swiftness" ) ;
     single -> add_action( this, "Lightning Bolt", "if=buff.ancestral_swiftness.up" );
     single -> add_action( this, "Frost Shock" );
-    single -> add_action( this, "Earth Elemental Totem" );
     single -> add_action( this, spec.maelstrom_weapon, "lightning_bolt", "if=buff.maelstrom_weapon.react>=1&!buff.ascendance.up" );
 
     // AoE
@@ -5270,7 +5270,6 @@ void shaman_t::init_action_list()
     aoe -> add_action( this, "Stormstrike" );
     aoe -> add_action( this, "Primal Strike" );
     aoe -> add_action( this, "Frost Shock", "if=active_enemies<4" );
-    aoe -> add_action( this, "Earth Elemental Totem" );
     aoe -> add_action( this, "Fire Nova", "if=active_flame_shock>=1" );
   }
   else if ( specialization() == SHAMAN_ELEMENTAL && ( primary_role() == ROLE_SPELL || primary_role() == ROLE_DPS ) )
