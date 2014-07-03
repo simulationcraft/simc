@@ -33,9 +33,10 @@ actions+=/cancel_buff,name=alter_time,moving=1
 actions+=/cold_snap,if=talent.cold_snap.enabled&health.pct<30
 actions+=/conjure_mana_gem,if=mana_gem_charges<3&target.debuff.invulnerable.react
 actions+=/time_warp,if=target.health.pct<25|time>5
+actions+=/mana_gem,if=mana.pct<10
 actions+=/rune_of_power,if=talent.rune_of_power.enabled&(buff.rune_of_power.remains<cast_time&buff.alter_time.down)
 actions+=/rune_of_power,if=talent.rune_of_power.enabled&(cooldown.icy_veins.remains=0&buff.rune_of_power.remains<20)
-actions+=/evocation,if=talent.invocation.enabled&(buff.invokers_energy.down|mana.pct<20)&buff.alter_time.down
+actions+=/evocation,if=talent.invocation.enabled&(buff.invokers_energy.down|mana.pct<10)&buff.alter_time.down
 actions+=/evocation,if=talent.invocation.enabled&cooldown.icy_veins.remains=0&buff.invokers_energy.remains<20
 actions+=/evocation,if=!talent.invocation.enabled&mana.pct<50,interrupt_if=mana.pct>95
 actions+=/mirror_image
@@ -52,13 +53,18 @@ actions+=/alter_time,if=buff.alter_time.down&buff.icy_veins.up&buff.amplified.do
 actions+=/use_item,slot=trinket2,if=(cooldown.alter_time_activate.remains>45|target.time_to_die<25)&(buff.rune_of_power.remains>20|buff.invokers_energy.remains>20|(!talent.rune_of_power.enabled&!talent.invocation.enabled))
 actions+=/flamestrike,if=active_enemies>=5
 actions+=/fire_blast,if=time_to_die<action.ice_lance.travel_time
-actions+=/frostfire_bolt,if=buff.alter_time.up&buff.brain_freeze.up
+actions+=/frostfire_bolt,if=buff.alter_time.up&buff.brain_freeze.react
 actions+=/frostfire_bolt,if=buff.brain_freeze.react&cooldown.icy_veins.remains>2*action.frostbolt.execute_time
 actions+=/nether_tempest,cycle_targets=1,if=talent.nether_tempest.enabled&((!ticking|remains<tick_time)&target.time_to_die>6)
 actions+=/living_bomb,cycle_targets=1,if=talent.living_bomb.enabled&((!ticking|remains<tick_time)&target.time_to_die>tick_time*3)
 actions+=/frost_bomb,if=talent.frost_bomb.enabled&target.time_to_die>cast_time+tick_time
-actions+=/ice_lance,if=buff.alter_time.up&buff.fingers_of_frost.up
+actions+=/ice_lance,if=buff.alter_time.up&buff.fingers_of_frost.react
+actions+=/ice_lance,if=buff.fingers_of_frost.react&buff.fingers_of_frost.remains<gcd
+# This line aims to maximize gain from short duration haste buffs, by conditionally ignoring fingers of frost.
+actions+=/frostbolt,if=!action.frozen_orb.in_flight&spell_haste<0.55&buff.bloodlust.remains<(2.5-buff.fingers_of_frost.stack)*8*execute_time&buff.tempus_repit.remains<(2.5-buff.fingers_of_frost.stack)*8*execute_time
 actions+=/ice_lance,if=buff.fingers_of_frost.react&cooldown.icy_veins.remains>2*action.frostbolt.execute_time
+actions+=/rune_of_power,if=talent.rune_of_power.enabled&(buff.amplified.up&trinket.stat.intellect.cooldown_remains=0&buff.rune_of_power.remains<20)
+actions+=/evocation,if=talent.invocation.enabled&buff.amplified.up&trinket.stat.intellect.cooldown_remains=0&buff.invokers_energy.remains<20
 actions+=/presence_of_mind,if=talent.presence_of_mind.enabled&cooldown.alter_time_activate.remains>0
 actions+=/frostbolt
 actions+=/ice_floes,if=talent.ice_floes.enabled
