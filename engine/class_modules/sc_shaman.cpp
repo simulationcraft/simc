@@ -1970,11 +1970,8 @@ struct eruption_t : public shaman_spell_t
 
 struct lightning_charge_t : public shaman_spell_t
 {
-  int threshold;
-
   lightning_charge_t( const std::string& n, shaman_t* player ) :
-    shaman_spell_t( n, player, player -> dbc.spell( 26364 ) ),
-    threshold( static_cast< int >( player -> spec.fulmination -> effectN( 1 ).base_value() ) )
+    shaman_spell_t( n, player, player -> dbc.spell( 26364 ) )
   {
     // Use the same name "lightning_shield" to make sure the cost of refreshing the shield is included with the procs.
     background       = true;
@@ -2002,9 +1999,9 @@ struct lightning_charge_t : public shaman_spell_t
   {
     double m = shaman_spell_t::composite_da_multiplier( state );
 
-    if ( threshold > 0 )
+    if ( p() -> spec.fulmination -> ok() )
     {
-      int consuming_stack =  p() -> buff.lightning_shield -> check() - threshold;
+      int consuming_stack =  p() -> buff.lightning_shield -> check() - 1;
       if ( consuming_stack > 0 )
         m *= consuming_stack;
     }
@@ -2797,11 +2794,11 @@ struct chain_lightning_t : public shaman_spell_t
   {
     shaman_spell_t::impact( state );
 
-    if ( result_is_hit( state -> result ) )
-    {
+    if ( result_is_hit( state -> result ) || result_is_multistrike( state -> result ) )
       trigger_fulmination( this );
+
+    if ( result_is_hit( state -> result ) )
       trigger_lightning_strike( state );
-    }
 
     trigger_tier16_4pc_caster( state );
   }
@@ -2835,10 +2832,7 @@ struct lava_beam_t : public shaman_spell_t
     shaman_spell_t::impact( state );
 
     if ( result_is_hit( state -> result ) )
-    {
-      trigger_fulmination( this );
       trigger_lightning_strike( state );
-    }
   }
 
   bool ready()
@@ -3065,10 +3059,7 @@ struct lava_burst_t : public shaman_spell_t
     shaman_spell_t::impact( state );
 
     if ( result_is_hit( state -> result ) )
-    {
       p() -> buff.elemental_fusion -> trigger();
-      trigger_fulmination( this );
-    }
   }
 
   virtual timespan_t execute_time() const
@@ -3140,10 +3131,11 @@ struct lightning_bolt_t : public shaman_spell_t
   {
     shaman_spell_t::impact( state );
 
-    if ( result_is_hit( state -> result ) )
-    {
+    if ( result_is_hit( state -> result ) || result_is_multistrike( state -> result ) )
       trigger_fulmination( this );
 
+    if ( result_is_hit( state -> result ) )
+    {
       if ( p() -> glyph.telluric_currents -> ok() )
       {
         double mana_gain = p() -> glyph.telluric_currents -> effectN( 2 ).percent();
