@@ -2831,6 +2831,9 @@ struct lava_beam_t : public shaman_spell_t
   {
     shaman_spell_t::impact( state );
 
+    if ( p() -> perk.improved_lightning_shield -> ok() && ( result_is_hit( state -> result ) || result_is_multistrike( state -> result ) ) )
+      trigger_fulmination( this );
+
     if ( result_is_hit( state -> result ) )
       trigger_lightning_strike( state );
   }
@@ -3057,6 +3060,9 @@ struct lava_burst_t : public shaman_spell_t
   virtual void impact( action_state_t* state )
   {
     shaman_spell_t::impact( state );
+
+    if ( p() -> perk.improved_lightning_shield -> ok() && (  result_is_hit( state -> result ) || result_is_multistrike( state -> result ) ) )
+      trigger_fulmination( this );
 
     if ( result_is_hit( state -> result ) )
       p() -> buff.elemental_fusion -> trigger();
