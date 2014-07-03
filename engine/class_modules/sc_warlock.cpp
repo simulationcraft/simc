@@ -2527,7 +2527,7 @@ struct immolate_t : public warlock_spell_t
 
   immolate_t( warlock_t* p ) :
     warlock_spell_t( p, "Immolate" ),
-    fnb( new immolate_t( "immolate", p, p -> find_spell( 108686 ) ) ) //maybe 348
+    fnb( new immolate_t( "immolate", p, p -> find_spell( 108686 ) ) )
   {
     havoc_consume = 1;
     base_costs[ RESOURCE_MANA ] *= 1.0 + p -> spec.chaotic_energy -> effectN( 2 ).percent();
