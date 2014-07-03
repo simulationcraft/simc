@@ -10,6 +10,14 @@
 // TODO: complete WoD overhaul
 // WoD Warlock changes: http://wod.wowhead.com/guide=2295
 // Will need new action lists because of dot changes.
+
+// Meta dot interaction http://us.battle.net/wow/en/forum/topic/13087818929?page=6#110 Need confirmation about ToC and corruption, possible it only extends now.
+// HoG snapshots on cast not impact
+// Demonology grimoire of sacrifice: http://wod.wowhead.com/spell=156656
+// Level 100 talents
+// Perks
+// Specialization statistic attunement
+// Grimoire of sacrifice interaction with fire and brimstone, search: GoSac FnB
 // ==========================================================================
 namespace { // unnamed namespace
 
