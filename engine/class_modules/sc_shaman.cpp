@@ -141,7 +141,7 @@ public:
   action_t* action_ancestral_awakening;
   action_t* action_improved_lava_lash;
   action_t* action_lightning_strike;
-  shaman_spell_t* lightning_strikes;
+  shaman_spell_t* lightning_strike ;
   shaman_spell_t* eruption;
 
   // Pets
@@ -372,7 +372,7 @@ public:
     const spell_data_t* ancestral_swiftness;
     const spell_data_t* flame_shock;
     const spell_data_t* windfury_driver;
-    const spell_data_t* lightning_strikes;
+    const spell_data_t* lightning_strike ;
     const spell_data_t* eruption;
   } spell;
 
@@ -1944,10 +1944,10 @@ static bool trigger_tier16_4pc_caster( const action_state_t* s )
 // Shaman Secondary Spells / Attacks
 // ==========================================================================
 
-struct lightning_strikes_t : public shaman_spell_t
+struct lightning_strike_t : public shaman_spell_t
 {
-  lightning_strikes_t( shaman_t* player ) :
-    shaman_spell_t( "lightning_strikes", player, player -> spell.lightning_strikes )
+  lightning_strike_t( shaman_t* player ) :
+    shaman_spell_t( "lightning_strike", player, player -> spell.lightning_strike )
   {
     background = true;
     callbacks = may_miss = may_elemental_discharge = false;
@@ -4815,7 +4815,7 @@ void shaman_t::init_spells()
   spell.resurgence                   = find_spell( 101033 );
   spell.flame_shock                  = find_class_spell( "Flame Shock" );
   spell.windfury_driver              = find_spell( 33757 );
-  spell.lightning_strikes            = find_spell( 168557 );
+  spell.lightning_strike             = find_spell( 168557 );
   spell.eruption                     = find_spell( 168556 );
 
   // Constants
@@ -4833,7 +4833,7 @@ void shaman_t::init_spells()
   if ( mastery.elemental_discharge -> ok() )
   {
     eruption = new eruption_t( this );
-    lightning_strikes = new lightning_strikes_t( this );
+    lightning_strike = new lightning_strike_t( this );
   }
 
   if ( specialization() == SHAMAN_ENHANCEMENT )
@@ -4971,7 +4971,7 @@ void shaman_t::create_buffs()
   buff.rising_heat             = buff_creator_t( this, "rising_heat", find_spell( 168554 ) )
                                   .max_stack( spell.eruption -> max_stacks() );
   buff.electric_charge         = buff_creator_t( this, "electric_charge", find_spell( 168553 ) )
-                                  .max_stack( spell.lightning_strikes -> max_stacks() );
+                                  .max_stack( spell.lightning_strike  -> max_stacks() );
 }
 
 // shaman_t::init_gains =====================================================
@@ -5044,8 +5044,8 @@ void shaman_t::trigger_elemental_discharge( const action_state_t* state )
     buff.electric_charge -> trigger();
     if ( buff.electric_charge -> stack() == buff.electric_charge -> max_stack() )
     {
-      lightning_strikes -> target = state -> action -> target;
-      lightning_strikes -> schedule_execute();
+      lightning_strike  -> target = state -> action -> target;
+      lightning_strike  -> schedule_execute();
       buff.electric_charge -> expire();
     }
   }
