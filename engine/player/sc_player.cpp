@@ -5688,10 +5688,6 @@ struct wait_fixed_t : public wait_action_base_t
 
   virtual timespan_t execute_time() const
   {
-    std::cout << if_expr -> eval() << std::endl;
-    std::cout << player -> get_cooldown( "mangle" ) << std::endl;
-    std::cout << player -> get_cooldown( "mangle" ) -> remains().total_seconds() << std::endl;
-    std::cout << time_expr -> eval() << std::endl;
     timespan_t wait = timespan_t::from_seconds( time_expr -> eval() );
     if ( wait <= timespan_t::zero() ) wait = player -> available();
     return wait;
@@ -6966,7 +6962,6 @@ struct position_expr_t : public player_expr_t
 expr_t* player_t::create_expression( action_t* a,
                                      const std::string& expression_str )
 {
-  std::cout << "player_expr " << expression_str << std::endl;
   if ( expression_str == "level" )
     return make_ref_expr( "level", level );
   if ( expression_str == "multiplier" )
@@ -7352,7 +7347,6 @@ expr_t* player_t::create_expression( action_t* a,
     }
     else if ( splits[ 0 ] == "cooldown" )
     {
-      std::cout << "cooldown_t::expression" << std::endl;
       cooldown_t* cooldown = get_cooldown( splits[ 1 ] );
       if ( cooldown )
       {
