@@ -4857,7 +4857,10 @@ void shaman_t::init_base_stats()
   base.spell_power_per_intellect = 1.0;
 
   resources.initial_multiplier[ RESOURCE_MANA ] = 1.0 + spec.spiritual_insight -> effectN( 1 ).percent();
-  base.mana_regen_per_second *= 1.0 + spec.spiritual_insight -> effectN( 1 ).percent();
+  if ( specialization() == SHAMAN_ELEMENTAL )
+    base.mana_regen_per_second = resources.base[ RESOURCE_MANA ] * resources.initial_multiplier[ RESOURCE_MANA ] * 0.004 * 1.9;
+  else if ( specialization() == SHAMAN_ENHANCEMENT )
+    base.mana_regen_per_second = resources.base[ RESOURCE_MANA ] * 0.008 * 2;
 
   base.distance = ( specialization() == SHAMAN_ENHANCEMENT ) ? 3 : 30;
   base.mana_regen_from_spirit_multiplier = spec.meditation -> effectN( 1 ).percent();
