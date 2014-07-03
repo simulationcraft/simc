@@ -2013,9 +2013,9 @@ struct lightning_charge_t : public shaman_spell_t
   }
 };
 
-struct unleash_flame_t : public shaman_spell_t
+struct unleash_flame_spell_t : public shaman_spell_t
 {
-  unleash_flame_t( const std::string& name, shaman_t* player ) :
+  unleash_flame_spell_t( const std::string& name, shaman_t* player ) :
     shaman_spell_t( name, player, player -> dbc.spell( 73683 ) )
   {
     harmful              = true;
@@ -3330,7 +3330,7 @@ struct thunderstorm_t : public shaman_spell_t
 struct unleash_elements_t : public shaman_spell_t
 {
   unleash_wind_t*   wind;
-  unleash_flame_t* flame;
+  unleash_flame_spell_t* flame;
 
   unleash_elements_t( shaman_t* player, const std::string& options_str ) :
     shaman_spell_t( "unleash_elements", player, player -> find_class_spell( "Unleash Elements" ), options_str ),
@@ -3341,7 +3341,7 @@ struct unleash_elements_t : public shaman_spell_t
     may_proc_eoe = true;
 
     wind = new unleash_wind_t( "unleash_wind", player );
-    flame = new unleash_flame_t( "unleash_flame", player );
+    flame = new unleash_flame_spell_t( "unleash_flame", player );
 
     add_child( wind );
     add_child( flame );
@@ -3359,6 +3359,26 @@ struct unleash_elements_t : public shaman_spell_t
       flame -> execute();
 
     p() -> buff.tier16_2pc_melee -> trigger();
+  }
+};
+
+struct unleash_flame_t : public shaman_spell_t
+{
+  unleash_flame_t( shaman_t* player, const std::string& options_str ) :
+    shaman_spell_t( "unleash_flame", player, player -> find_specialization_spell( "Unleash Flame" ), options_str )
+  {
+    may_crit     = false;
+    may_miss     = false;
+    may_proc_eoe = true;
+  }
+
+  virtual void execute()
+  {
+    shaman_spell_t::execute();
+
+    p() -> buff.unleash_flame -> trigger();
+    if ( result_is_hit( execute_state -> result ) && p() -> talent.unleashed_fury -> ok() )
+      td( execute_state -> target ) -> debuff.unleashed_fury -> trigger();
   }
 };
 
@@ -4541,7 +4561,7 @@ action_t* shaman_t::create_action( const std::string& name,
   if ( name == "lightning_shield"        ) return new         lightning_shield_t( this, options_str );
   if ( name == "primal_strike"           ) return new            primal_strike_t( this, options_str );
   if ( name == "shamanistic_rage"        ) return new         shamanistic_rage_t( this, options_str );
-  if ( name == "liquid_magma"               ) return new               liquid_magma_t( this, options_str );
+  if ( name == "liquid_magma"            ) return new             liquid_magma_t( this, options_str );
   if ( name == "windstrike"              ) return new               windstrike_t( this, options_str );
   if ( name == "feral_spirit"            ) return new       feral_spirit_spell_t( this, options_str );
   if ( name == "spirit_walk"             ) return new              spirit_walk_t( this, options_str );
@@ -4549,6 +4569,7 @@ action_t* shaman_t::create_action( const std::string& name,
   if ( name == "stormstrike"             ) return new              stormstrike_t( this, options_str );
   if ( name == "thunderstorm"            ) return new             thunderstorm_t( this, options_str );
   if ( name == "unleash_elements"        ) return new         unleash_elements_t( this, options_str );
+  if ( name == "unleash_flame"           ) return new            unleash_flame_t( this, options_str );
   if ( name == "wind_shear"              ) return new               wind_shear_t( this, options_str );
 
   if ( name == "chain_heal"              ) return new               chain_heal_t( this, options_str );
@@ -4806,7 +4827,7 @@ void shaman_t::init_spells()
   if ( sets.has_set_bonus( SET_T16_2PC_MELEE ) )
   {
     t16_wind = new unleash_wind_t( "t16_unleash_wind", this );
-    t16_flame = new unleash_flame_t( "t16_unleash_flame", this );
+    t16_flame = new unleash_flame_spell_t( "t16_unleash_flame", this );
   }
 
   if ( mastery.elemental_discharge -> ok() )
@@ -5291,7 +5312,7 @@ void shaman_t::init_action_list()
     if ( hand_addon > -1 )
       single -> add_action( "use_item,name=" + items[ hand_addon ].name_str + ",if=((cooldown.ascendance.remains>10|level<87)&cooldown.fire_elemental_totem.remains>10)|buff.ascendance.up|buff.bloodlust.up|totem.fire_elemental_totem.active" );
 
-    single -> add_action( this, "Unleash Elements", "if=talent.unleashed_fury.enabled&!buff.ascendance.up" );
+    single -> add_action( this, "Unleash Flame", "if=talent.unleashed_fury.enabled&!buff.ascendance.up" );
     single -> add_action( this, "Spiritwalker's Grace", "moving=1,if=buff.ascendance.up" );
     if ( find_item( "unerring_vision_of_lei_shen" ) )
       single -> add_action( this, "Flame Shock", "if=buff.perfect_aim.react&crit_pct<100" );
