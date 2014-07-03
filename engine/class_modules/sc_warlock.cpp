@@ -249,6 +249,7 @@ public:
     const spell_data_t* aftermath;
     const spell_data_t* backdraft;
     const spell_data_t* backlash;
+    const spell_data_t* immolate;
     const spell_data_t* burning_embers;
     const spell_data_t* chaotic_energy;
     const spell_data_t* fire_and_brimstone;
@@ -2526,10 +2527,17 @@ struct immolate_t : public warlock_spell_t
 
   immolate_t( warlock_t* p ) :
     warlock_spell_t( p, "Immolate" ),
-    fnb( new immolate_t( "immolate", p, p -> find_spell( 108686 ) ) )
+    fnb( new immolate_t( "immolate", p, p -> find_spell( 108686 ) ) ) //maybe 348
   {
     havoc_consume = 1;
     base_costs[ RESOURCE_MANA ] *= 1.0 + p -> spec.chaotic_energy -> effectN( 2 ).percent();
+    dot_behavior = DOT_REFRESH;
+    base_tick_time = p -> find_spell( 157736 ) -> effectN( 1 ).period();
+    dot_duration = p -> find_spell( 157736 ) -> duration();
+    spell_power_mod.tick = p -> spec.immolate -> effectN( 1 ).sp_coeff();
+    hasted_ticks = true;
+    tick_may_crit = false;
+    may_multistrike = false;
   }
 
   immolate_t( const std::string& n, warlock_t* p, const spell_data_t* spell ) :
@@ -4704,6 +4712,7 @@ void warlock_t::init_spells()
   spec.immolation_aura        = find_specialization_spell( "Metamorphosis: Immolation Aura" );
   spec.imp_swarm              = find_specialization_spell( "Imp Swarm" );
   spec.improved_fear          = find_specialization_spell( "Improved Fear" );
+  spec.immolate               = find_specialization_spell( "Immolate" );
   spec.metamorphosis          = find_specialization_spell( "Metamorphosis" );
   spec.molten_core            = find_specialization_spell( "Molten core" );
   spec.nightfall              = find_specialization_spell( "Nightfall" );
