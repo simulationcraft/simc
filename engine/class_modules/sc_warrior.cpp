@@ -1120,7 +1120,7 @@ struct bloodthirst_t: public warrior_attack_t
   {
     option_t opt[] =
     {
-      opt_bool( "unquenchable_thirst", unquenchable_thirst ),
+      opt_bool( "talented", unquenchable_thirst ),
       opt_null()
     };
     parse_options( NULL, options_str );
@@ -1306,9 +1306,15 @@ struct demoralizing_shout: public warrior_attack_t
 
 struct devastate_t: public warrior_attack_t
 {
+  bool unyielding_strikes;
   devastate_t( warrior_t* p, const std::string& options_str ):
-    warrior_attack_t( "devastate", p, p -> spec.devastate )
+    warrior_attack_t( "devastate", p, p -> spec.devastate ), unyielding_strikes( false )
   {
+    option_t opt[] =
+    {
+      opt_bool( "talented", unyielding_strikes ),
+      opt_null()
+    };
     parse_options( NULL, options_str );
   }
 
@@ -1322,7 +1328,7 @@ struct devastate_t: public warrior_attack_t
         p() -> cooldown.shield_slam -> reset( true );
       p() -> active_deep_wounds -> target = execute_state -> target;
       p() -> active_deep_wounds -> execute();
-      if ( p() -> buff.unyielding_strikes -> stack() != 5 )
+      if ( p() -> buff.unyielding_strikes -> stack() != 5 && unyielding_strikes )
         p() -> buff.unyielding_strikes -> trigger();
     }
   }
@@ -2089,7 +2095,7 @@ struct shield_slam_t: public warrior_attack_t
   {
     option_t opt[] =
     {
-      opt_bool( "heavy_repercussion", heavy_repercussion ),
+      opt_bool( "talented", heavy_repercussion ),
       opt_null()
     };
     parse_options( NULL, options_str );
@@ -2488,7 +2494,7 @@ struct wild_strike_t: public warrior_attack_t
   {
     option_t options[] =
     {
-      opt_bool( "furious", furious ),
+      opt_bool( "talented", furious ),
       opt_null()
     };
     parse_options( NULL, options_str );
