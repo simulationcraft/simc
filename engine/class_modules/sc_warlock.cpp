@@ -4557,6 +4557,7 @@ action_t* warlock_t::create_action( const std::string& action_name,
   else if ( action_name == "chaos_wave"            ) a = new            chaos_wave_t( this );
   else if ( action_name == "touch_of_chaos"        ) a = new        touch_of_chaos_t( this );
   else if ( action_name == "drain_life"            ) a = new            drain_life_t( this );
+  else if ( action_name == "drain_soul"            ) a = new            drain_soul_t( this );
   else if ( action_name == "grimoire_of_sacrifice" ) a = new grimoire_of_sacrifice_t( this );
   else if ( action_name == "haunt"                 ) a = new                 haunt_t( this );
   else if ( action_name == "immolate"              ) a = new              immolate_t( this );
