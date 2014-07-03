@@ -1324,7 +1324,9 @@ class SpellDataGenerator(DataGenerator):
           ( 25504, 0, False ), ( 33750, 0, False ),     # Windfury passives are not directly activatable
           ( 8034, 0, False ),                           # Frostbrand false positive for activatable
           ( 145002, 0, False ),                         # Lightning Elemental nuke
-          ( 157348, 5 ), ( 157331, 5 )                  # Storm elemental spells
+          ( 157348, 5 ), ( 157331, 5 ),                 # Storm elemental spells
+          ( 168553, 0 ),                                # Electrical Charge
+          ( 168554, 0 ),                                # Rising Heat
         ),
         
         # Mage:

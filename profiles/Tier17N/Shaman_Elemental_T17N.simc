@@ -1,10 +1,10 @@
 shaman="Shaman_Elemental_T17N"
 level=100
-race=orc
+race=tauren
 role=spell
 position=back
 professions=blacksmithing=600/engineering=600
-talents=http://us.battle.net/wow/en/tool/talent-calculator#Wa!...2.0.
+talents=http://us.battle.net/wow/en/tool/talent-calculator#Wa!...2.21
 glyphs=chain_lightning
 spec=elemental
 
@@ -16,7 +16,7 @@ spec=elemental
 
 # Executed before combat begins. Accepts non-harmful actions only.
 
-actions.precombat=flask,type=warm_sun
+actions.precombat=flask,type=greater_draenor_multistrike_flask
 actions.precombat+=/food,type=mogu_fish_stew
 actions.precombat+=/lightning_shield,if=!buff.lightning_shield.up
 # Snapshot raid buffed stats before combat begins and pre-potting is done.
@@ -48,13 +48,13 @@ actions.single=spiritwalkers_grace,moving=1,if=buff.ascendance.up
 actions.single+=/lava_burst,if=dot.flame_shock.remains>cast_time&(buff.ascendance.up|cooldown_react)
 actions.single+=/flame_shock,if=ticks_remain<2
 actions.single+=/elemental_blast,if=talent.elemental_blast.enabled
-# Use Earth Shock if Lightning Shield is at max (7) charges
+# Use Earth Shock if Lightning Shield is at max (20) charges
 actions.single+=/earth_shock,if=buff.lightning_shield.react=buff.lightning_shield.max_stack
-# Use Earth Shock if Lightning Shield is above 3 charges and the Flame Shock remaining duration is longer than the shock cooldown but shorter than shock cooldown + tick time interval
-actions.single+=/earth_shock,if=buff.lightning_shield.react>3&dot.flame_shock.remains>cooldown&dot.flame_shock.remains<cooldown+action.flame_shock.tick_time
+# Use Earth Shock if Lightning Shield is above 15 charges and the Flame Shock remaining duration is longer than the shock cooldown but shorter than shock cooldown + tick time interval
+actions.single+=/earth_shock,if=buff.lightning_shield.react>15&dot.flame_shock.remains>cooldown&dot.flame_shock.remains<cooldown+action.flame_shock.tick_time
 # After the initial Ascendance, use Flame Shock pre-emptively just before Ascendance to guarantee Flame Shock staying up for the full duration of the Ascendance buff
 actions.single+=/flame_shock,if=time>60&remains<=buff.ascendance.duration&cooldown.ascendance.remains+buff.ascendance.duration<duration
-actions.single+=/earth_elemental_totem,if=!active&cooldown.fire_elemental_totem.remains>=60
+actions.single+=/storm_elemental_totem,if=talent.storm_elemental_totem.enabled&(!active&cooldown.fire_elemental_totem.remains>=60)
 # Keep Searing Totem up, unless Fire Elemental Totem is coming off cooldown in the next 20 seconds
 actions.single+=/searing_totem,if=cooldown.fire_elemental_totem.remains>20&!totem.fire.active
 actions.single+=/spiritwalkers_grace,moving=1,if=((talent.elemental_blast.enabled&cooldown.elemental_blast.remains=0)|(cooldown.lava_burst.remains=0&!buff.lava_surge.react))
@@ -70,33 +70,30 @@ actions.aoe+=/thunderstorm,if=mana.pct_nonproc<80
 actions.aoe+=/chain_lightning,if=mana.pct_nonproc>10
 actions.aoe+=/lightning_bolt
 
-head=headpiece_of_celestial_harmony,id=99332,upgrade=2,gems=4int_8haste_9int
-neck=necklace_of_fading_light,id=105473,upgrade=2
-shoulders=shoulderwraps_of_celestial_harmony,id=99334,upgrade=2,gems=4int_8haste_4int_8haste_6int,enchant=10int_5crit
-back=jadefire_drape,id=98150,upgrade=2,gems=4int_8haste_3int,enchant=9crit
-chest=hauberk_of_celestial_harmony,id=99344,upgrade=2,gems=4int_8haste_4int_8haste_4int_8haste_9int,enchant=4all
-wrists=bracers_of_the_pristine_purifier,id=105598,upgrade=2,enchant=9int
-hands=grips_of_tidal_force,id=105501,upgrade=2,gems=4int_8haste_16haste_6int,enchant=9haste,addon=synapse_springs_mark_ii
-waist=chitinlink_chain_belt,id=105597,upgrade=2,gems=4int_8haste_16haste_16haste_6int
-legs=leggings_of_celestial_harmony,id=99333,upgrade=2,gems=16haste_16haste_6int,enchant=14int_8crit
-feet=powderstained_totemic_treads,id=105618,upgrade=2,gems=8haste_8crit_3spi,enchant=7mastery
-finger1=signet_of_the_dinomancers,id=105606,upgrade=2,gems=4int_8haste_3spi
-finger2=laserslice_signet,id=105520,upgrade=2,gems=16haste_3spi
-trinket1=purified_bindings_of_immerseus,id=105422,upgrade=2
-trinket2=kardris_toxic_totem,id=105540,upgrade=2
-main_hand=kardris_scepter,id=105541,upgrade=2,gems=4int_8haste_3int,enchant=jade_spirit
-off_hand=revelations_of_yshaarj,id=105650,upgrade=2,gems=4int_8haste_3int,enchant=8int
+head=primal_gladiators_helm,id=111280
+neck=primal_gladiators_pendant_of_cruelty,id=111128,enchant=140mult
+shoulders=primal_gladiators_spaulders,id=111282
+back=primal_gladiators_drape_of_cruelty,id=111124,enchant=gift_of_multistrike
+chest=primal_gladiators_armor,id=111278
+wrists=primal_gladiators_armbands_of_victory,id=111163
+hands=primal_gladiators_gauntlets,id=111279
+waist=primal_gladiators_waistguard_of_cruelty,id=111155
+legs=primal_gladiators_leggings,id=111281
+feet=primal_gladiators_footguards_of_prowess,id=111159
+finger1=primal_gladiators_band_of_cruelty,id=111134,enchant=100mult
+finger2=primal_gladiators_band_of_prowess,id=111135,enchant=100haste
+trinket1=primal_gladiators_medallion_of_cruelty,id=111229
+trinket2=primal_gladiators_insignia_of_dominance,id=111228
+main_hand=primal_gladiators_gavel,id=111118,enchant=mark_of_the_frostwolf
+off_hand=primal_gladiators_barrier,id=111140
 
 # Gear Summary
-# gear_strength=4
-# gear_agility=8
-# gear_stamina=1534
-# gear_intellect=1082
-# gear_spell_power=590
-# gear_crit_rating=340
-# gear_haste_rating=584
-# gear_mastery_rating=507
-# gear_armor=718
-# gear_multistrike_rating=99
-# tier16_2pc_caster=1
-# tier16_4pc_caster=1
+# gear_stamina=3241
+# gear_intellect=2374
+# gear_spell_power=1244
+# gear_crit_rating=854
+# gear_haste_rating=931
+# gear_mastery_rating=587
+# gear_armor=3339
+# gear_multistrike_rating=1183
+# gear_versatility_rating=77
