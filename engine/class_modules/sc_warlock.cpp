@@ -1797,21 +1797,25 @@ public:
   void trigger_extra_tick( dot_t* dot, double multiplier, bool tick_from_mg ) //if tick_from_mg == true, then MG created the tick, otherwise DS created the tick
   {
     if ( ! dot -> is_ticking() ) return;
-
+    double tempmulti;
     assert( multiplier != 0.0 );
 
     action_state_t* tmp_state = dot -> state;
     dot -> state = get_state( tmp_state );
     dot -> state -> ta_multiplier *= multiplier;
+
     snapshot_internal( dot -> state, update_flags | STATE_CRIT, tmp_state -> result_type );
 
     dot -> current_action -> periodic_hit = true;
     stats_t* tmp = dot -> current_action -> stats;
     warlock_spell_t* spell = debug_cast<warlock_spell_t*>( dot -> current_action );
-    if ( tick_from_mg )
-      dot -> current_action -> stats = spell -> mg_tick_stats;
-    else
-      dot -> current_action -> stats = spell -> ds_tick_stats;
+//    if ( tick_from_mg )
+//      dot -> current_action -> stats = spell -> mg_tick_stats;
+//    else
+    // TODO: Check if base_multiplier is the right route for this...
+    tempmulti = dot -> current_action -> base_multiplier;
+    dot -> current_action -> base_multiplier = multiplier;
+    dot -> current_action -> stats = spell -> ds_tick_stats;
     dot -> current_action -> tick( dot );
     dot -> current_action -> stats -> add_execute( timespan_t::zero(), dot -> state -> target );
     dot -> current_action -> stats = tmp;
@@ -1819,6 +1823,7 @@ public:
 
     action_state_t::release( dot -> state );
     dot -> state = tmp_state;
+    dot -> current_action -> base_multiplier = tempmulti;
   }
 
   void extend_dot( dot_t* dot, timespan_t extend_duration )
@@ -3285,9 +3290,9 @@ struct drain_soul_t : public warlock_spell_t
     hasted_ticks = false;
     may_crit     = false;
 
-    stats -> add_child( p -> get_stats( "agony_mg" ) );
-    stats -> add_child( p -> get_stats( "corruption_mg" ) );
-    stats -> add_child( p -> get_stats( "unstable_affliction_mg" ) );
+    stats -> add_child( p -> get_stats( "agony_ds" ) );
+    stats -> add_child( p -> get_stats( "corruption_ds" ) );
+    stats -> add_child( p -> get_stats( "unstable_affliction_ds" ) );
   }
 
   virtual double action_multiplier() const
@@ -3326,9 +3331,9 @@ struct drain_soul_t : public warlock_spell_t
 
 
 
-    trigger_extra_tick( td( d -> state -> target ) -> dots_agony,               multiplier , true);
-    trigger_extra_tick( td( d -> state -> target ) -> dots_corruption,          multiplier , true);
-    trigger_extra_tick( td( d -> state -> target ) -> dots_unstable_affliction, multiplier , true);
+    trigger_extra_tick( td( d -> state -> target ) -> dots_agony,               multiplier , false);
+    trigger_extra_tick( td( d -> state -> target ) -> dots_corruption,          multiplier , false);
+    trigger_extra_tick( td( d -> state -> target ) -> dots_unstable_affliction, multiplier , false);
 
     consume_tick_resource( d );
   }
