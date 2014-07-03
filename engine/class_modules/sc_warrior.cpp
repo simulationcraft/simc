@@ -82,6 +82,7 @@ public:
     buff_t* bloodsurge;
     buff_t* raging_blow;
     // Arms only
+    buff_t* slam;
     buff_t* sweeping_strikes;
     // Prot only
     buff_t* bladed_armor;
@@ -93,6 +94,7 @@ public:
     buff_t* shield_wall;
     buff_t* sword_and_board;
     buff_t* ultimatum;
+    buff_t* unyielding_strikes;
 
     // Tier bonuses
     buff_t* tier15_2pc_tank;
@@ -668,7 +670,7 @@ struct warrior_attack_t: public warrior_action_t < melee_attack_t >
     double rage_gain = 3.5 * w -> swing_time.total_seconds();
 
     if ( p() -> specialization() == WARRIOR_ARMS && p() -> active_stance == STANCE_BATTLE )
-      rage_gain *= 2;
+      rage_gain *= 2.4;
 
     if ( w -> slot == SLOT_OFF_HAND )
       rage_gain /= 2.0;
@@ -832,6 +834,7 @@ static bool trigger_t15_2pc_melee( warrior_attack_t* a )
 void warrior_attack_t::execute()
 {
   base_t::execute();
+  p() -> buff.slam -> expire();
 }
 
 // warrior_attack_t::impact =================================================
@@ -1109,12 +1112,21 @@ struct bloodthirst_heal_t: public warrior_heal_t
 struct bloodthirst_t: public warrior_attack_t
 {
   bloodthirst_heal_t* bloodthirst_heal;
+  bool unquenchable_thirst;
 
   bloodthirst_t( warrior_t* p, const std::string& options_str ):
     warrior_attack_t( "bloodthirst", p, p -> spec.bloodthirst ),
-    bloodthirst_heal( NULL )
+    bloodthirst_heal( NULL ), unquenchable_thirst( false )
   {
+    option_t opt[] =
+    {
+      opt_bool( "unquenchable_thirst", unquenchable_thirst ),
+      opt_null()
+    };
     parse_options( NULL, options_str );
+
+    if ( unquenchable_thirst )
+      cooldown -> duration = timespan_t::zero();
 
     weapon           = &( p -> main_hand_weapon );
     bloodthirst_heal = new bloodthirst_heal_t( p );
@@ -1152,6 +1164,8 @@ struct bloodthirst_t: public warrior_attack_t
 
   virtual void update_ready( timespan_t cd_duration )
   {
+    if ( unquenchable_thirst )
+      return;
     //Head Long Rush reduces the cooldown depending on the amount of haste.
     cd_duration = cooldown -> duration * player -> cache.attack_haste();
 
@@ -1229,9 +1243,7 @@ struct colossus_smash_t: public warrior_attack_t
     parse_options( NULL, options_str );
 
     weapon = &( player -> main_hand_weapon );
-
   }
-
 
   virtual double action_multiplier() const
   {
@@ -1308,10 +1320,11 @@ struct devastate_t: public warrior_attack_t
     {
       if ( p() -> buff.sword_and_board -> trigger() )
         p() -> cooldown.shield_slam -> reset( true );
+      p() -> active_deep_wounds -> target = execute_state -> target;
+      p() -> active_deep_wounds -> execute();
+      if ( p() -> buff.unyielding_strikes -> stack() != 5 )
+        p() -> buff.unyielding_strikes -> trigger();
     }
-
-    p() -> active_deep_wounds -> target = execute_state -> target;
-    p() -> active_deep_wounds -> execute();
   }
 
   virtual void impact( action_state_t* s )
@@ -1526,6 +1539,9 @@ struct heroic_strike_t: public warrior_attack_t
   virtual double cost() const
   {
     double c = warrior_attack_t::cost();
+
+    if ( p() -> buff.unyielding_strikes -> check() )
+      c -= p() -> buff.unyielding_strikes -> stack() * 6;
 
     if ( p() -> buff.ultimatum -> check() )
       c *= 1 + p() -> buff.ultimatum -> data().effectN( 1 ).percent();
@@ -2066,10 +2082,16 @@ struct enraged_regeneration_t: public warrior_heal_t
 struct shield_slam_t: public warrior_attack_t
 {
   double rage_gain;
+  bool heavy_repercussion;
   shield_slam_t( warrior_t* p, const std::string& options_str ):
     warrior_attack_t( "shield_slam", p, p -> find_class_spell( "Shield Slam" ) ),
-    rage_gain( 0.0 )
+    rage_gain( 0.0 ), heavy_repercussion( false )
   {
+    option_t opt[] =
+    {
+      opt_bool( "heavy_repercussion", heavy_repercussion ),
+      opt_null()
+    };
     parse_options( NULL, options_str );
 
     rage_gain = data().effectN( 3 ).resource( RESOURCE_RAGE );
@@ -2083,7 +2105,13 @@ struct shield_slam_t: public warrior_attack_t
     double am = warrior_attack_t::action_multiplier();
 
     if ( p() -> buff.shield_charge -> up() )
+    {
       am *= 1.0 + p() -> buff.shield_charge -> default_value;
+      if ( heavy_repercussion )
+        am *= 1.0 + 0.5;
+    }
+    if ( p() -> buff.shield_block -> up() && heavy_repercussion )
+      am *= 1.0 + 0.5;
 
     return am;
   }
@@ -2149,6 +2177,55 @@ struct shield_slam_t: public warrior_attack_t
   }
 };
 
+// Slam =====================================================================
+
+struct slam_t: public warrior_attack_t
+{
+  slam_t( warrior_t* p, const std::string& options_str ):
+    warrior_attack_t( "slam", p )
+  {
+    parse_options( NULL, options_str );
+    weapon_multiplier = 1.0;
+    base_costs[RESOURCE_RAGE] = 10;
+    trigger_gcd = timespan_t::from_millis( 1500 );
+    min_gcd = timespan_t::from_millis( 1000 );
+    school = SCHOOL_PHYSICAL;
+  }
+
+  virtual double cost() const
+  {
+    double c = warrior_attack_t::cost();
+
+    if ( p() -> buff.slam -> check() )
+      c *= 1.0 + p() -> buff.slam -> stack();
+
+    return c;
+  }
+
+  virtual void execute()
+  {
+    int slam;
+    slam = p() -> buff.slam -> stack();
+    warrior_attack_t::execute();
+    slam++;
+
+    if ( result_is_hit( execute_state -> result ) )
+      p() -> buff.slam -> trigger(slam);
+  }
+
+  virtual double action_multiplier() const
+  {
+    double am = warrior_attack_t::action_multiplier();
+
+    if ( p() -> mastery.weapons_master -> ok() )
+      am *= 1.0 + p() -> cache.mastery_value();
+
+    if ( p() -> buff.slam -> check() )
+      am *= 1.0 + ( p() -> buff.slam -> stack() / 2 );
+
+    return am;
+  }
+};
 // Shockwave ================================================================
 
 struct shockwave_t: public warrior_attack_t
@@ -2267,7 +2344,7 @@ struct thunder_clap_t: public warrior_attack_t
   {
     double c = base_t::cost();
 
-    if ( p() -> active_stance == STANCE_DEFENSE && p() -> specialization() == WARRIOR_PROTECTION )
+    if ( p() -> specialization() == WARRIOR_PROTECTION )
       c = 0;
 
     return c;
@@ -2278,14 +2355,6 @@ struct thunder_clap_t: public warrior_attack_t
     cd_duration = cooldown -> duration * player -> cache.attack_haste();
 
     warrior_attack_t::update_ready( cd_duration );
-  }
-
-  virtual bool ready()
-  {
-    if ( p() -> active_stance == STANCE_BATTLE )
-      return false;
-
-    return warrior_attack_t::ready();
   }
 };
 
@@ -2412,18 +2481,24 @@ struct whirlwind_t: public warrior_attack_t
 
 struct wild_strike_t: public warrior_attack_t
 {
+  bool furious;
   wild_strike_t( warrior_t* p, const std::string& options_str ):
-    warrior_attack_t( "wild_strike", p, p -> spec.wild_strike )
+    warrior_attack_t( "wild_strike", p, p -> spec.wild_strike ),
+    furious( false )
   {
+    option_t options[] =
+    {
+      opt_bool( "furious", furious ),
+      opt_null()
+    };
     parse_options( NULL, options_str );
 
+    if ( furious )
+      base_costs[RESOURCE_RAGE] = 20;
     weapon  = &( player -> off_hand_weapon );
     weapon_multiplier *= 1.0 + p -> perk.improved_wild_strike -> effectN( 1 ).percent();
     if ( player -> off_hand_weapon.type == WEAPON_NONE )
       background = true;
-    trigger_gcd = timespan_t::from_millis( 500 );
-    min_gcd = timespan_t::from_millis( 500 );
-    normalize_weapon_speed = true;
   }
 
   virtual double cost() const
@@ -3100,6 +3175,7 @@ action_t* warrior_t::create_action( const std::string& name,
   if ( name == "raging_blow"          ) return new raging_blow_t          ( this, options_str );
   if ( name == "ravager"              ) return new ravager_t              ( this, options_str );
   if ( name == "recklessness"         ) return new recklessness_t         ( this, options_str );
+  //if ( name == "rend"                 ) return new rend_t                 ( this, options_str );
   if ( name == "revenge"              ) return new revenge_t              ( this, options_str );
   if ( name == "shield_barrier"       ) return new shield_barrier_t       ( this, options_str );
   if ( name == "shield_block"         ) return new shield_block_t         ( this, options_str );
@@ -3107,6 +3183,7 @@ action_t* warrior_t::create_action( const std::string& name,
   if ( name == "shield_wall"          ) return new shield_wall_t          ( this, options_str );
   if ( name == "shield_slam"          ) return new shield_slam_t          ( this, options_str );
   if ( name == "shockwave"            ) return new shockwave_t            ( this, options_str );
+  if ( name == "slam"                 ) return new slam_t                 ( this, options_str );
   if ( name == "stampeding_roar"      ) return new stampeding_roar_t      ( this, options_str );
   if ( name == "storm_bolt"           ) return new storm_bolt_t           ( this, options_str );
   if ( name == "stance"               ) return new stance_t               ( this, options_str );
@@ -3711,6 +3788,13 @@ void warrior_t::create_buffs()
   player_t::create_buffs();
 
   buff.heroic_charge = buff_creator_t( this, "heroic_charge" );
+
+  buff.slam = buff_creator_t( this, "slam" )
+    .max_stack( 2 );
+
+  buff.unyielding_strikes = buff_creator_t( this, "unyielding_strikes" )
+    .max_stack( 5 )
+    .duration( timespan_t::from_seconds( 10 ) );
 
   buff.avatar = buff_creator_t( this, "avatar", talents.avatar )
     .cd( timespan_t::zero() )
@@ -4350,7 +4434,7 @@ void warrior_t::create_options()
   option_t::copy( options, warrior_options );
 }
 
-// Specialized attacks
+// Specialized attacks =========================================================
 
 struct warrior_flurry_of_xuen_t: public warrior_attack_t
 {
