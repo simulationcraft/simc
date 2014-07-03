@@ -1920,7 +1920,6 @@ struct ravager_t: public warrior_attack_t
   {
     parse_options( NULL, options_str );
 
-    tick_zero     = true;
     hasted_ticks  = false;
     add_child( ravager );
   }
