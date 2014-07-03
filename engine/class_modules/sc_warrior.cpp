@@ -7,8 +7,6 @@
 
 // ==========================================================================
 // To-do list:
-// Check ravager mechanics, see what buffs/debuffs it works with.
-// Check stance swapping to see if it is affected by headlong rush.
 // Turn blood craze into an ignite.
 // Add back melee 4P T16 once blizzard settles on a design for execute.
 // ==========================================================================
