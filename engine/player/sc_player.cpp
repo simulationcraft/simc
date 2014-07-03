@@ -5684,6 +5684,11 @@ struct wait_fixed_t : public wait_action_base_t
     parse_options( options, options_str );
 
     time_expr = std::shared_ptr<expr_t>( expr_t::parse( this, sec_str ) );
+    if ( ! time_expr )
+    {
+      sim -> errorf( "%s: Unable to generate wait expression from '%s'", player -> name(), options_str.c_str() );
+      background = true;
+    }
   }
 
   virtual timespan_t execute_time() const
@@ -6960,11 +6965,11 @@ struct position_expr_t : public player_expr_t
 // player_t::create_expression ==============================================
 
 expr_t* player_t::create_expression( action_t* a,
-                                     const std::string& name_str )
+                                     const std::string& expression_str )
 {
-  if ( name_str == "level" )
+  if ( expression_str == "level" )
     return make_ref_expr( "level", level );
-  if ( name_str == "multiplier" )
+  if ( expression_str == "multiplier" )
   {
     struct multiplier_expr_t : public player_expr_t
     {
@@ -6975,56 +6980,56 @@ expr_t* player_t::create_expression( action_t* a,
     };
     return new multiplier_expr_t( *this, a );
   }
-  if ( name_str == "in_combat" )
+  if ( expression_str == "in_combat" )
     return make_ref_expr( "in_combat", in_combat );
-  if ( name_str == "attack_haste" )
-    return make_mem_fn_expr( name_str, this-> cache, &player_stat_cache_t::attack_haste );
-  if ( name_str == "attack_speed" )
-    return make_mem_fn_expr( name_str, this -> cache, &player_stat_cache_t::attack_speed );
-  if ( name_str == "spell_haste" )
-    return make_mem_fn_expr( name_str, this-> cache, &player_stat_cache_t::spell_speed );
-  if ( name_str == "time_to_die" )
-    return make_mem_fn_expr( name_str, *this, &player_t::time_to_die );
+  if ( expression_str == "attack_haste" )
+    return make_mem_fn_expr( expression_str, this-> cache, &player_stat_cache_t::attack_haste );
+  if ( expression_str == "attack_speed" )
+    return make_mem_fn_expr( expression_str, this -> cache, &player_stat_cache_t::attack_speed );
+  if ( expression_str == "spell_haste" )
+    return make_mem_fn_expr( expression_str, this-> cache, &player_stat_cache_t::spell_speed );
+  if ( expression_str == "time_to_die" )
+    return make_mem_fn_expr( expression_str, *this, &player_t::time_to_die );
 
-  if ( name_str == "health_pct" )
-    return deprecate_expression( this, a, name_str, "health.pct" );
+  if ( expression_str == "health_pct" )
+    return deprecate_expression( this, a, expression_str, "health.pct" );
 
-  if ( name_str == "mana_pct" )
-    return deprecate_expression( this, a, name_str, "mana.pct" );
+  if ( expression_str == "mana_pct" )
+    return deprecate_expression( this, a, expression_str, "mana.pct" );
 
-  if ( name_str == "energy_regen" )
-    return deprecate_expression( this, a, name_str, "energy.regen" );
+  if ( expression_str == "energy_regen" )
+    return deprecate_expression( this, a, expression_str, "energy.regen" );
 
-  if ( name_str == "focus_regen" )
-    return deprecate_expression( this, a, name_str, "focus.regen" );
+  if ( expression_str == "focus_regen" )
+    return deprecate_expression( this, a, expression_str, "focus.regen" );
 
-  if ( name_str == "time_to_max_energy" )
-    return deprecate_expression( this, a, name_str, "energy.time_to_max" );
+  if ( expression_str == "time_to_max_energy" )
+    return deprecate_expression( this, a, expression_str, "energy.time_to_max" );
 
-  if ( name_str == "time_to_max_focus" )
-    return deprecate_expression( this, a, name_str, "focus.time_to_max" );
+  if ( expression_str == "time_to_max_focus" )
+    return deprecate_expression( this, a, expression_str, "focus.time_to_max" );
 
-  if ( name_str == "max_mana_nonproc" )
-    return deprecate_expression( this, a, name_str, "mana.max_nonproc" );
+  if ( expression_str == "max_mana_nonproc" )
+    return deprecate_expression( this, a, expression_str, "mana.max_nonproc" );
 
-  if ( name_str == "ptr" )
+  if ( expression_str == "ptr" )
     return make_ref_expr( "ptr", dbc.ptr );
 
-  if ( name_str == "position_front" )
+  if ( expression_str == "position_front" )
     return new position_expr_t( "position_front", *this,
                                 ( 1 << POSITION_FRONT ) | ( 1 << POSITION_RANGED_FRONT ) );
-  if ( name_str == "position_back" )
+  if ( expression_str == "position_back" )
     return new position_expr_t( "position_back", *this,
                                 ( 1 << POSITION_BACK ) | ( 1 << POSITION_RANGED_BACK ) );
 
-  if ( name_str == "mastery_value" )
-    return  make_mem_fn_expr( name_str, this-> cache, &player_stat_cache_t::mastery_value );
+  if ( expression_str == "mastery_value" )
+    return  make_mem_fn_expr( expression_str, this-> cache, &player_stat_cache_t::mastery_value );
 
-  if ( expr_t* q = create_resource_expression( name_str ) )
+  if ( expr_t* q = create_resource_expression( expression_str ) )
     return q;
 
   // time_to_bloodlust conditional
-  if ( name_str == "time_to_bloodlust" )
+  if ( expression_str == "time_to_bloodlust" )
   {
     struct time_to_bloodlust_expr_t : public expr_t
     {
@@ -7041,13 +7046,13 @@ expr_t* player_t::create_expression( action_t* a,
       }
     };
 
-    return new time_to_bloodlust_expr_t( this, name_str );
+    return new time_to_bloodlust_expr_t( this, expression_str );
   }
 
   // incoming_damage_X expressions
-  if ( util::str_in_str_ci( name_str, "incoming_damage_" ) )
+  if ( util::str_in_str_ci( expression_str, "incoming_damage_" ) )
   {
-    std::vector<std::string> parts = util::string_split( name_str, "_" );
+    std::vector<std::string> parts = util::string_split( expression_str, "_" );
     timespan_t window_duration;
 
     if ( util::str_in_str_ci( parts[ 2 ], "ms" ) )
@@ -7078,7 +7083,7 @@ expr_t* player_t::create_expression( action_t* a,
     }
   }
 
-  std::vector<std::string> splits = util::string_split( name_str, "." );
+  std::vector<std::string> splits = util::string_split( expression_str, "." );
 
   if ( splits[ 0 ] == "variable" && splits.size() == 2 )
   {
@@ -7115,7 +7120,7 @@ expr_t* player_t::create_expression( action_t* a,
   }
   if ( splits[ 0 ] == "trinket" )
   {
-    if ( expr_t* expr = unique_gear::create_expression( a, name_str ) )
+    if ( expr_t* expr = unique_gear::create_expression( a, expression_str ) )
       return expr;
   }
 
@@ -7175,7 +7180,7 @@ expr_t* player_t::create_expression( action_t* a,
       return new pet_remains_expr_t( *pet );
     }
 
-    return pet -> create_expression( a, name_str.substr( splits[ 1 ].length() + 5 ) );
+    return pet -> create_expression( a, expression_str.substr( splits[ 1 ].length() + 5 ) );
   }
 
   else if ( splits[ 0 ] == "owner" )
@@ -7183,7 +7188,7 @@ expr_t* player_t::create_expression( action_t* a,
     if ( pet_t* pet = dynamic_cast<pet_t*>( this ) )
     {
       if ( pet -> owner )
-        return pet -> owner -> create_expression( a, name_str.substr( 6 ) );
+        return pet -> owner -> create_expression( a, expression_str.substr( 6 ) );
     }
     // FIXME: report failure.
   }
@@ -7207,7 +7212,7 @@ expr_t* player_t::create_expression( action_t* a,
           virtual double evaluate()
           { return player.temporary.attribute[ attr ] * player.composite_attribute_multiplier( attr ); }
         };
-        return new temp_attr_expr_t( name_str, *this, static_cast<attribute_e>( stat ) );
+        return new temp_attr_expr_t( expression_str, *this, static_cast<attribute_e>( stat ) );
       }
 
       case STAT_SPELL_POWER:
@@ -7225,7 +7230,7 @@ expr_t* player_t::create_expression( action_t* a,
                    player.composite_spell_power_multiplier();
           }
         };
-        return new temp_sp_expr_t( name_str, *this );
+        return new temp_sp_expr_t( expression_str, *this );
       }
 
       case STAT_ATTACK_POWER:
@@ -7246,22 +7251,22 @@ expr_t* player_t::create_expression( action_t* a,
                    player.composite_attack_power_multiplier();
           }
         };
-        return new temp_ap_expr_t( name_str, *this );
+        return new temp_ap_expr_t( expression_str, *this );
       }
 
-      case STAT_EXPERTISE_RATING: return make_ref_expr( name_str, temporary.expertise_rating );
-      case STAT_HIT_RATING:       return make_ref_expr( name_str, temporary.hit_rating );
-      case STAT_CRIT_RATING:      return make_ref_expr( name_str, temporary.crit_rating );
-      case STAT_HASTE_RATING:     return make_ref_expr( name_str, temporary.haste_rating );
-      case STAT_READINESS_RATING: return make_ref_expr( name_str, temporary.readiness_rating );
-      case STAT_VERSATILITY_RATING: return make_ref_expr( name_str, temporary.versatility_rating );
-      case STAT_MULTISTRIKE_RATING:return make_ref_expr( name_str, temporary.multistrike_rating );
-      case STAT_ARMOR:            return make_ref_expr( name_str, temporary.armor );
-      case STAT_BONUS_ARMOR:      return make_ref_expr( name_str, temporary.bonus_armor );
-      case STAT_DODGE_RATING:     return make_ref_expr( name_str, temporary.dodge_rating );
-      case STAT_PARRY_RATING:     return make_ref_expr( name_str, temporary.parry_rating );
-      case STAT_BLOCK_RATING:     return make_ref_expr( name_str, temporary.block_rating );
-      case STAT_MASTERY_RATING:   return make_ref_expr( name_str, temporary.mastery_rating );
+      case STAT_EXPERTISE_RATING: return make_ref_expr( expression_str, temporary.expertise_rating );
+      case STAT_HIT_RATING:       return make_ref_expr( expression_str, temporary.hit_rating );
+      case STAT_CRIT_RATING:      return make_ref_expr( expression_str, temporary.crit_rating );
+      case STAT_HASTE_RATING:     return make_ref_expr( expression_str, temporary.haste_rating );
+      case STAT_READINESS_RATING: return make_ref_expr( expression_str, temporary.readiness_rating );
+      case STAT_VERSATILITY_RATING: return make_ref_expr( expression_str, temporary.versatility_rating );
+      case STAT_MULTISTRIKE_RATING:return make_ref_expr( expression_str, temporary.multistrike_rating );
+      case STAT_ARMOR:            return make_ref_expr( expression_str, temporary.armor );
+      case STAT_BONUS_ARMOR:      return make_ref_expr( expression_str, temporary.bonus_armor );
+      case STAT_DODGE_RATING:     return make_ref_expr( expression_str, temporary.dodge_rating );
+      case STAT_PARRY_RATING:     return make_ref_expr( expression_str, temporary.parry_rating );
+      case STAT_BLOCK_RATING:     return make_ref_expr( expression_str, temporary.block_rating );
+      case STAT_MASTERY_RATING:   return make_ref_expr( expression_str, temporary.mastery_rating );
       default: break;
     }
 
@@ -7287,7 +7292,7 @@ expr_t* player_t::create_expression( action_t* a,
           virtual double evaluate()
           { return player.cache.get_attribute( attr ); }
         };
-        return new attr_expr_t( name_str, *this, static_cast<attribute_e>( stat ) );
+        return new attr_expr_t( expression_str, *this, static_cast<attribute_e>( stat ) );
       }
 
       case STAT_SPELL_POWER:
@@ -7301,7 +7306,7 @@ expr_t* player_t::create_expression( action_t* a,
             return player.cache.spell_power( SCHOOL_MAX ) * player.composite_spell_power_multiplier();
           }
         };
-        return new sp_expr_t( name_str, *this );
+        return new sp_expr_t( expression_str, *this );
       }
 
       case STAT_ATTACK_POWER:
@@ -7315,21 +7320,21 @@ expr_t* player_t::create_expression( action_t* a,
             return player.cache.attack_power() * player.composite_attack_power_multiplier();
           }
         };
-        return new ap_expr_t( name_str, *this );
+        return new ap_expr_t( expression_str, *this );
       }
 
-      case STAT_EXPERTISE_RATING: return make_mem_fn_expr( name_str, *this, &player_t::composite_expertise_rating );
-      case STAT_HIT_RATING:       return make_mem_fn_expr( name_str, *this, &player_t::composite_melee_hit_rating );
-      case STAT_CRIT_RATING:      return make_mem_fn_expr( name_str, *this, &player_t::composite_melee_crit_rating );
-      case STAT_HASTE_RATING:     return make_mem_fn_expr( name_str, *this, &player_t::composite_melee_haste_rating );
-      case STAT_READINESS_RATING:  return make_mem_fn_expr( name_str, *this, &player_t::composite_readiness_rating );
-      case STAT_MULTISTRIKE_RATING: return make_mem_fn_expr( name_str, *this, &player_t::composite_multistrike_rating );
-      case STAT_ARMOR:            return make_ref_expr( name_str, current.stats.armor );
-      case STAT_BONUS_ARMOR:      return make_ref_expr( name_str, current.stats.bonus_armor );
-      case STAT_DODGE_RATING:     return make_mem_fn_expr( name_str, *this, &player_t::composite_dodge_rating );
-      case STAT_PARRY_RATING:     return make_mem_fn_expr( name_str, *this, &player_t::composite_parry_rating );
-      case STAT_BLOCK_RATING:     return make_mem_fn_expr( name_str, *this, &player_t::composite_block_rating );
-      case STAT_MASTERY_RATING:   return make_mem_fn_expr( name_str, *this, &player_t::composite_mastery_rating );
+      case STAT_EXPERTISE_RATING: return make_mem_fn_expr( expression_str, *this, &player_t::composite_expertise_rating );
+      case STAT_HIT_RATING:       return make_mem_fn_expr( expression_str, *this, &player_t::composite_melee_hit_rating );
+      case STAT_CRIT_RATING:      return make_mem_fn_expr( expression_str, *this, &player_t::composite_melee_crit_rating );
+      case STAT_HASTE_RATING:     return make_mem_fn_expr( expression_str, *this, &player_t::composite_melee_haste_rating );
+      case STAT_READINESS_RATING:  return make_mem_fn_expr( expression_str, *this, &player_t::composite_readiness_rating );
+      case STAT_MULTISTRIKE_RATING: return make_mem_fn_expr( expression_str, *this, &player_t::composite_multistrike_rating );
+      case STAT_ARMOR:            return make_ref_expr( expression_str, current.stats.armor );
+      case STAT_BONUS_ARMOR:      return make_ref_expr( expression_str, current.stats.bonus_armor );
+      case STAT_DODGE_RATING:     return make_mem_fn_expr( expression_str, *this, &player_t::composite_dodge_rating );
+      case STAT_PARRY_RATING:     return make_mem_fn_expr( expression_str, *this, &player_t::composite_parry_rating );
+      case STAT_BLOCK_RATING:     return make_mem_fn_expr( expression_str, *this, &player_t::composite_block_rating );
+      case STAT_MASTERY_RATING:   return make_mem_fn_expr( expression_str, *this, &player_t::composite_mastery_rating );
       default: break;
     }
 
@@ -7452,7 +7457,7 @@ expr_t* player_t::create_expression( action_t* a,
   if ( splits.size() >= 2 && splits[ 0 ] == "target" )
   {
     if (splits[1] == "distance")
-      return make_ref_expr( name_str, this->base.distance );
+      return make_ref_expr( expression_str, this->base.distance );
 
     std::string rest = splits[1];
     for ( size_t i = 2; i < splits.size(); ++i )
@@ -7488,7 +7493,7 @@ expr_t* player_t::create_expression( action_t* a,
       s = const_cast< spell_data_t* >( find_talent_spell( splits[ 1 ], std::string(), specialization(), true ) );
     }
 
-    return new s_expr_t( name_str, *this, s );
+    return new s_expr_t( expression_str, *this, s );
   }
   else if ( ( splits.size() == 3 && splits[ 0 ] == "action" ) || splits[ 0 ] == "in_flight" || splits[ 0 ] == "in_flight_to_target" )
   {
@@ -7555,7 +7560,7 @@ expr_t* player_t::create_expression( action_t* a,
     }
   }
 
-  return sim -> create_expression( a, name_str );
+  return sim -> create_expression( a, expression_str );
 }
 
 expr_t* player_t::create_resource_expression( const std::string& name_str )

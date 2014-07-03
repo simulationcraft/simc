@@ -1,6 +1,6 @@
 #define TALENT_SIZE (301)
 
-// 301 talents, wow build 18471
+// 301 talents, wow build 18505
 static struct talent_data_t __talent_data[] = {
 //{ Name                                ,    Id, Flgs,  Class, Spc, Col, Row, SpellID, ReplaceID, S1 },
   { "Second Wind"                       , 15757, 0x00, 0x0001,   0,   1,   1,   29838,         0,  0 },
@@ -267,7 +267,7 @@ static struct talent_data_t __talent_data[] = {
   { "Ignite Weapon"                     , 21667, 0x00, 0x0001,  72,   2,   6,  156288,        78,  0 },
   { "Beacon of Faith"                   , 21668, 0x00, 0x0002,  65,   0,   6,  156910,         0,  0 },
   { "Beacon of Insight"                 , 21671, 0x00, 0x0002,  65,   1,   6,  157007,         0,  0 },
-  { "Final Verdict"                     , 21672, 0x00, 0x0002,  70,   2,   6,  157048,         0,  0 },
+  { "Final Verdict"                     , 21672, 0x00, 0x0002,  70,   2,   6,  157048,     85256,  0 },
   { "Saved by the Light"                , 21673, 0x00, 0x0002,  65,   2,   6,  157047,         0,  0 },
   { "Condensation Totem"                , 21674, 0x00, 0x0040, 264,   0,   6,  157153,         0,  0 },
   { "High Tide"                         , 21675, 0x00, 0x0040, 264,   2,   6,  157154,         0,  0 },

@@ -121,7 +121,16 @@ _DIFF_DATA = {
             ( 'unk_18322', _REMOVE_FIELD ),
             ( 'unk_18379', _ADD_FIELD, 'mask_school' )
         ]
-    }
+    },
+    18505: {
+        'ChrSpecialization.dbc': [
+            ( 'unk_wod_1', _REMOVE_FIELD ),
+            ( 'unk_wod_2', _REMOVE_FIELD )
+        ],
+        'SpellPower.dbc': [
+            ( 'unk_18505', _ADD_FIELD, 'unk_1' )
+        ]
+    },
 }
 
 # Base DBC/DB2 fields, works for WoW build 17898 (Mists of Pandaria/5.4.7)
@@ -418,7 +427,7 @@ _DBC_FIELDS = {
         ( 'base_value', '%7d' ),     ( 'coefficient', '%13.10f' ),     ( 'dmg_multiplier', '%f' ),   'chain_target',                  ( 'die_sides', '%2d' ),
           'item_type',                   'mechanic',                     ( 'misc_value', '%7d' ),    ( 'misc_value_2', '%7d' ),         ( 'points_per_combo_points', '%5.1f' ), 
           'id_radius',                   'id_radius_max',                ( 'real_ppl', '%5.3f' ),    ( 'class_mask_1', '%#.8x' ),    ( 'class_mask_2', '%#.8x' ),
-        ( 'class_mask_3', '%#.8x' ),   ( 'class_mask_4', '%#.8x' ),  ( 'trigger_spell', '%5d' ),     ( 'unk_15589_2', '%f' ), 'implicit_target_1',              'implicit_target_2',     
+        ( 'class_mask_3', '%#.8x' ),   ( 'class_mask_4', '%#.8x' ),  ( 'trigger_spell', '%5d' ),     ( 'unk_15589_2', '%f' ), 'implicit_target_1',              'implicit_target_2',
     ( 'id_spell', '%6u' ),             ( 'index', '%2u' ),           'unk_14040'
     ],
     # New in MoP
@@ -448,7 +457,7 @@ _DBC_FIELDS = {
     ],
     'SpellPower.dbc' : [
           ( 'id', '%6u' ), 'id_spell', 'unk_15589_1', ( 'type_power', '%2d' ),( 'cost', '%6d' ),     'unk_1',     ( 'cost_per_second', '%3d' ), 'unk_2',
-          'id_display', ( 'cost_2', '%5.2f' ),     ( 'cost_per_second2', '%5.2f' ),   ( 'aura_id', '%6u' ), 'unk_15589_2'
+          'id_display', ( 'cost_2', '%5.2f' ),     ( 'cost_per_second2', '%5.2f' ),   ( 'aura_id', '%6u' ), ( 'unk_15589_2', '%f' )
     ],
     'SpellProcsPerMinute.dbc' : [
          'id', ( 'ppm', '%5.3f' ), 'unk_1'
