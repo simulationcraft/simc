@@ -627,7 +627,11 @@ void SC_MainWindow::createBestInSlotTab()
   for ( int i = 0; i < tnumProfiles; i++ )
   {
 #if ! defined( Q_WS_MAC ) && ! defined( Q_OS_MAC )
+  #if defined( SC_LINUX_PACKAGING )
+    QDir dir( SC_LINUX_PACKAGING "/profiles/" + tprofileList[ i ] );
+  #else
     QDir dir = QString( "profiles/" + tprofileList[ i ] );
+  #endif
 #else
     CFURLRef fileRef = CFBundleCopyResourceURL( CFBundleGetMainBundle(),
                        CFStringCreateWithCString( NULL,
