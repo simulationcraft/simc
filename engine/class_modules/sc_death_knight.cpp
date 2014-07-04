@@ -234,6 +234,7 @@ public:
     melee_attack_t* frozen_power;
     spell_t* necrotic_plague;
     spell_t* breath_of_sindragosa;
+    spell_t* necrosis;
   } active_spells;
 
   // Gains
@@ -292,18 +293,18 @@ public:
 
     // Frost
     const spell_data_t* blood_of_the_north;
-    const spell_data_t* haste_attunement;
+    const spell_data_t* tundra_stalker;
     const spell_data_t* icy_talons;
     const spell_data_t* improved_frost_presence;
     const spell_data_t* killing_machine;
     const spell_data_t* might_of_the_frozen_wastes;
     const spell_data_t* rime;
-    const spell_data_t* threat_of_thassarian;
 
     // Unholy
     const spell_data_t* ebon_plaguebringer;
     const spell_data_t* improved_unholy_presence;
     const spell_data_t* master_of_ghouls;
+    const spell_data_t* necrosis;
     const spell_data_t* reaping;
     const spell_data_t* shadow_infusion;
     const spell_data_t* sudden_doom;
@@ -367,7 +368,7 @@ public:
     const spell_data_t* improved_diseases;
     const spell_data_t* improved_soul_reaper;
     const spell_data_t* enhanced_death_strike;
-    
+
     // Blood
     const spell_data_t* enhanced_bone_shield;
     const spell_data_t* enhanced_death_coil_blood;
@@ -497,6 +498,7 @@ public:
   void      trigger_plaguebearer( action_state_t* state );
   void      trigger_blood_charge( double rpcost );
   void      trigger_shadow_infusion( double rpcost );
+  void      trigger_necrosis( const action_state_t* );
   void      apply_diseases( action_state_t* state, unsigned diseases );
   int       runes_count( rune_type rt, bool include_death, int position );
   double    runes_cooldown_any( rune_type rt, bool include_death, int position );
@@ -2638,6 +2640,17 @@ struct necrotic_plague_t : public death_knight_spell_t
   { return action_t::composite_crit() + player -> cache.attack_crit(); }
 };
 
+// Necrosis =================================================================
+
+struct necrosis_t : public death_knight_spell_t
+{
+  necrosis_t( death_knight_t* player ) :
+    death_knight_spell_t( "necrosis", player, player -> spec.necrosis -> effectN( 2 ).trigger() )
+  {
+    background = true;
+  }
+};
+
 // Soul Reaper ==============================================================
 
 struct soul_reaper_dot_t : public death_knight_melee_attack_t
@@ -2701,6 +2714,13 @@ struct soul_reaper_t : public death_knight_melee_attack_t
     death_knight_melee_attack_t::init();
 
     snapshot_flags |= STATE_MUL_TA;
+  }
+
+  void impact( action_state_t* state )
+  {
+    death_knight_melee_attack_t::impact( state );
+
+    p() -> trigger_necrosis( state );
   }
 
   virtual void execute()
@@ -3236,7 +3256,7 @@ struct death_strike_t : public death_knight_melee_attack_t
 
     if ( p -> off_hand_weapon.type != WEAPON_NONE )
     {
-      if ( p -> spec.threat_of_thassarian -> ok() )
+      if ( p -> spec.might_of_the_frozen_wastes -> ok() )
         oh_attack = new death_strike_offhand_t( p );
     }
   }
@@ -3348,6 +3368,8 @@ struct festering_strike_t : public death_knight_melee_attack_t
       else
         td( s -> target ) -> dots_necrotic_plague -> extend_duration( timespan_t::from_seconds( data().effectN( 3 ).base_value() ), 0 );
     }
+
+    p() -> trigger_necrosis( s );
   }
 };
 
@@ -3361,7 +3383,7 @@ struct frost_strike_offhand_t : public death_knight_melee_attack_t
     background       = true;
     weapon           = &( p -> off_hand_weapon );
     special          = true;
-    base_multiplier *= 1.0 + p -> spec.threat_of_thassarian -> effectN( 3 ).percent();
+    base_multiplier *= 1.0 + p -> spec.might_of_the_frozen_wastes -> effectN( 3 ).percent();
     base_multiplier *= 1.0 + p -> sets.set( SET_T14_2PC_MELEE ) -> effectN( 1 ).percent();
 
     rp_gain = 0; // Incorrectly set to 10 in the DBC
@@ -3394,9 +3416,9 @@ struct frost_strike_t : public death_knight_melee_attack_t
 
     if ( p -> off_hand_weapon.type != WEAPON_NONE )
     {
-      base_multiplier *= 1.0 + p -> spec.threat_of_thassarian -> effectN( 3 ).percent();
+      base_multiplier *= 1.0 + p -> spec.might_of_the_frozen_wastes -> effectN( 3 ).percent();
 
-      if ( p -> spec.threat_of_thassarian -> ok() )
+      if ( p -> spec.might_of_the_frozen_wastes -> ok() )
         oh_attack = new frost_strike_offhand_t( p );
     }
   }
@@ -3493,7 +3515,7 @@ struct howling_blast_t : public death_knight_spell_t
 
     if ( p() -> buffs.rime -> check() && p() -> perk.empowered_rime -> ok() )
       m += p() -> perk.empowered_rime -> effectN( 1 ).percent();
-    
+
     return m;
   }
 
@@ -3678,7 +3700,7 @@ struct obliterate_t : public death_knight_melee_attack_t
 
     if ( p -> off_hand_weapon.type != WEAPON_NONE )
     {
-      if ( p -> spec.threat_of_thassarian -> ok() )
+      if ( p -> spec.might_of_the_frozen_wastes -> ok() )
         oh_attack = new obliterate_offhand_t( p );
     }
 
@@ -3967,6 +3989,13 @@ struct pestilence_t : public death_knight_spell_t
     }
   }
 
+  void impact( action_state_t* state )
+  {
+    death_knight_spell_t::impact( state );
+
+    p() -> trigger_necrosis( state );
+  }
+
   virtual bool ready()
   {
     if ( ! death_knight_spell_t::ready() )
@@ -4055,7 +4084,7 @@ struct plague_strike_t : public death_knight_melee_attack_t
 
     if ( p -> off_hand_weapon.type != WEAPON_NONE )
     {
-      if ( p -> spec.threat_of_thassarian -> ok() )
+      if ( p -> spec.might_of_the_frozen_wastes -> ok() )
         oh_attack = new plague_strike_offhand_t( p );
     }
 
@@ -4085,6 +4114,8 @@ struct plague_strike_t : public death_knight_melee_attack_t
 
       p() -> apply_diseases( s, diseases );
     }
+
+    p() -> trigger_necrosis( s );
   }
 };
 
@@ -4220,10 +4251,10 @@ struct scourge_strike_t : public death_knight_melee_attack_t
 {
   spell_t* scourge_strike_shadow;
 
-  struct scourge_strike_shadow_t : public death_knight_spell_t
+  struct scourge_strike_shadow_t : public death_knight_melee_attack_t
   {
     scourge_strike_shadow_t( death_knight_t* p ) :
-      death_knight_spell_t( "scourge_strike_shadow", p, p -> find_spell( 70890 ) )
+      death_knight_melee_attack_t( "scourge_strike_shadow", p, p -> find_spell( 70890 ) )
     {
       may_miss = may_parry = may_dodge = false;
       special = proc = background = true;
@@ -4233,9 +4264,16 @@ struct scourge_strike_t : public death_knight_melee_attack_t
       base_multiplier *= 1.0 + p -> perk.improved_scourge_strike -> effectN( 1 ).percent();
     }
 
+    void impact( action_state_t* state )
+    {
+      death_knight_melee_attack_t::impact( state );
+
+      p() -> trigger_necrosis( state );
+    }
+
     virtual void init()
     {
-      death_knight_spell_t::init();
+      death_knight_melee_attack_t::init();
       stats = p() -> get_stats( name(), this );
     }
   };
@@ -4252,6 +4290,13 @@ struct scourge_strike_t : public death_knight_melee_attack_t
 
     // TODO-WOD: Do we need to inherit damage or is it a separate roll in WoD?
     execute_action = new scourge_strike_shadow_t( p );
+  }
+
+  void impact( action_state_t* state )
+  {
+    death_knight_melee_attack_t::impact( state );
+
+    p() -> trigger_necrosis( state );
   }
 };
 
@@ -5111,12 +5156,12 @@ void death_knight_t::init_spells()
   spec.improved_frost_presence    = find_specialization_spell( "Improved Frost Presence" );
   spec.rime                       = find_specialization_spell( "Rime" );
   spec.might_of_the_frozen_wastes = find_specialization_spell( "Might of the Frozen Wastes" );
-  spec.threat_of_thassarian       = find_specialization_spell( "Threat of Thassarian" );
   spec.killing_machine            = find_specialization_spell( "Killing Machine" );
-  spec.haste_attunement           = find_specialization_spell( "Haste Attunement" );
+  spec.tundra_stalker             = find_specialization_spell( "Tundra Stalker" );
 
   // Unholy
   spec.master_of_ghouls           = find_specialization_spell( "Master of Ghouls" );
+  spec.necrosis                   = find_specialization_spell( "Necrosis" );
   spec.reaping                    = find_specialization_spell( "Reaping" );
   spec.unholy_might               = find_specialization_spell( "Unholy Might" );
   spec.shadow_infusion            = find_specialization_spell( "Shadow Infusion" );
@@ -5194,6 +5239,9 @@ void death_knight_t::init_spells()
   active_spells.blood_plague = new blood_plague_t( this );
   active_spells.frost_fever = new frost_fever_t( this );
   active_spells.necrotic_plague = new necrotic_plague_t( this );
+
+  if ( spec.necrosis -> ok() )
+    active_spells.necrosis = new necrosis_t( this );
 
   // Tier Bonuses
   static const set_bonus_description_t set_bonuses =
@@ -6230,12 +6278,13 @@ double death_knight_t::composite_rating_multiplier( rating_e rating ) const
   switch ( rating )
   {
     case RATING_MULTISTRIKE:
-      m *= 1.0 * spec.multistrike_attunement -> effectN( 1 ).percent();
+      m *= 1.0 + spec.multistrike_attunement -> effectN( 1 ).percent();
+      m *= 1.0 + spec.necrosis -> effectN( 1 ).percent();
       break;
     case RATING_SPELL_HASTE:
     case RATING_MELEE_HASTE:
     case RATING_RANGED_HASTE:
-      m *= 1.0 + spec.haste_attunement -> effectN( 1 ).percent();
+      m *= 1.0 + spec.tundra_stalker -> effectN( 1 ).percent();
       break;
     default:
       break;
@@ -6601,6 +6650,18 @@ void death_knight_t::trigger_shadow_infusion( double rpcost )
     buffs.shadow_infusion -> trigger( stacks );
     shadow_infusion_counter -= stacks;
   }
+}
+
+void death_knight_t::trigger_necrosis( const action_state_t* state )
+{
+  if ( ! spec.necrosis -> ok() )
+    return;
+
+  if ( ! state -> action -> result_is_multistrike( state -> result ) )
+    return;
+
+  active_spells.necrosis -> target = state -> target;
+  active_spells.necrosis -> schedule_execute();
 }
 
 // death_knight_t::trigger_plaguebearer =====================================
