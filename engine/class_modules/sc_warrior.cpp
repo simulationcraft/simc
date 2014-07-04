@@ -27,6 +27,7 @@ struct warrior_td_t: public actor_pair_t
   dot_t* dots_bloodbath;
   dot_t* dots_deep_wounds;
   dot_t* dots_ravager;
+  dot_t* dots_rend;
 
   buff_t* debuffs_colossus_smash;
   buff_t* debuffs_demoralizing_shout;
@@ -38,6 +39,7 @@ struct warrior_t: public player_t
 {
 public:
   int initial_rage;
+  bool sudden_death;
 
   simple_sample_data_t cs_damage;
   simple_sample_data_t priority_damage;
@@ -63,6 +65,7 @@ public:
     buff_t* defensive_stance;
     buff_t* enrage;
     buff_t* heroic_charge;
+    buff_t* sudden_death;
     // Talents
     buff_t* avatar;
     buff_t* bloodbath;
@@ -146,6 +149,7 @@ public:
     // Arms Only
     gain_t* mortal_strike;
     gain_t* sweeping_strikes;
+    gain_t* taste_for_blood;
     // Prot Only
     gain_t* critical_block;
     gain_t* revenge;
@@ -208,6 +212,7 @@ public:
   struct procs_t
   {
     proc_t* raging_blow_wasted;
+    proc_t* sudden_death;
 
     //Tier bonuses
     proc_t* t15_2pc_melee;
@@ -364,6 +369,7 @@ public:
     cooldown.stance_swap             -> duration = timespan_t::from_seconds( 1.5 );
 
     initial_rage = 0;
+    sudden_death = false;
 
     base.distance = 3.0;
   }
@@ -934,7 +940,14 @@ struct melee_t: public warrior_attack_t
     warrior_attack_t::impact( s );
 
     if ( result_is_hit( s -> result ) )
+    {
       trigger_t15_2pc_melee( this );
+      if ( p() -> sudden_death )
+      {
+        if ( p() -> buff.sudden_death -> trigger() )
+          p() -> proc.sudden_death -> occur();
+      }
+    }
 
     // Any attack that hits generates rage. Multistrikes do not grant rage.
     if ( !result_is_miss( s -> result ) && !result_is_multistrike( s -> result ) )
@@ -1427,7 +1440,7 @@ struct execute_t: public warrior_attack_t
 
     if ( p() -> mastery.weapons_master -> ok() )
     {
-      am *= ( 3.0 * cost() / 50 );
+      am *= ( 3.0 * std::min( 50.0, p() -> resources.current[RESOURCE_RAGE] ) / 50 );
       am *= 1.0 + p() -> cache.mastery_value();
     }
 
@@ -1441,6 +1454,9 @@ struct execute_t: public warrior_attack_t
     if ( p() -> specialization() == WARRIOR_ARMS )
       c = std::min( 50.0, std::max( p() -> resources.current[RESOURCE_RAGE], c ) );
 
+    if ( p() -> buff.sudden_death -> up() )
+      c = 0;
+
     return c;
   }
 
@@ -1450,10 +1466,15 @@ struct execute_t: public warrior_attack_t
 
     if ( p() -> spec.crazed_berserker -> ok() && result_is_hit( execute_state -> result ) ) // If MH fails to land, OH does not execute.
       oh_attack -> execute();
+
+    p() -> buff.sudden_death -> expire();
   }
 
   virtual bool ready()
   {
+    if ( p() -> buff.sudden_death -> up() )
+      return true;
+
     if ( target -> health_percentage() > 20 )
       return false;
 
@@ -2190,6 +2211,7 @@ struct slam_t: public warrior_attack_t
   slam_t( warrior_t* p, const std::string& options_str ):
     warrior_attack_t( "slam", p )
   {
+    check_spec( WARRIOR_ARMS );
     parse_options( NULL, options_str );
     weapon_multiplier = 1.0;
     base_costs[RESOURCE_RAGE] = 10;
@@ -2327,7 +2349,7 @@ struct thunder_clap_t: public warrior_attack_t
     aoe = -1;
     may_dodge = may_parry = may_block = false;
 
-    cooldown -> duration = data().cooldown();
+    cooldown -> duration = timespan_t::from_seconds( 6.0 );
     cooldown -> duration *= 1 + p -> glyphs.resonating_power -> effectN( 2 ).percent();
 
     attack_power_mod.direct *= 1.0 + p -> perk.improved_thunder_clap -> effectN( 1 ).percent();
@@ -2658,6 +2680,71 @@ struct deep_wounds_t: public warrior_spell_t
     background = proc = tick_may_crit = true;
     hasted_ticks  = false;
     dot_behavior = DOT_REFRESH;
+  }
+};
+
+// Rend ==============================================================
+
+struct rend_burst_t: public warrior_spell_t
+{
+  rend_burst_t( warrior_t* p, const std::string& name ):
+    warrior_spell_t( "rend_burst", p )
+  {
+    background = may_crit = true;
+    may_multistrike = 1;
+    attack_power_mod.direct = 8;
+    school = SCHOOL_PHYSICAL;
+  }
+  virtual double target_armor( player_t* ) const
+  {
+    return 0.0;
+  }
+};
+
+struct rend_t: public warrior_spell_t
+{
+  rend_burst_t* burst;
+  bool taste_for_blood;
+  rend_t( warrior_t* p, const std::string& options_str ):
+    warrior_spell_t( "rend", p ),
+    burst( new rend_burst_t( p, "rend_burst" ) ), taste_for_blood( false )
+  {
+    option_t opt[] =
+    {
+      opt_bool( "talented", taste_for_blood ),
+      opt_null()
+    };
+    check_spec( WARRIOR_ARMS );
+    parse_options( opt, options_str );
+    base_tick_time = timespan_t::from_seconds( 3.0 );
+    dot_duration = timespan_t::from_seconds( 18.0 );
+    hasted_ticks = tick_zero = false;
+    tick_may_crit = true;
+    may_multistrike = 1;
+    dot_behavior = DOT_REFRESH;
+    attack_power_mod.tick = 0.8;
+    attack_power_mod.direct = 0.0;
+    base_costs[RESOURCE_RAGE] = 10;
+    school = SCHOOL_PHYSICAL;
+    add_child( burst );
+  }
+
+  virtual void tick( dot_t* d )
+  {
+    warrior_spell_t::tick( d );
+    if( taste_for_blood )
+      p() -> resource_gain( RESOURCE_RAGE, 3, p() -> gain.taste_for_blood );
+  }
+
+  timespan_t tick_time( double ) const
+  {
+    return timespan_t::from_seconds( 3 );
+  }
+
+  virtual void last_tick( dot_t* d )
+  {
+    warrior_spell_t::last_tick( d );
+    burst -> execute();
   }
 };
 
@@ -3140,6 +3227,7 @@ actor_pair_t( target, p )
   dots_bloodbath   = target -> get_dot( "bloodbath", p );
   dots_deep_wounds = target -> get_dot( "deep_wounds", p );
   dots_ravager     = target -> get_dot( "ravager", p );
+  dots_rend        = target -> get_dot( "rend", p );
 
   debuffs_colossus_smash = buff_creator_t( *this, "colossus_smash" )
     .duration( p -> glyphs.colossus_smash -> effectN( 1 ).time_value() +
@@ -3181,7 +3269,7 @@ action_t* warrior_t::create_action( const std::string& name,
   if ( name == "raging_blow"          ) return new raging_blow_t          ( this, options_str );
   if ( name == "ravager"              ) return new ravager_t              ( this, options_str );
   if ( name == "recklessness"         ) return new recklessness_t         ( this, options_str );
-  //if ( name == "rend"                 ) return new rend_t                 ( this, options_str );
+  if ( name == "rend"                 ) return new rend_t                 ( this, options_str );
   if ( name == "revenge"              ) return new revenge_t              ( this, options_str );
   if ( name == "shield_barrier"       ) return new shield_barrier_t       ( this, options_str );
   if ( name == "shield_block"         ) return new shield_block_t         ( this, options_str );
@@ -3796,11 +3884,17 @@ void warrior_t::create_buffs()
   buff.heroic_charge = buff_creator_t( this, "heroic_charge" );
 
   buff.slam = buff_creator_t( this, "slam" )
-    .max_stack( 2 );
+    .max_stack( 2 )
+    .duration( timespan_t::from_seconds( 2 ) );
 
   buff.unyielding_strikes = buff_creator_t( this, "unyielding_strikes" )
     .max_stack( 5 )
     .duration( timespan_t::from_seconds( 10 ) );
+
+  buff.sudden_death = buff_creator_t( this, "sudden_death" )
+    .chance( 0.1 )
+    .duration( timespan_t::from_seconds( 10 ) );
+
 
   buff.avatar = buff_creator_t( this, "avatar", talents.avatar )
     .cd( timespan_t::zero() )
@@ -3908,6 +4002,7 @@ void warrior_t::init_gains()
   gain.shield_slam            = get_gain( "shield_slam" );
   gain.sweeping_strikes       = get_gain( "sweeping_strikes" );
   gain.sword_and_board        = get_gain( "sword_and_board" );
+  gain.taste_for_blood        = get_gain( "taste_for_blood" );
 
   gain.tier15_4pc_tank        = get_gain( "tier15_4pc_tank" );
   gain.tier16_2pc_melee       = get_gain( "tier16_2pc_melee" );
@@ -3942,6 +4037,7 @@ void warrior_t::init_procs()
   player_t::init_procs();
 
   proc.raging_blow_wasted      = get_proc( "raging_blow_wasted" );
+  proc.sudden_death            = get_proc( "sudden_death" );
   proc.t15_2pc_melee           = get_proc( "t15_2pc_melee" );
 }
 
@@ -4434,6 +4530,7 @@ void warrior_t::create_options()
   option_t warrior_options[] =
   {
     opt_int( "initial_rage", initial_rage ),
+    opt_bool( "sudden_death", sudden_death ),
     opt_null()
   };
 
@@ -4493,6 +4590,7 @@ void warrior_t::copy_from( player_t* source )
   warrior_t* p = debug_cast<warrior_t*>( source );
 
   initial_rage = p -> initial_rage;
+  sudden_death = p -> sudden_death;
 }
 
 // warrior_t::decode_set ====================================================
