@@ -4,7 +4,7 @@ race=draenei
 role=attack
 position=back
 professions=engineering=600/enchanting=600
-talents=http://us.battle.net/wow/en/tool/talent-calculator#WZ!...1.0.
+talents=http://us.battle.net/wow/en/tool/talent-calculator#WZ!...1.01
 glyphs=chain_lightning
 spec=enhancement
 
@@ -29,7 +29,7 @@ actions=wind_shear
 # Bloodlust casting behavior mirrors the simulator settings for proxy bloodlust. See options 'bloodlust_percent', and 'bloodlust_time'. 
 actions+=/bloodlust,if=target.health.pct<25|time>5
 actions+=/auto_attack
-actions+=/use_item,name=ph_gladiators_badge_of_conquest
+actions+=/use_item,name=primal_gladiators_badge_of_conquest
 # In-combat potion is linked to Primal or Greater Fire Elemental Totem, after the first 60 seconds of combat.
 actions+=/potion,name=draenor_agility,if=time>60&(pet.primal_fire_elemental.active|pet.greater_fire_elemental.active|target.time_to_die<=60)
 actions+=/blood_fury
@@ -41,6 +41,7 @@ actions+=/elemental_mastery,if=talent.elemental_mastery.enabled&!talent.primal_e
 actions+=/fire_elemental_totem
 actions+=/ascendance,if=cooldown.strike.remains>=3
 actions+=/feral_spirit
+actions+=/storm_elemental_totem,if=talent.storm_elemental_totem.enabled&(!active&cooldown.fire_elemental_totem.remains>=60)
 # If only one enemy, priority follows the 'single' action list.
 actions+=/run_action_list,name=single,if=active_enemies=1
 # On multiple enemies, the priority follows the 'aoe' action list.
@@ -62,7 +63,6 @@ actions.single+=/lightning_bolt,if=buff.maelstrom_weapon.react>=3&!buff.ascendan
 actions.single+=/ancestral_swiftness,if=talent.ancestral_swiftness.enabled
 actions.single+=/lightning_bolt,if=buff.ancestral_swiftness.up
 actions.single+=/frost_shock
-actions.single+=/earth_elemental_totem
 actions.single+=/lightning_bolt,if=buff.maelstrom_weapon.react>=1&!buff.ascendance.up
 
 # Multi target action priority list
@@ -81,25 +81,24 @@ actions.aoe+=/fire_nova,if=active_flame_shock>=3
 actions.aoe+=/chain_lightning,if=active_enemies>=2&buff.maelstrom_weapon.react>=1
 actions.aoe+=/stormstrike
 actions.aoe+=/frost_shock,if=active_enemies<4
-actions.aoe+=/earth_elemental_totem
 actions.aoe+=/fire_nova,if=active_flame_shock>=1
 
-head=ph_gladiators_ringmail_helm,id=111195
-neck=ph_gladiators_necklace_of_prowess,id=111080,enchant=140haste
-shoulders=ph_gladiators_ringmail_spaulders,id=111197
-back=ph_gladiators_cape_of_prowess,id=111078,enchant=gift_of_haste
-chest=ph_gladiators_ringmail_armor,id=111193
-wrists=ph_gladiators_armbands_of_victory,id=111163
-hands=ph_gladiators_ringmail_gauntlets,id=111194
-waist=ph_gladiators_waistguard_of_cruelty,id=111155
-legs=ph_gladiators_ringmail_leggings,id=111196
-feet=ph_gladiators_footguards_of_prowess,id=111159
-finger1=ph_gladiators_ring_of_prowess,id=111082,enchant=100haste
-finger2=ph_gladiators_ring_of_prowess,id=111271,enchant=100haste
-trinket1=ph_gladiators_insignia_of_conquest,id=111223
-trinket2=ph_gladiators_badge_of_conquest,id=111222
-main_hand=ph_gladiators_cleaver,id=111067,enchant=mark_of_warsong
-off_hand=ph_gladiators_cleaver,id=111067,enchant=mark_of_warsong
+head=primal_gladiators_ringmail_helm,id=111195
+neck=primal_gladiators_necklace_of_prowess,id=111080,enchant=140haste
+shoulders=primal_gladiators_ringmail_spaulders,id=111197
+back=primal_gladiators_cape_of_prowess,id=111078,enchant=gift_of_haste
+chest=primal_gladiators_ringmail_armor,id=111193
+wrists=primal_gladiators_armbands_of_victory,id=111163
+hands=primal_gladiators_ringmail_gauntlets,id=111194
+waist=primal_gladiators_waistguard_of_cruelty,id=111155
+legs=primal_gladiators_ringmail_leggings,id=111196
+feet=primal_gladiators_footguards_of_prowess,id=111159
+finger1=primal_gladiators_ring_of_prowess,id=111082,enchant=100haste
+finger2=primal_gladiators_ring_of_prowess,id=111271,enchant=100haste
+trinket1=primal_gladiators_insignia_of_conquest,id=111223
+trinket2=primal_gladiators_badge_of_conquest,id=111222
+main_hand=primal_gladiators_cleaver,id=111067,enchant=mark_of_warsong
+off_hand=primal_gladiators_cleaver,id=111067,enchant=mark_of_warsong
 
 # Gear Summary
 # gear_agility=2553

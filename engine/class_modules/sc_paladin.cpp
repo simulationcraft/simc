@@ -171,22 +171,22 @@ public:
   struct passives_t
   {
     const spell_data_t* boundless_conviction;
-    const spell_data_t* crit_attunement;
     const spell_data_t* daybreak;
     const spell_data_t* divine_bulwark;
     const spell_data_t* exorcism; // for cooldown reset
     const spell_data_t* grand_crusader;
     const spell_data_t* guarded_by_the_light;
     const spell_data_t* hand_of_light;
-    const spell_data_t* haste_attunement;
     const spell_data_t* holy_insight;
     const spell_data_t* illuminated_healing;
     const spell_data_t* infusion_of_light;
     const spell_data_t* judgments_of_the_wise;
-    const spell_data_t* mastery_attunement;
     const spell_data_t* plate_specialization;
     const spell_data_t* resolve;
+    const spell_data_t* righteous_vengeance;
     const spell_data_t* riposte;
+    const spell_data_t* sacred_duty;
+    const spell_data_t* sanctified_light;
     const spell_data_t* sanctity_of_battle;
     const spell_data_t* sanctuary;
     const spell_data_t* shining_protector; 
@@ -2801,7 +2801,8 @@ struct sacred_shield_t : public paladin_heal_t
     paladin_heal_t( "sacred_shield", p, p -> find_talent_spell( "Sacred Shield" ) ) // todo: find_talent_spell -> find_specialization_spell
   {
     parse_options( NULL, options_str );
-    may_crit = tick_may_crit = false;
+    may_crit = false;
+    tick_may_crit = true; // Ticks can crit as of WoD
     benefits_from_seal_of_insight = false;
     harmful = false;
 
@@ -5393,7 +5394,7 @@ void paladin_t::init_spells()
   passives.daybreak               = find_specialization_spell( "Daybreak" );
   passives.holy_insight           = find_specialization_spell( "Holy Insight" );
   passives.infusion_of_light      = find_specialization_spell( "Infusion of Light" );
-  passives.crit_attunement        = find_specialization_spell( "Critical Strike Attunement" );
+  passives.sanctified_light       = find_specialization_spell( "Sanctified Light" );
 
   // Prot Passives
   passives.grand_crusader         = find_specialization_spell( "Grand Crusader" );
@@ -5403,13 +5404,13 @@ void paladin_t::init_spells()
   passives.shining_protector      = find_specialization_spell( "Shining Protector" );
   passives.resolve                = find_specialization_spell( "Resolve" );
   passives.riposte                = find_specialization_spell( "Riposte" );
-  passives.haste_attunement       = find_specialization_spell( "Haste Attunement" );
+  passives.sacred_duty            = find_specialization_spell( "Sacred Duty" );
 
   // Ret Passives
   passives.sword_of_light         = find_specialization_spell( "Sword of Light" );
   passives.sword_of_light_value   = find_spell( passives.sword_of_light -> ok() ? 20113 : 0 );
   passives.exorcism               = find_spell( passives.sword_of_light -> ok() ? 87138 : 0 );
-  passives.mastery_attunement     = find_specialization_spell( "Mastery Attunement" );
+  passives.righteous_vengeance    = find_specialization_spell( "Righteous Vengeance" );
 
   // Perks
   // Multiple
@@ -5590,13 +5591,13 @@ double paladin_t::composite_rating_multiplier( rating_e r ) const
     case RATING_MELEE_HASTE:
     case RATING_RANGED_HASTE:
     case RATING_SPELL_HASTE:
-      m *= 1.0 + passives.haste_attunement -> effectN( 1 ).percent(); 
+      m *= 1.0 + passives.sacred_duty -> effectN( 1 ).percent(); 
       // Seraphim adds 30% haste. TODO: check if multiplicative w/ attunement
       if ( buffs.seraphim -> check() )
         m *= 1.0 + buffs.seraphim -> data().effectN( 1 ).percent();
       break;
     case RATING_MASTERY:
-      m *= 1.0 + passives.mastery_attunement -> effectN( 1 ).percent();
+      m *= 1.0 + passives.righteous_vengeance -> effectN( 1 ).percent();
       // Seraphim adds 30% mastery TODO: check if multiplicative w/ attunement
       if ( buffs.seraphim -> check() )
         m *= 1.0 + buffs.seraphim -> data().effectN( 1 ).percent();
@@ -5604,7 +5605,7 @@ double paladin_t::composite_rating_multiplier( rating_e r ) const
     case RATING_MELEE_CRIT:
     case RATING_SPELL_CRIT:
     case RATING_RANGED_CRIT:
-      m *= 1.0 + passives.crit_attunement -> effectN( 1 ).percent();
+      m *= 1.0 + passives.sanctified_light -> effectN( 1 ).percent();
       // Seraphim adds 30% crit. TODO: check if multiplicative w/ attunement
       if ( buffs.seraphim -> check() )
         m *= 1.0 + buffs.seraphim -> data().effectN( 1 ).percent();
@@ -6165,6 +6166,9 @@ void paladin_t::assess_damage_imminent( school_e school, dmg_e, action_state_t* 
         // hack to register this on the abilities table
         buffs.holy_shield -> trigger( 1, block_amount );
         buffs.holy_shield -> consume( block_amount );
+
+        // Trigger the damage event
+        trigger_holy_shield();
       }
       else
       {        

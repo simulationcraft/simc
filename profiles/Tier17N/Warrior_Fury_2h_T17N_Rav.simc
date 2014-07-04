@@ -101,22 +101,22 @@ actions.aoe+=/colossus_smash
 actions.aoe+=/storm_bolt,if=talent.storm_bolt.enabled
 actions.aoe+=/shockwave,if=talent.shockwave.enabled
 
-head=ph_gladiators_plate_helm,id=111241
-neck=ph_gladiators_choker_of_cruelty,id=111207
-shoulders=ph_gladiators_plate_shoulders,id=111243,enchant=10str_5crit
-back=ph_gladiators_cloak_of_prowess,id=111206
-chest=ph_gladiators_plate_chestpiece,id=111239,enchant=glorious_stats
-wrists=ph_gladiators_armplates_of_prowess,id=111181,enchant=8mastery
-hands=ph_gladiators_plate_gauntlets,id=111210,enchant=8crit
-waist=ph_gladiators_girdle_of_cruelty,id=111174
-legs=ph_gladiators_plate_legguards,id=111212,enchant=14str_8crit
-feet=ph_gladiators_warboots_of_cruelty,id=111177,enchant=pandarens_step
-finger1=ph_gladiators_signet_of_cruelty,id=111219
-finger2=ph_gladiators_signet_of_accuracy,id=111272
-trinket1=ph_gladiators_badge_of_victory,id=111232
-trinket2=ph_gladiators_insignia_of_victory,id=111233
-main_hand=ph_gladiators_decapitator,id=111202,enchant=dancing_steel
-off_hand=ph_gladiators_decapitator,id=111202,enchant=dancing_steel
+head=primal_gladiators_plate_helm,id=111241
+neck=primal_gladiators_choker_of_cruelty,id=111207
+shoulders=primal_gladiators_plate_shoulders,id=111243,enchant=10str_5crit
+back=primal_gladiators_cloak_of_prowess,id=111206
+chest=primal_gladiators_plate_chestpiece,id=111239,enchant=glorious_stats
+wrists=primal_gladiators_armplates_of_prowess,id=111181,enchant=8mastery
+hands=primal_gladiators_plate_gauntlets,id=111210,enchant=8crit
+waist=primal_gladiators_girdle_of_cruelty,id=111174
+legs=primal_gladiators_plate_legguards,id=111212,enchant=14str_8crit
+feet=primal_gladiators_warboots_of_cruelty,id=111177,enchant=pandarens_step
+finger1=primal_gladiators_signet_of_cruelty,id=111219
+finger2=primal_gladiators_signet_of_accuracy,id=111272
+trinket1=primal_gladiators_badge_of_victory,id=111232
+trinket2=primal_gladiators_insignia_of_victory,id=111233
+main_hand=primal_gladiators_decapitator,id=111202,enchant=dancing_steel
+off_hand=primal_gladiators_decapitator,id=111202,enchant=dancing_steel
 
 # Gear Summary
 # gear_strength=2842

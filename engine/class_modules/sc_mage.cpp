@@ -148,6 +148,7 @@ public:
     // Major
     const spell_data_t* arcane_power;
     const spell_data_t* combustion;
+    const spell_data_t* cone_of_cold;
     const spell_data_t* frostfire;
     const spell_data_t* ice_lance;
     const spell_data_t* icy_veins;
@@ -1796,6 +1797,11 @@ struct cone_of_cold_t : public mage_spell_t
   virtual double action_multiplier() const
   {
     double am = mage_spell_t::action_multiplier();
+
+    if ( p() -> glyphs.cone_of_cold -> ok() )
+    {
+      am *=  1.0 + p() -> glyphs.cone_of_cold -> effectN( 1 ).percent();
+    }
 
     if ( p() -> buffs.frozen_thoughts -> up() )
     {
@@ -4150,6 +4156,7 @@ void mage_t::init_spells()
   glyphs.arcane_brilliance   = find_glyph_spell( "Glyph of Arcane Brilliance" );
   glyphs.arcane_power        = find_glyph_spell( "Glyph of Arcane Power" );
   glyphs.combustion          = find_glyph_spell( "Glyph of Combustion" );
+  glyphs.cone_of_cold        = find_glyph_spell( "Glyph of Cone of Cold" );
   glyphs.frostfire           = find_glyph_spell( "Glyph of Frostfire" );
   glyphs.ice_lance           = find_glyph_spell( "Glyph of Ice Lance" );
   glyphs.icy_veins           = find_glyph_spell( "Glyph of Icy Veins" );
