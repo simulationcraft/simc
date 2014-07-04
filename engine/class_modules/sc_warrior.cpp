@@ -1123,7 +1123,7 @@ struct bloodthirst_t: public warrior_attack_t
       opt_bool( "talented", unquenchable_thirst ),
       opt_null()
     };
-    parse_options( NULL, options_str );
+    parse_options( opt, options_str );
 
     if ( unquenchable_thirst )
       cooldown -> duration = timespan_t::zero();
@@ -1315,7 +1315,7 @@ struct devastate_t: public warrior_attack_t
       opt_bool( "talented", unyielding_strikes ),
       opt_null()
     };
-    parse_options( NULL, options_str );
+    parse_options( opt, options_str );
   }
 
   virtual void execute()
@@ -2098,7 +2098,7 @@ struct shield_slam_t: public warrior_attack_t
       opt_bool( "talented", heavy_repercussion ),
       opt_null()
     };
-    parse_options( NULL, options_str );
+    parse_options( opt, options_str );
 
     rage_gain = data().effectN( 3 ).resource( RESOURCE_RAGE );
     attack_power_mod.direct = 3.622; // Tested in game... doesn't match any spell data or tooltips... yay.
@@ -2497,7 +2497,7 @@ struct wild_strike_t: public warrior_attack_t
       opt_bool( "talented", furious ),
       opt_null()
     };
-    parse_options( NULL, options_str );
+    parse_options( options, options_str );
 
     if ( furious )
       base_costs[RESOURCE_RAGE] = 20;
