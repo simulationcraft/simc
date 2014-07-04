@@ -3537,6 +3537,9 @@ struct time_warp_t : public mage_spell_t
 
   virtual bool ready()
   {
+    if ( sim -> overrides.bloodlust )
+      return false;
+
     if ( player -> buffs.exhaustion -> check() )
       return false;
 
