@@ -15,8 +15,8 @@ namespace { // UNNAMED NAMESPACE
     Tranquility
     Dash
     Fix Force of Nature (summons fine, but treants take no actions)
-    Clean up NV implementation (pass values instead of execution states)
     Glyph of Ursoc's Defense
+    Potion action
 
     = Feral =
     Combo Points as a resource
@@ -29,8 +29,6 @@ namespace { // UNNAMED NAMESPACE
 
     = Guardian =
     Verify DoC
-    buff.natures_vigil.up? (nvtest)
-    Primal Tenacity retrigger -- http://us.battle.net/wow/en/forum/topic/13087818929?page=10#184
 
     = Restoration =
     Err'thing
@@ -596,7 +594,6 @@ public:
   virtual stat_e    convert_hybrid_stat( stat_e s ) const;
   virtual double    mana_regen_per_second() const;
   virtual void      assess_damage( school_e school, dmg_e, action_state_t* );
-  virtual void      assess_damage_imminent_pre_absorb( school_e school, dmg_e dtype, action_state_t* s );
   virtual void      assess_heal( school_e, dmg_e, action_state_t* );
   virtual void      create_options();
   virtual bool      create_profile( std::string& profile_str, save_e type = SAVE_ALL, bool save_html = false );
@@ -878,19 +875,16 @@ struct leader_of_the_pack_t : public heal_t
 
 struct primal_tenacity_t : public absorb_t
 {
+  double absorb_remaining;
+
   primal_tenacity_t( druid_t* p ) :
-    absorb_t( "primal_tenacity", p, p -> mastery.primal_tenacity )
+    absorb_t( "primal_tenacity", p, p -> mastery.primal_tenacity ),
+    absorb_remaining( 0.0 )
   {
     harmful = special = false;
     background = true;
-    may_crit = false;
+    may_crit = may_multistrike = false;
     target = player;
-  }
-
-  void set_incoming_damage( double damage )
-  {
-    // Set dd to incoming damage, this will get automatically get multiplied by mastery and resolve.
-    base_dd_min = base_dd_max = damage;
   }
 
   virtual double action_multiplier() const
@@ -902,26 +896,13 @@ struct primal_tenacity_t : public absorb_t
     return am;
   }
 
-  virtual void execute()
-  {
-    absorb_t::execute();
-
-    // Clear dd to prevent the absorb from triggering until its been "armed" again.
-    base_dd_min = base_dd_max = 0;
-  }
-
   virtual void impact( action_state_t* s )
   {
+    /* If this hit triggered off an attack that was partially absorbed by Primal Tenacity
+       then subtract the amount absorbed from the new absorb. */
+    s -> result_amount -= absorb_remaining;
+
     static_cast<druid_t*>( player ) -> buff.primal_tenacity -> trigger( 1, s -> result_amount );
-  }
-
-  virtual bool ready()
-  {
-    // If the incoming damage has not been set then the action is not ready.
-    if ( base_dd_min == 0 )
-      return false;
-
-    return absorb_t::ready();
   }
 };
 
@@ -935,8 +916,7 @@ struct yseras_gift_t : public heal_t
     base_tick_time = data().effectN( 1 ).period();
     dot_duration   = base_tick_time;
     hasted_ticks   = false;
-    tick_may_crit  = false;
-    may_multistrike = false;
+    tick_may_crit  = may_multistrike = false;
     harmful        = false;
     background     = true;
     target         = p;
@@ -6933,6 +6913,8 @@ void druid_t::assess_damage( school_e school,
                              dmg_e    dtype,
                              action_state_t* s )
 {
+  if ( mastery.primal_tenacity -> ok() && school == SCHOOL_PHYSICAL && ! ( s -> result == RESULT_DODGE || s -> result == RESULT_MISS ) )
+    active.primal_tenacity -> absorb_remaining = buff.primal_tenacity -> value();
 
   if ( sets.has_set_bonus( SET_T15_2PC_TANK ) && s -> result == RESULT_DODGE && buff.savage_defense -> check() )
     buff.tier15_2pc_tank -> trigger();
@@ -6975,22 +6957,33 @@ void druid_t::assess_damage( school_e school,
 
   player_t::assess_damage( school, dtype, s );
 
-  /* Trigger primal_tenacity absorb. ready() will only return true if the action has been "armed"
-     by an eligible attack in druid_t::assess_damage_imminent_pre_absorb. */
-  if ( mastery.primal_tenacity -> ok() && school == SCHOOL_PHYSICAL && active.primal_tenacity -> ready() )
-    active.primal_tenacity -> execute();
-}
+  // Primal Tenacity
+  if ( mastery.primal_tenacity -> ok() && school == SCHOOL_PHYSICAL && ! ( s -> result == RESULT_DODGE || s -> result == RESULT_MISS ) &&
+       ! buff.primal_tenacity -> check() ) // Check attack eligibility
+  {
+    bool trigger = false;
+    // Primal Tenacity can trigger in 2 cases!
 
-// druid_t::assess_damage_imminent_pre_absorb ===============================
-
-void druid_t::assess_damage_imminent_pre_absorb( school_e school, dmg_e dtype, action_state_t* s )
-{
-  if ( mastery.primal_tenacity -> ok() && ! buff.primal_tenacity -> check() && school == SCHOOL_PHYSICAL )
-    /* Set the incoming damage for primal_tenacity. This causes ready() to return true so that
-       the absorb may be applied after the damage assessment is complete. */
-    active.primal_tenacity -> set_incoming_damage( s -> result_amount );
-
-  player_t::assess_damage_imminent_pre_absorb( school, dtype, s );
+    if ( active.primal_tenacity -> absorb_remaining == 0 )
+      // Case 1: Absorb wasn't up at all.
+      trigger = true; 
+    else
+    {
+      // Case 2: Absorb was up, but the old absorb is < 20% of the new one.
+      double potential_absorb = s -> result_mitigated * cache.mastery_value() * ( 1.0 + cache.heal_versatility() );
+      if ( resolve_manager.is_started() ) // Apply Resolve
+        potential_absorb *= 1.0 + buffs.resolve -> current_value / 100.0;
+      if ( active.primal_tenacity -> absorb_remaining < potential_absorb * 0.2 )
+        trigger = true;
+    }
+    if ( trigger )
+    {
+      // Set the absorb amount (mastery and resolve multipliers are managed by the action itself)
+      active.primal_tenacity -> base_dd_min =
+      active.primal_tenacity -> base_dd_max = s -> result_mitigated;
+      active.primal_tenacity -> execute();
+    }
+  }
 }
 
 // druid_t::assess_heal =====================================================
