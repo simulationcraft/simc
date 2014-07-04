@@ -31,7 +31,6 @@ namespace { // UNNAMED NAMESPACE
     Pulverize
     Verify DoC
     buff.natures_vigil.up? (nvtest)
-    Lacerate buff
 
     = Restoration =
     Err'thing
@@ -207,7 +206,6 @@ public:
     buff_t* barkskin;
     buff_t* bladed_armor;
     buff_t* bristling_fur;
-    buff_t* lacerate;
     buff_t* might_of_ursoc;
     absorb_buff_t* primal_tenacity;
     buff_t* savage_defense;
@@ -2825,7 +2823,6 @@ struct lacerate_t : public bear_attack_t
       p() -> resource_gain( RESOURCE_RAGE, data().effectN( 3 ).resource( RESOURCE_RAGE ) , p() -> gain.lacerate );
       if ( td( state -> target ) -> lacerate_stack < 3 )
         td( state -> target ) -> lacerate_stack++;
-      p() -> buff.lacerate -> trigger();
 
       if ( rng().roll( 0.25 ) ) // FIXME: Find in spell data.
         p() -> cooldown.mangle -> reset( true );
@@ -2838,8 +2835,7 @@ struct lacerate_t : public bear_attack_t
   {
     double tm = bear_attack_t::composite_target_ta_multiplier( t );
 
-    // Since this is called before we get a chance to increment in impact(), account for that here
-    tm *= std::min( 3, td( t ) -> lacerate_stack + 1 );
+    tm *= td( t ) -> lacerate_stack;
 
     return tm;
   }
@@ -2855,7 +2851,6 @@ struct lacerate_t : public bear_attack_t
   {
     bear_attack_t::last_tick( d );
 
-    p() -> buff.lacerate -> expire();
     td( target ) -> lacerate_stack = 0;
   }
 };
@@ -5669,7 +5664,6 @@ void druid_t::create_buffs()
   buff.bristling_fur         = buff_creator_t( this, "bristling_fur", talent.bristling_fur )
                                .default_value( talent.bristling_fur -> effectN( 1 ).percent() )\
                                .cd( timespan_t::zero() );
-  buff.lacerate              = buff_creator_t( this, "lacerate" , find_class_spell( "Lacerate" ) );
   buff.might_of_ursoc        = new might_of_ursoc_t( *this );
   buff.primal_tenacity       = absorb_buff_creator_t( this, "primal_tenacity", find_spell( 155784 ) )
                                .school( SCHOOL_PHYSICAL )
@@ -5986,7 +5980,7 @@ void druid_t::apl_guardian()
   default_list -> add_talent( this, "Bristling Fur", "if=incoming_damage_4s>health.max*0.15" );
   default_list -> add_talent( this, "Renewal", "incoming_damage_5>0.8*health.max" );
   default_list -> add_talent( this, "Natures Vigil", "if=enabled&(!talent.incarnation.enabled|buff.son_of_ursoc.up|cooldown.incarnation.remains)" );
-  default_list -> add_action( this, "Lacerate", "if=((dot.lacerate.remains<3)|(buff.lacerate.stack<3&dot.thrash_bear.remains>3))&(buff.son_of_ursoc.up|buff.berserk.up)" );
+  default_list -> add_action( this, "Lacerate", "if=((dot.lacerate.remains<3)|(dot.lacerate.stack<3&dot.thrash_bear.remains>3))&(buff.son_of_ursoc.up|buff.berserk.up)" );
   default_list -> add_action( "thrash_bear,if=dot.thrash_bear.remains<3&(buff.son_of_ursoc.up|buff.berserk.up)" );
   default_list -> add_action( this, "Mangle" );
   default_list -> add_talent( this, "Cenarion Ward" );
