@@ -6919,8 +6919,8 @@ void druid_t::assess_damage( school_e school,
   if ( sets.has_set_bonus( SET_T15_2PC_TANK ) && s -> result == RESULT_DODGE && buff.savage_defense -> check() )
     buff.tier15_2pc_tank -> trigger();
 
-  if ( buff.barkskin -> check() )
-    s -> result_amount *= 1.0 + buff.barkskin -> value() + perk.improved_barkskin -> effectN( 1 ).percent();
+  if ( buff.barkskin -> up() )
+    s -> result_amount *= 1.0 + buff.barkskin -> default_value + perk.improved_barkskin -> effectN( 1 ).percent();
 
   s -> result_amount *= 1.0 + buff.survival_instincts -> value();
 
