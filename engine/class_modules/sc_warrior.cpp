@@ -2218,11 +2218,13 @@ struct slam_t: public warrior_attack_t
     trigger_gcd = timespan_t::from_millis( 1500 );
     min_gcd = timespan_t::from_millis( 1000 );
     school = SCHOOL_PHYSICAL;
+    normalize_weapon_speed = true;
+    weapon = &( p -> main_hand_weapon );
   }
 
   virtual double cost() const
   {
-    double c = warrior_attack_t::cost();
+    double c = 10;
 
     if ( p() -> buff.slam -> check() )
       c *= 1.0 + p() -> buff.slam -> stack();
@@ -2692,7 +2694,7 @@ struct rend_burst_t: public warrior_spell_t
   {
     background = may_crit = true;
     may_multistrike = 1;
-    attack_power_mod.direct = 8;
+    attack_power_mod.direct = 4;
     school = SCHOOL_PHYSICAL;
   }
   virtual double target_armor( player_t* ) const
@@ -2722,7 +2724,7 @@ struct rend_t: public warrior_spell_t
     tick_may_crit = true;
     may_multistrike = 1;
     dot_behavior = DOT_REFRESH;
-    attack_power_mod.tick = 0.8;
+    attack_power_mod.tick = 0.4;
     attack_power_mod.direct = 0.0;
     base_costs[RESOURCE_RAGE] = 10;
     school = SCHOOL_PHYSICAL;
