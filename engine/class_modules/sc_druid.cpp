@@ -1741,6 +1741,28 @@ public:
       t, // target
       p() -> find_spell( 165432 ) -> effectN( 1 ).percent() * dmg );
   }
+
+  virtual expr_t* create_expression( const std::string& name_str )
+  {
+    if ( ! util::str_compare_ci( name_str, "dot.lacerate.stack" ) )
+      return ab::create_expression( name_str );
+
+    struct lacerate_stack_expr_t : public expr_t
+    {
+      druid_t& druid;
+      action_t& action;
+
+      lacerate_stack_expr_t( action_t& a, druid_t& p ) :
+        expr_t( "stack" ), druid( p ), action( a )
+      {}
+      virtual double evaluate()
+      {
+        return druid.get_target_data( action.target ) -> lacerate_stack;
+      }
+    };
+
+    return new lacerate_stack_expr_t( *this, *p() );
+  }
 };
 
 // Druid melee attack base for cat_attack_t and bear_attack_t
@@ -2816,7 +2838,8 @@ struct lacerate_t : public bear_attack_t
   {
     double tm = bear_attack_t::composite_target_ta_multiplier( t );
 
-    tm *= td( t ) -> lacerate_stack;
+    // Since this is called before we get a chance to increment in impact(), account for that here
+    tm *= std::min( 3, td( t ) -> lacerate_stack + 1 );
 
     return tm;
   }
@@ -5967,7 +5990,7 @@ void druid_t::apl_guardian()
   default_list -> add_action( "thrash_bear,if=dot.thrash_bear.remains<3&(buff.son_of_ursoc.up|buff.berserk.up)" );
   default_list -> add_action( this, "Mangle" );
   default_list -> add_talent( this, "Cenarion Ward" );
-  default_list -> add_talent( this, "Incarnation: Son of Ursoc" );
+  default_list -> add_action( "incarnation" );
   default_list -> add_action( "thrash_bear,if=dot.thrash_bear.remains<duration*0.3" );
   default_list -> add_action( this, "Lacerate", "cycle_targets=1,if=dot.lacerate.remains<3" );
   default_list -> add_action( "thrash_bear,if=active_enemies>=3" );
@@ -6568,22 +6591,6 @@ expr_t* druid_t::create_expression( action_t* a, const std::string& name_str )
     virtual double evaluate() { return druid.eclipse_direction == rt; }
   };
 
-  struct lacerate_stack_expr_t : public druid_expr_t
-  {
-    druid_td_t* td;
-    lacerate_stack_expr_t( const std::string& n, druid_t& p, action_t* a ) :
-      druid_expr_t( n, p )
-    {
-      td = p.get_target_data( a -> target );
-    }
-    virtual double evaluate()
-    {
-      return td -> lacerate_stack ? td -> lacerate_stack : 0;
-    }
-  };
-
-
-
   std::vector<std::string> splits = util::string_split( name_str, "." );
 
   if ( ( splits.size() == 2 ) && ( splits[0] == "eclipse_dir" ) )
@@ -6598,10 +6605,6 @@ expr_t* druid_t::create_expression( action_t* a, const std::string& name_str )
       return player_t::create_expression( a, name_str );
     }
     return new eclipse_expr_t( name_str, *this, e );
-  }
-  else if ( splits.size() == 3 )
-  {
-    return new lacerate_stack_expr_t( name_str, *this, a );
   }
   else if ( util::str_compare_ci( name_str, "eclipse_energy" ) )
   {
@@ -6961,7 +6964,7 @@ druid_td_t::druid_td_t( player_t& target, druid_t& source )
   : actor_pair_t( &target, &source ),
     dots( dots_t() ),
     buffs( buffs_t() ),
-    lacerate_stack( 1 ),
+    lacerate_stack( 0 ),
     combo_points( source, target )
 {
   dots.gushing_wound = target.get_dot( "gushing_wound", &source );
