@@ -2353,7 +2353,7 @@ struct thunder_clap_t: public warrior_attack_t
     aoe = -1;
     may_dodge = may_parry = may_block = false;
 
-    cooldown -> duration = data().cooldown;
+    cooldown -> duration = data().cooldown();
     cooldown -> duration *= 1 + p -> glyphs.resonating_power -> effectN( 2 ).percent();
 
     attack_power_mod.direct *= 1.0 + p -> perk.improved_thunder_clap -> effectN( 1 ).percent();
