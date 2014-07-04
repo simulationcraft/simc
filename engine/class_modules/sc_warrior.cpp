@@ -2214,7 +2214,9 @@ struct slam_t: public warrior_attack_t
     check_spec( WARRIOR_ARMS );
     parse_options( NULL, options_str );
     weapon_multiplier = 1.0;
-    base_costs[RESOURCE_RAGE] = 10;
+    resource_consumed = RESOURCE_RAGE;
+    resource_current = RESOURCE_RAGE;
+    base_costs[ RESOURCE_RAGE ] = 10;
     trigger_gcd = timespan_t::from_millis( 1500 );
     min_gcd = timespan_t::from_millis( 1000 );
     school = SCHOOL_PHYSICAL;
@@ -2224,7 +2226,7 @@ struct slam_t: public warrior_attack_t
 
   virtual double cost() const
   {
-    double c = 10;
+    double c = warrior_attack_t::cost();
 
     if ( p() -> buff.slam -> check() )
       c *= 1.0 + p() -> buff.slam -> stack();
@@ -2692,7 +2694,7 @@ struct rend_burst_t: public warrior_spell_t
   rend_burst_t( warrior_t* p, const std::string& name ):
     warrior_spell_t( "rend_burst", p )
   {
-    background = may_crit = true;
+    background = may_crit = proc = true;
     may_multistrike = 1;
     attack_power_mod.direct = 4;
     school = SCHOOL_PHYSICAL;
@@ -2721,11 +2723,13 @@ struct rend_t: public warrior_spell_t
     base_tick_time = timespan_t::from_seconds( 3.0 );
     dot_duration = timespan_t::from_seconds( 18.0 );
     hasted_ticks = tick_zero = false;
-    tick_may_crit = true;
+    tick_may_crit = proc = true;
     may_multistrike = 1;
     dot_behavior = DOT_REFRESH;
     attack_power_mod.tick = 0.4;
     attack_power_mod.direct = 0.0;
+    resource_consumed = RESOURCE_RAGE;
+    resource_current = RESOURCE_RAGE;
     base_costs[RESOURCE_RAGE] = 10;
     school = SCHOOL_PHYSICAL;
     add_child( burst );
