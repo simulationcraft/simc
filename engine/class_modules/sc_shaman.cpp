@@ -4708,8 +4708,8 @@ void shaman_t::trigger_maelstrom_weapon( const action_state_t* state )
 
   double chance = attack -> weapon -> proc_chance_on_swing( 10.0 );
 
-  if ( sets.has_set_bonus( SET_PVP_2PC_MELEE ) )
-    chance *= 1.2;
+  //if ( sets.has_set_bonus( SET_PVP_2PC_MELEE ) )
+  //  chance *= 1.2;
 
   buff.maelstrom_weapon -> trigger( attack, 1, chance );
 }
