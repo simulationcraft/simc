@@ -896,7 +896,7 @@ struct melee_t: public warrior_attack_t
     trigger_gcd = timespan_t::zero();
 
     if ( p -> dual_wield() )
-      base_hit -= 0.265; // Effectively 19% miss chance, as characters now have 7.5% hit/expertise baseline.
+      base_hit -= 0.19;
   }
 
   void reset()
@@ -2122,7 +2122,7 @@ struct shield_slam_t: public warrior_attack_t
     parse_options( opt, options_str );
 
     rage_gain = data().effectN( 3 ).resource( RESOURCE_RAGE );
-    attack_power_mod.direct = 3.622; // Tested in game... doesn't match any spell data or tooltips... yay.
+    attack_power_mod.direct = 3.192; // Tested in game... doesn't match any spell data or tooltips... yay.
 
     attack_power_mod.direct *= 1.0 + p -> perk.improved_shield_slam -> effectN( 1 ).percent();
   }
@@ -2353,7 +2353,7 @@ struct thunder_clap_t: public warrior_attack_t
     aoe = -1;
     may_dodge = may_parry = may_block = false;
 
-    cooldown -> duration = timespan_t::from_seconds( 6.0 );
+    cooldown -> duration = data().cooldown();
     cooldown -> duration *= 1 + p -> glyphs.resonating_power -> effectN( 2 ).percent();
 
     attack_power_mod.direct *= 1.0 + p -> perk.improved_thunder_clap -> effectN( 1 ).percent();
@@ -2858,6 +2858,14 @@ struct shield_barrier_t: public warrior_action_t < absorb_t >
       p() -> buff.shield_barrier -> trigger( 1, s -> result_amount );
       stats -> add_result( 0.0, amount, ABSORB, s -> result, s -> block_result, p() );
     }
+  }
+
+  virtual void update_ready( timespan_t cd_duration )
+  {
+    //Head Long Rush reduces the cooldown depending on the amount of haste.
+    cd_duration = cooldown -> duration * player -> cache.attack_haste();
+
+    base_t::update_ready( cd_duration );
   }
 };
 
