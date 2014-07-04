@@ -2214,7 +2214,9 @@ struct slam_t: public warrior_attack_t
     check_spec( WARRIOR_ARMS );
     parse_options( NULL, options_str );
     weapon_multiplier = 1.0;
-    base_costs[RESOURCE_RAGE] = 10;
+    resource_consumed = RESOURCE_RAGE;
+    resource_current = RESOURCE_RAGE;
+    base_costs[ RESOURCE_RAGE ] = 10;
     trigger_gcd = timespan_t::from_millis( 1500 );
     min_gcd = timespan_t::from_millis( 1000 );
     school = SCHOOL_PHYSICAL;
@@ -2224,7 +2226,7 @@ struct slam_t: public warrior_attack_t
 
   virtual double cost() const
   {
-    double c = 10;
+    double c = warrior_attack_t::cost();
 
     if ( p() -> buff.slam -> check() )
       c *= 1.0 + p() -> buff.slam -> stack();
@@ -2726,6 +2728,8 @@ struct rend_t: public warrior_spell_t
     dot_behavior = DOT_REFRESH;
     attack_power_mod.tick = 0.4;
     attack_power_mod.direct = 0.0;
+    resource_consumed = RESOURCE_RAGE;
+    resource_current = RESOURCE_RAGE;
     base_costs[RESOURCE_RAGE] = 10;
     school = SCHOOL_PHYSICAL;
     add_child( burst );
