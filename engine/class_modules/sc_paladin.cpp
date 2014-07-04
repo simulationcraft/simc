@@ -5269,6 +5269,21 @@ void paladin_t::validate_action_priority_list()
           action_str.replace( found_position, splits[ 0 ].length(), "eternal_flame" );
           sim -> errorf( "Action priority list contains Word of Glory with Eternal Flame talent, automatically replacing WoG with EF\n" );
       }
+      // Check for usage of talents without talent present
+      if ( ( splits[ 0 ] == "holy_prism" && ! talents.holy_prism -> ok() ) || 
+           ( splits[ 0 ] == "lights_hammer" && ! talents.lights_hammer -> ok() ) || 
+           ( splits[ 0 ] == "execution_sentence" && ! talents.execution_sentence -> ok() ) ||
+           ( splits[ 0 ] == "sacred_shield" && ! talents.sacred_shield -> ok() ) ||
+           ( splits[ 0 ] == "hand_of_purity" && ! talents.hand_of_purity -> ok() ) ||
+           ( splits[ 0 ] == "holy_avenger" && ! talents.holy_avenger -> ok() ) ||
+           ( splits[ 0 ] == "eternal_flame" && ! talents.eternal_flame -> ok() ) )
+      {
+        std::string talent_str = "talent.";
+        talent_str += splits[ 0 ].c_str();
+        talent_str += ".enabled";
+        if ( ! util::str_in_str_ci( action_str, talent_str ) )
+          sim -> errorf( "Action priority list contains %s without talent, ignoring.", splits[ 0 ].c_str() );
+      }
     }
   }
 }

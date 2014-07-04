@@ -21,7 +21,7 @@ actions.precombat+=/food,type=chun_tian_spring_rolls
 actions.precombat+=/blessing_of_kings,if=(!aura.str_agi_int.up)&(aura.mastery.up)
 actions.precombat+=/blessing_of_might,if=!aura.mastery.up
 actions.precombat+=/seal_of_insight
-actions.precombat+=/sacred_shield
+actions.precombat+=/sacred_shield,if=talent.sacred_shield.enabled
 # Snapshot raid buffed stats before combat begins and pre-potting is done.
 actions.precombat+=/snapshot_stats
 
@@ -31,11 +31,11 @@ actions=/auto_attack
 actions+=/blood_fury
 actions+=/berserking
 actions+=/arcane_torrent
-actions+=/holy_avenger
+actions+=/holy_avenger,if=talent.holy_avenger.enabled
 actions+=/divine_protection
 actions+=/guardian_of_ancient_kings
-actions+=/eternal_flame,if=buff.eternal_flame.remains<2&buff.bastion_of_glory.react>2&(holy_power>=3|buff.divine_purpose.react|buff.bastion_of_power.react)
-actions+=/eternal_flame,if=buff.bastion_of_power.react&buff.bastion_of_glory.react>=5
+actions+=/eternal_flame,if=talent.eternal_flame.enabled&(buff.eternal_flame.remains<2&buff.bastion_of_glory.react>2&(holy_power>=3|buff.divine_purpose.react|buff.bastion_of_power.react))
+actions+=/eternal_flame,if=talent.eternal_flame.enabled&(buff.bastion_of_power.react&buff.bastion_of_glory.react>=5)
 actions+=/shield_of_the_righteous,if=holy_power>=5|buff.divine_purpose.react|incoming_damage_1500ms>=health.max*0.3
 actions+=/wait,sec=cooldown.judgment.remains,if=talent.sanctified_wrath.enabled&cooldown.judgment.remains>0&cooldown.judgment.remains<=0.5
 actions+=/crusader_strike
@@ -43,14 +43,14 @@ actions+=/wait,sec=cooldown.crusader_strike.remains,if=cooldown.crusader_strike.
 actions+=/judgment
 actions+=/wait,sec=cooldown.judgment.remains,if=cooldown.judgment.remains>0&cooldown.judgment.remains<=0.5&(cooldown.crusader_strike.remains-cooldown.judgment.remains)>=0.5
 actions+=/avengers_shield
-actions+=/sacred_shield,if=target.dot.sacred_shield.remains<5
+actions+=/sacred_shield,if=talent.sacred_shield.enabled&target.dot.sacred_shield.remains<5
 actions+=/holy_wrath
-actions+=/execution_sentence
-actions+=/lights_hammer
+actions+=/execution_sentence,if=talent.execution_sentence.enabled
+actions+=/lights_hammer,if=talent.lights_hammer.enabled
 actions+=/hammer_of_wrath
 actions+=/consecration,if=target.debuff.flying.down&!ticking
-actions+=/holy_prism
-actions+=/sacred_shield
+actions+=/holy_prism,if=talent.holy_prism.enabled
+actions+=/sacred_shield,if=talent.sacred_shield.enabled
 
 head=faceguard_of_winged_triumph,id=99370,upgrade=2,gems=indomitable_primal_8haste_8haste_14sta
 neck=juggernauts_ignition_keys,id=105513,upgrade=2
