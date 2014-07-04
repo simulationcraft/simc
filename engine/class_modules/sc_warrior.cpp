@@ -657,13 +657,12 @@ struct warrior_attack_t: public warrior_action_t < melee_attack_t >
       p() -> buff.bloodbath -> data().effectN( 1 ).percent() * dmg );
   }
 
-  void trigger_rage_gain()
+  void trigger_rage_gain( action_state_t * s )
   {
     // MoP: base rage gain is 3.5 * weaponspeed and half that for off-hand
     // Defensive/Gladiator stance: -100%
-    // Arms warriors get double the rage per swing, and quad rage on crit swings.
+    // Arms warriors get 2.4 times the rage per swing, and 4.8 times the rage on crit swings.
     // They get normal rage per swing in defensive stance.
-    // To do: Calculate quad rage here instead of running this function twice on crit swings.
 
     if ( proc )
       return;
@@ -677,6 +676,9 @@ struct warrior_attack_t: public warrior_action_t < melee_attack_t >
 
     if ( p() -> specialization() == WARRIOR_ARMS && p() -> active_stance == STANCE_BATTLE )
       rage_gain *= 2.4;
+
+    if ( p() -> specialization() == WARRIOR_ARMS && s -> result == RESULT_CRIT )
+      rage_gain *= 2.0;
 
     if ( w -> slot == SLOT_OFF_HAND )
       rage_gain /= 2.0;
@@ -951,11 +953,8 @@ struct melee_t: public warrior_attack_t
 
     // Any attack that hits generates rage. Multistrikes do not grant rage.
     if ( !result_is_miss( s -> result ) && !result_is_multistrike( s -> result ) )
-    {
-      trigger_rage_gain();
-      if ( p() -> specialization() == WARRIOR_ARMS && s -> result == RESULT_CRIT ) // Crits give 2x rage for Arms.
-        trigger_rage_gain();
-    }
+      trigger_rage_gain( s );
+
 
     if ( p() -> specialization() == WARRIOR_PROTECTION )
     {
