@@ -35,15 +35,17 @@ actions+=/frenzied_regeneration,if=health.pct<100&action.savage_defense.charges=
 actions+=/frenzied_regeneration,if=health.pct<100&action.savage_defense.charges>0&incoming_damage_5>0.4*health.max
 actions+=/savage_defense
 actions+=/barkskin
-actions+=/bristling_fur,if=talent.bristling_fur.enabled&incoming_damage_4s>health.max*0.15
-actions+=/renewal,if=talent.renewal.enabled
+actions+=/bristling_fur,if=incoming_damage_4s>health.max*0.15
+actions+=/renewal,if=incoming_damage_5>0.8*health.max
+actions+=/natures_vigil,if=!talent.incarnation.enabled|buff.son_of_ursoc.up|cooldown.incarnation.remains
 actions+=/lacerate,if=((dot.lacerate.remains<3)|(dot.lacerate.stack<3&dot.thrash_bear.remains>3))&(buff.son_of_ursoc.up|buff.berserk.up)
 actions+=/thrash_bear,if=dot.thrash_bear.remains<3&(buff.son_of_ursoc.up|buff.berserk.up)
+actions+=/pulverize,if=buff.pulverize.remains<gcd
 actions+=/mangle
-actions+=/cenarion_ward,if=talent.cenarion_ward.enabled
 actions+=/incarnation
-actions+=/thrash_bear,if=dot.thrash_bear.remains<duration*0.3
 actions+=/lacerate,cycle_targets=1,if=dot.lacerate.remains<3
+actions+=/thrash_bear,if=dot.thrash_bear.remains<16*0.3
+actions+=/cenarion_ward
 actions+=/thrash_bear,if=active_enemies>=3
 actions+=/lacerate
 

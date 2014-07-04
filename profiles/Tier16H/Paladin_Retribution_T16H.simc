@@ -32,12 +32,12 @@ actions=rebuke
 actions+=/mogu_power_potion,if=(buff.bloodlust.react|buff.avenging_wrath.up|target.time_to_die<=40)
 actions+=/auto_attack
 actions+=/avenging_wrath
-actions+=/holy_avenger,if=talent.holy_avenger.enabled&holy_power<=2
+actions+=/holy_avenger,if=holy_power<=2
 actions+=/blood_fury
 actions+=/berserking
 actions+=/arcane_torrent
-actions+=/execution_sentence,if=talent.execution_sentence.enabled
-actions+=/lights_hammer,if=talent.lights_hammer.enabled
+actions+=/execution_sentence
+actions+=/lights_hammer
 actions+=/divine_storm,if=active_enemies>=2&(holy_power=5|buff.divine_purpose.react|(buff.holy_avenger.up&holy_power>=3))
 actions+=/divine_storm,if=buff.divine_crusader.react&holy_power=5
 actions+=/templars_verdict,if=holy_power=5|buff.holy_avenger.up&holy_power>=3
@@ -59,7 +59,7 @@ actions+=/wait,sec=cooldown.exorcism.remains,if=cooldown.exorcism.remains>0&cool
 actions+=/templars_verdict,if=buff.tier15_4pc_melee.up&active_enemies<4
 actions+=/divine_storm,if=active_enemies>=2
 actions+=/templars_verdict
-actions+=/holy_prism,if=talent.holy_prism.enabled
+actions+=/holy_prism
 
 head=helmet_of_winged_triumph,id=99379,upgrade=2,gems=capacitive_primal_8haste_8haste_9str
 neck=juggernauts_ignition_keys,id=105513,upgrade=2

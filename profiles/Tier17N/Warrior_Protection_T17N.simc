@@ -40,18 +40,18 @@ actions+=/run_action_list,name=normal_rotation
 
 actions.normal_rotation=shield_slam
 actions.normal_rotation+=/revenge
-actions.normal_rotation+=/enraged_regeneration,if=talent.enraged_regeneration.enabled
+actions.normal_rotation+=/enraged_regeneration
 actions.normal_rotation+=/heroic_strike,if=buff.ultimatum.up
-actions.normal_rotation+=/ravager,if=talent.ravager.enabled
+actions.normal_rotation+=/ravager
 actions.normal_rotation+=/thunder_clap
 actions.normal_rotation+=/demoralizing_shout
-actions.normal_rotation+=/impending_victory,if=talent.impending_victory.enabled
+actions.normal_rotation+=/impending_victory
 actions.normal_rotation+=/victory_rush,if=!talent.impending_victory.enabled
-actions.normal_rotation+=/bloodbath,if=talent.bloodbath.enabled
-actions.normal_rotation+=/bladestorm,if=talent.bladestorm.enabled
-actions.normal_rotation+=/shockwave,if=talent.shockwave.enabled
-actions.normal_rotation+=/storm_bolt,if=talent.storm_bolt.enabled
-actions.normal_rotation+=/dragon_roar,if=talent.dragon_roar.enabled
+actions.normal_rotation+=/bloodbath
+actions.normal_rotation+=/bladestorm
+actions.normal_rotation+=/shockwave
+actions.normal_rotation+=/storm_bolt
+actions.normal_rotation+=/dragon_roar
 actions.normal_rotation+=/devastate
 
 head=primal_gladiators_plate_helm,id=111241
