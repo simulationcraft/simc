@@ -1792,7 +1792,9 @@ struct stay_of_execution_t : public paladin_heal_t
   {
     double m = paladin_heal_t::composite_target_multiplier( target );
 
-    m *= soe_tick_multiplier.at( td( target ) -> dots.stay_of_execution -> current_tick );
+    // Workaround for some clang insanity. soe_tick_multiplier.at( ... ) does not compile ..
+    assert( static_cast<size_t>( td( target ) -> dots.stay_of_execution -> current_tick ) < soe_tick_multiplier.size() && "Stay of Execution current tick > tick multiplier array" );
+    m *= soe_tick_multiplier[ td( target ) -> dots.stay_of_execution -> current_tick ];
 
     return m;
   }
@@ -1843,7 +1845,9 @@ struct execution_sentence_t : public paladin_spell_t
   {
     double m = paladin_spell_t::composite_target_multiplier( target );
 
-    m *= tick_multiplier.at( td( target ) -> dots.execution_sentence -> current_tick );
+    // Workaround for some clang insanity. tick_multiplier.at( ... ) does not compile ..
+    assert( static_cast<size_t>( td( target ) -> dots.execution_sentence -> current_tick ) < tick_multiplier.size() && "Execution Sentence current tick > tick multiplier array" );
+    m *= tick_multiplier[ td( target ) -> dots.execution_sentence -> current_tick ];
 
     return m;
   }
