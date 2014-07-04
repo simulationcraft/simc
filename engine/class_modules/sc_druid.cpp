@@ -3395,6 +3395,9 @@ struct frenzied_regeneration_t : public druid_heal_t
     if ( p() -> resources.current[ RESOURCE_RAGE ] < 1 )
       return false;
 
+    if ( p() -> resources.current[ RESOURCE_HEALTH ] >= p() -> resources.max[ RESOURCE_HEALTH ] )
+      return false;
+
     return druid_heal_t::ready();
   }
 };
@@ -5999,8 +6002,8 @@ void druid_t::apl_guardian()
   default_list -> add_action( "auto_attack" );
   default_list -> add_action( "skull_bash_bear" );
   default_list -> add_action( this, "Maul", "if=buff.tooth_and_claw.react&buff.tooth_and_claw_absorb.down&incoming_damage_1s" );
-  default_list -> add_action( this, "Frenzied Regeneration", "if=health.pct<100&action.savage_defense.charges=0&incoming_damage_5>0.2*health.max" );
-  default_list -> add_action( this, "Frenzied Regeneration", "if=health.pct<100&action.savage_defense.charges>0&incoming_damage_5>0.4*health.max" );
+  default_list -> add_action( this, "Frenzied Regeneration", "if=incoming_damage_3>(1+action.savage_defense.charges_fractional)*0.04*health.max",
+                              "Cast Frenzied Regeneration based on incoming damage, being more strict the closer we are to wasting SD charges." );
   default_list -> add_action( this, "Savage Defense" );
   default_list -> add_action( this, "Barkskin" );
   default_list -> add_talent( this, "Bristling Fur", "if=incoming_damage_4s>health.max*0.15" );
@@ -6011,7 +6014,7 @@ void druid_t::apl_guardian()
   default_list -> add_talent( this, "Pulverize", "if=buff.pulverize.remains<gcd" );
   default_list -> add_action( this, "Mangle" );
   default_list -> add_action( "incarnation" );
-  default_list -> add_action( this, "Lacerate", "cycle_targets=1,if=dot.lacerate.remains<3" );
+  default_list -> add_action( this, "Lacerate", "cycle_targets=1,if=dot.lacerate.remains<3|dot.lacerate.stack<3" );
   default_list -> add_action( "thrash_bear,if=dot.thrash_bear.remains<16*0.3" );
   default_list -> add_talent( this, "Cenarion Ward" );
   default_list -> add_action( "thrash_bear,if=active_enemies>=3" );
