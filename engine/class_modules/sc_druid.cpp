@@ -28,9 +28,9 @@ namespace { // UNNAMED NAMESPACE
     Just verify stuff.
 
     = Guardian =
-    Pulverize
     Verify DoC
     buff.natures_vigil.up? (nvtest)
+    Primal Tenacity retrigger -- http://us.battle.net/wow/en/forum/topic/13087818929?page=10#184
 
     = Restoration =
     Err'thing
@@ -2683,11 +2683,11 @@ struct bear_attack_t : public druid_attack_t<melee_attack_t>
     base_t( n, p, s )
   {}
 
-  virtual void execute()
+  virtual void impact( action_state_t* s )
   {
-    druid_attack_t::execute();
+    druid_attack_t::impact( s );
 
-    if ( execute_state -> result == RESULT_CRIT )
+    if ( s -> result == RESULT_CRIT )
     {
       p() -> resource_gain( RESOURCE_RAGE,
         p() -> spell.primal_fury -> effectN( 1 ).resource( RESOURCE_RAGE ),
