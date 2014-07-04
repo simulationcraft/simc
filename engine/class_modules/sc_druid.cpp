@@ -1442,19 +1442,19 @@ struct celestial_alignment_t : public druid_buff_t < buff_t >
 struct might_of_ursoc_t : public druid_buff_t < buff_t >
 {
   might_of_ursoc_t( druid_t& p ) :
-    druid_buff_t( p, buff_creator_t( &p, "might_of_ursoc", p.find_spell( 106922 ) ) )
+    base_t( p, buff_creator_t( &p, "might_of_ursoc", p.find_spell( 106922 ) ) )
   {}
 
   virtual void start( int stacks, double value, timespan_t duration )
   {
-    druid_buff_t::start( stacks, value, duration );
+    base_t::start( stacks, value, duration );
 
     druid.druid_t::recalculate_resource_max( RESOURCE_HEALTH );
   }
 
   virtual void expire_override()
   {
-    druid_buff_t::expire_override();
+    base_t::expire_override();
 
     druid.druid_t::recalculate_resource_max( RESOURCE_HEALTH );
   }
@@ -1524,7 +1524,7 @@ struct tooth_and_claw_absorb_t : public absorb_buff_t
 struct ursa_major_t : public druid_buff_t < buff_t >
 {
   ursa_major_t( druid_t& p ) :
-    druid_buff_t( p, buff_creator_t( &p, "ursa_major", p.find_spell( 159233 ) )
+    base_t( p, buff_creator_t( &p, "ursa_major", p.find_spell( 159233 ) )
                   .default_value( p.find_spell( 159233 ) -> effectN( 1 ).percent() )
     )
   {}
@@ -2685,7 +2685,7 @@ struct bear_attack_t : public druid_attack_t<melee_attack_t>
 
   virtual void execute()
   {
-    druid_attack_t::execute();
+    base_t::execute();
 
     if ( execute_state -> result == RESULT_CRIT )
     {
@@ -2714,9 +2714,9 @@ struct bear_attack_t : public druid_attack_t<melee_attack_t>
   virtual timespan_t gcd() const
   {
     if ( p() -> specialization() != DRUID_GUARDIAN )
-      return druid_attack_t::gcd();
+      return base_t::gcd();
 
-    timespan_t t = druid_attack_t::gcd();
+    timespan_t t = base_t::gcd();
 
     if ( t == timespan_t::zero() )
       return timespan_t::zero();
@@ -2734,7 +2734,7 @@ struct bear_attack_t : public druid_attack_t<melee_attack_t>
     if ( ! p() -> buff.bear_form -> check() )
       return false;
     
-    return druid_attack_t::ready();
+    return base_t::ready();
   }
 }; // end druid_bear_attack_t
 
@@ -2906,7 +2906,7 @@ struct maul_t : public bear_attack_t
   struct tooth_and_claw_t : public druid_action_t<absorb_t>
   {
     tooth_and_claw_t( druid_t* p ) :
-      druid_action_t( "tooth_and_claw", p, p -> spec.tooth_and_claw )
+      druid_action_t<absorb_t>( "tooth_and_claw", p, p -> spec.tooth_and_claw )
     {
       harmful = special = false;
       may_crit = may_multistrike = false; // TODO: Verify...
