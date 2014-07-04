@@ -208,6 +208,7 @@ public:
     buff_t* bristling_fur;
     buff_t* might_of_ursoc;
     absorb_buff_t* primal_tenacity;
+    buff_t* pulverize;
     buff_t* savage_defense;
     buff_t* son_of_ursoc;
     buff_t* survival_instincts;
@@ -241,20 +242,24 @@ public:
   // Gains
   struct gains_t
   {
-    // DONE
-    gain_t* bear_form;
+    // Multiple Specs / Forms
+    gain_t* omen_of_clarity;    // Feral & Restoration
+    gain_t* primal_fury;        // Cat & Bear Forms
+    gain_t* soul_of_the_forest; // Feral & Guardian
+
+    // Feral (Cat)
     gain_t* energy_refund;
-    gain_t* frenzied_regeneration;
-    gain_t* lotp_health;
-    gain_t* omen_of_clarity;
-    gain_t* primal_fury;
-    gain_t* soul_of_the_forest;
+    gain_t* glyph_ferocious_bite;
+    gain_t* leader_of_the_pack;
     gain_t* tigers_fury;
 
+    // Guardian (Bear)
+    gain_t* bear_form;
     gain_t* bear_melee;
-    gain_t* glyph_ferocious_bite;
-    gain_t* mangle;
+    gain_t* frenzied_regeneration;
     gain_t* lacerate;
+    gain_t* mangle;
+    gain_t* pulverize;
     gain_t* thrash;
   } gain;
 
@@ -2975,6 +2980,45 @@ struct maul_t : public bear_attack_t
   }
 };
 
+// Pulverize ================================================================
+
+struct pulverize_t : public bear_attack_t
+{
+  double rage_gain;
+
+  pulverize_t( druid_t* player, const std::string& options_str ) :
+    bear_attack_t( "pulverize", player, player -> talent.pulverize ),
+    rage_gain( 0.0 )
+  {
+    parse_options( NULL, options_str );
+
+    rage_gain = player -> find_spell( 162290 ) -> effectN( 1 ).resource( RESOURCE_RAGE );
+  }
+
+  virtual void impact( action_state_t* s )
+  {
+    bear_attack_t::impact( s );
+
+    if ( result_is_hit( s -> result ) )
+    {
+      // consumes 3 stacks of Lacerate on the target
+      target -> get_dot( "lacerate", p() ) -> cancel();
+      // generate 15 Rage
+      p() -> resource_gain( RESOURCE_RAGE, rage_gain, p() -> gain.pulverize );
+      // and reduce damage taken by 20% for 10 sec
+      p() -> buff.pulverize -> trigger();
+    }
+  }
+
+  virtual bool ready()
+  {
+    if ( td( target ) -> lacerate_stack < 3 )
+      return false;
+
+    return bear_attack_t::ready();
+  }
+};
+
 // Skull Bash (Bear) ========================================================
 
 struct skull_bash_bear_t : public bear_attack_t
@@ -5201,6 +5245,7 @@ action_t* druid_t::create_action( const std::string& name,
   if ( name == "moonkin_form"           ) return new           moonkin_form_t( this, options_str );
   if ( name == "natures_swiftness"      ) return new       druids_swiftness_t( this, options_str );
   if ( name == "natures_vigil"          ) return new          natures_vigil_t( this, options_str );
+  if ( name == "pulverize"              ) return new              pulverize_t( this, options_str );
   if ( name == "rake"                   ) return new                   rake_t( this, options_str );
   if ( name == "renewal"                ) return new                renewal_t( this, options_str );
   if ( name == "regrowth"               ) return new               regrowth_t( this, options_str );
@@ -5669,6 +5714,8 @@ void druid_t::create_buffs()
                                .school( SCHOOL_PHYSICAL )
                                .source( get_stats( "primal_tenacity" ) )
                                .gain( get_gain( "primal_tenacity" ) );
+  buff.pulverize             = buff_creator_t( this, "pulverize", find_spell( 158792 ) )
+                               .default_value( find_spell( 158792 ) -> effectN( 1 ).percent() );
   buff.savage_defense        = buff_creator_t( this, "savage_defense", find_class_spell( "Savage Defense" ) -> ok() ? find_spell( 132402 ) : spell_data_t::not_found() )
                                .add_invalidate( CACHE_DODGE )
                                .duration( find_spell( 132402 ) -> duration() + talent.guardian_of_elune -> effectN( 2 ).time_value() );
@@ -6056,10 +6103,11 @@ void druid_t::init_gains()
   gain.frenzied_regeneration = get_gain( "frenzied_regeneration" );
   gain.glyph_ferocious_bite  = get_gain( "glyph_ferocious_bite"  );
   gain.lacerate              = get_gain( "lacerate"              );
-  gain.lotp_health           = get_gain( "lotp_health"           );
+  gain.leader_of_the_pack    = get_gain( "leader_of_the_pack"    );
   gain.mangle                = get_gain( "mangle"                );
   gain.omen_of_clarity       = get_gain( "omen_of_clarity"       );
   gain.primal_fury           = get_gain( "primal_fury"           );
+  gain.pulverize             = get_gain( "pulverize"             );
   gain.soul_of_the_forest    = get_gain( "soul_of_the_forest"    );
   gain.thrash                = get_gain( "thrash"                );
   gain.tigers_fury           = get_gain( "tigers_fury"           );
@@ -6896,6 +6944,8 @@ void druid_t::assess_damage( school_e school,
   s -> result_amount *= 1.0 + glyph.ninth_life -> effectN( 1 ).base_value();
 
   s -> result_amount *= 1.0 + buff.bristling_fur -> value();
+
+  s -> result_amount *= 1.0 + buff.pulverize -> value();
 
   if ( specialization() == DRUID_GUARDIAN && buff.bear_form -> check() )
   {
