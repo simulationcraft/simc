@@ -30,22 +30,17 @@ actions+=/arcane_torrent
 actions+=/use_item,slot=waist
 actions+=/auto_attack
 actions+=/skull_bash_bear
-actions+=/maul,if=buff.tooth_and_claw.react&buff.tooth_and_claw_absorb.down
+actions+=/maul,if=buff.tooth_and_claw.react&buff.tooth_and_claw_absorb.down&incoming_damage_1s
 actions+=/frenzied_regeneration,if=health.pct<100&action.savage_defense.charges=0&incoming_damage_5>0.2*health.max
 actions+=/frenzied_regeneration,if=health.pct<100&action.savage_defense.charges>0&incoming_damage_5>0.4*health.max
 actions+=/savage_defense
 actions+=/barkskin
+actions+=/bristling_fur,if=talent.bristling_fur.enabled&incoming_damage_4s>health.max*0.15
 actions+=/renewal,if=talent.renewal.enabled
 actions+=/lacerate,if=((dot.lacerate.remains<3)|(buff.lacerate.stack<3&dot.thrash_bear.remains>3))&(buff.son_of_ursoc.up|buff.berserk.up)
 actions+=/thrash_bear,if=dot.thrash_bear.remains<3&(buff.son_of_ursoc.up|buff.berserk.up)
 actions+=/mangle
-actions+=/wait,sec=cooldown.mangle.remains,if=cooldown.mangle.remains<=0.5
 actions+=/cenarion_ward,if=talent.cenarion_ward.enabled
-actions+=/lacerate,if=dot.lacerate.remains<3|buff.lacerate.stack<3
-actions+=/thrash_bear,if=dot.thrash_bear.remains<2
-actions+=/lacerate
-actions+=/faerie_fire,if=dot.thrash_bear.remains>6
-actions+=/thrash_bear
 
 head=headpiece_of_the_shattered_vale,id=99328,upgrade=2,gems=8agi_9agi
 neck=immerseus_crystalline_eye,id=105407,upgrade=2

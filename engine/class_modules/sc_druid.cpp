@@ -28,8 +28,9 @@ namespace { // UNNAMED NAMESPACE
     Just verify stuff.
 
     = Guardian =
-    Level 100 Talents
+    Pulverize
     Verify DoC
+    buff.natures_vigil.up? (nvtest)
     Lacerate buff
 
     = Restoration =
@@ -653,34 +654,39 @@ struct gushing_wound_t : public residual_action::residual_periodic_action_t< att
 
 struct natures_vigil_proc_t : public spell_t
 {
-  struct natures_vigil_heal_t : public heal_t
+  struct heal_proc_t : public heal_t
   {
-    double heal_coeff;
-    double dmg_coeff;
+    bool fromDmg;
+    double heal_coeff, dmg_coeff;
 
-    natures_vigil_heal_t( druid_t* p ) :
+    heal_proc_t( druid_t* p ) :
       heal_t( "natures_vigil_heal", p, p -> find_spell( 124988 ) ),
-      heal_coeff( 0.0 ), dmg_coeff( 0.0 )
+      fromDmg( true ), heal_coeff( 0.0 ), dmg_coeff( 0.0 )
     {
       background = proc = dual = true;
-      may_crit = may_miss = false;
-      may_multistrike = false;
-      trigger_gcd              = timespan_t::zero();
-      heal_coeff               = p -> talent.natures_vigil -> effectN( 3 ).percent();
-      dmg_coeff                = p -> talent.natures_vigil -> effectN( 4 ).percent();
+      may_crit = may_miss = may_multistrike = false;
+      trigger_gcd = timespan_t::zero();
+      heal_coeff = p -> talent.natures_vigil -> effectN( 3 ).percent();
+      dmg_coeff  = p -> talent.natures_vigil -> effectN( 4 ).percent();
     }
 
-    void trigger( double amount, bool harmful )
+    virtual double action_multiplier() const
     {
-      double coeff = harmful ? dmg_coeff : heal_coeff;
+      double am = heal_t::action_multiplier();
+      
+      if ( fromDmg )
+        am *= dmg_coeff;
+      else
+        am *= heal_coeff;
 
-      // set the heal size to be fixed based on the result of the action
-      base_dd_min = base_dd_max = amount * coeff;
+      return am;
+    }
 
+    virtual void execute()
+    {
       target = find_lowest_target();
 
-      if ( target )
-        execute();
+      heal_t::execute();
     }
 
   private:
@@ -706,26 +712,22 @@ struct natures_vigil_proc_t : public spell_t
     }
   };
 
-  struct natures_vigil_damage_t : public spell_t
+  struct damage_proc_t : public spell_t
   {
-    natures_vigil_damage_t( druid_t* p ) :
+    damage_proc_t( druid_t* p ) :
       spell_t( "natures_vigil_damage", p, p -> find_spell( 124991 ) )
     {
       background = proc = dual = true;
-      may_crit = may_miss      = false;
-      trigger_gcd              = timespan_t::zero();
-      base_multiplier          = p -> talent.natures_vigil -> effectN( 3 ).percent();
+      may_crit = may_miss = may_multistrike = false;
+      trigger_gcd     = timespan_t::zero();
+      base_multiplier = p -> talent.natures_vigil -> effectN( 3 ).percent();
     }
 
-    void trigger( double amount )
+    virtual void execute()
     {
-      // set the heal size to be fixed based on the result of the action
-      base_dd_min = base_dd_max = amount;
-
       target = pick_random_target();
 
-      if ( target )
-        execute();
+      spell_t::execute();
     }
 
   private:
@@ -740,33 +742,26 @@ struct natures_vigil_proc_t : public spell_t
     }
   };
 
-  natures_vigil_damage_t* damage;
-  natures_vigil_heal_t*   healing;
+  damage_proc_t* damage;
+  heal_proc_t*   heal;
 
   natures_vigil_proc_t( druid_t* p ) :
     spell_t( "natures_vigil", p, spell_data_t::nil() )
   {
-    background = proc = true;
-    trigger_gcd       = timespan_t::zero();
-    may_crit = may_miss = false;
-    may_multistrike = false;
-
-    damage  = new natures_vigil_damage_t( p );
-    healing = new natures_vigil_heal_t( p );
+    damage  = new damage_proc_t( p );
+    heal    = new heal_proc_t( p );
   }
 
-  void trigger( const action_t& action, bool harmful = true )
+  void trigger( double amount, bool harmful = true )
   {
-    if ( action.execute_state -> result_amount <= 0 )
-      return;
-    if ( action.aoe != 0 )
-      return;
-    if ( ! action.special )
-      return;
-
-    if ( ! action.harmful || harmful )
-      damage -> trigger( action.execute_state -> result_amount );
-    healing -> trigger( action.execute_state -> result_amount, action.harmful );
+    if ( ! harmful )
+    {
+      damage -> base_dd_min = damage -> base_dd_max = amount;
+      damage -> execute();
+    }
+    heal -> base_dd_min = heal -> base_dd_max = amount;
+    heal -> fromDmg = harmful;
+    heal -> execute();
   }
 };
 
@@ -1706,9 +1701,12 @@ public:
   virtual void impact( action_state_t* s )
   {
     ab::impact( s );
-    
+
     if ( p() -> sets.has_set_bonus( SET_T17_4PC_MELEE ) )
       trigger_gushing_wound( s -> target, s -> result_amount );
+
+    if ( ab::aoe == 0 && s -> result_amount > 0 && p() -> buff.natures_vigil -> up() )
+      p() -> active.natures_vigil -> trigger( s -> result_amount, ab::harmful );
   }
 
   virtual void tick( dot_t* d )
@@ -1717,6 +1715,20 @@ public:
 
     if ( p() -> sets.has_set_bonus( SET_T17_4PC_MELEE ) )
       trigger_gushing_wound( d -> target, d -> state -> result_amount );
+
+    if ( ab::aoe == 0 && d -> state -> result_amount > 0 && p() -> buff.natures_vigil -> up() )
+      p() -> active.natures_vigil -> trigger( d -> state -> result_amount, ab::harmful );
+  }
+
+  virtual void multistrike_tick( const action_state_t* src_state, action_state_t* ms_state, double multiplier )
+  {
+    ab::multistrike_tick( src_state, ms_state, multiplier );
+
+    if ( p() -> sets.has_set_bonus( SET_T17_4PC_MELEE ) )
+      trigger_gushing_wound( ms_state -> target, ms_state -> result_amount );
+
+    if ( ab::aoe == 0 && ms_state -> result_amount > 0 && p() -> buff.natures_vigil -> up() )
+      p() -> active.natures_vigil -> trigger( ms_state -> result_amount, ab::harmful );
   }
 
   void trigger_gushing_wound( player_t* t, double dmg )
@@ -1728,6 +1740,28 @@ public:
       p() -> active.gushing_wound, // ignite spell
       t, // target
       p() -> find_spell( 165432 ) -> effectN( 1 ).percent() * dmg );
+  }
+
+  virtual expr_t* create_expression( const std::string& name_str )
+  {
+    if ( ! util::str_compare_ci( name_str, "dot.lacerate.stack" ) )
+      return ab::create_expression( name_str );
+
+    struct lacerate_stack_expr_t : public expr_t
+    {
+      druid_t& druid;
+      action_t& action;
+
+      lacerate_stack_expr_t( action_t& a, druid_t& p ) :
+        expr_t( "stack" ), druid( p ), action( a )
+      {}
+      virtual double evaluate()
+      {
+        return druid.get_target_data( action.target ) -> lacerate_stack;
+      }
+    };
+
+    return new lacerate_stack_expr_t( *this, *p() );
   }
 };
 
@@ -1761,9 +1795,6 @@ public:
   {
     ab::execute();
 
-    if ( ab::p() -> buff.natures_vigil -> check() && ab::result_is_hit( ab::execute_state -> result ) )
-      ab::p() -> active.natures_vigil -> trigger( *this );
-
     // TODO: Confirm you still lose a stack on miss
     if ( ab::p() -> talent.bloodtalons -> ok() && consume_bloodtalons & ab::p() -> buff.bloodtalons -> up() )
       ab::p() -> buff.bloodtalons -> decrement();
@@ -1775,14 +1806,6 @@ public:
 
     if ( ab::p() -> spec.leader_of_the_pack -> ok() && s -> result == RESULT_CRIT )
       trigger_lotp( s );
-  }
-
-  virtual void tick( dot_t* d )
-  {
-    ab::tick( d );
-
-    if ( ab::p() -> buff.natures_vigil -> up() )
-      ab::p() -> active.natures_vigil -> trigger( *this );
   }
 
   virtual double composite_persistent_multiplier( const action_state_t* s ) const
@@ -2815,7 +2838,8 @@ struct lacerate_t : public bear_attack_t
   {
     double tm = bear_attack_t::composite_target_ta_multiplier( t );
 
-    tm *= td( t ) -> lacerate_stack;
+    // Since this is called before we get a chance to increment in impact(), account for that here
+    tm *= std::min( 3, td( t ) -> lacerate_stack + 1 );
 
     return tm;
   }
@@ -3142,22 +3166,6 @@ public:
 
     return h;
   }
-
-  virtual void tick( dot_t* d )
-  {
-    ab::tick( d );
-
-    if ( this -> p() -> buff.natures_vigil -> check() )
-      this -> p() -> active.natures_vigil -> trigger( *this, d -> current_action -> harmful );
-  }
-
-  virtual void execute()
-  {
-    ab::execute();
-
-    if ( this -> p() -> buff.natures_vigil -> check() && ab::result_is_hit( ab::execute_state -> result ) )
-      this -> p() -> active.natures_vigil -> trigger( *this );
-  }
 };
 
 namespace heals {
@@ -3322,6 +3330,7 @@ struct frenzied_regeneration_t : public druid_heal_t
     druid_heal_t( "frenzied_regeneration", p, p -> find_class_spell( "Frenzied Regeneration" ), options_str ),
     maximum_rage_cost( 0.0 )
   {
+    parse_options( NULL, options_str );
     special = false;
     use_off_gcd = true;
 
@@ -3344,6 +3353,7 @@ struct frenzied_regeneration_t : public druid_heal_t
   virtual double action_multiplier() const
   {
     double am = druid_heal_t::action_multiplier();
+
     am *= cost() / 60;
 
     return am;
@@ -3361,10 +3371,10 @@ struct frenzied_regeneration_t : public druid_heal_t
 
   virtual bool ready()
   {
-    if ( !p() -> buff.bear_form -> check() )
+    if ( ! p() -> buff.bear_form -> check() )
       return false;
 
-    if ( p() -> resources.current[RESOURCE_RAGE ] < 1 )
+    if ( p() -> resources.current[ RESOURCE_RAGE ] < 1 )
       return false;
 
     return druid_heal_t::ready();
@@ -4699,9 +4709,10 @@ struct natures_vigil_t : public druid_spell_t
 
   virtual void execute()
   {
+    // Don't call druid_spell_t::execute() because the spell data has some weird stuff in it.
     if ( sim -> log ) sim -> out_log.printf( "%s performs %s", player -> name(), name() );
-
     update_ready();
+
     p() -> buff.natures_vigil -> trigger();
   }
 };
@@ -5967,24 +5978,23 @@ void druid_t::apl_guardian()
 
   default_list -> add_action( "auto_attack" );
   default_list -> add_action( "skull_bash_bear" );
-  default_list -> add_action( this, "Maul", "if=buff.tooth_and_claw.react&buff.tooth_and_claw_absorb.down" );
+  default_list -> add_action( this, "Maul", "if=buff.tooth_and_claw.react&buff.tooth_and_claw_absorb.down&incoming_damage_1s" );
   default_list -> add_action( this, "Frenzied Regeneration", "if=health.pct<100&action.savage_defense.charges=0&incoming_damage_5>0.2*health.max" );
   default_list -> add_action( this, "Frenzied Regeneration", "if=health.pct<100&action.savage_defense.charges>0&incoming_damage_5>0.4*health.max" );
   default_list -> add_action( this, "Savage Defense" );
   default_list -> add_action( this, "Barkskin" );
+  default_list -> add_talent( this, "Bristling Fur", "if=incoming_damage_4s>health.max*0.15" );
   default_list -> add_talent( this, "Renewal", "incoming_damage_5>0.8*health.max" );
   default_list -> add_talent( this, "Natures Vigil", "if=enabled&(!talent.incarnation.enabled|buff.son_of_ursoc.up|cooldown.incarnation.remains)" );
   default_list -> add_action( this, "Lacerate", "if=((dot.lacerate.remains<3)|(buff.lacerate.stack<3&dot.thrash_bear.remains>3))&(buff.son_of_ursoc.up|buff.berserk.up)" );
   default_list -> add_action( "thrash_bear,if=dot.thrash_bear.remains<3&(buff.son_of_ursoc.up|buff.berserk.up)" );
   default_list -> add_action( this, "Mangle" );
-  default_list -> add_action( "wait,sec=cooldown.mangle.remains,if=cooldown.mangle.remains<=0.5" );
   default_list -> add_talent( this, "Cenarion Ward" );
-  default_list -> add_talent( this, "Incarnation" );
-  default_list -> add_action( this, "Lacerate", "if=dot.lacerate.remains<3|buff.lacerate.stack<3" );
-  default_list -> add_action( "thrash_bear,if=dot.thrash_bear.remains<2" );
+  default_list -> add_action( "incarnation" );
+  default_list -> add_action( "thrash_bear,if=dot.thrash_bear.remains<duration*0.3" );
+  default_list -> add_action( this, "Lacerate", "cycle_targets=1,if=dot.lacerate.remains<3" );
+  default_list -> add_action( "thrash_bear,if=active_enemies>=3" );
   default_list -> add_action( this, "Lacerate" );
-  default_list -> add_action( this, "Faerie Fire", "if=dot.thrash_bear.remains>6" );
-  default_list -> add_action( "thrash_bear" );
 }
 
 // Restoration Combat Action Priority List ==============================
@@ -6581,22 +6591,6 @@ expr_t* druid_t::create_expression( action_t* a, const std::string& name_str )
     virtual double evaluate() { return druid.eclipse_direction == rt; }
   };
 
-  struct lacerate_stack_expr_t : public druid_expr_t
-  {
-    druid_td_t* td;
-    lacerate_stack_expr_t( const std::string& n, druid_t& p, action_t* a ) :
-      druid_expr_t( n, p )
-    {
-      td = p.get_target_data( a -> target );
-    }
-    virtual double evaluate()
-    {
-      return td -> lacerate_stack ? td -> lacerate_stack : 0;
-    }
-  };
-
-
-
   std::vector<std::string> splits = util::string_split( name_str, "." );
 
   if ( ( splits.size() == 2 ) && ( splits[0] == "eclipse_dir" ) )
@@ -6611,10 +6605,6 @@ expr_t* druid_t::create_expression( action_t* a, const std::string& name_str )
       return player_t::create_expression( a, name_str );
     }
     return new eclipse_expr_t( name_str, *this, e );
-  }
-  else if ( splits.size() == 3 )
-  {
-    return new lacerate_stack_expr_t( name_str, *this, a );
   }
   else if ( util::str_compare_ci( name_str, "eclipse_energy" ) )
   {
@@ -6974,7 +6964,7 @@ druid_td_t::druid_td_t( player_t& target, druid_t& source )
   : actor_pair_t( &target, &source ),
     dots( dots_t() ),
     buffs( buffs_t() ),
-    lacerate_stack( 1 ),
+    lacerate_stack( 0 ),
     combo_points( source, target )
 {
   dots.gushing_wound = target.get_dot( "gushing_wound", &source );
