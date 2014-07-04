@@ -6025,15 +6025,16 @@ void druid_t::apl_guardian()
   default_list -> add_action( this, "Savage Defense" );
   default_list -> add_action( this, "Barkskin" );
   default_list -> add_talent( this, "Bristling Fur", "if=incoming_damage_4s>health.max*0.15" );
-  default_list -> add_talent( this, "Renewal", "incoming_damage_5>0.8*health.max" );
-  default_list -> add_talent( this, "Natures Vigil", "if=enabled&(!talent.incarnation.enabled|buff.son_of_ursoc.up|cooldown.incarnation.remains)" );
+  default_list -> add_talent( this, "Renewal", "if=incoming_damage_5>0.8*health.max" );
+  default_list -> add_talent( this, "Nature's Vigil", "if=!talent.incarnation.enabled|buff.son_of_ursoc.up|cooldown.incarnation.remains" );
   default_list -> add_action( this, "Lacerate", "if=((dot.lacerate.remains<3)|(dot.lacerate.stack<3&dot.thrash_bear.remains>3))&(buff.son_of_ursoc.up|buff.berserk.up)" );
   default_list -> add_action( "thrash_bear,if=dot.thrash_bear.remains<3&(buff.son_of_ursoc.up|buff.berserk.up)" );
+  default_list -> add_talent( this, "Pulverize", "if=buff.pulverize.remains<gcd" );
   default_list -> add_action( this, "Mangle" );
-  default_list -> add_talent( this, "Cenarion Ward" );
   default_list -> add_action( "incarnation" );
-  default_list -> add_action( "thrash_bear,if=dot.thrash_bear.remains<duration*0.3" );
   default_list -> add_action( this, "Lacerate", "cycle_targets=1,if=dot.lacerate.remains<3" );
+  default_list -> add_action( "thrash_bear,if=dot.thrash_bear.remains<16*0.3" );
+  default_list -> add_talent( this, "Cenarion Ward" );
   default_list -> add_action( "thrash_bear,if=active_enemies>=3" );
   default_list -> add_action( this, "Lacerate" );
 }
