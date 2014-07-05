@@ -5788,11 +5788,11 @@ void priest_t::apl_precombat()
   if ( sim -> allow_potions && level >= 80 )
   {
     if ( level > 90 )
-      precombat -> add_action( "draenor_intellect_potion" );
+      precombat -> add_action( "potion,name=draenor_intellect_potion" );
     else if ( level > 85 )
-      precombat -> add_action( "jade_serpent_potion" );
+      precombat -> add_action( "potion,name=jade_serpent_potion" );
     else
-      precombat -> add_action( "volcanic_potion" );
+      precombat -> add_action( "potion,name=volcanic_potion" );
   }
 }
 
@@ -5842,11 +5842,11 @@ void priest_t::apl_shadow()
   if ( sim -> allow_potions && level >= 80 )
   {
     if ( level > 90 )
-      default_list -> add_action( "draenor_intellect_potion,if=buff.bloodlust.react|target.time_to_die<=40" );
+      default_list -> add_action( "potion,name=draenor_intellect_potion,if=buff.bloodlust.react|target.time_to_die<=40" );
     else if ( level > 85 )
-      default_list -> add_action( "jade_serpent_potion,if=buff.bloodlust.react|target.time_to_die<=40" );
+      default_list -> add_action( "potion,name=jade_serpent_potion,if=buff.bloodlust.react|target.time_to_die<=40" );
     else
-      default_list -> add_action( "volcanic_potion,if=buff.bloodlust.react|target.time_to_die<=40" );
+      default_list -> add_action( "potion,name=volcanic_potion,if=buff.bloodlust.react|target.time_to_die<=40" );
   }
 
   default_list -> add_action( "power_infusion,if=talent.power_infusion.enabled" );
@@ -5896,6 +5896,7 @@ void priest_t::apl_shadow()
   main -> add_action( "shadow_word_pain,moving=1,cycle_targets=1" );
 
   // Main CoP action list, if you don't have Insanity selected
+  cop -> add_action( "devouring_plague,if=shadow_orb>=3&(cooldown.mind_blast.remains<=gcd*1.0|cooldown.shadow_word_death.remains<=gcd*1.0)&primary_target=0,cycle_targets=1" );
   cop -> add_action( "devouring_plague,if=shadow_orb>=3&(cooldown.mind_blast.remains<=gcd*1.0|cooldown.shadow_word_death.remains<=gcd*1.0)" );
   cop -> add_action( "shadow_word_death,if=buff.shadow_word_death_reset_cooldown.stack=1,cycle_targets=1" );
   cop -> add_action( "shadow_word_death,if=buff.shadow_word_death_reset_cooldown.stack=0,cycle_targets=1" );
@@ -6026,10 +6027,12 @@ void priest_t::apl_disc_dmg()
   // Potions
   if ( sim -> allow_potions && level >= 80 )
   {
-    if ( level > 85 )
-      def -> add_action( "jade_serpent_potion,if=buff.bloodlust.react|target.time_to_die<=40" );
+    if ( level > 90 )
+      def -> add_action( "potion,name=draenor_intellect_potion,if=buff.bloodlust.react|target.time_to_die<=40" );
+    else if ( level > 85 )
+      def -> add_action( "potion,name=jade_serpent_potion,if=buff.bloodlust.react|target.time_to_die<=40" );
     else
-      def -> add_action( "volcanic_potion,if=buff.bloodlust.react|target.time_to_die<=40" );
+      def -> add_action( "potion,name=volcanic_potion,if=buff.bloodlust.react|target.time_to_die<=40" );
   }
 
   if ( race == RACE_BLOOD_ELF )
@@ -6135,10 +6138,12 @@ void priest_t::apl_holy_dmg()
   // Potions
   if ( sim -> allow_potions )
   {
-    if ( level > 85 )
-      def -> add_action( "jade_serpent_potion,if=buff.bloodlust.react|target.time_to_die<=40" );
-    else if ( level >= 80 )
-      def -> add_action( "volcanic_potion,if=buff.bloodlust.react|target.time_to_die<=40" );
+    if ( level > 90 )
+      def -> add_action( "potion,name=draenor_intellect_potion,if=buff.bloodlust.react|target.time_to_die<=40" );
+    else if ( level > 85 )
+      def -> add_action( "potion,name=jade_serpent_potion,if=buff.bloodlust.react|target.time_to_die<=40" );
+    else
+      def -> add_action( "potion,name=volcanic_potion,if=buff.bloodlust.react|target.time_to_die<=40" );
   }
 
   // Racials
