@@ -64,7 +64,7 @@ private:
   dot_t* dot;
 };
 
-// DoT Tick Event ===========================================================
+// DoT End Event ===========================================================
 
 struct dot_t::dot_end_event_t final : public event_t
 {

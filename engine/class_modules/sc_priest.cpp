@@ -1884,65 +1884,90 @@ struct shadowy_apparition_spell_t final : public priest_spell_t
   }
 };
 
+// Mind Blast T17 2pc Shadow Dot
+//TODO: Check and see if there is any sort of Ignite mechanic from Multistrikes or from a recast thanks to a DI proc. Also verify that it doesn't gain ticks (though I'm fairly certain it does not) and that it's duration is hasted. - Twintop 2014/06/30
+struct mind_blast_dot_t final : public priest_spell_t
+{
+  struct state_t final : public action_state_t
+  {
+    double mind_blast_dmg;
+    typedef action_state_t base_t;
+
+    state_t( action_t* a, player_t* t ) :
+      base_t( a, t ),
+      mind_blast_dmg( 0.0 )
+    { }
+
+    std::ostringstream& debug_str( std::ostringstream& s ) override
+    { base_t::debug_str( s ) << " mind_blast_dmg=" << mind_blast_dmg; return s; }
+
+    void initialize() override
+    { base_t::initialize(); mind_blast_dmg = 0.0; }
+
+    void copy_state( const action_state_t* o ) override
+    {
+      base_t::copy_state( o );
+      const state_t* dps_t = static_cast<const state_t*>( o );
+      mind_blast_dmg = dps_t -> mind_blast_dmg;
+    }
+  };
+
+  mind_blast_dot_t( priest_t& p, priest_spell_t* ) :
+    priest_spell_t( "mind_blast_dot", p, p.find_spell( 165623 ) )
+  {
+    parse_effect_data( data().effectN( 1 ) );
+
+    base_tick_time = timespan_t::from_seconds( 2.0 );
+    dot_duration = timespan_t::from_seconds( 4.0 );
+    hasted_ticks = true;
+    tick_may_crit = false;
+    may_multistrike = false;
+    tick_zero = false;
+
+    base_dd_min = base_dd_max = spell_power_mod.tick = spell_power_mod.direct = 0.0;
+
+    background = true;
+  }
+
+  timespan_t composite_dot_duration( const action_state_t* s ) const override
+  {
+    return dot_duration * ( tick_time( s -> haste ) / base_tick_time );
+  }
+
+  void init() override
+  {
+    priest_spell_t::init();
+
+    snapshot_flags = update_flags = 0;
+  }
+
+  double calculate_tick_amount( action_state_t* s_ , double ) override
+  {
+    const state_t* s = debug_cast<const state_t*>( s_ );
+    return s -> mind_blast_dmg / (dot_duration / base_tick_time );
+  }
+
+  virtual action_state_t* new_state() override
+  { return new state_t( this, target ); }
+
+  virtual action_state_t* get_state( const action_state_t* s = nullptr ) override
+  {
+    action_state_t* s_ = priest_spell_t::get_state( s );
+
+    if ( !s )
+    {
+      state_t* ds_ = static_cast<state_t*>( s_ );
+      ds_ -> mind_blast_dmg = 0.0;
+    }
+
+    return s_;
+  }
+};
+
 // Mind Blast Spell =========================================================
 
 struct mind_blast_t final : public priest_spell_t
 {
-  //TODO: Check and see if there is any sort of Ignite mechanic from Multistrikes or from a recast thanks to a DI proc. Also verify that it doesn't gain ticks (though I'm fairly certain it does not) and that it's duration is hasted. - Twintop 2014/06/30
-  struct mind_blast_dot_t : public priest_spell_t
-  {
-    double mind_blast_dmg;
-
-    mind_blast_dot_t( priest_t& p, priest_spell_t* ) :
-      priest_spell_t( "mind_blast_dot", p, p.find_spell( 165623 ) ),
-      mind_blast_dmg( 0.0 )
-    {
-      parse_effect_data( data().effectN( 1 ) );
-
-      base_tick_time = timespan_t::from_seconds( 2.0 );
-      dot_duration = timespan_t::from_seconds( 4.0 );
-      hasted_ticks = true;
-      tick_may_crit = false;
-      may_multistrike = false;
-      tick_zero = false;
-
-      base_dd_min = base_dd_max = spell_power_mod.tick = spell_power_mod.direct = 0.0;
-
-      background = true;
-    }
-
-    timespan_t composite_dot_duration( const action_state_t* s ) const override
-    {
-      return dot_duration * ( tick_time( s -> haste ) / base_tick_time );
-    }
-
-    void init() override
-    {
-      priest_spell_t::init();
-
-      snapshot_flags = update_flags = 0;
-    }
-
-    double calculate_tick_amount( action_state_t*, double ) override
-    {
-      return mind_blast_dmg / (dot_duration.total_seconds() / base_tick_time.total_seconds() );
-    }
-
-    timespan_t tick_time( double haste ) const
-    {
-      return base_tick_time * haste;
-    }
-
-    void set_dmg( int dmg )
-    {
-      mind_blast_dmg = dmg;
-    }
-
-    virtual void tick( dot_t* d )
-    {
-      priest_spell_t::tick( d );
-    }
-  };
 
   mind_blast_dot_t* dot_spell;
 
@@ -1950,7 +1975,7 @@ struct mind_blast_t final : public priest_spell_t
 
   mind_blast_t( priest_t& player, const std::string& options_str ) :
     priest_spell_t( "mind_blast", player, player.find_class_spell( "Mind Blast" ) ),
-    dot_spell( new mind_blast_dot_t( player, this ) ),
+    dot_spell( nullptr ),
     casted_with_divine_insight( false )
   {
     parse_options( nullptr, options_str );
@@ -1963,19 +1988,27 @@ struct mind_blast_t final : public priest_spell_t
       priest.cooldowns.mind_blast -> duration -= timespan_t::from_seconds( priest.talents.clarity_of_power -> effectN( 2 ).base_value() ); //Assuming it is effect 2, need to double check later. -- Twintop 2014/06/10
 
     if ( priest.sets.has_set_bonus( SET_T17_2PC_CASTER ) )
-        add_child( dot_spell );
+    {
+      dot_spell = new mind_blast_dot_t( player, this );
+      add_child( dot_spell );
+    }
   }
 
-  void set_dot( action_state_t* state )
+  void trigger_t17_2pc( action_state_t* state )
   {
-      action_state_t* s = priest_spell_t::get_state( state );
-      s -> result_amount = 0.0;
-      s -> haste = priest.composite_spell_haste();
-      s -> result = RESULT_HIT;
-      s -> target = state -> target;
-      dot_spell -> set_dmg( state -> result_amount * 0.1 );//* priest.sets.set( SET_T17_2PC_CASTER ) -> effectN( 1 ).percent() );
-      dot_spell -> schedule_travel( s );
-      dot_spell -> stats -> add_execute( timespan_t::zero(), s -> target);
+    if ( ! priest.sets.has_set_bonus( SET_T17_2PC_CASTER ) )
+      return;
+
+    assert( dot_spell );
+    mind_blast_dot_t::state_t* s = debug_cast<mind_blast_dot_t::state_t*>( dot_spell -> get_state( state ) );
+    s -> result_amount = 0.0;
+    s -> result = RESULT_HIT;
+    s -> target = state -> target;
+    s -> haste = dot_spell -> composite_haste();
+    s -> mind_blast_dmg = state -> result_amount * 0.1;//* priest.sets.set( SET_T17_2PC_CASTER ) -> effectN( 1 ).percent() );
+
+    dot_spell -> schedule_travel( s );
+    dot_spell -> stats -> add_execute( timespan_t::zero(), s -> target);
   }
 
   virtual void execute() override
@@ -2007,10 +2040,7 @@ struct mind_blast_t final : public priest_spell_t
         }
       }
 
-      if ( priest.sets.has_set_bonus( SET_T17_2PC_CASTER ) )
-      {
-        set_dot( s );
-      }
+      trigger_t17_2pc( s );
 
       priest.buffs.glyph_mind_spike -> expire();
     }
