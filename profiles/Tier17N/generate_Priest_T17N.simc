@@ -27,9 +27,9 @@ finger2=primal_gladiators_band_of_prowess,id=111135,enchant=100haste
 trinket1=primal_gladiators_medallion_of_cruelty,id=111229
 trinket2=primal_gladiators_insignia_of_dominance,id=111228
 main_hand=primal_gladiators_battle_staff,id=111122,enchant=mark_of_warsong
-save=Priest_Shadow_T17N_COP.simc
 tier17_2pc_caster=1
 tier17_4pc_caster=1
+save=Priest_Shadow_T17N_COP.simc
 
 copy="Priest_Shadow_T17N_VE"
 talents=1133132

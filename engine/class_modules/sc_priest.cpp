@@ -2216,7 +2216,7 @@ struct mind_spike_t final : public priest_spell_t
     if ( result_is_hit( s -> result ) )
     {
       const mind_spike_state_t* ms_s = static_cast<const mind_spike_state_t*>( s );
-      if ( ! ms_s -> surge_of_darkness )
+      if ( ! ms_s -> surge_of_darkness && !priest.buffs.surge_of_darkness -> up() ) // In Beta (and I suspect on Live), if you are in the middle of hardcasting a Mind Spike and a Surge of Darkness proc occurs before the cast time ends, DoTs are not removed. Probably a bug. -Twintop 2014/07/05
       {
         int ticksLost = 0;
         priest_td_t& td = get_td( s -> target );
