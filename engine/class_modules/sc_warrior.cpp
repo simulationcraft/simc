@@ -562,7 +562,7 @@ public:
     timespan_t t = ab::action_t::gcd();
 
     if ( t == timespan_t::zero() )
-      return timespan_t::zero();
+      return t;
 
     t *= ab::player -> cache.attack_haste();
     if ( t < ab::min_gcd )
@@ -827,7 +827,8 @@ static bool trigger_t15_2pc_melee( warrior_attack_t* a )
   if ( ( procced = p -> t15_2pc_melee.trigger() ) != false )
   {
     p -> proc.t15_2pc_melee -> occur();
-    p -> enrage();
+    if ( p -> specialization() != WARRIOR_ARMS )
+      p -> enrage();
   }
 
   return procced;
@@ -842,7 +843,6 @@ static bool trigger_t15_2pc_melee( warrior_attack_t* a )
 void warrior_attack_t::execute()
 {
   base_t::execute();
-  p() -> buff.slam -> expire();
 }
 
 // warrior_attack_t::impact =================================================
@@ -2234,13 +2234,10 @@ struct slam_t: public warrior_attack_t
 
   virtual void execute()
   {
-    int slam;
-    slam = p() -> buff.slam -> stack();
     warrior_attack_t::execute();
-    slam++;
 
     if ( result_is_hit( execute_state -> result ) )
-      p() -> buff.slam -> trigger(slam);
+      p() -> buff.slam -> trigger( 1 );
   }
 
   virtual double action_multiplier() const
