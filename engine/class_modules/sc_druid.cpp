@@ -44,30 +44,6 @@ namespace buffs {
 struct heart_of_the_wild_buff_t;
 }
 
-struct combo_points_t
-{
-public:
-  static const int max_combo_points = 5;
-
-  combo_points_t( druid_t& source, player_t& target );
-
-  void add( int num, const std::string* source_name = nullptr );
-  int consume( const std::string* source_name = nullptr );
-  void clear() { count = 0; }
-  int get() const { return count; }
-
-  expr_t* count_expr() const
-  { return make_ref_expr( "combo_points", count ); }
-private:
-  druid_t& source;
-  player_t& target;
-
-  proc_t* proc;
-  proc_t* wasted;
-
-  int count;
-};
-
 struct druid_td_t : public actor_pair_t
 {
   struct dots_t
@@ -91,7 +67,6 @@ struct druid_td_t : public actor_pair_t
   } buffs;
 
   int lacerate_stack;
-  combo_points_t combo_points;
 
   druid_td_t( player_t& target, druid_t& source );
 
@@ -106,7 +81,6 @@ struct druid_td_t : public actor_pair_t
   void reset()
   {
     lacerate_stack = 0;
-    combo_points.clear();
   }
 };
 
@@ -241,9 +215,14 @@ public:
 
     // Feral (Cat)
     gain_t* energy_refund;
+    gain_t* feral_rage; // tier16_4pc_melee
     gain_t* glyph_ferocious_bite;
     gain_t* leader_of_the_pack;
+    gain_t* moonfire;
+    gain_t* rake;
+    gain_t* shred;
     gain_t* tigers_fury;
+    gain_t* tier15_2pc_melee;
 
     // Guardian (Bear)
     gain_t* bear_form;
@@ -348,8 +327,6 @@ public:
   // Procs
   struct procs_t
   {
-    proc_t* combo_points;
-    proc_t* combo_points_wasted;
     proc_t* primal_fury;
     proc_t* shooting_stars;
     proc_t* shooting_stars_wasted;
@@ -431,7 +408,6 @@ public:
     const spell_data_t* berserk_bear; // Berserk bear mangler
     const spell_data_t* berserk_cat; // Berserk cat resource cost reducer
     const spell_data_t* cat_form; // Cat form bonuses
-    const spell_data_t* combo_point; // Combo point spell
     const spell_data_t* frenzied_regeneration;
     const spell_data_t* mangle; // Mangle cooldown reset
     const spell_data_t* moonkin_form; // Moonkin form bonuses
@@ -1814,33 +1790,10 @@ namespace cat_attacks {
 // Druid Cat Attack
 // ==========================================================================
 
-struct cat_attack_state_t : public action_state_t
-{
-  int cp;
-
-  cat_attack_state_t( action_t* action, player_t* target ) :
-    action_state_t( action, target ), cp( 0 )
-  { }
-
-  void initialize()
-  { action_state_t::initialize(); cp = 0; }
-
-  std::ostringstream& debug_str( std::ostringstream& s )
-  { action_state_t::debug_str( s ) << " cp=" << cp; return s; }
-
-  void copy_state( const action_state_t* o )
-  {
-    action_state_t::copy_state( o );
-    const cat_attack_state_t* st = debug_cast<const cat_attack_state_t*>( o );
-    cp = st -> cp;
-  }
-};
-
 struct cat_attack_t : public druid_attack_t < melee_attack_t >
 {
   bool             requires_stealth;
-  bool             requires_combo_points;
-  int              adds_combo_points;
+  int              combo_point_gain;
   double           base_dd_bonus;
   double           base_td_bonus;
   bool             consume_ooc;
@@ -1849,8 +1802,7 @@ struct cat_attack_t : public druid_attack_t < melee_attack_t >
                 const spell_data_t* s = spell_data_t::nil(),
                 const std::string& options = std::string() ) :
     base_t( token, p, s ),
-    requires_stealth( false ),
-    requires_combo_points( false ), adds_combo_points( 0 ),
+    requires_stealth( false ), combo_point_gain( 0 ),
     base_dd_bonus( 0.0 ), base_td_bonus( 0.0 ), consume_ooc( false )
   {
     parse_options( 0, options );
@@ -1867,7 +1819,7 @@ private:
       effect_type_t type = ed.type();
 
       if ( type == E_ADD_COMBO_POINTS )
-        adds_combo_points = ed.base_value();
+        combo_point_gain = ed.base_value();
       else if ( type == E_APPLY_AURA && ed.subtype() == A_PERIODIC_DAMAGE )
       {
         snapshot_flags |= STATE_AP;
@@ -1904,37 +1856,6 @@ public:
     return c;
   }
 
-  const cat_attack_state_t* cat_state( const action_state_t* st ) const
-  {
-    return debug_cast<const cat_attack_state_t*>( st );
-  }
-
-  cat_attack_state_t* cat_state( action_state_t* st ) const
-  {
-    return debug_cast<cat_attack_state_t*>( st );
-  }
-
-  virtual double bonus_ta( const action_state_t* s ) const
-  {
-    return base_td_bonus * ( requires_combo_points ? cat_state( s ) -> cp : 1 );
-  }
-
-  virtual double bonus_da( const action_state_t* s ) const
-  {
-    return base_dd_bonus * ( requires_combo_points ? cat_state( s ) -> cp : 1 );
-  }
-
-  virtual action_state_t* new_state()
-  {
-    return new cat_attack_state_t( this, target );
-  }
-
-  virtual void snapshot_state( action_state_t* state, dmg_e rt )
-  {
-    base_t::snapshot_state( state, rt );
-    cat_state( state ) -> cp = td( state -> target ) -> combo_points.get();
-  }
-
   virtual bool stealthed() const
   {
     return p() -> buff.prowl -> up() || p() -> buff.king_of_the_jungle -> up() || p() -> buffs.shadowmeld -> up();
@@ -1962,35 +1883,30 @@ public:
   {
     base_t::execute();
 
-    if ( cat_state( execute_state ) -> cp > 0 && requires_combo_points )
+    if ( this -> base_costs[ RESOURCE_COMBO_POINT ] > 0 )
     {
+      if ( player -> sets.has_set_bonus( SET_T15_2PC_MELEE ) &&
+          rng().roll( cost() * 0.15 ) )
+      {
+        p() -> proc.tier15_2pc_melee -> occur();
+        p() -> resource_gain( RESOURCE_COMBO_POINT, 1, p() -> gain.tier15_2pc_melee );
+      }
+
       if ( p() -> buff.feral_rage -> up() ) // tier16_4pc_melee
       {
-        td( target ) -> combo_points.add( p() -> buff.feral_rage -> data().effectN( 1 ).base_value(), &p() -> buff.feral_rage -> name_str );
+        p() -> resource_gain( RESOURCE_COMBO_POINT, p() -> buff.feral_rage -> data().effectN( 1 ).base_value(), p() -> gain.feral_rage );
         p() -> buff.feral_rage -> expire();
       }
     }
 
     if ( result_is_hit( execute_state -> result ) )
     {
-      if ( adds_combo_points )
+      if ( combo_point_gain )
       {
-        td( target ) -> combo_points.add( adds_combo_points, &name_str );
-
         if ( p() -> spell.primal_fury -> ok() && execute_state -> result == RESULT_CRIT )
         {
           p() -> proc.primal_fury -> occur();
-          td( target ) -> combo_points.add( p() -> spell.primal_fury -> effectN( 1 ).base_value(), &name_str );
-        }
-      }
-
-      if ( cat_state( execute_state ) -> cp > 0 && requires_combo_points )
-      {
-        if ( player -> sets.has_set_bonus( SET_T15_2PC_MELEE ) &&
-            rng().roll( cat_state( execute_state ) -> cp * 0.15 ) )
-        {
-          p() -> proc.tier15_2pc_melee -> occur();
-          td( target ) -> combo_points.add( 1, &name_str );
+          p() -> resource_gain( RESOURCE_COMBO_POINT, p() -> spell.primal_fury -> effectN( 1 ).base_value(), p() -> gain.primal_fury );
         }
       }
     }
@@ -2018,20 +1934,33 @@ public:
 
     if ( result_is_hit( s -> result ) )
     {
-      druid_td_t& td = *this -> td( s -> target );
-      if ( td.combo_points.get() > 0 && requires_combo_points && p() -> spec.predatory_swiftness -> ok() )
-        p() -> buff.predatory_swiftness -> trigger( 1, 1, td.combo_points.get() * 0.20 );
+      if ( p() -> spec.predatory_swiftness -> ok() && base_costs[ RESOURCE_COMBO_POINT ] )
+        p() -> buff.predatory_swiftness -> trigger( 1, 1, p() -> resources.current[ RESOURCE_COMBO_POINT ] * 0.20 );
     }
   }
 
   virtual void consume_resource()
   {
-    int combo_points_spent = 0;
     base_t::consume_resource();
 
-    if ( requires_combo_points && result_is_hit( execute_state -> result ) )
+    if ( base_costs[ RESOURCE_COMBO_POINT ] && result_is_hit( execute_state -> result ) )
     {
-      combo_points_spent = td( execute_state -> target ) -> combo_points.consume( &name_str );
+      int consumed = (int) p() -> resources.current[ RESOURCE_COMBO_POINT ];
+
+      p() -> resource_loss( RESOURCE_COMBO_POINT, consumed, 0, this );
+
+      if ( sim -> log )
+        sim -> out_log.printf( "%s consumes %d %s for %s (%d)",
+                               player -> name(),
+                               consumed,
+                               util::resource_type_string( RESOURCE_COMBO_POINT ),
+                               name(),
+                               player -> resources.current[ RESOURCE_COMBO_POINT ] );
+
+      if ( p() -> talent.soul_of_the_forest -> ok() )
+        p() -> resource_gain( RESOURCE_ENERGY,
+                              consumed * p() -> talent.soul_of_the_forest -> effectN( 1 ).base_value(),
+                              p() -> gain.soul_of_the_forest );
     }
 
     if ( consume_ooc && p() -> buff.omen_of_clarity -> up() )
@@ -2043,13 +1972,6 @@ public:
         p() -> gain.omen_of_clarity -> add( RESOURCE_ENERGY, amount );
         p() -> buff.omen_of_clarity -> expire();
       }
-    }
-
-    if ( combo_points_spent > 0 && p() -> talent.soul_of_the_forest -> ok() )
-    {
-      p() -> resource_gain( RESOURCE_ENERGY,
-                            combo_points_spent * p() -> talent.soul_of_the_forest -> effectN( 1 ).base_value(),
-                            p() -> gain.soul_of_the_forest );
     }
   }
 
@@ -2064,7 +1986,7 @@ public:
     if ( requires_stealth && ! stealthed() )
       return false;
 
-    if ( requires_combo_points && ! td( target ) -> combo_points.get() )
+    if ( p() -> resources.current[ RESOURCE_COMBO_POINT ] < base_costs[ RESOURCE_COMBO_POINT ] )
       return false;
 
     return true;
@@ -2184,15 +2106,17 @@ struct ferocious_bite_t : public cat_attack_t
     cat_attack_t( "ferocious_bite", p, p -> find_class_spell( "Ferocious Bite" ), options_str ),
     excess_energy( 0 ), max_excess_energy( 0 ), ap_per_point( 0.0 )
   {
+    base_costs[ RESOURCE_COMBO_POINT ] = 1;
+
     ap_per_point           = 0.357; // FIXME: Figure out where the hell this is in the spell data...
     max_excess_energy      = data().effectN( 2 ).base_value();
-    requires_combo_points  = special = true;
+    special                = true;
     base_multiplier       *= 1.0 + p -> perk.improved_ferocious_bite -> effectN( 1 ).percent();
     spell_power_mod.direct = 0;
   }
 
   double attack_direct_power_coefficient( const action_state_t* state ) const
-  { return cat_state( state ) -> cp * ap_per_point; }
+  { return ap_per_point * p() -> resources.current[ RESOURCE_COMBO_POINT ]; }
 
   virtual void execute()
   {
@@ -2289,8 +2213,10 @@ struct maim_t : public cat_attack_t
   maim_t( druid_t* player, const std::string& options_str ) :
     cat_attack_t( "maim", player, player -> find_specialization_spell( "Maim" ), options_str )
   {
-    requires_combo_points = special = true;
-    base_multiplier      *= 1.0 + player -> glyph.maim -> effectN( 1 ).percent();
+    base_costs[ RESOURCE_COMBO_POINT ] = 1;
+
+    special          = true;
+    base_multiplier *= 1.0 + player -> glyph.maim -> effectN( 1 ).percent();
   }
 };
 
@@ -2340,6 +2266,14 @@ struct rake_t : public cat_attack_t
   virtual double target_armor( player_t* ) const
   { return 0.0; }
 
+  virtual void impact( action_state_t* s )
+  {
+    cat_attack_t::impact( s );
+
+    if ( result_is_hit( s -> result ) )
+      p() -> resource_gain( RESOURCE_COMBO_POINT, combo_point_gain, p() -> gain.rake );
+  }
+
   virtual void execute()
   {
     if ( p() -> glyph.savage_roar -> ok() && stealthed() )
@@ -2356,64 +2290,109 @@ struct rake_t : public cat_attack_t
 
 struct rip_t : public cat_attack_t
 {
+  struct rip_state_t : public action_state_t
+  {
+    int combo_points;
+    druid_t* druid;
+
+    rip_state_t( druid_t* p, action_t* a, player_t* target ) :
+      action_state_t( a, target ), combo_points( 0 ), druid( p )
+    { }
+
+    void initialize()
+    {
+      action_state_t::initialize();
+
+      combo_points = (int) druid -> resources.current[ RESOURCE_COMBO_POINT ];
+    }
+
+    void copy_state( const action_state_t* state )
+    {
+      action_state_t::copy_state( state );
+
+      const rip_state_t* rip_state = debug_cast<const rip_state_t*>( state );
+      combo_points = rip_state -> combo_points;
+    }
+
+    std::ostringstream& debug_str( std::ostringstream& s )
+    {
+      action_state_t::debug_str( s );
+
+      s << " combo_points=" << combo_points;
+
+      return s;
+    }
+  };
+  
   double ap_per_point;
 
   rip_t( druid_t* p, const std::string& options_str ) :
     cat_attack_t( "rip", p, p -> find_specialization_spell( "Rip" ), options_str ),
     ap_per_point( 0.0 )
   {
-    ap_per_point          = data().effectN( 1 ).ap_coeff();
-    requires_combo_points = special = true;
-    may_crit              = false;
-    dot_behavior          = DOT_REFRESH;
+    base_costs[ RESOURCE_COMBO_POINT ] = 1;
 
-    // Increase Rip duration to 24s: https://twitter.com/Celestalon/status/481920491318288384
-    // TODO: Remove in an upcoming alpha build.
-    if ( dot_duration == timespan_t::from_seconds( 16.0 ) )
-      dot_duration += timespan_t::from_seconds( 8.0 );
+    ap_per_point = data().effectN( 1 ).ap_coeff();
+    special      = true;
+    may_crit     = false;
+    dot_behavior = DOT_REFRESH;
 
     dot_duration += player -> sets.set( SET_T14_4PC_MELEE ) -> effectN( 1 ).time_value();
   }
 
+  action_state_t* new_state()
+  { return new rip_state_t( p(), this, target ); }
+
   double attack_tick_power_coefficient( const action_state_t* state ) const
-  { return cat_state( state ) -> cp * ap_per_point; }
+  {
+    rip_state_t* rip_state = debug_cast<rip_state_t*>( td( target ) -> dots.rip -> state );
+
+    return ap_per_point * rip_state -> combo_points;
+  }
 };
 
 // Savage Roar ==============================================================
 
 struct savage_roar_t : public cat_attack_t
 {
-  timespan_t seconds_per_combo;
   savage_roar_t( druid_t* p, const std::string& options_str ) :
-    cat_attack_t( "savage_roar", p, p -> find_specialization_spell( "Savage Roar" ), options_str ),
-    seconds_per_combo( timespan_t::from_seconds( 6.0 ) ) // plus 6s per cp used. Must change this value in cat_attack_t::trigger_glyph_of_savage_roar() as well.
+    cat_attack_t( "savage_roar", p, p -> find_specialization_spell( "Savage Roar" ), options_str )
   {
+    base_costs[ RESOURCE_COMBO_POINT ] = 1;
+
     may_miss = harmful = false;
-    requires_combo_points = true;
     dot_duration  = timespan_t::zero();
+  }
+
+  timespan_t duration( int combo_points = -1 )
+  {
+    if ( combo_points == -1 )
+      combo_points = (int) p() -> resources.current[ RESOURCE_COMBO_POINT ];
+  
+    timespan_t d = data().duration() + timespan_t::from_seconds( 6.0 ) * combo_points;
+
+     /* Savage Roar behaves like a DoT with DOT_REFRESH and has a maximum duration equal
+        to 130% of the base duration.
+      * Per Alpha testing (6/16/2014), the maximum duration is 130% of the raw duration
+        of the NEW Savage Roar. */
+    if ( p() -> buff.savage_roar -> check() )
+      d += std::min( p() -> buff.savage_roar -> remains(), d * 0.3 );
+
+    return d;
   }
 
   virtual void impact( action_state_t* state )
   {
     cat_attack_t::impact( state );
 
-    timespan_t duration = data().duration() + seconds_per_combo * td( state -> target ) -> combo_points.get();
-    
-    /* Savage Roar behaves like a DoT with DOT_REFRESH and has a maximum duration equal
-        to 130% of the base duration.
-      * Per Alpha testing (6/16/2014), the maximum duration is 130% of the raw duration
-        of the NEW Savage Roar. */
-    if ( p() -> buff.savage_roar -> check() )
-      duration += std::min( p() -> buff.savage_roar -> remains(), duration * 0.3 );
-
-    p() -> buff.savage_roar -> trigger( 1, buff_t::DEFAULT_VALUE(), -1.0, duration );
+    p() -> buff.savage_roar -> trigger( 1, buff_t::DEFAULT_VALUE(), -1.0, duration() );
   }
 
   virtual bool ready()
   {
     if ( p() -> talent.savagery -> ok() )
       return false;
-    else if ( data().duration() + seconds_per_combo * td( target ) -> combo_points.get() < p() -> buff.savage_roar -> remains() )
+    else if ( duration() < p() -> buff.savage_roar -> remains() )
       return false;
     
     return cat_attack_t::ready();
@@ -2450,6 +2429,8 @@ struct shred_t : public cat_attack_t
 
     if ( result_is_hit( s -> result ) )
     {
+      p() -> resource_gain( RESOURCE_COMBO_POINT, combo_point_gain, p() -> gain.shred );
+
       if ( p() -> sets.has_set_bonus( SET_T17_2PC_MELEE ) && s -> result == RESULT_CRIT )
       {
         p() -> cooldown.berserk -> adjust( timespan_t::from_seconds( -5.0 ), true );
@@ -4663,13 +4644,12 @@ struct moonfire_li_t : public druid_spell_t
     // Grant combo points
     if ( result_is_hit( s -> result ) )
     {
-      int cp = data().effectN( 3 ).base_value(); // Since this isn't in cat_attack_t, we need to account for the base combo points as well.
+      p() -> resource_gain( RESOURCE_COMBO_POINT, 1, p() -> gain.moonfire );
       if ( p() -> spell.primal_fury -> ok() && s -> result == RESULT_CRIT )
       {
         p() -> proc.primal_fury -> occur();
-        cp += p() -> find_spell( 16953 ) -> effectN( 1 ).base_value();
+        p() -> resource_gain( RESOURCE_COMBO_POINT, p() -> find_spell( 16953 ) -> effectN( 1 ).base_value(), p() -> gain.primal_fury );
       }
-      td( s -> target ) -> combo_points.add( cp, &name_str );
     }
   }
 
@@ -5464,8 +5444,7 @@ void druid_t::init_spells()
   spell.bear_form                       = find_class_spell( "Bear Form"                   ) -> ok() ? find_spell( 1178   ) : spell_data_t::not_found(); // This is the passive applied on shapeshift!
   spell.berserk_bear                    = find_class_spell( "Berserk"                     ) -> ok() ? find_spell( 50334  ) : spell_data_t::not_found(); // Berserk bear mangler
   spell.berserk_cat                     = find_class_spell( "Berserk"                     ) -> ok() ? find_spell( 106951 ) : spell_data_t::not_found(); // Berserk cat resource cost reducer
-  spell.cat_form                        = find_class_spell( "Cat Form"                    ) -> ok() ? find_spell( 3025   ) : spell_data_t::not_found();   // Cat form buff
-  spell.combo_point                     = find_class_spell( "Cat Form"                    ) -> ok() ? find_spell( 34071  ) : spell_data_t::not_found(); // Combo point add "spell", weird
+  spell.cat_form                        = find_class_spell( "Cat Form"                    ) -> ok() ? find_spell( 3025   ) : spell_data_t::not_found(); // Cat form buff
   spell.frenzied_regeneration           = find_class_spell( "Frenzied Regeneration"       ) -> ok() ? find_spell( 22842  ) : spell_data_t::not_found();
   spell.moonkin_form                    = find_class_spell( "Moonkin Form"                ) -> ok() ? find_spell( 24905  ) : spell_data_t::not_found(); // This is the passive applied on shapeshift!
   spell.regrowth                        = find_class_spell( "Regrowth"                    ) -> ok() ? find_spell( 93036  ) : spell_data_t::not_found(); // Regrowth refresh
@@ -5583,6 +5562,8 @@ void druid_t::init_base_stats()
   base.attack_power_per_agility  = 1.0;
   base.attack_power_per_strength = 0.0;
   base.spell_power_per_intellect = 1.0;
+
+  resources.base[ RESOURCE_COMBO_POINT ] = 5;
 
   // based on http://www.sacredduty.net/2013/08/08/updated-diminishing-returns-coefficients-all-tanks/
   diminished_kfactor   = 1.2220000;
@@ -6141,16 +6122,21 @@ void druid_t::init_gains()
   gain.bear_melee            = get_gain( "bear_melee"            );
   gain.bear_form             = get_gain( "bear_form"             );
   gain.energy_refund         = get_gain( "energy_refund"         );
+  gain.feral_rage            = get_gain( "feral_rage"            );
   gain.frenzied_regeneration = get_gain( "frenzied_regeneration" );
   gain.glyph_ferocious_bite  = get_gain( "glyph_ferocious_bite"  );
   gain.lacerate              = get_gain( "lacerate"              );
   gain.leader_of_the_pack    = get_gain( "leader_of_the_pack"    );
   gain.mangle                = get_gain( "mangle"                );
+  gain.moonfire              = get_gain( "moonfire"              );
   gain.omen_of_clarity       = get_gain( "omen_of_clarity"       );
   gain.primal_fury           = get_gain( "primal_fury"           );
   gain.pulverize             = get_gain( "pulverize"             );
+  gain.rake                  = get_gain( "rake"                  );
+  gain.shred                 = get_gain( "shred"                 );
   gain.soul_of_the_forest    = get_gain( "soul_of_the_forest"    );
   gain.thrash                = get_gain( "thrash"                );
+  gain.tier15_2pc_melee      = get_gain( "tier15_2pc_melee"      );
   gain.tigers_fury           = get_gain( "tigers_fury"           );
 }
 
@@ -6160,8 +6146,6 @@ void druid_t::init_procs()
 {
   player_t::init_procs();
 
-  proc.combo_points             = get_proc( "combo_points"           );
-  proc.combo_points_wasted      = get_proc( "combo_points_wasted"    );
   proc.primal_fury              = get_proc( "primal_fury"            );
   proc.shooting_stars_wasted    = get_proc( "Shooting Stars overflow (buff already up)" );
   proc.shooting_stars           = get_proc( "Shooting Stars"         );
@@ -6298,8 +6282,9 @@ void druid_t::combat_begin()
 {
   player_t::combat_begin();
 
-  // Start the fight with 0 rage
+  // Start the fight with 0 rage and 0 combo points
   resources.current[ RESOURCE_RAGE ] = 0;
+  resources.current[ RESOURCE_COMBO_POINT ] = 0;
 
   // Redo eclipse balance bar starting position.
 
@@ -6711,10 +6696,7 @@ expr_t* druid_t::create_expression( action_t* a, const std::string& name_str )
   }
   else if ( util::str_compare_ci( name_str, "combo_points" ) )
   {
-    // If an action targets the druid, but checks for combo points, check
-    // sim -> target instead. Quick fix so HT can use combo_points
-    druid_td_t* td = get_target_data( ( a -> target == this ) ? sim -> target : a -> target );
-    return td -> combo_points.count_expr();
+    return make_ref_expr( "combo_points", resources.current[ RESOURCE_COMBO_POINT ] );
   }
   return player_t::create_expression( a, name_str );
 }
@@ -7062,8 +7044,7 @@ druid_td_t::druid_td_t( player_t& target, druid_t& source )
   : actor_pair_t( &target, &source ),
     dots( dots_t() ),
     buffs( buffs_t() ),
-    lacerate_stack( 0 ),
-    combo_points( source, target )
+    lacerate_stack( 0 )
 {
   dots.gushing_wound = target.get_dot( "gushing_wound", &source );
   dots.lacerate      = target.get_dot( "lacerate",      &source );
@@ -7078,76 +7059,6 @@ druid_td_t::druid_td_t( player_t& target, druid_t& source )
   dots.wild_growth   = target.get_dot( "wild_growth",   &source );
 
   buffs.lifebloom = buff_creator_t( *this, "lifebloom", source.find_class_spell( "Lifebloom" ) );
-}
-
-// ==========================================================================
-// Combo Point System Functions
-// ==========================================================================
-
-combo_points_t::combo_points_t( druid_t& source, player_t& target ) :
-  source( source ),
-  target( target ),
-  proc( nullptr ),
-  wasted( nullptr ),
-  count( 0 )
-{
-  proc   = target.get_proc( source.name_str + ": combo_points" );
-  wasted = target.get_proc( source.name_str + ": combo_points_wasted" );
-}
-
-void combo_points_t::add( int num, const std::string* source_name )
-{
-  int actual_num = clamp( num, 0, max_combo_points - count );
-  int overflow   = num - actual_num;
-
-  // we count all combo points gained in the proc
-  for ( int i = 0; i < num; i++ )
-    proc -> occur();
-
-  // add actual combo points
-  if ( actual_num > 0 )
-  {
-    count += actual_num;
-    source.trigger_ready();
-  }
-
-  // count wasted combo points
-  for ( int i = 0; i < overflow; i++ )
-    wasted -> occur();
-
-  sim_t& sim = *source.sim;
-  if ( sim.log )
-  {
-    if ( source_name )
-    {
-      if ( actual_num > 0 )
-        sim.out_log.printf( "%s gains %d (%d) combo_points from %s (%d)",
-                    target.name(), actual_num, num, source_name -> c_str(), count );
-    }
-    else
-    {
-      if ( actual_num > 0 )
-        sim.out_log.printf( "%s gains %d (%d) combo_points (%d)",
-                    target.name(), actual_num, num, count );
-    }
-  }
-}
-
-int combo_points_t::consume( const std::string* source_name )
-{
-  if ( source.sim -> log )
-  {
-    if ( source_name )
-      source.sim -> out_log.printf( "%s spends %d combo_points on %s",
-                            target.name(), count, source_name -> c_str() );
-    else
-      source.sim -> out_log.printf( "%s loses %d combo_points",
-                            target.name(), count );
-  }
-
-  int tmp_count = count;
-  count = 0;
-  return tmp_count;
 }
 
 void druid_t::balance_tracker()
