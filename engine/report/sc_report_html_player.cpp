@@ -1929,28 +1929,26 @@ void print_html_gain( report::sc_html_stream& os, gain_t* g, std::array<double, 
     if ( g -> actual[ i ] != 0 || g -> overflow[ i ] != 0 )
     {
       double overflow_pct = 100.0 * g -> overflow[ i ] / ( g -> actual[ i ] + g -> overflow[ i ] );
-      os.tabs() << "<tr";
+      os << "<tr";
       if ( j & 1 )
       {
         os << " class=\"odd\"";
       }
       ++j;
       os << ">\n";
-      ++os;
-      os.tabs() << "<td class=\"left\">" << g -> name() << "</td>\n";
-      os.tabs() << "<td class=\"left\">" << util::inverse_tokenize( util::resource_type_string( i ) ) << "</td>\n";
-      os.tabs() << "<td class=\"right\">" << g -> count[ i ] << "</td>\n";
-      os.tabs().printf( "<td class=\"right\">%.2f (%.2f%%)</td>\n",
+      os << "<td class=\"left\">" << g -> name() << "</td>\n";
+      os << "<td class=\"left\">" << util::inverse_tokenize( util::resource_type_string( i ) ) << "</td>\n";
+      os << "<td class=\"right\">" << g -> count[ i ] << "</td>\n";
+      os.printf( "<td class=\"right\">%.2f (%.2f%%)</td>\n",
                         g -> actual[ i ], g -> actual[ i ] ? g -> actual[ i ] / total_gains[ i ] * 100.0 : 0.0 );
-      os.tabs() << "<td class=\"right\">" << g -> actual[ i ] / g -> count[ i ] << "</td>\n";
+      os << "<td class=\"right\">" << g -> actual[ i ] / g -> count[ i ] << "</td>\n";
 
       if ( report_overflow )
       {
-        os.tabs() << "<td class=\"right\">" << g -> overflow[ i ] << "</td>\n";
-        os.tabs() << "<td class=\"right\">" << overflow_pct << "%</td>\n";
+        os << "<td class=\"right\">" << g -> overflow[ i ] << "</td>\n";
+        os << "<td class=\"right\">" << overflow_pct << "%</td>\n";
       }
-      --os;
-      os.tabs() << "</tr>\n";
+      os << "</tr>\n";
     }
   }
 }
@@ -1968,35 +1966,27 @@ void get_total_player_gains( player_t& p, std::array<double, RESOURCE_MAX>& tota
 
 void print_html_player_resources( report::sc_html_stream& os, player_t* p, player_processed_report_information_t& ri )
 {
-  os.set_level( 4 );
 
   // Resources Section
 
-  os.tabs() << "<div class=\"player-section gains\">\n";
-  ++os;
-  os.tabs() << "<h3 class=\"toggle open\">Resources</h3>\n";
-  os.tabs() << "<div class=\"toggle-content\">\n";
-  ++os;
-  os.tabs() << "<table class=\"sc mt\">\n";
-  ++os;
-  os.tabs() << "<tr>\n";
-  ++os;
-  os.tabs() << "<th>Resource Usage</th>\n";
-  os.tabs() << "<th>Type</th>\n";
-  os.tabs() << "<th>Count</th>\n";
-  os.tabs() << "<th>Total</th>\n";
-  os.tabs() << "<th>Average</th>\n";
-  os.tabs() << "<th>RPE</th>\n";
-  os.tabs() << "<th>APR</th>\n";
-  --os;
-  os.tabs() << "</tr>\n";
+  os << "<div class=\"player-section gains\">\n";
+  os << "<h3 class=\"toggle open\">Resources</h3>\n";
+  os << "<div class=\"toggle-content\">\n";
+  os << "<table class=\"sc mt\">\n";
+  os << "<tr>\n";
+  os << "<th>Resource Usage</th>\n";
+  os << "<th>Type</th>\n";
+  os << "<th>Count</th>\n";
+  os << "<th>Total</th>\n";
+  os << "<th>Average</th>\n";
+  os << "<th>RPE</th>\n";
+  os << "<th>APR</th>\n";
+  os << "</tr>\n";
 
-  os.tabs() << "<tr>\n";
-  ++os;
-  os.tabs() << "<th class=\"left small\">" << util::encode_html( p -> name() ) << "</th>\n";
-  os.tabs() << "<td colspan=\"6\" class=\"filler\"></td>\n";
-  --os;
-  os.tabs() << "</tr>\n";
+  os << "<tr>\n";
+  os << "<th class=\"left small\">" << util::encode_html( p -> name() ) << "</th>\n";
+  os << "<td colspan=\"6\" class=\"filler\"></td>\n";
+  os << "</tr>\n";
 
   int k = 0;
   for ( size_t i = 0; i < p -> stats_list.size(); ++i )
@@ -2021,20 +2011,17 @@ void print_html_player_resources( report::sc_html_stream& os, player_t* p, playe
         if ( first )
         {
           first = false;
-          os.tabs() << "<tr>\n";
-          ++os;
-          os.tabs() << "<th class=\"left small\">pet - " << util::encode_html( pet -> name_str ) << "</th>\n";
-          os.tabs() << "<td colspan=\"6\" class=\"filler\"></td>\n";
-          --os;
-          os.tabs() << "</tr>\n";
+          os << "<tr>\n";
+          os << "<th class=\"left small\">pet - " << util::encode_html( pet -> name_str ) << "</th>\n";
+          os << "<td colspan=\"6\" class=\"filler\"></td>\n";
+          os << "</tr>\n";
         }
         k = print_html_action_resource( os, s, k );
       }
     }
   }
 
-  --os;
-  os.tabs() << "</table>\n";
+  os << "</table>\n";
 
   std::array<double, RESOURCE_MAX> total_player_gains = std::array<double, RESOURCE_MAX>();
   get_total_player_gains( *p, total_player_gains );
@@ -2051,18 +2038,15 @@ void print_html_player_resources( report::sc_html_stream& os, player_t* p, playe
   if ( has_gains )
   {
     // Resource Gains Section
-    os.tabs() << "<table class=\"sc\">\n";
-    ++os;
-    os.tabs() << "<tr>\n";
-    ++os;
-    os.tabs() << "<th>Resource Gains</th>\n";
-    os.tabs() << "<th>Type</th>\n";
-    os.tabs() << "<th>Count</th>\n";
-    os.tabs() << "<th>Total</th>\n";
-    os.tabs() << "<th>Average</th>\n";
-    os.tabs() << "<th colspan=\"2\">Overflow</th>\n";
-    --os;
-    os.tabs() << "</tr>\n";
+    os << "<table class=\"sc\">\n";
+    os << "<tr>\n";
+    os << "<th>Resource Gains</th>\n";
+    os << "<th>Type</th>\n";
+    os << "<th>Count</th>\n";
+    os << "<th>Total</th>\n";
+    os << "<th>Average</th>\n";
+    os << "<th colspan=\"2\">Overflow</th>\n";
+    os << "</tr>\n";
 
     int j = 0;
 
@@ -2095,31 +2079,25 @@ void print_html_player_resources( report::sc_html_stream& os, player_t* p, playe
           if ( found )
           {
             first = false;
-            os.tabs() << "<tr>\n";
-            ++os;
-            os.tabs() << "<th>pet - " << util::encode_html( pet -> name_str ) << "</th>\n";
-            os.tabs() << "<td colspan=\"6\" class=\"filler\"></td>\n";
-            --os;
-            os.tabs() << "</tr>\n";
+            os << "<tr>\n";
+            os << "<th>pet - " << util::encode_html( pet -> name_str ) << "</th>\n";
+            os << "<td colspan=\"6\" class=\"filler\"></td>\n";
+            os << "</tr>\n";
           }
         }
         print_html_gain( os, g, total_pet_gains, j );
       }
     }
-    --os;
-    os.tabs() << "</table>\n";
+    os << "</table>\n";
   }
 
   // Resource Consumption Section
-  os.tabs() << "<table class=\"sc\">\n";
-  ++os;
-  os.tabs() << "<tr>\n";
-  ++os;
-  os.tabs() << "<th>Resource</th>\n";
-  os.tabs() << "<th>RPS-Gain</th>\n";
-  os.tabs() << "<th>RPS-Loss</th>\n";
-  --os;
-  os.tabs() << "</tr>\n";
+  os << "<table class=\"sc\">\n";
+  os << "<tr>\n";
+  os << "<th>Resource</th>\n";
+  os << "<th>RPS-Gain</th>\n";
+  os << "<th>RPS-Loss</th>\n";
+  os << "</tr>\n";
   int j = 0;
   for ( resource_e rt = RESOURCE_NONE; rt < RESOURCE_MAX; ++rt )
   {
@@ -2128,61 +2106,51 @@ void print_html_player_resources( report::sc_html_stream& os, player_t* p, playe
     if ( rps_gain <= 0 && rps_loss <= 0 )
       continue;
 
-    os.tabs() << "<tr";
+    os << "<tr";
     if ( j & 1 )
     {
       os << " class=\"odd\"";
     }
     ++j;
     os << ">\n";
-    ++os;
-    os.tabs() << "<td class=\"left\">" << util::inverse_tokenize( util::resource_type_string( rt ) ) << "</td>\n";
-    os.tabs() << "<td class=\"right\">" << rps_gain << "</td>\n";
-    os.tabs() << "<td class=\"right\">" << rps_loss << "</td>\n";
-    --os;
-    os.tabs() << "</tr>\n";
+    os << "<td class=\"left\">" << util::inverse_tokenize( util::resource_type_string( rt ) ) << "</td>\n";
+    os << "<td class=\"right\">" << rps_gain << "</td>\n";
+    os << "<td class=\"right\">" << rps_loss << "</td>\n";
+    os << "</tr>\n";
   }
-  --os;
-  os.tabs() << "</table>\n";
+  os << "</table>\n";
 
   // Resource End Section
-  os.tabs() << "<table class=\"sc\">\n";
-  ++os;
-  os.tabs() << "<tr>\n";
-  ++os;
-  os.tabs() << "<th>Combat End Resource</th>\n";
-  os.tabs() << "<th> Mean </th>\n";
-  os.tabs() << "<th> Min </th>\n";
-  os.tabs() << "<th> Max </th>\n";
-  --os;
-  os.tabs() << "</tr>\n";
+  os << "<table class=\"sc\">\n";
+  os << "<tr>\n";
+  os << "<th>Combat End Resource</th>\n";
+  os << "<th> Mean </th>\n";
+  os << "<th> Min </th>\n";
+  os << "<th> Max </th>\n";
+  os << "</tr>\n";
   j = 0;
   for ( resource_e rt = RESOURCE_NONE; rt < RESOURCE_MAX; ++rt )
   {
     if ( p -> resources.base[ rt ] <= 0 )
       continue;
 
-    os.tabs() << "<tr";
+    os << "<tr";
     if ( j & 1 )
     {
       os << " class=\"odd\"";
     }
     ++j;
     os << ">\n";
-    ++os;
-    os.tabs() << "<td class=\"left\">" << util::inverse_tokenize( util::resource_type_string( rt ) ) << "</td>\n";
-    os.tabs() << "<td class=\"right\">" << p -> collected_data.combat_end_resource[ rt ].mean() << "</td>\n";
-    os.tabs() << "<td class=\"right\">" << p -> collected_data.combat_end_resource[ rt ].min() << "</td>\n";
-    os.tabs() << "<td class=\"right\">" << p -> collected_data.combat_end_resource[ rt ].max() << "</td>\n";
-    --os;
-    os.tabs() << "</tr>\n";
+    os << "<td class=\"left\">" << util::inverse_tokenize( util::resource_type_string( rt ) ) << "</td>\n";
+    os << "<td class=\"right\">" << p -> collected_data.combat_end_resource[ rt ].mean() << "</td>\n";
+    os << "<td class=\"right\">" << p -> collected_data.combat_end_resource[ rt ].min() << "</td>\n";
+    os << "<td class=\"right\">" << p -> collected_data.combat_end_resource[ rt ].max() << "</td>\n";
+    os << "</tr>\n";
   }
-  --os;
-  os.tabs() << "</table>\n";
+  os << "</table>\n";
 
 
-  os.tabs() << "<div class=\"charts charts-left\">\n";
-  ++os;
+  os << "<div class=\"charts charts-left\">\n";
   for ( resource_e r = RESOURCE_NONE; r < RESOURCE_MAX; ++r )
   {
     // hack hack. don't display RESOURCE_RUNE_<TYPE> yet. only shown in tabular data.  WiP
@@ -2199,27 +2167,25 @@ void print_html_player_resources( report::sc_html_stream& os, player_t* p, playe
     {
       if ( ! ri.gains_chart[ r ].empty() )
       {
-        os.tabs() << "<img src=\"" << ri.gains_chart[ r ] << "\" alt=\"Resource Gains Chart\" />\n";
+        os << "<img src=\"" << ri.gains_chart[ r ] << "\" alt=\"Resource Gains Chart\" />\n";
       }
     }
   }
-  --os;
-  os.tabs() << "</div>\n";
+  os << "</div>\n";
 
 
-  os.tabs() << "<div class=\"charts\">\n";
-  ++os;
+  os << "<div class=\"charts\">\n";
   for ( unsigned r = RESOURCE_NONE + 1; r < RESOURCE_MAX; r++ )
   {
     if ( p -> resources.max[ r ] > 0 && ! ri.timeline_resource_chart[ r ].empty() )
     {
-      os.tabs() << "<img src=\"" << ri.timeline_resource_chart[ r ] << "\" alt=\"Resource Timeline Chart\" />\n";
+      os << "<img src=\"" << ri.timeline_resource_chart[ r ] << "\" alt=\"Resource Timeline Chart\" />\n";
     }
   }
   if ( p -> primary_role() == ROLE_TANK ) // Experimental, restrict to tanks for now
   {
-    os.tabs() << "<img src=\"" << ri.health_change_chart << "\" alt=\"Health Change Timeline Chart\" />\n";
-    os.tabs() << "<img src=\"" << ri.health_change_sliding_chart << "\" alt=\"Health Change Sliding Timeline Chart\" />\n";
+    os << "<img src=\"" << ri.health_change_chart << "\" alt=\"Health Change Timeline Chart\" />\n";
+    os << "<img src=\"" << ri.health_change_sliding_chart << "\" alt=\"Health Change Sliding Timeline Chart\" />\n";
 
     if ( ! p -> is_enemy() )
     {
@@ -2227,19 +2193,14 @@ void print_html_player_resources( report::sc_html_stream& os, player_t* p, playe
       histogram tmi_hist;
       tmi_hist.create_histogram( p -> collected_data.theck_meloree_index, 50 );
       std::string dist_chart = chart::distribution( p -> sim -> print_styles, tmi_hist.data(), "TMI", p -> collected_data.theck_meloree_index.mean(), tmi_hist.min(), tmi_hist.max() );
-      os.tabs() << "<img src=\"" << dist_chart << "\" alt=\"Theck meloree distribution Chart\" />\n";
+      os << "<img src=\"" << dist_chart << "\" alt=\"Theck meloree distribution Chart\" />\n";
     }
   }
-  --os;
-  os.tabs() << "</div>\n";
-  --os;
-  os.tabs() << "<div class=\"clear\"></div>\n";
+  os << "</div>\n";
+  os << "<div class=\"clear\"></div>\n";
 
-  os.tabs() << "</div>\n";
-  --os;
-  os.tabs() << "</div>\n";
-
-  os.set_level( 0 );
+  os << "</div>\n";
+  os << "</div>\n";
 }
 
 // print_html_player_charts =================================================
