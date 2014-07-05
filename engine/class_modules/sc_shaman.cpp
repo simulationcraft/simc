@@ -4867,10 +4867,6 @@ void shaman_t::init_action_list()
 
   clear_action_priority_lists();
 
-  std::vector<std::string> use_items;
-  for ( size_t i = 0; i < items.size(); i++ )
-    use_items.push_back( "use_item,name=" + items[ i ].name_str );
-
   action_priority_list_t* precombat = get_action_priority_list( "precombat" );
   action_priority_list_t* def       = get_action_priority_list( "default"   );
   action_priority_list_t* single    = get_action_priority_list( "single", "Single target action priority list" );
@@ -4954,9 +4950,14 @@ void shaman_t::init_action_list()
   if ( primary_role() == ROLE_ATTACK )
     def -> add_action( "auto_attack" );
 
-  // On use stuff and profession abilities
-  for ( size_t i = 0; i < use_items.size(); i++ )
-    def -> add_action( use_items[ i ] );
+  int num_items = (int)items.size();
+  for ( int i = 0; i < num_items; i++ )
+  {
+    if ( items[i].has_special_effect( SPECIAL_EFFECT_SOURCE_NONE, SPECIAL_EFFECT_USE ) )
+    {
+      def -> add_action( "use_item,name=" + items[i].name_str );
+    }
+  }
 
   // In-combat potion
   if ( sim -> allow_potions && level >= 80  )
