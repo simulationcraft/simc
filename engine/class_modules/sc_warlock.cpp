@@ -16,6 +16,8 @@
 // Perks
 // Grimoire of sacrifice interaction with fire and brimstone, search: GoSac FnB
 // Update action lists
+// void consume_tick_resource( dot_t* d ) - find out why this causes drain
+// ---soul to ignite with hell fire.
 
 // ==========================================================================
 namespace { // unnamed namespace
@@ -1775,10 +1777,12 @@ public:
 
   void consume_tick_resource( dot_t* d )
   {
+    //old malefic grasp code.
     resource_e r = current_resource();
     resource_consumed = costs_per_second[ r ] * base_tick_time.total_seconds();
 
-    player -> resource_loss( r, resource_consumed, 0, this );
+    //FIXME: TODO: causing drain soul to crash sim. Look for negatives of not using this.
+    //player -> resource_loss( r, resource_consumed, 0, this );
 
     if ( sim -> log )
       sim -> out_log.printf( "%s consumes %.1f %s for %s tick (%.0f)", player -> name(),
@@ -1796,7 +1800,7 @@ public:
     }
   }
 
-  void trigger_extra_tick( dot_t* dot, double multiplier, bool tick_from_mg ) //if tick_from_mg == true, then MG created the tick, otherwise DS created the tick
+  void trigger_extra_tick( dot_t* dot, double multiplier ) //if tick_from_mg == true, then MG created the tick, otherwise DS created the tick
   {
     if ( ! dot -> is_ticking() ) return;
     double tempmulti;
@@ -1811,10 +1815,7 @@ public:
     dot -> current_action -> periodic_hit = true;
     stats_t* tmp = dot -> current_action -> stats;
     warlock_spell_t* spell = debug_cast<warlock_spell_t*>( dot -> current_action );
-//    if ( tick_from_mg )
-//      dot -> current_action -> stats = spell -> mg_tick_stats;
-//    else
-    // TODO: Check if base_multiplier is the right route for this...
+
     tempmulti = dot -> current_action -> base_multiplier;
     dot -> current_action -> base_multiplier = multiplier;
     dot -> current_action -> stats = spell -> ds_tick_stats;
@@ -2527,7 +2528,7 @@ struct immolate_t : public warlock_spell_t
     spell_power_mod.tick = p -> spec.immolate -> effectN( 1 ).sp_coeff();
     hasted_ticks = true;
     tick_may_crit = false;
-    may_multistrike = false;
+
   }
 
   immolate_t( const std::string& n, warlock_t* p, const spell_data_t* spell ) :
@@ -3213,7 +3214,7 @@ struct touch_of_chaos_t : public warlock_spell_t
 struct drain_soul_t : public warlock_spell_t
 {
   drain_soul_t( warlock_t* p ) :
-    warlock_spell_t( p, "Drain Soul" )
+    warlock_spell_t( "Drain Soul", p, p -> find_spell(103103) )
   {
     channeled    = true;
     hasted_ticks = false;
@@ -3255,19 +3256,9 @@ struct drain_soul_t : public warlock_spell_t
 
     double multiplier = data().effectN( 3 ).percent();
 
-    // DO NOT CHANGE THE ORDER IF YOU ARE NOT 100% SURE
-    if ( p() ->  buffs.tier16_2pc_empowered_grasp -> up() )
-    {
-      multiplier += p() ->  buffs.tier16_2pc_empowered_grasp -> value();
-    }
-
-    multiplier *= 1.0 + p() -> sets.set( SET_T15_4PC_CASTER ) -> effectN( 1 ).percent();
-
-
-
-    trigger_extra_tick( td( d -> state -> target ) -> dots_agony,               multiplier , false);
-    trigger_extra_tick( td( d -> state -> target ) -> dots_corruption,          multiplier , false);
-    trigger_extra_tick( td( d -> state -> target ) -> dots_unstable_affliction, multiplier , false);
+    trigger_extra_tick( td( d -> state -> target ) -> dots_agony,               multiplier);
+    trigger_extra_tick( td( d -> state -> target ) -> dots_corruption,          multiplier);
+    trigger_extra_tick( td( d -> state -> target ) -> dots_unstable_affliction, multiplier);
 
     consume_tick_resource( d );
   }
