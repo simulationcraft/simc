@@ -326,13 +326,13 @@ expr_t* dot_t::create_expression( action_t* action,
   {
     struct duration_expr_t : public dot_expr_t
     {
+      // DoT duration expression, returns total duration of current dot.
       duration_expr_t( dot_t* d, action_t* a, bool dynamic ) :
         dot_expr_t( "dot_duration", d, a, dynamic ) {}
       virtual double evaluate()
       {
-        // FIXME: What exactly is this supposed to be calculating?
-        dot_t* dot = this->dot();
-        if ( ! dot -> state ) return 0;
+        dot_t* dot = this -> dot();
+        if ( ! dot -> state ) return 0; // DoT isn't active, return 0. Doing otherwise would require some effort.
         return dot -> current_action -> composite_dot_duration( dot -> state ).total_seconds();
       }
     };

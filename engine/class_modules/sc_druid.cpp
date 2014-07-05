@@ -5857,7 +5857,7 @@ void druid_t::apl_default()
   if ( primary_role() == ROLE_SPELL )
   {
     def -> add_action( extra_actions );
-    def -> add_action( this, "Moonfire", "if=!dot.moonfire.ticking" );
+    def -> add_action( this, "Moonfire", "if=remains<=duration*0.3" );
     def -> add_action( "Wrath" );
   }
   // Specless (or speced non-main role) druid who has a primary role of a melee
@@ -5865,7 +5865,7 @@ void druid_t::apl_default()
   {
     def -> add_action( this, "Faerie Fire", "if=debuff.weakened_armor.stack<3" );
     def -> add_action( extra_actions );
-    def -> add_action( this, "Rake", "if=!ticking|ticks_remain<2" );
+    def -> add_action( this, "Rake", "if=remains<=duration*0.3" );
     def -> add_action( this, "Shred" );
     def -> add_action( this, "Ferocious Bite", "if=combo_points>=5" );
   }
@@ -5873,7 +5873,7 @@ void druid_t::apl_default()
   else if ( primary_role() == ROLE_HEAL )
   {
     def -> add_action( extra_actions );
-    def -> add_action( this, "Rejuvenation", "if=!ticking|remains<tick_time" );
+    def -> add_action( this, "Rejuvenation", "if=remains<=duration*0.3" );
     def -> add_action( this, "Healing Touch", "if=mana.pct>=30" );
   }
 }
@@ -5911,8 +5911,9 @@ void druid_t::apl_feral()
   def -> add_action( this, "Ferocious Bite", "cycle_targets=1,if=dot.rip.ticking&dot.rip.remains<=3&target.health.pct<25",
                      "Keep Rip from falling off during execute range." );
   def -> add_action( this, "Healing Touch", "if=talent.bloodtalons.enabled&buff.predatory_swiftness.up&(combo_points>=4|buff.predatory_swiftness.remains<1.5)" );
-  def -> add_action( "bear_form,if=active_enemies>1&energy.time_to_max>=5.5&(dot.thrash_bear.remains<16*0.3+1.5|(cooldown.tigers_fury.remains>6&cooldown.tigers_fury.remains<8))",
-                     "Maintain Thrash during AoE, clipping before Tiger's Fury comes off cooldown." );
+  if ( glyph.master_shapeshifter -> ok() )
+    def -> add_action( "bear_form,if=active_enemies>1&energy.time_to_max>=5.5&(dot.thrash_bear.remains-gcd<=dot.thrash_bear.duration*0.3|(cooldown.tigers_fury.remains>6&cooldown.tigers_fury.remains<8))",
+                       "Maintain Thrash during AoE, clipping before Tiger's Fury comes off cooldown." );
   def -> add_action( this, "Savage Roar", "if=buff.savage_roar.remains<3" );
   if ( sim -> allow_potions && level >= 80 )
     def -> add_action( potion_action + ",if=target.time_to_die<=40" );
@@ -5927,21 +5928,21 @@ void druid_t::apl_feral()
   if ( sim -> allow_potions && level >= 80 )
     def -> add_action( potion_action + ",sync=berserk,if=target.health.pct<25" );
   def -> add_action( this, "Berserk", "if=buff.tigers_fury.up" );
-  def -> add_action( "thrash_cat,if=buff.omen_of_clarity.react&dot.thrash_cat.remains<4.5&active_enemies>1" );
+  def -> add_action( "thrash_cat,if=buff.omen_of_clarity.react&remains<=duration*0.3&active_enemies>1" );
 
   // Finishers
   def -> add_action( this, "Rip", "cycle_targets=1,if=combo_points=5&dot.rip.ticking&persistent_multiplier>dot.rip.pmultiplier" );
   def -> add_action( this, "Ferocious Bite", "cycle_targets=1,if=combo_points=5&target.health.pct<25&dot.rip.ticking" );
-  def -> add_action( this, "Rip", "cycle_targets=1,if=combo_points=5&dot.rip.remains<7.2" );
+  def -> add_action( this, "Rip", "cycle_targets=1,if=combo_points=5&remains<=duration*0.3" );
   def -> add_action( this, "Savage Roar", "if=combo_points=5&(energy.time_to_max<=1|buff.berserk.up|cooldown.tigers_fury.remains<3)&buff.savage_roar.remains<42*0.3" );
   def -> add_action( this, "Ferocious Bite", "if=combo_points=5&(energy.time_to_max<=1|buff.berserk.up|cooldown.tigers_fury.remains<3)" );
 
-  def -> add_action( this, "Rake", "cycle_targets=1,if=dot.rake.remains<4.5&active_enemies<9&combo_points<5" );
+  def -> add_action( this, "Rake", "cycle_targets=1,if=remains<=duration*0.3&active_enemies<9&combo_points<5" );
   def -> add_action( "pool_resource,for_next=1" );
   def -> add_action( "thrash_cat,if=dot.thrash_cat.remains<4.5&active_enemies>1" );
   def -> add_action( this, "Rake", "cycle_targets=1,if=persistent_multiplier>dot.rake.pmultiplier&active_enemies<9&combo_points<5" );
   if ( level >= 100 )
-    def -> add_action( "moonfire,cycle_targets=1,if=dot.moonfire.remains<4.2&active_enemies=1" );
+    def -> add_action( "moonfire,cycle_targets=1,if=remains<=duration*0.3&active_enemies=1" );
 
   // Fillers
   def -> add_action( "pool_resource,for_next=1" );
@@ -5952,7 +5953,7 @@ void druid_t::apl_feral()
   def -> add_action( this, "Shred", "if=combo_points<5" );
 
   if ( glyph.master_shapeshifter -> ok() )
-    def -> add_action( this, "Bear Form", "if=dot.thrash_bear.remains<16*0.3+1.5&cooldown.tigers_fury.remains>6&dot.rip.remains>6&energy.time_to_max>=5.5" );
+    def -> add_action( this, "Bear Form", "if=dot.thrash_bear.remains-gcd<=dot.thrash_bear.duration*0.3&cooldown.tigers_fury.remains>6&dot.rip.remains>6&energy.time_to_max>=5.5" );
   if ( perk.enhanced_rejuvenation -> ok() )
   {
     def -> add_action( "natures_vigil" );
@@ -6066,13 +6067,13 @@ void druid_t::apl_guardian()
   default_list -> add_talent( this, "Bristling Fur", "if=incoming_damage_4s>health.max*0.15" );
   default_list -> add_talent( this, "Renewal", "if=incoming_damage_5>0.8*health.max" );
   default_list -> add_talent( this, "Nature's Vigil", "if=!talent.incarnation.enabled|buff.son_of_ursoc.up|cooldown.incarnation.remains" );
-  default_list -> add_action( this, "Lacerate", "if=((dot.lacerate.remains<3)|(dot.lacerate.stack<3&dot.thrash_bear.remains>3))&(buff.son_of_ursoc.up|buff.berserk.up)" );
-  default_list -> add_action( "thrash_bear,if=dot.thrash_bear.remains<3&(buff.son_of_ursoc.up|buff.berserk.up)" );
+  default_list -> add_action( this, "Lacerate", "if=((remains<=duration*0.3)|(dot.lacerate.stack<3&dot.thrash_bear.remains>dot.thrash_bear.duration*0.3))&(buff.son_of_ursoc.up|buff.berserk.up)" );
+  default_list -> add_action( "thrash_bear,if=remains<=duration*0.3&(buff.son_of_ursoc.up|buff.berserk.up)" );
   default_list -> add_talent( this, "Pulverize", "if=buff.pulverize.remains<gcd" );
   default_list -> add_action( this, "Mangle" );
   default_list -> add_action( "incarnation" );
-  default_list -> add_action( this, "Lacerate", "cycle_targets=1,if=dot.lacerate.remains<3|dot.lacerate.stack<3" );
-  default_list -> add_action( "thrash_bear,if=dot.thrash_bear.remains<16*0.3" );
+  default_list -> add_action( this, "Lacerate", "cycle_targets=1,if=remains<=duration*0.3|dot.lacerate.stack<3" );
+  default_list -> add_action( "thrash_bear,if=remains<=duration*0.3" );
   default_list -> add_talent( this, "Cenarion Ward" );
   default_list -> add_action( "thrash_bear,if=active_enemies>=3" );
   default_list -> add_action( this, "Lacerate" );
@@ -6095,7 +6096,7 @@ void druid_t::apl_restoration()
   default_list -> add_action( this, "Natures Swiftness" );
   default_list -> add_talent( this, "Incarnation" );
   default_list -> add_action( this, "Healing Touch", "if=buff.natures_swiftness.up|buff.omen_of_clarity.up" );
-  default_list -> add_action( this, "Rejuvenation", "if=!ticking|remains<tick_time" );
+  default_list -> add_action( this, "Rejuvenation", "if=remains<=duration*0.3" );
   default_list -> add_action( this, "Lifebloom", "if=debuff.lifebloom.stack<3" );
   default_list -> add_action( this, "Swiftmend" );
   default_list -> add_action( this, "Healing Touch" );
