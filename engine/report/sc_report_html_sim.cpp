@@ -2896,6 +2896,32 @@ static const help_box_t help_boxes[] =
     { "Dynamic Buffs", "Temporary buffs received during combat, perhaps multiple times."},
     { "Glance%", "Percentage of executes that resulted in glancing blows."},
     { "Block%", "Percentage of executes that resulted in blocking blows."},
+    { "Id", "Associated spell-id for this ability."},
+    { "Ability", "Name of the ability."},
+    { "Total", "Total damage for this ability during the fight."},
+    { "Hit", "Average non-crit damage."},
+    { "Interval", "Average time between executions of a particular action."},
+    { "Avg", "Average direct damage per execution."},
+    { "Miss%", "Percentage of executes that resulted in misses, dodges or parries."},
+    { "Origin", "The player profile from which the simulation script was generated. The profile must be copied into the same directory as this HTML file in order for the link to work."},
+    { "Parry%", "Percentage of executes that resulted in parries."},
+    { "RPS In", "Average primary resource points generated per second."},
+    { "RPS Out", "Average primary resource points consumed per second."},
+    { "Scale Factors", "Gain per unit stat increase except for <b>Hit/Expertise</b> which represent <b>Loss</b> per unit stat <b>decrease</b>."},
+    { "Gear Amount", "Amount from raw gear, before class or buff modifiers. Amount from hybrid primary stats (i.e. Agility/Intellect) shown in parentheses."},
+    { "Stats Raid Buffed", "Amount after all static buffs have been accounted for. Dynamic buffs (i.e. trinkets, potions) not included."},
+    { "Stats Unbuffed", "Amount after class modifiers and effects, but before buff modifiers."},
+    { "Ticks", "Average number of periodic ticks per iteration. Spells that do not have a damage-over-time component will have zero ticks."},
+    { "Ticks Crit", "Average crit tick damage."},
+    { "Ticks Crit%", "Percentage of ticks that resulted in critical strikes."},
+    { "Ticks Hit", "Average non-crit tick damage."},
+    { "Ticks Miss%", "Percentage of ticks that resulted in misses, dodges or parries."},
+    { "Ticks Uptime%", "Percentage of total time that DoT is ticking on target."},
+    { "Ticks Avg", "Average damage per tick."},
+    { "Timeline Distribution", "The simulated encounter's duration can vary based on the health of the target and variation in the raid DPS. This chart shows how often the duration of the encounter varied by how much time."},
+    { "Waiting", "This is the percentage of time in which no action can be taken other than autoattacks. This can be caused by resource starvation, lockouts, and timers."},
+    { "Scale Factor Ranking", "This row ranks the scale factors from highest to lowest, checking whether one scale factor is higher/lower than another with statistical significance."},
+
 };
 
 void print_html_help_boxes( report::sc_html_stream& os, sim_t* sim )
@@ -2916,6 +2942,8 @@ void print_html_help_boxes( report::sc_html_stream& os, sim_t* sim )
        << "</div>\n"
        << "</div>\n";
   }
+
+  // From here on go special help boxes with dynamic text / etc.
 
   os << "<div id=\"help-tmirange\">\n"
      << "<div class=\"help-box\">\n"
@@ -2949,171 +2977,10 @@ void print_html_help_boxes( report::sc_html_stream& os, sim_t* sim )
      << "</div>\n"
      << "</div>\n";
 
-  os << "<div id=\"help-id\">\n"
-     << "<div class=\"help-box\">\n"
-     << "<h3>Id</h3>\n"
-     << "<p>Associated spell-id for this ability.</p>\n"
-     << "</div>\n"
-     << "</div>\n";
-
-  os << "<div id=\"help-ability\">\n"
-     << "<div class=\"help-box\">\n"
-     << "<h3>Ability</h3>\n"
-     << "<p>Name of the ability</p>\n"
-     << "</div>\n"
-     << "</div>\n";
-
-  os << "<div id=\"help-total\">\n"
-     << "<div class=\"help-box\">\n"
-     << "<h3>Total</h3>\n"
-     << "<p>Total damage for this ability during the fight.</p>\n"
-     << "</div>\n"
-     << "</div>\n";
-
-  os << "<div id=\"help-hit\">\n"
-     << "<div class=\"help-box\">\n"
-     << "<h3>Hit</h3>\n"
-     << "<p>Average non-crit damage.</p>\n"
-     << "</div>\n"
-     << "</div>\n";
-
-  os << "<div id=\"help-interval\">\n"
-     << "<div class=\"help-box\">\n"
-     << "<h3>Interval</h3>\n"
-     << "<p>Average time between executions of a particular action.</p>\n"
-     << "</div>\n"
-     << "</div>\n";
-
-  os << "<div id=\"help-avg\">\n"
-     << "<div class=\"help-box\">\n"
-     << "<h3>Avg</h3>\n"
-     << "<p>Average direct damage per execution.</p>\n"
-     << "</div>\n"
-     << "</div>\n";
-
-  os << "<div id=\"help-miss-pct\">\n"
-     << "<div class=\"help-box\">\n"
-     << "<h3>M%</h3>\n"
-     << "<p>Percentage of executes that resulted in misses, dodges or parries.</p>\n"
-     << "</div>\n"
-     << "</div>\n";
-
-  os << "<div id=\"help-origin\">\n"
-     << "<div class=\"help-box\">\n"
-     << "<h3>Origin</h3>\n"
-     << "<p>The player profile from which the simulation script was generated. The profile must be copied into the same directory as this HTML file in order for the link to work.</p>\n"
-     << "</div>\n"
-     << "</div>\n";
-
-  os << "<div id=\"help-parry-pct\">\n"
-     << "<div class=\"help-box\">\n"
-     << "<h3>Parry%</h3>\n"
-     << "<p>Percentage of executes that resulted in parries.</p>\n"
-     << "</div>\n"
-     << "</div>\n";
-
   os << "<div id=\"help-range\">\n"
      << "<div class=\"help-box\">\n"
      << "<h3>Range</h3>\n"
      << "<p>This is the range of values containing " << sim -> confidence * 100 << "% of the data, roughly centered on the mean.</p>\n"
-     << "</div>\n"
-     << "</div>\n";
-
-  os << "<div id=\"help-rps-in\">\n"
-     << "<div class=\"help-box\">\n"
-     << "<h3>RPS In</h3>\n"
-     << "<p>Average primary resource points generated per second.</p>\n"
-     << "</div>\n"
-     << "</div>\n";
-
-  os << "<div id=\"help-rps-out\">\n"
-     << "<div class=\"help-box\">\n"
-     << "<h3>RPS Out</h3>\n"
-     << "<p>Average primary resource points consumed per second.</p>\n"
-     << "</div>\n"
-     << "</div>\n";
-
-  os << "<div id=\"help-scale-factors\">\n"
-     << "<div class=\"help-box\">\n"
-     << "<h3>Scale Factors</h3>\n"
-     << "<p>Gain per unit stat increase except for <b>Hit/Expertise</b> which represent <b>Loss</b> per unit stat <b>decrease</b>.</p>\n"
-     << "</div>\n"
-     << "</div>\n";
-
-  os << "<div id=\"help-stats-gear\">\n"
-     << "<div class=\"help-box\">\n"
-     << "<h3>Gear Amount</h3>\n"
-     << "<p>Amount from raw gear, before class or buff modifiers. Amount from hybrid primary stats (i.e. Agility/Intellect) shown in parentheses.</p>\n"
-     << "</div>\n"
-     << "</div>\n";
-
-  os << "<div id=\"help-stats-raid-buffed\">\n"
-     << "<div class=\"help-box\">\n"
-     << "<h3>Gear Amount</h3>\n"
-     << "<p>Amount after all static buffs have been accounted for. Dynamic buffs (i.e. trinkets, potions) not included.</p>\n"
-     << "</div>\n"
-     << "</div>\n";
-
-  os << "<div id=\"help-stats-unbuffed\">\n"
-     << "<div class=\"help-box\">\n"
-     << "<h3>Gear Amount</h3>\n"
-     << "<p>Amount after class modifiers and effects, but before buff modifiers.</p>\n"
-     << "</div>\n"
-     << "</div>\n";
-
-  os << "<div id=\"help-ticks\">\n"
-     << "<div class=\"help-box\">\n"
-     << "<h3>Ticks</h3>\n"
-     << "<p>Average number of periodic ticks per iteration. Spells that do not have a damage-over-time component will have zero ticks.</p>\n"
-     << "</div>\n"
-     << "</div>\n";
-
-  os << "<div id=\"help-ticks-crit\">\n"
-     << "<div class=\"help-box\">\n"
-     << "<h3>T-Crit</h3>\n"
-     << "<p>Average crit tick damage.</p>\n"
-     << "</div>\n"
-     << "</div>\n";
-
-  os << "<div id=\"help-ticks-crit-pct\">\n"
-     << "<div class=\"help-box\">\n"
-     << "<h3>T-Crit%</h3>\n"
-     << "<p>Percentage of ticks that resulted in critical strikes.</p>\n"
-     << "</div>\n"
-     << "</div>\n";
-
-  os << "<div id=\"help-ticks-hit\">\n"
-     << "<div class=\"help-box\">\n"
-     << "<h3>T-Hit</h3>\n"
-     << "<p>Average non-crit tick damage.</p>\n"
-     << "</div>\n"
-     << "</div>\n";
-
-  os << "<div id=\"help-ticks-miss-pct\">\n"
-     << "<div class=\"help-box\">\n"
-     << "<h3>T-M%</h3>\n"
-     << "<p>Percentage of ticks that resulted in misses, dodges or parries.</p>\n"
-     << "</div>\n"
-     << "</div>\n";
-
-  os << "<div id=\"help-ticks-uptime\">\n"
-     << "<div class=\"help-box\">\n"
-     << "<h3>UpTime%</h3>\n"
-     << "<p>Percentage of total time that DoT is ticking on target.</p>\n"
-     << "</div>\n"
-     << "</div>\n";
-
-  os << "<div id=\"help-ticks-avg\">\n"
-     << "<div class=\"help-box\">\n"
-     << "<h3>T-Avg</h3>\n"
-     << "<p>Average damage per tick.</p>\n"
-     << "</div>\n"
-     << "</div>\n";
-
-  os << "<div id=\"help-timeline-distribution\">\n"
-     << "<div class=\"help-box\">\n"
-     << "<h3>Timeline Distribution</h3>\n"
-     << "<p>The simulated encounter's duration can vary based on the health of the target and variation in the raid DPS. This chart shows how often the duration of the encounter varied by how much time.</p>\n"
      << "</div>\n"
      << "</div>\n";
 
@@ -3123,20 +2990,6 @@ void print_html_help_boxes( report::sc_html_stream& os, sim_t* sim )
      << "<p>Fight Length: " << sim -> max_time.total_seconds() << "<br />\n"
      << "Vary Combat Length: " << sim -> vary_combat_length << "</p>\n"
      << "<p>Fight Length is the specified average fight duration. If vary_combat_length is set, the fight length will vary by +/- that portion of the value. See <a href=\"http://code.google.com/p/simulationcraft/wiki/Options#Combat_Length\" class=\"ext\">Combat Length</a> in the wiki for further details.</p>\n"
-     << "</div>\n"
-     << "</div>\n";
-
-  os << "<div id=\"help-waiting\">\n"
-     << "<div class=\"help-box\">\n"
-     << "<h3>Waiting</h3>\n"
-     << "<p>This is the percentage of time in which no action can be taken other than autoattacks. This can be caused by resource starvation, lockouts, and timers.</p>\n"
-     << "</div>\n"
-     << "</div>\n";
-
-  os << "<div id=\"help-sf-ranking\">\n"
-     << "<div class=\"help-box\">\n"
-     << "<h3>Scale Factor Ranking</h3>\n"
-     << "<p>This row ranks the scale factors from highest to lowest, checking whether one scale factor is higher/lower than another with statistical significance.</p>\n"
      << "</div>\n"
      << "</div>\n";
 

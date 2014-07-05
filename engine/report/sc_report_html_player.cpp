@@ -1019,7 +1019,7 @@ void print_html_stats ( report::sc_html_stream& os, player_t* a )
        << "\t\t\t\t\t\t\t\t\t\t<th></th>\n"
        << "\t\t\t\t\t\t\t\t\t\t<th><a href=\"#help-stats-raid-buffed\" class=\"help\">Raid-Buffed</a></th>\n"
        << "\t\t\t\t\t\t\t\t\t\t<th><a href=\"#help-stats-unbuffed\" class=\"help\">Unbuffed</a></th>\n"
-       << "\t\t\t\t\t\t\t\t\t\t<th><a href=\"#help-stats-gear\" class=\"help\">Gear Amount</a></th>\n"
+       << "\t\t\t\t\t\t\t\t\t\t<th><a href=\"#help-gear-amount\" class=\"help\">Gear Amount</a></th>\n"
        << "\t\t\t\t\t\t\t\t\t</tr>\n";
 
     for ( attribute_e i = ATTRIBUTE_NONE; ++i < ATTR_AGI_INT; )
@@ -1632,7 +1632,7 @@ void print_html_player_scale_factors( report::sc_html_stream& os, sim_t* sim, pl
       // Text Ranking
       os.printf(
         "\t\t\t\t\t\t\t<tr class=\"left\">\n"
-        "\t\t\t\t\t\t\t\t<th><a href=\"#help-sf-ranking\" class=\"help\">Ranking</a></th>\n"
+        "\t\t\t\t\t\t\t\t<th><a href=\"#help-scale-factor-ranking\" class=\"help\">Ranking</a></th>\n"
         "\t\t\t\t\t\t\t\t<td colspan=\"%i\" class=\"filler\">\n"
         "\t\t\t\t\t\t\t\t\t<ul class=\"float\">\n"
         "\t\t\t\t\t\t\t\t\t\t<li>",
@@ -3211,7 +3211,7 @@ void output_player_damage_summary( report::sc_html_stream& os, player_t* actor )
 
   if ( player_has_tick_results( actor, MASK_DMG ) )
   {
-    os << "\t\t\t\t\t\t\t\t<th class=\"small\"><a href=\"#help-ticks-uptime\" class=\"help\">Up%</a></th>\n"
+    os << "\t\t\t\t\t\t\t\t<th class=\"small\"><a href=\"#help-ticks-uptime-pct\" class=\"help\">Up%</a></th>\n"
        << "\t\t\t\t\t\t\t</tr>\n";
     n_optional_columns++;
   }
@@ -3308,7 +3308,7 @@ void output_player_heal_summary( report::sc_html_stream& os, player_t* actor )
 
   if ( player_has_tick_results( actor, MASK_HEAL | MASK_ABSORB ) )
   {
-    os << "\t\t\t\t\t\t\t\t<th class=\"small\"><a href=\"#help-ticks-uptime\" class=\"help\">Up%</a></th>\n"
+    os << "\t\t\t\t\t\t\t\t<th class=\"small\"><a href=\"#help-ticks-uptime-pct\" class=\"help\">Up%</a></th>\n"
        << "\t\t\t\t\t\t\t</tr>\n";
     n_optional_columns++;
   }
