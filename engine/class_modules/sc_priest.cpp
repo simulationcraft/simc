@@ -4018,12 +4018,12 @@ struct _heal_t final : public priest_heal_t
     if ( ! priest.buffs.spirit_shell -> check() )
       trigger_strength_of_soul( s -> target );
 
-    if ( priest.sets.has_set_bonus( SET_T17_4PC_HEAL ) && rng().roll( priest.sets.set( SET_T17_4PC_HEAL ) -> effectN( 1 ).percent() ))
+    if ( rng().roll( priest.sets.set( SET_T17_4PC_HEAL ) -> effectN( 1 ).percent() ) )
     {
       if ( priest.mastery_spells.echo_of_light -> ok() ) //Holy
-        priest.buffs.spiritual_vigor -> up();
+        priest.buffs.spiritual_vigor -> trigger();
       else if ( priest.mastery_spells.shield_discipline -> ok() ) //Discipline
-        priest.buffs.clear_thoughts -> up();
+        priest.buffs.clear_thoughts -> trigger();
     }
   }
 
