@@ -2724,7 +2724,7 @@ struct devouring_plague_t final : public priest_spell_t
       priest_spell_t::impact( s );
 
 
-      dot_t* dot = get_dot();
+      dot_t* dot = get_dot( state -> target );
       dp_state_t* ds = static_cast<dp_state_t*>( dot -> state );
       assert( ds );
       ds -> tick_dmg = saved_impact_dmg / dot -> ticks_left();
