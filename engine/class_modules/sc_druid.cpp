@@ -22,7 +22,6 @@ namespace { // UNNAMED NAMESPACE
     Combo Points as a resource
     Verify stuff, particularly damage checking
     check bitw refresh
-    li + ooc
 
     = Balance =
     Just verify stuff.
@@ -3155,7 +3154,7 @@ public:
     ab::consume_resource();
     druid_t& p = *this -> p();
 
-    if ( consume_ooc && this -> execute_time() != timespan_t::zero() && p.buff.omen_of_clarity -> up() )
+    if ( consume_ooc && ( this -> execute_time() != timespan_t::zero() || id == 155625 ) && p.buff.omen_of_clarity -> up() )
     {
       // Treat the savings like a mana gain.
       double amount = ab::cost();
@@ -3169,7 +3168,7 @@ public:
 
   virtual double cost() const
   {
-    if ( consume_ooc && this -> p() -> buff.omen_of_clarity -> check() && this -> execute_time() != timespan_t::zero() )
+    if ( consume_ooc && ( this -> execute_time() != timespan_t::zero() || id == 155625 ) && this -> p() -> buff.omen_of_clarity -> check() )
       return 0;
 
     return std::max( 0.0, ab::cost() * ( 1.0 + cost_reduction() ) );
@@ -4627,6 +4626,11 @@ struct mark_of_the_wild_t : public druid_spell_t
 };
 
 // Moonfire (Lunar Inspiration) Spell =======================================
+/* TODO: Confirm whether or not this can consume Omen of Clarity. It is
+   clearly not a cast time spell and whether or not it is a "feral offensive
+   ability" is debatable.
+   Currently implemented as consuming (see whitelist in druid_spell_base_t).
+ */
 
 struct moonfire_li_t : public druid_spell_t
 {
