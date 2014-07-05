@@ -2721,8 +2721,7 @@ struct devouring_plague_t final : public priest_spell_t
       double a = ds -> tick_heal_percent * priest.resources.max[ RESOURCE_HEALTH ];
       priest.resource_gain( RESOURCE_HEALTH, a, priest.gains.devouring_plague_health );
 
-      if ( priest.sets.has_set_bonus( SET_T17_4PC_CASTER ) )
-        priest.buffs.mental_instinct -> trigger();
+      priest.buffs.mental_instinct -> trigger();
 
       trigger_surge_of_darkness();
     }
@@ -5135,7 +5134,7 @@ double priest_t::composite_spell_haste() const
     h /= 1.0 + buffs.resolute_spirit -> data().effectN( 1 ).percent(); // FIXME: check whether to use set bonus data ( 10% ) or buff data ( 15% ). 2013/06/13
 
   if ( buffs.mental_instinct -> check() )
-    h /= 1.0 + buffs.mental_instinct -> default_value * buffs.mental_instinct -> stack();
+    h /= 1.0 + buffs.mental_instinct -> default_value * buffs.mental_instinct -> check();
 
   return h;
 }
