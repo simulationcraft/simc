@@ -15,7 +15,6 @@ namespace { // UNNAMED NAMESPACE
     Tranquility
     Dash
     Fix Force of Nature (summons fine, but treants take no actions)
-    Glyph of Ursoc's Defense
     Potion action
 
     = Feral =
@@ -6309,7 +6308,7 @@ double druid_t::composite_armor_multiplier() const
   double a = player_t::composite_armor_multiplier();
 
   if ( buff.bear_form -> check() )
-    a *= 1.0 + buff.bear_form -> data().effectN( 3 ).percent();
+    a *= 1.0 + buff.bear_form -> data().effectN( 3 ).percent() + glyph.ursols_defense -> effectN( 1 ).percent();
 
   if ( buff.moonkin_form -> check() )
     a *= 1.0 + buff.moonkin_form -> data().effectN( 3 ).percent() + perk.enhanced_moonkin_form -> effectN( 1 ).percent();
