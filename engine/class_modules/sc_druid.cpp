@@ -1757,9 +1757,19 @@ public:
 
   bool trigger_omen_of_clarity()
   {
-    if ( ab::proc ) return false;
+    if ( ab::proc )
+      return false;
 
-    return p() -> buff.omen_of_clarity -> trigger();
+    if ( p() -> specialization() == DRUID_RESTORATION )
+      return p() -> buff.omen_of_clarity -> trigger(); // Proc chance is handled by buff chance
+    else if ( p() -> specialization() == DRUID_FERAL )
+    {
+      if ( ab::rng().roll( ab::weapon -> proc_chance_on_swing( 3.5 ) ) ) // 3.5 PPM via https://twitter.com/Celestalon/status/482329896404799488
+        return p() -> buff.omen_of_clarity -> trigger();
+      else
+        return false;
+    } else
+      return false;
   }
 };
 
@@ -6162,7 +6172,8 @@ void druid_t::create_buffs()
   buff.frenzied_regeneration = buff_creator_t( this, "frenzied_regeneration", find_class_spell( "Frenzied Regeneration" ) );
   buff.moonkin_form          = new moonkin_form_t( *this );
   buff.omen_of_clarity       = buff_creator_t( this, "omen_of_clarity", spec.omen_of_clarity -> effectN( 1 ).trigger() )
-                               .chance( spec.omen_of_clarity -> ok() ? find_spell( 113043 ) -> proc_chance() : 0.0 );
+                               .chance( specialization() == DRUID_RESTORATION ? find_spell( 113043 ) -> proc_chance()
+                                                                              : find_spell( 16864 ) -> proc_chance() );
   buff.soul_of_the_forest    = buff_creator_t( this, "soul_of_the_forest", talent.soul_of_the_forest -> ok() ? find_spell( 114108 ) : spell_data_t::not_found() )
                                .default_value( find_spell( 114108 ) -> effectN( 1 ).percent() );
   buff.stealthed             = buff_creator_t( this, "stealthed", find_class_spell( "Prowl" ) );
