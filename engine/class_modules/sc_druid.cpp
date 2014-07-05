@@ -14,17 +14,16 @@ namespace { // UNNAMED NAMESPACE
     = General =
     Dash
     Fix Force of Nature (summons fine, but treants take no actions)
-    Potion action
 
     = Feral =
     Combo Points as a resource
-    Verify stuff, particularly damage checking
+    Verify stuff
 
     = Balance =
-    Just verify stuff.
+    Verify stuff.
 
     = Guardian =
-    Verify DoC
+    Verify stuff (particularly DoC)
 
     = Restoration =
     Err'thing
@@ -5788,10 +5787,27 @@ void druid_t::apl_precombat()
   // Pre-Potion
   if ( sim -> allow_potions && level >= 80 )
   {
+    std::string potion_action = "potion,name=";
     if ( specialization() == DRUID_FERAL && primary_role() == ROLE_ATTACK )
-      precombat -> add_action( ( level > 85 ) ? "virmens_bite_potion" : "tolvir_potion" );
+    {
+      if ( level > 90 )
+        potion_action += "draenor_agility";
+      else if ( level > 85 )
+        potion_action += "virmens_bite";
+      else
+        potion_action += "tolvir";
+      precombat -> add_action( potion_action );
+    }
     else if ( ( specialization() == DRUID_BALANCE || specialization() == DRUID_RESTORATION ) && ( primary_role() == ROLE_SPELL || primary_role() == ROLE_HEAL ) )
-      precombat -> add_action( ( level > 85 ) ? "jade_serpent_potion" : "volcanic_potion" );
+    {
+      if ( level > 90 )
+        potion_action += "draenor_intellect";
+      else if ( level > 85 )
+        potion_action += "jade_serpent";
+      else
+        potion_action += "volcanic";
+      precombat -> add_action( potion_action );
+    }
   }
 }
 
@@ -5846,8 +5862,15 @@ void druid_t::apl_feral()
 {
   action_priority_list_t* def      = get_action_priority_list( "default"  );
 
-  std::vector<std::string> item_actions       = get_item_actions();
-  std::vector<std::string> racial_actions     = get_racial_actions();
+  std::vector<std::string> item_actions   = get_item_actions();
+  std::vector<std::string> racial_actions = get_racial_actions();
+  std::string              potion_action  = "potion,name=";
+  if ( level > 90 )
+    potion_action += "draenor_agility";
+  else if ( level > 85 )
+    potion_action += "virmens_bite";
+  else
+    potion_action += "tolvir";
 
   // Main List =============================================================
 
@@ -5869,8 +5892,8 @@ void druid_t::apl_feral()
   def -> add_action( "bear_form,if=active_enemies>1&energy.time_to_max>=5.5&(dot.thrash_bear.remains<16*0.3+1.5|(cooldown.tigers_fury.remains>6&cooldown.tigers_fury.remains<8))",
                      "Maintain Thrash during AoE, clipping before Tiger's Fury comes off cooldown." );
   def -> add_action( this, "Savage Roar", "if=buff.savage_roar.remains<3" );
-  std::string potion_name = level > 85 ? "virmens_bite_potion" : "tolvir_potion";
-  def -> add_action( potion_name + ",if=target.time_to_die<=40" );
+  if ( sim -> allow_potions && level >= 80 )
+    def -> add_action( potion_action + ",if=target.time_to_die<=40" );
   def -> add_action( "incarnation,if=energy<25&!buff.omen_of_clarity.react&cooldown.tigers_fury.remains<=1" );
   // On-Use Items
   for ( size_t i = 0; i < item_actions.size(); i++ )
@@ -5879,7 +5902,8 @@ void druid_t::apl_feral()
   for ( size_t i = 0; i < racial_actions.size(); i++ )
     def -> add_action( racial_actions[ i ] + ",sync=tigers_fury" );
   def -> add_action( this, "Tiger's Fury", "if=energy<=35&!buff.omen_of_clarity.react&(!talent.incarnation_king_of_the_jungle.enabled|buff.king_of_the_jungle.up|cooldown.incarnation.remains>0)" );
-  def -> add_action( potion_name + ",sync=berserk,if=target.health.pct<25" );
+  if ( sim -> allow_potions && level >= 80 )
+    def -> add_action( potion_action + ",sync=berserk,if=target.health.pct<25" );
   def -> add_action( this, "Berserk", "if=buff.tigers_fury.up" );
   def -> add_action( "thrash_cat,if=buff.omen_of_clarity.react&dot.thrash_cat.remains<4.5&active_enemies>1" );
 
@@ -5918,8 +5942,15 @@ void druid_t::apl_feral()
 
 void druid_t::apl_balance()
 {
-  std::vector<std::string> racial_actions     = get_racial_actions();
-  std::vector<std::string> item_actions       = get_item_actions();
+  std::vector<std::string> racial_actions = get_racial_actions();
+  std::vector<std::string> item_actions   = get_item_actions();
+  std::string              potion_action  = "potion,name=";
+  if ( level > 90 )
+    potion_action += "draenor_intellect";
+  else if ( level > 85 )
+    potion_action += "jade_serpent";
+  else
+    potion_action += "volcanic";
 
   action_priority_list_t* default_list        = get_action_priority_list( "default" );
   action_priority_list_t* single_target       = get_action_priority_list( "single_target" );
@@ -5928,7 +5959,7 @@ void druid_t::apl_balance()
   action_priority_list_t* aoe                 = get_action_priority_list( "aoe" );
 
   if ( sim -> allow_potions && level >= 80 )
-    default_list -> add_action( "jade_serpent_potion,if=buff.bloodlust.react|target.time_to_die<=40|buff.celestial_alignment.up" );
+    default_list -> add_action( potion_action + ",if=buff.bloodlust.react|target.time_to_die<=40|buff.celestial_alignment.up" );
 
   for ( size_t i = 0; i < racial_actions.size(); i++ )
     default_list -> add_action( racial_actions[i] + ",if=buff.bloodlust.react|target.time_to_die<=40|buff.celestial_alignment.up" );
