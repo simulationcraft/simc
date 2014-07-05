@@ -2670,9 +2670,9 @@ struct devouring_plague_t final : public priest_spell_t
 
     /* Precondition: dot is ticking!
      */
-    void append_damage( double dmg )
+    void append_damage( player_t* target, double dmg )
     {
-      dot_t* dot = get_dot();
+      dot_t* dot = get_dot( target );
       if ( !dot -> is_ticking() )
       {
         if ( sim -> debug )
@@ -2691,9 +2691,9 @@ struct devouring_plague_t final : public priest_spell_t
     }
     /* Precondition: dot is ticking!
      */
-    void append_heal( double heal )
+    void append_heal( player_t* target, double heal )
     {
-      dot_t* dot = get_dot();
+      dot_t* dot = get_dot( target );
       if ( !dot -> is_ticking() )
       {
         if ( sim -> debug )
@@ -2730,7 +2730,6 @@ struct devouring_plague_t final : public priest_spell_t
       ds -> tick_dmg = saved_impact_dmg / dot -> ticks_left();
       ds -> tick_heal_percent = saved_tick_heal_percent / dot -> ticks_left();
       ds -> orbs_used = saved_orbs;
-	  ds -> orbs_used = saved_orbs;
       if ( sim -> debug )
         sim -> out_debug.printf( "%s DP dot started with total of %.2f damage / %.2f per tick and %.4f%% heal / %.4f%% per tick.",
                                  player -> name(), saved_impact_dmg, ds -> tick_dmg, saved_tick_heal_percent * 100.0, ds -> tick_heal_percent * 100.0 );
@@ -2881,7 +2880,7 @@ struct devouring_plague_t final : public priest_spell_t
                                util::result_type_string( state -> result ),
                                state -> result_amount );
 
-    dot_spell -> append_damage( state -> result_amount );
+    dot_spell -> append_damage( state -> target, state -> result_amount );
   }
 
   void transfer_heal_to_dot( action_state_t* state )
@@ -2896,7 +2895,7 @@ struct devouring_plague_t final : public priest_spell_t
                                util::result_type_string( state -> result ),
                                tick_heal_pct * 100.0 );
 
-    dot_spell -> append_heal( tick_heal_pct );
+    dot_spell -> append_heal( state -> target, tick_heal_pct );
   }
 
   virtual void impact( action_state_t* s ) override
