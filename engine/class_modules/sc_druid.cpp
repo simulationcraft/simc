@@ -3149,7 +3149,7 @@ public:
     ab::consume_resource();
     druid_t& p = *this -> p();
 
-    if ( consume_ooc && ( this -> execute_time() != timespan_t::zero() /*|| id == 155625*/ ) && p.buff.omen_of_clarity -> up() )
+    if ( consume_ooc && ( this -> execute_time() != timespan_t::zero() || ab::id == 155625 ) && p.buff.omen_of_clarity -> up() )
     {
       // Treat the savings like a mana gain.
       double amount = ab::cost();
@@ -3163,7 +3163,7 @@ public:
 
   virtual double cost() const
   {
-    if ( consume_ooc && ( this -> execute_time() != timespan_t::zero() /*|| id == 155625*/ ) && this -> p() -> buff.omen_of_clarity -> check() )
+    if ( consume_ooc && ( this -> execute_time() != timespan_t::zero() || ab::id == 155625 ) && this -> p() -> buff.omen_of_clarity -> check() )
       return 0;
 
     return std::max( 0.0, ab::cost() * ( 1.0 + cost_reduction() ) );
