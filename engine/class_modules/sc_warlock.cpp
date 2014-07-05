@@ -2279,7 +2279,7 @@ struct corruption_t : public warlock_spell_t
     base_multiplier *= 1.0 + p -> sets.set( SET_T13_4PC_CASTER ) -> effectN( 1 ).percent();
     //pulling duration from sub-curruption, since default id has no duration...
     dot_duration = p -> find_spell( 146739 )-> duration();
-    spell_power_mod.tick = p -> find_spell( 146739 ) -> effectN(1).sp_coeff(); //returning 1.80 for mod - supposed to be .165
+    spell_power_mod.tick = p -> find_spell( 146739 ) -> effectN(1).sp_coeff(); //returning .180 for mod - supposed to be .165
     base_tick_time = timespan_t::from_seconds( 2.0 );
   }
 
