@@ -12,7 +12,6 @@ namespace { // UNNAMED NAMESPACE
 
  /* WoD -- TODO:
     = General =
-    Dash
     Fix Force of Nature (summons fine, but treants take no actions)
 
     = Feral =
@@ -4167,6 +4166,27 @@ struct cenarion_ward_t : public druid_spell_t
   }
 };
 
+// Dash =====================================================================
+
+struct dash_t : public druid_spell_t
+{
+  dash_t( druid_t* player, const std::string& options_str ) :
+    druid_spell_t( "dash", player, player -> find_class_spell( "Dash" ) )
+  {
+    parse_options( NULL, options_str );
+
+    harmful = false;
+    use_off_gcd = true;
+  }
+
+  virtual void execute()
+  {
+    druid_spell_t::execute();
+
+    p() -> buff.dash -> trigger();
+  }
+};
+
 // Faerie Fire Spell ========================================================
 
 struct faerie_fire_t : public druid_spell_t
@@ -5207,6 +5227,7 @@ action_t* druid_t::create_action( const std::string& name,
   if ( name == "celestial_alignment" ||
        name == "ca"                     ) return new    celestial_alignment_t( this, options_str );
   if ( name == "cenarion_ward"          ) return new          cenarion_ward_t( this, options_str );
+  if ( name == "dash"                   ) return new                   dash_t( this, options_str );
   if ( name == "faerie_fire"            ) return new            faerie_fire_t( this, options_str );
   if ( name == "ferocious_bite"         ) return new         ferocious_bite_t( this, options_str );
   if ( name == "frenzied_regeneration"  ) return new  frenzied_regeneration_t( this, options_str );
@@ -5599,7 +5620,8 @@ void druid_t::create_buffs()
   buff.bear_form             = new bear_form_t( *this );
   buff.berserk               = new berserk_buff_t( *this );
   buff.cat_form              = new cat_form_t( *this );
-  buff.dash                  = buff_creator_t( this, "dash", find_class_spell( "Dash" ) );
+  buff.dash                  = buff_creator_t( this, "dash", find_class_spell( "Dash" ) )
+                               .cd( timespan_t::zero() );
   buff.frenzied_regeneration = buff_creator_t( this, "frenzied_regeneration", find_class_spell( "Frenzied Regeneration" ) );
   buff.moonkin_form          = new moonkin_form_t( *this );
   buff.omen_of_clarity       = buff_creator_t( this, "omen_of_clarity", spec.omen_of_clarity -> effectN( 1 ).trigger() )
