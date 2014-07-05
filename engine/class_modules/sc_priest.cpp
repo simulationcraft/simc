@@ -6209,6 +6209,11 @@ void priest_t::target_mitigation( school_e school,
   {
     s -> result_amount *= 1.0 + buffs.dispersion -> data().effectN( 1 ).percent();
   }
+
+  if ( buffs.focused_will -> check() )
+  {
+    s -> result_amount *= 1.0 + buffs.focused_will -> data().effectN( 1 ).percent() * buffs.focused_will -> check();
+  }
 }
 
 // priest_t::create_options =================================================
