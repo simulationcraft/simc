@@ -21,7 +21,6 @@ namespace { // UNNAMED NAMESPACE
     = Feral =
     Combo Points as a resource
     Verify stuff, particularly damage checking
-    check bitw refresh
 
     = Balance =
     Just verify stuff.
@@ -4649,7 +4648,10 @@ struct moonfire_li_t : public druid_spell_t
     {
       int cp = data().effectN( 3 ).base_value(); // Since this isn't in cat_attack_t, we need to account for the base combo points as well.
       if ( p() -> spell.primal_fury -> ok() && s -> result == RESULT_CRIT )
+      {
+        p() -> proc.primal_fury -> occur();
         cp += p() -> find_spell( 16953 ) -> effectN( 1 ).base_value();
+      }
       td( s -> target ) -> combo_points.add( cp, &name_str );
     }
   }
