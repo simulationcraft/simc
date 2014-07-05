@@ -5,11 +5,6 @@
 
 #include "simulationcraft.hpp"
 
-/* WOD TODO (when new dbc is up):
- *
- * - (Cascade), Divine Star, and Halo no longer heal allies but are instant cast
- *   for Shadow Priests, or damage enemies for Discipline or Holy Priests.
- */
 namespace { // UNNAMED NAMESPACE
 
 /* Forward declarations
@@ -81,6 +76,8 @@ public:
     buff_t* chakra_sanctuary;
     buff_t* chakra_serenity;
     buff_t* serendipity;
+
+    buff_t* focused_will;
 
     // Shadow
     buff_t* divine_insight_shadow;
@@ -161,6 +158,8 @@ public:
     const spell_data_t* serendipity;
     const spell_data_t* multistrike_attunement;
 
+    const spell_data_t* focused_will;
+
     // Shadow
     const spell_data_t* shadowform;
     const spell_data_t* shadowy_apparitions;
@@ -180,7 +179,7 @@ public:
   // Perk Spells
   struct
   {
-    // const spell_data_t* enhanced_focus_will;
+    const spell_data_t* enhanced_focused_will;
     const spell_data_t* enhanced_holy_fire;
     // const spell_data_t* enhanced_leap_of_faith;
     const spell_data_t* enhanced_power_word_shield;
@@ -376,7 +375,8 @@ public:
   virtual void      pre_analyze_hook() override;
   virtual void      init_action_list() override;
   virtual priest_td_t* get_target_data( player_t* target ) const override;
-  virtual expr_t*   create_expression( action_t* a, const std::string& name_str );
+  virtual expr_t*   create_expression( action_t* a, const std::string& name_str ) override;
+  virtual void assess_damage_imminent( school_e, dmg_e, action_state_t* ) override;
 
 private:
   void create_cooldowns();
@@ -3635,7 +3635,6 @@ private:
       return new halo_base_t<priest_heal_t>( "halo_heal", p, p.find_spell( 120692 ) );
     }
   }
-
 };
 
 // Divine Star spell
@@ -5227,6 +5226,11 @@ double priest_t::composite_player_multiplier( school_e school ) const
     m *= 1.0 + buffs.twist_of_fate -> current_value;
   }
 
+  if ( perks.enhanced_focused_will -> ok() && buffs.focused_will -> check() )
+  {
+    m *= 1.0 + buffs.focused_will -> check() * perks.enhanced_focused_will -> effectN( 1 ).percent();
+  }
+
   return m;
 }
 
@@ -5530,6 +5534,8 @@ void priest_t::init_spells()
   specs.rapid_renewal                  = find_specialization_spell( "Rapid Renewal" );
   specs.multistrike_attunement         = find_specialization_spell( "Multistrike Addunement ");
 
+  specs.focused_will                   = find_specialization_spell( "Focused Will" );
+
   // Shadow
   specs.shadowform                     = find_class_spell( "Shadowform" );
   specs.shadowy_apparitions            = find_specialization_spell( "Shadowy Apparitions" );
@@ -5543,6 +5549,7 @@ void priest_t::init_spells()
   mastery_spells.mental_anguish       = find_mastery_spell( PRIEST_SHADOW );
 
   // Perk Spells
+  perks.enhanced_focused_will            = find_perk_spell( "Enhanced Focused Will" );
   perks.enhanced_holy_fire            = find_perk_spell( "Enhanced Holy Fire" );
   perks.enhanced_power_word_shield    = find_perk_spell( "Enhanced Power Word: Shield" );
   perks.enhanced_strength_of_soul     = find_perk_spell( "Enhanced Strength of Soul" );
@@ -5621,6 +5628,14 @@ void priest_t::init_spells()
   sets.register_spelldata( set_bonuses );
 }
 
+void priest_t::assess_damage_imminent( school_e, dmg_e, action_state_t* s )
+{
+  if ( s -> result_amount > 0.0 )
+  {
+    buffs.focused_will -> trigger();
+  }
+}
+
 // priest_t::init_buffs =====================================================
 
 void priest_t::create_buffs()
@@ -5690,6 +5705,11 @@ void priest_t::create_buffs()
 
   buffs.serendipity = buff_creator_t( this, "serendipity" )
                       .spell( find_spell( specs.serendipity -> effectN( 1 ).trigger_spell_id( ) ) );
+
+  buffs.focused_will = buff_creator_t( this, "focused_will" )
+                       .spell( specs.focused_will -> ok() ? specs.focused_will -> effectN( 1 ).trigger() : spell_data_t::not_found() );
+  if ( perks.enhanced_focused_will -> ok() )
+    buffs.focused_will -> add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
 
   // Shadow
   buffs.divine_insight_shadow = new buffs::divine_insight_shadow_t( *this );
