@@ -2526,6 +2526,7 @@ struct wild_strike_t: public warrior_attack_t
     weapon_multiplier *= 1.0 + p -> perk.improved_wild_strike -> effectN( 1 ).percent();
     if ( player -> off_hand_weapon.type == WEAPON_NONE )
       background = true;
+    min_gcd = timespan_t::from_millis( 500 );
   }
 
   virtual double cost() const
