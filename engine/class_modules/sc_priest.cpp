@@ -181,8 +181,8 @@ public:
   {
     const spell_data_t* enhanced_focused_will;
     const spell_data_t* enhanced_holy_fire;
-    // const spell_data_t* enhanced_leap_of_faith;
     const spell_data_t* enhanced_power_word_shield;
+    const spell_data_t* enhanced_renew;
 
     // TODO 2014/06/09: check if it procs per execute or tick, and if it procs from penance_damage as well.
     // See http://howtopriest.com/viewtopic.php?f=76&t=5887&p=50468#p50468
@@ -4649,6 +4649,8 @@ struct renew_t final : public priest_heal_t
     base_multiplier *= 1.0 + p.glyphs.renew -> effectN( 1 ).percent();
     dot_duration       += p.glyphs.renew -> effectN( 2 ).time_value();
 
+    dot_duration += priest.perks.enhanced_renew -> effectN( 1 ).time_value();
+
     castable_in_shadowform = true;
   }
 
@@ -5549,9 +5551,10 @@ void priest_t::init_spells()
   mastery_spells.mental_anguish       = find_mastery_spell( PRIEST_SHADOW );
 
   // Perk Spells
-  perks.enhanced_focused_will            = find_perk_spell( "Enhanced Focused Will" );
+  perks.enhanced_focused_will         = find_perk_spell( "Enhanced Focused Will" );
   perks.enhanced_holy_fire            = find_perk_spell( "Enhanced Holy Fire" );
   perks.enhanced_power_word_shield    = find_perk_spell( "Enhanced Power Word: Shield" );
+  perks.enhanced_renew                = find_perk_spell( "Enhanced Renew" );
   perks.enhanced_strength_of_soul     = find_perk_spell( "Enhanced Strength of Soul" );
   perks.improved_flash_heal           = find_perk_spell( "Improved Flash Heal" );
   perks.improved_heal                 = find_perk_spell( "Improved Heal" );
