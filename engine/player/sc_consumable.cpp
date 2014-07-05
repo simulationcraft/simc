@@ -882,6 +882,7 @@ struct potion_base_t : public action_t
     harmful = false;
     cooldown = p -> get_cooldown( "potion" );
     cooldown -> duration = potion_buff -> cooldown -> duration;
+    sim -> errorf( "Old style potion actions ('actions+=/jade_spirit_potion') are going away in WoD Simulationcraft. Please change action list to use 'actions+=/potion,name=jade_spirit' instead." );
   }
 
   virtual void execute()
