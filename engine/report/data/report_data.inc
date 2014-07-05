@@ -1,5 +1,6 @@
 // Automatically generated report data.
 
+// Automatically generated from file simc_logo.txt
 static const char* __logo[] = {
 "url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAUUAAACXCAYAAACC9UnNAAAABmJLR0",
 "QA/wD/AP+gvaeTAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAB3RJTUUH3gMHEhQHkf+gfgAAIABJREFUeN",
@@ -1833,6 +1834,7 @@ static const char* __logo[] = {
 "y/EPXrfepf7xvH/1vtfwPeb8xX1hSFXAAAAABJRU5ErkJggg==)",
 };
 
+// Automatically generated from file image_load_script.js
 static const char* __image_load_script[] = {
 "<script type=\"text/javascript\"> function load_images(containers) { var $j = jQ",
 "uery.noConflict(); containers.each(function () { $j(this).children('span').each(",
@@ -1883,6 +1885,7 @@ static const char* __image_load_script[] = {
 "_anchor(target); }); });</script>",
 };
 
+// Automatically generated from file mop_style.css
 static const char* __mop_stylesheet[] = {
 "<style type=\"text/css\" media=\"all\"> * { border: none; margin: 0; padding: 0;",
 " } body { padding: 5px 25px 25px 25px;font-family: \"Lucida Grande\", Arial, san",

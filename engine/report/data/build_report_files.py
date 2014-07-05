@@ -11,10 +11,12 @@ def get_file_as_lines( input, out_line_length ):
         str = re.sub( "\s+", " ", str )
         str = json.dumps(str).strip('"') # Misuse to build a C string with escaped characters
         out = [str[x:x+out_line_length] for x in range(0,len(str),out_line_length)]
-    return out
+    return (input, out)
             
-def print_as_char_array( name, input_list ):
-    out = ("static const char* %s[] = {\n"%(name))
+def print_as_char_array( name, input ):
+    ( filename, input_list) = input
+    out = ("// Automatically generated from file %s\n"%(filename))
+    out += ("static const char* %s[] = {\n"%(name))
     for line in input_list:
         out += "\"%s\",\n"%(line)
     out += "};";

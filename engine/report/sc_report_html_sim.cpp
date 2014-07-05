@@ -204,11 +204,15 @@ void print( report::sc_html_stream& os, sim_t* sim )
 
 namespace { // UNNAMED NAMESPACE ==========================================
 
-void print_simc_logo( std::ostream& os )
+/* Prints a array of strings line by line. Necessary because we can't have big single text strings,
+ * because VS limits the size of static objects.
+ */
+template <typename T, std::size_t N>
+void print_text_array( std::ostream& os, const T ( & data )[N]  )
 {
-  for ( size_t i = 0; i < sizeof_array( __logo ); ++i )
+  for ( size_t i = 0; i < sizeof_array( data ); ++i )
   {
-    os << __logo[ i ];
+    os << data[ i ];
   }
 }
 
@@ -225,15 +229,12 @@ struct mop_html_style_t : public html_style_t
     // Logo
     os << "<style type=\"text/css\" media=\"all\">\n"
         << "#logo {display: block;position: absolute;top: 7px;left: 15px;width: 375px;height: 153px;background: ";
-    print_simc_logo( os );
+    print_text_array( os, __logo );
     os << " 0px 0px no-repeat; }\n"
         << "</style>\n";
 
     // Rest
-    for ( size_t i = 0; i < sizeof_array( __mop_stylesheet ); ++i )
-    {
-      os << __mop_stylesheet[ i ];
-    }
+    print_text_array( os, __mop_stylesheet );
   }
 };
 
@@ -1006,7 +1007,7 @@ void print_html_help_boxes( report::sc_html_stream& os, sim_t* sim )
 
 // print_html_styles ========================================================
 
-void print_html_styles( report::sc_html_stream& os, sim_t* sim )
+void print_html_styles( report::sc_html_stream& os, sim_t* )
 {
   // First select the appropriate style
   std::shared_ptr<html_style_t> style = std::shared_ptr<html_style_t>( new default_html_style_t() );
@@ -1102,10 +1103,7 @@ void print_html_beta_warning( report::sc_html_stream& os )
 
 void print_html_image_load_scripts( std::ostream& os )
 {
-  for ( size_t i = 0; i < sizeof_array( __image_load_script ); ++i )
-  {
-    os << __image_load_script[ i ];
-  }
+  print_text_array( os, __image_load_script );
 }
 
 void print_html_head( report::sc_html_stream& os, sim_t* sim )
