@@ -4018,13 +4018,8 @@ struct _heal_t final : public priest_heal_t
     if ( ! priest.buffs.spirit_shell -> check() )
       trigger_strength_of_soul( s -> target );
 
-    if ( rng().roll( priest.sets.set( SET_T17_4PC_HEAL ) -> effectN( 1 ).percent() ) )
-    {
-      if ( priest.mastery_spells.echo_of_light -> ok() ) //Holy
-        priest.buffs.spiritual_vigor -> trigger();
-      else if ( priest.mastery_spells.shield_discipline -> ok() ) //Discipline
-        priest.buffs.clear_thoughts -> trigger();
-    }
+    priest.buffs.spiritual_vigor -> trigger();
+    priest.buffs.clear_thoughts -> trigger();
   }
 
   virtual double composite_crit() const override
@@ -5589,12 +5584,12 @@ void priest_t::init_spells()
     { 165628, 165629,     0,     0,     0,     0,      0,      0 }, // Tier17
   };
 
-  if ( mastery_spells.echo_of_light -> ok() ) //Holy
+  if ( specialization() == PRIEST_HOLY )
   {
       set_bonuses[4][6] = 165621; //T17 2PC
       set_bonuses[4][7] = 167684; //T17 4PC
   }
-  else if ( mastery_spells.shield_discipline -> ok() ) //Discipline
+  else if ( specialization() == PRIEST_DISCIPLINE )
   {
       set_bonuses[4][6] = 165614; //T17 2PC
       set_bonuses[4][7] = 167694; //T17 4PC
@@ -5713,14 +5708,16 @@ void priest_t::create_buffs()
                             .default_value( 0.03 ) //From tooltip. - Twintop 2014/06/30
                             .add_invalidate( CACHE_HASTE );
 
+  // TODO: check if 10% proc chance is in spell data and automatically parsed into the buff
   buffs.spiritual_vigor = stat_buff_creator_t( this, "spiritual_vigor" )
                           .spell( sets.set( SET_T17_4PC_HEAL ) -> effectN( 1 ).trigger() )
-                          .chance( sets.has_set_bonus( SET_T17_4PC_HEAL ) ? 1.0 : 0.0 )
+                          .chance( specialization() == PRIEST_HOLY && sets.has_set_bonus( SET_T17_4PC_HEAL ) ? -1.0 : 0.0 )
                           .add_invalidate( CACHE_SPIRIT );
 
+  // TODO: check if 10% proc chance is in spell data and automatically parsed into the buff
   buffs.clear_thoughts = stat_buff_creator_t( this, "clear_thoughts" )
                           .spell( sets.set( SET_T17_4PC_HEAL ) -> effectN( 1 ).trigger() )
-                          .chance( sets.has_set_bonus( SET_T17_4PC_HEAL ) ? 1.0 : 0.0 )
+                          .chance( specialization() == PRIEST_DISCIPLINE && sets.has_set_bonus( SET_T17_4PC_HEAL ) ? -1.0 : 0.0 )
                           .add_invalidate( CACHE_SPIRIT );
 }
 
