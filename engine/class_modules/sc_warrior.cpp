@@ -3563,7 +3563,7 @@ void warrior_t::apl_smf_fury()
   {
     if ( items[i].has_special_effect( SPECIAL_EFFECT_SOURCE_NONE, SPECIAL_EFFECT_USE ) )
     {
-      default_list -> add_action( "/use_item,name=" + items[i].name_str );
+      default_list -> add_action( "use_item,name=" + items[i].name_str );
     }
   }
 
@@ -3662,7 +3662,7 @@ void warrior_t::apl_tg_fury()
   {
     if ( items[i].has_special_effect( SPECIAL_EFFECT_SOURCE_NONE, SPECIAL_EFFECT_USE ) )
     {
-      default_list -> add_action( "/use_item,name=" + items[i].name_str );
+      default_list -> add_action( "use_item,name=" + items[i].name_str );
     }
   }
 
@@ -3766,7 +3766,7 @@ void warrior_t::apl_arms()
   {
     if ( items[i].has_special_effect( SPECIAL_EFFECT_SOURCE_NONE, SPECIAL_EFFECT_USE ) )
     {
-      default_list -> add_action( "/use_item,name=" + items[i].name_str );
+      default_list -> add_action( "use_item,name=" + items[i].name_str );
     }
   }
 
@@ -3823,7 +3823,7 @@ void warrior_t::apl_prot()
   {
     if ( items[i].has_special_effect( SPECIAL_EFFECT_SOURCE_NONE, SPECIAL_EFFECT_USE ) )
     {
-      default_list -> add_action( "/use_item,name=" + items[i].name_str );
+      default_list -> add_action( "use_item,name=" + items[i].name_str );
     }
   }
 
@@ -3875,7 +3875,7 @@ void warrior_t::apl_gladiator()
   {
     if ( items[i].has_special_effect( SPECIAL_EFFECT_SOURCE_NONE, SPECIAL_EFFECT_USE ) )
     {
-      default_list -> add_action( "/use_item,name=" + items[i].name_str );
+      default_list -> add_action( "use_item,name=" + items[i].name_str );
     }
   }
 

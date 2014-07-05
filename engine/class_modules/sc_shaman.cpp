@@ -4955,7 +4955,7 @@ void shaman_t::init_action_list()
   {
     if ( items[i].has_special_effect( SPECIAL_EFFECT_SOURCE_NONE, SPECIAL_EFFECT_USE ) )
     {
-      def -> add_action( "/use_item,name=" + items[i].name_str );
+      def -> add_action( "use_item,name=" + items[i].name_str );
     }
   }
 
