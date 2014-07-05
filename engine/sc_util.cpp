@@ -748,6 +748,7 @@ const char* util::resource_type_string( resource_e resource_type )
     case RESOURCE_HOLY_POWER:    return "holy_power";
     case RESOURCE_CHI:           return "chi";
     case RESOURCE_SHADOW_ORB:    return "shadow_orb";
+    case RESOURCE_COMBO_POINT:   return "combo_points";
     default:                     return "unknown";
   }
 }
