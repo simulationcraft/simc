@@ -43,7 +43,7 @@ actions+=/thrash_bear,if=dot.thrash_bear.remains<3&(buff.son_of_ursoc.up|buff.be
 actions+=/pulverize,if=talent.pulverize.enabled&buff.pulverize.remains<gcd
 actions+=/mangle
 actions+=/incarnation
-actions+=/lacerate,cycle_targets=1,if=dot.lacerate.remains<3
+actions+=/lacerate,cycle_targets=1,if=dot.lacerate.remains<3|dot.lacerate.stack<3
 actions+=/thrash_bear,if=dot.thrash_bear.remains<16*0.3
 actions+=/cenarion_ward,if=talent.cenarion_ward.enabled
 actions+=/thrash_bear,if=active_enemies>=3

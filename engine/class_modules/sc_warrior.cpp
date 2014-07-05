@@ -3558,6 +3558,15 @@ void warrior_t::apl_smf_fury()
   default_list -> add_talent( this, "Avatar", "if=(buff.recklessness.up|target.time_to_die<=25)" );
   default_list -> add_action( this, "Berserker Rage", "if=!buff.enrage.up" );
 
+  int num_items = (int)items.size();
+  for ( int i = 0; i < num_items; i++ )
+  {
+    if ( items[i].has_special_effect( SPECIAL_EFFECT_SOURCE_NONE, SPECIAL_EFFECT_USE ) )
+    {
+      default_list -> add_action( "/use_item,name=" + items[i].name_str );
+    }
+  }
+
   for ( size_t i = 0; i < racial_actions.size(); i++ )
     default_list -> add_action( racial_actions[i] + ",if=buff.bloodbath.up|(!talent.bloodbath.enabled&debuff.colossus_smash.up)|buff.recklessness.up" );
 
@@ -3647,6 +3656,15 @@ void warrior_t::apl_tg_fury()
 
   default_list -> add_action( this, "Charge" );
   default_list -> add_action( "auto_attack" );
+
+  int num_items = (int)items.size();
+  for ( int i = 0; i < num_items; i++ )
+  {
+    if ( items[i].has_special_effect( SPECIAL_EFFECT_SOURCE_NONE, SPECIAL_EFFECT_USE ) )
+    {
+      default_list -> add_action( "/use_item,name=" + items[i].name_str );
+    }
+  }
 
   if ( sim -> allow_potions && level >= 80 )
     default_list -> add_action( "mogu_power_potion,if=(target.health.pct<20&buff.recklessness.up)|target.time_to_die<=25" );
@@ -3743,6 +3761,15 @@ void warrior_t::apl_arms()
   default_list -> add_action( this, "charge" );
   default_list -> add_action( "auto_attack" );
 
+  int num_items = (int)items.size();
+  for ( int i = 0; i < num_items; i++ )
+  {
+    if ( items[i].has_special_effect( SPECIAL_EFFECT_SOURCE_NONE, SPECIAL_EFFECT_USE ) )
+    {
+      default_list -> add_action( "/use_item,name=" + items[i].name_str );
+    }
+  }
+
   if ( sim -> allow_potions && level >= 80 )
     default_list -> add_action( "mogu_power_potion,if=(target.health.pct<20&buff.recklessness.up)|buff.bloodlust.react|target.time_to_die<=25" );
 
@@ -3791,6 +3818,15 @@ void warrior_t::apl_prot()
   default_list -> add_action( this, "charge" );
   default_list -> add_action( "auto_attack" );
 
+  int num_items = (int)items.size();
+  for ( int i = 0; i < num_items; i++ )
+  {
+    if ( items[i].has_special_effect( SPECIAL_EFFECT_SOURCE_NONE, SPECIAL_EFFECT_USE ) )
+    {
+      default_list -> add_action( "/use_item,name=" + items[i].name_str );
+    }
+  }
+
   if ( sim -> allow_potions && level >= 80 )
     default_list -> add_action( "mountains_potion,if=incoming_damage_2500ms>health.max*0.6&(buff.shield_wall.down&buff.last_stand.down)" );
 
@@ -3833,6 +3869,15 @@ void warrior_t::apl_gladiator()
   default_list -> add_action( "auto_attack" );
   for ( size_t i = 0; i < racial_actions.size(); i++ )
     default_list -> add_action( racial_actions[i] + ",if=buff.bloodbath.up|buff.avatar.up|buff.shield_charge.up" );
+
+  int num_items = (int)items.size();
+  for ( int i = 0; i < num_items; i++ )
+  {
+    if ( items[i].has_special_effect( SPECIAL_EFFECT_SOURCE_NONE, SPECIAL_EFFECT_USE ) )
+    {
+      default_list -> add_action( "/use_item,name=" + items[i].name_str );
+    }
+  }
 
   if ( sim -> allow_potions && level >= 80 )
     default_list -> add_action( "mogu_power_potion,if=buff.bloodbath.up|target.time_to_die<=25" );
