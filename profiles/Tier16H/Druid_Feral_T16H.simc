@@ -37,7 +37,7 @@ actions+=/shadowmeld,if=buff.savage_roar.remains<3|(buff.bloodtalons.up&buff.sav
 actions+=/ferocious_bite,cycle_targets=1,if=dot.rip.ticking&dot.rip.remains<=3&target.health.pct<25
 actions+=/healing_touch,if=talent.bloodtalons.enabled&buff.predatory_swiftness.up&(combo_points>=4|buff.predatory_swiftness.remains<1.5)
 # Maintain Thrash during AoE, clipping before Tiger's Fury comes off cooldown.
-actions+=/bear_form,if=active_enemies>1&energy.time_to_max>=5.5&(dot.thrash_bear.remains<16*0.3+1.5|(cooldown.tigers_fury.remains>6&cooldown.tigers_fury.remains<8))
+actions+=/bear_form,if=active_enemies>1&energy.time_to_max>=5.5&(dot.thrash_bear.remains-gcd<=dot.thrash_bear.duration*0.3|(cooldown.tigers_fury.remains>6&cooldown.tigers_fury.remains<8))
 actions+=/savage_roar,if=buff.savage_roar.remains<3
 actions+=/potion,name=virmens_bite,if=target.time_to_die<=40
 actions+=/incarnation,if=energy<25&!buff.omen_of_clarity.react&cooldown.tigers_fury.remains<=1
@@ -48,20 +48,20 @@ actions+=/arcane_torrent,sync=tigers_fury
 actions+=/tigers_fury,if=energy<=35&!buff.omen_of_clarity.react&(!talent.incarnation_king_of_the_jungle.enabled|buff.king_of_the_jungle.up|cooldown.incarnation.remains>0)
 actions+=/potion,name=virmens_bite,sync=berserk,if=target.health.pct<25
 actions+=/berserk,if=buff.tigers_fury.up
-actions+=/thrash_cat,if=buff.omen_of_clarity.react&dot.thrash_cat.remains<4.5&active_enemies>1
+actions+=/thrash_cat,if=buff.omen_of_clarity.react&remains<=duration*0.3&active_enemies>1
 actions+=/rip,cycle_targets=1,if=combo_points=5&dot.rip.ticking&persistent_multiplier>dot.rip.pmultiplier
 actions+=/ferocious_bite,cycle_targets=1,if=combo_points=5&target.health.pct<25&dot.rip.ticking
-actions+=/rip,cycle_targets=1,if=combo_points=5&dot.rip.remains<7.2
+actions+=/rip,cycle_targets=1,if=combo_points=5&remains<=duration*0.3
 actions+=/savage_roar,if=combo_points=5&(energy.time_to_max<=1|buff.berserk.up|cooldown.tigers_fury.remains<3)&buff.savage_roar.remains<42*0.3
 actions+=/ferocious_bite,if=combo_points=5&(energy.time_to_max<=1|buff.berserk.up|cooldown.tigers_fury.remains<3)
-actions+=/rake,cycle_targets=1,if=dot.rake.remains<4.5&active_enemies<9&combo_points<5
+actions+=/rake,cycle_targets=1,if=remains<=duration*0.3&active_enemies<9&combo_points<5
 actions+=/pool_resource,for_next=1
 actions+=/thrash_cat,if=dot.thrash_cat.remains<4.5&active_enemies>1
 actions+=/rake,cycle_targets=1,if=persistent_multiplier>dot.rake.pmultiplier&active_enemies<9&combo_points<5
 actions+=/pool_resource,for_next=1
 actions+=/swipe,if=combo_points<5&active_enemies>1
 actions+=/shred,if=combo_points<5
-actions+=/bear_form,if=dot.thrash_bear.remains<16*0.3+1.5&cooldown.tigers_fury.remains>6&dot.rip.remains>6&energy.time_to_max>=5.5
+actions+=/bear_form,if=dot.thrash_bear.remains-gcd<=dot.thrash_bear.duration*0.3&cooldown.tigers_fury.remains>6&dot.rip.remains>6&energy.time_to_max>=5.5
 
 head=headpiece_of_the_shattered_vale,id=99328,upgrade=2,gems=capacitive_primal_8agi_9agi
 neck=immerseus_crystalline_eye,id=105407,upgrade=2
