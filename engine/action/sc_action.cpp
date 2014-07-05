@@ -2154,6 +2154,25 @@ expr_t* action_t::create_expression( const std::string& name_str )
   }
   else if ( name_str == "charges" )
     return make_ref_expr( name_str, cooldown -> current_charge );
+  else if ( name_str == "charges_fractional" )
+  {
+    struct charges_fractional_expr_t : public expr_t
+    {
+      action_t* action;
+      charges_fractional_expr_t( action_t* a ) :
+        expr_t( "charges_fractional" ), action( a )
+      {}
+      virtual double evaluate()
+      {
+        cooldown_t* c = action -> cooldown;
+        double charges = c -> current_charge;
+        if ( action -> cooldown -> recharge_event )
+          charges += 1 - ( c -> recharge_event -> remains() / c -> duration );
+        return charges;
+      }
+    };
+    return new charges_fractional_expr_t( this );
+  }
   else if ( name_str == "max_charges" )
     return make_ref_expr( name_str, cooldown -> charges );
   else if ( name_str == "recharge_time" )
