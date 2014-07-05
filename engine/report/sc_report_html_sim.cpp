@@ -158,7 +158,7 @@ void print( report::sc_html_stream& os, sim_t* sim )
      << "<th class=\"small\"><a href=\"#help-hit\" class=\"help\">Hit</a></th>\n"
      << "<th class=\"small\"><a href=\"#help-crit\" class=\"help\">Crit</a></th>\n"
      << "<th class=\"small\"><a href=\"#help-count\" class=\"help\">Count</a></th>\n"
-     << "<th class=\"small\"><a href=\"#help-direct-results\" class=\"help\">Impacts</a></th>\n"
+     << "<th class=\"small\"><a href=\"#help-impacts\" class=\"help\">Impacts</a></th>\n"
      << "<th class=\"small\"><a href=\"#help-crit-pct\" class=\"help\">Crit%</a></th>\n"
      << "<th class=\"small\"><a href=\"#help-miss-pct\" class=\"help\">Avoid%</a></th>\n"
      << "<th class=\"small\"><a href=\"#help-glance-pct\" class=\"help\">G%</a></th>\n"
@@ -1430,7 +1430,7 @@ void print_simc_logo( std::ostream& os )
 
   for ( size_t i = 0; i < sizeof_array( __logo ); ++i )
   {
-    os << __logo[ i++ ];
+    os << __logo[ i ];
   }
 }
 
@@ -2862,158 +2862,60 @@ void print_html_scale_factors( report::sc_html_stream& os, sim_t* sim )
      << "</div>\n\n";
 }
 
-// print_html_help_boxes ====================================================
+struct help_box_t
+{
+  std::string abbreviation, text;
+};
+
+static const help_box_t help_boxes[] =
+{
+    { "APM", "Average number of actions executed per minute."},
+    { "APS", "Average absorption per active player duration."},
+    { "Constant Buffs", "Buffs received prior to combat and present the entire fight."},
+    { "Count", "Average number of times an action is executed per iteration."},
+    { "Crit", "Average crit damage."},
+    { "Crit%", "Percentage of executes that resulted in critical strikes."},
+    { "DPE", "Average damage per execution of an individual action."},
+    { "DPET", "Average damage per execute time of an individual action; the amount of damage generated, divided by the time taken to execute the action, including time spent in the GCD."},
+    { "DPR", "Average damage per resource point spent."},
+    { "DPS", "Average damage per active player duration."},
+    { "DPSE", "Average damage per fight duration."},
+    { "DTPS", "Average damage taken per second per active player duration."},
+    { "HPS", "Average healing (and absorption) per active player duration."},
+    { "HPSE", "Average healing (and absorption) per fight duration."},
+    { "HPE", "Average healing (or absorb) per execution of an individual action."},
+    { "HPET", "Average healing (or absorb) per execute time of an individual action; the amount of healing generated, divided by the time taken to execute the action, including time spent in the GCD."},
+    { "HPR", "Average healing (or absorb) per resource point spent."},
+    { "Impacts", "Average number of impacts against a target (for attacks that hit multiple times per execute) per iteration."},
+    { "Dodge%", "Percentage of executes that resulted in dodges."},
+    { "DPS%", "Percentage of total DPS contributed by a particular action."},
+    { "HPS%", "Percentage of total HPS (including absorb) contributed by a particular action."},
+    { "Theck-Meloree Index", "Measure of damage smoothness, calculated over entire fight length. Related to max spike damage, 1k TMI is roughly equivalent to 1% of your health. TMI ignores external healing and absorbs. Lower is better."},
+    { "TMI bin size", "Time bin size used to calculate TMI and MSD, in seconds."},
+    { "Max Spike Damage Frequency", "This is roughly how many spikes as large as MSD Mean you take per iteration. Calculated from TMI and MSD values."},
+    { "Dynamic Buffs", "Temporary buffs received during combat, perhaps multiple times."},
+    { "Glance%", "Percentage of executes that resulted in glancing blows."},
+    { "Block%", "Percentage of executes that resulted in blocking blows."},
+};
 
 void print_html_help_boxes( report::sc_html_stream& os, sim_t* sim )
 {
   os << "<!-- Help Boxes -->\n";
 
-  os << "<div id=\"help-apm\">\n"
-     << "<div class=\"help-box\">\n"
-     << "<h3>APM</h3>\n"
-     << "<p>Average number of actions executed per minute.</p>\n"
-     << "</div>\n"
-     << "</div>\n";
-
-  os << "<div id=\"help-aps\">\n"
-     << "<div class=\"help-box\">\n"
-     << "<h3>HPS</h3>\n"
-     << "<p>Average absorption per active player duration.</p>\n"
-     << "</div>\n"
-     << "</div>\n";
-
-  os << "<div id=\"help-constant-buffs\">\n"
-     << "<div class=\"help-box\">\n"
-     << "<h3>Constant Buffs</h3>\n"
-     << "<p>Buffs received prior to combat and present the entire fight.</p>\n"
-     << "</div>\n"
-     << "</div>\n";
-
-  os << "<div id=\"help-count\">\n"
-     << "<div class=\"help-box\">\n"
-     << "<h3>Count</h3>\n"
-     << "<p>Average number of times an action is executed per iteration.</p>\n"
-     << "</div>\n"
-     << "</div>\n";
-
-  os << "<div id=\"help-direct-results\">\n"
-     << "<div class=\"help-box\">\n"
-     << "<h3>Impacts</h3>\n"
-     << "<p>Average number of impacts against a target (for attacks that hit multiple times per execute) per iteration.</p>\n"
-     << "</div>\n"
-     << "</div>\n";
-
-  os << "<div id=\"help-crit\">\n"
-     << "<div class=\"help-box\">\n"
-     << "<h3>Crit</h3>\n"
-     << "<p>Average crit damage.</p>\n"
-     << "</div>\n"
-     << "</div>\n";
-
-  os << "<div id=\"help-crit-pct\">\n"
-     << "<div class=\"help-box\">\n"
-     << "<h3>Crit%</h3>\n"
-     << "<p>Percentage of executes that resulted in critical strikes.</p>\n"
-     << "</div>\n"
-     << "</div>\n";
-
-  os << "<div id=\"help-dodge-pct\">\n"
-     << "<div class=\"help-box\">\n"
-     << "<h3>Dodge%</h3>\n"
-     << "<p>Percentage of executes that resulted in dodges.</p>\n"
-     << "</div>\n"
-     << "</div>\n";
-
-  os << "<div id=\"help-dpe\">\n"
-     << "<div class=\"help-box\">\n"
-     << "<h3>DPE</h3>\n"
-     << "<p>Average damage per execution of an individual action.</p>\n"
-     << "</div>\n"
-     << "</div>\n";
-
-  os << "<div id=\"help-dpet\">\n"
-     << "<div class=\"help-box\">\n"
-     << "<h3>DPET</h3>\n"
-     << "<p>Average damage per execute time of an individual action; the amount of damage generated, divided by the time taken to execute the action, including time spent in the GCD.</p>\n"
-     << "</div>\n"
-     << "</div>\n";
-
-  os << "<div id=\"help-dpr\">\n"
-     << "<div class=\"help-box\">\n"
-     << "<h3>DPR</h3>\n"
-     << "<p>Average damage per resource point spent.</p>\n"
-     << "</div>\n"
-     << "</div>\n";
-
-  os << "<div id=\"help-dps\">\n"
-     << "<div class=\"help-box\">\n"
-     << "<h3>DPS</h3>\n"
-     << "<p>Average damage per active player duration.</p>\n"
-     << "</div>\n"
-     << "</div>\n";
-
-  os << "<div id=\"help-dpse\">\n"
-     << "<div class=\"help-box\">\n"
-     << "<h3>Effective DPS</h3>\n"
-     << "<p>Average damage per fight duration.</p>\n"
-     << "</div>\n"
-     << "</div>\n";
-
-  os << "<div id=\"help-dps-pct\">\n"
-     << "<div class=\"help-box\">\n"
-     << "<h3>DPS%</h3>\n"
-     << "<p>Percentage of total DPS contributed by a particular action.</p>\n"
-     << "</div>\n"
-     << "</div>\n";
-
-  os << "<div id=\"help-dtps\">\n"
-     << "<div class=\"help-box\">\n"
-     << "<h3>DTPS</h3>\n"
-     << "<p>Average damage taken per second per active player duration.</p>\n"
-     << "</div>\n"
-     << "</div>\n";
-
-  os << "<div id=\"help-hps\">\n"
-     << "<div class=\"help-box\">\n"
-     << "<h3>HPS</h3>\n"
-     << "<p>Average healing (and absorption) per active player duration.</p>\n"
-     << "</div>\n"
-     << "</div>\n";
-
-  os << "<div id=\"help-hps-pct\">\n"
-     << "<div class=\"help-box\">\n"
-     << "<h3>HPS%</h3>\n"
-     << "<p>Percentage of total HPS (including absorb) contributed by a particular action.</p>\n"
-     << "</div>\n"
-     << "</div>\n";
-
-  os << "<div id=\"help-hpe\">\n"
-     << "<div class=\"help-box\">\n"
-     << "<h3>HPE</h3>\n"
-     << "<p>Average healing (or absorb) per execution of an individual action.</p>\n"
-     << "</div>\n"
-     << "</div>\n";
-
-  os << "<div id=\"help-hpet\">\n"
-     << "<div class=\"help-box\">\n"
-     << "<h3>HPET</h3>\n"
-     << "<p>Average healing (or absorb) per execute time of an individual action; the amount of healing generated, divided by the time taken to execute the action, including time spent in the GCD.</p>\n"
-     << "</div>\n"
-     << "</div>\n";
-
-  os << "<div id=\"help-hpr\">\n"
-     << "<div class=\"help-box\">\n"
-     << "<h3>HPR</h3>\n"
-     << "<p>Average healing (or absorb) per resource point spent.</p>\n"
-     << "</div>\n"
-     << "</div>\n";
-
-  os << "<div id=\"help-tmi\">\n"
-     << "<div class=\"help-box\">\n"
-     << "<h3>Theck-Meloree Index</h3>\n"
-     << "<p>Measure of damage smoothness, calculated over entire fight length. Related to max spike damage, 1k TMI is roughly equivalent to 1% of your health. TMI ignores external healing and absorbs. Lower is better.</p>\n"
-     << "</div>\n"
-     << "</div>\n";
+  for ( size_t i = 0; i < sizeof_array( help_boxes ); ++i )
+  {
+    const help_box_t& hb = help_boxes[ i ];
+    std::string tokenized_id = hb.abbreviation;
+    util::replace_all( tokenized_id, " ", "-" );
+    util::replace_all( tokenized_id, "%", "-pct" );
+    util::tolower( tokenized_id );
+    os << "<div id=\"help-" << tokenized_id << "\">\n"
+       << "<div class=\"help-box\">\n"
+       << "<h3>" << hb.abbreviation << "</h3>\n"
+       << "<p>" << hb.text << "</p>\n"
+       << "</div>\n"
+       << "</div>\n";
+  }
 
   os << "<div id=\"help-tmirange\">\n"
      << "<div class=\"help-box\">\n"
@@ -3029,13 +2931,6 @@ void print_html_help_boxes( report::sc_html_stream& os, sim_t* sim )
      << "</div>\n"
      << "</div>\n";
 
-  os << "<div id=\"help-tmibin\">\n"
-     << "<div class=\"help-box\">\n"
-     << "<h3>TMI bin size</h3>\n"
-     << "<p>Time bin size used to calculate TMI and MSD, in seconds.</p>\n"
-     << "</div>\n"
-     << "</div>\n";
-
   for ( size_t i = 0; i < sim -> actor_list.size(); i++ )
   {
     os << "<div id=\"help-msd" << sim -> actor_list[ i ] -> actor_index << "\">\n"
@@ -3047,38 +2942,10 @@ void print_html_help_boxes( report::sc_html_stream& os, sim_t* sim )
       << "</div>\n";
   }
 
-  os << "<div id=\"help-msd-freq\">\n"
-     << "<div class=\"help-box\">\n"
-     << "<h3>Max Spike Damage Frequency</h3>\n"
-     << "<p>This is roughly how many spikes as large as MSD Mean you take per iteration. Calculated from TMI and MSD values.</p>\n"
-     << "</div>\n"
-     << "</div>\n";
-
-  os << "<div id=\"help-dynamic-buffs\">\n"
-     << "<div class=\"help-box\">\n"
-     << "<h3>Dynamic Buffs</h3>\n"
-     << "<p>Temporary buffs received during combat, perhaps multiple times.</p>\n"
-     << "</div>\n"
-     << "</div>\n";
-
   os << "<div id=\"help-error\">\n"
      << "<div class=\"help-box\">\n"
      << "<h3>Error</h3>\n"
      << "<p>Estimator for the " << sim -> confidence * 100.0 << "% confidence interval.</p>\n"
-     << "</div>\n"
-     << "</div>\n";
-
-  os << "<div id=\"help-glance-pct\">\n"
-     << "<div class=\"help-box\">\n"
-     << "<h3>G%</h3>\n"
-     << "<p>Percentage of executes that resulted in glancing blows.</p>\n"
-     << "</div>\n"
-     << "</div>\n";
-
-  os << "<div id=\"help-block-pct\">\n"
-     << "<div class=\"help-box\">\n"
-     << "<h3>B%</h3>\n"
-     << "<p>Percentage of executes that resulted in blocking blows.</p>\n"
      << "</div>\n"
      << "</div>\n";
 

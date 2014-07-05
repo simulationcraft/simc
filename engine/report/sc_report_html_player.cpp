@@ -2884,7 +2884,7 @@ void print_html_player_results_spec_gear( report::sc_html_stream& os, sim_t* sim
        << "\t\t\t\t\t\t\t\t<th><a href=\"#help-error\" class=\"help\">DTPS Error</a></th>\n"
        << "\t\t\t\t\t\t\t\t<th><a href=\"#help-range\" class=\"help\">DTPS Range</a></th>\n"
        << "\t\t\t\t\t\t\t\t<th>&nbsp;</th>\n"
-       << "\t\t\t\t\t\t\t\t<th><a href=\"#help-tmi\" class=\"help\">TMI</a></th>\n"
+       << "\t\t\t\t\t\t\t\t<th><a href=\"#help-theck-meloree-index\" class=\"help\">TMI</a></th>\n"
        << "\t\t\t\t\t\t\t\t<th><a href=\"#help-error\" class=\"help\">TMI Error</a></th>\n"
        << "\t\t\t\t\t\t\t\t<th><a href=\"#help-tmi\" class=\"help\">TMI Min</a></th>\n"
        << "\t\t\t\t\t\t\t\t<th><a href=\"#help-tmi\" class=\"help\">TMI Max</a></th>\n"
@@ -2893,10 +2893,10 @@ void print_html_player_results_spec_gear( report::sc_html_stream& os, sim_t* sim
        << "\t\t\t\t\t\t\t\t<th><a href=\"#help-msd" << p -> actor_index << "\" class=\"help\">MSD Mean</a></th>\n"
        << "\t\t\t\t\t\t\t\t<th><a href=\"#help-msd" << p -> actor_index << "\" class=\"help\">MSD Min</a></th>\n"
        << "\t\t\t\t\t\t\t\t<th><a href=\"#help-msd" << p -> actor_index << "\" class=\"help\">MSD Max</a></th>\n"
-       << "\t\t\t\t\t\t\t\t<th><a href=\"#help-msd-freq\" class=\"help\">MSD Freq.</a></th>\n"
+       << "\t\t\t\t\t\t\t\t<th><a href=\"#help-max-spike-damage-frequency\" class=\"help\">MSD Freq.</a></th>\n"
        << "\t\t\t\t\t\t\t\t<th>&nbsp</th>\n"
        << "\t\t\t\t\t\t\t\t<th><a href=\"#help-tmiwin\" class=\"help\">Window</a></th>\n"
-       << "\t\t\t\t\t\t\t\t<th><a href=\"#help-tmibin\" class=\"help\">Bin Size</a></th>\n"
+       << "\t\t\t\t\t\t\t\t<th><a href=\"#help-tmi-bin-size\" class=\"help\">Bin Size</a></th>\n"
        << "\t\t\t\t\t\t\t</tr>\n" // end second row
        << "\t\t\t\t\t\t\t<tr>\n"; // start third row
 
