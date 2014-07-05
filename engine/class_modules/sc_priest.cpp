@@ -149,7 +149,6 @@ public:
     const spell_data_t* mysticism;
     const spell_data_t* spirit_shell;
     const spell_data_t* strength_of_soul;
-    const spell_data_t* train_of_thought;
     const spell_data_t* crit_attunement;
 
     // Holy
@@ -210,7 +209,6 @@ public:
   struct
   {
     cooldown_t* chakra;
-    cooldown_t* inner_focus;
     cooldown_t* mindbender;
     cooldown_t* mind_blast;
     cooldown_t* penance;
@@ -1287,16 +1285,6 @@ struct priest_heal_t : public priest_action_t<heal_t>
     }
   }
 
-  void consume_inner_focus()
-  {
-    if ( priest.buffs.inner_focus -> up() )
-    {
-      // Inner Focus cooldown starts when consumed.
-      priest.buffs.inner_focus -> expire();
-      priest.cooldowns.inner_focus -> start( priest.buffs.inner_focus -> data().cooldown() );
-    }
-  }
-
   void consume_serendipity()
   {
     priest.buffs.serendipity -> up();
@@ -1646,28 +1634,6 @@ struct fortitude_t final : public priest_spell_t
 
     if ( ! sim -> overrides.stamina )
       sim -> auras.stamina -> trigger();
-  }
-};
-
-// Inner Focus Spell ========================================================
-
-struct inner_focus_t final : public priest_spell_t
-{
-  inner_focus_t( priest_t& p, const std::string& options_str ) :
-    priest_spell_t( "inner_focus", p, p.find_class_spell( "Inner Focus" ) )
-  {
-    parse_options( nullptr, options_str );
-
-    harmful = false;
-  }
-
-  virtual void execute() override
-  {
-    cooldown -> duration = sim -> max_time;
-
-    priest_spell_t::execute();
-
-    priest.buffs.inner_focus -> trigger();
   }
 };
 
@@ -3116,8 +3082,6 @@ struct holy_fire_base_t : public priest_spell_t
 
   virtual void execute() override
   {
-    priest.buffs.holy_evangelism -> up();
-
     priest_spell_t::execute();
 
     priest.buffs.holy_evangelism -> trigger();
@@ -3138,8 +3102,6 @@ struct holy_fire_base_t : public priest_spell_t
 
     if ( priest.buffs.chakra_chastise -> check() )
       c *= 1.0 + priest.buffs.chakra_chastise -> data().effectN( 3 ).percent();
-
-    c *= 1.0 + ( priest.buffs.holy_evangelism -> check() * priest.buffs.holy_evangelism -> data().effectN( 2 ).percent() );
 
     return c;
   }
@@ -3240,27 +3202,16 @@ struct penance_t final : public priest_spell_t
   {
     double c = priest_spell_t::cost();
 
-    c *= 1.0 + ( priest.buffs.holy_evangelism -> check() * priest.buffs.holy_evangelism -> data().effectN( 2 ).percent() );
-
     c *= 1.0 + priest.glyphs.penance -> effectN( 1 ).percent();
 
     return c;
   }
 
-  virtual double action_multiplier() const override
-  {
-    double m = priest_spell_t::action_multiplier();
-
-    m *= 1.0 + ( priest.buffs.holy_evangelism -> check() * priest.buffs.holy_evangelism -> data().effectN( 1 ).percent() );
-
-    return m;
-  }
 
   virtual void execute() override
   {
-    priest.buffs.holy_evangelism -> up();
     priest_spell_t::execute();
-    priest.buffs.holy_evangelism -> trigger();
+    priest.buffs.holy_evangelism -> trigger(); // TODO: why is this here, if not mentioned in the tooltip?
   }
 };
 
@@ -3307,16 +3258,10 @@ struct smite_t final : public priest_spell_t
 
   virtual void execute() override
   {
-    priest.buffs.holy_evangelism -> up();
-
     priest_spell_t::execute();
 
     priest.buffs.holy_evangelism -> trigger();
     priest.buffs.surge_of_light -> trigger();
-
-    // Train of Thought
-    if ( priest.specs.train_of_thought -> ok() )
-      priest.cooldowns.penance -> adjust ( - priest.specs.train_of_thought -> effectN( 2 ).time_value() );
 
     if ( priest.buffs.chakra_chastise -> check() )
     {
@@ -3381,14 +3326,6 @@ struct smite_t final : public priest_spell_t
     atonement -> trigger( atonement_dmg, direct_tick ? DMG_OVER_TIME : type, s -> result );
   }
 
-  virtual double action_multiplier() const override
-  {
-    double am = priest_spell_t::action_multiplier();
-
-    am *= 1.0 + ( priest.buffs.holy_evangelism -> check() * priest.buffs.holy_evangelism -> data().effectN( 1 ).percent() );
-
-    return am;
-  }
 
   virtual double cost() const override
   {
@@ -3396,7 +3333,6 @@ struct smite_t final : public priest_spell_t
 
     if ( priest.buffs.chakra_chastise -> check() )
       c *= 1.0 + priest.buffs.chakra_chastise -> data().effectN( 3 ).percent();
-    c *= 1.0 + ( priest.buffs.holy_evangelism -> check() * priest.buffs.holy_evangelism -> data().effectN( 2 ).percent() );
 
     return c;
   }
@@ -3804,7 +3740,6 @@ struct binding_heal_t final : public priest_heal_t
   {
     priest_heal_t::execute();
 
-    consume_inner_focus();
     trigger_serendipity();
     trigger_surge_of_light();
   }
@@ -3933,7 +3868,6 @@ struct flash_heal_t final : public priest_heal_t
   {
     priest_heal_t::execute();
 
-    consume_inner_focus();
     trigger_serendipity();
     consume_surge_of_light();
     trigger_surge_of_light();
@@ -3947,16 +3881,6 @@ struct flash_heal_t final : public priest_heal_t
 
     if ( ! priest.buffs.spirit_shell -> check() )
       trigger_strength_of_soul( s -> target );
-  }
-
-  virtual double composite_crit() const override
-  {
-    double cc = priest_heal_t::composite_crit();
-
-    if ( priest.buffs.inner_focus -> check() )
-      cc += priest.buffs.inner_focus -> data().effectN( 2 ).percent();
-
-    return cc;
   }
 
   virtual timespan_t execute_time() const override
@@ -4020,13 +3944,6 @@ struct _heal_t final : public priest_heal_t
   {
     priest_heal_t::execute();
 
-    // Train of Thought
-    // NOTE: Process Train of Thought _before_ Inner Focus: the GH that consumes Inner Focus does not
-    //       reduce the cooldown, since Inner Focus doesn't go on cooldown until after it is consumed.
-    if ( priest.specs.train_of_thought -> ok() )
-      priest.cooldowns.inner_focus -> adjust( timespan_t::from_seconds( - priest.specs.train_of_thought -> effectN( 1 ).base_value() ) );
-
-    consume_inner_focus();
     consume_serendipity();
     trigger_surge_of_light();
   }
@@ -4042,16 +3959,6 @@ struct _heal_t final : public priest_heal_t
 
     priest.buffs.spiritual_vigor -> trigger();
     priest.buffs.clear_thoughts -> trigger();
-  }
-
-  virtual double composite_crit() const override
-  {
-    double cc = priest_heal_t::composite_crit();
-
-    if ( priest.buffs.inner_focus -> check() )
-      cc += priest.buffs.inner_focus -> data().effectN( 2 ).percent();
-
-    return cc;
   }
 
   virtual double action_multiplier() const override
@@ -4390,8 +4297,6 @@ struct penance_heal_t final : public priest_heal_t
   {
     double c = priest_heal_t::cost();
 
-    c *= 1.0 + priest.buffs.holy_evangelism -> check() * priest.buffs.holy_evangelism -> data().effectN( 2 ).percent();
-
     c *= 1.0 + priest.glyphs.penance -> effectN( 1 ).percent();
 
     return c;
@@ -4502,7 +4407,6 @@ struct prayer_of_healing_t final : public priest_heal_t
   virtual void execute() override
   {
     priest_heal_t::execute();
-    consume_inner_focus();
     consume_serendipity();
   }
 
@@ -4516,16 +4420,6 @@ struct prayer_of_healing_t final : public priest_heal_t
     am *= 1.0 + priest.sets.set( SET_T16_2PC_HEAL ) -> effectN( 1 ).percent() * priest.buffs.serendipity -> check();
 
     return am;
-  }
-
-  virtual double composite_crit() const override
-  {
-    double cc = priest_heal_t::composite_crit();
-
-    if ( priest.buffs.inner_focus -> check() )
-      cc += priest.buffs.inner_focus -> data().effectN( 2 ).percent();
-
-    return cc;
   }
 
   virtual double cost() const override
@@ -4949,7 +4843,6 @@ void priest_t::create_cooldowns()
   cooldowns.shadowfiend  = get_cooldown( "shadowfiend" );
   cooldowns.mindbender   = get_cooldown( "mindbender" );
   cooldowns.chakra       = get_cooldown( "chakra" );
-  cooldowns.inner_focus  = get_cooldown( "inner_focus" );
   cooldowns.penance      = get_cooldown( "penance" );
 }
 
@@ -5331,7 +5224,6 @@ action_t* priest_t::create_action( const std::string& name,
   if ( name == "chakra_serenity"        ) return new chakra_serenity_t       ( *this, options_str );
   if ( name == "dispersion"             ) return new dispersion_t            ( *this, options_str );
   if ( name == "power_word_fortitude"   ) return new fortitude_t             ( *this, options_str );
-  if ( name == "inner_focus"            ) return new inner_focus_t           ( *this, options_str );
   if ( name == "pain_suppression"       ) return new pain_suppression_t      ( *this, options_str );
   if ( name == "power_infusion"         ) return new power_infusion_t        ( *this, options_str );
   if ( name == "shadowform"             ) return new shadowform_t            ( *this, options_str );
@@ -5374,7 +5266,7 @@ action_t* priest_t::create_action( const std::string& name,
   if ( name == "circle_of_healing"      ) return new circle_of_healing_t     ( *this, options_str );
   if ( name == "divine_hymn"            ) return new divine_hymn_t           ( *this, options_str );
   if ( name == "flash_heal"             ) return new flash_heal_t            ( *this, options_str );
-  if ( name == "greater_heal"           ) return new _heal_t          ( *this, options_str );
+  if ( name == "heal"                   ) return new _heal_t                 ( *this, options_str );
   if ( name == "guardian_spirit"        ) return new guardian_spirit_t       ( *this, options_str );
   if ( name == "holy_word"              ) return new holy_word_t             ( *this, options_str );
   if ( name == "penance_heal"           ) return new penance_heal_t          ( *this, options_str );
@@ -5527,7 +5419,6 @@ void priest_t::init_spells()
   specs.mysticism                      = find_specialization_spell( "Mysticism" );
   specs.spirit_shell                   = find_specialization_spell( "Spirit Shell" );
   specs.strength_of_soul               = find_specialization_spell( "Strength of Soul" );
-  specs.train_of_thought               = find_specialization_spell( "Train of Thought" );
   specs.crit_attunement                = find_specialization_spell( "Critical Strike Addunement ");
 
   // Holy
@@ -5679,10 +5570,6 @@ void priest_t::create_buffs()
                           .spell( find_spell( 81661 ) )
                           .chance( specs.evangelism -> ok() )
                           .activated( false );
-
-  buffs.inner_focus = buff_creator_t( this, "inner_focus" )
-                      .spell( find_class_spell( "Inner Focus" ) )
-                      .cd( timespan_t::zero() );
 
   buffs.spirit_shell = new buffs::spirit_shell_t( *this );
 
@@ -6007,7 +5894,7 @@ void priest_t::apl_disc_heal()
   {
     def -> add_action( "mindbender,if=talent.mindbender.enabled" );
 
-    std::string a = "shadowfiend,if=!talent.mindbender.enabled&";
+    std::string a = "shadowfiend,if=!talent.mindbender.enabled";
     def -> add_action( a );
   }
 
@@ -6023,7 +5910,6 @@ void priest_t::apl_disc_heal()
   def -> add_action( this, "Power Word: Shield" );
   def -> add_action( this, "Renew", "if=buff.borrowed_time.up&(!ticking|remains<tick_time)" );
   def -> add_action( "penance_heal,if=buff.borrowed_time.up|target.buff.grace.stack<3" );
-  def -> add_action( this, "Heal", "if=buff.inner_focus.up" );
   def -> add_action( "penance_heal" );
   def -> add_action( this, "Flash Heal", "if=buff.surge_of_light.react" );
   def -> add_action( this, "Heal", "if=buff.power_infusion.up|mana.pct>20" );
