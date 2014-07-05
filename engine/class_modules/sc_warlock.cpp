@@ -235,7 +235,6 @@ public:
     const spell_data_t* nethermancy;
 
     // Affliction only
-    const spell_data_t* eradication;
     const spell_data_t* improved_fear;
     const spell_data_t* nightfall;
     const spell_data_t* readyness_affliction;
@@ -245,7 +244,6 @@ public:
     const spell_data_t* decimation;
     const spell_data_t* demonic_fury;
     const spell_data_t* demonic_rebirth;
-    const spell_data_t* demonic_tactics;
     const spell_data_t* doom;
     const spell_data_t* immolation_aura;
     const spell_data_t* imp_swarm;
@@ -259,7 +257,6 @@ public:
     const spell_data_t* aftermath;
     const spell_data_t* backdraft;
     const spell_data_t* backlash;
-    const spell_data_t* devastation;
     const spell_data_t* immolate;
     const spell_data_t* burning_embers;
     const spell_data_t* chaotic_energy;
@@ -408,7 +405,6 @@ public:
   virtual stat_e    convert_hybrid_stat( stat_e s ) const;
   virtual double    matching_gear_multiplier( attribute_e attr ) const;
   virtual double    composite_player_multiplier( school_e school ) const;
-  virtual double    composite_rating_multiplier( rating_e rating ) const;
   virtual void      invalidate_cache( cache_e );
   virtual double    composite_spell_crit() const;
   virtual double    composite_spell_haste() const;
@@ -4421,39 +4417,6 @@ double warlock_t::composite_mastery() const
   return m;
 }
 
-double warlock_t::composite_rating_multiplier( rating_e rating ) const
-{
-  double m = player_t::composite_rating_multiplier( rating );
-
-  switch ( rating )
-  {
-    case RATING_SPELL_HASTE:
-      m *= 1.0 + spec.eradication -> effectN( 1 ).percent();
-      break;
-    case RATING_MELEE_HASTE:
-      m *= 1.0 + spec.eradication -> effectN( 1 ).percent();
-      break;
-    case RATING_RANGED_HASTE:
-      m *= 1.0 + spec.eradication -> effectN( 1 ).percent();
-      break;
-    case RATING_SPELL_CRIT:
-      m *= 1.0 + spec.devastation -> effectN( 1 ).percent();
-      break;
-    case RATING_MELEE_CRIT:
-      m *= 1.0 + spec.devastation -> effectN( 1 ).percent();
-      break;
-    case RATING_RANGED_CRIT:
-      m *= 1.0 + spec.devastation -> effectN( 1 ).percent();
-      break;
-	case RATING_MASTERY:
-      return m *= 1.0 + spec.demonic_tactics -> effectN( 1 ).percent();
-      break;
-    default: break;
-  }
-
-  return m;
-}
-
 double warlock_t::resource_gain( resource_e resource_type, double amount, gain_t* source, action_t* action )
 {
   if ( resource_type == RESOURCE_DEMONIC_FURY )
@@ -4669,9 +4632,6 @@ void warlock_t::init_spells()
   spec.nethermancy = find_spell( 86091 );
 
   // Spezialization Spells
-  spec.demonic_tactics        = find_specialization_spell( "Demonic Tactics" );
-  spec.devastation            = find_specialization_spell( "Devastation" );
-  spec.eradication            = find_specialization_spell( "Eradication" );
   spec.aftermath              = find_specialization_spell( "Aftermath" );
   spec.backdraft              = find_specialization_spell( "Backdraft" );
   spec.backlash               = find_specialization_spell( "Backlash" );
