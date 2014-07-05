@@ -1,4 +1,3 @@
-
 druid="Druid_Feral_T16H_Adv_Rotation"
 level=90
 race=troll
@@ -158,33 +157,33 @@ actions.aoe+=/swipe_cat,if=cooldown.tigers_fury.remains<3
 actions.aoe+=/swipe_cat,if=buff.omen_of_clarity.react
 actions.aoe+=/swipe_cat,if=energy.time_to_max<=1
 
-head=headpiece_of_the_shattered_vale,id=99328,reforge=mastery_haste,upgrade=4,gems=capacitive_primal_80agi_160crit_180agi
-neck=immerseus_crystalline_eye,id=105407,reforge=haste_exp,upgrade=4
-shoulders=spaulders_of_the_shattered_vale,id=99322,reforge=exp_hit,enchant=200agi_100crit,upgrade=4,gems=160crit_160exp_160exp_160mastery_120agi
-back=fenyu_fury_of_xuen,id=102248,reforge=mastery_hit,enchant=180crit,addon=goblin_glider,upgrade=4,gems=160exp_160mastery_60agi
-chest=raiment_of_the_shattered_vale,id=99326,reforge=crit_haste,enchant=80all,upgrade=4,gems=80agi_160haste_80agi_160haste_80agi_160haste_180agi
-wrists=bombers_blackened_wristwatch,id=105616,reforge=haste_exp,enchant=180agi,upgrade=4
-hands=grips_of_the_shattered_vale,id=99327,reforge=crit_haste,enchant=170haste,addon=synapse_springs_mark_ii,upgrade=4,gems=160haste_160exp_160haste_160exp_120agi
-waist=cord_of_black_dreams,id=105635,reforge=haste_hit,addon=nitro_boosts,upgrade=4,gems=80agi_160crit_320crit_320crit_120agi
-legs=rious_vigilant_leggings,id=105529,reforge=mastery_haste,enchant=285agi_165crit,upgrade=4,gems=160hit_160crit_160hit_160crit_120agi
-feet=pandaren_roofsprinters,id=105582,reforge=mastery_crit,enchant=140agi,upgrade=4,gems=160hit_160crit_60mastery
-finger1=kilruks_band_of_ascendancy,id=105624,reforge=haste_hit,upgrade=4,gems=160haste_160exp_60crit
-finger2=ring_of_restless_energy,id=105558,reforge=mastery_hit,upgrade=4,gems=160haste_160exp_60crit
+head=headpiece_of_the_shattered_vale,id=99328,upgrade=4,gems=capacitive_primal_80agi_160crit_180agi,reforge=crit_haste
+neck=immerseus_crystalline_eye,id=105407,upgrade=4,reforge=mastery_crit
+shoulders=spaulders_of_the_shattered_vale,id=99322,upgrade=4,gems=160crit_160exp_160exp_160mastery_120agi,enchant=200agi_100crit,reforge=exp_crit
+back=fenyu_fury_of_xuen,id=102248,upgrade=4,gems=160exp_160mastery_60agi,enchant=180hit,addon=goblin_glider,reforge=crit_hit
+chest=raiment_of_the_shattered_vale,id=99326,upgrade=4,gems=80agi_160crit_80agi_160haste_80agi_160haste_180agi,enchant=80all,reforge=mastery_haste
+wrists=bombers_blackened_wristwatch,id=105616,upgrade=4,enchant=180agi
+hands=grips_of_the_shattered_vale,id=99327,upgrade=4,gems=160exp_160mastery_160exp_160mastery_120agi,enchant=170haste,addon=synapse_springs_mark_ii,reforge=mastery_haste
+waist=cord_of_black_dreams,id=105635,upgrade=4,gems=80agi_160crit_320crit_320crit_120agi,addon=nitro_boosts,reforge=haste_hit
+legs=rious_vigilant_leggings,id=105529,upgrade=4,gems=160hit_160crit_160hit_160crit_120agi,enchant=285agi_165crit,reforge=mastery_haste
+feet=pandaren_roofsprinters,id=105582,upgrade=4,gems=160hit_160crit_60mastery,enchant=140agi,reforge=mastery_hit
+finger1=kilruks_band_of_ascendancy,id=105624,upgrade=4,gems=160exp_160mastery_60crit,reforge=mastery_hit
+finger2=swift_serpent_signet,id=105483,upgrade=4,gems=320mastery_60crit,reforge=mastery_haste
 trinket1=rune_of_reorigination,id=96918,upgrade=2
 trinket2=haromms_talisman,id=105527,upgrade=4
-main_hand=halberd_of_inner_shadows,id=105560,enchant=dancing_steel,upgrade=4,gems=320crit_60agi
+main_hand=halberd_of_inner_shadows,id=105560,upgrade=4,gems=320crit_60agi,enchant=dancing_steel,reforge=haste_crit
 
 # Gear Summary
 # gear_strength=80
-# gear_agility=32749
+# gear_agility=30669
 # gear_stamina=42167
 # gear_intellect=80
 # gear_spirit=80
-# gear_expertise_rating=2757
-# gear_hit_rating=2708
-# gear_crit_rating=10792
-# gear_haste_rating=10842
-# gear_mastery_rating=10859
+# gear_expertise_rating=2551
+# gear_hit_rating=2550
+# gear_crit_rating=12352
+# gear_haste_rating=12352
+# gear_mastery_rating=12353
 # gear_armor=23082
 # meta_gem=capacitive_primal
 # tier16_2pc_melee=1
