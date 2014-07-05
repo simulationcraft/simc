@@ -12,7 +12,6 @@ namespace { // UNNAMED NAMESPACE
 
  /* WoD -- TODO:
     = General =
-    Tranquility
     Dash
     Fix Force of Nature (summons fine, but treants take no actions)
     Potion action
@@ -3777,7 +3776,7 @@ struct swiftmend_t : public druid_heal_t
 struct tranquility_t : public druid_heal_t
 {
   tranquility_t( druid_t* p, const std::string& options_str ) :
-    druid_heal_t( "tranquility", p, p -> find_class_spell( "Tranquility" ), options_str )
+    druid_heal_t( "tranquility", p, p -> find_specialization_spell( "Tranquility" ), options_str )
   {
     aoe               = data().effectN( 3 ).base_value(); // Heals 5 targets
     base_execute_time = data().duration();
