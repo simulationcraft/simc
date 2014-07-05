@@ -2271,13 +2271,13 @@ struct corruption_t : public warlock_spell_t
   bool soc_triggered;
 
   corruption_t( warlock_t* p, bool soc = false ) :
-    warlock_spell_t( "Corruption", p , p -> find_spell( 146739 ) ), soc_triggered( soc ) //TODO Remove FIX after dbc update
+    warlock_spell_t( "Corruption", p ), soc_triggered( soc ) //TODO Remove FIX after dbc update
   {
     may_crit = false;
     generate_fury = 4;
     base_multiplier *= 1.0 + p -> sets.set( SET_T14_2PC_CASTER ) -> effectN( 1 ).percent();
     base_multiplier *= 1.0 + p -> sets.set( SET_T13_4PC_CASTER ) -> effectN( 1 ).percent();
-  };
+  }
 
   virtual timespan_t travel_time() const
   {
