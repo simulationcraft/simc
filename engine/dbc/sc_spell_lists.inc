@@ -715,8 +715,9 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
        30108, // Unstable Affliction
            0,
     },
-    // Demonology tree, 12 abilities
+    // Demonology tree, 14 abilities
     {
+      124916, // Chaos Wave (Metamorphosis)
       113861, // Dark Soul: Knowledge
       109151, // Demonic Leap
       111898, // Grimoire: Felguard (Summon)
@@ -729,6 +730,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
       104027, // Soul Fire (Metamorphosis)
        30146, // Summon Felguard (Summon)
       112870, // Summon Wrathguard (Summon)
+      103964, // Touch of Chaos (Metamorphosis)
            0,
     },
     // Destruction tree, 11 abilities

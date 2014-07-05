@@ -8,6 +8,7 @@
 // ==========================================================================
 // - Unleash Flame expiration delay
 // - Precision power inherit coefficients for pets
+// - Echo of the Elements buff spell data (159101, 159105, 159103)
 //
 // ==========================================================================
 // BUGS
