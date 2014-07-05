@@ -1996,10 +1996,9 @@ struct mind_blast_t final : public priest_spell_t
 
   void trigger_t17_2pc( action_state_t* state )
   {
-    if ( ! priest.sets.has_set_bonus( SET_T17_2PC_CASTER ) )
+    if ( ! dot_spell ) // equivalent to !priest.sets.has_set_bonus( SET_T17_2PC_CASTER )
       return;
 
-    assert( dot_spell );
     mind_blast_dot_t::state_t* s = debug_cast<mind_blast_dot_t::state_t*>( dot_spell -> get_state( state ) );
     s -> result_amount = 0.0;
     s -> result = RESULT_HIT;
@@ -2126,11 +2125,6 @@ struct mind_blast_t final : public priest_spell_t
 
     if ( priest.mastery_spells.mental_anguish -> ok() )
       d *= 1.0 + priest.cache.mastery_value();
-
-    // TO-DO: T17 2P has changed to: "Mind Blast deals an additional 10% of its damage over Xsec (until cancelled) to the target."
-    // Guessing that it will be a DoT that is removed by a hardcasted Mind Spike, but leaving it as it until values are released.
-    if ( priest.sets.has_set_bonus( SET_T17_2PC_CASTER ) )
-      d *= 1.0 + priest.sets.set( SET_T17_2PC_CASTER ) -> effectN( 1 ).percent();
 
     return d;
   }
@@ -4581,7 +4575,7 @@ struct prayer_of_mending_t final : public priest_heal_t
 
     aoe = 5;
 
-    if ( priest.sets.has_set_bonus( SET_T17_2PC_HEAL ) && priest.mastery_spells.echo_of_light -> ok())
+    if ( priest.sets.has_set_bonus( SET_T17_2PC_HEAL ) && priest.specialization() == PRIEST_HOLY )
       aoe += priest.sets.set( SET_T17_2PC_HEAL ) -> effectN( 1 ).percent() * 100;
 
     castable_in_shadowform = false;
