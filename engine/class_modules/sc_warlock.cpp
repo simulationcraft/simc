@@ -1938,7 +1938,7 @@ struct agony_t : public warlock_spell_t
 struct doom_t : public warlock_spell_t
 {
   doom_t( warlock_t* p ) :
-    warlock_spell_t( "doom", p, p -> spec.doom )
+    warlock_spell_t( "doom", p, /*p -> spec.doom*/ p -> find_spell(603) )
   {
     may_crit = false;
   }
@@ -3122,7 +3122,7 @@ struct chaos_wave_t : public warlock_spell_t
   chaos_wave_dmg_t* cw_damage;
 
   chaos_wave_t( warlock_t* p ) :
-    warlock_spell_t( "chaos_wave", p, p -> spec.chaos_wave ),
+    warlock_spell_t( "chaos_wave", p, p -> find_spell(124916) ),
     cw_damage( 0 )
   {
     cooldown = p -> cooldowns.hand_of_guldan;
@@ -3152,7 +3152,7 @@ struct touch_of_chaos_t : public warlock_spell_t
   chaos_wave_t* chaos_wave;
 
   touch_of_chaos_t( warlock_t* p ) :
-    warlock_spell_t( "touch_of_chaos", p, p -> spec.touch_of_chaos ),chaos_wave( new chaos_wave_t( p ) )
+    warlock_spell_t( "touch_of_chaos", p, p -> find_spell(103964) ),chaos_wave( new chaos_wave_t( p ) )
   {
     base_multiplier *= 1.0 + p -> sets.set( SET_T14_2PC_CASTER ) -> effectN( 3 ).percent();
     base_multiplier *= 1.0 + p -> sets.set( SET_T13_4PC_CASTER ) -> effectN( 1 ).percent(); // Assumption - need to test whether ToC is affected
