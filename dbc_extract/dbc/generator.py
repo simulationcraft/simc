@@ -1362,6 +1362,8 @@ class SpellDataGenerator(DataGenerator):
             ( 115422, 2, True ), # void ray
             ( 104025, 2, True ), # immolation aura
             ( 104027, 2, True ), # meta soul fire
+            ( 124916, 2, True ), # meta chaos wave
+            ( 103964, 2, True ), # meta touch of chaos
             ( 104232, 3, True ), # destruction rain of fire
             ( 114790, 1 ), ( 87385, 1 ), # soulburn seed of corruption
             ( 131737, 0, False ), ( 131740, 0, False ), ( 132566, 0, False ), ( 131736, 0, False ), # Duplicated Warlock dots
