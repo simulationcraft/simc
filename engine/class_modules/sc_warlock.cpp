@@ -2268,20 +2268,24 @@ struct shadowburn_t : public warlock_spell_t
 
 struct corruption_t : public warlock_spell_t
 {
-  bool soc_triggered;
+//  bool soc_triggered;
 
-  corruption_t( warlock_t* p, bool soc = false ) :
-    warlock_spell_t( "Corruption", p, p->find_spell( 146739 ) ), soc_triggered( soc ) //TODO Remove FIX after dbc update
+  corruption_t( warlock_t* p) :
+    warlock_spell_t( "Corruption", p , p -> find_spell( 172 )) //Use original corruption until DBC acts more friendly.
   {
     may_crit = false;
     generate_fury = 4;
     base_multiplier *= 1.0 + p -> sets.set( SET_T14_2PC_CASTER ) -> effectN( 1 ).percent();
     base_multiplier *= 1.0 + p -> sets.set( SET_T13_4PC_CASTER ) -> effectN( 1 ).percent();
+    //pulling duration from sub-curruption, since default id has no duration...
+    dot_duration = p -> find_spell( 146739 )-> duration();
+    spell_power_mod.tick = p -> find_spell( 146739 ) -> effectN(1).sp_coeff(); //returning 1.80 for mod - supposed to be .165
+    base_tick_time = timespan_t::from_seconds( 2.0 );
   }
 
   virtual timespan_t travel_time() const
   {
-    if ( soc_triggered ) return timespan_t::from_seconds( std::max( rng().gauss( sim -> aura_delay, 0.25 * sim -> aura_delay ).total_seconds() , 0.01 ) );
+    //if ( soc_triggered ) return timespan_t::from_seconds( std::max( rng().gauss( sim -> aura_delay, 0.25 * sim -> aura_delay ).total_seconds() , 0.01 ) );
 
     return warlock_spell_t::travel_time();
   }
@@ -3455,7 +3459,7 @@ struct soulburn_seed_of_corruption_aoe_t : public warlock_spell_t
   corruption_t* corruption;
 
   soulburn_seed_of_corruption_aoe_t( warlock_t* p ) :
-    warlock_spell_t( "soulburn_seed_of_corruption_aoe", p, p -> find_spell( 87385 ) ), corruption( new corruption_t( p, true ) )
+    warlock_spell_t( "soulburn_seed_of_corruption_aoe", p, p -> find_spell( 87385 ) ), corruption( new corruption_t( p ) )
   {
     aoe        = -1;
     dual       = true;
