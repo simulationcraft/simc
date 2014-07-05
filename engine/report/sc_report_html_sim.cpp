@@ -37,6 +37,170 @@ int find_id( stats_t* s )
 }
 
 }
+
+// Experimental Raw Ability Output for Blizzard to do comparisons
+namespace raw_ability_summary {
+
+void print_raw_action_damage( report::sc_html_stream& os, stats_t* s, player_t* p, int j, sim_t* sim )
+{
+  if ( s -> num_executes.mean() == 0 && s -> compound_amount == 0 && !sim -> debug )
+    return;
+
+  int id = find_id( s );
+
+  char format[] =
+    "<td class=\"left  small\">%s</td>\n"
+    "<td class=\"left  small\">%s</td>\n"
+    "<td class=\"left  small\">%s%s</td>\n"
+    "<td class=\"right small\">%d</td>\n"
+    "<td class=\"right small\">%.0f</td>\n"
+    "<td class=\"right small\">%.0f</td>\n"
+    "<td class=\"right small\">%.2f</td>\n"
+    "<td class=\"right small\">%.0f</td>\n"
+    "<td class=\"right small\">%.0f</td>\n"
+    "<td class=\"right small\">%.1f</td>\n"
+    "<td class=\"right small\">%.1f</td>\n"
+    "<td class=\"right small\">%.1f%%</td>\n"
+    "<td class=\"right small\">%.1f%%</td>\n"
+    "<td class=\"right small\">%.1f%%</td>\n"
+    "<td class=\"right small\">%.1f%%</td>\n"
+    "<td class=\"right small\">%.2fsec</td>\n"
+    "<td class=\"right small\">%.0f</td>\n"
+    "<td class=\"right small\">%.2fsec</td>\n"
+    "</tr>\n";
+
+  double direct_total = aggregate_damage( s -> direct_results );
+  double tick_total = aggregate_damage( s -> tick_results );
+  if ( direct_total > 0.0 || tick_total <= 0.0 )
+  {
+    os << "<tr";
+    if ( j & 1 )
+      os << " class=\"odd\"";
+    os << ">\n";
+
+    os.printf(
+      format,
+      util::encode_html( p -> name() ).c_str(),
+      util::encode_html( s -> player -> name() ).c_str(),
+      s -> name_str.c_str(), "",
+      id,
+      direct_total,
+      direct_total / s -> player -> collected_data.fight_length.mean(),
+      s -> num_direct_results.mean() / ( s -> player -> collected_data.fight_length.mean() / 60.0 ),
+      s -> direct_results[ RESULT_HIT  ].actual_amount.mean(),
+      s -> direct_results[ RESULT_CRIT ].actual_amount.mean(),
+      s -> num_executes.mean(),
+      s -> num_direct_results.mean(),
+      s -> direct_results[ RESULT_CRIT ].pct,
+      s -> direct_results[ RESULT_MISS ].pct + s -> direct_results[ RESULT_DODGE  ].pct + s -> direct_results[ RESULT_PARRY  ].pct,
+      s -> direct_results[ RESULT_GLANCE ].pct,
+      s -> direct_results_detail[ FULLTYPE_HIT_BLOCK ].pct + s -> direct_results_detail[ FULLTYPE_HIT_CRITBLOCK ].pct +
+      s -> direct_results_detail[ FULLTYPE_GLANCE_BLOCK ].pct + s -> direct_results_detail[ FULLTYPE_GLANCE_CRITBLOCK ].pct +
+      s -> direct_results_detail[ FULLTYPE_CRIT_BLOCK ].pct + s -> direct_results_detail[ FULLTYPE_CRIT_CRITBLOCK ].pct,
+      s -> total_intervals.mean(),
+      s -> total_amount.mean(),
+      s -> player -> collected_data.fight_length.mean() );
+  }
+
+  if ( tick_total > 0.0 )
+  {
+    os << "<tr";
+    if ( j & 1 )
+      os << " class=\"odd\"";
+    os << ">\n";
+
+    os.printf(
+      format,
+      util::encode_html( p -> name() ).c_str(),
+      util::encode_html( s -> player -> name() ).c_str(),
+      s -> name_str.c_str(), " ticks",
+      -id,
+      tick_total,
+      tick_total / sim -> max_time.total_seconds(),
+      s -> num_ticks.mean() / sim -> max_time.total_minutes(),
+      s -> tick_results[ RESULT_HIT  ].actual_amount.mean(),
+      s -> tick_results[ RESULT_CRIT ].actual_amount.mean(),
+      s -> num_executes.mean(),
+      s -> num_ticks.mean(),
+      s -> tick_results[ RESULT_CRIT ].pct,
+      s -> tick_results[ RESULT_MISS ].pct + s -> tick_results[ RESULT_DODGE  ].pct + s -> tick_results[ RESULT_PARRY  ].pct,
+      s -> tick_results[ RESULT_GLANCE ].pct,
+      s -> tick_results_detail[ FULLTYPE_HIT_BLOCK ].pct + s -> tick_results_detail[ FULLTYPE_HIT_CRITBLOCK ].pct +
+      s -> tick_results_detail[ FULLTYPE_GLANCE_BLOCK ].pct + s -> tick_results_detail[ FULLTYPE_GLANCE_CRITBLOCK ].pct +
+      s -> tick_results_detail[ FULLTYPE_CRIT_BLOCK ].pct + s -> tick_results_detail[ FULLTYPE_CRIT_CRITBLOCK ].pct,
+      s -> total_intervals.mean(),
+      s -> total_amount.mean(),
+      s -> player -> collected_data.fight_length.mean() );
+  }
+
+  for ( size_t i = 0, num_children = s -> children.size(); i < num_children; i++ )
+  {
+    print_raw_action_damage( os, s -> children[ i ], p, j, sim );
+  }
+}
+
+void print( report::sc_html_stream& os, sim_t* sim )
+{
+  os << "<div id=\"raw-abilities\" class=\"section\">\n\n";
+  os << "<h2 class=\"toggle\">Raw Ability Summary</h2>\n"
+     << "<div class=\"toggle-content hide\">\n";
+
+  // Abilities Section
+  os << "<table class=\"sc\">\n"
+     << "<tr>\n"
+     << "<th class=\"left small\">Character</th>\n"
+     << "<th class=\"left small\">Unit</th>\n"
+     << "<th class=\"small\"><a href=\"#help-ability\" class=\"help\">Ability</a></th>\n"
+     << "<th class=\"small\"><a href=\"#help-id\" class=\"help\">Id</a></th>\n"
+     << "<th class=\"small\"><a href=\"#help-total\" class=\"help\">Total</a></th>\n"
+     << "<th class=\"small\"><a href=\"#help-dps\" class=\"help\">DPS</a></th>\n"
+     << "<th class=\"small\"><a href=\"#help-ipm\" class=\"help\">Imp/Min</a></th>\n"
+     << "<th class=\"small\"><a href=\"#help-hit\" class=\"help\">Hit</a></th>\n"
+     << "<th class=\"small\"><a href=\"#help-crit\" class=\"help\">Crit</a></th>\n"
+     << "<th class=\"small\"><a href=\"#help-count\" class=\"help\">Count</a></th>\n"
+     << "<th class=\"small\"><a href=\"#help-direct-results\" class=\"help\">Impacts</a></th>\n"
+     << "<th class=\"small\"><a href=\"#help-crit-pct\" class=\"help\">Crit%</a></th>\n"
+     << "<th class=\"small\"><a href=\"#help-miss-pct\" class=\"help\">Avoid%</a></th>\n"
+     << "<th class=\"small\"><a href=\"#help-glance-pct\" class=\"help\">G%</a></th>\n"
+     << "<th class=\"small\"><a href=\"#help-block-pct\" class=\"help\">B%</a></th>\n"
+     << "<th class=\"small\"><a href=\"#help-interval\" class=\"help\">Interval</a></th>\n"
+     << "<th class=\"small\"><a href=\"#help-combined\" class=\"help\">Combined</a></th>\n"
+     << "<th class=\"small\"><a href=\"#help-duration\" class=\"help\">Duration</a></th>\n"
+     << "</tr>\n";
+
+  int count = 0;
+  for ( size_t player_i = 0; player_i < sim -> players_by_name.size(); player_i++ )
+  {
+    player_t* p = sim -> players_by_name[ player_i ];
+    for ( size_t i = 0; i < p -> stats_list.size(); ++i )
+    {
+      stats_t* s = p -> stats_list[ i ];
+      if ( s -> parent == NULL )
+        print_raw_action_damage( os, s, p, count++, sim );
+    }
+
+    for ( size_t pet_i = 0; pet_i < p -> pet_list.size(); ++pet_i )
+    {
+      pet_t* pet = p -> pet_list[ pet_i ];
+      for ( size_t i = 0; i < pet -> stats_list.size(); ++i )
+      {
+        stats_t* s = pet -> stats_list[ i ];
+        if ( s -> parent == NULL )
+          print_raw_action_damage( os, s, p, count++, sim );
+      }
+    }
+  }
+
+  // closure
+  os << "</table>\n";
+  os << "<div class=\"clear\"></div>\n"
+     << "</div>\n"
+     << "</div>\n\n";
+}
+
+} // raw_ability_summary
+
+
 namespace { // UNNAMED NAMESPACE ==========================================
 
 void print_simc_logo( std::ostream& os )
@@ -1280,74 +1444,74 @@ struct mop_html_style_t : public html_style_t
 {
   void print_html_styles( std::ostream& os) override
   {
-    os << "\t\t<style type=\"text/css\" media=\"all\">\n"
-           << "\t\t\t* {border: none;margin: 0;padding: 0; }\n"
-           << "\t\t\tbody {padding: 5px 25px 25px 25px;font-family: \"Lucida Grande\", Arial, sans-serif;font-size: 14px;background: url(data:image/jpeg;base64,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);color: #E2C7A3;text-align: center; }\n"
-           << "\t\t\ta {color: #c1a144;text-decoration: none; }\n"
-           << "\t\t\ta:hover,a:active {color: #e1b164; }\n"
-           << "\t\t\tp {margin: 1em 0 1em 0; }\n"
-           << "\t\t\th1,h2,h3,h4,h5,h6 {width: auto;color: #27a052;margin-top: 1em;margin-bottom: 0.5em; }\n"
-           << "\t\t\th1,h2 {margin: 0;padding: 2px 2px 0 2px; }\n"
-           << "\t\t\th1 {margin: 57px 0 0 355px;font-size: 28px;color: #008467; }\n"
-           << "\t\t\th1 a {color: #c1a144; }\n"
-           << "\t\t\th2 {font-size: 18px; }\n"
-           << "\t\t\th3 {margin: 0 0 4px 0;font-size: 16px; }\n"
-           << "\t\t\th4 {font-size: 12px; }\n"
-           << "\t\t\th5 {font-size: 10px; }\n"
-           << "\t\t\tul,ol {padding-left: 20px; }\n"
-           << "\t\t\tul.float,ol.float {padding: 0;margin: 0; }\n"
-           << "\t\t\tul.float li,ol.float li {display: inline;float: left;padding-right: 6px;margin-right: 6px;list-style-type: none;border-right: 2px solid #333; }\n"
-           << "\t\t\t.clear {clear: both; }\n"
-           << "\t\t\t.hide, .charts span {display: none; }\n"
-           << "\t\t\t.center {text-align: center; }\n"
-           << "\t\t\t.float {float: left; }\n"
-           << "\t\t\t.mt {margin-top: 20px; }\n"
-           << "\t\t\t.mb {margin-bottom: 20px; }\n"
-           << "\t\t\t.force-wrap {word-wrap: break-word; }\n"
-           << "\t\t\t.mono {font-family: \"Lucida Console\", Monaco, monospace;font-size: 12px; }\n"
-           << "\t\t\t.toggle,.toggle-details {cursor: pointer;background-image: url(data:image/png;base64,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);background-repeat: no-repeat; }\n"
-           << "\t\t\th2.toggle {padding-left: 18px;background-size: 16px auto;background-position: 0 4px; }\n"
-           << "\t\t\th2.toggle:hover {color: #47c072; }\n"
-           << "\t\t\th2.open {margin-bottom: 10px;background-position: 0 -18px; }\n"
-           << "\t\t\t#home-toc h2.open {margin-top: 20px; }\n"
-           << "\t\t\th3.toggle {padding-left: 16px;background-size: 14px auto;background-position: 0 2px; }\n"
-           << "\t\t\th3.toggle:hover {text-shadow: 0 0 2px #47c072; }\n"
-           << "\t\t\th3.open {background-position: 0 -17px; }\n"
-           << "\t\t\th4.toggle {margin: 0 0 8px 0;padding-left: 12px; }\n"
-           << "\t\t\th4.open {background-position: 0 6px; }\n"
-           << "\t\t\ta.toggle-details, span.toggle-details {margin: 0 0 8px 0;padding-left: 12px;background-size: 11px auto;background-position: 0 3px; }\n"
-           << "\t\t\ta.open,span.open {background-position: 0 -13px; }\n"
-           << "\t\t\ttd.small a.toggle-details, span.toggle-details {background-size: 10px auto;background-position: 0 2px; }\n"
-           << "\t\t\ttd.small a.open, span.open {background-position: 0 -12px; }\n"
-           << "\t\t\t#active-help, .help-box {display: none;-moz-border-radius: 6px;-khtml-border-radius: 6px;-webkit-border-radius: 6px; }\n"
-           << "\t\t\t#active-help {position: absolute;width: auto;padding: 3px;background: transparent;z-index: 10; }\n"
-           << "\t\t\t#active-help-dynamic {max-width: 400px;padding: 8px 8px 20px 8px;background: #333;font-size: 13px;text-align: left;border: 1px solid #222;-moz-border-radius: 6px;-khtml-border-radius: 6px;-webkit-border-radius: 6px;border-radius: 6px;-moz-box-shadow: 4px 4px 10px #000;-webkit-box-shadow: 4px 4px 10px #000;box-shadow: 4px 4px 10px #000; }\n"
-           << "\t\t\t#active-help .close {display: block;height: 14px;width: 14px;position: absolute;right: 12px;bottom: 7px;background: #000 url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAA4AAAAOCAYAAAAfSC3RAAAABGdBTUEAANbY1E9YMgAAABl0RVh0U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAE8SURBVHjafNI/KEVhGMfxc4/j33BZjK4MbkmxnEFiQFcZlMEgZTAZDbIYLEaRUMpCuaU7yCCrJINsJFkUNolSBnKJ71O/V69zb576LOe8v/M+73ueVBzH38HfesQ5bhGiFR2o9xdFidAm1nCFop7VoAvTGHILQy9kCw+0W9F7/o4jHPs7uOAyZrCL0aC05rCgd/uu1Rus4g6VKKAa2wrNKziCPTyhx4InClkt4RNbardFoWG3E3WKCwteJ9pawSt28IEcDr33b7gPy9ysVRZf2rWpzPso0j/yax2T6EazzlynTgL9z2ykBe24xAYm0I8zqdJF2cUtog9tFsxgFs8YR68uwFVeLec1DDYEaXe+MZ1pIBFyZe3WarJKRq5CV59Wiy9IoQGDmPpvVq3/Tg34gz5mR2nUUPzWjwADAFypQitBus+8AAAAAElFTkSuQmCC) no-repeat; }\n"
-           << "\t\t\t#active-help .close:hover {background-color: #1d1d1d; }\n"
-           << "\t\t\t.help-box h3 {margin: 0 0 12px 0;font-size: 14px;color: #C68E17; }\n"
-           << "\t\t\t.help-box p {margin: 0 0 10px 0; }\n"
-           << "\t\t\t.help-box {background-color: #000;padding: 10px; }\n"
-           << "\t\t\ta.help {color: #C68E17;cursor: help; }\n"
-           << "\t\t\ta.help:hover {text-shadow: 0 0 1px #C68E17; }\n"
-           << "\t\t\t.section {position: relative;width: 1200px;padding: 4px 8px;margin-left: auto;margin-right: auto;margin-bottom: -1px;background: #160f0b;text-align: left;-moz-box-shadow: 0px 0px 8px #160f0b;-webkit-box-shadow: 0px 0px 8px #160f0b;box-shadow: 0px 0px 8px #160f0b; }\n"
-           << "\t\t\t.section-open {margin-top: 25px;margin-bottom: 35px;padding: 8px 8px 10px 8px;-moz-border-radius: 8px;-khtml-border-radius: 8px;-webkit-border-radius: 8px;border-radius: 8px; }\n"
-           << "\t\t\t.grouped-first {-moz-border-radius-topright: 8px;-moz-border-radius-topleft: 8px;-khtml-border-top-right-radius: 8px;-khtml-border-top-left-radius: 8px;-webkit-border-top-right-radius: 8px;-webkit-border-top-left-radius: 8px;border-top-right-radius: 8px;border-top-left-radius: 8px;padding-top: 8px; }\n"
-           << "\t\t\t.grouped-last {-moz-border-radius-bottomright: 8px;-moz-border-radius-bottomleft: 8px;-khtml-border-bottom-right-radius: 8px;-khtml-border-bottom-left-radius: 8px;-webkit-border-bottom-right-radius: 8px;-webkit-border-bottom-left-radius: 8px;border-bottom-right-radius: 8px;border-bottom-left-radius: 8px;padding-bottom: 8px; }\n"
-           << "\t\t\t.section .toggle-content {padding: 0; }\n"
-           << "\t\t\t.player-section .toggle-content {padding-left: 16px; }\n"
-           << "\t\t\t#home-toc .toggle-content {margin-bottom: 20px; }\n"
-           << "\t\t\t.subsection {background-color: #333;width: 1000px;padding: 8px;margin-bottom: 20px;-moz-border-radius: 6px;-khtml-border-radius: 6px;-webkit-border-radius: 6px;border-radius: 6px;font-size: 12px; }\n"
-           << "\t\t\t.subsection-small {width: 500px; }\n"
-           << "\t\t\t.subsection h4 {margin: 0 0 10px 0;color: #fff; }\n"
-           << "\t\t\t.profile .subsection p {margin: 0; }\n"
-           << "\t\t\tul.params {padding: 0;margin: 4px 0 0 6px; }\n"
-           << "\t\t\tul.params li {float: left;padding: 2px 10px 2px 10px;margin-left: 10px;list-style-type: none;background: #2f2f2f;color: #ddd;font-family: \"Lucida Grande\", Arial, sans-serif;font-size: 11px;-moz-border-radius: 8px;-khtml-border-radius: 8px;-webkit-border-radius: 8px;border-radius: 8px; }\n"
-           << "\t\t\tul.params li.linked:hover {background: #393939; }\n"
-           << "\t\t\tul.params li a {color: #ddd; }\n"
-           << "\t\t\tul.params li a:hover {text-shadow: none; }\n"
-           << "\t\t\t.player h2 {margin: 0; }\n"
-           << "\t\t\t.player ul.params {position: relative;top: 2px; }\n"
-           << "\t\t\t#masthead {height: auto;padding-bottom: 15px;border: 0;-moz-border-radius: 8px;-khtml-border-radius: 8px;-webkit-border-radius: 8px;border-radius: 8px;text-align: left;color: #FDD017;background: #331d0f url(data:image/jpeg;base64,";
+    os << "<style type=\"text/css\" media=\"all\">\n"
+           << "* {border: none;margin: 0;padding: 0; }\n"
+           << "body {padding: 5px 25px 25px 25px;font-family: \"Lucida Grande\", Arial, sans-serif;font-size: 14px;background: url(data:image/jpeg;base64,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);color: #E2C7A3;text-align: center; }\n"
+           << "a {color: #c1a144;text-decoration: none; }\n"
+           << "a:hover,a:active {color: #e1b164; }\n"
+           << "p {margin: 1em 0 1em 0; }\n"
+           << "h1,h2,h3,h4,h5,h6 {width: auto;color: #27a052;margin-top: 1em;margin-bottom: 0.5em; }\n"
+           << "h1,h2 {margin: 0;padding: 2px 2px 0 2px; }\n"
+           << "h1 {margin: 57px 0 0 355px;font-size: 28px;color: #008467; }\n"
+           << "h1 a {color: #c1a144; }\n"
+           << "h2 {font-size: 18px; }\n"
+           << "h3 {margin: 0 0 4px 0;font-size: 16px; }\n"
+           << "h4 {font-size: 12px; }\n"
+           << "h5 {font-size: 10px; }\n"
+           << "ul,ol {padding-left: 20px; }\n"
+           << "ul.float,ol.float {padding: 0;margin: 0; }\n"
+           << "ul.float li,ol.float li {display: inline;float: left;padding-right: 6px;margin-right: 6px;list-style-type: none;border-right: 2px solid #333; }\n"
+           << ".clear {clear: both; }\n"
+           << ".hide, .charts span {display: none; }\n"
+           << ".center {text-align: center; }\n"
+           << ".float {float: left; }\n"
+           << ".mt {margin-top: 20px; }\n"
+           << ".mb {margin-bottom: 20px; }\n"
+           << ".force-wrap {word-wrap: break-word; }\n"
+           << ".mono {font-family: \"Lucida Console\", Monaco, monospace;font-size: 12px; }\n"
+           << ".toggle,.toggle-details {cursor: pointer;background-image: url(data:image/png;base64,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);background-repeat: no-repeat; }\n"
+           << "h2.toggle {padding-left: 18px;background-size: 16px auto;background-position: 0 4px; }\n"
+           << "h2.toggle:hover {color: #47c072; }\n"
+           << "h2.open {margin-bottom: 10px;background-position: 0 -18px; }\n"
+           << "#home-toc h2.open {margin-top: 20px; }\n"
+           << "h3.toggle {padding-left: 16px;background-size: 14px auto;background-position: 0 2px; }\n"
+           << "h3.toggle:hover {text-shadow: 0 0 2px #47c072; }\n"
+           << "h3.open {background-position: 0 -17px; }\n"
+           << "h4.toggle {margin: 0 0 8px 0;padding-left: 12px; }\n"
+           << "h4.open {background-position: 0 6px; }\n"
+           << "a.toggle-details, span.toggle-details {margin: 0 0 8px 0;padding-left: 12px;background-size: 11px auto;background-position: 0 3px; }\n"
+           << "a.open,span.open {background-position: 0 -13px; }\n"
+           << "td.small a.toggle-details, span.toggle-details {background-size: 10px auto;background-position: 0 2px; }\n"
+           << "td.small a.open, span.open {background-position: 0 -12px; }\n"
+           << "#active-help, .help-box {display: none;-moz-border-radius: 6px;-khtml-border-radius: 6px;-webkit-border-radius: 6px; }\n"
+           << "#active-help {position: absolute;width: auto;padding: 3px;background: transparent;z-index: 10; }\n"
+           << "#active-help-dynamic {max-width: 400px;padding: 8px 8px 20px 8px;background: #333;font-size: 13px;text-align: left;border: 1px solid #222;-moz-border-radius: 6px;-khtml-border-radius: 6px;-webkit-border-radius: 6px;border-radius: 6px;-moz-box-shadow: 4px 4px 10px #000;-webkit-box-shadow: 4px 4px 10px #000;box-shadow: 4px 4px 10px #000; }\n"
+           << "#active-help .close {display: block;height: 14px;width: 14px;position: absolute;right: 12px;bottom: 7px;background: #000 url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAA4AAAAOCAYAAAAfSC3RAAAABGdBTUEAANbY1E9YMgAAABl0RVh0U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAE8SURBVHjafNI/KEVhGMfxc4/j33BZjK4MbkmxnEFiQFcZlMEgZTAZDbIYLEaRUMpCuaU7yCCrJINsJFkUNolSBnKJ71O/V69zb576LOe8v/M+73ueVBzH38HfesQ5bhGiFR2o9xdFidAm1nCFop7VoAvTGHILQy9kCw+0W9F7/o4jHPs7uOAyZrCL0aC05rCgd/uu1Rus4g6VKKAa2wrNKziCPTyhx4InClkt4RNbardFoWG3E3WKCwteJ9pawSt28IEcDr33b7gPy9ysVRZf2rWpzPso0j/yax2T6EazzlynTgL9z2ykBe24xAYm0I8zqdJF2cUtog9tFsxgFs8YR68uwFVeLec1DDYEaXe+MZ1pIBFyZe3WarJKRq5CV59Wiy9IoQGDmPpvVq3/Tg34gz5mR2nUUPzWjwADAFypQitBus+8AAAAAElFTkSuQmCC) no-repeat; }\n"
+           << "#active-help .close:hover {background-color: #1d1d1d; }\n"
+           << ".help-box h3 {margin: 0 0 12px 0;font-size: 14px;color: #C68E17; }\n"
+           << ".help-box p {margin: 0 0 10px 0; }\n"
+           << ".help-box {background-color: #000;padding: 10px; }\n"
+           << "a.help {color: #C68E17;cursor: help; }\n"
+           << "a.help:hover {text-shadow: 0 0 1px #C68E17; }\n"
+           << ".section {position: relative;width: 1200px;padding: 4px 8px;margin-left: auto;margin-right: auto;margin-bottom: -1px;background: #160f0b;text-align: left;-moz-box-shadow: 0px 0px 8px #160f0b;-webkit-box-shadow: 0px 0px 8px #160f0b;box-shadow: 0px 0px 8px #160f0b; }\n"
+           << ".section-open {margin-top: 25px;margin-bottom: 35px;padding: 8px 8px 10px 8px;-moz-border-radius: 8px;-khtml-border-radius: 8px;-webkit-border-radius: 8px;border-radius: 8px; }\n"
+           << ".grouped-first {-moz-border-radius-topright: 8px;-moz-border-radius-topleft: 8px;-khtml-border-top-right-radius: 8px;-khtml-border-top-left-radius: 8px;-webkit-border-top-right-radius: 8px;-webkit-border-top-left-radius: 8px;border-top-right-radius: 8px;border-top-left-radius: 8px;padding-top: 8px; }\n"
+           << ".grouped-last {-moz-border-radius-bottomright: 8px;-moz-border-radius-bottomleft: 8px;-khtml-border-bottom-right-radius: 8px;-khtml-border-bottom-left-radius: 8px;-webkit-border-bottom-right-radius: 8px;-webkit-border-bottom-left-radius: 8px;border-bottom-right-radius: 8px;border-bottom-left-radius: 8px;padding-bottom: 8px; }\n"
+           << ".section .toggle-content {padding: 0; }\n"
+           << ".player-section .toggle-content {padding-left: 16px; }\n"
+           << "#home-toc .toggle-content {margin-bottom: 20px; }\n"
+           << ".subsection {background-color: #333;width: 1000px;padding: 8px;margin-bottom: 20px;-moz-border-radius: 6px;-khtml-border-radius: 6px;-webkit-border-radius: 6px;border-radius: 6px;font-size: 12px; }\n"
+           << ".subsection-small {width: 500px; }\n"
+           << ".subsection h4 {margin: 0 0 10px 0;color: #fff; }\n"
+           << ".profile .subsection p {margin: 0; }\n"
+           << "ul.params {padding: 0;margin: 4px 0 0 6px; }\n"
+           << "ul.params li {float: left;padding: 2px 10px 2px 10px;margin-left: 10px;list-style-type: none;background: #2f2f2f;color: #ddd;font-family: \"Lucida Grande\", Arial, sans-serif;font-size: 11px;-moz-border-radius: 8px;-khtml-border-radius: 8px;-webkit-border-radius: 8px;border-radius: 8px; }\n"
+           << "ul.params li.linked:hover {background: #393939; }\n"
+           << "ul.params li a {color: #ddd; }\n"
+           << "ul.params li a:hover {text-shadow: none; }\n"
+           << ".player h2 {margin: 0; }\n"
+           << ".player ul.params {position: relative;top: 2px; }\n"
+           << "#masthead {height: auto;padding-bottom: 15px;border: 0;-moz-border-radius: 8px;-khtml-border-radius: 8px;-webkit-border-radius: 8px;border-radius: 8px;text-align: left;color: #FDD017;background: #331d0f url(data:image/jpeg;base64,";
         os << "/9j/4AAQSkZJRgABAQEASABIAAD/4gy4SUNDX1BST0ZJTEUAAQEAAAyoYXBwbAIQAABtbnRyUkdCIFh";
         os << "ZWiAH3AAHABIAEwAlACRhY3NwQVBQTAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA9tYAAQAAAADTLW";
         os << "FwcGwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABFkZXNjAAABU";
@@ -1774,58 +1938,58 @@ struct mop_html_style_t : public html_style_t
         os << "TQv3hQAvVjTs5xTB1NFIETE/L1zULjH5VIPu0kn3T9KCiNTQvB5pE70o7UEijPPNOJwvWm+v1pH+5SG";
         os << "hMdKOen1FKe1IvVvrQMcnAx7U8YHJPFMHUfShvu0DR//2Q==";
         os << ") -440px -10px; }\n"
-           << "\t\t\t#logo {display: block;position: absolute;top: 7px;left: 15px;width: 375px;height: 153px;background: ";
+           << "#logo {display: block;position: absolute;top: 7px;left: 15px;width: 375px;height: 153px;background: ";
         print_simc_logo( os );
         os << " 0px 0px no-repeat; }\n"
-           << "\t\t\t#masthead h2 {margin-left: 355px;color: 268f45; }\n"
-           << "\t\t\t#masthead ul.params {margin: 20px 0 0 345px; }\n"
-           << "\t\t\t#masthead p {color: #fff;margin: 20px 20px 0 20px; }\n"
-           << "\t\t\t#notice {font-size: 12px;-moz-box-shadow: 0px 0px 8px #E41B17;-webkit-box-shadow: 0px 0px 8px #E41B17;box-shadow: 0px 0px 8px #E41B17; }\n"
-           << "\t\t\t.alert {width: 800px;padding: 10px;margin: 10px 0 10px 0;background-color: #333;-moz-border-radius: 6px;-khtml-border-radius: 6px;-webkit-border-radius: 6px;border-radius: 6px;-moz-box-shadow: inset 0px 0px 6px #C11B17;-webkit-box-shadow: inset 0px 0px 6px #C11B17;box-shadow: inset 0px 0px 6px #C11B17; }\n"
-           << "\t\t\t.alert p {margin-bottom: 0px; }\n"
-           << "\t\t\t.section .toggle-content {padding-left: 18px; }\n"
-           << "\t\t\t.player > .toggle-content {padding-left: 0; }\n"
-           << "\t\t\t.toc {float: left;padding: 0; }\n"
-           << "\t\t\t.toc-wide {width: 560px; }\n"
-           << "\t\t\t.toc-narrow {width: 375px; }\n"
-           << "\t\t\t.toc li {margin-bottom: 10px;list-style-type: none; }\n"
-           << "\t\t\t.toc li ul {padding-left: 10px; }\n"
-           << "\t\t\t.toc li ul li {margin: 0;list-style-type: none;font-size: 13px; }\n"
-           << "\t\t\t#raid-summary .toggle-content {padding-bottom: 0px; }\n"
-           << "\t\t\t#raid-summary ul.params,#raid-summary ul.params li:first-child {margin-left: 0; }\n"
-           << "\t\t\t.charts {float: left;width: 541px;margin-top: 10px; }\n"
-           << "\t\t\t.charts-left {margin-right: 40px; }\n"
-           << "\t\t\t.charts img {background-color: #333;padding: 5px;margin-bottom: 20px;-moz-border-radius: 6px;-khtml-border-radius: 6px;-webkit-border-radius: 6px;border-radius: 6px; }\n"
-           << "\t\t\t.talents div.float {width: auto;margin-right: 50px; }\n"
-           << "\t\t\ttable.sc {background-color: #333;padding: 4px 2px 2px 2px;margin: 10px 0 20px 0;-moz-border-radius: 6px;-khtml-border-radius: 6px;-webkit-border-radius: 6px;border-radius: 6px; }\n"
-           << "\t\t\ttable.sc tr {color: #fff;background-color: #1a1a1a; }\n"
-           << "\t\t\ttable.sc tr.head {background-color: #aaa;color: #fff; }\n"
-           << "\t\t\ttable.sc tr.odd {background-color: #222; }\n"
-           << "\t\t\ttable.sc th {padding: 2px 4px 4px 4px;text-align: center;background-color: #333;color: #fff; }\n"
-           << "\t\t\ttable.sc td {padding: 2px;text-align: center;font-size: 13px; }\n"
-           << "\t\t\ttable.sc th.left, table.sc td.left, table.sc tr.left th, table.sc tr.left td {text-align: left; vertical-align: top; }\n"
-           << "\t\t\ttable.sc th.right, table.sc td.right, table.sc tr.right th, table.sc tr.right td {text-align: right;padding-right: 4px; vertical-align: top; }\n"
-           << "\t\t\ttable.sc th.small {padding: 2px 2px 3px 2px;font-size: 11px; }\n"
-           << "\t\t\ttable.sc td.small {padding: 2px 2px 3px 2px;font-size: 11px; }\n"
-           << "\t\t\ttable.sc tr.details td {padding: 0 0 15px 15px;text-align: left;background-color: #333;font-size: 11px; }\n"
-           << "\t\t\ttable.sc tr.details td ul {padding: 0;margin: 4px 0 8px 0; }\n"
-           << "\t\t\ttable.sc tr.details td ul li {clear: both;padding: 2px;list-style-type: none; }\n"
-           << "\t\t\ttable.sc tr.details td ul li span.label {display: block;padding: 2px;float: left;width: 145px;margin-right: 4px;background: #222; }\n"
-           << "\t\t\ttable.sc tr.details td ul li span.tooltip {display: block;float: left;width: 190px; }\n"
-           << "\t\t\ttable.sc tr.details td ul li span.tooltip-wider {display: block;float: left;width: 350px; }\n"
-           << "\t\t\ttable.sc tr.details td div.float {width: 350px; }\n"
-           << "\t\t\ttable.sc tr.details td div.float h5 {margin-top: 4px; }\n"
-           << "\t\t\ttable.sc tr.details td div.float ul {margin: 0 0 12px 0; }\n"
-           << "\t\t\ttable.sc td.filler {background-color: #333; }\n"
-           << "\t\t\ttable.sc .dynamic-buffs tr.details td ul li span.label {width: 120px; }\n"
-           << "\t\t\ttr.details td table.details {padding: 0px;margin: 5px 0 10px 0; }\n"
-           << "\t\t\ttr.details td table.details tr th {background-color: #222; }\n"
-           << "\t\t\ttr.details td table.details tr td {background-color: #2d2d2d; }\n"
-           << "\t\t\ttr.details td table.details tr.odd td {background-color: #292929; }\n"
-           << "\t\t\ttr.details td table.details tr td {padding: 1px 3px 1px 3px; }\n"
-           << "\t\t\ttr.details td table.details tr td.right {text-align: right; }\n"
-           << "\t\t\t.player-thumbnail {float: right;margin: 8px;border-radius: 12px;-moz-border-radius: 12px;-khtml-border-radius: 12px;-webkit-border-radius: 12px; }\n"
-           << "\t\t</style>\n";
+           << "#masthead h2 {margin-left: 355px;color: 268f45; }\n"
+           << "#masthead ul.params {margin: 20px 0 0 345px; }\n"
+           << "#masthead p {color: #fff;margin: 20px 20px 0 20px; }\n"
+           << "#notice {font-size: 12px;-moz-box-shadow: 0px 0px 8px #E41B17;-webkit-box-shadow: 0px 0px 8px #E41B17;box-shadow: 0px 0px 8px #E41B17; }\n"
+           << ".alert {width: 800px;padding: 10px;margin: 10px 0 10px 0;background-color: #333;-moz-border-radius: 6px;-khtml-border-radius: 6px;-webkit-border-radius: 6px;border-radius: 6px;-moz-box-shadow: inset 0px 0px 6px #C11B17;-webkit-box-shadow: inset 0px 0px 6px #C11B17;box-shadow: inset 0px 0px 6px #C11B17; }\n"
+           << ".alert p {margin-bottom: 0px; }\n"
+           << ".section .toggle-content {padding-left: 18px; }\n"
+           << ".player > .toggle-content {padding-left: 0; }\n"
+           << ".toc {float: left;padding: 0; }\n"
+           << ".toc-wide {width: 560px; }\n"
+           << ".toc-narrow {width: 375px; }\n"
+           << ".toc li {margin-bottom: 10px;list-style-type: none; }\n"
+           << ".toc li ul {padding-left: 10px; }\n"
+           << ".toc li ul li {margin: 0;list-style-type: none;font-size: 13px; }\n"
+           << "#raid-summary .toggle-content {padding-bottom: 0px; }\n"
+           << "#raid-summary ul.params,#raid-summary ul.params li:first-child {margin-left: 0; }\n"
+           << ".charts {float: left;width: 541px;margin-top: 10px; }\n"
+           << ".charts-left {margin-right: 40px; }\n"
+           << ".charts img {background-color: #333;padding: 5px;margin-bottom: 20px;-moz-border-radius: 6px;-khtml-border-radius: 6px;-webkit-border-radius: 6px;border-radius: 6px; }\n"
+           << ".talents div.float {width: auto;margin-right: 50px; }\n"
+           << "table.sc {background-color: #333;padding: 4px 2px 2px 2px;margin: 10px 0 20px 0;-moz-border-radius: 6px;-khtml-border-radius: 6px;-webkit-border-radius: 6px;border-radius: 6px; }\n"
+           << "table.sc tr {color: #fff;background-color: #1a1a1a; }\n"
+           << "table.sc tr.head {background-color: #aaa;color: #fff; }\n"
+           << "table.sc tr.odd {background-color: #222; }\n"
+           << "table.sc th {padding: 2px 4px 4px 4px;text-align: center;background-color: #333;color: #fff; }\n"
+           << "table.sc td {padding: 2px;text-align: center;font-size: 13px; }\n"
+           << "table.sc th.left, table.sc td.left, table.sc tr.left th, table.sc tr.left td {text-align: left; vertical-align: top; }\n"
+           << "table.sc th.right, table.sc td.right, table.sc tr.right th, table.sc tr.right td {text-align: right;padding-right: 4px; vertical-align: top; }\n"
+           << "table.sc th.small {padding: 2px 2px 3px 2px;font-size: 11px; }\n"
+           << "table.sc td.small {padding: 2px 2px 3px 2px;font-size: 11px; }\n"
+           << "table.sc tr.details td {padding: 0 0 15px 15px;text-align: left;background-color: #333;font-size: 11px; }\n"
+           << "table.sc tr.details td ul {padding: 0;margin: 4px 0 8px 0; }\n"
+           << "table.sc tr.details td ul li {clear: both;padding: 2px;list-style-type: none; }\n"
+           << "table.sc tr.details td ul li span.label {display: block;padding: 2px;float: left;width: 145px;margin-right: 4px;background: #222; }\n"
+           << "table.sc tr.details td ul li span.tooltip {display: block;float: left;width: 190px; }\n"
+           << "table.sc tr.details td ul li span.tooltip-wider {display: block;float: left;width: 350px; }\n"
+           << "table.sc tr.details td div.float {width: 350px; }\n"
+           << "table.sc tr.details td div.float h5 {margin-top: 4px; }\n"
+           << "table.sc tr.details td div.float ul {margin: 0 0 12px 0; }\n"
+           << "table.sc td.filler {background-color: #333; }\n"
+           << "table.sc .dynamic-buffs tr.details td ul li span.label {width: 120px; }\n"
+           << "tr.details td table.details {padding: 0px;margin: 5px 0 10px 0; }\n"
+           << "tr.details td table.details tr th {background-color: #222; }\n"
+           << "tr.details td table.details tr td {background-color: #2d2d2d; }\n"
+           << "tr.details td table.details tr.odd td {background-color: #292929; }\n"
+           << "tr.details td table.details tr td {padding: 1px 3px 1px 3px; }\n"
+           << "tr.details td table.details tr td.right {text-align: right; }\n"
+           << ".player-thumbnail {float: right;margin: 8px;border-radius: 12px;-moz-border-radius: 12px;-khtml-border-radius: 12px;-webkit-border-radius: 12px; }\n"
+           << "</style>\n";
   }
 };
 
@@ -1833,112 +1997,112 @@ struct white_html_style_t : public html_style_t
 {
   void print_html_styles( std::ostream& os) override
   {
-    os << "\t\t<style type=\"text/css\" media=\"all\">\n"
-           << "\t\t\t* {border: none;margin: 0;padding: 0; }\n"
-           << "\t\t\tbody {padding: 5px 25px 25px 25px;font-family: \"Lucida Grande\", Arial, sans-serif;font-size: 14px;background-color: #f9f9f9;color: #333;text-align: center; }\n"
-           << "\t\t\tp {margin: 1em 0 1em 0; }\n"
-           << "\t\t\th1, h2, h3, h4, h5, h6 {width: auto;color: #777;margin-top: 1em;margin-bottom: 0.5em; }\n"
-           << "\t\t\th1, h2 {margin: 0;padding: 2px 2px 0 2px; }\n"
-           << "\t\t\th1 {font-size: 24px; }\n"
-           << "\t\t\th2 {font-size: 18px; }\n"
-           << "\t\t\th3 {margin: 0 0 4px 0;font-size: 16px; }\n"
-           << "\t\t\th4 {font-size: 12px; }\n"
-           << "\t\t\th5 {font-size: 10px; }\n"
-           << "\t\t\ta {color: #666688;text-decoration: none; }\n"
-           << "\t\t\ta:hover, a:active {color: #333; }\n"
-           << "\t\t\tul, ol {padding-left: 20px; }\n"
-           << "\t\t\tul.float, ol.float {padding: 0;margin: 0; }\n"
-           << "\t\t\tul.float li, ol.float li {display: inline;float: left;padding-right: 6px;margin-right: 6px;list-style-type: none;border-right: 2px solid #eee; }\n"
-           << "\t\t\t.clear {clear: both; }\n"
-           << "\t\t\t.hide, .charts span {display: none; }\n"
-           << "\t\t\t.center {text-align: center; }\n"
-           << "\t\t\t.float {float: left; }\n"
-           << "\t\t\t.mt {margin-top: 20px; }\n"
-           << "\t\t\t.mb {margin-bottom: 20px; }\n"
-           << "\t\t\t.force-wrap {word-wrap: break-word; }\n"
-           << "\t\t\t.mono {font-family: \"Lucida Console\", Monaco, monospace;font-size: 12px; }\n"
-           << "\t\t\t.toggle {cursor: pointer; }\n"
-           << "\t\t\th2.toggle {padding-left: 16px;background: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAA4AAAAeCAIAAACT/LgdAAAABGdBTUEAANbY1E9YMgAAABl0RVh0U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAD1SURBVHja7JQ9CoQwFIT9LURQG3vBwyh4XsUjWFtb2IqNCmIhkp1dd9dsfIkeYKdKHl+G5CUTvaqqrutM09Tk2rYtiiIrjuOmaeZ5VqBBEADVGWPTNJVlOQwDyYVhmKap4zgGJp7nJUmCpQoOY2Mv+b6PkkDz3IGevQUOeu6VdxrHsSgK27azLOM5AoVwPqCu6wp1ApXJ0G7rjx5oXdd4YrfQtm3xFJdluUYRBFypghb32ve9jCaOJaPpDpC0tFmg8zzn46nq6/rSd2opAo38IHMXrmeOdgWHACKVFx3Y/c7cjys+JkSP9HuLfYR/Dg1icj0EGACcXZ/44V8+SgAAAABJRU5ErkJggg==) 0 -10px no-repeat; }\n"
-           << "\t\t\th2.open {margin-bottom: 10px;background-position: 0 9px; }\n"
-           << "\t\t\th3.toggle {padding-left: 16px;background: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAwAAAAaCAIAAAAMmCo2AAAABGdBTUEAANbY1E9YMgAAABl0RVh0U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAEfSURBVHjazJPLjkRAGIXbdSM8ACISvWeDNRYeGuteuL2EdMSGWLrOmdExaCO9nLOq+vPV+S9VRTwej6IoGIYhCOK21zzPfd/f73da07TiRxRFbTkQ4zjKsqyqKoFN27ZhGD6fT5ZlV2IYBkVRXNflOI5ESBAEz/NEUYT5lnAcBwQi307L6aZpoiiqqgprSZJwbCF2EFTXdRAENE37vr8SR2jhAPE8vw0eoVORtw/0j6Fpmi7afEFlWeZ5jhu9grqui+M4SZIrCO8Eg86y7JT7LXx5TODSNL3qDhw6eOeOIyBJEuUj6ZY7mRNmAUvQa4Q+EEiHJizLMgzj3AkeMLBte0vsoCULPHRd//NaUK9pmu/EywDCv0M7+CTzmb4EGADS4Lwj+N6gZgAAAABJRU5ErkJggg==) 0 -11px no-repeat; }\n"
-           << "\t\t\th3.open {background-position: 0 7px; }\n"
-           << "\t\t\th4.toggle {margin: 0 0 8px 0;padding-left: 12px;background: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAoAAAAVCAIAAADw0OikAAAABGdBTUEAANbY1E9YMgAAABl0RVh0U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAD8SURBVHjavJHLjkRAGIUbRaxd3oAQ8QouifDSFmysPICNIBZ2EhuJuM6ZMdFR3T3LOYtKqk79/3/qKybLsrZteZ5/3DXPs67rxLbtvu+bprluHMexrqumaZZlMdhM05SmaVVVhBBst20zDMN1XRR822erJEnKsmQYxjRNz/M4jsM5ORsKguD7/r7vqHAc5/Sg3+orDsuyGHGd3OxXsY8/9R92XdfjOH60i6IAODzsvQ0sgApw1I0nAZACVGAAPlEU6WigDaLoEcfxleNN8mEY8Id0c2hZFlmWgyDASlefXhiGqqrS0eApihJFkSRJt0nHj/I877rueNGXAAMAKcaTc/aCM/4AAAAASUVORK5CYII=) 0 -8px no-repeat; }\n"
-           << "\t\t\th4.open {background-position: 0 6px; }\n"
-           << "\t\t\ta.toggle-details, span.toggle-details {margin: 0 0 8px 0;padding-left: 12px;background: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAkAAAAXCAYAAADZTWX7AAAABGdBTUEAANbY1E9YMgAAABl0RVh0U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAADiSURBVHjaYvz//z/DrFmzGBkYGLqBeG5aWtp1BjTACFIEAkCFZ4AUNxC7ARU+RlbEhMT+BMQaQLwOqEESlyIYMIEqlMenCAQsgLiakKILQNwF47AgSfyH0leA2B/o+EfYTOID4gdA7IusAK4IGk7ngNgPqOABut3I1uUDFfzA5kB4YOIDTAxEgOGtiAUY2vlA2hCIf2KRZwXie6AQPwzEFUAsgUURSGMQEzAqQHFmB8R30BS8BWJXoPw2sJuAjNug2Afi+1AFH4A4DCh+GMXhQIEboHQExKeAOAbI3weTAwgwAIZTQ9CyDvuYAAAAAElFTkSuQmCC) 0 4px no-repeat; }\n"
-           << "\t\t\ta.open, span.open {background-position: 0 -11px; }\n"
-           << "\t\t\ttd.small a.toggle-details, span.toggle-details {background-position: 0 2px; }\n"
-           << "\t\t\ttd.small a.open, span.open {background-position: 0 -13px; }\n"
-           << "\t\t\t#active-help, .help-box {display: none; }\n"
-           << "\t\t\t#active-help {position: absolute;width: 350px;padding: 3px;background: #fff;z-index: 10; }\n"
-           << "\t\t\t#active-help-dynamic {padding: 6px 6px 18px 6px;background: #eeeef5;outline: 1px solid #ddd;font-size: 13px; }\n"
-           << "\t\t\t#active-help .close {position: absolute;right: 10px;bottom: 4px; }\n"
-           << "\t\t\t.help-box h3 {margin: 0 0 5px 0;font-size: 16px; }\n"
-           << "\t\t\t.help-box {border: 1px solid #ccc;background-color: #fff;padding: 10px; }\n"
-           << "\t\t\ta.help {cursor: help; }\n"
-           << "\t\t\t.section {position: relative;width: 1200px;padding: 8px;margin-left: auto;margin-right: auto;margin-bottom: -1px;border: 1px solid #ccc;background-color: #fff;-moz-box-shadow: 4px 4px 4px #bbb;-webkit-box-shadow: 4px 4px 4px #bbb;box-shadow: 4px 4px 4px #bbb;text-align: left; }\n"
-           << "\t\t\t.section-open {margin-top: 25px;margin-bottom: 35px;-moz-border-radius: 15px;-khtml-border-radius: 15px;-webkit-border-radius: 15px;border-radius: 15px; }\n"
-           << "\t\t\t.grouped-first {-moz-border-radius-topright: 15px;-moz-border-radius-topleft: 15px;-khtml-border-top-right-radius: 15px;-khtml-border-top-left-radius: 15px;-webkit-border-top-right-radius: 15px;-webkit-border-top-left-radius: 15px;border-top-right-radius: 15px;border-top-left-radius: 15px; }\n"
-           << "\t\t\t.grouped-last {-moz-border-radius-bottomright: 15px;-moz-border-radius-bottomleft: 15px;-khtml-border-bottom-right-radius: 15px;-khtml-border-bottom-left-radius: 15px;-webkit-border-bottom-right-radius: 15px;-webkit-border-bottom-left-radius: 15px;border-bottom-right-radius: 15px;border-bottom-left-radius: 15px; }\n"
-           << "\t\t\t.section .toggle-content {padding: 0; }\n"
-           << "\t\t\t.player-section .toggle-content {padding-left: 16px;margin-bottom: 20px; }\n"
-           << "\t\t\t.subsection {background-color: #ccc;width: 1000px;padding: 8px;margin-bottom: 20px;-moz-border-radius: 6px;-khtml-border-radius: 6px;-webkit-border-radius: 6px;border-radius: 6px;font-size: 12px; }\n"
-           << "\t\t\t.subsection-small {width: 500px; }\n"
-           << "\t\t\t.subsection h4 {margin: 0 0 10px 0; }\n"
-           << "\t\t\t.profile .subsection p {margin: 0; }\n"
-           << "\t\t\t#raid-summary .toggle-content {padding-bottom: 0px; }\n"
-           << "\t\t\tul.params {padding: 0;margin: 4px 0 0 6px; }\n"
-           << "\t\t\tul.params li {float: left;padding: 2px 10px 2px 10px;margin-left: 10px;list-style-type: none;background: #eeeef5;font-family: \"Lucida Grande\", Arial, sans-serif;font-size: 11px; }\n"
-           << "\t\t\t#masthead ul.params {margin-left: 4px; }\n"
-           << "\t\t\t#masthead ul.params li {margin-left: 0px;margin-right: 10px; }\n"
-           << "\t\t\t.player h2 {margin: 0; }\n"
-           << "\t\t\t.player ul.params {position: relative;top: 2px; }\n"
-           << "\t\t\t#masthead h2 {margin: 10px 0 5px 0; }\n"
-           << "\t\t\t#notice {border: 1px solid #ddbbbb;background: #ffdddd;font-size: 12px; }\n"
-           << "\t\t\t#notice h2 {margin-bottom: 10px; }\n"
-           << "\t\t\t.alert {width: 800px;padding: 10px;margin: 10px 0 10px 0;background-color: #ddd;-moz-border-radius: 6px;-khtml-border-radius: 6px;-webkit-border-radius: 6px;border-radius: 6px; }\n"
-           << "\t\t\t.alert p {margin-bottom: 0px; }\n"
-           << "\t\t\t.section .toggle-content {padding-left: 18px; }\n"
-           << "\t\t\t.player > .toggle-content {padding-left: 0; }\n"
-           << "\t\t\t.toc {float: left;padding: 0; }\n"
-           << "\t\t\t.toc-wide {width: 560px; }\n"
-           << "\t\t\t.toc-narrow {width: 375px; }\n"
-           << "\t\t\t.toc li {margin-bottom: 10px;list-style-type: none; }\n"
-           << "\t\t\t.toc li ul {padding-left: 10px; }\n"
-           << "\t\t\t.toc li ul li {margin: 0;list-style-type: none;font-size: 13px; }\n"
-           << "\t\t\t.charts {float: left;width: 541px;margin-top: 10px; }\n"
-           << "\t\t\t.charts-left {margin-right: 40px; }\n"
-           << "\t\t\t.charts img {padding: 8px;margin: 0 auto;margin-bottom: 20px;border: 1px solid #ccc;-moz-border-radius: 6px;-khtml-border-radius: 6px;-webkit-border-radius: 6px;border-radius: 6px;-moz-box-shadow: inset 1px 1px 4px #ccc;-webkit-box-shadow: inset 1px 1px 4px #ccc;box-shadow: inset 1px 1px 4px #ccc; }\n"
-           << "\t\t\t.talents div.float {width: auto;margin-right: 50px; }\n"
-           << "\t\t\ttable.sc {border: 0;background-color: #eee; }\n"
-           << "\t\t\ttable.sc tr {background-color: #fff; }\n"
-           << "\t\t\ttable.sc tr.head {background-color: #aaa;color: #fff; }\n"
-           << "\t\t\ttable.sc tr.odd {background-color: #f3f3f3; }\n"
-           << "\t\t\ttable.sc th {padding: 2px 4px 4px 4px;text-align: center;background-color: #aaa;color: #fcfcfc; }\n"
-           << "\t\t\ttable.sc th.small {padding: 2px 2px;font-size: 12px; }\n"
-           << "\t\t\ttable.sc th a {color: #fff;text-decoration: underline; }\n"
-           << "\t\t\ttable.sc th a:hover, table.sc th a:active {color: #f1f1ff; }\n"
-           << "\t\t\ttable.sc td {padding: 2px;text-align: center;font-size: 13px; }\n"
-           << "\t\t\ttable.sc th.left, table.sc td.left, table.sc tr.left th, table.sc tr.left td {text-align: left; vertical-align: top; }\n"
-           << "\t\t\ttable.sc th.right, table.sc td.right, table.sc tr.right th, table.sc tr.right td {text-align: right;padding-right: 4px; vertical-align: top; }\n"
-           << "\t\t\ttable.sc th.small {padding: 2px 2px 3px 2px;font-size: 11px; }\n"
-           << "\t\t\ttable.sc td.small {padding: 2px 2px 3px 2px;font-size: 11px; }\n"
-           << "\t\t\ttable.sc tr.details td {padding: 0 0 15px 15px; 0px;margin: 5px 0 10px 0;text-align: left;background-color: #eee;font-size: 11px; }\n"
-           << "\t\t\ttable.sc tr.details td ul {padding: 0;margin: 4px 0 8px 0; }\n"
-           << "\t\t\ttable.sc tr.details td ul li {clear: both;padding: 2px;list-style-type: none; }\n"
-           << "\t\t\ttable.sc tr.details td ul li span.label {display: block;padding: 2px;float: left;width: 145px;margin-right: 4px;background: #f3f3f3; }\n"
-           << "\t\t\ttable.sc tr.details td ul li span.tooltip {display: block;float: left;width: 190px; }\n"
-           << "\t\t\ttable.sc tr.details td ul li span.tooltip-wider {display: block;float: left;width: 350px; }\n"
-           << "\t\t\ttable.sc tr.details td div.float {width: 350px; }\n"
-           << "\t\t\ttable.sc tr.details td div.float h5 {margin-top: 4px; }\n"
-           << "\t\t\ttable.sc tr.details td div.float ul {margin: 0 0 12px 0; }\n"
-           << "\t\t\ttable.sc td.filler {background-color: #ccc; }\n"
-           << "\t\t\ttable.sc .dynamic-buffs tr.details td ul li span.label {width: 120px; }\n"
-           << "\t\t\ttr.details td table.details {padding: 0px;margin: 5px 0 10px 0; background-color: #eee;}\n"
-           << "\t\t\ttr.details td table.details tr.odd td {background-color: #f3f3f3; }\n"
-           << "\t\t\ttr.details td table.details tr td {padding: 0 0 15px 15px; }\n"
-           << "\t\t\ttr.details td table.details tr td.right {text-align: right; }\n"
-           << "\t\t\t.player-thumbnail {float: right;margin: 8px;border-radius: 12px;-moz-border-radius: 12px;-webkit-border-radius: 12px;-khtml-border-radius: 12px; }\n"
-           << "\t\t</style>\n";
+    os << "<style type=\"text/css\" media=\"all\">\n"
+           << "* {border: none;margin: 0;padding: 0; }\n"
+           << "body {padding: 5px 25px 25px 25px;font-family: \"Lucida Grande\", Arial, sans-serif;font-size: 14px;background-color: #f9f9f9;color: #333;text-align: center; }\n"
+           << "p {margin: 1em 0 1em 0; }\n"
+           << "h1, h2, h3, h4, h5, h6 {width: auto;color: #777;margin-top: 1em;margin-bottom: 0.5em; }\n"
+           << "h1, h2 {margin: 0;padding: 2px 2px 0 2px; }\n"
+           << "h1 {font-size: 24px; }\n"
+           << "h2 {font-size: 18px; }\n"
+           << "h3 {margin: 0 0 4px 0;font-size: 16px; }\n"
+           << "h4 {font-size: 12px; }\n"
+           << "h5 {font-size: 10px; }\n"
+           << "a {color: #666688;text-decoration: none; }\n"
+           << "a:hover, a:active {color: #333; }\n"
+           << "ul, ol {padding-left: 20px; }\n"
+           << "ul.float, ol.float {padding: 0;margin: 0; }\n"
+           << "ul.float li, ol.float li {display: inline;float: left;padding-right: 6px;margin-right: 6px;list-style-type: none;border-right: 2px solid #eee; }\n"
+           << ".clear {clear: both; }\n"
+           << ".hide, .charts span {display: none; }\n"
+           << ".center {text-align: center; }\n"
+           << ".float {float: left; }\n"
+           << ".mt {margin-top: 20px; }\n"
+           << ".mb {margin-bottom: 20px; }\n"
+           << ".force-wrap {word-wrap: break-word; }\n"
+           << ".mono {font-family: \"Lucida Console\", Monaco, monospace;font-size: 12px; }\n"
+           << ".toggle {cursor: pointer; }\n"
+           << "h2.toggle {padding-left: 16px;background: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAA4AAAAeCAIAAACT/LgdAAAABGdBTUEAANbY1E9YMgAAABl0RVh0U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAD1SURBVHja7JQ9CoQwFIT9LURQG3vBwyh4XsUjWFtb2IqNCmIhkp1dd9dsfIkeYKdKHl+G5CUTvaqqrutM09Tk2rYtiiIrjuOmaeZ5VqBBEADVGWPTNJVlOQwDyYVhmKap4zgGJp7nJUmCpQoOY2Mv+b6PkkDz3IGevQUOeu6VdxrHsSgK27azLOM5AoVwPqCu6wp1ApXJ0G7rjx5oXdd4YrfQtm3xFJdluUYRBFypghb32ve9jCaOJaPpDpC0tFmg8zzn46nq6/rSd2opAo38IHMXrmeOdgWHACKVFx3Y/c7cjys+JkSP9HuLfYR/Dg1icj0EGACcXZ/44V8+SgAAAABJRU5ErkJggg==) 0 -10px no-repeat; }\n"
+           << "h2.open {margin-bottom: 10px;background-position: 0 9px; }\n"
+           << "h3.toggle {padding-left: 16px;background: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAwAAAAaCAIAAAAMmCo2AAAABGdBTUEAANbY1E9YMgAAABl0RVh0U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAEfSURBVHjazJPLjkRAGIXbdSM8ACISvWeDNRYeGuteuL2EdMSGWLrOmdExaCO9nLOq+vPV+S9VRTwej6IoGIYhCOK21zzPfd/f73da07TiRxRFbTkQ4zjKsqyqKoFN27ZhGD6fT5ZlV2IYBkVRXNflOI5ESBAEz/NEUYT5lnAcBwQi307L6aZpoiiqqgprSZJwbCF2EFTXdRAENE37vr8SR2jhAPE8vw0eoVORtw/0j6Fpmi7afEFlWeZ5jhu9grqui+M4SZIrCO8Eg86y7JT7LXx5TODSNL3qDhw6eOeOIyBJEuUj6ZY7mRNmAUvQa4Q+EEiHJizLMgzj3AkeMLBte0vsoCULPHRd//NaUK9pmu/EywDCv0M7+CTzmb4EGADS4Lwj+N6gZgAAAABJRU5ErkJggg==) 0 -11px no-repeat; }\n"
+           << "h3.open {background-position: 0 7px; }\n"
+           << "h4.toggle {margin: 0 0 8px 0;padding-left: 12px;background: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAoAAAAVCAIAAADw0OikAAAABGdBTUEAANbY1E9YMgAAABl0RVh0U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAD8SURBVHjavJHLjkRAGIUbRaxd3oAQ8QouifDSFmysPICNIBZ2EhuJuM6ZMdFR3T3LOYtKqk79/3/qKybLsrZteZ5/3DXPs67rxLbtvu+bprluHMexrqumaZZlMdhM05SmaVVVhBBst20zDMN1XRR822erJEnKsmQYxjRNz/M4jsM5ORsKguD7/r7vqHAc5/Sg3+orDsuyGHGd3OxXsY8/9R92XdfjOH60i6IAODzsvQ0sgApw1I0nAZACVGAAPlEU6WigDaLoEcfxleNN8mEY8Id0c2hZFlmWgyDASlefXhiGqqrS0eApihJFkSRJt0nHj/I877rueNGXAAMAKcaTc/aCM/4AAAAASUVORK5CYII=) 0 -8px no-repeat; }\n"
+           << "h4.open {background-position: 0 6px; }\n"
+           << "a.toggle-details, span.toggle-details {margin: 0 0 8px 0;padding-left: 12px;background: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAkAAAAXCAYAAADZTWX7AAAABGdBTUEAANbY1E9YMgAAABl0RVh0U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAADiSURBVHjaYvz//z/DrFmzGBkYGLqBeG5aWtp1BjTACFIEAkCFZ4AUNxC7ARU+RlbEhMT+BMQaQLwOqEESlyIYMIEqlMenCAQsgLiakKILQNwF47AgSfyH0leA2B/o+EfYTOID4gdA7IusAK4IGk7ngNgPqOABut3I1uUDFfzA5kB4YOIDTAxEgOGtiAUY2vlA2hCIf2KRZwXie6AQPwzEFUAsgUURSGMQEzAqQHFmB8R30BS8BWJXoPw2sJuAjNug2Afi+1AFH4A4DCh+GMXhQIEboHQExKeAOAbI3weTAwgwAIZTQ9CyDvuYAAAAAElFTkSuQmCC) 0 4px no-repeat; }\n"
+           << "a.open, span.open {background-position: 0 -11px; }\n"
+           << "td.small a.toggle-details, span.toggle-details {background-position: 0 2px; }\n"
+           << "td.small a.open, span.open {background-position: 0 -13px; }\n"
+           << "#active-help, .help-box {display: none; }\n"
+           << "#active-help {position: absolute;width: 350px;padding: 3px;background: #fff;z-index: 10; }\n"
+           << "#active-help-dynamic {padding: 6px 6px 18px 6px;background: #eeeef5;outline: 1px solid #ddd;font-size: 13px; }\n"
+           << "#active-help .close {position: absolute;right: 10px;bottom: 4px; }\n"
+           << ".help-box h3 {margin: 0 0 5px 0;font-size: 16px; }\n"
+           << ".help-box {border: 1px solid #ccc;background-color: #fff;padding: 10px; }\n"
+           << "a.help {cursor: help; }\n"
+           << ".section {position: relative;width: 1200px;padding: 8px;margin-left: auto;margin-right: auto;margin-bottom: -1px;border: 1px solid #ccc;background-color: #fff;-moz-box-shadow: 4px 4px 4px #bbb;-webkit-box-shadow: 4px 4px 4px #bbb;box-shadow: 4px 4px 4px #bbb;text-align: left; }\n"
+           << ".section-open {margin-top: 25px;margin-bottom: 35px;-moz-border-radius: 15px;-khtml-border-radius: 15px;-webkit-border-radius: 15px;border-radius: 15px; }\n"
+           << ".grouped-first {-moz-border-radius-topright: 15px;-moz-border-radius-topleft: 15px;-khtml-border-top-right-radius: 15px;-khtml-border-top-left-radius: 15px;-webkit-border-top-right-radius: 15px;-webkit-border-top-left-radius: 15px;border-top-right-radius: 15px;border-top-left-radius: 15px; }\n"
+           << ".grouped-last {-moz-border-radius-bottomright: 15px;-moz-border-radius-bottomleft: 15px;-khtml-border-bottom-right-radius: 15px;-khtml-border-bottom-left-radius: 15px;-webkit-border-bottom-right-radius: 15px;-webkit-border-bottom-left-radius: 15px;border-bottom-right-radius: 15px;border-bottom-left-radius: 15px; }\n"
+           << ".section .toggle-content {padding: 0; }\n"
+           << ".player-section .toggle-content {padding-left: 16px;margin-bottom: 20px; }\n"
+           << ".subsection {background-color: #ccc;width: 1000px;padding: 8px;margin-bottom: 20px;-moz-border-radius: 6px;-khtml-border-radius: 6px;-webkit-border-radius: 6px;border-radius: 6px;font-size: 12px; }\n"
+           << ".subsection-small {width: 500px; }\n"
+           << ".subsection h4 {margin: 0 0 10px 0; }\n"
+           << ".profile .subsection p {margin: 0; }\n"
+           << "#raid-summary .toggle-content {padding-bottom: 0px; }\n"
+           << "ul.params {padding: 0;margin: 4px 0 0 6px; }\n"
+           << "ul.params li {float: left;padding: 2px 10px 2px 10px;margin-left: 10px;list-style-type: none;background: #eeeef5;font-family: \"Lucida Grande\", Arial, sans-serif;font-size: 11px; }\n"
+           << "#masthead ul.params {margin-left: 4px; }\n"
+           << "#masthead ul.params li {margin-left: 0px;margin-right: 10px; }\n"
+           << ".player h2 {margin: 0; }\n"
+           << ".player ul.params {position: relative;top: 2px; }\n"
+           << "#masthead h2 {margin: 10px 0 5px 0; }\n"
+           << "#notice {border: 1px solid #ddbbbb;background: #ffdddd;font-size: 12px; }\n"
+           << "#notice h2 {margin-bottom: 10px; }\n"
+           << ".alert {width: 800px;padding: 10px;margin: 10px 0 10px 0;background-color: #ddd;-moz-border-radius: 6px;-khtml-border-radius: 6px;-webkit-border-radius: 6px;border-radius: 6px; }\n"
+           << ".alert p {margin-bottom: 0px; }\n"
+           << ".section .toggle-content {padding-left: 18px; }\n"
+           << ".player > .toggle-content {padding-left: 0; }\n"
+           << ".toc {float: left;padding: 0; }\n"
+           << ".toc-wide {width: 560px; }\n"
+           << ".toc-narrow {width: 375px; }\n"
+           << ".toc li {margin-bottom: 10px;list-style-type: none; }\n"
+           << ".toc li ul {padding-left: 10px; }\n"
+           << ".toc li ul li {margin: 0;list-style-type: none;font-size: 13px; }\n"
+           << ".charts {float: left;width: 541px;margin-top: 10px; }\n"
+           << ".charts-left {margin-right: 40px; }\n"
+           << ".charts img {padding: 8px;margin: 0 auto;margin-bottom: 20px;border: 1px solid #ccc;-moz-border-radius: 6px;-khtml-border-radius: 6px;-webkit-border-radius: 6px;border-radius: 6px;-moz-box-shadow: inset 1px 1px 4px #ccc;-webkit-box-shadow: inset 1px 1px 4px #ccc;box-shadow: inset 1px 1px 4px #ccc; }\n"
+           << ".talents div.float {width: auto;margin-right: 50px; }\n"
+           << "table.sc {border: 0;background-color: #eee; }\n"
+           << "table.sc tr {background-color: #fff; }\n"
+           << "table.sc tr.head {background-color: #aaa;color: #fff; }\n"
+           << "table.sc tr.odd {background-color: #f3f3f3; }\n"
+           << "table.sc th {padding: 2px 4px 4px 4px;text-align: center;background-color: #aaa;color: #fcfcfc; }\n"
+           << "table.sc th.small {padding: 2px 2px;font-size: 12px; }\n"
+           << "table.sc th a {color: #fff;text-decoration: underline; }\n"
+           << "table.sc th a:hover, table.sc th a:active {color: #f1f1ff; }\n"
+           << "table.sc td {padding: 2px;text-align: center;font-size: 13px; }\n"
+           << "table.sc th.left, table.sc td.left, table.sc tr.left th, table.sc tr.left td {text-align: left; vertical-align: top; }\n"
+           << "table.sc th.right, table.sc td.right, table.sc tr.right th, table.sc tr.right td {text-align: right;padding-right: 4px; vertical-align: top; }\n"
+           << "table.sc th.small {padding: 2px 2px 3px 2px;font-size: 11px; }\n"
+           << "table.sc td.small {padding: 2px 2px 3px 2px;font-size: 11px; }\n"
+           << "table.sc tr.details td {padding: 0 0 15px 15px; 0px;margin: 5px 0 10px 0;text-align: left;background-color: #eee;font-size: 11px; }\n"
+           << "table.sc tr.details td ul {padding: 0;margin: 4px 0 8px 0; }\n"
+           << "table.sc tr.details td ul li {clear: both;padding: 2px;list-style-type: none; }\n"
+           << "table.sc tr.details td ul li span.label {display: block;padding: 2px;float: left;width: 145px;margin-right: 4px;background: #f3f3f3; }\n"
+           << "table.sc tr.details td ul li span.tooltip {display: block;float: left;width: 190px; }\n"
+           << "table.sc tr.details td ul li span.tooltip-wider {display: block;float: left;width: 350px; }\n"
+           << "table.sc tr.details td div.float {width: 350px; }\n"
+           << "table.sc tr.details td div.float h5 {margin-top: 4px; }\n"
+           << "table.sc tr.details td div.float ul {margin: 0 0 12px 0; }\n"
+           << "table.sc td.filler {background-color: #ccc; }\n"
+           << "table.sc .dynamic-buffs tr.details td ul li span.label {width: 120px; }\n"
+           << "tr.details td table.details {padding: 0px;margin: 5px 0 10px 0; background-color: #eee;}\n"
+           << "tr.details td table.details tr.odd td {background-color: #f3f3f3; }\n"
+           << "tr.details td table.details tr td {padding: 0 0 15px 15px; }\n"
+           << "tr.details td table.details tr td.right {text-align: right; }\n"
+           << ".player-thumbnail {float: right;margin: 8px;border-radius: 12px;-moz-border-radius: 12px;-webkit-border-radius: 12px;-khtml-border-radius: 12px; }\n"
+           << "</style>\n";
   }
 };
 
@@ -1946,126 +2110,126 @@ struct classic_html_style_t : public html_style_t
 {
   void print_html_styles( std::ostream& os ) override
   {
-    os << "\t\t<style type=\"text/css\" media=\"all\">\n"
-           << "\t\t\t* {border: none;margin: 0;padding: 0; }\n"
-           << "\t\t\tbody {padding: 5px 25px 25px 25px;font-family: \"Lucida Grande\", Arial, sans-serif;font-size: 14px;background: #261307;color: #FFF;text-align: center; }\n"
-           << "\t\t\tp {margin: 1em 0 1em 0; }\n"
-           << "\t\t\th1, h2, h3, h4, h5, h6 {width: auto;color: #FDD017;margin-top: 1em;margin-bottom: 0.5em; }\n"
-           << "\t\t\th1, h2 {margin: 0;padding: 2px 2px 0 2px; }\n"
-           << "\t\t\th1 {font-size: 28px;text-shadow: 0 0 3px #FDD017; }\n"
-           << "\t\t\th2 {font-size: 18px; }\n"
-           << "\t\t\th3 {margin: 0 0 4px 0;font-size: 16px; }\n"
-           << "\t\t\th4 {font-size: 12px; }\n"
-           << "\t\t\th5 {font-size: 10px; }\n"
-           << "\t\t\ta {color: #FDD017;text-decoration: none; }\n"
-           << "\t\t\ta:hover, a:active {text-shadow: 0 0 1px #FDD017; }\n"
-           << "\t\t\tul, ol {padding-left: 20px; }\n"
-           << "\t\t\tul.float, ol.float {padding: 0;margin: 0; }\n"
-           << "\t\t\tul.float li, ol.float li {display: inline;float: left;padding-right: 6px;margin-right: 6px;list-style-type: none;border-right: 2px solid #333; }\n"
-           << "\t\t\t.clear {clear: both; }\n"
-           << "\t\t\t.hide, .charts span {display: none; }\n"
-           << "\t\t\t.center {text-align: center; }\n"
-           << "\t\t\t.float {float: left; }\n"
-           << "\t\t\t.mt {margin-top: 20px; }\n"
-           << "\t\t\t.mb {margin-bottom: 20px; }\n"
-           << "\t\t\t.force-wrap {word-wrap: break-word; }\n"
-           << "\t\t\t.mono {font-family: \"Lucida Console\", Monaco, monospace;font-size: 12px; }\n"
-           << "\t\t\t.toggle {cursor: pointer; }\n"
-           << "\t\t\th2.toggle {padding-left: 18px;background: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAA4AAAAeCAIAAACT/LgdAAAABGdBTUEAANbY1E9YMgAAABl0RVh0U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAFaSURBVHjaYoz24a9N51aVZ2PADT5//VPS+5WRk51RVZ55STu/tjILVnV//jLEVn1cv/cHMzsb45OX/+48/muizSoiyISm7vvP/yn1n1bs+AE0kYGbkxEiaqDOcn+HyN8L4nD09aRYhCcHRBakDK4UCKwNWM+sEIao+34aoQ6LUiCwMWR9sEMETR12pUBgqs0a5MKOJohdKVYAVMbEQDQYVUq6UhlxZmACIBwNQNJCj/XVQVFjLVbCsfXrN4MwP9O6fn4jTVai3Ap0xtp+fhMcZqN7S06CeU0fPzBxERUCshLM6ycKmOmwEhVYkiJMa/oE0HyJM1zffvj38u0/wkq3H/kZU/nxycu/yIJY8v65678LOj8DszsBt+4+/iuo8COmOnSlh87+Ku///PjFXwIRe2qZkKggE56IZebnZfn56x8nO9P5m/+u3vkNLHBYWdARExMjNxczQIABACK8cxwggQ+oAAAAAElFTkSuQmCC) 0 -10px no-repeat; }\n"
-           << "\t\t\th2.toggle:hover {text-shadow: 0 0 2px #FDD017; }\n"
-           << "\t\t\th2.open {margin-bottom: 10px;background-position: 0 9px; }\n"
-           << "\t\t\t#home-toc h2.open {margin-top: 20px; }\n"
-           << "\t\t\th3.toggle {padding-left: 16px;background: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAwAAAAaCAYAAACD+r1hAAAABGdBTUEAANbY1E9YMgAAABl0RVh0U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAD/SURBVHjaYvx7QdyTgYGhE4iVgfg3A3bACsRvgDic8f///wz/Lkq4ADkrgVgIh4bvIMVM+i82M4F4QMYeIBUAxE+wKP4IxCEgxWC1MFGgwGEglQnEj5EUfwbiaKDcNpgA2EnIAOg8VyC1Cog5gDgMZjJODVBNID9xABVvQZdjweHJO9CQwQBYbcAHmBhIBMNBAwta+MtgSx7A+MBpgw6pTloKxBGkaOAB4vlAHEyshu/QRLcQlyZ0DYxQmhuIFwNxICnBygnEy4DYg5R4AOW2D8RqACXxMCA+QYyG20CcAcSHCGUgTmhxEgPEp4gJpetQZ5wiNh7KgXg/vlAACDAAkUxCv8kbXs4AAAAASUVORK5CYII=) 0 -11px no-repeat; }\n"
-           << "\t\t\th3.toggle:hover {text-shadow: 0 0 2px #CDB007; }\n"
-           << "\t\t\th3.open {background-position: 0 7px; }\n"
-           << "\t\t\th4.toggle {margin: 0 0 8px 0;padding-left: 12px;background: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAoAAAAVCAIAAADw0OikAAAABGdBTUEAANbY1E9YMgAAABl0RVh0U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAD8SURBVHjavJHLjkRAGIUbRaxd3oAQ8QouifDSFmysPICNIBZ2EhuJuM6ZMdFR3T3LOYtKqk79/3/qKybLsrZteZ5/3DXPs67rxLbtvu+bprluHMexrqumaZZlMdhM05SmaVVVhBBst20zDMN1XRR822erJEnKsmQYxjRNz/M4jsM5ORsKguD7/r7vqHAc5/Sg3+orDsuyGHGd3OxXsY8/9R92XdfjOH60i6IAODzsvQ0sgApw1I0nAZACVGAAPlEU6WigDaLoEcfxleNN8mEY8Id0c2hZFlmWgyDASlefXhiGqqrS0eApihJFkSRJt0nHj/I877rueNGXAAMAKcaTc/aCM/4AAAAASUVORK5CYII=) 0 -8px no-repeat; }\n"
-           << "\t\t\th4.open {background-position: 0 6px; }\n"
-           << "\t\t\ta.toggle-details, span.toggle-details {margin: 0 0 8px 0;padding-left: 12px;background: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAoAAAAWCAYAAAD5Jg1dAAAABGdBTUEAANbY1E9YMgAAABl0RVh0U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAADpSURBVHjaYvx7QdyLgYGhH4ilgfgPAypgAuIvQBzD+P//f4Z/FyXCgJzZQMyHpvAvEMcx6b9YBlYIAkDFAUBqKRBzQRX9AuJEkCIwD6QQhoHOCADiX0D8F4hjkeXgJsIA0OQYIMUGNGkesjgLAyY4AsTM6IIYJuICTAxEggFUyIIULIpA6jkQ/0AxSf8FhoneQKxJjNVxQLwFiGUJKfwOxFJAvBmakgh6Rh+INwCxBDG+NoEq1iEmeK4A8Rt8iQIEpgJxPjThYpjIhKSoFFkRukJQQK8D4gpoCDDgSo+Tgfg0NDNhAIAAAwD5YVPrQE/ZlwAAAABJRU5ErkJggg==) 0 -9px no-repeat; }\n"
-           << "\t\t\ta.open, span.open {background-position: 0 6px; }\n"
-           << "\t\t\ttd.small a.toggle-details, span.toggle-details {background-position: 0 -10px; }\n"
-           << "\t\t\ttd.small a.open, span.open {background-position: 0 5px; }\n"
-           << "\t\t\t#active-help, .help-box {display: none;-moz-border-radius: 6px;-khtml-border-radius: 6px;-webkit-border-radius: 6px; }\n"
-           << "\t\t\t#active-help {position: absolute;width: auto;padding: 3px;background: transparent;z-index: 10; }\n"
-           << "\t\t\t#active-help-dynamic {max-width: 400px;padding: 8px 8px 20px 8px;background: #333;font-size: 13px;text-align: left;border: 1px solid #222;-moz-border-radius: 6px;-khtml-border-radius: 6px;-webkit-border-radius: 6px;border-radius: 6px;-moz-box-shadow: 4px 4px 10px #000;-webkit-box-shadow: 4px 4px 10px #000;box-shadow: 4px 4px 10px #000; }\n"
-           << "\t\t\t#active-help .close {display: block;height: 14px;width: 14px;position: absolute;right: 12px;bottom: 7px;background: #000 url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAA4AAAAOCAYAAAAfSC3RAAAABGdBTUEAANbY1E9YMgAAABl0RVh0U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAE8SURBVHjafNI/KEVhGMfxc4/j33BZjK4MbkmxnEFiQFcZlMEgZTAZDbIYLEaRUMpCuaU7yCCrJINsJFkUNolSBnKJ71O/V69zb576LOe8v/M+73ueVBzH38HfesQ5bhGiFR2o9xdFidAm1nCFop7VoAvTGHILQy9kCw+0W9F7/o4jHPs7uOAyZrCL0aC05rCgd/uu1Rus4g6VKKAa2wrNKziCPTyhx4InClkt4RNbardFoWG3E3WKCwteJ9pawSt28IEcDr33b7gPy9ysVRZf2rWpzPso0j/yax2T6EazzlynTgL9z2ykBe24xAYm0I8zqdJF2cUtog9tFsxgFs8YR68uwFVeLec1DDYEaXe+MZ1pIBFyZe3WarJKRq5CV59Wiy9IoQGDmPpvVq3/Tg34gz5mR2nUUPzWjwADAFypQitBus+8AAAAAElFTkSuQmCC) no-repeat; }\n"
-           << "\t\t\t#active-help .close:hover {background-color: #1d1d1d; }\n"
-           << "\t\t\t.help-box h3 {margin: 0 0 12px 0;font-size: 14px;color: #C68E17; }\n"
-           << "\t\t\t.help-box p {margin: 0 0 10px 0; }\n"
-           << "\t\t\t.help-box {background-color: #000;padding: 10px; }\n"
-           << "\t\t\ta.help {color: #C68E17;cursor: help; }\n"
-           << "\t\t\ta.help:hover {text-shadow: 0 0 1px #C68E17; }\n"
-           << "\t\t\t.section {position: relative;width: 1200px;padding: 8px;margin-left: auto;margin-right: auto;margin-bottom: -1px;border: 0;-moz-box-shadow: 0px 0px 8px #FDD017;-webkit-box-shadow: 0px 0px 8px #FDD017;box-shadow: 0px 0px 8px #FDD017;color: #fff;background-color: #000;text-align: left; }\n"
-           << "\t\t\t.section-open {margin-top: 25px;margin-bottom: 35px;-moz-border-radius: 15px;-khtml-border-radius: 15px;-webkit-border-radius: 15px;border-radius: 15px; }\n"
-           << "\t\t\t.grouped-first {-moz-border-radius-topright: 15px;-moz-border-radius-topleft: 15px;-khtml-border-top-right-radius: 15px;-khtml-border-top-left-radius: 15px;-webkit-border-top-right-radius: 15px;-webkit-border-top-left-radius: 15px;border-top-right-radius: 15px;border-top-left-radius: 15px; }\n"
-           << "\t\t\t.grouped-last {-moz-border-radius-bottomright: 15px;-moz-border-radius-bottomleft: 15px;-khtml-border-bottom-right-radius: 15px;-khtml-border-bottom-left-radius: 15px;-webkit-border-bottom-right-radius: 15px;-webkit-border-bottom-left-radius: 15px;border-bottom-right-radius: 15px;border-bottom-left-radius: 15px; }\n"
-           << "\t\t\t.section .toggle-content {padding: 0; }\n"
-           << "\t\t\t.player-section .toggle-content {padding-left: 16px; }\n"
-           << "\t\t\t#home-toc .toggle-content {margin-bottom: 20px; }\n"
-           << "\t\t\t.subsection {background-color: #333;width: 1000px;padding: 8px;margin-bottom: 20px;-moz-border-radius: 6px;-khtml-border-radius: 6px;-webkit-border-radius: 6px;border-radius: 6px;font-size: 12px; }\n"
-           << "\t\t\t.subsection-small {width: 500px; }\n"
-           << "\t\t\t.subsection h4 {margin: 0 0 10px 0;color: #fff; }\n"
-           << "\t\t\t.profile .subsection p {margin: 0; }\n"
-           << "\t\t\t#raid-summary .toggle-content {padding-bottom: 0px; }\n"
-           << "\t\t\tul.params {padding: 0;margin: 4px 0 0 6px; }\n"
-           << "\t\t\tul.params li {float: left;padding: 2px 10px 2px 10px;margin-left: 10px;list-style-type: none;background: #2f2f2f;color: #ddd;font-family: \"Lucida Grande\", Arial, sans-serif;font-size: 11px;-moz-border-radius: 8px;-khtml-border-radius: 8px;-webkit-border-radius: 8px;border-radius: 8px; }\n"
-           << "\t\t\tul.params li.linked:hover {background: #393939; }\n"
-           << "\t\t\tul.params li a {color: #ddd; }\n"
-           << "\t\t\tul.params li a:hover {text-shadow: none; }\n"
-           << "\t\t\t.player h2 {margin: 0; }\n"
-           << "\t\t\t.player ul.params {position: relative;top: 2px; }\n"
-           << "\t\t\t#masthead {height: auto;padding-bottom: 30px;border: 0;-moz-border-radius: 15px;-khtml-border-radius: 15px;-webkit-border-radius: 15px;border-radius: 15px;-moz-box-shadow: 0px 0px 8px #FDD017;-webkit-box-shadow: 0px 0px 8px #FDD017;box-shadow: 0px 0px 8px #FDD017;text-align: left;color: #FDD017;background: #000 ";
+    os << "<style type=\"text/css\" media=\"all\">\n"
+           << "* {border: none;margin: 0;padding: 0; }\n"
+           << "body {padding: 5px 25px 25px 25px;font-family: \"Lucida Grande\", Arial, sans-serif;font-size: 14px;background: #261307;color: #FFF;text-align: center; }\n"
+           << "p {margin: 1em 0 1em 0; }\n"
+           << "h1, h2, h3, h4, h5, h6 {width: auto;color: #FDD017;margin-top: 1em;margin-bottom: 0.5em; }\n"
+           << "h1, h2 {margin: 0;padding: 2px 2px 0 2px; }\n"
+           << "h1 {font-size: 28px;text-shadow: 0 0 3px #FDD017; }\n"
+           << "h2 {font-size: 18px; }\n"
+           << "h3 {margin: 0 0 4px 0;font-size: 16px; }\n"
+           << "h4 {font-size: 12px; }\n"
+           << "h5 {font-size: 10px; }\n"
+           << "a {color: #FDD017;text-decoration: none; }\n"
+           << "a:hover, a:active {text-shadow: 0 0 1px #FDD017; }\n"
+           << "ul, ol {padding-left: 20px; }\n"
+           << "ul.float, ol.float {padding: 0;margin: 0; }\n"
+           << "ul.float li, ol.float li {display: inline;float: left;padding-right: 6px;margin-right: 6px;list-style-type: none;border-right: 2px solid #333; }\n"
+           << ".clear {clear: both; }\n"
+           << ".hide, .charts span {display: none; }\n"
+           << ".center {text-align: center; }\n"
+           << ".float {float: left; }\n"
+           << ".mt {margin-top: 20px; }\n"
+           << ".mb {margin-bottom: 20px; }\n"
+           << ".force-wrap {word-wrap: break-word; }\n"
+           << ".mono {font-family: \"Lucida Console\", Monaco, monospace;font-size: 12px; }\n"
+           << ".toggle {cursor: pointer; }\n"
+           << "h2.toggle {padding-left: 18px;background: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAA4AAAAeCAIAAACT/LgdAAAABGdBTUEAANbY1E9YMgAAABl0RVh0U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAFaSURBVHjaYoz24a9N51aVZ2PADT5//VPS+5WRk51RVZ55STu/tjILVnV//jLEVn1cv/cHMzsb45OX/+48/muizSoiyISm7vvP/yn1n1bs+AE0kYGbkxEiaqDOcn+HyN8L4nD09aRYhCcHRBakDK4UCKwNWM+sEIao+34aoQ6LUiCwMWR9sEMETR12pUBgqs0a5MKOJohdKVYAVMbEQDQYVUq6UhlxZmACIBwNQNJCj/XVQVFjLVbCsfXrN4MwP9O6fn4jTVai3Ap0xtp+fhMcZqN7S06CeU0fPzBxERUCshLM6ycKmOmwEhVYkiJMa/oE0HyJM1zffvj38u0/wkq3H/kZU/nxycu/yIJY8v65678LOj8DszsBt+4+/iuo8COmOnSlh87+Ku///PjFXwIRe2qZkKggE56IZebnZfn56x8nO9P5m/+u3vkNLHBYWdARExMjNxczQIABACK8cxwggQ+oAAAAAElFTkSuQmCC) 0 -10px no-repeat; }\n"
+           << "h2.toggle:hover {text-shadow: 0 0 2px #FDD017; }\n"
+           << "h2.open {margin-bottom: 10px;background-position: 0 9px; }\n"
+           << "#home-toc h2.open {margin-top: 20px; }\n"
+           << "h3.toggle {padding-left: 16px;background: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAwAAAAaCAYAAACD+r1hAAAABGdBTUEAANbY1E9YMgAAABl0RVh0U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAD/SURBVHjaYvx7QdyTgYGhE4iVgfg3A3bACsRvgDic8f///wz/Lkq4ADkrgVgIh4bvIMVM+i82M4F4QMYeIBUAxE+wKP4IxCEgxWC1MFGgwGEglQnEj5EUfwbiaKDcNpgA2EnIAOg8VyC1Cog5gDgMZjJODVBNID9xABVvQZdjweHJO9CQwQBYbcAHmBhIBMNBAwta+MtgSx7A+MBpgw6pTloKxBGkaOAB4vlAHEyshu/QRLcQlyZ0DYxQmhuIFwNxICnBygnEy4DYg5R4AOW2D8RqACXxMCA+QYyG20CcAcSHCGUgTmhxEgPEp4gJpetQZ5wiNh7KgXg/vlAACDAAkUxCv8kbXs4AAAAASUVORK5CYII=) 0 -11px no-repeat; }\n"
+           << "h3.toggle:hover {text-shadow: 0 0 2px #CDB007; }\n"
+           << "h3.open {background-position: 0 7px; }\n"
+           << "h4.toggle {margin: 0 0 8px 0;padding-left: 12px;background: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAoAAAAVCAIAAADw0OikAAAABGdBTUEAANbY1E9YMgAAABl0RVh0U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAD8SURBVHjavJHLjkRAGIUbRaxd3oAQ8QouifDSFmysPICNIBZ2EhuJuM6ZMdFR3T3LOYtKqk79/3/qKybLsrZteZ5/3DXPs67rxLbtvu+bprluHMexrqumaZZlMdhM05SmaVVVhBBst20zDMN1XRR822erJEnKsmQYxjRNz/M4jsM5ORsKguD7/r7vqHAc5/Sg3+orDsuyGHGd3OxXsY8/9R92XdfjOH60i6IAODzsvQ0sgApw1I0nAZACVGAAPlEU6WigDaLoEcfxleNN8mEY8Id0c2hZFlmWgyDASlefXhiGqqrS0eApihJFkSRJt0nHj/I877rueNGXAAMAKcaTc/aCM/4AAAAASUVORK5CYII=) 0 -8px no-repeat; }\n"
+           << "h4.open {background-position: 0 6px; }\n"
+           << "a.toggle-details, span.toggle-details {margin: 0 0 8px 0;padding-left: 12px;background: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAoAAAAWCAYAAAD5Jg1dAAAABGdBTUEAANbY1E9YMgAAABl0RVh0U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAADpSURBVHjaYvx7QdyLgYGhH4ilgfgPAypgAuIvQBzD+P//f4Z/FyXCgJzZQMyHpvAvEMcx6b9YBlYIAkDFAUBqKRBzQRX9AuJEkCIwD6QQhoHOCADiX0D8F4hjkeXgJsIA0OQYIMUGNGkesjgLAyY4AsTM6IIYJuICTAxEggFUyIIULIpA6jkQ/0AxSf8FhoneQKxJjNVxQLwFiGUJKfwOxFJAvBmakgh6Rh+INwCxBDG+NoEq1iEmeK4A8Rt8iQIEpgJxPjThYpjIhKSoFFkRukJQQK8D4gpoCDDgSo+Tgfg0NDNhAIAAAwD5YVPrQE/ZlwAAAABJRU5ErkJggg==) 0 -9px no-repeat; }\n"
+           << "a.open, span.open {background-position: 0 6px; }\n"
+           << "td.small a.toggle-details, span.toggle-details {background-position: 0 -10px; }\n"
+           << "td.small a.open, span.open {background-position: 0 5px; }\n"
+           << "#active-help, .help-box {display: none;-moz-border-radius: 6px;-khtml-border-radius: 6px;-webkit-border-radius: 6px; }\n"
+           << "#active-help {position: absolute;width: auto;padding: 3px;background: transparent;z-index: 10; }\n"
+           << "#active-help-dynamic {max-width: 400px;padding: 8px 8px 20px 8px;background: #333;font-size: 13px;text-align: left;border: 1px solid #222;-moz-border-radius: 6px;-khtml-border-radius: 6px;-webkit-border-radius: 6px;border-radius: 6px;-moz-box-shadow: 4px 4px 10px #000;-webkit-box-shadow: 4px 4px 10px #000;box-shadow: 4px 4px 10px #000; }\n"
+           << "#active-help .close {display: block;height: 14px;width: 14px;position: absolute;right: 12px;bottom: 7px;background: #000 url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAA4AAAAOCAYAAAAfSC3RAAAABGdBTUEAANbY1E9YMgAAABl0RVh0U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAE8SURBVHjafNI/KEVhGMfxc4/j33BZjK4MbkmxnEFiQFcZlMEgZTAZDbIYLEaRUMpCuaU7yCCrJINsJFkUNolSBnKJ71O/V69zb576LOe8v/M+73ueVBzH38HfesQ5bhGiFR2o9xdFidAm1nCFop7VoAvTGHILQy9kCw+0W9F7/o4jHPs7uOAyZrCL0aC05rCgd/uu1Rus4g6VKKAa2wrNKziCPTyhx4InClkt4RNbardFoWG3E3WKCwteJ9pawSt28IEcDr33b7gPy9ysVRZf2rWpzPso0j/yax2T6EazzlynTgL9z2ykBe24xAYm0I8zqdJF2cUtog9tFsxgFs8YR68uwFVeLec1DDYEaXe+MZ1pIBFyZe3WarJKRq5CV59Wiy9IoQGDmPpvVq3/Tg34gz5mR2nUUPzWjwADAFypQitBus+8AAAAAElFTkSuQmCC) no-repeat; }\n"
+           << "#active-help .close:hover {background-color: #1d1d1d; }\n"
+           << ".help-box h3 {margin: 0 0 12px 0;font-size: 14px;color: #C68E17; }\n"
+           << ".help-box p {margin: 0 0 10px 0; }\n"
+           << ".help-box {background-color: #000;padding: 10px; }\n"
+           << "a.help {color: #C68E17;cursor: help; }\n"
+           << "a.help:hover {text-shadow: 0 0 1px #C68E17; }\n"
+           << ".section {position: relative;width: 1200px;padding: 8px;margin-left: auto;margin-right: auto;margin-bottom: -1px;border: 0;-moz-box-shadow: 0px 0px 8px #FDD017;-webkit-box-shadow: 0px 0px 8px #FDD017;box-shadow: 0px 0px 8px #FDD017;color: #fff;background-color: #000;text-align: left; }\n"
+           << ".section-open {margin-top: 25px;margin-bottom: 35px;-moz-border-radius: 15px;-khtml-border-radius: 15px;-webkit-border-radius: 15px;border-radius: 15px; }\n"
+           << ".grouped-first {-moz-border-radius-topright: 15px;-moz-border-radius-topleft: 15px;-khtml-border-top-right-radius: 15px;-khtml-border-top-left-radius: 15px;-webkit-border-top-right-radius: 15px;-webkit-border-top-left-radius: 15px;border-top-right-radius: 15px;border-top-left-radius: 15px; }\n"
+           << ".grouped-last {-moz-border-radius-bottomright: 15px;-moz-border-radius-bottomleft: 15px;-khtml-border-bottom-right-radius: 15px;-khtml-border-bottom-left-radius: 15px;-webkit-border-bottom-right-radius: 15px;-webkit-border-bottom-left-radius: 15px;border-bottom-right-radius: 15px;border-bottom-left-radius: 15px; }\n"
+           << ".section .toggle-content {padding: 0; }\n"
+           << ".player-section .toggle-content {padding-left: 16px; }\n"
+           << "#home-toc .toggle-content {margin-bottom: 20px; }\n"
+           << ".subsection {background-color: #333;width: 1000px;padding: 8px;margin-bottom: 20px;-moz-border-radius: 6px;-khtml-border-radius: 6px;-webkit-border-radius: 6px;border-radius: 6px;font-size: 12px; }\n"
+           << ".subsection-small {width: 500px; }\n"
+           << ".subsection h4 {margin: 0 0 10px 0;color: #fff; }\n"
+           << ".profile .subsection p {margin: 0; }\n"
+           << "#raid-summary .toggle-content {padding-bottom: 0px; }\n"
+           << "ul.params {padding: 0;margin: 4px 0 0 6px; }\n"
+           << "ul.params li {float: left;padding: 2px 10px 2px 10px;margin-left: 10px;list-style-type: none;background: #2f2f2f;color: #ddd;font-family: \"Lucida Grande\", Arial, sans-serif;font-size: 11px;-moz-border-radius: 8px;-khtml-border-radius: 8px;-webkit-border-radius: 8px;border-radius: 8px; }\n"
+           << "ul.params li.linked:hover {background: #393939; }\n"
+           << "ul.params li a {color: #ddd; }\n"
+           << "ul.params li a:hover {text-shadow: none; }\n"
+           << ".player h2 {margin: 0; }\n"
+           << ".player ul.params {position: relative;top: 2px; }\n"
+           << "#masthead {height: auto;padding-bottom: 30px;border: 0;-moz-border-radius: 15px;-khtml-border-radius: 15px;-webkit-border-radius: 15px;border-radius: 15px;-moz-box-shadow: 0px 0px 8px #FDD017;-webkit-box-shadow: 0px 0px 8px #FDD017;box-shadow: 0px 0px 8px #FDD017;text-align: left;color: #FDD017;background: #000 ";
         print_simc_logo( os );
         os <<" 7px 13px no-repeat; }\n"
-           << "\t\t\t#masthead h1 {margin: 57px 0 0 355px; }\n"
-           << "\t\t\t#home #masthead h1 {margin-top: 98px; }\n"
-           << "\t\t\t#masthead h2 {margin-left: 355px; }\n"
-           << "\t\t\t#masthead ul.params {margin: 20px 0 0 345px; }\n"
-           << "\t\t\t#masthead p {color: #fff;margin: 20px 20px 0 20px; }\n"
-           << "\t\t\t#notice {font-size: 12px;-moz-box-shadow: 0px 0px 8px #E41B17;-webkit-box-shadow: 0px 0px 8px #E41B17;box-shadow: 0px 0px 8px #E41B17; }\n"
-           << "\t\t\t#notice h2 {margin-bottom: 10px; }\n"
-           << "\t\t\t.alert {width: 800px;padding: 10px;margin: 10px 0 10px 0;background-color: #333;-moz-border-radius: 6px;-khtml-border-radius: 6px;-webkit-border-radius: 6px;border-radius: 6px;-moz-box-shadow: inset 0px 0px 6px #C11B17;-webkit-box-shadow: inset 0px 0px 6px #C11B17;box-shadow: inset 0px 0px 6px #C11B17; }\n"
-           << "\t\t\t.alert p {margin-bottom: 0px; }\n"
-           << "\t\t\t.section .toggle-content {padding-left: 18px; }\n"
-           << "\t\t\t.player > .toggle-content {padding-left: 0; }\n"
-           << "\t\t\t.toc {float: left;padding: 0; }\n"
-           << "\t\t\t.toc-wide {width: 560px; }\n"
-           << "\t\t\t.toc-narrow {width: 375px; }\n"
-           << "\t\t\t.toc li {margin-bottom: 10px;list-style-type: none; }\n"
-           << "\t\t\t.toc li ul {padding-left: 10px; }\n"
-           << "\t\t\t.toc li ul li {margin: 0;list-style-type: none;font-size: 13px; }\n"
-           << "\t\t\t.charts {float: left;width: 541px;margin-top: 10px; }\n"
-           << "\t\t\t.charts-left {margin-right: 40px; }\n"
-           << "\t\t\t.charts img {background-color: #333;padding: 5px;margin-bottom: 20px;-moz-border-radius: 6px;-khtml-border-radius: 6px;-webkit-border-radius: 6px;border-radius: 6px; }\n"
-           << "\t\t\t.talents div.float {width: auto;margin-right: 50px; }\n"
-           << "\t\t\ttable.sc {background-color: #333;padding: 4px 2px 2px 2px;margin: 10px 0 20px 0;-moz-border-radius: 6px;-khtml-border-radius: 6px;-webkit-border-radius: 6px;border-radius: 6px; }\n"
-           << "\t\t\ttable.sc tr {color: #fff;background-color: #1a1a1a; }\n"
-           << "\t\t\ttable.sc tr.head {background-color: #aaa;color: #fff; }\n"
-           << "\t\t\ttable.sc tr.odd {background-color: #222; }\n"
-           << "\t\t\ttable.sc th {padding: 2px 4px 4px 4px;text-align: center;background-color: #333;color: #fff; }\n"
-           << "\t\t\ttable.sc td {padding: 2px;text-align: center;font-size: 13px; }\n"
-           << "\t\t\ttable.sc th.left, table.sc td.left, table.sc tr.left th, table.sc tr.left td {text-align: left; }\n"
-           << "\t\t\ttable.sc th.right, table.sc td.right, table.sc tr.right th, table.sc tr.right td {text-align: right;padding-right: 4px; }\n"
-           << "\t\t\ttable.sc th.small {padding: 2px 2px 3px 2px;font-size: 11px; }\n"
-           << "\t\t\ttable.sc td.small {padding: 2px 2px 3px 2px;font-size: 11px; }\n"
-           << "\t\t\ttable.sc tr.details td {padding: 0 0 15px 15px;text-align: left;background-color: #333;font-size: 11px; }\n"
-           << "\t\t\ttable.sc tr.details td ul {padding: 0;margin: 4px 0 8px 0; }\n"
-           << "\t\t\ttable.sc tr.details td ul li {clear: both;padding: 2px;list-style-type: none; }\n"
-           << "\t\t\ttable.sc tr.details td ul li span.label {display: block;padding: 2px;float: left;width: 145px;margin-right: 4px;background: #222; }\n"
-           << "\t\t\ttable.sc tr.details td ul li span.tooltip {display: block;float: left;width: 190px; }\n"
-           << "\t\t\ttable.sc tr.details td ul li span.tooltip-wider {display: block;float: left;width: 350px; }\n"
-           << "\t\t\ttable.sc tr.details td div.float {width: 350px; }\n"
-           << "\t\t\ttable.sc tr.details td div.float h5 {margin-top: 4px; }\n"
-           << "\t\t\ttable.sc tr.details td div.float ul {margin: 0 0 12px 0; }\n"
-           << "\t\t\ttable.sc td.filler {background-color: #333; }\n"
-           << "\t\t\ttable.sc .dynamic-buffs tr.details td ul li span.label {width: 120px; }\n"
-           << "\t\t\ttr.details td table.details {padding: 0px;margin: 5px 0 10px 0; }\n"
-           << "\t\t\ttr.details td table.details tr th {background-color: #222; }\n"
-           << "\t\t\ttr.details td table.details tr td {background-color: #2d2d2d; }\n"
-           << "\t\t\ttr.details td table.details tr.odd td {background-color: #292929; }\n"
-           << "\t\t\ttr.details td table.details tr td {padding: 1px 3px 1px 3px; }\n"
-           << "\t\t\ttr.details td table.details tr td.right {text-align: right; }\n"
-           << "\t\t\t.player-thumbnail {float: right;margin: 8px;border-radius: 12px;-moz-border-radius: 12px;-webkit-border-radius: 12px;-khtml-border-radius: 12px; }\n"
-           << "\t\t</style>\n";
+           << "#masthead h1 {margin: 57px 0 0 355px; }\n"
+           << "#home #masthead h1 {margin-top: 98px; }\n"
+           << "#masthead h2 {margin-left: 355px; }\n"
+           << "#masthead ul.params {margin: 20px 0 0 345px; }\n"
+           << "#masthead p {color: #fff;margin: 20px 20px 0 20px; }\n"
+           << "#notice {font-size: 12px;-moz-box-shadow: 0px 0px 8px #E41B17;-webkit-box-shadow: 0px 0px 8px #E41B17;box-shadow: 0px 0px 8px #E41B17; }\n"
+           << "#notice h2 {margin-bottom: 10px; }\n"
+           << ".alert {width: 800px;padding: 10px;margin: 10px 0 10px 0;background-color: #333;-moz-border-radius: 6px;-khtml-border-radius: 6px;-webkit-border-radius: 6px;border-radius: 6px;-moz-box-shadow: inset 0px 0px 6px #C11B17;-webkit-box-shadow: inset 0px 0px 6px #C11B17;box-shadow: inset 0px 0px 6px #C11B17; }\n"
+           << ".alert p {margin-bottom: 0px; }\n"
+           << ".section .toggle-content {padding-left: 18px; }\n"
+           << ".player > .toggle-content {padding-left: 0; }\n"
+           << ".toc {float: left;padding: 0; }\n"
+           << ".toc-wide {width: 560px; }\n"
+           << ".toc-narrow {width: 375px; }\n"
+           << ".toc li {margin-bottom: 10px;list-style-type: none; }\n"
+           << ".toc li ul {padding-left: 10px; }\n"
+           << ".toc li ul li {margin: 0;list-style-type: none;font-size: 13px; }\n"
+           << ".charts {float: left;width: 541px;margin-top: 10px; }\n"
+           << ".charts-left {margin-right: 40px; }\n"
+           << ".charts img {background-color: #333;padding: 5px;margin-bottom: 20px;-moz-border-radius: 6px;-khtml-border-radius: 6px;-webkit-border-radius: 6px;border-radius: 6px; }\n"
+           << ".talents div.float {width: auto;margin-right: 50px; }\n"
+           << "table.sc {background-color: #333;padding: 4px 2px 2px 2px;margin: 10px 0 20px 0;-moz-border-radius: 6px;-khtml-border-radius: 6px;-webkit-border-radius: 6px;border-radius: 6px; }\n"
+           << "table.sc tr {color: #fff;background-color: #1a1a1a; }\n"
+           << "table.sc tr.head {background-color: #aaa;color: #fff; }\n"
+           << "table.sc tr.odd {background-color: #222; }\n"
+           << "table.sc th {padding: 2px 4px 4px 4px;text-align: center;background-color: #333;color: #fff; }\n"
+           << "table.sc td {padding: 2px;text-align: center;font-size: 13px; }\n"
+           << "table.sc th.left, table.sc td.left, table.sc tr.left th, table.sc tr.left td {text-align: left; }\n"
+           << "table.sc th.right, table.sc td.right, table.sc tr.right th, table.sc tr.right td {text-align: right;padding-right: 4px; }\n"
+           << "table.sc th.small {padding: 2px 2px 3px 2px;font-size: 11px; }\n"
+           << "table.sc td.small {padding: 2px 2px 3px 2px;font-size: 11px; }\n"
+           << "table.sc tr.details td {padding: 0 0 15px 15px;text-align: left;background-color: #333;font-size: 11px; }\n"
+           << "table.sc tr.details td ul {padding: 0;margin: 4px 0 8px 0; }\n"
+           << "table.sc tr.details td ul li {clear: both;padding: 2px;list-style-type: none; }\n"
+           << "table.sc tr.details td ul li span.label {display: block;padding: 2px;float: left;width: 145px;margin-right: 4px;background: #222; }\n"
+           << "table.sc tr.details td ul li span.tooltip {display: block;float: left;width: 190px; }\n"
+           << "table.sc tr.details td ul li span.tooltip-wider {display: block;float: left;width: 350px; }\n"
+           << "table.sc tr.details td div.float {width: 350px; }\n"
+           << "table.sc tr.details td div.float h5 {margin-top: 4px; }\n"
+           << "table.sc tr.details td div.float ul {margin: 0 0 12px 0; }\n"
+           << "table.sc td.filler {background-color: #333; }\n"
+           << "table.sc .dynamic-buffs tr.details td ul li span.label {width: 120px; }\n"
+           << "tr.details td table.details {padding: 0px;margin: 5px 0 10px 0; }\n"
+           << "tr.details td table.details tr th {background-color: #222; }\n"
+           << "tr.details td table.details tr td {background-color: #2d2d2d; }\n"
+           << "tr.details td table.details tr.odd td {background-color: #292929; }\n"
+           << "tr.details td table.details tr td {padding: 1px 3px 1px 3px; }\n"
+           << "tr.details td table.details tr td.right {text-align: right; }\n"
+           << ".player-thumbnail {float: right;margin: 8px;border-radius: 12px;-moz-border-radius: 12px;-webkit-border-radius: 12px;-khtml-border-radius: 12px; }\n"
+           << "</style>\n";
   }
 };
 
@@ -2073,7 +2237,7 @@ typedef mop_html_style_t default_html_style_t;
 
 // print_html_contents ======================================================
 
-void print_html_contents( report::sc_html_stream& os, sim_t* sim )
+void print_html_contents( report::sc_html_stream& os, const sim_t* sim )
 {
   size_t c = 2;     // total number of TOC entries
   if ( sim -> scaling -> has_scale_factors() )
@@ -2238,384 +2402,227 @@ void print_html_contents( report::sc_html_stream& os, sim_t* sim )
 
 // print_html_sim_summary ===================================================
 
-void print_html_sim_summary( report::sc_html_stream& os, sim_t* sim, sim_report_information_t& ri )
+void print_html_sim_summary( report::sc_html_stream& os, const sim_t* sim, const sim_report_information_t& ri )
 {
-  os << "\t\t\t\t<div id=\"sim-info\" class=\"section\">\n";
+  os << "<div id=\"sim-info\" class=\"section\">\n";
 
-  os << "\t\t\t\t\t<h2 class=\"toggle\">Simulation & Raid Information</h2>\n"
-     << "\t\t\t\t\t<div class=\"toggle-content hide\">\n";
+  os << "<h2 class=\"toggle\">Simulation & Raid Information</h2>\n"
+     << "<div class=\"toggle-content hide\">\n";
 
-  os << "\t\t\t\t\t\t<table class=\"sc mt\">\n";
+  os << "<table class=\"sc mt\">\n";
 
-  os << "\t\t\t\t\t\t\t<tr class=\"left\">\n"
-     << "\t\t\t\t\t\t\t\t<th>Iterations:</th>\n"
-     << "\t\t\t\t\t\t\t\t<td>" << sim -> iterations << "</td>\n"
-     << "\t\t\t\t\t\t\t</tr>\n";
+  os << "<tr class=\"left\">\n"
+     << "<th>Iterations:</th>\n"
+     << "<td>" << sim -> iterations << "</td>\n"
+     << "</tr>\n";
 
-  os << "\t\t\t\t\t\t\t<tr class=\"left\">\n"
-     << "\t\t\t\t\t\t\t\t<th>Threads:</th>\n"
-     << "\t\t\t\t\t\t\t\t<td>" << ( ( sim -> threads < 1 ) ? 1 : sim -> threads ) << "</td>\n"
-     << "\t\t\t\t\t\t\t</tr>\n";
+  os << "<tr class=\"left\">\n"
+     << "<th>Threads:</th>\n"
+     << "<td>" << ( ( sim -> threads < 1 ) ? 1 : sim -> threads ) << "</td>\n"
+     << "</tr>\n";
 
-  os << "\t\t\t\t\t\t\t<tr class=\"left\">\n"
-     << "\t\t\t\t\t\t\t\t<th>Confidence:</th>\n"
-     << "\t\t\t\t\t\t\t\t<td>" << sim -> confidence * 100.0 << "%</td>\n"
-     << "\t\t\t\t\t\t\t</tr>\n";
+  os << "<tr class=\"left\">\n"
+     << "<th>Confidence:</th>\n"
+     << "<td>" << sim -> confidence * 100.0 << "%</td>\n"
+     << "</tr>\n";
 
-  os.printf( "\t\t\t\t\t\t\t<tr class=\"left\">\n"
-             "\t\t\t\t\t\t\t\t<th>Fight Length%s:</th>\n"
-             "\t\t\t\t\t\t\t\t<td>%.0f - %.0f ( %.1f )</td>\n"
-             "\t\t\t\t\t\t\t</tr>\n",
+  os.printf( "<tr class=\"left\">\n"
+             "<th>Fight Length%s:</th>\n"
+             "<td>%.0f - %.0f ( %.1f )</td>\n"
+             "</tr>\n",
              (sim -> fixed_time ? " (fixed time)" : ""),
              sim -> simulation_length.min(),
              sim -> simulation_length.max(),
              sim -> simulation_length.mean() );
 
-  os << "\t\t\t\t\t\t\t<tr class=\"left\">\n"
-     << "\t\t\t\t\t\t\t\t<td><h2>Performance:</h2></td>\n"
-     << "\t\t\t\t\t\t\t\t<td></td>\n"
-     << "\t\t\t\t\t\t\t</tr>\n";
+  os << "<tr class=\"left\">\n"
+     << "<td><h2>Performance:</h2></td>\n"
+     << "<td></td>\n"
+     << "</tr>\n";
 
   os.printf(
-    "\t\t\t\t\t\t\t<tr class=\"left\">\n"
-    "\t\t\t\t\t\t\t\t<th>Total Events Processed:</th>\n"
-    "\t\t\t\t\t\t\t\t<td>%ld</td>\n"
-    "\t\t\t\t\t\t\t</tr>\n",
+    "<tr class=\"left\">\n"
+    "<th>Total Events Processed:</th>\n"
+    "<td>%ld</td>\n"
+    "</tr>\n",
     ( long ) sim -> total_events_processed );
 
   os.printf(
-    "\t\t\t\t\t\t\t<tr class=\"left\">\n"
-    "\t\t\t\t\t\t\t\t<th>Max Event Queue:</th>\n"
-    "\t\t\t\t\t\t\t\t<td>%ld</td>\n"
-    "\t\t\t\t\t\t\t</tr>\n",
+    "<tr class=\"left\">\n"
+    "<th>Max Event Queue:</th>\n"
+    "<td>%ld</td>\n"
+    "</tr>\n",
     ( long ) sim -> max_events_remaining );
 
   os.printf(
-    "\t\t\t\t\t\t\t<tr class=\"left\">\n"
-    "\t\t\t\t\t\t\t\t<th>Sim Seconds:</th>\n"
-    "\t\t\t\t\t\t\t\t<td>%.0f</td>\n"
-    "\t\t\t\t\t\t\t</tr>\n",
+    "<tr class=\"left\">\n"
+    "<th>Sim Seconds:</th>\n"
+    "<td>%.0f</td>\n"
+    "</tr>\n",
     sim -> iterations * sim -> simulation_length.mean() );
   os.printf(
-    "\t\t\t\t\t\t\t<tr class=\"left\">\n"
-    "\t\t\t\t\t\t\t\t<th>CPU Seconds:</th>\n"
-    "\t\t\t\t\t\t\t\t<td>%.4f</td>\n"
-    "\t\t\t\t\t\t\t</tr>\n",
+    "<tr class=\"left\">\n"
+    "<th>CPU Seconds:</th>\n"
+    "<td>%.4f</td>\n"
+    "</tr>\n",
     sim -> elapsed_cpu );
   os.printf(
-    "\t\t\t\t\t\t\t<tr class=\"left\">\n"
-    "\t\t\t\t\t\t\t\t<th>Physical Seconds:</th>\n"
-    "\t\t\t\t\t\t\t\t<td>%.4f</td>\n"
-    "\t\t\t\t\t\t\t</tr>\n",
+    "<tr class=\"left\">\n"
+    "<th>Physical Seconds:</th>\n"
+    "<td>%.4f</td>\n"
+    "</tr>\n",
     sim -> elapsed_time );
   os.printf(
-    "\t\t\t\t\t\t\t<tr class=\"left\">\n"
-    "\t\t\t\t\t\t\t\t<th>Speed Up:</th>\n"
-    "\t\t\t\t\t\t\t\t<td>%.0f</td>\n"
-    "\t\t\t\t\t\t\t</tr>\n",
+    "<tr class=\"left\">\n"
+    "<th>Speed Up:</th>\n"
+    "<td>%.0f</td>\n"
+    "</tr>\n",
     sim -> iterations * sim -> simulation_length.mean() / sim -> elapsed_cpu );
 
-  os << "\t\t\t\t\t\t\t<tr class=\"left\">\n"
-     << "\t\t\t\t\t\t\t\t<td><h2>Settings:</h2></td>\n"
-     << "\t\t\t\t\t\t\t\t<td></td>\n"
-     << "\t\t\t\t\t\t\t</tr>\n";
+  os << "<tr class=\"left\">\n"
+     << "<td><h2>Settings:</h2></td>\n"
+     << "<td></td>\n"
+     << "</tr>\n";
 
   os.printf(
-    "\t\t\t\t\t\t\t<tr class=\"left\">\n"
-    "\t\t\t\t\t\t\t\t<th>World Lag:</th>\n"
-    "\t\t\t\t\t\t\t\t<td>%.0f ms ( stddev = %.0f ms )</td>\n"
-    "\t\t\t\t\t\t\t</tr>\n",
+    "<tr class=\"left\">\n"
+    "<th>World Lag:</th>\n"
+    "<td>%.0f ms ( stddev = %.0f ms )</td>\n"
+    "</tr>\n",
     ( double )sim -> world_lag.total_millis(), ( double )sim -> world_lag_stddev.total_millis() );
   os.printf(
-    "\t\t\t\t\t\t\t<tr class=\"left\">\n"
-    "\t\t\t\t\t\t\t\t<th>Queue Lag:</th>\n"
-    "\t\t\t\t\t\t\t\t<td>%.0f ms ( stddev = %.0f ms )</td>\n"
-    "\t\t\t\t\t\t\t</tr>\n",
+    "<tr class=\"left\">\n"
+    "<th>Queue Lag:</th>\n"
+    "<td>%.0f ms ( stddev = %.0f ms )</td>\n"
+    "</tr>\n",
     ( double )sim -> queue_lag.total_millis(), ( double )sim -> queue_lag_stddev.total_millis() );
 
   if ( sim -> strict_gcd_queue )
   {
     os.printf(
-      "\t\t\t\t\t\t\t<tr class=\"left\">\n"
-      "\t\t\t\t\t\t\t\t<th>GCD Lag:</th>\n"
-      "\t\t\t\t\t\t\t\t<td>%.0f ms ( stddev = %.0f ms )</td>\n"
-      "\t\t\t\t\t\t\t</tr>\n",
+      "<tr class=\"left\">\n"
+      "<th>GCD Lag:</th>\n"
+      "<td>%.0f ms ( stddev = %.0f ms )</td>\n"
+      "</tr>\n",
       ( double )sim -> gcd_lag.total_millis(), ( double )sim -> gcd_lag_stddev.total_millis() );
     os.printf(
-      "\t\t\t\t\t\t\t<tr class=\"left\">\n"
-      "\t\t\t\t\t\t\t\t<th>Channel Lag:</th>\n"
-      "\t\t\t\t\t\t\t\t<td>%.0f ms ( stddev = %.0f ms )</td>\n"
-      "\t\t\t\t\t\t\t</tr>\n",
+      "<tr class=\"left\">\n"
+      "<th>Channel Lag:</th>\n"
+      "<td>%.0f ms ( stddev = %.0f ms )</td>\n"
+      "</tr>\n",
       ( double )sim -> channel_lag.total_millis(), ( double )sim -> channel_lag_stddev.total_millis() );
     os.printf(
-      "\t\t\t\t\t\t\t<tr class=\"left\">\n"
-      "\t\t\t\t\t\t\t\t<th>Queue GCD Reduction:</th>\n"
-      "\t\t\t\t\t\t\t\t<td>%.0f ms</td>\n"
-      "\t\t\t\t\t\t\t</tr>\n",
+      "<tr class=\"left\">\n"
+      "<th>Queue GCD Reduction:</th>\n"
+      "<td>%.0f ms</td>\n"
+      "</tr>\n",
       ( double )sim -> queue_gcd_reduction.total_millis() );
   }
 
   int sd_counter = 0;
   report::print_html_sample_data( os, sim, sim -> simulation_length, "Simulation Length", sd_counter, 2 );
 
-  os << "\t\t\t\t\t\t</table>\n";
+  os << "</table>\n";
 
   // Left side charts: dps, gear, timeline, raid events
 
-  os << "\t\t\t\t<div class=\"charts charts-left\">\n";
+  os << "<div class=\"charts charts-left\">\n";
   // Timeline Distribution Chart
   if ( sim -> iterations > 1 && ! ri.timeline_chart.empty() )
   {
     os.printf(
-      "\t\t\t\t\t<a href=\"#help-timeline-distribution\" class=\"help\"><img src=\"%s\" alt=\"Timeline Distribution Chart\" /></a>\n",
+      "<a href=\"#help-timeline-distribution\" class=\"help\"><img src=\"%s\" alt=\"Timeline Distribution Chart\" /></a>\n",
       ri.timeline_chart.c_str() );
   }
 
   // Gear Charts
   for ( size_t i = 0; i < ri.gear_charts.size(); i++ )
   {
-    os << "\t\t\t\t\t<img src=\"" << ri.gear_charts[ i ] << "\" alt=\"Gear Chart\" />\n";
+    os << "<img src=\"" << ri.gear_charts[ i ] << "\" alt=\"Gear Chart\" />\n";
   }
 
   // Raid Downtime Chart
   if ( !  ri.downtime_chart.empty() )
   {
     os.printf(
-      "\t\t\t\t\t<img src=\"%s\" alt=\"Raid Downtime Chart\" />\n",
+      "<img src=\"%s\" alt=\"Raid Downtime Chart\" />\n",
       ri.downtime_chart.c_str() );
   }
 
-  os << "\t\t\t\t</div>\n";
+  os << "</div>\n";
 
   // Right side charts: dpet
-  os << "\t\t\t\t<div class=\"charts\">\n";
+  os << "<div class=\"charts\">\n";
 
   for ( size_t i = 0; i < ri.dpet_charts.size(); i++ )
   {
     os.printf(
-      "\t\t\t\t\t<img src=\"%s\" alt=\"DPET Chart\" />\n",
+      "<img src=\"%s\" alt=\"DPET Chart\" />\n",
       ri.dpet_charts[ i ].c_str() );
   }
 
-  os << "\t\t\t\t</div>\n";
+  os << "</div>\n";
 
 
   // closure
-  os << "\t\t\t\t<div class=\"clear\"></div>\n"
-     << "\t\t\t</div>\n"
-     << "\t\t</div>\n\n";
-}
-
-void print_html_raw_action_damage( report::sc_html_stream& os, stats_t* s, player_t* p, int j, sim_t* sim )
-{
-  if ( s -> num_executes.mean() == 0 && s -> compound_amount == 0 && !sim -> debug )
-    return;
-
-  int id = find_id( s );
-
-  char format[] =
-    "\t\t\t\t\t<td class=\"left  small\">%s</td>\n"
-    "\t\t\t\t\t<td class=\"left  small\">%s</td>\n"
-    "\t\t\t\t\t<td class=\"left  small\">%s%s</td>\n"
-    "\t\t\t\t\t<td class=\"right small\">%d</td>\n"
-    "\t\t\t\t\t<td class=\"right small\">%.0f</td>\n"
-    "\t\t\t\t\t<td class=\"right small\">%.0f</td>\n"
-    "\t\t\t\t\t<td class=\"right small\">%.2f</td>\n"
-    "\t\t\t\t\t<td class=\"right small\">%.0f</td>\n"
-    "\t\t\t\t\t<td class=\"right small\">%.0f</td>\n"
-    "\t\t\t\t\t<td class=\"right small\">%.1f</td>\n"
-    "\t\t\t\t\t<td class=\"right small\">%.1f</td>\n"
-    "\t\t\t\t\t<td class=\"right small\">%.1f%%</td>\n"
-    "\t\t\t\t\t<td class=\"right small\">%.1f%%</td>\n"
-    "\t\t\t\t\t<td class=\"right small\">%.1f%%</td>\n"
-    "\t\t\t\t\t<td class=\"right small\">%.1f%%</td>\n"
-    "\t\t\t\t\t<td class=\"right small\">%.2fsec</td>\n"
-    "\t\t\t\t\t<td class=\"right small\">%.0f</td>\n"
-    "\t\t\t\t\t<td class=\"right small\">%.2fsec</td>\n"
-    "\t\t\t\t</tr>\n";
-
-  double direct_total = aggregate_damage( s -> direct_results );
-  double tick_total = aggregate_damage( s -> tick_results );
-  if ( direct_total > 0.0 || tick_total <= 0.0 )
-  {
-    os << "\t\t\t<tr";
-    if ( j & 1 )
-      os << " class=\"odd\"";
-    os << ">\n";
-
-    os.printf(
-      format,
-      util::encode_html( p -> name() ).c_str(),
-      util::encode_html( s -> player -> name() ).c_str(),
-      s -> name_str.c_str(), "",
-      id,
-      direct_total,
-      direct_total / s -> player -> collected_data.fight_length.mean(),
-      s -> num_direct_results.mean() / ( s -> player -> collected_data.fight_length.mean() / 60.0 ),
-      s -> direct_results[ RESULT_HIT  ].actual_amount.mean(),
-      s -> direct_results[ RESULT_CRIT ].actual_amount.mean(),
-      s -> num_executes.mean(),
-      s -> num_direct_results.mean(),
-      s -> direct_results[ RESULT_CRIT ].pct,
-      s -> direct_results[ RESULT_MISS ].pct + s -> direct_results[ RESULT_DODGE  ].pct + s -> direct_results[ RESULT_PARRY  ].pct,
-      s -> direct_results[ RESULT_GLANCE ].pct,
-      s -> direct_results_detail[ FULLTYPE_HIT_BLOCK ].pct + s -> direct_results_detail[ FULLTYPE_HIT_CRITBLOCK ].pct +
-      s -> direct_results_detail[ FULLTYPE_GLANCE_BLOCK ].pct + s -> direct_results_detail[ FULLTYPE_GLANCE_CRITBLOCK ].pct +
-      s -> direct_results_detail[ FULLTYPE_CRIT_BLOCK ].pct + s -> direct_results_detail[ FULLTYPE_CRIT_CRITBLOCK ].pct,
-      s -> total_intervals.mean(),
-      s -> total_amount.mean(),
-      s -> player -> collected_data.fight_length.mean() );
-  }
-
-  if ( tick_total > 0.0 )
-  {
-    os << "\t\t\t<tr";
-    if ( j & 1 )
-      os << " class=\"odd\"";
-    os << ">\n";
-
-    os.printf(
-      format,
-      util::encode_html( p -> name() ).c_str(),
-      util::encode_html( s -> player -> name() ).c_str(),
-      s -> name_str.c_str(), " ticks",
-      -id,
-      tick_total,
-      tick_total / sim -> max_time.total_seconds(),
-      s -> num_ticks.mean() / sim -> max_time.total_minutes(),
-      s -> tick_results[ RESULT_HIT  ].actual_amount.mean(),
-      s -> tick_results[ RESULT_CRIT ].actual_amount.mean(),
-      s -> num_executes.mean(),
-      s -> num_ticks.mean(),
-      s -> tick_results[ RESULT_CRIT ].pct,
-      s -> tick_results[ RESULT_MISS ].pct + s -> tick_results[ RESULT_DODGE  ].pct + s -> tick_results[ RESULT_PARRY  ].pct,
-      s -> tick_results[ RESULT_GLANCE ].pct,
-      s -> tick_results_detail[ FULLTYPE_HIT_BLOCK ].pct + s -> tick_results_detail[ FULLTYPE_HIT_CRITBLOCK ].pct +
-      s -> tick_results_detail[ FULLTYPE_GLANCE_BLOCK ].pct + s -> tick_results_detail[ FULLTYPE_GLANCE_CRITBLOCK ].pct +
-      s -> tick_results_detail[ FULLTYPE_CRIT_BLOCK ].pct + s -> tick_results_detail[ FULLTYPE_CRIT_CRITBLOCK ].pct,
-      s -> total_intervals.mean(),
-      s -> total_amount.mean(),
-      s -> player -> collected_data.fight_length.mean() );
-  }
-
-  for ( size_t i = 0, num_children = s -> children.size(); i < num_children; i++ )
-  {
-    print_html_raw_action_damage( os, s -> children[ i ], p, j, sim );
-  }
-}
-
-void print_html_raw_ability_summary( report::sc_html_stream& os, sim_t* sim )
-{
-  os << "\t\t<div id=\"raw-abilities\" class=\"section\">\n\n";
-  os << "\t\t\t<h2 class=\"toggle\">Raw Ability Summary</h2>\n"
-     << "\t\t\t<div class=\"toggle-content hide\">\n";
-
-  // Abilities Section
-  os << "\t\t\t<table class=\"sc\">\n"
-     << "\t\t\t\t<tr>\n"
-     << "\t\t\t\t\t<th class=\"left small\">Character</th>\n"
-     << "\t\t\t\t\t<th class=\"left small\">Unit</th>\n"
-     << "\t\t\t\t\t<th class=\"small\"><a href=\"#help-ability\" class=\"help\">Ability</a></th>\n"
-     << "\t\t\t\t\t<th class=\"small\"><a href=\"#help-id\" class=\"help\">Id</a></th>\n"
-     << "\t\t\t\t\t<th class=\"small\"><a href=\"#help-total\" class=\"help\">Total</a></th>\n"
-     << "\t\t\t\t\t<th class=\"small\"><a href=\"#help-dps\" class=\"help\">DPS</a></th>\n"
-     << "\t\t\t\t\t<th class=\"small\"><a href=\"#help-ipm\" class=\"help\">Imp/Min</a></th>\n"
-     << "\t\t\t\t\t<th class=\"small\"><a href=\"#help-hit\" class=\"help\">Hit</a></th>\n"
-     << "\t\t\t\t\t<th class=\"small\"><a href=\"#help-crit\" class=\"help\">Crit</a></th>\n"
-     << "\t\t\t\t\t<th class=\"small\"><a href=\"#help-count\" class=\"help\">Count</a></th>\n"
-     << "\t\t\t\t\t<th class=\"small\"><a href=\"#help-direct-results\" class=\"help\">Impacts</a></th>\n"
-     << "\t\t\t\t\t<th class=\"small\"><a href=\"#help-crit-pct\" class=\"help\">Crit%</a></th>\n"
-     << "\t\t\t\t\t<th class=\"small\"><a href=\"#help-miss-pct\" class=\"help\">Avoid%</a></th>\n"
-     << "\t\t\t\t\t<th class=\"small\"><a href=\"#help-glance-pct\" class=\"help\">G%</a></th>\n"
-     << "\t\t\t\t\t<th class=\"small\"><a href=\"#help-block-pct\" class=\"help\">B%</a></th>\n"
-     << "\t\t\t\t\t<th class=\"small\"><a href=\"#help-interval\" class=\"help\">Interval</a></th>\n"
-     << "\t\t\t\t\t<th class=\"small\"><a href=\"#help-combined\" class=\"help\">Combined</a></th>\n"
-     << "\t\t\t\t\t<th class=\"small\"><a href=\"#help-duration\" class=\"help\">Duration</a></th>\n"
-     << "\t\t\t\t</tr>\n";
-
-  int count = 0;
-  for ( size_t player_i = 0; player_i < sim -> players_by_name.size(); player_i++ )
-  {
-    player_t* p = sim -> players_by_name[ player_i ];
-    for ( size_t i = 0; i < p -> stats_list.size(); ++i )
-    {
-      stats_t* s = p -> stats_list[ i ];
-      if ( s -> parent == NULL )
-        print_html_raw_action_damage( os, s, p, count++, sim );
-    }
-
-    for ( size_t pet_i = 0; pet_i < p -> pet_list.size(); ++pet_i )
-    {
-      pet_t* pet = p -> pet_list[ pet_i ];
-      for ( size_t i = 0; i < pet -> stats_list.size(); ++i )
-      {
-        stats_t* s = pet -> stats_list[ i ];
-        if ( s -> parent == NULL )
-          print_html_raw_action_damage( os, s, p, count++, sim );
-      }
-    }
-  }
-
-  // closure
-  os << "\t\t\t\t</table>\n";
-  os << "\t\t\t\t<div class=\"clear\"></div>\n"
-     << "\t\t\t</div>\n"
-     << "\t\t</div>\n\n";
+  os << "<div class=\"clear\"></div>\n"
+     << "</div>\n"
+     << "</div>\n\n";
 }
 
 // print_html_raid_summary ==================================================
 
-void print_html_raid_summary( report::sc_html_stream& os, sim_t* sim, sim_report_information_t& ri )
+void print_html_raid_summary( report::sc_html_stream& os, const sim_t* sim, const sim_report_information_t& ri )
 {
-  os << "\t\t<div id=\"raid-summary\" class=\"section section-open\">\n\n";
+  os << "<div id=\"raid-summary\" class=\"section section-open\">\n\n";
 
-  os << "\t\t\t<h2 class=\"toggle open\">Raid Summary</h2>\n";
+  os << "<h2 class=\"toggle open\">Raid Summary</h2>\n";
 
-  os << "\t\t\t<div class=\"toggle-content\">\n";
+  os << "<div class=\"toggle-content\">\n";
 
-  os << "\t\t\t<ul class=\"params\">\n";
+  os << "<ul class=\"params\">\n";
 
   os.printf(
-    "\t\t\t\t<li><b>Raid Damage:</b> %.0f</li>\n",
+    "<li><b>Raid Damage:</b> %.0f</li>\n",
     sim -> total_dmg.mean() );
   os.printf(
-    "\t\t\t\t<li><b>Raid DPS:</b> %.0f</li>\n",
+    "<li><b>Raid DPS:</b> %.0f</li>\n",
     sim -> raid_dps.mean() );
   if ( sim -> total_heal.mean() > 0 )
   {
     os.printf(
-      "\t\t\t\t<li><b>Raid Heal+Absorb:</b> %.0f</li>\n",
+      "<li><b>Raid Heal+Absorb:</b> %.0f</li>\n",
       sim -> total_heal.mean() + sim -> total_absorb.mean() );
     os.printf(
-      "\t\t\t\t<li><b>Raid HPS+APS:</b> %.0f</li>\n",
+      "<li><b>Raid HPS+APS:</b> %.0f</li>\n",
       sim -> raid_hps.mean() + sim -> raid_aps.mean() );
   }
-  os << "\t\t\t</ul><p>&nbsp;</p>\n";
+  os << "</ul><p>&nbsp;</p>\n";
 
   // Left side charts: dps, raid events
-  os << "\t\t\t\t<div class=\"charts charts-left\">\n";
+  os << "<div class=\"charts charts-left\">\n";
 
   for ( size_t i = 0; i < ri.dps_charts.size(); i++ )
   {
     os.printf(
-      "\t\t\t\t\t<map id='DPSMAP%d' name='DPSMAP%d'></map>\n", ( int )i, ( int )i );
+      "<map id='DPSMAP%d' name='DPSMAP%d'></map>\n", ( int )i, ( int )i );
     os.printf(
-      "\t\t\t\t\t<img id='DPSIMG%d' src=\"%s\" alt=\"DPS Chart\" />\n",
+      "<img id='DPSIMG%d' src=\"%s\" alt=\"DPS Chart\" />\n",
       ( int )i, ri.dps_charts[ i ].c_str() );
   }
 
   if ( ! sim -> raid_events_str.empty() )
   {
-    os << "\t\t\t\t\t<table>\n"
-       << "\t\t\t\t\t\t<tr>\n"
-       << "\t\t\t\t\t\t\t<th></th>\n"
-       << "\t\t\t\t\t\t\t<th class=\"left\">Raid Event List</th>\n"
-       << "\t\t\t\t\t\t</tr>\n";
+    os << "<table>\n"
+       << "<tr>\n"
+       << "<th></th>\n"
+       << "<th class=\"left\">Raid Event List</th>\n"
+       << "</tr>\n";
 
     std::vector<std::string> raid_event_names = util::string_split( sim -> raid_events_str, "/" );
     for ( size_t i = 0; i < raid_event_names.size(); i++ )
     {
-      os << "\t\t\t\t\t\t<tr";
+      os << "<tr";
       if ( ( i & 1 ) )
       {
         os << " class=\"odd\"";
@@ -2623,50 +2630,50 @@ void print_html_raid_summary( report::sc_html_stream& os, sim_t* sim, sim_report
       os << ">\n";
 
       os.printf(
-        "\t\t\t\t\t\t\t<th class=\"right\">%d</th>\n"
-        "\t\t\t\t\t\t\t<td class=\"left\">%s</td>\n"
-        "\t\t\t\t\t\t</tr>\n",
+        "<th class=\"right\">%d</th>\n"
+        "<td class=\"left\">%s</td>\n"
+        "</tr>\n",
         ( int )i,
         raid_event_names[ i ].c_str() );
     }
-    os << "\t\t\t\t\t</table>\n";
+    os << "</table>\n";
   }
-  os << "\t\t\t\t</div>\n";
+  os << "</div>\n";
 
   // Right side charts: hps
-  os << "\t\t\t\t<div class=\"charts\">\n";
+  os << "<div class=\"charts\">\n";
 
   for ( size_t i = 0; i < ri.hps_charts.size(); i++ )
   {
-    os.printf(  "\t\t\t\t\t<map id='HPSMAP%d' name='HPSMAP%d'></map>\n", ( int )i, ( int )i );
+    os.printf(  "<map id='HPSMAP%d' name='HPSMAP%d'></map>\n", ( int )i, ( int )i );
     os.printf(
-      "\t\t\t\t\t<img id='HPSIMG%d' src=\"%s\" alt=\"HPS Chart\" />\n",
+      "<img id='HPSIMG%d' src=\"%s\" alt=\"HPS Chart\" />\n",
       ( int )i, ri.hps_charts[ i ].c_str() );
   }
 
   // RNG chart
   if ( sim -> report_rng )
   {
-    os << "\t\t\t\t\t<ul>\n";
+    os << "<ul>\n";
     for ( size_t i = 0; i < sim -> players_by_name.size(); i++ )
     {
       player_t* p = sim -> players_by_name[ i ];
       double range = ( p -> collected_data.dps.percentile( 0.95 ) - p -> collected_data.dps.percentile( 0.05 ) ) / 2.0;
       os.printf(
-        "\t\t\t\t\t\t<li>%s: %.1f / %.1f%%</li>\n",
+        "<li>%s: %.1f / %.1f%%</li>\n",
         util::encode_html( p -> name() ).c_str(),
         range,
         p -> collected_data.dps.mean() ? ( range * 100 / p -> collected_data.dps.mean() ) : 0 );
     }
-    os << "\t\t\t\t\t</ul>\n";
+    os << "</ul>\n";
   }
 
-  os << "\t\t\t\t</div>\n";
+  os << "</div>\n";
 
   // closure
-  os << "\t\t\t\t<div class=\"clear\"></div>\n"
-     << "\t\t\t</div>\n"
-     << "\t\t</div>\n\n";
+  os << "<div class=\"clear\"></div>\n"
+     << "</div>\n"
+     << "</div>\n\n";
 
 }
 
@@ -2690,7 +2697,7 @@ void print_html_raid_imagemap( report::sc_html_stream& os, sim_t* sim, size_t nu
 
   if ( end > player_list.size() ) end = player_list.size();
 
-  os << "\t\t\tn = [";
+  os << "n = [";
   for ( int i = ( int )end - 1; i >= ( int )start; i-- )
   {
     os << "\"player" << player_list[i] -> index << "\"";
@@ -2704,37 +2711,37 @@ void print_html_raid_imagemap( report::sc_html_stream& os, sim_t* sim, size_t nu
   util::snprintf( mapid, sizeof( mapid ), "%sMAP%u", ( dps ) ? "DPS" : "HPS", as<unsigned>( num ) );
 
   os.printf(
-    "\t\t\tu = document.getElementById('%s').src;\n"
-    "\t\t\tgetMap(u, n, function(mapStr) {\n"
-    "\t\t\t\tdocument.getElementById('%s').innerHTML += mapStr;\n"
-    "\t\t\t\t$j('#%s').attr('usemap','#%s');\n"
-    "\t\t\t\t$j('#%s area').click(function(e) {\n"
-    "\t\t\t\t\tanchor = $j(this).attr('href');\n"
-    "\t\t\t\t\ttarget = $j(anchor).children('h2:first');\n"
-    "\t\t\t\t\topen_anchor(target);\n"
-    "\t\t\t\t});\n"
-    "\t\t\t});\n\n",
+    "u = document.getElementById('%s').src;\n"
+    "getMap(u, n, function(mapStr) {\n"
+    "document.getElementById('%s').innerHTML += mapStr;\n"
+    "$j('#%s').attr('usemap','#%s');\n"
+    "$j('#%s area').click(function(e) {\n"
+    "anchor = $j(this).attr('href');\n"
+    "target = $j(anchor).children('h2:first');\n"
+    "open_anchor(target);\n"
+    "});\n"
+    "});\n\n",
     imgid, mapid, imgid, mapid, mapid );
 }
 
 void print_html_raid_imagemaps( report::sc_html_stream& os, sim_t* sim, sim_report_information_t& ri )
 {
 
-  os << "\t\t<script type=\"text/javascript\">\n"
-     << "\t\t\tvar $j = jQuery.noConflict();\n"
-     << "\t\t\tfunction getMap(url, names, mapWrite) {\n"
-     << "\t\t\t\t$j.getJSON(url + '&chof=json&callback=?', function(jsonObj) {\n"
-     << "\t\t\t\t\tvar area = false;\n"
-     << "\t\t\t\t\tvar chart = jsonObj.chartshape;\n"
-     << "\t\t\t\t\tvar mapStr = '';\n"
-     << "\t\t\t\t\tfor (var i = 0; i < chart.length; i++) {\n"
-     << "\t\t\t\t\t\tarea = chart[i];\n"
-     << "\t\t\t\t\t\tarea.coords[2] = 523;\n"
-     << "\t\t\t\t\t\tmapStr += \"\\n  <area name='\" + area.name + \"' shape='\" + area.type + \"' coords='\" + area.coords.join(\",\") + \"' href='#\" + names[i] + \"'  title='\" + names[i] + \"'>\";\n"
-     << "\t\t\t\t\t}\n"
-     << "\t\t\t\t\tmapWrite(mapStr);\n"
-     << "\t\t\t\t});\n"
-     << "\t\t\t}\n\n";
+  os << "<script type=\"text/javascript\">\n"
+     << "var $j = jQuery.noConflict();\n"
+     << "function getMap(url, names, mapWrite) {\n"
+     << "$j.getJSON(url + '&chof=json&callback=?', function(jsonObj) {\n"
+     << "var area = false;\n"
+     << "var chart = jsonObj.chartshape;\n"
+     << "var mapStr = '';\n"
+     << "for (var i = 0; i < chart.length; i++) {\n"
+     << "area = chart[i];\n"
+     << "area.coords[2] = 523;\n"
+     << "mapStr += \"\\n  <area name='\" + area.name + \"' shape='\" + area.type + \"' coords='\" + area.coords.join(\",\") + \"' href='#\" + names[i] + \"'  title='\" + names[i] + \"'>\";\n"
+     << "}\n"
+     << "mapWrite(mapStr);\n"
+     << "});\n"
+     << "}\n\n";
 
   for ( size_t i = 0; i < ri.dps_charts.size(); i++ )
   {
@@ -2746,7 +2753,7 @@ void print_html_raid_imagemaps( report::sc_html_stream& os, sim_t* sim, sim_repo
     print_html_raid_imagemap( os, sim, i, false );
   }
 
-  os << "\t\t</script>\n";
+  os << "</script>\n";
 
 }
 
@@ -2756,11 +2763,11 @@ void print_html_scale_factors( report::sc_html_stream& os, sim_t* sim )
 {
   if ( ! sim -> scaling -> has_scale_factors() ) return;
 
-  os << "\t\t<div id=\"raid-scale-factors\" class=\"section grouped-first\">\n\n"
-     << "\t\t\t<h2 class=\"toggle\">DPS Scale Factors (dps increase per unit stat)</h2>\n"
-     << "\t\t\t<div class=\"toggle-content hide\">\n";
+  os << "<div id=\"raid-scale-factors\" class=\"section grouped-first\">\n\n"
+     << "<h2 class=\"toggle\">DPS Scale Factors (dps increase per unit stat)</h2>\n"
+     << "<div class=\"toggle-content hide\">\n";
 
-  os << "\t\t\t\t<table class=\"sc\">\n";
+  os << "<table class=\"sc\">\n";
 
   // this next part is used to determine which columns to suppress
   std::vector<double> stat_effect_is_nonzero;
@@ -2794,28 +2801,28 @@ void print_html_scale_factors( report::sc_html_stream& os, sim_t* sim )
     {
       prev_type = p -> type;
 
-      os << "\t\t\t\t\t<tr>\n"
-         << "\t\t\t\t\t\t<th class=\"left small\">Profile</th>\n";
+      os << "<tr>\n"
+         << "<th class=\"left small\">Profile</th>\n";
       for ( stat_e j = STAT_NONE; j < STAT_MAX; j++ )
       {
         if ( sim -> scaling -> stats.get_stat( j ) != 0 && stat_effect_is_nonzero[ j ] > 0 )
         {
-          os << "\t\t\t\t\t\t<th class=\"small\">" << util::stat_type_abbrev( j ) << "</th>\n";
+          os << "<th class=\"small\">" << util::stat_type_abbrev( j ) << "</th>\n";
         }
       }
-      os << "\t\t\t\t\t\t<th colspan=\"2\" class=\"small\">wowhead</th>\n"
-         << "\t\t\t\t\t\t<th class=\"small\">lootrank</th>\n"
-         << "\t\t\t\t\t</tr>\n";
+      os << "<th colspan=\"2\" class=\"small\">wowhead</th>\n"
+         << "<th class=\"small\">lootrank</th>\n"
+         << "</tr>\n";
     }
 
-    os << "\t\t\t\t\t<tr";
+    os << "<tr";
     if ( ( i & 1 ) )
     {
       os << " class=\"odd\"";
     }
     os << ">\n";
     os.printf(
-      "\t\t\t\t\t\t<td class=\"left small\">%s</td>\n",
+      "<td class=\"left small\">%s</td>\n",
       p -> name() );
     for ( stat_e j = STAT_NONE; j < STAT_MAX; j++ )
     {
@@ -2823,450 +2830,450 @@ void print_html_scale_factors( report::sc_html_stream& os, sim_t* sim )
       {
         if ( p -> scaling.get_stat( j ) == 0 )
         {
-          os << "\t\t\t\t\t\t<td class=\"small\">-</td>\n";
+          os << "<td class=\"small\">-</td>\n";
         }
         else
         {
           os.printf(
-            "\t\t\t\t\t\t<td class=\"small\">%.*f</td>\n",
+            "<td class=\"small\">%.*f</td>\n",
             sim -> report_precision,
             p -> scaling.get_stat( j ) );
         }
       }
     }
     os.printf(
-      "\t\t\t\t\t\t<td class=\"small\"><a href=\"%s\"> wowhead </a></td>\n"
-      "\t\t\t\t\t\t<td class=\"small\"><a href=\"%s\"> wowhead (caps merged)</a></td>\n"
-      "\t\t\t\t\t\t<td class=\"small\"><a href=\"%s\"> lootrank</a></td>\n"
-      "\t\t\t\t\t</tr>\n",
+      "<td class=\"small\"><a href=\"%s\"> wowhead </a></td>\n"
+      "<td class=\"small\"><a href=\"%s\"> wowhead (caps merged)</a></td>\n"
+      "<td class=\"small\"><a href=\"%s\"> lootrank</a></td>\n"
+      "</tr>\n",
       p -> report_information.gear_weights_wowhead_std_link.c_str(),
       p -> report_information.gear_weights_wowhead_alt_link.c_str(),
       p -> report_information.gear_weights_lootrank_link.c_str() );
   }
-  os << "\t\t\t\t</table>\n";
+  os << "</table>\n";
 
   if ( sim -> iterations < 10000 )
-    os << "\t\t\t\t<div class=\"alert\">\n"
-       << "\t\t\t\t\t<h3>Warning</h3>\n"
-       << "\t\t\t\t\t<p>Scale Factors generated using less than 10,000 iterations will vary from run to run.</p>\n"
-       << "\t\t\t\t</div>\n";
+    os << "<div class=\"alert\">\n"
+       << "<h3>Warning</h3>\n"
+       << "<p>Scale Factors generated using less than 10,000 iterations will vary from run to run.</p>\n"
+       << "</div>\n";
 
-  os << "\t\t\t</div>\n"
-     << "\t\t</div>\n\n";
+  os << "</div>\n"
+     << "</div>\n\n";
 }
 
 // print_html_help_boxes ====================================================
 
 void print_html_help_boxes( report::sc_html_stream& os, sim_t* sim )
 {
-  os << "\t\t<!-- Help Boxes -->\n";
+  os << "<!-- Help Boxes -->\n";
 
-  os << "\t\t<div id=\"help-apm\">\n"
-     << "\t\t\t<div class=\"help-box\">\n"
-     << "\t\t\t\t<h3>APM</h3>\n"
-     << "\t\t\t\t<p>Average number of actions executed per minute.</p>\n"
-     << "\t\t\t</div>\n"
-     << "\t\t</div>\n";
+  os << "<div id=\"help-apm\">\n"
+     << "<div class=\"help-box\">\n"
+     << "<h3>APM</h3>\n"
+     << "<p>Average number of actions executed per minute.</p>\n"
+     << "</div>\n"
+     << "</div>\n";
 
-  os << "\t\t<div id=\"help-aps\">\n"
-     << "\t\t\t<div class=\"help-box\">\n"
-     << "\t\t\t\t<h3>HPS</h3>\n"
-     << "\t\t\t\t<p>Average absorption per active player duration.</p>\n"
-     << "\t\t\t</div>\n"
-     << "\t\t</div>\n";
+  os << "<div id=\"help-aps\">\n"
+     << "<div class=\"help-box\">\n"
+     << "<h3>HPS</h3>\n"
+     << "<p>Average absorption per active player duration.</p>\n"
+     << "</div>\n"
+     << "</div>\n";
 
-  os << "\t\t<div id=\"help-constant-buffs\">\n"
-     << "\t\t\t<div class=\"help-box\">\n"
-     << "\t\t\t\t<h3>Constant Buffs</h3>\n"
-     << "\t\t\t\t<p>Buffs received prior to combat and present the entire fight.</p>\n"
-     << "\t\t\t</div>\n"
-     << "\t\t</div>\n";
+  os << "<div id=\"help-constant-buffs\">\n"
+     << "<div class=\"help-box\">\n"
+     << "<h3>Constant Buffs</h3>\n"
+     << "<p>Buffs received prior to combat and present the entire fight.</p>\n"
+     << "</div>\n"
+     << "</div>\n";
 
-  os << "\t\t<div id=\"help-count\">\n"
-     << "\t\t\t<div class=\"help-box\">\n"
-     << "\t\t\t\t<h3>Count</h3>\n"
-     << "\t\t\t\t<p>Average number of times an action is executed per iteration.</p>\n"
-     << "\t\t\t</div>\n"
-     << "\t\t</div>\n";
+  os << "<div id=\"help-count\">\n"
+     << "<div class=\"help-box\">\n"
+     << "<h3>Count</h3>\n"
+     << "<p>Average number of times an action is executed per iteration.</p>\n"
+     << "</div>\n"
+     << "</div>\n";
 
-  os << "\t\t<div id=\"help-direct-results\">\n"
-     << "\t\t\t<div class=\"help-box\">\n"
-     << "\t\t\t\t<h3>Impacts</h3>\n"
-     << "\t\t\t\t<p>Average number of impacts against a target (for attacks that hit multiple times per execute) per iteration.</p>\n"
-     << "\t\t\t</div>\n"
-     << "\t\t</div>\n";
+  os << "<div id=\"help-direct-results\">\n"
+     << "<div class=\"help-box\">\n"
+     << "<h3>Impacts</h3>\n"
+     << "<p>Average number of impacts against a target (for attacks that hit multiple times per execute) per iteration.</p>\n"
+     << "</div>\n"
+     << "</div>\n";
 
-  os << "\t\t<div id=\"help-crit\">\n"
-     << "\t\t\t<div class=\"help-box\">\n"
-     << "\t\t\t\t<h3>Crit</h3>\n"
-     << "\t\t\t\t<p>Average crit damage.</p>\n"
-     << "\t\t\t</div>\n"
-     << "\t\t</div>\n";
+  os << "<div id=\"help-crit\">\n"
+     << "<div class=\"help-box\">\n"
+     << "<h3>Crit</h3>\n"
+     << "<p>Average crit damage.</p>\n"
+     << "</div>\n"
+     << "</div>\n";
 
-  os << "\t\t<div id=\"help-crit-pct\">\n"
-     << "\t\t\t<div class=\"help-box\">\n"
-     << "\t\t\t\t<h3>Crit%</h3>\n"
-     << "\t\t\t\t<p>Percentage of executes that resulted in critical strikes.</p>\n"
-     << "\t\t\t</div>\n"
-     << "\t\t</div>\n";
+  os << "<div id=\"help-crit-pct\">\n"
+     << "<div class=\"help-box\">\n"
+     << "<h3>Crit%</h3>\n"
+     << "<p>Percentage of executes that resulted in critical strikes.</p>\n"
+     << "</div>\n"
+     << "</div>\n";
 
-  os << "\t\t<div id=\"help-dodge-pct\">\n"
-     << "\t\t\t<div class=\"help-box\">\n"
-     << "\t\t\t\t<h3>Dodge%</h3>\n"
-     << "\t\t\t\t<p>Percentage of executes that resulted in dodges.</p>\n"
-     << "\t\t\t</div>\n"
-     << "\t\t</div>\n";
+  os << "<div id=\"help-dodge-pct\">\n"
+     << "<div class=\"help-box\">\n"
+     << "<h3>Dodge%</h3>\n"
+     << "<p>Percentage of executes that resulted in dodges.</p>\n"
+     << "</div>\n"
+     << "</div>\n";
 
-  os << "\t\t<div id=\"help-dpe\">\n"
-     << "\t\t\t<div class=\"help-box\">\n"
-     << "\t\t\t\t<h3>DPE</h3>\n"
-     << "\t\t\t\t<p>Average damage per execution of an individual action.</p>\n"
-     << "\t\t\t</div>\n"
-     << "\t\t</div>\n";
+  os << "<div id=\"help-dpe\">\n"
+     << "<div class=\"help-box\">\n"
+     << "<h3>DPE</h3>\n"
+     << "<p>Average damage per execution of an individual action.</p>\n"
+     << "</div>\n"
+     << "</div>\n";
 
-  os << "\t\t<div id=\"help-dpet\">\n"
-     << "\t\t\t<div class=\"help-box\">\n"
-     << "\t\t\t\t<h3>DPET</h3>\n"
-     << "\t\t\t\t<p>Average damage per execute time of an individual action; the amount of damage generated, divided by the time taken to execute the action, including time spent in the GCD.</p>\n"
-     << "\t\t\t</div>\n"
-     << "\t\t</div>\n";
+  os << "<div id=\"help-dpet\">\n"
+     << "<div class=\"help-box\">\n"
+     << "<h3>DPET</h3>\n"
+     << "<p>Average damage per execute time of an individual action; the amount of damage generated, divided by the time taken to execute the action, including time spent in the GCD.</p>\n"
+     << "</div>\n"
+     << "</div>\n";
 
-  os << "\t\t<div id=\"help-dpr\">\n"
-     << "\t\t\t<div class=\"help-box\">\n"
-     << "\t\t\t\t<h3>DPR</h3>\n"
-     << "\t\t\t\t<p>Average damage per resource point spent.</p>\n"
-     << "\t\t\t</div>\n"
-     << "\t\t</div>\n";
+  os << "<div id=\"help-dpr\">\n"
+     << "<div class=\"help-box\">\n"
+     << "<h3>DPR</h3>\n"
+     << "<p>Average damage per resource point spent.</p>\n"
+     << "</div>\n"
+     << "</div>\n";
 
-  os << "\t\t<div id=\"help-dps\">\n"
-     << "\t\t\t<div class=\"help-box\">\n"
-     << "\t\t\t\t<h3>DPS</h3>\n"
-     << "\t\t\t\t<p>Average damage per active player duration.</p>\n"
-     << "\t\t\t</div>\n"
-     << "\t\t</div>\n";
+  os << "<div id=\"help-dps\">\n"
+     << "<div class=\"help-box\">\n"
+     << "<h3>DPS</h3>\n"
+     << "<p>Average damage per active player duration.</p>\n"
+     << "</div>\n"
+     << "</div>\n";
 
-  os << "\t\t<div id=\"help-dpse\">\n"
-     << "\t\t\t<div class=\"help-box\">\n"
-     << "\t\t\t\t<h3>Effective DPS</h3>\n"
-     << "\t\t\t\t<p>Average damage per fight duration.</p>\n"
-     << "\t\t\t</div>\n"
-     << "\t\t</div>\n";
+  os << "<div id=\"help-dpse\">\n"
+     << "<div class=\"help-box\">\n"
+     << "<h3>Effective DPS</h3>\n"
+     << "<p>Average damage per fight duration.</p>\n"
+     << "</div>\n"
+     << "</div>\n";
 
-  os << "\t\t<div id=\"help-dps-pct\">\n"
-     << "\t\t\t<div class=\"help-box\">\n"
-     << "\t\t\t\t<h3>DPS%</h3>\n"
-     << "\t\t\t\t<p>Percentage of total DPS contributed by a particular action.</p>\n"
-     << "\t\t\t</div>\n"
-     << "\t\t</div>\n";
+  os << "<div id=\"help-dps-pct\">\n"
+     << "<div class=\"help-box\">\n"
+     << "<h3>DPS%</h3>\n"
+     << "<p>Percentage of total DPS contributed by a particular action.</p>\n"
+     << "</div>\n"
+     << "</div>\n";
 
-  os << "\t\t<div id=\"help-dtps\">\n"
-     << "\t\t\t<div class=\"help-box\">\n"
-     << "\t\t\t\t<h3>DTPS</h3>\n"
-     << "\t\t\t\t<p>Average damage taken per second per active player duration.</p>\n"
-     << "\t\t\t</div>\n"
-     << "\t\t</div>\n";
+  os << "<div id=\"help-dtps\">\n"
+     << "<div class=\"help-box\">\n"
+     << "<h3>DTPS</h3>\n"
+     << "<p>Average damage taken per second per active player duration.</p>\n"
+     << "</div>\n"
+     << "</div>\n";
 
-  os << "\t\t<div id=\"help-hps\">\n"
-     << "\t\t\t<div class=\"help-box\">\n"
-     << "\t\t\t\t<h3>HPS</h3>\n"
-     << "\t\t\t\t<p>Average healing (and absorption) per active player duration.</p>\n"
-     << "\t\t\t</div>\n"
-     << "\t\t</div>\n";
+  os << "<div id=\"help-hps\">\n"
+     << "<div class=\"help-box\">\n"
+     << "<h3>HPS</h3>\n"
+     << "<p>Average healing (and absorption) per active player duration.</p>\n"
+     << "</div>\n"
+     << "</div>\n";
 
-  os << "\t\t<div id=\"help-hps-pct\">\n"
-     << "\t\t\t<div class=\"help-box\">\n"
-     << "\t\t\t\t<h3>HPS%</h3>\n"
-     << "\t\t\t\t<p>Percentage of total HPS (including absorb) contributed by a particular action.</p>\n"
-     << "\t\t\t</div>\n"
-     << "\t\t</div>\n";
+  os << "<div id=\"help-hps-pct\">\n"
+     << "<div class=\"help-box\">\n"
+     << "<h3>HPS%</h3>\n"
+     << "<p>Percentage of total HPS (including absorb) contributed by a particular action.</p>\n"
+     << "</div>\n"
+     << "</div>\n";
 
-  os << "\t\t<div id=\"help-hpe\">\n"
-     << "\t\t\t<div class=\"help-box\">\n"
-     << "\t\t\t\t<h3>HPE</h3>\n"
-     << "\t\t\t\t<p>Average healing (or absorb) per execution of an individual action.</p>\n"
-     << "\t\t\t</div>\n"
-     << "\t\t</div>\n";
+  os << "<div id=\"help-hpe\">\n"
+     << "<div class=\"help-box\">\n"
+     << "<h3>HPE</h3>\n"
+     << "<p>Average healing (or absorb) per execution of an individual action.</p>\n"
+     << "</div>\n"
+     << "</div>\n";
 
-  os << "\t\t<div id=\"help-hpet\">\n"
-     << "\t\t\t<div class=\"help-box\">\n"
-     << "\t\t\t\t<h3>HPET</h3>\n"
-     << "\t\t\t\t<p>Average healing (or absorb) per execute time of an individual action; the amount of healing generated, divided by the time taken to execute the action, including time spent in the GCD.</p>\n"
-     << "\t\t\t</div>\n"
-     << "\t\t</div>\n";
+  os << "<div id=\"help-hpet\">\n"
+     << "<div class=\"help-box\">\n"
+     << "<h3>HPET</h3>\n"
+     << "<p>Average healing (or absorb) per execute time of an individual action; the amount of healing generated, divided by the time taken to execute the action, including time spent in the GCD.</p>\n"
+     << "</div>\n"
+     << "</div>\n";
 
-  os << "\t\t<div id=\"help-hpr\">\n"
-     << "\t\t\t<div class=\"help-box\">\n"
-     << "\t\t\t\t<h3>HPR</h3>\n"
-     << "\t\t\t\t<p>Average healing (or absorb) per resource point spent.</p>\n"
-     << "\t\t\t</div>\n"
-     << "\t\t</div>\n";
+  os << "<div id=\"help-hpr\">\n"
+     << "<div class=\"help-box\">\n"
+     << "<h3>HPR</h3>\n"
+     << "<p>Average healing (or absorb) per resource point spent.</p>\n"
+     << "</div>\n"
+     << "</div>\n";
 
-  os << "\t\t<div id=\"help-tmi\">\n"
-     << "\t\t\t<div class=\"help-box\">\n"
-     << "\t\t\t\t<h3>Theck-Meloree Index</h3>\n"
-     << "\t\t\t\t<p>Measure of damage smoothness, calculated over entire fight length. Related to max spike damage, 1k TMI is roughly equivalent to 1% of your health. TMI ignores external healing and absorbs. Lower is better.</p>\n"
-     << "\t\t\t</div>\n"
-     << "\t\t</div>\n";
+  os << "<div id=\"help-tmi\">\n"
+     << "<div class=\"help-box\">\n"
+     << "<h3>Theck-Meloree Index</h3>\n"
+     << "<p>Measure of damage smoothness, calculated over entire fight length. Related to max spike damage, 1k TMI is roughly equivalent to 1% of your health. TMI ignores external healing and absorbs. Lower is better.</p>\n"
+     << "</div>\n"
+     << "</div>\n";
 
-  os << "\t\t<div id=\"help-tmirange\">\n"
-     << "\t\t\t<div class=\"help-box\">\n"
-     << "\t\t\t\t<h3>TMI Range</h3>\n"
-     << "\t\t\t\t<p>This is the range of TMI values containing " << sim -> confidence * 100 << "% of the data, roughly centered on the mean.</p>\n"
-     << "\t\t\t</div>\n"
-     << "\t\t</div>\n";
+  os << "<div id=\"help-tmirange\">\n"
+     << "<div class=\"help-box\">\n"
+     << "<h3>TMI Range</h3>\n"
+     << "<p>This is the range of TMI values containing " << sim -> confidence * 100 << "% of the data, roughly centered on the mean.</p>\n"
+     << "</div>\n"
+     << "</div>\n";
 
-  os << "\t\t<div id=\"help-tmiwin\">\n"
-     << "\t\t\t<div class=\"help-box\">\n"
-     << "\t\t\t\t<h3>TMI/MSD Window</h3>\n"
-     << "\t\t\t\t<p>Window length used to calculate TMI and MSD, in seconds.</p>\n"
-     << "\t\t\t</div>\n"
-     << "\t\t</div>\n";
+  os << "<div id=\"help-tmiwin\">\n"
+     << "<div class=\"help-box\">\n"
+     << "<h3>TMI/MSD Window</h3>\n"
+     << "<p>Window length used to calculate TMI and MSD, in seconds.</p>\n"
+     << "</div>\n"
+     << "</div>\n";
 
-  os << "\t\t<div id=\"help-tmibin\">\n"
-     << "\t\t\t<div class=\"help-box\">\n"
-     << "\t\t\t\t<h3>TMI bin size</h3>\n"
-     << "\t\t\t\t<p>Time bin size used to calculate TMI and MSD, in seconds.</p>\n"
-     << "\t\t\t</div>\n"
-     << "\t\t</div>\n";
+  os << "<div id=\"help-tmibin\">\n"
+     << "<div class=\"help-box\">\n"
+     << "<h3>TMI bin size</h3>\n"
+     << "<p>Time bin size used to calculate TMI and MSD, in seconds.</p>\n"
+     << "</div>\n"
+     << "</div>\n";
 
   for ( size_t i = 0; i < sim -> actor_list.size(); i++ )
   {
-    os << "\t\t<div id=\"help-msd" << sim -> actor_list[ i ] -> actor_index << "\">\n"
-      << "\t\t\t<div class=\"help-box\">\n"
-      << "\t\t\t\t<h3>Max Spike Damage</h3>\n"
-      << "\t\t\t\t<p>Maximum amount of net damage taken in any " << sim -> actor_list[ i ] -> tmi_window << "-second period, expressed as a percentage of max health. Calculated independently for each iteration. "
+    os << "<div id=\"help-msd" << sim -> actor_list[ i ] -> actor_index << "\">\n"
+      << "<div class=\"help-box\">\n"
+      << "<h3>Max Spike Damage</h3>\n"
+      << "<p>Maximum amount of net damage taken in any " << sim -> actor_list[ i ] -> tmi_window << "-second period, expressed as a percentage of max health. Calculated independently for each iteration. "
       << "'MSD Min/Mean/Max' are the lowest/average/highest MSDs out of all iterations.</p>\n"
-      << "\t\t\t</div>\n"
-      << "\t\t</div>\n";
+      << "</div>\n"
+      << "</div>\n";
   }
 
-  os << "\t\t<div id=\"help-msd-freq\">\n"
-     << "\t\t\t<div class=\"help-box\">\n"
-     << "\t\t\t\t<h3>Max Spike Damage Frequency</h3>\n"
-     << "\t\t\t\t<p>This is roughly how many spikes as large as MSD Mean you take per iteration. Calculated from TMI and MSD values.</p>\n"
-     << "\t\t\t</div>\n"
-     << "\t\t</div>\n";
+  os << "<div id=\"help-msd-freq\">\n"
+     << "<div class=\"help-box\">\n"
+     << "<h3>Max Spike Damage Frequency</h3>\n"
+     << "<p>This is roughly how many spikes as large as MSD Mean you take per iteration. Calculated from TMI and MSD values.</p>\n"
+     << "</div>\n"
+     << "</div>\n";
 
-  os << "\t\t<div id=\"help-dynamic-buffs\">\n"
-     << "\t\t\t<div class=\"help-box\">\n"
-     << "\t\t\t\t<h3>Dynamic Buffs</h3>\n"
-     << "\t\t\t\t<p>Temporary buffs received during combat, perhaps multiple times.</p>\n"
-     << "\t\t\t</div>\n"
-     << "\t\t</div>\n";
+  os << "<div id=\"help-dynamic-buffs\">\n"
+     << "<div class=\"help-box\">\n"
+     << "<h3>Dynamic Buffs</h3>\n"
+     << "<p>Temporary buffs received during combat, perhaps multiple times.</p>\n"
+     << "</div>\n"
+     << "</div>\n";
 
-  os << "\t\t<div id=\"help-error\">\n"
-     << "\t\t\t<div class=\"help-box\">\n"
-     << "\t\t\t\t<h3>Error</h3>\n"
-     << "\t\t\t\t<p>Estimator for the " << sim -> confidence * 100.0 << "% confidence interval.</p>\n"
-     << "\t\t\t</div>\n"
-     << "\t\t</div>\n";
+  os << "<div id=\"help-error\">\n"
+     << "<div class=\"help-box\">\n"
+     << "<h3>Error</h3>\n"
+     << "<p>Estimator for the " << sim -> confidence * 100.0 << "% confidence interval.</p>\n"
+     << "</div>\n"
+     << "</div>\n";
 
-  os << "\t\t<div id=\"help-glance-pct\">\n"
-     << "\t\t\t<div class=\"help-box\">\n"
-     << "\t\t\t\t<h3>G%</h3>\n"
-     << "\t\t\t\t<p>Percentage of executes that resulted in glancing blows.</p>\n"
-     << "\t\t\t</div>\n"
-     << "\t\t</div>\n";
+  os << "<div id=\"help-glance-pct\">\n"
+     << "<div class=\"help-box\">\n"
+     << "<h3>G%</h3>\n"
+     << "<p>Percentage of executes that resulted in glancing blows.</p>\n"
+     << "</div>\n"
+     << "</div>\n";
 
-  os << "\t\t<div id=\"help-block-pct\">\n"
-     << "\t\t\t<div class=\"help-box\">\n"
-     << "\t\t\t\t<h3>B%</h3>\n"
-     << "\t\t\t\t<p>Percentage of executes that resulted in blocking blows.</p>\n"
-     << "\t\t\t</div>\n"
-     << "\t\t</div>\n";
+  os << "<div id=\"help-block-pct\">\n"
+     << "<div class=\"help-box\">\n"
+     << "<h3>B%</h3>\n"
+     << "<p>Percentage of executes that resulted in blocking blows.</p>\n"
+     << "</div>\n"
+     << "</div>\n";
 
-  os << "\t\t<div id=\"help-id\">\n"
-     << "\t\t\t<div class=\"help-box\">\n"
-     << "\t\t\t\t<h3>Id</h3>\n"
-     << "\t\t\t\t<p>Associated spell-id for this ability.</p>\n"
-     << "\t\t\t</div>\n"
-     << "\t\t</div>\n";
+  os << "<div id=\"help-id\">\n"
+     << "<div class=\"help-box\">\n"
+     << "<h3>Id</h3>\n"
+     << "<p>Associated spell-id for this ability.</p>\n"
+     << "</div>\n"
+     << "</div>\n";
 
-  os << "\t\t<div id=\"help-ability\">\n"
-     << "\t\t\t<div class=\"help-box\">\n"
-     << "\t\t\t\t<h3>Ability</h3>\n"
-     << "\t\t\t\t<p>Name of the ability</p>\n"
-     << "\t\t\t</div>\n"
-     << "\t\t</div>\n";
+  os << "<div id=\"help-ability\">\n"
+     << "<div class=\"help-box\">\n"
+     << "<h3>Ability</h3>\n"
+     << "<p>Name of the ability</p>\n"
+     << "</div>\n"
+     << "</div>\n";
 
-  os << "\t\t<div id=\"help-total\">\n"
-     << "\t\t\t<div class=\"help-box\">\n"
-     << "\t\t\t\t<h3>Total</h3>\n"
-     << "\t\t\t\t<p>Total damage for this ability during the fight.</p>\n"
-     << "\t\t\t</div>\n"
-     << "\t\t</div>\n";
+  os << "<div id=\"help-total\">\n"
+     << "<div class=\"help-box\">\n"
+     << "<h3>Total</h3>\n"
+     << "<p>Total damage for this ability during the fight.</p>\n"
+     << "</div>\n"
+     << "</div>\n";
 
-  os << "\t\t<div id=\"help-hit\">\n"
-     << "\t\t\t<div class=\"help-box\">\n"
-     << "\t\t\t\t<h3>Hit</h3>\n"
-     << "\t\t\t\t<p>Average non-crit damage.</p>\n"
-     << "\t\t\t</div>\n"
-     << "\t\t</div>\n";
+  os << "<div id=\"help-hit\">\n"
+     << "<div class=\"help-box\">\n"
+     << "<h3>Hit</h3>\n"
+     << "<p>Average non-crit damage.</p>\n"
+     << "</div>\n"
+     << "</div>\n";
 
-  os << "\t\t<div id=\"help-interval\">\n"
-     << "\t\t\t<div class=\"help-box\">\n"
-     << "\t\t\t\t<h3>Interval</h3>\n"
-     << "\t\t\t\t<p>Average time between executions of a particular action.</p>\n"
-     << "\t\t\t</div>\n"
-     << "\t\t</div>\n";
+  os << "<div id=\"help-interval\">\n"
+     << "<div class=\"help-box\">\n"
+     << "<h3>Interval</h3>\n"
+     << "<p>Average time between executions of a particular action.</p>\n"
+     << "</div>\n"
+     << "</div>\n";
 
-  os << "\t\t<div id=\"help-avg\">\n"
-     << "\t\t\t<div class=\"help-box\">\n"
-     << "\t\t\t\t<h3>Avg</h3>\n"
-     << "\t\t\t\t<p>Average direct damage per execution.</p>\n"
-     << "\t\t\t</div>\n"
-     << "\t\t</div>\n";
+  os << "<div id=\"help-avg\">\n"
+     << "<div class=\"help-box\">\n"
+     << "<h3>Avg</h3>\n"
+     << "<p>Average direct damage per execution.</p>\n"
+     << "</div>\n"
+     << "</div>\n";
 
-  os << "\t\t<div id=\"help-miss-pct\">\n"
-     << "\t\t\t<div class=\"help-box\">\n"
-     << "\t\t\t\t<h3>M%</h3>\n"
-     << "\t\t\t\t<p>Percentage of executes that resulted in misses, dodges or parries.</p>\n"
-     << "\t\t\t</div>\n"
-     << "\t\t</div>\n";
+  os << "<div id=\"help-miss-pct\">\n"
+     << "<div class=\"help-box\">\n"
+     << "<h3>M%</h3>\n"
+     << "<p>Percentage of executes that resulted in misses, dodges or parries.</p>\n"
+     << "</div>\n"
+     << "</div>\n";
 
-  os << "\t\t<div id=\"help-origin\">\n"
-     << "\t\t\t<div class=\"help-box\">\n"
-     << "\t\t\t\t<h3>Origin</h3>\n"
-     << "\t\t\t\t<p>The player profile from which the simulation script was generated. The profile must be copied into the same directory as this HTML file in order for the link to work.</p>\n"
-     << "\t\t\t</div>\n"
-     << "\t\t</div>\n";
+  os << "<div id=\"help-origin\">\n"
+     << "<div class=\"help-box\">\n"
+     << "<h3>Origin</h3>\n"
+     << "<p>The player profile from which the simulation script was generated. The profile must be copied into the same directory as this HTML file in order for the link to work.</p>\n"
+     << "</div>\n"
+     << "</div>\n";
 
-  os << "\t\t<div id=\"help-parry-pct\">\n"
-     << "\t\t\t<div class=\"help-box\">\n"
-     << "\t\t\t\t<h3>Parry%</h3>\n"
-     << "\t\t\t\t<p>Percentage of executes that resulted in parries.</p>\n"
-     << "\t\t\t</div>\n"
-     << "\t\t</div>\n";
+  os << "<div id=\"help-parry-pct\">\n"
+     << "<div class=\"help-box\">\n"
+     << "<h3>Parry%</h3>\n"
+     << "<p>Percentage of executes that resulted in parries.</p>\n"
+     << "</div>\n"
+     << "</div>\n";
 
-  os << "\t\t<div id=\"help-range\">\n"
-     << "\t\t\t<div class=\"help-box\">\n"
-     << "\t\t\t\t<h3>Range</h3>\n"
-     << "\t\t\t\t<p>This is the range of values containing " << sim -> confidence * 100 << "% of the data, roughly centered on the mean.</p>\n"
-     << "\t\t\t</div>\n"
-     << "\t\t</div>\n";
+  os << "<div id=\"help-range\">\n"
+     << "<div class=\"help-box\">\n"
+     << "<h3>Range</h3>\n"
+     << "<p>This is the range of values containing " << sim -> confidence * 100 << "% of the data, roughly centered on the mean.</p>\n"
+     << "</div>\n"
+     << "</div>\n";
 
-  os << "\t\t<div id=\"help-rps-in\">\n"
-     << "\t\t\t<div class=\"help-box\">\n"
-     << "\t\t\t\t<h3>RPS In</h3>\n"
-     << "\t\t\t\t<p>Average primary resource points generated per second.</p>\n"
-     << "\t\t\t</div>\n"
-     << "\t\t</div>\n";
+  os << "<div id=\"help-rps-in\">\n"
+     << "<div class=\"help-box\">\n"
+     << "<h3>RPS In</h3>\n"
+     << "<p>Average primary resource points generated per second.</p>\n"
+     << "</div>\n"
+     << "</div>\n";
 
-  os << "\t\t<div id=\"help-rps-out\">\n"
-     << "\t\t\t<div class=\"help-box\">\n"
-     << "\t\t\t\t<h3>RPS Out</h3>\n"
-     << "\t\t\t\t<p>Average primary resource points consumed per second.</p>\n"
-     << "\t\t\t</div>\n"
-     << "\t\t</div>\n";
+  os << "<div id=\"help-rps-out\">\n"
+     << "<div class=\"help-box\">\n"
+     << "<h3>RPS Out</h3>\n"
+     << "<p>Average primary resource points consumed per second.</p>\n"
+     << "</div>\n"
+     << "</div>\n";
 
-  os << "\t\t<div id=\"help-scale-factors\">\n"
-     << "\t\t\t<div class=\"help-box\">\n"
-     << "\t\t\t\t<h3>Scale Factors</h3>\n"
-     << "\t\t\t\t<p>Gain per unit stat increase except for <b>Hit/Expertise</b> which represent <b>Loss</b> per unit stat <b>decrease</b>.</p>\n"
-     << "\t\t\t</div>\n"
-     << "\t\t</div>\n";
+  os << "<div id=\"help-scale-factors\">\n"
+     << "<div class=\"help-box\">\n"
+     << "<h3>Scale Factors</h3>\n"
+     << "<p>Gain per unit stat increase except for <b>Hit/Expertise</b> which represent <b>Loss</b> per unit stat <b>decrease</b>.</p>\n"
+     << "</div>\n"
+     << "</div>\n";
 
-  os << "\t\t<div id=\"help-stats-gear\">\n"
-     << "\t\t\t<div class=\"help-box\">\n"
-     << "\t\t\t\t<h3>Gear Amount</h3>\n"
-     << "\t\t\t\t<p>Amount from raw gear, before class or buff modifiers. Amount from hybrid primary stats (i.e. Agility/Intellect) shown in parentheses.</p>\n"
-     << "\t\t\t</div>\n"
-     << "\t\t</div>\n";
+  os << "<div id=\"help-stats-gear\">\n"
+     << "<div class=\"help-box\">\n"
+     << "<h3>Gear Amount</h3>\n"
+     << "<p>Amount from raw gear, before class or buff modifiers. Amount from hybrid primary stats (i.e. Agility/Intellect) shown in parentheses.</p>\n"
+     << "</div>\n"
+     << "</div>\n";
 
-  os << "\t\t<div id=\"help-stats-raid-buffed\">\n"
-     << "\t\t\t<div class=\"help-box\">\n"
-     << "\t\t\t\t<h3>Gear Amount</h3>\n"
-     << "\t\t\t\t<p>Amount after all static buffs have been accounted for. Dynamic buffs (i.e. trinkets, potions) not included.</p>\n"
-     << "\t\t\t</div>\n"
-     << "\t\t</div>\n";
+  os << "<div id=\"help-stats-raid-buffed\">\n"
+     << "<div class=\"help-box\">\n"
+     << "<h3>Gear Amount</h3>\n"
+     << "<p>Amount after all static buffs have been accounted for. Dynamic buffs (i.e. trinkets, potions) not included.</p>\n"
+     << "</div>\n"
+     << "</div>\n";
 
-  os << "\t\t<div id=\"help-stats-unbuffed\">\n"
-     << "\t\t\t<div class=\"help-box\">\n"
-     << "\t\t\t\t<h3>Gear Amount</h3>\n"
-     << "\t\t\t\t<p>Amount after class modifiers and effects, but before buff modifiers.</p>\n"
-     << "\t\t\t</div>\n"
-     << "\t\t</div>\n";
+  os << "<div id=\"help-stats-unbuffed\">\n"
+     << "<div class=\"help-box\">\n"
+     << "<h3>Gear Amount</h3>\n"
+     << "<p>Amount after class modifiers and effects, but before buff modifiers.</p>\n"
+     << "</div>\n"
+     << "</div>\n";
 
-  os << "\t\t<div id=\"help-ticks\">\n"
-     << "\t\t\t<div class=\"help-box\">\n"
-     << "\t\t\t\t<h3>Ticks</h3>\n"
-     << "\t\t\t\t<p>Average number of periodic ticks per iteration. Spells that do not have a damage-over-time component will have zero ticks.</p>\n"
-     << "\t\t\t</div>\n"
-     << "\t\t</div>\n";
+  os << "<div id=\"help-ticks\">\n"
+     << "<div class=\"help-box\">\n"
+     << "<h3>Ticks</h3>\n"
+     << "<p>Average number of periodic ticks per iteration. Spells that do not have a damage-over-time component will have zero ticks.</p>\n"
+     << "</div>\n"
+     << "</div>\n";
 
-  os << "\t\t<div id=\"help-ticks-crit\">\n"
-     << "\t\t\t<div class=\"help-box\">\n"
-     << "\t\t\t\t<h3>T-Crit</h3>\n"
-     << "\t\t\t\t<p>Average crit tick damage.</p>\n"
-     << "\t\t\t</div>\n"
-     << "\t\t</div>\n";
+  os << "<div id=\"help-ticks-crit\">\n"
+     << "<div class=\"help-box\">\n"
+     << "<h3>T-Crit</h3>\n"
+     << "<p>Average crit tick damage.</p>\n"
+     << "</div>\n"
+     << "</div>\n";
 
-  os << "\t\t<div id=\"help-ticks-crit-pct\">\n"
-     << "\t\t\t<div class=\"help-box\">\n"
-     << "\t\t\t\t<h3>T-Crit%</h3>\n"
-     << "\t\t\t\t<p>Percentage of ticks that resulted in critical strikes.</p>\n"
-     << "\t\t\t</div>\n"
-     << "\t\t</div>\n";
+  os << "<div id=\"help-ticks-crit-pct\">\n"
+     << "<div class=\"help-box\">\n"
+     << "<h3>T-Crit%</h3>\n"
+     << "<p>Percentage of ticks that resulted in critical strikes.</p>\n"
+     << "</div>\n"
+     << "</div>\n";
 
-  os << "\t\t<div id=\"help-ticks-hit\">\n"
-     << "\t\t\t<div class=\"help-box\">\n"
-     << "\t\t\t\t<h3>T-Hit</h3>\n"
-     << "\t\t\t\t<p>Average non-crit tick damage.</p>\n"
-     << "\t\t\t</div>\n"
-     << "\t\t</div>\n";
+  os << "<div id=\"help-ticks-hit\">\n"
+     << "<div class=\"help-box\">\n"
+     << "<h3>T-Hit</h3>\n"
+     << "<p>Average non-crit tick damage.</p>\n"
+     << "</div>\n"
+     << "</div>\n";
 
-  os << "\t\t<div id=\"help-ticks-miss-pct\">\n"
-     << "\t\t\t<div class=\"help-box\">\n"
-     << "\t\t\t\t<h3>T-M%</h3>\n"
-     << "\t\t\t\t<p>Percentage of ticks that resulted in misses, dodges or parries.</p>\n"
-     << "\t\t\t</div>\n"
-     << "\t\t</div>\n";
+  os << "<div id=\"help-ticks-miss-pct\">\n"
+     << "<div class=\"help-box\">\n"
+     << "<h3>T-M%</h3>\n"
+     << "<p>Percentage of ticks that resulted in misses, dodges or parries.</p>\n"
+     << "</div>\n"
+     << "</div>\n";
 
-  os << "\t\t<div id=\"help-ticks-uptime\">\n"
-     << "\t\t\t<div class=\"help-box\">\n"
-     << "\t\t\t\t<h3>UpTime%</h3>\n"
-     << "\t\t\t\t<p>Percentage of total time that DoT is ticking on target.</p>\n"
-     << "\t\t\t</div>\n"
-     << "\t\t</div>\n";
+  os << "<div id=\"help-ticks-uptime\">\n"
+     << "<div class=\"help-box\">\n"
+     << "<h3>UpTime%</h3>\n"
+     << "<p>Percentage of total time that DoT is ticking on target.</p>\n"
+     << "</div>\n"
+     << "</div>\n";
 
-  os << "\t\t<div id=\"help-ticks-avg\">\n"
-     << "\t\t\t<div class=\"help-box\">\n"
-     << "\t\t\t\t<h3>T-Avg</h3>\n"
-     << "\t\t\t\t<p>Average damage per tick.</p>\n"
-     << "\t\t\t</div>\n"
-     << "\t\t</div>\n";
+  os << "<div id=\"help-ticks-avg\">\n"
+     << "<div class=\"help-box\">\n"
+     << "<h3>T-Avg</h3>\n"
+     << "<p>Average damage per tick.</p>\n"
+     << "</div>\n"
+     << "</div>\n";
 
-  os << "\t\t<div id=\"help-timeline-distribution\">\n"
-     << "\t\t\t<div class=\"help-box\">\n"
-     << "\t\t\t\t<h3>Timeline Distribution</h3>\n"
-     << "\t\t\t\t<p>The simulated encounter's duration can vary based on the health of the target and variation in the raid DPS. This chart shows how often the duration of the encounter varied by how much time.</p>\n"
-     << "\t\t\t</div>\n"
-     << "\t\t</div>\n";
+  os << "<div id=\"help-timeline-distribution\">\n"
+     << "<div class=\"help-box\">\n"
+     << "<h3>Timeline Distribution</h3>\n"
+     << "<p>The simulated encounter's duration can vary based on the health of the target and variation in the raid DPS. This chart shows how often the duration of the encounter varied by how much time.</p>\n"
+     << "</div>\n"
+     << "</div>\n";
 
-  os << "\t\t<div id=\"help-fight-length\">\n"
-     << "\t\t\t<div class=\"help-box\">\n"
-     << "\t\t\t\t<h3>Fight Length</h3>\n"
-     << "\t\t\t\t<p>Fight Length: " << sim -> max_time.total_seconds() << "<br />\n"
-     << "\t\t\t\tVary Combat Length: " << sim -> vary_combat_length << "</p>\n"
-     << "\t\t\t\t<p>Fight Length is the specified average fight duration. If vary_combat_length is set, the fight length will vary by +/- that portion of the value. See <a href=\"http://code.google.com/p/simulationcraft/wiki/Options#Combat_Length\" class=\"ext\">Combat Length</a> in the wiki for further details.</p>\n"
-     << "\t\t\t</div>\n"
-     << "\t\t</div>\n";
+  os << "<div id=\"help-fight-length\">\n"
+     << "<div class=\"help-box\">\n"
+     << "<h3>Fight Length</h3>\n"
+     << "<p>Fight Length: " << sim -> max_time.total_seconds() << "<br />\n"
+     << "Vary Combat Length: " << sim -> vary_combat_length << "</p>\n"
+     << "<p>Fight Length is the specified average fight duration. If vary_combat_length is set, the fight length will vary by +/- that portion of the value. See <a href=\"http://code.google.com/p/simulationcraft/wiki/Options#Combat_Length\" class=\"ext\">Combat Length</a> in the wiki for further details.</p>\n"
+     << "</div>\n"
+     << "</div>\n";
 
-  os << "\t\t<div id=\"help-waiting\">\n"
-     << "\t\t\t<div class=\"help-box\">\n"
-     << "\t\t\t\t<h3>Waiting</h3>\n"
-     << "\t\t\t\t<p>This is the percentage of time in which no action can be taken other than autoattacks. This can be caused by resource starvation, lockouts, and timers.</p>\n"
-     << "\t\t\t</div>\n"
-     << "\t\t</div>\n";
+  os << "<div id=\"help-waiting\">\n"
+     << "<div class=\"help-box\">\n"
+     << "<h3>Waiting</h3>\n"
+     << "<p>This is the percentage of time in which no action can be taken other than autoattacks. This can be caused by resource starvation, lockouts, and timers.</p>\n"
+     << "</div>\n"
+     << "</div>\n";
 
-  os << "\t\t<div id=\"help-sf-ranking\">\n"
-     << "\t\t\t<div class=\"help-box\">\n"
-     << "\t\t\t\t<h3>Scale Factor Ranking</h3>\n"
-     << "\t\t\t\t<p>This row ranks the scale factors from highest to lowest, checking whether one scale factor is higher/lower than another with statistical significance.</p>\n"
-     << "\t\t\t</div>\n"
-     << "\t\t</div>\n";
+  os << "<div id=\"help-sf-ranking\">\n"
+     << "<div class=\"help-box\">\n"
+     << "<h3>Scale Factor Ranking</h3>\n"
+     << "<p>This row ranks the scale factors from highest to lowest, checking whether one scale factor is higher/lower than another with statistical significance.</p>\n"
+     << "</div>\n"
+     << "</div>\n";
 
-  os << "\t\t<!-- End Help Boxes -->\n";
+  os << "<!-- End Help Boxes -->\n";
 }
 
 // print_html_styles ========================================================
@@ -3297,12 +3304,12 @@ void print_html_styles( report::sc_html_stream& os, sim_t* sim )
 void print_html_masthead( report::sc_html_stream& os, sim_t* sim )
 {
   // Begin masthead section
-  os << "\t\t<div id=\"masthead\" class=\"section section-open\">\n\n";
+  os << "<div id=\"masthead\" class=\"section section-open\">\n\n";
 
   os.printf(
-    "\t\t\t<span id=\"logo\"></span>\n"
-    "\t\t\t<h1><a href=\"%s\">SimulationCraft %s</a></h1>\n"
-    "\t\t\t<h2>for World of Warcraft %s %s (build level %d)</h2>\n\n",
+    "<span id=\"logo\"></span>\n"
+    "<h1><a href=\"%s\">SimulationCraft %s</a></h1>\n"
+    "<h2>for World of Warcraft %s %s (build level %d)</h2>\n\n",
     "http://code.google.com/p/simulationcraft/",
     SC_VERSION, sim -> dbc.wow_version(), ( sim -> dbc.ptr ?
 #if SC_BETA
@@ -3315,12 +3322,12 @@ void print_html_masthead( report::sc_html_stream& os, sim_t* sim )
   time_t rawtime;
   time( &rawtime );
 
-  os << "\t\t\t<ul class=\"params\">\n";
+  os << "<ul class=\"params\">\n";
   os.printf(
-    "\t\t\t\t<li><b>Timestamp:</b> %s</li>\n",
+    "<li><b>Timestamp:</b> %s</li>\n",
     ctime( &rawtime ) );
   os.printf(
-    "\t\t\t\t<li><b>Iterations:</b> %d</li>\n",
+    "<li><b>Iterations:</b> %d</li>\n",
     sim -> iterations );
 
   if ( sim -> vary_combat_length > 0.0 )
@@ -3328,22 +3335,22 @@ void print_html_masthead( report::sc_html_stream& os, sim_t* sim )
     timespan_t min_length = sim -> max_time * ( 1 - sim -> vary_combat_length );
     timespan_t max_length = sim -> max_time * ( 1 + sim -> vary_combat_length );
     os.printf(
-      "\t\t\t\t<li class=\"linked\"><a href=\"#help-fight-length\" class=\"help\"><b>Fight Length:</b> %.0f - %.0f</a></li>\n",
+      "<li class=\"linked\"><a href=\"#help-fight-length\" class=\"help\"><b>Fight Length:</b> %.0f - %.0f</a></li>\n",
       min_length.total_seconds(),
       max_length.total_seconds() );
   }
   else
   {
     os.printf(
-      "\t\t\t\t<li><b>Fight Length:</b> %.0f</li>\n",
+      "<li><b>Fight Length:</b> %.0f</li>\n",
       sim -> max_time.total_seconds() );
   }
   os.printf(
-    "\t\t\t\t<li><b>Fight Style:</b> %s</li>\n",
+    "<li><b>Fight Style:</b> %s</li>\n",
     sim -> fight_style.c_str() );
-  os << "\t\t\t</ul>\n"
-     << "\t\t\t<div class=\"clear\"></div>\n\n"
-     << "\t\t</div>\n\n";
+  os << "</ul>\n"
+     << "<div class=\"clear\"></div>\n\n"
+     << "</div>\n\n";
   // End masthead section
 }
 
@@ -3351,27 +3358,27 @@ void print_html_errors( report::sc_html_stream& os, sim_t* sim )
 {
   if ( ! sim -> error_list.empty() )
   {
-    os << "\t\t<pre class=\"section section-open\" style=\"color: black; background-color: white; font-weight: bold;\">\n";
+    os << "<pre class=\"section section-open\" style=\"color: black; background-color: white; font-weight: bold;\">\n";
 
     for ( size_t i = 0; i < sim -> error_list.size(); i++ )
       os <<  sim -> error_list[ i ] << "\n";
 
-    os << "\t\t</pre>\n\n";
+    os << "</pre>\n\n";
   }
 }
 
 void print_html_beta_warning( report::sc_html_stream& os )
 {
 #if SC_BETA
-  os << "\t\t<div id=\"notice\" class=\"section section-open\">\n"
-     << "\t\t\t<h2>Beta Release</h2>\n"
-     << "\t\t\t<ul>\n";
+  os << "<div id=\"notice\" class=\"section section-open\">\n"
+     << "<h2>Beta Release</h2>\n"
+     << "<ul>\n";
 
   for ( size_t i = 0; i < sizeof_array( report::beta_warnings ); ++i )
-    os << "\t\t\t\t<li>" << report::beta_warnings[ i ] << "</li>\n";
+    os << "<li>" << report::beta_warnings[ i ] << "</li>\n";
 
-  os << "\t\t\t</ul>\n"
-     << "\t\t</div>\n\n";
+  os << "</ul>\n"
+     << "</div>\n\n";
 #else
   (void)os;
 #endif
@@ -3579,7 +3586,7 @@ void print_html_( report::sc_html_stream& os, sim_t* sim )
   print_html_sim_summary( os, sim, sim -> report_information );
 
   if ( sim -> report_raw_abilities )
-    print_html_raw_ability_summary( os, sim );
+    raw_ability_summary::print( os, sim );
 
   // Report Targets
   if ( sim -> report_targets )
@@ -3612,7 +3619,7 @@ void print_html_( report::sc_html_stream& os, sim_t* sim )
   if ( sim -> hosted_html )
   {
     // Google Analytics
-    os << "\t\t<script type=\"text/javascript\" src=\"http://www.simulationcraft.org/js/ga.js\"></script>\n";
+    os << "<script type=\"text/javascript\" src=\"http://www.simulationcraft.org/js/ga.js\"></script>\n";
   }
 
   print_html_image_load_scripts( os );

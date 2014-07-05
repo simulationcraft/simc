@@ -554,7 +554,7 @@ void report::print_suite( sim_t* sim )
   report::print_csv_data( sim );
 }
 
-void report::print_html_sample_data( report::sc_html_stream& os, sim_t* sim, extended_sample_data_t& data, const std::string& name, int& td_counter, int columns )
+void report::print_html_sample_data( report::sc_html_stream& os, const sim_t* sim, const extended_sample_data_t& data, const std::string& name, int& td_counter, int columns )
 {
   // Print Statistics of a Sample Data Container
   os << "\t\t\t\t\t\t\t<tr";
