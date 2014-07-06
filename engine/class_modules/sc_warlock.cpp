@@ -468,17 +468,19 @@ struct warlock_pet_t : public pet_t
   const spell_data_t* supremacy;
 
   warlock_pet_t( sim_t* sim, warlock_t* owner, const std::string& pet_name, pet_e pt, bool guardian = false );
-  virtual void init_base_stats();
-  virtual void init_action_list();
-  virtual timespan_t available() const;
+  virtual void init_base_stats() override;
+  virtual void init_action_list() override;
+  virtual timespan_t available() const override;
   virtual void schedule_ready( timespan_t delta_time = timespan_t::zero(),
-                               bool   waiting = false );
-  virtual double composite_player_multiplier( school_e school ) const;
-  virtual double composite_melee_crit() const;
-  virtual double composite_spell_crit() const;
-  virtual double composite_melee_haste() const;
-  virtual double composite_spell_haste() const;
-  virtual resource_e primary_resource() const { return RESOURCE_ENERGY; }
+                               bool   waiting = false ) override;
+  virtual double composite_player_multiplier( school_e school ) const override;
+  virtual double composite_melee_crit() const override;
+  virtual double composite_spell_crit() const override;
+  virtual double composite_melee_haste() const override;
+  virtual double composite_spell_haste() const override;
+  virtual double composite_melee_speed() const override;
+  virtual double composite_spell_speed() const override;
+  virtual resource_e primary_resource() const override { return RESOURCE_ENERGY; }
   warlock_t* o()
   { return static_cast<warlock_t*>( owner ); }
   const warlock_t* o() const
@@ -1135,6 +1137,18 @@ double warlock_pet_t::composite_spell_haste() const
   sh /= 1.0 + o() -> perk.empowered_demons -> effectN( 2 ).percent();
   
   return sh;
+}
+
+double warlock_pet_t::composite_melee_speed() const
+{
+  // Make sure we get our overridden haste values applied to melee_speed
+  return player_t::composite_melee_speed();
+}
+
+double warlock_pet_t::composite_spell_speed() const
+{
+  // Make sure we get our overridden haste values applied to spell_speed
+  return player_t::composite_spell_speed();
 }
 
 
