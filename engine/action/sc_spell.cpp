@@ -306,6 +306,14 @@ double heal_t::calculate_direct_amount( action_state_t* state )
     {
       amount *= 1.0 + total_crit_bonus();
     }
+    else if ( state -> result == RESULT_MULTISTRIKE )
+    {
+      amount *= composite_multistrike_multiplier( state );
+    }
+    else if ( state -> result == RESULT_MULTISTRIKE_CRIT )
+    {
+      amount *= composite_multistrike_multiplier( state ) * ( 1.0 + total_crit_bonus() );
+    }
 
     // Record total amount to state
     state -> result_total = amount;
@@ -330,6 +338,14 @@ double heal_t::calculate_tick_amount( action_state_t* state, double dmg_multipli
     if ( state -> result == RESULT_CRIT )
     {
       amount *= 1.0 + total_crit_bonus();
+    }
+    else if ( state -> result == RESULT_MULTISTRIKE )
+    {
+      amount *= composite_multistrike_multiplier( state );
+    }
+    else if ( state -> result == RESULT_MULTISTRIKE_CRIT )
+    {
+      amount *= composite_multistrike_multiplier( state ) * ( 1.0 + total_crit_bonus() );
     }
 
     amount *= dmg_multiplier; // dot tick multiplier
