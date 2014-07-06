@@ -24,13 +24,13 @@ actions.precombat+=/snapshot_stats
 # AFTER IMPORTING, MAKE SURE YOUR LEVEL IS SET TO 100 AND GLADIATORS RESOLVE IS TALENTED. 
 # EXAMPLE TALENT LINE, THE VERY LAST DIGIT (2) IS GLADIATORS RESOLVE: talents=http://us.battle.net/wow/en/tool/talent-calculator#Zb!0102212
 actions.precombat+=/stance,choose=defensive
-actions.precombat+=/mountains_potion
+actions.precombat+=/potion,name=mountains
 
 # Executed every time the actor is available.
 
 actions=charge
 actions+=/auto_attack
-actions+=/mountains_potion,if=incoming_damage_2500ms>health.max*0.6&(buff.shield_wall.down&buff.last_stand.down)
+actions+=/potion,name=mountains,if=incoming_damage_2500ms>health.max*0.6&(buff.shield_wall.down&buff.last_stand.down)
 actions+=/heroic_strike,if=buff.ultimatum.up
 actions+=/shield_block
 actions+=/shield_barrier,if=incoming_damage_1500ms>health.max*0.3|rage>rage.max-20

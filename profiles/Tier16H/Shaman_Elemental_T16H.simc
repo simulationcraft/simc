@@ -16,7 +16,7 @@ spec=elemental
 
 # Executed before combat begins. Accepts non-harmful actions only.
 
-actions.precombat=flask,type=warm_sun 
+actions.precombat=flask,type=warm_sun
 actions.precombat+=/food,type=mogu_fish_stew
 actions.precombat+=/lightning_shield,if=!buff.lightning_shield.up
 # Snapshot raid buffed stats before combat begins and pre-potting is done.

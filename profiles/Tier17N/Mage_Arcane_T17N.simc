@@ -22,7 +22,7 @@ actions.precombat+=/arcane_brilliance
 actions.precombat+=/mage_armor
 actions.precombat+=/snapshot_stats
 actions.precombat+=/rune_of_power,if=talent.rune_of_power.enabled
-actions.precombat+=/jade_serpent_potion
+actions.precombat+=/potion,name=jade_serpent
 
 # Executed every time the actor is available.
 
@@ -36,7 +36,7 @@ actions+=/arcane_power,if=time_to_bloodlust>cooldown.arcane_power.duration&((buf
 actions+=/blood_fury
 actions+=/berserking
 actions+=/arcane_torrent
-actions+=/jade_serpent_potion,if=buff.arcane_power.up|target.time_to_die<50
+actions+=/potion,name=jade_serpent,if=buff.arcane_power.up|target.time_to_die<50
 actions+=/run_action_list,name=aoe,if=active_enemies>=6
 actions+=/run_action_list,name=single_target,if=active_enemies<6
 

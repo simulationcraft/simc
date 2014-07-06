@@ -3083,14 +3083,14 @@ void rogue_t::init_action_list()
   precombat -> add_action( "snapshot_stats", "Snapshot raid buffed stats before combat begins and pre-potting is done." );
 
   if ( sim -> allow_potions && level >= 80 )
-    precombat -> add_action( ( level > 85 ) ? "virmens_bite_potion" : "tolvir_potion" );
+    precombat -> add_action( ( level > 85 ) ? "potion,name=virmens_bite" : "potion,name=tolvir" );
 
   precombat -> add_action( this, "Stealth" );
 
   // In-combat potion
   if ( sim -> allow_potions )
   {
-    std::string potion_str = ( level > 85 ) ? "virmens_bite_potion" : "tolvir_potion";
+    std::string potion_str = ( level > 85 ) ? "potion,name=virmens_bite" : "potion,name=tolvir";
     potion_str += ",if=buff.bloodlust.react|target.time_to_die<40";
 
     def -> add_action( potion_str );

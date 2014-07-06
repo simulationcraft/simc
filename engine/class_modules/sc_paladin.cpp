@@ -4961,7 +4961,7 @@ void paladin_t::generate_action_prio_list_prot()
   // Pre-potting (disabled for now)
   /*
   if (sim -> allow_potions && level >= 80 )
-    precombat -> add_action( ( level > 85 ) ? "mogu_power_potion" : "golemblood_potion" );
+    precombat -> add_action( ( level > 85 ) ? "potion,name=_potion" : "potion,name=golemblood_potion" );
 
   */
 
@@ -4972,7 +4972,7 @@ void paladin_t::generate_action_prio_list_prot()
   action_priority_list_t* def = get_action_priority_list( "default" );
 
   // potion placeholder; need to think about realistic conditions
-  // def -> add_action( "potion_of_the_mountains,if=!in_combat|buff.bloodlust.react|target.time_to_die<=60" );
+  // def -> add_action( "potion,name=potion_of_the_mountains,if=!in_combat|buff.bloodlust.react|target.time_to_die<=60" );
 
   def -> add_action( "/auto_attack" );
 
@@ -5056,7 +5056,7 @@ void paladin_t::generate_action_prio_list_ret()
 
   // Pre-potting
   if ( sim -> allow_potions && level >= 80 )
-    precombat -> add_action( ( level > 85 ) ? "mogu_power_potion" : "golemblood_potion" );
+    precombat -> add_action( ( level > 85 ) ? "potion,name=mogu_power" : "potion,name=golemblood" );
 
   ///////////////////////
   // Action Priority List
@@ -5070,9 +5070,9 @@ void paladin_t::generate_action_prio_list_ret()
   if ( sim -> allow_potions )
   {
     if ( level > 85 )
-      def -> add_action( "mogu_power_potion,if=(buff.bloodlust.react|buff.avenging_wrath.up|target.time_to_die<=40)" );
+      def -> add_action( "potion,name=mogu_power,if=(buff.bloodlust.react|buff.avenging_wrath.up|target.time_to_die<=40)" );
     else if ( level >= 80 )
-      def -> add_action( "golemblood_potion,if=buff.bloodlust.react|buff.avenging_wrath.up|target.time_to_die<=40" );
+      def -> add_action( "potion,name=golemblood,if=buff.bloodlust.react|buff.avenging_wrath.up|target.time_to_die<=40" );
   }
 
   // This should<tm> get Censure up before the auto attack lands
@@ -5193,7 +5193,7 @@ void paladin_t::generate_action_prio_list_holy()
   // Pre-potting (disabled for now)
   /*
   if (sim -> allow_potions && level >= 80 )
-    precombat -> add_action( ( level > 85 ) ? "jade_serpent_potion" : "volcanic_potion" );
+    precombat -> add_action( ( level > 85 ) ? "potion,name=jade_serpent_potion" : "potion,name=volcanic_potion" );
 
   */
 
@@ -5202,7 +5202,7 @@ void paladin_t::generate_action_prio_list_holy()
 
   // Potions
   if ( sim -> allow_potions )
-    def -> add_action( "mana_potion,if=mana.pct<=75" );
+    def -> add_action( "potion,name=mana_potion,if=mana.pct<=75" );
 
   def -> add_action( "/auto_attack" );
 
@@ -5329,7 +5329,7 @@ void paladin_t::init_action_list()
         if ( level > 80 )
         {
           action_list_str = "flask,type=draconic_mind/food,type=severed_sagefish_head";
-          action_list_str += "/volcanic_potion,if=!in_combat|buff.bloodlust.react|target.time_to_die<=60";
+          action_list_str += "/potion,name=volcanic_potion,if=!in_combat|buff.bloodlust.react|target.time_to_die<=60";
         }
         action_list_str += "/snapshot_stats";
         action_list_str += "/auto_attack";

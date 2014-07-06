@@ -3433,9 +3433,9 @@ void hunter_t::init_action_list()
 
     if ( ( level >= 80 ) && ( sim -> allow_potions ) )
     {
-      precombat += ( level > 85 ) ? "/virmens_bite_potion" : "/tolvir_potion";
+      precombat += ( level > 85 ) ? "/potion,name=virmens_bite" : "/potion,name=tolvir";
 
-      action_list_str += ( level > 85 ) ? "/virmens_bite_potion" : "/tolvir_potion";
+      action_list_str += ( level > 85 ) ? "/potion,name=virmens_bite" : "/potion,name=tolvir";
       action_list_str += ",if=target.time_to_die<=25|buff.stampede.up";
     }
 

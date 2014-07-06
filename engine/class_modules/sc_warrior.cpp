@@ -3534,9 +3534,9 @@ void warrior_t::apl_precombat()
   if ( sim -> allow_potions && level >= 80 )
   {
     if ( primary_role() == ROLE_ATTACK )
-      precombat -> add_action( "mogu_power_potion" );
+      precombat -> add_action( "potion,name=mogu_power" );
     else if ( primary_role() == ROLE_TANK )
-      precombat -> add_action( "mountains_potion" );
+      precombat -> add_action( "potion,name=mountains" );
   }
 }
 
@@ -3556,7 +3556,7 @@ void warrior_t::apl_smf_fury()
   default_list -> add_action( "auto_attack" );
 
   if ( sim -> allow_potions && level >= 80 )
-    default_list -> add_action( "mogu_power_potion,if=(target.health.pct<20&buff.recklessness.up)|target.time_to_die<=25" );
+    default_list -> add_action( "potion,name=mogu_power,if=(target.health.pct<20&buff.recklessness.up)|target.time_to_die<=25" );
 
   default_list -> add_action( this, "Recklessness", "if=!talent.bloodbath.enabled&(((cooldown.colossus_smash.remains<2|debuff.colossus_smash.remains>=5)&target.time_to_die>192)|target.health.pct<20)|buff.bloodbath.up&(target.time_to_die>192|target.health.pct<20)|target.time_to_die<=12",
                               "This incredibly long line can be translated to 'Use recklessness on cooldown with colossus smash; unless the boss will die before the ability is usable again, and then combine with execute instead.'" );
@@ -3672,7 +3672,7 @@ void warrior_t::apl_tg_fury()
   }
 
   if ( sim -> allow_potions && level >= 80 )
-    default_list -> add_action( "mogu_power_potion,if=(target.health.pct<20&buff.recklessness.up)|target.time_to_die<=25" );
+    default_list -> add_action( "potion,name=mogu_power,if=(target.health.pct<20&buff.recklessness.up)|target.time_to_die<=25" );
 
   default_list -> add_action( this, "Recklessness", "if=!talent.bloodbath.enabled&(((cooldown.colossus_smash.remains<2|debuff.colossus_smash.remains>=5)&target.time_to_die>192)|target.health.pct<20)|buff.bloodbath.up&(target.time_to_die>192|target.health.pct<20)|target.time_to_die<=12",
                               "This incredibly long line can be translated to 'Use recklessness on cooldown with colossus smash; unless the boss will die before the ability is usable again, and then combine with execute instead.'" );
@@ -3776,7 +3776,7 @@ void warrior_t::apl_arms()
   }
 
   if ( sim -> allow_potions && level >= 80 )
-    default_list -> add_action( "mogu_power_potion,if=(target.health.pct<20&buff.recklessness.up)|buff.bloodlust.react|target.time_to_die<=25" );
+    default_list -> add_action( "potion,name=mogu_power,if=(target.health.pct<20&buff.recklessness.up)|buff.bloodlust.react|target.time_to_die<=25" );
 
   default_list -> add_action( this, "Recklessness", "if=!talent.bloodbath.enabled&((cooldown.colossus_smash.remains<2|debuff.colossus_smash.remains>=5)&(target.time_to_die>192|target.health.pct<20))|buff.bloodbath.up&(target.time_to_die>192|target.health.pct<20)|target.time_to_die<=12",
                               "This incredibly long line (Due to differing talent choices) says 'Use recklessness on cooldown with colossus smash, unless the boss will die before the ability is usable again, and then use it with execute.'" );
@@ -3833,7 +3833,7 @@ void warrior_t::apl_prot()
   }
 
   if ( sim -> allow_potions && level >= 80 )
-    default_list -> add_action( "mountains_potion,if=incoming_damage_2500ms>health.max*0.6&(buff.shield_wall.down&buff.last_stand.down)" );
+    default_list -> add_action( "potion,name=mountains,if=incoming_damage_2500ms>health.max*0.6&(buff.shield_wall.down&buff.last_stand.down)" );
 
   default_list -> add_action( this, "Heroic Strike", "if=buff.ultimatum.up" );
   default_list -> add_action( this, "Shield Block" );
@@ -3885,7 +3885,7 @@ void warrior_t::apl_gladiator()
   }
 
   if ( sim -> allow_potions && level >= 80 )
-    default_list -> add_action( "mogu_power_potion,if=buff.bloodbath.up|target.time_to_die<=25" );
+    default_list -> add_action( "potion,name=mogu_power,if=buff.bloodbath.up|target.time_to_die<=25" );
   default_list -> add_action( "run_action_list,name=single_target,if=active_enemies<=4" );
   default_list -> add_action( "run_action_list,name=aoe,if=active_enemies>3" );
 

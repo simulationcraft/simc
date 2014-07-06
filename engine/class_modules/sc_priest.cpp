@@ -5700,9 +5700,9 @@ void priest_t::apl_precombat()
     if ( level > 90 )
       precombat -> add_action( "potion,name=draenor_intellect_potion" );
     else if ( level > 85 )
-      precombat -> add_action( "potion,name=jade_serpent_potion" );
+      precombat -> add_action( "potion,name=jade_serpent" );
     else
-      precombat -> add_action( "potion,name=volcanic_potion" );
+      precombat -> add_action( "potion,name=volcanic" );
   }
 }
 
@@ -5754,9 +5754,9 @@ void priest_t::apl_shadow()
     if ( level > 90 )
       default_list -> add_action( "potion,name=draenor_intellect_potion,if=buff.bloodlust.react|target.time_to_die<=40" );
     else if ( level > 85 )
-      default_list -> add_action( "potion,name=jade_serpent_potion,if=buff.bloodlust.react|target.time_to_die<=40" );
+      default_list -> add_action( "potion,name=jade_serpent,if=buff.bloodlust.react|target.time_to_die<=40" );
     else
-      default_list -> add_action( "potion,name=volcanic_potion,if=buff.bloodlust.react|target.time_to_die<=40" );
+      default_list -> add_action( "potion,name=volcanic,if=buff.bloodlust.react|target.time_to_die<=40" );
   }
 
   default_list -> add_action( "power_infusion,if=talent.power_infusion.enabled" );
@@ -5940,9 +5940,9 @@ void priest_t::apl_disc_dmg()
     if ( level > 90 )
       def -> add_action( "potion,name=draenor_intellect_potion,if=buff.bloodlust.react|target.time_to_die<=40" );
     else if ( level > 85 )
-      def -> add_action( "potion,name=jade_serpent_potion,if=buff.bloodlust.react|target.time_to_die<=40" );
+      def -> add_action( "potion,name=jade_serpent,if=buff.bloodlust.react|target.time_to_die<=40" );
     else
-      def -> add_action( "potion,name=volcanic_potion,if=buff.bloodlust.react|target.time_to_die<=40" );
+      def -> add_action( "potion,name=volcanic,if=buff.bloodlust.react|target.time_to_die<=40" );
   }
 
   if ( race == RACE_BLOOD_ELF )
@@ -6051,9 +6051,9 @@ void priest_t::apl_holy_dmg()
     if ( level > 90 )
       def -> add_action( "potion,name=draenor_intellect_potion,if=buff.bloodlust.react|target.time_to_die<=40" );
     else if ( level > 85 )
-      def -> add_action( "potion,name=jade_serpent_potion,if=buff.bloodlust.react|target.time_to_die<=40" );
+      def -> add_action( "potion,name=jade_serpent,if=buff.bloodlust.react|target.time_to_die<=40" );
     else
-      def -> add_action( "potion,name=volcanic_potion,if=buff.bloodlust.react|target.time_to_die<=40" );
+      def -> add_action( "potion,name=volcanic,if=buff.bloodlust.react|target.time_to_die<=40" );
   }
 
   // Racials
