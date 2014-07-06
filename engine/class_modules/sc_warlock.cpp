@@ -2277,6 +2277,7 @@ struct corruption_t : public warlock_spell_t
   {
     may_crit = false;
     generate_fury = 4;
+    generate_fury += p -> perk.enhanced_corruption -> effectN( 1 ).base_value();
     base_multiplier *= 1.0 + p -> sets.set( SET_T14_2PC_CASTER ) -> effectN( 1 ).percent();
     base_multiplier *= 1.0 + p -> sets.set( SET_T13_4PC_CASTER ) -> effectN( 1 ).percent();
     base_multiplier *= 1.0 + p -> perk.improved_corruption -> effectN( 1 ).percent();
