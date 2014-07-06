@@ -4,7 +4,7 @@ race=troll
 role=spell
 position=back
 professions=Engineering=600/Tailoring=600
-talents=http://us.battle.net/wow/en/tool/talent-calculator#Vb!....20.
+talents=http://us.battle.net/wow/en/tool/talent-calculator#Vb!....00.
 spec=destruction
 
 # This default action priority list is automatically created based on your character.
@@ -15,31 +15,28 @@ spec=destruction
 
 # Executed before combat begins. Accepts non-harmful actions only.
 
-actions.precombat=flask,type=warm_sun
+actions.precombat=flask,type=greater_draenor_mastery_flask
 actions.precombat+=/food,type=mogu_fish_stew
 actions.precombat+=/dark_intent,if=!aura.spell_power_multiplier.up
 actions.precombat+=/summon_pet,if=!talent.grimoire_of_sacrifice.enabled|buff.grimoire_of_sacrifice.down
 actions.precombat+=/snapshot_stats
 actions.precombat+=/grimoire_of_sacrifice,if=talent.grimoire_of_sacrifice.enabled
 actions.precombat+=/service_pet,if=talent.grimoire_of_service.enabled
-actions.precombat+=/jade_serpent_potion
+actions.precombat+=/potion,name=draenor_intellect
 
 # Executed every time the actor is available.
 
-actions=jade_serpent_potion,if=buff.bloodlust.react|target.health.pct<=20
+actions=use_item,name=primal_gladiators_badge_of_dominance
+actions+=/potion,name=draenor_intellect,if=buff.bloodlust.react|target.health.pct<=20
 actions+=/berserking
 actions+=/dark_soul,if=!talent.archimondes_darkness.enabled|(talent.archimondes_darkness.enabled&(charges=2|trinket.proc.intellect.react|trinket.stacking_proc.intellect.react|target.health.pct<=10))
 actions+=/service_pet,if=talent.grimoire_of_service.enabled
 actions+=/run_action_list,name=aoe,if=active_enemies>3
 actions+=/summon_doomguard
-actions+=/rain_of_fire,if=!ticking&!in_flight&active_enemies>1
-actions+=/havoc,target=2,if=active_enemies>1
-actions+=/shadowburn,if=ember_react&(burning_ember>3.5|mana.pct<=20|target.time_to_die<20|buff.havoc.stack>=1|trinket.proc.intellect.react|(trinket.stacking_proc.intellect.remains<cast_time*4&trinket.stacking_proc.intellect.remains>cast_time))
-actions+=/immolate,cycle_targets=1,if=crit_pct_current>3*dot.immolate.ticks_remain*dot.immolate.crit_pct&miss_react
-actions+=/conflagrate,if=charges=2&buff.havoc.stack=0
-actions+=/rain_of_fire,if=!ticking&!in_flight,moving=1
-actions+=/chaos_bolt,if=ember_react&target.health.pct>20&(buff.backdraft.stack<3|level<86|(active_enemies>1&action.incinerate.cast_time<1))&(burning_ember>(4.5-active_enemies)|(trinket.proc.intellect.react&trinket.proc.intellect.remains>cast_time)|(trinket.stacking_proc.intellect.remains<cast_time*2.5&trinket.stacking_proc.intellect.remains>cast_time))
-actions+=/chaos_bolt,if=ember_react&target.health.pct>20&(buff.havoc.stack=3&buff.havoc.remains>cast_time)
+actions+=/shadowburn,if=(burning_ember>3.5|mana.pct<=20|target.time_to_die<20|trinket.proc.intellect.react|(trinket.stacking_proc.intellect.remains<cast_time*4&trinket.stacking_proc.intellect.remains>cast_time))
+actions+=/immolate,if=miss_react&remains<=(duration*0.3)
+actions+=/conflagrate,if=charges=2
+actions+=/chaos_bolt,if=target.health.pct>20&(buff.backdraft.stack<3|level<86|(active_enemies>1&action.incinerate.cast_time<1))&(burning_ember>(4.5-active_enemies)|(trinket.proc.intellect.react&trinket.proc.intellect.remains>cast_time)|(trinket.stacking_proc.intellect.remains<cast_time*2.5&trinket.stacking_proc.intellect.remains>cast_time))
 actions+=/conflagrate
 actions+=/incinerate
 
@@ -51,36 +48,33 @@ actions.aoe+=/conflagrate,if=buff.fire_and_brimstone.up
 actions.aoe+=/incinerate,if=buff.fire_and_brimstone.up
 actions.aoe+=/incinerate
 
-head=hood_of_the_horned_nightmare,id=99425,upgrade=2,gems=8exp_8mastery_9int
-neck=untainted_guardians_chain,id=105465,upgrade=2
-shoulders=rimerift_shoulders,id=105464,upgrade=2,gems=8exp_8mastery_8crit_8mastery_6int,enchant=10int_5crit
-back=jadefire_drape,id=98150,upgrade=2,gems=4int_8haste_3int,enchant=9crit
-chest=robes_of_the_horned_nightmare,id=99416,upgrade=2,gems=8exp_8mastery_8exp_8mastery_8exp_8mastery_9int,enchant=4all
-wrists=avools_ancestral_bracers,id=105591,upgrade=2,enchant=9int
-hands=gloves_of_the_horned_nightmare,id=99424,upgrade=2,gems=8exp_8mastery_8exp_8mastery_6int,enchant=9mastery
-waist=belt_of_ominous_trembles,id=105515,upgrade=2,gems=8exp_8mastery_8crit_8mastery_16mastery_6int
-legs=leggings_of_the_horned_nightmare,id=99426,upgrade=2,gems=16mastery_16mastery_6int,enchant=14int_8crit
-feet=boneinlaid_sandals,id=105493,upgrade=2,gems=16mastery_3hit,enchant=7mastery
-finger1=iyyokuks_hereditary_seal,id=105628,upgrade=2
-finger2=signet_of_the_dinomancers,id=105606,upgrade=2,gems=8exp_8mastery_3haste
-trinket1=purified_bindings_of_immerseus,id=105422,upgrade=2
-trinket2=kardris_toxic_totem,id=105540,upgrade=2
-main_hand=immaculately_preserved_wand,id=105594,upgrade=2,gems=8exp_8mastery_3int,enchant=jade_spirit
-off_hand=revelations_of_yshaarj,id=105650,upgrade=2,gems=8exp_8mastery_3int,enchant=8int
+head=primal_gladiators_hood_of_prowess,id=111084
+neck=primal_gladiators_pendant_of_cruelty,id=111128,enchant=140mastery
+shoulders=primal_gladiators_felweave_amice,id=111238
+back=primal_gladiators_drape_of_cruelty,id=111124,enchant=200mastery
+chest=primal_gladiators_felweave_raiment,id=111237
+wrists=primal_gladiators_cuffs_of_prowess,id=111099
+hands=primal_gladiators_felweave_handguards,id=111234
+waist=primal_gladiators_cord_of_victory,id=111095
+legs=primal_gladiators_felweave_trousers,id=111236
+feet=primal_gladiators_treads_of_cruelty,id=111096
+finger1=primal_gladiators_band_of_victory,id=111136,enchant=100mastery
+finger2=primal_gladiators_band_of_cruelty,id=111134,enchant=100mastery
+trinket1=primal_gladiators_badge_of_dominance,id=111227
+trinket2=primal_gladiators_insignia_of_dominance,id=111228
+main_hand=primal_gladiators_mageblade,id=111119,enchant=mark_of_warsong
+off_hand=primal_gladiators_endgame,id=111132
 
 # Gear Summary
-# gear_strength=4
-# gear_agility=4
-# gear_stamina=1534
-# gear_intellect=1042
-# gear_spell_power=590
-# gear_expertise_rating=88
-# gear_hit_rating=3
-# gear_crit_rating=393
-# gear_haste_rating=324
-# gear_mastery_rating=789
-# gear_armor=284
-# gear_multistrike_rating=99
-# tier16_2pc_caster=1
-# tier16_4pc_caster=1
+# gear_stamina=3245
+# gear_intellect=2584
+# gear_spell_power=1244
+# gear_crit_rating=905
+# gear_haste_rating=452
+# gear_mastery_rating=1662
+# gear_armor=600
+# gear_multistrike_rating=301
+# gear_versatility_rating=102
+# pvp_2pc_caster=1
+# pvp_4pc_caster=1
 default_pet=felhunter
