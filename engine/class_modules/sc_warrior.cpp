@@ -3502,9 +3502,9 @@ void warrior_t::apl_precombat()
   {
     std::string flask_action = "flask,type=";
     if ( primary_role() == ROLE_ATTACK )
-      flask_action += "winters_bite";
+      flask_action += "greater_draenor_critical_strike_flask";
     else if ( primary_role() == ROLE_TANK )
-      flask_action += "earth";
+      flask_action += "greater_draenor_critical_strike_flask";
     precombat -> add_action( flask_action );
   }
 
@@ -3531,7 +3531,15 @@ void warrior_t::apl_precombat()
     "# EXAMPLE TALENT LINE, THE VERY LAST DIGIT (2) IS GLADIATORS RESOLVE: talents=http://us.battle.net/wow/en/tool/talent-calculator#Zb!0102212");
 
   //Pre-pot
-  if ( sim -> allow_potions && level >= 80 )
+  if ( sim -> allow_potions && level >= 90 )
+  {
+    if ( primary_role() == ROLE_ATTACK )
+      precombat -> add_action( "potion,name=draenor_strength" );
+    else if ( primary_role() == ROLE_TANK )
+      precombat -> add_action( "potion,name=draenor_armor" );
+  }
+  //Pre-pot
+  else if ( sim -> allow_potions && level >= 80 )
   {
     if ( primary_role() == ROLE_ATTACK )
       precombat -> add_action( "potion,name=mogu_power" );
@@ -3555,8 +3563,13 @@ void warrior_t::apl_smf_fury()
   default_list -> add_action( this, "Charge" );
   default_list -> add_action( "auto_attack" );
 
-  if ( sim -> allow_potions && level >= 80 )
-    default_list -> add_action( "potion,name=mogu_power,if=(target.health.pct<20&buff.recklessness.up)|target.time_to_die<=25" );
+  if ( sim -> allow_potions )
+  {
+    if ( level >= 90 )
+      default_list -> add_action( "potion,name=draenor_strength,if=(target.health.pct<20&buff.recklessness.up)|target.time_to_die<=25" );
+    else if ( level >= 80 )
+      default_list -> add_action( "potion,name=mogu_power,if=(target.health.pct<20&buff.recklessness.up)|target.time_to_die<=25" );
+  }
 
   default_list -> add_action( this, "Recklessness", "if=!talent.bloodbath.enabled&(((cooldown.colossus_smash.remains<2|debuff.colossus_smash.remains>=5)&target.time_to_die>192)|target.health.pct<20)|buff.bloodbath.up&(target.time_to_die>192|target.health.pct<20)|target.time_to_die<=12",
                               "This incredibly long line can be translated to 'Use recklessness on cooldown with colossus smash; unless the boss will die before the ability is usable again, and then combine with execute instead.'" );
@@ -3671,8 +3684,13 @@ void warrior_t::apl_tg_fury()
     }
   }
 
-  if ( sim -> allow_potions && level >= 80 )
-    default_list -> add_action( "potion,name=mogu_power,if=(target.health.pct<20&buff.recklessness.up)|target.time_to_die<=25" );
+  if ( sim -> allow_potions )
+  {
+    if ( level >= 90 )
+      default_list -> add_action( "potion,name=draenor_strength,if=(target.health.pct<20&buff.recklessness.up)|target.time_to_die<=25" );
+    else if ( level >= 80 )
+      default_list -> add_action( "potion,name=mogu_power,if=(target.health.pct<20&buff.recklessness.up)|target.time_to_die<=25" );
+  }
 
   default_list -> add_action( this, "Recklessness", "if=!talent.bloodbath.enabled&(((cooldown.colossus_smash.remains<2|debuff.colossus_smash.remains>=5)&target.time_to_die>192)|target.health.pct<20)|buff.bloodbath.up&(target.time_to_die>192|target.health.pct<20)|target.time_to_die<=12",
                               "This incredibly long line can be translated to 'Use recklessness on cooldown with colossus smash; unless the boss will die before the ability is usable again, and then combine with execute instead.'" );
@@ -3775,8 +3793,13 @@ void warrior_t::apl_arms()
     }
   }
 
-  if ( sim -> allow_potions && level >= 80 )
-    default_list -> add_action( "potion,name=mogu_power,if=(target.health.pct<20&buff.recklessness.up)|buff.bloodlust.react|target.time_to_die<=25" );
+  if ( sim -> allow_potions )
+  {
+    if ( level >= 90 )
+      default_list -> add_action( "potion,name=draenor_strength,if=(target.health.pct<20&buff.recklessness.up)|target.time_to_die<=25" );
+    else if ( level >= 80 )
+      default_list -> add_action( "potion,name=mogu_power,if=(target.health.pct<20&buff.recklessness.up)|target.time_to_die<=25" );
+  }
 
   default_list -> add_action( this, "Recklessness", "if=!talent.bloodbath.enabled&((cooldown.colossus_smash.remains<2|debuff.colossus_smash.remains>=5)&(target.time_to_die>192|target.health.pct<20))|buff.bloodbath.up&(target.time_to_die>192|target.health.pct<20)|target.time_to_die<=12",
                               "This incredibly long line (Due to differing talent choices) says 'Use recklessness on cooldown with colossus smash, unless the boss will die before the ability is usable again, and then use it with execute.'" );
@@ -3832,8 +3855,13 @@ void warrior_t::apl_prot()
     }
   }
 
-  if ( sim -> allow_potions && level >= 80 )
-    default_list -> add_action( "potion,name=mountains,if=incoming_damage_2500ms>health.max*0.6&(buff.shield_wall.down&buff.last_stand.down)" );
+  if ( sim -> allow_potions )
+  {
+    if ( level >= 90 )
+      default_list -> add_action( "potion,name=draenor_armor,if=(target.health.pct<20&buff.recklessness.up)|target.time_to_die<=25" );
+    else if ( level >= 80 )
+      default_list -> add_action( "potion,name=mountains,if=(target.health.pct<20&buff.recklessness.up)|target.time_to_die<=25" );
+  }
 
   default_list -> add_action( this, "Heroic Strike", "if=buff.ultimatum.up" );
   default_list -> add_action( this, "Shield Block" );
@@ -3884,8 +3912,9 @@ void warrior_t::apl_gladiator()
     }
   }
 
-  if ( sim -> allow_potions && level >= 80 )
-    default_list -> add_action( "potion,name=mogu_power,if=buff.bloodbath.up|target.time_to_die<=25" );
+  if ( sim -> allow_potions ) // Gladiator is only usable at level 100.
+    default_list -> add_action( "potion,name=draenor_strength,if=(target.health.pct<20&buff.recklessness.up)|target.time_to_die<=25" );
+
   default_list -> add_action( "run_action_list,name=single_target,if=active_enemies<=4" );
   default_list -> add_action( "run_action_list,name=aoe,if=active_enemies>3" );
 
