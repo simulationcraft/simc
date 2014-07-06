@@ -2637,6 +2637,9 @@ struct conflagrate_t : public warlock_spell_t
     warlock_spell_t( p, "Conflagrate" ),
     fnb( new conflagrate_t( "conflagrate", p, p -> find_spell( 108685 ) ) )
   {
+    if ( p -> talents.charred_remains -> ok() ){
+      base_multiplier *= 1.0 + p -> talents.charred_remains -> effectN( 1 ).percent();
+    }
     havoc_consume = 1;
     base_costs[ RESOURCE_MANA ] *= 1.0 + p -> spec.chaotic_energy -> effectN( 2 ).percent();
   }
@@ -2720,7 +2723,11 @@ struct conflagrate_t : public warlock_spell_t
     else
       gain = p() -> gains.conflagrate;
 
-    trigger_ember_gain( p(), s -> result == RESULT_CRIT ? 0.2 : 0.1, gain );
+    if ( p() -> talents.charred_remains -> ok() ){
+      trigger_ember_gain( p(), s -> result == RESULT_CRIT ? 0.8 : 0.4, gain );
+    }
+    else
+      trigger_ember_gain( p(), s -> result == RESULT_CRIT ? 0.2 : 0.1, gain );
 
     //hotfixed extra gain with 15% chance from 13.09.13
     trigger_ember_gain( p(), 0.1, gain, 0.15 );
@@ -2745,6 +2752,9 @@ struct incinerate_t : public warlock_spell_t
     warlock_spell_t( p, "Incinerate" ),
     fnb( new incinerate_t( "incinerate", p, p -> find_spell( 114654 ) ) )
   {
+    if ( p -> talents.charred_remains -> ok() ){
+      base_multiplier *= 1.0 + p -> talents.charred_remains -> effectN( 1 ).percent();
+    }
     havoc_consume                = 1;
     base_costs[ RESOURCE_MANA ] *= 1.0 + p -> spec.chaotic_energy -> effectN( 2 ).percent();
   }
@@ -2822,7 +2832,12 @@ struct incinerate_t : public warlock_spell_t
     else
       gain = p() -> gains.incinerate;
 
-    trigger_ember_gain( p(), s -> result == RESULT_CRIT ? 0.2 : 0.1, gain );
+    if ( p() -> talents.charred_remains -> ok() ){
+      trigger_ember_gain( p(), s -> result == RESULT_CRIT ? 0.8 : 0.4, gain );
+    }
+    else
+      trigger_ember_gain( p(), s -> result == RESULT_CRIT ? 0.2 : 0.1, gain );
+
     //hotfixed extra gain with 15% 13.09.13
     trigger_ember_gain( p(), 0.1, gain, 0.15 );
     if ( rng().roll( p() -> sets.set ( SET_T15_4PC_CASTER ) -> effectN( 2 ).percent() ) )
