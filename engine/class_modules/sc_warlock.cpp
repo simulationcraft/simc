@@ -1942,6 +1942,7 @@ struct doom_t : public warlock_spell_t
     warlock_spell_t( "doom", p, p -> spec.doom )
   {
     may_crit = false;
+    base_crit += p -> perk.empowered_doom -> effectN( 1 ).percent();
   }
 
   virtual void tick( dot_t* d )
@@ -2085,6 +2086,7 @@ struct shadow_bolt_t : public warlock_spell_t
   {
     base_multiplier *= 1.0 + p -> sets.set( SET_T14_2PC_CASTER ) -> effectN( 3 ).percent();
     base_multiplier *= 1.0 + p -> sets.set( SET_T13_4PC_CASTER ) -> effectN( 1 ).percent();
+    base_multiplier *= 1.0 + p -> perk.improved_shadow_bolt -> effectN( 1 ).percent();
 
     hand_of_guldan               -> background = true;
     hand_of_guldan               -> base_costs[ RESOURCE_MANA ] = 0;
@@ -2208,7 +2210,7 @@ struct shadowburn_t : public warlock_spell_t
   {
     min_gcd = timespan_t::from_millis( 500 );
     havoc_consume = 1;
-
+    base_multiplier *= 1.0 + p -> perk.improved_shadowburn -> effectN( 1 ).percent();
     mana_delay  = data().effectN( 1 ).trigger() -> duration();
     mana_amount = p -> find_spell( data().effectN( 1 ).trigger() -> effectN( 1 ).base_value() ) -> effectN( 1 ).percent();
   }
@@ -2277,6 +2279,7 @@ struct corruption_t : public warlock_spell_t
     generate_fury = 4;
     base_multiplier *= 1.0 + p -> sets.set( SET_T14_2PC_CASTER ) -> effectN( 1 ).percent();
     base_multiplier *= 1.0 + p -> sets.set( SET_T13_4PC_CASTER ) -> effectN( 1 ).percent();
+    base_multiplier *= 1.0 + p -> perk.improved_corruption -> effectN( 1 ).percent();
     //pulling duration from sub-curruption, since default id has no duration...
     dot_duration = p -> find_spell( 146739 )-> duration();
     spell_power_mod.tick = p -> find_spell( 146739 ) -> effectN(1).sp_coeff(); //returning .180 for mod - supposed to be .165
@@ -2422,7 +2425,7 @@ struct unstable_affliction_t : public warlock_spell_t
     warlock_spell_t( p, "Unstable Affliction" )
   {
     may_crit   = false;
-    
+    base_multiplier *= 1.0 + p -> perk.improved_unstable_affliction -> effectN( 1 ).percent();
     if ( p -> glyphs.unstable_affliction -> ok() )
       base_execute_time *= 1.0 + p -> glyphs.unstable_affliction -> effectN( 1 ).percent();
   }
@@ -2668,6 +2671,8 @@ struct conflagrate_t : public warlock_spell_t
     // FIXME: No longer in the spell data for some reason
     cooldown -> duration = timespan_t::from_seconds( 12.0 );
     cooldown -> charges = 2;
+    base_multiplier *= 1.0 + p() -> perk.improved_conflagrate -> effectN( 1 ).percent();
+
   }
 
   void execute()
@@ -2757,7 +2762,7 @@ struct incinerate_t : public warlock_spell_t
     warlock_spell_t::init();
 
     backdraft_consume = 1;
-
+    base_crit += p() -> perk.empowered_incinerate -> effectN( 1 ).percent();
     base_multiplier *= 1.0 + p() -> sets.set( SET_T14_2PC_CASTER ) -> effectN( 2 ).percent();
     base_multiplier *= 1.0 + p() -> sets.set( SET_T13_4PC_CASTER ) -> effectN( 1 ).percent();
   }
@@ -3157,6 +3162,7 @@ struct touch_of_chaos_t : public warlock_spell_t
   {
     base_multiplier *= 1.0 + p -> sets.set( SET_T14_2PC_CASTER ) -> effectN( 3 ).percent();
     base_multiplier *= 1.0 + p -> sets.set( SET_T13_4PC_CASTER ) -> effectN( 1 ).percent(); // Assumption - need to test whether ToC is affected
+    base_multiplier *= 1.0 + p -> perk.improved_touch_of_chaos -> effectN( 1 ).percent();
 
     chaos_wave               -> background = true;
     chaos_wave               -> base_costs[ RESOURCE_DEMONIC_FURY ] = 0;
