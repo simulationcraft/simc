@@ -4307,6 +4307,7 @@ struct player_t : public actor_t
   std::map<std::string, std::string> alist_map;
   std::string action_list_information; // comment displayed in profile
   bool no_action_list_provided;
+  bool first_cast;
 
   bool quiet;
   // Reporting

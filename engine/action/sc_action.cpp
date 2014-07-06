@@ -1821,7 +1821,15 @@ void action_t::init()
   if ( ! ( background || sequence ) && ( pre_combat || action_list == "precombat" ) )
   {
     if ( harmful )
-      sim -> errorf( "Player %s attempted to add harmful action %s to precombat action list", player -> name(), name() );
+    {
+      if ( player -> first_cast == true )
+      {
+        player -> first_cast = false;
+        player -> precombat_action_list.push_back( this );
+      }
+      else
+        sim -> errorf( "Player %s attempted to add harmful action %s to precombat action list. A maximum of one harmful spell may be cast here.", player -> name(), name() );
+    }
     else
       player -> precombat_action_list.push_back( this );
   }
