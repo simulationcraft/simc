@@ -15,7 +15,7 @@ spec=balance
 
 # Executed before combat begins. Accepts non-harmful actions only.
 
-actions.precombat=flask,type=warm_sun
+actions.precombat=flask,type=greater_draenor_mastery_flask
 actions.precombat+=/food,type=mogu_fish_stew
 actions.precombat+=/mark_of_the_wild,if=!aura.str_agi_int.up
 actions.precombat+=/moonkin_form

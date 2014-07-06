@@ -16,7 +16,7 @@ spec=feral
 
 # Executed before combat begins. Accepts non-harmful actions only.
 
-actions.precombat=flask,type=spring_blossoms
+actions.precombat=flask,type=greater_draenor_mastery_flask
 actions.precombat+=/food,type=sea_mist_rice_noodles
 actions.precombat+=/mark_of_the_wild,if=!aura.str_agi_int.up
 actions.precombat+=/healing_touch,if=talent.bloodtalons.enabled
@@ -42,7 +42,7 @@ actions+=/bear_form,if=active_enemies>1&energy.time_to_max>=5.5&(dot.thrash_bear
 actions+=/savage_roar,if=buff.savage_roar.remains<3
 actions+=/potion,name=draenor_agility,if=target.time_to_die<=40
 actions+=/incarnation,if=energy<25&!buff.omen_of_clarity.react&cooldown.tigers_fury.remains<=1
-actions+=/use_item,slot=waist,sync=tigers_fury
+actions+=/use_item,slot=trinket1,sync=tigers_fury
 actions+=/blood_fury,sync=tigers_fury
 actions+=/berserking,sync=tigers_fury
 actions+=/arcane_torrent,sync=tigers_fury
@@ -67,31 +67,29 @@ actions+=/bear_form,if=dot.thrash_bear.remains-gcd<=dot.thrash_bear.duration*0.3
 actions+=/natures_vigil
 actions+=/rejuvenation,if=buff.natures_vigil.up&!ticking
 
-head=headpiece_of_the_shattered_vale,id=99328,upgrade=2,gems=8agi_9agi
-neck=immerseus_crystalline_eye,id=105407,upgrade=2
-shoulders=spaulders_of_the_shattered_vale,id=99322,upgrade=2,gems=8agi_8agi_6agi,enchant=10agi_5crit
-back=tigerfang_wrap,id=98148,upgrade=2,gems=8agi_3agi,enchant=9crit,addon=goblin_glider
-chest=raiment_of_the_shattered_vale,id=99326,upgrade=2,gems=8agi_8agi_8agi_9agi,enchant=4all
-wrists=bombers_blackened_wristwatch,id=105616,upgrade=2,enchant=9agi
-hands=grips_of_the_shattered_vale,id=99327,upgrade=2,gems=8agi_8agi_6agi,enchant=9haste
-waist=cord_of_black_dreams,id=105635,upgrade=2,gems=8agi_4agi_8crit_8agi_6agi,addon=nitro_boosts
-legs=rious_vigilant_leggings,id=105529,upgrade=2,gems=4agi_8crit_4agi_8crit_6agi,enchant=14agi_8crit
-feet=pandaren_roofsprinters,id=105582,upgrade=2,gems=4agi_8crit_3mastery,enchant=7agi
-finger1=kilruks_band_of_ascendancy,id=105624,upgrade=2,gems=8agi_3crit
-finger2=ring_of_restless_energy,id=105558,upgrade=2,gems=8agi_3crit
-trinket1=rune_of_reorigination,id=96918,upgrade=2
-trinket2=haromms_talisman,id=105527,upgrade=2
-main_hand=halberd_of_inner_shadows,id=105560,upgrade=2,gems=4agi_8crit_3agi,enchant=dancing_steel
+head=primal_gladiators_headcover,id=111285
+neck=primal_gladiators_necklace_of_prowess,id=111080,enchant=140mastery
+shoulders=primal_gladiators_dragonhide_spaulders,id=111111
+back=primal_gladiators_cape_of_cruelty,id=111077,enchant=200mastery
+chest=primal_gladiators_tunic,id=111273
+wrists=primal_gladiators_bindings_of_prowess,id=111148
+hands=primal_gladiators_dragonhide_gloves,id=111107
+waist=primal_gladiators_belt_of_cruelty,id=111142
+legs=primal_gladiators_legguards,id=111276
+feet=primal_gladiators_boots_of_victory,id=111146
+finger1=primal_gladiators_ring_of_cruelty,id=111081,enchant=100mastery
+finger2=primal_gladiators_ring_of_prowess,id=111271,enchant=100mastery
+trinket1=primal_gladiators_badge_of_conquest,id=111222
+trinket2=primal_gladiators_insignia_of_conquest,id=111223
+main_hand=primal_gladiators_pike,id=111075,enchant=mark_of_the_frostwolf
 
 # Gear Summary
-# gear_strength=4
-# gear_agility=1237
-# gear_stamina=1539
-# gear_intellect=8
-# gear_crit_rating=463
-# gear_haste_rating=372
-# gear_mastery_rating=527
-# gear_armor=414
-# gear_multistrike_rating=99
-# tier16_2pc_melee=1
-# tier16_4pc_melee=1
+# gear_agility=2588
+# gear_stamina=3250
+# gear_crit_rating=858
+# gear_haste_rating=89
+# gear_mastery_rating=1705
+# gear_armor=877
+# gear_multistrike_rating=525
+# gear_versatility_rating=249
+# pvp_2pc_melee=1

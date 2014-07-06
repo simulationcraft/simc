@@ -15,7 +15,6 @@ namespace { // UNNAMED NAMESPACE
     Fix Force of Nature (summons fine, but treants take no actions)
 
     = Feral =
-    Combo Points as a resource
     Verify stuff
 
     = Balance =
@@ -5736,9 +5735,23 @@ void druid_t::apl_precombat()
     } else {
       std::string flask_action = "flask,type=";
       if ( ( specialization() == DRUID_FERAL && primary_role() == ROLE_ATTACK ) || primary_role() == ROLE_ATTACK )
-        flask_action += ( level > 85 ) ? "spring_blossoms" : "winds";
+      {
+        if ( level > 90 )
+          flask_action += "greater_draenor_mastery_flask";
+        else if ( level > 85 )
+          flask_action += "spring_blossoms";
+        else
+          flask_action += "winds";
+      }
       else
-        flask_action += ( level > 85 ) ? "warm_sun" : "draconic_mind";
+      {
+        if ( level > 90 )
+          flask_action += "greater_draenor_mastery_flask";
+        else if ( level > 85 )
+          flask_action += "warm_sun";
+        else
+          flask_action += "draconic_mind";
+      }
       precombat -> add_action( flask_action );
     }
   }
