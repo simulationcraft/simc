@@ -2459,6 +2459,7 @@ struct haunt_t : public warlock_spell_t
   {
     hasted_ticks = false;
     tick_may_crit = false;
+    dot_duration += p -> perk.enhanced_haunt -> effectN( 1 ).time_value();
   }
 
 
@@ -2482,12 +2483,7 @@ struct haunt_t : public warlock_spell_t
 
   virtual void impact( action_state_t* s )
   {
-    timespan_t duration = data().duration();
 
-    if ( p() -> sets.has_set_bonus( SET_T15_2PC_CASTER ) && p() -> buffs.dark_soul -> check() )
-      duration += p() -> spells.tier15_2pc -> effectN( 1 ).time_value();
-
-    dot_duration = duration;
     warlock_spell_t::impact( s );
 
     if ( result_is_hit( s -> result ) )
