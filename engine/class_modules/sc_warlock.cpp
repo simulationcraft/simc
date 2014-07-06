@@ -3227,6 +3227,16 @@ struct drain_soul_t : public warlock_spell_t
     stats -> add_child( p -> get_stats( "unstable_affliction_ds" ) );
   }
 
+  virtual double composite_target_multiplier( player_t* t ) const
+  {
+    double m = warlock_spell_t::composite_target_multiplier( t );
+
+    if ( t -> health_percentage() <= 20 )
+      m *= 1.0 + p() -> perk.improved_drain_soul -> effectN( 1 ).percent();
+
+    return m;
+  }
+
   virtual double action_multiplier() const
   {
     double m = warlock_spell_t::action_multiplier();
