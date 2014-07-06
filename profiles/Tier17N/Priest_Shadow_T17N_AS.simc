@@ -1,9 +1,10 @@
 priest="Priest_Shadow_T17N_AS"
 level=100
-race=goblin
+race=draenei
 role=spell
 position=back
-talents=http://us.battle.net/wow/en/tool/talent-calculator#Xb!0022022
+professions=enchanting=600/engineering=600
+talents=http://us.battle.net/wow/en/tool/talent-calculator#Xb!0002022
 glyphs=mind_flay/fade/sha
 spec=shadow
 
