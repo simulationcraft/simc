@@ -446,7 +446,11 @@ bool option_db_t::parse_args( const std::vector<std::string>& args )
 // option_db_t::option_db_t =================================================
 
 #ifndef SC_SHARED_DATA
-#define SC_SHARED_DATA ".."
+  #if defined( SC_LINUX_PACKAGING )
+    #define SC_SHARED_DATA SC_LINUX_PACKAGING "/profiles/"
+  #else
+    #define SC_SHARED_DATA ".."
+  #endif
 #endif
 
 option_db_t::option_db_t()
