@@ -4398,7 +4398,7 @@ void mage_t::apl_precombat()
 
   //Potions
   if ( ( level >= 80 ) && ( sim -> allow_potions ) )
-    precombat -> add_action( "jade_serpent_potion" );
+    precombat -> add_action( "potion,name=jade_serpent" );
 
   precombat -> add_action( this, "Mirror Image" );
 }
@@ -4431,7 +4431,7 @@ void mage_t::apl_arcane()
   for( size_t i = 0; i < racial_actions.size(); i++ )
     default_list -> add_action( racial_actions[i] );
 
-  default_list -> add_action( "jade_serpent_potion,if=buff.arcane_power.up|target.time_to_die<50" );
+  default_list -> add_action( "potion,name=jade_serpent,if=buff.arcane_power.up|target.time_to_die<50" );
 
   for( size_t i = 0; i < item_actions.size(); i++ )
   {
@@ -4489,7 +4489,7 @@ void mage_t::apl_fire()
   for( size_t i = 0; i < racial_actions.size(); i++ )
     default_list -> add_action( racial_actions[i] );
 
-  default_list -> add_action( "jade_serpent_potion" );
+  default_list -> add_action( "potion,name=jade_serpent" );
   default_list -> add_action( this, "Mirror Image" );
 
   default_list -> add_action( this, "Combustion", "if=target.time_to_die<22" );

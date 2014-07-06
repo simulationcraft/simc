@@ -22,7 +22,7 @@ actions.precombat+=/arcane_brilliance
 actions.precombat+=/molten_armor
 actions.precombat+=/snapshot_stats
 actions.precombat+=/rune_of_power,if=talent.rune_of_power.enabled
-actions.precombat+=/jade_serpent_potion
+actions.precombat+=/potion,name=jade_serpent
 
 # Executed every time the actor is available.
 
@@ -33,7 +33,7 @@ actions+=/rune_of_power,if=talent.rune_of_power.enabled&buff.rune_of_power.remai
 actions+=/blood_fury
 actions+=/berserking
 actions+=/arcane_torrent
-actions+=/jade_serpent_potion
+actions+=/potion,name=jade_serpent
 actions+=/combustion,if=target.time_to_die<22
 actions+=/combustion,if=dot.ignite.tick_dmg>=((3*action.pyroblast.crit_damage)*mastery_value*0.5)
 actions+=/combustion,if=dot.ignite.tick_dmg>=((action.fireball.crit_damage+action.inferno_blast.crit_damage+action.pyroblast.hit_damage)*mastery_value*0.5)&dot.pyroblast.ticking&buff.pyroblast.down&buff.presence_of_mind.down

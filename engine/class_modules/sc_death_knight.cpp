@@ -5285,17 +5285,17 @@ void death_knight_t::default_apl_blood()
   std::string srpct     = sets.has_set_bonus( SET_T15_4PC_MELEE ) ? "45" : "35";
   std::string flask_str = "flask,type=";
   std::string food_str  = "food,type=";
-  std::string potion_str;
+  std::string potion_str = "potion,name=";
 
   if ( primary_role() == ROLE_TANK )
   {
-    potion_str = ( level >= 85 ) ? "mountains_potion" : "earthen_potion";
+    potion_str += ( level >= 85 ) ? "mountains_potion" : "earthen_potion";
     flask_str += ( level >= 85 ) ? "earth" : "steelskin";
     food_str += ( level >= 85 ) ? "chun_tian_spring_rolls" : "beer_basted_crocolisk";
   }
   else
   {
-    potion_str = ( level >= 85 ) ? "mogu_power_potion" : "golemblood_potion";
+    potion_str += ( level >= 85 ) ? "mogu_power" : "golemblood";
     flask_str += ( level >= 85 ) ? "winters_bite" : "titanic_strength";
     food_str += ( level >= 85 ) ? "black_pepper_ribs_and_shrimp" : "beer_basted_crocolisk";
   }
@@ -5419,8 +5419,8 @@ void death_knight_t::init_action_list()
   std::string soul_reaper_pct = sets.has_set_bonus( SET_T15_4PC_MELEE ) ? "45" : "35";
   std::string flask_str = "flask,type=";
   std::string food_str  = "food,type=";
-  std::string potion_str;
-  potion_str = ( level >= 85 ) ? "mogu_power_potion" : "golemblood_potion";
+  std::string potion_str = "potion,name=";
+  potion_str += ( level >= 85 ) ? "mogu_power" : "golemblood";
   flask_str += ( level >= 85 ) ? "winters_bite" : "titanic_strength";
   food_str += ( level >= 85 ) ? "black_pepper_ribs_and_shrimp" : "beer_basted_crocolisk";
 

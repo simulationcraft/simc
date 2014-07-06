@@ -16,21 +16,21 @@ spec=protection
 
 # Executed before combat begins. Accepts non-harmful actions only.
 
-actions.precombat=flask,type=earth
+actions.precombat=flask,type=greater_draenor_critical_strike_flask
 actions.precombat+=/food,type=chun_tian_spring_rolls
-# Snapshot raid buffed stats before combat begins and pre-potting is done.
-actions.precombat+=/snapshot_stats
 # IF YOU WISH TO SIMULATE YOUR CHARACTER AS GLADIATOR, PLEASE CHANGE ROLE TO DPS IN GLOBAL OPTIONS, AND THEN RE-IMPORT FROM BATTLE.NET
 # AFTER IMPORTING, MAKE SURE YOUR LEVEL IS SET TO 100 AND GLADIATORS RESOLVE IS TALENTED. 
 # EXAMPLE TALENT LINE, THE VERY LAST DIGIT (2) IS GLADIATORS RESOLVE: talents=http://us.battle.net/wow/en/tool/talent-calculator#Zb!0102212
 actions.precombat+=/stance,choose=defensive
-actions.precombat+=/mountains_potion
+# Snapshot raid buffed stats before combat begins and pre-potting is done.
+actions.precombat+=/snapshot_stats
+actions.precombat+=/potion,name=draenor_armor
 
 # Executed every time the actor is available.
 
 actions=charge
 actions+=/auto_attack
-actions+=/mountains_potion,if=incoming_damage_2500ms>health.max*0.6&(buff.shield_wall.down&buff.last_stand.down)
+actions+=/potion,name=draenor_armor,if=(target.health.pct<20&buff.recklessness.up)|target.time_to_die<=25
 actions+=/heroic_strike,if=buff.ultimatum.up
 actions+=/shield_block
 actions+=/shield_barrier,if=incoming_damage_1500ms>health.max*0.3|rage>rage.max-20

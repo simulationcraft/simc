@@ -23,7 +23,7 @@ actions.precombat+=/frost_armor
 actions.precombat+=/water_elemental
 actions.precombat+=/snapshot_stats
 actions.precombat+=/rune_of_power,if=talent.rune_of_power.enabled
-actions.precombat+=/jade_serpent_potion
+actions.precombat+=/potion,name=jade_serpent
 
 # Executed every time the actor is available.
 

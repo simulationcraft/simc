@@ -19,13 +19,13 @@ actions.precombat=flask,type=spring_blossoms
 actions.precombat+=/food,type=sea_mist_rice_noodles
 actions.precombat+=/stance,choose=fierce_tiger
 actions.precombat+=/snapshot_stats
-actions.precombat+=/virmens_bite_potion
+actions.precombat+=/potion,name=virmens_bite
 
 # Executed every time the actor is available.
 
 actions=auto_attack
 actions+=/chi_sphere,if=talent.power_strikes.enabled&buff.chi_sphere.react&chi<4
-actions+=/virmens_bite_potion,if=buff.bloodlust.react|target.time_to_die<=60
+actions+=/potion,name=virmens_bite,if=buff.bloodlust.react|target.time_to_die<=60
 actions+=/berserking
 actions+=/chi_brew,if=talent.chi_brew.enabled&chi<=2&(trinket.proc.agility.react|(charges=1&recharge_time<=10)|charges=2|target.time_to_die<charges*10)
 actions+=/tiger_palm,if=buff.tiger_power.remains<=3

@@ -1246,7 +1246,7 @@ result_e action_t::calculate_multistrike_result( action_state_t* s )
 {
   if ( ! s -> target ) return RESULT_NONE;
   if ( ! may_multistrike ) return RESULT_NONE;
-  if ( ! harmful ) return RESULT_NONE;
+  //if ( ! harmful ) return RESULT_NONE; See if this screws anything up. 
 
   result_e r = RESULT_NONE;
   if ( rng().roll( composite_multistrike() ) )
@@ -1824,8 +1824,13 @@ void action_t::init()
     {
       if ( player -> first_cast == true )
       {
-        player -> first_cast = false;
-        player -> precombat_action_list.push_back( this );
+        if ( this -> travel_speed > 0 || this -> base_execute_time > timespan_t::zero() )
+        {
+          player -> first_cast = false;
+          player -> precombat_action_list.push_back( this );
+        }
+        else
+          sim -> errorf( "Player %s attempted to add harmful action %s to precombat action list. Only one spell with travel time/cast time may be cast here.", player -> name(), name() );
       }
       else
         sim -> errorf( "Player %s attempted to add harmful action %s to precombat action list. A maximum of one harmful spell may be cast here.", player -> name(), name() );
@@ -2579,7 +2584,7 @@ void action_t::trigger_dot( action_state_t* s )
 
   if ( !dot -> is_ticking() )
   {
-    if ( get_school() == SCHOOL_PHYSICAL )
+    if ( get_school() == SCHOOL_PHYSICAL && harmful )
     {
       buff_t* b = s -> target -> debuffs.bleeding;
       if ( b -> current_value > 0 )

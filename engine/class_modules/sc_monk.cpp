@@ -4062,9 +4062,9 @@ void monk_t::apl_pre_brewmaster()
   /* if ( sim -> allow_potions && level >= 80 )
   {
     if ( level >= 85 )
-      pre -> add_action( "virmens_bite_potion" );
+      pre -> add_action( "potion,name=virmens_bite" );
     else
-      pre -> add_action( "tolvir_agility_potion" ); // FIXME
+      pre -> add_action( "potion,name=tolvir" ); // FIXME
   } */
 }
  
@@ -4093,9 +4093,9 @@ void monk_t::apl_pre_windwalker()
   {
     // Prepotion
     if ( level >= 85 )
-      precombat += "/virmens_bite_potion";
+      precombat += "/potion,name=virmens_bite";
     else if ( level > 80 )
-      precombat += "/tolvir_potion";
+      precombat += "/potion,name=tolvir";
   }
 }
  
@@ -4130,9 +4130,9 @@ void monk_t::apl_pre_mistweaver()
   {
     // Prepotion
     if ( level >= 85 )
-      precombat += "/jade_serpent_potion";
+      precombat += "/potion,name=jade_serpent_potion";
     else if ( level > 80 )
-      precombat += "/volcanic_potion";
+      precombat += "/potion,name=volcanic_potion";
   }
 }
  
@@ -4191,7 +4191,7 @@ void monk_t::apl_combat_windwalker()
   if ( sim -> allow_potions )
   {
     if ( level >= 85 )
-      action_list_str += "/virmens_bite_potion,if=buff.bloodlust.react|target.time_to_die<=60";
+      action_list_str += "/potion,name=virmens_bite,if=buff.bloodlust.react|target.time_to_die<=60";
   }
  
   // PROFS/RACIALS
@@ -4247,7 +4247,7 @@ void monk_t::apl_combat_mistweaver()
   if ( sim -> allow_potions )
   {
     if ( level >= 85 )
-      def -> add_action( "/jade_serpent_potion,if=buff.bloodlust.react|target.time_to_die<=60" );
+      def -> add_action( "/potion,name=jade_serpent_potion,if=buff.bloodlust.react|target.time_to_die<=60" );
   }
 
   def -> add_talent( this, "Invoke Xuen" );

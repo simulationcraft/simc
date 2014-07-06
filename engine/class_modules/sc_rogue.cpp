@@ -3083,14 +3083,14 @@ void rogue_t::init_action_list()
   precombat -> add_action( "snapshot_stats", "Snapshot raid buffed stats before combat begins and pre-potting is done." );
 
   if ( sim -> allow_potions && level >= 80 )
-    precombat -> add_action( ( level > 85 ) ? "virmens_bite_potion" : "tolvir_potion" );
+    precombat -> add_action( ( level > 85 ) ? "potion,name=virmens_bite" : "potion,name=tolvir" );
 
   precombat -> add_action( this, "Stealth" );
 
   // In-combat potion
   if ( sim -> allow_potions )
   {
-    std::string potion_str = ( level > 85 ) ? "virmens_bite_potion" : "tolvir_potion";
+    std::string potion_str = ( level > 85 ) ? "potion,name=virmens_bite" : "potion,name=tolvir";
     potion_str += ",if=buff.bloodlust.react|target.time_to_die<40";
 
     def -> add_action( potion_str );
@@ -3175,8 +3175,8 @@ void rogue_t::init_action_list()
     def -> add_action( this, "Vanish", "if=time>10&(combo_points<3|(talent.anticipation.enabled&anticipation_charges<3)|(buff.shadow_blades.down&(combo_points<4|(talent.anticipation.enabled&anticipation_charges<4))))&((talent.shadow_focus.enabled&buff.adrenaline_rush.down&energy<20)|(talent.subterfuge.enabled&energy>=90)|(!talent.shadow_focus.enabled&!talent.subterfuge.enabled&energy>=60))" );
 
     // Cooldowns (No Tier14)
+    def -> add_action( this, "Killing Spree", "if=energy<50" );
     def -> add_action( this, "Shadow Blades", "if=time>5" );
-    def -> add_action( this, "Killing Spree", "if=energy<45" );
     def -> add_action( this, "Adrenaline Rush", "if=energy<35|buff.shadow_blades.up" );
 
     // Rotation
@@ -3199,7 +3199,7 @@ void rogue_t::init_action_list()
     // Combo point finishers
     action_priority_list_t* finisher = get_action_priority_list( "finisher", "Combo point finishers" );
     finisher -> add_action( this, "Rupture", "if=ticks_remain<2&target.time_to_die>=26&(active_enemies<2|!buff.blade_flurry.up)" );
-	finisher -> add_action( this, "Crimson Tempest", "if=active_enemies>=7&dot.crimson_tempest_dot.ticks_remain<=2" );
+    finisher -> add_action( this, "Crimson Tempest", "if=active_enemies>=7&dot.crimson_tempest_dot.ticks_remain<=2" );
     finisher -> add_action( this, "Eviscerate" );
   }
   else if ( specialization() == ROGUE_SUBTLETY )

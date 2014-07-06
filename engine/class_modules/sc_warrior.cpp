@@ -2051,11 +2051,16 @@ struct revenge_t: public warrior_attack_t
 struct blood_craze_t: public warrior_heal_t
 {
   blood_craze_t( warrior_t* p ):
-    warrior_heal_t( "blood_craze", p, p -> spec.blood_craze -> effectN( 1 ).trigger() )
+    warrior_heal_t( "blood_craze", p, p -> spec.blood_craze )
   {
     tick_zero = true;
+    hasted_ticks = harmful = tick_may_crit = false;
+    tick_pct_heal = p -> spec.blood_craze -> effectN( 1 ).trigger() -> effectN( 1 ).percent();
+    tick_pct_heal *= 0.75; //Ticks for 0.75% of max health every second for 3 seconds, 4 ticks total.
+    base_tick_time = p -> spec.blood_craze -> effectN( 1 ).trigger() -> effectN( 1 ).period();
+    dot_duration = p -> spec.blood_craze -> effectN( 1 ).trigger() -> duration();
+    dot_behavior = DOT_REFRESH;
     may_multistrike = 1;
-    tick_pct_heal = data().effectN( 1 ).percent();
   }
 };
 
@@ -2620,15 +2625,7 @@ struct berserker_rage_t: public warrior_spell_t
     warrior_spell_t::execute();
 
     p() -> buff.berserker_rage -> trigger();
-    if ( p() -> specialization() != WARRIOR_ARMS )
-    {
-      p() -> resource_gain( RESOURCE_RAGE,
-                     p() -> buff.enrage -> data().effectN( 1 ).resource( RESOURCE_RAGE ),
-                     p() -> gain.enrage );
-      p() -> buff.enrage -> trigger();
-
-      p() -> buff.enraged_speed -> trigger();
-    }
+    p() -> enrage();
   }
 };
 
@@ -3502,9 +3499,9 @@ void warrior_t::apl_precombat()
   {
     std::string flask_action = "flask,type=";
     if ( primary_role() == ROLE_ATTACK )
-      flask_action += "winters_bite";
+      flask_action += "greater_draenor_critical_strike_flask";
     else if ( primary_role() == ROLE_TANK )
-      flask_action += "earth";
+      flask_action += "greater_draenor_critical_strike_flask";
     precombat -> add_action( flask_action );
   }
 
@@ -3519,8 +3516,6 @@ void warrior_t::apl_precombat()
     precombat -> add_action( food_action );
   }
 
-  precombat -> add_action( "snapshot_stats", "Snapshot raid buffed stats before combat begins and pre-potting is done." );
-
   if ( specialization() != WARRIOR_PROTECTION )
     precombat -> add_action( "stance,choose=battle" );
   else if ( primary_role() == ROLE_ATTACK )
@@ -3528,15 +3523,25 @@ void warrior_t::apl_precombat()
   else
     precombat -> add_action( "stance,choose=defensive", "IF YOU WISH TO SIMULATE YOUR CHARACTER AS GLADIATOR, PLEASE CHANGE ROLE TO DPS IN GLOBAL OPTIONS, AND THEN RE-IMPORT FROM BATTLE.NET\n"
     "# AFTER IMPORTING, MAKE SURE YOUR LEVEL IS SET TO 100 AND GLADIATORS RESOLVE IS TALENTED. \n"
-    "# EXAMPLE TALENT LINE, THE VERY LAST DIGIT (2) IS GLADIATORS RESOLVE: talents=http://us.battle.net/wow/en/tool/talent-calculator#Zb!0102212");
+    "# EXAMPLE TALENT LINE, THE VERY LAST DIGIT (2) IS GLADIATORS RESOLVE: talents=http://us.battle.net/wow/en/tool/talent-calculator#Zb!0102212" );
+
+  precombat -> add_action( "snapshot_stats", "Snapshot raid buffed stats before combat begins and pre-potting is done." );
 
   //Pre-pot
-  if ( sim -> allow_potions && level >= 80 )
+  if ( sim -> allow_potions && level >= 90 )
   {
     if ( primary_role() == ROLE_ATTACK )
-      precombat -> add_action( "mogu_power_potion" );
+      precombat -> add_action( "potion,name=draenor_strength" );
     else if ( primary_role() == ROLE_TANK )
-      precombat -> add_action( "mountains_potion" );
+      precombat -> add_action( "potion,name=draenor_armor" );
+  }
+  //Pre-pot
+  else if ( sim -> allow_potions && level >= 80 )
+  {
+    if ( primary_role() == ROLE_ATTACK )
+      precombat -> add_action( "potion,name=mogu_power" );
+    else if ( primary_role() == ROLE_TANK )
+      precombat -> add_action( "potion,name=mountains" );
   }
 }
 
@@ -3555,8 +3560,13 @@ void warrior_t::apl_smf_fury()
   default_list -> add_action( this, "Charge" );
   default_list -> add_action( "auto_attack" );
 
-  if ( sim -> allow_potions && level >= 80 )
-    default_list -> add_action( "mogu_power_potion,if=(target.health.pct<20&buff.recklessness.up)|target.time_to_die<=25" );
+  if ( sim -> allow_potions )
+  {
+    if ( level >= 90 )
+      default_list -> add_action( "potion,name=draenor_strength,if=(target.health.pct<20&buff.recklessness.up)|target.time_to_die<=25" );
+    else if ( level >= 80 )
+      default_list -> add_action( "potion,name=mogu_power,if=(target.health.pct<20&buff.recklessness.up)|target.time_to_die<=25" );
+  }
 
   default_list -> add_action( this, "Recklessness", "if=!talent.bloodbath.enabled&(((cooldown.colossus_smash.remains<2|debuff.colossus_smash.remains>=5)&target.time_to_die>192)|target.health.pct<20)|buff.bloodbath.up&(target.time_to_die>192|target.health.pct<20)|target.time_to_die<=12",
                               "This incredibly long line can be translated to 'Use recklessness on cooldown with colossus smash; unless the boss will die before the ability is usable again, and then combine with execute instead.'" );
@@ -3671,8 +3681,13 @@ void warrior_t::apl_tg_fury()
     }
   }
 
-  if ( sim -> allow_potions && level >= 80 )
-    default_list -> add_action( "mogu_power_potion,if=(target.health.pct<20&buff.recklessness.up)|target.time_to_die<=25" );
+  if ( sim -> allow_potions )
+  {
+    if ( level >= 90 )
+      default_list -> add_action( "potion,name=draenor_strength,if=(target.health.pct<20&buff.recklessness.up)|target.time_to_die<=25" );
+    else if ( level >= 80 )
+      default_list -> add_action( "potion,name=mogu_power,if=(target.health.pct<20&buff.recklessness.up)|target.time_to_die<=25" );
+  }
 
   default_list -> add_action( this, "Recklessness", "if=!talent.bloodbath.enabled&(((cooldown.colossus_smash.remains<2|debuff.colossus_smash.remains>=5)&target.time_to_die>192)|target.health.pct<20)|buff.bloodbath.up&(target.time_to_die>192|target.health.pct<20)|target.time_to_die<=12",
                               "This incredibly long line can be translated to 'Use recklessness on cooldown with colossus smash; unless the boss will die before the ability is usable again, and then combine with execute instead.'" );
@@ -3775,8 +3790,13 @@ void warrior_t::apl_arms()
     }
   }
 
-  if ( sim -> allow_potions && level >= 80 )
-    default_list -> add_action( "mogu_power_potion,if=(target.health.pct<20&buff.recklessness.up)|buff.bloodlust.react|target.time_to_die<=25" );
+  if ( sim -> allow_potions )
+  {
+    if ( level >= 90 )
+      default_list -> add_action( "potion,name=draenor_strength,if=(target.health.pct<20&buff.recklessness.up)|target.time_to_die<=25" );
+    else if ( level >= 80 )
+      default_list -> add_action( "potion,name=mogu_power,if=(target.health.pct<20&buff.recklessness.up)|target.time_to_die<=25" );
+  }
 
   default_list -> add_action( this, "Recklessness", "if=!talent.bloodbath.enabled&((cooldown.colossus_smash.remains<2|debuff.colossus_smash.remains>=5)&(target.time_to_die>192|target.health.pct<20))|buff.bloodbath.up&(target.time_to_die>192|target.health.pct<20)|target.time_to_die<=12",
                               "This incredibly long line (Due to differing talent choices) says 'Use recklessness on cooldown with colossus smash, unless the boss will die before the ability is usable again, and then use it with execute.'" );
@@ -3832,8 +3852,13 @@ void warrior_t::apl_prot()
     }
   }
 
-  if ( sim -> allow_potions && level >= 80 )
-    default_list -> add_action( "mountains_potion,if=incoming_damage_2500ms>health.max*0.6&(buff.shield_wall.down&buff.last_stand.down)" );
+  if ( sim -> allow_potions )
+  {
+    if ( level >= 90 )
+      default_list -> add_action( "potion,name=draenor_armor,if=(target.health.pct<20&buff.recklessness.up)|target.time_to_die<=25" );
+    else if ( level >= 80 )
+      default_list -> add_action( "potion,name=mountains,if=(target.health.pct<20&buff.recklessness.up)|target.time_to_die<=25" );
+  }
 
   default_list -> add_action( this, "Heroic Strike", "if=buff.ultimatum.up" );
   default_list -> add_action( this, "Shield Block" );
@@ -3884,8 +3909,9 @@ void warrior_t::apl_gladiator()
     }
   }
 
-  if ( sim -> allow_potions && level >= 80 )
-    default_list -> add_action( "mogu_power_potion,if=buff.bloodbath.up|target.time_to_die<=25" );
+  if ( sim -> allow_potions ) // Gladiator is only usable at level 100.
+    default_list -> add_action( "potion,name=draenor_strength,if=(target.health.pct<20&buff.recklessness.up)|target.time_to_die<=25" );
+
   default_list -> add_action( "run_action_list,name=single_target,if=active_enemies<=4" );
   default_list -> add_action( "run_action_list,name=aoe,if=active_enemies>3" );
 
@@ -3972,7 +3998,8 @@ void warrior_t::create_buffs()
   buff.bloodbath = buff_creator_t( this, "bloodbath", talents.bloodbath )
     .cd( timespan_t::zero() );
 
-  buff.blood_craze = buff_creator_t( this, "blood_craze", spec.blood_craze -> effectN( 1 ).trigger() );
+  buff.blood_craze = buff_creator_t( this, "blood_craze", spec.blood_craze )
+    .duration( spec.blood_craze -> effectN( 1 ).trigger() -> duration() );
 
   buff.bloodsurge = buff_creator_t( this, "bloodsurge", find_class_spell( "Wild Strike" ) )
     .chance( spec.bloodsurge -> effectN( 1 ).percent() );
@@ -4188,6 +4215,12 @@ void warrior_t::combat_begin()
 
   if ( active_stance == STANCE_BATTLE && !buff.battle_stance -> check() )
     buff.battle_stance -> trigger();
+
+  if ( active_stance == STANCE_DEFENSE && !buff.defensive_stance -> check() )
+    buff.defensive_stance -> trigger();
+
+  if ( active_stance == STANCE_GLADIATOR && !buff.gladiator_stance -> check() )
+    buff.gladiator_stance -> trigger();
 
   if ( specialization() == WARRIOR_PROTECTION )
     resolve_manager.start();
@@ -4783,8 +4816,6 @@ public:
     }
     os << "\t\t\t\t\t<p> Dps done to primary target </p>\n";
     os << ( ( priority_damage / all_damage ) * p.collected_data.dps.mean() ) << "</p>\n";
-
-    os << "\t\t\t\t\t<p> GCD: " << ( 1.5 * p.cache.attack_haste() ) << "</p>\n";
 
     os << "\t\t\t\t\t\t</div>\n" << "\t\t\t\t\t</div>\n";
   }

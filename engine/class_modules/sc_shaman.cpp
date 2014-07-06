@@ -4639,7 +4639,7 @@ void shaman_t::trigger_fulmination_stack( const action_state_t* state )
   if ( ! buff.lightning_shield -> check() )
     return;
 
-  if ( ! ( spell -> result_is_hit( state -> result ) &&
+  if ( ! ( spell -> result_is_hit( state -> result ) ||
            spell -> result_is_multistrike( state -> result ) ) )
     return;
 
@@ -4880,7 +4880,7 @@ void shaman_t::init_action_list()
     if ( primary_role() == ROLE_ATTACK )
       flask_action += ( ( level > 90 ) ? "greater_draenor_haste_flask" : ( level >= 85 ) ? "spring_blossoms" : ( level >= 80 ) ? "winds" : "" );
     else
-      flask_action += ( ( level > 90 ) ? "greater_draenor_multistrike_flask" : ( level >= 85 ) ? "warm_sun " : ( level >= 80 ) ? "draconic_mind" : "" );
+      flask_action += ( ( level > 90 ) ? "greater_draenor_multistrike_flask" : ( level >= 85 ) ? "warm_sun" : ( level >= 80 ) ? "draconic_mind" : "" );
 
     precombat -> add_action( flask_action );
   }
