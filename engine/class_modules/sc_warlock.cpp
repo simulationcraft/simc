@@ -2546,6 +2546,7 @@ struct immolate_t : public warlock_spell_t
   void init()
   {
     warlock_spell_t::init();
+    spell_power_mod.direct *= 1.0 + p() -> perk.empowered_immolate -> effectN( 1 ).percent();
   }
 
   void schedule_execute( action_state_t* state )
@@ -2961,7 +2962,6 @@ struct chaos_bolt_t : public warlock_spell_t
   {
     havoc_consume = 3;
     backdraft_consume = 3;
-
     hasted_ticks = false;
     
     if ( p -> talents.grimoire_of_sacrifice -> ok() )
