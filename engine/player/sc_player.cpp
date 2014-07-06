@@ -449,7 +449,7 @@ player_t::player_t( sim_t*             s,
   flask( FLASK_NONE ),
   food( FOOD_NONE ),
   // Events
-  executing( 0 ), channeling( 0 ), strict_sequence( 0 ), readying( 0 ), off_gcd( 0 ), in_combat( false ), action_queued( false ),
+  executing( 0 ), channeling( 0 ), strict_sequence( 0 ), readying( 0 ), off_gcd( 0 ), in_combat( false ), action_queued( false ), first_cast( true ),
   last_foreground_action( 0 ),
   cast_delay_reaction( timespan_t::zero() ), cast_delay_occurred( timespan_t::zero() ),
   // Actions
@@ -3341,6 +3341,7 @@ void player_t::reset()
     buff_list[ i ] -> reset();
 
   last_foreground_action = 0;
+  first_cast = true;
 
   executing = 0;
   channeling = 0;
