@@ -1091,6 +1091,9 @@ double warlock_pet_t::composite_player_multiplier( school_e school ) const
 
   if ( o() -> buffs.tier16_2pc_fiery_wrath -> up())
     m *= 1.0  + o() -> buffs.tier16_2pc_fiery_wrath -> value();
+
+  m *= 1.0 + o() -> perk.improved_demons -> effectN( 1 ).percent();
+
   return m;
 }
 
@@ -1911,7 +1914,7 @@ struct agony_t : public warlock_spell_t
 
   virtual void tick( dot_t* d )
   {
-    if ( td( d -> state -> target ) -> agony_stack < 10 ) td( d -> state -> target ) -> agony_stack++;
+    if ( td( d -> state -> target ) -> agony_stack < ( 10 + p() -> perk.empowered_agony -> effectN( 1 ).base_value() )) td( d -> state -> target ) -> agony_stack++;
     warlock_spell_t::tick( d );
   }
 
@@ -2308,7 +2311,7 @@ struct corruption_t : public warlock_spell_t
     if ( p() -> spec.nightfall -> ok() && d -> state -> target == p() -> latest_corruption_target && ! periodic_hit ) //5.4 only the latest corruption procs it
     {
 
-      if ( rng().roll( p() -> spec.nightfall -> effectN( 1 ).percent() ) )
+      if ( rng().roll( p() -> spec.nightfall -> effectN( 1 ).percent() + p() -> perk.enhanced_nightfall -> effectN( 1 ).percent()/10 ) )
       {
         p() -> resource_gain( RESOURCE_SOUL_SHARD, 1, p() -> gains.nightfall );
         // If going from 0 to 1 shard was a surprise, the player would have to react to it
@@ -2914,7 +2917,7 @@ struct soul_fire_t : public warlock_spell_t
     timespan_t t = warlock_spell_t::execute_time();
 
     if ( p() -> buffs.molten_core -> up() )
-      t *= 1.0 + p() -> buffs.molten_core -> data().effectN( 1 ).percent();
+      t *= 1.0 + p() -> buffs.molten_core -> data().effectN( 1 ).percent() + p() -> perk.improved_molten_core -> effectN( 1 ).percent();
 
     return t;
   }
@@ -2940,7 +2943,7 @@ struct soul_fire_t : public warlock_spell_t
     double c = warlock_spell_t::cost();
 
     if ( p() -> buffs.molten_core -> check() )
-      c *= 1.0 + p() -> buffs.molten_core -> data().effectN( 1 ).percent();
+      c *= 1.0 + p() -> buffs.molten_core -> data().effectN( 1 ).percent() + p() -> perk.improved_molten_core -> effectN( 1 ).percent();
 
     return c;
   }
@@ -2960,6 +2963,7 @@ struct chaos_bolt_t : public warlock_spell_t
     havoc_consume = 3;
     backdraft_consume = 3;
     hasted_ticks = false;
+    base_execute_time += p -> perk.enhanced_chaos_bolt -> effectN( 1 ).time_value();
     
     if ( p -> talents.grimoire_of_sacrifice -> ok() )
       dot_duration = p -> talents.grimoire_of_sacrifice -> effectN( 12 ).time_value();
@@ -3020,7 +3024,8 @@ struct life_tap_t : public warlock_spell_t
 
     // FIXME: Implement reduced healing debuff
     if ( ! p() -> glyphs.life_tap -> ok() ) player -> resource_loss( RESOURCE_HEALTH, health * data().effectN( 3 ).percent() );
-    player -> resource_gain( RESOURCE_MANA, health * data().effectN( 1 ).percent(), p() -> gains.life_tap );
+      player -> resource_gain( RESOURCE_MANA, health * data().effectN( 1 ).percent() * ( 1.0 + p() -> perk.improved_life_tap -> effectN( 1 ).percent() ), p() -> gains.life_tap );
+
   }
 };
 
