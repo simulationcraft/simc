@@ -4003,6 +4003,7 @@ void player_t::reset()
     buff_list[ i ] -> reset();
 
   last_foreground_action = 0;
+  first_cast = true;
 
   executing = 0;
   channeling = 0;
