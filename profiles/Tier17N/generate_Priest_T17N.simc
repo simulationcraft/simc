@@ -10,7 +10,6 @@ race=goblin
 spec=shadow
 role=spell
 position=back
-professions=enchanting=600/engineering=600
 glyphs=mind_flay/fade/sha
 head=primal_gladiators_hood_of_prowess,id=111084
 neck=primal_gladiators_pendant_of_cruelty,id=111128,enchant=140haste
