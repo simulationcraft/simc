@@ -474,6 +474,10 @@ struct warlock_pet_t : public pet_t
   virtual void schedule_ready( timespan_t delta_time = timespan_t::zero(),
                                bool   waiting = false );
   virtual double composite_player_multiplier( school_e school ) const;
+  virtual double composite_melee_crit() const;
+  virtual double composite_spell_crit() const;
+  virtual double composite_melee_haste() const;
+  virtual double composite_spell_haste() const;
   virtual resource_e primary_resource() const { return RESOURCE_ENERGY; }
   warlock_t* o()
   { return static_cast<warlock_t*>( owner ); }
@@ -1095,6 +1099,42 @@ double warlock_pet_t::composite_player_multiplier( school_e school ) const
   m *= 1.0 + o() -> perk.improved_demons -> effectN( 1 ).percent();
 
   return m;
+}
+
+double warlock_pet_t::composite_melee_crit() const
+{
+  double mc = pet_t::composite_melee_crit();
+
+  mc += o() -> perk.empowered_demons -> effectN( 1 ).percent();
+
+  return mc;
+}
+
+double warlock_pet_t::composite_spell_crit() const
+{
+  double sc = pet_t::composite_spell_crit();
+
+  sc += o() -> perk.empowered_demons -> effectN( 1 ).percent();
+  
+  return sc;
+}
+
+double warlock_pet_t::composite_melee_haste() const
+{
+  double mh = pet_t::composite_melee_haste();
+
+  mh /= 1.0 + o() -> perk.empowered_demons -> effectN( 2 ).percent();
+  
+  return mh;
+}
+
+double warlock_pet_t::composite_spell_haste() const
+{
+  double sh = pet_t::composite_spell_haste();
+
+  sh /= 1.0 + o() -> perk.empowered_demons -> effectN( 2 ).percent();
+  
+  return sh;
 }
 
 
