@@ -7,8 +7,18 @@
 #include "sc_report.hpp"
 #include "data/report_data.inc"
 
-// Helper functions
-namespace {
+// Experimental Raw Ability Output for Blizzard to do comparisons
+namespace raw_ability_summary {
+
+double aggregate_damage( const std::vector<stats_t::stats_results_t>& result )
+{
+  double total = 0;
+  for ( size_t i = 0; i < result.size(); i++ )
+  {
+    total  += result[ i ].fight_actual_amount.mean();
+  }
+  return total;
+}
 
 /* Find the first action id associated with a given stats object
  */
@@ -27,20 +37,6 @@ int find_id( stats_t* s )
   return id;
 }
 
-}
-
-// Experimental Raw Ability Output for Blizzard to do comparisons
-namespace raw_ability_summary {
-
-double aggregate_damage( const std::vector<stats_t::stats_results_t>& result )
-{
-  double total = 0;
-  for ( size_t i = 0; i < result.size(); i++ )
-  {
-    total  += result[ i ].fight_actual_amount.mean();
-  }
-  return total;
-}
 
 void print_raw_action_damage( report::sc_html_stream& os, stats_t* s, player_t* p, int j, sim_t* sim )
 {
@@ -208,7 +204,7 @@ namespace { // UNNAMED NAMESPACE ==========================================
  * because VS limits the size of static objects.
  */
 template <typename T, std::size_t N>
-void print_text_array( std::ostream& os, const T ( & data )[N]  )
+void print_text_array( report::sc_html_stream& os, const T ( & data )[N]  )
 {
   for ( size_t i = 0; i < sizeof_array( data ); ++i )
   {
@@ -218,13 +214,13 @@ void print_text_array( std::ostream& os, const T ( & data )[N]  )
 
 struct html_style_t
 {
-  virtual void print_html_styles( std::ostream& os) = 0;
+  virtual void print_html_styles( report::sc_html_stream& os) = 0;
   virtual ~html_style_t() {}
 };
 
 struct mop_html_style_t : public html_style_t
 {
-  void print_html_styles( std::ostream& os) override
+  void print_html_styles( report::sc_html_stream& os) override
   {
     // Logo
     os << "<style type=\"text/css\" media=\"all\">\n"
@@ -1101,7 +1097,7 @@ void print_html_beta_warning( report::sc_html_stream& os )
 #endif
 }
 
-void print_html_image_load_scripts( std::ostream& os )
+void print_html_image_load_scripts( report::sc_html_stream& os )
 {
   print_text_array( os, __image_load_script );
 }

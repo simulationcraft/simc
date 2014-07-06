@@ -3659,12 +3659,12 @@ void print_html_player_deaths( report::sc_html_stream& os, player_t* p, player_p
 
 // print_html_player_ =======================================================
 
-void print_html_player_( report::sc_html_stream& os, sim_t* sim, player_t* p, int j = 0 )
+void print_html_player_( report::sc_html_stream& os, sim_t* sim, player_t* p, int player_index )
 {
   report::generate_player_charts( p, p -> report_information );
   report::generate_player_buff_lists( p, p -> report_information );
 
-  print_html_player_description( os, sim, p, j );
+  print_html_player_description( os, sim, p, player_index );
 
   print_html_player_results_spec_gear( os, sim, p );
 
@@ -3708,9 +3708,9 @@ void print_html_player_( report::sc_html_stream& os, sim_t* sim, player_t* p, in
 
 namespace report {
 
-void print_html_player( report::sc_html_stream& os, player_t* p, int j = 0 )
+void print_html_player( report::sc_html_stream& os, player_t* p, int player_index )
 {
-  print_html_player_( os, p -> sim, p, j );
+  print_html_player_( os, p -> sim, p, player_index );
 }
 
 } // END report NAMESPACE
