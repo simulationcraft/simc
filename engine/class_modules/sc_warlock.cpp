@@ -1939,7 +1939,7 @@ struct agony_t : public warlock_spell_t
 struct doom_t : public warlock_spell_t
 {
   doom_t( warlock_t* p ) :
-    warlock_spell_t( "doom", p, /*p -> spec.doom*/ p -> find_spell(603) )
+    warlock_spell_t( "doom", p, p -> spec.doom )
   {
     may_crit = false;
   }
@@ -4687,9 +4687,10 @@ void warlock_t::init_spells()
   spec.readyness_destruction  = find_specialization_spell( "Readyness: Destruction" );
   spec.wild_imps              = find_specialization_spell( "Wild Imps" );
 
-  spec.chaos_wave             = ( find_specialization_spell( "Metamorphosis: Chaos Wave"     ) -> ok() ) ? find_spell( 124916 ) : spell_data_t::not_found();
-  spec.doom                   = ( find_specialization_spell( "Metamorphosis: Doom"           ) -> ok() ) ? find_spell( 603 )    : spell_data_t::not_found();
-  spec.touch_of_chaos         = ( find_specialization_spell( "Metamorphosis: Touch of Chaos" ) -> ok() ) ? find_spell( 103964 ) : spell_data_t::not_found();
+  // Removed terniary for compat.
+  spec.chaos_wave             = find_spell( 124916 );
+  spec.doom                   = find_spell( 603 );
+  spec.touch_of_chaos         = find_spell( 103964 );
 
   spec.dark_soul = find_specialization_spell( "Dark Soul: Instability", "dark_soul" );
   if ( ! spec.dark_soul -> ok() ) spec.dark_soul = find_specialization_spell( "Dark Soul: Knowledge", "dark_soul" );
@@ -5154,7 +5155,7 @@ void warlock_t::apl_demonology()
   add_action( "Life Tap", "if=mana.pct<60" );
   add_action( "Shadow Bolt" );
 
-  // AoE action list
+  // AoE action listi think i know what i might be secs
   if ( find_class_spell( "Metamorphosis" )->ok() )
     get_action_priority_list( "aoe" )->action_list_str +=
         "/cancel_metamorphosis,if=buff.metamorphosis.up&dot.corruption.remains>10&demonic_fury<=650&buff.dark_soul.down&!dot.immolation_aura.ticking";
