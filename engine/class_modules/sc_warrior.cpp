@@ -2620,15 +2620,7 @@ struct berserker_rage_t: public warrior_spell_t
     warrior_spell_t::execute();
 
     p() -> buff.berserker_rage -> trigger();
-    if ( p() -> specialization() != WARRIOR_ARMS )
-    {
-      p() -> resource_gain( RESOURCE_RAGE,
-                     p() -> buff.enrage -> data().effectN( 1 ).resource( RESOURCE_RAGE ),
-                     p() -> gain.enrage );
-      p() -> buff.enrage -> trigger();
-
-      p() -> buff.enraged_speed -> trigger();
-    }
+    p() -> enrage();
   }
 };
 
@@ -4812,8 +4804,6 @@ public:
     }
     os << "\t\t\t\t\t<p> Dps done to primary target </p>\n";
     os << ( ( priority_damage / all_damage ) * p.collected_data.dps.mean() ) << "</p>\n";
-
-    os << "\t\t\t\t\t<p> GCD: " << ( 1.5 * p.cache.attack_haste() ) << "</p>\n";
 
     os << "\t\t\t\t\t\t</div>\n" << "\t\t\t\t\t</div>\n";
   }
