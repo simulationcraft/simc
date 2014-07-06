@@ -24,6 +24,7 @@ actions.precombat+=/snapshot_stats
 actions.precombat+=/rune_of_power,if=talent.rune_of_power.enabled
 actions.precombat+=/jade_serpent_potion
 actions.precombat+=/mirror_image
+actions.precombat+=/arcane_blast
 
 # Executed every time the actor is available.
 

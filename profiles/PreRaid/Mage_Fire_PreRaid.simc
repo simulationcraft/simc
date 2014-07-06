@@ -24,6 +24,7 @@ actions.precombat+=/snapshot_stats
 actions.precombat+=/evocation
 actions.precombat+=/jade_serpent_potion
 actions.precombat+=/mirror_image
+actions.precombat+=/pyroblast
 
 # Executed every time the actor is available.
 
