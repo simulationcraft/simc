@@ -923,6 +923,8 @@ double get_avg_itemlvl( const player_t* p )
 
 void print_html_gear ( report::sc_html_stream& os, player_t* p )
 {
+  if ( p -> items.empty() )
+    return;
 
   os.printf(
     "<div class=\"player-section gear\">\n"
@@ -1000,11 +1002,16 @@ void print_html_stats ( report::sc_html_stream& os, player_t* a )
   std::array<double, ATTRIBUTE_MAX> hybrid_attributes;
   range::fill( hybrid_attributes, 0 );
 
-  for ( slot_e i = SLOT_MIN; i < SLOT_MAX; i++ )
-    for ( attribute_e j = ATTR_STAMINA; ++j < ATTRIBUTE_MAX; )
+  if ( ! a -> items.empty() )
+  {
+    for ( slot_e i = SLOT_MIN; i < SLOT_MAX; i++ )
     {
-      hybrid_attributes[ a -> convert_hybrid_stat( static_cast<stat_e>( j ) ) ] += a -> items[ i ].stats.attribute[ j ];
+      for ( attribute_e j = ATTR_STAMINA; ++j < ATTRIBUTE_MAX; )
+      {
+        hybrid_attributes[ a -> convert_hybrid_stat( static_cast<stat_e>( j ) ) ] += a -> items[ i ].stats.attribute[ j ];
+      }
     }
+  }
 
 
   if ( a -> collected_data.fight_length.mean() > 0 )
@@ -3683,16 +3690,13 @@ void print_html_player_( report::sc_html_stream& os, sim_t* sim, player_t* p, in
 
   print_html_player_action_priority_list( os, sim, p );
 
-  if ( ! p -> is_pet() )
-  {
-    print_html_stats( os, p );
+  print_html_stats( os, p );
 
-    print_html_gear( os, p );
+  print_html_gear( os, p );
 
-    print_html_talents( os, p );
+  print_html_talents( os, p );
 
-    print_html_profile( os, p );
-  }
+  print_html_profile( os, p );
 
   // print_html_player_gear_weights( os, p, p -> report_information );
 
