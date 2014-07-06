@@ -2051,11 +2051,16 @@ struct revenge_t: public warrior_attack_t
 struct blood_craze_t: public warrior_heal_t
 {
   blood_craze_t( warrior_t* p ):
-    warrior_heal_t( "blood_craze", p, p -> spec.blood_craze -> effectN( 1 ).trigger() )
+    warrior_heal_t( "blood_craze", p, p -> spec.blood_craze )
   {
     tick_zero = true;
+    hasted_ticks = harmful = tick_may_crit = false;
+    tick_pct_heal = p -> spec.blood_craze -> effectN( 1 ).trigger() -> effectN( 1 ).percent();
+    tick_pct_heal *= 0.75; //Ticks for 0.75% of max health every second for 3 seconds, 4 ticks total.
+    base_tick_time = p -> spec.blood_craze -> effectN( 1 ).trigger() -> effectN( 1 ).period();
+    dot_duration = p -> spec.blood_craze -> effectN( 1 ).trigger() -> duration();
+    dot_behavior = DOT_REFRESH;
     may_multistrike = 1;
-    tick_pct_heal = data().effectN( 1 ).percent();
   }
 };
 
@@ -3511,8 +3516,6 @@ void warrior_t::apl_precombat()
     precombat -> add_action( food_action );
   }
 
-  precombat -> add_action( "snapshot_stats", "Snapshot raid buffed stats before combat begins and pre-potting is done." );
-
   if ( specialization() != WARRIOR_PROTECTION )
     precombat -> add_action( "stance,choose=battle" );
   else if ( primary_role() == ROLE_ATTACK )
@@ -3520,7 +3523,9 @@ void warrior_t::apl_precombat()
   else
     precombat -> add_action( "stance,choose=defensive", "IF YOU WISH TO SIMULATE YOUR CHARACTER AS GLADIATOR, PLEASE CHANGE ROLE TO DPS IN GLOBAL OPTIONS, AND THEN RE-IMPORT FROM BATTLE.NET\n"
     "# AFTER IMPORTING, MAKE SURE YOUR LEVEL IS SET TO 100 AND GLADIATORS RESOLVE IS TALENTED. \n"
-    "# EXAMPLE TALENT LINE, THE VERY LAST DIGIT (2) IS GLADIATORS RESOLVE: talents=http://us.battle.net/wow/en/tool/talent-calculator#Zb!0102212");
+    "# EXAMPLE TALENT LINE, THE VERY LAST DIGIT (2) IS GLADIATORS RESOLVE: talents=http://us.battle.net/wow/en/tool/talent-calculator#Zb!0102212" );
+
+  precombat -> add_action( "snapshot_stats", "Snapshot raid buffed stats before combat begins and pre-potting is done." );
 
   //Pre-pot
   if ( sim -> allow_potions && level >= 90 )
@@ -3993,7 +3998,8 @@ void warrior_t::create_buffs()
   buff.bloodbath = buff_creator_t( this, "bloodbath", talents.bloodbath )
     .cd( timespan_t::zero() );
 
-  buff.blood_craze = buff_creator_t( this, "blood_craze", spec.blood_craze -> effectN( 1 ).trigger() );
+  buff.blood_craze = buff_creator_t( this, "blood_craze", spec.blood_craze )
+    .duration( spec.blood_craze -> effectN( 1 ).trigger() -> duration() );
 
   buff.bloodsurge = buff_creator_t( this, "bloodsurge", find_class_spell( "Wild Strike" ) )
     .chance( spec.bloodsurge -> effectN( 1 ).percent() );
@@ -4209,6 +4215,12 @@ void warrior_t::combat_begin()
 
   if ( active_stance == STANCE_BATTLE && !buff.battle_stance -> check() )
     buff.battle_stance -> trigger();
+
+  if ( active_stance == STANCE_DEFENSE && !buff.defensive_stance -> check() )
+    buff.defensive_stance -> trigger();
+
+  if ( active_stance == STANCE_GLADIATOR && !buff.gladiator_stance -> check() )
+    buff.gladiator_stance -> trigger();
 
   if ( specialization() == WARRIOR_PROTECTION )
     resolve_manager.start();

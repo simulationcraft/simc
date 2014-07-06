@@ -307,17 +307,7 @@ void dbc::apply_hotfixes()
 
   // Priest
 
-  // Hack to get proper tooltip text in reports
-  s = spell_data_t::find( 64904, false ); // Hymn of Hope (buff)
-  s -> _desc = "$@spelldesc64901";
-  if ( SC_USE_PTR )
-  {
-    s = spell_data_t::find( 64904, true ); // Hymn of Hope (buff)
-    s -> _desc = "$@spelldesc64901";
-  }
-
   // Rogue
-
 
   // Shaman
 
@@ -334,7 +324,6 @@ void dbc::apply_hotfixes()
     s = spell_data_t::find( 50288, true );
     s -> _prj_speed = 20;
   }
-
 
   // Death Knight
 
