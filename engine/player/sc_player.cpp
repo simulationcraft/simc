@@ -1615,6 +1615,13 @@ void player_t::init_stats()
   range::fill( iteration_resource_lost, 0.0 );
   range::fill( iteration_resource_gained, 0.0 );
 
+  if ( sim -> maximize_reporting )
+  {
+    for ( stat_e s = STAT_NONE; s < STAT_MAX; ++s )
+    {
+      stat_timelines.push_back( s );
+    }
+  }
   if ( ! is_pet() || sim -> report_pets_separately )
   {
     if ( collected_data.stat_timelines.size() == 0 )

@@ -2643,7 +2643,6 @@ public:
   int report_rng;
   int hosted_html;
   int print_styles;
-  int report_overheal;
   int save_raid_summary;
   int save_gear_comments;
   int statistics_level;
@@ -2656,6 +2655,7 @@ public:
   int allow_flasks;
   int solo_raid;
   int global_item_upgrade_level;
+  bool maximize_reporting;
 
   sim_report_information_t report_information;
 

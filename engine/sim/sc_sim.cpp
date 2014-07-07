@@ -687,6 +687,30 @@ bool parse_thread_priority( sim_t*             sim,
   return true;
 }
 
+bool parse_maximize_reporting( sim_t*             sim,
+                                   const std::string& name,
+                                   const std::string& v )
+{
+  if ( v != "0" && v != "1" )
+  {
+    sim -> errorf( "Acceptable values for '%s' are '1' or '0'\n", name.c_str() );
+    return false;
+  }
+  bool r = atoi( v.c_str() ) != 0;
+  if ( r )
+  {
+    sim -> maximize_reporting = true;
+    sim -> statistics_level = 100;
+    sim -> report_raid_summary = true;
+    sim -> report_rng = true;
+    sim -> report_details = true;
+    sim -> report_targets = true;
+    sim -> report_pets_separately = true;
+    sim -> report_precision = 4;
+  }
+
+  return true;
+}
 // Proxy cast ===============================================================
 
 struct proxy_cast_check_t : public event_t
@@ -896,13 +920,14 @@ sim_t::sim_t( sim_t* p, int index ) :
   debug_exp( 0 ),
   // Report
   report_precision( 2 ), report_pets_separately( 0 ), report_targets( 1 ), report_details( 1 ), report_raw_abilities( 1 ),
-  report_rng( 0 ), hosted_html( 0 ), print_styles( 0 ), report_overheal( 0 ),
+  report_rng( 0 ), hosted_html( 0 ), print_styles( 0 ),
   save_raid_summary( 0 ), save_gear_comments( 0 ), statistics_level( 1 ), separate_stats_by_actions( 0 ), report_raid_summary( 0 ), buff_uptime_timeline( 0 ),
   allow_potions( true ),
   allow_food( true ),
   allow_flasks( true ),
   solo_raid( false ),
   global_item_upgrade_level( 0 ),
+  maximize_reporting( false ),
   report_information(),
   // Multi-Threading
   threads( 0 ), thread_index( index ), thread_priority( sc_thread_t::NORMAL ), work_queue(),
@@ -2243,13 +2268,13 @@ void sim_t::create_options()
     opt_bool( "report_details", report_details ),
     opt_bool( "report_raw_abilities", report_raw_abilities ),
     opt_bool( "report_rng", report_rng ),
-    opt_bool( "report_overheal", report_overheal ),
     opt_int( "statistics_level", statistics_level ),
     opt_bool( "separate_stats_by_actions", separate_stats_by_actions ),
     opt_bool( "report_raid_summary", report_raid_summary ), // Force reporting of raid summary
     opt_string( "reforge_plot_output_file", reforge_plot_output_file_str ),
     opt_string( "csv_output_file_str", csv_output_file_str ),
     opt_bool( "monitor_cpu", monitor_cpu ),
+    opt_func( "maximize_reporting", parse_maximize_reporting ),
     opt_int( "global_item_upgrade_level", global_item_upgrade_level ),
     opt_null()
   };
