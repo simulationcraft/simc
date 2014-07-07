@@ -8,12 +8,9 @@
 // ==========================================================================
 //
 // TODO: complete WoD overhaul
-// ToC only extends corruption.
-// Doom snapshots meta mastery on cast.
-// Drain soul execute stuff
+// Pet damage is completely fucked.
 // Demonology grimoire of sacrifice: http://wod.wowhead.com/spell=156656
 // Level 100 talents
-// Perks
 // Grimoire of sacrifice interaction with fire and brimstone, GoSac FnB
 // Update action lists
 // void consume_tick_resource( dot_t* d ) - find out why this causes drain
