@@ -3010,8 +3010,8 @@ struct uthers_insight_t : public paladin_heal_t
     background = true;
     proc = true;
     target = player;
-    may_multistrike = false; // guess: test
-    may_crit = tick_may_crit = false; // guess, TODO: test
+    may_crit = tick_may_crit = false; // tested, see CtA thread
+    may_multistrike = true; // tested, see CtA thread
 
     // spell info isn't parsing out of the effect well
     base_tick_time = timespan_t::from_millis( data().effectN( 1 )._amplitude );
@@ -5596,7 +5596,7 @@ double paladin_t::composite_rating_multiplier( rating_e r ) const
     case RATING_RANGED_HASTE:
     case RATING_SPELL_HASTE:
       m *= 1.0 + passives.sacred_duty -> effectN( 1 ).percent(); 
-      // Seraphim adds 30% haste. TODO: check if multiplicative w/ attunement
+      // Seraphim adds 30% haste. Multiplicative w/ attunement (tested)
       if ( buffs.seraphim -> check() )
         m *= 1.0 + buffs.seraphim -> data().effectN( 1 ).percent();
       break;
