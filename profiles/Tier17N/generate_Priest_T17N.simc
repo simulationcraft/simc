@@ -1,5 +1,3 @@
-
-
 talent_format=armory
 
 # Shadow
@@ -38,3 +36,61 @@ save=Priest_Shadow_T17N_VE.simc
 copy="Priest_Shadow_T17N_AS"
 talents=1113133
 save=Priest_Shadow_T17N_AS.simc
+
+# Holy
+priest="Priest_Holy_T17N_Heal"
+talents=3223332
+level=100
+race=draenei
+spec=holy
+role=heal
+position=back
+professions=enchanting=600/engineering=600
+glyphs=prayer_of_mending/circle_of_healing/deep_wells
+head=primal_gladiators_hood_of_prowess,id=111084
+neck=primal_gladiators_pendant_of_contemplation,id=111131,enchant=140multistrike
+shoulders=primal_gladiators_amice_of_prowess,id=111087
+back=primal_gladiators_drape_of_contemplation,id=111127,enchant=gift_of_multistrike
+chest=primal_gladiators_robes_of_prowess,id=111086
+wrists=primal_gladiators_cuffs_of_cruelty,id=111100
+hands=primal_gladiators_handguards_of_cruelty,id=111088
+waist=primal_gladiators_cord_of_victory,id=111095
+legs=primal_gladiators_leggings_of_prowess,id=111085
+feet=primal_gladiators_treads_of_prowess,id=111097
+finger1=primal_gladiators_band_of_meditation,id=111137,enchant=100multistrike
+finger2=primal_gladiators_band_of_contemplation,id=111138,enchant=100multistrike
+trinket1=primal_gladiators_medallion_of_meditation,id=111231
+trinket2=primal_gladiators_insignia_of_dominance,id=111228
+main_hand=primal_gladiators_battle_staff,id=111122,enchant=mark_of_shadowmoon
+save=Priest_Holy_T17N_Heal.simc
+tier17_2pc_heal=1
+tier17_4pc_heal=1
+
+# Discipline
+priest="Priest_Discipline_T17N_Heal"
+talents=3223232
+level=100
+race=draenei
+spec=discipline
+role=heal
+position=back
+professions=enchanting=600/engineering=600
+glyphs=prayer_of_mending/circle_of_healing/deep_wells
+head=primal_gladiators_hood_of_prowess,id=111084
+neck=primal_gladiators_pendant_of_contemplation,id=111131,enchant=140crit
+shoulders=primal_gladiators_amice_of_prowess,id=111087
+back=primal_gladiators_drape_of_contemplation,id=111127,enchant=gift_of_critical_strike
+chest=primal_gladiators_robes_of_prowess,id=111086
+wrists=primal_gladiators_cuffs_of_cruelty,id=111100
+hands=primal_gladiators_handguards_of_cruelty,id=111088
+waist=primal_gladiators_cord_of_victory,id=111095
+legs=primal_gladiators_leggings_of_prowess,id=111085
+feet=primal_gladiators_treads_of_prowess,id=111097
+finger1=primal_gladiators_band_of_meditation,id=111137,enchant=100crit
+finger2=primal_gladiators_band_of_contemplation,id=111138,enchant=100crit
+trinket1=primal_gladiators_medallion_of_meditation,id=111231
+trinket2=primal_gladiators_insignia_of_dominance,id=111228
+main_hand=primal_gladiators_battle_staff,id=111122,enchant=mark_of_shadowmoon
+save=Priest_Discipline_T17N_Heal.simc
+tier17_2pc_heal=1
+tier17_4pc_heal=1

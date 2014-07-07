@@ -66,6 +66,7 @@ public:
     // Discipline
     buff_t* archangel;
     buff_t* borrowed_time;
+    buff_t* divine_insight_discipline;
     buff_t* holy_evangelism;
     buff_t* inner_focus;
     buff_t* spirit_shell;
@@ -75,6 +76,7 @@ public:
     buff_t* chakra_chastise;
     buff_t* chakra_sanctuary;
     buff_t* chakra_serenity;
+    buff_t* divine_insight_holy;
     buff_t* serendipity;
 
     buff_t* focused_will;
@@ -155,7 +157,7 @@ public:
     const spell_data_t* meditation_holy;
     const spell_data_t* rapid_renewal;
     const spell_data_t* serendipity;
-    const spell_data_t* multistrike_attunement;
+    const spell_data_t* divine_providence;
 
     const spell_data_t* focused_will;
 
@@ -178,25 +180,33 @@ public:
   // Perk Spells
   struct
   {
+    // General
+    const spell_data_t* enhanced_power_word_shield;
+    const spell_data_t* improved_flash_heal;
+
+    // Healing
     const spell_data_t* enhanced_focused_will;
     const spell_data_t* enhanced_holy_fire;
-    const spell_data_t* enhanced_power_word_shield;
-    const spell_data_t* enhanced_renew;
-
-    // TODO 2014/06/09: check if it procs per execute or tick, and if it procs from penance_damage as well.
-    // See http://howtopriest.com/viewtopic.php?f=76&t=5887&p=50468#p50468
-    const spell_data_t* enhanced_strength_of_soul;
-
-    const spell_data_t* improved_flash_heal;
+    const spell_data_t* enhanced_leap_of_faith;
 
     // TODO 2014/06/09: CoP is listed under affected spells. Check what's up with that.
     // http://howtopriest.com/viewtopic.php?f=76&t=5887&p=50469#p50469
     const spell_data_t* improved_heal;
-
-    const spell_data_t* improved_penance;
     const spell_data_t* improved_smite;
 
-    // Shadow related
+    // Discipline
+
+    // TODO 2014/06/09: check if it procs per execute or tick, and if it procs from penance_damage as well.
+    // See http://howtopriest.com/viewtopic.php?f=76&t=5887&p=50468#p50468
+    const spell_data_t* enhanced_strength_of_soul;
+    const spell_data_t* improved_penance;
+
+    // Holy
+    const spell_data_t* enhanced_chakras;
+    const spell_data_t* enhanced_renew;
+
+    // Shadow
+    const spell_data_t* empowered_psychic_horror;
     const spell_data_t* enhanced_mind_flay;
     const spell_data_t* enhanced_shadow_orbs;
     const spell_data_t* enhanced_shadow_word_death;
@@ -241,6 +251,10 @@ public:
   // Procs
   struct
   {
+    proc_t* divine_insight_discipline;
+    proc_t* divine_insight_discipline_overflow;
+    proc_t* divine_insight_holy;
+    proc_t* divine_insight_holy_overflow;
     proc_t* divine_insight_shadow;
     proc_t* divine_insight_shadow_overflow;
     proc_t* mind_spike_dot_removal;
@@ -292,27 +306,56 @@ public:
   // Glyphs
   struct
   {
-    const spell_data_t* circle_of_healing;
-    const spell_data_t* dark_binding;
-    const spell_data_t* dispersion;
-    const spell_data_t* borrowed_time;
-    const spell_data_t* holy_fire;
-    const spell_data_t* holy_nova;
-    const spell_data_t* lightwell;
-    const spell_data_t* mind_blast;
-    const spell_data_t* mind_flay;
-    const spell_data_t* mind_spike;
-    const spell_data_t* penance;
+    //All Specs
+    const spell_data_t* dispel_magic;
+    const spell_data_t* fade;
+    const spell_data_t* fear_ward;
+    const spell_data_t* leap_of_faith;
+    const spell_data_t* levitate;
+    const spell_data_t* mass_dispel;
     const spell_data_t* power_word_shield;
     const spell_data_t* prayer_of_mending;
-    const spell_data_t* renew;
-    const spell_data_t* shadow_word_death;
-    const spell_data_t* smite;
-    const spell_data_t* vampiric_embrace;
+    const spell_data_t* psychic_scream;
+    const spell_data_t* reflective_shield;
+    const spell_data_t* restored_faith;
+    const spell_data_t* scourge_imprisonment;
+    const spell_data_t* weakened_soul;
 
-    // WoD
+    //Healing Specs
+    const spell_data_t* holy_fire;
+    const spell_data_t* inquisitor;
+    const spell_data_t* purify;
+    const spell_data_t* shadow_magic;
+    const spell_data_t* smite;
+
+    //Discipline
+    const spell_data_t* borrowed_time;
+    const spell_data_t* penance;
+
+    //Holy
+    const spell_data_t* binding_heal;
+    const spell_data_t* circle_of_healing;
+    const spell_data_t* deep_wells;
+    const spell_data_t* guardian_spirit;
+    const spell_data_t* lightwell;
+    const spell_data_t* redeemer;
+    const spell_data_t* renew;
+    const spell_data_t* spirit_of_redemption;
+
+    //Shadow
+    const spell_data_t* delayed_coalescence;
+    const spell_data_t* dispersion;
+    const spell_data_t* focused_mending;
     const spell_data_t* free_action;
+    const spell_data_t* mind_blast;
+    const spell_data_t* mind_flay;
     const spell_data_t* mind_harvest;
+    const spell_data_t* mind_spike;
+    const spell_data_t* miraculous_dispelling;
+    const spell_data_t* psychic_horror;
+    const spell_data_t* shadow_word_death;
+    const spell_data_t* silence;
+    const spell_data_t* vampiric_embrace;
   } glyphs;
 
   priest_t( sim_t* sim, const std::string& name, race_e r ) :
@@ -878,7 +921,17 @@ struct weakened_soul_t final : public buff_t
    */
   bool trigger_weakened_souls( priest_t& p )
   {
-    timespan_t duration = buff_duration + p.perks.enhanced_power_word_shield->effectN( 1 ).time_value();
+    timespan_t duration;
+
+    if ( p.buffs.divine_insight_discipline -> up() )
+    {
+      p.buffs.divine_insight_discipline -> expire();
+      duration = timespan_t::zero();
+    }
+    else
+    {
+      duration = buff_duration + p.perks.enhanced_power_word_shield->effectN( 1 ).time_value();
+    }
 
     return buff_t::trigger( 1, buff_t::DEFAULT_VALUE(), 1.0, duration );
   }
@@ -1285,6 +1338,32 @@ struct priest_heal_t : public priest_action_t<heal_t>
     }
   }
 
+  void trigger_divine_insight()
+  {
+    if ( priest.specialization() == PRIEST_HOLY )
+    {
+      int stack = priest.buffs.divine_insight_holy -> check();
+      if ( priest.buffs.divine_insight_holy -> trigger() )
+      {
+        if ( priest.buffs.divine_insight_holy -> check() == stack )
+          priest.procs.divine_insight_holy -> occur();
+        else
+          priest.procs.divine_insight_holy -> occur();
+      }
+    }
+    else if ( priest.specialization() == PRIEST_DISCIPLINE )
+    {
+      int stack = priest.buffs.divine_insight_discipline -> check();
+      if ( priest.buffs.divine_insight_discipline -> trigger() )
+      {
+        if ( priest.buffs.divine_insight_discipline -> check() == stack )
+          priest.procs.divine_insight_discipline -> occur();
+        else
+          priest.procs.divine_insight_discipline -> occur();
+      }
+    }
+  }
+
   void consume_serendipity()
   {
     priest.buffs.serendipity -> up();
@@ -1478,6 +1557,34 @@ struct priest_spell_t : public priest_action_t<spell_t>
         priest.procs.surge_of_darkness -> occur();
     }
   }
+
+  void trigger_divine_insight()
+  {
+    if ( priest.specialization() == PRIEST_SHADOW )
+    {
+      int stack = priest.buffs.divine_insight_shadow -> check();
+      if ( priest.buffs.divine_insight_shadow -> trigger() )
+      {
+        priest.cooldowns.mind_blast -> reset( true );
+
+        if ( priest.buffs.divine_insight_shadow -> check() == stack )
+          priest.procs.divine_insight_shadow_overflow -> occur();
+        else
+          priest.procs.divine_insight_shadow -> occur();
+      }
+    }
+    else if ( priest.specialization() == PRIEST_DISCIPLINE )
+    {
+      int stack = priest.buffs.divine_insight_discipline -> check();
+      if ( priest.buffs.divine_insight_discipline -> trigger() )
+      {
+        if ( priest.buffs.divine_insight_discipline -> check() == stack )
+          priest.procs.divine_insight_discipline_overflow -> occur();
+        else
+          priest.procs.divine_insight_discipline -> occur();
+      }
+    }
+  }
 };
 
 namespace spells {
@@ -1539,6 +1646,12 @@ struct chakra_base_t : public priest_spell_t
     harmful = false;
 
     p.cooldowns.chakra -> duration = cooldown -> duration;
+
+    if ( priest.perks.enhanced_chakras -> ok() )
+    {
+      p.cooldowns.chakra -> duration -= timespan_t::from_millis( p.perks.enhanced_chakras->effectN( 1 ).time_value().total_millis() );
+    }
+
     cooldown = p.cooldowns.chakra;
   }
 
@@ -1572,7 +1685,7 @@ struct chakra_sanctuary_t final : public chakra_base_t
 {
   chakra_sanctuary_t( priest_t& p, const std::string& options_str ) :
     chakra_base_t( p, p.find_class_spell( "Chakra: Sanctuary" ), options_str )
-  { }
+  {}
 
   virtual void execute() override
   {
@@ -2250,7 +2363,7 @@ struct mind_spike_t final : public priest_spell_t
         priest.buffs.glyph_mind_spike -> trigger();
       }
 
-	  priest.buffs.divine_insight_shadow -> trigger();
+      trigger_divine_insight();
     }
   }
 
@@ -2993,7 +3106,7 @@ struct shadow_word_pain_t final : public priest_spell_t
     }
 
     if ( d -> state -> result_amount > 0 )
-      priest.buffs.divine_insight_shadow -> trigger();
+      trigger_divine_insight();
   }
 };
 
@@ -3066,6 +3179,8 @@ struct vampiric_touch_t final : public priest_spell_t
   }
 };
 
+// Holy Fire Base =====================================================
+
 struct holy_fire_base_t : public priest_spell_t
 {
   holy_fire_base_t( const std::string& name, priest_t& p, const spell_data_t* sd ) :
@@ -3106,12 +3221,14 @@ struct holy_fire_base_t : public priest_spell_t
     return c;
   }
 };
+
 // Power Word: Solace Spell =================================================
 
+//TODO: Add the healing component for Holy.
 struct power_word_solace_t final : public holy_fire_base_t
 {
-  power_word_solace_t( priest_t& p, const std::string& options_str ) :
-    holy_fire_base_t( "power_word_solace", p, p.find_spell( p.talents.power_word_solace -> effectN( 1 ).base_value() ) )
+  power_word_solace_t( priest_t& player, const std::string& options_str ) :
+    holy_fire_base_t( "power_word_solace", player, player.find_spell( 129250 ) )
   {
     parse_options( nullptr, options_str );
   }
@@ -3207,11 +3324,11 @@ struct penance_t final : public priest_spell_t
     return c;
   }
 
-
   virtual void execute() override
   {
     priest_spell_t::execute();
     priest.buffs.holy_evangelism -> trigger(); // TODO: why is this here, if not mentioned in the tooltip?
+    trigger_divine_insight();
   }
 };
 
@@ -3772,6 +3889,7 @@ struct circle_of_healing_t final : public priest_heal_t
     priest_heal_t::execute();
 
     priest.buffs.absolution -> trigger();
+    trigger_surge_of_light();
   }
 
   virtual double action_multiplier() const override
@@ -3787,6 +3905,7 @@ struct circle_of_healing_t final : public priest_heal_t
 
 // Desperate Prayer =========================================================
 
+// TODO: Check and see if Desperate Prayer can trigger Surge of Light for Holy
 struct desperate_prayer_t final : public priest_heal_t
 {
   desperate_prayer_t( priest_t& p, const std::string& options_str ) :
@@ -3834,6 +3953,13 @@ struct divine_hymn_t final : public priest_heal_t
       am *= 1.0 + priest.buffs.chakra_sanctuary -> data().effectN( 1 ).percent();
 
     return am;
+  }
+
+  virtual void execute() override
+  {
+    priest_heal_t::execute();
+
+    trigger_surge_of_light();
   }
 };
 
@@ -3946,6 +4072,7 @@ struct _heal_t final : public priest_heal_t
 
     consume_serendipity();
     trigger_surge_of_light();
+    trigger_divine_insight();
   }
 
   virtual void impact( action_state_t* s ) override
@@ -4041,6 +4168,8 @@ struct holy_word_sanctuary_t final : public priest_heal_t
     priest_heal_t::execute();
 
     priest.buffs.absolution -> expire();
+
+    trigger_surge_of_light();
   }
 
   virtual bool ready() override
@@ -4050,7 +4179,6 @@ struct holy_word_sanctuary_t final : public priest_heal_t
 
     return priest_heal_t::ready();
   }
-
   // HW: Sanctuary is treated as a instant cast spell, both affected by Inner Will and Mental Agility
 
 };
@@ -4121,6 +4249,8 @@ struct holy_word_serenity_t final : public priest_heal_t
     priest_heal_t::execute();
 
     priest.buffs.absolution -> expire();
+
+    trigger_surge_of_light();
   }
 
   virtual double action_multiplier() const override
@@ -4354,9 +4484,10 @@ struct power_word_shield_t final : public priest_absorb_t
     };
     parse_options( options, options_str );
 
+    //TODO: Check and see if this override is needed anymore. -Twintop 2014/07/07
     // Tooltip is wrong.
     // direct_power_mod = 0.87; // hardcoded into tooltip
-    spell_power_mod.direct = 1.8709; // matches in-game actual value
+    // spell_power_mod.direct = 1.8709; // matches in-game actual value
 
     if ( p.glyphs.power_word_shield -> ok() )
     {
@@ -4383,7 +4514,7 @@ struct power_word_shield_t final : public priest_absorb_t
 
   virtual bool ready() override
   {
-    if ( ! ignore_debuff && target -> buffs.weakened_soul -> check() )
+    if ( !ignore_debuff && target -> buffs.weakened_soul -> check() && !priest.buffs.divine_insight_discipline -> up() )
       return false;
 
     return priest_absorb_t::ready();
@@ -4407,7 +4538,10 @@ struct prayer_of_healing_t final : public priest_heal_t
   virtual void execute() override
   {
     priest_heal_t::execute();
+
     consume_serendipity();
+    trigger_surge_of_light();
+    trigger_divine_insight();
   }
 
   virtual double action_multiplier() const override
@@ -4440,6 +4574,14 @@ struct prayer_of_healing_t final : public priest_heal_t
       et *= 1.0 + priest.buffs.serendipity -> check() * priest.buffs.serendipity -> data().effectN( 1 ).percent();
 
     return et;
+  }
+
+  virtual bool ready() override
+  {
+    if ( priest.talents.clarity_of_purpose -> ok() )
+      return false; //Clarity of Purpose replaces Prayer of Healing
+
+    return heal_t::ready();
   }
 };
 
@@ -4478,6 +4620,7 @@ struct prayer_of_mending_t final : public priest_heal_t
     priest_heal_t::execute();
 
     priest.buffs.absolution -> trigger();
+    trigger_surge_of_light();
   }
 
   virtual double action_multiplier() const override
@@ -4518,6 +4661,7 @@ struct renew_t final : public priest_heal_t
     {
       target = s -> target;
       execute();
+      trigger_surge_of_light();
     }
 
     virtual double composite_da_multiplier( const action_state_t* /* state */ ) const override
@@ -4594,6 +4738,13 @@ struct clarity_of_purpose_t final : public priest_heal_t
     // can_trigger_spirit_shell = true; ?
     // TODO: implement mechanic
   }
+
+  virtual void execute() override
+  {
+    priest_heal_t::execute();
+
+    trigger_surge_of_light();
+  }
 };
 
 struct saving_grace_t final : public priest_heal_t
@@ -4603,8 +4754,6 @@ struct saving_grace_t final : public priest_heal_t
   {
     parse_options( nullptr, options_str );
     // can_trigger_spirit_shell = true; ?
-
-    pct_heal = 0.50; // TODO: spelldata
   }
 
   virtual void impact( action_state_t* s )
@@ -4612,6 +4761,13 @@ struct saving_grace_t final : public priest_heal_t
     priest_heal_t::impact( s );
 
     priest.buffs.saving_grace_penalty -> trigger();
+  }
+
+  virtual void execute() override
+  {
+    priest_heal_t::execute();
+
+    trigger_surge_of_light();
   }
 };
 
@@ -4709,46 +4865,6 @@ struct archangel_t final : public priest_buff_t<buff_t>
     bool success = base_t::trigger( stacks, archangel_value, chance, duration );
 
     priest.buffs.holy_evangelism -> expire();
-
-    return success;
-  }
-};
-
-/* Custom divine insight buff
- */
-struct divine_insight_shadow_t final : public priest_buff_t<buff_t>
-{
-  // Get correct spell data
-  static const spell_data_t* sd( priest_t& p )
-  {
-    if ( p.talents.divine_insight -> ok() && ( p.specialization() == PRIEST_SHADOW ) )
-      return p.talents.divine_insight -> effectN( 2 ).trigger();
-    return spell_data_t::not_found();
-  }
-
-  divine_insight_shadow_t( priest_t& p ) :
-    base_t( p, buff_creator_t( &p, "divine_insight_shadow" )
-            .spell( sd( p ) )
-          )
-  {
-    default_chance = data().ok() ? 0.05 : 0.0; // 5% hardcoded into tooltip, 3/12/2012
-  }
-
-  virtual bool trigger( int stacks, double value, double chance, timespan_t duration ) override
-  {
-    int stack = priest.buffs.divine_insight_shadow -> check();
-
-    bool success = base_t::trigger( stacks, value, chance, duration );
-
-    if ( success )
-    {
-      priest.cooldowns.mind_blast -> reset( true );
-
-      if ( priest.buffs.divine_insight_shadow -> check() == stack )
-        priest.procs.divine_insight_shadow_overflow -> occur();
-      else
-        priest.procs.divine_insight_shadow -> occur();
-    }
 
     return success;
   }
@@ -4865,28 +4981,32 @@ void priest_t::create_gains()
  */
 void priest_t::create_procs()
 {
-  procs.shadowy_apparition                              = get_proc( "Shadowy Apparition Procced"                            );
-  procs.divine_insight_shadow                           = get_proc( "Divine Insight Mind Blast CD Reset"                    );
-  procs.divine_insight_shadow_overflow                  = get_proc( "Divine Insight Mind Blast CD Reset lost to overflow"   );
-  procs.surge_of_darkness                               = get_proc( "Surge of Darkness"                                     );
-  procs.surge_of_darkness_overflow                      = get_proc( "Surge of Darkness lost to overflow"                    );
-  procs.surge_of_light                                  = get_proc( "Surge of Light"                                        );
-  procs.surge_of_light_overflow                         = get_proc( "Surge of Light lost to overflow"                       );
-  procs.mind_spike_dot_removal                          = get_proc( "Mind Spike removed DoTs"                               );
-  procs.mind_spike_dot_removal_devouring_plague         = get_proc( "Mind Spike removed Devouring Plague"                   );
-  procs.mind_spike_dot_removal_shadow_word_pain         = get_proc( "Mind Spike removed Shadow Word: Pain"                  );
-  procs.mind_spike_dot_removal_vampiric_touch           = get_proc( "Mind Spike removed Vampiric Touch"                     );
-  procs.mind_spike_dot_removal_void_entropy             = get_proc( "Mind Spike removed Void Entropy"                       );
-  procs.mind_spike_dot_removal_t17_2pc_mind_blast       = get_proc( "Mind Spike removed T17 2PC Mind Blast"                 );
-  procs.mind_spike_dot_removal_devouring_plague_ticks   = get_proc( "Devouring Plague ticks lost from Mind Spike removal"   );
-  procs.mind_spike_dot_removal_shadow_word_pain_ticks   = get_proc( "Shadow Word: Pain ticks lost from Mind Spike removal"  );
-  procs.mind_spike_dot_removal_vampiric_touch_ticks     = get_proc( "Vampiric Touch ticks lost from Mind Spike removal"     );
-  procs.mind_spike_dot_removal_void_entropy_ticks       = get_proc( "Void Entropy ticks lost from Mind Spike removal"       );
-  procs.mind_spike_dot_removal_t17_2pc_mind_blast_ticks = get_proc( "T17 2PC Mind Blast ticks lost from Mind Spike removal" );
-  procs.t15_2pc_caster                                  = get_proc( "Tier15 2pc caster"                                     );
-  procs.t15_4pc_caster                                  = get_proc( "Tier15 4pc caster"                                     );
-  procs.t15_2pc_caster_shadow_word_pain                 = get_proc( "Tier15 2pc caster Shadow Word: Pain Extra Tick"        );
-  procs.t15_2pc_caster_vampiric_touch                   = get_proc( "Tier15 2pc caster Vampiric Touch Extra Tick"           );
+  procs.shadowy_apparition                              = get_proc( "Shadowy Apparition Procced"                                   );
+  procs.divine_insight_discipline                       = get_proc( "Divine Insight Weakened Soul Effect Ignored"                  );
+  procs.divine_insight_discipline_overflow              = get_proc( "Divine Insight Weakened Soul Effect Ignored lost to overflow" );
+  procs.divine_insight_holy                             = get_proc( "Divine Insight Instant Prayer of Mending"                     );
+  procs.divine_insight_holy_overflow                    = get_proc( "Divine Insight Instant Prayer of Mending lost to overflow"    );
+  procs.divine_insight_shadow                           = get_proc( "Divine Insight Mind Blast CD Reset"                           );
+  procs.divine_insight_shadow_overflow                  = get_proc( "Divine Insight Mind Blast CD Reset lost to overflow"          );
+  procs.surge_of_darkness                               = get_proc( "Surge of Darkness"                                            );
+  procs.surge_of_darkness_overflow                      = get_proc( "Surge of Darkness lost to overflow"                           );
+  procs.surge_of_light                                  = get_proc( "Surge of Light"                                               );
+  procs.surge_of_light_overflow                         = get_proc( "Surge of Light lost to overflow"                              );
+  procs.mind_spike_dot_removal                          = get_proc( "Mind Spike removed DoTs"                                      );
+  procs.mind_spike_dot_removal_devouring_plague         = get_proc( "Mind Spike removed Devouring Plague"                          );
+  procs.mind_spike_dot_removal_shadow_word_pain         = get_proc( "Mind Spike removed Shadow Word: Pain"                         );
+  procs.mind_spike_dot_removal_vampiric_touch           = get_proc( "Mind Spike removed Vampiric Touch"                            );
+  procs.mind_spike_dot_removal_void_entropy             = get_proc( "Mind Spike removed Void Entropy"                              );
+  procs.mind_spike_dot_removal_t17_2pc_mind_blast       = get_proc( "Mind Spike removed T17 2PC Mind Blast"                        );
+  procs.mind_spike_dot_removal_devouring_plague_ticks   = get_proc( "Devouring Plague ticks lost from Mind Spike removal"          );
+  procs.mind_spike_dot_removal_shadow_word_pain_ticks   = get_proc( "Shadow Word: Pain ticks lost from Mind Spike removal"         );
+  procs.mind_spike_dot_removal_vampiric_touch_ticks     = get_proc( "Vampiric Touch ticks lost from Mind Spike removal"            );
+  procs.mind_spike_dot_removal_void_entropy_ticks       = get_proc( "Void Entropy ticks lost from Mind Spike removal"              );
+  procs.mind_spike_dot_removal_t17_2pc_mind_blast_ticks = get_proc( "T17 2PC Mind Blast ticks lost from Mind Spike removal"        );
+  procs.t15_2pc_caster                                  = get_proc( "Tier15 2pc caster"                                            );
+  procs.t15_4pc_caster                                  = get_proc( "Tier15 4pc caster"                                            );
+  procs.t15_2pc_caster_shadow_word_pain                 = get_proc( "Tier15 2pc caster Shadow Word: Pain Extra Tick"               );
+  procs.t15_2pc_caster_vampiric_touch                   = get_proc( "Tier15 2pc caster Vampiric Touch Extra Tick"                  );
 }
 
 /* Construct priest benefits
@@ -5190,8 +5310,8 @@ double priest_t::composite_rating_multiplier( rating_e rating ) const
         m *= 1.0 + specs.crit_attunement -> effectN( 1 ).percent();
       break;
     case RATING_MULTISTRIKE: //Holy
-      if ( specs.multistrike_attunement -> ok() )
-        m *= 1.0 + specs.multistrike_attunement -> effectN( 1 ).percent();
+      if ( specs.divine_providence -> ok() )
+        m *= 1.0 + specs.divine_providence -> effectN( 1 ).percent();
       break;
     default: break;
   }
@@ -5401,9 +5521,9 @@ void priest_t::init_spells()
   talents.clarity_of_purpose          = find_talent_spell( "Clarity of Purpose" );
   talents.clarity_of_will             = find_talent_spell( "Clarity of Will" );
   talents.void_entropy                = find_talent_spell( "Void Entropy" );
+  talents.words_of_mending            = find_talent_spell( "Words of Mending" );
   talents.auspicious_spirits          = find_talent_spell( "Auspicious Spirits" );
   talents.saving_grace                = find_talent_spell( "Saving Grace" );
-  talents.words_of_mending            = find_talent_spell( "Words of Mending" );
 
 
   // General Spells
@@ -5425,8 +5545,7 @@ void priest_t::init_spells()
   specs.meditation_holy                = find_specialization_spell( "Meditation", "meditation_holy", PRIEST_HOLY );
   specs.serendipity                    = find_specialization_spell( "Serendipity" );
   specs.rapid_renewal                  = find_specialization_spell( "Rapid Renewal" );
-  specs.multistrike_attunement         = find_specialization_spell( "Multistrike Addunement ");
-
+  specs.divine_providence              = find_specialization_spell( "Divine Providence");
   specs.focused_will                   = find_specialization_spell( "Focused Will" );
 
   // Shadow
@@ -5436,23 +5555,41 @@ void priest_t::init_spells()
   specs.haste_attunement               = find_specialization_spell( "Haste Attunement");
   specs.mana_attunement                = find_specialization_spell( "Mana Attunement");
 
+
   // Mastery Spells
   mastery_spells.shield_discipline    = find_mastery_spell( PRIEST_DISCIPLINE );
   mastery_spells.echo_of_light        = find_mastery_spell( PRIEST_HOLY );
   mastery_spells.mental_anguish       = find_mastery_spell( PRIEST_SHADOW );
 
+
   // Perk Spells
+  // General
+  perks.enhanced_power_word_shield    = find_perk_spell( "Enhanced Power Word: Shield" );
+  perks.improved_flash_heal           = find_perk_spell( "Improved Flash Heal" );
+
+  // Healing
   perks.enhanced_focused_will         = find_perk_spell( "Enhanced Focused Will" );
   perks.enhanced_holy_fire            = find_perk_spell( "Enhanced Holy Fire" );
-  perks.enhanced_power_word_shield    = find_perk_spell( "Enhanced Power Word: Shield" );
-  perks.enhanced_renew                = find_perk_spell( "Enhanced Renew" );
-  perks.enhanced_strength_of_soul     = find_perk_spell( "Enhanced Strength of Soul" );
-  perks.improved_flash_heal           = find_perk_spell( "Improved Flash Heal" );
+  perks.enhanced_leap_of_faith        = find_perk_spell( "Enhanced Leap of Faith" );            //NYI
+
+  // TODO 2014/06/09: CoP is listed under affected spells. Check what's up with that.
+  // http://howtopriest.com/viewtopic.php?f=76&t=5887&p=50469#p50469
   perks.improved_heal                 = find_perk_spell( "Improved Heal" );
-  perks.improved_penance              = find_perk_spell( "Improved Penance" );
   perks.improved_smite                = find_perk_spell( "Improved Smite" );
 
+  // Discipline
 
+  // TODO 2014/06/09: check if it procs per execute or tick, and if it procs from penance_damage as well.
+  // See http://howtopriest.com/viewtopic.php?f=76&t=5887&p=50468#p50468
+  perks.enhanced_strength_of_soul     = find_perk_spell( "Enhanced Strength of Soul" );
+  perks.improved_penance              = find_perk_spell( "Improved Penance" );
+
+  // Holy
+  perks.enhanced_chakras              = find_perk_spell( "Enhanced Chakras" );                  //NYI
+  perks.enhanced_renew                = find_perk_spell( "Enhanced Renew" );
+
+  // Shadow
+  perks.empowered_psychic_horror      = find_perk_spell( "Empowered Psychic Horror" );          //NYI
   perks.enhanced_mind_flay            = find_perk_spell( "Enhanced Mind Flay" );
   perks.enhanced_shadow_orbs          = find_perk_spell( "Enhanced Shadow Orbs" );
   perks.enhanced_shadow_word_death    = find_perk_spell( "Enhanced Shadow Word: Death" );
@@ -5461,27 +5598,56 @@ void priest_t::init_spells()
   perks.improved_vampiric_touch       = find_perk_spell( "Improved Vampiric Touch" );
 
   // Glyphs
-  glyphs.circle_of_healing            = find_glyph_spell( "Glyph of Circle of Healing" );
-  glyphs.dispersion                   = find_glyph_spell( "Glyph of Dispersion" );
-  glyphs.holy_nova                    = find_glyph_spell( "Glyph of Holy Nova" );
-  glyphs.lightwell                    = find_glyph_spell( "Glyph of Lightwell" );
-  glyphs.penance                      = find_glyph_spell( "Glyph of Penance" );
+  glyphs.dispel_magic                 = find_glyph_spell( "Glyph of Dispel Magic" );            //NYI
+  glyphs.fade                         = find_glyph_spell( "Glyph of Fade" );                    //NYI
+  glyphs.fear_ward                    = find_glyph_spell( "Glyph of Fear Ward" );               //NYI
+  glyphs.leap_of_faith                = find_glyph_spell( "Glyph of Leap of Faith" );           //NYI
+  glyphs.levitate                     = find_glyph_spell( "Glyph of Levitate" );                //NYI
+  glyphs.mass_dispel                  = find_glyph_spell( "Glyph of Mass Dispel" );             //NYI
   glyphs.power_word_shield            = find_glyph_spell( "Glyph of Power Word: Shield" );
   glyphs.prayer_of_mending            = find_glyph_spell( "Glyph of Prayer of Mending" );
-  glyphs.renew                        = find_glyph_spell( "Glyph of Renew" );
-  glyphs.smite                        = find_glyph_spell( "Glyph of Smite" );
-  glyphs.holy_fire                    = find_glyph_spell( "Glyph of Holy Fire" );
-  glyphs.dark_binding                 = find_glyph_spell( "Glyph of Dark Binding" );
-  glyphs.mind_spike                   = find_glyph_spell( "Glyph of Mind Spike" );
-  glyphs.mind_flay                    = find_glyph_spell( "Glyph of Mind Flay" );
-  glyphs.mind_blast                   = find_glyph_spell( "Glyph of Mind Blast" );
-  glyphs.vampiric_embrace             = find_glyph_spell( "Glyph of Vampiric Embrace" );
-  glyphs.borrowed_time                = find_glyph_spell( "Glyph of Borrowed Time" );
-  glyphs.shadow_word_death            = find_glyph_spell( "Glyph of Shadow Word: Death" );
-  // WoD
-  glyphs.free_action                  = find_glyph_spell( "Glyph of Free Action" );
-  glyphs.mind_harvest                 = find_glyph_spell( "Glyph of Mind Harvest" );
+  glyphs.psychic_scream               = find_glyph_spell( "Glyph of Psychic Scream" );          //NYI
+  glyphs.reflective_shield            = find_glyph_spell( "Glyph of Reflective Shield" );       //NYI
+  glyphs.restored_faith               = find_glyph_spell( "Glyph of Restored Faith" );          //NYI
+  glyphs.scourge_imprisonment         = find_glyph_spell( "Glyph of Scourge Imprisonment" );    //NYI
+  glyphs.weakened_soul                = find_glyph_spell( "Glyph of Weakened Soul" );           //NYI
 
+  //Healing Specs
+  glyphs.holy_fire                    = find_glyph_spell( "Glyph of Holy Fire" );
+  glyphs.inquisitor                   = find_glyph_spell( "Glyph of Inquisitor" );              //NYI
+  glyphs.purify                       = find_glyph_spell( "Glyph of Purify" );                  //NYI
+  glyphs.shadow_magic                 = find_glyph_spell( "Glyph of Shadow Magic" );            //NYI
+  glyphs.smite                        = find_glyph_spell( "Glyph of Smite" );
+
+  //Discipline
+  glyphs.borrowed_time                = find_glyph_spell( "Glyph of Borrowed Time" );
+  glyphs.penance                      = find_glyph_spell( "Glyph of Penance" );
+
+  //Holy
+  glyphs.binding_heal                 = find_glyph_spell( "Glyph of Binding Heal" );            //NYI
+  glyphs.circle_of_healing            = find_glyph_spell( "Glyph of Circle of Healing" );
+  glyphs.deep_wells                   = find_glyph_spell( "Glyph of Deep Wells" );              //NYI
+  glyphs.guardian_spirit              = find_glyph_spell( "Glyph of Guardian Spirit" );         //NYI
+  glyphs.lightwell                    = find_glyph_spell( "Glyph of Lightwell" );
+  glyphs.redeemer                     = find_glyph_spell( "Glyph of Redeemer" );                //NYI
+  glyphs.renew                        = find_glyph_spell( "Glyph of Renew" );
+  glyphs.spirit_of_redemption         = find_glyph_spell( "Glyph of Spirit of Redemption" );    //NYI
+
+  //Shadow
+  glyphs.delayed_coalescence          = find_glyph_spell( "Glyph of Delayed Coalescence" );     //NYI
+  glyphs.dispersion                   = find_glyph_spell( "Glyph of Dispersion" );
+  glyphs.focused_mending              = find_glyph_spell( "Glyph of Focused Mending" );         //NYI
+  glyphs.free_action                  = find_glyph_spell( "Glyph of Free Action" );
+  glyphs.mind_blast                   = find_glyph_spell( "Glyph of Mind Blast" );
+  glyphs.mind_flay                    = find_glyph_spell( "Glyph of Mind Flay" );
+  glyphs.mind_harvest                 = find_glyph_spell( "Glyph of Mind Harvest" );
+  glyphs.mind_spike                   = find_glyph_spell( "Glyph of Mind Spike" );
+  glyphs.miraculous_dispelling        = find_glyph_spell( "Glyph of Miraculous Dispelling" );   //NYI
+  glyphs.psychic_horror               = find_glyph_spell( "Glyph of Psychic Horror" );          //NYI
+  glyphs.shadow_word_death            = find_glyph_spell( "Glyph of Shadow Word: Death" );
+  glyphs.silence                      = find_glyph_spell( "Glyph of Silence" );                 //NYI
+  glyphs.vampiric_embrace             = find_glyph_spell( "Glyph of Vampiric Embrace" );
+  
   if ( mastery_spells.echo_of_light -> ok() )
     active_spells.echo_of_light = new actions::heals::echo_of_light_t( *this );
 
@@ -5557,6 +5723,18 @@ void priest_t::create_buffs()
                             .spell( find_spell( 87160 ) )
                             .chance( talents.surge_of_darkness -> effectN( 1 ).percent() );
 
+  buffs.divine_insight_discipline = buff_creator_t( this, "divine_insight_discipline" )
+                              .spell( find_spell( 162451 ) )
+                              .chance( talents.divine_insight->effectN( 3 ).percent());
+
+  buffs.divine_insight_holy = buff_creator_t( this, "divine_insight_holy" )
+                              .spell( find_spell( 109175 ) )
+                              .chance( talents.divine_insight->effectN( 1 ).percent());
+
+  buffs.divine_insight_shadow = buff_creator_t( this, "divine_insight_shadow" )
+                              .spell( find_spell( 162452 ) )
+                              .chance( talents.divine_insight->effectN( 4 ).percent());
+
   // Discipline
   buffs.archangel = new buffs::archangel_t( *this );
 
@@ -5580,18 +5758,19 @@ void priest_t::create_buffs()
   buffs.chakra_chastise = buff_creator_t( this, "chakra_chastise" )
                           .spell( find_spell( 81209 ) )
                           .chance( specialization() == PRIEST_HOLY ? 1.0 : 0.0 )
-                          .cd( timespan_t::zero() )
+                          .cd( timespan_t::from_seconds( 30 ) )
                           .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
 
   buffs.chakra_sanctuary = buff_creator_t( this, "chakra_sanctuary" )
                            .spell( find_spell( 81206 ) )
                            .chance( specialization() == PRIEST_HOLY ? 1.0 : 0.0 )
-                           .cd( timespan_t::zero() );
+                           .cd( timespan_t::from_seconds( 30 ) );
+
 
   buffs.chakra_serenity = buff_creator_t( this, "chakra_serenity" )
                           .spell( find_spell( 81208 ) )
                           .chance( specialization() == PRIEST_HOLY ? 1.0 : 0.0 )
-                          .cd( timespan_t::zero() );
+                          .cd( timespan_t::from_seconds( 30 ) );
 
   buffs.serendipity = buff_creator_t( this, "serendipity" )
                       .spell( find_spell( specs.serendipity -> effectN( 1 ).trigger_spell_id( ) ) );
@@ -5602,7 +5781,6 @@ void priest_t::create_buffs()
     buffs.focused_will -> add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
 
   // Shadow
-  buffs.divine_insight_shadow = new buffs::divine_insight_shadow_t( *this );
 
   buffs.shadowform = new buffs::shadowform_t( *this );
 
@@ -5666,11 +5844,25 @@ void priest_t::apl_precombat()
     std::string flask_action = "flask,type=";
 
     if ( level > 90 )
-        flask_action += "greater_draenor_haste_flask";
+    {
+      switch ( specialization() )
+      {
+        case PRIEST_DISCIPLINE:
+          flask_action += "greater_draenor_critical_strike_flask";
+          break;
+        case PRIEST_HOLY:
+          flask_action += "greater_draenor_multistrike_flask";
+          break;
+        case PRIEST_SHADOW:
+        default:
+          flask_action += "greater_draenor_haste_flask";
+          break;
+      }
+    }
     else if ( level > 85 )
-        flask_action += "warm_sun";
+      flask_action += "warm_sun";
     else
-        flask_action += "draconic_mind";
+      flask_action += "draconic_mind";
 
     precombat -> add_action( flask_action );
   }
@@ -5681,7 +5873,21 @@ void priest_t::apl_precombat()
     std::string food_action = "food,type=";
 
     if ( level > 90 )
-        food_action += "frosty_stew";
+    {
+      switch ( specialization() )
+      {
+        case PRIEST_DISCIPLINE:
+          food_action += "blackrock_barbecue";
+          break;
+        case PRIEST_HOLY:
+          food_action += "calamari_crepes";
+          break;
+        case PRIEST_SHADOW:
+        default:
+          food_action += "frosty_stew";
+          break;
+      }
+    }
     else if ( level > 85 )
         food_action += "mogu_fish_stew";
     else
@@ -5691,7 +5897,24 @@ void priest_t::apl_precombat()
   }
 
   precombat -> add_action( this, "Power Word: Fortitude", "if=!aura.stamina.up" );
-  precombat -> add_action( this, "Shadowform", "if=!buff.shadowform.up" );
+
+  // Chakra / Shadowform
+  switch ( specialization() )
+  {
+    case PRIEST_HOLY:
+      if ( primary_role() != ROLE_HEAL )
+        precombat -> add_action( this, "Chakra: Chastise" );
+      else
+        precombat -> add_action( this, "Chakra: Serenity" );
+      break;
+    case PRIEST_SHADOW:
+      precombat -> add_action( this, "Shadowform", "if=!buff.shadowform.up" );
+      break;
+    case PRIEST_DISCIPLINE:
+    default:
+      break;
+  }
+
   // Snapshot stats
   precombat -> add_action( "snapshot_stats", "Snapshot raid buffed stats before combat begins and pre-potting is done." );
 
@@ -5703,6 +5926,31 @@ void priest_t::apl_precombat()
       precombat -> add_action( "potion,name=jade_serpent" );
     else
       precombat -> add_action( "potion,name=volcanic" );
+  }
+
+  // Precast
+  switch ( specialization() )
+  {
+    case PRIEST_DISCIPLINE:
+      if ( primary_role() != ROLE_HEAL )
+        precombat -> add_action( "smite" );
+      else
+        precombat -> add_action( "prayer_of_mending" );
+      break;
+      break;
+    case PRIEST_HOLY:
+      if ( primary_role() != ROLE_HEAL )
+        precombat -> add_action( "smite" );
+      else
+        precombat -> add_action( "prayer_of_mending" );
+      break;
+    case PRIEST_SHADOW:
+    default:
+      if ( talents.clarity_of_power -> ok() )
+        precombat -> add_action( "mind_spike" );
+      else
+        precombat -> add_action( "mind_blast" );
+      break;
   }
 }
 
@@ -5891,14 +6139,6 @@ void priest_t::apl_disc_heal()
   if ( race == RACE_BLOOD_ELF )
     def -> add_action( "arcane_torrent,if=mana.pct<95" );
 
-  if ( find_class_spell( "Shadowfiend" ) -> ok() )
-  {
-    def -> add_action( "mindbender,if=talent.mindbender.enabled" );
-
-    std::string a = "shadowfiend,if=!talent.mindbender.enabled";
-    def -> add_action( a );
-  }
-
   if ( race != RACE_BLOOD_ELF )
   {
     std::vector<std::string> racial_actions = get_racial_actions();
@@ -5906,16 +6146,17 @@ void priest_t::apl_disc_heal()
       def -> add_action( racial_actions[ i ] );
   }
 
-  def -> add_action( this, "Inner Focus" );
   def -> add_action( "power_infusion,if=talent.power_infusion.enabled" );
+  def -> add_action( "power_word_solace,if=talent.power_word_solace.enabled" );
+  def -> add_action( "mindbender,if=talent.mindbender.enabled&mana.pct<80" );
+  def -> add_action( "shadowfiend,if=!talent.mindbender.enabled" );
   def -> add_action( this, "Power Word: Shield" );
-  def -> add_action( this, "Renew", "if=buff.borrowed_time.up&(!ticking|remains<tick_time)" );
   def -> add_action( "penance_heal,if=buff.borrowed_time.up|target.buff.grace.stack<3" );
   def -> add_action( "penance_heal" );
   def -> add_action( this, "Flash Heal", "if=buff.surge_of_light.react" );
   def -> add_action( this, "Heal", "if=buff.power_infusion.up|mana.pct>20" );
-  def -> add_action( "power_word_solace,if=talent.power_word_solace.enabled" );
-  // DEFAULT END
+  def -> add_action( "prayer_of_mending" );
+  def -> add_action( "heal" );
 }
 
 // Discipline Damage Combat Action Priority List
@@ -5965,7 +6206,6 @@ void priest_t::apl_disc_dmg()
 
   def -> add_action( this, "Archangel", "if=buff.holy_evangelism.react=5" );
   def -> add_action( this, "Penance" );
-  def -> add_action( this, "Shadow Word: Death" );
 
   if ( find_class_spell( "Holy Fire" ) -> ok() )
   {
@@ -5975,9 +6215,6 @@ void priest_t::apl_disc_dmg()
       def -> add_action( "holy_fire" );
   }
 
-  def -> add_action( "halo,if=talent.halo.enabled&active_enemies>3" );
-  def -> add_action( "divine_star,if=talent.divine_star.enabled&active_enemies>2" );
-  def -> add_talent( this, "Cascade", "if=active_enemies>3" );
   def -> add_action( this, "Smite", "if=glyph.smite.enabled&dot.power_word_solace.remains>cast_time" );
   def -> add_action( this, "Smite", "if=!talent.twist_of_fate.enabled&mana.pct>15" );
   def -> add_action( this, "Smite", "if=talent.twist_of_fate.enabled&target.health.pct<35&mana.pct>target.health.pct" );
@@ -6003,17 +6240,6 @@ void priest_t::apl_holy_heal()
   if ( sim -> allow_potions )
     def -> add_action( "mana_potion,if=mana.pct<=75" );
 
-  if ( find_class_spell( "Shadowfiend" ) -> ok() )
-  {
-    def -> add_action( "mindbender,if=talent.mindbender.enabled" );
-    def -> add_action( "shadowfiend,if=!talent.mindbender.enabled" );
-  }
-
-  std::string fiend_cond = "";
-  if ( find_class_spell( "Shadowfiend" ) -> ok() )
-    fiend_cond = ",if=(pet.mindbender.active|pet.shadowfiend.active)";
-
-
   std::string racial_condition;
   if ( race == RACE_BLOOD_ELF )
     racial_condition = ",if=mana.pct<=90";
@@ -6022,11 +6248,23 @@ void priest_t::apl_holy_heal()
   for ( size_t i = 0; i < racial_actions.size(); i++ )
     def -> add_action( racial_actions[ i ], racial_condition );
 
-  def -> add_action( this, "Chakra: Serenity" );
-  def -> add_action( this, "Renew", ",if=!ticking" );
-  def -> add_action( this, "Holy Word", ",if=buff.chakra_serenity.up" );
-  def -> add_action( this, "Heal", ",if=buff.serendipity.react>=2&mana.pct>40" );
-  def -> add_action( this, "Flash Heal", ",if=buff.surge_of_light.up" );
+  def -> add_action( "power_infusion,if=talent.power_infusion.enabled" );
+  //def -> add_action( this, "Lightwell" ); //Lightwell is segfaulting right now. -Twintop 2014/07/07
+
+  def -> add_action( "power_word_solace,if=talent.power_word_solace.enabled" );
+  def -> add_action( "mindbender,if=talent.mindbender.enabled&mana.pct<80" );
+  def -> add_action( "shadowfiend,if=!talent.mindbender.enabled" );
+  def -> add_action( "prayer_of_mending,if=buff.divine_insight_holy.up" );
+  def -> add_action( "flash_heal,if=buff.surge_of_light.up" );
+  def -> add_action( "circle_of_healing" );
+  def -> add_action( "holy_word" );
+  def -> add_action( "halo,if=talent.halo.enabled" );
+  def -> add_action( "cascade,if=talent.cascade.enabled" );
+  def -> add_action( "divine_star,if=talent.divine_star.enabled" );
+  def -> add_action( "renew,if=!ticking" );
+  def -> add_action( "heal,if=buff.serendipity.react>=2&mana.pct>40" );
+  def -> add_action( "prayer_of_mending" );
+  def -> add_action( "heal" );
 }
 
 // Holy Damage Combat Action Priority List
@@ -6071,8 +6309,6 @@ void priest_t::apl_holy_dmg()
     def -> add_action( "mindbender,if=talent.mindbender.enabled" );
     def -> add_action( "shadowfiend,if=!talent.mindbender.enabled" );
   }
-
-  def -> add_action( this, "Chakra: Chastise", ",if=buff.chakra_chastise.down" );
 
   if ( find_specialization_spell( "Holy Word: Chastise" ) -> ok() )
     def -> add_action( "holy_word" );
