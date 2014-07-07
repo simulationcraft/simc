@@ -76,7 +76,7 @@ public:
     buff_t* chakra_chastise;
     buff_t* chakra_sanctuary;
     buff_t* chakra_serenity;
-    buff_t* divine_insight_holy;
+    buff_t* divine_insight_holy; // TODO: implement actual effect
     buff_t* serendipity;
 
     buff_t* focused_will;
@@ -122,7 +122,9 @@ public:
 
     const spell_data_t* twist_of_fate;
     const spell_data_t* power_infusion;
-    const spell_data_t* divine_insight;
+    const spell_data_t* divine_insight_holy;
+    const spell_data_t* divine_insight_discipline;
+    const spell_data_t* divine_insight_shadow;
 
     const spell_data_t* cascade;
     const spell_data_t* divine_star;
@@ -977,6 +979,44 @@ public:
   priest_td_t& get_td( player_t* t ) const
   { return *( priest.get_target_data( t ) ); }
 
+  void trigger_divine_insight_shadow()
+  {
+
+    int stack = priest.buffs.divine_insight_shadow -> check();
+    if ( priest.buffs.divine_insight_shadow -> trigger() )
+    {
+      priest.cooldowns.mind_blast -> reset( true );
+
+      if ( priest.buffs.divine_insight_shadow -> check() == stack )
+        priest.procs.divine_insight_shadow_overflow -> occur();
+      else
+        priest.procs.divine_insight_shadow -> occur();
+    }
+  }
+
+  void trigger_divine_insight_discipline()
+  {
+    int stack = priest.buffs.divine_insight_discipline -> check();
+    if ( priest.buffs.divine_insight_discipline -> trigger() )
+    {
+      if ( priest.buffs.divine_insight_discipline -> check() == stack )
+        priest.procs.divine_insight_discipline_overflow -> occur();
+      else
+        priest.procs.divine_insight_discipline -> occur();
+    }
+  }
+
+  void trigger_divine_insight_holy()
+  {
+    int stack = priest.buffs.divine_insight_holy -> check();
+    if ( priest.buffs.divine_insight_holy -> trigger() )
+    {
+      if ( priest.buffs.divine_insight_holy -> check() == stack )
+        priest.procs.divine_insight_holy_overflow -> occur();
+      else
+        priest.procs.divine_insight_holy -> occur();
+    }
+  }
   virtual void schedule_execute( action_state_t* state = 0 ) override
   {
     cancel_shadowform();
@@ -1341,32 +1381,6 @@ struct priest_heal_t : public priest_action_t<heal_t>
     }
   }
 
-  void trigger_divine_insight()
-  {
-    if ( priest.specialization() == PRIEST_HOLY )
-    {
-      int stack = priest.buffs.divine_insight_holy -> check();
-      if ( priest.buffs.divine_insight_holy -> trigger() )
-      {
-        if ( priest.buffs.divine_insight_holy -> check() == stack )
-          priest.procs.divine_insight_holy_overflow -> occur();
-        else
-          priest.procs.divine_insight_holy -> occur();
-      }
-    }
-    else if ( priest.specialization() == PRIEST_DISCIPLINE )
-    {
-      int stack = priest.buffs.divine_insight_discipline -> check();
-      if ( priest.buffs.divine_insight_discipline -> trigger() )
-      {
-        if ( priest.buffs.divine_insight_discipline -> check() == stack )
-          priest.procs.divine_insight_discipline_overflow -> occur();
-        else
-          priest.procs.divine_insight_discipline -> occur();
-      }
-    }
-  }
-
   void consume_serendipity()
   {
     priest.buffs.serendipity -> up();
@@ -1560,34 +1574,6 @@ struct priest_spell_t : public priest_action_t<spell_t>
         priest.procs.surge_of_darkness -> occur();
     }
   }
-
-  void trigger_divine_insight()
-  {
-    if ( priest.specialization() == PRIEST_SHADOW )
-    {
-      int stack = priest.buffs.divine_insight_shadow -> check();
-      if ( priest.buffs.divine_insight_shadow -> trigger() )
-      {
-        priest.cooldowns.mind_blast -> reset( true );
-
-        if ( priest.buffs.divine_insight_shadow -> check() == stack )
-          priest.procs.divine_insight_shadow_overflow -> occur();
-        else
-          priest.procs.divine_insight_shadow -> occur();
-      }
-    }
-    else if ( priest.specialization() == PRIEST_DISCIPLINE )
-    {
-      int stack = priest.buffs.divine_insight_discipline -> check();
-      if ( priest.buffs.divine_insight_discipline -> trigger() )
-      {
-        if ( priest.buffs.divine_insight_discipline -> check() == stack )
-          priest.procs.divine_insight_discipline_overflow -> occur();
-        else
-          priest.procs.divine_insight_discipline -> occur();
-      }
-    }
-  }
 };
 
 namespace spells {
@@ -1652,7 +1638,7 @@ struct chakra_base_t : public priest_spell_t
 
     if ( priest.perks.enhanced_chakras -> ok() )
     {
-      p.cooldowns.chakra -> duration -= timespan_t::from_millis( p.perks.enhanced_chakras->effectN( 1 ).time_value().total_millis() );
+      p.cooldowns.chakra -> duration -= p.perks.enhanced_chakras -> effectN( 1 ).time_value();
     }
 
     cooldown = p.cooldowns.chakra;
@@ -2364,7 +2350,7 @@ struct mind_spike_t final : public priest_spell_t
         priest.buffs.glyph_mind_spike -> trigger();
       }
 
-      trigger_divine_insight();
+      trigger_divine_insight_shadow();
     }
   }
 
@@ -3107,7 +3093,7 @@ struct shadow_word_pain_t final : public priest_spell_t
     }
 
     if ( d -> state -> result_amount > 0 )
-      trigger_divine_insight();
+      trigger_divine_insight_shadow();
   }
 };
 
@@ -3328,8 +3314,8 @@ struct penance_t final : public priest_spell_t
   virtual void execute() override
   {
     priest_spell_t::execute();
-    priest.buffs.holy_evangelism -> trigger(); // TODO: why is this here, if not mentioned in the tooltip?
-    trigger_divine_insight();
+    priest.buffs.holy_evangelism -> trigger(); // re-checked 2014/07/07: offensive penance grants evangelism stacks, even though not mentioned in the tooltip.
+    trigger_divine_insight_discipline();
   }
 };
 
@@ -4073,7 +4059,7 @@ struct _heal_t final : public priest_heal_t
 
     consume_serendipity();
     trigger_surge_of_light();
-    trigger_divine_insight();
+    trigger_divine_insight_holy();
   }
 
   virtual void impact( action_state_t* s ) override
@@ -4542,7 +4528,7 @@ struct prayer_of_healing_t final : public priest_heal_t
 
     consume_serendipity();
     trigger_surge_of_light();
-    trigger_divine_insight();
+    trigger_divine_insight_holy();
   }
 
   virtual double action_multiplier() const override
@@ -5512,7 +5498,9 @@ void priest_t::init_spells()
   //Level 75 / Tier 5
   talents.twist_of_fate               = find_talent_spell( "Twist of Fate" );
   talents.power_infusion              = find_talent_spell( "Power Infusion" );
-  talents.divine_insight              = find_talent_spell( "Divine Insight" );
+  talents.divine_insight_holy         = find_talent_spell( "Divine Insight", std::string(), PRIEST_HOLY );
+  talents.divine_insight_discipline   = find_talent_spell( "Divine Insight", std::string(), PRIEST_DISCIPLINE );
+  talents.divine_insight_shadow       = find_talent_spell( "Divine Insight", std::string(), PRIEST_SHADOW );
 
   //Level 90 / Tier 6
   talents.cascade                     = find_talent_spell( "Cascade" );
@@ -5727,16 +5715,16 @@ void priest_t::create_buffs()
                             .chance( talents.surge_of_darkness -> effectN( 1 ).percent() );
 
   buffs.divine_insight_discipline = buff_creator_t( this, "divine_insight_discipline" )
-                              .spell( find_spell( 162451 ) )
-                              .chance( talents.divine_insight->effectN( 3 ).percent());
+                              .spell( talents.divine_insight_discipline )
+                              .chance( talents.divine_insight_discipline -> effectN( 3 ).percent());
 
   buffs.divine_insight_holy = buff_creator_t( this, "divine_insight_holy" )
-                              .spell( find_spell( 109175 ) )
-                              .chance( talents.divine_insight->effectN( 1 ).percent());
+                              .spell( talents.divine_insight_holy )
+                              .chance( talents.divine_insight_holy -> effectN( 1 ).percent() );
 
   buffs.divine_insight_shadow = buff_creator_t( this, "divine_insight_shadow" )
-                              .spell( find_spell( 162452 ) )
-                              .chance( talents.divine_insight->effectN( 4 ).percent());
+                              .spell( talents.divine_insight_shadow )
+                              .chance( talents.divine_insight_shadow -> effectN( 4 ).percent());
 
   // Discipline
   buffs.archangel = new buffs::archangel_t( *this );
