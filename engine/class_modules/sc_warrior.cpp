@@ -3506,14 +3506,20 @@ void warrior_t::apl_precombat()
   }
 
   // Food
-  if ( sim -> allow_food && level >= 80 )
+  if ( sim -> allow_food )
   {
     std::string food_action = "food,type=";
-    if ( primary_role() == ROLE_ATTACK )
-      food_action += "black_pepper_ribs_and_shrimp";
-    else if ( primary_role() == ROLE_TANK )
-      food_action += "chun_tian_spring_rolls";
+    if ( level >= 90 )
+      food_action += "blackrock_barbecue";
+    else
+    {
+      if ( primary_role() == ROLE_ATTACK )
+        food_action += "black_pepper_ribs_and_shrimp";
+      else if ( primary_role() == ROLE_TANK )
+        food_action += "chun_tian_spring_rolls";
+    }
     precombat -> add_action( food_action );
+
   }
 
   if ( specialization() != WARRIOR_PROTECTION )

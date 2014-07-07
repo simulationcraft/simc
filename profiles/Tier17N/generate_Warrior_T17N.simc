@@ -147,7 +147,7 @@ talents=2233322
 glyphs=unending_rage/death_from_above/raging_wind
 head=primal_gladiators_plate_helm,id=111241
 neck=primal_gladiators_choker_of_cruelty,id=111207
-shoulders=primal_gladiators_plate_shoulders,id=111243
+shoulders=primal_gladiators_plate_pauldrons,id=111218
 back=primal_gladiators_cloak_of_prowess,id=111206
 chest=primal_gladiators_plate_chestpiece,id=111239
 wrists=primal_gladiators_armplates_of_prowess,id=111181
@@ -160,5 +160,5 @@ finger2=primal_gladiators_signet_of_accuracy,id=111272
 trinket1=primal_gladiators_badge_of_victory,id=111232
 trinket2=primal_gladiators_insignia_of_victory,id=111233
 main_hand=primal_gladiators_decapitator,id=111202
-off_hand=primal_gladiators_decapitator,id=111202
+off_hand=primal_gladiators_decapitator,id=111202,gems=3vers
 save=Warrior_Fury_2h_T17N_test.simc
