@@ -2726,7 +2726,7 @@ struct rend_t: public warrior_spell_t
     tick_may_crit = proc = true;
     may_multistrike = 1;
     dot_behavior = DOT_REFRESH;
-    attack_power_mod.tick = 0.4;
+    attack_power_mod.tick = 1.0;
     attack_power_mod.direct = 0.0;
     resource_consumed = RESOURCE_RAGE;
     resource_current = RESOURCE_RAGE;
