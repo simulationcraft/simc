@@ -2,7 +2,7 @@
 
 talent_format=armory
 # Guardian Druid T17N
-druid="Druid_Feral_PrimalGlad"
+druid="Druid_Guardian_T17N"
 level=100
 race=night_elf
 spec=guardian
