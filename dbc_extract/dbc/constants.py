@@ -487,6 +487,8 @@ effect_subtype = {
     317 : "A_317",
     318 : "A_318",
     319 : "A_319",
+    319 : "A_319",
+    422 : "A_MOD_ABSORB_DONE_PERCENT",
 }
 
 effect_type_maxlen    = 0

@@ -1067,7 +1067,7 @@ enum effect_subtype_t {
     A_418 = 418,
     A_419 = 419,
     A_421 = 421,
-    A_422 = 422,
+    A_MOD_ABSORB_DONE_PERCENT = 422,
     A_423 = 423,
     A_424 = 424,
     A_429 = 429,

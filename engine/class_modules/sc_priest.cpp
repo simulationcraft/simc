@@ -76,7 +76,7 @@ public:
     buff_t* chakra_chastise;
     buff_t* chakra_sanctuary;
     buff_t* chakra_serenity;
-    buff_t* divine_insight_holy;
+    buff_t* divine_insight_holy; // TODO: implement actual effect
     buff_t* serendipity;
 
     buff_t* focused_will;
@@ -122,7 +122,9 @@ public:
 
     const spell_data_t* twist_of_fate;
     const spell_data_t* power_infusion;
-    const spell_data_t* divine_insight;
+    const spell_data_t* divine_insight_holy;
+    const spell_data_t* divine_insight_discipline;
+    const spell_data_t* divine_insight_shadow;
 
     const spell_data_t* cascade;
     const spell_data_t* divine_star;
@@ -977,6 +979,44 @@ public:
   priest_td_t& get_td( player_t* t ) const
   { return *( priest.get_target_data( t ) ); }
 
+  void trigger_divine_insight_shadow()
+  {
+
+    int stack = priest.buffs.divine_insight_shadow -> check();
+    if ( priest.buffs.divine_insight_shadow -> trigger() )
+    {
+      priest.cooldowns.mind_blast -> reset( true );
+
+      if ( priest.buffs.divine_insight_shadow -> check() == stack )
+        priest.procs.divine_insight_shadow_overflow -> occur();
+      else
+        priest.procs.divine_insight_shadow -> occur();
+    }
+  }
+
+  void trigger_divine_insight_discipline()
+  {
+    int stack = priest.buffs.divine_insight_discipline -> check();
+    if ( priest.buffs.divine_insight_discipline -> trigger() )
+    {
+      if ( priest.buffs.divine_insight_discipline -> check() == stack )
+        priest.procs.divine_insight_discipline_overflow -> occur();
+      else
+        priest.procs.divine_insight_discipline -> occur();
+    }
+  }
+
+  void trigger_divine_insight_holy()
+  {
+    int stack = priest.buffs.divine_insight_holy -> check();
+    if ( priest.buffs.divine_insight_holy -> trigger() )
+    {
+      if ( priest.buffs.divine_insight_holy -> check() == stack )
+        priest.procs.divine_insight_holy_overflow -> occur();
+      else
+        priest.procs.divine_insight_holy -> occur();
+    }
+  }
   virtual void schedule_execute( action_state_t* state = 0 ) override
   {
     cancel_shadowform();
@@ -1341,32 +1381,6 @@ struct priest_heal_t : public priest_action_t<heal_t>
     }
   }
 
-  void trigger_divine_insight()
-  {
-    if ( priest.specialization() == PRIEST_HOLY )
-    {
-      int stack = priest.buffs.divine_insight_holy -> check();
-      if ( priest.buffs.divine_insight_holy -> trigger() )
-      {
-        if ( priest.buffs.divine_insight_holy -> check() == stack )
-          priest.procs.divine_insight_holy_overflow -> occur();
-        else
-          priest.procs.divine_insight_holy -> occur();
-      }
-    }
-    else if ( priest.specialization() == PRIEST_DISCIPLINE )
-    {
-      int stack = priest.buffs.divine_insight_discipline -> check();
-      if ( priest.buffs.divine_insight_discipline -> trigger() )
-      {
-        if ( priest.buffs.divine_insight_discipline -> check() == stack )
-          priest.procs.divine_insight_discipline_overflow -> occur();
-        else
-          priest.procs.divine_insight_discipline -> occur();
-      }
-    }
-  }
-
   void consume_serendipity()
   {
     priest.buffs.serendipity -> up();
@@ -1560,34 +1574,6 @@ struct priest_spell_t : public priest_action_t<spell_t>
         priest.procs.surge_of_darkness -> occur();
     }
   }
-
-  void trigger_divine_insight()
-  {
-    if ( priest.specialization() == PRIEST_SHADOW )
-    {
-      int stack = priest.buffs.divine_insight_shadow -> check();
-      if ( priest.buffs.divine_insight_shadow -> trigger() )
-      {
-        priest.cooldowns.mind_blast -> reset( true );
-
-        if ( priest.buffs.divine_insight_shadow -> check() == stack )
-          priest.procs.divine_insight_shadow_overflow -> occur();
-        else
-          priest.procs.divine_insight_shadow -> occur();
-      }
-    }
-    else if ( priest.specialization() == PRIEST_DISCIPLINE )
-    {
-      int stack = priest.buffs.divine_insight_discipline -> check();
-      if ( priest.buffs.divine_insight_discipline -> trigger() )
-      {
-        if ( priest.buffs.divine_insight_discipline -> check() == stack )
-          priest.procs.divine_insight_discipline_overflow -> occur();
-        else
-          priest.procs.divine_insight_discipline -> occur();
-      }
-    }
-  }
 };
 
 namespace spells {
@@ -1652,7 +1638,7 @@ struct chakra_base_t : public priest_spell_t
 
     if ( priest.perks.enhanced_chakras -> ok() )
     {
-      p.cooldowns.chakra -> duration -= timespan_t::from_millis( p.perks.enhanced_chakras->effectN( 1 ).time_value().total_millis() );
+      p.cooldowns.chakra -> duration -= p.perks.enhanced_chakras -> effectN( 1 ).time_value();
     }
 
     cooldown = p.cooldowns.chakra;
@@ -1999,14 +1985,10 @@ struct mind_blast_dot_t final : public priest_spell_t
   {
     parse_effect_data( data().effectN( 1 ) );
 
-    base_tick_time = timespan_t::from_seconds( 2.0 );
-    dot_duration = timespan_t::from_seconds( 4.0 );
     hasted_ticks = true;
     tick_may_crit = false;
     may_multistrike = false;
     tick_zero = false;
-
-    base_dd_min = base_dd_max = spell_power_mod.tick = spell_power_mod.direct = 0.0;
 
     background = true;
   }
@@ -2368,7 +2350,7 @@ struct mind_spike_t final : public priest_spell_t
         priest.buffs.glyph_mind_spike -> trigger();
       }
 
-      trigger_divine_insight();
+      trigger_divine_insight_shadow();
     }
   }
 
@@ -3111,7 +3093,7 @@ struct shadow_word_pain_t final : public priest_spell_t
     }
 
     if ( d -> state -> result_amount > 0 )
-      trigger_divine_insight();
+      trigger_divine_insight_shadow();
   }
 };
 
@@ -3332,8 +3314,8 @@ struct penance_t final : public priest_spell_t
   virtual void execute() override
   {
     priest_spell_t::execute();
-    priest.buffs.holy_evangelism -> trigger(); // TODO: why is this here, if not mentioned in the tooltip?
-    trigger_divine_insight();
+    priest.buffs.holy_evangelism -> trigger(); // re-checked 2014/07/07: offensive penance grants evangelism stacks, even though not mentioned in the tooltip.
+    trigger_divine_insight_discipline();
   }
 };
 
@@ -4077,7 +4059,7 @@ struct _heal_t final : public priest_heal_t
 
     consume_serendipity();
     trigger_surge_of_light();
-    trigger_divine_insight();
+    trigger_divine_insight_holy();
   }
 
   virtual void impact( action_state_t* s ) override
@@ -4546,7 +4528,7 @@ struct prayer_of_healing_t final : public priest_heal_t
 
     consume_serendipity();
     trigger_surge_of_light();
-    trigger_divine_insight();
+    trigger_divine_insight_holy();
   }
 
   virtual double action_multiplier() const override
@@ -5173,7 +5155,7 @@ double priest_t::composite_spell_haste() const
     h /= 1.0 + buffs.resolute_spirit -> data().effectN( 1 ).percent(); // FIXME: check whether to use set bonus data ( 10% ) or buff data ( 15% ). 2013/06/13
 
   if ( buffs.mental_instinct -> check() )
-    h /= 1.0 + buffs.mental_instinct -> default_value * buffs.mental_instinct -> check();
+    h /= 1.0 + buffs.mental_instinct -> data().effectN( 1 ).percent() * buffs.mental_instinct -> check();
 
   return h;
 }
@@ -5269,7 +5251,7 @@ double priest_t::composite_player_heal_multiplier( const action_state_t* s ) con
 
   if ( buffs.saving_grace_penalty -> check() )
   {
-    m *= 1.0 + buffs.saving_grace_penalty -> check() * -0.10; // TODO: spelldata
+    m *= 1.0 + buffs.saving_grace_penalty -> check() * buffs.saving_grace_penalty -> data().effectN( 1 ).percent();
   }
 
   return m;
@@ -5516,7 +5498,9 @@ void priest_t::init_spells()
   //Level 75 / Tier 5
   talents.twist_of_fate               = find_talent_spell( "Twist of Fate" );
   talents.power_infusion              = find_talent_spell( "Power Infusion" );
-  talents.divine_insight              = find_talent_spell( "Divine Insight" );
+  talents.divine_insight_holy         = find_talent_spell( "Divine Insight", std::string(), PRIEST_HOLY );
+  talents.divine_insight_discipline   = find_talent_spell( "Divine Insight", std::string(), PRIEST_DISCIPLINE );
+  talents.divine_insight_shadow       = find_talent_spell( "Divine Insight", std::string(), PRIEST_SHADOW );
 
   //Level 90 / Tier 6
   talents.cascade                     = find_talent_spell( "Cascade" );
@@ -5592,7 +5576,7 @@ void priest_t::init_spells()
   perks.improved_penance              = find_perk_spell( "Improved Penance" );
 
   // Holy
-  perks.enhanced_chakras              = find_perk_spell( "Enhanced Chakras" );                  //NYI
+  perks.enhanced_chakras              = find_perk_spell( "Enhanced Chakras" );
   perks.enhanced_renew                = find_perk_spell( "Enhanced Renew" );
 
   // Shadow
@@ -5731,16 +5715,16 @@ void priest_t::create_buffs()
                             .chance( talents.surge_of_darkness -> effectN( 1 ).percent() );
 
   buffs.divine_insight_discipline = buff_creator_t( this, "divine_insight_discipline" )
-                              .spell( find_spell( 162451 ) )
-                              .chance( talents.divine_insight->effectN( 3 ).percent());
+                              .spell( talents.divine_insight_discipline )
+                              .chance( talents.divine_insight_discipline -> effectN( 3 ).percent());
 
   buffs.divine_insight_holy = buff_creator_t( this, "divine_insight_holy" )
-                              .spell( find_spell( 109175 ) )
-                              .chance( talents.divine_insight->effectN( 1 ).percent());
+                              .spell( talents.divine_insight_holy )
+                              .chance( talents.divine_insight_holy -> effectN( 1 ).percent() );
 
   buffs.divine_insight_shadow = buff_creator_t( this, "divine_insight_shadow" )
-                              .spell( find_spell( 162452 ) )
-                              .chance( talents.divine_insight->effectN( 4 ).percent());
+                              .spell( talents.divine_insight_shadow )
+                              .chance( talents.divine_insight_shadow -> effectN( 4 ).percent());
 
   // Discipline
   buffs.archangel = new buffs::archangel_t( *this );
@@ -5759,7 +5743,8 @@ void priest_t::create_buffs()
   buffs.spirit_shell = new buffs::spirit_shell_t( *this );
 
   buffs.saving_grace_penalty = buff_creator_t( this, "saving_grace_penalty" )
-                            .add_invalidate( CACHE_PLAYER_HEAL_MULTIPLIER ); // TODO: spelldata
+                            .spell( talents.saving_grace -> effectN( 2 ).trigger() )
+                            .add_invalidate( CACHE_PLAYER_HEAL_MULTIPLIER );
 
   // Holy
   buffs.chakra_chastise = buff_creator_t( this, "chakra_chastise" )
@@ -5819,23 +5804,18 @@ void priest_t::create_buffs()
                           .add_invalidate( CACHE_HASTE );
 
   buffs.mental_instinct = buff_creator_t( this, "mental_instinct" )
-                            .spell( find_spell( 167254 ) )
-                            .chance( sets.has_set_bonus( SET_T17_4PC_CASTER ) ? 1.0 : 0.0 )
-                            .max_stack( 2 ) //Not pulled from DBC yet, this is a placeholder to test. - Twintop 2014/06/30
-                            .duration( timespan_t::from_seconds( 4 ) ) //From tooltip. - Twintop 2014/06/30
-                            .default_value( 0.03 ) //From tooltip. - Twintop 2014/06/30
+                            .spell( sets.set( SET_T17_4PC_CASTER ) -> effectN( 1 ).trigger() )
+                            .chance( sets.has_set_bonus( SET_T17_4PC_CASTER ) ? -1.0 : 0.0 )
                             .add_invalidate( CACHE_HASTE );
 
-  // TODO: check if 10% proc chance is in spell data and automatically parsed into the buff
   buffs.spiritual_vigor = stat_buff_creator_t( this, "spiritual_vigor" )
                           .spell( sets.set( SET_T17_4PC_HEAL ) -> effectN( 1 ).trigger() )
-                          .chance( specialization() == PRIEST_HOLY && sets.has_set_bonus( SET_T17_4PC_HEAL ) ? -1.0 : 0.0 )
+                          .chance( specialization() == PRIEST_HOLY ? sets.set( SET_T17_4PC_HEAL ) -> proc_chance() : 0.0 )
                           .add_invalidate( CACHE_SPIRIT );
 
-  // TODO: check if 10% proc chance is in spell data and automatically parsed into the buff
   buffs.clear_thoughts = stat_buff_creator_t( this, "clear_thoughts" )
                           .spell( sets.set( SET_T17_4PC_HEAL ) -> effectN( 1 ).trigger() )
-                          .chance( specialization() == PRIEST_DISCIPLINE && sets.has_set_bonus( SET_T17_4PC_HEAL ) ? -1.0 : 0.0 )
+                          .chance( specialization() == PRIEST_DISCIPLINE ? sets.set( SET_T17_4PC_HEAL ) -> proc_chance() : 0.0 )
                           .add_invalidate( CACHE_SPIRIT );
 }
 
