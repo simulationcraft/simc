@@ -1293,6 +1293,7 @@ class SpellDataGenerator(DataGenerator):
             ( 127626, 0, False ), # Devouring Plague heal (deactive)
             ( 129197, 3 ), # Mind Flay (Insanity)
             ( 165628, 0 ), # Item - Priest T17 Shadow 2P Bonus
+            ( 165623, 0 ), # Item - Priest T17 Shadow 2P Bonus - dot spell
             
             ( 165621, 0 ), # Item - Priest T17 Holy 2P Bonus
             ( 165614, 0 ), # Item - Priest T17 Discipline 2P Bonus

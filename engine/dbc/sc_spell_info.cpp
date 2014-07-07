@@ -183,7 +183,7 @@ const char * _effect_subtype_strings[] =
   0,                            0,                          0,                      0,                          "Modify Ranged Attack Power", // 120
   0,                            0,                          0,                      0,                          0,                       // 125
   0,                            0,                          0,                      0,                          0,                       // 130
-  "Modify Healing Power",       0,                          "Modify Total Stat%",   "Modify Melee Haste%",      0,                       // 135
+  "Modify Healing Power",       "Modify Healing% Done",     "Modify Total Stat%",   "Modify Melee Haste%",      0,                       // 135
   "Modify Ranged Haste%",       0,                          "Modify Base Resistance",0,                         0,                       // 140
   0,                            0,                          0,                      0,                          0,                       // 145
   0,                            0,                          0,                      0,                          0,                       // 150
@@ -240,7 +240,7 @@ const char * _effect_subtype_strings[] =
   0,                            0,                          0,                      0,                          0,                       // 405
   0,                            0,                          0,                      0,                          0,                       // 410
   0,                            0,                          0,                      0,                          0,                       // 415
-  0,                            0,                          0,                      0,                          0,                       // 420
+  0,                            0,                          "Modify Absorb% Done", 0,                          0,                       // 420
   0,                            0,                          0,                      0,                          0,                       // 425
   0,                            0,                          0,                      0,                          0,                       // 430
   0,                            0,                          0,                      0,                          0,                       // 435

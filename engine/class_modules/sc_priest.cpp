@@ -1999,14 +1999,10 @@ struct mind_blast_dot_t final : public priest_spell_t
   {
     parse_effect_data( data().effectN( 1 ) );
 
-    base_tick_time = timespan_t::from_seconds( 2.0 );
-    dot_duration = timespan_t::from_seconds( 4.0 );
     hasted_ticks = true;
     tick_may_crit = false;
     may_multistrike = false;
     tick_zero = false;
-
-    base_dd_min = base_dd_max = spell_power_mod.tick = spell_power_mod.direct = 0.0;
 
     background = true;
   }
@@ -5173,7 +5169,7 @@ double priest_t::composite_spell_haste() const
     h /= 1.0 + buffs.resolute_spirit -> data().effectN( 1 ).percent(); // FIXME: check whether to use set bonus data ( 10% ) or buff data ( 15% ). 2013/06/13
 
   if ( buffs.mental_instinct -> check() )
-    h /= 1.0 + buffs.mental_instinct -> default_value * buffs.mental_instinct -> check();
+    h /= 1.0 + buffs.mental_instinct -> data().effectN( 1 ).percent() * buffs.mental_instinct -> check();
 
   return h;
 }
@@ -5269,7 +5265,7 @@ double priest_t::composite_player_heal_multiplier( const action_state_t* s ) con
 
   if ( buffs.saving_grace_penalty -> check() )
   {
-    m *= 1.0 + buffs.saving_grace_penalty -> check() * -0.10; // TODO: spelldata
+    m *= 1.0 + buffs.saving_grace_penalty -> check() * buffs.saving_grace_penalty -> data().effectN( 1 ).percent();
   }
 
   return m;
@@ -5759,7 +5755,8 @@ void priest_t::create_buffs()
   buffs.spirit_shell = new buffs::spirit_shell_t( *this );
 
   buffs.saving_grace_penalty = buff_creator_t( this, "saving_grace_penalty" )
-                            .add_invalidate( CACHE_PLAYER_HEAL_MULTIPLIER ); // TODO: spelldata
+                            .spell( talents.saving_grace -> effectN( 2 ).trigger() )
+                            .add_invalidate( CACHE_PLAYER_HEAL_MULTIPLIER );
 
   // Holy
   buffs.chakra_chastise = buff_creator_t( this, "chakra_chastise" )
@@ -5819,23 +5816,18 @@ void priest_t::create_buffs()
                           .add_invalidate( CACHE_HASTE );
 
   buffs.mental_instinct = buff_creator_t( this, "mental_instinct" )
-                            .spell( find_spell( 167254 ) )
-                            .chance( sets.has_set_bonus( SET_T17_4PC_CASTER ) ? 1.0 : 0.0 )
-                            .max_stack( 2 ) //Not pulled from DBC yet, this is a placeholder to test. - Twintop 2014/06/30
-                            .duration( timespan_t::from_seconds( 4 ) ) //From tooltip. - Twintop 2014/06/30
-                            .default_value( 0.03 ) //From tooltip. - Twintop 2014/06/30
+                            .spell( sets.set( SET_T17_4PC_CASTER ) -> effectN( 1 ).trigger() )
+                            .chance( sets.has_set_bonus( SET_T17_4PC_CASTER ) ? -1.0 : 0.0 )
                             .add_invalidate( CACHE_HASTE );
 
-  // TODO: check if 10% proc chance is in spell data and automatically parsed into the buff
   buffs.spiritual_vigor = stat_buff_creator_t( this, "spiritual_vigor" )
                           .spell( sets.set( SET_T17_4PC_HEAL ) -> effectN( 1 ).trigger() )
-                          .chance( specialization() == PRIEST_HOLY && sets.has_set_bonus( SET_T17_4PC_HEAL ) ? -1.0 : 0.0 )
+                          .chance( specialization() == PRIEST_HOLY ? sets.set( SET_T17_4PC_HEAL ) -> proc_chance() : 0.0 )
                           .add_invalidate( CACHE_SPIRIT );
 
-  // TODO: check if 10% proc chance is in spell data and automatically parsed into the buff
   buffs.clear_thoughts = stat_buff_creator_t( this, "clear_thoughts" )
                           .spell( sets.set( SET_T17_4PC_HEAL ) -> effectN( 1 ).trigger() )
-                          .chance( specialization() == PRIEST_DISCIPLINE && sets.has_set_bonus( SET_T17_4PC_HEAL ) ? -1.0 : 0.0 )
+                          .chance( specialization() == PRIEST_DISCIPLINE ? sets.set( SET_T17_4PC_HEAL ) -> proc_chance() : 0.0 )
                           .add_invalidate( CACHE_SPIRIT );
 }
 
