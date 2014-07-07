@@ -654,10 +654,10 @@ void absorb_t::impact( action_state_t* s )
   if ( target_specific[ s -> target ] == 0 )
   {
     std::string stats_obj_name = name_str + "_" + player -> name_str;
-    stats_t* target_stats = s -> target -> get_stats( stats_obj_name, this );
-    stats -> add_child( target_stats );
+    //stats_t* target_stats = s -> target -> get_stats( stats_obj_name, this );
+    //stats -> add_child( target_stats );
     creator_.actors( s -> target );
-    creator_.source( target_stats );
+    //creator_.source( target_stats );
 
     target_specific[ s -> target ] = creator_;
   }
@@ -675,13 +675,13 @@ void absorb_t::impact( action_state_t* s )
 void absorb_t::assess_damage( dmg_e    heal_type,
                               action_state_t* s )
 {
-  s -> result_amount = s -> target -> resource_gain( RESOURCE_HEALTH, s -> result_amount, 0, this );
+  //s -> result_amount = s -> target -> resource_gain( RESOURCE_HEALTH, s -> result_amount, 0, this );
 
-  if ( sim -> log )
-    sim -> out_log.printf( "%s %s heals %s for %.0f (%.0f) (%s)",
-                   player -> name(), name(),
-                   s -> target -> name(), s -> result_amount, s -> result_total,
-                   util::result_type_string( s -> result ) );
+  //if ( sim -> log )
+  //  sim -> out_log.printf( "%s %s heals %s for %.0f (%.0f) (%s)",
+  //                 player -> name(), name(),
+  //                 s -> target -> name(), s -> result_amount, s -> result_total,
+  //                 util::result_type_string( s -> result ) );
 
   stats -> add_result( s -> result_amount, s -> result_total, heal_type, s -> result, s -> block_result, s -> target );
 }

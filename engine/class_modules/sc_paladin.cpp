@@ -2798,6 +2798,30 @@ struct light_of_dawn_t : public paladin_heal_t
 };
 
 // Sacred Shield ============================================================
+// The sacred_shield_t action is the driver, which should act like a HoT that doesn't do any healing.
+// Instead it has a sacred_shield_tick_t tick_action, which is the absorb bubble.
+
+struct sacred_shield_tick_t : public absorb_t 
+{
+  sacred_shield_tick_t( paladin_t* p ) :
+    absorb_t( "sacred_shield_tick", p, p -> find_spell( 65148 ) )
+  {
+    may_crit = true;
+    background = true;
+
+    // unfortunately, this spell info is split between effects and tooltip 
+    base_dd_min = base_dd_max = data().effectN( 1 ).average( p ); 
+    spell_power_mod.direct = 1.3285; // tooltip wrong, hardcoding based on testing TODO: Re-test  
+    
+
+    // Spell data reflects protection values; Ret and Holy are 30% larger TODO: test if this is still the case
+    if ( ( p -> specialization() == PALADIN_RETRIBUTION || p -> specialization() == PALADIN_HOLY ) )
+    {
+      spell_power_mod.direct /= 0.6999;
+    }
+  }
+
+};
 
 struct sacred_shield_t : public paladin_heal_t
 {
@@ -2805,15 +2829,17 @@ struct sacred_shield_t : public paladin_heal_t
     paladin_heal_t( "sacred_shield", p, p -> find_talent_spell( "Sacred Shield" ) ) // todo: find_talent_spell -> find_specialization_spell
   {
     parse_options( NULL, options_str );
-    may_crit = false;
-    tick_may_crit = true; // Ticks can crit as of WoD
-    benefits_from_seal_of_insight = false;
-    harmful = false;
 
     // treat this as a HoT that spawns an absorb bubble on each tick() call rather than healing
-    // unfortunately, this spell info is split between effects and tooltip 
-    base_td = data().effectN( 1 ).average( p ); 
-    spell_power_mod.tick = 1.229; // in tooltip, hardcoding
+    tick_action = new sacred_shield_tick_t( p );
+    hasted_ticks = true;
+    may_multistrike = false;
+        
+    // most of this is irrelevant now, I think?
+    may_crit = false;
+    tick_may_crit = false;
+    benefits_from_seal_of_insight = false;
+    harmful = false;
     
     // redirect HoT to self if not specified
     if ( target -> is_enemy() || ( target -> type == HEALING_ENEMY && p -> specialization() == PALADIN_PROTECTION ) )
@@ -2823,13 +2849,6 @@ struct sacred_shield_t : public paladin_heal_t
     if ( ! ( p -> talents.sacred_shield -> ok() ) )
       background = true;
 
-    // Spell data reflects protection values; Ret and Holy are 30% larger TODO: test if this is still the case
-    if ( ( p -> specialization() == PALADIN_RETRIBUTION || p -> specialization() == PALADIN_HOLY ) )
-    {
-      base_td /= 0.7;
-      spell_power_mod.tick /= 0.7;
-    }
-
     // Holy gets other special stuff - no cooldown, no target limit, 3 charges, 10-second recharge time, extra (zero) tick
     if ( p -> specialization() == PALADIN_HOLY )
     {
@@ -2837,25 +2856,25 @@ struct sacred_shield_t : public paladin_heal_t
       cooldown -> charges = 3;
       cooldown -> duration += timespan_t::from_seconds( 4 );
       // extra tick immediately upon cast
-      tick_zero = true;      
+      tick_zero = true; // TODO: retest
     }
 
   }
 
-  virtual void tick( dot_t* d )
-  {
-    // Kludge to swap the heal for an absorb
-    // calculate the tick amount
-    double ss_tick_amount = calculate_tick_amount( d -> state, d -> get_last_tick_factor() );
+  //virtual void tick( dot_t* d )
+  //{
+  //  // Kludge to swap the heal for an absorb
+  //  // calculate the tick amount
+  //  double ss_tick_amount = calculate_tick_amount( d -> state, d -> get_last_tick_factor() );
+  
+  //  //// if an existing absorb bubble is still hanging around, kill it
+  //  //td( d -> state -> target ) -> buffs.sacred_shield_tick -> expire();
 
-    // if an existing absorb bubble is still hanging around, kill it
-    td( d -> state -> target ) -> buffs.sacred_shield_tick -> expire();
+  //  //// trigger a new 6-second absorb bubble with the absorb amount we stored earlier
+  //  //td( d -> state -> target ) -> buffs.sacred_shield_tick -> trigger( 1, ss_tick_amount );
 
-    // trigger a new 6-second absorb bubble with the absorb amount we stored earlier
-    td( d -> state -> target ) -> buffs.sacred_shield_tick -> trigger( 1, ss_tick_amount );
-
-    // note that we don't call paladin_heal_t::tick( d ) so that the heal doesn't happen
-  }
+  //  // note that we don't call paladin_heal_t::tick( d ) so that the heal doesn't happen
+  //}
 
   virtual void last_tick( dot_t* d )
   {
@@ -2868,6 +2887,12 @@ struct sacred_shield_t : public paladin_heal_t
     paladin_heal_t::execute();
 
     p()->buffs.sacred_shield->trigger();
+  }
+
+  virtual timespan_t calculate_dot_refresh_duration( const dot_t* dot, timespan_t triggered_duration ) const override
+  {
+    // Old MoP Dot Behavior
+    return dot -> time_to_next_tick() + triggered_duration;
   }
 };
 
@@ -4875,7 +4900,8 @@ void paladin_t::create_buffs()
                                  .source( get_stats( "holy_shield" ) )
                                  .gain( get_gain( "holy_shield" ) );
   buffs.sacred_shield          = buff_creator_t( this, "sacred_shield", find_talent_spell( "Sacred Shield" ) )
-                                 .duration( timespan_t::from_seconds( 60 ) ); // arbitrarily high since this is just a placeholder, we expire() on last_tick()
+                                 .duration( timespan_t::from_seconds( 60 ) ) // arbitrarily high since this is just a placeholder, we expire() on last_tick()
+                                 .cd( timespan_t::zero() ); // let ability handle CD
   buffs.selfless_healer        = buff_creator_t( this, "selfless_healer", find_spell( 114250 ) );
   buffs.liadrins_righteousness = buff_creator_t( this, "liadrins_righteousness", find_spell( 156989 ) )
                                  .add_invalidate( CACHE_ATTACK_SPEED );
