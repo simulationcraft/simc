@@ -1346,7 +1346,7 @@ struct priest_heal_t : public priest_action_t<heal_t>
       if ( priest.buffs.divine_insight_holy -> trigger() )
       {
         if ( priest.buffs.divine_insight_holy -> check() == stack )
-          priest.procs.divine_insight_holy -> occur();
+          priest.procs.divine_insight_holy_overflow -> occur();
         else
           priest.procs.divine_insight_holy -> occur();
       }
@@ -1357,7 +1357,7 @@ struct priest_heal_t : public priest_action_t<heal_t>
       if ( priest.buffs.divine_insight_discipline -> trigger() )
       {
         if ( priest.buffs.divine_insight_discipline -> check() == stack )
-          priest.procs.divine_insight_discipline -> occur();
+          priest.procs.divine_insight_discipline_overflow -> occur();
         else
           priest.procs.divine_insight_discipline -> occur();
       }
