@@ -14,10 +14,11 @@
 // Demonology grimoire of sacrifice: http://wod.wowhead.com/spell=156656
 // Level 100 talents
 // Perks
-// Grimoire of sacrifice interaction with fire and brimstone, search: GoSac FnB
+// Grimoire of sacrifice interaction with fire and brimstone, GoSac FnB
 // Update action lists
 // void consume_tick_resource( dot_t* d ) - find out why this causes drain
 // ---soul to ignite with hell fire.
+// fix charred_embers usage once we get info about FaB. Don't use aoe until.
 
 // ==========================================================================
 namespace { // unnamed namespace
@@ -2778,7 +2779,7 @@ struct conflagrate_t : public warlock_spell_t
       gain = p() -> gains.conflagrate;
 
     if ( p() -> talents.charred_remains -> ok() ){
-      trigger_ember_gain( p(), s -> result == RESULT_CRIT ? 0.8 : 0.4, gain );
+      trigger_ember_gain( p(), s -> result == RESULT_CRIT ?  0.2 * ( 1.0 + p() -> talents.charred_remains -> effectN( 2 ).percent() ) : 0.1 * ( 1.0 + p() -> talents.charred_remains -> effectN( 2 ).percent() ), gain );
     }
     else
       trigger_ember_gain( p(), s -> result == RESULT_CRIT ? 0.2 : 0.1, gain );
@@ -2887,7 +2888,7 @@ struct incinerate_t : public warlock_spell_t
       gain = p() -> gains.incinerate;
 
     if ( p() -> talents.charred_remains -> ok() ){
-      trigger_ember_gain( p(), s -> result == RESULT_CRIT ? 0.8 : 0.4, gain );
+      trigger_ember_gain( p(), s -> result == RESULT_CRIT ?  0.2 * ( 1.0 + p() -> talents.charred_remains -> effectN( 2 ).percent() ) : 0.1 * ( 1.0 + p() -> talents.charred_remains -> effectN( 2 ).percent() ), gain );
     }
     else
       trigger_ember_gain( p(), s -> result == RESULT_CRIT ? 0.2 : 0.1, gain );
