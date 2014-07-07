@@ -1800,6 +1800,8 @@ public:
   {
     double pm = spell_t::composite_persistent_multiplier( s );
 
+    /* TODO: Confirm if the actual mastery value is snapshotted or
+       if it's only whether or not the spell was cast under meta. */
     if ( p() -> mastery_spells.master_demonologist -> ok() )
     {
       if ( p() -> buffs.metamorphosis -> up() )
