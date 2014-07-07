@@ -1,11 +1,10 @@
-warrior="Warrior_Fury_1h_T17N_Rav"
+warrior="Warrior_Fury_1h_T17N_IW"
 level=100
 race=orc
 role=attack
 position=back
-professions=engineering=600/blacksmithing=600
 talents=http://us.battle.net/wow/en/tool/talent-calculator#ZZ!0100211
-glyphs=unending_rage/death_from_above/cleave
+glyphs=unending_rage/death_from_above
 spec=fury
 
 # This default action priority list is automatically created based on your character.

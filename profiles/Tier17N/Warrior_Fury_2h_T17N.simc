@@ -1,11 +1,10 @@
-warrior="Warrior_Fury_1h_T17N_IW"
+warrior="Warrior_Fury_2h_T17N"
 level=100
 race=orc
 role=attack
 position=back
-professions=engineering=600/blacksmithing=600
-talents=http://us.battle.net/wow/en/tool/talent-calculator#ZZ!0100212
-glyphs=unending_rage/death_from_above/cleave
+talents=http://us.battle.net/wow/en/tool/talent-calculator#ZZ!0100211
+glyphs=unending_rage/death_from_above
 spec=fury
 
 # This default action priority list is automatically created based on your character.
@@ -27,12 +26,12 @@ actions.precombat+=/potion,name=draenor_strength
 
 actions=charge
 actions+=/auto_attack
+actions+=/use_item,name=primal_gladiators_badge_of_victory
 actions+=/potion,name=draenor_strength,if=(target.health.pct<20&buff.recklessness.up)|target.time_to_die<=25
 # This incredibly long line can be translated to 'Use recklessness on cooldown with colossus smash; unless the boss will die before the ability is usable again, and then combine with execute instead.'
 actions+=/recklessness,if=!talent.bloodbath.enabled&(((cooldown.colossus_smash.remains<2|debuff.colossus_smash.remains>=5)&target.time_to_die>192)|target.health.pct<20)|buff.bloodbath.up&(target.time_to_die>192|target.health.pct<20)|target.time_to_die<=12
 actions+=/avatar,if=talent.avatar.enabled&((buff.recklessness.up|target.time_to_die<=25))
 actions+=/berserker_rage,if=!buff.enrage.up
-actions+=/use_item,name=primal_gladiators_badge_of_victory
 actions+=/blood_fury,if=buff.bloodbath.up|(!talent.bloodbath.enabled&debuff.colossus_smash.up)|buff.recklessness.up
 actions+=/berserking,if=buff.bloodbath.up|(!talent.bloodbath.enabled&debuff.colossus_smash.up)|buff.recklessness.up
 actions+=/arcane_torrent,if=buff.bloodbath.up|(!talent.bloodbath.enabled&debuff.colossus_smash.up)|buff.recklessness.up
@@ -46,8 +45,8 @@ actions.single_target+=/ignite_weapon,if=talent.ignite_weapon.enabled&((target.h
 actions.single_target+=/heroic_leap,if=debuff.colossus_smash.up
 actions.single_target+=/storm_bolt,if=talent.storm_bolt.enabled&debuff.colossus_smash.up
 # Delay Bloodthirst if 2 stacks of raging blow are available inside Colossus Smash.
-actions.single_target+=/raging_blow,if=buff.raging_blow.stack=2&debuff.colossus_smash.up&target.health.pct>=20
-# Until execute range, Bloodthirst is used on cooldown 95% of the time. When execute range is reached, bloodthirst can be delayed 1-2~ globals as long as the conditions below are met.
+actions.single_target+=/raging_blow,if=buff.raging_blow.stack=2&debuff.colossus_smash.up
+# Until execute range, Bloodthirst is used on cooldown 95% of the time. When execute range is reached, bloodthirst can be delayed 1~ globals as long as the conditions below are met.
 # This is done to lower the amount of heroic strike usage, and to increase the amount of executes used.
 actions.single_target+=/bloodthirst,if=!(target.health.pct<20&debuff.colossus_smash.up&rage>=30&buff.enrage.up)
 actions.single_target+=/dragon_roar,if=talent.dragon_roar.enabled&((!debuff.colossus_smash.up&(buff.bloodbath.up|!talent.bloodbath.enabled)))
@@ -66,23 +65,23 @@ actions.two_targets=bloodbath,if=talent.bloodbath.enabled
 actions.two_targets+=/heroic_leap,if=buff.enrage.up
 actions.two_targets+=/ignite_weapon,if=talent.ignite_weapon.enabled&((target.health.pct>=20&rage>100)|buff.ignite_weapon.down)
 actions.two_targets+=/ravager,if=talent.ravager.enabled
-actions.two_targets+=/bladestorm,if=talent.bladestorm.enabled&buff.enrage.remains>4
+actions.two_targets+=/bladestorm,if=talent.bladestorm.enabled
 actions.two_targets+=/dragon_roar,if=talent.dragon_roar.enabled&(!debuff.colossus_smash.up&(buff.bloodbath.up|!talent.bloodbath.enabled))
 actions.two_targets+=/colossus_smash
 actions.two_targets+=/storm_bolt,if=talent.storm_bolt.enabled&debuff.colossus_smash.up
 actions.two_targets+=/bloodthirst
 actions.two_targets+=/raging_blow
-actions.two_targets+=/execute
 actions.two_targets+=/whirlwind
 actions.two_targets+=/shockwave,if=talent.shockwave.enabled
+actions.two_targets+=/execute
 
 actions.three_targets=bloodbath,if=talent.bloodbath.enabled
 actions.three_targets+=/heroic_leap,if=buff.enrage.up
 actions.three_targets+=/ravager,if=talent.ravager.enabled
 actions.three_targets+=/ignite_weapon,if=talent.ignite_weapon.enabled&((target.health.pct>=20&rage>100)|buff.ignite_weapon.down)
-actions.three_targets+=/bloodthirst
 actions.three_targets+=/bladestorm,if=talent.bladestorm.enabled&buff.enrage.remains>4
 actions.three_targets+=/dragon_roar,if=talent.dragon_roar.enabled&(!debuff.colossus_smash.up&(buff.bloodbath.up|!talent.bloodbath.enabled))
+actions.three_targets+=/bloodthirst
 actions.three_targets+=/colossus_smash
 actions.three_targets+=/storm_bolt,if=talent.storm_bolt.enabled&debuff.colossus_smash.up
 actions.three_targets+=/raging_blow
@@ -116,17 +115,17 @@ finger1=primal_gladiators_signet_of_cruelty,id=111219
 finger2=primal_gladiators_signet_of_accuracy,id=111272
 trinket1=primal_gladiators_badge_of_victory,id=111232
 trinket2=primal_gladiators_insignia_of_victory,id=111233
-main_hand=primal_gladiators_bonecracker,id=111200,enchant=dancing_steel
-off_hand=primal_gladiators_bonecracker,id=111200,enchant=dancing_steel
+main_hand=primal_gladiators_decapitator,id=111202,enchant=dancing_steel
+off_hand=primal_gladiators_decapitator,id=111202,enchant=dancing_steel
 
 # Gear Summary
-# gear_strength=2586
+# gear_strength=2842
 # gear_agility=3
-# gear_stamina=3202
+# gear_stamina=3584
 # gear_intellect=3
-# gear_crit_rating=1365
+# gear_crit_rating=1535
 # gear_haste_rating=436
-# gear_mastery_rating=664
+# gear_mastery_rating=834
 # gear_armor=2574
 # gear_multistrike_rating=411
 # pvp_2pc_melee=1
