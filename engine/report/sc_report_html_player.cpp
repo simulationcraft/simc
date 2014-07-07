@@ -1914,6 +1914,10 @@ void print_html_player_statistics( report::sc_html_stream& os, player_t* p, play
   report::print_html_sample_data( os, p -> sim, p -> collected_data.effective_theck_meloree_index, "ETMI", sd_counter );
   report::print_html_sample_data( os, p -> sim, p -> collected_data.max_spike_amount, "MSD", sd_counter );
 
+  for ( size_t i = 0; i < p -> sample_data_list.size(); ++i )
+  {
+    report::print_html_sample_data( os, p -> sim, *p -> sample_data_list[ i ], p -> sample_data_list[ i ] -> name_str, sd_counter );
+  }
   os << "<tr>\n"
      "<td>\n";
   if ( ! ri.timeline_dps_error_chart.empty() )

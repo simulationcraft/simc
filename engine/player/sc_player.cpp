@@ -3027,23 +3027,13 @@ void player_t::datacollection_begin()
     collected_data.health_changes_tmi.timeline_normalized.clear();
   }
 
-  for ( size_t i = 0; i < buff_list.size(); ++i )
-    buff_list[ i ] -> datacollection_begin();
-
-  for ( size_t i = 0; i < stats_list.size(); ++i )
-    stats_list[ i ] -> datacollection_begin();
-
-  for ( size_t i = 0; i < uptime_list.size(); ++i )
-    uptime_list[ i ] -> datacollection_begin();
-
-  for ( size_t i = 0; i < benefit_list.size(); ++i )
-    benefit_list[ i ] -> datacollection_begin();
-
-  for ( size_t i = 0; i < proc_list.size(); ++i )
-    proc_list[ i ] -> datacollection_begin();
-
-  for ( size_t i = 0; i < pet_list.size(); ++i )
-    pet_list[ i ] -> datacollection_begin();
+  range::for_each( buff_list, std::mem_fn(&buff_t::datacollection_begin ) );
+  range::for_each( stats_list, std::mem_fn(&stats_t::datacollection_begin ) );
+  range::for_each( uptime_list, std::mem_fn(&uptime_t::datacollection_begin ) );
+  range::for_each( benefit_list, std::mem_fn(&benefit_t::datacollection_begin ) );
+  range::for_each( proc_list, std::mem_fn(&proc_t::datacollection_begin ) );
+  range::for_each( pet_list, std::mem_fn(&pet_t::datacollection_begin ) );
+  range::for_each( sample_data_list, std::mem_fn(&luxurious_sample_data_t::datacollection_begin ) );
 }
 
 // endpoint for statistical data collection
@@ -3090,17 +3080,15 @@ void player_t::datacollection_end()
   }
   collected_data.collect_data( *this );
 
-  for ( size_t i = 0; i < buff_list.size(); ++i )
-    buff_list[ i ] -> datacollection_end();
+
+  range::for_each( buff_list, std::mem_fn(&buff_t::datacollection_end ) );
 
   for ( size_t i = 0; i < uptime_list.size(); ++i )
     uptime_list[ i ] -> datacollection_end( iteration_fight_length );
 
-  for ( size_t i = 0; i < benefit_list.size(); ++i )
-    benefit_list[ i ] -> datacollection_end();
-
-  for ( size_t i = 0; i < proc_list.size(); ++i )
-    proc_list[ i ] -> datacollection_end();
+  range::for_each( benefit_list, std::mem_fn(&benefit_t::datacollection_end ) );
+  range::for_each( proc_list, std::mem_fn(&proc_t::datacollection_end ) );
+  range::for_each( sample_data_list, std::mem_fn(&luxurious_sample_data_t::datacollection_end ) );
 }
 
 // player_t::merge ==========================================================
@@ -3302,6 +3290,20 @@ void player_t::merge( player_t& other )
     {
 #ifndef NDEBUG
       sim -> errorf( "%s player_t::merge can't merge benefit %s", name(), benefit.name() );
+#endif
+    }
+  }
+
+  // Sample Data
+  for ( size_t i = 0; i < sample_data_list.size(); ++i )
+  {
+    luxurious_sample_data_t& sd = *sample_data_list[ i ];
+    if ( luxurious_sample_data_t* other_sd = other.find_sample_data( sd.name_str ) )
+      sd.merge( *other_sd );
+    else
+    {
+#ifndef NDEBUG
+      sim -> errorf( "%s player_t::merge can't merge proc %s", name(), sd.name_str.c_str() );
 #endif
     }
   }
@@ -4871,6 +4873,9 @@ gain_t* player_t::find_gain ( const std::string& name ) const
 proc_t* player_t::find_proc ( const std::string& name ) const
 { return find_vector_member( proc_list, name ); }
 
+luxurious_sample_data_t* player_t::find_sample_data( const std::string& name ) const
+{ return find_vector_member( sample_data_list, name ); }
+
 benefit_t* player_t::find_benefit ( const std::string& name ) const
 { return find_vector_member( benefit_list, name ); }
 
@@ -4945,6 +4950,22 @@ proc_t* player_t::get_proc( const std::string& name )
   }
 
   return p;
+}
+
+// player_t::get_proc =======================================================
+
+luxurious_sample_data_t* player_t::get_sample_data( const std::string& name )
+{
+  luxurious_sample_data_t* sd = find_sample_data( name );
+
+  if ( !sd )
+  {
+    sd = new luxurious_sample_data_t( *this, name );
+
+    sample_data_list.push_back( sd );
+  }
+
+  return sd;
 }
 
 // player_t::get_stats ======================================================
@@ -8377,6 +8398,8 @@ void player_t::analyze( sim_t& s )
   if (  quiet ) return;
   if (  collected_data.fight_length.mean() == 0 ) return;
 
+  range::for_each( sample_data_list, std::mem_fn(&luxurious_sample_data_t::analyze_all ) );
+
   // Pet Chart Adjustment ===================================================
   size_t max_buckets = static_cast<size_t>(  collected_data.fight_length.max() );
 
@@ -10041,3 +10064,11 @@ void manager_t::add_damage_event( double amount, timespan_t current_time )
 }
 
 } // end namespace resolve
+
+luxurious_sample_data_t::luxurious_sample_data_t( player_t& p, std::string n ) :
+    extended_sample_data_t( n, p.sim -> statistics_level < 3 ),
+  player( p ),
+  buffer_value( 0.0 )
+{
+
+}

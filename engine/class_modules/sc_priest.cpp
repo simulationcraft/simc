@@ -277,6 +277,9 @@ public:
     proc_t* t15_4pc_caster;
     proc_t* t15_2pc_caster_shadow_word_pain;
     proc_t* t15_2pc_caster_vampiric_touch;
+
+
+    luxurious_sample_data_t* sd_mind_spike_dot_removal_devouring_plague_ticks;
   } procs;
 
   // Special
@@ -2309,6 +2312,8 @@ struct mind_spike_t final : public priest_spell_t
 
           for (int x = 0; x < ticksLost; x++)
             priest.procs.mind_spike_dot_removal_devouring_plague_ticks -> occur();
+
+          priest.procs.sd_mind_spike_dot_removal_devouring_plague_ticks -> add( ticksLost );
 
           removed_dot = true;
         }
@@ -5007,6 +5012,8 @@ void priest_t::create_procs()
   procs.t15_4pc_caster                                  = get_proc( "Tier15 4pc caster"                                            );
   procs.t15_2pc_caster_shadow_word_pain                 = get_proc( "Tier15 2pc caster Shadow Word: Pain Extra Tick"               );
   procs.t15_2pc_caster_vampiric_touch                   = get_proc( "Tier15 2pc caster Vampiric Touch Extra Tick"                  );
+
+  procs.sd_mind_spike_dot_removal_devouring_plague_ticks   = get_sample_data( "Devouring Plague ticks lost from Mind Spike removal"   );
 }
 
 /* Construct priest benefits

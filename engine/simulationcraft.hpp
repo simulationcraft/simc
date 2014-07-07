@@ -1381,6 +1381,39 @@ std::ostringstream& effect_to_str( const dbc_t& dbc, const spell_data_t* spell, 
 void                effect_to_xml( const dbc_t& dbc, const spell_data_t* spell, const spelleffect_data_t* effect, xml_node_t*    parent, int level = MAX_LEVEL );
 }
 
+/* Luxurious sample data container with automatic merge/analyze,
+ * intended to be used in class modules for custom reporting.
+ * Iteration based sampling
+ */
+struct luxurious_sample_data_t : public extended_sample_data_t, public noncopyable
+{
+  luxurious_sample_data_t( player_t& p, std::string n );
+
+  void add( double x )
+  { buffer_value += x; }
+
+  void datacollection_begin()
+  {
+    reset_buffer();
+  }
+  void datacollection_end()
+  {
+    write_buffer_as_sample();
+  }
+  player_t& player;
+private:
+  double buffer_value;
+  void write_buffer_as_sample()
+  {
+    extended_sample_data_t::add( buffer_value );
+    reset_buffer();
+  }
+  void reset_buffer()
+  {
+    buffer_value = 0.0;
+  }
+};
+
 // Raid Event
 
 struct raid_event_t
@@ -4329,6 +4362,7 @@ struct player_t : public actor_t
   auto_dispose< std::vector<cooldown_t*> > cooldown_list;
   std::array< std::vector<plot_data_t>, STAT_MAX > dps_plot_data;
   std::vector<std::vector<plot_data_t> > reforge_plot_data;
+  auto_dispose< std::vector<luxurious_sample_data_t*> > sample_data_list;
 
   // All Data collected during / end of combat
   player_collected_data_t collected_data;
@@ -4831,6 +4865,7 @@ struct player_t : public actor_t
   proc_t*     find_proc    ( const std::string& name ) const;
   benefit_t*  find_benefit ( const std::string& name ) const;
   uptime_t*   find_uptime  ( const std::string& name ) const;
+  luxurious_sample_data_t* find_sample_data( const std::string& name ) const;
 
   cooldown_t* get_cooldown( const std::string& name );
   dot_t*      get_dot     ( const std::string& name, player_t* source );
@@ -4839,6 +4874,7 @@ struct player_t : public actor_t
   stats_t*    get_stats   ( const std::string& name, action_t* action = 0 );
   benefit_t*  get_benefit ( const std::string& name );
   uptime_t*   get_uptime  ( const std::string& name );
+  luxurious_sample_data_t* get_sample_data( const std::string& name );
   double      get_player_distance( player_t& );
   double      get_position_distance( double m = 0, double v = 0 );
   action_priority_list_t* get_action_priority_list( const std::string& name, const std::string& comment = std::string() );
