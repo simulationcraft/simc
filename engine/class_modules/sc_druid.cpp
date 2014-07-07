@@ -380,7 +380,8 @@ public:
     const spell_data_t* readiness_guardian;
     const spell_data_t* resolve;
     const spell_data_t* savage_defense;
-    const spell_data_t* thick_hide;
+    const spell_data_t* survival_of_the_fittest;
+    const spell_data_t* thick_hide; // Hidden passive for innate DR, expertise, and crit reduction
     const spell_data_t* tooth_and_claw;
     const spell_data_t* ursa_major;
 
@@ -5323,64 +5324,65 @@ void druid_t::init_spells()
 
   // Specializations
   // Generic / Multiple specs
-  spec.critical_strikes       = find_specialization_spell( "Critical Strikes" );
-  spec.leader_of_the_pack     = find_specialization_spell( "Leader of the Pack" );
-  spec.leather_specialization = find_specialization_spell( "Leather Specialization" );
-  spec.omen_of_clarity        = find_specialization_spell( "Omen of Clarity" );
-  spec.killer_instinct        = find_specialization_spell( "Killer Instinct" );
-  spec.mana_attunement        = find_specialization_spell( "Mana Attunement" );
+  spec.critical_strikes        = find_specialization_spell( "Critical Strikes" );
+  spec.leader_of_the_pack      = find_specialization_spell( "Leader of the Pack" );
+  spec.leather_specialization  = find_specialization_spell( "Leather Specialization" );
+  spec.omen_of_clarity         = find_specialization_spell( "Omen of Clarity" );
+  spec.killer_instinct         = find_specialization_spell( "Killer Instinct" );
+  spec.mana_attunement         = find_specialization_spell( "Mana Attunement" );
 
-  spec.natures_swiftness      = find_specialization_spell( "Nature's Swiftness" );
-  spec.nurturing_instinct     = find_specialization_spell( "Nurturing Instinct" );
+  spec.natures_swiftness       = find_specialization_spell( "Nature's Swiftness" );
+  spec.nurturing_instinct      = find_specialization_spell( "Nurturing Instinct" );
 
   // Boomkin
-  spec.astral_communion       = find_specialization_spell( "Astral Communion" );
-  spec.astral_showers         = find_specialization_spell( "Astral Showers" );
-  spec.celestial_alignment    = find_specialization_spell( "Celestial Alignment" );
-  spec.celestial_focus        = find_specialization_spell( "Celestial Focus" );
-  spec.lunar_guidance         = find_specialization_spell( "Lunar Guidance" );
-  spec.moonkin_form           = find_specialization_spell( "Moonkin Form" );
-  spec.owlkin_frenzy          = find_specialization_spell( "Owlkin Frenzy" );
-  spec.readiness_balance      = find_specialization_spell( "Readiness: Balance" );
-  spec.shooting_stars         = find_specialization_spell( "Shooting Stars" );
-  spec.starfall               = find_specialization_spell( "Starfall" );
-  spec.starfire               = find_specialization_spell( "Starfire" );
-  spec.starsurge              = find_specialization_spell( "Starsurge" );
-  spec.sunfire                = find_specialization_spell( "Sunfire" );
+  spec.astral_communion        = find_specialization_spell( "Astral Communion" );
+  spec.astral_showers          = find_specialization_spell( "Astral Showers" );
+  spec.celestial_alignment     = find_specialization_spell( "Celestial Alignment" );
+  spec.celestial_focus         = find_specialization_spell( "Celestial Focus" );
+  spec.lunar_guidance          = find_specialization_spell( "Lunar Guidance" );
+  spec.moonkin_form            = find_specialization_spell( "Moonkin Form" );
+  spec.owlkin_frenzy           = find_specialization_spell( "Owlkin Frenzy" );
+  spec.readiness_balance       = find_specialization_spell( "Readiness: Balance" );
+  spec.shooting_stars          = find_specialization_spell( "Shooting Stars" );
+  spec.starfall                = find_specialization_spell( "Starfall" );
+  spec.starfire                = find_specialization_spell( "Starfire" );
+  spec.starsurge               = find_specialization_spell( "Starsurge" );
+  spec.sunfire                 = find_specialization_spell( "Sunfire" );
 
   // Feral
-  spec.predatory_swiftness    = find_specialization_spell( "Predatory Swiftness" );
-  spec.nurturing_instinct     = find_specialization_spell( "Nurturing Instinct" );
-  spec.predatory_swiftness    = find_specialization_spell( "Predatory Swiftness" );
-  spec.savage_roar            = find_specialization_spell( "Savage Roar" );
-  spec.sharpened_claws        = find_specialization_spell( "Sharpened Claws" );
-  spec.rip                    = find_specialization_spell( "Rip" );
-  spec.readiness_feral        = find_specialization_spell( "Readiness: Feral" );
-  spec.tigers_fury            = find_specialization_spell( "Tiger's Fury" );
+  spec.predatory_swiftness     = find_specialization_spell( "Predatory Swiftness" );
+  spec.nurturing_instinct      = find_specialization_spell( "Nurturing Instinct" );
+  spec.predatory_swiftness     = find_specialization_spell( "Predatory Swiftness" );
+  spec.savage_roar             = find_specialization_spell( "Savage Roar" );
+  spec.sharpened_claws         = find_specialization_spell( "Sharpened Claws" );
+  spec.rip                     = find_specialization_spell( "Rip" );
+  spec.readiness_feral         = find_specialization_spell( "Readiness: Feral" );
+  spec.tigers_fury             = find_specialization_spell( "Tiger's Fury" );
 
   // Guardian
-  spec.bladed_armor           = find_specialization_spell( "Bladed Armor" );
-  spec.resolve                = find_specialization_spell( "Resolve" );
-  spec.savage_defense         = find_specialization_spell( "Savage Defense" );
-  spec.thick_hide             = find_specialization_spell( "Thick Hide" );
-  spec.tooth_and_claw         = find_specialization_spell( "Tooth and Claw" );
-  spec.ursa_major             = find_specialization_spell( "Ursa Major" );
+  spec.bladed_armor            = find_specialization_spell( "Bladed Armor" );
+  spec.resolve                 = find_specialization_spell( "Resolve" );
+  spec.savage_defense          = find_specialization_spell( "Savage Defense" );
+  spec.survival_of_the_fittest = find_specialization_spell( "Survival of the Fittest" );
+  spec.thick_hide              = find_specialization_spell( "Thick Hide" );
+  spec.tooth_and_claw          = find_specialization_spell( "Tooth and Claw" );
+  spec.ursa_major              = find_specialization_spell( "Ursa Major" );
 
   // Restoration
-  spec.lifebloom              = find_specialization_spell( "Lifebloom" );
-  spec.living_seed            = find_specialization_spell( "Living Seed" );
-  spec.genesis                = find_specialization_spell( "Genesis" );
-  spec.ironbark               = find_specialization_spell( "Ironbark" );
-  spec.malfurions_gift        = find_specialization_spell( "Malfurion's Gift" );
-  spec.meditation             = find_specialization_spell( "Meditation" );
-  spec.naturalist             = find_specialization_spell( "Naturalist" );
-  spec.natural_insight        = find_specialization_spell( "Natural Insight" );
-  spec.natures_focus          = find_specialization_spell( "Nature's Focus" );
-  spec.regrowth               = find_specialization_spell( "Regrowth" );
-  spec.readiness_restoration  = find_specialization_spell( "Readiness: Restoration" );
-  spec.swiftmend              = find_specialization_spell( "Swiftmend" );
-  spec.tranquility            = find_specialization_spell( "Tranquility" );
-  spec.wild_growth            = find_specialization_spell( "Wild Growth" );
+  spec.lifebloom               = find_specialization_spell( "Lifebloom" );
+  spec.living_seed             = find_specialization_spell( "Living Seed" );
+  spec.genesis                 = find_specialization_spell( "Genesis" );
+  spec.ironbark                = find_specialization_spell( "Ironbark" );
+  spec.malfurions_gift         = find_specialization_spell( "Malfurion's Gift" );
+  spec.meditation              = find_specialization_spell( "Meditation" );
+  spec.naturalist              = find_specialization_spell( "Naturalist" );
+  spec.natural_insight         = find_specialization_spell( "Natural Insight" );
+  spec.natures_focus           = find_specialization_spell( "Nature's Focus" );
+  spec.regrowth                = find_specialization_spell( "Regrowth" );
+  spec.readiness_restoration   = find_specialization_spell( "Readiness: Restoration" );
+  spec.swiftmend               = find_specialization_spell( "Swiftmend" );
+  spec.tranquility             = find_specialization_spell( "Tranquility" );
+  spec.wild_growth             = find_specialization_spell( "Wild Growth" );
 
   // Talents
   talent.feline_swiftness   = find_talent_spell( "Feline Swiftness" );
@@ -6416,8 +6418,7 @@ double druid_t::composite_melee_expertise( weapon_t* ) const
 {
   double exp = player_t::composite_melee_expertise();
 
-  if ( specialization() == DRUID_GUARDIAN ) // Guardian innate expertise bonus
-    exp += 0.03;
+  exp += spec.thick_hide -> effectN( 7 ).percent();
 
   return exp;
 }
@@ -6579,19 +6580,18 @@ double druid_t::matching_gear_multiplier( attribute_e attr ) const
   return spec.leather_specialization -> effectN( idx ).percent();
 }
 
-// druid_t::composite_tank_crit =============================================
+// druid_t::c omposite_crit_avoidance =============================================
 
 double druid_t::composite_crit_avoidance() const
 {
   double c = player_t::composite_crit_avoidance();
 
-  if ( specialization() == DRUID_GUARDIAN ) // Guardian innate crit avoidance
-    c -= 0.06;
+  c += spec.thick_hide -> effectN( 1 ).percent();
 
   return c;
 }
 
-// druid_t::composite_tank_dodge ============================================
+// druid_t::composite_composite_dodge ============================================
 
 double druid_t::composite_dodge() const
 {
@@ -6630,7 +6630,7 @@ double druid_t::composite_rating_multiplier( rating_e rating ) const
     return m *= 1.0 + spec.sharpened_claws -> effectN( 1 ).percent();
     break;
   case RATING_MASTERY:
-    return m *= 1.0 + spec.lunar_guidance -> effectN( 1 ).percent() + spec.thick_hide -> effectN( 1 ).percent();
+    return m *= 1.0 + spec.lunar_guidance -> effectN( 1 ).percent() + spec.survival_of_the_fittest -> effectN( 1 ).percent();
     break;
   default:
     break;
@@ -7000,10 +7000,10 @@ void druid_t::assess_damage( school_e school,
         gain.primal_fury );
       proc.primal_fury -> occur();
      }
-    if ( school == SCHOOL_PHYSICAL ) // Guardian innate physical damage reduction
-      s -> result_amount *= 1.0 - 0.12;
-    else if ( dbc::get_school_mask( school ) & SCHOOL_MAGIC_MASK ) // Guardian innate magic damage reduction
-      s -> result_amount *= 1.0 - 0.25;
+    if ( school == SCHOOL_PHYSICAL )
+      s -> result_amount *= 1.0 + spec.thick_hide -> effectN( 5 ).percent();
+    else if ( dbc::get_school_mask( school ) & SCHOOL_MAGIC_MASK )
+      s -> result_amount *= 1.0 + spec.thick_hide -> effectN( 3 ).percent();
   }
 
   if ( buff.cenarion_ward -> up() && s -> result_amount > 0 )
