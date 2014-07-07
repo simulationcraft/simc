@@ -5723,29 +5723,47 @@ void druid_t::apl_precombat()
   // Flask or Elixir
   if ( sim -> allow_flasks && level >= 80 )
   {
+    std::string flask = "flask,type=";
+    std::string elixir1, elixir2;
+    elixir1 = elixir2 = "elixir,type=";
+
     if ( ( specialization() == DRUID_GUARDIAN && primary_role() == ROLE_TANK ) || primary_role() == ROLE_TANK ) {
-      precombat -> add_action( "elixir,type=mad_hozen" );
+      if ( level > 90 )
+        flask += "greater_draenor_armor_flask";
+      else if ( level > 85 )
+      {
+        elixir1 += "mad_hozen";
+        elixir2 += "mantid";
+      }
+      else
+        flask += "steelskin";
     } else {
-      std::string flask_action = "flask,type=";
       if ( ( specialization() == DRUID_FERAL && primary_role() == ROLE_ATTACK ) || primary_role() == ROLE_ATTACK )
       {
         if ( level > 90 )
-          flask_action += "greater_draenor_mastery_flask";
+          flask += "greater_draenor_mastery_flask";
         else if ( level > 85 )
-          flask_action += "spring_blossoms";
+          flask += "spring_blossoms";
         else
-          flask_action += "winds";
+          flask += "winds";
       }
       else
       {
         if ( level > 90 )
-          flask_action += "greater_draenor_mastery_flask";
+          flask += "greater_draenor_mastery_flask";
         else if ( level > 85 )
-          flask_action += "warm_sun";
+          flask += "warm_sun";
         else
-          flask_action += "draconic_mind";
+          flask += "draconic_mind";
       }
-      precombat -> add_action( flask_action );
+    }
+
+    if ( ! util::str_compare_ci( flask, "flask,type=" ) )
+      precombat -> add_action( flask );
+    else if ( ! util::str_compare_ci( elixir1, "elixir,type=" ) )
+    {
+      precombat -> add_action( elixir1 );
+      precombat -> add_action( elixir2 );
     }
   }
 

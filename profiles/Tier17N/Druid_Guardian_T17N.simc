@@ -15,7 +15,7 @@ spec=guardian
 
 # Executed before combat begins. Accepts non-harmful actions only.
 
-actions.precombat=elixir,type=mad_hozen
+actions.precombat=flask,type=greater_draenor_armor_flask
 actions.precombat+=/food,type=chun_tian_spring_rolls
 actions.precombat+=/mark_of_the_wild,if=!aura.str_agi_int.up
 actions.precombat+=/bear_form
