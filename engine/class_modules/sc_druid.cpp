@@ -15,12 +15,15 @@ namespace { // UNNAMED NAMESPACE
     Fix Force of Nature (summons fine, but treants take no actions)
 
     = Feral =
+    PvP bonuses
     Verify stuff
 
     = Balance =
+    PvP bonuses
     Verify stuff.
 
     = Guardian =
+    PvP bonuses
     Verify stuff (particularly DoC)
 
     = Restoration =
