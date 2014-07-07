@@ -1796,6 +1796,21 @@ public:
     return spell_t::composite_target_multiplier( t ) * m;
   }
 
+  virtual double composite_persistent_multiplier( const action_state_t* s ) const
+  {
+    double pm = spell_t::composite_persistent_multiplier( s );
+
+    if ( p() -> mastery_spells.master_demonologist -> ok() )
+    {
+      if ( p() -> buffs.metamorphosis -> up() )
+        pm *= 1.0 + p() -> cache.mastery_value() * 3.0;
+      else
+        pm *= 1.0 + p() -> cache.mastery_value();
+    }
+
+    return pm;
+  }
+
   virtual resource_e current_resource() const
   {
     if ( fury_in_meta && p() -> buffs.metamorphosis -> data().ok() )
@@ -2051,6 +2066,11 @@ struct shadowflame_t : public warlock_spell_t
     generate_fury = 2;
   }
 
+  virtual timespan_t travel_time() const
+  {
+    return timespan_t::from_seconds( 1.5 );
+  }
+
   virtual void tick( dot_t* d )
   {
     warlock_spell_t::tick( d );
@@ -2085,6 +2105,8 @@ struct shadowflame_t : public warlock_spell_t
 
 struct hand_of_guldan_t : public warlock_spell_t
 {
+  shadowflame_t* shadowflame;
+
   hand_of_guldan_t( warlock_t* p ) :
   warlock_spell_t( p, "Hand of Gul'dan" )
   {
@@ -2093,16 +2115,24 @@ struct hand_of_guldan_t : public warlock_spell_t
     cooldown -> duration = timespan_t::from_seconds( 15 );
     cooldown -> charges = 2;
 
-    impact_action = new shadowflame_t( p );
+    shadowflame = new shadowflame_t( p );
+    add_child( shadowflame );
 
     parse_effect_data( p -> find_spell( 86040 ) -> effectN( 1 ) );
-
-    add_child( impact_action );
   }
 
   virtual timespan_t travel_time() const
   {
     return timespan_t::from_seconds( 1.5 );
+  }
+
+  virtual void execute()
+  {
+    warlock_spell_t::execute();
+
+    /* Executed at the same time as HoG and given a travel time,
+       so that it can snapshot meta at the appropriate time. */
+    shadowflame -> execute();
   }
 
   virtual bool ready()
@@ -2395,12 +2425,6 @@ struct corruption_t : public warlock_spell_t
     if ( p() -> mastery_spells.potent_afflictions -> ok() )
       m *= 1.0 + p() -> cache.mastery_value();
 
-    if ( p() -> buffs.metamorphosis -> up() ) // FIXME: Is corruption an exception, or did they change it so it only applies to a few spells specifically?
-    {
-      double mastery_value = p() -> mastery_spells.master_demonologist -> ok() ? p() -> cache.mastery_value() : 0.0;
-
-      m /= 1.0 + p() -> spec.demonic_fury -> effectN( 1 ).percent() * 3 + mastery_value * 3;
-    }
     return m;
   }
 
@@ -4415,21 +4439,9 @@ double warlock_t::composite_player_multiplier( school_e school ) const
 {
   double m = player_t::composite_player_multiplier( school );
 
-  double mastery_value = mastery_spells.master_demonologist -> ok() ? cache.mastery_value() : 0.0;
-
-  if ( buffs.metamorphosis -> up() ) // FIXME: Is corruption an exception, or did they change it so it only applies to a few spells specifically?
-  {
-    m *= 1.0 + spec.demonic_fury -> effectN( 1 ).percent() * 3 + mastery_value * 3;
-  }
-  else
-  {
-    m *= 1.0 + mastery_value;
-  }
-
-  if ( buffs.tier16_2pc_fiery_wrath -> up())
-  {
+  if ( buffs.tier16_2pc_fiery_wrath -> up() )
     m *= 1.0 + buffs.tier16_2pc_fiery_wrath -> value();
-  }
+
   return m;
 }
 
@@ -4442,9 +4454,7 @@ void warlock_t::invalidate_cache( cache_e c )
   {
     case CACHE_MASTERY:
       if ( mastery_spells.master_demonologist -> ok() )
-      {
         player_t::invalidate_cache( CACHE_PLAYER_DAMAGE_MULTIPLIER );
-      }
       break;
     default: break;
   }
