@@ -58,3 +58,4 @@ CMakeCache.txt
 *.ld_*
 Win32OpenSSL_Light-*
 Win64OpenSSL_Light-*
+casc_extract/cache/

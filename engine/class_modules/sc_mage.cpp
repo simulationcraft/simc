@@ -4401,6 +4401,13 @@ void mage_t::apl_precombat()
     precombat -> add_action( "potion,name=jade_serpent" );
 
   precombat -> add_action( this, "Mirror Image" );
+
+  if ( specialization() == MAGE_ARCANE )
+    precombat -> add_action( this, "Arcane Blast" );
+  else if ( specialization() == MAGE_FIRE )
+    precombat -> add_action( this, "Pyroblast" );
+  else
+    precombat -> add_action( this, "Frostbolt" );
 }
 
 
