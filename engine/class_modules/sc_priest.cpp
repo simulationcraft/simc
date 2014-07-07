@@ -5592,7 +5592,7 @@ void priest_t::init_spells()
   perks.improved_penance              = find_perk_spell( "Improved Penance" );
 
   // Holy
-  perks.enhanced_chakras              = find_perk_spell( "Enhanced Chakras" );                  //NYI
+  perks.enhanced_chakras              = find_perk_spell( "Enhanced Chakras" );
   perks.enhanced_renew                = find_perk_spell( "Enhanced Renew" );
 
   // Shadow
