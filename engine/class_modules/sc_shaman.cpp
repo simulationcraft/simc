@@ -1145,7 +1145,7 @@ struct feral_spirit_pet_t : public pet_t
     main_hand_weapon.damage     = ( main_hand_weapon.min_dmg + main_hand_weapon.max_dmg ) / 2;
     main_hand_weapon.swing_time = timespan_t::from_seconds( 1.5 );
 
-    owner_coeff.ap_from_ap = 0.33; // TODO-WOD: Preliminary value, verify
+    owner_coeff.ap_from_ap = 0.33;
 
     command = owner -> find_spell( 65222 );
   }
@@ -1355,7 +1355,7 @@ struct earth_elemental_t : public primal_elemental_t
     resources.base[ RESOURCE_HEALTH ] = 8000; // Approximated from lvl85 earth elemental in game
     resources.base[ RESOURCE_MANA   ] = 0; //
 
-    owner_coeff.ap_from_sp = 0.065; // TODO-WOD: Preliminary value, verify
+    owner_coeff.ap_from_sp = 0.05; // TODO-WOD: Preliminary value, verify
   }
 
   void init_action_list()
@@ -1433,7 +1433,7 @@ struct fire_elemental_t : public primal_elemental_t
     main_hand_weapon.type            = WEAPON_BEAST;
     main_hand_weapon.swing_time      = timespan_t::from_seconds( 1.4 );
 
-    owner_coeff.sp_from_sp = 0.27; // TODO-WOD: Preliminary value, verify
+    owner_coeff.sp_from_sp = 0.27;
   }
 
   void init_action_list()
@@ -1498,7 +1498,7 @@ struct storm_elemental_t : public primal_elemental_t
     resources.base[ RESOURCE_HEALTH ] = 32268; // TODO-WOD: FE values, placeholder
     resources.base[ RESOURCE_MANA   ] = 8908;
 
-    owner_coeff.sp_from_sp = 0.068; // TODO-WOD: Preliminary value, verify
+    owner_coeff.sp_from_sp = 0.0675;
   }
 
   void init_action_list()
