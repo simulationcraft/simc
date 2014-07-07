@@ -4,7 +4,7 @@ race=troll
 role=spell
 position=back
 professions=Engineering=600/Tailoring=600
-talents=http://us.battle.net/wow/en/tool/talent-calculator#Vb!....00.
+talents=http://us.battle.net/wow/en/tool/talent-calculator#Vb!....000
 spec=destruction
 
 # This default action priority list is automatically created based on your character.
@@ -33,10 +33,10 @@ actions+=/dark_soul,if=!talent.archimondes_darkness.enabled|(talent.archimondes_
 actions+=/service_pet,if=talent.grimoire_of_service.enabled
 actions+=/run_action_list,name=aoe,if=active_enemies>3
 actions+=/summon_doomguard
-actions+=/shadowburn,if=(burning_ember>3.5|mana.pct<=20|target.time_to_die<20|trinket.proc.intellect.react|(trinket.stacking_proc.intellect.remains<cast_time*4&trinket.stacking_proc.intellect.remains>cast_time))
+actions+=/shadowburn,if=(burning_ember>=3|mana.pct<=20|target.time_to_die<20|trinket.proc.intellect.react|(trinket.stacking_proc.intellect.remains<cast_time*4&trinket.stacking_proc.intellect.remains>cast_time))
 actions+=/immolate,if=miss_react&remains<=(duration*0.3)
 actions+=/conflagrate,if=charges=2
-actions+=/chaos_bolt,if=target.health.pct>20&(buff.backdraft.stack<3|level<86|(active_enemies>1&action.incinerate.cast_time<1))&(burning_ember>(4.5-active_enemies)|(trinket.proc.intellect.react&trinket.proc.intellect.remains>cast_time)|(trinket.stacking_proc.intellect.remains<cast_time*2.5&trinket.stacking_proc.intellect.remains>cast_time))
+actions+=/chaos_bolt,if=target.health.pct>20&(buff.backdraft.stack<3|level<86|(active_enemies>1&action.incinerate.cast_time<1))&(burning_ember>=(3.0-active_enemies)|(trinket.proc.intellect.react&trinket.proc.intellect.remains>cast_time)|(trinket.stacking_proc.intellect.remains<cast_time*2.5&trinket.stacking_proc.intellect.remains>cast_time))
 actions+=/conflagrate
 actions+=/incinerate
 

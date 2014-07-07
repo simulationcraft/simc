@@ -5153,7 +5153,7 @@ void warlock_t::apl_affliction()
 {
   add_action( "Soul Swap", "if=buff.soulburn.up" );
   add_action( "Soulburn", "if=!dot.agony.remains&!dot.corruption.remains&!dot.unstable_affliction.remains" );
-  add_action( "Haunt", "if=!in_flight_to_target&remains<cast_time+travel_time+tick_time&shard_react&(soul_shard>3|buff.dark_soul.react|trinket.proc.intellect.react|trinket.stacking_proc.intellect.react>6|time_to_die<30)" );
+  add_action( "Haunt", "if=shard_react&((!in_flight_to_target&remains<cast_time+travel_time+tick_time)|soul_shard=4)" );
   add_action( "Agony", "if=remains<=(duration*0.3)" );
   add_action( "Unstable Affliction", "if=remains<=(duration*0.3)" );
   add_action( "Corruption", "if=remains<=(duration*0.3)" );
