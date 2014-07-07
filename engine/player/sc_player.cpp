@@ -9501,6 +9501,14 @@ void player_collected_data_t::merge( const player_collected_data_t& other )
     resource_timelines[ i ].timeline.merge ( other.resource_timelines[ i ].timeline );
   }
 
+  assert( stat_timelines.size() == other.stat_timelines.size() );
+  for ( size_t i = 0; i < stat_timelines.size(); ++i )
+  {
+    assert( stat_timelines[ i ].type == other.stat_timelines[ i ].type );
+
+    stat_timelines[ i ].timeline.merge ( other.stat_timelines[ i ].timeline );
+  }
+
   health_changes.merged_timeline.merge( other.health_changes.merged_timeline );
   health_changes_tmi.merged_timeline.merge( other.health_changes_tmi.merged_timeline );
 }

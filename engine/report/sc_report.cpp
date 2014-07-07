@@ -1011,7 +1011,7 @@ void report::generate_player_charts( player_t* p, player_processed_report_inform
                          cd.stat_timelines[ i ].timeline.data(),
                          encoded_name + ' ' + util::inverse_tokenize( util::stat_type_string( st ) ),
                          cd.stat_timelines[ i ].timeline.mean(),
-                         "FFFFFF",
+                         chart::stat_color( st ),
                          max_buckets );
     }
   }
