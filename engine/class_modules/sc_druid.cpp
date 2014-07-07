@@ -801,18 +801,16 @@ struct cenarion_ward_hot_t : public heal_t
   cenarion_ward_hot_t( druid_t* p ) :
     heal_t( "cenarion_ward_hot", p, p -> find_spell( 102352 ) )
   {
-    background = true;
     harmful = false;
+    background = proc = true;
+    target = p;
   }
-
-  druid_t* p() const
-  { return static_cast<druid_t*>( player ); }
 
   virtual void execute()
   {
     heal_t::execute();
 
-    p() -> buff.cenarion_ward -> expire();
+    static_cast<druid_t*>( player ) -> buff.cenarion_ward -> expire();
   }
 };
 
@@ -820,27 +818,15 @@ struct cenarion_ward_hot_t : public heal_t
 
 struct leader_of_the_pack_t : public heal_t
 {
-  double heal_pct;
-
   leader_of_the_pack_t( druid_t* p ) :
     heal_t( "leader_of_the_pack", p, p -> find_spell( 68285 ) )
   {
-    may_crit = false;
-    may_multistrike = false;
+    harmful = may_crit = may_multistrike = false;
     background = proc = true;
+    target = p;
 
     cooldown -> duration = timespan_t::from_seconds( 6.0 );
-    heal_pct = data().effectN( 1 ).percent();
-  }
-
-  druid_t* p() const
-  { return static_cast<druid_t*>( player ); }
-
-  virtual void execute()
-  {
-    base_dd_min = base_dd_max = heal_pct * p() -> resources.max[ RESOURCE_HEALTH ];
-
-    heal_t::execute();
+    pct_heal = data().effectN( 1 ).percent();
   }
 };
 
@@ -848,34 +834,40 @@ struct leader_of_the_pack_t : public heal_t
 
 struct primal_tenacity_t : public absorb_t
 {
-  double absorb_remaining;
+  double absorb_remaining; // The absorb value the druid had when they took the triggering attack
 
   primal_tenacity_t( druid_t* p ) :
     absorb_t( "primal_tenacity", p, p -> mastery.primal_tenacity ),
     absorb_remaining( 0.0 )
   {
-    harmful = special = false;
-    background = true;
-    may_crit = may_multistrike = false;
-    target = player;
+    harmful = may_crit = may_multistrike = false;
+    background = proc = dual = true;
+    target = p;
   }
+
+  druid_t* p() const
+  { return static_cast<druid_t*>( player ); }
 
   virtual double action_multiplier() const
   {
     double am = absorb_t::action_multiplier();
 
-    am *= static_cast<druid_t*>( player ) -> cache.mastery_value();
+    am *= p() -> cache.mastery_value();
 
     return am;
   }
 
   virtual void impact( action_state_t* s )
   {
-    /* If this hit triggered off an attack that was partially absorbed by Primal Tenacity
-       then subtract the amount absorbed from the new absorb. */
-    s -> result_amount -= absorb_remaining;
+    /* Primal Tenacity may only occur if the amount of damage PT absorbed from the triggering attack
+       is less than 20% of the size of the new absorb. */
+    if ( absorb_remaining < s -> result_amount * 0.2 )
+    {
+      // Subtract the amount absorbed from the triggering attack from the new absorb.
+      s -> result_amount -= absorb_remaining;
 
-    static_cast<druid_t*>( player ) -> buff.primal_tenacity -> trigger( 1, s -> result_amount );
+      p() -> buff.primal_tenacity -> trigger( 1, s -> result_amount );
+    }
   }
 };
 
@@ -888,20 +880,16 @@ struct yseras_gift_t : public heal_t
   {
     base_tick_time = data().effectN( 1 ).period();
     dot_duration   = base_tick_time;
-    hasted_ticks   = false;
-    tick_may_crit  = may_multistrike = false;
-    harmful        = false;
-    background     = true;
-    target         = p;
+    harmful = tick_may_crit = may_multistrike = hasted_ticks = false;
+    background = proc = dual = true;
+    target = p;
+
+    tick_pct_heal = data().effectN( 1 ).percent();
   }
 
   virtual void tick( dot_t* d )
   {
-    druid_t* p = static_cast<druid_t*>( player );
-
     d -> refresh_duration(); // ticks indefinitely
-
-    base_td = p -> resources.max[ RESOURCE_HEALTH ] * data().effectN( 1 ).percent();
 
     heal_t::tick( d );
   }
@@ -1783,7 +1771,7 @@ public:
     if ( ab::proc || s -> result_amount <= 0 )
       return;
 
-    if ( ab::p() -> active.leader_of_the_pack -> cooldown -> up() )
+    if ( ab::p() -> active.leader_of_the_pack -> ready() )
       ab::p() -> active.leader_of_the_pack -> execute();
   }
 };
@@ -6971,7 +6959,10 @@ void druid_t::assess_damage( school_e school,
                              dmg_e    dtype,
                              action_state_t* s )
 {
-  if ( mastery.primal_tenacity -> ok() && school == SCHOOL_PHYSICAL && ! ( s -> result == RESULT_DODGE || s -> result == RESULT_MISS ) )
+  /* Store the amount primal_tenacity absorb remaining so we can use it 
+    later to determine if we need to apply the absorb. */
+  if ( mastery.primal_tenacity -> ok() && school == SCHOOL_PHYSICAL &&
+       ! ( s -> result == RESULT_DODGE || s -> result == RESULT_MISS ) )
     active.primal_tenacity -> absorb_remaining = buff.primal_tenacity -> value();
 
   if ( sets.has_set_bonus( SET_T15_2PC_TANK ) && s -> result == RESULT_DODGE && buff.savage_defense -> check() )
@@ -7016,31 +7007,17 @@ void druid_t::assess_damage( school_e school,
   player_t::assess_damage( school, dtype, s );
 
   // Primal Tenacity
-  if ( mastery.primal_tenacity -> ok() && school == SCHOOL_PHYSICAL && ! ( s -> result == RESULT_DODGE || s -> result == RESULT_MISS ) &&
+  if ( mastery.primal_tenacity -> ok() && school == SCHOOL_PHYSICAL &&
+       ! ( s -> result == RESULT_DODGE || s -> result == RESULT_MISS ) &&
        ! buff.primal_tenacity -> check() ) // Check attack eligibility
   {
-    bool trigger = false;
-    // Primal Tenacity can trigger in 2 cases!
-
-    if ( active.primal_tenacity -> absorb_remaining == 0 )
-      // Case 1: Absorb wasn't up at all.
-      trigger = true; 
-    else
-    {
-      // Case 2: Absorb was up, but the old absorb is < 20% of the new one.
-      double potential_absorb = s -> result_mitigated * cache.mastery_value() * ( 1.0 + cache.heal_versatility() );
-      if ( resolve_manager.is_started() ) // Apply Resolve
-        potential_absorb *= 1.0 + buffs.resolve -> current_value / 100.0;
-      if ( active.primal_tenacity -> absorb_remaining < potential_absorb * 0.2 )
-        trigger = true;
-    }
-    if ( trigger )
-    {
-      // Set the absorb amount (mastery and resolve multipliers are managed by the action itself)
-      active.primal_tenacity -> base_dd_min =
-      active.primal_tenacity -> base_dd_max = s -> result_mitigated;
-      active.primal_tenacity -> execute();
-    }
+    // Set the absorb amount (mastery and resolve multipliers are managed by the action itself)
+    active.primal_tenacity -> base_dd_min =
+    active.primal_tenacity -> base_dd_max = s -> result_mitigated;
+    /* Execute absorb, if too large of an absorb was present for the triggering attack then the
+       absorb will not be reapplied. The outcome depends on the size of the resulting absorb
+       so we must execute on every eligible attack; see primal_tenacity_t::impact() for details. */
+    active.primal_tenacity -> execute();
   }
 }
 
