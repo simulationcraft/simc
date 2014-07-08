@@ -1203,13 +1203,14 @@ struct primal_elemental_t : public pet_t
 
   struct melee_t : public melee_attack_t
   {
-    melee_t( primal_elemental_t* player, school_e school_ ) :
+    melee_t( primal_elemental_t* player, school_e school_, double multiplier ) :
       melee_attack_t( "melee", player, spell_data_t::nil() )
     {
       auto_attack = may_crit = background = repeating = true;
 
       school                 = school_;
       weapon                 = &( player -> main_hand_weapon );
+      weapon_multiplier      = multiplier;
       base_execute_time      = weapon -> swing_time;
       crit_bonus_multiplier *= 1.0 + o() -> spec.elemental_fury -> effectN( 1 ).percent() + o() -> perk.improved_critical_strikes -> effectN( 1 ).percent();
 
@@ -1233,11 +1234,11 @@ struct primal_elemental_t : public pet_t
 
   struct auto_attack_t : public melee_attack_t
   {
-    auto_attack_t( primal_elemental_t* player, school_e school ) :
+    auto_attack_t( primal_elemental_t* player, school_e school, double multiplier = 1.0 ) :
       melee_attack_t( "auto_attack", player )
     {
       assert( player -> main_hand_weapon.type != WEAPON_NONE );
-      player -> main_hand_attack = new melee_t( player, school );
+      player -> main_hand_attack = new melee_t( player, school, multiplier );
     }
 
     void execute()
@@ -1369,7 +1370,8 @@ struct earth_elemental_t : public primal_elemental_t
   virtual action_t* create_action( const std::string& name,
                                    const std::string& options_str )
   {
-    if ( name == "auto_attack" ) return new auto_attack_t ( this, SCHOOL_PHYSICAL );
+    // EE seems to use 130% weapon multiplier on attachs, while inheriting 5% SP
+    if ( name == "auto_attack" ) return new auto_attack_t ( this, SCHOOL_PHYSICAL, 1.3 );
 
     return primal_elemental_t::create_action( name, options_str );
   }
