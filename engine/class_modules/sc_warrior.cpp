@@ -2661,7 +2661,7 @@ struct deep_wounds_t: public warrior_spell_t
   deep_wounds_t( warrior_t* p ):
     warrior_spell_t( "deep_wounds", p, p -> find_spell( 115767 ) )
   {
-    tick_may_crit = true;
+    background = tick_may_crit = true;
     hasted_ticks = false;
     dot_behavior = DOT_REFRESH;
   }
@@ -4638,7 +4638,7 @@ struct warrior_flurry_of_xuen_t: public warrior_attack_t
     attack_power_mod.tick = data().extra_coeff();
     proc = false;
     aoe = 5;
-    special = may_miss = may_parry = may_block = may_dodge = may_crit = true;
+    special = may_miss = may_parry = may_block = may_dodge = may_crit = background = true;
   }
 };
 
@@ -4647,6 +4647,7 @@ struct warrior_lightning_strike_t: public warrior_attack_t
   warrior_lightning_strike_t( warrior_t* p ):
     warrior_attack_t( "lightning_strike", p, p -> find_spell( 137597 ) )
   {
+    background = true;
     may_dodge = may_parry = false;
   }
 };
