@@ -5118,7 +5118,7 @@ void shaman_t::init_action_list()
     // Elemental Mastery is not used during Ascendance, if Berserking is up.
     // Finally, after the second Ascendance (time 200+ seconds), start using
     // Elemental Mastery on cooldown.
-    def -> add_talent( this, "Elemental Mastery", "if=time>15&((!buff.bloodlust.up&time<120)|(!buff.berserking.up&!buff.bloodlust.up&buff.ascendance.up)|(time>=200&(cooldown.ascendance.remains>30|level<87)))" );
+    def -> add_talent( this, "Elemental Mastery" );
 
     def -> add_talent( this, "Ancestral Swiftness", "if=!buff.ascendance.up" );
     def -> add_action( this, "Fire Elemental Totem", "if=!active" );

@@ -4,7 +4,7 @@ race=tauren
 role=spell
 position=back
 professions=blacksmithing=600/engineering=600
-talents=http://us.battle.net/wow/en/tool/talent-calculator#Wa!...2.21
+talents=http://us.battle.net/wow/en/tool/talent-calculator#Wa!...0.21
 glyphs=chain_lightning
 spec=elemental
 
@@ -28,12 +28,13 @@ actions.precombat+=/potion,name=draenor_intellect
 actions=wind_shear
 # Bloodlust casting behavior mirrors the simulator settings for proxy bloodlust. See options 'bloodlust_percent', and 'bloodlust_time'. 
 actions+=/bloodlust,if=target.health.pct<25|time>0.500
+actions+=/use_item,name=primal_gladiators_badge_of_dominance
 # In-combat potion is linked to Primal or Greater Fire Elemental Totem, after the first 60 seconds of combat.
 actions+=/potion,name=draenor_intellect,if=time>60&(pet.primal_fire_elemental.active|pet.greater_fire_elemental.active|target.time_to_die<=60)
 actions+=/berserking,if=!buff.bloodlust.up&!buff.elemental_mastery.up&(set_bonus.tier15_4pc_caster=1|(buff.ascendance.cooldown_remains=0&(dot.flame_shock.remains>buff.ascendance.duration|level<87)))
 actions+=/blood_fury,if=buff.bloodlust.up|buff.ascendance.up|((cooldown.ascendance.remains>10|level<87)&cooldown.fire_elemental_totem.remains>10)
 actions+=/arcane_torrent
-actions+=/elemental_mastery,if=talent.elemental_mastery.enabled&(time>15&((!buff.bloodlust.up&time<120)|(!buff.berserking.up&!buff.bloodlust.up&buff.ascendance.up)|(time>=200&(cooldown.ascendance.remains>30|level<87))))
+actions+=/elemental_mastery,if=talent.elemental_mastery.enabled
 actions+=/ancestral_swiftness,if=talent.ancestral_swiftness.enabled&!buff.ascendance.up
 actions+=/fire_elemental_totem,if=!active
 actions+=/ascendance,if=active_enemies>1|(dot.flame_shock.remains>buff.ascendance.duration&(target.time_to_die<20|buff.bloodlust.up|time>=60)&cooldown.lava_burst.remains>0)
@@ -75,26 +76,26 @@ head=primal_gladiators_helm,id=111280
 neck=primal_gladiators_pendant_of_cruelty,id=111128,enchant=140mult
 shoulders=primal_gladiators_spaulders,id=111282
 back=primal_gladiators_drape_of_cruelty,id=111124,enchant=gift_of_multistrike
-chest=primal_gladiators_armor,id=111278
+chest=primal_gladiators_ringmail_armor,id=111193
 wrists=primal_gladiators_armbands_of_victory,id=111163
 hands=primal_gladiators_gauntlets,id=111279
-waist=primal_gladiators_waistguard_of_cruelty,id=111155
+waist=primal_gladiators_waistguard_of_prowess,id=111156
 legs=primal_gladiators_leggings,id=111281
 feet=primal_gladiators_footguards_of_prowess,id=111159
 finger1=primal_gladiators_band_of_cruelty,id=111134,enchant=100mult
 finger2=primal_gladiators_band_of_prowess,id=111135,enchant=100haste
-trinket1=primal_gladiators_medallion_of_cruelty,id=111229
+trinket1=primal_gladiators_badge_of_dominance,id=111227
 trinket2=primal_gladiators_insignia_of_dominance,id=111228
 main_hand=primal_gladiators_gavel,id=111118,enchant=mark_of_the_frostwolf
 off_hand=primal_gladiators_barrier,id=111140
 
 # Gear Summary
 # gear_stamina=3241
-# gear_intellect=2374
+# gear_intellect=2584
 # gear_spell_power=1244
-# gear_crit_rating=854
-# gear_haste_rating=931
-# gear_mastery_rating=587
+# gear_crit_rating=615
+# gear_haste_rating=960
+# gear_mastery_rating=338
 # gear_armor=3339
-# gear_multistrike_rating=1183
+# gear_multistrike_rating=1432
 # gear_versatility_rating=77
