@@ -563,9 +563,7 @@ struct warlock_pet_melee_t : public melee_attack_t
     school = SCHOOL_PHYSICAL;
     weapon = &( p -> main_hand_weapon );
     base_execute_time = weapon -> swing_time;
-    may_crit    = true;
-    background  = true;
-    repeating   = true;
+    may_crit = background = repeating = true;
 
     if ( p -> dual_wield() )
       oh = new off_hand_swing( p );
@@ -588,7 +586,6 @@ struct warlock_pet_melee_t : public melee_attack_t
     }
   }
 };
-
 
 struct warlock_pet_melee_attack_t : public warlock_pet_action_t<melee_attack_t>
 {
@@ -636,7 +633,6 @@ public:
   }
 };
 
-
 struct firebolt_t : public warlock_pet_spell_t
 {
   firebolt_t( warlock_pet_t* p ) :
@@ -659,7 +655,6 @@ struct firebolt_t : public warlock_pet_spell_t
   }
 };
 
-
 struct legion_strike_t : public warlock_pet_melee_attack_t
 {
   legion_strike_t( warlock_pet_t* p ) :
@@ -678,7 +673,6 @@ struct legion_strike_t : public warlock_pet_melee_attack_t
   }
 };
 
-
 struct felstorm_tick_t : public warlock_pet_melee_attack_t
 {
   felstorm_tick_t( warlock_pet_t* p, const spell_data_t& s ) :
@@ -689,7 +683,6 @@ struct felstorm_tick_t : public warlock_pet_melee_attack_t
     weapon = &( p -> main_hand_weapon );
   }
 };
-
 
 struct felstorm_t : public warlock_pet_melee_attack_t
 {
@@ -728,7 +721,6 @@ struct felstorm_t : public warlock_pet_melee_attack_t
       p() -> melee_attack -> execute();
   }
 };
-
 
 struct shadow_bite_t : public warlock_pet_spell_t
 {
@@ -999,7 +991,7 @@ warlock_pet_t::warlock_pet_t( sim_t* sim, warlock_t* owner, const std::string& p
   pet_t( sim, owner, pet_name, pt, guardian ), special_action( 0 ), melee_attack( 0 ), summon_stats( 0 )
 {
   owner_fury_gain = owner -> get_gain( pet_name );
-  owner_coeff.ap_from_sp = 3.5;
+  owner_coeff.ap_from_sp = 0.6; // Changed from 3.5 for more accurate pet damage. Not 100% accurate, but pretty close for now.
   owner_coeff.sp_from_sp = 1.0;
   supremacy = find_spell( 115578 );
 }
@@ -1010,10 +1002,6 @@ void warlock_pet_t::init_base_stats()
 
   resources.base[ RESOURCE_ENERGY ] = 200;
   base_energy_regen_per_second = 10;
-
-
-  resources.infinite_resource[RESOURCE_MANA] = true; // REMOVE LATER *~*~*~*~*~**~*// ~***$_@*$%_@
-
 
   // We only care about intellect - no other primary attribute affects anything interesting
   base.stats.attribute[ ATTR_INTELLECT ] = util::ability_rank( owner -> level, 74, 90, 72, 89, 71, 88, 70, 87, 69, 85, 0, 1 );
@@ -1149,7 +1137,6 @@ double warlock_pet_t::composite_spell_speed() const
   return player_t::composite_spell_speed();
 }
 
-
 struct imp_pet_t : public warlock_pet_t
 {
   imp_pet_t( sim_t* sim, warlock_t* owner, const std::string& name = "imp" ) :
@@ -1165,7 +1152,6 @@ struct imp_pet_t : public warlock_pet_t
     return warlock_pet_t::create_action( name, options_str );
   }
 };
-
 
 struct felguard_pet_t : public warlock_pet_t
 {
@@ -1191,7 +1177,6 @@ struct felguard_pet_t : public warlock_pet_t
   }
 };
 
-
 struct felhunter_pet_t : public warlock_pet_t
 {
   felhunter_pet_t( sim_t* sim, warlock_t* owner, const std::string& name = "felhunter" ) :
@@ -1214,7 +1199,6 @@ struct felhunter_pet_t : public warlock_pet_t
     return warlock_pet_t::create_action( name, options_str );
   }
 };
-
 
 struct succubus_pet_t : public warlock_pet_t
 {
@@ -1243,7 +1227,6 @@ struct succubus_pet_t : public warlock_pet_t
   }
 };
 
-
 struct voidwalker_pet_t : public warlock_pet_t
 {
   voidwalker_pet_t( sim_t* sim, warlock_t* owner, const std::string& name = "voidwalker" ) :
@@ -1266,7 +1249,6 @@ struct voidwalker_pet_t : public warlock_pet_t
     return warlock_pet_t::create_action( name, options_str );
   }
 };
-
 
 struct infernal_pet_t : public warlock_pet_t
 {
@@ -1292,7 +1274,6 @@ struct infernal_pet_t : public warlock_pet_t
   }
 };
 
-
 struct doomguard_pet_t : public warlock_pet_t
 {
   doomguard_pet_t( sim_t* sim, warlock_t* owner ) :
@@ -1313,7 +1294,6 @@ struct doomguard_pet_t : public warlock_pet_t
     return warlock_pet_t::create_action( name, options_str );
   }
 };
-
 
 struct wild_imp_pet_t : public warlock_pet_t
 {
@@ -1384,7 +1364,6 @@ struct wild_imp_pet_t : public warlock_pet_t
   }
 };
 
-
 struct fel_imp_pet_t : public warlock_pet_t
 {
   fel_imp_pet_t( sim_t* sim, warlock_t* owner ) :
@@ -1400,7 +1379,6 @@ struct fel_imp_pet_t : public warlock_pet_t
     return warlock_pet_t::create_action( name, options_str );
   }
 };
-
 
 struct wrathguard_pet_t : public warlock_pet_t
 {
@@ -1430,7 +1408,6 @@ struct wrathguard_pet_t : public warlock_pet_t
   }
 };
 
-
 struct observer_pet_t : public warlock_pet_t
 {
   observer_pet_t( sim_t* sim, warlock_t* owner ) :
@@ -1453,7 +1430,6 @@ struct observer_pet_t : public warlock_pet_t
     return warlock_pet_t::create_action( name, options_str );
   }
 };
-
 
 struct shivarra_pet_t : public warlock_pet_t
 {
@@ -1484,7 +1460,6 @@ struct shivarra_pet_t : public warlock_pet_t
   }
 };
 
-
 struct voidlord_pet_t : public warlock_pet_t
 {
   voidlord_pet_t( sim_t* sim, warlock_t* owner ) :
@@ -1507,7 +1482,6 @@ struct voidlord_pet_t : public warlock_pet_t
     return warlock_pet_t::create_action( name, options_str );
   }
 };
-
 
 struct abyssal_pet_t : public warlock_pet_t
 {
@@ -1532,7 +1506,6 @@ struct abyssal_pet_t : public warlock_pet_t
     return warlock_pet_t::create_action( name, options_str );
   }
 };
-
 
 struct terrorguard_pet_t : public warlock_pet_t
 {
@@ -1566,7 +1539,6 @@ struct warlock_heal_t : public heal_t
   warlock_t* p()
   { return static_cast<warlock_t*>( player ); }
 };
-
 
 struct warlock_spell_t : public spell_t
 {

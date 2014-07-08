@@ -1979,7 +1979,7 @@ struct tigereye_brew_t : public monk_spell_t
     }
 
     if ( p() -> sets.has_set_bonus( SET_T17_4PC_MELEE ) )
-      p() -> buff.forceful_winds-> trigger( teb_stacks_used, buff_t::DEFAULT_VALUE(), 100.0 );
+      p() -> buff.forceful_winds-> trigger( (int)teb_stacks_used, buff_t::DEFAULT_VALUE(), 100.0 );
  
     p() -> buff.tigereye_brew_use -> trigger( 1, use_value );
     p() -> buff.tigereye_brew -> decrement( max_stacks_consumable );

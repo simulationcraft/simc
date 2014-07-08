@@ -5825,7 +5825,7 @@ bool death_knight_t::init_special_effect( special_effect_t& effect,
 
   bool ret = false;
   const special_effect_db_item_t& dbitem = find_special_effect_db_item( __runeforge_db,
-                                                                        sizeof_array( __runeforge_db ),
+                                                                        (int)sizeof_array( __runeforge_db ),
                                                                         spell_id );
 
   // All runeforges defined here will be custom callbacks

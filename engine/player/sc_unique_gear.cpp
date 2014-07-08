@@ -1342,7 +1342,7 @@ bool unique_gear::initialize_special_effect( special_effect_t& effect,
   // first. If that returns false (nothing done), move to generic init
   if ( ! item.player -> init_special_effect( effect, item, spell_id ) )
   {
-    const special_effect_db_item_t& dbitem = find_special_effect_db_item( __special_effect_db, sizeof_array( __special_effect_db ), spell_id );
+    const special_effect_db_item_t& dbitem = find_special_effect_db_item( __special_effect_db, (int)sizeof_array( __special_effect_db ), spell_id );
 
     // Figure out first phase options from our special effect database
     if ( dbitem.spell_id == spell_id )

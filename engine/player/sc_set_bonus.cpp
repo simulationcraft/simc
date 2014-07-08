@@ -193,7 +193,7 @@ void set_bonus_t::init()
         unsigned count = this -> count[ i ][ j ];
         if ( count > 0 )
           p -> sim -> out_debug.printf( "%s new set bonus debug: tier=%u spec=%s count=%u", p -> name(), i,
-                                        util::specialization_string( dbc::spec_by_idx( p -> type, j ) ),
+                                        util::specialization_string( dbc::spec_by_idx( p -> type, (int)j ) ),
                                         count  );
       }
     }
@@ -220,10 +220,9 @@ void set_bonus_t::build_filtered_spell_data_list( const spell_data_map_t& raw_da
       set_bonuses[ i ][ j ].resize( raw_data[ i ][ j ].size(), default_value );
       for ( size_t k = 0; k < raw_data[ i ][ j ].size(); ++k )
       {
-        if ( has_set_bonus( static_cast<set_tier_e>(i), k, j ) )
+        if ( has_set_bonus( static_cast<set_tier_e>((int)i), (int)k, (int)j ) )
         {
           set_bonuses[ i ][ j ][ k ] = raw_data[ i ][ j ][ k ];
-
         }
       }
     }
@@ -245,7 +244,7 @@ void set_bonus_t::debug_spell_data_lists( const spell_data_map_t& map, std::stri
           if ( s -> ok() )
             p -> sim -> out_debug.printf( "%s new set bonus debug '%s': tier=%u spec=%s count=%u spell_id=%u",
                                           p -> name(), type.c_str(),  i,
-                                          util::specialization_string( dbc::spec_by_idx( p -> type, j ) ),
+                                          util::specialization_string( dbc::spec_by_idx( p -> type, (int)j ) ),
                                           k, s -> id()  );
         }
       }
