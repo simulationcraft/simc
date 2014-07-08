@@ -2811,13 +2811,13 @@ struct sacred_shield_tick_t : public absorb_t
 
     // unfortunately, this spell info is split between effects and tooltip 
     base_dd_min = base_dd_max = data().effectN( 1 ).average( p ); 
-    spell_power_mod.direct = 1.3285; // tooltip wrong, hardcoding based on testing TODO: Re-test  
+    spell_power_mod.direct = 1.3059044; // tooltip wrong, hardcoding based on testing (7/7/2014 http://maintankadin.failsafedesign.com/forum/viewtopic.php?p=783749#p783749)
     
 
-    // Spell data reflects protection values; Ret and Holy are 30% larger TODO: test if this is still the case
+    // Spell data reflects protection values; Ret and Holy are 30% larger (tested 7/7/2014)
     if ( ( p -> specialization() == PALADIN_RETRIBUTION || p -> specialization() == PALADIN_HOLY ) )
     {
-      spell_power_mod.direct /= 0.6999;
+      spell_power_mod.direct /= 0.7;
     }
   }
 
@@ -2860,21 +2860,6 @@ struct sacred_shield_t : public paladin_heal_t
     }
 
   }
-
-  //virtual void tick( dot_t* d )
-  //{
-  //  // Kludge to swap the heal for an absorb
-  //  // calculate the tick amount
-  //  double ss_tick_amount = calculate_tick_amount( d -> state, d -> get_last_tick_factor() );
-  
-  //  //// if an existing absorb bubble is still hanging around, kill it
-  //  //td( d -> state -> target ) -> buffs.sacred_shield_tick -> expire();
-
-  //  //// trigger a new 6-second absorb bubble with the absorb amount we stored earlier
-  //  //td( d -> state -> target ) -> buffs.sacred_shield_tick -> trigger( 1, ss_tick_amount );
-
-  //  // note that we don't call paladin_heal_t::tick( d ) so that the heal doesn't happen
-  //}
 
   virtual void last_tick( dot_t* d )
   {
@@ -4639,8 +4624,8 @@ void paladin_t::init_base_stats()
   diminished_dodge_cap = 0.6656744;
   
   // note that these conversions are level-specific; these are L90 values
-  base.dodge_per_agility = 1 / 10000.0 / 100.0; // empirically tested
-  base.parry_per_strength = 1 / 95115.8596; // exact value given by Blizzard
+  base.dodge_per_agility = 1 / 10000.0 / 100.0; // empirically tested, TODO: update for 100
+  base.parry_per_strength = 1 / 95115.8596; // exact value given by Blizzard, TODO: update for 100
 
   // Holy Insight grants mana regen from spirit during combat
   base.mana_regen_from_spirit_multiplier = passives.holy_insight -> effectN( 3 ).percent();
@@ -6139,8 +6124,8 @@ void paladin_t::assess_damage( school_e school,
     trigger_holy_shield();
   }
 
-  // Also trigger Grand Crusader on an avoidance event
-  if ( s -> result == RESULT_DODGE || s -> result == RESULT_PARRY )
+  // Also trigger Grand Crusader on an avoidance event (TODO: test if it triggers on misses)
+  if ( s -> result == RESULT_DODGE || s -> result == RESULT_PARRY || s -> result == RESULT_MISS )
   {
     trigger_grand_crusader();
   }
