@@ -26,6 +26,7 @@ namespace { // UNNAMED NAMESPACE
     = Guardian =
     PvP bonuses
     Fix MoU and Ursa Major decreasing resolve
+    Mangle cleave
     FR "none" results?
     Verify stuff (particularly DoC)
 
@@ -226,6 +227,7 @@ public:
     gain_t* moonfire;
     gain_t* rake;
     gain_t* shred;
+    gain_t* swipe;
     gain_t* tigers_fury;
     gain_t* tier15_2pc_melee;
 
@@ -1893,21 +1895,8 @@ public:
       }
     }
 
-    if ( result_is_hit( execute_state -> result ) )
-    {
-      if ( combo_point_gain )
-      {
-        if ( p() -> spell.primal_fury -> ok() && execute_state -> result == RESULT_CRIT )
-        {
-          p() -> proc.primal_fury -> occur();
-          p() -> resource_gain( RESOURCE_COMBO_POINT, p() -> spell.primal_fury -> effectN( 1 ).base_value(), p() -> gain.primal_fury );
-        }
-      }
-    }
-    else
-    {
+    if ( ! result_is_hit( execute_state -> result ) )
       trigger_energy_refund();
-    }
 
     if ( harmful )
     {
@@ -1930,6 +1919,13 @@ public:
     {
       if ( p() -> spec.predatory_swiftness -> ok() && base_costs[ RESOURCE_COMBO_POINT ] )
         p() -> buff.predatory_swiftness -> trigger( 1, 1, p() -> resources.current[ RESOURCE_COMBO_POINT ] * 0.20 );
+
+      if ( combo_point_gain && p() -> spell.primal_fury -> ok() && 
+           s -> target == target && s -> result == RESULT_CRIT ) // Only trigger from primary target
+      {
+        p() -> proc.primal_fury -> occur();
+        p() -> resource_gain( RESOURCE_COMBO_POINT, p() -> spell.primal_fury -> effectN( 1 ).base_value(), p() -> gain.primal_fury );
+      }
     }
   }
 
@@ -2505,6 +2501,14 @@ struct swipe_t : public cat_attack_t
     aoe = -1;
   }
 
+  virtual void impact( action_state_t* s )
+  {
+    cat_attack_t::impact( s );
+
+    if ( s -> target == target && result_is_hit( s -> result ) )
+      p() -> resource_gain( RESOURCE_COMBO_POINT, combo_point_gain, p() -> gain.swipe );
+  }
+
   virtual void execute()
   {
     cat_attack_t::execute();
@@ -2628,18 +2632,6 @@ struct bear_attack_t : public druid_attack_t<melee_attack_t>
     base_t( n, p, s )
   {}
 
-  virtual void impact( action_state_t* s )
-  {
-    base_t::impact( s );
-    if ( s -> result == RESULT_CRIT )
-    {
-      p() -> resource_gain( RESOURCE_RAGE,
-        p() -> spell.primal_fury -> effectN( 1 ).resource( RESOURCE_RAGE ),
-        p() -> gain.primal_fury );
-      p() -> proc.primal_fury -> occur();
-    }
-  }
-
   void trigger_ursa_major()
   {
     if ( ! p() -> spec.ursa_major -> ok() )
@@ -2678,6 +2670,19 @@ struct bear_attack_t : public druid_attack_t<melee_attack_t>
     cd_duration = cooldown -> duration * p() -> cache.attack_haste();
 
     base_t::update_ready( cd_duration );
+  }
+
+  virtual void impact( action_state_t* s )
+  {
+    base_t::impact( s );
+
+    if ( p() -> spell.primal_fury -> ok() && s -> target == target && s -> result == RESULT_CRIT ) // Only trigger from primary target
+    {
+      p() -> resource_gain( RESOURCE_RAGE,
+                            p() -> spell.primal_fury -> effectN( 1 ).resource( RESOURCE_RAGE ),
+                            p() -> gain.primal_fury );
+      p() -> proc.primal_fury -> occur();
+    }
   }
 
   virtual bool ready() 
@@ -6170,6 +6175,7 @@ void druid_t::init_gains()
   gain.rake                  = get_gain( "rake"                  );
   gain.shred                 = get_gain( "shred"                 );
   gain.soul_of_the_forest    = get_gain( "soul_of_the_forest"    );
+  gain.swipe                 = get_gain( "swipe"                 );
   gain.thrash                = get_gain( "thrash"                );
   gain.tier15_2pc_melee      = get_gain( "tier15_2pc_melee"      );
   gain.tigers_fury           = get_gain( "tigers_fury"           );
