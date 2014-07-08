@@ -2479,6 +2479,33 @@ struct bloodlust_t : public shaman_spell_t
 
 struct chain_lightning_t : public shaman_spell_t
 {
+  struct chain_lightning_state_t : public action_state_t
+  {
+    int ms_results;
+
+    chain_lightning_state_t( action_t* action, player_t* target ) :
+      action_state_t( action, target ), ms_results( 0 )
+    { }
+
+    void initialize()
+    { action_state_t::initialize(); ms_results = 0; }
+
+    void copy_state( const action_state_t* other )
+    {
+      action_state_t::copy_state( other );
+
+      const chain_lightning_state_t* s = debug_cast<const chain_lightning_state_t*>( other );
+      ms_results = s -> ms_results;
+    }
+
+    std::ostringstream& debug_str( std::ostringstream& s )
+    {
+      action_state_t::debug_str( s );
+      s << " ms_results=" << ms_results;
+      return s;
+    }
+  };
+
   chain_lightning_t( shaman_t* player, const std::string& options_str ) :
     shaman_spell_t( "chain_lightning", player, player -> find_specialization_spell( "Chain Lightning" ), options_str )
   {
@@ -2489,6 +2516,9 @@ struct chain_lightning_t : public shaman_spell_t
     aoe                   = player -> glyph.chain_lightning -> effectN( 1 ).base_value() + 3;
     base_add_multiplier   = data().effectN( 1 ).chain_multiplier();
   }
+
+  action_state_t* new_state()
+  { return new chain_lightning_state_t( this, target ); }
 
   double composite_target_crit( player_t* target ) const
   {
@@ -2518,6 +2548,56 @@ struct chain_lightning_t : public shaman_spell_t
       return false;
 
     return shaman_spell_t::ready();
+  }
+
+  // Chain Lightning has a specialized multistrike mechanism. It rolls once for
+  // 0, 1, or 2 multistrikes, and then uses that value for all jumps. Crits are
+  // independent. Spcialize schedulemultistrike so that on the first target
+  // (chain target is 0), we compute how many multistrikes happen, and schedule
+  // that many on each schedule_multistrike call.
+  void schedule_travel( action_state_t* state )
+  {
+    chain_lightning_state_t* cls = debug_cast<chain_lightning_state_t*>( state );
+    if ( state -> chain_target == 0 )
+    {
+      for ( int i = 0; i < 2; i++ )
+      {
+        if ( rng().roll( player -> composite_multistrike() ) )
+          cls -> ms_results++;
+      }
+    }
+    else
+    {
+      // For chain targets 1->, copy the "ms_results" from the previous execute
+      // state to preserve the number of results across each impact.
+      chain_lightning_state_t* execute_cls = debug_cast<chain_lightning_state_t*>( execute_state );
+      cls -> ms_results = execute_cls -> ms_results;
+    }
+
+    shaman_spell_t::schedule_travel( state );
+  }
+
+  int schedule_multistrike( action_state_t* state, dmg_e, double )
+  {
+    chain_lightning_state_t* cls = debug_cast<chain_lightning_state_t*>( state );
+    for ( int i = 0; i < cls -> ms_results; i++ )
+    {
+      action_state_t* ms_state = get_state( state );
+      ms_state -> target = state -> target;
+      ms_state -> n_targets = 1;
+      ms_state -> chain_target = state -> chain_target;
+      ms_state -> result = RESULT_MULTISTRIKE;
+      if ( rng().roll( std::max( state -> composite_crit(), 0.0 ) ) )
+        ms_state -> result = RESULT_MULTISTRIKE_CRIT;
+
+      multistrike_direct( state, ms_state );
+
+      // Schedule multistrike "execute"; in reality it calls either impact, or
+      // assess_damage (for ticks).
+      new ( *sim ) multistrike_execute_event_t( ms_state );
+    }
+
+    return cls -> ms_results;
   }
 };
 

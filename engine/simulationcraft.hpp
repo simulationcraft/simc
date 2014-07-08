@@ -6443,6 +6443,93 @@ struct travel_event_t : public event_t
   virtual void execute();
 };
 
+struct multistrike_execute_event_t : public event_t
+{
+  action_state_t* state;
+
+  multistrike_execute_event_t( action_state_t* s ) :
+      event_t( *s -> action -> player, "Multistrike-Execute-Event" ), state( s )
+  {
+    if ( sim().debug )
+    {
+      sim().out_debug.printf( "New Multistrike Execute Event: %s %s (target=%s)",
+                  s -> action -> player -> name(), s -> action -> name(),
+                  s -> target -> name() );
+    }
+
+    // Hots/Dots will be scheduled immediately, direct damage multistrikes will
+    // jump through hoops .. below
+    if ( state -> result_type == DMG_OVER_TIME || state -> result_type == HEAL_OVER_TIME )
+      sim().add_event( this, timespan_t::zero() );
+    // Direct damage/heal multistrikes need to take into account the travel
+    // time of the "real" spell, and impact at the same time(?), so ..
+    // TODO-WOD: Multistrike impacts in combatlog have delay of .. ?
+    else if ( state -> result_type == DMG_DIRECT || state -> result_type == HEAL_DIRECT )
+    {
+      // No travel time -> impact immediately. Event ordering is guaranteed, as
+      // schedule_travel() in action_t::execute() has already impacted on this
+      // timestamp
+      if ( state -> action -> travel_time() == timespan_t::zero() )
+      {
+        sim().add_event( this, timespan_t::zero() );
+      }
+      // Travel time spell, schedule_travel() has inserted a new entry into the
+      // action's travel events (at the end of the vector), so use it's
+      // remaining time as a basis for this event. Event ordering guaranteed,
+      // as the main spell travel event is already in the queue.
+      else
+      {
+        assert( state -> action -> current_travel_events().size() > 0 );
+        timespan_t time_to_travel = state -> action -> current_travel_events().back() -> remains();
+        sim().add_event( this, time_to_travel );
+      }
+    }
+    else
+      assert( 0 && "Mulstrike Execute event, where state has no result_type" );
+  }
+
+  // Ensure we properly release the carried execute_state even if this event
+  // is never executed.
+  ~multistrike_execute_event_t()
+  {
+    if ( state )
+      action_state_t::release( state );
+  }
+
+  void execute()
+  {
+    if ( ! state -> target -> is_sleeping() )
+    {
+      if ( sim().debug )
+        state -> debug();
+
+      if ( state -> result_type == DMG_OVER_TIME || state -> result_type == HEAL_OVER_TIME )
+        state -> action -> assess_damage( state -> result_type, state );
+      else
+        state -> action -> impact( state );
+
+      // Multistrike callbacks, if there are any
+      if ( state -> action -> callbacks )
+      {
+        proc_types pt = state -> proc_type();
+        proc_types2 pt2 = state -> execute_proc_type2();
+        if ( pt2 == PROC2_LANDED )
+          pt2 = state -> impact_proc_type2();
+
+        // "On an execute result"
+        if ( pt != PROC1_INVALID && pt2 != PROC2_INVALID )
+        {
+          action_callback_t::trigger( state -> action -> player -> callbacks.procs[ pt ][ pt2 ],
+                                      state -> action,
+                                      state );
+        }
+      }
+    }
+
+    action_state_t::release( state );
+  }
+};
+
 // Item database ============================================================
 
 namespace item_database
