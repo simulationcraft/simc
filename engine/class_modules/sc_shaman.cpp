@@ -1096,6 +1096,7 @@ struct feral_spirit_pet_t : public pet_t
     {
       auto_attack = true;
       weapon = &( player -> main_hand_weapon );
+      weapon_multiplier *= 1.0 + player-> o() -> perk.improved_feral_spirits -> effectN( 1 ).percent();
       base_execute_time = weapon -> swing_time;
       background = true;
       repeating = true;
@@ -1179,8 +1180,6 @@ struct feral_spirit_pet_t : public pet_t
 
     if ( owner -> race == RACE_ORC )
       m *= 1.0 + command -> effectN( 1 ).percent();
-
-    m *= 1.0 + o() -> perk.improved_feral_spirits -> effectN( 1 ).percent();
 
     return m;
   }
