@@ -902,7 +902,7 @@ bool player_t::init_items()
   // STR, AGI, or INT happens, via convert_hybrid_stat()
   for ( stat_e i = STAT_NONE; i < STAT_MAX; i++ )
   {
-    if ( gear.get_stat( i ) == 0 && ! disabled_stat( i ) )
+    if ( gear.get_stat( i ) == 0 )
         gear.add_stat( convert_hybrid_stat( i ), item_stats.get_stat( i ) );
   }
 

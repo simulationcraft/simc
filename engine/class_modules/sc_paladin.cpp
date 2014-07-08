@@ -402,7 +402,6 @@ public:
   virtual resource_e primary_resource() const { return RESOURCE_MANA; }
   virtual role_e    primary_role() const;
   virtual stat_e    convert_hybrid_stat( stat_e s ) const;
-  virtual bool      disabled_stat( stat_e s ) const;
   virtual void      regen( timespan_t periodicity );
   virtual void      combat_begin();
 
@@ -5549,59 +5548,60 @@ role_e paladin_t::primary_role() const
 }
 
 // paladin_t::convert_hybrid_stat ===========================================
+
 stat_e paladin_t::convert_hybrid_stat( stat_e s ) const
 {
   // this converts hybrid stats that either morph based on spec or only work
-  // for certain specs into the appropriate "basic" stats
+  // for certain specs into the appropriate "basic" stats.
+  stat_e converted_stat = s;
+
   switch ( s )
   {
-  // Guess at how AGI/INT mail or leather will be handled for plate - probably INT?
-  case STAT_AGI_INT: 
-    return STAT_INTELLECT;
-  // This is a guess at how AGI/STR gear will work for Holy, TODO: confirm  
-  case STAT_STR_AGI:
-    return STAT_STRENGTH;
-  case STAT_STR_INT:
-    if ( specialization() == PALADIN_HOLY )
-      return STAT_INTELLECT;
-    else
-      return STAT_STRENGTH;
-  case STAT_SPIRIT:
-    if ( specialization() == PALADIN_HOLY )
-      return s;
-    else
-      return STAT_NONE;
-  case STAT_BONUS_ARMOR:
-    if ( specialization() == PALADIN_PROTECTION )
-      return s;
-    else
-      return STAT_NONE;
-  default:
-    return s; 
+    // Guess at how AGI/INT mail or leather will be handled for plate - probably INT?
+    case STAT_AGI_INT:
+      converted_stat = STAT_INTELLECT;
+      break;
+    // This is a guess at how AGI/STR gear will work for Holy, TODO: confirm  
+    case STAT_STR_AGI:
+      converted_stat = STAT_STRENGTH;
+      break;
+    case STAT_STR_INT:
+      if ( specialization() == PALADIN_HOLY )
+        converted_stat = STAT_INTELLECT;
+      else
+        converted_stat = STAT_STRENGTH;
+      break;
+    default:
+      break;
   }
-}
-
-// paladin_t::disabled_stat ===================================================
-
-bool paladin_t::disabled_stat( stat_e s ) const
-{
-  // This method returns true if the stat is disabled for the player's spec
-
-  // First, run it through the converter to account for hybrid stats
-  stat_e converted_stat = convert_hybrid_stat( s );
   
-  // Then check to see whether that stat is disabled based on spec.
+  // Now disable stats that aren't applicable to a given spec.
   switch ( converted_stat )
   {
-    case STAT_INTELLECT:
-      return specialization() != PALADIN_HOLY; // INT disabled for Ret/Prot
     case STAT_STRENGTH:
-      return specialization() == PALADIN_HOLY; // STR disabled for Holy
+      if ( specialization() == PALADIN_HOLY )
+        converted_stat = STAT_NONE;  // STR disabled for Holy
+      break;
+    case STAT_INTELLECT:
+      if ( specialization() != PALADIN_HOLY )
+        converted_stat = STAT_NONE; // INT disabled for Ret/Prot
+      break;
     case STAT_AGILITY:
-      return true; // AGI disabled for all paladins
+      converted_stat = STAT_NONE; // AGI disabled for all paladins
+      break;
+    case STAT_SPIRIT:
+      if ( specialization() != PALADIN_HOLY )
+        converted_stat = STAT_NONE;
+      break;
+    case STAT_BONUS_ARMOR:
+      if ( specialization() != PALADIN_PROTECTION )
+        converted_stat = STAT_NONE;
+      break;
     default:
-      return false;
+      break;
   }
+
+  return converted_stat;
 }
 
 // paladin_t::composite_attribute_multiplier ================================
