@@ -5945,6 +5945,8 @@ struct absorb_t : public spell_base_t
   virtual void init_target_cache();
   virtual size_t available_targets( std::vector< player_t* >& ) const;
   virtual int num_targets();
+  virtual void multistrike_direct( const action_state_t*, action_state_t* ms_state );
+  virtual void multistrike_tick( const action_state_t*, action_state_t* ms_state, double tick_multiplier );
 
   virtual double composite_da_multiplier( const action_state_t* s ) const
   {

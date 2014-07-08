@@ -686,6 +686,22 @@ void absorb_t::assess_damage( dmg_e    heal_type,
   stats -> add_result( s -> result_amount, s -> result_total, heal_type, s -> result, s -> block_result, s -> target );
 }
 
+void absorb_t::multistrike_direct( const action_state_t* source_state, action_state_t* ms_state )
+{
+  if ( source_state -> result == RESULT_CRIT )
+    ms_state -> result = RESULT_MULTISTRIKE_CRIT;
+
+  ms_state -> result_amount = calculate_direct_amount( ms_state );
+}
+
+void absorb_t::multistrike_tick( const action_state_t* source_state, action_state_t* ms_state, double last_tick_multiplier )
+{
+  if ( source_state -> result == RESULT_CRIT )
+    ms_state -> result = RESULT_MULTISTRIKE_CRIT;
+
+  ms_state -> result_amount = calculate_tick_amount( ms_state, last_tick_multiplier );
+}
+
 // absorb_t::available_targets ==============================================
 
 int absorb_t::num_targets()
