@@ -651,22 +651,6 @@ void absorb_t::execute()
 
 void absorb_t::impact( action_state_t* s )
 {
-  if ( target_specific[ s -> target ] == 0 )
-  {
-    std::string stats_obj_name = name_str + "_" + player -> name_str;
-    //stats_t* target_stats = s -> target -> get_stats( stats_obj_name, this );
-    //stats -> add_child( target_stats );
-    creator_.actors( s -> target );
-    //creator_.source( target_stats );
-
-    target_specific[ s -> target ] = creator_;
-  }
-
-  if ( result_is_hit( s -> result ) )
-    target_specific[ s -> target ] -> trigger( 1, s -> result_amount );
-  else if ( result_is_multistrike( s -> result ) )
-    target_specific[ s -> target ] -> current_value += s -> result_amount;
-
   assess_damage( type == ACTION_HEAL ? HEAL_DIRECT : DMG_DIRECT, s );
 }
 
@@ -682,6 +666,22 @@ void absorb_t::assess_damage( dmg_e    heal_type,
   //                 player -> name(), name(),
   //                 s -> target -> name(), s -> result_amount, s -> result_total,
   //                 util::result_type_string( s -> result ) );
+
+  if ( target_specific[ s -> target ] == 0 )
+  {
+    std::string stats_obj_name = name_str + "_" + player -> name_str;
+    //stats_t* target_stats = s -> target -> get_stats( stats_obj_name, this );
+    //stats -> add_child( target_stats );
+    creator_.actors( s -> target );
+    //creator_.source( target_stats );
+
+    target_specific[ s -> target ] = creator_;
+  }
+
+  if ( result_is_hit( s -> result ) )
+    target_specific[ s -> target ] -> trigger( 1, s -> result_amount );
+  else if ( result_is_multistrike( s -> result ) )
+    target_specific[ s -> target ] -> current_value += s -> result_amount;
 
   stats -> add_result( s -> result_amount, s -> result_total, heal_type, s -> result, s -> block_result, s -> target );
 }
