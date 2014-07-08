@@ -4876,7 +4876,8 @@ void paladin_t::create_buffs()
                                  .gain( get_gain( "holy_shield" ) );
   buffs.sacred_shield          = buff_creator_t( this, "sacred_shield", find_talent_spell( "Sacred Shield" ) )
                                  .duration( timespan_t::from_seconds( 60 ) ) // arbitrarily high since this is just a placeholder, we expire() on last_tick()
-                                 .cd( timespan_t::zero() ); // let ability handle CD
+                                 .cd( timespan_t::zero() ) // let ability handle CD
+                                 .period( timespan_t::zero() );
   buffs.selfless_healer        = buff_creator_t( this, "selfless_healer", find_spell( 114250 ) );
   buffs.liadrins_righteousness = buff_creator_t( this, "liadrins_righteousness", find_spell( 156989 ) )
                                  .add_invalidate( CACHE_ATTACK_SPEED );
