@@ -1232,7 +1232,7 @@ class SpellDataGenerator(DataGenerator):
          146137,                    # Cleave
          146071,                    # Multistrike
          120032, 142530,            # Dancing Steel
-         104993,                    # Jade Spirit
+         104993, 142535,            # Jade Spirit
          116631,                    # Colossus
          105617,                    # Alchemist's Flask
          137596,                    # Capacitance
