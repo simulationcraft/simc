@@ -1369,7 +1369,7 @@ struct earth_elemental_t : public primal_elemental_t
   virtual action_t* create_action( const std::string& name,
                                    const std::string& options_str )
   {
-    // EE seems to use 130% weapon multiplier on attachs, while inheriting 5% SP
+    // EE seems to use 130% weapon multiplier on attacks, while inheriting 5% SP as AP
     if ( name == "auto_attack" ) return new auto_attack_t ( this, SCHOOL_PHYSICAL, 1.3 );
 
     return primal_elemental_t::create_action( name, options_str );
@@ -5117,11 +5117,9 @@ void shaman_t::init_action_list()
     def -> add_action( "blood_fury,if=buff.bloodlust.up|buff.ascendance.up|((cooldown.ascendance.remains>10|level<87)&cooldown.fire_elemental_totem.remains>10)" );
     def -> add_action( "arcane_torrent" );
 
-    // Use Elemental Mastery after initial Bloodlust ends. Also make sure that
-    // Elemental Mastery is not used during Ascendance, if Berserking is up.
-    // Finally, after the second Ascendance (time 200+ seconds), start using
-    // Elemental Mastery on cooldown.
-    def -> add_talent( this, "Elemental Mastery" );
+    // Use Elemental Mastery on cooldown so long as it won't send you significantly under
+    // the GCD cap.
+    def -> add_talent( this, "Elemental Mastery", "if=action.lava_burst.cast_time>=1.2" );
 
     def -> add_talent( this, "Ancestral Swiftness", "if=!buff.ascendance.up" );
     def -> add_action( this, "Fire Elemental Totem", "if=!active" );
