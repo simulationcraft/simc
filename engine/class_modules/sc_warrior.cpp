@@ -120,7 +120,6 @@ public:
     cooldown_t* shockwave;
     cooldown_t* storm_bolt;
     // Fury And Arms
-    cooldown_t* colossus_smash;
     cooldown_t* recklessness;
     // Prot Only
     cooldown_t* demoralizing_shout;
@@ -147,7 +146,6 @@ public:
     gain_t* bloodthirst;
     gain_t* melee_off_hand;
     // Arms Only
-    gain_t* mortal_strike;
     gain_t* sweeping_strikes;
     gain_t* taste_for_blood;
     // Prot Only
@@ -232,8 +230,9 @@ public:
     //Arms and Prot
     const spell_data_t* thunder_clap;
     //Arms and Fury
-    const spell_data_t* recklessness;
     const spell_data_t* colossus_smash;
+    const spell_data_t* recklessness;
+    const spell_data_t* whirlwind;
     //Fury-only
     const spell_data_t* bloodsurge;
     const spell_data_t* bloodthirst;
@@ -242,7 +241,6 @@ public:
     const spell_data_t* raging_blow;
     const spell_data_t* readiness_fury;
     const spell_data_t* single_minded_fury;
-    const spell_data_t* whirlwind;
     const spell_data_t* wild_strike;
     //Prot-only
     const spell_data_t* bastion_of_defense;
@@ -349,7 +347,6 @@ public:
     cooldown.bladestorm               = get_cooldown( "bladestorm" );
     cooldown.bloodbath                = get_cooldown( "bloodbath" );
     cooldown.charge                   = get_cooldown( "charge" );
-    cooldown.colossus_smash           = get_cooldown( "colossus_smash" );
     cooldown.demoralizing_shout       = get_cooldown( "demoralizing_shout" );
     cooldown.dragon_roar              = get_cooldown( "dragon_roar" );
     cooldown.heroic_leap              = get_cooldown( "heroic_leap" );
@@ -582,8 +579,6 @@ struct warrior_heal_t: public warrior_action_t < heal_t >
     base_t( n, p, s )
   {
     may_crit = tick_may_crit = hasted_ticks = false;
-    may_multistrike = 0;
-    background = proc = true;
     target = p;
   }
 };
@@ -599,7 +594,6 @@ struct warrior_attack_t: public warrior_action_t < melee_attack_t >
                     base_t( n, p, s )
   {
     may_crit = special = true;
-    may_glance = false;
   }
 
   virtual double target_armor( player_t* t ) const
@@ -664,14 +658,10 @@ struct warrior_attack_t: public warrior_action_t < melee_attack_t >
     // Arms warriors get 2.4 times the rage per swing, and 4.8 times the rage on crit swings.
     // They get half rage while in defensive stance.
 
-    if ( proc )
-      return;
-
-    weapon_t*  w = weapon;
-
     if ( p() -> active_stance != STANCE_BATTLE && p() -> specialization() != WARRIOR_ARMS )
       return;
 
+    weapon_t*  w = weapon;
     double rage_gain = 3.5 * w -> swing_time.total_seconds();
 
     if ( p() -> specialization() == WARRIOR_ARMS && p() -> active_stance == STANCE_BATTLE )
@@ -699,7 +689,7 @@ struct bloodbath_dot_t: public residual_action::residual_periodic_action_t < att
   bloodbath_dot_t( warrior_t* p ):
     base_t( "bloodbath", p, p -> find_spell( 113344 ) )
   {
-    background = dual = true;
+    dual = true;
   }
 
   void assess_damage( dmg_e type,
@@ -735,8 +725,7 @@ static void trigger_sweeping_strikes( action_state_t* s )
     sweeping_strikes_attack_t( warrior_t* p ):
       warrior_attack_t( "sweeping_strikes_attack", p, p -> spec.sweeping_strikes )
     {
-      may_miss = may_dodge = may_parry = may_crit = callbacks = false;
-      background = true;
+      may_miss = may_dodge = may_parry = may_crit = may_block = callbacks = false;
       aoe = 1;
       weapon_multiplier = 0;
       base_costs[RESOURCE_RAGE] = 0; //Resource consumption already accounted for in the buff application.
@@ -892,9 +881,9 @@ struct melee_t: public warrior_attack_t
     warrior_attack_t( name, p, spell_data_t::nil() ),
     sync_weapons( sw ), first( true )
   {
-    school      = SCHOOL_PHYSICAL;
-    special     = false;
-    background  = repeating = auto_attack = may_glance = true;
+    school = SCHOOL_PHYSICAL;
+    special = false;
+    background = repeating = auto_attack = may_glance = true;
     trigger_gcd = timespan_t::zero();
 
     if ( p -> dual_wield() )
@@ -1024,7 +1013,7 @@ struct bladestorm_tick_t: public warrior_attack_t
   bladestorm_tick_t( warrior_t* p, const std::string& name ):
     warrior_attack_t( name, p, p -> talents.bladestorm -> effectN( 1 ).trigger() )
   {
-    background = direct_tick = may_miss = may_dodge = may_parry = true;
+    dual = true;
     aoe = -1;
     if ( p -> specialization() == WARRIOR_ARMS )
       weapon_multiplier *= 2;
@@ -1280,10 +1269,9 @@ struct colossus_smash_t: public warrior_attack_t
       if ( s -> result == RESULT_CRIT && p() -> specialization() != WARRIOR_ARMS )
         p() -> enrage();
 
-      if ( p() -> specialization() == WARRIOR_FURY )
-        p() -> resource_gain( RESOURCE_RAGE,
-        p() -> perk.improved_colossus_smash -> effectN( 1 ).base_value(),
-        p() -> gain.colossus_smash );
+      p() -> resource_gain( RESOURCE_RAGE,
+                            p() -> perk.improved_colossus_smash -> effectN( 1 ).base_value(),
+                            p() -> gain.colossus_smash );
     }
   }
 };
@@ -1397,9 +1385,9 @@ struct execute_off_hand_t: public warrior_attack_t
   execute_off_hand_t( warrior_t* p, const char* name, const spell_data_t* s ):
     warrior_attack_t( name, p, s )
   {
-    background = true;
+    dual = true;
     base_costs[RESOURCE_RAGE] = 0;
-    may_miss = may_dodge = may_parry = false;
+    may_miss = may_dodge = may_parry = may_block = false;
 
     weapon = &( p -> off_hand_weapon );
     weapon_multiplier *= 1.0 + p -> perk.empowered_execute -> effectN( 1 ).percent();
@@ -1535,9 +1523,6 @@ struct heroic_strike_t: public warrior_attack_t
   {
     parse_options( NULL, options_str );
 
-    if ( p -> talents.ignite_weapon -> ok() || p -> specialization() == WARRIOR_ARMS )
-      background = true;
-
     weapon  = &( player -> main_hand_weapon );
 
     // The 140% is hardcoded in the tooltip
@@ -1608,7 +1593,10 @@ struct heroic_throw_t: public warrior_attack_t
     warrior_attack_t( "heroic_throw", p, p -> find_class_spell( "Heroic Throw" ) )
   {
     parse_options( NULL, options_str );
+
+    weapon  = &( player -> main_hand_weapon );
     may_dodge = may_parry = may_block = false;
+
     if ( p -> perk.improved_heroic_throw -> ok() )
       cooldown -> duration = timespan_t::zero();
   }
@@ -1632,8 +1620,8 @@ struct heroic_leap_t: public warrior_attack_t
   {
     parse_options( NULL, options_str );
 
-    aoe       = -1;
-    may_dodge = may_parry = may_miss = false;
+    aoe = -1;
+    may_dodge = may_parry = may_miss = may_block = false;
     movement_directionality = MOVEMENT_OMNI;
     base_teleport_distance = data().max_range();
 
@@ -1683,7 +1671,7 @@ struct impending_victory_heal_t: public warrior_heal_t
   impending_victory_heal_t( warrior_t* p ):
     warrior_heal_t( "impending_victory_heal", p, p -> find_spell( 118340 ) )
   {
-    pct_heal   = data().effectN( 1 ).percent();
+    pct_heal = data().effectN( 1 ).percent();
     base_pct_heal = pct_heal;
   }
 
@@ -1709,8 +1697,7 @@ struct impending_victory_t: public warrior_attack_t
     impending_victory_heal( new impending_victory_heal_t( p ) )
   {
     parse_options( NULL, options_str );
-
-    weapon            = &( player -> main_hand_weapon );
+    may_crit = false; //Check at some point.
   }
 
   virtual void execute()
@@ -1774,9 +1761,9 @@ struct heroic_charge_t: public warrior_attack_t
     add_child( leap );
     add_child( intervene );
     add_child( charge );
+    dual = true;
 
     parse_options( NULL, options_str );
-    proc = false;
     trigger_gcd = timespan_t::zero();
   }
 
@@ -1812,7 +1799,6 @@ struct heroic_charge_t: public warrior_attack_t
   }
 };
 
-
 // Mortal Strike ============================================================
 
 struct mortal_strike_t: public warrior_attack_t
@@ -1821,6 +1807,8 @@ struct mortal_strike_t: public warrior_attack_t
     warrior_attack_t( "mortal_strike", p, p -> spec.mortal_strike )
   {
     parse_options( NULL, options_str );
+
+    weapon = &( p -> main_hand_weapon );
     weapon_multiplier += p -> sets.set( SET_T14_2PC_MELEE ) -> effectN( 1 ).percent();
   }
 
@@ -1862,7 +1850,7 @@ struct pummel_t: public warrior_attack_t
   {
     parse_options( NULL, options_str );
 
-    may_miss = may_glance = may_block = may_dodge = may_parry = may_crit = false;
+    may_miss = may_block = may_dodge = may_parry = false;
   }
 
   virtual void execute()
@@ -1880,8 +1868,8 @@ struct raging_blow_attack_t: public warrior_attack_t
   raging_blow_attack_t( warrior_t* p, const char* name, const spell_data_t* s ):
     warrior_attack_t( name, p, s )
   {
-    may_miss = may_dodge = may_parry = false;
-    background = true;
+    may_miss = may_dodge = may_parry = may_block = false;
+    dual = true;
     weapon_multiplier *= 1.0 + p -> perk.improved_raging_blow -> effectN( 1 ).percent();
   }
 };
@@ -1897,8 +1885,6 @@ struct raging_blow_t: public warrior_attack_t
   {
     // Parent attack is only to determine miss/dodge/parry
     weapon_multiplier = attack_power_mod.direct = 0;
-    may_crit = proc = false;
-
     parse_options( NULL, options_str );
 
     mh_attack = new raging_blow_attack_t( p, "raging_blow_mh", data().effectN( 1 ).trigger() );
@@ -1948,8 +1934,8 @@ struct ravager_tick_t: public warrior_attack_t
   ravager_tick_t( warrior_t* p, const std::string& name ):
     warrior_attack_t( name, p, p -> find_spell( 156287 ) )
   {
-    aoe           = -1;
-    background = direct_tick = true;
+    aoe = -1;
+    dual = true;
   }
 };
 
@@ -1962,7 +1948,7 @@ struct ravager_t: public warrior_attack_t
   {
     parse_options( NULL, options_str );
 
-    hasted_ticks  = false;
+    hasted_ticks = false;
     add_child( ravager );
   }
 
@@ -1975,8 +1961,6 @@ struct ravager_t: public warrior_attack_t
 
   virtual void tick( dot_t* d )
   {
-    warrior_attack_t::tick( d );
-
     ravager -> execute();
   }
 
@@ -2056,11 +2040,9 @@ struct blood_craze_t: public warrior_heal_t
     tick_zero = true;
     hasted_ticks = harmful = tick_may_crit = false;
     tick_pct_heal = p -> spec.blood_craze -> effectN( 1 ).trigger() -> effectN( 1 ).percent();
-    tick_pct_heal *= 0.75; //Ticks for 0.75% of max health every second for 3 seconds, 4 ticks total.
     base_tick_time = p -> spec.blood_craze -> effectN( 1 ).trigger() -> effectN( 1 ).period();
     dot_duration = p -> spec.blood_craze -> effectN( 1 ).trigger() -> duration();
     dot_behavior = DOT_REFRESH;
-    may_multistrike = 1;
   }
 };
 
@@ -2071,7 +2053,6 @@ struct second_wind_t: public warrior_heal_t
   second_wind_t( warrior_t* p ):
     warrior_heal_t( "second_wind", p, p -> talents.second_wind )
   {
-    proc = false;
   }
 
   virtual void execute()
@@ -2093,7 +2074,6 @@ struct enraged_regeneration_t: public warrior_heal_t
     parse_options( NULL, options_str );
     dot_duration = data().duration();
     base_tick_time = timespan_t::from_seconds( 1.0 );
-    background = false;
 
     pct_heal = data().effectN( 1 ).percent();
     tick_pct_heal = data().effectN( 2 ).percent();
@@ -2200,7 +2180,7 @@ struct shield_slam_t: public warrior_attack_t
 
   virtual bool ready()
   {
-    if ( p() -> active_stance == STANCE_BATTLE )
+    if ( p() -> active_stance == STANCE_BATTLE || !p() -> has_shield_equipped() )
       return false;
 
     return warrior_attack_t::ready();
@@ -2296,8 +2276,8 @@ struct storm_bolt_off_hand_t: public warrior_attack_t
   storm_bolt_off_hand_t( warrior_t* p, const char* name, const spell_data_t* s ):
     warrior_attack_t( name, p, s )
   {
-    may_dodge  = may_parry = may_block = may_miss = false;
-    background = true;
+    may_dodge = may_parry = may_block = may_miss = false;
+    dual = true;
 
     weapon = &( p -> off_hand_weapon );
     // assume the target is stun-immune
@@ -2310,7 +2290,8 @@ struct storm_bolt_t: public warrior_attack_t
   storm_bolt_off_hand_t* oh_attack;
 
   storm_bolt_t( warrior_t* p, const std::string& options_str ):
-    warrior_attack_t( "storm_bolt", p, p -> talents.storm_bolt )
+    warrior_attack_t( "storm_bolt", p, p -> talents.storm_bolt ),
+    oh_attack( 0 )
   {
     parse_options( NULL, options_str );
     may_dodge = may_parry = may_block = false;
@@ -2328,7 +2309,7 @@ struct storm_bolt_t: public warrior_attack_t
   {
     warrior_attack_t::execute(); // for fury, this is the MH attack
 
-    if ( p() -> specialization() == WARRIOR_FURY && result_is_hit( execute_state -> result ) ) // If MH fails to land, OH does not execute.
+    if ( oh_attack && result_is_hit( execute_state -> result ) ) // If MH fails to land, OH does not execute.
       oh_attack -> execute();
   }
 
@@ -2412,7 +2393,6 @@ struct victory_rush_t: public warrior_attack_t
   {
     parse_options( NULL, options_str );
 
-    weapon               = &( player -> main_hand_weapon );
     cooldown -> duration = timespan_t::from_seconds( 1000.0 );
   }
 
@@ -2442,7 +2422,7 @@ struct whirlwind_off_hand_t: public warrior_attack_t
   whirlwind_off_hand_t( warrior_t* p ):
     warrior_attack_t( "whirlwind_oh", p, p -> find_spell( 44949 ) )
   {
-    background = true;
+    dual = true;
     aoe = -1;
     weapon = &( p -> off_hand_weapon );
   }
@@ -2681,8 +2661,8 @@ struct deep_wounds_t: public warrior_spell_t
   deep_wounds_t( warrior_t* p ):
     warrior_spell_t( "deep_wounds", p, p -> find_spell( 115767 ) )
   {
-    background = proc = tick_may_crit = true;
-    hasted_ticks  = false;
+    tick_may_crit = true;
+    hasted_ticks = false;
     dot_behavior = DOT_REFRESH;
   }
 };
@@ -2694,7 +2674,7 @@ struct rend_burst_t: public warrior_spell_t
   rend_burst_t( warrior_t* p, const std::string& name ):
     warrior_spell_t( "rend_burst", p )
   {
-    background = may_crit = proc = true;
+    may_crit = dual = true;
     may_multistrike = 1;
     attack_power_mod.direct = 4;
     school = SCHOOL_PHYSICAL;
@@ -2724,13 +2704,13 @@ struct rend_t: public warrior_spell_t
     base_tick_time = timespan_t::from_seconds( 3.0 );
     dot_duration = timespan_t::from_seconds( 18.0 );
     hasted_ticks = tick_zero = false;
-    tick_may_crit = proc = true;
+    tick_may_crit = true;
     may_multistrike = 1;
     dot_behavior = DOT_REFRESH;
     attack_power_mod.tick = 0.4;
     attack_power_mod.direct = 0.0;
-    resource_consumed = RESOURCE_RAGE;
     resource_current = RESOURCE_RAGE;
+    resource_consumed = RESOURCE_RAGE;
     base_costs[RESOURCE_RAGE] = 10;
     school = SCHOOL_PHYSICAL;
     add_child( burst );
@@ -2775,8 +2755,8 @@ struct defensive_stance_t: public warrior_spell_t
   {
     base_tick_time = timespan_t::from_seconds( 3.0 );
     dot_duration   = timespan_t::from_seconds( 6.0 );
-    hasted_ticks = harmful = proc = may_crit = tick_zero = false;
-    background = quiet = true;
+    hasted_ticks = harmful = tick_zero = false;
+    quiet = true;
     dot_behavior = DOT_REFRESH;
   }
 
@@ -2840,7 +2820,7 @@ struct shield_barrier_t: public warrior_action_t < absorb_t >
 
     use_off_gcd = true;
     may_crit = false;
-    target   = player;
+    target = player;
     attack_power_mod.direct = 2.5; // Effect #1 is not correct.
 
     attack_power_mod.direct *= 1.0 + p -> perk.improved_shield_barrier -> effectN( 1 ).percent();
@@ -2879,6 +2859,14 @@ struct shield_barrier_t: public warrior_action_t < absorb_t >
 
     base_t::update_ready( cd_duration );
   }
+
+  virtual bool ready()
+  {
+    if ( !p() -> has_shield_equipped() )
+      return false;
+
+    return base_t::ready();
+  }
 };
 
 // Shield Block =============================================================
@@ -2915,7 +2903,7 @@ struct shield_block_t: public warrior_spell_t
 
   virtual bool ready()
   {
-    if ( p() -> active_stance == STANCE_GLADIATOR )
+    if ( p() -> active_stance == STANCE_GLADIATOR || !p() -> has_shield_equipped() )
       return false;
 
     return warrior_spell_t::ready();
@@ -2948,7 +2936,7 @@ struct shield_charge_t: public warrior_spell_t
 
   virtual bool ready()
   {
-    if ( p() -> active_stance != STANCE_GLADIATOR )
+    if ( p() -> active_stance != STANCE_GLADIATOR || !p() -> has_shield_equipped() )
       return false;
 
     if ( p() -> current.distance_to_move > base_teleport_distance )
@@ -4095,7 +4083,6 @@ void warrior_t::init_gains()
   gain.enrage                 = get_gain( "enrage" );
   gain.melee_main_hand        = get_gain( "melee_main_hand" );
   gain.melee_off_hand         = get_gain( "melee_off_hand" );
-  gain.mortal_strike          = get_gain( "mortal_strike" );
   gain.revenge                = get_gain( "revenge" );
   gain.shield_slam            = get_gain( "shield_slam" );
   gain.sweeping_strikes       = get_gain( "sweeping_strikes" );
@@ -4651,7 +4638,7 @@ struct warrior_flurry_of_xuen_t: public warrior_attack_t
     attack_power_mod.tick = data().extra_coeff();
     proc = false;
     aoe = 5;
-    special = may_miss = may_parry = may_block = may_dodge = may_crit = background = true;
+    special = may_miss = may_parry = may_block = may_dodge = may_crit = true;
   }
 };
 
@@ -4660,7 +4647,6 @@ struct warrior_lightning_strike_t: public warrior_attack_t
   warrior_lightning_strike_t( warrior_t* p ):
     warrior_attack_t( "lightning_strike", p, p -> find_spell( 137597 ) )
   {
-    background = true;
     may_dodge = may_parry = false;
   }
 };
