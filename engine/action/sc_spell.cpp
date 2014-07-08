@@ -699,6 +699,8 @@ void absorb_t::multistrike_direct( const action_state_t* source_state, action_st
 {
   if ( source_state -> result == RESULT_CRIT )
     ms_state -> result = RESULT_MULTISTRIKE_CRIT;
+  else if ( source_state -> result == RESULT_HIT )
+    ms_state -> result = RESULT_MULTISTRIKE;
 
   ms_state -> result_amount = calculate_direct_amount( ms_state );
 }
@@ -707,6 +709,8 @@ void absorb_t::multistrike_tick( const action_state_t* source_state, action_stat
 {
   if ( source_state -> result == RESULT_CRIT )
     ms_state -> result = RESULT_MULTISTRIKE_CRIT;
+  else if ( source_state -> result == RESULT_HIT )
+    ms_state -> result = RESULT_MULTISTRIKE;
 
   ms_state -> result_amount = calculate_tick_amount( ms_state, last_tick_multiplier );
 }
