@@ -323,7 +323,7 @@ public:
     const spell_data_t* improved_maelstrom_weapon;
     const spell_data_t* improved_stormstrike;
     const spell_data_t* improved_lava_lash_2;
-    const spell_data_t* improved_feral_spirits;
+    const spell_data_t* improved_feral_spirit;
 
     // Elemental
     const spell_data_t* improved_critical_strikes;
@@ -1096,7 +1096,7 @@ struct feral_spirit_pet_t : public pet_t
     {
       auto_attack = true;
       weapon = &( player -> main_hand_weapon );
-      weapon_multiplier *= 1.0 + player-> o() -> perk.improved_feral_spirits -> effectN( 1 ).percent();
+      weapon_multiplier *= 1.0 + player-> o() -> perk.improved_feral_spirit -> effectN( 1 ).percent();
       base_execute_time = weapon -> swing_time;
       background = true;
       repeating = true;
@@ -2795,6 +2795,9 @@ struct lava_burst_t : public shaman_spell_t
     if ( td( target ) -> debuff.unleashed_fury -> check() )
       m *= 1.0 + td( target ) -> debuff.unleashed_fury -> data().effectN( 2 ).percent();
 
+    if ( td( target ) -> dot.flame_shock -> is_ticking() )
+      m *= 1.0 + p() -> spell.flame_shock -> effectN( 3 ).percent();
+
     return m;
   }
 
@@ -4430,7 +4433,7 @@ void shaman_t::init_spells()
   perk.improved_maelstrom_weapon     = find_perk_spell( "Improved Maelstrom Weapon" );
   perk.improved_stormstrike          = find_perk_spell( "Improved Stormstrike" );
   perk.improved_lava_lash_2          = find_perk_spell( 7 );
-  perk.improved_feral_spirits        = find_perk_spell( "Improved Feral Spirit" );
+  perk.improved_feral_spirit         = find_perk_spell( "Improved Feral Spirit" );
 
   // Perks - Elemental
   perk.improved_critical_strikes     = find_perk_spell( "Improved Critical Strikes" );
