@@ -402,6 +402,7 @@ public:
   virtual resource_e primary_resource() const { return RESOURCE_MANA; }
   virtual role_e    primary_role() const;
   virtual stat_e    convert_hybrid_stat( stat_e s ) const;
+  virtual bool      disabled_stat( stat_e s ) const;
   virtual void      regen( timespan_t periodicity );
   virtual void      combat_begin();
 
@@ -5577,6 +5578,29 @@ stat_e paladin_t::convert_hybrid_stat( stat_e s ) const
       return STAT_NONE;
   default:
     return s; 
+  }
+}
+
+// paladin_t::disabled_stat ===================================================
+
+bool paladin_t::disabled_stat( stat_e s ) const
+{
+  // This method returns true if the stat is disabled for the player's spec
+
+  // First, run it through the converter to account for hybrid stats
+  stat_e converted_stat = convert_hybrid_stat( s );
+  
+  // Then check to see whether that stat is disabled based on spec.
+  switch ( converted_stat )
+  {
+    case STAT_INTELLECT:
+      return specialization() != PALADIN_HOLY; // INT disabled for Ret/Prot
+    case STAT_STRENGTH:
+      return specialization() == PALADIN_HOLY; // STR disabled for Holy
+    case STAT_AGILITY:
+      return true; // AGI disabled for all paladins
+    default:
+      return false;
   }
 }
 

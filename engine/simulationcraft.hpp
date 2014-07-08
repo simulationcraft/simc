@@ -4757,6 +4757,7 @@ struct player_t : public actor_t
   virtual resource_e primary_resource() const { return RESOURCE_NONE; }
   virtual role_e   primary_role() const;
   virtual stat_e convert_hybrid_stat( stat_e s ) const { return s; }
+  virtual bool disabled_stat( stat_e s ) const { return false; }
   specialization_e specialization() const { return _spec; }
   const char* primary_tree_name() const;
   virtual stat_e normalize_by() const;
