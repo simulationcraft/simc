@@ -64,8 +64,6 @@ actions+=/pool_resource,for_next=1
 actions+=/swipe,if=combo_points<5&active_enemies>1
 actions+=/shred,if=combo_points<5
 actions+=/bear_form,if=dot.thrash_bear.remains-gcd<=dot.thrash_bear.duration*0.3&cooldown.tigers_fury.remains>6&dot.rip.remains>6&energy.time_to_max>=5.5
-actions+=/natures_vigil
-actions+=/rejuvenation,if=buff.natures_vigil.up&!ticking
 
 head=primal_gladiators_headcover,id=111285
 neck=primal_gladiators_necklace_of_prowess,id=111080,enchant=140mastery

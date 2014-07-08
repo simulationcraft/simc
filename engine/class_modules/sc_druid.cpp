@@ -1804,7 +1804,7 @@ struct cat_attack_t : public druid_attack_t < melee_attack_t >
                 const std::string& options = std::string() ) :
     base_t( token, p, s ),
     requires_stealth( false ), combo_point_gain( 0 ),
-    base_dd_bonus( 0.0 ), base_td_bonus( 0.0 ), consume_ooc( false )
+    base_dd_bonus( 0.0 ), base_td_bonus( 0.0 ), consume_ooc( true )
   {
     parse_options( 0, options );
 
@@ -1834,13 +1834,6 @@ private:
     }
   }
 public:
-  virtual void init()
-  {
-    base_t::init();
-
-    consume_ooc = harmful;
-  }
-
   virtual double cost() const
   {
     double c = base_t::cost();
@@ -1964,15 +1957,11 @@ public:
                               p() -> gain.soul_of_the_forest );
     }
 
-    if ( consume_ooc && p() -> buff.omen_of_clarity -> up() )
+    if ( consume_ooc && base_t::cost() > 0 && p() -> buff.omen_of_clarity -> up() )
     {
       // Treat the savings like a energy gain.
-      double amount = melee_attack_t::cost();
-      if ( amount > 0 )
-      {
-        p() -> gain.omen_of_clarity -> add( RESOURCE_ENERGY, amount );
-        p() -> buff.omen_of_clarity -> expire();
-      }
+      p() -> gain.omen_of_clarity -> add( RESOURCE_ENERGY, base_t::cost() );
+      p() -> buff.omen_of_clarity -> expire();
     }
   }
 
@@ -3016,24 +3005,19 @@ public:
   druid_spell_base_t( const std::string& n, druid_t* player,
                       const spell_data_t* s = spell_data_t::nil() ) :
     ab( n, player, s ),
-    consume_ooc( false )
-  {
-  }
+    consume_ooc( true )
+  {}
 
   virtual void consume_resource()
   {
     ab::consume_resource();
     druid_t& p = *this -> p();
 
-    if ( consume_ooc && ( this -> execute_time() != timespan_t::zero() || ab::id == 155625 ) && p.buff.omen_of_clarity -> up() )
+    if ( consume_ooc && ab::cost() > 0 && ( this -> execute_time() != timespan_t::zero() || p.specialization() == DRUID_FERAL ) && p.buff.omen_of_clarity -> up() )
     {
       // Treat the savings like a mana gain.
-      double amount = ab::cost();
-      if ( amount > 0 )
-      {
-        p.gain.omen_of_clarity -> add( RESOURCE_MANA, amount );
-        p.buff.omen_of_clarity -> expire();
-      }
+      p.gain.omen_of_clarity -> add( RESOURCE_MANA, ab::cost() );
+      p.buff.omen_of_clarity -> expire();
     }
   }
 
@@ -3308,6 +3292,18 @@ struct healing_touch_t : public druid_heal_t
       return 0;
 
     return druid_heal_t::cost();
+  }
+
+  virtual void consume_resource()
+  {
+    // Prevent from consuming Omen of Clarity unnecessarily
+    if ( p() -> buff.predatory_swiftness -> check() )
+      return;
+
+    if ( p() -> buff.natures_swiftness -> check() )
+      return;
+
+    druid_heal_t::consume_resource();
   }
 
   virtual double action_da_multiplier() const
@@ -3703,12 +3699,6 @@ struct druid_spell_t : public druid_spell_base_t<spell_t>
     base_t( token, p, s )
   {
     parse_options( 0, options );
-  }
-
-  virtual void init()
-  {
-    base_t::init();
-    consume_ooc = harmful;
   }
 
   virtual void execute()
@@ -5981,11 +5971,12 @@ void druid_t::apl_feral()
 
   if ( glyph.master_shapeshifter -> ok() )
     def -> add_action( this, "Bear Form", "if=dot.thrash_bear.remains-gcd<=dot.thrash_bear.duration*0.3&cooldown.tigers_fury.remains>6&dot.rip.remains>6&energy.time_to_max>=5.5" );
-  if ( perk.enhanced_rejuvenation -> ok() )
+  // Disabled until Rejuv consuming OoC is fixed
+  /* if ( perk.enhanced_rejuvenation -> ok() )
   {
     def -> add_action( "natures_vigil" );
     def -> add_action( this, "Rejuvenation", "if=buff.natures_vigil.up&!ticking" );
-  }
+  } */
 }
 
 // Balance Combat Action Priority List ==============================
