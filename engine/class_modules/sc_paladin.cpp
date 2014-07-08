@@ -352,7 +352,6 @@ public:
     base.distance = 3;
   }
 
-  virtual void      init_defense();
   virtual void      init_base_stats();
   virtual void      init_gains();
   virtual void      init_procs();
@@ -366,6 +365,7 @@ public:
   
   // player stat functions
   virtual double    composite_attribute_multiplier( attribute_e attr ) const;
+  virtual double    composite_armor_multiplier() const;
   virtual double    composite_rating_multiplier( rating_e rating ) const;
   virtual double    composite_attack_power_multiplier() const;
   virtual double    composite_mastery() const;
@@ -4585,16 +4585,6 @@ void paladin_t::trigger_holy_shield()
     active_holy_shield_proc -> schedule_execute();
 }
 
-// paladin_t::init_defense ==================================================
-
-void paladin_t::init_defense()
-{
-  gear.armor *= 1.0 + passives.sanctuary -> effectN( 2 ).percent();
-
-  player_t::init_defense();
-
-}
-
 // paladin_t::init_base =====================================================
 
 void paladin_t::init_base_stats()
@@ -5619,6 +5609,17 @@ double paladin_t::composite_attribute_multiplier( attribute_e attr ) const
   return m;
 }
 
+// paladin_t::composite_armor_multiplier ===================================
+
+double paladin_t::composite_armor_multiplier() const
+{
+  double a = player_t::composite_armor_multiplier();
+  
+  a *= 1.0 + passives.sanctuary -> effectN( 2 ).percent();
+
+  return a;
+}
+
 // paladin_t::composite_rating_multiplier ==================================
 
 double paladin_t::composite_rating_multiplier( rating_e r ) const
@@ -5637,7 +5638,7 @@ double paladin_t::composite_rating_multiplier( rating_e r ) const
       break;
     case RATING_MASTERY:
       m *= 1.0 + passives.righteous_vengeance -> effectN( 1 ).percent();
-      // Seraphim adds 30% mastery TODO: check if multiplicative w/ attunement
+      // Seraphim adds 30% mastery, multiplicative w/ attunement
       if ( buffs.seraphim -> check() )
         m *= 1.0 + buffs.seraphim -> data().effectN( 1 ).percent();
       break;
@@ -5645,7 +5646,7 @@ double paladin_t::composite_rating_multiplier( rating_e r ) const
     case RATING_SPELL_CRIT:
     case RATING_RANGED_CRIT:
       m *= 1.0 + passives.sanctified_light -> effectN( 1 ).percent();
-      // Seraphim adds 30% crit. TODO: check if multiplicative w/ attunement
+      // Seraphim adds 30% crit, multiplicative w/ attunement
       if ( buffs.seraphim -> check() )
         m *= 1.0 + buffs.seraphim -> data().effectN( 1 ).percent();
       break;
@@ -5865,12 +5866,12 @@ double paladin_t::composite_attack_power_multiplier() const
 {
   double ap = player_t::composite_attack_power_multiplier();
 
-  // TODO: check if additive or multiplicative
-  ap += cache.mastery() * passives.divine_bulwark -> effectN( 5 ).mastery_value();
+  // Mastery bonus is multiplicative with other effects (raid buff, Maraad's Truth)
+  ap *= 1.0 + cache.mastery() * passives.divine_bulwark -> effectN( 5 ).mastery_value();
   
-  // TODO: check if additive or multiplicative
+  // Maraad's Truth is multiplicative with other effects (raid buff, mastery)
   if ( buffs.maraads_truth -> check() )
-    ap += buffs.maraads_truth -> data().effectN( 1 ).percent(); 
+    ap *= 1.0 + buffs.maraads_truth -> data().effectN( 1 ).percent(); 
 
   return ap;
 }

@@ -2262,8 +2262,8 @@ double player_t::composite_armor() const
   a *= composite_armor_multiplier();
 
   // Traditionally, armor multipliers have only applied to base armor from gear
-  // and not bonus armor. I'm assuming this will continue in WoD - need to test
-  // in beta to be sure - Theck, 4/26/2014
+  // and not bonus armor. I'm assuming this will continue in WoD. 
+  //TODO: need to test in beta to be sure - Theck, 4/26/2014
   a += current.stats.bonus_armor;
 
   return a;
