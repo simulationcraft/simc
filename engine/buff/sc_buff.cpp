@@ -259,7 +259,7 @@ buff_t::buff_t( const buff_creation::buff_creator_basics_t& params ) :
   if ( params._activated != -1 )
     activated = params._activated != 0;
 
-  if ( params._period > timespan_t::zero() )
+  if ( params._period >= timespan_t::zero() )
     buff_period = params._period;
   else
   {
