@@ -339,7 +339,7 @@ bool enchant::passive_enchant( item_t& item, unsigned spell_id )
 
     if ( stat != STAT_NONE && value != 0 )
     {
-      item.parsed.enchant_stats.push_back( stat_pair_t( stat, value ) );
+      item.parsed.enchant_stats.push_back( stat_pair_t( stat, (int)value ) );
       ret = true;
     }
   }

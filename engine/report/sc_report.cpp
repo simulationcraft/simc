@@ -1027,7 +1027,7 @@ void report::generate_player_charts( player_t* p, player_processed_report_inform
                        max_buckets );
 
     sc_timeline_t sliding_average_tl;
-    cd.health_changes.merged_timeline.build_sliding_average_timeline( sliding_average_tl, p -> tmi_window );
+    cd.health_changes.merged_timeline.build_sliding_average_timeline( sliding_average_tl, (int)p -> tmi_window );
     ri.health_change_sliding_chart =
       chart::timeline( p,
                        sliding_average_tl.data(),

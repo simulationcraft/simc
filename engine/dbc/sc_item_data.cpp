@@ -42,7 +42,7 @@ stat_pair_t item_database::item_enchantment_effect_stats( player_t* player,
   }
 
   if ( stat != STAT_NONE && value != 0 )
-    return stat_pair_t( stat, value );
+    return stat_pair_t( stat, (int)value );
 
   return stat_pair_t();
 }

@@ -4308,10 +4308,11 @@ struct player_t : public actor_t
   action_t* executing;
   action_t* channeling;
   action_t* strict_sequence; // Strict sequence of actions currently being executed
-  core_event_t*  readying;
-  core_event_t*  off_gcd;
-  bool      in_combat;
-  bool      action_queued;
+  core_event_t* readying;
+  core_event_t* off_gcd;
+  bool in_combat;
+  bool action_queued;
+  bool first_cast;
   action_t* last_foreground_action;
 
   // Delay time used by "cast_delay" expression to determine when an action
@@ -4340,16 +4341,15 @@ struct player_t : public actor_t
   std::map<std::string, std::string> alist_map;
   std::string action_list_information; // comment displayed in profile
   bool no_action_list_provided;
-  bool first_cast;
 
   bool quiet;
   // Reporting
   std::shared_ptr<player_report_extension_t> report_extension;
   timespan_t iteration_fight_length, arise_time;
   timespan_t iteration_waiting_time;
-  int       iteration_executed_foreground_actions;
+  int iteration_executed_foreground_actions;
   std::array< double, RESOURCE_MAX > iteration_resource_lost, iteration_resource_gained;
-  double    rps_gain, rps_loss;
+  double rps_gain, rps_loss;
   std::string tmi_debug_file_str;
   double tmi_window;
 
@@ -4404,7 +4404,7 @@ struct player_t : public actor_t
   gear_stats_t scaling_error;
   gear_stats_t scaling_delta_dps;
   gear_stats_t scaling_compare_error;
-  double       scaling_lag, scaling_lag_error;
+  double scaling_lag, scaling_lag_error;
   std::array<bool, STAT_MAX> scales_with;
   std::array<double, STAT_MAX> over_cap;
   std::vector<stat_e> scaling_stats; // sorting vector

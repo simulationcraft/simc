@@ -2860,7 +2860,7 @@ struct devouring_plague_t final : public priest_spell_t
   {
     shadow_orb_state_t* ds = static_cast<shadow_orb_state_t*>( s );
 
-    ds -> orbs_used = shadow_orbs_to_consume();
+    ds -> orbs_used = (int)shadow_orbs_to_consume();
 
     priest_spell_t::snapshot_state( s, type );
   }
@@ -4597,7 +4597,7 @@ struct prayer_of_mending_t final : public priest_heal_t
     aoe = 5;
 
     if ( priest.sets.has_set_bonus( SET_T17_2PC_HEAL ) && priest.specialization() == PRIEST_HOLY )
-      aoe += priest.sets.set( SET_T17_2PC_HEAL ) -> effectN( 1 ).percent() * 100;
+      aoe += (int)priest.sets.set( SET_T17_2PC_HEAL ) -> effectN( 1 ).percent() * 100;
 
     castable_in_shadowform = false;
   }

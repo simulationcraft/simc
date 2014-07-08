@@ -2803,7 +2803,7 @@ bool spell_data_t::affected_by( const spell_data_t* spell ) const
 
   for ( size_t flag_idx = 0; flag_idx < NUM_CLASS_FAMILY_FLAGS; flag_idx++ )
   {
-    if ( ! class_flags( flag_idx ) )
+    if ( ! class_flags( (int)flag_idx ) )
       continue;
 
     for ( size_t effect_idx = 1, end = spell -> effect_count(); effect_idx <= end; effect_idx++ )
@@ -2812,7 +2812,7 @@ bool spell_data_t::affected_by( const spell_data_t* spell ) const
       if ( ! effect.id() )
         continue;
 
-      if ( class_flags( flag_idx ) & effect.class_flags( flag_idx ) )
+      if ( class_flags( (int)flag_idx ) & effect.class_flags( (int)flag_idx ) )
         return true;
     }
   }
@@ -2827,10 +2827,10 @@ bool spell_data_t::affected_by( const spelleffect_data_t* effect ) const
 
   for ( size_t flag_idx = 0; flag_idx < NUM_CLASS_FAMILY_FLAGS; flag_idx++ )
   {
-    if ( ! class_flags( flag_idx ) )
+    if ( ! class_flags( (int)flag_idx ) )
       continue;
 
-    if ( class_flags( flag_idx ) & effect -> class_flags( flag_idx ) )
+    if ( class_flags( (int)flag_idx ) & effect -> class_flags( (int)flag_idx ) )
       return true;
   }
 

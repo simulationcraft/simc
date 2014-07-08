@@ -2125,7 +2125,7 @@ struct shield_slam_t: public warrior_attack_t
     parse_options( opt, options_str );
 
     rage_gain = data().effectN( 3 ).resource( RESOURCE_RAGE );
-    attack_power_mod.direct = 3.192; // Tested in game... doesn't match any spell data or tooltips... yay.
+    attack_power_mod.direct = 3.08; // Tested in game... doesn't match any spell data or tooltips... yay.
 
     attack_power_mod.direct *= 1.0 + p -> perk.improved_shield_slam -> effectN( 1 ).percent();
   }
