@@ -617,7 +617,7 @@ absorb_t::absorb_t( const std::string&  token,
     target = p;
 
   may_crit = false;
-  may_multistrike = true;
+  may_multistrike = false;
 
   stats -> type = STATS_ABSORB;
 }
@@ -661,11 +661,6 @@ void absorb_t::assess_damage( dmg_e    heal_type,
 {
   //s -> result_amount = s -> target -> resource_gain( RESOURCE_HEALTH, s -> result_amount, 0, this );
 
-  //if ( sim -> log )
-  //  sim -> out_log.printf( "%s %s heals %s for %.0f (%.0f) (%s)",
-  //                 player -> name(), name(),
-  //                 s -> target -> name(), s -> result_amount, s -> result_total,
-  //                 util::result_type_string( s -> result ) );
 
   if ( target_specific[ s -> target ] == 0 )
   {
@@ -679,9 +674,23 @@ void absorb_t::assess_damage( dmg_e    heal_type,
   }
 
   if ( result_is_hit( s -> result ) )
+  {
     target_specific[ s -> target ] -> trigger( 1, s -> result_amount );
+    if ( sim -> log )
+      sim -> out_log.printf( "%s %s applies absorb on %s for %.0f (%.0f) (%s)",
+                     player -> name(), name(),
+                     s -> target -> name(), s -> result_amount, s -> result_total,
+                     util::result_type_string( s -> result ) );
+  }
   else if ( result_is_multistrike( s -> result ) )
+  {
     target_specific[ s -> target ] -> current_value += s -> result_amount;
+    if ( sim -> log )
+      sim -> out_log.printf( "%s %s multistrike adds to absorb on %s for %.0f (%.0f) (%s)",
+                     player -> name(), name(),
+                     s -> target -> name(), s -> result_amount, s -> result_total,
+                     util::result_type_string( s -> result ) );
+  }
 
   stats -> add_result( s -> result_amount, s -> result_total, heal_type, s -> result, s -> block_result, s -> target );
 }
