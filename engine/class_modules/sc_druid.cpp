@@ -16,6 +16,7 @@ namespace { // UNNAMED NAMESPACE
 
     = Feral =
     PvP bonuses
+    Omen of Clarity mechanical change
     Verify stuff
 
     = Balance =
@@ -2685,8 +2686,7 @@ struct bear_attack_t : public druid_attack_t<melee_attack_t>
 
   virtual void update_ready( timespan_t cd_duration )
   {
-    if ( p() -> specialization() == DRUID_GUARDIAN )
-      cd_duration = cooldown -> duration * p() -> cache.attack_haste();
+    cd_duration = cooldown -> duration * p() -> cache.attack_haste();
 
     base_t::update_ready( cd_duration );
   }
@@ -2739,36 +2739,6 @@ struct bear_melee_t : public bear_attack_t
     }
     if ( result_is_multistrike( state -> result ) )
       trigger_ursa_major();
-  }
-};
-
-// Feral Charge (Bear) ======================================================
-
-struct feral_charge_bear_t : public bear_attack_t
-{
-  feral_charge_bear_t( druid_t* p, const std::string& options_str ) :
-    bear_attack_t( "feral_charge", p, p -> talent.wild_charge )
-  {
-    parse_options( NULL, options_str );
-    may_miss = may_dodge = may_parry = may_block = may_glance = false;
-    base_teleport_distance = data().max_range();
-    movement_directionality = MOVEMENT_OMNI;
-  }
-
-  virtual void init()
-  {
-    bear_attack_t::init();
-
-    consume_bloodtalons = false;
-  }
-
-  virtual bool ready()
-  {
-    if ( p() -> current.distance_to_move > base_teleport_distance ||
-         p() -> current.distance_to_move < data().min_range() ) // Cannot charge unless target is in range.
-      return false;
-
-    return bear_attack_t::ready();
   }
 };
 
@@ -2981,36 +2951,6 @@ struct pulverize_t : public bear_attack_t
   }
 };
 
-// Skull Bash (Bear) ========================================================
-
-struct skull_bash_bear_t : public bear_attack_t
-{
-  skull_bash_bear_t( druid_t* player, const std::string& options_str ) :
-    bear_attack_t( "skull_bash_bear", player, player -> find_specialization_spell( "Skull Bash" ) )
-  {
-    parse_options( NULL, options_str );
-    may_miss = may_glance = may_block = may_dodge = may_parry = may_crit = false;
-    use_off_gcd = true;
-
-    cooldown -> duration += player -> glyph.skull_bash -> effectN( 1 ).time_value();
-  }
-
-  virtual void init()
-  {
-    bear_attack_t::init();
-
-    consume_bloodtalons = false;
-  }
-
-  virtual bool ready()
-  {
-    if ( ! target -> debuffs.casting -> check() )
-      return false;
-
-    return bear_attack_t::ready();
-  }
-};
-
 // Thrash (Bear) ============================================================
 
 struct thrash_bear_t : public bear_attack_t
@@ -3057,59 +2997,6 @@ struct thrash_bear_t : public bear_attack_t
       m *= 1.0 + p() -> cache.mastery_value();
 
     return m;
-  }
-};
-
-// Savage Defense ===========================================================
-
-struct savage_defense_t : public bear_attack_t
-{
-  savage_defense_t( druid_t* player, const std::string& options_str ) :
-    bear_attack_t( "savage_defense", player, player -> find_class_spell( "Savage Defense" ) )
-  {
-    parse_options( NULL, options_str );
-    harmful = false;
-    cooldown -> duration = timespan_t::from_seconds( 9.0 );
-    cooldown -> charges = 3;
-    use_off_gcd = true;
-
-    if ( player -> sets.has_set_bonus( SET_T16_2PC_TANK ) )
-      player -> active.ursocs_vigor = new ursocs_vigor_t( player );
-  }
-
-  virtual void execute()
-  {
-    bear_attack_t::execute();
-
-    if ( p() -> buff.savage_defense -> check() )
-      p() -> buff.savage_defense -> extend_duration( p(), p() -> buff.savage_defense -> buff_duration );
-    else
-      p() -> buff.savage_defense -> trigger();
-
-    if ( p() -> sets.has_set_bonus( SET_T16_4PC_TANK ) )
-      p() -> active.ursocs_vigor -> trigger_hot();
-  }
-};
-
-// Might of Ursoc ===========================================================
-
-struct might_of_ursoc_t : public bear_attack_t
-{
-  might_of_ursoc_t( druid_t* player, const std::string& options_str ) :
-    bear_attack_t( "might_of_ursoc", player, player -> find_specialization_spell( "Might of Ursoc" ) )
-  {
-    parse_options( NULL, options_str );
-    cooldown -> duration = data().cooldown();
-    cooldown -> duration += player -> glyph.might_of_ursoc -> effectN( 2 ).time_value();
-    harmful = false;
-    use_off_gcd = true;
-  }
-
-  virtual void execute()
-  {
-    bear_attack_t::execute();
-
-    p() -> buff.might_of_ursoc -> trigger( 1, p() -> resources.max[ RESOURCE_HEALTH ] * data().effectN( 1 ).percent() );
   }
 };
 
@@ -4216,6 +4103,32 @@ struct faerie_fire_t : public druid_spell_t
   }
 };
 
+// Feral Charge (Bear) ======================================================
+
+struct feral_charge_bear_t : public druid_spell_t
+{
+  feral_charge_bear_t( druid_t* p, const std::string& options_str ) :
+    druid_spell_t( "feral_charge", p, p -> talent.wild_charge )
+  {
+    parse_options( NULL, options_str );
+    may_miss = may_dodge = may_parry = may_block = may_glance = false;
+    base_teleport_distance = data().max_range();
+    movement_directionality = MOVEMENT_OMNI;
+  }
+
+  virtual bool ready()
+  {
+    if ( ! p() -> buff.bear_form -> check() )
+      return false;
+
+    if ( p() -> current.distance_to_move > base_teleport_distance ||
+         p() -> current.distance_to_move < data().min_range() ) // Cannot charge unless target is in range.
+      return false;
+
+    return druid_spell_t::ready();
+  }
+};
+
 // Heart of the Wild Spell ==================================================
 
 struct heart_of_the_wild_t : public druid_spell_t
@@ -4388,180 +4301,111 @@ struct mark_of_the_wild_t : public druid_spell_t
   }
 };
 
+// Might of Ursoc ===========================================================
+
+struct might_of_ursoc_t : public druid_spell_t
+{
+  might_of_ursoc_t( druid_t* p, const std::string& options_str ) :
+    druid_spell_t( "might_of_ursoc", p, p -> find_specialization_spell( "Might of Ursoc" ), options_str )
+  {
+    cooldown -> duration = data().cooldown();
+    cooldown -> duration += p -> glyph.might_of_ursoc -> effectN( 2 ).time_value();
+    harmful = false;
+    use_off_gcd = true;
+  }
+
+  virtual void execute()
+  {
+    druid_spell_t::execute();
+
+    p() -> buff.might_of_ursoc -> trigger( 1, p() -> resources.max[ RESOURCE_HEALTH ] * data().effectN( 1 ).percent() );
+  }
+
+  virtual bool ready() 
+  {
+    if ( ! p() -> buff.bear_form -> check() )
+      return false;
+    
+    return druid_spell_t::ready();
+  }
+};
+
+// Savage Defense ===========================================================
+
+struct savage_defense_t : public druid_spell_t
+{
+  savage_defense_t( druid_t* p, const std::string& options_str ) :
+    druid_spell_t( "savage_defense", p, p -> find_specialization_spell( "Savage Defense" ), options_str )
+  {
+    harmful = false;
+    cooldown -> duration = timespan_t::from_seconds( 9.0 );
+    cooldown -> charges = 3;
+    use_off_gcd = true;
+
+    if ( p -> sets.has_set_bonus( SET_T16_2PC_TANK ) )
+      p -> active.ursocs_vigor = new ursocs_vigor_t( p );
+  }
+
+  virtual void execute()
+  {
+    druid_spell_t::execute();
+
+    if ( p() -> buff.savage_defense -> check() )
+      p() -> buff.savage_defense -> extend_duration( p(), p() -> buff.savage_defense -> buff_duration );
+    else
+      p() -> buff.savage_defense -> trigger();
+
+    if ( p() -> sets.has_set_bonus( SET_T16_4PC_TANK ) )
+      p() -> active.ursocs_vigor -> trigger_hot();
+  }
+
+  virtual bool ready() 
+  {
+    if ( ! p() -> buff.bear_form -> check() )
+      return false;
+    
+    return druid_spell_t::ready();
+  }
+};
+
+// Skull Bash (Bear) ========================================================
+
+struct skull_bash_bear_t : public druid_spell_t
+{
+  skull_bash_bear_t( druid_t* player, const std::string& options_str ) :
+    druid_spell_t( "skull_bash_bear", player, player -> find_specialization_spell( "Skull Bash" ) )
+  {
+    parse_options( NULL, options_str );
+    may_miss = may_glance = may_block = may_dodge = may_parry = may_crit = false;
+    use_off_gcd = true;
+
+    cooldown -> duration += player -> glyph.skull_bash -> effectN( 1 ).time_value();
+  }
+
+  virtual bool ready()
+  {
+    if ( ! target -> debuffs.casting -> check() )
+      return false;
+    if ( ! p() -> buff.bear_form -> check() )
+      return false;
+
+    return druid_spell_t::ready();
+  }
+};
+
 // Sunfire Spell ===========================================================
 
-  struct sunfire_t : public druid_spell_t
+struct sunfire_t : public druid_spell_t
+{
+  // Sunfire also applies the Moonfire DoT during Celestial Alignment.
+  struct moonfire_CA_t : public druid_spell_t
   {
-    // Sunfire also applies the Moonfire DoT during Celestial Alignment.
-    struct moonfire_CA_t : public druid_spell_t
-    {
-      moonfire_CA_t( druid_t* player ) :
-        druid_spell_t( "moonfire", player, player -> find_spell( 8921 ) )
-      {
-        const spell_data_t* dmg_spell = player -> find_spell( 164812 );
-        dot_behavior = DOT_REFRESH;
-        dot_duration                  = dmg_spell -> duration();
-        dot_duration                 *= 1 + player -> spec.astral_showers -> effectN( 1 ).percent();
-        dot_duration                 += player -> sets.set( SET_T14_4PC_CASTER ) -> effectN( 1 ).time_value();
-        base_tick_time                = dmg_spell -> effectN( 2 ).period();
-
-        spell_power_mod.tick          = dmg_spell-> effectN( 2 ).sp_coeff();
-        spell_power_mod.tick         *= 1.0 + player -> talent.balance_of_power -> effectN( 3 ).percent();
-        spell_power_mod.tick         *= 1.0 + player -> perk.improved_moonfire -> effectN( 1 ).percent();
-
-        // Does no direct damage, costs no mana
-        attack_power_mod.direct = 0;
-        spell_power_mod.direct = 0;
-        range::fill( base_costs, 0 );
-      }
-
-      double composite_target_multiplier( player_t* target ) const
-      {
-        double m = druid_spell_t::composite_target_multiplier( target );
-
-        if ( p() -> buff.hurricane -> up() )
-          m *= 1.0 + p() -> perk.enhanced_storms -> effectN( 1 ).percent();
-
-        return m;
-      }
-
-
-      virtual void tick( dot_t* d )
-      {
-        druid_spell_t::tick( d );
-
-        if ( result_is_hit( d -> state -> result ) )
-          p() -> trigger_shooting_stars( d -> state );
-      }
-    };
-
-    action_t* moonfire;
-    sunfire_t( druid_t* player, const std::string& options_str ) :
-      druid_spell_t( "sunfire", player, player -> find_spell( 93402 ) )
-    {
-      parse_options( NULL, options_str );
-      dot_behavior = DOT_REFRESH;
-      const spell_data_t* dmg_spell = player -> find_spell( 164815 );
-      dot_duration                  = dmg_spell -> duration();
-      dot_duration                 += player -> sets.set( SET_T14_4PC_CASTER ) -> effectN( 1 ).time_value();
-      base_tick_time                = dmg_spell -> effectN( 2 ).period();
-
-      spell_power_mod.direct        = dmg_spell-> effectN( 1 ).sp_coeff();
-      spell_power_mod.direct       *= 1.0 + player -> perk.improved_moonfire -> effectN( 1 ).percent();
-
-      spell_power_mod.tick          = dmg_spell-> effectN( 2 ).sp_coeff();
-      spell_power_mod.tick         *= 1.0 + player -> talent.balance_of_power -> effectN( 3 ).percent();
-      spell_power_mod.tick         *= 1.0 + player -> perk.improved_moonfire -> effectN( 1 ).percent();
-
-      if ( p() -> spec.astral_showers -> ok() )
-        aoe = -1;
-
-      if ( player -> specialization() == DRUID_BALANCE )
-        moonfire = new moonfire_CA_t( player );
-    }
-
-    double composite_target_multiplier( player_t* target ) const
-    {
-      double m = druid_spell_t::composite_target_multiplier( target );
-
-      if ( p() -> buff.hurricane -> up() )
-        m *= 1.0 + p() -> perk.enhanced_storms -> effectN( 1 ).percent();
-
-      return m;
-    }
-
-    virtual void tick( dot_t* d )
-    {
-      druid_spell_t::tick( d );
-
-      if ( result_is_hit( d -> state -> result ) )
-        p() -> trigger_shooting_stars( d -> state );
-    }
-
-    virtual void impact( action_state_t* s )
-    {
-      if ( moonfire && result_is_hit( s -> result ) )
-      {
-        if ( p() -> buff.celestial_alignment -> check() )
-        {
-          moonfire -> target = s -> target;
-          moonfire -> execute();
-        }
-      }
-      druid_spell_t::impact( s );
-    }
-
-    virtual bool ready()
-    {
-      bool ready = druid_spell_t::ready();
-
-      if ( p() -> buff.celestial_alignment -> up() )
-        return ready;
-
-      if ( p() -> eclipse_amount >= 0 )
-        return false;
-
-      return ready;
-    }
-  };
-
-// Moonfire spell ===============================================================
-
-  struct moonfire_t : public druid_spell_t
-  {
-    // Moonfire also applies the Sunfire DoT during Celestial Alignment.
-    struct sunfire_CA_t : public druid_spell_t
-    {
-      sunfire_CA_t( druid_t* player ) :
-        druid_spell_t( "sunfire", player, player -> find_spell( 93402 ) )
-      {
-        const spell_data_t* dmg_spell = player -> find_spell( 164815 );
-        dot_behavior = DOT_REFRESH;
-        dot_duration                  = dmg_spell -> duration();
-        dot_duration                 += player -> sets.set( SET_T14_4PC_CASTER ) -> effectN( 1 ).time_value();
-        base_tick_time                = dmg_spell -> effectN( 2 ).period();
-
-        spell_power_mod.tick          = dmg_spell-> effectN( 2 ).sp_coeff();
-        spell_power_mod.tick         *= 1.0 + player -> talent.balance_of_power -> effectN( 3 ).percent();
-        spell_power_mod.tick         *= 1.0 + player -> perk.improved_moonfire -> effectN( 1 ).percent();
-
-        // Does no direct damage, costs no mana
-        attack_power_mod.direct = 0;
-        spell_power_mod.direct = 0;
-        range::fill( base_costs, 0 );
-
-        if ( p() -> spec.astral_showers -> ok() )
-          aoe = -1;
-      }
-
-      double composite_target_multiplier( player_t* target ) const
-      {
-        double m = druid_spell_t::composite_target_multiplier( target );
-
-        if ( p() -> buff.hurricane -> up() )
-          m *= 1.0 + p() -> perk.enhanced_storms -> effectN( 1 ).percent();
-
-        return m;
-      }
-
-      virtual void tick( dot_t* d )
-      {
-        druid_spell_t::tick( d );
-
-        if ( result_is_hit( d -> state -> result ) )
-          p() -> trigger_shooting_stars( d -> state );
-      }
-    };
-
-    action_t* sunfire;
-    moonfire_t( druid_t* player, const std::string& options_str ) :
+    moonfire_CA_t( druid_t* player ) :
       druid_spell_t( "moonfire", player, player -> find_spell( 8921 ) )
     {
-      parse_options( NULL, options_str );
       const spell_data_t* dmg_spell = player -> find_spell( 164812 );
-
       dot_behavior = DOT_REFRESH;
-      dot_duration                  = dmg_spell -> duration(); 
+      dot_duration                  = dmg_spell -> duration();
       dot_duration                 *= 1 + player -> spec.astral_showers -> effectN( 1 ).percent();
       dot_duration                 += player -> sets.set( SET_T14_4PC_CASTER ) -> effectN( 1 ).time_value();
       base_tick_time                = dmg_spell -> effectN( 2 ).period();
@@ -4570,19 +4414,10 @@ struct mark_of_the_wild_t : public druid_spell_t
       spell_power_mod.tick         *= 1.0 + player -> talent.balance_of_power -> effectN( 3 ).percent();
       spell_power_mod.tick         *= 1.0 + player -> perk.improved_moonfire -> effectN( 1 ).percent();
 
-      spell_power_mod.direct        = dmg_spell-> effectN( 1 ).sp_coeff();
-      spell_power_mod.direct       *= 1.0 + player -> perk.improved_moonfire -> effectN( 1 ).percent();
-
-      if ( player -> specialization() == DRUID_BALANCE )
-        sunfire = new sunfire_CA_t( player );
-    }
-
-    virtual void tick( dot_t* d )
-    {
-      druid_spell_t::tick( d );
-
-      if ( result_is_hit( d -> state -> result ) )
-        p() -> trigger_shooting_stars( d -> state );
+      // Does no direct damage, costs no mana
+      attack_power_mod.direct = 0;
+      spell_power_mod.direct = 0;
+      range::fill( base_costs, 0 );
     }
 
     double composite_target_multiplier( player_t* target ) const
@@ -4595,39 +4430,209 @@ struct mark_of_the_wild_t : public druid_spell_t
       return m;
     }
 
-    virtual void schedule_execute( action_state_t* state = 0 )
-    {
-      druid_spell_t::schedule_execute( state );
 
-      p() -> buff.bear_form -> expire();
-      p() -> buff.cat_form -> expire();
+    virtual void tick( dot_t* d )
+    {
+      druid_spell_t::tick( d );
+
+      if ( result_is_hit( d -> state -> result ) )
+        p() -> trigger_shooting_stars( d -> state );
     }
+  };
 
-    virtual void impact( action_state_t* s )
+  action_t* moonfire;
+  sunfire_t( druid_t* player, const std::string& options_str ) :
+    druid_spell_t( "sunfire", player, player -> find_spell( 93402 ) )
+  {
+    parse_options( NULL, options_str );
+    dot_behavior = DOT_REFRESH;
+    const spell_data_t* dmg_spell = player -> find_spell( 164815 );
+    dot_duration                  = dmg_spell -> duration();
+    dot_duration                 += player -> sets.set( SET_T14_4PC_CASTER ) -> effectN( 1 ).time_value();
+    base_tick_time                = dmg_spell -> effectN( 2 ).period();
+
+    spell_power_mod.direct        = dmg_spell-> effectN( 1 ).sp_coeff();
+    spell_power_mod.direct       *= 1.0 + player -> perk.improved_moonfire -> effectN( 1 ).percent();
+
+    spell_power_mod.tick          = dmg_spell-> effectN( 2 ).sp_coeff();
+    spell_power_mod.tick         *= 1.0 + player -> talent.balance_of_power -> effectN( 3 ).percent();
+    spell_power_mod.tick         *= 1.0 + player -> perk.improved_moonfire -> effectN( 1 ).percent();
+
+    if ( p() -> spec.astral_showers -> ok() )
+      aoe = -1;
+
+    if ( player -> specialization() == DRUID_BALANCE )
+      moonfire = new moonfire_CA_t( player );
+  }
+
+  double composite_target_multiplier( player_t* target ) const
+  {
+    double m = druid_spell_t::composite_target_multiplier( target );
+
+    if ( p() -> buff.hurricane -> up() )
+      m *= 1.0 + p() -> perk.enhanced_storms -> effectN( 1 ).percent();
+
+    return m;
+  }
+
+  virtual void tick( dot_t* d )
+  {
+    druid_spell_t::tick( d );
+
+    if ( result_is_hit( d -> state -> result ) )
+      p() -> trigger_shooting_stars( d -> state );
+  }
+
+  virtual void impact( action_state_t* s )
+  {
+    if ( moonfire && result_is_hit( s -> result ) )
     {
-      // The Sunfire hits BEFORE the moonfire!
-      if ( sunfire && result_is_hit( s -> result ) )
+      if ( p() -> buff.celestial_alignment -> check() )
       {
-        if ( p() -> buff.celestial_alignment -> check() )
-        {
-          sunfire -> target = s -> target;
-          sunfire -> execute();
-        }
+        moonfire -> target = s -> target;
+        moonfire -> execute();
       }
-      druid_spell_t::impact( s );
     }
+    druid_spell_t::impact( s );
+  }
 
-    virtual bool ready()
-    {
-      bool ready = druid_spell_t::ready();
+  virtual bool ready()
+  {
+    bool ready = druid_spell_t::ready();
 
-      if ( p() -> buff.celestial_alignment -> up() )
-        return ready;
-      if ( p() -> eclipse_amount < 0 )
-        return false;
-
+    if ( p() -> buff.celestial_alignment -> up() )
       return ready;
+
+    if ( p() -> eclipse_amount >= 0 )
+      return false;
+
+    return ready;
+  }
+};
+
+// Moonfire spell ===============================================================
+
+struct moonfire_t : public druid_spell_t
+{
+  // Moonfire also applies the Sunfire DoT during Celestial Alignment.
+  struct sunfire_CA_t : public druid_spell_t
+  {
+    sunfire_CA_t( druid_t* player ) :
+      druid_spell_t( "sunfire", player, player -> find_spell( 93402 ) )
+    {
+      const spell_data_t* dmg_spell = player -> find_spell( 164815 );
+      dot_behavior = DOT_REFRESH;
+      dot_duration                  = dmg_spell -> duration();
+      dot_duration                 += player -> sets.set( SET_T14_4PC_CASTER ) -> effectN( 1 ).time_value();
+      base_tick_time                = dmg_spell -> effectN( 2 ).period();
+
+      spell_power_mod.tick          = dmg_spell-> effectN( 2 ).sp_coeff();
+      spell_power_mod.tick         *= 1.0 + player -> talent.balance_of_power -> effectN( 3 ).percent();
+      spell_power_mod.tick         *= 1.0 + player -> perk.improved_moonfire -> effectN( 1 ).percent();
+
+      // Does no direct damage, costs no mana
+      attack_power_mod.direct = 0;
+      spell_power_mod.direct = 0;
+      range::fill( base_costs, 0 );
+
+      if ( p() -> spec.astral_showers -> ok() )
+        aoe = -1;
     }
+
+    double composite_target_multiplier( player_t* target ) const
+    {
+      double m = druid_spell_t::composite_target_multiplier( target );
+
+      if ( p() -> buff.hurricane -> up() )
+        m *= 1.0 + p() -> perk.enhanced_storms -> effectN( 1 ).percent();
+
+      return m;
+    }
+
+    virtual void tick( dot_t* d )
+    {
+      druid_spell_t::tick( d );
+
+      if ( result_is_hit( d -> state -> result ) )
+        p() -> trigger_shooting_stars( d -> state );
+    }
+  };
+
+  action_t* sunfire;
+  moonfire_t( druid_t* player, const std::string& options_str ) :
+    druid_spell_t( "moonfire", player, player -> find_spell( 8921 ) )
+  {
+    parse_options( NULL, options_str );
+    const spell_data_t* dmg_spell = player -> find_spell( 164812 );
+
+    dot_behavior = DOT_REFRESH;
+    dot_duration                  = dmg_spell -> duration(); 
+    dot_duration                 *= 1 + player -> spec.astral_showers -> effectN( 1 ).percent();
+    dot_duration                 += player -> sets.set( SET_T14_4PC_CASTER ) -> effectN( 1 ).time_value();
+    base_tick_time                = dmg_spell -> effectN( 2 ).period();
+
+    spell_power_mod.tick          = dmg_spell-> effectN( 2 ).sp_coeff();
+    spell_power_mod.tick         *= 1.0 + player -> talent.balance_of_power -> effectN( 3 ).percent();
+    spell_power_mod.tick         *= 1.0 + player -> perk.improved_moonfire -> effectN( 1 ).percent();
+
+    spell_power_mod.direct        = dmg_spell-> effectN( 1 ).sp_coeff();
+    spell_power_mod.direct       *= 1.0 + player -> perk.improved_moonfire -> effectN( 1 ).percent();
+
+    if ( player -> specialization() == DRUID_BALANCE )
+      sunfire = new sunfire_CA_t( player );
+  }
+
+  virtual void tick( dot_t* d )
+  {
+    druid_spell_t::tick( d );
+
+    if ( result_is_hit( d -> state -> result ) )
+      p() -> trigger_shooting_stars( d -> state );
+  }
+
+  double composite_target_multiplier( player_t* target ) const
+  {
+    double m = druid_spell_t::composite_target_multiplier( target );
+
+    if ( p() -> buff.hurricane -> up() )
+      m *= 1.0 + p() -> perk.enhanced_storms -> effectN( 1 ).percent();
+
+    return m;
+  }
+
+  virtual void schedule_execute( action_state_t* state = 0 )
+  {
+    druid_spell_t::schedule_execute( state );
+
+    p() -> buff.bear_form -> expire();
+    p() -> buff.cat_form -> expire();
+  }
+
+  virtual void impact( action_state_t* s )
+  {
+    // The Sunfire hits BEFORE the moonfire!
+    if ( sunfire && result_is_hit( s -> result ) )
+    {
+      if ( p() -> buff.celestial_alignment -> check() )
+      {
+        sunfire -> target = s -> target;
+        sunfire -> execute();
+      }
+    }
+    druid_spell_t::impact( s );
+  }
+
+  virtual bool ready()
+  {
+    bool ready = druid_spell_t::ready();
+
+    if ( p() -> buff.celestial_alignment -> up() )
+      return ready;
+    if ( p() -> eclipse_amount < 0 )
+      return false;
+
+    return ready;
+  }
 };
 
 // Moonfire (Lunar Inspiration) Spell =======================================
