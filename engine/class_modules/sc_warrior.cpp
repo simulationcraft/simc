@@ -871,11 +871,11 @@ void warrior_attack_t::impact( action_state_t* s )
         if ( p() -> buff.bloodbath -> up() && this -> id != 156287 ) // Ravager does not trigger bloodbath.
           trigger_bloodbath_dot( s -> target, s -> result_amount );
         if ( p() -> sets.has_set_bonus( SET_T16_2PC_MELEE ) && td( s -> target ) ->  debuffs_colossus_smash -> up() && // Melee tier 16 2 piece.
-           ( this ->  weapon == &( p() -> main_hand_weapon ) || this -> id == 100130 ) && // Only procs once per ability used.
-           this -> id != 12328 ) // Doesn't proc from sweeping strikes.
-           p() -> resource_gain( RESOURCE_RAGE,
-           p() -> sets.set( SET_T16_2PC_MELEE ) -> effectN( 1 ).base_value(),
-           p() -> gain.tier16_2pc_melee );
+             ( this ->  weapon == &( p() -> main_hand_weapon ) || this -> id == 100130 ) && // Only procs once per ability used.
+             this -> id != 12328 ) // Doesn't proc from sweeping strikes.
+             p() -> resource_gain( RESOURCE_RAGE,
+             p() -> sets.set( SET_T16_2PC_MELEE ) -> effectN( 1 ).base_value(),
+             p() -> gain.tier16_2pc_melee );
       }
     }
   }
@@ -2219,7 +2219,7 @@ struct slam_t: public warrior_attack_t
     weapon_multiplier = 1.0;
     resource_consumed = RESOURCE_RAGE;
     resource_current = RESOURCE_RAGE;
-    base_costs[ RESOURCE_RAGE ] = 10;
+    base_costs[RESOURCE_RAGE] = 10;
     trigger_gcd = timespan_t::from_millis( 1500 );
     min_gcd = timespan_t::from_millis( 1000 );
     school = SCHOOL_PHYSICAL;
@@ -2699,6 +2699,7 @@ struct rend_burst_t: public warrior_spell_t
     attack_power_mod.direct = 4;
     school = SCHOOL_PHYSICAL;
   }
+
   virtual double target_armor( player_t* ) const
   {
     return 0.0;
@@ -2726,7 +2727,7 @@ struct rend_t: public warrior_spell_t
     tick_may_crit = proc = true;
     may_multistrike = 1;
     dot_behavior = DOT_REFRESH;
-    attack_power_mod.tick = 1.0;
+    attack_power_mod.tick = 0.4;
     attack_power_mod.direct = 0.0;
     resource_consumed = RESOURCE_RAGE;
     resource_current = RESOURCE_RAGE;
@@ -2735,16 +2736,27 @@ struct rend_t: public warrior_spell_t
     add_child( burst );
   }
 
-  virtual void tick( dot_t* d )
+  virtual void impact( action_state_t* s )
   {
-    warrior_spell_t::tick( d );
-    if( taste_for_blood )
-      p() -> resource_gain( RESOURCE_RAGE, 3, p() -> gain.taste_for_blood );
+    if ( result_is_hit( s -> result ) )
+    {
+      dot_t* dot = get_dot( s -> target );
+      if ( dot -> is_ticking() && dot -> remains() < dot -> current_action -> base_tick_time )
+        burst -> execute();
+    }
+    warrior_spell_t::impact( s );
   }
 
   timespan_t tick_time( double ) const
   {
     return timespan_t::from_seconds( 3 );
+  }
+
+  virtual void tick( dot_t* d )
+  {
+    warrior_spell_t::tick( d );
+    if ( taste_for_blood )
+      p() -> resource_gain( RESOURCE_RAGE, 3, p() -> gain.taste_for_blood );
   }
 
   virtual void last_tick( dot_t* d )
