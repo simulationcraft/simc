@@ -4071,9 +4071,13 @@ void player_t::stat_gain( stat_e    stat,
 {
   if ( amount <= 0 ) return;
 
+  // bail out if this is a stat that doesn't work for this class
+  if ( convert_hybrid_stat( stat ) == STAT_NONE ) return;
+
   if ( sim -> log ) sim -> out_log.printf( "%s gains %.2f %s%s", name(), amount, util::stat_type_string( stat ), temporary_stat ? " (temporary)" : "" );
 
   int temp_value = temporary_stat ? 1 : 0;
+
   switch ( stat )
   {
     case STAT_STAMINA:
@@ -4198,7 +4202,10 @@ void player_t::stat_loss( stat_e    stat,
                           bool      temporary_buff )
 {
   if ( amount <= 0 ) return;
-
+  
+  // bail out if this is a stat that doesn't work for this class
+  if ( convert_hybrid_stat( stat ) == STAT_NONE ) return;
+  
   if ( sim -> log ) sim -> out_log.printf( "%s loses %.2f %s%s", name(), amount, util::stat_type_string( stat ), ( temporary_buff ) ? " (temporary)" : "" );
 
   int temp_value = temporary_buff ? 1 : 0;
