@@ -3595,9 +3595,7 @@ void warrior_t::apl_smf_fury()
   for ( int i = 0; i < num_items; i++ )
   {
     if ( items[i].has_special_effect( SPECIAL_EFFECT_SOURCE_NONE, SPECIAL_EFFECT_USE ) )
-    {
       default_list -> add_action( "use_item,name=" + items[i].name_str );
-    }
   }
 
   for ( size_t i = 0; i < racial_actions.size(); i++ )
@@ -3694,9 +3692,7 @@ void warrior_t::apl_tg_fury()
   for ( int i = 0; i < num_items; i++ )
   {
     if ( items[i].has_special_effect( SPECIAL_EFFECT_SOURCE_NONE, SPECIAL_EFFECT_USE ) )
-    {
       default_list -> add_action( "use_item,name=" + items[i].name_str );
-    }
   }
 
   if ( sim -> allow_potions )
@@ -3803,9 +3799,7 @@ void warrior_t::apl_arms()
   for ( int i = 0; i < num_items; i++ )
   {
     if ( items[i].has_special_effect( SPECIAL_EFFECT_SOURCE_NONE, SPECIAL_EFFECT_USE ) )
-    {
       default_list -> add_action( "use_item,name=" + items[i].name_str );
-    }
   }
 
   if ( sim -> allow_potions )
@@ -3829,6 +3823,7 @@ void warrior_t::apl_arms()
   default_list -> add_action( "run_action_list,name=single_target,if=active_enemies<2" );
 
   single_target -> add_action( this, "Mortal Strike" );
+  single_target -> add_action( "rend,if=dot.rend.remains<3" );
   single_target -> add_action( this, "Colossus Smash" );
   single_target -> add_talent( this, "Ravager" );
   single_target -> add_action( "bladestorm,if=enabled,interrupt_if=!cooldown.colossus_smash.remains",
@@ -3865,9 +3860,7 @@ void warrior_t::apl_prot()
   for ( int i = 0; i < num_items; i++ )
   {
     if ( items[i].has_special_effect( SPECIAL_EFFECT_SOURCE_NONE, SPECIAL_EFFECT_USE ) )
-    {
       default_list -> add_action( "use_item,name=" + items[i].name_str );
-    }
   }
 
   if ( sim -> allow_potions )
@@ -3922,9 +3915,7 @@ void warrior_t::apl_gladiator()
   for ( int i = 0; i < num_items; i++ )
   {
     if ( items[i].has_special_effect( SPECIAL_EFFECT_SOURCE_NONE, SPECIAL_EFFECT_USE ) )
-    {
       default_list -> add_action( "use_item,name=" + items[i].name_str );
-    }
   }
 
   if ( sim -> allow_potions ) // Gladiator is only usable at level 100.
