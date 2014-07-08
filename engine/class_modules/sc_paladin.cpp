@@ -2807,6 +2807,7 @@ struct sacred_shield_tick_t : public absorb_t
     absorb_t( "sacred_shield_tick", p, p -> find_spell( 65148 ) )
   {
     may_crit = true;
+    may_multistrike = true;
     background = true;
 
     // unfortunately, this spell info is split between effects and tooltip 
@@ -2871,7 +2872,7 @@ struct sacred_shield_t : public paladin_heal_t
   {
     paladin_heal_t::execute();
 
-    p()->buffs.sacred_shield->trigger();
+    p()->buffs.sacred_shield -> trigger();
   }
 
   virtual timespan_t calculate_dot_refresh_duration( const dot_t* dot, timespan_t triggered_duration ) const override
@@ -4875,7 +4876,7 @@ void paladin_t::create_buffs()
                                  .source( get_stats( "holy_shield" ) )
                                  .gain( get_gain( "holy_shield" ) );
   buffs.sacred_shield          = buff_creator_t( this, "sacred_shield", find_talent_spell( "Sacred Shield" ) )
-                                 .duration( timespan_t::from_seconds( 60 ) ) // arbitrarily high since this is just a placeholder, we expire() on last_tick()
+                                 .duration( timespan_t::from_seconds( 30 ) ) // arbitrarily high since this is just a placeholder, we expire() on last_tick()
                                  .cd( timespan_t::zero() ) // let ability handle CD
                                  .period( timespan_t::zero() );
   buffs.selfless_healer        = buff_creator_t( this, "selfless_healer", find_spell( 114250 ) );
