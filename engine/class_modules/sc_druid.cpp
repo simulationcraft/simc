@@ -24,6 +24,8 @@ namespace { // UNNAMED NAMESPACE
 
     = Guardian =
     PvP bonuses
+    Fix MoU and Ursa Major decreasing resolve
+    FR "none" results?
     Verify stuff (particularly DoC)
 
     = Restoration =
@@ -847,6 +849,13 @@ struct primal_tenacity_t : public absorb_t
 
   druid_t* p() const
   { return static_cast<druid_t*>( player ); }
+
+  virtual void init()
+  {
+    absorb_t::init();
+
+    snapshot_flags &= ~STATE_RESOLVE; // Is not affected by resolve.
+  }
 
   virtual double action_multiplier() const
   {
@@ -2674,6 +2683,14 @@ struct bear_attack_t : public druid_attack_t<melee_attack_t>
     return t;
   }
 
+  virtual void update_ready( timespan_t cd_duration )
+  {
+    if ( p() -> specialization() == DRUID_GUARDIAN )
+      cd_duration = cooldown -> duration * p() -> cache.attack_haste();
+
+    base_t::update_ready( cd_duration );
+  }
+
   virtual bool ready() 
   {
     if ( ! p() -> buff.bear_form -> check() )
@@ -3315,8 +3332,8 @@ struct frenzied_regeneration_t : public druid_heal_t
     maximum_rage_cost( 0.0 )
   {
     parse_options( NULL, options_str );
-    special = false;
     use_off_gcd = true;
+    may_crit = may_multistrike = false;
 
     attack_power_mod.direct = data().effectN( 1 ).ap_coeff();
     base_multiplier *= 1.0 + p -> perk.improved_frenzied_regeneration -> effectN( 1 ).percent();
