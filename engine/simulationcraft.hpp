@@ -4719,7 +4719,7 @@ struct player_t : public actor_t
   { return composite_rating( RATING_MITIGATION_VERSATILITY ); }
 
   double get_attribute( attribute_e a ) const
-  { return util::round( composite_attribute( a ) * composite_attribute_multiplier( a ) ); }
+  { return util::floor( composite_attribute( a ) * composite_attribute_multiplier( a ) ); }
 
   double strength() const  { return get_attribute( ATTR_STRENGTH ); }
   double agility() const   { return get_attribute( ATTR_AGILITY ); }
