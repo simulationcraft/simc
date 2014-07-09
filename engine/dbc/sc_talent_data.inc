@@ -1,6 +1,6 @@
-#define TALENT_SIZE (301)
+#define TALENT_SIZE (305)
 
-// 301 talents, wow build 18505
+// 305 talents, wow build 18522
 static struct talent_data_t __talent_data[] = {
 //{ Name                                ,    Id, Flgs,  Class, Spc, Col, Row, SpellID, ReplaceID, S1 },
   { "Second Wind"                       , 15757, 0x00, 0x0001,   0,   1,   1,   29838,         0,  0 },
@@ -9,9 +9,9 @@ static struct talent_data_t __talent_data[] = {
   { "Shockwave"                         , 15760, 0x00, 0x0001,   0,   1,   3,   46968,         0,  0 },
   { "Mass Spell Reflection"             , 15765, 0x00, 0x0001,   0,   0,   4,  114028,     23920,  0 },
   { "Safeguard"                         , 15766, 0x00, 0x0001,   0,   1,   4,  114029,      3411,  0 },
-  { "Staggering Shout"                  , 15768, 0x00, 0x0001,   0,   0,   2,  107566,         0,  0 },
-  { "Piercing Howl"                     , 15769, 0x00, 0x0001,   0,   1,   2,   12323,         0,  0 },
-  { "Disrupting Shout"                  , 15770, 0x00, 0x0001,   0,   2,   2,  102060,         0,  0 },
+  { "Taste for Blood"                   , 15768, 0x00, 0x0001,   0,   0,   2,   56636,         0,  0 },
+  { "Sudden Death"                      , 15769, 0x00, 0x0001,   0,   1,   2,   29725,         0,  0 },
+  { "Slam"                              , 15770, 0x00, 0x0001,   0,   2,   2,    1464,         0,  0 },
   { "Warbringer"                        , 15774, 0x00, 0x0001,   0,   2,   0,  103828,         0,  0 },
   { "Juggernaut"                        , 15775, 0x00, 0x0001,   0,   0,   0,  103826,         0,  0 },
   { "Blazing Speed"                     , 16012, 0x00, 0x0080,   0,   1,   0,  108843,         0,  0 },
@@ -248,7 +248,7 @@ static struct talent_data_t __talent_data[] = {
   { "Thermal Void"                      , 21632, 0x00, 0x0080,  64,   0,   6,  155149,         0,  0 },
   { "Meteor"                            , 21633, 0x00, 0x0080,   0,   2,   6,  153561,         0,  0 },
   { "Comet Storm"                       , 21634, 0x00, 0x0080,  64,   2,   6,  153595,         0,  0 },
-  { "Versatility"                       , 21635, 0x00, 0x0004, 253,   2,   6,  152244,         0,  0 },
+  { "Adaptation"                        , 21635, 0x00, 0x0004, 253,   2,   6,  152244,         0,  0 },
   { "Clarity of Purpose"                , 21636, 0x00, 0x0010, 257,   0,   6,  155245,       596,  0 },
   { "Clarity of Power"                  , 21637, 0x00, 0x0010, 258,   0,   6,  155246,         0,  0 },
   { "Auspicious Spirits"                , 21638, 0x00, 0x0010, 258,   2,   6,  155271,         0,  0 },
@@ -264,7 +264,7 @@ static struct talent_data_t __talent_data[] = {
   { "Bristling Fur"                     , 21654, 0x00, 0x0400, 104,   2,   6,  155835,         0,  0 },
   { "Rampant Growth"                    , 21655, 0x00, 0x0400, 105,   2,   6,  155834,         0,  0 },
   { "Focusing Shot"                     , 21662, 0x00, 0x0004, 254,   1,   6,  163485,     56641,  0 },
-  { "Ignite Weapon"                     , 21667, 0x00, 0x0001,  72,   2,   6,  156288,        78,  0 },
+  { "Ignite Weapon"                     , 21667, 0x00, 0x0001,  72,   2,   6,  156288,         0,  0 },
   { "Beacon of Faith"                   , 21668, 0x00, 0x0002,  65,   0,   6,  156910,         0,  0 },
   { "Beacon of Insight"                 , 21671, 0x00, 0x0002,  65,   1,   6,  157007,         0,  0 },
   { "Final Verdict"                     , 21672, 0x00, 0x0002,  70,   2,   6,  157048,     85256,  0 },
@@ -319,5 +319,9 @@ static struct talent_data_t __talent_data[] = {
   { "Faerie Swarm"                      , 21777, 0x00, 0x0400, 104,   0,   2,  106707,         0,  0 },
 //{ Name                                ,    Id, Flgs,  Class, Spc, Col, Row, SpellID, ReplaceID, S1 },
   { "Faerie Swarm"                      , 21778, 0x00, 0x0400,   0,   0,   2,  102355,         0,  0 },
+  { "Furious Strikes"                   , 21789, 0x00, 0x0001,  72,   0,   2,  169679,         0,  0 },
+  { "Heavy Repercussions"               , 21790, 0x00, 0x0001,  73,   0,   2,  169680,         0,  0 },
+  { "Unquenchable Thirst"               , 21791, 0x00, 0x0001,  72,   2,   2,  169683,         0,  0 },
+  { "Unyielding Strikes"                , 21792, 0x00, 0x0001,  73,   2,   2,  169685,         0,  0 },
   { 0                                   ,     0, 0x00, 0x0000,   0,   0,   0,       0,         0,  0 },
 };
