@@ -3468,20 +3468,14 @@ void warrior_t::init_base_stats()
   base.attack_power_per_strength = 1.0;
   base.attack_power_per_agility  = 0.0;
 
-  // Avoidance diminishing Returns constants/conversions
-  // base miss, dodge, parry all set to 3% in player_t::init_base_stats()
+  // Avoidance diminishing Returns constants/conversions now handled in player_t::init_base_stats()
+  // base miss & dodge are set to 3% and block & parry set to 0% in player_t::init_base_stats()
+  // just need to adjust block and block_reduction and add spec-based sources of dodge/parry
   base.block           = 0.030; //90
   base.block_reduction = 0.300;
   base.dodge += spec.bastion_of_defense -> effectN( 3 ).percent();
 
-  // updated from http://sacredduty.net/2012/09/14/avoidance-diminishing-returns-in-mop-followup/
-  // re-confirmed http://www.sacredduty.net/2013/08/09/updated-diminishing-returns-coefficients-all-tanks/
-  diminished_kfactor   = 0.9560000; // Need to update this for WoD..... I'm sure Theck will handle it. :P
-  diminished_block_cap = 1.5037594692967;
-  diminished_dodge_cap = 0.906425;
-  diminished_parry_cap = 2.37186;
-
-  // note that these conversions are level-specific; these are L90 values
+  // note that these conversions are level-specific; these are L90 values TODO: update for L100
   base.dodge_per_agility  = 1 / 10000.0 / 100.0; // empirically tested
   base.parry_per_strength = 1 / 95115.8596; // exact value given by Blizzard
 

@@ -5448,9 +5448,6 @@ void priest_t::init_base_stats()
 
   base.mana_regen_per_second *= 1.0 + specs.mana_attunement -> effectN( 1 ).percent();
 
-  diminished_kfactor   = 0.009830;
-  diminished_dodge_cap = 0.006650;
-  diminished_parry_cap = 0.006650;
 }
 
 // priest_t::init_scaling ===================================================

@@ -5114,14 +5114,10 @@ void death_knight_t::init_base_stats()
 
   base_gcd = timespan_t::from_seconds( 1.0 );
 
-  // Avoidance diminishing Returns constants/conversions
-  // base miss, dodge, parry all set to 3% in player_t::init_base_stats()
+  // Avoidance diminishing Returns constants/conversions now handled in player_t::init_base_stats()
+  // base miss & dodge are set to 3% and block & parry set to 0% in player_t::init_base_stats()
+  // just need to add spec-based sources of dodge/parry
   base.dodge += 0.0300 + spec.veteran_of_the_third_war -> effectN( 2 ).percent();
-
-  // based on http://www.sacredduty.net/2013/08/08/updated-diminishing-returns-coefficients-all-tanks/
-  diminished_kfactor   = 0.956;
-  diminished_dodge_cap = 0.90642574;
-  diminished_parry_cap = 2.3718614;
 
   // note that these conversions are level-specific; these are L90 values
   base.parry_per_strength = 1 / 95115.8596; // exact value given by Blizzard

@@ -5569,11 +5569,9 @@ void druid_t::init_base_stats()
 
   resources.base[ RESOURCE_COMBO_POINT ] = 5;
 
-  // based on http://www.sacredduty.net/2013/08/08/updated-diminishing-returns-coefficients-all-tanks/
-  diminished_kfactor   = 1.2220000;
-  diminished_dodge_cap = 1.50375948;
-  diminished_parry_cap = 1; // irrelevant for druids, cannot parry
-
+  // Avoidance diminishing Returns constants/conversions now handled in player_t::init_base_stats()
+  // base miss & dodge are set to 3% and block & parry set to 0% in player_t::init_base_stats()
+  
   // note that these conversions are level-specific; these are L90 values
   base.dodge_per_agility = 1 / 95115.8596; // exact value given by Blizzard
   base.parry_per_strength = 0; // this is also the default, but just to be safe...

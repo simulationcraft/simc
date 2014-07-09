@@ -439,7 +439,7 @@ player_t::player_t( sim_t*             s,
   base_energy_regen_per_second( 0 ), base_focus_regen_per_second( 0 ), base_chi_regen_per_second( 0 ),
   last_cast( timespan_t::zero() ),
   // Defense Mechanics
-  diminished_dodge_cap( 0 ), diminished_parry_cap( 0 ), diminished_block_cap( 0 ), diminished_kfactor( 0 ),
+  def_dr( diminishing_returns_constants_t() ),
   // Attacks
   main_hand_attack( 0 ), off_hand_attack( 0 ),
   // Resources
@@ -737,10 +737,18 @@ void player_t::init_base_stats()
     base.expertise = 0.075;
   }
 
-  base.dodge = 0.03;
+  base.dodge = 0.03 + racials.quickness -> effectN( 1 ).percent();
   base.parry = 0.0; // No more base parry, it's all from strength.
   base.miss  = 0.03;
-  base.block = 0.0;  // overridden in enemy, paladin, and warrior modules
+  base.block = 0.0;  // overridden in enemy, paladin, and warrior modules  
+
+  // Extract values from table in sc_extra_data.inc
+  def_dr.horizontal_shift = dbc.horizontal_shift( type );
+  def_dr.vertical_stretch = dbc.vertical_stretch( type );
+  def_dr.dodge_factor = dbc.dodge_factor( type );
+  def_dr.parry_factor = dbc.parry_factor( type );
+  def_dr.miss_factor = dbc.miss_factor( type );
+  def_dr.block_factor = dbc.block_factor( type );
 
   base.spell_power_multiplier    = 1.0;
   base.attack_power_multiplier   = 1.0;
@@ -2287,11 +2295,24 @@ double player_t::composite_armor_multiplier() const
 
 double player_t::composite_miss() const
 {
-  double m = current.miss;
+  // this is sort of academic, since we know of no sources of miss that are actually subject to DR.
+  // However, we've been told that it follows the same DR formula as the other avoidance stats, and
+  // we've been given the relevant constants (def_dr.miss_factor etc.). I've coded this mostly for symmetry,
+  // such that it will be fully-functional if in the future we suddenly gain some source of bonus_miss.
 
-  assert( m >= 0.0 && m <= 1.0 );
+  // Start with sources not subject to DR - base miss (stored in current.miss)
+  double total_miss = current.miss;
+  
+  // bonus_miss is miss from rating or other sources subject to DR 
+  double bonus_miss = 0.0;
 
-  return m;
+  // if we have any bonus_miss, apply diminishing returns and add it to total_miss
+  if ( bonus_miss > 0 )
+    total_miss += bonus_miss / ( def_dr.miss_factor * bonus_miss * 100 * def_dr.vertical_stretch + def_dr.horizontal_shift );
+  
+  assert( total_miss >= 0.0 && total_miss <= 1.0 );
+
+  return total_miss;
 }
 
 // player_t::composite_block ===========================================
@@ -2307,68 +2328,61 @@ double player_t::composite_block() const
 
 double player_t::composite_block_dr( double extra_block ) const
 {
-  // block_by_rating is pre-DR block percentage from all sources subject to DR
-  double block_by_rating = composite_block_rating() / current.rating.block;
+  // Start with sources not subject to DR - base block (stored in current.block)
+  double total_block = current.block;
 
-  block_by_rating += extra_block;
+  // bonus_block is block from rating or other sources subject to DR (passed from class module via extra_block)
+  double bonus_block = composite_block_rating() / current.rating.block;
+  bonus_block += extra_block;
 
-  // start with base block
-  double b = current.block;
+  // bonus_block gets rounded because that's how blizzard rolls...
+  bonus_block = util::round( 12800 * bonus_block ) / 12800;
 
-  // add post-DR block from sources subect to DR
-  if ( block_by_rating > 0 )
-  {
-    //the block by rating gets rounded because that's how blizzard rolls...
-    b += 1 / ( 1 / diminished_block_cap + diminished_kfactor / ( util::round( 12800 * block_by_rating ) / 12800 ) );
-  }
+  // if we have any bonus_block, apply diminishing returns and add it to total_block
+  if ( bonus_block > 0 )
+    total_block += bonus_block / ( def_dr.block_factor * bonus_block * 100 * def_dr.vertical_stretch + def_dr.horizontal_shift );
 
-  return b;
+  return total_block;
 }
 
 // player_t::composite_dodge ===========================================
 
 double player_t::composite_dodge() const
 {
-  double dodge_by_dodge_rating = composite_dodge_rating() / current.rating.dodge;
-  double dodge_by_agility = ( cache.agility() - base.stats.attribute[ ATTR_AGILITY ] ) * current.dodge_per_agility;
+  // Start with sources not subject to DR - base dodge (stored in current.dodge) parry from base agility;
+  double total_dodge = current.dodge;
+  total_dodge += base.stats.attribute[ ATTR_AGILITY ] * current.dodge_per_agility;
 
-  double d = current.dodge;
+  // bonus_dodge is dodge from rating and non-base agility
+  double bonus_dodge = composite_dodge_rating() / current.rating.dodge;
+  bonus_dodge += ( cache.agility() - base.stats.attribute[ ATTR_AGILITY ] ) * current.dodge_per_agility;
+  
+  // if we have any bonus_dodge, apply diminishing returns and add it to total_dodge.
+  if ( bonus_dodge > 0 )
+    total_dodge += bonus_dodge / ( def_dr.dodge_factor * bonus_dodge * 100 * def_dr.vertical_stretch + def_dr.horizontal_shift );
 
-  d += base.stats.attribute[ ATTR_AGILITY ] * current.dodge_per_agility;
-
-  if ( dodge_by_agility > 0 || dodge_by_dodge_rating > 0 )
-  {
-    d += 1 / ( 1 / diminished_dodge_cap + diminished_kfactor / ( dodge_by_dodge_rating + dodge_by_agility ) );
-  }
-
-  d += racials.quickness -> effectN( 1 ).percent();
-
-  return d;
+  return total_dodge;
 }
 
 // player_t::composite_parry ===========================================
 
 double player_t::composite_parry() const
 {
-
-  //changed it to match the typical formulation
-
-  double parry_by_parry_rating = composite_parry_rating() / current.rating.parry;
-  double parry_by_strength = ( cache.strength() - base.stats.attribute[ ATTR_STRENGTH ] ) * current.parry_per_strength;
-  // these are pre-DR values
-
-  double p = current.parry;
-
+  // Start with sources not subject to DR - base parry (stored in current.parry) and parry from base strength
+  double total_parry = current.parry;
   if ( current.parry_per_strength > 0 )
-  {
-    p += base.stats.attribute[ ATTR_STRENGTH ] * current.parry_per_strength;
-  }
+    total_parry += base.stats.attribute[ ATTR_STRENGTH ] * current.parry_per_strength;
 
-  if ( parry_by_strength > 0 || parry_by_parry_rating > 0 )
-  {
-    p += 1 / ( 1 / diminished_parry_cap + diminished_kfactor / ( parry_by_parry_rating + parry_by_strength ) );
-  }
-  return p; //this is the post-DR parry value
+  // bonus_parry is from rating and non-base STR
+  double bonus_parry = composite_parry_rating() / current.rating.parry;
+  bonus_parry += ( cache.strength() - base.stats.attribute[ ATTR_STRENGTH ] ) * current.parry_per_strength;
+
+  // if we have any bonus_parry, apply diminishing returns and add it to total_parry.
+  if ( bonus_parry > 0 )
+    total_parry += bonus_parry / ( def_dr.parry_factor * bonus_parry * 100 * def_dr.vertical_stretch + def_dr.horizontal_shift );
+
+
+  return total_parry; 
 }
 
 // player_t::composite_block_reduction =================================

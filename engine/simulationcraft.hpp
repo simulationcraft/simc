@@ -4261,7 +4261,21 @@ struct player_t : public actor_t
   timespan_t last_cast;
 
   // Defense Mechanics
-  double diminished_dodge_cap, diminished_parry_cap, diminished_block_cap, diminished_kfactor;
+  struct diminishing_returns_constants_t
+  {
+    double horizontal_shift;
+    double vertical_stretch;
+    double dodge_factor;
+    double parry_factor;
+    double miss_factor;
+    double block_factor;
+
+    diminishing_returns_constants_t()
+    {
+      horizontal_shift = vertical_stretch = 0.0;
+      dodge_factor = parry_factor = miss_factor = block_factor = 1.0;
+    }
+  } def_dr;
 
   // Weapons
   weapon_t main_hand_weapon;

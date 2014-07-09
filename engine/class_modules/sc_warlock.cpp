@@ -4909,10 +4909,6 @@ void warlock_t::init_base_stats()
     else
       default_pet = "felhunter";
   }
-
-  diminished_kfactor    = 0.009830;
-  diminished_dodge_cap = 0.006650;
-  diminished_parry_cap = 0.006650;
 }
 
 

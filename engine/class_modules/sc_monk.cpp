@@ -3337,13 +3337,8 @@ void monk_t::init_base_stats()
   if ( spec.mana_meditation -> ok() )
     base.mana_regen_from_spirit_multiplier = spec.mana_meditation -> effectN( 1 ).percent();
 
-  // Avoidance diminishing Returns constants/conversions
-  // base miss, dodge, parry all set to 3% in player_t::init_base_stats()
-
-  // based on http://www.sacredduty.net/2013/08/08/updated-diminishing-returns-coefficients-all-tanks/
-  diminished_kfactor   =   1.422000;
-  diminished_dodge_cap = 501.25348;
-  diminished_parry_cap =  90.64244;
+  // Avoidance diminishing Returns constants/conversions now handled in player_t::init_base_stats()
+  // base miss & dodge are set to 3% and block & parry set to 0% in player_t::init_base_stats()
 
   // note that these conversions are level-specific; these are L90 values
   base.dodge_per_agility = 1 / 95115.8596; // exact value given by Blizzard

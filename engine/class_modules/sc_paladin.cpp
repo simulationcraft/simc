@@ -4599,20 +4599,15 @@ void paladin_t::init_base_stats()
   // Boundless Conviction raises max holy power to 5
   resources.base[ RESOURCE_HOLY_POWER ] = 3 + passives.boundless_conviction -> effectN( 1 ).base_value();
 
-  // Avoidance diminishing Returns constants/conversions
-  // base miss, dodge, parry all set to 3% in player_t::init_base_stats()
+  // Avoidance diminishing Returns constants/conversions now handled in player_t::init_base_stats()
+  // base miss & dodge are set to 3% and block & parry set to 0% in player_t::init_base_stats()
+  // just need to adjust block and block_reduction and add spec-based sources of dodge/parry
   base.block   = 0.030;  //90
   base.block_reduction = 0.3 + perk.improved_block -> effectN( 1 ).percent();
   // add Sanctuary dodge
   base.dodge += passives.sanctuary -> effectN( 3 ).percent();
   // add Sanctuary expertise
   base.expertise += passives.sanctuary -> effectN( 4 ).percent();
-
-  // based on http://sacredduty.net/2012/09/14/avoidance-diminishing-returns-in-mop-followup/
-  diminished_kfactor    = 0.886;
-  diminished_parry_cap = 2.37186;
-  diminished_block_cap = 1.5037594692967;
-  diminished_dodge_cap = 0.6656744;
   
   // note that these conversions are level-specific; these are L90 values
   base.dodge_per_agility = 1 / 10000.0 / 100.0; // empirically tested, TODO: update for 100

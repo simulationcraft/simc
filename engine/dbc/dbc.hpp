@@ -902,6 +902,12 @@ public:
   stat_data_t& attribute_base( pet_e t, unsigned level ) const;
   stat_data_t& race_base( race_e r ) const;
   stat_data_t& race_base( pet_e t ) const;
+  double parry_factor( player_e t ) const;
+  double dodge_factor( player_e t ) const;
+  double miss_factor( player_e t ) const;
+  double block_factor( player_e t ) const;
+  double vertical_stretch( player_e t ) const;
+  double horizontal_shift( player_e t ) const;
 
   double spell_scaling( player_e t, unsigned level ) const;
   double melee_crit_scaling( player_e t, unsigned level ) const;

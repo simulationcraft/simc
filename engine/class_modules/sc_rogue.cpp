@@ -3389,9 +3389,6 @@ void rogue_t::init_base_stats()
 
   base_gcd = timespan_t::from_seconds( 1.0 );
 
-  diminished_kfactor   = 0.009880;
-  diminished_dodge_cap = 0.006870;
-  diminished_parry_cap = 0.006870;
 }
 
 // rogue_t::init_spells =====================================================

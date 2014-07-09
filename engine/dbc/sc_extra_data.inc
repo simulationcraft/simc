@@ -1565,3 +1565,23 @@ static stat_data_t __gt_race_stats[] =
   { 20, 18, 21, 19, 22 }, // Pandaren - Horde
 };
 
+// Avoidance diminishing returns information
+// from http://us.battle.net/wow/en/forum/topic/13087818929?page=12#238
+// re-arranged to fit Blizzard standard dbc ordering
+static double __gt_DodgeFactor[] = 
+{ 0.0, 1.659, 2.259, 1.000, 1.000, 1.000, 1.659, 1.000, 1.000, 1.000, 0.300, 1.000 };
+
+static double __gt_ParryFactor[] = 
+{ 0.0, 0.634, 0.634, 1.000, 1.000, 1.000, 0.634, 1.000, 1.000, 1.000, 1.659, 1.000 };
+
+static double __gt_MissFactor[] = 
+{ 0.0, 8.500000, 8.500000, 1.000000, 1.000000, 1.000000, 8.500000, 1.000000, 1.000000, 1.000000, 6.555555, 6.555555 };
+
+static double __gt_BlockFactor[] = 
+{ 0.0, 1.000, 1.000, 1.000, 1.000, 1.000, 1.000, 1.000, 1.000, 1.000, 1.000, 1.000 };
+
+static double __gt_VerticalStretch[] = 
+{ 0.0, 0.00665, 0.00665, 0.00687, 0.00687, 0.00665, 0.00665, 0.00687, 0.00665, 0.00665, 0.00665, 0.00665 };
+
+static double __gt_HorizontalShift[] = 
+{ 0.0, 0.956, 0.886, 0.988, 0.988, 0.983, 0.956, 0.988, 0.983, 0.983, 1.422, 1.222 };

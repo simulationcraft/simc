@@ -1028,6 +1028,84 @@ stat_data_t& dbc_t::race_base( pet_e /* r */ ) const
   return race_base( RACE_NONE );
 }
 
+double dbc_t::dodge_factor( player_e t ) const
+{
+  uint32_t class_id = util::class_id( t );
+
+  assert( class_id < dbc_t::class_max_size() );
+#if SC_USE_PTR
+  return ptr ? __ptr_gt_DodgeFactor[ class_id ]
+             : __gt_DodgeFactor[ class_id ];
+#else
+  return __gt_DodgeFactor[ class_id ];
+#endif
+}
+
+double dbc_t::parry_factor( player_e t ) const
+{
+  uint32_t class_id = util::class_id( t );
+
+  assert( class_id < dbc_t::class_max_size() );
+#if SC_USE_PTR
+  return ptr ? __ptr_gt_ParryFactor[ class_id ]
+             : __gt_ParryFactor[ class_id ];
+#else
+  return __gt_ParryFactor[ class_id ];
+#endif
+}
+
+double dbc_t::miss_factor( player_e t ) const
+{
+  uint32_t class_id = util::class_id( t );
+
+  assert( class_id < dbc_t::class_max_size() );
+#if SC_USE_PTR
+  return ptr ? __ptr_gt_MissFactor[ class_id ]
+             : __gt_MissFactor[ class_id ];
+#else
+  return __gt_MissFactor[ class_id ];
+#endif
+}
+
+double dbc_t::block_factor( player_e t ) const
+{
+  uint32_t class_id = util::class_id( t );
+
+  assert( class_id < dbc_t::class_max_size() );
+#if SC_USE_PTR
+  return ptr ? __ptr_gt_BlockFactor[ class_id ]
+             : __gt_BlockFactor[ class_id ];
+#else
+  return __gt_BlockFactor[ class_id ];
+#endif
+}
+
+double dbc_t::vertical_stretch( player_e t ) const
+{
+  uint32_t class_id = util::class_id( t );
+
+  assert( class_id < dbc_t::class_max_size() );
+#if SC_USE_PTR
+  return ptr ? __ptr_gt_VerticalStretch[ class_id ]
+             : __gt_VerticalStretch[ class_id ];
+#else
+  return __gt_VerticalStretch[ class_id ];
+#endif
+}
+
+double dbc_t::horizontal_shift( player_e t ) const
+{
+  uint32_t class_id = util::class_id( t );
+
+  assert( class_id < dbc_t::class_max_size() );
+#if SC_USE_PTR
+  return ptr ? __ptr_gt_HorizontalShift[ class_id ]
+             : __gt_HorizontalShift[ class_id ];
+#else
+  return __gt_HorizontalShift[ class_id ];
+#endif
+}
+
 double dbc_t::spell_scaling( player_e t, unsigned level ) const
 {
   uint32_t class_id = util::class_id( t );

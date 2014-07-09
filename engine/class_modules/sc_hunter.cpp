@@ -3258,11 +3258,7 @@ void hunter_t::init_base_stats()
     pet_multiplier *= 1.0 +  find_racial_spell( "Command" ) -> effectN( 1 ).percent();
 
   pet_multiplier *= 1.0 + perks.empowered_pets -> effectN( 1 ).percent();
-
-  diminished_kfactor   = 0.009880;
-  diminished_dodge_cap = 0.006870;
-  diminished_parry_cap = 0.006870;
-
+  
   stats_stampede = get_stats( "stampede" );
 }
 
