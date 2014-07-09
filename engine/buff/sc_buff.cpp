@@ -63,10 +63,10 @@ struct tick_t : public buff_event_t
 
     // For tick number calculations, always include the +1ms so we get correct
     // tick number labeling on the last tick, just before the buff expires.
-    timespan_t elapsed = buff -> elapsed( buff -> sim -> current_time ) + timespan_t::from_millis( 1 ),
-               total_duration = elapsed + buff -> remains();
-    int current_tick = static_cast<int>( elapsed / buff -> buff_period ),
-        total_ticks = static_cast<int>( total_duration / buff -> buff_period );
+    timespan_t elapsed = buff -> elapsed( buff -> sim -> current_time ) + timespan_t::from_millis( 1 );
+    timespan_t total_duration = buff -> expiration ? (elapsed + buff -> remains() ): timespan_t::max();
+    int current_tick = static_cast<int>( elapsed / buff -> buff_period );
+    int total_ticks = buff -> expiration ? static_cast<int>( total_duration / buff -> buff_period ) : -1;
 
     if ( buff -> sim -> debug )
       buff -> sim -> out_debug.printf( "%s buff %s ticks (%d of %d).", buff -> player -> name(), buff -> name(), current_tick, total_ticks );
