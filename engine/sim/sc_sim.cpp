@@ -707,6 +707,7 @@ bool parse_maximize_reporting( sim_t*             sim,
     sim -> report_targets = true;
     sim -> report_pets_separately = true;
     sim -> report_precision = 4;
+    sim -> buff_uptime_timeline = true;
   }
 
   return true;
