@@ -15,9 +15,9 @@ namespace { // UNNAMED NAMESPACE
     Fix Force of Nature (summons fine, but treants take no actions)
 
     = Feral =
-    PvP bonuses
-    Omen of Clarity mechanical change
-    Verify stuff
+    Damage check:
+      Thrash (both forms)
+      Swipe
 
     = Balance =
     PvP bonuses
@@ -70,6 +70,7 @@ struct druid_td_t : public actor_pair_t
   struct buffs_t
   {
     buff_t* lifebloom;
+    buff_t* bloodletting;
   } buffs;
 
   int lacerate_stack;
@@ -625,6 +626,14 @@ struct gushing_wound_t : public residual_action::residual_periodic_action_t< att
     base_t( "gushing_wound", p, p -> find_spell( 166638 ) )
   {
     background = dual = true;
+  }
+
+  virtual void init()
+  {
+    attack_t::init();
+
+    // Don't double dip!
+    snapshot_flags &= STATE_NO_MULTIPLIER;
   }
 };
 
@@ -1751,7 +1760,6 @@ public:
   {
     ab::execute();
 
-    // TODO: Confirm you still lose a stack on miss
     if ( ab::p() -> talent.bloodtalons -> ok() && consume_bloodtalons & ab::p() -> buff.bloodtalons -> up() )
       ab::p() -> buff.bloodtalons -> decrement();
   }
@@ -1772,6 +1780,19 @@ public:
       pm *= 1.0 + ab::p() -> buff.bloodtalons -> data().effectN( 1 ).percent();
 
     return pm;
+  }
+  
+  virtual double composite_target_multiplier( player_t* t ) const
+  {
+    double tm = ab::composite_target_multiplier( t );
+
+    /* Assume that any action that deals physical and applies a dot deals all bleed damage, so
+       that it scales direct "bleed" damage. This is a bad assumption if there is an action
+       that applies a dot but does plain physical direct damage, but there are none of those. */
+    if ( ! p() -> bugs && dbc::is_school( ab::school, SCHOOL_PHYSICAL ) && ab::dot_duration > timespan_t::zero() )
+      tm *= 1.0 + td( t ) -> buffs.bloodletting -> value();
+
+    return tm;
   }
 
   void trigger_lotp( const action_state_t* s )
@@ -2094,7 +2115,7 @@ struct ferocious_bite_t : public cat_attack_t
   {
     base_costs[ RESOURCE_COMBO_POINT ] = 1;
 
-    ap_per_point           = 0.357; // FIXME: Figure out where the hell this is in the spell data...
+    ap_per_point           = 0.238; // 7/9/2014: Tooltip coeff is wrong. This is a perfect match to in-game damage.
     max_excess_energy      = data().effectN( 2 ).base_value();
     special                = true;
     base_multiplier       *= 1.0 + p -> perk.improved_ferocious_bite -> effectN( 1 ).percent();
@@ -2119,7 +2140,7 @@ struct ferocious_bite_t : public cat_attack_t
     if ( p() -> buff.tier15_4pc_melee -> up() )
       p() -> buff.tier15_4pc_melee -> decrement();
 
-    max_excess_energy = 25.0;
+    max_excess_energy = data().effectN( 2 ).base_value();
   }
 
   void impact( action_state_t* state )
@@ -2348,6 +2369,7 @@ struct savage_roar_t : public cat_attack_t
 
     may_miss = harmful = false;
     dot_duration  = timespan_t::zero();
+    base_tick_time = timespan_t::zero();
   }
 
   timespan_t duration( int combo_points = -1 )
@@ -2417,10 +2439,15 @@ struct shred_t : public cat_attack_t
     {
       p() -> resource_gain( RESOURCE_COMBO_POINT, combo_point_gain, p() -> gain.shred );
 
-      if ( p() -> sets.has_set_bonus( SET_T17_2PC_MELEE ) && s -> result == RESULT_CRIT )
+      if ( s -> result == RESULT_CRIT )
       {
-        p() -> cooldown.berserk -> adjust( timespan_t::from_seconds( -5.0 ), true );
-        p() -> proc.tier17_2pc_melee -> occur();
+        if ( p() -> sets.has_set_bonus( SET_T17_2PC_MELEE ) )
+        {
+          p() -> cooldown.berserk -> adjust( timespan_t::from_seconds( -5.0 ), true );
+          p() -> proc.tier17_2pc_melee -> occur();
+        }
+        if ( p() -> sets.has_set_bonus( SET_PVP_4PC_MELEE ) )
+          td( s -> target ) -> buffs.bloodletting -> trigger(); // Druid module debuff
       }
     }
   }
@@ -2835,7 +2862,7 @@ struct maul_t : public bear_attack_t
       druid_action_t<absorb_t>( "tooth_and_claw", p, p -> spec.tooth_and_claw )
     {
       harmful = special = false;
-      may_crit = may_multistrike = false; // TODO: Verify...
+      may_crit = may_multistrike = false;
       target = player;
 
       // Coeff of 4 AP is hardcoded into tooltip, use FR coeff * 0.4 instead.
@@ -5691,7 +5718,7 @@ void druid_t::create_buffs()
                                .default_value( talent.savagery -> ok() ?
                                                talent.savagery -> effectN( 1 ).percent()
                                              : find_specialization_spell( "Savage Roar" ) -> effectN( 2 ).percent() )
-                               .duration( timespan_t::max() ); // Set base duration to infinite for Savagery talent. All other uses trigger with a set duration.
+                               .duration( timespan_t::zero() ); // Set base duration to infinite for Savagery talent. All other uses trigger with a set duration.
   buff.predatory_swiftness   = buff_creator_t( this, "predatory_swiftness", spec.predatory_swiftness -> ok() ? find_spell( 69369 ) : spell_data_t::not_found() );
   buff.tier15_4pc_melee      = buff_creator_t( this, "tier15_4pc_melee", find_spell( 138358 ) );
   buff.feral_fury            = buff_creator_t( this, "feral_fury", find_spell( 144865 ) ); // tier16_2pc_melee
@@ -7087,6 +7114,10 @@ druid_td_t::druid_td_t( player_t& target, druid_t& source )
   dots.wild_growth   = target.get_dot( "wild_growth",   &source );
 
   buffs.lifebloom = buff_creator_t( *this, "lifebloom", source.find_class_spell( "Lifebloom" ) );
+  buffs.bloodletting = buff_creator_t( *this, "bloodletting", source.find_spell( 165699 ) )
+                       .default_value( source.find_spell( 165699 ) -> ok() ? source.find_spell( 165699 ) -> effectN( 1 ).percent() : 0.10 )
+                       .duration( source.find_spell( 165699 ) -> ok() ? source.find_spell( 165699 ) -> duration() : timespan_t::from_seconds( 6.0 ) )
+                       .chance( 1.0 );
 }
 
 void druid_t::balance_tracker()
