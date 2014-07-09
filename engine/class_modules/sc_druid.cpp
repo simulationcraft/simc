@@ -2127,7 +2127,7 @@ struct ferocious_bite_t : public cat_attack_t
     spell_power_mod.direct = 0;
   }
 
-  double attack_direct_power_coefficient( const action_state_t* state ) const
+  double attack_direct_power_coefficient( const action_state_t* ) const
   { return ap_per_point * p() -> resources.current[ RESOURCE_COMBO_POINT ]; }
 
   virtual void execute()
@@ -2320,6 +2320,7 @@ struct rip_t : public cat_attack_t
 
     void copy_state( const action_state_t* state )
     {
+      action_state_t::copy_state( state );
       const rip_state_t* rip_state = debug_cast<const rip_state_t*>( state );
       combo_points = rip_state -> combo_points;
     }
@@ -2353,7 +2354,7 @@ struct rip_t : public cat_attack_t
   action_state_t* new_state()
   { return new rip_state_t( p(), this, target ); }
 
-  double attack_tick_power_coefficient( const action_state_t* state ) const
+  double attack_tick_power_coefficient( const action_state_t* ) const
   {
     rip_state_t* rip_state = debug_cast<rip_state_t*>( td( target ) -> dots.rip -> state );
 

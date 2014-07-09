@@ -6499,7 +6499,7 @@ struct multistrike_execute_event_t : public event_t
       }
     }
     else
-      assert( 0 && "Mulstrike Execute event, where state has no result_type" );
+      assert( 0 && "Multistrike Execute event, where state has no result_type" );
   }
 
   // Ensure we properly release the carried execute_state even if this event
