@@ -29,7 +29,7 @@ actions.precombat+=/virmens_bite_potion
 
 actions=wind_shear
 # Bloodlust casting behavior mirrors the simulator settings for proxy bloodlust. See options 'bloodlust_percent', and 'bloodlust_time'. 
-actions+=/bloodlust,if=target.health.pct<25|time>5
+actions+=/bloodlust,if=target.health.pct<25|time>0.500
 actions+=/auto_attack
 actions+=/use_item,name=grips_of_celestial_harmony
 # Link Stormlash totem cast to early Bloodlust, and ensure that only one Stormlash is used at a time.

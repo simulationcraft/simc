@@ -28,7 +28,7 @@ actions.precombat+=/jade_serpent_potion
 
 actions=wind_shear
 # Bloodlust casting behavior mirrors the simulator settings for proxy bloodlust. See options 'bloodlust_percent', and 'bloodlust_time'. 
-actions+=/bloodlust,if=target.health.pct<25|time>5
+actions+=/bloodlust,if=target.health.pct<25|time>0.500
 # Link Stormlash totem cast to early Bloodlust, and ensure that only one Stormlash is used at a time.
 actions+=/stormlash_totem,if=!active&!buff.stormlash.up&(buff.bloodlust.up|time>=60)
 # In-combat potion is linked to Primal or Greater Fire Elemental Totem, after the first 60 seconds of combat.

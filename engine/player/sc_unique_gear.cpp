@@ -550,6 +550,45 @@ void power_torrent( player_t* p, const std::string& enchant, const std::string& 
   }
 }
 
+struct spirit_of_conquest_check_func
+{
+  spirit_of_conquest_check_func( player_t* p ): p( p ) {}
+  bool operator()( const stat_buff_t& )
+  {
+    if ( p -> resources.max[RESOURCE_MANA] <= 0.0 ) return false;
+
+    return ( p -> resources.current[RESOURCE_MANA] / p -> resources.max[RESOURCE_MANA] < 0.25 );
+  }
+  player_t* p;
+};
+
+void spirit_of_conquest( player_t* p, const std::string& mh_enchant, const std::string& oh_enchant )
+{
+  const spell_data_t* driver = p -> find_spell( 142536 );
+  const spell_data_t* spell = p -> find_spell( 142535 );
+
+  if ( mh_enchant == "spirit_of_conquest" || oh_enchant == "spirit_of_conquest" )
+  {
+    stat_buff_t* buff  = stat_buff_creator_t( p, "spirit_of_conquest" )
+      .duration( spell -> duration() )
+      .cd( timespan_t::zero() )
+      .chance( p -> find_spell( 142536 ) -> proc_chance() )
+      .activated( false )
+      .add_stat( STAT_INTELLECT, spell -> effectN( 1 ).base_value() )
+      .add_stat( STAT_SPIRIT, spell -> effectN( 2 ).base_value(), spirit_of_conquest_check_func( p ) );
+
+    special_effect_t effect;
+    effect.name_str = "spirit_of_conquest";
+    effect.ppm = -1.0 * driver -> real_ppm();
+    action_callback_t* cb = new buff_proc_callback_t<stat_buff_t>( p, effect, buff );
+
+    p -> callbacks.register_spell_tick_damage_callback( SCHOOL_ALL_MASK, cb );
+    p -> callbacks.register_spell_direct_damage_callback( SCHOOL_ALL_MASK, cb );
+    p -> callbacks.register_tick_heal_callback( SCHOOL_ALL_MASK, cb );
+    p -> callbacks.register_direct_heal_callback( SCHOOL_ALL_MASK, cb );
+  }
+}
+
 struct jade_spirit_check_func
 {
   jade_spirit_check_func( player_t* p ) : p(p) {}
@@ -4237,6 +4276,8 @@ void unique_gear::initialize_special_effects( player_t* p )
   power_torrent( p, oh_enchant, "_oh" );
 
   jade_spirit( p, mh_enchant, oh_enchant );
+
+  spirit_of_conquest( p, mh_enchant, oh_enchant );
 
   windwalk( p, mh_enchant, mhw, "" );
   windwalk( p, oh_enchant, ohw, "_oh" );
