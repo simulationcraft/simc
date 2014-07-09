@@ -2741,7 +2741,7 @@ struct conflagrate_t : public warlock_spell_t
   {
     double cc = warlock_spell_t::composite_crit();
      
-	  // GoSac FnB
+    // GoSac FnB
       cc += p() -> talents.grimoire_of_sacrifice -> effectN( 5 ).percent() * p() -> buffs.grimoire_of_sacrifice -> stack();
 
     return cc;
@@ -2847,7 +2847,7 @@ struct incinerate_t : public warlock_spell_t
   virtual double composite_crit() const
   {
     double cc = warlock_spell_t::composite_crit();
-	
+  
       // GoSac FnB
       cc += p() -> talents.grimoire_of_sacrifice -> effectN( 5 ).percent() * p() -> buffs.grimoire_of_sacrifice -> stack();
 
@@ -4508,7 +4508,7 @@ double warlock_t::composite_rating_multiplier( rating_e rating ) const
     case RATING_RANGED_CRIT:
       m *= 1.0 + spec.devastation -> effectN( 1 ).percent();
       break;
-	case RATING_MASTERY:
+  case RATING_MASTERY:
       return m *= 1.0 + spec.demonic_tactics -> effectN( 1 ).percent();
       break;
     default: break;

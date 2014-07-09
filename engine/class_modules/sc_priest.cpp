@@ -2248,7 +2248,7 @@ struct mind_spike_t final : public priest_spell_t
   {
     parse_options( nullptr, options_str );
 
-	base_multiplier *= 1.0 + player.perks.improved_mind_spike -> effectN( 1 ).percent();
+  base_multiplier *= 1.0 + player.perks.improved_mind_spike -> effectN( 1 ).percent();
   }
 
   virtual action_state_t* new_state() override
@@ -2406,7 +2406,7 @@ struct mind_spike_t final : public priest_spell_t
   virtual double composite_da_multiplier( const action_state_t* state ) const override
   {
     double d = priest_spell_t::composite_da_multiplier( state );
-	
+  
     if ( casted_with_surge_of_darkness )
     {
       d *= 1.0 + priest.active_spells.surge_of_darkness -> effectN( 4 ).percent();
@@ -2620,7 +2620,7 @@ struct shadow_word_death_t final : public priest_spell_t
     if ( priest.buffs.empowered_shadows -> check() )
         d *= 1.0 + priest.buffs.empowered_shadows -> current_value *  priest.buffs.empowered_shadows -> check();
 
-	priest_td_t& td = get_td( target );
+  priest_td_t& td = get_td( target );
     if ( priest.talents.clarity_of_power -> ok() && !td.dots.shadow_word_pain -> is_ticking() && !td.dots.vampiric_touch -> is_ticking() )
         d *= 1.0 + priest.talents.clarity_of_power -> effectN( 1 ).percent();
 
@@ -3801,7 +3801,7 @@ struct void_entropy_t : public priest_spell_t
   {
      parse_options( nullptr, options_str );
 
-	 spell_power_mod.tick /= 3.0;
+   spell_power_mod.tick /= 3.0;
   }
 
   virtual void consume_resource() override

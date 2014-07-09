@@ -4881,7 +4881,7 @@ expr_t* mage_t::create_expression( action_t* a, const std::string& name_str )
       pyro_chain_expr_t( mage_t& m ) : mage_expr_t( "pyro_chain", m ), mage( &m )
       {}
       virtual double evaluate()
-	  { return mage -> pyro_switch.dump_state; }
+    { return mage -> pyro_switch.dump_state; }
     };
 
     return new pyro_chain_expr_t( *this );

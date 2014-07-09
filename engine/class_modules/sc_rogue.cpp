@@ -3266,8 +3266,8 @@ void rogue_t::init_action_list()
       finisher -> add_action( this, "Slice and Dice", "if=buff.slice_and_dice.remains<4|(buff.rune_of_reorigination.react&buff.slice_and_dice.remains<25)" );
       finisher -> add_action( this, "Rupture", "if=ticks_remain<2&active_enemies<3|(buff.rune_of_reorigination.react&ticks_remain<7)" );
     }
-	finisher -> add_action( this, "Crimson Tempest", "if=(active_enemies>1&dot.crimson_tempest_dot.ticks_remain<=2&combo_points=5)|active_enemies>=5" );
-	finisher -> add_action( this, "Eviscerate", "if=active_enemies<4|(active_enemies>3&dot.crimson_tempest_dot.ticks_remain>=2)" );
+  finisher -> add_action( this, "Crimson Tempest", "if=(active_enemies>1&dot.crimson_tempest_dot.ticks_remain<=2&combo_points=5)|active_enemies>=5" );
+  finisher -> add_action( this, "Eviscerate", "if=active_enemies<4|(active_enemies>3&dot.crimson_tempest_dot.ticks_remain>=2)" );
     finisher -> add_action( this, find_class_spell( "Preparation" ), "run_action_list", "name=pool" );
 
     // Resource pooling
