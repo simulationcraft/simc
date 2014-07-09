@@ -28,7 +28,6 @@ actions.precombat+=/snapshot_stats
 # Executed every time the actor is available.
 
 actions=/auto_attack
-actions+=//use_item,name=primal_gladiators_badge_of_victory
 actions+=/blood_fury
 actions+=/berserking
 actions+=/arcane_torrent
@@ -53,29 +52,30 @@ actions+=/consecration,if=target.debuff.flying.down&!ticking
 actions+=/holy_prism,if=talent.holy_prism.enabled
 actions+=/sacred_shield,if=talent.sacred_shield.enabled
 
-head=primal_gladiators_plate_helm,id=111241
+head=primal_gladiators_plate_helm,id=111211
 neck=primal_gladiators_choker_of_cruelty,id=111207
-shoulders=primal_gladiators_plate_shoulders,id=111243,enchant=10str_5crit
+shoulders=primal_gladiators_plate_shoulders,id=111213,enchant=10str_5crit
 back=primal_gladiators_cloak_of_prowess,id=111206
-chest=primal_gladiators_plate_chestpiece,id=111239,enchant=glorious_stats
-wrists=primal_gladiators_armplates_of_prowess,id=111181,enchant=8mastery
+chest=primal_gladiators_plate_chestpiece,id=111209,enchant=glorious_stats
+wrists=primal_gladiators_armplates_of_victory,id=111182,enchant=8mastery
 hands=primal_gladiators_plate_gauntlets,id=111210,enchant=8crit
 waist=primal_gladiators_girdle_of_cruelty,id=111174
 legs=primal_gladiators_plate_legguards,id=111212,enchant=14str_8crit
-feet=primal_gladiators_warboots_of_cruelty,id=111177,enchant=pandarens_step
+feet=primal_gladiators_warboots_of_prowess,id=111178,enchant=pandarens_step
 finger1=primal_gladiators_signet_of_cruelty,id=111219
-finger2=primal_gladiators_signet_of_accuracy,id=111272
-trinket1=primal_gladiators_badge_of_victory,id=111232
+finger2=primal_gladiators_signet_of_accuracy,id=111220
+trinket1=primal_gladiators_medallion_of_cruelty,id=111229
 trinket2=primal_gladiators_insignia_of_victory,id=111233
-main_hand=primal_gladiators_bonecracker,id=111200,enchant=dancing_steel
+main_hand=primal_gladiators_hacker,id=111198,enchant=dancing_steel
 off_hand=primal_gladiators_shield_wall,id=111221,enchant=9parry
 
 # Gear Summary
-# gear_strength=2617
+# gear_strength=2407
 # gear_stamina=3248
-# gear_crit_rating=1386
-# gear_haste_rating=436
-# gear_mastery_rating=685
+# gear_crit_rating=1242
+# gear_haste_rating=370
+# gear_mastery_rating=591
 # gear_armor=4366
 # gear_parry_rating=9
-# gear_multistrike_rating=411
+# gear_multistrike_rating=701
+# gear_versatility_rating=224
