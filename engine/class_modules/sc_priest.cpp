@@ -1406,7 +1406,7 @@ struct priest_spell_t : public priest_action_t<spell_t>
   struct atonement_heal_t final : public priest_heal_t
   {
     atonement_heal_t( const std::string& n, priest_t& p ) :
-      priest_heal_t( n, p, p.specs.atonement )
+      priest_heal_t( n, p, p.find_spell( 81749 ) /* accessed through id so both disc and holy can use it */ )
     {
       background     = true;
       round_base_dmg = false;
@@ -1496,7 +1496,7 @@ struct priest_spell_t : public priest_action_t<spell_t>
   {
     base_t::init();
 
-    if ( can_trigger_atonement && priest.specs.atonement -> ok() )
+    if ( can_trigger_atonement )
       atonement = new atonement_heal_t( "atonement_" + name_str, priest );
   }
 
@@ -3208,7 +3208,7 @@ struct holy_fire_base_t : public priest_spell_t
   {
     procs_courageous_primal_diamond = false;
 
-    can_trigger_atonement = true;
+    can_trigger_atonement = priest.specs.atonement -> ok();
 
     range += priest.glyphs.holy_fire -> effectN( 1 ).base_value();
 
@@ -3251,6 +3251,8 @@ struct power_word_solace_t final : public holy_fire_base_t
     holy_fire_base_t( "power_word_solace", player, player.find_spell( 129250 ) )
   {
     parse_options( nullptr, options_str );
+
+    can_trigger_atonement = true; // works for both disc and holy
   }
 
   virtual void impact( action_state_t* s ) override
@@ -3285,7 +3287,7 @@ struct penance_t final : public priest_spell_t
       background  = true;
       dual        = true;
       direct_tick = true;
-      can_trigger_atonement = true;
+      can_trigger_atonement = priest.specs.atonement -> ok();
 
       this -> stats = stats;
     }
@@ -3315,7 +3317,7 @@ struct penance_t final : public priest_spell_t
     // HACK: Set can_trigger here even though the tick spell actually
     // does the triggering. We want atonement_penance to be created in
     // priest_heal_t::init() so that it appears in the report.
-    can_trigger_atonement = true;
+    can_trigger_atonement = priest.specs.atonement -> ok();
 
     cooldown -> duration = data().cooldown() + p.sets.set( SET_T14_4PC_HEAL ) -> effectN( 1 ).time_value();
 
@@ -3385,7 +3387,7 @@ struct smite_t final : public priest_spell_t
 
     procs_courageous_primal_diamond = false;
 
-    can_trigger_atonement = true;
+    can_trigger_atonement = priest.specs.atonement -> ok();
     castable_in_shadowform = false;
 
     range += priest.glyphs.holy_fire -> effectN( 1 ).base_value();
@@ -6246,13 +6248,8 @@ void priest_t::apl_disc_dmg()
   def -> add_action( this, "Archangel", "if=buff.holy_evangelism.react=5" );
   def -> add_action( this, "Penance" );
 
-  if ( find_class_spell( "Holy Fire" ) -> ok() )
-  {
-    if ( talents.power_word_solace -> ok() ) // This is just for a nice-looking action list. Both strings resolve to the correct current action
-      def -> add_action( "power_word_solace" );
-    else
-      def -> add_action( "holy_fire" );
-  }
+  def -> add_action( this, "Holy Fire" );
+  def -> add_talent( this, "Power Word: Solace" );
 
   def -> add_action( this, "Smite", "if=glyph.smite.enabled&dot.power_word_solace.remains>cast_time" );
   def -> add_action( this, "Smite", "if=!talent.twist_of_fate.enabled&mana.pct>15" );
@@ -6352,13 +6349,8 @@ void priest_t::apl_holy_dmg()
   if ( find_specialization_spell( "Holy Word: Chastise" ) -> ok() )
     def -> add_action( "holy_word" );
 
-  if ( find_class_spell( "Holy Fire" ) -> ok() )
-  {
-    if ( talents.power_word_solace -> ok() ) // This is just for a nice-looking action list. Both strings resolve to the correct current action
-      def -> add_action( "power_word_solace" );
-    else
-      def -> add_action( "holy_fire" );
-  }
+  def -> add_action( this, "Holy Fire" );
+  def -> add_talent( this, "Power Word: Solace" );
 
   def -> add_action( this, "Shadow Word: Pain", "if=remains<tick_time|!ticking" );
   def -> add_action( this, "Smite" );
