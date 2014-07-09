@@ -3956,8 +3956,7 @@ struct rogue_module_t : public module_t
       player_t* p = sim -> actor_list[i];
       p -> buffs.tricks_of_the_trade  = buff_creator_t( p, "tricks_of_the_trade" )
                                         .max_stack( 1 )
-                                        .duration( timespan_t::from_seconds( 6.0 ) )
-                                        .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
+                                        .duration( timespan_t::from_seconds( 6.0 ) );
     }
   }
 

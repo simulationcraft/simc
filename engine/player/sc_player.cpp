@@ -2661,9 +2661,6 @@ double player_t::temporary_movement_modifier() const
   if ( buffs.stampeding_roar -> up() )
     temporary = std::max( buffs.stampeding_roar -> data().effectN( 1 ).percent(), temporary );
 
-  if ( buffs.stampeding_shout -> up() )
-    temporary = std::max( buffs.stampeding_shout -> data().effectN( 1 ).percent(), temporary );
-
   temporary = std::max( buffs.body_and_soul -> current_value, temporary );
 
   if ( buffs.aspect_of_the_pack -> up() )
@@ -3385,8 +3382,8 @@ void player_t::reset()
   off_hand_weapon.bonus_dmg  = 0;
 
   active_elixir.battle = active_elixir.guardian = false;
-  flask           = FLASK_NONE;
-  food            = FOOD_NONE;
+  flask = FLASK_NONE;
+  food  = FOOD_NONE;
 
   callbacks.reset();
 

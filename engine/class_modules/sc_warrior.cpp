@@ -2979,31 +2979,6 @@ struct shield_wall_t: public warrior_spell_t
   }
 };
 
-// Stampeding Roar =========================================================
-
-struct stampeding_roar_t: public warrior_spell_t
-{
-  stampeding_roar_t( warrior_t* p, const std::string& options_str ):
-    warrior_spell_t( "stampeding_roar", p, p -> find_class_spell( "Stampeding Roar" ) )
-  {
-    parse_options( NULL, options_str );
-  }
-
-  virtual void execute()
-  {
-    warrior_spell_t::execute();
-
-    for ( size_t i = 0; i < sim -> player_non_sleeping_list.size(); ++i )
-    {
-      player_t* p = sim -> player_non_sleeping_list[i];
-      if ( p -> is_enemy() || p -> type == PLAYER_GUARDIAN )
-        break;
-
-      p -> buffs.stampeding_roar -> trigger();
-    }
-  }
-};
-
 // The swap/damage taken options are intended to make it easier for players to simulate possible gains/losses from
 // swapping stances while in combat, without having to create a bunch of messy actions for it.
 // (Instead, we have a bunch of messy code!)
@@ -3292,7 +3267,6 @@ action_t* warrior_t::create_action( const std::string& name,
   if ( name == "shield_slam"          ) return new shield_slam_t          ( this, options_str );
   if ( name == "shockwave"            ) return new shockwave_t            ( this, options_str );
   if ( name == "slam"                 ) return new slam_t                 ( this, options_str );
-  if ( name == "stampeding_roar"      ) return new stampeding_roar_t      ( this, options_str );
   if ( name == "storm_bolt"           ) return new storm_bolt_t           ( this, options_str );
   if ( name == "stance"               ) return new stance_t               ( this, options_str );
   if ( name == "sweeping_strikes"     ) return new sweeping_strikes_t     ( this, options_str );
@@ -4833,8 +4807,6 @@ struct warrior_module_t: public module_t
     for ( size_t i = 0; i < sim -> actor_list.size(); i++ )
     {
       player_t* p = sim -> actor_list[i];
-
-      p -> buffs.stampeding_roar = buff_creator_t( p, "stampeding_roar", p -> find_spell( 122294 ) );
     }
   }
 

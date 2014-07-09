@@ -4448,7 +4448,6 @@ struct player_t : public actor_t
     buff_t* pain_supression;
     buff_t* raid_movement;
     buff_t* self_movement;
-    buff_t* stampeding_shout;
     buff_t* stampeding_roar;
     buff_t* shadowmeld;
     buff_t* stoneform;

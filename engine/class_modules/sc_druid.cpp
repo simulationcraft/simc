@@ -147,7 +147,7 @@ public:
     buff_t* natures_vigil;
     buff_t* omen_of_clarity;
     buff_t* prowl;
-    buff_t* stampeding_shout;
+    buff_t* stampeding_roar;
 
     // Balance
     buff_t* astral_communion;
@@ -5024,12 +5024,12 @@ struct t16_2pc_sun_bolt_t : public druid_spell_t
   }
 };
 
-// Stampeding Shout =========================================================
+// Stampeding Roar =========================================================
 
-struct stampeding_shout_t : public druid_spell_t
+struct stampeding_roar_t : public druid_spell_t
 {
-  stampeding_shout_t( druid_t* p, const std::string& options_str ) :
-    druid_spell_t( "stampeding_shout", p, p -> find_class_spell( "Stampeding Shout" ) )
+  stampeding_roar_t( druid_t* p, const std::string& options_str ) :
+    druid_spell_t( "stampeding_roar", p, p -> find_class_spell( "Stampeding Roar" ) )
   {
     parse_options( NULL, options_str );
     harmful = false;
@@ -5045,7 +5045,7 @@ struct stampeding_shout_t : public druid_spell_t
       if( p -> is_enemy() || p -> type == PLAYER_GUARDIAN )
         break;
 
-      p -> buffs.stampeding_shout -> trigger();
+      p -> buffs.stampeding_roar -> trigger();
     }
   }
 };
@@ -5277,7 +5277,7 @@ action_t* druid_t::create_action( const std::string& name,
   if ( name == "shred"                  ) return new                  shred_t( this, options_str );
   if ( name == "skull_bash_bear"        ) return new        skull_bash_bear_t( this, options_str );
   if ( name == "skull_bash_cat"         ) return new         skull_bash_cat_t( this, options_str );
-  if ( name == "stampeding_shout"       ) return new       stampeding_shout_t( this, options_str );
+  if ( name == "stampeding_roar"        ) return new        stampeding_roar_t( this, options_str );
   if ( name == "starfire"               ) return new               starfire_t( this, options_str );
   if ( name == "starfall"               ) return new               starfall_t( this, options_str );
   if ( name == "starsurge"              ) return new              starsurge_t( this, options_str );
@@ -7311,7 +7311,7 @@ struct druid_module_t : public module_t
     for ( unsigned int i = 0; i < sim -> actor_list.size(); i++ )
     {
       player_t* p = sim -> actor_list[ i ];
-      p -> buffs.stampeding_shout        = buff_creator_t( p, "stampeding_shout", p -> find_spell( 77764 ) )
+      p -> buffs.stampeding_roar        = buff_creator_t( p, "stampeding_roar", p -> find_spell( 77764 ) )
                                           .max_stack( 1 )
                                           .duration( timespan_t::from_seconds( 8.0 ) );
     }
