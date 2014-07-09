@@ -1,0 +1,32 @@
+//  Racial Base Stat Modifiers (Str Agi Sta Int Spi)
+static stat_data_t __gt_race_stats[] = 
+{
+  // Str Agi Sta Int Spi
+  {   0,  0,  0,  0,  0 }, // No Race
+  {   0,  0,  0,  0,  0 }, // Human
+  {   3, -3,  1, -3,  2 }, // Orc
+  {   5, -4,  1, -1, -1 }, // Dwarf
+  {  -4,  4,  0,  0,  0 }, // Night Elf
+  {  -1, -2,  0, -2,  5 }, // Undead
+  {   5, -4,  1, -4,  2 }, // Tauren
+  {  -5,  2,  0,  3,  0 }, // Gnome
+  {   1,  2,  0, -4,  1 }, // Troll
+  {  -3,  2,  0,  3, -2 }, // Goblin
+  {  -3,  2,  0,  3, -2 }, // Blood Elf
+  {   1, -3,  0,  0,  2 }, // Draenei
+  {   0,  0,  0,  0,  0 }, // Fel Orc
+  {   0,  0,  0,  0,  0 }, // Naga
+  {   0,  0,  0,  0,  0 }, // Broken
+  {   0,  0,  0,  0,  0 }, // Skeleton
+  {   0,  0,  0,  0,  0 }, // Vrykul
+  {   0,  0,  0,  0,  0 }, // Tuskarr
+  {   0,  0,  0,  0,  0 }, // Forest Troll
+  {   0,  0,  0,  0,  0 }, // Tanuka
+  {   0,  0,  0,  0,  0 }, // Skeleton
+  {   0,  0,  0,  0,  0 }, // Ice Troll
+  {   3,  2,  0, -4, -1 }, // Worgen
+  {   0,  0,  0,  0,  0 }, // Gilnean
+  {   0, -2,  1, -1,  2 }, // Pandaren
+  {   0, -2,  1, -1,  2 }, // Pandaren - Alliance
+  {   0, -2,  1, -1,  2 }, // Pandaren - Horde
+};
