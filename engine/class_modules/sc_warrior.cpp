@@ -2826,11 +2826,7 @@ struct shield_barrier_t: public warrior_action_t < absorb_t >
 
   virtual double cost() const
   {
-    double c = base_t::cost();
-
-    c = std::min( 60.0, std::max( p() -> resources.current[RESOURCE_RAGE], c ) );
-
-    return c;
+    return std::min( 60.0, std::max( p() -> resources.current[RESOURCE_RAGE], 20.0 ) );
   }
 
   virtual void impact( action_state_t* s )
@@ -2840,12 +2836,12 @@ struct shield_barrier_t: public warrior_action_t < absorb_t >
     double amount;
 
     amount = s -> result_amount;
-    amount *= resource_consumed / 20;
+    amount *= cost() / 20;
     if ( !p() -> buff.shield_barrier -> check() ||
-         ( p() -> buff.shield_barrier -> check() && p() -> buff.shield_barrier -> current_value < s -> result_amount )
+         ( p() -> buff.shield_barrier -> check() && p() -> buff.shield_barrier -> current_value < amount )
          )
     {
-      p() -> buff.shield_barrier -> trigger( 1, s -> result_amount );
+      p() -> buff.shield_barrier -> trigger( 1, amount );
       stats -> add_result( 0.0, amount, ABSORB, s -> result, s -> block_result, p() );
     }
   }
