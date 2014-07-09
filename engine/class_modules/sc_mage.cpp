@@ -2958,22 +2958,17 @@ struct living_bomb_t : public mage_spell_t
     if ( result_is_hit( s -> result ) )
     {
       dot_t* dot = get_dot( s -> target );
-      if ( dot -> ticking && dot -> remains() < dot -> current_action -> base_tick_time )
+      if ( dot -> ticks() == 1 )
       {
         explosion_spell -> scale_damage_by_ticks( dot -> num_ticks );
         explosion_spell -> execute();
-        mage_t& p = *this -> p();
-        p.active_living_bomb_targets--;
       }
     }
 
     mage_spell_t::impact( s );
 
-
     if ( p() -> specialization() == MAGE_FIRE && result_is_hit( s -> result ) )
-    {
       td( s -> target ) -> debuffs.pyromaniac -> trigger( 1, buff_t::DEFAULT_VALUE(), 1 );
-    }
   }
 
   virtual void tick( dot_t* d )
@@ -2988,7 +2983,6 @@ struct living_bomb_t : public mage_spell_t
   {
     mage_spell_t::last_tick( d );
 
-
     explosion_spell -> scale_damage_by_ticks( d -> num_ticks );
     explosion_spell -> execute();
     mage_t& p = *this -> p();
@@ -2997,12 +2991,15 @@ struct living_bomb_t : public mage_spell_t
 
   virtual void execute()
   {
+    mage_t& p = *this -> p();
+    bool pre_ticking = get_dot( target ) -> ticking;
+
     mage_spell_t::execute();
 
     if ( result_is_hit( execute_state -> result ) )
     {
-      mage_t& p = *this -> p();
-      p.active_living_bomb_targets++;
+      if ( ! pre_ticking )
+        p.active_living_bomb_targets++;
       p.last_bomb_target = execute_state -> target;
     }
   }
@@ -3014,9 +3011,7 @@ struct living_bomb_t : public mage_spell_t
     assert( p.active_living_bomb_targets <= 3 && p.active_living_bomb_targets >= 0 );
 
     if ( p.active_living_bomb_targets == 3 )
-    {
       return false;
-    }
 
     return mage_spell_t::ready();
   }
