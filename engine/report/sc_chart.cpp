@@ -117,7 +117,7 @@ const std::string nearly_white  = "FCFFFF";
 const std::string green         = "336600";
 const std::string grey          = "C0C0C0";
 const std::string olive         = "909000";
-const std::string orange       = "FF7D0A";
+const std::string orange        = "FF7D0A";
 const std::string teal          = "009090";
 const std::string darker_blue   = "59ADCC";
 const std::string darker_silver = "8A8A8A";
@@ -602,6 +602,7 @@ std::string chart::stat_color( stat_e type )
     case STAT_HASTE_RATING:             return class_color( SHAMAN );
     case STAT_MASTERY_RATING:           return class_color( ROGUE );
     case STAT_MULTISTRIKE_RATING:       return color::mix( color::red, color::tan );
+    case STAT_VERSATILITY_RATING:       return class_color( DRUID );
     case STAT_DODGE_RATING:             return class_color( MONK );
     case STAT_PARRY_RATING:             return color::teal;
     case STAT_ARMOR:                    return class_color( PRIEST );
