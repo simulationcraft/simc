@@ -4450,7 +4450,7 @@ struct player_t : public actor_t
     buff_t* self_movement;
     buff_t* stampeding_roar;
     buff_t* shadowmeld;
-    buff_t* stance_of_the_fierce_tiger;
+    buff_t* fierce_tiger_movement_aura;
     buff_t* stoneform;
     buff_t* stunned;
     buff_t* tricks_of_the_trade;

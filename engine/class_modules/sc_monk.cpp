@@ -3962,7 +3962,7 @@ void monk_t::combat_begin()
  
   resources.current[ RESOURCE_CHI ] = clamp( as<double>( user_options.initial_chi ), 0.0, resources.max[ RESOURCE_CHI ] );
 
-  if ( _active_stance == FIERCE_TIGER && !buffs.stance_of_the_fierce_tiger -> up() )
+  if ( _active_stance == FIERCE_TIGER && !buffs.fierce_tiger_movement_aura -> up() )
   {
     for ( size_t i = 0; i < sim -> player_non_sleeping_list.size(); ++i )
     {
@@ -3970,7 +3970,7 @@ void monk_t::combat_begin()
       if ( p -> is_enemy() || p -> type == PLAYER_GUARDIAN )
         break;
 
-      p -> buffs.stance_of_the_fierce_tiger -> trigger();
+      p -> buffs.fierce_tiger_movement_aura -> trigger();
     }
   }
  
@@ -4457,7 +4457,7 @@ bool monk_t::switch_to_stance( stance_e to )
       if ( p -> is_enemy() || p -> type == PLAYER_GUARDIAN )
         break;
 
-       p -> buffs.stance_of_the_fierce_tiger -> trigger();
+      p -> buffs.fierce_tiger_movement_aura -> trigger();
     }
   }
   else if ( _active_stance == FIERCE_TIGER )
@@ -4468,7 +4468,7 @@ bool monk_t::switch_to_stance( stance_e to )
       if ( p -> is_enemy() || p -> type == PLAYER_GUARDIAN )
         break;
 
-      p -> buffs.stance_of_the_fierce_tiger -> expire();
+      p -> buffs.fierce_tiger_movement_aura -> expire();
     }
   }
  
@@ -4558,7 +4558,7 @@ struct monk_module_t : public module_t
     for ( unsigned int i = 0; i < sim -> actor_list.size(); i++ )
     {
       player_t* p = sim -> actor_list[i];
-      p -> buffs.stance_of_the_fierce_tiger = buff_creator_t( p, "stance_of_the_fierce_tiger", p -> find_spell( 103985 ) )
+      p -> buffs.fierce_tiger_movement_aura = buff_creator_t( p, "fierce_tiger_movement_aura", p -> find_spell( 103985 ) )
         .duration( timespan_t::from_seconds( 0 ) );
     }
   }

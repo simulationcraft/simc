@@ -2652,8 +2652,8 @@ double player_t::temporary_movement_modifier() const
 {
   double temporary = 0;
 
-  if ( buffs.stance_of_the_fierce_tiger -> up() )
-    temporary = std::max( buffs.stance_of_the_fierce_tiger -> data().effectN( 5 ).percent(), temporary );
+  if ( buffs.fierce_tiger_movement_aura -> up() )
+    temporary = std::max( buffs.fierce_tiger_movement_aura -> data().effectN( 5 ).percent(), temporary );
 
   if ( buffs.darkflight -> up() )
     temporary = std::max( buffs.darkflight -> data().effectN( 1 ).percent(), temporary );
