@@ -4,7 +4,7 @@
 #ifndef MAX_CLASS
 #define MAX_CLASS (12)
 #endif
-// Class based active abilities, wow build 18505
+// Class based active abilities, wow build 18522
 static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SIZE] = {
   {
     {
@@ -49,7 +49,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
        34428, // Victory Rush
            0,
     },
-    // Arms tree, 9 abilities
+    // Arms tree, 10 abilities
     {
       167105, // Colossus Smash
       118038, // Die by the Sword
@@ -57,6 +57,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
        12294, // Mortal Strike
        97462, // Rallying Cry
         1719, // Recklessness
+         772, // Rend
        12328, // Sweeping Strikes
         6343, // Thunder Clap
         1680, // Whirlwind
@@ -98,7 +99,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
   },
   // Class active abilities for Paladin
   {
-    // General tree, 22 abilities
+    // General tree, 23 abilities
     {
        20217, // Blessing of Kings
        19740, // Blessing of Might
@@ -112,6 +113,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
         1044, // Hand of Freedom
         1022, // Hand of Protection
         6940, // Hand of Sacrifice
+        1038, // Hand of Salvation
        20271, // Judgment
          633, // Lay on Hands
        96231, // Rebuke
@@ -137,7 +139,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
        85222, // Light of Dawn
            0,
     },
-    // Protection tree, 10 abilities
+    // Protection tree, 11 abilities
     {
        31850, // Ardent Defender
        31935, // Avenger's Shield
@@ -145,6 +147,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
        19750, // Flash of Light
        86659, // Guardian of Ancient Kings
        53595, // Hammer of the Righteous
+        1038, // Hand of Salvation
       119072, // Holy Wrath
        20154, // Seal of Righteousness
        31801, // Seal of Truth
@@ -507,12 +510,13 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
   },
   // Class active abilities for Shaman
   {
-    // General tree, 26 abilities
+    // General tree, 27 abilities
     {
         2008, // Ancestral Spirit
       114049, // Ascendance
         2825, // Bloodlust
       108269, // Capacitor Totem (Air Totem)
+         421, // Chain Lightning
        51886, // Cleanse Spirit
         2062, // Earth Elemental Totem (Earth Totem)
         2484, // Earthbind Totem (Earth Totem)
@@ -540,8 +544,8 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
     // Elemental tree, 8 abilities
     {
       165339, // Ascendance
-         421, // Chain Lightning
         8042, // Earth Shock
+       61882, // Earthquake
        51505, // Lava Burst
        30823, // Shamanistic Rage
        79206, // Spiritwalker's Grace
@@ -549,10 +553,9 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
       165462, // Unleash Flame
            0,
     },
-    // Enhancement tree, 10 abilities
+    // Enhancement tree, 9 abilities
     {
       165341, // Ascendance
-         421, // Chain Lightning
        51533, // Feral Spirit
         1535, // Fire Nova
        60103, // Lava Lash
@@ -786,7 +789,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
   },
   // Class active abilities for Monk
   {
-    // General tree, 19 abilities
+    // General tree, 22 abilities
     {
       100784, // Blackout Kick
       117952, // Crackling Jade Lightning
@@ -806,10 +809,13 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
       123273, // Surging Mist
       116694, // Surging Mist
       100787, // Tiger Palm
+      115080, // Touch of Death
+      101643, // Transcendence
+      119996, // Transcendence: Transfer
       126892, // Zen Pilgrimage
            0,
     },
-    // Brewmaster tree, 13 abilities
+    // Brewmaster tree, 10 abilities
     {
       115181, // Breath of Fire
       115180, // Dizzying Haze
@@ -820,9 +826,6 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
       119582, // Purifying Brew
       115069, // Stance of the Sturdy Ox (Brewmaster Stance)
       115315, // Summon Black Ox Statue
-      115080, // Touch of Death
-      101643, // Transcendence
-      119996, // Transcendence: Transfer
       115176, // Zen Meditation
            0,
     },
@@ -844,7 +847,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
       116670, // Uplift
            0,
     },
-    // Windwalker tree, 15 abilities
+    // Windwalker tree, 12 abilities
     {
       116768, // Combo Breaker: Blackout Kick
       118864, // Combo Breaker: Tiger Palm
@@ -856,10 +859,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
       107428, // Rising Sun Kick
       137639, // Storm, Earth, and Fire
       116740, // Tigereye Brew
-      115080, // Touch of Death
       122470, // Touch of Karma
-      101643, // Transcendence
-      119996, // Transcendence: Transfer
       115176, // Zen Meditation
            0,
     },
@@ -872,23 +872,28 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
   },
   // Class active abilities for Druid
   {
-    // General tree, 21 abilities
+    // General tree, 26 abilities
     {
         5487, // Bear Form (Shapeshift)
          768, // Cat Form (Shapeshift)
        33786, // Cyclone
         1850, // Dash
+         339, // Entangling Roots
+      102355, // Faerie Swarm (Talent)
        22568, // Ferocious Bite
        22842, // Frenzied Regeneration
         6795, // Growl
         5185, // Healing Touch
+       16914, // Hurricane (Solar)
       102560, // Incarnation: Chosen of Elune (Talent, Shapeshift)
       102543, // Incarnation: King of the Jungle (Talent, Shapeshift)
       102558, // Incarnation: Son of Ursoc (Talent, Shapeshift)
        33917, // Mangle
         1126, // Mark of the Wild
+        8921, // Moonfire (Lunar)
         5215, // Prowl
        20484, // Rebirth
+         774, // Rejuvenation
         5221, // Shred
         2908, // Soothe
       106898, // Stampeding Roar
@@ -897,16 +902,12 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
         5176, // Wrath (Solar)
            0,
     },
-    // Balance tree, 15 abilities
+    // Balance tree, 11 abilities
     {
       127663, // Astral Communion
       106996, // Astral Storm (Lunar)
       112071, // Celestial Alignment
-         339, // Entangling Roots
-       16914, // Hurricane (Solar)
-        8921, // Moonfire (Lunar)
        24858, // Moonkin Form
-         774, // Rejuvenation
         2782, // Remove Corruption
        78675, // Solar Beam
        48505, // Starfall (Lunar)
@@ -916,13 +917,12 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
        88747, // Wild Mushroom
            0,
     },
-    // Feral tree, 11 abilities
+    // Feral tree, 10 abilities
     {
       106952, // Berserk
          770, // Faerie Fire
        22570, // Maim
         1822, // Rake
-         774, // Rejuvenation
         2782, // Remove Corruption
         1079, // Rip
        52610, // Savage Roar
@@ -944,18 +944,14 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
       106839, // Skull Bash
            0,
     },
-    // Restoration tree, 14 abilities
+    // Restoration tree, 10 abilities
     {
-         339, // Entangling Roots
       145518, // Genesis
-       16914, // Hurricane (Solar)
       102342, // Ironbark
        33763, // Lifebloom
-        8921, // Moonfire (Lunar)
        88423, // Nature's Cure
       132158, // Nature's Swiftness
         8936, // Regrowth
-         774, // Rejuvenation
        18562, // Swiftmend
          740, // Tranquility
        48438, // Wild Growth
@@ -971,9 +967,9 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
   },
 };
 
-#define TREE_SPECIALIZATION_SIZE (29)
+#define TREE_SPECIALIZATION_SIZE (28)
 
-// Talent tree specialization abilities, wow build 18505
+// Talent tree specialization abilities, wow build 18522
 static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZATION_SIZE] = {
   // Specialization abilities for Hunter pets
   {
@@ -995,7 +991,7 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
        53184, // Spiked Collar
            0,
     },
-    // Specialization abilities for Tenacious Versatility
+    // Specialization abilities for Tenacious Adaptation
     {
        53482, // Blood of the Rhino
        53482, // Blood of the Rhino
@@ -1054,6 +1050,7 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
        97462, // Rallying Cry
       145990, // Readiness: Arms
         1719, // Recklessness
+         772, // Rend
        12712, // Seasoned Soldier
       162698, // Stat Negation Aura - Strength DPS
        12328, // Sweeping Strikes
@@ -1075,6 +1072,7 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
       137050, // Hotfix Passive
       167188, // Inspiring Presence
        76856, // Mastery: Unshackled Fury
+       12950, // Meat Cleaver
        86110, // Plate Specialization
        85288, // Raging Blow
        97462, // Rallying Cry
@@ -1162,6 +1160,7 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
        53592, // Guarded by the Light
        86659, // Guardian of Ancient Kings
        53595, // Hammer of the Righteous
+        1038, // Hand of Salvation
       119072, // Holy Wrath
       137028, // Hotfix Passive
       105424, // Judgments of the Wise
@@ -1243,7 +1242,6 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
        53351, // Kill Shot
       165378, // Lethal Shots
        76659, // Mastery: Sniper Training
-       53238, // Piercing Shots
         3045, // Rapid Fire
       145965, // Readiness: Marksmanship
            0,
@@ -1263,7 +1261,6 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
        87935, // Serpent Sting
       164856, // Survivalist
        63458, // Trap Mastery
-      118976, // Viper Venom
            0,
     },
     {
@@ -1338,6 +1335,7 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
     {
        81700, // Archangel
        81749, // Atonement
+       52798, // Borrowed Time
       165376, // Critical Strike Attunement
        47515, // Divine Aegis
       122098, // Divine Fury
@@ -1508,8 +1506,8 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
     // Specialization abilities for Elemental
     {
       165339, // Ascendance
-         421, // Chain Lightning
         8042, // Earth Shock
+       61882, // Earthquake
        60188, // Elemental Fury
       165399, // Elemental Overload
        29000, // Elemental Reach
@@ -1532,7 +1530,6 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
     // Specialization abilities for Enhancement
     {
       165341, // Ascendance
-         421, // Chain Lightning
       157444, // Critical Strikes
        86629, // Dual Wield
       166221, // Enhanced Weapons
@@ -1751,10 +1748,6 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
       158298, // Resolve
       115069, // Stance of the Sturdy Ox
       115315, // Summon Black Ox Statue
-      115080, // Touch of Death
-      121128, // Touch of Death/Expel Harm Notification Driver
-      101643, // Transcendence
-      119996, // Transcendence: Transfer
       115176, // Zen Meditation
            0,
     },
@@ -1788,7 +1781,6 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
       116645, // Teachings of the Monastery
       116680, // Thunder Focus Tea
       116670, // Uplift
-           0,
     },
     // Specialization abilities for Windwalker
     {
@@ -1811,11 +1803,7 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
       107428, // Rising Sun Kick
       137639, // Storm, Earth, and Fire
       116740, // Tigereye Brew
-      115080, // Touch of Death
-      121128, // Touch of Death/Expel Harm Notification Driver
       122470, // Touch of Karma
-      101643, // Transcendence
-      119996, // Transcendence: Transfer
       166916, // Windflurry
       115176, // Zen Meditation
            0,
@@ -1834,18 +1822,14 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
       106732, // Balance Overrides Passive
       112071, // Celestial Alignment
        79577, // Eclipse
-         339, // Entangling Roots
       137013, // Hotfix Passive
-       16914, // Hurricane
       108299, // Killer Instinct
        86104, // Leather Specialization
       165386, // Lunar Guidance
        77492, // Mastery: Total Eclipse
-        8921, // Moonfire
        24858, // Moonkin Form
       112857, // Natural Insight
       151021, // Readiness: Balance
-         774, // Rejuvenation
         2782, // Remove Corruption
        93399, // Shooting Stars
        78675, // Solar Beam
@@ -1875,7 +1859,6 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
        16974, // Predatory Swiftness
         1822, // Rake
       145961, // Readiness: Feral
-         774, // Rejuvenation
         2782, // Remove Corruption
         1079, // Rip
        52610, // Savage Roar
@@ -1883,7 +1866,6 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
       106839, // Skull Bash
       162697, // Stat Negation Aura - Agility DPS
       106785, // Swipe
-      106832, // Thrash
         5217, // Tiger's Fury
            0,
     },
@@ -1913,18 +1895,15 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
       162700, // Stat Negation Aura - Agility Tank
       165387, // Survival of the Fittest
        16931, // Thick Hide
-      106832, // Thrash
       135288, // Tooth and Claw
       159232, // Ursa Major
            0,
     },
     // Specialization abilities for Restoration
     {
-         339, // Entangling Roots
       145518, // Genesis
       158920, // Healer Level 90 Mana Fix
       137012, // Hotfix Passive
-       16914, // Hurricane
       102342, // Ironbark
       108299, // Killer Instinct
        86093, // Leather Specialization
@@ -1933,7 +1912,6 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
        92364, // Malfurion's Gift
        77495, // Mastery: Harmony
        85101, // Meditation
-        8921, // Moonfire
       112857, // Natural Insight
       165374, // Naturalist
        17073, // Naturalist
@@ -1942,20 +1920,20 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
       113043, // Omen of Clarity
       145963, // Readiness: Restoration
         8936, // Regrowth
-         774, // Rejuvenation
       106735, // Restoration Overrides Passive
       162701, // Stat Negation Aura - Intellect Healer
        18562, // Swiftmend
          740, // Tranquility
        48438, // Wild Growth
       145205, // Wild Mushroom
+           0,
     },
   },
 };
 
 #define CLASS_MASTERY_ABILITY_SIZE (1)
 
-// Class mastery abilities, wow build 18505
+// Class mastery abilities, wow build 18522
 static unsigned __class_mastery_ability_data[MAX_CLASS][MAX_SPECS_PER_CLASS][CLASS_MASTERY_ABILITY_SIZE] = {
   {
     {
@@ -2178,7 +2156,7 @@ static unsigned __class_mastery_ability_data[MAX_CLASS][MAX_SPECS_PER_CLASS][CLA
 #define MAX_RACE (28)
 #endif
 
-// Racial abilities, wow build 18505
+// Racial abilities, wow build 18522
 static unsigned __race_ability_data[MAX_RACE][MAX_CLASS][RACE_ABILITY_SIZE] = {
   {
     {     0, },
@@ -2901,7 +2879,7 @@ static unsigned __race_ability_data[MAX_RACE][MAX_CLASS][RACE_ABILITY_SIZE] = {
 
 #define GLYPH_ABILITIES_SIZE (40)
 
-// Glyph spells for classes, wow build 18505
+// Glyph spells for classes, wow build 18522
 static unsigned __glyph_abilities_data[][3][GLYPH_ABILITIES_SIZE] = {
   {
     {
@@ -3183,9 +3161,10 @@ static unsigned __glyph_abilities_data[][3][GLYPH_ABILITIES_SIZE] = {
       159624, // Glyph of the Inquisitor
       159627, // Glyph of the Redeemer
     },
-    // Minor Glyphs (12 spells)
+    // Minor Glyphs (13 spells)
     {
       145722, // Glyph of Angels
+       58009, // Glyph of Borrowed Time
       126152, // Glyph of Confession
        58228, // Glyph of Dark Archangel
       126174, // Glyph of Holy Resurrection
@@ -3537,8 +3516,8 @@ static unsigned __glyph_abilities_data[][3][GLYPH_ABILITIES_SIZE] = {
       114333, // Glyph of the Orca
       114280, // Glyph of the Predator
       146654, // Glyph of the Sprouting Mushroom
+      114338, // Glyph of the Stag
       125047, // Glyph of the Treant
-      165962, // Stag Form
            0,
     },
     {
@@ -3552,7 +3531,7 @@ static unsigned __glyph_abilities_data[][3][GLYPH_ABILITIES_SIZE] = {
 
 #define TIER_BONUSES_TIER_BASE (13)
 
-// Tier item set bonuses for class, wow build 18505
+// Tier item set bonuses for class, wow build 18522
 static unsigned __tier_bonuses_data[][TIER_BONUSES_MAX_TIER][TIER_BONUSES_SIZE] = {
   {
     {
@@ -3977,7 +3956,7 @@ static unsigned __tier_bonuses_data[][TIER_BONUSES_MAX_TIER][TIER_BONUSES_SIZE] 
 
 #define PERK_SIZE (9)
 
-// Perk specialization abilities, wow build 18505
+// Perk specialization abilities, wow build 18522
 static unsigned __perk_data[][MAX_SPECS_PER_CLASS][PERK_SIZE] = {
   {
     {
@@ -4245,7 +4224,7 @@ static unsigned __perk_data[][MAX_SPECS_PER_CLASS][PERK_SIZE] = {
       157765, // 0: Improved Chain Lightning
       157774, // 1: Improved Lightning Shield
       157764, // 2: Improved Reincarnation
-      157775, // 3: Improved Searing Totem
+      157775, // 3: Improved Fire Totems
       157776, // 4: Improved Critical Strikes
       157777, // 5: Improved Lightning Bolt
       157778, // 6: Improved Lava Burst
@@ -4255,7 +4234,7 @@ static unsigned __perk_data[][MAX_SPECS_PER_CLASS][PERK_SIZE] = {
     // Enhancement
     {
       157764, // 0: Improved Reincarnation
-      157775, // 1: Improved Searing Totem
+      157775, // 1: Improved Fire Totems
       157784, // 2: Enhanced Unleash Elements
       157803, // 3: Improved Lava Lash
       157804, // 4: Improved Flame Shock
@@ -4455,11 +4434,11 @@ static unsigned __perk_data[][MAX_SPECS_PER_CLASS][PERK_SIZE] = {
   },
 };
 
-// Glyph properties, wow build 18505
-static glyph_property_data_t __glyph_property_data[520] = {
+// Glyph properties, wow build 18522
+static glyph_property_data_t __glyph_property_data[521] = {
   {   162,  54811 },
   {   163,  54812 },
-  {   164, 165962 },
+  {   164, 114338 },
   {   166, 116186 },
   {   167,  54821 },
   {   170,  54733 },
@@ -4626,6 +4605,7 @@ static glyph_property_data_t __glyph_property_data[520] = {
   {   457,  57954 },
   {   458,  57985 },
   {   459, 108939 },
+  {   460,  58009 },
   {   461,  57986 },
   {   462,  33202 },
   {   463,  58228 },
