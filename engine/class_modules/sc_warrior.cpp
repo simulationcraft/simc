@@ -1054,10 +1054,8 @@ struct bladestorm_t: public warrior_attack_t
     }
   }
 
-  virtual void tick( dot_t* d )
+  virtual void tick(dot_t*)
   {
-    warrior_attack_t::tick( d );
-
     bladestorm_mh -> execute();
 
     if ( bladestorm_mh -> result_is_hit( execute_state -> result ) && bladestorm_oh )
@@ -1959,7 +1957,7 @@ struct ravager_t: public warrior_attack_t
     warrior_attack_t::execute();
   }
 
-  virtual void tick( dot_t* d )
+  virtual void tick(dot_t*)
   {
     ravager -> execute();
   }
@@ -2671,7 +2669,7 @@ struct deep_wounds_t: public warrior_spell_t
 
 struct rend_burst_t: public warrior_spell_t
 {
-  rend_burst_t( warrior_t* p, const std::string& name ):
+  rend_burst_t( warrior_t* p ):
     warrior_spell_t( "rend_burst", p )
   {
     may_crit = dual = true;
@@ -2692,7 +2690,7 @@ struct rend_t: public warrior_spell_t
   bool taste_for_blood;
   rend_t( warrior_t* p, const std::string& options_str ):
     warrior_spell_t( "rend", p ),
-    burst( new rend_burst_t( p, "rend_burst" ) ), taste_for_blood( false )
+    burst( new rend_burst_t( p ) ), taste_for_blood( false )
   {
     option_t opt[] =
     {
@@ -4804,10 +4802,11 @@ struct warrior_module_t: public module_t
 
   virtual void init( sim_t* sim ) const
   {
+    /*
     for ( size_t i = 0; i < sim -> actor_list.size(); i++ )
     {
       player_t* p = sim -> actor_list[i];
-    }
+    }*/
   }
 
   virtual void combat_begin( sim_t* ) const {}
