@@ -651,7 +651,8 @@ struct natures_vigil_proc_t : public spell_t
       fromDmg( true ), heal_coeff( 0.0 ), dmg_coeff( 0.0 )
     {
       background = proc = dual = true;
-      may_crit = may_miss = may_multistrike = false;
+      may_crit = may_miss = false;
+      may_multistrike = 0;
       trigger_gcd = timespan_t::zero();
       heal_coeff = p -> talent.natures_vigil -> effectN( 3 ).percent();
       dmg_coeff  = p -> talent.natures_vigil -> effectN( 4 ).percent();
@@ -705,7 +706,8 @@ struct natures_vigil_proc_t : public spell_t
       spell_t( "natures_vigil_damage", p, p -> find_spell( 124991 ) )
     {
       background = proc = dual = true;
-      may_crit = may_miss = may_multistrike = false;
+      may_crit = may_miss = false;
+      may_multistrike = 0;
       trigger_gcd     = timespan_t::zero();
       base_multiplier = p -> talent.natures_vigil -> effectN( 3 ).percent();
     }
@@ -766,10 +768,9 @@ struct ursocs_vigor_t : public heal_t
 
     hasted_ticks = false;
     may_crit = tick_may_crit = false;
-    may_multistrike = false;
-
+    may_multistrike = 0;
     base_td = 0;
-    
+
     base_tick_time = timespan_t::from_seconds( 1.0 );
     dot_duration = 8 * base_tick_time;
 
@@ -835,7 +836,8 @@ struct leader_of_the_pack_t : public heal_t
   leader_of_the_pack_t( druid_t* p ) :
     heal_t( "leader_of_the_pack", p, p -> find_spell( 68285 ) )
   {
-    harmful = may_crit = may_multistrike = false;
+    harmful = may_crit = false;
+    may_multistrike = 0;
     background = proc = true;
     target = p;
 
@@ -854,7 +856,8 @@ struct primal_tenacity_t : public absorb_t
     absorb_t( "primal_tenacity", p, p -> mastery.primal_tenacity ),
     absorb_remaining( 0.0 )
   {
-    harmful = may_crit = may_multistrike = false;
+    harmful = may_crit = false;
+    may_multistrike = 0;
     background = proc = dual = true;
     target = p;
   }
@@ -901,7 +904,8 @@ struct yseras_gift_t : public heal_t
   {
     base_tick_time = data().effectN( 1 ).period();
     dot_duration   = base_tick_time;
-    harmful = tick_may_crit = may_multistrike = hasted_ticks = false;
+    harmful = tick_may_crit = hasted_ticks = false;
+    may_multistrike = 0;
     background = proc = dual = true;
     target = p;
 
@@ -2861,8 +2865,8 @@ struct maul_t : public bear_attack_t
     tooth_and_claw_t( druid_t* p ) :
       druid_action_t<absorb_t>( "tooth_and_claw", p, p -> spec.tooth_and_claw )
     {
-      harmful = special = false;
-      may_crit = may_multistrike = false;
+      harmful = special = may_crit = false;
+      may_multistrike = 0;
       target = player;
 
       // Coeff of 4 AP is hardcoded into tooltip, use FR coeff * 0.4 instead.
@@ -3236,7 +3240,8 @@ struct frenzied_regeneration_t : public druid_heal_t
   {
     parse_options( NULL, options_str );
     use_off_gcd = true;
-    may_crit = may_multistrike = false;
+    may_crit = false;
+    may_multistrike = 0;
 
     attack_power_mod.direct = data().effectN( 1 ).ap_coeff();
     base_multiplier *= 1.0 + p -> perk.improved_frenzied_regeneration -> effectN( 1 ).percent();
@@ -3852,7 +3857,7 @@ struct astral_communion_t : public druid_spell_t
     druid_spell_t( "astral_communion", player, player -> spec.astral_communion, options_str )
   {
     harmful = proc = hasted_ticks = false;
-    may_multistrike = false;
+    may_multistrike = 0;
     channeled = true;
 
     base_tick_time = timespan_t::from_millis( 100 );
@@ -4850,7 +4855,7 @@ struct starfall_t : public druid_spell_t
     parse_options( NULL, options_str );
 
     hasted_ticks = false;
-    may_multistrike = false;
+    may_multistrike = 0;
     tick_zero = true;
     cooldown = player -> cooldown.starfallsurge;
     base_multiplier *= 1.0 + player -> sets.set( SET_T14_2PC_CASTER ) -> effectN( 1 ).percent();
