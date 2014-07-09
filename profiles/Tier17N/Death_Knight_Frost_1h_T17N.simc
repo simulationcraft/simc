@@ -27,6 +27,8 @@ actions.precombat+=/pillar_of_frost
 # Executed every time the actor is available.
 
 actions=auto_attack
+actions+=/deaths_advance,if=talent.deaths_advance.enabled&movement.remains>2
+actions+=/antimagic_shell,damage=100000
 actions+=/pillar_of_frost
 actions+=/potion,name=mogu_power,if=target.time_to_die<=30|(target.time_to_die<=60&buff.pillar_of_frost.up)
 actions+=/empower_rune_weapon,if=target.time_to_die<=60&(buff.potion_of_mogu_power.up|buff.golemblood_potion.up)

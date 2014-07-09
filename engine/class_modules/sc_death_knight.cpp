@@ -5481,8 +5481,8 @@ void death_knight_t::init_action_list()
     precombat -> add_action( get_profession_actions()[ i ] );
 
   def -> add_action( "auto_attack" );
-  def -> add_action( this, "Death's Advance", "if=movement.remains>2" );
-  def -> add_talent( this, "Anti-Magic Shell", "damage=100000" );
+  def -> add_talent( this, "Death's Advance", "if=movement.remains>2" );
+  def -> add_action( this, "Anti-Magic Shell", "damage=100000" );
 
 
   switch ( specialization() )
