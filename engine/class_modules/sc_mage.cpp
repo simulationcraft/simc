@@ -103,12 +103,14 @@ public:
     buff_t* arcane_charge;
     buff_t* arcane_missiles;
     buff_t* arcane_power;
+    buff_t* blazing_speed;
     buff_t* brain_freeze;
     buff_t* fingers_of_frost;
     buff_t* frost_armor;
     buff_t* heating_up;
     buff_t* ice_floes;
     buff_t* icy_veins;
+    buff_t* improved_blink;
     stat_buff_t* mage_armor;
     buff_t* molten_armor;
     buff_t* presence_of_mind;
@@ -147,6 +149,7 @@ public:
 
     // Major
     const spell_data_t* arcane_power;
+    const spell_data_t* blink;
     const spell_data_t* combustion;
     const spell_data_t* cone_of_cold;
     const spell_data_t* frostfire;
@@ -155,6 +158,7 @@ public:
     const spell_data_t* inferno_blast;
     const spell_data_t* living_bomb;
     const spell_data_t* mirror_image;
+    const spell_data_t* rapid_displacement;
     const spell_data_t* splitting_ice;
 
     // Minor
@@ -374,6 +378,7 @@ public:
   virtual double    matching_gear_multiplier( attribute_e attr ) const;
   virtual void      stun();
   virtual void      moving();
+  virtual double    temporary_movement_modifier() const;
 
   target_specific_t<mage_td_t*> target_data;
 
@@ -1577,10 +1582,25 @@ struct blast_wave_t : public mage_spell_t
 
         return am;
     }
-
-
 };
 
+// Blazing Speed ============================================================
+
+struct blazing_speed_t: public mage_spell_t
+{
+  blazing_speed_t( mage_t* p, const std::string& options_str ):
+    mage_spell_t( "blazing_speed", p, p -> talents.blazing_speed )
+  {
+    parse_options( NULL, options_str );
+  }
+
+  virtual void execute()
+  {
+    mage_spell_t::execute();
+
+    p() -> buffs.blazing_speed -> trigger();
+  }
+};
 
 // Blink Spell ==============================================================
 
@@ -1593,6 +1613,10 @@ struct blink_t : public mage_spell_t
 
     harmful = false;
     base_teleport_distance = 20;
+    base_teleport_distance += p -> glyphs.blink -> effectN( 1 ).base_value();
+    if ( p -> glyphs.rapid_displacement -> ok() )
+      cooldown -> charges = p -> glyphs.rapid_displacement -> effectN( 1 ).base_value();
+
     movement_directionality = MOVEMENT_OMNI;
   }
 
@@ -1600,7 +1624,10 @@ struct blink_t : public mage_spell_t
   {
     mage_spell_t::execute();
 
-    player -> buffs.stunned -> expire();
+    if ( !p() -> glyphs.rapid_displacement -> ok() )
+      player -> buffs.stunned -> expire();
+
+    p() -> buffs.improved_blink -> trigger();
   }
 };
 
@@ -3962,11 +3989,12 @@ action_t* mage_t::create_action( const std::string& name,
   if ( name == "arcane_explosion"  ) return new        arcane_explosion_t( this, options_str );
   if ( name == "arcane_missiles"   ) return new         arcane_missiles_t( this, options_str );
   if ( name == "arcane_power"      ) return new            arcane_power_t( this, options_str );
+  if ( name == "blazing_speed"     ) return new           blazing_speed_t( this, options_str );
   if ( name == "blink"             ) return new                   blink_t( this, options_str );
   if ( name == "blizzard"          ) return new                blizzard_t( this, options_str );
   if ( name == "choose_rotation"   ) return new         choose_rotation_t( this, options_str );
-  if ( name == "start_pyro_chain"  ) return new         start_pyro_chain_t( this, options_str );
-  if ( name == "stop_pyro_chain"  ) return new          stop_pyro_chain_t(  this, options_str );
+  if ( name == "start_pyro_chain"  ) return new        start_pyro_chain_t( this, options_str );
+  if ( name == "stop_pyro_chain"   ) return new        stop_pyro_chain_t(  this, options_str );
   if ( name == "cold_snap"         ) return new               cold_snap_t( this, options_str );
   if ( name == "combustion"        ) return new              combustion_t( this, options_str );
   if ( name == "cone_of_cold"      ) return new            cone_of_cold_t( this, options_str );
@@ -4158,6 +4186,7 @@ void mage_t::init_spells()
   // Glyphs
   glyphs.arcane_brilliance   = find_glyph_spell( "Glyph of Arcane Brilliance" );
   glyphs.arcane_power        = find_glyph_spell( "Glyph of Arcane Power" );
+  glyphs.blink               = find_glyph_spell( "Glyph of Blink" );
   glyphs.combustion          = find_glyph_spell( "Glyph of Combustion" );
   glyphs.cone_of_cold        = find_glyph_spell( "Glyph of Cone of Cold" );
   glyphs.frostfire           = find_glyph_spell( "Glyph of Frostfire" );
@@ -4166,6 +4195,7 @@ void mage_t::init_spells()
   glyphs.inferno_blast       = find_glyph_spell( "Glyph of Inferno Blast" );
   glyphs.living_bomb         = find_glyph_spell( "Glyph of Living Bomb" );
   glyphs.mirror_image        = find_glyph_spell( "Glyph of Mirror Image" );
+  glyphs.rapid_displacement  = find_glyph_spell( "Glyph of Rapid Displacement" );
   glyphs.splitting_ice       = find_glyph_spell( "Glyph of Splitting Ice" );
 
   static const set_bonus_description_t set_bonuses =
@@ -4229,6 +4259,8 @@ void mage_t::create_buffs()
   buffs.arcane_missiles      = buff_creator_t( this, "arcane_missiles", find_class_spell( "Arcane Missiles" ) -> ok() ? find_spell( 79683 ) : spell_data_t::not_found() ).chance( 0.3 ).max_stack( 3 );
 
   buffs.arcane_power         = new buffs::arcane_power_t( this );
+  buffs.blazing_speed        = buff_creator_t( this, "blazing_speed", talents.blazing_speed )
+                               .default_value( talents.blazing_speed -> effectN( 1 ).percent() );
   buffs.brain_freeze         = buff_creator_t( this, "brain_freeze", spec.brain_freeze )
                                .duration( find_spell( 57761 ) -> duration() )
                                .default_value( spec.brain_freeze -> effectN( 1 ).percent() )
@@ -4243,6 +4275,8 @@ void mage_t::create_buffs()
   buffs.frost_armor          = buff_creator_t( this, "frost_armor", find_spell( 7302 ) ).add_invalidate( CACHE_MULTISTRIKE );
   buffs.icy_veins            = new buffs::icy_veins_t( this );
   buffs.ice_floes            = buff_creator_t( this, "ice_floes", talents.ice_floes );
+  buffs.improved_blink       = buff_creator_t( this, "improved_blink", perks.improved_blink )
+                               .default_value( perks.improved_blink -> effectN( 1 ).percent() );
   buffs.mage_armor           = stat_buff_creator_t( this, "mage_armor" ).spell( find_spell( 6117 ) );
   buffs.molten_armor         = buff_creator_t( this, "molten_armor", find_spell( 30482 ) ).add_invalidate( CACHE_SPELL_CRIT );
   buffs.presence_of_mind     = buff_creator_t( this, "presence_of_mind", talents.presence_of_mind ).duration( timespan_t::zero() ).activated( true );
@@ -4419,13 +4453,14 @@ void mage_t::apl_arcane()
   action_priority_list_t* aoe                 = get_action_priority_list( "aoe"           );
 
   default_list -> add_action( this, "Counterspell", "if=target.debuff.casting.react" );
+  default_list -> add_action( this, "Blink", "if=movement.distance>10" );
+  default_list -> add_talent( this, "Blazing Speed", "if=movement.remains>0" );
   default_list -> add_talent( this, "Cold Snap", "if=health.pct<30" );
   default_list -> add_action( this, "Time Warp", "if=target.health.pct<25|time>5" );
   //not useful if bloodlust is check in option.
 
   default_list -> add_talent( this, "Rune of Power", "if=buff.rune_of_power.remains<cast_time" );
   default_list -> add_talent( this, "Rune of Power", "if=cooldown.arcane_power.remains<gcd&buff.rune_of_power.remains<buff.arcane_power.duration" );
-
 
   default_list -> add_action( this, "Evocation", "if=!talent.invocation.enabled=mana.pct<50,interrupt_if=mana.pct>95" );
   default_list -> add_action( this, "Mirror Image" );
@@ -4476,18 +4511,14 @@ void mage_t::apl_fire()
 
 
   default_list -> add_action( this, "Counterspell", "if=target.debuff.casting.react" );
+  default_list -> add_action( this, "Blink", "if=movement.distance>10" );
+  default_list -> add_talent( this, "Blazing Speed", "if=movement.remains>0" );
   default_list -> add_talent( this, "Cold Snap", "if=health.pct<30" );
   default_list -> add_action( this, "Time Warp", "if=target.health.pct<25|time>5" );
   //not useful if bloodlust is check in option.
 
-
-
   default_list -> add_talent( this, "Rune of Power", "if=buff.rune_of_power.remains<cast_time" );
-
-
-
   default_list -> add_action( this, "Evocation", "if=mana.pct<20,interrupt_if=mana.pct>95" );
-
 
   for( size_t i = 0; i < racial_actions.size(); i++ )
     default_list -> add_action( racial_actions[i] );
@@ -4522,6 +4553,8 @@ void mage_t::apl_frost()
   action_priority_list_t* default_list = get_action_priority_list( "default" );
 
   default_list -> add_action( this, "Counterspell", "if=target.debuff.casting.react" );
+  default_list -> add_action( this, "Blink", "if=movement.distance>10" );
+  default_list -> add_talent( this, "Blazing Speed", "if=movement.remains>0" );
   default_list -> add_talent( this, "Cold Snap", "if=health.pct<30" );
   default_list -> add_action( this, "Time Warp", "if=target.health.pct<25|time>5" );
   //not useful if bloodlust is check in option.
@@ -4543,7 +4576,6 @@ void mage_t::apl_frost()
   for( size_t i = 0; i < item_actions.size(); i++ )
   {
     default_list -> add_action( item_actions[i] + ",if=talent.rune_of_power.enabled&target.time_to_die<25&buff.rune_of_power.remains>20" );
-
     default_list -> add_action( item_actions[i] + ",if=(!talent.rune_of_power.enabled&!talent.invocation.enabled)&target.time_to_die<25" );
   }
 
@@ -4560,9 +4592,9 @@ void mage_t::apl_frost()
 
 void mage_t::apl_default()
 {
-    action_priority_list_t* default_list = get_action_priority_list( "default" );
+  action_priority_list_t* default_list = get_action_priority_list( "default" );
 
-    default_list -> add_action( "fireball" );
+  default_list -> add_action( "fireball" );
 }
 
 // mage_t::mana_regen_per_second ============================================
@@ -4760,6 +4792,21 @@ void mage_t::moving()
   if ( sim -> debug ) sim -> out_debug.printf( "%s lost Rune of Power due to movement.", name() );
 
   player_t::moving();
+}
+
+// mage_t::temporary_movement_modifier ==================================
+
+double mage_t::temporary_movement_modifier() const
+{
+  double temporary = player_t::temporary_movement_modifier();
+
+  if ( buffs.blazing_speed -> up() )
+    temporary = std::max( buffs.blazing_speed -> default_value, temporary );
+
+  if ( buffs.improved_blink -> up() )
+    temporary = std::max( buffs.improved_blink -> default_value, temporary );
+
+  return temporary;
 }
 
 // mage_t::create_expression ================================================
