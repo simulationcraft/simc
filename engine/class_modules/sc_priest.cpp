@@ -3244,7 +3244,6 @@ struct holy_fire_base_t : public priest_spell_t
 
 // Power Word: Solace Spell =================================================
 
-//TODO: Add the healing component for Holy.
 struct power_word_solace_t final : public holy_fire_base_t
 {
   power_word_solace_t( priest_t& player, const std::string& options_str ) :
@@ -5196,7 +5195,7 @@ double priest_t::composite_spell_haste() const
     h /= 1.0 + buffs.power_infusion -> data().effectN( 1 ).percent();
 
   if ( buffs.resolute_spirit -> check() )
-    h /= 1.0 + buffs.resolute_spirit -> data().effectN( 1 ).percent(); // FIXME: check whether to use set bonus data ( 10% ) or buff data ( 15% ). 2013/06/13
+    h /= 1.0 + buffs.resolute_spirit -> data().effectN( 1 ).percent();
 
   if ( buffs.mental_instinct -> check() )
     h /= 1.0 + buffs.mental_instinct -> data().effectN( 1 ).percent() * buffs.mental_instinct -> check();
