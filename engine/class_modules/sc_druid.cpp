@@ -1793,8 +1793,8 @@ public:
     /* Assume that any action that deals physical and applies a dot deals all bleed damage, so
        that it scales direct "bleed" damage. This is a bad assumption if there is an action
        that applies a dot but does plain physical direct damage, but there are none of those. */
-    if ( ! p() -> bugs && dbc::is_school( ab::school, SCHOOL_PHYSICAL ) && ab::dot_duration > timespan_t::zero() )
-      tm *= 1.0 + td( t ) -> buffs.bloodletting -> value();
+    if ( ! ab::p() -> bugs && dbc::is_school( ab::school, SCHOOL_PHYSICAL ) && ab::dot_duration > timespan_t::zero() )
+      tm *= 1.0 + ab::td( t ) -> buffs.bloodletting -> value();
 
     return tm;
   }
@@ -2117,6 +2117,7 @@ struct ferocious_bite_t : public cat_attack_t
     cat_attack_t( "ferocious_bite", p, p -> find_class_spell( "Ferocious Bite" ), options_str ),
     excess_energy( 0 ), max_excess_energy( 0 ), ap_per_point( 0.0 )
   {
+    parse_options( NULL, options_str );
     base_costs[ RESOURCE_COMBO_POINT ] = 1;
 
     ap_per_point           = 0.238; // 7/9/2014: Tooltip coeff is wrong. This is a perfect match to in-game damage.
@@ -2319,8 +2320,6 @@ struct rip_t : public cat_attack_t
 
     void copy_state( const action_state_t* state )
     {
-      action_state_t::copy_state( state );
-
       const rip_state_t* rip_state = debug_cast<const rip_state_t*>( state );
       combo_points = rip_state -> combo_points;
     }
@@ -2334,7 +2333,7 @@ struct rip_t : public cat_attack_t
       return s;
     }
   };
-  
+
   double ap_per_point;
 
   rip_t( druid_t* p, const std::string& options_str ) :
