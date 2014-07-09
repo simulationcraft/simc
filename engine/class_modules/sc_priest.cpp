@@ -59,6 +59,7 @@ public:
   struct
   {
     // Talents
+    buff_t* glyph_of_levitate;
     buff_t* power_infusion;
     buff_t* twist_of_fate;
     buff_t* surge_of_light;
@@ -84,6 +85,7 @@ public:
     // Shadow
     buff_t* divine_insight_shadow;
     buff_t* shadow_word_death_reset_cooldown;
+    buff_t* glyph_of_mind_flay;
     buff_t* glyph_mind_spike;
     buff_t* shadowform;
     buff_t* vampiric_embrace;
@@ -1739,6 +1741,24 @@ struct fortitude_t final : public priest_spell_t
   }
 };
 
+// Levitate =================================================================
+
+struct levitate_t final: public priest_spell_t
+{
+  levitate_t( priest_t& p, const std::string& options_str ):
+    priest_spell_t( "levitate", p, p.find_class_spell( "Levitate" ) )
+  {
+    parse_options( nullptr, options_str );
+  }
+
+  virtual void execute()
+  {
+    priest_spell_t::execute();
+
+    priest.buffs.glyph_of_levitate -> trigger();
+  }
+};
+
 // Pain Supression ==========================================================
 
 struct pain_suppression_t final : public priest_spell_t
@@ -2643,6 +2663,7 @@ struct shadow_orb_state_t : public action_state_t
     orbs_used = dps_t -> orbs_used;
   }
 };
+
 // Shadow Orb State ===================================================
 
 struct dp_state_t final : public shadow_orb_state_t
@@ -3016,6 +3037,12 @@ struct mind_flay_base_t : public priest_spell_t
 
     return am;
   }
+
+  virtual void tick( dot_t * d )
+  {
+    priest_spell_t::tick( d );
+    priest.buffs.glyph_of_mind_flay -> trigger();
+  }
 };
 
 struct mind_flay_insanity_t final : public mind_flay_base_t<true>
@@ -3037,6 +3064,12 @@ struct mind_flay_insanity_t final : public mind_flay_base_t<true>
     am *= 1.0 + dp_state -> orbs_used / 3.0;
 
     return am;
+  }
+
+  virtual void tick( dot_t * d )
+  {
+    priest_spell_t::tick( d );
+    priest.buffs.glyph_of_mind_flay -> trigger();
   }
 
   virtual bool ready() override
@@ -5267,6 +5300,12 @@ double priest_t::temporary_movement_modifier() const
     speed = std::max( speed, glyphs.free_action -> effectN( 1 ).percent() );
   }
 
+  if ( buffs.glyph_of_levitate -> up() )
+    speed = std::max( speed, buffs.glyph_of_levitate -> default_value );
+
+  if ( buffs.glyph_of_mind_flay -> up() )
+    speed = std::max( speed, ( buffs.glyph_of_mind_flay -> default_value * buffs.glyph_of_mind_flay -> stack() ) );
+
   return speed;
 }
 
@@ -5332,6 +5371,7 @@ action_t* priest_t::create_action( const std::string& name,
   if ( name == "chakra_sanctuary"       ) return new chakra_sanctuary_t      ( *this, options_str );
   if ( name == "chakra_serenity"        ) return new chakra_serenity_t       ( *this, options_str );
   if ( name == "dispersion"             ) return new dispersion_t            ( *this, options_str );
+  if ( name == "levitate"               ) return new levitate_t              ( *this, options_str );
   if ( name == "power_word_fortitude"   ) return new fortitude_t             ( *this, options_str );
   if ( name == "pain_suppression"       ) return new pain_suppression_t      ( *this, options_str );
   if ( name == "power_infusion"         ) return new power_infusion_t        ( *this, options_str );
@@ -5590,7 +5630,7 @@ void priest_t::init_spells()
   glyphs.fade                         = find_glyph_spell( "Glyph of Fade" );                    //NYI
   glyphs.fear_ward                    = find_glyph_spell( "Glyph of Fear Ward" );               //NYI
   glyphs.leap_of_faith                = find_glyph_spell( "Glyph of Leap of Faith" );           //NYI
-  glyphs.levitate                     = find_glyph_spell( "Glyph of Levitate" );                //NYI
+  glyphs.levitate                     = find_glyph_spell( "Glyph of Levitate" );
   glyphs.mass_dispel                  = find_glyph_spell( "Glyph of Mass Dispel" );             //NYI
   glyphs.power_word_shield            = find_glyph_spell( "Glyph of Power Word: Shield" );
   glyphs.prayer_of_mending            = find_glyph_spell( "Glyph of Prayer of Mending" );
@@ -5799,6 +5839,12 @@ void priest_t::create_buffs()
                           .spell( find_spell( 145374 ) )
                           .chance( sets.has_set_bonus( SET_T16_4PC_HEAL ) ? 1.0 : 0.0 )
                           .add_invalidate( CACHE_HASTE );
+
+  buffs.glyph_of_levitate = buff_creator_t( this, "glyph_of_levitate", glyphs.levitate )
+                              .default_value( glyphs.levitate -> effectN( 1 ).percent() );
+
+  buffs.glyph_of_mind_flay = buff_creator_t( this, "glyph_of_mind_flay", glyphs.mind_flay )
+                               .default_value( glyphs.mind_flay -> effectN( 1 ).percent() );
 
   buffs.mental_instinct = buff_creator_t( this, "mental_instinct" )
                             .spell( sets.set( SET_T17_4PC_CASTER ) -> effectN( 1 ).trigger() )
