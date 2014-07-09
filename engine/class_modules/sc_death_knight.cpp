@@ -185,6 +185,7 @@ public:
     buff_t* crimson_scourge;
     buff_t* dancing_rune_weapon;
     buff_t* dark_transformation;
+    buff_t* deaths_advance;
     buff_t* deathbringer;
     buff_t* frost_presence;
     buff_t* icebound_fortitude;
@@ -326,11 +327,13 @@ public:
     const spell_data_t* plague_leech;
     const spell_data_t* unholy_blight;
 
-    const spell_data_t* death_siphon;
+    const spell_data_t* deaths_advance;
 
     const spell_data_t* blood_tap;
     const spell_data_t* runic_empowerment;
     const spell_data_t* runic_corruption;
+
+    const spell_data_t* death_siphon;
 
     const spell_data_t* necrotic_plague;
     const spell_data_t* breath_of_sindragosa;
@@ -344,6 +347,7 @@ public:
     const spell_data_t* t15_4pc_tank;
     const spell_data_t* t16_4pc_melee;
     const spell_data_t* blood_rites;
+    const spell_data_t* deaths_advance;
     const spell_data_t* necrotic_plague_energize;
   } spell;
 
@@ -475,6 +479,8 @@ public:
   virtual double    composite_melee_expertise( weapon_t* ) const;
   virtual double    composite_player_multiplier( school_e school ) const;
   virtual double    composite_crit_avoidance() const;
+  virtual double    passive_movement_modifier() const;
+  virtual double    temporary_movement_modifier() const;
   virtual void      regen( timespan_t periodicity );
   virtual void      reset();
   virtual void      arise();
@@ -4216,6 +4222,23 @@ struct unholy_presence_t : public presence_t
   }
 };
 
+// Death's Advance ===============================================================
+
+struct deaths_advance_t: public death_knight_spell_t
+{
+  deaths_advance_t( death_knight_t* p, const std::string& options_str ):
+    death_knight_spell_t( "raise_dead", p, p -> talent.deaths_advance )
+  {
+    parse_options( NULL, options_str );
+  }
+
+  virtual void execute()
+  {
+    death_knight_spell_t::execute();
+
+    p() -> buffs.deaths_advance -> trigger();
+  }
+};
 
 // Raise Dead ===============================================================
 
@@ -4810,6 +4833,7 @@ action_t* death_knight_t::create_action( const std::string& name, const std::str
   if ( name == "antimagic_shell"          ) return new antimagic_shell_t          ( this, options_str );
   if ( name == "auto_attack"              ) return new auto_attack_t              ( this, options_str );
   if ( name == "blood_presence"           ) return new blood_presence_t           ( this, options_str );
+  if ( name == "deaths_advance"           ) return new deaths_advance_t           ( this, options_str );
   if ( name == "unholy_presence"          ) return new unholy_presence_t          ( this, options_str );
   if ( name == "frost_presence"           ) return new frost_presence_t           ( this, options_str );
   if ( name == "soul_reaper"              ) return new soul_reaper_t              ( this, options_str );
@@ -5174,11 +5198,14 @@ void death_knight_t::init_spells()
   talent.plague_leech             = find_talent_spell( "Plague Leech" );
   talent.unholy_blight            = find_talent_spell( "Unholy Blight" );
 
-  talent.death_siphon             = find_talent_spell( "Death Siphon" );
+  talent.deaths_advance           = find_talent_spell( "Death's Advance" );
+  spell.deaths_advance            = find_spell( 124285 ); // Passive movement speed is in a completely unlinked spell id.
 
   talent.blood_tap                = find_talent_spell( "Blood Tap" );
   talent.runic_empowerment        = find_talent_spell( "Runic Empowerment" );
   talent.runic_corruption         = find_talent_spell( "Runic Corruption" );
+
+  talent.death_siphon             = find_talent_spell( "Death Siphon" );
 
   talent.necrotic_plague          = find_talent_spell( "Necrotic Plague" );
   talent.breath_of_sindragosa     = find_talent_spell( "Breath of Sindragosa" );
@@ -5432,9 +5459,7 @@ void death_knight_t::init_action_list()
 
   
   precombat -> add_action( this, "Horn of Winter" );
-  
 
-  
 
   if ( specialization() == DEATH_KNIGHT_FROST )
     precombat -> add_action( this, "Frost Presence" );
@@ -5456,7 +5481,8 @@ void death_knight_t::init_action_list()
     precombat -> add_action( get_profession_actions()[ i ] );
 
   def -> add_action( "auto_attack" );
-  def -> add_action( this, "Anti-Magic Shell", "damage=100000" );
+  def -> add_action( this, "Death's Advance", "if=movement.remains>2" );
+  def -> add_talent( this, "Anti-Magic Shell", "damage=100000" );
 
 
   switch ( specialization() )
@@ -5485,7 +5511,6 @@ void death_knight_t::init_action_list()
       //decide between single_target and aoe rotation
       def -> add_action( "run_action_list,name=aoe,if=active_enemies>=3" );
       def -> add_action( "run_action_list,name=single_target,if=active_enemies<3" );
-      
 
       if ( main_hand_weapon.group() == WEAPON_2H )
       {
@@ -5595,95 +5620,95 @@ void death_knight_t::init_action_list()
       break;
     }
     case DEATH_KNIGHT_UNHOLY:
-	  {
-	    precombat -> add_action( this, "Raise Dead" );
+    {
+      precombat -> add_action( this, "Raise Dead" );
 
-	    for ( size_t i = 0; i < get_profession_actions().size( ); i++ )
-	      def -> add_action( get_profession_actions()[ i ] );
-	
-	    for ( size_t i = 0; i < get_racial_actions().size( ); i++ )
-	      def -> add_action( get_racial_actions()[ i ] );
-	
-	    for ( size_t i = 0; i < get_item_actions().size( ); i++ )
-	      def -> add_action( get_item_actions()[ i ] );
-	
+      for ( size_t i = 0; i < get_profession_actions().size( ); i++ )
+        def -> add_action( get_profession_actions()[ i ] );
+  
+      for ( size_t i = 0; i < get_racial_actions().size( ); i++ )
+        def -> add_action( get_racial_actions()[ i ] );
+  
+      for ( size_t i = 0; i < get_item_actions().size( ); i++ )
+        def -> add_action( get_item_actions()[ i ] );
+  
             if ( sim -> allow_potions && level >= 80 )
               def -> add_action( potion_str + ",if=buff.dark_transformation.up&target.time_to_die<=60" );
 
-	    //decide between single_target and aoe rotation
-	    def -> add_action( "run_action_list,name=aoe,if=active_enemies>=3" );
-	    def -> add_action( "run_action_list,name=single_target,if=active_enemies<3" );
+      //decide between single_target and aoe rotation
+      def -> add_action( "run_action_list,name=aoe,if=active_enemies>=3" );
+      def -> add_action( "run_action_list,name=single_target,if=active_enemies<3" );
 
-	    // Disease Gaming
-		  st -> add_action( this, "Outbreak", "if=stat.attack_power>(dot.blood_plague.attack_power*1.1)&time>15&!(cooldown.unholy_blight.remains>79)" );
-		  st -> add_action( this, "Plague Strike", "if=stat.attack_power>(dot.blood_plague.attack_power*1.1)&time>15&!(cooldown.unholy_blight.remains>79)" );
+      // Disease Gaming
+      st -> add_action( this, "Outbreak", "if=stat.attack_power>(dot.blood_plague.attack_power*1.1)&time>15&!(cooldown.unholy_blight.remains>79)" );
+      st -> add_action( this, "Plague Strike", "if=stat.attack_power>(dot.blood_plague.attack_power*1.1)&time>15&!(cooldown.unholy_blight.remains>79)" );
 
-		  st -> add_talent( this, "Blood Tap", "if=buff.blood_charge.stack>10&runic_power>=32" );
+      st -> add_talent( this, "Blood Tap", "if=buff.blood_charge.stack>10&runic_power>=32" );
 
-	    // Diseases for free
-		  st -> add_talent( this, "Unholy Blight", "if=(dot.frost_fever.remains<3|dot.blood_plague.remains<3)" );
-		  st -> add_action( this, "Outbreak", "if=dot.frost_fever.remains<3|dot.blood_plague.remains<3" );
+      // Diseases for free
+      st -> add_talent( this, "Unholy Blight", "if=(dot.frost_fever.remains<3|dot.blood_plague.remains<3)" );
+      st -> add_action( this, "Outbreak", "if=dot.frost_fever.remains<3|dot.blood_plague.remains<3" );
 
-	    // Soul Reaper
-		  st -> add_action( this, "Soul Reaper", "if=target.health.pct-3*(target.health.pct%target.time_to_die)<=" + soul_reaper_pct );
-		  st -> add_talent( this, "Blood Tap", "if=(target.health.pct-3*(target.health.pct%target.time_to_die)<=" + soul_reaper_pct + "&cooldown.soul_reaper.remains=0)" );
+      // Soul Reaper
+      st -> add_action( this, "Soul Reaper", "if=target.health.pct-3*(target.health.pct%target.time_to_die)<=" + soul_reaper_pct );
+      st -> add_talent( this, "Blood Tap", "if=(target.health.pct-3*(target.health.pct%target.time_to_die)<=" + soul_reaper_pct + "&cooldown.soul_reaper.remains=0)" );
      
 
-	    // Diseases for Runes
-		  st -> add_action( this, "Plague Strike", "if=!dot.blood_plague.ticking|!dot.frost_fever.ticking" );
+      // Diseases for Runes
+      st -> add_action( this, "Plague Strike", "if=!dot.blood_plague.ticking|!dot.frost_fever.ticking" );
 
-	    // GCD Cooldowns
-		  st -> add_action( this, "Summon Gargoyle" );
-		  st -> add_action( this, "Dark Transformation" );
-		  st -> add_talent( this, "Blood Tap,if=buff.shadow_infusion.stack=5" );
+      // GCD Cooldowns
+      st -> add_action( this, "Summon Gargoyle" );
+      st -> add_action( this, "Dark Transformation" );
+      st -> add_talent( this, "Blood Tap,if=buff.shadow_infusion.stack=5" );
 
-	    // Don't waste runic power
-		  st -> add_action( this, "Death Coil", "if=runic_power>90" );
+      // Don't waste runic power
+      st -> add_action( this, "Death Coil", "if=runic_power>90" );
 
-	    // Get runes on cooldown
-		  st -> add_action( this, "Death and Decay", "if=unholy=2" );
-		  st -> add_talent( this, "Blood Tap", "if=unholy=2&cooldown.death_and_decay.remains=0" );
-		  st -> add_action( this, "Scourge Strike", "if=unholy=2" );
-		  st -> add_action( this, "Festering Strike", "if=blood=2&frost=2" );
+      // Get runes on cooldown
+      st -> add_action( this, "Death and Decay", "if=unholy=2" );
+      st -> add_talent( this, "Blood Tap", "if=unholy=2&cooldown.death_and_decay.remains=0" );
+      st -> add_action( this, "Scourge Strike", "if=unholy=2" );
+      st -> add_action( this, "Festering Strike", "if=blood=2&frost=2" );
 
-	    // Normal stuff
-		  st -> add_action( this, "Death and Decay" );
-		  st -> add_talent( this, "Blood Tap", "if=cooldown.death_and_decay.remains=0" );
-		  st -> add_action( this, "Death Coil", "if=buff.sudden_doom.react|(buff.dark_transformation.down&rune.unholy<=1)" );
-		  st -> add_action( this, "Scourge Strike" );
-		  st -> add_talent( this, "Plague Leech", "if=cooldown.outbreak.remains<1" );
-		  st -> add_action( this, "Festering Strike" );
-		  st -> add_action( this, "Death Coil" );
+      // Normal stuff
+      st -> add_action( this, "Death and Decay" );
+      st -> add_talent( this, "Blood Tap", "if=cooldown.death_and_decay.remains=0" );
+      st -> add_action( this, "Death Coil", "if=buff.sudden_doom.react|(buff.dark_transformation.down&rune.unholy<=1)" );
+      st -> add_action( this, "Scourge Strike" );
+      st -> add_talent( this, "Plague Leech", "if=cooldown.outbreak.remains<1" );
+      st -> add_action( this, "Festering Strike" );
+      st -> add_action( this, "Death Coil" );
 
-	    // Less waiting
-		  st -> add_talent( this, "Blood Tap", "if=buff.blood_charge.stack>=8" );
-		  st -> add_action( this, "Empower Rune Weapon" );
+      // Less waiting
+      st -> add_talent( this, "Blood Tap", "if=buff.blood_charge.stack>=8" );
+      st -> add_action( this, "Empower Rune Weapon" );
 
-	    //AoE
-	    aoe -> add_talent( this, "Unholy Blight" );
-	    aoe -> add_action( this, "Plague Strike", "if=!dot.blood_plague.ticking|!dot.frost_fever.ticking" );
-	    aoe -> add_action( this, "Pestilence", "if=dot.blood_plague.ticking&talent.plague_leech.enabled,line_cd=28" );
-	    aoe -> add_action( this, "Pestilence", "if=dot.blood_plague.ticking&talent.unholy_blight.enabled&cooldown.unholy_blight.remains<49,line_cd=28" );
-	    aoe -> add_action( this, "Summon Gargoyle" );
-	    aoe -> add_action( this, "Dark Transformation" );
-	    aoe -> add_talent( this, "Blood Tap", "if=buff.shadow_infusion.stack=5" );
-	    aoe -> add_action( this, "Death and Decay", "if=unholy=1" );
-	    aoe -> add_action( this, "Soul Reaper", "if=unholy=2&target.health.pct-3*(target.health.pct%target.time_to_die)<=" + soul_reaper_pct );
-	    aoe -> add_action( this, "Scourge Strike", "if=unholy=2" );
-	    aoe -> add_talent( this, "Blood Tap", "if=buff.blood_charge.stack>10" );
-	    aoe -> add_action( this, "Death Coil", "if=runic_power>90|buff.sudden_doom.react|(buff.dark_transformation.down&rune.unholy<=1)" );
-	    aoe -> add_action( this, "Icy Touch" );
-	    aoe -> add_action( this, "Soul Reaper", "if=unholy=1&target.health.pct-3*(target.health.pct%target.time_to_die)<=" + soul_reaper_pct );
-	    aoe -> add_action( this, "Scourge Strike", "if=unholy=1" );
-	    aoe -> add_action( this, "Death Coil" );
-	    aoe -> add_talent( this, "Blood Tap" );
-	    aoe -> add_talent( this, "Plague Leech", "if=unholy=1" );
-	    aoe -> add_action( this, "Empower Rune Weapon" );
+      //AoE
+      aoe -> add_talent( this, "Unholy Blight" );
+      aoe -> add_action( this, "Plague Strike", "if=!dot.blood_plague.ticking|!dot.frost_fever.ticking" );
+      aoe -> add_action( this, "Pestilence", "if=dot.blood_plague.ticking&talent.plague_leech.enabled,line_cd=28" );
+      aoe -> add_action( this, "Pestilence", "if=dot.blood_plague.ticking&talent.unholy_blight.enabled&cooldown.unholy_blight.remains<49,line_cd=28" );
+      aoe -> add_action( this, "Summon Gargoyle" );
+      aoe -> add_action( this, "Dark Transformation" );
+      aoe -> add_talent( this, "Blood Tap", "if=buff.shadow_infusion.stack=5" );
+      aoe -> add_action( this, "Death and Decay", "if=unholy=1" );
+      aoe -> add_action( this, "Soul Reaper", "if=unholy=2&target.health.pct-3*(target.health.pct%target.time_to_die)<=" + soul_reaper_pct );
+      aoe -> add_action( this, "Scourge Strike", "if=unholy=2" );
+      aoe -> add_talent( this, "Blood Tap", "if=buff.blood_charge.stack>10" );
+      aoe -> add_action( this, "Death Coil", "if=runic_power>90|buff.sudden_doom.react|(buff.dark_transformation.down&rune.unholy<=1)" );
+      aoe -> add_action( this, "Icy Touch" );
+      aoe -> add_action( this, "Soul Reaper", "if=unholy=1&target.health.pct-3*(target.health.pct%target.time_to_die)<=" + soul_reaper_pct );
+      aoe -> add_action( this, "Scourge Strike", "if=unholy=1" );
+      aoe -> add_action( this, "Death Coil" );
+      aoe -> add_talent( this, "Blood Tap" );
+      aoe -> add_talent( this, "Plague Leech", "if=unholy=1" );
+      aoe -> add_action( this, "Empower Rune Weapon" );
 
-	    break;
-	  }
-	  default: break;
-	}
+      break;
+    }
+    default: break;
+  }
 
 
   use_default_action_list = true;
@@ -5938,6 +5963,8 @@ void death_knight_t::create_buffs()
                               .cd( timespan_t::zero() )
                               .add_invalidate( CACHE_PARRY );
   buffs.dark_transformation = buff_creator_t( this, "dark_transformation", find_class_spell( "Dark Transformation" ) );
+  buffs.deaths_advance      = buff_creator_t( this, "deaths_advance", talent.deaths_advance )
+                              .default_value( talent.deaths_advance -> effectN( 1 ).percent() );
   buffs.deathbringer        = buff_creator_t( this, "deathbringer", find_spell( 144953 ) )
                               .chance( sets.has_set_bonus( SET_T16_4PC_TANK ) );
   buffs.death_shroud        = stat_buff_creator_t( this, "death_shroud", sets.set( SET_T16_2PC_MELEE ) -> effectN( 1 ).trigger() )
@@ -6397,6 +6424,35 @@ double death_knight_t::composite_crit_avoidance() const
 
   return c;
 }
+
+// death_knight_t::temporary_movement_modifier ==================================
+
+double death_knight_t::temporary_movement_modifier() const
+{
+  double temporary = player_t::temporary_movement_modifier();
+
+  if ( buffs.deaths_advance -> up() )
+    temporary = std::max( buffs.deaths_advance -> default_value, temporary );
+
+  return temporary;
+}
+
+// death_knight_t::passive_movement_modifier====================================
+
+double death_knight_t::passive_movement_modifier() const
+{
+  double ms = player_t::passive_movement_modifier();
+
+  if ( buffs.unholy_presence -> up() )
+    ms += buffs.unholy_presence -> data().effectN( 2 ).percent();
+
+  if ( talent.deaths_advance -> ok() )
+    ms += spell.deaths_advance -> effectN( 2 ).percent();
+
+  return ms;
+}
+
+// death_knight_t::invalidate_cache =========================================
 
 void death_knight_t::invalidate_cache( cache_e c )
 {
