@@ -77,7 +77,7 @@ public:
     buff_t* chakra_chastise;
     buff_t* chakra_sanctuary;
     buff_t* chakra_serenity;
-    buff_t* divine_insight_holy; // TODO: implement actual effect
+    buff_t* divine_insight_holy;
     buff_t* serendipity;
 
     buff_t* focused_will;
@@ -4661,6 +4661,15 @@ struct prayer_of_mending_t final : public priest_heal_t
       ctm *= 1.0 + priest.glyphs.prayer_of_mending -> effectN( 1 ).percent();
 
     return ctm;
+  }
+
+  void update_ready( timespan_t cd_duration  ) override
+  {
+    // If divine insight holy is up, don't trigger a cooldown
+    if ( ! priest.buffs.divine_insight_holy -> up() )
+    {
+      priest_heal_t::update_ready( cd_duration );
+    }
   }
 };
 
