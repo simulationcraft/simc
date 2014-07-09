@@ -28,6 +28,7 @@ actions.precombat+=/snapshot_stats
 # Executed every time the actor is available.
 
 actions=/auto_attack
+actions+=/speed_of_light,if=talent.speed_of_light.enabled&movement.remains>1
 actions+=/blood_fury
 actions+=/berserking
 actions+=/arcane_torrent

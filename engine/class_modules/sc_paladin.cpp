@@ -113,12 +113,14 @@ public:
     absorb_buff_t* holy_shield;
     buff_t* infusion_of_light;
     buff_t* liadrins_righteousness;
+    buff_t* long_arm_of_the_law;
     buff_t* maraads_truth;
     buff_t* sacred_shield;  // dummy buff for APL simplicity
     buff_t* selfless_healer;
     buff_t* seraphim;
     buff_t* shield_of_glory; // t15_2pc_tank
     buff_t* shield_of_the_righteous;
+    buff_t* speed_of_light;
     buff_t* turalyons_justice;
     buff_t* uthers_insight;
     buff_t* warrior_of_the_light; // t16_2pc_melee
@@ -249,6 +251,9 @@ public:
   // Talents
   struct talents_t
   {
+    const spell_data_t* speed_of_light;
+    const spell_data_t* long_arm_of_the_law;
+    const spell_data_t* pursuit_of_justice;
     const spell_data_t* hand_of_purity;
     const spell_data_t* unbreakable_spirit;
     const spell_data_t* clemency;
@@ -695,7 +700,6 @@ public:
     }
   }
 };
-
 
 // paladin "Spell" Base for paladin_spell_t, paladin_heal_t and paladin_absorb_t
 
@@ -2965,6 +2969,24 @@ struct seraphim_t : public paladin_spell_t
   }
 };
 
+// Speed of Light ===========================================================
+
+struct speed_of_light_t: public paladin_spell_t
+{
+  speed_of_light_t( paladin_t* p, const std::string& options_str )
+    : paladin_spell_t( "speed_of_light", p, p -> talents.speed_of_light )
+  {
+    parse_options( NULL, options_str );
+  }
+
+  virtual void execute()
+  {
+    paladin_spell_t::execute();
+
+    p() -> buffs.speed_of_light -> trigger();
+  }
+};
+
 // Shining Protector ========================================================
 // This is a protection-specific multistrike effect
 
@@ -3965,8 +3987,9 @@ struct judgment_t : public paladin_melee_attack_t
       {
         // apply gain, attribute gain to Judgment
         p() -> resource_gain( RESOURCE_HOLY_POWER, 1, p() -> gains.hp_judgment );
-
       }
+      if ( p() -> talents.long_arm_of_the_law -> ok() )
+        p() -> buffs.long_arm_of_the_law -> trigger();
       // +1 Holy Power for Prot
       else if ( p() -> passives.judgments_of_the_wise -> ok() )
       {
@@ -4537,6 +4560,7 @@ action_t* paladin_t::create_action( const std::string& name, const std::string& 
                                                active_seal_of_truth_proc         = new seal_of_truth_proc_t         ( this );
                                                active_censure                    = new censure_t                    ( this ); return a; }
 
+  if ( name == "speed_of_light"            ) return new speed_of_light_t           ( this, options_str );
   if ( name == "eternal_flame"             ) return new eternal_flame_t            ( this, options_str );
   if ( name == "word_of_glory"             ) return new word_of_glory_t            ( this, options_str );
   if ( name == "sacred_shield"             ) return new sacred_shield_t            ( this, options_str );
@@ -4870,6 +4894,10 @@ void paladin_t::create_buffs()
                                  .school( SCHOOL_MAGIC )
                                  .source( get_stats( "holy_shield" ) )
                                  .gain( get_gain( "holy_shield" ) );
+  buffs.long_arm_of_the_law    = buff_creator_t( this, "long_arm_of_the_law", talents.long_arm_of_the_law )
+                                 .default_value( talents.long_arm_of_the_law -> effectN( 1 ).percent() );
+  buffs.speed_of_light         = buff_creator_t( this, "speed_of_light", talents.speed_of_light )
+                                 .default_value( talents.speed_of_light -> effectN( 1 ).percent() );
   buffs.sacred_shield          = buff_creator_t( this, "sacred_shield", find_talent_spell( "Sacred Shield" ) )
                                  .duration( timespan_t::from_seconds( 30 ) ) // arbitrarily high since this is just a placeholder, we expire() on last_tick()
                                  .cd( timespan_t::zero() ) // let ability handle CD
@@ -4973,6 +5001,7 @@ void paladin_t::generate_action_prio_list_prot()
   // def -> add_action( "potion,name=potion_of_the_mountains,if=!in_combat|buff.bloodlust.react|target.time_to_die<=60" );
 
   def -> add_action( "/auto_attack" );
+  def -> add_talent( this, "Speed of Light", "if=movement.remains>1" );
 
   int num_items = ( int ) items.size();
   for ( int i = 0; i < num_items; i++ )
@@ -5075,6 +5104,7 @@ void paladin_t::generate_action_prio_list_ret()
 
   // This should<tm> get Censure up before the auto attack lands
   def -> add_action( "auto_attack" );
+  def -> add_talent( this, "Speed of Light", "if=movement.remains>1" );
 
   // Avenging Wrath
   def -> add_action( this, "Avenging Wrath" );
@@ -5203,6 +5233,7 @@ void paladin_t::generate_action_prio_list_holy()
     def -> add_action( "potion,name=mana_potion,if=mana.pct<=75" );
 
   def -> add_action( "/auto_attack" );
+  def -> add_talent( this, "Speed of Light", "if=movement.remains>1" );
 
   int num_items = ( int ) items.size();
   for ( int i = 0; i < num_items; i++ )
@@ -5355,6 +5386,9 @@ void paladin_t::init_spells()
   player_t::init_spells();
 
   // Talents
+  talents.long_arm_of_the_law     = find_talent_spell( "Long Arm of the Law" );
+  talents.speed_of_light          = find_talent_spell( "Speed of Light" );
+  talents.pursuit_of_justice      = find_talent_spell( "Pursuit of Justice" );
   talents.hand_of_purity          = find_talent_spell( "Hand of Purity" );
   talents.unbreakable_spirit      = find_talent_spell( "Unbreakable Spirit" );
   talents.clemency                = find_talent_spell( "Clemency" );
@@ -5928,12 +5962,22 @@ double paladin_t::composite_parry() const
   return p;
 }
 
+// paladin_t::temporary_movement_modifier ================================
+
 double paladin_t::temporary_movement_modifier() const
 {
   double temporary = player_t::temporary_movement_modifier();
   
+  if ( buffs.speed_of_light -> up() )
+    temporary = std::max( buffs.speed_of_light -> default_value, temporary );
+  if ( buffs.long_arm_of_the_law -> up() )
+    temporary = std::max( buffs.long_arm_of_the_law -> default_value, temporary );
   if ( buffs.turalyons_justice -> check() )
     temporary = std::max( buffs.turalyons_justice-> data().effectN( 1 ).percent(), temporary );
+  if ( talents.pursuit_of_justice -> ok() )
+    temporary = std::max( ( talents.pursuit_of_justice -> effectN( 1 ).percent() +
+                std::min( resources.current[RESOURCE_HOLY_POWER] * talents.pursuit_of_justice -> effectN( 8 ).percent(), 0.15 ) ), 
+                temporary );
 
   return temporary;
 }
