@@ -4800,7 +4800,7 @@ struct warrior_module_t: public module_t
 
   virtual bool valid() const { return true; }
 
-  virtual void init( sim_t* sim ) const
+  virtual void init( sim_t* /* sim */) const
   {
     /*
     for ( size_t i = 0; i < sim -> actor_list.size(); i++ )
