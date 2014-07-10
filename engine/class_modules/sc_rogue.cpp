@@ -493,7 +493,6 @@ struct rogue_attack_t : public melee_attack_t
   virtual bool   ready();
   virtual void   impact( action_state_t* state );
 
-  virtual double calculate_weapon_damage( double attack_power );
   virtual double target_armor( player_t* ) const;
 
   virtual double attack_direct_power_coefficient( const action_state_t* s ) const
@@ -1376,20 +1375,6 @@ void rogue_attack_t::execute()
     trigger_tricks_of_the_trade( this );
     trigger_restless_blades();
   }
-}
-
-// rogue_attack_t::calculate_weapon_damage ==================================
-
-double rogue_attack_t::calculate_weapon_damage( double attack_power )
-{
-  double dmg = melee_attack_t::calculate_weapon_damage( attack_power );
-
-  if ( dmg == 0 ) return 0;
-
-  if ( weapon -> slot == SLOT_OFF_HAND )
-    dmg *= 1.0 + p() -> spec.ambidexterity -> effectN( 1 ).percent();
-
-  return dmg;
 }
 
 // rogue_attack_t::ready() ==================================================
@@ -2396,14 +2381,6 @@ struct revealing_strike_t : public rogue_attack_t
       t += p() -> perk.enhanced_adrenaline_rush -> effectN( 1 ).time_value();
 
     return t;
-  }
-
-  virtual void impact( action_state_t* state )
-  {
-    rogue_attack_t::impact( state );
-
-    if ( result_is_hit( state -> result ) )
-      p() -> buffs.bandits_guile -> trigger();
   }
 };
 
@@ -3657,7 +3634,6 @@ void rogue_t::init_spells()
   spec.blindside            = find_specialization_spell( "Blindside" );
 
   // Combat
-  spec.ambidexterity        = find_specialization_spell( "Ambidexterity" );
   spec.blade_flurry         = find_specialization_spell( "Blade Flurry" );
   spec.vitality             = find_specialization_spell( "Vitality" );
   spec.combat_potency       = find_specialization_spell( "Combat Potency" );
