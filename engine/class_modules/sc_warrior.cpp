@@ -102,6 +102,8 @@ public:
     // Tier bonuses
     buff_t* tier15_2pc_tank;
     buff_t* tier16_reckless_defense;
+    buff_t* tier17_4pc_arms;
+    buff_t* tier17_4pc_fury;
   } buff;
 
   // Cooldowns
@@ -157,6 +159,7 @@ public:
     gain_t* tier15_4pc_tank;
     gain_t* tier16_2pc_melee;
     gain_t* tier16_4pc_tank;
+    gain_t* tier17_2pc_arms;
   } gain;
 
   // Spells
@@ -214,6 +217,7 @@ public:
 
     //Tier bonuses
     proc_t* t15_2pc_melee;
+    proc_t* t17_4pc_arms;
   } proc;
 
   real_ppm_t t15_2pc_melee;
@@ -399,6 +403,7 @@ public:
   virtual double    composite_crit_block() const;
   virtual double    composite_crit_avoidance() const;
   virtual double    composite_melee_speed() const;
+  virtual double    composite_melee_crit() const;
   virtual void      reset();
   virtual void      regen( timespan_t periodicity );
   virtual void      create_options();
@@ -1232,6 +1237,9 @@ struct colossus_smash_t: public warrior_attack_t
     parse_options( NULL, options_str );
 
     weapon = &( player -> main_hand_weapon );
+
+    if ( p -> sets.has_set_bonus( SET_T17_2PC_MELEE ) && p -> specialization() == WARRIOR_ARMS )
+      base_costs[RESOURCE_RAGE] = 0;
   }
 
   virtual double action_multiplier() const
@@ -1242,6 +1250,22 @@ struct colossus_smash_t: public warrior_attack_t
       am *= 1.0 + p() -> cache.mastery_value();
 
     return am;
+  }
+
+  virtual void execute()
+  {
+    warrior_attack_t::execute();
+
+    if ( p() -> specialization() == WARRIOR_ARMS )
+    {
+      if ( p() -> sets.has_set_bonus( SET_T17_2PC_MELEE ) )
+        p() -> resource_gain( RESOURCE_RAGE,
+        p() -> sets.set( SET_T17_2PC_MELEE ) -> effectN( 1 ).trigger() -> effectN( 1 ).resource( RESOURCE_RAGE ),
+        p() -> gain.tier17_2pc_arms );
+      if ( p() -> sets.has_set_bonus( SET_T17_4PC_MELEE ) )
+        if ( p() -> buff.tier17_4pc_arms -> trigger() )
+          p() -> proc.t17_4pc_arms -> occur();
+    }
   }
 
   virtual void impact( action_state_t* s )
@@ -1822,6 +1846,9 @@ struct mortal_strike_t: public warrior_attack_t
   {
     cd_duration = cooldown -> duration * player -> cache.attack_haste();
 
+    if ( p() -> buff.tier17_4pc_arms -> up() )
+      cd_duration *= -1 * p() -> buff.tier17_4pc_arms -> data().effectN( 1 ).percent();
+
     warrior_attack_t::update_ready( cd_duration );
   }
 };
@@ -1864,6 +1891,10 @@ struct raging_blow_attack_t: public warrior_attack_t
     if ( aoe ) ++aoe;
 
     warrior_attack_t::execute();
+
+    if ( execute_state -> result == RESULT_CRIT )
+      if ( rng().roll( p() -> sets.set( SET_T17_2PC_MELEE ) -> proc_chance() ) )
+        p() -> enrage();
   }
 };
 
@@ -3867,10 +3898,16 @@ void warrior_t::create_buffs()
 
   buff.tier16_reckless_defense = buff_creator_t( this, "tier16_reckless_defense", find_spell( 144500 ) );
 
+  buff.tier17_4pc_arms = buff_creator_t( this, "tier17_4pc_arms", sets.set( SET_T17_4PC_MELEE ) -> effectN( 1 ).trigger() )
+    .chance( sets.set( SET_T17_4PC_MELEE) -> proc_chance() );
+
+  buff.tier17_4pc_fury = buff_creator_t( this, "tier17_4pc_fury", sets.set( SET_T17_4PC_MELEE ) -> effectN( 1 ).trigger() -> effectN( 1 ).trigger() )
+    .add_invalidate( CACHE_ATTACK_SPEED )
+    .add_invalidate( CACHE_CRIT );
+
   buff.unyielding_strikes = buff_creator_t( this, "unyielding_strikes", talents.unyielding_strikes );
 
   buff.ultimatum        = buff_creator_t( this, "ultimatum", spec.ultimatum -> effectN( 1 ).trigger() );
-
 }
 
 // warrior_t::init_gains ====================================================
@@ -3897,6 +3934,7 @@ void warrior_t::init_gains()
   gain.tier15_4pc_tank        = get_gain( "tier15_4pc_tank" );
   gain.tier16_2pc_melee       = get_gain( "tier16_2pc_melee" );
   gain.tier16_4pc_tank        = get_gain( "tier16_4pc_tank" );
+  gain.tier17_2pc_arms        = get_gain( "tier17_2pc_arms" );
 }
 
 // warrior_t::init_position ====================================================
@@ -3929,6 +3967,7 @@ void warrior_t::init_procs()
   proc.raging_blow_wasted      = get_proc( "raging_blow_wasted" );
   proc.sudden_death            = get_proc( "sudden_death" );
   proc.t15_2pc_melee           = get_proc( "t15_2pc_melee" );
+  proc.t17_4pc_arms            = get_proc( "t17_4pc_arms" );
 }
 
 // warrior_t::init_rng ======================================================
@@ -4250,7 +4289,21 @@ double warrior_t::composite_crit_avoidance() const
 double warrior_t::composite_melee_speed() const
 {
   double s = player_t::composite_melee_speed();
+
+  s *= 1.0 / ( 1.0 + buff.tier17_4pc_fury -> stack() * buff.tier17_4pc_fury -> data().effectN( 1 ).percent() );
+
   return s;
+}
+
+// warrior_t::composite_melee_crit =========================================
+
+double warrior_t::composite_melee_crit() const
+{
+  double c = player_t::composite_melee_crit();
+
+  c += buff.tier17_4pc_fury -> stack() * buff.tier17_4pc_fury -> data().effectN( 2 ).percent();
+
+  return c;
 }
 
 // warrior_t::temporary_movement_modifier ==================================
