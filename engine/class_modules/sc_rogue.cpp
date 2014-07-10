@@ -1922,6 +1922,30 @@ struct fan_of_knives_t : public rogue_attack_t
 
 struct crimson_tempest_t : public rogue_attack_t
 {
+  struct ct_state_t : public rogue_attack_state_t
+  {
+    double damage_pool;
+
+    ct_state_t( action_t* action, player_t* target ) :
+      rogue_attack_state_t( action, target ), damage_pool( 0 )
+    { }
+
+    void initialize()
+    { rogue_attack_state_t::initialize(); damage_pool = 0; }
+
+    void copy_state( const action_state_t* other )
+    {
+      rogue_attack_state_t::copy_state( other );
+
+      const ct_state_t* os = debug_cast<const ct_state_t*>( other );
+
+      damage_pool = os -> damage_pool;
+    }
+
+    std::ostringstream& debug_str( std::ostringstream& debug_str )
+    { rogue_attack_state_t::debug_str( debug_str ); debug_str << " damage_pool=" << damage_pool; return debug_str; }
+  };
+
   struct crimson_tempest_dot_t : public rogue_attack_t
   {
     crimson_tempest_dot_t( rogue_t * p ) :
@@ -1930,6 +1954,48 @@ struct crimson_tempest_t : public rogue_attack_t
       may_miss = may_dodge = may_parry = may_block = may_crit = tick_may_crit = false;
       background = true;
       dot_behavior = DOT_REFRESH;
+    }
+
+    action_state_t* new_state()
+    { return new ct_state_t( this, target ); }
+
+    void impact( action_state_t* state )
+    {
+      double damage_pool = 0;
+      dot_t* d = get_dot( state -> target );
+      // Figure out remaining damage pool pre-impact
+      if ( d -> is_ticking() )
+      {
+        ct_state_t* s = debug_cast<ct_state_t*>( d -> state );
+        damage_pool += s -> damage_pool;
+      }
+
+      rogue_attack_t::impact( state );
+
+      ct_state_t* s = debug_cast<ct_state_t*>( d -> state );
+      // Add damage to it, post impact. Damage is carried over through the
+      // base_td variable.
+      s -> damage_pool = damage_pool + base_td;
+    }
+
+    double base_ta( const action_state_t* state ) const
+    {
+      dot_t* d = find_dot( state -> target );
+      assert( d );
+
+      ct_state_t* s = debug_cast<ct_state_t*>( d -> state );
+
+      // Tick amount is the damage pool, divided by the number of ticks left,
+      // including this one
+      return s -> damage_pool / ( d -> ticks_left() + 1 );
+    }
+
+    void tick( dot_t* dot )
+    {
+      rogue_attack_t::tick( dot );
+
+      ct_state_t* s = debug_cast<ct_state_t*>( dot -> state );
+      s -> damage_pool -= s -> damage_pool / ( dot -> ticks_left() + 1 );
     }
   };
 
@@ -1955,8 +2021,10 @@ struct crimson_tempest_t : public rogue_attack_t
     {
       ct_dot -> pre_execute_state = ct_dot -> get_state( s );
       ct_dot -> target = s -> target;
-      ct_dot -> base_td = s -> result_amount * ct_dot -> data().effectN( 1 ).percent() * ct_dot -> dot_duration / ct_dot -> base_tick_time;
-      ct_dot -> execute();
+      // Use base_td as a placeholder to deliver the damage to the dot.
+      // Overridden base_ta() method will return the correct tick base damage
+      ct_dot -> base_td = s -> result_amount * ct_dot -> data().effectN( 1 ).percent();
+      ct_dot -> schedule_execute();
 
       if ( p() -> perk.enhanced_crimson_tempest -> ok() )
       {
@@ -2006,6 +2074,30 @@ struct garrote_t : public rogue_attack_t
 
 struct hemorrhage_t : public rogue_attack_t
 {
+  struct hemorrhage_state_t : public rogue_attack_state_t
+  {
+    double damage_pool;
+
+    hemorrhage_state_t( action_t* action, player_t* target ) :
+      rogue_attack_state_t( action, target ), damage_pool( 0 )
+    { }
+
+    void initialize()
+    { rogue_attack_state_t::initialize(); damage_pool = 0; }
+
+    void copy_state( const action_state_t* other )
+    {
+      rogue_attack_state_t::copy_state( other );
+
+      const hemorrhage_state_t* os = debug_cast<const hemorrhage_state_t*>( other );
+
+      damage_pool = os -> damage_pool;
+    }
+
+    std::ostringstream& debug_str( std::ostringstream& debug_str )
+    { rogue_attack_state_t::debug_str( debug_str ); debug_str << " damage_pool=" << damage_pool; return debug_str; }
+  };
+
   hemorrhage_t( rogue_t* p, const std::string& options_str ) :
     rogue_attack_t( "hemorrhage", p, p -> find_class_spell( "Hemorrhage" ), options_str )
   {
@@ -2020,12 +2112,44 @@ struct hemorrhage_t : public rogue_attack_t
     base_multiplier *= 1.0 + p -> perk.improved_hemorrhage -> effectN( 1 ).percent();
   }
 
+  action_state_t* new_state()
+  { return new hemorrhage_state_t( this, target ); }
+
   virtual void impact( action_state_t* state )
   {
-    if ( result_is_hit( state -> result ) )
-      base_td = state -> result_amount * data().effectN( 4 ).percent() * dot_duration / base_tick_time;
+    double damage_pool = 0;
+    dot_t* d = get_dot( state -> target );
+    // Figure out remaining damage pool pre-impact
+    if ( d -> is_ticking() )
+    {
+      hemorrhage_state_t* s = debug_cast<hemorrhage_state_t*>( d -> state );
+      damage_pool += s -> damage_pool;
+    }
 
     rogue_attack_t::impact( state );
+
+    hemorrhage_state_t* s = debug_cast<hemorrhage_state_t*>( d -> state );
+    // Add damage to it, post impact
+    s -> damage_pool = damage_pool + state -> result_amount * data().effectN( 4 ).percent();
+  }
+
+  double base_ta( const action_state_t* state ) const
+  {
+    dot_t* d = find_dot( state -> target );
+    assert( d );
+
+    hemorrhage_state_t* s = debug_cast<hemorrhage_state_t*>( d -> state );
+
+    // Tick amount is the damage pool, divided by the number of ticks left, including this one
+    return s -> damage_pool / ( d -> ticks_left() + 1 );
+  }
+
+  void tick( dot_t* dot )
+  {
+    rogue_attack_t::tick( dot );
+
+    hemorrhage_state_t* s = debug_cast<hemorrhage_state_t*>( dot -> state );
+    s -> damage_pool -= s -> damage_pool / ( dot -> ticks_left() + 1 );
   }
 };
 
