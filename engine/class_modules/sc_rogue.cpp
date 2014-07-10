@@ -1160,6 +1160,8 @@ static bool trigger_blade_flurry( action_state_t* s )
       may_miss = may_crit = proc = callbacks = may_dodge = may_parry = may_block = false;
       background = true;
       aoe = p -> spec.blade_flurry -> effectN( 4 ).base_value();
+      weapon = &p -> main_hand_weapon;
+      weapon_multiplier = 0;
       if ( p -> perk.enhanced_blade_flurry -> ok() )
         aoe = -1;
     }
