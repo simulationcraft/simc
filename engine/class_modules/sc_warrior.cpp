@@ -3820,7 +3820,7 @@ void warrior_t::apl_gladiator()
   default_list -> add_action( "run_action_list,name=single_target,if=active_enemies<=4" );
   default_list -> add_action( "run_action_list,name=aoe,if=active_enemies>3" );
 
-  single_target -> add_action( this, "Shield Charge", "if=buff.shield_charge.down&cooldown.shield_slam.remains=0&(cooldown.bloodbath.remains>15|!talent.bloodbath.enabled)" );
+  single_target -> add_action( "shield_charge,if=buff.shield_charge.down&cooldown.shield_slam.remains=0&(cooldown.bloodbath.remains>15|!talent.bloodbath.enabled)" );
   single_target -> add_action( this, "Heroic Strike", "if=buff.shield_charge.up|buff.ultimatum.up|rage>=85" );
   single_target -> add_talent( this, "Bloodbath" );
   single_target -> add_talent( this, "Avatar" );
@@ -3833,7 +3833,7 @@ void warrior_t::apl_gladiator()
 
   aoe -> add_talent( this, "Bloodbath" );
   aoe -> add_talent( this, "Avatar" );
-  aoe -> add_action( this, "Shield Charge", "if=buff.shield_charge.down" );
+  aoe -> add_action( "shield_charge,if=buff.shield_charge.down" );
   aoe -> add_action( this, "Thunder Clap", "if=!dot.deep_wounds.ticking" );
   aoe -> add_talent( this, "Bladestorm" );
   aoe -> add_action( this, "Heroic Strike", "if=buff.ultimatum.up|buff.shield_charge.up&rage>50|rage>110" );
