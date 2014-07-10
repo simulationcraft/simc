@@ -576,7 +576,6 @@ public:
   virtual void      assess_heal( school_e, dmg_e, action_state_t* );
   virtual void      create_options();
   virtual bool      create_profile( std::string& profile_str, save_e type = SAVE_ALL, bool save_html = false );
-  virtual void      recalculate_resource_max( resource_e resource_type );
 
   void              apl_precombat();
   void              apl_default();
@@ -1282,7 +1281,7 @@ public:
 
     sim -> auras.critical_strike -> decrement();
 
-    druid.druid_t::recalculate_resource_max( RESOURCE_HEALTH );
+    druid.recalculate_resource_max( RESOURCE_HEALTH );
 
     if ( druid.specialization() == DRUID_GUARDIAN )
       druid.resolve_manager.stop();
@@ -1310,7 +1309,7 @@ public:
     if ( ! sim -> overrides.critical_strike )
       sim -> auras.critical_strike -> trigger();
 
-    druid.druid_t::recalculate_resource_max( RESOURCE_HEALTH );
+    druid.recalculate_resource_max( RESOURCE_HEALTH );
   }
 private:
   const spell_data_t* rage_spell;
@@ -1420,14 +1419,14 @@ struct might_of_ursoc_t : public druid_buff_t < buff_t >
   virtual void start( int stacks, double value, timespan_t duration )
   {
     health_gain = (int) floor( player -> resources.max[ RESOURCE_HEALTH ] * health_pct );
-    player -> temporary.resource[ RESOURCE_HEALTH ] += health_gain;
+    player -> stat_gain( STAT_MAX_HEALTH, health_gain );
 
     base_t::start( stacks, value, duration );
   }
 
   virtual void expire_override()
   {
-    player -> temporary.resource[ RESOURCE_HEALTH ] -= health_gain;
+    player -> stat_loss( STAT_MAX_HEALTH, health_gain );
 
     base_t::expire_override();
   }
@@ -1496,55 +1495,48 @@ struct tooth_and_claw_absorb_t : public absorb_buff_t
 
 struct ursa_major_t : public druid_buff_t < buff_t >
 {
+  int health_gain;
+
   ursa_major_t( druid_t& p ) :
     base_t( p, buff_creator_t( &p, "ursa_major", p.find_spell( 159233 ) )
                   .default_value( p.find_spell( 159233 ) -> effectN( 1 ).percent() )
-    )
+    ), health_gain( 0 )
   {}
 
   virtual void start( int stacks, double value, timespan_t duration )
   {
-    double health_before = druid.resources.max[ RESOURCE_HEALTH ];
-
     base_t::start( stacks, value, duration );
 
-    druid.druid_t::recalculate_resource_max( RESOURCE_HEALTH );
-
-    if ( sim -> debug )
-        sim -> out_debug.printf( "%s gains ursa_major -- before HP: %.1f, after HP: %.1f",
-                                 player -> name(),
-                                 health_before,
-                                 druid.resources.max[ RESOURCE_HEALTH ] );
+    recalculate_temporary_health( value );
   }
 
   virtual void refresh( int stacks, double value, timespan_t duration )
   {
-    double health_before = druid.resources.max[ RESOURCE_HEALTH ];
-
     base_t::refresh( stacks, value, duration );
-
-    druid.druid_t::recalculate_resource_max( RESOURCE_HEALTH );
-
-    if ( sim -> debug )
-        sim -> out_debug.printf( "%s refreshes ursa_major -- before HP: %.1f, after HP: %.1f",
-                                 player -> name(),
-                                 health_before,
-                                 druid.resources.max[ RESOURCE_HEALTH ] );
+    
+    recalculate_temporary_health( value );
   }
 
   virtual void expire_override()
   {
-    double health_before = druid.resources.max[ RESOURCE_HEALTH ];
-
     base_t::expire_override();
 
-    druid.druid_t::recalculate_resource_max( RESOURCE_HEALTH );
+    recalculate_temporary_health( 0.0 );
+  }
 
-    if ( sim -> debug )
-        sim -> out_debug.printf( "%s loses ursa_major -- before HP: %.1f, after HP: %.1f",
-                                 player -> name(),
-                                 health_before,
-                                 druid.resources.max[ RESOURCE_HEALTH ] );
+private:
+  void recalculate_temporary_health( double value )
+  {
+    // Calculate the benefit of the new buff
+    int old_health_gain = health_gain;
+    health_gain = (int) floor( druid.resources.current[ RESOURCE_HEALTH ] * value );
+    int diff = health_gain - old_health_gain;
+
+    // Adjust the temporary HP gain
+    if ( diff > 0 )
+      druid.stat_gain( STAT_MAX_HEALTH, diff );
+    else if ( diff < 0 )
+      druid.stat_loss( STAT_MAX_HEALTH, -diff );
   }
 };
 
@@ -6720,16 +6712,6 @@ double druid_t::composite_rating_multiplier( rating_e rating ) const
   }
 
   return m;
-}
-
-// druid_t::recalculate_resource_max ========================================
-
-void druid_t::recalculate_resource_max( resource_e resource_type )
-{
-  player_t::recalculate_resource_max( resource_type );
-
-  if ( resource_type == RESOURCE_HEALTH )
-    resources.max[ RESOURCE_HEALTH ] *= 1.0 + buff.ursa_major -> value();
 }
 
 // druid_t::create_expression ===============================================
