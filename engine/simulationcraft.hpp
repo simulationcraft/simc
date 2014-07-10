@@ -4404,7 +4404,7 @@ struct player_t : public actor_t
   // Gear
   std::string items_str, meta_gem_str;
   std::vector<item_t> items;
-  gear_stats_t gear, enchant, temporary;
+  gear_stats_t gear, enchant;
   gear_stats_t total_gear; // composite of gear, enchant and for non-pets sim -> enchant
   set_bonus_t sets;
   new_set_bonus::set_bonus_t new_sets;

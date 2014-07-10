@@ -3409,9 +3409,7 @@ void player_t::reset()
     proc_list[ i ] -> reset();
 
   potion_used = 0;
-
-  temporary = gear_stats_t();
-
+  
   item_cooldown.reset( false );
 
   incoming_damage.clear();
@@ -4107,7 +4105,6 @@ void player_t::stat_gain( stat_e    stat,
     case STAT_READINESS_RATING:
     case STAT_VERSATILITY_RATING:
       current.stats.add_stat( stat, amount );
-      temporary.add_stat( stat, temp_value * amount );
       invalidate_cache( cache_from_stat( stat ) );
       break;
 
@@ -4118,7 +4115,6 @@ void player_t::stat_gain( stat_e    stat,
         old_attack_speed = cache.attack_speed();
 
       current.stats.add_stat( stat, amount );
-      temporary.add_stat( stat, temp_value * amount );
       invalidate_cache( cache_from_stat( stat ) );
 
       if ( main_hand_attack )
@@ -4131,7 +4127,6 @@ void player_t::stat_gain( stat_e    stat,
     case STAT_ALL:
       for ( attribute_e i = ATTRIBUTE_NONE; i < ATTRIBUTE_MAX; i++ )
       {
-        temporary.attribute[ i ] += temp_value * amount;
         current.stats.attribute[ i ] += amount;
         invalidate_cache( static_cast<cache_e>( i ) );
       }
@@ -4235,14 +4230,12 @@ void player_t::stat_loss( stat_e    stat,
     case STAT_READINESS_RATING:
     case STAT_VERSATILITY_RATING:
       current.stats.add_stat( stat, -amount );
-      temporary.add_stat( stat, temp_value * -amount );
       invalidate_cache( cache_from_stat( stat ) );
       break;
 
     case STAT_ALL:
       for ( attribute_e i = ATTRIBUTE_NONE; i < ATTRIBUTE_MAX; i++ )
       {
-        temporary.attribute[ i ] -= temp_value * amount;
         current.stats.attribute  [ i ] -= amount;
         invalidate_cache( ( cache_e ) i );
       }
@@ -4291,7 +4284,6 @@ void player_t::stat_loss( stat_e    stat,
       if ( main_hand_attack || off_hand_attack )
         old_attack_speed = cache.attack_speed();
 
-      temporary.haste_rating -= temp_value * amount;
       current.stats.haste_rating   -= amount;
       invalidate_cache( CACHE_HASTE );
 
@@ -7230,86 +7222,6 @@ expr_t* player_t::create_expression( action_t* a,
         return pet -> owner -> create_expression( a, expression_str.substr( 6 ) );
     }
     // FIXME: report failure.
-  }
-
-  else if ( splits[ 0 ] == "temporary_bonus" && splits.size() == 2 )
-  {
-    stat_e stat = util::parse_stat_type( splits[ 1 ] );
-    switch ( stat )
-    {
-      case STAT_STRENGTH:
-      case STAT_AGILITY:
-      case STAT_STAMINA:
-      case STAT_INTELLECT:
-      case STAT_SPIRIT:
-      {
-        struct temp_attr_expr_t : public player_expr_t
-        {
-          attribute_e attr;
-          temp_attr_expr_t( const std::string& name, player_t& p, attribute_e a ) :
-            player_expr_t( name, p ), attr( a ) {}
-          virtual double evaluate()
-          { return player.temporary.attribute[ attr ] * player.composite_attribute_multiplier( attr ); }
-        };
-        return new temp_attr_expr_t( expression_str, *this, static_cast<attribute_e>( stat ) );
-      }
-
-      case STAT_SPELL_POWER:
-      {
-        struct temp_sp_expr_t : player_expr_t
-        {
-          temp_sp_expr_t( const std::string& name, player_t& p ) :
-            player_expr_t( name, p ) {}
-          virtual double evaluate()
-          {
-            return ( player.temporary.spell_power +
-                     player.temporary.attribute[ ATTR_INTELLECT ] *
-                     player.composite_attribute_multiplier( ATTR_INTELLECT ) *
-                     player.current.spell_power_per_intellect ) *
-                   player.composite_spell_power_multiplier();
-          }
-        };
-        return new temp_sp_expr_t( expression_str, *this );
-      }
-
-      case STAT_ATTACK_POWER:
-      {
-        struct temp_ap_expr_t : player_expr_t
-        {
-          temp_ap_expr_t( const std::string& name, player_t& p ) :
-            player_expr_t( name, p ) {}
-          virtual double evaluate()
-          {
-            return ( player.temporary.attack_power +
-                     player.temporary.attribute[ ATTR_STRENGTH ] *
-                     player.composite_attribute_multiplier( ATTR_STRENGTH ) *
-                     player.current.attack_power_per_strength +
-                     player.temporary.attribute[ ATTR_AGILITY ] *
-                     player.composite_attribute_multiplier( ATTR_AGILITY ) *
-                     player.current.attack_power_per_agility ) *
-                   player.composite_attack_power_multiplier();
-          }
-        };
-        return new temp_ap_expr_t( expression_str, *this );
-      }
-
-      case STAT_EXPERTISE_RATING: return make_ref_expr( expression_str, temporary.expertise_rating );
-      case STAT_HIT_RATING:       return make_ref_expr( expression_str, temporary.hit_rating );
-      case STAT_CRIT_RATING:      return make_ref_expr( expression_str, temporary.crit_rating );
-      case STAT_HASTE_RATING:     return make_ref_expr( expression_str, temporary.haste_rating );
-      case STAT_READINESS_RATING: return make_ref_expr( expression_str, temporary.readiness_rating );
-      case STAT_VERSATILITY_RATING: return make_ref_expr( expression_str, temporary.versatility_rating );
-      case STAT_MULTISTRIKE_RATING:return make_ref_expr( expression_str, temporary.multistrike_rating );
-      case STAT_ARMOR:            return make_ref_expr( expression_str, temporary.armor );
-      case STAT_BONUS_ARMOR:      return make_ref_expr( expression_str, temporary.bonus_armor );
-      case STAT_DODGE_RATING:     return make_ref_expr( expression_str, temporary.dodge_rating );
-      case STAT_PARRY_RATING:     return make_ref_expr( expression_str, temporary.parry_rating );
-      case STAT_BLOCK_RATING:     return make_ref_expr( expression_str, temporary.block_rating );
-      case STAT_MASTERY_RATING:   return make_ref_expr( expression_str, temporary.mastery_rating );
-      default: break;
-    }
-
-    // FIXME: report error and return?
   }
 
   else if ( splits[ 0 ] == "stat" && splits.size() == 2 )
