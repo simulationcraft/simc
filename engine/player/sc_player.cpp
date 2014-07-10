@@ -3998,7 +3998,6 @@ void player_t::recalculate_resource_max( resource_e resource_type )
       // Calculate & set maximum health
       double adjust = ( is_pet() || is_enemy() || is_add() ) ? 0 : std::min( 20, ( int ) floor( stamina() ) );
       resources.max[ resource_type ] += ( floor( stamina() ) - adjust ) * current.health_per_stamina + adjust;
-      resources.max[ resource_type ] += resources.temporary[ RESOURCE_HEALTH ];
 
       // Sanity check on current health values
       if ( ! in_combat )
@@ -4008,6 +4007,7 @@ void player_t::recalculate_resource_max( resource_e resource_type )
     }
     default: break;
   }
+  resources.max[ resource_type ] += resources.temporary[ resource_type ];
 }
 
 // player_t::primary_role ===================================================
@@ -4175,8 +4175,9 @@ void player_t::stat_gain( stat_e    stat,
                        ( stat == STAT_MAX_RAGE   ) ? RESOURCE_RAGE   :
                        ( stat == STAT_MAX_ENERGY ) ? RESOURCE_ENERGY :
                        ( stat == STAT_MAX_FOCUS  ) ? RESOURCE_FOCUS  : RESOURCE_RUNIC_POWER );
-      resources.max[ r ] += amount;
+
       resources.temporary[ r ] += temp_value * amount;
+      recalculate_resource_max( r );
       resource_gain( r, amount, gain, action );
     }
     break;
