@@ -575,6 +575,7 @@ public:
   virtual void      assess_heal( school_e, dmg_e, action_state_t* );
   virtual void      create_options();
   virtual bool      create_profile( std::string& profile_str, save_e type = SAVE_ALL, bool save_html = false );
+  virtual void      recalculate_resource_max( resource_e r );
 
   void              apl_precombat();
   void              apl_default();
@@ -1400,8 +1401,6 @@ struct celestial_alignment_t : public druid_buff_t < buff_t >
 };
 
 // Might of Ursoc Buff ======================================================
-/* TODO: Does this double dip on Ursa Major or not? Current implementation snapshots
-         20% of max HP post-major and then that value gets buffed by Ursa Major. */
 
 struct might_of_ursoc_t : public druid_buff_t < buff_t >
 {
@@ -1528,7 +1527,7 @@ private:
   {
     // Calculate the benefit of the new buff
     int old_health_gain = health_gain;
-    health_gain = (int) floor( ( druid.resources.max[ RESOURCE_HEALTH ] - druid.resources.temporary[ RESOURCE_HEALTH ] ) * value );
+    health_gain = (int) floor( ( druid.resources.max[ RESOURCE_HEALTH ] - old_health_gain ) * value );
     int diff = health_gain - old_health_gain;
 
     // Adjust the temporary HP gain
@@ -6799,6 +6798,17 @@ bool druid_t::create_profile( std::string& profile_str, save_e type, bool save_h
   player_t::create_profile( profile_str, type, save_html );
 
   return true;
+}
+
+// druid_t::recalculate_resource_max ========================================
+
+void druid_t::recalculate_resource_max( resource_e r )
+{
+  player_t::recalculate_resource_max( r );
+  
+  // Update Ursa Major's value for the new health amount.
+  if ( r == RESOURCE_HEALTH && buff.ursa_major -> check() )
+    buff.ursa_major -> refresh( 1, buff.ursa_major -> value(), buff.ursa_major -> remains() );
 }
 
 // druid_t::decode_set ======================================================
