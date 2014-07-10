@@ -3998,7 +3998,7 @@ void player_t::recalculate_resource_max( resource_e resource_type )
       // Calculate & set maximum health
       double adjust = ( is_pet() || is_enemy() || is_add() ) ? 0 : std::min( 20, ( int ) floor( stamina() ) );
       resources.max[ resource_type ] += ( floor( stamina() ) - adjust ) * current.health_per_stamina + adjust;
-      resources.max[ resource_type ] += temporary.resource[ RESOURCE_HEALTH ];
+      resources.max[ resource_type ] += resources.temporary[ RESOURCE_HEALTH ];
 
       // Sanity check on current health values
       if ( ! in_combat )
@@ -4176,11 +4176,7 @@ void player_t::stat_gain( stat_e    stat,
                        ( stat == STAT_MAX_ENERGY ) ? RESOURCE_ENERGY :
                        ( stat == STAT_MAX_FOCUS  ) ? RESOURCE_FOCUS  : RESOURCE_RUNIC_POWER );
       resources.max[ r ] += amount;
-      // Stuff temporary max health gains into temporary.resource[ RESOURCE_HEALTH ] since temporary lacks a STAT_MAX_HEALTH field
-      // A bit of a kludge; if we ever use temporary.resource[ RESOURCE_HEALTH ] for something else, we'll have to tweak this, either
-      // by adding a temporary.resource_max[] array of doubles or a temporary.max_health double.
-      if ( r == RESOURCE_HEALTH )
-        temporary.resource[ r ] += temp_value * amount;
+      resources.temporary[ r ] += temp_value * amount;
       resource_gain( r, amount, gain, action );
     }
     break;
@@ -4290,10 +4286,7 @@ void player_t::stat_loss( stat_e    stat,
                        ( stat == STAT_MAX_ENERGY ) ? RESOURCE_ENERGY :
                        ( stat == STAT_MAX_FOCUS  ) ? RESOURCE_FOCUS  : RESOURCE_RUNIC_POWER );
 
-      // See equivalent part of player_t::stat_gain for comment on this kludge
-      if ( r == RESOURCE_HEALTH )
-        temporary.resource[ r ] -= temp_value * amount;
-
+      resources.temporary[ r ] -= temp_value * amount;
       recalculate_resource_max( r );
       double delta = resources.current[ r ] - resources.max[ r ];
       if ( delta > 0 ) resource_loss( r, delta, gain, action );

@@ -3125,6 +3125,7 @@ struct stance_t: public warrior_spell_t
       {
         p() -> buff.defensive_stance -> trigger();
         p() -> active_defensive_stance -> execute();
+        p() -> recalculate_resource_max( RESOURCE_HEALTH ); // Force stamina modifier, otherwise it doesn't apply until stat_loss is called
         break;
       }
       case STANCE_GLADIATOR:
@@ -3225,14 +3226,14 @@ struct last_stand_t: public buff_t
   virtual bool trigger( int stacks, double value, double chance, timespan_t duration )
   {
     health_gain = (int)floor( player -> resources.max[RESOURCE_HEALTH] * 0.3 );
-    player -> temporary.resource[RESOURCE_HEALTH] += health_gain;
+    player -> stat_gain( STAT_MAX_HEALTH, health_gain, (gain_t*) 0, (action_t*) 0, true );
 
     return buff_t::trigger( stacks, value, chance, duration );
   }
 
   virtual void expire_override()
   {
-    player -> temporary.resource[RESOURCE_HEALTH] -= health_gain;
+    player -> stat_loss( STAT_MAX_HEALTH, health_gain, (gain_t*) 0, (action_t*) 0, true );
 
     buff_t::expire_override();
   }
@@ -3911,7 +3912,8 @@ void warrior_t::create_buffs()
     .add_invalidate( CACHE_EXP )
     .add_invalidate( CACHE_CRIT_AVOIDANCE )
     .add_invalidate( CACHE_CRIT_BLOCK )
-    .add_invalidate( CACHE_BLOCK );
+    .add_invalidate( CACHE_BLOCK )
+    .add_invalidate( CACHE_STAMINA );
 
   buff.enrage = buff_creator_t( this, "enrage", find_spell( 12880 ) )
     .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );

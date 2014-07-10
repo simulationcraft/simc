@@ -1528,7 +1528,7 @@ private:
   {
     // Calculate the benefit of the new buff
     int old_health_gain = health_gain;
-    health_gain = (int) floor( ( druid.resources.max[ RESOURCE_HEALTH ] - druid.temporary.resource[ RESOURCE_HEALTH ] ) * value );
+    health_gain = (int) floor( ( druid.resources.max[ RESOURCE_HEALTH ] - druid.resources.temporary[ RESOURCE_HEALTH ] ) * value );
     int diff = health_gain - old_health_gain;
 
     // Adjust the temporary HP gain

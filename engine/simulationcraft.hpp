@@ -4288,7 +4288,7 @@ struct player_t : public actor_t
   // Resources
   struct resources_t
   {
-    std::array<double, RESOURCE_MAX> base, initial, max, current,
+    std::array<double, RESOURCE_MAX> base, initial, max, current, temporary,
         base_multiplier, initial_multiplier;
     std::array<int, RESOURCE_MAX> infinite_resource;
 
@@ -4298,6 +4298,7 @@ struct player_t : public actor_t
       range::fill( initial, 0.0 );
       range::fill( max, 0.0 );
       range::fill( current, 0.0 );
+      range::fill( temporary, 0.0 );
       range::fill( base_multiplier, 1.0 );
       range::fill( initial_multiplier, 1.0 );
       range::fill( infinite_resource, 0 );
