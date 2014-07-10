@@ -316,7 +316,7 @@ public:
     // Elemental
 
     // Enhancement
-    const spell_data_t* improved_searing_totem;
+    const spell_data_t* improved_fire_totems;
     const spell_data_t* enhanced_unleash_elements;
     const spell_data_t* improved_lava_lash;
     const spell_data_t* improved_flame_shock;
@@ -1607,7 +1607,7 @@ struct lightning_strike_t : public shaman_spell_t
   {
     background = true;
     callbacks = may_miss = may_elemental_discharge = false;
-    spell_power_mod.direct = attack_power_mod.direct;
+    spell_power_mod.direct = 2.0;
     attack_power_mod.direct = 0;
   }
 };
@@ -1619,7 +1619,7 @@ struct eruption_t : public shaman_spell_t
   {
     background = true;
     callbacks = may_miss = may_elemental_discharge = false;
-    spell_power_mod.direct = attack_power_mod.direct;
+    spell_power_mod.direct = 3.0;
     attack_power_mod.direct = 0;
   }
 };
@@ -3838,7 +3838,7 @@ struct magma_totem_pulse_t : public totem_pulse_action_t
     totem_pulse_action_t( "magma_totem", p, p -> find_spell( 8187 ) )
   {
     aoe = -1;
-    base_multiplier *= 1.0 + totem -> o() -> perk.improved_searing_totem -> effectN( 1 ).percent();
+    base_multiplier *= 1.0 + totem -> o() -> perk.improved_fire_totems -> effectN( 1 ).percent();
   }
 };
 
@@ -3872,7 +3872,7 @@ struct searing_totem_pulse_t : public totem_pulse_action_t
     base_dd_min += 10;
     base_dd_max += 10;
 
-    base_multiplier *= 1.0 + totem -> o() -> perk.improved_searing_totem -> effectN( 1 ).percent();
+    base_multiplier *= 1.0 + totem -> o() -> perk.improved_fire_totems -> effectN( 1 ).percent();
   }
 };
 
@@ -4428,7 +4428,7 @@ void shaman_t::init_spells()
   talent.liquid_magma                = find_talent_spell( "Liquid Magma" );
 
   // Perks - Shared
-  perk.improved_searing_totem        = find_perk_spell( "Improved Searing Totem" );
+  perk.improved_fire_totems        = find_perk_spell( "Improved Fire Totems" );
 
   // Perks - Enhancement
   perk.enhanced_unleash_elements     = find_perk_spell( "Enhanced Unleash Elements" );
