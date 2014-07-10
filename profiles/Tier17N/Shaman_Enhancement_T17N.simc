@@ -16,12 +16,12 @@ spec=enhancement
 
 # Executed before combat begins. Accepts non-harmful actions only.
 
-actions.precombat=flask,type=greater_draenor_haste_flask
+actions.precombat=flask,type=greater_draenic_haste_flask
 actions.precombat+=/food,type=sea_mist_rice_noodles
 actions.precombat+=/lightning_shield,if=!buff.lightning_shield.up
 # Snapshot raid buffed stats before combat begins and pre-potting is done.
 actions.precombat+=/snapshot_stats
-actions.precombat+=/potion,name=draenor_agility
+actions.precombat+=/potion,name=draenic_agility
 
 # Executed every time the actor is available.
 
@@ -31,7 +31,7 @@ actions+=/bloodlust,if=target.health.pct<25|time>0.500
 actions+=/auto_attack
 actions+=/use_item,name=primal_gladiators_badge_of_conquest
 # In-combat potion is linked to Primal or Greater Fire Elemental Totem, after the first 60 seconds of combat.
-actions+=/potion,name=draenor_agility,if=time>60&(pet.primal_fire_elemental.active|pet.greater_fire_elemental.active|target.time_to_die<=60)
+actions+=/potion,name=draenic_agility,if=time>60&(pet.primal_fire_elemental.active|pet.greater_fire_elemental.active|target.time_to_die<=60)
 actions+=/blood_fury
 actions+=/arcane_torrent
 actions+=/berserking

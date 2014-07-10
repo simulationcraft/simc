@@ -4959,9 +4959,9 @@ void shaman_t::init_action_list()
   {
     std::string flask_action = "flask,type=";
     if ( primary_role() == ROLE_ATTACK )
-      flask_action += ( ( level > 90 ) ? "greater_draenor_haste_flask" : ( level >= 85 ) ? "spring_blossoms" : ( level >= 80 ) ? "winds" : "" );
+      flask_action += ( ( level > 90 ) ? "greater_draenic_haste_flask" : ( level >= 85 ) ? "spring_blossoms" : ( level >= 80 ) ? "winds" : "" );
     else
-      flask_action += ( ( level > 90 ) ? "greater_draenor_multistrike_flask" : ( level >= 85 ) ? "warm_sun" : ( level >= 80 ) ? "draconic_mind" : "" );
+      flask_action += ( ( level > 90 ) ? "greater_draenic_multistrike_flask" : ( level >= 85 ) ? "warm_sun" : ( level >= 80 ) ? "draconic_mind" : "" );
 
     precombat -> add_action( flask_action );
   }
@@ -4991,7 +4991,7 @@ void shaman_t::init_action_list()
     if ( primary_role() == ROLE_ATTACK )
     {
       if ( level > 90 )
-        potion_name = "draenor_agility";
+        potion_name = "draenic_agility";
       else if ( level > 85 )
         potion_name = "virmens_bite";
       else
@@ -5000,7 +5000,7 @@ void shaman_t::init_action_list()
     else
     {
       if ( level > 90 )
-        potion_name = "draenor_intellect";
+        potion_name = "draenic_intellect";
       else if ( level > 85 )
         potion_name = "jade_serpent";
       else
