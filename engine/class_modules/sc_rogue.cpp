@@ -3898,11 +3898,13 @@ struct honor_among_thieves_callback_t : public action_callback_t
 
     if ( a )
     {
-      // only procs from specials; repeating is here for hunter autoshot, which doesn't proc it either
-      if ( ! a -> special || a -> repeating )
+      // Only procs from specials; repeating is here for hunter autoshot, which
+      // doesn't proc it either .. except in WoD, the rogue's own autoattacks
+      // can also proc HaT
+      if ( a -> player != listener && ( ! a -> special || a -> repeating ) )
         return;
 
-      // doesn't proc from pets (only tested for hunter pets though)
+      // Doesn't proc from pets (only tested for hunter pets though)
       if ( a -> player -> is_pet() )
         return;
 
