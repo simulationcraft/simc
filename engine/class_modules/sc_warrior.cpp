@@ -250,7 +250,6 @@ public:
     //Prot-only
     const spell_data_t* bastion_of_defense;
     const spell_data_t* bladed_armor;
-    const spell_data_t* blood_and_thunder;
     const spell_data_t* blood_craze;
     const spell_data_t* devastate;
     const spell_data_t* readiness_protection;
@@ -496,6 +495,10 @@ public:
   virtual bool ready()
   {
     if ( !ab::ready() )
+      return false;
+
+    // Attack available in current stance?
+    if ( ( stancemask & p() -> active_stance ) == 0 )
       return false;
 
     return true;
@@ -1020,8 +1023,16 @@ struct bladestorm_tick_t: public warrior_attack_t
     aoe = -1;
     if ( p -> specialization() == WARRIOR_ARMS )
       weapon_multiplier *= 2;
-    else if ( p -> specialization() == WARRIOR_PROTECTION )
-      weapon_multiplier *= 1.0 + 1 / 3;
+  }
+
+  virtual double action_multiplier() const
+  {
+    double am = warrior_attack_t::action_multiplier();
+
+    if ( p() -> specialization() == WARRIOR_PROTECTION && p() -> has_shield_equipped() )
+      am *= 1.0 + 1 / 3;
+
+    return am;
   }
 
   virtual void execute()
@@ -1459,7 +1470,8 @@ struct execute_t: public warrior_attack_t
   {
     warrior_attack_t::execute();
 
-    if ( p() -> spec.crazed_berserker -> ok() && result_is_hit( execute_state -> result ) ) // If MH fails to land, OH does not execute.
+    if ( p() -> spec.crazed_berserker -> ok() && result_is_hit( execute_state -> result ) &&
+         p() -> off_hand_weapon.type == WEAPON_NONE ) // If MH fails to land, or if there is no OH weapon for Fury, oh attack does not execute.
       oh_attack -> execute();
 
     p() -> buff.sudden_death -> expire();
@@ -1467,6 +1479,9 @@ struct execute_t: public warrior_attack_t
 
   virtual bool ready()
   {
+    if ( p() -> main_hand_weapon.type == WEAPON_NONE )
+      return false;
+
     if ( p() -> buff.sudden_death -> up() )
       return true;
 
@@ -1488,11 +1503,6 @@ struct ignite_weapon_t: public warrior_attack_t
 
     weapon  = &( player -> main_hand_weapon );
 
-    // The 140% is hardcoded in the tooltip
-    if ( weapon -> group() == WEAPON_1H ||
-         weapon -> group() == WEAPON_SMALL )
-         weapon_multiplier *= 1.40;
-
     dot_duration = timespan_t::zero(); // Effect 4 shows up as periodic damage on target, but the actual "dot" shows up on autoattacks.
     use_off_gcd = true;
   }
@@ -1508,6 +1518,11 @@ struct ignite_weapon_t: public warrior_attack_t
   {
     double am = warrior_attack_t::action_multiplier();
 
+    // The 140% is hardcoded in the tooltip
+    if ( weapon -> group() == WEAPON_1H ||
+         weapon -> group() == WEAPON_SMALL )
+         am *= 1.40;
+
     if ( p() -> mastery.weapons_master -> ok() )
       am *= 1.0 + p() -> cache.mastery_value();
 
@@ -1520,6 +1535,14 @@ struct ignite_weapon_t: public warrior_attack_t
     cd_duration = cooldown -> duration * player -> cache.attack_haste();
 
     warrior_attack_t::update_ready( cd_duration );
+  }
+
+  virtual bool ready()
+  {
+    if ( p() -> main_hand_weapon.type == WEAPON_NONE )
+      return false;
+
+    return warrior_attack_t::ready();
   }
 };
 
@@ -1534,11 +1557,6 @@ struct heroic_strike_t: public warrior_attack_t
 
     weapon  = &( player -> main_hand_weapon );
 
-    // The 140% is hardcoded in the tooltip
-    if ( weapon -> group() == WEAPON_1H ||
-         weapon -> group() == WEAPON_SMALL )
-         weapon_multiplier *= 1.40;
-
     if ( p -> glyphs.cleave -> ok() )
       aoe = 2;
 
@@ -1548,6 +1566,11 @@ struct heroic_strike_t: public warrior_attack_t
   virtual double action_multiplier() const
   {
     double am = warrior_attack_t::action_multiplier();
+
+    // The 140% is hardcoded in the tooltip
+    if ( weapon -> group() == WEAPON_1H ||
+         weapon -> group() == WEAPON_SMALL )
+         am *= 1.40;
 
     if ( p() -> buff.shield_charge -> up() )
       am *= 1.0 + p() -> buff.shield_charge -> default_value;
@@ -1592,6 +1615,14 @@ struct heroic_strike_t: public warrior_attack_t
 
     warrior_attack_t::update_ready( cd_duration );
   }
+
+  virtual bool ready()
+  {
+    if ( p() -> main_hand_weapon.type == WEAPON_NONE )
+      return false;
+
+    return warrior_attack_t::ready();
+  }
 };
 
 // Heroic Throw ==============================================================
@@ -1614,7 +1645,10 @@ struct heroic_throw_t: public warrior_attack_t
   {
     if ( p() -> current.distance_to_move > data().max_range() ||
          p() -> current.distance_to_move < data().min_range() ) // Cannot heroic throw unless target is in range.
-         return false;
+      return false;
+
+    if ( p() -> main_hand_weapon.type == WEAPON_NONE )
+      return false;
 
     return warrior_attack_t::ready();
   }
@@ -1740,6 +1774,7 @@ struct intervene_t: public warrior_attack_t
     warrior_attack_t( "intervene", p, p -> spell.intervene )
   {
     parse_options( NULL, options_str );
+    stancemask = STANCE_DEFENSE | STANCE_GLADIATOR;
     base_teleport_distance = data().max_range();
     movement_directionality = MOVEMENT_OMNI;
   }
@@ -1851,6 +1886,14 @@ struct mortal_strike_t: public warrior_attack_t
 
     warrior_attack_t::update_ready( cd_duration );
   }
+
+  virtual bool ready()
+  {
+    if ( p() -> main_hand_weapon.type == WEAPON_NONE )
+      return false;
+
+    return warrior_attack_t::ready();
+  }
 };
 
 // Pummel ===================================================================
@@ -1918,11 +1961,6 @@ struct raging_blow_t: public warrior_attack_t
     oh_attack = new raging_blow_attack_t( p, "raging_blow_oh", data().effectN( 2 ).trigger() );
     oh_attack -> weapon = &( p -> off_hand_weapon );
     add_child( oh_attack );
-
-    // Needs weapons in both hands
-    if ( p -> main_hand_weapon.type == WEAPON_NONE ||
-         p -> off_hand_weapon.type == WEAPON_NONE )
-         background = true;
   }
 
   virtual void execute()
@@ -1946,6 +1984,11 @@ struct raging_blow_t: public warrior_attack_t
   virtual bool ready()
   {
     if ( !p() -> buff.raging_blow -> check() )
+      return false;
+
+    // Needs weapons in both hands
+    if ( p() -> main_hand_weapon.type == WEAPON_NONE ||
+         p() -> off_hand_weapon.type == WEAPON_NONE )
       return false;
 
     return warrior_attack_t::ready();
@@ -2004,6 +2047,7 @@ struct revenge_t: public warrior_attack_t
     absorb_stats( 0 ), rage_gain( 0 )
   {
     parse_options( NULL, options_str );
+    stancemask = STANCE_GLADIATOR | STANCE_BATTLE;
 
     aoe = 3;
     rage_gain = data().effectN( 2 ).resource( RESOURCE_RAGE );
@@ -2048,7 +2092,7 @@ struct revenge_t: public warrior_attack_t
 
   virtual bool ready()
   {
-    if ( p() -> active_stance == STANCE_BATTLE )
+    if ( p() -> main_hand_weapon.type == WEAPON_NONE )
       return false;
 
     return warrior_attack_t::ready();
@@ -2122,6 +2166,7 @@ struct shield_slam_t: public warrior_attack_t
     rage_gain( 0.0 )
   {
     parse_options( NULL, options_str );
+    stancemask = STANCE_GLADIATOR | STANCE_DEFENSE;
 
     rage_gain = data().effectN( 3 ).resource( RESOURCE_RAGE );
     attack_power_mod.direct = 3.08; //Hard-coded in tooltip.
@@ -2199,7 +2244,7 @@ struct shield_slam_t: public warrior_attack_t
 
   virtual bool ready()
   {
-    if ( p() -> active_stance == STANCE_BATTLE || !p() -> has_shield_equipped() )
+    if ( !p() -> has_shield_equipped() )
       return false;
 
     return warrior_attack_t::ready();
@@ -2246,6 +2291,14 @@ struct slam_t: public warrior_attack_t
       am *= 1.0 + ( p() -> buff.slam -> stack() / 2 );
 
     return am;
+  }
+
+  virtual bool ready()
+  {
+    if ( p() -> main_hand_weapon.type == WEAPON_NONE )
+      return false;
+
+    return warrior_attack_t::ready();
   }
 };
 
@@ -2320,7 +2373,8 @@ struct storm_bolt_t: public warrior_attack_t
   {
     warrior_attack_t::execute(); // for fury, this is the MH attack
 
-    if ( oh_attack && result_is_hit( execute_state -> result ) ) // If MH fails to land, OH does not execute.
+    if ( oh_attack && result_is_hit( execute_state -> result ) &&
+         p() -> off_hand_weapon.type != WEAPON_NONE ) // If MH fails to land, OH does not execute.
       oh_attack -> execute();
   }
 
@@ -2330,6 +2384,14 @@ struct storm_bolt_t: public warrior_attack_t
       cd_duration = cooldown -> duration / ( 1 + player -> cache.readiness() );
 
     warrior_attack_t::update_ready( cd_duration );
+  }
+
+  virtual bool ready()
+  {
+    if ( p() -> main_hand_weapon.type == WEAPON_NONE )
+      return false;
+
+    return warrior_attack_t::ready();
   }
 };
 
@@ -2350,7 +2412,6 @@ struct thunder_clap_t: public warrior_attack_t
 
     attack_power_mod.direct *= 1.0 + p -> perk.improved_thunder_clap -> effectN( 1 ).percent();
     attack_power_mod.direct *= 1.0 + p -> glyphs.resonating_power -> effectN( 1 ).percent();
-    attack_power_mod.direct *= 1.0 + p -> spec.blood_and_thunder -> effectN( 2 ).percent();
   }
 
   virtual void impact( action_state_t* s )
@@ -2368,7 +2429,7 @@ struct thunder_clap_t: public warrior_attack_t
   {
     double c = base_t::cost();
 
-    if ( p() -> specialization() == WARRIOR_PROTECTION )
+    if ( p() -> specialization() == WARRIOR_PROTECTION && p() -> active_stance == STANCE_DEFENSE )
       c = 0;
 
     return c;
@@ -2458,6 +2519,7 @@ struct whirlwind_t: public warrior_attack_t
     oh_attack( 0 )
   {
     parse_options( NULL, options_str );
+    stancemask = STANCE_BATTLE;
     aoe = -1;
 
     if ( p -> specialization() == WARRIOR_FURY )
@@ -2485,6 +2547,9 @@ struct whirlwind_t: public warrior_attack_t
   {
     warrior_attack_t::execute();
 
+    if ( p() -> buff.sweeping_strikes -> up() )
+      trigger_sweeping_strikes( execute_state );
+
     if ( oh_attack )
       oh_attack -> execute();
 
@@ -2494,10 +2559,10 @@ struct whirlwind_t: public warrior_attack_t
 
   virtual bool ready()
   {
-    if ( p() -> active_stance != STANCE_BATTLE )
+    if ( p() -> main_hand_weapon.type == WEAPON_NONE )
       return false;
 
-    return warrior_attack_t::ready();
+     return warrior_attack_t::ready();
   }
 };
 
@@ -2514,8 +2579,6 @@ struct wild_strike_t: public warrior_attack_t
       base_costs[RESOURCE_RAGE] = 20;
     weapon  = &( player -> off_hand_weapon );
     weapon_multiplier *= 1.0 + p -> perk.improved_wild_strike -> effectN( 1 ).percent();
-    if ( player -> off_hand_weapon.type == WEAPON_NONE )
-      background = true;
     min_gcd = timespan_t::from_millis( 500 );
   }
 
@@ -2535,6 +2598,14 @@ struct wild_strike_t: public warrior_attack_t
 
     p() -> buff.bloodsurge -> decrement();
   }
+
+  virtual bool ready()
+  {
+    if ( player -> off_hand_weapon.type == WEAPON_NONE )
+      return false;
+
+    return warrior_attack_t::ready();
+  }
 };
 
 // ==========================================================================
@@ -2546,7 +2617,7 @@ struct warrior_spell_t: public warrior_action_t < spell_t >
   warrior_spell_t( const std::string& n, warrior_t* p, const spell_data_t* s = spell_data_t::nil() ):
     base_t( n, p, s )
   {
-    may_miss = may_glance = may_block = may_dodge = may_parry = may_crit = false;
+    may_miss = may_glance = may_block = may_dodge = may_parry = false;
   }
 };
 
@@ -2610,7 +2681,8 @@ struct berserker_rage_t: public warrior_spell_t
     warrior_spell_t::execute();
 
     p() -> buff.berserker_rage -> trigger();
-    p() -> enrage();
+    if ( p() -> specialization() != WARRIOR_ARMS )
+      p() -> enrage();
   }
 };
 
@@ -2677,12 +2749,12 @@ struct deep_wounds_t: public warrior_spell_t
 struct rend_burst_t: public warrior_spell_t
 {
   rend_burst_t( warrior_t* p ):
-    warrior_spell_t( "rend_burst", p )
+    warrior_spell_t( "rend_burst", p, p -> find_specialization_spell( "Rend" ) )
   {
-    may_crit = dual = true;
+    dual = true;
     may_multistrike = 1;
-    attack_power_mod.direct = 4;
-    school = SCHOOL_PHYSICAL;
+    attack_power_mod.direct = data().effectN( 1 ).ap_coeff();
+    dot_duration = timespan_t::zero();
   }
 
   virtual double target_armor( player_t* ) const
@@ -2699,6 +2771,7 @@ struct rend_t: public warrior_spell_t
     burst( new rend_burst_t( p ) )
   {
     parse_options( NULL, options_str );
+    parse_effect_data( data().effectN( 2 ).trigger() -> effectN( 1 ) );
     hasted_ticks = tick_zero = false;
     may_multistrike = 1;
     add_child( burst );
@@ -2726,6 +2799,14 @@ struct rend_t: public warrior_spell_t
   {
     warrior_spell_t::last_tick( d );
     burst -> execute();
+  }
+
+  virtual bool ready()
+  {
+    if ( p() -> main_hand_weapon.type == WEAPON_NONE )
+      return false;
+
+    return warrior_spell_t::ready();
   }
 };
 
@@ -2798,7 +2879,7 @@ struct recklessness_t: public warrior_spell_t
 struct shield_barrier_t: public warrior_action_t < absorb_t >
 {
   shield_barrier_t( warrior_t* p, const std::string& options_str ):
-    base_t( "shield_barrier", p, p -> find_class_spell( "Shield Barrier" ) )
+    base_t( "shield_barrier", p, p -> find_specialization_spell( "Shield Barrier" ) )
   {
     parse_options( NULL, options_str );
 
@@ -2857,6 +2938,7 @@ struct shield_block_t: public warrior_spell_t
     warrior_spell_t( "shield_block", p, p -> find_class_spell( "Shield Block" ) )
   {
     parse_options( NULL, options_str );
+    stancemask = STANCE_DEFENSE | STANCE_BATTLE;
     cooldown -> duration = timespan_t::from_seconds( 9.0 );
     cooldown -> charges = 2;
     use_off_gcd = true;
@@ -2883,7 +2965,7 @@ struct shield_block_t: public warrior_spell_t
 
   virtual bool ready()
   {
-    if ( p() -> active_stance == STANCE_GLADIATOR || !p() -> has_shield_equipped() )
+    if ( !p() -> has_shield_equipped() )
       return false;
 
     return warrior_spell_t::ready();
@@ -2898,6 +2980,7 @@ struct shield_charge_t: public warrior_spell_t
     warrior_spell_t( "shield_charge", p, p -> find_class_spell( "Shield Charge" ) )
   {
     parse_options( NULL, options_str );
+    stancemask = STANCE_GLADIATOR;
 
     base_teleport_distance = data().max_range();
     movement_directionality = MOVEMENT_OMNI;
@@ -2913,7 +2996,7 @@ struct shield_charge_t: public warrior_spell_t
 
   virtual bool ready()
   {
-    if ( p() -> active_stance != STANCE_GLADIATOR || !p() -> has_shield_equipped() )
+    if ( !p() -> has_shield_equipped() )
       return false;
 
     if ( p() -> current.distance_to_move > base_teleport_distance )
@@ -3085,6 +3168,7 @@ struct sweeping_strikes_t: public warrior_spell_t
     warrior_spell_t( "sweeping_strikes", p, p -> spec.sweeping_strikes )
   {
     parse_options( NULL, options_str );
+    stancemask = STANCE_BATTLE;
     cooldown -> duration  = data().cooldown();
     cooldown -> duration += p -> perk.enhanced_sweeping_strikes -> effectN( 2 ).time_value();
   }
@@ -3093,14 +3177,6 @@ struct sweeping_strikes_t: public warrior_spell_t
   {
     warrior_spell_t::execute();
     p() -> buff.sweeping_strikes -> trigger();
-  }
-
-  virtual bool ready()
-  {
-    if ( p() -> active_stance == STANCE_DEFENSE )
-      return false;
-
-    return warrior_spell_t::ready();
   }
 };
 
@@ -3269,7 +3345,6 @@ void warrior_t::init_spells()
   spec.bastion_of_defense       = find_specialization_spell( "Bastion of Defense" );
   spec.bladed_armor             = find_specialization_spell( "Bladed Armor" );
   spec.blood_craze              = find_specialization_spell( "Blood Craze" );
-  spec.blood_and_thunder        = find_specialization_spell( "Blood and Thunder" );
   spec.bloodsurge               = find_specialization_spell( "Bloodsurge" );
   spec.bloodthirst              = find_specialization_spell( "Bloodthirst" );
   spec.colossus_smash           = find_specialization_spell( "Colossus Smash" );
