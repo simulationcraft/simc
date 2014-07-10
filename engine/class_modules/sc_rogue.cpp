@@ -197,6 +197,7 @@ struct rogue_t : public player_t
     const spell_data_t* tier13_2pc;
     const spell_data_t* tier13_4pc;
     const spell_data_t* tier15_4pc;
+    const spell_data_t* venom_zest;
   } spell;
 
   // Talents
@@ -208,6 +209,8 @@ struct rogue_t : public player_t
 
     const spell_data_t* anticipation;
     const spell_data_t* marked_for_death;
+
+    const spell_data_t* venom_zest;
   } talent;
 
   // Masteries
@@ -3611,6 +3614,8 @@ void rogue_t::init_base_stats()
   if ( sets.has_set_bonus( SET_PVP_2PC_MELEE ) )
     resources.base[ RESOURCE_ENERGY ] += 10;
 
+  resources.base[ RESOURCE_ENERGY ] += talent.venom_zest -> effectN( 1 ).base_value();
+
   base_energy_regen_per_second = 10 * ( 1.0 + spec.vitality -> effectN( 1 ).percent() );
 
   base_gcd = timespan_t::from_seconds( 1.0 );
@@ -3666,6 +3671,7 @@ void rogue_t::init_spells()
   spell.tier15_4pc          = find_spell( 138151 );
   spell.bandits_guile_value = find_spell( 84747 );
   spell.fan_of_knives       = find_class_spell( "Fan of Knives" );
+  spell.venom_zest          = find_spell( 156719 );
 
   // Glyphs
   glyph.adrenaline_rush     = find_glyph_spell( "Glyph of Adrenaline Rush" );
@@ -3681,6 +3687,7 @@ void rogue_t::init_spells()
   talent.shadow_focus       = find_talent_spell( "Shadow Focus" );
   talent.marked_for_death   = find_talent_spell( "Marked for Death" );
   talent.anticipation       = find_talent_spell( "Anticipation" );
+  talent.venom_zest         = find_talent_spell( "Venom Zest" );
 
   // Shared perks
   perk.improved_recuperate         = find_perk_spell( "Improved Recuperate" );
@@ -3989,6 +3996,9 @@ double rogue_t::energy_regen_per_second() const
 
   if ( buffs.blade_flurry -> check() )
     r *= 1.0 + spec.blade_flurry -> effectN( 1 ).percent();
+
+  if ( talent.venom_zest -> ok() )
+    r *= 1.0 + spell.venom_zest -> effectN( 1 ).percent();
 
   return r;
 }
