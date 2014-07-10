@@ -115,7 +115,7 @@ finger2=primal_gladiators_signet_of_accuracy,id=111272
 trinket1=primal_gladiators_badge_of_victory,id=111232
 trinket2=primal_gladiators_insignia_of_victory,id=111233
 main_hand=primal_gladiators_decapitator,id=111202
-off_hand=primal_gladiators_decapitator,id=111202,gems=3vers
+off_hand=primal_gladiators_decapitator,id=111202
 
 # Gear Summary
 # gear_strength=2809
@@ -125,6 +125,6 @@ off_hand=primal_gladiators_decapitator,id=111202,gems=3vers
 # gear_mastery_rating=709
 # gear_armor=2574
 # gear_multistrike_rating=411
-# gear_versatility_rating=113
+# gear_versatility_rating=110
 # pvp_2pc_melee=1
 # pvp_4pc_melee=1

@@ -2088,20 +2088,14 @@ struct enraged_regeneration_t: public warrior_heal_t
 struct shield_slam_t: public warrior_attack_t
 {
   double rage_gain;
-  bool heavy_repercussion;
   shield_slam_t( warrior_t* p, const std::string& options_str ):
     warrior_attack_t( "shield_slam", p, p -> find_class_spell( "Shield Slam" ) ),
-    rage_gain( 0.0 ), heavy_repercussion( false )
+    rage_gain( 0.0 )
   {
-    option_t opt[] =
-    {
-      opt_bool( "talented", heavy_repercussion ),
-      opt_null()
-    };
-    parse_options( opt, options_str );
+    parse_options( NULL, options_str );
 
     rage_gain = data().effectN( 3 ).resource( RESOURCE_RAGE );
-    attack_power_mod.direct = 3.08; // Tested in game... doesn't match any spell data or tooltips... yay.
+    attack_power_mod.direct = 3.191; // Tested in game... doesn't match any spell data or tooltips... yay.
 
     attack_power_mod.direct *= 1.0 + p -> perk.improved_shield_slam -> effectN( 1 ).percent();
   }
@@ -2113,10 +2107,10 @@ struct shield_slam_t: public warrior_attack_t
     if ( p() -> buff.shield_charge -> up() )
     {
       am *= 1.0 + p() -> buff.shield_charge -> default_value;
-      if ( heavy_repercussion )
+      if ( p() -> talents.heavy_repercussions -> ok() )
         am *= 1.0 + 0.5;
     }
-    if ( p() -> buff.shield_block -> up() && heavy_repercussion )
+    if ( p() -> buff.shield_block -> up() && p() -> talents.heavy_repercussions -> ok() )
       am *= 1.0 + 0.5;
 
     return am;
