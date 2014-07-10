@@ -82,6 +82,7 @@ public:
     buff_t* recklessness;
     // Fury Only
     buff_t* bloodsurge;
+    buff_t* meat_cleaver;
     buff_t* raging_blow;
     // Arms only
     buff_t* slam;
@@ -237,6 +238,7 @@ public:
     const spell_data_t* bloodthirst;
     const spell_data_t* crazed_berserker;
     const spell_data_t* cruelty;
+    const spell_data_t* meat_cleaver;
     const spell_data_t* raging_blow;
     const spell_data_t* readiness_fury;
     const spell_data_t* single_minded_fury;
@@ -1857,6 +1859,14 @@ struct raging_blow_attack_t: public warrior_attack_t
     dual = true;
     weapon_multiplier *= 1.0 + p -> perk.improved_raging_blow -> effectN( 1 ).percent();
   }
+
+  virtual void execute()
+  {
+    aoe = p() -> buff.meat_cleaver -> stack();
+    if ( aoe ) ++aoe;
+
+    warrior_attack_t::execute();
+  }
 };
 
 struct raging_blow_t: public warrior_attack_t
@@ -1899,6 +1909,7 @@ struct raging_blow_t: public warrior_attack_t
            oh_attack -> execute_state -> result == RESULT_CRIT )
            p() -> buff.raging_blow_glyph -> trigger();
       p() -> buff.raging_wind -> trigger();
+      p() -> buff.meat_cleaver -> expire();
     }
     p() -> buff.raging_blow -> decrement(); // Raging blow buff decrements even if the attack doesn't land.
   }
@@ -2454,6 +2465,7 @@ struct whirlwind_t: public warrior_attack_t
     if ( oh_attack )
       oh_attack -> execute();
 
+    p() -> buff.meat_cleaver -> trigger();
     p() -> buff.raging_wind -> expire();
   }
 
@@ -3239,6 +3251,7 @@ void warrior_t::init_spells()
   spec.crazed_berserker         = find_specialization_spell( "Crazed Berserker" );
   spec.cruelty                  = find_specialization_spell( "Cruelty" );
   spec.devastate                = find_specialization_spell( "Devastate" );
+  spec.meat_cleaver             = find_specialization_spell( "Meat Cleaver" );
   spec.mortal_strike            = find_specialization_spell( "Mortal Strike" );
   spec.raging_blow              = find_specialization_spell( "Raging Blow" );
   spec.readiness_arms           = find_specialization_spell( "Readiness: Arms" );
@@ -3534,9 +3547,8 @@ void warrior_t::apl_smf_fury()
   two_targets -> add_action( this, "Colossus Smash" );
   two_targets -> add_talent( this, "Storm Bolt", "if=debuff.colossus_smash.up" );
   two_targets -> add_action( this, "Bloodthirst" );
-  two_targets -> add_action( this, "Raging Blow" );
-  two_targets -> add_action( this, "Execute" );
-  two_targets -> add_action( this, "Whirlwind" );
+  two_targets -> add_action( this, "Raging Blow", "if=buff.meat_cleaver.up" );
+  two_targets -> add_action( this, "Whirlwind", "if=!buff.meat_cleaver.up" );
   two_targets -> add_talent( this, "Shockwave" );
 
   three_targets -> add_talent( this, "Bloodbath" );
@@ -3549,9 +3561,8 @@ void warrior_t::apl_smf_fury()
   three_targets -> add_talent( this, "Dragon Roar", "if=!debuff.colossus_smash.up&(buff.bloodbath.up|!talent.bloodbath.enabled)" );
   three_targets -> add_action( this, "Colossus Smash" );
   three_targets -> add_talent( this, "Storm Bolt", "if=debuff.colossus_smash.up" );
-  three_targets -> add_action( this, "Raging Blow" );
+  three_targets -> add_action( this, "Raging Blow", "if=buff.meat_cleaver.stack=2" );
   three_targets -> add_action( this, "Whirlwind" );
-  three_targets -> add_talent( this, "Shockwave" );
 
   aoe -> add_talent( this, "Bloodbath" );
   aoe -> add_action( this, "Heroic Leap", "if=buff.enrage.up" );
@@ -3559,14 +3570,13 @@ void warrior_t::apl_smf_fury()
   aoe -> add_talent( this, "Ignite Weapon", "if=(target.health.pct>=20&rage>100)|buff.ignite_weapon.down" );
   aoe -> add_talent( this, "Ravager" );
   aoe -> add_talent( this, "Bladestorm" );
-  aoe -> add_action( this, "Bloodthirst" );
-  aoe -> add_action( this, "Raging Blow" );
+  aoe -> add_action( this, "Bloodthirst", "if=rage<80" );
+  aoe -> add_action( this, "Raging Blow", "if=buff.meat_cleaver.stack=3" );
   aoe -> add_action( this, "Whirlwind" );
   aoe -> add_talent( this, "Dragon Roar", "if=debuff.colossus_smash.down&(buff.bloodbath.up|!talent.bloodbath.enabled)" );
   aoe -> add_action( this, "Colossus Smash" );
   aoe -> add_talent( this, "Storm Bolt" );
   aoe -> add_talent( this, "Shockwave" );
-
 }
 
 // Titan's Grip Fury Warrior Action Priority List ========================================
@@ -3644,9 +3654,9 @@ void warrior_t::apl_tg_fury()
   two_targets -> add_action( this, "Colossus Smash" );
   two_targets -> add_talent( this, "Storm Bolt", "if=debuff.colossus_smash.up" );
   two_targets -> add_action( this, "Bloodthirst" );
-  two_targets -> add_action( this, "Raging Blow" );
-  two_targets -> add_action( this, "Whirlwind" );
   two_targets -> add_talent( this, "Shockwave" );
+  two_targets -> add_action( this, "Raging Blow", "if=buff.meat_cleaver.up" );
+  two_targets -> add_action( this, "Whirlwind", "if=!buff.meat_cleaver.up" );
   two_targets -> add_action( this, "Execute" );
 
   three_targets -> add_talent( this, "Bloodbath" );
@@ -3659,9 +3669,8 @@ void warrior_t::apl_tg_fury()
   three_targets -> add_action( this, "Bloodthirst" );
   three_targets -> add_action( this, "Colossus Smash" );
   three_targets -> add_talent( this, "Storm Bolt", "if=debuff.colossus_smash.up" );
-  three_targets -> add_action( this, "Raging Blow" );
+  three_targets -> add_action( this, "Raging Blow", "if=buff.meat_cleaver.stack=2" );
   three_targets -> add_action( this, "Whirlwind" );
-  three_targets -> add_talent( this, "Shockwave" );
 
   aoe -> add_talent( this, "Bloodbath" );
   aoe -> add_action( this, "Heroic Leap", "if=buff.enrage.up" );
@@ -3669,8 +3678,8 @@ void warrior_t::apl_tg_fury()
   aoe -> add_talent( this, "Ignite Weapon", "if=(target.health.pct>=20&rage>100)|buff.ignite_weapon.down" );
   aoe -> add_talent( this, "Ravager" );
   aoe -> add_talent( this, "Bladestorm" );
-  aoe -> add_action( this, "Bloodthirst" );
-  aoe -> add_action( this, "Raging Blow" );
+  aoe -> add_action( this, "Bloodthirst", "if=rage<80" );
+  aoe -> add_action( this, "Raging Blow", "if=buff.meat_cleaver.stack=3" );
   aoe -> add_action( this, "Whirlwind" );
   aoe -> add_talent( this, "Dragon Roar", "if=debuff.colossus_smash.down&(buff.bloodbath.up|!talent.bloodbath.enabled)" );
   aoe -> add_action( this, "Colossus Smash" );
@@ -3883,6 +3892,9 @@ void warrior_t::create_buffs()
   buff.battle_stance = buff_creator_t( this, "battle_stance", find_class_spell( "Battle Stance" ) );
 
   buff.berserker_rage = buff_creator_t( this, "berserker_rage", find_class_spell( "Berserker Rage" ) );
+
+  buff.meat_cleaver     = buff_creator_t( this, "meat_cleaver",     spec.meat_cleaver -> effectN( 1 ).trigger() )
+    .max_stack( 3 + perk.improved_meat_cleaver -> effectN( 1 ).base_value() );
 
   buff.bladed_armor = buff_creator_t( this, "bladed_armor", spec.bladed_armor )
     .add_invalidate( CACHE_ATTACK_POWER );

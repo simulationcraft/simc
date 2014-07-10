@@ -6338,7 +6338,6 @@ void priest_t::apl_holy_dmg()
   for ( size_t i = 0; i < racial_actions.size(); i++ )
     def -> add_action( racial_actions[ i ], racial_condition );
 
-
   if ( find_class_spell( "Shadowfiend" ) -> ok() )
   {
     def -> add_action( "mindbender,if=talent.mindbender.enabled" );
