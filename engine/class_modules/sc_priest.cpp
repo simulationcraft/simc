@@ -1973,30 +1973,30 @@ struct shadowy_apparition_spell_t final : public priest_spell_t
 };
 
 // Mind Blast T17 2pc Shadow Dot
-//TODO: Check and see if there is any sort of Ignite mechanic from Multistrikes or from a recast thanks to a DI proc. Also verify that it doesn't gain ticks (though I'm fairly certain it does not) and that it's duration is hasted. - Twintop 2014/06/30
+//Celestalon confirmed Ignite mechanics like DP's - Twintop 2014/07/09
 struct mind_blast_dot_t final : public priest_spell_t
 {
   struct state_t final : public action_state_t
   {
-    double mind_blast_dmg;
+    double tick_dmg;
     typedef action_state_t base_t;
 
     state_t( action_t* a, player_t* t ) :
       base_t( a, t ),
-      mind_blast_dmg( 0.0 )
+      tick_dmg( 0.0 )
     { }
 
     std::ostringstream& debug_str( std::ostringstream& s ) override
-    { base_t::debug_str( s ) << " mind_blast_dmg=" << mind_blast_dmg; return s; }
+    { base_t::debug_str( s ) << " mind_blast_dmg=" << tick_dmg; return s; }
 
     void initialize() override
-    { base_t::initialize(); mind_blast_dmg = 0.0; }
+    { base_t::initialize(); tick_dmg = 0.0; }
 
     void copy_state( const action_state_t* o ) override
     {
       base_t::copy_state( o );
       const state_t* dps_t = static_cast<const state_t*>( o );
-      mind_blast_dmg = dps_t -> mind_blast_dmg;
+      tick_dmg = dps_t -> tick_dmg;
     }
   };
 
@@ -2025,11 +2025,8 @@ struct mind_blast_dot_t final : public priest_spell_t
     snapshot_flags = update_flags = 0;
   }
 
-  double calculate_tick_amount( action_state_t* s_ , double ) override
-  {
-    const state_t* s = debug_cast<const state_t*>( s_ );
-    return s -> mind_blast_dmg / (dot_duration / base_tick_time );
-  }
+  virtual void reset() override
+  { priest_spell_t::reset(); base_ta_adder = 0; }
 
   virtual action_state_t* new_state() override
   { return new state_t( this, target ); }
@@ -2041,10 +2038,61 @@ struct mind_blast_dot_t final : public priest_spell_t
     if ( !s )
     {
       state_t* ds_ = static_cast<state_t*>( s_ );
-      ds_ -> mind_blast_dmg = 0.0;
+      ds_ -> tick_dmg = 0.0;
     }
 
     return s_;
+  }
+
+  double calculate_tick_amount( action_state_t* state, double dot_multiplier ) override
+  {
+    // We already got the dmg stored, just return it.
+    const state_t* ds = static_cast<const state_t*>( state );
+    return ds -> tick_dmg * dot_multiplier;
+  }
+
+  /* Precondition: dot is ticking!
+   */
+  void append_damage( player_t* target, double dmg )
+  {
+    dot_t* dot = get_dot( target );
+    if ( !dot -> is_ticking() )
+    {
+      if ( sim -> debug )
+        sim -> out_debug.printf( "%s could not appended damage because the dot is no longer ticking."
+                                 "( This should only be the case if the dot drops between main impact and multistrike impact. )",
+                                 player -> name() );
+      return;
+    }
+
+    state_t* ds = static_cast<state_t*>( dot -> state );
+    ds -> tick_dmg += dmg / dot -> ticks_left();
+    if ( sim -> debug )
+      sim -> out_debug.printf( "%s appended %.2f damage / %.2f per tick. New dmg per tick: %.2f",
+                               player -> name(), dmg, dmg / dot -> ticks_left(), ds -> tick_dmg );
+  }
+
+  virtual void impact( action_state_t* state ) override
+  {
+    state_t* s = static_cast<state_t*>( state );
+    double saved_impact_dmg = s -> result_amount; // catch previous remaining t17 2pc damage
+
+    s -> result_amount = 0.0;
+    priest_spell_t::impact( s );
+
+    dot_t* dot = get_dot( state -> target );
+    state_t* ds = static_cast<state_t*>( dot -> state );
+    assert( ds );
+    ds -> tick_dmg = saved_impact_dmg / dot -> ticks_left();
+    if ( sim -> debug )
+      sim -> out_debug.printf( "%s T17 2PC / Mind Blast dot started with total of %.2f damage / %.2f per tick.",
+                               player -> name(), saved_impact_dmg, ds -> tick_dmg );
+  }
+
+  virtual timespan_t calculate_dot_refresh_duration( const dot_t* dot, timespan_t triggered_duration ) const override
+  {
+    // Old Mop Dot Behaviour
+    return dot -> time_to_next_tick() + triggered_duration;
   }
 };
 
@@ -2083,15 +2131,43 @@ struct mind_blast_t final : public priest_spell_t
     if ( ! dot_spell ) // equivalent to !priest.sets.has_set_bonus( SET_T17_2PC_CASTER )
       return;
 
+    dot_t* dot = dot_spell -> get_dot( state -> target );
+
+    double dmg_to_pass_to_t17_2pc = 0.0;
+
+    if ( dot -> is_ticking() )
+    {
+      const mind_blast_dot_t::state_t* ds = debug_cast<const mind_blast_dot_t::state_t*>( dot -> state );
+      dmg_to_pass_to_t17_2pc += ds -> tick_dmg * dot -> ticks_left();
+
+      if ( sim -> debug )
+        sim -> out_debug.printf( "%s DP was still ticking. Added %.2f damage to new dot, and %.4f%% heal%%/tick.",
+                                 player -> name(), dmg_to_pass_to_t17_2pc );
+    }
+
     mind_blast_dot_t::state_t* s = debug_cast<mind_blast_dot_t::state_t*>( dot_spell -> get_state( state ) );
-    s -> result_amount = 0.0;
+    s -> result_amount = dmg_to_pass_to_t17_2pc;
     s -> result = RESULT_HIT;
     s -> target = state -> target;
     s -> haste = dot_spell -> composite_haste();
-    s -> mind_blast_dmg = state -> result_amount * 0.1;//* priest.sets.set( SET_T17_2PC_CASTER ) -> effectN( 1 ).percent() );
+    s -> result_amount = state -> result_amount * priest.sets.set( SET_T17_2PC_CASTER ) -> effectN( 1 ).percent();
 
     dot_spell -> schedule_travel( s );
     dot_spell -> stats -> add_execute( timespan_t::zero(), s -> target);
+  }
+
+  void transfer_dmg_to_dot( action_state_t* state )
+  {
+    if ( ! dot_spell ) // equivalent to !priest.sets.has_set_bonus( SET_T17_2PC_CASTER )
+      return;
+
+    if ( sim -> debug )
+      sim -> out_debug.printf( "%s T17 2PC result %s appends %.2f damage to dot",
+                               player -> name(),
+                               util::result_type_string( state -> result ),
+                               state -> result_amount );
+
+    dot_spell -> append_damage( state -> target, state -> result_amount * priest.sets.set( SET_T17_2PC_CASTER ) -> effectN( 1 ).percent() );
   }
 
   virtual void execute() override
@@ -2105,27 +2181,30 @@ struct mind_blast_t final : public priest_spell_t
   {
     priest_spell_t::impact( s );
 
-    if ( result_is_hit( s -> result ) )
+    if ( result_is_hit( s -> result ) || result_is_multistrike( s -> result ) )
     {
-      generate_shadow_orb( 1, priest.gains.shadow_orb_mind_blast );
-
-      // Glyph of Mind Harvest
-      if ( priest.glyphs.mind_harvest -> ok() )
+      if ( result_is_hit( s -> result ) )
       {
-        priest_td_t& td = get_td( s -> target );
-        if ( ! td.glyph_of_mind_harvest_consumed )
-        {
-          td.glyph_of_mind_harvest_consumed = true;
-          generate_shadow_orb( 2, priest.gains.shadow_orb_mind_harvest ); // no sensible spell data available, 2014/06/09
+        generate_shadow_orb( 1, priest.gains.shadow_orb_mind_blast );
 
-          if ( sim -> debug )
-            sim -> out_debug.printf( "%s consumed Glyph of Mind Harvest on target %s.", priest.name(), s -> target -> name() );
+        // Glyph of Mind Harvest
+        if ( priest.glyphs.mind_harvest -> ok() )
+        {
+          priest_td_t& td = get_td( s -> target );
+          if ( ! td.glyph_of_mind_harvest_consumed )
+          {
+            td.glyph_of_mind_harvest_consumed = true;
+            generate_shadow_orb( 2, priest.gains.shadow_orb_mind_harvest ); // no sensible spell data available, 2014/06/09
+
+            if ( sim -> debug )
+              sim -> out_debug.printf( "%s consumed Glyph of Mind Harvest on target %s.", priest.name(), s -> target -> name() );
+          }
         }
+        priest.buffs.glyph_mind_spike -> expire();
       }
 
       trigger_t17_2pc( s );
-
-      priest.buffs.glyph_mind_spike -> expire();
+      transfer_dmg_to_dot( s );
     }
   }
 
@@ -2774,8 +2853,8 @@ struct devouring_plague_t final : public priest_spell_t
       if ( sim -> debug )
         sim -> out_debug.printf( "%s appended %.2f damage / %.2f per tick. New dmg per tick: %.2f",
                                  player -> name(), dmg, dmg / dot -> ticks_left(), ds -> tick_dmg );
-
     }
+
     /* Precondition: dot is ticking!
      */
     void append_heal( player_t* target, double heal )
@@ -2795,12 +2874,10 @@ struct devouring_plague_t final : public priest_spell_t
       if ( sim -> debug )
         sim -> out_debug.printf( "%s appended %.4f%% heal / %.4f%% per tick. New heal per tick: %.4f%%%",
                                  player -> name(), heal * 100.0, heal / dot -> ticks_left() * 100.0, ds -> tick_heal_percent * 100.0 );
-
     }
 
     virtual void impact( action_state_t* state ) override
     {
-
       dp_state_t* s = static_cast<dp_state_t*>( state );
       double saved_impact_dmg = s -> result_amount; // catch previous remaining dp damage
       double saved_tick_heal_percent = s -> tick_heal_percent;
