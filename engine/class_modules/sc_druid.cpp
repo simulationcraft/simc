@@ -5784,7 +5784,7 @@ void druid_t::apl_precombat()
       if ( ( specialization() == DRUID_FERAL && primary_role() == ROLE_ATTACK ) || primary_role() == ROLE_ATTACK )
       {
         if ( level > 90 )
-          flask += "greater_draenor_mastery_flask";
+          flask += "greater_draenic_mastery_flask";
         else if ( level > 85 )
           flask += "spring_blossoms";
         else
@@ -5793,7 +5793,7 @@ void druid_t::apl_precombat()
       else
       {
         if ( level > 90 )
-          flask += "greater_draenor_mastery_flask";
+          flask += "greater_draenic_mastery_flask";
         else if ( level > 85 )
           flask += "warm_sun";
         else
@@ -5861,7 +5861,7 @@ void druid_t::apl_precombat()
     if ( specialization() == DRUID_FERAL && primary_role() == ROLE_ATTACK )
     {
       if ( level > 90 )
-        potion_action += "draenor_agility";
+        potion_action += "draenic_agility";
       else if ( level > 85 )
         potion_action += "virmens_bite";
       else
@@ -5871,7 +5871,7 @@ void druid_t::apl_precombat()
     else if ( ( specialization() == DRUID_BALANCE || specialization() == DRUID_RESTORATION ) && ( primary_role() == ROLE_SPELL || primary_role() == ROLE_HEAL ) )
     {
       if ( level > 90 )
-        potion_action += "draenor_intellect";
+        potion_action += "draenic_intellect";
       else if ( level > 85 )
         potion_action += "jade_serpent";
       else
@@ -5936,7 +5936,7 @@ void druid_t::apl_feral()
   std::vector<std::string> racial_actions = get_racial_actions();
   std::string              potion_action  = "potion,name=";
   if ( level > 90 )
-    potion_action += "draenor_agility";
+    potion_action += "draenic_agility";
   else if ( level > 85 )
     potion_action += "virmens_bite";
   else
@@ -6018,7 +6018,7 @@ void druid_t::apl_balance()
   std::vector<std::string> item_actions   = get_item_actions();
   std::string              potion_action  = "potion,name=";
   if ( level > 90 )
-    potion_action += "draenor_intellect";
+    potion_action += "draenic_intellect";
   else if ( level > 85 )
     potion_action += "jade_serpent";
   else

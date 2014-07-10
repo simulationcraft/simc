@@ -5029,7 +5029,7 @@ void warlock_t::apl_precombat()
   {
     // Flask
     if ( level == 100 )
-      precombat_list = "flask,type=greater_draenor_mastery_flask";
+      precombat_list = "flask,type=greater_draenic_mastery_flask";
     else if ( level >= 90 )
       precombat_list = "flask,type=warm_sun";
   }
@@ -5061,7 +5061,7 @@ void warlock_t::apl_precombat()
   {
     // Pre-potion
     if ( level == 100 )
-      precombat_list += "/potion,name=draenor_intellect";
+      precombat_list += "/potion,name=draenic_intellect";
     else if ( level >= 90 )
       precombat_list += "/potion,name=jade_serpent";
   }
@@ -5081,7 +5081,7 @@ void warlock_t::apl_precombat()
     // Potion
     if ( level == 100 )
       action_list_str +=
-          "/potion,name=draenor_intellect,if=buff.bloodlust.react|target.health.pct<=20";
+          "/potion,name=draenic_intellect,if=buff.bloodlust.react|target.health.pct<=20";
     else if ( level >= 90 )
       action_list_str +=
           "/potion,name=jade_serpent,if=buff.bloodlust.react|target.health.pct<=20";

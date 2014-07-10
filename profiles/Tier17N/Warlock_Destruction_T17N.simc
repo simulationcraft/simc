@@ -15,19 +15,19 @@ spec=destruction
 
 # Executed before combat begins. Accepts non-harmful actions only.
 
-actions.precombat=flask,type=greater_draenor_mastery_flask
+actions.precombat=flask,type=greater_draenic_mastery_flask
 actions.precombat+=/food,type=mogu_fish_stew
 actions.precombat+=/dark_intent,if=!aura.spell_power_multiplier.up
 actions.precombat+=/summon_pet,if=!talent.grimoire_of_sacrifice.enabled|buff.grimoire_of_sacrifice.down
 actions.precombat+=/snapshot_stats
 actions.precombat+=/grimoire_of_sacrifice,if=talent.grimoire_of_sacrifice.enabled
 actions.precombat+=/service_pet,if=talent.grimoire_of_service.enabled
-actions.precombat+=/potion,name=draenor_intellect
+actions.precombat+=/potion,name=draenic_intellect
 
 # Executed every time the actor is available.
 
 actions=use_item,name=primal_gladiators_badge_of_dominance
-actions+=/potion,name=draenor_intellect,if=buff.bloodlust.react|target.health.pct<=20
+actions+=/potion,name=draenic_intellect,if=buff.bloodlust.react|target.health.pct<=20
 actions+=/berserking
 actions+=/dark_soul,if=!talent.archimondes_darkness.enabled|(talent.archimondes_darkness.enabled&(charges=2|trinket.proc.intellect.react|trinket.stacking_proc.intellect.react|target.health.pct<=10))
 actions+=/service_pet,if=talent.grimoire_of_service.enabled

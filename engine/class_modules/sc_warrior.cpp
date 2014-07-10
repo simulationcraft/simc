@@ -2858,7 +2858,7 @@ struct shield_block_t: public warrior_spell_t
 struct shield_charge_t: public warrior_spell_t
 {
   shield_charge_t( warrior_t* p, const std::string& options_str ):
-    warrior_spell_t( "shield_charge", p, p -> find_specialization_spell( "Shield Charge" ) )
+    warrior_spell_t( "shield_charge", p, p -> find_class_spell( "Shield Charge" ) )
   {
     parse_options( NULL, options_str );
 
@@ -3408,9 +3408,9 @@ void warrior_t::apl_precombat()
   {
     std::string flask_action = "flask,type=";
     if ( primary_role() == ROLE_ATTACK )
-      flask_action += "greater_draenor_critical_strike_flask";
+      flask_action += "greater_draenic_critical_strike_flask";
     else if ( primary_role() == ROLE_TANK )
-      flask_action += "greater_draenor_critical_strike_flask";
+      flask_action += "greater_draenic_critical_strike_flask";
     precombat -> add_action( flask_action );
   }
 
@@ -3428,7 +3428,6 @@ void warrior_t::apl_precombat()
         food_action += "chun_tian_spring_rolls";
     }
     precombat -> add_action( food_action );
-
   }
 
   if ( specialization() != WARRIOR_PROTECTION )
@@ -3446,9 +3445,9 @@ void warrior_t::apl_precombat()
   if ( sim -> allow_potions && level >= 90 )
   {
     if ( primary_role() == ROLE_ATTACK )
-      precombat -> add_action( "potion,name=draenor_strength" );
+      precombat -> add_action( "potion,name=draenic_strength" );
     else if ( primary_role() == ROLE_TANK )
-      precombat -> add_action( "potion,name=draenor_armor" );
+      precombat -> add_action( "potion,name=draenic_armor" );
   }
   //Pre-pot
   else if ( sim -> allow_potions && level >= 80 )
@@ -3478,7 +3477,7 @@ void warrior_t::apl_smf_fury()
   if ( sim -> allow_potions )
   {
     if ( level >= 90 )
-      default_list -> add_action( "potion,name=draenor_strength,if=(target.health.pct<20&buff.recklessness.up)|target.time_to_die<=25" );
+      default_list -> add_action( "potion,name=draenic_strength,if=(target.health.pct<20&buff.recklessness.up)|target.time_to_die<=25" );
     else if ( level >= 80 )
       default_list -> add_action( "potion,name=mogu_power,if=(target.health.pct<20&buff.recklessness.up)|target.time_to_die<=25" );
   }
@@ -3595,7 +3594,7 @@ void warrior_t::apl_tg_fury()
   if ( sim -> allow_potions )
   {
     if ( level >= 90 )
-      default_list -> add_action( "potion,name=draenor_strength,if=(target.health.pct<20&buff.recklessness.up)|target.time_to_die<=25" );
+      default_list -> add_action( "potion,name=draenic_strength,if=(target.health.pct<20&buff.recklessness.up)|target.time_to_die<=25" );
     else if ( level >= 80 )
       default_list -> add_action( "potion,name=mogu_power,if=(target.health.pct<20&buff.recklessness.up)|target.time_to_die<=25" );
   }
@@ -3702,7 +3701,7 @@ void warrior_t::apl_arms()
   if ( sim -> allow_potions )
   {
     if ( level >= 90 )
-      default_list -> add_action( "potion,name=draenor_strength,if=(target.health.pct<20&buff.recklessness.up)|target.time_to_die<=25" );
+      default_list -> add_action( "potion,name=draenic_strength,if=(target.health.pct<20&buff.recklessness.up)|target.time_to_die<=25" );
     else if ( level >= 80 )
       default_list -> add_action( "potion,name=mogu_power,if=(target.health.pct<20&buff.recklessness.up)|target.time_to_die<=25" );
   }
@@ -3720,7 +3719,7 @@ void warrior_t::apl_arms()
   default_list -> add_action( "run_action_list,name=single_target,if=active_enemies<2" );
 
   single_target -> add_action( this, "Mortal Strike" );
-  single_target -> add_action( "rend,if=dot.rend.remains<3" );
+  single_target -> add_action( this, "Rend", "if=dot.rend.remains<3" );
   single_target -> add_action( this, "Colossus Smash" );
   single_target -> add_talent( this, "Ravager" );
   single_target -> add_action( "bladestorm,if=enabled,interrupt_if=!cooldown.colossus_smash.remains",
@@ -3763,7 +3762,7 @@ void warrior_t::apl_prot()
   if ( sim -> allow_potions )
   {
     if ( level >= 90 )
-      default_list -> add_action( "potion,name=draenor_armor,if=(target.health.pct<20&buff.recklessness.up)|target.time_to_die<=25" );
+      default_list -> add_action( "potion,name=draenic_armor,if=(target.health.pct<20&buff.recklessness.up)|target.time_to_die<=25" );
     else if ( level >= 80 )
       default_list -> add_action( "potion,name=mountains,if=(target.health.pct<20&buff.recklessness.up)|target.time_to_die<=25" );
   }
@@ -3815,13 +3814,13 @@ void warrior_t::apl_gladiator()
       default_list -> add_action( "use_item,name=" + items[i].name_str );
   }
 
-  if ( sim -> allow_potions ) // Gladiator is only usable at level 100.
-    default_list -> add_action( "potion,name=draenor_strength,if=(target.health.pct<20&buff.recklessness.up)|target.time_to_die<=25" );
+  if ( sim -> allow_potions )
+    default_list -> add_action( "potion,name=draenic_strength,if=(target.health.pct<20&buff.recklessness.up)|target.time_to_die<=25" );
 
   default_list -> add_action( "run_action_list,name=single_target,if=active_enemies<=4" );
   default_list -> add_action( "run_action_list,name=aoe,if=active_enemies>3" );
 
-  single_target -> add_action( "shield_charge,if=buff.shield_charge.down&cooldown.shield_slam.remains=0&(cooldown.bloodbath.remains>15|!talent.bloodbath.enabled)" );
+  single_target -> add_action( this, "Shield Charge", "if=buff.shield_charge.down&cooldown.shield_slam.remains=0&(cooldown.bloodbath.remains>15|!talent.bloodbath.enabled)" );
   single_target -> add_action( this, "Heroic Strike", "if=buff.shield_charge.up|buff.ultimatum.up|rage>=85" );
   single_target -> add_talent( this, "Bloodbath" );
   single_target -> add_talent( this, "Avatar" );
@@ -3834,7 +3833,7 @@ void warrior_t::apl_gladiator()
 
   aoe -> add_talent( this, "Bloodbath" );
   aoe -> add_talent( this, "Avatar" );
-  aoe -> add_action( "shield_charge,if=buff.shield_charge.down" );
+  aoe -> add_action( this, "Shield Charge", "if=buff.shield_charge.down" );
   aoe -> add_action( this, "Thunder Clap", "if=!dot.deep_wounds.ticking" );
   aoe -> add_talent( this, "Bladestorm" );
   aoe -> add_action( this, "Heroic Strike", "if=buff.ultimatum.up|buff.shield_charge.up&rage>50|rage>110" );
@@ -3943,10 +3942,10 @@ void warrior_t::create_buffs()
   buff.shield_block = buff_creator_t( this, "shield_block" ).spell( find_spell( 132404 ) )
     .add_invalidate( CACHE_BLOCK );
 
-  buff.shield_charge = buff_creator_t( this, "shield_charge", find_spell( 156321 ) )
-    .default_value( find_spell( 156321 ) -> effectN( 2 ).percent() );
+  buff.shield_charge = buff_creator_t( this, "shield_charge", find_spell( 169667 ) )
+    .default_value( find_spell( 169667 ) -> effectN( 1 ).percent() );
 
-  buff.shield_wall = buff_creator_t( this, "shield_wall", find_class_spell( "Shield Wall" ) )
+  buff.shield_wall = buff_creator_t( this, "shield_wall", find_spell( "Shield Wall" ) )
     .default_value( find_class_spell( "Shield Wall" )-> effectN( 1 ).percent() )
     .cd( timespan_t::zero() );
 

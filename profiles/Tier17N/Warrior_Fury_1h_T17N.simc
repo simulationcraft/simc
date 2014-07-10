@@ -15,18 +15,18 @@ spec=fury
 
 # Executed before combat begins. Accepts non-harmful actions only.
 
-actions.precombat=flask,type=greater_draenor_critical_strike_flask
+actions.precombat=flask,type=greater_draenic_critical_strike_flask
 actions.precombat+=/food,type=blackrock_barbecue
 actions.precombat+=/stance,choose=battle
 # Snapshot raid buffed stats before combat begins and pre-potting is done.
 actions.precombat+=/snapshot_stats
-actions.precombat+=/potion,name=draenor_strength
+actions.precombat+=/potion,name=draenic_strength
 
 # Executed every time the actor is available.
 
 actions=charge
 actions+=/auto_attack
-actions+=/potion,name=draenor_strength,if=(target.health.pct<20&buff.recklessness.up)|target.time_to_die<=25
+actions+=/potion,name=draenic_strength,if=(target.health.pct<20&buff.recklessness.up)|target.time_to_die<=25
 # This incredibly long line can be translated to 'Use recklessness on cooldown with colossus smash; unless the boss will die before the ability is usable again, and then combine with execute instead.'
 actions+=/recklessness,if=!talent.bloodbath.enabled&(((cooldown.colossus_smash.remains<2|debuff.colossus_smash.remains>=5)&target.time_to_die>192)|target.health.pct<20)|buff.bloodbath.up&(target.time_to_die>192|target.health.pct<20)|target.time_to_die<=12
 actions+=/avatar,if=talent.avatar.enabled&((buff.recklessness.up|target.time_to_die<=25))

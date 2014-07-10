@@ -2070,13 +2070,13 @@ void player_t::create_buffs()
       potion_buffs.virmens_bite = potion_buff_creator( this, "virmens_bite" )
                                   .spell( find_spell( 105697 ) );
       // WoD
-      potion_buffs.draenor_agility   = potion_buff_creator( this, "draenor_agility_potion" )
+      potion_buffs.draenic_agility   = potion_buff_creator( this, "draenic_agility_potion" )
                                        .spell( find_spell( 156423 ) );
-      potion_buffs.draenor_armor     = potion_buff_creator( this, "draenor_armor_potion" )
+      potion_buffs.draenic_armor     = potion_buff_creator( this, "draenic_armor_potion" )
                                        .spell( find_spell( 156430 ) );
-      potion_buffs.draenor_intellect = potion_buff_creator( this, "draenor_intellect_potion" )
+      potion_buffs.draenic_intellect = potion_buff_creator( this, "draenic_intellect_potion" )
                                        .spell( find_spell( 156426 ) );
-      potion_buffs.draenor_strength  = potion_buff_creator( this, "draenor_strength_potion" )
+      potion_buffs.draenic_strength  = potion_buff_creator( this, "draenic_strength_potion" )
                                        .spell( find_spell( 156428 ) );
 
       buffs.darkflight         = buff_creator_t( this, "darkflight", find_racial_spell( "darkflight" ) );

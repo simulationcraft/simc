@@ -16,7 +16,7 @@ spec=feral
 
 # Executed before combat begins. Accepts non-harmful actions only.
 
-actions.precombat=flask,type=greater_draenor_mastery_flask
+actions.precombat=flask,type=greater_draenic_mastery_flask
 actions.precombat+=/food,type=sea_mist_rice_noodles
 actions.precombat+=/mark_of_the_wild,if=!aura.str_agi_int.up
 actions.precombat+=/healing_touch,if=talent.bloodtalons.enabled
@@ -25,7 +25,7 @@ actions.precombat+=/prowl
 actions.precombat+=/bear_form,if=active_enemies>1
 # Snapshot raid buffed stats before combat begins and pre-potting is done.
 actions.precombat+=/snapshot_stats
-actions.precombat+=/potion,name=draenor_agility
+actions.precombat+=/potion,name=draenic_agility
 
 # Executed every time the actor is available.
 
@@ -40,14 +40,14 @@ actions+=/healing_touch,if=talent.bloodtalons.enabled&buff.predatory_swiftness.u
 # Maintain Thrash during AoE, clipping before Tiger's Fury comes off cooldown.
 actions+=/bear_form,if=active_enemies>1&energy.time_to_max>=5.5&(dot.thrash_bear.remains-gcd<=dot.thrash_bear.duration*0.3|(cooldown.tigers_fury.remains>6&cooldown.tigers_fury.remains<8))
 actions+=/savage_roar,if=buff.savage_roar.remains<3
-actions+=/potion,name=draenor_agility,if=target.time_to_die<=40
+actions+=/potion,name=draenic_agility,if=target.time_to_die<=40
 actions+=/incarnation,if=energy<25&!buff.omen_of_clarity.react&cooldown.tigers_fury.remains<=1
 actions+=/use_item,slot=trinket1,sync=tigers_fury
 actions+=/blood_fury,sync=tigers_fury
 actions+=/berserking,sync=tigers_fury
 actions+=/arcane_torrent,sync=tigers_fury
 actions+=/tigers_fury,if=energy<=35&!buff.omen_of_clarity.react&(!talent.incarnation_king_of_the_jungle.enabled|buff.king_of_the_jungle.up|cooldown.incarnation.remains>0)
-actions+=/potion,name=draenor_agility,sync=berserk,if=target.health.pct<25
+actions+=/potion,name=draenic_agility,sync=berserk,if=target.health.pct<25
 actions+=/berserk,if=buff.tigers_fury.up
 actions+=/thrash_cat,if=buff.omen_of_clarity.react&remains<=duration*0.3&active_enemies>1
 actions+=/rip,cycle_targets=1,if=combo_points=5&dot.rip.ticking&persistent_multiplier>dot.rip.pmultiplier
