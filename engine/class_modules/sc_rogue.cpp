@@ -255,6 +255,16 @@ struct rogue_t : public player_t
     const spell_data_t* improved_dual_wield;
     const spell_data_t* improved_sinister_strike;
     const spell_data_t* improved_eviscerate;
+
+    // Subtlety
+    const spell_data_t* improved_backstab;
+    const spell_data_t* improved_ambush;
+    const spell_data_t* improved_hemorrhage;
+    const spell_data_t* enhanced_vanish;
+    const spell_data_t* enhanced_eviscerate;
+    const spell_data_t* enhanced_shadow_dance;
+    const spell_data_t* enhanced_master_of_subtlety;
+    const spell_data_t* empowered_fan_of_knives;
   } perk;
 
   // Procs
@@ -1561,6 +1571,8 @@ struct ambush_t : public rogue_attack_t
 
     if ( weapon -> type == WEAPON_DAGGER )
       weapon_multiplier   *= 1.447; // It'is in the description.
+
+    base_multiplier *= 1.0 + p -> perk.improved_ambush -> effectN( 1 ).percent();
   }
 
   virtual double cost() const
@@ -1639,6 +1651,7 @@ struct backstab_t : public rogue_attack_t
   {
     requires_weapon   = WEAPON_DAGGER;
     requires_position = POSITION_BACK;
+    base_multiplier  *= 1.0 + p -> perk.improved_backstab -> effectN( 1 ).percent();
   }
 
   virtual double cost() const
@@ -1851,6 +1864,7 @@ struct eviscerate_t : public rogue_attack_t
 
     attack_power_mod.direct = 0.18;
     base_multiplier *= 1.0 + p -> perk.improved_eviscerate -> effectN( 1 ).percent();
+    base_costs[ RESOURCE_ENERGY ] += p -> perk.enhanced_eviscerate -> effectN( 1 ).resource( RESOURCE_ENERGY );
   }
 
   timespan_t gcd() const
@@ -1917,6 +1931,8 @@ struct fan_of_knives_t : public rogue_attack_t
   void impact( action_state_t* state )
   {
     rogue_attack_t::impact( state );
+    if ( p() -> perk.empowered_fan_of_knives -> ok() )
+      td( state -> target ) -> combo_points.add( 1, "empowered_fan_of_knives" );
   }
 };
 
@@ -2018,6 +2034,8 @@ struct hemorrhage_t : public rogue_attack_t
     base_tick_time = p -> find_spell( 89775 ) -> effectN( 1 ).period();
     dot_duration = p -> find_spell( 89775 ) -> duration();
     dot_behavior = DOT_REFRESH;
+
+    base_multiplier *= 1.0 + p -> perk.improved_hemorrhage -> effectN( 1 ).percent();
   }
 
   virtual void impact( action_state_t* state )
@@ -2724,6 +2742,8 @@ struct vanish_t : public rogue_attack_t
     rogue_attack_t( "vanish", p, p -> find_class_spell( "Vanish" ), options_str )
   {
     may_miss = may_crit = harmful = false;
+
+    cooldown -> duration += p -> perk.enhanced_vanish -> effectN( 1 ).time_value();
   }
 
   void execute()
@@ -3228,7 +3248,8 @@ double rogue_t::composite_player_multiplier( school_e school ) const
 
   if ( buffs.master_of_subtlety -> check() ||
        ( spec.master_of_subtlety -> ok() && ( buffs.stealth -> check() || buffs.vanish -> check() ) ) )
-    m *= 1.0 + spec.master_of_subtlety -> effectN( 1 ).percent();
+    // TODO-WOD: Enhance Master of Subtlety is additive or multiplicative?
+    m *= 1.0 + spec.master_of_subtlety -> effectN( 1 ).percent() + perk.enhanced_master_of_subtlety -> effectN( 1 ).percent();
 
   m *= 1.0 + buffs.shallow_insight -> value();
 
@@ -3684,23 +3705,36 @@ void rogue_t::init_spells()
   talent.marked_for_death   = find_talent_spell( "Marked for Death" );
   talent.anticipation       = find_talent_spell( "Anticipation" );
 
-  perk.improved_slice_and_dice  = find_perk_spell( "Improved Slice and Dice" );
-  perk.enhanced_vendetta        = find_perk_spell( "Enhanced Vendetta" );
-  perk.improved_venomous_wounds = find_perk_spell( "Improved Venomous Wounds" );
-  perk.enhanced_poisons         = find_perk_spell( "Enhanced Poisons" );
-  perk.enhanced_crimson_tempest = find_perk_spell( "Enhanced Crimson Tempest" );
-  perk.empowered_envenom        = find_perk_spell( "Empowered Envenom" );
-  perk.improved_rupture         = find_perk_spell( "Improved Rupture" );
-  perk.enhanced_envenom         = find_perk_spell( "Enhanced Envenom" );
-  perk.improved_recuperate      = find_perk_spell( "Improved Recuperate" );
+  // Shared perks
+  perk.improved_recuperate         = find_perk_spell( "Improved Recuperate" );
+  perk.enhanced_crimson_tempest    = find_perk_spell( "Enhanced Crimson Tempest" );
 
-  perk.empowered_bandits_guile  = find_perk_spell( "Empowered Bandit's Guile" );
-  perk.instant_poison           = find_perk_spell( "Instant Poison" );
-  perk.enhanced_adrenaline_rush = find_perk_spell( "Enhanced Adrenaline Rush" );
-  perk.enhanced_blade_flurry    = find_perk_spell( "Enhanced Blade Flurry" );
-  perk.improved_dual_wield      = find_perk_spell( "Improved Dual Wield" );
-  perk.improved_sinister_strike = find_perk_spell( "Improved Sinister Strike" );
-  perk.improved_eviscerate      = find_perk_spell( "Improved Eviscerate" );
+  // Assassination
+  perk.improved_slice_and_dice     = find_perk_spell( "Improved Slice and Dice" );
+  perk.enhanced_vendetta           = find_perk_spell( "Enhanced Vendetta" );
+  perk.improved_venomous_wounds    = find_perk_spell( "Improved Venomous Wounds" );
+  perk.enhanced_poisons            = find_perk_spell( "Enhanced Poisons" );
+  perk.empowered_envenom           = find_perk_spell( "Empowered Envenom" );
+  perk.improved_rupture            = find_perk_spell( "Improved Rupture" );
+  perk.enhanced_envenom            = find_perk_spell( "Enhanced Envenom" );
+
+  // Combat
+  perk.empowered_bandits_guile     = find_perk_spell( "Empowered Bandit's Guile" );
+  perk.instant_poison              = find_perk_spell( "Instant Poison" );
+  perk.enhanced_adrenaline_rush    = find_perk_spell( "Enhanced Adrenaline Rush" );
+  perk.enhanced_blade_flurry       = find_perk_spell( "Enhanced Blade Flurry" );
+  perk.improved_dual_wield         = find_perk_spell( "Improved Dual Wield" );
+  perk.improved_sinister_strike    = find_perk_spell( "Improved Sinister Strike" );
+  perk.improved_eviscerate         = find_perk_spell( "Improved Eviscerate" );
+
+  perk.improved_backstab           = find_perk_spell( "Improved Backstab" );
+  perk.improved_ambush             = find_perk_spell( "Improved Ambush" );
+  perk.improved_hemorrhage         = find_perk_spell( "Improved Hemorrhage" );
+  perk.enhanced_vanish             = find_perk_spell( "Enhanced Vanish" );
+  perk.enhanced_eviscerate         = find_perk_spell( "Enhanced Eviscerate" );
+  perk.enhanced_shadow_dance       = find_perk_spell( "Enhanced Shadow Dance" );
+  perk.empowered_fan_of_knives     = find_perk_spell( "Empowered Fan of Knives" );
+  perk.enhanced_master_of_subtlety = find_perk_spell( "Enhanced Master of Subtlety" );
 
   if ( spec.venomous_wounds -> ok() )
   {
@@ -3813,7 +3847,9 @@ void rogue_t::create_buffs()
   buffs.shadow_blades      = new buffs::shadow_blades_t( this );
   buffs.shadow_dance       = buff_creator_t( this, "shadow_dance", find_specialization_spell( "Shadow Dance" ) )
                              .cd( timespan_t::zero() )
-                             .duration( find_specialization_spell( "Shadow Dance" ) -> duration() + sets.set( SET_T13_4PC_MELEE ) -> effectN( 1 ).time_value() );
+                             .duration( find_specialization_spell( "Shadow Dance" ) -> duration() +
+                                        sets.set( SET_T13_4PC_MELEE ) -> effectN( 1 ).time_value() +
+                                        perk.enhanced_shadow_dance -> effectN( 1 ).time_value() );
   buffs.deadly_proc        = buff_creator_t( this, "deadly_proc" );
   buffs.shallow_insight    = buff_creator_t( this, "shallow_insight", find_spell( 84745 ) )
                              .default_value( find_spell( 84745 ) -> effectN( 1 ).percent() )
