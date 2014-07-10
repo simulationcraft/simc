@@ -12,6 +12,10 @@ namespace { // UNNAMED NAMESPACE
 // ==========================================================================
 
 struct rogue_t;
+namespace actions
+{
+struct rogue_poison_t;
+}
 
 
 struct combo_points_t
@@ -39,12 +43,6 @@ struct combo_points_t
 // Rogue
 // ==========================================================================
 
-// ==========================================================================
-//  New Ability: Redirect, doable once we allow debuffs on multiple targets
-//  Review: Ability Scaling
-//  Review: Energy Regen (how Adrenaline rush stacks with Blade Flurry / haste)
-// ==========================================================================
-
 struct rogue_td_t : public actor_pair_t
 {
   struct dots_t
@@ -63,6 +61,7 @@ struct rogue_td_t : public actor_pair_t
     buff_t* find_weakness;
     buff_t* vendetta;
     buff_t* wound_poison;
+    buff_t* enhanced_crimson_tempest;
   } debuffs;
 
   combo_points_t combo_points;
@@ -84,7 +83,7 @@ struct rogue_t : public player_t
 
   // Active
   attack_t* active_blade_flurry;
-  action_t* active_lethal_poison;
+  actions::rogue_poison_t* active_lethal_poison;
   action_t* active_main_gauche;
   action_t* active_venomous_wound;
 
@@ -130,6 +129,8 @@ struct rogue_t : public player_t
     stat_buff_t* fof_p2;
     stat_buff_t* fof_p3;
     stat_buff_t* toxicologist;
+
+    buff_t* enhanced_vendetta;
   } buffs;
 
   // Cooldowns
@@ -191,6 +192,7 @@ struct rogue_t : public player_t
   // Spell Data
   struct spells_t
   {
+    const spell_data_t* fan_of_knives;
     const spell_data_t* bandits_guile_value;
     const spell_data_t* relentless_strikes;
     const spell_data_t* ruthlessness_cp;
@@ -229,6 +231,31 @@ struct rogue_t : public player_t
     const spell_data_t* vanish;
     const spell_data_t* vendetta;
   } glyph;
+
+  struct perks_t
+  {
+    // Shared
+    const spell_data_t* improved_recuperate;
+    const spell_data_t* enhanced_crimson_tempest;
+
+    // Assassination
+    const spell_data_t* improved_slice_and_dice;
+    const spell_data_t* enhanced_vendetta;
+    const spell_data_t* improved_venomous_wounds;
+    const spell_data_t* enhanced_poisons;
+    const spell_data_t* empowered_envenom;
+    const spell_data_t* improved_rupture;
+    const spell_data_t* enhanced_envenom;
+
+    // Combat
+    const spell_data_t* empowered_bandits_guile;
+    const spell_data_t* instant_poison;
+    const spell_data_t* enhanced_adrenaline_rush;
+    const spell_data_t* enhanced_blade_flurry;
+    const spell_data_t* improved_dual_wield;
+    const spell_data_t* improved_sinister_strike;
+    const spell_data_t* improved_eviscerate;
+  } perk;
 
   // Procs
   struct procs_t
@@ -590,6 +617,321 @@ struct rogue_attack_t : public melee_attack_t
 };
 
 // ==========================================================================
+// Poisons
+// ==========================================================================
+
+struct rogue_poison_t : public rogue_attack_t
+{
+  double proc_chance_;
+
+  rogue_poison_t( const std::string& token, rogue_t* p,
+                  const spell_data_t* s = spell_data_t::nil() ) :
+    actions::rogue_attack_t( token, p, s ),
+    proc_chance_( 0 )
+  {
+    proc              = true;
+    background        = true;
+    trigger_gcd       = timespan_t::zero();
+    may_dodge         = false;
+    may_parry         = false;
+    may_block         = false;
+
+    weapon_multiplier = 0;
+
+    proc_chance_  = data().proc_chance();
+    proc_chance_ += p -> spec.improved_poisons -> effectN( 1 ).percent();
+  }
+
+  virtual double proc_chance( const action_state_t* source_state )
+  {
+    double chance = proc_chance_;
+
+    if ( p() -> buffs.envenom -> up() )
+    {
+      chance += p() -> buffs.envenom -> data().effectN( 2 ).percent();
+      if ( p() -> perk.enhanced_envenom -> ok() )
+        chance += p() -> perk.enhanced_envenom -> effectN( 1 ).percent();
+    }
+
+    // Fan of Knives for Assassination always applies poisons
+    if ( p() -> perk.enhanced_poisons -> ok() &&
+         source_state -> action -> id == p() -> spell.fan_of_knives -> id() )
+      chance += 1.0;
+
+    return chance;
+  }
+
+  virtual void trigger( const action_state_t* source_state )
+  {
+    if ( sim -> debug )
+      sim -> out_debug.printf( "%s attempts to proc %s, target=%s source_action=%s proc_chance=%.3f",
+          player -> name(), name(), source_state -> target -> name(), source_state -> action -> name(), proc_chance( source_state ) );
+
+    if ( ! rng().roll( proc_chance( source_state ) ) )
+      return;
+
+    target = source_state -> target;
+    schedule_execute();
+  }
+
+  virtual double composite_target_multiplier( player_t* target ) const
+  {
+    double m = rogue_attack_t::composite_target_multiplier( target );
+
+    if ( td( target ) -> debuffs.enhanced_crimson_tempest -> up() )
+      m *= 1.0 + td( target ) -> debuffs.enhanced_crimson_tempest -> data().effectN( 1 ).percent();
+
+    return m;
+  }
+
+  virtual double action_da_multiplier() const
+  {
+    double m = rogue_attack_t::action_da_multiplier();
+
+    if ( p() -> mastery.potent_poisons -> ok() )
+      m *= 1.0 + p() -> cache.mastery_value();
+
+    return m;
+  }
+
+  virtual double action_ta_multiplier() const
+  {
+    double m = rogue_attack_t::action_ta_multiplier();
+
+    if ( p() -> mastery.potent_poisons -> ok() )
+      m *= 1.0 + p() -> cache.mastery_value();
+
+    return m;
+  }
+};
+
+// Venomous Wound ===========================================================
+
+struct venomous_wound_t : public rogue_poison_t
+{
+  venomous_wound_t( rogue_t* p ) :
+    rogue_poison_t( "venomous_wound", p, p -> find_spell( 79136 ) )
+  {
+    background       = true;
+    proc             = true;
+  }
+
+  double composite_da_multiplier( const action_state_t* state ) const
+  {
+    double m = rogue_poison_t::composite_da_multiplier( state );
+
+    m *= 1.0 + p() -> sets.set( SET_T14_2PC_MELEE ) -> effectN( 1 ).percent();
+
+    return m;
+  }
+};
+
+// Deadly Poison ============================================================
+
+struct deadly_poison_t : public rogue_poison_t
+{
+  struct deadly_poison_dd_t : public rogue_poison_t
+  {
+    deadly_poison_dd_t( rogue_t* p ) :
+      rogue_poison_t( "deadly_poison_instant", p, p -> find_spell( 113780 ) )
+    {
+      harmful          = true;
+    }
+  };
+
+  struct deadly_poison_dot_t : public rogue_poison_t
+  {
+    deadly_poison_dot_t( rogue_t* p ) :
+      rogue_poison_t( "deadly_poison_dot", p, p -> find_class_spell( "Deadly Poison" ) -> effectN( 1 ).trigger() )
+    {
+      may_crit       = false;
+      harmful        = true;
+      tick_may_crit  = true;
+      dot_behavior   = DOT_REFRESH;
+    }
+  };
+
+  deadly_poison_dd_t*  proc_instant;
+  deadly_poison_dot_t* proc_dot;
+
+  deadly_poison_t( rogue_t* player ) :
+    rogue_poison_t( "deadly_poison", player, player -> find_class_spell( "Deadly Poison" ) ),
+    proc_instant( 0 ), proc_dot( 0 )
+  {
+    dual = true;
+    may_miss = may_crit = false;
+
+    proc_instant = new deadly_poison_dd_t( player );
+    proc_dot     = new deadly_poison_dot_t( player );
+  }
+
+  virtual void impact( action_state_t* state )
+  {
+    bool is_up = ( td( state -> target ) -> dots.deadly_poison -> is_ticking() != 0 );
+
+    rogue_poison_t::impact( state );
+
+    if ( result_is_hit( state -> result ) )
+    {
+      proc_dot -> target = state -> target;
+      proc_dot -> schedule_execute();
+      if ( is_up )
+      {
+        proc_instant -> target = state -> target;
+        proc_instant -> schedule_execute();
+      }
+    }
+  }
+};
+
+// Instant Poison ===========================================================
+
+struct instant_poison_t : public rogue_poison_t
+{
+  struct instant_poison_dd_t : public rogue_poison_t
+  {
+    instant_poison_dd_t( rogue_t* p ) :
+      rogue_poison_t( "instant_poison", p, p -> find_spell( 157607 ) )
+    {
+      harmful = true;
+    }
+  };
+
+  instant_poison_dd_t* proc_instant;
+
+  instant_poison_t( rogue_t* player ) :
+    rogue_poison_t( "instant_poison", player, player -> find_spell( 157584 ) )
+  {
+    dual = true;
+    may_miss = may_crit = false;
+
+    proc_instant = new instant_poison_dd_t( player );
+  }
+
+  virtual void impact( action_state_t* state )
+  {
+    rogue_poison_t::impact( state );
+
+    proc_instant -> target = state -> target;
+    proc_instant -> schedule_execute();
+  }
+};
+
+
+// Wound Poison =============================================================
+
+struct wound_poison_t : public rogue_poison_t
+{
+  struct wound_poison_dd_t : public rogue_poison_t
+  {
+    wound_poison_dd_t( rogue_t* p ) :
+      rogue_poison_t( "wound_poison", p, p -> find_class_spell( "Wound Poison" ) -> effectN( 1 ).trigger() )
+    {
+      harmful          = true;
+    }
+
+    void impact( action_state_t* state )
+    {
+      rogue_poison_t::impact( state );
+
+      if ( result_is_hit( state -> result ) )
+      {
+        td( state -> target ) -> debuffs.wound_poison -> trigger();
+
+        if ( ! sim -> overrides.mortal_wounds )
+          state -> target -> debuffs.mortal_wounds -> trigger( 1, buff_t::DEFAULT_VALUE(), -1.0, data().duration() );
+      }
+    }
+  };
+
+  wound_poison_dd_t* proc_dd;
+
+  wound_poison_t( rogue_t* player ) :
+    rogue_poison_t( "wound_poison_driver", player, player -> find_class_spell( "Wound Poison" ) )
+  {
+    dual           = true;
+    may_miss = may_crit = false;
+
+    proc_dd = new wound_poison_dd_t( player );
+  }
+
+  void impact( action_state_t* state )
+  {
+    rogue_poison_t::impact( state );
+
+    proc_dd -> target = state -> target;
+    proc_dd -> execute();
+  }
+};
+
+// Apply Poison =============================================================
+
+struct apply_poison_t : public action_t
+{
+  enum poison_e
+  {
+    POISON_NONE = 0,
+    DEADLY_POISON,
+    WOUND_POISON,
+    INSTANT_POISON,
+    CRIPPLING_POISON,
+    MINDNUMBING_POISON,
+    LEECHING_POISON,
+    PARALYTIC_POISON
+  };
+  poison_e lethal_poison;
+  poison_e nonlethal_poison;
+  bool executed;
+
+  apply_poison_t( rogue_t* p, const std::string& options_str ) :
+    action_t( ACTION_OTHER, "apply_poison", p ),
+    lethal_poison( POISON_NONE ), nonlethal_poison( POISON_NONE ),
+    executed( false )
+  {
+    std::string lethal_str;
+    std::string nonlethal_str;
+
+    option_t options[] =
+    {
+      opt_string( "lethal", lethal_str ),
+      opt_string( "nonlethal", nonlethal_str ),
+      opt_null()
+    };
+    parse_options( options, options_str );
+
+    trigger_gcd = timespan_t::zero();
+    harmful = false;
+
+    if ( p -> main_hand_weapon.type != WEAPON_NONE || p -> off_hand_weapon.type != WEAPON_NONE )
+    {
+      if ( lethal_str == "deadly"    ) lethal_poison = p -> perk.instant_poison -> ok() ? INSTANT_POISON : DEADLY_POISON;
+      if ( lethal_str == "instant"   ) lethal_poison = INSTANT_POISON;
+      if ( lethal_str == "wound"     ) lethal_poison = WOUND_POISON;
+    }
+
+    if ( ! p -> active_lethal_poison )
+    {
+      if ( lethal_poison == DEADLY_POISON  ) p -> active_lethal_poison = new deadly_poison_t( p );
+      if ( lethal_poison == WOUND_POISON   ) p -> active_lethal_poison = new wound_poison_t( p );
+      if ( lethal_poison == INSTANT_POISON ) p -> active_lethal_poison = new instant_poison_t( p );
+    }
+  }
+
+  virtual void execute()
+  {
+    executed = true;
+
+    if ( sim -> log )
+      sim -> out_log.printf( "%s performs %s", player -> name(), name() );
+  }
+
+  virtual bool ready()
+  {
+    return ! executed;
+  }
+};
+
+// ==========================================================================
 // Static Functions
 // ==========================================================================
 
@@ -785,7 +1127,7 @@ static void trigger_venomous_wounds( rogue_attack_t* a )
   if ( ! p -> spec.venomous_wounds -> ok() )
     return;
 
-  if ( p -> rng().roll( p -> spec.venomous_wounds -> proc_chance() ) )
+  if ( p -> rng().roll( p -> spec.venomous_wounds -> proc_chance() + p -> perk.improved_venomous_wounds -> effectN( 1 ).percent() ) )
   {
     assert( p -> active_venomous_wound );
 
@@ -809,6 +1151,8 @@ static bool trigger_blade_flurry( action_state_t* s )
       may_miss = may_crit = proc = callbacks = may_dodge = may_parry = may_block = false;
       background = true;
       aoe = p -> spec.blade_flurry -> effectN( 4 ).base_value();
+      if ( p -> perk.enhanced_blade_flurry -> ok() )
+        aoe = -1;
     }
 
     double composite_da_multiplier( const action_state_t* state ) const
@@ -879,10 +1223,7 @@ void rogue_attack_t::impact( action_state_t* state )
   if ( result_is_hit( state -> result ) )
   {
     if ( weapon && p() -> active_lethal_poison )
-    {
-      p() -> active_lethal_poison -> target = state -> target;
-      p() -> active_lethal_poison -> execute();
-    }
+      p() -> active_lethal_poison -> trigger( state );
 
     if ( adds_combo_points && state -> result == RESULT_CRIT )
       trigger_seal_fate( this );
@@ -1097,7 +1438,7 @@ struct melee_t : public rogue_attack_t
     special         = false;
     may_glance      = true;
 
-    if ( p -> dual_wield() )
+    if ( p -> dual_wield() && ! p -> perk.improved_dual_wield -> ok() )
       base_hit -= 0.19;
   }
 
@@ -1254,6 +1595,23 @@ struct ambush_t : public rogue_attack_t
     }
   }
 
+  void consume_resource()
+  {
+    rogue_attack_t::consume_resource();
+
+    p() -> buffs.enhanced_vendetta -> expire();
+  }
+
+  double composite_crit() const
+  {
+    double c = rogue_attack_t::composite_crit();
+
+    if ( p() -> buffs.enhanced_vendetta -> up() )
+      c += p() -> buffs.enhanced_vendetta -> data().effectN( 1 ).percent();
+
+    return c;
+  }
+
   bool ready()
   {
     bool rd;
@@ -1367,6 +1725,33 @@ struct dispatch_t : public rogue_attack_t
       p() -> buffs.t16_2pc_melee -> expire();
   }
 
+  void consume_resource()
+  {
+    rogue_attack_t::consume_resource();
+
+    p() -> buffs.enhanced_vendetta -> expire();
+  }
+
+  double composite_crit() const
+  {
+    double c = rogue_attack_t::composite_crit();
+
+    if ( p() -> buffs.enhanced_vendetta -> up() )
+      c += p() -> buffs.enhanced_vendetta -> data().effectN( 1 ).percent();
+
+    return c;
+  }
+
+  double action_multiplier() const
+  {
+    double m = rogue_attack_t::action_multiplier();
+
+    if ( p() -> perk.empowered_envenom -> ok() && p() -> buffs.envenom -> up() )
+      m *= 1.0 + p() -> perk.empowered_envenom -> effectN( 1 ).percent();
+
+    return m;
+  }
+
   bool ready()
   {
     if ( ! p() -> buffs.blindside -> check() && target -> health_percentage() > 35 )
@@ -1397,6 +1782,23 @@ struct envenom_t : public rogue_attack_t
   double base_da_max( const action_state_t* s ) const
   { return base_dd_max * rogue_attack_t::cast_state( s ) -> cp; }
 
+  void consume_resource()
+  {
+    rogue_attack_t::consume_resource();
+
+    p() -> buffs.enhanced_vendetta -> expire();
+  }
+
+  double composite_crit() const
+  {
+    double c = rogue_attack_t::composite_crit();
+
+    if ( p() -> buffs.enhanced_vendetta -> up() )
+      c += p() -> buffs.enhanced_vendetta -> data().effectN( 1 ).percent();
+
+    return c;
+  }
+
   virtual void execute()
   {
     rogue_td_t* td = this -> td( target );
@@ -1409,7 +1811,7 @@ struct envenom_t : public rogue_attack_t
 
     rogue_attack_t::execute();
   }
-
+ 
   virtual double action_da_multiplier() const
   {
     double m = rogue_attack_t::action_da_multiplier();
@@ -1448,6 +1850,7 @@ struct eviscerate_t : public rogue_attack_t
     weapon_multiplier = weapon_power_mod = 0;
 
     attack_power_mod.direct = 0.18;
+    base_multiplier *= 1.0 + p -> perk.improved_eviscerate -> effectN( 1 ).percent();
   }
 
   timespan_t gcd() const
@@ -1456,6 +1859,9 @@ struct eviscerate_t : public rogue_attack_t
 
     if ( t != timespan_t::zero() && p() -> buffs.adrenaline_rush -> check() )
       t += p() -> buffs.adrenaline_rush -> data().effectN( 3 ).time_value();
+
+    if ( p() -> perk.enhanced_adrenaline_rush -> ok() )
+      t += p() -> perk.enhanced_adrenaline_rush -> effectN( 1 ).time_value();
 
     return t;
   }
@@ -1503,11 +1909,15 @@ struct fan_of_knives_t : public rogue_attack_t
   fan_of_knives_t( rogue_t* p, const std::string& options_str ) :
     rogue_attack_t( "fan_of_knives", p, p -> find_class_spell( "Fan of Knives" ), options_str )
   {
-    weapon = &( p -> main_hand_weapon );
-    weapon_multiplier = weapon_power_mod = 0;
-    aoe              = -1;
+    // Don't put in a weapon here, because we need to specialize the poison
+    // application
+    aoe = -1;
   }
 
+  void impact( action_state_t* state )
+  {
+    rogue_attack_t::impact( state );
+  }
 };
 
 // Crimson Tempest ==========================================================
@@ -1549,6 +1959,14 @@ struct crimson_tempest_t : public rogue_attack_t
       ct_dot -> target = s -> target;
       ct_dot -> base_td = s -> result_amount * ct_dot -> data().effectN( 1 ).percent() * ct_dot -> dot_duration / ct_dot -> base_tick_time;
       ct_dot -> execute();
+
+      if ( p() -> perk.enhanced_crimson_tempest -> ok() )
+      {
+        rogue_td_t* tdata = td( s -> target );
+        rogue_attack_state_t* state = debug_cast<rogue_attack_state_t*>( s );
+        timespan_t duration = timespan_t::from_seconds( 1 + state -> cp );
+        tdata -> debuffs.enhanced_crimson_tempest -> trigger( 1, buff_t::DEFAULT_VALUE(), -1.0, duration );
+      }
     }
   }
 };
@@ -1746,6 +2164,33 @@ struct mutilate_strike_t : public rogue_attack_t
     if ( state -> result == RESULT_CRIT )
       trigger_seal_fate( this );
   }
+
+  void consume_resource()
+  {
+    rogue_attack_t::consume_resource();
+
+    p() -> buffs.enhanced_vendetta -> expire();
+  }
+
+  double action_multiplier() const
+  {
+    double m = rogue_attack_t::action_multiplier();
+
+    if ( p() -> perk.empowered_envenom -> ok() && p() -> buffs.envenom -> up() )
+      m *= 1.0 + p() -> perk.empowered_envenom -> effectN( 1 ).percent();
+
+    return m;
+  }
+
+  double composite_crit() const
+  {
+    double c = rogue_attack_t::composite_crit();
+
+    if ( p() -> buffs.enhanced_vendetta -> up() )
+      c += p() -> buffs.enhanced_vendetta -> data().effectN( 1 ).percent();
+
+    return c;
+  }
 };
 
 struct mutilate_t : public rogue_attack_t
@@ -1890,6 +2335,16 @@ struct recuperate_t : public rogue_attack_t
     p() -> buffs.recuperate -> trigger();
   }
 
+  virtual double action_ta_muliplier() const
+  {
+    double m = rogue_attack_t::action_ta_multiplier();
+
+    if ( p() -> perk.improved_recuperate -> ok() )
+      m *= 1.0 + p() -> perk.improved_recuperate -> effectN( 1 ).percent();
+
+    return m;
+  }
+
   virtual void last_tick( dot_t* d )
   {
     p() -> buffs.recuperate -> expire();
@@ -1918,6 +2373,9 @@ struct revealing_strike_t : public rogue_attack_t
 
     if ( t != timespan_t::zero() && p() -> buffs.adrenaline_rush -> check() )
       t += p() -> buffs.adrenaline_rush -> data().effectN( 3 ).time_value();
+
+    if ( p() -> perk.enhanced_adrenaline_rush -> ok() )
+      t += p() -> perk.enhanced_adrenaline_rush -> effectN( 1 ).time_value();
 
     return t;
   }
@@ -1950,7 +2408,8 @@ struct rupture_t : public rogue_attack_t
     requires_combo_points = true;
     tick_may_crit         = true;
     dot_behavior          = DOT_REFRESH;
-    base_multiplier      += p -> spec.sanguinary_vein -> effectN( 1 ).percent();
+    base_multiplier      *= 1.0 + p -> spec.sanguinary_vein -> effectN( 1 ).percent();
+    base_multiplier      *= 1.0 + p -> perk.improved_rupture -> effectN( 1 ).percent();
   }
 
   double tick_power_coefficient( const action_state_t* state ) const
@@ -1962,6 +2421,9 @@ struct rupture_t : public rogue_attack_t
 
     if ( t != timespan_t::zero() && p() -> buffs.adrenaline_rush -> check() )
       t += p() -> buffs.adrenaline_rush -> data().effectN( 3 ).time_value();
+
+    if ( p() -> perk.enhanced_adrenaline_rush -> ok() )
+      t += p() -> perk.enhanced_adrenaline_rush -> effectN( 1 ).time_value();
 
     return t;
   }
@@ -2037,6 +2499,7 @@ struct sinister_strike_t : public rogue_attack_t
     rogue_attack_t( "sinister_strike", p, p -> find_class_spell( "Sinister Strike" ), options_str )
   {
     adds_combo_points = 1; // it has an effect but with no base value :rollseyes:
+    base_multiplier *= 1.0 + p -> perk.improved_sinister_strike -> effectN( 1 ).percent();
   }
 
   timespan_t gcd() const
@@ -2045,6 +2508,9 @@ struct sinister_strike_t : public rogue_attack_t
 
     if ( t != timespan_t::zero() && p() -> buffs.adrenaline_rush -> check() )
       t += p() -> buffs.adrenaline_rush -> data().effectN( 3 ).time_value();
+
+    if ( p() -> perk.enhanced_adrenaline_rush -> ok() )
+      t += p() -> perk.enhanced_adrenaline_rush -> effectN( 1 ).time_value();
 
     return t;
   }
@@ -2114,6 +2580,9 @@ struct slice_and_dice_t : public rogue_attack_t
     if ( t != timespan_t::zero() && p() -> buffs.adrenaline_rush -> check() )
       t += p() -> buffs.adrenaline_rush -> data().effectN( 3 ).time_value();
 
+    if ( p() -> perk.enhanced_adrenaline_rush -> ok() )
+      t += p() -> perk.enhanced_adrenaline_rush -> effectN( 1 ).time_value();
+
     return t;
   }
 
@@ -2133,6 +2602,14 @@ struct slice_and_dice_t : public rogue_attack_t
       snd_duration += 3 * p() -> buffs.slice_and_dice -> buff_period;
 
     p() -> buffs.slice_and_dice -> trigger( 1, snd, -1.0, snd_duration );
+  }
+
+  bool ready()
+  {
+    if ( p() -> perk.improved_slice_and_dice -> ok() )
+      return false;
+
+    return rogue_attack_t::ready();
   }
 };
 
@@ -2281,6 +2758,7 @@ struct vendetta_t : public rogue_attack_t
     rogue_td_t* td = this -> td( execute_state -> target );
 
     td -> debuffs.vendetta -> trigger();
+    p() -> buffs.enhanced_vendetta -> trigger();
   }
 };
 
@@ -2369,259 +2847,6 @@ struct stealth_t : public spell_t
 };
 
 } // end namespace actions
-
-namespace poisons {
-// ==========================================================================
-// Poisons
-// ==========================================================================
-
-struct rogue_poison_t : public actions::rogue_attack_t
-{
-  double proc_chance;
-
-  rogue_poison_t( const std::string& token, rogue_t* p,
-                  const spell_data_t* s = spell_data_t::nil() ) :
-    actions::rogue_attack_t( token, p, s ),
-    proc_chance( 0 )
-  {
-    proc              = true;
-    background        = true;
-    trigger_gcd       = timespan_t::zero();
-    may_dodge         = false;
-    may_parry         = false;
-    may_block         = false;
-
-    weapon_multiplier = 0;
-
-    proc_chance    = data().proc_chance();
-    proc_chance   += p -> spec.improved_poisons -> effectN( 1 ).percent();
-  }
-
-  virtual double action_da_multiplier() const
-  {
-    double m = rogue_attack_t::action_da_multiplier();
-
-    if ( p() -> mastery.potent_poisons -> ok() )
-      m *= 1.0 + p() -> cache.mastery_value();
-
-    return m;
-  }
-
-  virtual double action_ta_multiplier() const
-  {
-    double m = rogue_attack_t::action_ta_multiplier();
-
-    if ( p() -> mastery.potent_poisons -> ok() )
-      m *= 1.0 + p() -> cache.mastery_value();
-
-    return m;
-  }
-};
-
-// Venomous Wound ===========================================================
-
-struct venomous_wound_t : public rogue_poison_t
-{
-  venomous_wound_t( rogue_t* p ) :
-    rogue_poison_t( "venomous_wound", p, p -> find_spell( 79136 ) )
-  {
-    background       = true;
-    proc             = true;
-  }
-
-  double composite_da_multiplier( const action_state_t* state ) const
-  {
-    double m = rogue_poison_t::composite_da_multiplier( state );
-
-    m *= 1.0 + p() -> sets.set( SET_T14_2PC_MELEE ) -> effectN( 1 ).percent();
-
-    return m;
-  }
-};
-
-// Deadly Poison ============================================================
-
-struct deadly_poison_t : public rogue_poison_t
-{
-  struct deadly_poison_dd_t : public rogue_poison_t
-  {
-    deadly_poison_dd_t( rogue_t* p ) :
-      rogue_poison_t( "deadly_poison_instant", p, p -> find_spell( 113780 ) )
-    {
-      harmful          = true;
-    }
-  };
-
-  struct deadly_poison_dot_t : public rogue_poison_t
-  {
-    deadly_poison_dot_t( rogue_t* p ) :
-      rogue_poison_t( "deadly_poison_dot", p, p -> find_class_spell( "Deadly Poison" ) -> effectN( 1 ).trigger() )
-    {
-      may_crit       = false;
-      harmful        = true;
-      tick_may_crit  = true;
-      dot_behavior   = DOT_REFRESH;
-    }
-  };
-
-  deadly_poison_dd_t*  proc_instant;
-  deadly_poison_dot_t* proc_dot;
-
-  deadly_poison_t( rogue_t* player ) :
-    rogue_poison_t( "deadly_poison", player, player -> find_class_spell( "Deadly Poison" ) ),
-    proc_instant( 0 ), proc_dot( 0 )
-  {
-    dual = true;
-    may_miss = may_crit = false;
-
-    proc_instant = new deadly_poison_dd_t( player );
-    proc_dot     = new deadly_poison_dot_t( player );
-  }
-
-  virtual void impact( action_state_t* state )
-  {
-    bool is_up = ( td( state -> target ) -> dots.deadly_poison -> is_ticking() != 0 );
-
-    rogue_poison_t::impact( state );
-
-    if ( result_is_hit( state -> result ) )
-    {
-      double chance = proc_chance;
-      if ( p() -> buffs.envenom -> up() )
-        chance += p() -> buffs.envenom -> data().effectN( 2 ).percent();
-
-      if ( rng().roll( chance ) )
-      {
-        proc_dot -> target = state -> target;
-        proc_dot -> execute();
-        if ( is_up )
-        {
-          proc_instant -> target = state -> target;
-          proc_instant -> execute();
-        }
-      }
-    }
-  }
-};
-
-// Wound Poison =============================================================
-
-struct wound_poison_t : public rogue_poison_t
-{
-  struct wound_poison_dd_t : public rogue_poison_t
-  {
-    wound_poison_dd_t( rogue_t* p ) :
-      rogue_poison_t( "wound_poison", p, p -> find_class_spell( "Wound Poison" ) -> effectN( 1 ).trigger() )
-    {
-      harmful          = true;
-    }
-
-    void impact( action_state_t* state )
-    {
-      rogue_poison_t::impact( state );
-
-      if ( result_is_hit( state -> result ) )
-      {
-        td( state -> target ) -> debuffs.wound_poison -> trigger();
-
-        if ( ! sim -> overrides.mortal_wounds )
-          state -> target -> debuffs.mortal_wounds -> trigger( 1, buff_t::DEFAULT_VALUE(), -1.0, data().duration() );
-      }
-    }
-  };
-
-  wound_poison_dd_t* proc_dd;
-
-  wound_poison_t( rogue_t* player ) :
-    rogue_poison_t( "wound_poison_driver", player, player -> find_class_spell( "Wound Poison" ) )
-  {
-    dual           = true;
-    may_miss = may_crit = false;
-
-    proc_dd = new wound_poison_dd_t( player );
-  }
-
-  void impact( action_state_t* state )
-  {
-    rogue_poison_t::impact( state );
-
-    double chance = proc_chance;
-    if ( p() -> buffs.envenom -> up() )
-      chance += p() -> buffs.envenom -> data().effectN( 2 ).percent();
-
-    if ( rng().roll( chance ) )
-    {
-      proc_dd -> target = state -> target;
-      proc_dd -> execute();
-    }
-  }
-};
-
-// Apply Poison =============================================================
-
-struct apply_poison_t : public action_t
-{
-  enum poison_e
-  {
-    POISON_NONE = 0,
-    DEADLY_POISON,
-    WOUND_POISON,
-    CRIPPLING_POISON,
-    MINDNUMBING_POISON,
-    LEECHING_POISON,
-    PARALYTIC_POISON
-  };
-  poison_e lethal_poison;
-  poison_e nonlethal_poison;
-  bool executed;
-
-  apply_poison_t( rogue_t* p, const std::string& options_str ) :
-    action_t( ACTION_OTHER, "apply_poison", p ),
-    lethal_poison( POISON_NONE ), nonlethal_poison( POISON_NONE ),
-    executed( false )
-  {
-    std::string lethal_str;
-    std::string nonlethal_str;
-
-    option_t options[] =
-    {
-      opt_string( "lethal", lethal_str ),
-      opt_string( "nonlethal", nonlethal_str ),
-      opt_null()
-    };
-    parse_options( options, options_str );
-
-    trigger_gcd = timespan_t::zero();
-    harmful = false;
-
-    if ( p -> main_hand_weapon.type != WEAPON_NONE || p -> off_hand_weapon.type != WEAPON_NONE )
-    {
-      if ( lethal_str == "deadly"    ) lethal_poison = DEADLY_POISON;
-      if ( lethal_str == "wound"     ) lethal_poison = WOUND_POISON;
-    }
-
-    if ( ! p -> active_lethal_poison )
-    {
-      if ( lethal_poison == DEADLY_POISON ) p -> active_lethal_poison = new deadly_poison_t( p );
-      if ( lethal_poison == WOUND_POISON  ) p -> active_lethal_poison = new wound_poison_t( p );
-    }
-  }
-
-  virtual void execute()
-  {
-    executed = true;
-
-    if ( sim -> log )
-      sim -> out_log.printf( "%s performs %s", player -> name(), name() );
-  }
-
-  virtual bool ready()
-  {
-    return ! executed;
-  }
-};
-
-} // end namespace poisons
 
 namespace buffs {
 // ==========================================================================
@@ -2940,6 +3165,7 @@ rogue_td_t::rogue_td_t( player_t* target, rogue_t* source ) :
                                .default_value( vd -> effectN( 1 ).percent() + source -> glyph.vendetta -> effectN( 1 ).percent() );
 
   debuffs.wound_poison = buff_creator_t( *this, "wound_poison", source -> find_spell( 8680 ) );
+  debuffs.enhanced_crimson_tempest = buff_creator_t( *this, "enhanced_crimson_tempest", source -> find_spell( 157561 ) );
 }
 
 // ==========================================================================
@@ -3009,6 +3235,9 @@ double rogue_t::composite_player_multiplier( school_e school ) const
   m *= 1.0 + buffs.moderate_insight -> value();
 
   m *= 1.0 + buffs.deep_insight -> value();
+
+  if ( perk.empowered_bandits_guile -> ok() && buffs.deep_insight -> check() )
+    m *= 1.0 + perk.empowered_bandits_guile -> effectN( 1 ).percent();
 
   if ( main_hand_weapon.type == WEAPON_DAGGER && off_hand_weapon.type == WEAPON_DAGGER )
     m *= 1.0 + spec.assassins_resolve -> effectN( 2 ).percent();
@@ -3286,7 +3515,6 @@ action_t* rogue_t::create_action( const std::string& name,
                                   const std::string& options_str )
 {
   using namespace actions;
-  using namespace poisons;
 
   if ( name == "auto_attack"         ) return new auto_melee_attack_t  ( this, options_str );
   if ( name == "adrenaline_rush"     ) return new adrenaline_rush_t    ( this, options_str );
@@ -3439,6 +3667,7 @@ void rogue_t::init_spells()
   spell.tier13_4pc          = find_spell( 105865 );
   spell.tier15_4pc          = find_spell( 138151 );
   spell.bandits_guile_value = find_spell( 84747 );
+  spell.fan_of_knives       = find_class_spell( "Fan of Knives" );
 
   // Glyphs
   glyph.adrenaline_rush     = find_glyph_spell( "Glyph of Adrenaline Rush" );
@@ -3455,9 +3684,27 @@ void rogue_t::init_spells()
   talent.marked_for_death   = find_talent_spell( "Marked for Death" );
   talent.anticipation       = find_talent_spell( "Anticipation" );
 
+  perk.improved_slice_and_dice  = find_perk_spell( "Improved Slice and Dice" );
+  perk.enhanced_vendetta        = find_perk_spell( "Enhanced Vendetta" );
+  perk.improved_venomous_wounds = find_perk_spell( "Improved Venomous Wounds" );
+  perk.enhanced_poisons         = find_perk_spell( "Enhanced Poisons" );
+  perk.enhanced_crimson_tempest = find_perk_spell( "Enhanced Crimson Tempest" );
+  perk.empowered_envenom        = find_perk_spell( "Empowered Envenom" );
+  perk.improved_rupture         = find_perk_spell( "Improved Rupture" );
+  perk.enhanced_envenom         = find_perk_spell( "Enhanced Envenom" );
+  perk.improved_recuperate      = find_perk_spell( "Improved Recuperate" );
+
+  perk.empowered_bandits_guile  = find_perk_spell( "Empowered Bandit's Guile" );
+  perk.instant_poison           = find_perk_spell( "Instant Poison" );
+  perk.enhanced_adrenaline_rush = find_perk_spell( "Enhanced Adrenaline Rush" );
+  perk.enhanced_blade_flurry    = find_perk_spell( "Enhanced Blade Flurry" );
+  perk.improved_dual_wield      = find_perk_spell( "Improved Dual Wield" );
+  perk.improved_sinister_strike = find_perk_spell( "Improved Sinister Strike" );
+  perk.improved_eviscerate      = find_perk_spell( "Improved Eviscerate" );
+
   if ( spec.venomous_wounds -> ok() )
   {
-    active_venomous_wound = new poisons::venomous_wound_t( this );
+    active_venomous_wound = new actions::venomous_wound_t( this );
   }
 
   static const set_bonus_description_t set_bonuses =
@@ -3601,7 +3848,7 @@ void rogue_t::create_buffs()
                              .duration( timespan_t::min() )
                              .tick_behavior( BUFF_TICK_REFRESH );
   buffs.slice_and_dice     = buff_creator_t( this, "slice_and_dice", find_class_spell( "Slice and Dice" ) )
-                             .duration( timespan_t::min() )
+                             .duration( perk.improved_slice_and_dice -> ok() ? timespan_t::zero() : timespan_t::min() )
                              .tick_behavior( BUFF_TICK_REFRESH )
                              .tick_callback( energetic_recovery )
                              .add_invalidate( CACHE_ATTACK_SPEED );
@@ -3618,6 +3865,8 @@ void rogue_t::create_buffs()
                             .chance( fof_p3 );
 
   buffs.fof_fod           = new buffs::fof_fod_t( this );
+
+  buffs.enhanced_vendetta = buff_creator_t( this, "enhanced_vendetta", perk.enhanced_vendetta );
 }
 
 // trigger_honor_among_thieves ==============================================
@@ -3760,6 +4009,9 @@ void rogue_t::reset()
 void rogue_t::arise()
 {
   player_t::arise();
+
+  if ( perk.improved_slice_and_dice -> ok() )
+    buffs.slice_and_dice -> trigger();
 
   if ( ! sim -> overrides.haste && dbc.spell( 113742 ) -> is_level( level ) ) sim -> auras.haste -> trigger();
 }
