@@ -3358,7 +3358,7 @@ void warrior_t::init_spells()
   active_second_wind        = new second_wind_t( this );
   active_t16_2pc            = new tier16_2pc_tank_heal_t( this );
 
-  static const set_bonus_description_t set_bonuses =
+  static set_bonus_description_t set_bonuses =
   {
     // 0's are for healers/casters.
     //      M2P     M4P     T2P     T4P
@@ -3366,7 +3366,19 @@ void warrior_t::init_spells()
     { 0, 0, 123142, 123144, 123146, 123147, 0, 0 }, // Tier14
     { 0, 0, 138120, 138126, 138280, 138281, 0, 0 }, // Tier15
     { 0, 0, 144436, 144441, 144503, 144502, 0, 0 }, // Tier16
+    { 0, 0, 0,      0,      165338, 165351, 0, 0 }, // Tier17
   };
+
+  if ( specialization() == WARRIOR_FURY )
+  {
+    set_bonuses[2][6] = 165337; //T17 2PC
+    set_bonuses[2][7] = 165349; //T17 4PC
+  }
+  else if ( specialization() == WARRIOR_ARMS )
+  {
+    set_bonuses[2][6] = 165336; //T17 2PC
+    set_bonuses[2][7] = 165345; //T17 4PC
+  }
 
   sets.register_spelldata( set_bonuses );
 }
