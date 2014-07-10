@@ -1081,11 +1081,7 @@ void player_t::init_resources( bool force )
                                    + ( is_pet() ? 0 : sim -> enchant.resource[ i ] )
                                ) * resources.initial_multiplier[ i ];
       if ( i == RESOURCE_HEALTH )
-      {
-        // The first 20pts of stamina only provide 1pt of health.
-        double adjust = ( is_pet() || is_enemy() || is_add() ) ? 0 : std::min( 20, static_cast<int>( floor( stamina() ) ) );
-        resources.initial[ i ] += ( floor( stamina() ) - adjust ) * current.health_per_stamina + adjust;
-      }
+        resources.initial[ i ] += floor( stamina() ) * current.health_per_stamina;
     }
   }
 
@@ -3980,8 +3976,6 @@ bool player_t::resource_available( resource_e resource_type,
 
 void player_t::recalculate_resource_max( resource_e resource_type )
 {
-  // The first 20pts of intellect/stamina only provide 1pt of mana/health.
-
   resources.max[ resource_type ] = resources.base[ resource_type ] * resources.base_multiplier[ resource_type ] +
                                    gear.resource[ resource_type ] +
                                    enchant.resource[ resource_type ] +
@@ -3989,19 +3983,15 @@ void player_t::recalculate_resource_max( resource_e resource_type )
   resources.max[ resource_type ] *= resources.initial_multiplier[ resource_type ];
   switch ( resource_type )
   {
-    case RESOURCE_MANA:
-    {
-      break;
-    }
     case RESOURCE_HEALTH:
     {
       // Calculate & set maximum health
-      double adjust = ( is_pet() || is_enemy() || is_add() ) ? 0 : std::min( 20, ( int ) floor( stamina() ) );
-      resources.max[ resource_type ] += ( floor( stamina() ) - adjust ) * current.health_per_stamina + adjust;
+      resources.max[ resource_type ] += floor( stamina() ) * current.health_per_stamina;
 
-      // Sanity check on current health values
       if ( ! in_combat )
         resources.current[ resource_type ] = resources.max[ resource_type ];
+      
+      // Sanity check on current health values
       resources.current[ resource_type ] = std::min( resources.current[ resource_type ], resources.max[ resource_type] );
       break;
     }
