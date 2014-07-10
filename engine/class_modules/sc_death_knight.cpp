@@ -5140,12 +5140,9 @@ void death_knight_t::init_base_stats()
 
   // Avoidance diminishing Returns constants/conversions now handled in player_t::init_base_stats()
   // base miss & dodge are set to 3% and block & parry set to 0% in player_t::init_base_stats()
-  // just need to add spec-based sources of dodge/parry
-  base.dodge += 0.0300 + spec.veteran_of_the_third_war -> effectN( 2 ).percent();
-
-  // note that these conversions are level-specific; these are L90 values
-  base.parry_per_strength = 1 / 95115.8596; // exact value given by Blizzard
-  base.dodge_per_agility = 1 / 10000.0 / 100.0; // empirically tested
+  // just need to add base parry and spec-based sources of dodge/parry
+  base.parry  = 0.030;
+  base.dodge += 0.030 + spec.veteran_of_the_third_war -> effectN( 2 ).percent();
 }
 
 // death_knight_t::init_spells ==============================================

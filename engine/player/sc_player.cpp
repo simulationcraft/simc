@@ -729,8 +729,13 @@ void player_t::init_base_stats()
     base.mana_regen_per_second = dbc.regen_base( type, level ) / 5.0;
     base.mana_regen_per_spirit = dbc.regen_spirit( type, level );
     base.health_per_stamina    = dbc.health_per_stamina( level );
-    base.dodge_per_agility     = 1 / 10000.0 / 100.0; // default at L90, modified for druid/monk in class module
-    base.parry_per_strength    = 0.0;                 // only certain classes get STR->parry conversions, handle in class module
+    
+    // only certain classes get Agi->Dodge conversions
+    base.dodge_per_agility     = ( type == MONK || type == DRUID || type == ROGUE || type == HUNTER || type == SHAMAN ) ? 1.0 : 0.0; 
+    base.dodge_per_agility     *= 1 / 176.3760684 / 100.0; // exact value given by Blizzard, L100 only (?)
+    // only certain classes get STR->parry conversions
+    base.parry_per_strength    = ( type == PALADIN || type == WARRIOR || type == DEATH_KNIGHT ) ? 1.0 : 0.0; 
+    base.parry_per_strength    *= 1 / 176.3760684 / 100.0; // exact value given by Blizzard, L100 only (?)
 
     // players have a base 7.5% hit/exp 
     base.hit       = 0.075;
@@ -738,7 +743,7 @@ void player_t::init_base_stats()
   }
 
   base.dodge = 0.03 + racials.quickness -> effectN( 1 ).percent();
-  base.parry = 0.0; // No more base parry, it's all from strength.
+  base.parry = 0.00; // overridden in modules of players that can parry
   base.miss  = 0.03;
   base.block = 0.0;  // overridden in enemy, paladin, and warrior modules  
 
@@ -2349,9 +2354,8 @@ double player_t::composite_block_dr( double extra_block ) const
 
 double player_t::composite_dodge() const
 {
-  // Start with sources not subject to DR - base dodge (stored in current.dodge) parry from base agility;
+  // Start with sources not subject to DR - base dodge (stored in current.dodge). Base stats no longer give dodge/parry.
   double total_dodge = current.dodge;
-  total_dodge += base.stats.attribute[ ATTR_AGILITY ] * current.dodge_per_agility;
 
   // bonus_dodge is dodge from rating and non-base agility
   double bonus_dodge = composite_dodge_rating() / current.rating.dodge;
@@ -2368,10 +2372,8 @@ double player_t::composite_dodge() const
 
 double player_t::composite_parry() const
 {
-  // Start with sources not subject to DR - base parry (stored in current.parry) and parry from base strength
+  // Start with sources not subject to DR - base parry (stored in current.parry). Base stats no longer give dodge/parry.
   double total_parry = current.parry;
-  if ( current.parry_per_strength > 0 )
-    total_parry += base.stats.attribute[ ATTR_STRENGTH ] * current.parry_per_strength;
 
   // bonus_parry is from rating and non-base STR
   double bonus_parry = composite_parry_rating() / current.rating.parry;

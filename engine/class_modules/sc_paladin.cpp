@@ -4625,18 +4625,15 @@ void paladin_t::init_base_stats()
 
   // Avoidance diminishing Returns constants/conversions now handled in player_t::init_base_stats()
   // base miss & dodge are set to 3% and block & parry set to 0% in player_t::init_base_stats()
-  // just need to adjust block and block_reduction and add spec-based sources of dodge/parry
-  base.block   = 0.030;  //90
+  // just need to adjust parry, block and block_reduction and add spec-based sources of dodge/parry
+  base.block   = 0.030; 
   base.block_reduction = 0.3 + perk.improved_block -> effectN( 1 ).percent();
+  base.parry   = 0.030;
   // add Sanctuary dodge
   base.dodge += passives.sanctuary -> effectN( 3 ).percent();
   // add Sanctuary expertise
   base.expertise += passives.sanctuary -> effectN( 4 ).percent();
   
-  // note that these conversions are level-specific; these are L90 values
-  base.dodge_per_agility = 1 / 10000.0 / 100.0; // empirically tested, TODO: update for 100
-  base.parry_per_strength = 1 / 95115.8596; // exact value given by Blizzard, TODO: update for 100
-
   // Holy Insight grants mana regen from spirit during combat
   base.mana_regen_from_spirit_multiplier = passives.holy_insight -> effectN( 3 ).percent();
   

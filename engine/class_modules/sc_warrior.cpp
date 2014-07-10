@@ -3438,14 +3438,11 @@ void warrior_t::init_base_stats()
 
   // Avoidance diminishing Returns constants/conversions now handled in player_t::init_base_stats()
   // base miss & dodge are set to 3% and block & parry set to 0% in player_t::init_base_stats()
-  // just need to adjust block and block_reduction and add spec-based sources of dodge/parry
-  base.block           = 0.030; //90
+  // just need to adjust parry, block and block_reduction and add spec-based sources of dodge/parry
+  base.block           = 0.030; 
   base.block_reduction = 0.300;
+  base.parry           = 0.030;
   base.dodge += spec.bastion_of_defense -> effectN( 3 ).percent();
-
-  // note that these conversions are level-specific; these are L90 values TODO: update for L100
-  base.dodge_per_agility  = 1 / 10000.0 / 100.0; // empirically tested
-  base.parry_per_strength = 1 / 95115.8596; // exact value given by Blizzard
 
   base_gcd = timespan_t::from_seconds( 1.5 );
 }

@@ -1356,6 +1356,10 @@ struct earth_elemental_t : public primal_elemental_t
     resources.base[ RESOURCE_MANA   ] = 0; //
 
     owner_coeff.ap_from_sp = 0.05; // TODO-WOD: Preliminary value, verify
+
+    // dual-wielding enhancement shamans get 3% base parry
+    if ( specialization() == SHAMAN_ENHANCEMENT )
+      base.parry = 0.03;
   }
 
   void init_action_list()

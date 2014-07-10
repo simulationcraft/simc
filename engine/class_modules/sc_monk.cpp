@@ -3339,10 +3339,8 @@ void monk_t::init_base_stats()
 
   // Avoidance diminishing Returns constants/conversions now handled in player_t::init_base_stats()
   // base miss & dodge are set to 3% and block & parry set to 0% in player_t::init_base_stats()
-
-  // note that these conversions are level-specific; these are L90 values
-  base.dodge_per_agility = 1 / 95115.8596; // exact value given by Blizzard
-  base.parry_per_strength = 1 / 10000.0 / 100.0 ; // empirically tested
+  // Need to apply 3% base parry here
+  base.parry = 3.0;
 }
 
 // monk_t::init_scaling =====================================================

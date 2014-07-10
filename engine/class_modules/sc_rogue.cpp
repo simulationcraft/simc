@@ -3389,6 +3389,8 @@ void rogue_t::init_base_stats()
 
   base_gcd = timespan_t::from_seconds( 1.0 );
 
+  base.parry = 0.03;
+
 }
 
 // rogue_t::init_spells =====================================================
