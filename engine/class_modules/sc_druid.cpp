@@ -15,7 +15,6 @@ namespace { // UNNAMED NAMESPACE
     Fix Force of Nature (summons fine, but treants take no actions)
 
     = Feral =
-    Rewrite Savagery
     Damage check:
       Thrash (both forms)
       Swipe
@@ -1894,7 +1893,7 @@ public:
 
   void trigger_glyph_of_savage_roar()
   {
-    // Bail out if we have Savagery, buff should already be up so lets not mess with it.
+    // Bail out if we have Savagery
     if ( p() -> talent.savagery -> ok() )
       return;
 
@@ -2020,7 +2019,10 @@ public:
     if ( p() -> buff.cat_form -> check() && dbc::is_school( s -> action -> school, SCHOOL_PHYSICAL ) )
     { // Avoid using value() to prevent skewing benefit_pct.
       pm *= 1.0 + p() -> buff.tigers_fury -> check() * p() -> buff.tigers_fury -> default_value;
-      pm *= 1.0 + p() -> buff.savage_roar -> check() * p() -> buff.savage_roar -> default_value;
+      if ( p() -> talent.savagery -> ok() )
+        pm *= 1.0 + p() -> talent.savagery -> effectN( 1 ).percent();
+      else
+        pm *= 1.0 + p() -> buff.savage_roar -> check() * p() -> buff.savage_roar -> default_value;
     }
 
     return pm;
@@ -5736,10 +5738,7 @@ void druid_t::create_buffs()
                                .chance( 1.0 )
                                .duration( find_specialization_spell( "Tiger's Fury" ) -> duration() + perk.enhanced_tigers_fury -> effectN( 1 ).time_value() );
   buff.savage_roar           = buff_creator_t( this, "savage_roar", find_specialization_spell( "Savage Roar" ) )
-                               .default_value( talent.savagery -> ok() ?
-                                               talent.savagery -> effectN( 1 ).percent()
-                                             : find_specialization_spell( "Savage Roar" ) -> effectN( 2 ).percent() )
-                               .duration( timespan_t::zero() ); // Set base duration to infinite for Savagery talent. All other uses trigger with a set duration.
+                               .default_value( find_specialization_spell( "Savage Roar" ) -> effectN( 2 ).percent() );
   buff.predatory_swiftness   = buff_creator_t( this, "predatory_swiftness", spec.predatory_swiftness -> ok() ? find_spell( 69369 ) : spell_data_t::not_found() );
   buff.tier15_4pc_melee      = buff_creator_t( this, "tier15_4pc_melee", find_spell( 138358 ) );
   buff.feral_fury            = buff_creator_t( this, "feral_fury", find_spell( 144865 ) ); // tier16_2pc_melee
@@ -6381,10 +6380,6 @@ void druid_t::combat_begin()
   // If Ysera's Gift is talented, apply it upon entering combat
   if ( talent.yseras_gift -> ok() )
     active.yseras_gift -> execute();
-
-  // If Savagery is talented, apply Savage Roar entering combat
-  if ( talent.savagery -> ok() )
-    buff.savage_roar -> trigger();
   
   // Apply Bladed Armor buff 
   if ( spec.bladed_armor -> ok() )
