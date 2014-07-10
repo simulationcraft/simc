@@ -2782,6 +2782,7 @@ struct recklessness_t: public warrior_spell_t
     warrior_spell_t::execute();
 
     p() -> buff.recklessness -> trigger( 1, bonus_crit );
+    p() -> buff.tier17_4pc_fury -> trigger();
   }
 
   virtual void update_ready( timespan_t cd_duration )
