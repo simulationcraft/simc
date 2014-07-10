@@ -25,7 +25,6 @@ namespace { // UNNAMED NAMESPACE
     Verify stuff.
 
     = Guardian =
-    Fix MoU and Ursa Major decreasing resolve
     FR "none" results?
     Verify stuff (particularly DoC)
 
@@ -1419,14 +1418,14 @@ struct might_of_ursoc_t : public druid_buff_t < buff_t >
   virtual void start( int stacks, double value, timespan_t duration )
   {
     health_gain = (int) floor( player -> resources.max[ RESOURCE_HEALTH ] * health_pct );
-    player -> stat_gain( STAT_MAX_HEALTH, health_gain );
+    player -> stat_gain( STAT_MAX_HEALTH, health_gain, (gain_t*) 0, (action_t*) 0, true );
 
     base_t::start( stacks, value, duration );
   }
 
   virtual void expire_override()
   {
-    player -> stat_loss( STAT_MAX_HEALTH, health_gain );
+    player -> stat_loss( STAT_MAX_HEALTH, health_gain, (gain_t*) 0, (action_t*) 0, true );
 
     base_t::expire_override();
   }
@@ -1529,14 +1528,14 @@ private:
   {
     // Calculate the benefit of the new buff
     int old_health_gain = health_gain;
-    health_gain = (int) floor( druid.resources.current[ RESOURCE_HEALTH ] * value );
+    health_gain = (int) floor( ( druid.resources.max[ RESOURCE_HEALTH ] - druid.temporary.resource[ RESOURCE_HEALTH ] ) * value );
     int diff = health_gain - old_health_gain;
 
     // Adjust the temporary HP gain
     if ( diff > 0 )
-      druid.stat_gain( STAT_MAX_HEALTH, diff );
+      druid.stat_gain( STAT_MAX_HEALTH, diff, (gain_t*) 0, (action_t*) 0, true );
     else if ( diff < 0 )
-      druid.stat_loss( STAT_MAX_HEALTH, -diff );
+      druid.stat_loss( STAT_MAX_HEALTH, -diff, (gain_t*) 0, (action_t*) 0, true );
   }
 };
 

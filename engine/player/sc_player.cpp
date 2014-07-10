@@ -3998,6 +3998,7 @@ void player_t::recalculate_resource_max( resource_e resource_type )
       // Calculate & set maximum health
       double adjust = ( is_pet() || is_enemy() || is_add() ) ? 0 : std::min( 20, ( int ) floor( stamina() ) );
       resources.max[ resource_type ] += ( floor( stamina() ) - adjust ) * current.health_per_stamina + adjust;
+      resources.max[ resource_type ] += temporary.resource[ RESOURCE_HEALTH ];
 
       // Sanity check on current health values
       if ( ! in_combat )
