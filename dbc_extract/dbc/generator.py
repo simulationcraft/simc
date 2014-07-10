@@ -1204,6 +1204,12 @@ class RandomSuffixGroupGenerator(ItemDataGenerator):
 class SpellDataGenerator(DataGenerator):
     _spell_ref_rx = r'\$(?:\?[A-z]|@spell(?:name|desc|icon|tooltip))?([0-9]+)(?:\[|[A-z][0-9]?|)'
     
+
+    # Pattern based whitelist, these will always be added
+    _spell_name_whitelist = [
+        re.compile(r'^Item\s+-\s+(.+)\s+T([0-9]+)\s+([A-z\s]*)\s*([0-9]+)P')
+    ]
+
     # Explicitly included list of spells per class, that cannot be 
     # found from talents, or based on a SkillLine category
     # The list contains a tuple ( spell_id, category[, activated ] ), 
@@ -2148,6 +2154,12 @@ class SpellDataGenerator(DataGenerator):
                     sys.stderr.write('Whitelisted spell id %u (%s) already in the list of spells to be extracted.\n' % (
                         spell_tuple[0], self._spell_db[spell_tuple[0]].name) )
                 self.process_spell(spell_tuple[0], ids, self._class_masks[cls], 0)
+
+        for spell_id, spell_data in self._spell_db.iteritems():
+            for pattern in SpellDataGenerator._spell_name_whitelist:
+                if pattern.match(spell_data.name):
+                    self.process_spell(spell_id, ids, 0, 0)
+
         
         # After normal spells have been fetched, go through all spell ids, 
         # and get all the relevant aura_ids for selected spells
@@ -3274,9 +3286,112 @@ class GlyphListGenerator(SpellDataGenerator):
         
         return s
 
+class SetBonusListGenerator(DataGenerator):
+
+    def __init__(self, options):
+        self._dbc = [ 'ItemSet', 'ItemSetSpell', 'Spell', 'ChrSpecialization' ]
+
+        self._regex = re.compile(r'^Item\s+-\s+(.+)\s+T([0-9]+)\s+([A-z\s]*)\s*([0-9]+)P')
+
+        DataGenerator.__init__(self, options)
+
+    def filter(self):
+        data = []
+        for spell_id, spell_data in self._spell_db.iteritems():
+            mobj = self._regex.match(spell_data.name)
+            if not mobj:
+                continue
+
+            set_class = self._class_map[mobj.group(1)]
+            set_tier_derived = int(mobj.group(2))
+            set_tier_spec_string = mobj.group(3)
+            set_tier_bonus_derived = int(mobj.group(4))
+
+            set_spec_arr_derived = []
+            spec_string_split = set_tier_spec_string.split(' ')
+            if len(spec_string_split) > 0:
+                for spec_id, spec_data in self._chrspecialization_db.iteritems():
+                    if spec_data.class_id != set_class:
+                        continue
+
+                    if spec_data.name not in spec_string_split:
+                        continue
+
+                    set_spec_arr_derived.append('%3u' % spec_id)
+
+            set_spell_id = 0
+
+            for setspell_id, setspell_data in self._itemsetspell_db.iteritems():
+                if setspell_data.id_spell != spell_data.id:
+                    continue
+
+                set_spell_id = setspell_id
+                break
+
+            if set_spell_id > 0:
+                data.append({
+                    'derived_class': set_class,
+                    'derived_tier' : set_tier_derived,
+                    'derived_bonus': set_tier_bonus_derived,
+                    'derived_specs': set_spec_arr_derived,
+                    'set_bonus_id' : set_spell_id })
+
+        return data
+
+    def generate(self, ids):
+        def sorter(a, b):
+            if a['derived_tier'] > b['derived_tier']:
+                return 1
+            elif a['derived_tier'] < b['derived_tier']:
+                return -1
+            else:
+                if a['derived_class'] > b['derived_class']:
+                    return 1
+                elif a['derived_class'] < b['derived_class']:
+                    return -1
+                else:
+                    return 0
+
+        ids.sort(cmp = sorter)
+
+        s = '  // %44s, Tier, Bns, Cls, %15s, Spec,  Spell, Items\n' % ('Tier name', 'Spec Guess')
+        for i in ids:
+            item_set_spell = self._itemsetspell_db[i['set_bonus_id']]
+            item_set = self._itemset_db[item_set_spell.id_item_set]
+            set_bonus = i['derived_bonus']
+            if item_set_spell.n_req_items != set_bonus:
+                print >>sys.stderr, 'Discrepancy between set bonuses for %s, derived %u, data %u' % (
+                        item_set.name, set_bonus, item_set_spell.n_req_items )
+                set_bonus = item_set_spell.n_req_items
+
+            items = []
+            for item_n in xrange(1, 17):
+                item_id = getattr(item_set, 'id_item_%d' % item_n)
+                if item_id > 0:
+                    items.append('%6u' % item_id)
+
+            if len(items) < 17:
+                items.append('0')
+
+            spec_str = '0'
+            if len(i['derived_specs']) > 0:
+                spec_str = ', '.join(i['derived_specs'] + ['0'])
+
+            s += '  { %-45s, %4u, %3u, %3u, %15s, %4u, %6u, %s },\n' % (
+                '"%s"' % item_set.name.replace('"', '\\"'),
+                i['derived_tier'],
+                set_bonus,
+                i['derived_class'],
+                '{ %s }' % spec_str,
+                item_set_spell.unk_wod_1,
+                item_set_spell.id_spell,
+                '{ %s }' % (', '.join(items))
+            )
+        return s
+
 class ItemSetListGenerator(SpellDataGenerator):
     _tier_base = 13
-    
+
     def __init__(self, options):
 
         SpellDataGenerator.__init__(self, options)
