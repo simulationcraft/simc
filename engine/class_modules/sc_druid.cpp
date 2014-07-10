@@ -15,6 +15,7 @@ namespace { // UNNAMED NAMESPACE
     Fix Force of Nature (summons fine, but treants take no actions)
 
     = Feral =
+    Rewrite Savagery
     Damage check:
       Thrash (both forms)
       Swipe
@@ -231,6 +232,7 @@ public:
     gain_t* swipe;
     gain_t* tigers_fury;
     gain_t* tier15_2pc_melee;
+    gain_t* tier17_2pc_melee;
 
     // Guardian (Bear)
     gain_t* bear_form;
@@ -1776,6 +1778,14 @@ public:
       trigger_lotp( s );
   }
 
+  virtual void tick( dot_t* d )
+  {
+    ab::tick( d );
+
+    if ( ab::p() -> sets.has_set_bonus( SET_T17_2PC_MELEE ) && dbc::is_school( ab::school, SCHOOL_PHYSICAL ) )
+      ab::p() -> resource_gain( RESOURCE_ENERGY, 3.0, ab::p() -> gain.tier17_2pc_melee );
+  }
+
   virtual double composite_persistent_multiplier( const action_state_t* s ) const
   {
     double pm = ab::composite_persistent_multiplier( s );
@@ -1793,7 +1803,7 @@ public:
     /* Assume that any action that deals physical and applies a dot deals all bleed damage, so
        that it scales direct "bleed" damage. This is a bad assumption if there is an action
        that applies a dot but does plain physical direct damage, but there are none of those. */
-    if ( ! ab::p() -> bugs && dbc::is_school( ab::school, SCHOOL_PHYSICAL ) && ab::dot_duration > timespan_t::zero() )
+    if ( dbc::is_school( ab::school, SCHOOL_PHYSICAL ) && ab::dot_duration > timespan_t::zero() )
       tm *= 1.0 + ab::td( t ) -> buffs.bloodletting -> value();
 
     return tm;
@@ -2283,7 +2293,12 @@ struct rake_t : public cat_attack_t
     cat_attack_t::impact( s );
 
     if ( result_is_hit( s -> result ) )
+    {
       p() -> resource_gain( RESOURCE_COMBO_POINT, combo_point_gain, p() -> gain.rake );
+
+      if ( p() -> sets.has_set_bonus( SET_T17_2PC_MELEE ) )
+        p() -> resource_gain( RESOURCE_ENERGY, 3.0, p() -> gain.tier17_2pc_melee );
+    }
   }
 
   virtual void execute()
@@ -2354,9 +2369,9 @@ struct rip_t : public cat_attack_t
   action_state_t* new_state()
   { return new rip_state_t( p(), this, target ); }
 
-  double attack_tick_power_coefficient( const action_state_t* ) const
+  double attack_tick_power_coefficient( const action_state_t* s ) const
   {
-    rip_state_t* rip_state = debug_cast<rip_state_t*>( td( target ) -> dots.rip -> state );
+    rip_state_t* rip_state = debug_cast<rip_state_t*>( td( s -> target ) -> dots.rip -> state );
 
     return ap_per_point * rip_state -> combo_points;
   }
@@ -2443,16 +2458,8 @@ struct shred_t : public cat_attack_t
     {
       p() -> resource_gain( RESOURCE_COMBO_POINT, combo_point_gain, p() -> gain.shred );
 
-      if ( s -> result == RESULT_CRIT )
-      {
-        if ( p() -> sets.has_set_bonus( SET_T17_2PC_MELEE ) )
-        {
-          p() -> cooldown.berserk -> adjust( timespan_t::from_seconds( -5.0 ), true );
-          p() -> proc.tier17_2pc_melee -> occur();
-        }
-        if ( p() -> sets.has_set_bonus( SET_PVP_4PC_MELEE ) )
-          td( s -> target ) -> buffs.bloodletting -> trigger(); // Druid module debuff
-      }
+      if ( s -> result == RESULT_CRIT && p() -> sets.has_set_bonus( SET_PVP_4PC_MELEE ) )
+        td( s -> target ) -> buffs.bloodletting -> trigger(); // Druid module debuff
     }
   }
 
@@ -2602,6 +2609,14 @@ struct thrash_cat_t : public cat_attack_t
       m *= 1.0 + p() -> cache.mastery_value();
 
     return m;
+  }
+
+  virtual void impact( action_state_t* s )
+  {
+    cat_attack_t::impact( s );
+
+    if ( result_is_hit( s -> result ) && p() -> sets.has_set_bonus( SET_T17_2PC_MELEE ) )
+      p() -> resource_gain( RESOURCE_ENERGY, 3.0, p() -> gain.tier17_2pc_melee );
   }
 
   // Treat direct damage as "bleed"
@@ -2998,7 +3013,12 @@ struct thrash_bear_t : public bear_attack_t
     bear_attack_t::impact( s );
 
     if ( result_is_hit( s -> result ) )
+    {
       p() -> resource_gain( RESOURCE_RAGE, rage_gain, p() -> gain.thrash );
+
+      if ( p() -> sets.has_set_bonus( SET_T17_2PC_MELEE ) )
+        p() -> resource_gain( RESOURCE_ENERGY, 3.0, p() -> gain.tier17_2pc_melee );
+    }
   }
 
   virtual void tick( dot_t* d )
@@ -6206,6 +6226,7 @@ void druid_t::init_gains()
   gain.swipe                 = get_gain( "swipe"                 );
   gain.thrash                = get_gain( "thrash"                );
   gain.tier15_2pc_melee      = get_gain( "tier15_2pc_melee"      );
+  gain.tier17_2pc_melee      = get_gain( "tier17_2pc_melee"      );
   gain.tigers_fury           = get_gain( "tigers_fury"           );
 }
 
