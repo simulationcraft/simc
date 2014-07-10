@@ -281,7 +281,6 @@ struct rogue_t : public player_t
 
   // Options
   std::string tricks_of_the_trade_target_str;
-  timespan_t virtual_hat_interval;
   uint32_t fof_p1, fof_p2, fof_p3;
 
   rogue_t( sim_t* sim, const std::string& name, race_e r = RACE_NIGHT_ELF ) :
@@ -305,7 +304,6 @@ struct rogue_t : public player_t
     tot_target( 0 ),
     virtual_hat_callback( 0 ),
     tricks_of_the_trade_target_str( "" ),
-    virtual_hat_interval( timespan_t::min() ),
     fof_p1( 0 ), fof_p2( 0 ), fof_p3( 0 )
   {
     // Cooldowns
@@ -327,7 +325,6 @@ struct rogue_t : public player_t
   virtual void      create_buffs();
   virtual void      init_action_list();
   virtual void      register_callbacks();
-  virtual void      combat_begin();
   virtual void      reset();
   virtual void      arise();
   virtual void      regen( timespan_t periodicity );
@@ -335,12 +332,10 @@ struct rogue_t : public player_t
   virtual void      create_options();
   virtual action_t* create_action( const std::string& name, const std::string& options );
   virtual expr_t*   create_expression( action_t* a, const std::string& name_str );
-  virtual set_e       decode_set( const item_t& ) const;
+  virtual set_e     decode_set( const item_t& ) const;
   virtual resource_e primary_resource() const { return RESOURCE_ENERGY; }
   virtual role_e    primary_role() const  { return ROLE_ATTACK; }
   virtual stat_e    convert_hybrid_stat( stat_e s ) const;
-  virtual bool      create_profile( std::string& profile_str, save_e = SAVE_ALL, bool save_html = false );
-  virtual void      copy_from( player_t* source );
 
   virtual double    composite_attribute_multiplier( attribute_e attr ) const;
   virtual double    composite_melee_speed() const;
@@ -3768,7 +3763,6 @@ void rogue_t::init_scaling()
 
   scales_with[ STAT_WEAPON_OFFHAND_DPS    ] = true;
   scales_with[ STAT_WEAPON_OFFHAND_SPEED  ] = sim -> weapon_speed_scale_factors != 0;
-  scales_with[ STAT_HIT_RATING2           ] = true;
 }
 
 // rogue_t::init_buffs ======================================================
@@ -3885,34 +3879,28 @@ void rogue_t::create_buffs()
 
 // trigger_honor_among_thieves ==============================================
 
-struct honor_among_thieves_callback_t : public action_callback_t
+struct honor_among_thieves_callback_t : public dbc_proc_callback_t
 {
-  honor_among_thieves_callback_t( rogue_t* r ) : action_callback_t( r ) {}
+  rogue_t* rogue;
 
-  virtual void trigger( action_t* a, void* /* call_data */ )
+  honor_among_thieves_callback_t( player_t* player, rogue_t* r, const special_effect_t& effect ) :
+    dbc_proc_callback_t( player, effect ), rogue( r )
+  { }
+
+  void trigger( action_t* a, void* call_data )
   {
-    rogue_t* rogue = debug_cast< rogue_t* >( listener );
-
     if ( ! rogue -> in_combat )
       return;
 
-    if ( a )
-    {
-      // Only procs from specials; repeating is here for hunter autoshot, which
-      // doesn't proc it either .. except in WoD, the rogue's own autoattacks
-      // can also proc HaT
-      if ( a -> player != listener && ( ! a -> special || a -> repeating ) )
-        return;
+    // Only procs from specials; repeating is here for hunter autoshot, which
+    // doesn't proc it either .. except in WoD, the rogue's own autoattacks
+    // can also proc HaT
+    if ( a -> player != rogue && ( ! a -> special || a -> repeating ) )
+      return;
 
-      // Doesn't proc from pets (only tested for hunter pets though)
-      if ( a -> player -> is_pet() )
-        return;
-
-      a -> player -> procs.hat_donor -> occur();
-    }
-
-//    if ( sim -> debug )
-//      sim -> output( "Eligible For Honor Among Thieves" );
+    // Doesn't proc from pets (only tested for hunter pets though)
+    if ( a -> player -> is_pet() )
+      return;
 
     if ( rogue -> cooldowns.honor_among_thieves -> down() )
       return;
@@ -3920,13 +3908,20 @@ struct honor_among_thieves_callback_t : public action_callback_t
     if ( ! rogue -> rng().roll( rogue -> spec.honor_among_thieves -> proc_chance() ) )
       return;
 
+    listener -> procs.hat_donor -> occur();
+
+    execute( a, static_cast<action_state_t*>( call_data ) );
+  }
+
+  void execute( action_t*, action_state_t* )
+  {
     rogue_td_t* td = rogue -> get_target_data( rogue -> target );
 
     td -> combo_points.add( 1, rogue -> spec.honor_among_thieves -> name_cstr() );
 
     rogue -> procs.honor_among_thieves -> occur();
 
-    rogue -> cooldowns.honor_among_thieves -> start( timespan_t::from_seconds( 2.0 ) );
+    rogue -> cooldowns.honor_among_thieves -> start( rogue -> spec.honor_among_thieves -> internal_cooldown() );
 
     if ( rogue -> buffs.t16_2pc_melee -> trigger() )
       rogue -> procs.t16_2pc_melee -> occur();
@@ -3937,72 +3932,23 @@ struct honor_among_thieves_callback_t : public action_callback_t
 
 void rogue_t::register_callbacks()
 {
+  if ( spec.honor_among_thieves -> ok() )
+  {
+    for ( size_t i = 0; i < sim -> player_no_pet_list.size(); i++ )
+    {
+      player_t* p = sim -> player_no_pet_list[ i ];
+      special_effect_t effect( p );
+      effect.spell_id = spec.honor_among_thieves -> id();
+      effect.proc_flags2_ = PF2_CRIT;
+      effect.cooldown_ = timespan_t::zero();
+
+      p -> special_effects.push_back( effect );
+
+      new honor_among_thieves_callback_t( p, this, p -> special_effects.back() );
+    }
+  }
+
   player_t::register_callbacks();
-
-  if ( spec.honor_among_thieves -> ok() && virtual_hat_interval != timespan_t::zero() )
-  {
-    action_callback_t* cb = new honor_among_thieves_callback_t( this );
-
-    callbacks.register_attack_callback( RESULT_CRIT_MASK, cb );
-    callbacks.register_spell_callback ( RESULT_CRIT_MASK, cb );
-    callbacks.register_tick_callback( RESULT_CRIT_MASK, cb );
-
-    if ( virtual_hat_interval < timespan_t::zero() )
-    {
-      if ( ! sim -> solo_raid )
-        virtual_hat_interval = timespan_t::from_seconds( 2.20 );
-    }
-
-    if ( virtual_hat_interval > timespan_t::zero() )
-      virtual_hat_callback = cb;
-    else
-    {
-      for ( size_t i = 0; i < sim -> player_no_pet_list.size(); i++ )
-      {
-        player_t* p = sim -> player_no_pet_list[ i ];
-
-        p -> callbacks.register_attack_callback( RESULT_CRIT_MASK, cb );
-        p -> callbacks.register_spell_callback ( RESULT_CRIT_MASK, cb );
-        p -> callbacks.register_tick_callback( RESULT_CRIT_MASK, cb );
-      }
-    }
-  }
-}
-
-// rogue_t::combat_begin ====================================================
-
-void rogue_t::combat_begin()
-{
-  player_t::combat_begin();
-
-  if ( spec.honor_among_thieves -> ok() && virtual_hat_interval > timespan_t::zero() )
-  {
-    struct virtual_hat_event_t : public event_t
-    {
-      action_callback_t* callback;
-      timespan_t         interval;
-
-      virtual_hat_event_t( rogue_t* p, action_callback_t* cb, timespan_t i ) :
-        event_t( *p, "Virtual HAT Event" ),
-        callback( cb ), interval( i )
-      {
-        timespan_t cooldown = timespan_t::from_seconds( 2.0 );
-        timespan_t remainder = interval - cooldown;
-        if ( remainder < timespan_t::zero() ) remainder = timespan_t::zero();
-        timespan_t time = cooldown + p -> rng().range( remainder * 0.5, remainder * 1.5 ) + timespan_t::from_seconds( 0.01 );
-        add_event( time );
-      }
-
-      virtual void execute()
-      {
-        rogue_t* p = debug_cast<rogue_t*>( actor );
-        callback -> trigger( nullptr, nullptr );
-        new ( sim() ) virtual_hat_event_t( p, callback, interval );
-      }
-    };
-
-    new ( *sim ) virtual_hat_event_t( this, virtual_hat_callback, virtual_hat_interval );
-  }
 }
 
 // rogue_t::reset ===========================================================
@@ -4086,41 +4032,11 @@ void rogue_t::create_options()
 
   option_t rogue_options[] =
   {
-    opt_timespan( "virtual_hat_interval", ( virtual_hat_interval           ) ),
     opt_string( "tricks_of_the_trade_target", tricks_of_the_trade_target_str ),
     opt_null()
   };
 
   option_t::copy( options, rogue_options );
-}
-
-// rogue_t::create_profile ==================================================
-
-bool rogue_t::create_profile( std::string& profile_str, save_e stype, bool save_html )
-{
-  player_t::create_profile( profile_str, stype, save_html );
-
-  if ( stype == SAVE_ALL || stype == SAVE_ACTIONS )
-  {
-    if ( spec.honor_among_thieves -> ok() && ! sim -> solo_raid )
-    {
-      profile_str += "# These values represent the avg HAT donor interval of the raid.\n";
-      profile_str += "# A negative value will make the Rogue use a programmed default interval.\n";
-      profile_str += "# A zero value will disable virtual HAT procs and assume a real raid is being simulated.\n";
-      profile_str += "virtual_hat_interval=-1\n";  // Force it to generate profiles using programmed default.
-    }
-  }
-
-  return true;
-}
-
-// rogue_t::copy_from =======================================================
-
-void rogue_t::copy_from( player_t* source )
-{
-  player_t::copy_from( source );
-  rogue_t* p = debug_cast<rogue_t*>( source );
-  virtual_hat_interval = p -> virtual_hat_interval;
 }
 
 // rogue_t::decode_set ======================================================
