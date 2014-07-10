@@ -411,6 +411,7 @@ public:
   virtual void      invalidate_cache( cache_e );
   virtual double    composite_spell_crit() const;
   virtual double    composite_spell_haste() const;
+  virtual double    composite_melee_crit() const;
   virtual double    composite_mastery() const;
   virtual double    resource_gain( resource_e, double, gain_t* = 0, action_t* = 0 );
   virtual double    mana_regen_per_second() const;
@@ -1094,6 +1095,10 @@ double warlock_pet_t::composite_melee_crit() const
 {
   double mc = pet_t::composite_melee_crit();
 
+  // must go first in this function!
+  if ( o() -> specialization() == WARLOCK_DEMONOLOGY && o() -> talents.grimoire_of_sacrifice -> ok() )
+    mc *= 1.0 + o() -> talents.grimoire_of_sacrifice -> effectN( 2 ).percent();
+
   mc += o() -> perk.empowered_demons -> effectN( 1 ).percent();
 
   return mc;
@@ -1102,6 +1107,10 @@ double warlock_pet_t::composite_melee_crit() const
 double warlock_pet_t::composite_spell_crit() const
 {
   double sc = pet_t::composite_spell_crit();
+
+  // must go first in this function!
+  if ( o() -> specialization() == WARLOCK_DEMONOLOGY && o() -> talents.grimoire_of_sacrifice -> ok() )
+    sc *= 1.0 + o() -> talents.grimoire_of_sacrifice -> effectN( 2 ).percent();
 
   sc += o() -> perk.empowered_demons -> effectN( 1 ).percent();
   
@@ -4298,8 +4307,11 @@ struct grimoire_of_sacrifice_t : public warlock_spell_t
     {
       warlock_spell_t::execute();
 
-      p() -> pets.active -> dismiss();
-      p() -> pets.active = 0;
+      if ( p() -> specialization() != WARLOCK_DEMONOLOGY )
+      {
+        p() -> pets.active -> dismiss();
+        p() -> pets.active = 0;
+      }
       p() -> buffs.grimoire_of_sacrifice -> trigger();
 
       // FIXME: Demonic rebirth should really trigger on any pet death, but this is the only pet death we care about for now
@@ -4438,14 +4450,15 @@ double warlock_t::composite_spell_crit() const
   if ( specialization() == WARLOCK_DESTRUCTION )
   {
     if ( buffs.dark_soul -> up() )
-    {
       sc += spec.dark_soul -> effectN( 1 ).percent() ;
-    }
     if ( buffs.tier16_4pc_ember_fillup -> up() )
-    {
       sc += find_spell( 145164 ) -> effectN(1).percent();
-    }
   }
+
+
+  // This must go last in this function!
+  if ( specialization() == WARLOCK_DEMONOLOGY && talents.grimoire_of_sacrifice -> ok() )
+    sc *= 0.5;
 
   return sc;
 }
@@ -4465,6 +4478,17 @@ double warlock_t::composite_spell_haste() const
   }
 
   return h;
+}
+
+double warlock_t::composite_melee_crit() const
+{
+  double mc = player_t::composite_melee_crit();
+
+  // This must go last in this function!
+  if ( specialization() == WARLOCK_DEMONOLOGY && talents.grimoire_of_sacrifice -> ok() )
+    mc *= 0.5;
+
+  return mc;
 }
 
 
