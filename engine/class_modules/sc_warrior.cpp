@@ -2587,7 +2587,7 @@ struct wild_strike_t: public warrior_attack_t
     double c = warrior_attack_t::cost();
 
     if ( p() -> buff.bloodsurge -> up() )
-      c = 0;
+      c += p() -> buff.bloodsurge -> data().effectN( 2 ).resource( RESOURCE_RAGE );
 
     return c;
   }
