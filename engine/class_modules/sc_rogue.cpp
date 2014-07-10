@@ -1040,7 +1040,7 @@ void trigger_seal_fate( rogue_attack_t* a )
   rogue_td_t* td = a -> td( a -> target );
   td -> combo_points.add( 1, p -> spec.seal_fate -> name_cstr() );
 
-  p -> cooldowns.seal_fate -> start( timespan_t::from_millis( 1 ) );
+  p -> cooldowns.seal_fate -> start( p -> spec.seal_fate -> internal_cooldown() );
   p -> procs.seal_fate -> occur();
 
   if ( p -> buffs.t16_2pc_melee -> trigger() )
