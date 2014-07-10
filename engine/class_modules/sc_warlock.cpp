@@ -3031,11 +3031,7 @@ struct chaos_bolt_t : public warlock_spell_t
   {
     havoc_consume = 3;
     backdraft_consume = 3;
-    hasted_ticks = false;
     base_execute_time += p -> perk.enhanced_chaos_bolt -> effectN( 1 ).time_value();
-    
-    if ( p -> talents.grimoire_of_sacrifice -> ok() )
-      dot_duration = p -> talents.grimoire_of_sacrifice -> effectN( 12 ).time_value();
   }
 
   virtual double composite_crit() const
