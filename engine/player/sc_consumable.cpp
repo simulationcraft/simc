@@ -1055,10 +1055,10 @@ action_t* consumable::create_action( player_t*          p,
   if ( name == "mogu_power_potion"    ) return new  potion_base_t( p, name, p -> potion_buffs.mogu_power, options_str );
   if ( name == "virmens_bite_potion"  ) return new  potion_base_t( p, name, p -> potion_buffs.virmens_bite, options_str );
   // new wod potions
-  if ( name == "draenic_agility_potion"     ) return new  potion_base_t( p, name, p -> potion_buffs.draenic_agility, options_str );
-  if ( name == "draenic_armor_potion"       ) return new  potion_base_t( p, name, p -> potion_buffs.draenic_armor, options_str );
-  if ( name == "draenic_intellect_potion"   ) return new  potion_base_t( p, name, p -> potion_buffs.draenic_intellect, options_str );
-  if ( name == "draenic_strength_potion"    ) return new  potion_base_t( p, name, p -> potion_buffs.draenic_strength, options_str );
+  if ( name == "draenor_agility_potion"     ) return new  potion_base_t( p, name, p -> potion_buffs.draenor_agility, options_str );
+  if ( name == "draenor_armor_potion"       ) return new  potion_base_t( p, name, p -> potion_buffs.draenor_armor, options_str );
+  if ( name == "draenor_intellect_potion"   ) return new  potion_base_t( p, name, p -> potion_buffs.draenor_intellect, options_str );
+  if ( name == "draenor_strength_potion"    ) return new  potion_base_t( p, name, p -> potion_buffs.draenor_strength, options_str );
 
   return 0;
 }

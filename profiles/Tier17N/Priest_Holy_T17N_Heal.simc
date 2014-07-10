@@ -22,7 +22,7 @@ actions.precombat+=/power_word_fortitude,if=!aura.stamina.up
 actions.precombat+=/chakra_serenity
 # Snapshot raid buffed stats before combat begins and pre-potting is done.
 actions.precombat+=/snapshot_stats
-actions.precombat+=/potion,name=draenic_intellect_potion
+actions.precombat+=/potion,name=draenic_intellect
 actions.precombat+=/prayer_of_mending
 
 # Executed every time the actor is available.

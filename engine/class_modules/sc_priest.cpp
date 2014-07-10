@@ -5961,7 +5961,7 @@ void priest_t::apl_precombat()
   if ( sim -> allow_potions && level >= 80 )
   {
     if ( level > 90 )
-      precombat -> add_action( "potion,name=draenic_intellect_potion" );
+      precombat -> add_action( "potion,name=draenic_intellect" );
     else if ( level > 85 )
       precombat -> add_action( "potion,name=jade_serpent" );
     else
@@ -6040,7 +6040,7 @@ void priest_t::apl_shadow()
   if ( sim -> allow_potions && level >= 80 )
   {
     if ( level > 90 )
-      default_list -> add_action( "potion,name=draenic_intellect_potion,if=buff.bloodlust.react|target.time_to_die<=40" );
+      default_list -> add_action( "potion,name=draenic_intellect,if=buff.bloodlust.react|target.time_to_die<=40" );
     else if ( level > 85 )
       default_list -> add_action( "potion,name=jade_serpent,if=buff.bloodlust.react|target.time_to_die<=40" );
     else
@@ -6219,7 +6219,7 @@ void priest_t::apl_disc_dmg()
   if ( sim -> allow_potions && level >= 80 )
   {
     if ( level > 90 )
-      def -> add_action( "potion,name=draenic_intellect_potion,if=buff.bloodlust.react|target.time_to_die<=40" );
+      def -> add_action( "potion,name=draenic_intellect,if=buff.bloodlust.react|target.time_to_die<=40" );
     else if ( level > 85 )
       def -> add_action( "potion,name=jade_serpent,if=buff.bloodlust.react|target.time_to_die<=40" );
     else
@@ -6322,7 +6322,7 @@ void priest_t::apl_holy_dmg()
   if ( sim -> allow_potions )
   {
     if ( level > 90 )
-      def -> add_action( "potion,name=draenic_intellect_potion,if=buff.bloodlust.react|target.time_to_die<=40" );
+      def -> add_action( "potion,name=draenic_intellect,if=buff.bloodlust.react|target.time_to_die<=40" );
     else if ( level > 85 )
       def -> add_action( "potion,name=jade_serpent,if=buff.bloodlust.react|target.time_to_die<=40" );
     else

@@ -4484,10 +4484,10 @@ struct player_t : public actor_t
     stat_buff_t* mountains;
 
     // WoD
-    stat_buff_t* draenic_agility;
-    stat_buff_t* draenic_armor;
-    stat_buff_t* draenic_intellect;
-    stat_buff_t* draenic_strength;
+    stat_buff_t* draenor_agility;
+    stat_buff_t* draenor_armor;
+    stat_buff_t* draenor_intellect;
+    stat_buff_t* draenor_strength;
   } potion_buffs;
 
   struct debuffs_t
