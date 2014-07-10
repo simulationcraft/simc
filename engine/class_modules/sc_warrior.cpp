@@ -2587,7 +2587,7 @@ struct wild_strike_t: public warrior_attack_t
     double c = warrior_attack_t::cost();
 
     if ( p() -> buff.bloodsurge -> up() )
-      c = 0;
+      c += p() -> spec.bloodsurge -> effectN( 2 ).resource( RESOURCE_RAGE );
 
     return c;
   }
@@ -3904,7 +3904,7 @@ void warrior_t::create_buffs()
   buff.blood_craze = buff_creator_t( this, "blood_craze", spec.blood_craze )
     .duration( spec.blood_craze -> effectN( 1 ).trigger() -> duration() );
 
-  buff.bloodsurge = buff_creator_t( this, "bloodsurge", find_class_spell( "Wild Strike" ) )
+  buff.bloodsurge = buff_creator_t( this, "bloodsurge", spec.bloodsurge -> effectN( 1 ).trigger() )
     .chance( spec.bloodsurge -> effectN( 1 ).percent() );
 
   buff.defensive_stance = buff_creator_t( this, "defensive_stance", find_class_spell( "Defensive Stance" ) )
