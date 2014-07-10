@@ -4289,13 +4289,15 @@ void player_t::stat_loss( stat_e    stat,
                        ( stat == STAT_MAX_RAGE   ) ? RESOURCE_RAGE   :
                        ( stat == STAT_MAX_ENERGY ) ? RESOURCE_ENERGY :
                        ( stat == STAT_MAX_FOCUS  ) ? RESOURCE_FOCUS  : RESOURCE_RUNIC_POWER );
-      recalculate_resource_max( r );
-      double delta = resources.current[ r ] - resources.max[ r ];
-      if ( delta > 0 ) resource_loss( r, delta, gain, action );
 
       // See equivalent part of player_t::stat_gain for comment on this kludge
       if ( r == RESOURCE_HEALTH )
         temporary.resource[ r ] -= temp_value * amount;
+
+      recalculate_resource_max( r );
+      double delta = resources.current[ r ] - resources.max[ r ];
+      if ( delta > 0 ) resource_loss( r, delta, gain, action );
+
     }
     break;
 
