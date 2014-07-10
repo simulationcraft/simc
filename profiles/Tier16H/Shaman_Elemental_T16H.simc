@@ -46,13 +46,11 @@ actions+=/run_action_list,name=aoe,if=active_enemies>1
 
 actions.single=unleash_flame,if=talent.unleashed_fury.enabled&!buff.ascendance.up
 actions.single+=/spiritwalkers_grace,moving=1,if=buff.ascendance.up
-actions.single+=/lava_burst,if=dot.flame_shock.remains>cast_time&(buff.ascendance.up|cooldown_react)
-actions.single+=/flame_shock,if=ticks_remain<2
-actions.single+=/elemental_blast,if=talent.elemental_blast.enabled
-# Use Earth Shock if Lightning Shield is at max (20) charges
 actions.single+=/earth_shock,if=buff.lightning_shield.react=buff.lightning_shield.max_stack
-# Use Earth Shock if Lightning Shield is above 15 charges and the Flame Shock remaining duration is longer than the shock cooldown but shorter than shock cooldown + tick time interval
-actions.single+=/earth_shock,if=buff.lightning_shield.react>15&dot.flame_shock.remains>cooldown&dot.flame_shock.remains<cooldown+action.flame_shock.tick_time
+actions.single+=/lava_burst,if=dot.flame_shock.remains>cast_time&(buff.ascendance.up|cooldown_react)
+actions.single+=/flame_shock,if=dot.flame_shock.remains<9
+actions.single+=/earth_shock,if=buff.lightning_shield.react>15
+actions.single+=/elemental_blast,if=talent.elemental_blast.enabled
 # After the initial Ascendance, use Flame Shock pre-emptively just before Ascendance to guarantee Flame Shock staying up for the full duration of the Ascendance buff
 actions.single+=/flame_shock,if=time>60&remains<=buff.ascendance.duration&cooldown.ascendance.remains+buff.ascendance.duration<duration
 actions.single+=/storm_elemental_totem,if=talent.storm_elemental_totem.enabled&(!active&cooldown.fire_elemental_totem.remains>=60)

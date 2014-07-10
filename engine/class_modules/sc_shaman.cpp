@@ -5147,13 +5147,11 @@ void shaman_t::init_action_list()
     single -> add_action( this, "Spiritwalker's Grace", "moving=1,if=buff.ascendance.up" );
     if ( find_item( "unerring_vision_of_lei_shen" ) )
       single -> add_action( this, "Flame Shock", "if=buff.perfect_aim.react&crit_pct<100" );
+    single -> add_action( this, spec.fulmination, "earth_shock", "if=buff.lightning_shield.react=buff.lightning_shield.max_stack" );
     single -> add_action( this, "Lava Burst", "if=dot.flame_shock.remains>cast_time&(buff.ascendance.up|cooldown_react)" );
-    single -> add_action( this, "Flame Shock", "if=ticks_remain<2" );
+    single -> add_action( this, "Flame Shock", "if=dot.flame_shock.remains<9" );
+    single -> add_action( this, spec.fulmination, "earth_shock", "if=buff.lightning_shield.react>15" );
     single -> add_talent( this, "Elemental Blast" );
-    single -> add_action( this, spec.fulmination, "earth_shock", "if=buff.lightning_shield.react=buff.lightning_shield.max_stack",
-                          "Use Earth Shock if Lightning Shield is at max (20) charges" );
-    single -> add_action( this, spec.fulmination, "earth_shock", "if=buff.lightning_shield.react>15&dot.flame_shock.remains>cooldown&dot.flame_shock.remains<cooldown+action.flame_shock.tick_time",
-                          "Use Earth Shock if Lightning Shield is above 15 charges and the Flame Shock remaining duration is longer than the shock cooldown but shorter than shock cooldown + tick time interval" );
     single -> add_action( this, "Flame Shock", "if=time>60&remains<=buff.ascendance.duration&cooldown.ascendance.remains+buff.ascendance.duration<duration",
                           "After the initial Ascendance, use Flame Shock pre-emptively just before Ascendance to guarantee Flame Shock staying up for the full duration of the Ascendance buff" );
     single -> add_talent( this, "Storm Elemental Totem", "if=!active&cooldown.fire_elemental_totem.remains>=60" );
