@@ -3986,16 +3986,16 @@ void player_t::recalculate_resource_max( resource_e resource_type )
       // Calculate & set maximum health
       resources.max[ resource_type ] += floor( stamina() ) * current.health_per_stamina;
 
+      // Make sure the player starts combat with full health
       if ( ! in_combat )
         resources.current[ resource_type ] = resources.max[ resource_type ];
-      
-      // Sanity check on current health values
-      resources.current[ resource_type ] = std::min( resources.current[ resource_type ], resources.max[ resource_type] );
       break;
     }
     default: break;
   }
   resources.max[ resource_type ] += resources.temporary[ resource_type ];
+  // Sanity check on current values
+  resources.current[ resource_type ] = std::min( resources.current[ resource_type ], resources.max[ resource_type] );
 }
 
 // player_t::primary_role ===================================================
