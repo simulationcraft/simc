@@ -3287,6 +3287,15 @@ class GlyphListGenerator(SpellDataGenerator):
         return s
 
 class SetBonusListGenerator(DataGenerator):
+    # A tier spell map that maps ItemSetSpell.dbc IDs to tiers. This is needed
+    # to ensure that certain re-used tier spells (Ret paladin T10 set bonus for
+    # example) get the correct tier number, as blizzard does not provide tier
+    # information for us, outside of their spell name template for the bonus
+    # spells
+    tier_spell_map = {
+            # Ret T10 bonus is re-used in T14
+            2980: 14
+    }
 
     def __init__(self, options):
         self._dbc = [ 'ItemSet', 'ItemSetSpell', 'Spell', 'ChrSpecialization' ]
@@ -3313,69 +3322,70 @@ class SetBonusListGenerator(DataGenerator):
         return True
 
     def filter(self):
+        # Make a set bonus spell id <-> tier number map so we can .. "fix" some things.
+        self.tier_id_map = {}
         data = []
-        for spell_id, spell_data in self._spell_db.iteritems():
+        for item_set_spell_id, item_set_spell_data in self._itemsetspell_db.iteritems():
+            spell_data = self._spell_db[item_set_spell_data.id_spell]
+
             mobj = self._regex.match(spell_data.name)
             if not mobj:
-                continue
-
-            set_spell = False
-            for item_set_spell_id, item_set_spell_data in self._itemsetspell_db.iteritems():
-                if item_set_spell_data.id_spell == spell_id:
-                    set_spell = True
-                    break
-
-            if not set_spell:
                 continue
 
             set_class = self._class_map[mobj.group(1)]
             set_tier_derived = int(mobj.group(2))
             set_tier_spec_string = mobj.group(3).strip()
             set_tier_bonus_derived = int(mobj.group(4))
+            set_spec = 0
+
+            if item_set_spell_data.id in SetBonusListGenerator.tier_spell_map:
+                set_tier_derived = SetBonusListGenerator.tier_spell_map[item_set_spell_data.id]
 
             set_spec_arr_derived = []
-            spec_added = False
-            for spec_id, spec_data in self._chrspecialization_db.iteritems():
-                if set_class == spec_data.class_id and spec_data.name in set_tier_spec_string:
-                    spec_added = True
-                    set_spec_arr_derived.append(spec_id)
 
-            # If we could not figure out specs from spec specific words, use
-            # some generic things and blizzard typoes .. sigh .. to massage
-            # things a bit
-            if not spec_added:
-                if set_tier_spec_string == 'Tank':
-                    set_spec_arr_derived = self.spec_type_map[set_class][0]
-                elif set_tier_spec_string in ['DPS', 'Melee']:
-                    set_spec_arr_derived = self.spec_type_map[set_class][2]
-                elif set_tier_spec_string in ['Healer', 'Healing']:
-                    set_spec_arr_derived = self.spec_type_map[set_class][1]
-                # Pure DPS classes can have empty string
-                elif len(set_tier_spec_string) == 0:
-                    set_spec_arr_derived = self.spec_type_map[set_class][2]
-                # Sigh ...
-                elif set_tier_spec_string == 'Enhancment':
-                    set_spec_arr_derived = [ 263, ]
-                else:
-                    print '|%s|' % set_tier_spec_string
-                    print spell_id
+            if item_set_spell_data.unk_wod_1 == 0:
+                spec_added = False
+                for spec_id, spec_data in self._chrspecialization_db.iteritems():
+                    if set_class == spec_data.class_id and spec_data.name in set_tier_spec_string:
+                        spec_added = True
+                        set_spec_arr_derived.append(spec_id)
 
-            set_spell_id = 0
+                # If we could not figure out specs from spec specific words, use
+                # some generic things and blizzard typoes .. sigh .. to massage
+                # things a bit
+                if not spec_added:
+                    if set_tier_spec_string == 'Tank':
+                        set_spec_arr_derived = self.spec_type_map[set_class][0]
+                    elif set_tier_spec_string in ['DPS', 'Melee']:
+                        set_spec_arr_derived = self.spec_type_map[set_class][2]
+                    elif set_tier_spec_string in ['Healer', 'Healing']:
+                        set_spec_arr_derived = self.spec_type_map[set_class][1]
+                    # Pure DPS classes can have empty string, in which case just
+                    # slap in all specs for the class
+                    elif len(set_tier_spec_string) == 0:
+                        set_spec_arr_derived = self.spec_type_map[set_class][2]
+                    # Sigh ...
+                    elif set_tier_spec_string == 'Enhancment':
+                        set_spec_arr_derived = [ 263, ]
+                    else:
+                        print >>sys.stderr, "Found set bonus spell '%s' that does not match Blizzard set bonus spell template" % spell_data.name
+            # We have a spec. Figure out class from it too and stop guessing by
+            # name.
+            else:
+                set_spec = item_set_spell_data.unk_wod_1
+                for spec_id, spec_data in self._chrspecialization_db.iteritems():
+                    if spec_id == item_set_spell_data.unk_wod_1:
+                        set_class = spec_data.class_id
+                        break
+                set_spec_arr_derived.append(0)
 
-            for setspell_id, setspell_data in self._itemsetspell_db.iteritems():
-                if setspell_data.id_spell != spell_data.id:
-                    continue
-
-                set_spell_id = setspell_id
-                break
-
-            if set_spell_id > 0:
-                data.append({
-                    'derived_class': set_class,
-                    'derived_tier' : set_tier_derived,
-                    'derived_bonus': set_tier_bonus_derived,
-                    'derived_specs': set_spec_arr_derived,
-                    'set_bonus_id' : set_spell_id })
+            data.append({
+                'derived_class': set_class,
+                'derived_tier' : set_tier_derived,
+                'derived_bonus': set_tier_bonus_derived,
+                'derived_specs': set_spec_arr_derived,
+                'spec'         : set_spec,
+                'set_bonus_id' : item_set_spell_id })
 
         return data
 
@@ -3387,21 +3397,44 @@ class SetBonusListGenerator(DataGenerator):
                 if a['derived_class'] != b['derived_class']:
                     return a['derived_class'] - b['derived_class']
                 else:
-                    if a['derived_specs'][0] != b['derived_specs'][0]:
-                        return a['derived_specs'][0] - b['derived_specs'][0]
+                    if a['spec'] != b['spec']:
+                        return a['spec'] - b['spec']
                     else:
-                        if a['derived_bonus'] != b['derived_bonus']:
-                            return a['derived_bonus'] - b['derived_bonus']
+                        if a['derived_specs'][0] != b['derived_specs'][0]:
+                            return a['derived_specs'][0] - b['derived_specs'][0]
                         else:
-                            return 0
+                            if a['derived_bonus'] != b['derived_bonus']:
+                                return a['derived_bonus'] - b['derived_bonus']
+                            else:
+                                return 0
 
         ids.sort(cmp = sorter)
 
-        s = '  // %44s, Tier, Bns, Cls, %20s, Spec,  Spell, Items\n' % ('Tier name', 'Spec Guess')
-        for i in ids:
-            item_set_spell = self._itemsetspell_db[i['set_bonus_id']]
+        data_str = "%sset_bonus_data%s" % (
+            self._options.prefix and ('%s_' % self._options.prefix) or '',
+            self._options.suffix and ('_%s' % self._options.suffix) or '',
+        )
+
+        s = '#define %s_SIZE (%d)\n\n' % (
+            data_str.upper(),
+            len(ids)
+        )
+
+        s += '// Set bonus data, wow build %d\n' % self._options.build
+        s += 'static item_set_bonus_t __%s[%s_SIZE] = {\n' % (
+            data_str,
+            data_str.upper(),
+        )
+
+        for data_idx in xrange(0, len(ids)):
+            entry = ids[data_idx]
+
+            if data_idx % 25 == 0:
+                s += '  //%45s, Tier, Bns, Cls, %20s, Spec,  Spell, Items\n' % ('Tier name', 'Derived Spec')
+
+            item_set_spell = self._itemsetspell_db[entry['set_bonus_id']]
             item_set = self._itemset_db[item_set_spell.id_item_set]
-            set_bonus = i['derived_bonus']
+            set_bonus = entry['derived_bonus']
             if item_set_spell.n_req_items != set_bonus:
                 print >>sys.stderr, 'Discrepancy between set bonuses for %s, derived %u, data %u' % (
                         item_set.name, set_bonus, item_set_spell.n_req_items )
@@ -3414,24 +3447,27 @@ class SetBonusListGenerator(DataGenerator):
                     items.append('%6u' % item_id)
 
             if len(items) < 17:
-                items.append('0')
+                items.append(' 0')
 
             spec_str = ''
-            for idx in xrange(0, len(i['derived_specs'])):
-                spec_str += '%3u, ' % i['derived_specs'][idx]
+            if entry['derived_specs'][0] > 0:
+                for idx in xrange(0, len(entry['derived_specs'])):
+                    spec_str += '%3u, ' % entry['derived_specs'][idx]
 
             spec_str += '0'
 
             s += '  { %-45s, %4u, %3u, %3u, %20s, %4u, %6u, %s },\n' % (
                 '"%s"' % item_set.name.replace('"', '\\"'),
-                i['derived_tier'],
+                entry['derived_tier'],
                 set_bonus,
-                i['derived_class'],
+                entry['derived_class'],
                 '{ %s }' % spec_str,
                 item_set_spell.unk_wod_1,
                 item_set_spell.id_spell,
                 '{ %s }' % (', '.join(items))
             )
+
+        s += '};\n'
         return s
 
 class ItemSetListGenerator(SpellDataGenerator):

@@ -37,6 +37,7 @@ python.exe %RUNFILE% -p %INPATH% -b %BUILD% %PTR%  -t mastery_list           >> 
 python.exe %RUNFILE% -p %INPATH% -b %BUILD% %PTR%  -t racial_list            >> %OUTPATH%\sc_spell_lists%PTREXT%.inc
 python.exe %RUNFILE% -p %INPATH% -b %BUILD% %PTR%  -t glyph_list             >> %OUTPATH%\sc_spell_lists%PTREXT%.inc
 python.exe %RUNFILE% -p %INPATH% -b %BUILD% %PTR%  -t set_list               >> %OUTPATH%\sc_spell_lists%PTREXT%.inc
+python.exe %RUNFILE% -p %INPATH% -b %BUILD% %PTR%  -t set_list2              >> %OUTPATH%\sc_spell_lists%PTREXT%.inc
 python.exe %RUNFILE% -p %INPATH% -b %BUILD% %PTR%  -t perk_list              >> %OUTPATH%\sc_spell_lists%PTREXT%.inc
 python.exe %RUNFILE% -p %INPATH% -b %BUILD% %PTR%  -t glyph_property_list    >> %OUTPATH%\sc_spell_lists%PTREXT%.inc
 python.exe %RUNFILE% -p %INPATH% --cache=%CACHEDIR% -b %BUILD% %PTR%  -t item > %OUTPATH%/sc_item_data%PTREXT%.inc

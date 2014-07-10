@@ -46,6 +46,8 @@ const char* wow_version( bool ptr );
 const char* wow_ptr_status( bool ptr );
 const item_data_t* items( bool ptr );
 std::size_t        n_items( bool ptr );
+const item_set_bonus_t* set_bonus( bool ptr );
+std::size_t             n_set_bonus( bool ptr );
 const item_enchantment_data_t* item_enchantments( bool ptr );
 std::size_t        n_item_enchantments( bool ptr );
 const gem_property_data_t* gem_properties( bool ptr );
