@@ -15,17 +15,17 @@ spec=balance
 
 # Executed before combat begins. Accepts non-harmful actions only.
 
-actions.precombat=flask,type=greater_draenor_mastery_flask
+actions.precombat=flask,type=greater_draenic_mastery_flask
 actions.precombat+=/food,type=mogu_fish_stew
 actions.precombat+=/mark_of_the_wild,if=!aura.str_agi_int.up
 actions.precombat+=/moonkin_form
 # Snapshot raid buffed stats before combat begins and pre-potting is done.
 actions.precombat+=/snapshot_stats
-actions.precombat+=/potion,name=draenor_intellect
+actions.precombat+=/potion,name=draenic_intellect
 
 # Executed every time the actor is available.
 
-actions=potion,name=draenor_intellect,if=buff.bloodlust.react|target.time_to_die<=40|buff.celestial_alignment.up
+actions=potion,name=draenic_intellect,if=buff.bloodlust.react|target.time_to_die<=40|buff.celestial_alignment.up
 actions+=/blood_fury,if=buff.bloodlust.react|target.time_to_die<=40|buff.celestial_alignment.up
 actions+=/berserking,if=buff.bloodlust.react|target.time_to_die<=40|buff.celestial_alignment.up
 actions+=/arcane_torrent,if=buff.bloodlust.react|target.time_to_die<=40|buff.celestial_alignment.up

@@ -15,6 +15,7 @@ namespace { // UNNAMED NAMESPACE
     Fix Force of Nature (summons fine, but treants take no actions)
 
     = Feral =
+    Tweak LI implementation so Feral can use normal moonfire
     Damage check:
       Thrash (both forms)
       Swipe
@@ -24,9 +25,7 @@ namespace { // UNNAMED NAMESPACE
     Verify stuff.
 
     = Guardian =
-    PvP bonuses
     Fix MoU and Ursa Major decreasing resolve
-    Mangle cleave
     FR "none" results?
     Verify stuff (particularly DoC)
 
@@ -231,6 +230,7 @@ public:
     gain_t* swipe;
     gain_t* tigers_fury;
     gain_t* tier15_2pc_melee;
+    gain_t* tier17_2pc_melee;
 
     // Guardian (Bear)
     gain_t* bear_form;
@@ -1776,6 +1776,14 @@ public:
       trigger_lotp( s );
   }
 
+  virtual void tick( dot_t* d )
+  {
+    ab::tick( d );
+
+    if ( ab::p() -> sets.has_set_bonus( SET_T17_2PC_MELEE ) && dbc::is_school( ab::school, SCHOOL_PHYSICAL ) )
+      ab::p() -> resource_gain( RESOURCE_ENERGY, 3.0, ab::p() -> gain.tier17_2pc_melee );
+  }
+
   virtual double composite_persistent_multiplier( const action_state_t* s ) const
   {
     double pm = ab::composite_persistent_multiplier( s );
@@ -1793,7 +1801,7 @@ public:
     /* Assume that any action that deals physical and applies a dot deals all bleed damage, so
        that it scales direct "bleed" damage. This is a bad assumption if there is an action
        that applies a dot but does plain physical direct damage, but there are none of those. */
-    if ( ! ab::p() -> bugs && dbc::is_school( ab::school, SCHOOL_PHYSICAL ) && ab::dot_duration > timespan_t::zero() )
+    if ( dbc::is_school( ab::school, SCHOOL_PHYSICAL ) && ab::dot_duration > timespan_t::zero() )
       tm *= 1.0 + ab::td( t ) -> buffs.bloodletting -> value();
 
     return tm;
@@ -1884,7 +1892,7 @@ public:
 
   void trigger_glyph_of_savage_roar()
   {
-    // Bail out if we have Savagery, buff should already be up so lets not mess with it.
+    // Bail out if we have Savagery
     if ( p() -> talent.savagery -> ok() )
       return;
 
@@ -2010,7 +2018,10 @@ public:
     if ( p() -> buff.cat_form -> check() && dbc::is_school( s -> action -> school, SCHOOL_PHYSICAL ) )
     { // Avoid using value() to prevent skewing benefit_pct.
       pm *= 1.0 + p() -> buff.tigers_fury -> check() * p() -> buff.tigers_fury -> default_value;
-      pm *= 1.0 + p() -> buff.savage_roar -> check() * p() -> buff.savage_roar -> default_value;
+      if ( p() -> talent.savagery -> ok() )
+        pm *= 1.0 + p() -> talent.savagery -> effectN( 1 ).percent();
+      else
+        pm *= 1.0 + p() -> buff.savage_roar -> check() * p() -> buff.savage_roar -> default_value;
     }
 
     return pm;
@@ -2283,7 +2294,12 @@ struct rake_t : public cat_attack_t
     cat_attack_t::impact( s );
 
     if ( result_is_hit( s -> result ) )
+    {
       p() -> resource_gain( RESOURCE_COMBO_POINT, combo_point_gain, p() -> gain.rake );
+
+      if ( p() -> sets.has_set_bonus( SET_T17_2PC_MELEE ) )
+        p() -> resource_gain( RESOURCE_ENERGY, 3.0, p() -> gain.tier17_2pc_melee );
+    }
   }
 
   virtual void execute()
@@ -2354,9 +2370,9 @@ struct rip_t : public cat_attack_t
   action_state_t* new_state()
   { return new rip_state_t( p(), this, target ); }
 
-  double attack_tick_power_coefficient( const action_state_t* ) const
+  double attack_tick_power_coefficient( const action_state_t* s ) const
   {
-    rip_state_t* rip_state = debug_cast<rip_state_t*>( td( target ) -> dots.rip -> state );
+    rip_state_t* rip_state = debug_cast<rip_state_t*>( td( s -> target ) -> dots.rip -> state );
 
     return ap_per_point * rip_state -> combo_points;
   }
@@ -2443,16 +2459,8 @@ struct shred_t : public cat_attack_t
     {
       p() -> resource_gain( RESOURCE_COMBO_POINT, combo_point_gain, p() -> gain.shred );
 
-      if ( s -> result == RESULT_CRIT )
-      {
-        if ( p() -> sets.has_set_bonus( SET_T17_2PC_MELEE ) )
-        {
-          p() -> cooldown.berserk -> adjust( timespan_t::from_seconds( -5.0 ), true );
-          p() -> proc.tier17_2pc_melee -> occur();
-        }
-        if ( p() -> sets.has_set_bonus( SET_PVP_4PC_MELEE ) )
-          td( s -> target ) -> buffs.bloodletting -> trigger(); // Druid module debuff
-      }
+      if ( s -> result == RESULT_CRIT && p() -> sets.has_set_bonus( SET_PVP_4PC_MELEE ) )
+        td( s -> target ) -> buffs.bloodletting -> trigger(); // Druid module debuff
     }
   }
 
@@ -2602,6 +2610,14 @@ struct thrash_cat_t : public cat_attack_t
       m *= 1.0 + p() -> cache.mastery_value();
 
     return m;
+  }
+
+  virtual void impact( action_state_t* s )
+  {
+    cat_attack_t::impact( s );
+
+    if ( result_is_hit( s -> result ) && p() -> sets.has_set_bonus( SET_T17_2PC_MELEE ) )
+      p() -> resource_gain( RESOURCE_ENERGY, 3.0, p() -> gain.tier17_2pc_melee );
   }
 
   // Treat direct damage as "bleed"
@@ -2834,6 +2850,16 @@ struct mangle_t : public bear_attack_t
     base_multiplier *= 1.0 + player -> perk.improved_mangle -> effectN( 1 ).percent();
   }
 
+  virtual int num_targets()
+  {
+    int t = bear_attack_t::num_targets();
+
+    if ( p() -> buff.berserk -> check() )
+      t += p() -> spell.berserk_bear -> effectN( 1 ).base_value();
+
+    return t;
+  }
+
   virtual void execute()
   {
     if ( p() -> buff.berserk -> up() )
@@ -2998,7 +3024,12 @@ struct thrash_bear_t : public bear_attack_t
     bear_attack_t::impact( s );
 
     if ( result_is_hit( s -> result ) )
+    {
       p() -> resource_gain( RESOURCE_RAGE, rage_gain, p() -> gain.thrash );
+
+      if ( p() -> sets.has_set_bonus( SET_T17_2PC_MELEE ) )
+        p() -> resource_gain( RESOURCE_ENERGY, 3.0, p() -> gain.tier17_2pc_melee );
+    }
   }
 
   virtual void tick( dot_t* d )
@@ -5716,10 +5747,7 @@ void druid_t::create_buffs()
                                .chance( 1.0 )
                                .duration( find_specialization_spell( "Tiger's Fury" ) -> duration() + perk.enhanced_tigers_fury -> effectN( 1 ).time_value() );
   buff.savage_roar           = buff_creator_t( this, "savage_roar", find_specialization_spell( "Savage Roar" ) )
-                               .default_value( talent.savagery -> ok() ?
-                                               talent.savagery -> effectN( 1 ).percent()
-                                             : find_specialization_spell( "Savage Roar" ) -> effectN( 2 ).percent() )
-                               .duration( timespan_t::zero() ); // Set base duration to infinite for Savagery talent. All other uses trigger with a set duration.
+                               .default_value( find_specialization_spell( "Savage Roar" ) -> effectN( 2 ).percent() );
   buff.predatory_swiftness   = buff_creator_t( this, "predatory_swiftness", spec.predatory_swiftness -> ok() ? find_spell( 69369 ) : spell_data_t::not_found() );
   buff.tier15_4pc_melee      = buff_creator_t( this, "tier15_4pc_melee", find_spell( 138358 ) );
   buff.feral_fury            = buff_creator_t( this, "feral_fury", find_spell( 144865 ) ); // tier16_2pc_melee
@@ -5784,7 +5812,7 @@ void druid_t::apl_precombat()
       if ( ( specialization() == DRUID_FERAL && primary_role() == ROLE_ATTACK ) || primary_role() == ROLE_ATTACK )
       {
         if ( level > 90 )
-          flask += "greater_draenor_mastery_flask";
+          flask += "greater_draenic_mastery_flask";
         else if ( level > 85 )
           flask += "spring_blossoms";
         else
@@ -5793,7 +5821,7 @@ void druid_t::apl_precombat()
       else
       {
         if ( level > 90 )
-          flask += "greater_draenor_mastery_flask";
+          flask += "greater_draenic_mastery_flask";
         else if ( level > 85 )
           flask += "warm_sun";
         else
@@ -5861,7 +5889,7 @@ void druid_t::apl_precombat()
     if ( specialization() == DRUID_FERAL && primary_role() == ROLE_ATTACK )
     {
       if ( level > 90 )
-        potion_action += "draenor_agility";
+        potion_action += "draenic_agility";
       else if ( level > 85 )
         potion_action += "virmens_bite";
       else
@@ -5871,7 +5899,7 @@ void druid_t::apl_precombat()
     else if ( ( specialization() == DRUID_BALANCE || specialization() == DRUID_RESTORATION ) && ( primary_role() == ROLE_SPELL || primary_role() == ROLE_HEAL ) )
     {
       if ( level > 90 )
-        potion_action += "draenor_intellect";
+        potion_action += "draenic_intellect";
       else if ( level > 85 )
         potion_action += "jade_serpent";
       else
@@ -5936,7 +5964,7 @@ void druid_t::apl_feral()
   std::vector<std::string> racial_actions = get_racial_actions();
   std::string              potion_action  = "potion,name=";
   if ( level > 90 )
-    potion_action += "draenor_agility";
+    potion_action += "draenic_agility";
   else if ( level > 85 )
     potion_action += "virmens_bite";
   else
@@ -6018,7 +6046,7 @@ void druid_t::apl_balance()
   std::vector<std::string> item_actions   = get_item_actions();
   std::string              potion_action  = "potion,name=";
   if ( level > 90 )
-    potion_action += "draenor_intellect";
+    potion_action += "draenic_intellect";
   else if ( level > 85 )
     potion_action += "jade_serpent";
   else
@@ -6206,6 +6234,7 @@ void druid_t::init_gains()
   gain.swipe                 = get_gain( "swipe"                 );
   gain.thrash                = get_gain( "thrash"                );
   gain.tier15_2pc_melee      = get_gain( "tier15_2pc_melee"      );
+  gain.tier17_2pc_melee      = get_gain( "tier17_2pc_melee"      );
   gain.tigers_fury           = get_gain( "tigers_fury"           );
 }
 
@@ -6360,10 +6389,6 @@ void druid_t::combat_begin()
   // If Ysera's Gift is talented, apply it upon entering combat
   if ( talent.yseras_gift -> ok() )
     active.yseras_gift -> execute();
-
-  // If Savagery is talented, apply Savage Roar entering combat
-  if ( talent.savagery -> ok() )
-    buff.savage_roar -> trigger();
   
   // Apply Bladed Armor buff 
   if ( spec.bladed_armor -> ok() )

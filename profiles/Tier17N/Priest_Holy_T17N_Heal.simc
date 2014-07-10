@@ -16,13 +16,13 @@ spec=holy
 
 # Executed before combat begins. Accepts non-harmful actions only.
 
-actions.precombat=flask,type=greater_draenor_multistrike_flask
+actions.precombat=flask,type=greater_draenic_multistrike_flask
 actions.precombat+=/food,type=calamari_crepes
 actions.precombat+=/power_word_fortitude,if=!aura.stamina.up
 actions.precombat+=/chakra_serenity
 # Snapshot raid buffed stats before combat begins and pre-potting is done.
 actions.precombat+=/snapshot_stats
-actions.precombat+=/potion,name=draenor_intellect_potion
+actions.precombat+=/potion,name=draenic_intellect
 actions.precombat+=/prayer_of_mending
 
 # Executed every time the actor is available.
