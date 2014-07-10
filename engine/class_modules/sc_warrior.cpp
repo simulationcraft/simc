@@ -2664,7 +2664,8 @@ struct rend_t: public warrior_spell_t
 {
   rend_burst_t* burst;
   rend_t( warrior_t* p, const std::string& options_str ):
-    warrior_spell_t( "rend", p ), burst( new rend_burst_t( p ) )
+    warrior_spell_t( "rend", p, p -> find_specialization_spell( "Rend" ) ),
+    burst( new rend_burst_t( p ) )
   {
     parse_options( NULL, options_str );
     hasted_ticks = tick_zero = false;
