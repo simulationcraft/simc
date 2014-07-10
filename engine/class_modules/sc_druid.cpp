@@ -15,6 +15,7 @@ namespace { // UNNAMED NAMESPACE
     Fix Force of Nature (summons fine, but treants take no actions)
 
     = Feral =
+    Tweak LI implementation so Feral can use normal moonfire
     Damage check:
       Thrash (both forms)
       Swipe
@@ -24,9 +25,7 @@ namespace { // UNNAMED NAMESPACE
     Verify stuff.
 
     = Guardian =
-    PvP bonuses
     Fix MoU and Ursa Major decreasing resolve
-    Mangle cleave
     FR "none" results?
     Verify stuff (particularly DoC)
 
@@ -2849,6 +2848,16 @@ struct mangle_t : public bear_attack_t
 
     base_multiplier *= 1.0 + player -> talent.soul_of_the_forest -> effectN( 2 ).percent();
     base_multiplier *= 1.0 + player -> perk.improved_mangle -> effectN( 1 ).percent();
+  }
+
+  virtual int num_targets()
+  {
+    int t = bear_attack_t::num_targets();
+
+    if ( p() -> buff.berserk -> check() )
+      t += p() -> spell.berserk_bear -> effectN( 1 ).base_value();
+
+    return t;
   }
 
   virtual void execute()
