@@ -44,11 +44,9 @@ actions.single_target=bloodbath,if=talent.bloodbath.enabled&((cooldown.colossus_
 actions.single_target+=/ignite_weapon,if=talent.ignite_weapon.enabled&((target.health.pct>=20&(rage>90|(buff.enrage.up&rage>40)))|buff.ignite_weapon.remains<2)
 actions.single_target+=/heroic_leap,if=debuff.colossus_smash.up
 actions.single_target+=/storm_bolt,if=talent.storm_bolt.enabled&debuff.colossus_smash.up
-# Delay Bloodthirst if 2 stacks of raging blow are available inside Colossus Smash.
 actions.single_target+=/raging_blow,if=buff.raging_blow.stack=2&debuff.colossus_smash.up
-# Until execute range, Bloodthirst is used on cooldown 95% of the time. When execute range is reached, bloodthirst can be delayed 1~ globals as long as the conditions below are met.
-# This is done to lower the amount of heroic strike usage, and to increase the amount of executes used.
-actions.single_target+=/bloodthirst,if=!(target.health.pct<20&debuff.colossus_smash.up&rage>=30&buff.enrage.up)
+actions.single_target+=/bloodthirst,if=!(target.health.pct<20&debuff.colossus_smash.up&rage>=30&buff.enrage.up)&!talent.unquenchable_thirst.enabled
+actions.single_target+=/bloodthirst,if=talent.unquenchable_thirst.enabled&buff.enrage.down
 actions.single_target+=/dragon_roar,if=talent.dragon_roar.enabled&((!debuff.colossus_smash.up&(buff.bloodbath.up|!talent.bloodbath.enabled)))
 actions.single_target+=/colossus_smash
 actions.single_target+=/storm_bolt,if=talent.storm_bolt.enabled&cooldown.colossus_smash.remains>3
@@ -58,6 +56,7 @@ actions.single_target+=/raging_blow,if=target.health.pct<20|buff.raging_blow.sta
 actions.single_target+=/ravager,if=talent.ravager.enabled
 actions.single_target+=/bladestorm,if=enabled,interrupt_if=cooldown.bloodthirst.remains<1
 actions.single_target+=/raging_blow,if=cooldown.colossus_smash.remains>=1
+actions.single_target+=/bloodthirst,if=talent.unquenchable_thirst.enabled
 actions.single_target+=/shockwave,if=talent.shockwave.enabled
 actions.single_target+=/impending_victory,if=talent.impending_victory.enabled&(target.health.pct>=20&cooldown.colossus_smash.remains>=2)
 

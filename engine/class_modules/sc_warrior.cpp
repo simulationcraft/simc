@@ -410,11 +410,9 @@ public:
 
   void              apl_precombat();
   void              apl_default();
-  void              apl_smf_fury();
-  void              apl_tg_fury();
+  void              apl_fury();
   void              apl_arms();
   void              apl_prot();
-  void              apl_gladiator();
   virtual void      init_action_list();
 
   virtual action_t* create_action( const std::string& name, const std::string& options );
@@ -1054,7 +1052,7 @@ struct bladestorm_t: public warrior_attack_t
     }
   }
 
-  virtual void tick(dot_t*)
+  virtual void tick( dot_t* )
   {
     bladestorm_mh -> execute();
 
@@ -1411,9 +1409,9 @@ struct execute_t: public warrior_attack_t
 
     if ( p() -> mastery.weapons_master -> ok() )
     {
-      am *= ( 3.0 * std::min( 50.0, 
-            ( p() -> buff.sudden_death -> up() ? p() -> resources.current[RESOURCE_RAGE] + 10 :
-              p() -> resources.current[RESOURCE_RAGE] ) / 50 ) );
+      am *= ( 3.0 * std::min( 50.0,
+        ( p() -> buff.sudden_death -> up() ? p() -> resources.current[RESOURCE_RAGE] + 10 :
+        p() -> resources.current[RESOURCE_RAGE] ) / 50 ) );
       am *= 1.0 + p() -> cache.mastery_value();
     }
 
@@ -1955,7 +1953,7 @@ struct ravager_t: public warrior_attack_t
     warrior_attack_t::execute();
   }
 
-  virtual void tick(dot_t*)
+  virtual void tick( dot_t* )
   {
     ravager -> execute();
   }
@@ -2095,7 +2093,7 @@ struct shield_slam_t: public warrior_attack_t
     parse_options( NULL, options_str );
 
     rage_gain = data().effectN( 3 ).resource( RESOURCE_RAGE );
-    attack_power_mod.direct = 3.191; // Tested in game... doesn't match any spell data or tooltips... yay.
+    attack_power_mod.direct = 3.08; //Hard-coded in tooltip.
 
     attack_power_mod.direct *= 1.0 + p -> perk.improved_shield_slam -> effectN( 1 ).percent();
   }
@@ -2108,10 +2106,10 @@ struct shield_slam_t: public warrior_attack_t
     {
       am *= 1.0 + p() -> buff.shield_charge -> default_value;
       if ( p() -> talents.heavy_repercussions -> ok() )
-        am *= 1.0 + 0.5;
+        am *= 1.0 + p() -> talents.heavy_repercussions -> effectN( 1 ).percent();
     }
-    if ( p() -> buff.shield_block -> up() && p() -> talents.heavy_repercussions -> ok() )
-      am *= 1.0 + 0.5;
+    else if ( p() -> buff.shield_block -> up() && p() -> talents.heavy_repercussions -> ok() )
+      am *= 1.0 + p() -> talents.heavy_repercussions -> effectN( 1 ).percent();
 
     return am;
   }
@@ -3396,7 +3394,7 @@ void warrior_t::init_base_stats()
   // Avoidance diminishing Returns constants/conversions now handled in player_t::init_base_stats()
   // base miss & dodge are set to 3% and block & parry set to 0% in player_t::init_base_stats()
   // just need to adjust parry, block and block_reduction and add spec-based sources of dodge/parry
-  base.block           = 0.030; 
+  base.block           = 0.030;
   base.block_reduction = 0.300;
   base.parry           = 0.030;
   base.dodge += spec.bastion_of_defense -> effectN( 3 ).percent();
@@ -3466,116 +3464,9 @@ void warrior_t::apl_precombat()
   }
 }
 
-// Single Minded Fury Warrior Action Priority List ========================================
+// Fury Warrior Action Priority List ========================================
 
-void warrior_t::apl_smf_fury()
-{
-  std::vector<std::string> racial_actions     = get_racial_actions();
-
-  action_priority_list_t* default_list        = get_action_priority_list( "default" );
-  action_priority_list_t* single_target       = get_action_priority_list( "single_target" );
-  action_priority_list_t* two_targets         = get_action_priority_list( "two_targets" );
-  action_priority_list_t* three_targets       = get_action_priority_list( "three_targets" );
-  action_priority_list_t* aoe                 = get_action_priority_list( "aoe" );
-
-  default_list -> add_action( this, "Charge" );
-  default_list -> add_action( "auto_attack" );
-
-  if ( sim -> allow_potions )
-  {
-    if ( level >= 90 )
-      default_list -> add_action( "potion,name=draenic_strength,if=(target.health.pct<20&buff.recklessness.up)|target.time_to_die<=25" );
-    else if ( level >= 80 )
-      default_list -> add_action( "potion,name=mogu_power,if=(target.health.pct<20&buff.recklessness.up)|target.time_to_die<=25" );
-  }
-
-  default_list -> add_action( this, "Recklessness", "if=!talent.bloodbath.enabled&(((cooldown.colossus_smash.remains<2|debuff.colossus_smash.remains>=5)&target.time_to_die>192)|target.health.pct<20)|buff.bloodbath.up&(target.time_to_die>192|target.health.pct<20)|target.time_to_die<=12",
-                              "This incredibly long line can be translated to 'Use recklessness on cooldown with colossus smash; unless the boss will die before the ability is usable again, and then combine with execute instead.'" );
-  default_list -> add_talent( this, "Avatar", "if=(buff.recklessness.up|target.time_to_die<=25)" );
-  default_list -> add_action( this, "Berserker Rage", "if=!buff.enrage.up" );
-
-  int num_items = (int)items.size();
-  for ( int i = 0; i < num_items; i++ )
-  {
-    if ( items[i].has_special_effect( SPECIAL_EFFECT_SOURCE_NONE, SPECIAL_EFFECT_USE ) )
-      default_list -> add_action( "use_item,name=" + items[i].name_str );
-  }
-
-  for ( size_t i = 0; i < racial_actions.size(); i++ )
-    default_list -> add_action( racial_actions[i] + ",if=buff.bloodbath.up|(!talent.bloodbath.enabled&debuff.colossus_smash.up)|buff.recklessness.up" );
-
-  default_list -> add_action( "run_action_list,name=single_target,if=active_enemies=1" );
-  default_list -> add_action( "run_action_list,name=two_targets,if=active_enemies=2" );
-  default_list -> add_action( "run_action_list,name=three_targets,if=active_enemies=3" );
-  default_list -> add_action( "run_action_list,name=aoe,if=active_enemies>3" );
-
-  single_target -> add_talent( this, "Bloodbath", "if=(cooldown.colossus_smash.remains<2|debuff.colossus_smash.remains>=5|target.time_to_die<=20)" );
-  single_target -> add_action( this, "Heroic Strike", "if=((debuff.colossus_smash.up&rage>=40)&target.health.pct>=20)|rage>=100&buff.enrage.up" );
-  single_target -> add_talent( this, "Ignite Weapon", "if=(target.health.pct>=20&(rage>90|(buff.enrage.up&rage>40)))|buff.ignite_weapon.remains<2" );
-  single_target -> add_action( this, "Heroic Leap", "if=debuff.colossus_smash.up" );
-  single_target -> add_talent( this, "Storm Bolt", "if=debuff.colossus_smash.up" );
-  single_target -> add_action( this, "Raging Blow", "if=buff.raging_blow.stack=2&debuff.colossus_smash.up&target.health.pct>=20",
-                               "Delay Bloodthirst if 2 stacks of raging blow are available inside Colossus Smash." );
-  single_target -> add_action( this, "Bloodthirst", "if=!(target.health.pct<20&debuff.colossus_smash.up&rage>=30&buff.enrage.up)",
-                               "Until execute range, Bloodthirst is used on cooldown 95% of the time. When execute range is reached, bloodthirst can be delayed 1-2~ globals as long as the conditions below are met.\n"
-                               "# This is done to lower the amount of heroic strike usage, and to increase the amount of executes used." );
-  single_target -> add_talent( this, "Dragon Roar", "if=(!debuff.colossus_smash.up&(buff.bloodbath.up|!talent.bloodbath.enabled))" );
-  single_target -> add_action( this, "Colossus Smash" );
-  single_target -> add_talent( this, "Storm Bolt", "if=cooldown.colossus_smash.remains>3" );
-  single_target -> add_action( this, "Execute", "if=debuff.colossus_smash.up|rage>70|target.time_to_die<12" );
-  single_target -> add_action( this, "Wild Strike", "if=buff.bloodsurge.up|((debuff.colossus_smash.up|rage>70)&target.health.pct>20)" );
-  single_target -> add_action( this, "Raging Blow", "if=target.health.pct<20|buff.raging_blow.stack=2|(debuff.colossus_smash.up|(cooldown.bloodthirst.remains>=1&buff.raging_blow.remains<=3))" );
-  single_target -> add_talent( this, "Ravager" );
-  single_target -> add_action( "bladestorm,if=enabled,interrupt_if=cooldown.bloodthirst.remains<1" );
-  single_target -> add_action( this, "Raging Blow", "if=cooldown.colossus_smash.remains>=1" );
-  single_target -> add_talent( this, "Shockwave" );
-  single_target -> add_talent( this, "Impending Victory", "if=target.health.pct>=20&cooldown.colossus_smash.remains>=2" );
-
-  two_targets -> add_talent( this, "Bloodbath" );
-  two_targets -> add_action( this, "Heroic Leap", "if=buff.enrage.up" );
-  two_targets -> add_action( this, "Heroic Strike", "if=rage>100" );
-  two_targets -> add_talent( this, "Ignite Weapon", "if=(target.health.pct>=20&rage>100)|buff.ignite_weapon.down" );
-  two_targets -> add_talent( this, "Ravager" );
-  two_targets -> add_talent( this, "Bladestorm", "if=buff.enrage.remains>4" );
-  two_targets -> add_talent( this, "Dragon Roar", "if=!debuff.colossus_smash.up&(buff.bloodbath.up|!talent.bloodbath.enabled)" );
-  two_targets -> add_action( this, "Colossus Smash" );
-  two_targets -> add_talent( this, "Storm Bolt", "if=debuff.colossus_smash.up" );
-  two_targets -> add_action( this, "Bloodthirst" );
-  two_targets -> add_action( this, "Raging Blow", "if=buff.meat_cleaver.up" );
-  two_targets -> add_action( this, "Whirlwind", "if=!buff.meat_cleaver.up" );
-  two_targets -> add_talent( this, "Shockwave" );
-
-  three_targets -> add_talent( this, "Bloodbath" );
-  three_targets -> add_action( this, "Heroic Leap", "if=buff.enrage.up" );
-  three_targets -> add_talent( this, "Ravager" );
-  three_targets -> add_action( this, "Heroic Strike", "if=rage>100" );
-  three_targets -> add_talent( this, "Ignite Weapon", "if=(target.health.pct>=20&rage>100)|buff.ignite_weapon.down" );
-  three_targets -> add_action( this, "Bloodthirst" );
-  three_targets -> add_talent( this, "Bladestorm", "if=buff.enrage.remains>4" );
-  three_targets -> add_talent( this, "Dragon Roar", "if=!debuff.colossus_smash.up&(buff.bloodbath.up|!talent.bloodbath.enabled)" );
-  three_targets -> add_action( this, "Colossus Smash" );
-  three_targets -> add_talent( this, "Storm Bolt", "if=debuff.colossus_smash.up" );
-  three_targets -> add_action( this, "Raging Blow", "if=buff.meat_cleaver.stack=2" );
-  three_targets -> add_action( this, "Whirlwind" );
-
-  aoe -> add_talent( this, "Bloodbath" );
-  aoe -> add_action( this, "Heroic Leap", "if=buff.enrage.up" );
-  aoe -> add_action( this, "Heroic Strike", "if=rage>100" );
-  aoe -> add_talent( this, "Ignite Weapon", "if=(target.health.pct>=20&rage>100)|buff.ignite_weapon.down" );
-  aoe -> add_talent( this, "Ravager" );
-  aoe -> add_talent( this, "Bladestorm" );
-  aoe -> add_action( this, "Bloodthirst", "if=rage<80" );
-  aoe -> add_action( this, "Raging Blow", "if=buff.meat_cleaver.stack=3" );
-  aoe -> add_action( this, "Whirlwind" );
-  aoe -> add_talent( this, "Dragon Roar", "if=debuff.colossus_smash.down&(buff.bloodbath.up|!talent.bloodbath.enabled)" );
-  aoe -> add_action( this, "Colossus Smash" );
-  aoe -> add_talent( this, "Storm Bolt" );
-  aoe -> add_talent( this, "Shockwave" );
-}
-
-// Titan's Grip Fury Warrior Action Priority List ========================================
-
-void warrior_t::apl_tg_fury()
+void warrior_t::apl_fury()
 {
   std::vector<std::string> racial_actions     = get_racial_actions();
 
@@ -3621,11 +3512,9 @@ void warrior_t::apl_tg_fury()
   single_target -> add_action( this, "Heroic Strike", "if=((debuff.colossus_smash.up&rage>=40)&target.health.pct>=20)|rage>=100&buff.enrage.up" );
   single_target -> add_action( this, "Heroic Leap", "if=debuff.colossus_smash.up" );
   single_target -> add_talent( this, "Storm Bolt", "if=debuff.colossus_smash.up" );
-  single_target -> add_action( this, "Raging Blow", "if=buff.raging_blow.stack=2&debuff.colossus_smash.up",
-                               "Delay Bloodthirst if 2 stacks of raging blow are available inside Colossus Smash." );
-  single_target -> add_action( this, "Bloodthirst", "if=!(target.health.pct<20&debuff.colossus_smash.up&rage>=30&buff.enrage.up)",
-                               "Until execute range, Bloodthirst is used on cooldown 95% of the time. When execute range is reached, bloodthirst can be delayed 1~ globals as long as the conditions below are met.\n"
-                               "# This is done to lower the amount of heroic strike usage, and to increase the amount of executes used." );
+  single_target -> add_action( this, "Raging Blow", "if=buff.raging_blow.stack=2&debuff.colossus_smash.up" );
+  single_target -> add_action( this, "Bloodthirst", "if=!(target.health.pct<20&debuff.colossus_smash.up&rage>=30&buff.enrage.up)&!talent.unquenchable_thirst.enabled" );
+  single_target -> add_action( this, "Bloodthirst", "if=talent.unquenchable_thirst.enabled&buff.enrage.down" );
   single_target -> add_talent( this, "Dragon Roar", "if=(!debuff.colossus_smash.up&(buff.bloodbath.up|!talent.bloodbath.enabled))" );
   single_target -> add_action( this, "Colossus Smash" );
   single_target -> add_talent( this, "Storm Bolt", "if=cooldown.colossus_smash.remains>3" );
@@ -3635,6 +3524,7 @@ void warrior_t::apl_tg_fury()
   single_target -> add_talent( this, "Ravager" );
   single_target -> add_action( "bladestorm,if=enabled,interrupt_if=cooldown.bloodthirst.remains<1" );
   single_target -> add_action( this, "Raging Blow", "if=cooldown.colossus_smash.remains>=1" );
+  single_target -> add_action( this, "Bloodthirst", "if=talent.unquenchable_thirst.enabled" );
   single_target -> add_talent( this, "Shockwave" );
   single_target -> add_talent( this, "Impending Victory", "if=target.health.pct>=20&cooldown.colossus_smash.remains>=2" );
 
@@ -3750,7 +3640,10 @@ void warrior_t::apl_prot()
   std::vector<std::string> racial_actions     = get_racial_actions();
 
   action_priority_list_t* default_list        = get_action_priority_list( "default" );
-  action_priority_list_t* normal_rotation     = get_action_priority_list( "normal_rotation" );
+  action_priority_list_t* prot                = get_action_priority_list( "prot" );
+  action_priority_list_t* prot_aoe            = get_action_priority_list( "prot_aoe" );
+  action_priority_list_t* gladiator           = get_action_priority_list( "gladiator" );
+  action_priority_list_t* gladiator_aoe       = get_action_priority_list( "gladiator_aoe" );
 
   default_list -> add_action( this, "charge" );
   default_list -> add_action( "auto_attack" );
@@ -3759,94 +3652,86 @@ void warrior_t::apl_prot()
   for ( int i = 0; i < num_items; i++ )
   {
     if ( items[i].has_special_effect( SPECIAL_EFFECT_SOURCE_NONE, SPECIAL_EFFECT_USE ) )
-      default_list -> add_action( "use_item,name=" + items[i].name_str );
+      default_list -> add_action( "use_item,name=" + items[i].name_str + ",if=buff.bloodbath.up|buff.avatar.up|buff.shield_charge.up" );
   }
+  for ( size_t i = 0; i < racial_actions.size(); i++ )
+    default_list -> add_action( racial_actions[i] + ",if=buff.bloodbath.up|buff.avatar.up|buff.shield_charge.up" );
+
+  default_list -> add_action( "run_action_list,name=gladiator,if=talent.gladiators_resolve.enabled" );
+  default_list -> add_action( "run_action_list,name=prot" );
 
   if ( sim -> allow_potions )
   {
     if ( level >= 90 )
-      default_list -> add_action( "potion,name=draenic_armor,if=(target.health.pct<20&buff.recklessness.up)|target.time_to_die<=25" );
+      prot -> add_action( "potion,name=draenic_armor,if=(target.health.pct<20&buff.recklessness.up)|target.time_to_die<=25" );
     else if ( level >= 80 )
-      default_list -> add_action( "potion,name=mountains,if=(target.health.pct<20&buff.recklessness.up)|target.time_to_die<=25" );
+      prot -> add_action( "potion,name=mountains,if=(target.health.pct<20&buff.recklessness.up)|target.time_to_die<=25" );
   }
 
-  default_list -> add_action( this, "Heroic Strike", "if=buff.ultimatum.up" );
-  default_list -> add_action( this, "Shield Block" );
-  default_list -> add_action( this, "Shield Barrier", "if=incoming_damage_1500ms>health.max*0.3|rage>rage.max-20" );
-  default_list -> add_action( this, "Shield Wall", "if=incoming_damage_2500ms>health.max*0.6" );
-  default_list -> add_action( this, "Last Stand", "if=incoming_damage_2500ms>health.max*0.6&buff.shield_wall.down" );
-  default_list -> add_action( "run_action_list,name=normal_rotation" );
+  prot -> add_action( this, "Heroic Strike", "if=buff.ultimatum.up" );
+  prot -> add_action( this, "Shield Block" );
+  prot -> add_action( this, "Shield Barrier", "if=incoming_damage_1500ms>health.max*0.3|rage>rage.max-20" );
+  prot -> add_action( this, "Shield Wall", "if=incoming_damage_2500ms>health.max*0.6" );
+  prot -> add_action( this, "Last Stand", "if=incoming_damage_2500ms>health.max*0.6&buff.shield_wall.down" );
+  prot -> add_action( "run_action_list,name=prot_aoe,if=active_enemies>3" );
 
-  normal_rotation -> add_action( this, "Shield Slam" );
-  normal_rotation -> add_action( this, "Revenge" );
-  normal_rotation -> add_talent( this, "Enraged Regeneration" );
-  normal_rotation -> add_action( this, "Heroic Strike", "if=buff.ultimatum.up" );
-  normal_rotation -> add_talent( this, "Ravager" );
-  normal_rotation -> add_action( this, "Thunder Clap" );
-  normal_rotation -> add_action( this, "Demoralizing Shout" );
-  normal_rotation -> add_talent( this, "Impending Victory" );
-  normal_rotation -> add_action( this, "Victory Rush", "if=!talent.impending_victory.enabled" );
-  normal_rotation -> add_talent( this, "Bloodbath" );
-  normal_rotation -> add_talent( this, "Bladestorm" );
-  normal_rotation -> add_talent( this, "Shockwave" );
-  normal_rotation -> add_talent( this, "Storm Bolt" );
-  normal_rotation -> add_talent( this, "Dragon Roar" );
-  normal_rotation -> add_action( this, "Devastate" );
+  prot -> add_action( this, "Shield Slam" );
+  prot -> add_action( this, "Revenge" );
+  prot -> add_talent( this, "Enraged Regeneration" );
+  prot -> add_action( this, "Heroic Strike", "if=buff.ultimatum.up" );
+  prot -> add_talent( this, "Ravager" );
+  prot -> add_action( this, "Thunder Clap" );
+  prot -> add_action( this, "Demoralizing Shout" );
+  prot -> add_talent( this, "Impending Victory" );
+  prot -> add_action( this, "Victory Rush", "if=!talent.impending_victory.enabled" );
+  prot -> add_talent( this, "Bloodbath" );
+  prot -> add_talent( this, "Bladestorm" );
+  prot -> add_talent( this, "Shockwave" );
+  prot -> add_talent( this, "Storm Bolt" );
+  prot -> add_talent( this, "Dragon Roar" );
+  prot -> add_action( this, "Devastate" );
 
-}
-
-// Gladiator Action List =================================================================
-
-void warrior_t::apl_gladiator()
-{
-  std::vector<std::string> racial_actions     = get_racial_actions();
-  action_priority_list_t* default_list        = get_action_priority_list( "default" );
-  action_priority_list_t* single_target       = get_action_priority_list( "single_target" );
-  action_priority_list_t* aoe                 = get_action_priority_list( "aoe" );
-
-
-  default_list -> add_action( this, "charge" );
-  default_list -> add_action( "auto_attack" );
-  for ( size_t i = 0; i < racial_actions.size(); i++ )
-    default_list -> add_action( racial_actions[i] + ",if=buff.bloodbath.up|buff.avatar.up|buff.shield_charge.up" );
-
-  int num_items = (int)items.size();
-  for ( int i = 0; i < num_items; i++ )
-  {
-    if ( items[i].has_special_effect( SPECIAL_EFFECT_SOURCE_NONE, SPECIAL_EFFECT_USE ) )
-      default_list -> add_action( "use_item,name=" + items[i].name_str );
-  }
+  prot_aoe -> add_talent( this, "Bloodbath" );
+  prot_aoe -> add_talent( this, "Avatar" );
+  prot_aoe -> add_action( this, "Thunder Clap", "if=!dot.deep_wounds.ticking" );
+  prot_aoe -> add_talent( this, "Bladestorm" );
+  prot_aoe -> add_action( this, "Heroic Strike", "if=buff.ultimatum.up|rage>110" );
+  prot_aoe -> add_action( this, "Heroic Leap", "if=(buff.bloodbath.up|cooldown.bloodbath.remains>5|!talent.bloodbath.enabled)" );
+  prot_aoe -> add_action( this, "Revenge" );
+  prot_aoe -> add_action( this, "Shield Slam" );
+  prot_aoe -> add_action( this, "Thunder Clap" );
+  prot_aoe -> add_talent( this, "Dragon Roar", "if=(buff.bloodbath.up|cooldown.bloodbath.remains>10)|!talent.bloodbath.enabled" );
+  prot_aoe -> add_talent( this, "Storm Bolt", "if=(buff.bloodbath.up|cooldown.bloodbath.remains>7)|!talent.bloodbath.enabled" );
+  prot_aoe -> add_action( this, "Devastate", "if=cooldown.shield_slam.remains>gcd*0.4" );
 
   if ( sim -> allow_potions )
-    default_list -> add_action( "potion,name=draenic_strength,if=(target.health.pct<20&buff.recklessness.up)|target.time_to_die<=25" );
+    gladiator -> add_action( "potion,name=draenic_strength,if=(target.health.pct<20&buff.recklessness.up)|target.time_to_die<=25" );
 
-  default_list -> add_action( "run_action_list,name=single_target,if=active_enemies<=4" );
-  default_list -> add_action( "run_action_list,name=aoe,if=active_enemies>3" );
+  gladiator -> add_action( "run_action_list,name=gladiator_aoe,if=active_enemies>3" );
+  gladiator -> add_action( "shield_charge,if=buff.shield_charge.down&cooldown.shield_slam.remains=0&(cooldown.bloodbath.remains>15|!talent.bloodbath.enabled)" );
+  gladiator -> add_action( this, "Heroic Strike", "if=buff.shield_charge.up|buff.ultimatum.up|rage>=85|target.time_to_die<=3|(talent.unyielding_strikes.enabled&buff.unyielding_strikes.max_stack)" );
+  gladiator -> add_talent( this, "Bloodbath" );
+  gladiator -> add_talent( this, "Avatar" );
+  gladiator -> add_action( this, "Heroic Leap", "if=(buff.bloodbath.up|cooldown.bloodbath.remains>10)|!talent.bloodbath.enabled" );
+  gladiator -> add_action( this, "Shield Slam" );
+  gladiator -> add_action( this, "Revenge" );
+  gladiator -> add_talent( this, "Storm Bolt", "if=(buff.bloodbath.up|cooldown.bloodbath.remains>7)|!talent.bloodbath.enabled" );
+  gladiator -> add_talent( this, "Dragon Roar", "if=(buff.bloodbath.up|cooldown.bloodbath.remains>10)|!talent.bloodbath.enabled" );
+  gladiator -> add_action( this, "Devastate", "if=cooldown.shield_slam.remains>gcd*0.4" );
 
-  single_target -> add_action( "shield_charge,if=buff.shield_charge.down&cooldown.shield_slam.remains=0&(cooldown.bloodbath.remains>15|!talent.bloodbath.enabled)" );
-  single_target -> add_action( this, "Heroic Strike", "if=buff.shield_charge.up|buff.ultimatum.up|rage>=85|target.time_to_die<=3|(talent.unyielding_strikes.enabled&buff.unyielding_strikes.max_stack)" );
-  single_target -> add_talent( this, "Bloodbath" );
-  single_target -> add_talent( this, "Avatar" );
-  single_target -> add_action( this, "Heroic Leap", "if=(buff.bloodbath.up|cooldown.bloodbath.remains>10)|!talent.bloodbath.enabled" );
-  single_target -> add_action( this, "Shield Slam" );
-  single_target -> add_action( this, "Revenge" );
-  single_target -> add_talent( this, "Storm Bolt", "if=(buff.bloodbath.up|cooldown.bloodbath.remains>7)|!talent.bloodbath.enabled" );
-  single_target -> add_talent( this, "Dragon Roar", "if=(buff.bloodbath.up|cooldown.bloodbath.remains>10)|!talent.bloodbath.enabled" );
-  single_target -> add_action( this, "Devastate", "if=cooldown.shield_slam.remains>gcd*0.4" );
-
-  aoe -> add_talent( this, "Bloodbath" );
-  aoe -> add_talent( this, "Avatar" );
-  aoe -> add_action( "shield_charge,if=buff.shield_charge.down&cooldown.shield_slam.remains=0&(cooldown.bloodbath.remains>15|!talent.bloodbath.enabled)" );
-  aoe -> add_action( this, "Thunder Clap", "if=!dot.deep_wounds.ticking" );
-  aoe -> add_talent( this, "Bladestorm" );
-  aoe -> add_action( this, "Heroic Strike", "if=buff.ultimatum.up|buff.shield_charge.up&rage>50|rage>110" );
-  aoe -> add_action( this, "Heroic Leap", "if=(buff.bloodbath.up|cooldown.bloodbath.remains>5|!talent.bloodbath.enabled)" );
-  aoe -> add_action( this, "Revenge" );
-  aoe -> add_action( this, "Shield Slam" );
-  aoe -> add_action( this, "Thunder Clap" );
-  aoe -> add_talent( this, "Dragon Roar", "if=(buff.bloodbath.up|cooldown.bloodbath.remains>10)|!talent.bloodbath.enabled" );
-  aoe -> add_talent( this, "Storm Bolt", "if=(buff.bloodbath.up|cooldown.bloodbath.remains>7)|!talent.bloodbath.enabled" );
-  aoe -> add_action( this, "Devastate", "if=cooldown.shield_slam.remains>gcd*0.4" );
+  gladiator_aoe -> add_talent( this, "Bloodbath" );
+  gladiator_aoe -> add_talent( this, "Avatar" );
+  gladiator_aoe -> add_action( "shield_charge,if=buff.shield_charge.down&cooldown.shield_slam.remains=0&(cooldown.bloodbath.remains>15|!talent.bloodbath.enabled)" );
+  gladiator_aoe -> add_action( this, "Thunder Clap", "if=!dot.deep_wounds.ticking" );
+  gladiator_aoe -> add_talent( this, "Bladestorm" );
+  gladiator_aoe -> add_action( this, "Heroic Strike", "if=buff.ultimatum.up|buff.shield_charge.up&rage>50|rage>110" );
+  gladiator_aoe -> add_action( this, "Heroic Leap", "if=(buff.bloodbath.up|cooldown.bloodbath.remains>5|!talent.bloodbath.enabled)" );
+  gladiator_aoe -> add_action( this, "Revenge" );
+  gladiator_aoe -> add_action( this, "Shield Slam" );
+  gladiator_aoe -> add_action( this, "Thunder Clap" );
+  gladiator_aoe -> add_talent( this, "Dragon Roar", "if=(buff.bloodbath.up|cooldown.bloodbath.remains>10)|!talent.bloodbath.enabled" );
+  gladiator_aoe -> add_talent( this, "Storm Bolt", "if=(buff.bloodbath.up|cooldown.bloodbath.remains>7)|!talent.bloodbath.enabled" );
+  gladiator_aoe -> add_action( this, "Devastate", "if=cooldown.shield_slam.remains>gcd*0.4" );
 }
 
 // NO Spec Combat Action Priority List
@@ -3887,7 +3772,7 @@ void warrior_t::create_buffs()
 
   buff.berserker_rage = buff_creator_t( this, "berserker_rage", find_class_spell( "Berserker Rage" ) );
 
-  buff.meat_cleaver     = buff_creator_t( this, "meat_cleaver",     spec.meat_cleaver -> effectN( 1 ).trigger() )
+  buff.meat_cleaver     = buff_creator_t( this, "meat_cleaver", spec.meat_cleaver -> effectN( 1 ).trigger() )
     .max_stack( find_spell( 85739 ) -> max_stacks() + perk.improved_meat_cleaver -> effectN( 1 ).base_value() );
 
   buff.bladed_armor = buff_creator_t( this, "bladed_armor", spec.bladed_armor )
@@ -4082,19 +3967,13 @@ void warrior_t::init_action_list()
   switch ( specialization() )
   {
   case WARRIOR_FURY:
-    if ( main_hand_weapon.group() == WEAPON_1H )
-      apl_smf_fury();
-    else
-      apl_tg_fury();
+    apl_fury();
     break;
   case WARRIOR_ARMS:
     apl_arms();
     break;
   case WARRIOR_PROTECTION:
-    if ( primary_role() == ROLE_ATTACK )
-      apl_gladiator();
-    else
-      apl_prot();
+    apl_prot();
     break;
   default:
     apl_default(); // DEFAULT
@@ -4739,12 +4618,12 @@ struct warrior_module_t: public module_t
 
   virtual bool valid() const { return true; }
 
-  virtual void init( sim_t* /* sim */) const
+  virtual void init( sim_t* /* sim */ ) const
   {
     /*
     for ( size_t i = 0; i < sim -> actor_list.size(); i++ )
     {
-      player_t* p = sim -> actor_list[i];
+    player_t* p = sim -> actor_list[i];
     }*/
   }
 
