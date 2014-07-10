@@ -3295,6 +3295,23 @@ class SetBonusListGenerator(DataGenerator):
 
         DataGenerator.__init__(self, options)
 
+        # Generate a class -> spec_type -> spec_ids list
+
+    def initialize(self):
+        DataGenerator.initialize(self)
+
+        self.spec_type_map = {}
+        for spec_id, spec_data in self._chrspecialization_db.iteritems():
+            if spec_data.class_id not in self.spec_type_map:
+                self.spec_type_map[spec_data.class_id] = { }
+
+            if spec_data.spec_type not in self.spec_type_map[spec_data.class_id]:
+                self.spec_type_map[spec_data.class_id][spec_data.spec_type] = []
+
+            self.spec_type_map[spec_data.class_id][spec_data.spec_type].append(spec_id)
+
+        return True
+
     def filter(self):
         data = []
         for spell_id, spell_data in self._spell_db.iteritems():
@@ -3302,22 +3319,46 @@ class SetBonusListGenerator(DataGenerator):
             if not mobj:
                 continue
 
+            set_spell = False
+            for item_set_spell_id, item_set_spell_data in self._itemsetspell_db.iteritems():
+                if item_set_spell_data.id_spell == spell_id:
+                    set_spell = True
+                    break
+
+            if not set_spell:
+                continue
+
             set_class = self._class_map[mobj.group(1)]
             set_tier_derived = int(mobj.group(2))
-            set_tier_spec_string = mobj.group(3)
+            set_tier_spec_string = mobj.group(3).strip()
             set_tier_bonus_derived = int(mobj.group(4))
 
             set_spec_arr_derived = []
-            spec_string_split = set_tier_spec_string.split(' ')
-            if len(spec_string_split) > 0:
-                for spec_id, spec_data in self._chrspecialization_db.iteritems():
-                    if spec_data.class_id != set_class:
-                        continue
+            spec_added = False
+            for spec_id, spec_data in self._chrspecialization_db.iteritems():
+                if set_class == spec_data.class_id and spec_data.name in set_tier_spec_string:
+                    spec_added = True
+                    set_spec_arr_derived.append(spec_id)
 
-                    if spec_data.name not in spec_string_split:
-                        continue
-
-                    set_spec_arr_derived.append('%3u' % spec_id)
+            # If we could not figure out specs from spec specific words, use
+            # some generic things and blizzard typoes .. sigh .. to massage
+            # things a bit
+            if not spec_added:
+                if set_tier_spec_string == 'Tank':
+                    set_spec_arr_derived = self.spec_type_map[set_class][0]
+                elif set_tier_spec_string in ['DPS', 'Melee']:
+                    set_spec_arr_derived = self.spec_type_map[set_class][2]
+                elif set_tier_spec_string in ['Healer', 'Healing']:
+                    set_spec_arr_derived = self.spec_type_map[set_class][1]
+                # Pure DPS classes can have empty string
+                elif len(set_tier_spec_string) == 0:
+                    set_spec_arr_derived = self.spec_type_map[set_class][2]
+                # Sigh ...
+                elif set_tier_spec_string == 'Enhancment':
+                    set_spec_arr_derived = [ 263, ]
+                else:
+                    print '|%s|' % set_tier_spec_string
+                    print spell_id
 
             set_spell_id = 0
 
@@ -3340,21 +3381,23 @@ class SetBonusListGenerator(DataGenerator):
 
     def generate(self, ids):
         def sorter(a, b):
-            if a['derived_tier'] > b['derived_tier']:
-                return 1
-            elif a['derived_tier'] < b['derived_tier']:
-                return -1
+            if a['derived_tier'] != b['derived_tier']:
+                return a['derived_tier'] - b['derived_tier']
             else:
-                if a['derived_class'] > b['derived_class']:
-                    return 1
-                elif a['derived_class'] < b['derived_class']:
-                    return -1
+                if a['derived_class'] != b['derived_class']:
+                    return a['derived_class'] - b['derived_class']
                 else:
-                    return 0
+                    if a['derived_specs'][0] != b['derived_specs'][0]:
+                        return a['derived_specs'][0] - b['derived_specs'][0]
+                    else:
+                        if a['derived_bonus'] != b['derived_bonus']:
+                            return a['derived_bonus'] - b['derived_bonus']
+                        else:
+                            return 0
 
         ids.sort(cmp = sorter)
 
-        s = '  // %44s, Tier, Bns, Cls, %15s, Spec,  Spell, Items\n' % ('Tier name', 'Spec Guess')
+        s = '  // %44s, Tier, Bns, Cls, %20s, Spec,  Spell, Items\n' % ('Tier name', 'Spec Guess')
         for i in ids:
             item_set_spell = self._itemsetspell_db[i['set_bonus_id']]
             item_set = self._itemset_db[item_set_spell.id_item_set]
@@ -3373,11 +3416,13 @@ class SetBonusListGenerator(DataGenerator):
             if len(items) < 17:
                 items.append('0')
 
-            spec_str = '0'
-            if len(i['derived_specs']) > 0:
-                spec_str = ', '.join(i['derived_specs'] + ['0'])
+            spec_str = ''
+            for idx in xrange(0, len(i['derived_specs'])):
+                spec_str += '%3u, ' % i['derived_specs'][idx]
 
-            s += '  { %-45s, %4u, %3u, %3u, %15s, %4u, %6u, %s },\n' % (
+            spec_str += '0'
+
+            s += '  { %-45s, %4u, %3u, %3u, %20s, %4u, %6u, %s },\n' % (
                 '"%s"' % item_set.name.replace('"', '\\"'),
                 i['derived_tier'],
                 set_bonus,

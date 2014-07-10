@@ -168,7 +168,7 @@ _DBC_FIELDS = {
           'unk_25'
     ],
     'ChrSpecialization.dbc' : [
-          'id', 'f1', 'class_id', 'id_mastery', 'f4', 'spec_id', 'f6', 'f7', 'id_icon', 'unk_15650', 'unk_15961', 'ofs_name', 'ofs_desc', 'unk_15699'
+          'id', 'f1', 'class_id', 'id_mastery', 'f4', 'spec_id', 'f6', 'spec_type', 'id_icon', 'unk_15650', 'unk_15961', 'ofs_name', 'ofs_desc', 'unk_15699'
     ],
     'CurrencyCategory.dbc' : [
         'id', 'f1', 'ofs_name'

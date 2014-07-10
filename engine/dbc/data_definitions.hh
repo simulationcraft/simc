@@ -16,6 +16,17 @@ struct spell_data_t;
 struct spelleffect_data_t;
 struct talent_data_t;
 
+struct item_set_bonus_t {
+  const char* set_name;
+  unsigned    tier;
+  unsigned    bonus;
+  unsigned    class_id;
+  unsigned    spec_guess[4];
+  unsigned    spec;
+  unsigned    spell_id;
+  unsigned    item_ids[10]; // TODO: This really needs a define ..
+};
+
 struct rppm_modifier_t {
   unsigned         spell_id;
   specialization_e spec;
