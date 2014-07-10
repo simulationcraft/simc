@@ -164,6 +164,7 @@ struct rogue_t : public player_t
     // Assassination
     const spell_data_t* assassins_resolve;
     const spell_data_t* improved_poisons;
+    const spell_data_t* master_poisoner;
     const spell_data_t* seal_fate;
     const spell_data_t* venomous_wounds;
     const spell_data_t* cut_to_the_chase;
@@ -337,6 +338,7 @@ struct rogue_t : public player_t
   virtual role_e    primary_role() const  { return ROLE_ATTACK; }
   virtual stat_e    convert_hybrid_stat( stat_e s ) const;
 
+  virtual double    composite_rating_multiplier( rating_e rating ) const;
   virtual double    composite_attribute_multiplier( attribute_e attr ) const;
   virtual double    composite_melee_speed() const;
   virtual double    matching_gear_multiplier( attribute_e attr ) const;
@@ -3290,6 +3292,31 @@ rogue_td_t::rogue_td_t( player_t* target, rogue_t* source ) :
 // Rogue Character Definition
 // ==========================================================================
 
+// rogue_t::composite_rating_multiplier =====================================
+
+double rogue_t::composite_rating_multiplier( rating_e rating ) const
+{
+  double m = player_t::composite_rating_multiplier( rating );
+  switch ( rating )
+  {
+    case RATING_MULTISTRIKE:
+      m *= 1.0 + spec.sinister_calling -> effectN( 2 ).percent();
+      break;
+    case RATING_MASTERY:
+      m *= 1.0 + spec.master_poisoner -> effectN( 1 ).percent();
+      break;
+    case RATING_SPELL_HASTE:
+    case RATING_MELEE_HASTE:
+    case RATING_RANGED_HASTE:
+      m *= 1.0 + spec.combat_potency -> effectN( 2 ).percent();
+      break;
+    default:
+      break;
+  }
+
+  return m;
+}
+
 // rogue_t::composite_attribute_multiplier ==================================
 
 double rogue_t::composite_attribute_multiplier( attribute_e attr ) const
@@ -3749,6 +3776,7 @@ void rogue_t::init_spells()
   // Assassination
   spec.assassins_resolve    = find_specialization_spell( "Assassin's Resolve" );
   spec.improved_poisons     = find_specialization_spell( "Improved Poisons" );
+  spec.master_poisoner      = find_specialization_spell( "Master Poisoner" );
   spec.seal_fate            = find_specialization_spell( "Seal Fate" );
   spec.venomous_wounds      = find_specialization_spell( "Venomous Wounds" );
   spec.cut_to_the_chase     = find_specialization_spell( "Cut to the Chase" );
