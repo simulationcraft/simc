@@ -2992,7 +2992,7 @@ struct living_bomb_t : public mage_spell_t
   virtual void execute()
   {
     mage_t& p = *this -> p();
-    bool pre_ticking = get_dot( target ) -> ticking;
+    bool pre_ticking = td( target ) -> dots.living_bomb -> ticking;
 
     mage_spell_t::execute();
 
