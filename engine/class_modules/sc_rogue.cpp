@@ -1020,21 +1020,21 @@ static void trigger_relentless_strikes( rogue_attack_t* a )
 
 // trigger_seal_fate ========================================================
 
-void trigger_seal_fate( rogue_attack_t* a )
+void trigger_seal_fate( action_state_t* state )
 {
-  rogue_t* p = a -> p();
+  rogue_t* p = debug_cast<rogue_t*>( state -> action -> player );
 
   if ( ! p -> spec.seal_fate -> ok() )
     return;
 
-  if ( a -> aoe != 0 )
+  if ( state -> target != state -> action -> target )
     return;
 
   // This is to prevent dual-weapon special attacks from triggering a double-proc of Seal Fate
   if ( p -> cooldowns.seal_fate -> down() )
     return;
 
-  rogue_td_t* td = a -> td( a -> target );
+  rogue_td_t* td = p -> get_target_data( state -> target );
   td -> combo_points.add( 1, p -> spec.seal_fate -> name_cstr() );
 
   p -> cooldowns.seal_fate -> start( p -> spec.seal_fate -> internal_cooldown() );
@@ -1234,7 +1234,7 @@ void rogue_attack_t::impact( action_state_t* state )
       p() -> active_lethal_poison -> trigger( state );
 
     if ( adds_combo_points && state -> result == RESULT_CRIT )
-      trigger_seal_fate( this );
+      trigger_seal_fate( state );
 
     // Legendary Daggers buff handling
     // Proc rates from: https://github.com/Aldriana/ShadowCraft-Engine/blob/master/shadowcraft/objects/proc_data.py#L504
@@ -2288,7 +2288,7 @@ struct mutilate_strike_t : public rogue_attack_t
     rogue_attack_t::impact( state );
 
     if ( state -> result == RESULT_CRIT )
-      trigger_seal_fate( this );
+      trigger_seal_fate( state );
   }
 
   void consume_resource()
