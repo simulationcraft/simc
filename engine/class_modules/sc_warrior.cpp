@@ -39,7 +39,6 @@ struct warrior_t: public player_t
 {
 public:
   int initial_rage;
-  bool sudden_death;
 
   simple_sample_data_t cs_damage;
   simple_sample_data_t priority_damage;
@@ -270,9 +269,13 @@ public:
     const spell_data_t* second_wind;
     const spell_data_t* impending_victory;
 
-    const spell_data_t* staggering_shout;
-    const spell_data_t* piercing_howl;
-    const spell_data_t* disrupting_shout;
+    const spell_data_t* taste_for_blood;
+    const spell_data_t* unyielding_strikes;
+    const spell_data_t* sudden_death;
+    const spell_data_t* unquenchable_thirst;
+    const spell_data_t* heavy_repercussions;
+    const spell_data_t* slam;
+    const spell_data_t* furious_strikes;
 
     const spell_data_t* storm_bolt;
     const spell_data_t* shockwave;
@@ -366,8 +369,6 @@ public:
     cooldown.stance_swap             -> duration = timespan_t::from_seconds( 1.5 );
 
     initial_rage = 0;
-    sudden_death = false;
-
     base.distance = 3.0;
   }
 
@@ -933,11 +934,8 @@ struct melee_t: public warrior_attack_t
     if ( result_is_hit( s -> result ) )
     {
       trigger_t15_2pc_melee( this );
-      if ( p() -> sudden_death )
-      {
-        if ( p() -> buff.sudden_death -> trigger() )
-          p() -> proc.sudden_death -> occur();
-      }
+      if ( p() -> buff.sudden_death -> trigger() )
+        p() -> proc.sudden_death -> occur();
     }
 
     // Any attack that hits generates rage. Multistrikes do not grant rage.
@@ -1110,20 +1108,13 @@ struct bloodthirst_heal_t: public warrior_heal_t
 struct bloodthirst_t: public warrior_attack_t
 {
   bloodthirst_heal_t* bloodthirst_heal;
-  bool unquenchable_thirst;
-
   bloodthirst_t( warrior_t* p, const std::string& options_str ):
     warrior_attack_t( "bloodthirst", p, p -> spec.bloodthirst ),
-    bloodthirst_heal( NULL ), unquenchable_thirst( false )
+    bloodthirst_heal( NULL )
   {
-    option_t opt[] =
-    {
-      opt_bool( "talented", unquenchable_thirst ),
-      opt_null()
-    };
-    parse_options( opt, options_str );
+    parse_options( NULL, options_str );
 
-    if ( unquenchable_thirst )
+    if ( p -> talents.unquenchable_thirst -> ok() )
       cooldown -> duration = timespan_t::zero();
 
     weapon           = &( p -> main_hand_weapon );
@@ -1162,7 +1153,7 @@ struct bloodthirst_t: public warrior_attack_t
 
   virtual void update_ready( timespan_t cd_duration )
   {
-    if ( unquenchable_thirst )
+    if ( p() -> talents.unquenchable_thirst -> ok() )
       return;
     //Head Long Rush reduces the cooldown depending on the amount of haste.
     cd_duration = cooldown -> duration * player -> cache.attack_haste();
@@ -1303,16 +1294,10 @@ struct demoralizing_shout: public warrior_attack_t
 
 struct devastate_t: public warrior_attack_t
 {
-  bool unyielding_strikes;
   devastate_t( warrior_t* p, const std::string& options_str ):
-    warrior_attack_t( "devastate", p, p -> spec.devastate ), unyielding_strikes( false )
+    warrior_attack_t( "devastate", p, p -> spec.devastate )
   {
-    option_t opt[] =
-    {
-      opt_bool( "talented", unyielding_strikes ),
-      opt_null()
-    };
-    parse_options( opt, options_str );
+    parse_options( NULL, options_str );
   }
 
   virtual void execute()
@@ -1325,7 +1310,7 @@ struct devastate_t: public warrior_attack_t
         p() -> cooldown.shield_slam -> reset( true );
       p() -> active_deep_wounds -> target = execute_state -> target;
       p() -> active_deep_wounds -> execute();
-      if ( p() -> buff.unyielding_strikes -> stack() != 5 && unyielding_strikes )
+      if ( p() -> buff.unyielding_strikes -> stack() != 5 )
         p() -> buff.unyielding_strikes -> trigger();
     }
   }
@@ -1424,7 +1409,9 @@ struct execute_t: public warrior_attack_t
 
     if ( p() -> mastery.weapons_master -> ok() )
     {
-      am *= ( 3.0 * std::min( 50.0, p() -> resources.current[RESOURCE_RAGE] ) / 50 );
+      am *= ( 3.0 * std::min( 50.0, 
+            ( p() -> buff.sudden_death -> up() ? p() -> resources.current[RESOURCE_RAGE] + 10 :
+              p() -> resources.current[RESOURCE_RAGE] ) / 50 ) );
       am *= 1.0 + p() -> cache.mastery_value();
     }
 
@@ -1439,7 +1426,7 @@ struct execute_t: public warrior_attack_t
       c = std::min( 50.0, std::max( p() -> resources.current[RESOURCE_RAGE], c ) );
 
     if ( p() -> buff.sudden_death -> up() )
-      c = 0;
+      c -= 10;
 
     return c;
   }
@@ -2190,18 +2177,9 @@ struct shield_slam_t: public warrior_attack_t
 struct slam_t: public warrior_attack_t
 {
   slam_t( warrior_t* p, const std::string& options_str ):
-    warrior_attack_t( "slam", p )
+    warrior_attack_t( "slam", p, p -> talents.slam )
   {
-    check_spec( WARRIOR_ARMS );
     parse_options( NULL, options_str );
-    weapon_multiplier = 1.0;
-    resource_consumed = RESOURCE_RAGE;
-    resource_current = RESOURCE_RAGE;
-    base_costs[RESOURCE_RAGE] = 10;
-    trigger_gcd = timespan_t::from_millis( 1500 );
-    min_gcd = timespan_t::from_millis( 1000 );
-    school = SCHOOL_PHYSICAL;
-    normalize_weapon_speed = true;
     weapon = &( p -> main_hand_weapon );
   }
 
@@ -2236,6 +2214,7 @@ struct slam_t: public warrior_attack_t
     return am;
   }
 };
+
 // Shockwave ================================================================
 
 struct shockwave_t: public warrior_attack_t
@@ -2491,19 +2470,12 @@ struct whirlwind_t: public warrior_attack_t
 
 struct wild_strike_t: public warrior_attack_t
 {
-  bool furious;
   wild_strike_t( warrior_t* p, const std::string& options_str ):
-    warrior_attack_t( "wild_strike", p, p -> spec.wild_strike ),
-    furious( false )
+    warrior_attack_t( "wild_strike", p, p -> spec.wild_strike )
   {
-    option_t options[] =
-    {
-      opt_bool( "talented", furious ),
-      opt_null()
-    };
-    parse_options( options, options_str );
+    parse_options( NULL, options_str );
 
-    if ( furious )
+    if ( p -> talents.furious_strikes -> ok() )
       base_costs[RESOURCE_RAGE] = 20;
     weapon  = &( player -> off_hand_weapon );
     weapon_multiplier *= 1.0 + p -> perk.improved_wild_strike -> effectN( 1 ).percent();
@@ -2687,30 +2659,12 @@ struct rend_burst_t: public warrior_spell_t
 struct rend_t: public warrior_spell_t
 {
   rend_burst_t* burst;
-  bool taste_for_blood;
   rend_t( warrior_t* p, const std::string& options_str ):
-    warrior_spell_t( "rend", p ),
-    burst( new rend_burst_t( p ) ), taste_for_blood( false )
+    warrior_spell_t( "rend", p ), burst( new rend_burst_t( p ) )
   {
-    option_t opt[] =
-    {
-      opt_bool( "talented", taste_for_blood ),
-      opt_null()
-    };
-    check_spec( WARRIOR_ARMS );
-    parse_options( opt, options_str );
-    base_tick_time = timespan_t::from_seconds( 3.0 );
-    dot_duration = timespan_t::from_seconds( 18.0 );
+    parse_options( NULL, options_str );
     hasted_ticks = tick_zero = false;
-    tick_may_crit = true;
     may_multistrike = 1;
-    dot_behavior = DOT_REFRESH;
-    attack_power_mod.tick = 0.4;
-    attack_power_mod.direct = 0.0;
-    resource_current = RESOURCE_RAGE;
-    resource_consumed = RESOURCE_RAGE;
-    base_costs[RESOURCE_RAGE] = 10;
-    school = SCHOOL_PHYSICAL;
     add_child( burst );
   }
 
@@ -2725,15 +2679,10 @@ struct rend_t: public warrior_spell_t
     warrior_spell_t::impact( s );
   }
 
-  timespan_t tick_time( double ) const
-  {
-    return timespan_t::from_seconds( 3 );
-  }
-
   virtual void tick( dot_t* d )
   {
     warrior_spell_t::tick( d );
-    if ( taste_for_blood )
+    if ( p() -> talents.taste_for_blood -> ok() )
       p() -> resource_gain( RESOURCE_RAGE, 3, p() -> gain.taste_for_blood );
   }
 
@@ -2909,15 +2858,12 @@ struct shield_block_t: public warrior_spell_t
 struct shield_charge_t: public warrior_spell_t
 {
   shield_charge_t( warrior_t* p, const std::string& options_str ):
-    warrior_spell_t( "shield_charge", p, p -> find_spell( 156321 ) )
+    warrior_spell_t( "shield_charge", p, p -> find_specialization_spell( "Shield Charge" ) )
   {
     parse_options( NULL, options_str );
 
     base_teleport_distance = data().max_range();
     movement_directionality = MOVEMENT_OMNI;
-
-    cooldown -> duration = timespan_t::from_seconds( 15.0 );
-    cooldown -> charges = 2;
     use_off_gcd = true;
   }
 
@@ -3324,9 +3270,13 @@ void warrior_t::init_spells()
   talents.second_wind           = find_talent_spell( "Second Wind" );
   talents.impending_victory     = find_talent_spell( "Impending Victory" );
 
-  talents.staggering_shout      = find_talent_spell( "Staggering Shout" );
-  talents.piercing_howl         = find_talent_spell( "Piercing Howl" );
-  talents.disrupting_shout      = find_talent_spell( "Disrupting Shout" );
+  talents.heavy_repercussions   = find_talent_spell( "Heavy Repercussions" );
+  talents.unyielding_strikes    = find_talent_spell( "Unyielding Strikes" );
+  talents.sudden_death          = find_talent_spell( "Sudden Death" );
+  talents.taste_for_blood       = find_talent_spell( "Taste For Blood" );
+  talents.unquenchable_thirst   = find_talent_spell( "Unquenchable Thirst" );
+  talents.slam                  = find_talent_spell( "Slam" );
+  talents.furious_strikes       = find_talent_spell( "Furious Strikes" );
 
   talents.storm_bolt            = find_talent_spell( "Storm Bolt" );
   talents.shockwave             = find_talent_spell( "Shockwave" );
@@ -3927,19 +3877,6 @@ void warrior_t::create_buffs()
 
   buff.heroic_charge = buff_creator_t( this, "heroic_charge" );
 
-  buff.slam = buff_creator_t( this, "slam" )
-    .max_stack( 2 )
-    .duration( timespan_t::from_seconds( 2 ) );
-
-  buff.unyielding_strikes = buff_creator_t( this, "unyielding_strikes" )
-    .max_stack( 5 )
-    .duration( timespan_t::from_seconds( 10 ) );
-
-  buff.sudden_death = buff_creator_t( this, "sudden_death" )
-    .chance( 0.1 )
-    .duration( timespan_t::from_seconds( 10 ) );
-
-
   buff.avatar = buff_creator_t( this, "avatar", talents.avatar )
     .cd( timespan_t::zero() )
     .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
@@ -4013,6 +3950,10 @@ void warrior_t::create_buffs()
     .default_value( find_class_spell( "Shield Wall" )-> effectN( 1 ).percent() )
     .cd( timespan_t::zero() );
 
+  buff.slam = buff_creator_t( this, "slam", talents.slam );
+
+  buff.sudden_death = buff_creator_t( this, "sudden_death", talents.sudden_death );
+
   buff.sweeping_strikes = buff_creator_t( this, "sweeping_strikes", spec.sweeping_strikes )
     .duration( spec.sweeping_strikes -> duration() + perk.enhanced_sweeping_strikes -> effectN( 1 ).time_value() );
 
@@ -4022,6 +3963,8 @@ void warrior_t::create_buffs()
   buff.tier15_2pc_tank = buff_creator_t( this, "tier15_2pc_tank", find_spell( 138279 ) );
 
   buff.tier16_reckless_defense = buff_creator_t( this, "tier16_reckless_defense", find_spell( 144500 ) );
+
+  buff.unyielding_strikes = buff_creator_t( this, "unyielding_strikes", talents.unyielding_strikes );
 
   buff.ultimatum        = buff_creator_t( this, "ultimatum", spec.ultimatum -> effectN( 1 ).trigger() );
 
@@ -4580,7 +4523,6 @@ void warrior_t::create_options()
   option_t warrior_options[] =
   {
     opt_int( "initial_rage", initial_rage ),
-    opt_bool( "sudden_death", sudden_death ),
     opt_null()
   };
 
@@ -4640,7 +4582,6 @@ void warrior_t::copy_from( player_t* source )
   warrior_t* p = debug_cast<warrior_t*>( source );
 
   initial_rage = p -> initial_rage;
-  sudden_death = p -> sudden_death;
 }
 
 // warrior_t::decode_set ====================================================
