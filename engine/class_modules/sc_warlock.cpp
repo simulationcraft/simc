@@ -3066,7 +3066,7 @@ struct chaos_bolt_t : public warlock_spell_t
     if ( p() -> mastery_spells.emberstorm -> ok() )
       m *= 1.0 + p() -> cache.mastery_value();
 
-    m *= 1.0 + p() -> cache.spell_crit() + p() -> talents.grimoire_of_sacrifice -> effectN( 5 ).percent() * p() -> buffs.grimoire_of_sacrifice -> stack();
+    m *= 1.0 + p() -> cache.spell_crit(); //+ p() -> talents.grimoire_of_sacrifice -> effectN( 5 ).percent() * p() -> buffs.grimoire_of_sacrifice -> stack()
 
     return m;
   }
@@ -3093,8 +3093,11 @@ struct life_tap_t : public warlock_spell_t
 
     double health = player -> resources.max[ RESOURCE_HEALTH ];
     // FIXME: This should be implemented as a real health gain, but we don't have an easy way to do temporary percentage-wise resource gains
-    if ( p() -> talents.soul_link -> ok() && p() -> buffs.grimoire_of_sacrifice -> up() )
-      health *= 1.0 + p() -> talents.grimoire_of_sacrifice -> effectN( 7 ).percent();
+    if ( p() -> specialization() != WARLOCK_DEMONOLOGY )
+    {
+      if ( p() -> talents.soul_link -> ok() && p() -> buffs.grimoire_of_sacrifice -> up() )
+        health *= 1.0 + p() -> talents.grimoire_of_sacrifice -> effectN( 7 ).percent();
+    }
 
     // FIXME: Implement reduced healing debuff
     if ( ! p() -> glyphs.life_tap -> ok() ) player -> resource_loss( RESOURCE_HEALTH, health * data().effectN( 3 ).percent() );
