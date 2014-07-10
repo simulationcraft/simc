@@ -228,7 +228,7 @@ public:
  
   } spec;
 
-  // Warlords of draenic Perks
+  // Warlords of Draenor Perks
   struct
   {
      // GENERAL

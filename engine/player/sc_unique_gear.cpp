@@ -36,7 +36,7 @@ namespace profession
 {
   void nitro_boosts( special_effect_t&, const item_t& );
   void zen_alchemist_stone( special_effect_t&, const item_t& );
-  void draenic_philosophers_stone( special_effect_t&, const item_t& );
+  void draenor_philosophers_stone( special_effect_t&, const item_t& );
 }
 
 namespace item
@@ -256,7 +256,7 @@ static const special_effect_db_item_t __special_effect_db[] = {
    * Enchants
    */
 
-  /* Warlords of draenic */
+  /* Warlords of Draenor */
   { 159236, 0,                enchant::mark_of_the_shattered_hand },
   { 159243, 0,                   enchant::mark_of_the_thunderlord },
   { 159682, 0,                           enchant::mark_of_warsong },
@@ -303,7 +303,7 @@ static const special_effect_db_item_t __special_effect_db[] = {
   {  75177, "OnAttackHit",                                      0 }, /* Swordguard Embroidery Rank 2 */
   {  55776, "OnAttackHit",                                      0 }, /* Swordguard Embroidery Rank 1 */
   { 105574, 0,                    profession::zen_alchemist_stone }, /* Zen Alchemist Stone (stat proc) */
-  { 157136, 0,             profession::draenic_philosophers_stone }, /* draenic Philosopher's Stone (stat proc) */
+  { 157136, 0,             profession::draenor_philosophers_stone }, /* Draenor Philosopher's Stone (stat proc) */
   {  55004, 0,                           profession::nitro_boosts },
 
   /**
@@ -715,16 +715,16 @@ void profession::zen_alchemist_stone( special_effect_t& effect,
   new zen_alchemist_stone_callback( item, effect );
 }
 
-void profession::draenic_philosophers_stone( special_effect_t& effect,
+void profession::draenor_philosophers_stone( special_effect_t& effect,
                                       const item_t& item )
 {
-  struct draenic_philosophers_stone_callback : public dbc_proc_callback_t
+  struct draenor_philosophers_stone_callback : public dbc_proc_callback_t
   {
     stat_buff_t* buff_str;
     stat_buff_t* buff_agi;
     stat_buff_t* buff_int;
 
-    draenic_philosophers_stone_callback( const item_t& i, const special_effect_t& data ) :
+    draenor_philosophers_stone_callback( const item_t& i, const special_effect_t& data ) :
       dbc_proc_callback_t( i.player, data )
     {
       const spell_data_t* spell = listener -> find_spell( 157136 );
@@ -732,7 +732,7 @@ void profession::draenic_philosophers_stone( special_effect_t& effect,
       struct common_buff_creator : public stat_buff_creator_t
       {
         common_buff_creator( player_t* p, const std::string& n, const spell_data_t* spell ) :
-          stat_buff_creator_t ( p, "draenic_philosophers_stone_" + n, spell  )
+          stat_buff_creator_t ( p, "draenor_philosophers_stone_" + n, spell  )
         {
           duration( p -> find_spell( 60229 ) -> duration() );
           chance( 1.0 );
@@ -770,7 +770,7 @@ void profession::draenic_philosophers_stone( special_effect_t& effect,
 
   maintenance_check( 620 );
 
-  new draenic_philosophers_stone_callback( item, effect );
+  new draenor_philosophers_stone_callback( item, effect );
 }
 
 void gem::sinister_primal( special_effect_t& effect, 
