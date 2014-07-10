@@ -1407,22 +1407,29 @@ struct celestial_alignment_t : public druid_buff_t < buff_t >
 
 struct might_of_ursoc_t : public druid_buff_t < buff_t >
 {
+  int health_gain;
+  double health_pct;
+
   might_of_ursoc_t( druid_t& p ) :
-    base_t( p, buff_creator_t( &p, "might_of_ursoc", p.find_spell( 106922 ) ) )
-  {}
+    base_t( p, buff_creator_t( &p, "might_of_ursoc", p.find_spell( 106922 ) ) ),
+    health_gain( 0 ), health_pct( 0.0 )
+  {
+    health_pct = data().effectN( 1 ).percent() + p.glyph.might_of_ursoc -> effectN( 1 ).percent();
+  }
 
   virtual void start( int stacks, double value, timespan_t duration )
   {
-    base_t::start( stacks, value, duration );
+    health_gain = (int) floor( player -> resources.max[ RESOURCE_HEALTH ] * health_pct );
+    player -> temporary.resource[ RESOURCE_HEALTH ] += health_gain;
 
-    druid.druid_t::recalculate_resource_max( RESOURCE_HEALTH );
+    base_t::start( stacks, value, duration );
   }
 
   virtual void expire_override()
   {
-    base_t::expire_override();
+    player -> temporary.resource[ RESOURCE_HEALTH ] -= health_gain;
 
-    druid.druid_t::recalculate_resource_max( RESOURCE_HEALTH );
+    base_t::expire_override();
   }
 };
 
@@ -4376,7 +4383,7 @@ struct might_of_ursoc_t : public druid_spell_t
   {
     druid_spell_t::execute();
 
-    p() -> buff.might_of_ursoc -> trigger( 1, p() -> resources.max[ RESOURCE_HEALTH ] * data().effectN( 1 ).percent() );
+    p() -> buff.might_of_ursoc -> trigger();
   }
 
   virtual bool ready() 
@@ -6722,10 +6729,7 @@ void druid_t::recalculate_resource_max( resource_e resource_type )
   player_t::recalculate_resource_max( resource_type );
 
   if ( resource_type == RESOURCE_HEALTH )
-  {
-    resources.max[ RESOURCE_HEALTH ] += buff.might_of_ursoc -> value();
     resources.max[ RESOURCE_HEALTH ] *= 1.0 + buff.ursa_major -> value();
-  }
 }
 
 // druid_t::create_expression ===============================================
