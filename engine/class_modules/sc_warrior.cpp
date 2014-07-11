@@ -2989,6 +2989,8 @@ struct shield_charge_t: public warrior_spell_t
     parse_options( NULL, options_str );
     stancemask = STANCE_GLADIATOR;
 
+    cooldown -> charges = 2;
+    cooldown -> duration = timespan_t::from_seconds( 15 );
     base_teleport_distance = data().max_range();
     movement_directionality = MOVEMENT_OMNI;
     use_off_gcd = true;
@@ -3511,8 +3513,6 @@ void warrior_t::init_base_stats()
 {
   player_t::init_base_stats();
 
-  resources.base[RESOURCE_RAGE] = 100;
-
   if ( glyphs.unending_rage -> ok() )
     resources.base[RESOURCE_RAGE] += glyphs.unending_rage -> effectN( 1 ).resource( RESOURCE_RAGE );
 
@@ -3565,12 +3565,11 @@ void warrior_t::apl_precombat()
 
   if ( specialization() != WARRIOR_PROTECTION )
     precombat -> add_action( "stance,choose=battle" );
-  else if ( primary_role() == ROLE_ATTACK )
-    precombat -> add_action( "stance,choose=gladiator" );
   else
-    precombat -> add_action( "stance,choose=defensive", "IF YOU WISH TO SIMULATE YOUR CHARACTER AS GLADIATOR, PLEASE CHANGE ROLE TO DPS IN GLOBAL OPTIONS, AND THEN RE-IMPORT FROM BATTLE.NET\n"
-    "# AFTER IMPORTING, MAKE SURE YOUR LEVEL IS SET TO 100 AND GLADIATORS RESOLVE IS TALENTED. \n"
-    "# EXAMPLE TALENT LINE, THE VERY LAST DIGIT (2) IS GLADIATORS RESOLVE: talents=http://us.battle.net/wow/en/tool/talent-calculator#Zb!0102212" );
+  {
+    precombat -> add_action( "stance,choose=gladiator,if=talent.gladiators_resolve.enabled" );
+    precombat -> add_action( "stance,choose=defensive,if=!talent.gladiators_resolve.enabled" );
+  }
 
   precombat -> add_action( "snapshot_stats", "Snapshot raid buffed stats before combat begins and pre-potting is done." );
 
@@ -4143,7 +4142,11 @@ void warrior_t::combat_begin()
     buff.battle_stance -> trigger();
 
   if ( active_stance == STANCE_DEFENSE && !buff.defensive_stance -> check() )
+  {
     buff.defensive_stance -> trigger();
+    if ( !active_defensive_stance )
+      active_defensive_stance -> execute();
+  }
 
   if ( active_stance == STANCE_GLADIATOR && !buff.gladiator_stance -> check() )
     buff.gladiator_stance -> trigger();

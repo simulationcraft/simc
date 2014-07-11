@@ -17,10 +17,8 @@ spec=protection
 
 actions.precombat=flask,type=greater_draenic_critical_strike_flask
 actions.precombat+=/food,type=blackrock_barbecue
-# IF YOU WISH TO SIMULATE YOUR CHARACTER AS GLADIATOR, PLEASE CHANGE ROLE TO DPS IN GLOBAL OPTIONS, AND THEN RE-IMPORT FROM BATTLE.NET
-# AFTER IMPORTING, MAKE SURE YOUR LEVEL IS SET TO 100 AND GLADIATORS RESOLVE IS TALENTED. 
-# EXAMPLE TALENT LINE, THE VERY LAST DIGIT (2) IS GLADIATORS RESOLVE: talents=http://us.battle.net/wow/en/tool/talent-calculator#Zb!0102212
-actions.precombat+=/stance,choose=defensive
+actions.precombat+=/stance,choose=gladiator,if=talent.gladiators_resolve.enabled
+actions.precombat+=/stance,choose=defensive,if=!talent.gladiators_resolve.enabled
 # Snapshot raid buffed stats before combat begins and pre-potting is done.
 actions.precombat+=/snapshot_stats
 actions.precombat+=/potion,name=draenic_armor
