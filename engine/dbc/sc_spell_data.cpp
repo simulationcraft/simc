@@ -1309,6 +1309,11 @@ spell_data_expr_t* spell_data_expr_t::create_spell_expression( sim_t* sim, const
     fields = _talent_data_fields;
     fsize  = sizeof( _talent_data_fields );
   }
+  else if ( data_type == DATA_SET_BONUS )
+  {
+    fields = _set_bonus_data_fields;
+    fsize  = sizeof( _set_bonus_data_fields );
+  }
   else if ( effect_query || data_type == DATA_EFFECT )
   {
     fields = _effect_data_fields;
