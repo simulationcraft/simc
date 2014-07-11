@@ -4,7 +4,6 @@ race=orc
 role=attack
 position=back
 talents=http://us.battle.net/wow/en/tool/talent-calculator#ZZ!0120211
-glyphs=unending_rage/death_from_above
 spec=fury
 
 # This default action priority list is automatically created based on your character.
@@ -26,7 +25,7 @@ actions.precombat+=/potion,name=draenic_strength
 
 actions=charge
 actions+=/auto_attack
-actions+=/use_item,name=primal_gladiators_badge_of_victory
+actions+=/use_item,name=primal_gladiators_badge_of_victory,if=debuff.colossus_smash.up
 actions+=/potion,name=draenic_strength,if=(target.health.pct<20&buff.recklessness.up)|target.time_to_die<=25
 # This incredibly long line can be translated to 'Use recklessness on cooldown with colossus smash; unless the boss will die before the ability is usable again, and then combine with execute instead.'
 actions+=/recklessness,if=!talent.bloodbath.enabled&(((cooldown.colossus_smash.remains<2|debuff.colossus_smash.remains>=5)&target.time_to_die>192)|target.health.pct<20)|buff.bloodbath.up&(target.time_to_die>192|target.health.pct<20)|target.time_to_die<=12
@@ -100,31 +99,30 @@ actions.aoe+=/storm_bolt,if=talent.storm_bolt.enabled
 actions.aoe+=/shockwave,if=talent.shockwave.enabled
 
 head=primal_gladiators_plate_helm,id=111241
-neck=primal_gladiators_choker_of_cruelty,id=111207
-shoulders=primal_gladiators_plate_shoulders,id=111243,enchant=10str_5crit
-back=primal_gladiators_cloak_of_prowess,id=111206
-chest=primal_gladiators_plate_chestpiece,id=111239,enchant=glorious_stats
-wrists=primal_gladiators_armplates_of_prowess,id=111181,enchant=8mastery
-hands=primal_gladiators_plate_gauntlets,id=111210,enchant=8crit
+neck=primal_gladiators_choker_of_cruelty,id=111207,enchant=140crit
+shoulders=primal_gladiators_plate_pauldrons,id=111218
+back=primal_gladiators_cloak_of_prowess,id=111206,enchant=gift_of_critical_strike
+chest=primal_gladiators_plate_chestpiece,id=111239
+wrists=primal_gladiators_armplates_of_prowess,id=111181
+hands=primal_gladiators_plate_gauntlets,id=111210
 waist=primal_gladiators_girdle_of_cruelty,id=111174
-legs=primal_gladiators_plate_legguards,id=111212,enchant=14str_8crit
-feet=primal_gladiators_warboots_of_cruelty,id=111177,enchant=pandarens_step
-finger1=primal_gladiators_signet_of_cruelty,id=111219
-finger2=primal_gladiators_signet_of_accuracy,id=111272
+legs=primal_gladiators_plate_legguards,id=111212
+feet=primal_gladiators_warboots_of_cruelty,id=111177
+finger1=primal_gladiators_signet_of_cruelty,id=111219,enchant=100crit
+finger2=primal_gladiators_signet_of_accuracy,id=111272,enchant=100crit
 trinket1=primal_gladiators_badge_of_victory,id=111232
 trinket2=primal_gladiators_insignia_of_victory,id=111233
-main_hand=primal_gladiators_bonecracker,id=111200,enchant=dancing_steel
-off_hand=primal_gladiators_bonecracker,id=111200,enchant=dancing_steel
+main_hand=primal_gladiators_bonecracker,id=111200,enchant=mark_of_the_thunderlord
+off_hand=primal_gladiators_bonecracker,id=111200,enchant=mark_of_the_thunderlord
 
 # Gear Summary
-# gear_strength=2586
-# gear_agility=3
-# gear_stamina=3202
-# gear_intellect=3
-# gear_crit_rating=1365
-# gear_haste_rating=436
-# gear_mastery_rating=664
+# gear_strength=2553
+# gear_stamina=3199
+# gear_crit_rating=1994
+# gear_haste_rating=326
+# gear_mastery_rating=539
 # gear_armor=2574
 # gear_multistrike_rating=411
+# gear_versatility_rating=110
 # pvp_2pc_melee=1
 # pvp_4pc_melee=1
