@@ -246,6 +246,7 @@ struct rogue_t : public player_t
   // Options
   std::string tricks_of_the_trade_target_str;
   timespan_t virtual_hat_interval;
+  int initial_combo_points;
   uint32_t fof_p1, fof_p2, fof_p3;
 
   rogue_t( sim_t* sim, const std::string& name, race_e r = RACE_NIGHT_ELF ) :
@@ -270,6 +271,7 @@ struct rogue_t : public player_t
     virtual_hat_callback( 0 ),
     tricks_of_the_trade_target_str( "" ),
     virtual_hat_interval( timespan_t::min() ),
+    initial_combo_points( 0 ),
     fof_p1( 0 ), fof_p2( 0 ), fof_p3( 0 )
   {
     // Cooldowns
@@ -3739,6 +3741,9 @@ void rogue_t::combat_begin()
 
     new ( *sim ) virtual_hat_event_t( this, virtual_hat_callback, virtual_hat_interval );
   }
+
+
+  get_target_data( sim -> target ) -> combo_points.add( clamp( initial_combo_points, 0, 5 ) );
 }
 
 // rogue_t::reset ===========================================================
@@ -3829,6 +3834,7 @@ void rogue_t::create_options()
   {
     opt_timespan( "virtual_hat_interval", ( virtual_hat_interval           ) ),
     opt_string( "tricks_of_the_trade_target", tricks_of_the_trade_target_str ),
+    opt_int( "initial_combo_points", initial_combo_points                    ),
     opt_null()
   };
 
@@ -3850,6 +3856,13 @@ bool rogue_t::create_profile( std::string& profile_str, save_e stype, bool save_
       profile_str += "# A zero value will disable virtual HAT procs and assume a real raid is being simulated.\n";
       profile_str += "virtual_hat_interval=-1\n";  // Force it to generate profiles using programmed default.
     }
+    
+    if ( initial_combo_points != 0 )
+    {
+      profile_str += "initial_combo_points=";
+      profile_str += util::to_string( initial_combo_points );
+      profile_str += "\n";
+    }
   }
 
   return true;
@@ -3862,6 +3875,7 @@ void rogue_t::copy_from( player_t* source )
   player_t::copy_from( source );
   rogue_t* p = debug_cast<rogue_t*>( source );
   virtual_hat_interval = p -> virtual_hat_interval;
+  initial_combo_points = p -> initial_combo_points;
 }
 
 // rogue_t::decode_set ======================================================
