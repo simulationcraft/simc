@@ -1,6 +1,6 @@
 #define TALENT_SIZE (305)
 
-// 305 talents, wow build 18522
+// 305 talents, wow build 18537
 static struct talent_data_t __talent_data[] = {
 //{ Name                                ,    Id, Flgs,  Class, Spc, Col, Row, SpellID, ReplaceID, S1 },
   { "Second Wind"                       , 15757, 0x00, 0x0001,   0,   1,   1,   29838,         0,  0 },
@@ -309,8 +309,8 @@ static struct talent_data_t __talent_data[] = {
   { "Surge of Darkness"                 , 21751, 0x00, 0x0010, 258,   0,   2,  162448,         0,  0 },
   { "Power Word: Solace"                , 21752, 0x00, 0x0010,   0,   2,   2,  129250,     14914,  0 },
   { "Insanity"                          , 21753, 0x00, 0x0010, 258,   2,   2,  139139,         0,  0 },
-  { "Divine Insight"                    , 21754, 0x00, 0x0010, 256,   2,   4,  162451,         0,  0 },
-  { "Divine Insight"                    , 21755, 0x00, 0x0010, 258,   2,   4,  162452,         0,  0 },
+  { "Spirit Shell"                      , 21754, 0x00, 0x0010, 256,   2,   4,  109964,         0,  0 },
+  { "Shadowy Insight"                   , 21755, 0x00, 0x0010, 258,   2,   4,  162452,         0,  0 },
   { "Focusing Shot"                     , 21756, 0x00, 0x0004,   0,   1,   6,  163485,     56641,  0 },
   { "Ignite Weapon"                     , 21760, 0x00, 0x0001,   0,   2,   6,  163965,         0,  0 },
   { "Unleashed Fury"                    , 21772, 0x00, 0x0040, 264,   0,   5,  165479,         0,  0 },
