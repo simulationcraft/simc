@@ -4429,6 +4429,9 @@ void warrior_t::invalidate_cache( cache_e c )
 {
   player_t::invalidate_cache( c );
 
+  if ( c == CACHE_ATTACK_CRIT && mastery.critical_block -> ok() )
+    player_t::invalidate_cache( CACHE_PARRY );
+
   if ( c == CACHE_MASTERY && mastery.critical_block -> ok() )
   {
     player_t::invalidate_cache( CACHE_BLOCK );

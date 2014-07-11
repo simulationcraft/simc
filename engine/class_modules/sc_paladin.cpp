@@ -17,7 +17,7 @@ struct paladin_t;
 struct hand_of_sacrifice_redirect_t;
 struct blessing_of_the_guardians_t;
 namespace buffs { 
-                  struct avenging_wrath_buff_t; 
+                  struct avenging_wrath_buff_t;
                   struct ardent_defender_buff_t;
                 }
 
