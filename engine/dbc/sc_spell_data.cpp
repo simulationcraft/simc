@@ -1006,7 +1006,7 @@ struct spell_class_expr_t : public spell_list_expr_t
         if ( ! (dbc::set_bonus( sim -> dbc.ptr ) + *i) )
           continue;
 
-        if ( (dbc::set_bonus( sim -> dbc.ptr ) + *i) -> class_id == class_type )
+        if ( util::translate_class_id( ( dbc::set_bonus( sim -> dbc.ptr ) + *i) -> class_id ) == class_type )
           res.push_back( *i );
       }
       else
