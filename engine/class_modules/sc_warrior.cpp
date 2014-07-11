@@ -1347,7 +1347,7 @@ struct devastate_t: public warrior_attack_t
       p() -> active_deep_wounds -> target = execute_state -> target;
       p() -> active_deep_wounds -> execute();
       if ( p() -> buff.unyielding_strikes -> stack() != 5 )
-        p() -> buff.unyielding_strikes -> trigger();
+        p() -> buff.unyielding_strikes -> trigger( 1 );
     }
   }
 
@@ -3996,7 +3996,7 @@ void warrior_t::create_buffs()
     .duration( timespan_t::from_seconds( 15 ) )
     .period( timespan_t::from_seconds( 1 ) );
 
-  buff.unyielding_strikes = buff_creator_t( this, "unyielding_strikes", talents.unyielding_strikes );
+  buff.unyielding_strikes = buff_creator_t( this, "unyielding_strikes", find_spell( 169686 ) );
 
   buff.ultimatum        = buff_creator_t( this, "ultimatum", spec.ultimatum -> effectN( 1 ).trigger() );
 }
