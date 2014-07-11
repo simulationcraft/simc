@@ -1096,7 +1096,6 @@ struct feral_spirit_pet_t : public pet_t
     {
       auto_attack = true;
       weapon = &( player -> main_hand_weapon );
-      weapon_multiplier *= 1.0 + player-> o() -> perk.improved_feral_spirit -> effectN( 1 ).percent();
       base_execute_time = weapon -> swing_time;
       background = true;
       repeating = true;
@@ -1181,6 +1180,8 @@ struct feral_spirit_pet_t : public pet_t
     if ( owner -> race == RACE_ORC )
       m *= 1.0 + command -> effectN( 1 ).percent();
 
+    m *= 1.0 + o() -> perk.improved_feral_spirit -> effectN( 1 ).percent();
+
     return m;
   }
 };
@@ -1254,7 +1255,7 @@ struct primal_elemental_t : public pet_t
   {
     primal_elemental_t* p;
 
-    primal_elemental_spell_t( const std::string& t, 
+    primal_elemental_spell_t( const std::string& t,
                               primal_elemental_t* p,
                               const spell_data_t* s = spell_data_t::nil(),
                               const std::string& options = std::string() ) :
@@ -1355,11 +1356,7 @@ struct earth_elemental_t : public primal_elemental_t
     resources.base[ RESOURCE_HEALTH ] = 8000; // Approximated from lvl85 earth elemental in game
     resources.base[ RESOURCE_MANA   ] = 0; //
 
-    owner_coeff.ap_from_sp = 0.05; // TODO-WOD: Preliminary value, verify
-
-    // dual-wielding enhancement shamans get 3% base parry
-    if ( specialization() == SHAMAN_ENHANCEMENT )
-      base.parry = 0.03;
+    owner_coeff.ap_from_sp = 0.05625;
   }
 
   void init_action_list()
@@ -1374,7 +1371,7 @@ struct earth_elemental_t : public primal_elemental_t
                                    const std::string& options_str )
   {
     // EE seems to use 130% weapon multiplier on attacks, while inheriting 5% SP as AP
-    if ( name == "auto_attack" ) return new auto_attack_t ( this, SCHOOL_PHYSICAL, 1.3 );
+    if ( name == "auto_attack" ) return new auto_attack_t ( this, SCHOOL_PHYSICAL );
 
     return primal_elemental_t::create_action( name, options_str );
   }
@@ -4516,6 +4513,9 @@ void shaman_t::init_base_stats()
   base.distance = ( specialization() == SHAMAN_ENHANCEMENT ) ? 3 : 30;
   base.mana_regen_from_spirit_multiplier = spec.meditation -> effectN( 1 ).percent();
 
+  // dual-wielding enhancement shamans get 3% base parry
+  if ( specialization() == SHAMAN_ENHANCEMENT )
+    base.parry = 0.03;
 
   //if ( specialization() == SHAMAN_ENHANCEMENT )
   //  ready_type = READY_TRIGGER;
