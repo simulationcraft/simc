@@ -449,7 +449,7 @@ player_e util::parse_player_type( const std::string& name )
 
 // translate_class_str ======================================================
 
-player_e util::translate_class_str( std::string& s )
+player_e util::translate_class_str( const std::string& s )
 {
   return parse_enum<player_e, PLAYER_NONE, PLAYER_MAX, player_type_string>( s );
 }

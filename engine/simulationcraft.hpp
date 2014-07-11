@@ -1274,7 +1274,7 @@ player_e pet_class_type( pet_e type );
 
 const char* class_id_string( player_e type );
 player_e translate_class_id( int cid );
-player_e translate_class_str( std::string& s );
+player_e translate_class_str( const std::string& s );
 race_e translate_race_id( int rid );
 stat_e translate_item_mod( int stat_mod );
 int translate_stat( stat_e stat );
@@ -1376,7 +1376,9 @@ std::string to_str( const dbc_t& dbc, const spell_data_t* spell, int level = MAX
 void        to_xml( const dbc_t& dbc, const spell_data_t* spell, xml_node_t* parent, int level = MAX_LEVEL );
 //static std::string to_str( sim_t* sim, uint32_t spell_id, int level = MAX_LEVEL );
 std::string talent_to_str( const dbc_t& dbc, const talent_data_t* talent, int level = MAX_LEVEL );
+std::string set_bonus_to_str( const dbc_t& dbc, const item_set_bonus_t* set_bonus, int level = MAX_LEVEL );
 void        talent_to_xml( const dbc_t& dbc, const talent_data_t* talent, xml_node_t* parent, int level = MAX_LEVEL );
+void        set_bonus_to_xml( const dbc_t& dbc, const item_set_bonus_t* talent, xml_node_t* parent, int level = MAX_LEVEL );
 std::ostringstream& effect_to_str( const dbc_t& dbc, const spell_data_t* spell, const spelleffect_data_t* effect, std::ostringstream& s, int level = MAX_LEVEL );
 void                effect_to_xml( const dbc_t& dbc, const spell_data_t* spell, const spelleffect_data_t* effect, xml_node_t*    parent, int level = MAX_LEVEL );
 }
@@ -2158,6 +2160,7 @@ enum expr_data_e
   DATA_GLYPH_SPELL,
   DATA_SET_BONUS_SPELL,
   DATA_PERK_SPELL,
+  DATA_SET_BONUS,
 };
 
 struct spell_data_expr_t

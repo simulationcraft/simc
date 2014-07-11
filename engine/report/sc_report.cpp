@@ -519,6 +519,13 @@ void report::print_spell_query( sim_t* sim, unsigned level )
       }
       sim -> out_std.raw() << sqs.str();
     }
+    else if ( sq -> data_type == DATA_SET_BONUS )
+    {
+      if ( root )
+        spell_info::talent_to_xml( sim -> dbc, sim -> dbc.talent( *i ), root );
+      else
+        sim -> out_std.raw() << spell_info::set_bonus_to_str( sim -> dbc, (dbc::set_bonus( sim -> dbc.ptr ) + *i) );
+    }
     else
     {
       const spell_data_t* spell = sim -> dbc.spell( *i );
@@ -528,6 +535,7 @@ void report::print_spell_query( sim_t* sim, unsigned level )
         sim -> out_std.raw() << spell_info::to_str( sim -> dbc, spell, level );
     }
   }
+
 
   if ( root )
   {

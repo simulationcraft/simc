@@ -210,7 +210,7 @@ const item_set_bonus_t* dbc::set_bonus( bool ptr )
   return p;
 }
 
-std::size_t n_set_bonus( bool ptr )
+std::size_t dbc::n_set_bonus( bool ptr )
 {
   ( void ) ptr;
 
