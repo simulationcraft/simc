@@ -3513,6 +3513,8 @@ void warrior_t::init_base_stats()
 {
   player_t::init_base_stats();
 
+  resources.base[RESOURCE_RAGE] = 100;
+
   if ( glyphs.unending_rage -> ok() )
     resources.base[RESOURCE_RAGE] += glyphs.unending_rage -> effectN( 1 ).resource( RESOURCE_RAGE );
 
