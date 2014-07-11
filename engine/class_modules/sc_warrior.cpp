@@ -218,6 +218,7 @@ public:
     //Tier bonuses
     proc_t* t15_2pc_melee;
     proc_t* t17_4pc_arms;
+    proc_t* t17_2pc_fury;
   } proc;
 
   real_ppm_t t15_2pc_melee;
@@ -1472,7 +1473,7 @@ struct execute_t: public warrior_attack_t
 
     if ( p() -> spec.crazed_berserker -> ok() && result_is_hit( execute_state -> result ) &&
          p() -> off_hand_weapon.type == WEAPON_NONE ) // If MH fails to land, or if there is no OH weapon for Fury, oh attack does not execute.
-      oh_attack -> execute();
+         oh_attack -> execute();
 
     p() -> buff.sudden_death -> expire();
   }
@@ -1645,7 +1646,7 @@ struct heroic_throw_t: public warrior_attack_t
   {
     if ( p() -> current.distance_to_move > data().max_range() ||
          p() -> current.distance_to_move < data().min_range() ) // Cannot heroic throw unless target is in range.
-      return false;
+         return false;
 
     if ( p() -> main_hand_weapon.type == WEAPON_NONE )
       return false;
@@ -1934,10 +1935,6 @@ struct raging_blow_attack_t: public warrior_attack_t
     if ( aoe ) ++aoe;
 
     warrior_attack_t::execute();
-
-    if ( execute_state -> result == RESULT_CRIT )
-      if ( rng().roll( p() -> sets.set( SET_T17_2PC_MELEE ) -> proc_chance() ) )
-        p() -> enrage();
   }
 };
 
@@ -1975,6 +1972,15 @@ struct raging_blow_t: public warrior_attack_t
       if ( mh_attack -> execute_state -> result == RESULT_CRIT &&
            oh_attack -> execute_state -> result == RESULT_CRIT )
            p() -> buff.raging_blow_glyph -> trigger();
+      if ( mh_attack -> execute_state -> result == RESULT_CRIT ||
+           oh_attack -> execute_state -> result == RESULT_CRIT )
+      {
+        if ( rng().roll( p() -> sets.set( SET_T17_2PC_MELEE ) -> _proc_chance ) )
+        {
+          p() -> enrage();
+          p() -> proc.t17_2pc_fury -> occur();
+        }
+      }
       p() -> buff.raging_wind -> trigger();
       p() -> buff.meat_cleaver -> expire();
     }
@@ -1989,7 +1995,7 @@ struct raging_blow_t: public warrior_attack_t
     // Needs weapons in both hands
     if ( p() -> main_hand_weapon.type == WEAPON_NONE ||
          p() -> off_hand_weapon.type == WEAPON_NONE )
-      return false;
+         return false;
 
     return warrior_attack_t::ready();
   }
@@ -2260,6 +2266,7 @@ struct slam_t: public warrior_attack_t
   {
     parse_options( NULL, options_str );
     weapon = &( p -> main_hand_weapon );
+    base_costs[RESOURCE_RAGE] = 10;
   }
 
   virtual double cost() const
@@ -2375,7 +2382,7 @@ struct storm_bolt_t: public warrior_attack_t
 
     if ( oh_attack && result_is_hit( execute_state -> result ) &&
          p() -> off_hand_weapon.type != WEAPON_NONE ) // If MH fails to land, OH does not execute.
-      oh_attack -> execute();
+         oh_attack -> execute();
   }
 
   virtual void update_ready( timespan_t cd_duration )
@@ -2562,7 +2569,7 @@ struct whirlwind_t: public warrior_attack_t
     if ( p() -> main_hand_weapon.type == WEAPON_NONE )
       return false;
 
-     return warrior_attack_t::ready();
+    return warrior_attack_t::ready();
   }
 };
 
@@ -2977,7 +2984,7 @@ struct shield_block_t: public warrior_spell_t
 struct shield_charge_t: public warrior_spell_t
 {
   shield_charge_t( warrior_t* p, const std::string& options_str ):
-    warrior_spell_t( "shield_charge", p, p -> find_class_spell( "Shield Charge" ) )
+    warrior_spell_t( "shield_charge", p, p -> find_spell( 156321 ) )
   {
     parse_options( NULL, options_str );
     stancemask = STANCE_GLADIATOR;
@@ -3226,14 +3233,14 @@ struct last_stand_t: public buff_t
   virtual bool trigger( int stacks, double value, double chance, timespan_t duration )
   {
     health_gain = (int)floor( player -> resources.max[RESOURCE_HEALTH] * 0.3 );
-    player -> stat_gain( STAT_MAX_HEALTH, health_gain, (gain_t*) 0, (action_t*) 0, true );
+    player -> stat_gain( STAT_MAX_HEALTH, health_gain, (gain_t*)0, (action_t*)0, true );
 
     return buff_t::trigger( stacks, value, chance, duration );
   }
 
   virtual void expire_override()
   {
-    player -> stat_loss( STAT_MAX_HEALTH, health_gain, (gain_t*) 0, (action_t*) 0, true );
+    player -> stat_loss( STAT_MAX_HEALTH, health_gain, (gain_t*)0, (action_t*)0, true );
 
     buff_t::expire_override();
   }
@@ -3474,18 +3481,18 @@ void warrior_t::init_spells()
     { 0, 0, 123142, 123144, 123146, 123147, 0, 0 }, // Tier14
     { 0, 0, 138120, 138126, 138280, 138281, 0, 0 }, // Tier15
     { 0, 0, 144436, 144441, 144503, 144502, 0, 0 }, // Tier16
-    { 0, 0, 0,      0,      165338, 165351, 0, 0 }, // Tier17
+    { 0, 0, 0, 0, 165338, 165351, 0, 0 }, // Tier17
   };
 
   if ( specialization() == WARRIOR_FURY )
   {
-    set_bonuses[2][6] = 165337; //T17 2PC
-    set_bonuses[2][7] = 165349; //T17 4PC
+    set_bonuses[4][2] = 165337; //T17 2PC
+    set_bonuses[4][3] = 165349; //T17 4PC
   }
   else if ( specialization() == WARRIOR_ARMS )
   {
-    set_bonuses[2][6] = 165336; //T17 2PC
-    set_bonuses[2][7] = 165345; //T17 4PC
+    set_bonuses[4][2] = 165336; //T17 2PC
+    set_bonuses[4][3] = 165345; //T17 4PC
   }
 
   sets.register_spelldata( set_bonuses );
@@ -3962,7 +3969,8 @@ void warrior_t::create_buffs()
     .default_value( find_class_spell( "Shield Wall" )-> effectN( 1 ).percent() )
     .cd( timespan_t::zero() );
 
-  buff.slam = buff_creator_t( this, "slam", talents.slam );
+  buff.slam = buff_creator_t( this, "slam", talents.slam )
+    .max_stack( 2 );
 
   buff.sudden_death = buff_creator_t( this, "sudden_death", talents.sudden_death );
 
@@ -3977,11 +3985,16 @@ void warrior_t::create_buffs()
   buff.tier16_reckless_defense = buff_creator_t( this, "tier16_reckless_defense", find_spell( 144500 ) );
 
   buff.tier17_4pc_arms = buff_creator_t( this, "tier17_4pc_arms", sets.set( SET_T17_4PC_MELEE ) -> effectN( 1 ).trigger() )
-    .chance( sets.set( SET_T17_4PC_MELEE) -> proc_chance() );
+    .chance( ( sets.has_set_bonus( SET_T17_4PC_MELEE ) ? 1.0 : 0.0 ) * sets.set( SET_T17_4PC_MELEE ) -> proc_chance() );
 
-  buff.tier17_4pc_fury = buff_creator_t( this, "tier17_4pc_fury", sets.set( SET_T17_4PC_MELEE ) -> effectN( 1 ).trigger() -> effectN( 1 ).trigger() )
+  buff.tier17_4pc_fury = buff_creator_t( this, "tier17_4pc_fury", sets.set( SET_T17_4PC_MELEE ) -> effectN( 1 ).trigger() )
+    .chance( sets.has_set_bonus( SET_T17_4PC_MELEE ) ? 1.0 : 0.0 )
+    .default_value( 0.05 )
     .add_invalidate( CACHE_ATTACK_SPEED )
-    .add_invalidate( CACHE_CRIT );
+    .add_invalidate( CACHE_CRIT )
+    .max_stack( 10 )
+    .duration( timespan_t::from_seconds( 15 ) )
+    .period( timespan_t::from_seconds( 1 ) );
 
   buff.unyielding_strikes = buff_creator_t( this, "unyielding_strikes", talents.unyielding_strikes );
 
@@ -4046,6 +4059,7 @@ void warrior_t::init_procs()
   proc.sudden_death            = get_proc( "sudden_death" );
   proc.t15_2pc_melee           = get_proc( "t15_2pc_melee" );
   proc.t17_4pc_arms            = get_proc( "t17_4pc_arms" );
+  proc.t17_2pc_fury            = get_proc( "t17_2pc_fury" );
 }
 
 // warrior_t::init_rng ======================================================
@@ -4368,7 +4382,8 @@ double warrior_t::composite_melee_speed() const
 {
   double s = player_t::composite_melee_speed();
 
-  s *= 1.0 / ( 1.0 + buff.tier17_4pc_fury -> stack() * buff.tier17_4pc_fury -> data().effectN( 1 ).percent() );
+  if ( buff.tier17_4pc_fury -> up() )
+    s *= 1.0 / ( 1.0 + buff.tier17_4pc_fury -> stack() * buff.tier17_4pc_fury -> default_value );
 
   return s;
 }
@@ -4379,7 +4394,8 @@ double warrior_t::composite_melee_crit() const
 {
   double c = player_t::composite_melee_crit();
 
-  c += buff.tier17_4pc_fury -> stack() * buff.tier17_4pc_fury -> data().effectN( 2 ).percent();
+  if ( buff.tier17_4pc_fury -> up() )
+    c += buff.tier17_4pc_fury -> stack() * buff.tier17_4pc_fury -> default_value;
 
   return c;
 }
