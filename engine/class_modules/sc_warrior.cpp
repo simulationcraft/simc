@@ -51,6 +51,7 @@ public:
   action_t* active_defensive_stance;
   action_t* active_second_wind;
   attack_t* active_sweeping_strikes;
+  action_t* active_t17_4pc_fury_driver;
 
   heal_t* active_t16_2pc;
   warrior_stance active_stance;
@@ -103,6 +104,7 @@ public:
     buff_t* tier15_2pc_tank;
     buff_t* tier16_reckless_defense;
     buff_t* tier17_4pc_arms;
+    buff_t* tier17_4pc_fury_driver;
     buff_t* tier17_4pc_fury;
   } buff;
 
@@ -349,6 +351,7 @@ public:
     active_second_wind        = 0;
     active_sweeping_strikes   = 0;
     active_t16_2pc            = 0;
+    active_t17_4pc_fury_driver = 0;
     active_stance             = STANCE_BATTLE;
 
     // Cooldowns
@@ -404,6 +407,7 @@ public:
   virtual double    composite_crit_avoidance() const;
   virtual double    composite_melee_speed() const;
   virtual double    composite_melee_crit() const;
+  virtual double    composite_spell_crit() const;
   virtual void      reset();
   virtual void      regen( timespan_t periodicity );
   virtual void      create_options();
@@ -2053,7 +2057,7 @@ struct revenge_t: public warrior_attack_t
     absorb_stats( 0 ), rage_gain( 0 )
   {
     parse_options( NULL, options_str );
-    stancemask = STANCE_GLADIATOR | STANCE_BATTLE;
+    stancemask = STANCE_GLADIATOR | STANCE_DEFENSE;
 
     aoe = 3;
     rage_gain = data().effectN( 2 ).resource( RESOURCE_RAGE );
@@ -2628,6 +2632,20 @@ struct warrior_spell_t: public warrior_action_t < spell_t >
   }
 };
 
+struct tier17_4pc_fury_driver_t: public warrior_spell_t
+{
+  tier17_4pc_fury_driver_t( warrior_t* p ):
+    warrior_spell_t( "rampage_driver", p, p -> find_spell( 165350 ) )
+  {
+  }
+
+  virtual void tick( dot_t*d )
+  {
+    warrior_spell_t::tick( d );
+    p() -> buff.tier17_4pc_fury -> trigger( 1 );
+  }
+};
+
 // Avatar ===================================================================
 
 struct avatar_t: public warrior_spell_t
@@ -2870,7 +2888,8 @@ struct recklessness_t: public warrior_spell_t
     warrior_spell_t::execute();
 
     p() -> buff.recklessness -> trigger( 1, bonus_crit );
-    p() -> buff.tier17_4pc_fury -> trigger();
+    if ( p() -> sets.has_set_bonus( SET_T17_4PC_MELEE ) && p() -> specialization() == WARRIOR_FURY )
+      p() -> active_t17_4pc_fury_driver -> execute();
   }
 
   virtual void update_ready( timespan_t cd_duration )
@@ -3219,8 +3238,31 @@ struct last_stand_t: public warrior_spell_t
 
 } // UNNAMED NAMESPACE
 
+// ==========================================================================
+// Warrior Buffs
+// ==========================================================================
+
 namespace buffs
 {
+template <typename Base>
+struct warrior_buff_t: public Base
+{
+public:
+  typedef warrior_buff_t base_t;
+
+  warrior_buff_t( warrior_td_t& p, const buff_creator_basics_t& params ):
+    Base( params ), warrior( p.warrior )
+  {
+  }
+
+  warrior_buff_t( warrior_t& p, const buff_creator_basics_t& params ):
+    Base( params ), warrior( p )
+  {
+  }
+
+protected:
+  warrior_t& warrior;
+};
 
 struct last_stand_t: public buff_t
 {
@@ -3474,6 +3516,7 @@ void warrior_t::init_spells()
   active_defensive_stance   = new defensive_stance_t( this );
   active_second_wind        = new second_wind_t( this );
   active_t16_2pc            = new tier16_2pc_tank_heal_t( this );
+  active_t17_4pc_fury_driver = new tier17_4pc_fury_driver_t( this );
 
   static set_bonus_description_t set_bonuses =
   {
@@ -3891,6 +3934,8 @@ void warrior_t::create_buffs()
 {
   player_t::create_buffs();
 
+  using namespace buffs;
+
   buff.heroic_charge = buff_creator_t( this, "heroic_charge" );
 
   buff.avatar = buff_creator_t( this, "avatar", talents.avatar )
@@ -3970,8 +4015,7 @@ void warrior_t::create_buffs()
     .default_value( find_class_spell( "Shield Wall" )-> effectN( 1 ).percent() )
     .cd( timespan_t::zero() );
 
-  buff.slam = buff_creator_t( this, "slam", talents.slam )
-    .max_stack( 2 );
+  buff.slam = buff_creator_t( this, "slam", talents.slam );
 
   buff.sudden_death = buff_creator_t( this, "sudden_death", talents.sudden_death );
 
@@ -3988,14 +4032,9 @@ void warrior_t::create_buffs()
   buff.tier17_4pc_arms = buff_creator_t( this, "tier17_4pc_arms", sets.set( SET_T17_4PC_MELEE ) -> effectN( 1 ).trigger() )
     .chance( ( sets.has_set_bonus( SET_T17_4PC_MELEE ) ? 1.0 : 0.0 ) * sets.set( SET_T17_4PC_MELEE ) -> proc_chance() );
 
-  buff.tier17_4pc_fury = buff_creator_t( this, "tier17_4pc_fury", sets.set( SET_T17_4PC_MELEE ) -> effectN( 1 ).trigger() )
-    .chance( sets.has_set_bonus( SET_T17_4PC_MELEE ) ? 1.0 : 0.0 )
-    .default_value( 0.05 )
+  buff.tier17_4pc_fury = buff_creator_t( this, "rampage", find_spell( 166588 ) )
     .add_invalidate( CACHE_ATTACK_SPEED )
-    .add_invalidate( CACHE_CRIT )
-    .max_stack( 10 )
-    .duration( timespan_t::from_seconds( 15 ) )
-    .period( timespan_t::from_seconds( 1 ) );
+    .add_invalidate( CACHE_CRIT );
 
   buff.unyielding_strikes = buff_creator_t( this, "unyielding_strikes", find_spell( 169686 ) );
 
@@ -4392,6 +4431,18 @@ double warrior_t::composite_melee_speed() const
 double warrior_t::composite_melee_crit() const
 {
   double c = player_t::composite_melee_crit();
+
+  if ( buff.tier17_4pc_fury -> up() )
+    c += buff.tier17_4pc_fury -> stack() * buff.tier17_4pc_fury -> default_value;
+
+  return c;
+}
+
+// warrior_t::composite_spell_crit =========================================
+
+double warrior_t::composite_spell_crit() const
+{
+  double c = player_t::composite_spell_crit();
 
   if ( buff.tier17_4pc_fury -> up() )
     c += buff.tier17_4pc_fury -> stack() * buff.tier17_4pc_fury -> default_value;
