@@ -166,7 +166,6 @@ SC_OptionsTab::SC_OptionsTab( SC_MainWindow* parent ) :
 
   connect( choice.armory_region,      SIGNAL( currentIndexChanged( int ) ), this, SLOT( _optionsChanged() ) );
   connect( choice.armory_spec,        SIGNAL( currentIndexChanged( int ) ), this, SLOT( _optionsChanged() ) );
-  connect( choice.aura_delay,         SIGNAL( currentIndexChanged( int ) ), this, SLOT( _optionsChanged() ) );
   connect( choice.center_scale_delta, SIGNAL( currentIndexChanged( int ) ), this, SLOT( _optionsChanged() ) );
   connect( choice.challenge_mode,     SIGNAL( currentIndexChanged( int ) ), this, SLOT( _optionsChanged() ) );
   connect( choice.debug,              SIGNAL( currentIndexChanged( int ) ), this, SLOT( _optionsChanged() ) );
