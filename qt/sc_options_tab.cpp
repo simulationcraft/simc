@@ -70,7 +70,7 @@ const OptionEntry scalingOptions[] =
   { "Analyze Haste Rating",             "haste",    "Calculate scale factors for Haste Rating"             },
   { "Analyze Mastery Rating",           "mastery",  "Calculate scale factors for Mastery Rating"           },
   { "Analyze Multistrike Rating",       "mult",     "Calculate scale factors for Multistrike Rating"       },
-  { "Analyze Readiness Rating",         "readiness",  "Calculate scale factors for Readiness Rating"         },
+  { "Analyze Readiness Rating",         "readiness",  "Calculate scale factors for Readiness Rating"       },
   { "Analyze Versatility Rating",       "vers",     "Calculate scale factors for Versatility Rating"       },
   { "Analyze Weapon DPS",               "wdps",     "Calculate scale factors for Weapon DPS"               },
   { "Analyze Weapon Speed",             "wspeed",   "Calculate scale factors for Weapon Speed"             },
