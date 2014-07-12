@@ -125,8 +125,8 @@ public:
   action_t* action_ancestral_awakening;
   action_t* action_improved_lava_lash;
   action_t* action_lightning_strike;
-  shaman_spell_t* lightning_strike;
-  shaman_spell_t* eruption;
+  spell_t*  molten_earth;
+
 
   // Pets
   pet_t* pet_feral_spirit[4];
@@ -184,8 +184,6 @@ public:
     stat_buff_t* tier13_2pc_caster;
     stat_buff_t* tier13_4pc_caster;
 
-    buff_t* rising_heat;
-    buff_t* electric_charge;
   } buff;
 
   // Cooldowns
@@ -438,6 +436,7 @@ public:
   virtual           ~shaman_t();
 
   // triggers
+  void trigger_molten_earth( const action_state_t* );
   void trigger_fulmination_stack( const action_state_t* );
   void trigger_maelstrom_weapon( const action_state_t* );
   void trigger_windfury_weapon( const action_state_t* );
@@ -1674,6 +1673,92 @@ struct flametongue_weapon_spell_t : public shaman_spell_t
   }
 };
 
+struct molten_earth_spell_t : public shaman_spell_t
+{
+  molten_earth_spell_t( shaman_t* p ) :
+    shaman_spell_t( "molten_earth", p, p -> find_spell( 170379 ) )
+  {
+    background = proc = true;
+    callbacks = false;
+  }
+
+  double spell_direct_power_coefficient( const action_state_t* ) const
+  { return .25 * data().effectN( 1 ).sp_coeff() * player -> cache.mastery_value(); }
+};
+
+struct molten_earth_driver_t;
+
+struct molten_earth_spell_event_t : public event_t
+{
+  molten_earth_driver_t* driver;
+
+  molten_earth_spell_event_t( shaman_t* shaman, molten_earth_driver_t* driver ) :
+    event_t( *shaman, "molten_earth" ), driver( driver )
+  {
+    sim().add_event( this, timespan_t::from_seconds( rng().range( 0, 4.0 * shaman -> cache.spell_speed() ) ) );
+  }
+
+  // Execute the nuke
+  void execute();
+};
+
+struct molten_earth_driver_t : public spell_t
+{
+  std::vector<molten_earth_spell_event_t*> scheduled_bolts;
+  molten_earth_spell_t* nuke;
+
+  molten_earth_driver_t( shaman_t* p ) :
+    spell_t( "molten_earth_driver", p, p -> find_spell( 170377 ) ),
+    nuke( new molten_earth_spell_t( p ) )
+  {
+    may_miss = may_crit = callbacks = proc = tick_may_crit = false;
+    background = hasted_ticks = quiet = dual = true;
+  }
+
+  void tick( dot_t* d )
+  {
+    spell_t::tick( d );
+
+    // Driver ticks, add a new scheduled bolt that will fire at [0..4/haste]
+    // time.
+    scheduled_bolts.push_back( new ( *sim ) molten_earth_spell_event_t( debug_cast<shaman_t*>( player ), this ) );
+  }
+
+  // When a bolt is fired, remove it's pointer from the list of scheduled bolts
+  void remove_event( molten_earth_spell_event_t* event )
+  {
+    std::vector<molten_earth_spell_event_t*>::iterator i;
+    i = std::find( scheduled_bolts.begin(), scheduled_bolts.end(), event );
+    if ( i != scheduled_bolts.end() )
+      scheduled_bolts.erase( i );
+  }
+
+  // Maximum duration is extended by max of 6 seconds
+  timespan_t calculate_dot_refresh_duration( const dot_t*, timespan_t ) const override
+  { return data().duration(); }
+
+  void last_tick( dot_t* dot )
+  {
+    spell_t::last_tick( dot );
+
+    // Last tick, actor has not done anything for the past 6 seconds. Remove
+    // all scheduled bolts.
+    for ( size_t i = 0, end = scheduled_bolts.size(); i < end; i++ )
+    {
+      core_event_t* e = scheduled_bolts[ i ];
+      core_event_t::cancel( e );
+    }
+
+    scheduled_bolts.clear();
+  }
+};
+
+inline void molten_earth_spell_event_t::execute()
+{
+  driver -> nuke -> schedule_execute();
+  driver -> remove_event( this );
+}
+
 struct ancestral_awakening_t : public shaman_heal_t
 {
   ancestral_awakening_t( shaman_t* player ) :
@@ -2405,6 +2490,7 @@ void shaman_spell_t::execute()
   if ( ! background && uses_unleash_flame )
     p() -> buff.unleash_flame -> expire();
 
+  p() -> trigger_molten_earth( execute_state );
 }
 
 // ==========================================================================
@@ -4454,6 +4540,9 @@ void shaman_t::init_spells()
     t16_flame = new unleash_flame_spell_t( "t16_unleash_flame", this );
   }
 
+  if ( mastery.molten_earth -> ok() )
+    molten_earth = new molten_earth_driver_t( this );
+
   if ( specialization() == SHAMAN_ENHANCEMENT )
   {
     windfury = new windfury_weapon_melee_attack_t( "windfury_attack", this, &( main_hand_weapon ) );
@@ -4521,129 +4610,20 @@ void shaman_t::init_scaling()
   }
 }
 
-// shaman_t::init_buffs =====================================================
-
-void shaman_t::create_buffs()
-{
-  player_t::create_buffs();
-
-  buff.ancestral_swiftness     = buff_creator_t( this, "ancestral_swiftness", talent.ancestral_swiftness )
-                                 .cd( timespan_t::zero() );
-  buff.ascendance              = new ascendance_buff_t( this );
-  buff.echo_of_the_elements    = buff_creator_t( this, "echo_of_the_elements", talent.echo_of_the_elements )
-                                 .chance( talent.echo_of_the_elements -> ok() );
-  buff.liquid_magma               = buff_creator_t( this, "liquid_magma", talent.liquid_magma )
-                                 .chance( talent.liquid_magma -> ok() );
-  buff.lava_surge              = buff_creator_t( this, "lava_surge",        spec.lava_surge )
-                                 .activated( false )
-                                 .chance( 1.0 ); // Proc chance is handled externally
-  buff.lightning_shield        = buff_creator_t( this, "lightning_shield", find_class_spell( "Lightning Shield" ) )
-                                 .max_stack( ( specialization() == SHAMAN_ELEMENTAL )
-                                             ? static_cast< int >( spec.fulmination -> effectN( 1 ).base_value() + perk.improved_lightning_shield -> effectN( 1 ).base_value() )
-                                             : find_class_spell( "Lightning Shield" ) -> initial_stacks() )
-                                 .cd( timespan_t::zero() );
-  buff.maelstrom_weapon        = new maelstrom_weapon_buff_t( this );
-  buff.shamanistic_rage        = buff_creator_t( this, "shamanistic_rage",  spec.shamanistic_rage );
-  buff.elemental_fusion        = buff_creator_t( this, "elemental_fusion", find_spell( 157174 ) )
-                                 .chance( talent.elemental_fusion -> ok() );
-  buff.spirit_walk             = buff_creator_t( this, "spirit_walk", spec.spirit_walk );
-  buff.spiritwalkers_grace     = buff_creator_t( this, "spiritwalkers_grace", find_class_spell( "Spiritwalker's Grace" ) )
-                                 .chance( 1.0 )
-                                 .duration( find_class_spell( "Spiritwalker's Grace" ) -> duration() +
-                                            glyph.spiritwalkers_grace -> effectN( 1 ).time_value() +
-                                            sets.set( SET_T13_4PC_HEAL ) -> effectN( 1 ).time_value() );
-  buff.tidal_waves             = buff_creator_t( this, "tidal_waves", spec.tidal_waves -> ok() ? find_spell( 53390 ) : spell_data_t::not_found() );
-  buff.unleash_flame           = new unleash_flame_buff_t( this );
-  buff.unleashed_fury_wf       = buff_creator_t( this, "unleashed_fury_wf", find_spell( 118472 ) )
-                                 .add_invalidate( CACHE_MULTISTRIKE );
-
-  // Haste buffs
-  buff.elemental_mastery       = haste_buff_creator_t( this, "elemental_mastery", talent.elemental_mastery )
-                                 .chance( 1.0 )
-                                 .add_invalidate( CACHE_HASTE );
-  constant.haste_elemental_mastery = 1.0 / ( 1.0 + buff.elemental_mastery -> data().effectN( 1 ).percent() );
-
-  buff.unleash_wind            = haste_buff_creator_t( this, "unleash_wind", find_spell( 73681 ) ).add_invalidate( CACHE_ATTACK_SPEED );
-  constant.attack_speed_unleash_wind = 1.0 / ( 1.0 + buff.unleash_wind -> data().effectN( 1 ).percent() );
-
-  buff.tier13_4pc_healer       = haste_buff_creator_t( this, "tier13_4pc_healer", find_spell( 105877 ) ).add_invalidate( CACHE_HASTE );
-
-  // Stat buffs
-  buff.elemental_blast_crit    = stat_buff_creator_t( this, "elemental_blast_crit", find_spell( 118522 ) )
-                                 .max_stack( 1 )
-                                 .add_stat( STAT_CRIT_RATING, find_spell( 118522 ) -> effectN( 1 ).average( this ) );
-  buff.elemental_blast_haste   = stat_buff_creator_t( this, "elemental_blast_haste", find_spell( 118522 ) )
-                                 .max_stack( 1 )
-                                 .add_stat( STAT_HASTE_RATING, find_spell( 118522 ) -> effectN( 2 ).average( this ) );
-  buff.elemental_blast_mastery = stat_buff_creator_t( this, "elemental_blast_mastery", find_spell( 118522 ) )
-                                 .max_stack( 1 )
-                                 .add_stat( STAT_MASTERY_RATING, find_spell( 118522 ) -> effectN( 3 ).average( this ) );
-  buff.elemental_blast_multistrike = stat_buff_creator_t( this, "elemental_blast_multistrike", find_spell( 118522 ) )
-                                 .max_stack( 1 )
-                                 .add_stat( STAT_MULTISTRIKE_RATING, find_spell( 118522 ) -> effectN( 4 ).average( this ) );
-  buff.elemental_blast_versatility = stat_buff_creator_t( this, "elemental_blast_versatility", find_spell( 118522 ) )
-                                 .max_stack( 1 )
-                                 .add_stat( STAT_MULTISTRIKE_RATING, find_spell( 118522 ) -> effectN( 5 ).average( this ) );
-  buff.elemental_blast_agility = stat_buff_creator_t( this, "elemental_blast_agility", find_spell( 118522 ) )
-                                 .max_stack( 1 )
-                                 .add_stat( STAT_AGILITY, find_spell( 118522 ) -> effectN( 6 ).average( this ) );
-  buff.tier13_2pc_caster        = stat_buff_creator_t( this, "tier13_2pc_caster", find_spell( 105779 ) );
-  buff.tier13_4pc_caster        = stat_buff_creator_t( this, "tier13_4pc_caster", find_spell( 105821 ) );
-  buff.tier16_2pc_melee         = buff_creator_t( this, "tier16_2pc_melee", sets.set( SET_T16_2PC_MELEE ) -> effectN( 1 ).trigger() )
-                                  .chance( static_cast< double >( sets.has_set_bonus( SET_T16_2PC_MELEE ) ) );
-
-  buff.rising_heat             = buff_creator_t( this, "rising_heat", find_spell( 168554 ) )
-                                  .max_stack( spell.eruption -> max_stacks() );
-  buff.electric_charge         = buff_creator_t( this, "electric_charge", find_spell( 168553 ) )
-                                  .max_stack( spell.lightning_strike  -> max_stacks() );
-}
-
-// shaman_t::init_gains =====================================================
-
-void shaman_t::init_gains()
-{
-  player_t::init_gains();
-
-  gain.resurgence           = get_gain( "resurgence"        );
-}
-
-// shaman_t::init_procs =====================================================
-
-void shaman_t::init_procs()
-{
-  player_t::init_procs();
-
-  proc.lava_surge         = get_proc( "lava_surge"              );
-  proc.ls_fast            = get_proc( "lightning_shield_too_fast_fill" );
-  proc.maelstrom_weapon   = get_proc( "maelstrom_weapon"        );
-  proc.swings_clipped_mh  = get_proc( "swings_clipped_mh"       );
-  proc.swings_clipped_oh  = get_proc( "swings_clipped_oh"       );
-  proc.swings_reset_mh    = get_proc( "swings_reset_mh"         );
-  proc.swings_reset_oh    = get_proc( "swings_reset_oh"         );
-  proc.uf_flame_shock     = get_proc( "uf_flame_shock"          );
-  proc.uf_fire_nova       = get_proc( "uf_fire_nova"            );
-  proc.uf_lava_burst      = get_proc( "uf_lava_burst"           );
-  proc.uf_elemental_blast = get_proc( "uf_elemental_blast"      );
-  proc.uf_wasted          = get_proc( "uf_wasted"               );
-  proc.t15_2pc_melee      = get_proc( "t15_2pc_melee"           );
-  proc.t16_2pc_melee      = get_proc( "t16_2pc_melee"           );
-  proc.t16_4pc_caster     = get_proc( "t16_4pc_caster"          );
-  proc.t16_4pc_melee      = get_proc( "t16_4pc_melee"           );
-  proc.wasted_t15_2pc_melee = get_proc( "wasted_t15_2pc_melee"  );
-  proc.wasted_lava_surge  = get_proc( "wasted_lava_surge"       );
-  proc.wasted_ls          = get_proc( "wasted_lightning_shield" );
-  proc.wasted_ls_shock_cd = get_proc( "wasted_lightning_shield_shock_cd" );
-  proc.wasted_mw          = get_proc( "wasted_maelstrom_weapon" );
-  proc.windfury           = get_proc( "windfury"                );
-  proc.surge_during_lvb   = get_proc( "lava_surge_during_lvb"   );
-
-  for ( size_t i = 0, end = sizeof_array( proc.fulmination ); i < end; i++ )
-    proc.fulmination[ i ] = get_proc( "Fulmination: " + util::to_string( i ) + " stacks" );
-}
-
 // ==========================================================================
 // Shaman Ability Triggers
 // ==========================================================================
+
+void shaman_t::trigger_molten_earth( const action_state_t* state )
+{
+  if ( ! state -> action -> result_is_hit( state -> result ) )
+    return;
+
+  if ( ! mastery.molten_earth -> ok() )
+    return;
+
+  molten_earth -> schedule_execute();
+}
 
 void shaman_t::trigger_fulmination_stack( const action_state_t* state )
 {
@@ -4842,6 +4822,121 @@ void shaman_t::trigger_improved_lava_lash( const action_state_t* state )
   // Splash from the action's target
   action_improved_lava_lash -> target = state -> target;
   action_improved_lava_lash -> schedule_execute();
+}
+
+// shaman_t::init_buffs =====================================================
+
+void shaman_t::create_buffs()
+{
+  player_t::create_buffs();
+
+  buff.ancestral_swiftness     = buff_creator_t( this, "ancestral_swiftness", talent.ancestral_swiftness )
+                                 .cd( timespan_t::zero() );
+  buff.ascendance              = new ascendance_buff_t( this );
+  buff.echo_of_the_elements    = buff_creator_t( this, "echo_of_the_elements", talent.echo_of_the_elements )
+                                 .chance( talent.echo_of_the_elements -> ok() );
+  buff.liquid_magma               = buff_creator_t( this, "liquid_magma", talent.liquid_magma )
+                                 .chance( talent.liquid_magma -> ok() );
+  buff.lava_surge              = buff_creator_t( this, "lava_surge",        spec.lava_surge )
+                                 .activated( false )
+                                 .chance( 1.0 ); // Proc chance is handled externally
+  buff.lightning_shield        = buff_creator_t( this, "lightning_shield", find_class_spell( "Lightning Shield" ) )
+                                 .max_stack( ( specialization() == SHAMAN_ELEMENTAL )
+                                             ? static_cast< int >( spec.fulmination -> effectN( 1 ).base_value() + perk.improved_lightning_shield -> effectN( 1 ).base_value() )
+                                             : find_class_spell( "Lightning Shield" ) -> initial_stacks() )
+                                 .cd( timespan_t::zero() );
+  buff.maelstrom_weapon        = new maelstrom_weapon_buff_t( this );
+  buff.shamanistic_rage        = buff_creator_t( this, "shamanistic_rage",  spec.shamanistic_rage );
+  buff.elemental_fusion        = buff_creator_t( this, "elemental_fusion", find_spell( 157174 ) )
+                                 .chance( talent.elemental_fusion -> ok() );
+  buff.spirit_walk             = buff_creator_t( this, "spirit_walk", spec.spirit_walk );
+  buff.spiritwalkers_grace     = buff_creator_t( this, "spiritwalkers_grace", find_class_spell( "Spiritwalker's Grace" ) )
+                                 .chance( 1.0 )
+                                 .duration( find_class_spell( "Spiritwalker's Grace" ) -> duration() +
+                                            glyph.spiritwalkers_grace -> effectN( 1 ).time_value() +
+                                            sets.set( SET_T13_4PC_HEAL ) -> effectN( 1 ).time_value() );
+  buff.tidal_waves             = buff_creator_t( this, "tidal_waves", spec.tidal_waves -> ok() ? find_spell( 53390 ) : spell_data_t::not_found() );
+  buff.unleash_flame           = new unleash_flame_buff_t( this );
+  buff.unleashed_fury_wf       = buff_creator_t( this, "unleashed_fury_wf", find_spell( 118472 ) )
+                                 .add_invalidate( CACHE_MULTISTRIKE );
+
+  // Haste buffs
+  buff.elemental_mastery       = haste_buff_creator_t( this, "elemental_mastery", talent.elemental_mastery )
+                                 .chance( 1.0 )
+                                 .add_invalidate( CACHE_HASTE );
+  constant.haste_elemental_mastery = 1.0 / ( 1.0 + buff.elemental_mastery -> data().effectN( 1 ).percent() );
+
+  buff.unleash_wind            = haste_buff_creator_t( this, "unleash_wind", find_spell( 73681 ) ).add_invalidate( CACHE_ATTACK_SPEED );
+  constant.attack_speed_unleash_wind = 1.0 / ( 1.0 + buff.unleash_wind -> data().effectN( 1 ).percent() );
+
+  buff.tier13_4pc_healer       = haste_buff_creator_t( this, "tier13_4pc_healer", find_spell( 105877 ) ).add_invalidate( CACHE_HASTE );
+
+  // Stat buffs
+  buff.elemental_blast_crit    = stat_buff_creator_t( this, "elemental_blast_crit", find_spell( 118522 ) )
+                                 .max_stack( 1 )
+                                 .add_stat( STAT_CRIT_RATING, find_spell( 118522 ) -> effectN( 1 ).average( this ) );
+  buff.elemental_blast_haste   = stat_buff_creator_t( this, "elemental_blast_haste", find_spell( 118522 ) )
+                                 .max_stack( 1 )
+                                 .add_stat( STAT_HASTE_RATING, find_spell( 118522 ) -> effectN( 2 ).average( this ) );
+  buff.elemental_blast_mastery = stat_buff_creator_t( this, "elemental_blast_mastery", find_spell( 118522 ) )
+                                 .max_stack( 1 )
+                                 .add_stat( STAT_MASTERY_RATING, find_spell( 118522 ) -> effectN( 3 ).average( this ) );
+  buff.elemental_blast_multistrike = stat_buff_creator_t( this, "elemental_blast_multistrike", find_spell( 118522 ) )
+                                 .max_stack( 1 )
+                                 .add_stat( STAT_MULTISTRIKE_RATING, find_spell( 118522 ) -> effectN( 4 ).average( this ) );
+  buff.elemental_blast_versatility = stat_buff_creator_t( this, "elemental_blast_versatility", find_spell( 118522 ) )
+                                 .max_stack( 1 )
+                                 .add_stat( STAT_VERSATILITY_RATING, find_spell( 118522 ) -> effectN( 5 ).average( this ) );
+  buff.elemental_blast_agility = stat_buff_creator_t( this, "elemental_blast_agility", find_spell( 118522 ) )
+                                 .max_stack( 1 )
+                                 .add_stat( STAT_AGILITY, find_spell( 118522 ) -> effectN( 6 ).average( this ) );
+  buff.tier13_2pc_caster        = stat_buff_creator_t( this, "tier13_2pc_caster", find_spell( 105779 ) );
+  buff.tier13_4pc_caster        = stat_buff_creator_t( this, "tier13_4pc_caster", find_spell( 105821 ) );
+  buff.tier16_2pc_melee         = buff_creator_t( this, "tier16_2pc_melee", sets.set( SET_T16_2PC_MELEE ) -> effectN( 1 ).trigger() )
+                                  .chance( static_cast< double >( sets.has_set_bonus( SET_T16_2PC_MELEE ) ) );
+}
+
+// shaman_t::init_gains =====================================================
+
+void shaman_t::init_gains()
+{
+  player_t::init_gains();
+
+  gain.resurgence           = get_gain( "resurgence"        );
+}
+
+// shaman_t::init_procs =====================================================
+
+void shaman_t::init_procs()
+{
+  player_t::init_procs();
+
+  proc.lava_surge         = get_proc( "lava_surge"              );
+  proc.ls_fast            = get_proc( "lightning_shield_too_fast_fill" );
+  proc.maelstrom_weapon   = get_proc( "maelstrom_weapon"        );
+  proc.swings_clipped_mh  = get_proc( "swings_clipped_mh"       );
+  proc.swings_clipped_oh  = get_proc( "swings_clipped_oh"       );
+  proc.swings_reset_mh    = get_proc( "swings_reset_mh"         );
+  proc.swings_reset_oh    = get_proc( "swings_reset_oh"         );
+  proc.uf_flame_shock     = get_proc( "uf_flame_shock"          );
+  proc.uf_fire_nova       = get_proc( "uf_fire_nova"            );
+  proc.uf_lava_burst      = get_proc( "uf_lava_burst"           );
+  proc.uf_elemental_blast = get_proc( "uf_elemental_blast"      );
+  proc.uf_wasted          = get_proc( "uf_wasted"               );
+  proc.t15_2pc_melee      = get_proc( "t15_2pc_melee"           );
+  proc.t16_2pc_melee      = get_proc( "t16_2pc_melee"           );
+  proc.t16_4pc_caster     = get_proc( "t16_4pc_caster"          );
+  proc.t16_4pc_melee      = get_proc( "t16_4pc_melee"           );
+  proc.wasted_t15_2pc_melee = get_proc( "wasted_t15_2pc_melee"  );
+  proc.wasted_lava_surge  = get_proc( "wasted_lava_surge"       );
+  proc.wasted_ls          = get_proc( "wasted_lightning_shield" );
+  proc.wasted_ls_shock_cd = get_proc( "wasted_lightning_shield_shock_cd" );
+  proc.wasted_mw          = get_proc( "wasted_maelstrom_weapon" );
+  proc.windfury           = get_proc( "windfury"                );
+  proc.surge_during_lvb   = get_proc( "lava_surge_during_lvb"   );
+
+  for ( size_t i = 0, end = sizeof_array( proc.fulmination ); i < end; i++ )
+    proc.fulmination[ i ] = get_proc( "Fulmination: " + util::to_string( i ) + " stacks" );
 }
 
 // shaman_t::init_actions ===================================================
