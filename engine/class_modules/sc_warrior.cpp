@@ -39,6 +39,8 @@ struct warrior_t: public player_t
 {
 public:
   int initial_rage;
+  bool swapping; // Disables automated swapping when it's not required to use the ability.
+  // Set to true whenever a player uses the swap option inside of stance_t, as we should assume they are intentionally sitting in defensive stance.
 
   simple_sample_data_t cs_damage;
   simple_sample_data_t priority_damage;
@@ -48,7 +50,6 @@ public:
   action_t* active_bloodbath_dot;
   action_t* active_blood_craze;
   action_t* active_deep_wounds;
-  action_t* active_defensive_stance;
   action_t* active_second_wind;
   attack_t* active_sweeping_strikes;
   action_t* active_t17_4pc_fury_driver;
@@ -346,7 +347,6 @@ public:
     active_bloodbath_dot      = 0;
     active_blood_craze        = 0;
     active_deep_wounds        = 0;
-    active_defensive_stance   = 0;
     active_second_wind        = 0;
     active_sweeping_strikes   = 0;
     active_t16_2pc            = 0;
@@ -377,6 +377,7 @@ public:
     cooldown.stance_swap             -> duration = timespan_t::from_seconds( 1.5 );
 
     initial_rage = 0;
+    swapping = false;
     base.distance = 3.0;
   }
 
@@ -443,6 +444,7 @@ public:
 
   // Custom Warrior Functions
   void enrage();
+  void stance_swap();
 
   target_specific_t<warrior_td_t*> target_data;
 
@@ -502,10 +504,29 @@ public:
       return false;
 
     // Attack available in current stance?
-    if ( ( stancemask & p() -> active_stance ) == 0 )
+    if ( ( ( stancemask & p() -> active_stance ) == 0 ) && p() -> cooldown.stance_swap -> down() )
       return false;
 
     return true;
+  }
+
+  virtual void execute()
+  {
+    if ( ( stancemask & p() -> active_stance ) == 0 )
+      p() -> stance_swap();
+    else if ( p() -> cooldown.stance_swap -> up() )
+    {
+      if ( p() -> active_stance == STANCE_DEFENSE &&
+           p() -> specialization() != WARRIOR_PROTECTION &&
+           ( ( stancemask & STANCE_BATTLE ) != 0 ) )
+           p() -> stance_swap();
+      else if ( p() -> active_stance == STANCE_BATTLE &&
+                p() -> specialization() == WARRIOR_PROTECTION &&
+                ( ( stancemask & STANCE_DEFENSE ) != 0 ) )
+                p() -> stance_swap();
+    }
+
+    ab::execute();
   }
 
   void assess_damage( dmg_e type,
@@ -2413,6 +2434,7 @@ struct thunder_clap_t: public warrior_attack_t
     warrior_attack_t( "thunder_clap", p, p -> spec.thunder_clap )
   {
     parse_options( NULL, options_str );
+    stancemask = STANCE_DEFENSE | STANCE_GLADIATOR;
 
     aoe = -1;
     may_dodge = may_parry = may_block = false;
@@ -2834,34 +2856,6 @@ struct rend_t: public warrior_spell_t
   }
 };
 
-// Defensive Stance ==============================================================
-
-struct defensive_stance_t: public warrior_spell_t
-{
-  defensive_stance_t( warrior_t* p ):
-    warrior_spell_t( "defensive_stance", p, p -> find_class_spell( "Defensive Stance" ) )
-  {
-    base_tick_time = timespan_t::from_seconds( 3.0 );
-    dot_duration   = timespan_t::from_seconds( 6.0 );
-    hasted_ticks = harmful = tick_zero = false;
-    quiet = true;
-    dot_behavior = DOT_REFRESH;
-  }
-
-  timespan_t tick_time( double ) const
-  {
-    return timespan_t::from_seconds( 3 );
-  }
-
-  virtual void tick( dot_t* d )
-  {
-    if ( p() -> in_combat ) // Needed to prevent precombat infininte loop
-      d -> refresh_duration(); // ticks indefinitely
-
-    p() -> resource_gain( RESOURCE_RAGE, 1, p() -> gain.defensive_stance );
-  }
-};
-
 // Recklessness =============================================================
 
 struct recklessness_t: public warrior_spell_t
@@ -3124,7 +3118,10 @@ struct stance_t: public warrior_spell_t
     if ( swap == 0 )
       cooldown -> duration = p -> cooldown.stance_swap -> duration;
     else
+    {
+      p -> swapping = true;
       cooldown -> duration = ( timespan_t::from_seconds( swap ) );
+    }
 
     harmful     = false;
     use_off_gcd = true;
@@ -3136,30 +3133,27 @@ struct stance_t: public warrior_spell_t
     {
       switch ( p() -> active_stance )
       {
-      case STANCE_BATTLE:     p() -> buff.battle_stance    -> expire(); break;
+      case STANCE_BATTLE: p() -> buff.battle_stance -> expire(); break;
       case STANCE_DEFENSE:
       {
         p() -> buff.defensive_stance -> expire();
-        p() -> active_defensive_stance -> cancel();
+        p() -> recalculate_resource_max( RESOURCE_HEALTH );
         break;
       }
-      case STANCE_GLADIATOR:
-        break;
+      case STANCE_GLADIATOR: p() -> buff.gladiator_stance -> expire(); break;
       }
       p() -> active_stance = switch_to_stance;
 
       switch ( p() -> active_stance )
       {
-      case STANCE_BATTLE:     p() -> buff.battle_stance    -> trigger(); break;
+      case STANCE_BATTLE: p() -> buff.battle_stance -> trigger(); break;
       case STANCE_DEFENSE:
       {
         p() -> buff.defensive_stance -> trigger();
-        p() -> active_defensive_stance -> execute();
         p() -> recalculate_resource_max( RESOURCE_HEALTH ); // Force stamina modifier, otherwise it doesn't apply until stat_loss is called
         break;
       }
-      case STANCE_GLADIATOR:
-        break;
+      case STANCE_GLADIATOR: p() -> buff.gladiator_stance -> trigger(); break;
       }
       p() -> cooldown.stance_swap -> start();
     }
@@ -3267,6 +3261,7 @@ protected:
   warrior_t& warrior;
 };
 */
+
 struct last_stand_t: public buff_t
 {
   int health_gain;
@@ -3516,7 +3511,6 @@ void warrior_t::init_spells()
   active_deep_wounds        = new deep_wounds_t( this );
   active_bloodbath_dot      = new bloodbath_dot_t( this );
   active_blood_craze        = new blood_craze_t( this );
-  active_defensive_stance   = new defensive_stance_t( this );
   active_second_wind        = new second_wind_t( this );
   active_t16_2pc            = new tier16_2pc_tank_heal_t( this );
   active_t17_4pc_fury_driver = new tier17_4pc_fury_driver_t( this );
@@ -3931,6 +3925,16 @@ void warrior_t::init_scaling()
   }
 }
 
+// Defensive Stance Rage Gain ==============================================
+
+static void defensive_stance( buff_t* buff, int, int )
+{
+  warrior_t* p = debug_cast<warrior_t*>( buff -> player );
+
+    p -> resource_gain( RESOURCE_RAGE, 1, p -> gain.defensive_stance );
+    buff -> refresh();
+}
+
 // warrior_t::init_buffs ====================================================
 
 void warrior_t::create_buffs()
@@ -3965,11 +3969,15 @@ void warrior_t::create_buffs()
     .chance( spec.bloodsurge -> effectN( 1 ).percent() );
 
   buff.defensive_stance = buff_creator_t( this, "defensive_stance", find_class_spell( "Defensive Stance" ) )
+    .tick_callback( defensive_stance )
+    .tick_behavior( BUFF_TICK_REFRESH )
     .add_invalidate( CACHE_EXP )
     .add_invalidate( CACHE_CRIT_AVOIDANCE )
     .add_invalidate( CACHE_CRIT_BLOCK )
     .add_invalidate( CACHE_BLOCK )
-    .add_invalidate( CACHE_STAMINA );
+    .add_invalidate( CACHE_STAMINA )
+    .duration( timespan_t::from_seconds( 3 ) )
+    .period( timespan_t::from_seconds( 3 ) );
 
   buff.enrage = buff_creator_t( this, "enrage", find_spell( 12880 ) )
     .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
@@ -4175,19 +4183,6 @@ void warrior_t::combat_begin()
 
   if ( initial_rage > 0 )
     resources.current[RESOURCE_RAGE] = initial_rage; // User specified rage.
-
-  if ( active_stance == STANCE_BATTLE && !buff.battle_stance -> check() )
-    buff.battle_stance -> trigger();
-
-  if ( active_stance == STANCE_DEFENSE && !buff.defensive_stance -> check() )
-  {
-    buff.defensive_stance -> trigger();
-    if ( !active_defensive_stance )
-      active_defensive_stance -> execute();
-  }
-
-  if ( active_stance == STANCE_GLADIATOR && !buff.gladiator_stance -> check() )
-    buff.gladiator_stance -> trigger();
 
   if ( specialization() == WARRIOR_PROTECTION )
     resolve_manager.start();
@@ -4757,6 +4752,44 @@ set_e warrior_t::decode_set( const item_t& item ) const
 
   return SET_NONE;
 }
+
+void warrior_t::stance_swap()
+{
+  // Blizzard has automated stance swapping with defensive and battle stance. This class will swap to the stance automatically if
+  // The ability that we are trying to use is not usable in the current stance.
+  // Currently it is not possible to swap in/out of gladiator stance, so there's no need to model it.
+  warrior_stance swap;
+  switch ( active_stance )
+  {
+  case STANCE_BATTLE:
+  {
+    buff.battle_stance -> expire();
+    swap = STANCE_DEFENSE;
+    break;
+  }
+  case STANCE_DEFENSE:
+  {
+    buff.defensive_stance -> expire();
+    swap = STANCE_BATTLE;
+    recalculate_resource_max( RESOURCE_HEALTH );
+    break;
+  }
+  }
+  active_stance = swap;
+
+  switch ( active_stance )
+  {
+  case STANCE_BATTLE: buff.battle_stance -> trigger(); break;
+  case STANCE_DEFENSE:
+  {
+    buff.defensive_stance -> trigger();
+    recalculate_resource_max( RESOURCE_HEALTH );
+    break;
+  }
+  }
+  cooldown.stance_swap -> start();
+}
+
 
 // warrior_t::enrage ========================================================
 
