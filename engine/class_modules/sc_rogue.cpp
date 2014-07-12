@@ -20,7 +20,7 @@ struct rogue_poison_t;
 struct rogue_attack_t;
 }
 
-enum ability_type {
+enum ability_type_e {
   ABILITY_NONE = -1,
   EVISCERATE,
   SINISTER_STRIKE,
@@ -461,7 +461,7 @@ struct rogue_attack_t : public melee_attack_t
   int              combo_points_spent;
 
   // Justshadowreflectthings
-  ability_type ability_type;
+  ability_type_e ability_type;
 
   rogue_attack_t( const std::string& token, rogue_t* p,
                   const spell_data_t* s = spell_data_t::nil(),
