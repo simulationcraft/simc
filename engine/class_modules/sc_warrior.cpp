@@ -1552,7 +1552,7 @@ struct hamstring_t: public warrior_attack_t
     weapon           = &( p -> main_hand_weapon );
   }
 
-  virtual double cost()
+  virtual double cost() const
   {
     double c = warrior_attack_t::cost();
 
@@ -4994,7 +4994,7 @@ void warrior_t::stance_swap()
   }
   active_stance = swap;
 
-  switch ( active_stance )
+  switch ( swap )
   {
   case STANCE_BATTLE: buff.battle_stance -> trigger(); break;
   case STANCE_DEFENSE:
