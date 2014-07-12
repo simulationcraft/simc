@@ -220,7 +220,7 @@ void SC_OptionsTab::createGlobalsTab()
 #endif
 #endif
   globalsLayout_left -> addRow( tr(    "Iterations" ),     choice.iterations = addValidatorToComboBox( 1, INT_MAX, createChoice( 7, "100", "1000", "10000", "25000", "50000", "100000", "250000" ) ) );
-  globalsLayout_left -> addRow( tr(     "World Lag" ),      choice.world_lag = createChoice( 5, "Super Low", "Low", "Medium", "High", "Australia" ) );
+  globalsLayout_left -> addRow( tr(     "World Lag" ),      choice.world_lag = createChoice( 5, "Super Low - 25 ms", "Low - 50 ms", "Medium - 100 ms", "High - 150 ms", "Australia - 200 ms" ) );
   globalsLayout_left -> addRow( tr(  "Length (sec)" ),   choice.fight_length = createChoice( 10, "100", "150", "200", "250", "300", "350", "400", "450", "500", "600" ) );
   globalsLayout_left -> addRow( tr(   "Vary Length" ), choice.fight_variance = createChoice( 3, "0%", "10%", "20%" ) );
   globalsLayout_left -> addRow( tr(   "Fight Style" ),    choice.fight_style = createChoice( 7, "Patchwerk", "HecticAddCleave", "HelterSkelter", "Ultraxion", "LightMovement", "HeavyMovement", "RaidDummy" ) );
