@@ -1541,7 +1541,7 @@ struct gear_stats_t
     multistrike_rating += right.multistrike_rating;
     readiness_rating += right.readiness_rating;
     versatility_rating += right.versatility_rating;
-    range::transform ( attribute, right.attribute, attribute.begin(), std::plus<int>() );
+    range::transform ( attribute, right.attribute, attribute.begin(), std::plus<double>() );
     range::transform ( resource, right.resource, resource.begin(), std::plus<int>() );
     return *this;
   }

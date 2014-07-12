@@ -774,7 +774,8 @@ void player_t::init_base_stats()
     for ( attribute_e a = ATTR_STRENGTH; a <= ATTR_SPIRIT; a++ )
     {
       base.stats.attribute[ a ] *= 1.0 + matching_gear_multiplier( a );
-      base.stats.attribute[ a ] = util::floor( base.stats.attribute[ a ] );
+      // NOTE: post-matching-multiplier base stats are NOT actually floored.
+      // They are only floor()-ed for the character sheet and in certain calculations.
     }
   }
 
