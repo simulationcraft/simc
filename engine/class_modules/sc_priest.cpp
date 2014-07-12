@@ -1349,7 +1349,7 @@ struct priest_heal_t : public priest_action_t<heal_t>
     int stack = priest.buffs.serendipity -> check();
     bool triggered = false;
 
-    if ( tier17_4pc && rng().roll( priest.sets.set( SET_T17_4PC_HEAL ) -> effectN( 1 ).percent() ) )
+    if ( tier17_4pc && SET_T17_4PC_HEAL && rng().roll( priest.sets.set( SET_T17_4PC_HEAL ) -> effectN( 1 ).percent() ) )
     {
       triggered = priest.buffs.serendipity -> trigger();
     }
