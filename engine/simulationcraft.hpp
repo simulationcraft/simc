@@ -2604,7 +2604,6 @@ public:
 
   // Auras and De-Buffs
   auto_dispose< std::vector<buff_t*> > buff_list;
-  timespan_t aura_delay;
 
   // Global aura related delay
   timespan_t default_aura_delay;
