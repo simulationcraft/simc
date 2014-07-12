@@ -286,7 +286,7 @@ public:
   // Masteries
   struct
   {
-    const spell_data_t* elemental_discharge;
+    const spell_data_t* molten_earth;
     const spell_data_t* enhanced_elements;
     const spell_data_t* deep_healing;
   } mastery;
@@ -437,7 +437,6 @@ public:
   virtual           ~shaman_t();
 
   // triggers
-  void trigger_elemental_discharge( const action_state_t* );
   void trigger_fulmination_stack( const action_state_t* );
   void trigger_maelstrom_weapon( const action_state_t* );
   void trigger_windfury_weapon( const action_state_t* );
@@ -910,7 +909,6 @@ struct shaman_spell_t : public shaman_spell_base_t<spell_t>
   // Unleash flame
   bool     uses_unleash_flame;
   bool     uses_elemental_fusion;
-  bool     may_elemental_discharge;
   bool     may_fulmination;
 
   shaman_spell_t( const std::string& token, shaman_t* p,
@@ -918,7 +916,6 @@ struct shaman_spell_t : public shaman_spell_base_t<spell_t>
     base_t( token, p, s ),
     uses_unleash_flame( data().affected_by( p -> spell.unleash_flame -> effectN( 2 ) ) ),
     uses_elemental_fusion( false ),
-    may_elemental_discharge( dbc::is_school( school, SCHOOL_FIRE ) || dbc::is_school( school, SCHOOL_NATURE ) ),
     may_fulmination( false )
   {
     parse_options( 0, options );
@@ -931,7 +928,6 @@ struct shaman_spell_t : public shaman_spell_base_t<spell_t>
   void impact( action_state_t* state )
   {
     base_t::impact( state );
-    p() -> trigger_elemental_discharge( state );
   }
 
   virtual void consume_resource()
@@ -1594,30 +1590,6 @@ struct t15_2pc_caster_t : public shaman_spell_t
     proc = background = split_aoe_damage = true;
     callbacks = false;
     aoe = -1;
-  }
-};
-
-struct lightning_strike_t : public shaman_spell_t
-{
-  lightning_strike_t( shaman_t* player ) :
-    shaman_spell_t( "lightning_strike", player, player -> spell.lightning_strike )
-  {
-    background = true;
-    callbacks = may_miss = may_elemental_discharge = false;
-    spell_power_mod.direct = 2.0;
-    attack_power_mod.direct = 0;
-  }
-};
-
-struct eruption_t : public shaman_spell_t
-{
-  eruption_t( shaman_t* player ) :
-    shaman_spell_t( "eruption", player, player -> spell.eruption )
-  {
-    background = true;
-    callbacks = may_miss = may_elemental_discharge = false;
-    spell_power_mod.direct = 3.0;
-    attack_power_mod.direct = 0;
   }
 };
 
@@ -4402,7 +4374,7 @@ void shaman_t::init_spells()
   spec.tidal_waves           = find_specialization_spell( "Tidal Waves" );
 
   // Masteries
-  mastery.elemental_discharge        = find_mastery_spell( SHAMAN_ELEMENTAL   );
+  mastery.molten_earth               = find_mastery_spell( SHAMAN_ELEMENTAL   );
   mastery.enhanced_elements          = find_mastery_spell( SHAMAN_ENHANCEMENT );
   mastery.deep_healing               = find_mastery_spell( SHAMAN_RESTORATION );
 
@@ -4476,12 +4448,6 @@ void shaman_t::init_spells()
   {
     t16_wind = new unleash_wind_t( "t16_unleash_wind", this );
     t16_flame = new unleash_flame_spell_t( "t16_unleash_flame", this );
-  }
-
-  if ( mastery.elemental_discharge -> ok() )
-  {
-    eruption = new eruption_t( this );
-    lightning_strike = new lightning_strike_t( this );
   }
 
   if ( specialization() == SHAMAN_ENHANCEMENT )
@@ -4671,48 +4637,6 @@ void shaman_t::init_procs()
 // ==========================================================================
 // Shaman Ability Triggers
 // ==========================================================================
-
-void shaman_t::trigger_elemental_discharge( const action_state_t* state )
-{
-  if ( ! mastery.elemental_discharge -> ok() )
-    return;
-
-  if ( state -> result_amount == 0 )
-    return;
-
-  if ( state -> action -> result_is_multistrike( state -> result ) )
-    return;
-
-  if ( state -> action -> result_is_miss( state -> result ) )
-    return;
-
-  shaman_spell_t* source_spell = debug_cast< shaman_spell_t* >( state -> action );
-  if ( ! source_spell -> may_elemental_discharge )
-    return;
-
-  bool triggered = rng().roll( cache.mastery_value() );
-  if ( triggered && dbc::is_school( state -> action -> get_school(), SCHOOL_NATURE ) )
-  {
-    buff.electric_charge -> trigger();
-    if ( buff.electric_charge -> stack() == buff.electric_charge -> max_stack() )
-    {
-      lightning_strike  -> target = state -> action -> target;
-      lightning_strike  -> schedule_execute();
-      buff.electric_charge -> expire();
-    }
-  }
-
-  if ( triggered && dbc::is_school( state -> action -> get_school(), SCHOOL_FIRE ) )
-  {
-    buff.rising_heat -> trigger();
-    if ( buff.rising_heat -> stack() == buff.rising_heat -> max_stack() )
-    {
-      eruption -> target = state -> action -> target;
-      eruption -> schedule_execute();
-      buff.rising_heat -> expire();
-    }
-  }
-}
 
 void shaman_t::trigger_fulmination_stack( const action_state_t* state )
 {
