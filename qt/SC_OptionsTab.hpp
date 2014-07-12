@@ -35,7 +35,6 @@ public:
     // options
     QComboBox* version;
     QComboBox* world_lag;
-    QComboBox* aura_delay;
     QComboBox* iterations;
     QComboBox* fight_length;
     QComboBox* fight_variance;
