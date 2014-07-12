@@ -108,8 +108,8 @@ actions.single_target=inferno_blast,if=dot.combustion.ticking&active_enemies>1
 # Use HS procs before they run out
 actions.single_target+=/pyroblast,if=buff.pyroblast.up&buff.pyroblast.remains<action.fireball.execute_time
 # Intentionally sustain 2T16 4 stack or more
-actions.single_target+=/pyroblast,if=set_bonus.tier16_2pc_caster&buff.pyroblast.up&buff.potent_flames.stack>=4&buff.potent_flames.remains<action.fireball.execute_time
-actions.single_target+=/inferno_blast,if=set_bonus.tier16_2pc_caster&buff.pyroblast.down&buff.potent_flames.stack>=4&buff.potent_flames.remains<action.fireball.execute_time&buff.potent_flames.remains>gcd&(buff.heating_up.up|action.fireball.in_flight|action.pyroblast.in_flight)
+actions.single_target+=/pyroblast,if=set_bonus.tier16_2pc_caster&buff.pyroblast.up&buff.potent_flames.up&buff.potent_flames.remains<action.fireball.execute_time
+actions.single_target+=/inferno_blast,if=set_bonus.tier16_2pc_caster&buff.pyroblast.down&buff.potent_flames.up&buff.potent_flames.remains<action.fireball.execute_time&buff.potent_flames.remains>gcd&(buff.heating_up.up|action.fireball.in_flight|action.pyroblast.in_flight)
 # Pyro camp during regular sequence; Do not use Pyro procs without HU and first using fireball
 actions.single_target+=/pyroblast,if=buff.pyroblast.up&buff.heating_up.up&action.fireball.in_flight
 actions.single_target+=/nether_tempest,cycle_targets=1,if=talent.nether_tempest.enabled&((!ticking|remains<tick_time)&target.time_to_die>6)

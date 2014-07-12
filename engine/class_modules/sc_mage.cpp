@@ -4572,10 +4572,10 @@ void mage_t::apl_fire()
                                "if=buff.pyroblast.up&buff.pyroblast.remains<action.fireball.execute_time",
                                "Use HS procs before they run out" );
   single_target -> add_action( this, "Pyroblast",
-                               "if=set_bonus.tier16_2pc_caster&buff.pyroblast.up&buff.potent_flames.stack>=4&buff.potent_flames.remains<action.fireball.execute_time",
+                               "if=set_bonus.tier16_2pc_caster&buff.pyroblast.up&buff.potent_flames.up&buff.potent_flames.remains<action.fireball.execute_time",
                                "Intentionally sustain 2T16 4 stack or more" );
   single_target -> add_action( this, "Inferno Blast",
-                               "if=set_bonus.tier16_2pc_caster&buff.pyroblast.down&buff.potent_flames.stack>=4&buff.potent_flames.remains<action.fireball.execute_time&buff.potent_flames.remains>gcd&(buff.heating_up.up|action.fireball.in_flight|action.pyroblast.in_flight)" );
+                               "if=set_bonus.tier16_2pc_caster&buff.pyroblast.down&buff.potent_flames.up&buff.potent_flames.remains<action.fireball.execute_time&buff.potent_flames.remains>gcd&(buff.heating_up.up|action.fireball.in_flight|action.pyroblast.in_flight)" );
   single_target -> add_action( this, "Pyroblast",
                                "if=buff.pyroblast.up&buff.heating_up.up&action.fireball.in_flight",
                                "Pyro camp during regular sequence; Do not use Pyro procs without HU and first using fireball" );
