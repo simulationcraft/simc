@@ -35,7 +35,7 @@ actions+=/power_infusion,if=talent.power_infusion.enabled
 actions+=/power_word_solace,if=talent.power_word_solace.enabled
 actions+=/mindbender,if=talent.mindbender.enabled&mana.pct<80
 actions+=/shadowfiend,if=!talent.mindbender.enabled
-actions+=/prayer_of_mending,if=buff.divine_insight_holy.up
+actions+=/prayer_of_mending,if=buff.divine_insight.up
 actions+=/flash_heal,if=buff.surge_of_light.up
 actions+=/circle_of_healing
 actions+=/holy_word
