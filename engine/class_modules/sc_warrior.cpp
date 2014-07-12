@@ -514,7 +514,7 @@ public:
   {
     if ( ( stancemask & p() -> active_stance ) == 0 )
       p() -> stance_swap();
-    else if ( p() -> cooldown.stance_swap -> up() )
+    else if ( p() -> cooldown.stance_swap -> up() && p() -> swapping = false )
     {
       if ( p() -> active_stance == STANCE_DEFENSE &&
            p() -> specialization() != WARRIOR_PROTECTION &&
@@ -4774,6 +4774,7 @@ void warrior_t::stance_swap()
     recalculate_resource_max( RESOURCE_HEALTH );
     break;
   }
+  case STANCE_GLADIATOR: break;
   }
   active_stance = swap;
 
@@ -4786,6 +4787,7 @@ void warrior_t::stance_swap()
     recalculate_resource_max( RESOURCE_HEALTH );
     break;
   }
+  case STANCE_GLADIATOR: break;
   }
   cooldown.stance_swap -> start();
 }
