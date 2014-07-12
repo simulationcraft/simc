@@ -104,7 +104,6 @@ public:
     buff_t* tier15_2pc_tank;
     buff_t* tier16_reckless_defense;
     buff_t* tier17_4pc_arms;
-    buff_t* tier17_4pc_fury_driver;
     buff_t* tier17_4pc_fury;
   } buff;
 
@@ -3244,6 +3243,7 @@ struct last_stand_t: public warrior_spell_t
 
 namespace buffs
 {
+/*
 template <typename Base>
 struct warrior_buff_t: public Base
 {
@@ -3263,7 +3263,7 @@ public:
 protected:
   warrior_t& warrior;
 };
-
+*/
 struct last_stand_t: public buff_t
 {
   int health_gain;
