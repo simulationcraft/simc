@@ -666,6 +666,7 @@ struct mindbender_pet_t final : public base_fiend_pet_t
 // Pet Lightwell
 // ==========================================================================
 
+
 struct lightwell_pet_t final : public priest_pet_t
 {
 public:
@@ -677,9 +678,14 @@ public:
   {
     role = ROLE_HEAL;
 
-    action_list_str  = "/snapshot_stats";
-    action_list_str += "/lightwell_renew";
-    action_list_str += "/wait,sec=cooldown.lightwell_renew.remains";
+    action_priority_list_t* precombat = get_action_priority_list( "precombat" );
+    // Snapshot stats
+    precombat -> add_action( "snapshot_stats", "Snapshot raid buffed stats before combat begins and pre-potting is done." );
+
+
+    action_priority_list_t* def = get_action_priority_list( "default" );
+    def -> add_action( "lightwell_renew" );
+    //def -> add_action( "wait,sec=cooldown.lightwell_renew.remains" );
 
     owner_coeff.sp_from_sp = 1.0;
   }
@@ -689,7 +695,7 @@ public:
 
   virtual void summon( timespan_t duration ) override
   {
-    charges = 10 + o().glyphs.lightwell -> effectN( 1 ).base_value();
+    charges = 15 + o().glyphs.deep_wells -> effectN( 1 ).base_value();
 
     priest_pet_t::summon( duration );
   }
@@ -1353,7 +1359,7 @@ struct priest_heal_t : public priest_action_t<heal_t>
     {
       triggered = priest.buffs.serendipity -> trigger();
     }
-    else
+    else if ( !tier17_4pc )
     {
       triggered = priest.buffs.serendipity -> trigger();
     }
@@ -5384,9 +5390,8 @@ double priest_t::temporary_movement_modifier() const
 {
   double speed = player_t::temporary_movement_modifier();
 
-  if ( glyphs.free_action -> ok() && buffs.dispersion -> check() ) {
+  if ( glyphs.free_action -> ok() && buffs.dispersion -> check() )
     speed = std::max( speed, glyphs.free_action -> effectN( 1 ).percent() );
-  }
 
   if ( buffs.glyph_of_levitate -> up() )
     speed = std::max( speed, buffs.glyph_of_levitate -> default_value );
@@ -5742,9 +5747,9 @@ void priest_t::init_spells()
   //Holy
   glyphs.binding_heal                 = find_glyph_spell( "Glyph of Binding Heal" );            //NYI
   glyphs.circle_of_healing            = find_glyph_spell( "Glyph of Circle of Healing" );
-  glyphs.deep_wells                   = find_glyph_spell( "Glyph of Deep Wells" );              //NYI
+  glyphs.deep_wells                   = find_glyph_spell( "Glyph of Deep Wells" );
   glyphs.guardian_spirit              = find_glyph_spell( "Glyph of Guardian Spirit" );         //NYI
-  glyphs.lightwell                    = find_glyph_spell( "Glyph of Lightwell" );
+  glyphs.lightwell                    = find_glyph_spell( "Glyph of Lightwell" );               //NYI
   glyphs.redeemer                     = find_glyph_spell( "Glyph of Redeemer" );                //NYI
   glyphs.renew                        = find_glyph_spell( "Glyph of Renew" );
   glyphs.spirit_of_redemption         = find_glyph_spell( "Glyph of Spirit of Redemption" );    //NYI
@@ -6530,6 +6535,9 @@ void priest_t::pre_analyze_hook()
     fixup_atonement_stats( "holy_fire", "atonement_holy_fire" );
     fixup_atonement_stats( "penance", "atonement_penance" );
   }
+
+  if ( specialization() == PRIEST_DISCIPLINE || specialization() == PRIEST_HOLY )
+    fixup_atonement_stats( "power_word_solace", "atonement_power_word_solace" );
 }
 
 // priest_t::target_mitigation ==============================================
