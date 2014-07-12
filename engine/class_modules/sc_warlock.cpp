@@ -2792,8 +2792,6 @@ struct conflagrate_t : public warlock_spell_t
     else
       trigger_ember_gain( p(), s -> result == RESULT_CRIT ? 0.2 : 0.1, gain );
 
-    //hotfixed extra gain with 15% chance from 13.09.13
-    trigger_ember_gain( p(), 0.1, gain, 0.15 );
     if ( s -> result == RESULT_CRIT &&  p() -> sets.has_set_bonus( SET_T16_2PC_CASTER ) )
       p() -> buffs.tier16_2pc_destructive_influence -> trigger();
   }
@@ -2901,8 +2899,6 @@ struct incinerate_t : public warlock_spell_t
     else
       trigger_ember_gain( p(), s -> result == RESULT_CRIT ? 0.2 : 0.1, gain );
 
-    //hotfixed extra gain with 15% 13.09.13
-    trigger_ember_gain( p(), 0.1, gain, 0.15 );
     if ( rng().roll( p() -> sets.set ( SET_T15_4PC_CASTER ) -> effectN( 2 ).percent() ) )
       trigger_ember_gain( p(), s -> result == RESULT_CRIT ? 0.2 : 0.1, p() -> gains.incinerate_t15_4pc );
 
