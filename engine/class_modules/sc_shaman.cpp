@@ -4616,10 +4616,10 @@ void shaman_t::init_scaling()
 
 void shaman_t::trigger_molten_earth( const action_state_t* state )
 {
-  if ( ! state -> action -> result_is_hit( state -> result ) )
+  if ( ! mastery.molten_earth -> ok() )
     return;
 
-  if ( ! mastery.molten_earth -> ok() )
+  if ( ! state -> action -> result_is_hit( state -> result ) )
     return;
 
   molten_earth -> schedule_execute();
