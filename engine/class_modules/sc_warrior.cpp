@@ -81,6 +81,7 @@ public:
     buff_t* raging_wind;
     buff_t* rude_interruption;
     // Arms and Fury
+    buff_t* die_by_the_sword;
     buff_t* rallying_cry;
     buff_t* recklessness;
     // Fury Only
@@ -125,6 +126,7 @@ public:
     cooldown_t* shockwave;
     cooldown_t* storm_bolt;
     // Fury And Arms
+    cooldown_t* die_by_the_sword;
     cooldown_t* recklessness;
     // Prot Only
     cooldown_t* demoralizing_shout;
@@ -239,6 +241,8 @@ public:
     const spell_data_t* thunder_clap;
     //Arms and Fury
     const spell_data_t* colossus_smash;
+    const spell_data_t* die_by_the_sword;
+    const spell_data_t* rallying_cry;
     const spell_data_t* recklessness;
     const spell_data_t* whirlwind;
     //Fury-only
@@ -360,6 +364,7 @@ public:
     cooldown.bloodbath                = get_cooldown( "bloodbath" );
     cooldown.charge                   = get_cooldown( "charge" );
     cooldown.demoralizing_shout       = get_cooldown( "demoralizing_shout" );
+    cooldown.die_by_the_sword         = get_cooldown( "die_by_the_sword" );
     cooldown.dragon_roar              = get_cooldown( "dragon_roar" );
     cooldown.heroic_leap              = get_cooldown( "heroic_leap" );
     cooldown.intervene                = get_cooldown( "intervene" );
@@ -579,6 +584,7 @@ public:
           p() -> cooldown.avatar -> adjust( timespan_t::from_seconds( rage ) );
 
         p() -> cooldown.recklessness -> adjust( timespan_t::from_seconds( rage ) );
+        p() -> cooldown.die_by_the_sword -> adjust( timespan_t::from_seconds( rage ) );
       }
       else if ( p() -> specialization() == WARRIOR_PROTECTION )
       {
@@ -2791,6 +2797,31 @@ struct deep_wounds_t: public warrior_spell_t
   }
 };
 
+// Die By the Sword  ==============================================================
+
+struct die_by_the_sword_t: public warrior_spell_t
+{
+  die_by_the_sword_t( warrior_t* p, const std::string& options_str ):
+    warrior_spell_t( "die_by_the_sword", p, p -> spec.die_by_the_sword )
+  {
+    parse_options( NULL, options_str );
+    stancemask = STANCE_DEFENSE;
+  }
+
+  virtual void execute()
+  {
+    warrior_spell_t::execute();
+    p() -> buff.die_by_the_sword -> trigger();
+  }
+
+  virtual void update_ready( timespan_t cd_duration )
+  {
+    cd_duration = cooldown -> duration / ( 1 + player -> cache.readiness() );
+
+    warrior_spell_t::update_ready( cd_duration );
+  }
+};
+
 // Rend ==============================================================
 
 struct rend_burst_t: public warrior_spell_t
@@ -3390,6 +3421,7 @@ action_t* warrior_t::create_action( const std::string& name,
   if ( name == "colossus_smash"       ) return new colossus_smash_t       ( this, options_str );
   if ( name == "demoralizing_shout"   ) return new demoralizing_shout     ( this, options_str );
   if ( name == "devastate"            ) return new devastate_t            ( this, options_str );
+  if ( name == "die_by_the_sword"     ) return new die_by_the_sword_t     ( this, options_str );
   if ( name == "dragon_roar"          ) return new dragon_roar_t          ( this, options_str );
   if ( name == "enraged_regeneration" ) return new enraged_regeneration_t ( this, options_str );
   if ( name == "execute"              ) return new execute_t              ( this, options_str );
@@ -3448,8 +3480,10 @@ void warrior_t::init_spells()
   spec.crazed_berserker         = find_specialization_spell( "Crazed Berserker" );
   spec.cruelty                  = find_specialization_spell( "Cruelty" );
   spec.devastate                = find_specialization_spell( "Devastate" );
+  spec.die_by_the_sword         = find_specialization_spell( "Die By the Sword" );
   spec.meat_cleaver             = find_specialization_spell( "Meat Cleaver" );
   spec.mortal_strike            = find_specialization_spell( "Mortal Strike" );
+  spec.rallying_cry             = find_specialization_spell( "Rallying Cry" );
   spec.raging_blow              = find_specialization_spell( "Raging Blow" );
   spec.readiness_arms           = find_specialization_spell( "Readiness: Arms" );
   spec.readiness_fury           = find_specialization_spell( "Readiness: Fury" );
@@ -4026,6 +4060,10 @@ void warrior_t::create_buffs()
     .duration( timespan_t::from_seconds( 3 ) )
     .period( timespan_t::from_seconds( 3 ) );
 
+  buff.die_by_the_sword = buff_creator_t( this, "die_by_the_sword", spec.die_by_the_sword )
+    .cd( timespan_t::zero() )
+    .add_invalidate( CACHE_PARRY );
+
   buff.enrage = buff_creator_t( this, "enrage", find_spell( 12880 ) )
     .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
 
@@ -4049,7 +4087,7 @@ void warrior_t::create_buffs()
   buff.raging_wind = buff_creator_t( this, "raging_wind", glyphs.raging_wind -> effectN( 1 ).trigger() )
     .chance( glyphs.raging_wind -> ok() ? 1 : 0 );
 
-  buff.rallying_cry = new buffs::rallying_cry_t( this, find_specialization_spell( "Rallying Cry" ), "rallying_cry" );
+  buff.rallying_cry = new buffs::rallying_cry_t( this, spec.rallying_cry , "rallying_cry" );
 
   buff.ravager = buff_creator_t( this, "ravager", talents.ravager )
     .add_invalidate( CACHE_PARRY );
