@@ -96,7 +96,6 @@ public:
     buff_t* mental_instinct; // t17 4pc caster
     buff_t* absolution; // t16 4pc heal holy word
     buff_t* resolute_spirit; // t16 4pc heal spirit shell
-    buff_t* spiritual_vigor; //t17 4pc holy
     buff_t* clear_thoughts; //t17 4pc disc
   } buffs;
 
@@ -269,6 +268,8 @@ public:
     proc_t* mind_spike_dot_removal_void_entropy_ticks;
     //proc_t* mind_spike_dot_removal_t17_2pc_mind_blast;     // Set bonus changed in build 18537. Leaving old one in, but commented out, for now. - Twintop 2014/07/11
     //proc_t* mind_spike_dot_removal_t17_2pc_mind_blast_ticks;
+    proc_t* serendipity;
+    proc_t* serendipity_overflow;
     proc_t* shadowy_apparition;
     proc_t* surge_of_darkness;
     proc_t* surge_of_darkness_overflow;
@@ -280,6 +281,8 @@ public:
     proc_t* t15_2pc_caster_vampiric_touch;
     proc_t* t17_2pc_caster_mind_blast_reset;
     proc_t* t17_2pc_caster_mind_blast_reset_overflow;
+    proc_t* t17_4pc_holy;
+    proc_t* t17_4pc_holy_overflow;
 
 
     luxurious_sample_data_t* sd_mind_spike_dot_removal_devouring_plague_ticks;
@@ -1341,8 +1344,38 @@ struct priest_heal_t : public priest_action_t<heal_t>
       t -> buffs.grace -> trigger( 1, priest.specs.grace -> effectN( 1 ).trigger() -> effectN( 1 ).percent() );
   }
 
-  void trigger_serendipity()
-  { priest.buffs.serendipity -> trigger(); }
+  void trigger_serendipity( bool tier17_4pc = false )
+  {
+    int stack = priest.buffs.serendipity -> check();
+    bool triggered = false;
+
+    if ( tier17_4pc && rng().roll( priest.sets.set( SET_T17_4PC_HEAL ) -> effectN( 1 ).percent() ) )
+    {
+      triggered = priest.buffs.serendipity -> trigger();
+    }
+    else
+    {
+      triggered = priest.buffs.serendipity -> trigger();
+    }
+
+    if ( triggered )
+    {
+      if ( tier17_4pc )
+      {
+        if ( priest.buffs.serendipity -> check() == stack )
+          priest.procs.t17_4pc_holy_overflow -> occur();
+        else
+          priest.procs.t17_4pc_holy -> occur();
+      }
+      else
+      {
+        if ( priest.buffs.serendipity -> check() == stack )
+          priest.procs.serendipity_overflow -> occur();
+        else
+          priest.procs.serendipity -> occur();
+      }
+    }
+  }
 
   void trigger_strength_of_soul( player_t* t )
   {
@@ -1593,6 +1626,9 @@ struct archangel_t final : public priest_spell_t
   {
     priest_spell_t::execute();
     priest.buffs.archangel -> trigger();
+
+    if ( SET_T17_4PC_HEAL )
+      priest.buffs.clear_thoughts -> trigger();
   }
 
   virtual bool ready() override
@@ -3376,6 +3412,9 @@ struct penance_t final : public priest_spell_t
   {
     priest_spell_t::execute();
     priest.buffs.holy_evangelism -> trigger(); // re-checked 2014/07/07: offensive penance grants evangelism stacks, even though not mentioned in the tooltip.
+
+    if ( SET_T17_2PC_HEAL )
+      priest.buffs.holy_evangelism -> trigger(); //Set bonus says "...and generates 2 stacks of Evangelism." Need to check if this happens up front or after a particular tick. - Twintop 2014/07/11
   }
 };
 
@@ -4144,9 +4183,6 @@ struct _heal_t final : public priest_heal_t
 
     if ( ! priest.buffs.spirit_shell -> check() )
       trigger_strength_of_soul( s -> target );
-
-    priest.buffs.spiritual_vigor -> trigger();
-    priest.buffs.clear_thoughts -> trigger();
   }
 
   virtual double action_multiplier() const override
@@ -4621,6 +4657,9 @@ struct prayer_of_healing_t final : public priest_heal_t
   {
     double c = priest_heal_t::cost();
 
+    if ( priest.buffs.clear_thoughts -> check() )
+      c *= 1.0 + priest.buffs.clear_thoughts -> check() * priest.buffs.clear_thoughts -> data().effectN( 1 ).percent();
+
     if ( priest.buffs.serendipity -> check() )
       c *= 1.0 + priest.buffs.serendipity -> check() * priest.buffs.serendipity -> data().effectN( 2 ).percent();
 
@@ -4682,6 +4721,7 @@ struct prayer_of_mending_t final : public priest_heal_t
 
     priest.buffs.absolution -> trigger();
     trigger_surge_of_light();
+    trigger_serendipity( true );
   }
 
   virtual double action_multiplier() const override
@@ -5077,6 +5117,10 @@ void priest_t::create_procs()
   procs.t15_2pc_caster_vampiric_touch                   = get_proc( "Tier15 2pc caster Vampiric Touch Extra Tick"                  );
   procs.t17_2pc_caster_mind_blast_reset                 = get_proc( "Tier17 2pc Mind Blast CD Rest"                                );
   procs.t17_2pc_caster_mind_blast_reset_overflow        = get_proc( "Tier17 2pc Mind Blast CD Rest lost to overflow"               );
+  procs.serendipity                                     = get_proc( "Serendipity (Non-Tier 17 4pc)"                                );
+  procs.serendipity_overflow                            = get_proc( "Serendipity lost to overflow (Non-Tier 17 4pc)"               );
+  procs.t17_4pc_holy                                    = get_proc( "Tier17 4pc Serendipity"                                       );
+  procs.t17_4pc_holy_overflow                           = get_proc( "Tier17 4pc Serendipity lost to overflow"                      );
 
   procs.sd_mind_spike_dot_removal_devouring_plague_ticks   = get_sample_data( "Devouring Plague ticks lost from Mind Spike removal"   );
 }
@@ -5215,12 +5259,6 @@ double priest_t::composite_armor() const
 double priest_t::spirit() const
 {
   double s = player_t::spirit();
-
-  if ( buffs.clear_thoughts -> check() )
-    s *= 1.0 + buffs.clear_thoughts -> data().effectN( 1 ).percent();
-
-  if ( buffs.spiritual_vigor -> check() )
-    s *= 1.0 + buffs.spiritual_vigor -> data().effectN( 1 ).percent();
 
   return s;
 }
@@ -5897,15 +5935,9 @@ void priest_t::create_buffs()
                             .chance( sets.has_set_bonus( SET_T17_4PC_CASTER ) ? -1.0 : 0.0 )
                             .add_invalidate( CACHE_HASTE );
 
-  buffs.spiritual_vigor = stat_buff_creator_t( this, "spiritual_vigor" )
+  buffs.clear_thoughts = buff_creator_t( this, "clear_thoughts" )
                           .spell( sets.set( SET_T17_4PC_HEAL ) -> effectN( 1 ).trigger() )
-                          .chance( specialization() == PRIEST_HOLY ? sets.set( SET_T17_4PC_HEAL ) -> proc_chance() : 0.0 )
-                          .add_invalidate( CACHE_SPIRIT );
-
-  buffs.clear_thoughts = stat_buff_creator_t( this, "clear_thoughts" )
-                          .spell( sets.set( SET_T17_4PC_HEAL ) -> effectN( 1 ).trigger() )
-                          .chance( specialization() == PRIEST_DISCIPLINE ? sets.set( SET_T17_4PC_HEAL ) -> proc_chance() : 0.0 )
-                          .add_invalidate( CACHE_SPIRIT );
+                          .chance( specialization() == PRIEST_DISCIPLINE ? sets.set( SET_T17_4PC_HEAL ) -> proc_chance() : 0.0 );
 }
 
 // ALL Spec Pre-Combat Action Priority List
