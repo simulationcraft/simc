@@ -220,7 +220,7 @@ void SC_OptionsTab::createGlobalsTab()
 #endif
 #endif
   globalsLayout_left -> addRow( tr(    "Iterations" ),     choice.iterations = addValidatorToComboBox( 1, INT_MAX, createChoice( 7, "100", "1000", "10000", "25000", "50000", "100000", "250000" ) ) );
-  globalsLayout_left -> addRow( tr(     "World Lag" ),      choice.world_lag = createChoice( 3, "Low", "Medium", "High" ) );
+  globalsLayout_left -> addRow( tr(     "World Lag" ),      choice.world_lag = createChoice( 5, "Super Low", "Low", "Medium", "High", "Australia" ) );
   globalsLayout_left -> addRow( tr(  "Length (sec)" ),   choice.fight_length = createChoice( 10, "100", "150", "200", "250", "300", "350", "400", "450", "500", "600" ) );
   globalsLayout_left -> addRow( tr(   "Vary Length" ), choice.fight_variance = createChoice( 3, "0%", "10%", "20%" ) );
   globalsLayout_left -> addRow( tr(   "Fight Style" ),    choice.fight_style = createChoice( 7, "Patchwerk", "HecticAddCleave", "HelterSkelter", "Ultraxion", "LightMovement", "HeavyMovement", "RaidDummy" ) );
@@ -240,11 +240,9 @@ void SC_OptionsTab::createGlobalsTab()
   QGroupBox* globalsGroupBox_left = new QGroupBox( tr( "Basic Options" ) );
   globalsGroupBox_left -> setLayout( globalsLayout_left );
 
-
   // Create right side of global options
   QFormLayout* globalsLayout_right = new QFormLayout();
   globalsLayout_right -> setFieldGrowthPolicy( QFormLayout::FieldsStayAtSizeHint );
-  globalsLayout_right -> addRow( tr( "Aura Delay" ),               choice.aura_delay = createChoice( 4, "300ms", "400ms", "500ms", "600ms" ) );
   globalsLayout_right -> addRow( tr( "Generate Debug" ),                choice.debug = createChoice( 3, "None", "Log Only", "Gory Details" ) );
   globalsLayout_right -> addRow( tr( "Report Pets Separately" ),  choice.report_pets = createChoice( 2, "Yes", "No" ) );
   globalsLayout_right -> addRow( tr( "Report Print Style" ),      choice.print_style = createChoice( 3, "MoP", "White", "Classic" ) );
@@ -545,7 +543,6 @@ void SC_OptionsTab::decodeOptions()
   load_setting( settings, "show_etmi", choice.show_etmi );
   load_setting( settings, "world_lag", choice.world_lag );
   load_setting( settings, "target_level", choice.target_level );
-  load_setting( settings, "aura_delay", choice.aura_delay, "300ms" );
   load_setting( settings, "report_pets", choice.report_pets, "No" );
   load_setting( settings, "print_style", choice.print_style );
   load_setting( settings, "statistics_level", choice.statistics_level, "1" );
@@ -638,7 +635,6 @@ void SC_OptionsTab::encodeOptions()
   settings.setValue( "show_etmi", choice.show_etmi -> currentText() );
   settings.setValue( "world_lag", choice.world_lag -> currentText() );
   settings.setValue( "target_level", choice.target_level -> currentText() );
-  settings.setValue( "aura_delay", choice.aura_delay -> currentText() );
   settings.setValue( "report_pets", choice.report_pets -> currentText() );
   settings.setValue( "print_style", choice.print_style -> currentText() );
   settings.setValue( "statistics_level", choice.statistics_level -> currentText() );
@@ -760,13 +756,11 @@ void SC_OptionsTab::createToolTips()
                                       "It is currently used to extend the cooldown duration of user executable abilities "
                                       " that have a cooldown.\n"
                                       "Each setting adds an amount of 'lag' with a default standard deviation of 10%:" ) + "\n" +
+                                  tr( "    'Super Low' : %1ms" ).arg( 25 ) + "\n" +
                                   tr( "    'Low'   : %1ms" ).arg( 50 ) + "\n" +
-                                  tr( "    'Medium': %1ms" ).arg( 150 ) + "\n" +
-                                  tr( "    'High'  : %1ms" ).arg( 300 ) );
-
-  choice.aura_delay -> setToolTip( tr( "Aura Lag represents the server latency which occurs when buffs are applied.\n"
-                                       "This value is given by Blizzard server reaction time and not influenced by your latency.\n"
-                                       "Each setting adds an amount of 'lag' with a default standard deviation of 10%:\n" ) );
+                                  tr( "    'Medium': %1ms" ).arg( 100 ) + "\n" +
+                                  tr( "    'High'  : %1ms" ).arg( 150 ) + "\n" + 
+                                  tr( "    'Australia' : %1ms" ).arg( 200 ) );
 
   choice.plots_points -> setToolTip( tr( "The number of points that will appear on the graph" ) );
   choice.plots_step -> setToolTip( tr( "The delta between two points of the graph.\n"
@@ -793,15 +787,9 @@ QString SC_OptionsTab::get_globalSettings()
     options += "dps_plot_iterations=1000\n";
   }
 
-  const char *world_lag[] = { "0.05", "0.15", "0.3" };
+  const char *world_lag[] = { "0.025", "0.05", "0.1", "0.15", "0.20" };
   options += "default_world_lag=";
   options += world_lag[ choice.world_lag->currentIndex() ];
-  options += "\n";
-
-
-  const char *auradelay[] = { "0.3", "0.4", "0.5", "0.6" };
-  options += "default_aura_delay=";
-  options += auradelay[ choice.aura_delay->currentIndex() ];
   options += "\n";
 
   options += "max_time=" + choice.fight_length->currentText() + "\n";
