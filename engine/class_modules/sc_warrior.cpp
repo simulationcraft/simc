@@ -81,6 +81,7 @@ public:
     buff_t* raging_wind;
     buff_t* rude_interruption;
     // Arms and Fury
+    buff_t* rallying_cry;
     buff_t* recklessness;
     // Fury Only
     buff_t* bloodsurge;
@@ -514,7 +515,7 @@ public:
   {
     if ( ( stancemask & p() -> active_stance ) == 0 )
       p() -> stance_swap();
-    else if ( p() -> cooldown.stance_swap -> up() && p() -> swapping = false )
+    else if ( p() -> cooldown.stance_swap -> up() && p() -> swapping == false )
     {
       if ( p() -> active_stance == STANCE_DEFENSE &&
            p() -> specialization() != WARRIOR_PROTECTION &&
@@ -3232,6 +3233,25 @@ struct last_stand_t: public warrior_spell_t
   }
 };
 
+// Rallying Cry ===============================================================
+
+struct rallying_cry_t: public warrior_spell_t
+{
+  rallying_cry_t( warrior_t* p, const std::string& options_str ):
+    warrior_spell_t( "rallying_cry", p, p -> find_specialization_spell( "Rallying Cry" ) )
+  {
+    parse_options( NULL, options_str );
+    stancemask = STANCE_DEFENSE;
+  }
+
+  virtual void execute()
+  {
+    warrior_spell_t::execute();
+
+    p() -> buff.rallying_cry -> trigger();
+  }
+};
+
 } // UNNAMED NAMESPACE
 
 // ==========================================================================
@@ -3262,12 +3282,38 @@ protected:
 };
 */
 
+struct rallying_cry_t : public buff_t
+{
+  int health_gain;
+
+  rallying_cry_t( warrior_t* p, const spell_data_t*s, const std::string&n ):
+    buff_t( buff_creator_t( p, n, s ) ),
+    health_gain( 0 )
+  {
+  }
+
+  virtual bool trigger( int stacks, double value, double chance, timespan_t duration )
+  {
+    health_gain = (int)floor( player -> resources.max[RESOURCE_HEALTH] * 0.15 );
+    player -> stat_gain( STAT_MAX_HEALTH, health_gain, (gain_t*)0, (action_t*)0, true );
+
+    return buff_t::trigger( stacks, value, chance, duration );
+  }
+
+  virtual void expire_override()
+  {
+    player -> stat_loss( STAT_MAX_HEALTH, health_gain, (gain_t*)0, (action_t*)0, true );
+
+    buff_t::expire_override();
+  }
+};
+
 struct last_stand_t: public buff_t
 {
   int health_gain;
 
-  last_stand_t( warrior_t* p, const uint32_t id, const std::string& /* n */ ):
-    buff_t( buff_creator_t( p, "last_stand", p -> find_spell( id ) ) ),
+  last_stand_t( warrior_t* p, const uint32_t id, const std::string& n ):
+    buff_t( buff_creator_t( p, n, p -> find_spell( id ) ) ),
     health_gain( 0 )
   {
   }
@@ -3359,6 +3405,7 @@ action_t* warrior_t::create_action( const std::string& name,
   if ( name == "mortal_strike"        ) return new mortal_strike_t        ( this, options_str );
   if ( name == "pummel"               ) return new pummel_t               ( this, options_str );
   if ( name == "raging_blow"          ) return new raging_blow_t          ( this, options_str );
+  if ( name == "rallying_cry"         ) return new rallying_cry_t         ( this, options_str );
   if ( name == "ravager"              ) return new ravager_t              ( this, options_str );
   if ( name == "recklessness"         ) return new recklessness_t         ( this, options_str );
   if ( name == "rend"                 ) return new rend_t                 ( this, options_str );
@@ -4001,6 +4048,8 @@ void warrior_t::create_buffs()
 
   buff.raging_wind = buff_creator_t( this, "raging_wind", glyphs.raging_wind -> effectN( 1 ).trigger() )
     .chance( glyphs.raging_wind -> ok() ? 1 : 0 );
+
+  buff.rallying_cry = new buffs::rallying_cry_t( this, find_specialization_spell( "Rallying Cry" ), "rallying_cry" );
 
   buff.ravager = buff_creator_t( this, "ravager", talents.ravager )
     .add_invalidate( CACHE_PARRY );
