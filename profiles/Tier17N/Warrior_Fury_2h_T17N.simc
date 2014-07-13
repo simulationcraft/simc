@@ -3,8 +3,8 @@ level=100
 race=orc
 role=attack
 position=back
-talents=http://us.battle.net/wow/en/tool/talent-calculator#ZZ!0120211
-glyphs=unending_rage/death_from_above
+talents=http://us.battle.net/wow/en/tool/talent-calculator#ZZ!1122211
+glyphs=unending_rage/death_from_above/raging_wind
 spec=fury
 
 # This default action priority list is automatically created based on your character.

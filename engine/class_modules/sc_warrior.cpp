@@ -879,6 +879,7 @@ static bool trigger_t15_2pc_melee( warrior_attack_t* a )
 
 void warrior_attack_t::execute()
 {
+  p() -> buff.tier17_4pc_fury -> up();
   base_t::execute();
 }
 
@@ -2348,15 +2349,14 @@ struct slam_t: public warrior_attack_t
   {
     parse_options( NULL, options_str );
     weapon = &( p -> main_hand_weapon );
-    base_costs[RESOURCE_RAGE] = 10;
+    base_costs[ RESOURCE_RAGE ] = 10;
   }
 
   virtual double cost() const
   {
     double c = warrior_attack_t::cost();
 
-    if ( p() -> buff.slam -> check() )
-      c *= 1.0 + p() -> buff.slam -> stack();
+    c *= 1.0 + p() -> buff.slam -> current_stack;
 
     return c;
   }
@@ -2376,8 +2376,8 @@ struct slam_t: public warrior_attack_t
     if ( p() -> mastery.weapons_master -> ok() )
       am *= 1.0 + p() -> cache.mastery_value();
 
-    if ( p() -> buff.slam -> check() )
-      am *= 1.0 + ( p() -> buff.slam -> stack() / 2 );
+    if ( p() -> buff.slam -> up() )
+      am *= 1.0 + ( ( (double)p() -> buff.slam -> current_stack ) / 2 );
 
     return am;
   }
@@ -4251,7 +4251,7 @@ void warrior_t::create_buffs()
   buff.tier17_4pc_fury_driver = buff_creator_t( this, "rampage_driver", find_spell( 165350 ) )
     .tick_callback( tier17_4pc_fury );
 
-  buff.unyielding_strikes = buff_creator_t( this, "unyielding_strikes", find_spell( 169686 ) );
+  buff.unyielding_strikes = buff_creator_t( this, "unyielding_strikes", talents.unyielding_strikes -> effectN( 1 ).trigger() );
 
   buff.ultimatum        = buff_creator_t( this, "ultimatum", spec.ultimatum -> effectN( 1 ).trigger() );
 }
@@ -4626,8 +4626,7 @@ double warrior_t::composite_melee_speed() const
 {
   double s = player_t::composite_melee_speed();
 
-  if ( buff.tier17_4pc_fury -> up() )
-    s *= 1.0 / ( 1.0 + buff.tier17_4pc_fury -> stack() * buff.tier17_4pc_fury -> default_value );
+  s /= 1.0 + buff.tier17_4pc_fury -> current_stack * buff.tier17_4pc_fury -> default_value;
 
   return s;
 }
@@ -4638,8 +4637,7 @@ double warrior_t::composite_melee_crit() const
 {
   double c = player_t::composite_melee_crit();
 
-  if ( buff.tier17_4pc_fury -> up() )
-    c += buff.tier17_4pc_fury -> stack() * buff.tier17_4pc_fury -> default_value;
+  c += buff.tier17_4pc_fury -> current_stack * buff.tier17_4pc_fury -> default_value;
 
   return c;
 }
@@ -4650,8 +4648,7 @@ double warrior_t::composite_spell_crit() const
 {
   double c = player_t::composite_spell_crit();
 
-  if ( buff.tier17_4pc_fury -> up() )
-    c += buff.tier17_4pc_fury -> stack() * buff.tier17_4pc_fury -> default_value;
+  c += buff.tier17_4pc_fury -> current_stack * buff.tier17_4pc_fury -> default_value;
 
   return c;
 }
@@ -4990,7 +4987,12 @@ void warrior_t::stance_swap()
     recalculate_resource_max( RESOURCE_HEALTH );
     break;
   }
-  case STANCE_GLADIATOR: break;
+  case STANCE_GLADIATOR:
+  {
+    buff.gladiator_stance -> expire();
+    swap = STANCE_GLADIATOR;
+    break;
+  }
   }
   active_stance = swap;
 
@@ -5003,11 +5005,14 @@ void warrior_t::stance_swap()
     recalculate_resource_max( RESOURCE_HEALTH );
     break;
   }
-  case STANCE_GLADIATOR: break;
+  case STANCE_GLADIATOR:
+  {
+    buff.gladiator_stance -> trigger();
+    break;
+  }
   }
   cooldown.stance_swap -> start();
 }
-
 
 // warrior_t::enrage ========================================================
 
