@@ -129,6 +129,7 @@ struct rogue_t : public player_t
     buff_t* blindside;
     buff_t* deadly_poison;
     buff_t* deadly_proc;
+    buff_t* death_from_above;
     buff_t* deep_insight;
     buff_t* killing_spree;
     buff_t* master_of_subtlety;
@@ -232,6 +233,7 @@ struct rogue_t : public player_t
     const spell_data_t* tier13_4pc;
     const spell_data_t* tier15_4pc;
     const spell_data_t* venom_zest;
+    const spell_data_t* death_from_above;
   } spell;
 
   // Talents
@@ -246,6 +248,7 @@ struct rogue_t : public player_t
 
     const spell_data_t* venom_zest;
     const spell_data_t* shadow_reflection;
+    const spell_data_t* death_from_above;
   } talent;
 
   // Masteries
@@ -688,6 +691,9 @@ struct rogue_poison_t : public rogue_attack_t
     proc_chance_  = data().proc_chance();
     proc_chance_ += p -> spec.improved_poisons -> effectN( 1 ).percent();
   }
+
+  timespan_t execute_time() const
+  { return timespan_t::zero(); }
 
   virtual double proc_chance( const action_state_t* source_state )
   {
@@ -1577,6 +1583,26 @@ struct envenom_t : public rogue_attack_t
     p() -> buffs.enhanced_vendetta -> expire();
   }
 
+  double action_multiplier() const
+  {
+    double m = rogue_attack_t::action_multiplier();
+
+    if ( p() -> buffs.death_from_above -> up() )
+      m *= 1.0 + p() -> buffs.death_from_above -> data().effectN( 2 ).percent();
+
+    return m;
+  }
+
+  double cost() const
+  {
+    double c = rogue_attack_t::cost();
+
+    if ( p() -> buffs.death_from_above -> check() )
+      c *= 1.0 + p() -> buffs.death_from_above -> data().effectN( 1 ).percent();
+
+    return c;
+  }
+
   double composite_crit() const
   {
     double c = rogue_attack_t::composite_crit();
@@ -1654,6 +1680,26 @@ struct eviscerate_t : public rogue_attack_t
       t += p() -> perk.enhanced_adrenaline_rush -> effectN( 1 ).time_value();
 
     return t;
+  }
+
+  double action_multiplier() const
+  {
+    double m = rogue_attack_t::action_multiplier();
+
+    if ( p() -> buffs.death_from_above -> up() )
+      m *= 1.0 + p() -> buffs.death_from_above -> data().effectN( 2 ).percent();
+
+    return m;
+  }
+
+  double cost() const
+  {
+    double c = rogue_attack_t::cost();
+
+    if ( p() -> buffs.death_from_above -> check() )
+      c *= 1.0 + p() -> buffs.death_from_above -> data().effectN( 1 ).percent();
+
+    return c;
   }
 
   virtual void impact( action_state_t* state )
@@ -2514,6 +2560,67 @@ struct shadow_reflection_t : public rogue_attack_t
     rogue_attack_t::execute();
 
     p() -> buffs.shadow_reflection -> trigger();
+  }
+};
+
+// Death From Above
+
+struct death_from_above_t : public rogue_attack_t
+{
+  envenom_t* envenom;
+  eviscerate_t* eviscerate;
+  death_from_above_t( rogue_t* p, const std::string& options_str ) :
+    rogue_attack_t( "death_from_above", p, p -> talent.death_from_above, options_str ),
+    envenom( 0 ), eviscerate( 0 )
+  {
+    weapon = &( p -> main_hand_weapon );
+    weapon_multiplier = 0;
+
+    aoe = -1;
+  }
+
+  void execute()
+  {
+    rogue_attack_t::execute();
+
+    p() -> buffs.death_from_above -> trigger();
+
+    // Apparently DfA reset swing timers
+    if ( player -> main_hand_attack && player -> main_hand_attack -> execute_event )
+    {
+      core_event_t::cancel( player -> main_hand_attack -> execute_event );
+      player -> main_hand_attack -> schedule_execute();
+    }
+
+    if ( player -> off_hand_attack && player -> off_hand_attack -> execute_event )
+    {
+      core_event_t::cancel( player -> off_hand_attack -> execute_event );
+      player -> off_hand_attack -> schedule_execute();
+    }
+  }
+
+  void last_tick( dot_t* d )
+  {
+    rogue_attack_t::last_tick( d );
+
+    rogue_td_t* td = this -> td( target );
+    if ( ! td -> combo_points.count )
+      return;
+
+    if ( p() -> specialization() == ROGUE_ASSASSINATION && envenom )
+      envenom -> execute();
+    else if ( eviscerate )
+      eviscerate -> execute();
+
+    p() -> buffs.death_from_above -> expire();
+  }
+
+  void init()
+  {
+    rogue_attack_t::init();
+
+    envenom = debug_cast<envenom_t*>( p() -> find_action( "envenom" ) );
+    eviscerate = debug_cast<eviscerate_t*>( p() -> find_action( "eviscerate" ) );
   }
 };
 
@@ -3908,6 +4015,7 @@ action_t* rogue_t::create_action( const std::string& name,
   if ( name == "vanish"              ) return new vanish_t             ( this, options_str );
   if ( name == "vendetta"            ) return new vendetta_t           ( this, options_str );
   if ( name == "shadow_reflection"   ) return new shadow_reflection_t( this, options_str );
+  if ( name == "death_from_above"    ) return new death_from_above_t( this, options_str );
 
   return player_t::create_action( name, options_str );
 }
@@ -4031,6 +4139,7 @@ void rogue_t::init_spells()
   spell.bandits_guile_value = find_spell( 84747 );
   spell.fan_of_knives       = find_class_spell( "Fan of Knives" );
   spell.venom_zest          = find_spell( 156719 );
+  spell.death_from_above    = find_spell( 163786 );
 
   // Glyphs
   glyph.adrenaline_rush     = find_glyph_spell( "Glyph of Adrenaline Rush" );
@@ -4048,6 +4157,7 @@ void rogue_t::init_spells()
   talent.anticipation       = find_talent_spell( "Anticipation" );
   talent.venom_zest         = find_talent_spell( "Venom Zest" );
   talent.shadow_reflection  = find_talent_spell( "Shadow Reflection" );
+  talent.death_from_above   = find_talent_spell( "Death from Above" );
 
   // Shared perks
   perk.improved_recuperate         = find_perk_spell( "Improved Recuperate" );
@@ -4249,6 +4359,8 @@ void rogue_t::create_buffs()
 
   buffs.enhanced_vendetta = buff_creator_t( this, "enhanced_vendetta", perk.enhanced_vendetta );
   buffs.shadow_reflection = new buffs::shadow_reflection_t( this );
+  buffs.death_from_above  = buff_creator_t( this, "death_from_above", spell.death_from_above )
+                            .quiet( true );
 }
 
 // trigger_honor_among_thieves ==============================================
