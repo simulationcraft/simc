@@ -3509,10 +3509,12 @@ action_t* warrior_t::create_action( const std::string& name,
   if ( name == "shockwave"            ) return new shockwave_t            ( this, options_str );
   if ( name == "slam"                 ) return new slam_t                 ( this, options_str );
   if ( name == "spell_reflection" || name == "mass_spell_reflection" )
-       if ( talents.mass_spell_reflection -> ok() )
-         return new mass_spell_reflection_t( this, options_str );
-       else
-         return new spell_reflection_t( this, options_str );
+  {
+    if ( talents.mass_spell_reflection -> ok() )
+      return new mass_spell_reflection_t( this, options_str );
+    else
+      return new spell_reflection_t( this, options_str );
+  }
   if ( name == "storm_bolt"           ) return new storm_bolt_t           ( this, options_str );
   if ( name == "stance"               ) return new stance_t               ( this, options_str );
   if ( name == "sweeping_strikes"     ) return new sweeping_strikes_t     ( this, options_str );
