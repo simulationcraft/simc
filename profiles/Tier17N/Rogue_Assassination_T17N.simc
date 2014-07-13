@@ -3,7 +3,6 @@ level=100
 race=troll
 role=attack
 position=back
-professions=blacksmithing=600/engineering=600
 talents=http://us.battle.net/wow/en/tool/talent-calculator#ca!200002.
 glyphs=vendetta
 spec=assassination
@@ -32,6 +31,7 @@ actions=potion,name=virmens_bite,if=buff.bloodlust.react|target.time_to_die<40
 actions+=/auto_attack
 actions+=/kick
 actions+=/preparation,if=!buff.vanish.up&cooldown.vanish.remains>60
+actions+=/use_item,slot=trinket2
 actions+=/blood_fury
 actions+=/berserking
 actions+=/arcane_torrent,if=energy<60
@@ -50,32 +50,29 @@ actions+=/envenom,if=combo_points>=2&buff.slice_and_dice.remains<3
 actions+=/dispatch,if=combo_points<5
 actions+=/mutilate
 
-head=helmet_of_the_barbed_assassin,id=99348,upgrade=2,gems=8agi_9agi
-neck=immerseus_crystalline_eye,id=105407,upgrade=2
-shoulders=spaulders_of_the_barbed_assassin,id=99350,upgrade=2,gems=8agi_8agi_6agi,enchant=10agi_5crit
-back=tigerfang_wrap,id=98148,upgrade=2,gems=8agi_3agi,enchant=9crit,addon=goblin_glider
-chest=tunic_of_the_barbed_assassin,id=99356,upgrade=2,gems=8agi_8agi_8agi_9agi,enchant=4all
-wrists=bombers_blackened_wristwatch,id=105616,upgrade=2,enchant=9agi
-hands=gloves_of_the_barbed_assassin,id=99355,upgrade=2,gems=8agi_8agi_6agi,enchant=9haste
-waist=cord_of_black_dreams,id=105635,upgrade=2,gems=8agi_4agi_8haste_8agi_6agi
-legs=rious_vigilant_leggings,id=105529,upgrade=2,gems=4agi_8crit_4agi_8crit_6agi,enchant=14agi_8crit
-feet=pandaren_roofsprinters,id=105582,upgrade=2,gems=4agi_8crit_3mastery,enchant=7agi
-finger1=kilruks_band_of_ascendancy,id=105624,upgrade=2,gems=8agi_3crit
-finger2=swift_serpent_signet,id=105483,upgrade=2,gems=4agi_8haste_3crit
-trinket1=assurance_of_consequence,id=105472,upgrade=2
-trinket2=haromms_talisman,id=105527,upgrade=2
-main_hand=hvitserks_formidable_shanker,id=105601,upgrade=2,gems=8agi_3agi,enchant=dancing_steel
-off_hand=hvitserks_formidable_shanker,id=105601,upgrade=2,gems=8agi_3agi,enchant=dancing_steel
+head=primal_gladiators_helm,id=111275
+neck=primal_gladiators_necklace_of_cruelty,id=111079,enchant=140crit
+shoulders=primal_gladiators_spaulders,id=111277
+back=primal_gladiators_cape_of_cruelty,id=111077,enchant=gift_of_critical_strike
+chest=primal_gladiators_tunic,id=111273
+wrists=primal_gladiators_bindings_of_victory,id=111149
+hands=primal_gladiators_gloves,id=111274
+waist=primal_gladiators_belt_of_prowess,id=111141
+legs=primal_gladiators_legguards,id=111276
+feet=primal_gladiators_boots_of_prowess,id=111145
+finger1=primal_gladiators_ring_of_cruelty,id=111081,enchant=100crit
+finger2=primal_gladiators_ring_of_prowess,id=111082,enchant=100crit
+trinket1=primal_gladiators_medallion_of_cruelty,id=111229
+trinket2=primal_gladiators_badge_of_conquest,id=111222
+main_hand=primal_gladiators_shanker,id=111068,enchant=mark_of_the_thunderlord
+off_hand=primal_gladiators_shanker,id=111068,enchant=mark_of_the_thunderlord
 
 # Gear Summary
-# gear_strength=4
-# gear_agility=1152
-# gear_stamina=1514
-# gear_intellect=4
-# gear_crit_rating=276
-# gear_haste_rating=537
-# gear_mastery_rating=523
-# gear_armor=414
-# gear_multistrike_rating=99
-# tier16_2pc_melee=1
-# tier16_4pc_melee=1
+# gear_agility=2343
+# gear_stamina=3197
+# gear_crit_rating=1752
+# gear_haste_rating=541
+# gear_mastery_rating=861
+# gear_armor=877
+# gear_multistrike_rating=359
+# gear_versatility_rating=77

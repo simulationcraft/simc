@@ -49,7 +49,6 @@ actions+=/envenom,if=combo_points>4
 actions+=/envenom,if=combo_points>=2&buff.slice_and_dice.remains<3
 actions+=/dispatch,if=combo_points<5
 actions+=/mutilate
-actions+=/tricks_of_the_trade
 
 head=helmet_of_the_barbed_assassin,id=99348,upgrade=2,gems=capacitive_primal_8agi_9agi
 neck=immerseus_crystalline_eye,id=105407,upgrade=2
