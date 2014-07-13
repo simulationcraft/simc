@@ -3459,16 +3459,25 @@ struct shadow_reflection_pet_t : public pet_t
   {
     pet_t::init_spells();
 
+    // Sigh ...
+    attacks[ AMBUSH           ] = new sr_ambush_t( this );
+
+    _spec = ROGUE_ASSASSINATION;
+    attacks[ ENVENOM          ] = new sr_envenom_t( this );
+    attacks[ MUTILATE         ] = new sr_mutilate_t( this );
+    attacks[ DISPATCH         ] = new sr_dispatch_t( this );
+
+    _spec = ROGUE_COMBAT;
     attacks[ EVISCERATE       ] = new sr_eviscerate_t( this );
     attacks[ SINISTER_STRIKE  ] = new sr_sinister_strike_t( this );
     attacks[ REVEALING_STRIKE ] = new sr_revealing_strike_t( this );
-    attacks[ AMBUSH           ] = new sr_ambush_t( this );
+
+    _spec = ROGUE_SUBTLETY;
     attacks[ HEMORRHAGE       ] = new sr_hemorrhage_t( this );
     attacks[ BACKSTAB         ] = new sr_backstab_t( this );
-    attacks[ ENVENOM          ] = new sr_envenom_t( this );
-    attacks[ DISPATCH         ] = new sr_dispatch_t( this );
-    attacks[ MUTILATE         ] = new sr_mutilate_t( this );
     attacks[ RUPTURE          ] = new sr_rupture_t( this );
+
+    _spec = SPEC_NONE;
   }
 
   virtual action_t* create_action( const std::string& name,
@@ -3782,7 +3791,6 @@ void rogue_t::init_action_list()
 
     // Combo point finishers
     action_priority_list_t* finisher = get_action_priority_list( "finisher", "Combo point finishers" );
-    finisher -> add_action( this, "Rupture", "if=ticks_remain<2&target.time_to_die>=26&(active_enemies<2|!buff.blade_flurry.up)" );
     finisher -> add_action( this, "Crimson Tempest", "if=active_enemies>=7&dot.crimson_tempest_dot.ticks_remain<=2" );
     finisher -> add_action( this, "Eviscerate" );
   }
