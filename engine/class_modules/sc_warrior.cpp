@@ -3453,18 +3453,18 @@ struct bloodsurge_t: public warrior_buff_t<buff_t>
     .chance( p.spec.bloodsurge -> effectN( 1 ).percent() ) ), wasted( 0 )
   {
   }
-  virtual void execute()
+  virtual void execute( int a, double b, timespan_t t )
   {
     wasted = 3;
 
-    base_t::execute();
+    base_t::execute( a, b, t );
   }
 
-  virtual void decrement()
+  virtual void decrement( int a, double b )
   {
     wasted--;
 
-    base_t::decrement();
+    base_t::decrement( a, b );
   }
 
   void reset()
