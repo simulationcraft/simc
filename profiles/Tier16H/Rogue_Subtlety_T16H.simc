@@ -41,6 +41,7 @@ actions+=/shadow_dance,if=energy>=75&buff.stealth.down&buff.vanish.down&debuff.f
 actions+=/pool_resource,for_next=1,extra_amount=45
 actions+=/vanish,if=energy>=45&energy<=75&combo_points<=3&buff.shadow_dance.down&buff.master_of_subtlety.down&debuff.find_weakness.down
 actions+=/marked_for_death,if=talent.marked_for_death.enabled&combo_points=0
+actions+=/shadow_reflection,if=talent.shadow_reflection.enabled
 actions+=/run_action_list,name=generator,if=talent.anticipation.enabled&anticipation_charges<4&buff.slice_and_dice.up&dot.rupture.remains>2&(buff.slice_and_dice.remains<6|dot.rupture.remains<4)
 actions+=/run_action_list,name=finisher,if=combo_points=5
 actions+=/run_action_list,name=generator,if=combo_points<4|energy>80|talent.anticipation.enabled
@@ -97,7 +98,3 @@ off_hand=hvitserks_formidable_shanker,id=105601,upgrade=2,gems=8agi_3agi,enchant
 # meta_gem=capacitive_primal
 # tier16_2pc_melee=1
 # tier16_4pc_melee=1
-# These values represent the avg HAT donor interval of the raid.
-# A negative value will make the Rogue use a programmed default interval.
-# A zero value will disable virtual HAT procs and assume a real raid is being simulated.
-virtual_hat_interval=-1
