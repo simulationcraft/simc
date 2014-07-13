@@ -68,7 +68,7 @@ tier17_4pc_heal=1
 
 # Holy DMG
 priest="Priest_Holy_T17N_DMG"
-talents=3233332
+talents=3223132
 level=100
 race=draenei
 spec=holy

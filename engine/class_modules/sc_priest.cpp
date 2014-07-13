@@ -411,6 +411,7 @@ public:
   virtual double    composite_armor() const override;
   virtual double    composite_spell_haste() const override;
   virtual double    composite_spell_speed() const override;
+  virtual double    composite_multistrike_multiplier( const action_state_t* s ); //TODO Wire this up when we can change the damage/heal coefficient for Multistrikes
   virtual double    composite_spell_power_multiplier() const override;
   virtual double    composite_spell_crit() const override;
   virtual double    composite_melee_crit() const override;
@@ -1007,6 +1008,19 @@ public:
         priest.procs.divine_insight -> occur();
     }
   }
+
+  void trigger_surge_of_light()
+  {
+    int stack = priest.buffs.surge_of_light -> check();
+    if ( priest.buffs.surge_of_light -> trigger() )
+    {
+      if ( priest.buffs.surge_of_light -> check() == stack )
+        priest.procs.surge_of_light_overflow -> occur();
+      else
+        priest.procs.surge_of_light -> occur();
+    }
+  }
+
   virtual void schedule_execute( action_state_t* state = 0 ) override
   {
     cancel_shadowform();
@@ -1387,18 +1401,6 @@ struct priest_heal_t : public priest_action_t<heal_t>
   {
     if ( priest.specs.strength_of_soul -> ok() && t -> buffs.weakened_soul -> up() )
       t -> buffs.weakened_soul -> extend_duration( player, timespan_t::from_seconds( -1 * priest.specs.strength_of_soul -> effectN( 1 ).base_value() ) );
-  }
-
-  void trigger_surge_of_light()
-  {
-    int stack = priest.buffs.surge_of_light -> check();
-    if ( priest.buffs.surge_of_light -> trigger() )
-    {
-      if ( priest.buffs.surge_of_light -> check() == stack )
-        priest.procs.surge_of_light_overflow -> occur();
-      else
-        priest.procs.surge_of_light -> occur();
-    }
   }
 
   void consume_serendipity()
@@ -2621,10 +2623,6 @@ struct shadow_word_death_t final : public priest_spell_t
       may_crit   = false;
       callbacks  = false;
 
-      // Hard-coded values as nothing in DBC
-      base_dd_min = base_dd_max = 0.533 * priest.dbc.spell_scaling( data().scaling_class(), priest.level );
-      spell_power_mod.direct = 0.599;
-
       target = &priest;
 
       ability_lag = sim -> default_aura_delay;
@@ -2648,11 +2646,7 @@ struct shadow_word_death_t final : public priest_spell_t
       if ( priest.sets.has_set_bonus( SET_T13_2PC_CASTER ) )
         d *= 0.663587;
 
-      priest_td_t& td = get_td( target );
-      if ( priest.talents.clarity_of_power -> ok() && !td.dots.shadow_word_pain -> is_ticking() && !td.dots.vampiric_touch -> is_ticking() )
-        d *= 1.0 + priest.talents.clarity_of_power -> effectN( 1 ).percent();
-
-      return d;
+      return d / 4.0;
     }
   };
 
@@ -2673,7 +2667,7 @@ struct shadow_word_death_t final : public priest_spell_t
 
     priest_spell_t::execute();
 
-    if ( below_20 && priest.specialization() == PRIEST_SHADOW && ! priest.buffs.shadow_word_death_reset_cooldown -> up() )
+    if ( below_20 && !priest.buffs.shadow_word_death_reset_cooldown -> up() )
     {
       cooldown -> reset( false );
       priest.buffs.shadow_word_death_reset_cooldown -> trigger();
@@ -2693,7 +2687,7 @@ struct shadow_word_death_t final : public priest_spell_t
     s -> result_amount = floor( s -> result_amount );
 
     bool over_20 = ( s -> target -> health_percentage() >= 20.0 );
-    if ( backlash && over_20 )
+    if ( backlash && over_20 && s -> result == RESULT_HIT )
     {
       backlash -> spellpower = s -> composite_spell_power();
       backlash -> multiplier = s -> da_multiplier;
@@ -2721,11 +2715,11 @@ struct shadow_word_death_t final : public priest_spell_t
     double d = priest_spell_t::composite_da_multiplier( state );
 
     if ( priest.buffs.empowered_shadows -> check() )
-        d *= 1.0 + priest.buffs.empowered_shadows -> current_value *  priest.buffs.empowered_shadows -> check();
+      d *= 1.0 + priest.buffs.empowered_shadows -> current_value *  priest.buffs.empowered_shadows -> check();
 
-  priest_td_t& td = get_td( target );
+    priest_td_t& td = get_td( target );
     if ( priest.talents.clarity_of_power -> ok() && !td.dots.shadow_word_pain -> is_ticking() && !td.dots.vampiric_touch -> is_ticking() )
-        d *= 1.0 + priest.talents.clarity_of_power -> effectN( 1 ).percent();
+      d *= 1.0 + priest.talents.clarity_of_power -> effectN( 1 ).percent();
 
     return d;
   }
@@ -3272,8 +3266,55 @@ struct vampiric_touch_t final : public priest_spell_t
 
 struct holy_fire_base_t : public priest_spell_t
 {
+  struct glyph_of_the_inquisitor_backlash_t : public priest_spell_t
+  {
+    double spellpower;
+    double multiplier;
+    bool critical;
+
+    glyph_of_the_inquisitor_backlash_t( priest_t& p ) :
+      priest_spell_t( "glyph_of_the_inquisitor_backlash", p, p.talents.power_word_solace -> ok() ? p.find_spell( 129250 ) : p.find_class_spell( "Holy Fire" ) ),
+      spellpower( 0.0 ), multiplier( 1.0 ), critical( false )
+    {
+      background = true;
+      harmful    = false;
+      proc       = true;
+      may_crit   = false;
+      callbacks  = false;
+
+      target = &priest;
+
+      ability_lag = sim -> default_aura_delay;
+      ability_lag_stddev = sim -> default_aura_delay_stddev;
+    }
+
+    virtual void init() override
+    {
+      priest_spell_t::init();
+
+      stats -> type = STATS_NEUTRAL;
+    }
+
+    virtual double composite_spell_power() const override
+    { return spellpower; }
+
+    virtual double composite_da_multiplier( const action_state_t* /* state */ ) const override
+    {
+      double d = multiplier;
+      d /= 5;
+
+      if ( critical )
+        d *= 2;
+
+      return d;
+    }
+  };
+
+  glyph_of_the_inquisitor_backlash_t* backlash;
+
   holy_fire_base_t( const std::string& name, priest_t& p, const spell_data_t* sd ) :
-    priest_spell_t( name, p, sd )
+    priest_spell_t( name, p, sd ),
+    backlash ( new glyph_of_the_inquisitor_backlash_t( p ) )
   {
     procs_courageous_primal_diamond = false;
 
@@ -3309,6 +3350,22 @@ struct holy_fire_base_t : public priest_spell_t
 
     return c;
   }
+
+  virtual void impact( action_state_t* s ) override
+  {
+    if ( backlash && priest.glyphs.inquisitor -> ok() && ( s -> result == RESULT_HIT || s -> result == RESULT_CRIT ) )
+    {
+      backlash -> spellpower = s -> composite_spell_power();
+      backlash -> multiplier = s -> da_multiplier;
+
+      if ( s -> result == RESULT_CRIT )
+        backlash -> critical = true;
+
+      backlash -> schedule_execute();
+    }
+
+    priest_spell_t::impact( s );
+  }
 };
 
 // Power Word: Solace Spell =================================================
@@ -3319,6 +3376,8 @@ struct power_word_solace_t final : public holy_fire_base_t
     holy_fire_base_t( "power_word_solace", player, player.find_spell( 129250 ) )
   {
     parse_options( nullptr, options_str );
+
+    travel_speed = 0.0; //DBC has default travel taking 54seconds.....
 
     can_trigger_atonement = true; // works for both disc and holy
   }
@@ -3472,11 +3531,7 @@ struct smite_t final : public priest_spell_t
     priest.buffs.holy_evangelism -> trigger();
     priest.buffs.surge_of_light -> trigger();
 
-    if ( priest.buffs.chakra_chastise -> check() )
-    {
-      if ( rng().roll( priest.buffs.chakra_chastise -> data().proc_chance() ) )
-        hw_chastise -> reset( true );
-    }
+    trigger_surge_of_light();
   }
 
   virtual void update_ready( timespan_t cd_duration ) override
@@ -5260,7 +5315,7 @@ double priest_t::composite_armor() const
   return std::floor( a );
 }
 
-// priest_t::composite_spell_haste ==========================================
+// priest_t::spirit ==========================================
 
 double priest_t::spirit() const
 {
@@ -5285,6 +5340,20 @@ double priest_t::composite_spell_haste() const
     h /= 1.0 + buffs.mental_instinct -> data().effectN( 1 ).percent() * buffs.mental_instinct -> check();
 
   return h;
+}
+
+// priest_t::composite_spell_haste ==========================================
+
+ // TODO Wire this up when we can change the damage/heal coefficient for Multistrikes
+double priest_t::composite_multistrike_multiplier( const action_state_t* s )
+{
+    //double m = action_t::composite_multistrike_multiplier ( s );
+    double m = 0.3;
+
+    if ( specialization() == PRIEST_HOLY )
+      m = 0.375;//*= 1 + specs.divine_providence->effectN( 2 ).percent();
+
+    return m;
 }
 
 // priest_t::composite_spell_speed ==========================================
@@ -5735,7 +5804,7 @@ void priest_t::init_spells()
 
   //Healing Specs
   glyphs.holy_fire                    = find_glyph_spell( "Glyph of Holy Fire" );
-  glyphs.inquisitor                   = find_glyph_spell( "Glyph of Inquisitor" );              //NYI
+  glyphs.inquisitor                   = find_glyph_spell( "Glyph of the Inquisitor" );
   glyphs.purify                       = find_glyph_spell( "Glyph of Purify" );                  //NYI
   glyphs.shadow_magic                 = find_glyph_spell( "Glyph of Shadow Magic" );            //NYI
   glyphs.smite                        = find_glyph_spell( "Glyph of Smite" );
@@ -5750,7 +5819,7 @@ void priest_t::init_spells()
   glyphs.deep_wells                   = find_glyph_spell( "Glyph of Deep Wells" );
   glyphs.guardian_spirit              = find_glyph_spell( "Glyph of Guardian Spirit" );         //NYI
   glyphs.lightwell                    = find_glyph_spell( "Glyph of Lightwell" );               //NYI
-  glyphs.redeemer                     = find_glyph_spell( "Glyph of Redeemer" );                //NYI
+  glyphs.redeemer                     = find_glyph_spell( "Glyph of the Redeemer" );            //NYI
   glyphs.renew                        = find_glyph_spell( "Glyph of Renew" );
   glyphs.spirit_of_redemption         = find_glyph_spell( "Glyph of Spirit of Redemption" );    //NYI
 
@@ -6358,7 +6427,7 @@ void priest_t::apl_holy_heal()
     def -> add_action( racial_actions[ i ], racial_condition );
 
   def -> add_action( "power_infusion,if=talent.power_infusion.enabled" );
-  //def -> add_action( this, "Lightwell" ); //Lightwell is segfaulting right now. -Twintop 2014/07/07
+  def -> add_action( this, "Lightwell" );
 
   def -> add_action( "power_word_solace,if=talent.power_word_solace.enabled" );
   def -> add_action( "mindbender,if=talent.mindbender.enabled&mana.pct<80" );
@@ -6412,20 +6481,16 @@ void priest_t::apl_holy_dmg()
   for ( size_t i = 0; i < racial_actions.size(); i++ )
     def -> add_action( racial_actions[ i ], racial_condition );
 
-  if ( find_class_spell( "Shadowfiend" ) -> ok() )
-  {
-    def -> add_action( "mindbender,if=talent.mindbender.enabled" );
-    def -> add_action( "shadowfiend,if=!talent.mindbender.enabled" );
-  }
-
-  if ( find_specialization_spell( "Holy Word: Chastise" ) -> ok() )
-    def -> add_action( "holy_word" );
-
-  def -> add_action( this, "Holy Fire" );
-  def -> add_talent( this, "Power Word: Solace" );
-
-  def -> add_action( this, "Shadow Word: Pain", "if=remains<tick_time|!ticking" );
-  def -> add_action( this, "Smite" );
+  def -> add_action( "power_infusion,if=talent.power_infusion.enabled" );
+  def -> add_action( "shadowfiend,if=!talent.mindbender.enabled" );
+  def -> add_action( "mindbender,if=talent.mindbender.enabled" );
+  def -> add_action( "shadow_word_pain,cycle_targets=1,max_cycle_targets=5,if=miss_react&!ticking" );
+  def -> add_action( "power_word_solace" );
+  def -> add_action( "mind_sear,if=active_enemies>=4" );
+  def -> add_action( "holy_fire" );
+  def -> add_action( "smite" );
+  def -> add_action( "holy_word,moving=1" );
+  def -> add_action( "shadow_word_pain,moving=1" );
 }
 
 /* Always returns non-null targetdata pointer
