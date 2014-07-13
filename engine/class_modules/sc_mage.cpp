@@ -36,7 +36,7 @@
 // Unstable Magic Trigger is very sensative to double dipping - as we encounter new modifiers, need to check there is no double dipping going on!
 // Un-hardcode 50% damage modifier on unstable magic
 // Fix how Ivy Veins interacts with spells.
-// Multi-strikes proc UM. Add this!
+// Multi-strikes proc UM. Add this! - DONE!
 
 
 #include "simulationcraft.hpp"
@@ -164,7 +164,6 @@ public:
     const spell_data_t* icy_veins;
     const spell_data_t* inferno_blast;
     const spell_data_t* living_bomb;
-    const spell_data_t* mirror_image;
     const spell_data_t* rapid_displacement;
     const spell_data_t* splitting_ice;
 
@@ -314,6 +313,7 @@ public:
     const spell_data_t* arcane_orb;
     const spell_data_t* meteor;
     const spell_data_t* unstable_magic;
+    const spell_data_t* mirror_image;
 
   } talents;
 
@@ -591,15 +591,6 @@ struct mirror_image_pet_t : public pet_t
     }
   };
 
-  struct fire_blast_t : public mirror_image_spell_t
-  {
-    fire_blast_t( mirror_image_pet_t* p, const std::string& options_str ):
-      mirror_image_spell_t( "fire_blast", p, p -> find_pet_spell( "Fire Blast" ) )
-    {
-      parse_options( NULL, options_str );
-    }
-  };
-
   struct fireball_t : public mirror_image_spell_t
   {
     fireball_t( mirror_image_pet_t* p, const std::string& options_str ):
@@ -624,7 +615,7 @@ struct mirror_image_pet_t : public pet_t
     pet_t( sim, owner, "mirror_image", true ),
     arcane_charge( NULL )
   {
-    owner_coeff.sp_from_sp = 0.05;
+    owner_coeff.sp_from_sp = 0.50;
   }
 
   virtual action_t* create_action( const std::string& name,
@@ -642,21 +633,19 @@ struct mirror_image_pet_t : public pet_t
 
   virtual void init_action_list()
   {
-    if ( o() -> glyphs.mirror_image -> ok() && o() -> specialization() != MAGE_FROST )
-    {
+
       if ( o() -> specialization() == MAGE_FIRE )
       {
         action_list_str = "fireball";
       }
-      else
+      else if ( o() -> specialization() == MAGE_ARCANE )
       {
         action_list_str = "arcane_blast";
       }
-    }
-    else
-    {
-      action_list_str = "frostbolt";
-    }
+      else
+      {
+        action_list_str = "frostbolt";
+      }
 
     pet_t::init_action_list();
   }
@@ -2970,6 +2959,8 @@ struct mirror_image_t : public mage_spell_t
     parse_options( NULL, options_str );
     dot_duration = timespan_t::zero();
     harmful = false;
+    if ( !p -> talents.mirror_image -> ok() )
+      background = true;
   }
 
   virtual void init()
@@ -2987,6 +2978,10 @@ struct mirror_image_t : public mage_spell_t
 
   virtual void execute()
   {
+
+    if (!p() -> talents.mirror_image -> ok() )
+      return;
+
     mage_spell_t::execute();
 
     if ( p() -> pets.mirror_images[ 0 ] )
@@ -3946,6 +3941,7 @@ void mage_t::init_spells()
   talents.overpowered        = find_talent_spell( "Overpowered" );
   talents.arcane_orb         = find_talent_spell( "Arcane Orb" );
   talents.unstable_magic     = find_talent_spell( "Unstable Magic" );
+  talents.mirror_image       = find_talent_spell( "Mirror Image" );
 
 
   // Passive Spells
@@ -4016,7 +4012,6 @@ void mage_t::init_spells()
   glyphs.icy_veins           = find_glyph_spell( "Glyph of Icy Veins" );
   glyphs.inferno_blast       = find_glyph_spell( "Glyph of Inferno Blast" );
   glyphs.living_bomb         = find_glyph_spell( "Glyph of Living Bomb" );
-  glyphs.mirror_image        = find_glyph_spell( "Glyph of Mirror Image" );
   glyphs.rapid_displacement  = find_glyph_spell( "Glyph of Rapid Displacement" );
   glyphs.splitting_ice       = find_glyph_spell( "Glyph of Splitting Ice" );
 
