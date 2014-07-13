@@ -376,6 +376,8 @@ struct rogue_t : public player_t
   virtual double    composite_player_multiplier( school_e school ) const;
   virtual double    energy_regen_per_second() const;
 
+  void trigger_sinister_calling( const action_state_t* );
+
   target_specific_t<rogue_td_t*> target_data;
 
   virtual rogue_td_t* get_target_data( player_t* target ) const
@@ -1652,6 +1654,9 @@ struct ambush_t : public rogue_attack_t
 
       td -> debuffs.find_weakness -> trigger();
     }
+
+    if ( result_is_multistrike( state -> result ) )
+      p() -> trigger_sinister_calling( state );
   }
 
   void consume_resource()
@@ -1717,6 +1722,14 @@ struct backstab_t : public rogue_attack_t
 
     if ( result_is_hit( execute_state -> result ) && p() -> sets.has_set_bonus( SET_T16_4PC_MELEE ) )
       p() -> buffs.sleight_of_hand -> trigger();
+  }
+
+  void impact( action_state_t* state )
+  {
+    rogue_attack_t::impact( state );
+
+    if ( result_is_multistrike( state -> result ) )
+      p() -> trigger_sinister_calling( state );
   }
 
   double composite_da_multiplier( const action_state_t* state ) const
@@ -2895,6 +2908,34 @@ struct stealth_t : public spell_t
 };
 
 } // end namespace actions
+
+// ==========================================================================
+// Rogue Triggers
+// ==========================================================================
+
+void rogue_t::trigger_sinister_calling( const action_state_t* state )
+{
+  if ( ! spec.sinister_calling -> ok() )
+    return;
+
+  if ( ! state -> action -> result_is_multistrike( state -> result ) )
+    return;
+
+  rogue_td_t* tdata = get_target_data( state -> target );
+  if ( tdata -> dots.rupture -> is_ticking() )
+    tdata -> dots.rupture -> current_action -> tick( tdata -> dots.rupture );
+
+  if ( tdata -> dots.garrote -> is_ticking() )
+    tdata -> dots.garrote -> current_action -> tick( tdata -> dots.garrote );
+
+  // Hemorrhage and Crimson tempest are ignites, do they give extra ticks?
+  if ( tdata -> dots.hemorrhage -> is_ticking() )
+    tdata -> dots.hemorrhage -> current_action -> tick( tdata -> dots.hemorrhage );
+
+  if ( tdata -> dots.crimson_tempest -> is_ticking() )
+    tdata -> dots.crimson_tempest -> current_action -> tick( tdata -> dots.crimson_tempest );
+}
+
 
 namespace buffs {
 // ==========================================================================
