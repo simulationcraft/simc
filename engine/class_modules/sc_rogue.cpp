@@ -693,7 +693,9 @@ struct damage_pool_attack_t : public ABILITY
                         const std::string&  options = std::string() ) :
     ability_t( token, p, s, options ),
     pool_multiplier( 1.0 )
-  { }
+  {
+    this -> tick_may_crit = false;
+  }
 
   damage_pool_state_t* cast_state( action_state_t* state )
   { return debug_cast<damage_pool_state_t*>( state ); }
@@ -780,6 +782,7 @@ struct rogue_poison_t : public rogue_attack_t
     may_dodge         = false;
     may_parry         = false;
     may_block         = false;
+    callbacks         = false;
 
     weapon_multiplier = 0;
 
@@ -2550,8 +2553,6 @@ struct revealing_strike_t : public rogue_attack_t
 
 struct rupture_t : public rogue_attack_t
 {
-  double combo_point_tick_power_mod[ combo_points_t::max_combo_points ];
-
   rupture_t( rogue_t* p, const std::string& options_str ) :
     rogue_attack_t( "rupture", p, p -> find_specialization_spell( "Rupture" ), options_str )
   {
@@ -2583,7 +2584,7 @@ struct rupture_t : public rogue_attack_t
 
     duration += duration * td( s -> target ) -> combo_points.count;
     if ( p() -> sets.has_set_bonus( SET_T15_2PC_MELEE ) )
-      duration += timespan_t::from_seconds( 4 );
+      duration += data().duration();
 
     return duration;
   }
@@ -3473,11 +3474,11 @@ struct shadow_reflection_pet_t : public pet_t
       may_crit = false;
 
       mh_strike = new sr_mutilate_strike_t( p, "mutilate_mh", data().effectN( 2 ).trigger() );
-      mh_strike -> weapon = &( p -> main_hand_weapon );
+      mh_strike -> weapon = &( p -> o() -> main_hand_weapon );
       add_child( mh_strike );
 
       oh_strike = new sr_mutilate_strike_t( p, "mutilate_oh", data().effectN( 3 ).trigger() );
-      oh_strike -> weapon = &( p -> off_hand_weapon );
+      oh_strike -> weapon = &( p -> o() -> off_hand_weapon );
       add_child( oh_strike );
     }
 
