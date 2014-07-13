@@ -34,7 +34,7 @@ race=orc
 spec=fury
 role=attack
 position=back
-talents=2233322
+talents=2231322
 glyphs=unending_rage/death_from_above/raging_wind
 head=primal_gladiators_plate_helm,id=111241
 neck=primal_gladiators_choker_of_cruelty,id=111207,enchant=140crit
@@ -61,7 +61,7 @@ race=orc
 spec=Arms
 role=attack
 position=back
-talents=1211322
+talents=1221322
 glyphs=unending_rage/death_from_above
 head=primal_gladiators_plate_helm,id=111241
 neck=primal_gladiators_choker_of_cruelty,id=111207,enchant=140crit

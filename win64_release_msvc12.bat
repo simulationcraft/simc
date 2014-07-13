@@ -10,7 +10,7 @@
 
 :: Update the qt_dir as necessary
 set qt_dir=C:\Qt\Qt5.3.1\5.3\msvc2013_64
-set install=simc-win64-release
+set install=simc-601-alpha-win64-
 set redist="C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\redist\x64\Microsoft.VC120.CRT"
 
 :: IMPORTANT NOTE FOR DEBUGGING
