@@ -34,12 +34,15 @@
 // Enhanced Pyrotechnics is giving global crit chance increase (not just FB/FFB). Fix this!
 // Unstable Magic Trigger is very sensative to double dipping - as we encounter new modifiers, need to check there is no double dipping going on!
 // Un-hardcode 50% damage modifier on unstable magic
+// Does the IV glyph still have a hidden proc-rate increase for FoF?
+// Brainfreeze doesn't look correct in the spelldata (and isn't correct on the beta) in regards to proc chance. Until this is fixed, hardcoding it's buff and proc rate will suffice. Need to go and fix once the spell data is fixed.
 
 // To-do Completed:
-//  BUG IGNITE TRIGGERS ON MISSES. Fixing this breaks icicles. Need to investigate - DONE
+//  BUG IGNITE TRIGGERS ON MISSES. Fixing this breaks icicles. Need to investigate - DONE!
 //  Multistrike triggering ignite? - Confirmed by celestalon to interact with one another
-//  Fix how Ivy Veins interacts with spells. - DONE
+//  Fix how Ivy Veins interacts with spells. - DONE!
 //  Multi-strikes proc UM. Add this! - DONE!
+//  Remove pyromaniac - DONE!
 
 // Misc Notes:
 //  Unstable Magic Trigger is very sensative to double dipping - as we encounter new modifiers, need to check there is no double dipping going on!
@@ -80,7 +83,6 @@ struct mage_td_t : public actor_pair_t
   struct debuffs_t
   {
     buff_t* frostbolt;
-    buff_t* pyromaniac;
     buff_t* slow;
   } debuffs;
 
@@ -281,7 +283,6 @@ public:
     // Fire
     const spell_data_t* critical_mass;
     const spell_data_t* ignite;
-    const spell_data_t* pyromaniac;
 
     // Frost
     const spell_data_t* frostbolt;
@@ -2119,18 +2120,6 @@ struct fireball_t : public mage_spell_t
 
     return m;
   }
-
-  virtual double composite_target_multiplier( player_t* t ) const
-  {
-    double tm = mage_spell_t::composite_target_multiplier( t );
-
-    if ( td( t ) -> debuffs.pyromaniac -> up() )
-    {
-      tm *= 1.1;
-    }
-
-    return tm;
-  }
 };
 
 // Flamestrike Spell ========================================================
@@ -2221,21 +2210,9 @@ struct frost_bomb_t : public mage_spell_t
       p() -> last_bomb_target = execute_state -> target;
   }
 
-  virtual void impact( action_state_t* s )
-  {
-    mage_spell_t::impact( s );
-
-    if ( p() -> specialization() == MAGE_FIRE && result_is_hit( s -> result ) )
-    {
-      td( s -> target ) -> debuffs.pyromaniac -> trigger( 1, buff_t::DEFAULT_VALUE(), 1 );
-    }
-  }
-
   virtual void tick( dot_t* d )
   {
     mage_spell_t::tick( d );
-    if ( p() -> last_bomb_target == d -> state -> target )
-      p() -> buffs.brain_freeze -> trigger();
     d -> cancel();
   }
 };
@@ -2255,7 +2232,23 @@ struct frostbolt_t : public mage_spell_t
 
     if ( p -> sets.has_set_bonus( SET_PVP_4PC_CASTER ) )
       base_multiplier *= 1.05;
+
   }
+
+  double bf_proc_chance = p() -> buffs.brain_freeze -> data().proc_chance();
+
+  virtual int schedule_multistrike( action_state_t* s, dmg_e dmg_type, double tick_multiplier )
+  {
+    int sm = mage_spell_t::schedule_multistrike( s, dmg_type, tick_multiplier );
+
+    if ( sm == 1 )
+      bf_proc_chance += 0.45;
+    if ( sm == 2 )
+      bf_proc_chance += 0.90;
+    return sm;
+  }
+
+
   virtual void execute()
   {
     mage_spell_t::execute();
@@ -2273,6 +2266,7 @@ struct frostbolt_t : public mage_spell_t
       }
 
       p() -> buffs.fingers_of_frost -> trigger( 1, buff_t::DEFAULT_VALUE(), fof_proc_chance );
+      p() -> buffs.brain_freeze -> trigger(1, buff_t::DEFAULT_VALUE(), bf_proc_chance );
 
       p() -> buffs.tier13_2pc -> trigger();
     }
@@ -2363,10 +2357,8 @@ struct frostfire_bolt_t : public mage_spell_t
   {
     // Brain Freeze treats the target as frozen
     frozen = p() -> buffs.brain_freeze -> check() > 0;
-
-    dual = p() -> glyphs.icy_veins -> ok() && p() -> buffs.icy_veins -> check();
     mage_spell_t::execute();
-    dual = false;
+
 
     if ( result_is_hit( execute_state -> result ) )
     {
@@ -2408,7 +2400,7 @@ struct frostfire_bolt_t : public mage_spell_t
 
     if ( s -> result == RESULT_CRIT && p() -> specialization() == MAGE_FIRE )
         p() -> buffs.enhanced_pyrotechnics -> expire();
-    else
+    else if ( s -> result == RESULT_HIT && p() -> specialization() == MAGE_FIRE )
         p() -> buffs.enhanced_pyrotechnics -> trigger();
 
 
@@ -2425,7 +2417,7 @@ struct frostfire_bolt_t : public mage_spell_t
   {
       double c = mage_spell_t::composite_crit();
 
-      if ( p() -> specialization() == MAGE_FIRE)  c += ( p() -> buffs.enhanced_pyrotechnics -> check() ) * p() -> perks.enhanced_pyrotechnics -> effectN( 1 ).trigger() -> effectN( 1 ).percent();
+      if ( p() -> specialization() == MAGE_FIRE )  c += ( p() -> buffs.enhanced_pyrotechnics -> check() ) * p() -> perks.enhanced_pyrotechnics -> effectN( 1 ).trigger() -> effectN( 1 ).percent();
 
       return c;
   }
@@ -2455,18 +2447,6 @@ struct frostfire_bolt_t : public mage_spell_t
     }
 
     return am;
-  }
-
-  virtual double composite_target_multiplier( player_t* t ) const
-  {
-    double tm = mage_spell_t::composite_target_multiplier( t );
-
-    if ( td( t ) -> debuffs.pyromaniac -> check() )
-    {
-      tm *= 1.1;
-    }
-
-    return tm;
   }
 
 };
@@ -2765,18 +2745,6 @@ struct inferno_blast_t : public mage_spell_t
   virtual double composite_target_crit( player_t* ) const
   { return 0.0; }
 
-  virtual double composite_target_multiplier( player_t* t ) const
-  {
-    double tm = mage_spell_t::composite_target_multiplier( t );
-
-    if ( td( t ) -> debuffs.pyromaniac -> check() )
-    {
-      tm *= 1.1;
-    }
-
-    return tm;
-  }
-
   virtual void execute()
   {
     mage_spell_t::execute();
@@ -2835,18 +2803,8 @@ struct living_bomb_t : public mage_spell_t
     }
 
     mage_spell_t::impact( s );
-
-    if ( p() -> specialization() == MAGE_FIRE && result_is_hit( s -> result ) )
-      td( s -> target ) -> debuffs.pyromaniac -> trigger( 1, buff_t::DEFAULT_VALUE(), 1 );
   }
 
-  virtual void tick( dot_t* d )
-  {
-    mage_spell_t::tick( d );
-
-    if ( p() -> last_bomb_target == d -> state -> target )
-      p() -> buffs.brain_freeze -> trigger();
-  }
 
   virtual void last_tick( dot_t* d )
   {
@@ -3093,16 +3051,6 @@ struct nether_tempest_t : public mage_spell_t
       p() -> last_bomb_target = execute_state -> target;
   }
 
-  virtual void impact( action_state_t* s )
-  {
-    mage_spell_t::impact( s );
-
-    if ( p() -> specialization() == MAGE_FIRE && result_is_hit( s -> result ) )
-    {
-      td( s -> target ) -> debuffs.pyromaniac -> trigger( 1, buff_t::DEFAULT_VALUE(), 1 );
-    }
-  }
-
   virtual void tick( dot_t* d )
   {
     mage_spell_t::tick( d );
@@ -3110,8 +3058,6 @@ struct nether_tempest_t : public mage_spell_t
     add_cleave -> main_target = target;
     add_cleave -> execute();
 
-    if ( d -> state -> target == p() -> last_bomb_target )
-      p() -> buffs.brain_freeze -> trigger();
   }
 };
 
@@ -3243,17 +3189,6 @@ struct pyroblast_t : public mage_spell_t
     return am;
   }
 
-  virtual double composite_target_multiplier( player_t* t ) const
-  {
-    double tm = mage_spell_t::composite_target_multiplier( t );
-
-    if ( td( t ) -> debuffs.pyromaniac -> check() )
-    {
-      tm *= 1.1;
-    }
-
-    return tm;
-  }
 };
 
 // Rune of Power ============================================================
@@ -3789,7 +3724,6 @@ mage_td_t::mage_td_t( player_t* target, mage_t* mage ) :
   dots.pyroblast      = target -> get_dot( "pyroblast",      mage );
 
   debuffs.frostbolt = buff_creator_t( *this, "frostbolt" ).spell( mage -> spec.frostbolt ).duration( timespan_t::from_seconds( 15.0 ) ).max_stack( 3 );
-  debuffs.pyromaniac = buff_creator_t( *this, "pyromaniac" ).spell( mage -> spec.pyromaniac ).duration( timespan_t::from_seconds( 15.0 ) ).max_stack( 1 );
   debuffs.slow = buff_creator_t( *this, "slow" ).spell( mage -> spec.slow );
 }
 
@@ -3992,7 +3926,6 @@ void mage_t::init_spells()
   spec.critical_mass         = find_specialization_spell( "Critical Mass" );
   spec.fingers_of_frost      = find_specialization_spell( "Fingers of Frost" );
   spec.frostbolt             = find_specialization_spell( "Frostbolt" );
-  spec.pyromaniac            = find_specialization_spell( "Pyromaniac" );
 
   // Mastery
   spec.icicles               = find_mastery_spell( MAGE_FROST );
@@ -4081,11 +4014,7 @@ void mage_t::create_buffs()
                                .default_value( talents.blazing_speed -> effectN( 1 ).percent() );
   buffs.brain_freeze         = buff_creator_t( this, "brain_freeze", spec.brain_freeze )
                                .duration( find_spell( 57761 ) -> duration() )
-                               .default_value( spec.brain_freeze -> effectN( 1 ).percent() )
-                               .chance( spec.brain_freeze      -> ok() ?
-                                      ( talents.nether_tempest -> ok() ? 0.09 :
-                                      ( talents.living_bomb    -> ok() ? 0.25 :
-                                      ( talents.frost_bomb     -> ok() ? 1.00 : 0.0 ) ) ) : 0 );
+                               .default_value( spec.brain_freeze -> effectN( 1 ).percent() ).max_stack( 2 ).chance( 0.10 );;
 
   buffs.fingers_of_frost     = buff_creator_t( this, "fingers_of_frost", find_spell( 112965 ) ).chance( find_spell( 112965 ) -> effectN( 1 ).percent() )
                                .duration( timespan_t::from_seconds( 15.0 ) )
