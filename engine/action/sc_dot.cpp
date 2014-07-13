@@ -630,6 +630,11 @@ void dot_t::start( timespan_t duration )
 
   schedule_tick();
 
+  // Only schedule a tick if thre's enough time to tick at least once.
+  // Otherwise, next tick is the last tick, and the end event will handle it
+  if ( current_duration <= time_to_tick )
+    core_event_t::cancel( tick_event );
+
   end_event = new ( sim ) dot_t::dot_end_event_t( this, current_duration );
 }
 
