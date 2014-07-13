@@ -902,7 +902,7 @@ struct yseras_gift_t : public heal_t
     heal_t( "yseras_gift", p, p -> talent.yseras_gift )
   {
     base_tick_time = data().effectN( 1 ).period();
-    dot_duration   = base_tick_time;
+    dot_duration   = base_tick_time * 2;
     harmful = tick_may_crit = hasted_ticks = false;
     may_multistrike = 0;
     background = proc = dual = true;
