@@ -4987,7 +4987,12 @@ void warrior_t::stance_swap()
     recalculate_resource_max( RESOURCE_HEALTH );
     break;
   }
-  case STANCE_GLADIATOR: break;
+  case STANCE_GLADIATOR:
+  {
+    buff.gladiator_stance -> expire();
+    swap = STANCE_GLADIATOR;
+    break;
+  }
   }
   active_stance = swap;
 
@@ -5000,11 +5005,14 @@ void warrior_t::stance_swap()
     recalculate_resource_max( RESOURCE_HEALTH );
     break;
   }
-  case STANCE_GLADIATOR: break;
+  case STANCE_GLADIATOR:
+  {
+    buff.gladiator_stance -> trigger();
+    break;
+  }
   }
   cooldown.stance_swap -> start();
 }
-
 
 // warrior_t::enrage ========================================================
 
