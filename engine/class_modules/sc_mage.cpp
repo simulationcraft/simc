@@ -31,6 +31,12 @@
 // Need to not hardcode Overpowered
 // Can Meteor ticks crit and miss?
 // Are Meteor ticks effected by haste?
+// Living Bomb spell data has completely changed - need to re-do the entire thing.
+// Enhanced Pyrotechnics is giving global crit chance increase (not just FB/FFB). Fix this!
+// Unstable Magic Trigger is very sensative to double dipping - as we encounter new modifiers, need to check there is no double dipping going on!
+// Un-hardcode 50% damage modifier on unstable magic
+// Fix how Ivy Veins interacts with spells.
+// Multi-strikes proc UM. Add this!
 
 
 #include "simulationcraft.hpp"
@@ -86,6 +92,7 @@ public:
   // Active
   actions::ignite_t* active_ignite;
   int active_living_bomb_targets;
+  action_t* explode;
   player_t* last_bomb_target;
 
   // Benefits
@@ -306,6 +313,7 @@ public:
     const spell_data_t* overpowered;
     const spell_data_t* arcane_orb;
     const spell_data_t* meteor;
+    const spell_data_t* unstable_magic;
 
   } talents;
 
@@ -343,6 +351,10 @@ public:
     pyro_switch( pyro_switch_t() ),
     current_arcane_charges()
   {
+
+    //Active
+    explode                  = 0;
+
     // Cooldowns
     cooldowns.evocation      = get_cooldown( "evocation"     );
     cooldowns.inferno_blast  = get_cooldown( "inferno_blast" );
@@ -350,6 +362,7 @@ public:
 
     // Options
     base.distance = 40;
+
   }
 
   // Character Definition
@@ -441,30 +454,9 @@ struct water_elemental_pet_t : public pet_t
     }
   };
 
-  struct mini_waterbolt_t : public spell_t
-  {
-    mini_waterbolt_t( water_elemental_pet_t* p , int bolt_count = 1 ) :
-      spell_t( "mini_waterbolt", p, p -> find_spell( 31707 ) )
-    {
-      may_crit = true;
-      background = true;
-      dual = true;
-      base_costs[ RESOURCE_MANA ] = 0;
-
-      if ( bolt_count < 3 )
-      {
-        execute_action = new mini_waterbolt_t( p, bolt_count + 1 );
-      }
-
-    }
-
-    virtual timespan_t execute_time() const
-    { return timespan_t::from_seconds( 0.25 ); }
-  };
-
   struct waterbolt_t : public spell_t
   {
-    mini_waterbolt_t* mini_waterbolt;
+
 
     waterbolt_t( water_elemental_pet_t* p, const std::string& options_str ):
       spell_t( "waterbolt", p, p -> find_pet_spell( "Waterbolt" ) )
@@ -472,8 +464,6 @@ struct water_elemental_pet_t : public pet_t
       parse_options( NULL, options_str );
       may_crit = true;
 
-      mini_waterbolt = new mini_waterbolt_t( p );
-      add_child( mini_waterbolt );
     }
 
     virtual void impact( action_state_t* s )
@@ -491,10 +481,6 @@ struct water_elemental_pet_t : public pet_t
       spell_t::execute();
 
       water_elemental_pet_t* p = static_cast<water_elemental_pet_t*>( player );
-      if ( p -> o() -> glyphs.icy_veins -> ok() && p -> o() -> buffs.icy_veins -> up() )
-      {
-        mini_waterbolt -> schedule_execute( mini_waterbolt -> get_state( execute_state ) );
-      }
     }
 
     virtual double action_multiplier() const
@@ -1228,6 +1214,70 @@ void mage_spell_t::trigger_ignite( action_state_t* state )
   trigger( p.active_ignite, state -> target, amount );
 }
 
+// Unstable Magic Trigger ====================================================
+
+static void trigger_unstable_magic( action_state_t* s )
+{
+  struct unstable_magic_explosion_t : public mage_spell_t
+  {
+
+    double pct_damage;
+    unstable_magic_explosion_t( mage_t* p ) :
+      mage_spell_t( "unstable_magic_explosion", p, p -> talents.unstable_magic )
+    {
+      may_miss = may_dodge = may_parry = may_crit = may_block = callbacks = may_multistrike = false;
+      aoe = -1;
+      base_costs[ RESOURCE_MANA ] = 0;
+      cooldown -> duration  = timespan_t::zero();
+      pct_damage = 0.5; // Hardcoding this until I can figure out how to get the numbers to match when not hardcoding.
+      trigger_gcd = timespan_t::zero();
+    }
+
+  virtual double composite_player_multipler() const
+  { return 1; }
+
+  virtual double composite_target_multipler() const
+  { return 1; }
+
+  virtual double composite_versaility() const
+  { return 1; }
+
+  virtual void init()
+  {
+    mage_spell_t::init();
+    // disable the snapshot_flags for all multipliers
+    snapshot_flags &= STATE_NO_MULTIPLIER;
+  }
+
+  virtual void execute()
+  {
+    base_dd_max *= pct_damage; // Deals 50% of original triggering spell damage
+    base_dd_min *= pct_damage;
+
+    mage_spell_t::execute();
+  }
+  };
+
+
+  
+  mage_t* p = debug_cast<mage_t*>( s -> action -> player );
+
+  if ( !p -> explode )
+  {
+   p -> explode = new unstable_magic_explosion_t( p );
+   p -> explode -> init();
+  }
+
+  p -> explode -> base_dd_max = s -> result_amount;
+  p -> explode -> base_dd_min = s -> result_amount;
+  p -> explode -> execute();
+  
+  return;
+}
+
+
+
+
 // Arcane Barrage Spell =====================================================
 
 struct arcane_barrage_t : public mage_spell_t
@@ -1339,6 +1389,18 @@ struct arcane_blast_t : public mage_spell_t
       else
           return mage_spell_t::execute_time();
   }
+
+  virtual void impact( action_state_t* s )
+  {
+    mage_spell_t::impact( s );
+
+    if ( result_is_hit( s -> result ) || result_is_multistrike( s -> result ) )
+    {
+        if ( p() -> talents.unstable_magic -> ok() && rng().roll( p() -> talents.unstable_magic -> effectN( 2 ).percent() ) )
+          trigger_unstable_magic( s );
+    }
+  }
+
 };
 
 // Arcane Brilliance Spell ==================================================
@@ -1989,8 +2051,11 @@ struct fire_blast_t : public mage_spell_t
 
 struct fireball_t : public mage_spell_t
 {
+
+
   fireball_t( mage_t* p, const std::string& options_str ) :
     mage_spell_t( "fireball", p, p -> find_class_spell( "Fireball" ) )
+
   {
     parse_options( NULL, options_str );
     may_hot_streak = true;
@@ -2007,6 +2072,7 @@ struct fireball_t : public mage_spell_t
     if ( result_is_hit( execute_state -> result ) )
     {
       p() -> buffs.tier13_2pc -> trigger();
+
     }
   }
 
@@ -2027,6 +2093,7 @@ struct fireball_t : public mage_spell_t
 
         else
             p() -> buffs.enhanced_pyrotechnics -> trigger();
+
     }
 
 
@@ -2034,7 +2101,12 @@ struct fireball_t : public mage_spell_t
         p() -> cooldowns.combustion -> adjust( timespan_t::from_seconds( - p() -> talents.kindling -> effectN( 1 ).base_value() ) );
 
     if ( result_is_hit( s -> result) || result_is_multistrike( s -> result) )
+    {
+        if ( p() -> talents.unstable_magic -> ok() && rng().roll( p() -> talents.unstable_magic -> effectN( 3 ).percent() ) )
+          trigger_unstable_magic( s );
         trigger_ignite( s );
+    }
+
   }
 
   virtual double composite_crit() const
@@ -2177,62 +2249,11 @@ struct frost_bomb_t : public mage_spell_t
 
 // Frostbolt Spell ==========================================================
 
-struct mini_frostbolt_t : public mage_spell_t
-{
-  mini_frostbolt_t( mage_t* p, int bolt_count = 1 ) :
-    mage_spell_t( "mini_frostbolt", p, p -> find_spell( 31707 ) )
-  {
-    background = true;
-    //dual = true;
-    base_costs[ RESOURCE_MANA ] = 0;
-    if ( p -> perks.improved_frostbolt -> ok() )
-      base_multiplier *= 1.0 + p -> perks.improved_frostbolt -> effectN( 1 ).percent();
-    if ( p -> sets.has_set_bonus( SET_PVP_4PC_CASTER ) )
-      base_multiplier *= 1.05;
-
-    if ( bolt_count < 3 )
-    {
-      execute_action = new mini_frostbolt_t( p, bolt_count + 1 );
-    }
-  }
-
-  void impact( action_state_t* s )
-  {
-    mage_spell_t::impact( s );
-    if ( result_is_hit( s -> result) || result_is_multistrike( s -> result ) )
-        trigger_icicle_gain( s );
-
-  }
-
-  virtual timespan_t execute_time() const
-  { return timespan_t::from_seconds( 0.25 ); }
-};
 
 struct frostbolt_t : public mage_spell_t
 {
-  struct state_t : public action_state_t
-  {
-    bool mini_version;
-    state_t( action_t* a, player_t* t ) : action_state_t( a, t ),
-      mini_version( false ) { }
-
-    std::ostringstream& debug_str( std::ostringstream& s )
-    { action_state_t::debug_str( s ) << " mini_version=" << std::boolalpha << mini_version; return s; }
-
-    void initialize()
-    { action_state_t::initialize(); mini_version = false; }
-
-    void copy_state( const action_state_t* o )
-    {
-      action_state_t::copy_state( o );
-      mini_version = static_cast<const state_t&>( *o ).mini_version;
-    }
-  };
-  mini_frostbolt_t* mini_frostbolt;
-
   frostbolt_t( mage_t* p, const std::string& options_str ) :
-    mage_spell_t( "frostbolt", p, p -> find_class_spell( "Frostbolt" ) ),
-    mini_frostbolt( new mini_frostbolt_t( p ) )
+    mage_spell_t( "frostbolt", p, p -> find_class_spell( "Frostbolt" ) )
   {
     parse_options( NULL, options_str );
 
@@ -2241,27 +2262,11 @@ struct frostbolt_t : public mage_spell_t
 
     if ( p -> sets.has_set_bonus( SET_PVP_4PC_CASTER ) )
       base_multiplier *= 1.05;
-
-    add_child( mini_frostbolt );
   }
-
-  virtual void snapshot_state( action_state_t* s, dmg_e type )
-  {
-    state_t& state = static_cast<state_t&>( *s );
-
-    state.mini_version = p() -> glyphs.icy_veins -> ok() && p() -> buffs.icy_veins -> check();
-
-    mage_spell_t::snapshot_state( s, type );
-  }
-
-  virtual action_state_t* new_state()
-  { return new state_t( this, target ); }
-
   virtual void execute()
   {
-    dual = p() -> glyphs.icy_veins -> ok() && p() -> buffs.icy_veins -> check();
     mage_spell_t::execute();
-    dual = false;
+
 
     if ( result_is_hit( execute_state -> result ) )
     {
@@ -2277,11 +2282,6 @@ struct frostbolt_t : public mage_spell_t
       p() -> buffs.fingers_of_frost -> trigger( 1, buff_t::DEFAULT_VALUE(), fof_proc_chance );
 
       p() -> buffs.tier13_2pc -> trigger();
-
-      if ( p() -> glyphs.icy_veins -> ok() && p() -> buffs.icy_veins -> up() )
-      {
-        mini_frostbolt -> schedule_execute( mini_frostbolt -> get_state( execute_state ) );
-      }
     }
 
     p() -> buffs.frozen_thoughts -> expire();
@@ -2289,23 +2289,21 @@ struct frostbolt_t : public mage_spell_t
 
   virtual void impact( action_state_t* s )
   {
-    if ( ! static_cast<const state_t&>( *s ).mini_version ) // Bail out if mini spells get casted
-    {
       mage_spell_t::impact( s );
       if ( result_is_hit( s -> result ) || result_is_multistrike( s -> result) )
-          trigger_icicle_gain( s );
-    }
+      {
+        if ( p() -> talents.unstable_magic -> ok() && rng().roll( p() -> talents.unstable_magic -> effectN( 3 ).percent() ) )
+          trigger_unstable_magic( s );      
+        trigger_icicle_gain( s );
+      }
+          
+
+
   }
 
   virtual double action_multiplier() const
   {
     double am = mage_spell_t::action_multiplier();
-
-    if ( p() -> glyphs.icy_veins -> ok() && p() -> buffs.icy_veins -> up() )
-    {
-      am *= 0.4;
-    }
-
     if ( p() -> buffs.frozen_thoughts -> up() )
     {
       am *= ( 1.0 + p() -> buffs.frozen_thoughts -> data().effectN( 1 ).percent() );
@@ -2317,45 +2315,7 @@ struct frostbolt_t : public mage_spell_t
 
 // Frostfire Bolt Spell =====================================================
 
-// Used when glyphed Icy Veins is active
-struct mini_frostfire_bolt_t : public mage_spell_t
-{
-  mini_frostfire_bolt_t( mage_t* p , int bolt_count = 1 ) :
-    mage_spell_t( "mini_frostfire_bolt", p, p -> find_spell( 131081 ) )
-  {
-    background = true;
-    //dual = true;
-    base_costs[ RESOURCE_MANA ] = 0;
 
-    if ( p -> perks.improved_frostfire_bolt -> ok() )
-        base_multiplier *= 1.0 + p -> perks.improved_frostfire_bolt -> effectN( 1 ).percent();
-
-    if ( p -> sets.has_set_bonus( SET_PVP_4PC_CASTER ) )
-      base_multiplier *= 1.05;
-
-    if ( bolt_count < 3 )
-    {
-      execute_action = new mini_frostfire_bolt_t( p, bolt_count + 1 );
-    }
-  }
-
-  void impact( action_state_t* s )
-  {
-    mage_spell_t::impact( s );
-
-    if ( result_is_hit( s -> result ) || result_is_multistrike( s -> result) )
-        trigger_icicle_gain( s );
-  }
-
-  virtual timespan_t execute_time() const
-  { return timespan_t::from_seconds( 0.25 ); }
-
-  virtual timespan_t travel_time() const
-  {
-    timespan_t t = mage_spell_t::travel_time();
-    return ( t > timespan_t::from_seconds( 0.75 ) ? timespan_t::from_seconds( 0.75 ) : t );
-  }
-};
 
 // Cast by Frost T16 4pc bonus when Brain Freeze FFB is cast
 struct frigid_blast_t : public mage_spell_t
@@ -2370,31 +2330,11 @@ struct frigid_blast_t : public mage_spell_t
 
 struct frostfire_bolt_t : public mage_spell_t
 {
-  struct state_t : public action_state_t
-  {
-    bool mini_version;
-    state_t( action_t* a, player_t* t ) : action_state_t( a, t ),
-      mini_version( false ) { }
 
-    std::ostringstream& debug_str( std::ostringstream& s )
-    { action_state_t::debug_str( s ) << " mini_version=" << std::boolalpha << mini_version; return s; }
-
-    void initialize()
-    { action_state_t::initialize(); mini_version = false; }
-
-    void copy_state( const action_state_t* o )
-    {
-      action_state_t::copy_state( o );
-      mini_version = static_cast<const state_t&>( *o ).mini_version;
-    }
-  };
-
-  mini_frostfire_bolt_t* mini_frostfire_bolt;
   frigid_blast_t* frigid_blast;
 
   frostfire_bolt_t( mage_t* p, const std::string& options_str ) :
     mage_spell_t( "frostfire_bolt", p, p -> find_spell( 44614 ) ),
-    mini_frostfire_bolt( new mini_frostfire_bolt_t( p ) ),
     frigid_blast( new frigid_blast_t( p ) )
   {
     parse_options( NULL, options_str );
@@ -2404,8 +2344,6 @@ struct frostfire_bolt_t : public mage_spell_t
         base_multiplier *= 1.0 + p -> perks.improved_frostfire_bolt -> effectN( 1 ).percent();
     base_execute_time += p -> glyphs.frostfire -> effectN( 1 ).time_value();
 
-    add_child( mini_frostfire_bolt );
-
     if ( p -> sets.has_set_bonus( SET_PVP_4PC_CASTER ) )
       base_multiplier *= 1.05;
 
@@ -2414,18 +2352,6 @@ struct frostfire_bolt_t : public mage_spell_t
       add_child( frigid_blast );
     }
   }
-
-  virtual void snapshot_state( action_state_t* s, dmg_e type )
-  {
-    state_t& state = static_cast<state_t&>( *s );
-
-    state.mini_version = p() -> glyphs.icy_veins -> ok() && p() -> buffs.icy_veins -> check();
-
-    mage_spell_t::snapshot_state( s, type );
-  }
-
-  virtual action_state_t* new_state()
-  { return new state_t( this, target ); }
 
   virtual double cost() const
   {
@@ -2460,11 +2386,6 @@ struct frostfire_bolt_t : public mage_spell_t
         fof_proc_chance *= 1.2;
       }
       p() -> buffs.fingers_of_frost -> trigger( 1, buff_t::DEFAULT_VALUE(), fof_proc_chance );
-
-      if ( p() -> glyphs.icy_veins -> ok() && p() -> buffs.icy_veins -> up() )
-      {
-        mini_frostfire_bolt -> schedule_execute( mini_frostfire_bolt -> get_state( execute_state ) );
-      }
     }
     p() -> buffs.frozen_thoughts -> expire();
     if ( p() -> buffs.brain_freeze -> check() && p() -> sets.has_set_bonus( SET_T16_2PC_CASTER ) )
@@ -2487,8 +2408,6 @@ struct frostfire_bolt_t : public mage_spell_t
 
   virtual void impact( action_state_t* s )
   {
-    if ( static_cast<const state_t&>( *s ).mini_version ) // Bail out if mini spells get casted
-      return;
 
     mage_spell_t::impact( s );
     // If there are five Icicles, launch the oldest at this spell's target
@@ -2633,71 +2552,16 @@ struct ice_floes_t : public mage_spell_t
   }
 };
 
-// Mini Ice Lance Spell =====================================================
-
-struct mini_ice_lance_t : public mage_spell_t
-{
-
-  mini_ice_lance_t( mage_t* p , int bolt_count = 1 ) :
-    mage_spell_t( "mini_ice_lance", p, p -> find_spell( 30455 ) )
-  {
-    background = true;
-    //dual = true;
-    base_costs[ RESOURCE_MANA ] = 0;
-
-    if ( p -> perks.improved_ice_lance -> ok() )
-        base_multiplier *= 1.0 + p -> perks.improved_ice_lance -> effectN( 1 ).percent();
-
-    if ( p -> glyphs.ice_lance -> ok() )
-      aoe = p -> glyphs.ice_lance -> effectN( 1 ).base_value() + 1;
-    else if ( p -> glyphs.splitting_ice -> ok() )
-      aoe = p -> glyphs.splitting_ice -> effectN( 1 ).base_value() + 1;
-
-    if ( p -> glyphs.ice_lance -> ok() )
-      base_aoe_multiplier *= p -> glyphs.ice_lance -> effectN( 2 ).percent();
-    else if ( p -> glyphs.splitting_ice -> ok() )
-      base_aoe_multiplier *= p -> glyphs.splitting_ice -> effectN( 2 ).percent();
-
-    if ( bolt_count < 3 )
-    {
-      execute_action = new mini_ice_lance_t( p, bolt_count + 1 );
-    }
-  }
-
-  virtual timespan_t execute_time() const
-  { return timespan_t::from_seconds( 0.25 ); }
-
-};
-
 // Ice Lance Spell ==========================================================
 
 struct ice_lance_t : public mage_spell_t
 {
-  struct state_t : public action_state_t
-  {
-    bool mini_version;
-    state_t( action_t* a, player_t* t ) : action_state_t( a, t ),
-      mini_version( false ) { }
 
-    std::ostringstream& debug_str( std::ostringstream& s )
-    { action_state_t::debug_str( s ) << " mini_version=" << std::boolalpha << mini_version; return s; }
-
-    void initialize()
-    { action_state_t::initialize(); mini_version = false; }
-
-    void copy_state( const action_state_t* o )
-    {
-      action_state_t::copy_state( o );
-      mini_version = static_cast<const state_t&>( *o ).mini_version;
-    }
-  };
   double fof_multiplier;
-  mini_ice_lance_t* mini_ice_lance;
 
   ice_lance_t( mage_t* p, const std::string& options_str ) :
     mage_spell_t( "ice_lance", p, p -> find_class_spell( "Ice Lance" ) ),
-    fof_multiplier( 0 ),
-    mini_ice_lance( new mini_ice_lance_t( p ) )
+    fof_multiplier( 0 )
   {
     parse_options( NULL, options_str );
 
@@ -2716,22 +2580,7 @@ struct ice_lance_t : public mage_spell_t
 
     fof_multiplier = p -> find_specialization_spell( "Fingers of Frost" ) -> ok() ? p -> find_spell( 44544 ) -> effectN( 2 ).percent() : 0.0;
 
-    add_child( mini_ice_lance );
   }
-
-  virtual int n_targets() const
-  {
-    // If we're shooting mini ice lances, the main ice lance action will always
-    // be single targeted, since the mini ice lances will handle the aoe damage
-    // due toe glyph of splitting ice
-    if ( p() -> glyphs.icy_veins -> ok() && p() -> buffs.icy_veins -> check() )
-      return 1;
-
-    return mage_spell_t::n_targets();
-  }
-
-  virtual action_state_t* new_state()
-  { return new state_t( this, target ); }
 
   virtual void execute()
   {
@@ -2739,9 +2588,6 @@ struct ice_lance_t : public mage_spell_t
     frozen = p() -> buffs.fingers_of_frost -> check() > 0;
 
     mage_spell_t::execute();
-
-    if ( static_cast<const state_t*>( execute_state ) -> mini_version )
-      mini_ice_lance -> schedule_execute( mini_ice_lance -> get_state( execute_state ) );
 
     // Begin casting all Icicles at the target, beginning 0.25 seconds after the
     // Ice Lance cast with remaining Icicles launching at intervals of 0.75
@@ -2755,23 +2601,6 @@ struct ice_lance_t : public mage_spell_t
     p() -> trigger_icicle( true );
   }
 
-  virtual void impact( action_state_t* s )
-  {
-    if ( static_cast<const state_t&>( *s ).mini_version ) // Bail out if mini spells get casted
-      return;
-
-    mage_spell_t::impact( s );
-  }
-
-  virtual void snapshot_state( action_state_t* s, dmg_e type )
-  {
-    state_t& state = static_cast<state_t&>( *s );
-
-    state.mini_version = p() -> glyphs.icy_veins -> ok() && p() -> buffs.icy_veins -> check();
-
-    mage_spell_t::snapshot_state( s, type );
-  }
-
   virtual double action_multiplier() const
   {
     double am = mage_spell_t::action_multiplier();
@@ -2780,11 +2609,6 @@ struct ice_lance_t : public mage_spell_t
     {
       am *= 4.0; // Built in bonus against frozen targets
       am *= 1.0 + fof_multiplier; // Buff from Fingers of Frost
-    }
-
-    if ( p() -> buffs.icy_veins -> up() && p() -> glyphs.icy_veins -> ok() )
-    {
-      am *= 0.4;
     }
 
     if ( p() -> sets.has_set_bonus( SET_T14_2PC_CASTER ) )
@@ -3120,6 +2944,8 @@ struct meteor_t : public mage_spell_t
     dot_duration = timespan_t::from_seconds( 8.0 );
     spell_power_mod.tick = p -> find_spell( 155158 ) -> effectN( 1 ).sp_coeff();
     base_tick_time = p -> find_spell( 155158 ) -> effectN( 1 ).period();
+    dynamic_tick_action =  true;
+
     hasted_ticks = false;
   }
 
@@ -4011,7 +3837,7 @@ action_t* mage_t::create_action( const std::string& name,
   if ( name == "living_bomb"       ) return new             living_bomb_t( this, options_str );
   if ( name == "mage_armor"        ) return new              mage_armor_t( this, options_str );
   if ( name == "arcane_orb"        ) return new              arcane_orb_t( this, options_str );
-  if (name == "meteor"             ) return new                  meteor_t( this, options_str );
+  if ( name == "meteor"            ) return new                  meteor_t( this, options_str );
   if ( name == "mage_bomb"         )
   {
     if ( talents.frost_bomb -> ok() )
@@ -4119,6 +3945,7 @@ void mage_t::init_spells()
   talents.supernova          = find_talent_spell( "Supernova" );
   talents.overpowered        = find_talent_spell( "Overpowered" );
   talents.arcane_orb         = find_talent_spell( "Arcane Orb" );
+  talents.unstable_magic     = find_talent_spell( "Unstable Magic" );
 
 
   // Passive Spells
