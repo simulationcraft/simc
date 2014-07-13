@@ -4,7 +4,6 @@
 // ==========================================================================
 // WoD To-do
 // Do perks that effect crit (such as enhanced pyrotechnics) also effect the crit chance of multistrike?
-// BUG IGNITE TRIGGERS ON MISSES. Fixing this breaks icicles. Need to investigate
 // Extensive Test - At a glance, enhanced pyrotechnics works properly. Need to test more in depth though (remember CM interacts with this! or does it? test and find out!)
 // multistrike triggering ignite? - CONFIRMED BY CELESTALON TO INTERACT WITH EACHOTHER
 // change the syntax around frostfirebolts implimentation of Enhanced pyrotechnics to match fireballs
@@ -37,6 +36,8 @@
 // Un-hardcode 50% damage modifier on unstable magic
 // Fix how Ivy Veins interacts with spells.
 // Multi-strikes proc UM. Add this! - DONE!
+// BUG IGNITE TRIGGERS ON MISSES. Fixing this breaks icicles. Need to investigate - DONE
+// multistrike triggering ignite? - Confirmed by celestalon to interact with one another
 
 
 #include "simulationcraft.hpp"
@@ -92,7 +93,7 @@ public:
   // Active
   actions::ignite_t* active_ignite;
   int active_living_bomb_targets;
-  action_t* explode;
+  action_t* explode; // Explode helps with handling Unstable Magic.
   player_t* last_bomb_target;
 
   // Benefits
@@ -968,7 +969,6 @@ public:
 
     if ( ! channeled && pom_enabled && t > timespan_t::zero() && p() -> buffs.presence_of_mind -> check() )
       return timespan_t::zero();
-
     return t;
   }
   // Ensures mastery for Arcane is only added to spells which call mage_spell_t, so things like the Legendary Cloak do not get modified. Added 4/15/2014
@@ -1010,7 +1010,6 @@ public:
 
     return um;
   }
-
   virtual double composite_crit_multiplier() const
   {
     double m = spell_t::composite_crit_multiplier();
@@ -2285,9 +2284,6 @@ struct frostbolt_t : public mage_spell_t
           trigger_unstable_magic( s );      
         trigger_icicle_gain( s );
       }
-          
-
-
   }
 
   virtual double action_multiplier() const
@@ -4497,6 +4493,14 @@ double mage_t::composite_multistrike() const
 
   if ( buffs.frost_armor -> up() )
     ms += buffs.frost_armor -> data().effectN( 1 ).percent();
+
+  if ( buffs.icy_veins -> up() && glyphs.icy_veins -> ok() )
+  {
+    ms += buffs.icy_veins -> data().effectN( 3 ).percent();
+    if ( perks.improved_icy_veins -> ok() )
+      ms += perks.improved_icy_veins -> effectN( 2 ).percent();
+  }
+
 
   return ms;
 }
