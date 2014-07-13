@@ -1523,9 +1523,9 @@ struct execute_t: public warrior_attack_t
 
     if ( p() -> mastery.weapons_master -> ok() )
     {
-      am *= ( 3.0 * std::min( 50.0,
+      am *= 6.0 * std::min( 60.0,
         ( p() -> buff.sudden_death -> up() ? p() -> resources.current[RESOURCE_RAGE] + 10 :
-        p() -> resources.current[RESOURCE_RAGE] ) / 50 ) );
+        p() -> resources.current[RESOURCE_RAGE] ) ) / 60;
       am *= 1.0 + p() -> cache.mastery_value();
     }
 
@@ -1537,7 +1537,7 @@ struct execute_t: public warrior_attack_t
     double c = warrior_attack_t::cost();
 
     if ( p() -> specialization() == WARRIOR_ARMS )
-      c = std::min( 50.0, std::max( p() -> resources.current[RESOURCE_RAGE], c ) );
+      c = std::min( 60.0, std::max( p() -> resources.current[RESOURCE_RAGE], c ) );
 
     if ( p() -> buff.sudden_death -> up() )
       c -= 10;
