@@ -3,7 +3,7 @@ level=100
 race=troll
 role=attack
 position=back
-talents=http://us.battle.net/wow/en/tool/talent-calculator#cZ!200002.
+talents=http://us.battle.net/wow/en/tool/talent-calculator#cZ!2000020
 spec=combat
 
 # This default action priority list is automatically created based on your character.
@@ -14,25 +14,25 @@ spec=combat
 
 # Executed before combat begins. Accepts non-harmful actions only.
 
-actions.precombat=flask,type=spring_blossoms
+actions.precombat=flask,type=greater_draenic_haste_flask
 actions.precombat+=/food,type=sea_mist_rice_noodles
 actions.precombat+=/apply_poison,lethal=deadly
 # Snapshot raid buffed stats before combat begins and pre-potting is done.
 actions.precombat+=/snapshot_stats
-actions.precombat+=/potion,name=virmens_bite
+actions.precombat+=/potion,name=draenic_agility
 actions.precombat+=/stealth
 actions.precombat+=/marked_for_death,if=talent.marked_for_death.enabled
 actions.precombat+=/slice_and_dice,if=talent.marked_for_death.enabled
 
 # Executed every time the actor is available.
 
-actions=potion,name=virmens_bite,if=buff.bloodlust.react|target.time_to_die<40
+actions=potion,name=draenic_agility,if=buff.bloodlust.react|target.time_to_die<40
 actions+=/auto_attack
 actions+=/kick
 actions+=/preparation,if=!buff.vanish.up&cooldown.vanish.remains>60
-actions+=/use_item,slot=trinket2,if=time=0
-actions+=/blood_fury,if=time=0
-actions+=/berserking,if=time=0
+actions+=/use_item,slot=trinket2
+actions+=/blood_fury
+actions+=/berserking
 actions+=/arcane_torrent,if=energy<60
 actions+=/blade_flurry,if=(active_enemies>=2&!buff.blade_flurry.up)|(active_enemies<2&buff.blade_flurry.up)
 actions+=/shadow_reflection,if=talent.shadow_reflection.enabled
@@ -57,27 +57,27 @@ actions.finisher=crimson_tempest,if=active_enemies>=7&dot.crimson_tempest_dot.ti
 actions.finisher+=/eviscerate
 
 head=primal_gladiators_helm,id=111275
-neck=primal_gladiators_necklace_of_cruelty,id=111079,enchant=140crit
+neck=primal_gladiators_necklace_of_cruelty,id=111079,enchant=140haste
 shoulders=primal_gladiators_spaulders,id=111277
-back=primal_gladiators_cape_of_cruelty,id=111077,enchant=gift_of_critical_strike
+back=primal_gladiators_cape_of_cruelty,id=111077,enchant=gift_of_haste
 chest=primal_gladiators_tunic,id=111273
 wrists=primal_gladiators_bindings_of_victory,id=111149
 hands=primal_gladiators_gloves,id=111274
 waist=primal_gladiators_belt_of_prowess,id=111141
 legs=primal_gladiators_legguards,id=111276
 feet=primal_gladiators_boots_of_prowess,id=111145
-finger1=primal_gladiators_ring_of_cruelty,id=111081,enchant=100crit
-finger2=primal_gladiators_ring_of_prowess,id=111082,enchant=100crit
+finger1=primal_gladiators_ring_of_cruelty,id=111081,enchant=100haste
+finger2=primal_gladiators_ring_of_prowess,id=111082,enchant=100haste
 trinket1=primal_gladiators_medallion_of_cruelty,id=111229
 trinket2=primal_gladiators_badge_of_conquest,id=111222
-main_hand=primal_gladiators_quickblade,id=111071,enchant=mark_of_the_thunderlord
-off_hand=primal_gladiators_shanker,id=111068,enchant=mark_of_the_thunderlord
+main_hand=primal_gladiators_quickblade,id=111071,enchant=mark_of_warsong
+off_hand=primal_gladiators_shanker,id=111068,enchant=mark_of_warsong
 
 # Gear Summary
 # gear_agility=2343
 # gear_stamina=3197
-# gear_crit_rating=1752
-# gear_haste_rating=541
+# gear_crit_rating=1212
+# gear_haste_rating=1081
 # gear_mastery_rating=861
 # gear_armor=877
 # gear_multistrike_rating=359

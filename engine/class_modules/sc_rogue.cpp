@@ -2575,6 +2575,7 @@ struct death_from_above_t : public rogue_attack_t
   {
     weapon = &( p -> main_hand_weapon );
     weapon_multiplier = 0;
+    tick_may_crit = false;
 
     aoe = -1;
   }
@@ -3768,7 +3769,18 @@ void rogue_t::init_action_list()
   if ( sim -> allow_flasks && level >= 80 )
   {
     std::string flask_action = "flask,type=";
-    flask_action += ( level > 85 ) ? "spring_blossoms" : "winds";
+    if ( level > 90 )
+    {
+      if ( specialization() == ROGUE_SUBTLETY )
+        flask_action += "greater_draenic_multistrike_flask";
+      else if ( specialization() == ROGUE_COMBAT )
+        flask_action += "greater_draenic_haste_flask";
+      else
+        flask_action += "greater_draenic_mastery_flask";
+    }
+    else
+      flask_action += ( level >= 85 ) ? "spring_blossoms" : ( ( level >= 80 ) ? "winds" : "" );
+
     precombat -> add_action( flask_action );
   }
 
@@ -3786,19 +3798,24 @@ void rogue_t::init_action_list()
   // Snapshot stats
   precombat -> add_action( "snapshot_stats", "Snapshot raid buffed stats before combat begins and pre-potting is done." );
 
+  std::string potion_name;
   if ( sim -> allow_potions && level >= 80 )
-    precombat -> add_action( ( level > 85 ) ? "potion,name=virmens_bite" : "potion,name=tolvir" );
+  {
+    if ( level > 90 )
+      potion_name = "draenic_agility";
+    else if ( level > 85 )
+      potion_name = "virmens_bite";
+    else
+      potion_name = "tolvir";
+
+    precombat -> add_action( "potion,name=" + potion_name );
+  }
 
   precombat -> add_action( this, "Stealth" );
 
   // In-combat potion
   if ( sim -> allow_potions )
-  {
-    std::string potion_str = ( level > 85 ) ? "potion,name=virmens_bite" : "potion,name=tolvir";
-    potion_str += ",if=buff.bloodlust.react|target.time_to_die<40";
-
-    def -> add_action( potion_str );
-  }
+    def -> add_action( "potion,name=" + potion_name + ",if=buff.bloodlust.react|target.time_to_die<40" );
 
   def -> add_action( "auto_attack" );
   def -> add_action( this, "Kick" );
@@ -3856,17 +3873,17 @@ void rogue_t::init_action_list()
     def -> add_action( this, "Preparation", "if=!buff.vanish.up&cooldown.vanish.remains>60" );
 
     for ( size_t i = 0; i < item_actions.size(); i++ )
-      def -> add_action( item_actions[ i ] + ",if=time=0" );
+      def -> add_action( item_actions[ i ] );
 
     for ( size_t i = 0; i < profession_actions.size(); i++ )
-      def -> add_action( profession_actions[ i ] + ",if=time=0" );
+      def -> add_action( profession_actions[ i ] );
 
     for ( size_t i = 0; i < racial_actions.size(); i++ )
     {
       if ( racial_actions[ i ] == "arcane_torrent" )
         def -> add_action( racial_actions[ i ] + ",if=energy<60" );
       else
-        def -> add_action( racial_actions[ i ] + ",if=time=0" );
+        def -> add_action( racial_actions[ i ] );
     }
 
     def -> add_action( this, "Blade Flurry", "if=(active_enemies>=2&!buff.blade_flurry.up)|(active_enemies<2&buff.blade_flurry.up)" );
