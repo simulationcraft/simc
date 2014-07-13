@@ -4251,7 +4251,7 @@ void warrior_t::create_buffs()
   buff.tier17_4pc_fury_driver = buff_creator_t( this, "rampage_driver", find_spell( 165350 ) )
     .tick_callback( tier17_4pc_fury );
 
-  buff.unyielding_strikes = buff_creator_t( this, "unyielding_strikes", find_spell( 169686 ) );
+  buff.unyielding_strikes = buff_creator_t( this, "unyielding_strikes", talents.unyielding_strikes -> effectN( 1 ).trigger() );
 
   buff.ultimatum        = buff_creator_t( this, "ultimatum", spec.ultimatum -> effectN( 1 ).trigger() );
 }
