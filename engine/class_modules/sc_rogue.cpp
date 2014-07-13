@@ -263,11 +263,10 @@ struct rogue_t : public player_t
 
   struct glyphs_t
   {
-    const spell_data_t* adrenaline_rush;
-    const spell_data_t* expose_armor;
+    const spell_data_t* disappearance;
+    const spell_data_t* energy;
     const spell_data_t* hemorrhaging_veins;
     const spell_data_t* kick;
-    const spell_data_t* sharp_knives;
     const spell_data_t* vanish;
     const spell_data_t* vendetta;
   } glyph;
@@ -4148,6 +4147,8 @@ void rogue_t::init_base_stats()
   if ( sets.has_set_bonus( SET_PVP_2PC_MELEE ) )
     resources.base[ RESOURCE_ENERGY ] += 10;
 
+  resources.base[ RESOURCE_ENERGY ] += glyph.energy -> effectN( 1 ).base_value();
+
   resources.base[ RESOURCE_ENERGY ] += talent.venom_zest -> effectN( 1 ).base_value();
 
   base_energy_regen_per_second = 10 * ( 1.0 + spec.vitality -> effectN( 1 ).percent() );
@@ -4211,11 +4212,10 @@ void rogue_t::init_spells()
   spell.death_from_above    = find_spell( 163786 );
 
   // Glyphs
-  glyph.adrenaline_rush     = find_glyph_spell( "Glyph of Adrenaline Rush" );
-  glyph.expose_armor        = find_glyph_spell( "Glyph of Expose Armor" );
+  glyph.disappearance       = find_glyph_spell( "Glyph of Disappearance" );
+  glyph.energy              = find_glyph_spell( "Glyph of Energy" );
   glyph.hemorrhaging_veins  = find_glyph_spell( "Glyph of Hemorrhaging Veins" );
   glyph.kick                = find_glyph_spell( "Glyph of Kick" );
-  glyph.sharp_knives        = find_glyph_spell( "Glyph of Sharp Knives" );
   glyph.vanish              = find_glyph_spell( "Glyph of Vanish" );
   glyph.vendetta            = find_glyph_spell( "Glyph of Vendetta" );
 
