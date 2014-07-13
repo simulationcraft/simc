@@ -80,15 +80,15 @@ legs=primal_gladiators_legguards,id=111276
 feet=primal_gladiators_boots_of_prowess,id=111145
 finger1=primal_gladiators_ring_of_cruelty,id=111081,enchant=100mult
 finger2=primal_gladiators_ring_of_prowess,id=111082,enchant=100mult
-trinket1=primal_gladiators_medallion_of_cruelty,id=111229
+trinket1=primal_gladiators_insignia_of_conquest,id=111223
 trinket2=primal_gladiators_badge_of_conquest,id=111222
 main_hand=primal_gladiators_shanker,id=111068,enchant=mark_of_the_frostwolf
 off_hand=primal_gladiators_shanker,id=111068,enchant=mark_of_the_frostwolf
 
 # Gear Summary
-# gear_agility=2343
+# gear_agility=2553
 # gear_stamina=3197
-# gear_crit_rating=1212
+# gear_crit_rating=1002
 # gear_haste_rating=541
 # gear_mastery_rating=861
 # gear_armor=877
