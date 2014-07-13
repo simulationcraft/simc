@@ -34,6 +34,8 @@ enum ability_type_e {
   DISPATCH,
   MUTILATE,
   RUPTURE,
+  FAN_OF_KNIVES,
+  CRIMSON_TEMPEST,
   ABILITY_MAX
 };
 
@@ -1745,6 +1747,7 @@ struct fan_of_knives_t : public rogue_attack_t
   fan_of_knives_t( rogue_t* p, const std::string& options_str ) :
     rogue_attack_t( "fan_of_knives", p, p -> find_class_spell( "Fan of Knives" ), options_str )
   {
+    ability_type = FAN_OF_KNIVES;
     // Don't put in a weapon here, because we need to specialize the poison
     // application
     aoe = -1;
@@ -1777,6 +1780,7 @@ struct crimson_tempest_t : public rogue_attack_t
   crimson_tempest_t( rogue_t* p, const std::string& options_str ) :
     rogue_attack_t( "crimson_tempest", p, p -> find_class_spell( "Crimson Tempest" ), options_str )
   {
+    ability_type = CRIMSON_TEMPEST;
     aoe = -1;
     requires_combo_points = true;
     attack_power_mod.direct = 0.0602;
@@ -3244,6 +3248,8 @@ struct shadow_reflection_pet_t : public pet_t
 
     void snapshot_internal( action_state_t* state, uint32_t flags, dmg_e rt )
     {
+      assert( source_action );
+
       // Sooo ... snapshot the state of the ability to be mimiced from the
       // rogue itself. This should get us the correct multipliers etc, so the
       // shadow reflection mimic ability does not need them, making the mimiced
@@ -3346,7 +3352,7 @@ struct shadow_reflection_pet_t : public pet_t
     {
       requires_combo_points = true;
       attack_power_mod.direct = 0.3203;
-      weapon_multiplier = weapon_power_mod = 0;
+      weapon_multiplier = 0;
     }
   };
 
@@ -3466,7 +3472,7 @@ struct shadow_reflection_pet_t : public pet_t
       requires_combo_points  = true;
       attack_power_mod.direct = 0.306;
       dot_duration = timespan_t::zero();
-      weapon_multiplier = weapon_power_mod = 0.0;
+      weapon_multiplier = 0.0;
     }
   };
 
@@ -3479,7 +3485,7 @@ struct shadow_reflection_pet_t : public pet_t
       may_crit              = false;
       tick_may_crit         = true;
       dot_behavior          = DOT_REFRESH;
-      weapon_multiplier = weapon_power_mod = 0.0;
+      weapon_multiplier = 0.0;
     }
 
     timespan_t composite_dot_duration( const action_state_t* s ) const override
@@ -3491,6 +3497,50 @@ struct shadow_reflection_pet_t : public pet_t
       duration += duration * state -> cp;
 
       return duration;
+    }
+  };
+
+  struct sr_fan_of_knives_t : public shadow_reflection_attack_t
+  {
+    sr_fan_of_knives_t( shadow_reflection_pet_t* p ) :
+      shadow_reflection_attack_t( "fan_of_knives", p, p -> find_spell( 51723 ) )
+    {
+      weapon_multiplier = 0;
+      aoe = -1;
+    }
+  };
+
+  struct sr_crimson_tempest_t : public shadow_reflection_attack_t
+  {
+    struct sr_crimson_tempest_dot_t : public residual_periodic_action_t<attack_t>
+    {
+      sr_crimson_tempest_dot_t( shadow_reflection_pet_t* p ) :
+        residual_periodic_action_t<attack_t>( "crimson_tempest_dot", p, p -> find_spell( 122233 ) )
+      { }
+
+      action_state_t* new_state()
+      { return new residual_periodic_state_t( this, target ); }
+    };
+
+    sr_crimson_tempest_dot_t* dot;
+
+    sr_crimson_tempest_t( shadow_reflection_pet_t* p ) :
+      shadow_reflection_attack_t( "crimson_tempest", p, p -> find_spell( 121411 ) ),
+      dot( new sr_crimson_tempest_dot_t( p ) )
+    {
+      aoe = -1;
+      requires_combo_points = true;
+      attack_power_mod.direct = 0.0602;
+      weapon_multiplier = 0;
+      add_child( dot );
+    }
+
+    void impact( action_state_t* s )
+    {
+      shadow_reflection_attack_t::impact( s );
+
+      if ( result_is_hit( s -> result ) )
+        residual_action::trigger( dot, s -> target, s -> result_amount * dot -> data().effectN( 1 ).percent() );
     }
   };
 
@@ -3569,11 +3619,13 @@ struct shadow_reflection_pet_t : public pet_t
 
     // Sigh ...
     attacks[ AMBUSH           ] = new sr_ambush_t( this );
+    attacks[ CRIMSON_TEMPEST  ] = new sr_crimson_tempest_t( this );
 
     _spec = ROGUE_ASSASSINATION;
     attacks[ ENVENOM          ] = new sr_envenom_t( this );
     attacks[ MUTILATE         ] = new sr_mutilate_t( this );
     attacks[ DISPATCH         ] = new sr_dispatch_t( this );
+    attacks[ FAN_OF_KNIVES    ] = new sr_fan_of_knives_t( this );
 
     _spec = ROGUE_COMBAT;
     attacks[ EVISCERATE       ] = new sr_eviscerate_t( this );
