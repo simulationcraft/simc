@@ -5,6 +5,8 @@
 
 #include "simulationcraft.hpp"
 
+using namespace residual_action;
+
 namespace { // UNNAMED NAMESPACE
 
 // ==========================================================================
@@ -15,7 +17,7 @@ struct rogue_t;
 namespace actions
 {
 struct rogue_attack_state_t;
-struct damage_pool_state_t;
+struct residual_damage_state_t;
 struct rogue_poison_t;
 struct rogue_attack_t;
 }
@@ -425,37 +427,30 @@ struct rogue_attack_state_t : public action_state_t
   }
 };
 
-struct damage_pool_state_t : public rogue_attack_state_t
+struct residual_damage_state_t : public rogue_attack_state_t
 {
-  // Total pooled damage, this is ticking away
-  double damage_pool;
-  // Added damage to the pool, used to deliver new damage into the pool. If
-  // zero during impact in damage_pool_attack_t, state -> result_amount is used
-  // instead
-  double damage_addition;
+  double tick_amount;
 
-  damage_pool_state_t( action_t* action, player_t* target ) :
-    rogue_attack_state_t( action, target ), damage_pool( 0 ), damage_addition( 0 )
+  residual_damage_state_t( action_t* action, player_t* target ) :
+    rogue_attack_state_t( action, target ), tick_amount( 0 )
   { }
 
   void initialize()
-  { rogue_attack_state_t::initialize(); damage_pool = damage_addition = 0; }
+  { rogue_attack_state_t::initialize(); tick_amount = 0; }
 
   void copy_state( const action_state_t* other )
   {
     rogue_attack_state_t::copy_state( other );
 
-    const damage_pool_state_t* os = debug_cast<const damage_pool_state_t*>( other );
+    const residual_damage_state_t* os = debug_cast<const residual_damage_state_t*>( other );
 
-    damage_pool = os -> damage_pool;
-    damage_addition = os -> damage_addition;
+    tick_amount = os -> tick_amount;
   }
 
   std::ostringstream& debug_str( std::ostringstream& debug_str )
   {
     rogue_attack_state_t::debug_str( debug_str );
-    debug_str << " damage_pool=" << damage_pool;
-    debug_str << " damage_addition=" << damage_addition;
+    debug_str << " tick_amount=" << tick_amount;
 
     return debug_str;
   }
@@ -520,7 +515,8 @@ struct rogue_attack_t : public melee_attack_t
     // In the meantime, snapshot combo points always off the primary target
     // and pray that nobody makes a rogue ability that has to juggle primary
     // targets around during it's execution. Gulp.
-    cast_state( state ) -> cp = td( target ) -> combo_points.count;
+    if ( requires_combo_points )
+      cast_state( state ) -> cp = td( target ) -> combo_points.count;
   }
 
   bool stealthed()
@@ -674,93 +670,6 @@ struct rogue_attack_t : public melee_attack_t
     p() -> cooldowns.adrenaline_rush -> ready -= reduction;
     p() -> cooldowns.killing_spree   -> ready -= reduction;
   }
-};
-
-template<typename ABILITY, typename ACTOR>
-struct damage_pool_attack_t : public ABILITY
-{
-  typedef ABILITY ability_t;
-  typedef damage_pool_attack_t<ABILITY, ACTOR> base_t;
-
-  // Multiplier for the damage that is being added through
-  // damage_pool_state_t::damage_added. Overridable throgh
-  // damage_pool_multiplier().
-  double pool_multiplier;
-
-  damage_pool_attack_t( const std::string&  token,
-                        ACTOR*              p,
-                        const spell_data_t* s = spell_data_t::nil(),
-                        const std::string&  options = std::string() ) :
-    ability_t( token, p, s, options ),
-    pool_multiplier( 1.0 )
-  {
-    this -> tick_may_crit = false;
-  }
-
-  damage_pool_state_t* cast_state( action_state_t* state )
-  { return debug_cast<damage_pool_state_t*>( state ); }
-
-  const damage_pool_state_t* cast_state( const action_state_t* state ) const
-  { return debug_cast<const damage_pool_state_t*>( state ); }
-
-  action_state_t* new_state()
-  { return new damage_pool_state_t( this, this -> target ); }
-
-  virtual double damage_pool_multiplier( const action_state_t* ) const
-  { return pool_multiplier; }
-
-  void impact( action_state_t* state )
-  {
-    double damage_pool = 0;
-    // Added damage is delivered in state -> damage_addition; if it's zero, use
-    // the result_amount.
-    double added_damage_raw = cast_state( state ) -> damage_addition;
-    if ( added_damage_raw == 0 )
-      added_damage_raw = state -> result_amount;
-
-    // Remaining damage in pool
-    dot_t* d = this -> get_dot( state -> target );
-    if ( d -> is_ticking() )
-      damage_pool = cast_state( d -> state ) -> damage_pool;
-
-    // Added damage to the pool
-    double added_pool = damage_pool_multiplier( state ) * added_damage_raw;
-
-    // Total pool damage
-    double total_pool = damage_pool + added_pool;
-
-    ability_t::impact( state );
-
-    if ( this -> sim -> debug )
-      this -> sim -> out_debug.printf("%s %s damage_pool, current=%.3f adding_raw=%.3f add_mul=%.3f add_total=%.3f total=%.3f tick=%.3f",
-          this -> player -> name(), this -> name(),
-          damage_pool, added_damage_raw, damage_pool_multiplier( state ), added_pool, total_pool, total_pool / d -> ticks_left() );
-
-    // Set new total pool value, post impact
-    cast_state( d -> state ) -> damage_pool = total_pool;
-  }
-
-  // Tick amount is the damage pool, divided by the number of ticks left,
-  // including this one
-  double base_ta( const action_state_t* state ) const
-  {
-    dot_t* d = this -> find_dot( state -> target );
-    assert( d );
-
-    return cast_state( d -> state ) -> damage_pool / ( d -> ticks_left() + 1 );
-  }
-
-  void tick( dot_t* dot )
-  {
-    ability_t::tick( dot );
-
-    // Reduce pool by tick amount
-    cast_state( dot -> state ) -> damage_pool -= cast_state( dot -> state ) -> damage_pool / ( dot -> ticks_left() + 1 );
-  }
-
-  // Damage pool does no use pandemic .. for now
-  timespan_t calculate_dot_refresh_duration( const dot_t* dot, timespan_t triggered_duration ) const override
-  { return dot -> time_to_next_tick() + triggered_duration; }
 };
 
 // ==========================================================================
@@ -2082,16 +1991,14 @@ struct fan_of_knives_t : public rogue_attack_t
 
 struct crimson_tempest_t : public rogue_attack_t
 {
-  struct crimson_tempest_dot_t : public damage_pool_attack_t<rogue_attack_t, rogue_t>
+  struct crimson_tempest_dot_t : public residual_periodic_action_t<rogue_attack_t>
   {
     crimson_tempest_dot_t( rogue_t * p ) :
-      base_t( "crimson_tempest_dot", p, p -> find_spell( 122233 ) )
-    {
-      may_miss = may_dodge = may_parry = may_block = may_crit = tick_may_crit = false;
-      background = true;
-      dot_behavior = DOT_REFRESH;
-      pool_multiplier = data().effectN( 1 ).percent();
-    }
+      residual_periodic_action_t<rogue_attack_t>( "crimson_tempest_dot", p, p -> find_spell( 122233 ) )
+    { }
+
+    action_state_t* new_state()
+    { return new residual_periodic_state_t( this, target ); }
   };
 
   crimson_tempest_dot_t* ct_dot;
@@ -2114,11 +2021,7 @@ struct crimson_tempest_t : public rogue_attack_t
 
     if ( result_is_hit( s -> result ) )
     {
-      action_state_t* ct_dot_state = ct_dot -> get_state();
-      ct_dot_state -> target = s -> target;
-      debug_cast<damage_pool_state_t*>( ct_dot_state ) -> damage_addition = s -> result_amount;
-
-      ct_dot -> schedule_execute( ct_dot_state );
+      residual_action::trigger( ct_dot, s -> target, s -> result_amount * ct_dot -> data().effectN( 1 ).percent() );
 
       if ( p() -> perk.enhanced_crimson_tempest -> ok() )
       {
@@ -2166,32 +2069,49 @@ struct garrote_t : public rogue_attack_t
 
 // Hemorrhage ===============================================================
 
-struct hemorrhage_t : public damage_pool_attack_t<rogue_attack_t, rogue_t>
+struct hemorrhage_t : public rogue_attack_t
 {
+  struct hemorrhage_dot_t : public residual_periodic_action_t<rogue_attack_t>
+  {
+    hemorrhage_dot_t( rogue_t* p ) :
+      residual_periodic_action_t<rogue_attack_t>( "hemorrhage", p, p -> find_spell( 89775 ) )
+    { }
+
+    action_state_t* new_state()
+    { return new residual_periodic_state_t( this, target ); }
+  };
+
+  hemorrhage_dot_t* dot;
+  double residual_damage_modifier;
 
   hemorrhage_t( rogue_t* p, const std::string& options_str ) :
-    base_t( "hemorrhage", p, p -> find_class_spell( "Hemorrhage" ), options_str )
+    rogue_attack_t( "hemorrhage", p, p -> find_class_spell( "Hemorrhage" ), options_str ),
+    dot( new hemorrhage_dot_t( p ) ),
+    residual_damage_modifier( data().effectN( 4 ).percent() )
   {
-    this -> ability_type = HEMORRHAGE;
-    this -> weapon = &( p -> main_hand_weapon );
+    ability_type = HEMORRHAGE;
+    weapon = &( p -> main_hand_weapon );
 
-    this -> base_tick_time = p -> find_spell( 89775 ) -> effectN( 1 ).period();
-    this -> dot_duration = p -> find_spell( 89775 ) -> duration();
-    this -> dot_behavior = DOT_REFRESH;
-    this -> tick_may_crit = false;
+    base_multiplier *= 1.0 + p -> perk.improved_hemorrhage -> effectN( 1 ).percent();
 
-    this -> base_multiplier *= 1.0 + p -> perk.improved_hemorrhage -> effectN( 1 ).percent();
-    pool_multiplier = data().effectN( 4 ).percent();
+    add_child( dot );
   }
 
   double action_multiplier() const
   {
-    double m = ability_t::action_multiplier();
+    double m = rogue_attack_t::action_multiplier();
 
-    if ( this -> weapon -> type == WEAPON_DAGGER )
+    if ( weapon -> type == WEAPON_DAGGER )
       m *= 1.4;
 
     return m;
+  }
+
+  void impact( action_state_t* state )
+  {
+    rogue_attack_t::impact( state );
+
+    residual_action::trigger( dot, state -> target, state -> result_amount * residual_damage_modifier );
   }
 };
 
@@ -3422,17 +3342,30 @@ struct shadow_reflection_pet_t : public pet_t
     }
   };
 
-  struct sr_hemorrhage_t : public damage_pool_attack_t<shadow_reflection_attack_t, shadow_reflection_pet_t>
+  struct sr_hemorrhage_t : public shadow_reflection_attack_t
   {
-    sr_hemorrhage_t( shadow_reflection_pet_t* p ) :
-      base_t( "hemorrhage", p, p -> find_spell( 16511 ) )
+    struct sr_hemorrhage_dot_t : residual_periodic_action_t<shadow_reflection_attack_t>
     {
-      this -> base_tick_time = p -> find_spell( 89775 ) -> effectN( 1 ).period();
-      this -> dot_duration = p -> find_spell( 89775 ) -> duration();
-      this -> dot_behavior = DOT_REFRESH;
-      this -> tick_may_crit = false;
+      sr_hemorrhage_dot_t( shadow_reflection_pet_t* p ) :
+        residual_periodic_action_t<shadow_reflection_attack_t>( "hemorrhage", p, p -> find_spell( 89775 ) )
+      { }
 
-      pool_multiplier = data().effectN( 4 ).percent();
+      action_state_t* new_state()
+      { return new residual_periodic_state_t( this, target ); }
+    };
+
+    sr_hemorrhage_dot_t* dot;
+
+    sr_hemorrhage_t( shadow_reflection_pet_t* p ) :
+      shadow_reflection_attack_t( "hemorrhage", p, p -> find_spell( 16511 ) ),
+      dot( new sr_hemorrhage_dot_t( p ) )
+    { }
+
+    void impact( action_state_t* state )
+    {
+      shadow_reflection_attack_t::impact( state );
+
+      residual_action::trigger( dot, state -> target, state -> result_amount * data().effectN( 4 ).percent() );
     }
   };
 

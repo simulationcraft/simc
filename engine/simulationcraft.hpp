@@ -6819,6 +6819,18 @@ public:
   residual_periodic_action_t( const std::string& n, T& p, const spell_data_t* s ) :
     ab( n, p, s )
   {
+    initialize_();
+  }
+
+  template <typename T>
+  residual_periodic_action_t( const std::string& n, T* p, const spell_data_t* s ) :
+    ab( n, p, s )
+  {
+    initialize_();
+  }
+
+  void initialize_()
+  {
     ab::background = true;
 
     ab::tick_may_crit = false;
