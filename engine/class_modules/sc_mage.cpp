@@ -12,7 +12,7 @@
 // Need to add in Improved Scorch
 // Imp. Arcane Barrage needs to be tested.
 // Imp. Arcane Explosion needs to be tested.
-// Shatter is changed Shatter: Now Frost only. Multiplies the critical strike chance of all your spells against frozen targets by 1.5 plus an additional 10%. needs to be coded.
+// Shatter is changed Shatter: Now Frost only. Multiplies the critical strike chance of all your spells against frozen targets by 1.5 plus an additional 50%. needs to be coded.
 // Having difficulties implimenting Improved Arcane Missiles.
 // Improved Arcane Power needs to have a check for the perk to exist so it functions pre-90 correctly.
 // Need to Add Improved Blink
@@ -34,10 +34,15 @@
 // Enhanced Pyrotechnics is giving global crit chance increase (not just FB/FFB). Fix this!
 // Unstable Magic Trigger is very sensative to double dipping - as we encounter new modifiers, need to check there is no double dipping going on!
 // Un-hardcode 50% damage modifier on unstable magic
-// Fix how Ivy Veins interacts with spells.
-// Multi-strikes proc UM. Add this! - DONE!
-// BUG IGNITE TRIGGERS ON MISSES. Fixing this breaks icicles. Need to investigate - DONE
-// multistrike triggering ignite? - Confirmed by celestalon to interact with one another
+
+// To-do Completed:
+//  BUG IGNITE TRIGGERS ON MISSES. Fixing this breaks icicles. Need to investigate - DONE
+//  Multistrike triggering ignite? - Confirmed by celestalon to interact with one another
+//  Fix how Ivy Veins interacts with spells. - DONE
+//  Multi-strikes proc UM. Add this! - DONE!
+
+// Misc Notes:
+//  Unstable Magic Trigger is very sensative to double dipping - as we encounter new modifiers, need to check there is no double dipping going on!
 
 
 #include "simulationcraft.hpp"
@@ -4086,7 +4091,10 @@ void mage_t::create_buffs()
                                .duration( timespan_t::from_seconds( 15.0 ) )
                                .max_stack( 3 );
   buffs.frost_armor          = buff_creator_t( this, "frost_armor", find_spell( 7302 ) ).add_invalidate( CACHE_MULTISTRIKE );
-  buffs.icy_veins            = new buffs::icy_veins_t( this );
+  if( glyphs.icy_veins -> ok() )
+    buffs.icy_veins            = buff_creator_t( this, "icy_veins", find_spell( 12472 ) ).add_invalidate( CACHE_MULTISTRIKE );
+  else
+    buffs.icy_veins            = buff_creator_t( this, "icy_veins", find_spell( 12472 ) ).add_invalidate( CACHE_SPELL_HASTE );
   buffs.ice_floes            = buff_creator_t( this, "ice_floes", talents.ice_floes );
   buffs.improved_blink       = buff_creator_t( this, "improved_blink", perks.improved_blink )
                                .default_value( perks.improved_blink -> effectN( 1 ).percent() );
