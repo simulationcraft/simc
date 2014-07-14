@@ -3380,10 +3380,10 @@ struct shadow_reflection_pet_t : public pet_t
 
   struct sr_hemorrhage_t : public shadow_reflection_attack_t
   {
-    struct sr_hemorrhage_dot_t : residual_periodic_action_t<shadow_reflection_attack_t>
+    struct sr_hemorrhage_dot_t : residual_periodic_action_t<attack_t>
     {
       sr_hemorrhage_dot_t( shadow_reflection_pet_t* p ) :
-        residual_periodic_action_t<shadow_reflection_attack_t>( "hemorrhage", p, p -> find_spell( 89775 ) )
+        residual_periodic_action_t<attack_t>( "hemorrhage", p, p -> find_spell( 89775 ) )
       { }
 
       action_state_t* new_state()
