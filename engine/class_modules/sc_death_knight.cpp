@@ -5778,7 +5778,6 @@ void runeforge::fallen_crusader( special_effect_t& effect,
     return;
 
   effect.custom_buff = b;
-  effect.ppm_ = 2.0;
 
   new dbc_proc_callback_t( item, effect );
 }
@@ -5829,13 +5828,13 @@ bool death_knight_t::init_special_effect( special_effect_t& effect,
 {
   static unique_gear::special_effect_db_item_t __runeforge_db[] =
   {
-    { 50401, 0,    runeforge::razorice_attack },
-    { 51714, 0,    runeforge::razorice_debuff },
-    { 53365, 0,    runeforge::fallen_crusader },
-    { 53386, 0,      runeforge::cinderglacier },
-    { 62157, 0, runeforge::stoneskin_gargoyle },
-    { 53362, 0,    runeforge::spellshattering }, // Damage taken, we don't use the silence reduction
-    { 54449, 0,      runeforge::spellbreaking }, // Damage taken, we don't use the silence reduction
+    {  50401, 0,    runeforge::razorice_attack },
+    {  51714, 0,    runeforge::razorice_debuff },
+    { 166441, 0,    runeforge::fallen_crusader },
+    {  53386, 0,      runeforge::cinderglacier },
+    {  62157, 0, runeforge::stoneskin_gargoyle },
+    {  53362, 0,    runeforge::spellshattering }, // Damage taken, we don't use the silence reduction
+    {  54449, 0,      runeforge::spellbreaking }, // Damage taken, we don't use the silence reduction
 
     // Last entry must be all zeroes
     {     0, 0,                             0 },
