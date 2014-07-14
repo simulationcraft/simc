@@ -4170,29 +4170,29 @@ void rogue_t::init_spells()
 
   // Assassination
   spec.assassins_resolve    = find_specialization_spell( "Assassin's Resolve" );
+  spec.blindside            = find_specialization_spell( "Blindside" );
+  spec.cut_to_the_chase     = find_specialization_spell( "Cut to the Chase" );
   spec.improved_poisons     = find_specialization_spell( "Improved Poisons" );
   spec.master_poisoner      = find_specialization_spell( "Master Poisoner" );
   spec.seal_fate            = find_specialization_spell( "Seal Fate" );
   spec.venomous_wounds      = find_specialization_spell( "Venomous Wounds" );
-  spec.cut_to_the_chase     = find_specialization_spell( "Cut to the Chase" );
-  spec.blindside            = find_specialization_spell( "Blindside" );
 
   // Combat
-  spec.blade_flurry         = find_specialization_spell( "Blade Flurry" );
-  spec.vitality             = find_specialization_spell( "Vitality" );
-  spec.combat_potency       = find_specialization_spell( "Combat Potency" );
   spec.bandits_guile        = find_specialization_spell( "Bandit's Guile" );
+  spec.blade_flurry         = find_specialization_spell( "Blade Flurry" );
+  spec.combat_potency       = find_specialization_spell( "Combat Potency" );
   spec.killing_spree        = find_specialization_spell( "Killing Spree" );
   spec.ruthlessness         = find_specialization_spell( "Ruthlessness" );
+  spec.vitality             = find_specialization_spell( "Vitality" );
 
   // Subtlety
-  spec.master_of_subtlety   = find_specialization_spell( "Master of Subtlety" );
-  spec.sinister_calling     = find_specialization_spell( "Sinister Calling" );
+  spec.energetic_recovery   = find_specialization_spell( "Energetic Recovery" );
   spec.find_weakness        = find_specialization_spell( "Find Weakness" );
   spec.honor_among_thieves  = find_specialization_spell( "Honor Among Thieves" );
+  spec.master_of_subtlety   = find_specialization_spell( "Master of Subtlety" );
   spec.sanguinary_vein      = find_specialization_spell( "Sanguinary Vein" );
-  spec.energetic_recovery   = find_specialization_spell( "Energetic Recovery" );
   spec.shadow_dance         = find_specialization_spell( "Shadow Dance" );
+  spec.sinister_calling     = find_specialization_spell( "Sinister Calling" );
 
   // Masteries
   mastery.potent_poisons    = find_mastery_spell( ROGUE_ASSASSINATION );
