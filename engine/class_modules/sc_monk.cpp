@@ -3388,7 +3388,8 @@ void monk_t::create_buffs()
   buff.energizing_brew   = buff_creator_t( this, "energizing_brew" ).spell( find_class_spell( "Energizing Brew" ) )
                            .add_invalidate( CACHE_MULTISTRIKE );
   buff.energizing_brew -> buff_duration += sets.set( SET_T14_4PC_MELEE ) -> effectN( 1 ).time_value(); //verify working
-  buff.tigereye_brew     = buff_creator_t( this, "tigereye_brew"       ).spell( find_spell( 125195 ) );
+  buff.tigereye_brew     = buff_creator_t( this, "tigereye_brew"       ).spell( find_spell( 125195 ) )
+                           .period( timespan_t::zero() ); // Tigereye Brew does not tick, despite what the spelldata implies.
   buff.tigereye_brew_use = buff_creator_t( this, "tigereye_brew_use"   ).spell( find_spell( 116740 ) ).add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
   buff.focus_of_xuen     = buff_creator_t( this, "focus_of_xuen"       ).spell( find_spell( 145024 ) );
   buff.forceful_winds    = buff_creator_t( this, "forceful_winds"      ).spell( find_spell( 166603 ) );
