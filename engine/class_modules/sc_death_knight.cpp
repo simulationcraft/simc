@@ -5865,7 +5865,6 @@ void death_knight_t::init_scaling()
   {
     scales_with[ STAT_WEAPON_OFFHAND_DPS   ] = true;
     scales_with[ STAT_WEAPON_OFFHAND_SPEED ] = sim -> weapon_speed_scale_factors != 0;
-    scales_with[ STAT_HIT_RATING2          ] = true;
   }
 
   if ( primary_role() == ROLE_TANK )
