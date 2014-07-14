@@ -5795,7 +5795,6 @@ void runeforge::cinderglacier( special_effect_t& effect,
     { proc_buff -> trigger( proc_buff -> max_stack() ); }
   };
 
-  effect.ppm_ = 2.0;
   effect.custom_buff = buff_t::find( item.player, "cinderglacier" );
 
   new cinderglacier_callback_t( item, effect );
@@ -5831,7 +5830,7 @@ bool death_knight_t::init_special_effect( special_effect_t& effect,
     {  50401, 0,    runeforge::razorice_attack },
     {  51714, 0,    runeforge::razorice_debuff },
     { 166441, 0,    runeforge::fallen_crusader },
-    {  53386, 0,      runeforge::cinderglacier },
+    { 166443, 0,      runeforge::cinderglacier },
     {  62157, 0, runeforge::stoneskin_gargoyle },
     {  53362, 0,    runeforge::spellshattering }, // Damage taken, we don't use the silence reduction
     {  54449, 0,      runeforge::spellbreaking }, // Damage taken, we don't use the silence reduction
