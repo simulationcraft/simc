@@ -5020,7 +5020,7 @@ struct prowl_t : public druid_spell_t
 struct survival_instincts_t : public druid_spell_t
 {
   survival_instincts_t( druid_t* player, const std::string& options_str ) :
-    druid_spell_t( "survival_instincts", player, player -> find_class_spell( "Survival Instincts" ), options_str )
+    druid_spell_t( "survival_instincts", player, player -> find_specialization_spell( "Survival Instincts" ), options_str )
   {
     harmful = false;
     use_off_gcd = true;
