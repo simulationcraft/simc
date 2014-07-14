@@ -114,7 +114,7 @@ public:
     buff_t* tiger_power;
     buff_t* tiger_strikes;
     buff_t* focus_of_xuen;
-    buff_t* chi_serenity;
+    buff_t* serenity;
     buff_t* forceful_winds;
  
     //  buff_t* zen_meditation;
@@ -146,6 +146,7 @@ public:
     gain_t* keg_smash;
     gain_t* mana_tea;
     gain_t* renewing_mist;
+    gain_t* serenity;
     gain_t* soothing_mist;
     gain_t* spinning_crane_kick;
     gain_t* surging_mist;
@@ -198,7 +199,7 @@ public:
     const spell_data_t* chi_explosion_bm;
     const spell_data_t* chi_explosion_ww;
     const spell_data_t* chi_explosion_mw;
-    const spell_data_t* chi_serenity;
+    const spell_data_t* serenity;
     const spell_data_t* path_of_mists;
   } talent;
  
@@ -718,10 +719,13 @@ public:
     }
  
     // Chi Savings on Dodge & Parry & Miss
-    if ( current_resource() == RESOURCE_CHI && ab::resource_consumed > 0 && ! ab::aoe && ab::result_is_miss( ab::execute_state -> result ) )
+    if ( current_resource() == RESOURCE_CHI && ab::resource_consumed > 0 )
     {
       double chi_restored = ab::resource_consumed;
-      p() -> resource_gain( RESOURCE_CHI, chi_restored, p() -> gain.chi_refund );
+      if ( ! ab::aoe && ab::result_is_miss( ab::execute_state -> result ) )
+        p() -> resource_gain( RESOURCE_CHI, chi_restored, p() -> gain.chi_refund );
+      else if ( p() -> buff.serenity -> up() )
+        p() -> resource_gain( RESOURCE_CHI, chi_restored, p() -> gain.serenity );
     }
  
     // Energy refund, estimated at 80%
@@ -998,9 +1002,6 @@ struct tiger_palm_t : public monk_melee_attack_t
 
   virtual double cost() const
   {
-    // TODO check if Chi Serenity is consumed before Combo Breaker
-    if ( p() -> buff.chi_serenity -> check() )
-      return 0;
     if ( p() -> buff.combo_breaker_tp -> check() )
       return 0;
  
@@ -1109,14 +1110,10 @@ struct blackout_kick_t : public monk_melee_attack_t
  
   virtual double cost() const
   {
-    // TODO: check if Chi Serenity is consumed before Combo Breaker
-    if ( p() -> buff.chi_serenity -> check() )
-      return 0.0;
     if ( p() -> buff.combo_breaker_bok -> check() )
       return 0.0;
-    if ( p() -> buff.focus_of_xuen -> check() ){
-                return monk_melee_attack_t::cost() - 1;//+ p() -> buff.focus_of_xuen -> s_data -> effectN( 1 ).base_value(); // TODO: Update to spell data
-    }
+    if ( p() -> buff.focus_of_xuen -> check() )
+      return monk_melee_attack_t::cost() - 1; //+ p() -> buff.focus_of_xuen -> s_data -> effectN( 1 ).base_value(); // TODO: Update to spell data
     return monk_melee_attack_t::cost();
   }
  virtual void consume_resource()
@@ -1362,11 +1359,8 @@ struct rising_sun_kick_t : public monk_melee_attack_t
 
   virtual double cost() const
   {
-    if ( p() -> buff.chi_serenity -> check() )
-      return 0.0;
-    if ( p() -> buff.focus_of_xuen -> check() ){
-      return monk_melee_attack_t::cost() - 1;//+ p() -> buff.focus_of_xuen -> s_data -> effectN( 1 ).base_value(); // TODO: Update to spell data
-    }
+    if ( p() -> buff.focus_of_xuen -> check() )
+      return monk_melee_attack_t::cost() - 1; //+ p() -> buff.focus_of_xuen -> s_data -> effectN( 1 ).base_value(); // TODO: Update to spell data
     return monk_melee_attack_t::cost();
   }
 
@@ -1543,10 +1537,8 @@ struct fists_of_fury_t : public monk_melee_attack_t
 
   virtual double cost() const
   {
-    if ( p() -> buff.chi_serenity -> check() )
-      return 0.0;
     if ( p() -> buff.focus_of_xuen -> check() )
-      return monk_melee_attack_t::cost() - 1;// + p() -> buff.focus_of_xuen -> s_data -> effectN( 1 ).base_value();// TODO: Update to spell data
+      return monk_melee_attack_t::cost() - 1; // + p() -> buff.focus_of_xuen -> s_data -> effectN( 1 ).base_value();// TODO: Update to spell data
 
     return monk_melee_attack_t::cost();
   }
@@ -2170,13 +2162,13 @@ struct chi_torpedo_t : public monk_spell_t
 };
  
 // ==========================================================================
-// Chi Serenity
+// Serenity
 // ==========================================================================
  
-struct chi_serenity_t : public monk_spell_t
+struct serenity_t : public monk_spell_t
 {
-  chi_serenity_t( monk_t* player, const std::string& options_str ) :
-    monk_spell_t( "chi_serenity", player, player -> talent.chi_serenity )
+  serenity_t( monk_t* player, const std::string& options_str ) :
+    monk_spell_t( "serenity", player, player -> talent.serenity )
   {
     parse_options( nullptr, options_str );
  
@@ -2187,7 +2179,7 @@ struct chi_serenity_t : public monk_spell_t
   {
     monk_spell_t::execute();
  
-    p() -> buff.chi_serenity -> trigger();
+    p() -> buff.serenity -> trigger();
   }
 };
  
@@ -2285,13 +2277,6 @@ struct breath_of_fire_t : public monk_spell_t
 
     aoe = -1;
     stancemask = STURDY_OX;
-  }
- 
-  virtual double cost() const
-  {
-    if ( p() -> buff.chi_serenity -> check() )
-      return 0.0;
-    return monk_spell_t::cost();
   }
  
   virtual void impact( action_state_t* s )
@@ -2493,13 +2478,6 @@ struct purifying_brew_t : public monk_spell_t
     stancemask = STURDY_OX;
     harmful = false;
     trigger_gcd = timespan_t::zero();
-  }
- 
-  virtual double cost() const
-  {
-    if ( p() -> buff.chi_serenity -> check() )
-      return 0.0;
-    return monk_spell_t::cost();
   }
  
   virtual void execute()
@@ -3173,7 +3151,7 @@ action_t* monk_t::create_action( const std::string& name,
  
   if ( name == "hurricane_strike"      ) return new       hurricane_strike_t( this, options_str );
   if ( name == "chi_explosion"         ) return new          chi_explosion_t( this, options_str );
-  if ( name == "chi_serenity"          ) return new           chi_serenity_t( this, options_str );
+  if ( name == "serenity"              ) return new               serenity_t( this, options_str );
   return base_t::create_action( name, options_str );
 }
  
@@ -3222,7 +3200,7 @@ void monk_t::init_spells()
   talent.chi_explosion_bm         = find_spell ( 157676 );
   talent.chi_explosion_ww         = find_spell ( 152174 );
   talent.chi_explosion_mw         = find_spell ( 157675 );
-  talent.chi_serenity             = find_talent_spell( "Chi Serenity" );
+  talent.serenity                 = find_talent_spell( "Serenity" );
   talent.path_of_mists            = find_talent_spell( "Path of Mists" );
  
   // PERKS
@@ -3383,7 +3361,7 @@ void monk_t::create_buffs()
                            .spell( find_class_spell( "Tiger Palm" ) -> effectN( 2 ).trigger() );
   buff.rushing_jade_wind = buff_creator_t( this, "rushing_jade_wind", talent.rushing_jade_wind )
                            .cd( timespan_t::zero() );
-  buff.chi_serenity      = buff_creator_t( this, "chi_serenity", talent.chi_serenity );
+  buff.serenity          = buff_creator_t( this, "serenity", talent.serenity );
  
   // Brewmaster
   buff.bladed_armor           = buff_creator_t( this, "bladed_armor", find_specialization_spell( "Bladed Armor" ) )
@@ -3422,24 +3400,25 @@ void monk_t::init_gains()
 {
   base_t::init_gains();
  
-  gain.chi_brew              = get_gain( "chi_brew"        );
-  gain.chi_refund            = get_gain( "chi_refund"               );
-  gain.chi_sphere            = get_gain( "chi_sphere"               );
-  gain.combo_breaker_savings = get_gain( "combo_breaker_savings"    );
-  gain.combo_breaker_ce      = get_gain( "combo_breaker_chi_explosion" );
-  gain.crackling_jade_lightning = get_gain( "crackling_jade_lightning" );
-  gain.energy_refund         = get_gain( "energy_refund"            );
-  gain.energizing_brew       = get_gain( "energizing_brew"          );
-  gain.expel_harm            = get_gain( "expel_harm"               );
-  gain.jab                   = get_gain( "jab"                      );
-  gain.keg_smash             = get_gain( "keg_smash"                );
-  gain.mana_tea              = get_gain( "mana_tea"                 );
-  gain.renewing_mist         = get_gain( "renewing_mist"            );
-  gain.soothing_mist         = get_gain( "soothing_mist"            );
-  gain.spinning_crane_kick   = get_gain( "spinning_crane_kick"      );
-  gain.surging_mist          = get_gain( "surging_mist"             );
-  gain.tier15_2pc            = get_gain( "tier15_2pc"               );
-  gain.focus_of_xuen_savings = get_gain( "focus_of_xuen_savings"          );
+  gain.chi_brew                 = get_gain( "chi_brew"                    );
+  gain.chi_refund               = get_gain( "chi_refund"                  );
+  gain.chi_sphere               = get_gain( "chi_sphere"                  );
+  gain.combo_breaker_savings    = get_gain( "combo_breaker_savings"       );
+  gain.combo_breaker_ce         = get_gain( "combo_breaker_chi_explosion" );
+  gain.crackling_jade_lightning = get_gain( "crackling_jade_lightning"    );
+  gain.energy_refund            = get_gain( "energy_refund"               );
+  gain.energizing_brew          = get_gain( "energizing_brew"             );
+  gain.expel_harm               = get_gain( "expel_harm"                  );
+  gain.jab                      = get_gain( "jab"                         );
+  gain.keg_smash                = get_gain( "keg_smash"                   );
+  gain.mana_tea                 = get_gain( "mana_tea"                    );
+  gain.renewing_mist            = get_gain( "renewing_mist"               );
+  gain.serenity                 = get_gain( "serenity"                    );
+  gain.soothing_mist            = get_gain( "soothing_mist"               );
+  gain.spinning_crane_kick      = get_gain( "spinning_crane_kick"         );
+  gain.surging_mist             = get_gain( "surging_mist"                );
+  gain.tier15_2pc               = get_gain( "tier15_2pc"                  );
+  gain.focus_of_xuen_savings    = get_gain( "focus_of_xuen_savings"       );
 }
  
 // monk_t::init_procs =======================================================
