@@ -1174,6 +1174,7 @@ struct bloodthirst_heal_t: public warrior_heal_t
     pct_heal  *= 1.0 + p -> perk.improved_bloodthirst -> effectN( 1 ).percent();
     pct_heal  *= 1.0 + p -> glyphs.bloodthirst -> effectN( 2 ).percent();
     base_pct_heal = pct_heal;
+    background = true;
   }
 
   virtual resource_e current_resource() const { return RESOURCE_NONE; }
@@ -1468,21 +1469,11 @@ struct dragon_roar_t: public warrior_attack_t
     stancemask = STANCE_BATTLE | STANCE_GLADIATOR | STANCE_DEFENSE;
   }
 
-  virtual double target_armor( player_t* ) const
-  {
-    return 0;
-  }
+  virtual double target_armor( player_t* ) const { return 0; }
 
-  // Dragon Roar always crits
-  virtual double composite_crit() const
-  {
-    return 1.0;
-  }
+  virtual double composite_crit() const { return 1.0; }
 
-  virtual double composite_target_crit( player_t* ) const
-  {
-    return 0.0;
-  }
+  virtual double composite_target_crit( player_t* ) const { return 0.0; }
 
   virtual void update_ready( timespan_t cd_duration )
   {
@@ -1860,7 +1851,7 @@ struct impending_victory_heal_t: public warrior_heal_t
   {
     pct_heal = base_pct_heal;
 
-    if ( p() -> buff.tier15_2pc_tank -> up() )
+    if ( p() -> buff.tier15_2pc_tank -> check() )
       pct_heal += p() -> buff.tier15_2pc_tank -> value();
 
     return warrior_heal_t::calculate_direct_amount( state );
@@ -1965,9 +1956,12 @@ struct heroic_charge_t: public warrior_attack_t
   {
     if ( p() -> cooldown.heroic_leap -> up() )
       leap -> execute();
-    else if ( p() -> cooldown.intervene -> up() )
+    else if ( p() -> cooldown.intervene -> up() && p() -> cooldown.stance_swap -> up() )
+    {
+      p() -> active_stance = STANCE_DEFENSE;
+      p() -> buff.defensive_stance -> trigger();
       intervene -> execute();
-
+    }
     warrior_attack_t::execute();
     p() -> buff.heroic_charge -> trigger();
     charge -> execute();
@@ -2501,7 +2495,6 @@ struct storm_bolt_off_hand_t: public warrior_attack_t
 struct storm_bolt_t: public warrior_attack_t
 {
   storm_bolt_off_hand_t* oh_attack;
-
   storm_bolt_t( warrior_t* p, const std::string& options_str ):
     warrior_attack_t( "storm_bolt", p, p -> talents.storm_bolt ),
     oh_attack( 0 )
