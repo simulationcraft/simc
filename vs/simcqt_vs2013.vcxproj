@@ -307,7 +307,6 @@
       </ProgramDatabaseFile>
       <SubSystem>Windows</SubSystem>
       <LinkTimeCodeGeneration>UseLinkTimeCodeGeneration</LinkTimeCodeGeneration>
-      <OptimizeReferences>true</OptimizeReferences>
     </Link>
   </ItemDefinitionGroup>
   <Import Project="..\source_files\VS_engine.props" />
@@ -317,7 +316,7 @@
   </ImportGroup>
   <ProjectExtensions>
     <VisualStudio>
-      <UserProperties QtVersion_x0020_Win32="5.1.0" />
+      <UserProperties QtVersion_x0020_Win32="5.3.1" />
     </VisualStudio>
   </ProjectExtensions>
 </Project>
