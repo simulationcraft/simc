@@ -1,18 +1,18 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2013
-VisualStudioVersion = 12.0.30501.0
+VisualStudioVersion = 12.0.30516.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "simc", "vs\simc_vs2013.vcxproj", "{D963926C-4A85-4600-8626-51FA12FDF5C1}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "SimcGUI_qt5.3.0", "vs\simcqt_vs2013.vcxproj", "{A4EECBB3-65A3-40BD-AD41-ED02BF5A3A97}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "SimcGUI_qt5.3.1", "vs\simcqt_vs2013.vcxproj", "{A4EECBB3-65A3-40BD-AD41-ED02BF5A3A97}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
-		Debug|x64 = Debug|x64
-		Release|x64 = Release|x64
 		Debug|Win32 = Debug|Win32
+		Debug|x64 = Debug|x64
 		Release|Win32 = Release|Win32
+		Release|x64 = Release|x64
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{D963926C-4A85-4600-8626-51FA12FDF5C1}.Debug|Win32.ActiveCfg = Debug|Win32
@@ -23,11 +23,12 @@ Global
 		{D963926C-4A85-4600-8626-51FA12FDF5C1}.Release|Win32.Build.0 = Release|Win32
 		{D963926C-4A85-4600-8626-51FA12FDF5C1}.Release|x64.ActiveCfg = Release|x64
 		{D963926C-4A85-4600-8626-51FA12FDF5C1}.Release|x64.Build.0 = Release|x64
-		{A4EECBB3-65A3-40BD-AD41-ED02BF5A3A97}.Debug|Win32.ActiveCfg = Debug|Win32
-		{A4EECBB3-65A3-40BD-AD41-ED02BF5A3A97}.Debug|Win32.Build.0 = Debug|Win32
+		{A4EECBB3-65A3-40BD-AD41-ED02BF5A3A97}.Debug|Win32.ActiveCfg = Release|Win32
+		{A4EECBB3-65A3-40BD-AD41-ED02BF5A3A97}.Debug|Win32.Build.0 = Release|Win32
 		{A4EECBB3-65A3-40BD-AD41-ED02BF5A3A97}.Debug|x64.ActiveCfg = Debug|x64
 		{A4EECBB3-65A3-40BD-AD41-ED02BF5A3A97}.Debug|x64.Build.0 = Debug|x64
 		{A4EECBB3-65A3-40BD-AD41-ED02BF5A3A97}.Release|Win32.ActiveCfg = Release|Win32
+		{A4EECBB3-65A3-40BD-AD41-ED02BF5A3A97}.Release|Win32.Build.0 = Release|Win32
 		{A4EECBB3-65A3-40BD-AD41-ED02BF5A3A97}.Release|x64.ActiveCfg = Release|x64
 		{A4EECBB3-65A3-40BD-AD41-ED02BF5A3A97}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection

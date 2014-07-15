@@ -65,7 +65,7 @@ xcopy %qt_dir%\plugins\platforms\qwindows.dll %install%\platforms\
 :: Copy other relevant files for windows release
 xcopy Welcome.html %install%\
 xcopy Welcome.png %install%\
-xcopy Simulationcraft.exe %install%\
+xcopy Simulationcraft64.exe %install%\
 xcopy simc64.exe %install%\
 xcopy readme.txt %install%\
 xcopy Error.html %install%\
