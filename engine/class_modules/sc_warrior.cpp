@@ -550,8 +550,30 @@ public:
                 ( ( stancemask & STANCE_DEFENSE ) != 0 ) )
                 p() -> stance_swap();
     }
-
     ab::execute();
+  }
+
+  virtual void impact( action_state_t* s )
+  {
+    ab::impact( s );
+
+    if ( sim -> log || sim -> debug )
+    {
+      sim -> out_debug.printf( 
+    "Strength: %4.4f, AP: %4.4f, Crit: %4.4f%%, Crit Dmg Mult: %4.4f,  Mastery: %4.4f%%, Multistrike: %4.4f%%, Haste: %4.4f%%, Versatility: %4.4f%%, Bonus Armor: %4.4f, Tick Multiplier: %4.4f, Direct Multiplier: %4.4f, Action Multiplier: %4.4f",
+                               p() -> cache.strength(),
+                               p() -> cache.attack_power(),
+                               p() -> cache.attack_crit() * 100,
+                               p() -> composite_player_critical_damage_multiplier(),
+                               p() -> cache.mastery_value() * 100,
+                               p() -> cache.multistrike() * 100,
+                               ( ( 1 / ( p() -> cache.attack_haste() ) ) - 1 ) * 100,
+                               p() -> cache.damage_versatility() * 100,
+                               p() -> cache.bonus_armor(),
+                               s -> composite_ta_multiplier(),
+                               s -> composite_da_multiplier(),
+                               s -> action -> action_multiplier() ) ;
+    }
   }
 
   void assess_damage( dmg_e type,
@@ -1442,7 +1464,7 @@ struct devastate_t: public warrior_attack_t
         p() -> cooldown.shield_slam -> reset( true );
       p() -> active_deep_wounds -> target = execute_state -> target;
       p() -> active_deep_wounds -> execute();
-      if ( p() -> buff.unyielding_strikes -> stack() != 5 )
+      if ( p() -> buff.unyielding_strikes -> current_stack != 5 && p() -> talents.unyielding_strikes -> ok() )
         p() -> buff.unyielding_strikes -> trigger( 1 );
     }
   }
@@ -1710,8 +1732,8 @@ struct heroic_strike_t: public warrior_attack_t
   {
     double c = warrior_attack_t::cost();
 
-    if ( p() -> buff.unyielding_strikes -> check() )
-      c -= p() -> buff.unyielding_strikes -> stack() * 6;
+    if ( p() -> buff.unyielding_strikes -> up() )
+      c -= p() -> buff.unyielding_strikes -> current_stack * p() -> buff.unyielding_strikes -> default_value;
 
     if ( p() -> buff.ultimatum -> check() )
       c *= 1 + p() -> buff.ultimatum -> data().effectN( 1 ).percent();
@@ -4244,8 +4266,8 @@ struct last_stand_t: public warrior_buff_t<buff_t>
 
 struct debuff_demo_shout_t: public warrior_buff_t<buff_t>
 {
-  debuff_demo_shout_t( warrior_td_t& p, const std::string&n, const spell_data_t*s ):
-    base_t( p, buff_creator_t( p.target, n, s ) )
+  debuff_demo_shout_t( warrior_td_t& p, const std::string&, const spell_data_t*s ):
+    base_t( p, buff_creator_t( p.target, "demoralizing_shout", s ) )
   {
     default_value = data().effectN( 1 ).percent();
   }
@@ -4398,9 +4420,12 @@ void warrior_t::create_buffs()
   buff.tier17_4pc_fury_driver = buff_creator_t( this, "rampage_driver", find_spell( 165350 ) )
     .tick_callback( tier17_4pc_fury );
 
-  buff.unyielding_strikes = buff_creator_t( this, "unyielding_strikes", talents.unyielding_strikes -> effectN( 1 ).trigger() );
+  buff.unyielding_strikes = buff_creator_t( this, "unyielding_strikes", talents.unyielding_strikes -> effectN( 1 ).trigger() )
+    .default_value( talents.unyielding_strikes -> effectN( 1 ).resource( RESOURCE_RAGE ) )
+    .chance( talents.unyielding_strikes -> ok() ? 1 : 0 )
+    .max_stack( 5 );
 
-  buff.ultimatum        = buff_creator_t( this, "ultimatum", spec.ultimatum -> effectN( 1 ).trigger() );
+  buff.ultimatum = buff_creator_t( this, "ultimatum", spec.ultimatum -> effectN( 1 ).trigger() );
 }
 
 // warrior_t::init_scaling ==================================================
