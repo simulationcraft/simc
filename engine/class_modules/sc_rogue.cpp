@@ -4531,6 +4531,7 @@ void rogue_t::arise()
     buffs.slice_and_dice -> trigger();
 
   if ( ! sim -> overrides.haste && dbc.spell( 113742 ) -> is_level( level ) ) sim -> auras.haste -> trigger();
+  if ( ! sim -> overrides.multistrike && dbc.spell( 113742 ) -> is_level( level ) ) sim -> auras.multistrike -> trigger();
 }
 
 // rogue_t::energy_regen_per_second =========================================
