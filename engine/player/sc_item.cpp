@@ -370,6 +370,13 @@ weapon_t* item_t::weapon() const
   return 0;
 }
 
+// item_t::inv_type =========================================================
+
+inventory_type item_t::inv_type() const
+{
+  return static_cast<inventory_type>( parsed.data.inventory_type );
+}
+
 // item_t::parse_options ====================================================
 
 bool item_t::parse_options()
@@ -1306,7 +1313,7 @@ bool item_t::decode_enchant()
     // No stats, this is a special enchant that we need to parse out
     if ( parsed.enchant_stats.size() == 0 )
     {
-      const item_enchantment_data_t& enchant_data = enchant::find_item_enchant( player -> dbc, option_enchant_str );
+      const item_enchantment_data_t& enchant_data = enchant::find_item_enchant( *this, option_enchant_str );
       if ( ! enchant::initialize_item_enchant( *this, parsed.enchant_stats, SPECIAL_EFFECT_SOURCE_ENCHANT, enchant_data ) )
         return false;
     }
@@ -1338,7 +1345,7 @@ bool item_t::decode_addon()
     // No stats, this is a special enchant that we need to parse out
     if ( parsed.addon_stats.size() == 0 )
     {
-      const item_enchantment_data_t& enchant_data = enchant::find_item_enchant( player -> dbc, option_addon_str );
+      const item_enchantment_data_t& enchant_data = enchant::find_item_enchant( *this, option_addon_str );
       if ( ! enchant::initialize_item_enchant( *this, parsed.addon_stats, SPECIAL_EFFECT_SOURCE_ADDON, enchant_data ) )
         return false;
     }

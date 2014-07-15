@@ -647,6 +647,18 @@ public:
 
   bool override_field( const std::string& field, double value );
 
+  bool valid_item_enchantment( inventory_type inv_type ) const
+  {
+    if ( ! _equipped_invtype_mask )
+      return true;
+
+    unsigned invtype_mask = 1 << inv_type;
+    if ( _equipped_invtype_mask & invtype_mask )
+      return true;
+
+    return false;
+  }
+
   std::string to_str() const
   {
     std::ostringstream s;

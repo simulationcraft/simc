@@ -3361,6 +3361,7 @@ struct item_t
   weapon_t* weapon() const;
   bool init();
   bool parse_options();
+  inventory_type inv_type() const;
 
   bool is_matching_type();
   bool is_valid_type();
@@ -6620,7 +6621,7 @@ namespace enchant
   std::string find_enchant_name( unsigned enchant_id );
   std::string encoded_enchant_name( const dbc_t&, const item_enchantment_data_t& );
 
-  const item_enchantment_data_t& find_item_enchant( const dbc_t& dbc, const std::string& name );
+  const item_enchantment_data_t& find_item_enchant( const item_t& item, const std::string& name );
   const item_enchantment_data_t& find_meta_gem( const dbc_t& dbc, const std::string& encoding );
   meta_gem_e meta_gem_type( const dbc_t& dbc, const item_enchantment_data_t& );
   bool passive_enchant( item_t& item, unsigned spell_id );

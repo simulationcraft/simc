@@ -152,25 +152,29 @@ std::string enchant::encoded_enchant_name( const dbc_t& dbc, const item_enchantm
  * enchant procs for even more detection. This would remove the need for
  * Tailoring enchant mappings in the array above.
  */
-const item_enchantment_data_t& enchant::find_item_enchant( const dbc_t& dbc,
+const item_enchantment_data_t& enchant::find_item_enchant( const item_t& item,
                                                            const std::string& name )
 {
   // Check additional mapping table first
   if ( find_enchant_id( name ) > 0 )
-    return dbc.item_enchantment( find_enchant_id( name ) );
+    return item.player -> dbc.item_enchantment( find_enchant_id( name ) );
 
-  for ( const item_enchantment_data_t* item_enchant = dbc.item_enchantments();
+  for ( const item_enchantment_data_t* item_enchant = item.player -> dbc.item_enchantments();
         item_enchant -> id != 0;
         item_enchant++ )
   {
     if ( ! item_enchant -> name && ! item_enchant -> id_spell )
       continue;
 
-    if ( util::str_compare_ci( name, encoded_enchant_name( dbc, *item_enchant ) ) )
+    const spell_data_t* enchant_spell = item.player -> dbc.spell( item_enchant -> id_spell );
+    if ( ! enchant_spell -> valid_item_enchantment( item.inv_type() ) )
+      continue;
+
+    if ( util::str_compare_ci( name, encoded_enchant_name( item.player -> dbc, *item_enchant ) ) )
       return *item_enchant;
   }
 
-  return dbc.item_enchantment( 0 );
+  return item.player -> dbc.item_enchantment( 0 );
 }
 
 /**
