@@ -557,9 +557,9 @@ public:
   {
     ab::impact( s );
 
-    if ( sim -> log || sim -> debug )
+    if ( ab::sim -> log || ab::sim -> debug )
     {
-      sim -> out_debug.printf( 
+      ab::sim -> out_debug.printf( 
     "Strength: %4.4f, AP: %4.4f, Crit: %4.4f%%, Crit Dmg Mult: %4.4f,  Mastery: %4.4f%%, Multistrike: %4.4f%%, Haste: %4.4f%%, Versatility: %4.4f%%, Bonus Armor: %4.4f, Tick Multiplier: %4.4f, Direct Multiplier: %4.4f, Action Multiplier: %4.4f",
                                p() -> cache.strength(),
                                p() -> cache.attack_power(),
