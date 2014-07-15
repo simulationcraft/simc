@@ -5002,9 +5002,9 @@ void shaman_t::init_action_list()
   {
     std::string food_action = "food,type=";
     if ( specialization() == SHAMAN_ENHANCEMENT )
-      food_action += ( level > 85 ) ? "sea_mist_rice_noodles" : "seafood_magnifique_feast";
+      food_action += ( ( level >= 100 ) ? "frosty_stew" : ( level > 85 ) ? "sea_mist_rice_noodles" : ( level > 80 ) ? "seafood_magnifique_feast" : "" );
     else
-      food_action += ( level > 85 ) ? "mogu_fish_stew" : "seafood_magnifique_feast";
+      food_action += ( ( level >= 100 ) ? "calamari_crepes" : ( level > 85 ) ? "mogu_fish_stew" : ( level > 80 ) ? "seafood_magnifique_feast" : "" );
 
     precombat -> add_action( food_action );
   }
