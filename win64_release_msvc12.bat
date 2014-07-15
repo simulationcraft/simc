@@ -74,8 +74,21 @@ xcopy Profiles %install%\profiles\ /s /e
 xcopy C:\OpenSSL-Win64\bin\libeay32.dll %install%\
 xcopy C:\OpenSSL-Win64\bin\ssleay32.dll %install%\
 
-SET ThisScriptsDirectory=%~dp0
-SET PowerShellScriptPath=%ThisScriptsDirectory%vs\powershellzip64.ps1
-PowerShell -NoProfile -ExecutionPolicy Bypass -Command "& '%PowerShellScriptPath%'";
+GOTO Encoded
+The following lines are what I ran to get the encoded base64 string below.
+
+$code={[Reflection.Assembly]::LoadWithPartialName( "System.IO.Compression.FileSystem" )
+$src_folder = "E:\simulationcraft\simc-601-alpha-win64"
+$destfile = "E:\simulationcraft\simc-601-alpha-win64.zip"
+$compressionLevel = [System.IO.Compression.CompressionLevel]::Optimal
+$includebasedir = $false
+remove-item -path $destfile
+[System.IO.Compression.ZipFile]::CreateFromDirectory($src_folder,$destfile,$compressionLevel, $includebasedir )}
+$file = [convert]::ToBase64String([System.Text.Encoding]::Unicode.GetBytes($code))
+$file | Out-File E:\simulationcraft\encoded.txt
+
+:Encoded
+Powershell -EncodedCommand WwBSAGUAZgBsAGUAYwB0AGkAbwBuAC4AQQBzAHMAZQBtAGIAbAB5AF0AOgA6AEwAbwBhAGQAVwBpAHQAaABQAGEAcgB0AGkAYQBsAE4AYQBtAGUAKAAgACIAUwB5AHMAdABlAG0ALgBJAE8ALgBDAG8AbQBwAHIAZQBzAHMAaQBvAG4ALgBGAGkAbABlAFMAeQBzAHQAZQBtACIAIAApAA0ACgAkAHMAcgBjAF8AZgBvAGwAZABlAHIAIAA9ACAAIgBFADoAXABzAGkAbQB1AGwAYQB0AGkAbwBuAGMAcgBhAGYAdABcAHMAaQBtAGMALQA2ADAAMQAtAGEAbABwAGgAYQAtAHcAaQBuADYANAAiAA0ACgAkAGQAZQBzAHQAZgBpAGwAZQAgAD0AIAAiAEUAOgBcAHMAaQBtAHUAbABhAHQAaQBvAG4AYwByAGEAZgB0AFwAcwBpAG0AYwAtADYAMAAxAC0AYQBsAHAAaABhAC0AdwBpAG4ANgA0AC4AegBpAHAAIgANAAoAJABjAG8AbQBwAHIAZQBzAHMAaQBvAG4ATABlAHYAZQBsACAAPQAgAFsAUwB5AHMAdABlAG0ALgBJAE8ALgBDAG8AbQBwAHIAZQBzAHMAaQBvAG4ALgBDAG8AbQBwAHIAZQBzAHMAaQBvAG4ATABlAHYAZQBsAF0AOgA6AE8AcAB0AGkAbQBhAGwADQAKACQAaQBuAGMAbAB1AGQAZQBiAGEAcwBlAGQAaQByACAAPQAgACQAZgBhAGwAcwBlAA0ACgByAGUAbQBvAHYAZQAtAGkAdABlAG0AIAAtAHAAYQB0AGgAIAAkAGQAZQBzAHQAZgBpAGwAZQANAAoAWwBTAHkAcwB0AGUAbQAuAEkATwAuAEMAbwBtAHAAcgBlAHMAcwBpAG8AbgAuAFoAaQBwAEYAaQBsAGUAXQA6ADoAQwByAGUAYQB0AGUARgByAG8AbQBEAGkAcgBlAGMAdABvAHIAeQAoACQAcwByAGMAXwBmAG8AbABkAGUAcgAsACQAZABlAHMAdABmAGkAbABlACwAJABjAG8AbQBwAHIAZQBzAHMAaQBvAG4ATABlAHYAZQBsACwAIAAkAGkAbgBjAGwAdQBkAGUAYgBhAHMAZQBkAGkAcgAgACkA
+
 win32_release_msvc12.bat
 pause
