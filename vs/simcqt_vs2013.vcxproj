@@ -99,7 +99,7 @@
     <TargetName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">SimulationCraft</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <TargetName>SimulationCraft</TargetName>
+    <TargetName>SimulationCraft64</TargetName>
     <IntDir>int_gui\$(Platform)\$(Configuration)\</IntDir>
     <OutDir>$(SolutionDir)bin\$(PlatformShortName)\$(Configuration)\</OutDir>
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>

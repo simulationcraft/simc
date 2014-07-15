@@ -1,28 +1,35 @@
 
 :: Necessary Qt dlls are packaged with every release.
-:: These dlls are not included in the SVN.
+:: These dlls are not included in GIT.
 :: They need to be copied into the dev area from the Qt install.
-:: Qt-Framework is simply the Qt runtime dlls built against the MSVC 2008 compiler
+:: Qt-Framework is simply the Qt runtime dlls built against the MSVC 2013 compiler
 :: It can be found at: http://qt.nokia.com/downloads
-:: If you build SimC with MSVC 2008, then you need to use dlls from Qt-Framework
+:: If you build SimC with MSVC 2013, then you need to use dlls from Qt-Framework
 :: As of this writing, the default locations from which to gather the dlls are:
 :: Qt-Framework: C:\Qt\Qt5.3.1\
 
 :: Update the qt_dir as necessary
 set qt_dir=C:\Qt\Qt5.3.1\5.3\msvc2013_64
-set install=simc-601-alpha-win64-
+set install=simc-601-alpha-win64
 set redist="C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\redist\x64\Microsoft.VC120.CRT"
 
 :: IMPORTANT NOTE FOR DEBUGGING
 :: This script will ONLY copy the optimized Qt dlls
-:: The MSVC 2008 simcqt.vcproj file is setup to use optimized dlls for both Debug/Release builds
+:: The MSVC 2013 simcqt.vcproj file is setup to use optimized dlls for both Debug/Release builds
 :: This script needs to be smarter if you wish to use the interactive debugger in the Qt SDK
-:: The debug Qt dlls are named: Qt___d4.dll
+:: The debug Qt dlls are named: Qt___d5.dll
 
 :: Delete old folder/files
 
 rd %install% /s /q
 :: Copying new dlls
+
+for /f "skip=2 tokens=2,*" %%A in ('reg.exe query "HKLM\SOFTWARE\Microsoft\MSBuild\ToolsVersions\12.0" /v MSBuildToolsPath') do SET MSBUILDDIR=%%B
+
+"%MSBUILDDIR%msbuild.exe" E:\simulationcraft\simc_vs2013.sln /p:configuration=release /p:platform=x64
+
+del /s simc_cache.dat
+forfiles -s -m generate_????.simc -c "cmd /c echo Running @path && %~dp0simc64.exe @file"
 
 xcopy %qt_dir%\plugins\imageformats %install%\imageformats\
 xcopy %redist%\msvcp120.dll %install%\
@@ -66,3 +73,9 @@ xcopy COPYING %install%\
 xcopy Profiles %install%\profiles\ /s /e
 xcopy C:\OpenSSL-Win64\bin\libeay32.dll %install%\
 xcopy C:\OpenSSL-Win64\bin\ssleay32.dll %install%\
+
+SET ThisScriptsDirectory=%~dp0
+SET PowerShellScriptPath=%ThisScriptsDirectory%vs\powershellzip64.ps1
+PowerShell -NoProfile -ExecutionPolicy Bypass -Command "& '%PowerShellScriptPath%'";
+win32_release_msvc12.bat
+pause
