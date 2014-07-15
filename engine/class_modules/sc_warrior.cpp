@@ -1733,7 +1733,7 @@ struct heroic_strike_t: public warrior_attack_t
     double c = warrior_attack_t::cost();
 
     if ( p() -> buff.unyielding_strikes -> up() )
-      c -= p() -> buff.unyielding_strikes -> current_stack * p() -> buff.unyielding_strikes -> default_value;
+      c -= p() -> buff.unyielding_strikes -> current_stack * 6;
 
     if ( p() -> buff.ultimatum -> check() )
       c *= 1 + p() -> buff.ultimatum -> data().effectN( 1 ).percent();
@@ -4421,7 +4421,7 @@ void warrior_t::create_buffs()
     .tick_callback( tier17_4pc_fury );
 
   buff.unyielding_strikes = buff_creator_t( this, "unyielding_strikes", talents.unyielding_strikes -> effectN( 1 ).trigger() )
-    .default_value( talents.unyielding_strikes -> effectN( 1 ).resource( RESOURCE_RAGE ) )
+    .default_value( talents.unyielding_strikes -> effectN( 1 ).trigger() -> effectN( 1 ).resource( RESOURCE_RAGE ) )
     .chance( talents.unyielding_strikes -> ok() ? 1 : 0 )
     .max_stack( 5 );
 
