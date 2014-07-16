@@ -2235,7 +2235,8 @@ struct frostbolt_t : public mage_spell_t
 
   }
 
-  double bf_proc_chance = p() -> buffs.brain_freeze -> data().proc_chance();
+  double bf_proc_chance = 0.1;
+
 
   virtual int schedule_multistrike( action_state_t* s, dmg_e dmg_type, double tick_multiplier )
   {
@@ -2272,6 +2273,7 @@ struct frostbolt_t : public mage_spell_t
     }
 
     p() -> buffs.frozen_thoughts -> expire();
+    bf_proc_chance = 0.1;
   }
 
   virtual void impact( action_state_t* s )
@@ -2352,7 +2354,6 @@ struct frostfire_bolt_t : public mage_spell_t
 
     return mage_spell_t::execute_time();
   }
-
   virtual void execute()
   {
     // Brain Freeze treats the target as frozen
