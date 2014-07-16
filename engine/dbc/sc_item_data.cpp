@@ -549,11 +549,11 @@ bool item_database::load_item_from_data( item_t& item )
   // something similar
   if ( item.parsed.bonus_id > 0 )
   {
-    std::vector<const item_bonus_entry_t*> item_bonuses = item.player -> dbc.item_bonus( parsed.bonus_id );
+    std::vector<const item_bonus_entry_t*> item_bonuses = item.player -> dbc.item_bonus( item.parsed.bonus_id );
     // Apply bonuses
     for ( size_t i = 0, end = item_bonuses.size(); i < end; i++ )
     {
-      if ( ! apply_item_bonus( *this, *item_bonuses[ i ] ) )
+      if ( ! apply_item_bonus( item, *item_bonuses[ i ] ) )
         return false;
     }
   }
