@@ -2348,10 +2348,10 @@ void action_t::snapshot_internal( action_state_t* state, uint32_t flags, dmg_e r
     state -> haste = composite_haste();
 
   if ( flags & STATE_AP )
-    state -> attack_power = int( composite_attack_power() * player -> composite_attack_power_multiplier() );
+    state -> attack_power = composite_attack_power() * player -> composite_attack_power_multiplier();
 
   if ( flags & STATE_SP )
-    state -> spell_power = int( composite_spell_power() * player -> composite_spell_power_multiplier() );
+    state -> spell_power = composite_spell_power() * player -> composite_spell_power_multiplier();
 
   if ( flags & STATE_VERSATILITY )
     state -> versatility = composite_versatility( state );
