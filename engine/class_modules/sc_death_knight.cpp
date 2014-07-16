@@ -474,6 +474,7 @@ public:
   virtual double    composite_attribute_multiplier( attribute_e attr ) const;
   virtual double    composite_rating_multiplier( rating_e ) const;
   virtual double    matching_gear_multiplier( attribute_e attr ) const;
+  virtual double    composite_parry_rating() const;
   virtual double    composite_parry() const;
   virtual double    composite_multistrike() const;
   virtual double    composite_melee_expertise( weapon_t* ) const;
@@ -6347,8 +6348,20 @@ double death_knight_t::composite_melee_expertise( weapon_t* ) const
 
   return expertise;
 }
+// warrior_t::composite_parry_rating() ========================================
 
-// death_knight_t::composite_tank_parry =====================================
+double death_knight_t::composite_parry_rating() const
+{
+  double p = player_t::composite_parry_rating();
+
+  // add Riposte
+  if ( spec.riposte -> ok() )
+    p += composite_melee_crit_rating();
+
+  return p;
+}
+
+// death_knight_t::composite_parry ============================================
 
 double death_knight_t::composite_parry() const
 {

@@ -388,8 +388,7 @@ public:
   virtual double    composite_spell_power( school_e school ) const;
   virtual double    composite_spell_power_multiplier() const;
   virtual double    composite_crit_avoidance() const;
-  virtual double    composite_dodge() const;
-  virtual double    composite_parry() const;
+  virtual double    composite_parry_rating() const;
   virtual double    composite_block() const;
   virtual double    temporary_movement_modifier() const;
 
@@ -5941,20 +5940,13 @@ double paladin_t::composite_crit_avoidance() const
   return c;
 }
 
-double paladin_t::composite_dodge() const
+double paladin_t::composite_parry_rating() const
 {
-  double d = player_t::composite_dodge();
-
-  return d;
-}
-
-double paladin_t::composite_parry() const
-{
-  double p = player_t::composite_parry();
+  double p = player_t::composite_parry_rating();
 
   // add Riposte
   if ( passives.riposte -> ok() )
-    p += composite_melee_crit_rating() / current_rating().attack_crit;
+    p += composite_melee_crit_rating();
 
   return p;
 }

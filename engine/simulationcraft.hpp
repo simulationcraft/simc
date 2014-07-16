@@ -4691,50 +4691,50 @@ struct player_t : public actor_t
   virtual double composite_rating_multiplier( rating_e /* rating */ ) const;
   virtual double composite_rating( rating_e rating ) const;
 
-  double composite_spell_hit_rating() const
+  virtual double composite_spell_hit_rating() const
   { return composite_rating( RATING_SPELL_HIT ); }
-  double composite_spell_crit_rating() const
+  virtual double composite_spell_crit_rating() const
   { return composite_rating( RATING_SPELL_CRIT ); }
-  double composite_spell_haste_rating() const
+  virtual double composite_spell_haste_rating() const
   { return composite_rating( RATING_SPELL_HASTE ); }
 
-  double composite_melee_hit_rating() const
+  virtual double composite_melee_hit_rating() const
   { return composite_rating( RATING_MELEE_HIT ); }
-  double composite_melee_crit_rating() const
+  virtual double composite_melee_crit_rating() const
   { return composite_rating( RATING_MELEE_CRIT ); }
-  double composite_melee_haste_rating() const
+  virtual double composite_melee_haste_rating() const
   { return composite_rating( RATING_MELEE_HASTE ); }
 
-  double composite_ranged_hit_rating() const
+  virtual double composite_ranged_hit_rating() const
   { return composite_rating( RATING_RANGED_HIT ); }
-  double composite_ranged_crit_rating() const
+  virtual double composite_ranged_crit_rating() const
   { return composite_rating( RATING_RANGED_CRIT ); }
-  double composite_ranged_haste_rating() const
+  virtual double composite_ranged_haste_rating() const
   { return composite_rating( RATING_RANGED_HASTE ); }
 
-  double composite_mastery_rating() const
+  virtual double composite_mastery_rating() const
   { return composite_rating( RATING_MASTERY ); }
-  double composite_expertise_rating() const
+  virtual double composite_expertise_rating() const
   { return composite_rating( RATING_EXPERTISE ); }
 
-  double composite_dodge_rating() const
+  virtual double composite_dodge_rating() const
   { return composite_rating( RATING_DODGE ); }
-  double composite_parry_rating() const
+  virtual double composite_parry_rating() const
   { return composite_rating( RATING_PARRY ); }
-  double composite_block_rating() const
+  virtual double composite_block_rating() const
   { return composite_rating( RATING_BLOCK ); }
 
-  double composite_multistrike_rating() const
+  virtual double composite_multistrike_rating() const
   { return composite_rating( RATING_MULTISTRIKE ); }
 
-  double composite_readiness_rating() const
+  virtual double composite_readiness_rating() const
   { return composite_rating( RATING_READINESS ); }
 
-  double composite_damage_versatility_rating() const
+  virtual double composite_damage_versatility_rating() const
   { return composite_rating( RATING_DAMAGE_VERSATILITY ); }
-  double composite_heal_versatility_rating() const
+  virtual double composite_heal_versatility_rating() const
   { return composite_rating( RATING_HEAL_VERSATILITY ); }
-  double composite_mitigation_versatility_rating() const
+  virtual double composite_mitigation_versatility_rating() const
   { return composite_rating( RATING_MITIGATION_VERSATILITY ); }
 
   double get_attribute( attribute_e a ) const

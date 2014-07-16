@@ -418,6 +418,7 @@ public:
   virtual double    matching_gear_multiplier( attribute_e attr ) const;
   virtual double    composite_armor_multiplier() const;
   virtual double    composite_block() const;
+  virtual double    composite_parry_rating() const;
   virtual double    composite_parry() const;
   virtual double    composite_melee_expertise( weapon_t* ) const;
   virtual double    composite_attack_power_multiplier() const;
@@ -4767,15 +4768,25 @@ double warrior_t::composite_melee_attack_power() const
   return ap;
 }
 
+// warrior_t::composite_parry_rating() ========================================
+
+double warrior_t::composite_parry_rating() const
+{
+  double p = player_t::composite_parry_rating();
+
+  // add Riposte
+  if ( spec.riposte -> ok() )
+    p += composite_melee_crit_rating();
+
+  return p;
+}
+
 // warrior_t::composite_parry ==========================================
 
 double warrior_t::composite_parry() const
 {
   double parry = player_t::composite_parry();
-
-  if ( spec.riposte -> ok() )
-    parry += composite_melee_crit_rating() / current_rating().attack_crit;
-
+  
   if ( buff.ravager -> up() )
     parry += talents.ravager -> effectN( 2 ).percent();
 
