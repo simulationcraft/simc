@@ -4052,3 +4052,70 @@ class GemPropertyDataGenerator(DataGenerator):
         s += '};\n\n'
 
         return s
+
+class ItemBonusDataGenerator(DataGenerator):
+    def __init__(self, options):
+        self._dbc = [ 'ItemBonus', 'ItemBonusTreeNode', 'ItemXBonusTree' ]
+        DataGenerator.__init__(self, options)
+
+    def generate(self, ids):
+        # Bonus trees
+        """
+        data_str = "%sitem_bonus_tree%s" % (
+            self._options.prefix and ('%s_' % self._options.prefix) or '',
+            self._options.suffix and ('_%s' % self._options.suffix) or '',
+        )
+
+        s = '#define %s_SIZE (%d)\n\n' % (data_str.upper(), len(self._itembonustreenode_db.keys()) + 1)
+
+        s += '// Item bonus trees, wow build %d\n' % ( self._options.build )
+
+        s += 'static struct item_bonus_tree_entry_t __%s_data[%s_SIZE] = {\n' % (data_str, data_str.upper())
+
+        for key in sorted(self._itembonustreenode_db.keys()) + [0,]:
+            data = self._itembonustreenode_db[key]
+
+            fields = data.field('id', 'id_tree', 'index', 'id_child', 'id_node')
+            s += '  { %s },\n' % (', '.join(fields))
+
+        s += '};\n\n'
+        """
+        # Bonus definitions
+
+        data_str = "%sitem_bonus%s" % (
+            self._options.prefix and ('%s_' % self._options.prefix) or '',
+            self._options.suffix and ('_%s' % self._options.suffix) or '',
+        )
+
+        s = '#define %s_SIZE (%d)\n\n' % (data_str.upper(), len(self._itembonus_db.keys()) + 1)
+        s += '// Item bonuses, wow build %d\n' % ( self._options.build )
+
+        s += 'static struct item_bonus_entry_t __%s_data[%s_SIZE] = {\n' % (data_str, data_str.upper())
+
+        for key in sorted(self._itembonus_db.keys()) + [0,]:
+            data = self._itembonus_db[key]
+            fields = data.field('id', 'id_node', 'type', 'val1', 'val2', 'index')
+            s += '  { %s },\n' % (', '.join(fields))
+
+        s += '};\n\n'
+        """
+        # Item bonuses (unsure as of yet if we need this, depends on how
+        # Blizzard exports the bonus id to third parties)
+        data_str = "%sitem_bonus_map%s" % (
+            self._options.prefix and ('%s_' % self._options.prefix) or '',
+            self._options.suffix and ('_%s' % self._options.suffix) or '',
+        )
+
+        s += '#define %s_SIZE (%d)\n\n' % (data_str.upper(), len(self._itemxbonustree_db.keys()) + 1)
+        s += '// Item bonus map, wow build %d\n' % ( self._options.build )
+
+        s += 'static struct item_bonus_node_entry_t __%s_data[%s_SIZE] = {\n' % (data_str, data_str.upper())
+
+        for key in sorted(self._itemxbonustree_db.keys()) + [0,]:
+            data = self._itemxbonustree_db[key]
+            fields = data.field('id', 'id_item', 'id_tree')
+            s += '  { %s },\n' % (', '.join(fields))
+
+        s += '};\n\n'
+        """
+        return s

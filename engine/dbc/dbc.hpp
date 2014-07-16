@@ -986,6 +986,8 @@ public:
   const item_upgrade_rule_t&     item_upgrade_rule( unsigned item_id, unsigned upgrade_level ) const;
   const rppm_modifier_t&         real_ppm_modifier( specialization_e spec, unsigned spell_id ) const;
 
+  std::vector<const item_bonus_entry_t*> item_bonus( unsigned bonus_id ) const;
+
   // Derived data access
   unsigned num_tiers() const;
 

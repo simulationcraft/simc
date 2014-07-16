@@ -16,6 +16,32 @@ struct spell_data_t;
 struct spelleffect_data_t;
 struct talent_data_t;
 
+struct item_bonus_tree_entry_t
+{
+  unsigned id;
+  unsigned tree_id;
+  unsigned index; // Unsure
+  unsigned child_id; // Child item_bouns_tree_entry_t
+  unsigned bonus_id; // Node ID in ItemBonus.db2
+};
+
+struct item_bonus_node_entry_t
+{
+  unsigned id;
+  unsigned item_id;
+  unsigned tree_id;
+};
+
+struct item_bonus_entry_t
+{
+  unsigned id;
+  unsigned bonus_id;
+  unsigned type;
+  int      value_1;
+  int      value_2;
+  unsigned index;
+};
+
 struct item_set_bonus_t {
   const char* set_name;
   unsigned    tier;

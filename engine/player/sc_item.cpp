@@ -419,6 +419,7 @@ bool item_t::parse_options()
     opt_string( "gem_id", option_gem_id_str ),
     opt_string( "enchant_id", option_enchant_id_str ),
     opt_string( "addon_id", option_addon_id_str ),
+    opt_string( "bonus_id", option_bonus_id_str ),
     opt_null()
   };
 
@@ -461,6 +462,9 @@ bool item_t::parse_options()
   if ( ! option_addon_id_str.empty() )
     parsed.addon_id = util::to_unsigned( option_addon_id_str );
 
+  if ( ! option_bonus_id_str.empty() )
+    parsed.bonus_id = util::to_unsigned( option_bonus_id_str );
+
   return true;
 }
 
@@ -473,6 +477,9 @@ void item_t::encoded_item( xml_writer_t& writer )
 
   if ( parsed.data.id )
     writer.print_attribute( "id", util::to_string( parsed.data.id ) );
+
+  if ( parsed.bonus_id > 0 )
+    writer.print_attribute( "bonus_id", util::to_string( parsed.bonus_id )  );
 
   if ( parsed.upgrade_level > 0 )
     writer.print_attribute( "upgrade_level", encoded_upgrade_level() );
@@ -500,6 +507,9 @@ std::string item_t::encoded_item()
 
   if ( parsed.data.id )
     s << ",id=" << parsed.data.id;
+
+  if ( parsed.bonus_id > 0 )
+    s << ",bonus_id=" << parsed.bonus_id;
 
   if ( ! option_ilevel_str.empty() )
     s << ",ilevel=" << parsed.data.level;

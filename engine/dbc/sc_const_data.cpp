@@ -1719,6 +1719,26 @@ const rppm_modifier_t& dbc_t::real_ppm_modifier( specialization_e spec, unsigned
   return *p;
 }
 
+std::vector<const item_bonus_entry_t*> dbc_t::item_bonus( unsigned bonus_id ) const
+{
+#if SC_USE_PTR
+  const item_bonus_entry_t* p = ptr ? __ptr_item_bonus_data : __item_bonus_data;
+#else
+  const item_bonus_entry_t* p = __item_bonus_data;
+#endif
+
+  std::vector<const item_bonus_entry_t*> entries;
+
+  while ( p -> id != 0 )
+  {
+    if ( p -> bonus_id == bonus_id )
+      entries.push_back(p);
+    p++;
+  }
+
+  return entries;
+}
+
 const random_suffix_data_t& dbc_t::random_suffix( unsigned suffix_id ) const
 {
 #if SC_USE_PTR

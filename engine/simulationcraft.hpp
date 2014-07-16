@@ -3294,6 +3294,7 @@ struct item_t
     int                      suffix_id;
     unsigned                 enchant_id;
     unsigned                 addon_id;
+    unsigned                 bonus_id;
     int                      armor;
     std::array<int, 3>       gem_id;
     std::array<int, 3>       gem_color;
@@ -3308,8 +3309,8 @@ struct item_t
     std::vector<std::string> source_list;
 
     parsed_input_t() :
-      upgrade_level( 0 ), suffix_id( 0 ), enchant_id( 0 ), addon_id( 0 ), 
-      armor( 0 ), data()
+      upgrade_level( 0 ), suffix_id( 0 ), enchant_id( 0 ), addon_id( 0 ),
+      bonus_id( 0 ), armor( 0 ), data()
     {
       range::fill( data.stat_type_e, -1 );
       range::fill( data.stat_val, 0 );
@@ -3346,6 +3347,7 @@ struct item_t
   std::string option_enchant_id_str;
   std::string option_addon_id_str;
   std::string option_gem_id_str;
+  std::string option_bonus_id_str;
 
   // Extracted data
   gear_stats_t base_stats, stats;
@@ -6588,6 +6590,8 @@ inline bool heroic( unsigned f ) { return ( f & RAID_TYPE_HEROIC ) == RAID_TYPE_
 inline bool lfr( unsigned f ) { return ( f & RAID_TYPE_LFR ) == RAID_TYPE_LFR; }
 inline bool flex( unsigned f ) { return ( f & RAID_TYPE_FLEXIBLE ) == RAID_TYPE_FLEXIBLE; }
 inline bool elite( unsigned f ) { return ( f & RAID_TYPE_ELITE ) == RAID_TYPE_ELITE; }
+
+bool apply_item_bonus( item_t& item, const item_bonus_entry_t& entry );
 
 struct token_t
 {

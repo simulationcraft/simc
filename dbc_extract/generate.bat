@@ -48,6 +48,7 @@ python.exe %RUNFILE% -p %INPATH% -b %BUILD% %PTR%  -t item_armor             >> 
 python.exe %RUNFILE% -p %INPATH% -b %BUILD% %PTR%  -t weapon_damage          >> %OUTPATH%/sc_item_data%PTREXT%.inc
 python.exe %RUNFILE% -p %INPATH% -b %BUILD% %PTR%  -t gem_properties         >> %OUTPATH%/sc_item_data%PTREXT%.inc
 python.exe %RUNFILE% -p %INPATH% -b %BUILD% %PTR%  -t item_upgrade           >> %OUTPATH%/sc_item_data%PTREXT%.inc
+python.exe %RUNFILE% -p %INPATH% -b %BUILD% %PTR%  -t item_bonus             >> %OUTPATH%/sc_item_data%PTREXT%.inc
 
 
 echo // ==========================================================================>  %OUTPATH%\specialization.hpp

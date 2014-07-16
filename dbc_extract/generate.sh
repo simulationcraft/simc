@@ -59,6 +59,7 @@ fi
 ./dbc_extract.py -p $INPUT $WOWVERSION -b $BUILD$PTR -t weapon_damage          >> $OUTPATH/sc_item_data${PTR:+_ptr}.inc
 ./dbc_extract.py -p $INPUT $WOWVERSION -b $BUILD$PTR -t gem_properties         >> $OUTPATH/sc_item_data${PTR:+_ptr}.inc
 ./dbc_extract.py -p $INPUT $WOWVERSION -b $BUILD$PTR -t item_upgrade           >> $OUTPATH/sc_item_data${PTR:+_ptr}.inc
+./dbc_extract.py -p $INPUT $WOWVERSION -b $BUILD$PTR -t item_bonus             >> $OUTPATH/sc_item_data${PTR:+_ptr}.inc
 
 (
 cat << zz1234

@@ -1,6 +1,15 @@
 #ifndef DATA_ENUMS_HH
 #define DATA_ENUMS_HH
 
+enum item_bonus_type
+{
+  ITEM_BONUS_ILEVEL    = 1,
+  ITEM_BONUS_MOD       = 2,
+  ITEM_BONUS_DESC      = 4,
+  ITEM_BONUS_SUFFIX    = 5,
+  ITEM_BONUS_REQ_LEVEL = 8,
+};
+
 enum proc_types
 {
   PROC1_KILLED = 0,

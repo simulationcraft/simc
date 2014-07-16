@@ -5,6 +5,78 @@
 
 #include "simulationcraft.hpp"
 
+bool item_database::apply_item_bonus( item_t& item, const item_bonus_entry_t& entry )
+{
+  switch ( entry.type )
+  {
+    // Adjust ilevel, value is in 'value_1' field
+    case ITEM_BONUS_ILEVEL:
+      if ( item.sim -> debug )
+        item.player -> sim -> out_debug.printf( "Player %s item '%s' adjusting ilevel by %d (old=%d new=%d)",
+            item.player -> name(), item.name(), entry.value_1, item.parsed.data.level, item.parsed.data.level + entry.value_1 );
+      item.parsed.data.level += entry.value_1;
+      break;
+    // Add new item stats. Value_1 has the item modifier, value_2 has the
+    // allocation percent. This bonus type is the reason we don't really
+    // support the bonus id stuff outside of our local item database.
+    case ITEM_BONUS_MOD:
+    {
+      // First, check if the item already has that stat
+      int found = -1;
+      int offset = -1;
+      for ( size_t i = 0, end = sizeof_array( item.parsed.data.stat_type_e ); i < end; i++ )
+      {
+        // Put the new stat in first available slot
+        if ( offset != -1 && item.parsed.data.stat_type_e[ i ] == ITEM_MOD_NONE )
+          offset = static_cast< int >( i );
+
+        // Stat already found
+        if ( found == -1 && item.parsed.data.stat_type_e[ i ] == entry.value_1 )
+          found = static_cast< int >( i );
+      }
+
+      // New stat, and there's room.
+      if ( found == -1 && offset != -1 )
+      {
+        if ( item.sim -> debug )
+          item.player -> sim -> out_debug.printf( "Player %s item '%s' adding new stat %s (allocation %u)", 
+              item.player -> name(), item.name(), util::stat_type_string( util::translate_item_mod( entry.value_1 ) ), entry.value_2 );
+        item.parsed.data.stat_type_e[ offset ] = entry.value_1;
+        item.parsed.data.stat_alloc[ offset ] = entry.value_2;
+      }
+      // Existing stat, set (?) new allocation percent
+      else if ( found != -1 )
+        item.parsed.data.stat_alloc[ offset ] = entry.value_2;
+      // New stat but no room, this should never happen.
+      else
+      {
+        item.player -> sim -> errorf( "Player %s item '%s' unable to add item modifier, stats full", item.player -> name(), item.name() );
+        return false;
+      }
+      break;
+    }
+    // Item name description. We should do flagging here, I suppose. We don't
+    // have the name descriptions exported at the moment though ..
+    case ITEM_BONUS_DESC:
+      break;
+    // WoD random suffix name string; stats are in other options for that item
+    // bonus id. Again, we don't export item name descriptions so we cannot
+    // apply the name
+    case ITEM_BONUS_SUFFIX:
+      break;
+    // Adjust required level of the item. Value in 'value_1'
+    case ITEM_BONUS_REQ_LEVEL:
+      if ( item.sim -> debug )
+        item.player -> sim -> out_debug.printf( "Player %s item '%s' required level by %d (old=%d new=%d)",
+            item.player -> name(), item.name(), entry.value_1, item.parsed.data.req_level, item.parsed.data.req_level + entry.value_1 );
+      item.parsed.data.req_level += entry.value_1;
+      break;
+    default:
+      break;
+  }
+  return true;
+}
+
 stat_pair_t item_database::item_enchantment_effect_stats( const item_enchantment_data_t& enchantment, int index )
 {
   assert( enchantment.id );
@@ -472,6 +544,19 @@ bool item_database::load_item_from_data( item_t& item )
   item.parsed.data.name = item.name_str.c_str();
 
   util::tokenize( item.name_str );
+
+  // Item bonus for local source only. TODO: BCP API and Wowhead will need ..
+  // something similar
+  if ( item.parsed.bonus_id > 0 )
+  {
+    std::vector<const item_bonus_entry_t*> item_bonuses = item.player -> dbc.item_bonus( parsed.bonus_id );
+    // Apply bonuses
+    for ( size_t i = 0, end = item_bonuses.size(); i < end; i++ )
+    {
+      if ( ! apply_item_bonus( *this, *item_bonuses[ i ] ) )
+        return false;
+    }
+  }
 
   return true;
 }
