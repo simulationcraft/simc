@@ -900,7 +900,7 @@ struct jab_t : public monk_melee_attack_t
     mh = &( player -> main_hand_weapon );
     oh = &( player -> off_hand_weapon );
  
-    base_multiplier *= 2.091; // hardcoded into tooltip
+    base_multiplier *= 1.15; // hardcoded into tooltip
 
     base_costs[ RESOURCE_ENERGY ] += p -> active_stance_data( FIERCE_TIGER ).effectN( 5 ).base_value();
   }
@@ -969,7 +969,7 @@ struct tiger_palm_t : public monk_melee_attack_t
         stancemask = STURDY_OX | FIERCE_TIGER | SPIRITED_CRANE;
     mh = &( player -> main_hand_weapon ) ;
     oh = &( player -> off_hand_weapon ) ;
-    base_multiplier *= 4.183; // hardcoded into tooltip
+    base_multiplier *= 3.16; // hardcoded into tooltip
  
     if ( p -> spec.brewmaster_training -> ok() )
       base_costs[ RESOURCE_CHI ] = 0.0;
@@ -1055,7 +1055,7 @@ struct blackout_kick_t : public monk_melee_attack_t
     parse_options( nullptr, options_str );
     mh = &( player -> main_hand_weapon );
     oh = &( player -> off_hand_weapon );
-    base_multiplier *= 8.929; // hardcoded into tooltip
+    base_multiplier *= 5.6; // hardcoded into tooltip
 
     if ( p -> spec.teachings_of_the_monastery -> ok() )
     {
@@ -1347,7 +1347,7 @@ struct rising_sun_kick_t : public monk_melee_attack_t
     stancemask = FIERCE_TIGER;
     mh = &( player -> main_hand_weapon ) ;
     oh = &( player -> off_hand_weapon ) ;
-    base_multiplier *= 17.866; // hardcoded into tooltip
+    base_multiplier *= 5.9; // hardcoded into tooltip
   }
  
   virtual void impact ( action_state_t* s )
@@ -1437,13 +1437,13 @@ struct spinning_crane_kick_t : public monk_melee_attack_t
  
     if( p -> talent.rushing_jade_wind -> ok() )
     {
-      base_multiplier *= 1.59; // hardcoded into tooltip
+	  base_multiplier *= 0.7392; // hardcoded into tooltip
       school = SCHOOL_NATURE; // Application is Nature but the actual damage ticks is Physical
       tick_action = new rushing_jade_wind_tick_t( p, p -> find_talent_spell( "Rushing Jade Wind" ) );
     }
     else
     {
-      base_multiplier *= 1.59; // hardcoded into tooltip
+      base_multiplier *= 0.7392; // hardcoded into tooltip
       school = SCHOOL_PHYSICAL;
       channeled = true;
       tick_action = new spinning_crane_kick_tick_t( p, p -> find_class_spell( "Spinning Crane Kick" ) );
@@ -1513,7 +1513,7 @@ struct fists_of_fury_t : public monk_melee_attack_t
       aoe = -1;
       mh = &( player -> main_hand_weapon );
       oh = &( player -> off_hand_weapon );
-      base_multiplier *= 18.5; // hardcoded into tooltip
+	  base_multiplier *= 30.5; // hardcoded into tooltip
       split_aoe_damage = false;
       school = SCHOOL_PHYSICAL;
     }
@@ -1807,7 +1807,7 @@ struct expel_harm_t : public monk_melee_attack_t
     mh = &( player -> main_hand_weapon );
     oh = &( player -> off_hand_weapon );
  
-    base_multiplier = 15.768; // hardcoded into tooltip
+    base_multiplier = 9.5999; // hardcoded into tooltip
         base_multiplier *= 1/3; // 33% of the heal is done as damage
 
     if ( p -> glyph.targeted_expulsion -> ok() )
