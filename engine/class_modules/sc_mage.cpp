@@ -52,8 +52,11 @@
 
 using namespace residual_action;
 
+
+
 namespace { // UNNAMED NAMESPACE
 
+struct incanters_flow_t;
 
 // ==========================================================================
 // Mage
@@ -140,6 +143,7 @@ public:
     buff_t* frozen_thoughts;
     buff_t* fiery_adept;
     buff_t* enhanced_pyrotechnics;
+    incanters_flow_t* incanters_flow;
   } buffs;
 
   // Cooldowns
@@ -320,6 +324,7 @@ public:
     const spell_data_t* meteor;
     const spell_data_t* unstable_magic;
     const spell_data_t* mirror_image;
+    const spell_data_t* incanters_flow;
 
   } talents;
 
@@ -398,6 +403,7 @@ public:
   virtual void      stun();
   virtual void      moving();
   virtual double    temporary_movement_modifier() const;
+  virtual void      arise();
 
   target_specific_t<mage_td_t*> target_data;
 
@@ -2278,7 +2284,7 @@ struct frostbolt_t : public mage_spell_t
       if ( result_is_hit( s -> result ) || result_is_multistrike( s -> result) )
       {
         if ( p() -> talents.unstable_magic -> ok() && rng().roll( p() -> talents.unstable_magic -> effectN( 3 ).percent() ) )
-          trigger_unstable_magic( s );      
+          trigger_unstable_magic( s );
         trigger_icicle_gain( s );
       }
   }
@@ -3879,6 +3885,7 @@ void mage_t::init_spells()
   talents.arcane_orb         = find_talent_spell( "Arcane Orb" );
   talents.unstable_magic     = find_talent_spell( "Unstable Magic" );
   talents.mirror_image       = find_talent_spell( "Mirror Image" );
+  talents.incanters_flow      = find_talent_spell( "Incanter's Flow" );
 
 
   // Passive Spells
@@ -3998,6 +4005,33 @@ void mage_t::init_scaling()
 
 // mage_t::init_buffs =======================================================
 
+struct incanters_flow_t : public buff_t
+{
+  static void callback( buff_t* buff, int current_tick, int )
+  {
+    // First 5 ticks are increasing, 6th tick flips bit, 11th tick flips again
+    // etc.
+    if ( current_tick > 5 && ( current_tick - 1 ) % 5 == 0 )
+      buff -> reverse = ! buff -> reverse;
+  }
+
+  incanters_flow_t( mage_t* p ) :
+    buff_t( buff_creator_t( p, "incanters_flow", p -> find_spell( 116267 ) ) // Buff is a separate spell
+            .tick_callback( callback )
+            .duration( p -> sim -> max_time * 3 ) // Long enough duration to trip twice_expected_event
+            .period( p -> talents.incanters_flow -> effectN( 1 ).period() ) ) // Period is in the talent
+  { }
+
+  void decrement( int stacks, double value )
+  {
+    // This buff will never fade, so just do nothing at 1 stack. Buff uptime
+    // reporting _should_ work ok with this solution
+    if ( current_stack > 1 )
+      buff_t::decrement( stacks, value );
+  }
+};
+
+
 void mage_t::create_buffs()
 {
   player_t::create_buffs();
@@ -4061,6 +4095,8 @@ void mage_t::create_buffs()
   buffs.fiery_adept          = buff_creator_t( this, "fiery_adept" )
                                .spell( find_spell( 145261 ) )
                                .chance( 1.0 );
+
+  buffs.incanters_flow = new incanters_flow_t( this );
 }
 
 // mage_t::init_gains =======================================================
@@ -4567,6 +4603,16 @@ double mage_t::temporary_movement_modifier() const
     temporary = std::max( buffs.improved_blink -> default_value, temporary );
 
   return temporary;
+}
+
+// mage_t::arise ============================================================
+
+void mage_t::arise()
+{
+  player_t::arise();
+
+  if ( talents.incanters_flow -> ok() )
+    buffs.incanters_flow -> trigger();
 }
 
 // mage_t::create_expression ================================================
