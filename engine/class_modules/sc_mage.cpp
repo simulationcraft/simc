@@ -2222,8 +2222,11 @@ struct frost_bomb_t : public mage_spell_t
 
 struct frostbolt_t : public mage_spell_t
 {
+  double bf_proc_chance;
+
   frostbolt_t( mage_t* p, const std::string& options_str ) :
-    mage_spell_t( "frostbolt", p, p -> find_class_spell( "Frostbolt" ) )
+    mage_spell_t( "frostbolt", p, p -> find_class_spell( "Frostbolt" ) ),
+    bf_proc_chance( 0.1 )
   {
     parse_options( NULL, options_str );
 
@@ -2232,11 +2235,7 @@ struct frostbolt_t : public mage_spell_t
 
     if ( p -> sets.has_set_bonus( SET_PVP_4PC_CASTER ) )
       base_multiplier *= 1.05;
-
   }
-
-  double bf_proc_chance = 0.1;
-
 
   virtual int schedule_multistrike( action_state_t* s, dmg_e dmg_type, double tick_multiplier )
   {
@@ -2249,11 +2248,9 @@ struct frostbolt_t : public mage_spell_t
     return sm;
   }
 
-
   virtual void execute()
   {
     mage_spell_t::execute();
-
 
     if ( result_is_hit( execute_state -> result ) )
     {
