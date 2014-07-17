@@ -3,14 +3,15 @@
 :: These dlls are not included in the GIT.
 :: They need to be copied into the dev area from the Qt install.
 :: Qt-Framework is simply the Qt runtime dlls built against the MSVC 2013 compiler
-:: It can be found at: http://qt.nokia.com/downloads
+:: It can be found at: http://qt-project.org/downloads
 :: If you build SimC with MSVC 2013, then you need to use dlls from Qt-Framework
 :: As of this writing, the default locations from which to gather the dlls are:
 :: Qt-Framework: C:\Qt\Qt5.3.1\
 
-:: Update the qt_dir as necessary
 For /f "tokens=2-4 delims=/ " %%a in ('date /t') do (set mydate=%%a-%%b)
 
+
+:: Update the qt_dir as necessary
 set qt_dir=C:\Qt\Qt5.3.1\5.3\msvc2013
 set install=simc-601-alpha-win32-%mydate%\simc-601-alpha-win32-%mydate%
 set redist="C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\redist\x64\Microsoft.VC120.CRT"
@@ -99,6 +100,3 @@ BJAE8ALgBDAG8AbQBwAHIAZQBzAHMAaQBvAG4ALgBDAG8AbQBwAHIAZQBzAHMAaQBvAG4ATABlAHYAZQ
 yACAAPQAgACQAZgBhAGwAcwBlAA0ACgByAGUAbQBvAHYAZQAtAGkAdABlAG0AIAAtAHAAYQB0AGgAIAAkAGQAZQBzAHQAZgBpAGwAZQANAAoAWwBTAHkAcwB0AGUAbQAuAEkATwAuAEMAbwBtAHAAcgBl^
 AHMAcwBpAG8AbgAuAFoAaQBwAEYAaQBsAGUAXQA6ADoAQwByAGUAYQB0AGUARgByAG8AbQBEAGkAcgBlAGMAdABvAHIAeQAoACQAcwByAGMAXwBmAG8AbABkAGUAcgAsACQAZABlAHMAdABmAGkAbABlA^
 CwAJABjAG8AbQBwAHIAZQBzAHMAaQBvAG4ATABlAHYAZQBsACwAIAAkAGkAbgBjAGwAdQBkAGUAYgBhAHMAZQBkAGkAcgAgACkA
-
-
-pause
