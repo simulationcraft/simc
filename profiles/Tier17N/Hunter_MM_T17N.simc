@@ -36,14 +36,14 @@ actions+=/dire_beast
 actions+=/run_action_list,name=careful_aim,if=target.health.pct>80
 actions+=/glaive_toss
 actions+=/barrage
-actions+=/chimera_shot
+actions+=/chimaera_shot
 actions+=/focusing_shot,if=focus<50
 actions+=/kill_shot
 actions+=/multi_shot,if=active_enemies>=4
 actions+=/aimed_shot
 actions+=/steady_shot
 
-actions.careful_aim=chimera_shot
+actions.careful_aim=chimaera_shot
 actions.careful_aim+=/aimed_shot
 actions.careful_aim+=/glaive_toss
 actions.careful_aim+=/focusing_shot,if=focus<60
