@@ -82,7 +82,6 @@ struct mage_td_t : public actor_pair_t
 
   struct debuffs_t
   {
-    buff_t* frostbolt;
     buff_t* slow;
   } debuffs;
 
@@ -2284,6 +2283,12 @@ struct frostbolt_t : public mage_spell_t
       }
   }
 
+  virtual timespan_t travel_time() const
+  {
+    timespan_t t = mage_spell_t::travel_time();
+    return ( t > timespan_t::from_seconds( 0.75 ) ? timespan_t::from_seconds( 0.75 ) : t );
+  }
+
   virtual double action_multiplier() const
   {
     double am = mage_spell_t::action_multiplier();
@@ -3721,7 +3726,6 @@ mage_td_t::mage_td_t( player_t* target, mage_t* mage ) :
   dots.nether_tempest = target -> get_dot( "nether_tempest", mage );
   dots.pyroblast      = target -> get_dot( "pyroblast",      mage );
 
-  debuffs.frostbolt = buff_creator_t( *this, "frostbolt" ).spell( mage -> spec.frostbolt ).duration( timespan_t::from_seconds( 15.0 ) ).max_stack( 3 );
   debuffs.slow = buff_creator_t( *this, "slow" ).spell( mage -> spec.slow );
 }
 
