@@ -3342,6 +3342,24 @@ struct shadow_reflection_pet_t : public pet_t
     // Shadow Reflection does not consume resources, it has none ..
     void consume_resource()
     { }
+
+    void cancel()
+    {
+      melee_attack_t::cancel();
+
+      // Bail out early if not a dot.
+      if ( dot_duration == timespan_t::zero() )
+        return;
+
+      // Cancel ticking dots on targets when SR goes away (basically whenever
+      // the action is canceled is sufficient)
+      for ( size_t i = 0, end = sim -> target_non_sleeping_list.size(); i < end; i++ )
+      {
+        dot_t* d = target_specific_dot[ sim -> target_non_sleeping_list[ i ] ];
+        if ( d && d -> is_ticking() )
+          d -> cancel();
+      }
+    }
   };
 
   struct sr_eviscerate_t : public shadow_reflection_attack_t
