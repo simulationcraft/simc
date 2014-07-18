@@ -1,9 +1,11 @@
+game.db2
 DBFilesClient\CharSections.dbc
 DBFilesClient\CharHairGeosets.dbc
 DBFilesClient\TaxiPathNode.db2
 DBFilesClient\KeyChain.db2
 DBFilesClient\UiTextureAtlas.db2
 DBFilesClient\UiTextureAtlasMember.db2
+DBFilesClient\CharacterFaceBoneSet.db2
 DBFilesClient\Startup_Strings.dbc
 DBFilesClient\VideoHardware.dbc
 DBFilesClient\Creature.db2
@@ -117,12 +119,10 @@ DBFilesClient\SpellSpecialUnitEffect.dbc
 DBFilesClient\SpellShapeshiftForm.dbc
 DBFilesClient\SpellShapeshift.dbc
 DBFilesClient\SpellScaling.dbc
-DBFilesClient\SpellRuneCost.dbc
 DBFilesClient\SpellProcsPerMinuteMod.dbc
 DBFilesClient\SpellProcsPerMinute.dbc
 DBFilesClient\SpellRange.dbc
 DBFilesClient\SpellRadius.dbc
-DBFilesClient\SpellMechanic.dbc
 DBFilesClient\SpellLevels.dbc
 DBFilesClient\SpellKeyboundOverride.dbc
 DBFilesClient\SpellItemEnchantmentCondition.dbc
@@ -357,6 +357,7 @@ DBFilesClient\ChrUpgradeBucketSpell.db2
 DBFilesClient\ChrUpgradeTier.db2
 DBFilesClient\Curve.db2
 DBFilesClient\CurvePoint.db2
+DBFilesClient\GarrAbilityCategory.db2
 DBFilesClient\GarrAbility.db2
 DBFilesClient\GarrAbilityEffect.db2
 DBFilesClient\GarrBuilding.db2
@@ -369,6 +370,7 @@ DBFilesClient\GarrFollItemSet.db2
 DBFilesClient\GarrFollItemSetMember.db2
 DBFilesClient\GarrFollower.db2
 DBFilesClient\GarrFollowerLevelXP.db2
+DBFilesClient\GarrFollowerQuality.db2
 DBFilesClient\GarrFollowerXAbility.db2
 DBFilesClient\GarrMechanic.db2
 DBFilesClient\GarrMechanicType.db2
@@ -423,8 +425,11 @@ DBFilesClient\PvpItem.db2
 DBFilesClient\QuestPackageItem.db2
 DBFilesClient\QuestLine.db2
 DBFilesClient\QuestLineXQuest.db2
+DBFilesClient\QuestPOIPointCliTask.db2
+DBFilesClient\QuestObjectiveCliTask.db2
 DBFilesClient\RulesetItemUpgrade.db2
 DBFilesClient\RulesetRaidLootUpgrade.db2
+DBFilesClient\SpellActionBarPref.db2
 DBFilesClient\SpellAuraRestrictions.db2
 DBFilesClient\SpellAuraRestrictionsDifficulty.db2
 DBFilesClient\SpellCastingRequirements.db2
@@ -432,6 +437,7 @@ DBFilesClient\SpellClassOptions.db2
 DBFilesClient\SpellEffectCameraShakes.db2
 DBFilesClient\SpellEffectGroupSize.db2
 DBFilesClient\SpellLearnSpell.db2
+DBFilesClient\SpellMechanic.db2
 DBFilesClient\SpellMisc.db2
 DBFilesClient\SpellMiscDifficulty.db2
 DBFilesClient\SpellMissileMotion.db2
@@ -439,6 +445,7 @@ DBFilesClient\SpellMissile.db2
 DBFilesClient\SpellPower.db2
 DBFilesClient\SpellPowerDifficulty.db2
 DBFilesClient\SpellReagents.db2
+DBFilesClient\SpellRuneCost.db2
 DBFilesClient\SpellTotems.db2
 DBFilesClient\SpellVisualEffectName.db2
 DBFilesClient\SpellVisualKitAreaModel.db2
@@ -458,13 +465,14 @@ DBFilesClient\WbCertWhitelist.db2
 DBFilesClient\WbPermissions.db2
 DBFilesClient\WeaponTrail.db2
 DBFilesClient\WorldBossLockout.db2
+DBFilesClient\QuestV2CliTask.db2
 DBFilesClient\UiTextureKit.db2
 DBFilesClient\DeclinedWordCases.dbc
 DBFilesClient\DeclinedWord.dbc
+DBFilesClient\WindSettings.db2
 DBFilesClient\DeviceBlacklist.db2
 DBFilesClient\DriverBlacklist.db2
 DBFilesClient\DeviceDefaultSettings.db2
-DBFilesClient\WindSettings.db2
 DBFilesClient\ZoneLightPoint.dbc
 DBFilesClient\ZoneLight.dbc
 DBFilesClient\WMOAreaTable.dbc
