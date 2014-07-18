@@ -153,12 +153,11 @@ public:
     buff_t* astral_showers;
     buff_t* celestial_alignment;
     buff_t* chosen_of_elune;
+    buff_t* empowered_moonkin;
     buff_t* hurricane;
     buff_t* lunar_empowerment;
     buff_t* solar_empowerment;
-    buff_t* enhanced_owlkin_frenzy;
     buff_t* moonkin_form;
-    buff_t* owlkin_frenzy;
     buff_t* shooting_stars;
     buff_t* starfall;
 
@@ -258,25 +257,25 @@ public:
     const spell_data_t* improved_shred;
 
     // Balance
-    const spell_data_t* enhanced_mushrooms;
-    const spell_data_t* enhanced_storms;
+    const spell_data_t* empowered_moonkin;
+    const spell_data_t* empowered_starfall;
     const spell_data_t* enhanced_moonkin_form;
-    const spell_data_t* enhanced_owlkin_frenzy;
+    const spell_data_t* enhanced_mushrooms;
+    const spell_data_t* enhanced_starsurge;
+    const spell_data_t* enhanced_storms;
+    const spell_data_t* improved_moonfire;
     const spell_data_t* improved_starfire;
     const spell_data_t* improved_wrath;
-    const spell_data_t* enhanced_starsurge;
-    const spell_data_t* empowered_starfall;
-    const spell_data_t* improved_moonfire;
 
     // Guardian
-    const spell_data_t* enhanced_tooth_and_claw;
-    const spell_data_t* improved_mangle;
-    const spell_data_t* improved_maul;
-    const spell_data_t* empowered_thrash;
     const spell_data_t* empowered_bear_form;
     const spell_data_t* empowered_berserk;
+    const spell_data_t* empowered_thrash;
+    const spell_data_t* enhanced_tooth_and_claw;
     const spell_data_t* improved_barkskin;
     const spell_data_t* improved_frenzied_regeneration;
+    const spell_data_t* improved_mangle;
+    const spell_data_t* improved_maul;
 
     // Restoration
     const spell_data_t* empowered_rejuvenation;
@@ -372,7 +371,6 @@ public:
     const spell_data_t* celestial_focus;
     const spell_data_t* lunar_guidance;
     const spell_data_t* moonkin_form;
-    const spell_data_t* owlkin_frenzy;
     const spell_data_t* readiness_balance;
     const spell_data_t* shooting_stars;
     const spell_data_t* starfall;
@@ -3122,6 +3120,22 @@ public:
 
     return h;
   }
+
+  virtual timespan_t execute_time() const
+  {
+    if ( p() -> buff.empowered_moonkin -> up() )
+      return timespan_t::zero();
+
+    return ab::execute_time();
+  }
+
+  virtual void execute()
+  {
+    ab::execute();
+
+    if ( base_execute_time > timespan_t::zero() )
+      p() -> buff.empowered_moonkin -> decrement();
+  }
 };
 
 namespace heals {
@@ -3850,11 +3864,6 @@ struct druid_spell_t : public druid_spell_base_t<spell_t>
     if ( harmful && p() -> buff.heart_of_the_wild -> damage_spells_are_free() )
       return 0;
 
-    if ( p() -> buff.enhanced_owlkin_frenzy -> up() && cost > 0 )
-    {
-      p() -> buff.enhanced_owlkin_frenzy -> expire();
-      return 0;
-    }
     return base_t::cost();
   }
 
@@ -4026,7 +4035,7 @@ struct berserk_t : public druid_spell_t
   }
 };
 
-// Bristling Fur Spell
+// Bristling Fur Spell ======================================================
 
 struct bristling_fur_t : public druid_spell_t
 {
@@ -5427,7 +5436,6 @@ void druid_t::init_spells()
   spec.celestial_focus         = find_specialization_spell( "Celestial Focus" );
   spec.lunar_guidance          = find_specialization_spell( "Lunar Guidance" );
   spec.moonkin_form            = find_specialization_spell( "Moonkin Form" );
-  spec.owlkin_frenzy           = find_specialization_spell( "Owlkin Frenzy" );
   spec.readiness_balance       = find_specialization_spell( "Readiness: Balance" );
   spec.shooting_stars          = find_specialization_spell( "Shooting Stars" );
   spec.starfall                = find_specialization_spell( "Starfall" );
@@ -5571,7 +5579,7 @@ void druid_t::init_spells()
   perk.enhanced_mushrooms      = find_perk_spell( "Enhanced Mushrooms" );
   perk.enhanced_storms         = find_perk_spell( "Enhanced Storms" );
   perk.enhanced_moonkin_form   = find_perk_spell( "Enhanced Moonkin Form" );
-  perk.enhanced_owlkin_frenzy  = find_perk_spell( "Enhanced Owlkin Frenzy" );
+  perk.empowered_moonkin       = find_perk_spell( "Empowered Moonkin" );
   perk.improved_starfire       = find_perk_spell( "Improved Starfire" );
   perk.improved_wrath          = find_perk_spell( "Improved Wrath" );
   perk.enhanced_starsurge      = find_perk_spell( "Enhanced Starsurge" );
@@ -5736,25 +5744,21 @@ void druid_t::create_buffs()
   buff.astral_insight            = buff_creator_t( this, "astral_insight", talent.soul_of_the_forest -> ok() ? find_spell( 145138 ) : spell_data_t::not_found() )
                                    .chance( 0.08 );
 
+  buff.astral_showers              = buff_creator_t( this, "astral_showers",   spec.astral_showers );
+
   buff.celestial_alignment       = new celestial_alignment_t( *this );
+
+  buff.empowered_moonkin         = buff_creator_t( this, "empowered_moonkin", find_spell( 157228 ) )
+                                   .chance( perk.empowered_moonkin -> proc_chance() );
 
   buff.hurricane                 = buff_creator_t( this, "hurricane", find_class_spell( "Hurricane" ) );
 
-  buff.astral_showers              = buff_creator_t( this, "astral_showers",   spec.astral_showers );
-
-  buff.solar_empowerment         = buff_creator_t( this, "solar_empowerment", find_spell( 164545 ) );
-
   buff.lunar_empowerment         = buff_creator_t( this, "lunar_empowerment", find_spell( 164547 ) );
-
-  buff.owlkin_frenzy             = buff_creator_t( this, "owlkin_frenzy", spec.owlkin_frenzy -> effectN( 1 ).trigger() )
-                                   .chance( spec.owlkin_frenzy -> proc_chance() )
-                                   .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
-
-  buff.enhanced_owlkin_frenzy    = buff_creator_t( this, "enhanced_owlkin_frenzy", perk.enhanced_owlkin_frenzy )
-                                   .duration( spec.owlkin_frenzy -> effectN( 1 ).trigger() -> duration() );
 
   buff.shooting_stars            = buff_creator_t( this, "shooting_stars", spec.shooting_stars -> effectN( 1 ).trigger() )
                                    .chance( spec.shooting_stars -> proc_chance() + sets.set( SET_T16_4PC_CASTER ) -> effectN( 1 ).percent() );
+
+  buff.solar_empowerment         = buff_creator_t( this, "solar_empowerment", find_spell( 164545 ) );
 
   buff.starfall                  = buff_creator_t( this, "starfall", spec.starfall  );
 
@@ -6477,9 +6481,6 @@ double druid_t::composite_player_multiplier( school_e school ) const
 
   if ( specialization() == DRUID_BALANCE )
   {
-    if ( buff.owlkin_frenzy -> up() )
-      m *= 1.0 + buff.owlkin_frenzy -> data().effectN( 2 ).percent();
-
     if ( dbc::is_school( school, SCHOOL_ARCANE ) || dbc::is_school( school, SCHOOL_NATURE ) )
     {
       if ( buff.moonkin_form -> check() )
@@ -7102,11 +7103,10 @@ void druid_t::assess_damage( school_e school,
   }
 
   if ( buff.cenarion_ward -> up() && s -> result_amount > 0 )
-     active.cenarion_ward_hot -> execute();
+    active.cenarion_ward_hot -> execute();
 
-  if ( buff.moonkin_form -> up() && s -> result_amount > 0 )
-    if ( buff.owlkin_frenzy -> trigger() )
-      buff.enhanced_owlkin_frenzy -> trigger();
+  if ( buff.moonkin_form -> up() && s -> result_amount > 0 && s -> action -> aoe == 0 )
+    buff.empowered_moonkin -> trigger();
 
   player_t::assess_damage( school, dtype, s );
 
