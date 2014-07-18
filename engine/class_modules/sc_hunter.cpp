@@ -3048,7 +3048,7 @@ void hunter_t::init_spells()
   glyphs.animal_bond         = find_glyph_spell( "Glyph of Animal Bond"    );
   glyphs.black_ice           = find_glyph_spell( "Glyph of Block Ice"  );
   glyphs.camouflage          = find_glyph_spell( "Glyph of Camoflage"  );
-  glyphs.chimaera_shot        = find_glyph_spell( "Glyph of chimaera Shot"   );
+  glyphs.chimaera_shot        = find_glyph_spell( "Glyph of Chimaera Shot"   );
   glyphs.deterrence          = find_glyph_spell( "Glyph of Deterrence"  );
   glyphs.disengage           = find_glyph_spell( "Glyph of Disengage"  );
   glyphs.explosive_trap      = find_glyph_spell( "Glyph of Explosive Trap"  );
@@ -3693,7 +3693,7 @@ void hunter_t::armory_extensions( const std::string& /* region */,
     /*20*/ PET_SCORPID,      PET_TURTLE,       PET_NONE,         PET_NONE,     PET_BAT,
     /*25*/ PET_HYENA,        PET_BIRD_OF_PREY, PET_WIND_SERPENT, PET_NONE,     PET_NONE,
     /*30*/ PET_DRAGONHAWK,   PET_RAVAGER,      PET_WARP_STALKER, PET_SPOREBAT, PET_NETHER_RAY,
-    /*35*/ PET_SERPENT,      PET_NONE,         PET_MOTH,         PET_chimaera,  PET_DEVILSAUR,
+    /*35*/ PET_SERPENT,      PET_NONE,         PET_MOTH,         PET_CHIMERA,  PET_DEVILSAUR,
     /*40*/ PET_NONE,         PET_SILITHID,     PET_WORM,         PET_RHINO,    PET_WASP,
     /*45*/ PET_CORE_HOUND,   PET_SPIRIT_BEAST, PET_NONE,         PET_NONE,     PET_NONE,
     /*50*/ PET_FOX,          PET_MONKEY,       PET_DOG,          PET_BEETLE,   PET_NONE,
