@@ -2569,7 +2569,7 @@ struct chain_lightning_t : public shaman_spell_t
   };
 
   chain_lightning_t( shaman_t* player, const std::string& options_str ) :
-    shaman_spell_t( "chain_lightning", player, player -> find_specialization_spell( "Chain Lightning" ), options_str )
+    shaman_spell_t( "chain_lightning", player, player -> find_class_spell( "Chain Lightning" ), options_str )
   {
     may_fulmination       = player -> spec.fulmination -> ok();
     cooldown -> duration += player -> spec.shamanism -> effectN( 4 ).time_value();
