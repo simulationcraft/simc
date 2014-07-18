@@ -131,6 +131,11 @@ _DIFF_DATA = {
             ( 'unk_18505', _ADD_FIELD, 'unk_1' )
         ]
     },
+    18566: {
+        'ChrSpecialization.dbc': [
+            ( 'unk_wod_1', _ADD_FIELD, 'ofs_name' ),
+        ]
+    },
 }
 
 # Base DBC/DB2 fields, works for WoW build 17898 (Mists of Pandaria/5.4.7)

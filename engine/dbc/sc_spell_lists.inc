@@ -4,7 +4,7 @@
 #ifndef MAX_CLASS
 #define MAX_CLASS (12)
 #endif
-// Class based active abilities, wow build 18556
+// Class based active abilities, wow build 18566
 static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SIZE] = {
   {
     {
@@ -222,7 +222,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
     // Marksmanship tree, 4 abilities
     {
        19434, // Aimed Shot
-       53209, // Chimera Shot
+       53209, // Chimaera Shot
        53351, // Kill Shot
         3045, // Rapid Fire
            0,
@@ -754,11 +754,13 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
     {
            0,
     },
-    // Pet tree, 28 abilities
+    // Pet tree, 33 abilities
     {
        89766, // Axe Toss (Special Ability)
       115748, // Bladedance (Basic Attack)
+      171011, // Burning Presence (Special Ability)
       119899, // Cauterize Master (Special Ability)
+      170995, // Cripple
        19505, // Devour Magic (Special Ability)
        19658, // Devour Magic
        85692, // Doom Bolt
@@ -773,7 +775,9 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
       115625, // Mortal Cleave (Basic Attack)
        30151, // Pursuit (Special Ability)
         6358, // Seduction (Special Ability)
+      171014, // Seethe (Special Ability)
        54049, // Shadow Bite (Basic Attack)
+      171138, // Shadow Lock (Special Ability)
       115232, // Shadow Shield (Special Ability)
        89808, // Singe Magic (Special Ability)
        19647, // Spell Lock (Special Ability)
@@ -781,6 +785,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
       134477, // Threatening Presence (Special Ability)
       112042, // Threatening Presence (Special Ability)
       115778, // Tongue Lash (Basic Attack)
+      171021, // Torch Magic (Special Ability)
         3716, // Torment (Basic Attack)
         6360, // Whiplash (Special Ability)
       115831, // Wrathstorm (Special Ability)
@@ -972,7 +977,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
 
 #define TREE_SPECIALIZATION_SIZE (28)
 
-// Talent tree specialization abilities, wow build 18556
+// Talent tree specialization abilities, wow build 18566
 static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZATION_SIZE] = {
   // Specialization abilities for Hunter pets
   {
@@ -1240,7 +1245,7 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
        19434, // Aimed Shot
        35110, // Bombardment
        34483, // Careful Aim
-       53209, // Chimera Shot
+       53209, // Chimaera Shot
       137016, // Hotfix Passive
        53351, // Kill Shot
       165378, // Lethal Shots
@@ -1940,7 +1945,7 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
 
 #define CLASS_MASTERY_ABILITY_SIZE (1)
 
-// Class mastery abilities, wow build 18556
+// Class mastery abilities, wow build 18566
 static unsigned __class_mastery_ability_data[MAX_CLASS][MAX_SPECS_PER_CLASS][CLASS_MASTERY_ABILITY_SIZE] = {
   {
     {
@@ -2163,7 +2168,7 @@ static unsigned __class_mastery_ability_data[MAX_CLASS][MAX_SPECS_PER_CLASS][CLA
 #define MAX_RACE (28)
 #endif
 
-// Racial abilities, wow build 18556
+// Racial abilities, wow build 18566
 static unsigned __race_ability_data[MAX_RACE][MAX_CLASS][RACE_ABILITY_SIZE] = {
   {
     {     0, },
@@ -2886,7 +2891,7 @@ static unsigned __race_ability_data[MAX_RACE][MAX_CLASS][RACE_ABILITY_SIZE] = {
 
 #define GLYPH_ABILITIES_SIZE (40)
 
-// Glyph spells for classes, wow build 18556
+// Glyph spells for classes, wow build 18566
 static unsigned __glyph_abilities_data[][3][GLYPH_ABILITIES_SIZE] = {
   {
     {
@@ -3023,13 +3028,12 @@ static unsigned __glyph_abilities_data[][3][GLYPH_ABILITIES_SIZE] = {
   },
   // Glyph spells for Hunter
   {
-    // Major Glyphs (25 spells)
+    // Major Glyphs (24 spells)
     {
        20895, // Glyph of Animal Bond
       109263, // Glyph of Black Ice
       119449, // Glyph of Camouflage
       119447, // Glyph of Chimera Shot
-      159467, // Glyph of Deep Frost
        56850, // Glyph of Deterrence
        56844, // Glyph of Disengage
       123632, // Glyph of Distracting Shot
@@ -3073,7 +3077,7 @@ static unsigned __glyph_abilities_data[][3][GLYPH_ABILITIES_SIZE] = {
   },
   // Glyph spells for Rogue
   {
-    // Major Glyphs (25 spells)
+    // Major Glyphs (24 spells)
     {
        56813, // Glyph of Ambush
        56818, // Glyph of Blade Flurry
@@ -3093,7 +3097,6 @@ static unsigned __glyph_abilities_data[][3][GLYPH_ABILITIES_SIZE] = {
        56805, // Glyph of Kick
       146625, // Glyph of Recovery
        56806, // Glyph of Recuperate
-       56808, // Glyph of Shadow Walk
        56810, // Glyph of Shiv
        56819, // Glyph of Smoke Bomb
        56811, // Glyph of Sprint
@@ -3168,10 +3171,9 @@ static unsigned __glyph_abilities_data[][3][GLYPH_ABILITIES_SIZE] = {
       159624, // Glyph of the Inquisitor
       159627, // Glyph of the Redeemer
     },
-    // Minor Glyphs (13 spells)
+    // Minor Glyphs (12 spells)
     {
       145722, // Glyph of Angels
-       58009, // Glyph of Borrowed Time
       126152, // Glyph of Confession
        58228, // Glyph of Dark Archangel
       126174, // Glyph of Holy Resurrection
@@ -3191,7 +3193,7 @@ static unsigned __glyph_abilities_data[][3][GLYPH_ABILITIES_SIZE] = {
   },
   // Glyph spells for Death Knight
   {
-    // Major Glyphs (28 spells)
+    // Major Glyphs (27 spells)
     {
       159415, // Glyph of Absorb Magic
        58623, // Glyph of Anti-Magic Shell
@@ -3207,7 +3209,6 @@ static unsigned __glyph_abilities_data[][3][GLYPH_ABILITIES_SIZE] = {
       159418, // Glyph of Icy Runes
        58631, // Glyph of Icy Touch
        58686, // Glyph of Mind Freeze
-      159422, // Glyph of Necrotic Strike
        59332, // Glyph of Outbreak
        58657, // Glyph of Pestilence
        58635, // Glyph of Pillar of Frost
@@ -3257,7 +3258,7 @@ static unsigned __glyph_abilities_data[][3][GLYPH_ABILITIES_SIZE] = {
        55450, // Glyph of Fire Nova
        55447, // Glyph of Flame Shock
        55443, // Glyph of Frost Shock
-      161654, // Glyph of Frostflame Weapon
+      161654, // Glyph of Frostbrand Weapon
        59289, // Glyph of Ghost Wolf
       159643, // Glyph of Grounding
        55441, // Glyph of Grounding Totem
@@ -3312,14 +3313,14 @@ static unsigned __glyph_abilities_data[][3][GLYPH_ABILITIES_SIZE] = {
   },
   // Glyph spells for Mage
   {
-    // Major Glyphs (22 spells)
+    // Major Glyphs (21 spells)
     {
+      115703, // 0
       115718, // Glyph of Arcane Explosion
        62210, // Glyph of Arcane Power
        56365, // Glyph of Blink
        56368, // Glyph of Combustion
       115705, // Glyph of Cone of Cold
-      115703, // Glyph of Counterspell
       115710, // Glyph of Deep Freeze
       159485, // Glyph of Dragon's Breath
        56376, // Glyph of Frost Nova
@@ -3327,7 +3328,6 @@ static unsigned __glyph_abilities_data[][3][GLYPH_ABILITIES_SIZE] = {
       115723, // Glyph of Ice Block
        56364, // Glyph of Icy Veins
        89926, // Glyph of Inferno Blast
-      159484, // Glyph of Interruption
        56375, // Glyph of Polymorph
       146659, // Glyph of Rapid Displacement
       159486, // Glyph of Regenerative Ice
@@ -3361,11 +3361,9 @@ static unsigned __glyph_abilities_data[][3][GLYPH_ABILITIES_SIZE] = {
   },
   // Glyph spells for Warlock
   {
-    // Major Glyphs (25 spells)
+    // Major Glyphs (21 spells)
     {
        56235, // Glyph of Conflagrate
-       58080, // Glyph of Curse of Exhaustion
-      159653, // Glyph of Curses
       159665, // Glyph of Dark Soul
        56249, // Glyph of Demon Training
        63309, // Glyph of Demonic Circle
@@ -3373,7 +3371,6 @@ static unsigned __glyph_abilities_data[][3][GLYPH_ABILITIES_SIZE] = {
        63304, // Glyph of Ember Tap
       148683, // Glyph of Eternal Resolve
        56244, // Glyph of Fear
-      159667, // Glyph of Flames of Xoroth
       146962, // Glyph of Havoc
        56224, // Glyph of Healthstone
        56242, // Glyph of Imp Swarm
@@ -3385,7 +3382,6 @@ static unsigned __glyph_abilities_data[][3][GLYPH_ABILITIES_SIZE] = {
       159691, // Glyph of Soul Swap
        56231, // Glyph of Soulstone
       159697, // Glyph of Strengthened Resolve
-      159693, // Glyph of Twilight Ward
       146964, // Glyph of Unending Resolve
        56233, // Glyph of Unstable Affliction
            0,
@@ -3415,11 +3411,10 @@ static unsigned __glyph_abilities_data[][3][GLYPH_ABILITIES_SIZE] = {
   },
   // Glyph spells for Monk
   {
-    // Major Glyphs (31 spells)
+    // Major Glyphs (28 spells)
     {
       123394, // Glyph of Breath of Fire
       146954, // Glyph of Detox
-      120482, // Glyph of Enduring Healing Sphere
       159487, // Glyph of Expel Harm
       125671, // Glyph of Fists of Fury
       124997, // Glyph of Fortifying Brew
@@ -3436,8 +3431,6 @@ static unsigned __glyph_abilities_data[][3][GLYPH_ABILITIES_SIZE] = {
       159496, // Glyph of Renewed Tea
       123334, // Glyph of Renewing Mist
       159536, // Glyph of Soothing Mist
-      125673, // Glyph of Sparring
-      120479, // Glyph of Spinning Crane Kick
       120483, // Glyph of Surging Mist
       146950, // Glyph of Targeted Expulsion
       123391, // Glyph of Touch of Death
@@ -3450,9 +3443,8 @@ static unsigned __glyph_abilities_data[][3][GLYPH_ABILITIES_SIZE] = {
       159492, // Glyph of the Flying Serpent
            0,
     },
-    // Minor Glyphs (10 spells)
+    // Minor Glyphs (9 spells)
     {
-      132005, // Glyph of Blackout Kick
       125931, // Glyph of Crackling Tiger Lightning
       125872, // Glyph of Fighting Pose
       123403, // Glyph of Flying Serpent Kick
@@ -3470,7 +3462,7 @@ static unsigned __glyph_abilities_data[][3][GLYPH_ABILITIES_SIZE] = {
   },
   // Glyph spells for Druid
   {
-    // Major Glyphs (36 spells)
+    // Major Glyphs (34 spells)
     {
       159432, // Glyph of Astral Communion
        63057, // Glyph of Barkskin
@@ -3493,7 +3485,6 @@ static unsigned __glyph_abilities_data[][3][GLYPH_ABILITIES_SIZE] = {
        54811, // Glyph of Maul
       116238, // Glyph of Might of Ursoc
       159455, // Glyph of Moonwarding
-      116203, // Glyph of Nature's Grasp
        54821, // Glyph of Rake
        54733, // Glyph of Rebirth
       116218, // Glyph of Regrowth
@@ -3501,7 +3492,6 @@ static unsigned __glyph_abilities_data[][3][GLYPH_ABILITIES_SIZE] = {
       127540, // Glyph of Savage Roar
       116216, // Glyph of Skull Bash
       114222, // Glyph of Stampeding Roar
-      159448, // Glyph of Sudden Eclipse
       114223, // Glyph of Survival Instincts
       159441, // Glyph of Ursol's Defense
        62970, // Glyph of Wild Growth
@@ -3538,7 +3528,7 @@ static unsigned __glyph_abilities_data[][3][GLYPH_ABILITIES_SIZE] = {
 
 #define TIER_BONUSES_TIER_BASE (13)
 
-// Tier item set bonuses for class, wow build 18556
+// Tier item set bonuses for class, wow build 18566
 static unsigned __tier_bonuses_data[][TIER_BONUSES_MAX_TIER][TIER_BONUSES_SIZE] = {
   {
     {
@@ -3961,9 +3951,9 @@ static unsigned __tier_bonuses_data[][TIER_BONUSES_MAX_TIER][TIER_BONUSES_SIZE] 
   },
 };
 
-#define SET_BONUS_DATA_SIZE (475)
+#define SET_BONUS_DATA_SIZE (543)
 
-// Set bonus data, wow build 18556
+// Set bonus data, wow build 18566
 static item_set_bonus_t __set_bonus_data[SET_BONUS_DATA_SIZE] = {
   //                                    Tier name, Tier, Bns, Cls,         Derived Spec, Spec,  Spell, Items
   { "Siegebreaker Battlegear"                    ,    8,   2,   1,      {  71,  72, 0 },    0,  64938, {  46278,  46280,  46282,  46285,  46287,  0 } },
@@ -4395,62 +4385,125 @@ static item_set_bonus_t __set_bonus_data[SET_BONUS_DATA_SIZE] = {
   { "[PH] Warrior Fury T17 4P Bonus"             ,   17,   4,   1,           {  72, 0 },    0, 165349, {  0 } },
   { "[PH] Warrior Protection T17 2P Bonus"       ,   17,   2,   1,           {  73, 0 },    0, 165338, {  0 } },
   { "[PH] Warrior Protection T17 4P Bonus"       ,   17,   4,   1,           {  73, 0 },    0, 165351, {  0 } },
+  { "PH Warrior Set"                             ,   17,   2,   1,                { 0 },   71, 165336, { 115580, 115581, 115582, 115583, 115584,  0 } },
+  { "PH Warrior Set"                             ,   17,   4,   1,                { 0 },   71, 165345, { 115580, 115581, 115582, 115583, 115584,  0 } },
+  { "PH Warrior Set"                             ,   17,   2,   1,                { 0 },   72, 165337, { 115580, 115581, 115582, 115583, 115584,  0 } },
+  { "PH Warrior Set"                             ,   17,   4,   1,                { 0 },   72, 165349, { 115580, 115581, 115582, 115583, 115584,  0 } },
+  { "PH Warrior Set"                             ,   17,   2,   1,                { 0 },   73, 165338, { 115580, 115581, 115582, 115583, 115584,  0 } },
+  { "PH Warrior Set"                             ,   17,   4,   1,                { 0 },   73, 165351, { 115580, 115581, 115582, 115583, 115584,  0 } },
   { "[PH] Paladin Holy T17 2P Bonus"             ,   17,   2,   2,           {  65, 0 },    0, 165438, {  0 } },
   { "[PH] Paladin Holy T17 4P Bonus"             ,   17,   4,   2,           {  65, 0 },    0, 167697, {  0 } },
   { "[PH] Paladin Protection T17 2P Bonus"       ,   17,   2,   2,           {  66, 0 },    0, 165446, {  0 } },
   { "[PH] Paladin Protection T17 4P Bonus"       ,   17,   4,   2,           {  66, 0 },    0, 167740, {  0 } },
   { "[PH] Paladin Retribution T17 2P Bonus"      ,   17,   2,   2,           {  70, 0 },    0, 165440, {  0 } },
   { "[PH] Paladin Retribution T17 4P Bonus"      ,   17,   4,   2,           {  70, 0 },    0, 165439, {  0 } },
+  //                                    Tier name, Tier, Bns, Cls,         Derived Spec, Spec,  Spell, Items
+  { "PH Paladin Set"                             ,   17,   2,   2,                { 0 },   65, 165438, { 115565, 115566, 115567, 115568, 115569,  0 } },
+  { "PH Paladin Set"                             ,   17,   4,   2,                { 0 },   65, 167697, { 115565, 115566, 115567, 115568, 115569,  0 } },
+  { "PH Paladin Set"                             ,   17,   2,   2,                { 0 },   66, 165446, { 115565, 115566, 115567, 115568, 115569,  0 } },
+  { "PH Paladin Set"                             ,   17,   4,   2,                { 0 },   66, 167740, { 115565, 115566, 115567, 115568, 115569,  0 } },
+  { "PH Paladin Set"                             ,   17,   2,   2,                { 0 },   70, 165440, { 115565, 115566, 115567, 115568, 115569,  0 } },
+  { "PH Paladin Set"                             ,   17,   4,   2,                { 0 },   70, 165439, { 115565, 115566, 115567, 115568, 115569,  0 } },
   { "[PH] Hunter Beast Mastery T17 2P Bonus"     ,   17,   2,   3,           { 253, 0 },    0, 165517, {  0 } },
   { "[PH] Hunter Beast Mastery T17 4P Bonus"     ,   17,   4,   3,           { 253, 0 },    0, 165518, {  0 } },
   { "[PH] Hunter Marksmanship T17 2P Bonus"      ,   17,   2,   3,           { 254, 0 },    0, 165519, {  0 } },
   { "[PH] Hunter Marksmanship T17 4P Bonus"      ,   17,   4,   3,           { 254, 0 },    0, 165525, {  0 } },
   { "[PH] Hunter Survival T17 2P Bonus"          ,   17,   2,   3,           { 255, 0 },    0, 165544, {  0 } },
   { "[PH] Hunter Survival T17 4P Bonus"          ,   17,   4,   3,           { 255, 0 },    0, 165545, {  0 } },
-  //                                    Tier name, Tier, Bns, Cls,         Derived Spec, Spec,  Spell, Items
+  { "PH Hunter Set"                              ,   17,   2,   3,                { 0 },  253, 165517, { 115545, 115546, 115547, 115548, 115549,  0 } },
+  { "PH Hunter Set"                              ,   17,   4,   3,                { 0 },  253, 165518, { 115545, 115546, 115547, 115548, 115549,  0 } },
+  { "PH Hunter Set"                              ,   17,   2,   3,                { 0 },  254, 165519, { 115545, 115546, 115547, 115548, 115549,  0 } },
+  { "PH Hunter Set"                              ,   17,   4,   3,                { 0 },  254, 165525, { 115545, 115546, 115547, 115548, 115549,  0 } },
+  { "PH Hunter Set"                              ,   17,   2,   3,                { 0 },  255, 165544, { 115545, 115546, 115547, 115548, 115549,  0 } },
+  { "PH Hunter Set"                              ,   17,   4,   3,                { 0 },  255, 165545, { 115545, 115546, 115547, 115548, 115549,  0 } },
   { "[PH] Rogue Assassination T17 2P Bonus"      ,   17,   2,   4,           { 259, 0 },    0, 165516, {  0 } },
   { "[PH] Rogue Assassination T17 4P Bonus"      ,   17,   4,   4,           { 259, 0 },    0, 166886, {  0 } },
   { "[PH] Rogue Combat T17 2P Bonus"             ,   17,   2,   4,           { 260, 0 },    0, 165480, {  0 } },
   { "[PH] Rogue Combat T17 4P Bonus"             ,   17,   4,   4,           { 260, 0 },    0, 165478, {  0 } },
   { "[PH] Rogue Subtlety T17 2P Bonus"           ,   17,   2,   4,           { 261, 0 },    0, 165482, {  0 } },
   { "[PH] Rogue Subtlety T17 4P Bonus"           ,   17,   4,   4,           { 261, 0 },    0, 165514, {  0 } },
+  { "PH Rogue Set"                               ,   17,   2,   4,                { 0 },  259, 165516, { 115570, 115571, 115572, 115573, 115574,  0 } },
+  //                                    Tier name, Tier, Bns, Cls,         Derived Spec, Spec,  Spell, Items
+  { "PH Rogue Set"                               ,   17,   4,   4,                { 0 },  259, 166886, { 115570, 115571, 115572, 115573, 115574,  0 } },
+  { "PH Rogue Set"                               ,   17,   2,   4,                { 0 },  260, 165480, { 115570, 115571, 115572, 115573, 115574,  0 } },
+  { "PH Rogue Set"                               ,   17,   4,   4,                { 0 },  260, 165478, { 115570, 115571, 115572, 115573, 115574,  0 } },
+  { "PH Rogue Set"                               ,   17,   2,   4,                { 0 },  261, 165482, { 115570, 115571, 115572, 115573, 115574,  0 } },
+  { "PH Rogue Set"                               ,   17,   4,   4,                { 0 },  261, 165514, { 115570, 115571, 115572, 115573, 115574,  0 } },
   { "[PH] Priest Discipline T17 2P Bonus"        ,   17,   2,   5,           { 256, 0 },    0, 165614, {  0 } },
   { "[PH] Priest Discipline T17 4P Bonus"        ,   17,   4,   5,           { 256, 0 },    0, 167694, {  0 } },
   { "[PH] Priest Holy T17 2P Bonus"              ,   17,   2,   5,           { 257, 0 },    0, 165621, {  0 } },
   { "[PH] Priest Holy T17 4P Bonus"              ,   17,   4,   5,           { 257, 0 },    0, 167684, {  0 } },
   { "[PH] Priest Shadow T17 2P Bonus"            ,   17,   2,   5,           { 258, 0 },    0, 165628, {  0 } },
   { "[PH] Priest Shadow T17 4P Bonus"            ,   17,   4,   5,           { 258, 0 },    0, 165629, {  0 } },
+  { "PH Priest Set"                              ,   17,   2,   5,                { 0 },  256, 165614, { 115560, 115561, 115562, 115563, 115564,  0 } },
+  { "PH Priest Set"                              ,   17,   4,   5,                { 0 },  256, 167694, { 115560, 115561, 115562, 115563, 115564,  0 } },
+  { "PH Priest Set"                              ,   17,   2,   5,                { 0 },  257, 165621, { 115560, 115561, 115562, 115563, 115564,  0 } },
+  { "PH Priest Set"                              ,   17,   4,   5,                { 0 },  257, 167684, { 115560, 115561, 115562, 115563, 115564,  0 } },
+  { "PH Priest Set"                              ,   17,   2,   5,                { 0 },  258, 165628, { 115560, 115561, 115562, 115563, 115564,  0 } },
+  { "PH Priest Set"                              ,   17,   4,   5,                { 0 },  258, 165629, { 115560, 115561, 115562, 115563, 115564,  0 } },
   { "[PH] Death Knight Blood T17 2P Bonus"       ,   17,   2,   6,           { 250, 0 },    0, 167192, {  0 } },
   { "[PH] Death Knight Blood T17 4P Bonus"       ,   17,   4,   6,           { 250, 0 },    0, 165571, {  0 } },
   { "[PH] Death Knight Frost T17 2P Bonus"       ,   17,   2,   6,           { 251, 0 },    0, 165547, {  0 } },
   { "[PH] Death Knight Frost T17 4P Bonus"       ,   17,   4,   6,           { 251, 0 },    0, 165568, {  0 } },
   { "[PH] Death Knight Unholy T17 2P Bonus"      ,   17,   2,   6,           { 252, 0 },    0, 165575, {  0 } },
   { "[PH] Death Knight Unholy T17 4P Bonus"      ,   17,   4,   6,           { 252, 0 },    0, 165574, {  0 } },
+  { "PH Death Knight Set"                        ,   17,   2,   6,                { 0 },  250, 167192, { 115535, 115536, 115537, 115538, 115539,  0 } },
+  { "PH Death Knight Set"                        ,   17,   4,   6,                { 0 },  250, 165571, { 115535, 115536, 115537, 115538, 115539,  0 } },
+  //                                    Tier name, Tier, Bns, Cls,         Derived Spec, Spec,  Spell, Items
+  { "PH Death Knight Set"                        ,   17,   2,   6,                { 0 },  251, 165547, { 115535, 115536, 115537, 115538, 115539,  0 } },
+  { "PH Death Knight Set"                        ,   17,   4,   6,                { 0 },  251, 165568, { 115535, 115536, 115537, 115538, 115539,  0 } },
+  { "PH Death Knight Set"                        ,   17,   2,   6,                { 0 },  252, 165575, { 115535, 115536, 115537, 115538, 115539,  0 } },
+  { "PH Death Knight Set"                        ,   17,   4,   6,                { 0 },  252, 165574, { 115535, 115536, 115537, 115538, 115539,  0 } },
   { "[PH] Shaman Elemental T17 2P Bonus"         ,   17,   2,   7,           { 262, 0 },    0, 165577, {  0 } },
   { "[PH] Shaman Elemental T17 4P Bonus"         ,   17,   4,   7,           { 262, 0 },    0, 165580, {  0 } },
   { "[PH] Shaman Enhancement T17 2P Bonus"       ,   17,   2,   7,           { 263, 0 },    0, 165605, {  0 } },
   { "[PH] Shaman Enhancement T17 4P Bonus"       ,   17,   4,   7,           { 263, 0 },    0, 165610, {  0 } },
   { "[PH] Shaman Restoration T17 2P Bonus"       ,   17,   2,   7,           { 264, 0 },    0, 165576, {  0 } },
   { "[PH] Shaman Restoration T17 4P Bonus"       ,   17,   4,   7,           { 264, 0 },    0, 167702, {  0 } },
+  { "PH Shaman Set"                              ,   17,   2,   7,                { 0 },  262, 165577, { 115575, 115576, 115577, 115578, 115579,  0 } },
+  { "PH Shaman Set"                              ,   17,   4,   7,                { 0 },  262, 165580, { 115575, 115576, 115577, 115578, 115579,  0 } },
+  { "PH Shaman Set"                              ,   17,   2,   7,                { 0 },  263, 165605, { 115575, 115576, 115577, 115578, 115579,  0 } },
+  { "PH Shaman Set"                              ,   17,   4,   7,                { 0 },  263, 165610, { 115575, 115576, 115577, 115578, 115579,  0 } },
+  { "PH Shaman Set"                              ,   17,   2,   7,                { 0 },  264, 165576, { 115575, 115576, 115577, 115578, 115579,  0 } },
+  { "PH Shaman Set"                              ,   17,   4,   7,                { 0 },  264, 167702, { 115575, 115576, 115577, 115578, 115579,  0 } },
   { "[PH] Mage Arcane T17 2P Bonus"              ,   17,   2,   8,           {  62, 0 },    0, 165475, {  0 } },
-  //                                    Tier name, Tier, Bns, Cls,         Derived Spec, Spec,  Spell, Items
   { "[PH] Mage Arcane T17 4P Bonus"              ,   17,   4,   8,           {  62, 0 },    0, 165476, {  0 } },
   { "[PH] Mage Fire T17 2P Bonus"                ,   17,   2,   8,           {  63, 0 },    0, 165458, {  0 } },
   { "[PH] Mage Fire T17 4P Bonus"                ,   17,   4,   8,           {  63, 0 },    0, 165459, {  0 } },
   { "[PH] Mage Frost T17 2P Bonus"               ,   17,   2,   8,           {  64, 0 },    0, 165470, {  0 } },
   { "[PH] Mage Frost T17 4P Bonus"               ,   17,   4,   8,           {  64, 0 },    0, 165469, {  0 } },
+  { "PH Mage Set"                                ,   17,   2,   8,                { 0 },   62, 165475, { 115550, 115551, 115552, 115553, 115554,  0 } },
+  { "PH Mage Set"                                ,   17,   4,   8,                { 0 },   62, 165476, { 115550, 115551, 115552, 115553, 115554,  0 } },
+  { "PH Mage Set"                                ,   17,   2,   8,                { 0 },   63, 165458, { 115550, 115551, 115552, 115553, 115554,  0 } },
+  //                                    Tier name, Tier, Bns, Cls,         Derived Spec, Spec,  Spell, Items
+  { "PH Mage Set"                                ,   17,   4,   8,                { 0 },   63, 165459, { 115550, 115551, 115552, 115553, 115554,  0 } },
+  { "PH Mage Set"                                ,   17,   2,   8,                { 0 },   64, 165470, { 115550, 115551, 115552, 115553, 115554,  0 } },
+  { "PH Mage Set"                                ,   17,   4,   8,                { 0 },   64, 165469, { 115550, 115551, 115552, 115553, 115554,  0 } },
   { "[PH] Warlock Affliction T17 2P Bonus"       ,   17,   2,   9,           { 265, 0 },    0, 165448, {  0 } },
   { "[PH] Warlock Affliction T17 4P Bonus"       ,   17,   4,   9,           { 265, 0 },    0, 165449, {  0 } },
   { "[PH] Warlock Demonology T17 2P Bonus"       ,   17,   2,   9,           { 266, 0 },    0, 165451, {  0 } },
   { "[PH] Warlock Demonology T17 4P Bonus"       ,   17,   4,   9,           { 266, 0 },    0, 165450, {  0 } },
   { "[PH] Warlock Destruction T17 2P Bonus"      ,   17,   2,   9,           { 267, 0 },    0, 165455, {  0 } },
   { "[PH] Warlock Destruction T17 4P Bonus"      ,   17,   4,   9,           { 267, 0 },    0, 165452, {  0 } },
+  { "PH Warlock Set"                             ,   17,   2,   9,                { 0 },  265, 165448, { 115585, 115586, 115587, 115588, 115589,  0 } },
+  { "PH Warlock Set"                             ,   17,   4,   9,                { 0 },  265, 165449, { 115585, 115586, 115587, 115588, 115589,  0 } },
+  { "PH Warlock Set"                             ,   17,   2,   9,                { 0 },  266, 165451, { 115585, 115586, 115587, 115588, 115589,  0 } },
+  { "PH Warlock Set"                             ,   17,   4,   9,                { 0 },  266, 165450, { 115585, 115586, 115587, 115588, 115589,  0 } },
+  { "PH Warlock Set"                             ,   17,   2,   9,                { 0 },  267, 165455, { 115585, 115586, 115587, 115588, 115589,  0 } },
+  { "PH Warlock Set"                             ,   17,   4,   9,                { 0 },  267, 165452, { 115585, 115586, 115587, 115588, 115589,  0 } },
   { "[PH] Monk Brewmaster T17 2P Bonus"          ,   17,   2,  10,           { 268, 0 },    0, 165353, {  0 } },
   { "[PH] Monk Brewmaster T17 4P Bonus"          ,   17,   4,  10,           { 268, 0 },    0, 165352, {  0 } },
   { "[PH] Monk Windwalker T17 2P Bonus"          ,   17,   2,  10,           { 269, 0 },    0, 165403, {  0 } },
   { "[PH] Monk Windwalker T17 4P Bonus"          ,   17,   4,  10,           { 269, 0 },    0, 165402, {  0 } },
   { "[PH] Monk Mistweaver T17 2P Bonus"          ,   17,   2,  10,           { 270, 0 },    0, 165404, {  0 } },
   { "[PH] Monk Mistweaver T17 4P Bonus"          ,   17,   4,  10,           { 270, 0 },    0, 167718, {  0 } },
+  { "PH Monk Set"                                ,   17,   2,  10,                { 0 },  268, 165353, { 115555, 115556, 115557, 115558, 115559,  0 } },
+  { "PH Monk Set"                                ,   17,   4,  10,                { 0 },  268, 165352, { 115555, 115556, 115557, 115558, 115559,  0 } },
+  { "PH Monk Set"                                ,   17,   2,  10,                { 0 },  269, 165403, { 115555, 115556, 115557, 115558, 115559,  0 } },
+  { "PH Monk Set"                                ,   17,   4,  10,                { 0 },  269, 165402, { 115555, 115556, 115557, 115558, 115559,  0 } },
+  //                                    Tier name, Tier, Bns, Cls,         Derived Spec, Spec,  Spell, Items
+  { "PH Monk Set"                                ,   17,   2,  10,                { 0 },  270, 165404, { 115555, 115556, 115557, 115558, 115559,  0 } },
+  { "PH Monk Set"                                ,   17,   4,  10,                { 0 },  270, 167718, { 115555, 115556, 115557, 115558, 115559,  0 } },
   { "[PH] Druid Balance T17 2P Bonus"            ,   17,   2,  11,           { 102, 0 },    0, 165433, {  0 } },
   { "[PH] Druid Balance T17 4P Bonus"            ,   17,   4,  11,           { 102, 0 },    0, 166677, {  0 } },
   { "[PH] Druid Feral T17 2P Bonus"              ,   17,   2,  11,           { 103, 0 },    0, 165431, {  0 } },
@@ -4459,11 +4512,19 @@ static item_set_bonus_t __set_bonus_data[SET_BONUS_DATA_SIZE] = {
   { "[PH] Druid Guardian T17 4P Bonus"           ,   17,   4,  11,           { 104, 0 },    0, 165423, {  0 } },
   { "[PH] Druid Restoration T17 2P Bonus"        ,   17,   2,  11,           { 105, 0 },    0, 165437, {  0 } },
   { "[PH] Druid Restoration T17 4P Bonus"        ,   17,   4,  11,           { 105, 0 },    0, 167714, {  0 } },
+  { "PH Druid Set"                               ,   17,   2,  11,                { 0 },  102, 165433, { 115540, 115541, 115542, 115543, 115544,  0 } },
+  { "PH Druid Set"                               ,   17,   4,  11,                { 0 },  102, 166677, { 115540, 115541, 115542, 115543, 115544,  0 } },
+  { "PH Druid Set"                               ,   17,   2,  11,                { 0 },  103, 165431, { 115540, 115541, 115542, 115543, 115544,  0 } },
+  { "PH Druid Set"                               ,   17,   4,  11,                { 0 },  103, 165432, { 115540, 115541, 115542, 115543, 115544,  0 } },
+  { "PH Druid Set"                               ,   17,   2,  11,                { 0 },  104, 165410, { 115540, 115541, 115542, 115543, 115544,  0 } },
+  { "PH Druid Set"                               ,   17,   4,  11,                { 0 },  104, 165423, { 115540, 115541, 115542, 115543, 115544,  0 } },
+  { "PH Druid Set"                               ,   17,   2,  11,                { 0 },  105, 165437, { 115540, 115541, 115542, 115543, 115544,  0 } },
+  { "PH Druid Set"                               ,   17,   4,  11,                { 0 },  105, 167714, { 115540, 115541, 115542, 115543, 115544,  0 } },
 };
 
 #define PERK_SIZE (9)
 
-// Perk specialization abilities, wow build 18556
+// Perk specialization abilities, wow build 18566
 static unsigned __perk_data[][MAX_SPECS_PER_CLASS][PERK_SIZE] = {
   {
     {
@@ -4486,18 +4547,18 @@ static unsigned __perk_data[][MAX_SPECS_PER_CLASS][PERK_SIZE] = {
       157449, // 1: Improved Heroic Leap
       157452, // 2: Improved Die by the Sword
       157454, // 3: Empowered Execute
-      157457, // 4: Improved Colossus Smash
+      171246, // 4: Enhanced Hamstring
       157461, // 5: Enhanced Sweeping Strikes
       157464, // 6: Improved Mortal Strike
-      157466, // 7: Improved Thunderclap
-      157472, // 8: Improved Overpower
+      157466, // 7: Improved Whirlwind
+      157472, // 8: Improved Rend
     },
     // Fury
     {
       157452, // 0: Improved Die by the Sword
       157454, // 1: Empowered Execute
       157457, // 2: Improved Colossus Smash
-      157473, // 3: Improved Meat Cleaver
+      157473, // 3: Enhanced Whirlwind
       157474, // 4: Improved Wild Strike
       157475, // 5: Improved Bloodthirst
       157477, // 6: Improved Raging Blow
@@ -4508,13 +4569,13 @@ static unsigned __perk_data[][MAX_SPECS_PER_CLASS][PERK_SIZE] = {
     {
       157446, // 0: Improved Charge
       157449, // 1: Improved Heroic Leap
-      157497, // 2: Improved Bastion of Defense
+      157497, // 2: Improved Block
       157487, // 3: Improved Revenge
       157479, // 4: Improved Heroic Throw
       157492, // 5: Improved Shield Barrier
       157481, // 6: Improved Shield Slam
       157498, // 7: Improved Thunder Clap
-      157494, // 8: Improved Unwavering Sentinel
+      157494, // 8: Improved Defensive Stance
     },
     {
            0,
@@ -4581,7 +4642,7 @@ static unsigned __perk_data[][MAX_SPECS_PER_CLASS][PERK_SIZE] = {
       157724, // 2: Enhanced Aimed Shot
       157719, // 3: Enhanced Chimera Shot
       157733, // 4: Improved Chimera Shot
-      157732, // 5: Enhanced Shots
+      157732, // 5: Improved Multi-Shot
       157728, // 6: Improved Aimed Shot
       157726, // 7: Improved Focus
       157729, // 8: Improved Steady Shot
@@ -4596,7 +4657,7 @@ static unsigned __perk_data[][MAX_SPECS_PER_CLASS][PERK_SIZE] = {
       157751, // 5: Enhanced Traps
       157749, // 6: Improved Black Arrow
       157753, // 7: Improved Camouflage
-      157768, // 8: Improved Viper Venom
+      157768, // 8: Improved Serpent Sting
     },
     {
            0,
@@ -4607,7 +4668,7 @@ static unsigned __perk_data[][MAX_SPECS_PER_CLASS][PERK_SIZE] = {
     {
       157513, // 0: Improved Slice and Dice
       157514, // 1: Enhanced Vendetta
-      157515, // 2: Improved Venomous Wounds
+      157515, // 2: Empowered Rupture
       157560, // 3: Enhanced Poisons
       157561, // 4: Enhanced Crimson Tempest
       157569, // 5: Empowered Envenom
@@ -4637,7 +4698,7 @@ static unsigned __perk_data[][MAX_SPECS_PER_CLASS][PERK_SIZE] = {
       157667, // 5: Enhanced Eviscerate
       157669, // 6: Enhanced Shadow Dance
       157671, // 7: Empowered Fan of Knives
-      157704, // 8: Enhanced Master of Subtlety
+      157704, // 8: Enhanced Stealth
     },
     {
            0,
@@ -4647,7 +4708,7 @@ static unsigned __perk_data[][MAX_SPECS_PER_CLASS][PERK_SIZE] = {
     // Discipline
     {
       157181, // 0: Improved Heal
-      157197, // 1: Enhanced Strength of Soul
+      157197, // 1: Empowered Archangel
       157182, // 2: Improved Penance
       157193, // 3: Enhanced Focused Will
       157180, // 4: Enhanced Holy Fire
@@ -4703,7 +4764,7 @@ static unsigned __perk_data[][MAX_SPECS_PER_CLASS][PERK_SIZE] = {
       157342, // 1: Improved Soul Reaper
       157403, // 2: Empowered Icebound Fortitude
       157389, // 3: Empowered Pillar of Frost
-      157409, // 4: Empowered Rime
+      157409, // 4: Empowered Obliterate
       157380, // 5: Improved Mind Freeze
       157376, // 6: Improved Runeforges
       157367, // 7: Improved Death Grip
@@ -4736,14 +4797,14 @@ static unsigned __perk_data[][MAX_SPECS_PER_CLASS][PERK_SIZE] = {
       157777, // 5: Improved Lightning Bolt
       157778, // 6: Improved Lava Burst
       157779, // 7: Improved Shocks
-      157784, // 8: Enhanced Unleash Elements
+      157784, // 8: Enhanced Unleash
     },
     // Enhancement
     {
       157764, // 0: Improved Reincarnation
       157775, // 1: Improved Fire Totems
-      157784, // 2: Enhanced Unleash Elements
-      157803, // 3: Improved Lava Lash
+      157784, // 2: Enhanced Unleash
+      157803, // 3: Empowered Lava Lash
       157804, // 4: Improved Flame Shock
       157807, // 5: Improved Maelstrom Weapon
       157808, // 6: Improved Stormstrike
@@ -4760,7 +4821,7 @@ static unsigned __perk_data[][MAX_SPECS_PER_CLASS][PERK_SIZE] = {
       157816, // 5: Improved Healing Surge
       157818, // 6: Improved Tidal Waves
       157830, // 7: Improved Healing Rain
-      157784, // 8: Enhanced Unleash Elements
+      157784, // 8: Enhanced Unleash
     },
     {
            0,
@@ -4816,7 +4877,7 @@ static unsigned __perk_data[][MAX_SPECS_PER_CLASS][PERK_SIZE] = {
       157073, // 3: Improved Corruption
       157076, // 4: Improved Unstable Affliction
       157077, // 5: Improved Drain Soul
-      157078, // 6: Enhanced Nightfall
+      157078, // 6: Empowered Corruption
       157068, // 7: Improved Demons
       157069, // 8: Empowered Drain Life
     },
@@ -4840,7 +4901,7 @@ static unsigned __perk_data[][MAX_SPECS_PER_CLASS][PERK_SIZE] = {
       157120, // 3: Empowered Incinerate
       157121, // 4: Improved Ember Tap
       157125, // 5: Improved Shadowburn
-      157126, // 6: Enhanced Backlash
+      157126, // 6: Enhanced Havoc
       157068, // 7: Improved Demons
       158362, // 8: Enhanced Drain Life
     },
@@ -4893,11 +4954,11 @@ static unsigned __perk_data[][MAX_SPECS_PER_CLASS][PERK_SIZE] = {
     // Balance
     {
       157233, // 0: Empowered Starfall
-      157229, // 1: Enhanced Owlkin Frenzy
+      157229, // 1: Empowered Moonkin
       157227, // 2: Enhanced Moonkin Form
-      157225, // 3: Improved Nature's Swiftness
+      157301, // 3: Enhanced Rebirth
       157232, // 4: Enhanced Starsurge
-      157226, // 5: Enhanced Storms
+      157226, // 5: Enhanced Hurricane
       157230, // 6: Improved Starfire
       157235, // 7: Improved Moonfire
       157231, // 8: Improved Wrath
@@ -4919,7 +4980,7 @@ static unsigned __perk_data[][MAX_SPECS_PER_CLASS][PERK_SIZE] = {
       157292, // 0: Empowered Bear Form
       157284, // 1: Empowered Berserk
       157290, // 2: Empowered Thrash
-      157286, // 3: Enhanced Bear Hug
+      157286, // 3: Enhanced Faerie Fire
       157283, // 4: Enhanced Tooth and Claw
       157296, // 5: Improved Barkskin
       157298, // 6: Improved Frenzied Regeneration
@@ -4941,8 +5002,8 @@ static unsigned __perk_data[][MAX_SPECS_PER_CLASS][PERK_SIZE] = {
   },
 };
 
-// Glyph properties, wow build 18556
-static glyph_property_data_t __glyph_property_data[521] = {
+// Glyph properties, wow build 18566
+static glyph_property_data_t __glyph_property_data[518] = {
   {   162,  54811 },
   {   163,  54812 },
   {   164, 114338 },
@@ -5251,7 +5312,6 @@ static glyph_property_data_t __glyph_property_data[521] = {
   {   773,  63335 },
   {   831,  67598 },
   {   851,  68164 },
-  {   871, 115703 },
   {   911, 148683 },
   {   920,  57927 },
   {   923,  89749 },
@@ -5399,10 +5459,8 @@ static glyph_property_data_t __glyph_property_data[521] = {
   {  1126, 159455 },
   {  1127, 159456 },
   {  1128, 159459 },
-  {  1129, 159467 },
   {  1130, 159469 },
   {  1131, 159470 },
-  {  1132, 159484 },
   {  1133, 159485 },
   {  1134, 159486 },
   {  1135, 159487 },
