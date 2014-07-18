@@ -2730,10 +2730,13 @@ struct whirlwind_t: public warrior_attack_t
     if ( oh_attack )
       oh_attack -> execute();
 
-    p() -> buff.meat_cleaver -> trigger();
-    if ( p() -> perk.enhanced_whirlwind -> ok() )
+    if ( p() -> specialization() == WARRIOR_FURY )
+    {
       p() -> buff.meat_cleaver -> trigger();
-    p() -> buff.raging_wind -> expire();
+      if ( p() -> perk.enhanced_whirlwind -> ok() )
+        p() -> buff.meat_cleaver -> trigger();
+      p() -> buff.raging_wind -> expire();
+    }
   }
 
   virtual bool ready()
