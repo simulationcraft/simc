@@ -27,7 +27,7 @@ bool item_database::apply_item_bonus( item_t& item, const item_bonus_entry_t& en
       for ( size_t i = 0, end = sizeof_array( item.parsed.data.stat_type_e ); i < end; i++ )
       {
         // Put the new stat in first available slot
-        if ( offset != -1 && item.parsed.data.stat_type_e[ i ] == ITEM_MOD_NONE )
+        if ( offset == -1 && item.parsed.data.stat_type_e[ i ] == ITEM_MOD_NONE )
           offset = static_cast< int >( i );
 
         // Stat already found
@@ -39,8 +39,8 @@ bool item_database::apply_item_bonus( item_t& item, const item_bonus_entry_t& en
       if ( found == -1 && offset != -1 )
       {
         if ( item.sim -> debug )
-          item.player -> sim -> out_debug.printf( "Player %s item '%s' adding new stat %s (allocation %u)", 
-              item.player -> name(), item.name(), util::stat_type_string( util::translate_item_mod( entry.value_1 ) ), entry.value_2 );
+          item.player -> sim -> out_debug.printf( "Player %s item '%s' adding new stat %s offset=%d (allocation %u)", 
+              item.player -> name(), item.name(), util::stat_type_string( util::translate_item_mod( entry.value_1 ) ), offset, entry.value_2 );
         item.parsed.data.stat_type_e[ offset ] = entry.value_1;
         item.parsed.data.stat_alloc[ offset ] = entry.value_2;
       }
@@ -158,7 +158,7 @@ int item_database::scaled_stat( const item_data_t& item, const dbc_t& dbc, size_
   if ( idx >= sizeof_array( item.stat_val ) - 1 )
     return -1;
 
-  if ( item.level == 0 || item.stat_val[ idx ] <= 0 )
+  if ( item.level == 0 )
     return item.stat_val[ idx ];
 
   //if ( item.level == ( int ) new_ilevel )
