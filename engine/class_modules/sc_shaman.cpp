@@ -1684,7 +1684,7 @@ struct molten_earth_spell_t : public shaman_spell_t
 
   // Placeholder until mastery_value() works correctly
   double spell_direct_power_coefficient( const action_state_t* ) const
-  { return data().effectN( 1 ).sp_coeff() * player -> cache.mastery() / 100.0; }
+  { return data().effectN( 1 ).sp_coeff() * player -> cache.mastery_value(); }
 };
 
 struct molten_earth_driver_t;
