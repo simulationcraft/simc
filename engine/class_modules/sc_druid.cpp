@@ -259,10 +259,10 @@ public:
     // Balance
     const spell_data_t* empowered_moonkin;
     const spell_data_t* empowered_starfall;
+    const spell_data_t* enhanced_hurricane;
     const spell_data_t* enhanced_moonkin_form;
     const spell_data_t* enhanced_mushrooms;
     const spell_data_t* enhanced_starsurge;
-    const spell_data_t* enhanced_storms;
     const spell_data_t* improved_moonfire;
     const spell_data_t* improved_starfire;
     const spell_data_t* improved_wrath;
@@ -4509,7 +4509,7 @@ struct sunfire_t : public druid_spell_t
       double m = druid_spell_t::composite_target_multiplier( target );
 
       if ( p() -> buff.hurricane -> up() )
-        m *= 1.0 + p() -> perk.enhanced_storms -> effectN( 1 ).percent();
+        m *= 1.0 + p() -> perk.enhanced_hurricane -> effectN( 1 ).percent();
 
       return m;
     }
@@ -4554,7 +4554,7 @@ struct sunfire_t : public druid_spell_t
     double m = druid_spell_t::composite_target_multiplier( target );
 
     if ( p() -> buff.hurricane -> up() )
-      m *= 1.0 + p() -> perk.enhanced_storms -> effectN( 1 ).percent();
+      m *= 1.0 + p() -> perk.enhanced_hurricane -> effectN( 1 ).percent();
 
     return m;
   }
@@ -4628,7 +4628,7 @@ struct moonfire_t : public druid_spell_t
       double m = druid_spell_t::composite_target_multiplier( target );
 
       if ( p() -> buff.hurricane -> up() )
-        m *= 1.0 + p() -> perk.enhanced_storms -> effectN( 1 ).percent();
+        m *= 1.0 + p() -> perk.enhanced_hurricane -> effectN( 1 ).percent();
 
       return m;
     }
@@ -4679,7 +4679,7 @@ struct moonfire_t : public druid_spell_t
     double m = druid_spell_t::composite_target_multiplier( target );
 
     if ( p() -> buff.hurricane -> up() )
-      m *= 1.0 + p() -> perk.enhanced_storms -> effectN( 1 ).percent();
+      m *= 1.0 + p() -> perk.enhanced_hurricane -> effectN( 1 ).percent();
 
     return m;
   }
@@ -4925,7 +4925,7 @@ struct starfall_t : public druid_spell_t
     double m = druid_spell_t::composite_target_multiplier( target );
 
     if ( p() -> buff.hurricane -> up() )
-      m *= 1.0 + p() -> perk.enhanced_storms -> effectN( 1 ).percent();
+      m *= 1.0 + p() -> perk.enhanced_hurricane -> effectN( 1 ).percent();
 
     return m;
   }
@@ -5576,8 +5576,8 @@ void druid_t::init_spells()
   perk.improved_shred          = find_perk_spell( "Improved Shred" );
 
   // Balance
+  perk.enhanced_hurricane      = find_perk_spell( "Enhanced Hurricane" );
   perk.enhanced_mushrooms      = find_perk_spell( "Enhanced Mushrooms" );
-  perk.enhanced_storms         = find_perk_spell( "Enhanced Storms" );
   perk.enhanced_moonkin_form   = find_perk_spell( "Enhanced Moonkin Form" );
   perk.empowered_moonkin       = find_perk_spell( "Empowered Moonkin" );
   perk.improved_starfire       = find_perk_spell( "Improved Starfire" );
