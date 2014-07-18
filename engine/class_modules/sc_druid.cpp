@@ -27,6 +27,8 @@ namespace { // UNNAMED NAMESPACE
     = Guardian =
     FR "none" results?
     Verify stuff (particularly DoC)
+    Might of Ursoc
+    Stamina, multistrike, agi in DTPS scaling
 
     = Restoration =
     Err'thing
@@ -271,6 +273,7 @@ public:
     const spell_data_t* empowered_bear_form;
     const spell_data_t* empowered_berserk;
     const spell_data_t* empowered_thrash;
+    const spell_data_t* enhanced_faerie_fire;
     const spell_data_t* enhanced_tooth_and_claw;
     const spell_data_t* improved_barkskin;
     const spell_data_t* improved_frenzied_regeneration;
@@ -4162,7 +4165,7 @@ struct faerie_fire_t : public druid_spell_t
   {
     timespan_t cd = cooldown -> duration;
 
-    if ( ! ( p() -> buff.bear_form -> check() || p() -> buff.cat_form -> check() ) )
+    if ( ! ( ( p() -> buff.bear_form -> check() && ! p() -> perk.enhanced_faerie_fire -> ok() ) || p() -> buff.cat_form -> check() ) )
       cd = timespan_t::zero();
 
     druid_spell_t::update_ready( cd );
@@ -4170,10 +4173,14 @@ struct faerie_fire_t : public druid_spell_t
 
   virtual double action_multiplier() const
   {
+    double am = druid_spell_t::action_multiplier();
+
     if ( p() -> buff.bear_form -> check() )
-      return druid_spell_t::action_multiplier();
+      am *= 1.0 + p() -> perk.enhanced_faerie_fire -> effectN( 2 ).percent();
     else
       return 0.0;
+    
+    return am;
   }
 
   virtual resource_e current_resource() const
@@ -5587,6 +5594,7 @@ void druid_t::init_spells()
   perk.improved_moonfire       = find_perk_spell( "Improved Moonfire" );
 
   // Guardian
+  perk.enhanced_faerie_fire           = find_perk_spell( "Enhanced Faerie Fire" );
   perk.enhanced_tooth_and_claw        = find_perk_spell( "Enhanced Tooth and Claw" );
   perk.improved_mangle                = find_perk_spell( "Improved Mangle" );
   perk.improved_maul                  = find_perk_spell( "Improved Maul" );
