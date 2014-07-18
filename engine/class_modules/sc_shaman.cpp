@@ -4623,6 +4623,10 @@ void shaman_t::trigger_molten_earth( const action_state_t* state )
   if ( ! state -> action -> result_is_hit( state -> result ) )
     return;
 
+  // Molten earth does not trigger itself.
+  if ( state -> action == debug_cast<molten_earth_driver_t*>( molten_earth ) -> nuke )
+    return;
+
   molten_earth -> schedule_execute();
 }
 
