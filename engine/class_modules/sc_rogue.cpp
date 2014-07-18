@@ -280,7 +280,7 @@ struct rogue_t : public player_t
     // Assassination
     const spell_data_t* improved_slice_and_dice;
     const spell_data_t* enhanced_vendetta;
-    const spell_data_t* improved_venomous_wounds;
+    const spell_data_t* empowered_rupture;
     const spell_data_t* enhanced_poisons;
     const spell_data_t* empowered_envenom;
     const spell_data_t* improved_rupture;
@@ -2894,7 +2894,7 @@ void rogue_t::trigger_venomous_wounds( const action_state_t* state )
   if ( ! state -> action -> result_is_hit( state -> result ) && ! state -> action -> result_is_multistrike( state -> result ) )
     return;
 
-  double chance = spec.venomous_wounds -> proc_chance() + perk.improved_venomous_wounds -> effectN( 1 ).percent();
+  double chance = spec.venomous_wounds -> proc_chance() + perk.empowered_rupture -> effectN( 1 ).percent();
 
   if ( ! rng().roll( chance ) )
     return;
@@ -4235,7 +4235,7 @@ void rogue_t::init_spells()
   // Assassination
   perk.improved_slice_and_dice     = find_perk_spell( "Improved Slice and Dice" );
   perk.enhanced_vendetta           = find_perk_spell( "Enhanced Vendetta" );
-  perk.improved_venomous_wounds    = find_perk_spell( "Improved Venomous Wounds" );
+  perk.empowered_rupture           = find_perk_spell( "Empowered Rupture" );
   perk.enhanced_poisons            = find_perk_spell( "Enhanced Poisons" );
   perk.empowered_envenom           = find_perk_spell( "Empowered Envenom" );
   perk.improved_rupture            = find_perk_spell( "Improved Rupture" );
