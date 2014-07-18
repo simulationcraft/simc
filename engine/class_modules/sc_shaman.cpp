@@ -4488,15 +4488,15 @@ void shaman_t::init_spells()
   talent.liquid_magma                = find_talent_spell( "Liquid Magma" );
 
   // Perks - Shared
-  perk.improved_fire_totems        = find_perk_spell( "Improved Fire Totems" );
+  perk.improved_fire_totems          = find_perk_spell( "Improved Fire Totems" );
+  perk.enhanced_unleash_elements     = find_perk_spell( "Enhanced Unleash" );
 
   // Perks - Enhancement
-  perk.enhanced_unleash_elements     = find_perk_spell( "Enhanced Unleash Elements" );
-  perk.improved_lava_lash            = find_perk_spell( "Improved Lava Lash" );
+  perk.improved_lava_lash            = find_perk_spell( "Empowered Lava Lash" );
   perk.improved_flame_shock          = find_perk_spell( "Improved Flame Shock" );
   perk.improved_maelstrom_weapon     = find_perk_spell( "Improved Maelstrom Weapon" );
   perk.improved_stormstrike          = find_perk_spell( "Improved Stormstrike" );
-  perk.improved_lava_lash_2          = find_perk_spell( 7 );
+  perk.improved_lava_lash_2          = find_perk_spell( "Improvd Lava Lash" );
   perk.improved_feral_spirit         = find_perk_spell( "Improved Feral Spirit" );
 
   // Perks - Elemental
