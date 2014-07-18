@@ -1558,9 +1558,9 @@ struct execute_t: public warrior_attack_t
 
     if ( p() -> mastery.weapons_master -> ok() )
     {
-      am *= 6.0 * std::min( 60.0,
+      am *= 5.0 * std::min( 50.0,
         ( p() -> buff.sudden_death -> up() ? p() -> resources.current[RESOURCE_RAGE] + 10 :
-        p() -> resources.current[RESOURCE_RAGE] ) ) / 60;
+        p() -> resources.current[RESOURCE_RAGE] ) ) / 50;
       am *= 1.0 + p() -> cache.mastery_value();
     }
 
@@ -1572,11 +1572,15 @@ struct execute_t: public warrior_attack_t
     double c = warrior_attack_t::cost();
 
     if ( p() -> specialization() == WARRIOR_ARMS )
-      c = std::min( 60.0, std::max( p() -> resources.current[RESOURCE_RAGE], c ) );
+      c = std::min( 50.0, std::max( p() -> resources.current[RESOURCE_RAGE], c ) );
 
     if ( p() -> buff.sudden_death -> up() )
-      c -= 10;
-
+    {
+      if ( p() -> specialization() != WARRIOR_ARMS )
+        return 0;
+      else
+        c -= 10;
+    }
     return c;
   }
 
@@ -1585,7 +1589,7 @@ struct execute_t: public warrior_attack_t
     warrior_attack_t::execute();
 
     if ( p() -> spec.crazed_berserker -> ok() && result_is_hit( execute_state -> result ) &&
-         p() -> off_hand_weapon.type == WEAPON_NONE ) // If MH fails to land, or if there is no OH weapon for Fury, oh attack does not execute.
+         p() -> off_hand_weapon.type != WEAPON_NONE ) // If MH fails to land, or if there is no OH weapon for Fury, oh attack does not execute.
          oh_attack -> execute();
 
     p() -> buff.sudden_death -> expire();
