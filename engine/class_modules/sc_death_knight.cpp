@@ -384,7 +384,7 @@ public:
     // Frost
     const spell_data_t* empowered_icebound_fortitude;
     const spell_data_t* empowered_pillar_of_frost;
-    const spell_data_t* empowered_rime;
+    const spell_data_t* empowered_obliterate;
     const spell_data_t* improved_runeforges;
 
     // Unholy
@@ -3520,8 +3520,8 @@ struct howling_blast_t : public death_knight_spell_t
   {
     double m = death_knight_spell_t::action_multiplier();
 
-    if ( p() -> buffs.rime -> check() && p() -> perk.empowered_rime -> ok() )
-      m += p() -> perk.empowered_rime -> effectN( 1 ).percent();
+    if ( p() -> buffs.rime -> check() && p() -> perk.empowered_obliterate -> ok() )
+      m += p() -> perk.empowered_obliterate -> effectN( 1 ).percent();
 
     return m;
   }
@@ -3592,8 +3592,8 @@ struct icy_touch_t : public death_knight_spell_t
   {
     double m = death_knight_spell_t::action_multiplier();
 
-    if ( p() -> buffs.rime -> check() && p() -> perk.empowered_rime -> ok() )
-      m += p() -> perk.empowered_rime -> effectN( 1 ).percent();
+    if ( p() -> buffs.rime -> check() && p() -> perk.empowered_obliterate -> ok() )
+      m += p() -> perk.empowered_obliterate -> effectN( 1 ).percent();
     
     return m;
   }
@@ -5245,7 +5245,7 @@ void death_knight_t::init_spells()
   // Frost
   perk.empowered_icebound_fortitude    = find_perk_spell( "Empowered Icebound Fortitude" );
   perk.empowered_pillar_of_frost       = find_perk_spell( "Empowered Pillar of Frost" );
-  perk.empowered_rime                  = find_perk_spell( "Empowered Rime" );
+  perk.empowered_obliterate            = find_perk_spell( "Empowered Obliterate" );
   perk.improved_runeforges             = find_perk_spell( "Improved Runeforges" );
 
   // Unholy
