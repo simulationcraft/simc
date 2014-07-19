@@ -3182,7 +3182,7 @@ void hunter_t::create_buffs()
   buffs.rapid_fire -> cooldown -> duration = timespan_t::zero();
 
   buffs.sniper_training   = buff_creator_t( this, "sniper_training", mastery.sniper_training )
-                            .duration( mastery.sniper_training -> effectN( 3 ).time_value() )
+                            .duration( timespan_t::from_seconds( mastery.sniper_training -> effectN( 3 ).base_value() ) )
                             .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
 
   buffs.stampede          = buff_creator_t( this, 130201, "stampede" ) // To allow action lists to react to stampede, rather than doing it in a roundabout way.

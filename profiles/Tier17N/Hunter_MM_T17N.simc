@@ -24,6 +24,7 @@ actions.precombat+=/potion,name=virmens_bite
 # Executed every time the actor is available.
 
 actions=potion,name=virmens_bite,if=target.time_to_die<=25|buff.stampede.up
+actions+=/use_item,slot=trinket1
 actions+=/auto_shot
 actions+=/explosive_trap,if=active_enemies>1
 actions+=/blood_fury
@@ -49,30 +50,30 @@ actions.careful_aim+=/glaive_toss
 actions.careful_aim+=/focusing_shot,if=focus<60
 actions.careful_aim+=/steady_shot
 
-head=headguard_of_the_unblinking_vigil,id=99402,upgrade=2,gems=8agi_9agi
-neck=gleaming_eye_of_the_devilsaur,id=105602,upgrade=2
-shoulders=spaulders_of_the_unblinking_vigil,id=99404,upgrade=2,gems=8agi_8agi_6agi,enchant=10agi_5crit
-back=tigerfang_wrap,id=98148,upgrade=2,gems=8agi_3agi,enchant=9crit
-chest=tunic_of_the_unblinking_vigil,id=99405,upgrade=2,gems=8agi_8agi_8agi_9agi,enchant=4agi_4sta
-wrists=wristguards_of_ruination,id=105562,upgrade=2,enchant=9agi
-hands=gloves_of_the_unblinking_vigil,id=99406,upgrade=2,gems=8agi_8agi_6agi,enchant=9haste
-waist=arrowflight_girdle,id=105584,upgrade=2,gems=8agi_4agi_8crit_8agi_6agi
-legs=leggings_of_unabashed_anger,id=105454,upgrade=2,gems=4agi_8crit_4agi_8crit_6agi,enchant=14agi_8crit
-feet=puddle_punishers,id=105410,upgrade=2,gems=8agi_3mastery,enchant=7agi
-finger1=kilruks_band_of_ascendancy,id=105624,upgrade=2,gems=8agi_3crit
-finger2=ring_of_restless_energy,id=105558,upgrade=2,gems=8agi_3crit
-trinket1=assurance_of_consequence,id=105472,upgrade=2
-trinket2=haromms_talisman,id=105527,upgrade=2
-main_hand=hiseks_reserve_longbow,id=105623,upgrade=2,gems=8agi_3agi,enchant=lord_blastingtons_scope_of_doom
+head=primal_gladiators_helm,id=111280
+neck=primal_gladiators_pendant_of_cruelty,id=111128,enchant=140mult
+shoulders=primal_gladiators_spaulders,id=111282
+back=primal_gladiators_drape_of_cruelty,id=111124,enchant=gift_of_multistrike
+chest=primal_gladiators_ringmail_armor,id=111193
+wrists=primal_gladiators_armbands_of_victory,id=111163
+hands=primal_gladiators_gauntlets,id=111279
+waist=primal_gladiators_waistguard_of_prowess,id=111156
+legs=primal_gladiators_leggings,id=111281
+feet=primal_gladiators_footguards_of_prowess,id=111159
+finger1=primal_gladiators_band_of_cruelty,id=111134,enchant=100mult
+finger2=primal_gladiators_band_of_prowess,id=111135,enchant=100mult
+trinket1=primal_gladiators_badge_of_dominance,id=111227
+trinket2=primal_gladiators_insignia_of_dominance,id=111228
+main_hand=primal_gladiators_heavy_crossbow,id=111073
 
 # Gear Summary
-# gear_agility=1162
-# gear_stamina=1539
-# gear_crit_rating=637
-# gear_haste_rating=531
-# gear_mastery_rating=169
-# gear_armor=720
-# gear_multistrike_rating=99
-# tier16_2pc_melee=1
-# tier16_4pc_melee=1
+# gear_agility=1672
+# gear_stamina=3246
+# gear_intellect=916
+# gear_crit_rating=700
+# gear_haste_rating=777
+# gear_mastery_rating=423
+# gear_armor=1547
+# gear_multistrike_rating=1449
+# gear_versatility_rating=77
 summon_pet=cat
