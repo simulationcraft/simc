@@ -301,9 +301,10 @@ public:
     pet_multiplier( 1.0 )
   {
     // Cooldowns
-    cooldowns.explosive_shot = get_cooldown( "explosive_shot" );
-    cooldowns.rapid_fire     = get_cooldown( "rapid_fire" );
-    cooldowns.sniper_training    = get_cooldown( "sniper_training" );
+    cooldowns.explosive_shot  = get_cooldown( "explosive_shot" );
+    cooldowns.rapid_fire      = get_cooldown( "rapid_fire" );
+    cooldowns.sniper_training = get_cooldown( "sniper_training" );
+    cooldowns.sniper_training -> duration = timespan_t::from_seconds( 3 );
 
     summon_pet_str = "";
     base.distance = 40;
