@@ -10,8 +10,6 @@ namespace { // UNNAMED NAMESPACE
 // ==========================================================================
 // Hunter
 // Improve lone wolf implementation -- Need to add a dismiss pet function.
-// Merge effects of frenzy ---> Focus fire, go for the throat --> invigoration,
-// The beast within --> Bestial Wrath
 // ==========================================================================
 
 struct hunter_t;
@@ -22,11 +20,14 @@ struct hunter_main_pet_t;
 
 enum aspect_type { ASPECT_NONE = 0, ASPECT_MAX };
 
+enum exotic_munitions { NO_AMMO = 0, FROZEN_AMMO = 2, INCENDIARY_AMMO = 4, POISONED_AMMO = 8 };
+
 struct hunter_td_t : public actor_pair_t
 {
   struct dots_t
   {
     dot_t* serpent_sting;
+    dot_t* poisoned_ammo;
   } dots;
 
   hunter_td_t( player_t* target, hunter_t* p );
@@ -41,8 +42,12 @@ public:
   {
     pets::hunter_main_pet_t* pet;
     aspect_type         aspect;
+    exotic_munitions    ammo;
     action_t*           explosive_ticks;
     action_t*           serpent_sting;
+    action_t*           frozen_ammo;
+    action_t*           incendiary_ammo;
+    action_t*           poisoned_ammo;
   } active;
 
   // Secondary pets
@@ -149,7 +154,7 @@ public:
     const spell_data_t* powershot;
     const spell_data_t* barrage;
 
-    const spell_data_t* flaming_shots;
+    const spell_data_t* exotic_munitions;
     const spell_data_t* focusing_shot;
     const spell_data_t* versatility;
     const spell_data_t* lone_wolf;
@@ -1658,6 +1663,21 @@ struct ranged_t : public hunter_ranged_attack_t
   {
     hunter_ranged_attack_t::impact( s );
 
+    if ( p() -> active.ammo != NO_AMMO )
+    {
+      if ( p() -> active.ammo == POISONED_AMMO )
+      {
+        residual_action::trigger(
+          p() -> active.poisoned_ammo, // ignite spell
+          s -> target, // target
+          p() -> cache.attack_power() * 0.4 );
+      }
+      else if ( p() -> active.ammo == FROZEN_AMMO )
+        p() -> active.frozen_ammo -> execute();
+      else if ( p() -> active.ammo == INCENDIARY_AMMO )
+        p() -> active.incendiary_ammo -> execute();
+    }
+
     if ( result_is_hit( s -> result ) )
     {
       if ( s -> result == RESULT_CRIT )
@@ -1670,18 +1690,16 @@ struct ranged_t : public hunter_ranged_attack_t
 
 struct auto_shot_t : public ranged_t
 {
-  auto_shot_t( hunter_t* p ) : ranged_t( p, "auto_shot", p -> find_class_spell( "Auto Shot" ) )
+  auto_shot_t( hunter_t* p ): ranged_t( p, "auto_shot", spell_data_t::nil() )
   {
     school = SCHOOL_PHYSICAL;
-    if ( p -> talents.flaming_shots -> ok() )
-      school = SCHOOL_FIRE;
   }
 };
 
 struct start_attack_t : public hunter_ranged_attack_t
 {
   start_attack_t( hunter_t* p, const std::string& options_str ) :
-    hunter_ranged_attack_t( "start_auto_shot", p, p -> find_class_spell( "Auto Shot" ) )
+    hunter_ranged_attack_t( "start_auto_shot", p, spell_data_t::nil() )
   {
     parse_options( NULL, options_str );
 
@@ -1700,7 +1718,80 @@ struct start_attack_t : public hunter_ranged_attack_t
   {
     return( player -> main_hand_attack -> execute_event == 0 ); // not swinging
   }
+};
 
+struct exotic_munitions_poisoned_ammo_t: public residual_action::residual_periodic_action_t < attack_t >
+{
+  typedef residual_action::residual_periodic_action_t < attack_t> base_t;
+  exotic_munitions_poisoned_ammo_t( hunter_t* p, const char* name, const spell_data_t* s ):
+    base_t( name, p, s )
+  {
+  }
+};
+
+struct exotic_munitions_incendiary_ammo_t: public hunter_ranged_attack_t
+{
+  exotic_munitions_incendiary_ammo_t( hunter_t* p, const char* name, const spell_data_t* s ):
+    hunter_ranged_attack_t( name, p, s )
+  {
+    aoe = -1;
+  }
+};
+
+struct exotic_munitions_frozen_ammo_t: public hunter_ranged_attack_t
+{
+  exotic_munitions_frozen_ammo_t( hunter_t* p, const char* name, const spell_data_t* s ):
+    hunter_ranged_attack_t( name, p, s )
+  {
+  }
+};
+
+struct exotic_munitions_t: public hunter_ranged_attack_t
+{
+  std::string ammo_type;
+  exotic_munitions swap_ammo;
+  exotic_munitions_t( hunter_t* player, const std::string& options_str ):
+    hunter_ranged_attack_t( "exotic_munitions", player, player -> talents.exotic_munitions )
+  {
+    option_t options[] =
+    {
+      opt_string( "ammo_type", ammo_type ),
+      opt_null()
+    };
+    parse_options( options, options_str );
+
+    callbacks = harmful = false;
+
+    if ( !ammo_type.empty() )
+    {
+      if ( ammo_type == "incendiary" || ammo_type == "incen" || ammo_type == "incendiary_ammo" )
+      {
+        swap_ammo = INCENDIARY_AMMO;
+      }
+      else if ( ammo_type == "poisoned" || ammo_type == "poison" || ammo_type == "poisoned_ammo" )
+      {
+        swap_ammo = POISONED_AMMO;
+      }
+      else if ( ammo_type == "frozen" || ammo_type == "frozen_ammo" )
+      {
+        swap_ammo = FROZEN_AMMO;
+      }
+    }
+  }
+
+  void execute()
+  {
+    hunter_ranged_attack_t::execute();
+    p() -> active.ammo = swap_ammo;
+  }
+
+  bool ready()
+  {
+    if ( p() -> active.ammo == swap_ammo )
+      return false;
+
+    return hunter_ranged_attack_t::ready();
+  }
 };
 
 // Aimed Shot ===============================================================
@@ -2410,7 +2501,6 @@ public:
   }
 };
 
-
 struct aspect_of_the_pack_t : public hunter_spell_t
 {
   std::string toggle;
@@ -2898,6 +2988,7 @@ hunter_td_t::hunter_td_t( player_t* target, hunter_t* p ) :
   dots( dots_t() )
 {
   dots.serpent_sting = target -> get_dot( "serpent_sting", p );
+  dots.poisoned_ammo = target -> get_dot( "poisoned_ammo", p );
 }
 
 // hunter_t::create_action ==================================================
@@ -2908,13 +2999,14 @@ action_t* hunter_t::create_action( const std::string& name,
   using namespace attacks;
   using namespace spells;
 
-  if ( name == "auto_shot"             ) return new              start_attack_t( this, options_str );
+  if ( name == "auto_shot"             ) return new           start_attack_t( this, options_str );
   if ( name == "aimed_shot"            ) return new             aimed_shot_t( this, options_str );
   if ( name == "arcane_shot"           ) return new            arcane_shot_t( this, options_str );
   // make this a no-op for now to not break profiles.
   if ( name == "bestial_wrath"         ) return new          bestial_wrath_t( this, options_str );
   if ( name == "black_arrow"           ) return new            black_arrow_t( this, options_str );
-  if ( name == "chimaera_shot"         ) return new           chimaera_shot_t( this, options_str );
+  if ( name == "chimaera_shot"         ) return new          chimaera_shot_t( this, options_str );
+  if ( name == "exotic_munitions"      ) return new       exotic_munitions_t( this, options_str );
   if ( name == "explosive_shot"        ) return new         explosive_shot_t( this, options_str );
   if ( name == "explosive_trap"        ) return new         explosive_trap_t( this, options_str );
   if ( name == "fervor"                ) return new                 fervor_t( this, options_str );
@@ -3023,7 +3115,7 @@ void hunter_t::init_spells()
   talents.powershot                         = find_talent_spell( "Powershot" );
   talents.barrage                           = find_talent_spell( "Barrage" );
 
-  talents.flaming_shots                     = find_talent_spell( "Flaming Shots" );
+  talents.exotic_munitions                  = find_talent_spell( "Exotic Munitions" );
   talents.focusing_shot                     = find_talent_spell( "Focusing Shot" );
   talents.versatility                       = find_talent_spell( "Versatility" );
   talents.lone_wolf                         = find_talent_spell( "Lone Wolf" );
@@ -3135,6 +3227,13 @@ void hunter_t::init_spells()
 
   if ( specs.serpent_sting -> ok() )
     active.serpent_sting = new attacks::serpent_sting_t( this );
+
+  if ( talents.exotic_munitions -> ok() )
+  {
+    active.incendiary_ammo = new attacks::exotic_munitions_incendiary_ammo_t( this, "incendiary_ammo", find_spell( 162541 ) );
+    active.frozen_ammo = new attacks::exotic_munitions_frozen_ammo_t( this, "frozen_ammo", find_spell( 162546 ) );
+    active.poisoned_ammo = new attacks::exotic_munitions_poisoned_ammo_t( this, "poisoned_ammo", find_spell( 170661 ) );
+  }
 
   action_lightning_arrow_aimed_shot = new attacks::lightning_arrow_t( this, "_aimed_shot" );
   action_lightning_arrow_arcane_shot = new attacks::lightning_arrow_t( this, "_arcane_shot" );
@@ -3481,6 +3580,7 @@ void hunter_t::reset()
   // Active
   active.pet            = nullptr;
   active.aspect         = ASPECT_NONE;
+  active.ammo           = NO_AMMO;
 }
 
 // hunter_t::arise ==========================================================
