@@ -1154,51 +1154,54 @@ void enemy_t::init_action_list()
      a "target=Tank_Name" to each ability. Then the default APL is replaced with
      a series of /run_action_list entries at the end. This is how we support tank swaps.
   */
-
-  // count the number of tanks in the simulation
-  std::vector<player_t*> tanks;
-  for ( size_t i = 0, players = sim -> player_list.size(); i < players; i++ )
+  // only do this for enemies targeting players
+  if ( ! target -> is_enemy() )
   {
-    player_t* q = sim -> player_list[ i ];
-    if ( q -> primary_role() == ROLE_TANK )
-      tanks.push_back( q );
-  }
-
-  // If we have more than one tank, create a new action list for each
-  if ( tanks.size() > 1 )
-  {
-    std::string new_action_list_str = "";
-
-    // split the action_list_str into individual actions so we can modify each later
-    std::vector<std::string> splits = util::string_split( action_list_str, "/" );
-
-    for ( size_t i = 0; i < tanks.size(); i++ )
+    // count the number of tanks in the simulation
+    std::vector<player_t*> tanks;
+    for ( size_t i = 0, players = sim -> player_list.size(); i < players; i++ )
     {
-      // create a new APL sub-entry with the name of the tank in question
-      std::string& tank_str = get_action_priority_list( tanks[ i ] -> name_str ) -> action_list_str;
-      
-      // Reconstruct the action_list_str for this tank by appending ",target=Tank_Name"
-      // to each action if it doesn't already specify a different target
-      for ( size_t j = 0, jmax = splits.size(); j < jmax; j++ )
-      {
-        tank_str += "/" + splits[ j ];
-
-        if ( ! util::str_in_str_ci( "target=", splits[ j ] ) )
-          tank_str += ",target=" + tanks[ i ] -> name_str;
-      }
-
-      // add a /run_action_list line to the new default APL
-      new_action_list_str += "/run_action_list,name=" + tanks[ i ] -> name_str + ",if=current_target=" + util::to_string( tanks[ i ] -> actor_index );
+      player_t* q = sim -> player_list[ i ];
+      if ( q -> primary_role() == ROLE_TANK )
+        tanks.push_back( q );
     }
 
-    // finish off the default action list with an instruction to run the default target's APL
-    if ( ! target -> is_enemy() )
-      new_action_list_str += "/run_action_list,name=" + target -> name_str;
-    else
-      new_action_list_str += "/run_action_list,name=" + tanks[ 0 ] -> name_str;
-        
-    // replace the default APL with our new one.
-    action_list_str = new_action_list_str;
+    // If we have more than one tank, create a new action list for each
+    if ( tanks.size() > 1 )
+    {
+      std::string new_action_list_str = "";
+
+      // split the action_list_str into individual actions so we can modify each later
+      std::vector<std::string> splits = util::string_split( action_list_str, "/" );
+
+      for ( size_t i = 0; i < tanks.size(); i++ )
+      {
+        // create a new APL sub-entry with the name of the tank in question
+        std::string& tank_str = get_action_priority_list( tanks[ i ] -> name_str ) -> action_list_str;
+
+        // Reconstruct the action_list_str for this tank by appending ",target=Tank_Name"
+        // to each action if it doesn't already specify a different target
+        for ( size_t j = 0, jmax = splits.size(); j < jmax; j++ )
+        {
+          tank_str += "/" + splits[ j ];
+
+          if ( !util::str_in_str_ci( "target=", splits[ j ] ) )
+            tank_str += ",target=" + tanks[ i ] -> name_str;
+        }
+
+        // add a /run_action_list line to the new default APL
+        new_action_list_str += "/run_action_list,name=" + tanks[ i ] -> name_str + ",if=current_target=" + util::to_string( tanks[ i ] -> actor_index );
+      }
+
+      // finish off the default action list with an instruction to run the default target's APL
+      if ( !target -> is_enemy() )
+        new_action_list_str += "/run_action_list,name=" + target -> name_str;
+      else
+        new_action_list_str += "/run_action_list,name=" + tanks[ 0 ] -> name_str;
+
+      // replace the default APL with our new one.
+      action_list_str = new_action_list_str;
+    }
   }
   player_t::init_action_list();
 }
