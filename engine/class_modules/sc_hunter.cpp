@@ -81,6 +81,7 @@ public:
   struct cooldowns_t
   {
     cooldown_t* explosive_shot;
+    cooldown_t* kill_shot_reset;
     cooldown_t* rapid_fire;
     cooldown_t* sniper_training;
   } cooldowns;
@@ -303,6 +304,8 @@ public:
   {
     // Cooldowns
     cooldowns.explosive_shot  = get_cooldown( "explosive_shot" );
+    cooldowns.kill_shot_reset = get_cooldown( "kill_shot_reset" );
+    cooldowns.kill_shot_reset -> duration = timespan_t::from_seconds( 6 );
     cooldowns.rapid_fire      = get_cooldown( "rapid_fire" );
     cooldowns.sniper_training = get_cooldown( "sniper_training" );
     cooldowns.sniper_training -> duration = timespan_t::from_seconds( 3 );
@@ -1921,10 +1924,9 @@ struct explosive_trap_t : public hunter_ranged_attack_t
 
     explosive_trap_tick -> execute();
   }
-
 };
 
-// chimaera Shot =============================================================
+// Chimaera Shot =============================================================
 
 struct chimaera_shot_t : public hunter_ranged_attack_t
 {
@@ -2111,25 +2113,20 @@ struct explosive_shot_t : public hunter_ranged_attack_t
 
 struct kill_shot_t : public hunter_ranged_attack_t
 {
-  cooldown_t* cd_glyph_kill_shot;
-
   kill_shot_t( hunter_t* player, const std::string& options_str ) :
-    hunter_ranged_attack_t( "kill_shot", player, player -> find_class_spell( "Kill Shot" ) ),
-    cd_glyph_kill_shot( player -> get_cooldown( "cooldowns.glyph_kill_shot" ) )
+    hunter_ranged_attack_t( "kill_shot", player, player -> find_specialization_spell( "Kill Shot" ) )
   {
     parse_options( NULL, options_str );
-
-    cd_glyph_kill_shot -> duration = player -> dbc.spell( 90967 ) -> duration();
   }
 
   virtual void execute()
   {
     hunter_ranged_attack_t::execute();
 
-    if ( cd_glyph_kill_shot -> up() )
+    if ( p() -> cooldowns.kill_shot_reset -> up() )
     {
-      cooldown -> reset( false );
-      cd_glyph_kill_shot -> start();
+      cooldown -> reset( true );
+      p() -> cooldowns.kill_shot_reset -> start();
     }
   }
 
@@ -2898,7 +2895,7 @@ action_t* hunter_t::create_action( const std::string& name,
   // make this a no-op for now to not break profiles.
   if ( name == "bestial_wrath"         ) return new          bestial_wrath_t( this, options_str );
   if ( name == "black_arrow"           ) return new            black_arrow_t( this, options_str );
-  if ( name == "chimaera_shot"          ) return new           chimaera_shot_t( this, options_str );
+  if ( name == "chimaera_shot"         ) return new           chimaera_shot_t( this, options_str );
   if ( name == "explosive_shot"        ) return new         explosive_shot_t( this, options_str );
   if ( name == "explosive_trap"        ) return new         explosive_trap_t( this, options_str );
   if ( name == "fervor"                ) return new                 fervor_t( this, options_str );
