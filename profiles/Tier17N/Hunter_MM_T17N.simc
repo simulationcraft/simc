@@ -3,7 +3,6 @@ level=100
 race=orc
 role=attack
 position=ranged_back
-professions=enchanting=600/alchemy=600
 talents=http://us.battle.net/wow/en/tool/talent-calculator#YZ!...0000
 spec=marksmanship
 
@@ -24,7 +23,7 @@ actions.precombat+=/potion,name=virmens_bite
 # Executed every time the actor is available.
 
 actions=potion,name=virmens_bite,if=target.time_to_die<=25|buff.stampede.up
-actions+=/use_item,slot=trinket1
+actions+=/use_item,slot=trinket2
 actions+=/auto_shot
 actions+=/explosive_trap,if=active_enemies>1
 actions+=/blood_fury
@@ -50,30 +49,29 @@ actions.careful_aim+=/glaive_toss
 actions.careful_aim+=/focusing_shot,if=focus<60
 actions.careful_aim+=/steady_shot
 
-head=primal_gladiators_helm,id=111280
-neck=primal_gladiators_pendant_of_cruelty,id=111128,enchant=140mult
-shoulders=primal_gladiators_spaulders,id=111282
-back=primal_gladiators_drape_of_cruelty,id=111124,enchant=gift_of_multistrike
+head=primal_gladiators_ringmail_helm,id=111195
+neck=primal_gladiators_necklace_of_prowess,id=111080,enchant=115mult
+shoulders=primal_gladiators_ringmail_spaulders,id=111197
+back=primal_gladiators_cape_of_prowess,id=111078,enchant=gift_of_multistrike
 chest=primal_gladiators_ringmail_armor,id=111193
 wrists=primal_gladiators_armbands_of_victory,id=111163
-hands=primal_gladiators_gauntlets,id=111279
-waist=primal_gladiators_waistguard_of_prowess,id=111156
-legs=primal_gladiators_leggings,id=111281
+hands=primal_gladiators_ringmail_gauntlets,id=111194
+waist=primal_gladiators_waistguard_of_cruelty,id=111155
+legs=primal_gladiators_ringmail_leggings,id=111196
 feet=primal_gladiators_footguards_of_prowess,id=111159
-finger1=primal_gladiators_band_of_cruelty,id=111134,enchant=100mult
-finger2=primal_gladiators_band_of_prowess,id=111135,enchant=100mult
-trinket1=primal_gladiators_badge_of_dominance,id=111227
-trinket2=primal_gladiators_insignia_of_dominance,id=111228
+finger1=primal_gladiators_ring_of_prowess,id=111082,enchant=75mult
+finger2=primal_gladiators_ring_of_prowess,id=111271,enchant=75mult
+trinket1=primal_gladiators_insignia_of_conquest,id=111223
+trinket2=primal_gladiators_badge_of_conquest,id=111222
 main_hand=primal_gladiators_heavy_crossbow,id=111073
 
 # Gear Summary
-# gear_agility=1672
-# gear_stamina=3246
-# gear_intellect=916
-# gear_crit_rating=700
-# gear_haste_rating=777
-# gear_mastery_rating=423
+# gear_agility=2588
+# gear_stamina=3248
+# gear_crit_rating=591
+# gear_haste_rating=1021
+# gear_mastery_rating=749
 # gear_armor=1547
-# gear_multistrike_rating=1449
+# gear_multistrike_rating=913
 # gear_versatility_rating=77
 summon_pet=cat

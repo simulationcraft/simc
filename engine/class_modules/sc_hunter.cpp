@@ -886,6 +886,11 @@ public:
   virtual action_t* create_action( const std::string& name, const std::string& options_str );
 
   virtual void init_spells();
+
+  void moving()
+  {
+    return;
+  }
 };
 
 namespace actions {
@@ -1907,7 +1912,7 @@ struct explosive_trap_t : public hunter_ranged_attack_t
     explosive_trap_tick( new explosive_trap_tick_t( player, "explosive_trap_tick" ) )
   {
     parse_options( NULL, options_str );
-    
+
     cooldown -> duration = data().cooldown();
     cooldown -> duration += p() -> specs.trap_mastery -> effectN( 4 ).time_value();
     if ( p() -> perks.enhanced_traps -> ok() )
@@ -3655,11 +3660,12 @@ void hunter_t::regen( timespan_t periodicity )
 {
   player_t::regen( periodicity );
 
-  if ( cooldowns.sniper_training -> up() )
+  if ( is_moving() )
+    cooldowns.sniper_training -> start();
+  else if ( cooldowns.sniper_training -> up() )
     buffs.sniper_training -> trigger();
 
   periodicity *= 1.0 + composite_ranged_haste_rating() / current_rating().attack_haste;
-
 }
 
 // hunter_t::create_options =================================================
@@ -3896,16 +3902,21 @@ stat_e hunter_t::convert_hybrid_stat( stat_e s ) const
   case STAT_SPIRIT:
       return STAT_NONE;
   case STAT_BONUS_ARMOR:
-      return STAT_NONE;     
+      return STAT_NONE;
   default: return s; 
   }
 }
 
 // hunter_t::moving() =======================================================
 
-void hunter_t::moving()
+void hunter_t::moving() 
 {
   cooldowns.sniper_training -> start();
+  if ( executing )
+  {
+    if ( executing -> id == 163485 || executing -> id == 152245 )
+      player_t::interrupt();
+  }
 }
 
 /* Report Extension Class
