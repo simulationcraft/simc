@@ -271,7 +271,7 @@ struct auto_attack_t : public enemy_action_t<attack_t>
 
   // default constructor
   auto_attack_t( player_t* p, const std::string& options_str ) :
-    base_t( "auto_attack", p )
+    base_t( "auto_attack", p ), mh( 0 ), oh( 0 )
   {
     parse_options( options.data(), options_str );
 
