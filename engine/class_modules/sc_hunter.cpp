@@ -1726,6 +1726,8 @@ struct exotic_munitions_poisoned_ammo_t: public residual_action::residual_period
   exotic_munitions_poisoned_ammo_t( hunter_t* p, const char* name, const spell_data_t* s ):
     base_t( name, p, s )
   {
+    may_multistrike = 1;
+    may_crit = tick_may_crit = true;
   }
 };
 
@@ -3705,13 +3707,8 @@ double hunter_t::composite_player_multiplier( school_e school ) const
   double m = player_t::composite_player_multiplier( school );
 
   if ( mastery.essence_of_the_viper -> ok() &&
-       ( dbc::is_school( school, SCHOOL_NATURE ) ||
-         dbc::is_school( school, SCHOOL_ARCANE ) ||
-         dbc::is_school( school, SCHOOL_SHADOW ) ||
-         dbc::is_school( school, SCHOOL_FIRE   ) ) )
-  {
+       dbc::get_school_mask( school ) & SCHOOL_MAGIC_MASK )
     m *= 1.0 + cache.mastery_value();
-  }
 
   if ( talents.lone_wolf && !active.pet )
     m *= 1.0 + talents.lone_wolf -> effectN( 1 ).percent();
