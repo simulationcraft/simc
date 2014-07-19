@@ -1838,6 +1838,28 @@ struct expel_harm_t : public monk_melee_attack_t
   }
 };
  
+// ==========================================================================
+// Provoke
+// ==========================================================================
+
+struct provoke_t: public monk_melee_attack_t
+{
+  provoke_t( monk_t* p, const std::string& options_str ):
+    monk_melee_attack_t( "provoke", p, p -> find_class_spell( "Provoke" ) )
+  {
+    parse_options( NULL, options_str );
+    use_off_gcd = true;
+  }
+
+  virtual void impact( action_state_t* s )
+  {
+    if ( s -> target -> is_enemy() )
+      target -> taunt( player );
+
+    monk_melee_attack_t::impact( s );
+  }
+};
+ 
 } // END melee_attacks NAMESPACE
  
 namespace spells {
@@ -3117,6 +3139,7 @@ action_t* monk_t::create_action( const std::string& name,
   if ( name == "stance"                ) return new                 stance_t( this, options_str );
   if ( name == "tigereye_brew"         ) return new          tigereye_brew_t( this, options_str );
   if ( name == "energizing_brew"       ) return new        energizing_brew_t( this, options_str );
+  if ( name == "provoke"               ) return new                provoke_t( this, options_str );
  
   // Brewmaster
   if ( name == "breath_of_fire"        ) return new         breath_of_fire_t( *this, options_str );

@@ -2946,6 +2946,26 @@ struct dancing_rune_weapon_t : public death_knight_spell_t
   }
 };
 
+// Dark Command =======================================================================
+
+struct dark_command_t: public death_knight_spell_t
+{
+  dark_command_t( death_knight_t* p, const std::string& options_str ):
+    death_knight_spell_t( "dark_command", p, p -> find_class_spell( "Dark Command" ) )
+  {
+    parse_options( NULL, options_str );
+    use_off_gcd = true;
+  }
+
+  virtual void impact( action_state_t* s )
+  {
+    if ( s -> target -> is_enemy() )
+      target -> taunt( player );
+
+    death_knight_spell_t::impact( s );
+  }
+};
+
 // Dark Transformation ======================================================
 
 struct dark_transformation_t : public death_knight_spell_t
@@ -4843,6 +4863,7 @@ action_t* death_knight_t::create_action( const std::string& name, const std::str
 
   // Blood Actions
   if ( name == "blood_tap"                ) return new blood_tap_t                ( this, options_str );
+  if ( name == "dark_command"             ) return new dark_command_t             ( this, options_str );
   if ( name == "dancing_rune_weapon"      ) return new dancing_rune_weapon_t      ( this, options_str );
   if ( name == "pestilence"               ) return new pestilence_t               ( this, options_str );
   if ( name == "rune_tap"                 ) return new rune_tap_t                 ( this, options_str );

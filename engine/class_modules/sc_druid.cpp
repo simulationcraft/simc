@@ -2780,6 +2780,26 @@ struct bear_melee_t : public bear_attack_t
   }
 };
 
+// Growl  =======================================================================
+
+struct growl_t: public bear_attack_t
+{
+  growl_t( druid_t* player, const std::string& options_str ):
+    bear_attack_t( "growl", player, player -> find_class_spell( "Growl" ) )
+  {
+    parse_options( NULL, options_str );
+    use_off_gcd = true;
+  }
+
+  virtual void impact( action_state_t* s )
+  {
+    if ( s -> target -> is_enemy() )
+      target -> taunt( player );
+
+    bear_attack_t::impact( s );
+  }
+};
+
 // Lacerate =================================================================
 
 struct lacerate_t : public bear_attack_t
@@ -5279,6 +5299,7 @@ action_t* druid_t::create_action( const std::string& name,
   if ( name == "faerie_fire"            ) return new            faerie_fire_t( this, options_str );
   if ( name == "ferocious_bite"         ) return new         ferocious_bite_t( this, options_str );
   if ( name == "frenzied_regeneration"  ) return new  frenzied_regeneration_t( this, options_str );
+  if ( name == "growl"                  ) return new                  growl_t( this, options_str );
   if ( name == "healing_touch"          ) return new          healing_touch_t( this, options_str );
   if ( name == "hurricane"              ) return new              hurricane_t( this, options_str );
   if ( name == "heart_of_the_wild"  ||
