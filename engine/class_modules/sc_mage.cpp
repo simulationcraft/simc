@@ -36,6 +36,8 @@
 // Un-hardcode 50% damage modifier on unstable magic
 // Does the IV glyph still have a hidden proc-rate increase for FoF?
 // Brainfreeze doesn't look correct in the spelldata (and isn't correct on the beta) in regards to proc chance. Until this is fixed, hardcoding it's buff and proc rate will suffice. Need to go and fix once the spell data is fixed.
+// Do not hardcode 15second duration for enhanced frostbolt perk
+
 
 // To-do Completed:
 //  BUG IGNITE TRIGGERS ON MISSES. Fixing this breaks icicles. Need to investigate - DONE!
@@ -143,6 +145,7 @@ public:
     buff_t* frozen_thoughts;
     buff_t* fiery_adept;
     buff_t* enhanced_pyrotechnics;
+    buff_t* enhanced_frostbolt;
     incanters_flow_t* incanters_flow;
   } buffs;
 
@@ -152,7 +155,7 @@ public:
     cooldown_t* evocation;
     cooldown_t* inferno_blast;
     cooldown_t* combustion;
-
+    cooldown_t* bolt; // Cooldown to handle enhanced_frostbolt perk.
   } cooldowns;
 
   // Gains
@@ -370,6 +373,7 @@ public:
     cooldowns.evocation      = get_cooldown( "evocation"     );
     cooldowns.inferno_blast  = get_cooldown( "inferno_blast" );
     cooldowns.combustion     = get_cooldown( "combustion"    );
+    cooldowns.bolt           = get_cooldown( "enhanced_frostbolt" );
 
     // Options
     base.distance = 40;
@@ -958,6 +962,11 @@ public:
       if ( p() -> rotation.current != ROTATION_DPM )
         return false;
 
+    if ( p() -> cooldowns.bolt -> up() )
+      p() -> buffs.enhanced_frostbolt -> trigger();
+
+
+
     return spell_t::ready();
   }
 
@@ -1228,7 +1237,7 @@ static void trigger_unstable_magic( action_state_t* s )
       aoe = -1;
       base_costs[ RESOURCE_MANA ] = 0;
       cooldown -> duration  = timespan_t::zero();
-      pct_damage = 0.5; // Hardcoding this until I can figure out how to get the numbers to match when not hardcoding.
+      pct_damage = 0.2; // Hardcoding this until I can figure out how to get the numbers to match when not hardcoding.
       trigger_gcd = timespan_t::zero();
     }
 
@@ -2242,6 +2251,8 @@ struct frostbolt_t : public mage_spell_t
       base_multiplier *= 1.05;
   }
 
+
+
   virtual int schedule_multistrike( action_state_t* s, dmg_e dmg_type, double tick_multiplier )
   {
     int sm = mage_spell_t::schedule_multistrike( s, dmg_type, tick_multiplier );
@@ -2253,9 +2264,28 @@ struct frostbolt_t : public mage_spell_t
     return sm;
   }
 
+  virtual timespan_t execute_time() const
+  {
+    timespan_t cast = mage_spell_t::execute_time();
+
+    if ( p() -> buffs.enhanced_frostbolt -> check() )
+      cast -= timespan_t::from_seconds( 0.5 );
+    return cast;
+
+  }
+
+
   virtual void execute()
   {
+
     mage_spell_t::execute();
+
+    if ( p() -> buffs.enhanced_frostbolt -> up() )
+    {
+      p() -> cooldowns.bolt -> duration = timespan_t::from_seconds( 15.0 );
+      p() -> cooldowns.bolt -> start();
+      p() -> buffs.enhanced_frostbolt -> expire();
+    }
 
     if ( result_is_hit( execute_state -> result ) )
     {
@@ -4060,6 +4090,8 @@ void mage_t::create_buffs()
     buffs.icy_veins            = buff_creator_t( this, "icy_veins", find_spell( 12472 ) ).add_invalidate( CACHE_MULTISTRIKE );
   else
     buffs.icy_veins            = buff_creator_t( this, "icy_veins", find_spell( 12472 ) ).add_invalidate( CACHE_SPELL_HASTE );
+
+  buffs.enhanced_frostbolt   = buff_creator_t( this, "enhanced_frostbolt", find_spell( 157646 ) ).duration( timespan_t::from_seconds( 15.0 ) );
   buffs.ice_floes            = buff_creator_t( this, "ice_floes", talents.ice_floes );
   buffs.improved_blink       = buff_creator_t( this, "improved_blink", perks.improved_blink )
                                .default_value( perks.improved_blink -> effectN( 1 ).percent() );
@@ -4613,6 +4645,9 @@ void mage_t::arise()
 
   if ( talents.incanters_flow -> ok() )
     buffs.incanters_flow -> trigger();
+
+  if ( perks.enhanced_frostbolt -> ok() )
+    buffs.enhanced_frostbolt -> trigger();
 }
 
 // mage_t::create_expression ================================================
