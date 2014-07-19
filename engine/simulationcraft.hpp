@@ -1073,6 +1073,8 @@ public:
   option_t( const char* n, const char* str ) : name( n ), type( DEPRECATED ), data( str ) {}
   option_t( const char* n, function_t* f ) : name( n ), type( FUNC ), data( f ) {}
 
+  const char* name_cstr() const { return name; }
+
   friend std::ostream& operator<<( std::ostream& stream, const option_t& opt );
   bool parse( sim_t*, const std::string& name, const std::string& value );
 
@@ -4803,7 +4805,7 @@ struct player_t : public actor_t
 
   virtual void assess_heal( school_e, dmg_e, action_state_t* );
 
-  virtual bool taunt( player_t* source ) { return false; }
+  virtual bool taunt( player_t* /* source */ ) { return false; }
 
   virtual void  summon_pet( const std::string& name, timespan_t duration = timespan_t::zero() );
   virtual void dismiss_pet( const std::string& name );

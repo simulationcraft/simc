@@ -87,49 +87,166 @@ struct enemy_t : public player_t
 // Enemy actions are generic to serve both enemy_t and enemy_add_t,
 // so they can only rely on player_t and should have no knowledge of class definitions
 
+template <typename ACTION_TYPE>
+struct enemy_action_t : public ACTION_TYPE
+{
+  typedef ACTION_TYPE action_type_t;
+  typedef enemy_action_t<ACTION_TYPE> base_t;
+
+  bool apply_debuff;
+  int num_debuff_stacks;
+  double damage_range;
+  timespan_t cooldown_;
+
+  std::vector<option_t> options;
+
+  enemy_action_t( const std::string& name, player_t* player ) :
+    action_type_t( name, player ),
+    apply_debuff( false ), num_debuff_stacks( -1000000 ), damage_range( -1 ),
+    cooldown_( timespan_t::zero() )
+  {
+    options.push_back( opt_float( "damage", this -> base_dd_min ) );
+    options.push_back( opt_timespan( "attack_speed", this -> base_execute_time ) );
+    options.push_back( opt_int( "apply_debuff", num_debuff_stacks ) );
+    options.push_back( opt_int( "aoe_tanks", this -> aoe ) );
+    options.push_back( opt_float( "range", damage_range ) );
+    options.push_back( opt_timespan( "cooldown", cooldown_ ) );
+    options.push_back( opt_null() );
+  }
+
+  void add_option( const option_t& new_option )
+  {
+    size_t i;
+
+    for ( i = 0; i < options.size(); i++ )
+    {
+      if ( options[ i ].name_cstr() && util::str_compare_ci( options[ i ].name_cstr(), new_option.name_cstr() ) )
+      {
+        options[ i ] = new_option;
+        break;
+      }
+    }
+
+    if ( i == options.size() )
+      options.insert( options.begin(), new_option );
+  }
+
+  void init()
+  {
+    action_type_t::init();
+
+    this -> name_str = this -> name_str + "_" + this -> target -> name();
+    this -> cooldown = this -> player -> get_cooldown( this -> name_str );
+
+    this -> stats = this -> player -> get_stats( this -> name_str, this );
+    this -> stats -> school = this -> school;
+
+    if ( cooldown_ > timespan_t::zero() )
+      this -> cooldown -> duration = cooldown_;
+
+    // if the debuff increment size is specified in the options string, it takes precedence
+    if ( num_debuff_stacks != -1e6 && num_debuff_stacks != 0 )
+      apply_debuff = true;
+
+    if ( enemy_t* e = dynamic_cast< enemy_t* >( this -> player ) )
+    {
+      // if the debuff increment hasn't been specified at all, set it
+      if ( num_debuff_stacks == -1e6 )
+      {
+        if ( e -> apply_damage_taken_debuff == 0 )
+          num_debuff_stacks = 0;
+        else
+        {
+          apply_debuff = true;
+          num_debuff_stacks = e -> apply_damage_taken_debuff;
+        }
+      }
+    }
+  }
+
+  size_t available_targets( std::vector< player_t* >& tl ) const
+  {
+    // TODO: This does not work for heals at all, as it presumes enemies in the
+    // actor list.
+    tl.clear();
+    tl.push_back( this -> target );
+
+    for ( size_t i = 0, actors = this -> sim -> actor_list.size(); i < actors; i++ )
+    {
+      player_t* actor = this -> sim -> actor_list[ i ];
+      //only add non heal_target tanks to this list for now
+      if ( ! actor -> is_sleeping() &&
+           ! actor -> is_enemy() &&
+           actor -> primary_role() == ROLE_TANK &&
+           actor != this -> target &&
+           actor != this -> sim -> heal_target )
+        tl.push_back( actor );
+    }
+    //if we have no target (no tank), add the healing target as substitute
+    if ( tl.empty() )
+    {
+      tl.push_back( this -> sim -> heal_target );
+    }
+
+    return tl.size();
+  }
+
+  double calculate_direct_amount( action_state_t* s )
+  {
+    // force boss attack size to vary regardless of whether the sim itself does
+    int previous_average_range_state = this -> sim -> average_range;
+    this -> sim -> average_range = 0;
+
+    double amount = action_type_t::calculate_direct_amount( s );
+
+    this -> sim -> average_range = previous_average_range_state;
+
+    return amount;
+  }
+
+  void impact( action_state_t* s )
+  {
+    if ( apply_debuff && num_debuff_stacks >= 0 )
+      this -> target -> debuffs.damage_taken -> trigger( num_debuff_stacks );
+    else if ( apply_debuff )
+      this -> target -> debuffs.damage_taken -> decrement( - num_debuff_stacks );
+
+    action_type_t::impact( s );
+  }
+
+  // this one applies the debuff on tick
+  void tick( dot_t* d )
+  {
+    if ( apply_debuff && num_debuff_stacks >= 0 )
+      this -> target -> debuffs.damage_taken -> trigger( num_debuff_stacks );
+    else if ( apply_debuff )
+      this -> target -> debuffs.damage_taken -> decrement( - num_debuff_stacks );
+
+    action_type_t::tick( d );
+  }
+};
+
 // Melee ====================================================================
 
-struct melee_t : public melee_attack_t
+struct melee_t : public enemy_action_t<melee_attack_t>
 {
-  bool apply_debuff = false;
-  int num_debuff_stacks = -1000000;  // ludicrious value for a default
-
-  // default constructor is fairly barebones
-  melee_t( const std::string& name, player_t* player ) :
-    melee_attack_t( name, player, spell_data_t::nil() )
+  melee_t( const std::string& name, player_t* player, const std::string options_str ) :
+    base_t( name, player )
   {
     school = SCHOOL_PHYSICAL;
-    may_crit    = true;
-    background  = true;
-    repeating   = true;
+    may_crit = true;
+    background = true;
     trigger_gcd = timespan_t::zero();
     base_dd_min = 26000;
     base_execute_time = timespan_t::from_seconds( 1.5 );
-    aoe = -1;
-    //apply_debuff = player -> apply_damage_taken_debuff;
+    repeating = true;
+
+    parse_options( options.data(), options_str );
   }
 
-  // this one allows for an options string
-  melee_t( const std::string& name, player_t* player, const std::string options_str ) :
-    melee_t( name, player )
-  {    
-    int aoe_tanks = 0;
-    double damage_range = -1;
-    option_t options[] =
-    {
-      opt_float( "damage", base_dd_min ),
-      opt_timespan( "attack_speed", base_execute_time ),
-      opt_bool( "aoe_tanks", aoe_tanks ),
-      opt_float( "range", damage_range ),
-      opt_int( "apply_debuff", num_debuff_stacks ),
-      opt_null()
-    };
-    parse_options( options, options_str );
-    
-    if ( aoe_tanks == 1 )
-      aoe = -1;
-    else
-      aoe = aoe_tanks;
+  void init()
+  {
+    base_t::init();
 
     // check that the specified damage range is sane
     if ( damage_range > base_dd_min || damage_range < 0 )
@@ -138,108 +255,64 @@ struct melee_t : public melee_attack_t
     // set damage range to mean +/- range
     base_dd_max = base_dd_min + damage_range;
     base_dd_min -= damage_range;
-    
+
     // if the execute time is somehow less than 10 ms, set it back to the default of 1.5 seconds
     if ( base_execute_time < timespan_t::from_seconds( 0.01 ) )
       base_execute_time = timespan_t::from_seconds( 1.5 );
-    
-    // if the debuff increment size is specified in the options string, it takes precedence
-    if ( num_debuff_stacks != -1e6 && num_debuff_stacks != 0 )
-      apply_debuff = true;
-  }
-  
-  virtual size_t available_targets( std::vector< player_t* >& tl ) const
-  {
-    // TODO: This does not work for heals at all, as it presumes enemies in the
-    // actor list.
-    tl.clear();
-    tl.push_back( target );
-
-    for ( size_t i = 0, actors = sim -> actor_list.size(); i < actors; i++ )
-    {
-      //only add non heal_target tanks to this list for now
-      if ( !sim -> actor_list[ i ] -> is_sleeping() &&
-           !sim -> actor_list[ i ] -> is_enemy() &&
-           sim -> actor_list[ i ] -> primary_role() == ROLE_TANK &&
-           sim -> actor_list[ i ] != target &&
-           sim -> actor_list[ i ] != sim -> heal_target )
-        tl.push_back( sim -> actor_list[ i ] );
-    }
-    //if we have no target (no tank), add the healing target as substitute
-    if ( tl.empty() )
-    {
-      tl.push_back( sim->heal_target );
-    }
-
-    return tl.size();
-  }
-  
-  virtual void impact( action_state_t* s )
-  {
-    if ( apply_debuff && num_debuff_stacks >= 0 )
-      target -> debuffs.damage_taken -> trigger( num_debuff_stacks );
-    else if ( apply_debuff )
-      target -> debuffs.damage_taken -> decrement( - num_debuff_stacks );
-
-    melee_attack_t::impact( s );  
   }
 };
 
 // Auto Attack ==============================================================
 
-struct auto_attack_t : public attack_t
+struct auto_attack_t : public enemy_action_t<attack_t>
 {
   melee_t* mh;
   melee_t* oh;
 
   // default constructor
   auto_attack_t( player_t* p, const std::string& options_str ) :
-    attack_t( "auto_attack", p, spell_data_t::nil() )
+    base_t( "auto_attack", p )
   {
-    school = SCHOOL_PHYSICAL;
+    parse_options( options.data(), options_str );
+
     mh = new melee_t( "melee_main_hand", p, options_str );
     mh -> weapon = &( p -> main_hand_weapon );
     if ( ! mh -> target )
       mh -> target = target;
 
-    cooldown = player -> get_cooldown( name_str + "_" + target -> name() );
-    stats = player -> get_stats( name_str + "_" + target -> name(), this );
-    name_str = name_str + "_" + target -> name();
-
-    trigger_gcd = timespan_t::zero();
-
     p -> main_hand_attack = mh;
-  }
 
-  // alternate constructor that takes an enemy_t
-  auto_attack_t( player_t* p, enemy_t* e, const std::string& options_str ) :
-    auto_attack_t( e, options_str )
-  {
-    // if the number of debuff stacks hasn't been specified yet, set it 
-    if ( mh -> num_debuff_stacks == -1e6 )
-    {
-      if ( e -> apply_damage_taken_debuff == 0 )
-        mh -> num_debuff_stacks = 0;
-      else
-      {
-        mh -> apply_debuff = true;
-        mh -> num_debuff_stacks = e -> apply_damage_taken_debuff;
-      }
-    }
-
-    // handle dual-wielders by creating an off-hand attack
-    if ( e -> dual_wield )
+    enemy_t* e = dynamic_cast< enemy_t* >( p );
+    if ( e && e -> dual_wield )
     {
       oh = new melee_t( "melee_off_hand", e, options_str );
       oh -> weapon = &( e -> off_hand_weapon );
-      
       if ( ! oh -> target )
         oh -> target = target;
 
       p -> off_hand_attack = oh;
+    }
+  }
 
-      // if the number of debuff stacks hasn't been specified yet, set it 
-      if ( oh -> num_debuff_stacks == -1e6 )
+  void init()
+  {
+    base_t::init();
+
+    if ( enemy_t* e = dynamic_cast< enemy_t* >( player ) )
+    {
+      // if the number of debuff stacks hasn't been specified yet, set it
+      if ( mh -> num_debuff_stacks == -1e6 )
+      {
+        if ( e -> apply_damage_taken_debuff == 0 )
+          mh -> num_debuff_stacks = 0;
+        else
+        {
+          mh -> apply_debuff = true;
+          mh -> num_debuff_stacks = e -> apply_damage_taken_debuff;
+        }
+      }
+
+      if ( oh && oh -> num_debuff_stacks == -1e6 )
       {
         if ( e -> apply_damage_taken_debuff == 0 )
           oh -> num_debuff_stacks = 0;
@@ -250,20 +323,6 @@ struct auto_attack_t : public attack_t
         }
       }
     }
-
-  }
-
-  virtual double calculate_direct_amount( action_state_t* s )
-  {
-    // force boss attack size to vary regardless of whether the sim itself does
-    int previous_average_range_state = sim ->average_range;
-    sim -> average_range = 0;
-
-    double amount = attack_t::calculate_direct_amount( s );
-
-    sim -> average_range = previous_average_range_state;
-
-    return amount;
   }
 
   virtual void execute()
@@ -287,14 +346,11 @@ struct auto_attack_t : public attack_t
 
 // Melee Nuke ===============================================================
 
-struct melee_nuke_t : public attack_t
+struct melee_nuke_t : public enemy_action_t<attack_t>
 {
-  bool apply_debuff = false;
-  int num_debuff_stacks = -1000000; // ludicrious value for a default
-
   // default constructor
   melee_nuke_t( player_t* p, const std::string& options_str ) :
-    attack_t( "melee_nuke", p, spell_data_t::nil() )
+    base_t( "melee_nuke", p )
   {
     school = SCHOOL_PHYSICAL;
     may_miss = may_dodge = may_parry = false;
@@ -302,22 +358,13 @@ struct melee_nuke_t : public attack_t
     base_execute_time = timespan_t::from_seconds( 3.0 );
     base_dd_min = 25000;
 
-    cooldown = player -> get_cooldown( name_str + "_" + target -> name() );
+    parse_options( options.data(), options_str );
+  }
 
-    int aoe_tanks = 0;
-    double damage_range = -1;
-    option_t options[] =
-    {
-      opt_float( "damage", base_dd_min ),
-      opt_timespan( "attack_speed", base_execute_time ),
-      opt_timespan( "cooldown",     cooldown -> duration ),
-      opt_bool( "aoe_tanks", aoe_tanks ),
-      opt_float( "range", damage_range ),
-      opt_int( "apply_debuff", num_debuff_stacks ),
-      opt_null()
-    };
-    parse_options( options, options_str );
-        
+  void init()
+  {
+    base_t::init();
+
     // check that the specified damage range is sane
     if ( damage_range > base_dd_min || damage_range < 0 )
       damage_range = 0.1 * base_dd_min; // if not, set to +/-10%
@@ -327,116 +374,27 @@ struct melee_nuke_t : public attack_t
 
     if ( base_execute_time < timespan_t::zero() )
       base_execute_time = timespan_t::from_seconds( 3.0 );
-
-    stats = player -> get_stats( name_str + "_" + target -> name(), this );
-    name_str = name_str + "_" + target -> name();
-
-    if ( aoe_tanks == 1 )
-      aoe = -1;
-
-    // if the debuff increment size is specified in the options string, it takes precedence
-    if ( num_debuff_stacks != -1e6 && num_debuff_stacks != 0 )
-      apply_debuff = true;
-  }
-
-  // alternate constructor that takes an enemy_t
-  melee_nuke_t( player_t* p, enemy_t* e, const std::string& options_str ) :
-    melee_nuke_t( p, options_str )
-  {
-    // if the debuff increment hasn't been specified at all, set it
-    if ( num_debuff_stacks == -1e6 )
-    {
-      if ( e -> apply_damage_taken_debuff == 0 )
-        num_debuff_stacks = 0;
-      else
-      {
-        apply_debuff = true;
-        num_debuff_stacks = e -> apply_damage_taken_debuff;
-      }
-    }
-  }
-
-  virtual size_t available_targets( std::vector< player_t* >& tl ) const
-  {
-    // TODO: This does not work for heals at all, as it presumes enemies in the
-    // actor list.
-
-    tl.clear();
-    tl.push_back( target );
-    for ( size_t i = 0, actors = sim -> actor_list.size(); i < actors; i++ )
-    {
-      //only add non heal_target tanks to this list for now
-      if ( !sim -> actor_list[ i ] -> is_sleeping() &&
-           !sim -> actor_list[ i ] -> is_enemy() &&
-           sim -> actor_list[ i ] -> primary_role() == ROLE_TANK &&
-           sim -> actor_list[ i ] != target &&
-           sim -> actor_list[ i ] != sim -> heal_target )
-        tl.push_back( sim -> actor_list[ i ] );
-    }
-    //if we have no target (no tank), add the healing target as substitute
-    if ( tl.empty() )
-    {
-      tl.push_back( sim->heal_target );
-    }
-    return tl.size();
-  }
-    
-  virtual double calculate_direct_amount( action_state_t* s )
-  {
-    // force boss attack size to vary regardless of whether the sim itself does
-    int previous_average_range_state = sim ->average_range;
-    sim -> average_range = 0;
-
-    double amount = attack_t::calculate_direct_amount( s );
-
-    sim -> average_range = previous_average_range_state;
-
-    return amount;
-  }
-
-  virtual void impact( action_state_t* s )
-  {
-    if ( apply_debuff && num_debuff_stacks >= 0 )
-      target -> debuffs.damage_taken -> trigger( num_debuff_stacks );
-    else if ( apply_debuff )
-      target -> debuffs.damage_taken -> decrement( - num_debuff_stacks );
-
-    attack_t::impact( s );  
   }
 };
 
 // Spell Nuke ===============================================================
 
-struct spell_nuke_t : public spell_t
+struct spell_nuke_t : public enemy_action_t<spell_t>
 {
-  bool apply_debuff = false;
-  int num_debuff_stacks = -1000000; // ludicrious value for a default
-
-  // default constructor
   spell_nuke_t( player_t* p, const std::string& options_str ) :
-    spell_t( "spell_nuke", p, spell_data_t::nil() )
+    base_t( "spell_nuke", p )
   {
-    school = SCHOOL_FIRE;
+    school            = SCHOOL_FIRE;
     base_execute_time = timespan_t::from_seconds( 3.0 );
-    base_dd_min = 5000;
-    //apply_debuff = p -> apply_damage_taken_debuff;
+    base_dd_min       = 5000;
 
-    cooldown = player -> get_cooldown( name_str + "_" + target -> name() );
+    parse_options( options.data(), options_str );
+  }
 
-    int aoe_tanks = 0;
-    double damage_range = -1;
-    option_t options[] =
-    {
-      opt_float( "damage", base_dd_min ),
-      opt_timespan( "attack_speed", base_execute_time ),
-      opt_timespan( "cooldown",     cooldown -> duration ),
-      opt_bool( "aoe_tanks", aoe_tanks ),
-      opt_float( "range", damage_range ),
-      opt_int( "apply_debuff", num_debuff_stacks ),
-      opt_null()
-    };
-    parse_options( options, options_str );
-    
+  void init()
+  {
+    base_t::init();
+
     // check that the specified damage range is sane
     if ( damage_range > base_dd_min || damage_range < 0 )
       damage_range = 0.1 * base_dd_min; // if not, set to +/-10%
@@ -446,258 +404,74 @@ struct spell_nuke_t : public spell_t
 
     if ( base_execute_time < timespan_t::zero() )
       base_execute_time = timespan_t::from_seconds( 3.0 );
-
-    stats = player -> get_stats( name_str + "_" + target -> name(), this );
-    name_str = name_str + "_" + target -> name();
-
-    may_crit = false;
-    if ( aoe_tanks == 1 )
-      aoe = -1;
-
-    // if the debuff increment size is specified in the options string, it takes precedence
-    if ( num_debuff_stacks != -1e6 && num_debuff_stacks != 0 )
-      apply_debuff = true;
   }
-
-  // alternate constructor that takes an enemy_t
-  spell_nuke_t( player_t* p, enemy_t* e, const std::string& options_str ) :
-    spell_nuke_t( p, options_str )
-  {
-    // if the debuff increment hasn't been specified at all, set it
-    if ( num_debuff_stacks == -1e6 )
-    {
-      if ( e -> apply_damage_taken_debuff == 0 )
-        num_debuff_stacks = 0;
-      else
-      {
-        apply_debuff = true;
-        num_debuff_stacks = e -> apply_damage_taken_debuff;
-      }
-    }
-  }
-
-  virtual size_t available_targets( std::vector< player_t* >& tl ) const
-  {
-    // TODO: This does not work for heals at all, as it presumes enemies in the
-    // actor list.
-
-    tl.clear();
-    tl.push_back( target );
-    for ( size_t i = 0, actors = sim -> actor_list.size(); i < actors; i++ )
-    {
-      //only add non heal_target tanks to this list for now
-      if ( !sim -> actor_list[ i ] -> is_sleeping() &&
-           !sim -> actor_list[ i ] -> is_enemy() &&
-           sim -> actor_list[ i ] -> primary_role() == ROLE_TANK &&
-           sim -> actor_list[ i ] != target &&
-           sim -> actor_list[ i ] != sim -> heal_target )
-        tl.push_back( sim -> actor_list[ i ] );
-    }
-    //if we have no target (no tank), add the healing target as substitute
-    if ( tl.empty() )
-    {
-      tl.push_back( sim->heal_target );
-    }
-    return tl.size();
-  }
-
-  
-  virtual double calculate_direct_amount( action_state_t* s )
-  {
-    // force boss attack size to vary regardless of whether the sim itself does
-    int previous_average_range_state = sim ->average_range;
-    sim -> average_range = 0;
-
-    double amount = spell_t::calculate_direct_amount( s );
-
-    sim -> average_range = previous_average_range_state;
-
-    return amount;
-  }
-  
-  virtual void impact( action_state_t* s )
-  {
-    if ( apply_debuff && num_debuff_stacks >= 0 )
-      target -> debuffs.damage_taken -> trigger( num_debuff_stacks );
-    else if ( apply_debuff )
-      target -> debuffs.damage_taken -> decrement( - num_debuff_stacks );
-
-    spell_t::impact( s );  
-  }
-
 };
 
 // Spell DoT ================================================================
 
-struct spell_dot_t : public spell_t
+struct spell_dot_t : public enemy_action_t<spell_t>
 {
-  bool apply_debuff = false;
-  int num_debuff_stacks = -1000000; // ludicrious value for a default
-
-  // default constructor
   spell_dot_t( player_t* p, const std::string& options_str ) :
-    spell_t( "spell_dot", p, spell_data_t::nil() )
+    base_t( "spell_dot", p )
   {
-    school = SCHOOL_FIRE;
+    school         = SCHOOL_FIRE;
     base_tick_time = timespan_t::from_seconds( 1.0 );
-    dot_duration = timespan_t::from_seconds( 10.0 );
-    base_td = 5000;
-    //apply_debuff = p -> apply_damage_taken_debuff;
+    dot_duration   = timespan_t::from_seconds( 10.0 );
+    base_td        = 5000;
+    tick_may_crit  = false; // FIXME: should ticks crit or not?
+    may_crit       = false;
 
-    cooldown = player -> get_cooldown( name_str + "_" + target -> name() );
+    // Replace damage option
+    add_option( opt_float( "damage", base_td ) );
+    add_option( opt_timespan( "dot_duration", dot_duration ) );
+    add_option( opt_timespan( "tick_time", base_tick_time ) );
 
-    int aoe_tanks = 0;
-    option_t options[] =
-    {
-      opt_float( "damage", base_td ),
-      opt_timespan( "tick_time", base_tick_time ),
-      opt_timespan( "dot_duration", dot_duration ),
-      opt_timespan( "cooldown",     cooldown -> duration ),
-      opt_bool( "aoe_tanks", aoe_tanks ),
-      opt_int( "apply_debuff", num_debuff_stacks ),
-      opt_null()
-    };
-    parse_options( options, options_str );
-
-    if ( base_tick_time < timespan_t::zero() ) // User input sanity check
-      base_execute_time = timespan_t::from_seconds( 1.0 );
-
-    stats = player -> get_stats( name_str + "_" + target -> name(), this );
-    name_str = name_str + "_" + target -> name();
-
-    tick_may_crit = false; // FIXME: should ticks crit or not?
-    may_crit = false;
-    if ( aoe_tanks == 1 )
-      aoe = -1;
-
-    // if the debuff increment size is specified in the options string, it takes precedence
-    if ( num_debuff_stacks != -1e6 && num_debuff_stacks != 0 )
-      apply_debuff = true;
+    parse_options( options.data(), options_str );
   }
 
-  // alternate constructor that takes an enemy_t
-  spell_dot_t( player_t* p, enemy_t* e, const std::string& options_str ) :
-    spell_dot_t( p, options_str )
+  void init()
   {
-    // if the debuff increment hasn't been specified at all, set it
-    if ( num_debuff_stacks == -1e6 )
-    {
-      if ( e -> apply_damage_taken_debuff == 0 )
-        num_debuff_stacks = 0;
-      else
-      {
-        apply_debuff = true;
-        num_debuff_stacks = e -> apply_damage_taken_debuff;
-      }
-    }
+    base_t::init();
+
+    if ( base_tick_time < timespan_t::zero() ) // User input sanity check
+      base_tick_time = timespan_t::from_seconds( 1.0 );
   }
 
   virtual void execute()
   {
     target_cache.is_valid = false;
-    spell_t::execute();
+
+    base_t::execute();
   }
-
-  virtual size_t available_targets( std::vector< player_t* >& tl ) const
-  {
-    // TODO: This does not work for heals at all, as it presumes enemies in the
-    // actor list.
-
-    tl.clear();
-    tl.push_back( target );
-    for ( size_t i = 0, actors = sim -> actor_list.size(); i < actors; i++ )
-    {
-      //only add non heal_target tanks to this list for now
-      if ( !sim -> actor_list[ i ] -> is_sleeping() &&
-           !sim -> actor_list[ i ] -> is_enemy() &&
-           sim -> actor_list[ i ] -> primary_role() == ROLE_TANK &&
-           sim -> actor_list[ i ] != target &&
-           sim -> actor_list[ i ] != sim -> heal_target )
-        tl.push_back( sim -> actor_list[ i ] );
-    }
-    //if we have no target (no tank), add the healing target as substitute
-    if ( tl.empty() )
-    {
-      tl.push_back( sim->heal_target );
-    }
-    return tl.size();
-  }
-
-  // this one applies the debuff on tick
-  virtual void tick( dot_t* d )
-  {
-    if ( apply_debuff && num_debuff_stacks >= 0 )
-      target -> debuffs.damage_taken -> trigger( num_debuff_stacks );
-    else if ( apply_debuff )
-      target -> debuffs.damage_taken -> decrement( - num_debuff_stacks );
-
-    spell_t::tick( d );
-  }
-
 };
 
 // Spell AoE ================================================================
 
-struct spell_aoe_t : public spell_t
+struct spell_aoe_t : public enemy_action_t<spell_t>
 {
-  bool apply_debuff = false;
-  int num_debuff_stacks = -1000000; // ludicrious value for a default
-
   // default constructor
   spell_aoe_t( player_t* p, const std::string& options_str ) :
-    spell_t( "spell_aoe", p, spell_data_t::nil() )
+    base_t( "spell_aoe", p )
   {
-    school = SCHOOL_FIRE;
+    school            = SCHOOL_FIRE;
     base_execute_time = timespan_t::from_seconds( 3.0 );
-    base_dd_min = 5000;
-    //apply_debuff = p -> apply_damage_taken_debuff;
+    base_dd_min       = 5000;
+    aoe               = -1;
+    may_crit          = false;
 
-    cooldown = player -> get_cooldown( name_str + "_" + target -> name() );
+    parse_options( options.data(), options_str );
+  }
 
-    option_t options[] =
-    {
-      opt_float( "damage", base_dd_min ),
-      opt_timespan( "cast_time", base_execute_time ),
-      opt_timespan( "cooldown", cooldown -> duration ),
-      opt_int( "apply_debuff", num_debuff_stacks ),
-      opt_null()
-    };
-    parse_options( options, options_str );
+  void init()
+  {
+    base_t::init();
 
     base_dd_max = base_dd_min;
     if ( base_execute_time < timespan_t::from_seconds( 0.01 ) )
       base_execute_time = timespan_t::from_seconds( 3.0 );
-
-    stats = player -> get_stats( name_str + "_" + target -> name(), this );
-    name_str = name_str + "_" + target -> name();
-
-    may_crit = false;
-
-    aoe = -1;
-
-    // if the debuff increment size is specified in the options string, it takes precedence
-    if ( num_debuff_stacks != -1e6 && num_debuff_stacks != 0 )
-      apply_debuff = true;
   }
 
-  // alternate constructor that takes an enemy_t
-  spell_aoe_t( player_t* p, enemy_t* e, const std::string& options_str ) :
-    spell_aoe_t( p, options_str )
-  {
-    // if the debuff increment hasn't been specified at all, set it
-    if ( num_debuff_stacks == -1e6 )
-    {
-      if ( e -> apply_damage_taken_debuff == 0 )
-        num_debuff_stacks = 0;
-      else
-      {
-        apply_debuff = true;
-        num_debuff_stacks = e -> apply_damage_taken_debuff;
-      }
-    }
-  }
-
-  virtual size_t available_targets( std::vector< player_t* >& tl ) const
+  size_t available_targets( std::vector< player_t* >& tl ) const
   {
     // TODO: This does not work for heals at all, as it presumes enemies in the
     // actor list.
@@ -714,16 +488,6 @@ struct spell_aoe_t : public spell_t
     }
 
     return tl.size();
-  }
-  
-  virtual void impact( action_state_t* s )
-  {
-    if ( apply_debuff &&  num_debuff_stacks >= 0 )
-      target -> debuffs.damage_taken -> trigger( num_debuff_stacks );
-    else if ( apply_debuff )
-      target -> debuffs.damage_taken -> decrement( - num_debuff_stacks );
-
-    spell_t::impact( s );  
   }
 };
 
@@ -776,19 +540,6 @@ struct summon_add_t : public spell_t
     return spell_t::ready();
   }
 };
-
-// alternate overload for enemy_t actions; pet_t actors will call the old one
-action_t* enemy_create_action( enemy_t* p, const std::string& name, const std::string& options_str )
-{
-  if ( name == "auto_attack" ) return new auto_attack_t( p, p, options_str );
-  if ( name == "melee_nuke"  ) return new  melee_nuke_t( p, p, options_str );
-  if ( name == "spell_nuke"  ) return new  spell_nuke_t( p, p, options_str );
-  if ( name == "spell_dot"   ) return new   spell_dot_t( p, p, options_str );
-  if ( name == "spell_aoe"   ) return new   spell_aoe_t( p, p, options_str );
-  if ( name == "summon_add"  ) return new  summon_add_t( p, options_str );
-
-  return NULL;
-}
 
 action_t* enemy_create_action( player_t* p, const std::string& name, const std::string& options_str )
 {
@@ -1459,7 +1210,7 @@ public:
   enemy_report_t( enemy_t& player ) :
       p( player )
   {
-
+    ( void ) p;
   }
 
   virtual void html_customsection( report::sc_html_stream& /* os*/ ) override
