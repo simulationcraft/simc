@@ -2311,8 +2311,7 @@ struct improved_lava_lash_t : public shaman_spell_t
     dot_t* dot = td( target ) -> dot.flame_shock;
     if ( dot -> is_ticking() )
     {
-      if ( ! td( state -> target ) -> dot.flame_shock -> is_ticking() )
-        p() -> active_flame_shocks++;
+      p() -> active_flame_shocks++;
       dot -> copy( state -> target, DOT_COPY_CLONE );
     }
   }
