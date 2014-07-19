@@ -3475,7 +3475,16 @@ struct taunt_t: public warrior_spell_t
     warrior_spell_t( "taunt", p, p -> find_class_spell( "Taunt" ) )
   {
     parse_options( NULL, options_str );
+    use_off_gcd = true;
     stancemask = STANCE_DEFENSE | STANCE_GLADIATOR;
+  }
+
+  virtual void impact( action_state_t* s )
+  {
+    if ( s -> target -> is_enemy() )
+      target -> taunt( player );
+
+    warrior_spell_t::impact( s );
   }
 };
 

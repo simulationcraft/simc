@@ -2106,6 +2106,7 @@ void player_t::create_buffs()
   debuffs.invulnerable = buff_creator_t( this, "invulnerable" ).max_stack( 1 );
   debuffs.vulnerable   = buff_creator_t( this, "vulnerable" ).max_stack( 1 );
   debuffs.flying       = buff_creator_t( this, "flying" ).max_stack( 1 );
+  debuffs.damage_taken = buff_creator_t( this, "damage_taken" ).duration( timespan_t::from_seconds( 20.0 ) ).max_stack( 999 );
 
   // stuff moved from old init_debuffs method
 
@@ -2836,6 +2837,10 @@ double player_t::composite_player_vulnerability( school_e /* school */ ) const
 
   if ( debuffs.vulnerable -> check() )
     m *= 1.0 + debuffs.vulnerable -> value();
+
+  // 1% damage taken per stack, arbitrary because this buff is completely fabricated!
+  if ( debuffs.damage_taken -> check() )
+    m *= 1.0 + debuffs.damage_taken -> current_stack * 0.01; 
 
   return m;
 }
@@ -7001,6 +7006,8 @@ expr_t* player_t::create_expression( action_t* a,
 {
   if ( expression_str == "level" )
     return make_ref_expr( "level", level );
+  if ( expression_str == "name" )
+    return make_ref_expr( "name", actor_index );
   if ( expression_str == "multiplier" )
   {
     struct multiplier_expr_t : public player_expr_t

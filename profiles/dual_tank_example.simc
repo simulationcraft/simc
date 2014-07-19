@@ -1,0 +1,101 @@
+paladin="Alice"
+level=100
+race=blood_elf
+role=tank
+position=front
+professions=Blacksmithing=600/Enchanting=600
+talents=http://us.battle.net/wow/en/tool/talent-calculator#bZ!201121.
+glyphs=focused_shield/alabaster_shield/divine_protection
+spec=protection
+
+iterations=1
+
+# Executed before combat begins. Accepts non-harmful actions only.
+
+actions.precombat=/seal_of_insight
+# Snapshot raid buffed stats before combat begins and pre-potting is done.
+actions.precombat+=/snapshot_stats
+
+# Executed every time the actor is available.
+
+actions=/auto_attack
+actions+=/crusader_strike
+actions+=/judgment
+actions+=/reckoning,if=target.current_target.debuff.damage_taken>60
+
+head=primal_gladiators_plate_helm,id=111211
+neck=primal_gladiators_choker_of_cruelty,id=111207
+shoulders=primal_gladiators_plate_shoulders,id=111213
+back=primal_gladiators_cloak_of_prowess,id=111206
+chest=primal_gladiators_plate_chestpiece,id=111209
+wrists=primal_gladiators_armplates_of_victory,id=111182
+hands=primal_gladiators_plate_gauntlets,id=111210
+waist=primal_gladiators_girdle_of_cruelty,id=111174
+legs=primal_gladiators_plate_legguards,id=111212
+feet=primal_gladiators_warboots_of_prowess,id=111178
+finger1=primal_gladiators_signet_of_cruelty,id=111219
+finger2=primal_gladiators_signet_of_accuracy,id=111220
+trinket1=primal_gladiators_medallion_of_cruelty,id=111229
+#trinket2=primal_gladiators_insignia_of_victory,id=111233
+main_hand=primal_gladiators_hacker,id=111198
+off_hand=primal_gladiators_shield_wall,id=111221
+
+warrior="Bob"
+level=100
+race=night_elf
+role=tank
+position=front
+professions=engineering=600/blacksmithing=600
+talents=http://us.battle.net/wow/en/tool/talent-calculator#Zb!0110212
+glyphs=unending_rage/death_from_above/bull_rush/cleave
+spec=protection
+
+# Executed before combat begins. Accepts non-harmful actions only.
+
+# Snapshot raid buffed stats before combat begins and pre-potting is done.
+actions.precombat=/stance,choose=defensive
+actions.precombat+=/snapshot_stats
+
+
+# Executed every time the actor is available.
+
+actions=charge
+actions+=/auto_attack
+actions+=/shield_slam
+actions+=/revenge
+actions+=/devastate
+actions+=/taunt,if=target.current_target.debuff.damage_taken>60
+
+head=helmet_of_the_prehistoric_marauder,id=99418,upgrade=2,gems=16crit_8haste_8crit
+neck=malkoroks_tainted_dog_tags,id=105566,upgrade=2
+shoulders=spaulders_of_the_fallen_warchief,id=104645,upgrade=2,gems=16crit_16crit,enchant=10str_5crit
+back=tigerclaw_cape,id=98147,upgrade=2,gems=8haste_8crit,enchant=9crit
+chest=breastplate_of_shamanic_mirrors,id=105532,upgrade=2,gems=8haste_8crit_8haste_8crit_16crit,enchant=3all
+shirt=precious_ribbon,id=52019
+wrists=bracers_of_blind_hatred,id=105456,upgrade=2,gems=16crit,enchant=9mastery
+hands=gauntlets_of_the_prehistoric_marauder,id=99412,upgrade=2,gems=8haste_8crit_8haste_8crit_16crit,enchant=9mastery
+waist=demolishers_reinforced_belt,id=104513,upgrade=2,gems=8haste_8crit_16crit_16crit
+legs=legplates_of_willful_doom,id=104569,upgrade=2,gems=16crit_16crit_16crit,enchant=14str_8crit
+feet=greaves_of_sublime_superiority,id=105478,upgrade=2,gems=8haste_8crit,enchant=7mastery
+finger1=seal_of_the_forgotten_kings,id=105589,upgrade=2,gems=16crit
+finger2=sorrowpath_signet,id=105436,upgrade=2
+trinket1=evil_eye_of_galakras,id=105491,upgrade=2
+trinket2=zandalari,id=96421,upgrade=2
+main_hand=encapsulated_essence_of_immerseus,id=105417,upgrade=2
+off_hand=shield_of_mockery,id=105481,upgrade=2
+
+enemy=Fluffy_Pillow
+tmi_boss=T15N
+#this tells the boss to dual-wield
+dual_wield=1
+#this tells all attacks to apply 1 stack, unless overriden in the attack options
+apply_debuff=1 
+#auto attacks (main- and off-hand) will apply 1 stack due to the line above this
+actions=/auto_attack 
+#this DpT will apply one stack every tick for the same reason
+actions+=/spell_dot,dot_duration=20,tick_time=2,if=!ticking 
+#these actions all specify the number of stacks
+actions+=/melee_nuke,apply_debuff=2,cooldown=5
+actions+=/spell_nuke,apply_debuff=3,cooldown=10
+#this one doesn't apply it, because the action option overrides the enemy option
+actions+=/spell_aoe,apply_debuff=0,cooldown=20 

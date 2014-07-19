@@ -4120,6 +4120,26 @@ struct rebuke_t : public paladin_melee_attack_t
   }
 };
 
+// Reckoning ==================================================================
+
+struct reckoning_t: public paladin_melee_attack_t
+{
+  reckoning_t( paladin_t* p, const std::string& options_str ):
+    paladin_melee_attack_t( "reckoning", p, p -> find_class_spell( "Reckoning" ) )
+  {
+    parse_options( NULL, options_str );
+    use_off_gcd = true;
+  }
+
+  virtual void impact( action_state_t* s )
+  {
+    if ( s -> target -> is_enemy() )
+      target -> taunt( player );
+
+    paladin_melee_attack_t::impact( s );
+  }
+};
+
 // Seals ====================================================================
 
 struct paladin_seal_t : public paladin_melee_attack_t
@@ -4543,6 +4563,7 @@ action_t* paladin_t::create_action( const std::string& name, const std::string& 
   if ( name == "light_of_dawn"             ) return new light_of_dawn_t            ( this, options_str );
   if ( name == "lights_hammer"             ) return new lights_hammer_t            ( this, options_str );
   if ( name == "rebuke"                    ) return new rebuke_t                   ( this, options_str );
+  if ( name == "reckoning"                 ) return new reckoning_t                ( this, options_str );
   if ( name == "seraphim"                  ) return new seraphim_t                 ( this, options_str );
   if ( name == "shield_of_the_righteous"   ) return new shield_of_the_righteous_t  ( this, options_str );
   if ( name == "templars_verdict"          ) return new templars_verdict_t         ( this, options_str );

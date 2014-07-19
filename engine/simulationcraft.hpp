@@ -4504,6 +4504,7 @@ struct player_t : public actor_t
     debuff_t* invulnerable;
     debuff_t* vulnerable;
     debuff_t* dazed;
+    debuff_t* damage_taken;
 
     // MoP debuffs
     debuff_t* mortal_wounds;
@@ -4801,6 +4802,8 @@ struct player_t : public actor_t
   double       calculate_time_to_bloodlust();
 
   virtual void assess_heal( school_e, dmg_e, action_state_t* );
+
+  virtual bool taunt( player_t* source ) { return false; }
 
   virtual void  summon_pet( const std::string& name, timespan_t duration = timespan_t::zero() );
   virtual void dismiss_pet( const std::string& name );

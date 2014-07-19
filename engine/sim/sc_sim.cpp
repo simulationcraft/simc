@@ -2076,6 +2076,13 @@ expr_t* sim_t::create_expression( action_t* a,
     return make_ref_expr( name_str, target -> actor_index );
   }
 
+  // If nothing else works, check to see if the string matches an actor in the sim.
+  // If so, return their actor index
+  if ( splits.size() == 1 )
+    for ( size_t i = 0; i < actor_list.size(); i++ )
+      if ( name_str == actor_list[ i ] -> name_str )
+        return make_ref_expr( name_str, actor_list[ i ] -> actor_index );    
+
   return 0;
 }
 
