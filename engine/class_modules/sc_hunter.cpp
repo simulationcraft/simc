@@ -173,13 +173,14 @@ public:
     const spell_data_t* improved_focus;
     const spell_data_t* improved_aimed_shot;
     const spell_data_t* improved_steady_shot;
-    const spell_data_t* enhanced_shots;
+    const spell_data_t* improved_multishot;
     // Survival
     const spell_data_t* empowered_explosive_shot;
     const spell_data_t* improved_black_arrow;
     const spell_data_t* enhanced_traps;
     const spell_data_t* enhanced_entrapment;
     const spell_data_t* improved_camouflage;
+    const spell_data_t* improved_serpent_sting;
   } perks;
 
   // Specialization Spells
@@ -1931,6 +1932,8 @@ struct chimaera_shot_t : public hunter_ranged_attack_t
     hunter_ranged_attack_t( "chimaera_shot", player, player -> specs.chimaera_shot )
   {
     parse_options( NULL, options_str );
+    parse_effect_data( player -> dbc.spell( 171454) -> effectN( 2 ) );
+    base_costs[RESOURCE_FOCUS] += player -> perks.enhanced_chimaera_shot -> effectN( 1 ).base_value();
   }
 
   virtual double action_multiplier() const
@@ -1940,11 +1943,12 @@ struct chimaera_shot_t : public hunter_ranged_attack_t
     return am;
   }
 
-  virtual double cost() const
+  virtual school_e get_school() const
   {
-    double cost = hunter_ranged_attack_t::cost();
-    cost += p() -> perks.enhanced_chimaera_shot -> effectN( 1 ).base_value();
-    return cost;
+   if ( rng().roll( 0.5 ) ) // Chimaera shot has a 50/50 chance to roll frost or nature damage... for the flavorz.
+     return SCHOOL_FROST;
+   else
+     return SCHOOL_NATURE;
   }
 };
 
@@ -2145,12 +2149,11 @@ struct serpent_sting_t : public hunter_ranged_attack_t
   serpent_sting_t( hunter_t* player ) :
     hunter_ranged_attack_t( "serpent_sting", player,  player -> find_spell( 118253 ) )
   {
-    background = true;
-    proc = true;
-    tick_may_crit = true;
+    background = proc = tick_may_crit = tick_zero = true;
     hasted_ticks = false;
-    tick_zero = true;
     dot_behavior = DOT_CLIP; // Serpent sting deals immediate damage every time it is cast, and the next tick is reset.
+    attack_power_mod.direct *= 1.0 + player -> perks.improved_serpent_sting -> effectN( 1 ).percent();
+    attack_power_mod.tick   *= 1.0 + player -> perks.improved_serpent_sting -> effectN( 1 ).percent();
   }
 };
 
@@ -2209,6 +2212,8 @@ struct multi_shot_t : public hunter_ranged_attack_t
     parse_options( NULL, options_str );
 
     aoe = -1;
+    base_costs[ RESOURCE_FOCUS ] += player -> perks.improved_multishot -> effectN( 1 ).base_value();
+    weapon_multiplier *= 1.0 + player -> perks.improved_multishot -> effectN( 2 ).percent();
   }
 
   virtual double cost() const
@@ -3017,17 +3022,18 @@ void hunter_t::init_spells()
   perks.enhanced_kill_shot                = find_perk_spell( "Enhanced Kill Shot"       );
   perks.improved_arcane_shot              = find_perk_spell( "Improved Arcane Shot"     );
   perks.improved_cobra_shot               = find_perk_spell( "Improved Cobra Shot"      );
-  perks.enhanced_chimaera_shot             = find_perk_spell( "Enhanced chimaera Shot"    );
+  perks.enhanced_chimaera_shot            = find_perk_spell( "Enhanced Chimaera Shot"   );
   perks.enhanced_aimed_shot               = find_perk_spell( "Enhanced Aimed Shot"      );
   perks.improved_focus                    = find_perk_spell( "Improved Focus"           );
   perks.improved_aimed_shot               = find_perk_spell( "Improved Aimed Shot"      );
   perks.improved_steady_shot              = find_perk_spell( "Improved Steady Shot"     );
-  perks.enhanced_shots                    = find_perk_spell( "Enhanced Shots"           );
+  perks.improved_multishot                = find_perk_spell( "Improved Multishot"       );
   perks.empowered_explosive_shot          = find_perk_spell( "Empowered Explosive Shot" );
   perks.improved_black_arrow              = find_perk_spell( "Improved Black Arrow"     );
   perks.enhanced_traps                    = find_perk_spell( "Enhanced Traps"           );
   perks.enhanced_entrapment               = find_perk_spell( "Enhanced Entrapment"      );
   perks.improved_camouflage               = find_perk_spell( "Improved Camouflage"      );
+  perks.improved_serpent_sting            = find_perk_spell( "Improved Serpent Sting"   );
 
   // Mastery
   mastery.master_of_beasts     = find_mastery_spell( HUNTER_BEAST_MASTERY );

@@ -1283,6 +1283,8 @@ class SpellDataGenerator(DataGenerator):
           ( 131900, 0 ), # Murder of Crows damage spell
           ( 138374, 5 ), # T15 2pc nuke
           ( 168811, 0 ), # Sniper Training
+          ( 171454, 0 ), # Chimaera Shot - Frost
+          ( 171457, 0 ), # Chimaera Shot - Nature
         ),
           
         # Rogue:
