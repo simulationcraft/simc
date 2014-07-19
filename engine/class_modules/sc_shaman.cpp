@@ -5124,21 +5124,23 @@ void shaman_t::init_action_list()
     single -> add_action( this, spec.maelstrom_weapon, "lightning_bolt", "if=buff.maelstrom_weapon.react>=1&!buff.ascendance.up" );
 
     // AoE
-    aoe -> add_action( this, "Fire Nova", "if=active_flame_shock>=4" );
-    aoe -> add_action( "wait,sec=cooldown.fire_nova.remains,if=active_flame_shock>=4&cooldown.fire_nova.remains<=execute_time" );
-    aoe -> add_action( this, "Magma Totem", "if=active_enemies>5&!totem.fire.active" );
-    aoe -> add_action( this, "Searing Totem", "if=active_enemies<=5&!totem.fire.active" );
+    aoe -> add_action( this, "Fire Nova", "if=active_flame_shock>=3" );
+    aoe -> add_action( "wait,sec=cooldown.fire_nova.remains,if=active_flame_shock>=4&cooldown.fire_nova.remains<=action.fire_nova.gcd" );
+    aoe -> add_action( this, "Magma Totem", "if=!totem.fire.active" );
     aoe -> add_action( this, "Lava Lash", "if=dot.flame_shock.ticking" );
     aoe -> add_talent( this, "Elemental Blast", "if=buff.maelstrom_weapon.react>=1" );
-    aoe -> add_action( this, spec.maelstrom_weapon, "chain_lightning", "if=active_enemies>=2&buff.maelstrom_weapon.react>=3" );
+    aoe -> add_action( this, spec.maelstrom_weapon, "chain_lightning", "if=glyph.chain_lightning.enabled&active_enemies>=4&buff.maelstrom_weapon.react=5" );
     aoe -> add_action( this, "Unleash Elements" );
     aoe -> add_action( this, "Flame Shock", "cycle_targets=1,if=!ticking" );
+    aoe -> add_action( this, spec.maelstrom_weapon, "lightning_bolt", "if=(!glyph.chain_lightning.enabled|active_enemies<=3)&buff.maelstrom_weapon.react=5" );
     aoe -> add_action( this, find_class_spell( "Ascendance" ), "windstrike" );
-    aoe -> add_action( this, "Fire Nova", "if=active_flame_shock>=3" );
+    aoe -> add_action( this, "Fire Nova", "if=active_flame_shock>=2" );
     aoe -> add_action( this, spec.maelstrom_weapon, "chain_lightning", "if=active_enemies>=2&buff.maelstrom_weapon.react>=1" );
     aoe -> add_action( this, "Stormstrike" );
     aoe -> add_action( this, "Primal Strike" );
     aoe -> add_action( this, "Frost Shock", "if=active_enemies<4" );
+    aoe -> add_action( this, spec.maelstrom_weapon, "chain_lightning", "if=glyph.chain_lightning.enabled&active_enemies>=4&buff.maelstrom_weapon.react>=1" );
+    aoe -> add_action( this, spec.maelstrom_weapon, "lightning_bolt", "if=(!glyph.chain_lightning.enabled|active_enemies<=3)&buff.maelstrom_weapon.react>=1" );
     aoe -> add_action( this, "Fire Nova", "if=active_flame_shock>=1" );
   }
   else if ( specialization() == SHAMAN_ELEMENTAL && ( primary_role() == ROLE_SPELL || primary_role() == ROLE_DPS ) )
@@ -5200,13 +5202,14 @@ void shaman_t::init_action_list()
 
     // AoE
     aoe -> add_action( this, find_class_spell( "Ascendance" ), "lava_beam" );
-    aoe -> add_action( this, "Magma Totem", "if=active_enemies>2&!totem.fire.active" );
-    aoe -> add_action( this, "Searing Totem", "if=active_enemies<=2&!totem.fire.active" );
-    aoe -> add_action( this, "Lava Burst", "if=active_enemies<3&dot.flame_shock.remains>cast_time&cooldown_react" );
-    aoe -> add_action( this, "Flame Shock", "cycle_targets=1,if=!ticking&active_enemies<3" );
+    aoe -> add_action( this, spec.fulmination, "earth_shock", "if=buff.lightning_shield.react=buff.lightning_shield.max_stack" );
+    aoe -> add_action( this, "Lava Burst", "if=dot.flame_shock.remains>cast_time&cooldown_react" );
+    aoe -> add_action( this, "Flame Shock", "if=dot.flame_shock.remains<9" );
+    aoe -> add_action( this, spec.fulmination, "earth_shock", "if=buff.lightning_shield.react>15" );
     aoe -> add_action( this, "Thunderstorm", "if=mana.pct_nonproc<80" );
-    aoe -> add_action( this, "Chain Lightning", "if=mana.pct_nonproc>10" );
-    aoe -> add_action( this, "Lightning Bolt" );
+    aoe -> add_action( this, "Searing Totem", "if=cooldown.fire_elemental_totem.remains>20&!totem.fire.active" );
+    aoe -> add_action( this, "Chain Lightning", "if=active_enemies>=3" );
+    aoe -> add_action( this, "Lightning Bolt", "if=active_enemies<3" );
   }
   else if ( primary_role() == ROLE_SPELL )
   {

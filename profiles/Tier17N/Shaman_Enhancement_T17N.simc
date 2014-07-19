@@ -67,20 +67,22 @@ actions.single+=/lightning_bolt,if=buff.maelstrom_weapon.react>=1&!buff.ascendan
 
 # Multi target action priority list
 
-actions.aoe=fire_nova,if=active_flame_shock>=4
-actions.aoe+=/wait,sec=cooldown.fire_nova.remains,if=active_flame_shock>=4&cooldown.fire_nova.remains<=execute_time
-actions.aoe+=/magma_totem,if=active_enemies>5&!totem.fire.active
-actions.aoe+=/searing_totem,if=active_enemies<=5&!totem.fire.active
+actions.aoe=fire_nova,if=active_flame_shock>=3
+actions.aoe+=/wait,sec=cooldown.fire_nova.remains,if=active_flame_shock>=4&cooldown.fire_nova.remains<=action.fire_nova.gcd
+actions.aoe+=/magma_totem,if=!totem.fire.active
 actions.aoe+=/lava_lash,if=dot.flame_shock.ticking
 actions.aoe+=/elemental_blast,if=talent.elemental_blast.enabled&buff.maelstrom_weapon.react>=1
-actions.aoe+=/chain_lightning,if=active_enemies>=2&buff.maelstrom_weapon.react>=3
+actions.aoe+=/chain_lightning,if=glyph.chain_lightning.enabled&active_enemies>=4&buff.maelstrom_weapon.react=5
 actions.aoe+=/unleash_elements
 actions.aoe+=/flame_shock,cycle_targets=1,if=!ticking
+actions.aoe+=/lightning_bolt,if=(!glyph.chain_lightning.enabled|active_enemies<=3)&buff.maelstrom_weapon.react=5
 actions.aoe+=/windstrike
-actions.aoe+=/fire_nova,if=active_flame_shock>=3
+actions.aoe+=/fire_nova,if=active_flame_shock>=2
 actions.aoe+=/chain_lightning,if=active_enemies>=2&buff.maelstrom_weapon.react>=1
 actions.aoe+=/stormstrike
 actions.aoe+=/frost_shock,if=active_enemies<4
+actions.aoe+=/chain_lightning,if=glyph.chain_lightning.enabled&active_enemies>=4&buff.maelstrom_weapon.react>=1
+actions.aoe+=/lightning_bolt,if=(!glyph.chain_lightning.enabled|active_enemies<=3)&buff.maelstrom_weapon.react>=1
 actions.aoe+=/fire_nova,if=active_flame_shock>=1
 
 head=primal_gladiators_ringmail_helm,id=111195

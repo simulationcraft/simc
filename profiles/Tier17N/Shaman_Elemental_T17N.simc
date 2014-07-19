@@ -63,12 +63,14 @@ actions.single+=/lightning_bolt
 # Multi target action priority list
 
 actions.aoe=lava_beam
-actions.aoe+=/searing_totem,if=active_enemies<=2&!totem.fire.active
-actions.aoe+=/lava_burst,if=active_enemies<3&dot.flame_shock.remains>cast_time&cooldown_react
-actions.aoe+=/flame_shock,cycle_targets=1,if=!ticking&active_enemies<3
+actions.aoe+=/earth_shock,if=buff.lightning_shield.react=buff.lightning_shield.max_stack
+actions.aoe+=/lava_burst,if=dot.flame_shock.remains>cast_time&cooldown_react
+actions.aoe+=/flame_shock,if=dot.flame_shock.remains<9
+actions.aoe+=/earth_shock,if=buff.lightning_shield.react>15
 actions.aoe+=/thunderstorm,if=mana.pct_nonproc<80
-actions.aoe+=/chain_lightning,if=mana.pct_nonproc>10
-actions.aoe+=/lightning_bolt
+actions.aoe+=/searing_totem,if=cooldown.fire_elemental_totem.remains>20&!totem.fire.active
+actions.aoe+=/chain_lightning,if=active_enemies>=3
+actions.aoe+=/lightning_bolt,if=active_enemies<3
 
 head=primal_gladiators_helm,id=111280
 neck=primal_gladiators_pendant_of_cruelty,id=111128,enchant=140mult
