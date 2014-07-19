@@ -71,6 +71,7 @@ public:
     buff_t* thrill_of_the_hunt;
     buff_t* stampede;
     buff_t* rapid_fire;
+    buff_t* sniper_training;
     buff_t* tier13_4pc;
     buff_t* tier16_4pc_mm_keen_eye;
     buff_t* tier16_4pc_bm_brutal_kinship;
@@ -81,7 +82,7 @@ public:
   {
     cooldown_t* explosive_shot;
     cooldown_t* rapid_fire;
-    cooldown_t* viper_venom;
+    cooldown_t* sniper_training;
   } cooldowns;
 
   // Custom Parameters
@@ -99,7 +100,6 @@ public:
     gain_t* cobra_shot;
     gain_t* aimed_shot;
     gain_t* dire_beast;
-    gain_t* viper_venom;
   } gains;
 
   // Procs
@@ -180,7 +180,6 @@ public:
     const spell_data_t* enhanced_traps;
     const spell_data_t* enhanced_entrapment;
     const spell_data_t* improved_camouflage;
-    const spell_data_t* improved_viper_venom;
   } perks;
 
   // Specialization Spells
@@ -222,7 +221,6 @@ public:
     const spell_data_t* lock_and_load;
     const spell_data_t* black_arrow;
     const spell_data_t* entrapment;
-    const spell_data_t* viper_venom;
     const spell_data_t* trap_mastery;
     const spell_data_t* serpent_sting;
     const spell_data_t* survivalist;
@@ -305,7 +303,7 @@ public:
     // Cooldowns
     cooldowns.explosive_shot = get_cooldown( "explosive_shot" );
     cooldowns.rapid_fire     = get_cooldown( "rapid_fire" );
-    cooldowns.viper_venom    = get_cooldown( "viper_venom" );
+    cooldowns.sniper_training    = get_cooldown( "sniper_training" );
 
     summon_pet_str = "";
     base.distance = 40;
@@ -332,6 +330,7 @@ public:
   virtual double    composite_multistrike() const;
   virtual double    ranged_haste_multiplier() const;
   virtual double    ranged_speed_multiplier() const;
+  virtual double    composite_player_critical_damage_multiplier() const;
   virtual double    composite_rating_multiplier( rating_e rating ) const;
   virtual double    composite_player_multiplier( school_e school ) const;
   virtual double    matching_gear_multiplier( attribute_e attr ) const;
@@ -3028,7 +3027,6 @@ void hunter_t::init_spells()
   perks.enhanced_traps                    = find_perk_spell( "Enhanced Traps"           );
   perks.enhanced_entrapment               = find_perk_spell( "Enhanced Entrapment"      );
   perks.improved_camouflage               = find_perk_spell( "Improved Camouflage"      );
-  perks.improved_viper_venom              = find_perk_spell( "Improved Viper Venom"     );
 
   // Mastery
   mastery.master_of_beasts     = find_mastery_spell( HUNTER_BEAST_MASTERY );
@@ -3093,7 +3091,6 @@ void hunter_t::init_spells()
   specs.careful_aim          = find_specialization_spell( "Careful Aim" );
   specs.explosive_shot       = find_specialization_spell( "Explosive Shot" );
   specs.lock_and_load        = find_specialization_spell( "Lock and Load" );
-  specs.viper_venom          = find_specialization_spell( "Viper Venom" );
   specs.bombardment          = find_specialization_spell( "Bombardment" );
   specs.serpent_sting        = find_specialization_spell( "Serpent Sting" );
   specs.trap_mastery         = find_specialization_spell( "Trap Mastery" );
@@ -3146,11 +3143,8 @@ void hunter_t::init_base_stats()
   if ( sets.has_set_bonus( SET_PVP_4PC_MELEE ) )
     base_focus_regen_per_second *= 1.25;
 
-
   resources.base[ RESOURCE_FOCUS ] = 100 + specs.kindred_spirits -> effectN( 1 ).resource( RESOURCE_FOCUS );
   resources.base[ RESOURCE_FOCUS ] = 100 + perks.improved_focus -> effectN( 1 ).resource( RESOURCE_FOCUS );
-
-  cooldowns.viper_venom -> duration = specs.viper_venom -> internal_cooldown();
 
   // Orc racial
   if ( race == RACE_ORC )
@@ -3186,6 +3180,10 @@ void hunter_t::create_buffs()
                                       .add_invalidate( CACHE_ATTACK_HASTE );
   buffs.rapid_fire -> cooldown -> duration = timespan_t::zero();
 
+  buffs.sniper_training   = buff_creator_t( this, "sniper_training", mastery.sniper_training )
+                            .duration( mastery.sniper_training -> effectN( 3 ).time_value() )
+                            .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
+
   buffs.stampede          = buff_creator_t( this, 130201, "stampede" ) // To allow action lists to react to stampede, rather than doing it in a roundabout way.
                            .activated( true )
                            .duration( timespan_t::from_millis( 20027 ) ); 
@@ -3217,7 +3215,6 @@ void hunter_t::init_gains()
   gains.cobra_shot           = get_gain( "cobra_shot"           );
   gains.aimed_shot           = get_gain( "aimed_shot"           );
   gains.dire_beast           = get_gain( "dire_beast"           );
-  gains.viper_venom          = get_gain( "viper_venom"          );
 }
 
 // hunter_t::init_position ==================================================
@@ -3566,6 +3563,18 @@ double hunter_t::ranged_speed_multiplier() const
   return h;
 }
 
+// hunter_t::composite_player_critical_damage_multiplier ====================
+
+double hunter_t::composite_player_critical_damage_multiplier() const
+{
+  double cdm = player_t::composite_player_critical_damage_multiplier();
+
+  if ( buffs.sniper_training -> up() )
+    cdm += cache.mastery_value();
+
+  return cdm;
+}
+
 // hunter_t::composite_player_multiplier ====================================
 
 double hunter_t::composite_player_multiplier( school_e school ) const
@@ -3587,7 +3596,7 @@ double hunter_t::composite_player_multiplier( school_e school ) const
   if ( buffs.beast_within -> up() )
     m *= 1.0 + buffs.beast_within -> data().effectN( 2 ).percent();
 
-  if ( mastery.sniper_training -> ok() )
+  if ( buffs.sniper_training -> up() )
     m*= 1.0 + cache.mastery_value();
   
   if ( sets.set( SET_T16_4PC_MELEE) -> ok() )
@@ -3627,6 +3636,9 @@ double hunter_t::matching_gear_multiplier( attribute_e attr ) const
 void hunter_t::regen( timespan_t periodicity )
 {
   player_t::regen( periodicity );
+
+  if ( cooldowns.sniper_training -> up() )
+    buffs.sniper_training -> trigger();
 
   periodicity *= 1.0 + composite_ranged_haste_rating() / current_rating().attack_haste;
 
@@ -3875,7 +3887,7 @@ stat_e hunter_t::convert_hybrid_stat( stat_e s ) const
 
 void hunter_t::moving()
 {
-  player_t::interrupt();
+  cooldowns.sniper_training -> start();
 }
 
 /* Report Extension Class
