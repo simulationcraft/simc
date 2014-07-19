@@ -635,6 +635,8 @@ struct heal_enemy_t : public enemy_t
   virtual resource_e primary_resource() const
   { return RESOURCE_HEALTH; }
 
+  void init_action_list()
+  { }
 };
 
 // enemy_t::create_action ===================================================
