@@ -635,8 +635,8 @@ struct heal_enemy_t : public enemy_t
   virtual resource_e primary_resource() const
   { return RESOURCE_HEALTH; }
 
-  void init_action_list()
-  { }
+//  void init_action_list()
+//  { }
 };
 
 // enemy_t::create_action ===================================================
@@ -908,7 +908,7 @@ void enemy_t::init_action_list()
      a series of /run_action_list entries at the end. This is how we support tank swaps.
   */
   // only do this for enemies targeting players
-  if ( ! target -> is_enemy() )
+  if ( ! target -> is_enemy() && this != sim -> heal_target )
   {
     // count the number of tanks in the simulation
     std::vector<player_t*> tanks;
