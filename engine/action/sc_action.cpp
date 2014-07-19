@@ -643,9 +643,6 @@ void action_t::parse_options( option_t*          options,
         sim -> errorf( "%s %s: Unable to locate target '%s'.\n", player -> name(), name(), options_str.c_str() );
     }
   }
-
-  // Setup default target after option parsing
-  default_target = target;
 }
 
 // action_t::cost ===========================================================
@@ -1761,6 +1758,9 @@ void action_t::init()
   initialized = true;
 
   init_target_cache();
+
+  // Setup default target in init
+  default_target = target;
 }
 
 void action_t::init_target_cache()
