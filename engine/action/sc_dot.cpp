@@ -246,7 +246,7 @@ void dot_t::copy( player_t* other_target, dot_copy_e copy_type )
     // time. Tick time will be recalculated on the next tick, implicitly
     // syncing it to the source's tick time.
     timespan_t tick_time;
-    if ( other_dot -> tick_event )
+    if ( tick_event )
       tick_time = tick_event -> remains();
     else
       tick_time = other_dot -> current_action -> tick_time( other_dot -> state -> haste );

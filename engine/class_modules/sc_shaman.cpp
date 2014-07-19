@@ -2255,7 +2255,7 @@ struct improved_lava_lash_t : public shaman_spell_t
       if ( actor == target )
         continue;
 
-      if ( td( actor ) -> dot.flame_shock -> remains() > target_dot -> remains() )
+      if ( td( actor ) -> dot.flame_shock -> remains() >= target_dot -> remains() )
         continue;
 
       tl.push_back( actor );
