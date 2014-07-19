@@ -1188,7 +1188,7 @@ void enemy_t::init_action_list()
       }
 
       // add a /run_action_list line to the new default APL
-      new_action_list_str += "/run_action_list,name=" + tanks[ i ] -> name_str + ",if=current_target=" + std::to_string( tanks[ i ] -> actor_index );
+      new_action_list_str += "/run_action_list,name=" + tanks[ i ] -> name_str + ",if=current_target=" + util::to_string( tanks[ i ] -> actor_index );
     }
 
     // finish off the default action list with an instruction to run the default target's APL
