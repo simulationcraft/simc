@@ -2197,7 +2197,7 @@ struct explosive_shot_t : public hunter_ranged_attack_t
       p() -> buffs.lock_and_load -> decrement(); //The cooldown does not reset if lock and load is consumed.
   }
 
-  double composite_player_multiplier( school_e school ) const
+  double composite_player_multiplier( school_e /*school*/ ) const
   {
     return 1.0;
   }
