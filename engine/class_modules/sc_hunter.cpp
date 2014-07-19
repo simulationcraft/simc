@@ -1560,8 +1560,12 @@ struct hunter_ranged_attack_t : public hunter_action_t<ranged_attack_t>
     {
       background = true;
     }
-
     base_t::init();
+  }
+
+  virtual bool usable_moving() const
+  {
+    return true;
   }
 
   virtual void execute()
@@ -1619,7 +1623,6 @@ struct hunter_ranged_attack_t : public hunter_action_t<ranged_attack_t>
   }
 
   void trigger_tier15_4pc_melee( proc_t* proc, attack_t* attack );
-
 };
 
 // Ranged Attack ============================================================
@@ -1928,14 +1931,11 @@ struct explosive_trap_t : public hunter_ranged_attack_t
 
 // Chimaera Shot =============================================================
 
-struct chimaera_shot_t : public hunter_ranged_attack_t
+struct chimaera_shot_impact_t: public hunter_ranged_attack_t
 {
-  chimaera_shot_t( hunter_t* player, const std::string& options_str ):
-    hunter_ranged_attack_t( "chimaera_shot", player, player -> specs.chimaera_shot )
+  chimaera_shot_impact_t( hunter_t* p, const char* name, const spell_data_t* s ):
+    hunter_ranged_attack_t( name, p, s )
   {
-    parse_options( NULL, options_str );
-    parse_effect_data( player -> dbc.spell( 171454) -> effectN( 2 ) );
-    base_costs[RESOURCE_FOCUS] += player -> perks.enhanced_chimaera_shot -> effectN( 1 ).base_value();
   }
 
   virtual double action_multiplier() const
@@ -1944,13 +1944,34 @@ struct chimaera_shot_t : public hunter_ranged_attack_t
     am *= 1.0 + p() -> sets.set( SET_T14_2PC_MELEE ) -> effectN( 2 ).percent();
     return am;
   }
+};
 
-  virtual school_e get_school() const
+struct chimaera_shot_t : public hunter_ranged_attack_t
+{
+  chimaera_shot_impact_t* frost;
+  chimaera_shot_impact_t* nature;
+  chimaera_shot_t( hunter_t* player, const std::string& options_str ):
+    hunter_ranged_attack_t( "chimaera_shot", player, player -> specs.chimaera_shot ),
+    frost( NULL ), nature( NULL )
   {
-   if ( rng().roll( 0.5 ) ) // Chimaera shot has a 50/50 chance to roll frost or nature damage... for the flavorz.
-     return SCHOOL_FROST;
-   else
-     return SCHOOL_NATURE;
+    parse_options( NULL, options_str );
+
+    frost = new chimaera_shot_impact_t( player, "chimaera_shot_frost", player -> find_spell( 171454 ) );
+    add_child( frost );
+
+    nature = new chimaera_shot_impact_t( player, "chimaera_shot_nature", player -> find_spell( 171457 ) );
+    add_child( nature );
+
+    base_costs[RESOURCE_FOCUS] += player -> perks.enhanced_chimaera_shot -> effectN( 1 ).base_value();
+    aoe = 2;
+  }
+
+  void execute()
+  {
+    if ( rng().roll( 0.5 ) ) // Chimaera shot has a 50/50 chance to roll frost or nature damage... for the flavorz.
+      frost -> execute();
+    else
+      nature -> execute();
   }
 };
 
@@ -1971,11 +1992,6 @@ struct cobra_shot_t : public hunter_ranged_attack_t
     if ( p() -> sets.has_set_bonus( SET_T13_2PC_MELEE ) )
       focus_gain *= 2.0;
     base_multiplier *= 1 + p() -> perks.improved_cobra_shot -> effectN ( 1 ).percent();
-  }
-
-  virtual bool usable_moving() const
-  {
-    return true;
   }
 
   virtual void execute()
@@ -2278,6 +2294,11 @@ struct focusing_shot_t : public hunter_ranged_attack_t
     focus_gain = data().effectN( 2 ).base_value();
   }
 
+  bool usable_moving() const
+  {
+    return false;
+  }
+
   virtual void execute()
   {
     hunter_ranged_attack_t::execute();
@@ -2319,11 +2340,6 @@ struct steady_shot_t : public hunter_ranged_attack_t
 
       p() -> resource_gain( RESOURCE_FOCUS, focus_gain, p() -> gains.steady_shot );
     }
-  }
-
-  virtual bool usable_moving() const
-  {
-    return true;
   }
 
   virtual double composite_target_crit( player_t* t ) const
@@ -2500,11 +2516,6 @@ struct barrage_t : public hunter_spell_t
   virtual double composite_crit() const
   {
     return p() -> composite_melee_crit(); // Since barrage is a spell, we need to explicitly make it use attack crit.
-  }
-
-  virtual bool usable_moving() const
-  {
-    return true;
   }
 };
 
