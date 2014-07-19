@@ -259,6 +259,7 @@ action_t::action_t( action_e       ty,
   name_str( token ),
   player( p ),
   target( p -> target ),
+  default_target( p -> target ),
   target_cache(),
   school( SCHOOL_NONE ),
   id(),
@@ -642,6 +643,9 @@ void action_t::parse_options( option_t*          options,
         sim -> errorf( "%s %s: Unable to locate target '%s'.\n", player -> name(), name(), options_str.c_str() );
     }
   }
+
+  // Setup default target after option parsing
+  default_target = target;
 }
 
 // action_t::cost ===========================================================
@@ -1776,6 +1780,7 @@ void action_t::reset()
   line_cooldown.reset( false );
   execute_event = 0;
   travel_events.clear();
+  target = default_target;
 }
 
 // action_t::cancel =========================================================

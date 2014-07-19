@@ -5414,7 +5414,11 @@ struct action_t : public noncopyable
   const action_e type;
   std::string name_str;
   player_t* const player;
-  player_t* target;
+  // Default target is needed, otherwise there's a chance that cycle_targets
+  // option will _MAJORLY_ mess up the action list for the actor, as there's no
+  // guarantee cycle_targets will end up on the "initial target" when an
+  // iteration ends.
+  player_t* target, * default_target;
 
   /* Target Cache System
    * - list: contains the cached target pointers
