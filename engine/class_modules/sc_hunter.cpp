@@ -10,9 +10,7 @@ namespace { // UNNAMED NAMESPACE
 // ==========================================================================
 // Hunter
 // Improve lone wolf implementation -- Need to add a dismiss pet function.
-// Black arrow implementation
 // Merge effects of frenzy ---> Focus fire, go for the throat --> invigoration,
-// Serpent spread + viper venom + imp. serpent sting ---> Serpent Sting,
 // The beast within --> Bestial Wrath
 // ==========================================================================
 
@@ -39,8 +37,6 @@ struct hunter_t : public player_t
 public:
   // Active
   std::vector<pets::hunter_main_pet_t*> hunter_main_pets;
-
-  double locknload;// Select the chance for black arrow ticks to proc lock n load until Blizzard reveals the chance. Default is 15%.
   struct actives_t
   {
     pets::hunter_main_pet_t* pet;
@@ -311,7 +307,6 @@ public:
     cooldowns.rapid_fire     = get_cooldown( "rapid_fire" );
     cooldowns.viper_venom    = get_cooldown( "viper_venom" );
 
-    locknload = 0.15;
     summon_pet_str = "";
     base.distance = 40;
     base_gcd = timespan_t::from_seconds( 1.0 );
@@ -1850,10 +1845,8 @@ struct powershot_t : public hunter_ranged_attack_t
 
 struct black_arrow_t : public hunter_ranged_attack_t
 {
-  double ticks_since_lnl;
   black_arrow_t( hunter_t* player, const std::string& options_str ) :
-    hunter_ranged_attack_t( "black_arrow", player, player -> find_class_spell( "Black Arrow" ) ),
-    ticks_since_lnl ( 0 )
+    hunter_ranged_attack_t( "black_arrow", player, player -> find_class_spell( "Black Arrow" ) )
   {
     parse_options( NULL, options_str );
 
@@ -3593,6 +3586,9 @@ double hunter_t::composite_player_multiplier( school_e school ) const
 
   if ( buffs.beast_within -> up() )
     m *= 1.0 + buffs.beast_within -> data().effectN( 2 ).percent();
+
+  if ( mastery.sniper_training -> ok() )
+    m*= 1.0 + cache.mastery_value();
   
   if ( sets.set( SET_T16_4PC_MELEE) -> ok() )
     m *= 1.0 + buffs.tier16_4pc_bm_brutal_kinship -> stack() * buffs.tier16_4pc_bm_brutal_kinship -> data().effectN( 1 ).percent();
@@ -3645,7 +3641,6 @@ void hunter_t::create_options()
   option_t hunter_options[] =
   {
     opt_string( "summon_pet", summon_pet_str ),
-    opt_float( "locknload", locknload ),
     opt_null()
   };
 
@@ -3672,7 +3667,6 @@ void hunter_t::copy_from( player_t* source )
   hunter_t* p = debug_cast<hunter_t*>( source );
 
   summon_pet_str = p -> summon_pet_str;
-  locknload = p -> locknload;
 }
 
 // hunter_t::armory_extensions ==============================================

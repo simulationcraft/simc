@@ -1282,6 +1282,7 @@ class SpellDataGenerator(DataGenerator):
           ( 82928, 0 ), # Aimed Shot Master Marksman
           ( 131900, 0 ), # Murder of Crows damage spell
           ( 138374, 5 ), # T15 2pc nuke
+          ( 168811, 0 ), # Sniper Training
         ),
           
         # Rogue:
