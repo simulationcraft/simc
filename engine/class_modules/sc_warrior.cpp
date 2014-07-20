@@ -3813,20 +3813,23 @@ void warrior_t::apl_precombat()
   precombat -> add_action( "snapshot_stats", "Snapshot raid buffed stats before combat begins and pre-potting is done." );
 
   //Pre-pot
-  if ( sim -> allow_potions && level >= 90 )
+  if ( sim -> allow_potions )
   {
-    if ( primary_role() == ROLE_ATTACK )
-      precombat -> add_action( "potion,name=draenic_strength" );
-    else if ( primary_role() == ROLE_TANK )
-      precombat -> add_action( "potion,name=draenic_armor" );
-  }
-  //Pre-pot
-  else if ( sim -> allow_potions && level >= 80 )
-  {
-    if ( primary_role() == ROLE_ATTACK )
-      precombat -> add_action( "potion,name=mogu_power" );
-    else if ( primary_role() == ROLE_TANK )
-      precombat -> add_action( "potion,name=mountains" );
+    if ( level >= 90 )
+    {
+      if ( primary_role() == ROLE_ATTACK )
+        precombat -> add_action( "potion,name=draenic_strength" );
+      else if ( primary_role() == ROLE_TANK )
+        precombat -> add_action( "potion,name=draenic_armor" );
+    }
+    //Pre-pot
+    else if ( level >= 80 )
+    {
+      if ( primary_role() == ROLE_ATTACK )
+        precombat -> add_action( "potion,name=mogu_power" );
+      else if ( primary_role() == ROLE_TANK )
+        precombat -> add_action( "potion,name=mountains" );
+    }
   }
 }
 

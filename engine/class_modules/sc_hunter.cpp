@@ -361,6 +361,10 @@ public:
   virtual void      armory_extensions( const std::string& r, const std::string& s, const std::string& c, cache::behavior_e );
   virtual void      moving();
 
+  void              apl_default();
+  void              apl_surv();
+  void              apl_bm();
+  void              apl_mm();
   target_specific_t<hunter_td_t*> target_data;
 
   virtual hunter_td_t* get_target_data( player_t* target ) const
@@ -2912,7 +2916,7 @@ action_t* hunter_t::create_action( const std::string& name,
   if ( name == "focus_fire"            ) return new             focus_fire_t( this, options_str );
   if ( name == "kill_command"          ) return new           kill_command_t( this, options_str );
   if ( name == "kill_shot"             ) return new              kill_shot_t( this, options_str );
-  if ( name == "multi_shot"            ) return new             multi_shot_t( this, options_str );
+  if ( name == "multishot"             ) return new             multi_shot_t( this, options_str );
   if ( name == "rapid_fire"            ) return new             rapid_fire_t( this, options_str );
   if ( name == "steady_shot"           ) return new            steady_shot_t( this, options_str );
   if ( name == "focusing_shot"         ) return new          focusing_shot_t( this, options_str );
@@ -3320,157 +3324,229 @@ void hunter_t::init_action_list()
   {
     clear_action_priority_lists();
 
-    std::string& precombat = get_action_priority_list( "precombat" ) -> action_list_str;
+    action_priority_list_t* precombat = get_action_priority_list( "precombat" );
 
-    if ( level >= 80 )
+    // Flask
+    if ( sim -> allow_flasks && level >= 80 )
     {
-      if ( sim -> allow_flasks )
-      {
-        precombat += "/flask,type=";
-        if ( level >= 90 )
-          precombat += "greater_draenic_critical_strike_flask";
-        else
-          precombat += ( level > 85 ) ? "spring_blossoms" : "winds";
-      }
-
-      if ( sim -> allow_food )
-      {
-        precombat += "/food,type=";
-        if ( level >= 90 )
-          precombat += "blackrock_barbecue";
-        else
-          precombat += ( level > 85 ) ? "sea_mist_rice_noodles" : "seafood_magnifique_feast";
-      }
+      std::string flask_action = "flask,type=";
+        flask_action += "greater_draenic_critical_strike_flask";
+      precombat -> add_action( flask_action );
     }
 
-    precombat += "/summon_pet";
-    precombat += "/snapshot_stats";
-    precombat += "/exotic_munitions,ammo_type=frozen,if=talent.exotic_munitions.enabled";
+    // Food
+    if ( sim -> allow_food )
+    {
+      std::string food_action = "food,type=";
+      if ( level >= 90 )
+        food_action += "blackrock_barbecue";
+      else
+        food_action += ( level > 85 ) ? "sea_mist_rice_noodles" : "seafood_magnifique_feast";
+      precombat -> add_action( food_action );
+    }
 
+    precombat -> add_action( "summon_pet" );
+    precombat -> add_action( "snapshot_stats", "Snapshot raid buffed stats before combat begins and pre-potting is done." );
+    precombat -> add_action( "exotic_munitions,ammo_type=frozen,if=talent.exotic_munitions.enabled" );
+
+    //Pre-pot
     if ( sim -> allow_potions )
     {
+      std::string potion_action = "potion,name=";
       if ( level >= 90 )
-      {
-        precombat += "/potion,name=draenic_agility";
-        action_list_str += "/potion,name=draenic_agility,if=target.time_to_die<=25|buff.stampede.up";
-      }
-      else if ( level >= 80 )
-      {
-        precombat += ( level > 85 ) ? "/potion,name=virmens_bite" : "/potion,name=tolvir";
-
-        action_list_str += ( level > 85 ) ? "/potion,name=virmens_bite" : "/potion,name=tolvir";
-        action_list_str += ",if=target.time_to_die<=25|buff.stampede.up";
-      }
+        potion_action += "draenic_agility";
+      else
+        potion_action += ( level > 85 ) ? "virmens_bite" : "tolvir";
+      precombat -> add_action( potion_action );
     }
-    if ( specialization() == HUNTER_SURVIVAL )
-      action_list_str += init_use_racial_actions();
-    action_list_str += init_use_item_actions();
-    action_list_str += init_use_profession_actions();
-    action_list_str += "/auto_shot";
-    action_list_str += "/explosive_trap,if=active_enemies>1";
 
     switch ( specialization() )
     {
-      // BEAST MASTERY
-    case HUNTER_BEAST_MASTERY:
-
-      action_list_str += init_use_racial_actions();
-      action_list_str += "/dire_beast";
-      action_list_str += "/fervor,if=focus<=65";
-      action_list_str += "/bestial_wrath,if=focus>60&!buff.beast_within.up";
-      action_list_str += "/multi_shot,if=active_enemies>5|(active_enemies>1&pet.cat.buff.beast_cleave.down)";
-
-      action_list_str += "/stampede,if=(trinket.stat.agility.up|target.time_to_die<=20|(trinket.stacking_stat.agility.stack>10&trinket.stat.agility.cooldown_remains<=3))";
-
-      action_list_str += "/barrage,if=active_enemies>5";
-      action_list_str += "/kill_shot";
-      action_list_str += "/kill_command";
-      action_list_str += "/focusing_shot,if=focus<50";
-      action_list_str += "/a_murder_of_crows,if=!ticking";
-      action_list_str += "/glaive_toss";
-      action_list_str += "/barrage";
-      action_list_str += "/powershot";
-      action_list_str += "/cobra_shot,if=active_enemies>5";
-      action_list_str += "/arcane_shot,if=buff.thrill_of_the_hunt.react|buff.beast_within.up";
-      action_list_str += "/focus_fire,five_stacks=1";
-      action_list_str += "/arcane_shot,if=focus>=61";
-
-      if ( level >= 81 )
-        action_list_str += "/cobra_shot";
-      else
-        action_list_str += "/steady_shot";
-      break;
-
-      // MARKSMANSHIP
-    case HUNTER_MARKSMANSHIP:
-      action_list_str += init_use_racial_actions();
-
-      action_list_str += "/powershot";
-      action_list_str += "/fervor,if=focus<=50";
-      action_list_str += "/rapid_fire,if=!buff.rapid_fire.up";
-
-      action_list_str += "/stampede,if=(trinket.stat.agility.up|target.time_to_die<=20|(trinket.stacking_stat.agility.stack>10&trinket.stat.agility.cooldown_remains<=3))";
-
-      action_list_str += "/a_murder_of_crows,if=!ticking";
-      action_list_str += "/dire_beast";
-
-      action_list_str += "/run_action_list,name=careful_aim,if=target.health.pct>";
-      action_list_str += util::to_string( dbc.spell( 34483 ) -> effectN( 2 ).base_value() );
-      {
-        // sub-action list for the CA phase. The action above here are also included
-        std::string& CA_actions = get_action_priority_list( "careful_aim" ) -> action_list_str;
-        CA_actions += "/chimaera_shot";
-        CA_actions += "/aimed_shot";
-        CA_actions += "/glaive_toss";
-        CA_actions += "/focusing_shot,if=focus<60";
-        CA_actions += "/steady_shot";
-      }
-
-      // actions for outside the CA phase
-      action_list_str += "/glaive_toss";
-      action_list_str += "/barrage";
-      action_list_str += "/chimaera_shot";
-      action_list_str += "/focusing_shot,if=focus<50";
-      action_list_str += "/kill_shot";
-      action_list_str += "/multi_shot,if=active_enemies>=4";
-      action_list_str += "/aimed_shot";
-      action_list_str += "/steady_shot";
-      break;
-
-      // SURVIVAL
     case HUNTER_SURVIVAL:
-      action_list_str += "/fervor,if=focus<=50";
-      action_list_str += "/a_murder_of_crows,if=!ticking";
-      action_list_str += "/explosive_shot,if=buff.lock_and_load.react";
-      action_list_str += "/glaive_toss";
-      action_list_str += "/powershot";
-      action_list_str += "/barrage";
-      action_list_str += "/explosive_shot,if=cooldown_react";
-      action_list_str += "/black_arrow,if=!ticking&target.time_to_die>=8";
-      action_list_str += "/multi_shot,if=active_enemies>3";
-      action_list_str += "/focusing_shot,if=focus<50";
-      action_list_str += "/arcane_shot,if=buff.thrill_of_the_hunt.react";
-      action_list_str += "/dire_beast";
-
-      action_list_str += "/stampede,if=(trinket.stat.agility.up|target.time_to_die<=20|(trinket.stacking_stat.agility.stack>10&trinket.stat.agility.cooldown_remains<=3))";
-
-      action_list_str += "/arcane_shot,if=focus>=67&active_enemies<2";
-      action_list_str += "/multi_shot,if=focus>=67&active_enemies>1";
-
-      if ( find_class_spell( "Cobra Shot" ) )
-        action_list_str += "/cobra_shot";
-      else if ( find_class_spell( "Steady Shot" ) )
-        action_list_str += "/steady_shot";
+      apl_surv();
       break;
-      // DEFAULT
-    default: break;
+    case HUNTER_BEAST_MASTERY:
+      apl_bm();
+      break;
+    case HUNTER_MARKSMANSHIP:
+      apl_mm();
+      break;
+    default:
+      apl_default(); // DEFAULT
+      break;
     }
+
     if ( summon_pet_str.empty() )
       summon_pet_str = "cat";
-
+    // Default
     use_default_action_list = true;
+    player_t::init_action_list();
   }
-  player_t::init_action_list();
+}
+
+// Beastmastery Action List =============================================================
+
+void hunter_t::apl_bm()
+{
+  std::vector<std::string> racial_actions     = get_racial_actions();
+
+  action_priority_list_t* default_list        = get_action_priority_list( "default" );
+  action_priority_list_t* single_target       = get_action_priority_list( "single_target" );
+
+  default_list -> add_action( "auto_shot" );
+
+  int num_items = (int)items.size();
+  for ( int i = 0; i < num_items; i++ )
+  {
+    if ( items[i].has_special_effect( SPECIAL_EFFECT_SOURCE_NONE, SPECIAL_EFFECT_USE ) )
+      default_list -> add_action( "use_item,name=" + items[i].name_str );
+  }
+  for ( size_t i = 0; i < racial_actions.size(); i++ )
+    default_list -> add_action( racial_actions[i] );
+
+  if ( sim -> allow_potions )
+  {
+    if ( level >= 90 )
+      default_list -> add_action( "potion,name=draenic_agility,if=buff.beast_within.up" );
+    else if ( level >= 80 )
+      default_list -> add_action( "potion,name=virmens_bite,if=buff.beast_within.up" );
+  }
+
+  single_target -> add_talent( this, "Dire Beast" );
+  single_target -> add_talent( this, "Fervor", "if=focus<=65" );
+  single_target -> add_action( this, "Bestial Wrath", "if=focus>60&!buff.beast_within.up" );
+  single_target -> add_action( this, "Multi-Shot", "if=active_enemies>5|(active_enemies>1&pet.cat.buff.beast_cleave.down)" );
+  single_target -> add_talent( this, "Stampede", "if=(trinket.stat.agility.up|target.time_to_die<=20|(trinket.stacking_stat.agility.stack>10&trinket.stat.agility.cooldown_remains<=3))" );
+  single_target -> add_talent( this, "Barrage", "if=active_enemies>1" );
+  single_target -> add_action( this, "Kill Shot" );
+  single_target -> add_action( this, "Kill Command" );
+  single_target -> add_talent( this, "Focusing Shot", "if=focus<50" );
+  single_target -> add_talent( this, "A Murder of Crows" );
+  single_target -> add_talent( this, "Glaive Toss" );
+  single_target -> add_talent( this, "Barrage" );
+  single_target -> add_talent( this, "Powershot" );
+  single_target -> add_action( this, "Cobra Shot", "if=active_enemies>5" );
+  single_target -> add_action( this, "Arcane Shot", "if=buff.thrill_of_the_hunt.react|buff.beast_within.up" );
+  single_target -> add_action( "focus_fire,five_stacks=1" );
+  single_target -> add_action( this, "Arcane Shot", "if=focus>=61" );
+  if ( level >= 81 )
+    single_target -> add_action( this, "Cobra Shot" );
+  else
+    single_target -> add_action( this, "Steady Shot" );
+}
+
+// Marksman Action List ======================================================================
+
+void hunter_t::apl_mm()
+{
+  std::vector<std::string> racial_actions     = get_racial_actions();
+
+  action_priority_list_t* default_list        = get_action_priority_list( "default" );
+  action_priority_list_t* single_target       = get_action_priority_list( "single_target" );
+  action_priority_list_t* careful_aim         = get_action_priority_list( "careful_aim" );
+
+  default_list -> add_action( "auto_shot" );
+
+  int num_items = (int)items.size();
+  for ( int i = 0; i < num_items; i++ )
+  {
+    if ( items[i].has_special_effect( SPECIAL_EFFECT_SOURCE_NONE, SPECIAL_EFFECT_USE ) )
+      default_list -> add_action( "use_item,name=" + items[i].name_str );
+  }
+
+  for ( size_t i = 0; i < racial_actions.size(); i++ )
+    default_list -> add_action( racial_actions[i] );
+
+  if ( sim -> allow_potions )
+  {
+    if ( level >= 90 )
+      default_list -> add_action( "potion,name=draenic_agility,if=buff.rapid_fire.up" );
+    else if ( level >= 80 )
+      default_list -> add_action( "potion,name=virmens_bite,if=buff.rapid_fire.up" );
+  }
+
+  single_target -> add_talent( this, "Powershot" );
+  single_target -> add_talent( this, "Fervor", "if=focus<=50" );
+  single_target -> add_action( this, "Rapid Fire", "if=!buff.rapid_fire.up" );
+  single_target -> add_talent( this, "Stampede", "if=(trinket.stat.agility.up|target.time_to_die<=20|(trinket.stacking_stat.agility.stack>10&trinket.stat.agility.cooldown_remains<=3))" );
+  single_target -> add_talent( this, "A Murder of Crows" );
+  single_target -> add_talent( this, "Dire Beast" );
+
+  single_target -> add_action( "run_action_list,name=careful_aim,if=target.health.pct>80|buff.rapid_fire.up" );
+  {
+    careful_aim -> add_action( this, "Chimaera Shot" ); 
+    careful_aim -> add_action( this, "Aimed Shot" );
+    careful_aim -> add_talent( this, "Glaive Toss" );
+    careful_aim -> add_talent( this, "Focusing Shot", "if=focus<50" );
+    careful_aim -> add_action( this, "Steady Shot" );
+  }
+
+  single_target -> add_talent( this, "Glaive Toss" );
+  single_target -> add_talent( this, "Barrage" );
+  single_target -> add_action( this, "Chimaera Shot" );
+  single_target -> add_talent( this, "Focusing Shot", "if=focus<55" );
+  single_target -> add_action( this, "Kill Shot" );
+  single_target -> add_action( this, "Multi-Shot", "if=active_enemies>=4" );
+  single_target -> add_action( this, "Aimed Shot" );
+  single_target -> add_action( this, "Steady Shot" );
+}
+
+// Survival Action List ===================================================================
+
+void hunter_t::apl_surv()
+{
+  std::vector<std::string> racial_actions     = get_racial_actions();
+  action_priority_list_t* default_list        = get_action_priority_list( "default" );
+  action_priority_list_t* single_target       = get_action_priority_list( "single_target" );
+
+  default_list -> add_action( "auto_shot" );
+
+  int num_items = (int)items.size();
+  for ( int i = 0; i < num_items; i++ )
+  {
+    if ( items[i].has_special_effect( SPECIAL_EFFECT_SOURCE_NONE, SPECIAL_EFFECT_USE ) )
+      default_list -> add_action( "use_item,name=" + items[i].name_str );
+  }
+
+  for ( size_t i = 0; i < racial_actions.size(); i++ )
+    default_list -> add_action( racial_actions[i] );
+
+  if ( sim -> allow_potions )
+  {
+    if ( level >= 90 )
+      default_list -> add_action( "potion,name=draenic_agility" );
+    else if ( level >= 80 )
+      default_list -> add_action( "potion,name=virmens_bite" );
+  }
+
+  single_target -> add_action( this, "Explosive Trap", "if=active_enemies>1" );
+  single_target -> add_talent( this, "Fervor", "if=focus<=50" );
+  single_target -> add_talent( this, "A Murder of Crows" );
+  single_target -> add_action( this, "Explosive Shot" );
+  single_target -> add_talent( this, "Glaive Toss" );
+  single_target -> add_talent( this, "Powershot" );
+  single_target -> add_talent( this, "Barrage" );
+  single_target -> add_action( this, "Black Arrow", "if=!ticking" );
+  single_target -> add_action( this, "Multi-Shot" , "if=active_enemies>3" );
+  single_target -> add_talent( this, "Focusing Shot", "if=focus<50" );
+  single_target -> add_action( this, "Arcane Shot", "if=buff.thrill_of_the_hunt.react" );
+  single_target -> add_talent( this, "Dire Beast" );
+  single_target -> add_talent( this, "Stampede", "if=(trinket.stat.agility.up|target.time_to_die<=20|(trinket.stacking_stat.agility.stack>10&trinket.stat.agility.cooldown_remains<=3))" );
+  single_target -> add_action( this, "Arcane Shot", "if=focus>=67&active_enemies<2" );
+  single_target -> add_action( this, "Multi-Shot", "if=focus>67&active_enemies>1" );
+  if ( level >= 81 )
+    single_target -> add_action( this, "Cobra Shot" );
+  else
+    single_target -> add_action( this, "Steady Shot" );
+}
+
+// NO Spec Combat Action Priority List ======================================
+
+void hunter_t::apl_default()
+{
+  action_priority_list_t* default_list = get_action_priority_list( "default" );
+
+  default_list -> add_action( this, "Arcane Shot" );
 }
 
 // hunter_t::combat_begin ===================================================
