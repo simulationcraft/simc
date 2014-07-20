@@ -1719,6 +1719,12 @@ void action_t::init()
   if ( dot_duration > timespan_t::zero() && ( hasted_ticks || channeled ) )
     snapshot_flags |= STATE_HASTE;
 
+  // If the action has a tick action, we have to snapshot tick multiplier,
+  // since ::tick() will actually replace da_modifier in the snapshot state
+  // with ta_modifier.
+  if ( tick_action )
+    snapshot_flags |= STATE_MUL_TA;
+
   // WOD: Dot Snapshoting is gone
   update_flags |= snapshot_flags;
 
@@ -1731,6 +1737,7 @@ void action_t::init()
   {
     update_flags &= ~STATE_HASTE;
   }
+
 
   if ( ! ( background || sequence ) && ( pre_combat || action_list == "precombat" ) )
   {
