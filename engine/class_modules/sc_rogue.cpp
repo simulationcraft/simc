@@ -37,6 +37,7 @@ enum ability_type_e {
   RUPTURE,
   FAN_OF_KNIVES,
   CRIMSON_TEMPEST,
+  KILLING_SPREE,
   ABILITY_MAX
 };
 
@@ -2059,7 +2060,7 @@ struct killing_spree_t : public rogue_attack_t
     rogue_attack_t( "killing_spree", p, p -> find_class_spell( "Killing Spree" ), options_str ),
     attack_mh( 0 ), attack_oh( 0 )
   {
-    dot_duration = 6 * base_tick_time;
+    ability_type = KILLING_SPREE;
     may_miss  = false;
     may_crit  = false;
     channeled = true;
@@ -3750,6 +3751,57 @@ struct shadow_reflection_pet_t : public pet_t
     }
   };
 
+  struct sr_killing_spree_t : public shadow_reflection_attack_t
+  {
+    struct sr_ks_tick_t : public shadow_reflection_attack_t
+    {
+      sr_ks_tick_t( shadow_reflection_pet_t* p, const char* name, const spell_data_t* s ) :
+        shadow_reflection_attack_t( name, p, s )
+      {
+        school      = SCHOOL_PHYSICAL;
+        direct_tick = true;
+      }
+    };
+
+    melee_attack_t* attack_mh, *attack_oh;
+
+    sr_killing_spree_t( shadow_reflection_pet_t* p ) :
+      shadow_reflection_attack_t( "killing_spree", p, p -> find_spell( 51690 ) ),
+      attack_mh( 0 ), attack_oh( 0 )
+    {
+      may_miss = may_crit = false;
+      channeled = tick_zero = true;
+      const spell_data_t* spell = p -> find_spell( 57841 );
+
+      attack_mh = new sr_ks_tick_t( p, "killing_spree_mh", spell );
+      add_child( attack_mh );
+
+      if ( p -> o() -> off_hand_weapon.type != WEAPON_NONE )
+      {
+        attack_oh = new sr_ks_tick_t( p, "killing_spree_oh", spell -> effectN( 2 ).trigger() );
+        attack_oh -> weapon = &( p -> o() -> off_hand_weapon );
+        add_child( attack_oh );
+      }
+    }
+
+    timespan_t tick_time( double ) const
+    { return base_tick_time; }
+
+    virtual void tick( dot_t* d )
+    {
+      shadow_reflection_attack_t::tick( d );
+
+      attack_mh -> pre_execute_state = attack_mh -> get_state( d -> state );
+      attack_mh -> execute();
+
+      if ( attack_oh && result_is_hit( attack_mh -> execute_state -> result ) )
+      {
+        attack_oh -> pre_execute_state = attack_oh -> get_state( d -> state );
+        attack_oh -> execute();
+      }
+    }
+  };
+
   // A very dummy action to do very naughty things.
   struct shadow_reflection_t : public action_t
   {
@@ -3837,6 +3889,7 @@ struct shadow_reflection_pet_t : public pet_t
     attacks[ EVISCERATE       ] = new sr_eviscerate_t( this );
     attacks[ SINISTER_STRIKE  ] = new sr_sinister_strike_t( this );
     attacks[ REVEALING_STRIKE ] = new sr_revealing_strike_t( this );
+    attacks[ KILLING_SPREE    ] = new sr_killing_spree_t( this );
 
     _spec = ROGUE_SUBTLETY;
     attacks[ HEMORRHAGE       ] = new sr_hemorrhage_t( this );
