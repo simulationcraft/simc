@@ -20,6 +20,7 @@ struct rogue_attack_state_t;
 struct residual_damage_state_t;
 struct rogue_poison_t;
 struct rogue_attack_t;
+struct rogue_poison_buff_t;
 }
 
 enum ability_type_e {
@@ -88,6 +89,8 @@ struct rogue_td_t : public actor_pair_t
     buff_t* find_weakness;
     buff_t* vendetta;
     buff_t* wound_poison;
+    buff_t* crippling_poison;
+    buff_t* leeching_poison;
     buff_t* enhanced_crimson_tempest;
   } debuffs;
 
@@ -105,6 +108,9 @@ struct rogue_td_t : public actor_pair_t
 
 struct rogue_t : public player_t
 {
+  // Venom Zest poison tracking
+  unsigned active_poisons;
+
   // Shadow Reflection stuff
   std::vector<shadow_reflect_mimic_t> shadow_reflection_sequence;
   pet_t* shadow_reflection;
@@ -115,6 +121,7 @@ struct rogue_t : public player_t
   // Active
   attack_t* active_blade_flurry;
   actions::rogue_poison_t* active_lethal_poison;
+  actions::rogue_poison_t* active_nonlethal_poison;
   action_t* active_main_gauche;
   action_t* active_venomous_wound;
 
@@ -245,6 +252,8 @@ struct rogue_t : public player_t
     const spell_data_t* subterfuge;
     const spell_data_t* shadow_focus;
 
+    const spell_data_t* leeching_poison;
+
     const spell_data_t* anticipation;
     const spell_data_t* marked_for_death;
 
@@ -323,6 +332,7 @@ struct rogue_t : public player_t
 
   rogue_t( sim_t* sim, const std::string& name, race_e r = RACE_NIGHT_ELF ) :
     player_t( sim, ROGUE, name, r ),
+    active_poisons( 0 ),
     shadow_reflection( 0 ),
     event_premeditation( 0 ),
     active_blade_flurry( 0 ),
@@ -803,6 +813,21 @@ struct deadly_poison_t : public rogue_poison_t
       tick_may_crit  = true;
       dot_behavior   = DOT_REFRESH;
     }
+
+    void impact( action_state_t* state )
+    {
+      if ( ! td( state -> target ) -> dots.deadly_poison -> is_ticking() )
+        p() -> active_poisons++;
+
+      rogue_poison_t::impact( state );
+    }
+
+    void last_tick( dot_t* d )
+    {
+      rogue_poison_t::last_tick( d );
+
+      p() -> active_poisons--;
+    }
   };
 
   deadly_poison_dd_t*  proc_instant;
@@ -918,6 +943,80 @@ struct wound_poison_t : public rogue_poison_t
   }
 };
 
+// Crippling poison =========================================================
+
+struct crippling_poison_t : public rogue_poison_t
+{
+  struct crippling_poison_proc_t : public rogue_poison_t
+  {
+    crippling_poison_proc_t( rogue_t* rogue ) :
+      rogue_poison_t( "crippling_poison", rogue, rogue -> find_spell( 3409 ) )
+    { }
+
+    void impact( action_state_t* state )
+    {
+      rogue_poison_t::impact( state );
+
+      td( state -> target ) -> debuffs.crippling_poison -> trigger();
+    }
+  };
+
+  crippling_poison_proc_t* proc;
+
+  crippling_poison_t( rogue_t* player ) :
+    rogue_poison_t( "crippling_poison_driver", player, player -> find_class_spell( "Crippling Poison" ) ),
+    proc( new crippling_poison_proc_t( player ) )
+  {
+    dual = true;
+    may_miss = may_crit = false;
+  }
+
+  void impact( action_state_t* state )
+  {
+    rogue_poison_t::impact( state );
+
+    proc -> target = state -> target;
+    proc -> schedule_execute();
+  }
+};
+
+// Leeching poison =========================================================
+
+struct leeching_poison_t : public rogue_poison_t
+{
+  struct leeching_poison_proc_t : public rogue_poison_t
+  {
+    leeching_poison_proc_t( rogue_t* rogue ) :
+      rogue_poison_t( "leeching_poison", rogue, rogue -> find_spell( 112961 ) )
+    { }
+
+    void impact( action_state_t* state )
+    {
+      rogue_poison_t::impact( state );
+
+      td( state -> target ) -> debuffs.leeching_poison -> trigger();
+    }
+  };
+
+  leeching_poison_proc_t* proc;
+
+  leeching_poison_t( rogue_t* player ) :
+    rogue_poison_t( "leeching_poison_driver", player, player -> find_talent_spell( "Leeching Poison" ) ),
+    proc( new leeching_poison_proc_t( player ) )
+  {
+    dual = true;
+    may_miss = may_crit = false;
+  }
+
+  void impact( action_state_t* state )
+  {
+    rogue_poison_t::impact( state );
+
+    proc -> target = state -> target;
+    proc -> schedule_execute();
+  }
+};
+
 // Apply Poison =============================================================
 
 struct apply_poison_t : public action_t
@@ -929,9 +1028,7 @@ struct apply_poison_t : public action_t
     WOUND_POISON,
     INSTANT_POISON,
     CRIPPLING_POISON,
-    MINDNUMBING_POISON,
     LEECHING_POISON,
-    PARALYTIC_POISON
   };
   poison_e lethal_poison;
   poison_e nonlethal_poison;
@@ -961,6 +1058,9 @@ struct apply_poison_t : public action_t
       if ( lethal_str == "deadly"    ) lethal_poison = p -> perk.instant_poison -> ok() ? INSTANT_POISON : DEADLY_POISON;
       if ( lethal_str == "instant"   ) lethal_poison = INSTANT_POISON;
       if ( lethal_str == "wound"     ) lethal_poison = WOUND_POISON;
+
+      if ( nonlethal_str == "crippling" ) nonlethal_poison = CRIPPLING_POISON;
+      if ( nonlethal_str == "leeching"  ) nonlethal_poison = LEECHING_POISON;
     }
 
     if ( ! p -> active_lethal_poison )
@@ -968,6 +1068,12 @@ struct apply_poison_t : public action_t
       if ( lethal_poison == DEADLY_POISON  ) p -> active_lethal_poison = new deadly_poison_t( p );
       if ( lethal_poison == WOUND_POISON   ) p -> active_lethal_poison = new wound_poison_t( p );
       if ( lethal_poison == INSTANT_POISON ) p -> active_lethal_poison = new instant_poison_t( p );
+    }
+
+    if ( ! p -> active_nonlethal_poison )
+    {
+      if ( nonlethal_poison == CRIPPLING_POISON ) p -> active_nonlethal_poison = new crippling_poison_t( p );
+      if ( nonlethal_poison == LEECHING_POISON  ) p -> active_nonlethal_poison = new leeching_poison_t( p );
     }
   }
 
@@ -1030,6 +1136,8 @@ void rogue_attack_t::impact( action_state_t* state )
     if ( weapon && p() -> active_lethal_poison )
       p() -> active_lethal_poison -> trigger( state );
 
+    if ( weapon && p() -> active_nonlethal_poison )
+      p() -> active_nonlethal_poison -> trigger( state );
 
     // Legendary Daggers buff handling
     // Proc rates from: https://github.com/Aldriana/ShadowCraft-Engine/blob/master/shadowcraft/objects/proc_data.py#L504
@@ -3041,6 +3149,51 @@ struct subterfuge_t : public buff_t
   }
 };
 
+struct rogue_poison_buff_t : public buff_t
+{
+  rogue_poison_buff_t( rogue_td_t& r, const std::string& name, const spell_data_t* spell ) :
+    buff_t( buff_creator_t( r, name, spell ) )
+  { }
+
+  void execute( int stacks, double value, timespan_t duration )
+  {
+    bool is_up = current_stack > 0;
+
+    buff_t::execute( stacks, value, duration );
+
+    if ( ! is_up )
+      debug_cast< rogue_t* >( source ) -> active_poisons++;
+  }
+
+  void expire_override()
+  {
+    buff_t::expire_override();
+
+    debug_cast< rogue_t* >( source ) -> active_poisons--;
+  }
+};
+
+struct wound_poison_t : public rogue_poison_buff_t
+{
+  wound_poison_t( rogue_td_t& r ) :
+    rogue_poison_buff_t( r, "wound_poison", r.source -> find_spell( 8680 ) )
+  { }
+};
+
+struct crippling_poison_t : public rogue_poison_buff_t
+{
+  crippling_poison_t( rogue_td_t& r ) :
+    rogue_poison_buff_t( r, "crippling_poison", r.source -> find_spell( 3409 ) )
+  { }
+};
+
+struct leeching_poison_t : public rogue_poison_buff_t
+{
+  leeching_poison_t( rogue_td_t& r ) :
+    rogue_poison_buff_t( r, "leeching_poison", r.source -> find_spell( 112961 ) )
+  { }
+};
+
 } // end namespace buffs
 
 
@@ -3206,7 +3359,9 @@ rogue_td_t::rogue_td_t( player_t* target, rogue_t* source ) :
                                            source -> glyph.vendetta -> effectN( 2 ).time_value() )
                                .default_value( vd -> effectN( 1 ).percent() + source -> glyph.vendetta -> effectN( 1 ).percent() );
 
-  debuffs.wound_poison = buff_creator_t( *this, "wound_poison", source -> find_spell( 8680 ) );
+  debuffs.wound_poison = new buffs::wound_poison_t( *this );
+  debuffs.crippling_poison = new buffs::crippling_poison_t( *this );
+  debuffs.leeching_poison = new buffs::leeching_poison_t( *this );
   debuffs.enhanced_crimson_tempest = buff_creator_t( *this, "enhanced_crimson_tempest", source -> find_spell( 157561 ) );
 }
 
@@ -3862,7 +4017,13 @@ void rogue_t::init_action_list()
   }
 
   // Lethal poison
-  precombat -> add_action( "apply_poison,lethal=deadly" );
+  std::string poison_str = "apply_poison,lethal=deadly,nonlethal=";
+  if ( talent.leeching_poison -> ok() )
+    poison_str += "leeching";
+  else
+    poison_str += "crippling";
+
+  precombat -> add_action( poison_str );
 
   // Snapshot stats
   precombat -> add_action( "snapshot_stats", "Snapshot raid buffed stats before combat begins and pre-potting is done." );
@@ -4245,6 +4406,7 @@ void rogue_t::init_spells()
   talent.venom_zest         = find_talent_spell( "Venom Zest" );
   talent.shadow_reflection  = find_talent_spell( "Shadow Reflection" );
   talent.death_from_above   = find_talent_spell( "Death from Above" );
+  talent.leeching_poison    = find_talent_spell( "Leeching Poison" );
 
   // Shared perks
   perk.improved_recuperate         = find_perk_spell( "Improved Recuperate" );
@@ -4530,6 +4692,8 @@ void rogue_t::reset()
 {
   player_t::reset();
 
+  active_poisons = 0;
+
   for ( size_t i = 0; i < sim -> actor_list.size(); i++ )
   {
     rogue_td_t* td = target_data[ sim -> actor_list[ i ] ];
@@ -4561,8 +4725,9 @@ double rogue_t::energy_regen_per_second() const
   if ( buffs.blade_flurry -> check() )
     r *= 1.0 + spec.blade_flurry -> effectN( 1 ).percent();
 
+  // TODO: This is actually N% per poisoned targets.
   if ( talent.venom_zest -> ok() )
-    r *= 1.0 + spell.venom_zest -> effectN( 1 ).percent();
+    r *= 1.0 + active_poisons * spell.venom_zest -> effectN( 1 ).percent();
 
   return r;
 }
