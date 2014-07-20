@@ -3900,11 +3900,12 @@ void warrior_t::apl_fury()
   two_targets -> add_talent( this, "Dragon Roar", "if=!debuff.colossus_smash.up&(buff.bloodbath.up|!talent.bloodbath.enabled)" );
   two_targets -> add_action( this, "Colossus Smash" );
   two_targets -> add_talent( this, "Storm Bolt", "if=debuff.colossus_smash.up" );
-  two_targets -> add_action( this, "Bloodthirst" );
+  two_targets -> add_action( this, "Bloodthirst", "if=(talent.unquenchable_thirst.enabled&buff.enrage.down)|!talent.unquenchable_thirst.enabled" );
   two_targets -> add_talent( this, "Shockwave" );
   two_targets -> add_action( this, "Raging Blow", "if=buff.meat_cleaver.up" );
   two_targets -> add_action( this, "Whirlwind", "if=!buff.meat_cleaver.up" );
   two_targets -> add_action( this, "Execute" );
+  two_targets -> add_action( this, "Bloodthirst" );
 
   three_targets -> add_talent( this, "Bloodbath" );
   three_targets -> add_action( this, "Heroic Leap", "if=buff.enrage.up" );
@@ -3912,24 +3913,26 @@ void warrior_t::apl_fury()
   three_targets -> add_talent( this, "Ignite Weapon", "if=(target.health.pct>=20&rage>100)|buff.ignite_weapon.down" );
   three_targets -> add_talent( this, "Bladestorm", "if=buff.enrage.remains>4" );
   three_targets -> add_talent( this, "Dragon Roar", "if=!debuff.colossus_smash.up&(buff.bloodbath.up|!talent.bloodbath.enabled)" );
-  three_targets -> add_action( this, "Bloodthirst" );
+  three_targets -> add_action( this, "Bloodthirst", "if=(talent.unquenchable_thirst.enabled&buff.enrage.down)|!talent.unquenchable_thirst.enabled" );
   three_targets -> add_action( this, "Colossus Smash" );
   three_targets -> add_talent( this, "Storm Bolt", "if=debuff.colossus_smash.up" );
   three_targets -> add_action( this, "Raging Blow", "if=buff.meat_cleaver.stack=2" );
   three_targets -> add_action( this, "Whirlwind" );
+  three_targets -> add_action( this, "Bloodthirst" );
 
   aoe -> add_talent( this, "Bloodbath" );
   aoe -> add_action( this, "Heroic Leap", "if=buff.enrage.up" );
   aoe -> add_talent( this, "Ignite Weapon", "if=(target.health.pct>=20&rage>100)|buff.ignite_weapon.down" );
   aoe -> add_talent( this, "Ravager" );
   aoe -> add_talent( this, "Bladestorm" );
-  aoe -> add_action( this, "Bloodthirst", "if=rage<80" );
-  aoe -> add_action( this, "Raging Blow", "if=buff.meat_cleaver.stack=3" );
+  aoe -> add_action( this, "Bloodthirst", "if=(talent.unquenchable_thirst.enabled&buff.enrage.down)|!talent.unquenchable_thirst.enabled" );
+  aoe -> add_action( this, "Raging Blow", "if=buff.meat_cleaver.stack>=3" );
   aoe -> add_action( this, "Whirlwind" );
   aoe -> add_talent( this, "Dragon Roar", "if=debuff.colossus_smash.down&(buff.bloodbath.up|!talent.bloodbath.enabled)" );
   aoe -> add_action( this, "Colossus Smash" );
   aoe -> add_talent( this, "Storm Bolt" );
   aoe -> add_talent( this, "Shockwave" );
+  aoe -> add_action( this, "Bloodthirst" );
 }
 
 // Arms Warrior Action Priority List ========================================

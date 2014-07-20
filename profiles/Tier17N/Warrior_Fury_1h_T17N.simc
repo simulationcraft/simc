@@ -63,11 +63,12 @@ actions.two_targets+=/bladestorm,if=talent.bladestorm.enabled
 actions.two_targets+=/dragon_roar,if=talent.dragon_roar.enabled&(!debuff.colossus_smash.up&(buff.bloodbath.up|!talent.bloodbath.enabled))
 actions.two_targets+=/colossus_smash
 actions.two_targets+=/storm_bolt,if=talent.storm_bolt.enabled&debuff.colossus_smash.up
-actions.two_targets+=/bloodthirst
+actions.two_targets+=/bloodthirst,if=(talent.unquenchable_thirst.enabled&buff.enrage.down)|!talent.unquenchable_thirst.enabled
 actions.two_targets+=/shockwave,if=talent.shockwave.enabled
 actions.two_targets+=/raging_blow,if=buff.meat_cleaver.up
 actions.two_targets+=/whirlwind,if=!buff.meat_cleaver.up
 actions.two_targets+=/execute
+actions.two_targets+=/bloodthirst
 
 actions.three_targets=bloodbath,if=talent.bloodbath.enabled
 actions.three_targets+=/heroic_leap,if=buff.enrage.up
@@ -75,24 +76,26 @@ actions.three_targets+=/ravager,if=talent.ravager.enabled
 actions.three_targets+=/ignite_weapon,if=talent.ignite_weapon.enabled&((target.health.pct>=20&rage>100)|buff.ignite_weapon.down)
 actions.three_targets+=/bladestorm,if=talent.bladestorm.enabled&buff.enrage.remains>4
 actions.three_targets+=/dragon_roar,if=talent.dragon_roar.enabled&(!debuff.colossus_smash.up&(buff.bloodbath.up|!talent.bloodbath.enabled))
-actions.three_targets+=/bloodthirst
+actions.three_targets+=/bloodthirst,if=(talent.unquenchable_thirst.enabled&buff.enrage.down)|!talent.unquenchable_thirst.enabled
 actions.three_targets+=/colossus_smash
 actions.three_targets+=/storm_bolt,if=talent.storm_bolt.enabled&debuff.colossus_smash.up
 actions.three_targets+=/raging_blow,if=buff.meat_cleaver.stack=2
 actions.three_targets+=/whirlwind
+actions.three_targets+=/bloodthirst
 
 actions.aoe=bloodbath,if=talent.bloodbath.enabled
 actions.aoe+=/heroic_leap,if=buff.enrage.up
 actions.aoe+=/ignite_weapon,if=talent.ignite_weapon.enabled&((target.health.pct>=20&rage>100)|buff.ignite_weapon.down)
 actions.aoe+=/ravager,if=talent.ravager.enabled
 actions.aoe+=/bladestorm,if=talent.bladestorm.enabled
-actions.aoe+=/bloodthirst,if=rage<80
-actions.aoe+=/raging_blow,if=buff.meat_cleaver.stack=3
+actions.aoe+=/bloodthirst,if=(talent.unquenchable_thirst.enabled&buff.enrage.down)|!talent.unquenchable_thirst.enabled
+actions.aoe+=/raging_blow,if=buff.meat_cleaver.stack>=3
 actions.aoe+=/whirlwind
 actions.aoe+=/dragon_roar,if=talent.dragon_roar.enabled&(debuff.colossus_smash.down&(buff.bloodbath.up|!talent.bloodbath.enabled))
 actions.aoe+=/colossus_smash
 actions.aoe+=/storm_bolt,if=talent.storm_bolt.enabled
 actions.aoe+=/shockwave,if=talent.shockwave.enabled
+actions.aoe+=/bloodthirst
 
 head=primal_gladiators_plate_helm,id=111241
 neck=primal_gladiators_choker_of_cruelty,id=111207,enchant=140crit
