@@ -2191,10 +2191,10 @@ struct explosive_shot_t : public hunter_ranged_attack_t
 
   void update_ready( timespan_t cd_duration )
   {
-    if ( cooldown -> up() )
-      hunter_ranged_attack_t::update_ready( cd_duration );
-    else
+    if ( p() -> buffs.lock_and_load -> check() )
       p() -> buffs.lock_and_load -> decrement(); //The cooldown does not reset if lock and load is consumed.
+    else
+      hunter_ranged_attack_t::update_ready();
   }
 
   double composite_player_multiplier( school_e /*school*/ ) const
