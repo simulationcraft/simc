@@ -50,17 +50,17 @@ actions+=/thrash_bear,if=active_enemies>=3
 actions+=/lacerate
 
 head=primal_gladiators_headcover,id=111285
-neck=primal_gladiators_necklace_of_prowess,id=111080,enchant=140mastery
+neck=primal_gladiators_necklace_of_prowess,id=111080,enchant=105mastery
 shoulders=primal_gladiators_dragonhide_spaulders,id=111111
-back=primal_gladiators_cape_of_cruelty,id=111077,enchant=200mastery
+back=primal_gladiators_cape_of_cruelty,id=111077,enchant=gift_of_mastery
 chest=primal_gladiators_tunic,id=111273
 wrists=primal_gladiators_bindings_of_prowess,id=111148
 hands=primal_gladiators_dragonhide_gloves,id=111107
 waist=primal_gladiators_belt_of_cruelty,id=111142
 legs=primal_gladiators_legguards,id=111276
 feet=primal_gladiators_boots_of_victory,id=111146
-finger1=primal_gladiators_ring_of_cruelty,id=111081,enchant=100mastery
-finger2=primal_gladiators_ring_of_prowess,id=111271,enchant=100mastery
+finger1=primal_gladiators_ring_of_cruelty,id=111081,enchant=75mastery
+finger2=primal_gladiators_ring_of_prowess,id=111271,enchant=75mastery
 trinket1=primal_gladiators_badge_of_conquest,id=111222
 trinket2=primal_gladiators_insignia_of_conquest,id=111223
 main_hand=primal_gladiators_pike,id=111075,enchant=mark_of_the_frostwolf
@@ -70,7 +70,7 @@ main_hand=primal_gladiators_pike,id=111075,enchant=mark_of_the_frostwolf
 # gear_stamina=3250
 # gear_crit_rating=858
 # gear_haste_rating=89
-# gear_mastery_rating=1705
+# gear_mastery_rating=1620
 # gear_armor=877
 # gear_multistrike_rating=525
 # gear_versatility_rating=249
