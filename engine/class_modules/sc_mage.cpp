@@ -37,6 +37,7 @@
 // Does the IV glyph still have a hidden proc-rate increase for FoF?
 // Brainfreeze doesn't look correct in the spelldata (and isn't correct on the beta) in regards to proc chance. Until this is fixed, hardcoding it's buff and proc rate will suffice. Need to go and fix once the spell data is fixed.
 // Do not hardcode 15second duration for enhanced frostbolt perk
+// Ice Lance MS should not be procing Frost Bomb explosion (as per in game testing 7/20/2014)
 
 
 // To-do Completed:
@@ -88,6 +89,7 @@ struct mage_td_t : public actor_pair_t
   struct debuffs_t
   {
     buff_t* slow;
+    buff_t* frost_bomb;
   } debuffs;
 
   mage_td_t( player_t* target, mage_t* mage );
@@ -2178,7 +2180,7 @@ struct frost_armor_t : public mage_spell_t
   }
 };
 
-// Frost Bomb ===============================================================
+// Frost Bomb Spell ===============================================================
 
 struct frost_bomb_explosion_t : public mage_spell_t
 {
@@ -2197,37 +2199,18 @@ struct frost_bomb_explosion_t : public mage_spell_t
 
 struct frost_bomb_t : public mage_spell_t
 {
-  timespan_t original_cooldown;
-
   frost_bomb_t( mage_t* p, const std::string& options_str ) :
-    mage_spell_t( "frost_bomb", p, p -> talents.frost_bomb ),
-    original_cooldown( timespan_t::zero() )
+    mage_spell_t( "frost_bomb", p, p -> talents.frost_bomb )
   {
     parse_options( NULL, options_str );
-    base_tick_time = data().duration();
-    dot_duration = 1 * base_tick_time; // Fake a tick, so we can trigger the explosion at the end of it
-    hasted_ticks = true; // Haste decreases the 'tick' time to explosion
-
-    dynamic_tick_action = true;
-    tick_action = new frost_bomb_explosion_t( p );
-
-    original_cooldown = cooldown -> duration;
+    harmful = false;
   }
 
-  virtual void execute()
+  virtual void impact( action_state_t* s )
   {
-    // Cooldown is reduced by haste
-    cooldown -> duration = original_cooldown * composite_haste();
-    mage_spell_t::execute();
+    mage_spell_t::impact( s );
 
-    if ( result_is_hit( execute_state -> result ) )
-      p() -> last_bomb_target = execute_state -> target;
-  }
-
-  virtual void tick( dot_t* d )
-  {
-    mage_spell_t::tick( d );
-    d -> cancel();
+    td( s -> target ) -> debuffs.frost_bomb -> trigger();
   }
 };
 
@@ -2567,10 +2550,12 @@ struct ice_lance_t : public mage_spell_t
 {
 
   double fof_multiplier;
+  frost_bomb_explosion_t* frost_bomb_explode;
 
   ice_lance_t( mage_t* p, const std::string& options_str ) :
     mage_spell_t( "ice_lance", p, p -> find_class_spell( "Ice Lance" ) ),
-    fof_multiplier( 0 )
+    fof_multiplier( 0 ),
+    frost_bomb_explode( new frost_bomb_explosion_t( p ) )
   {
     parse_options( NULL, options_str );
 
@@ -3763,6 +3748,8 @@ mage_td_t::mage_td_t( player_t* target, mage_t* mage ) :
   dots.pyroblast      = target -> get_dot( "pyroblast",      mage );
 
   debuffs.slow = buff_creator_t( *this, "slow" ).spell( mage -> spec.slow );
+  debuffs.frost_bomb = buff_creator_t( *this, "frost_bomb" ).spell( mage -> talents.frost_bomb );
+
 }
 
 // mage_t::create_action ====================================================
