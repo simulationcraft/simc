@@ -156,7 +156,7 @@ public:
 
     const spell_data_t* exotic_munitions;
     const spell_data_t* focusing_shot;
-    const spell_data_t* versatility;
+    const spell_data_t* adaptation;
     const spell_data_t* lone_wolf;
   } talents;
 
@@ -599,6 +599,7 @@ public:
     // base for all pets
     const spell_data_t* wild_hunt;
     const spell_data_t* combat_experience;
+    const spell_data_t* adaptation_combat_experience;
   } specs;
 
   // Buffs
@@ -863,8 +864,8 @@ public:
       m *= 1.0 + buffs.tier16_4pc_bm_brutal_kinship -> stack() * buffs.tier16_4pc_bm_brutal_kinship -> data().effectN( 1 ).percent();
 
     // Pet combat experience
-    if ( o() -> talents.versatility -> ok() )
-      m *= 1.0 + ( specs.combat_experience -> effectN( 2 ).percent() + 0.2 );  // No spell data for the 20% from versatility.
+    if ( o() -> talents.adaptation -> ok() )
+      m *= 1.0 + specs.adaptation_combat_experience -> effectN( 2 ).percent();
     else
       m *= 1.0 + specs.combat_experience -> effectN( 2 ).percent();
 
@@ -1417,6 +1418,7 @@ void hunter_main_pet_t::init_spells()
 
   specs.wild_hunt = find_spell( 62762 );
   specs.combat_experience = find_specialization_spell( "Combat Experience" );
+  specs.adaptation_combat_experience = find_spell( 156843 );
 }
 
 // ==========================================================================
@@ -3095,7 +3097,7 @@ void hunter_t::init_spells()
   talents.wyvern_sting                      = find_talent_spell( "Wyvern Sting" );
   talents.binding_shot                      = find_talent_spell( "Binding Shot" );
 
-  talents.crouching_tiger_hidden_chimaera    = find_talent_spell( "Crouching Tiger, Hidden chimaera" );
+  talents.crouching_tiger_hidden_chimaera   = find_talent_spell( "Crouching Tiger, Hidden chimaera" );
   talents.iron_hawk                         = find_talent_spell( "Iron Hawk" );
   talents.spirit_bond                       = find_talent_spell( "Spirit Bond" );
 
@@ -3113,7 +3115,7 @@ void hunter_t::init_spells()
 
   talents.exotic_munitions                  = find_talent_spell( "Exotic Munitions" );
   talents.focusing_shot                     = find_talent_spell( "Focusing Shot" );
-  talents.versatility                       = find_talent_spell( "Versatility" );
+  talents.adaptation                        = find_talent_spell( "Adaptation" );
   talents.lone_wolf                         = find_talent_spell( "Lone Wolf" );
 
   // Perks
