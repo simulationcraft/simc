@@ -2315,7 +2315,8 @@ struct improved_lava_lash_t : public shaman_spell_t
       dot -> copy( state -> target, DOT_COPY_CLONE );
       // Improved Lava Lash spreads base flame shocks, so null out any
       // persistent modifir that may have been copied
-      dot -> state -> persistent_multiplier = 1.0;
+      dot_t* new_dot = td( state -> target ) -> dot.flame_shock;
+      new_dot -> state -> persistent_multiplier = 1.0;
     }
   }
 };
