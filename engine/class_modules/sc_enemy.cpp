@@ -920,7 +920,8 @@ void enemy_t::init_action_list()
     }
 
     // If we have more than one tank, create a new action list for each
-    if ( tanks.size() > 1 )
+    // Only do this if the user hasn't specified additional action lists beyond precombat & default
+    if ( tanks.size() > 1 && action_priority_list.size() < 2 )
     {
       std::string new_action_list_str = "";
 
@@ -1014,7 +1015,7 @@ void enemy_t::create_options()
     opt_float( "enemy_size", size ),
     opt_string( "enemy_tank", target_str ),
     opt_string( "tmi_boss", tmi_boss_str ),
-    opt_bool( "apply_debuff", apply_damage_taken_debuff ),
+    opt_int( "apply_debuff", apply_damage_taken_debuff ),
     opt_bool( "dual_wield", dual_wield ),
     opt_null()
   };
