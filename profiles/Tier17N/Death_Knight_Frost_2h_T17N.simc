@@ -78,28 +78,26 @@ actions.single_target+=/plague_leech,if=talent.plague_leech.enabled
 actions.single_target+=/empower_rune_weapon
 
 head=primal_gladiators_plate_helm,id=111241
-neck=primal_gladiators_choker_of_cruelty,id=111207
-shoulders=primal_gladiators_plate_shoulders,id=111243,enchant=10str_5crit
-back=primal_gladiators_cloak_of_prowess,id=111206
-chest=primal_gladiators_plate_chestpiece,id=111239,enchant=glorious_stats
-wrists=primal_gladiators_armplates_of_prowess,id=111181,enchant=8mastery
-hands=primal_gladiators_plate_gauntlets,id=111210,enchant=8crit
+neck=primal_gladiators_choker_of_cruelty,id=111207,enchant=gift_of_haste
+shoulders=primal_gladiators_plate_shoulders,id=111243
+back=primal_gladiators_cloak_of_prowess,id=111206,enchant=gift_of_haste
+chest=primal_gladiators_plate_chestpiece,id=111239
+wrists=primal_gladiators_armplates_of_prowess,id=111181
+hands=primal_gladiators_plate_gauntlets,id=111210
 waist=primal_gladiators_girdle_of_cruelty,id=111174
-legs=primal_gladiators_plate_legguards,id=111212,enchant=14str_8crit
-feet=primal_gladiators_warboots_of_cruelty,id=111177,enchant=pandarens_step
-finger1=primal_gladiators_signet_of_cruelty,id=111219
-finger2=primal_gladiators_signet_of_accuracy,id=111272
+legs=primal_gladiators_plate_legguards,id=111212
+feet=primal_gladiators_warboots_of_cruelty,id=111177
+finger1=primal_gladiators_signet_of_cruelty,id=111219,enchant=gift_of_haste
+finger2=primal_gladiators_signet_of_accuracy,id=111272,enchant=gift_of_haste
 trinket1=primal_gladiators_badge_of_victory,id=111232
 trinket2=primal_gladiators_insignia_of_victory,id=111233
 main_hand=primal_gladiators_decapitator,id=111202,enchant=rune_of_the_fallen_crusader
 
 # Gear Summary
-# gear_strength=2621
-# gear_agility=3
-# gear_stamina=3253
-# gear_intellect=3
-# gear_crit_rating=1388
-# gear_haste_rating=436
-# gear_mastery_rating=687
+# gear_strength=2588
+# gear_stamina=3250
+# gear_crit_rating=1367
+# gear_haste_rating=976
+# gear_mastery_rating=672
 # gear_armor=2574
 # gear_multistrike_rating=411

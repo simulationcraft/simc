@@ -34,6 +34,7 @@ actions+=/auto_attack
 actions+=/speed_of_light,if=talent.speed_of_light.enabled&movement.remains>1
 actions+=/avenging_wrath
 actions+=/holy_avenger,if=talent.holy_avenger.enabled&holy_power<=2
+actions+=/use_item,name=primal_gladiators_badge_of_victory
 actions+=/blood_fury
 actions+=/berserking
 actions+=/arcane_torrent
@@ -63,27 +64,27 @@ actions+=/templars_verdict
 actions+=/holy_prism,if=talent.holy_prism.enabled
 
 head=primal_gladiators_plate_helm,id=111211
-neck=primal_gladiators_choker_of_cruelty,id=111207
-shoulders=primal_gladiators_plate_shoulders,id=111213,enchant=10str_5crit
-back=primal_gladiators_cloak_of_prowess,id=111206
-chest=primal_gladiators_plate_chestpiece,id=111209,enchant=glorious_stats
-wrists=primal_gladiators_armplates_of_victory,id=111182,enchant=8mastery
-hands=primal_gladiators_plate_gauntlets,id=111210,enchant=8crit
+neck=primal_gladiators_choker_of_cruelty,id=111207,enchant=gift_of_mastery
+shoulders=primal_gladiators_plate_shoulders,id=111213
+back=primal_gladiators_cloak_of_prowess,id=111206,enchant=gift_of_mastery
+chest=primal_gladiators_plate_chestpiece,id=111209
+wrists=primal_gladiators_armplates_of_victory,id=111182
+hands=primal_gladiators_plate_gauntlets,id=111210
 waist=primal_gladiators_girdle_of_cruelty,id=111174
-legs=primal_gladiators_plate_legguards,id=111212,enchant=14str_8crit
-feet=primal_gladiators_warboots_of_prowess,id=111178,enchant=pandarens_step
+legs=primal_gladiators_plate_legguards,id=111212
+feet=primal_gladiators_warboots_of_prowess,id=111178
 finger1=primal_gladiators_signet_of_cruelty,id=111219
 finger2=primal_gladiators_signet_of_accuracy,id=111220
-trinket1=primal_gladiators_medallion_of_cruelty,id=111229
+trinket1=primal_gladiators_badge_of_victory,id=111232
 trinket2=primal_gladiators_insignia_of_victory,id=111233
-main_hand=primal_gladiators_decapitator,id=111202,enchant=dancing_steel
+main_hand=primal_gladiators_decapitator,id=111202,enchant=mark_of_warsong
 
 # Gear Summary
-# gear_strength=2411
-# gear_stamina=3253
-# gear_crit_rating=1244
+# gear_strength=2588
+# gear_stamina=3250
+# gear_crit_rating=1013
 # gear_haste_rating=370
-# gear_mastery_rating=593
+# gear_mastery_rating=918
 # gear_armor=2574
 # gear_multistrike_rating=701
 # gear_versatility_rating=224

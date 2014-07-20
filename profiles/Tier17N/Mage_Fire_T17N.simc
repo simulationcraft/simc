@@ -40,6 +40,7 @@ actions+=/potion,name=jade_serpent
 actions+=/combustion,if=target.time_to_die<22
 actions+=/combustion,if=dot.ignite.tick_dmg>=((3*action.pyroblast.crit_damage)*mastery_value*0.5)
 actions+=/combustion,if=dot.ignite.tick_dmg>=((action.fireball.crit_damage+action.inferno_blast.crit_damage+action.pyroblast.hit_damage)*mastery_value*0.5)&dot.pyroblast.ticking&buff.pyroblast.down&buff.presence_of_mind.down
+actions+=/use_item,slot=trinket1
 actions+=/flamestrike,if=active_enemies>=5
 actions+=/inferno_blast,if=dot.combustion.ticking&active_enemies>1
 actions+=/pyroblast,if=buff.pyroblast.react|buff.presence_of_mind.up
@@ -48,34 +49,30 @@ actions+=/living_bomb,cycle_targets=1,if=talent.living_bomb.enabled&((!ticking|r
 actions+=/fireball
 actions+=/scorch,moving=1
 
-head=ebon_ritual_hood,id=105647,upgrade=2,gems=8haste_8mastery_9int
-neck=untainted_guardians_chain,id=105465,upgrade=2
-shoulders=chronomancer_mantle,id=99401,upgrade=2,gems=8haste_8mastery_8haste_8mastery_6int,enchant=10int_5crit
-back=jadefire_drape,id=98150,upgrade=2,gems=4int_8haste_3int,enchant=9crit
-chest=chronomancer_robes,id=99400,upgrade=2,gems=8haste_8mastery_8haste_8mastery_8haste_8mastery_9int,enchant=4all
-wrists=avools_ancestral_bracers,id=105591,upgrade=2,enchant=9int
-hands=chronomancer_gloves,id=99397,upgrade=2,gems=8haste_8mastery_8haste_8mastery_6int,enchant=9mastery
-waist=belt_of_ominous_trembles,id=105515,upgrade=2,gems=8haste_8mastery_8crit_8mastery_16mastery_6int
-legs=chronomancer_leggings,id=99399,upgrade=2,gems=16mastery_16mastery_6int,enchant=14int_8crit
-feet=boneinlaid_sandals,id=105493,upgrade=2,gems=16mastery_3hit,enchant=7mastery
-finger1=iyyokuks_hereditary_seal,id=105628,upgrade=2
-finger2=signet_of_the_dinomancers,id=105606,upgrade=2,gems=16mastery
-trinket1=purified_bindings_of_immerseus,id=105422,upgrade=2
-trinket2=kardris_toxic_totem,id=105540,upgrade=2
-main_hand=immaculately_preserved_wand,id=105594,upgrade=2,gems=8haste_8mastery_3int,enchant=jade_spirit
-off_hand=revelations_of_yshaarj,id=105650,upgrade=2,gems=8haste_8mastery_3int,enchant=8int
+head=primal_gladiators_hood_of_prowess,id=111084
+neck=primal_gladiators_pendant_of_cruelty,id=111128,enchant=gift_of_critical_strike
+shoulders=primal_gladiators_felweave_amice,id=111238
+back=primal_gladiators_drape_of_cruelty,id=111124,enchant=gift_of_critical_strike
+chest=primal_gladiators_felweave_raiment,id=111237
+wrists=primal_gladiators_cuffs_of_prowess,id=111099
+hands=primal_gladiators_felweave_handguards,id=111234
+waist=primal_gladiators_cord_of_victory,id=111095
+legs=primal_gladiators_felweave_trousers,id=111236
+feet=primal_gladiators_treads_of_cruelty,id=111096
+finger1=primal_gladiators_band_of_victory,id=111136,enchant=gift_of_critical_strike
+finger2=primal_gladiators_band_of_cruelty,id=111134,enchant=gift_of_critical_strike
+trinket1=primal_gladiators_badge_of_dominance,id=111227
+trinket2=primal_gladiators_insignia_of_dominance,id=111228
+main_hand=primal_gladiators_mageblade,id=111119,enchant=mark_of_the_thunderlord
+off_hand=primal_gladiators_endgame,id=111132
 
 # Gear Summary
-# gear_strength=4
-# gear_agility=4
-# gear_stamina=1536
-# gear_intellect=1044
-# gear_spell_power=590
-# gear_hit_rating=3
-# gear_crit_rating=419
-# gear_haste_rating=450
-# gear_mastery_rating=724
-# gear_armor=284
-# gear_multistrike_rating=99
-# tier16_2pc_caster=1
-# tier16_4pc_caster=1
+# gear_stamina=3245
+# gear_intellect=2584
+# gear_spell_power=1244
+# gear_crit_rating=1445
+# gear_haste_rating=452
+# gear_mastery_rating=1122
+# gear_armor=600
+# gear_multistrike_rating=301
+# gear_versatility_rating=102
