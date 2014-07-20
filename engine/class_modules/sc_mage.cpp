@@ -38,6 +38,7 @@
 // Brainfreeze doesn't look correct in the spelldata (and isn't correct on the beta) in regards to proc chance. Until this is fixed, hardcoding it's buff and proc rate will suffice. Need to go and fix once the spell data is fixed.
 // Do not hardcode 15second duration for enhanced frostbolt perk
 // Ice Lance MS should not be procing Frost Bomb explosion (as per in game testing 7/20/2014)
+// All "nova" talents have the 100% damage mod applied to the primary and AoE effects - it should only be on the primary target.
 
 
 // To-do Completed:
@@ -2185,12 +2186,14 @@ struct frost_armor_t : public mage_spell_t
 struct frost_bomb_explosion_t : public mage_spell_t
 {
   frost_bomb_explosion_t( mage_t* p ) :
-    mage_spell_t( "frost_bomb_explosion", p, p -> find_spell( p -> talents.frost_bomb -> effectN( 2 ).base_value() ) )
+    mage_spell_t( "frost_bomb_explosion", p, p -> find_spell( 113092 ) )
   {
     aoe = -1;
-    base_aoe_multiplier = 0.5; // This is stored in effectN( 2 ), but it's just 50% of effectN( 1 )
-    background = true;
+    // This spell is where the actual damage coefficients are stored.
+    base_multiplier = p -> find_spell( 113092 ) -> effectN( 1 ).sp_coeff();
+    base_aoe_multiplier = p -> find_spell( 113092 ) -> effectN( 2 ).sp_coeff();
     parse_effect_data( data().effectN( 1 ) );
+    background = true;
   }
 
   virtual resource_e current_resource() const
@@ -2593,6 +2596,18 @@ struct ice_lance_t : public mage_spell_t
     p() -> buffs.fingers_of_frost -> decrement();
     p() -> buffs.frozen_thoughts -> expire();
     p() -> trigger_icicle( true );
+  }
+
+  virtual void impact( action_state_t* s )
+  {
+
+    mage_spell_t::impact( s );
+
+    if ( p() -> talents.frost_bomb -> ok() )
+    {
+      if ( td( s -> target ) -> debuffs.frost_bomb -> up() && frozen )
+        frost_bomb_explode -> execute();
+    }
   }
 
   virtual double action_multiplier() const
