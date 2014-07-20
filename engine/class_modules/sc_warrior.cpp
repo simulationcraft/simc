@@ -1154,6 +1154,7 @@ struct bladestorm_t: public warrior_attack_t
     stancemask = STANCE_BATTLE | STANCE_GLADIATOR | STANCE_DEFENSE;
 
     channeled = tick_zero = true;
+    callbacks = false;
 
     bladestorm_mh -> weapon = &( player -> main_hand_weapon );
     add_child( bladestorm_mh );
@@ -2188,7 +2189,7 @@ struct ravager_t: public warrior_attack_t
   {
     parse_options( NULL, options_str );
     stancemask = STANCE_BATTLE | STANCE_GLADIATOR | STANCE_DEFENSE;
-    hasted_ticks = false;
+    hasted_ticks = callbacks = false;
     add_child( ravager );
   }
 
@@ -2294,6 +2295,7 @@ struct second_wind_t: public warrior_heal_t
   second_wind_t( warrior_t* p ):
     warrior_heal_t( "second_wind", p, p -> talents.second_wind )
   {
+    callbacks = false;
   }
 
   virtual void execute()
@@ -2840,6 +2842,7 @@ struct battle_shout_t: public warrior_spell_t
   {
     parse_options( NULL, options_str );
     stancemask = STANCE_BATTLE | STANCE_GLADIATOR | STANCE_DEFENSE;
+    callbacks = false;
   }
 
   virtual void execute()
@@ -2908,6 +2911,7 @@ struct commanding_shout_t: public warrior_spell_t
   {
     parse_options( NULL, options_str );
     stancemask = STANCE_BATTLE | STANCE_GLADIATOR | STANCE_DEFENSE;
+    callbacks = false;
   }
 
   virtual void execute()
@@ -3386,7 +3390,7 @@ struct stance_t: public warrior_spell_t
       cooldown -> duration = ( timespan_t::from_seconds( swap ) );
     }
 
-    harmful     = false;
+    callbacks = harmful = false;
     use_off_gcd = true;
   }
 

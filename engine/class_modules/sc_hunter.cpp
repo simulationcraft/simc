@@ -2643,9 +2643,7 @@ struct barrage_t : public hunter_spell_t
   {
     parse_options( NULL, options_str );
     add_child( peck );
-    hasted_ticks = false;
-    may_crit = false;
-    may_miss = false;
+    hasted_ticks = callbacks = may_crit = may_miss = false;
   }
 
   hunter_t* p() const { return static_cast<hunter_t*>( player ); }
@@ -2773,7 +2771,7 @@ struct fervor_t : public hunter_spell_t
   {
     parse_options( NULL, options_str );
 
-    harmful = false;
+    harmful = callbacks = false;
 
     trigger_gcd = timespan_t::zero();
 
@@ -2922,7 +2920,7 @@ struct summon_pet_t : public hunter_spell_t
     hunter_spell_t( "summon_pet", player ),
     pet( 0 )
   {
-    harmful = false;
+    harmful = callbacks = false;
     std::string pet_name = options_str.empty() ? p() -> summon_pet_str : options_str;
     pet = p() -> find_pet( pet_name );
     if ( ! pet )
@@ -2959,7 +2957,7 @@ struct stampede_t : public hunter_spell_t
     hunter_spell_t( "stampede", p, p -> talents.stampede )
   {
     parse_options( NULL, options_str );
-    harmful = false;
+    harmful = callbacks = false;
     school = SCHOOL_PHYSICAL;
   }
 
@@ -3425,13 +3423,19 @@ void hunter_t::init_action_list()
       if ( sim -> allow_flasks )
       {
         precombat += "/flask,type=";
-        precombat += ( level > 85 ) ? "spring_blossoms" : "winds";
+        if ( level >= 90 )
+          precombat += "greater_draenic_critical_strike_flask";
+        else
+          precombat += ( level > 85 ) ? "spring_blossoms" : "winds";
       }
 
       if ( sim -> allow_food )
       {
         precombat += "/food,type=";
-        precombat += ( level > 85 ) ? "sea_mist_rice_noodles" : "seafood_magnifique_feast";
+        if ( level >= 90 )
+          precombat += "blackrock_barbecue";
+        else
+          precombat += ( level > 85 ) ? "sea_mist_rice_noodles" : "seafood_magnifique_feast";
       }
     }
 
@@ -3439,14 +3443,21 @@ void hunter_t::init_action_list()
     precombat += "/snapshot_stats";
     precombat += "/exotic_munitions,ammo_type=frozen,if=talent.exotic_munitions.enabled";
 
-    if ( ( level >= 80 ) && ( sim -> allow_potions ) )
+    if ( sim -> allow_potions )
     {
-      precombat += ( level > 85 ) ? "/potion,name=virmens_bite" : "/potion,name=tolvir";
+      if ( level >= 90 )
+      {
+        precombat += "/potion,name=draenic_agility";
+        action_list_str += "/potion,name=draenic_agility,if=target.time_to_die<=25|buff.stampede.up";
+      }
+      else if ( level >= 80 )
+      {
+        precombat += ( level > 85 ) ? "/potion,name=virmens_bite" : "/potion,name=tolvir";
 
-      action_list_str += ( level > 85 ) ? "/potion,name=virmens_bite" : "/potion,name=tolvir";
-      action_list_str += ",if=target.time_to_die<=25|buff.stampede.up";
+        action_list_str += ( level > 85 ) ? "/potion,name=virmens_bite" : "/potion,name=tolvir";
+        action_list_str += ",if=target.time_to_die<=25|buff.stampede.up";
+      }
     }
-
     if ( specialization() == HUNTER_SURVIVAL )
       action_list_str += init_use_racial_actions();
     action_list_str += init_use_item_actions();
