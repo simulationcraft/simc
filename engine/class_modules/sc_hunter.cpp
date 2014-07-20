@@ -1953,6 +1953,7 @@ struct black_arrow_t : public hunter_ranged_attack_t
     cooldown -> duration += p() -> specs.trap_mastery -> effectN( 4 ).time_value();
     base_multiplier *= 1.0 + p() -> specs.trap_mastery -> effectN( 2 ).percent();
     base_multiplier *= 1.0 + p() -> perks.improved_black_arrow -> effectN( 1 ).percent();
+    may_multistrike = 1;
   }
 
   virtual bool ready()
@@ -1966,15 +1967,12 @@ struct black_arrow_t : public hunter_ranged_attack_t
     return hunter_ranged_attack_t::ready();
   }
 
-  virtual void tick( dot_t* d )
+  virtual void multistrike_tick( const action_state_t* src_state, action_state_t* ms_state, double multiplier )
   {
-    hunter_ranged_attack_t::tick( d );
+    hunter_ranged_attack_t::multistrike_tick( src_state, ms_state, multiplier );
 
-    if ( result_is_multistrike( d -> state -> result ) )
-    {
-      p() -> buffs.lock_and_load -> trigger( 1 );
-      p() -> procs.lock_and_load -> occur();
-    }
+    p() -> buffs.lock_and_load -> trigger( 1 );
+    p() -> procs.lock_and_load -> occur();
   }
 };
 
@@ -2116,6 +2114,7 @@ struct explosive_shot_tick_t: public residual_action::residual_periodic_action_t
   {
     tick_may_crit = true;
     dual = true;
+    may_multistrike = 1;
 
     // suppress direct damage in the dot.
     base_dd_min = base_dd_max = 0;
