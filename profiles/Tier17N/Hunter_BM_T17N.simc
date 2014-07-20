@@ -30,6 +30,7 @@ actions+=/blood_fury
 actions+=/berserking
 actions+=/arcane_torrent
 actions+=/potion,name=draenic_agility,if=buff.beast_within.up
+actions+=/run_action_list,name=single_target
 
 actions.single_target=dire_beast,if=talent.dire_beast.enabled
 actions.single_target+=/fervor,if=talent.fervor.enabled&focus<=65

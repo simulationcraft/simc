@@ -30,6 +30,7 @@ actions+=/blood_fury
 actions+=/berserking
 actions+=/arcane_torrent
 actions+=/potion,name=draenic_agility
+actions+=/run_action_list,name=single_target
 
 actions.single_target=explosive_trap,if=active_enemies>1
 actions.single_target+=/fervor,if=talent.fervor.enabled&focus<=50

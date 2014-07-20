@@ -3412,6 +3412,8 @@ void hunter_t::apl_bm()
       default_list -> add_action( "potion,name=virmens_bite,if=buff.beast_within.up" );
   }
 
+  default_list -> add_action( "run_action_list,name=single_target" );
+
   single_target -> add_talent( this, "Dire Beast" );
   single_target -> add_talent( this, "Fervor", "if=focus<=65" );
   single_target -> add_action( this, "Bestial Wrath", "if=focus>60&!buff.beast_within.up" );
@@ -3464,6 +3466,8 @@ void hunter_t::apl_mm()
     else if ( level >= 80 )
       default_list -> add_action( "potion,name=virmens_bite,if=buff.rapid_fire.up" );
   }
+
+  default_list -> add_action( "run_action_list,name=single_target" );
 
   single_target -> add_talent( this, "Powershot" );
   single_target -> add_talent( this, "Fervor", "if=focus<=50" );
@@ -3518,6 +3522,8 @@ void hunter_t::apl_surv()
     else if ( level >= 80 )
       default_list -> add_action( "potion,name=virmens_bite" );
   }
+
+  default_list -> add_action( "run_action_list,name=single_target" );
 
   single_target -> add_action( this, "Explosive Trap", "if=active_enemies>1" );
   single_target -> add_talent( this, "Fervor", "if=focus<=50" );

@@ -30,6 +30,7 @@ actions+=/blood_fury
 actions+=/berserking
 actions+=/arcane_torrent
 actions+=/potion,name=draenic_agility,if=buff.rapid_fire.up
+actions+=/run_action_list,name=single_target
 
 actions.single_target=powershot,if=talent.powershot.enabled
 actions.single_target+=/fervor,if=talent.fervor.enabled&focus<=50
