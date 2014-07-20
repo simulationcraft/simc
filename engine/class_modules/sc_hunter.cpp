@@ -2616,44 +2616,50 @@ struct barrage_t : public hunter_spell_t
 
 // A Murder of Crows ========================================================
 
-struct moc_t : public ranged_attack_t
-{
   struct peck_t : public ranged_attack_t
   {
-    peck_t( hunter_t* player ) :
-      ranged_attack_t( "crow_peck", player, player -> find_spell( 131900 ) )
+    peck_t( hunter_t* player, const std::string& name ):
+      ranged_attack_t( name, player, player -> find_spell( 131900 ) )
     {
-      background  = true;
+      dual = true;
       may_crit   = true;
       may_parry = false;
       may_block = false;
       travel_speed = 0.0;
 
       attack_power_mod.direct = data().effectN( 1 ).ap_coeff();
-      attack_power_mod.tick   = attack_power_mod.direct;
+    }
+
+    hunter_t* p() const { return static_cast<hunter_t*>( player ); }
+
+    virtual double action_multiplier() const
+    {
+      double am = ranged_attack_t::action_multiplier();
+      am *= p() -> beast_multiplier();
+      return am;
     }
   };
 
+  struct moc_t: public ranged_attack_t
+  {
+    peck_t* peck;
   moc_t( hunter_t* player, const std::string& options_str ) :
-    ranged_attack_t( "a_murder_of_crows", player, player -> talents.a_murder_of_crows )
+    ranged_attack_t( "a_murder_of_crows", player, player -> talents.a_murder_of_crows ),
+    peck( new peck_t( player, "crow_peck" ) )
   {
     parse_options( NULL, options_str );
-
+    add_child( peck );
     hasted_ticks = false;
     may_crit = false;
     may_miss = false;
-
-    dynamic_tick_action = true;
-    tick_action = new peck_t( player );
   }
 
   hunter_t* p() const { return static_cast<hunter_t*>( player ); }
 
-  virtual double action_multiplier() const
+  void tick( dot_t*d )
   {
-    double am = ranged_attack_t::action_multiplier();
-    am *= p() -> beast_multiplier();
-    return am;
+    ranged_attack_t::tick( d );
+    peck -> execute();
   }
 
   virtual double cost() const
@@ -2675,7 +2681,6 @@ struct moc_t : public ranged_attack_t
 
     ranged_attack_t::execute();
   }
-
 };
 
 // Dire Beast ===============================================================
