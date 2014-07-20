@@ -2614,17 +2614,37 @@ struct barrage_t : public hunter_spell_t
   }
 };
 
-struct moc_t: public ranged_attack_t
+// A Murder of Crows ========================================================
+
+struct moc_t : public ranged_attack_t
 {
-  moc_t( hunter_t* player, const std::string& options_str ):
+  struct peck_t : public ranged_attack_t
+  {
+    peck_t( hunter_t* player ) :
+      ranged_attack_t( "crow_peck", player, player -> find_spell( 131900 ) )
+    {
+      background  = true;
+      may_crit   = true;
+      may_parry = false;
+      may_block = false;
+      travel_speed = 0.0;
+
+      attack_power_mod.direct = data().effectN( 1 ).ap_coeff();
+      attack_power_mod.tick   = attack_power_mod.direct;
+    }
+  };
+
+  moc_t( hunter_t* player, const std::string& options_str ) :
     ranged_attack_t( "a_murder_of_crows", player, player -> talents.a_murder_of_crows )
   {
     parse_options( NULL, options_str );
-    const spell_data_t* tick_dmg = p() -> find_spell( 131900 );
+
     hasted_ticks = false;
-    school = SCHOOL_PHYSICAL;
-    attack_power_mod.direct = 0;
-    attack_power_mod.tick = tick_dmg -> effectN( 1 ).ap_coeff();
+    may_crit = false;
+    may_miss = false;
+
+    dynamic_tick_action = true;
+    tick_action = new peck_t( player );
   }
 
   hunter_t* p() const { return static_cast<hunter_t*>( player ); }
@@ -2632,7 +2652,7 @@ struct moc_t: public ranged_attack_t
   virtual double action_multiplier() const
   {
     double am = ranged_attack_t::action_multiplier();
-    am *= 1.0 + p() -> beast_multiplier();
+    am *= p() -> beast_multiplier();
     return am;
   }
 
