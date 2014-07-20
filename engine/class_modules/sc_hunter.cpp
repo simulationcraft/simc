@@ -156,7 +156,7 @@ public:
 
     const spell_data_t* exotic_munitions;
     const spell_data_t* focusing_shot;
-    const spell_data_t* versatility;
+    const spell_data_t* adaptation;
     const spell_data_t* lone_wolf;
   } talents;
 
@@ -599,6 +599,7 @@ public:
     // base for all pets
     const spell_data_t* wild_hunt;
     const spell_data_t* combat_experience;
+    const spell_data_t* adaptation_combat_experience;
   } specs;
 
   // Buffs
@@ -713,11 +714,8 @@ public:
 
     resources.infinite_resource[ RESOURCE_FOCUS ] = o() -> resources.infinite_resource[ RESOURCE_FOCUS ];
 
-    world_lag = timespan_t::from_seconds( 0.3 ); // Pet AI latency to get 3.3s claw cooldown as confirmed by Rivkah on EJ, August 2011
-    world_lag_override = true;
-
-    owner_coeff.ap_from_ap = 1.0;
-    owner_coeff.sp_from_ap = 0.5;
+    owner_coeff.ap_from_ap = 0.3333;
+    owner_coeff.sp_from_ap = 0.3333;
   }
 
   virtual void create_buffs()
@@ -866,8 +864,8 @@ public:
       m *= 1.0 + buffs.tier16_4pc_bm_brutal_kinship -> stack() * buffs.tier16_4pc_bm_brutal_kinship -> data().effectN( 1 ).percent();
 
     // Pet combat experience
-    if ( o() -> talents.versatility -> ok() )
-      m *= 1.0 + ( specs.combat_experience -> effectN( 2 ).percent() + 0.2 );  // No spell data for the 20% from versatility.
+    if ( o() -> talents.adaptation -> ok() )
+      m *= 1.0 + specs.adaptation_combat_experience -> effectN( 2 ).percent();
     else
       m *= 1.0 + specs.combat_experience -> effectN( 2 ).percent();
 
@@ -1420,6 +1418,7 @@ void hunter_main_pet_t::init_spells()
 
   specs.wild_hunt = find_spell( 62762 );
   specs.combat_experience = find_specialization_spell( "Combat Experience" );
+  specs.adaptation_combat_experience = find_spell( 156843 );
 }
 
 // ==========================================================================
@@ -1442,16 +1441,13 @@ struct dire_critter_t : public hunter_pet_t
       weapon_multiplier = 0;
       base_execute_time = weapon -> swing_time;
       base_dd_min = base_dd_max = player -> dbc.spell_scaling( p.o() -> type, p.o() -> level );
-      attack_power_mod.direct = 0.2875;
+      attack_power_mod.direct = 0.575;
       school = SCHOOL_PHYSICAL;
 
       trigger_gcd = timespan_t::zero();
 
-      background = true;
-      repeating  = true;
+      background = repeating = may_glance = may_crit = true;
       special    = false;
-      may_glance = true;
-      may_crit   = true;
 
       focus_gain = player -> find_spell( 120694 ) -> effectN( 1 ).base_value();
     }
@@ -2616,44 +2612,50 @@ struct barrage_t : public hunter_spell_t
 
 // A Murder of Crows ========================================================
 
-struct moc_t : public ranged_attack_t
-{
   struct peck_t : public ranged_attack_t
   {
-    peck_t( hunter_t* player ) :
-      ranged_attack_t( "crow_peck", player, player -> find_spell( 131900 ) )
+    peck_t( hunter_t* player, const std::string& name ):
+      ranged_attack_t( name, player, player -> find_spell( 131900 ) )
     {
-      background  = true;
+      dual = true;
       may_crit   = true;
       may_parry = false;
       may_block = false;
       travel_speed = 0.0;
 
       attack_power_mod.direct = data().effectN( 1 ).ap_coeff();
-      attack_power_mod.tick   = attack_power_mod.direct;
+    }
+
+    hunter_t* p() const { return static_cast<hunter_t*>( player ); }
+
+    virtual double action_multiplier() const
+    {
+      double am = ranged_attack_t::action_multiplier();
+      am *= p() -> beast_multiplier();
+      return am;
     }
   };
 
+  struct moc_t: public ranged_attack_t
+  {
+    peck_t* peck;
   moc_t( hunter_t* player, const std::string& options_str ) :
-    ranged_attack_t( "a_murder_of_crows", player, player -> talents.a_murder_of_crows )
+    ranged_attack_t( "a_murder_of_crows", player, player -> talents.a_murder_of_crows ),
+    peck( new peck_t( player, "crow_peck" ) )
   {
     parse_options( NULL, options_str );
-
+    add_child( peck );
     hasted_ticks = false;
     may_crit = false;
     may_miss = false;
-
-    dynamic_tick_action = true;
-    tick_action = new peck_t( player );
   }
 
   hunter_t* p() const { return static_cast<hunter_t*>( player ); }
 
-  virtual double action_multiplier() const
+  void tick( dot_t*d )
   {
-    double am = ranged_attack_t::action_multiplier();
-    am *= p() -> beast_multiplier();
-    return am;
+    ranged_attack_t::tick( d );
+    peck -> execute();
   }
 
   virtual double cost() const
@@ -2675,7 +2677,6 @@ struct moc_t : public ranged_attack_t
 
     ranged_attack_t::execute();
   }
-
 };
 
 // Dire Beast ===============================================================
@@ -3096,7 +3097,7 @@ void hunter_t::init_spells()
   talents.wyvern_sting                      = find_talent_spell( "Wyvern Sting" );
   talents.binding_shot                      = find_talent_spell( "Binding Shot" );
 
-  talents.crouching_tiger_hidden_chimaera    = find_talent_spell( "Crouching Tiger, Hidden chimaera" );
+  talents.crouching_tiger_hidden_chimaera   = find_talent_spell( "Crouching Tiger, Hidden chimaera" );
   talents.iron_hawk                         = find_talent_spell( "Iron Hawk" );
   talents.spirit_bond                       = find_talent_spell( "Spirit Bond" );
 
@@ -3114,7 +3115,7 @@ void hunter_t::init_spells()
 
   talents.exotic_munitions                  = find_talent_spell( "Exotic Munitions" );
   talents.focusing_shot                     = find_talent_spell( "Focusing Shot" );
-  talents.versatility                       = find_talent_spell( "Versatility" );
+  talents.adaptation                        = find_talent_spell( "Adaptation" );
   talents.lone_wolf                         = find_talent_spell( "Lone Wolf" );
 
   // Perks
