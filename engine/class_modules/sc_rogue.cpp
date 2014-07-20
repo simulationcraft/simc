@@ -551,6 +551,10 @@ struct rogue_attack_t : public melee_attack_t
     return p() -> buffs.vanish -> check() || p() -> buffs.stealth -> check() || player -> buffs.shadowmeld -> check();
   }
 
+  // Adjust poison proc chance
+  virtual double composite_poison_flat_modifier( const action_state_t* ) const
+  { return 0.0; }
+
   action_state_t* new_state()
   { return new rogue_attack_state_t( this, target ); }
 
@@ -718,10 +722,8 @@ struct rogue_poison_t : public rogue_attack_t
         chance += p() -> perk.enhanced_envenom -> effectN( 1 ).percent();
     }
 
-    // Fan of Knives for Assassination always applies poisons
-    if ( p() -> perk.enhanced_poisons -> ok() &&
-         source_state -> action -> id == p() -> spell.fan_of_knives -> id() )
-      chance += 1.0;
+    const rogue_attack_t* attack = debug_cast< const rogue_attack_t* >( source_state -> action );
+    chance += attack -> composite_poison_flat_modifier( source_state );
 
     return chance;
   }
@@ -1859,9 +1861,17 @@ struct fan_of_knives_t : public rogue_attack_t
     rogue_attack_t( "fan_of_knives", p, p -> find_class_spell( "Fan of Knives" ), options_str )
   {
     ability_type = FAN_OF_KNIVES;
-    // Don't put in a weapon here, because we need to specialize the poison
-    // application
+    weapon = &( player -> main_hand_weapon );
+    weapon_multiplier = 0;
     aoe = -1;
+  }
+
+  double composite_poison_flat_modifier( const action_state_t* ) const
+  {
+    if ( p() -> perk.enhanced_poisons -> ok() )
+      return 1.0;
+
+    return 0.0;
   }
 
   void impact( action_state_t* state )
