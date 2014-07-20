@@ -39,6 +39,7 @@
 // Do not hardcode 15second duration for enhanced frostbolt perk
 // Ice Lance MS should not be procing Frost Bomb explosion (as per in game testing 7/20/2014)
 // All "nova" talents have the 100% damage mod applied to the primary and AoE effects - it should only be on the primary target.
+// Frostbomb should be working correctly....(maybe not it's AoE portion? But it should be.....)
 
 
 // To-do Completed:
@@ -106,7 +107,7 @@ public:
 
   // Active
   actions::ignite_t* active_ignite;
-  int active_living_bomb_targets;
+  int active_bomb_targets;
   action_t* explode; // Explode helps with handling Unstable Magic.
   player_t* last_bomb_target;
 
@@ -351,7 +352,7 @@ public:
     icicle( 0 ),
     icicle_event( 0 ),
     active_ignite( 0 ),
-    active_living_bomb_targets( 0 ),
+    active_bomb_targets( 0 ),
     last_bomb_target( 0 ),
     benefits( benefits_t() ),
     buffs( buffs_t() ),
@@ -2209,12 +2210,50 @@ struct frost_bomb_t : public mage_spell_t
     harmful = false;
   }
 
+  virtual void execute()
+  {
+    mage_t& p = *this -> p();
+    bool pre_ticking = get_dot( target ) -> is_ticking();
+
+    mage_spell_t::execute();
+
+    if ( result_is_hit( execute_state -> result ) )
+    {
+      if ( ! pre_ticking )
+        p.active_bomb_targets++;
+      p.last_bomb_target = execute_state -> target;
+    }
+  }
+
+  virtual void last_tick( dot_t* d )
+  {
+
+    mage_spell_t::last_tick( d );
+
+    mage_t& p = *this -> p();
+    p.active_bomb_targets--;
+  }
+
   virtual void impact( action_state_t* s )
   {
     mage_spell_t::impact( s );
 
     td( s -> target ) -> debuffs.frost_bomb -> trigger();
   }
+
+  virtual bool ready()
+  {
+    mage_t& p = *this -> p();
+
+    assert( p.active_bomb_targets <= 1 && p.active_bomb_targets >= 0 );
+
+    if ( p.active_bomb_targets == 1 )
+      return false;
+
+    return mage_spell_t::ready();
+  }
+
+
 };
 
 // Frostbolt Spell ==========================================================
@@ -2851,7 +2890,7 @@ struct living_bomb_t : public mage_spell_t
 
     explosion_spell -> execute();
     mage_t& p = *this -> p();
-    p.active_living_bomb_targets--;
+    p.active_bomb_targets--;
   }
 
   virtual void execute()
@@ -2864,7 +2903,7 @@ struct living_bomb_t : public mage_spell_t
     if ( result_is_hit( execute_state -> result ) )
     {
       if ( ! pre_ticking )
-        p.active_living_bomb_targets++;
+        p.active_bomb_targets++;
       p.last_bomb_target = execute_state -> target;
     }
   }
@@ -2873,9 +2912,9 @@ struct living_bomb_t : public mage_spell_t
   {
     mage_t& p = *this -> p();
 
-    assert( p.active_living_bomb_targets <= 3 && p.active_living_bomb_targets >= 0 );
+    assert( p.active_bomb_targets <= 3 && p.active_bomb_targets >= 0 );
 
-    if ( p.active_living_bomb_targets == 3 )
+    if ( p.active_bomb_targets == 3 )
       return false;
 
     return mage_spell_t::ready();
@@ -4546,7 +4585,7 @@ void mage_t::reset()
   rotation.reset();
   icicles.clear();
   core_event_t::cancel( icicle_event );
-  active_living_bomb_targets = 0;
+  active_bomb_targets = 0;
   last_bomb_target = 0;
   pyro_switch.reset();
 }
