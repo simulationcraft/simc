@@ -259,6 +259,7 @@ action_t::action_t( action_e       ty,
   name_str( token ),
   player( p ),
   target( p -> target ),
+  default_target( p -> target ),
   target_cache(),
   school( SCHOOL_NONE ),
   id(),
@@ -1757,6 +1758,9 @@ void action_t::init()
   initialized = true;
 
   init_target_cache();
+
+  // Setup default target in init
+  default_target = target;
 }
 
 void action_t::init_target_cache()
@@ -1776,6 +1780,7 @@ void action_t::reset()
   line_cooldown.reset( false );
   execute_event = 0;
   travel_events.clear();
+  target = default_target;
 }
 
 // action_t::cancel =========================================================
