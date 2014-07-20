@@ -2177,14 +2177,11 @@ struct explosive_shot_t : public hunter_ranged_attack_t
 
   bool ready()
   {
-    if ( ( cooldown -> up() || p() -> buffs.lock_and_load -> check() ) && ! p() -> resource_available( RESOURCE_FOCUS, cost() ) )
+    if ( cooldown -> up() && ! p() -> resource_available( RESOURCE_FOCUS, cost() ) )
     {
       if ( sim -> log ) sim -> out_log.printf( "Player %s was focus starved when Explosive Shot was ready.", p() -> name() );
       p() -> procs.explosive_shot_focus_starved -> occur();
     }
-
-    if ( p() -> buffs.lock_and_load -> check() && p() -> resource_available( RESOURCE_FOCUS, cost() ) )
-      return true;
 
     return hunter_ranged_attack_t::ready();
   }
@@ -2195,11 +2192,6 @@ struct explosive_shot_t : public hunter_ranged_attack_t
       p() -> buffs.lock_and_load -> decrement(); //The cooldown does not reset if lock and load is consumed.
     else
       hunter_ranged_attack_t::update_ready();
-  }
-
-  double composite_player_multiplier( school_e /*school*/ ) const
-  {
-    return 1.0;
   }
 
   virtual double action_multiplier() const
