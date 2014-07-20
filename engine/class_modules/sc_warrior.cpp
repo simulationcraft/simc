@@ -4296,19 +4296,22 @@ struct last_stand_t: public warrior_buff_t<buff_t>
   }
 };
 
-struct debuff_demo_shout_t: public warrior_buff_t<buff_t>
+struct debuff_demo_shout_t: public buff_t
 {
-  debuff_demo_shout_t( warrior_td_t& p, const std::string&, const spell_data_t*s ):
-    base_t( p, buff_creator_t( p.target, "demoralizing_shout", s ) )
+  debuff_demo_shout_t( warrior_td_t& wtd ):
+    buff_t( buff_creator_t( wtd, "demo_shout", wtd.source -> find_specialization_spell( "Demoralizing Shout" ) ) )
   {
     default_value = data().effectN( 1 ).percent();
   }
 
   virtual void expire_override()
   {
-    if ( warrior.sets.has_set_bonus( SET_T16_4PC_TANK ) )
-      warrior.buff.tier16_reckless_defense -> trigger();
-    base_t::expire_override();
+    warrior_t* p = (warrior_t*)player;
+
+    if ( set_bonus_t::has_set_bonus( p, SET_T16_4PC_TANK ) )
+      p -> buff.tier16_reckless_defense -> trigger();
+
+    buff_t::expire_override();
   }
 };
 
@@ -4332,10 +4335,9 @@ actor_pair_t( target, &p ), warrior( p )
     .duration( p.glyphs.colossus_smash -> effectN( 1 ).time_value() +
     p.spec.colossus_smash -> duration() );
 
-  debuffs_demoralizing_shout = new buffs::debuff_demo_shout_t( *this, "demo_shout", p.find_specialization_spell( "Demoralizing Shout" ) );
+  debuffs_demoralizing_shout = new buffs::debuff_demo_shout_t( *this );
   debuffs_taunt = buff_creator_t( *this, "taunt", p.find_class_spell( "Taunt" ) );
 }
-
 
 // warrior_t::init_buffs ====================================================
 
