@@ -61,6 +61,7 @@ race=troll
 spec=balance
 professions=engineering=600/blacksmithing=600
 talents=0102012
+
 head=primal_gladiators_dragonhide_helm,id=111108
 neck=primal_gladiators_pendant_of_cruelty,id=111128,enchant=105mastery
 shoulder=primal_gladiators_spaulders,id=111277
@@ -68,12 +69,12 @@ back=primal_gladiators_drape_of_cruelty,id=111124,enchant=gift_of_mastery
 chest=primal_gladiators_dragonhide_robes,id=111110
 wrist=primal_gladiators_bindings_of_victory,id=111149
 hands=primal_gladiators_dragonhide_gloves,id=111107
-waist=primal_gladiators_belt_of_prowess
-legs=primal_gladiators_dragonhide_legguards
-feet=primal_gladiators_boots_of_prowess
-finger1=primal_gladiators_band_of_cruelty,enchant=75mastery
-finger2=primal_gladiators_band_of_prowess,enchant=75mastery
+waist=primal_gladiators_belt_of_prowess,id=111141
+legs=primal_gladiators_dragonhide_legguards,id=111109
+feet=primal_gladiators_boots_of_prowess,id=111145
+finger1=primal_gladiators_band_of_cruelty,id=111134,enchant=75mastery
+finger2=primal_gladiators_band_of_prowess,id=111135,enchant=75mastery
 trinket1=primal_gladiators_badge_of_dominance,id=115754
 trinket2=primal_gladiators_insignia_of_dominance,id=115755
-main_hand=primal_gladiators_battle_staff,enchant=mark_of_the_frostwolf
+main_hand=primal_gladiators_battle_staff,id=111122,enchant=mark_of_the_frostwolf
 save=Druid_Balance_T17N.simc
