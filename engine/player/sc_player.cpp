@@ -717,6 +717,13 @@ void player_t::init_base_stats()
     base.stats.attribute[ STAT_INTELLECT ] = dbc.race_base( race ).intellect + dbc.attribute_base( type, level ).intellect;
     base.stats.attribute[ STAT_SPIRIT ]    = dbc.race_base( race ).spirit + dbc.attribute_base( type, level ).spirit;
 
+    // heroic presence is treated like base stats, floored before adding in; tested 7/20/2014
+    base.stats.attribute[ STAT_STRENGTH] += util::floor( racials.heroic_presence -> effectN( 1 ).average( this ) );
+    base.stats.attribute[ STAT_AGILITY ] += util::floor( racials.heroic_presence -> effectN( 2 ).average( this ) );
+    base.stats.attribute[ STAT_INTELLECT] += util::floor( racials.heroic_presence -> effectN( 3 ).average( this ) );
+    // so is endurance. Can't tell if this is floored, ends in 0.055 @ L100. Assuming based on symmetry w/ heroic pres.
+    base.stats.attribute[ STAT_STAMINA ]  += util::floor( racials.endurance -> effectN( 1 ).average( this ) ); 
+
     base.spell_crit               = dbc.spell_crit_base( type, level );
     base.attack_crit              = dbc.melee_crit_base( type, level );
     base.spell_crit_per_intellect = dbc.spell_crit_scaling( type, level );
@@ -2722,25 +2729,7 @@ double player_t::composite_attribute( attribute_e attr ) const
 {
   double a = current.stats.attribute[ attr ];
   double m = ( ( level >= 50 ) && matching_gear ) ? ( 1.0 + matching_gear_multiplier( attr ) ) : 1.0;
-
-  switch ( attr )
-  {
-    case ATTR_INTELLECT:
-        a += racials.heroic_presence -> effectN( 3 ).average( this );
-      break;
-    case ATTR_STRENGTH:
-        a += racials.heroic_presence -> effectN( 1 ).average( this );
-      break;
-    case ATTR_AGILITY:
-        a += racials.heroic_presence -> effectN( 2 ).average( this );
-      break;
-    case ATTR_STAMINA:
-        a += racials.endurance -> effectN( 1 ).average( this );
-      break;
-    default:
-      break;
-  }
-
+  
   a = util::floor( ( a - base.stats.attribute[ attr ] ) * m ) + base.stats.attribute[ attr ];
 
   return a;
