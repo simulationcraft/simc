@@ -2210,7 +2210,7 @@ struct explosive_shot_t : public hunter_ranged_attack_t
       // Force damage calculation to be hit based always
       result_e r = s -> result;
       s -> result = RESULT_HIT;
-      double damage = calculate_tick_amount( s, p() -> cache.player_multiplier( s -> action -> school ) );
+      double damage = calculate_tick_amount( s, 1.0 );
       s -> result = r;
 
       residual_action::trigger(
@@ -2219,70 +2219,6 @@ struct explosive_shot_t : public hunter_ranged_attack_t
         damage * tick_count);
     }
   }
-};
-
-// A Murder of Crows ========================================================
-
-struct moc_t: public hunter_ranged_attack_t
-{
-  struct peck_t: public hunter_ranged_attack_t
-  {
-    peck_t( hunter_t* player ):
-      hunter_ranged_attack_t( "crow_peck", player, player -> find_spell( 131900 ) )
-    {
-      background  = true;
-      may_crit   = true;
-      may_parry = false;
-      may_block = false;
-      travel_speed = 0.0;
-
-      attack_power_mod.direct = data().effectN( 1 ).ap_coeff();
-      attack_power_mod.tick   = attack_power_mod.direct;
-    }
-  };
-
-  moc_t( hunter_t* player, const std::string& options_str ):
-    hunter_ranged_attack_t( "a_murder_of_crows", player, player -> talents.a_murder_of_crows )
-  {
-    parse_options( NULL, options_str );
-
-    hasted_ticks = false;
-    may_crit = false;
-    may_miss = false;
-
-    dynamic_tick_action = true;
-    tick_action = new peck_t( player );
-  }
-
-  hunter_t* p() const { return static_cast<hunter_t*>( player ); }
-
-  virtual double action_multiplier() const
-  {
-    double am = hunter_ranged_attack_t::action_multiplier();
-    am *= p() -> beast_multiplier();
-    return am;
-  }
-
-  virtual double cost() const
-  {
-    double c = hunter_ranged_attack_t::cost();
-    if ( p() -> buffs.beast_within -> check() )
-      c *= ( 1.0 + p() -> buffs.beast_within -> data().effectN( 1 ).percent() );
-    return c;
-  }
-
-  virtual void execute()
-  {
-    trigger_tier16_bm_4pc_brutal_kinship( p() );
-
-    cooldown -> duration = data().cooldown();
-
-    if ( target -> health_percentage() < 20 )
-      cooldown -> duration = timespan_t::from_seconds( data().effectN( 1 ).base_value() );
-
-    hunter_ranged_attack_t::execute();
-  }
-
 };
 
 // Kill Shot ================================================================
@@ -2676,6 +2612,50 @@ struct barrage_t : public hunter_spell_t
   {
     return p() -> composite_melee_crit(); // Since barrage is a spell, we need to explicitly make it use attack crit.
   }
+};
+
+struct moc_t: public ranged_attack_t
+{
+  moc_t( hunter_t* player, const std::string& options_str ):
+    ranged_attack_t( "a_murder_of_crows", player, player -> talents.a_murder_of_crows )
+  {
+    parse_options( NULL, options_str );
+    const spell_data_t* tick_dmg = p() -> find_spell( 131900 );
+    hasted_ticks = false;
+    school = SCHOOL_PHYSICAL;
+    attack_power_mod.direct = 0;
+    attack_power_mod.tick = tick_dmg -> effectN( 1 ).ap_coeff();
+  }
+
+  hunter_t* p() const { return static_cast<hunter_t*>( player ); }
+
+  virtual double action_multiplier() const
+  {
+    double am = ranged_attack_t::action_multiplier();
+    am *= 1.0 + p() -> beast_multiplier();
+    return am;
+  }
+
+  virtual double cost() const
+  {
+    double c = ranged_attack_t::cost();
+    if ( p() -> buffs.beast_within -> check() )
+      c *= ( 1.0 + p() -> buffs.beast_within -> data().effectN( 1 ).percent() );
+    return c;
+  }
+
+  virtual void execute()
+  {
+    trigger_tier16_bm_4pc_brutal_kinship( p() );
+
+    cooldown -> duration = data().cooldown();
+
+    if ( target -> health_percentage() < 20 )
+      cooldown -> duration = timespan_t::from_seconds( data().effectN( 1 ).base_value() );
+
+    ranged_attack_t::execute();
+  }
+
 };
 
 // Dire Beast ===============================================================
@@ -3706,7 +3686,7 @@ double hunter_t::composite_player_multiplier( school_e school ) const
        dbc::get_school_mask( school ) & SCHOOL_MAGIC_MASK )
     m *= 1.0 + cache.mastery_value();
 
-  if ( talents.lone_wolf -> ok() && active.pet )
+  if ( talents.lone_wolf -> ok() && !active.pet )
     m *= 1.0 + talents.lone_wolf -> effectN( 1 ).percent();
 
   if ( buffs.beast_within -> up() )
