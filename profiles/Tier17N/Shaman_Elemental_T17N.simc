@@ -1,6 +1,6 @@
 shaman="Shaman_Elemental_T17N"
 level=100
-race=tauren
+race=dwarf
 role=spell
 position=back
 professions=blacksmithing=600/engineering=600
@@ -72,30 +72,28 @@ actions.aoe+=/searing_totem,if=cooldown.fire_elemental_totem.remains>20&!totem.f
 actions.aoe+=/chain_lightning,if=active_enemies>=3
 actions.aoe+=/lightning_bolt,if=active_enemies<3
 
-head=primal_gladiators_helm,id=111280
-neck=primal_gladiators_pendant_of_cruelty,id=111128,enchant=140mult
-shoulders=primal_gladiators_spaulders,id=111282
-back=primal_gladiators_drape_of_cruelty,id=111124,enchant=gift_of_multistrike
-chest=primal_gladiators_ringmail_armor,id=111193
-wrists=primal_gladiators_armbands_of_victory,id=111163
-hands=primal_gladiators_gauntlets,id=111279
-waist=primal_gladiators_waistguard_of_prowess,id=111156
-legs=primal_gladiators_leggings,id=111281
-feet=primal_gladiators_footguards_of_prowess,id=111159
-finger1=primal_gladiators_band_of_cruelty,id=111134,enchant=100mult
-finger2=primal_gladiators_band_of_prowess,id=111135,enchant=100mult
-trinket1=primal_gladiators_badge_of_dominance,id=111227
-trinket2=primal_gladiators_insignia_of_dominance,id=111228
-main_hand=primal_gladiators_gavel,id=111118,enchant=mark_of_the_frostwolf
-off_hand=primal_gladiators_barrier,id=111140
+head=primal_gladiators_helm,id=115780
+neck=primal_gladiators_pendant_of_cruelty,id=115655,enchant=gift_of_multistrike
+shoulders=primal_gladiators_spaulders,id=115782
+back=primal_gladiators_drape_of_cruelty,id=115651,enchant=gift_of_multistrike
+chest=primal_gladiators_ringmail_armor,id=115720
+wrists=primal_gladiators_armbands_of_cruelty,id=115689
+hands=primal_gladiators_gauntlets,id=115779
+waist=primal_gladiators_waistguard_of_prowess,id=115683
+legs=primal_gladiators_leggings,id=115781
+feet=primal_gladiators_footguards_of_prowess,id=115686
+finger1=primal_gladiators_band_of_prowess,id=115662,enchant=gift_of_multistrike
+finger2=primal_gladiators_band_of_victory,id=115663,enchant=gift_of_multistrike
+trinket1=primal_gladiators_badge_of_dominance,id=115754
+trinket2=primal_gladiators_insignia_of_dominance,id=115755
+main_hand=primal_gladiators_battle_staff,id=115649,enchant=mark_of_the_frostwolf
 
 # Gear Summary
-# gear_stamina=3241
-# gear_intellect=2584
-# gear_spell_power=1244
-# gear_crit_rating=615
-# gear_haste_rating=860
-# gear_mastery_rating=338
-# gear_armor=3339
-# gear_multistrike_rating=1532
-# gear_versatility_rating=77
+# gear_stamina=3246
+# gear_intellect=2588
+# gear_spell_power=1265
+# gear_crit_rating=700
+# gear_haste_rating=611
+# gear_mastery_rating=512
+# gear_armor=1547
+# gear_multistrike_rating=1603
