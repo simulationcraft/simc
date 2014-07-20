@@ -1659,23 +1659,22 @@ struct ranged_t : public hunter_ranged_attack_t
   {
     hunter_ranged_attack_t::impact( s );
 
-    if ( p() -> active.ammo != NO_AMMO )
-    {
-      if ( p() -> active.ammo == POISONED_AMMO )
-      {
-        residual_action::trigger(
-          p() -> active.poisoned_ammo, // ignite spell
-          s -> target, // target
-          p() -> cache.attack_power() * 0.4 );
-      }
-      else if ( p() -> active.ammo == FROZEN_AMMO )
-        p() -> active.frozen_ammo -> execute();
-      else if ( p() -> active.ammo == INCENDIARY_AMMO )
-        p() -> active.incendiary_ammo -> execute();
-    }
-
     if ( result_is_hit( s -> result ) )
     {
+      if ( p() -> active.ammo != NO_AMMO )
+      {
+        if ( p() -> active.ammo == POISONED_AMMO )
+        {
+          residual_action::trigger(
+            p() -> active.poisoned_ammo, // ignite spell
+            s -> target, // target
+            p() -> cache.attack_power() * 0.4 );
+        }
+        else if ( p() -> active.ammo == FROZEN_AMMO )
+          p() -> active.frozen_ammo -> execute();
+        else if ( p() -> active.ammo == INCENDIARY_AMMO )
+          p() -> active.incendiary_ammo -> execute();
+      }
       if ( s -> result == RESULT_CRIT )
         trigger_go_for_the_throat();
     }
