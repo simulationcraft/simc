@@ -1442,16 +1442,13 @@ struct dire_critter_t : public hunter_pet_t
       weapon_multiplier = 0;
       base_execute_time = weapon -> swing_time;
       base_dd_min = base_dd_max = player -> dbc.spell_scaling( p.o() -> type, p.o() -> level );
-      attack_power_mod.direct = 0.2875;
+      attack_power_mod.direct = 0.575;
       school = SCHOOL_PHYSICAL;
 
       trigger_gcd = timespan_t::zero();
 
-      background = true;
-      repeating  = true;
+      background = repeating = may_glance = may_crit = true;
       special    = false;
-      may_glance = true;
-      may_crit   = true;
 
       focus_gain = player -> find_spell( 120694 ) -> effectN( 1 ).base_value();
     }
