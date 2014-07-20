@@ -713,11 +713,8 @@ public:
 
     resources.infinite_resource[ RESOURCE_FOCUS ] = o() -> resources.infinite_resource[ RESOURCE_FOCUS ];
 
-    world_lag = timespan_t::from_seconds( 0.3 ); // Pet AI latency to get 3.3s claw cooldown as confirmed by Rivkah on EJ, August 2011
-    world_lag_override = true;
-
-    owner_coeff.ap_from_ap = 1.0;
-    owner_coeff.sp_from_ap = 0.5;
+    owner_coeff.ap_from_ap = 0.3333;
+    owner_coeff.sp_from_ap = 0.3333;
   }
 
   virtual void create_buffs()
