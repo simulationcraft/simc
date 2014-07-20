@@ -1084,7 +1084,7 @@ struct basic_attack_t : public hunter_main_pet_attack_t
 
     // hardcoded into tooltip
 
-    attack_power_mod.direct = 0.168;
+    attack_power_mod.direct = 1;
     base_multiplier *= 1.0 + p -> specs.spiked_collar -> effectN( 1 ).percent();
     chance_invigoration = p -> find_spell( 53397 ) -> proc_chance();
     gain_invigoration = p -> find_spell( 53398 ) -> effectN( 1 ).resource( RESOURCE_FOCUS );
@@ -1196,7 +1196,7 @@ struct kill_command_t : public hunter_main_pet_attack_t
     proc = true;
     school = SCHOOL_PHYSICAL;
 
-    attack_power_mod.direct  = 1.576 * 1.5; // Hard-coded in tooltip.
+    attack_power_mod.direct  = 1.576 * 3; // Hard-coded in tooltip.
     attack_power_mod.direct *= 1.0 + o() -> perks.improved_kill_command -> effectN( 1 ).percent();
   }
 
