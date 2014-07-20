@@ -2137,7 +2137,7 @@ struct explosive_shot_tick_t: public residual_action::residual_periodic_action_t
   {
     base_t::init();
 
-    snapshot_flags |= STATE_CRIT | STATE_TGT_CRIT;
+    snapshot_flags |= STATE_CRIT | STATE_TGT_CRIT | STATE_AP | STATE_MUL_TA;
   }
 };
 
