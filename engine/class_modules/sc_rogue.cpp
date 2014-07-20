@@ -109,7 +109,7 @@ struct rogue_td_t : public actor_pair_t
 struct rogue_t : public player_t
 {
   // Venom Zest poison tracking
-  unsigned active_poisons;
+  unsigned poisoned_enemies;
 
   // Shadow Reflection stuff
   std::vector<shadow_reflect_mimic_t> shadow_reflection_sequence;
@@ -332,7 +332,7 @@ struct rogue_t : public player_t
 
   rogue_t( sim_t* sim, const std::string& name, race_e r = RACE_NIGHT_ELF ) :
     player_t( sim, ROGUE, name, r ),
-    active_poisons( 0 ),
+    poisoned_enemies( 0 ),
     shadow_reflection( 0 ),
     event_premeditation( 0 ),
     active_blade_flurry( 0 ),
@@ -392,6 +392,7 @@ struct rogue_t : public player_t
   virtual double    composite_player_multiplier( school_e school ) const;
   virtual double    energy_regen_per_second() const;
 
+  bool poisoned_enemy( player_t* target ) const;
   void trigger_sinister_calling( const action_state_t* );
   void trigger_seal_fate( const action_state_t* );
   void trigger_main_gauche( const action_state_t* );
@@ -816,17 +817,20 @@ struct deadly_poison_t : public rogue_poison_t
 
     void impact( action_state_t* state )
     {
-      if ( ! td( state -> target ) -> dots.deadly_poison -> is_ticking() )
-        p() -> active_poisons++;
+      if ( ! p() -> poisoned_enemy( state -> target ) && result_is_hit( state -> result ) )
+        p() -> poisoned_enemies++;
 
       rogue_poison_t::impact( state );
     }
 
     void last_tick( dot_t* d )
     {
+      player_t* t = d -> state -> target;
+
       rogue_poison_t::last_tick( d );
 
-      p() -> active_poisons--;
+      if ( ! p() -> poisoned_enemy( t ) )
+        p() -> poisoned_enemies--;
     }
   };
 
@@ -2833,6 +2837,25 @@ struct blade_flurry_attack_t : public rogue_attack_t
 
 } // end namespace actions
 
+inline bool rogue_t::poisoned_enemy( player_t* target ) const
+{
+  const rogue_td_t* td = get_target_data( target );
+
+  if ( td -> dots.deadly_poison -> is_ticking() )
+    return true;
+
+  if ( td -> debuffs.wound_poison -> check() )
+    return true;
+
+  if ( td -> debuffs.crippling_poison -> check() )
+    return true;
+
+  if ( td -> debuffs.leeching_poison -> check() )
+    return true;
+
+  return false;
+}
+
 // ==========================================================================
 // Rogue Triggers
 // ==========================================================================
@@ -3157,19 +3180,20 @@ struct rogue_poison_buff_t : public buff_t
 
   void execute( int stacks, double value, timespan_t duration )
   {
-    bool is_up = current_stack > 0;
+    rogue_t* rogue = debug_cast< rogue_t* >( source );
+    if ( ! rogue -> poisoned_enemy( player ) )
+      rogue -> poisoned_enemies++;
 
     buff_t::execute( stacks, value, duration );
-
-    if ( ! is_up )
-      debug_cast< rogue_t* >( source ) -> active_poisons++;
   }
 
   void expire_override()
   {
     buff_t::expire_override();
 
-    debug_cast< rogue_t* >( source ) -> active_poisons--;
+    rogue_t* rogue = debug_cast< rogue_t* >( source );
+    if ( ! rogue -> poisoned_enemy( player ) )
+      rogue -> poisoned_enemies--;
   }
 };
 
@@ -4692,7 +4716,7 @@ void rogue_t::reset()
 {
   player_t::reset();
 
-  active_poisons = 0;
+  poisoned_enemies = 0;
 
   for ( size_t i = 0; i < sim -> actor_list.size(); i++ )
   {
@@ -4727,7 +4751,7 @@ double rogue_t::energy_regen_per_second() const
 
   // TODO: This is actually N% per poisoned targets.
   if ( talent.venom_zest -> ok() )
-    r *= 1.0 + active_poisons * spell.venom_zest -> effectN( 1 ).percent();
+    r *= 1.0 + poisoned_enemies * spell.venom_zest -> effectN( 1 ).percent();
 
   return r;
 }
