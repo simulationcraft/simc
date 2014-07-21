@@ -2653,6 +2653,7 @@ public:
   int separate_stats_by_actions;
   int report_raid_summary;
   int buff_uptime_timeline;
+  int wowhead_tooltips;
 
   int allow_potions;
   int allow_food;

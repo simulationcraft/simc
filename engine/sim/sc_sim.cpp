@@ -923,6 +923,7 @@ sim_t::sim_t( sim_t* p, int index ) :
   report_precision( 2 ), report_pets_separately( 0 ), report_targets( 1 ), report_details( 1 ), report_raw_abilities( 1 ),
   report_rng( 0 ), hosted_html( 0 ), print_styles( 0 ),
   save_raid_summary( 0 ), save_gear_comments( 0 ), statistics_level( 1 ), separate_stats_by_actions( 0 ), report_raid_summary( 0 ), buff_uptime_timeline( 0 ),
+  wowhead_tooltips( -1 ),
   allow_potions( true ),
   allow_food( true ),
   allow_flasks( true ),
@@ -1404,6 +1405,9 @@ bool sim_t::init_actors()
     p -> init();
     p -> initialized = true;
   }
+
+  if ( wowhead_tooltips == -1 )
+    wowhead_tooltips = player_list.size() <= 10;
 
   // This next section handles all the ugly details of initialization. Ideally, each of these
   // init_* methods will eventually return a bool to indicate success or failure, from which
@@ -2283,6 +2287,7 @@ void sim_t::create_options()
     opt_bool( "monitor_cpu", monitor_cpu ),
     opt_func( "maximize_reporting", parse_maximize_reporting ),
     opt_int( "global_item_upgrade_level", global_item_upgrade_level ),
+    opt_int( "wowhead_tooltips", wowhead_tooltips ),
     opt_null()
   };
 

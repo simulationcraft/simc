@@ -174,7 +174,11 @@ std::string output_action_name( stats_t* s, player_t* actor )
   if ( ! SC_BETA )
     domain = s -> player -> dbc.ptr ? wowhead::PTR : wowhead::LIVE;
 
-  std::string name = wowhead::decorated_action_name( s -> name_str, a, domain );
+  std::string name;
+  if ( a && a -> sim -> wowhead_tooltips )
+    name = wowhead::decorated_action_name( s -> name_str, a, domain );
+  else
+    name = "<a href=\"#\">" + s -> name_str + "</a>";
 
   // If we are printing a stats object that belongs to a pet, for an actual
   // actor, print out the pet name too
