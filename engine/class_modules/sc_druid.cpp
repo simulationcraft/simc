@@ -342,6 +342,7 @@ public:
     proc_t* tier15_2pc_melee;
     proc_t* tier17_2pc_melee;
     proc_t* tooth_and_claw;
+    proc_t* tooth_and_claw_wasted;
     proc_t* ursa_major;
     proc_t* wrong_eclipse_wrath;
     proc_t* wrong_eclipse_starfire;
@@ -2770,6 +2771,8 @@ struct bear_melee_t : public bear_attack_t
 
       if ( rng().roll( p() -> spec.tooth_and_claw -> proc_chance() ) )
       {
+        if ( p() -> buff.tooth_and_claw -> current_stack == p() -> buff.tooth_and_claw -> max_stack() )
+          p() -> proc.tooth_and_claw_wasted -> occur();
         p() -> buff.tooth_and_claw -> trigger();
         p() -> proc.tooth_and_claw -> occur();
       }
@@ -6280,6 +6283,7 @@ void druid_t::init_procs()
   proc.tier15_2pc_melee         = get_proc( "tier15_2pc_melee"       );
   proc.tier17_2pc_melee         = get_proc( "tier17_2pc_melee"       );
   proc.tooth_and_claw           = get_proc( "tooth_and_claw"         );
+  proc.tooth_and_claw_wasted    = get_proc( "tooth_and_claw_wasted"  );
   proc.ursa_major               = get_proc( "ursa_major"             );
   proc.wrong_eclipse_wrath      = get_proc( "wrong_eclipse_wrath"    );
   proc.wrong_eclipse_starfire   = get_proc( "wrong_eclipse_starfire" );
