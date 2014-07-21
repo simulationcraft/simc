@@ -655,12 +655,13 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
     {
            0,
     },
-    // Pet tree, 5 abilities
+    // Pet tree, 6 abilities
     {
        88084, // Arcane Blast
        88082, // Fireball
        33395, // Freeze
        59638, // Frostbolt
+      155152, // Prismatic Crystal
        31707, // Waterbolt
            0,
     },

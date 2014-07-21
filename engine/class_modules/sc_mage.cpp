@@ -693,7 +693,7 @@ struct prismatic_crystal_t : public pet_t
   struct prismatic_crystal_aoe_t : public spell_t
   {
     prismatic_crystal_aoe_t( prismatic_crystal_t* p ) :
-      spell_t( "burst_of_energy", p )
+      spell_t( "prismatic_crystal", p, p -> find_spell( 155152 ) )
     {
       school = SCHOOL_ARCANE;
       may_crit = may_miss = callbacks = false;

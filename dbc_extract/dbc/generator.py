@@ -1364,6 +1364,7 @@ class SpellDataGenerator(DataGenerator):
           ( 115757, 0, False ),                                   # Frost Nova false positive for activatable
           ( 145264, 0 ),                                          # T16 Frigid Blast
           ( 148022, 0 ),                                          # Icicle
+          ( 155152, 5 ),                                          # Prismatic Crystal nuke
         ), 
         
         # Warlock:
