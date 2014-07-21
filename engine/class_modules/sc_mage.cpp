@@ -3630,14 +3630,19 @@ struct choose_target_t : public action_t
 
     parse_options( options, options_str );
 
-    for ( size_t i = 0, end = sim -> actor_list.size(); i < end; i++ )
+    if ( ! target_name.empty() && ! util::str_compare_ci( target_name, "default" ) )
     {
-      if ( util::str_compare_ci( sim -> actor_list[ i ] -> name_str, target_name ) )
+      for ( size_t i = 0, end = sim -> actor_list.size(); i < end; i++ )
       {
-        selected_target = sim -> actor_list[ i ];
-        break;
+        if ( util::str_compare_ci( sim -> actor_list[ i ] -> name_str, target_name ) )
+        {
+          selected_target = sim -> actor_list[ i ];
+          break;
+        }
       }
     }
+    else
+      selected_target = p -> target;
 
     if ( ! selected_target )
       background = true;
@@ -3665,10 +3670,19 @@ struct choose_target_t : public action_t
 
   bool ready()
   {
-    if ( selected_target -> is_sleeping() )
-      return false;
+    mage_t* p = debug_cast<mage_t*>( player );
 
-    if ( debug_cast<mage_t*>( player ) -> current_target == selected_target )
+    // Safeguard stupidly against breaking the sim.
+    if ( selected_target -> is_sleeping() )
+    {
+      // Reset target to default actor target if we're still targeting a dead selected target
+      if ( p -> current_target == selected_target )
+        p -> current_target = p -> target;
+
+      return false;
+    }
+
+    if ( p -> current_target == selected_target )
       return false;
 
     return action_t::ready();
