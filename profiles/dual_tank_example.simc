@@ -85,7 +85,6 @@ main_hand=encapsulated_essence_of_immerseus,id=105417,upgrade=2
 off_hand=shield_of_mockery,id=105481,upgrade=2
 
 enemy=Fluffy_Pillow
-tmi_boss=T15N
 #this tells all attacks to apply 1 stack, unless overriden in the attack options
 apply_debuff=1 
 #auto attacks (main-hand) will apply 1 stack due to the line above this
