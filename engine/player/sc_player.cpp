@@ -2563,7 +2563,7 @@ double player_t::composite_damage_versatility() const
   double cdv = composite_damage_versatility_rating() / current.rating.damage_versatility;
 
   if ( ! is_pet() && ! is_enemy() && sim -> auras.versatility -> check() )
-    cdv += sim -> auras.versatility -> value();
+    cdv += sim -> auras.versatility -> default_value;
 
   return cdv;
 }
@@ -2575,7 +2575,7 @@ double player_t::composite_heal_versatility() const
   double chv = composite_heal_versatility_rating() / current.rating.heal_versatility;
 
   if ( ! is_pet() && ! is_enemy() && sim -> auras.versatility -> check() )
-    chv += sim -> auras.versatility -> value();
+    chv += sim -> auras.versatility -> default_value;
 
   return chv;
 }
@@ -2587,7 +2587,7 @@ double player_t::composite_mitigation_versatility() const
   double cmv = composite_mitigation_versatility_rating() / current.rating.mitigation_versatility;
 
   if ( ! is_pet() && ! is_enemy() && sim -> auras.versatility -> check() )
-    cmv += sim -> auras.versatility -> value();
+    cmv += sim -> auras.versatility -> default_value / 2; // Mitigation recieves 1.5% from the aura.
 
   return cmv;
 }

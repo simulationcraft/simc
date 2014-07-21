@@ -579,7 +579,33 @@ public:
     }
   }
 
-  void assess_damage( dmg_e type,
+  virtual void tick( dot_t* d )
+  {
+    ab::tick( d );
+
+    if ( ab::sim -> log || ab::sim -> debug )
+    {
+      ab::sim -> out_debug.printf(
+        "Strength: %4.4f, AP: %4.4f, Crit: %4.4f%%, Crit Dmg Mult: %4.4f,  Mastery: %4.4f%%, Multistrike: %4.4f%%, Haste: %4.4f%%, Versatility: %4.4f%%, Bonus Armor: %4.4f, Tick Multiplier: %4.4f, Direct Multiplier: %4.4f, Action Multiplier: %4.4f",
+        p() -> cache.strength(),
+        p() -> cache.attack_power(),
+        p() -> cache.attack_crit() * 100,
+        p() -> composite_player_critical_damage_multiplier(),
+        p() -> cache.mastery_value() * 100,
+        p() -> cache.multistrike() * 100,
+        ( ( 1 / ( p() -> cache.attack_haste() ) ) - 1 ) * 100,
+        p() -> cache.damage_versatility() * 100,
+        p() -> cache.bonus_armor(),
+        d -> state -> composite_ta_multiplier(),
+        d -> state -> composite_da_multiplier(),
+        d -> state -> action -> action_ta_multiplier() );
+    }
+
+
+
+  }
+
+  virtual void assess_damage( dmg_e type,
                       action_state_t* s )
   {
     ab::assess_damage( type, s );
@@ -594,7 +620,7 @@ public:
       p() -> all_damage.add( s -> result_amount );
   }
 
-  void consume_resource()
+  virtual void consume_resource()
   {
     ab::consume_resource();
 
@@ -3629,7 +3655,7 @@ void warrior_t::init_spells()
   talents.heavy_repercussions   = find_talent_spell( "Heavy Repercussions" );
   talents.unyielding_strikes    = find_talent_spell( "Unyielding Strikes" );
   talents.sudden_death          = find_talent_spell( "Sudden Death" );
-  talents.taste_for_blood       = find_talent_spell( "Taste For Blood" );
+  talents.taste_for_blood       = find_talent_spell( "Taste for Blood" );
   talents.unquenchable_thirst   = find_talent_spell( "Unquenchable Thirst" );
   talents.slam                  = find_talent_spell( "Slam" );
   talents.furious_strikes       = find_talent_spell( "Furious Strikes" );

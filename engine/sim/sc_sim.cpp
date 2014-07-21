@@ -1545,11 +1545,11 @@ bool sim_t::init()
                       .add_invalidate( CACHE_AGILITY )
                       .add_invalidate( CACHE_INTELLECT );
 
-  // Versatility --########## ADD IN ACTUAL AURA NAME WITH NEW SPELL DATA #########
+  // Versatility from Inspiring Presence - ID=167188 (Warrior)
   // Warriors will have it.
   auras.versatility = buff_creator_t( this, "versatility" )
                       .max_stack( 100 )
-                      .default_value( 0.03 ) //Check
+                      .default_value( dbc.spell( 167188 ) -> effectN ( 1 ).percent() )
                       .add_invalidate( CACHE_VERSATILITY );
 
   // Find Already defined target, otherwise create a new one.
