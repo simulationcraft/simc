@@ -58,9 +58,8 @@ actions+=/rake,cycle_targets=1,if=remains<=duration*0.3&active_enemies<9&combo_p
 actions+=/pool_resource,for_next=1
 actions+=/thrash_cat,if=dot.thrash_cat.remains<4.5&active_enemies>1
 actions+=/rake,cycle_targets=1,if=persistent_multiplier>dot.rake.pmultiplier&active_enemies<9&combo_points<5
-actions+=/pool_resource,for_next=1
 actions+=/swipe,if=combo_points<5&active_enemies>1
-actions+=/shred,if=combo_points<5
+actions+=/shred,if=combo_points<5&active_enemies=1
 actions+=/bear_form,if=dot.thrash_bear.remains-gcd<=dot.thrash_bear.duration*0.3&cooldown.tigers_fury.remains>6&dot.rip.remains>6&energy.time_to_max>=5.5
 
 head=headpiece_of_the_shattered_vale,id=99328,upgrade=2,gems=capacitive_primal_8agi_9agi
