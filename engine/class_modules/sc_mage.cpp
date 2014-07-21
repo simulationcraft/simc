@@ -240,6 +240,7 @@ public:
   {
     pet_t* water_elemental;
     pet_t* mirror_images[ 3 ];
+    pet_t* prismatic_crystal;
   } pets;
 
   // Procs
@@ -332,7 +333,7 @@ public:
     const spell_data_t* unstable_magic;
     const spell_data_t* mirror_image;
     const spell_data_t* incanters_flow;
-
+    const spell_data_t* prismatic_crystal;
   } talents;
 
   struct pyro_switch_t
@@ -675,6 +676,97 @@ struct mirror_image_pet_t : public pet_t
       m *= 1.0 + find_spell( 21563 ) -> effectN( 1 ).percent();
 
     return m;
+  }
+};
+
+// ==========================================================================
+// Pet Prismatic Crystal
+// ==========================================================================
+
+struct prismatic_crystal_t : public pet_t
+{
+  struct prismatic_crystal_aoe_t : public spell_t
+  {
+    prismatic_crystal_aoe_t( prismatic_crystal_t* p ) :
+      spell_t( "burst_of_energy", p )
+    {
+      school = SCHOOL_ARCANE;
+      may_crit = may_miss = callbacks = false;
+      background = true;
+      aoe = -1;
+    }
+
+    // Damage gets fully inherited from the Mage's own spell
+    double calculate_direct_amount( action_state_t* state )
+    { return state -> result_amount; }
+  };
+
+  prismatic_crystal_aoe_t* aoe_spell;
+  const spell_data_t* damage_taken;
+
+  prismatic_crystal_t( sim_t* sim, mage_t* owner ) :
+    pet_t( sim, owner, "prismatic_crystal", true ),
+    aoe_spell( 0 ),
+    damage_taken( owner -> find_spell( 155153 ) )
+  { }
+
+  mage_t* o() const
+  { return debug_cast<mage_t*>( owner ); }
+
+  void init_spells()
+  {
+    pet_t::init_spells();
+
+    aoe_spell = new prismatic_crystal_aoe_t( this );
+  }
+
+  void arise()
+  {
+    pet_t::arise();
+
+    // For now, when Prismatic Crystal is summoned, adjust all mage targets to it.
+    for ( size_t i = 0, end = o() -> action_list.size(); i < end; i++ )
+    {
+      action_t* a = o() -> action_list[ i ];
+      if ( a -> target -> is_enemy() )
+        a -> target = this;
+    }
+  }
+
+  void demise()
+  {
+    pet_t::demise();
+
+    // For now, when Prismatic Crystal despawns, adjust all mage targets back to fluffy pillow.
+    for ( size_t i = 0, end = o() -> action_list.size(); i < end; i++ )
+    {
+      action_t* a = o() -> action_list[ i ];
+      if ( a -> target == this )
+        a -> target = a -> default_target;
+    }
+  }
+
+  double composite_player_vulnerability( school_e school ) const
+  {
+    double m = pet_t::composite_player_vulnerability( school );
+
+    m *= 1.0 + damage_taken -> effectN( 1 ).percent();
+
+    return m;
+  }
+
+  void assess_damage( school_e school, dmg_e type, action_state_t* state )
+  {
+    pet_t::assess_damage( school, type, state );
+
+    if ( state -> result_amount == 0 )
+      return;
+
+    action_state_t* new_state = aoe_spell -> get_state( state );
+    // Reset target to an enemy to avoid infinite looping
+    new_state -> target = aoe_spell -> target;
+
+    aoe_spell -> schedule_execute( new_state );
   }
 };
 
@@ -3438,6 +3530,27 @@ struct summon_water_elemental_t : public mage_spell_t
   }
 };
 
+// Prismatic Crystal =========================================================
+
+struct prismatic_crystal_t : public mage_spell_t
+{
+  prismatic_crystal_t( mage_t* p, const std::string& options_str ) :
+    mage_spell_t( "prismatic_crystal", p, p -> find_talent_spell( "Prismatic Crystal" ) )
+  {
+    parse_options( NULL, options_str );
+    may_miss = may_crit = harmful = callbacks = false;
+  }
+
+  void execute()
+  {
+    mage_spell_t::execute();
+
+    p() -> pets.prismatic_crystal -> summon( data().duration() );
+  }
+};
+
+
+
 // Combustion Pyroblast Chaining Switch ==========================================================
 
 
@@ -3869,6 +3982,7 @@ action_t* mage_t::create_action( const std::string& name,
 
   if ( name == "time_warp"         ) return new               time_warp_t( this, options_str );
   if ( name == "water_elemental"   ) return new  summon_water_elemental_t( this, options_str );
+  if ( name == "prismatic_crystal" ) return new prismatic_crystal_t( this, options_str );
   //if ( name == "alter_time"        ) return new              alter_time_t( this, options_str );
 
   return player_t::create_action( name, options_str );
@@ -3893,6 +4007,7 @@ pet_t* mage_t::create_pet( const std::string& pet_name,
 void mage_t::create_pets()
 {
   pets.water_elemental = create_pet( "water_elemental" );
+  pets.prismatic_crystal = new pets::prismatic_crystal_t( sim, this );
 
   for ( unsigned i = 0; i < sizeof_array( pets.mirror_images ); i++ )
   {
@@ -3936,7 +4051,8 @@ void mage_t::init_spells()
   talents.arcane_orb         = find_talent_spell( "Arcane Orb" );
   talents.unstable_magic     = find_talent_spell( "Unstable Magic" );
   talents.mirror_image       = find_talent_spell( "Mirror Image" );
-  talents.incanters_flow      = find_talent_spell( "Incanter's Flow" );
+  talents.incanters_flow     = find_talent_spell( "Incanter's Flow" );
+  talents.prismatic_crystal  = find_talent_spell( "Prismatic Crystal" );
 
 
   // Passive Spells
