@@ -1043,8 +1043,8 @@ void print_html_stats ( report::sc_html_stream& os, player_t* a )
         "<td class=\"right\">%.0f",
         ( j % 2 == 1 ) ? " class=\"odd\"" : "",
         util::inverse_tokenize( util::attribute_type_string( i ) ).c_str(),
-        buffed_stats.attribute[ i ],
-        a -> get_attribute( i ),
+        util::floor( buffed_stats.attribute[ i ] ),
+        util::floor( a -> get_attribute( i ) ),
         util::floor( a -> initial.stats.attribute[ i ] ) );
       // append hybrid attributes as a parenthetical if appropriate
       if ( hybrid_attributes[ i ] > 0 )
