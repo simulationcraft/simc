@@ -468,22 +468,17 @@ struct water_elemental_pet_t : public pet_t
       water_elemental_pet_t* p = static_cast<water_elemental_pet_t*>( player );
 
       if ( result_is_hit( s -> result ) )
-      {
         p -> o() -> buffs.fingers_of_frost -> trigger( 1, buff_t::DEFAULT_VALUE(), 1 );
-      }
     }
   };
 
-  struct waterbolt_t : public spell_t
+  struct waterbolt_t: public spell_t
   {
-
-
     waterbolt_t( water_elemental_pet_t* p, const std::string& options_str ):
       spell_t( "waterbolt", p, p -> find_pet_spell( "Waterbolt" ) )
     {
       parse_options( NULL, options_str );
       may_crit = true;
-
     }
 
     virtual void impact( action_state_t* s )
@@ -496,13 +491,6 @@ struct water_elemental_pet_t : public pet_t
       spell_t::impact( s );
     }
 
-    void execute()
-    {
-      spell_t::execute();
-
-      water_elemental_pet_t* p = static_cast<water_elemental_pet_t*>( player );
-    }
-
     virtual double action_multiplier() const
     {
       double am = spell_t::action_multiplier();
@@ -510,9 +498,7 @@ struct water_elemental_pet_t : public pet_t
       water_elemental_pet_t* p = static_cast<water_elemental_pet_t*>( player );
 
       if ( p -> o() -> glyphs.icy_veins -> ok() && p -> o() -> buffs.icy_veins -> up() )
-      {
         am *= 0.4;
-      }
 
       return am;
     }
@@ -1232,7 +1218,6 @@ static void trigger_unstable_magic( action_state_t* s )
 {
   struct unstable_magic_explosion_t : public mage_spell_t
   {
-
     double pct_damage;
     unstable_magic_explosion_t( mage_t* p ) :
       mage_spell_t( "unstable_magic_explosion", p, p -> talents.unstable_magic )
@@ -1270,8 +1255,6 @@ static void trigger_unstable_magic( action_state_t* s )
   }
   };
 
-
-  
   mage_t* p = debug_cast<mage_t*>( s -> action -> player );
 
   if ( !p -> explode )
@@ -1286,9 +1269,6 @@ static void trigger_unstable_magic( action_state_t* s )
   
   return;
 }
-
-
-
 
 // Arcane Barrage Spell =====================================================
 

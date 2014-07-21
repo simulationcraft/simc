@@ -454,7 +454,7 @@ struct spell_list_expr_t : public spell_data_expr_t
       {
         for ( size_t i = 0, max = dbc::n_set_bonus( sim -> dbc.ptr ); i < max; ++i )
         {
-          result_spell_list.push_back( i ); // back: just insert the array index
+          result_spell_list.push_back( (int)i ); // back: just insert the array index
         }
         break;
       }

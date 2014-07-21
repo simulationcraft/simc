@@ -3129,7 +3129,7 @@ public:
 
   virtual timespan_t execute_time() const
   {
-    if ( p() -> buff.empowered_moonkin -> up() )
+    if ( this -> p() -> buff.empowered_moonkin -> up() )
       return timespan_t::zero();
 
     return ab::execute_time();
@@ -3139,8 +3139,8 @@ public:
   {
     ab::execute();
 
-    if ( base_execute_time > timespan_t::zero() )
-      p() -> buff.empowered_moonkin -> decrement();
+    if ( ab::base_execute_time > timespan_t::zero() )
+      this -> p() -> buff.empowered_moonkin -> decrement();
   }
 };
 
@@ -3865,8 +3865,6 @@ struct druid_spell_t : public druid_spell_base_t<spell_t>
 
   virtual double cost() const
   {
-    double cost = base_t::cost();
-
     if ( harmful && p() -> buff.heart_of_the_wild -> damage_spells_are_free() )
       return 0;
 
