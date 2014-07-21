@@ -27,7 +27,6 @@ struct enemy_t : public player_t
   std::string tmi_boss_str;
   tmi_boss_e tmi_boss_enum;
   int current_target;
-  bool dual_wield;
   int apply_damage_taken_debuff;
 
   std::vector<buff_t*> buffs_health_decades;
@@ -41,7 +40,6 @@ struct enemy_t : public player_t
     tmi_boss_str( "none" ),
     tmi_boss_enum( TMI_NONE ),
     current_target( 0 ),
-    dual_wield( false ),
     apply_damage_taken_debuff( 0 )
   {
     s -> target_list.push_back( this );
@@ -268,7 +266,7 @@ struct melee_t : public enemy_action_t<melee_attack_t>
 
     if ( first )
     {
-      et += weapon -> swing_time / 2;
+      et += this -> base_execute_time / 2;
     }
 
     return et;
@@ -280,13 +278,15 @@ struct melee_t : public enemy_action_t<melee_attack_t>
 struct auto_attack_t : public enemy_action_t<attack_t>
 {
   melee_t* mh;
-  melee_t* oh;
 
   // default constructor
   auto_attack_t( player_t* p, const std::string& options_str ) :
-    base_t( "auto_attack", p ), mh( 0 ), oh( 0 )
+    base_t( "auto_attack", p ), mh( 0 )
   {
     parse_options( options.data(), options_str );
+
+    use_off_gcd = true;
+    trigger_gcd = timespan_t::zero();
 
     mh = new melee_t( "melee_main_hand", p, options_str );
     mh -> weapon = &( p -> main_hand_weapon );
@@ -294,17 +294,6 @@ struct auto_attack_t : public enemy_action_t<attack_t>
       mh -> target = target;
 
     p -> main_hand_attack = mh;
-
-    enemy_t* e = dynamic_cast< enemy_t* >( p );
-    if ( e && e -> dual_wield )
-    {
-      oh = new melee_t( "melee_off_hand", e, options_str );
-      oh -> weapon = &( e -> off_hand_weapon );
-      if ( ! oh -> target )
-        oh -> target = target;
-
-      p -> off_hand_attack = oh;
-    }
   }
 
   void init()
@@ -324,7 +313,52 @@ struct auto_attack_t : public enemy_action_t<attack_t>
           mh -> num_debuff_stacks = e -> apply_damage_taken_debuff;
         }
       }
+    }
+  }
 
+  virtual void execute()
+  {
+    player -> main_hand_attack = mh;
+    player -> main_hand_attack -> schedule_execute();
+  }
+
+  virtual bool ready()
+  {
+    if ( player -> is_moving() ) return false;
+    return( player -> main_hand_attack -> execute_event == 0 ); // not swinging
+  }
+};
+
+// Auto Attack Off-Hand =======================================================
+
+struct auto_attack_off_hand_t : public enemy_action_t<attack_t>
+{
+  melee_t* oh;
+
+  // default constructor
+  auto_attack_off_hand_t( player_t* p, const std::string& options_str ) :
+    base_t( "auto_attack_off_hand", p ), oh( 0 )
+  {
+    parse_options( options.data(), options_str );
+    
+    use_off_gcd = true;
+    trigger_gcd = timespan_t::zero();
+
+    oh = new melee_t( "melee_off_hand", p, options_str );
+    oh -> weapon = &( p -> off_hand_weapon );
+    if ( !oh -> target )
+      oh -> target = target;
+
+    p -> off_hand_attack = oh;
+  }
+
+  void init()
+  {
+    base_t::init();
+
+    if ( enemy_t* e = dynamic_cast< enemy_t* >( player ) )
+    {
+      // if the number of debuff stacks hasn't been specified yet, set it
       if ( oh && oh -> num_debuff_stacks == -1e6 )
       {
         if ( e -> apply_damage_taken_debuff == 0 )
@@ -340,21 +374,16 @@ struct auto_attack_t : public enemy_action_t<attack_t>
 
   virtual void execute()
   {
-    player -> main_hand_attack = mh;
+    oh -> first = true;
+    player -> off_hand_attack = oh;
+    player -> off_hand_attack -> schedule_execute();
 
-    player -> main_hand_attack -> schedule_execute();
-    if ( player -> off_hand_attack )
-    {
-      oh -> first = true;
-      player -> off_hand_attack = oh;
-      player -> off_hand_attack -> schedule_execute();
-    }
   }
 
   virtual bool ready()
   {
     if ( player -> is_moving() ) return false;
-    return( player -> main_hand_attack -> execute_event == 0 ); // not swinging
+    return( player -> off_hand_attack -> execute_event == 0 ); // not swinging
   }
 };
 
@@ -557,12 +586,13 @@ struct summon_add_t : public spell_t
 
 action_t* enemy_create_action( player_t* p, const std::string& name, const std::string& options_str )
 {
-  if ( name == "auto_attack" ) return new auto_attack_t( p, options_str );
-  if ( name == "melee_nuke"  ) return new  melee_nuke_t( p, options_str );
-  if ( name == "spell_nuke"  ) return new  spell_nuke_t( p, options_str );
-  if ( name == "spell_dot"   ) return new   spell_dot_t( p, options_str );
-  if ( name == "spell_aoe"   ) return new   spell_aoe_t( p, options_str );
-  if ( name == "summon_add"  ) return new  summon_add_t( p, options_str );
+  if ( name == "auto_attack" )          return new          auto_attack_t( p, options_str );
+  if ( name == "auto_attack_off_hand" ) return new auto_attack_off_hand_t( p, options_str );
+  if ( name == "melee_nuke"  )          return new           melee_nuke_t( p, options_str );
+  if ( name == "spell_nuke"  )          return new           spell_nuke_t( p, options_str );
+  if ( name == "spell_dot"   )          return new            spell_dot_t( p, options_str );
+  if ( name == "spell_aoe"   )          return new            spell_aoe_t( p, options_str );
+  if ( name == "summon_add"  )          return new           summon_add_t( p, options_str );
 
   return NULL;
 }
@@ -1030,7 +1060,6 @@ void enemy_t::create_options()
     opt_string( "enemy_tank", target_str ),
     opt_string( "tmi_boss", tmi_boss_str ),
     opt_int( "apply_debuff", apply_damage_taken_debuff ),
-    opt_bool( "dual_wield", dual_wield ),
     opt_null()
   };
 

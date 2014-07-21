@@ -86,13 +86,13 @@ off_hand=shield_of_mockery,id=105481,upgrade=2
 
 enemy=Fluffy_Pillow
 tmi_boss=T15N
-#this tells the boss to dual-wield
-dual_wield=1
 #this tells all attacks to apply 1 stack, unless overriden in the attack options
 apply_debuff=1 
-#auto attacks (main- and off-hand) will apply 1 stack due to the line above this
-actions=/auto_attack 
-#this DpT will apply one stack every tick for the same reason
+#auto attacks (main-hand) will apply 1 stack due to the line above this
+actions=/auto_attack
+#so will off-hand auto attacks
+actions+=/auto_attack_off_hand 
+#this DoT will apply one stack every tick for the same reason
 actions+=/spell_dot,dot_duration=20,tick_time=2,if=!ticking 
 #these actions all specify the number of stacks
 actions+=/melee_nuke,apply_debuff=2,cooldown=5
