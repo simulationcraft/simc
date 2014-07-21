@@ -230,8 +230,9 @@ struct enemy_action_t : public ACTION_TYPE
 
 struct melee_t : public enemy_action_t<melee_attack_t>
 {
+  bool first;
   melee_t( const std::string& name, player_t* player, const std::string options_str ) :
-    base_t( name, player )
+    base_t( name, player ), first( false )
   {
     school = SCHOOL_PHYSICAL;
     may_crit = true;
@@ -259,6 +260,18 @@ struct melee_t : public enemy_action_t<melee_attack_t>
     // if the execute time is somehow less than 10 ms, set it back to the default of 1.5 seconds
     if ( base_execute_time < timespan_t::from_seconds( 0.01 ) )
       base_execute_time = timespan_t::from_seconds( 1.5 );
+  }
+
+  timespan_t execute_time() const
+  {
+    timespan_t et = enemy_action_t::execute_time();
+
+    if ( first )
+    {
+      et += weapon -> swing_time / 2;
+    }
+
+    return et;
   }
 };
 
@@ -332,6 +345,7 @@ struct auto_attack_t : public enemy_action_t<attack_t>
     player -> main_hand_attack -> schedule_execute();
     if ( player -> off_hand_attack )
     {
+      oh -> first = true;
       player -> off_hand_attack = oh;
       player -> off_hand_attack -> schedule_execute();
     }
