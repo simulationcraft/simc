@@ -1103,7 +1103,6 @@ public slots:
 
   void stopImport();
   void stopSim();
-  void stopAllSim();
 
 public:
   SC_MainWindow( QWidget *parent = 0 );

@@ -4333,10 +4333,7 @@ void mage_t::apl_arcane()
   default_list -> add_action( "potion,name=jade_serpent,if=buff.arcane_power.up|target.time_to_die<50" );
 
   for( size_t i = 0; i < item_actions.size(); i++ )
-  {
-    default_list -> add_action( item_actions[i] + ",if=talent.rune_of_power.enabled&target.time_to_die<25&buff.rune_of_power.remains>20" );
-    default_list -> add_action( item_actions[i] + ",if=(!talent.rune_of_power.enabled&!talent.invocation.enabled)&(buff.arcane_power.up|target.time_to_die<25)" );
-  }
+    default_list -> add_action( item_actions[i] );
 
   default_list -> add_talent( this, "Presence of Mind", "if=buff.arcane_power.up" );
 
@@ -4384,16 +4381,15 @@ void mage_t::apl_fire()
   for( size_t i = 0; i < racial_actions.size(); i++ )
     default_list -> add_action( racial_actions[i] );
 
+  for ( size_t i = 0; i < item_actions.size(); i++ )
+    default_list -> add_action( item_actions[i] );
+
   default_list -> add_action( "potion,name=jade_serpent" );
   default_list -> add_action( this, "Mirror Image" );
 
   default_list -> add_action( this, "Combustion", "if=target.time_to_die<22" );
   default_list -> add_action( this, "Combustion", "if=dot.ignite.tick_dmg>=((3*action.pyroblast.crit_damage)*mastery_value*0.5)" );
   default_list -> add_action( this, "Combustion", "if=dot.ignite.tick_dmg>=((action.fireball.crit_damage+action.inferno_blast.crit_damage+action.pyroblast.hit_damage)*mastery_value*0.5)&dot.pyroblast.ticking&buff.pyroblast.down&buff.presence_of_mind.down" );
-
-  for( size_t i = 0; i < item_actions.size(); i++ )
-    default_list -> add_action( item_actions[i]  );
-
   default_list -> add_talent( this, "Presence of Mind" );
   default_list -> add_action( this, "Flamestrike", "if=active_enemies>=5" );
   default_list -> add_action( this, "Inferno Blast", "if=dot.combustion.ticking&active_enemies>1" );
@@ -4433,12 +4429,6 @@ void mage_t::apl_frost()
 
   for( size_t i = 0; i < item_actions.size(); i++ )
     default_list -> add_action( item_actions[i] );
-
-  for( size_t i = 0; i < item_actions.size(); i++ )
-  {
-    default_list -> add_action( item_actions[i] + ",if=talent.rune_of_power.enabled&target.time_to_die<25&buff.rune_of_power.remains>20" );
-    default_list -> add_action( item_actions[i] + ",if=(!talent.rune_of_power.enabled&!talent.invocation.enabled)&target.time_to_die<25" );
-  }
 
   default_list -> add_action( this, "Flamestrike", "if=active_enemies>=5" );
   default_list -> add_talent( this, "Frost Bomb", "if=target.time_to_die>cast_time+tick_time" );
