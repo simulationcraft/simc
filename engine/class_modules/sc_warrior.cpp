@@ -41,6 +41,8 @@ struct warrior_t: public player_t
 {
 public:
   int initial_rage;
+  double arms_rage_mult;
+  double crit_rage_mult;
   bool swapping; // Disables automated swapping when it's not required to use the ability.
   // Set to true whenever a player uses the swap option inside of stance_t, as we should assume they are intentionally sitting in defensive stance.
 
@@ -397,6 +399,8 @@ public:
     cooldown.stance_swap             -> duration = timespan_t::from_seconds( 1.5 );
 
     initial_rage = 0;
+    arms_rage_mult = 2.4;
+    crit_rage_mult = 2;
     swapping = false;
     base.distance = 3.0;
   }
@@ -781,10 +785,10 @@ struct warrior_attack_t: public warrior_action_t < melee_attack_t >
     double rage_gain = 3.5 * w -> swing_time.total_seconds();
 
     if ( p() -> specialization() == WARRIOR_ARMS && p() -> active_stance == STANCE_BATTLE )
-      rage_gain *= 2.4;
+      rage_gain *= p() -> arms_rage_mult;
 
     if ( p() -> specialization() == WARRIOR_ARMS && s -> result == RESULT_CRIT )
-      rage_gain *= 2.0;
+      rage_gain *= p() -> crit_rage_mult;
 
     if ( w -> slot == SLOT_OFF_HAND )
       rage_gain /= 2.0;
@@ -5105,6 +5109,8 @@ void warrior_t::create_options()
   option_t warrior_options[] =
   {
     opt_int( "initial_rage", initial_rage ),
+    opt_float("arms_rage_mult", arms_rage_mult ),
+    opt_float( "crit_rage_mult", crit_rage_mult ),
     opt_null()
   };
 
@@ -5164,6 +5170,8 @@ void warrior_t::copy_from( player_t* source )
   warrior_t* p = debug_cast<warrior_t*>( source );
 
   initial_rage = p -> initial_rage;
+  arms_rage_mult = p -> arms_rage_mult;
+  crit_rage_mult = p -> crit_rage_mult;
 }
 
 // warrior_t::decode_set ====================================================
