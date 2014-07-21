@@ -100,6 +100,9 @@ struct mage_td_t : public actor_pair_t
 struct mage_t : public player_t
 {
 public:
+  // Current target
+  player_t* current_target;
+
   // Icicles
   std::vector<icicle_data_t> icicles;
   action_t* icicle;
@@ -350,6 +353,7 @@ public:
 
   mage_t( sim_t* sim, const std::string& name, race_e r = RACE_NIGHT_ELF ) :
     player_t( sim, MAGE, name, r ),
+    current_target( target ),
     icicle( 0 ),
     icicle_event( 0 ),
     active_ignite( 0 ),
@@ -413,6 +417,7 @@ public:
   virtual void      moving();
   virtual double    temporary_movement_modifier() const;
   virtual void      arise();
+  virtual action_t* execute_action();
 
   target_specific_t<mage_td_t*> target_data;
 
@@ -725,12 +730,9 @@ struct prismatic_crystal_t : public pet_t
     pet_t::arise();
 
     // For now, when Prismatic Crystal is summoned, adjust all mage targets to it.
+    o() -> current_target = this;
     for ( size_t i = 0, end = o() -> action_list.size(); i < end; i++ )
-    {
-      action_t* a = o() -> action_list[ i ];
-      if ( a -> target -> is_enemy() )
-        a -> target = this;
-    }
+      o() -> action_list[ i ] -> target_cache.is_valid = false;
   }
 
   void demise()
@@ -738,12 +740,9 @@ struct prismatic_crystal_t : public pet_t
     pet_t::demise();
 
     // For now, when Prismatic Crystal despawns, adjust all mage targets back to fluffy pillow.
+    o() -> current_target = o() -> target;
     for ( size_t i = 0, end = o() -> action_list.size(); i < end; i++ )
-    {
-      action_t* a = o() -> action_list[ i ];
-      if ( a -> target == this )
-        a -> target = a -> default_target;
-    }
+      o() -> action_list[ i ] -> target_cache.is_valid = false;
   }
 
   double composite_player_vulnerability( school_e school ) const
@@ -1087,6 +1086,21 @@ public:
   //
   virtual void schedule_execute( action_state_t* state = 0 )
   {
+    // If there is no state to schedule, make one and put the actor's current
+    // target into it. This guarantees that:
+    // 1) action_execute_event_t::execute() does not execute on dead targets, if the target died during cast
+    // 2) We do not modify action's variables this early in the game
+    //
+    // If this is a tick action, there's going to be a state object passed to
+    // it, that will have the correct target anyhow, since the parent will have
+    // had it's target adjusted during its execution.
+    if ( state == 0 )
+    {
+      state = get_state();
+      // Put the actor's current target into the state object always.
+      state -> target = p() -> current_target;
+    }
+
     spell_t::schedule_execute( state );
 
     if ( ! channeled )
@@ -1207,11 +1221,44 @@ public:
     p() -> benefits.dps_rotation -> update( p() -> rotation.current == ROTATION_DPS );
     p() -> benefits.dpm_rotation -> update( p() -> rotation.current == ROTATION_DPM );
 
+    player_t* original_target = 0;
+    // Mage spells will always have a pre_execute_state defined, because of
+    // schedule_execute() trickery.
+    //
+    // Adjust the target of this action to always match what the
+    // pre_execute_state targets. Note that execute() will never be called if
+    // the actor's current target (at the time of cast beginning) has demised
+    // before the cast finishes.
+    if ( pre_execute_state )
+    {
+      // Adjust target if necessary
+      if ( target != pre_execute_state -> target )
+      {
+        original_target = target;
+        target = pre_execute_state -> target;
+      }
+
+      // Massive hack to describe a situation where schedule_execute()
+      // forcefully made a pre-execute state to pass the current target to
+      // execute. In this case we release the pre_execute_state, because we
+      // want the action to snapshot it's own stats on "cast finish". We have,
+      // however changed the target of the action to the one specified whe nthe
+      // casting begun (in schedule_execute()).
+      if ( pre_execute_state -> result_type == RESULT_TYPE_NONE )
+      {
+        action_state_t::release( pre_execute_state );
+        pre_execute_state = 0;
+      }
+    }
+
     spell_t::execute();
+
+    // Restore original target if necessary
+    if ( original_target )
+      target = original_target;
 
     if ( background )
       return;
-
 
     if ( ! channeled && !is_copy && hasted_by_pom )
     {
@@ -1253,9 +1300,24 @@ public:
 
   void trigger_ignite( action_state_t* state );
 
+  size_t available_targets( std::vector< player_t* >& tl ) const
+  {
+    tl.clear();
+    tl.push_back( target );
 
+    for ( size_t i = 0, actors = sim -> target_non_sleeping_list.size(); i < actors; i++ )
+    {
+      player_t* t = sim -> target_non_sleeping_list[ i ];
 
+      if ( t -> is_enemy() && ( t != target ) )
+        tl.push_back( t );
+    }
 
+    if ( ! p() -> pets.prismatic_crystal -> is_sleeping() )
+      tl.push_back( p() -> pets.prismatic_crystal );
+
+    return tl.size();
+  }
 };
 
 typedef residual_action::residual_periodic_action_t< mage_spell_t > residual_action_t;
@@ -2848,11 +2910,11 @@ struct inferno_blast_t : public mage_spell_t
 
       int spread_remaining = max_spread_targets;
 
-      for ( size_t i = 0, actors = sim -> actor_list.size(); i < actors; i++ )
+      for ( size_t i = 0, actors = target_list().size(); i < actors; i++ )
       {
-        player_t* t = sim -> actor_list[ i ];
+        player_t* t = target_list()[ i ];
 
-        if ( t -> is_sleeping() || ! t -> is_enemy() || ( t == s -> target ) )
+        if ( t == s -> target )
           continue;
 
         if ( ignite_dot -> is_ticking() )
@@ -3549,6 +3611,69 @@ struct prismatic_crystal_t : public mage_spell_t
   }
 };
 
+// Choose target ============================================================
+
+struct choose_target_t : public action_t
+{
+  player_t* selected_target;
+
+  choose_target_t( mage_t* p, const std::string& options_str ) :
+    action_t( ACTION_OTHER, "choose_target", p ),
+    selected_target( 0 )
+  {
+    std::string target_name;
+
+    option_t options[] = {
+      opt_string( "name", target_name ),
+      opt_null()
+    };
+
+    parse_options( options, options_str );
+
+    for ( size_t i = 0, end = sim -> actor_list.size(); i < end; i++ )
+    {
+      if ( util::str_compare_ci( sim -> actor_list[ i ] -> name_str, target_name ) )
+      {
+        selected_target = sim -> actor_list[ i ];
+        break;
+      }
+    }
+
+    if ( ! selected_target )
+      background = true;
+
+    harmful = may_miss = may_crit = callbacks = false;
+  }
+
+  result_e calculate_result( action_state_t* )
+  { return RESULT_HIT; }
+
+  block_result_e calculate_block_result( action_state_t* )
+  { return BLOCK_RESULT_UNBLOCKED; }
+
+  void execute()
+  {
+    action_t::execute();
+
+    mage_t* p = debug_cast<mage_t*>( player );
+
+    if ( sim -> debug )
+      sim -> out_debug.printf( "%s swapping target from %s to %s", player -> name(), p -> current_target -> name(), selected_target -> name() );
+
+    p -> current_target = selected_target;
+  }
+
+  bool ready()
+  {
+    if ( selected_target -> is_sleeping() )
+      return false;
+
+    if ( debug_cast<mage_t*>( player ) -> current_target == selected_target )
+      return false;
+
+    return action_t::ready();
+  }
+};
 
 
 // Combustion Pyroblast Chaining Switch ==========================================================
@@ -3983,6 +4108,7 @@ action_t* mage_t::create_action( const std::string& name,
   if ( name == "time_warp"         ) return new               time_warp_t( this, options_str );
   if ( name == "water_elemental"   ) return new  summon_water_elemental_t( this, options_str );
   if ( name == "prismatic_crystal" ) return new prismatic_crystal_t( this, options_str );
+  if ( name == "choose_target"     ) return new choose_target_t( this, options_str );
   //if ( name == "alter_time"        ) return new              alter_time_t( this, options_str );
 
   return player_t::create_action( name, options_str );
@@ -4668,6 +4794,8 @@ void mage_t::reset()
 {
   player_t::reset();
 
+  current_target = target;
+
   rotation.reset();
   icicles.clear();
   core_event_t::cancel( icicle_event );
@@ -4775,6 +4903,78 @@ void mage_t::arise()
 
   if ( perks.enhanced_frostbolt -> ok() )
     buffs.enhanced_frostbolt -> trigger();
+}
+
+// Copypasta, execept for target selection. This is a massive kludge. Buyer
+// beware!
+
+action_t* mage_t::execute_action()
+{
+  readying = 0;
+  off_gcd = 0;
+
+  action_t* action = 0;
+  player_t* action_target = 0;
+
+  if ( ! strict_sequence )
+  {
+    for ( size_t i = 0, num_actions = active_action_list -> foreground_action_list.size(); i < num_actions; ++i )
+    {
+      action_t* a = active_action_list -> foreground_action_list[ i ];
+
+      if ( a -> background ) continue;
+
+      if ( a -> wait_on_ready == 1 )
+        break;
+
+      // Change the target of the action before ready call ...
+      if ( a -> target != current_target )
+      {
+        action_target = a -> target;
+        a -> target = current_target;
+      }
+
+      if ( a -> ready() )
+      {
+        action = a;
+        break;
+      }
+      else if ( action_target )
+      {
+        a -> target = action_target;
+        action_target = 0;
+      }
+    }
+  }
+  // Committed to a strict sequence of actions, just perform them instead of a priority list
+  else
+    action = strict_sequence;
+
+  last_foreground_action = action;
+
+  if ( restore_action_list != 0 )
+  {
+    activate_action_list( restore_action_list );
+    restore_action_list = 0;
+  }
+
+  if ( action )
+  {
+    action -> line_cooldown.start();
+    action -> schedule_execute();
+
+    if ( ! action -> quiet )
+    {
+      iteration_executed_foreground_actions++;
+      action -> total_executions++;
+
+      sequence_add( action, action -> target, sim -> current_time );
+      if ( action_target )
+        action -> target = action_target;
+    }
+  }
+
+  return action;
 }
 
 // mage_t::create_expression ================================================

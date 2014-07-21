@@ -4768,7 +4768,7 @@ struct player_t : public actor_t
   virtual void arise();
   virtual void demise();
   virtual timespan_t available() const { return timespan_t::from_seconds( 0.1 ); }
-  action_t* execute_action();
+  virtual action_t* execute_action();
 
   virtual void   regen( timespan_t periodicity = timespan_t::from_seconds( 0.25 ) );
   virtual double resource_gain( resource_e resource_type, double amount, gain_t* g = 0, action_t* a = 0 );
