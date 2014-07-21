@@ -3647,6 +3647,8 @@ struct choose_target_t : public action_t
     if ( ! selected_target )
       background = true;
 
+    trigger_gcd = timespan_t::zero();
+
     harmful = may_miss = may_crit = callbacks = false;
   }
 
@@ -3685,7 +3687,16 @@ struct choose_target_t : public action_t
     if ( p -> current_target == selected_target )
       return false;
 
-    return action_t::ready();
+    player_t* original_target = 0;
+    if ( target != selected_target )
+      original_target = target;
+
+    target = selected_target;
+    bool rd = action_t::ready();
+    if ( original_target )
+      target = original_target;
+
+    return rd;
   }
 };
 
