@@ -1525,7 +1525,7 @@ struct fists_of_fury_t : public monk_melee_attack_t
     stancemask = FIERCE_TIGER;
     channeled = tick_zero = true;
     school = SCHOOL_PHYSICAL;
-    base_multiplier *= 18.5; // hardcoded into tooltip
+    base_multiplier *= 6.1; // hardcoded into tooltip
     callbacks = false; // Fists of Fury driver probably does not proc anything
 
     // T14 WW 2PC
