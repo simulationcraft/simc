@@ -338,6 +338,7 @@ struct rogue_t : public player_t
     event_premeditation( 0 ),
     active_blade_flurry( 0 ),
     active_lethal_poison( 0 ),
+    active_nonlethal_poison( 0 ),
     active_main_gauche( 0 ),
     active_venomous_wound( 0 ),
     melee_main_hand( 0 ), melee_off_hand( 0 ),
