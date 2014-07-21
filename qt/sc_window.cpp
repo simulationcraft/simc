@@ -468,6 +468,7 @@ void SC_MainWindow::createCmdLine()
   connect( cmdLine, SIGNAL( saveLogClicked() ), this, SLOT( saveLog() ) );
   connect( cmdLine, SIGNAL( saveResultsClicked() ), this, SLOT( saveResults() ) );
   connect( cmdLine, SIGNAL( cancelSimulationClicked() ), this, SLOT( stopSim() ) );
+  connect( cmdLine, SIGNAL( cancelAllSimulationClicked() ), this, SLOT( stopAllSim() ) );
   connect( cmdLine, SIGNAL( cancelImportClicked() ), this, SLOT( stopImport() ) );
 #ifdef SC_PAPERDOLL
   connect( cmdLine, SIGNAL( simulatePaperdollClicked() ), this, SLOT( start_paperdoll_sim() ) );
@@ -1166,6 +1167,10 @@ void SC_MainWindow::stopSim()
     if ( sim -> is_paused() )
       sim -> toggle_pause();
   }
+}
+void SC_MainWindow::stopAllSim()
+{
+  stopSim();
 }
 
 bool SC_MainWindow::simRunning()
