@@ -6054,21 +6054,14 @@ void druid_t::apl_feral()
     def -> add_action( "moonfire,cycle_targets=1,if=remains<=duration*0.3&active_enemies=1" );
 
   // Fillers
-  def -> add_action( "pool_resource,for_next=1" );
   def -> add_action( this, "Swipe", "if=combo_points<5&active_enemies>1" );
   // Disabled until Rake perk + Incarnation is fixed.
   /* def -> add_action( this, "Rake", "if=combo_points<5&hit_damage>=action.shred.hit_damage",
                         "Rake for CP if it hits harder than Shred." ); */
-  def -> add_action( this, "Shred", "if=combo_points<5" );
+  def -> add_action( this, "Shred", "if=combo_points<5&active_enemies=1" );
 
   if ( glyph.master_shapeshifter -> ok() )
     def -> add_action( this, "Bear Form", "if=dot.thrash_bear.remains-gcd<=dot.thrash_bear.duration*0.3&cooldown.tigers_fury.remains>6&dot.rip.remains>6&energy.time_to_max>=5.5" );
-  // Disabled until Rejuv consuming OoC is fixed
-  /* if ( perk.enhanced_rejuvenation -> ok() )
-  {
-    def -> add_action( "natures_vigil" );
-    def -> add_action( this, "Rejuvenation", "if=buff.natures_vigil.up&!ticking" );
-  } */
 }
 
 // Balance Combat Action Priority List ==============================
