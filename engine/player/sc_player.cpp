@@ -6086,6 +6086,8 @@ struct pool_resource_t : public action_t
   {
     if ( sim -> log )
       sim -> out_log.printf( "%s performs %s", player -> name(), name() );
+
+    player -> iteration_waiting_time += wait;
   }
 
   virtual timespan_t gcd() const
