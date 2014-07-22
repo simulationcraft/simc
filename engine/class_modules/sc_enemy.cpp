@@ -44,7 +44,7 @@ struct enemy_t : public player_t
   {
     s -> target_list.push_back( this );
     position_str = "front";
-    level = level + 3;
+    level = 0;
   }
 
   virtual role_e primary_role() const
@@ -736,14 +736,15 @@ void enemy_t::init_base_stats()
 
   tmi_boss_enum = convert_tmi_string( tmi_boss_str );
 
-  level = sim -> max_player_level + 3;
+  if ( level == 0 )
+    level = sim -> max_player_level + 3;
 
   if ( tmi_boss_enum == TMI_NONE ) // skip overrides for TMI standard bosses
   {
     // target_level override
     if ( sim -> target_level >= 0 )
       level = sim -> target_level;
-    else if ( ( sim -> max_player_level + sim -> rel_target_level ) >= 0 )
+    else if ( sim -> rel_target_level > 0 && ( sim -> max_player_level + sim -> rel_target_level ) >= 0 )
       level = sim -> max_player_level + sim -> rel_target_level;
 
     // waiting_time override

@@ -503,17 +503,49 @@ bool parse_fight_style( sim_t*             sim,
     sim -> fight_style = "HeavyMovement";
     sim -> raid_events_str = "/movement,players_only=1,first=10,cooldown=10,duration=4";
   }
-  else if ( util::str_compare_ci( value, "RaidDummy" ) )
+  else if ( util::str_compare_ci( value, "WoD_KillableRaidDummy" ) || util::str_compare_ci( value, "WoD_KillableMythicDummy" ) )
   {
-    sim -> fight_style = "RaidDummy";
+    sim -> fight_style = value;
     sim -> overrides.bloodlust = 0;
-    sim -> overrides.target_health = 50000000;
+    sim -> overrides.target_health = 300000000;
     sim -> target_death_pct = 0;
     sim -> allow_potions = false;
     sim -> vary_combat_length = 0;
     sim -> max_time = timespan_t::from_seconds( 1800 );
     sim -> average_range = false;
     sim -> solo_raid = true;
+  }
+  else if ( util::str_compare_ci( value, "WoD_RaidDamageDummyCluster" ) )
+  {
+    sim -> fight_style = value;
+    sim -> overrides.bloodlust = 0;
+    sim -> allow_potions = false;
+    sim -> average_range = false;
+    sim -> solo_raid = true;
+
+    // Set the main target to "RaidDamageDummy" and spawn 2 lower level mobs too
+    sim -> target = module_t::enemy() -> create_player( sim, "RaidDamageDummy" );
+
+    player_t* add_1 = module_t::enemy() -> create_player( sim, "DungeonDamageDummy1" );
+    add_1 -> level = 102;
+    player_t* add_2 = module_t::enemy() -> create_player( sim, "DungeonDamageDummy2" );
+    add_2 -> level = 102;
+  }
+  else if ( util::str_compare_ci( value, "WoD_WeakDamageDummyCluster" ) )
+  {
+    sim -> fight_style = value;
+    sim -> overrides.bloodlust = 0;
+    sim -> allow_potions = false;
+    sim -> average_range = false;
+    sim -> solo_raid = true;
+
+    for ( size_t i = 0; i < 5; i++ )
+    {
+      player_t* dummy = module_t::enemy() -> create_player( sim, "WeakDamageDummy" + util::to_string( i + 1 ) );
+      dummy -> level = 100;
+      if ( i == 0 )
+        sim -> target = dummy;
+    }
   }
   else if ( util::str_compare_ci( value, "HecticAddCleave" ) )
   {
@@ -898,7 +930,7 @@ sim_t::sim_t( sim_t* p, int index ) :
   save_talent_str( 0 ),
   talent_format( TALENT_FORMAT_UNCHANGED ),
   auto_ready_trigger( 0 ), stat_cache( 1 ), max_aoe_enemies( 20 ), show_etmi( 0 ), tmi_window_global( 0 ), tmi_bin_size( 0.5 ),
-  target_death_pct( 0 ), rel_target_level( 3 ), target_level( -1 ), target_adds( 0 ), desired_targets( 0 ),
+  target_death_pct( 0 ), rel_target_level( 0 ), target_level( -1 ), target_adds( 0 ), desired_targets( 0 ),
   challenge_mode( false ), scale_to_itemlevel ( -1 ),
   active_enemies( 0 ), active_allies( 0 ),
   deterministic_rng( false ),

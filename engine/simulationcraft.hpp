@@ -4160,7 +4160,7 @@ struct action_variable_t
 
 struct player_t : public actor_t
 {
-  static const int default_level = 90;
+  static const int default_level = 100;
 
   // static values
   player_e type;
