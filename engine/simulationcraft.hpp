@@ -5542,6 +5542,7 @@ struct action_t : public noncopyable
   virtual void   last_tick( dot_t* d );
   virtual void   update_resolve( dmg_e, action_state_t* assess_state );
   virtual void   assess_damage( dmg_e, action_state_t* assess_state );
+  virtual void   record_data( action_state_t* data );
   virtual int    schedule_multistrike( action_state_t* state, dmg_e type, double dmg_multiplier = 1.0 );
   virtual void   schedule_execute( action_state_t* execute_state = 0 );
   virtual void   reschedule_execute( timespan_t time );
