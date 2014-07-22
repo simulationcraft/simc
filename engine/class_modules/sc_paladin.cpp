@@ -51,7 +51,7 @@ struct paladin_td_t : public actor_pair_t
     buff_t* debuffs_censure;
     buff_t* eternal_flame;
     buff_t* glyph_of_flash_of_light;
-    absorb_buff_t* sacred_shield_tick;
+    buff_t* sacred_shield;
   } buffs;
 
   paladin_td_t( player_t* target, paladin_t* paladin );
@@ -2833,9 +2833,15 @@ struct sacred_shield_t : public paladin_heal_t
     paladin_heal_t( "sacred_shield", p, p -> find_talent_spell( "Sacred Shield" ) ) // todo: find_talent_spell -> find_specialization_spell
   {
     parse_options( NULL, options_str );
+    
+    // redirect HoT to self if not specified
+    if ( target -> is_enemy() || ( target -> type == HEALING_ENEMY && p -> specialization() == PALADIN_PROTECTION ) )
+      target = p;
 
     // treat this as a HoT that spawns an absorb bubble on each tick() call rather than healing
     tick_action = new sacred_shield_tick_t( p );
+    // tick_action doesn't natively inherit target, so set that specifically
+    tick_action -> target = target;
     hasted_ticks = true;
     may_multistrike = false;
         
@@ -2845,9 +2851,6 @@ struct sacred_shield_t : public paladin_heal_t
     benefits_from_seal_of_insight = false;
     harmful = false;
     
-    // redirect HoT to self if not specified
-    if ( target -> is_enemy() || ( target -> type == HEALING_ENEMY && p -> specialization() == PALADIN_PROTECTION ) )
-      target = p;
 
     // disable if not talented
     if ( ! ( p -> talents.sacred_shield -> ok() ) )
@@ -2866,16 +2869,17 @@ struct sacred_shield_t : public paladin_heal_t
   }
 
   virtual void last_tick( dot_t* d )
-  {
-    p() -> buffs.sacred_shield -> expire();
+  {    
+    td( d -> state -> target ) -> buffs.sacred_shield -> expire();
+
     paladin_heal_t::last_tick( d );
   }
 
   virtual void execute()
   {
     paladin_heal_t::execute();
-
-    p()->buffs.sacred_shield -> trigger();
+    
+    td( target ) -> buffs.sacred_shield -> trigger();
   }
 
   virtual timespan_t calculate_dot_refresh_duration( const dot_t* dot, timespan_t triggered_duration ) const override
@@ -4520,11 +4524,8 @@ paladin_td_t::paladin_td_t( player_t* target, paladin_t* paladin ) :
 
   buffs.debuffs_censure    = buff_creator_t( *this, "censure", paladin -> find_spell( 31803 ) );
   buffs.eternal_flame      = new buffs::eternal_flame_t( this );
+  buffs.sacred_shield      = buff_creator_t( *this, "sacred_shield", paladin -> find_talent_spell( "Sacred Shield" ) );
   buffs.glyph_of_flash_of_light = buff_creator_t( *this, "glyph_of_flash_of_light", paladin -> find_spell( 54957 ) );
-  buffs.sacred_shield_tick = absorb_buff_creator_t( *this, "sacred_shield_tick", paladin -> find_spell( 65148 ) )
-                             .source( paladin -> get_stats( "sacred_shield" ) )
-                             .cd( timespan_t::zero() )
-                             .gain( target -> get_gain( "sacred_shield_tick" ) );
 }
 
 // paladin_t::create_action =================================================
@@ -4915,10 +4916,6 @@ void paladin_t::create_buffs()
                                  .default_value( talents.long_arm_of_the_law -> effectN( 1 ).percent() );
   buffs.speed_of_light         = buff_creator_t( this, "speed_of_light", talents.speed_of_light )
                                  .default_value( talents.speed_of_light -> effectN( 1 ).percent() );
-  buffs.sacred_shield          = buff_creator_t( this, "sacred_shield", find_talent_spell( "Sacred Shield" ) )
-                                 .duration( timespan_t::from_seconds( 30 ) ) // arbitrarily high since this is just a placeholder, we expire() on last_tick()
-                                 .cd( timespan_t::zero() ) // let ability handle CD
-                                 .period( timespan_t::zero() );
   buffs.selfless_healer        = buff_creator_t( this, "selfless_healer", find_spell( 114250 ) );
   buffs.liadrins_righteousness = buff_creator_t( this, "liadrins_righteousness", find_spell( 156989 ) )
                                  .add_invalidate( CACHE_ATTACK_SPEED );
