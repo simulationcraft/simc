@@ -627,7 +627,7 @@ struct mirror_image_pet_t : public pet_t
     pet_t( sim, owner, "mirror_image", true ),
     arcane_charge( NULL )
   {
-    owner_coeff.sp_from_sp = 0.50;
+    owner_coeff.sp_from_sp = 1.00;
   }
 
   virtual action_t* create_action( const std::string& name,
