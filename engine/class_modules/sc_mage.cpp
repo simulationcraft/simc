@@ -994,9 +994,6 @@ public:
   int dps_rotation;
   int dpm_rotation;
 
-  // Hackery to not double-count prismatic crystal
-  stats_t* prismatic_crystal_stats;
-
   mage_spell_t( const std::string& n, mage_t* p,
                 const spell_data_t* s = spell_data_t::nil() ) :
     spell_t( n, p, s ),
