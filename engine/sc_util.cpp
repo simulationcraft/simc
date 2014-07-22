@@ -1643,7 +1643,7 @@ const char* util::stat_type_wowhead( stat_e stat )
 
     case STAT_MULTISTRIKE_RATING: return "multistrike";
     case STAT_READINESS_RATING:   return "readiness";
-    case STAT_VERSATILITY_RATING: return "versatility"; // TODO-WOD: Verify
+    case STAT_VERSATILITY_RATING: return "versatility";
 
     case STAT_MAX: return "__all";
     default: return "unknown";
@@ -1699,12 +1699,13 @@ const char* util::stat_type_askmrrobot( stat_e stat )
     case STAT_PARRY_RATING: return "ParryRating";
     case STAT_RESILIENCE_RATING: return "ResilienceRating";
     case STAT_MASTERY_RATING: return "MasteryRating";
+    case STAT_MULTISTRIKE_RATING: return "MultistrikeRating";
+    case STAT_VERSATILITY_RATING: return "VersatilityRating";
+    case STAT_BONUS_ARMOR: return "BonusArmor";
     case STAT_PVP_POWER: return "PvpPower";
     case STAT_WEAPON_DPS: return "MainHandDps";
     case STAT_WEAPON_OFFHAND_DPS: return "OffHandDPS";
-
-    //WOD-TODO: add bonus armor, multistrike, readiness, hybrid primaries
-
+      
     default: return "unknown";
 
   }
@@ -2002,7 +2003,6 @@ stat_e util::translate_item_mod( int item_mod )
     case ITEM_MOD_STRENGTH_INTELLECT:  return STAT_STR_INT;
     case ITEM_MOD_VERSATILITY_RATING:  return STAT_VERSATILITY_RATING;
     default:                           return STAT_NONE;
-    // TODO-wOD: Versatility rating
   }
 }
 
@@ -2033,9 +2033,8 @@ int util::translate_stat( stat_e stat )
     case STAT_AGI_INT:            return ITEM_MOD_AGILITY_INTELLECT;
     case STAT_STR_AGI:            return ITEM_MOD_STRENGTH_AGILITY;
     case STAT_STR_INT:            return ITEM_MOD_STRENGTH_INTELLECT;
+    case STAT_VERSATILITY_RATING: return ITEM_MOD_VERSATILITY_RATING;
     default:                      return ITEM_MOD_NONE;
-
-    // TODO-wOD: Versatility rating
   }
 }
 

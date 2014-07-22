@@ -208,11 +208,25 @@ bool wowhead::download_item_data( item_t&            item,
     item.parsed.data.class_mask = classes;
 
     size_t n = 0;
+    stat_e hybrid_stat = STAT_NONE;
+    for ( rapidjson::Value::ConstMemberIterator i = jsonequip.MemberBegin(); 
+          i != jsonequip.MemberEnd() && n < sizeof_array( item.parsed.data.stat_type_e ); i++ )
+    {
+      stat_e type = util::parse_stat_type( i -> name.GetString() );
+      // wowhead josnEquip contains redundant entries for queries, take note so we can purge
+      if ( type == STAT_STR_AGI || type == STAT_STR_INT || type == STAT_AGI_INT )
+        hybrid_stat = type;
+    }
+
     for ( rapidjson::Value::ConstMemberIterator i = jsonequip.MemberBegin(); 
           i != jsonequip.MemberEnd() && n < sizeof_array( item.parsed.data.stat_type_e ); i++ )
     {
       stat_e type = util::parse_stat_type( i -> name.GetString() );
       if ( type == STAT_NONE || type == STAT_ARMOR || util::translate_stat( type ) == ITEM_MOD_NONE ) 
+        continue;
+
+      // If we have a hybrid stat, don't record the excess STR/INT/AGI entries
+      if ( hybrid_stat != STAT_NONE && ( type == STAT_STRENGTH || type == STAT_INTELLECT || type == STAT_AGILITY ) )
         continue;
 
       item.parsed.data.stat_type_e[ n ] = util::translate_stat( type );
@@ -226,7 +240,7 @@ bool wowhead::download_item_data( item_t&            item,
            item.parsed.data.stat_type_e[ n - 1 ] == ITEM_MOD_SPELL_POWER ) )
         item.parsed.data.flags_2 |= ITEM_FLAG2_CASTER_WEAPON;
     }
-
+    
     int n_sockets = 0;
     if ( jsonequip.HasMember( "nsockets" ) )
       n_sockets = jsonequip[ "nsockets" ].GetUint();
