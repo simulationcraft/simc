@@ -1064,7 +1064,7 @@ void action_t::execute()
     player -> in_combat = true;
   }
 
-  dmg_e result_type;
+  dmg_e result_type = RESULT_TYPE_NONE;
   if ( type == ACTION_HEAL || type == ACTION_ABSORB )
     result_type = HEAL_DIRECT;
   else
@@ -1239,7 +1239,7 @@ void action_t::multistrike_direct( const action_state_t*, action_state_t* ms_sta
 
 void action_t::tick( dot_t* d )
 {
-  dmg_e result_type;
+  dmg_e result_type = RESULT_TYPE_NONE;
   if ( type == ACTION_HEAL || type == ACTION_ABSORB )
   {
     if ( tick_action )
