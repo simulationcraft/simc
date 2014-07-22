@@ -21,7 +21,7 @@ actions.precombat+=/snapshot_stats
 actions=/auto_attack
 actions+=/crusader_strike
 actions+=/judgment
-actions+=/reckoning,if=target.current_target.debuff.damage_taken>60
+actions+=/reckoning,if=target.current_target.debuff.damage_taken>60&target.current_target!=Alice
 
 head=primal_gladiators_plate_helm,id=111211
 neck=primal_gladiators_choker_of_cruelty,id=111207
@@ -64,7 +64,7 @@ actions+=/auto_attack
 actions+=/shield_slam
 actions+=/revenge
 actions+=/devastate
-actions+=/taunt,if=target.current_target.debuff.damage_taken>60
+actions+=/taunt,if=target.current_target.debuff.damage_taken>60&target.current_target!=Bob
 
 head=helmet_of_the_prehistoric_marauder,id=99418,upgrade=2,gems=16crit_8haste_8crit
 neck=malkoroks_tainted_dog_tags,id=105566,upgrade=2

@@ -212,7 +212,6 @@ struct enemy_action_t : public ACTION_TYPE
     action_type_t::impact( s );
   }
 
-  // this one applies the debuff on tick
   void tick( dot_t* d )
   {
     if ( apply_debuff && num_debuff_stacks >= 0 )
@@ -966,7 +965,7 @@ void enemy_t::init_action_list()
 
     // If we have more than one tank, create a new action list for each
     // Only do this if the user hasn't specified additional action lists beyond precombat & default
-    if ( tanks.size() > 1 && action_priority_list.size() < 2 )
+    if ( tanks.size() > 1 && action_priority_list.size() < 3 )
     {
       std::string new_action_list_str = "";
 
