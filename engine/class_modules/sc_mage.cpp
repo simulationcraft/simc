@@ -994,6 +994,9 @@ public:
   int dps_rotation;
   int dpm_rotation;
 
+  // Hackery to not double-count prismatic crystal
+  stats_t* prismatic_crystal_stats;
+
   mage_spell_t( const std::string& n, mage_t* p,
                 const spell_data_t* s = spell_data_t::nil() ) :
     spell_t( n, p, s ),
@@ -1317,6 +1320,14 @@ public:
       tl.push_back( p() -> pets.prismatic_crystal );
 
     return tl.size();
+  }
+
+  void record_data( action_state_t* data )
+  {
+    if ( data -> target == p() -> pets.prismatic_crystal )
+      return;
+
+    spell_t::record_data( data );
   }
 };
 
