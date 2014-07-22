@@ -1442,7 +1442,7 @@ bool sim_t::init_actors()
   }
 
   if ( wowhead_tooltips == -1 )
-    wowhead_tooltips = player_list.size() <= 10;
+    wowhead_tooltips = player_no_pet_list.size() <= 10;
 
   // This next section handles all the ugly details of initialization. Ideally, each of these
   // init_* methods will eventually return a bool to indicate success or failure, from which
