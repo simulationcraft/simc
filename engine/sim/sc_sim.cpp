@@ -507,7 +507,10 @@ bool parse_fight_style( sim_t*             sim,
   {
     sim -> fight_style = value;
     sim -> overrides.bloodlust = 0;
-    sim -> overrides.target_health = 300000000;
+    if ( util::str_compare_ci( value, "WoD_KillableRaidDummy" ) )
+      sim -> overrides.target_health = 20000000;
+    else
+      sim -> overrides.target_health = 300000000;
     sim -> target_death_pct = 0;
     sim -> allow_potions = false;
     sim -> vary_combat_length = 0;
