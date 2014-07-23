@@ -31,6 +31,7 @@ actions+=/use_item,name=primal_gladiators_badge_of_victory,if=buff.bloodbath.up|
 actions+=/blood_fury,if=buff.bloodbath.up|buff.avatar.up|buff.shield_charge.up
 actions+=/berserking,if=buff.bloodbath.up|buff.avatar.up|buff.shield_charge.up
 actions+=/arcane_torrent,if=buff.bloodbath.up|buff.avatar.up|buff.shield_charge.up
+actions+=/berserker_rage,if=buff.enrage.down
 actions+=/run_action_list,name=gladiator,if=talent.gladiators_resolve.enabled
 actions+=/run_action_list,name=prot
 

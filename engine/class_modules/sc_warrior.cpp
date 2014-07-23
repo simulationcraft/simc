@@ -2168,7 +2168,6 @@ struct raging_blow_t: public warrior_attack_t
   {
     // check attack
     attack_t::execute();
-
     if ( result_is_hit( execute_state -> result ) )
     {
       mh_attack -> execute();
@@ -4056,7 +4055,7 @@ void warrior_t::apl_prot()
   }
   for ( size_t i = 0; i < racial_actions.size(); i++ )
     default_list -> add_action( racial_actions[i] + ",if=buff.bloodbath.up|buff.avatar.up|buff.shield_charge.up" );
-
+  default_list -> add_action( this, "Berserker Rage", "if=buff.enrage.down" );
   default_list -> add_action( "run_action_list,name=gladiator,if=talent.gladiators_resolve.enabled" );
   default_list -> add_action( "run_action_list,name=prot" );
 
