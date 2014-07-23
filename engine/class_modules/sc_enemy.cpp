@@ -95,18 +95,19 @@ struct enemy_action_t : public ACTION_TYPE
   int num_debuff_stacks;
   double damage_range;
   timespan_t cooldown_;
+  int aoe_tanks;
 
   std::vector<option_t> options;
 
   enemy_action_t( const std::string& name, player_t* player ) :
     action_type_t( name, player ),
     apply_debuff( false ), num_debuff_stacks( -1000000 ), damage_range( -1 ),
-    cooldown_( timespan_t::zero() )
+    cooldown_( timespan_t::zero() ), aoe_tanks( 0 )
   {
     options.push_back( opt_float( "damage", this -> base_dd_min ) );
     options.push_back( opt_timespan( "attack_speed", this -> base_execute_time ) );
     options.push_back( opt_int( "apply_debuff", num_debuff_stacks ) );
-    options.push_back( opt_int( "aoe_tanks", this -> aoe ) );
+    options.push_back( opt_int( "aoe_tanks", aoe_tanks ) );
     options.push_back( opt_float( "range", damage_range ) );
     options.push_back( opt_timespan( "cooldown", cooldown_ ) );
     options.push_back( opt_null() );
@@ -132,6 +133,11 @@ struct enemy_action_t : public ACTION_TYPE
   void init()
   {
     action_type_t::init();
+
+    if ( aoe_tanks == 1 )
+      this -> aoe = -1;
+    else
+      this -> aoe = aoe_tanks;
 
     this -> name_str = this -> name_str + "_" + this -> target -> name();
     this -> cooldown = this -> player -> get_cooldown( this -> name_str );
