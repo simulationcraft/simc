@@ -47,7 +47,6 @@ struct shaman_td_t : public actor_pair_t
   struct debuffs
   {
     buff_t* stormstrike;
-    buff_t* unleashed_fury;
     buff_t* t16_2pc_caster;
   } debuff;
 
@@ -168,7 +167,7 @@ public:
     buff_t* tier16_2pc_melee;
     buff_t* tier16_2pc_caster;
     buff_t* unleash_flame;
-    buff_t* unleashed_fury_wf;
+    buff_t* unleashed_fury;
     buff_t* tidal_waves;
 
     haste_buff_t* elemental_mastery;
@@ -513,7 +512,6 @@ shaman_td_t::shaman_td_t( player_t* target, shaman_t* p ) :
   dot.flame_shock       = target -> get_dot( "flame_shock", p );
 
   debuff.stormstrike    = buff_creator_t( *this, "stormstrike", p -> find_specialization_spell( "Stormstrike" ) );
-  debuff.unleashed_fury = buff_creator_t( *this, "unleashed_fury_ft", p -> find_spell( 118470 ) );
   debuff.t16_2pc_caster = buff_creator_t( *this, "tier16_2pc_caster", p -> sets.set( SET_T16_2PC_CASTER ) -> effectN( 1 ).trigger() )
                           .chance( static_cast< double >( p -> sets.has_set_bonus( SET_T16_2PC_CASTER ) ) );
 }
@@ -1651,9 +1649,6 @@ struct unleash_flame_spell_t : public shaman_spell_t
   virtual void execute()
   {
     shaman_spell_t::execute();
-    p() -> buff.unleash_flame -> trigger();
-    if ( result_is_hit( execute_state -> result ) && p() -> talent.unleashed_fury -> ok() )
-      td( execute_state -> target ) -> debuff.unleashed_fury -> trigger();
   }
 };
 
@@ -1816,9 +1811,6 @@ struct unleash_wind_t : public shaman_attack_t
   void execute()
   {
     shaman_attack_t::execute();
-    p() -> buff.unleash_wind -> trigger( p() -> buff.unleash_wind -> data().initial_stacks() );
-    if ( result_is_hit( execute_state -> result ) && p() -> talent.unleashed_fury -> ok() )
-      p() -> buff.unleashed_fury_wf -> trigger();
   }
 };
 
@@ -2481,6 +2473,33 @@ struct windstrike_t : public shaman_attack_t
   }
 };
 
+// Unleash Elements Attack ==================================================
+
+struct unleash_elements_t : public shaman_attack_t
+{
+  unleash_elements_t( shaman_t* player, const std::string& options_str ) :
+    shaman_attack_t( "unleash_elements", player, player -> find_specialization_spell( "Unleash Elements" ) )
+  {
+    parse_options( NULL, options_str );
+
+    may_crit     = false;
+    may_miss     = false;
+    may_proc_eoe = true;
+  }
+
+  virtual void execute()
+  {
+    shaman_attack_t::execute();
+
+    if ( p() -> talent.unleashed_fury -> ok() )
+      p() -> buff.unleashed_fury -> trigger();
+
+    p() -> buff.unleash_wind -> trigger( p() -> buff.unleash_wind -> data().initial_stacks() );
+    p() -> buff.unleash_flame -> trigger();
+    p() -> buff.tier16_2pc_melee -> trigger();
+  }
+};
+
 // ==========================================================================
 // Shaman Spell
 // ==========================================================================
@@ -2856,11 +2875,18 @@ struct lava_burst_t : public shaman_spell_t
   {
     double m = shaman_spell_t::composite_target_multiplier( target );
 
-    if ( td( target ) -> debuff.unleashed_fury -> check() )
-      m *= 1.0 + td( target ) -> debuff.unleashed_fury -> data().effectN( 2 ).percent();
-
     if ( td( target ) -> dot.flame_shock -> is_ticking() )
       m *= 1.0 + p() -> spell.flame_shock -> effectN( 3 ).percent();
+
+    return m;
+  }
+
+  double action_multiplier() const
+  {
+    double m = shaman_spell_t::action_multiplier();
+
+    if ( p() -> buff.unleashed_fury -> check() )
+      m *= 1.0 + p() -> buff.unleashed_fury -> data().effectN( 2 ).percent();
 
     return m;
   }
@@ -2936,6 +2962,9 @@ struct lightning_bolt_t : public shaman_spell_t
 
     m *= 1.0 + p() -> sets.set( SET_T14_2PC_CASTER ) -> effectN( 1 ).percent();
 
+    if ( p() -> buff.unleashed_fury -> check() )
+      m *= 1.0 + p() -> buff.unleashed_fury -> data().effectN( p() -> specialization() == SHAMAN_ENHANCEMENT ? 2 : 1 ).percent();
+
     return m;
   }
 
@@ -2955,9 +2984,6 @@ struct lightning_bolt_t : public shaman_spell_t
   virtual double composite_target_multiplier( player_t* target ) const
   {
     double m = shaman_spell_t::composite_target_multiplier( target );
-
-    if ( td( target ) -> debuff.unleashed_fury -> check() )
-      m *= 1.0 + td( target ) -> debuff.unleashed_fury -> data().effectN( 1 ).percent();
 
     return m;
   }
@@ -3114,42 +3140,6 @@ struct thunderstorm_t : public shaman_spell_t
   }
 };
 
-// Unleash Elements Spell ===================================================
-
-struct unleash_elements_t : public shaman_spell_t
-{
-  unleash_wind_t*   wind;
-  unleash_flame_spell_t* flame;
-
-  unleash_elements_t( shaman_t* player, const std::string& options_str ) :
-    shaman_spell_t( "unleash_elements", player, player -> find_specialization_spell( "Unleash Elements" ), options_str ),
-    wind( 0 ), flame( 0 )
-  {
-    may_crit     = false;
-    may_miss     = false;
-    may_proc_eoe = true;
-
-    wind = new unleash_wind_t( "unleash_wind", player );
-    flame = new unleash_flame_spell_t( "unleash_flame", player );
-
-    add_child( wind );
-    add_child( flame );
-  }
-
-  virtual void execute()
-  {
-    shaman_spell_t::execute();
-
-    wind -> target = execute_state -> target;
-    wind -> execute();
-
-    flame -> target = execute_state -> target;
-    flame -> execute();
-
-    p() -> buff.tier16_2pc_melee -> trigger();
-  }
-};
-
 struct unleash_flame_t : public shaman_spell_t
 {
   unleash_flame_t( shaman_t* player, const std::string& options_str ) :
@@ -3165,8 +3155,8 @@ struct unleash_flame_t : public shaman_spell_t
     shaman_spell_t::execute();
 
     p() -> buff.unleash_flame -> trigger();
-    if ( result_is_hit( execute_state -> result ) && p() -> talent.unleashed_fury -> ok() )
-      td( execute_state -> target ) -> debuff.unleashed_fury -> trigger();
+    if ( p() -> talent.unleashed_fury -> ok() )
+      p() -> buff.unleashed_fury -> trigger();
   }
 };
 
@@ -4865,8 +4855,18 @@ void shaman_t::create_buffs()
                                             sets.set( SET_T13_4PC_HEAL ) -> effectN( 1 ).time_value() );
   buff.tidal_waves             = buff_creator_t( this, "tidal_waves", spec.tidal_waves -> ok() ? find_spell( 53390 ) : spell_data_t::not_found() );
   buff.unleash_flame           = new unleash_flame_buff_t( this );
-  buff.unleashed_fury_wf       = buff_creator_t( this, "unleashed_fury_wf", find_spell( 118472 ) )
-                                 .add_invalidate( CACHE_MULTISTRIKE );
+
+  buff_creator_t unleashed_fury = buff_creator_t( this,"unleashed_fury" )
+                                  .chance( talent.unleashed_fury -> ok() );
+  if ( specialization() == SHAMAN_ENHANCEMENT )
+  {
+    unleashed_fury.spell( find_spell( 118472 ) );
+    unleashed_fury.add_invalidate( CACHE_MULTISTRIKE );
+  }
+  else if ( specialization() == SHAMAN_ELEMENTAL )
+    unleashed_fury.spell( find_spell( 118470 ) );
+
+  buff.unleashed_fury          = unleashed_fury;
 
   // Haste buffs
   buff.elemental_mastery       = haste_buff_creator_t( this, "elemental_mastery", talent.elemental_mastery )
@@ -5458,8 +5458,8 @@ double shaman_t::composite_multistrike() const
 {
   double m = player_t::composite_multistrike();
 
-  if ( buff.unleashed_fury_wf -> up() )
-    m += buff.unleashed_fury_wf -> data().effectN( 1 ).percent();
+  if ( buff.unleashed_fury -> up() )
+    m += buff.unleashed_fury -> data().effectN( 1 ).percent();
 
   m += spec.elemental_overload -> effectN( 2 ).percent();
 
