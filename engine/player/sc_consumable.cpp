@@ -965,6 +965,11 @@ struct dbc_potion_t : public action_t
           stat_buff = stat_buff_creator_t( p, spell_name, spell );
         else
           stat_buff = static_cast< stat_buff_t* >( existing_buff );
+
+        id = spell -> id();
+        s_data = spell;
+
+        stats = player -> get_stats( spell_name, this );
         break;
       }
     }
