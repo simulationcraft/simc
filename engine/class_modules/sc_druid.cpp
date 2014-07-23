@@ -2625,45 +2625,6 @@ struct thrash_cat_t : public cat_attack_t
   { return 0.0; }
 };
 
-// Tiger's Fury =============================================================
-
-struct tigers_fury_t : public cat_attack_t
-{
-  tigers_fury_t( druid_t* p, const std::string& options_str ) :
-    cat_attack_t( "tigers_fury", p, p -> find_specialization_spell( "Tiger's Fury" ), options_str )
-  {
-    harmful = false;
-  }
-
-  virtual void execute()
-  {
-    cat_attack_t::execute();
-
-    p() -> buff.tigers_fury -> trigger();
-
-    p() -> resource_gain( RESOURCE_ENERGY,
-                          data().effectN( 2 ).resource( RESOURCE_ENERGY ),
-                          p() -> gain.tigers_fury );
-
-    if ( p() -> sets.has_set_bonus( SET_T13_4PC_MELEE ) )
-      p() -> buff.omen_of_clarity -> trigger();
-
-    if ( p() -> sets.has_set_bonus( SET_T15_4PC_MELEE ) )
-      p() -> buff.tier15_4pc_melee -> trigger( 3 );
-
-    if ( p() -> sets.has_set_bonus( SET_T16_4PC_MELEE ) )
-      p() -> buff.feral_rage -> trigger();
-  }
-
-  virtual bool ready()
-  {
-    if ( p() -> buff.berserk -> check() )
-      return false;
-
-    return cat_attack_t::ready();
-  }
-};
-
 } // end namespace cat_attacks
 
 namespace bear_attacks {
@@ -4222,6 +4183,42 @@ struct feral_charge_bear_t : public druid_spell_t
   }
 };
 
+// Force of Nature Spell ====================================================
+
+struct force_of_nature_spell_t : public druid_spell_t
+{
+  force_of_nature_spell_t( druid_t* player, const std::string& options_str ) :
+    druid_spell_t( "force_of_nature", player, player -> talent.force_of_nature )
+  {
+    parse_options( NULL, options_str );
+
+    harmful = false;
+    cooldown -> charges = 3;
+    cooldown -> duration = timespan_t::from_seconds( 20.0 );
+    use_off_gcd = true;
+  }
+
+  virtual void execute()
+  {
+    druid_spell_t::execute();
+
+    if ( p() -> pet_force_of_nature[ 0 ] )
+    {
+      for ( int i = 0; i < 3; i++ )
+      {
+        if ( p() -> pet_force_of_nature[ i ] -> is_sleeping() )
+        {
+          p() -> pet_force_of_nature[ i ] -> summon( p() -> talent.force_of_nature -> duration() );
+          return;
+        }
+      }
+
+      p() -> sim -> errorf( "Player %s ran out of treants.\n", p() -> name() );
+      assert( false ); // Will only get here if there are no available treants
+    }
+  }
+};
+
 // Heart of the Wild Spell ==================================================
 
 struct heart_of_the_wild_t : public druid_spell_t
@@ -4419,69 +4416,6 @@ struct might_of_ursoc_t : public druid_spell_t
     if ( ! p() -> buff.bear_form -> check() )
       return false;
     
-    return druid_spell_t::ready();
-  }
-};
-
-// Savage Defense ===========================================================
-
-struct savage_defense_t : public druid_spell_t
-{
-  savage_defense_t( druid_t* p, const std::string& options_str ) :
-    druid_spell_t( "savage_defense", p, p -> find_specialization_spell( "Savage Defense" ), options_str )
-  {
-    harmful = false;
-    cooldown -> duration = timespan_t::from_seconds( 9.0 );
-    cooldown -> charges = 3;
-    use_off_gcd = true;
-
-    if ( p -> sets.has_set_bonus( SET_T16_2PC_TANK ) )
-      p -> active.ursocs_vigor = new ursocs_vigor_t( p );
-  }
-
-  virtual void execute()
-  {
-    druid_spell_t::execute();
-
-    if ( p() -> buff.savage_defense -> check() )
-      p() -> buff.savage_defense -> extend_duration( p(), p() -> buff.savage_defense -> buff_duration );
-    else
-      p() -> buff.savage_defense -> trigger();
-
-    if ( p() -> sets.has_set_bonus( SET_T16_4PC_TANK ) )
-      p() -> active.ursocs_vigor -> trigger_hot();
-  }
-
-  virtual bool ready() 
-  {
-    if ( ! p() -> buff.bear_form -> check() )
-      return false;
-    
-    return druid_spell_t::ready();
-  }
-};
-
-// Skull Bash (Bear) ========================================================
-
-struct skull_bash_bear_t : public druid_spell_t
-{
-  skull_bash_bear_t( druid_t* player, const std::string& options_str ) :
-    druid_spell_t( "skull_bash_bear", player, player -> find_specialization_spell( "Skull Bash" ) )
-  {
-    parse_options( NULL, options_str );
-    may_miss = may_glance = may_block = may_dodge = may_parry = may_crit = false;
-    use_off_gcd = true;
-
-    cooldown -> duration += player -> glyph.skull_bash -> effectN( 1 ).time_value();
-  }
-
-  virtual bool ready()
-  {
-    if ( ! target -> debuffs.casting -> check() )
-      return false;
-    if ( ! p() -> buff.bear_form -> check() )
-      return false;
-
     return druid_spell_t::ready();
   }
 };
@@ -4847,6 +4781,128 @@ struct natures_vigil_t : public druid_spell_t
   }
 };
 
+// Prowl ==================================================================
+
+struct prowl_t : public druid_spell_t
+{
+  prowl_t( druid_t* player, const std::string& options_str ) :
+    druid_spell_t( "prowl", player, player -> find_class_spell( "Prowl" ) )
+  {
+    parse_options( NULL, options_str );
+
+    trigger_gcd = timespan_t::zero();
+    harmful     = false;
+  }
+
+  virtual void execute()
+  {
+    if ( sim -> log )
+      sim -> out_log.printf( "%s performs %s", player -> name(), name() );
+
+    p() -> buff.prowl -> trigger();
+  }
+
+  virtual bool ready()
+  {
+    if ( p() -> buff.prowl -> check() )
+      return false;
+
+    if ( p() -> in_combat && ! p() -> buff.king_of_the_jungle -> check() )
+      return false;
+
+    return druid_spell_t::ready();
+  }
+};
+
+// Savage Defense ===========================================================
+
+struct savage_defense_t : public druid_spell_t
+{
+  savage_defense_t( druid_t* p, const std::string& options_str ) :
+    druid_spell_t( "savage_defense", p, p -> find_specialization_spell( "Savage Defense" ), options_str )
+  {
+    harmful = false;
+    cooldown -> duration = timespan_t::from_seconds( 9.0 );
+    cooldown -> charges = 3;
+    use_off_gcd = true;
+
+    if ( p -> sets.has_set_bonus( SET_T16_2PC_TANK ) )
+      p -> active.ursocs_vigor = new ursocs_vigor_t( p );
+  }
+
+  virtual void execute()
+  {
+    druid_spell_t::execute();
+
+    if ( p() -> buff.savage_defense -> check() )
+      p() -> buff.savage_defense -> extend_duration( p(), p() -> buff.savage_defense -> buff_duration );
+    else
+      p() -> buff.savage_defense -> trigger();
+
+    if ( p() -> sets.has_set_bonus( SET_T16_4PC_TANK ) )
+      p() -> active.ursocs_vigor -> trigger_hot();
+  }
+
+  virtual bool ready() 
+  {
+    if ( ! p() -> buff.bear_form -> check() )
+      return false;
+    
+    return druid_spell_t::ready();
+  }
+};
+
+// Skull Bash (Bear) ========================================================
+
+struct skull_bash_bear_t : public druid_spell_t
+{
+  skull_bash_bear_t( druid_t* player, const std::string& options_str ) :
+    druid_spell_t( "skull_bash_bear", player, player -> find_specialization_spell( "Skull Bash" ) )
+  {
+    parse_options( NULL, options_str );
+    may_miss = may_glance = may_block = may_dodge = may_parry = may_crit = false;
+    use_off_gcd = true;
+
+    cooldown -> duration += player -> glyph.skull_bash -> effectN( 1 ).time_value();
+  }
+
+  virtual bool ready()
+  {
+    if ( ! target -> debuffs.casting -> check() )
+      return false;
+    if ( ! p() -> buff.bear_form -> check() )
+      return false;
+
+    return druid_spell_t::ready();
+  }
+};
+
+// Stampeding Roar =========================================================
+
+struct stampeding_roar_t : public druid_spell_t
+{
+  stampeding_roar_t( druid_t* p, const std::string& options_str ) :
+    druid_spell_t( "stampeding_roar", p, p -> find_class_spell( "Stampeding Roar" ) )
+  {
+    parse_options( NULL, options_str );
+    harmful = false;
+  }
+
+  virtual void execute()
+  {
+    druid_spell_t::execute();
+
+    for ( size_t i = 0; i < sim -> player_non_sleeping_list.size(); ++i )
+    {
+      player_t* p = sim -> player_non_sleeping_list[ i ];
+      if( p -> is_enemy() || p -> type == PLAYER_GUARDIAN )
+        break;
+
+      p -> buffs.stampeding_roar -> trigger();
+    }
+  }
+};
+
 // Starfire Spell ===========================================================
 
 struct starfire_t : public druid_spell_t
@@ -5020,39 +5076,6 @@ struct stellar_flare_t : public druid_spell_t
   }
 };
 
-// Prowl ==================================================================
-
-struct prowl_t : public druid_spell_t
-{
-  prowl_t( druid_t* player, const std::string& options_str ) :
-    druid_spell_t( "prowl", player, player -> find_class_spell( "Prowl" ) )
-  {
-    parse_options( NULL, options_str );
-
-    trigger_gcd = timespan_t::zero();
-    harmful     = false;
-  }
-
-  virtual void execute()
-  {
-    if ( sim -> log )
-      sim -> out_log.printf( "%s performs %s", player -> name(), name() );
-
-    p() -> buff.prowl -> trigger();
-  }
-
-  virtual bool ready()
-  {
-    if ( p() -> buff.prowl -> check() )
-      return false;
-
-    if ( p() -> in_combat && ! p() -> buff.king_of_the_jungle -> check() )
-      return false;
-
-    return druid_spell_t::ready();
-  }
-};
-
 // Survival Instincts =======================================================
 
 struct survival_instincts_t : public druid_spell_t
@@ -5075,6 +5098,37 @@ struct survival_instincts_t : public druid_spell_t
   }
 };
 
+// Tiger's Fury =============================================================
+
+struct tigers_fury_t : public druid_spell_t
+{
+  tigers_fury_t( druid_t* p, const std::string& options_str ) :
+    druid_spell_t( "tigers_fury", p, p -> find_specialization_spell( "Tiger's Fury" ), options_str )
+  {
+    harmful = false;
+  }
+
+  virtual void execute()
+  {
+    druid_spell_t::execute();
+
+    p() -> buff.tigers_fury -> trigger();
+
+    p() -> resource_gain( RESOURCE_ENERGY,
+                          data().effectN( 2 ).resource( RESOURCE_ENERGY ),
+                          p() -> gain.tigers_fury );
+
+    if ( p() -> sets.has_set_bonus( SET_T13_4PC_MELEE ) )
+      p() -> buff.omen_of_clarity -> trigger();
+
+    if ( p() -> sets.has_set_bonus( SET_T15_4PC_MELEE ) )
+      p() -> buff.tier15_4pc_melee -> trigger( 3 );
+
+    if ( p() -> sets.has_set_bonus( SET_T16_4PC_MELEE ) )
+      p() -> buff.feral_rage -> trigger();
+  }
+};
+
 // T16 Balance 2P Bonus =====================================================
 
 struct t16_2pc_starfall_bolt_t : public druid_spell_t
@@ -5092,68 +5146,6 @@ struct t16_2pc_sun_bolt_t : public druid_spell_t
     druid_spell_t( "t16_2pc_sun_bolt", player, player -> find_spell( 144772 ) )
   {
     background  = true;
-  }
-};
-
-// Stampeding Roar =========================================================
-
-struct stampeding_roar_t : public druid_spell_t
-{
-  stampeding_roar_t( druid_t* p, const std::string& options_str ) :
-    druid_spell_t( "stampeding_roar", p, p -> find_class_spell( "Stampeding Roar" ) )
-  {
-    parse_options( NULL, options_str );
-    harmful = false;
-  }
-
-  virtual void execute()
-  {
-    druid_spell_t::execute();
-
-    for ( size_t i = 0; i < sim -> player_non_sleeping_list.size(); ++i )
-    {
-      player_t* p = sim -> player_non_sleeping_list[ i ];
-      if( p -> is_enemy() || p -> type == PLAYER_GUARDIAN )
-        break;
-
-      p -> buffs.stampeding_roar -> trigger();
-    }
-  }
-};
-
-// Force of Nature Spell ====================================================
-
-struct force_of_nature_spell_t : public druid_spell_t
-{
-  force_of_nature_spell_t( druid_t* player, const std::string& options_str ) :
-    druid_spell_t( "force_of_nature", player, player -> talent.force_of_nature )
-  {
-    parse_options( NULL, options_str );
-
-    harmful = false;
-    cooldown -> charges = 3;
-    cooldown -> duration = timespan_t::from_seconds( 20.0 );
-    use_off_gcd = true;
-  }
-
-  virtual void execute()
-  {
-    druid_spell_t::execute();
-
-    if ( p() -> pet_force_of_nature[ 0 ] )
-    {
-      for ( int i = 0; i < 3; i++ )
-      {
-        if ( p() -> pet_force_of_nature[ i ] -> is_sleeping() )
-        {
-          p() -> pet_force_of_nature[ i ] -> summon( p() -> talent.force_of_nature -> duration() );
-          return;
-        }
-      }
-
-      p() -> sim -> errorf( "Player %s ran out of treants.\n", p() -> name() );
-      assert( false ); // Will only get here if there are no available treants
-    }
   }
 };
 
