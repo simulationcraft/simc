@@ -13,6 +13,7 @@ namespace { // UNNAMED NAMESPACE
  /* WoD -- TODO:
     = General =
     Fix Force of Nature (summons fine, but treants take no actions)
+    What parts of Thick Hide apply to every spec vs Guardian only
 
     = Feral =
     Tweak LI implementation so Feral can use normal moonfire
@@ -6678,7 +6679,7 @@ double druid_t::matching_gear_multiplier( attribute_e attr ) const
   return spec.leather_specialization -> effectN( idx ).percent();
 }
 
-// druid_t::c omposite_crit_avoidance =============================================
+// druid_t::composite_crit_avoidance =============================================
 
 double druid_t::composite_crit_avoidance() const
 {
@@ -7099,9 +7100,7 @@ void druid_t::assess_damage( school_e school,
         gain.primal_fury );
       proc.primal_fury -> occur();
      }
-    if ( school == SCHOOL_PHYSICAL )
-      s -> result_amount *= 1.0 + spec.thick_hide -> effectN( 5 ).percent();
-    else if ( dbc::get_school_mask( school ) & SCHOOL_MAGIC_MASK )
+    if ( dbc::get_school_mask( school ) & SCHOOL_MAGIC_MASK )
       s -> result_amount *= 1.0 + spec.thick_hide -> effectN( 3 ).percent();
   }
 
