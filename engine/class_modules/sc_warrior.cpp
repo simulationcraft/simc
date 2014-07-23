@@ -2157,6 +2157,13 @@ struct raging_blow_t: public warrior_attack_t
     add_child( oh_attack );
   }
 
+  void impact( action_state_t* s )
+  {
+    warrior_attack_t::impact( s );
+    if ( result_is_hit( s -> result ) && td ( s -> target ) -> debuffs_colossus_smash -> up() )
+      td( s -> target ) -> debuffs_colossus_smash -> extend_duration( s -> target, timespan_t::from_seconds( 2 ) );
+  }
+
   virtual void execute()
   {
     // check attack
