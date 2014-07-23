@@ -2746,26 +2746,6 @@ struct bear_melee_t : public bear_attack_t
   }
 };
 
-// Growl  =======================================================================
-
-struct growl_t: public bear_attack_t
-{
-  growl_t( druid_t* player, const std::string& options_str ):
-    bear_attack_t( "growl", player, player -> find_class_spell( "Growl" ) )
-  {
-    parse_options( NULL, options_str );
-    use_off_gcd = true;
-  }
-
-  virtual void impact( action_state_t* s )
-  {
-    if ( s -> target -> is_enemy() )
-      target -> taunt( player );
-
-    bear_attack_t::impact( s );
-  }
-};
-
 // Lacerate =================================================================
 
 struct lacerate_t : public bear_attack_t
@@ -4216,6 +4196,34 @@ struct force_of_nature_spell_t : public druid_spell_t
       p() -> sim -> errorf( "Player %s ran out of treants.\n", p() -> name() );
       assert( false ); // Will only get here if there are no available treants
     }
+  }
+};
+
+// Growl  =======================================================================
+
+struct growl_t: public druid_spell_t
+{
+  growl_t( druid_t* player, const std::string& options_str ):
+    druid_spell_t( "growl", player, player -> find_class_spell( "Growl" ) )
+  {
+    parse_options( NULL, options_str );
+    use_off_gcd = true;
+  }
+
+  virtual void impact( action_state_t* s )
+  {
+    if ( s -> target -> is_enemy() )
+      target -> taunt( player );
+
+    druid_spell_t::impact( s );
+  }
+
+  virtual bool ready()
+  {
+    if ( ! p() -> buff.bear_form -> check() )
+      return false;
+
+    return druid_spell_t::ready();
   }
 };
 
