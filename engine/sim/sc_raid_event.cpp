@@ -488,6 +488,43 @@ struct heal_event_t : public raid_event_t
   {}
 };
 
+// Damage Taken Debuff=========================================================
+
+struct damage_taken_debuff_event_t : public raid_event_t
+{
+  int amount;
+
+  damage_taken_debuff_event_t( sim_t* s, const std::string& options_str ) :
+    raid_event_t( s, "damage_taken" ), amount( 1 )
+  {
+    option_t options[] =
+    {
+      opt_int( "amount", amount ),
+      opt_null()
+    };
+    parse_options( options, options_str );
+
+    assert( duration == timespan_t::zero() );
+  }
+
+  virtual void _start()
+  {
+    for ( size_t i = 0, num_affected = affected_players.size(); i < num_affected; ++i )
+    {
+      player_t* p = affected_players[ i ];
+
+      if ( sim -> log ) sim -> out_log.printf( "%s gains %d stacks of damage_taken debuff.", p -> name(), amount );
+
+      p -> debuffs.damage_taken -> trigger( amount );
+
+    }
+  }
+
+  virtual void _finish()
+  {
+  }
+};
+
 // Vulnerable ===============================================================
 
 struct vulnerable_event_t : public raid_event_t
@@ -836,7 +873,8 @@ raid_event_t* raid_event_t::create( sim_t* sim,
   if ( name == "stun"         ) return new         stun_event_t( sim, options_str );
   if ( name == "vulnerable"   ) return new   vulnerable_event_t( sim, options_str );
   if ( name == "position_switch" ) return new  position_event_t( sim, options_str );
-  if ( name == "flying" )       return new  flying_event_t( sim, options_str );
+  if ( name == "flying" )       return new       flying_event_t( sim, options_str );
+  if ( name == "damage_taken_debuff" ) return new   damage_taken_debuff_event_t( sim, options_str );
 
   return 0;
 }
