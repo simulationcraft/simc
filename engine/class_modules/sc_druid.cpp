@@ -5694,8 +5694,9 @@ void druid_t::init_base_stats()
 
   resources.base[ RESOURCE_COMBO_POINT ] = 5;
 
-  // Avoidance diminishing Returns constants/conversions now handled in player_t::init_base_stats()
-  // base miss & dodge are set to 3% and block & parry set to 0% in player_t::init_base_stats()
+  // Avoidance diminishing Returns constants/conversions now handled in player_t::init_base_stats().
+  // Base miss, dodge, parry, and block are set in player_t::init_base_stats().
+  // Just need to add class- or spec-based modifiers here (none for druids at the moment).
 
   resources.base[ RESOURCE_ENERGY ] = 100;
   resources.base[ RESOURCE_RAGE   ] = 100;

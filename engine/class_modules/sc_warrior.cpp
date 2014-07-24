@@ -3793,12 +3793,10 @@ void warrior_t::init_base_stats()
   base.attack_power_per_strength = 1.0;
   base.attack_power_per_agility  = 0.0;
 
-  // Avoidance diminishing Returns constants/conversions now handled in player_t::init_base_stats()
-  // base miss & dodge are set to 3% and block & parry set to 0% in player_t::init_base_stats()
-  // just need to adjust parry, block and block_reduction and add spec-based sources of dodge/parry
-  base.block           = 0.030;
-  base.block_reduction = 0.300;
-  base.parry           = 0.030;
+  // Avoidance diminishing Returns constants/conversions now handled in player_t::init_base_stats().
+  // Base miss, dodge, parry, and block are set in player_t::init_base_stats().
+  // Just need to add class- or spec-based modifiers here.
+
   base.dodge += spec.bastion_of_defense -> effectN( 3 ).percent();
 
   base_gcd = timespan_t::from_seconds( 1.5 );

@@ -736,25 +736,41 @@ void player_t::init_base_stats()
     base.mana_regen_per_second = dbc.regen_base( type, level ) / 5.0;
     base.mana_regen_per_spirit = dbc.regen_spirit( type, level );
     base.health_per_stamina    = dbc.health_per_stamina( level );
-    
-    // only certain classes get Agi->Dodge conversions
-    base.dodge_per_agility     = ( type == MONK || type == DRUID || type == ROGUE || type == HUNTER || type == SHAMAN ) ? 1.0 : 0.0; 
-    base.dodge_per_agility     *= 1 / 176.3760684 / 100.0; // exact value given by Blizzard, L100 only (?)
-    // only certain classes get STR->parry conversions
-    base.parry_per_strength    = ( type == PALADIN || type == WARRIOR || type == DEATH_KNIGHT ) ? 1.0 : 0.0; 
-    base.parry_per_strength    *= 1 / 176.3760684 / 100.0; // exact value given by Blizzard, L100 only (?)
 
     // players have a base 7.5% hit/exp 
     base.hit       = 0.075;
     base.expertise = 0.075;
   }
 
+  // All classes get 3% dodge and miss; add racials in here too
   base.dodge = 0.03 + racials.quickness -> effectN( 1 ).percent();
-  base.parry = 0.00; // overridden in modules of players that can parry
   base.miss  = 0.03;
-  base.block = 0.0;  // overridden in enemy, paladin, and warrior modules  
+  
+  // Only Warriors and Paladins (and enemies) can block, defaults is 0
+  if ( type == WARRIOR || type == PALADIN || type == ENEMY )
+  {
+    base.block = 0.03;
+    base.block_reduction = 0.30;
+  }
 
-  // Extract values from table in sc_extra_data.inc
+  // Only certain classes can parry, and get 3% base parry, defaults is 0
+  if ( type == WARRIOR || type == PALADIN || type == ROGUE || type == DEATH_KNIGHT || 
+       type == MONK || specialization() == SHAMAN_ENHANCEMENT || type == ENEMY )
+    base.parry = 0.03;
+
+  // only certain classes get Agi->Dodge conversions, dodge_per_agility defaults to 0.00
+  // Racial agility modifiers and Heroic Presence do affect base dodge, but are affected
+  // by diminishing returns, and handled in composite_dodge()  (tested 7/24/2014)
+  if ( type == MONK || type == DRUID || type == ROGUE || type == HUNTER || type == SHAMAN )
+    base.dodge_per_agility     = 1 / 176.3760684 / 100.0; // exact value given by Blizzard, L100 only (?)
+
+  // only certain classes get Str->Parry conversions, dodge_per_agility defaults to 0.00
+  // Racial strength modifiers and Heroic Presence do affect base parry, but are affected
+  // by diminishing returns, and handled in composite_parry()  (tested 7/24/2014)
+  if ( type == PALADIN || type == WARRIOR || type == DEATH_KNIGHT )
+    base.parry_per_strength    = 1 / 176.3760684 / 100.0; // exact value given by Blizzard, L100 only (?)
+
+  // Extract avoidance DR values from table in sc_extra_data.inc
   def_dr.horizontal_shift = dbc.horizontal_shift( type );
   def_dr.vertical_stretch = dbc.vertical_stretch( type );
   def_dr.dodge_factor = dbc.dodge_factor( type );
@@ -2365,9 +2381,13 @@ double player_t::composite_dodge() const
   // bonus_dodge is dodge from rating and non-base agility
   double bonus_dodge = composite_dodge_rating() / current.rating.dodge;
   bonus_dodge += ( cache.agility() - base.stats.attribute[ ATTR_AGILITY ] ) * current.dodge_per_agility;
+  // and Heroic Presence.... which is in base AGI but is subject to DR (tested 7/24/2014)
+  bonus_dodge += util::floor( racials.heroic_presence -> effectN( 2 ).average( this ) ) * current.dodge_per_agility;
+  // and racial stat modifiers
+  bonus_dodge += dbc.race_base( race ).agility * base.dodge_per_agility;
   
   // if we have any bonus_dodge, apply diminishing returns and add it to total_dodge.
-  if ( bonus_dodge > 0 )
+  if ( bonus_dodge != 0 )
     total_dodge += bonus_dodge / ( def_dr.dodge_factor * bonus_dodge * 100 * def_dr.vertical_stretch + def_dr.horizontal_shift );
 
   return total_dodge;
@@ -2383,9 +2403,13 @@ double player_t::composite_parry() const
   // bonus_parry is from rating and non-base STR
   double bonus_parry = composite_parry_rating() / current.rating.parry;
   bonus_parry += ( cache.strength() - base.stats.attribute[ ATTR_STRENGTH ] ) * current.parry_per_strength;
+  // and Heroic Presence.... which is in base STR but is subject to DR (tested 7/24/2014)
+  bonus_parry += util::floor( racials.heroic_presence -> effectN( 1 ).average( this ) ) * current.parry_per_strength;
+  // and racial stat modifiers
+  bonus_parry += dbc.race_base( race ).strength * base.parry_per_strength;
 
   // if we have any bonus_parry, apply diminishing returns and add it to total_parry.
-  if ( bonus_parry > 0 )
+  if ( bonus_parry != 0 )
     total_parry += bonus_parry / ( def_dr.parry_factor * bonus_parry * 100 * def_dr.vertical_stretch + def_dr.horizontal_shift );
 
 

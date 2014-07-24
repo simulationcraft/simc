@@ -5160,10 +5160,10 @@ void death_knight_t::init_base_stats()
 
   base_gcd = timespan_t::from_seconds( 1.0 );
 
-  // Avoidance diminishing Returns constants/conversions now handled in player_t::init_base_stats()
-  // base miss & dodge are set to 3% and block & parry set to 0% in player_t::init_base_stats()
-  // just need to add base parry and spec-based sources of dodge/parry
-  base.parry  = 0.030;
+  // Avoidance diminishing Returns constants/conversions now handled in player_t::init_base_stats().
+  // Base miss, dodge, parry, and block are set in player_t::init_base_stats().
+  // Just need to add class- or spec-based modifiers here.
+
   base.dodge += 0.030 + spec.veteran_of_the_third_war -> effectN( 2 ).percent();
 }
 

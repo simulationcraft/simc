@@ -3339,10 +3339,9 @@ void monk_t::init_base_stats()
   if ( spec.mana_meditation -> ok() )
     base.mana_regen_from_spirit_multiplier = spec.mana_meditation -> effectN( 1 ).percent();
 
-  // Avoidance diminishing Returns constants/conversions now handled in player_t::init_base_stats()
-  // base miss & dodge are set to 3% and block & parry set to 0% in player_t::init_base_stats()
-  // Need to apply 3% base parry here
-  base.parry = 3.0;
+  // Avoidance diminishing Returns constants/conversions now handled in player_t::init_base_stats().
+  // Base miss, dodge, parry, and block are set in player_t::init_base_stats().
+  // Just need to add class- or spec-based modifiers here (none for monk at the moment).
 }
 
 // monk_t::init_scaling =====================================================

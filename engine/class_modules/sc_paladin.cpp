@@ -4644,12 +4644,12 @@ void paladin_t::init_base_stats()
   // Boundless Conviction raises max holy power to 5
   resources.base[ RESOURCE_HOLY_POWER ] = 3 + passives.boundless_conviction -> effectN( 1 ).base_value();
 
-  // Avoidance diminishing Returns constants/conversions now handled in player_t::init_base_stats()
-  // base miss & dodge are set to 3% and block & parry set to 0% in player_t::init_base_stats()
-  // just need to adjust parry, block and block_reduction and add spec-based sources of dodge/parry
-  base.block   = 0.030; 
-  base.block_reduction = 0.3 + perk.improved_block -> effectN( 1 ).percent();
-  base.parry   = 0.030;
+  // Avoidance diminishing Returns constants/conversions now handled in player_t::init_base_stats().
+  // Base miss, dodge, parry, and block are set in player_t::init_base_stats().
+  // Just need to add class- or spec-based modifiers here.
+
+  // add improved block perk
+  base.block_reduction += perk.improved_block -> effectN( 1 ).percent();
   // add Sanctuary dodge
   base.dodge += passives.sanctuary -> effectN( 3 ).percent();
   // add Sanctuary expertise

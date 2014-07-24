@@ -4566,10 +4566,6 @@ void shaman_t::init_base_stats()
   base.distance = ( specialization() == SHAMAN_ENHANCEMENT ) ? 3 : 30;
   base.mana_regen_from_spirit_multiplier = spec.meditation -> effectN( 1 ).percent();
 
-  // dual-wielding enhancement shamans get 3% base parry
-  if ( specialization() == SHAMAN_ENHANCEMENT )
-    base.parry = 0.03;
-
   //if ( specialization() == SHAMAN_ENHANCEMENT )
   //  ready_type = READY_TRIGGER;
 

@@ -4421,9 +4421,7 @@ void rogue_t::init_base_stats()
   base_energy_regen_per_second = 10 * ( 1.0 + spec.vitality -> effectN( 1 ).percent() );
 
   base_gcd = timespan_t::from_seconds( 1.0 );
-
-  base.parry = 0.03;
-
+  
 }
 
 // rogue_t::init_spells =====================================================
