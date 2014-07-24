@@ -2159,7 +2159,7 @@ struct explosive_shot_t: public hunter_ranged_attack_t
     if ( p() -> buffs.lock_and_load -> check() )
       p() -> buffs.lock_and_load -> decrement(); //The cooldown does not reset if lock and load is consumed.
     else
-      hunter_ranged_attack_t::update_ready();
+      hunter_ranged_attack_t::update_ready( cd_duration );
   }
 
   virtual double action_multiplier() const
