@@ -4245,6 +4245,8 @@ struct defensive_stance_t: public warrior_buff_t < buff_t >
     .add_invalidate( CACHE_CRIT_BLOCK )
     .add_invalidate( CACHE_BLOCK )
     .add_invalidate( CACHE_STAMINA )
+    .add_invalidate( CACHE_ARMOR )
+    .add_invalidate( CACHE_BONUS_ARMOR )
     .duration( timespan_t::from_seconds( 3 ) )
     .period( timespan_t::from_seconds( 3 ) ) )
   {}
