@@ -750,7 +750,7 @@ public:
     buffs.bestial_wrath -> cooldown -> duration = timespan_t::zero();
     buffs.bestial_wrath -> buff_duration += owner -> sets.set( SET_T14_4PC_MELEE ) -> effectN( 1 ).time_value();
 
-    buffs.frenzy            = buff_creator_t( this, 19615, "frenzy_effect" ).chance( o() -> specs.frenzy -> effectN( 2 ).percent() );
+    buffs.frenzy            = buff_creator_t( this, 19615, "frenzy" ).chance( o() -> specs.frenzy -> effectN( 2 ).percent() );
 
     // Use buff to indicate whether the pet is a stampede summon
     buffs.stampede          = buff_creator_t( this, 130201, "stampede" )
@@ -1625,22 +1625,38 @@ struct hunter_ranged_attack_t: public hunter_action_t < ranged_attack_t >
 
 struct ranged_t: public hunter_ranged_attack_t
 {
+  bool first_shot;
   ranged_t( hunter_t* player, const char* name = "ranged", const spell_data_t* s = spell_data_t::nil() ):
-    hunter_ranged_attack_t( name, player, s )
+    hunter_ranged_attack_t( name, player, s ), first_shot( true )
   {
     school = SCHOOL_PHYSICAL;
     weapon = &( player -> main_hand_weapon );
     base_execute_time = weapon -> swing_time;
     background = repeating = true;
-    special     = false;
+    special = false;
+  }
+
+  void reset()
+  {
+    hunter_ranged_attack_t::reset();
+
+    first_shot = true;
   }
 
   virtual timespan_t execute_time() const
   {
-    if ( !player -> in_combat )
-      return timespan_t::from_seconds( 0.01 );
+    timespan_t t = hunter_ranged_attack_t::execute_time();
+    if ( first_shot )
+      return timespan_t::from_millis( 100 );
+    else
+      return t;
+  }
 
-    return hunter_ranged_attack_t::execute_time();
+  virtual void execute()
+  {
+    if ( first_shot )
+      first_shot = false;
+    hunter_ranged_attack_t::execute();
   }
 
   virtual void impact( action_state_t* s )
@@ -1707,13 +1723,18 @@ struct start_attack_t: public hunter_ranged_attack_t
 
 struct exotic_munitions_poisoned_ammo_t: public residual_action::residual_periodic_action_t < hunter_ranged_attack_t >
 {
-  typedef residual_action::residual_periodic_action_t < hunter_ranged_attack_t > base_t;
   exotic_munitions_poisoned_ammo_t( hunter_t* p, const char* name, const spell_data_t* s ):
     base_t( name, p, s )
   {
     may_multistrike = 1;
     may_crit = tick_may_crit = true;
-    snapshot_flags |= STATE_CRIT | STATE_TGT_CRIT | STATE_AP | STATE_MUL_TA;
+  }
+
+  void init()
+  {
+    hunter_ranged_attack_t::init();
+
+    snapshot_flags &= ~( STATE_AP | STATE_CRIT | STATE_TGT_CRIT );
   }
 };
 
@@ -3657,8 +3678,7 @@ double hunter_t::composite_melee_speed() const
   return h;
 }
 
-// Buffs that increase hunter ranged attack haste (and thus regen) but not
-// melee attack haste (and so not pet attacks nor RPPM)
+// Buffs that increase hunter ranged attack haste (and thus regen)
 double hunter_t::ranged_haste_multiplier() const
 {
   double h = 1.0;

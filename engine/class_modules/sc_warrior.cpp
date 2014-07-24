@@ -1932,7 +1932,7 @@ struct impending_victory_t: public warrior_attack_t
   {
     parse_options( NULL, options_str );
     stancemask = STANCE_BATTLE | STANCE_GLADIATOR | STANCE_DEFENSE;
-    may_crit = false;
+    may_crit = true;
   }
 
   virtual void execute()
@@ -1979,7 +1979,6 @@ struct intervene_t: public warrior_attack_t
     return warrior_attack_t::ready();
   }
 };
-
 
 // Heroic Charge  ==============================================================
 
