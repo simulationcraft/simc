@@ -4276,7 +4276,8 @@ struct gladiator_stance_t: public warrior_buff_t < buff_t >
 {
   gladiator_stance_t( warrior_t& p, const std::string&n, const spell_data_t*s ):
     base_t( p, buff_creator_t( &p, n, s )
-    .activated( true ) )
+    .activated( true )
+    .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER ) )
   {}
 
   virtual void execute( int a, double b, timespan_t t )
