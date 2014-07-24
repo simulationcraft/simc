@@ -2880,6 +2880,7 @@ void player_t::invalidate_cache( cache_e c )
       invalidate_cache( CACHE_SPELL_SPEED );
       break;
     case CACHE_BONUS_ARMOR:
+      invalidate_cache( CACHE_ARMOR );
       if ( primary_role() == ROLE_TANK || specialization() == WARRIOR_PROTECTION ) //Gladiator Stance
         invalidate_cache( CACHE_ATTACK_POWER );
     default: break;
