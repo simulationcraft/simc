@@ -5542,6 +5542,10 @@ struct action_t : public noncopyable
   virtual void   last_tick( dot_t* d );
   virtual void   update_resolve( dmg_e, action_state_t* assess_state );
   virtual void   assess_damage( dmg_e, action_state_t* assess_state );
+  virtual dmg_e  amount_type( const action_state_t* /* state */, bool /* periodic */ = false ) const
+  { return RESULT_TYPE_NONE; }
+  virtual dmg_e  report_amount_type( const action_state_t* state ) const
+  { return state -> result_type; }
   virtual void   record_data( action_state_t* data );
   virtual int    schedule_multistrike( action_state_t* state, dmg_e type, double dmg_multiplier = 1.0 );
   virtual void   schedule_execute( action_state_t* execute_state = 0 );
@@ -5782,6 +5786,9 @@ struct attack_t : public action_t
   virtual result_e calculate_result( action_state_t* );
   virtual void   init();
 
+  virtual dmg_e amount_type( const action_state_t* /* state */, bool /* periodic */ = false ) const;
+  virtual dmg_e report_amount_type( const action_state_t* /* state */ ) const;
+
   virtual double  miss_chance( double hit, player_t* t ) const;
   virtual double  dodge_chance( double /* expertise */, player_t* t ) const;
   virtual double  block_chance( action_state_t* s ) const;
@@ -5886,6 +5893,8 @@ public:
 
   // Harmful Spell Overrides
   virtual void   assess_damage( dmg_e, action_state_t* );
+  virtual dmg_e amount_type( const action_state_t* /* state */, bool /* periodic */ = false ) const;
+  virtual dmg_e report_amount_type( const action_state_t* /* state */ ) const;
   virtual void   execute();
   virtual double miss_chance( double hit, player_t* t ) const;
   virtual void   init();
@@ -5909,6 +5918,8 @@ public:
   heal_t( const std::string& name, player_t* p, const spell_data_t* s = spell_data_t::nil() );
 
   virtual void assess_damage( dmg_e, action_state_t* );
+  virtual dmg_e amount_type( const action_state_t* /* state */, bool /* periodic */ = false ) const;
+  virtual dmg_e report_amount_type( const action_state_t* /* state */ ) const;
   virtual size_t available_targets( std::vector< player_t* >& ) const;
   virtual void init_target_cache();
   virtual double calculate_direct_amount( action_state_t* state );
@@ -5971,6 +5982,8 @@ struct absorb_t : public spell_base_t
 
   virtual void execute();
   virtual void assess_damage( dmg_e, action_state_t* );
+  virtual dmg_e amount_type( const action_state_t* /* state */, bool /* periodic */ = false ) const
+  { return ABSORB; }
   virtual void impact( action_state_t* );
   virtual void init_target_cache();
   virtual size_t available_targets( std::vector< player_t* >& ) const;

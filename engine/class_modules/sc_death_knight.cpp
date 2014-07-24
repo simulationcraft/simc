@@ -2693,12 +2693,6 @@ struct soul_reaper_dot_t : public death_knight_melee_attack_t
     weapon_multiplier = 0;
     base_multiplier *= 1.0 + p -> perk.improved_soul_reaper -> effectN( 1 ).percent();
   }
-
-  virtual void init()
-  {
-    death_knight_melee_attack_t::init();
-    stats = p() -> get_stats( name(), this );
-  }
 };
 
 struct soul_reaper_t : public death_knight_melee_attack_t
@@ -2716,8 +2710,7 @@ struct soul_reaper_t : public death_knight_melee_attack_t
 
     dynamic_tick_action = true;
     tick_action = new soul_reaper_dot_t( p );
-    add_child( tick_action );
-    
+
     base_multiplier *= 1.0 + p -> perk.improved_soul_reaper -> effectN( 1 ).percent();
   }
 

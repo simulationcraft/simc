@@ -1064,12 +1064,6 @@ void action_t::execute()
     player -> in_combat = true;
   }
 
-  dmg_e result_type = RESULT_TYPE_NONE;
-  if ( type == ACTION_HEAL || type == ACTION_ABSORB )
-    result_type = HEAL_DIRECT;
-  else
-    result_type = DMG_DIRECT;
-
   size_t num_targets;
   if ( is_aoe() ) // aoe
   {
@@ -1081,7 +1075,7 @@ void action_t::execute()
       s -> target = tl[ t ];
       s -> n_targets = std::min( num_targets, tl.size() );
       s -> chain_target = as<int>( t );
-      if ( ! pre_execute_state ) snapshot_state( s, result_type );
+      if ( ! pre_execute_state ) snapshot_state( s, amount_type( s ) );
       s -> result = calculate_result( s );
       s -> block_result = calculate_block_result( s );
 
@@ -1093,7 +1087,7 @@ void action_t::execute()
 
       schedule_travel( s );
 
-      schedule_multistrike( execute_state, result_type );
+      schedule_multistrike( execute_state, amount_type( execute_state ) );
     }
   }
   else // single target
@@ -1104,7 +1098,7 @@ void action_t::execute()
     s -> target = target;
     s -> n_targets = 1;
     s -> chain_target = 0;
-    if ( ! pre_execute_state ) snapshot_state( s, result_type );
+    if ( ! pre_execute_state ) snapshot_state( s, amount_type( s ) );
     s -> result = calculate_result( s );
     s -> block_result = calculate_block_result( s );
 
@@ -1115,7 +1109,7 @@ void action_t::execute()
 
     schedule_travel( s );
 
-    schedule_multistrike( execute_state, result_type );
+    schedule_multistrike( execute_state, amount_type( execute_state ) );
   }
 
   consume_resource();
@@ -1238,30 +1232,6 @@ void action_t::multistrike_direct( const action_state_t*, action_state_t* ms_sta
 
 void action_t::tick( dot_t* d )
 {
-  dmg_e result_type = RESULT_TYPE_NONE;
-  if ( type == ACTION_HEAL || type == ACTION_ABSORB )
-  {
-    if ( tick_action )
-      result_type = HEAL_OVER_TIME;
-    else if ( periodic_hit )
-      result_type = HEAL_DIRECT;
-    else if ( direct_tick )
-      result_type = HEAL_OVER_TIME;
-    else
-      result_type = HEAL_OVER_TIME;
-  }
-  else if ( type == ACTION_SPELL || type == ACTION_ATTACK )
-  {
-    if ( tick_action )
-      result_type = DMG_OVER_TIME;
-    else if ( periodic_hit )
-      result_type = DMG_DIRECT;
-    else if ( direct_tick )
-      result_type = DMG_OVER_TIME;
-    else
-      result_type = DMG_OVER_TIME;
-  }
-
   if ( tick_action )
   {
     if ( tick_action -> pre_execute_state )
@@ -1269,9 +1239,9 @@ void action_t::tick( dot_t* d )
 
     action_state_t* state = tick_action -> get_state( d -> state );
     if ( dynamic_tick_action )
-      snapshot_state( state, result_type );
+      snapshot_state( state, amount_type( state, true ) );
     else
-      update_state( state, result_type );
+      update_state( state, amount_type( state, true ) );
     state -> da_multiplier = state -> ta_multiplier;
     state -> target_da_multiplier = state -> target_ta_multiplier;
     tick_action -> schedule_execute( state );
@@ -1279,19 +1249,19 @@ void action_t::tick( dot_t* d )
   else
   {
     d -> state -> result = RESULT_HIT;
-    update_state( d -> state, result_type );
+    update_state( d -> state, amount_type( d -> state, true ) );
 
     if ( tick_may_crit && rng().roll( d -> state -> composite_crit() ) )
       d -> state -> result = RESULT_CRIT;
 
     d -> state -> result_amount = calculate_tick_amount( d -> state, d -> get_last_tick_factor() );
 
-    assess_damage( result_type, d -> state );
+    assess_damage( amount_type( d -> state, true ), d -> state );
 
     if ( sim -> debug )
       d -> state -> debug();
 
-    schedule_multistrike( d -> state, result_type );
+    schedule_multistrike( d -> state, amount_type( d -> state, true ) );
   }
 
   if ( harmful && callbacks && type != ACTION_HEAL )
@@ -1459,7 +1429,8 @@ void action_t::record_data( action_state_t* data )
   if ( ! stats )
     return;
 
-  stats -> add_result( data -> result_amount, data -> result_amount, data -> result_type,
+  stats -> add_result( data -> result_amount, data -> result_total,
+                       report_amount_type( data ),
                        data -> result, data -> block_result, data -> target );
 }
 

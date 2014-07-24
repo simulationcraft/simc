@@ -215,6 +215,41 @@ void spell_t::assess_damage( dmg_e type,
   }
 }
 
+dmg_e spell_t::amount_type( const action_state_t* /* state */, bool periodic ) const
+{
+  if ( periodic )
+    return ( periodic_hit ) ? DMG_DIRECT : DMG_OVER_TIME;
+  else
+    return DMG_DIRECT;
+}
+
+dmg_e spell_t::report_amount_type( const action_state_t* state ) const
+{
+  dmg_e result_type = state -> result_type;
+
+  if ( result_type == DMG_DIRECT )
+  {
+    // Direct ticks are direct damage, that are recorded as ticks
+    if ( direct_tick )
+      result_type = DMG_OVER_TIME;
+    // With direct damage, we need to check if this action is a tick action of
+    // someone. If so, then the damage should be recorded as periodic.
+    else
+    {
+      for ( size_t i = 0, end = stats -> action_list.size(); i < end; i++ )
+      {
+        if ( stats -> action_list.front() -> tick_action == this )
+        {
+          result_type = DMG_OVER_TIME;
+          break;
+        }
+      }
+    }
+  }
+
+  return result_type;
+}
+
 void spell_t::execute()
 {
   spell_base_t::execute();
@@ -289,6 +324,38 @@ void heal_t::parse_effect_data( const spelleffect_data_t& e )
     else if ( e.subtype() == A_OBS_MOD_HEALTH )
       tick_pct_heal = e.percent();
   }
+}
+
+dmg_e heal_t::amount_type( const action_state_t* /* state */, bool periodic ) const
+{
+  if ( periodic )
+    return ( periodic_hit ) ? HEAL_DIRECT : HEAL_OVER_TIME;
+  else
+    return HEAL_DIRECT;
+}
+
+dmg_e heal_t::report_amount_type( const action_state_t* state ) const
+{
+  dmg_e result_type = state -> result_type;
+
+  // With direct healing, we need to check if this action is a tick action of
+  // someone. If so, then the healing should be recorded as periodic.
+  if ( result_type == HEAL_DIRECT )
+  {
+    for ( size_t i = 0, end = stats -> action_list.size(); i < end; i++ )
+    {
+      if ( stats -> action_list.front() -> tick_action == this )
+      {
+        result_type = HEAL_OVER_TIME;
+        break;
+      }
+    }
+  }
+  // Direct ticks are direct damage, that are recorded as ticks
+  else if ( direct_tick )
+    result_type = HEAL_OVER_TIME;
+
+  return result_type;
 }
 
 // heal_t::calculate_direct_amount ==========================================

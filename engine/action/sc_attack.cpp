@@ -58,6 +58,41 @@ timespan_t attack_t::execute_time() const
   return base_execute_time * player -> cache.attack_speed();
 }
 
+dmg_e attack_t::amount_type( const action_state_t* /* state */, bool periodic ) const
+{
+  if ( periodic )
+    return ( periodic_hit ) ? DMG_DIRECT : DMG_OVER_TIME;
+  else
+    return DMG_DIRECT;
+}
+
+dmg_e attack_t::report_amount_type( const action_state_t* state ) const
+{
+  dmg_e result_type = state -> result_type;
+
+  if ( result_type == DMG_DIRECT )
+  {
+    // Direct ticks are direct damage, that are recorded as ticks
+    if ( direct_tick )
+      result_type = DMG_OVER_TIME;
+    // With direct damage, we need to check if this action is a tick action of
+    // someone. If so, then the damage should be recorded as periodic.
+    else
+    {
+      for ( size_t i = 0, end = stats -> action_list.size(); i < end; i++ )
+      {
+        if ( stats -> action_list.front() -> tick_action == this )
+        {
+          result_type = DMG_OVER_TIME;
+          break;
+        }
+      }
+    }
+  }
+
+  return result_type;
+}
+
 // attack_t::miss_chance ====================================================
 
 double attack_t::miss_chance( double hit, player_t* t ) const

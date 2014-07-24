@@ -1371,6 +1371,7 @@ const char* util::cache_type_string( cache_e c )
     case CACHE_DODGE:        return "dodge";
     case CACHE_BLOCK:        return "block";
     case CACHE_ARMOR:        return "armor";
+    case CACHE_BONUS_ARMOR:  return "bonus_armor";
     case CACHE_MULTISTRIKE:  return "multistrike";
     case CACHE_READINESS:    return "readiness";
     case CACHE_VERSATILITY:  return "versatility";
