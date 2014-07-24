@@ -10,7 +10,7 @@
 // TODO: complete WoD overhaul
 // Pet damage is completely fucked.
 // Demonology grimoire of sacrifice: http://wod.wowhead.com/spell=156656
-// Level 100 talents
+// Level 100 talents: cataclysm, demonic servitude
 // Grimoire of sacrifice interaction with fire and brimstone, GoSac FnB
 // Update action lists
 // void consume_tick_resource( dot_t* d ) - find out why this causes drain
@@ -282,7 +282,9 @@ public:
     buff_t* soul_swap;
     buff_t* demonic_rebirth;
     buff_t* mannoroths_fury;
-
+    buff_t* haunting_spirits;
+      
+      
     buff_t* tier16_4pc_ember_fillup;
     buff_t* tier16_2pc_destructive_influence;
     buff_t* tier16_2pc_empowered_grasp;
@@ -1770,9 +1772,18 @@ public:
     double m = 1.0;
 
     warlock_td_t* td = this -> td( t );
+      
+    //haunt debuff
     if ( td -> debuffs_haunt -> check() && ( channeled || spell_power_mod.direct ) ) // Only applies to channeled or dots
     {
       m *= 1.0 + td -> debuffs_haunt -> data().effectN( 3 ).percent();
+    }
+      
+      
+    //sb:haunt buff
+    if ( p() -> buffs.haunting_spirits -> check() && ( channeled || spell_power_mod.direct ) ) // Only applies to channeled or dots
+    {
+        m *= 1.0 + p() -> buffs.haunting_spirits -> data().effectN( 1 ).percent();//TODO double check correct effectN
     }
 
     return spell_t::composite_target_multiplier( t ) * m;
@@ -2575,6 +2586,17 @@ struct haunt_t : public warlock_spell_t
     try_to_trigger_soul_shard_refund();
   }
 
+    virtual void execute()
+    {
+        if ( p() -> buffs.soulburn -> up() )
+        {
+            p() -> buffs.soulburn -> expire();
+            p() -> buffs.haunting_spirits -> trigger();
+        }
+ 
+            warlock_spell_t::execute();
+
+    }
 };
 
 
@@ -4963,6 +4985,10 @@ void warlock_t::create_buffs()
                                 .cd( timespan_t::zero() );
   buffs.demonic_rebirth       = buff_creator_t( this, "demonic_rebirth", find_spell( 88448 ) ).cd( find_spell( 89140 ) -> duration() );
   buffs.mannoroths_fury       = buff_creator_t( this, "mannoroths_fury", talents.mannoroths_fury );
+    
+  buffs.haunting_spirits      = buff_creator_t( this, "haunting_spirits", find_spell( 157698 ) )
+    .chance(1.0);
+    
   buffs.tier16_4pc_ember_fillup = buff_creator_t( this, "ember_master",   find_spell( 145164 ) )
                                 .cd( find_spell( 145165 ) -> duration() )
                                 .add_invalidate(CACHE_CRIT);
