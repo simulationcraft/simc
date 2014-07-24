@@ -904,11 +904,13 @@ struct dbc_potion_t : public action_t
         std::string spell_name = spell -> name_cstr();
         util::tokenize( spell_name );
         buff_t* existing_buff = buff_t::find( p -> buff_list, spell_name );
-        assert( dynamic_cast< stat_buff_t* >( existing_buff ) && "Potion stat buff is not stat_buff_t" );
         if ( ! existing_buff )
           stat_buff = stat_buff_creator_t( p, spell_name, spell );
         else
+        {
+          assert( dynamic_cast< stat_buff_t* >( existing_buff ) && "Potion stat buff is not stat_buff_t" );
           stat_buff = static_cast< stat_buff_t* >( existing_buff );
+        }
 
         id = spell -> id();
         s_data = spell;
