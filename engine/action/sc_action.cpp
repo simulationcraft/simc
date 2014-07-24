@@ -1264,9 +1264,6 @@ void action_t::tick( dot_t* d )
     schedule_multistrike( d -> state, amount_type( d -> state, true ) );
   }
 
-  if ( harmful && callbacks && type != ACTION_HEAL )
-    action_callback_t::trigger( player -> callbacks.tick[ d -> state -> result ], this, d -> state );
-
   if ( ! periodic_hit ) stats -> add_tick( d -> time_to_tick, d -> state -> target );
 
   player -> trigger_ready();
@@ -1370,25 +1367,6 @@ void action_t::assess_damage( dmg_e    type,
                      util::school_type_string( get_school() ),
                      util::result_type_string( s -> result ) );
     }
-
-    if ( s -> result_amount > 0.0 && ! result_is_multistrike( s -> result ) )
-    {
-      if ( direct_tick_callbacks )
-      {
-        action_callback_t::trigger( player -> callbacks.tick_damage[ get_school() ], this, s );
-      }
-      else
-      {
-        if ( callbacks )
-        {
-          action_callback_t::trigger( player -> callbacks.direct_damage[ get_school() ], this, s );
-          if ( s -> result == RESULT_CRIT )
-          {
-            action_callback_t::trigger( player -> callbacks.direct_crit[ get_school() ], this, s );
-          }
-        }
-      }
-    }
   }
   else // DMG_OVER_TIME
   {
@@ -1402,13 +1380,9 @@ void action_t::assess_damage( dmg_e    type,
                      util::school_type_string( get_school() ),
                      util::result_type_string( s -> result ) );
     }
-
-    if ( ! result_is_multistrike( s -> result ) && callbacks && s -> result_amount > 0.0 )
-      action_callback_t::trigger( player -> callbacks.tick_damage[ get_school() ], this, s );
   }
 
   // New callback system; proc spells on impact. 
-  // TODO: Not used for now.
   // Note: direct_tick_callbacks should not be used with the new system, 
   // override action_t::proc_type() instead
   if ( callbacks )

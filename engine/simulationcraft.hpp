@@ -3677,26 +3677,6 @@ private:
 struct player_callbacks_t
 {
   std::vector<action_callback_t*> all_callbacks;
-  std::array< std::vector<action_callback_t*>, RESULT_MAX > attack;
-  std::array< std::vector<action_callback_t*>, RESULT_MAX > spell;
-  std::array< std::vector<action_callback_t*>, RESULT_MAX > harmful_spell;
-  std::array< std::vector<action_callback_t*>, RESULT_MAX > heal;
-  std::array< std::vector<action_callback_t*>, RESULT_MAX > absorb;
-  std::array< std::vector<action_callback_t*>, RESULT_MAX > tick;
-
-  std::array< std::vector<action_callback_t*>, SCHOOL_MAX > direct_damage;
-  std::array< std::vector<action_callback_t*>, SCHOOL_MAX > direct_crit;
-  std::array< std::vector<action_callback_t*>, SCHOOL_MAX > tick_damage;
-  std::array< std::vector<action_callback_t*>, SCHOOL_MAX > spell_direct_damage;
-  std::array< std::vector<action_callback_t*>, SCHOOL_MAX > spell_tick_damage;
-  std::array< std::vector<action_callback_t*>, SCHOOL_MAX > direct_heal;
-  std::array< std::vector<action_callback_t*>, SCHOOL_MAX > tick_heal;
-
-  std::array< std::vector<action_callback_t*>, RESOURCE_MAX > resource_gain;
-  std::array< std::vector<action_callback_t*>, RESOURCE_MAX > resource_loss;
-
-  std::array< std::vector<action_callback_t*>, RESULT_MAX > incoming_attack;
-
   // New proc system
 
   // Callbacks (procs) stored in a vector
@@ -3714,22 +3694,6 @@ struct player_callbacks_t
   void reset();
 
   void register_callback( unsigned proc_flags, unsigned proc_flags2, action_callback_t* cb );
-  void register_resource_gain_callback       ( resource_e,     action_callback_t*      );
-  void register_resource_loss_callback       ( resource_e,     action_callback_t*      );
-  void register_attack_callback              ( int64_t result_mask, action_callback_t* );
-  void register_spell_callback               ( int64_t result_mask, action_callback_t* );
-  void register_tick_callback                ( int64_t result_mask, action_callback_t* );
-  void register_heal_callback                ( int64_t result_mask, action_callback_t* );
-  void register_absorb_callback              ( int64_t result_mask, action_callback_t* );
-  void register_harmful_spell_callback       ( int64_t result_mask, action_callback_t* );
-  void register_tick_damage_callback         ( int64_t result_mask, action_callback_t* );
-  void register_direct_damage_callback       ( int64_t result_mask, action_callback_t* );
-  void register_direct_crit_callback         ( int64_t result_mask, action_callback_t* );
-  void register_spell_tick_damage_callback   ( int64_t result_mask, action_callback_t* );
-  void register_spell_direct_damage_callback ( int64_t result_mask, action_callback_t* );
-  void register_tick_heal_callback           ( int64_t result_mask, action_callback_t* );
-  void register_direct_heal_callback         ( int64_t result_mask, action_callback_t* );
-  void register_incoming_attack_callback     ( int64_t result_mask, action_callback_t* );
 private:
   void add_proc_callback( proc_types type, unsigned flags, action_callback_t* cb );
 };

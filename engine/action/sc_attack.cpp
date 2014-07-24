@@ -33,15 +33,6 @@ attack_t::attack_t( const std::string&  n,
 void attack_t::execute()
 {
   action_t::execute();
-
-  if ( harmful && callbacks )
-  {
-    result_e r = execute_state ? execute_state -> result : RESULT_NONE;
-    if ( r != RESULT_NONE )
-    {
-      action_callback_t::trigger( player -> callbacks.attack[ execute_state -> result ], this, execute_state );
-    }
-  }
 }
 
 // attack_t::execute_time ===================================================

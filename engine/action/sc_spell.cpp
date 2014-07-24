@@ -113,19 +113,6 @@ void spell_base_t::execute()
 
   if ( player -> last_foreground_action == this )
     player -> debuffs.casting -> expire();
-
-  if ( callbacks )
-  {
-    result_e r = execute_state ? execute_state -> result : RESULT_NONE;
-    if ( r != RESULT_NONE )
-    {
-      action_callback_t::trigger( player -> callbacks.spell[ r ], this );
-    }
-    if ( ! background ) // OnSpellCast
-    {
-      action_callback_t::trigger( player -> callbacks.spell[ RESULT_NONE ], this );
-    }
-  }
 }
 
 void spell_base_t::schedule_execute( action_state_t* execute_state )
@@ -191,28 +178,6 @@ void spell_t::assess_damage( dmg_e type,
                              action_state_t* s )
 {
   spell_base_t::assess_damage( type, s );
-
-  if ( result_is_multistrike( s -> result ) )
-    return;
-
-  if ( type == DMG_DIRECT )
-  {
-    if ( s -> result_amount > 0.0 )
-    {
-      if ( direct_tick_callbacks )
-      {
-        action_callback_t::trigger( player -> callbacks.spell_tick_damage[ get_school() ], this, s );
-      }
-      else
-      {
-        if ( callbacks ) action_callback_t::trigger( player -> callbacks.spell_direct_damage[ get_school() ], this, s );
-      }
-    }
-  }
-  else // DMG_OVER_TIME
-  {
-    if ( callbacks && s -> result_amount > 0.0 ) action_callback_t::trigger( player -> callbacks.spell_tick_damage[ get_school() ], this, s );
-  }
 }
 
 dmg_e spell_t::amount_type( const action_state_t* /* state */, bool periodic ) const
@@ -253,20 +218,6 @@ dmg_e spell_t::report_amount_type( const action_state_t* state ) const
 void spell_t::execute()
 {
   spell_base_t::execute();
-
-  if ( harmful && callbacks )
-  {
-    result_e r = execute_state ? execute_state -> result : RESULT_NONE;
-
-    if ( r != RESULT_NONE )
-    {
-      action_callback_t::trigger( player -> callbacks.harmful_spell[ r ], this );
-    }
-    if ( ! background ) // OnHarmfulSpellCast
-    {
-      action_callback_t::trigger( player -> callbacks.harmful_spell[ RESULT_NONE ], this );
-    }
-  }
 }
 
 void spell_t::init()
@@ -445,19 +396,6 @@ double heal_t::calculate_tick_amount( action_state_t* state, double dmg_multipli
 void heal_t::execute()
 {
   spell_base_t::execute();
-
-  if ( callbacks )
-  {
-    result_e r = execute_state ? execute_state -> result : RESULT_NONE;
-    if ( r != RESULT_NONE )
-    {
-      action_callback_t::trigger( player -> callbacks.heal[ r ], this );
-    }
-    if ( ! background ) // OnSpellCast
-    {
-      action_callback_t::trigger( player -> callbacks.heal[ RESULT_NONE ], this );
-    }
-  }
 }
 
 // heal_t::assess_damage ====================================================
@@ -476,12 +414,6 @@ void heal_t::assess_damage( dmg_e heal_type,
                      s -> target -> name(), s -> result_total, s -> result_amount,
                      util::result_type_string( s -> result ) );
     }
-
-    if ( ! result_is_multistrike( s -> result ) )
-    {
-      if ( callbacks && ! direct_tick_callbacks ) action_callback_t::trigger( player -> callbacks.direct_heal[ get_school() ], this, s );
-      if ( direct_tick_callbacks ) action_callback_t::trigger( player -> callbacks.tick_heal[ get_school() ], this, s );
-    }
   }
   else // HEAL_OVER_TIME
   {
@@ -494,9 +426,6 @@ void heal_t::assess_damage( dmg_e heal_type,
                      s -> target -> name(), s -> result_total, s -> result_amount,
                      util::result_type_string( s -> result ) );
     }
-
-    if ( ! result_is_multistrike( s -> result ) || callbacks )
-      action_callback_t::trigger( player -> callbacks.tick_heal[ get_school() ], this, s );
   }
 
   // New callback system; proc spells on impact. 
@@ -699,19 +628,6 @@ void absorb_t::init_target_cache()
 void absorb_t::execute()
 {
   spell_base_t::execute();
-
-  if ( harmful && callbacks )
-  {
-    result_e r = execute_state ? execute_state -> result : RESULT_UNKNOWN;
-    if ( r != RESULT_NONE )
-    {
-      action_callback_t::trigger( player -> callbacks.absorb[ r ], this );
-    }
-    if ( ! background ) // OnSpellCast
-    {
-      action_callback_t::trigger( player -> callbacks.absorb[ RESULT_NONE ], this );
-    }
-  }
 }
 
 // absorb_t::impact =========================================================
