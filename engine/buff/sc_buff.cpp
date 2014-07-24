@@ -1009,6 +1009,32 @@ buff_t* buff_t::find( const std::vector<buff_t*>& buffs,
   return NULL;
 }
 
+static buff_t* find_potion_buff( const std::vector<buff_t*>& buffs, player_t* source )
+{
+  for ( size_t i = 0, end = buffs.size(); i < end; i++ )
+  {
+    buff_t* b = buffs[ i ];
+    player_t* p = b -> player;
+
+    const item_data_t* item = unique_gear::find_item_by_spell( p -> dbc, b -> data().id() );
+    if ( item && item -> item_class == 0 && item -> item_subclass == ITEM_SUBCLASS_POTION &&
+         ( ! source || ( source == b -> source ) ) )
+      return b;
+  }
+
+  return 0;
+}
+
+buff_t* buff_t::find_expressable( const std::vector<buff_t*>& buffs,
+                                  const std::string& name,
+                                  player_t* source )
+{
+  if ( util::str_compare_ci( "potion", name ) )
+    return find_potion_buff( buffs, source );
+  else
+    return find( buffs, name, source );
+}
+
 // buff_t::to_str ===========================================================
 
 std::string buff_t::to_str() const

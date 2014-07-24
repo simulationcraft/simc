@@ -1941,6 +1941,7 @@ public:
   static buff_t* find( const std::vector<buff_t*>&, const std::string& name, player_t* source = 0 );
   static buff_t* find(    sim_t*, const std::string& name );
   static buff_t* find( player_t*, const std::string& name, player_t* source = 0 );
+  static buff_t* find_expressable( const std::vector<buff_t*>&, const std::string& name, player_t* source = 0 );
 
   const char* name() const { return name_str.c_str(); }
   std::string source_name() const;
@@ -6618,6 +6619,7 @@ const special_effect_db_item_t& find_special_effect_db_item( const special_effec
 bool initialize_special_effect( special_effect_t& effect, const item_t& item, unsigned spell_id );
 
 const item_data_t* find_consumable( const dbc_t& dbc, const std::string& name, item_subclass_consumable type );
+const item_data_t* find_item_by_spell( const dbc_t& dbc, unsigned spell_id );
 
 expr_t* create_expression( action_t* a, const std::string& name_str );
 };

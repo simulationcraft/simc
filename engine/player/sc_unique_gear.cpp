@@ -1799,3 +1799,16 @@ const item_data_t* unique_gear::find_consumable( const dbc_t& dbc,
   return 0;
 }
 
+const item_data_t* unique_gear::find_item_by_spell( const dbc_t& dbc, unsigned spell_id )
+{
+  for ( const item_data_t* item = dbc::items( maybe_ptr( dbc.ptr ) ); item -> id != 0; item++ )
+  {
+    for ( size_t spell_idx = 0, end = sizeof_array( item -> id_spell ); spell_idx < end; spell_idx++ )
+    {
+      if ( item -> id_spell[ spell_idx ] == static_cast<int>( spell_id ) )
+        return item;
+    }
+  }
+
+  return 0;
+}
