@@ -97,6 +97,7 @@ struct druid_t : public player_t
 public:
   timespan_t balance_time; // Balance power's current time, after accounting for celestial alignment/astral communion.
   timespan_t last_check; // Last time balance power was updated.
+  bool double_dmg_triggered;
   double eclipse_amount; // Current balance power.
   double clamped_eclipse_amount;
   double eclipse_direction; // 1 = Going upwards, ie: Lunar ---> Solar
@@ -159,6 +160,8 @@ public:
     buff_t* empowered_moonkin;
     buff_t* hurricane;
     buff_t* lunar_empowerment;
+    buff_t* moonfire;
+    buff_t* sunfire;
     buff_t* solar_empowerment;
     buff_t* moonkin_form;
     buff_t* shooting_stars;
@@ -507,6 +510,7 @@ public:
   {
     t16_2pc_starfall_bolt = 0;
     t16_2pc_sun_bolt      = 0;
+    double_dmg_triggered = false;
 
     for (size_t i = 0; i < sizeof_array(pet_force_of_nature); i++)
     {
@@ -3768,9 +3772,9 @@ struct druid_spell_t : public druid_spell_base_t<spell_t>
     spell_t::execute();
   }
 
-  virtual double composite_persistent_multiplier( const action_state_t* state ) const
+  virtual double action_multiplier() const
   {
-    double m = base_t::composite_persistent_multiplier( state );
+    double m = spell_t::action_multiplier();
 
     if ( p() -> specialization() == DRUID_BALANCE )
     {
@@ -3781,27 +3785,18 @@ struct druid_spell_t : public druid_spell_base_t<spell_t>
       mastery = p() -> cache.mastery_value();
 
       if ( ( dbc::is_school( school, SCHOOL_ARCANE ) || dbc::is_school( school, SCHOOL_NATURE ) ) &&
-        p() -> buff.celestial_alignment -> up() )
-      {
+           p() -> buff.celestial_alignment -> up() )
         m *= 1.0 + mastery;
-      }
       else if ( dbc::is_school( school, SCHOOL_NATURE ) && balance < 0 )
-      {
         m *= 1.0 + mastery / 2 + mastery * std::abs( balance ) / 200;
-      }
       else if ( dbc::is_school( school, SCHOOL_ARCANE ) && balance >= 0 )
-      {
         m *= 1.0 + mastery / 2 + mastery * balance / 200;
-      }
       else if ( dbc::is_school( school, SCHOOL_ARCANE ) || dbc::is_school( school, SCHOOL_NATURE ) )
-      {
         m *= 1.0 + mastery / 2 - mastery * std::abs( balance ) / 200;
-      }
 
       if ( sim -> log || sim -> debug )
         sim -> out_debug.printf( "Action modifier %f", m );
     }
-
     return m;
   }
 
@@ -4268,9 +4263,9 @@ struct hurricane_t : public druid_spell_t
     dynamic_tick_action = true;
   }
 
-  virtual double composite_persistent_multiplier( const action_state_t* state ) const
+  virtual double action_multiplier() const
   {
-    double m = druid_spell_t::composite_persistent_multiplier( state );
+    double m = druid_spell_t::action_multiplier();
 
     m *= 1.0 + p() -> buff.heart_of_the_wild -> damage_spell_multiplier();
 
@@ -4465,7 +4460,6 @@ struct sunfire_t : public druid_spell_t
       return m;
     }
 
-
     virtual void tick( dot_t* d )
     {
       druid_spell_t::tick( d );
@@ -4483,6 +4477,7 @@ struct sunfire_t : public druid_spell_t
     dot_behavior = DOT_REFRESH;
     const spell_data_t* dmg_spell = player -> find_spell( 164815 );
     dot_duration                  = dmg_spell -> duration();
+    dot_duration                 += timespan_t::from_seconds( 4 ); //Remove
     dot_duration                 += player -> sets.set( SET_T14_4PC_CASTER ) -> effectN( 1 ).time_value();
     base_tick_time                = dmg_spell -> effectN( 2 ).period();
 
@@ -4498,6 +4493,19 @@ struct sunfire_t : public druid_spell_t
 
     if ( player -> specialization() == DRUID_BALANCE )
       moonfire = new moonfire_CA_t( player );
+  }
+
+  double action_multiplier() const
+  {
+    double am = druid_spell_t::action_multiplier();
+
+    if ( p() -> buff.sunfire -> up() )
+    {
+      am *= 2;
+      p() -> buff.sunfire -> expire();
+    }
+
+    return am;
   }
 
   double composite_target_multiplier( player_t* target ) const
@@ -4558,6 +4566,7 @@ struct moonfire_t : public druid_spell_t
       const spell_data_t* dmg_spell = player -> find_spell( 164815 );
       dot_behavior = DOT_REFRESH;
       dot_duration                  = dmg_spell -> duration();
+      dot_duration                 += timespan_t::from_seconds( 4 ); //Remove
       dot_duration                 += player -> sets.set( SET_T14_4PC_CASTER ) -> effectN( 1 ).time_value();
       base_tick_time                = dmg_spell -> effectN( 2 ).period();
 
@@ -4623,6 +4632,19 @@ struct moonfire_t : public druid_spell_t
 
     if ( result_is_hit( d -> state -> result ) )
       p() -> trigger_shooting_stars( d -> state );
+  }
+
+  double action_multiplier() const
+  {
+    double am = druid_spell_t::action_multiplier();
+
+    if ( p() -> buff.moonfire -> up() )
+    {
+      am *= 2;
+      p() -> buff.moonfire -> expire();
+    }
+
+    return am;
   }
 
   double composite_target_multiplier( player_t* target ) const
@@ -4923,9 +4945,9 @@ struct starfire_t : public druid_spell_t
     base_multiplier *= 1.0 + player -> perk.improved_starfire -> effectN( 1 ).percent();
   }
 
-  virtual double composite_persistent_multiplier( const action_state_t* state ) const
+  virtual double action_multiplier() const
   {
-    double m = druid_spell_t::composite_persistent_multiplier( state );
+    double m = druid_spell_t::action_multiplier();
 
     if ( p() -> buff.lunar_empowerment -> up() )
       m *= 1.0 + p() -> buff.lunar_empowerment -> data().effectN( 1 ).percent() +
@@ -5062,9 +5084,9 @@ struct stellar_flare_t : public druid_spell_t
     parse_options( NULL, options_str );
   }
 
-  virtual double composite_persistent_multiplier( const action_state_t* state ) const
+  double action_multiplier() const
   {
-    double m = base_t::composite_persistent_multiplier( state );
+    double m = base_t::action_multiplier();
 
     double balance;
     balance = p() -> clamped_eclipse_amount;
@@ -5072,7 +5094,6 @@ struct stellar_flare_t : public druid_spell_t
 
     mastery = p() -> cache.mastery_value();
 
-    
     if ( p() -> buff.celestial_alignment -> up() )
       m *= ( 1.0 + mastery ) * ( 1.0 + mastery );
     else
@@ -5199,9 +5220,9 @@ struct wrath_t : public druid_spell_t
     spell_power_mod.direct *= 1.0 + player -> perk.improved_wrath -> effectN( 1 ).percent();
   }
 
-  virtual double composite_persistent_multiplier( const action_state_t* state ) const
+  virtual double action_multiplier() const
   {
-    double m = druid_spell_t::composite_persistent_multiplier( state );
+    double m = druid_spell_t::action_multiplier();
 
     m *= 1.0 + p() -> sets.set( SET_T13_2PC_CASTER ) -> effectN( 1 ).percent();
 
@@ -5764,6 +5785,12 @@ void druid_t::create_buffs()
   buff.hurricane                 = buff_creator_t( this, "hurricane", find_class_spell( "Hurricane" ) );
 
   buff.lunar_empowerment         = buff_creator_t( this, "lunar_empowerment", find_spell( 164547 ) );
+
+  buff.moonfire                  = buff_creator_t( this, "moonfire" )
+    .duration( timespan_t::from_seconds( 10 ) );
+
+  buff.sunfire                  = buff_creator_t( this, "starfire" )
+    .duration( timespan_t::from_seconds( 10 ) );
 
   buff.shooting_stars            = buff_creator_t( this, "shooting_stars", spec.shooting_stars -> effectN( 1 ).trigger() )
                                    .chance( spec.shooting_stars -> proc_chance() + sets.set( SET_T16_4PC_CASTER ) -> effectN( 1 ).percent() );
@@ -6332,7 +6359,7 @@ void druid_t::reset()
   player_t::reset();
 
   inflight_starsurge = false;
-
+  double_dmg_triggered = false;
   eclipse_amount = 0;
   eclipse_direction = 1;
   eclipse_change = talent.euphoria -> ok() ? 10 : 20;
@@ -7199,12 +7226,29 @@ void druid_t::balance_tracker()
 
   eclipse_amount = 105 * sin( 2 * M_PI * balance_time / timespan_t::from_millis( 40000 ) ); // Re-calculate eclipse
 
-  if ( eclipse_amount > 100 )
+  if ( eclipse_amount >= 100 )
+  {
     clamped_eclipse_amount = 100;
-  else if ( eclipse_amount < -100 )
+    if ( !double_dmg_triggered )
+    {
+      buff.moonfire -> trigger();
+      double_dmg_triggered = true;
+    }
+  }
+  else if ( eclipse_amount <= -100 )
+  {
     clamped_eclipse_amount = -100;
+    if ( !double_dmg_triggered )
+    {
+      buff.sunfire -> trigger();
+      double_dmg_triggered = true;
+    }
+  }
   else
+  {
     clamped_eclipse_amount = eclipse_amount;
+    double_dmg_triggered = false;
+  }
 
   eclipse_direction = 105 * sin( 2 * M_PI * ( balance_time + timespan_t::from_millis( 1 ) ) / timespan_t::from_millis( 40000 ) );
   // Add 1 millisecond to eclipse in order to find the direction we are going.

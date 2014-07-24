@@ -1932,7 +1932,7 @@ struct impending_victory_t: public warrior_attack_t
   {
     parse_options( NULL, options_str );
     stancemask = STANCE_BATTLE | STANCE_GLADIATOR | STANCE_DEFENSE;
-    may_crit = false;
+    may_crit = true;
   }
 
   virtual void execute()
@@ -1979,7 +1979,6 @@ struct intervene_t: public warrior_attack_t
     return warrior_attack_t::ready();
   }
 };
-
 
 // Heroic Charge  ==============================================================
 
@@ -4246,6 +4245,8 @@ struct defensive_stance_t: public warrior_buff_t < buff_t >
     .add_invalidate( CACHE_CRIT_BLOCK )
     .add_invalidate( CACHE_BLOCK )
     .add_invalidate( CACHE_STAMINA )
+    .add_invalidate( CACHE_ARMOR )
+    .add_invalidate( CACHE_BONUS_ARMOR )
     .duration( timespan_t::from_seconds( 3 ) )
     .period( timespan_t::from_seconds( 3 ) ) )
   {}
@@ -4275,7 +4276,8 @@ struct gladiator_stance_t: public warrior_buff_t < buff_t >
 {
   gladiator_stance_t( warrior_t& p, const std::string&n, const spell_data_t*s ):
     base_t( p, buff_creator_t( &p, n, s )
-    .activated( true ) )
+    .activated( true )
+    .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER ) )
   {}
 
   virtual void execute( int a, double b, timespan_t t )
