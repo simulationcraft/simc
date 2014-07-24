@@ -5532,7 +5532,7 @@ void death_knight_t::init_action_list()
       if ( sim -> allow_potions && level >= 80 )
         def -> add_action( potion_str + ",if=target.time_to_die<=30|(target.time_to_die<=60&buff.pillar_of_frost.up)" );
       
-      def -> add_action( this, "Empower Rune Weapon", "if=target.time_to_die<=60&(buff.potion_of_mogu_power.up|buff.golemblood_potion.up)" );
+      def -> add_action( this, "Empower Rune Weapon", "if=target.time_to_die<=60&(buff.potion_of_mogu_power.up)" );
 
       for ( size_t i = 0; i < get_profession_actions().size(); i++ )
         def -> add_action( get_profession_actions()[ i ] );
