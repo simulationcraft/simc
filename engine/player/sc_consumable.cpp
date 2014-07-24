@@ -857,62 +857,6 @@ struct dark_rune_t : public action_t
 //  Potion Base
 // ==========================================================================
 
-struct potion_base_t : public action_t
-{
-  timespan_t pre_pot_time;
-  buff_t*    potion_buff;
-
-  potion_base_t( player_t* p, const std::string& n, buff_t* pb, const std::string& options_str ) :
-    action_t( ACTION_USE, n, p ),
-    pre_pot_time( timespan_t::from_seconds( 5.0 ) ),
-    potion_buff( pb )
-  {
-    assert( pb );
-
-    option_t options[] =
-    {
-      opt_timespan( "pre_pot_time", pre_pot_time ),
-      opt_null()
-    };
-    parse_options( options, options_str );
-
-    pre_pot_time = std::max( timespan_t::zero(), std::min( pre_pot_time, potion_buff -> buff_duration ) );
-
-    trigger_gcd = timespan_t::zero();
-    harmful = false;
-    cooldown = p -> get_cooldown( "potion" );
-    cooldown -> duration = potion_buff -> cooldown -> duration;
-    sim -> errorf( "Old style potion actions ('actions+=/jade_spirit_potion') are going away in WoD Simulationcraft. Please change action list to use 'actions+=/potion,name=jade_spirit' instead." );
-  }
-
-  virtual void execute()
-  {
-    if ( player -> in_combat )
-    {
-      potion_buff -> trigger();
-      player -> potion_used = true;
-    }
-    else
-    {
-      cooldown -> duration -= pre_pot_time;
-      potion_buff -> trigger( 1, buff_t::DEFAULT_VALUE(), potion_buff -> default_chance,
-                              potion_buff ->  buff_duration - pre_pot_time );
-    }
-
-    if ( sim -> log ) sim -> out_log.printf( "%s uses %s", player -> name(), name() );
-    update_ready();
-    cooldown -> duration = potion_buff -> cooldown -> duration;
-  }
-
-  virtual bool ready()
-  {
-    if ( player -> potion_used )
-      return false;
-
-    return action_t::ready();
-  }
-};
-
 struct dbc_potion_t : public action_t
 {
   timespan_t pre_pot_time;
@@ -1049,21 +993,6 @@ action_t* consumable::create_action( player_t*          p,
   if ( name == "health_stone"         ) return new health_stone_t( p, options_str );
   if ( name == "mana_potion"          ) return new  mana_potion_t( p, options_str );
   if ( name == "mythical_mana_potion" ) return new  mana_potion_t( p, options_str );
-  if ( name == "speed_potion"         ) return new  potion_base_t( p, name, p -> potion_buffs.speed, options_str );
-  if ( name == "volcanic_potion"      ) return new  potion_base_t( p, name, p -> potion_buffs.volcanic, options_str );
-  if ( name == "earthen_potion"       ) return new  potion_base_t( p, name, p -> potion_buffs.earthen, options_str );
-  if ( name == "golemblood_potion"    ) return new  potion_base_t( p, name, p -> potion_buffs.golemblood, options_str );
-  if ( name == "tolvir_potion"        ) return new  potion_base_t( p, name, p -> potion_buffs.tolvir, options_str );
-  // new mop potions
-  if ( name == "jade_serpent_potion"  ) return new  potion_base_t( p, name, p -> potion_buffs.jade_serpent, options_str );
-  if ( name == "mountains_potion"     ) return new  potion_base_t( p, name, p -> potion_buffs.mountains, options_str );
-  if ( name == "mogu_power_potion"    ) return new  potion_base_t( p, name, p -> potion_buffs.mogu_power, options_str );
-  if ( name == "virmens_bite_potion"  ) return new  potion_base_t( p, name, p -> potion_buffs.virmens_bite, options_str );
-  // new wod potions
-  if ( name == "draenor_agility_potion"     ) return new  potion_base_t( p, name, p -> potion_buffs.draenor_agility, options_str );
-  if ( name == "draenor_armor_potion"       ) return new  potion_base_t( p, name, p -> potion_buffs.draenor_armor, options_str );
-  if ( name == "draenor_intellect_potion"   ) return new  potion_base_t( p, name, p -> potion_buffs.draenor_intellect, options_str );
-  if ( name == "draenor_strength_potion"    ) return new  potion_base_t( p, name, p -> potion_buffs.draenor_strength, options_str );
 
   return 0;
 }

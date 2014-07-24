@@ -488,7 +488,6 @@ player_t::player_t( sim_t*             s,
   base_movement_speed( 7.0 ), passive_modifier( 0 ),
   x_position( 0.0 ), y_position( 0.0 ),
   buffs( buffs_t() ),
-  potion_buffs( potion_buffs_t() ),
   debuffs( debuffs_t() ),
   gains( gains_t() ),
   procs( procs_t() ),
@@ -2047,57 +2046,6 @@ void player_t::create_buffs()
                         .duration( timespan_t::zero() )
                         .default_value( 0 )
                         .add_invalidate( CACHE_PLAYER_HEAL_MULTIPLIER );
-
-      // Potions
-      struct potion_buff_creator : public stat_buff_creator_t
-      {
-        potion_buff_creator( player_t* p,
-                             const std::string& n,
-                             timespan_t cd = timespan_t::from_seconds( 60.0 ) ) :
-          stat_buff_creator_t ( p,  n )
-        {
-          max_stack( 1 );
-          this -> cd( cd );
-          // Kludge of the century, version 2
-          chance( p -> sim -> allow_potions );
-        }
-      };
-
-      // Cataclysm
-      potion_buffs.speed      = potion_buff_creator( this, "speed_potion" ) //TODO: What potion is this actually? Need to update the value from 500.0, or, just remove Cata potions. -Twintop 2014/07/01
-                                .duration( timespan_t::from_seconds( 15.0 ) )
-                                .add_stat( STAT_HASTE_RATING, 500.0 );
-      potion_buffs.volcanic   = potion_buff_creator( this, "volcanic_potion" )
-                                .duration( timespan_t::from_seconds( 25.0 ) )
-                                .add_stat( STAT_INTELLECT, 476.0 );
-      potion_buffs.earthen    = potion_buff_creator( this, "earthen_potion" )
-                                .duration( timespan_t::from_seconds( 25.0 ) )
-                                .add_stat( STAT_BONUS_ARMOR, 330.0 );
-      potion_buffs.golemblood = potion_buff_creator( this, "golemblood_potion" )
-                                .duration( timespan_t::from_seconds( 25.0 ) )
-                                .add_stat( STAT_STRENGTH, 476.0 );
-      potion_buffs.tolvir     = potion_buff_creator( this, "tolvir_potion" )
-                                .duration( timespan_t::from_seconds( 25.0 ) )
-                                .add_stat( STAT_AGILITY, 476.0 );
-
-      // MoP
-      potion_buffs.jade_serpent = potion_buff_creator( this, "potion_of_the_jade_serpent" )
-                                  .spell( find_spell( 109217 ) );
-      potion_buffs.mountains    = potion_buff_creator( this, "potion_of_the_mountains" )
-                                  .spell( find_spell( 105698 ) );
-      potion_buffs.mogu_power   = potion_buff_creator( this, "potion_of_mogu_power" )
-                                  .spell( find_spell( 105706 ) );
-      potion_buffs.virmens_bite = potion_buff_creator( this, "virmens_bite" )
-                                  .spell( find_spell( 105697 ) );
-      // WoD
-      potion_buffs.draenor_agility   = potion_buff_creator( this, "draenor_agility_potion" )
-                                       .spell( find_spell( 156423 ) );
-      potion_buffs.draenor_armor     = potion_buff_creator( this, "draenor_armor_potion" )
-                                       .spell( find_spell( 156430 ) );
-      potion_buffs.draenor_intellect = potion_buff_creator( this, "draenor_intellect_potion" )
-                                       .spell( find_spell( 156426 ) );
-      potion_buffs.draenor_strength  = potion_buff_creator( this, "draenor_strength_potion" )
-                                       .spell( find_spell( 156428 ) );
 
       buffs.darkflight         = buff_creator_t( this, "darkflight", find_racial_spell( "darkflight" ) );
 

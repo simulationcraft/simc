@@ -4476,28 +4476,6 @@ struct player_t : public actor_t
     stat_buff_t* flask;
   } buffs;
 
-  struct potion_buffs_t
-  {
-    // Cataclysm
-    stat_buff_t* earthen;
-    stat_buff_t* golemblood;
-    stat_buff_t* speed;
-    stat_buff_t* tolvir;
-    stat_buff_t* volcanic;
-
-    // MoP
-    stat_buff_t* virmens_bite;
-    stat_buff_t* mogu_power;
-    stat_buff_t* jade_serpent;
-    stat_buff_t* mountains;
-
-    // WoD
-    stat_buff_t* draenor_agility;
-    stat_buff_t* draenor_armor;
-    stat_buff_t* draenor_intellect;
-    stat_buff_t* draenor_strength;
-  } potion_buffs;
-
   struct debuffs_t
   {
     debuff_t* bleeding;
