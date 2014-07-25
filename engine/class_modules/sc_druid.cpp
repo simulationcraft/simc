@@ -4868,7 +4868,7 @@ struct savage_defense_t : public druid_spell_t
   {
     harmful = false;
     cooldown -> duration = timespan_t::from_seconds( 9.0 );
-    cooldown -> charges = 3;
+    cooldown -> charges = 2;
     use_off_gcd = true;
 
     if ( p -> sets.has_set_bonus( SET_T16_2PC_TANK ) )
@@ -5554,7 +5554,7 @@ void druid_t::init_spells()
   // Balance 100 Talents
   talent.euphoria            = find_talent_spell( "Euphoria" );
   talent.stellar_flare       = find_talent_spell( "Stellar Flare" );
-  talent.balance_of_power    = find_talent_spell( "Balance of Power" );
+  talent.balance_of_power    = find_talent_spell( "Balance of Power" );s
 
   // Feral 100 Talents
   talent.lunar_inspiration   = find_talent_spell( "Lunar Inspiration" );
