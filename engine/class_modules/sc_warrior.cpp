@@ -811,31 +811,12 @@ struct warrior_attack_t: public warrior_action_t < melee_attack_t >
 
 // trigger_bloodbath ========================================================
 
-struct bloodbath_dot_t: public residual_action::residual_periodic_action_t < attack_t >
+struct bloodbath_dot_t: public residual_action::residual_periodic_action_t < warrior_attack_t >
 {
-  typedef  residual_action::residual_periodic_action_t<attack_t> base_t;
   bloodbath_dot_t( warrior_t* p ):
     base_t( "bloodbath", p, p -> find_spell( 113344 ) )
   {
     dual = true;
-  }
-
-  void assess_damage( dmg_e type,
-                      action_state_t* s )
-  {
-    base_t::assess_damage( type, s );
-
-    warrior_t* p = static_cast<warrior_t*>( player );
-    warrior_td_t* td = p -> get_target_data( s -> target );
-
-    if ( td -> debuffs_colossus_smash -> up() && s -> result_amount > 0 )
-      p -> cs_damage.add( s -> result_amount );
-
-    if ( ( s -> target == sim -> target ) && s -> result_amount > 0 )
-      p -> priority_damage.add( s -> result_amount );
-
-    if ( s -> result_amount > 0 )
-      p -> all_damage.add( s -> result_amount );
   }
 };
 
@@ -959,7 +940,6 @@ static bool trigger_t15_2pc_melee( warrior_attack_t* a )
 
 void warrior_attack_t::execute()
 {
-  p() -> buff.tier17_4pc_fury -> up();
   base_t::execute();
 }
 
@@ -1028,7 +1008,6 @@ struct melee_t: public warrior_attack_t
   void reset()
   {
     warrior_attack_t::reset();
-
     first = true;
   }
 
@@ -1408,9 +1387,6 @@ struct colossus_smash_t: public warrior_attack_t
     stancemask = STANCE_BATTLE | STANCE_DEFENSE;
 
     weapon = &( player -> main_hand_weapon );
-
-    if ( p -> sets.has_set_bonus( SET_T17_2PC_MELEE ) && p -> specialization() == WARRIOR_ARMS )
-      base_costs[RESOURCE_RAGE] = 0;
   }
 
   virtual double action_multiplier() const
@@ -1664,7 +1640,7 @@ struct hamstring_t: public warrior_attack_t
 
     base_costs[RESOURCE_RAGE] += p -> perk.enhanced_hamstring -> effectN( 1 ).resource( RESOURCE_RAGE );
 
-    weapon           = &( p -> main_hand_weapon );
+    weapon = &( p -> main_hand_weapon );
   }
 
   virtual double cost() const
@@ -1978,44 +1954,33 @@ struct intervene_t: public warrior_attack_t
 struct heroic_charge_t: public warrior_attack_t
 {
   action_t*leap;
-  action_t*intervene;
   action_t*charge;
   heroic_charge_t( warrior_t* p, const std::string& options_str ):
     warrior_attack_t( "heroic_charge", p, spell_data_t::nil() )
   {
+    stancemask = STANCE_DEFENSE | STANCE_GLADIATOR | STANCE_BATTLE;
     leap = new heroic_leap_t( p, options_str );
-    intervene = new intervene_t( p, options_str );
     charge = new charge_t( p, options_str );
     add_child( leap );
-    add_child( intervene );
     add_child( charge );
     dual = true;
-
-    parse_options( NULL, options_str );
-    trigger_gcd = timespan_t::zero();
+    school = SCHOOL_FIRE; // Used to give the pie chart a different color.
+    min_gcd = timespan_t::from_millis( 750 );
   }
 
-  virtual timespan_t execute_time() const
+  timespan_t gcd() const
   {
-    timespan_t time = timespan_t::zero();
-    if ( p() -> cooldown.heroic_leap -> up() || p() -> cooldown.intervene -> up() )
-      time = timespan_t::from_millis( 750 );
+    if ( p() -> cooldown.heroic_leap -> up() )
+      return timespan_t::from_millis( 750 );
     else
-      time = timespan_t::from_millis( 1250 ); // Pause swing timer for 1.25 second, as we'd be walking out.
-
-    return time;
+      return timespan_t::from_millis( 1250 );
   }
 
   virtual void execute()
   {
     if ( p() -> cooldown.heroic_leap -> up() )
       leap -> execute();
-    else if ( p() -> cooldown.intervene -> up() && p() -> cooldown.stance_swap -> up() )
-    {
-      p() -> active_stance = STANCE_DEFENSE;
-      p() -> buff.defensive_stance -> trigger();
-      intervene -> execute();
-    }
+
     warrior_attack_t::execute();
     p() -> buff.heroic_charge -> trigger();
     charge -> execute();
