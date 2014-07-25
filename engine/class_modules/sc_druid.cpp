@@ -5345,7 +5345,8 @@ action_t* druid_t::create_action( const std::string& name,
   if ( name == "berserk"                ) return new                berserk_t( this, options_str );
   if ( name == "bear_form"              ) return new              bear_form_t( this, options_str );
   if ( name == "bristling_fur"          ) return new          bristling_fur_t( this, options_str );
-  if ( name == "cat_form"               ) return new               cat_form_t( this, options_str );
+  if ( name == "cat_form" ||
+       name == "claws_of_shirvallah"    ) return new               cat_form_t( this, options_str );
   if ( name == "celestial_alignment" ||
        name == "ca"                     ) return new    celestial_alignment_t( this, options_str );
   if ( name == "cenarion_ward"          ) return new          cenarion_ward_t( this, options_str );
