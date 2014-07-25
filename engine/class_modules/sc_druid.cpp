@@ -6545,7 +6545,7 @@ double druid_t::composite_melee_expertise( weapon_t* ) const
 {
   double exp = player_t::composite_melee_expertise();
 
-  exp += spec.thick_hide -> effectN( 7 ).percent();
+  exp += spec.thick_hide -> effectN( 3 ).percent();
 
   return exp;
 }
