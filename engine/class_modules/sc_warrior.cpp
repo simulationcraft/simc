@@ -399,7 +399,7 @@ public:
     cooldown.stance_swap             -> duration = timespan_t::from_seconds( 1.5 );
 
     initial_rage = 0;
-    arms_rage_mult = 2.4;
+    arms_rage_mult = 1.6;
     crit_rage_mult = 2;
     swapping = false;
     base.distance = 3.0;
@@ -1589,9 +1589,9 @@ struct execute_t: public warrior_attack_t
 
     if ( p() -> mastery.weapons_master -> ok() )
     {
-      am *= 5.0 * std::min( 50.0,
+      am *= 5.0 * std::min( 40.0,
         ( p() -> buff.sudden_death -> up() ? p() -> resources.current[RESOURCE_RAGE] + 10 :
-        p() -> resources.current[RESOURCE_RAGE] ) ) / 50;
+        p() -> resources.current[RESOURCE_RAGE] ) ) / 40;
       am *= 1.0 + p() -> cache.mastery_value();
     }
 
@@ -1603,7 +1603,7 @@ struct execute_t: public warrior_attack_t
     double c = warrior_attack_t::cost();
 
     if ( p() -> specialization() == WARRIOR_ARMS )
-      c = std::min( 50.0, std::max( p() -> resources.current[RESOURCE_RAGE], c ) );
+      c = std::min( 40.0, std::max( p() -> resources.current[RESOURCE_RAGE], c ) );
 
     if ( p() -> buff.sudden_death -> up() )
     {
