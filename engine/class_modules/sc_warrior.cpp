@@ -6,8 +6,7 @@
 #include "simulationcraft.hpp"
 
 // ==========================================================================
-// To-do list:
-// Turn blood craze into an ignite.
+//
 // ==========================================================================
 
 namespace
@@ -1082,7 +1081,11 @@ struct melee_t: public warrior_attack_t
       if ( result_is_multistrike( s -> result ) )
       {
         p() -> buff.blood_craze -> trigger();
-        p() -> active_blood_craze -> execute();
+        residual_action::trigger(
+          p() -> active_blood_craze, // ignite spell
+          p(), // target
+          p() -> spec.blood_craze -> effectN( 1 ).trigger() -> effectN( 1 ).percent() * 
+          p() -> resources.max[RESOURCE_HEALTH] * 3 );
       }
     }
   }
@@ -2309,14 +2312,12 @@ struct revenge_t: public warrior_attack_t
 
 // Blood Craze ==============================================================
 
-struct blood_craze_t: public warrior_heal_t
+struct blood_craze_t: public residual_action::residual_periodic_action_t < warrior_heal_t >
 {
   blood_craze_t( warrior_t* p ):
-    warrior_heal_t( "blood_craze", p, p -> spec.blood_craze )
+    base_t( "blood_craze", p, p -> spec.blood_craze )
   {
-    tick_zero = true;
     hasted_ticks = harmful = tick_may_crit = false;
-    tick_pct_heal = p -> spec.blood_craze -> effectN( 1 ).trigger() -> effectN( 1 ).percent();
     base_tick_time = p -> spec.blood_craze -> effectN( 1 ).trigger() -> effectN( 1 ).period();
     dot_duration = p -> spec.blood_craze -> effectN( 1 ).trigger() -> duration();
     dot_behavior = DOT_REFRESH;
