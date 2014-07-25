@@ -493,7 +493,8 @@ template <class Base>
 struct warrior_action_t: public Base
 {
   int stancemask;
-
+  bool headlongrush;
+  bool recklessness;
 private:
   typedef Base ab; // action base, eg. spell_t
 public:
@@ -502,7 +503,9 @@ public:
   warrior_action_t( const std::string& n, warrior_t* player,
                     const spell_data_t* s = spell_data_t::nil() ):
                     ab( n, player, s ),
-                    stancemask( STANCE_BATTLE | STANCE_DEFENSE | STANCE_GLADIATOR )
+                    stancemask( STANCE_BATTLE | STANCE_DEFENSE | STANCE_GLADIATOR ),
+                    headlongrush( ab::data().affected_by( player -> spell.headlong_rush -> effectN( 1 ) ) ),
+                    recklessness( ab::data().affected_by( player -> spec.recklessness -> effectN( 1 ) ) )
   {
     ab::may_crit = true;
   }
@@ -521,6 +524,25 @@ public:
   warrior_td_t* td( player_t* t ) const
   {
     return p() -> get_target_data( t );
+  }
+
+  virtual void update_ready( timespan_t cd_duration )
+  {
+    //Head Long Rush reduces the cooldown depending on the amount of haste.
+    if ( headlongrush )
+      cd_duration = cooldown -> duration * p() -> cache.attack_haste();
+
+    ab::update_ready( cd_duration );
+  }
+
+  virtual double composite_crit() const
+  {
+    double cc = ab::composite_crit();
+
+    if ( recklessness )
+      cc += p() -> buff.recklessness -> value();
+
+    return cc;
   }
 
   virtual bool ready()
@@ -565,20 +587,20 @@ public:
 
     if ( ab::sim -> log || ab::sim -> debug )
     {
-      ab::sim -> out_debug.printf( 
-    "Strength: %4.4f, AP: %4.4f, Crit: %4.4f%%, Crit Dmg Mult: %4.4f,  Mastery: %4.4f%%, Multistrike: %4.4f%%, Haste: %4.4f%%, Versatility: %4.4f%%, Bonus Armor: %4.4f, Tick Multiplier: %4.4f, Direct Multiplier: %4.4f, Action Multiplier: %4.4f",
-                               p() -> cache.strength(),
-                               p() -> cache.attack_power(),
-                               p() -> cache.attack_crit() * 100,
-                               p() -> composite_player_critical_damage_multiplier(),
-                               p() -> cache.mastery_value() * 100,
-                               p() -> cache.multistrike() * 100,
-                               ( ( 1 / ( p() -> cache.attack_haste() ) ) - 1 ) * 100,
-                               p() -> cache.damage_versatility() * 100,
-                               p() -> cache.bonus_armor(),
-                               s -> composite_ta_multiplier(),
-                               s -> composite_da_multiplier(),
-                               s -> action -> action_multiplier() ) ;
+      ab::sim -> out_debug.printf(
+        "Strength: %4.4f, AP: %4.4f, Crit: %4.4f%%, Crit Dmg Mult: %4.4f,  Mastery: %4.4f%%, Multistrike: %4.4f%%, Haste: %4.4f%%, Versatility: %4.4f%%, Bonus Armor: %4.4f, Tick Multiplier: %4.4f, Direct Multiplier: %4.4f, Action Multiplier: %4.4f",
+        p() -> cache.strength(),
+        p() -> cache.attack_power(),
+        p() -> cache.attack_crit() * 100,
+        p() -> composite_player_critical_damage_multiplier(),
+        p() -> cache.mastery_value() * 100,
+        p() -> cache.multistrike() * 100,
+        ( ( 1 / ( p() -> cache.attack_haste() ) ) - 1 ) * 100,
+        p() -> cache.damage_versatility() * 100,
+        p() -> cache.bonus_armor(),
+        s -> composite_ta_multiplier(),
+        s -> composite_da_multiplier(),
+        s -> action -> action_multiplier() );
     }
   }
 
@@ -603,13 +625,10 @@ public:
         d -> state -> composite_da_multiplier(),
         d -> state -> action -> action_ta_multiplier() );
     }
-
-
-
   }
 
   virtual void assess_damage( dmg_e type,
-                      action_state_t* s )
+                              action_state_t* s )
   {
     ab::assess_damage( type, s );
 
@@ -629,7 +648,7 @@ public:
 
     double rage = ab::resource_consumed;
 
-    anger_management(rage);
+    anger_management( rage );
 
     if ( ab::result_is_miss( ab::execute_state -> result ) && rage > 0 && !ab::aoe )
       p() -> resource_gain( RESOURCE_RAGE, rage*0.8, p() -> gain.avoided_attacks );
@@ -712,7 +731,7 @@ struct warrior_attack_t: public warrior_action_t < melee_attack_t >
                     const spell_data_t* s = spell_data_t::nil() ):
                     base_t( n, p, s )
   {
-    may_crit = special = true;
+    special = true;
   }
 
   virtual double target_armor( player_t* t ) const
@@ -745,16 +764,6 @@ struct warrior_attack_t: public warrior_action_t < melee_attack_t >
            dmg *= 1.0 + p() -> spec.single_minded_fury -> effectN( 2 ).percent();
     }
     return dmg;
-  }
-
-  virtual double composite_crit() const
-  {
-    double cc = base_t::composite_crit();
-
-    if ( special )
-      cc += p() -> buff.recklessness -> value();
-
-    return cc;
   }
 
   // helper functions
@@ -1084,7 +1093,7 @@ struct melee_t: public warrior_attack_t
         residual_action::trigger(
           p() -> active_blood_craze, // ignite spell
           p(), // target
-          p() -> spec.blood_craze -> effectN( 1 ).trigger() -> effectN( 1 ).percent() * 
+          p() -> spec.blood_craze -> effectN( 1 ).trigger() -> effectN( 1 ).percent() *
           p() -> resources.max[RESOURCE_HEALTH] * 3 );
       }
     }
@@ -1318,13 +1327,10 @@ struct bloodthirst_t: public warrior_attack_t
       p() -> enrage();
   }
 
-
-  virtual void update_ready( timespan_t cd_duration )
+  void update_ready( timespan_t cd_duration )
   {
     if ( p() -> talents.unquenchable_thirst -> ok() )
       return;
-    //Head Long Rush reduces the cooldown depending on the amount of haste.
-    cd_duration = cooldown -> duration * player -> cache.attack_haste();
 
     warrior_attack_t::update_ready( cd_duration );
   }
@@ -1593,8 +1599,8 @@ struct execute_t: public warrior_attack_t
     if ( p() -> mastery.weapons_master -> ok() )
     {
       am *= 5.0 * std::min( 40.0,
-        ( p() -> buff.sudden_death -> up() ? p() -> resources.current[RESOURCE_RAGE] + 10 :
-        p() -> resources.current[RESOURCE_RAGE] ) ) / 40;
+                            ( p() -> buff.sudden_death -> up() ? p() -> resources.current[RESOURCE_RAGE] + 10 :
+                            p() -> resources.current[RESOURCE_RAGE] ) ) / 40;
       am *= 1.0 + p() -> cache.mastery_value();
     }
 
@@ -1721,14 +1727,6 @@ struct ignite_weapon_t: public warrior_attack_t
     return am;
   }
 
-  virtual void update_ready( timespan_t cd_duration )
-  {
-    //Head Long Rush reduces the cooldown depending on the amount of haste.
-    cd_duration = cooldown -> duration * player -> cache.attack_haste();
-
-    warrior_attack_t::update_ready( cd_duration );
-  }
-
   virtual bool ready()
   {
     if ( p() -> main_hand_weapon.type == WEAPON_NONE )
@@ -1799,14 +1797,6 @@ struct heroic_strike_t: public warrior_attack_t
     warrior_attack_t::execute();
 
     p() -> buff.ultimatum -> expire();
-  }
-
-  virtual void update_ready( timespan_t cd_duration )
-  {
-    //Head Long Rush reduces the cooldown depending on the amount of haste.
-    cd_duration = cooldown -> duration * player -> cache.attack_haste();
-
-    warrior_attack_t::update_ready( cd_duration );
   }
 
   virtual bool ready()
@@ -2075,16 +2065,6 @@ struct mortal_strike_t: public warrior_attack_t
     }
   }
 
-  virtual void update_ready( timespan_t cd_duration )
-  {
-    cd_duration = cooldown -> duration * player -> cache.attack_haste();
-
-    if ( p() -> buff.tier17_4pc_arms -> up() )
-      cd_duration *= -1 * p() -> buff.tier17_4pc_arms -> data().effectN( 1 ).percent();
-
-    warrior_attack_t::update_ready( cd_duration );
-  }
-
   virtual bool ready()
   {
     if ( p() -> main_hand_weapon.type == WEAPON_NONE )
@@ -2162,7 +2142,7 @@ struct raging_blow_t: public warrior_attack_t
   void impact( action_state_t* s )
   {
     warrior_attack_t::impact( s );
-    if ( result_is_hit( s -> result ) && td ( s -> target ) -> debuffs_colossus_smash -> up() )
+    if ( result_is_hit( s -> result ) && td( s -> target ) -> debuffs_colossus_smash -> up() )
       td( s -> target ) -> debuffs_colossus_smash -> extend_duration( s -> target, timespan_t::from_seconds( 2 ) );
   }
 
@@ -2446,13 +2426,6 @@ struct shield_slam_t: public warrior_attack_t
     }
   }
 
-  virtual void update_ready( timespan_t cd_duration )
-  {
-    cd_duration = cooldown -> duration * player -> cache.attack_haste();
-
-    warrior_attack_t::update_ready( cd_duration );
-  }
-
   virtual bool ready()
   {
     if ( !p() -> has_shield_equipped() )
@@ -2644,13 +2617,6 @@ struct thunder_clap_t: public warrior_attack_t
       c = 0;
 
     return c;
-  }
-
-  virtual void update_ready( timespan_t cd_duration )
-  {
-    cd_duration = cooldown -> duration * player -> cache.attack_haste();
-
-    warrior_attack_t::update_ready( cd_duration );
   }
 };
 
@@ -3209,14 +3175,6 @@ struct shield_barrier_t: public warrior_action_t < absorb_t >
     }
   }
 
-  virtual void update_ready( timespan_t cd_duration )
-  {
-    //Head Long Rush reduces the cooldown depending on the amount of haste.
-    cd_duration = cooldown -> duration * player -> cache.attack_haste();
-
-    base_t::update_ready( cd_duration );
-  }
-
   virtual bool ready()
   {
     if ( !p() -> has_shield_equipped() )
@@ -3543,6 +3501,7 @@ struct vigilance_t: public warrior_spell_t
 
 // warrior_t::create_action  ================================================
 
+
 action_t* warrior_t::create_action( const std::string& name,
                                     const std::string& options_str )
 {
@@ -3596,9 +3555,9 @@ action_t* warrior_t::create_action( const std::string& name,
   if ( name == "storm_bolt"           ) return new storm_bolt_t           ( this, options_str );
   if ( name == "stance"               ) return new stance_t               ( this, options_str );
   if ( name == "sweeping_strikes"     ) return new sweeping_strikes_t     ( this, options_str );
-  if ( name == "taunt"                ) return new taunt_t                ( this, options_str ); //Doesn't do anything at the moment.
+  if ( name == "taunt"                ) return new taunt_t                ( this, options_str );
   if ( name == "thunder_clap"         ) return new thunder_clap_t         ( this, options_str );
-  if ( name == "vigilance"            ) return new vigilance_t            ( this, options_str ); //Same
+  if ( name == "vigilance"            ) return new vigilance_t            ( this, options_str );
   if ( name == "whirlwind"            ) return new whirlwind_t            ( this, options_str );
   if ( name == "wild_strike"          ) return new wild_strike_t          ( this, options_str );
 
@@ -4026,7 +3985,6 @@ void warrior_t::apl_arms()
   aoe -> add_action( this, "Mortal Strike" );
   aoe -> add_action( this, "Execute", "if=rage>90&debuff.colossus_smash.up" );
   aoe -> add_action( this, "Whirlwind" );
-
 }
 
 // Protection Warrior Action Priority List ========================================
@@ -4149,8 +4107,8 @@ static void defensive_stance( buff_t* buff, int, int )
 {
   warrior_t* p = debug_cast<warrior_t*>( buff -> player );
 
-    p -> resource_gain( RESOURCE_RAGE, 1, p -> gain.defensive_stance );
-    buff -> refresh();
+  p -> resource_gain( RESOURCE_RAGE, 1, p -> gain.defensive_stance );
+  buff -> refresh();
 }
 
 // Fury T17 4 piece ========================================================
@@ -4176,27 +4134,32 @@ public:
 
   warrior_buff_t( warrior_td_t& p, const buff_creator_basics_t& params ):
     Base( params ), warrior( p.warrior )
-  {}
+  {
+  }
 
   warrior_buff_t( warrior_t& p, const buff_creator_basics_t& params ):
     Base( params ), warrior( p )
-  {}
+  {
+  }
 
   warrior_td_t& get_td( player_t* t ) const
-  { return *( warrior.get_target_data( t ) ); }
+  {
+    return *( warrior.get_target_data( t ) );
+  }
 
 protected:
   warrior_t& warrior;
 };
 
 
-struct bloodsurge_t: public warrior_buff_t<buff_t>
+struct bloodsurge_t: public warrior_buff_t < buff_t >
 {
   int wasted;
   bloodsurge_t( warrior_t& p, const std::string&n, const spell_data_t*s ):
     base_t( p, buff_creator_t( &p, n, s )
     .chance( p.spec.bloodsurge -> effectN( 1 ).percent() ) ), wasted( 0 )
-  {}
+  {
+  }
 
   virtual void execute( int a, double b, timespan_t t )
   {
@@ -4247,9 +4210,10 @@ struct defensive_stance_t: public warrior_buff_t < buff_t >
     .add_invalidate( CACHE_BONUS_ARMOR )
     .duration( timespan_t::from_seconds( 3 ) )
     .period( timespan_t::from_seconds( 3 ) ) )
-  {}
+  {
+  }
 
-  virtual void execute( int a, double b, timespan_t t)
+  virtual void execute( int a, double b, timespan_t t )
   {
     warrior.active_stance = STANCE_DEFENSE;
     base_t::execute( a, b, t );
@@ -4261,7 +4225,8 @@ struct battle_stance_t: public warrior_buff_t < buff_t >
   battle_stance_t( warrior_t& p, const std::string&n, const spell_data_t*s ):
     base_t( p, buff_creator_t( &p, n, s )
     .activated( true ) )
-  {}
+  {
+  }
 
   virtual void execute( int a, double b, timespan_t t )
   {
@@ -4276,7 +4241,8 @@ struct gladiator_stance_t: public warrior_buff_t < buff_t >
     base_t( p, buff_creator_t( &p, n, s )
     .activated( true )
     .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER ) )
-  {}
+  {
+  }
 
   virtual void execute( int a, double b, timespan_t t )
   {
@@ -4286,19 +4252,21 @@ struct gladiator_stance_t: public warrior_buff_t < buff_t >
   }
 };
 
-struct sudden_death_t: public warrior_buff_t<buff_t>
+struct sudden_death_t: public warrior_buff_t < buff_t >
 {
   sudden_death_t( warrior_t& p, const std::string&n, const spell_data_t*s ):
     base_t( p, buff_creator_t( &p, n, s ) )
-  {}
+  {
+  }
 };
 
-struct rallying_cry_t: public warrior_buff_t<buff_t>
+struct rallying_cry_t: public warrior_buff_t < buff_t >
 {
   int health_gain;
   rallying_cry_t( warrior_t& p, const std::string&n, const spell_data_t*s ):
     base_t( p, buff_creator_t( &p, n, s ) ), health_gain( 0 )
-  {}
+  {
+  }
 
   virtual bool trigger( int stacks, double value, double chance, timespan_t duration )
   {
@@ -4314,12 +4282,13 @@ struct rallying_cry_t: public warrior_buff_t<buff_t>
   }
 };
 
-struct last_stand_t: public warrior_buff_t<buff_t>
+struct last_stand_t: public warrior_buff_t < buff_t >
 {
   int health_gain;
   last_stand_t( warrior_t& p, const std::string&n, const spell_data_t*s ):
     base_t( p, buff_creator_t( &p, n, s ) ), health_gain( 0 )
-  {}
+  {
+  }
 
   virtual bool trigger( int stacks, double value, double chance, timespan_t duration )
   {
@@ -4717,7 +4686,7 @@ double warrior_t::composite_player_multiplier( school_e school ) const
 }
 
 // What a name.
-// warrior_t::composite_player_critical_damage_multiplier ====================
+// warrior_t::composite_player_critical_damage_multiplier ======================
 
 double warrior_t::composite_player_critical_damage_multiplier() const
 {
@@ -4858,7 +4827,7 @@ double warrior_t::composite_parry_rating() const
 double warrior_t::composite_parry() const
 {
   double parry = player_t::composite_parry();
-  
+
   if ( buff.ravager -> up() )
     parry += talents.ravager -> effectN( 2 ).percent();
 
@@ -5073,8 +5042,8 @@ void warrior_t::assess_damage( school_e school,
 
   if ( s -> result == RESULT_PARRY && buff.die_by_the_sword -> up() && glyphs.drawn_sword )
     player_t::resource_gain( RESOURCE_RAGE,
-                             glyphs.drawn_sword -> effectN( 1 ).resource( RESOURCE_RAGE ),
-                             gain.drawn_sword_glyph );
+    glyphs.drawn_sword -> effectN( 1 ).resource( RESOURCE_RAGE ),
+    gain.drawn_sword_glyph );
 
   player_t::assess_damage( school, dtype, s );
 
@@ -5115,7 +5084,7 @@ void warrior_t::create_options()
   option_t warrior_options[] =
   {
     opt_int( "initial_rage", initial_rage ),
-    opt_float("arms_rage_mult", arms_rage_mult ),
+    opt_float( "arms_rage_mult", arms_rage_mult ),
     opt_float( "crit_rage_mult", crit_rage_mult ),
     opt_null()
   };
@@ -5282,10 +5251,10 @@ void warrior_t::stance_swap()
     break;
   }
   default:
-  swap = active_stance;
-  break;
+    swap = active_stance;
+    break;
   }
-  
+
   switch ( swap )
   {
   case STANCE_BATTLE: buff.battle_stance -> trigger(); break;
