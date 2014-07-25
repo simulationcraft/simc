@@ -5745,7 +5745,8 @@ void druid_t::create_buffs()
   buff.berserk               = new berserk_buff_t( *this );
   buff.cat_form              = new cat_form_t( *this );
   buff.claws_of_shirvallah   = buff_creator_t( this, "claws_of_shirvallah", find_spell( talent.claws_of_shirvallah -> effectN( 1 ).base_value() ) )
-                               .default_value( find_spell( talent.claws_of_shirvallah -> effectN( 1 ).base_value() ) -> effectN( 5 ).percent() );
+                               .default_value( find_spell( talent.claws_of_shirvallah -> effectN( 1 ).base_value() ) -> effectN( 5 ).percent() )
+                               .add_invalidate( CACHE_VERSATILITY );
   buff.dash                  = buff_creator_t( this, "dash", find_class_spell( "Dash" ) )
                                .cd( timespan_t::zero() );
   buff.frenzied_regeneration = buff_creator_t( this, "frenzied_regeneration", find_class_spell( "Frenzied Regeneration" ) );
