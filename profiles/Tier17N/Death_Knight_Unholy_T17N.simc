@@ -39,6 +39,8 @@ actions+=/run_action_list,name=single_target,if=active_enemies<3
 
 actions.aoe=unholy_blight,if=talent.unholy_blight.enabled
 actions.aoe+=/plague_strike,if=!dot.blood_plague.ticking|!dot.frost_fever.ticking
+actions.aoe+=/blood_boil,if=dot.blood_plague.ticking&talent.plague_leech.enabled,line_cd=28
+actions.aoe+=/blood_boil,if=dot.blood_plague.ticking&talent.unholy_blight.enabled&cooldown.unholy_blight.remains<49,line_cd=28
 actions.aoe+=/summon_gargoyle
 actions.aoe+=/dark_transformation
 actions.aoe+=/blood_tap,if=talent.blood_tap.enabled&buff.shadow_infusion.stack=5

@@ -1086,10 +1086,10 @@ struct dancing_rune_weapon_pet_t : public pet_t
     }
   };
 
-  struct drw_pestilence_t : public drw_spell_t
+  struct drw_blood_boil_t: public drw_spell_t
   {
-    drw_pestilence_t( dancing_rune_weapon_pet_t* p ) :
-      drw_spell_t( "pestilence", p, p -> owner -> find_class_spell( "Pestilence" ) )
+    drw_blood_boil_t( dancing_rune_weapon_pet_t* p ) :
+      drw_spell_t( "blood_boil", p, p -> owner -> find_class_spell( "Blood Boil" ) )
     {
       aoe = -1;
     }
@@ -1231,7 +1231,7 @@ struct dancing_rune_weapon_pet_t : public pet_t
   spell_t*        drw_death_siphon;
   spell_t*        drw_icy_touch;
   spell_t*        drw_outbreak;
-  spell_t*        drw_pestilence;
+  spell_t*        drw_blood_boil;
 
   melee_attack_t* drw_death_strike;
   melee_attack_t* drw_plague_strike;
@@ -1243,8 +1243,8 @@ struct dancing_rune_weapon_pet_t : public pet_t
     drw_blood_plague( nullptr ), drw_frost_fever( nullptr ),
     drw_death_coil( nullptr ),
     drw_death_siphon( nullptr ), drw_icy_touch( nullptr ),
-    drw_outbreak( nullptr ), drw_pestilence( nullptr ),
-    drw_death_strike( nullptr ), 
+    drw_outbreak( nullptr ), drw_blood_boil( nullptr ),
+    drw_death_strike( nullptr ),
     drw_plague_strike( nullptr ),
     drw_soul_reaper( nullptr ), drw_melee( nullptr )
   {
@@ -1285,7 +1285,7 @@ struct dancing_rune_weapon_pet_t : public pet_t
     drw_death_siphon  = new drw_death_siphon_t ( this );
     drw_icy_touch     = new drw_icy_touch_t    ( this );
     drw_outbreak      = new drw_outbreak_t     ( this );
-    drw_pestilence    = new drw_pestilence_t   ( this );
+    drw_blood_boil    = new drw_blood_boil_t   ( this );
 
     drw_death_strike  = new drw_death_strike_t ( this );
     drw_plague_strike = new drw_plague_strike_t( this );
@@ -3828,15 +3828,15 @@ struct outbreak_t : public death_knight_spell_t
   }
 };
 
-// Pestilence ===============================================================
+// Blood Boil ==============================================================
 
 
-struct pestilence_spread_t : public death_knight_spell_t
+struct blood_boil_spread_t : public death_knight_spell_t
 {
   dot_t *bp, *ff, *np;
 
-  pestilence_spread_t( death_knight_t* p ) :
-    death_knight_spell_t( "pestilence_spread", p, spell_data_t::nil() ),
+  blood_boil_spread_t( death_knight_t* p ) :
+    death_knight_spell_t( "blood_boil_spread", p, spell_data_t::nil() ),
     bp( 0 ), ff( 0 ), np( 0 )
   {
     harmful = may_miss = proc = callbacks = may_crit = may_dodge = may_parry = may_glance = false;
@@ -3963,13 +3963,13 @@ struct pestilence_spread_t : public death_knight_spell_t
   }
 };
 
-struct pestilence_t : public death_knight_spell_t
+struct blood_boil_t : public death_knight_spell_t
 {
-  pestilence_spread_t* spread;
+  blood_boil_spread_t* spread;
 
-  pestilence_t( death_knight_t* p, const std::string& options_str ) :
-    death_knight_spell_t( "pestilence", p, p -> find_class_spell( "Pestilence" ) ),
-    spread( new pestilence_spread_t( p ) )
+  blood_boil_t( death_knight_t* p, const std::string& options_str ) :
+    death_knight_spell_t( "blood_boil", p, p -> find_class_spell( "Blood Boil" ) ),
+    spread( new blood_boil_spread_t( p ) )
   {
     parse_options( NULL, options_str );
 
@@ -4002,7 +4002,7 @@ struct pestilence_t : public death_knight_spell_t
     death_knight_spell_t::execute();
 
     if ( p() -> buffs.dancing_rune_weapon -> check() )
-      p() -> pets.dancing_rune_weapon -> drw_pestilence -> execute();
+      p() -> pets.dancing_rune_weapon -> drw_blood_boil -> execute();
 
     if ( p() -> buffs.crimson_scourge -> up() )
       p() -> buffs.crimson_scourge -> expire();
@@ -4010,7 +4010,7 @@ struct pestilence_t : public death_knight_spell_t
     if ( result_is_hit( execute_state -> result ) )
     {
       // Just use "main" target for the spread selection, spread logic is fully
-      // implemented in pestilence_spread_t
+      // implemented in blood_boil_spread_t
       spread -> target = target;
       spread -> schedule_execute();
     }
@@ -4860,12 +4860,12 @@ action_t* death_knight_t::create_action( const std::string& name, const std::str
   if ( name == "soul_reaper"              ) return new soul_reaper_t              ( this, options_str );
   if ( name == "plague_leech"             ) return new plague_leech_t             ( this, options_str );
   if ( name == "icebound_fortitude"       ) return new icebound_fortitude_t       ( this, options_str );
+  if ( name == "blood_boil"               ) return new blood_boil_t               ( this, options_str );
 
   // Blood Actions
   if ( name == "blood_tap"                ) return new blood_tap_t                ( this, options_str );
   if ( name == "dark_command"             ) return new dark_command_t             ( this, options_str );
   if ( name == "dancing_rune_weapon"      ) return new dancing_rune_weapon_t      ( this, options_str );
-  if ( name == "pestilence"               ) return new pestilence_t               ( this, options_str );
   if ( name == "rune_tap"                 ) return new rune_tap_t                 ( this, options_str );
   if ( name == "vampiric_blood"           ) return new vampiric_blood_t           ( this, options_str );
 
@@ -5622,8 +5622,8 @@ void death_knight_t::init_action_list()
 
       //AoE
       aoe -> add_talent( this, "Unholy Blight" );
-      aoe -> add_action( this, "Pestilence", "if=dot.blood_plague.ticking&talent.plague_leech.enabled,line_cd=28" );
-      aoe -> add_action( this, "Pestilence", "if=dot.blood_plague.ticking&talent.unholy_blight.enabled&cooldown.unholy_blight.remains<49,line_cd=28" );
+      aoe -> add_action( this, "Blood Boil", "if=dot.blood_plague.ticking&talent.plague_leech.enabled,line_cd=28" );
+      aoe -> add_action( this, "Blood Boil", "if=dot.blood_plague.ticking&talent.unholy_blight.enabled&cooldown.unholy_blight.remains<49,line_cd=28" );
       aoe -> add_action( this, "Howling Blast" );
       aoe -> add_talent( this, "Blood Tap", "if=buff.blood_charge.stack>10" );
       aoe -> add_action( this, "Frost Strike", "if=runic_power>76" );
@@ -5706,8 +5706,8 @@ void death_knight_t::init_action_list()
       //AoE
       aoe -> add_talent( this, "Unholy Blight" );
       aoe -> add_action( this, "Plague Strike", "if=!dot.blood_plague.ticking|!dot.frost_fever.ticking" );
-      aoe -> add_action( this, "Pestilence", "if=dot.blood_plague.ticking&talent.plague_leech.enabled,line_cd=28" );
-      aoe -> add_action( this, "Pestilence", "if=dot.blood_plague.ticking&talent.unholy_blight.enabled&cooldown.unholy_blight.remains<49,line_cd=28" );
+      aoe -> add_action( this, "Blood Boil", "if=dot.blood_plague.ticking&talent.plague_leech.enabled,line_cd=28" );
+      aoe -> add_action( this, "Blood Boil", "if=dot.blood_plague.ticking&talent.unholy_blight.enabled&cooldown.unholy_blight.remains<49,line_cd=28" );
       aoe -> add_action( this, "Summon Gargoyle" );
       aoe -> add_action( this, "Dark Transformation" );
       aoe -> add_talent( this, "Blood Tap", "if=buff.shadow_infusion.stack=5" );

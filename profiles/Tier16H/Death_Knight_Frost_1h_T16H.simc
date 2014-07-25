@@ -39,6 +39,8 @@ actions+=/run_action_list,name=aoe,if=active_enemies>=3
 actions+=/run_action_list,name=single_target,if=active_enemies<3
 
 actions.aoe=unholy_blight,if=talent.unholy_blight.enabled
+actions.aoe+=/blood_boil,if=dot.blood_plague.ticking&talent.plague_leech.enabled,line_cd=28
+actions.aoe+=/blood_boil,if=dot.blood_plague.ticking&talent.unholy_blight.enabled&cooldown.unholy_blight.remains<49,line_cd=28
 actions.aoe+=/howling_blast
 actions.aoe+=/blood_tap,if=talent.blood_tap.enabled&buff.blood_charge.stack>10
 actions.aoe+=/frost_strike,if=runic_power>76
