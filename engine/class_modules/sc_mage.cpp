@@ -4129,6 +4129,7 @@ action_t* mage_t::create_action( const std::string& name,
   if ( name == "supernova"         ) return new               supernova_t( this, options_str );
   if ( name == "blast_wave"        ) return new              blast_wave_t( this, options_str );
   if ( name == "ice_nova"          ) return new                ice_nova_t( this, options_str );
+  /*
   {
       if ( talents.supernova -> ok() )
           return new supernova_t( this, options_str );
@@ -4137,7 +4138,7 @@ action_t* mage_t::create_action( const std::string& name,
       if ( talents.ice_nova -> ok() )
           return new ice_nova_t( this, options_str );
   }
-
+  */
   if ( name == "time_warp"         ) return new               time_warp_t( this, options_str );
   if ( name == "water_elemental"   ) return new  summon_water_elemental_t( this, options_str );
   if ( name == "prismatic_crystal" ) return new prismatic_crystal_t( this, options_str );
