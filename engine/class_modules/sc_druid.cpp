@@ -20,6 +20,7 @@ namespace { // UNNAMED NAMESPACE
     Damage check:
       Thrash (both forms)
       Swipe
+    pvp_2pc_melee
 
     = Balance =
     PvP bonuses
@@ -30,6 +31,7 @@ namespace { // UNNAMED NAMESPACE
     Verify stuff (particularly DoC)
     Might of Ursoc
     Stamina, multistrike, agi in DTPS scaling
+    PvP bonuses
 
     = Restoration =
     Err'thing
@@ -170,6 +172,7 @@ public:
     // Feral
     buff_t* berserk;
     buff_t* bloodtalons;
+    buff_t* claws_of_shirvallah;
     buff_t* feral_fury;
     buff_t* feral_rage;
     buff_t* king_of_the_jungle;
@@ -306,6 +309,7 @@ public:
     const spell_data_t* maim;
     const spell_data_t* maul;
     const spell_data_t* savage_roar;
+    const spell_data_t* savagery;
     const spell_data_t* skull_bash;
     const spell_data_t* survival_instincts;
     const spell_data_t* stampeding_roar;
@@ -460,22 +464,24 @@ public:
     const spell_data_t* dream_of_cenarius;
     const spell_data_t* natures_vigil;
 
-    // Touch of Elune (Level 100 Slot 1)
+    // Balance 100 Talents
     const spell_data_t* euphoria;
-    const spell_data_t* lunar_inspiration;
-    const spell_data_t* guardian_of_elune;
-    const spell_data_t* moment_of_clarity;
-
-    // Will of Malfurion (Level 100 Slot 2)
     const spell_data_t* stellar_flare;
-    const spell_data_t* bloodtalons;
-    const spell_data_t* pulverize;
-    const spell_data_t* germination;
-
-    // Might of Malorne (Level 100 Slot 3)
     const spell_data_t* balance_of_power;
-    const spell_data_t* savagery;
+
+    // Feral 100 Talents
+    const spell_data_t* lunar_inspiration;
+    const spell_data_t* bloodtalons;
+    const spell_data_t* claws_of_shirvallah;
+
+    // Guardian 100 Talents
+    const spell_data_t* guardian_of_elune;
+    const spell_data_t* pulverize;
     const spell_data_t* bristling_fur;
+
+    // Restoration 100 Talents
+    const spell_data_t* moment_of_clarity;
+    const spell_data_t* germination;
     const spell_data_t* rampant_growth;
 
   } talent;
@@ -563,6 +569,9 @@ public:
   virtual double    composite_attribute( attribute_e attr ) const;
   virtual double    composite_attribute_multiplier( attribute_e attr ) const;
   virtual double    matching_gear_multiplier( attribute_e attr ) const;
+  virtual double    composite_damage_versatility() const;
+  virtual double    composite_heal_versatility() const;
+  virtual double    composite_mitigation_versatility() const;
   virtual double    composite_parry() const { return 0; }
   virtual double    composite_block() const { return 0; }
   virtual double    composite_crit_avoidance() const;
@@ -1363,6 +1372,9 @@ struct cat_form_t : public druid_buff_t< buff_t >
     add_invalidate( CACHE_AGILITY );
     add_invalidate( CACHE_ATTACK_POWER );
     add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
+
+    if ( druid.talent.claws_of_shirvallah -> ok() )
+      quiet = true;
   }
 
   virtual void expire_override()
@@ -1370,6 +1382,8 @@ struct cat_form_t : public druid_buff_t< buff_t >
     base_t::expire_override();
 
     druid.main_hand_weapon = druid.caster_form_weapon;
+
+    druid.buff.claws_of_shirvallah -> expire();
 
     sim -> auras.critical_strike -> decrement();
   }
@@ -1382,6 +1396,9 @@ struct cat_form_t : public druid_buff_t< buff_t >
     swap_melee( druid.cat_melee_attack, druid.cat_weapon );
 
     base_t::start( stacks, value, duration );
+
+    if ( druid.talent.claws_of_shirvallah -> ok() )
+      druid.buff.claws_of_shirvallah -> start();
 
     if ( ! sim -> overrides.critical_strike )
       sim -> auras.critical_strike -> trigger();
@@ -1897,7 +1914,7 @@ public:
   void trigger_glyph_of_savage_roar()
   {
     // Bail out if we have Savagery
-    if ( p() -> talent.savagery -> ok() )
+    if ( p() -> glyph.savagery -> ok() )
       return;
 
     timespan_t duration = p() -> spec.savage_roar -> duration() + timespan_t::from_seconds( 6.0 ) * 5;
@@ -2022,10 +2039,7 @@ public:
     if ( p() -> buff.cat_form -> check() && dbc::is_school( s -> action -> school, SCHOOL_PHYSICAL ) )
     { // Avoid using value() to prevent skewing benefit_pct.
       pm *= 1.0 + p() -> buff.tigers_fury -> check() * p() -> buff.tigers_fury -> default_value;
-      if ( p() -> talent.savagery -> ok() )
-        pm *= 1.0 + p() -> talent.savagery -> effectN( 1 ).percent();
-      else
-        pm *= 1.0 + p() -> buff.savage_roar -> check() * p() -> buff.savage_roar -> default_value;
+      pm *= 1.0 + p() -> buff.savage_roar -> check() * p() -> buff.savage_roar -> default_value;
     }
 
     return pm;
@@ -2422,7 +2436,7 @@ struct savage_roar_t : public cat_attack_t
 
   virtual bool ready()
   {
-    if ( p() -> talent.savagery -> ok() )
+    if ( p() -> glyph.savagery -> ok() )
       return false;
     else if ( duration() < p() -> buff.savage_roar -> remains() )
       return false;
@@ -3417,7 +3431,8 @@ struct healing_touch_t : public druid_heal_t
 
     if ( ! p() -> buff.natures_swiftness -> up() &&
          ! p() -> buff.predatory_swiftness -> up() &&
-         ! ( p() -> buff.dream_of_cenarius -> check() && p() -> specialization() == DRUID_GUARDIAN ) )
+         ! ( p() -> buff.dream_of_cenarius -> check() && p() -> specialization() == DRUID_GUARDIAN ) &&
+         ! p() -> talent.claws_of_shirvallah -> ok() )
     {
       p() -> buff.cat_form         -> expire();
       p() -> buff.bear_form        -> expire();
@@ -4853,7 +4868,7 @@ struct savage_defense_t : public druid_spell_t
   {
     harmful = false;
     cooldown -> duration = timespan_t::from_seconds( 9.0 );
-    cooldown -> charges = 3;
+    cooldown -> charges = 2;
     use_off_gcd = true;
 
     if ( p -> sets.has_set_bonus( SET_T16_2PC_TANK ) )
@@ -5330,7 +5345,8 @@ action_t* druid_t::create_action( const std::string& name,
   if ( name == "berserk"                ) return new                berserk_t( this, options_str );
   if ( name == "bear_form"              ) return new              bear_form_t( this, options_str );
   if ( name == "bristling_fur"          ) return new          bristling_fur_t( this, options_str );
-  if ( name == "cat_form"               ) return new               cat_form_t( this, options_str );
+  if ( name == "cat_form" ||
+       name == "claws_of_shirvallah"    ) return new               cat_form_t( this, options_str );
   if ( name == "celestial_alignment" ||
        name == "ca"                     ) return new    celestial_alignment_t( this, options_str );
   if ( name == "cenarion_ward"          ) return new          cenarion_ward_t( this, options_str );
@@ -5509,50 +5525,52 @@ void druid_t::init_spells()
   spec.wild_growth             = find_specialization_spell( "Wild Growth" );
 
   // Talents
-  talent.feline_swiftness   = find_talent_spell( "Feline Swiftness" );
-  talent.displacer_beast    = find_talent_spell( "Displacer Beast" );
-  talent.wild_charge        = find_talent_spell( "Wild Charge" );
+  talent.feline_swiftness    = find_talent_spell( "Feline Swiftness" );
+  talent.displacer_beast     = find_talent_spell( "Displacer Beast" );
+  talent.wild_charge         = find_talent_spell( "Wild Charge" );
 
-  talent.yseras_gift        = find_talent_spell( "Ysera's Gift" );
-  talent.renewal            = find_talent_spell( "Renewal" );
-  talent.cenarion_ward      = find_talent_spell( "Cenarion Ward" );
+  talent.yseras_gift         = find_talent_spell( "Ysera's Gift" );
+  talent.renewal             = find_talent_spell( "Renewal" );
+  talent.cenarion_ward       = find_talent_spell( "Cenarion Ward" );
 
-  talent.faerie_swarm       = find_talent_spell( "Faerie Swarm" );
-  talent.mass_entanglement  = find_talent_spell( "Mass Entanglement" );
-  talent.typhoon            = find_talent_spell( "Typhoon" );
+  talent.faerie_swarm        = find_talent_spell( "Faerie Swarm" );
+  talent.mass_entanglement   = find_talent_spell( "Mass Entanglement" );
+  talent.typhoon             = find_talent_spell( "Typhoon" );
 
-  talent.soul_of_the_forest = find_talent_spell( "Soul of the Forest" );
-  talent.incarnation_chosen = find_talent_spell( "Incarnation: Chosen of Elune" );
-  talent.incarnation_king   = find_talent_spell( "Incarnation: King of the Jungle" );
-  talent.incarnation_son    = find_talent_spell( "Incarnation: Son of Ursoc" );
-  talent.incarnation_tree   = find_talent_spell( "Incarnation: Tree of Life" );
-  talent.force_of_nature    = find_talent_spell( "Force of Nature" );
+  talent.soul_of_the_forest  = find_talent_spell( "Soul of the Forest" );
+  talent.incarnation_chosen  = find_talent_spell( "Incarnation: Chosen of Elune" );
+  talent.incarnation_king    = find_talent_spell( "Incarnation: King of the Jungle" );
+  talent.incarnation_son     = find_talent_spell( "Incarnation: Son of Ursoc" );
+  talent.incarnation_tree    = find_talent_spell( "Incarnation: Tree of Life" );
+  talent.force_of_nature     = find_talent_spell( "Force of Nature" );
 
-  talent.incapacitating_roar  = find_talent_spell( "Incapacitating Roar" );
-  talent.ursols_vortex      = find_talent_spell( "Ursol's Vortex" );
-  talent.mighty_bash        = find_talent_spell( "Mighty Bash" );
+  talent.incapacitating_roar = find_talent_spell( "Incapacitating Roar" );
+  talent.ursols_vortex       = find_talent_spell( "Ursol's Vortex" );
+  talent.mighty_bash         = find_talent_spell( "Mighty Bash" );
 
-  talent.heart_of_the_wild  = find_talent_spell( "Heart of the Wild" );
-  talent.dream_of_cenarius  = find_talent_spell( "Dream of Cenarius" );
-  talent.natures_vigil      = find_talent_spell( "Nature's Vigil" );
+  talent.heart_of_the_wild   = find_talent_spell( "Heart of the Wild" );
+  talent.dream_of_cenarius   = find_talent_spell( "Dream of Cenarius" );
+  talent.natures_vigil       = find_talent_spell( "Nature's Vigil" );
 
-    // Touch of Elune (Level 100 Slot 1)
-  talent.euphoria           = find_talent_spell( "Euphoria" );
-  talent.lunar_inspiration  = find_talent_spell( "Lunar Inspiration" );
-  talent.guardian_of_elune  = find_talent_spell( "Guardian of Elune" );
-  talent.moment_of_clarity  = find_talent_spell( "Moment of Clarity" );
+  // Balance 100 Talents
+  talent.euphoria            = find_talent_spell( "Euphoria" );
+  talent.stellar_flare       = find_talent_spell( "Stellar Flare" );
+  talent.balance_of_power    = find_talent_spell( "Balance of Power" );
 
-  // Will of Malfurion (Level 100 Slot 2)
-  talent.stellar_flare      = find_talent_spell( "Stellar Flare" );
-  talent.bloodtalons        = find_talent_spell( "Bloodtalons" );
-  talent.pulverize          = find_talent_spell( "Pulverize" );
-  talent.germination        = find_talent_spell( "Germination" );
+  // Feral 100 Talents
+  talent.lunar_inspiration   = find_talent_spell( "Lunar Inspiration" );
+  talent.bloodtalons         = find_talent_spell( "Bloodtalons" );
+  talent.claws_of_shirvallah = find_talent_spell( "Claws of Shirvallah" );
+  
+  // Guardian 100 Talents
+  talent.guardian_of_elune   = find_talent_spell( "Guardian of Elune" );
+  talent.pulverize           = find_talent_spell( "Pulverize" );
+  talent.bristling_fur       = find_talent_spell( "Bristling Fur" );
 
-  // Might of Malorne (Level 100 Slot 3)
-  talent.balance_of_power   = find_talent_spell( "Balance of Power" );
-  talent.savagery           = find_talent_spell( "Savagery" );
-  talent.bristling_fur      = find_talent_spell( "Bristling Fur" );
-  talent.rampant_growth     = find_talent_spell( "Rampant Growth" );
+  // Restoration 100 Talents
+  talent.moment_of_clarity   = find_talent_spell( "Moment of Clarity" );
+  talent.germination         = find_talent_spell( "Germination" );
+  talent.rampant_growth      = find_talent_spell( "Rampant Growth" );
 
   // Active actions
   if ( spec.leader_of_the_pack -> ok() )
@@ -5653,6 +5671,7 @@ void druid_t::init_spells()
   glyph.regrowth              = find_glyph_spell( "Glyph of Regrowth" );
   glyph.rejuvenation          = find_glyph_spell( "Glyph of Rejuvenation" );
   glyph.savage_roar           = find_glyph_spell( "Glyph of Savage Roar" );
+  glyph.savagery              = find_glyph_spell( "Glyph of Savagery" );
   glyph.skull_bash            = find_glyph_spell( "Glyph of Skull Bash" );
   glyph.shapemender           = find_glyph_spell( "Glyph of the Shapemender" );
   glyph.stampeding_roar       = find_glyph_spell( "Glyph of Stampeding Roar" );
@@ -5725,6 +5744,9 @@ void druid_t::create_buffs()
   buff.bear_form             = new bear_form_t( *this );
   buff.berserk               = new berserk_buff_t( *this );
   buff.cat_form              = new cat_form_t( *this );
+  buff.claws_of_shirvallah   = buff_creator_t( this, "claws_of_shirvallah", find_spell( talent.claws_of_shirvallah -> effectN( 1 ).base_value() ) )
+                               .default_value( find_spell( talent.claws_of_shirvallah -> effectN( 1 ).base_value() ) -> effectN( 5 ).percent() )
+                               .add_invalidate( CACHE_VERSATILITY );
   buff.dash                  = buff_creator_t( this, "dash", find_class_spell( "Dash" ) )
                                .cd( timespan_t::zero() );
   buff.frenzied_regeneration = buff_creator_t( this, "frenzied_regeneration", find_class_spell( "Frenzied Regeneration" ) );
@@ -5807,7 +5829,7 @@ void druid_t::create_buffs()
                                .chance( 1.0 )
                                .duration( find_specialization_spell( "Tiger's Fury" ) -> duration() + perk.enhanced_tigers_fury -> effectN( 1 ).time_value() );
   buff.savage_roar           = buff_creator_t( this, "savage_roar", find_specialization_spell( "Savage Roar" ) )
-                               .default_value( find_specialization_spell( "Savage Roar" ) -> effectN( 2 ).percent() );
+                               .default_value( find_specialization_spell( "Savage Roar" ) -> effectN( 2 ).percent() - glyph.savagery -> effectN( 2 ).percent() );
   buff.predatory_swiftness   = buff_creator_t( this, "predatory_swiftness", spec.predatory_swiftness -> ok() ? find_spell( 69369 ) : spell_data_t::not_found() );
   buff.tier15_4pc_melee      = buff_creator_t( this, "tier15_4pc_melee", find_spell( 138358 ) );
   buff.feral_fury            = buff_creator_t( this, "feral_fury", find_spell( 144865 ) ); // tier16_2pc_melee
@@ -6707,13 +6729,49 @@ double druid_t::matching_gear_multiplier( attribute_e attr ) const
   return spec.leather_specialization -> effectN( idx ).percent();
 }
 
+// druid_t::composite_damage_versatility =========================================
+
+double druid_t::composite_damage_versatility() const
+{
+  double dv = player_t::composite_damage_versatility();
+
+  if ( buff.claws_of_shirvallah -> check() )
+    dv += buff.claws_of_shirvallah -> default_value;
+
+  return dv;
+}
+
+// druid_t::composite_heal_versatility =========================================
+
+double druid_t::composite_heal_versatility() const
+{
+  double hv = player_t::composite_heal_versatility();
+
+  if ( buff.claws_of_shirvallah -> check() )
+    hv += buff.claws_of_shirvallah -> default_value;
+
+  return hv;
+}
+
+// druid_t::composite_mitigation_versatility =========================================
+
+double druid_t::composite_mitigation_versatility() const
+{
+  double mv = player_t::composite_mitigation_versatility();
+
+  if ( buff.claws_of_shirvallah -> check() )
+    mv += buff.claws_of_shirvallah -> default_value;
+
+  return mv;
+}
+
 // druid_t::composite_crit_avoidance =============================================
 
 double druid_t::composite_crit_avoidance() const
 {
   double c = player_t::composite_crit_avoidance();
 
-  c += spec.thick_hide -> effectN( 1 ).percent();
+  c += spec.thick_hide -> effectN( 2 ).percent();
 
   return c;
 }
@@ -7129,7 +7187,7 @@ void druid_t::assess_damage( school_e school,
       proc.primal_fury -> occur();
      }
     if ( dbc::get_school_mask( school ) & SCHOOL_MAGIC_MASK )
-      s -> result_amount *= 1.0 + spec.thick_hide -> effectN( 3 ).percent();
+      s -> result_amount *= 1.0 + spec.thick_hide -> effectN( 1 ).percent();
   }
 
   if ( buff.cenarion_ward -> up() && s -> result_amount > 0 )
