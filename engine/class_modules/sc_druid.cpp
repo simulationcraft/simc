@@ -13,7 +13,6 @@ namespace { // UNNAMED NAMESPACE
  /* WoD -- TODO:
     = General =
     Fix Force of Nature (summons fine, but treants take no actions)
-    What parts of Thick Hide apply to every spec vs Guardian only
 
     = Feral =
     Tweak LI implementation so Feral can use normal moonfire
@@ -32,6 +31,7 @@ namespace { // UNNAMED NAMESPACE
     Might of Ursoc
     Stamina, multistrike, agi in DTPS scaling
     PvP bonuses
+    Guardian of Elune change
 
     = Restoration =
     Err'thing
