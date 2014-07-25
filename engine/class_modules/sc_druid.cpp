@@ -464,22 +464,24 @@ public:
     const spell_data_t* dream_of_cenarius;
     const spell_data_t* natures_vigil;
 
-    // Touch of Elune (Level 100 Slot 1)
+    // Balance 100 Talents
     const spell_data_t* euphoria;
-    const spell_data_t* lunar_inspiration;
-    const spell_data_t* guardian_of_elune;
-    const spell_data_t* moment_of_clarity;
-
-    // Will of Malfurion (Level 100 Slot 2)
     const spell_data_t* stellar_flare;
-    const spell_data_t* bloodtalons;
-    const spell_data_t* pulverize;
-    const spell_data_t* germination;
-
-    // Might of Malorne (Level 100 Slot 3)
     const spell_data_t* balance_of_power;
+
+    // Feral 100 Talents
+    const spell_data_t* lunar_inspiration;
+    const spell_data_t* bloodtalons;
     const spell_data_t* claws_of_shirvallah;
+
+    // Guardian 100 Talents
+    const spell_data_t* guardian_of_elune;
+    const spell_data_t* pulverize;
     const spell_data_t* bristling_fur;
+
+    // Restoration 100 Talents
+    const spell_data_t* moment_of_clarity;
+    const spell_data_t* germination;
     const spell_data_t* rampant_growth;
 
   } talent;
@@ -5549,22 +5551,24 @@ void druid_t::init_spells()
   talent.dream_of_cenarius   = find_talent_spell( "Dream of Cenarius" );
   talent.natures_vigil       = find_talent_spell( "Nature's Vigil" );
 
-  // Touch of Elune (Level 100 Slot 1)
+  // Balance 100 Talents
   talent.euphoria            = find_talent_spell( "Euphoria" );
-  talent.lunar_inspiration   = find_talent_spell( "Lunar Inspiration" );
-  talent.guardian_of_elune   = find_talent_spell( "Guardian of Elune" );
-  talent.moment_of_clarity   = find_talent_spell( "Moment of Clarity" );
-
-  // Will of Malfurion (Level 100 Slot 2)
   talent.stellar_flare       = find_talent_spell( "Stellar Flare" );
-  talent.bloodtalons         = find_talent_spell( "Bloodtalons" );
-  talent.pulverize           = find_talent_spell( "Pulverize" );
-  talent.germination         = find_talent_spell( "Germination" );
-
-  // Might of Malorne (Level 100 Slot 3)
   talent.balance_of_power    = find_talent_spell( "Balance of Power" );
+
+  // Feral 100 Talents
+  talent.lunar_inspiration   = find_talent_spell( "Lunar Inspiration" );
+  talent.bloodtalons         = find_talent_spell( "Bloodtalons" );
   talent.claws_of_shirvallah = find_talent_spell( "Claws of Shirvallah" );
+  
+  // Guardian 100 Talents
+  talent.guardian_of_elune   = find_talent_spell( "Guardian of Elune" );
+  talent.pulverize           = find_talent_spell( "Pulverize" );
   talent.bristling_fur       = find_talent_spell( "Bristling Fur" );
+
+  // Restoration 100 Talents
+  talent.moment_of_clarity   = find_talent_spell( "Moment of Clarity" );
+  talent.germination         = find_talent_spell( "Germination" );
   talent.rampant_growth      = find_talent_spell( "Rampant Growth" );
 
   // Active actions
