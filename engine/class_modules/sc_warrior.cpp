@@ -530,7 +530,7 @@ public:
   {
     //Head Long Rush reduces the cooldown depending on the amount of haste.
     if ( headlongrush )
-      cd_duration = cooldown -> duration * p() -> cache.attack_haste();
+      cd_duration = ab::cooldown -> duration * p() -> cache.attack_haste();
 
     ab::update_ready( cd_duration );
   }
