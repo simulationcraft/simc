@@ -337,6 +337,8 @@ public:
     const spell_data_t* mirror_image;
     const spell_data_t* incanters_flow;
     const spell_data_t* prismatic_crystal;
+    const spell_data_t* thermal_void;
+
   } talents;
 
   struct pyro_switch_t
@@ -2767,6 +2769,11 @@ struct ice_lance_t : public mage_spell_t
 
     mage_spell_t::execute();
 
+    if ( p() -> talents.thermal_void -> ok() && p() -> buffs.icy_veins -> up() )
+      p() -> buffs.icy_veins -> extend_duration( p(), timespan_t::from_seconds( p() -> talents.thermal_void -> effectN( 1 ).base_value() ) );
+
+
+
     // Begin casting all Icicles at the target, beginning 0.25 seconds after the
     // Ice Lance cast with remaining Icicles launching at intervals of 0.75
     // seconds, both values adjusted by haste. Casting continues until all
@@ -4129,16 +4136,6 @@ action_t* mage_t::create_action( const std::string& name,
   if ( name == "supernova"         ) return new               supernova_t( this, options_str );
   if ( name == "blast_wave"        ) return new              blast_wave_t( this, options_str );
   if ( name == "ice_nova"          ) return new                ice_nova_t( this, options_str );
-  /*
-  {
-      if ( talents.supernova -> ok() )
-          return new supernova_t( this, options_str );
-      if ( talents.blast_wave -> ok() )
-          return new blast_wave_t( this, options_str );
-      if ( talents.ice_nova -> ok() )
-          return new ice_nova_t( this, options_str );
-  }
-  */
   if ( name == "time_warp"         ) return new               time_warp_t( this, options_str );
   if ( name == "water_elemental"   ) return new  summon_water_elemental_t( this, options_str );
   if ( name == "prismatic_crystal" ) return new prismatic_crystal_t( this, options_str );
@@ -4213,6 +4210,7 @@ void mage_t::init_spells()
   talents.mirror_image       = find_talent_spell( "Mirror Image" );
   talents.incanters_flow     = find_talent_spell( "Incanter's Flow" );
   talents.prismatic_crystal  = find_talent_spell( "Prismatic Crystal" );
+  talents.thermal_void       = find_talent_spell( "Thermal Void" ); // BUG: Not in spell lists, have to manually find using spell ID
 
 
   // Passive Spells
@@ -4220,6 +4218,7 @@ void mage_t::init_spells()
   passives.nether_attunement = ( find_spell( 117957 ) -> is_level( level ) ) ? find_spell( 117957 ) : spell_data_t::not_found();
   passives.shatter           = find_specialization_spell( "Shatter" ); // BUG: Doesn't work at present as Shatter isn't tagged as a spec of Frost.
   passives.shatter           = ( find_spell( 12982 ) -> is_level( level ) ) ? find_spell( 12982 ) : spell_data_t::not_found();
+
 
   // Perks - Fire
   perks.enhanced_inferno_blast               = find_perk_spell( "Enhanced Inferno Blast" );
