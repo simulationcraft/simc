@@ -3428,7 +3428,7 @@ class SetBonusListGenerator(DataGenerator):
                     if found:
                         if entry['spec'] > 0 and set_spec_arr_derived[0] != entry['spec']:
                             found = False
-                        elif set_spec_arr_derived != entry['derived_specs']:
+                        elif entry['spec'] == 0 and set_spec_arr_derived != entry['derived_specs']:
                             found = False
 
                     if found:
