@@ -405,9 +405,12 @@ private:
 public:
   typedef hunter_action_t base_t;
 
+  bool lone_wolf;
+
   hunter_action_t( const std::string& n, hunter_t* player,
                    const spell_data_t* s = spell_data_t::nil() ):
-                   ab( n, player, s )
+                   ab( n, player, s ),
+                   lone_wolf( ab::data().affected_by( player -> talents.lone_wolf -> effectN( 1 ) ) )
   {
   }
 
@@ -425,6 +428,16 @@ public:
   hunter_td_t* td( player_t* t ) const
   {
     return p() -> get_target_data( t );
+  }
+
+  virtual double action_multiplier() const
+  {
+    double am = ab::action_multiplier();
+
+    if ( lone_wolf )
+      am *= 1.0 + p() -> talents.lone_wolf -> effectN( 1 ).percent();
+
+    return am;
   }
 
   virtual double cost() const
@@ -3717,9 +3730,6 @@ double hunter_t::composite_player_multiplier( school_e school ) const
   if ( mastery.essence_of_the_viper -> ok() &&
        dbc::get_school_mask( school ) & SCHOOL_MAGIC_MASK )
        m *= 1.0 + cache.mastery_value();
-
-  if ( talents.lone_wolf -> ok() && !active.pet )
-    m *= 1.0 + talents.lone_wolf -> effectN( 1 ).percent();
 
   if ( buffs.beast_within -> up() )
     m *= 1.0 + buffs.beast_within -> data().effectN( 2 ).percent();
