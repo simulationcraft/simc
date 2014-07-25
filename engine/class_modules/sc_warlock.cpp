@@ -7,15 +7,15 @@
 
 // ==========================================================================
 //
-// TODO: complete WoD overhaul
-// Pet damage is completely fucked.
-// Demonology grimoire of sacrifice: http://wod.wowhead.com/spell=156656
+// TODO:
+// Update Grimoire of Sacrifice
+// Remove old grimoire of sacrifice stuff
+// Grimoire of Synergy
 // Level 100 talents: cataclysm, demonic servitude
-// Grimoire of sacrifice interaction with fire and brimstone, GoSac FnB
+// Whitelist SB:Haunt, fix stuff
 // Update action lists
 // void consume_tick_resource( dot_t* d ) - find out why this causes drain
 // ---soul to ignite with hell fire.
-// fix charred_embers usage once we get info about FaB. Don't use aoe until.
 
 // ==========================================================================
 namespace { // unnamed namespace
