@@ -4014,7 +4014,10 @@ struct bristling_fur_t : public druid_spell_t
 struct cat_form_t : public druid_spell_t
 {
   cat_form_t( druid_t* player, const std::string& options_str ) :
-    druid_spell_t( "cat_form", player, player -> find_class_spell( "Cat Form" ), options_str )
+    druid_spell_t( "cat_form", player, player -> talent.claws_of_shirvallah -> ok() ?
+    player -> find_spell( player -> talent.claws_of_shirvallah -> effectN( 1 ).base_value() ) : 
+    player -> find_class_spell( "Cat Form" ), 
+    options_str )
   {
     harmful = false;
     min_gcd = timespan_t::from_seconds( 1.5 );
