@@ -3769,10 +3769,9 @@ struct druid_spell_t : public druid_spell_base_t<spell_t>
 
   virtual void execute()
   {
-    p() -> balance_tracker();
-
     if( p() -> specialization() == DRUID_BALANCE )
     {
+      p() -> balance_tracker();
       if( sim -> log || sim -> debug )
       {
         sim -> out_debug.printf( "Eclipse Position: %f Eclipse Direction: %f Time till next Eclipse Change: %f Time to next lunar %f Time to next Solar %f Time Till Maximum Eclipse: %f",
@@ -3825,7 +3824,8 @@ struct druid_spell_t : public druid_spell_base_t<spell_t>
 
   virtual bool ready()
   {
-    p() -> balance_tracker();
+    if ( p() -> specialization() == DRUID_BALANCE )
+      p() -> balance_tracker();
 
     return base_t::ready();
   }
