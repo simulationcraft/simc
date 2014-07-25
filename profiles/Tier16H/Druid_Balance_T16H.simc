@@ -16,7 +16,7 @@ spec=balance
 # Executed before combat begins. Accepts non-harmful actions only.
 
 actions.precombat=flask,type=warm_sun
-actions.precombat+=/food,type=mogu_fish_stew
+actions.precombat+=/food,type=pandaren_treasure_noodle_soup
 actions.precombat+=/mark_of_the_wild,if=!aura.str_agi_int.up
 actions.precombat+=/moonkin_form
 # Snapshot raid buffed stats before combat begins and pre-potting is done.

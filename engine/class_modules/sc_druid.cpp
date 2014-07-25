@@ -5922,21 +5922,27 @@ void druid_t::apl_precombat()
   }
 
   // Food
-  if ( sim -> allow_food && level >= 80 )
+  if ( sim -> allow_food && level > 80 )
   {
-    std::string food_action = "food,type=";
-    if ( level > 85 )
+    std::string food = "food,type=";
+    
+    if ( level > 90 )
     {
       if ( specialization() == DRUID_FERAL )
-        food_action += "sea_mist_rice_noodles";
+        food += "blackrock_barbecue";
+      else if ( specialization() == DRUID_BALANCE )
+        food += "sleeper_surprise"; // PH: Attuned stat
       else if ( specialization() == DRUID_GUARDIAN )
-        food_action += "chun_tian_spring_rolls";
+        food += "sleeper_surprise";
       else
-        food_action += "mogu_fish_stew";
+        food += "frosty_stew"; // PH: Attuned stat
     }
+    else if ( level > 85 )
+      food += "pandaren_treasure_noodle_soup";
     else
-      food_action += "seafood_magnifique_feast";
-    precombat -> add_action( food_action );
+      food += "seafood_magnifique_feast";
+
+    precombat -> add_action( food );
   }
 
   // Mark of the Wild
