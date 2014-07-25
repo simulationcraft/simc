@@ -298,7 +298,7 @@ struct rogue_t : public player_t
 
     // Combat
     const spell_data_t* empowered_bandits_guile;
-    const spell_data_t* instant_poison;
+    const spell_data_t* swift_poison;
     const spell_data_t* enhanced_adrenaline_rush;
     const spell_data_t* enhanced_blade_flurry;
     const spell_data_t* improved_dual_wield;
@@ -1063,7 +1063,7 @@ struct apply_poison_t : public action_t
 
     if ( p -> main_hand_weapon.type != WEAPON_NONE || p -> off_hand_weapon.type != WEAPON_NONE )
     {
-      if ( lethal_str == "deadly"    ) lethal_poison = p -> perk.instant_poison -> ok() ? INSTANT_POISON : DEADLY_POISON;
+      if ( lethal_str == "deadly"    ) lethal_poison = p -> perk.swift_poison -> ok() ? INSTANT_POISON : DEADLY_POISON;
       if ( lethal_str == "instant"   ) lethal_poison = INSTANT_POISON;
       if ( lethal_str == "wound"     ) lethal_poison = WOUND_POISON;
 
@@ -4509,7 +4509,7 @@ void rogue_t::init_spells()
 
   // Combat
   perk.empowered_bandits_guile     = find_perk_spell( "Empowered Bandit's Guile" );
-  perk.instant_poison              = find_perk_spell( "Instant Poison" );
+  perk.swift_poison                = find_perk_spell( "Swift Poison" );
   perk.enhanced_adrenaline_rush    = find_perk_spell( "Enhanced Adrenaline Rush" );
   perk.enhanced_blade_flurry       = find_perk_spell( "Enhanced Blade Flurry" );
   perk.improved_dual_wield         = find_perk_spell( "Improved Dual Wield" );
