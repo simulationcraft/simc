@@ -4210,7 +4210,7 @@ void mage_t::init_spells()
   talents.mirror_image       = find_talent_spell( "Mirror Image" );
   talents.incanters_flow     = find_talent_spell( "Incanter's Flow" );
   talents.prismatic_crystal  = find_talent_spell( "Prismatic Crystal" );
-  talents.thermal_void       = find_talent_spell( "Thermal Void" ); // BUG: Not in spell lists, have to manually find using spell ID
+  talents.thermal_void       = find_talent_spell( "Thermal Void" );
 
 
   // Passive Spells
