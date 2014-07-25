@@ -11,7 +11,6 @@ namespace
 // ==========================================================================
 // Hunter
 // Improve lone wolf implementation -- Need to add a dismiss pet function.
-// Check poisoned ammo/explosive shot in game whenever they fix ignite bugs.
 // ==========================================================================
 
 struct hunter_t;
@@ -750,7 +749,8 @@ public:
     buffs.bestial_wrath -> cooldown -> duration = timespan_t::zero();
     buffs.bestial_wrath -> buff_duration += owner -> sets.set( SET_T14_4PC_MELEE ) -> effectN( 1 ).time_value();
 
-    buffs.frenzy            = buff_creator_t( this, 19615, "frenzy" ).chance( o() -> specs.frenzy -> effectN( 2 ).percent() );
+    buffs.frenzy            = buff_creator_t( this, 19615, "frenzy" ).chance( o() -> specs.frenzy -> effectN( 2 ).percent() )
+      .add_invalidate( CACHE_ATTACK_SPEED );
 
     // Use buff to indicate whether the pet is a stampede summon
     buffs.stampede          = buff_creator_t( this, 130201, "stampede" )

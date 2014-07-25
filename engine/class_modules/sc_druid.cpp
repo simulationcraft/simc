@@ -162,10 +162,10 @@ public:
     buff_t* empowered_moonkin;
     buff_t* hurricane;
     buff_t* lunar_empowerment;
-    buff_t* moonfire;
-    buff_t* sunfire;
-    buff_t* solar_empowerment;
+    buff_t* lunar_peak;
     buff_t* moonkin_form;
+    buff_t* solar_empowerment;
+    buff_t* solar_peak;
     buff_t* shooting_stars;
     buff_t* starfall;
 
@@ -4514,10 +4514,10 @@ struct sunfire_t : public druid_spell_t
   {
     double am = druid_spell_t::action_multiplier();
 
-    if ( p() -> buff.sunfire -> up() )
+    if ( p() -> buff.solar_peak -> up() )
     {
       am *= 2;
-      p() -> buff.sunfire -> expire();
+      p() -> buff.solar_peak -> expire();
     }
 
     return am;
@@ -4653,10 +4653,10 @@ struct moonfire_t : public druid_spell_t
   {
     double am = druid_spell_t::action_multiplier();
 
-    if ( p() -> buff.moonfire -> up() )
+    if ( p() -> buff.lunar_peak -> up() )
     {
       am *= 2;
-      p() -> buff.moonfire -> expire();
+      p() -> buff.lunar_peak -> expire();
     }
 
     return am;
@@ -5809,11 +5809,9 @@ void druid_t::create_buffs()
 
   buff.lunar_empowerment         = buff_creator_t( this, "lunar_empowerment", find_spell( 164547 ) );
 
-  buff.moonfire                  = buff_creator_t( this, "moonfire" )
-    .duration( timespan_t::from_seconds( 10 ) );
+  buff.lunar_peak                = buff_creator_t( this, "lunar_peak", find_spell( 171743 ) );
 
-  buff.sunfire                  = buff_creator_t( this, "starfire" )
-    .duration( timespan_t::from_seconds( 10 ) );
+  buff.solar_peak                = buff_creator_t( this, "solar_peak", find_spell( 171744 ) );
 
   buff.shooting_stars            = buff_creator_t( this, "shooting_stars", spec.shooting_stars -> effectN( 1 ).trigger() )
                                    .chance( spec.shooting_stars -> proc_chance() + sets.set( SET_T16_4PC_CASTER ) -> effectN( 1 ).percent() );
@@ -7290,7 +7288,7 @@ void druid_t::balance_tracker()
     clamped_eclipse_amount = 100;
     if ( !double_dmg_triggered )
     {
-      buff.moonfire -> trigger();
+      buff.lunar_peak -> trigger();
       double_dmg_triggered = true;
     }
   }
@@ -7299,7 +7297,7 @@ void druid_t::balance_tracker()
     clamped_eclipse_amount = -100;
     if ( !double_dmg_triggered )
     {
-      buff.sunfire -> trigger();
+      buff.solar_peak -> trigger();
       double_dmg_triggered = true;
     }
   }

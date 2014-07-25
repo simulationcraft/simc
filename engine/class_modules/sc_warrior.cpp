@@ -2470,9 +2470,8 @@ struct slam_t: public warrior_attack_t
     warrior_attack_t( "slam", p, p -> talents.slam )
   {
     parse_options( NULL, options_str );
-    stancemask = STANCE_BATTLE | STANCE_DEFENSE;
+    stancemask = STANCE_BATTLE;
     weapon = &( p -> main_hand_weapon );
-    base_costs[ RESOURCE_RAGE ] = 10;
   }
 
   virtual double cost() const
@@ -2794,7 +2793,7 @@ struct wild_strike_t: public warrior_attack_t
     warrior_attack_t( "wild_strike", p, p -> spec.wild_strike )
   {
     parse_options( NULL, options_str );
-    stancemask = STANCE_BATTLE | STANCE_DEFENSE;
+    stancemask = STANCE_BATTLE;
 
     if ( p -> talents.furious_strikes -> ok() )
       base_costs[RESOURCE_RAGE] = 20;
