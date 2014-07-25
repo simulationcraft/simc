@@ -4,7 +4,7 @@ race=orc
 role=attack
 position=back
 talents=http://us.battle.net/wow/en/tool/talent-calculator#Zb!0102212
-glyphs=unending_rage/death_from_above/bull_rush/cleave
+glyphs=unending_rage/death_from_above/cleave
 spec=protection
 
 # This default action priority list is automatically created based on your character.
@@ -99,7 +99,7 @@ actions.gladiator_aoe+=/storm_bolt,if=talent.storm_bolt.enabled&((buff.bloodbath
 actions.gladiator_aoe+=/devastate,if=cooldown.shield_slam.remains>gcd*0.4
 
 head=primal_gladiators_plate_helm,id=111241
-neck=primal_gladiators_choker_of_cruelty,id=111207,enchant=105crit
+neck=primal_gladiators_choker_of_cruelty,id=111207,enchant=gift_of_critical_strike
 shoulders=primal_gladiators_plate_pauldrons,id=111218
 back=primal_gladiators_cloak_of_prowess,id=111206,enchant=gift_of_critical_strike
 chest=primal_gladiators_plate_chestpiece,id=111239
@@ -108,8 +108,8 @@ hands=primal_gladiators_plate_gauntlets,id=111210
 waist=primal_gladiators_girdle_of_cruelty,id=111174
 legs=primal_gladiators_plate_legguards,id=111212
 feet=primal_gladiators_warboots_of_cruelty,id=111177
-finger1=primal_gladiators_signet_of_cruelty,id=111219,enchant=75crit
-finger2=primal_gladiators_signet_of_accuracy,id=111272,enchant=75crit
+finger1=primal_gladiators_signet_of_cruelty,id=111219,enchant=gift_of_critical_strike
+finger2=primal_gladiators_signet_of_accuracy,id=111272,enchant=gift_of_critical_strike
 trinket1=primal_gladiators_badge_of_victory,id=111232
 trinket2=primal_gladiators_insignia_of_victory,id=111233
 main_hand=primal_gladiators_bonecracker,id=111200,enchant=mark_of_the_thunderlord
@@ -118,7 +118,7 @@ off_hand=primal_gladiators_shield_wall,id=111221
 # Gear Summary
 # gear_strength=2584
 # gear_stamina=3245
-# gear_crit_rating=1930
+# gear_crit_rating=2015
 # gear_haste_rating=326
 # gear_mastery_rating=560
 # gear_armor=4366

@@ -3359,7 +3359,7 @@ void hunter_t::init_action_list()
 
     precombat -> add_action( "summon_pet" );
     precombat -> add_action( "snapshot_stats", "Snapshot raid buffed stats before combat begins and pre-potting is done." );
-    precombat -> add_action( "exotic_munitions,ammo_type=frozen,if=talent.exotic_munitions.enabled" );
+    precombat -> add_action( "exotic_munitions,ammo_type=poisoned,if=talent.exotic_munitions.enabled" );
 
     //Pre-pot
     if ( sim -> allow_potions )
