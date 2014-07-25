@@ -5387,7 +5387,7 @@ void death_knight_t::default_apl_blood()
   if ( primary_role() == ROLE_TANK )
   {
     if ( sim -> allow_potions && level >= 80 )
-      def -> add_action( potion_str + ",if=buff.potion_of_the_mountains.down&buff.blood_shield.down&!unholy&!frost" );
+      def -> add_action( potion_str + ",if=buff.potion.down&buff.blood_shield.down&!unholy&!frost" );
 
     def -> add_action( this, "Anti-Magic Shell" );
     def -> add_action( this, "Death Strike", "if=incoming_damage_5s>=health.max*0.65" );
@@ -5532,7 +5532,7 @@ void death_knight_t::init_action_list()
       if ( sim -> allow_potions && level >= 80 )
         def -> add_action( potion_str + ",if=target.time_to_die<=30|(target.time_to_die<=60&buff.pillar_of_frost.up)" );
       
-      def -> add_action( this, "Empower Rune Weapon", "if=target.time_to_die<=60&(buff.potion_of_mogu_power.up)" );
+      def -> add_action( this, "Empower Rune Weapon", "if=target.time_to_die<=60&buff.potion.up" );
 
       for ( size_t i = 0; i < get_profession_actions().size(); i++ )
         def -> add_action( get_profession_actions()[ i ] );
