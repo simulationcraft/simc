@@ -338,10 +338,7 @@ public:
   virtual double    composite_attack_power_multiplier() const;
   virtual double    composite_melee_crit() const;
   virtual double    composite_melee_haste() const;
-  virtual double    composite_melee_speed() const;
   virtual double    composite_multistrike() const;
-  virtual double    ranged_haste_multiplier() const;
-  virtual double    ranged_speed_multiplier() const;
   virtual double    composite_player_critical_damage_multiplier() const;
   virtual double    composite_rating_multiplier( rating_e rating ) const;
   virtual double    composite_player_multiplier( school_e school ) const;
@@ -537,23 +534,6 @@ public:
     double m = base_t::composite_player_multiplier( school );
     m *= o() -> beast_multiplier();
     return m;
-  }
-
-  virtual double composite_melee_haste() const
-  {
-    double ah = base_t::composite_melee_haste();
-    // remove the portions of speed that were ranged only.
-    ah /= o() -> ranged_haste_multiplier();
-    return ah;
-  }
-
-  virtual double composite_melee_speed() const
-  {
-    double ah = base_t::composite_melee_speed();
-    // remove the portions of speed that were ranged only.
-    ah /= o() -> ranged_haste_multiplier();
-    ah /= o() -> ranged_speed_multiplier();
-    return ah;
   }
 };
 
@@ -762,8 +742,7 @@ public:
     buffs.bestial_wrath -> cooldown -> duration = timespan_t::zero();
     buffs.bestial_wrath -> buff_duration += owner -> sets.set( SET_T14_4PC_MELEE ) -> effectN( 1 ).time_value();
 
-    buffs.frenzy            = buff_creator_t( this, 19615, "frenzy" ).chance( o() -> specs.frenzy -> effectN( 2 ).percent() )
-      .add_invalidate( CACHE_ATTACK_SPEED );
+    buffs.frenzy            = buff_creator_t( this, 19615, "frenzy" ).chance( o() -> specs.frenzy -> effectN( 2 ).percent() );
 
     // Use buff to indicate whether the pet is a stampede summon
     buffs.stampede          = buff_creator_t( this, 130201, "stampede" )
@@ -777,8 +756,7 @@ public:
 
     buffs.enhanced_basic_attacks = buff_creator_t( this, "enhanced_basic_attacks", o() -> perks.enhanced_basic_attacks );
 
-    buffs.tier16_4pc_bm_brutal_kinship = buff_creator_t( this, 145737, "tier16_4pc_brutal_kinship" )
-      .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
+    buffs.tier16_4pc_bm_brutal_kinship = buff_creator_t( this, 145737, "tier16_4pc_brutal_kinship" );
   }
 
   virtual void init_gains()
@@ -1069,7 +1047,7 @@ struct pet_melee_t: public hunter_main_pet_attack_t
     special = false;
     weapon = &( player -> main_hand_weapon );
     base_execute_time = weapon -> swing_time;
-    background = repeating = true;
+    background = repeating = auto_attack = true;
     school = SCHOOL_PHYSICAL;
   }
 
@@ -3381,7 +3359,7 @@ void hunter_t::init_action_list()
 
     precombat -> add_action( "summon_pet" );
     precombat -> add_action( "snapshot_stats", "Snapshot raid buffed stats before combat begins and pre-potting is done." );
-    precombat -> add_action( "exotic_munitions,ammo_type=frozen,if=talent.exotic_munitions.enabled" );
+    precombat -> add_action( "exotic_munitions,ammo_type=poisoned,if=talent.exotic_munitions.enabled" );
 
     //Pre-pot
     if ( sim -> allow_potions )
@@ -3680,32 +3658,8 @@ double hunter_t::composite_melee_haste() const
 {
   double h = player_t::composite_melee_haste();
   h *= 1.0 / ( 1.0 + buffs.tier13_4pc -> up() * buffs.tier13_4pc -> data().effectN( 1 ).percent() );
-  h *= ranged_haste_multiplier();
-  return h;
-}
-
-double hunter_t::composite_melee_speed() const
-{
-  double h = player_t::composite_melee_speed();
-  h *= ranged_speed_multiplier();
-  return h;
-}
-
-// Buffs that increase hunter ranged attack haste (and thus regen)
-double hunter_t::ranged_haste_multiplier() const
-{
-  double h = 1.0;
   h *= 1.0 / ( 1.0 + buffs.focus_fire -> value() );
   h *= 1.0 / ( 1.0 + buffs.rapid_fire -> value() );
-  return h;
-}
-
-// Buffs that increase hunter ranged attack speed but not
-// melee attack speed (and so not pet attacks)
-double hunter_t::ranged_speed_multiplier() const
-{
-  double h = 1.0;
-
   return h;
 }
 

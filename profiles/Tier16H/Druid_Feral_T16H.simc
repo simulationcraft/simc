@@ -17,7 +17,7 @@ spec=feral
 # Executed before combat begins. Accepts non-harmful actions only.
 
 actions.precombat=flask,type=spring_blossoms
-actions.precombat+=/food,type=sea_mist_rice_noodles
+actions.precombat+=/food,type=pandaren_treasure_noodle_soup
 actions.precombat+=/mark_of_the_wild,if=!aura.str_agi_int.up
 actions.precombat+=/cat_form,if=active_enemies=1
 actions.precombat+=/prowl

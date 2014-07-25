@@ -3769,10 +3769,9 @@ struct druid_spell_t : public druid_spell_base_t<spell_t>
 
   virtual void execute()
   {
-    p() -> balance_tracker();
-
     if( p() -> specialization() == DRUID_BALANCE )
     {
+      p() -> balance_tracker();
       if( sim -> log || sim -> debug )
       {
         sim -> out_debug.printf( "Eclipse Position: %f Eclipse Direction: %f Time till next Eclipse Change: %f Time to next lunar %f Time to next Solar %f Time Till Maximum Eclipse: %f",
@@ -3825,7 +3824,8 @@ struct druid_spell_t : public druid_spell_base_t<spell_t>
 
   virtual bool ready()
   {
-    p() -> balance_tracker();
+    if ( p() -> specialization() == DRUID_BALANCE )
+      p() -> balance_tracker();
 
     return base_t::ready();
   }
@@ -4014,7 +4014,10 @@ struct bristling_fur_t : public druid_spell_t
 struct cat_form_t : public druid_spell_t
 {
   cat_form_t( druid_t* player, const std::string& options_str ) :
-    druid_spell_t( "cat_form", player, player -> find_class_spell( "Cat Form" ), options_str )
+    druid_spell_t( "cat_form", player, player -> talent.claws_of_shirvallah -> ok() ?
+    player -> find_spell( player -> talent.claws_of_shirvallah -> effectN( 1 ).base_value() ) : 
+    player -> find_class_spell( "Cat Form" ), 
+    options_str )
   {
     harmful = false;
     min_gcd = timespan_t::from_seconds( 1.5 );
@@ -5919,21 +5922,27 @@ void druid_t::apl_precombat()
   }
 
   // Food
-  if ( sim -> allow_food && level >= 80 )
+  if ( sim -> allow_food && level > 80 )
   {
-    std::string food_action = "food,type=";
-    if ( level > 85 )
+    std::string food = "food,type=";
+    
+    if ( level > 90 )
     {
       if ( specialization() == DRUID_FERAL )
-        food_action += "sea_mist_rice_noodles";
+        food += "blackrock_barbecue";
+      else if ( specialization() == DRUID_BALANCE )
+        food += "sleeper_surprise"; // PH: Attuned stat
       else if ( specialization() == DRUID_GUARDIAN )
-        food_action += "chun_tian_spring_rolls";
+        food += "sleeper_surprise";
       else
-        food_action += "mogu_fish_stew";
+        food += "frosty_stew"; // PH: Attuned stat
     }
+    else if ( level > 85 )
+      food += "pandaren_treasure_noodle_soup";
     else
-      food_action += "seafood_magnifique_feast";
-    precombat -> add_action( food_action );
+      food += "seafood_magnifique_feast";
+
+    precombat -> add_action( food );
   }
 
   // Mark of the Wild

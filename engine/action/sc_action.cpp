@@ -1166,7 +1166,6 @@ result_e action_t::calculate_multistrike_result( action_state_t* s )
 {
   if ( ! s -> target ) return RESULT_NONE;
   if ( ! may_multistrike ) return RESULT_NONE;
-  //if ( ! harmful ) return RESULT_NONE; See if this screws anything up. 
 
   result_e r = RESULT_NONE;
   if ( rng().roll( composite_multistrike() ) )
