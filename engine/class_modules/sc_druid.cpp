@@ -5554,7 +5554,7 @@ void druid_t::init_spells()
   // Balance 100 Talents
   talent.euphoria            = find_talent_spell( "Euphoria" );
   talent.stellar_flare       = find_talent_spell( "Stellar Flare" );
-  talent.balance_of_power    = find_talent_spell( "Balance of Power" );s
+  talent.balance_of_power    = find_talent_spell( "Balance of Power" );
 
   // Feral 100 Talents
   talent.lunar_inspiration   = find_talent_spell( "Lunar Inspiration" );
@@ -6565,7 +6565,7 @@ double druid_t::composite_melee_expertise( weapon_t* ) const
 {
   double exp = player_t::composite_melee_expertise();
 
-  exp += spec.thick_hide -> effectN( 7 ).percent();
+  exp += spec.thick_hide -> effectN( 3 ).percent();
 
   return exp;
 }
@@ -6769,7 +6769,7 @@ double druid_t::composite_crit_avoidance() const
 {
   double c = player_t::composite_crit_avoidance();
 
-  c += spec.thick_hide -> effectN( 1 ).percent();
+  c += spec.thick_hide -> effectN( 2 ).percent();
 
   return c;
 }
@@ -7185,7 +7185,7 @@ void druid_t::assess_damage( school_e school,
       proc.primal_fury -> occur();
      }
     if ( dbc::get_school_mask( school ) & SCHOOL_MAGIC_MASK )
-      s -> result_amount *= 1.0 + spec.thick_hide -> effectN( 3 ).percent();
+      s -> result_amount *= 1.0 + spec.thick_hide -> effectN( 1 ).percent();
   }
 
   if ( buff.cenarion_ward -> up() && s -> result_amount > 0 )
