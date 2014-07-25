@@ -1,6 +1,6 @@
-#define TALENT_SIZE (305)
+#define TALENT_SIZE (306)
 
-// 305 talents, wow build 18566
+// 306 talents, wow build 18594
 static struct talent_data_t __talent_data[] = {
 //{ Name                                ,    Id, Flgs,  Class, Spc, Col, Row, SpellID, ReplaceID, S1 },
   { "Second Wind"                       , 15757, 0x00, 0x0001,   0,   1,   1,   29838,         0,  0 },
@@ -169,7 +169,7 @@ static struct talent_data_t __talent_data[] = {
   { "Blink Strikes"                     , 19361, 0x00, 0x0004,   0,   1,   4,  130392,         0,  0 },
   { "Stampede"                          , 19362, 0x00, 0x0004,   0,   2,   4,  121818,         0,  0 },
   { "Narrow Escape"                     , 19363, 0x00, 0x0004,   0,   1,   0,  109298,         0,  0 },
-  { "Crouching Tiger, Hidden Chimera"   , 19364, 0x00, 0x0004,   0,   2,   0,  118675,         0,  0 },
+  { "Crouching Tiger, Hidden Chimaera"  , 19364, 0x00, 0x0004,   0,   2,   0,  118675,         0,  0 },
 //{ Name                                ,    Id, Flgs,  Class, Spc, Col, Row, SpellID, ReplaceID, S1 },
   { "Thrill of the Hunt"                , 19365, 0x00, 0x0004,   0,   2,   3,  109306,         0,  0 },
   { "Vigilance"                         , 19676, 0x00, 0x0001,   0,   2,   4,  114030,         0,  0 },
@@ -260,7 +260,7 @@ static struct talent_data_t __talent_data[] = {
   { "Bloodtalons"                       , 21649, 0x00, 0x0400, 103,   1,   6,  155672,         0,  0 },
   { "Pulverize"                         , 21650, 0x00, 0x0400, 104,   1,   6,   80313,         0,  0 },
   { "Germination"                       , 21651, 0x00, 0x0400, 105,   1,   6,  155675,         0,  0 },
-  { "Savagery"                          , 21653, 0x00, 0x0400, 103,   2,   6,  155836,     52610,  0 },
+  { "Claws of Shirvallah"               , 21653, 0x00, 0x0400, 103,   2,   6,  171746,         0,  0 },
   { "Bristling Fur"                     , 21654, 0x00, 0x0400, 104,   2,   6,  155835,         0,  0 },
   { "Rampant Growth"                    , 21655, 0x00, 0x0400, 105,   2,   6,  155834,         0,  0 },
   { "Focusing Shot"                     , 21662, 0x00, 0x0004, 254,   1,   6,  163485,     56641,  0 },
@@ -269,7 +269,7 @@ static struct talent_data_t __talent_data[] = {
   { "Beacon of Insight"                 , 21671, 0x00, 0x0002,  65,   1,   6,  157007,         0,  0 },
   { "Final Verdict"                     , 21672, 0x00, 0x0002,  70,   2,   6,  157048,     85256,  0 },
   { "Saved by the Light"                , 21673, 0x00, 0x0002,  65,   2,   6,  157047,         0,  0 },
-  { "Condensation Totem"                , 21674, 0x00, 0x0040, 264,   0,   6,  157153,         0,  0 },
+  { "Cloudburst Totem"                  , 21674, 0x00, 0x0040, 264,   0,   6,  157153,         0,  0 },
   { "High Tide"                         , 21675, 0x00, 0x0040, 264,   2,   6,  157154,         0,  0 },
   { "Breath of the Serpent"             , 21676, 0x00, 0x0200, 270,   0,   6,  157535,         0,  0 },
   { "Soul Dance"                        , 21677, 0x00, 0x0200, 268,   0,   6,  157533,         0,  0 },
@@ -300,7 +300,7 @@ static struct talent_data_t __talent_data[] = {
   { "Heart of the Wild"                 , 21714, 0x00, 0x0400, 103,   0,   5,  108292,         0,  0 },
   { "Heart of the Wild"                 , 21715, 0x00, 0x0400, 104,   0,   5,  108293,         0,  0 },
   { "Heart of the Wild"                 , 21716, 0x00, 0x0400, 105,   0,   5,  108294,         0,  0 },
-  { "Grimoire of Sacrifice"             , 21717, 0x00, 0x0100, 266,   2,   4,  156656,         0,  0 },
+  { "Grimoire of Synergy"               , 21717, 0x00, 0x0100, 266,   2,   4,  171975,         0,  0 },
   { "Cascade"                           , 21718, 0x00, 0x0010, 258,   0,   5,  127632,         0,  0 },
   { "Divine Star"                       , 21719, 0x00, 0x0010, 258,   1,   5,  122121,         0,  0 },
   { "Halo"                              , 21720, 0x00, 0x0010, 258,   2,   5,  120644,         0,  0 },
@@ -323,5 +323,6 @@ static struct talent_data_t __talent_data[] = {
   { "Heavy Repercussions"               , 21790, 0x00, 0x0001,  73,   0,   2,  169680,         0,  0 },
   { "Unquenchable Thirst"               , 21791, 0x00, 0x0001,  72,   2,   2,  169683,         0,  0 },
   { "Unyielding Strikes"                , 21792, 0x00, 0x0001,  73,   2,   2,  169685,         0,  0 },
+  { "Sanctified Wrath"                  , 21795, 0x00, 0x0002,  66,   1,   4,  171648,         0,  0 },
   { 0                                   ,     0, 0x00, 0x0000,   0,   0,   0,       0,         0,  0 },
 };

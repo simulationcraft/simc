@@ -4,7 +4,7 @@
 #ifndef MAX_CLASS
 #define MAX_CLASS (12)
 #endif
-// Class based active abilities, wow build 18566
+// Class based active abilities, wow build 18594
 static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SIZE] = {
   {
     {
@@ -99,7 +99,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
   },
   // Class active abilities for Paladin
   {
-    // General tree, 23 abilities
+    // General tree, 24 abilities
     {
        20217, // Blessing of Kings
        19740, // Blessing of Might
@@ -114,6 +114,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
         1022, // Hand of Protection
         6940, // Hand of Sacrifice
         1038, // Hand of Salvation
+      162056, // Jailor's Judgement
        20271, // Judgment
          633, // Lay on Hands
        96231, // Rebuke
@@ -177,9 +178,10 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
   },
   // Class active abilities for Hunter
   {
-    // General tree, 28 abilities
+    // General tree, 29 abilities
     {
         5118, // Aspect of the Cheetah
+      172106, // Aspect of the Fox
        13159, // Aspect of the Pack
         1462, // Beast Lore
          883, // Call Pet 1
@@ -240,7 +242,6 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
     },
     // Pet tree, 49 abilities
     {
-       55749, // Acid Spit (Special Ability)
       160011, // Agile Reflexes (Special Ability)
        90355, // Ancient Hysteria (Exotic Ability)
        50433, // Ankle Crack (Special Ability)
@@ -248,47 +249,48 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
        17253, // Bite (Basic Attack)
       160017, // Blessing of Kongs
        24423, // Bloody Screech (Special Ability)
+       24844, // Breath of the Winds (Special Ability)
        93433, // Burrow Attack (Exotic Ability)
       128432, // Cackling Howl (Special Ability)
+       50518, // Chitinous Armor (Special Ability)
        16827, // Claw (Basic Attack)
       160060, // Deadly Sting (Special Ability)
+       58604, // Double Bite (Special Ability)
       159956, // Dust of Life (Exotic Ability)
       135678, // Energizing Spores
       159953, // Feast (Special Ability)
-       34889, // Fire Breath (Special Ability)
        54644, // Frost Breath (Special Ability)
        92380, // Froststorm Breath (Exotic Ability)
        24604, // Furious Howl
-       35290, // Gore (Special Ability)
         2649, // Growl (Basic Ability)
+       35290, // Indomitable (Special Ability)
        19577, // Intimidation
        50256, // Invigorating Roar (Special Ability)
-       58604, // Lava Breath (Special Ability)
       138374, // Lightning Blast
-       24844, // Lightning Breath (Special Ability)
        54680, // Monstrous Bite (Exotic Ability)
       160073, // Plainswalking (Special Ability)
        90347, // Play (Bonus Ability)
        24450, // Prowl (Bonus Ability)
        90364, // Qiraji Fortitude (Exotic Ability)
-       50518, // Ravage (Special Ability)
        94019, // Rest (Bonus Ability)
        93435, // Roar of Courage (Special Ability)
       128433, // Serpent's Cunning (Special Ability)
        49966, // Smack (Basic Attack)
-       50519, // Sonic Blast (Special Ability)
+       50519, // Sonic Focus (Special Ability)
       160074, // Speed of the Swarm (Special Ability)
       128997, // Spirit Beast Blessing (Special Ability)
        90361, // Spirit Mend (Exotic Ability)
        90328, // Spirit Walk (Bonus Ability)
-       57386, // Stampede (Special Ability)
+       34889, // Spry Attacks (Special Ability)
       160077, // Strength of the Earth
       160052, // Strength of the Pack (Special Ability)
+      159735, // Tenacity (Special Ability)
       160065, // Tendon Rip (Special Ability)
        90309, // Terrifying Roar (Special Ability)
        94022, // Trick (Bonus Ability)
        35346, // Warp Time (Special Ability)
       160067, // Web Spray (Special Ability)
+       57386, // Wild Strength (Special Ability)
     },
   },
   // Class active abilities for Rogue
@@ -363,8 +365,9 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
   },
   // Class active abilities for Priest
   {
-    // General tree, 15 abilities
+    // General tree, 16 abilities
     {
+      161862, // Ascension
          528, // Dispel Magic
          586, // Fade
         6346, // Fear Ward
@@ -444,6 +447,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
     {
        48707, // Anti-Magic Shell
        42650, // Army of the Dead
+       50842, // Blood Boil
        48263, // Blood Presence
        45524, // Chains of Ice
       111673, // Control Undead
@@ -460,7 +464,6 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
        47528, // Mind Freeze
        77575, // Outbreak
         3714, // Path of Frost
-       50842, // Pestilence
        45462, // Plague Strike
        61999, // Raise Ally
        47476, // Strangulate
@@ -978,7 +981,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
 
 #define TREE_SPECIALIZATION_SIZE (28)
 
-// Talent tree specialization abilities, wow build 18566
+// Talent tree specialization abilities, wow build 18594
 static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZATION_SIZE] = {
   // Specialization abilities for Hunter pets
   {
@@ -1946,7 +1949,7 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
 
 #define CLASS_MASTERY_ABILITY_SIZE (1)
 
-// Class mastery abilities, wow build 18566
+// Class mastery abilities, wow build 18594
 static unsigned __class_mastery_ability_data[MAX_CLASS][MAX_SPECS_PER_CLASS][CLASS_MASTERY_ABILITY_SIZE] = {
   {
     {
@@ -2169,7 +2172,7 @@ static unsigned __class_mastery_ability_data[MAX_CLASS][MAX_SPECS_PER_CLASS][CLA
 #define MAX_RACE (28)
 #endif
 
-// Racial abilities, wow build 18566
+// Racial abilities, wow build 18594
 static unsigned __race_ability_data[MAX_RACE][MAX_CLASS][RACE_ABILITY_SIZE] = {
   {
     {     0, },
@@ -2890,9 +2893,9 @@ static unsigned __race_ability_data[MAX_RACE][MAX_CLASS][RACE_ABILITY_SIZE] = {
   },
 };
 
-#define GLYPH_ABILITIES_SIZE (40)
+#define GLYPH_ABILITIES_SIZE (41)
 
-// Glyph spells for classes, wow build 18566
+// Glyph spells for classes, wow build 18594
 static unsigned __glyph_abilities_data[][3][GLYPH_ABILITIES_SIZE] = {
   {
     {
@@ -2938,7 +2941,7 @@ static unsigned __glyph_abilities_data[][3][GLYPH_ABILITIES_SIZE] = {
        58098, // Glyph of Unending Rage
       146965, // Glyph of Victorious Throw
        58382, // Glyph of Victory Rush
-       63324, // Glyph of Whirlwind
+       63324, // Glyph of Wind and Thunder
       159703, // Glyph of the Drawn Sword
       146971, // Glyph of the Executor
            0,
@@ -2967,13 +2970,14 @@ static unsigned __glyph_abilities_data[][3][GLYPH_ABILITIES_SIZE] = {
   },
   // Glyph spells for Paladin
   {
-    // Major Glyphs (36 spells)
+    // Major Glyphs (37 spells)
     {
       159548, // Glyph of Ardent Defender
        54927, // Glyph of Avenging Wrath
        63218, // Glyph of Beacon of Light
        54943, // Glyph of Blessed Life
        54931, // Glyph of Burden of Guilt
+      171929, // Glyph of Cleanse
        54928, // Glyph of Consecration
        56414, // Glyph of Dazing Shield
        56420, // Glyph of Denounce
@@ -3034,7 +3038,7 @@ static unsigned __glyph_abilities_data[][3][GLYPH_ABILITIES_SIZE] = {
        20895, // Glyph of Animal Bond
       109263, // Glyph of Black Ice
       119449, // Glyph of Camouflage
-      119447, // Glyph of Chimera Shot
+      119447, // Glyph of Chimaera Shot
        56850, // Glyph of Deterrence
        56844, // Glyph of Disengage
       123632, // Glyph of Distracting Shot
@@ -3129,7 +3133,7 @@ static unsigned __glyph_abilities_data[][3][GLYPH_ABILITIES_SIZE] = {
   },
   // Glyph spells for Priest
   {
-    // Major Glyphs (40 spells)
+    // Major Glyphs (41 spells)
     {
        63248, // Glyph of Binding Heal
        55675, // Glyph of Circle of Healing
@@ -3157,6 +3161,7 @@ static unsigned __glyph_abilities_data[][3][GLYPH_ABILITIES_SIZE] = {
        55685, // Glyph of Prayer of Mending
        55688, // Glyph of Psychic Horror
        55676, // Glyph of Psychic Scream
+      171921, // Glyph of Purification
        55677, // Glyph of Purify
        33202, // Glyph of Reflective Shield
       119872, // Glyph of Renew
@@ -3246,7 +3251,7 @@ static unsigned __glyph_abilities_data[][3][GLYPH_ABILITIES_SIZE] = {
   },
   // Glyph spells for Shaman
   {
-    // Major Glyphs (37 spells)
+    // Major Glyphs (38 spells)
     {
        55442, // Glyph of Capacitor Totem
        55449, // Glyph of Chain Lightning
@@ -3270,6 +3275,7 @@ static unsigned __glyph_abilities_data[][3][GLYPH_ABILITIES_SIZE] = {
       101052, // Glyph of Lightning Shield
        55439, // Glyph of Purge
       147762, // Glyph of Purging
+      171933, // Glyph of Purify Spirit
       159647, // Glyph of Reactive Shielding
        63273, // Glyph of Riptide
        63280, // Glyph of Shamanistic Rage
@@ -3412,10 +3418,11 @@ static unsigned __glyph_abilities_data[][3][GLYPH_ABILITIES_SIZE] = {
   },
   // Glyph spells for Monk
   {
-    // Major Glyphs (28 spells)
+    // Major Glyphs (29 spells)
     {
       123394, // Glyph of Breath of Fire
       146954, // Glyph of Detox
+      171926, // Glyph of Detoxing
       159487, // Glyph of Expel Harm
       125671, // Glyph of Fists of Fury
       124997, // Glyph of Fortifying Brew
@@ -3463,7 +3470,7 @@ static unsigned __glyph_abilities_data[][3][GLYPH_ABILITIES_SIZE] = {
   },
   // Glyph spells for Druid
   {
-    // Major Glyphs (34 spells)
+    // Major Glyphs (35 spells)
     {
       159432, // Glyph of Astral Communion
        63057, // Glyph of Barkskin
@@ -3486,6 +3493,7 @@ static unsigned __glyph_abilities_data[][3][GLYPH_ABILITIES_SIZE] = {
        54811, // Glyph of Maul
       116238, // Glyph of Might of Ursoc
       159455, // Glyph of Moonwarding
+      171924, // Glyph of Nature's Cure
        54821, // Glyph of Rake
        54733, // Glyph of Rebirth
       116218, // Glyph of Regrowth
@@ -3494,11 +3502,11 @@ static unsigned __glyph_abilities_data[][3][GLYPH_ABILITIES_SIZE] = {
       116216, // Glyph of Skull Bash
       114222, // Glyph of Stampeding Roar
       114223, // Glyph of Survival Instincts
-      159441, // Glyph of Ursol's Defense
        62970, // Glyph of Wild Growth
       116172, // Glyph of the Master Shapeshifter
       159444, // Glyph of the Ninth Life
       159453, // Glyph of the Shapemender
+      171752, // Savagery
            0,
     },
     // Minor Glyphs (13 spells)
@@ -3529,7 +3537,7 @@ static unsigned __glyph_abilities_data[][3][GLYPH_ABILITIES_SIZE] = {
 
 #define TIER_BONUSES_TIER_BASE (13)
 
-// Tier item set bonuses for class, wow build 18566
+// Tier item set bonuses for class, wow build 18594
 static unsigned __tier_bonuses_data[][TIER_BONUSES_MAX_TIER][TIER_BONUSES_SIZE] = {
   {
     {
@@ -3578,7 +3586,7 @@ static unsigned __tier_bonuses_data[][TIER_BONUSES_MAX_TIER][TIER_BONUSES_SIZE] 
   {
     // Tier 13 bonuses (6 spells)
     {
-      105743, // Regalia of Radiant Glory - 2 Piece Bonus (Item - Paladin T13 Holy 2P Bonus (Divine Favor))
+      105743, // Regalia of Radiant Glory - 2 Piece Bonus (Item - Paladin T13 Holy 2P Bonus (Avenging Wrath))
       105744, // Armor of Radiant Glory - 4 Piece Bonus (Item - Paladin T13 Protection 4P Bonus (Divine Guardian))
       105765, // Battleplate of Radiant Glory - 2 Piece Bonus (Item - Paladin T13 Retribution 2P Bonus (Judgment))
       105798, // Regalia of Radiant Glory - 4 Piece Bonus (Item - Paladin T13 Holy 4P Bonus (Holy Radiance))
@@ -3684,7 +3692,7 @@ static unsigned __tier_bonuses_data[][TIER_BONUSES_MAX_TIER][TIER_BONUSES_SIZE] 
   {
     // Tier 13 bonuses (4 spells)
     {
-      105827, // Vestments of Dying Light - 2 Piece Bonus (Item - Priest T13 Healer 2P Bonus (Power Infusion and Lightwell))
+      105827, // Vestments of Dying Light - 2 Piece Bonus (Item - Priest T13 Healer 2P Bonus (Power Word: Barrier and Divine Hymn))
       105832, // Vestments of Dying Light - 4 Piece Bonus (Item - Priest T13 Healer 4P Bonus (Holy Word and Power Word: Shield))
       105843, // Regalia of Dying Light - 2 Piece Bonus (Item - Priest T13 Shadow 2P Bonus (Shadow Word: Death))
       105844, // Regalia of Dying Light - 4 Piece Bonus (Item - Priest T13 Shadow 4P Bonus (Shadow Word: Pain))
@@ -3905,7 +3913,7 @@ static unsigned __tier_bonuses_data[][TIER_BONUSES_MAX_TIER][TIER_BONUSES_SIZE] 
   {
     // Tier 13 bonuses (6 spells)
     {
-      105715, // Deep Earth Vestments - 2 Piece Bonus (Item - Druid T13 Restoration 2P Bonus (Innervate))
+      105715, // Deep Earth Vestments - 2 Piece Bonus (Item - Druid T13 Restoration 2P Bonus (Healing Touch and Rejuv))
       105717, // Deep Earth Regalia - 4 Piece Bonus (Item - Druid T13 Balance 4P Bonus (Starsurge))
       105722, // Deep Earth Regalia - 2 Piece Bonus (Item - Druid T13 Balance 2P Bonus (Insect Swarm))
       105725, // Deep Earth Battlegarb - 2 Piece Bonus (Item - Druid T13 Feral 2P Bonus (Savage Defense and Blood In The Water))
@@ -3954,7 +3962,7 @@ static unsigned __tier_bonuses_data[][TIER_BONUSES_MAX_TIER][TIER_BONUSES_SIZE] 
 
 #define SET_BONUS_DATA_SIZE (543)
 
-// Set bonus data, wow build 18566
+// Set bonus data, wow build 18594
 static item_set_bonus_t __set_bonus_data[SET_BONUS_DATA_SIZE] = {
   //                                    Tier name, Tier, Bns, Cls,         Derived Spec, Spec,  Spell, Items
   { "Siegebreaker Battlegear"                    ,    8,   2,   1,      {  71,  72, 0 },    0,  64938, {  46278,  46280,  46282,  46285,  46287,  0 } },
@@ -4525,7 +4533,7 @@ static item_set_bonus_t __set_bonus_data[SET_BONUS_DATA_SIZE] = {
 
 #define PERK_SIZE (9)
 
-// Perk specialization abilities, wow build 18566
+// Perk specialization abilities, wow build 18594
 static unsigned __perk_data[][MAX_SPECS_PER_CLASS][PERK_SIZE] = {
   {
     {
@@ -4641,8 +4649,8 @@ static unsigned __perk_data[][MAX_SPECS_PER_CLASS][PERK_SIZE] = {
       157707, // 0: Enhanced Kill Shot
       157718, // 1: Enhanced Camouflage
       157724, // 2: Enhanced Aimed Shot
-      157719, // 3: Enhanced Chimera Shot
-      157733, // 4: Improved Chimera Shot
+      157719, // 3: Enhanced Chimaera Shot
+      157733, // 4: Improved Chimaera Shot
       157732, // 5: Improved Multi-Shot
       157728, // 6: Improved Aimed Shot
       157726, // 7: Improved Focus
@@ -4681,7 +4689,7 @@ static unsigned __perk_data[][MAX_SPECS_PER_CLASS][PERK_SIZE] = {
     {
       157576, // 0: Improved Recuperate
       157581, // 1: Empowered Bandit's Guile
-      157605, // 2: Instant Poison
+      157605, // 2: Swift Poison
       157613, // 3: Enhanced Adrenaline Rush
       157615, // 4: Enhanced Blade Flurry
       157645, // 5: Empowered Crimson Tempest
@@ -5003,8 +5011,8 @@ static unsigned __perk_data[][MAX_SPECS_PER_CLASS][PERK_SIZE] = {
   },
 };
 
-// Glyph properties, wow build 18566
-static glyph_property_data_t __glyph_property_data[518] = {
+// Glyph properties, wow build 18594
+static glyph_property_data_t __glyph_property_data[524] = {
   {   162,  54811 },
   {   163,  54812 },
   {   164, 114338 },
@@ -5451,7 +5459,6 @@ static glyph_property_data_t __glyph_property_data[518] = {
   {  1117, 159432 },
   {  1118, 159434 },
   {  1119, 159436 },
-  {  1120, 159441 },
   {  1121, 159444 },
   {  1122, 159445 },
   {  1123, 159448 },
@@ -5522,6 +5529,13 @@ static glyph_property_data_t __glyph_property_data[518] = {
   {  1202, 162532 },
   {  1203, 162604 },
   {  1204,  58669 },
+  {  1205, 171752 },
+  {  1206, 171803 },
+  {  1207, 171933 },
+  {  1208, 171929 },
+  {  1209, 171926 },
+  {  1210, 171924 },
+  {  1211, 171921 },
   {     0,      0 }
 };
 
