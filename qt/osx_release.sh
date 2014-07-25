@@ -12,7 +12,7 @@ if [ -d $DEPLOY_DIR ]; then
   sed -i -e "s/GIT-REV-PARSE-HERE/$REVISION/" $DEPLOY_DIR/SimulationCraft.app/Contents/Info.plist
   sed -i -e "s/VERSION-PARSE-HERE/$MAJOR_VERSION\.$MINOR_VERSION/" $DEPLOY_DIR/SimulationCraft.app/Contents/Info.plist
 
-  hdiutil create -srcfolder $DEPLOY_DIR/SimulationCraft.app -srcfolder profiles -srcfolder COPYING -srcfolder readme.txt -srcfolder "simc" -nospotlight -format UDBZ -volname "Simulationcraft v`defaults read $DEPLOY_DIR/SimulationCraft.app/Contents/Info CFBundleVersion`" -ov simc-$MAJOR_VERSION-$MINOR_VERSION-osx-x86.dmg
+  hdiutil create  -srcfolder $DEPLOY_DIR/SimulationCraft.app -srcfolder profiles -srcfolder COPYING -srcfolder readme.txt -srcfolder "simc" -nospotlight -format UDBZ -stretch 1g -volname "Simulationcraft v`defaults read $DEPLOY_DIR/SimulationCraft.app/Contents/Info CFBundleVersion`" -ov simc-$MAJOR_VERSION-$MINOR_VERSION-osx-x86.dmg
   rm -rf $DEPLOY_DIR
 fi
 
