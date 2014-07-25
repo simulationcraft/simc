@@ -267,7 +267,7 @@ struct melee_t : public enemy_action_t<melee_attack_t>
 
   timespan_t execute_time() const
   {
-    timespan_t et = enemy_action_t::execute_time();
+    timespan_t et = base_t::execute_time();
 
     if ( first )
     {
