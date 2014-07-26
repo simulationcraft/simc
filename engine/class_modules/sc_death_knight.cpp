@@ -1218,8 +1218,9 @@ struct dancing_rune_weapon_pet_t : public pet_t
   struct drw_melee_t : public drw_melee_attack_t
   {
     drw_melee_t( dancing_rune_weapon_pet_t* p ) :
-      drw_melee_attack_t( "drw_melee", p )
+      drw_melee_attack_t( "auto_attack_mh", p )
     {
+      auto_attack       = true;
       weapon            = &( p -> main_hand_weapon );
       base_execute_time = weapon -> swing_time;
       special           = false;
@@ -1396,9 +1397,10 @@ struct army_ghoul_pet_t : public death_knight_pet_t
   struct army_ghoul_pet_melee_t : public army_ghoul_pet_melee_attack_t
   {
     army_ghoul_pet_melee_t( army_ghoul_pet_t* p ) :
-      army_ghoul_pet_melee_attack_t( "melee", p )
+      army_ghoul_pet_melee_attack_t( "auto_attack_mh", p )
     {
-      school          = SCHOOL_PHYSICAL;
+      auto_attack       = true;
+      school            = SCHOOL_PHYSICAL;
       base_execute_time = weapon -> swing_time;
       background        = true;
       repeating         = true;
@@ -1609,9 +1611,10 @@ struct ghoul_pet_t : public death_knight_pet_t
   struct ghoul_pet_melee_t : public ghoul_pet_melee_attack_t
   {
     ghoul_pet_melee_t( ghoul_pet_t* p ) :
-      ghoul_pet_melee_attack_t( "melee", p )
+      ghoul_pet_melee_attack_t( "auto_attack_mh", p )
     {
-      school          = SCHOOL_PHYSICAL;
+      auto_attack       = true;
+      school            = SCHOOL_PHYSICAL;
       base_execute_time = weapon -> swing_time;
       background        = true;
       repeating         = true;
@@ -1743,8 +1746,9 @@ struct fallen_zandalari_t : public death_knight_pet_t
   struct zandalari_melee_t : public zandalari_melee_attack_t
   {
     zandalari_melee_t( fallen_zandalari_t* p ) :
-      zandalari_melee_attack_t( "melee", p )
+      zandalari_melee_attack_t( "auto_attack_mh", p )
     {
+      auto_attack       = true;
       base_execute_time = weapon -> swing_time;
       background        = true;
       repeating         = true;
@@ -2244,6 +2248,7 @@ struct melee_t : public death_knight_melee_attack_t
   melee_t( const char* name, death_knight_t* p, int sw ) :
     death_knight_melee_attack_t( name, p ), sync_weapons( sw ), first ( true )
   {
+    auto_attack     = true;
     school          = SCHOOL_PHYSICAL;
     may_glance      = true;
     background      = true;
@@ -2359,13 +2364,13 @@ struct auto_attack_t : public death_knight_melee_attack_t
 
     assert( p -> main_hand_weapon.type != WEAPON_NONE );
 
-    p -> main_hand_attack = new melee_t( "melee_main_hand", p, sync_weapons );
+    p -> main_hand_attack = new melee_t( "auto_attack_mh", p, sync_weapons );
     p -> main_hand_attack -> weapon = &( p -> main_hand_weapon );
     p -> main_hand_attack -> base_execute_time = p -> main_hand_weapon.swing_time;
 
     if ( p -> off_hand_weapon.type != WEAPON_NONE )
     {
-      p -> off_hand_attack = new melee_t( "melee_off_hand", p, sync_weapons );
+      p -> off_hand_attack = new melee_t( "auto_attack_oh", p, sync_weapons );
       p -> off_hand_attack -> weapon = &( p -> off_hand_weapon );
       p -> off_hand_attack -> base_execute_time = p -> off_hand_weapon.swing_time;
       p -> off_hand_attack -> id = 1;
@@ -4333,12 +4338,6 @@ struct scourge_strike_t : public death_knight_melee_attack_t
 
       p() -> trigger_necrosis( state );
     }
-
-    virtual void init()
-    {
-      death_knight_melee_attack_t::init();
-      stats = p() -> get_stats( name(), this );
-    }
   };
 
   scourge_strike_t( death_knight_t* p, const std::string& options_str ) :
@@ -4353,6 +4352,7 @@ struct scourge_strike_t : public death_knight_melee_attack_t
 
     // TODO-WOD: Do we need to inherit damage or is it a separate roll in WoD?
     execute_action = new scourge_strike_shadow_t( p );
+    add_child( execute_action );
   }
 
   void impact( action_state_t* state )
@@ -5481,9 +5481,13 @@ void death_knight_t::init_action_list()
   std::string flask_str = "flask,type=";
   std::string food_str  = "food,type=";
   std::string potion_str = "potion,name=";
-  potion_str += ( level >= 85 ) ? "mogu_power" : "golemblood";
-  flask_str += ( level >= 85 ) ? "winters_bite" : "titanic_strength";
+  potion_str += ( level >= 90 ) ? "draenic_strength" : ( ( level >= 85 ) ? "mogu_power" : "golemblood" );
   food_str += ( level >= 85 ) ? "black_pepper_ribs_and_shrimp" : "beer_basted_crocolisk";
+
+  if ( tree == DEATH_KNIGHT_UNHOLY )
+    flask_str += ( level >= 90 ) ? "greater_draenic_multistrike_flask" : ( ( level >= 85 ) ? "winters_bite" : "titanic_strength" );
+  else
+    flask_str += ( level >= 90 ) ? "greater_draenic_haste_flask" : ( ( level >= 85 ) ? "winters_bite" : "titanic_strength" );
 
   if ( tree == DEATH_KNIGHT_FROST || tree == DEATH_KNIGHT_UNHOLY )
   

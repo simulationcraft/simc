@@ -15,13 +15,13 @@ spec=frost
 
 # Executed before combat begins. Accepts non-harmful actions only.
 
-actions.precombat=flask,type=winters_bite
+actions.precombat=flask,type=greater_draenic_haste_flask
 actions.precombat+=/food,type=black_pepper_ribs_and_shrimp
 actions.precombat+=/horn_of_winter
 actions.precombat+=/frost_presence
 # Snapshot raid buffed stats before combat begins and pre-potting is done.
 actions.precombat+=/snapshot_stats
-actions.precombat+=/potion,name=mogu_power
+actions.precombat+=/potion,name=draenic_strength
 actions.precombat+=/pillar_of_frost
 
 # Executed every time the actor is available.
@@ -30,7 +30,7 @@ actions=auto_attack
 actions+=/deaths_advance,if=talent.deaths_advance.enabled&movement.remains>2
 actions+=/antimagic_shell,damage=100000
 actions+=/pillar_of_frost
-actions+=/potion,name=mogu_power,if=target.time_to_die<=30|(target.time_to_die<=60&buff.pillar_of_frost.up)
+actions+=/potion,name=draenic_strength,if=target.time_to_die<=30|(target.time_to_die<=60&buff.pillar_of_frost.up)
 actions+=/empower_rune_weapon,if=target.time_to_die<=60&(buff.potion_of_mogu_power.up|buff.golemblood_potion.up)
 actions+=/blood_fury
 actions+=/berserking
