@@ -2564,6 +2564,13 @@ double player_t::composite_mitigation_versatility() const
   return cmv;
 }
 
+// player_t::composite_leech ================================================
+
+double player_t::composite_leech() const
+{
+  return composite_leech_rating() / current.rating.leech;
+}
+
 // player_t::composite_player_multiplier ====================================
 
 double player_t::composite_player_multiplier( school_e /* school */ ) const
@@ -8142,6 +8149,7 @@ void player_t::create_options()
     opt_float( "gear_readiness_rating", gear.readiness_rating ),
     opt_float( "gear_versatility_rating", gear.versatility_rating ),
     opt_float( "gear_bonus_armor",      gear.bonus_armor ),
+    opt_float( "gear_leech_rating",     gear.leech_rating ),
 
     // Stat Enchants
     opt_float( "enchant_strength",         enchant.attribute[ ATTR_STRENGTH  ] ),
@@ -8161,6 +8169,7 @@ void player_t::create_options()
     opt_float( "enchant_readiness_rating", enchant.readiness_rating ),
     opt_float( "enchant_versatility_rating", enchant.versatility_rating ),
     opt_float( "enchant_bonus_armor",      enchant.bonus_armor ),
+    opt_float( "enchant_leech_rating",     enchant.leech_rating ),
     opt_float( "enchant_health",           enchant.resource[ RESOURCE_HEALTH ] ),
     opt_float( "enchant_mana",             enchant.resource[ RESOURCE_MANA   ] ),
     opt_float( "enchant_rage",             enchant.resource[ RESOURCE_RAGE   ] ),
@@ -9028,6 +9037,17 @@ double player_stat_cache_t::mitigation_versatility() const
   }
   else assert( _mitigation_versatility == player -> composite_mitigation_versatility() );
   return _mitigation_versatility;
+}
+
+double player_stat_cache_t::leech() const
+{
+  if ( ! active || ! valid[ CACHE_LEECH ] )
+  {
+    valid[ CACHE_LEECH ] = true;
+    _leech = player -> composite_leech();
+  }
+  else assert( _leech == player -> composite_leech() );
+  return _leech;
 }
 
 // player_stat_cache_t::mastery =============================================

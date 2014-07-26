@@ -1378,6 +1378,7 @@ const char* util::cache_type_string( cache_e c )
     case CACHE_DAMAGE_VERSATILITY:  return "damage_versatility";
     case CACHE_HEAL_VERSATILITY:  return "heal_versatility";
     case CACHE_MITIGATION_VERSATILITY:  return "mitigation_versatility";
+    case CACHE_LEECH: return "leech";
 
     default: return "unknown";
   }
@@ -1524,6 +1525,8 @@ const char* util::stat_type_string( stat_e stat )
     case STAT_READINESS_RATING: return "readiness_rating";
     case STAT_VERSATILITY_RATING: return "versatility_rating";
 
+    case STAT_LEECH_RATING: return "leech_rating";
+
     case STAT_ALL: return "all";
 
     default: return "unknown";
@@ -1593,6 +1596,8 @@ const char* util::stat_type_abbrev( stat_e stat )
 
     case STAT_READINESS_RATING: return "Readiness";
 
+    case STAT_LEECH_RATING: return "Leech";
+
     case STAT_ALL: return "All";
 
     default: return "unknown";
@@ -1645,6 +1650,8 @@ const char* util::stat_type_wowhead( stat_e stat )
     case STAT_MULTISTRIKE_RATING: return "multistrike";
     case STAT_READINESS_RATING:   return "readiness";
     case STAT_VERSATILITY_RATING: return "versatility";
+
+    case STAT_LEECH_RATING: return "lifesteal";
 
     case STAT_MAX: return "__all";
     default: return "unknown";
@@ -2003,6 +2010,7 @@ stat_e util::translate_item_mod( int item_mod )
     case ITEM_MOD_STRENGTH_AGILITY:    return STAT_STR_AGI;
     case ITEM_MOD_STRENGTH_INTELLECT:  return STAT_STR_INT;
     case ITEM_MOD_VERSATILITY_RATING:  return STAT_VERSATILITY_RATING;
+    case ITEM_MOD_LEECH_RATING:        return STAT_LEECH_RATING;
     default:                           return STAT_NONE;
   }
 }
@@ -2035,6 +2043,7 @@ int util::translate_stat( stat_e stat )
     case STAT_STR_AGI:            return ITEM_MOD_STRENGTH_AGILITY;
     case STAT_STR_INT:            return ITEM_MOD_STRENGTH_INTELLECT;
     case STAT_VERSATILITY_RATING: return ITEM_MOD_VERSATILITY_RATING;
+    case STAT_LEECH_RATING:       return ITEM_MOD_LEECH_RATING;
     default:                      return ITEM_MOD_NONE;
   }
 }
@@ -2067,6 +2076,8 @@ stat_e util::translate_rating_mod( unsigned ratings )
     return STAT_MULTISTRIKE_RATING;
   else if ( ratings & RATING_MOD_READINESS )
     return STAT_READINESS_RATING;
+  else if ( ratings & RATING_MOD_LEECH )
+    return STAT_LEECH_RATING;
 
   return STAT_NONE;
 }

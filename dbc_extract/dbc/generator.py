@@ -493,8 +493,8 @@ class CombatRatingsDataGenerator(DataGenerator):
                         'Spell hit',    'Melee crit',   'Ranged crit', 'Spell crit', 'PvP Resilience',
                         'Melee haste',  'Ranged haste', 'Spell haste', 'Expertise',  'Mastery',
                         'PvP Power',    'Multistrike',  'Readiness',
-                        'Damage Versatility', 'Healing Versatility', 'Mitigation Versatility' ]
-    _combat_rating_ids = [ 2, 3, 4, 5, 6, 7, 8, 9, 10, 15, 17, 18, 19, 23, 25, 26, 11, 12, 28, 29, 30 ]
+                        'Damage Versatility', 'Healing Versatility', 'Mitigation Versatility', 'Leech' ]
+    _combat_rating_ids = [ 2, 3, 4, 5, 6, 7, 8, 9, 10, 15, 17, 18, 19, 23, 25, 26, 11, 12, 28, 29, 30, 16 ]
     def __init__(self, options):
         # Hardcode these, as we need two different kinds of databases for output, using the same combat rating ids
         self._dbc = [ 'gtCombatRatings' ]
