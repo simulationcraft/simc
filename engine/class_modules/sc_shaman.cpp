@@ -156,6 +156,7 @@ public:
     buff_t* ancestral_swiftness;
     buff_t* ascendance;
     buff_t* echo_of_the_elements;
+    buff_t* improved_chain_lightning;
     buff_t* lava_surge;
     buff_t* liquid_magma;
     buff_t* lightning_shield;
@@ -311,8 +312,6 @@ public:
   // Perks
   struct perks
   {
-    // Elemental
-
     // Enhancement
     const spell_data_t* improved_fire_totems;
     const spell_data_t* enhanced_unleash_elements;
@@ -324,6 +323,7 @@ public:
     const spell_data_t* improved_feral_spirit;
 
     // Elemental
+    const spell_data_t* improved_chain_lightning;
     const spell_data_t* improved_critical_strikes;
     const spell_data_t* improved_lightning_shield;
     const spell_data_t* improved_lightning_bolt;
@@ -441,6 +441,7 @@ public:
   void trigger_windfury_weapon( const action_state_t* );
   void trigger_flametongue_weapon( const action_state_t* );
   void trigger_improved_lava_lash( const action_state_t* );
+  void trigger_improved_chain_lightning( const action_state_t* );
   void trigger_tier15_2pc_caster( const action_state_t* );
   void trigger_tier16_2pc_melee( const action_state_t* );
   void trigger_tier16_4pc_melee( const action_state_t* );
@@ -2617,6 +2618,14 @@ struct chain_lightning_t : public shaman_spell_t
     return c;
   }
 
+  void execute()
+  {
+    shaman_spell_t::execute();
+
+    // Note, done in execute() to get the weird functionality working correctly
+    p() -> trigger_improved_chain_lightning( execute_state );
+  }
+
   void impact( action_state_t* state )
   {
     shaman_spell_t::impact( state );
@@ -2697,6 +2706,14 @@ struct lava_beam_t : public shaman_spell_t
     base_multiplier      *= 1.0 + p() -> spec.shamanism -> effectN( 2 ).percent();
     aoe                   = 5;
     base_add_multiplier   = data().effectN( 1 ).chain_multiplier();
+  }
+
+  void execute()
+  {
+    shaman_spell_t::execute();
+
+    // Note, done in execute() to get the weird functionality working correctly
+    p() -> trigger_improved_chain_lightning( execute_state );
   }
 
   void impact( action_state_t* state )
@@ -3137,6 +3154,74 @@ struct thunderstorm_t : public shaman_spell_t
   {
     aoe = -1;
     cooldown -> duration += player -> glyph.thunder -> effectN( 1 ).time_value();
+  }
+};
+
+// Earthquake Spell =========================================================
+
+struct earthquake_rumble_t : public shaman_spell_t
+{
+  earthquake_rumble_t( shaman_t* player ) :
+    shaman_spell_t( "earthquake_rumble", player, player -> find_spell( 77478 ) )
+  {
+    may_proc_eoe = false;
+    harmful = background = true;
+    aoe = -1;
+    school = SCHOOL_PHYSICAL;
+    spell_power_mod.direct = 0.1125; // Hardcoded into tooltip because it's cool
+  }
+
+  virtual double composite_spell_power() const
+  {
+    double sp = shaman_spell_t::composite_spell_power();
+
+    sp += player -> cache.spell_power( SCHOOL_NATURE );
+
+    return sp;
+  }
+
+  virtual double target_armor( player_t* ) const
+  { return 0; }
+};
+
+struct earthquake_t : public shaman_spell_t
+{
+  earthquake_t( shaman_t* player, const std::string& options_str ) :
+    shaman_spell_t( "earthquake", player, player -> find_specialization_spell( "Earthquake" ), options_str )
+  {
+    harmful = hasted_ticks = true;
+    may_miss = may_crit = may_proc_eoe = callbacks = false;
+
+    base_td = base_dd_min = base_dd_max = 0;
+    spell_power_mod.direct = 0;
+
+    tick_action = new earthquake_rumble_t( player );
+  }
+
+  void init()
+  {
+    shaman_spell_t::init();
+
+    update_flags &= ~STATE_HASTE;
+  }
+
+  timespan_t composite_dot_duration( const action_state_t* state ) const
+  { return dot_duration * state -> haste; }
+
+  void consume_resource()
+  {
+    shaman_spell_t::consume_resource();
+
+    p() -> buff.improved_chain_lightning -> expire();
+  }
+
+  double composite_persistent_multiplier( const action_state_t* state) const
+  {
+    double m = shaman_spell_t::composite_persistent_multiplier( state );
+
+    m *= 1.0 + p() -> buff.improved_chain_lightning -> check() * p() -> buff.improved_chain_lightning -> data().effectN( 1 ).percent();
+
+    return m;
   }
 };
 
@@ -4254,6 +4339,7 @@ action_t* shaman_t::create_action( const std::string& name,
   if ( name == "call_of_the_elements"    ) return new     call_of_the_elements_t( this, options_str );
   if ( name == "chain_lightning"         ) return new          chain_lightning_t( this, options_str );
   if ( name == "earth_shock"             ) return new              earth_shock_t( this, options_str );
+  if ( name == "earthquake"              ) return new               earthquake_t( this, options_str );
   if ( name == "earthliving_weapon"      ) return new       earthliving_weapon_t( this, options_str );
   if ( name == "elemental_blast"         ) return new          elemental_blast_t( this, options_str );
   if ( name == "elemental_mastery"       ) return new        elemental_mastery_t( this, options_str );
@@ -4493,6 +4579,7 @@ void shaman_t::init_spells()
   perk.improved_feral_spirit         = find_perk_spell( "Improved Feral Spirit" );
 
   // Perks - Elemental
+  perk.improved_chain_lightning      = find_perk_spell( "Improved Chain Lightning" );
   perk.improved_critical_strikes     = find_perk_spell( "Improved Critical Strikes" );
   perk.improved_lightning_shield     = find_perk_spell( "Improved Lightning Shield" );
   perk.improved_lightning_bolt       = find_perk_spell( "Improved Lightning Bolt" );
@@ -4818,6 +4905,25 @@ void shaman_t::trigger_improved_lava_lash( const action_state_t* state )
   action_improved_lava_lash -> schedule_execute();
 }
 
+void shaman_t::trigger_improved_chain_lightning( const action_state_t* state )
+{
+  if ( ! perk.improved_chain_lightning -> ok() )
+    return;
+
+  // Trigger as many stacks as there are targets, if the buff is not up
+  if ( ! buff.improved_chain_lightning -> check() )
+    buff.improved_chain_lightning -> trigger( state -> n_targets );
+  else
+  {
+    // Stacks are only refreshed if the new number is higher than the current
+    if ( state -> n_targets >= static_cast<size_t>( buff.improved_chain_lightning -> check() ) )
+    {
+      buff.improved_chain_lightning -> expire();
+      buff.improved_chain_lightning -> trigger( state -> n_targets );
+    }
+  }
+}
+
 // shaman_t::init_buffs =====================================================
 
 void shaman_t::create_buffs()
@@ -4898,6 +5004,9 @@ void shaman_t::create_buffs()
   buff.tier13_4pc_caster        = stat_buff_creator_t( this, "tier13_4pc_caster", find_spell( 105821 ) );
   buff.tier16_2pc_melee         = buff_creator_t( this, "tier16_2pc_melee", sets.set( SET_T16_2PC_MELEE ) -> effectN( 1 ).trigger() )
                                   .chance( static_cast< double >( sets.has_set_bonus( SET_T16_2PC_MELEE ) ) );
+
+  buff.improved_chain_lightning = buff_creator_t( this, "improved_chain_lightning", perk.improved_chain_lightning )
+                                  .max_stack( 5 );
 }
 
 // shaman_t::init_gains =====================================================

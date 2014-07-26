@@ -1350,6 +1350,7 @@ class SpellDataGenerator(DataGenerator):
           ( 145002, 0, False ),                         # Lightning Elemental nuke
           ( 157348, 5 ), ( 157331, 5 ),                 # Storm elemental spells
           ( 159101, 0 ), ( 159105, 0 ), ( 159103, 0 ),  # Echo of the Elements spec buffs
+          ( 157766, 0 ),                                # Improved Chain Lightning visible buff
         ),
         
         # Mage:
