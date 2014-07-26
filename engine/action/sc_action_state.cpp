@@ -41,7 +41,7 @@ void action_t::release_state( action_state_t* s )
 // state object is retrieved using get_state()
 void action_state_t::initialize()
 {
-  result = RESULT_NONE;
+  result = RESULT_NONE; result_type = RESULT_TYPE_NONE;
   block_result = BLOCK_RESULT_UNBLOCKED;
   result_raw = result_total = result_mitigated = result_absorbed = result_amount = blocked_amount = self_absorb_amount =  0;
 }
