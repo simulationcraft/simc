@@ -189,11 +189,11 @@ public:
     const spell_data_t* holy_insight;
     const spell_data_t* illuminated_healing;
     const spell_data_t* infusion_of_light;
-    const spell_data_t* judgments_of_the_wise;
+    const spell_data_t* judgments_of_the_wise;  // hidden
     const spell_data_t* plate_specialization;
     const spell_data_t* resolve;
     const spell_data_t* righteous_vengeance;
-    const spell_data_t* riposte;
+    const spell_data_t* riposte;   // hidden
     const spell_data_t* sacred_duty;
     const spell_data_t* sanctified_light;
     const spell_data_t* sanctity_of_battle;
@@ -598,9 +598,15 @@ private:
 public:
   typedef paladin_action_t base_t;
 
+  // Sanctity of Battle bools
+  bool hasted_cd;
+  bool hasted_gcd;
+
   paladin_action_t( const std::string& n, paladin_t* player,
                     const spell_data_t* s = spell_data_t::nil() ) :
-    ab( n, player, s )
+    ab( n, player, s ),
+    hasted_cd( ab::data().affected_by( player -> passives.sanctity_of_battle -> effectN( 1 ) ) ),
+    hasted_gcd( ab::data().affected_by( player -> passives.sanctity_of_battle -> effectN( 2 ) ) )
   {
   }
 
@@ -705,6 +711,23 @@ public:
       // trigger new "free hp finisher" buffs (e.g. Divine Purpose)
       trigger_free_hp_effects( c );
     }
+  }
+
+  virtual double cooldown_multiplier() { return 1.0; }
+
+  void update_ready( timespan_t cd = timespan_t::min() )
+  {
+    if ( hasted_cd )
+    {
+      if ( cd == timespan_t::min() && ab::cooldown && ab::cooldown -> duration > timespan_t::zero() )
+      {
+        cd = ab::cooldown -> duration;
+        cd *= ab::player -> cache.attack_haste();
+        cd *= cooldown_multiplier();
+      }
+    }
+
+    ab::update_ready( cd );
   }
 };
 
@@ -962,15 +985,6 @@ struct avengers_shield_t : public paladin_spell_t
       am *= 1.0 + p() -> buffs.holy_avenger -> data().effectN( 4 ).percent();
 
     return am;
-  }
-
-  // Sanctity of Battle reduces cooldown
-  virtual void update_ready( timespan_t cd_duration )
-  {
-    if ( p() -> passives.sanctity_of_battle -> ok() )
-      cd_duration = cooldown -> duration * p() -> cache.attack_haste();
-
-    paladin_spell_t::update_ready( cd_duration );
   }
 
   virtual void execute()
@@ -1676,17 +1690,6 @@ struct eternal_flame_t : public paladin_heal_t
     base_multiplier *= 1.0 + p -> passives.sword_of_light -> effectN( 3 ).percent();
   }
 
-  virtual void update_ready( timespan_t cd_duration )
-  {
-    // reduce cooldown if Sanctity of Battle present
-    if ( p() -> passives.sanctity_of_battle -> ok() )
-    {
-      cd_duration = cooldown -> duration * p() -> cache.attack_haste();
-    }
-
-    paladin_heal_t::update_ready( cd_duration );
-  }
-
   virtual double cost() const
   {
     // check for T16 4-pc tank effect
@@ -1915,15 +1918,6 @@ struct exorcism_t : public paladin_spell_t
     }
 
     return am;
-  }
-
-  virtual void update_ready( timespan_t cd_duration )
-  {
-    if ( p() -> passives.sanctity_of_battle -> ok() )
-    {
-      cd_duration = cooldown -> duration * p() -> cache.attack_haste();
-    }
-    paladin_spell_t::update_ready( cd_duration );
   }
 
   virtual void execute()
@@ -2549,7 +2543,8 @@ struct holy_shock_t : public paladin_heal_t
   double cooldown_mult;
 
   holy_shock_t( paladin_t* p, const std::string& options_str )
-    : paladin_heal_t( "holy_shock", p, p -> find_specialization_spell( "Holy Shock" ) )
+    : paladin_heal_t( "holy_shock", p, p -> find_specialization_spell( "Holy Shock" ) ),
+    cooldown_mult( 1.0 )
   {
     check_spec( PALADIN_HOLY );
     parse_options( NULL, options_str );
@@ -2559,7 +2554,7 @@ struct holy_shock_t : public paladin_heal_t
     double crit_increase = 0.0;
 
     // Bonuses from Sanctified Wrath need to be stored for future use
-    if ( ( p -> specialization() == PALADIN_HOLY ) && p -> find_talent_spell( "Sanctified Wrath" ) -> ok()  )
+    if ( ( p -> specialization() == PALADIN_HOLY ) && p -> spells.sanctified_wrath -> ok()  )
     {
       // the actual values of these are stored in spell 114232 rather than the spell returned by find_talent_spell
       cooldown_mult = p -> spells.sanctified_wrath -> effectN( 1 ).percent();
@@ -2604,13 +2599,14 @@ struct holy_shock_t : public paladin_heal_t
     paladin_heal_t::execute();
   }
 
-  virtual void update_ready( timespan_t cd_override )
+  double cooldown_multiplier()
   {
-    cd_override = cooldown -> duration;
+    double cdm = paladin_heal_t::cooldown_multiplier();
+    
     if ( p() -> buffs.avenging_wrath -> up() )
-      cd_override *= cooldown_mult;
+      cdm += cooldown_mult;
 
-    paladin_heal_t::update_ready( cd_override );
+    return cdm;
   }
 };
 
@@ -2638,16 +2634,6 @@ struct holy_wrath_t : public paladin_spell_t
     //Tooltip formula is suspect (has been wrong before) TODO: test
     spell_power_mod.direct = 2.686;      
 
-  }
-
-  //Sanctity of Battle reduces cooldown
-  virtual void update_ready( timespan_t cd_duration )
-  {
-    if ( p() -> passives.sanctity_of_battle -> ok() )
-    {
-      cd_duration = cooldown -> duration * p() -> cache.attack_haste();
-    }
-    paladin_spell_t::update_ready( cd_duration );
   }
 
   virtual double action_multiplier() const
@@ -3144,17 +3130,6 @@ struct word_of_glory_t : public paladin_heal_t
     base_multiplier *= 1.0 + p -> passives.sword_of_light -> effectN( 3 ).percent();
   }
 
-  virtual void update_ready( timespan_t cd_duration )
-  {
-    // reduce cooldown if Sanctity of Battle present
-    if ( p() -> passives.sanctity_of_battle -> ok() )
-    {
-      cd_duration = cooldown -> duration * p() -> cache.attack_haste();
-    }
-
-    paladin_heal_t::update_ready( cd_duration );
-  }
-
   virtual double cost() const
   {
     // check for T16 4-pc tank effect
@@ -3264,17 +3239,6 @@ struct harsh_word_t : public paladin_spell_t
 
   }
 
-  virtual void update_ready( timespan_t cd_duration )
-  {
-    // reduce cooldown if Sanctity of Battle present
-    if ( p() -> passives.sanctity_of_battle -> ok() )
-    {
-      cd_duration = cooldown -> duration * p() -> cache.attack_haste();
-    }
-
-    paladin_spell_t::update_ready( cd_duration );
-  }
-
   virtual double action_multiplier() const
   {
     double am = paladin_spell_t::action_multiplier();
@@ -3318,9 +3282,6 @@ struct paladin_melee_attack_t : public paladin_action_t< melee_attack_t >
   bool trigger_seal_of_justice;
   bool trigger_seal_of_truth;
 
-  // spell cooldown reduction flags
-  bool sanctity_of_battle;  //reduces some spell cooldowns/gcds by melee haste
-
   bool use2hspec;
 
   paladin_melee_attack_t( const std::string& n, paladin_t* p,
@@ -3331,7 +3292,6 @@ struct paladin_melee_attack_t : public paladin_action_t< melee_attack_t >
     trigger_seal_of_righteousness( false ),
     trigger_seal_of_justice( false ),
     trigger_seal_of_truth( false ),
-    sanctity_of_battle( false ),
     use2hspec( u2h )
   {
     may_crit = true;
@@ -3349,7 +3309,7 @@ struct paladin_melee_attack_t : public paladin_action_t< melee_attack_t >
   virtual timespan_t gcd() const
   {
 
-    if ( sanctity_of_battle )
+    if ( hasted_gcd )
     {
       timespan_t t = action_t::gcd();
       if ( t == timespan_t::zero() ) return timespan_t::zero();
@@ -3487,10 +3447,7 @@ struct crusader_strike_t : public paladin_melee_attack_t
 
     // CS triggers all seals
     trigger_seal = true;
-
-    // Sanctity of Battle reduces melee GCD
-    sanctity_of_battle = p -> passives.sanctity_of_battle -> ok();
-
+    
     // multiplier modification for T13 Retribution 2-piece bonus
     base_multiplier *= 1.0 + ( p -> sets.set( SET_T13_2PC_MELEE ) -> effectN( 1 ).percent() );
 
@@ -3514,17 +3471,6 @@ struct crusader_strike_t : public paladin_melee_attack_t
     }
 
     return am;
-  }
-
-  virtual void update_ready( timespan_t cd_duration )
-  {
-    // reduce cooldown if Sanctity of Battle present
-    if ( p() -> passives.sanctity_of_battle -> ok() )
-    {
-      cd_duration = cooldown -> duration * p() -> cache.attack_haste();
-    }
-
-    paladin_melee_attack_t::update_ready( cd_duration );
   }
 
   virtual void impact( action_state_t* s )
@@ -3582,7 +3528,6 @@ struct divine_storm_t : public paladin_melee_attack_t
 
     aoe                = -1;
     trigger_seal       = false;
-    sanctity_of_battle = true;
     trigger_seal_of_righteousness = true;
 
     if ( p -> glyphs.divine_storm -> ok() )
@@ -3734,10 +3679,7 @@ struct hammer_of_the_righteous_t : public paladin_melee_attack_t
     // link with Crusader Strike's cooldown
     cooldown = p -> get_cooldown( "crusader_strike" );
     cooldown -> duration = data().cooldown();
-
-    // Sanctity of Battle reduces melee GCD
-    sanctity_of_battle = p -> passives.sanctity_of_battle -> ok();
-
+    
     // HotR triggers all seals
     trigger_seal = true;
 
@@ -3748,16 +3690,6 @@ struct hammer_of_the_righteous_t : public paladin_melee_attack_t
 
     // Attach AoE proc as a child
     add_child( hotr_aoe );
-  }
-
-  virtual void update_ready( timespan_t cd_duration )
-  {
-    // reduce cooldown if Sanctity of Battle present
-    if ( p() -> passives.sanctity_of_battle -> ok() )
-    {
-      cd_duration = cooldown -> duration * p() -> cache.attack_haste();
-    }
-    paladin_melee_attack_t::update_ready( cd_duration );
   }
 
   virtual double action_multiplier() const
@@ -3811,9 +3743,6 @@ struct hammer_of_wrath_t : public paladin_melee_attack_t
       cooldown_mult( 1.0 )
   {
     parse_options( NULL, options_str );
-
-    // Sanctity of Battle reduces melee GCD
-    sanctity_of_battle = p -> passives.sanctity_of_battle -> ok();
 
     // Cannot be parried or blocked, but can be dodged
     may_parry    = false;
@@ -3873,23 +3802,14 @@ struct hammer_of_wrath_t : public paladin_melee_attack_t
     return am;
   }
 
-  virtual void update_ready( timespan_t cd_override )
+  double cooldown_multiplier()
   {
-    cd_override = cooldown -> duration;
-
-    // Reduction during AW - does nothing if Sanctified Wrath not talented
+    double cdm = paladin_melee_attack_t::cooldown_multiplier();
+    
     if ( p() -> buffs.avenging_wrath -> up() )
-    {
-      cd_override *= cooldown_mult;
-    }
+      cdm *= cooldown_mult;
 
-    // reduce cooldown if Sanctity of Battle present
-    if ( p() -> passives.sanctity_of_battle -> ok() )
-    {
-      cd_override *= p() -> cache.attack_haste();
-    }
-
-    paladin_melee_attack_t::update_ready( cd_override );
+    return cdm;
   }
 
   virtual bool ready()
@@ -3970,10 +3890,7 @@ struct judgment_t : public paladin_melee_attack_t
     : paladin_melee_attack_t( "judgment", p, p -> find_spell( "Judgment" ), true )
   {
     parse_options( NULL, options_str );
-
-    // Sanctity of Battle reduces melee GCD
-    sanctity_of_battle = p -> passives.sanctity_of_battle -> ok();
-
+    
     // Glyph of Judgment increases range
     range += p -> glyphs.judgment -> effectN( 1 ).base_value();
 
@@ -4090,20 +4007,6 @@ struct judgment_t : public paladin_melee_attack_t
     }
 
     return am;
-  }
-
-  // Cooldown reduction effects
-  virtual void update_ready( timespan_t cd_duration )
-  {
-    cd_duration = cooldown -> duration;
-
-    // Sanctity of Battle
-    if ( p() -> passives.sanctity_of_battle -> ok() )
-    {
-      cd_duration *= p() -> cache.attack_haste();
-    }
-
-    paladin_melee_attack_t::update_ready( cd_duration );
   }
 
   virtual bool ready()
@@ -4330,17 +4233,6 @@ struct shield_of_the_righteous_t : public paladin_melee_attack_t
     p() -> buffs.alabaster_shield -> expire();
   }
 
-  virtual void update_ready( timespan_t cd_duration )
-  {
-    // reduce cooldown if Sanctity of Battle present
-    if ( p() -> passives.sanctity_of_battle -> ok() )
-    {
-      cd_duration = cooldown -> duration * p() -> cache.attack_haste();
-    }
-
-    paladin_melee_attack_t::update_ready( cd_duration );
-  }
-
   virtual double action_multiplier() const
   {
     double am = paladin_melee_attack_t::action_multiplier();
@@ -4363,7 +4255,6 @@ struct templars_verdict_t : public paladin_melee_attack_t
                               true )
   {
     parse_options( NULL, options_str );
-    sanctity_of_battle = true;
     trigger_seal       = true;
 
     // Tier 13 Retribution 4-piece boosts damage
@@ -5466,9 +5357,9 @@ void paladin_t::init_spells()
   // Passives
 
   // Shared Passives
-  passives.boundless_conviction   = find_spell( 115675 ); // find_specialization_spell( "Boundless Conviction" ); FIX-ME: (not in our spell lists for some reason)
+  passives.boundless_conviction   = find_spell( 115675 ); // find_spell fails here
   passives.plate_specialization   = find_specialization_spell( "Plate Specialization" );
-  passives.sanctity_of_battle     = find_spell( 25956 ); // FIX-ME: find_specialization_spell( "Sanctity of Battle" )   (not in spell lists yet)
+  passives.sanctity_of_battle     = find_spell( 25956 );  // find_spell fails here
   passives.seal_of_insight        = find_class_spell( "Seal of Insight" );
 
   // Holy Passives
