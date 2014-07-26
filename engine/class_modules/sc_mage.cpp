@@ -4567,7 +4567,7 @@ void mage_t::apl_precombat()
   //Potions
   if ( sim -> allow_potions && level >= 80 )
   {
-    std::string potion_action = "potion,type=";
+    std::string potion_action = "potion,name=";
 
     if ( level <= 90 )
       potion_action += "jade_serpent" ;
