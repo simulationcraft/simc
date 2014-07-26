@@ -2550,15 +2550,6 @@ struct haunt_t : public warlock_spell_t
     }
   }
 
-  virtual double composite_crit() const
-  {
-    double cc = warlock_spell_t::composite_crit();
-     
-      cc += p() -> talents.grimoire_of_sacrifice -> effectN( 6 ).percent() * p() -> buffs.grimoire_of_sacrifice -> stack();
-
-    return cc;
-  }
-
   virtual void impact( action_state_t* s )
   {
 
