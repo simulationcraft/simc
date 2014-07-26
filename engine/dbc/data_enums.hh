@@ -7,6 +7,7 @@ enum item_bonus_type
   ITEM_BONUS_MOD       = 2,
   ITEM_BONUS_DESC      = 4,
   ITEM_BONUS_SUFFIX    = 5,
+  ITEM_BONUS_SOCKET    = 6, // TODO-WOD: Guess, based on data. Need an item with a socket in-beta to test
   ITEM_BONUS_REQ_LEVEL = 8,
 };
 

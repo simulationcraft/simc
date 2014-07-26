@@ -147,7 +147,6 @@ struct death_knight_td_t : public actor_pair_t
 
   debuff_t* debuffs_frost_vulnerability;
   debuff_t* debuffs_mark_of_sindragosa;
-  debuff_t* debuffs_necrotic_plague;
 
   int diseases() const
   {
@@ -542,9 +541,6 @@ inline death_knight_td_t::death_knight_td_t( player_t* target, death_knight_t* d
 
   debuffs_frost_vulnerability = buff_creator_t( *this, "frost_vulnerability", death_knight -> find_spell( 51714 ) );
   debuffs_mark_of_sindragosa = buff_creator_t( *this, "mark_of_sindragosa", death_knight -> find_spell( 155166 ) );
-  debuffs_necrotic_plague = buff_creator_t( *this, "necrotic_plague" )
-    .chance( 1 )
-    .max_stack( 15 );
 }
 
 inline void rune_t::fill_rune()
@@ -1968,6 +1964,9 @@ struct death_knight_action_t : public Base
 
     return m;
   }
+
+  virtual expr_t* create_expression( const std::string& name_str );
+
 private:
   void extract_rune_cost( const spell_data_t* spell )
   {
@@ -2177,6 +2176,7 @@ bool death_knight_melee_attack_t::ready()
 
   return group_runes( p(), cost_blood, cost_frost, cost_unholy, cost_death, use );
 }
+
 
 // ==========================================================================
 // Death Knight Spell Methods
@@ -2623,12 +2623,6 @@ struct necrotic_plague_t : public death_knight_spell_t
     return m;
   }
 
-  void last_tick( dot_t* dot )
-  {
-    death_knight_spell_t::last_tick( dot );
-    td( dot -> target ) -> debuffs_necrotic_plague -> expire();
-  }
-
   // Necrotic Plague duration will not be refreshed if it is already ticking on
   // the target, only the stack count will go up. Only Festering Strike is
   // allowed to extend the duration of the Necrotic Plague dot.
@@ -2640,12 +2634,14 @@ struct necrotic_plague_t : public death_knight_spell_t
       necrotic_plague_state_t* np_state = debug_cast<necrotic_plague_state_t*>( tdata -> dots_necrotic_plague -> state );
       if ( np_state -> stack < max_stack )
         np_state -> stack++;
-      td( s -> target ) -> debuffs_necrotic_plague -> increment();
     }
     else
-    {
       death_knight_spell_t::trigger_dot( s );
-      td( s -> target ) -> debuffs_necrotic_plague -> increment();
+
+    if ( sim -> debug )
+    {
+      necrotic_plague_state_t* np_state = debug_cast<necrotic_plague_state_t*>( tdata -> dots_necrotic_plague -> state );
+      sim -> out_debug.printf( "%s necrotic_plague stack increases to %d", player -> name(), np_state -> stack );
     }
   }
 
@@ -2657,11 +2653,10 @@ struct necrotic_plague_t : public death_knight_spell_t
     {
       necrotic_plague_state_t* np_state = debug_cast<necrotic_plague_state_t*>( dot -> state );
       if ( np_state -> stack < max_stack )
-      {
         np_state -> stack++;
-        td( dot -> target ) -> debuffs_necrotic_plague -> increment();
-      }
 
+      if ( sim -> debug )
+        sim -> out_debug.printf( "%s necrotic_plague stack %d", player -> name(), np_state -> stack );
       new ( *sim ) np_spread_event_t( dot );
     }
   }
@@ -4748,6 +4743,148 @@ struct death_pact_t : public death_knight_heal_t
   double base_da_max( const action_state_t* ) const
   { return p() -> resources.max[ RESOURCE_HEALTH ] * data().effectN( 1 ).percent(); }
 };
+
+// Expressions
+
+struct disease_expr_t : public expr_t
+{
+  enum type_e { TYPE_NONE, TYPE_MIN, TYPE_MAX };
+
+  type_e  type;
+  expr_t* bp_expr;
+  expr_t* ff_expr;
+  expr_t* np_expr;
+
+  double default_value;
+
+  disease_expr_t( const action_t* a, const std::string& expression, type_e t ) :
+    expr_t( "disease_expr" ), type( t ), bp_expr( 0 ), ff_expr( 0 ), np_expr( 0 ),
+    default_value( 0 )
+  {
+    death_knight_t* p = debug_cast< death_knight_t* >( a -> player );
+    if ( p -> talent.necrotic_plague -> ok() )
+      np_expr = a -> target -> get_dot( "necrotic_plague", p ) -> create_expression( p -> active_spells.necrotic_plague, expression, true );
+    else
+    {
+      bp_expr = a -> target -> get_dot( "blood_plague", p ) -> create_expression( p -> active_spells.blood_plague, expression, true );
+      ff_expr = a -> target -> get_dot( "frost_fever", p ) -> create_expression( p -> active_spells.frost_fever, expression, true );
+    }
+
+    if ( type == TYPE_MIN )
+      default_value = std::numeric_limits<double>::max();
+    else if ( type == TYPE_MAX )
+      default_value = std::numeric_limits<double>::min();
+  }
+
+  double evaluate()
+  {
+    double ret = default_value;
+
+    if ( bp_expr )
+    {
+      double val = bp_expr -> eval();
+      std::cout << "bp_expr=" << val << std::endl;
+      if ( type == TYPE_NONE && val != 0 )
+        return val;
+      else if ( type == TYPE_MIN && val < ret )
+        ret = val;
+      else if ( type == TYPE_MAX && val > ret )
+        ret = val;
+    }
+
+    if ( ff_expr )
+    {
+      double val = ff_expr -> eval();
+      std::cout << "ff_expr=" << val << std::endl;
+      if ( type == TYPE_NONE && val != 0 )
+        return val;
+      else if ( type == TYPE_MIN && val < ret )
+        ret = val;
+      else if ( type == TYPE_MAX && val > ret )
+        ret = val;
+    }
+
+    if ( np_expr )
+    {
+      double val = np_expr -> eval();
+      std::cout << "np_expr=" << val << std::endl;
+      if ( type == TYPE_NONE && val != 0 )
+        return val;
+      else if ( type == TYPE_MIN && val < ret )
+        ret = val;
+      else if ( type == TYPE_MAX && val > ret )
+        ret = val;
+    }
+
+    if ( ret == default_value )
+      ret = 0;
+
+    return ret;
+  }
+
+  ~disease_expr_t()
+  {
+    delete bp_expr;
+    delete ff_expr;
+    delete np_expr;
+  }
+};
+
+struct np_stack_expr_t : public expr_t
+{
+  action_t* action;
+
+  np_stack_expr_t( action_t* a ) :
+    expr_t( "np_stack_expr" ), action( a )
+  { }
+
+  double evaluate()
+  {
+    dot_t* d = action -> target -> get_dot( "necrotic_plague", action -> player );
+
+    if ( ! d -> is_ticking() )
+      return 0;
+
+    return debug_cast<necrotic_plague_t::necrotic_plague_state_t*>( d -> state ) -> stack;
+  }
+};
+
+template <class Base>
+expr_t* death_knight_action_t<Base>::create_expression( const std::string& name_str )
+{
+  std::vector<std::string> split = util::string_split( name_str, "." );
+  std::string name, expression;
+  disease_expr_t::type_e type = disease_expr_t::TYPE_NONE;
+
+  if ( split.size() == 3 && util::str_compare_ci( split[ 0 ], "dot" ) )
+  {
+    name = split[ 1 ];
+    expression = split[2];
+  }
+  else if ( split.size() == 2 )
+  {
+    name = split[ 0 ];
+    expression = split[ 1 ];
+  }
+
+  if ( util::str_in_str_ci( expression, "min_" ) )
+  {
+    type = disease_expr_t::TYPE_MIN;
+    expression = expression.substr( 4 );
+  }
+  else if ( util::str_in_str_ci( expression, "max_" ) )
+  {
+    type = disease_expr_t::TYPE_MAX;
+    expression = expression.substr( 4 );
+  }
+
+  if ( util::str_compare_ci( name, "disease" ) )
+    return new disease_expr_t( this, expression, type );
+  else if ( split[ 0 ] == "dot" && split[ 1 ] == "necrotic_plague" && split[ 2 ] == "stack" )
+    return new np_stack_expr_t( this );
+
+  return Base::create_expression( name_str );
+}
 
 // Buffs ====================================================================
 
