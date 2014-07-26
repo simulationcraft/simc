@@ -22,6 +22,8 @@ actions.precombat+=/arcane_brilliance
 actions.precombat+=/frost_armor
 actions.precombat+=/water_elemental
 actions.precombat+=/snapshot_stats
+actions.precombat+=/rune_of_power,if=talent.rune_of_power.enabled
+actions.precombat+=/mirror_image,if=talent.mirror_image.enabled
 actions.precombat+=/potion,name=draenic_intellect
 actions.precombat+=/frostbolt
 

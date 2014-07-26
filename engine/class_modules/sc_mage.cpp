@@ -4558,11 +4558,9 @@ void mage_t::apl_precombat()
   // Snapshot Stats
   precombat -> add_action( "snapshot_stats" );
 
-  // Prebuff L90 talents
-  if ( talents.mirror_image -> ok() )
-    precombat -> add_action( this, "Mirror Image" );
-  else if ( talents.rune_of_power -> ok() )
-    precombat -> add_talent( this, "Rune of Power" );
+  // Level 90 talents
+  precombat -> add_talent( this, "Rune of Power" );
+  precombat -> add_talent( this, "Mirror Image" );
 
   //Potions
   if ( sim -> allow_potions && level >= 80 )
