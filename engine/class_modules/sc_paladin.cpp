@@ -3887,7 +3887,7 @@ struct hand_of_light_proc_t : public paladin_melee_attack_t
     may_dodge   = false;
     may_parry   = false;
     may_glance  = false;
-    may_multistrike = true;
+    may_multistrike = 0;
     proc        = true;
     background  = true;
     trigger_gcd = timespan_t::zero();
