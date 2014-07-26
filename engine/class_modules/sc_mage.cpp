@@ -488,28 +488,6 @@ struct water_elemental_pet_t : public pet_t
       parse_options( NULL, options_str );
       may_crit = true;
     }
-
-    virtual void impact( action_state_t* s )
-    {
-      water_elemental_pet_t* p = static_cast<water_elemental_pet_t*>( player );
-
-      if ( p -> o() -> glyphs.icy_veins -> ok() && p -> o() -> buffs.icy_veins -> up() )
-        return;
-
-      spell_t::impact( s );
-    }
-
-    virtual double action_multiplier() const
-    {
-      double am = spell_t::action_multiplier();
-
-      water_elemental_pet_t* p = static_cast<water_elemental_pet_t*>( player );
-
-      if ( p -> o() -> glyphs.icy_veins -> ok() && p -> o() -> buffs.icy_veins -> up() )
-        am *= 0.4;
-
-      return am;
-    }
   };
 
   water_elemental_pet_t( sim_t* sim, mage_t* owner ) :
@@ -1132,7 +1110,7 @@ public:
   {
     double m = spell_t::composite_crit_multiplier();
     if ( frozen && p() -> passives.shatter -> ok() )
-      m *= 2.0;
+      m *= 1.5;
     return m;
   }
 
@@ -1868,10 +1846,12 @@ struct blizzard_shard_t : public mage_spell_t
     if ( result_is_hit( s -> result ) )
     {
       double fof_proc_chance = p() -> buffs.fingers_of_frost -> data().effectN( 2 ).percent();
-      if ( p() -> buffs.icy_veins -> up() && p() -> glyphs.icy_veins -> ok() )
+
+      // TODO: Verify that hidden FoF proc increase from glyph of IV is removed
+      /*if ( p() -> buffs.icy_veins -> up() && p() -> glyphs.icy_veins -> ok() )
       {
         fof_proc_chance *= 1.2;
-      }
+      }*/
       p() -> buffs.fingers_of_frost -> trigger( 1, buff_t::DEFAULT_VALUE(), fof_proc_chance );
     }
   }
@@ -2456,10 +2436,11 @@ struct frostbolt_t : public mage_spell_t
 
       fof_proc_chance += p() -> sets.set( SET_T15_4PC_CASTER ) -> effectN( 3 ).percent();
 
-      if ( p() -> buffs.icy_veins -> up() && p() -> glyphs.icy_veins -> ok() )
+      // TODO: Verify that hidden FoF proc increase from glyph of IV is removed
+      /*if ( p() -> buffs.icy_veins -> up() && p() -> glyphs.icy_veins -> ok() )
       {
         fof_proc_chance *= 1.2;
-      }
+      }*/
 
       p() -> buffs.fingers_of_frost -> trigger( 1, buff_t::DEFAULT_VALUE(), fof_proc_chance );
       p() -> buffs.brain_freeze -> trigger(1, buff_t::DEFAULT_VALUE(), bf_proc_chance );
@@ -2565,10 +2546,11 @@ struct frostfire_bolt_t : public mage_spell_t
     if ( result_is_hit( execute_state -> result ) )
     {
       double fof_proc_chance = p() -> buffs.fingers_of_frost -> data().effectN( 1 ).percent();
-      if ( p() -> buffs.icy_veins -> up() && p() -> glyphs.icy_veins -> ok() )
+      // TODO: Verify that hidden FoF proc increase from glyph of IV is removed
+      /*if ( p() -> buffs.icy_veins -> up() && p() -> glyphs.icy_veins -> ok() )
       {
         fof_proc_chance *= 1.2;
-      }
+      }*/
       p() -> buffs.fingers_of_frost -> trigger( 1, buff_t::DEFAULT_VALUE(), fof_proc_chance );
     }
     p() -> buffs.frozen_thoughts -> expire();
@@ -2637,12 +2619,7 @@ struct frostfire_bolt_t : public mage_spell_t
   {
     double am = mage_spell_t::action_multiplier();
 
-    if ( p() -> buffs.icy_veins -> up() && p() -> glyphs.icy_veins -> ok() )
-    {
-      am *= 0.4;
-    }
-
-//FFB's damage can be increase by 2pT16 too
+    // 2T16
     if ( p() -> buffs.frozen_thoughts -> up() )
     {
       am *= ( 1.0 + p() -> buffs.frozen_thoughts -> data().effectN( 1 ).percent() );
@@ -2672,10 +2649,11 @@ struct frozen_orb_bolt_t : public mage_spell_t
 
     double fof_proc_chance = p() -> buffs.fingers_of_frost -> data().effectN( 1 ).percent();
 
-    if ( p() -> buffs.icy_veins -> up() && p() -> glyphs.icy_veins -> ok() )
+    // TODO: Verify that hidden FoF proc increase from glyph of IV is removed
+    /*if ( p() -> buffs.icy_veins -> up() && p() -> glyphs.icy_veins -> ok() )
     {
       fof_proc_chance *= 1.2;
-    }
+    }*/
     p() -> buffs.fingers_of_frost -> trigger( 1, buff_t::DEFAULT_VALUE(), fof_proc_chance );
   }
 };
@@ -2798,7 +2776,7 @@ struct ice_lance_t : public mage_spell_t
 
     if ( p() -> buffs.fingers_of_frost -> up() )
     {
-      am *= 4.0; // Built in bonus against frozen targets
+      am *= 2.0; // Built in bonus against frozen targets
       am *= 1.0 + fof_multiplier; // Buff from Fingers of Frost
     }
 
