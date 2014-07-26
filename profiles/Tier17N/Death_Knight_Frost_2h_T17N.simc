@@ -4,7 +4,7 @@ race=orc
 role=attack
 position=back
 professions=blacksmithing=600/engineering=600
-talents=http://us.battle.net/wow/en/tool/talent-calculator#dZ!1...0..
+talents=http://us.battle.net/wow/en/tool/talent-calculator#dZ!1...0.0
 spec=frost
 
 # This default action priority list is automatically created based on your character.

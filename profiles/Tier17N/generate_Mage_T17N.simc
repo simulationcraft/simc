@@ -1,11 +1,8 @@
 talent_format=armory
-
-
 mage=Mage_Frost_T17N
 level=100
 race=troll
 spec=frost
-professions=tailoring=600/engineering=600
 talents=1000112
 glyphs=icy_veins/splitting_ice
 head=primal_gladiators_hood_of_prowess,id=111084
@@ -26,12 +23,10 @@ main_hand=primal_gladiators_mageblade,id=111119,enchant=mark_of_the_frostwolf
 off_hand=primal_gladiators_endgame,id=111132
 save=Mage_Frost_T17N.simc
 
-
 mage=Mage_Arcane_T17N
 level=100
 race=troll
 spec=arcane
-professions=tailoring=600/engineering=600
 talents=1000212
 glyphs=arcane_power
 head=primal_gladiators_hood_of_prowess,id=111084
@@ -52,12 +47,10 @@ main_hand=primal_gladiators_mageblade,id=111119,enchant=mark_of_warsong
 off_hand=primal_gladiators_endgame,id=111132
 save=Mage_Arcane_T17N.simc
 
-
 mage=Mage_Fire_T17N
 level=100
 race=troll
 spec=fire
-professions=tailoring=600/engineering=600
 talents=1000313
 glyphs=combustion
 head=primal_gladiators_hood_of_prowess,id=111084

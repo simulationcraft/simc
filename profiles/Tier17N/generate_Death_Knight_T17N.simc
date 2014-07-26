@@ -8,7 +8,7 @@ spec=unholy
 role=attack
 position=back
 professions=blacksmithing=600/engineering=600
-talents=300010
+talents=3000101
 head=primal_gladiators_plate_helm,id=111241
 neck=primal_gladiators_choker_of_cruelty,id=111207,enchant=gift_of_mastery
 shoulders=primal_gladiators_plate_shoulders,id=111243
@@ -33,7 +33,7 @@ spec=frost
 role=attack
 position=back
 professions=blacksmithing=600/engineering=600
-talents=200010
+talents=2000101
 glyphs=
 head=primal_gladiators_plate_helm,id=111241
 neck=primal_gladiators_choker_of_cruelty,id=111207,enchant=gift_of_haste
@@ -59,7 +59,7 @@ spec=frost
 role=attack
 position=back
 professions=blacksmithing=600/engineering=600
-talents=200010
+talents=2000101
 glyphs=
 head=primal_gladiators_plate_helm,id=111241
 neck=primal_gladiators_choker_of_cruelty,id=111207,enchant=gift_of_mastery

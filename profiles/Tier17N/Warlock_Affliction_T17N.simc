@@ -3,8 +3,7 @@ level=100
 race=troll
 role=spell
 position=back
-professions=engineering=600/tailoring=600
-talents=http://us.battle.net/wow/en/tool/talent-calculator#Va!....00.
+talents=http://us.battle.net/wow/en/tool/talent-calculator#Va!....000
 talent_override=grimoire_of_service,if=active_enemies>3
 spec=affliction
 

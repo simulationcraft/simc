@@ -3,8 +3,7 @@ level=100
 race=blood_elf
 role=tank
 position=front
-professions=Blacksmithing=600/Enchanting=600
-talents=http://us.battle.net/wow/en/tool/talent-calculator#bZ!201121.
+talents=http://us.battle.net/wow/en/tool/talent-calculator#bZ!2011212
 glyphs=focused_shield/alabaster_shield/divine_protection
 spec=protection
 

@@ -4,8 +4,7 @@ warlock=Warlock_Affliction_T17N
 level=100
 race=troll
 spec=affliction
-professions=engineering=600/tailoring=600
-talents=000011
+talents=0000111
 talent_override=grimoire_of_service,if=active_enemies>3
 head=primal_gladiators_cowl_of_cruelty,id=111089
 neck=primal_gladiators_pendant_of_prowess,id=111129,enchant=gift_of_mastery
@@ -29,8 +28,7 @@ warlock=Warlock_Demonology_T17N
 level=100
 race=troll
 spec=demonology
-professions=engineering=600/tailoring=600
-talents=000021
+talents=0000213
 head=primal_gladiators_cowl_of_cruelty,id=111089
 neck=primal_gladiators_pendant_of_prowess,id=111129,enchant=gift_of_mastery
 shoulders=primal_gladiators_felweave_amice,id=111238
@@ -54,8 +52,7 @@ level=100
 race=troll
 role=spell
 spec=destruction
-professions=Engineering=600/Tailoring=600
-talents=000011
+talents=0000111
 head=primal_gladiators_hood_of_prowess,id=111084
 neck=primal_gladiators_pendant_of_cruelty,id=111128,enchant=gift_of_multistrike
 shoulders=primal_gladiators_felweave_amice,id=111238

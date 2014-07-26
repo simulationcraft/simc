@@ -3,7 +3,6 @@ level=100
 race=night_elf
 role=attack
 position=back
-professions=engineering=600/alchemy=600
 talents=http://us.battle.net/wow/en/tool/talent-calculator#UZ!...1..1
 glyphs=savage_roar/master_shapeshifter
 spec=feral

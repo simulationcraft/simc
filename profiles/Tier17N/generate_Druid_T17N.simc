@@ -8,7 +8,6 @@ race=night_elf
 spec=guardian
 role=tank
 position=front
-professions=engineering=600/alchemy=600
 talents=0101012
 head=primal_gladiators_headcover,id=111285
 neck=primal_gladiators_necklace_of_prowess,id=111080,enchant=gift_of_mastery
@@ -34,7 +33,6 @@ race=night_elf
 spec=feral
 role=attack
 position=back
-professions=engineering=600/alchemy=600
 talents=0002002
 glyphs=savage_roar/master_shapeshifter
 head=primal_gladiators_headcover,id=111285
@@ -59,9 +57,7 @@ druid="Druid_Balance_T17N"
 level=100
 race=troll
 spec=balance
-professions=engineering=600/blacksmithing=600
 talents=0102012
-
 head=primal_gladiators_dragonhide_helm,id=111108
 neck=primal_gladiators_pendant_of_cruelty,id=111128,enchant=gift_of_mastery
 shoulder=primal_gladiators_spaulders,id=111277

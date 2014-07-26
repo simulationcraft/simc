@@ -5,10 +5,9 @@ paladin="Paladin_Retribution_T17N"
 level=100
 race=blood_elf
 role=attack
-talents=211213
+talents=2112133
 glyphs=winged_vengeance/templars_verdict/righteous_retreat/hand_of_sacrifice/fire_from_the_heavens/judgment/
 spec=retribution
-
 head=primal_gladiators_scaled_helm,id=111171
 neck=primal_gladiators_choker_of_prowess,id=111208,enchant=gift_of_haste
 shoulder=primal_gladiators_plate_shoulders,id=111213
@@ -27,13 +26,12 @@ main_hand=primal_gladiators_greatsword,id=111204,enchant=mark_of_the_frostwolf
 save=Paladin_Retribution_T17N.simc
 
 paladin="Paladin_Protection_T17N"
-talents=312232
+talents=3122323
 level=100
 race=blood_elf
 spec=protection
 role=tank
 position=front
-professions=Blacksmithing=600/Enchanting=600
 glyphs=focused_shield/alabaster_shield/divine_protection
 head=primal_gladiators_plate_helm,id=111211
 neck=primal_gladiators_choker_of_cruelty,id=111207,enchant=gift_of_haste

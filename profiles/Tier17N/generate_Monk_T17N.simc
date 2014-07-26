@@ -9,8 +9,7 @@ race=troll
 spec=windwalker
 role=hybrid
 position=back
-professions=blacksmithing=600/engineering=600
-talents=113332
+talents=1133323
 head=primal_gladiators_helm,id=111275
 neck=primal_gladiators_necklace_of_cruelty,id=111079,enchant=gift_of_multistrike
 shoulders=primal_gladiators_spaulders,id=111277
@@ -36,8 +35,7 @@ race=troll
 spec=windwalker
 role=hybrid
 position=back
-professions=blacksmithing=600/engineering=600
-talents=113332
+talents=1133323
 head=primal_gladiators_helm,id=111275
 neck=primal_gladiators_necklace_of_cruelty,id=111079,enchant=gift_of_multistrike
 shoulders=primal_gladiators_spaulders,id=111277
