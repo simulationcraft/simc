@@ -17,7 +17,7 @@ spec=protection
 # Executed before combat begins. Accepts non-harmful actions only.
 
 actions.precombat=flask,type=greater_draenic_critical_strike_flask
-actions.precombat+=/food,type=blackrock_barbecue
+actions.precombat+=/food,type=nagrand_tempura
 actions.precombat+=/stance,choose=gladiator,if=talent.gladiators_resolve.enabled
 actions.precombat+=/stance,choose=defensive,if=!talent.gladiators_resolve.enabled
 # Snapshot raid buffed stats before combat begins and pre-potting is done.

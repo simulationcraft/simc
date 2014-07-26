@@ -16,8 +16,8 @@ spec=protection
 
 # Executed before combat begins. Accepts non-harmful actions only.
 
-actions.precombat=flask,type=earth
-actions.precombat+=/food,type=chun_tian_spring_rolls
+actions.precombat=flask,type=greater_draenic_haste_flask
+actions.precombat+=/food,type=frosty_stew
 actions.precombat+=/blessing_of_kings,if=(!aura.str_agi_int.up)&(aura.mastery.up)
 actions.precombat+=/blessing_of_might,if=!aura.mastery.up
 actions.precombat+=/seal_of_insight

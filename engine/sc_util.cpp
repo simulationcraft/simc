@@ -1108,7 +1108,7 @@ const char* util::food_type_string( food_e food )
     case FOOD_GORGROND_CHOWDER:                 return "gorgrond_chowder";
     case FOOD_GRILLED_GULPER:                   return "grilled_gulper";
     case FOOD_HEARTY_ELEKK_STEAK:               return "hearty_elekk_steak";
-    case FOOD_NAGRAND_TEMPURA:                  return "nagrant_tempura";
+    case FOOD_NAGRAND_TEMPURA:                  return "nagrand_tempura";
     case FOOD_PAN_SEARED_TALBUK:                return "pan_seared_talbuk";
     case FOOD_RYLAK_CREPES:                     return "rylak_crepes";
     case FOOD_SALTED_SKULKER:                   return "salted_skulker";

@@ -15,13 +15,13 @@ spec=unholy
 
 # Executed before combat begins. Accepts non-harmful actions only.
 
-actions.precombat=flask,type=winters_bite
+actions.precombat=flask,type=greater_draenic_multistrike_flask
 actions.precombat+=/food,type=black_pepper_ribs_and_shrimp
 actions.precombat+=/horn_of_winter
 actions.precombat+=/unholy_presence
 # Snapshot raid buffed stats before combat begins and pre-potting is done.
 actions.precombat+=/snapshot_stats
-actions.precombat+=/potion,name=mogu_power
+actions.precombat+=/potion,name=draenic_strength
 actions.precombat+=/raise_dead
 
 # Executed every time the actor is available.
@@ -33,7 +33,7 @@ actions+=/blood_fury
 actions+=/berserking
 actions+=/arcane_torrent
 actions+=/use_item,slot=trinket1
-actions+=/potion,name=mogu_power,if=buff.dark_transformation.up&target.time_to_die<=60
+actions+=/potion,name=draenic_strength,if=buff.dark_transformation.up&target.time_to_die<=60
 actions+=/run_action_list,name=aoe,if=active_enemies>=3
 actions+=/run_action_list,name=single_target,if=active_enemies<3
 

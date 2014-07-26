@@ -16,15 +16,15 @@ spec=retribution
 
 # Executed before combat begins. Accepts non-harmful actions only.
 
-actions.precombat=flask,type=winters_bite
-actions.precombat+=/food,type=black_pepper_ribs_and_shrimp
+actions.precombat=flask,type=greater_draenic_multistrike_flask
+actions.precombat+=/food,type=calamari_crepes
 actions.precombat+=/blessing_of_kings,if=!aura.str_agi_int.up
 actions.precombat+=/blessing_of_might,if=!aura.mastery.up
 actions.precombat+=/seal_of_truth,if=active_enemies<4
 actions.precombat+=/seal_of_righteousness,if=active_enemies>=4
 # Snapshot raid buffed stats before combat begins and pre-potting is done.
 actions.precombat+=/snapshot_stats
-actions.precombat+=/potion,name=mogu_power
+actions.precombat+=/potion,name=draenic_strength
 
 # Executed every time the actor is available.
 

@@ -4978,7 +4978,11 @@ void paladin_t::generate_action_prio_list_prot()
   if ( sim -> allow_flasks && level >= 80 )
   {
     std::string flask_action = "flask,type=";
-    flask_action += ( level > 85 ) ? "earth" : "steelskin";
+    if ( level >= 90 )
+      flask_action += "greater_draenic_haste_flask";
+    else
+      flask_action += ( level > 85 ) ? "earth" : "steelskin";
+
     precombat -> add_action( flask_action );
   }
 
@@ -4986,7 +4990,11 @@ void paladin_t::generate_action_prio_list_prot()
   if ( sim -> allow_food && level >= 80 )
   {
     std::string food_action = "food,type=";
-    food_action += ( level > 85 ) ? "chun_tian_spring_rolls" : "seafood_magnifique_feast";
+    if ( level >= 90 )
+      food_action += "frosty_stew";
+    else
+      food_action += ( level > 85 ) ? "chun_tian_spring_rolls" : "seafood_magnifique_feast";
+
     precombat -> add_action( food_action );
   }
 
@@ -5075,7 +5083,11 @@ void paladin_t::generate_action_prio_list_ret()
   if ( sim -> allow_flasks && level >= 80 )
   {
     std::string flask_action = "flask,type=";
-    flask_action += ( level > 85 ) ? "winters_bite" : "titanic_strength";
+    if ( level >= 90 )
+      flask_action += "greater_draenic_multistrike_flask";
+    else
+      flask_action += ( level > 85 ) ? "winters_bite" : "titanic_strength";
+
     precombat -> add_action( flask_action );
   }
 
@@ -5083,7 +5095,11 @@ void paladin_t::generate_action_prio_list_ret()
   if ( sim -> allow_food && level >= 80 )
   {
     std::string food_action = "food,type=";
-    food_action += ( level > 85 ) ? "black_pepper_ribs_and_shrimp" : "beer_basted_crocolisk";
+    if ( level >= 90 )
+      food_action += "calamari_crepes";
+    else
+      food_action += ( level > 85 ) ? "black_pepper_ribs_and_shrimp" : "beer_basted_crocolisk";
+
     precombat -> add_action( food_action );
   }
 
@@ -5097,7 +5113,12 @@ void paladin_t::generate_action_prio_list_ret()
 
   // Pre-potting
   if ( sim -> allow_potions && level >= 80 )
-    precombat -> add_action( ( level > 85 ) ? "potion,name=mogu_power" : "potion,name=golemblood" );
+  {
+    if ( level >= 90 )
+      precombat -> add_action( "potion,name=draenic_strength" );
+    else
+      precombat -> add_action( ( level > 85 ) ? "potion,name=mogu_power" : "potion,name=golemblood" );
+  }
 
   ///////////////////////
   // Action Priority List

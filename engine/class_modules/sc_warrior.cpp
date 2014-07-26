@@ -3747,9 +3747,12 @@ void warrior_t::apl_precombat()
   if ( sim -> allow_food )
   {
     std::string food_action = "food,type=";
-    if ( level >= 90 )
+    if ( level >= 90 && specialization() != WARRIOR_PROTECTION )
       food_action += "blackrock_barbecue";
     else
+        food_action += "nagrand_tempura";
+
+    if ( level < 90 )
     {
       if ( primary_role() == ROLE_ATTACK )
         food_action += "black_pepper_ribs_and_shrimp";
