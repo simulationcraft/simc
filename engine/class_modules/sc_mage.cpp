@@ -4757,10 +4757,11 @@ void mage_t::apl_frost()
   default_list -> add_action( this, "Time Warp", "if=target.health.pct<25|time>5" );
   //not useful if bloodlust is check in option.
 
+  default_list -> add_talent( this, "Mirror Image" );
   default_list -> add_talent( this, "Rune of Power", "if=buff.rune_of_power.remains<cast_time" );
   default_list -> add_talent( this, "Rune of Power", "if=cooldown.icy_veins.remains=0&buff.rune_of_power.remains<20" );
 
-  default_list -> add_action( this, "Evocation", "if=!talent.invocation.enabled&mana.pct<50,interrupt_if=mana.pct>95" );
+  default_list -> add_talent( this, "Prismatic Crystal");
   default_list -> add_action( this, "Mirror Image" );
   default_list -> add_action( this, "Frozen Orb", "if=buff.fingers_of_frost.stack<2" );
   default_list -> add_action( this, "Icy Veins", "if=(time_to_bloodlust>160&(buff.brain_freeze.react|buff.fingers_of_frost.react))|target.time_to_die<22,moving=0" );
@@ -4772,9 +4773,9 @@ void mage_t::apl_frost()
     default_list -> add_action( item_actions[i] );
 
   default_list -> add_action( this, "Flamestrike", "if=active_enemies>=5" );
-  default_list -> add_talent( this, "Frost Bomb", "if=target.time_to_die>cast_time+tick_time" );
-  default_list -> add_action( this, "Ice Lance", "if=buff.fingers_of_frost.up" );
-  default_list -> add_action( this, "Ice Lance", "if=buff.fingers_of_frost.react&cooldown.icy_veins.remains>2*action.frostbolt.execute_time" );
+  default_list -> add_talent( this, "Frost Bomb", "if=debuff.frost_bomb.remains<cast_time&buff.fingers_of_frost.stack>=2" );
+  default_list -> add_action( this, "Ice Lance", "if=buff.fingers_of_frost.react&debuff.frost_bomb.remains>travel_time" );
+  default_list -> add_action( this, "Frostfire Bolt", "if=buff.brain_freeze.react" );
   default_list -> add_action( this, "Frostbolt" );
   default_list -> add_talent( this, "Ice Floes", "moving=1" );
   default_list -> add_action( this, "Ice Lance", "moving=1" );
