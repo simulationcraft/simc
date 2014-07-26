@@ -94,7 +94,6 @@ public:
     buffs::ardent_defender_buff_t* ardent_defender;
     buffs::avenging_wrath_buff_t* avenging_wrath;
     buff_t* bastion_of_glory;
-    buff_t* bladed_armor;
     buff_t* daybreak;
     buff_t* divine_protection;
     buff_t* divine_purpose;
@@ -179,6 +178,7 @@ public:
   // Passives
   struct passives_t
   {
+    const spell_data_t* bladed_armor;
     const spell_data_t* boundless_conviction;
     const spell_data_t* daybreak;
     const spell_data_t* divine_bulwark;
@@ -4950,10 +4950,8 @@ void paladin_t::create_buffs()
   buffs.favor_of_the_kings     = buff_creator_t( this, "favor_of_the_kings", find_spell( 144622 ) );
 
   // Prot
-  buffs.bastion_of_power       = buff_creator_t( this, "bastion_of_power", find_spell( 144569 ) );
-  buffs.bastion_of_glory       = buff_creator_t( this, "bastion_of_glory", find_spell( 114637 ) );
-  buffs.bladed_armor           = buff_creator_t( this, "bladed_armor", find_specialization_spell( "Bladed Armor" ) )
-                                 .add_invalidate( CACHE_ATTACK_POWER );
+  buffs.bastion_of_power               = buff_creator_t( this, "bastion_of_power", find_spell( 144569 ) );
+  buffs.bastion_of_glory               = buff_creator_t( this, "bastion_of_glory", find_spell( 114637 ) );
   buffs.guardian_of_ancient_kings      = buff_creator_t( this, "guardian_of_ancient_kings", find_specialization_spell( "Guardian of Ancient Kings" ) )
                                           .cd( timespan_t::zero() ); // let the ability handle the CD
   buffs.grand_crusader                 = buff_creator_t( this, "grand_crusader" ).spell( passives.grand_crusader -> effectN( 1 ).trigger() ).chance( passives.grand_crusader -> proc_chance() );
@@ -5480,6 +5478,7 @@ void paladin_t::init_spells()
   passives.sanctified_light       = find_specialization_spell( "Sanctified Light" );
 
   // Prot Passives
+  passives.bladed_armor           = find_specialization_spell( "Bladed Armor" );
   passives.grand_crusader         = find_specialization_spell( "Grand Crusader" );
   passives.guarded_by_the_light   = find_specialization_spell( "Guarded by the Light" );
   passives.judgments_of_the_wise  = find_specialization_spell( "Judgments of the Wise" );
@@ -5942,8 +5941,7 @@ double paladin_t::composite_melee_attack_power() const
 {
   double ap = player_t::composite_melee_attack_power();
 
-  // can skip the conditional here, buffs.bladed_armor is a spell_not_found for holy/ret
-  ap += buffs.bladed_armor -> data().effectN( 1 ).percent() * current.stats.get_stat( STAT_BONUS_ARMOR );
+  ap += passives.bladed_armor -> effectN( 1 ).percent() * current.stats.get_stat( STAT_BONUS_ARMOR );
 
   return ap;
 }
@@ -6163,6 +6161,9 @@ void paladin_t::invalidate_cache( cache_e c )
   if ( c == CACHE_ATTACK_CRIT && specialization() == PALADIN_PROTECTION )
     player_t::invalidate_cache( CACHE_PARRY );
 
+  if ( c == CACHE_BONUS_ARMOR && passives.bladed_armor -> ok() )
+    player_t::invalidate_cache( CACHE_ATTACK_POWER );
+
   if ( c == CACHE_MASTERY && passives.divine_bulwark -> ok() )
   {
     player_t::invalidate_cache( CACHE_BLOCK );
@@ -6348,9 +6349,6 @@ void paladin_t::combat_begin()
 
   if ( passives.resolve -> ok() )
     resolve_manager.start();
-
-  if ( find_specialization_spell( "Bladed Armor" ) )
-    buffs.bladed_armor -> trigger();
 }
 
 // paladin_t::holy_power_stacks =============================================
