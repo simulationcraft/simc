@@ -3189,7 +3189,7 @@ struct earthquake_t : public shaman_spell_t
   earthquake_t( shaman_t* player, const std::string& options_str ) :
     shaman_spell_t( "earthquake", player, player -> find_specialization_spell( "Earthquake" ), options_str )
   {
-    harmful = hasted_ticks = true;
+    harmful = hasted_ticks = uses_eoe = true;
     may_miss = may_crit = may_proc_eoe = callbacks = false;
 
     base_td = base_dd_min = base_dd_max = 0;
