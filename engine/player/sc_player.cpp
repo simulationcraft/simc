@@ -1597,6 +1597,7 @@ void player_t::init_gains()
   gains.vampiric_embrace       = get_gain( "vampiric_embrace" );
   gains.vampiric_touch         = get_gain( "vampiric_touch" );
   gains.water_elemental        = get_gain( "water_elemental" );
+  gains.leech                  = get_gain( "leech" );
 }
 
 // player_t::init_procs =====================================================
@@ -2791,6 +2792,8 @@ double player_t::composite_rating( rating_e rating ) const
       v = current.stats.multistrike_rating; break;
     case RATING_READINESS:
       v = current.stats.readiness_rating; break;
+    case RATING_LEECH:
+      v = current.stats.leech_rating; break;
     default: break;
   }
 

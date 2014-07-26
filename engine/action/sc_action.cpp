@@ -1382,6 +1382,9 @@ void action_t::assess_damage( dmg_e    type,
     }
   }
 
+  if ( s -> result_amount > 0 && composite_leech( s ) > 0 )
+    player -> resource_gain( RESOURCE_HEALTH, composite_leech( s ) * s -> result_amount, player -> gains.leech );
+
   // New callback system; proc spells on impact. 
   // Note: direct_tick_callbacks should not be used with the new system, 
   // override action_t::proc_type() instead

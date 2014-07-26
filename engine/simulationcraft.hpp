@@ -3825,7 +3825,7 @@ public:
   double damage_versatility() const { return _player -> composite_damage_versatility(); }
   double heal_versatility() const { return _player -> composite_heal_versatility(); }
   double mitigation_versatility() const { return _player -> composite_mitigation_versatility(); }
-  double leeh() const { return _player -> composite_leech(); }
+  double leech() const { return _player -> composite_leech(); }
 #endif
 };
 
@@ -4486,6 +4486,8 @@ struct player_t : public actor_t
     gain_t* vampiric_embrace;
     gain_t* vampiric_touch;
     gain_t* water_elemental;
+
+    gain_t* leech;
   } gains;
 
   struct procs_t
