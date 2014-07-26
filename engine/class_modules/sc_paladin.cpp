@@ -90,42 +90,50 @@ public:
   // Buffs
   struct buffs_t
   {
-    buff_t* alabaster_shield;
+    // core
     buffs::ardent_defender_buff_t* ardent_defender;
     buffs::avenging_wrath_buff_t* avenging_wrath;
     buff_t* bastion_of_glory;
-    buff_t* bastion_of_power; // t16_4pc_tank
     buff_t* bladed_armor;
-    buff_t* blessed_life;
     buff_t* daybreak;
-    buff_t* divine_crusader; // t16_4pc_melee
     buff_t* divine_protection;
     buff_t* divine_purpose;
     buff_t* divine_shield;
-    buff_t* double_jeopardy;
     buff_t* enhanced_holy_shock;
     buff_t* guardian_of_ancient_kings;
     buff_t* grand_crusader;
+    buff_t* infusion_of_light;
+    buff_t* seraphim;
+    buff_t* shield_of_the_righteous;
+
+    // glyphs
+    buff_t* alabaster_shield;
+    buff_t* blessed_life;
+    buff_t* double_jeopardy;
     buff_t* glyph_templars_verdict;
     buff_t* glyph_of_word_of_glory;
+
+    // talents
     buff_t* hand_of_purity;
     buff_t* holy_avenger;
-    absorb_buff_t* holy_shield;
-    buff_t* infusion_of_light;
+    absorb_buff_t* holy_shield; // Dummy buff to trigger spell damage "blocking" absorb effect
     buff_t* liadrins_righteousness;
     buff_t* long_arm_of_the_law;
     buff_t* maraads_truth;
     buff_t* sacred_shield;  // dummy buff for APL simplicity
     buff_t* selfless_healer;
-    buff_t* seraphim;
-    buff_t* shield_of_glory; // t15_2pc_tank
-    buff_t* shield_of_the_righteous;
     buff_t* speed_of_light;
     buff_t* turalyons_justice;
     buff_t* uthers_insight;
-    buff_t* warrior_of_the_light; // t16_2pc_melee
+
+    // Set Bonuses
+    buff_t* bastion_of_power;     // t16_4pc_tank
+    buff_t* divine_crusader;      // t16_4pc_melee
+    buff_t* favor_of_the_kings;   // t16_4pc_heal
+    buff_t* shield_of_glory;      // t15_2pc_tank
     buff_t* tier15_2pc_melee;
     buff_t* tier15_4pc_melee;
+    buff_t* warrior_of_the_light; // t16_2pc_melee
   } buffs;
   
   // Gains
@@ -151,7 +159,6 @@ public:
     gain_t* hp_hammer_of_wrath;
     gain_t* hp_holy_avenger;
     gain_t* hp_holy_shock;
-    gain_t* hp_judgments_of_the_wise;
     gain_t* hp_pursuit_of_justice;
     gain_t* hp_sanctified_wrath;
     gain_t* hp_selfless_healer;
@@ -374,6 +381,7 @@ public:
   virtual double    composite_rating_multiplier( rating_e rating ) const;
   virtual double    composite_attack_power_multiplier() const;
   virtual double    composite_mastery() const;
+  virtual double    composite_mastery_rating() const;
   virtual double    composite_multistrike() const;
   virtual double    composite_bonus_armor() const;
   virtual double    composite_melee_attack_power() const;
@@ -1006,6 +1014,9 @@ struct avenging_wrath_t : public paladin_heal_t
 
     cooldown -> duration += p -> passives.sword_of_light -> effectN( 7 ).time_value();
 
+    // T16 Holy 4PC reduces AW cooldown by 60s
+    cooldown -> duration -= timespan_t::from_millis( p -> sets.set( SET_T16_2PC_HEAL ) -> effectN( 1 ).base_value() );
+
     cooldown -> duration *= ( 1.0 + p -> glyphs.merciful_wrath -> effectN( 5 ).percent() );
 
     // disable for protection
@@ -1046,6 +1057,8 @@ struct avenging_wrath_t : public paladin_heal_t
     paladin_heal_t::execute();
 
     p() -> buffs.avenging_wrath -> trigger();
+    if ( p() -> sets.has_set_bonus( SET_T16_4PC_HEAL ) )
+      p() -> buffs.favor_of_the_kings -> trigger();
   }
 };
 
@@ -2605,8 +2618,10 @@ struct holy_shock_t : public paladin_heal_t
 
 struct holy_wrath_t : public paladin_spell_t
 {
+  int hp_granted;
   holy_wrath_t( paladin_t* p, const std::string& options_str )
-    : paladin_spell_t( "holy_wrath", p, p -> find_class_spell( "Holy Wrath" ) )
+    : paladin_spell_t( "holy_wrath", p, p -> find_class_spell( "Holy Wrath" ) ),
+    hp_granted( 0 )
   {
     parse_options( NULL, options_str );
 
@@ -2615,6 +2630,9 @@ struct holy_wrath_t : public paladin_spell_t
 
     may_crit   = true;
     split_aoe_damage = true;
+
+    base_multiplier += p -> talents.sanctified_wrath -> effectN( 1 ).percent();
+    hp_granted += (int) p -> talents.sanctified_wrath -> effectN( 2 ).base_value();
 
     //Holy Wrath is an oddball - spell database entry doesn't properly contain damage details
     //Tooltip formula is suspect (has been wrong before) TODO: test
@@ -2643,6 +2661,18 @@ struct holy_wrath_t : public paladin_spell_t
 
     return am;
   }
+
+  virtual void execute()
+  {
+    paladin_spell_t::execute();
+
+    if ( hp_granted > 0 && result_is_hit( execute_state -> result ) )
+    {
+      p() -> resource_gain( RESOURCE_HOLY_POWER, hp_granted, p() -> gains.hp_sanctified_wrath );
+    }
+  
+  }
+  
 };
 
 // Illuminated Healing ======================================================
@@ -3935,11 +3965,9 @@ struct hand_of_light_proc_t : public paladin_melee_attack_t
 struct judgment_t : public paladin_melee_attack_t
 {
   uthers_insight_t* uthers_insight;
-  double cooldown_mult; // used to handle Sanctified Wrath cooldown reduction
 
   judgment_t( paladin_t* p, const std::string& options_str )
-    : paladin_melee_attack_t( "judgment", p, p -> find_spell( "Judgment" ), true ),
-      cooldown_mult( 1.0 )
+    : paladin_melee_attack_t( "judgment", p, p -> find_spell( "Judgment" ), true )
   {
     parse_options( NULL, options_str );
 
@@ -3960,14 +3988,7 @@ struct judgment_t : public paladin_melee_attack_t
 
     // Only triggers Seal of Truth
     trigger_seal_of_truth        = true;
-
-    // define cooldown multiplier for use with Sanctified Wrath talent for protection only
-    if ( ( p -> specialization() == PALADIN_PROTECTION ) && p -> find_talent_spell( "Sanctified Wrath" ) -> ok()  )
-    {
-      // for some reason, this is stored in spell 114232 instead of 53376 (which is returned by find_talent_spell)
-      cooldown_mult = 1.0 + p -> spells.sanctified_wrath -> effectN( 2 ).percent();
-    }
-
+    
     // damage multiplier from T14 Retribution 4-piece bonus
     base_multiplier *= 1.0 + p -> sets.set( SET_T14_4PC_MELEE ) -> effectN( 1 ).percent();
 
@@ -3991,18 +4012,18 @@ struct judgment_t : public paladin_melee_attack_t
         // apply gain, attribute gain to Judgment
         p() -> resource_gain( RESOURCE_HOLY_POWER, 1, p() -> gains.hp_judgment );
       }
+
+      // Trigger Long Arm of the Law
       if ( p() -> talents.long_arm_of_the_law -> ok() )
         p() -> buffs.long_arm_of_the_law -> trigger();
-      // +1 Holy Power for Prot
+
+      // +1 Holy Power for Prot via hidden Judgments of the Wise passive
       else if ( p() -> passives.judgments_of_the_wise -> ok() )
       {
         // apply gain, attribute gain to Judgments of the Wise
-        p() -> resource_gain( RESOURCE_HOLY_POWER, 1, p() -> gains.hp_judgments_of_the_wise );
-
-        // if sanctified wrath is talented and Avenging Wrath is active, give another HP
-        if ( p() -> talents.sanctified_wrath -> ok() && p() -> buffs.avenging_wrath -> check() )
-          p() -> resource_gain( RESOURCE_HOLY_POWER, 1, p() -> gains.hp_sanctified_wrath );
+        p() -> resource_gain( RESOURCE_HOLY_POWER, 1, p() -> gains.hp_judgment );
       }
+
       // Holy Avenger adds 2 more Holy Power if active
       if ( p() -> buffs.holy_avenger -> check() )
       {
@@ -4080,12 +4101,6 @@ struct judgment_t : public paladin_melee_attack_t
     if ( p() -> passives.sanctity_of_battle -> ok() )
     {
       cd_duration *= p() -> cache.attack_haste();
-    }
-
-    // Reduction during AW - does nothing if Sanctified Wrath not talented
-    if ( p() -> buffs.avenging_wrath -> up() )
-    {
-      cd_duration *= cooldown_mult;
     }
 
     paladin_melee_attack_t::update_ready( cd_duration );
@@ -4717,12 +4732,11 @@ void paladin_t::init_gains()
   gains.hp_hammer_of_wrath          = get_gain( "hammer_of_wrath" );
   gains.hp_holy_avenger             = get_gain( "holy_avenger" );
   gains.hp_holy_shock               = get_gain( "holy_shock" );
-  gains.hp_judgments_of_the_wise    = get_gain( "judgments_of_the_wise" );
+  gains.hp_judgment                 = get_gain( "judgment" );
   gains.hp_pursuit_of_justice       = get_gain( "pursuit_of_justice" );
   gains.hp_sanctified_wrath         = get_gain( "sanctified_wrath" );
   gains.hp_selfless_healer          = get_gain( "selfless_healer" );
   gains.hp_templars_verdict_refund  = get_gain( "templars_verdict_refund" );
-  gains.hp_judgment                 = get_gain( "judgment" );
   gains.hp_t15_4pc_tank             = get_gain( "t15_4pc_tank" );
 }
 
@@ -4889,10 +4903,6 @@ void paladin_t::create_buffs()
   // Glyphs
   buffs.alabaster_shield       = buff_creator_t( this, "alabaster_shield", find_spell( 121467 ) ) // alabaster shield glyph spell contains no useful data
                                  .cd( timespan_t::zero() );
-  buffs.bastion_of_glory       = buff_creator_t( this, "bastion_of_glory", find_spell( 114637 ) );
-  buffs.bastion_of_power       = buff_creator_t( this, "bastion_of_power", find_spell( 144569 ) );
-  buffs.bladed_armor           = buff_creator_t( this, "bladed_armor", find_specialization_spell( "Bladed Armor" ) )
-                                 .add_invalidate( CACHE_ATTACK_POWER );
   buffs.blessed_life           = buff_creator_t( this, "glyph_blessed_life", glyphs.blessed_life )
                                  .cd( timespan_t::from_seconds( glyphs.blessed_life -> effectN( 2 ).base_value() ) );
   buffs.double_jeopardy        = buff_creator_t( this, "glyph_double_jeopardy", glyphs.double_jeopardy )
@@ -4937,8 +4947,13 @@ void paladin_t::create_buffs()
   buffs.infusion_of_light      = buff_creator_t( this, "infusion_of_light", find_spell( 54149 ) );
   buffs.enhanced_holy_shock    = buff_creator_t( this, "enhanced_holy_shock", find_spell( 160002 ) )
                                  .chance( find_spell( 157478 ) -> proc_chance() );
+  buffs.favor_of_the_kings     = buff_creator_t( this, "favor_of_the_kings", find_spell( 144622 ) );
 
   // Prot
+  buffs.bastion_of_power       = buff_creator_t( this, "bastion_of_power", find_spell( 144569 ) );
+  buffs.bastion_of_glory       = buff_creator_t( this, "bastion_of_glory", find_spell( 114637 ) );
+  buffs.bladed_armor           = buff_creator_t( this, "bladed_armor", find_specialization_spell( "Bladed Armor" ) )
+                                 .add_invalidate( CACHE_ATTACK_POWER );
   buffs.guardian_of_ancient_kings      = buff_creator_t( this, "guardian_of_ancient_kings", find_specialization_spell( "Guardian of Ancient Kings" ) )
                                           .cd( timespan_t::zero() ); // let the ability handle the CD
   buffs.grand_crusader                 = buff_creator_t( this, "grand_crusader" ).spell( passives.grand_crusader -> effectN( 1 ).trigger() ).chance( passives.grand_crusader -> proc_chance() );
@@ -5047,19 +5062,16 @@ void paladin_t::generate_action_prio_list_prot()
   //def -> add_action( this, "Avenging Wrath" );
   def -> add_talent( this, "Holy Avenger" );
   def -> add_action( this, "Divine Protection" ); // use on cooldown
-  def -> add_action( this, "Guardian of Ancient Kings" ); // use on cooldown
+  def -> add_action( this, "Guardian of Ancient Kings", "if=buff.holy_avenger.down&buff.shield_of_the_righteous.down&buff.divine_protection.down" ); 
+  def -> add_action( this, "Ardent Defender", "if=buff.holy_avenger.down&buff.shield_of_the_righteous.down&buff.divine_protection.down&buff.guardian_of_ancient_kings.down");
   def -> add_talent( this, "Eternal Flame", "if=buff.eternal_flame.remains<2&buff.bastion_of_glory.react>2&(holy_power>=3|buff.divine_purpose.react|buff.bastion_of_power.react)" );
   def -> add_talent( this, "Eternal Flame", "if=buff.bastion_of_power.react&buff.bastion_of_glory.react>=5" );
   // these two lines are emergency WoG, but seem to do more harm than good
   //def -> add_action( this, "Word of Glory", "if=buff.bastion_of_glory.react>3&incoming_damage_5s>health.max*0.8" );
   //def -> add_talent( this, "Eternal Flame", "if=buff.bastion_of_glory.react>3&incoming_damage_5s>health.max*0.8" );
   def -> add_action( this, "Shield of the Righteous", "if=holy_power>=5|buff.divine_purpose.react|incoming_damage_1500ms>=health.max*0.3" );
-  //def -> add_action( this, "Judgment", "if=talent.sanctified_wrath.enabled&buff.avenging_wrath.react" );
-  def -> add_action( "wait,sec=cooldown.judgment.remains,if=talent.sanctified_wrath.enabled&cooldown.judgment.remains>0&cooldown.judgment.remains<=0.5" );
   def -> add_action( this, "Crusader Strike" );
-  def -> add_action( "wait,sec=cooldown.crusader_strike.remains,if=cooldown.crusader_strike.remains>0&cooldown.crusader_strike.remains<=0.5" );
   def -> add_action( this, "Judgment" );
-  def -> add_action( "wait,sec=cooldown.judgment.remains,if=cooldown.judgment.remains>0&cooldown.judgment.remains<=0.5&(cooldown.crusader_strike.remains-cooldown.judgment.remains)>=0.5" );
   def -> add_action( this, "Avenger's Shield" );
   def -> add_talent( this, "Sacred Shield", "if=target.dot.sacred_shield.remains<5" );
   def -> add_action( this, "Holy Wrath" );
@@ -5431,7 +5443,7 @@ void paladin_t::init_spells()
   talents.eternal_flame           = find_talent_spell( "Eternal Flame" );
   talents.sacred_shield           = find_talent_spell( "Sacred Shield" );
   talents.holy_avenger            = find_talent_spell( "Holy Avenger" );
-  talents.sanctified_wrath        = find_talent_spell( "Sanctified Wrath" );
+  talents.sanctified_wrath        = find_talent_spell( "Sanctified Wrath" ); // this returns the prot version of the talent
   talents.divine_purpose          = find_talent_spell( "Divine Purpose" );
   talents.holy_prism              = find_talent_spell( "Holy Prism" );
   talents.lights_hammer           = find_talent_spell( "Light's Hammer" );
@@ -5446,7 +5458,7 @@ void paladin_t::init_spells()
 
   // Spells
   spells.holy_light                    = find_specialization_spell( "Holy Light" );
-  spells.sanctified_wrath              = find_spell( 114232 );  // spec-specific effects for Sanctified Wrath
+  spells.sanctified_wrath              = find_spell( 114232 );  // spec-specific effects for Ret/Holy Sanctified Wrath
 
   // Masteries
   passives.divine_bulwark         = find_mastery_spell( PALADIN_PROTECTION );
@@ -5822,6 +5834,16 @@ double paladin_t::composite_spell_haste() const
 double paladin_t::composite_mastery() const
 {
   double m = player_t::composite_mastery();
+
+  return m;
+}
+
+double paladin_t::composite_mastery_rating() const
+{
+  double m = player_t::composite_mastery_rating();
+
+  if ( buffs.favor_of_the_kings -> check() )
+    m += buffs.favor_of_the_kings -> data().effectN( 1 ).base_value();
 
   return m;
 }
@@ -6295,12 +6317,6 @@ void paladin_t::assess_damage_imminent( school_e school, dmg_e, action_state_t* 
 
 void paladin_t::assess_heal( school_e school, dmg_e dmg_type, action_state_t* s )
 {
-  // 20% healing increase due to Sanctified Wrath during Avenging Wrath
-  if ( specialization() == PALADIN_PROTECTION && talents.sanctified_wrath -> ok() && buffs.avenging_wrath -> check() )
-  {
-    s -> result_amount *= 1.0 + spells.sanctified_wrath  -> effectN( 4 ).percent();
-  }
-
   // Shining Protector procs a heal every now and again
   if ( passives.shining_protector -> ok() )
     trigger_shining_protector( s );
