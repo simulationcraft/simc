@@ -2602,6 +2602,7 @@ struct necrotic_plague_t : public death_knight_spell_t
     hasted_ticks = may_miss = may_crit = false;
     background = tick_may_crit = true;
     base_multiplier *= 1.0 + p -> spec.ebon_plaguebringer -> effectN( 2 ).percent();
+    base_multiplier *= 1.0 + p -> perk.improved_diseases -> effectN( 2 ).percent();
     dot_behavior = DOT_REFRESH;
   }
 
