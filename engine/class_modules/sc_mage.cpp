@@ -1667,8 +1667,9 @@ struct arcane_missiles_t : public mage_spell_t
 
     mage_spell_t::execute();
 
-    if ( p() -> buffs.arcane_power -> check() )
-      p() -> buffs.arcane_power -> extend_duration( p(), timespan_t::from_seconds( 2.0 ) );
+
+    if ( p() -> buffs.arcane_power -> up() && p() -> talents.overpowered -> ok() )
+      p() -> buffs.arcane_power -> extend_duration( p(), timespan_t::from_seconds( p() -> talents.overpowered -> effectN( 1 ).base_value() ) );
 
     p() -> buffs.arcane_missiles -> up();
 
