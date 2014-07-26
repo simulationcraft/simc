@@ -3,7 +3,7 @@ level=100
 race=orc
 role=attack
 position=back
-talents=http://us.battle.net/wow/en/tool/talent-calculator#ZZ!0120211
+talents=http://us.battle.net/wow/en/tool/talent-calculator#ZZ!0120212
 glyphs=unending_rage/death_from_above/raging_wind
 spec=fury
 
@@ -31,7 +31,7 @@ actions+=/potion,name=draenic_strength,if=(target.health.pct<20&buff.recklessnes
 # This incredibly long line can be translated to 'Use recklessness on cooldown with colossus smash; unless the boss will die before the ability is usable again, and then combine with execute instead.'
 actions+=/recklessness,if=!talent.bloodbath.enabled&(((cooldown.colossus_smash.remains<2|debuff.colossus_smash.remains>=5)&target.time_to_die>192)|target.health.pct<20)|buff.bloodbath.up&(target.time_to_die>192|target.health.pct<20)|target.time_to_die<=12
 actions+=/avatar,if=talent.avatar.enabled&((buff.recklessness.up|target.time_to_die<=25))
-actions+=/berserker_rage,if=!buff.enrage.up
+actions+=/berserker_rage,if=debuff.colossus_smash.up&buff.raging_blow.stack<2
 actions+=/blood_fury,if=buff.bloodbath.up|(!talent.bloodbath.enabled&debuff.colossus_smash.up)|buff.recklessness.up
 actions+=/berserking,if=buff.bloodbath.up|(!talent.bloodbath.enabled&debuff.colossus_smash.up)|buff.recklessness.up
 actions+=/arcane_torrent,if=buff.bloodbath.up|(!talent.bloodbath.enabled&debuff.colossus_smash.up)|buff.recklessness.up
@@ -41,7 +41,7 @@ actions+=/run_action_list,name=three_targets,if=active_enemies=3
 actions+=/run_action_list,name=aoe,if=active_enemies>3
 
 actions.single_target=bloodbath,if=talent.bloodbath.enabled&((cooldown.colossus_smash.remains<2|debuff.colossus_smash.remains>=5|target.time_to_die<=20))
-actions.single_target+=/ignite_weapon,if=talent.ignite_weapon.enabled&((target.health.pct>=20&(rage>90|(buff.enrage.up&rage>40)))|buff.ignite_weapon.remains<2)
+actions.single_target+=/ignite_weapon,if=talent.ignite_weapon.enabled&((target.health.pct>=20&(buff.ignite_weapon.remains<2|rage>90|(buff.enrage.up&rage>60))))
 actions.single_target+=/heroic_leap,if=debuff.colossus_smash.up
 actions.single_target+=/bloodthirst,if=!(target.health.pct<20&debuff.colossus_smash.up&rage>=30&buff.enrage.up)&!talent.unquenchable_thirst.enabled
 actions.single_target+=/bloodthirst,if=talent.unquenchable_thirst.enabled&buff.enrage.down&rage<100
@@ -49,10 +49,10 @@ actions.single_target+=/storm_bolt,if=talent.storm_bolt.enabled&(cooldown.coloss
 actions.single_target+=/dragon_roar,if=talent.dragon_roar.enabled&((!debuff.colossus_smash.up&(buff.bloodbath.up|!talent.bloodbath.enabled)))
 actions.single_target+=/ravager,if=talent.ravager.enabled&cooldown.colossus_smash.remains<4
 actions.single_target+=/colossus_smash
-actions.single_target+=/raging_blow,if=debuff.colossus_smash.remains<3
+actions.single_target+=/raging_blow,if=debuff.colossus_smash.up
 actions.single_target+=/execute,if=debuff.colossus_smash.up|rage>70|target.time_to_die<12|buff.sudden_death.up
-actions.single_target+=/wild_strike,if=buff.bloodsurge.up|((debuff.colossus_smash.up|rage>70)&target.health.pct>20)
-actions.single_target+=/raging_blow
+actions.single_target+=/wild_strike,if=buff.bloodsurge.up|(((debuff.colossus_smash.up|rage>70)&target.health.pct>20)&!talent.ignite_weapon.enabled&!talent.unquenchable_thirst.enabled)
+actions.single_target+=/raging_blow,if=cooldown.colossus_smash.remains>4
 actions.single_target+=/bladestorm,if=enabled&buff.enrage.remains>3,interrupt_if=buff.enrage.down
 actions.single_target+=/bloodthirst,if=talent.unquenchable_thirst.enabled
 actions.single_target+=/shockwave,if=talent.shockwave.enabled

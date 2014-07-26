@@ -3826,7 +3826,7 @@ void warrior_t::apl_fury()
   default_list -> add_action( this, "Recklessness", "if=!talent.bloodbath.enabled&(((cooldown.colossus_smash.remains<2|debuff.colossus_smash.remains>=5)&target.time_to_die>192)|target.health.pct<20)|buff.bloodbath.up&(target.time_to_die>192|target.health.pct<20)|target.time_to_die<=12",
                               "This incredibly long line can be translated to 'Use recklessness on cooldown with colossus smash; unless the boss will die before the ability is usable again, and then combine with execute instead.'" );
   default_list -> add_talent( this, "Avatar", "if=(buff.recklessness.up|target.time_to_die<=25)" );
-  default_list -> add_action( this, "Berserker Rage", "if=!buff.enrage.up" );
+  default_list -> add_action( this, "Berserker Rage", "if=debuff.colossus_smash.up&buff.raging_blow.stack<2" );
 
   for ( size_t i = 0; i < racial_actions.size(); i++ )
     default_list -> add_action( racial_actions[i] + ",if=buff.bloodbath.up|(!talent.bloodbath.enabled&debuff.colossus_smash.up)|buff.recklessness.up" );
@@ -3837,7 +3837,7 @@ void warrior_t::apl_fury()
   default_list -> add_action( "run_action_list,name=aoe,if=active_enemies>3" );
 
   single_target -> add_talent( this, "Bloodbath", "if=(cooldown.colossus_smash.remains<2|debuff.colossus_smash.remains>=5|target.time_to_die<=20)" );
-  single_target -> add_talent( this, "Ignite Weapon", "if=(target.health.pct>=20&(rage>90|(buff.enrage.up&rage>40)))|buff.ignite_weapon.remains<2" );
+  single_target -> add_talent( this, "Ignite Weapon", "if=(target.health.pct>=20&(buff.ignite_weapon.remains<2|rage>90|(buff.enrage.up&rage>60)))" );
   single_target -> add_action( this, "Heroic Leap", "if=debuff.colossus_smash.up" );
   single_target -> add_action( this, "Bloodthirst", "if=!(target.health.pct<20&debuff.colossus_smash.up&rage>=30&buff.enrage.up)&!talent.unquenchable_thirst.enabled" );
   single_target -> add_action( this, "Bloodthirst", "if=talent.unquenchable_thirst.enabled&buff.enrage.down&rage<100" );
@@ -3845,10 +3845,10 @@ void warrior_t::apl_fury()
   single_target -> add_talent( this, "Dragon Roar", "if=(!debuff.colossus_smash.up&(buff.bloodbath.up|!talent.bloodbath.enabled))" );
   single_target -> add_talent( this, "Ravager", "if=cooldown.colossus_smash.remains<4" );
   single_target -> add_action( this, "Colossus Smash" );
-  single_target -> add_action( this, "Raging Blow", "if=debuff.colossus_smash.remains<3" );
+  single_target -> add_action( this, "Raging Blow", "if=debuff.colossus_smash.up" );
   single_target -> add_action( this, "Execute", "if=debuff.colossus_smash.up|rage>70|target.time_to_die<12|buff.sudden_death.up" );
-  single_target -> add_action( this, "Wild Strike", "if=buff.bloodsurge.up|((debuff.colossus_smash.up|rage>70)&target.health.pct>20)" );
-  single_target -> add_action( this, "Raging Blow" );
+  single_target -> add_action( this, "Wild Strike", "if=buff.bloodsurge.up|(((debuff.colossus_smash.up|rage>70)&target.health.pct>20)&!talent.ignite_weapon.enabled&!talent.unquenchable_thirst.enabled)" );
+  single_target -> add_action( this, "Raging Blow", "if=cooldown.colossus_smash.remains>4" );
   single_target -> add_action( "bladestorm,if=enabled&buff.enrage.remains>3,interrupt_if=buff.enrage.down" );
   single_target -> add_action( this, "Bloodthirst", "if=talent.unquenchable_thirst.enabled" );
   single_target -> add_talent( this, "Shockwave" );
@@ -3987,9 +3987,9 @@ void warrior_t::apl_prot()
   if ( sim -> allow_potions )
   {
     if ( level >= 90 )
-      prot -> add_action( "potion,name=draenic_armor,if=(target.health.pct<20&buff.recklessness.up)|target.time_to_die<=25" );
+      prot -> add_action( "potion,name=draenic_armor" );
     else if ( level >= 80 )
-      prot -> add_action( "potion,name=mountains,if=(target.health.pct<20&buff.recklessness.up)|target.time_to_die<=25" );
+      prot -> add_action( "potion,name=mountains" );
   }
 
   prot -> add_action( this, "Heroic Strike", "if=buff.ultimatum.up" );
@@ -4029,13 +4029,13 @@ void warrior_t::apl_prot()
   prot_aoe -> add_action( this, "Devastate", "if=cooldown.shield_slam.remains>gcd*0.4" );
 
   if ( sim -> allow_potions )
-    gladiator -> add_action( "potion,name=draenic_strength,if=(target.health.pct<20&buff.recklessness.up)|target.time_to_die<=25" );
+    gladiator -> add_action( "potion,name=draenic_strength,if=buff.bloodbath.up|buff.avatar.up|buff.shield_charge.up" );
 
   gladiator -> add_action( "run_action_list,name=gladiator_aoe,if=active_enemies>3" );
-  gladiator -> add_action( "shield_charge,if=cooldown.shield_slam.remains=0&(cooldown.bloodbath.remains>15|!talent.bloodbath.enabled)" );
+  gladiator -> add_action( "shield_charge,if=buff.shield_charge.down&cooldown.shield_slam.remains=0&(cooldown.bloodbath.remains>15|!talent.bloodbath.enabled)" );
   gladiator -> add_action( this, "Heroic Strike", "if=buff.shield_charge.up|buff.ultimatum.up|rage>=90|target.time_to_die<=3|(talent.unyielding_strikes.enabled&buff.unyielding_strikes.max_stack)" );
-  gladiator -> add_talent( this, "Bloodbath", "if=buff.shield_charge.up" );
-  gladiator -> add_talent( this, "Avatar", "if=buff.shield_charge.up" );
+  gladiator -> add_talent( this, "Bloodbath" );
+  gladiator -> add_talent( this, "Avatar" );
   gladiator -> add_action( this, "Heroic Leap", "if=(buff.bloodbath.up|cooldown.bloodbath.remains>10)|!talent.bloodbath.enabled" );
   gladiator -> add_action( this, "Shield Slam" );
   gladiator -> add_action( this, "Revenge" );
