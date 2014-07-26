@@ -324,7 +324,6 @@ public:
     const spell_data_t* nether_tempest; // Extra target NYI
     const spell_data_t* living_bomb;
     const spell_data_t* frost_bomb;
-    const spell_data_t* invocation;
     const spell_data_t* rune_of_power;
     const spell_data_t* supernova;
     const spell_data_t* blast_wave;
@@ -2125,13 +2124,6 @@ public:
 
     timespan_t duration = data().duration();
 
-    if ( p -> talents.invocation -> ok() )
-    {
-      cooldown -> duration = timespan_t::zero();
-
-      base_tick_time *= 1.0 + p -> talents.invocation -> effectN( 2 ).percent();
-      duration       *= 1.0 + p -> talents.invocation -> effectN( 2 ).percent();
-    }
 
     dot_duration = duration;
   }
@@ -4128,11 +4120,6 @@ action_t* mage_t::create_action( const std::string& name,
   if ( name == "presence_of_mind"  ) return new        presence_of_mind_t( this, options_str );
   if ( name == "pyroblast"         ) return new               pyroblast_t( this, options_str );
   if ( name == "rune_of_power"     ) return new           rune_of_power_t( this, options_str );
-  if ( name == "invocation"        )
-  {
-    sim -> errorf( "The behavior of \"invocation\" has been subsumed into evocation." );
-    return new evocation_t( this, options_str );
-  }
   if ( name == "scorch"            ) return new                  scorch_t( this, options_str );
   if ( name == "slow"              ) return new                    slow_t( this, options_str );
   if ( name == "supernova"         ) return new               supernova_t( this, options_str );
@@ -4196,7 +4183,6 @@ void mage_t::init_spells()
   talents.ice_floes          = find_talent_spell( "Ice Floes" );
   talents.ice_nova           = find_talent_spell( "Ice Nova" );
   talents.ice_ward           = find_talent_spell( "Ice Ward" );
-  talents.invocation         = find_talent_spell( "Invocation" );
   talents.kindling           = find_talent_spell( "Kindling" );
   talents.living_bomb        = find_talent_spell( "Living Bomb" );
   talents.nether_tempest     = find_talent_spell( "Nether Tempest" );
