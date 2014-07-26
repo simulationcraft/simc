@@ -4646,7 +4646,7 @@ void shaman_t::init_base_stats()
 
   resources.initial_multiplier[ RESOURCE_MANA ] = 1.0 + spec.spiritual_insight -> effectN( 1 ).percent();
   if ( specialization() == SHAMAN_ELEMENTAL )
-    base.mana_regen_per_second = resources.base[ RESOURCE_MANA ] * resources.initial_multiplier[ RESOURCE_MANA ] * 0.004 * 10 /* 1.9 */;
+    base.mana_regen_per_second = resources.base[ RESOURCE_MANA ] * resources.initial_multiplier[ RESOURCE_MANA ] * 0.004 * 1.9;
   else if ( specialization() == SHAMAN_ENHANCEMENT )
     base.mana_regen_per_second = resources.base[ RESOURCE_MANA ] * 0.008 * 2;
 
