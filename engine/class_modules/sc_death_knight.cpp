@@ -2596,6 +2596,7 @@ struct necrotic_plague_t : public death_knight_spell_t
   {
     hasted_ticks = may_miss = may_crit = false;
     background = tick_may_crit = true;
+    base_multiplier *= 1.0 + p -> spec.ebon_plaguebringer -> effectN( 2 ).percent();
     dot_behavior = DOT_REFRESH;
   }
 
@@ -3191,7 +3192,8 @@ struct death_coil_t : public death_knight_spell_t
       p() -> pets.dancing_rune_weapon -> drw_death_coil -> execute();
 
     p() -> trigger_shadow_infusion( base_costs[ RESOURCE_RUNIC_POWER ] );
-    p() -> buffs.shadow_of_death -> trigger();
+    if ( p() -> specialization == DEATH_KNIGHT_BLOOD )
+      p() -> buffs.shadow_of_death -> trigger();
   }
 
   void impact( action_state_t* s )
