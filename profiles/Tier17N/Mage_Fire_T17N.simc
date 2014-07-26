@@ -4,7 +4,7 @@ race=troll
 role=spell
 position=back
 professions=tailoring=600/engineering=600
-talents=http://us.battle.net/wow/en/tool/talent-calculator#eZ!0...11.
+talents=http://us.battle.net/wow/en/tool/talent-calculator#eZ!0...202
 glyphs=combustion
 spec=fire
 
@@ -16,13 +16,12 @@ spec=fire
 
 # Executed before combat begins. Accepts non-harmful actions only.
 
-actions.precombat=flask,type=warm_sun
-actions.precombat+=/food,type=mogu_fish_stew
+actions.precombat=flask,type=greater_draenic_critical_strike_flask
+actions.precombat+=/food,type=blackrock_barbecue
 actions.precombat+=/arcane_brilliance
 actions.precombat+=/molten_armor
 actions.precombat+=/snapshot_stats
-actions.precombat+=/rune_of_power,if=talent.rune_of_power.enabled
-actions.precombat+=/potion,name=jade_serpent
+actions.precombat+=/potion,name=draenic_intellect
 actions.precombat+=/pyroblast
 
 # Executed every time the actor is available.
