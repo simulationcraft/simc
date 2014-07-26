@@ -543,7 +543,7 @@ struct water_elemental_pet_t : public pet_t
 
     if ( o() -> buffs.rune_of_power -> check() )
     {
-      m *= 1.0 + o() -> buffs.rune_of_power -> data().effectN( 2 ).percent();
+      m *= 1.0 + o() -> buffs.rune_of_power -> data().effectN( 3 ).percent();
     }
 
 
@@ -4736,7 +4736,7 @@ double mage_t::composite_player_multiplier( school_e school ) const
 
   if ( buffs.rune_of_power -> check() )
   {
-    m *= 1.0 + buffs.rune_of_power -> data().effectN( 2 ).percent();
+    m *= 1.0 + buffs.rune_of_power -> data().effectN( 1 ).percent();
   }
 
   if ( specialization() == MAGE_ARCANE )
