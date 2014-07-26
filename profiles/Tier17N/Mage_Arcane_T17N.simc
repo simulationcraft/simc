@@ -40,7 +40,7 @@ actions+=/arcane_power,if=time_to_bloodlust>cooldown.arcane_power.duration&((buf
 actions+=/blood_fury
 actions+=/berserking
 actions+=/arcane_torrent
-actions+=/potion,name=jade_serpent,if=buff.arcane_power.up|target.time_to_die<50
+actions+=/potion,name=draenic_intellect,if=buff.arcane_power.up|target.time_to_die<50
 actions+=/use_item,slot=trinket1
 actions+=/run_action_list,name=aoe,if=active_enemies>=6
 actions+=/run_action_list,name=single_target,if=active_enemies<6

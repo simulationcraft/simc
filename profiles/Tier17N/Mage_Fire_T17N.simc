@@ -38,7 +38,7 @@ actions+=/blood_fury
 actions+=/berserking
 actions+=/arcane_torrent
 actions+=/use_item,slot=trinket1
-actions+=/potion,name=jade_serpent
+actions+=/potion,name=draenic_intellect
 actions+=/combustion,if=target.time_to_die<22
 actions+=/combustion,if=dot.ignite.tick_dmg>=((3*action.pyroblast.crit_damage)*mastery_value*0.5)
 actions+=/combustion,if=dot.ignite.tick_dmg>=((action.fireball.crit_damage+action.inferno_blast.crit_damage+action.pyroblast.hit_damage)*mastery_value*0.5)&dot.pyroblast.ticking&buff.pyroblast.down&buff.presence_of_mind.down

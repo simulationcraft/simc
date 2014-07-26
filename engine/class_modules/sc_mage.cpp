@@ -449,6 +449,7 @@ public:
   void              apl_default();
   virtual void      init_action_list();
 
+  std::string       get_potion_action();
 };
 
 namespace pets {
@@ -4563,17 +4564,11 @@ void mage_t::apl_precombat()
   precombat -> add_talent( this, "Rune of Power" );
   precombat -> add_talent( this, "Mirror Image" );
 
+
   //Potions
   if ( sim -> allow_potions && level >= 80 )
   {
-    std::string potion_action = "potion,name=";
-
-    if ( level <= 90 )
-      potion_action += "jade_serpent" ;
-    else
-      potion_action += "draenic_intellect" ;
-
-    precombat -> add_action( potion_action );
+    precombat -> add_action( get_potion_action() );
   }
 
   if ( specialization() == MAGE_ARCANE )
@@ -4582,6 +4577,23 @@ void mage_t::apl_precombat()
     precombat -> add_action( this, "Pyroblast" );
   else
     precombat -> add_action( this, "Frostbolt" );
+}
+
+
+// Util for using level appropriate potion
+
+std::string mage_t::get_potion_action()
+{
+  std::string potion_action = "potion,name=";
+
+  if ( level <= 85 )
+    potion_action += "volcanic" ;
+  else if ( level <= 90 )
+    potion_action += "jade_serpent" ;
+  else
+    potion_action += "draenic_intellect" ;
+
+  return potion_action;
 }
 
 
@@ -4613,7 +4625,7 @@ void mage_t::apl_arcane()
   for( size_t i = 0; i < racial_actions.size(); i++ )
     default_list -> add_action( racial_actions[i] );
 
-  default_list -> add_action( "potion,name=jade_serpent,if=buff.arcane_power.up|target.time_to_die<50" );
+  default_list -> add_action( get_potion_action() + ",if=buff.arcane_power.up|target.time_to_die<50" );
 
   for( size_t i = 0; i < item_actions.size(); i++ )
     default_list -> add_action( item_actions[i] );
@@ -4667,7 +4679,7 @@ void mage_t::apl_fire()
   for ( size_t i = 0; i < item_actions.size(); i++ )
     default_list -> add_action( item_actions[i] );
 
-  default_list -> add_action( "potion,name=jade_serpent" );
+  default_list -> add_action( get_potion_action() );
   default_list -> add_action( this, "Mirror Image" );
 
   default_list -> add_action( this, "Combustion", "if=target.time_to_die<22" );
