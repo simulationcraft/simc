@@ -11,20 +11,20 @@ position=ranged_back
 role=attack
 talents=0002113
 head=primal_gladiators_ringmail_helm,id=111195
-neck=primal_gladiators_necklace_of_prowess,id=111080,enchant=gift_of_mastery
+neck=primal_gladiators_necklace_of_prowess,id=111080,enchant=gift_of_multistrike
 shoulders=primal_gladiators_ringmail_spaulders,id=111197
-back=primal_gladiators_cape_of_prowess,id=111078,enchant=gift_of_mastery
+back=primal_gladiators_cape_of_prowess,id=111078,enchant=gift_of_multistrike
 chest=primal_gladiators_ringmail_armor,id=111193
 wrists=primal_gladiators_armbands_of_victory,id=111163
 hands=primal_gladiators_ringmail_gauntlets,id=111194
 waist=primal_gladiators_waistguard_of_cruelty,id=111155
 legs=primal_gladiators_ringmail_leggings,id=111196
 feet=primal_gladiators_footguards_of_prowess,id=111159
-finger1=primal_gladiators_ring_of_prowess,id=111082,enchant=gift_of_mastery
-finger2=primal_gladiators_ring_of_prowess,id=111271,enchant=gift_of_mastery
+finger1=primal_gladiators_ring_of_prowess,id=111082,enchant=gift_of_multistrike
+finger2=primal_gladiators_ring_of_prowess,id=111271,enchant=gift_of_multistrike
 trinket1=primal_gladiators_insignia_of_conquest,id=111223
 trinket2=primal_gladiators_badge_of_conquest,id=111222
-main_hand=primal_gladiators_heavy_crossbow,id=111073
+main_hand=primal_gladiators_heavy_crossbow,id=111073,enchant=oglethorpes_missile_splitter
 save=Hunter_BM_T17N.simc
 
 # MM
@@ -36,20 +36,20 @@ position=ranged_back
 role=attack
 talents=0001111
 head=primal_gladiators_ringmail_helm,id=111195
-neck=primal_gladiators_necklace_of_prowess,id=111080,enchant=gift_of_mastery
+neck=primal_gladiators_necklace_of_prowess,id=111080,enchant=gift_of_multistrike
 shoulders=primal_gladiators_ringmail_spaulders,id=111197
-back=primal_gladiators_cape_of_prowess,id=111078,enchant=gift_of_mastery
+back=primal_gladiators_cape_of_prowess,id=111078,enchant=gift_of_multistrike
 chest=primal_gladiators_ringmail_armor,id=111193
 wrists=primal_gladiators_armbands_of_victory,id=111163
 hands=primal_gladiators_ringmail_gauntlets,id=111194
 waist=primal_gladiators_waistguard_of_cruelty,id=111155
 legs=primal_gladiators_ringmail_leggings,id=111196
 feet=primal_gladiators_footguards_of_prowess,id=111159
-finger1=primal_gladiators_ring_of_prowess,id=111082,enchant=gift_of_mastery
-finger2=primal_gladiators_ring_of_prowess,id=111271,enchant=gift_of_mastery
+finger1=primal_gladiators_ring_of_prowess,id=111082,enchant=gift_of_multistrike
+finger2=primal_gladiators_ring_of_prowess,id=111271,enchant=gift_of_multistrike
 trinket1=primal_gladiators_insignia_of_conquest,id=111223
 trinket2=primal_gladiators_badge_of_conquest,id=111222
-main_hand=primal_gladiators_heavy_crossbow,id=111073
+main_hand=primal_gladiators_heavy_crossbow,id=111073,enchant=oglethorpes_missile_splitter
 save=Hunter_MM_T17N.simc
 
 # SV
@@ -61,18 +61,18 @@ position=ranged_back
 role=attack
 talents=0003111
 head=primal_gladiators_ringmail_helm,id=111195
-neck=primal_gladiators_necklace_of_prowess,id=111080,enchant=gift_of_mastery
+neck=primal_gladiators_necklace_of_prowess,id=111080,enchant=gift_of_multistrike
 shoulders=primal_gladiators_ringmail_spaulders,id=111197
-back=primal_gladiators_cape_of_prowess,id=111078,enchant=gift_of_mastery
+back=primal_gladiators_cape_of_prowess,id=111078,enchant=gift_of_multistrike
 chest=primal_gladiators_ringmail_armor,id=111193
 wrists=primal_gladiators_armbands_of_victory,id=111163
 hands=primal_gladiators_ringmail_gauntlets,id=111194
 waist=primal_gladiators_waistguard_of_cruelty,id=111155
 legs=primal_gladiators_ringmail_leggings,id=111196
 feet=primal_gladiators_footguards_of_prowess,id=111159
-finger1=primal_gladiators_ring_of_prowess,id=111082,enchant=gift_of_mastery
-finger2=primal_gladiators_ring_of_prowess,id=111271,enchant=gift_of_mastery
+finger1=primal_gladiators_ring_of_prowess,id=111082,enchant=gift_of_multistrike
+finger2=primal_gladiators_ring_of_prowess,id=111271,enchant=gift_of_multistrike
 trinket1=primal_gladiators_insignia_of_conquest,id=111223
 trinket2=primal_gladiators_badge_of_conquest,id=111222
-main_hand=primal_gladiators_heavy_crossbow,id=111073
+main_hand=primal_gladiators_heavy_crossbow,id=111073,enchant=oglethorpes_missile_splitter
 save=Hunter_SV_T17N.simc

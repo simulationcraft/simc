@@ -52,17 +52,17 @@ actions.aoe+=/haunt,cycle_targets=1,if=!in_flight_to_target&debuff.haunt.remains
 actions.aoe+=/life_tap,if=mana.pct<70
 
 head=primal_gladiators_cowl_of_cruelty,id=111089
-neck=primal_gladiators_pendant_of_prowess,id=111129,enchant=140haste
+neck=primal_gladiators_pendant_of_prowess,id=111129,enchant=gift_of_mastery
 shoulders=primal_gladiators_felweave_amice,id=111238
-back=primal_gladiators_drape_of_prowess,id=111125,enchant=200haste
+back=primal_gladiators_drape_of_prowess,id=111125,enchant=gift_of_mastery
 chest=primal_gladiators_felweave_raiment,id=111237
 wrists=primal_gladiators_cuffs_of_victory,id=111101
 hands=primal_gladiators_felweave_handguards,id=111234
 waist=primal_gladiators_cord_of_cruelty,id=111093
 legs=primal_gladiators_felweave_trousers,id=111236
 feet=primal_gladiators_treads_of_cruelty,id=111096
-finger1=primal_gladiators_band_of_prowess,id=111135,enchant=100haste
-finger2=primal_gladiators_band_of_cruelty,id=111134,enchant=100haste
+finger1=primal_gladiators_band_of_prowess,id=111135,enchant=gift_of_mastery
+finger2=primal_gladiators_band_of_cruelty,id=111134,enchant=gift_of_mastery
 trinket1=primal_gladiators_badge_of_dominance,id=111227
 trinket2=primal_gladiators_insignia_of_dominance,id=111228
 main_hand=primal_gladiators_mageblade,id=111119,enchant=mark_of_warsong
@@ -73,8 +73,8 @@ off_hand=primal_gladiators_reprieve,id=111133
 # gear_intellect=2584
 # gear_spell_power=1244
 # gear_crit_rating=704
-# gear_haste_rating=1579
-# gear_mastery_rating=608
+# gear_haste_rating=1039
+# gear_mastery_rating=1148
 # gear_armor=600
 # gear_multistrike_rating=307
 # gear_versatility_rating=224

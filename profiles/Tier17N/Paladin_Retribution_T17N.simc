@@ -1,11 +1,10 @@
 paladin="Paladin_Retribution_T17N"
 level=100
-race=tauren
+race=blood_elf
 role=hybrid
 position=back
-professions=engineering=600/blacksmithing=600
-talents=http://us.battle.net/wow/en/tool/talent-calculator#bb!110112.
-glyphs=double_jeopardy/mass_exorcism
+talents=http://us.battle.net/wow/en/tool/talent-calculator#bb!100102.
+glyphs=winged_vengeance/templars_verdict/righteous_retreat/hand_of_sacrifice/fire_from_the_heavens/judgment/
 spec=retribution
 
 # This default action priority list is automatically created based on your character.
@@ -63,28 +62,29 @@ actions+=/divine_storm,if=active_enemies>=2
 actions+=/templars_verdict
 actions+=/holy_prism,if=talent.holy_prism.enabled
 
-head=primal_gladiators_plate_helm,id=111211
-neck=primal_gladiators_choker_of_cruelty,id=111207,enchant=gift_of_mastery
+head=primal_gladiators_scaled_helm,id=111171
+neck=primal_gladiators_choker_of_prowess,id=111208,enchant=gift_of_haste
 shoulders=primal_gladiators_plate_shoulders,id=111213
-back=primal_gladiators_cloak_of_prowess,id=111206,enchant=gift_of_mastery
-chest=primal_gladiators_plate_chestpiece,id=111209
-wrists=primal_gladiators_armplates_of_victory,id=111182
-hands=primal_gladiators_plate_gauntlets,id=111210
-waist=primal_gladiators_girdle_of_cruelty,id=111174
-legs=primal_gladiators_plate_legguards,id=111212
+back=primal_gladiators_cloak_of_cruelty,id=111205,enchant=gift_of_haste
+chest=primal_gladiators_scaled_chestpiece,id=111169
+wrists=primal_gladiators_armplates_of_cruelty,id=111180
+hands=primal_gladiators_scaled_gauntlets,id=111170
+waist=primal_gladiators_girdle_of_prowess,id=111175
+legs=primal_gladiators_scaled_legguards,id=111172
 feet=primal_gladiators_warboots_of_prowess,id=111178
-finger1=primal_gladiators_signet_of_cruelty,id=111219
-finger2=primal_gladiators_signet_of_accuracy,id=111220
+finger1=primal_gladiators_signet_of_cruelty,id=111219,enchant=gift_of_haste
+finger2=primal_gladiators_signet_of_accuracy,id=111220,enchant=gift_of_haste
 trinket1=primal_gladiators_badge_of_victory,id=111232
 trinket2=primal_gladiators_insignia_of_victory,id=111233
-main_hand=primal_gladiators_decapitator,id=111202,enchant=mark_of_warsong
+main_hand=primal_gladiators_greatsword,id=111204,enchant=mark_of_the_frostwolf
 
 # Gear Summary
 # gear_strength=2588
 # gear_stamina=3250
-# gear_crit_rating=1013
-# gear_haste_rating=370
-# gear_mastery_rating=918
+# gear_crit_rating=493
+# gear_haste_rating=1557
+# gear_mastery_rating=643
 # gear_armor=2574
-# gear_multistrike_rating=701
-# gear_versatility_rating=224
+# gear_multistrike_rating=733
+# pvp_2pc_melee=1
+# pvp_4pc_melee=1

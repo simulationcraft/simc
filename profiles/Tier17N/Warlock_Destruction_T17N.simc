@@ -49,17 +49,17 @@ actions.aoe+=/incinerate,if=buff.fire_and_brimstone.up
 actions.aoe+=/incinerate
 
 head=primal_gladiators_hood_of_prowess,id=111084
-neck=primal_gladiators_pendant_of_cruelty,id=111128,enchant=140mastery
+neck=primal_gladiators_pendant_of_cruelty,id=111128,enchant=gift_of_multistrike
 shoulders=primal_gladiators_felweave_amice,id=111238
-back=primal_gladiators_drape_of_cruelty,id=111124,enchant=200mastery
+back=primal_gladiators_drape_of_cruelty,id=111124,enchant=gift_of_multistrike
 chest=primal_gladiators_felweave_raiment,id=111237
 wrists=primal_gladiators_cuffs_of_prowess,id=111099
 hands=primal_gladiators_felweave_handguards,id=111234
 waist=primal_gladiators_cord_of_victory,id=111095
 legs=primal_gladiators_felweave_trousers,id=111236
 feet=primal_gladiators_treads_of_cruelty,id=111096
-finger1=primal_gladiators_band_of_victory,id=111136,enchant=100mastery
-finger2=primal_gladiators_band_of_cruelty,id=111134,enchant=100mastery
+finger1=primal_gladiators_band_of_victory,id=111136,enchant=gift_of_multistrike
+finger2=primal_gladiators_band_of_cruelty,id=111134,enchant=gift_of_multistrike
 trinket1=primal_gladiators_badge_of_dominance,id=111227
 trinket2=primal_gladiators_insignia_of_dominance,id=111228
 main_hand=primal_gladiators_mageblade,id=111119,enchant=mark_of_warsong
@@ -71,9 +71,9 @@ off_hand=primal_gladiators_endgame,id=111132
 # gear_spell_power=1244
 # gear_crit_rating=905
 # gear_haste_rating=452
-# gear_mastery_rating=1662
+# gear_mastery_rating=1122
 # gear_armor=600
-# gear_multistrike_rating=301
+# gear_multistrike_rating=841
 # gear_versatility_rating=102
 # pvp_2pc_caster=1
 # pvp_4pc_caster=1

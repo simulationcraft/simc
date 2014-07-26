@@ -84,7 +84,7 @@ actions.aoe+=/starfire,if=(eclipse_energy>0&eclipse_change>execute_time)|(eclips
 actions.aoe+=/wrath,if=(eclipse_energy<0&eclipse_change>execute_time)|(eclipse_energy>0&eclipse_change<execute_time)
 
 head=primal_gladiators_dragonhide_helm,id=111108
-neck=primal_gladiators_pendant_of_cruelty,id=111128,enchant=105mastery
+neck=primal_gladiators_pendant_of_cruelty,id=111128,enchant=gift_of_mastery
 shoulders=primal_gladiators_spaulders,id=111277
 back=primal_gladiators_drape_of_cruelty,id=111124,enchant=gift_of_mastery
 chest=primal_gladiators_dragonhide_robes,id=111110
@@ -93,8 +93,8 @@ hands=primal_gladiators_dragonhide_gloves,id=111107
 waist=primal_gladiators_belt_of_prowess,id=111141
 legs=primal_gladiators_dragonhide_legguards,id=111109
 feet=primal_gladiators_boots_of_prowess,id=111145
-finger1=primal_gladiators_band_of_cruelty,id=111134,enchant=75mastery
-finger2=primal_gladiators_band_of_prowess,id=111135,enchant=75mastery
+finger1=primal_gladiators_band_of_cruelty,id=111134,enchant=gift_of_mastery
+finger2=primal_gladiators_band_of_prowess,id=111135,enchant=gift_of_mastery
 trinket1=primal_gladiators_badge_of_dominance,id=115754
 trinket2=primal_gladiators_insignia_of_dominance,id=115755
 main_hand=primal_gladiators_battle_staff,id=111122,enchant=mark_of_the_frostwolf
@@ -105,7 +105,7 @@ main_hand=primal_gladiators_battle_staff,id=111122,enchant=mark_of_the_frostwolf
 # gear_spell_power=1265
 # gear_crit_rating=899
 # gear_haste_rating=725
-# gear_mastery_rating=1127
+# gear_mastery_rating=1212
 # gear_armor=877
 # gear_multistrike_rating=513
 # gear_versatility_rating=77

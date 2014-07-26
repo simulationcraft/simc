@@ -69,7 +69,7 @@ actions.finisher+=/run_action_list,name=pool
 actions.pool=preparation,if=!buff.vanish.up&cooldown.vanish.remains>60
 
 head=primal_gladiators_helm,id=111275
-neck=primal_gladiators_necklace_of_cruelty,id=111079,enchant=140mult
+neck=primal_gladiators_necklace_of_cruelty,id=111079,enchant=gift_of_multistrike
 shoulders=primal_gladiators_spaulders,id=111277
 back=primal_gladiators_cape_of_cruelty,id=111077,enchant=gift_of_multistrike
 chest=primal_gladiators_tunic,id=111273
@@ -78,8 +78,8 @@ hands=primal_gladiators_gloves,id=111274
 waist=primal_gladiators_belt_of_prowess,id=111141
 legs=primal_gladiators_legguards,id=111276
 feet=primal_gladiators_boots_of_prowess,id=111145
-finger1=primal_gladiators_ring_of_cruelty,id=111081,enchant=100mult
-finger2=primal_gladiators_ring_of_prowess,id=111082,enchant=100mult
+finger1=primal_gladiators_ring_of_cruelty,id=111081,enchant=gift_of_multistrike
+finger2=primal_gladiators_ring_of_prowess,id=111082,enchant=gift_of_multistrike
 trinket1=primal_gladiators_insignia_of_conquest,id=111223
 trinket2=primal_gladiators_badge_of_conquest,id=111222
 main_hand=primal_gladiators_shanker,id=111068,enchant=mark_of_the_frostwolf

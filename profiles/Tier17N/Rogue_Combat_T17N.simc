@@ -57,7 +57,7 @@ actions.finisher=crimson_tempest,if=active_enemies>=7&dot.crimson_tempest_dot.ti
 actions.finisher+=/eviscerate
 
 head=primal_gladiators_helm,id=111275
-neck=primal_gladiators_necklace_of_cruelty,id=111079,enchant=140haste
+neck=primal_gladiators_necklace_of_cruelty,id=111079,enchant=gift_of_haste
 shoulders=primal_gladiators_spaulders,id=111277
 back=primal_gladiators_cape_of_cruelty,id=111077,enchant=gift_of_haste
 chest=primal_gladiators_tunic,id=111273
@@ -66,8 +66,8 @@ hands=primal_gladiators_gloves,id=111274
 waist=primal_gladiators_belt_of_prowess,id=111141
 legs=primal_gladiators_legguards,id=111276
 feet=primal_gladiators_boots_of_prowess,id=111145
-finger1=primal_gladiators_ring_of_cruelty,id=111081,enchant=100haste
-finger2=primal_gladiators_ring_of_prowess,id=111082,enchant=100haste
+finger1=primal_gladiators_ring_of_cruelty,id=111081,enchant=gift_of_haste
+finger2=primal_gladiators_ring_of_prowess,id=111082,enchant=gift_of_haste
 trinket1=primal_gladiators_insignia_of_conquest,id=111223
 trinket2=primal_gladiators_badge_of_conquest,id=111222
 main_hand=primal_gladiators_quickblade,id=111071,enchant=mark_of_warsong
