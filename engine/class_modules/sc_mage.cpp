@@ -4508,14 +4508,36 @@ void mage_t::apl_precombat()
   if( sim -> allow_flasks && level >= 80 )
   {
     std::string flask_action = "flask,type=";
-    flask_action += ( level > 85 ) ? "warm_sun" : "draconic_mind";
+
+    if ( level <= 85 )
+      flask_action += "draconic_mind" ;
+    else if ( level <= 90 )
+      flask_action += "warm_sun" ;
+    else if ( specialization() == MAGE_ARCANE )
+      flask_action += "greater_draenic_mastery_flask" ;
+    else if ( specialization() == MAGE_FIRE )
+      flask_action += "greater_draenic_critical_strike_flask" ;
+    else
+      flask_action += "greater_draenic_multistrike_flask" ;
+
     precombat -> add_action( flask_action );
   }
     // Food
   if ( sim -> allow_food && level >= 80 )
   {
     std::string food_action = "food,type=";
-    food_action += ( level > 85 ) ? "mogu_fish_stew" : "seafood_magnifique_feast";
+
+    if ( level <= 85 )
+      food_action += "seafood_magnifique_feast" ;
+    else if ( level <= 90 )
+      food_action += "mogu_fish_stew" ;
+    else if ( specialization() == MAGE_ARCANE )
+      food_action += "sleeper_surprise" ;
+    else if ( specialization() == MAGE_FIRE )
+      food_action += "blackrock_barbecue" ;
+    else
+      food_action += "calamari_crepes" ;
+
     precombat -> add_action( food_action );
   }
 
@@ -4537,17 +4559,22 @@ void mage_t::apl_precombat()
   // Snapshot Stats
   precombat -> add_action( "snapshot_stats" );
 
-  // Prebuff L90 talents
-  if ( talents.invocation -> ok() )
-    precombat -> add_action( this, "Evocation" );
-  else if ( talents.rune_of_power -> ok() )
-    precombat -> add_talent( this, "Rune of Power" );
+  // Level 90 talents
+  precombat -> add_talent( this, "Rune of Power" );
+  precombat -> add_talent( this, "Mirror Image" );
 
   //Potions
-  if ( ( level >= 80 ) && ( sim -> allow_potions ) )
-    precombat -> add_action( "potion,name=jade_serpent" );
+  if ( sim -> allow_potions && level >= 80 )
+  {
+    std::string potion_action = "potion,name=";
 
-  precombat -> add_action( this, "Mirror Image" );
+    if ( level <= 90 )
+      potion_action += "jade_serpent" ;
+    else
+      potion_action += "draenic_intellect" ;
+
+    precombat -> add_action( potion_action );
+  }
 
   if ( specialization() == MAGE_ARCANE )
     precombat -> add_action( this, "Arcane Blast" );

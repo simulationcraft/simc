@@ -6,7 +6,7 @@ level=100
 race=troll
 spec=frost
 professions=tailoring=600/engineering=600
-talents=100022
+talents=1000112
 glyphs=icy_veins/splitting_ice
 head=primal_gladiators_hood_of_prowess,id=111084
 neck=primal_gladiators_pendant_of_cruelty,id=111128,enchant=gift_of_multistrike
@@ -32,7 +32,7 @@ level=100
 race=troll
 spec=arcane
 professions=tailoring=600/engineering=600
-talents=100022
+talents=1000212
 glyphs=arcane_power
 head=primal_gladiators_hood_of_prowess,id=111084
 neck=primal_gladiators_pendant_of_cruelty,id=111128,enchant=gift_of_mastery
@@ -58,7 +58,7 @@ level=100
 race=troll
 spec=fire
 professions=tailoring=600/engineering=600
-talents=100022
+talents=1000313
 glyphs=combustion
 head=primal_gladiators_hood_of_prowess,id=111084
 neck=primal_gladiators_pendant_of_cruelty,id=111128,enchant=gift_of_critical_strike
