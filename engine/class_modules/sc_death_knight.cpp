@@ -3192,7 +3192,7 @@ struct death_coil_t : public death_knight_spell_t
       p() -> pets.dancing_rune_weapon -> drw_death_coil -> execute();
 
     p() -> trigger_shadow_infusion( base_costs[ RESOURCE_RUNIC_POWER ] );
-    if ( p() -> specialization == DEATH_KNIGHT_BLOOD )
+    if ( p() -> specialization() == DEATH_KNIGHT_BLOOD )
       p() -> buffs.shadow_of_death -> trigger();
   }
 
