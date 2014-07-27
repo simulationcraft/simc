@@ -395,10 +395,21 @@ struct compare_downtime
 
 struct filter_non_performing_players
 {
-  bool dps;
-  filter_non_performing_players( bool dps_ ) : dps( dps_ ) {}
+  std::string type;
+  filter_non_performing_players( std::string type_ ) : type( type_ ) {}
   bool operator()( player_t* p ) const
-  { if ( dps ) { if ( p -> collected_data.dps.mean() <= 0 ) return true;} else if ( p -> collected_data.hps.mean() <= 0 ) return true; return false; }
+  { 
+    if ( type == "dps" && p -> collected_data.dps.mean() <= 0 ) 
+        return true;
+    else if ( type == "hps" && p -> collected_data.hps.mean() <= 0 ) 
+      return true; 
+    else if ( type == "dtps" && p -> collected_data.dtps.mean() <= 0 ) 
+      return true; 
+    else if ( type == "tmi" && p -> collected_data.theck_meloree_index.mean() <= 0 ) 
+      return true; 
+    
+    return false; 
+  }
 };
 
 struct compare_dpet
@@ -715,7 +726,7 @@ std::string chart::raid_downtime( std::vector<player_t*>& players_by_name, int p
 size_t chart::raid_aps( std::vector<std::string>& images,
                         sim_t* sim,
                         std::vector<player_t*>& players_by_aps,
-                        bool dps )
+                        std::string type )
 {
   size_t num_players = players_by_aps.size();
 
@@ -723,10 +734,27 @@ size_t chart::raid_aps( std::vector<std::string>& images,
     return 0;
 
   double max_aps = 0;
-  if ( dps )
+  std::string title_str = "none";
+  if ( type == "dps" )
+  {
     max_aps = players_by_aps[ 0 ] -> collected_data.dps.mean();
-  else
+    title_str = "DPS";
+  }
+  else if ( type == "hps" )
+  {
     max_aps = players_by_aps[ 0 ] -> collected_data.hps.mean() + players_by_aps[ 0 ] -> collected_data.aps.mean();
+    title_str = "HPS %2b APS";
+  }
+  else if ( type == "dtps" )
+  {
+    max_aps = players_by_aps[ players_by_aps.size() - 1 ] -> collected_data.dtps.mean();
+    title_str = "DTPS";
+  }
+  else if ( type == "tmi" )
+  {
+    max_aps = players_by_aps[ players_by_aps.size() - 1 ] -> collected_data.theck_meloree_index.mean() / 1000.0;
+    title_str = "TMI";
+  }
 
   std::string s = std::string();
   char buffer[ 1024 ];
@@ -736,7 +764,7 @@ size_t chart::raid_aps( std::vector<std::string>& images,
   size_t max_players = MAX_PLAYERS_PER_CHART;
 
   // Ommit Player with 0 DPS/HPS
-  range::remove_copy_if( players_by_aps, back_inserter( player_list ), filter_non_performing_players( dps ) );
+  range::remove_copy_if( players_by_aps, back_inserter( player_list ), filter_non_performing_players( type ) );
 
   num_players = player_list.size();
 
@@ -761,7 +789,7 @@ size_t chart::raid_aps( std::vector<std::string>& images,
       }
     }
 
-    std::string chart_name = first ? ( std::string( player_names_non_ascii ? "\xE4\xB8\x80" : "" ) + std::string( dps ? "DPS" : "HPS %2b APS" ) + " Ranking" ) : "";
+    std::string chart_name = first ? ( std::string( player_names_non_ascii ? "\xE4\xB8\x80" : "" ) + std::string( title_str ) + " Ranking" ) : "";
     sc_chart chart( chart_name, HORIZONTAL_BAR, sim -> print_styles );
     chart.set_height( as<unsigned>( num_players ) * 20 + ( first ? 20 : 0 ) );
 
@@ -773,7 +801,13 @@ size_t chart::raid_aps( std::vector<std::string>& images,
     for ( size_t i = 0; i < num_players; i++ )
     {
       player_t* p = player_list[ i ];
-      snprintf( buffer, sizeof( buffer ), "%s%.0f", ( i ? "|" : "" ), dps ? p -> collected_data.dps.mean() : p -> collected_data.hps.mean() + p -> collected_data.aps.mean() ); s += buffer;
+      double player_mean = 0.0;
+      if      ( type == "dps" )  { player_mean = p -> collected_data.dps.mean(); }
+      else if ( type == "hps" )  { player_mean = p -> collected_data.hps.mean() + p -> collected_data.aps.mean(); }
+      else if ( type == "dtps" ) { player_mean = p -> collected_data.dtps.mean(); }
+      else if ( type == "tmi" )  { player_mean = p -> collected_data.theck_meloree_index.mean() / 1000.0; }
+      snprintf( buffer, sizeof( buffer ), "%s%.0f", ( i ? "|" : "" ), player_mean ); 
+      s += buffer;
     }
     s += amp;
     snprintf( buffer, sizeof( buffer ), "chds=0,%.0f", max_aps * 2.5 ); s += buffer;
@@ -791,7 +825,13 @@ size_t chart::raid_aps( std::vector<std::string>& images,
       player_t* p = player_list[ i ];
       std::string formatted_name = p -> name_str;
       util::urlencode( formatted_name );
-      snprintf( buffer, sizeof( buffer ), "%st++%.0f++%s,%s,%d,0,15", ( i ? "|" : "" ), dps ? p -> collected_data.dps.mean() : p -> collected_data.hps.mean() + p -> collected_data.aps.mean(), formatted_name.c_str(), get_color( p ).c_str(), ( int )i ); s += buffer;
+      double player_mean = 0.0;
+      if      ( type == "dps" )  { player_mean = p -> collected_data.dps.mean(); }
+      else if ( type == "hps" )  { player_mean = p -> collected_data.hps.mean() + p -> collected_data.aps.mean(); }
+      else if ( type == "dtps" ) { player_mean = p -> collected_data.dtps.mean(); }
+      else if ( type == "tmi" )  { player_mean = p -> collected_data.theck_meloree_index.mean() / 1000.0; }
+      std::string tmi_letter = ( type == "tmi" ) ? "k" : "";
+      snprintf( buffer, sizeof( buffer ), "%st++%.0f%s++%s,%s,%d,0,15", ( i ? "|" : "" ), player_mean, tmi_letter.c_str(), formatted_name.c_str(), get_color( p ).c_str(), ( int )i ); s += buffer;
     }
     s += amp;
 

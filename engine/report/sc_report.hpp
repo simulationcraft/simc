@@ -24,7 +24,7 @@ enum chart_e { HORIZONTAL_BAR_STACKED, HORIZONTAL_BAR, VERTICAL_BAR, PIE, LINE, 
 std::string stat_color( stat_e type );
 std::string resource_color( int type );
 std::string raid_downtime ( std::vector<player_t*> &players_by_name, int print_styles = 0 );
-size_t raid_aps ( std::vector<std::string>& images, sim_t*, std::vector<player_t*>&, bool dps );
+size_t raid_aps ( std::vector<std::string>& images, sim_t*, std::vector<player_t*>&, std::string type );
 size_t raid_dpet( std::vector<std::string>& images, sim_t* );
 size_t raid_gear( std::vector<std::string>& images, sim_t*, int print_styles = 0 );
 

@@ -8351,6 +8351,8 @@ void player_t::analyze( sim_t& s )
   {
     s.players_by_dps.push_back( this );
     s.players_by_hps.push_back( this );
+    s.players_by_dtps.push_back( this );
+    s.players_by_tmi.push_back( this );
     s.players_by_name.push_back( this );
   }
   if ( !  quiet && (  is_enemy() ||  is_add() ) && ! (  is_pet() && s.report_pets_separately ) )

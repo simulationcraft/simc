@@ -1678,6 +1678,26 @@ struct compare_hps
   }
 };
 
+// compare_dtps ==============================================================
+
+struct compare_dtps
+{
+  bool operator()( player_t* l, player_t* r ) const
+  {
+    return l -> collected_data.dtps.mean() < r -> collected_data.dtps.mean();
+  }
+};
+
+// compare_tmi==============================================================
+
+struct compare_tmi
+{
+  bool operator()( player_t* l, player_t* r ) const
+  {
+    return l -> collected_data.theck_meloree_index.mean() < r -> collected_data.theck_meloree_index.mean();
+  }
+};
+
 // compare_name =============================================================
 
 struct compare_name
@@ -1724,8 +1744,10 @@ void sim_t::analyze()
   for ( size_t i = 0; i < actor_list.size(); i++ )
     actor_list[ i ] -> analyze( *this );
 
-  range::sort( players_by_dps, compare_dps() );
-  range::sort( players_by_hps, compare_hps() );
+  range::sort( players_by_dps,  compare_dps() );
+  range::sort( players_by_hps,  compare_hps() );
+  range::sort( players_by_dtps, compare_dtps() );
+  range::sort( players_by_tmi,  compare_tmi() );
   range::sort( players_by_name, compare_name() );
   range::sort( targets_by_name, compare_name() );
 }
