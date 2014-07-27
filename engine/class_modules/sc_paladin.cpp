@@ -4223,13 +4223,109 @@ struct shield_of_the_righteous_t : public paladin_melee_attack_t
 
 // Templar's Verdict / Final Verdict ========================================================
 
+struct final_verdict_cleave_t : public paladin_melee_attack_t 
+{
+  final_verdict_cleave_t( paladin_t* p ) 
+    : paladin_melee_attack_t( "final_verdict_cleave", p, p -> find_talent_spell( "Final Verdict" ) )
+  {
+    base_multiplier *= data().effectN( 1 ).percent();
+    aoe = -1;
+    trigger_seal = true; // TODO: test, works w/ SoI
+    background = true;
+    trigger_gcd = timespan_t::zero();
+    
+    // Tier 13 Retribution 4-piece boosts damage (TODO: Test?)
+    base_multiplier *= 1.0 + p -> sets.set( SET_T13_4PC_MELEE ) -> effectN( 1 ).percent();
+    // Tier 14 Retribution 2-piece boosts damage (TODO: Test?)
+    base_multiplier *= 1.0 + p -> sets.set( SET_T14_2PC_MELEE ) -> effectN( 1 ).percent();
+  }
+    
+  // FV AoE does not hit the main target
+  size_t available_targets( std::vector< player_t* >& tl ) const
+  {
+    tl.clear();
+
+    for ( size_t i = 0; i < sim -> actor_list.size(); i++ )
+    {
+      if ( ! sim -> actor_list[ i ] -> is_sleeping() &&
+             sim -> actor_list[ i ] -> is_enemy() &&
+             sim -> actor_list[ i ] != target )
+        tl.push_back( sim -> actor_list[ i ] );
+    }
+
+    return tl.size();
+  }
+
+  virtual void impact( action_state_t* s )
+  {
+    paladin_melee_attack_t::impact( s );
+
+    if ( result_is_hit( s -> result ) || result_is_multistrike( s -> result ) )
+      trigger_hand_of_light( s );
+  }
+
+};
+
+struct final_verdict_t : public paladin_melee_attack_t
+{
+  final_verdict_cleave_t* cleave;
+
+  final_verdict_t( paladin_t* p, const std::string& options_str )
+    : paladin_melee_attack_t( "final_verdict", p, p -> find_talent_spell( "Final Verdict" ), true )
+  {
+    parse_options( NULL, options_str );
+    trigger_seal       = true;
+
+    // Tier 13 Retribution 4-piece boosts damage (TODO: test?)
+    base_multiplier *= 1.0 + p -> sets.set( SET_T13_4PC_MELEE ) -> effectN( 1 ).percent();
+
+    // Tier 14 Retribution 2-piece boosts damage (TODO: test?)
+    base_multiplier *= 1.0 + p -> sets.set( SET_T14_2PC_MELEE ) -> effectN( 1 ).percent();
+
+    // Create a child cleave object 
+    cleave = new final_verdict_cleave_t( p );
+    add_child( cleave );
+
+  }
+
+  virtual void execute ()
+  {
+    // store cost for potential refunding (see below)
+    double c = cost();
+
+    paladin_melee_attack_t::execute();
+
+    // missed/dodged/parried TVs do not consume Holy Power, but do consume Divine Purpose
+    // check for a miss, and refund the appropriate amount of HP if we spent any
+    if ( result_is_miss( execute_state -> result ) && c > 0 )
+    {
+      p() -> resource_gain( RESOURCE_HOLY_POWER, c, p() -> gains.hp_templars_verdict_refund );
+    }
+  }
+
+  virtual void impact( action_state_t* s )
+  {
+    paladin_melee_attack_t::impact( s );
+
+    if ( result_is_hit( s -> result ) || result_is_multistrike( s -> result ) )
+    {
+      // Trigger Hand of Light procs
+      trigger_hand_of_light( s );
+
+      // Remove T15 Retribution 4-piece effect
+      p() -> buffs.tier15_4pc_melee -> expire();
+
+      // Apply cleave if we're using SoR
+      if ( p() -> active_seal == SEAL_OF_RIGHTEOUSNESS )
+        cleave -> schedule_execute();
+    }
+  }
+};
+
 struct templars_verdict_t : public paladin_melee_attack_t
 {
   templars_verdict_t( paladin_t* p, const std::string& options_str )
-    : paladin_melee_attack_t( ( p -> talents.final_verdict -> ok() ? "final_verdict" : "templars_verdict" ), 
-                              p, 
-                              ( p -> talents.final_verdict -> ok() ? p -> find_talent_spell( "Final Verdict" ) : p -> find_class_spell( "Templar's Verdict" ) ), 
-                              true )
+    : paladin_melee_attack_t( "templars_verdict", p, p -> find_class_spell( "Templar's Verdict" ), true )
   {
     parse_options( NULL, options_str );
     trigger_seal       = true;
@@ -4239,6 +4335,9 @@ struct templars_verdict_t : public paladin_melee_attack_t
 
     // Tier 14 Retribution 2-piece boosts damage
     base_multiplier *= 1.0 + p -> sets.set( SET_T14_2PC_MELEE ) -> effectN( 1 ).percent();
+
+    // disable if Final Verdict is taken
+    background = p -> talents.final_verdict -> ok();
   }
 
   virtual school_e get_school() const
@@ -4273,6 +4372,7 @@ struct templars_verdict_t : public paladin_melee_attack_t
     {
       // Trigger Hand of Light procs
       trigger_hand_of_light( s );
+
       // Remove T15 Retribution 4-piece effect
       p() -> buffs.tier15_4pc_melee -> expire();
     }
@@ -4432,7 +4532,7 @@ action_t* paladin_t::create_action( const std::string& name, const std::string& 
   if ( name == "execution_sentence"        ) return new execution_sentence_t       ( this, options_str );
   if ( name == "exorcism"                  ) return new exorcism_t                 ( this, options_str );
   if ( name == "fist_of_justice"           ) return new fist_of_justice_t          ( this, options_str );
-  if ( name == "final_verdict"             ) return new templars_verdict_t         ( this, options_str );
+  if ( name == "final_verdict"             ) return new final_verdict_t            ( this, options_str );
   if ( name == "hand_of_purity"            ) return new hand_of_purity_t           ( this, options_str );
   if ( name == "hand_of_sacrifice"         ) return new hand_of_sacrifice_t        ( this, options_str );
   if ( name == "hammer_of_justice"         ) return new hammer_of_justice_t        ( this, options_str );
