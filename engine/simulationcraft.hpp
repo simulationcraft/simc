@@ -3305,10 +3305,10 @@ struct item_t
     int                      suffix_id;
     unsigned                 enchant_id;
     unsigned                 addon_id;
-    unsigned                 bonus_id;
     int                      armor;
     std::array<int, 3>       gem_id;
     std::array<int, 3>       gem_color;
+    std::vector<int>         bonus_id;
     std::vector<stat_pair_t> gem_stats, meta_gem_stats, socket_bonus_stats;
     std::string              encoded_enchant;
     std::vector<stat_pair_t> enchant_stats;
@@ -3321,11 +3321,12 @@ struct item_t
 
     parsed_input_t() :
       upgrade_level( 0 ), suffix_id( 0 ), enchant_id( 0 ), addon_id( 0 ),
-      bonus_id( 0 ), armor( 0 ), data()
+      armor( 0 ), data()
     {
       range::fill( data.stat_type_e, -1 );
       range::fill( data.stat_val, 0 );
       range::fill( gem_id, 0 );
+      range::fill( bonus_id, 0 );
       range::fill( gem_color, SOCKET_COLOR_NONE );
     }
   } parsed;

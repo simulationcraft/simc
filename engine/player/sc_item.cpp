@@ -463,7 +463,17 @@ bool item_t::parse_options()
     parsed.addon_id = util::to_unsigned( option_addon_id_str );
 
   if ( ! option_bonus_id_str.empty() )
-    parsed.bonus_id = util::to_unsigned( option_bonus_id_str );
+  {
+    std::vector<std::string> split = util::string_split( option_bonus_id_str, "/" );
+    for ( size_t i = 0, end = split.size(); i < end; i++ )
+    {
+      int bonus_id = util::to_int( split[ i ] );
+      if ( bonus_id <= 0 )
+        continue;
+
+      parsed.bonus_id.push_back( bonus_id );
+    }
+  }
 
   return true;
 }
@@ -478,8 +488,18 @@ void item_t::encoded_item( xml_writer_t& writer )
   if ( parsed.data.id )
     writer.print_attribute( "id", util::to_string( parsed.data.id ) );
 
-  if ( parsed.bonus_id > 0 )
-    writer.print_attribute( "bonus_id", util::to_string( parsed.bonus_id )  );
+  if ( parsed.bonus_id.size() > 0 )
+  {
+    std::string bonus_id_str;
+    for ( size_t i = 0, end = parsed.bonus_id.size(); i < end; i++ )
+    {
+      bonus_id_str += util::to_string( parsed.bonus_id[ i ] );
+      if ( i < parsed.bonus_id.size() - 1 )
+        bonus_id_str += "/";
+    }
+
+    writer.print_attribute( "bonus_id", bonus_id_str );
+  }
 
   if ( parsed.upgrade_level > 0 )
     writer.print_attribute( "upgrade_level", encoded_upgrade_level() );
@@ -508,8 +528,16 @@ std::string item_t::encoded_item()
   if ( parsed.data.id )
     s << ",id=" << parsed.data.id;
 
-  if ( parsed.bonus_id > 0 )
-    s << ",bonus_id=" << parsed.bonus_id;
+  if ( parsed.bonus_id.size() > 0 )
+  {
+    s << ",bonus_id=";
+    for ( size_t i = 0, end = parsed.bonus_id.size(); i < end; i++ )
+    {
+      s << parsed.bonus_id[ i ];
+      if ( i < parsed.bonus_id.size() - 1 )
+        s << "/";
+    }
+  }
 
   if ( ! option_ilevel_str.empty() )
     s << ",ilevel=" << parsed.data.level;
