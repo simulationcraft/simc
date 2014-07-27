@@ -4912,14 +4912,14 @@ void shaman_t::trigger_improved_chain_lightning( const action_state_t* state )
 
   // Trigger as many stacks as there are targets, if the buff is not up
   if ( ! buff.improved_chain_lightning -> check() )
-    buff.improved_chain_lightning -> trigger( state -> n_targets );
+    buff.improved_chain_lightning -> trigger( (int)state -> n_targets );
   else
   {
     // Stacks are only refreshed if the new number is higher than the current
     if ( state -> n_targets >= static_cast<size_t>( buff.improved_chain_lightning -> check() ) )
     {
       buff.improved_chain_lightning -> expire();
-      buff.improved_chain_lightning -> trigger( state -> n_targets );
+      buff.improved_chain_lightning -> trigger( (int)state -> n_targets );
     }
   }
 }
