@@ -5345,7 +5345,7 @@ double priest_t::composite_spell_haste() const
 // priest_t::composite_spell_haste ==========================================
 
  // TODO Wire this up when we can change the damage/heal coefficient for Multistrikes
-double priest_t::composite_multistrike_multiplier( const action_state_t* s )
+double priest_t::composite_multistrike_multiplier( const action_state_t* /*s*/ )
 {
     //double m = action_t::composite_multistrike_multiplier ( s );
     double m = 0.3;
