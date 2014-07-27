@@ -1989,11 +1989,6 @@ struct flash_of_light_t : public paladin_heal_t
       {
         am *= 1.0 + p() -> buffs.selfless_healer -> data().effectN( 2 ).percent() * p() -> buffs.selfless_healer -> stack();
       }
-      // multiplicative 20% per stack of Bastion of Glory when used on self, only if 1+ stack of SH
-      else if ( p() -> buffs.bastion_of_glory -> stack() > 0  && p() -> buffs.selfless_healer -> stack() > 0 )
-      {
-        am *= 1.0 + p() -> buffs.selfless_healer -> data().effectN( 2 ).percent() * p() -> buffs.bastion_of_glory -> stack();
-      }
     }
 
     return am;
