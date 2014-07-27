@@ -2567,11 +2567,8 @@ struct necrotic_plague_t : public death_knight_spell_t
     }
   };
 
-  int max_stack;
-
   necrotic_plague_t( death_knight_t* p ) :
-    death_knight_spell_t( "necrotic_plague", p, p -> find_spell( 155159 ) ),
-    max_stack( data().max_stacks() )
+    death_knight_spell_t( "necrotic_plague", p, p -> find_spell( 155159 ) )
   {
     hasted_ticks = may_miss = may_crit = false;
     background = tick_may_crit = true;
