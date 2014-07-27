@@ -4474,7 +4474,9 @@ void mage_t::apl_fire()
                               "if=buff.alter_time.down&buff.rune_of_power.remains<4*action.fireball.execute_time&(buff.heating_up.down|buff.pyroblast.down|!action.fireball.in_flight)",
                               "Cast RoP/Evoc/MI only when player does not have both HU, Pyro proc and fireball mid flight - this causes Proc munching" );
   default_list -> add_action( this, "Evocation",
-                              "if=talent.invocation.enabled&buff.alter_time.down&buff.invokers_energy.remains<4*action.fireball.execute_time&(buff.heating_up.down|buff.pyroblast.down|!action.fireball.in_flight)" );
+                              "if=talent.invocation.enabled&buff.alter_time.down&buff.amplified.up&(buff.invokers_energy.remains<4*action.fireball.execute_time|(buff.invokers_energy.remains<20&trinket.stat.intellect.cooldown_remains<action.fireball.execute_time))&(buff.heating_up.down|buff.pyroblast.down|!action.fireball.in_flight)" );
+  default_list -> add_action( this, "Evocation",
+                              "if=talent.invocation.enabled&buff.alter_time.down&buff.amplified.down&buff.invokers_energy.remains<4*action.fireball.execute_time&(buff.heating_up.down|buff.pyroblast.down|!action.fireball.in_flight)" );
   default_list -> add_action( this, "Mirror Image",
                               "if=buff.alter_time.down&(buff.heating_up.down|buff.pyroblast.down|!action.fireball.in_flight)" );
 
