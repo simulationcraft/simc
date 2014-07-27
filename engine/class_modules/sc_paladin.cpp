@@ -426,7 +426,6 @@ public:
   void    generate_action_prio_list_prot();
   void    generate_action_prio_list_ret();
   void    generate_action_prio_list_holy();
-  void    validate_action_priority_list();
 
   target_specific_t<paladin_td_t*> target_data;
 
@@ -751,21 +750,8 @@ public:
 
 
 // ==========================================================================
-// To keep consistency throughout the ability damage definitions, I'm keeping to the following conventions.
-// The damage formula in action_t::calculate_direct_amount in sc_action.cpp is as follows:
-// da_multiplier * ( weapon_multiplier * ( avg_range( base_dd_min, base_dd_max) + base_dd_adder
-//                                         + avg_range( weapon->min_dmg, weapon->max_dmg)
-//                                         + weapon -> bonus_damage
-//                                         + weapon_speed * attack_power / 14 )
-//                   + direct_power_mod * ( base_attack_power_multiplier * attack_power
-//                                          + base_spell_power_multiplier * spell_power )
-//                  )
-// The convention we're sticking to is as follows:
-// - for spells that scale with ONLY attack_power or spell_power, the scaling coefficient goes
-//   in direct_power_mod and base_X_power_multiplier is set to 0 or 1 accordingly
-//
-// - for spells that scale with both SP and AP differently (Judgment, Avenger's Shield), we set
-//   direct_power_mod equal to 1.0 and put the appropriate scaling factors in base_X_power_multiplier
+// The damage formula in action_t::calculate_direct_amount in sc_action.cpp is documented here:
+// https://code.google.com/p/simulationcraft/wiki/DevelopersDocumentation#Damage_Calculations
 // ==========================================================================
 
 
@@ -3746,10 +3732,6 @@ struct hammer_of_wrath_t : public paladin_melee_attack_t
     // no weapon multiplier
     weapon_multiplier = 0.0;
 
-    // HoW scales with SP, not AP; flip base multipliers (direct_power_mod is correct @ 1.61)
-    //base_spell_power_multiplier  = 1.0;
-    //base_attack_power_multiplier = data().extra_coeff();
-
     // define cooldown multiplier for use with Sanctified Wrath talent for retribution only
     if ( ( p -> specialization() == PALADIN_RETRIBUTION ) && p -> find_talent_spell( "Sanctified Wrath" ) -> ok()  )
     {
@@ -4943,16 +4925,12 @@ void paladin_t::generate_action_prio_list_prot()
   for ( size_t i = 0; i < racial_actions.size(); i++ )
     def -> add_action( racial_actions[ i ] );
 
-  //def -> add_action( this, "Avenging Wrath" );
   def -> add_talent( this, "Holy Avenger" );
   def -> add_action( this, "Divine Protection" ); // use on cooldown
   def -> add_action( this, "Guardian of Ancient Kings", "if=buff.holy_avenger.down&buff.shield_of_the_righteous.down&buff.divine_protection.down" ); 
   def -> add_action( this, "Ardent Defender", "if=buff.holy_avenger.down&buff.shield_of_the_righteous.down&buff.divine_protection.down&buff.guardian_of_ancient_kings.down");
   def -> add_talent( this, "Eternal Flame", "if=buff.eternal_flame.remains<2&buff.bastion_of_glory.react>2&(holy_power>=3|buff.divine_purpose.react|buff.bastion_of_power.react)" );
   def -> add_talent( this, "Eternal Flame", "if=buff.bastion_of_power.react&buff.bastion_of_glory.react>=5" );
-  // these two lines are emergency WoG, but seem to do more harm than good
-  //def -> add_action( this, "Word of Glory", "if=buff.bastion_of_glory.react>3&incoming_damage_5s>health.max*0.8" );
-  //def -> add_talent( this, "Eternal Flame", "if=buff.bastion_of_glory.react>3&incoming_damage_5s>health.max*0.8" );
   def -> add_action( this, "Shield of the Righteous", "if=holy_power>=5|buff.divine_purpose.react|incoming_damage_1500ms>=health.max*0.3" );
   def -> add_action( this, "Crusader Strike" );
   def -> add_action( this, "Judgment" );
@@ -5148,14 +5126,7 @@ void paladin_t::generate_action_prio_list_holy()
 
   // Snapshot stats
   precombat -> add_action( "snapshot_stats",  "Snapshot raid buffed stats before combat begins and pre-potting is done." );
-
-  // Pre-potting (disabled for now)
-  /*
-  if (sim -> allow_potions && level >= 80 )
-    precombat -> add_action( ( level > 85 ) ? "potion,name=jade_serpent_potion" : "potion,name=volcanic_potion" );
-
-  */
-
+  
   // action priority list
   action_priority_list_t* def = get_action_priority_list( "default" );
 
@@ -5192,64 +5163,6 @@ void paladin_t::generate_action_prio_list_holy()
   def -> add_action( this, "Divine Plea", "if=mana_pct<75" );
   def -> add_action( this, "Holy Light" );
 
-}
-
-void paladin_t::validate_action_priority_list()
-{
-
-  for ( size_t alist = 0; alist < action_priority_list.size(); alist++ )
-  {
-    action_priority_list_t* a = action_priority_list[ alist ];
-
-    // Convert old style action list to new style, all lines are without comments
-    // stolen from player_t::init_actions() in sc_player.cpp
-    if ( ! action_priority_list[ alist ] -> action_list_str.empty() )
-    {
-      // convert old string style to vectorized format
-      std::vector<std::string> splits = util::string_split( action_priority_list[ alist ] -> action_list_str, "/" );
-      for ( size_t i = 0; i < splits.size(); i++ )
-        action_priority_list[ alist ] -> action_list.push_back( action_priority_t( splits[ i ], "" ) );
-
-      // set action_list_str to empty to avoid assert() error in player_t::init_actions()
-      action_priority_list[ alist ] -> action_list_str.clear();
-
-    }
-
-    // This section performs some validation on hand-written APLs.  The ones created in 
-    // generate_action_prio_list_spec() should automatically avoid all of these mistakes.
-    // In most cases, this will spit out a warning to inform the user that something was ignored.
-    // For WoG w/EF talented, it will try to correct the error.
-
-    for ( size_t i = 0; i < a -> action_list.size(); i++ )
-    {
-      std::string& action_str = a -> action_list[ i ].action_;
-      std::size_t found_position;
-      std::vector<std::string> splits = util::string_split( action_str, "," );
-
-      // Check for EF/WoG mistakes
-      if ( splits[ 0 ] == "word_of_glory" && talents.eternal_flame -> ok() )
-      {
-          found_position = action_str.find( splits[ 0 ].c_str() );
-          action_str.replace( found_position, splits[ 0 ].length(), "eternal_flame" );
-          sim -> errorf( "Action priority list contains Word of Glory with Eternal Flame talent, automatically replacing WoG with EF\n" );
-      }
-      // Check for usage of talents without talent present
-      if ( ( splits[ 0 ] == "holy_prism" && ! talents.holy_prism -> ok() ) || 
-           ( splits[ 0 ] == "lights_hammer" && ! talents.lights_hammer -> ok() ) || 
-           ( splits[ 0 ] == "execution_sentence" && ! talents.execution_sentence -> ok() ) ||
-           ( splits[ 0 ] == "sacred_shield" && ! talents.sacred_shield -> ok() ) ||
-           ( splits[ 0 ] == "hand_of_purity" && ! talents.hand_of_purity -> ok() ) ||
-           ( splits[ 0 ] == "holy_avenger" && ! talents.holy_avenger -> ok() ) ||
-           ( splits[ 0 ] == "eternal_flame" && ! talents.eternal_flame -> ok() ) )
-      {
-        std::string talent_str = "talent.";
-        talent_str += splits[ 0 ].c_str();
-        talent_str += ".enabled";
-        if ( ! util::str_in_str_ci( action_str, talent_str ) )
-          sim -> errorf( "Action priority list contains %s without talent, ignoring.", splits[ 0 ].c_str() );
-      }
-    }
-  }
 }
 
 // paladin_t::init_actions ==================================================
@@ -5305,10 +5218,7 @@ void paladin_t::init_action_list()
     // clear action_list_str to avoid an assert error in player_t::init_actions()
     action_list_str.clear();
   }
-
-
-  validate_action_priority_list(); // this checks for conflicts and cleans up APL accordingly
-
+  
   player_t::init_action_list();
 }
 
