@@ -4978,8 +4978,7 @@ void warlock_t::create_buffs()
   buffs.mannoroths_fury       = buff_creator_t( this, "mannoroths_fury", talents.mannoroths_fury );
     
   buffs.haunting_spirits      = buff_creator_t( this, "haunting_spirits", find_spell( 157698 ) )
-    .chance(1.0)
-    .duration( timespan_t::from_seconds( 10 ));
+    .chance(1.0);
     
   buffs.tier16_4pc_ember_fillup = buff_creator_t( this, "ember_master",   find_spell( 145164 ) )
                                 .cd( find_spell( 145165 ) -> duration() )

@@ -168,6 +168,57 @@
 		34EE061118056CCD005A5A94 /* Rogue_Assassination_T16H.simc in CopyFiles */ = {isa = PBXBuildFile; fileRef = 34EE05FD18056CA8005A5A94 /* Rogue_Assassination_T16H.simc */; };
 		34EE061218056CCD005A5A94 /* Rogue_Combat_T16H.simc in CopyFiles */ = {isa = PBXBuildFile; fileRef = 34EE05FE18056CA8005A5A94 /* Rogue_Combat_T16H.simc */; };
 		34EE061318056CCD005A5A94 /* Rogue_Subtlety_T16H.simc in CopyFiles */ = {isa = PBXBuildFile; fileRef = 34EE05FF18056CA8005A5A94 /* Rogue_Subtlety_T16H.simc */; };
+		513DC77D198664830073BD7F /* Death_Knight_Frost_1h_T17N.simc in Resources */ = {isa = PBXBuildFile; fileRef = 513DC74A198664830073BD7F /* Death_Knight_Frost_1h_T17N.simc */; };
+		513DC77E198664840073BD7F /* Death_Knight_Frost_2h_T17N.simc in Resources */ = {isa = PBXBuildFile; fileRef = 513DC74B198664830073BD7F /* Death_Knight_Frost_2h_T17N.simc */; };
+		513DC77F198664840073BD7F /* Death_Knight_Unholy_T17N.simc in Resources */ = {isa = PBXBuildFile; fileRef = 513DC74C198664830073BD7F /* Death_Knight_Unholy_T17N.simc */; };
+		513DC780198664840073BD7F /* Druid_Balance_T17N.simc in Resources */ = {isa = PBXBuildFile; fileRef = 513DC74D198664830073BD7F /* Druid_Balance_T17N.simc */; };
+		513DC781198664840073BD7F /* Druid_Feral_T17N.simc in Resources */ = {isa = PBXBuildFile; fileRef = 513DC74E198664830073BD7F /* Druid_Feral_T17N.simc */; };
+		513DC782198664840073BD7F /* Druid_Guardian_T17N.simc in Resources */ = {isa = PBXBuildFile; fileRef = 513DC74F198664830073BD7F /* Druid_Guardian_T17N.simc */; };
+		513DC783198664840073BD7F /* generate_Death_Knight_T17N.simc in Resources */ = {isa = PBXBuildFile; fileRef = 513DC750198664830073BD7F /* generate_Death_Knight_T17N.simc */; };
+		513DC784198664840073BD7F /* generate_Druid_T17N.simc in Resources */ = {isa = PBXBuildFile; fileRef = 513DC751198664830073BD7F /* generate_Druid_T17N.simc */; };
+		513DC785198664840073BD7F /* generate_Hunter_T17N.simc in Resources */ = {isa = PBXBuildFile; fileRef = 513DC752198664830073BD7F /* generate_Hunter_T17N.simc */; };
+		513DC786198664840073BD7F /* generate_Mage_T17N.simc in Resources */ = {isa = PBXBuildFile; fileRef = 513DC753198664830073BD7F /* generate_Mage_T17N.simc */; };
+		513DC787198664840073BD7F /* generate_Monk_T17N.simc in Resources */ = {isa = PBXBuildFile; fileRef = 513DC754198664830073BD7F /* generate_Monk_T17N.simc */; };
+		513DC788198664840073BD7F /* generate_Paladin_T17N.simc in Resources */ = {isa = PBXBuildFile; fileRef = 513DC755198664830073BD7F /* generate_Paladin_T17N.simc */; };
+		513DC789198664840073BD7F /* generate_Priest_T17N.simc in Resources */ = {isa = PBXBuildFile; fileRef = 513DC756198664830073BD7F /* generate_Priest_T17N.simc */; };
+		513DC78A198664840073BD7F /* generate_Rogue_T17N.simc in Resources */ = {isa = PBXBuildFile; fileRef = 513DC757198664830073BD7F /* generate_Rogue_T17N.simc */; };
+		513DC78B198664840073BD7F /* generate_Shaman_T17N.simc in Resources */ = {isa = PBXBuildFile; fileRef = 513DC758198664830073BD7F /* generate_Shaman_T17N.simc */; };
+		513DC78C198664840073BD7F /* generate_T17N.simc in Resources */ = {isa = PBXBuildFile; fileRef = 513DC759198664830073BD7F /* generate_T17N.simc */; };
+		513DC78D198664840073BD7F /* generate_Warlock_T17N.simc in Resources */ = {isa = PBXBuildFile; fileRef = 513DC75A198664830073BD7F /* generate_Warlock_T17N.simc */; };
+		513DC78E198664840073BD7F /* generate_Warrior_T17N.simc in Resources */ = {isa = PBXBuildFile; fileRef = 513DC75B198664830073BD7F /* generate_Warrior_T17N.simc */; };
+		513DC78F198664840073BD7F /* Hunter_BM_T17N.simc in Resources */ = {isa = PBXBuildFile; fileRef = 513DC75C198664830073BD7F /* Hunter_BM_T17N.simc */; };
+		513DC790198664840073BD7F /* Hunter_MM_T17N.simc in Resources */ = {isa = PBXBuildFile; fileRef = 513DC75D198664830073BD7F /* Hunter_MM_T17N.simc */; };
+		513DC791198664840073BD7F /* Hunter_SV_T17N.simc in Resources */ = {isa = PBXBuildFile; fileRef = 513DC75E198664830073BD7F /* Hunter_SV_T17N.simc */; };
+		513DC792198664840073BD7F /* Mage_Arcane_T17N.simc in Resources */ = {isa = PBXBuildFile; fileRef = 513DC75F198664830073BD7F /* Mage_Arcane_T17N.simc */; };
+		513DC793198664840073BD7F /* Mage_Fire_T17N.simc in Resources */ = {isa = PBXBuildFile; fileRef = 513DC760198664830073BD7F /* Mage_Fire_T17N.simc */; };
+		513DC794198664840073BD7F /* Mage_Frost_T17N.simc in Resources */ = {isa = PBXBuildFile; fileRef = 513DC761198664830073BD7F /* Mage_Frost_T17N.simc */; };
+		513DC795198664840073BD7F /* Monk_Windwalker_1h_T17N.simc in Resources */ = {isa = PBXBuildFile; fileRef = 513DC762198664830073BD7F /* Monk_Windwalker_1h_T17N.simc */; };
+		513DC796198664840073BD7F /* Monk_Windwalker_2h_T17N.simc in Resources */ = {isa = PBXBuildFile; fileRef = 513DC763198664830073BD7F /* Monk_Windwalker_2h_T17N.simc */; };
+		513DC797198664840073BD7F /* Paladin_Protection_T17N.simc in Resources */ = {isa = PBXBuildFile; fileRef = 513DC764198664830073BD7F /* Paladin_Protection_T17N.simc */; };
+		513DC798198664840073BD7F /* Paladin_Retribution_T17N.simc in Resources */ = {isa = PBXBuildFile; fileRef = 513DC765198664830073BD7F /* Paladin_Retribution_T17N.simc */; };
+		513DC799198664840073BD7F /* Priest_Discipline_T17N_Dmg.simc in Resources */ = {isa = PBXBuildFile; fileRef = 513DC766198664830073BD7F /* Priest_Discipline_T17N_Dmg.simc */; };
+		513DC79A198664840073BD7F /* Priest_Discipline_T17N_Heal.simc in Resources */ = {isa = PBXBuildFile; fileRef = 513DC767198664830073BD7F /* Priest_Discipline_T17N_Heal.simc */; };
+		513DC79B198664840073BD7F /* Priest_Holy_T17N_Dmg.simc in Resources */ = {isa = PBXBuildFile; fileRef = 513DC768198664830073BD7F /* Priest_Holy_T17N_Dmg.simc */; };
+		513DC79C198664840073BD7F /* Priest_Holy_T17N_Heal.simc in Resources */ = {isa = PBXBuildFile; fileRef = 513DC769198664830073BD7F /* Priest_Holy_T17N_Heal.simc */; };
+		513DC79D198664840073BD7F /* Priest_Shadow_T17N_AS.simc in Resources */ = {isa = PBXBuildFile; fileRef = 513DC76A198664830073BD7F /* Priest_Shadow_T17N_AS.simc */; };
+		513DC79E198664840073BD7F /* Priest_Shadow_T17N_COP.simc in Resources */ = {isa = PBXBuildFile; fileRef = 513DC76B198664830073BD7F /* Priest_Shadow_T17N_COP.simc */; };
+		513DC79F198664840073BD7F /* Priest_Shadow_T17N_VE.simc in Resources */ = {isa = PBXBuildFile; fileRef = 513DC76C198664830073BD7F /* Priest_Shadow_T17N_VE.simc */; };
+		513DC7A0198664840073BD7F /* Priest_T17N.simc in Resources */ = {isa = PBXBuildFile; fileRef = 513DC76D198664830073BD7F /* Priest_T17N.simc */; };
+		513DC7A1198664840073BD7F /* Raid_T17N.simc in Resources */ = {isa = PBXBuildFile; fileRef = 513DC76E198664830073BD7F /* Raid_T17N.simc */; };
+		513DC7A2198664840073BD7F /* Rogue_Assassination_T17N.simc in Resources */ = {isa = PBXBuildFile; fileRef = 513DC76F198664830073BD7F /* Rogue_Assassination_T17N.simc */; };
+		513DC7A3198664840073BD7F /* Rogue_Combat_T17N.simc in Resources */ = {isa = PBXBuildFile; fileRef = 513DC770198664830073BD7F /* Rogue_Combat_T17N.simc */; };
+		513DC7A4198664840073BD7F /* Rogue_Subtlety_T17N.simc in Resources */ = {isa = PBXBuildFile; fileRef = 513DC771198664830073BD7F /* Rogue_Subtlety_T17N.simc */; };
+		513DC7A5198664840073BD7F /* Shaman_Elemental_T17N.simc in Resources */ = {isa = PBXBuildFile; fileRef = 513DC772198664830073BD7F /* Shaman_Elemental_T17N.simc */; };
+		513DC7A6198664840073BD7F /* Shaman_Enhancement_T17N.simc in Resources */ = {isa = PBXBuildFile; fileRef = 513DC773198664830073BD7F /* Shaman_Enhancement_T17N.simc */; };
+		513DC7A7198664840073BD7F /* Warlock_Affliction_T17N.simc in Resources */ = {isa = PBXBuildFile; fileRef = 513DC774198664830073BD7F /* Warlock_Affliction_T17N.simc */; };
+		513DC7A8198664840073BD7F /* Warlock_Demonology_T17N.simc in Resources */ = {isa = PBXBuildFile; fileRef = 513DC775198664830073BD7F /* Warlock_Demonology_T17N.simc */; };
+		513DC7A9198664840073BD7F /* Warlock_Destruction_T17N.simc in Resources */ = {isa = PBXBuildFile; fileRef = 513DC776198664830073BD7F /* Warlock_Destruction_T17N.simc */; };
+		513DC7AA198664840073BD7F /* Warrior_Arms_T17N.simc in Resources */ = {isa = PBXBuildFile; fileRef = 513DC777198664830073BD7F /* Warrior_Arms_T17N.simc */; };
+		513DC7AB198664840073BD7F /* Warrior_Fury_1h_T17N.simc in Resources */ = {isa = PBXBuildFile; fileRef = 513DC778198664830073BD7F /* Warrior_Fury_1h_T17N.simc */; };
+		513DC7AC198664840073BD7F /* Warrior_Fury_2h_T17N.simc in Resources */ = {isa = PBXBuildFile; fileRef = 513DC779198664830073BD7F /* Warrior_Fury_2h_T17N.simc */; };
+		513DC7AD198664840073BD7F /* Warrior_Gladiator_T17N.simc in Resources */ = {isa = PBXBuildFile; fileRef = 513DC77A198664830073BD7F /* Warrior_Gladiator_T17N.simc */; };
+		513DC7AE198664840073BD7F /* Warrior_Protection_T17N.simc in Resources */ = {isa = PBXBuildFile; fileRef = 513DC77B198664830073BD7F /* Warrior_Protection_T17N.simc */; };
+		513DC7AF198664840073BD7F /* Warrior_T17N.simc in Resources */ = {isa = PBXBuildFile; fileRef = 513DC77C198664830073BD7F /* Warrior_T17N.simc */; };
 		6E1F18A716DFF43A00485193 /* Death_Knight_Frost_1h_T15H.simc in CopyFiles */ = {isa = PBXBuildFile; fileRef = 3424816B16DB581F008FC024 /* Death_Knight_Frost_1h_T15H.simc */; };
 		6E1F18A816DFF43A00485193 /* Death_Knight_Frost_2h_T15H.simc in CopyFiles */ = {isa = PBXBuildFile; fileRef = 3424816C16DB581F008FC024 /* Death_Knight_Frost_2h_T15H.simc */; };
 		6E1F18A916DFF43A00485193 /* Death_Knight_Unholy_T15H.simc in CopyFiles */ = {isa = PBXBuildFile; fileRef = 3424816D16DB581F008FC024 /* Death_Knight_Unholy_T15H.simc */; };
@@ -776,6 +827,57 @@
 		34F1862716ED190D00E003F2 /* Warrior_Arms_T15N.simc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Warrior_Arms_T15N.simc; sourceTree = "<group>"; };
 		34F1862816ED190D00E003F2 /* Warrior_Fury_1h_T15N.simc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Warrior_Fury_1h_T15N.simc; sourceTree = "<group>"; };
 		34F1862916ED190D00E003F2 /* Warrior_Fury_2h_T15N.simc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Warrior_Fury_2h_T15N.simc; sourceTree = "<group>"; };
+		513DC74A198664830073BD7F /* Death_Knight_Frost_1h_T17N.simc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Death_Knight_Frost_1h_T17N.simc; sourceTree = "<group>"; };
+		513DC74B198664830073BD7F /* Death_Knight_Frost_2h_T17N.simc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Death_Knight_Frost_2h_T17N.simc; sourceTree = "<group>"; };
+		513DC74C198664830073BD7F /* Death_Knight_Unholy_T17N.simc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Death_Knight_Unholy_T17N.simc; sourceTree = "<group>"; };
+		513DC74D198664830073BD7F /* Druid_Balance_T17N.simc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Druid_Balance_T17N.simc; sourceTree = "<group>"; };
+		513DC74E198664830073BD7F /* Druid_Feral_T17N.simc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Druid_Feral_T17N.simc; sourceTree = "<group>"; };
+		513DC74F198664830073BD7F /* Druid_Guardian_T17N.simc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Druid_Guardian_T17N.simc; sourceTree = "<group>"; };
+		513DC750198664830073BD7F /* generate_Death_Knight_T17N.simc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = generate_Death_Knight_T17N.simc; sourceTree = "<group>"; };
+		513DC751198664830073BD7F /* generate_Druid_T17N.simc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = generate_Druid_T17N.simc; sourceTree = "<group>"; };
+		513DC752198664830073BD7F /* generate_Hunter_T17N.simc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = generate_Hunter_T17N.simc; sourceTree = "<group>"; };
+		513DC753198664830073BD7F /* generate_Mage_T17N.simc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = generate_Mage_T17N.simc; sourceTree = "<group>"; };
+		513DC754198664830073BD7F /* generate_Monk_T17N.simc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = generate_Monk_T17N.simc; sourceTree = "<group>"; };
+		513DC755198664830073BD7F /* generate_Paladin_T17N.simc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = generate_Paladin_T17N.simc; sourceTree = "<group>"; };
+		513DC756198664830073BD7F /* generate_Priest_T17N.simc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = generate_Priest_T17N.simc; sourceTree = "<group>"; };
+		513DC757198664830073BD7F /* generate_Rogue_T17N.simc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = generate_Rogue_T17N.simc; sourceTree = "<group>"; };
+		513DC758198664830073BD7F /* generate_Shaman_T17N.simc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = generate_Shaman_T17N.simc; sourceTree = "<group>"; };
+		513DC759198664830073BD7F /* generate_T17N.simc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = generate_T17N.simc; sourceTree = "<group>"; };
+		513DC75A198664830073BD7F /* generate_Warlock_T17N.simc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = generate_Warlock_T17N.simc; sourceTree = "<group>"; };
+		513DC75B198664830073BD7F /* generate_Warrior_T17N.simc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = generate_Warrior_T17N.simc; sourceTree = "<group>"; };
+		513DC75C198664830073BD7F /* Hunter_BM_T17N.simc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Hunter_BM_T17N.simc; sourceTree = "<group>"; };
+		513DC75D198664830073BD7F /* Hunter_MM_T17N.simc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Hunter_MM_T17N.simc; sourceTree = "<group>"; };
+		513DC75E198664830073BD7F /* Hunter_SV_T17N.simc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Hunter_SV_T17N.simc; sourceTree = "<group>"; };
+		513DC75F198664830073BD7F /* Mage_Arcane_T17N.simc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Mage_Arcane_T17N.simc; sourceTree = "<group>"; };
+		513DC760198664830073BD7F /* Mage_Fire_T17N.simc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Mage_Fire_T17N.simc; sourceTree = "<group>"; };
+		513DC761198664830073BD7F /* Mage_Frost_T17N.simc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Mage_Frost_T17N.simc; sourceTree = "<group>"; };
+		513DC762198664830073BD7F /* Monk_Windwalker_1h_T17N.simc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Monk_Windwalker_1h_T17N.simc; sourceTree = "<group>"; };
+		513DC763198664830073BD7F /* Monk_Windwalker_2h_T17N.simc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Monk_Windwalker_2h_T17N.simc; sourceTree = "<group>"; };
+		513DC764198664830073BD7F /* Paladin_Protection_T17N.simc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Paladin_Protection_T17N.simc; sourceTree = "<group>"; };
+		513DC765198664830073BD7F /* Paladin_Retribution_T17N.simc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Paladin_Retribution_T17N.simc; sourceTree = "<group>"; };
+		513DC766198664830073BD7F /* Priest_Discipline_T17N_Dmg.simc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Priest_Discipline_T17N_Dmg.simc; sourceTree = "<group>"; };
+		513DC767198664830073BD7F /* Priest_Discipline_T17N_Heal.simc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Priest_Discipline_T17N_Heal.simc; sourceTree = "<group>"; };
+		513DC768198664830073BD7F /* Priest_Holy_T17N_Dmg.simc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Priest_Holy_T17N_Dmg.simc; sourceTree = "<group>"; };
+		513DC769198664830073BD7F /* Priest_Holy_T17N_Heal.simc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Priest_Holy_T17N_Heal.simc; sourceTree = "<group>"; };
+		513DC76A198664830073BD7F /* Priest_Shadow_T17N_AS.simc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Priest_Shadow_T17N_AS.simc; sourceTree = "<group>"; };
+		513DC76B198664830073BD7F /* Priest_Shadow_T17N_COP.simc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Priest_Shadow_T17N_COP.simc; sourceTree = "<group>"; };
+		513DC76C198664830073BD7F /* Priest_Shadow_T17N_VE.simc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Priest_Shadow_T17N_VE.simc; sourceTree = "<group>"; };
+		513DC76D198664830073BD7F /* Priest_T17N.simc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Priest_T17N.simc; sourceTree = "<group>"; };
+		513DC76E198664830073BD7F /* Raid_T17N.simc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Raid_T17N.simc; sourceTree = "<group>"; };
+		513DC76F198664830073BD7F /* Rogue_Assassination_T17N.simc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Rogue_Assassination_T17N.simc; sourceTree = "<group>"; };
+		513DC770198664830073BD7F /* Rogue_Combat_T17N.simc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Rogue_Combat_T17N.simc; sourceTree = "<group>"; };
+		513DC771198664830073BD7F /* Rogue_Subtlety_T17N.simc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Rogue_Subtlety_T17N.simc; sourceTree = "<group>"; };
+		513DC772198664830073BD7F /* Shaman_Elemental_T17N.simc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Shaman_Elemental_T17N.simc; sourceTree = "<group>"; };
+		513DC773198664830073BD7F /* Shaman_Enhancement_T17N.simc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Shaman_Enhancement_T17N.simc; sourceTree = "<group>"; };
+		513DC774198664830073BD7F /* Warlock_Affliction_T17N.simc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Warlock_Affliction_T17N.simc; sourceTree = "<group>"; };
+		513DC775198664830073BD7F /* Warlock_Demonology_T17N.simc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Warlock_Demonology_T17N.simc; sourceTree = "<group>"; };
+		513DC776198664830073BD7F /* Warlock_Destruction_T17N.simc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Warlock_Destruction_T17N.simc; sourceTree = "<group>"; };
+		513DC777198664830073BD7F /* Warrior_Arms_T17N.simc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Warrior_Arms_T17N.simc; sourceTree = "<group>"; };
+		513DC778198664830073BD7F /* Warrior_Fury_1h_T17N.simc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Warrior_Fury_1h_T17N.simc; sourceTree = "<group>"; };
+		513DC779198664830073BD7F /* Warrior_Fury_2h_T17N.simc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Warrior_Fury_2h_T17N.simc; sourceTree = "<group>"; };
+		513DC77A198664830073BD7F /* Warrior_Gladiator_T17N.simc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Warrior_Gladiator_T17N.simc; sourceTree = "<group>"; };
+		513DC77B198664830073BD7F /* Warrior_Protection_T17N.simc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Warrior_Protection_T17N.simc; sourceTree = "<group>"; };
+		513DC77C198664830073BD7F /* Warrior_T17N.simc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Warrior_T17N.simc; sourceTree = "<group>"; };
 		6E21CFFD17DC8C71000FB100 /* SC_OptionsTab.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = SC_OptionsTab.hpp; path = qt/SC_OptionsTab.hpp; sourceTree = "<group>"; };
 		6E392F3213969ECE00649B6A /* SimulationCraft.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SimulationCraft.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		6E392F5313969FCC00649B6A /* Simcraft2.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; name = Simcraft2.icns; path = qt/icon/Simcraft2.icns; sourceTree = "<group>"; };
@@ -1197,6 +1299,64 @@
 			path = profiles/Tier15N;
 			sourceTree = SOURCE_ROOT;
 		};
+		513DC749198664830073BD7F /* Tier17N */ = {
+			isa = PBXGroup;
+			children = (
+				513DC74A198664830073BD7F /* Death_Knight_Frost_1h_T17N.simc */,
+				513DC74B198664830073BD7F /* Death_Knight_Frost_2h_T17N.simc */,
+				513DC74C198664830073BD7F /* Death_Knight_Unholy_T17N.simc */,
+				513DC74D198664830073BD7F /* Druid_Balance_T17N.simc */,
+				513DC74E198664830073BD7F /* Druid_Feral_T17N.simc */,
+				513DC74F198664830073BD7F /* Druid_Guardian_T17N.simc */,
+				513DC750198664830073BD7F /* generate_Death_Knight_T17N.simc */,
+				513DC751198664830073BD7F /* generate_Druid_T17N.simc */,
+				513DC752198664830073BD7F /* generate_Hunter_T17N.simc */,
+				513DC753198664830073BD7F /* generate_Mage_T17N.simc */,
+				513DC754198664830073BD7F /* generate_Monk_T17N.simc */,
+				513DC755198664830073BD7F /* generate_Paladin_T17N.simc */,
+				513DC756198664830073BD7F /* generate_Priest_T17N.simc */,
+				513DC757198664830073BD7F /* generate_Rogue_T17N.simc */,
+				513DC758198664830073BD7F /* generate_Shaman_T17N.simc */,
+				513DC759198664830073BD7F /* generate_T17N.simc */,
+				513DC75A198664830073BD7F /* generate_Warlock_T17N.simc */,
+				513DC75B198664830073BD7F /* generate_Warrior_T17N.simc */,
+				513DC75C198664830073BD7F /* Hunter_BM_T17N.simc */,
+				513DC75D198664830073BD7F /* Hunter_MM_T17N.simc */,
+				513DC75E198664830073BD7F /* Hunter_SV_T17N.simc */,
+				513DC75F198664830073BD7F /* Mage_Arcane_T17N.simc */,
+				513DC760198664830073BD7F /* Mage_Fire_T17N.simc */,
+				513DC761198664830073BD7F /* Mage_Frost_T17N.simc */,
+				513DC762198664830073BD7F /* Monk_Windwalker_1h_T17N.simc */,
+				513DC763198664830073BD7F /* Monk_Windwalker_2h_T17N.simc */,
+				513DC764198664830073BD7F /* Paladin_Protection_T17N.simc */,
+				513DC765198664830073BD7F /* Paladin_Retribution_T17N.simc */,
+				513DC766198664830073BD7F /* Priest_Discipline_T17N_Dmg.simc */,
+				513DC767198664830073BD7F /* Priest_Discipline_T17N_Heal.simc */,
+				513DC768198664830073BD7F /* Priest_Holy_T17N_Dmg.simc */,
+				513DC769198664830073BD7F /* Priest_Holy_T17N_Heal.simc */,
+				513DC76A198664830073BD7F /* Priest_Shadow_T17N_AS.simc */,
+				513DC76B198664830073BD7F /* Priest_Shadow_T17N_COP.simc */,
+				513DC76C198664830073BD7F /* Priest_Shadow_T17N_VE.simc */,
+				513DC76D198664830073BD7F /* Priest_T17N.simc */,
+				513DC76E198664830073BD7F /* Raid_T17N.simc */,
+				513DC76F198664830073BD7F /* Rogue_Assassination_T17N.simc */,
+				513DC770198664830073BD7F /* Rogue_Combat_T17N.simc */,
+				513DC771198664830073BD7F /* Rogue_Subtlety_T17N.simc */,
+				513DC772198664830073BD7F /* Shaman_Elemental_T17N.simc */,
+				513DC773198664830073BD7F /* Shaman_Enhancement_T17N.simc */,
+				513DC774198664830073BD7F /* Warlock_Affliction_T17N.simc */,
+				513DC775198664830073BD7F /* Warlock_Demonology_T17N.simc */,
+				513DC776198664830073BD7F /* Warlock_Destruction_T17N.simc */,
+				513DC777198664830073BD7F /* Warrior_Arms_T17N.simc */,
+				513DC778198664830073BD7F /* Warrior_Fury_1h_T17N.simc */,
+				513DC779198664830073BD7F /* Warrior_Fury_2h_T17N.simc */,
+				513DC77A198664830073BD7F /* Warrior_Gladiator_T17N.simc */,
+				513DC77B198664830073BD7F /* Warrior_Protection_T17N.simc */,
+				513DC77C198664830073BD7F /* Warrior_T17N.simc */,
+			);
+			path = Tier17N;
+			sourceTree = "<group>";
+		};
 		6E392F3413969ECE00649B6A /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
@@ -1551,6 +1711,7 @@
 				34C7D20516F4DD5800E6AF6C /* generate_profiles.sh */,
 				342481C716DB7444008FC024 /* melee_trinkets.simc */,
 				6E41F15815C68C89002B6836 /* PreRaid */,
+				513DC749198664830073BD7F /* Tier17N */,
 				3411B41017E1AC3400FB7872 /* Tier16H */,
 				3411B43117E1AC3400FB7872 /* Tier16N */,
 				347470E716D219300071A4D8 /* Tier15H */,
@@ -1644,43 +1805,72 @@
 				6E9DF0511791A4DE000462D5 /* Shaman_Elemental_T15H.simc in Resources */,
 				3411B45117E1AC3400FB7872 /* Death_Knight_Frost_1h_T16H.simc in Resources */,
 				3411B45217E1AC3400FB7872 /* Death_Knight_Frost_2h_T16H.simc in Resources */,
+				513DC792198664840073BD7F /* Mage_Arcane_T17N.simc in Resources */,
 				3411B45317E1AC3400FB7872 /* Death_Knight_Unholy_T16H.simc in Resources */,
 				3411B45417E1AC3400FB7872 /* Druid_Feral_T16H.simc in Resources */,
+				513DC77E198664840073BD7F /* Death_Knight_Frost_2h_T17N.simc in Resources */,
+				513DC79C198664840073BD7F /* Priest_Holy_T17N_Heal.simc in Resources */,
+				513DC790198664840073BD7F /* Hunter_MM_T17N.simc in Resources */,
 				3411B45517E1AC3400FB7872 /* Druid_Feral_T16H_Adv_Rotation.simc in Resources */,
 				3411B45617E1AC3400FB7872 /* generate_Death_Knight_T16H.simc in Resources */,
+				513DC789198664840073BD7F /* generate_Priest_T17N.simc in Resources */,
 				3411B45717E1AC3400FB7872 /* generate_Druid_T16H.simc in Resources */,
+				513DC79E198664840073BD7F /* Priest_Shadow_T17N_COP.simc in Resources */,
 				34EE060418056CA8005A5A94 /* Mage_Frost_T16H.simc in Resources */,
 				3411B45817E1AC3400FB7872 /* generate_Hunter_T16H.simc in Resources */,
 				3411B45917E1AC3400FB7872 /* generate_Mage_T16H.simc in Resources */,
 				34EE05D118056C1D005A5A94 /* Monk_Windwalker_2h_T16N.simc in Resources */,
 				3411B45A17E1AC3400FB7872 /* generate_Monk_T16H.simc in Resources */,
+				513DC7A6198664840073BD7F /* Shaman_Enhancement_T17N.simc in Resources */,
 				3411B45B17E1AC3400FB7872 /* generate_Paladin_T16H.simc in Resources */,
 				3411B45C17E1AC3400FB7872 /* generate_Priest_T16H.simc in Resources */,
 				3411B45D17E1AC3400FB7872 /* generate_Rogue_T16H.simc in Resources */,
 				3411B45E17E1AC3400FB7872 /* generate_Shaman_T16H.simc in Resources */,
+				513DC79A198664840073BD7F /* Priest_Discipline_T17N_Heal.simc in Resources */,
 				3411B45F17E1AC3400FB7872 /* generate_T16H.simc in Resources */,
 				3411B46017E1AC3400FB7872 /* generate_Warlock_T16H.simc in Resources */,
+				513DC796198664840073BD7F /* Monk_Windwalker_2h_T17N.simc in Resources */,
+				513DC781198664840073BD7F /* Druid_Feral_T17N.simc in Resources */,
+				513DC79D198664840073BD7F /* Priest_Shadow_T17N_AS.simc in Resources */,
 				3411B46117E1AC3400FB7872 /* generate_Warrior_T16H.simc in Resources */,
 				3411B46217E1AC3400FB7872 /* Hunter_BM_T16H.simc in Resources */,
+				513DC783198664840073BD7F /* generate_Death_Knight_T17N.simc in Resources */,
+				513DC7A2198664840073BD7F /* Rogue_Assassination_T17N.simc in Resources */,
 				3411B46317E1AC3400FB7872 /* Hunter_MM_T16H.simc in Resources */,
 				34EE060218056CA8005A5A94 /* Druid_Balance_T16H.simc in Resources */,
+				513DC799198664840073BD7F /* Priest_Discipline_T17N_Dmg.simc in Resources */,
 				34EE060518056CA8005A5A94 /* Monk_Windwalker_1h_T16H.simc in Resources */,
 				3411B46417E1AC3400FB7872 /* Hunter_SV_T16H.simc in Resources */,
 				34EE05CD18056C1D005A5A94 /* Hunter_BM_T16N.simc in Resources */,
 				3411B46517E1AC3400FB7872 /* Hunter_T16H.simc in Resources */,
 				3411B46617E1AC3400FB7872 /* Mage_Fire_T16H.simc in Resources */,
+				513DC77D198664830073BD7F /* Death_Knight_Frost_1h_T17N.simc in Resources */,
 				3411B46717E1AC3400FB7872 /* Paladin_Protection_T16H.simc in Resources */,
 				3411B46817E1AC3400FB7872 /* Paladin_Retribution_T16H.simc in Resources */,
+				513DC798198664840073BD7F /* Paladin_Retribution_T17N.simc in Resources */,
+				513DC78B198664840073BD7F /* generate_Shaman_T17N.simc in Resources */,
+				513DC782198664840073BD7F /* Druid_Guardian_T17N.simc in Resources */,
+				513DC78D198664840073BD7F /* generate_Warlock_T17N.simc in Resources */,
+				513DC785198664840073BD7F /* generate_Hunter_T17N.simc in Resources */,
 				3411B46917E1AC3400FB7872 /* Priest_Shadow_T16H.simc in Resources */,
 				3411B46A17E1AC3400FB7872 /* Raid_T16H.simc in Resources */,
+				513DC78E198664840073BD7F /* generate_Warrior_T17N.simc in Resources */,
+				513DC7A7198664840073BD7F /* Warlock_Affliction_T17N.simc in Resources */,
 				3411B46B17E1AC3400FB7872 /* Shaman_Elemental_T16H.simc in Resources */,
 				3411B46C17E1AC3400FB7872 /* Shaman_Enhancement_T16H.simc in Resources */,
+				513DC78A198664840073BD7F /* generate_Rogue_T17N.simc in Resources */,
+				513DC7AD198664840073BD7F /* Warrior_Gladiator_T17N.simc in Resources */,
+				513DC7A3198664840073BD7F /* Rogue_Combat_T17N.simc in Resources */,
 				3411B46D17E1AC3400FB7872 /* Warrior_Arms_T16H.simc in Resources */,
+				513DC7AA198664840073BD7F /* Warrior_Arms_T17N.simc in Resources */,
+				513DC7AE198664840073BD7F /* Warrior_Protection_T17N.simc in Resources */,
 				3411B46E17E1AC3400FB7872 /* Warrior_Fury_1h_T16H.simc in Resources */,
+				513DC786198664840073BD7F /* generate_Mage_T17N.simc in Resources */,
 				34EE05CE18056C1D005A5A94 /* Hunter_MM_T16N.simc in Resources */,
 				3411B46F17E1AC3400FB7872 /* Warrior_Fury_2h_T16H.simc in Resources */,
 				3411B47117E1AC3400FB7872 /* Death_Knight_Frost_1h_T16N.simc in Resources */,
 				3411B47217E1AC3400FB7872 /* Death_Knight_Frost_2h_T16N.simc in Resources */,
+				513DC793198664840073BD7F /* Mage_Fire_T17N.simc in Resources */,
 				3411B47317E1AC3400FB7872 /* Death_Knight_Unholy_T16N.simc in Resources */,
 				3411B47417E1AC3400FB7872 /* Druid_Feral_T16N.simc in Resources */,
 				3411B47517E1AC3400FB7872 /* Druid_Feral_T16N_Adv_Rotation.simc in Resources */,
@@ -1688,36 +1878,56 @@
 				34EE060918056CA8005A5A94 /* Rogue_Subtlety_T16H.simc in Resources */,
 				3411B47717E1AC3400FB7872 /* generate_Druid_T16N.simc in Resources */,
 				34EE05D618056C1D005A5A94 /* Warrior_Fury_1h_T16N.simc in Resources */,
+				513DC795198664840073BD7F /* Monk_Windwalker_1h_T17N.simc in Resources */,
+				513DC7A8198664840073BD7F /* Warlock_Demonology_T17N.simc in Resources */,
 				3411B47817E1AC3400FB7872 /* generate_Hunter_T16N.simc in Resources */,
 				3411B47917E1AC3400FB7872 /* generate_Mage_T16N.simc in Resources */,
+				513DC77F198664840073BD7F /* Death_Knight_Unholy_T17N.simc in Resources */,
 				3411B47A17E1AC3400FB7872 /* generate_Mage_T16N_Cleave.simc in Resources */,
 				3411B47B17E1AC3400FB7872 /* generate_Monk_T16N.simc in Resources */,
+				513DC797198664840073BD7F /* Paladin_Protection_T17N.simc in Resources */,
+				513DC7A1198664840073BD7F /* Raid_T17N.simc in Resources */,
 				3411B47C17E1AC3400FB7872 /* generate_Paladin_T16N.simc in Resources */,
+				513DC7AB198664840073BD7F /* Warrior_Fury_1h_T17N.simc in Resources */,
+				513DC7A0198664840073BD7F /* Priest_T17N.simc in Resources */,
+				513DC787198664840073BD7F /* generate_Monk_T17N.simc in Resources */,
 				3411B47D17E1AC3400FB7872 /* generate_Priest_T16N.simc in Resources */,
 				3411B47E17E1AC3400FB7872 /* generate_Rogue_T16N.simc in Resources */,
 				34EE05D218056C1D005A5A94 /* Priest_Shadow_T16N.simc in Resources */,
 				3411B47F17E1AC3400FB7872 /* generate_Shaman_T16N.simc in Resources */,
 				3411B48017E1AC3400FB7872 /* generate_T16N.simc in Resources */,
+				513DC78C198664840073BD7F /* generate_T17N.simc in Resources */,
+				513DC7AF198664840073BD7F /* Warrior_T17N.simc in Resources */,
 				3411B48117E1AC3400FB7872 /* generate_Warlock_T16N.simc in Resources */,
 				34EE060718056CA8005A5A94 /* Rogue_Assassination_T16H.simc in Resources */,
 				3411B48217E1AC3400FB7872 /* generate_Warrior_T16N.simc in Resources */,
 				34EE05D018056C1D005A5A94 /* Monk_Windwalker_1h_T16N.simc in Resources */,
 				34EE05D318056C1D005A5A94 /* Rogue_Assassination_T16N.simc in Resources */,
 				34EE05D518056C1D005A5A94 /* Rogue_Subtlety_T16N.simc in Resources */,
+				513DC7A5198664840073BD7F /* Shaman_Elemental_T17N.simc in Resources */,
+				513DC791198664840073BD7F /* Hunter_SV_T17N.simc in Resources */,
 				3411B48317E1AC3400FB7872 /* Mage_Arcane_T16N.simc in Resources */,
+				513DC788198664840073BD7F /* generate_Paladin_T17N.simc in Resources */,
 				3411B48417E1AC3400FB7872 /* Mage_Fire_T16N.simc in Resources */,
 				3411B48517E1AC3400FB7872 /* Mage_Frost_T16N.simc in Resources */,
 				3411B48617E1AC3400FB7872 /* Paladin_Protection_T16N.simc in Resources */,
+				513DC780198664840073BD7F /* Druid_Balance_T17N.simc in Resources */,
+				513DC7A9198664840073BD7F /* Warlock_Destruction_T17N.simc in Resources */,
 				3411B48717E1AC3400FB7872 /* Paladin_Retribution_T16N.simc in Resources */,
 				3411B48817E1AC3400FB7872 /* Raid_T16N.simc in Resources */,
 				3411B48917E1AC3400FB7872 /* Shaman_Elemental_T16N.simc in Resources */,
+				513DC784198664840073BD7F /* generate_Druid_T17N.simc in Resources */,
 				34EE060818056CA8005A5A94 /* Rogue_Combat_T16H.simc in Resources */,
 				3411B48A17E1AC3400FB7872 /* Shaman_Enhancement_T16N.simc in Resources */,
 				3411B48B17E1AC3400FB7872 /* Warrior_Arms_T16N.simc in Resources */,
 				3411B48D17E1AC3400FB7872 /* Warrior_Fury_2h_T16N.simc in Resources */,
 				3411B48F17E1AD9A00FB7872 /* Warrior_Protection_T16N.simc in Resources */,
+				513DC79F198664840073BD7F /* Priest_Shadow_T17N_VE.simc in Resources */,
+				513DC7A4198664840073BD7F /* Rogue_Subtlety_T17N.simc in Resources */,
+				513DC78F198664840073BD7F /* Hunter_BM_T17N.simc in Resources */,
 				34EE05CC18056C1D005A5A94 /* Druid_Balance_T16N.simc in Resources */,
 				34EE05CF18056C1D005A5A94 /* Hunter_SV_T16N.simc in Resources */,
+				513DC7AC198664840073BD7F /* Warrior_Fury_2h_T17N.simc in Resources */,
 				3411B49117E1ADA400FB7872 /* Warrior_Protection_T16H.simc in Resources */,
 				3403892517E20AA900FDEB00 /* Warlock_Destruction_T16H.simc in Resources */,
 				347A1A4517E2EAFA00A577DB /* Warlock_Demonology_T16H.simc in Resources */,
@@ -1726,7 +1936,9 @@
 				34EE05D418056C1D005A5A94 /* Rogue_Combat_T16N.simc in Resources */,
 				34ABF66517E6FA9900DB9A32 /* Warlock_Demonology_T16N.simc in Resources */,
 				34EE060618056CA8005A5A94 /* Monk_Windwalker_2h_T16H.simc in Resources */,
+				513DC79B198664840073BD7F /* Priest_Holy_T17N_Dmg.simc in Resources */,
 				34ABF66617E6FA9900DB9A32 /* Warlock_Destruction_T16N.simc in Resources */,
+				513DC794198664840073BD7F /* Mage_Frost_T17N.simc in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
