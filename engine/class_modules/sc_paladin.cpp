@@ -130,8 +130,10 @@ public:
     buff_t* divine_crusader;      // t16_4pc_melee
     buff_t* favor_of_the_kings;   // t16_4pc_heal
     buff_t* shield_of_glory;      // t15_2pc_tank
-    buff_t* tier15_2pc_melee;
-    buff_t* tier15_4pc_melee;
+    buff_t* tier15_2pc_melee;     // t15_2pc_melee
+    buff_t* tier15_4pc_melee;     // t15_4pc_melee
+    buff_t* tier17_2pc_melee;     // t17_2pc_melee
+    buff_t* tier17_4pc_melee;     // t17_4pc_melee
     buff_t* warrior_of_the_light; // t16_2pc_melee
   } buffs;
   
@@ -164,6 +166,7 @@ public:
     gain_t* hp_templars_verdict_refund;
     gain_t* hp_judgment;
     gain_t* hp_t15_4pc_tank;
+    gain_t* hp_t17_4pc_melee;
   } gains;
 
   // Cooldowns
@@ -244,6 +247,7 @@ public:
     proc_t* eternal_glory;
     proc_t* exorcism_cd_reset;
     proc_t* wasted_exorcism_cd_reset;
+    proc_t* t17_2pc_melee;
   } procs;
 
   // Spells
@@ -709,6 +713,8 @@ public:
 
       // trigger new "free hp finisher" buffs (e.g. Divine Purpose)
       trigger_free_hp_effects( c );
+      if ( p() -> buffs.tier17_2pc_melee -> trigger() )
+        p() -> procs.t17_2pc_melee -> occur();
     }
   }
 
@@ -1913,6 +1919,11 @@ struct exorcism_t : public paladin_spell_t
     {
       int g = 1;
       p() -> resource_gain( RESOURCE_HOLY_POWER, g, p() -> gains.hp_exorcism );
+      if ( p() -> buffs.tier17_4pc_melee -> up() )
+      {
+        p() -> resource_gain( RESOURCE_HOLY_POWER, p() -> buffs.tier17_4pc_melee -> default_value, p() -> gains.hp_t17_4pc_melee );
+        p() -> buffs.tier17_4pc_melee -> expire();
+      }
       if ( p() -> buffs.holy_avenger -> check() )
       {
         p() -> resource_gain( RESOURCE_HOLY_POWER, p() -> buffs.holy_avenger -> value() - g, p() -> gains.hp_holy_avenger );
@@ -3726,8 +3737,7 @@ struct hammer_of_wrath_t : public paladin_melee_attack_t
     parse_options( NULL, options_str );
 
     // Cannot be parried or blocked, but can be dodged
-    may_parry    = false;
-    may_block    = false;
+    may_parry = may_block = false;
 
     // no weapon multiplier
     weapon_multiplier = 0.0;
@@ -3739,11 +3749,18 @@ struct hammer_of_wrath_t : public paladin_melee_attack_t
     }
   }
 
+  virtual void execute()
+  {
+    paladin_melee_attack_t::execute();
+
+    p() -> buffs.tier17_2pc_melee -> expire();
+    p() -> buffs.tier17_4pc_melee -> trigger();
+  }
+
   // Special things that happen with Hammer of Wrath damages target
   virtual void impact( action_state_t* s )
   {
     paladin_melee_attack_t::impact( s );
-
     if ( result_is_hit( s -> result ) )
     {
       // if Ret spec, grant Holy Power
@@ -3793,6 +3810,8 @@ struct hammer_of_wrath_t : public paladin_melee_attack_t
   {
     // not available if target is above 20% health unless Sword of Light present and Avenging Wrath up
     // Improved HoW perk raises the threshold to 35%
+    if ( p() -> buffs.tier17_2pc_melee -> up() )
+      return true;
     double threshold = ( p() -> perk.empowered_hammer_of_wrath -> ok() ? 15 : 0 ) + 20;
     if ( target -> health_percentage() > threshold && ! ( p() -> passives.sword_of_light -> ok() && p() -> buffs.avenging_wrath -> check() ) )
       return false;
@@ -4706,6 +4725,7 @@ void paladin_t::init_gains()
   gains.hp_selfless_healer          = get_gain( "selfless_healer" );
   gains.hp_templars_verdict_refund  = get_gain( "templars_verdict_refund" );
   gains.hp_t15_4pc_tank             = get_gain( "t15_4pc_tank" );
+  gains.hp_t17_4pc_melee            = get_gain( "t17_4pc_melee" );
 }
 
 // paladin_t::init_procs ====================================================
@@ -4719,6 +4739,7 @@ void paladin_t::init_procs()
   procs.eternal_glory            = get_proc( "eternal_glory"                  );
   procs.exorcism_cd_reset        = get_proc( "exorcism_cd_reset"              );
   procs.wasted_exorcism_cd_reset = get_proc( "wasted_exorcism_cd_reset"       );
+  procs.t17_2pc_melee            = get_proc( "t17_2pc_melee"                  );
 }
 
 // paladin_t::init_scaling ==================================================
@@ -4938,6 +4959,11 @@ void paladin_t::create_buffs()
                                  .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
   buffs.tier15_4pc_melee       = buff_creator_t( this, "tier15_4pc_melee", find_spell( 138164 ) )
                                  .chance( find_spell( 138164 ) -> effectN( 1 ).percent() );
+  buffs.tier17_2pc_melee       = buff_creator_t( this, "tier17_2pc_melee", sets.set( SET_T17_2PC_MELEE ) -> effectN( 1 ).trigger() )
+    .chance( sets.has_set_bonus( SET_T17_2PC_MELEE ) ? sets.set( SET_T17_2PC_MELEE ) -> effectN( 1 ).trigger() -> proc_chance() : 0 );
+  buffs.tier17_4pc_melee       = buff_creator_t( this, "tier17_4pc_melee", sets.set( SET_T17_4PC_MELEE ) -> effectN( 1 ).trigger() )
+    .default_value( sets.set( SET_T17_4PC_MELEE ) -> effectN( 1 ).trigger() -> effectN( 1 ).base_value() )
+    .chance( sets.has_set_bonus( SET_T17_2PC_MELEE ) ? 1 : 0 );
   buffs.warrior_of_the_light   = buff_creator_t( this, "warrior_of_the_light", find_spell( 144587 ) )
                                  .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
   buffs.divine_crusader        = buff_creator_t( this, "divine_crusader", find_spell( 144595 ) )
@@ -5483,6 +5509,7 @@ void paladin_t::init_spells()
     {     0,     0, 123108,  70762, 123104, 123107, 123102, 123103 }, // Tier14
     {     0,     0, 138159, 138164, 138238, 138244, 138291, 138292 }, // Tier15
     {     0,     0, 144586, 144593, 144566, 144580, 144625, 144613 }, // Tier16
+    {     0,     0, 165440, 165439, 165446, 167740, 165438, 167697 }, // Tier17
   };
 
   sets.register_spelldata( set_bonuses );
