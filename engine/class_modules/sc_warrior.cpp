@@ -1617,7 +1617,7 @@ struct execute_t: public warrior_attack_t
       return false;
 
     if ( p() -> buff.sudden_death -> up() )
-      return true;
+      return warrior_attack_t::ready();;
 
     if ( target -> health_percentage() > 20 )
       return false;
