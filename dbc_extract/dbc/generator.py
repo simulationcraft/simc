@@ -871,6 +871,17 @@ class ItemDataGenerator(DataGenerator):
                    filter_ilevel = False 
                 else:
                     continue
+            # Hunter scopes and whatnot
+            elif classdata.classs == 7:
+                if classdata.has_value('subclass', 3):
+                    for item_effect in data.spells:
+                        spell = self._spell_db[item_effect.id_spell]
+                        for effect in spell._effects:
+                            if not effect:
+                                continue
+
+                            if effect.type == 53:
+                                filter_ilevel = False
             # Only very select quest-item permanent item enchantments
             elif classdata.classs == 12:
                 valid = False
@@ -2045,7 +2056,9 @@ class SpellDataGenerator(DataGenerator):
                 continue
 
             # Consumables, Flasks, Elixirs, Potions, Food & Drink, Permanent Enchants
-            if classdata.classs != 12 and (classdata.classs != 0 or classdata.subclass not in [1, 2, 3, 5, 6]):
+            if classdata.classs != 12 and \
+               (classdata.classs != 7 or classdata.subclass not in [3]) and \
+               (classdata.classs != 0 or classdata.subclass not in [1, 2, 3, 5, 6]):
                 continue
             
             # Grab relevant spells from quest items, this in essence only 
@@ -2080,6 +2093,17 @@ class SpellDataGenerator(DataGenerator):
                     # Permanent enchants
                     elif classdata.has_value('subclass', 6):
                         self.process_spell(spell.id, ids, 0, 0)
+            # Hunter scopes and whatnot
+            elif classdata.classs == 7:
+                if classdata.has_value('subclass', 3):
+                    for item_effect in data.spells:
+                        spell = self._spell_db[item_effect.id_spell]
+                        for effect in spell._effects:
+                            if not effect:
+                                continue
+
+                            if effect.type == 53:
+                                self.process_spell(spell.id, ids, 0, 0)
         
         # Item sets, loop through ItemSet.dbc getting class-specific tier sets and add 
         # their bonuses to the spell list
