@@ -722,7 +722,8 @@ void player_t::init_base_stats()
     base.stats.attribute[ STAT_INTELLECT] += util::floor( racials.heroic_presence -> effectN( 3 ).average( this ) );
     // so is endurance. Can't tell if this is floored, ends in 0.055 @ L100. Assuming based on symmetry w/ heroic pres.
     base.stats.attribute[ STAT_STAMINA ]  += util::floor( racials.endurance -> effectN( 1 ).average( this ) ); 
-    base.stats.attribute[ STAT_VERSATILITY_RATING ] += util::floor( racials.the_human_spirit -> effectN( 1 ).average( this ) );
+    // Human spirit 
+    base.stats.versatility_rating += util::floor( racials.the_human_spirit -> effectN( 1 ).average( this ) );
 
     base.spell_crit               = dbc.spell_crit_base( type, level );
     base.attack_crit              = dbc.melee_crit_base( type, level );
