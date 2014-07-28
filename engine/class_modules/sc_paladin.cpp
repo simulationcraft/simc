@@ -126,15 +126,15 @@ public:
     buff_t* uthers_insight;
 
     // Set Bonuses
-    buff_t* bastion_of_power;     // t16_4pc_tank
-    buff_t* divine_crusader;      // t16_4pc_melee
-    buff_t* favor_of_the_kings;   // t16_4pc_heal
-    buff_t* shield_of_glory;      // t15_2pc_tank
     buff_t* tier15_2pc_melee;     // t15_2pc_melee
     buff_t* tier15_4pc_melee;     // t15_4pc_melee
-    buff_t* tier17_2pc_melee;     // t17_2pc_melee
-    buff_t* tier17_4pc_melee;     // t17_4pc_melee
+    buff_t* shield_of_glory;      // t15_2pc_tank
+    buff_t* favor_of_the_kings;   // t16_4pc_heal
     buff_t* warrior_of_the_light; // t16_2pc_melee
+    buff_t* divine_crusader;      // t16_4pc_melee
+    buff_t* bastion_of_power;     // t16_4pc_tank
+    buff_t* crusaders_fury;       // t17_2pc_melee
+    buff_t* blazing_contempt;     // t17_4pc_melee
   } buffs;
   
   // Gains
@@ -152,6 +152,7 @@ public:
 
     // Holy Power
     gain_t* hp_beacon_of_light;
+    gain_t* hp_blazing_contempt;
     gain_t* hp_blessed_life;
     gain_t* hp_crusader_strike;
     gain_t* hp_exorcism;
@@ -166,7 +167,6 @@ public:
     gain_t* hp_templars_verdict_refund;
     gain_t* hp_judgment;
     gain_t* hp_t15_4pc_tank;
-    gain_t* hp_t17_4pc_melee;
   } gains;
 
   // Cooldowns
@@ -247,7 +247,7 @@ public:
     proc_t* eternal_glory;
     proc_t* exorcism_cd_reset;
     proc_t* wasted_exorcism_cd_reset;
-    proc_t* t17_2pc_melee;
+    proc_t* crusaders_fury;
   } procs;
 
   // Spells
@@ -704,7 +704,7 @@ public:
 
     ab::execute();
 
-    // if the ability uses Holy Power, apply Unbreakable Spirit and handle Divine Purpose and other freebie effects
+    // if the ability uses Holy Power, handle Divine Purpose and other freebie effects
     if ( c >= 0 )
     {
       // consume divine purpose and other "free hp finisher" buffs (e.g. Divine Purpose)
@@ -713,8 +713,10 @@ public:
 
       // trigger new "free hp finisher" buffs (e.g. Divine Purpose)
       trigger_free_hp_effects( c );
-      if ( p() -> buffs.tier17_2pc_melee -> trigger() )
-        p() -> procs.t17_2pc_melee -> occur();
+      
+      // trigger T17 Ret set bonus
+      if ( p() -> buffs.crusaders_fury -> trigger() )
+        p() -> procs.crusaders_fury -> occur();
     }
   }
 
@@ -1917,13 +1919,17 @@ struct exorcism_t : public paladin_spell_t
     paladin_spell_t::execute();
     if ( result_is_hit( execute_state -> result ) )
     {
+      // base spell adds one Holy Power
       int g = 1;
       p() -> resource_gain( RESOURCE_HOLY_POWER, g, p() -> gains.hp_exorcism );
-      if ( p() -> buffs.tier17_4pc_melee -> up() )
+
+      // T17 Ret 4-piece bonus adds two holy power
+      if ( p() -> buffs.blazing_contempt -> up() )
       {
-        p() -> resource_gain( RESOURCE_HOLY_POWER, p() -> buffs.tier17_4pc_melee -> default_value, p() -> gains.hp_t17_4pc_melee );
-        p() -> buffs.tier17_4pc_melee -> expire();
+        p() -> resource_gain( RESOURCE_HOLY_POWER, p() -> buffs.blazing_contempt -> default_value, p() -> gains.hp_blazing_contempt );
+        p() -> buffs.blazing_contempt -> expire();
       }
+      // Holy Avenger also adds 2 holy power
       if ( p() -> buffs.holy_avenger -> check() )
       {
         p() -> resource_gain( RESOURCE_HOLY_POWER, p() -> buffs.holy_avenger -> value() - g, p() -> gains.hp_holy_avenger );
@@ -3753,8 +3759,10 @@ struct hammer_of_wrath_t : public paladin_melee_attack_t
   {
     paladin_melee_attack_t::execute();
 
-    p() -> buffs.tier17_2pc_melee -> expire();
-    p() -> buffs.tier17_4pc_melee -> trigger();
+    // Expire Ret T17 2-piece
+    p() -> buffs.crusaders_fury -> expire();
+    // Trigger Ret T17 4-piece 
+    p() -> buffs.blazing_contempt -> trigger();
   }
 
   // Special things that happen with Hammer of Wrath damages target
@@ -3808,12 +3816,17 @@ struct hammer_of_wrath_t : public paladin_melee_attack_t
 
   virtual bool ready()
   {
-    // not available if target is above 20% health unless Sword of Light present and Avenging Wrath up
-    // Improved HoW perk raises the threshold to 35%
-    if ( p() -> buffs.tier17_2pc_melee -> up() )
-      return true;
+    // T17 Ret tier bonus makes this available regardless of health
+    if ( p() -> buffs.crusaders_fury -> check() )
+      return paladin_melee_attack_t::ready();
+
+    // Ret can use freely during Avenging Wrath thanks to Sword of Light
+    if ( p() -> passives.sword_of_light -> ok() && p() -> buffs.avenging_wrath -> check() )
+      return paladin_melee_attack_t::ready();
+
+    // Otherwise, not available if target is above 20% health. Improved HoW perk raises the threshold to 35%
     double threshold = ( p() -> perk.empowered_hammer_of_wrath -> ok() ? 15 : 0 ) + 20;
-    if ( target -> health_percentage() > threshold && ! ( p() -> passives.sword_of_light -> ok() && p() -> buffs.avenging_wrath -> check() ) )
+    if ( target -> health_percentage() > threshold )
       return false;
 
     return paladin_melee_attack_t::ready();
@@ -4252,12 +4265,15 @@ struct final_verdict_cleave_t : public paladin_melee_attack_t
     trigger_seal = true; // TODO: test, works w/ SoI
     background = true;
     trigger_gcd = timespan_t::zero();
+    resource_consumed = RESOURCE_NONE;
     
     // Tier 13 Retribution 4-piece boosts damage (TODO: Test?)
     base_multiplier *= 1.0 + p -> sets.set( SET_T13_4PC_MELEE ) -> effectN( 1 ).percent();
     // Tier 14 Retribution 2-piece boosts damage (TODO: Test?)
     base_multiplier *= 1.0 + p -> sets.set( SET_T14_2PC_MELEE ) -> effectN( 1 ).percent();
   }
+
+  
     
   // FV AoE does not hit the main target
   size_t available_targets( std::vector< player_t* >& tl ) const
@@ -4725,7 +4741,7 @@ void paladin_t::init_gains()
   gains.hp_selfless_healer          = get_gain( "selfless_healer" );
   gains.hp_templars_verdict_refund  = get_gain( "templars_verdict_refund" );
   gains.hp_t15_4pc_tank             = get_gain( "t15_4pc_tank" );
-  gains.hp_t17_4pc_melee            = get_gain( "t17_4pc_melee" );
+  gains.hp_blazing_contempt         = get_gain( "blazing_contempt" );
 }
 
 // paladin_t::init_procs ====================================================
@@ -4739,7 +4755,7 @@ void paladin_t::init_procs()
   procs.eternal_glory            = get_proc( "eternal_glory"                  );
   procs.exorcism_cd_reset        = get_proc( "exorcism_cd_reset"              );
   procs.wasted_exorcism_cd_reset = get_proc( "wasted_exorcism_cd_reset"       );
-  procs.t17_2pc_melee            = get_proc( "t17_2pc_melee"                  );
+  procs.crusaders_fury           = get_proc( "crusaders_fury"                  );
 }
 
 // paladin_t::init_scaling ==================================================
@@ -4936,10 +4952,8 @@ void paladin_t::create_buffs()
   buffs.infusion_of_light      = buff_creator_t( this, "infusion_of_light", find_spell( 54149 ) );
   buffs.enhanced_holy_shock    = buff_creator_t( this, "enhanced_holy_shock", find_spell( 160002 ) )
                                  .chance( find_spell( 157478 ) -> proc_chance() );
-  buffs.favor_of_the_kings     = buff_creator_t( this, "favor_of_the_kings", find_spell( 144622 ) );
 
   // Prot
-  buffs.bastion_of_power               = buff_creator_t( this, "bastion_of_power", find_spell( 144569 ) );
   buffs.bastion_of_glory               = buff_creator_t( this, "bastion_of_glory", find_spell( 114637 ) );
   buffs.guardian_of_ancient_kings      = buff_creator_t( this, "guardian_of_ancient_kings", find_specialization_spell( "Guardian of Ancient Kings" ) )
                                           .cd( timespan_t::zero() ); // let the ability handle the CD
@@ -4951,23 +4965,31 @@ void paladin_t::create_buffs()
                                          .add_invalidate( CACHE_READINESS ).add_invalidate( CACHE_BONUS_ARMOR ); // WOD-TODO: replace Readiness with versatility
   buffs.shield_of_the_righteous        = buff_creator_t( this, "shield_of_the_righteous" ).spell( find_spell( 132403 ) );
   buffs.ardent_defender                = new buffs::ardent_defender_buff_t( this );
-  buffs.shield_of_glory                = buff_creator_t( this, "shield_of_glory" ).spell( find_spell( 138242 ) );
 
   // Ret
+
+
+  // Tier Bonuses
+  // MoP
   buffs.tier15_2pc_melee       = buff_creator_t( this, "tier15_2pc_melee", find_spell( 138162 ) )
                                  .default_value( find_spell( 138162 ) -> effectN( 1 ).percent() )
                                  .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
   buffs.tier15_4pc_melee       = buff_creator_t( this, "tier15_4pc_melee", find_spell( 138164 ) )
                                  .chance( find_spell( 138164 ) -> effectN( 1 ).percent() );
-  buffs.tier17_2pc_melee       = buff_creator_t( this, "tier17_2pc_melee", sets.set( SET_T17_2PC_MELEE ) -> effectN( 1 ).trigger() )
-    .chance( sets.has_set_bonus( SET_T17_2PC_MELEE ) ? sets.set( SET_T17_2PC_MELEE ) -> effectN( 1 ).trigger() -> proc_chance() : 0 );
-  buffs.tier17_4pc_melee       = buff_creator_t( this, "tier17_4pc_melee", sets.set( SET_T17_4PC_MELEE ) -> effectN( 1 ).trigger() )
-    .default_value( sets.set( SET_T17_4PC_MELEE ) -> effectN( 1 ).trigger() -> effectN( 1 ).base_value() )
-    .chance( sets.has_set_bonus( SET_T17_2PC_MELEE ) ? 1 : 0 );
+  buffs.favor_of_the_kings     = buff_creator_t( this, "favor_of_the_kings", find_spell( 144622 ) );
+  buffs.shield_of_glory                = buff_creator_t( this, "shield_of_glory" ).spell( find_spell( 138242 ) );
   buffs.warrior_of_the_light   = buff_creator_t( this, "warrior_of_the_light", find_spell( 144587 ) )
                                  .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
   buffs.divine_crusader        = buff_creator_t( this, "divine_crusader", find_spell( 144595 ) )
                                  .chance( 0.25 ); // spell data errantly defines proc chance as 101%, actual proc chance nowhere to be found; should be 25%
+  buffs.bastion_of_power               = buff_creator_t( this, "bastion_of_power", find_spell( 144569 ) );
+
+  // T17
+  buffs.crusaders_fury         = buff_creator_t( this, "crusaders_fury", sets.set( SET_T17_2PC_MELEE ) -> effectN( 1 ).trigger() )
+                                 .chance( sets.set( SET_T17_2PC_MELEE ) -> effectN( 1 ).trigger() -> proc_chance() );
+  buffs.blazing_contempt       = buff_creator_t( this, "blazing_contempt", sets.set( SET_T17_4PC_MELEE ) -> effectN( 1 ).trigger() )
+                                 .default_value( sets.set( SET_T17_4PC_MELEE ) -> effectN( 1 ).trigger() -> effectN( 1 ).base_value() )
+                                 .chance( sets.has_set_bonus( SET_T17_2PC_MELEE ) ? 1 : 0 );
 }
 
 // ==========================================================================
