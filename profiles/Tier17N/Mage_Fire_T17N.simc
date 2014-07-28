@@ -4,7 +4,7 @@ race=troll
 role=spell
 position=back
 talents=http://us.battle.net/wow/en/tool/talent-calculator#eZ!0...202
-glyphs=combustion
+glyphs=combustion,inferno_blast
 spec=fire
 
 # This default action priority list is automatically created based on your character.
@@ -45,7 +45,7 @@ actions.combust_sequence+=/stop_pyro_chain,if=cooldown.combustion.remains>0&pyro
 actions.combust_sequence+=/blood_fury
 actions.combust_sequence+=/berserking
 actions.combust_sequence+=/arcane_torrent
-actions.combust_sequence+=/use_item,slot=trinket1
+actions.combust_sequence+=/use_item,slot=trinket2
 actions.combust_sequence+=/potion,name=draenic_intellect
 actions.combust_sequence+=/pyroblast,if=execute_time=gcd
 actions.combust_sequence+=/combustion
@@ -73,30 +73,32 @@ actions.single_target+=/inferno_blast,if=(buff.pyroblast.down&buff.heating_up.up
 actions.single_target+=/fireball
 actions.single_target+=/scorch,moving=1
 
-head=primal_gladiators_hood_of_prowess,id=111084
-neck=primal_gladiators_pendant_of_cruelty,id=111128,enchant=gift_of_critical_strike
-shoulders=primal_gladiators_felweave_amice,id=111238
-back=primal_gladiators_drape_of_cruelty,id=111124,enchant=gift_of_critical_strike
-chest=primal_gladiators_felweave_raiment,id=111237
-wrists=primal_gladiators_cuffs_of_prowess,id=111099
-hands=primal_gladiators_felweave_handguards,id=111234
-waist=primal_gladiators_cord_of_victory,id=111095
-legs=primal_gladiators_felweave_trousers,id=111236
-feet=primal_gladiators_treads_of_cruelty,id=111096
-finger1=primal_gladiators_band_of_victory,id=111136,enchant=gift_of_critical_strike
-finger2=primal_gladiators_band_of_cruelty,id=111134,enchant=gift_of_critical_strike
-trinket1=primal_gladiators_badge_of_dominance,id=111227
-trinket2=primal_gladiators_insignia_of_dominance,id=111228
-main_hand=primal_gladiators_mageblade,id=111119,enchant=mark_of_the_thunderlord
-off_hand=primal_gladiators_endgame,id=111132
+head=primal_gladiators_silk_cowl,id=111151,gem_id=0/0/0/,enchant_id=0
+neck=primal_gladiators_pendant_of_prowess,id=111129,gem_id=0/0/0/,enchant_id=5285
+shoulders=primal_gladiators_silk_amice,id=111154,gem_id=0/0/0/,enchant_id=0
+back=primal_gladiators_drape_of_cruelty,id=111124,gem_id=0/0/0/,enchant_id=5281
+chest=primal_gladiators_silk_robe,id=111153,gem_id=0/0/0/,enchant_id=0
+wrists=primal_gladiators_cuffs_of_cruelty,id=111100,gem_id=0/0/0/,enchant_id=0
+hands=primal_gladiators_handguards_of_cruelty,id=111088,gem_id=0/0/0/,enchant_id=0
+waist=primal_gladiators_cord_of_cruelty,id=111093,gem_id=0/0/0/,enchant_id=0
+legs=primal_gladiators_silk_trousers,id=111152,gem_id=0/0/0/,enchant_id=0
+feet=primal_gladiators_treads_of_prowess,id=111097,gem_id=0/0/0/,enchant_id=0
+finger1=primal_gladiators_band_of_victory,id=111136,gem_id=0/0/0/,enchant_id=5284
+finger2=primal_gladiators_band_of_cruelty,id=111134,gem_id=0/0/0/,enchant_id=5284
+trinket1=primal_gladiators_insignia_of_dominance,id=111228,gem_id=0/0/0/,enchant_id=0
+trinket2=primal_gladiators_badge_of_dominance,id=111227,gem_id=0/0/0/,enchant_id=0
+main_hand=primal_gladiators_mageblade,id=111119,gem_id=0/0/0/,enchant_id=5334
+off_hand=primal_gladiators_reprieve,id=111133,gem_id=0/0/0/,enchant_id=0
 
 # Gear Summary
 # gear_stamina=3245
 # gear_intellect=2584
 # gear_spell_power=1244
-# gear_crit_rating=1445
-# gear_haste_rating=452
-# gear_mastery_rating=1122
+# gear_crit_rating=1602
+# gear_haste_rating=596
+# gear_mastery_rating=433
 # gear_armor=600
-# gear_multistrike_rating=301
-# gear_versatility_rating=102
+# gear_multistrike_rating=596
+# gear_versatility_rating=110
+# pvp_2pc_caster=1
+# pvp_4pc_caster=1
