@@ -328,9 +328,9 @@ public:
     const spell_data_t* enhanced_hamstring;
     const spell_data_t* improved_charge;
     const spell_data_t* improved_heroic_leap;
+    const spell_data_t* improved_thunder_clap;
     //Arms and Fury
     const spell_data_t* empowered_execute;
-    const spell_data_t* improved_colossus_smash;
     const spell_data_t* improved_die_by_the_sword;
     const spell_data_t* improved_whirlwind;
     //Arms only
@@ -340,6 +340,7 @@ public:
     //Fury only
     const spell_data_t* enhanced_whirlwind;
     const spell_data_t* improved_bloodthirst;
+    const spell_data_t* improved_colossus_smash;
     const spell_data_t* improved_raging_blow;
     const spell_data_t* improved_wild_strike;
     //Protection only
@@ -1571,7 +1572,7 @@ struct execute_t: public warrior_attack_t
 
     if ( p() -> mastery.weapons_master -> ok() )
     {
-      am *= 5.0 * std::min( 40.0,
+      am *= 6.0 * std::min( 40.0,
                             ( p() -> buff.sudden_death -> up() ? p() -> resources.current[RESOURCE_RAGE] + 10 :
                             p() -> resources.current[RESOURCE_RAGE] ) ) / 40;
       am *= 1.0 + p() -> cache.mastery_value();
@@ -1997,6 +1998,7 @@ struct mortal_strike_t: public warrior_attack_t
 
     weapon = &( p -> main_hand_weapon );
     weapon_multiplier += p -> sets.set( SET_T14_2PC_MELEE ) -> effectN( 1 ).percent();
+    weapon_multiplier *= 1.0 + p -> perk.improved_mortal_strike -> effectN( 1 ).percent();
   }
 
   double action_multiplier() const
@@ -2551,6 +2553,7 @@ struct thunder_clap_t: public warrior_attack_t
     cooldown -> duration *= 1 + p -> glyphs.resonating_power -> effectN( 2 ).percent();
 
     attack_power_mod.direct *= 1.0 + p -> glyphs.resonating_power -> effectN( 1 ).percent();
+    attack_power_mod.direct *= 1.0 + p -> perk.improved_thunder_clap -> effectN( 1 ).percent();
   }
 
   void impact( action_state_t* s )
@@ -3030,6 +3033,7 @@ struct rend_burst_t: public warrior_spell_t
     dual = true;
     may_multistrike = 1;
     attack_power_mod.direct = data().effectN( 1 ).ap_coeff();
+    attack_power_mod.direct *= 1.0 + p -> perk.improved_rend -> effectN( 1 ).percent();
     dot_duration = timespan_t::zero();
     base_costs[RESOURCE_RAGE] = 0;
   }
@@ -3054,6 +3058,7 @@ struct rend_t: public warrior_spell_t
     tick_may_crit = true;
     may_multistrike = 1;
     add_child( burst );
+    attack_power_mod.tick *= 1.0 + p -> perk.improved_rend -> effectN( 1 ).percent();
   }
 
   void impact( action_state_t* s )
@@ -3611,6 +3616,7 @@ void warrior_t::init_spells()
   perk.empowered_execute             = find_perk_spell( "Empowered Execute" );
   perk.improved_colossus_smash       = find_perk_spell( "Improved Colossus Smash" );
   perk.improved_whirlwind            = find_perk_spell( "Improved Whirlwind" );
+  perk.improved_rend                 = find_perk_spell( "Improved Rend" );
 
   perk.enhanced_whirlwind            = find_perk_spell( "Enhanced Whirlwind" );
   perk.improved_wild_strike          = find_perk_spell( "Improved Wild Strike" );
