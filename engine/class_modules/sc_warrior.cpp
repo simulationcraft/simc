@@ -4376,7 +4376,9 @@ void warrior_t::create_buffs()
 
   buff.last_stand = new buffs::last_stand_t( *this, "last_stand", spec.last_stand );
 
-  buff.raging_blow = buff_creator_t( this, "raging_blow", find_spell( 131116 ) );
+  buff.raging_blow = buff_creator_t( this, "raging_blow", find_spell( 131116 ) )
+    .cd( timespan_t::zero() ); // The buff has a 0.5 second ICD in spell data, but from in game testing this doesn't
+                               // do anything. Also confirmed from sparkle dragon.
 
   buff.raging_blow_glyph = buff_creator_t( this, "raging_blow_glyph", glyphs.raging_blow );
 
