@@ -135,6 +135,8 @@ public:
     buff_t* bastion_of_power;     // t16_4pc_tank
     buff_t* crusaders_fury;       // t17_2pc_melee
     buff_t* blazing_contempt;     // t17_4pc_melee
+    buff_t* faith_barricade;      // t17_2pc_tank
+    buff_t* defender_of_the_light; // t17_4pc_tank
   } buffs;
   
   // Gains
@@ -248,7 +250,10 @@ public:
     proc_t* exorcism_cd_reset;
     proc_t* wasted_exorcism_cd_reset;
     proc_t* crusaders_fury;
+    proc_t* defender_of_the_light;
   } procs;
+
+  real_ppm_t rppm_defender_of_the_light;
 
   // Spells
   struct spells_t
@@ -341,7 +346,8 @@ public:
     bom_up( false ),
     last_extra_regen( timespan_t::from_seconds( 0.0 ) ),
     extra_regen_period( timespan_t::from_seconds( 0.0 ) ),
-    extra_regen_percent( 0.0 )
+    extra_regen_percent( 0.0 ),
+    rppm_defender_of_the_light( *this, 0, RPPM_HASTE )
   {
     active_beacon_of_light             = 0;
     active_censure                     = 0;
@@ -402,6 +408,7 @@ public:
   virtual double    composite_crit_avoidance() const;
   virtual double    composite_parry_rating() const;
   virtual double    composite_block() const;
+  virtual double    composite_block_reduction() const;
   virtual double    temporary_movement_modifier() const;
 
   // combat outcome functions
@@ -1005,6 +1012,10 @@ struct avengers_shield_t : public paladin_spell_t
       // Remove Grand Crsuader buff
       p() -> buffs.grand_crusader -> expire();
     }
+
+    // Protection T17 2-piece grants block buff
+    if ( p() -> sets.has_set_bonus( SET_T17_2PC_TANK ) )
+      p() -> buffs.faith_barricade -> trigger();
   }
 };
 
@@ -4707,6 +4718,7 @@ void paladin_t::reset()
   bok_up      = false;
   bom_up      = false;
   last_extra_regen = timespan_t::zero();
+  rppm_defender_of_the_light.reset();
 }
 
 // paladin_t::init_gains ====================================================
@@ -4990,6 +5002,12 @@ void paladin_t::create_buffs()
   buffs.blazing_contempt       = buff_creator_t( this, "blazing_contempt", sets.set( SET_T17_4PC_MELEE ) -> effectN( 1 ).trigger() )
                                  .default_value( sets.set( SET_T17_4PC_MELEE ) -> effectN( 1 ).trigger() -> effectN( 1 ).base_value() )
                                  .chance( sets.has_set_bonus( SET_T17_2PC_MELEE ) ? 1 : 0 );
+  buffs.faith_barricade        = buff_creator_t( this, "faith_barricade", sets.set( SET_T17_2PC_TANK ) -> effectN( 1 ).trigger() )
+                                 .default_value( sets.set( SET_T17_2PC_TANK ) -> effectN( 1 ).trigger() -> effectN( 1 ).percent() )
+                                 .add_invalidate( CACHE_BLOCK );
+  buffs.defender_of_the_light  = buff_creator_t( this, "defender_of_the_light", sets.set( SET_T17_4PC_TANK ) -> effectN( 1 ).trigger() )
+                                 .default_value( sets.set( SET_T17_4PC_TANK ) -> effectN( 1 ).trigger() -> effectN( 1 ).percent() );
+                                 
 }
 
 // ==========================================================================
@@ -5542,6 +5560,8 @@ void paladin_t::init_spells()
 
   sets.register_spelldata( set_bonuses );
 
+  rppm_defender_of_the_light.set_frequency( sets.set( SET_T17_4PC_TANK ) -> real_ppm() );
+
   // Holy Mastery uses effect#2 by default
   if ( specialization() == PALADIN_HOLY )
   {
@@ -5937,8 +5957,31 @@ double paladin_t::composite_block() const
   // Holy Shield (assuming for now that it's not affected by DR)
   b += talents.holy_shield -> effectN( 1 ).percent();
 
+  // Protection T15 2-piece bonus
+  if ( buffs.shield_of_glory -> check() )
+    b += buffs.shield_of_glory -> data().effectN( 1 ).percent();
+
+  // Protection T17 2-piece bonus
+  if ( buffs.faith_barricade -> check() )
+    b += buffs.faith_barricade -> value();
+
   return b;
 }
+
+// paladin_t::composite_block_reduction =======================================
+
+double paladin_t::composite_block_reduction() const
+{
+  double br = player_t::composite_block_reduction();
+
+  // Prot T17 4-pc increases block by 50% (TODO: check if additive or multiplicative)
+  if ( buffs.defender_of_the_light -> up() )
+    br += buffs.defender_of_the_light -> value();
+
+  return br;
+}
+
+// paladin_t::composite_crit_avoidance ========================================
 
 double paladin_t::composite_crit_avoidance() const
 {
@@ -5949,6 +5992,8 @@ double paladin_t::composite_crit_avoidance() const
 
   return c;
 }
+
+// paladin_t::composite_parry_rating ==========================================
 
 double paladin_t::composite_parry_rating() const
 {
@@ -6183,13 +6228,16 @@ void paladin_t::assess_damage( school_e school,
     return;
   }
 
-  // On a block event, trigger Alabaster Shield & Holy Shield
+  // On a block event, trigger Alabaster Shield & Holy Shield & Defender of the Light
   if ( s -> block_result == BLOCK_RESULT_BLOCKED )
   {
     if ( glyphs.alabaster_shield -> ok() )
       buffs.alabaster_shield -> trigger();
     
     trigger_holy_shield();
+
+    if ( rppm_defender_of_the_light.trigger() )
+      buffs.defender_of_the_light -> trigger();
   }
 
   // Also trigger Grand Crusader on an avoidance event (TODO: test if it triggers on misses)
