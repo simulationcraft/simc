@@ -8,12 +8,10 @@
 // ==========================================================================
 //
 // TODO:
-// Update Grimoire of Sacrifice
-// Remove old grimoire of sacrifice stuff
 // Grimoire of Synergy
 // Level 100 talents: cataclysm, demonic servitude
-// Whitelist SB:Haunt, fix stuff
-// Update action lists
+// Update action lists.
+// In-depth testing of demonology and affliction is needed.
 // void consume_tick_resource( dot_t* d ) - find out why this causes drain
 // ---soul to ignite with hell fire.
 
