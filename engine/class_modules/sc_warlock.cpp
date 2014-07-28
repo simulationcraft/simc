@@ -9,8 +9,9 @@
 //
 // TODO:
 // Grimoire of Synergy
-// Level 100 talents: cataclysm, demonic servitude
+// Level 100 talents: demonic servitude
 // Update action lists.
+// Proper Stats for childs of cataclysm
 // In-depth testing of demonology and affliction is needed.
 // void consume_tick_resource( dot_t* d ) - find out why this causes drain
 // ---soul to ignite with hell fire.
@@ -3855,6 +3856,69 @@ struct immolation_aura_t : public warlock_spell_t
     return r;
   }
 };
+  
+struct cataclysm_t : public warlock_spell_t
+{
+    agony_t* agony;
+    corruption_t* corruption;
+    immolate_t* immolate;
+    
+    cataclysm_t( warlock_t* p ) :
+    warlock_spell_t( "cataclysm", p, p -> find_spell( 152108 ) ),
+    agony( new agony_t( p ) ),
+    corruption( new corruption_t( p ) ),
+    immolate( new immolate_t( p ) )
+    {
+        aoe = -1;
+        
+        agony               -> background = true;
+        agony               -> dual       = true;
+        agony               -> base_costs[ RESOURCE_MANA ] = 0;
+        corruption          -> background = true;
+        corruption          -> dual       = true;
+        corruption          -> base_costs[ RESOURCE_MANA ] = 0;
+        immolate -> background = true;
+        immolate -> dual       = true;
+        immolate -> base_costs[ RESOURCE_MANA ] = 0;
+        
+        
+       
+        //TODO Add proper reporting of spawned dots via add_child, etc.
+        //stats = p -> get_stats( "immolate_fnb", this );
+        //stats -> add_child(p -> get_stats("agony_cata", this));
+    }
+    
+    virtual void impact( action_state_t* s )
+    {
+        warlock_spell_t::impact( s );
+        
+        if ( result_is_hit( s -> result ) )
+        {
+            switch (p() -> specialization() ) {
+                case WARLOCK_AFFLICTION:
+                    agony -> target = s -> target;
+                    agony -> execute();
+                    break;
+                case WARLOCK_DEMONOLOGY:
+                    corruption -> target = s -> target;
+                    corruption -> execute();
+                    break;
+                case WARLOCK_DESTRUCTION:
+                    immolate -> target = s -> target;
+                    immolate -> execute();
+                    break;
+                default:
+                    break;
+            }
+            
+        }
+    }
+    
+};
+    
+    
+    
+    
 // SOUL SWAP
 
 struct soul_swap_t : public warlock_spell_t
@@ -4614,6 +4678,7 @@ action_t* warlock_t::create_action( const std::string& action_name,
   else if ( action_name == "soulburn"              ) a = new              soulburn_t( this );
   else if ( action_name == "havoc"                 ) a = new                 havoc_t( this );
   else if ( action_name == "seed_of_corruption"    ) a = new    seed_of_corruption_t( this );
+  else if ( action_name == "cataclysm"             ) a = new             cataclysm_t( this );
   else if ( action_name == "rain_of_fire"          ) a = new          rain_of_fire_t( this );
   else if ( action_name == "hellfire"              ) a = new              hellfire_t( this );
   else if ( action_name == "immolation_aura"       ) a = new       immolation_aura_t( this );
