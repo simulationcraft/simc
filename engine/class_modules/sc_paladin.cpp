@@ -5188,6 +5188,8 @@ void paladin_t::generate_action_prio_list_ret()
   // Templar's Verdict @ 5 HP, or if DivPurp is about to expire
   def -> add_action( this, "Templar's Verdict", "if=holy_power=5|buff.holy_avenger.up&holy_power>=3" );
   def -> add_action( this, "Templar's Verdict", "if=buff.divine_purpose.react&buff.divine_purpose.remains<4" );
+  def -> add_talent( this, "Final Verdict", "if=holy_power=5|buff.holy_avenger.up&holy_power>=3" );
+  def -> add_talent( this, "Final Verdict", "if=buff.divine_purpose.react&buff.divine_purpose.remains<4" );
   
   // Hammer of Wrath
   def -> add_action( this, "Hammer of Wrath" );
@@ -5198,6 +5200,7 @@ void paladin_t::generate_action_prio_list_ret()
   
   // Templar's Verdict if AW is up
   def -> add_action( this, "Templar's Verdict", "if=buff.avenging_wrath.up");
+  def -> add_talent( this, "Final Verdict", "if=buff.avenging_wrath.up" );
 
   // HotR/CS > Mexo > J
   def -> add_action( this, "Hammer of the Righteous", "if=active_enemies>=4" );
@@ -5212,13 +5215,16 @@ void paladin_t::generate_action_prio_list_ret()
 
   // Templar's Verdict w/ Divine Purpose
   def -> add_action( this, "Templar's Verdict", "if=buff.divine_purpose.react" );
+  def -> add_talent( this, "Final Verdict", "if=buff.divine_purpose.react" );
 
   // Exo > TV4T15 > DS > TV > HPr
   def -> add_action( this, "Exorcism" );
   def -> add_action( "wait,sec=cooldown.exorcism.remains,if=cooldown.exorcism.remains>0&cooldown.exorcism.remains<=0.2" );
   def -> add_action( this, "Templar's Verdict", "if=buff.tier15_4pc_melee.up&active_enemies<4" );
+  def -> add_talent( this, "Final Verdict", "if=buff.tier15_4pc_melee.up&active_enemies<4" );
   def -> add_action( this, "Divine Storm", "if=active_enemies>=2" );
   def -> add_action( this, "Templar's Verdict" );
+  def -> add_talent( this, "Final Verdict" );
   def -> add_talent( this, "Holy Prism" );
 }
 
