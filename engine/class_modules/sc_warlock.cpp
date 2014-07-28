@@ -3386,6 +3386,15 @@ struct soulburn_t : public warlock_spell_t
 
     warlock_spell_t::execute();
   }
+
+  virtual bool ready()
+  {
+      bool r = warlock_spell_t::ready();
+      
+      if ( p() -> buffs.soulburn -> check() ) r = false;
+        
+      return r;
+  }
 };
 
 
