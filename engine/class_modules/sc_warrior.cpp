@@ -1964,7 +1964,7 @@ struct heroic_charge_t: public warrior_attack_t
     add_child( leap );
     add_child( charge );
     dual = true;
-    school = SCHOOL_FIRE; // Used to give the pie chart a different color.
+    school = SCHOOL_PHYSICAL; // Used to give the pie chart a different color.
     min_gcd = timespan_t::from_millis( 750 );
   }
 
