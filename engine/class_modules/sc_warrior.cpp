@@ -3609,6 +3609,7 @@ void warrior_t::init_spells()
   perk.enhanced_hamstring            = find_perk_spell( "Enhanced Hamstring" );
   perk.improved_charge               = find_perk_spell( "Improved Charge" );
   perk.improved_heroic_leap          = find_perk_spell( "Improved Heroic Leap" );
+  perk.improved_thunder_clap         = find_perk_spell( "Improved Thunder Clap" );
 
   perk.enhanced_sweeping_strikes     = find_perk_spell( "Enhanced Sweeping Strikes" );
   perk.improved_mortal_strike        = find_perk_spell( "Improved Mortal Strike" );
