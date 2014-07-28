@@ -1950,6 +1950,8 @@ struct intervene_t: public warrior_attack_t
 };
 
 // Heroic Charge  ==============================================================
+// Currently assumes that the player has a swing timer, and never clips autoattacks.
+// In practice this is extremely easy to do.
 
 struct heroic_charge_t: public warrior_attack_t
 {
