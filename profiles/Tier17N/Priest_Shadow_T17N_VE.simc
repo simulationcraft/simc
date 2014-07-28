@@ -38,7 +38,8 @@ actions+=/run_action_list,name=main
 
 actions.main=mindbender,if=talent.mindbender.enabled
 actions.main+=/shadowfiend,if=!talent.mindbender.enabled
-actions.main+=/void_entropy,if=talent.void_entropy.enabled&(shadow_orb>=3&miss_react&(!ticking|target.dot.void_entropy.ticks_remain=1))
+actions.main+=/void_entropy,if=talent.void_entropy.enabled&shadow_orb>=3&miss_react&!ticking,max_cycle_targets=4,cycle_targets=1
+actions.main+=/devouring_plague,if=shadow_orb>=3&dot.void_entropy.remains<30,cycle_targets=1
 actions.main+=/devouring_plague,if=shadow_orb>=4&!target.dot.devouring_plague_tick.ticking&talent.surge_of_darkness.enabled,cycle_targets=1
 actions.main+=/devouring_plague,if=shadow_orb>=4
 actions.main+=/devouring_plague,if=shadow_orb>=3&set_bonus.tier17_2pc_caster
@@ -50,8 +51,8 @@ actions.main+=/devouring_plague,if=shadow_orb>=3&(cooldown.mind_blast.remains<1.
 actions.main+=/devouring_plague,if=shadow_orb>=3&(cooldown.mind_blast.remains<1.5|target.health.pct<20&cooldown.shadow_word_death.remains<1.5)
 actions.main+=/mind_blast,if=glyph.mind_harvest.enabled&mind_harvest=0,cycle_targets=1
 actions.main+=/mind_blast,if=active_enemies<=5&cooldown_react
-actions.main+=/mind_flay_insanity,if=target.dot.devouring_plague_tick.ticks_remain=1&active_enemies<=2,chain=1
-actions.main+=/mind_flay_insanity,interrupt=1,chain=1,if=active_enemies<=2
+actions.main+=/mind_flay_insanity,if=dot.devouring_plague_tick.ticks_remain=1&active_enemies<=2,chain=1,cycle_targets=1
+actions.main+=/mind_flay_insanity,if=dot.devouring_plague_tick.ticking,interrupt=1,chain=1,if=active_enemies<=2,cycle_targets=1
 actions.main+=/shadow_word_pain,cycle_targets=1,max_cycle_targets=5,if=miss_react&!ticking
 actions.main+=/vampiric_touch,cycle_targets=1,max_cycle_targets=5,if=remains<cast_time&miss_react
 actions.main+=/shadow_word_pain,cycle_targets=1,max_cycle_targets=5,if=miss_react&ticks_remain<=1
@@ -125,17 +126,17 @@ actions.cop_mfi+=/cascade,moving=1,if=talent.cascade.enabled&target.distance<=40
 actions.cop_mfi+=/shadow_word_pain,moving=1,cycle_targets=1,if=primary_target=0
 
 head=primal_gladiators_hood_of_prowess,id=111084
-neck=primal_gladiators_pendant_of_cruelty,id=111128,enchant=gift_of_critical_strike
+neck=primal_gladiators_pendant_of_cruelty,id=111128,enchant=gift_of_haste
 shoulders=primal_gladiators_amice_of_prowess,id=111087
-back=primal_gladiators_drape_of_cruelty,id=111124,enchant=gift_of_critical_strike
+back=primal_gladiators_drape_of_cruelty,id=111124,enchant=gift_of_haste
 chest=primal_gladiators_robes_of_prowess,id=111086
 wrists=primal_gladiators_cuffs_of_cruelty,id=111100
 hands=primal_gladiators_handguards_of_cruelty,id=111088
 waist=primal_gladiators_cord_of_victory,id=111095
 legs=primal_gladiators_leggings_of_prowess,id=111085
 feet=primal_gladiators_treads_of_prowess,id=111097
-finger1=primal_gladiators_band_of_cruelty,id=111134,enchant=gift_of_critical_strike
-finger2=primal_gladiators_band_of_prowess,id=111135,enchant=gift_of_critical_strike
+finger1=primal_gladiators_band_of_cruelty,id=111134,enchant=gift_of_haste
+finger2=primal_gladiators_band_of_prowess,id=111135,enchant=gift_of_haste
 trinket1=primal_gladiators_medallion_of_cruelty,id=111229
 trinket2=primal_gladiators_insignia_of_dominance,id=111228
 main_hand=primal_gladiators_battle_staff,id=111122,enchant=mark_of_warsong
@@ -144,8 +145,8 @@ main_hand=primal_gladiators_battle_staff,id=111122,enchant=mark_of_warsong
 # gear_stamina=3250
 # gear_intellect=2378
 # gear_spell_power=1265
-# gear_crit_rating=1539
-# gear_haste_rating=423
+# gear_crit_rating=999
+# gear_haste_rating=963
 # gear_mastery_rating=872
 # gear_armor=600
 # gear_multistrike_rating=590
