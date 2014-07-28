@@ -842,17 +842,17 @@ static void trigger_sweeping_strikes( action_state_t* s )
       pct_damage = data().effectN( 1 ).percent();
     }
 
-    virtual double target_armor( player_t* ) const
+    double target_armor( player_t* ) const
     {
       return 0; // Armor accounted for in previous attack.
     }
 
-    virtual double composite_player_multiplier() const
+    double composite_player_multiplier() const
     {
       return 1; // No double dipping
     }
 
-    virtual void execute()
+    void execute()
     {
       base_dd_max *= pct_damage; //Deals 50% of original damage
       base_dd_min *= pct_damage;
@@ -875,7 +875,7 @@ static void trigger_sweeping_strikes( action_state_t* s )
       return tl.size();
     }
 
-    virtual void impact( action_state_t* s )
+    void impact( action_state_t* s )
     {
       warrior_attack_t::impact( s );
 
@@ -1011,7 +1011,7 @@ struct melee_t: public warrior_attack_t
     first = true;
   }
 
-  virtual timespan_t execute_time() const
+  timespan_t execute_time() const
   {
     timespan_t t = warrior_attack_t::execute_time();
     if ( first )
@@ -1020,7 +1020,7 @@ struct melee_t: public warrior_attack_t
       return t;
   }
 
-  virtual void execute()
+  void execute()
   {
     if ( first )
       first = false;
@@ -1032,7 +1032,7 @@ struct melee_t: public warrior_attack_t
       warrior_attack_t::execute();
   }
 
-  virtual school_e get_school() const
+  school_e get_school() const
   {
     if ( p() -> buff.ignite_weapon -> up() )
       return SCHOOL_FIRE;
@@ -1040,7 +1040,7 @@ struct melee_t: public warrior_attack_t
       return warrior_attack_t::get_school();
   }
 
-  virtual void impact( action_state_t* s )
+  void impact( action_state_t* s )
   {
     warrior_attack_t::impact( s );
 
@@ -1113,7 +1113,7 @@ struct auto_attack_t: public warrior_attack_t
     trigger_gcd = timespan_t::zero();
   }
 
-  virtual void execute()
+  void execute()
   {
     p() -> main_hand_attack -> schedule_execute();
 
@@ -1121,7 +1121,7 @@ struct auto_attack_t: public warrior_attack_t
       p() -> off_hand_attack -> schedule_execute();
   }
 
-  virtual bool ready()
+  bool ready()
   {
     if ( p() -> current.distance_to_move > 5 )
       return false;
@@ -1143,7 +1143,7 @@ struct bladestorm_tick_t: public warrior_attack_t
       weapon_multiplier *= 2;
   }
 
-  virtual double action_multiplier() const
+  double action_multiplier() const
   {
     double am = warrior_attack_t::action_multiplier();
 
@@ -1153,7 +1153,7 @@ struct bladestorm_tick_t: public warrior_attack_t
     return am;
   }
 
-  virtual void execute()
+  void execute()
   {
     warrior_attack_t::execute();
     if ( p() -> buff.sweeping_strikes -> up() )
@@ -1188,7 +1188,7 @@ struct bladestorm_t: public warrior_attack_t
     }
   }
 
-  virtual void tick( dot_t* )
+  void tick( dot_t* )
   {
     bladestorm_mh -> execute();
 
@@ -1196,7 +1196,7 @@ struct bladestorm_t: public warrior_attack_t
       bladestorm_oh -> execute();
   }
 
-  virtual void update_ready( timespan_t cd_duration )
+  void update_ready( timespan_t cd_duration )
   {
     if ( p() -> specialization() != WARRIOR_PROTECTION )
       cd_duration = cooldown -> duration / ( 1 + player -> cache.readiness() );
@@ -1204,7 +1204,7 @@ struct bladestorm_t: public warrior_attack_t
     warrior_attack_t::update_ready( cd_duration );
   }
   // Bladestorm is not modified by haste effects
-  virtual double composite_haste() const { return 1.0; }
+  double composite_haste() const { return 1.0; }
 };
 
 // Bloodthirst Heal =========================================================
@@ -1212,7 +1212,6 @@ struct bladestorm_t: public warrior_attack_t
 struct bloodthirst_heal_t: public warrior_heal_t
 {
   double base_pct_heal;
-
   bloodthirst_heal_t( warrior_t* p ):
     warrior_heal_t( "bloodthirst_heal", p, p -> find_spell( 117313 ) ),
     base_pct_heal( 0 )
@@ -1224,9 +1223,9 @@ struct bloodthirst_heal_t: public warrior_heal_t
     background = true;
   }
 
-  virtual resource_e current_resource() const { return RESOURCE_NONE; }
+  resource_e current_resource() const { return RESOURCE_NONE; }
 
-  virtual double calculate_direct_amount( action_state_t* state )
+  double calculate_direct_amount( action_state_t* state )
   {
     pct_heal = base_pct_heal;
 
@@ -1271,7 +1270,7 @@ struct bloodthirst_t: public warrior_attack_t
     return c;
   }
 
-  virtual void impact( action_state_t* s )
+  void impact( action_state_t* s )
   {
     warrior_attack_t::impact( s );
 
@@ -1337,7 +1336,7 @@ struct charge_t: public warrior_attack_t
       cooldown -> duration += p -> talents.juggernaut -> effectN( 1 ).time_value();
   }
 
-  virtual void execute()
+  void execute()
   {
     warrior_attack_t::execute();
 
@@ -1363,7 +1362,7 @@ struct charge_t: public warrior_attack_t
     first_charge = true;
   }
 
-  virtual bool ready()
+  bool ready()
   {
     if ( first_charge == true || p() -> buff.heroic_charge -> up() ) // Assumes that we charge into combat, instead of setting initial distance to 20 yards.
       return warrior_attack_t::ready();
@@ -1389,7 +1388,7 @@ struct colossus_smash_t: public warrior_attack_t
     weapon = &( player -> main_hand_weapon );
   }
 
-  virtual double action_multiplier() const
+  double action_multiplier() const
   {
     double am = warrior_attack_t::action_multiplier();
 
@@ -1399,7 +1398,7 @@ struct colossus_smash_t: public warrior_attack_t
     return am;
   }
 
-  virtual void execute()
+  void execute()
   {
     warrior_attack_t::execute();
 
@@ -1415,7 +1414,7 @@ struct colossus_smash_t: public warrior_attack_t
     }
   }
 
-  virtual void impact( action_state_t* s )
+  void impact( action_state_t* s )
   {
     warrior_attack_t::impact( s );
 
@@ -1447,17 +1446,16 @@ struct demoralizing_shout: public warrior_attack_t
     stancemask = STANCE_BATTLE | STANCE_GLADIATOR | STANCE_DEFENSE;
   }
 
-  virtual void impact( action_state_t* s )
+  void impact( action_state_t* s )
   {
     warrior_attack_t::impact( s );
     if ( result_is_hit( s -> result ) )
       td( s -> target ) -> debuffs_demoralizing_shout -> trigger( 1, data().effectN( 1 ).percent() );
   }
 
-  virtual void update_ready( timespan_t cd_duration )
+  void update_ready( timespan_t cd_duration )
   {
     cd_duration = cooldown -> duration / ( 1 + player -> cache.readiness() );
-
     warrior_attack_t::update_ready( cd_duration );
   }
 };
@@ -1473,7 +1471,7 @@ struct devastate_t: public warrior_attack_t
     stancemask = STANCE_BATTLE | STANCE_GLADIATOR | STANCE_DEFENSE;
   }
 
-  virtual void execute()
+  void execute()
   {
     warrior_attack_t::execute();
 
@@ -1488,7 +1486,7 @@ struct devastate_t: public warrior_attack_t
     }
   }
 
-  virtual void impact( action_state_t* s )
+  void impact( action_state_t* s )
   {
     warrior_attack_t::impact( s );
 
@@ -1510,13 +1508,13 @@ struct dragon_roar_t: public warrior_attack_t
     stancemask = STANCE_BATTLE | STANCE_GLADIATOR | STANCE_DEFENSE;
   }
 
-  virtual double target_armor( player_t* ) const { return 0; }
+  double target_armor( player_t* ) const { return 0; }
 
-  virtual double composite_crit() const { return 1.0; }
+  double composite_crit() const { return 1.0; }
 
-  virtual double composite_target_crit( player_t* ) const { return 0.0; }
+  double composite_target_crit( player_t* ) const { return 0.0; }
 
-  virtual void update_ready( timespan_t cd_duration )
+  void update_ready( timespan_t cd_duration )
   {
     if ( p() -> specialization() != WARRIOR_PROTECTION )
       cd_duration = cooldown -> duration / ( 1 + player -> cache.readiness() );
@@ -1533,7 +1531,6 @@ struct execute_off_hand_t: public warrior_attack_t
     warrior_attack_t( name, p, s )
   {
     dual = true;
-    base_costs[RESOURCE_RAGE] = 0;
     may_miss = may_dodge = may_parry = may_block = false;
 
     weapon = &( p -> off_hand_weapon );
@@ -1563,12 +1560,12 @@ struct execute_t: public warrior_attack_t
 
     if ( p -> spec.crazed_berserker -> ok() )
     {
-      oh_attack = new execute_off_hand_t( p, "execute_oh", p -> find_specialization_spell( "Execute" ) );
+      oh_attack = new execute_off_hand_t( p, "execute_oh", p -> find_spell( 163558 ) );
       add_child( oh_attack );
     }
   }
 
-  virtual double action_multiplier() const
+  double action_multiplier() const
   {
     double am = warrior_attack_t::action_multiplier();
 
@@ -1579,28 +1576,27 @@ struct execute_t: public warrior_attack_t
                             p() -> resources.current[RESOURCE_RAGE] ) ) / 40;
       am *= 1.0 + p() -> cache.mastery_value();
     }
-
     return am;
   }
 
-  virtual double cost() const
+  double cost() const
   {
     double c = warrior_attack_t::cost();
 
-    if ( p() -> specialization() == WARRIOR_ARMS )
+    if ( p() -> mastery.weapons_master -> ok() )
       c = std::min( 40.0, std::max( p() -> resources.current[RESOURCE_RAGE], c ) );
 
     if ( p() -> buff.sudden_death -> up() )
     {
       if ( p() -> specialization() != WARRIOR_ARMS )
-        return 0;
+         c = 0;
       else
         c -= 10;
     }
     return c;
   }
 
-  virtual void execute()
+  void execute()
   {
     warrior_attack_t::execute();
 
@@ -1611,7 +1607,7 @@ struct execute_t: public warrior_attack_t
     p() -> buff.sudden_death -> expire();
   }
 
-  virtual bool ready()
+  bool ready()
   {
     if ( p() -> main_hand_weapon.type == WEAPON_NONE )
       return false;
@@ -1643,7 +1639,7 @@ struct hamstring_t: public warrior_attack_t
     weapon = &( p -> main_hand_weapon );
   }
 
-  virtual double cost() const
+  double cost() const
   {
     double c = warrior_attack_t::cost();
 
@@ -1653,7 +1649,7 @@ struct hamstring_t: public warrior_attack_t
     return c;
   }
 
-  virtual void execute()
+  void execute()
   {
     if ( cost() > 0 )
       rage_spent = true;
@@ -1681,14 +1677,14 @@ struct ignite_weapon_t: public warrior_attack_t
     use_off_gcd = true;
   }
 
-  virtual void execute()
+  void execute()
   {
     warrior_attack_t::execute();
 
     p() -> buff.ignite_weapon -> trigger();
   }
 
-  virtual double action_multiplier() const
+  double action_multiplier() const
   {
     double am = warrior_attack_t::action_multiplier();
 
@@ -1703,7 +1699,7 @@ struct ignite_weapon_t: public warrior_attack_t
     return am;
   }
 
-  virtual bool ready()
+  bool ready()
   {
     if ( p() -> main_hand_weapon.type == WEAPON_NONE )
       return false;
@@ -1730,7 +1726,7 @@ struct heroic_strike_t: public warrior_attack_t
     use_off_gcd = true;
   }
 
-  virtual double action_multiplier() const
+  double action_multiplier() const
   {
     double am = warrior_attack_t::action_multiplier();
 
@@ -1745,7 +1741,7 @@ struct heroic_strike_t: public warrior_attack_t
     return am;
   }
 
-  virtual double cost() const
+  double cost() const
   {
     double c = warrior_attack_t::cost();
 
@@ -1758,7 +1754,7 @@ struct heroic_strike_t: public warrior_attack_t
     return c;
   }
 
-  virtual double composite_crit() const
+  double composite_crit() const
   {
     double cc = warrior_attack_t::composite_crit();
 
@@ -1768,14 +1764,14 @@ struct heroic_strike_t: public warrior_attack_t
     return cc;
   }
 
-  virtual void execute()
+  void execute()
   {
     warrior_attack_t::execute();
 
     p() -> buff.ultimatum -> expire();
   }
 
-  virtual bool ready()
+  bool ready()
   {
     if ( p() -> main_hand_weapon.type == WEAPON_NONE )
       return false;
@@ -1801,7 +1797,7 @@ struct heroic_throw_t: public warrior_attack_t
       cooldown -> duration = timespan_t::zero();
   }
 
-  virtual bool ready()
+  bool ready()
   {
     if ( p() -> current.distance_to_move > data().max_range() ||
          p() -> current.distance_to_move < data().min_range() ) // Cannot heroic throw unless target is in range.
@@ -1835,7 +1831,7 @@ struct heroic_leap_t: public warrior_attack_t
     cooldown -> duration += p -> glyphs.death_from_above -> effectN( 1 ).time_value();
   }
 
-  virtual void impact( action_state_t* s )
+  void impact( action_state_t* s )
   {
     if ( p() -> current.distance_to_move >  // Hack so that heroic leap doesn't deal damage if the target is far away.
          ( p() -> spell.heroic_leap -> effectN( 2 ).trigger() -> effectN( 1 ).radius() +
@@ -1847,7 +1843,7 @@ struct heroic_leap_t: public warrior_attack_t
     warrior_attack_t::impact( s );
   }
 
-  virtual void update_ready( timespan_t cd_duration )
+  void update_ready( timespan_t cd_duration )
   {
     cd_duration = cooldown -> duration / ( 1 + player -> cache.readiness() );
 
@@ -1863,7 +1859,7 @@ struct tier16_2pc_tank_heal_t: public warrior_heal_t
     warrior_heal_t( "tier16_2pc_tank_heal", p )
   {
   }
-  virtual resource_e current_resource() const { return RESOURCE_NONE; }
+  resource_e current_resource() const { return RESOURCE_NONE; }
 };
 
 // Impending Victory ========================================================
@@ -1878,7 +1874,7 @@ struct impending_victory_heal_t: public warrior_heal_t
     base_pct_heal = pct_heal;
   }
 
-  virtual double calculate_direct_amount( action_state_t* state )
+  double calculate_direct_amount( action_state_t* state )
   {
     pct_heal = base_pct_heal;
 
@@ -1888,7 +1884,7 @@ struct impending_victory_heal_t: public warrior_heal_t
     return warrior_heal_t::calculate_direct_amount( state );
   }
 
-  virtual resource_e current_resource() const { return RESOURCE_NONE; }
+  resource_e current_resource() const { return RESOURCE_NONE; }
 };
 
 struct impending_victory_t: public warrior_attack_t
@@ -1904,7 +1900,7 @@ struct impending_victory_t: public warrior_attack_t
     may_crit = true;
   }
 
-  virtual void execute()
+  void execute()
   {
     warrior_attack_t::execute();
 
@@ -1912,14 +1908,6 @@ struct impending_victory_t: public warrior_attack_t
       impending_victory_heal -> execute();
 
     p() -> buff.tier15_2pc_tank -> decrement();
-  }
-
-  virtual bool ready()
-  {
-    if ( p() -> buff.tier15_2pc_tank -> check() )
-      return true;
-
-    return warrior_attack_t::ready();
   }
 };
 
@@ -1940,7 +1928,7 @@ struct intervene_t: public warrior_attack_t
     movement_directionality = MOVEMENT_OMNI;
   }
 
-  virtual bool ready()
+  bool ready()
   {
     if ( p() -> current.distance_to_move > base_teleport_distance )
       return false;
@@ -1978,7 +1966,7 @@ struct heroic_charge_t: public warrior_attack_t
       return timespan_t::from_millis( 1250 );
   }
 
-  virtual void execute()
+  void execute()
   {
     if ( p() -> cooldown.heroic_leap -> up() )
       leap -> execute();
@@ -1988,10 +1976,10 @@ struct heroic_charge_t: public warrior_attack_t
     charge -> execute();
   }
 
-  virtual bool ready()
+  bool ready()
   {
     if ( p() -> cooldown.rage_from_charge -> up() && p() -> cooldown.charge -> up() )
-      return true;
+      return warrior_attack_t::ready();
     else
       return false;
   }
@@ -2011,7 +1999,7 @@ struct mortal_strike_t: public warrior_attack_t
     weapon_multiplier += p -> sets.set( SET_T14_2PC_MELEE ) -> effectN( 1 ).percent();
   }
 
-  virtual double action_multiplier() const
+  double action_multiplier() const
   {
     double am = warrior_attack_t::action_multiplier();
 
@@ -2021,7 +2009,7 @@ struct mortal_strike_t: public warrior_attack_t
     return am;
   }
 
-  virtual void impact( action_state_t* s )
+  void impact( action_state_t* s )
   {
     warrior_attack_t::impact( s );
 
@@ -2032,7 +2020,7 @@ struct mortal_strike_t: public warrior_attack_t
     }
   }
 
-  virtual bool ready()
+  bool ready()
   {
     if ( p() -> main_hand_weapon.type == WEAPON_NONE )
       return false;
@@ -2054,7 +2042,7 @@ struct pummel_t: public warrior_attack_t
     may_miss = may_block = may_dodge = may_parry = false;
   }
 
-  virtual void execute()
+  void execute()
   {
     warrior_attack_t::execute();
 
@@ -2074,7 +2062,7 @@ struct raging_blow_attack_t: public warrior_attack_t
     weapon_multiplier *= 1.0 + p -> perk.improved_raging_blow -> effectN( 1 ).percent();
   }
 
-  virtual void execute()
+  void execute()
   {
     aoe = p() -> buff.meat_cleaver -> stack();
     if ( aoe ) ++aoe;
@@ -2113,7 +2101,7 @@ struct raging_blow_t: public warrior_attack_t
       td( s -> target ) -> debuffs_colossus_smash -> extend_duration( s -> target, timespan_t::from_seconds( 2 ) );
   }
 
-  virtual void execute()
+  void execute()
   {
     // check attack
     attack_t::execute();
@@ -2139,7 +2127,7 @@ struct raging_blow_t: public warrior_attack_t
     p() -> buff.raging_blow -> decrement(); // Raging blow buff decrements even if the attack doesn't land.
   }
 
-  virtual bool ready()
+  bool ready()
   {
     if ( !p() -> buff.raging_blow -> check() )
       return false;
@@ -2178,19 +2166,19 @@ struct ravager_t: public warrior_attack_t
     add_child( ravager );
   }
 
-  virtual void execute()
+  void execute()
   {
     p() -> buff.ravager -> trigger();
 
     warrior_attack_t::execute();
   }
 
-  virtual void tick( dot_t* )
+  void tick( dot_t* )
   {
     ravager -> execute();
   }
 
-  virtual double composite_haste() const { return 1.0; }
+  double composite_haste() const { return 1.0; }
 };
 
 // Revenge ==================================================================
@@ -2212,7 +2200,7 @@ struct revenge_t: public warrior_attack_t
     attack_power_mod.direct *= 1.0 + p -> perk.improved_revenge -> effectN( 1 ).percent();
   }
 
-  virtual double action_multiplier() const
+  double action_multiplier() const
   {
     double am = warrior_attack_t::action_multiplier();
 
@@ -2222,7 +2210,7 @@ struct revenge_t: public warrior_attack_t
     return am;
   }
 
-  virtual void execute()
+  void execute()
   {
     warrior_attack_t::execute();
 
@@ -2237,7 +2225,7 @@ struct revenge_t: public warrior_attack_t
     }
   }
 
-  virtual void impact( action_state_t* s )
+  void impact( action_state_t* s )
   {
     warrior_attack_t::impact( s );
 
@@ -2248,7 +2236,7 @@ struct revenge_t: public warrior_attack_t
     }
   }
 
-  virtual bool ready()
+  bool ready()
   {
     if ( p() -> main_hand_weapon.type == WEAPON_NONE )
       return false;
@@ -2281,7 +2269,7 @@ struct second_wind_t: public warrior_heal_t
     callbacks = false;
   }
 
-  virtual void execute()
+  void execute()
   {
     base_dd_max *= 0.1; //Heals for 10% of original damage
     base_dd_min *= 0.1;
@@ -2306,7 +2294,7 @@ struct enraged_regeneration_t: public warrior_heal_t
     tick_pct_heal = data().effectN( 2 ).percent();
   }
 
-  virtual void execute()
+  void execute()
   {
     p() -> buff.enraged_regeneration -> trigger();
 
@@ -2332,7 +2320,7 @@ struct shield_slam_t: public warrior_attack_t
     attack_power_mod.direct *= 1.0 + p -> perk.improved_shield_slam -> effectN( 1 ).percent();
   }
 
-  virtual double action_multiplier() const
+  double action_multiplier() const
   {
     double am = warrior_attack_t::action_multiplier();
 
@@ -2348,7 +2336,7 @@ struct shield_slam_t: public warrior_attack_t
     return am;
   }
 
-  virtual void execute()
+  void execute()
   {
     warrior_attack_t::execute();
 
@@ -2379,7 +2367,7 @@ struct shield_slam_t: public warrior_attack_t
       p() -> gain.tier15_4pc_tank );
   }
 
-  virtual void impact( action_state_t* s )
+  void impact( action_state_t* s )
   {
     warrior_attack_t::impact( s );
 
@@ -2393,7 +2381,7 @@ struct shield_slam_t: public warrior_attack_t
     }
   }
 
-  virtual bool ready()
+  bool ready()
   {
     if ( !p() -> has_shield_equipped() )
       return false;
@@ -2414,7 +2402,7 @@ struct slam_t: public warrior_attack_t
     weapon = &( p -> main_hand_weapon );
   }
 
-  virtual double cost() const
+  double cost() const
   {
     double c = warrior_attack_t::cost();
 
@@ -2423,7 +2411,7 @@ struct slam_t: public warrior_attack_t
     return c;
   }
 
-  virtual void execute()
+  void execute()
   {
     warrior_attack_t::execute();
 
@@ -2431,7 +2419,7 @@ struct slam_t: public warrior_attack_t
       p() -> buff.slam -> trigger( 1 );
   }
 
-  virtual double action_multiplier() const
+  double action_multiplier() const
   {
     double am = warrior_attack_t::action_multiplier();
 
@@ -2444,7 +2432,7 @@ struct slam_t: public warrior_attack_t
     return am;
   }
 
-  virtual bool ready()
+  bool ready()
   {
     if ( p() -> main_hand_weapon.type == WEAPON_NONE )
       return false;
@@ -2466,7 +2454,7 @@ struct shockwave_t: public warrior_attack_t
     aoe = -1;
   }
 
-  virtual void update_ready( timespan_t cd_duration )
+  void update_ready( timespan_t cd_duration )
   {
     if ( p() -> specialization() != WARRIOR_PROTECTION )
       cd_duration = cooldown -> duration / ( 1 + player -> cache.readiness() );
@@ -2520,7 +2508,7 @@ struct storm_bolt_t: public warrior_attack_t
     }
   }
 
-  virtual void execute()
+  void execute()
   {
     warrior_attack_t::execute(); // for fury, this is the MH attack
 
@@ -2529,7 +2517,7 @@ struct storm_bolt_t: public warrior_attack_t
          oh_attack -> execute();
   }
 
-  virtual void update_ready( timespan_t cd_duration )
+  void update_ready( timespan_t cd_duration )
   {
     if ( p() -> specialization() != WARRIOR_PROTECTION )
       cd_duration = cooldown -> duration / ( 1 + player -> cache.readiness() );
@@ -2537,7 +2525,7 @@ struct storm_bolt_t: public warrior_attack_t
     warrior_attack_t::update_ready( cd_duration );
   }
 
-  virtual bool ready()
+  bool ready()
   {
     if ( p() -> main_hand_weapon.type == WEAPON_NONE )
       return false;
@@ -2565,7 +2553,7 @@ struct thunder_clap_t: public warrior_attack_t
     attack_power_mod.direct *= 1.0 + p -> glyphs.resonating_power -> effectN( 1 ).percent();
   }
 
-  virtual void impact( action_state_t* s )
+  void impact( action_state_t* s )
   {
     warrior_attack_t::impact( s );
 
@@ -2576,7 +2564,7 @@ struct thunder_clap_t: public warrior_attack_t
     }
   }
 
-  virtual double cost() const
+  double cost() const
   {
     double c = base_t::cost();
 
@@ -2596,7 +2584,7 @@ struct victory_rush_heal_t: public warrior_heal_t
   {
     pct_heal = data().effectN( 1 ).percent() * ( 1 + p -> glyphs.victory_rush -> effectN( 1 ).percent() );
   }
-  virtual resource_e current_resource() const { return RESOURCE_NONE; }
+  resource_e current_resource() const { return RESOURCE_NONE; }
 };
 
 struct victory_rush_t: public warrior_attack_t
@@ -2613,7 +2601,7 @@ struct victory_rush_t: public warrior_attack_t
     cooldown -> duration = timespan_t::from_seconds( 1000.0 );
   }
 
-  virtual void execute()
+  void execute()
   {
     warrior_attack_t::execute();
 
@@ -2623,7 +2611,7 @@ struct victory_rush_t: public warrior_attack_t
     p() -> buff.tier15_2pc_tank -> decrement();
   }
 
-  virtual bool ready()
+  bool ready()
   {
     if ( p() -> buff.tier15_2pc_tank -> check() )
       return true;
@@ -2645,7 +2633,7 @@ struct whirlwind_off_hand_t: public warrior_attack_t
     weapon_multiplier *= 1.0 + p -> perk.improved_whirlwind -> effectN( 1 ).percent();
   }
 
-  virtual double action_multiplier() const
+  double action_multiplier() const
   {
     double am = warrior_attack_t::action_multiplier();
 
@@ -2680,7 +2668,7 @@ struct whirlwind_t: public warrior_attack_t
     weapon = &( p -> main_hand_weapon );
   }
 
-  virtual double action_multiplier() const
+  double action_multiplier() const
   {
     double am = warrior_attack_t::action_multiplier();
 
@@ -2690,7 +2678,7 @@ struct whirlwind_t: public warrior_attack_t
     return am;
   }
 
-  virtual void execute()
+  void execute()
   {
     warrior_attack_t::execute();
 
@@ -2709,7 +2697,7 @@ struct whirlwind_t: public warrior_attack_t
     }
   }
 
-  virtual bool ready()
+  bool ready()
   {
     if ( p() -> main_hand_weapon.type == WEAPON_NONE )
       return false;
@@ -2735,7 +2723,7 @@ struct wild_strike_t: public warrior_attack_t
     min_gcd = timespan_t::from_millis( 500 );
   }
 
-  virtual double cost() const
+  double cost() const
   {
     double c = warrior_attack_t::cost();
 
@@ -2745,16 +2733,16 @@ struct wild_strike_t: public warrior_attack_t
     return c;
   }
 
-  virtual void execute()
+  void execute()
   {
     warrior_attack_t::execute();
 
     p() -> buff.bloodsurge -> decrement();
   }
 
-  virtual bool ready()
+  bool ready()
   {
-    if ( player -> off_hand_weapon.type == WEAPON_NONE )
+    if ( p() -> off_hand_weapon.type == WEAPON_NONE )
       return false;
 
     return warrior_attack_t::ready();
@@ -2785,14 +2773,14 @@ struct avatar_t: public warrior_spell_t
     stancemask = STANCE_BATTLE | STANCE_GLADIATOR | STANCE_DEFENSE;
   }
 
-  virtual void execute()
+  void execute()
   {
     warrior_spell_t::execute();
 
     p() -> buff.avatar -> trigger();
   }
 
-  virtual void update_ready( timespan_t cd_duration )
+  void update_ready( timespan_t cd_duration )
   {
     if ( p() -> specialization() != WARRIOR_PROTECTION )
       cd_duration = cooldown -> duration / ( 1 + player -> cache.readiness() );
@@ -2813,7 +2801,7 @@ struct battle_shout_t: public warrior_spell_t
     callbacks = false;
   }
 
-  virtual void execute()
+  void execute()
   {
     warrior_spell_t::execute();
 
@@ -2833,7 +2821,7 @@ struct berserker_rage_t: public warrior_spell_t
     stancemask = STANCE_BATTLE | STANCE_GLADIATOR | STANCE_DEFENSE;
   }
 
-  virtual void execute()
+  void execute()
   {
     warrior_spell_t::execute();
 
@@ -2854,14 +2842,14 @@ struct bloodbath_t: public warrior_spell_t
     stancemask = STANCE_BATTLE | STANCE_GLADIATOR | STANCE_DEFENSE;
   }
 
-  virtual void execute()
+  void execute()
   {
     warrior_spell_t::execute();
 
     p() -> buff.bloodbath -> trigger();
   }
 
-  virtual void update_ready( timespan_t cd_duration )
+  void update_ready( timespan_t cd_duration )
   {
     if ( p() -> specialization() != WARRIOR_PROTECTION )
       cd_duration = cooldown -> duration / ( 1 + player -> cache.readiness() );
@@ -2882,7 +2870,7 @@ struct commanding_shout_t: public warrior_spell_t
     callbacks = false;
   }
 
-  virtual void execute()
+  void execute()
   {
     warrior_spell_t::execute();
 
@@ -2915,13 +2903,13 @@ struct die_by_the_sword_t: public warrior_spell_t
     stancemask = STANCE_DEFENSE;
   }
 
-  virtual void execute()
+  void execute()
   {
     warrior_spell_t::execute();
     p() -> buff.die_by_the_sword -> trigger();
   }
 
-  virtual void update_ready( timespan_t cd_duration )
+  void update_ready( timespan_t cd_duration )
   {
     cd_duration = cooldown -> duration / ( 1 + player -> cache.readiness() );
 
@@ -2942,14 +2930,14 @@ struct last_stand_t: public warrior_spell_t
     cooldown -> duration += p -> sets.set( SET_T14_2PC_TANK ) -> effectN( 1 ).time_value();
   }
 
-  virtual void execute()
+  void execute()
   {
     warrior_spell_t::execute();
 
     p() -> buff.last_stand -> trigger();
   }
 
-  virtual void update_ready( timespan_t cd_duration )
+  void update_ready( timespan_t cd_duration )
   {
     cd_duration = cooldown -> duration / ( 1 + player -> cache.readiness() );
 
@@ -2968,7 +2956,7 @@ struct rallying_cry_heal_t: public warrior_heal_t
     percent = data().effectN( 1 ).percent();
   }
 
-  virtual void execute()
+  void execute()
   {
     base_dd_max *= percent; //Heals for 20% of original damage
     base_dd_min *= percent;
@@ -2986,7 +2974,7 @@ struct rallying_cry_t: public warrior_spell_t
     stancemask = STANCE_DEFENSE;
   }
 
-  virtual void execute()
+  void execute()
   {
     warrior_spell_t::execute();
 
@@ -3015,7 +3003,7 @@ struct recklessness_t: public warrior_spell_t
     cooldown -> duration += p -> sets.set( SET_T14_4PC_MELEE ) -> effectN( 1 ).time_value();
   }
 
-  virtual void execute()
+  void execute()
   {
     warrior_spell_t::execute();
 
@@ -3024,7 +3012,7 @@ struct recklessness_t: public warrior_spell_t
       p() -> buff.tier17_4pc_fury_driver -> trigger();
   }
 
-  virtual void update_ready( timespan_t cd_duration )
+  void update_ready( timespan_t cd_duration )
   {
     cd_duration = cooldown -> duration / ( 1 + player -> cache.readiness() );
 
@@ -3046,7 +3034,7 @@ struct rend_burst_t: public warrior_spell_t
     base_costs[RESOURCE_RAGE] = 0;
   }
 
-  virtual double target_armor( player_t* ) const
+  double target_armor( player_t* ) const
   {
     return 0.0;
   }
@@ -3068,7 +3056,7 @@ struct rend_t: public warrior_spell_t
     add_child( burst );
   }
 
-  virtual void impact( action_state_t* s )
+  void impact( action_state_t* s )
   {
     if ( result_is_hit( s -> result ) )
     {
@@ -3079,7 +3067,7 @@ struct rend_t: public warrior_spell_t
     warrior_spell_t::impact( s );
   }
 
-  virtual void tick( dot_t* d )
+  void tick( dot_t* d )
   {
     warrior_spell_t::tick( d );
     if ( p() -> talents.taste_for_blood -> ok() )
@@ -3088,13 +3076,13 @@ struct rend_t: public warrior_spell_t
       p() -> gain.taste_for_blood );
   }
 
-  virtual void last_tick( dot_t* d )
+  void last_tick( dot_t* d )
   {
     warrior_spell_t::last_tick( d );
     burst -> execute();
   }
 
-  virtual bool ready()
+  bool ready()
   {
     if ( p() -> main_hand_weapon.type == WEAPON_NONE )
       return false;
@@ -3120,12 +3108,12 @@ struct shield_barrier_t: public warrior_action_t < absorb_t >
     attack_power_mod.direct *= 1.0 + p -> perk.improved_shield_barrier -> effectN( 1 ).percent();
   }
 
-  virtual double cost() const
+  double cost() const
   {
     return std::min( 60.0, std::max( p() -> resources.current[RESOURCE_RAGE], 20.0 ) );
   }
 
-  virtual void impact( action_state_t* s )
+  void impact( action_state_t* s )
   {
     //1) Buff does not stack with itself.
     //2) Will overwrite existing buff if new one is bigger.
@@ -3142,7 +3130,7 @@ struct shield_barrier_t: public warrior_action_t < absorb_t >
     }
   }
 
-  virtual bool ready()
+  bool ready()
   {
     if ( !p() -> has_shield_equipped() )
       return false;
@@ -3165,7 +3153,7 @@ struct shield_block_t: public warrior_spell_t
     use_off_gcd = true;
   }
 
-  virtual double cost() const
+  double cost() const
   {
     double c = warrior_spell_t::cost();
 
@@ -3174,7 +3162,7 @@ struct shield_block_t: public warrior_spell_t
     return c;
   }
 
-  virtual void execute()
+  void execute()
   {
     warrior_spell_t::execute();
 
@@ -3184,7 +3172,7 @@ struct shield_block_t: public warrior_spell_t
       p() -> buff.shield_block -> trigger();
   }
 
-  virtual bool ready()
+  bool ready()
   {
     if ( !p() -> has_shield_equipped() )
       return false;
@@ -3210,7 +3198,7 @@ struct shield_charge_t: public warrior_spell_t
     use_off_gcd = true;
   }
 
-  virtual void execute()
+  void execute()
   {
     warrior_spell_t::execute();
 
@@ -3220,7 +3208,7 @@ struct shield_charge_t: public warrior_spell_t
       p() -> buff.shield_charge -> trigger();
   }
 
-  virtual bool ready()
+  bool ready()
   {
     if ( !p() -> has_shield_equipped() )
       return false;
@@ -3247,7 +3235,7 @@ struct shield_wall_t: public warrior_spell_t
     cooldown -> duration += p -> glyphs.shield_wall -> effectN( 1 ).time_value();
   }
 
-  virtual void execute()
+  void execute()
   {
     warrior_spell_t::execute();
 
@@ -3258,7 +3246,7 @@ struct shield_wall_t: public warrior_spell_t
     p() -> buff.shield_wall -> trigger( 1, value );
   }
 
-  virtual void update_ready( timespan_t cd_duration )
+  void update_ready( timespan_t cd_duration )
   {
     cd_duration = cooldown -> duration / ( 1 + player -> cache.readiness() );
 
@@ -3354,7 +3342,7 @@ struct stance_t: public warrior_spell_t
     use_off_gcd = true;
   }
 
-  virtual void execute()
+  void execute()
   {
     if ( p() -> active_stance != switch_to_stance )
     {
@@ -3399,7 +3387,7 @@ struct stance_t: public warrior_spell_t
     }
   }
 
-  virtual bool ready()
+  bool ready()
   {
     if ( p() -> cooldown.stance_swap -> down() ||
          cooldown -> down() ||
@@ -3424,7 +3412,7 @@ struct sweeping_strikes_t: public warrior_spell_t
     cooldown -> duration += p -> perk.enhanced_sweeping_strikes -> effectN( 2 ).time_value();
   }
 
-  virtual void execute()
+  void execute()
   {
     warrior_spell_t::execute();
     p() -> buff.sweeping_strikes -> trigger();
@@ -3443,7 +3431,7 @@ struct taunt_t: public warrior_spell_t
     stancemask = STANCE_DEFENSE | STANCE_GLADIATOR;
   }
 
-  virtual void impact( action_state_t* s )
+  void impact( action_state_t* s )
   {
     if ( s -> target -> is_enemy() )
       target -> taunt( player );
@@ -4133,13 +4121,13 @@ struct bloodsurge_t: public warrior_buff_t < buff_t >
   {
   }
 
-  virtual void execute( int a, double b, timespan_t t )
+  void execute( int a, double b, timespan_t t )
   {
     wasted = 3;
     base_t::execute( a, b, t );
   }
 
-  virtual void decrement( int a, double b )
+  void decrement( int a, double b )
   {
     wasted--;
     base_t::decrement( a, b );
@@ -4151,7 +4139,7 @@ struct bloodsurge_t: public warrior_buff_t < buff_t >
     wasted = 0;
   }
 
-  virtual void expire_override()
+  void expire_override()
   {
     if ( wasted > 0 )
     {
@@ -4185,7 +4173,7 @@ struct defensive_stance_t: public warrior_buff_t < buff_t >
   {
   }
 
-  virtual void execute( int a, double b, timespan_t t )
+  void execute( int a, double b, timespan_t t )
   {
     warrior.active_stance = STANCE_DEFENSE;
     base_t::execute( a, b, t );
@@ -4200,7 +4188,7 @@ struct battle_stance_t: public warrior_buff_t < buff_t >
   {
   }
 
-  virtual void execute( int a, double b, timespan_t t )
+  void execute( int a, double b, timespan_t t )
   {
     warrior.active_stance = STANCE_BATTLE;
     base_t::execute( a, b, t );
@@ -4216,7 +4204,7 @@ struct gladiator_stance_t: public warrior_buff_t < buff_t >
   {
   }
 
-  virtual void execute( int a, double b, timespan_t t )
+  void execute( int a, double b, timespan_t t )
   {
     warrior.swapping = true; // Once you go into gladiator stance, there's no going back after precombat.
     warrior.active_stance = STANCE_GLADIATOR;
@@ -4240,14 +4228,14 @@ struct rallying_cry_t: public warrior_buff_t < buff_t >
   {
   }
 
-  virtual bool trigger( int stacks, double value, double chance, timespan_t duration )
+  bool trigger( int stacks, double value, double chance, timespan_t duration )
   {
     health_gain = (int)floor( warrior.resources.max[RESOURCE_HEALTH] * data().effectN( 1 ).percent() );
     warrior.stat_gain( STAT_MAX_HEALTH, health_gain, (gain_t*)0, (action_t*)0, true );
     return base_t::trigger( stacks, value, chance, duration );
   }
 
-  virtual void expire_override()
+  void expire_override()
   {
     warrior.stat_loss( STAT_MAX_HEALTH, health_gain, (gain_t*)0, (action_t*)0, true );
     base_t::expire_override();
@@ -4262,14 +4250,14 @@ struct last_stand_t: public warrior_buff_t < buff_t >
   {
   }
 
-  virtual bool trigger( int stacks, double value, double chance, timespan_t duration )
+  bool trigger( int stacks, double value, double chance, timespan_t duration )
   {
     health_gain = (int)floor( warrior.resources.max[RESOURCE_HEALTH] * warrior.spec.last_stand -> effectN( 1 ).percent() );
     warrior.stat_gain( STAT_MAX_HEALTH, health_gain, (gain_t*)0, (action_t*)0, true );
     return base_t::trigger( stacks, value, chance, duration );
   }
 
-  virtual void expire_override()
+  void expire_override()
   {
     warrior.stat_loss( STAT_MAX_HEALTH, health_gain, (gain_t*)0, (action_t*)0, true );
     base_t::expire_override();
@@ -4284,7 +4272,7 @@ struct debuff_demo_shout_t: public buff_t
     default_value = data().effectN( 1 ).percent();
   }
 
-  virtual void expire_override()
+  void expire_override()
   {
     warrior_t* p = (warrior_t*)player;
 
