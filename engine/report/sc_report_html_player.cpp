@@ -1803,11 +1803,10 @@ void print_html_player_action_priority_list( report::sc_html_stream& os, sim_t* 
     os << "</table>\n";
   }
 
+  // Sample Sequences
+
   if ( ! p -> collected_data.action_sequence.empty() )
   {
-    os << "<div class=\"subsection subsection-small\">\n"
-       << "<h4>Sample Sequence</h4>\n"
-       << "<div class=\"force-wrap mono\">\n";
 
     std::vector<std::string> targets;
 
@@ -1829,6 +1828,12 @@ void print_html_player_action_priority_list( report::sc_html_stream& os, sim_t* 
       }
       if ( ! found ) targets.push_back( data -> target -> name() );
     }
+
+    // Sample Sequence (text string)
+
+    os << "<div class=\"subsection subsection-small\">\n"
+       << "<h4>Sample Sequence</h4>\n"
+       << "<div class=\"force-wrap mono\">\n";
 
     os << "<style type=\"text/css\" media=\"all\">\n";
 
@@ -1886,8 +1891,92 @@ void print_html_player_action_priority_list( report::sc_html_stream& os, sim_t* 
 
     os << "\n</div>\n"
        << "</div>\n";
+
+    // Sample Sequence (table)
+    
+    // define collapsable section
+    os << "<h3 class=\"toggle\">Sample Sequence Table</h3>\n"
+       << "<div class=\"toggle-content hide\">\n";
+
+    // create table header
+    os.printf(
+      "<table class=\"sc\">\n"
+      "<tr>\n"
+      "<th class=\"center\">time</th>\n"
+      "<th></th>\n"
+      "<th class=\"center\">name</th>\n"
+      "<th></th>\n"
+      "<th class=\"center\">target</th>\n"
+      "<th></th>\n"
+      "<th class=\"center\">resources</th>\n"
+      "<th></th>\n"
+      "<th class=\"center\">buffs</th>\n"
+      "</tr>\n");
+
+    for ( size_t i = 0; i < p -> collected_data.action_sequence.size(); ++i )
+    {
+      player_collected_data_t::action_sequence_data_t* data = p -> collected_data.action_sequence[ i ];
+      
+      os.printf( "<tr>\n"
+                 "<td>%d:%02d</td>\n"
+                 "<td></td>\n"
+                 "<td class=\"left\">%s</td>\n"
+                 "<td></td>\n"
+                 "<td class=\"left\">%s</td>\n"
+                 "<td></td>\n",
+                 ( int ) data -> time.total_minutes(),
+                 ( int ) data -> time.total_seconds() % 60,
+                 data -> action -> name(),
+                 data -> target -> name()
+                 );
+
+      os.printf( "<td class=\"left\" style=\"white-space: nowrap\">");
+
+      bool first = true;
+      for ( resource_e r = RESOURCE_HEALTH; r < RESOURCE_MAX; ++r )
+      {
+        if ( ! p -> resources.is_infinite( r ) && data -> resource_snapshot[ r ] >= 0 )
+        {
+          if ( first )
+            first = false;
+          else
+            os.printf( " |" );
+
+          if ( r == RESOURCE_HEALTH || r == RESOURCE_MANA )
+            os.printf( " %d%%", ( int ) ( ( data -> resource_snapshot[ r ] / p -> resources.max[ r ] ) * 100 ) );
+          else
+            os.printf( " %.1f", data -> resource_snapshot[ r ] );
+          os.printf( " %s", util::resource_type_string( r ) );
+        }
+      }
+
+      os.printf( "</td>\n<td></td>\n<td class=\"left\">" );
+      
+      first = true;
+      for ( size_t b = 0; b < data -> buff_list.size(); ++b )
+      {
+        buff_t* buff = data -> buff_list[ b ];
+        if ( ! buff -> constant ) 
+        {
+          if ( first )
+            first = false;
+          else
+            os.printf( ", " );
+          os.printf( "%s", buff -> name() );
+        }
+      }
+
+      os.printf( "</td>\n" );
+    }
+
+    // close table
+    os << "</table>\n";
+
+    // close collapsable section
+    os << "</div>\n";
   }
 
+  // End Action Priority List section
   os << "</div>\n"
      << "</div>\n";
 
