@@ -3864,6 +3864,9 @@ struct cataclysm_t : public warlock_spell_t
     doom_t* doom;
     immolate_t* immolate;
     
+    bool demonic_fury_paid_for_doom;
+    int base_cost_doom;
+    
     cataclysm_t( warlock_t* p ) :
     warlock_spell_t( "cataclysm", p, p -> find_spell( 152108 ) ),
     agony( new agony_t( p ) ),
@@ -3882,6 +3885,8 @@ struct cataclysm_t : public warlock_spell_t
         doom          -> background = true;
         doom          -> dual       = true;
         doom          -> base_costs[ RESOURCE_MANA ] = 0;
+        base_cost_doom = doom -> base_costs[ RESOURCE_DEMONIC_FURY];
+        demonic_fury_paid_for_doom = false;
         
         immolate -> background = true;
         immolate -> dual       = true;
@@ -3892,6 +3897,13 @@ struct cataclysm_t : public warlock_spell_t
         //TODO Add proper reporting of spawned dots via add_child, etc.
         //stats = p -> get_stats( "immolate_fnb", this );
         //stats -> add_child(p -> get_stats("agony_cata", this));
+    }
+    
+    virtual void execute()
+    {
+        demonic_fury_paid_for_doom = false;//Cataclysm needs only to pay doom's cost once, no matter the amount of targets
+        warlock_spell_t::execute();
+        
     }
     
     virtual void impact( action_state_t* s )
@@ -3909,6 +3921,15 @@ struct cataclysm_t : public warlock_spell_t
                     if ( p() -> buffs.metamorphosis -> check() )
                     {
                         doom -> target = s -> target;
+                        if (demonic_fury_paid_for_doom) //Cataclysm needs only to pay doom's cost once, no matter the amount of targets
+                        {
+                            doom -> base_costs[RESOURCE_DEMONIC_FURY] = 0;
+                        }
+                        else
+                        {
+                            doom -> base_costs[RESOURCE_DEMONIC_FURY] = base_cost_doom;
+                            demonic_fury_paid_for_doom = true;
+                        }
                         doom -> execute();
                     }
                     else
