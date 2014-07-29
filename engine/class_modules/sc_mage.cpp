@@ -2960,12 +2960,11 @@ struct inferno_blast_t : public mage_spell_t
 struct living_bomb_explosion_t : public mage_spell_t
 {
   living_bomb_explosion_t( mage_t* p ) :
-    mage_spell_t( "living_bomb_explosion", p, p -> find_spell( p -> talents.living_bomb -> effectN( 2 ).base_value() ) )
+    mage_spell_t( "living_bomb_explosion", p, p -> find_spell( 44461 ) )
   {
     aoe = -1;
     background = true;
-
-    base_multiplier *= 4;
+    base_multiplier *= 4.0;
   }
 
   virtual resource_e current_resource() const
@@ -2981,13 +2980,6 @@ struct living_bomb_t : public mage_spell_t
     explosion_spell( new living_bomb_explosion_t( p ) )
   {
     parse_options( NULL, options_str );
-
-    dot_behavior = DOT_REFRESH;
-    hasted_ticks = true;
-
-    trigger_gcd = timespan_t::from_seconds( 1.0 );
-
-    add_child( explosion_spell );
   }
 
   virtual void impact( action_state_t* s )
@@ -2995,12 +2987,11 @@ struct living_bomb_t : public mage_spell_t
     if ( result_is_hit( s -> result ) )
     {
       dot_t* dot = get_dot( s -> target );
-      if ( dot -> is_ticking() && dot -> remains() < dot -> current_action -> base_tick_time )
+      if ( dot -> is_ticking() && dot -> remains() < ( dot -> current_action -> base_tick_time * 0.3 ) )
       {
         explosion_spell -> execute();
       }
     }
-
     mage_spell_t::impact( s );
   }
 
@@ -3010,35 +3001,6 @@ struct living_bomb_t : public mage_spell_t
     mage_spell_t::last_tick( d );
 
     explosion_spell -> execute();
-    mage_t& p = *this -> p();
-    p.active_bomb_targets--;
-  }
-
-  virtual void execute()
-  {
-    mage_t& p = *this -> p();
-    bool pre_ticking = get_dot( target ) -> is_ticking();
-
-    mage_spell_t::execute();
-
-    if ( result_is_hit( execute_state -> result ) )
-    {
-      if ( ! pre_ticking )
-        p.active_bomb_targets++;
-      p.last_bomb_target = execute_state -> target;
-    }
-  }
-
-  virtual bool ready()
-  {
-    mage_t& p = *this -> p();
-
-    assert( p.active_bomb_targets <= 3 && p.active_bomb_targets >= 0 );
-
-    if ( p.active_bomb_targets == 3 )
-      return false;
-
-    return mage_spell_t::ready();
   }
 };
 
