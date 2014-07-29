@@ -2410,7 +2410,7 @@ void print_html_player_charts( report::sc_html_stream& os, sim_t* sim, player_t*
     os << chart_str;
   }
 
-  std::string resolve_timeline_chart = chart::timeline( p, p -> resolve_timeline.data(), "resolve", 0, "ff0000", static_cast<size_t>( p -> collected_data.fight_length.max() ) );
+  std::string resolve_timeline_chart = chart::timeline( p, p -> collected_data.resolve_timeline.merged_timeline.data(), "resolve", 0, "ff0000", static_cast<size_t>( p -> collected_data.fight_length.max() ) );
   if ( ! resolve_timeline_chart.empty() )
   {
     os << "<img src=\"" << resolve_timeline_chart << "\" alt=\"Resolve Timeline Chart\" />\n";

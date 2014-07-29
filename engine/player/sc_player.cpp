@@ -465,7 +465,6 @@ player_t::player_t( sim_t*             s,
 
   tmi_window( 6.0 ),
   collected_data( player_collected_data_t( name_str, *sim ) ),
-  resolve_timeline( collected_data.resolve_timeline ),
   // Damage
   iteration_dmg( 0 ), iteration_dmg_taken( 0 ),
   dpr( 0 ),
@@ -3026,6 +3025,8 @@ void player_t::datacollection_begin()
     collected_data.health_changes_tmi.timeline_normalized.clear();
   }
 
+  collected_data.resolve_timeline.iteration_timeline.clear();
+
   range::for_each( buff_list, std::mem_fn(&buff_t::datacollection_begin ) );
   range::for_each( stats_list, std::mem_fn(&stats_t::datacollection_begin ) );
   range::for_each( uptime_list, std::mem_fn(&uptime_t::datacollection_begin ) );
@@ -3306,10 +3307,7 @@ void player_t::merge( player_t& other )
 #endif
     }
   }
-
-  // Resolve Timeline
-  resolve_timeline.merge( other.resolve_timeline );
-
+  
   // Action Map
   for ( size_t i = 0; i < other.action_list.size(); ++i )
     action_list[ i ] -> total_executions += other.action_list[ i ] -> total_executions;
@@ -8359,10 +8357,7 @@ void player_t::analyze( sim_t& s )
   }
   if ( !  quiet && (  is_enemy() ||  is_add() ) && ! (  is_pet() && s.report_pets_separately ) )
     s.targets_by_name.push_back( this );
-
-  // Resolve Timeline
-  resolve_timeline.adjust( s.divisor_timeline );
-
+  
   // Resources & Gains ======================================================
 
   double rl = collected_data.resource_lost[  primary_resource() ].mean();
@@ -9210,6 +9205,8 @@ void player_collected_data_t::merge( const player_collected_data_t& other )
 
   health_changes.merged_timeline.merge( other.health_changes.merged_timeline );
   health_changes_tmi.merged_timeline.merge( other.health_changes_tmi.merged_timeline );
+
+  resolve_timeline.merged_timeline.merge( other.resolve_timeline.merged_timeline );
 }
 
 void player_collected_data_t::analyze( const player_t& p )
@@ -9255,6 +9252,8 @@ void player_collected_data_t::analyze( const player_t& p )
 
   health_changes.merged_timeline.adjust( p.sim -> divisor_timeline );
   health_changes_tmi.merged_timeline.adjust( p.sim -> divisor_timeline );
+
+  resolve_timeline.merged_timeline.adjust( p.sim -> divisor_timeline );
 }
 
 //This is pretty much only useful for dev debugging at this point, would need to modify to make it useful to users
@@ -9418,6 +9417,10 @@ void player_collected_data_t::collect_data( const player_t& p )
 
   for ( resource_e i = RESOURCE_NONE; i < RESOURCE_MAX; ++i )
     combat_end_resource[ i ].add( p.resources.current[ i ] );
+
+  // Resolve Timeline - Only nonzero for tanks
+  if ( resolve_timeline.iteration_timeline.data().size() > 0 )
+    resolve_timeline.merged_timeline.merge( resolve_timeline.iteration_timeline );
 
   // Health Change Calculations - only needed for tanks
   if ( ! p.is_pet() && p.primary_role() == ROLE_TANK )
@@ -9758,7 +9761,7 @@ void manager_t::update()
   _player.buffs.resolve -> trigger( 1, new_amount, 1, timespan_t::zero() );
 
   // Add to the Resolve timeline
-  _player.resolve_timeline.add( _player.sim -> current_time, _player.buffs.resolve -> value() );
+  _player.collected_data.resolve_timeline.add_max( _player.sim -> current_time, _player.buffs.resolve -> value() );
 }
 
 void manager_t::add_diminishing_return_entry( const player_t* actor, double raw_dps, timespan_t current_time )

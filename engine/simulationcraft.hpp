@@ -105,6 +105,18 @@ struct sc_timeline_t : public timeline_t
   void add( timespan_t current_time, double value )
   { base_t::add( static_cast<size_t>( current_time.total_millis() / 1000 / bin_size ), value ); }
 
+  // Add 'value' at corresponding time, replacing existing entry if new value is larger
+  void add_max( timespan_t current_time, double new_value )
+  {
+    size_t index = static_cast<size_t>( current_time.total_millis() / 1000 / bin_size );    
+    if ( data().size() == 0 || data().size() <= index )
+      add( current_time, new_value );
+    else if ( new_value > data().at( index ) )
+    {
+      add( current_time, new_value - data().at( index ) );
+    }  
+  }
+
   void build_derivative_timeline( sc_timeline_t& out ) const
   { base_t::build_sliding_average_timeline( out, 20 ); }
 };
@@ -3892,7 +3904,6 @@ struct player_collected_data_t
   extended_sample_data_t theck_meloree_index;
   extended_sample_data_t effective_theck_meloree_index;
   extended_sample_data_t max_spike_amount;
-  sc_timeline_t resolve_timeline;
 
   std::array<simple_sample_data_t,RESOURCE_MAX> resource_lost, resource_gained;
   struct resource_timeline_t
@@ -3949,6 +3960,46 @@ struct player_collected_data_t
   health_changes_timeline_t health_changes;     //records all health changes
   health_changes_timeline_t health_changes_tmi; //records only health changes due to damage and self-healng/self-absorb
   
+  struct resolve_timeline_t
+  {
+    sc_timeline_t iteration_timeline;
+    sc_timeline_t merged_timeline;
+
+    resolve_timeline_t() {}
+
+    void set_bin_size( double bin )
+    {
+      iteration_timeline.set_bin_size( bin );
+      merged_timeline.set_bin_size( bin );
+    }
+
+    double get_bin_size() const
+    {
+      if ( iteration_timeline.get_bin_size() != merged_timeline.get_bin_size() )
+      {
+        assert( false );
+        return 0.0;
+      }
+      else
+        return iteration_timeline.get_bin_size();
+    } 
+
+    // Add 'value' at corresponding time, replacing existing entry if new value is larger
+    void add_max( timespan_t current_time, double new_value )
+    {
+      size_t index = static_cast< size_t >( current_time.total_millis() / 1000 / iteration_timeline.bin_size );
+
+      // if data doesn't exist in this element, add it; otherwise store only the maximum value
+      if ( iteration_timeline.data().size() == 0 || iteration_timeline.data().size() <= index )
+        iteration_timeline.add( current_time, new_value );
+      else if ( new_value > iteration_timeline.data().at( index ) )
+      {
+        iteration_timeline.add( current_time, new_value - iteration_timeline.data().at( index ) );
+      }
+    }
+  };
+
+  resolve_timeline_t resolve_timeline;
 
   struct action_sequence_data_t
   {
@@ -4368,10 +4419,7 @@ struct player_t : public actor_t
 
   // All Data collected during / end of combat
   player_collected_data_t collected_data;
-
-
-  sc_timeline_t resolve_timeline;
-
+  
   // Damage
   double iteration_dmg, iteration_dmg_taken; // temporary accumulators
   double dpr;
