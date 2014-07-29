@@ -9,8 +9,9 @@
 //
 // TODO:
 // Grimoire of Synergy
-// Level 100 talents: cataclysm, demonic servitude
+// Level 100 talents: demonic servitude
 // Update action lists.
+// Proper Stats for childs of cataclysm
 // In-depth testing of demonology and affliction is needed.
 // void consume_tick_resource( dot_t* d ) - find out why this causes drain
 // ---soul to ignite with hell fire.
@@ -2670,9 +2671,9 @@ struct immolate_t : public warlock_spell_t
       gain = p() -> gains.immolate;
 
     if ( result_is_hit( s -> result ))
-    {
-      if ( s -> result == RESULT_CRIT ) trigger_ember_gain( p(), 0.1, gain );
-    }
+	  {
+	    if ( s -> result == RESULT_CRIT ) trigger_ember_gain( p(), 0.1, gain );
+	  }
   }
 
   virtual void tick( dot_t* d )
@@ -2779,15 +2780,16 @@ struct conflagrate_t : public warlock_spell_t
     gain_t* gain;
 
     if ( result_is_hit( s -> result ))
-    {
-    if ( ! fnb && p() -> spec.fire_and_brimstone -> ok() )
-      gain = p() -> gains.conflagrate_fnb;
-    else
-      gain = p() -> gains.conflagrate;
+	  {
+      if ( ! fnb && p() -> spec.fire_and_brimstone -> ok() )
+        gain = p() -> gains.conflagrate_fnb;
+      else
+        gain = p() -> gains.conflagrate;
 
-    if ( p() -> talents.charred_remains -> ok() ){
-      trigger_ember_gain( p(), s -> result == RESULT_CRIT ?  0.2 * ( 1.0 + p() -> talents.charred_remains -> effectN( 2 ).percent() ) : 0.1 * ( 1.0 + p() -> talents.charred_remains -> effectN( 2 ).percent() ), gain );
-    }
+      if ( p() -> talents.charred_remains -> ok() )
+      {
+        trigger_ember_gain( p(), s -> result == RESULT_CRIT ?  0.2 * ( 1.0 + p() -> talents.charred_remains -> effectN( 2 ).percent() ) : 0.1 * ( 1.0 + p() -> talents.charred_remains -> effectN( 2 ).percent() ), gain );
+      }
     else
       trigger_ember_gain( p(), s -> result == RESULT_CRIT ? 0.2 : 0.1, gain );
 
@@ -2887,21 +2889,21 @@ struct incinerate_t : public warlock_spell_t
   {
     warlock_spell_t::impact( s );
     gain_t* gain;
-
     if ( ! fnb && p() -> spec.fire_and_brimstone -> ok() )
       gain = p() -> gains.incinerate_fnb;
     else
       gain = p() -> gains.incinerate;
 
-    if ( result_is_hit( s -> result ) )
+    if ( result_is_hit( s -> result ))
     {
-      if ( p() -> talents.charred_remains -> ok() ){
-        trigger_ember_gain(p(), s -> result == RESULT_CRIT ? 0.2 * ( 1.0 + p() -> talents.charred_remains -> effectN( 2 ).percent() ) : 0.1 * ( 1.0 + p() -> talents.charred_remains -> effectN( 2 ).percent() ), gain );
+      if ( p() -> talents.charred_remains -> ok() )
+      {
+        trigger_ember_gain( p(), s -> result == RESULT_CRIT ?  0.2 * ( 1.0 + p() -> talents.charred_remains -> effectN( 2 ).percent() ) : 0.1 * ( 1.0 + p() -> talents.charred_remains -> effectN( 2 ).percent() ), gain );
       }
       else
         trigger_ember_gain( p(), s -> result == RESULT_CRIT ? 0.2 : 0.1, gain );
 
-      if ( rng().roll( p() -> sets.set(SET_T15_4PC_CASTER) -> effectN( 2 ).percent() ))
+      if ( rng().roll( p() -> sets.set ( SET_T15_4PC_CASTER ) -> effectN( 2 ).percent() ) )
         trigger_ember_gain( p(), s -> result == RESULT_CRIT ? 0.2 : 0.1, p() -> gains.incinerate_t15_4pc );
 
       trigger_soul_leech( p(), s -> result_amount * p() -> talents.soul_leech -> effectN( 1 ).percent() );
@@ -3396,6 +3398,15 @@ struct soulburn_t : public warlock_spell_t
 
     warlock_spell_t::execute();
   }
+
+  virtual bool ready()
+  {
+      bool r = warlock_spell_t::ready();
+      
+      if ( p() -> buffs.soulburn -> check() ) r = false;
+        
+      return r;
+  }
 };
 
 
@@ -3856,6 +3867,104 @@ struct immolation_aura_t : public warlock_spell_t
     return r;
   }
 };
+  
+struct cataclysm_t : public warlock_spell_t
+{
+    agony_t* agony;
+    corruption_t* corruption;
+    doom_t* doom;
+    immolate_t* immolate;
+    
+    bool demonic_fury_paid_for_doom;
+    int base_cost_doom;
+    
+    cataclysm_t( warlock_t* p ) :
+    warlock_spell_t( "cataclysm", p, p -> find_spell( 152108 ) ),
+    agony( new agony_t( p ) ),
+    corruption( new corruption_t( p ) ),
+    doom( new doom_t( p ) ),
+    immolate( new immolate_t( p ) )
+    {
+        aoe = -1;
+        
+        agony               -> background = true;
+        agony               -> dual       = true;
+        agony               -> base_costs[ RESOURCE_MANA ] = 0;
+        corruption          -> background = true;
+        corruption          -> dual       = true;
+        corruption          -> base_costs[ RESOURCE_MANA ] = 0;
+        doom          -> background = true;
+        doom          -> dual       = true;
+        doom          -> base_costs[ RESOURCE_MANA ] = 0;
+        base_cost_doom = doom -> base_costs[ RESOURCE_DEMONIC_FURY];
+        demonic_fury_paid_for_doom = false;
+        
+        immolate -> background = true;
+        immolate -> dual       = true;
+        immolate -> base_costs[ RESOURCE_MANA ] = 0;
+        
+        
+       
+        //TODO Add proper reporting of spawned dots via add_child, etc.
+        //stats = p -> get_stats( "immolate_fnb", this );
+        //stats -> add_child(p -> get_stats("agony_cata", this));
+    }
+    
+    virtual void execute()
+    {
+        demonic_fury_paid_for_doom = false;//Cataclysm needs only to pay doom's cost once, no matter the amount of targets
+        warlock_spell_t::execute();
+        
+    }
+    
+    virtual void impact( action_state_t* s )
+    {
+        warlock_spell_t::impact( s );
+        
+        if ( result_is_hit( s -> result ) )
+        {
+            switch (p() -> specialization() ) {
+                case WARLOCK_AFFLICTION:
+                    agony -> target = s -> target;
+                    agony -> execute();
+                    break;
+                case WARLOCK_DEMONOLOGY:
+                    if ( p() -> buffs.metamorphosis -> check() )
+                    {
+                        doom -> target = s -> target;
+                        if (demonic_fury_paid_for_doom) //Cataclysm needs only to pay doom's cost once, no matter the amount of targets
+                        {
+                            doom -> base_costs[RESOURCE_DEMONIC_FURY] = 0;
+                        }
+                        else
+                        {
+                            doom -> base_costs[RESOURCE_DEMONIC_FURY] = base_cost_doom;
+                            demonic_fury_paid_for_doom = true;
+                        }
+                        doom -> execute();
+                    }
+                    else
+                    {
+                        corruption -> target = s -> target;
+                        corruption -> execute();
+                    }
+                    break;
+                case WARLOCK_DESTRUCTION:
+                    immolate -> target = s -> target;
+                    immolate -> execute();
+                    break;
+                default:
+                    break;
+            }
+            
+        }
+    }
+    
+};
+    
+    
+    
+    
 // SOUL SWAP
 
 struct soul_swap_t : public warlock_spell_t
@@ -4615,6 +4724,7 @@ action_t* warlock_t::create_action( const std::string& action_name,
   else if ( action_name == "soulburn"              ) a = new              soulburn_t( this );
   else if ( action_name == "havoc"                 ) a = new                 havoc_t( this );
   else if ( action_name == "seed_of_corruption"    ) a = new    seed_of_corruption_t( this );
+  else if ( action_name == "cataclysm"             ) a = new             cataclysm_t( this );
   else if ( action_name == "rain_of_fire"          ) a = new          rain_of_fire_t( this );
   else if ( action_name == "hellfire"              ) a = new              hellfire_t( this );
   else if ( action_name == "immolation_aura"       ) a = new       immolation_aura_t( this );
