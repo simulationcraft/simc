@@ -1732,7 +1732,73 @@ void print_html_player_scale_factors( report::sc_html_stream& os, sim_t* sim, pl
      << "</div>\n";
 }
 
-// print_html_player_action_priority_list ===================================
+// print_html_sample_sequence_table_entry =====================================
+
+void print_html_sample_sequence_table_entry( report::sc_html_stream& os,
+                                             player_collected_data_t::action_sequence_data_t* data,
+                                             player_t* p,
+                                             bool precombat = false )
+{
+  os << "<tr>\n";
+
+  if ( precombat )
+    os << "<td class=\"right\">Pre</td>\n";
+  else
+    os.printf( "<td class=\"right\">%d:%02d.%03d</td>\n",
+               ( int ) data -> time.total_minutes(),
+               ( int ) data -> time.total_seconds() % 60,
+               ( int ) data -> time.total_millis() % 1000
+               );
+
+  os.printf( "<td></td>\n"
+             "<td class=\"left\">%s</td>\n"
+             "<td></td>\n"
+             "<td class=\"left\">%s</td>\n"
+             "<td></td>\n",
+             data -> action -> name(),
+             data -> target -> name()
+             );
+
+  os.printf( "<td class=\"left\" style=\"white-space: nowrap\">" );
+
+  bool first = true;
+  for ( resource_e r = RESOURCE_HEALTH; r < RESOURCE_MAX; ++r )
+  {
+    if ( !p -> resources.is_infinite( r ) && data -> resource_snapshot[ r ] >= 0 )
+    {
+      if ( first )
+        first = false;
+      else
+        os.printf( " |" );
+
+      if ( r == RESOURCE_HEALTH || r == RESOURCE_MANA )
+        os.printf( " %d%%", ( int ) ( ( data -> resource_snapshot[ r ] / p -> resources.max[ r ] ) * 100 ) );
+      else
+        os.printf( " %.1f", data -> resource_snapshot[ r ] );
+      os.printf( " %s", util::resource_type_string( r ) );
+    }
+  }
+
+  os.printf( "</td>\n<td></td>\n<td class=\"left\">" );
+
+  first = true;
+  for ( size_t b = 0; b < data -> buff_list.size(); ++b )
+  {
+    buff_t* buff = data -> buff_list[ b ];
+    if ( !buff -> constant )
+    {
+      if ( first )
+        first = false;
+      else
+        os.printf( ", " );
+      os.printf( "%s", buff -> name() );
+    }
+  }
+
+  os.printf( "</td>\n" );
+}
+
+// print_html_player_action_priority_list =====================================
 
 void print_html_player_action_priority_list( report::sc_html_stream& os, sim_t* sim, player_t* p )
 {
@@ -1912,62 +1978,19 @@ void print_html_player_action_priority_list( report::sc_html_stream& os, sim_t* 
       "<th></th>\n"
       "<th class=\"center\">buffs</th>\n"
       "</tr>\n");
+    
+    for ( size_t i = 0; i < p -> collected_data.action_sequence_precombat.size(); ++i )
+    {
+      player_collected_data_t::action_sequence_data_t* data = p -> collected_data.action_sequence_precombat[ i ];
+      
+      print_html_sample_sequence_table_entry( os, data, p, true );      
+    }
 
     for ( size_t i = 0; i < p -> collected_data.action_sequence.size(); ++i )
     {
       player_collected_data_t::action_sequence_data_t* data = p -> collected_data.action_sequence[ i ];
       
-      os.printf( "<tr>\n"
-                 "<td class=\"right\">%d:%02d.%03d</td>\n"
-                 "<td></td>\n"
-                 "<td class=\"left\">%s</td>\n"
-                 "<td></td>\n"
-                 "<td class=\"left\">%s</td>\n"
-                 "<td></td>\n",
-                 ( int ) data -> time.total_minutes(),
-                 ( int ) data -> time.total_seconds() % 60,
-                 ( int ) data -> time.total_millis() % 1000,
-                 data -> action -> name(),
-                 data -> target -> name()
-                 );
-
-      os.printf( "<td class=\"left\" style=\"white-space: nowrap\">");
-
-      bool first = true;
-      for ( resource_e r = RESOURCE_HEALTH; r < RESOURCE_MAX; ++r )
-      {
-        if ( ! p -> resources.is_infinite( r ) && data -> resource_snapshot[ r ] >= 0 )
-        {
-          if ( first )
-            first = false;
-          else
-            os.printf( " |" );
-
-          if ( r == RESOURCE_HEALTH || r == RESOURCE_MANA )
-            os.printf( " %d%%", ( int ) ( ( data -> resource_snapshot[ r ] / p -> resources.max[ r ] ) * 100 ) );
-          else
-            os.printf( " %.1f", data -> resource_snapshot[ r ] );
-          os.printf( " %s", util::resource_type_string( r ) );
-        }
-      }
-
-      os.printf( "</td>\n<td></td>\n<td class=\"left\">" );
-      
-      first = true;
-      for ( size_t b = 0; b < data -> buff_list.size(); ++b )
-      {
-        buff_t* buff = data -> buff_list[ b ];
-        if ( ! buff -> constant ) 
-        {
-          if ( first )
-            first = false;
-          else
-            os.printf( ", " );
-          os.printf( "%s", buff -> name() );
-        }
-      }
-
-      os.printf( "</td>\n" );
+      print_html_sample_sequence_table_entry( os, data, p );
     }
 
     // close table

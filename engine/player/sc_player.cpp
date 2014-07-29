@@ -2917,7 +2917,10 @@ void player_t::sequence_add( const action_t* a, const player_t* target, const ti
     {
       if ( collected_data.action_sequence.size() <= sim -> expected_max_time() * 2.0 )
       {
-        collected_data.action_sequence.push_back( new player_collected_data_t::action_sequence_data_t( a, target, ts, this ) );
+        if ( in_combat )
+          collected_data.action_sequence.push_back( new player_collected_data_t::action_sequence_data_t( a, target, ts, this ) );
+        else
+          collected_data.action_sequence_precombat.push_back( new player_collected_data_t::action_sequence_data_t( a, target, ts, this ) );
       }
       else
       {
@@ -2946,7 +2949,11 @@ void player_t::combat_begin()
     for ( size_t i = 0; i < precombat_action_list.size(); i++ )
     {
       if ( precombat_action_list[ i ] -> ready() )
-        precombat_action_list[ i ] -> execute();
+      {
+        action_t* action = precombat_action_list[ i ];
+        action -> execute();
+        sequence_add( action, action -> target, sim -> current_time );
+      }
     }
   }
 

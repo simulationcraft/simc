@@ -4010,6 +4010,7 @@ struct player_collected_data_t
     action_sequence_data_t( const action_t* a, const player_t* t, const timespan_t& ts, const player_t* p );
   };
   auto_dispose< std::vector<action_sequence_data_t*> > action_sequence;
+  auto_dispose< std::vector<action_sequence_data_t*> > action_sequence_precombat;
 
   // Buffed snapshot_stats (for reporting)
   struct buffed_stats_t
