@@ -1268,9 +1268,10 @@ struct primal_elemental_t : public pet_t
   };
 
   const spell_data_t* command;
+  bool gains_damage;
 
   primal_elemental_t( shaman_t* owner, const std::string& name, bool guardian = false ) :
-    pet_t( owner -> sim, owner, name, guardian )
+    pet_t( owner -> sim, owner, name, guardian ), gains_damage( true )
   {
     stamina_per_owner = 1.0;
   }
@@ -1300,7 +1301,8 @@ struct primal_elemental_t : public pet_t
   {
     double m = pet_t::composite_attack_power_multiplier();
 
-    m *= 1.0 + o() -> talent.primal_elementalist -> effectN( 1 ).percent();
+    if ( gains_damage )
+      m *= 1.0 + o() -> talent.primal_elementalist -> effectN( 1 ).percent();
 
     return m;
   }
@@ -1309,7 +1311,8 @@ struct primal_elemental_t : public pet_t
   {
     double m = pet_t::composite_spell_power_multiplier();
 
-    m *= 1.0 + o() -> talent.primal_elementalist -> effectN( 1 ).percent();
+    if ( gains_damage )
+      m *= 1.0 + o() -> talent.primal_elementalist -> effectN( 1 ).percent();
 
     return m;
   }
@@ -1486,7 +1489,9 @@ struct storm_elemental_t : public primal_elemental_t
 
   storm_elemental_t( shaman_t* owner, bool guardian ) :
     primal_elemental_t( owner, ( ! guardian ) ? "primal_storm_elemental" : "greater_storm_elemental", guardian )
-  { }
+  {
+    gains_damage = false;
+  }
 
   void init_base_stats()
   {
