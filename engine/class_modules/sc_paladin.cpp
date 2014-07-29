@@ -6236,7 +6236,7 @@ void paladin_t::assess_damage( school_e school,
     
     trigger_holy_shield();
 
-    if ( rppm_defender_of_the_light.trigger() )
+    if ( sets.set( SET_T17_4PC_TANK ) -> ok() && rppm_defender_of_the_light.trigger() )
       buffs.defender_of_the_light -> trigger();
   }
 
