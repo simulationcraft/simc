@@ -7345,8 +7345,8 @@ expr_t* player_t::create_expression( action_t* a,
     {
       struct active_dot_expr_t : public expr_t
       {
-        unsigned id;
         const player_t& player;
+        unsigned id;
 
         active_dot_expr_t( const player_t& p, unsigned action_id ) :
           expr_t( "active_dot_expr" ), player( p ), id( action_id )

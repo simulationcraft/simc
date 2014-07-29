@@ -109,7 +109,6 @@ struct shaman_t : public player_t
 public:
   // Misc
   timespan_t ls_reset;
-  int        active_flame_shocks;
   bool       lava_surge_during_lvb;
   std::vector<counter_t*> counters;
 
@@ -376,7 +375,7 @@ public:
 
   shaman_t( sim_t* sim, const std::string& name, race_e r = RACE_TAUREN ) :
     player_t( sim, SHAMAN, name, r ),
-    ls_reset( timespan_t::zero() ), active_flame_shocks( 0 ), lava_surge_during_lvb( false ),
+    ls_reset( timespan_t::zero() ), lava_surge_during_lvb( false ),
     uf_expiration_delay( timespan_t::from_seconds( 0.3 ) ), uf_expiration_delay_stddev( timespan_t::from_seconds( 0.05 ) ),
     active_lightning_charge( nullptr ),
     action_ancestral_awakening( nullptr ),
@@ -2309,7 +2308,6 @@ struct improved_lava_lash_t : public shaman_spell_t
     dot_t* dot = td( target ) -> dot.flame_shock;
     if ( dot -> is_ticking() )
     {
-      p() -> active_flame_shocks++;
       dot -> copy( state -> target, DOT_COPY_CLONE );
       // Improved Lava Lash spreads base flame shocks, so null out any
       // persistent modifir that may have been copied
@@ -3359,9 +3357,6 @@ struct flame_shock_t : public shaman_spell_t
 
   void execute()
   {
-    if ( ! td( target ) -> dot.flame_shock -> is_ticking() )
-      p() -> active_flame_shocks++;
-
     if ( p() -> buff.unleash_flame -> check() )
       p() -> proc.uf_flame_shock -> occur();
 
@@ -3393,13 +3388,6 @@ struct flame_shock_t : public shaman_spell_t
       p() -> cooldown.lava_lash -> reset( true );
 
     p() -> trigger_tier16_4pc_melee( d -> state );
-  }
-
-  void last_tick( dot_t* d )
-  {
-    shaman_spell_t::last_tick( d );
-
-    p() -> active_flame_shocks--;
   }
 };
 
@@ -4488,11 +4476,6 @@ expr_t* shaman_t::create_expression( action_t* a, const std::string& name )
     }
   }
 
-  if ( util::str_compare_ci( name, "active_flame_shock" ) )
-  {
-    return make_ref_expr( name, active_flame_shocks );
-  }
-
   return player_t::create_expression( a, name );
 }
 
@@ -5235,8 +5218,8 @@ void shaman_t::init_action_list()
     single -> add_action( this, spec.maelstrom_weapon, "lightning_bolt", "if=buff.maelstrom_weapon.react>=1&!buff.ascendance.up" );
 
     // AoE
-    aoe -> add_action( this, "Fire Nova", "if=active_flame_shock>=3" );
-    aoe -> add_action( "wait,sec=cooldown.fire_nova.remains,if=active_flame_shock>=4&cooldown.fire_nova.remains<=action.fire_nova.gcd" );
+    aoe -> add_action( this, "Fire Nova", "if=active_dot.flame_shock>=3" );
+    aoe -> add_action( "wait,sec=cooldown.fire_nova.remains,if=active_dot.flame_shock>=4&cooldown.fire_nova.remains<=action.fire_nova.gcd" );
     aoe -> add_action( this, "Magma Totem", "if=!totem.fire.active" );
     aoe -> add_action( this, "Lava Lash", "if=dot.flame_shock.ticking" );
     aoe -> add_talent( this, "Elemental Blast", "if=buff.maelstrom_weapon.react>=1" );
@@ -5245,14 +5228,14 @@ void shaman_t::init_action_list()
     aoe -> add_action( this, "Flame Shock", "cycle_targets=1,if=!ticking" );
     aoe -> add_action( this, spec.maelstrom_weapon, "lightning_bolt", "if=(!glyph.chain_lightning.enabled|active_enemies<=3)&buff.maelstrom_weapon.react=5" );
     aoe -> add_action( this, find_class_spell( "Ascendance" ), "windstrike" );
-    aoe -> add_action( this, "Fire Nova", "if=active_flame_shock>=2" );
+    aoe -> add_action( this, "Fire Nova", "if=active_dot.flame_shock>=2" );
     aoe -> add_action( this, spec.maelstrom_weapon, "chain_lightning", "if=active_enemies>=2&buff.maelstrom_weapon.react>=1" );
     aoe -> add_action( this, "Stormstrike" );
     aoe -> add_action( this, "Primal Strike" );
     aoe -> add_action( this, "Frost Shock", "if=active_enemies<4" );
     aoe -> add_action( this, spec.maelstrom_weapon, "chain_lightning", "if=glyph.chain_lightning.enabled&active_enemies>=4&buff.maelstrom_weapon.react>=1" );
     aoe -> add_action( this, spec.maelstrom_weapon, "lightning_bolt", "if=(!glyph.chain_lightning.enabled|active_enemies<=3)&buff.maelstrom_weapon.react>=1" );
-    aoe -> add_action( this, "Fire Nova", "if=active_flame_shock>=1" );
+    aoe -> add_action( this, "Fire Nova", "if=active_dot.flame_shock>=1" );
   }
   else if ( specialization() == SHAMAN_ELEMENTAL && ( primary_role() == ROLE_SPELL || primary_role() == ROLE_DPS ) )
   {
@@ -5650,7 +5633,6 @@ void shaman_t::reset()
   player_t::reset();
 
   ls_reset = timespan_t::zero();
-  active_flame_shocks = 0;
   lava_surge_during_lvb = false;
   rppm_echo_of_the_elements.reset();
   for ( size_t i = 0, end = counters.size(); i < end; i++ )
