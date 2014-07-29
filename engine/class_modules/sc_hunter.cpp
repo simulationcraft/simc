@@ -682,7 +682,7 @@ public:
     {
     case PET_CARRION_BIRD: return "demoralizing_screech";
     case PET_CAT:          return "roar_of_courage";
-    case PET_CORE_HOUND:   return "";
+    case PET_CORE_HOUND:   return "double_bite";
     case PET_DEVILSAUR:    return "furious_howl/monstrous_bite";
     case PET_HYENA:        return "cackling_howl";
     case PET_MOTH:         return "";
@@ -692,27 +692,27 @@ public:
     case PET_WASP:         return "";
     case PET_WOLF:         return "furious_howl";
     case PET_BEAR:         return "";
-    case PET_BOAR:         return "";
+    case PET_BOAR:         return "indomitable";
     case PET_CRAB:         return "";
     case PET_CROCOLISK:    return "";
     case PET_GORILLA:      return "";
-    case PET_RHINO:        return "";
+    case PET_RHINO:        return "wild_strength";
     case PET_SCORPID:      return "";
     case PET_SHALE_SPIDER: return "";
     case PET_TURTLE:       return "";
     case PET_WARP_STALKER: return "";
     case PET_WORM:         return "";
     case PET_BAT:          return "";
-    case PET_BIRD_OF_PREY: return "";
+    case PET_BIRD_OF_PREY: return "tenacity";
     case PET_CHIMERA:      return "froststorm_breath";
-    case PET_DRAGONHAWK:   return "lightning_breath";
+    case PET_DRAGONHAWK:   return "spry_attacks";
     case PET_NETHER_RAY:   return "";
-    case PET_RAVAGER:      return "ravage";
+    case PET_RAVAGER:      return "chitinous_armor";
     case PET_SERPENT:      return "corrosive_spit";
     case PET_SILITHID:     return "qiraji_fortitude";
     case PET_SPIDER:       return "";
     case PET_SPOREBAT:     return "";
-    case PET_WIND_SERPENT: return "lightning_breath";
+    case PET_WIND_SERPENT: return "breath_of_the_winds";
     case PET_FOX:          return "tailspin";
     default: break;
     }
