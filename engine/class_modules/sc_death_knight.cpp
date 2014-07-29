@@ -5843,7 +5843,7 @@ void runeforge::razorice_attack( special_effect_t& effect,
       death_knight_melee_attack_t( "razorice", player , player -> find_spell( 50401 ) )
     {
       school      = SCHOOL_FROST;
-      may_miss    = may_crit = callbacks = false;
+      may_miss    = callbacks = false;
       background  = proc = true;
 
       weapon_multiplier += player -> perk.improved_runeforges -> effectN( 2 ).percent();
