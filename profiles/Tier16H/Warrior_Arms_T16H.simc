@@ -30,11 +30,11 @@ actions+=/auto_attack
 actions+=/potion,name=draenic_strength,if=(target.health.pct<20&buff.recklessness.up)|target.time_to_die<=25
 # This incredibly long line (Due to differing talent choices) says 'Use recklessness on cooldown with colossus smash, unless the boss will die before the ability is usable again, and then use it with execute.'
 actions+=/recklessness,if=!talent.bloodbath.enabled&((cooldown.colossus_smash.remains<2|debuff.colossus_smash.remains>=5)&(target.time_to_die>192|target.health.pct<20))|buff.bloodbath.up&(target.time_to_die>192|target.health.pct<20)|target.time_to_die<=12
-actions+=/avatar,if=talent.avatar.enabled&((buff.recklessness.up|target.time_to_die<=25))
+actions+=/avatar,if=(buff.recklessness.up|target.time_to_die<=25)
 actions+=/blood_fury,if=buff.bloodbath.up|(!talent.bloodbath.enabled&debuff.colossus_smash.up)|buff.recklessness.up
 actions+=/berserking,if=buff.bloodbath.up|(!talent.bloodbath.enabled&debuff.colossus_smash.up)|buff.recklessness.up
 actions+=/arcane_torrent,if=buff.bloodbath.up|(!talent.bloodbath.enabled&debuff.colossus_smash.up)|buff.recklessness.up
-actions+=/bloodbath,if=talent.bloodbath.enabled&((debuff.colossus_smash.remains>0.1|cooldown.colossus_smash.remains<5|target.time_to_die<=20))
+actions+=/bloodbath,if=(debuff.colossus_smash.remains>0.1|cooldown.colossus_smash.remains<5|target.time_to_die<=20)
 actions+=/heroic_leap,if=debuff.colossus_smash.up
 actions+=/run_action_list,name=aoe,if=active_enemies>=2
 actions+=/run_action_list,name=single_target,if=active_enemies<2
@@ -42,18 +42,18 @@ actions+=/run_action_list,name=single_target,if=active_enemies<2
 actions.single_target=rend,if=dot.rend.remains<3
 actions.single_target+=/mortal_strike
 actions.single_target+=/heroic_charge,if=rage<70
-actions.single_target+=/ravager,if=talent.ravager.enabled&cooldown.colossus_smash.remains<3
+actions.single_target+=/ravager,if=cooldown.colossus_smash.remains<3
 actions.single_target+=/colossus_smash
-actions.single_target+=/storm_bolt,if=talent.storm_bolt.enabled&(cooldown.colossus_smash.remains>4|debuff.colossus_smash.up)
-actions.single_target+=/dragon_roar,if=talent.dragon_roar.enabled
+actions.single_target+=/storm_bolt,if=cooldown.colossus_smash.remains>4|debuff.colossus_smash.up
+actions.single_target+=/dragon_roar
 actions.single_target+=/execute,if=(debuff.colossus_smash.down&rage>70)|(rage>40&debuff.colossus_smash.up)
-actions.single_target+=/slam,if=talent.slam.enabled&((debuff.colossus_smash.up|rage>80)&target.health.pct>20)
+actions.single_target+=/slam,if=(debuff.colossus_smash.up|rage>80)&target.health.pct>20
 actions.single_target+=/whirlwind,if=(rage>70|debuff.colossus_smash.up)&target.health.pct>20&buff.sudden_death.down&!talent.slam.enabled
 
 actions.aoe=sweeping_strikes
-actions.aoe+=/ravager,if=talent.ravager.enabled
-actions.aoe+=/bladestorm,if=talent.bladestorm.enabled
-actions.aoe+=/dragon_roar,if=talent.dragon_roar.enabled
+actions.aoe+=/ravager
+actions.aoe+=/bladestorm
+actions.aoe+=/dragon_roar
 actions.aoe+=/colossus_smash
 actions.aoe+=/mortal_strike,if=active_enemies<6
 actions.aoe+=/execute,if=buff.sudden_death.up|active_enemies<6

@@ -23,7 +23,7 @@ actions.precombat+=/apply_poison,lethal=deadly,nonlethal=crippling
 actions.precombat+=/snapshot_stats
 actions.precombat+=/potion,name=virmens_bite
 actions.precombat+=/stealth
-actions.precombat+=/marked_for_death,if=talent.marked_for_death.enabled
+actions.precombat+=/marked_for_death
 actions.precombat+=/slice_and_dice,if=talent.marked_for_death.enabled
 
 # Executed every time the actor is available.
@@ -36,12 +36,12 @@ actions+=/blood_fury
 actions+=/berserking
 actions+=/arcane_torrent,if=energy<60
 actions+=/vanish,if=time>10&!buff.stealth.up
-actions+=/shadow_reflection,if=talent.shadow_reflection.enabled
+actions+=/shadow_reflection
 actions+=/mutilate,if=buff.stealth.up
 actions+=/slice_and_dice,if=buff.slice_and_dice.remains<2
 actions+=/dispatch,if=dot.rupture.ticks_remain<2&energy>90
 actions+=/mutilate,if=dot.rupture.ticks_remain<2&energy>90
-actions+=/marked_for_death,if=talent.marked_for_death.enabled&combo_points=0
+actions+=/marked_for_death,if=combo_points=0
 actions+=/rupture,if=ticks_remain<2|(combo_points=5&ticks_remain<3)
 actions+=/fan_of_knives,if=combo_points<5&active_enemies>=4
 actions+=/vendetta

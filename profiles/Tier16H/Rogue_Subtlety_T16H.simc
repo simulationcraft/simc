@@ -40,8 +40,8 @@ actions+=/pool_resource,for_next=1,extra_amount=75
 actions+=/shadow_dance,if=energy>=75&buff.stealth.down&buff.vanish.down&debuff.find_weakness.down
 actions+=/pool_resource,for_next=1,extra_amount=45
 actions+=/vanish,if=energy>=45&energy<=75&combo_points<=3&buff.shadow_dance.down&buff.master_of_subtlety.down&debuff.find_weakness.down
-actions+=/marked_for_death,if=talent.marked_for_death.enabled&combo_points=0
-actions+=/shadow_reflection,if=talent.shadow_reflection.enabled
+actions+=/marked_for_death,if=combo_points=0
+actions+=/shadow_reflection
 actions+=/run_action_list,name=generator,if=talent.anticipation.enabled&anticipation_charges<4&buff.slice_and_dice.up&dot.rupture.remains>2&(buff.slice_and_dice.remains<6|dot.rupture.remains<4)
 actions+=/run_action_list,name=finisher,if=combo_points=5
 actions+=/run_action_list,name=generator,if=combo_points<4|energy>80|talent.anticipation.enabled
@@ -52,7 +52,7 @@ actions+=/run_action_list,name=pool
 actions.generator=run_action_list,name=pool,if=buff.master_of_subtlety.down&buff.shadow_dance.down&debuff.find_weakness.down&(energy+cooldown.shadow_dance.remains*energy.regen<80|energy+cooldown.vanish.remains*energy.regen<60)
 actions.generator+=/fan_of_knives,if=active_enemies>=4
 actions.generator+=/hemorrhage,if=remains<3|position_front
-actions.generator+=/shuriken_toss,if=talent.shuriken_toss.enabled&(energy<65&energy.regen<16)
+actions.generator+=/shuriken_toss,if=energy<65&energy.regen<16
 actions.generator+=/backstab
 actions.generator+=/run_action_list,name=pool
 
@@ -74,7 +74,7 @@ shoulders=spaulders_of_the_barbed_assassin,id=99350,upgrade=2,gems=8agi_8agi_6ag
 back=fenyu_fury_of_xuen,id=102248,upgrade=2,gems=8agi_3agi,enchant=9crit
 chest=tunic_of_the_barbed_assassin,id=99356,upgrade=2,gems=8agi_8agi_8agi_9agi,enchant=4all
 wrists=bombers_blackened_wristwatch,id=105616,upgrade=2,gems=8agi,enchant=9agi
-hands=gloves_of_the_barbed_assassin,id=99355,upgrade=2,gems=8agi_8agi__8agi_6agi,enchant=9haste,addon=synapse_springs_2
+hands=gloves_of_the_barbed_assassin,id=99355,upgrade=2,gems=8agi_8agi__8agi_6agi,enchant=9haste
 waist=cord_of_black_dreams,id=105635,upgrade=2,gems=8agi_4agi_8haste_8agi_6agi
 legs=rious_vigilant_leggings,id=105529,upgrade=2,gems=4agi_8crit_4agi_8crit_6agi,enchant=14agi_8crit
 feet=stonetoes_tormented_treads,id=105431,upgrade=2,gems=8agi_3mastery,enchant=7agi

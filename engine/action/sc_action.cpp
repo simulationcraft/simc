@@ -215,36 +215,7 @@ action_priority_t* action_priority_list_t::add_talent( const player_t* p,
                                                        const std::string& comment )
 {
   const spell_data_t* s = p -> find_talent_spell( name, "", SPEC_NONE, false, false );
-  std::string talent_check_str = "talent." + dbc::get_token( s -> id() ) + ".enabled";
-  bool found_if = false;
-  bool found_talent_check = false;
-
-  if ( util::str_in_str_ci( action_options, "if=" ) )
-    found_if = true;
-
-  if ( util::str_in_str_ci( action_options, talent_check_str ) )
-    found_talent_check = true;
-
-  std::string opts;
-  if ( ! found_if && ! found_talent_check )
-    opts = "if=" + talent_check_str;
-  else if ( found_if && ! found_talent_check )
-  {
-    // Naively parenthesis the existing expressions if there are logical
-    // operators in it
-    bool has_logical_operators = util::str_in_str_ci( action_options, "&" ) ||
-                                 util::str_in_str_ci( action_options, "|" );
-
-    size_t if_pos = action_options.find( "if=" ) + 3;
-    opts += action_options.substr( 0, if_pos ) + talent_check_str + "&";
-    if ( has_logical_operators ) opts += "(";
-    opts += action_options.substr( if_pos );
-    if ( has_logical_operators ) opts += ")";
-  }
-  else
-    opts = action_options;
-
-  return add_action( p, s, dbc::get_token( s -> id() ), opts, comment );
+  return add_action( p, s, dbc::get_token( s -> id() ), action_options, comment );
 }
 
 // action_t::action_t =======================================================

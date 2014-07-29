@@ -44,7 +44,7 @@ wrists=bombers_blackened_wristwatch,id=105616,gems=8agi,enchant=9agi,reforge=mas
 chest=tunic_of_the_barbed_assassin,id=99356,gems=8agi_8agi_8agi_9agi,enchant=4all,reforge=mastery_exp,upgrade=2
 main_hand=enchanted_shaotien_saber,id=105581,gems=8agi_3agi,enchant=dancing_steel,upgrade=2
 off_hand=hvitserks_formidable_shanker,id=105601,gems=8agi_3agi,enchant=dancing_steel,upgrade=2
-hands=gloves_of_the_barbed_assassin,id=99355,gems=8agi_8agi_8agi_6agi,enchant=9haste,reforge=mastery_crit,upgrade=2,addon=synapse_springs_2
+hands=gloves_of_the_barbed_assassin,id=99355,gems=8agi_8agi_8agi_6agi,enchant=9haste,reforge=mastery_crit,upgrade=2
 waist=damrons_belt_of_darkness,id=105528,gems=8agi_4agi_8crit_8agi_6agi,upgrade=2
 head=helmet_of_the_barbed_assassin,id=99348,gems=capacitive_primal_8agi_9agi,reforge=mastery_crit,upgrade=2
 back=fenyu_fury_of_xuen,id=102248,gems=8agi_3agi,enchant=9crit,reforge=mastery_exp,upgrade=2
@@ -74,7 +74,7 @@ main_hand=hvitserks_formidable_shanker,id=105601,gems=8agi_3agi,enchant=dancing_
 off_hand=hvitserks_formidable_shanker,id=105601,gems=8agi_3agi,enchant=dancing_steel,reforge=mastery_exp,upgrade=2
 waist=cord_of_black_dreams,id=105635,gems=8agi_4agi_8haste_8agi_6agi,reforge=crit_hit,upgrade=2
 head=helmet_of_the_barbed_assassin,id=99348,gems=capacitive_primal_8agi_9agi,reforge=mastery_crit,upgrade=2
-hands=gloves_of_the_barbed_assassin,id=99355,gems=8agi_8agi__8agi_6agi,enchant=9haste,reforge=mastery_crit,upgrade=2,addon=synapse_springs_2
+hands=gloves_of_the_barbed_assassin,id=99355,gems=8agi_8agi__8agi_6agi,enchant=9haste,reforge=mastery_crit,upgrade=2
 back=fenyu_fury_of_xuen,id=102248,gems=8agi_3agi,enchant=9crit,reforge=mastery_exp,upgrade=2
 finger1=kilruks_band_of_ascendancy,id=105624,gems=8agi_3crit,reforge=mastery_hit,upgrade=2
 finger2=swift_serpent_signet,id=105483,gems=4agi_8haste_3crit,reforge=mastery_haste,upgrade=2

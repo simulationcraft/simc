@@ -32,17 +32,17 @@ actions+=/arcane_torrent
 actions+=/potion,name=draenic_agility,if=buff.rapid_fire.up
 actions+=/run_action_list,name=single_target
 
-actions.single_target=powershot,if=talent.powershot.enabled
-actions.single_target+=/fervor,if=talent.fervor.enabled&focus<=50
+actions.single_target=powershot
+actions.single_target+=/fervor,if=focus<=50
 actions.single_target+=/rapid_fire,if=!buff.rapid_fire.up
-actions.single_target+=/stampede,if=talent.stampede.enabled&((trinket.stat.agility.up|target.time_to_die<=20|(trinket.stacking_stat.agility.stack>10&trinket.stat.agility.cooldown_remains<=3)))
-actions.single_target+=/a_murder_of_crows,if=talent.a_murder_of_crows.enabled
-actions.single_target+=/dire_beast,if=talent.dire_beast.enabled
+actions.single_target+=/stampede,if=(trinket.stat.agility.up|target.time_to_die<=20|(trinket.stacking_stat.agility.stack>10&trinket.stat.agility.cooldown_remains<=3))
+actions.single_target+=/a_murder_of_crows
+actions.single_target+=/dire_beast
 actions.single_target+=/run_action_list,name=careful_aim,if=target.health.pct>80|buff.rapid_fire.up
-actions.single_target+=/glaive_toss,if=talent.glaive_toss.enabled
-actions.single_target+=/barrage,if=talent.barrage.enabled
+actions.single_target+=/glaive_toss
+actions.single_target+=/barrage
 actions.single_target+=/chimaera_shot
-actions.single_target+=/focusing_shot,if=talent.focusing_shot.enabled&focus<55
+actions.single_target+=/focusing_shot,if=focus<55
 actions.single_target+=/kill_shot
 actions.single_target+=/multishot,if=active_enemies>=4
 actions.single_target+=/aimed_shot
@@ -50,8 +50,8 @@ actions.single_target+=/steady_shot
 
 actions.careful_aim=chimaera_shot
 actions.careful_aim+=/aimed_shot
-actions.careful_aim+=/glaive_toss,if=talent.glaive_toss.enabled
-actions.careful_aim+=/focusing_shot,if=talent.focusing_shot.enabled&focus<50
+actions.careful_aim+=/glaive_toss
+actions.careful_aim+=/focusing_shot,if=focus<50
 actions.careful_aim+=/steady_shot
 
 head=primal_gladiators_ringmail_helm,id=111195
