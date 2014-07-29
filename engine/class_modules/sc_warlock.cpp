@@ -3861,6 +3861,7 @@ struct cataclysm_t : public warlock_spell_t
 {
     agony_t* agony;
     corruption_t* corruption;
+    doom_t* doom;
     immolate_t* immolate;
     
     cataclysm_t( warlock_t* p ) :
@@ -3900,8 +3901,16 @@ struct cataclysm_t : public warlock_spell_t
                     agony -> execute();
                     break;
                 case WARLOCK_DEMONOLOGY:
-                    corruption -> target = s -> target;
-                    corruption -> execute();
+                    if ( p() -> buffs.metamorphosis -> check() )
+                    {
+                        doom -> target = s -> target;
+                        doom -> execute();
+                    }
+                    else
+                    {
+                        corruption -> target = s -> target;
+                        corruption -> execute();
+                    }
                     break;
                 case WARLOCK_DESTRUCTION:
                     immolate -> target = s -> target;
