@@ -3960,9 +3960,10 @@ struct player_collected_data_t
     void update_divisor( timespan_t sim_length )
     {
       int max_index = (int) ( sim_length.total_millis() / 1000 / get_bin_size() + 1 );
+      assert( max_index >= 0 );
 
       // adjust the length if neccessary
-      if ( max_index > divisor_timeline.size() )
+      if ( static_cast<size_t>( max_index ) > divisor_timeline.size() )
         divisor_timeline.resize( max_index, 0 );
 
       for ( int i = 0; i < max_index; i++ )
@@ -5013,6 +5014,61 @@ struct player_t : public actor_t
   virtual movement_direction_e movement_direction() const
   { return current.movement_direction; }
 
+  std::vector<std::string> action_map;
+
+  size_t get_action_id( const std::string& name )
+  {
+    for ( size_t i = 0; i < action_map.size(); i++ )
+    {
+      if ( util::str_compare_ci( name, action_map[ i ] ) )
+        return i;
+    }
+
+    action_map.push_back( name );
+    return action_map.size() - 1;
+  }
+
+  int find_action_id( const std::string& name )
+  {
+    for ( size_t i = 0; i < action_map.size(); i++ )
+    {
+      if ( util::str_compare_ci( name, action_map[ i ] ) )
+        return i;
+    }
+
+    return -1;
+  }
+private:
+  std::vector<unsigned> active_dots;
+public:
+  void add_active_dot( unsigned action_id )
+  {
+    if ( active_dots.size() < action_id + 1 )
+      active_dots.resize( action_id + 1 );
+
+    active_dots[ action_id ]++;
+    if ( sim -> debug )
+      sim -> out_debug.printf( "%s Increasing %s dot count to %u", name(), action_map[ action_id ].c_str(), active_dots[ action_id ] );
+  }
+
+  void remove_active_dot( unsigned action_id )
+  {
+    assert( active_dots.size() > action_id );
+    assert( active_dots[ action_id ] > 0 );
+
+    active_dots[ action_id ]--;
+    if ( sim -> debug )
+      sim -> out_debug.printf( "%s Decreasing %s dot count to %u", name(), action_map[ action_id ].c_str(), active_dots[ action_id ] );
+  }
+
+  unsigned get_active_dots( unsigned action_id ) const
+  {
+    if ( active_dots.size() <= action_id )
+      return 0;
+
+    return active_dots[ action_id ];
+  }
+
 private:
   // Update movement data, and also control the buff
   void do_update_movement( double yards )
@@ -5446,6 +5502,7 @@ struct action_t : public noncopyable
   school_e school;
 
   uint32_t id;
+  unsigned internal_id;
   resource_e resource_current;
   int aoe, pre_combat, may_multistrike;
   bool dual; // true if this action should not be counted for executes

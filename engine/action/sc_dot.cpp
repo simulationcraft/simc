@@ -181,6 +181,9 @@ void dot_t::refresh_duration( uint32_t state_flags )
  */
 void dot_t::reset()
 {
+  if ( ticking )
+    source -> remove_active_dot( current_action -> internal_id );
+
   core_event_t::cancel( tick_event );
   core_event_t::cancel( end_event );
   time_to_tick = timespan_t::zero();
@@ -252,6 +255,8 @@ void dot_t::copy( player_t* other_target, dot_copy_e copy_type )
       tick_time = other_dot -> current_action -> tick_time( other_dot -> state -> haste );
 
     other_dot -> tick_event = new ( sim ) dot_t::dot_tick_event_t( other_dot, tick_time );
+
+    source -> add_active_dot( current_action -> internal_id );
   }
 }
 
@@ -629,6 +634,8 @@ void dot_t::start( timespan_t duration )
   check_tick_zero();
 
   schedule_tick();
+
+  source -> add_active_dot( current_action -> internal_id );
 
   // Only schedule a tick if thre's enough time to tick at least once.
   // Otherwise, next tick is the last tick, and the end event will handle it

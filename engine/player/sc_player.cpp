@@ -3397,6 +3397,13 @@ void player_t::reset()
 
   for( size_t i = 0, end = variables.size(); i < end; i++ )
     variables[ i ].reset();
+
+#ifndef NDEBUG
+  for ( size_t i = 0, end = active_dots.size(); i < end; i++ )
+  {
+    assert( active_dots[ i ] == 0 );
+  }
+#endif
 }
 
 // player_t::trigger_ready ==================================================
@@ -7333,6 +7340,26 @@ expr_t* player_t::create_expression( action_t* a,
   {
     if ( splits[ 0 ] == "set_bonus" )
       return sets.create_expression( this, splits[ 1 ] );
+
+    if ( splits[ 0 ] == "active_dot" )
+    {
+      struct active_dot_expr_t : public expr_t
+      {
+        unsigned id;
+        const player_t& player;
+
+        active_dot_expr_t( const player_t& p, unsigned action_id ) :
+          expr_t( "active_dot_expr" ), player( p ), id( action_id )
+        { }
+
+        double evaluate()
+        { return player.get_active_dots( id ); }
+      };
+
+      int internal_id = find_action_id( splits[ 1 ] );
+      if ( internal_id > -1 )
+        return new active_dot_expr_t( *this, internal_id );
+    }
 
     if ( splits[ 0 ] == "movement" )
     {
