@@ -1918,7 +1918,7 @@ void print_html_player_action_priority_list( report::sc_html_stream& os, sim_t* 
       player_collected_data_t::action_sequence_data_t* data = p -> collected_data.action_sequence[ i ];
       
       os.printf( "<tr>\n"
-                 "<td>%d:%02d</td>\n"
+                 "<td class=\"right\">%d:%02d.%03d</td>\n"
                  "<td></td>\n"
                  "<td class=\"left\">%s</td>\n"
                  "<td></td>\n"
@@ -1926,6 +1926,7 @@ void print_html_player_action_priority_list( report::sc_html_stream& os, sim_t* 
                  "<td></td>\n",
                  ( int ) data -> time.total_minutes(),
                  ( int ) data -> time.total_seconds() % 60,
+                 ( int ) data -> time.total_millis() % 1000,
                  data -> action -> name(),
                  data -> target -> name()
                  );
