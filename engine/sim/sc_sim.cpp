@@ -846,19 +846,22 @@ struct resource_timeline_collect_event_t : public event_t
 
   virtual void execute()
   {
-    // Assumptions: Enemies do not have primary resource regeneration
-    for ( size_t i = 0, actors = sim().player_non_sleeping_list.size(); i < actors; i++ )
+    if ( sim().iterations == 1 || sim().current_iteration > 0 )
     {
-      player_t* p = sim().player_non_sleeping_list[ i ];
-      if ( p -> primary_resource() == RESOURCE_NONE ) continue;
+      // Assumptions: Enemies do not have primary resource regeneration
+      for ( size_t i = 0, actors = sim().player_non_sleeping_list.size(); i < actors; i++ )
+      {
+        player_t* p = sim().player_non_sleeping_list[ i ];
+        if ( p -> primary_resource() == RESOURCE_NONE ) continue;
 
-      p -> collect_resource_timeline_information();
-    }
-    // However, enemies do have health
-    for ( size_t i = 0, actors = sim().target_non_sleeping_list.size(); i < actors; i++ )
-    {
-      player_t* p = sim().target_non_sleeping_list[ i ];
-      p -> collect_resource_timeline_information();
+        p -> collect_resource_timeline_information();
+      }
+      // However, enemies do have health
+      for ( size_t i = 0, actors = sim().target_non_sleeping_list.size(); i < actors; i++ )
+      {
+        player_t* p = sim().target_non_sleeping_list[ i ];
+        p -> collect_resource_timeline_information();
+      }
     }
 
     new ( sim() ) resource_timeline_collect_event_t( sim() );
@@ -1211,7 +1214,7 @@ void sim_t::combat_end()
     b -> expire();
   }
 
-  //if ( iterations == 1 || current_iteration >= 1 )
+  if ( iterations == 1 || current_iteration >= 1 )
     datacollection_end();
 
   assert( active_enemies == 0 );

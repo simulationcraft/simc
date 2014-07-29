@@ -496,6 +496,8 @@ player_t::player_t( sim_t*             s,
   _mastery( spelleffect_data_t::nil() ),
   cache( this )
 {
+  special_effects.reserve( 8 ); // TODO: Fix this properly, really really ugly hack
+
   actor_index = sim -> actor_list.size();
   sim -> actor_list.push_back( this );
 

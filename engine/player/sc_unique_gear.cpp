@@ -410,7 +410,7 @@ void enchant::mark_of_warsong( special_effect_t& effect,
   effect.type = SPECIAL_EFFECT_EQUIP;
   effect.trigger_spell_id = 159675;
   effect.reverse = true;
-  
+
   new dbc_proc_callback_t( item, effect );
 }
 
@@ -420,15 +420,16 @@ void enchant::mark_of_the_thunderlord( special_effect_t& effect,
   struct mott_buff_t : public stat_buff_t
   {
     unsigned extensions;
+    unsigned max_extensions;
 
-    mott_buff_t( const item_t& item ) :
+    mott_buff_t( const item_t& item, unsigned max_ext ) :
       stat_buff_t( stat_buff_creator_t( item.player, "mark_of_the_thunderlord", item.player -> find_spell( 159234 ) ) ),
-      extensions( 0 )
+      extensions( 0 ), max_extensions( max_ext )
     { }
 
     void extend_duration( player_t* p, timespan_t extend_duration )
     {
-      if ( extensions < 3 )
+      if ( extensions < max_extensions )
       {
         stat_buff_t::extend_duration( p, extend_duration );
         extensions++;
@@ -445,30 +446,42 @@ void enchant::mark_of_the_thunderlord( special_effect_t& effect,
     { stat_buff_t::expire_override(); extensions = 0; }
   };
 
-  struct mott_callback_t : public dbc_proc_callback_t
+  // Max extensions is hardcoded, no spell data to fetch it
+  effect.custom_buff = new mott_buff_t( item, 3 );
+
+  // Setup another proc callback, that uses the same driver as the proc that
+  // triggers the buff, however it only procs on crits. This callback will
+  // extend the duration of the buff, only if the buff is up. The extension
+  // capping is handled in the buff itself.
+  special_effect_t effect2( &item );
+  effect2.name_str = effect.name() + "_crit_driver";
+  effect2.proc_chance_ = 1;
+  effect2.ppm_ = 0;
+  effect2.spell_id = effect.spell_id;
+  effect2.custom_buff = effect.custom_buff;
+  effect2.cooldown_ = timespan_t::zero();
+  effect2.proc_flags2_ = PF2_CRIT;
+
+  item.player -> special_effects.push_back( effect2 );
+
+  struct mott_crit_callback_t : public dbc_proc_callback_t
   {
-    mott_callback_t( const item_t& item, const special_effect_t& effect ) :
+    mott_crit_callback_t( const item_t& item, const special_effect_t& effect ) :
       dbc_proc_callback_t( item, effect )
     { }
 
-    void execute( action_t* a, action_state_t* state )
+    void execute( action_t*, action_state_t* )
     {
-      if ( proc_buff -> up() )
-      {
-        if ( state -> result == RESULT_CRIT )
-          proc_buff -> extend_duration( a -> player, timespan_t::from_seconds( 2 ) );
-      }
-      else
-        proc_buff -> trigger();
+      if ( proc_buff -> check() )
+        proc_buff -> extend_duration( listener, timespan_t::from_seconds( 2 ) );
     }
   };
 
-  effect.custom_buff = new mott_buff_t( item );
-
-  new mott_callback_t( item, effect );
+  new dbc_proc_callback_t( item, effect );
+  new mott_crit_callback_t( item, item.player -> special_effects.back() );
 }
 
-void enchant::mark_of_the_frostwolf( special_effect_t& effect, 
+void enchant::mark_of_the_frostwolf( special_effect_t& effect,
                                      const item_t& item )
 {
   // Custom callback to help the special effect initialization, we can use
