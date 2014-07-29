@@ -3879,6 +3879,10 @@ struct cataclysm_t : public warlock_spell_t
         corruption          -> background = true;
         corruption          -> dual       = true;
         corruption          -> base_costs[ RESOURCE_MANA ] = 0;
+        doom          -> background = true;
+        doom          -> dual       = true;
+        doom          -> base_costs[ RESOURCE_MANA ] = 0;
+        
         immolate -> background = true;
         immolate -> dual       = true;
         immolate -> base_costs[ RESOURCE_MANA ] = 0;
