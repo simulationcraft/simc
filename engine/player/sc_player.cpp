@@ -1708,7 +1708,7 @@ void player_t::init_scaling()
     scales_with[ STAT_HASTE_RATING              ] = true;
     scales_with[ STAT_MASTERY_RATING            ] = true;
     scales_with[ STAT_MULTISTRIKE_RATING        ] = true;
-    scales_with[ STAT_READINESS_RATING          ] = true;
+    scales_with[ STAT_READINESS_RATING          ] = false; //no longer going to happen, so no need to sim it by default
     scales_with[ STAT_VERSATILITY_RATING        ] = true;
 
     scales_with[ STAT_WEAPON_DPS   ] = attack;
