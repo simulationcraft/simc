@@ -17,6 +17,8 @@ namespace { // UNNAMED NAMESPACE
 
 namespace enchant
 {
+  void megawatt_filament( special_effect_t&, const item_t& );
+  void oglethorpes_missile_splitter( special_effect_t&, const item_t& );
   void mark_of_the_thunderlord( special_effect_t&, const item_t& );
   void mark_of_the_shattered_hand( special_effect_t&, const item_t& );
   void mark_of_the_frostwolf( special_effect_t&, const item_t& );
@@ -263,6 +265,8 @@ static const special_effect_db_item_t __special_effect_db[] = {
   { 159683, 0,                     enchant::mark_of_the_frostwolf },
   { 159684, 0,                        enchant::mark_of_shadowmoon },
   { 159685, 0,                         enchant::mark_of_blackrock },
+  { 156059, 0,                         enchant::megawatt_filament },
+  { 156052, 0,              enchant::oglethorpes_missile_splitter },
 
   /* Mists of Pandaria */
   { 118333, 0,                             enchant::dancing_steel },
@@ -324,6 +328,32 @@ static const special_effect_db_item_t __special_effect_db[] = {
 
 // Enchants ================================================================
 
+void enchant::megawatt_filament( special_effect_t& effect,
+                                 const item_t& item )
+{
+  // Custom callback to help the special effect initialization, we can use
+  // generic initialization for the enchant, but the game client data does not
+  // link driver to the procced spell, so we do it here.
+
+  effect.type = SPECIAL_EFFECT_EQUIP;
+  effect.trigger_spell_id = 109092; // TODO-WOD: points to mirror scope atm
+
+  new dbc_proc_callback_t( item, effect );
+}
+
+void enchant::oglethorpes_missile_splitter( special_effect_t& effect,
+                                            const item_t& item )
+{
+  // Custom callback to help the special effect initialization, we can use
+  // generic initialization for the enchant, but the game client data does not
+  // link driver to the procced spell, so we do it here.
+
+  effect.type = SPECIAL_EFFECT_EQUIP;
+  effect.trigger_spell_id = 109092; // TODO-WOD: points to mirror scope atm
+
+  new dbc_proc_callback_t( item, effect );
+}
+
 void enchant::mark_of_shadowmoon( special_effect_t& effect, 
                                   const item_t& item )
 {
@@ -384,17 +414,58 @@ void enchant::mark_of_warsong( special_effect_t& effect,
   new dbc_proc_callback_t( item, effect );
 }
 
-void enchant::mark_of_the_thunderlord( special_effect_t& effect, 
+void enchant::mark_of_the_thunderlord( special_effect_t& effect,
                                        const item_t& item )
 {
-  // Custom callback to help the special effect initialization, we can use
-  // generic initialization for the enchant, but the game client data does not
-  // link driver to the procced spell, so we do it here.
- 
-  effect.type = SPECIAL_EFFECT_EQUIP;
-  effect.trigger_spell_id = 159234;
-  
-  new dbc_proc_callback_t( item, effect );
+  struct mott_buff_t : public stat_buff_t
+  {
+    unsigned extensions;
+
+    mott_buff_t( const item_t& item ) :
+      stat_buff_t( stat_buff_creator_t( item.player, "mark_of_the_thunderlord", item.player -> find_spell( 159234 ) ) ),
+      extensions( 0 )
+    { }
+
+    void extend_duration( player_t* p, timespan_t extend_duration )
+    {
+      if ( extensions < 3 )
+      {
+        stat_buff_t::extend_duration( p, extend_duration );
+        extensions++;
+      }
+    }
+
+    void execute( int stacks, double value, timespan_t duration )
+    { stat_buff_t::execute( stacks, value, duration ); extensions = 0; }
+
+    void reset()
+    { stat_buff_t::reset(); extensions = 0; }
+
+    void expire_override()
+    { stat_buff_t::expire_override(); extensions = 0; }
+  };
+
+  struct mott_callback_t : public dbc_proc_callback_t
+  {
+    mott_callback_t( const item_t& item, const special_effect_t& effect ) :
+      dbc_proc_callback_t( item, effect )
+    { }
+
+    void execute( action_t* a, action_state_t* state )
+    {
+      if ( proc_buff -> up() )
+      {
+        if ( state -> result == RESULT_CRIT )
+          proc_buff -> extend_duration( a -> player, timespan_t::from_seconds( 2 ) );
+      }
+      else
+        proc_buff -> trigger();
+    }
+  };
+
+  effect.custom_buff = new mott_buff_t( item );
+
+  new mott_callback_t( item, effect );
 }
 
 void enchant::mark_of_the_frostwolf( special_effect_t& effect, 

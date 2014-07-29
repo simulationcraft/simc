@@ -8,12 +8,11 @@
 // ==========================================================================
 //
 // TODO:
-// Update Grimoire of Sacrifice
-// Remove old grimoire of sacrifice stuff
 // Grimoire of Synergy
-// Level 100 talents: cataclysm, demonic servitude
-// Whitelist SB:Haunt, fix stuff
-// Update action lists
+// Level 100 talents: demonic servitude
+// Update action lists.
+// Proper Stats for childs of cataclysm
+// In-depth testing of demonology and affliction is needed.
 // void consume_tick_resource( dot_t* d ) - find out why this causes drain
 // ---soul to ignite with hell fire.
 
@@ -102,6 +101,7 @@ public:
     const spell_data_t* grimoire_of_supremacy;
     const spell_data_t* grimoire_of_service;
     const spell_data_t* grimoire_of_sacrifice;
+    const spell_data_t* grimoire_of_synergy;
 
     const spell_data_t* archimondes_darkness;
     const spell_data_t* kiljaedens_cunning;
@@ -277,6 +277,7 @@ public:
     buff_t* soulburn;
     buff_t* havoc;
     buff_t* grimoire_of_sacrifice;
+    buff_t* grimoire_of_synergy;
     buff_t* demonic_calling;
     buff_t* fire_and_brimstone;
     buff_t* soul_swap;
@@ -1097,10 +1098,6 @@ double warlock_pet_t::composite_melee_crit() const
 {
   double mc = pet_t::composite_melee_crit();
 
-  // must go first in this function!
-  if ( o() -> specialization() == WARLOCK_DEMONOLOGY && o() -> talents.grimoire_of_sacrifice -> ok() )
-    mc *= 1.0 + o() -> talents.grimoire_of_sacrifice -> effectN( 2 ).percent();
-
   mc += o() -> perk.empowered_demons -> effectN( 1 ).percent();
 
   return mc;
@@ -1109,10 +1106,6 @@ double warlock_pet_t::composite_melee_crit() const
 double warlock_pet_t::composite_spell_crit() const
 {
   double sc = pet_t::composite_spell_crit();
-
-  // must go first in this function!
-  if ( o() -> specialization() == WARLOCK_DEMONOLOGY && o() -> talents.grimoire_of_sacrifice -> ok() )
-    sc *= 1.0 + o() -> talents.grimoire_of_sacrifice -> effectN( 2 ).percent();
 
   sc += o() -> perk.empowered_demons -> effectN( 1 ).percent();
   
@@ -2315,20 +2308,14 @@ struct shadowburn_t : public warlock_spell_t
     return c;
   }
 
-  virtual double composite_crit() const
-  {
-    double cc = warlock_spell_t::composite_crit();
-      cc += p() -> talents.grimoire_of_sacrifice -> effectN( 5 ).percent() * p() -> buffs.grimoire_of_sacrifice -> stack();
-
-    return cc;
-  }
-
   virtual double action_multiplier() const
   {
     double m = warlock_spell_t::action_multiplier();
 
     if ( p() -> mastery_spells.emberstorm -> ok() )
       m *= 1.0 + p() -> cache.mastery_value();
+
+    m *= 1.0 + p() -> talents.grimoire_of_sacrifice -> effectN( 4 ).percent() * p() -> buffs.grimoire_of_sacrifice -> stack();
 
     return m;
   }
@@ -2540,7 +2527,14 @@ struct haunt_t : public warlock_spell_t
     dot_duration += p -> perk.enhanced_haunt -> effectN( 1 ).time_value();
   }
 
+  virtual double action_multiplier() const
+  {
+    double m = warlock_spell_t::action_multiplier();
 
+    m *= 1.0 + p() -> talents.grimoire_of_sacrifice -> effectN( 4 ).percent() * p() -> buffs.grimoire_of_sacrifice -> stack();
+
+    return m;
+  }
 
   void try_to_trigger_soul_shard_refund()//t16_4pc_bonus
   {
@@ -2568,8 +2562,6 @@ struct haunt_t : public warlock_spell_t
     }
   }
 
-
-
   virtual void last_tick( dot_t* d )
   {
     warlock_spell_t::last_tick( d );
@@ -2577,17 +2569,16 @@ struct haunt_t : public warlock_spell_t
     try_to_trigger_soul_shard_refund();
   }
 
-    virtual void execute()
+  virtual void execute()
+  {
+    if ( p() -> talents.soulburn_haunt -> ok() && p() -> buffs.soulburn -> up() )
     {
-        if ( p() -> talents.soulburn_haunt -> ok() && p() -> buffs.soulburn -> up() )
-        {
-            p() -> buffs.soulburn -> expire();
-            p() -> buffs.haunting_spirits -> trigger();
-        }
- 
-            warlock_spell_t::execute();
-
+      p() -> buffs.soulburn -> expire();
+      p() -> buffs.haunting_spirits -> trigger();
     }
+ 
+    warlock_spell_t::execute();
+  }
 };
 
 
@@ -2763,16 +2754,6 @@ struct conflagrate_t : public warlock_spell_t
       p() -> buffs.backdraft -> trigger( 3 );
   }
 
-  virtual double composite_crit() const
-  {
-    double cc = warlock_spell_t::composite_crit();
-     
-    // GoSac FnB
-      cc += p() -> talents.grimoire_of_sacrifice -> effectN( 5 ).percent() * p() -> buffs.grimoire_of_sacrifice -> stack();
-
-    return cc;
-  }
-
   virtual double action_multiplier() const
   {
     double m = warlock_spell_t::action_multiplier();
@@ -2872,9 +2853,6 @@ struct incinerate_t : public warlock_spell_t
   {
     double cc = warlock_spell_t::composite_crit();
   
-      // GoSac FnB
-      cc += p() -> talents.grimoire_of_sacrifice -> effectN( 5 ).percent() * p() -> buffs.grimoire_of_sacrifice -> stack();
-
     if ( p() -> sets.has_set_bonus( SET_T16_2PC_CASTER ) && p() -> buffs.tier16_2pc_destructive_influence -> check() )
       cc += p() -> buffs.tier16_2pc_destructive_influence -> value();
 
@@ -2891,6 +2869,8 @@ struct incinerate_t : public warlock_spell_t
         m *= 1.0 + p() -> cache.mastery_value();
       m *= p() -> buffs.fire_and_brimstone -> data().effectN( 6 ).percent();
     }
+
+    m *= 1.0 + p() -> talents.grimoire_of_sacrifice -> effectN( 4 ).percent() * p() -> buffs.grimoire_of_sacrifice -> stack();
 
     m *= 1.0 + p() -> mastery_spells.emberstorm -> effectN( 3 ).percent() + p() -> composite_mastery() * p() -> mastery_spells.emberstorm -> effectN( 3 ).mastery_value();
 
@@ -3075,7 +3055,9 @@ struct chaos_bolt_t : public warlock_spell_t
     if ( p() -> mastery_spells.emberstorm -> ok() )
       m *= 1.0 + p() -> cache.mastery_value();
 
-    m *= 1.0 + p() -> cache.spell_crit(); //+ p() -> talents.grimoire_of_sacrifice -> effectN( 5 ).percent() * p() -> buffs.grimoire_of_sacrifice -> stack()
+    m *= 1.0 + p() -> cache.spell_crit();
+
+    m *= 1.0 + p() -> talents.grimoire_of_sacrifice -> effectN( 4 ).percent() * p() -> buffs.grimoire_of_sacrifice -> stack();
 
     return m;
   }
@@ -3335,21 +3317,14 @@ struct drain_soul_t : public warlock_spell_t
 
     m *= 1.0 + p() -> sets.set( SET_T15_4PC_CASTER ) -> effectN( 1 ).percent();
 
+    m *= 1.0 + p() -> talents.grimoire_of_sacrifice -> effectN( 4 ).percent() * p() -> buffs.grimoire_of_sacrifice -> stack();
+
 
     if ( p() ->  buffs.tier16_2pc_empowered_grasp -> up() )
     {
       m *= 1.0 + p() ->  buffs.tier16_2pc_empowered_grasp -> value();
     }
     return m;
-  }
-
-  virtual double composite_crit() const
-  {
-    double cc = warlock_spell_t::composite_crit();
-     
-      cc += p() -> talents.grimoire_of_sacrifice -> effectN( 3 ).percent() * p() -> buffs.grimoire_of_sacrifice -> stack();
-
-    return cc;
   }
 
   virtual void tick( dot_t* d )
@@ -3411,6 +3386,15 @@ struct soulburn_t : public warlock_spell_t
     p() -> buffs.soulburn -> trigger();
 
     warlock_spell_t::execute();
+  }
+
+  virtual bool ready()
+  {
+      bool r = warlock_spell_t::ready();
+      
+      if ( p() -> buffs.soulburn -> check() ) r = false;
+        
+      return r;
   }
 };
 
@@ -3872,6 +3856,69 @@ struct immolation_aura_t : public warlock_spell_t
     return r;
   }
 };
+  
+struct cataclysm_t : public warlock_spell_t
+{
+    agony_t* agony;
+    corruption_t* corruption;
+    immolate_t* immolate;
+    
+    cataclysm_t( warlock_t* p ) :
+    warlock_spell_t( "cataclysm", p, p -> find_spell( 152108 ) ),
+    agony( new agony_t( p ) ),
+    corruption( new corruption_t( p ) ),
+    immolate( new immolate_t( p ) )
+    {
+        aoe = -1;
+        
+        agony               -> background = true;
+        agony               -> dual       = true;
+        agony               -> base_costs[ RESOURCE_MANA ] = 0;
+        corruption          -> background = true;
+        corruption          -> dual       = true;
+        corruption          -> base_costs[ RESOURCE_MANA ] = 0;
+        immolate -> background = true;
+        immolate -> dual       = true;
+        immolate -> base_costs[ RESOURCE_MANA ] = 0;
+        
+        
+       
+        //TODO Add proper reporting of spawned dots via add_child, etc.
+        //stats = p -> get_stats( "immolate_fnb", this );
+        //stats -> add_child(p -> get_stats("agony_cata", this));
+    }
+    
+    virtual void impact( action_state_t* s )
+    {
+        warlock_spell_t::impact( s );
+        
+        if ( result_is_hit( s -> result ) )
+        {
+            switch (p() -> specialization() ) {
+                case WARLOCK_AFFLICTION:
+                    agony -> target = s -> target;
+                    agony -> execute();
+                    break;
+                case WARLOCK_DEMONOLOGY:
+                    corruption -> target = s -> target;
+                    corruption -> execute();
+                    break;
+                case WARLOCK_DESTRUCTION:
+                    immolate -> target = s -> target;
+                    immolate -> execute();
+                    break;
+                default:
+                    break;
+            }
+            
+        }
+    }
+    
+};
+    
+    
+    
+    
 // SOUL SWAP
 
 struct soul_swap_t : public warlock_spell_t
@@ -4319,11 +4366,8 @@ struct grimoire_of_sacrifice_t : public warlock_spell_t
     {
       warlock_spell_t::execute();
 
-      if ( p() -> specialization() != WARLOCK_DEMONOLOGY )
-      {
-        p() -> pets.active -> dismiss();
-        p() -> pets.active = 0;
-      }
+      p() -> pets.active -> dismiss();
+      p() -> pets.active = 0;
       p() -> buffs.grimoire_of_sacrifice -> trigger();
 
       // FIXME: Demonic rebirth should really trigger on any pet death, but this is the only pet death we care about for now
@@ -4467,11 +4511,6 @@ double warlock_t::composite_spell_crit() const
       sc += find_spell( 145164 ) -> effectN(1).percent();
   }
 
-
-  // This must go last in this function!
-  if ( specialization() == WARLOCK_DEMONOLOGY && talents.grimoire_of_sacrifice -> ok() )
-    sc *= 0.5;
-
   return sc;
 }
 
@@ -4496,13 +4535,8 @@ double warlock_t::composite_melee_crit() const
 {
   double mc = player_t::composite_melee_crit();
 
-  // This must go last in this function!
-  if ( specialization() == WARLOCK_DEMONOLOGY && talents.grimoire_of_sacrifice -> ok() )
-    mc *= 0.5;
-
   return mc;
 }
-
 
 double warlock_t::composite_mastery() const
 {
@@ -4644,6 +4678,7 @@ action_t* warlock_t::create_action( const std::string& action_name,
   else if ( action_name == "soulburn"              ) a = new              soulburn_t( this );
   else if ( action_name == "havoc"                 ) a = new                 havoc_t( this );
   else if ( action_name == "seed_of_corruption"    ) a = new    seed_of_corruption_t( this );
+  else if ( action_name == "cataclysm"             ) a = new             cataclysm_t( this );
   else if ( action_name == "rain_of_fire"          ) a = new          rain_of_fire_t( this );
   else if ( action_name == "hellfire"              ) a = new              hellfire_t( this );
   else if ( action_name == "immolation_aura"       ) a = new       immolation_aura_t( this );
@@ -4978,8 +5013,7 @@ void warlock_t::create_buffs()
   buffs.mannoroths_fury       = buff_creator_t( this, "mannoroths_fury", talents.mannoroths_fury );
     
   buffs.haunting_spirits      = buff_creator_t( this, "haunting_spirits", find_spell( 157698 ) )
-    .chance(1.0)
-    .duration( timespan_t::from_seconds( 10 ));
+    .chance(1.0);
     
   buffs.tier16_4pc_ember_fillup = buff_creator_t( this, "ember_master",   find_spell( 145164 ) )
                                 .cd( find_spell( 145165 ) -> duration() )

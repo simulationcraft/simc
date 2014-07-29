@@ -105,6 +105,18 @@ struct sc_timeline_t : public timeline_t
   void add( timespan_t current_time, double value )
   { base_t::add( static_cast<size_t>( current_time.total_millis() / 1000 / bin_size ), value ); }
 
+  // Add 'value' at corresponding time, replacing existing entry if new value is larger
+  void add_max( timespan_t current_time, double new_value )
+  {
+    size_t index = static_cast<size_t>( current_time.total_millis() / 1000 / bin_size );    
+    if ( data().size() == 0 || data().size() <= index )
+      add( current_time, new_value );
+    else if ( new_value > data().at( index ) )
+    {
+      add( current_time, new_value - data().at( index ) );
+    }  
+  }
+
   void build_derivative_timeline( sc_timeline_t& out ) const
   { base_t::build_sliding_average_timeline( out, 20 ); }
 };
@@ -690,7 +702,7 @@ enum stat_e
   STAT_WEAPON_OFFHAND_DPS, STAT_WEAPON_OFFHAND_SPEED,
   STAT_ARMOR, STAT_BONUS_ARMOR, STAT_RESILIENCE_RATING, STAT_DODGE_RATING, STAT_PARRY_RATING,
   STAT_BLOCK_RATING, STAT_PVP_POWER,
-  STAT_MULTISTRIKE_RATING, STAT_READINESS_RATING, STAT_VERSATILITY_RATING,
+  STAT_MULTISTRIKE_RATING, STAT_READINESS_RATING, STAT_VERSATILITY_RATING, STAT_LEECH_RATING,
   STAT_ALL,
   STAT_MAX
 };
@@ -727,7 +739,7 @@ enum cache_e
   CACHE_MASTERY,
   CACHE_DODGE, CACHE_PARRY, CACHE_BLOCK, CACHE_CRIT_BLOCK, CACHE_ARMOR, CACHE_BONUS_ARMOR,
   CACHE_CRIT_AVOIDANCE, CACHE_MISS,
-  CACHE_MULTISTRIKE, CACHE_READINESS,
+  CACHE_MULTISTRIKE, CACHE_READINESS, CACHE_LEECH,
   CACHE_PLAYER_DAMAGE_MULTIPLIER,
   CACHE_PLAYER_HEAL_MULTIPLIER,
   CACHE_MAX
@@ -766,6 +778,7 @@ inline cache_e cache_from_stat( stat_e st )
     case STAT_MULTISTRIKE_RATING: return CACHE_MULTISTRIKE;
     case STAT_READINESS_RATING: return CACHE_READINESS;
     case STAT_VERSATILITY_RATING: return CACHE_VERSATILITY;
+    case STAT_LEECH_RATING: return CACHE_LEECH;
     default: break;
   }
   return CACHE_NONE;
@@ -1501,6 +1514,7 @@ struct gear_stats_t
   double multistrike_rating;
   double readiness_rating;
   double versatility_rating;
+  double leech_rating;
 
   gear_stats_t() :
     attribute(), resource(),
@@ -1508,7 +1522,7 @@ struct gear_stats_t
     hit_rating( 0.0 ), hit_rating2( 0.0 ), crit_rating( 0.0 ), haste_rating( 0.0 ), weapon_dps( 0.0 ), weapon_speed( 0.0 ),
     weapon_offhand_dps( 0.0 ), weapon_offhand_speed( 0.0 ), armor( 0.0 ), bonus_armor( 0.0 ), dodge_rating( 0.0 ),
     parry_rating( 0.0 ), block_rating( 0.0 ), mastery_rating( 0.0 ), resilience_rating( 0.0 ), pvp_power( 0.0 ),
-    multistrike_rating( 0.0 ), readiness_rating( 0.0 ), versatility_rating( 0.0 )
+    multistrike_rating( 0.0 ), readiness_rating( 0.0 ), versatility_rating( 0.0 ), leech_rating( 0.0 )
   { }
 
   friend gear_stats_t operator+( const gear_stats_t& left, const gear_stats_t& right )
@@ -1543,6 +1557,7 @@ struct gear_stats_t
     multistrike_rating += right.multistrike_rating;
     readiness_rating += right.readiness_rating;
     versatility_rating += right.versatility_rating;
+    leech_rating += right.leech_rating;
     range::transform ( attribute, right.attribute, attribute.begin(), std::plus<double>() );
     range::transform ( resource, right.resource, resource.begin(), std::plus<int>() );
     return *this;
@@ -2471,7 +2486,7 @@ private:
 struct sim_report_information_t
 {
   bool charts_generated;
-  std::vector<std::string> dps_charts, hps_charts, gear_charts, dpet_charts;
+  std::vector<std::string> dps_charts, hps_charts, dtps_charts, tmi_charts, gear_charts, dpet_charts;
   std::string timeline_chart, downtime_chart;
   sim_report_information_t() { charts_generated = false; }
 };
@@ -2630,6 +2645,8 @@ public:
   std::string reference_player_str;
   std::vector<player_t*> players_by_dps;
   std::vector<player_t*> players_by_hps;
+  std::vector<player_t*> players_by_dtps;
+  std::vector<player_t*> players_by_tmi;
   std::vector<player_t*> players_by_name;
   std::vector<player_t*> targets_by_name;
   std::vector<std::string> id_dictionary;
@@ -2998,6 +3015,7 @@ enum rating_e
   RATING_DAMAGE_VERSATILITY,
   RATING_HEAL_VERSATILITY,
   RATING_MITIGATION_VERSATILITY,
+  RATING_LEECH,
   RATING_MAX
 };
 
@@ -3026,6 +3044,7 @@ inline cache_e cache_from_rating( rating_e r )
     case RATING_DAMAGE_VERSATILITY: return CACHE_DAMAGE_VERSATILITY;
     case RATING_HEAL_VERSATILITY: return CACHE_HEAL_VERSATILITY;
     case RATING_MITIGATION_VERSATILITY: return CACHE_MITIGATION_VERSATILITY;
+    case RATING_LEECH: return CACHE_LEECH;
     default: break;
   }
   assert( false ); return CACHE_NONE;
@@ -3043,6 +3062,7 @@ struct rating_t
   double multistrike;
   double readiness;
   double damage_versatility, heal_versatility, mitigation_versatility;
+  double leech;
 
   double& get( rating_e r )
   {
@@ -3069,6 +3089,7 @@ struct rating_t
       case RATING_DAMAGE_VERSATILITY: return damage_versatility;
       case RATING_HEAL_VERSATILITY: return heal_versatility;
       case RATING_MITIGATION_VERSATILITY: return mitigation_versatility;
+      case RATING_LEECH: return leech;
       default: break;
     }
     assert( false ); return mastery;
@@ -3298,10 +3319,10 @@ struct item_t
     int                      suffix_id;
     unsigned                 enchant_id;
     unsigned                 addon_id;
-    unsigned                 bonus_id;
     int                      armor;
     std::array<int, 3>       gem_id;
     std::array<int, 3>       gem_color;
+    std::vector<int>         bonus_id;
     std::vector<stat_pair_t> gem_stats, meta_gem_stats, socket_bonus_stats;
     std::string              encoded_enchant;
     std::vector<stat_pair_t> enchant_stats;
@@ -3314,11 +3335,12 @@ struct item_t
 
     parsed_input_t() :
       upgrade_level( 0 ), suffix_id( 0 ), enchant_id( 0 ), addon_id( 0 ),
-      bonus_id( 0 ), armor( 0 ), data()
+      armor( 0 ), data()
     {
       range::fill( data.stat_type_e, -1 );
       range::fill( data.stat_val, 0 );
       range::fill( gem_id, 0 );
+      range::fill( bonus_id, 0 );
       range::fill( gem_color, SOCKET_COLOR_NONE );
     }
   } parsed;
@@ -3743,6 +3765,7 @@ private:
   mutable double _mastery, _mastery_value, _crit_avoidance, _miss, _multistrike, _readiness;
   mutable double _player_mult[SCHOOL_MAX + 1], _player_heal_mult[SCHOOL_MAX + 1];
   mutable double _damage_versatility, _heal_versatility, _mitigation_versatility;
+  mutable double _leech;
 public:
   bool active; // runtime active-flag
   void invalidate_all();
@@ -3784,6 +3807,7 @@ public:
   double damage_versatility() const;
   double heal_versatility() const;
   double mitigation_versatility() const;
+  double leech() const;
 #else
   // Passthrough cache stat functions for inactive cache
   double strength() const  { return _player -> strength();  }
@@ -3816,6 +3840,7 @@ public:
   double damage_versatility() const { return _player -> composite_damage_versatility(); }
   double heal_versatility() const { return _player -> composite_heal_versatility(); }
   double mitigation_versatility() const { return _player -> composite_mitigation_versatility(); }
+  double leech() const { return _player -> composite_leech(); }
 #endif
 };
 
@@ -3879,7 +3904,6 @@ struct player_collected_data_t
   extended_sample_data_t theck_meloree_index;
   extended_sample_data_t effective_theck_meloree_index;
   extended_sample_data_t max_spike_amount;
-  sc_timeline_t resolve_timeline;
 
   std::array<simple_sample_data_t,RESOURCE_MAX> resource_lost, resource_gained;
   struct resource_timeline_t
@@ -3911,6 +3935,7 @@ struct player_collected_data_t
     sc_timeline_t timeline; // keeps only data per iteration
     sc_timeline_t timeline_normalized; // same as above, but normalized to current player health
     sc_timeline_t merged_timeline;
+    std::vector<int> divisor_timeline;
     bool collect; // whether we collect all this or not.
     health_changes_timeline_t() : previous_loss_level( 0.0 ), previous_gain_level( 0.0 ), collect( false ) {}
 
@@ -3930,12 +3955,64 @@ struct player_collected_data_t
       }
       else
         return timeline.get_bin_size();
-    }           
+    }  
+
+    void update_divisor( timespan_t sim_length )
+    {
+      int max_index = (int) ( sim_length.total_millis() / 1000 / get_bin_size() + 1 );
+
+      // adjust the length if neccessary
+      if ( max_index > divisor_timeline.size() )
+        divisor_timeline.resize( max_index, 0 );
+
+      for ( int i = 0; i < max_index; i++ )
+        divisor_timeline[ i ] += 1;
+    }
   };
 
   health_changes_timeline_t health_changes;     //records all health changes
   health_changes_timeline_t health_changes_tmi; //records only health changes due to damage and self-healng/self-absorb
   
+  struct resolve_timeline_t
+  {
+    sc_timeline_t iteration_timeline;
+    sc_timeline_t merged_timeline;
+
+    resolve_timeline_t() {}
+
+    void set_bin_size( double bin )
+    {
+      iteration_timeline.set_bin_size( bin );
+      merged_timeline.set_bin_size( bin );
+    }
+
+    double get_bin_size() const
+    {
+      if ( iteration_timeline.get_bin_size() != merged_timeline.get_bin_size() )
+      {
+        assert( false );
+        return 0.0;
+      }
+      else
+        return iteration_timeline.get_bin_size();
+    } 
+
+    // Add 'value' at corresponding time, replacing existing entry if new value is larger
+    void add_max( timespan_t current_time, double new_value )
+    {
+      size_t index = static_cast< size_t >( current_time.total_millis() / 1000 / iteration_timeline.bin_size );
+
+      // if data doesn't exist in this element, add it; otherwise store only the maximum value
+      if ( iteration_timeline.data().size() == 0 || iteration_timeline.data().size() <= index )
+        iteration_timeline.add( current_time, new_value );
+      else if ( new_value > iteration_timeline.data().at( index ) )
+      {
+        iteration_timeline.add( current_time, new_value - iteration_timeline.data().at( index ) );
+      }
+    }
+  };
+
+  resolve_timeline_t resolve_timeline;
 
   struct action_sequence_data_t
   {
@@ -3961,6 +4038,7 @@ struct player_collected_data_t
     double spell_haste, spell_speed, attack_haste, attack_speed;
     double mastery_value, multistrike, readiness;
     double damage_versatility, heal_versatility, mitigation_versatility;
+    double leech;
   } buffed_stats_snapshot;
 
   player_collected_data_t( const std::string& player_name, sim_t& );
@@ -4354,10 +4432,7 @@ struct player_t : public actor_t
 
   // All Data collected during / end of combat
   player_collected_data_t collected_data;
-
-
-  sc_timeline_t resolve_timeline;
-
+  
   // Damage
   double iteration_dmg, iteration_dmg_taken; // temporary accumulators
   double dpr;
@@ -4475,6 +4550,8 @@ struct player_t : public actor_t
     gain_t* vampiric_embrace;
     gain_t* vampiric_touch;
     gain_t* water_elemental;
+
+    gain_t* leech;
   } gains;
 
   struct procs_t
@@ -4594,6 +4671,8 @@ struct player_t : public actor_t
   virtual double composite_heal_versatility() const;
   virtual double composite_mitigation_versatility() const;
 
+  virtual double composite_leech() const;
+
   virtual double composite_armor() const;
   virtual double composite_armor_multiplier() const;
   virtual double composite_miss() const;
@@ -4683,6 +4762,9 @@ struct player_t : public actor_t
   { return composite_rating( RATING_HEAL_VERSATILITY ); }
   virtual double composite_mitigation_versatility_rating() const
   { return composite_rating( RATING_MITIGATION_VERSATILITY ); }
+
+  virtual double composite_leech_rating() const
+  { return composite_rating( RATING_LEECH ); }
 
   double get_attribute( attribute_e a ) const
   { return util::floor( composite_attribute( a ) * composite_attribute_multiplier( a ) ); }
@@ -5632,6 +5714,7 @@ public:
   virtual double composite_readiness() const { return player -> cache.readiness(); }
   virtual double composite_versatility( const action_state_t* ) const { return 1.0; }
   virtual double composite_resolve( const action_state_t* ) const { return 1.0; }
+  virtual double composite_leech( const action_state_t* ) const { return player -> cache.leech(); }
 
   // the direct amount multiplier due to debuffs on the target
   virtual double composite_target_da_multiplier( player_t* target ) const { return composite_target_multiplier( target ); }

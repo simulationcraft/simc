@@ -465,7 +465,6 @@ player_t::player_t( sim_t*             s,
 
   tmi_window( 6.0 ),
   collected_data( player_collected_data_t( name_str, *sim ) ),
-  resolve_timeline( collected_data.resolve_timeline ),
   // Damage
   iteration_dmg( 0 ), iteration_dmg_taken( 0 ),
   dpr( 0 ),
@@ -722,6 +721,8 @@ void player_t::init_base_stats()
     base.stats.attribute[ STAT_INTELLECT] += util::floor( racials.heroic_presence -> effectN( 3 ).average( this ) );
     // so is endurance. Can't tell if this is floored, ends in 0.055 @ L100. Assuming based on symmetry w/ heroic pres.
     base.stats.attribute[ STAT_STAMINA ]  += util::floor( racials.endurance -> effectN( 1 ).average( this ) ); 
+    // Human spirit 
+    base.stats.versatility_rating += util::floor( racials.the_human_spirit -> effectN( 1 ).average( this ) );
 
     base.spell_crit               = dbc.spell_crit_base( type, level );
     base.attack_crit              = dbc.melee_crit_base( type, level );
@@ -1597,6 +1598,7 @@ void player_t::init_gains()
   gains.vampiric_embrace       = get_gain( "vampiric_embrace" );
   gains.vampiric_touch         = get_gain( "vampiric_touch" );
   gains.water_elemental        = get_gain( "water_elemental" );
+  gains.leech                  = get_gain( "leech" );
 }
 
 // player_t::init_procs =====================================================
@@ -2564,6 +2566,13 @@ double player_t::composite_mitigation_versatility() const
   return cmv;
 }
 
+// player_t::composite_leech ================================================
+
+double player_t::composite_leech() const
+{
+  return composite_leech_rating() / current.rating.leech;
+}
+
 // player_t::composite_player_multiplier ====================================
 
 double player_t::composite_player_multiplier( school_e /* school */ ) const
@@ -2784,6 +2793,8 @@ double player_t::composite_rating( rating_e rating ) const
       v = current.stats.multistrike_rating; break;
     case RATING_READINESS:
       v = current.stats.readiness_rating; break;
+    case RATING_LEECH:
+      v = current.stats.leech_rating; break;
     default: break;
   }
 
@@ -3014,6 +3025,8 @@ void player_t::datacollection_begin()
     collected_data.health_changes_tmi.timeline_normalized.clear();
   }
 
+  collected_data.resolve_timeline.iteration_timeline.clear();
+
   range::for_each( buff_list, std::mem_fn(&buff_t::datacollection_begin ) );
   range::for_each( stats_list, std::mem_fn(&stats_t::datacollection_begin ) );
   range::for_each( uptime_list, std::mem_fn(&uptime_t::datacollection_begin ) );
@@ -3064,6 +3077,7 @@ void player_t::datacollection_end()
     collected_data.health_changes.timeline_normalized.add( sim -> current_time, 0.0 );
     collected_data.health_changes_tmi.timeline.add( sim -> current_time, 0.0 );
     collected_data.health_changes_tmi.timeline_normalized.add( sim -> current_time, 0.0 );
+    collected_data.health_changes.update_divisor( sim -> current_time );
   }
   collected_data.collect_data( *this );
 
@@ -3294,10 +3308,7 @@ void player_t::merge( player_t& other )
 #endif
     }
   }
-
-  // Resolve Timeline
-  resolve_timeline.merge( other.resolve_timeline );
-
+  
   // Action Map
   for ( size_t i = 0; i < other.action_list.size(); ++i )
     action_list[ i ] -> total_executions += other.action_list[ i ] -> total_executions;
@@ -8142,6 +8153,7 @@ void player_t::create_options()
     opt_float( "gear_readiness_rating", gear.readiness_rating ),
     opt_float( "gear_versatility_rating", gear.versatility_rating ),
     opt_float( "gear_bonus_armor",      gear.bonus_armor ),
+    opt_float( "gear_leech_rating",     gear.leech_rating ),
 
     // Stat Enchants
     opt_float( "enchant_strength",         enchant.attribute[ ATTR_STRENGTH  ] ),
@@ -8161,6 +8173,7 @@ void player_t::create_options()
     opt_float( "enchant_readiness_rating", enchant.readiness_rating ),
     opt_float( "enchant_versatility_rating", enchant.versatility_rating ),
     opt_float( "enchant_bonus_armor",      enchant.bonus_armor ),
+    opt_float( "enchant_leech_rating",     enchant.leech_rating ),
     opt_float( "enchant_health",           enchant.resource[ RESOURCE_HEALTH ] ),
     opt_float( "enchant_mana",             enchant.resource[ RESOURCE_MANA   ] ),
     opt_float( "enchant_rage",             enchant.resource[ RESOURCE_RAGE   ] ),
@@ -8339,14 +8352,13 @@ void player_t::analyze( sim_t& s )
   {
     s.players_by_dps.push_back( this );
     s.players_by_hps.push_back( this );
+    s.players_by_dtps.push_back( this );
+    s.players_by_tmi.push_back( this );
     s.players_by_name.push_back( this );
   }
   if ( !  quiet && (  is_enemy() ||  is_add() ) && ! (  is_pet() && s.report_pets_separately ) )
     s.targets_by_name.push_back( this );
-
-  // Resolve Timeline
-  resolve_timeline.adjust( s.divisor_timeline );
-
+  
   // Resources & Gains ======================================================
 
   double rl = collected_data.resource_lost[  primary_resource() ].mean();
@@ -9030,6 +9042,17 @@ double player_stat_cache_t::mitigation_versatility() const
   return _mitigation_versatility;
 }
 
+double player_stat_cache_t::leech() const
+{
+  if ( ! active || ! valid[ CACHE_LEECH ] )
+  {
+    valid[ CACHE_LEECH ] = true;
+    _leech = player -> composite_leech();
+  }
+  else assert( _leech == player -> composite_leech() );
+  return _leech;
+}
+
 // player_stat_cache_t::mastery =============================================
 
 double player_stat_cache_t::player_multiplier( school_e s ) const
@@ -9183,6 +9206,8 @@ void player_collected_data_t::merge( const player_collected_data_t& other )
 
   health_changes.merged_timeline.merge( other.health_changes.merged_timeline );
   health_changes_tmi.merged_timeline.merge( other.health_changes_tmi.merged_timeline );
+
+  resolve_timeline.merged_timeline.merge( other.resolve_timeline.merged_timeline );
 }
 
 void player_collected_data_t::analyze( const player_t& p )
@@ -9226,8 +9251,11 @@ void player_collected_data_t::analyze( const player_t& p )
     stat_timelines[ i ].timeline.adjust( p.sim -> divisor_timeline );
   }
 
-  health_changes.merged_timeline.adjust( p.sim -> divisor_timeline );
-  health_changes_tmi.merged_timeline.adjust( p.sim -> divisor_timeline );
+  // health changes need their own divisor
+  health_changes.merged_timeline.adjust( health_changes.divisor_timeline );
+  health_changes_tmi.merged_timeline.adjust( health_changes.divisor_timeline );
+
+  resolve_timeline.merged_timeline.adjust( p.sim -> divisor_timeline );
 }
 
 //This is pretty much only useful for dev debugging at this point, would need to modify to make it useful to users
@@ -9391,6 +9419,10 @@ void player_collected_data_t::collect_data( const player_t& p )
 
   for ( resource_e i = RESOURCE_NONE; i < RESOURCE_MAX; ++i )
     combat_end_resource[ i ].add( p.resources.current[ i ] );
+
+  // Resolve Timeline - Only nonzero for tanks
+  if ( resolve_timeline.iteration_timeline.data().size() > 0 )
+    resolve_timeline.merged_timeline.merge( resolve_timeline.iteration_timeline );
 
   // Health Change Calculations - only needed for tanks
   if ( ! p.is_pet() && p.primary_role() == ROLE_TANK )
@@ -9731,7 +9763,7 @@ void manager_t::update()
   _player.buffs.resolve -> trigger( 1, new_amount, 1, timespan_t::zero() );
 
   // Add to the Resolve timeline
-  _player.resolve_timeline.add( _player.sim -> current_time, _player.buffs.resolve -> value() );
+  _player.collected_data.resolve_timeline.add_max( _player.sim -> current_time, _player.buffs.resolve -> value() );
 }
 
 void manager_t::add_diminishing_return_entry( const player_t* actor, double raw_dps, timespan_t current_time )

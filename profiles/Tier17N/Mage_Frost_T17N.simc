@@ -42,7 +42,7 @@ actions+=/icy_veins,if=(time_to_bloodlust>160&(buff.brain_freeze.react|buff.fing
 actions+=/blood_fury,if=buff.icy_veins.up|target.time_to_die<18
 actions+=/berserking,if=buff.icy_veins.up|target.time_to_die<18
 actions+=/arcane_torrent,if=buff.icy_veins.up|target.time_to_die<18
-actions+=/use_item,slot=trinket1
+actions+=/use_item,slot=trinket2
 actions+=/frost_bomb,if=talent.frost_bomb.enabled&(debuff.frost_bomb.remains<cast_time&buff.fingers_of_frost.stack>=2)
 actions+=/ice_lance,if=buff.fingers_of_frost.react&debuff.frost_bomb.remains>travel_time
 actions+=/frostfire_bolt,if=buff.brain_freeze.react
@@ -50,30 +50,31 @@ actions+=/frostbolt
 actions+=/ice_floes,if=talent.ice_floes.enabled
 actions+=/ice_lance,moving=1
 
-head=primal_gladiators_hood_of_prowess,id=111084
-neck=primal_gladiators_pendant_of_cruelty,id=111128,enchant=gift_of_multistrike
-shoulders=primal_gladiators_felweave_amice,id=111238
-back=primal_gladiators_drape_of_cruelty,id=111124,enchant=gift_of_multistrike
-chest=primal_gladiators_felweave_raiment,id=111237
-wrists=primal_gladiators_cuffs_of_prowess,id=111099
-hands=primal_gladiators_felweave_handguards,id=111234
-waist=primal_gladiators_cord_of_victory,id=111095
-legs=primal_gladiators_felweave_trousers,id=111236
-feet=primal_gladiators_treads_of_cruelty,id=111096
-finger1=primal_gladiators_band_of_victory,id=111136,enchant=gift_of_multistrike
-finger2=primal_gladiators_band_of_cruelty,id=111134,enchant=gift_of_multistrike
-trinket1=primal_gladiators_badge_of_dominance,id=111227
-trinket2=primal_gladiators_insignia_of_dominance,id=111228
-main_hand=primal_gladiators_mageblade,id=111119,enchant=mark_of_the_frostwolf
-off_hand=primal_gladiators_endgame,id=111132
+head=primal_gladiators_silk_cowl,id=111151,gem_id=0/0/0/,enchant_id=0
+neck=primal_gladiators_pendant_of_cruelty,id=111128,gem_id=0/0/0/,enchant_id=5294
+shoulders=primal_gladiators_silk_amice,id=111154,gem_id=0/0/0/,enchant_id=0
+back=primal_gladiators_drape_of_prowess,id=111125,gem_id=0/0/0/,enchant_id=5302
+chest=primal_gladiators_silk_robe,id=111153,gem_id=0/0/0/,enchant_id=0
+wrists=primal_gladiators_cuffs_of_cruelty,id=111100,gem_id=0/0/0/,enchant_id=0
+hands=primal_gladiators_silk_handguards,id=111150,gem_id=0/0/0/,enchant_id=0
+waist=primal_gladiators_cord_of_prowess,id=111094,gem_id=0/0/0/,enchant_id=0
+legs=primal_gladiators_leggings_of_prowess,id=111085,gem_id=0/0/0/,enchant_id=0
+feet=primal_gladiators_treads_of_prowess,id=111097,gem_id=0/0/0/,enchant_id=0
+finger1=primal_gladiators_band_of_victory,id=111136,gem_id=0/0/0/,enchant_id=5301
+finger2=primal_gladiators_band_of_prowess,id=111135,gem_id=0/0/0/,enchant_id=5301
+trinket1=primal_gladiators_insignia_of_dominance,id=111228,gem_id=0/0/0/,enchant_id=0
+trinket2=primal_gladiators_badge_of_dominance,id=111227,gem_id=0/0/0/,enchant_id=0
+main_hand=primal_gladiators_mageblade,id=111119,gem_id=0/0/0/,enchant_id=5334
+off_hand=primal_gladiators_reprieve,id=111133,gem_id=0/0/0/,enchant_id=0
 
 # Gear Summary
 # gear_stamina=3245
 # gear_intellect=2584
 # gear_spell_power=1244
-# gear_crit_rating=905
-# gear_haste_rating=452
-# gear_mastery_rating=1122
+# gear_crit_rating=505
+# gear_haste_rating=599
+# gear_mastery_rating=669
 # gear_armor=600
-# gear_multistrike_rating=841
-# gear_versatility_rating=102
+# gear_multistrike_rating=1564
+# pvp_2pc_caster=1
+# pvp_4pc_caster=1

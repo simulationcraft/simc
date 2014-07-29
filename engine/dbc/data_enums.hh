@@ -7,7 +7,7 @@ enum item_bonus_type
   ITEM_BONUS_MOD       = 2,
   ITEM_BONUS_DESC      = 4,
   ITEM_BONUS_SUFFIX    = 5,
-  ITEM_BONUS_SOCKET    = 6, // TODO-WOD: Guess, based on data. Need an item with a socket in-beta to test
+  ITEM_BONUS_SOCKET    = 6,
   ITEM_BONUS_REQ_LEVEL = 8,
 };
 
@@ -417,7 +417,7 @@ enum item_mod_type {
   ITEM_MOD_MULTISTRIKE_RATING       = 59,
   ITEM_MOD_READINESS_RATING         = 60,
   ITEM_MOD_WOD_1                    = 61,
-  ITEM_MOD_WOD_2                    = 62,
+  ITEM_MOD_LEECH_RATING             = 62,
   ITEM_MOD_WOD_3                    = 63,
   ITEM_MOD_WOD_4                    = 64,
   ITEM_MOD_WOD_5                    = 65,
@@ -439,6 +439,7 @@ enum rating_mod_type {
   RATING_MOD_MULTISTRIKE  = 0x00000800,
   RATING_MOD_READINESS    = 0x00001000,
   RATING_MOD_RESILIENCE   = 0x00008000,
+  RATING_MOD_LEECH        = 0x00010000,
   RATING_MOD_HASTE_MELEE  = 0x00020000,
   RATING_MOD_HASTE_RANGED = 0x00040000,
   RATING_MOD_HASTE_SPELL  = 0x00080000,

@@ -283,6 +283,7 @@ public:
     proc_t* t17_2pc_caster_mind_blast_reset_overflow;
     proc_t* t17_4pc_holy;
     proc_t* t17_4pc_holy_overflow;
+    proc_t* void_entropy_extentions;
 
 
     luxurious_sample_data_t* sd_mind_spike_dot_removal_devouring_plague_ticks;
@@ -1369,7 +1370,7 @@ struct priest_heal_t : public priest_action_t<heal_t>
     int stack = priest.buffs.serendipity -> check();
     bool triggered = false;
 
-    if ( tier17_4pc && SET_T17_4PC_HEAL && rng().roll( priest.sets.set( SET_T17_4PC_HEAL ) -> effectN( 1 ).percent() ) )
+    if ( tier17_4pc && priest.sets.has_set_bonus( SET_T17_4PC_HEAL ) && rng().roll( priest.sets.set( SET_T17_4PC_HEAL ) -> effectN( 1 ).percent() ) )
     {
       triggered = priest.buffs.serendipity -> trigger();
     }
@@ -2314,6 +2315,8 @@ struct mind_blast_t final : public priest_spell_t
     if ( priest.mastery_spells.mental_anguish -> ok() )
       d *= 1.0 + priest.cache.mastery_value();
 
+    d *= 1.0 + priest.sets.set( SET_T16_2PC_CASTER ) -> effectN( 1 ).percent();
+
     return d;
   }
 };
@@ -2642,9 +2645,6 @@ struct shadow_word_death_t final : public priest_spell_t
     virtual double composite_da_multiplier( const action_state_t* /* state */ ) const override
     {
       double d = multiplier;
-
-      if ( priest.sets.has_set_bonus( SET_T13_2PC_CASTER ) )
-        d *= 0.663587;
 
       return d / 4.0;
     }
@@ -3057,6 +3057,16 @@ struct devouring_plague_t final : public priest_spell_t
       trigger_dp_dot( s );
       transfer_dmg_to_dot( s );
       priest.resource_gain( RESOURCE_HEALTH, s -> result_amount, priest.gains.devouring_plague_health );
+
+      priest_td_t& td = get_td( s -> target );
+
+      // DP refreshes the duration on VEnt, per Celestalon tweet.
+      // TODO: Verify if Multistrikes also refresh, see if pandemic applies or not - Twintop 2014/07/27
+      if ( td.dots.void_entropy -> is_ticking() )
+      {
+        td.dots.void_entropy -> refresh_duration();
+        priest.procs.void_entropy_extentions -> occur();
+      }
     }
   }
 
@@ -3971,6 +3981,15 @@ struct void_entropy_t : public priest_spell_t
     m *= shadow_orbs_to_consume();
 
     return m;
+  }
+
+  virtual bool ready() override
+  {
+    //Only usable with 3 orbs, per Celestalon in Theorycraft thread - Twintop 2014/07/27
+    if ( priest.resources.current[ RESOURCE_SHADOW_ORB ] < 3.0 )
+      return false;
+
+    return priest_spell_t::ready();
   }
 };
 
@@ -5182,6 +5201,7 @@ void priest_t::create_procs()
   procs.serendipity_overflow                            = get_proc( "Serendipity lost to overflow (Non-Tier 17 4pc)"               );
   procs.t17_4pc_holy                                    = get_proc( "Tier17 4pc Serendipity"                                       );
   procs.t17_4pc_holy_overflow                           = get_proc( "Tier17 4pc Serendipity lost to overflow"                      );
+  procs.void_entropy_extentions                         = get_proc( "Void Entropy extentions from Devouring Plagues"               );
 
   procs.sd_mind_spike_dot_removal_devouring_plague_ticks   = get_sample_data( "Devouring Plague ticks lost from Mind Spike removal"   );
 }
@@ -5345,7 +5365,7 @@ double priest_t::composite_spell_haste() const
 // priest_t::composite_spell_haste ==========================================
 
  // TODO Wire this up when we can change the damage/heal coefficient for Multistrikes
-double priest_t::composite_multistrike_multiplier( const action_state_t* s )
+double priest_t::composite_multistrike_multiplier( const action_state_t* /*s*/ )
 {
     //double m = action_t::composite_multistrike_multiplier ( s );
     double m = 0.3;
@@ -6204,7 +6224,8 @@ void priest_t::apl_shadow()
   // Main action list, if you don't have CoP selected
   main -> add_action( "mindbender,if=talent.mindbender.enabled" );
   main -> add_action( "shadowfiend,if=!talent.mindbender.enabled" );
-  main -> add_action( "void_entropy,if=talent.void_entropy.enabled&(shadow_orb>=3&miss_react&(!ticking|target.dot.void_entropy.ticks_remain=1))" );
+  main -> add_action( "void_entropy,if=talent.void_entropy.enabled&shadow_orb>=3&miss_react&!ticking,max_cycle_targets=4,cycle_targets=1" );
+  main -> add_action( "devouring_plague,if=shadow_orb>=3&dot.void_entropy.remains<30,cycle_targets=1" );
   main -> add_action( "devouring_plague,if=shadow_orb>=4&!target.dot.devouring_plague_tick.ticking&talent.surge_of_darkness.enabled,cycle_targets=1" );
   main -> add_action( "devouring_plague,if=shadow_orb>=4" );
   main -> add_action( "devouring_plague,if=shadow_orb>=3&set_bonus.tier17_2pc_caster" );
@@ -6216,8 +6237,8 @@ void priest_t::apl_shadow()
   main -> add_action( "devouring_plague,if=shadow_orb>=3&(cooldown.mind_blast.remains<1.5|target.health.pct<20&cooldown.shadow_word_death.remains<1.5)" );
   main -> add_action( "mind_blast,if=glyph.mind_harvest.enabled&mind_harvest=0,cycle_targets=1" );
   main -> add_action( "mind_blast,if=active_enemies<=5&cooldown_react" );
-  main -> add_action( "mind_flay_insanity,if=target.dot.devouring_plague_tick.ticks_remain=1&active_enemies<=2,chain=1" );
-  main -> add_action( "mind_flay_insanity,interrupt=1,chain=1,if=active_enemies<=2" );
+  main -> add_action( "mind_flay_insanity,if=dot.devouring_plague_tick.ticks_remain=1&active_enemies<=2,chain=1,cycle_targets=1" );
+  main -> add_action( "mind_flay_insanity,if=dot.devouring_plague_tick.ticking,interrupt=1,chain=1,if=active_enemies<=2,cycle_targets=1" );
   main -> add_action( "shadow_word_pain,cycle_targets=1,max_cycle_targets=5,if=miss_react&!ticking" );
   main -> add_action( "vampiric_touch,cycle_targets=1,max_cycle_targets=5,if=remains<cast_time&miss_react" );
   main -> add_action( "shadow_word_pain,cycle_targets=1,max_cycle_targets=5,if=miss_react&ticks_remain<=1" );

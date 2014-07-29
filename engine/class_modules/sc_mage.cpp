@@ -1364,7 +1364,8 @@ static void trigger_unstable_magic( action_state_t* s )
     unstable_magic_explosion_t( mage_t* p ) :
       mage_spell_t( "unstable_magic_explosion", p, p -> talents.unstable_magic )
     {
-      may_miss = may_dodge = may_parry = may_crit = may_block = callbacks = may_multistrike = false;
+      may_miss = may_dodge = may_parry = may_crit = may_block = callbacks = false;
+      may_multistrike = 0;
       aoe = -1;
       base_costs[ RESOURCE_MANA ] = 0;
       cooldown -> duration  = timespan_t::zero();

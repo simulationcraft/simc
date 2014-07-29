@@ -71,6 +71,30 @@ bool item_database::apply_item_bonus( item_t& item, const item_bonus_entry_t& en
             item.player -> name(), item.name(), entry.value_1, item.parsed.data.req_level, item.parsed.data.req_level + entry.value_1 );
       item.parsed.data.req_level += entry.value_1;
       break;
+    // Number of sockets is in value 1, type (color) of sockets is in value 2
+    case ITEM_BONUS_SOCKET:
+    {
+      if ( item.sim -> debug )
+        item.player -> sim -> out_debug.printf( "Player %s item '%s' adding %d socket(s) (type=%d)",
+            item.player -> name(), item.name(), entry.value_1, entry.value_2 );
+      int n_added = 0;
+      for ( size_t i = 0, end = sizeof_array( item.parsed.data.socket_color ); i < end && n_added < entry.value_1; i++ )
+      {
+        if ( item.parsed.data.socket_color[ i ] != SOCKET_COLOR_NONE )
+          continue;
+
+        item.parsed.data.socket_color[ i ] = entry.value_2;
+        n_added++;
+      }
+
+      if ( n_added < entry.value_1 )
+      {
+        item.player -> sim -> errorf( "Player %s item '%s' unable to fit %d new sockets into the item (could only fit %d)",
+            item.player -> name(), item.name(), entry.value_1, n_added );
+        return false;
+      }
+      break;
+    }
     default:
       break;
   }
@@ -547,13 +571,13 @@ bool item_database::load_item_from_data( item_t& item )
 
   // Item bonus for local source only. TODO: BCP API and Wowhead will need ..
   // something similar
-  if ( item.parsed.bonus_id > 0 )
+  for ( size_t i = 0, end = item.parsed.bonus_id.size(); i < end; i++ )
   {
-    std::vector<const item_bonus_entry_t*> item_bonuses = item.player -> dbc.item_bonus( item.parsed.bonus_id );
+    std::vector<const item_bonus_entry_t*> item_bonuses = item.player -> dbc.item_bonus( item.parsed.bonus_id[ i ] );
     // Apply bonuses
-    for ( size_t i = 0, end = item_bonuses.size(); i < end; i++ )
+    for ( size_t bonus_idx = 0, end = item_bonuses.size(); bonus_idx < end; bonus_idx++ )
     {
-      if ( ! apply_item_bonus( item, *item_bonuses[ i ] ) )
+      if ( ! apply_item_bonus( item, *item_bonuses[ bonus_idx ] ) )
         return false;
     }
   }

@@ -612,6 +612,15 @@ void print_html_raid_summary( report::sc_html_stream& os, const sim_t* sim, cons
       ( int )i, ri.dps_charts[ i ].c_str() );
   }
 
+  for ( size_t i = 0; i < ri.dtps_charts.size(); i++ )
+  {
+    os.printf(
+      "<map id='DTPSMAP%d' name='DTPSMAP%d'></map>\n", ( int )i, ( int )i );
+    os.printf(
+      "<img id='DTPSIMG%d' src=\"%s\" alt=\"DTPS Chart\" />\n",
+      ( int )i, ri.dtps_charts[ i ].c_str() );
+  }
+
   if ( ! sim -> raid_events_str.empty() )
   {
     os << "<table>\n"
@@ -650,6 +659,15 @@ void print_html_raid_summary( report::sc_html_stream& os, const sim_t* sim, cons
     os.printf(
       "<img id='HPSIMG%d' src=\"%s\" alt=\"HPS Chart\" />\n",
       ( int )i, ri.hps_charts[ i ].c_str() );
+  }
+
+  for ( size_t i = 0; i < ri.tmi_charts.size(); i++ )
+  {
+    os.printf(
+      "<map id='TMIMAP%d' name='TMIMAP%d'></map>\n", ( int )i, ( int )i );
+    os.printf(
+      "<img id='TMIIMG%d' src=\"%s\" alt=\"TMI Chart\" />\n",
+      ( int )i, ri.tmi_charts[ i ].c_str() );
   }
 
   // RNG chart

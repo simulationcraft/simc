@@ -147,6 +147,7 @@ struct death_knight_td_t : public actor_pair_t
 
   debuff_t* debuffs_frost_vulnerability;
   debuff_t* debuffs_mark_of_sindragosa;
+  debuff_t* debuffs_necrotic_plague;
 
   int diseases() const
   {
@@ -541,6 +542,7 @@ inline death_knight_td_t::death_knight_td_t( player_t* target, death_knight_t* d
 
   debuffs_frost_vulnerability = buff_creator_t( *this, "frost_vulnerability", death_knight -> find_spell( 51714 ) );
   debuffs_mark_of_sindragosa = buff_creator_t( *this, "mark_of_sindragosa", death_knight -> find_spell( 155166 ) );
+  debuffs_necrotic_plague = buff_creator_t( *this, "necrotic_plague", death_knight -> find_spell( 155159 ) ).period( timespan_t::zero() );
 }
 
 inline void rune_t::fill_rune()
@@ -2556,48 +2558,17 @@ struct necrotic_plague_t : public death_knight_spell_t
               dot -> target -> name(),
               new_target -> name() );
         dot -> copy( new_target, DOT_COPY_CLONE );
+
+        death_knight_td_t* source_tdata = debug_cast<death_knight_td_t*>( dot -> source -> get_target_data( dot -> state -> target ) );
+        death_knight_td_t* tdata = debug_cast<death_knight_td_t*>( dot -> source -> get_target_data( new_target ) );
+        assert( ! tdata -> debuffs_necrotic_plague -> check() );
+        tdata -> debuffs_necrotic_plague -> trigger( source_tdata -> debuffs_necrotic_plague -> check() );
       }
     }
   };
 
-  struct necrotic_plague_state_t : public action_state_t
-  {
-    int stack;
-
-    necrotic_plague_state_t( action_t* a, player_t* target ) :
-      action_state_t( a, target ), stack( 0 )
-    { }
-
-    void initialize()
-    {
-      action_state_t::initialize();
-
-      stack = 1;
-    }
-
-    void copy_state( const action_state_t* state )
-    {
-      action_state_t::copy_state( state );
-
-      const necrotic_plague_state_t* np_state = debug_cast<const necrotic_plague_state_t*>( state );
-      stack = np_state -> stack;
-    }
-
-    std::ostringstream& debug_str( std::ostringstream& s )
-    {
-      action_state_t::debug_str( s );
-
-      s << " stack=" << stack;
-
-      return s;
-    }
-  };
-
-  int max_stack;
-
   necrotic_plague_t( death_knight_t* p ) :
-    death_knight_spell_t( "necrotic_plague", p, p -> find_spell( 155159 ) ),
-    max_stack( data().max_stacks() )
+    death_knight_spell_t( "necrotic_plague", p, p -> find_spell( 155159 ) )
   {
     hasted_ticks = may_miss = may_crit = false;
     background = tick_may_crit = true;
@@ -2606,22 +2577,21 @@ struct necrotic_plague_t : public death_knight_spell_t
     dot_behavior = DOT_REFRESH;
   }
 
-  action_state_t* new_state()
-  { return new necrotic_plague_state_t( this, target ); }
-
   double composite_target_multiplier( player_t* target ) const
   {
     double m = death_knight_spell_t::composite_target_multiplier( target );
 
     death_knight_td_t* tdata = td( target );
     if ( tdata -> dots_necrotic_plague -> is_ticking() )
-    {
-      necrotic_plague_state_t* np_state = debug_cast<necrotic_plague_state_t*>( tdata -> dots_necrotic_plague -> state );
-
-      m *= np_state -> stack;
-    }
+      m *= tdata -> debuffs_necrotic_plague -> stack();
 
     return m;
+  }
+
+  void last_tick( dot_t* dot )
+  {
+    death_knight_spell_t::last_tick( dot );
+    td( dot -> target ) -> debuffs_necrotic_plague -> expire();
   }
 
   // Necrotic Plague duration will not be refreshed if it is already ticking on
@@ -2630,20 +2600,14 @@ struct necrotic_plague_t : public death_knight_spell_t
   void trigger_dot( action_state_t* s )
   {
     death_knight_td_t* tdata = td( s -> target );
-    if ( tdata -> dots_necrotic_plague -> is_ticking() )
-    {
-      necrotic_plague_state_t* np_state = debug_cast<necrotic_plague_state_t*>( tdata -> dots_necrotic_plague -> state );
-      if ( np_state -> stack < max_stack )
-        np_state -> stack++;
-    }
-    else
+    if ( ! tdata -> dots_necrotic_plague -> is_ticking() )
       death_knight_spell_t::trigger_dot( s );
 
+    tdata -> debuffs_necrotic_plague -> trigger();
+
     if ( sim -> debug )
-    {
-      necrotic_plague_state_t* np_state = debug_cast<necrotic_plague_state_t*>( tdata -> dots_necrotic_plague -> state );
-      sim -> out_debug.printf( "%s necrotic_plague stack increases to %d", player -> name(), np_state -> stack );
-    }
+      sim -> out_debug.printf( "%s necrotic_plague stack increases to %d",
+          player -> name(), tdata -> debuffs_necrotic_plague -> check() );
   }
 
   void tick( dot_t* dot )
@@ -2652,12 +2616,12 @@ struct necrotic_plague_t : public death_knight_spell_t
 
     if ( result_is_hit( dot -> state -> result ) && dot -> ticks_left() > 0 )
     {
-      necrotic_plague_state_t* np_state = debug_cast<necrotic_plague_state_t*>( dot -> state );
-      if ( np_state -> stack < max_stack )
-        np_state -> stack++;
+      death_knight_td_t* tdata = td( dot -> state -> target );
+      tdata -> debuffs_necrotic_plague -> trigger();
 
       if ( sim -> debug )
-        sim -> out_debug.printf( "%s necrotic_plague stack %d", player -> name(), np_state -> stack );
+        sim -> out_debug.printf( "%s necrotic_plague stack %d",
+            player -> name(), tdata -> debuffs_necrotic_plague -> check() );
       new ( *sim ) np_spread_event_t( dot );
     }
   }
@@ -4831,25 +4795,6 @@ struct disease_expr_t : public expr_t
   }
 };
 
-struct np_stack_expr_t : public expr_t
-{
-  action_t* action;
-
-  np_stack_expr_t( action_t* a ) :
-    expr_t( "np_stack_expr" ), action( a )
-  { }
-
-  double evaluate()
-  {
-    dot_t* d = action -> target -> get_dot( "necrotic_plague", action -> player );
-
-    if ( ! d -> is_ticking() )
-      return 0;
-
-    return debug_cast<necrotic_plague_t::necrotic_plague_state_t*>( d -> state ) -> stack;
-  }
-};
-
 template <class Base>
 expr_t* death_knight_action_t<Base>::create_expression( const std::string& name_str )
 {
@@ -4881,8 +4826,6 @@ expr_t* death_knight_action_t<Base>::create_expression( const std::string& name_
 
   if ( util::str_compare_ci( name, "disease" ) )
     return new disease_expr_t( this, expression, type );
-  else if ( split[ 0 ] == "dot" && split[ 1 ] == "necrotic_plague" && split[ 2 ] == "stack" )
-    return new np_stack_expr_t( this );
 
   return Base::create_expression( name_str );
 }

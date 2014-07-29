@@ -493,8 +493,12 @@ class CombatRatingsDataGenerator(DataGenerator):
                         'Spell hit',    'Melee crit',   'Ranged crit', 'Spell crit', 'PvP Resilience',
                         'Melee haste',  'Ranged haste', 'Spell haste', 'Expertise',  'Mastery',
                         'PvP Power',    'Multistrike',  'Readiness',
-                        'Damage Versatility', 'Healing Versatility', 'Mitigation Versatility' ]
-    _combat_rating_ids = [ 2, 3, 4, 5, 6, 7, 8, 9, 10, 15, 17, 18, 19, 23, 25, 26, 11, 12, 28, 29, 30 ]
+                        'Damage Versatility', 'Healing Versatility', 'Mitigation Versatility', 'Leech' ]
+    _combat_rating_ids = [ 2, 3, 4, 5, 6,
+                           7, 8, 9, 10, 15, 
+                           17, 18, 19, 23, 25, 
+                           26, 11, 12, 
+                           28, 29, 30, 16 ]
     def __init__(self, options):
         # Hardcode these, as we need two different kinds of databases for output, using the same combat rating ids
         self._dbc = [ 'gtCombatRatings' ]
@@ -867,6 +871,17 @@ class ItemDataGenerator(DataGenerator):
                    filter_ilevel = False 
                 else:
                     continue
+            # Hunter scopes and whatnot
+            elif classdata.classs == 7:
+                if classdata.has_value('subclass', 3):
+                    for item_effect in data.spells:
+                        spell = self._spell_db[item_effect.id_spell]
+                        for effect in spell._effects:
+                            if not effect:
+                                continue
+
+                            if effect.type == 53:
+                                filter_ilevel = False
             # Only very select quest-item permanent item enchantments
             elif classdata.classs == 12:
                 valid = False
@@ -1350,6 +1365,7 @@ class SpellDataGenerator(DataGenerator):
           ( 145002, 0, False ),                         # Lightning Elemental nuke
           ( 157348, 5 ), ( 157331, 5 ),                 # Storm elemental spells
           ( 159101, 0 ), ( 159105, 0 ), ( 159103, 0 ),  # Echo of the Elements spec buffs
+          ( 157766, 0 ),                                # Improved Chain Lightning visible buff
         ),
         
         # Mage:
@@ -2040,7 +2056,9 @@ class SpellDataGenerator(DataGenerator):
                 continue
 
             # Consumables, Flasks, Elixirs, Potions, Food & Drink, Permanent Enchants
-            if classdata.classs != 12 and (classdata.classs != 0 or classdata.subclass not in [1, 2, 3, 5, 6]):
+            if classdata.classs != 12 and \
+               (classdata.classs != 7 or classdata.subclass not in [3]) and \
+               (classdata.classs != 0 or classdata.subclass not in [1, 2, 3, 5, 6]):
                 continue
             
             # Grab relevant spells from quest items, this in essence only 
@@ -2075,6 +2093,17 @@ class SpellDataGenerator(DataGenerator):
                     # Permanent enchants
                     elif classdata.has_value('subclass', 6):
                         self.process_spell(spell.id, ids, 0, 0)
+            # Hunter scopes and whatnot
+            elif classdata.classs == 7:
+                if classdata.has_value('subclass', 3):
+                    for item_effect in data.spells:
+                        spell = self._spell_db[item_effect.id_spell]
+                        for effect in spell._effects:
+                            if not effect:
+                                continue
+
+                            if effect.type == 53:
+                                self.process_spell(spell.id, ids, 0, 0)
         
         # Item sets, loop through ItemSet.dbc getting class-specific tier sets and add 
         # their bonuses to the spell list
