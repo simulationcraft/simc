@@ -4645,10 +4645,8 @@ void mage_t::apl_fire()
                      "if=dot.combustion.ticking|dot.living_bomb.ticking",
                      "AoE sequence" );
 
-  // TODO: Uncomment this add_talent when LB is fixed
-  /*aoe -> add_talent( this, "Living Bomb",
-                     "if=(!ticking|remains<tick_time)&target.time_to_die>tick_time*3",
-                      );*/
+  aoe -> add_talent( this, "Living Bomb",
+                     "if=(!ticking|remains<3.6)&target.time_to_die>remains+12" );
 
   aoe -> add_talent( this, "Meteor" );
   aoe -> add_talent( this, "Blast Wave" );
@@ -4669,9 +4667,8 @@ void mage_t::apl_fire()
                                "Use active talents" );
 
 
-  // TODO: Uncomment this add_talent when LB is fixed
-  /*single_target -> add_talent( this, "Living Bomb",
-                                 "if=(!ticking|remains<tick_time)&target.time_to_die>tick_time*3" );*/
+  single_target -> add_talent( this, "Living Bomb",
+                               "if=(!ticking|remains<3.6)&target.time_to_die>remains+12" );
 
 
   single_target -> add_talent( this, "Blast Wave" );
