@@ -3868,6 +3868,7 @@ struct cataclysm_t : public warlock_spell_t
     warlock_spell_t( "cataclysm", p, p -> find_spell( 152108 ) ),
     agony( new agony_t( p ) ),
     corruption( new corruption_t( p ) ),
+    doom( new doom_t( p ) ),
     immolate( new immolate_t( p ) )
     {
         aoe = -1;
