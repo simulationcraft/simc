@@ -3077,6 +3077,7 @@ void player_t::datacollection_end()
     collected_data.health_changes.timeline_normalized.add( sim -> current_time, 0.0 );
     collected_data.health_changes_tmi.timeline.add( sim -> current_time, 0.0 );
     collected_data.health_changes_tmi.timeline_normalized.add( sim -> current_time, 0.0 );
+    collected_data.health_changes.update_divisor( sim -> current_time );
   }
   collected_data.collect_data( *this );
 
@@ -9250,8 +9251,9 @@ void player_collected_data_t::analyze( const player_t& p )
     stat_timelines[ i ].timeline.adjust( p.sim -> divisor_timeline );
   }
 
-  health_changes.merged_timeline.adjust( p.sim -> divisor_timeline );
-  health_changes_tmi.merged_timeline.adjust( p.sim -> divisor_timeline );
+  // health changes need their own divisor
+  health_changes.merged_timeline.adjust( health_changes.divisor_timeline );
+  health_changes_tmi.merged_timeline.adjust( health_changes.divisor_timeline );
 
   resolve_timeline.merged_timeline.adjust( p.sim -> divisor_timeline );
 }

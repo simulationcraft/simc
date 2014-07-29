@@ -3935,6 +3935,7 @@ struct player_collected_data_t
     sc_timeline_t timeline; // keeps only data per iteration
     sc_timeline_t timeline_normalized; // same as above, but normalized to current player health
     sc_timeline_t merged_timeline;
+    std::vector<int> divisor_timeline;
     bool collect; // whether we collect all this or not.
     health_changes_timeline_t() : previous_loss_level( 0.0 ), previous_gain_level( 0.0 ), collect( false ) {}
 
@@ -3954,7 +3955,19 @@ struct player_collected_data_t
       }
       else
         return timeline.get_bin_size();
-    }           
+    }  
+
+    void update_divisor( timespan_t sim_length )
+    {
+      int max_index = (int) ( sim_length.total_millis() / 1000 / get_bin_size() + 1 );
+
+      // adjust the length if neccessary
+      if ( max_index > divisor_timeline.size() )
+        divisor_timeline.resize( max_index, 0 );
+
+      for ( int i = 0; i < max_index; i++ )
+        divisor_timeline[ i ] += 1;
+    }
   };
 
   health_changes_timeline_t health_changes;     //records all health changes
