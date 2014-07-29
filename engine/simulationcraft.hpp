@@ -3980,31 +3980,15 @@ struct player_collected_data_t
 
     resolve_timeline_t() {}
 
-    void set_bin_size( double bin )
-    {
-      iteration_timeline.set_bin_size( bin );
-      merged_timeline.set_bin_size( bin );
-    }
-
-    double get_bin_size() const
-    {
-      if ( iteration_timeline.get_bin_size() != merged_timeline.get_bin_size() )
-      {
-        assert( false );
-        return 0.0;
-      }
-      else
-        return iteration_timeline.get_bin_size();
-    } 
-
     // Add 'value' at corresponding time, replacing existing entry if new value is larger
     void add_max( timespan_t current_time, double new_value )
     {
       size_t index = static_cast< size_t >( current_time.total_millis() / 1000 / iteration_timeline.bin_size );
 
-      // if data doesn't exist in this element, add it; otherwise store only the maximum value
+      // if data doesn't exist in this element, add it
       if ( iteration_timeline.data().size() == 0 || iteration_timeline.data().size() <= index )
         iteration_timeline.add( current_time, new_value );
+      // otherwise store only the maximum value
       else if ( new_value > iteration_timeline.data().at( index ) )
       {
         iteration_timeline.add( current_time, new_value - iteration_timeline.data().at( index ) );
