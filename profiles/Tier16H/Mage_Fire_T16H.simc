@@ -56,6 +56,7 @@ actions.init_combust+=/start_pyro_chain,if=!pyro_chain
 
 # AoE sequence
 actions.aoe=inferno_blast,if=dot.combustion.ticking|dot.living_bomb.ticking
+actions.aoe+=/living_bomb,if=(!ticking|remains<3.6)&target.time_to_die>remains+12
 actions.aoe+=/meteor
 actions.aoe+=/blast_wave
 actions.aoe+=/flamestrike
@@ -68,6 +69,7 @@ actions.single_target+=/pyroblast,if=buff.pyroblast.up&buff.pyroblast.remains<ac
 actions.single_target+=/pyroblast,if=buff.pyroblast.up&buff.heating_up.up&action.fireball.in_flight
 # Use active talents
 actions.single_target+=/meteor
+actions.single_target+=/living_bomb,if=(!ticking|remains<3.6)&target.time_to_die>remains+12
 actions.single_target+=/blast_wave
 actions.single_target+=/inferno_blast,if=(buff.pyroblast.down&buff.heating_up.up)|(buff.pyroblast.up&buff.heating_up.down&!action.fireball.in_flight)
 actions.single_target+=/fireball
