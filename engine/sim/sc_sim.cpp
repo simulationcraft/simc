@@ -1211,7 +1211,7 @@ void sim_t::combat_end()
     b -> expire();
   }
 
-  //if ( iterations == 1 || current_iteration >= 1 )
+  if ( iterations == 1 || current_iteration >= 1 )
     datacollection_end();
 
   assert( active_enemies == 0 );
