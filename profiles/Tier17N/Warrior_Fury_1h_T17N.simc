@@ -81,7 +81,7 @@ actions.three_targets+=/dragon_roar,if=!debuff.colossus_smash.up&(buff.bloodbath
 actions.three_targets+=/bloodthirst,if=(talent.unquenchable_thirst.enabled&buff.enrage.down)|!talent.unquenchable_thirst.enabled
 actions.three_targets+=/colossus_smash
 actions.three_targets+=/storm_bolt,if=debuff.colossus_smash.up
-actions.three_targets+=/raging_blow,if=buff.meat_cleaver.stack=2
+actions.three_targets+=/raging_blow,if=buff.meat_cleaver.stack>=2
 actions.three_targets+=/whirlwind
 actions.three_targets+=/bloodthirst
 
