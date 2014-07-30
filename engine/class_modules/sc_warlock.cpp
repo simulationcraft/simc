@@ -298,7 +298,6 @@ public:
   {
     gain_t* life_tap;
     gain_t* soul_leech;
-    gain_t* tier13_4pc;
     gain_t* nightfall;
     gain_t* incinerate;
     gain_t* incinerate_fnb;
@@ -1961,7 +1960,6 @@ struct agony_t : public warlock_spell_t
     warlock_spell_t( p, "Agony" )
   {
     may_crit = false;
-    base_multiplier *= 1.0 + p -> sets.set( SET_T13_4PC_CASTER ) -> effectN( 1 ).percent();
   }
 
   virtual void last_tick( dot_t* d )
@@ -2161,7 +2159,6 @@ struct shadow_bolt_t : public warlock_spell_t
     warlock_spell_t( p, "Shadow Bolt" ), glyph_copy_1( 0 ), glyph_copy_2( 0 ),  hand_of_guldan( new hand_of_guldan_t( p ) )
   {
     base_multiplier *= 1.0 + p -> sets.set( SET_T14_2PC_CASTER ) -> effectN( 3 ).percent();
-    base_multiplier *= 1.0 + p -> sets.set( SET_T13_4PC_CASTER ) -> effectN( 1 ).percent();
     base_multiplier *= 1.0 + p -> perk.improved_shadow_bolt -> effectN( 1 ).percent();
 
     hand_of_guldan               -> background = true;
@@ -2349,7 +2346,6 @@ struct corruption_t : public warlock_spell_t
     generate_fury = 4;
     generate_fury += p -> perk.enhanced_corruption -> effectN( 1 ).base_value();
     base_multiplier *= 1.0 + p -> sets.set( SET_T14_2PC_CASTER ) -> effectN( 1 ).percent();
-    base_multiplier *= 1.0 + p -> sets.set( SET_T13_4PC_CASTER ) -> effectN( 1 ).percent();
     base_multiplier *= 1.0 + p -> perk.improved_corruption -> effectN( 1 ).percent();
     //pulling duration from sub-curruption, since default id has no duration...
     dot_duration = p -> find_spell( 146739 )-> duration();
@@ -2838,7 +2834,6 @@ struct incinerate_t : public warlock_spell_t
     backdraft_consume = 1;
     base_crit += p() -> perk.empowered_incinerate -> effectN( 1 ).percent();
     base_multiplier *= 1.0 + p() -> sets.set( SET_T14_2PC_CASTER ) -> effectN( 2 ).percent();
-    base_multiplier *= 1.0 + p() -> sets.set( SET_T13_4PC_CASTER ) -> effectN( 1 ).percent();
   }
 
   void schedule_execute( action_state_t* state )
@@ -3242,7 +3237,6 @@ struct touch_of_chaos_t : public warlock_spell_t
     warlock_spell_t( "touch_of_chaos", p, p -> find_spell(103964) ),chaos_wave( new chaos_wave_t( p ) )
   {
     base_multiplier *= 1.0 + p -> sets.set( SET_T14_2PC_CASTER ) -> effectN( 3 ).percent();
-    base_multiplier *= 1.0 + p -> sets.set( SET_T13_4PC_CASTER ) -> effectN( 1 ).percent(); // Assumption - need to test whether ToC is affected
     base_multiplier *= 1.0 + p -> perk.improved_touch_of_chaos -> effectN( 1 ).percent();
 
     chaos_wave               -> background = true;
@@ -3959,7 +3953,15 @@ struct cataclysm_t : public warlock_spell_t
             
         }
     }
-    
+    virtual bool ready()
+    {
+        bool r = warlock_spell_t::ready();
+        
+        if ( !p() -> talents.cataclysm -> ok() ) r = false;
+        
+        return r;
+    }
+
 };
     
     
@@ -4184,6 +4186,8 @@ struct summon_main_pet_t : public summon_pet_t
     if ( ( p() -> buffs.soulburn -> check() || p() -> specialization() == WARLOCK_DEMONOLOGY ) && instant_cooldown -> down() )
       return false;
 
+    if ( p() -> talents.demonic_servitude -> ok() ) //if we have the uberpets, we can't summon our standard pets
+        return false;
     return summon_pet_t::ready();
   }
 
@@ -4286,14 +4290,15 @@ struct summon_infernal_t : public summon_pet_t
     harmful = false;
 
     cooldown = p -> cooldowns.infernal;
-    cooldown -> duration = data().cooldown(); // Reset the cooldown duration because we're overriding the duration
-    cooldown -> duration += timespan_t::from_millis( p -> sets.set( SET_T13_2PC_CASTER ) -> effectN( 3 ).base_value() );
-
-    summoning_duration = data().effectN( 2 ).trigger() -> duration();
-    summoning_duration += ( p -> specialization() == WARLOCK_DEMONOLOGY ) ?
-                            timespan_t::from_seconds( p -> sets.set( SET_T13_2PC_CASTER ) -> effectN( 1 ).base_value() ) :
-                            timespan_t::from_seconds( p -> sets.set( SET_T13_2PC_CASTER ) -> effectN( 2 ).base_value() );
-
+    cooldown -> duration = data().cooldown();
+    
+    if ( p -> talents.demonic_servitude -> ok() )
+    {
+          summoning_duration = timespan_t::from_seconds(-1);
+    }
+      else summoning_duration = data().duration();
+      
+    
     infernal_awakening = new infernal_awakening_t( p, data().effectN( 1 ).trigger() );
     infernal_awakening -> stats = stats;
     pet -> summon_stats = stats;
@@ -4317,10 +4322,10 @@ struct summon_doomguard2_t : public summon_pet_t
     background = true;
     dual       = true;
     callbacks  = false;
-    summoning_duration = data().duration();
-    summoning_duration += ( p -> specialization() == WARLOCK_DEMONOLOGY ?
-                            timespan_t::from_seconds( p -> sets.set( SET_T13_2PC_CASTER ) -> effectN( 1 ).base_value() ) :
-                            timespan_t::from_seconds( p -> sets.set( SET_T13_2PC_CASTER ) -> effectN( 2 ).base_value() ) );
+    if ( p -> talents.demonic_servitude -> ok() ){
+          summoning_duration = timespan_t::from_seconds(-1);
+    }
+    else summoning_duration = data().duration();
   }
 };
 
@@ -4333,9 +4338,8 @@ struct summon_doomguard_t : public warlock_spell_t
     summon_doomguard2( 0 )
   {
     cooldown = p -> cooldowns.doomguard;
-    cooldown -> duration = data().cooldown(); // Reset the cooldown duration because we're overriding the duration
-    cooldown -> duration += timespan_t::from_millis( p -> sets.set( SET_T13_2PC_CASTER ) -> effectN( 3 ).base_value() );
-
+    cooldown -> duration = data().cooldown();
+    
     harmful = false;
     summon_doomguard2 = new summon_doomguard2_t( p, data().effectN( 2 ).trigger() );
     summon_doomguard2 -> stats = stats;
@@ -4837,7 +4841,6 @@ void warlock_t::init_spells()
   static const set_bonus_description_t set_bonuses =
   {
     //  C2P    C4P    M2P    M4P    T2P    T4P    H2P    H4P
-    { 105888, 105787,     0,     0,     0,     0,     0,     0 }, // Tier13
     { 123136, 123141,     0,     0,     0,     0,     0,     0 }, // Tier14
     { 138129, 138134,     0,     0,     0,     0,     0,     0 }, // Tier15
     { 145072, 145091,     0,     0,     0,     0,     0,     0 }, // Tier16
@@ -5086,7 +5089,6 @@ void warlock_t::init_gains()
 
   gains.life_tap           = get_gain( "life_tap"     );
   gains.soul_leech         = get_gain( "soul_leech"   );
-  gains.tier13_4pc         = get_gain( "tier13_4pc"   );
   gains.nightfall          = get_gain( "nightfall"    );
   gains.incinerate         = get_gain( "incinerate"   );
   gains.incinerate_fnb     = get_gain( "incinerate_fnb" );
@@ -5475,8 +5477,6 @@ set_e warlock_t::decode_set( const item_t& item ) const
   }
 
   const char* s = item.name();
-
-  if ( strstr( s, "_of_the_faceless_shroud" ) ) return SET_T13_CASTER;
 
   if ( strstr( s, "shaskin_"               ) ) return SET_T14_CASTER;
 
