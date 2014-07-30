@@ -4562,13 +4562,13 @@ void mage_t::apl_arcane()
   default_list -> add_action( "run_action_list,name=aoe,if=active_enemies>=6" );
   default_list -> add_action( "run_action_list,name=single_target,if=active_enemies<6" );
 
-  single_target -> add_talent( this, "Nether Tempest", "cycle_targets=1,if=(!ticking|remains<tick_time)&target.time_to_die>6" );
-  single_target -> add_talent( this, "Living Bomb", "cycle_targets=1,if=(!ticking|remains<tick_time)&target.time_to_die>tick_time*3" );
-  single_target -> add_talent( this, "Frost Bomb", "if=!ticking&target.time_to_die>cast_time+tick_time" );
-  single_target -> add_action( this, "Arcane Blast", "if=set_bonus.tier16_2pc_caster&buff.arcane_missiles.stack<2&buff.arcane_charge.stack=4&buff.profound_magic.stack>=2&mana.pct>90" );
-  single_target -> add_action( this, "Arcane Blast", "if=buff.arcane_missiles.stack<2&buff.arcane_charge.stack=4&buff.profound_magic.up&mana.pct>93" );
-  single_target -> add_action( this, "Arcane Missiles", "if=(buff.arcane_missiles.stack=2&cooldown.arcane_power.remains>0)|(buff.arcane_charge.stack=4&cooldown.arcane_power.remains>4*action.arcane_blast.cast_time)" );
+  single_target -> add_action( this, "Arcane Missiles", "if=buff.arcane_missiles.stack=3&buff.arcane_charge.stack=4" );
+  single_target -> add_talent( this, "Nether Tempest", "if=(!ticking|remains<tick_time)&target.time_to_die>6&buff.arcane_charge.stack=4" );
+  single_target -> add_talent( this, "Supernova", "if=buff.arcane_charge.stack=4" );
+  single_target -> add_action( this, "Arcane Missiles", "if=buff.arcane_charge.stack=4" );
+  single_target -> add_talent( this, "Nether Tempest", "if=remains<9.5&target.time_to_die>6&buff.arcane_charge.stack=4" );
   single_target -> add_action( this, "Arcane Barrage", "if=buff.arcane_charge.stack=4&mana.pct<95" );
+  single_target -> add_talent( this, "Arcane Orb", "if=buff.arcane_charge.stack<=3" );
   single_target -> add_talent( this, "Presence of Mind", "if=cooldown.arcane_power.remains>75" );
   single_target -> add_action( this, "Arcane Blast" );
   single_target -> add_talent( this, "Ice Floes", "moving=1" );
