@@ -3,7 +3,7 @@ level=100
 race=troll
 role=spell
 position=back
-talents=http://us.battle.net/wow/en/tool/talent-calculator#ea!0...101
+talents=http://us.battle.net/wow/en/tool/talent-calculator#ea!0...212
 glyphs=arcane_power
 spec=arcane
 
@@ -34,7 +34,6 @@ actions+=/cold_snap,if=health.pct<30
 actions+=/time_warp,if=target.health.pct<25|time>5
 actions+=/rune_of_power,if=buff.rune_of_power.remains<cast_time
 actions+=/rune_of_power,if=cooldown.arcane_power.remains<gcd&buff.rune_of_power.remains<buff.arcane_power.duration
-actions+=/evocation,if=!talent.invocation.enabled=mana.pct<50,interrupt_if=mana.pct>95
 actions+=/arcane_power,if=time_to_bloodlust>cooldown.arcane_power.duration&((buff.arcane_charge.stack=4)|target.time_to_die<buff.arcane_power.duration+5),moving=0
 actions+=/blood_fury
 actions+=/berserking
@@ -44,14 +43,17 @@ actions+=/use_item,slot=trinket1
 actions+=/run_action_list,name=aoe,if=active_enemies>=6
 actions+=/run_action_list,name=single_target,if=active_enemies<6
 
-actions.single_target=nether_tempest,cycle_targets=1,if=(!ticking|remains<tick_time)&target.time_to_die>6
-actions.single_target+=/arcane_blast,if=set_bonus.tier16_2pc_caster&buff.arcane_missiles.stack<2&buff.arcane_charge.stack=4&buff.profound_magic.stack>=2&mana.pct>90
-actions.single_target+=/arcane_blast,if=buff.arcane_missiles.stack<2&buff.arcane_charge.stack=4&buff.profound_magic.up&mana.pct>93
-actions.single_target+=/arcane_missiles,if=(buff.arcane_missiles.stack=2&cooldown.arcane_power.remains>0)|(buff.arcane_charge.stack=4&cooldown.arcane_power.remains>4*action.arcane_blast.cast_time)
-actions.single_target+=/arcane_barrage,if=buff.arcane_charge.stack=4&mana.pct<95
-actions.single_target+=/arcane_blast
-actions.single_target+=/ice_floes,moving=1
-actions.single_target+=/arcane_barrage,moving=1
+actions.single_target=/Arcane_Missiles,if=buff.arcane_missiles.stack=3&buff.arcane_charge.stack=4
+actions.single_target+=/Nether_Tempest,if=(!ticking|remains<tick_time)&target.time_to_die>6&buff.arcane_charge.stack=4
+actions.single_target+=/Supernova,if=buff.arcane_charge.stack=4
+actions.single_target+=/Arcane_Missiles,if=buff.arcane_charge.stack=4
+actions.single_target+=/Nether_Tempest,if=remains<9.5&target.time_to_die>6&buff.arcane_charge.stack=4
+actions.single_target+=/Arcane_Barrage,if=buff.arcane_charge.stack=4&mana.pct<95
+actions.single_target+=/Arcane_Orb,if=buff.arcane_charge.stack<=3
+actions.single_target+=/Presence_of_Mind,if=cooldown.arcane_power.remains>75
+actions.single_target+=/Arcane_Blast
+actions.single_target+=/Ice_Floes,moving=1
+actions.single_target+=/Arcane_Barrage,moving=1
 
 actions.aoe=nether_tempest,cycle_targets=1,if=(!ticking|remains<tick_time)&target.time_to_die>6
 actions.aoe+=/arcane_barrage,if=buff.arcane_charge.stack=4
