@@ -4808,7 +4808,7 @@ double rogue_t::energy_regen_per_second() const
 
   // TODO: This is actually N% per poisoned targets.
   if ( talent.venom_zest -> ok() )
-    r *= 1.0 + poisoned_enemies * spell.venom_zest -> effectN( 1 ).percent();
+    r *= 1.0 + std::min( poisoned_enemies, 3U ) * spell.venom_zest -> effectN( 1 ).percent();
 
   return r;
 }
