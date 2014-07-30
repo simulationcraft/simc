@@ -1,0 +1,83 @@
+monk="Monk_Windwalker_1h_T17P"
+level=100
+race=troll
+role=dps
+position=back
+talents=http://us.battle.net/wow/en/tool/talent-calculator#fb!0022212
+spec=windwalker
+
+# This default action priority list is automatically created based on your character.
+# It is a attempt to provide you with a action list that is both simple and practicable,
+# while resulting in a meaningful and good simulation. It may not result in the absolutely highest possible dps.
+# Feel free to edit, adapt and improve it to your own needs.
+# SimulationCraft is always looking for updates and improvements to the default action lists.
+
+# Executed before combat begins. Accepts non-harmful actions only.
+
+actions.precombat=flask,type=spring_blossoms
+actions.precombat+=/food,type=sea_mist_rice_noodles
+actions.precombat+=/stance,choose=fierce_tiger
+actions.precombat+=/snapshot_stats
+actions.precombat+=/potion,name=virmens_bite
+
+# Executed every time the actor is available.
+
+actions=auto_attack
+actions+=/chi_sphere,if=talent.power_strikes.enabled&buff.chi_sphere.react&chi<4
+actions+=/potion,name=virmens_bite,if=buff.bloodlust.react|target.time_to_die<=60
+actions+=/berserking
+actions+=/chi_brew,if=talent.chi_brew.enabled&chi<=2&(trinket.proc.agility.react|(charges=1&recharge_time<=10)|charges=2|target.time_to_die<charges*10)
+actions+=/tiger_palm,if=buff.tiger_power.remains<=3
+actions+=/tigereye_brew,if=buff.tigereye_brew_use.down&buff.tigereye_brew.stack=20
+actions+=/tigereye_brew,if=buff.tigereye_brew_use.down&trinket.proc.agility.react
+actions+=/tigereye_brew,if=buff.tigereye_brew_use.down&chi>=2&(trinket.proc.agility.react|trinket.proc.strength.react|buff.tigereye_brew.stack>=15|target.time_to_die<40)&debuff.rising_sun_kick.up&buff.tiger_power.up
+actions+=/energizing_brew,if=energy.time_to_max>5
+actions+=/rising_sun_kick,if=debuff.rising_sun_kick.down
+actions+=/tiger_palm,if=buff.tiger_power.down&debuff.rising_sun_kick.remains>1&energy.time_to_max>1
+actions+=/invoke_xuen,if=talent.invoke_xuen.enabled
+actions+=/run_action_list,name=aoe,if=active_enemies>=3
+actions+=/run_action_list,name=single_target,if=active_enemies<3
+
+actions.aoe=rushing_jade_wind,if=talent.rushing_jade_wind.enabled
+actions.aoe+=/zen_sphere,cycle_targets=1,if=talent.zen_sphere.enabled&!dot.zen_sphere.ticking
+actions.aoe+=/chi_wave,if=talent.chi_wave.enabled
+actions.aoe+=/chi_burst,if=talent.chi_burst.enabled
+actions.aoe+=/rising_sun_kick,if=chi=chi.max
+actions.aoe+=/spinning_crane_kick,if=!talent.rushing_jade_wind.enabled
+
+actions.single_target=fists_of_fury,if=energy.time_to_max>4&buff.tiger_power.remains>4&debuff.rising_sun_kick.remains>4
+actions.single_target+=/rising_sun_kick
+actions.single_target+=/chi_wave,if=talent.chi_wave.enabled&energy.time_to_max>2
+actions.single_target+=/chi_burst,if=talent.chi_burst.enabled&energy.time_to_max>2
+actions.single_target+=/zen_sphere,cycle_targets=1,if=talent.zen_sphere.enabled&energy.time_to_max>2&!dot.zen_sphere.ticking
+actions.single_target+=/blackout_kick,if=buff.combo_breaker_bok.react
+actions.single_target+=/tiger_palm,if=buff.combo_breaker_tp.react&(buff.combo_breaker_tp.remains<=2|energy.time_to_max>=2)
+actions.single_target+=/jab,if=chi.max-chi>=2
+actions.single_target+=/blackout_kick,if=energy+energy.regen*cooldown.rising_sun_kick.remains>=40
+
+head=primal_gladiators_helm,id=111275
+neck=primal_gladiators_necklace_of_cruelty,id=111079,enchant=gift_of_multistrike
+shoulders=primal_gladiators_spaulders,id=111277
+back=primal_gladiators_cape_of_cruelty,id=111077,enchant=gift_of_multistrike
+chest=primal_gladiators_tunic,id=111273
+wrists=primal_gladiators_bindings_of_victory,id=111149
+hands=primal_gladiators_gloves,id=111274
+waist=primal_gladiators_belt_of_prowess,id=111141
+legs=primal_gladiators_legguards,id=111276
+feet=primal_gladiators_boots_of_prowess,id=111145
+finger1=primal_gladiators_ring_of_cruelty,id=111081,enchant=gift_of_multistrike
+finger2=primal_gladiators_ring_of_prowess,id=111082,enchant=gift_of_multistrike
+trinket1=primal_gladiators_insignia_of_conquest,id=111223
+trinket2=primal_gladiators_badge_of_conquest,id=111222
+main_hand=primal_gladiators_ripper,id=115596,enchant=mark_of_the_frostwolf
+off_hand=primal_gladiators_ripper,id=115596,enchant=mark_of_the_frostwolf
+
+# Gear Summary
+# gear_agility=2553
+# gear_stamina=3197
+# gear_crit_rating=1002
+# gear_haste_rating=541
+# gear_mastery_rating=861
+# gear_armor=877
+# gear_multistrike_rating=899
+# gear_versatility_rating=77

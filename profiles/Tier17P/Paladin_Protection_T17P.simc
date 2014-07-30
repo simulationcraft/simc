@@ -1,0 +1,79 @@
+paladin="Paladin_Protection_T17P"
+level=100
+race=blood_elf
+role=tank
+position=front
+talents=http://us.battle.net/wow/en/tool/talent-calculator#bZ!2011212
+glyphs=focused_shield/alabaster_shield/divine_protection
+spec=protection
+
+# This default action priority list is automatically created based on your character.
+# It is a attempt to provide you with a action list that is both simple and practicable,
+# while resulting in a meaningful and good simulation. It may not result in the absolutely highest possible dps.
+# Feel free to edit, adapt and improve it to your own needs.
+# SimulationCraft is always looking for updates and improvements to the default action lists.
+
+# Executed before combat begins. Accepts non-harmful actions only.
+
+actions.precombat=flask,type=greater_draenic_haste_flask
+actions.precombat+=/food,type=frosty_stew
+actions.precombat+=/blessing_of_kings,if=(!aura.str_agi_int.up)&(aura.mastery.up)
+actions.precombat+=/blessing_of_might,if=!aura.mastery.up
+actions.precombat+=/seal_of_insight
+actions.precombat+=/sacred_shield
+# Snapshot raid buffed stats before combat begins and pre-potting is done.
+actions.precombat+=/snapshot_stats
+
+# Executed every time the actor is available.
+
+actions=/auto_attack
+actions+=/speed_of_light,if=movement.remains>1
+actions+=//use_item,name=primal_gladiators_badge_of_victory
+actions+=/blood_fury
+actions+=/berserking
+actions+=/arcane_torrent
+actions+=/holy_avenger
+actions+=/divine_protection
+actions+=/guardian_of_ancient_kings,if=buff.holy_avenger.down&buff.shield_of_the_righteous.down&buff.divine_protection.down
+actions+=/ardent_defender,if=buff.holy_avenger.down&buff.shield_of_the_righteous.down&buff.divine_protection.down&buff.guardian_of_ancient_kings.down
+actions+=/eternal_flame,if=buff.eternal_flame.remains<2&buff.bastion_of_glory.react>2&(holy_power>=3|buff.divine_purpose.react|buff.bastion_of_power.react)
+actions+=/eternal_flame,if=buff.bastion_of_power.react&buff.bastion_of_glory.react>=5
+actions+=/shield_of_the_righteous,if=holy_power>=5|buff.divine_purpose.react|incoming_damage_1500ms>=health.max*0.3
+actions+=/crusader_strike
+actions+=/judgment
+actions+=/avengers_shield
+actions+=/sacred_shield,if=target.dot.sacred_shield.remains<5
+actions+=/holy_wrath
+actions+=/execution_sentence
+actions+=/lights_hammer
+actions+=/hammer_of_wrath
+actions+=/consecration,if=target.debuff.flying.down&!ticking
+actions+=/holy_prism
+actions+=/sacred_shield
+
+head=primal_gladiators_plate_helm,id=111211
+neck=primal_gladiators_choker_of_cruelty,id=111207,enchant=gift_of_haste
+shoulders=primal_gladiators_plate_shoulders,id=111213
+back=primal_gladiators_cloak_of_prowess,id=111206,enchant=gift_of_haste
+chest=primal_gladiators_plate_chestpiece,id=111209
+wrists=primal_gladiators_armplates_of_victory,id=111182
+hands=primal_gladiators_plate_gauntlets,id=111210
+waist=primal_gladiators_girdle_of_cruelty,id=111174
+legs=primal_gladiators_plate_legguards,id=111212
+feet=primal_gladiators_warboots_of_prowess,id=111178
+finger1=primal_gladiators_signet_of_cruelty,id=111219,enchant=gift_of_haste
+finger2=primal_gladiators_signet_of_accuracy,id=111220,enchant=gift_of_haste
+trinket1=primal_gladiators_badge_of_victory,id=111232
+trinket2=primal_gladiators_insignia_of_victory,id=111233
+main_hand=primal_gladiators_hacker,id=111198,enchant=mark_of_warsong
+off_hand=primal_gladiators_shield_wall,id=111221
+
+# Gear Summary
+# gear_strength=2584
+# gear_stamina=3245
+# gear_crit_rating=1011
+# gear_haste_rating=910
+# gear_mastery_rating=576
+# gear_armor=4366
+# gear_multistrike_rating=701
+# gear_versatility_rating=224

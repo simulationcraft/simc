@@ -1,0 +1,86 @@
+mage="Mage_Arcane_T17P"
+level=100
+race=troll
+role=spell
+position=back
+talents=http://us.battle.net/wow/en/tool/talent-calculator#ea!0...101
+glyphs=arcane_power
+spec=arcane
+
+# This default action priority list is automatically created based on your character.
+# It is a attempt to provide you with a action list that is both simple and practicable,
+# while resulting in a meaningful and good simulation. It may not result in the absolutely highest possible dps.
+# Feel free to edit, adapt and improve it to your own needs.
+# SimulationCraft is always looking for updates and improvements to the default action lists.
+
+# Executed before combat begins. Accepts non-harmful actions only.
+
+actions.precombat=flask,type=greater_draenic_mastery_flask
+actions.precombat+=/food,type=sleeper_surprise
+actions.precombat+=/arcane_brilliance
+actions.precombat+=/mage_armor
+actions.precombat+=/snapshot_stats
+actions.precombat+=/rune_of_power
+actions.precombat+=/mirror_image
+actions.precombat+=/potion,name=draenic_intellect
+actions.precombat+=/arcane_blast
+
+# Executed every time the actor is available.
+
+actions=counterspell,if=target.debuff.casting.react
+actions+=/blink,if=movement.distance>10
+actions+=/blazing_speed,if=movement.remains>0
+actions+=/cold_snap,if=health.pct<30
+actions+=/time_warp,if=target.health.pct<25|time>5
+actions+=/rune_of_power,if=buff.rune_of_power.remains<cast_time
+actions+=/rune_of_power,if=cooldown.arcane_power.remains<gcd&buff.rune_of_power.remains<buff.arcane_power.duration
+actions+=/evocation,if=!talent.invocation.enabled=mana.pct<50,interrupt_if=mana.pct>95
+actions+=/arcane_power,if=time_to_bloodlust>cooldown.arcane_power.duration&((buff.arcane_charge.stack=4)|target.time_to_die<buff.arcane_power.duration+5),moving=0
+actions+=/blood_fury
+actions+=/berserking
+actions+=/arcane_torrent
+actions+=/potion,name=draenic_intellect,if=buff.arcane_power.up|target.time_to_die<50
+actions+=/use_item,slot=trinket1
+actions+=/run_action_list,name=aoe,if=active_enemies>=6
+actions+=/run_action_list,name=single_target,if=active_enemies<6
+
+actions.single_target=nether_tempest,cycle_targets=1,if=(!ticking|remains<tick_time)&target.time_to_die>6
+actions.single_target+=/arcane_blast,if=set_bonus.tier16_2pc_caster&buff.arcane_missiles.stack<2&buff.arcane_charge.stack=4&buff.profound_magic.stack>=2&mana.pct>90
+actions.single_target+=/arcane_blast,if=buff.arcane_missiles.stack<2&buff.arcane_charge.stack=4&buff.profound_magic.up&mana.pct>93
+actions.single_target+=/arcane_missiles,if=(buff.arcane_missiles.stack=2&cooldown.arcane_power.remains>0)|(buff.arcane_charge.stack=4&cooldown.arcane_power.remains>4*action.arcane_blast.cast_time)
+actions.single_target+=/arcane_barrage,if=buff.arcane_charge.stack=4&mana.pct<95
+actions.single_target+=/arcane_blast
+actions.single_target+=/ice_floes,moving=1
+actions.single_target+=/arcane_barrage,moving=1
+
+actions.aoe=nether_tempest,cycle_targets=1,if=(!ticking|remains<tick_time)&target.time_to_die>6
+actions.aoe+=/arcane_barrage,if=buff.arcane_charge.stack=4
+actions.aoe+=/arcane_explosion
+
+head=primal_gladiators_hood_of_prowess,id=111084
+neck=primal_gladiators_pendant_of_cruelty,id=111128,enchant=gift_of_mastery
+shoulders=primal_gladiators_felweave_amice,id=111238
+back=primal_gladiators_drape_of_cruelty,id=111124,enchant=gift_of_mastery
+chest=primal_gladiators_felweave_raiment,id=111237
+wrists=primal_gladiators_cuffs_of_prowess,id=111099
+hands=primal_gladiators_felweave_handguards,id=111234
+waist=primal_gladiators_cord_of_victory,id=111095
+legs=primal_gladiators_felweave_trousers,id=111236
+feet=primal_gladiators_treads_of_cruelty,id=111096
+finger1=primal_gladiators_band_of_victory,id=111136,enchant=gift_of_mastery
+finger2=primal_gladiators_band_of_cruelty,id=111134,enchant=gift_of_mastery
+trinket1=primal_gladiators_badge_of_dominance,id=111227
+trinket2=primal_gladiators_insignia_of_dominance,id=111228
+main_hand=primal_gladiators_mageblade,id=111119,enchant=mark_of_warsong
+off_hand=primal_gladiators_endgame,id=111132
+
+# Gear Summary
+# gear_stamina=3245
+# gear_intellect=2584
+# gear_spell_power=1244
+# gear_crit_rating=905
+# gear_haste_rating=452
+# gear_mastery_rating=1662
+# gear_armor=600
+# gear_multistrike_rating=301
+# gear_versatility_rating=102
