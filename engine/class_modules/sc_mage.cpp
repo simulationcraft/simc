@@ -2402,9 +2402,9 @@ struct frostbolt_t : public mage_spell_t
     int sm = mage_spell_t::schedule_multistrike( s, dmg_type, tick_multiplier );
 
     if ( sm == 1 )
-      bf_proc_chance += 0.45;
+      bf_proc_chance += p() -> spec.brain_freeze -> effectN( 2 ).percent();
     if ( sm == 2 )
-      bf_proc_chance += 0.90;
+      bf_proc_chance +=  ( p() -> spec.brain_freeze -> effectN( 2 ).percent() * 2 );
     return sm;
   }
 
