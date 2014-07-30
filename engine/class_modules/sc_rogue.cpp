@@ -2698,7 +2698,8 @@ struct death_from_above_t : public rogue_attack_t
   eviscerate_t* eviscerate;
   death_from_above_t( rogue_t* p, const std::string& options_str ) :
     rogue_attack_t( "death_from_above", p, p -> talent.death_from_above, options_str ),
-    envenom( 0 ), eviscerate( 0 )
+    envenom( p -> specialization() == ROGUE_ASSASSINATION ? new envenom_t( p, "" ) : 0 ),
+    eviscerate( p -> specialization() != ROGUE_ASSASSINATION ? new eviscerate_t( p, "" ) : 0 )
   {
     weapon = &( p -> main_hand_weapon );
     weapon_multiplier = 0;
@@ -2735,20 +2736,14 @@ struct death_from_above_t : public rogue_attack_t
     if ( ! td -> combo_points.count )
       return;
 
-    if ( p() -> specialization() == ROGUE_ASSASSINATION && envenom )
+    if ( envenom )
       envenom -> execute();
     else if ( eviscerate )
       eviscerate -> execute();
+    else
+      assert( 0 );
 
     p() -> buffs.death_from_above -> expire();
-  }
-
-  void init()
-  {
-    rogue_attack_t::init();
-
-    envenom = debug_cast<envenom_t*>( p() -> find_action( "envenom" ) );
-    eviscerate = debug_cast<eviscerate_t*>( p() -> find_action( "eviscerate" ) );
   }
 };
 
