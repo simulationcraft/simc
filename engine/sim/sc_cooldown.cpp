@@ -10,11 +10,12 @@ namespace { // UNNAMED NAMESPACE
 struct recharge_event_t : event_t
 {
   cooldown_t* cooldown;
+  timespan_t duration;
 
-  recharge_event_t( player_t& p, cooldown_t* cd, timespan_t delay = timespan_t::zero() ) :
-    event_t( p, "recharge_event" ), cooldown( cd )
+  recharge_event_t( player_t& p, cooldown_t* cd, timespan_t cooldown_, timespan_t delay = timespan_t::zero() ) :
+    event_t( p, "recharge_event" ), cooldown( cd ), duration( cooldown_ )
   {
-    sim().add_event( this, cd -> duration * cd -> get_recharge_multiplier() + delay );
+    sim().add_event( this, cooldown_ * cooldown -> get_recharge_multiplier() + delay );
   }
 
   virtual void execute()
@@ -24,7 +25,7 @@ struct recharge_event_t : event_t
 
     if ( cooldown -> current_charge < cooldown -> charges )
     {
-      cooldown -> recharge_event = new ( sim() ) recharge_event_t( *p(), cooldown );
+      cooldown -> recharge_event = new ( sim() ) recharge_event_t( *p(), cooldown, duration * cooldown -> get_recharge_multiplier() );
     }
     else
     {
@@ -128,11 +129,13 @@ void cooldown_t::start( timespan_t _override, timespan_t delay )
 
       if ( current_charge == charges - 1 )
       {
-        recharge_event = new ( sim ) recharge_event_t( *player, this, delay );
+        recharge_event = new ( sim ) recharge_event_t( *player, this, _override, delay );
       }
       else if ( current_charge == 0 )
       {
         assert( recharge_event );
+        // TODO-WOD: How does this actually work w/ regards to refreshing the recharge time?
+        debug_cast<recharge_event_t*>( recharge_event ) -> duration = _override;
         ready = recharge_event -> occurs() + timespan_t::from_millis( 1 );
       }
     }
