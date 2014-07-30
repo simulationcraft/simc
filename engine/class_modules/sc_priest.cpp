@@ -257,7 +257,9 @@ public:
     proc_t* divine_insight;
     proc_t* divine_insight_overflow;
     proc_t* shadowy_insight;
-    proc_t* shadowy_insight_shadow_overflow;
+    proc_t* shadowy_insight_from_mind_spike;
+    proc_t* shadowy_insight_from_shadow_word_pain;
+    proc_t* shadowy_insight_overflow;
     proc_t* mind_spike_dot_removal;
     proc_t* mind_spike_dot_removal_devouring_plague;
     proc_t* mind_spike_dot_removal_devouring_plague_ticks;
@@ -273,6 +275,8 @@ public:
     proc_t* serendipity_overflow;
     proc_t* shadowy_apparition;
     proc_t* surge_of_darkness;
+    proc_t* surge_of_darkness_from_devouring_plague;
+    proc_t* surge_of_darkness_from_vampiric_touch;
     proc_t* surge_of_darkness_overflow;
     proc_t* surge_of_light;
     proc_t* surge_of_light_overflow;
@@ -984,7 +988,7 @@ public:
   priest_td_t& get_td( player_t* t ) const
   { return *( priest.get_target_data( t ) ); }
 
-  void trigger_shadowy_insight()
+  bool trigger_shadowy_insight()
   {
     int stack = priest.buffs.shadowy_insight -> check();
     if ( priest.buffs.shadowy_insight -> trigger() )
@@ -992,13 +996,15 @@ public:
       priest.cooldowns.mind_blast -> reset( true );
 
       if ( priest.buffs.shadowy_insight -> check() == stack )
-        priest.procs.shadowy_insight_shadow_overflow -> occur();
+        priest.procs.shadowy_insight_overflow -> occur();
       else
         priest.procs.shadowy_insight -> occur();
+      return true;
     }
+    return false;
   }
 
-  void trigger_divine_insight()
+  bool trigger_divine_insight()
   {
     int stack = priest.buffs.divine_insight -> check();
     if ( priest.buffs.divine_insight -> trigger() )
@@ -1007,10 +1013,12 @@ public:
         priest.procs.divine_insight_overflow -> occur();
       else
         priest.procs.divine_insight -> occur();
+      return true;
     }
+    return false;
   }
 
-  void trigger_surge_of_light()
+  bool trigger_surge_of_light()
   {
     int stack = priest.buffs.surge_of_light -> check();
     if ( priest.buffs.surge_of_light -> trigger() )
@@ -1019,7 +1027,9 @@ public:
         priest.procs.surge_of_light_overflow -> occur();
       else
         priest.procs.surge_of_light -> occur();
+      return true;
     }
+    return false;
   }
 
   virtual void schedule_execute( action_state_t* state = 0 ) override
@@ -1618,7 +1628,7 @@ struct priest_spell_t : public priest_action_t<spell_t>
       priest.buffs.insanity -> trigger(1, 0, 1, timespan_t::from_seconds( 2.0 * orbs * s -> haste ) );
   }
 
-  void trigger_surge_of_darkness( bool overrideProcChance = false ) //false = use VT, true = override for DP. This is a stopgap until new DBC data is released that we can tie off of. -Twintop 2014/07/29
+  bool trigger_surge_of_darkness( bool overrideProcChance = false ) //false = use VT, true = override for DP. This is a stopgap until new DBC data is released that we can tie off of. -Twintop 2014/07/29
   {
     int stack = priest.buffs.surge_of_darkness -> check();
 
@@ -1626,24 +1636,30 @@ struct priest_spell_t : public priest_action_t<spell_t>
     {
       if ( priest.talents.surge_of_darkness -> ok() && rng().roll( 0.1 ) )
       {
+        priest.procs.surge_of_darkness_from_devouring_plague -> occur();
         priest.buffs.surge_of_darkness -> execute();
 
         if ( priest.buffs.surge_of_darkness -> check() == stack )
           priest.procs.surge_of_darkness_overflow -> occur();
         else
           priest.procs.surge_of_darkness -> occur();
+        return true;
       }
     }
     else
     {
       if ( priest.buffs.surge_of_darkness -> trigger() )
       {
+        priest.procs.surge_of_darkness_from_vampiric_touch -> occur();
+
         if ( priest.buffs.surge_of_darkness -> check() == stack )
           priest.procs.surge_of_darkness_overflow -> occur();
         else
           priest.procs.surge_of_darkness -> occur();
+        return true;
       }
     }
+    return false;
   }
 };
 
@@ -2526,7 +2542,8 @@ struct mind_spike_t final : public priest_spell_t
         priest.buffs.glyph_mind_spike -> trigger();
       }
 
-      trigger_shadowy_insight();
+      if ( trigger_shadowy_insight() )
+        priest.procs.shadowy_insight_from_mind_spike -> occur();
     }
   }
 
@@ -2826,6 +2843,7 @@ struct devouring_plague_t final : public priest_spell_t
       hasted_ticks = true;
       tick_may_crit = false;
       may_multistrike = false;
+      tick_zero = false;
 
       base_dd_min = base_dd_max = spell_power_mod.tick = spell_power_mod.direct = 0.0;
 
@@ -2900,7 +2918,6 @@ struct devouring_plague_t final : public priest_spell_t
 
       s -> result_amount = 0.0;
       priest_spell_t::impact( s );
-
 
       dot_t* dot = get_dot( state -> target );
       dp_state_t* ds = static_cast<dp_state_t*>( dot -> state );
@@ -3219,7 +3236,8 @@ struct shadow_word_pain_t final : public priest_spell_t
     }
 
     if ( d -> state -> result_amount > 0 )
-      trigger_shadowy_insight();
+        if ( trigger_shadowy_insight() )
+          priest.procs.shadowy_insight_from_shadow_word_pain -> occur();
   }
 };
 
@@ -5203,8 +5221,12 @@ void priest_t::create_procs()
   procs.divine_insight                                  = get_proc( "Divine Insight Instant Prayer of Mending"                     );
   procs.divine_insight_overflow                         = get_proc( "Divine Insight Instant Prayer of Mending lost to overflow"    );
   procs.shadowy_insight                                 = get_proc( "Shadowy Insight Mind Blast CD Reset"                          );
-  procs.shadowy_insight_shadow_overflow                 = get_proc( "Shadowy Insight Mind Blast CD Reset lost to overflow"         );
+  procs.shadowy_insight_from_mind_spike                 = get_proc( "Shadowy Insight Mind Blast CD Reset from Mind Spike"          );
+  procs.shadowy_insight_from_shadow_word_pain           = get_proc( "Shadowy Insight Mind Blast CD Reset from Shadow Word: Pain"   );
+  procs.shadowy_insight_overflow                        = get_proc( "Shadowy Insight Mind Blast CD Reset lost to overflow"         );
   procs.surge_of_darkness                               = get_proc( "Surge of Darkness"                                            );
+  procs.surge_of_darkness_from_devouring_plague         = get_proc( "Surge of Darkness from Devouring Plague"                      );
+  procs.surge_of_darkness_from_vampiric_touch           = get_proc( "Surge of Darkness from Vampiric Touch"                        );
   procs.surge_of_darkness_overflow                      = get_proc( "Surge of Darkness lost to overflow"                           );
   procs.surge_of_light                                  = get_proc( "Surge of Light"                                               );
   procs.surge_of_light_overflow                         = get_proc( "Surge of Light lost to overflow"                              );
