@@ -1628,36 +1628,19 @@ struct priest_spell_t : public priest_action_t<spell_t>
       priest.buffs.insanity -> trigger(1, 0, 1, timespan_t::from_seconds( 2.0 * orbs * s -> haste ) );
   }
 
-  bool trigger_surge_of_darkness( bool overrideProcChance = false ) //false = use VT, true = override for DP. This is a stopgap until new DBC data is released that we can tie off of. -Twintop 2014/07/29
+  bool trigger_surge_of_darkness()
   {
     int stack = priest.buffs.surge_of_darkness -> check();
 
-    if ( overrideProcChance )
+    if ( priest.talents.surge_of_darkness -> ok() && rng().roll( 0.1 ) )
     {
-      if ( priest.talents.surge_of_darkness -> ok() && rng().roll( 0.1 ) )
-      {
-        priest.procs.surge_of_darkness_from_devouring_plague -> occur();
-        priest.buffs.surge_of_darkness -> execute();
+      priest.buffs.surge_of_darkness -> execute();
 
-        if ( priest.buffs.surge_of_darkness -> check() == stack )
-          priest.procs.surge_of_darkness_overflow -> occur();
-        else
-          priest.procs.surge_of_darkness -> occur();
-        return true;
-      }
-    }
-    else
-    {
-      if ( priest.buffs.surge_of_darkness -> trigger() )
-      {
-        priest.procs.surge_of_darkness_from_vampiric_touch -> occur();
-
-        if ( priest.buffs.surge_of_darkness -> check() == stack )
-          priest.procs.surge_of_darkness_overflow -> occur();
-        else
-          priest.procs.surge_of_darkness -> occur();
-        return true;
-      }
+      if ( priest.buffs.surge_of_darkness -> check() == stack )
+        priest.procs.surge_of_darkness_overflow -> occur();
+      else
+        priest.procs.surge_of_darkness -> occur();
+      return true;
     }
     return false;
   }
@@ -2940,7 +2923,8 @@ struct devouring_plague_t final : public priest_spell_t
 
       priest.buffs.mental_instinct -> trigger();
 
-      trigger_surge_of_darkness( true );
+      if ( trigger_surge_of_darkness() )
+        priest.procs.surge_of_darkness_from_devouring_plague -> occur();
     }
 
     virtual timespan_t calculate_dot_refresh_duration( const dot_t* dot, timespan_t triggered_duration ) const override
@@ -3293,7 +3277,8 @@ struct vampiric_touch_t final : public priest_spell_t
   {
     priest_spell_t::tick( d );
 
-    trigger_surge_of_darkness( false );
+    if ( trigger_surge_of_darkness() )
+      priest.procs.surge_of_darkness_from_vampiric_touch -> occur();
 
     if ( priest.sets.has_set_bonus( SET_T15_4PC_CASTER ) )
     {
