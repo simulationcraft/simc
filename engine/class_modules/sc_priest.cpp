@@ -1615,10 +1615,7 @@ struct priest_spell_t : public priest_action_t<spell_t>
   void trigger_insanity( action_state_t* s, int orbs )
   {
     if ( priest.talents.insanity -> ok() )
-    {
-      //shadow_orb_state_t* state = debug_cast<shadow_orb_state_t*>( s );
       priest.buffs.insanity -> trigger(1, 0, 1, timespan_t::from_seconds( 2.0 * orbs * s -> haste ) );
-    }
   }
 
   void trigger_surge_of_darkness( bool overrideProcChance = false ) //false = use VT, true = override for DP. This is a stopgap until new DBC data is released that we can tie off of. -Twintop 2014/07/29
@@ -2926,7 +2923,7 @@ struct devouring_plague_t final : public priest_spell_t
 
       priest.buffs.mental_instinct -> trigger();
 
-      trigger_surge_of_darkness( false );
+      trigger_surge_of_darkness( true );
     }
 
     virtual timespan_t calculate_dot_refresh_duration( const dot_t* dot, timespan_t triggered_duration ) const override
@@ -3278,7 +3275,7 @@ struct vampiric_touch_t final : public priest_spell_t
   {
     priest_spell_t::tick( d );
 
-    trigger_surge_of_darkness( true );
+    trigger_surge_of_darkness( false );
 
     if ( priest.sets.has_set_bonus( SET_T15_4PC_CASTER ) )
     {
@@ -6092,7 +6089,12 @@ void priest_t::apl_precombat()
           break;
         case PRIEST_SHADOW:
         default:
-          flask_action += "greater_draenic_haste_flask";
+          if ( talents.clarity_of_power -> ok() )
+            flask_action += "greater_draenic_mastery_flask";
+          else if ( talents.auspicious_spirits -> ok() )
+            flask_action += "greater_draenic_critical_strike_flask";
+          else
+            flask_action += "greater_draenic_haste_flask";
           break;
       }
     }
@@ -6121,7 +6123,12 @@ void priest_t::apl_precombat()
           break;
         case PRIEST_SHADOW:
         default:
-          food_action += "frosty_stew";
+          if ( talents.clarity_of_power -> ok() )
+            food_action += "sleeper_surprise";
+          else if ( talents.auspicious_spirits -> ok() )
+            food_action += "blackrock_barbecue";
+          else
+            food_action += "frosty_stew";
           break;
       }
     }
