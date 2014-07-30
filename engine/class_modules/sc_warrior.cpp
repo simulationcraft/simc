@@ -1959,6 +1959,7 @@ struct heroic_charge_t: public warrior_attack_t
   heroic_charge_t( warrior_t* p, const std::string& options_str ):
     warrior_attack_t( "heroic_charge", p, spell_data_t::nil() )
   {
+    parse_options( NULL, options_str );
     stancemask = STANCE_DEFENSE | STANCE_GLADIATOR | STANCE_BATTLE;
     leap = new heroic_leap_t( p, options_str );
     charge = new charge_t( p, options_str );
