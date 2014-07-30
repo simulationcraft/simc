@@ -1,0 +1,79 @@
+warlock="Warlock_Destruction_T17N"
+level=100
+race=troll
+role=spell
+position=back
+talents=http://us.battle.net/wow/en/tool/talent-calculator#Vb!....000
+spec=destruction
+
+# This default action priority list is automatically created based on your character.
+# It is a attempt to provide you with a action list that is both simple and practicable,
+# while resulting in a meaningful and good simulation. It may not result in the absolutely highest possible dps.
+# Feel free to edit, adapt and improve it to your own needs.
+# SimulationCraft is always looking for updates and improvements to the default action lists.
+
+# Executed before combat begins. Accepts non-harmful actions only.
+
+actions.precombat=flask,type=greater_draenic_mastery_flask
+actions.precombat+=/food,type=mogu_fish_stew
+actions.precombat+=/dark_intent,if=!aura.spell_power_multiplier.up
+actions.precombat+=/summon_pet,if=!talent.grimoire_of_sacrifice.enabled|buff.grimoire_of_sacrifice.down
+actions.precombat+=/snapshot_stats
+actions.precombat+=/grimoire_of_sacrifice,if=talent.grimoire_of_sacrifice.enabled
+actions.precombat+=/service_pet,if=talent.grimoire_of_service.enabled
+actions.precombat+=/potion,name=draenic_intellect
+
+# Executed every time the actor is available.
+
+actions=use_item,name=primal_gladiators_badge_of_dominance
+actions+=/potion,name=draenic_intellect,if=buff.bloodlust.react|target.health.pct<=20
+actions+=/berserking
+actions+=/dark_soul,if=!talent.archimondes_darkness.enabled|(talent.archimondes_darkness.enabled&(charges=2|trinket.proc.intellect.react|trinket.stacking_proc.intellect.react|target.health.pct<=10))
+actions+=/service_pet,if=talent.grimoire_of_service.enabled
+actions+=/run_action_list,name=aoe,if=active_enemies>3
+actions+=/summon_doomguard
+actions+=/shadowburn,if=(burning_ember>3.5|mana.pct<=20|target.time_to_die<20|trinket.proc.intellect.react|(trinket.stacking_proc.intellect.remains<cast_time*4&trinket.stacking_proc.intellect.remains>cast_time))
+actions+=/immolate,if=miss_react&remains<=(duration*0.3)
+actions+=/conflagrate,if=charges=2
+actions+=/chaos_bolt,if=target.health.pct>20&(buff.backdraft.stack<3|level<86|(active_enemies>1&action.incinerate.cast_time<1))&(burning_ember>(4.5-active_enemies)|(trinket.proc.intellect.react&trinket.proc.intellect.remains>cast_time)|(trinket.stacking_proc.intellect.remains<cast_time*2.5&trinket.stacking_proc.intellect.remains>cast_time))
+actions+=/conflagrate
+actions+=/incinerate
+
+actions.aoe=summon_infernal
+actions.aoe+=/rain_of_fire,if=!ticking&!in_flight
+actions.aoe+=/fire_and_brimstone,if=ember_react&buff.fire_and_brimstone.down
+actions.aoe+=/immolate,if=buff.fire_and_brimstone.up&!ticking
+actions.aoe+=/conflagrate,if=buff.fire_and_brimstone.up
+actions.aoe+=/incinerate,if=buff.fire_and_brimstone.up
+actions.aoe+=/incinerate
+
+head=primal_gladiators_hood_of_prowess,id=111084
+neck=primal_gladiators_pendant_of_cruelty,id=111128,enchant=gift_of_multistrike
+shoulders=primal_gladiators_felweave_amice,id=111238
+back=primal_gladiators_drape_of_cruelty,id=111124,enchant=gift_of_multistrike
+chest=primal_gladiators_felweave_raiment,id=111237
+wrists=primal_gladiators_cuffs_of_prowess,id=111099
+hands=primal_gladiators_felweave_handguards,id=111234
+waist=primal_gladiators_cord_of_victory,id=111095
+legs=primal_gladiators_felweave_trousers,id=111236
+feet=primal_gladiators_treads_of_cruelty,id=111096
+finger1=primal_gladiators_band_of_victory,id=111136,enchant=gift_of_multistrike
+finger2=primal_gladiators_band_of_cruelty,id=111134,enchant=gift_of_multistrike
+trinket1=primal_gladiators_badge_of_dominance,id=111227
+trinket2=primal_gladiators_insignia_of_dominance,id=111228
+main_hand=primal_gladiators_mageblade,id=111119,enchant=mark_of_warsong
+off_hand=primal_gladiators_endgame,id=111132
+
+# Gear Summary
+# gear_stamina=3245
+# gear_intellect=2584
+# gear_spell_power=1244
+# gear_crit_rating=905
+# gear_haste_rating=452
+# gear_mastery_rating=1122
+# gear_armor=600
+# gear_multistrike_rating=841
+# gear_versatility_rating=102
+# pvp_2pc_caster=1
+# pvp_4pc_caster=1
+default_pet=felhunter
