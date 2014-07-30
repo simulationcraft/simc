@@ -3816,8 +3816,8 @@ struct blood_boil_spread_t : public death_knight_spell_t
     death_knight_spell_t( "blood_boil_spread", p, spell_data_t::nil() ),
     bp( 0 ), ff( 0 ), np( 0 )
   {
-    harmful = may_miss = proc = callbacks = may_crit = may_dodge = may_parry = may_glance = false;
-    dual = quiet = background = true;
+    harmful = may_miss = callbacks = may_crit = may_dodge = may_parry = may_glance = false;
+    dual = quiet = background = proc = true;
     aoe = -1;
   }
 
@@ -3825,9 +3825,9 @@ struct blood_boil_spread_t : public death_knight_spell_t
   {
     bp = ff = np = 0;
 
-    for ( size_t i = 0, end = sim -> target_non_sleeping_list.size(); i < end; i++ )
+    for ( size_t i = 0, end = target_list().size(); i < end; i++ )
     {
-      player_t* actor = sim -> target_non_sleeping_list[ i ];
+      player_t* actor = target_list()[ i ];
       death_knight_td_t* tdata = td( actor );
 
       if ( tdata -> dots_blood_plague -> is_ticking() && ( ! bp || tdata -> dots_blood_plague -> remains() > bp -> remains() ) )
@@ -3899,7 +3899,7 @@ struct blood_boil_spread_t : public death_knight_spell_t
       }
     }
     // No Scent of Blood -> copy the longest duration BP/FF/NP to all targets.
-    // The dots have (individually) been selected earlier (in execute()).  
+    // The dots have (individually) been selected earlier (in execute()).
     else
     {
       death_knight_td_t* tdata = td( s -> target );
@@ -3912,7 +3912,7 @@ struct blood_boil_spread_t : public death_knight_spell_t
               player -> name(), bp -> state -> target -> name(), s -> target -> name() );
         if ( tdata -> dots_blood_plague -> is_ticking() )
           tdata -> dots_blood_plague -> cancel();
-        bp -> copy( s -> target );
+        bp -> copy( s -> target, DOT_COPY_CLONE );
       }
 
       // Spread Frost Fever
@@ -3923,7 +3923,7 @@ struct blood_boil_spread_t : public death_knight_spell_t
               player -> name(), ff -> state -> target -> name(), s -> target -> name() );
         if ( tdata -> dots_frost_fever -> is_ticking() )
           tdata -> dots_frost_fever -> cancel();
-        ff -> copy( s -> target );
+        ff -> copy( s -> target, DOT_COPY_CLONE );
       }
 
       // Spread Necrotic Plague
@@ -3933,8 +3933,15 @@ struct blood_boil_spread_t : public death_knight_spell_t
           sim -> out_debug.printf( "Player %s spreading Necrotic Plague from %s to %s",
               player -> name(), np -> state -> target -> name(), s -> target -> name() );
         if ( tdata -> dots_necrotic_plague -> is_ticking() )
+        {
           tdata -> dots_necrotic_plague -> cancel();
-        np -> copy( s -> target );
+          tdata -> debuffs_necrotic_plague -> expire();
+        }
+
+        np -> copy( s -> target, DOT_COPY_CLONE );
+
+        int orig_stacks = tdata -> debuffs_necrotic_plague -> check();
+        tdata -> debuffs_necrotic_plague -> trigger( orig_stacks );
       }
     }
   }
