@@ -4891,6 +4891,19 @@ struct savage_defense_t : public druid_spell_t
       p() -> active.ursocs_vigor -> trigger_hot();
   }
 
+  virtual void update_ready( timespan_t cd_duration )
+  {
+    cd_duration = cooldown -> duration;
+
+    if ( p() -> talent.guardian_of_elune -> ok() )
+    {
+      double dodge = p() -> cache.dodge() - p() -> buff.savage_defense -> check() * p() -> buff.savage_defense -> default_value;
+      cd_duration /= 1 + dodge;
+    }
+
+    druid_spell_t::update_ready( cd_duration );
+  }
+
   virtual bool ready() 
   {
     if ( ! p() -> buff.bear_form -> check() )
@@ -5852,7 +5865,8 @@ void druid_t::create_buffs()
                                .default_value( find_spell( 158792 ) -> effectN( 1 ).percent() );
   buff.savage_defense        = buff_creator_t( this, "savage_defense", find_class_spell( "Savage Defense" ) -> ok() ? find_spell( 132402 ) : spell_data_t::not_found() )
                                .add_invalidate( CACHE_DODGE )
-                               .duration( find_spell( 132402 ) -> duration() + talent.guardian_of_elune -> effectN( 2 ).time_value() );
+                               .duration( find_spell( 132402 ) -> duration() + talent.guardian_of_elune -> effectN( 2 ).time_value() )
+                               .default_value( find_spell( 132402 ) -> effectN( 1 ).percent() + talent.guardian_of_elune -> effectN( 1 ).percent() );
   buff.survival_instincts    = buff_creator_t( this, "survival_instincts", find_class_spell( "Survival Instincts" ) )
                                .cd( timespan_t::zero() );
   buff.tier15_2pc_tank       = buff_creator_t( this, "tier15_2pc_tank", find_spell( 138217 ) );
@@ -6790,7 +6804,7 @@ double druid_t::composite_dodge() const
   double d = player_t::composite_dodge();
 
   if ( buff.savage_defense -> check() )
-    d += buff.savage_defense -> data().effectN( 1 ).percent() + talent.guardian_of_elune -> effectN( 1 ).percent();
+    d += buff.savage_defense -> default_value;
 
   return d;
 }
