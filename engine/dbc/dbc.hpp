@@ -698,7 +698,7 @@ class spelleffect_data_nil_t : public spelleffect_data_t
 {
 public:
   spelleffect_data_nil_t() : spelleffect_data_t()
-  { _spell = _trigger_spell = spell_data_t::nil(); }
+  { _spell = _trigger_spell = spell_data_t::not_found(); }
 
   static spelleffect_data_nil_t singleton;
 };
@@ -750,7 +750,7 @@ inline spell_data_t* spell_data_t::not_found()
 
 inline spell_data_t* spelleffect_data_t::spell() const
 {
-  return _spell ? _spell : spell_data_t::nil();
+  return _spell ? _spell : spell_data_t::not_found();
 }
 
 inline spell_data_t* spelleffect_data_t::trigger() const
