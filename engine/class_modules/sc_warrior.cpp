@@ -3930,14 +3930,14 @@ void warrior_t::apl_arms()
   default_list -> add_action( "run_action_list,name=aoe,if=active_enemies>=2" );
   default_list -> add_action( "run_action_list,name=single_target,if=active_enemies<2" );
 
-  single_target -> add_action( this, "Rend", "if=dot.rend.remains<3" );
-  single_target -> add_action( this, "Mortal Strike" );
-  single_target -> add_action( "heroic_charge,if=rage<70" );
+  single_target -> add_action( this, "Rend", "if=dot.rend.remains<3&target.health.pct>20" );
+  single_target -> add_action( this, "Mortal Strike", "if=target.health.pct>20" );
+  single_target -> add_action( "heroic_charge,if=rage<50" );
   single_target -> add_talent( this, "Ravager", "if=cooldown.colossus_smash.remains<3" );
   single_target -> add_action( this, "Colossus Smash" );
   single_target -> add_talent( this, "Storm Bolt", "if=cooldown.colossus_smash.remains>4|debuff.colossus_smash.up" );
   single_target -> add_talent( this, "Dragon Roar" );
-  single_target -> add_action( this, "Execute", "if=(debuff.colossus_smash.down&rage>70)|(rage>40&debuff.colossus_smash.up)" );
+  single_target -> add_action( this, "Execute", "if=rage>70|(rage>40&debuff.colossus_smash.up)|buff.sudden_death.up&rage>30" );
   single_target -> add_talent( this, "Slam", "if=(debuff.colossus_smash.up|rage>80)&target.health.pct>20" );
   single_target -> add_action( this, "Whirlwind", "if=(rage>70|debuff.colossus_smash.up)&target.health.pct>20&buff.sudden_death.down&!talent.slam.enabled" );
 

@@ -21,6 +21,7 @@ actions.precombat+=/horn_of_winter
 actions.precombat+=/unholy_presence
 # Snapshot raid buffed stats before combat begins and pre-potting is done.
 actions.precombat+=/snapshot_stats
+actions.precombat+=/army_of_the_dead
 actions.precombat+=/potion,name=draenic_strength
 actions.precombat+=/raise_dead
 
@@ -37,39 +38,41 @@ actions+=/run_action_list,name=aoe,if=active_enemies>=3
 actions+=/run_action_list,name=single_target,if=active_enemies<3
 
 actions.aoe=unholy_blight
-actions.aoe+=/plague_strike,if=!dot.blood_plague.ticking|!dot.frost_fever.ticking
-actions.aoe+=/blood_boil,if=dot.blood_plague.ticking&talent.plague_leech.enabled,line_cd=28
-actions.aoe+=/blood_boil,if=dot.blood_plague.ticking&talent.unholy_blight.enabled&cooldown.unholy_blight.remains<49,line_cd=28
+actions.aoe+=/plague_strike,if=!talent.necrotic_plague.enabled&(!dot.blood_plague.ticking|!dot.frost_fever.ticking)
+actions.aoe+=/plague_strike,if=talent.necrotic_plague.enabled&(!dot.necrotic_plague.ticking)
+actions.aoe+=/blood_boil,if=blood=2|(frost=2&death=2)
 actions.aoe+=/summon_gargoyle
 actions.aoe+=/dark_transformation
 actions.aoe+=/blood_tap,if=buff.shadow_infusion.stack=5
 actions.aoe+=/death_and_decay,if=unholy=1
-actions.aoe+=/soul_reaper,if=unholy=2&target.health.pct-3*(target.health.pct%target.time_to_die)<=35
+actions.aoe+=/soul_reaper,if=target.health.pct-3*(target.health.pct%target.time_to_die)<=35
 actions.aoe+=/scourge_strike,if=unholy=2
 actions.aoe+=/blood_tap,if=buff.blood_charge.stack>10
 actions.aoe+=/death_coil,if=runic_power>90|buff.sudden_doom.react|(buff.dark_transformation.down&rune.unholy<=1)
+actions.aoe+=/blood_boil
 actions.aoe+=/icy_touch
-actions.aoe+=/soul_reaper,if=unholy=1&target.health.pct-3*(target.health.pct%target.time_to_die)<=35
 actions.aoe+=/scourge_strike,if=unholy=1
 actions.aoe+=/death_coil
 actions.aoe+=/blood_tap
 actions.aoe+=/plague_leech,if=unholy=1
 actions.aoe+=/empower_rune_weapon
 
-actions.single_target=outbreak,if=stat.attack_power>(dot.blood_plague.attack_power*1.1)&time>15&!(cooldown.unholy_blight.remains>79)
-actions.single_target+=/plague_strike,if=stat.attack_power>(dot.blood_plague.attack_power*1.1)&time>15&!(cooldown.unholy_blight.remains>79)
-actions.single_target+=/blood_tap,if=buff.blood_charge.stack>10&runic_power>=32
-actions.single_target+=/unholy_blight,if=(dot.frost_fever.remains<3|dot.blood_plague.remains<3)
-actions.single_target+=/outbreak,if=dot.frost_fever.remains<3|dot.blood_plague.remains<3
+actions.single_target=blood_tap,if=buff.blood_charge.stack>10&runic_power>=32
+actions.single_target+=/unholy_blight,if=!talent.necrotic_plague.enabled&(dot.frost_fever.remains<3|dot.blood_plague.remains<3)
+actions.single_target+=/unholy_blight,if=talent.necrotic_plague.enabled&(dot.necrotic_plague.remains<3)
+actions.single_target+=/outbreak,if=!talent.necrotic_plague.enabled&(dot.frost_fever.remains<3|dot.blood_plague.remains<3)
+actions.single_target+=/outbreak,if=talent.necrotic_plague.enabled&(dot.necrotic_plague.remains<3)
 actions.single_target+=/soul_reaper,if=target.health.pct-3*(target.health.pct%target.time_to_die)<=35
 actions.single_target+=/blood_tap,if=(target.health.pct-3*(target.health.pct%target.time_to_die)<=35&cooldown.soul_reaper.remains=0)
-actions.single_target+=/plague_strike,if=!dot.blood_plague.ticking|!dot.frost_fever.ticking
+actions.single_target+=/plague_strike,if=!talent.necrotic_plague.enabled&(!dot.blood_plague.ticking|!dot.frost_fever.ticking)
+actions.single_target+=/plague_strike,if=talent.necrotic_plague.enabled&(!dot.necrotic_plague.ticking)
 actions.single_target+=/summon_gargoyle
 actions.single_target+=/dark_transformation
 actions.single_target+=/death_coil,if=runic_power>90
 actions.single_target+=/death_and_decay,if=unholy=2
 actions.single_target+=/blood_tap,if=unholy=2&cooldown.death_and_decay.remains=0
 actions.single_target+=/scourge_strike,if=unholy=2
+actions.single_target+=/death_coil,if=runic_power>80
 actions.single_target+=/festering_strike,if=blood=2&frost=2
 actions.single_target+=/death_and_decay
 actions.single_target+=/blood_tap,if=cooldown.death_and_decay.remains=0

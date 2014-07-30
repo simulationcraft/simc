@@ -21,6 +21,7 @@ actions.precombat+=/horn_of_winter
 actions.precombat+=/frost_presence
 # Snapshot raid buffed stats before combat begins and pre-potting is done.
 actions.precombat+=/snapshot_stats
+actions.precombat+=/army_of_the_dead
 actions.precombat+=/potion,name=draenic_strength
 actions.precombat+=/pillar_of_frost
 
@@ -39,8 +40,8 @@ actions+=/run_action_list,name=aoe,if=active_enemies>=3
 actions+=/run_action_list,name=single_target,if=active_enemies<3
 
 actions.aoe=unholy_blight
-actions.aoe+=/blood_boil,if=dot.blood_plague.ticking&talent.plague_leech.enabled,line_cd=28
-actions.aoe+=/blood_boil,if=dot.blood_plague.ticking&talent.unholy_blight.enabled&cooldown.unholy_blight.remains<49,line_cd=28
+actions.aoe+=/blood_boil,if=!talent.necrotic_plague.enabled&dot.blood_plague.ticking&talent.plague_leech.enabled,line_cd=28
+actions.aoe+=/blood_boil,if=!talent.necrotic_plague.enabled&dot.blood_plague.ticking&talent.unholy_blight.enabled&cooldown.unholy_blight.remains<49,line_cd=28
 actions.aoe+=/howling_blast
 actions.aoe+=/blood_tap,if=buff.blood_charge.stack>10
 actions.aoe+=/frost_strike,if=runic_power>76
@@ -58,8 +59,9 @@ actions.single_target+=/howling_blast,if=death>1|frost>1
 actions.single_target+=/unholy_blight,if=(dot.frost_fever.remains<3|dot.blood_plague.remains<3)
 actions.single_target+=/soul_reaper,if=target.health.pct-3*(target.health.pct%target.time_to_die)<=35
 actions.single_target+=/blood_tap,if=(target.health.pct-3*(target.health.pct%target.time_to_die)<=35&cooldown.soul_reaper.remains=0)
-actions.single_target+=/howling_blast,if=!dot.frost_fever.ticking
-actions.single_target+=/plague_strike,if=!dot.blood_plague.ticking&unholy>0
+actions.single_target+=/howling_blast,if=!talent.necrotic_plague.enabled&!dot.frost_fever.ticking
+actions.single_target+=/howling_blast,if=talent.necrotic_plague.enabled&!dot.necrotic_plague.ticking
+actions.single_target+=/plague_strike,if=!talent.necrotic_plague.enabled&!dot.blood_plague.ticking&unholy>0
 actions.single_target+=/howling_blast,if=buff.rime.react
 actions.single_target+=/frost_strike,if=runic_power>76
 actions.single_target+=/obliterate,if=unholy>0&!buff.killing_machine.react
