@@ -3,8 +3,8 @@ level=100
 race=draenei
 role=spell
 position=back
-talents=http://us.battle.net/wow/en/tool/talent-calculator#XZ!2112021
-glyphs=prayer_of_mending/circle_of_healing/deep_wells
+talents=http://us.battle.net/wow/en/tool/talent-calculator#XZ!2112121
+glyphs=smite/holy_fire/inquisitor
 spec=holy
 
 # This default action priority list is automatically created based on your character.

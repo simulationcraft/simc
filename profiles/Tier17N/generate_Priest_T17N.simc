@@ -100,13 +100,13 @@ tier17_4pc_heal=1
 
 # Holy DMG
 priest="Priest_Holy_T17N_DMG"
-talents=3223132
+talents=3223232
 level=100
 race=draenei
 spec=holy
 role=dps
 position=back
-glyphs=prayer_of_mending/circle_of_healing/deep_wells
+glyphs=smite/holy_fire/inquisitor
 head=primal_gladiators_hood_of_prowess,id=111084
 neck=primal_gladiators_pendant_of_contemplation,id=111131,enchant=gift_of_multistrike
 shoulders=primal_gladiators_amice_of_prowess,id=111087
@@ -162,7 +162,7 @@ race=draenei
 spec=discipline
 role=heal
 position=back
-glyphs=prayer_of_mending/circle_of_healing/deep_wells
+glyphs=smite/holy_fire/inquisitor
 head=primal_gladiators_hood_of_prowess,id=111084
 neck=primal_gladiators_pendant_of_contemplation,id=111131,enchant=gift_of_critical_strike
 shoulders=primal_gladiators_amice_of_prowess,id=111087

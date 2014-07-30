@@ -82,6 +82,7 @@ public:
     buff_t* focused_will;
 
     // Shadow
+    buff_t* insanity;
     buff_t* shadowy_insight;
     buff_t* shadow_word_death_reset_cooldown;
     buff_t* glyph_of_mind_flay;
@@ -404,7 +405,7 @@ public:
   virtual pet_t*    create_pet( const std::string& name, const std::string& type = std::string() ) override;
   virtual void      create_pets() override;
   virtual void      copy_from( player_t* source ) override;
-  virtual set_e       decode_set( const item_t& ) const override;
+  virtual set_e     decode_set( const item_t& ) const override;
   virtual resource_e primary_resource() const override { return RESOURCE_MANA; }
   virtual role_e    primary_role() const override;
   virtual stat_e    convert_hybrid_stat( stat_e s ) const override;
@@ -985,7 +986,6 @@ public:
 
   void trigger_shadowy_insight()
   {
-
     int stack = priest.buffs.shadowy_insight -> check();
     if ( priest.buffs.shadowy_insight -> trigger() )
     {
@@ -1326,7 +1326,7 @@ struct priest_heal_t : public priest_action_t<heal_t>
           get_td( target ).dots.renew -> refresh_duration();
         }
 
-        if ( priest.talents.twist_of_fate -> ok() && ( save_health_percentage < priest.talents.twist_of_fate -> effectN( 1 ).base_value() ) )
+        if ( priest.specialization() != PRIEST_SHADOW && priest.talents.twist_of_fate -> ok() && ( save_health_percentage < priest.talents.twist_of_fate -> effectN( 1 ).base_value() ) )
         {
           priest.buffs.twist_of_fate -> trigger();
         }
@@ -1414,6 +1414,31 @@ struct priest_heal_t : public priest_action_t<heal_t>
   {
     priest.buffs.surge_of_light -> up();
     priest.buffs.surge_of_light -> expire();
+  }
+};
+
+// Shadow Orb State ===================================================
+
+struct shadow_orb_state_t : public action_state_t
+{
+  int orbs_used;
+
+  shadow_orb_state_t( action_t* a, player_t* t ) :
+    action_state_t( a, t ),
+    orbs_used ( 0 )
+  { }
+
+  std::ostringstream& debug_str( std::ostringstream& s ) override
+  { action_state_t::debug_str( s ) << " orbs_used=" << orbs_used; return s; }
+
+  void initialize() override
+  { action_state_t::initialize(); orbs_used = 0; }
+
+  void copy_state( const action_state_t* o ) override
+  {
+    action_state_t::copy_state( o );
+    const shadow_orb_state_t* dps_t = static_cast<const shadow_orb_state_t*>( o );
+    orbs_used = dps_t -> orbs_used;
   }
 };
 
@@ -1529,7 +1554,7 @@ struct priest_spell_t : public priest_action_t<spell_t>
 
     if ( result_is_hit( s -> result ) )
     {
-      if ( priest.talents.twist_of_fate -> ok() && ( save_health_percentage < priest.talents.twist_of_fate -> effectN( 1 ).base_value() ) )
+      if ( priest.specialization() == PRIEST_SHADOW && priest.talents.twist_of_fate -> ok() && ( save_health_percentage < priest.talents.twist_of_fate -> effectN( 1 ).base_value() ) )
       {
         priest.buffs.twist_of_fate -> trigger();
       }
@@ -1586,15 +1611,41 @@ struct priest_spell_t : public priest_action_t<spell_t>
       priest.resource_gain( RESOURCE_SHADOW_ORB, num_orbs, g, this );
   }
 
-  void trigger_surge_of_darkness()
+  // TODO: Check about refreshes, see if Insanity is a buff on the priest or a debuff on the target. -Twintop 2014/07/29
+  void trigger_insanity( action_state_t* s, int orbs )
+  {
+    if ( priest.talents.insanity -> ok() )
+    {
+      //shadow_orb_state_t* state = debug_cast<shadow_orb_state_t*>( s );
+      priest.buffs.insanity -> trigger(1, 0, 1, timespan_t::from_seconds( 2.0 * orbs * s -> haste ) );
+    }
+  }
+
+  void trigger_surge_of_darkness( bool overrideProcChance = false ) //false = use VT, true = override for DP. This is a stopgap until new DBC data is released that we can tie off of. -Twintop 2014/07/29
   {
     int stack = priest.buffs.surge_of_darkness -> check();
-    if ( priest.buffs.surge_of_darkness -> trigger() )
+
+    if ( overrideProcChance )
     {
-      if ( priest.buffs.surge_of_darkness -> check() == stack )
-        priest.procs.surge_of_darkness_overflow -> occur();
-      else
-        priest.procs.surge_of_darkness -> occur();
+      if ( priest.talents.surge_of_darkness -> ok() && rng().roll( 0.1 ) )
+      {
+        priest.buffs.surge_of_darkness -> execute();
+
+        if ( priest.buffs.surge_of_darkness -> check() == stack )
+          priest.procs.surge_of_darkness_overflow -> occur();
+        else
+          priest.procs.surge_of_darkness -> occur();
+      }
+    }
+    else
+    {
+      if ( priest.buffs.surge_of_darkness -> trigger() )
+      {
+        if ( priest.buffs.surge_of_darkness -> check() == stack )
+          priest.procs.surge_of_darkness_overflow -> occur();
+        else
+          priest.procs.surge_of_darkness -> occur();
+      }
     }
   }
 };
@@ -2738,31 +2789,6 @@ struct shadow_word_death_t final : public priest_spell_t
 
 // Shadow Orb State ===================================================
 
-struct shadow_orb_state_t : public action_state_t
-{
-  int orbs_used;
-
-  shadow_orb_state_t( action_t* a, player_t* t ) :
-    action_state_t( a, t ),
-    orbs_used ( 0 )
-  { }
-
-  std::ostringstream& debug_str( std::ostringstream& s ) override
-  { action_state_t::debug_str( s ) << " orbs_used=" << orbs_used; return s; }
-
-  void initialize() override
-  { action_state_t::initialize(); orbs_used = 0; }
-
-  void copy_state( const action_state_t* o ) override
-  {
-    action_state_t::copy_state( o );
-    const shadow_orb_state_t* dps_t = static_cast<const shadow_orb_state_t*>( o );
-    orbs_used = dps_t -> orbs_used;
-  }
-};
-
-// Shadow Orb State ===================================================
-
 struct dp_state_t final : public shadow_orb_state_t
 {
   double tick_dmg;
@@ -2900,7 +2926,7 @@ struct devouring_plague_t final : public priest_spell_t
 
       priest.buffs.mental_instinct -> trigger();
 
-      trigger_surge_of_darkness();
+      trigger_surge_of_darkness( false );
     }
 
     virtual timespan_t calculate_dot_refresh_duration( const dot_t* dot, timespan_t triggered_duration ) const override
@@ -2967,6 +2993,8 @@ struct devouring_plague_t final : public priest_spell_t
     if ( execute_state -> result != RESULT_MISS )
     {
       resource_consumed = shadow_orbs_to_consume();
+
+      trigger_insanity( execute_state, resource_consumed );
 
       if ( priest.sets.has_set_bonus( SET_T17_2PC_CASTER ) )
       {
@@ -3131,10 +3159,7 @@ struct mind_flay_insanity_t final : public mind_flay_base_t<true>
   {
     double am = base_t::composite_persistent_multiplier( s );
 
-    priest_td_t& td = get_td( target );
-    const shadow_orb_state_t* dp_state = debug_cast<const shadow_orb_state_t*>( td.dots.devouring_plague_tick -> state );
-
-    am *= 1.0 + dp_state -> orbs_used / 3.0;
+    am *= 2.0;
 
     return am;
   }
@@ -3147,10 +3172,8 @@ struct mind_flay_insanity_t final : public mind_flay_base_t<true>
 
   virtual bool ready() override
   {
-    priest_td_t& td = get_td( target );
-    if (!( priest.talents.insanity -> ok() && td.dots.devouring_plague_tick -> is_ticking() ) )
+    if ( !priest.buffs.insanity -> up() )
       return false;
-
 
     return base_t::ready();
   }
@@ -3255,7 +3278,7 @@ struct vampiric_touch_t final : public priest_spell_t
   {
     priest_spell_t::tick( d );
 
-    trigger_surge_of_darkness();
+    trigger_surge_of_darkness( true );
 
     if ( priest.sets.has_set_bonus( SET_T15_4PC_CASTER ) )
     {
@@ -3936,9 +3959,10 @@ struct void_entropy_t : public priest_spell_t
   void_entropy_t( priest_t& p, const std::string& options_str ) :
      priest_spell_t( "void_entropy", p, p.talents.void_entropy )
   {
-     parse_options( nullptr, options_str );
-
-   spell_power_mod.tick /= 3.0;
+    parse_options( nullptr, options_str );
+    spell_power_mod.tick /= 3.0;
+    may_crit = false;
+    tick_zero = false;
   }
 
   virtual void consume_resource() override
@@ -3948,6 +3972,8 @@ struct void_entropy_t : public priest_spell_t
     if ( execute_state -> result != RESULT_MISS )
     {
       resource_consumed = shadow_orbs_to_consume();
+
+      trigger_insanity( execute_state, resource_consumed );
 
       if ( priest.sets.has_set_bonus( SET_T17_2PC_CASTER ) )
       {
@@ -3981,6 +4007,11 @@ struct void_entropy_t : public priest_spell_t
     m *= shadow_orbs_to_consume();
 
     return m;
+  }
+
+  virtual void impact( action_state_t* s ) override
+  {
+    priest_spell_t::impact( s );
   }
 
   virtual bool ready() override
@@ -5940,6 +5971,10 @@ void priest_t::create_buffs()
   buffs.shadowy_insight = buff_creator_t( this, "shadowy_insight" )
                               .spell( talents.shadowy_insight )
                               .chance( talents.shadowy_insight -> effectN( 4 ).percent());
+
+  buffs.insanity = buff_creator_t( this, "insanity")
+                   .spell( talents.insanity )
+                   .max_stack( 1 );
 
   // Discipline
   buffs.archangel = new buffs::archangel_t( *this );
