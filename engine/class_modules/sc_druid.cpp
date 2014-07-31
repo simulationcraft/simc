@@ -578,7 +578,6 @@ public:
   virtual double    composite_crit_avoidance() const;
   virtual double    composite_melee_expertise( weapon_t* ) const;
   virtual double    composite_dodge() const;
-  virtual double    composite_dodge_rating() const;
   virtual double    composite_rating_multiplier( rating_e rating ) const;
   virtual expr_t*   create_expression( action_t*, const std::string& name );
   virtual action_t* create_action( const std::string& name, const std::string& options );
@@ -6799,7 +6798,7 @@ double druid_t::composite_crit_avoidance() const
   return c;
 }
 
-// druid_t::composite_dodge ============================================
+// druid_t::composite_composite_dodge ============================================
 
 double druid_t::composite_dodge() const
 {
@@ -6807,17 +6806,6 @@ double druid_t::composite_dodge() const
 
   if ( buff.savage_defense -> check() )
     d += buff.savage_defense -> default_value;
-
-  return d;
-}
-
-// druid_t::composite_dodge_rating =====================================
-
-double druid_t::composite_dodge_rating() const
-{
-  double d = player_t::composite_dodge_rating();
-
-  d += composite_melee_crit_rating();
 
   return d;
 }
