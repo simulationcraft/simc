@@ -3664,6 +3664,7 @@ struct cooldown_t
   // the user would react to rather than plan ahead for.
   void adjust( timespan_t, bool requires_reaction = true );
   void reset( bool require_reaction );
+  void start( action_t* action, timespan_t override = timespan_t::min(), timespan_t delay = timespan_t::zero() );
   void start( timespan_t override = timespan_t::min(), timespan_t delay = timespan_t::zero() );
 
   timespan_t remains() const

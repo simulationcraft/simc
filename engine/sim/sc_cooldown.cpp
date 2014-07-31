@@ -10,11 +10,11 @@ namespace { // UNNAMED NAMESPACE
 struct recharge_event_t : event_t
 {
   cooldown_t* cooldown;
+  action_t* action;
 
-  recharge_event_t( player_t& p, cooldown_t* cd, timespan_t delay = timespan_t::zero() ) :
-    event_t( p, "recharge_event" ), cooldown( cd )
+  recharge_event_t( player_t& p, cooldown_t* cd, action_t* a, timespan_t delay = timespan_t::zero() ) :
+    event_t( p, "recharge_event" ), cooldown( cd ), action( a )
   {
-    action_t* action = cd -> player -> find_action( cd -> name_str );
     double cdr = action ? action -> cooldown_reduction() : 1.0;
     sim().add_event( this, cd -> duration * cd -> get_recharge_multiplier() * cdr + delay );
   }
@@ -26,7 +26,7 @@ struct recharge_event_t : event_t
 
     if ( cooldown -> current_charge < cooldown -> charges )
     {
-      cooldown -> recharge_event = new ( sim() ) recharge_event_t( *p(), cooldown );
+      cooldown -> recharge_event = new ( sim() ) recharge_event_t( *p(), cooldown, action );
     }
     else
     {
@@ -117,7 +117,7 @@ void cooldown_t::reset( bool require_reaction )
   core_event_t::cancel( ready_trigger_event );
 }
 
-void cooldown_t::start( timespan_t _override, timespan_t delay )
+void cooldown_t::start( action_t* action, timespan_t _override, timespan_t delay )
 {
   reset_react = timespan_t::zero();
   if ( _override < timespan_t::zero() ) _override = duration;
@@ -130,7 +130,7 @@ void cooldown_t::start( timespan_t _override, timespan_t delay )
 
       if ( current_charge == charges - 1 )
       {
-        recharge_event = new ( sim ) recharge_event_t( *player, this, delay );
+        recharge_event = new ( sim ) recharge_event_t( *player, this, action, delay );
       }
       else if ( current_charge == 0 )
       {
@@ -147,6 +147,11 @@ void cooldown_t::start( timespan_t _override, timespan_t delay )
     if ( player -> ready_type == READY_TRIGGER )
       ready_trigger_event = new ( sim ) ready_trigger_event_t( *player, this );
   }
+}
+
+void cooldown_t::start( timespan_t _override, timespan_t delay )
+{
+  start( 0, _override, delay );
 }
 
 void cooldown_t::set_recharge_multiplier( double v )
