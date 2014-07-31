@@ -32,6 +32,7 @@ namespace { // UNNAMED NAMESPACE
     Stamina, multistrike, agi in DTPS scaling
     PvP bonuses
     Guardian of Elune change
+    Add 1.5s CD to SD
 
     = Restoration =
     Err'thing
@@ -4892,17 +4893,17 @@ struct savage_defense_t : public druid_spell_t
       p() -> active.ursocs_vigor -> trigger_hot();
   }
 
-  virtual void update_ready( timespan_t cd_duration )
+  virtual double cooldown_reduction() const
   {
-    cd_duration = cooldown -> duration;
+    double cdr = druid_spell_t::cooldown_reduction();
 
     if ( p() -> talent.guardian_of_elune -> ok() )
     {
       double dodge = p() -> cache.dodge() - p() -> buff.savage_defense -> check() * p() -> buff.savage_defense -> default_value;
-      cd_duration /= 1 + dodge;
+      cdr /= 1 + dodge;
     }
 
-    druid_spell_t::update_ready( cd_duration );
+    return cdr;
   }
 
   virtual bool ready() 

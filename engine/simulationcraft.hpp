@@ -5539,6 +5539,7 @@ struct action_t : public noncopyable
   double base_aoe_multiplier; // Static reduction of damage for AoE
   bool split_aoe_damage;
   bool normalize_weapon_speed;
+  double base_cooldown_reduction;
   cooldown_t* cooldown;
   stats_t* stats;
   core_event_t* execute_event;
@@ -5598,6 +5599,7 @@ struct action_t : public noncopyable
   virtual double calculate_weapon_damage( double attack_power );
   virtual double target_armor( player_t* t ) const
   { return t -> cache.armor(); }
+  virtual double cooldown_reduction() const { return base_cooldown_reduction; }
   virtual void   consume_resource();
   virtual resource_e current_resource() const { return resource_current; }
   virtual int n_targets() const { return aoe; }

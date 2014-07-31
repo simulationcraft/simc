@@ -10,12 +10,13 @@ namespace { // UNNAMED NAMESPACE
 struct recharge_event_t : event_t
 {
   cooldown_t* cooldown;
-  timespan_t duration;
 
-  recharge_event_t( player_t& p, cooldown_t* cd, timespan_t cooldown_, timespan_t delay = timespan_t::zero() ) :
-    event_t( p, "recharge_event" ), cooldown( cd ), duration( cooldown_ )
+  recharge_event_t( player_t& p, cooldown_t* cd, timespan_t delay = timespan_t::zero() ) :
+    event_t( p, "recharge_event" ), cooldown( cd )
   {
-    sim().add_event( this, cooldown_ * cooldown -> get_recharge_multiplier() + delay );
+    action_t* action = cd -> player -> find_action( cd -> name_str );
+    double cdr = action ? action -> cooldown_reduction() : 1.0;
+    sim().add_event( this, cd -> duration * cd -> get_recharge_multiplier() * cdr + delay );
   }
 
   virtual void execute()
@@ -25,7 +26,7 @@ struct recharge_event_t : event_t
 
     if ( cooldown -> current_charge < cooldown -> charges )
     {
-      cooldown -> recharge_event = new ( sim() ) recharge_event_t( *p(), cooldown, duration * cooldown -> get_recharge_multiplier() );
+      cooldown -> recharge_event = new ( sim() ) recharge_event_t( *p(), cooldown );
     }
     else
     {
@@ -85,6 +86,38 @@ cooldown_t::cooldown_t( const std::string& n, sim_t& s ) :
   recharge_multiplier( 1.0 )
 {}
 
+cooldown_t::cooldown_t( const std::string& n, player_t& p, action_t& a ) :
+  sim( *p.sim ),
+  player( &p ),
+  name_str( n ),
+  duration( timespan_t::zero() ),
+  ready( ready_init() ),
+  reset_react( timespan_t::zero() ),
+  charges( 1 ),
+  current_charge( 1 ),
+  recharge_event( nullptr ),
+  ready_trigger_event( nullptr ),
+  last_start( timespan_t::zero() ),
+  recharge_multiplier( 1.0 ),
+  action( &a )
+{}
+
+cooldown_t::cooldown_t( const std::string& n, sim_t& s, action_t& a ) :
+  sim( s ),
+  player( nullptr ),
+  name_str( n ),
+  duration( timespan_t::zero() ),
+  ready( ready_init() ),
+  reset_react( timespan_t::zero() ),
+  charges( 1 ),
+  current_charge( 1 ),
+  recharge_event( nullptr ),
+  ready_trigger_event( nullptr ),
+  last_start( timespan_t::zero() ),
+  recharge_multiplier( 1.0 ),
+  action( &a )
+{}
+
 void cooldown_t::adjust( timespan_t amount, bool require_reaction )
 {
   if ( down() )
@@ -129,13 +162,11 @@ void cooldown_t::start( timespan_t _override, timespan_t delay )
 
       if ( current_charge == charges - 1 )
       {
-        recharge_event = new ( sim ) recharge_event_t( *player, this, _override, delay );
+        recharge_event = new ( sim ) recharge_event_t( *player, this, delay );
       }
       else if ( current_charge == 0 )
       {
         assert( recharge_event );
-        // TODO-WOD: How does this actually work w/ regards to refreshing the recharge time?
-        debug_cast<recharge_event_t*>( recharge_event ) -> duration = _override;
         ready = recharge_event -> occurs() + timespan_t::from_millis( 1 );
       }
     }
