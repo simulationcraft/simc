@@ -3228,7 +3228,7 @@ struct nether_tempest_t : public mage_spell_t
 struct presence_of_mind_t : public mage_spell_t
 {
   presence_of_mind_t( mage_t* p, const std::string& options_str ) :
-    mage_spell_t( "presence_of_mind", p, p -> talents.presence_of_mind )
+    mage_spell_t( "presence_of_mind", p, p -> find_class_spell( "Presence of Mind" )  )
   {
     parse_options( NULL, options_str );
     harmful = false;
@@ -4557,7 +4557,7 @@ void mage_t::apl_arcane()
   for( size_t i = 0; i < item_actions.size(); i++ )
     default_list -> add_action( item_actions[i] );
 
-  default_list -> add_talent( this, "Presence of Mind", "if=buff.arcane_power.up" );
+  default_list -> add_action( this, "Presence of Mind", "if=buff.arcane_power.up" );
 
   default_list -> add_action( "run_action_list,name=aoe,if=active_enemies>=6" );
   default_list -> add_action( "run_action_list,name=single_target,if=active_enemies<6" );
