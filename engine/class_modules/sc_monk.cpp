@@ -518,7 +518,7 @@ private:
  
       player -> main_hand_attack = new melee_t( "melee_main_hand", player );
       player -> main_hand_attack -> base_execute_time = player -> main_hand_weapon.swing_time;
- 
+      use_off_gcd = true;
       trigger_gcd = timespan_t::zero();
     }
  

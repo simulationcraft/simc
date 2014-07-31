@@ -2066,6 +2066,7 @@ struct melee_t : public shaman_attack_t
     first( true ), swing_timer_variance( stv )
   {
     auto_attack = true;
+    use_off_gcd = true;
     background = repeating = may_glance = true;
     special           = false;
     trigger_gcd       = timespan_t::zero();

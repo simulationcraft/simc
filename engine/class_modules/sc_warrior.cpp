@@ -1109,7 +1109,7 @@ struct auto_attack_t: public warrior_attack_t
       opt_null()
     };
     parse_options( options, options_str );
-
+    use_off_gcd = true;
     assert( p -> main_hand_weapon.type != WEAPON_NONE );
 
     p -> main_hand_attack = new melee_t( "auto_attack_mh", p, sync_weapons );
