@@ -2415,7 +2415,8 @@ public:
   // Collection of most event-related functionality
   struct event_managment_t
   {
-    int events_remaining, events_processed;
+    int events_remaining;
+    uint64_t events_processed;
     unsigned timing_slice, global_event_id;
     std::vector<core_event_t*> timing_wheel;
     core_event_t* recycled_event_list;
@@ -2455,7 +2456,8 @@ public:
 
 
   // Timing Wheel statistics
-  int64_t     max_events_remaining, total_events_processed;
+  int64_t     max_events_remaining;
+  uint64_t total_events_processed;
   stopwatch_t event_stopwatch;
   bool monitor_cpu;
 
