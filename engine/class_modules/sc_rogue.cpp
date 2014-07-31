@@ -1382,7 +1382,7 @@ struct auto_melee_attack_t : public action_t
       opt_null()
     };
     parse_options( options, options_str );
-    use_off_gcd = true;
+
     assert( p -> main_hand_weapon.type != WEAPON_NONE );
 
     p -> melee_main_hand = p -> main_hand_attack = new melee_t( "melee_main_hand", p, sync_weapons );

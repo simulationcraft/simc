@@ -1695,7 +1695,7 @@ struct start_attack_t: public hunter_ranged_attack_t
 
     p -> main_hand_attack = new auto_shot_t( p );
     stats = p -> main_hand_attack -> stats;
-    use_off_gcd = true;
+
     trigger_gcd = timespan_t::zero();
   }
 

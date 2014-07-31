@@ -3423,7 +3423,7 @@ struct auto_melee_attack_t : public paladin_melee_attack_t
     school = SCHOOL_PHYSICAL;
     assert( p -> main_hand_weapon.type != WEAPON_NONE );
     p -> main_hand_attack = new melee_t( p );
-    use_off_gcd = true;
+
     // does not incur a GCD
     trigger_gcd = timespan_t::zero();
 

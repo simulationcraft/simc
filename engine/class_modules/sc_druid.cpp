@@ -3839,7 +3839,7 @@ struct auto_attack_t : public melee_attack_t
     melee_attack_t( "auto_attack", player, spell_data_t::nil() )
   {
     parse_options( 0, options_str );
-    use_off_gcd = true;
+
     trigger_gcd = timespan_t::zero();
   }
 
