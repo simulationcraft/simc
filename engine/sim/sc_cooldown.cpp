@@ -86,38 +86,6 @@ cooldown_t::cooldown_t( const std::string& n, sim_t& s ) :
   recharge_multiplier( 1.0 )
 {}
 
-cooldown_t::cooldown_t( const std::string& n, player_t& p, action_t& a ) :
-  sim( *p.sim ),
-  player( &p ),
-  name_str( n ),
-  duration( timespan_t::zero() ),
-  ready( ready_init() ),
-  reset_react( timespan_t::zero() ),
-  charges( 1 ),
-  current_charge( 1 ),
-  recharge_event( nullptr ),
-  ready_trigger_event( nullptr ),
-  last_start( timespan_t::zero() ),
-  recharge_multiplier( 1.0 ),
-  action( &a )
-{}
-
-cooldown_t::cooldown_t( const std::string& n, sim_t& s, action_t& a ) :
-  sim( s ),
-  player( nullptr ),
-  name_str( n ),
-  duration( timespan_t::zero() ),
-  ready( ready_init() ),
-  reset_react( timespan_t::zero() ),
-  charges( 1 ),
-  current_charge( 1 ),
-  recharge_event( nullptr ),
-  ready_trigger_event( nullptr ),
-  last_start( timespan_t::zero() ),
-  recharge_multiplier( 1.0 ),
-  action( &a )
-{}
-
 void cooldown_t::adjust( timespan_t amount, bool require_reaction )
 {
   if ( down() )
