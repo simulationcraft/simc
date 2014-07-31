@@ -20,6 +20,7 @@ namespace { // UNNAMED NAMESPACE
       Thrash (both forms)
       Swipe
     pvp_2pc_melee
+    SR doesn't snapshot :(
 
     = Balance =
     PvP bonuses
@@ -2692,11 +2693,13 @@ struct bear_attack_t : public druid_attack_t<melee_attack_t>
     return t;
   }
 
-  virtual void update_ready( timespan_t cd_duration )
+  virtual double cooldown_reduction() const
   {
-    cd_duration = cooldown -> duration * p() -> cache.attack_haste();
+    double cdr = base_t::cooldown_reduction();
 
-    base_t::update_ready( cd_duration );
+    cdr *= p() -> cache.attack_haste();
+
+    return cdr;
   }
 
   virtual void impact( action_state_t* s )
