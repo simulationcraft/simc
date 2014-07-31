@@ -4545,8 +4545,8 @@ void mage_t::apl_arcane()
   default_list -> add_talent( this, "Rune of Power", "if=buff.rune_of_power.remains<cast_time" );
   default_list -> add_talent( this, "Rune of Power", "if=cooldown.arcane_power.remains<gcd&buff.rune_of_power.remains<buff.arcane_power.duration" );
 
-  default_list -> add_action( this, "Evocation", "if=!talent.invocation.enabled=mana.pct<50,interrupt_if=mana.pct>95" );
-  default_list -> add_action( this, "Mirror Image" );
+  default_list -> add_talent( this, "Mirror Image" );
+  default_list -> add_action( this, "Evocation", "if=mana.pct<50,interrupt_if=mana.pct>95" );
   default_list -> add_action( this, "Arcane Power", "if=time_to_bloodlust>cooldown.arcane_power.duration&((buff.arcane_charge.stack=4)|target.time_to_die<buff.arcane_power.duration+5),moving=0" );
 
   for( size_t i = 0; i < racial_actions.size(); i++ )
@@ -4567,9 +4567,9 @@ void mage_t::apl_arcane()
   single_target -> add_talent( this, "Supernova", "if=buff.arcane_charge.stack=4" );
   single_target -> add_action( this, "Arcane Missiles", "if=buff.arcane_charge.stack=4" );
   single_target -> add_talent( this, "Nether Tempest", "if=remains<9.5&target.time_to_die>6&buff.arcane_charge.stack=4" );
-  single_target -> add_action( this, "Arcane Barrage", "if=buff.arcane_charge.stack=4&mana.pct<95" );
   single_target -> add_talent( this, "Arcane Orb", "if=buff.arcane_charge.stack<=3" );
-  single_target -> add_talent( this, "Presence of Mind", "if=cooldown.arcane_power.remains>75" );
+  single_target -> add_action( this, "Arcane Barrage", "if=buff.arcane_charge.stack=4&mana.pct<95" );
+  single_target -> add_action( this, "Presence of Mind", "if=cooldown.arcane_power.remains>75" );
   single_target -> add_action( this, "Arcane Blast" );
   single_target -> add_talent( this, "Ice Floes", "moving=1" );
   single_target -> add_action( this, "Arcane Barrage", "moving=1" );
