@@ -1837,26 +1837,6 @@ struct eviscerate_t : public rogue_attack_t
   }
 };
 
-// Expose Armor =============================================================
-
-struct expose_armor_t : public rogue_attack_t
-{
-  expose_armor_t( rogue_t* p, const std::string& options_str ) :
-    rogue_attack_t( "expose_armor", p, p -> find_class_spell( "Expose Armor" ), options_str )
-  { }
-
-  virtual void execute()
-  {
-    rogue_attack_t::execute();
-
-    if ( result_is_hit( execute_state -> result ) )
-    {
-      rogue_td_t* td = this -> td( target );
-      td -> combo_points.add( 1 );
-    }
-  };
-};
-
 // Fan of Knives ============================================================
 
 struct fan_of_knives_t : public rogue_attack_t
@@ -4366,7 +4346,6 @@ action_t* rogue_t::create_action( const std::string& name,
   if ( name == "dispatch"            ) return new dispatch_t           ( this, options_str );
   if ( name == "envenom"             ) return new envenom_t            ( this, options_str );
   if ( name == "eviscerate"          ) return new eviscerate_t         ( this, options_str );
-  if ( name == "expose_armor"        ) return new expose_armor_t       ( this, options_str );
   if ( name == "fan_of_knives"       ) return new fan_of_knives_t      ( this, options_str );
   if ( name == "garrote"             ) return new garrote_t            ( this, options_str );
   if ( name == "hemorrhage"          ) return new hemorrhage_t         ( this, options_str );
