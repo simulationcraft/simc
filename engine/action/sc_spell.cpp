@@ -183,7 +183,7 @@ void spell_t::assess_damage( dmg_e type,
 dmg_e spell_t::amount_type( const action_state_t* /* state */, bool periodic ) const
 {
   if ( periodic )
-    return ( periodic_hit ) ? DMG_DIRECT : DMG_OVER_TIME;
+    return DMG_OVER_TIME;
   else
     return DMG_DIRECT;
 }
@@ -210,6 +210,11 @@ dmg_e spell_t::report_amount_type( const action_state_t* state ) const
         }
       }
     }
+  }
+  else if ( result_type == DMG_OVER_TIME )
+  {
+    if ( periodic_hit )
+      result_type = DMG_OVER_TIME;
   }
 
   return result_type;
@@ -280,7 +285,7 @@ void heal_t::parse_effect_data( const spelleffect_data_t& e )
 dmg_e heal_t::amount_type( const action_state_t* /* state */, bool periodic ) const
 {
   if ( periodic )
-    return ( periodic_hit ) ? HEAL_DIRECT : HEAL_OVER_TIME;
+    return HEAL_OVER_TIME;
   else
     return HEAL_DIRECT;
 }
@@ -293,18 +298,26 @@ dmg_e heal_t::report_amount_type( const action_state_t* state ) const
   // someone. If so, then the healing should be recorded as periodic.
   if ( result_type == HEAL_DIRECT )
   {
-    for ( size_t i = 0, end = stats -> action_list.size(); i < end; i++ )
+    // Direct ticks are direct damage, that are recorded as ticks
+    if ( direct_tick )
+      result_type = HEAL_OVER_TIME;
+    else
     {
-      if ( stats -> action_list.front() -> tick_action == this )
+      for ( size_t i = 0, end = stats -> action_list.size(); i < end; i++ )
       {
-        result_type = HEAL_OVER_TIME;
-        break;
+        if ( stats -> action_list.front() -> tick_action == this )
+        {
+          result_type = HEAL_OVER_TIME;
+          break;
+        }
       }
     }
   }
-  // Direct ticks are direct damage, that are recorded as ticks
-  else if ( direct_tick )
-    result_type = HEAL_OVER_TIME;
+  else if ( result_type == DMG_OVER_TIME )
+  {
+    if ( periodic_hit )
+      result_type = DMG_OVER_TIME;
+  }
 
   return result_type;
 }
