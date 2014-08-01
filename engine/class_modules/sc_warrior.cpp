@@ -3033,6 +3033,7 @@ struct rend_burst_t: public warrior_spell_t
   {
     dual = true;
     may_multistrike = 1;
+    attack_power_mod.direct = attack_power_mod.tick;
     attack_power_mod.direct *= 1.0 + p -> perk.improved_rend -> effectN( 1 ).percent();
     dot_duration = timespan_t::zero();
     base_costs[RESOURCE_RAGE] = 0;
