@@ -116,6 +116,7 @@ struct rogue_t : public player_t
   // Shadow Reflection stuff
   std::vector<shadow_reflect_mimic_t> shadow_reflection_sequence;
   pet_t* shadow_reflection;
+  bool reflection_attack;
 
   // Premeditation
   core_event_t* event_premeditation;
@@ -336,6 +337,7 @@ struct rogue_t : public player_t
     player_t( sim, ROGUE, name, r ),
     poisoned_enemies( 0 ),
     shadow_reflection( 0 ),
+    reflection_attack( false ),
     event_premeditation( 0 ),
     active_blade_flurry( 0 ),
     active_lethal_poison( 0 ),
@@ -1505,7 +1507,7 @@ struct ambush_t : public rogue_attack_t
   {
     double c = rogue_attack_t::composite_crit();
 
-    if ( p() -> buffs.enhanced_vendetta -> up() )
+    if ( ! p() -> reflection_attack && p() -> buffs.enhanced_vendetta -> up() )
       c += p() -> buffs.enhanced_vendetta -> data().effectN( 1 ).percent();
 
     return c;
@@ -1647,7 +1649,7 @@ struct dispatch_t : public rogue_attack_t
   {
     double c = rogue_attack_t::composite_crit();
 
-    if ( p() -> buffs.enhanced_vendetta -> up() )
+    if ( ! p() -> reflection_attack && p() -> buffs.enhanced_vendetta -> up() )
       c += p() -> buffs.enhanced_vendetta -> data().effectN( 1 ).percent();
 
     return c;
@@ -1657,7 +1659,7 @@ struct dispatch_t : public rogue_attack_t
   {
     double m = rogue_attack_t::action_multiplier();
 
-    if ( p() -> perk.empowered_envenom -> ok() && p() -> buffs.envenom -> up() )
+    if ( ! p() -> reflection_attack && p() -> perk.empowered_envenom -> ok() && p() -> buffs.envenom -> up() )
       m *= 1.0 + p() -> perk.empowered_envenom -> effectN( 1 ).percent();
 
     return m;
@@ -1724,7 +1726,7 @@ struct envenom_t : public rogue_attack_t
   {
     double c = rogue_attack_t::composite_crit();
 
-    if ( p() -> buffs.enhanced_vendetta -> up() )
+    if ( ! p() -> reflection_attack && p() -> buffs.enhanced_vendetta -> up() )
       c += p() -> buffs.enhanced_vendetta -> data().effectN( 1 ).percent();
 
     return c;
@@ -2174,7 +2176,7 @@ struct mutilate_strike_t : public rogue_attack_t
   {
     double m = rogue_attack_t::action_multiplier();
 
-    if ( p() -> perk.empowered_envenom -> ok() && p() -> buffs.envenom -> up() )
+    if ( ! p() -> reflection_attack && p() -> perk.empowered_envenom -> ok() && p() -> buffs.envenom -> up() )
       m *= 1.0 + p() -> perk.empowered_envenom -> effectN( 1 ).percent();
 
     return m;
@@ -2184,7 +2186,7 @@ struct mutilate_strike_t : public rogue_attack_t
   {
     double c = rogue_attack_t::composite_crit();
 
-    if ( p() -> buffs.enhanced_vendetta -> up() )
+    if ( ! p() -> reflection_attack && p() -> buffs.enhanced_vendetta -> up() )
       c += p() -> buffs.enhanced_vendetta -> data().effectN( 1 ).percent();
 
     return c;
@@ -3470,10 +3472,12 @@ struct shadow_reflection_pet_t : public pet_t
     {
       assert( source_action );
 
+
       // Sooo ... snapshot the state of the ability to be mimiced from the
       // rogue itself. This should get us the correct multipliers etc, so the
       // shadow reflection mimic ability does not need them, making the mimiced
       // abilities programmatically much simpler.
+      o() -> reflection_attack = true;
       source_action -> snapshot_internal( state, flags, rt );
 
       // Finally, the Shadow Relfection mimic abilities _do not_ get the
@@ -3490,6 +3494,8 @@ struct shadow_reflection_pet_t : public pet_t
       // on the owner are valid for the Shadow Reflection
       if ( flags & STATE_TGT_CRIT )
         state -> target_crit = composite_target_crit( state -> target ) * source_action -> composite_crit_multiplier();
+
+      o() -> reflection_attack = false;
     }
 
     static rogue_attack_state_t* cast_state( action_state_t* st )
@@ -4043,19 +4049,22 @@ double rogue_t::composite_player_multiplier( school_e school ) const
 {
   double m = player_t::composite_player_multiplier( school );
 
-  if ( buffs.master_of_subtlety -> check() ||
-       ( spec.master_of_subtlety -> ok() && ( buffs.stealth -> check() || buffs.vanish -> check() ) ) )
-    // TODO-WOD: Enhance Master of Subtlety is additive or multiplicative?
-    m *= 1.0 + spec.master_of_subtlety -> effectN( 1 ).percent() + perk.enhanced_master_of_subtlety -> effectN( 1 ).percent();
+  if ( ! reflection_attack )
+  {
+    if ( buffs.master_of_subtlety -> check() ||
+         ( spec.master_of_subtlety -> ok() && ( buffs.stealth -> check() || buffs.vanish -> check() ) ) )
+      // TODO-WOD: Enhance Master of Subtlety is additive or multiplicative?
+      m *= 1.0 + spec.master_of_subtlety -> effectN( 1 ).percent() + perk.enhanced_master_of_subtlety -> effectN( 1 ).percent();
 
-  m *= 1.0 + buffs.shallow_insight -> value();
+    m *= 1.0 + buffs.shallow_insight -> value();
 
-  m *= 1.0 + buffs.moderate_insight -> value();
+    m *= 1.0 + buffs.moderate_insight -> value();
 
-  m *= 1.0 + buffs.deep_insight -> value();
+    m *= 1.0 + buffs.deep_insight -> value();
 
-  if ( perk.empowered_bandits_guile -> ok() && buffs.deep_insight -> check() )
-    m *= 1.0 + perk.empowered_bandits_guile -> effectN( 1 ).percent();
+    if ( perk.empowered_bandits_guile -> ok() && buffs.deep_insight -> check() )
+      m *= 1.0 + perk.empowered_bandits_guile -> effectN( 1 ).percent();
+  }
 
   if ( main_hand_weapon.type == WEAPON_DAGGER && off_hand_weapon.type == WEAPON_DAGGER )
     m *= 1.0 + spec.assassins_resolve -> effectN( 2 ).percent();
