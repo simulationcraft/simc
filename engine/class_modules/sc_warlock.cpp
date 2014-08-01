@@ -994,7 +994,7 @@ warlock_pet_t::warlock_pet_t( sim_t* sim, warlock_t* owner, const std::string& p
   pet_t( sim, owner, pet_name, pt, guardian ), special_action( 0 ), melee_attack( 0 ), summon_stats( 0 )
 {
   owner_fury_gain = owner -> get_gain( pet_name );
-  owner_coeff.ap_from_sp = 0.6563;
+  owner_coeff.ap_from_sp = 1;
   owner_coeff.sp_from_sp = 0.75;
   supremacy = find_spell( 115578 );
 }
@@ -1147,6 +1147,7 @@ struct imp_pet_t : public warlock_pet_t
     warlock_pet_t( sim, owner, name, PET_IMP, name != "imp" )
   {
     action_list_str = "firebolt";
+    owner_coeff.ap_from_sp = 0.6563;
   }
 
   virtual action_t* create_action( const std::string& name, const std::string& options_str )
@@ -1163,6 +1164,7 @@ struct felguard_pet_t : public warlock_pet_t
     warlock_pet_t( sim, owner, name, PET_FELGUARD, name != "felguard" )
   {
     action_list_str = "legion_strike";
+    owner_coeff.ap_from_sp = 0.6563;
   }
 
   virtual void init_base_stats()
@@ -1187,6 +1189,7 @@ struct felhunter_pet_t : public warlock_pet_t
     warlock_pet_t( sim, owner, name, PET_FELHUNTER, name != "felhunter" )
   {
     action_list_str = "shadow_bite";
+    owner_coeff.ap_from_sp = 0.6563;
   }
 
   virtual void init_base_stats()
@@ -1237,6 +1240,7 @@ struct voidwalker_pet_t : public warlock_pet_t
     warlock_pet_t( sim, owner, name, PET_VOIDWALKER, name != "voidwalker" )
   {
     action_list_str = "torment";
+    owner_coeff.ap_from_sp = 0.6563;
   }
 
   virtual void init_base_stats()
@@ -1376,6 +1380,7 @@ struct fel_imp_pet_t : public warlock_pet_t
     warlock_pet_t( sim, owner, "fel_imp", PET_IMP )
   {
     action_list_str = "felbolt";
+    owner_coeff.ap_from_sp = 0.6563;
   }
 
   virtual action_t* create_action( const std::string& name, const std::string& options_str )
@@ -1420,6 +1425,7 @@ struct observer_pet_t : public warlock_pet_t
     warlock_pet_t( sim, owner, "observer", PET_FELHUNTER )
   {
     action_list_str = "tongue_lash";
+    owner_coeff.ap_from_sp = 0.6563;
   }
 
   virtual void init_base_stats()
@@ -1472,6 +1478,7 @@ struct voidlord_pet_t : public warlock_pet_t
     warlock_pet_t( sim, owner, "voidlord", PET_VOIDWALKER )
   {
     action_list_str = "torment";
+    owner_coeff.ap_from_sp = 0.6563;
   }
 
   virtual void init_base_stats()
