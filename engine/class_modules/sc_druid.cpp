@@ -20,7 +20,6 @@ namespace { // UNNAMED NAMESPACE
       Thrash (both forms)
       Swipe
     pvp_2pc_melee
-    SR doesn't snapshot :(
 
     = Balance =
     PvP bonuses
@@ -2038,10 +2037,7 @@ public:
     double pm = base_t::composite_persistent_multiplier( s );
 
     if ( p() -> buff.cat_form -> check() && dbc::is_school( s -> action -> school, SCHOOL_PHYSICAL ) )
-    { // Avoid using value() to prevent skewing benefit_pct.
-      pm *= 1.0 + p() -> buff.tigers_fury -> check() * p() -> buff.tigers_fury -> default_value;
-      pm *= 1.0 + p() -> buff.savage_roar -> check() * p() -> buff.savage_roar -> default_value;
-    }
+      pm *= 1.0 + p() -> buff.tigers_fury -> check() * p() -> buff.tigers_fury -> default_value; // Avoid using value() to prevent skewing benefit_pct.
 
     return pm;
   }
@@ -6576,6 +6572,10 @@ double druid_t::composite_player_multiplier( school_e school ) const
         m *= 1.0 + buff.chosen_of_elune -> default_value;
     }
   }
+
+  if ( buff.cat_form -> check() && dbc::is_school( school, SCHOOL_PHYSICAL ) )
+    m *= 1.0 + buff.savage_roar -> check() * buff.savage_roar -> default_value; // Avoid using value() to prevent skewing benefit_pct.
+
   return m;
 }
 
