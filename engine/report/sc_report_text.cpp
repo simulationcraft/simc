@@ -563,7 +563,7 @@ void print_text_performance( FILE* file, sim_t* sim )
   util::fprintf( file,
                  "\nBaseline Performance:\n"
 #if !defined( SC_WINDOWS )
-                 "  TotalEvents   = %lu\n"
+                 "  TotalEvents   = %llu\n"
 #else
                  "  TotalEvents   = %I64u\n"
 #endif
@@ -574,7 +574,7 @@ void print_text_performance( FILE* file, sim_t* sim )
                  "  WallSeconds   = %.3f\n"
                  "  SpeedUp       = %.0f\n"
                  "  EndTime       = %s (%ld)\n\n",
-                 ( long ) sim -> total_events_processed,
+                 sim -> total_events_processed,
                  ( long ) sim -> max_events_remaining,
                  sim -> target -> resources.base[ RESOURCE_HEALTH ],
                  sim -> iterations * sim -> simulation_length.mean(),

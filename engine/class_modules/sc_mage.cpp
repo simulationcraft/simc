@@ -292,6 +292,7 @@ public:
     // Arcane
     const spell_data_t* arcane_charge;
     const spell_data_t* mana_adept;
+    const spell_data_t* presence_of_mind;
     const spell_data_t* slow;
 
     // Fire
@@ -309,7 +310,6 @@ public:
   // Talents
   struct talents_list_t
   {
-    const spell_data_t* presence_of_mind;
     const spell_data_t* scorch;
     const spell_data_t* ice_floes;
     const spell_data_t* temporal_shield; // NYI
@@ -4127,7 +4127,6 @@ void mage_t::init_spells()
   talents.kindling           = find_talent_spell( "Kindling" );
   talents.living_bomb        = find_talent_spell( "Living Bomb" );
   talents.nether_tempest     = find_talent_spell( "Nether Tempest" );
-  talents.presence_of_mind   = find_talent_spell( "Presence of Mind" );
   talents.ring_of_frost      = find_talent_spell( "Ring of Frost" );
   talents.rune_of_power      = find_talent_spell( "Rune of Power" );
   talents.scorch             = find_talent_spell( "Scorch" );
@@ -4183,7 +4182,7 @@ void mage_t::init_spells()
   // Spec Spells
   spec.arcane_charge         = find_specialization_spell( "Arcane Charge" );
   spells.arcane_charge_arcane_blast = spec.arcane_charge -> ok() ? find_spell( 36032 ) : spell_data_t::not_found();
-
+  spec.presence_of_mind      = find_specialization_spell( "Presence of Mind" );
   spec.slow                  = find_class_spell( "Slow" );
 
   spec.brain_freeze          = find_specialization_spell( "Brain Freeze" );
@@ -4322,7 +4321,7 @@ void mage_t::create_buffs()
                                .default_value( perks.improved_blink -> effectN( 1 ).percent() );
   buffs.mage_armor           = stat_buff_creator_t( this, "mage_armor" ).spell( find_spell( 6117 ) );
   buffs.molten_armor         = buff_creator_t( this, "molten_armor", find_spell( 30482 ) ).add_invalidate( CACHE_SPELL_CRIT );
-  buffs.presence_of_mind     = buff_creator_t( this, "presence_of_mind", talents.presence_of_mind ).duration( timespan_t::zero() ).activated( true );
+  buffs.presence_of_mind     = buff_creator_t( this, "presence_of_mind", find_spell(12043) ).duration( timespan_t::zero() ).activated( true );
   buffs.rune_of_power        = buff_creator_t( this, "rune_of_power", find_spell( 116014 ) )
                                .duration( timespan_t::from_minutes( 3 ) )
                                .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
