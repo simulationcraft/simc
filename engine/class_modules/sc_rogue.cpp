@@ -675,7 +675,7 @@ struct sinister_calling_t : public rogue_attack_t
     proc = background = true;
   }
 
-  double target_armor( player_t* target ) const
+  double target_armor( player_t* ) const
   { return 0; }
 
   // Sinister calling just replicates the damage of the tick
@@ -1891,7 +1891,7 @@ struct crimson_tempest_t : public rogue_attack_t
   struct crimson_tempest_dot_t : public residual_periodic_action_t<rogue_attack_t>
   {
     crimson_tempest_dot_t( rogue_t * p ) :
-      residual_periodic_action_t<rogue_attack_t>( "crimson_tempest_dot", p, p -> find_spell( 122233 ) )
+      residual_periodic_action_t<rogue_attack_t>( "crimson_tempest", p, p -> find_spell( 122233 ) )
     {
       if ( p -> spec.sinister_calling -> ok() )
       {
@@ -1916,7 +1916,6 @@ struct crimson_tempest_t : public rogue_attack_t
     weapon = &( p -> main_hand_weapon );
     weapon_power_mod = weapon_multiplier = 0;
     ct_dot = new crimson_tempest_dot_t( p );
-    add_child( ct_dot );
   }
 
   void impact( action_state_t* s )
@@ -2009,8 +2008,6 @@ struct hemorrhage_t : public rogue_attack_t
     weapon = &( p -> main_hand_weapon );
 
     base_multiplier *= 1.0 + p -> perk.improved_hemorrhage -> effectN( 1 ).percent();
-
-    add_child( dot );
   }
 
   double action_multiplier() const
@@ -2895,8 +2892,6 @@ inline bool rogue_t::poisoned_enemy( player_t* target ) const
 inline void actions::rogue_attack_t::trigger_sinister_calling( dot_t* dot )
 {
   assert( sinister_calling );
-
-  rogue_attack_t* attack = debug_cast<rogue_attack_t*>( dot -> current_action );
 
   action_state_t* new_state = 0;
   new_state = sinister_calling -> get_state();
