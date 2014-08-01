@@ -1773,7 +1773,7 @@ public:
       
       
     //sb:haunt buff
-    if ( p() -> buffs.haunting_spirits -> check() && ( channeled || spell_power_mod.direct ) ) // Only applies to channeled or dots
+    if ( p() -> buffs.haunting_spirits -> check() && ( channeled || spell_power_mod.tick ) ) // Only applies to channeled or dots
     {
         m *= 1.0 + p() -> buffs.haunting_spirits -> data().effectN( 1 ).percent();//TODO double check correct effectN
     }
