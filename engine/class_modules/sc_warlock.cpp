@@ -1766,9 +1766,9 @@ public:
     warlock_td_t* td = this -> td( t );
       
     //haunt debuff
-    if ( td -> debuffs_haunt -> check() && ( channeled || spell_power_mod.direct ) ) // Only applies to channeled or dots
+    if ( td -> debuffs_haunt -> check() && ( channeled || spell_power_mod.tick ) ) // Only applies to channeled or dots
     {
-      m *= 1.0 + td -> debuffs_haunt -> data().effectN( 3 ).percent();
+      m *= 1.0 + td -> debuffs_haunt -> data().effectN( 4 ).percent();
     }
       
       
