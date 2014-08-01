@@ -246,6 +246,7 @@ struct rogue_t : public player_t
     const spell_data_t* tier15_4pc;
     const spell_data_t* venom_zest;
     const spell_data_t* death_from_above;
+    const spell_data_t* critical_strikes;
   } spell;
 
   // Talents
@@ -392,6 +393,8 @@ struct rogue_t : public player_t
   virtual double    composite_rating_multiplier( rating_e rating ) const;
   virtual double    composite_attribute_multiplier( attribute_e attr ) const;
   virtual double    composite_melee_speed() const;
+  virtual double    composite_melee_crit() const;
+  virtual double    composite_spell_crit() const;
   virtual double    matching_gear_multiplier( attribute_e attr ) const;
   virtual double    composite_attack_power_multiplier() const;
   virtual double    composite_player_multiplier( school_e school ) const;
@@ -4002,6 +4005,28 @@ double rogue_t::composite_melee_speed() const
   return h;
 }
 
+// rogue_t::composite_melee_crit =========================================
+
+double rogue_t::composite_melee_crit() const
+{
+  double crit = player_t::composite_melee_crit();
+
+  crit += spell.critical_strikes -> effectN( 1 ).percent();
+
+  return crit;
+}
+
+// rogue_t::composite_spell_crit =========================================
+
+double rogue_t::composite_spell_crit() const
+{
+  double crit = player_t::composite_spell_crit();
+
+  crit += spell.critical_strikes -> effectN( 1 ).percent();
+
+  return crit;
+}
+
 // rogue_t::matching_gear_multiplier ========================================
 
 double rogue_t::matching_gear_multiplier( attribute_e attr ) const
@@ -4493,6 +4518,7 @@ void rogue_t::init_spells()
   spell.fan_of_knives       = find_class_spell( "Fan of Knives" );
   spell.venom_zest          = find_spell( 156719 );
   spell.death_from_above    = find_spell( 163786 );
+  spell.critical_strikes    = find_spell( 157442 );
 
   // Glyphs
   glyph.disappearance       = find_glyph_spell( "Glyph of Disappearance" );
