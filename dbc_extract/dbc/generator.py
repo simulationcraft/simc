@@ -1313,6 +1313,10 @@ class SpellDataGenerator(DataGenerator):
             ( 89775, 0, False ),    # Hemorrhage damage is not directy activatable
             ( 86392, 0, False ),    # Main Gauche false positive for activatable
             ( 145211, 0 ),          # Subtlety Tier16 4PC proc
+            ( 168908, 0 ),          # Sinister Calling: Hemorrhage
+            ( 168952, 0 ),          # Sinister Calling: Crimson Tempest
+            ( 168971, 0 ),          # Sinister Calling: Garrote
+            ( 168963, 0 ),          # Sinister Calling: Rupture
         ),  
         
         # Priest:
