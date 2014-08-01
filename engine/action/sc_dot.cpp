@@ -222,25 +222,81 @@ void dot_t::trigger( timespan_t duration )
 
 void dot_t::copy( player_t* other_target, dot_copy_e copy_type )
 {
-  // assert( target != other_target );
+  if ( target == other_target )
+    return;
 
   dot_t* other_dot = current_action -> get_dot( other_target );
-  // If the target actor has a dot ticking, we need to cancel it in any case
-  if ( other_dot -> is_ticking() )
-    other_dot -> cancel();
 
-  other_dot -> copy( this );
-
+  // Default behavior simply copies the current stat of the source dot
+  // (including duration) to the target and starts it
   if ( copy_type == DOT_COPY_START )
-    other_dot -> trigger( other_dot -> current_duration );
+  {
+    if ( other_dot -> is_ticking() )
+      other_dot -> cancel();
+    other_dot -> copy( this );
+    other_dot -> trigger( current_duration );
+  }
   // If we don't start the copied dot from the beginning, we need to bypass a
   // lot of the dot scheduling logic, and simply do the minimum amount possible
   // to get the dot aligned with the source dot, both in terms of state, as
   // well as the remaining duration, and the remaining ongoing tick time.
   else
   {
+    timespan_t new_duration;
+
+    if ( other_dot -> is_ticking() )
+    {
+      // The new duration is computed through our normal refresh duration
+      // method. End result (by default) will be source_remains + min(
+      // target_remains, 0.3 * source_remains )
+      new_duration = current_action -> calculate_dot_refresh_duration( other_dot, remains() );
+
+      assert( other_dot -> end_event && other_dot -> tick_event );
+      assert( other_dot -> end_event -> remains() == other_dot -> remains() );
+
+      // Cancel target's ongoing events, we are about to re-do them
+      core_event_t::cancel( other_dot -> end_event );
+      core_event_t::cancel( other_dot -> tick_event );
+    }
+    else
+    {
+      // No target dot ticking, just copy the source's remaining time
+      new_duration = remains();
+
+      source -> add_active_dot( current_action -> internal_id );
+    }
+
+    if ( sim.debug )
+      sim.out_debug.printf( "%s cloning %s from %s to %s: source_remains=%.3f target_remains=%.3f target_duration=%.3f",
+        current_action -> player -> name(), current_action -> name(), target -> name(), other_target -> name(),
+        remains().total_seconds(), other_dot -> remains().total_seconds(), new_duration.total_seconds() );
+
+    // To compute new number of ticks, we use the new duration, plus the
+    // source's ongoing remaining tick time, since we are copying the ongoing
+    // tick too
+    timespan_t computed_tick_duration = new_duration;
+    if ( tick_event )
+      computed_tick_duration += time_to_tick - tick_event -> remains();
+
+    // Copy various things from source to target
+    other_dot -> copy( this );
+
+    // Aand then adjust some things for ease-of-use for now. The copied dot has
+    // its current tick reset to 0, and it's last start time is set to current
+    // time.
+    //
+    // TODO?: A more proper way might be to also copy the source dot's last
+    // start time and current tick, in practice it is probably meaningless,
+    // though.
+    other_dot -> last_start = sim.current_time;
+    other_dot -> current_duration = new_duration;
+    other_dot -> current_tick = 0;
+    other_dot -> extended_time = timespan_t::zero();
+    other_dot -> num_ticks = as<int>( std::ceil( computed_tick_duration / time_to_tick ) );
+    other_dot -> last_tick_factor = std::min( 1.0, computed_tick_duration / time_to_tick );
+
     other_dot -> ticking = true;
-    other_dot -> end_event = new ( sim ) dot_t::dot_end_event_t( other_dot, remains() );
+    other_dot -> end_event = new ( sim ) dot_t::dot_end_event_t( other_dot, new_duration );
 
     // The clone may happen on tick, or mid tick. If it happens on tick, the
     // source dot will not have a new tick event scheduled yet, so the tick
@@ -255,8 +311,6 @@ void dot_t::copy( player_t* other_target, dot_copy_e copy_type )
       tick_time = other_dot -> current_action -> tick_time( other_dot -> state -> haste );
 
     other_dot -> tick_event = new ( sim ) dot_t::dot_tick_event_t( other_dot, tick_time );
-
-    source -> add_active_dot( current_action -> internal_id );
   }
 }
 
@@ -273,12 +327,12 @@ void dot_t::copy( dot_t* other_dot )
   state -> copy_state( other_dot -> state );
   state -> target = target;
   current_action = other_dot -> current_action;
-  current_tick = other_dot -> current_tick;
-  last_start = other_dot -> last_start;
-  current_duration = other_dot -> current_duration;
-  num_ticks = other_dot -> num_ticks;
-  extended_time = other_dot -> extended_time;
-  last_tick_factor = other_dot -> last_tick_factor;
+  //current_tick = other_dot -> current_tick;
+  //last_start = other_dot -> last_start;
+  //current_duration = other_dot -> current_duration;
+  //num_ticks = other_dot -> num_ticks;
+  //extended_time = other_dot -> extended_time;
+  //last_tick_factor = other_dot -> last_tick_factor;
 }
 
 // dot_t::create_expression =================================================

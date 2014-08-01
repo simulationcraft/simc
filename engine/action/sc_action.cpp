@@ -282,7 +282,8 @@ action_t::action_t( action_e       ty,
   time_to_travel( timespan_t::zero() ),
   target_specific_dot( false ),
   total_executions(),
-  line_cooldown( cooldown_t( "line_cd", *p ) )
+  line_cooldown( cooldown_t( "line_cd", *p ) ),
+  base_cooldown_reduction( 1.0 )
 {
   dot_behavior                   = DOT_CLIP;
   trigger_gcd                    = player -> base_gcd;
@@ -1462,7 +1463,7 @@ void action_t::update_ready( timespan_t cd_duration /* = timespan_t::min() */ )
   timespan_t delay = timespan_t::zero();
 
   if ( cd_duration < timespan_t::zero() )
-    cd_duration = cooldown -> duration;
+    cd_duration = cooldown -> duration * cooldown_reduction();
 
   if ( cd_duration > timespan_t::zero() && ! dual )
   {
@@ -1478,7 +1479,7 @@ void action_t::update_ready( timespan_t cd_duration /* = timespan_t::min() */ )
         sim -> out_debug.printf( "%s delaying the cooldown finish of %s by %f", player -> name(), name(), delay.total_seconds() );
     }
 
-    cooldown -> start( cd_duration, delay );
+    cooldown -> start( this, cd_duration, delay );
 
     if ( sim -> debug )
       sim -> out_debug.printf( "%s starts cooldown for %s (%s). Will be ready at %.4f", player -> name(), name(), cooldown -> name(), cooldown -> ready.total_seconds() );

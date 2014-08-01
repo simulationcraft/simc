@@ -2594,6 +2594,11 @@ struct necrotic_plague_t : public death_knight_spell_t
     td( dot -> target ) -> debuffs_necrotic_plague -> expire();
   }
 
+  // Spread Necrotic Plagues use the source NP dot's duration on the target,
+  // and never pandemic-extnd the dot on the target.
+  timespan_t calculate_dot_refresh_duration( const dot_t*, timespan_t triggered_duration ) const
+  { return triggered_duration; }
+
   // Necrotic Plague duration will not be refreshed if it is already ticking on
   // the target, only the stack count will go up. Only Festering Strike is
   // allowed to extend the duration of the Necrotic Plague dot.
@@ -2606,8 +2611,8 @@ struct necrotic_plague_t : public death_knight_spell_t
     tdata -> debuffs_necrotic_plague -> trigger();
 
     if ( sim -> debug )
-      sim -> out_debug.printf( "%s necrotic_plague stack increases to %d",
-          player -> name(), tdata -> debuffs_necrotic_plague -> check() );
+      sim -> out_debug.printf( "%s %s stack increases to %d",
+          player -> name(), name(), tdata -> debuffs_necrotic_plague -> check() );
   }
 
   void tick( dot_t* dot )
@@ -2620,13 +2625,13 @@ struct necrotic_plague_t : public death_knight_spell_t
       tdata -> debuffs_necrotic_plague -> trigger();
 
       if ( sim -> debug )
-        sim -> out_debug.printf( "%s necrotic_plague stack %d",
-            player -> name(), tdata -> debuffs_necrotic_plague -> check() );
+        sim -> out_debug.printf( "%s %s stack %d",
+            player -> name(), name(), tdata -> debuffs_necrotic_plague -> check() );
       new ( *sim ) np_spread_event_t( dot );
     }
   }
 
-  virtual double composite_crit() const
+  double composite_crit() const
   { return action_t::composite_crit() + player -> cache.attack_crit(); }
 };
 

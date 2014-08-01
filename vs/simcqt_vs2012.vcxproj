@@ -152,7 +152,6 @@
       <StringPooling>true</StringPooling>
       <EnableEnhancedInstructionSet>StreamingSIMDExtensions2</EnableEnhancedInstructionSet>
       <FloatingPointModel>Fast</FloatingPointModel>
-      <SmallerTypeCheck>true</SmallerTypeCheck>
       <ProgramDataBaseFileName>.\</ProgramDataBaseFileName>
     </ClCompile>
     <ResourceCompile>
@@ -243,7 +242,6 @@
       <StringPooling>true</StringPooling>
       <EnableEnhancedInstructionSet>StreamingSIMDExtensions2</EnableEnhancedInstructionSet>
       <FloatingPointModel>Fast</FloatingPointModel>
-      <SmallerTypeCheck>true</SmallerTypeCheck>
       <ProgramDataBaseFileName>.\</ProgramDataBaseFileName>
     </ClCompile>
     <ResourceCompile>

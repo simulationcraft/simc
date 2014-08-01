@@ -2415,7 +2415,8 @@ public:
   // Collection of most event-related functionality
   struct event_managment_t
   {
-    int events_remaining, events_processed;
+    int events_remaining;
+    uint64_t events_processed;
     unsigned timing_slice, global_event_id;
     std::vector<core_event_t*> timing_wheel;
     core_event_t* recycled_event_list;
@@ -2455,7 +2456,8 @@ public:
 
 
   // Timing Wheel statistics
-  int64_t     max_events_remaining, total_events_processed;
+  int64_t     max_events_remaining;
+  uint64_t total_events_processed;
   stopwatch_t event_stopwatch;
   bool monitor_cpu;
 
@@ -3664,6 +3666,7 @@ struct cooldown_t
   // the user would react to rather than plan ahead for.
   void adjust( timespan_t, bool requires_reaction = true );
   void reset( bool require_reaction );
+  void start( action_t* action, timespan_t override = timespan_t::min(), timespan_t delay = timespan_t::zero() );
   void start( timespan_t override = timespan_t::min(), timespan_t delay = timespan_t::zero() );
 
   timespan_t remains() const
@@ -5539,6 +5542,7 @@ struct action_t : public noncopyable
   double base_aoe_multiplier; // Static reduction of damage for AoE
   bool split_aoe_damage;
   bool normalize_weapon_speed;
+  double base_cooldown_reduction;
   cooldown_t* cooldown;
   stats_t* stats;
   core_event_t* execute_event;
@@ -5598,6 +5602,7 @@ struct action_t : public noncopyable
   virtual double calculate_weapon_damage( double attack_power );
   virtual double target_armor( player_t* t ) const
   { return t -> cache.armor(); }
+  virtual double cooldown_reduction() const { return base_cooldown_reduction; }
   virtual void   consume_resource();
   virtual resource_e current_resource() const { return resource_current; }
   virtual int n_targets() const { return aoe; }

@@ -2634,6 +2634,7 @@ struct vanish_t : public rogue_attack_t
     may_miss = may_crit = harmful = false;
 
     cooldown -> duration += p -> perk.enhanced_vanish -> effectN( 1 ).time_value();
+    cooldown -> duration += p -> glyph.disappearance -> effectN( 1 ).time_value();
   }
 
   void execute()

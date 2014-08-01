@@ -1547,6 +1547,26 @@ struct warlock_heal_t : public heal_t
   { return static_cast<warlock_t*>( player ); }
 };
 
+// Custom state to carry "ds tickness" across event boundaries in ability
+// execution. Works for multistrikes too.
+struct warlock_state_t : public action_state_t
+{
+  bool ds_tick;
+
+  warlock_state_t( action_t* a, player_t* target ) :
+    action_state_t( a, target ), ds_tick( false )
+  { }
+
+  void initialize()
+  { action_state_t::initialize(); ds_tick = false; }
+
+  std::ostringstream& debug_str( std::ostringstream& ds )
+  { action_state_t::debug_str( ds ); ds << " ds_tick=" << ds_tick; return ds; }
+
+  void copy_state( const action_state_t* other )
+  { action_state_t::copy_state( other ); ds_tick = debug_cast<const warlock_state_t*>( other ) -> ds_tick; }
+};
+
 struct warlock_spell_t : public spell_t
 {
 private:
@@ -1619,6 +1639,9 @@ public:
 
   warlock_td_t* td( player_t* t ) const
   { return p() -> get_target_data( t ); }
+
+  action_state_t* new_state()
+  { return new warlock_state_t( this, target ); }
 
   bool use_havoc() const
   {
@@ -1766,14 +1789,14 @@ public:
     warlock_td_t* td = this -> td( t );
       
     //haunt debuff
-    if ( td -> debuffs_haunt -> check() && ( channeled || spell_power_mod.direct ) ) // Only applies to channeled or dots
+    if ( td -> debuffs_haunt -> check() && ( channeled || spell_power_mod.tick ) ) // Only applies to channeled or dots
     {
-      m *= 1.0 + td -> debuffs_haunt -> data().effectN( 3 ).percent();
+      m *= 1.0 + td -> debuffs_haunt -> data().effectN( 4 ).percent();
     }
       
       
     //sb:haunt buff
-    if ( p() -> buffs.haunting_spirits -> check() && ( channeled || spell_power_mod.direct ) ) // Only applies to channeled or dots
+    if ( p() -> buffs.haunting_spirits -> check() && ( channeled || spell_power_mod.tick ) ) // Only applies to channeled or dots
     {
         m *= 1.0 + p() -> buffs.haunting_spirits -> data().effectN( 1 ).percent();//TODO double check correct effectN
     }
@@ -1860,6 +1883,40 @@ public:
     }
   }
 
+  // ds_tick is set, and we will record the damage as "direct", even if it is
+  // from extra ticks
+  dmg_e report_amount_type( const action_state_t* state ) const
+  {
+    if ( debug_cast<const warlock_state_t*>( state ) -> ds_tick )
+      return DMG_DIRECT;
+
+    return spell_t::report_amount_type( state );
+  }
+
+  // DS extra ticks can multistrike, so we need to do the stats juggling in
+  // it's correct place, since multistrikes do not strike immediately, but
+  // rather on their own event
+  void assess_damage( dmg_e type, action_state_t* s )
+  {
+    warlock_state_t* state = debug_cast<warlock_state_t*>( s );
+    stats_t* tmp = 0;
+    // ds tick -> adjust the spell's "stats" object so we collect information
+    // to a separate SPELL_ds entry in the report
+    if ( state -> ds_tick )
+    {
+      tmp = stats;
+      stats = ds_tick_stats;
+    }
+
+    spell_t::assess_damage( type, s );
+
+    if ( tmp )
+    {
+      stats -> add_execute( timespan_t::zero(), s -> target );
+      stats = tmp;
+    }
+  }
+
   void trigger_extra_tick( dot_t* dot, double multiplier ) //if tick_from_mg == true, then MG created the tick, otherwise DS created the tick
   {
     if ( ! dot -> is_ticking() ) return;
@@ -1870,18 +1927,15 @@ public:
     dot -> state = get_state( tmp_state );
     dot -> state -> ta_multiplier *= multiplier;
 
+    // Carry "ds tickness" in the state, so it works across events etc
+    debug_cast<warlock_state_t*>( dot -> state ) -> ds_tick = true;
+
     snapshot_internal( dot -> state, update_flags | STATE_CRIT, tmp_state -> result_type );
 
-    dot -> current_action -> periodic_hit = true;
-    stats_t* tmp = dot -> current_action -> stats;
-    warlock_spell_t* spell = debug_cast<warlock_spell_t*>( dot -> current_action );
-
     tempmulti = dot -> current_action -> base_multiplier;
+    dot -> current_action -> periodic_hit = true;
     dot -> current_action -> base_multiplier = multiplier;
-    dot -> current_action -> stats = spell -> ds_tick_stats;
     dot -> current_action -> tick( dot );
-    dot -> current_action -> stats -> add_execute( timespan_t::zero(), dot -> state -> target );
-    dot -> current_action -> stats = tmp;
     dot -> current_action -> periodic_hit = false;
 
     action_state_t::release( dot -> state );

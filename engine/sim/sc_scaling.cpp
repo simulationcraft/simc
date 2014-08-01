@@ -310,27 +310,10 @@ void scaling_t::analyze_stats()
       double   ref_error = ref_p -> scales_over().stddev * ref_sim -> confidence_estimator;
 
       p -> scaling_delta_dps.set_stat( stat, delta_score );
-
-      //if we do a dtps analysis for stamina, scale it by the tank's hp so that we get relative dtps
-      if ( stat == STAT_STAMINA && scale_over == "dtps" )
-      {
-        delta_score /= delta_p -> resources.max[ RESOURCE_HEALTH ];
-        ref_score /= ref_p -> resources.max[ RESOURCE_HEALTH ];
-
-        delta_error /= delta_p -> resources.max[ RESOURCE_HEALTH ];
-        ref_error /= ref_p -> resources.max[ RESOURCE_HEALTH ];
-      }
-
+      
       double score = ( delta_score - ref_score ) / divisor;
       double error = delta_error * delta_error + ref_error * ref_error;
-
-      //if we do a dtps analysis for stamina, unscale relative dtps so that we can compare to the other factors
-      if ( stat == STAT_STAMINA && scale_over == "dtps" )
-      {
-        score *= ref_p -> resources.max[ RESOURCE_HEALTH ];
-        error *= ref_p -> resources.max[ RESOURCE_HEALTH ] * ref_p -> resources.max[ RESOURCE_HEALTH ];
-      }
-
+      
       if ( error > 0  )
         error = sqrt( error );
 

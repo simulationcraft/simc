@@ -52,7 +52,7 @@ timespan_t attack_t::execute_time() const
 dmg_e attack_t::amount_type( const action_state_t* /* state */, bool periodic ) const
 {
   if ( periodic )
-    return ( periodic_hit ) ? DMG_DIRECT : DMG_OVER_TIME;
+    return DMG_OVER_TIME;
   else
     return DMG_DIRECT;
 }
@@ -79,6 +79,11 @@ dmg_e attack_t::report_amount_type( const action_state_t* state ) const
         }
       }
     }
+  }
+  else if ( result_type == DMG_OVER_TIME )
+  {
+    if ( periodic_hit )
+      result_type = DMG_OVER_TIME;
   }
 
   return result_type;

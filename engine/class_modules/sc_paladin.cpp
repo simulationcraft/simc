@@ -2929,7 +2929,7 @@ struct seal_of_insight_proc_t : public paladin_heal_t
     background  = true;
     proc = true;
     trigger_gcd = timespan_t::zero();
-    may_crit = false; //cannot crit
+    may_crit = true; 
 
     // spell database info is in tooltip
     attack_power_mod.direct = 0.236;

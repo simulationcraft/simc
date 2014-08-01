@@ -20,6 +20,7 @@ namespace { // UNNAMED NAMESPACE
       Thrash (both forms)
       Swipe
     pvp_2pc_melee
+    SR doesn't snapshot :(
 
     = Balance =
     PvP bonuses
@@ -29,9 +30,7 @@ namespace { // UNNAMED NAMESPACE
     FR "none" results?
     Verify stuff (particularly DoC)
     Might of Ursoc
-    Stamina, multistrike, agi in DTPS scaling
     PvP bonuses
-    Guardian of Elune change
 
     = Restoration =
     Err'thing
@@ -214,6 +213,7 @@ public:
     cooldown_t* mangle;
     cooldown_t* natures_swiftness;
     cooldown_t* pvp_4pc_melee;
+    cooldown_t* savage_defense_use;
     cooldown_t* starfallsurge;
     cooldown_t* swiftmend;
   } cooldown;
@@ -527,12 +527,13 @@ public:
     cooldown.mangle              = get_cooldown( "mangle"              );
     cooldown.natures_swiftness   = get_cooldown( "natures_swiftness"   );
     cooldown.pvp_4pc_melee       = get_cooldown( "pvp_4pc_melee"       );
-    cooldown.pvp_4pc_melee -> duration = timespan_t::from_seconds( 30.0 );
+    cooldown.savage_defense_use  = get_cooldown( "savage_defense_use"  );
     cooldown.starfallsurge       = get_cooldown( "starfallsurge"       );
-    cooldown.starfallsurge -> charges = 3;
-    cooldown.starfallsurge -> duration = timespan_t::from_seconds( 30 );
     cooldown.swiftmend           = get_cooldown( "swiftmend"           );
-
+    
+    cooldown.pvp_4pc_melee -> duration = timespan_t::from_seconds( 30.0 );
+    cooldown.starfallsurge -> charges = 3;
+    cooldown.starfallsurge -> duration = timespan_t::from_seconds( 30.0 );
 
     cat_melee_attack = 0;
     bear_melee_attack = 0;
@@ -2691,11 +2692,13 @@ struct bear_attack_t : public druid_attack_t<melee_attack_t>
     return t;
   }
 
-  virtual void update_ready( timespan_t cd_duration )
+  virtual double cooldown_reduction() const
   {
-    cd_duration = cooldown -> duration * p() -> cache.attack_haste();
+    double cdr = base_t::cooldown_reduction();
 
-    base_t::update_ready( cd_duration );
+    cdr *= p() -> cache.attack_haste();
+
+    return cdr;
   }
 
   virtual void impact( action_state_t* s )
@@ -4869,6 +4872,9 @@ struct savage_defense_t : public druid_spell_t
   savage_defense_t( druid_t* p, const std::string& options_str ) :
     druid_spell_t( "savage_defense", p, p -> find_specialization_spell( "Savage Defense" ), options_str )
   {
+    // Savage Defense has 2 cooldowns, obey the 1.5s one via this:
+    p -> cooldown.savage_defense_use -> duration = cooldown -> duration;
+
     harmful = false;
     cooldown -> duration = timespan_t::from_seconds( 9.0 );
     cooldown -> charges = 2;
@@ -4882,6 +4888,8 @@ struct savage_defense_t : public druid_spell_t
   {
     druid_spell_t::execute();
 
+    p() -> cooldown.savage_defense_use -> start();
+
     if ( p() -> buff.savage_defense -> check() )
       p() -> buff.savage_defense -> extend_duration( p(), p() -> buff.savage_defense -> buff_duration );
     else
@@ -4891,21 +4899,23 @@ struct savage_defense_t : public druid_spell_t
       p() -> active.ursocs_vigor -> trigger_hot();
   }
 
-  virtual void update_ready( timespan_t cd_duration )
+  virtual double cooldown_reduction() const
   {
-    cd_duration = cooldown -> duration;
+    double cdr = druid_spell_t::cooldown_reduction();
 
     if ( p() -> talent.guardian_of_elune -> ok() )
     {
       double dodge = p() -> cache.dodge() - p() -> buff.savage_defense -> check() * p() -> buff.savage_defense -> default_value;
-      cd_duration /= 1 + dodge;
+      cdr /= 1 + dodge;
     }
 
-    druid_spell_t::update_ready( cd_duration );
+    return cdr;
   }
 
   virtual bool ready() 
   {
+    if ( p() -> cooldown.savage_defense_use -> down() )
+      return false;
     if ( ! p() -> buff.bear_form -> check() )
       return false;
     

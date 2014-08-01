@@ -42,6 +42,7 @@ actions+=/berserking
 actions+=/arcane_torrent
 actions+=/potion,name=draenic_intellect,if=buff.arcane_power.up|target.time_to_die<50
 actions+=/use_item,slot=trinket1
+actions+=/presence_of_mind,if=buff.arcane_power.up
 actions+=/run_action_list,name=aoe,if=active_enemies>=6
 actions+=/run_action_list,name=single_target,if=active_enemies<6
 
