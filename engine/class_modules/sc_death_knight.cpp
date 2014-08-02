@@ -4783,7 +4783,6 @@ struct disease_expr_t : public expr_t
     if ( bp_expr )
     {
       double val = bp_expr -> eval();
-      std::cout << "bp_expr=" << val << std::endl;
       if ( type == TYPE_NONE && val != 0 )
         return val;
       else if ( type == TYPE_MIN && val < ret )
@@ -4795,7 +4794,6 @@ struct disease_expr_t : public expr_t
     if ( ff_expr )
     {
       double val = ff_expr -> eval();
-      std::cout << "ff_expr=" << val << std::endl;
       if ( type == TYPE_NONE && val != 0 )
         return val;
       else if ( type == TYPE_MIN && val < ret )
@@ -4807,7 +4805,6 @@ struct disease_expr_t : public expr_t
     if ( np_expr )
     {
       double val = np_expr -> eval();
-      std::cout << "np_expr=" << val << std::endl;
       if ( type == TYPE_NONE && val != 0 )
         return val;
       else if ( type == TYPE_MIN && val < ret )
@@ -6142,7 +6139,8 @@ void death_knight_t::create_buffs()
   buffs.pillar_of_frost     = buff_creator_t( this, "pillar_of_frost", find_class_spell( "Pillar of Frost" ) )
                               .cd( timespan_t::zero() )
                               .default_value( find_class_spell( "Pillar of Frost" ) -> effectN( 1 ).percent() +
-                                              sets.set( SET_T14_4PC_MELEE ) -> effectN( 1 ).percent() )
+                                              sets.set( SET_T14_4PC_MELEE ) -> effectN( 1 ).percent() +
+                                              perk.empowered_pillar_of_frost -> effectN( 1 ).percent() )
                               .add_invalidate( CACHE_STRENGTH );
   buffs.rime                = buff_creator_t( this, "rime", find_spell( 59052 ) )
                               .max_stack( ( sets.has_set_bonus( SET_T13_2PC_MELEE ) ) ? 2 : 1 )
@@ -6439,7 +6437,7 @@ double death_knight_t::composite_attribute_multiplier( attribute_e attr ) const
   if ( attr == ATTR_STRENGTH )
   {
     m *= 1.0 + runeforge.rune_of_the_fallen_crusader -> value() + perk.enhanced_fallen_crusader -> effectN( 1 ).percent();
-    m *= 1.0 + buffs.pillar_of_frost -> value() + perk.empowered_pillar_of_frost -> effectN( 1 ).percent();
+    m *= 1.0 + buffs.pillar_of_frost -> value();
   }
   else if ( attr == ATTR_STAMINA )
   {
