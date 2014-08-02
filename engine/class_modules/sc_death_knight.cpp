@@ -1960,8 +1960,11 @@ struct death_knight_action_t : public Base
 
     if ( dbc::is_school( action_base_t::school, SCHOOL_FROST ) )
     {
-      m *= 1.0 + td( t ) -> debuffs_frost_vulnerability -> check() *
-          td( t ) -> debuffs_frost_vulnerability -> data().effectN( 1 ).percent();
+      double debuff = td( t ) -> debuffs_frost_vulnerability -> data().effectN( 1 ).percent();
+      // TODO: Razorice debuff gives +1% more per stack
+      debuff += 0.01;
+
+      m *= 1.0 + td( t ) -> debuffs_frost_vulnerability -> check() * debuff;
     }
 
     return m;
@@ -3392,8 +3395,11 @@ struct frost_strike_offhand_t : public death_knight_melee_attack_t
     background       = true;
     weapon           = &( p -> off_hand_weapon );
     special          = true;
-    base_multiplier *= 1.0 + p -> spec.might_of_the_frozen_wastes -> effectN( 3 ).percent();
+    // TODO: New dk stuff
+    base_multiplier *= 1.0 + p -> spec.might_of_the_frozen_wastes -> effectN( 3 ).percent() + 0.2;
     base_multiplier *= 1.0 + p -> sets.set( SET_T14_2PC_MELEE ) -> effectN( 1 ).percent();
+    // TODO: New dk stuff
+    base_multiplier *= 2.0;
 
     rp_gain = 0; // Incorrectly set to 10 in the DBC
   }
@@ -3418,14 +3424,20 @@ struct frost_strike_t : public death_knight_melee_attack_t
   {
     special = true;
     base_multiplier *= 1.0 + p -> sets.set( SET_T14_2PC_MELEE ) -> effectN( 1 ).percent();
+    // TODO: New dk stuff
+    base_multiplier *= 2.0;
 
     parse_options( NULL, options_str );
+
+    // TODO: New dk stuff
+    base_costs[ RESOURCE_RUNIC_POWER ] = 40;
 
     weapon     = &( p -> main_hand_weapon );
 
     if ( p -> off_hand_weapon.type != WEAPON_NONE )
     {
-      base_multiplier *= 1.0 + p -> spec.might_of_the_frozen_wastes -> effectN( 3 ).percent();
+      // TODO: New dk stuff
+      base_multiplier *= 1.0 + p -> spec.might_of_the_frozen_wastes -> effectN( 3 ).percent() + 0.2;
 
       if ( p -> spec.might_of_the_frozen_wastes -> ok() )
         oh_attack = new frost_strike_offhand_t( p );
@@ -3462,11 +3474,13 @@ struct frost_strike_t : public death_knight_melee_attack_t
   {
     death_knight_melee_attack_t::impact( s );
 
-    if ( result_is_hit( s -> result ) )
+    double consume = resource_consumed;
+
+    if ( result_is_hit( s -> result ) && consume > 0 )
     {
-      p() -> trigger_runic_empowerment( base_costs[ RESOURCE_RUNIC_POWER ] );
-      p() -> trigger_blood_charge( base_costs[ RESOURCE_RUNIC_POWER ] );
-      p() -> trigger_runic_corruption( base_costs[ RESOURCE_RUNIC_POWER ] );
+      p() -> trigger_runic_empowerment( consume );
+      p() -> trigger_blood_charge( consume );
+      p() -> trigger_runic_corruption( consume );
       p() -> trigger_plaguebearer( s );
     }
   }
@@ -3681,6 +3695,8 @@ struct obliterate_offhand_t : public death_knight_melee_attack_t
     weapon           = &( p -> off_hand_weapon );
     special          = true;
     base_multiplier *= 1.0 + p -> sets.set( SET_T14_2PC_MELEE ) -> effectN( 1 ).percent();
+    // TODO: New dk stuff
+    base_multiplier *= 1.3;
   }
 
   virtual double composite_crit() const
@@ -3704,6 +3720,8 @@ struct obliterate_t : public death_knight_melee_attack_t
 
     special = true;
     base_multiplier *= 1.0 + p -> sets.set( SET_T14_2PC_MELEE ) -> effectN( 1 ).percent();
+    // TODO: New dk stuff
+    base_multiplier *= 1.3;
 
     weapon = &( p -> main_hand_weapon );
 
@@ -3713,8 +3731,9 @@ struct obliterate_t : public death_knight_melee_attack_t
         oh_attack = new obliterate_offhand_t( p );
     }
 
+    // TODO: New dk stuff
     if ( p -> main_hand_weapon.group() == WEAPON_2H )
-      weapon_multiplier *= 1.0 + p -> spec.might_of_the_frozen_wastes -> effectN( 1 ).percent();
+      weapon_multiplier *= 1.0 + p -> spec.might_of_the_frozen_wastes -> effectN( 1 ).percent() + 0.1;
   }
 
   virtual void execute()
@@ -3797,11 +3816,13 @@ struct outbreak_t : public death_knight_spell_t
     {
       p() -> apply_diseases( execute_state, DISEASE_BLOOD_PLAGUE | DISEASE_FROST_FEVER );
 
-      if ( base_costs[ RESOURCE_RUNIC_POWER ] > 0 )
+      double consume =  resource_consumed;
+
+      if ( consume > 0 )
       {
-        p() -> trigger_runic_empowerment( base_costs[ RESOURCE_RUNIC_POWER ] );
-        p() -> trigger_runic_corruption( base_costs[ RESOURCE_RUNIC_POWER ] );
-        p() -> trigger_blood_charge( base_costs[ RESOURCE_RUNIC_POWER ] );
+        p() -> trigger_runic_empowerment( consume );
+        p() -> trigger_runic_corruption( consume );
+        p() -> trigger_blood_charge( consume );
       }
     }
 
@@ -4471,12 +4492,14 @@ struct breath_of_sindragosa_tick_t : public death_knight_spell_t
   {
     death_knight_spell_t::impact( s );
 
-    if ( result_is_hit( s -> result ) )
+    double consume = resource_consumed;
+
+    if ( result_is_hit( s -> result ) && consume > 0 )
     {
-      p() -> trigger_runic_empowerment( base_costs[ RESOURCE_RUNIC_POWER ] );
-      p() -> trigger_blood_charge( base_costs[ RESOURCE_RUNIC_POWER ] );
-      p() -> trigger_runic_corruption( base_costs[ RESOURCE_RUNIC_POWER ] );
-      p() -> trigger_shadow_infusion( base_costs[ RESOURCE_RUNIC_POWER ] );
+      p() -> trigger_runic_empowerment( consume );
+      p() -> trigger_blood_charge( consume );
+      p() -> trigger_runic_corruption( consume );
+      p() -> trigger_shadow_infusion( consume );
 
       td( target ) -> debuffs_mark_of_sindragosa -> trigger();
     }
@@ -5866,6 +5889,8 @@ void runeforge::razorice_attack( special_effect_t& effect,
       school      = SCHOOL_FROST;
       may_miss    = callbacks = false;
       background  = proc = true;
+      // TODO: New dk stuff
+      weapon_multiplier = 0.04;
 
       weapon_multiplier += player -> perk.improved_runeforges -> effectN( 2 ).percent();
       if ( item.slot == SLOT_OFF_HAND )
