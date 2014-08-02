@@ -402,7 +402,7 @@ public:
     cooldown.stance_swap             -> duration = timespan_t::from_seconds( 1.5 );
 
     initial_rage = 0;
-    arms_rage_mult = 1.67;
+    arms_rage_mult = 2.15;
     crit_rage_mult = 2;
     swapping = false;
     base.distance = 3.0;
@@ -1645,7 +1645,7 @@ struct hamstring_t: public warrior_attack_t
     rage_spent( false )
   {
     parse_options( NULL, options_str );
-    stancemask = STANCE_BATTLE | STANCE_GLADIATOR;
+    stancemask = STANCE_BATTLE | STANCE_GLADIATOR | STANCE_DEFENSE;
 
     base_costs[RESOURCE_RAGE] += p -> perk.enhanced_hamstring -> effectN( 1 ).resource( RESOURCE_RAGE );
 
@@ -1934,7 +1934,7 @@ struct intervene_t: public warrior_attack_t
     warrior_attack_t( "intervene", p, p -> spell.intervene )
   {
     parse_options( NULL, options_str );
-    stancemask = STANCE_DEFENSE | STANCE_GLADIATOR;
+    stancemask = STANCE_BATTLE | STANCE_GLADIATOR | STANCE_DEFENSE;
     base_teleport_distance = data().max_range();
     movement_directionality = MOVEMENT_OMNI;
   }
@@ -2410,7 +2410,7 @@ struct slam_t: public warrior_attack_t
     warrior_attack_t( "slam", p, p -> talents.slam )
   {
     parse_options( NULL, options_str );
-    stancemask = STANCE_BATTLE;
+    stancemask = STANCE_BATTLE | STANCE_DEFENSE;
     weapon = &( p -> main_hand_weapon );
   }
 
@@ -2553,7 +2553,7 @@ struct thunder_clap_t: public warrior_attack_t
     warrior_attack_t( "thunder_clap", p, p -> spec.thunder_clap )
   {
     parse_options( NULL, options_str );
-    stancemask = STANCE_DEFENSE | STANCE_GLADIATOR;
+    stancemask = STANCE_BATTLE | STANCE_GLADIATOR | STANCE_DEFENSE;
     aoe = -1;
     may_dodge = may_parry = may_block = false;
     cooldown -> duration = data().cooldown();
@@ -2661,7 +2661,7 @@ struct whirlwind_t: public warrior_attack_t
     oh_attack( 0 )
   {
     parse_options( NULL, options_str );
-    stancemask = STANCE_BATTLE;
+    stancemask = STANCE_BATTLE | STANCE_DEFENSE;
     aoe = -1;
 
     if ( p -> specialization() == WARRIOR_FURY )
@@ -2719,7 +2719,7 @@ struct wild_strike_t: public warrior_attack_t
     warrior_attack_t( "wild_strike", p, p -> spec.wild_strike )
   {
     parse_options( NULL, options_str );
-    stancemask = STANCE_BATTLE;
+    stancemask = STANCE_BATTLE | STANCE_DEFENSE;
 
     if ( p -> talents.furious_strikes -> ok() )
       base_costs[RESOURCE_RAGE] = 20;
@@ -2981,7 +2981,7 @@ struct rallying_cry_t: public warrior_spell_t
     warrior_spell_t( "rallying_cry", p, p -> find_specialization_spell( "Rallying Cry" ) )
   {
     parse_options( NULL, options_str );
-    stancemask = STANCE_DEFENSE;
+    stancemask = STANCE_BATTLE | STANCE_GLADIATOR | STANCE_DEFENSE;
   }
 
   void execute()
@@ -3001,7 +3001,7 @@ struct recklessness_t: public warrior_spell_t
     bonus_crit( 0.0 )
   {
     parse_options( NULL, options_str );
-    stancemask = STANCE_BATTLE | STANCE_GLADIATOR | STANCE_DEFENSE;
+    stancemask = STANCE_BATTLE | STANCE_DEFENSE;
     bonus_crit = data().effectN( 1 ).percent();
     bonus_crit *= ( 1 - p -> glyphs.recklessness -> effectN( 1 ).percent() );
     cooldown -> duration = data().cooldown();
@@ -3053,13 +3053,14 @@ struct rend_t: public warrior_spell_t
     burst( new rend_burst_t( p ) )
   {
     parse_options( NULL, options_str );
-    stancemask = STANCE_BATTLE | STANCE_GLADIATOR | STANCE_DEFENSE;
+    stancemask = STANCE_BATTLE | STANCE_DEFENSE;
     parse_effect_data( data().effectN( 2 ).trigger() -> effectN( 1 ) );
     hasted_ticks = tick_zero = false;
     tick_may_crit = true;
     may_multistrike = 1;
     add_child( burst );
     attack_power_mod.tick *= 1.0 + p -> perk.improved_rend -> effectN( 1 ).percent();
+    base_costs[RESOURCE_RAGE] = 5;
   }
 
   void impact( action_state_t* s )
@@ -3264,7 +3265,7 @@ struct spell_reflection_t: public warrior_spell_t
     warrior_spell_t( "spell_reflection", p, p -> find_class_spell( "Spell Reflection" ) )
   {
     parse_options( NULL, options_str );
-    stancemask = STANCE_DEFENSE | STANCE_GLADIATOR;
+    stancemask = STANCE_BATTLE | STANCE_GLADIATOR | STANCE_DEFENSE;
   }
 };
 
@@ -3276,7 +3277,7 @@ struct mass_spell_reflection_t: public warrior_spell_t
     warrior_spell_t( "spell_reflection", p, p -> talents.mass_spell_reflection )
   {
     parse_options( NULL, options_str );
-    stancemask = STANCE_DEFENSE | STANCE_GLADIATOR;
+    stancemask = STANCE_DEFENSE | STANCE_GLADIATOR | STANCE_BATTLE;
   }
 };
 
@@ -3409,7 +3410,7 @@ struct sweeping_strikes_t: public warrior_spell_t
     warrior_spell_t( "sweeping_strikes", p, p -> spec.sweeping_strikes )
   {
     parse_options( NULL, options_str );
-    stancemask = STANCE_BATTLE;
+    stancemask = STANCE_BATTLE | STANCE_DEFENSE;
     cooldown -> duration  = data().cooldown();
     cooldown -> duration += p -> perk.enhanced_sweeping_strikes -> effectN( 2 ).time_value();
   }
@@ -3450,7 +3451,7 @@ struct vigilance_t: public warrior_spell_t
     warrior_spell_t( "vigilance", p, p -> talents.vigilance )
   {
     parse_options( NULL, options_str );
-    stancemask = STANCE_DEFENSE | STANCE_GLADIATOR;
+    stancemask = STANCE_BATTLE | STANCE_GLADIATOR | STANCE_DEFENSE;
   }
 };
 
