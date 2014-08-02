@@ -690,6 +690,9 @@ struct sinister_calling_t : public rogue_attack_t
     proc = background = true;
   }
 
+  dmg_e report_amount_type( const action_state_t* ) const
+  { return DMG_DIRECT; }
+
   double target_armor( player_t* ) const
   { return 0; }
 
