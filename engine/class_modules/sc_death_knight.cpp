@@ -391,8 +391,8 @@ public:
     // Unholy
     const spell_data_t* empowered_gargoyle;
     const spell_data_t* enhanced_dark_transformation;
-    const spell_data_t* enhanced_death_coil_unholy;
     const spell_data_t* enhanced_fallen_crusader;
+    const spell_data_t* improved_death_coil;
     const spell_data_t* improved_festering_strike;
     const spell_data_t* improved_scourge_strike;
   } perk;
@@ -3137,7 +3137,7 @@ struct death_coil_t : public death_knight_spell_t
 
     attack_power_mod.direct = 1.272;
 
-    base_multiplier *= 1.0 + p -> perk.enhanced_death_coil_unholy -> effectN( 2 ).percent();
+    base_multiplier *= 1.0 + p -> perk.improved_death_coil -> effectN( 2 ).percent();
   }
 
   virtual double cost() const
@@ -5397,10 +5397,10 @@ void death_knight_t::init_spells()
   // Unholy
   perk.empowered_gargoyle             = find_perk_spell( "Empowered Gargoyle" );
   perk.enhanced_dark_transformation   = find_perk_spell( "Enhanced Dark Transformation" );
-  perk.enhanced_death_coil_unholy     = find_perk_spell( "Enhanced Death Coil", DEATH_KNIGHT_UNHOLY );
   perk.enhanced_fallen_crusader       = find_perk_spell( "Enhanced Fallen Crusader" );
   perk.improved_festering_strike      = find_perk_spell( "Improved Festering Strike" );
   perk.improved_scourge_strike        = find_perk_spell( "Improved Scourge Strike" );
+  perk.improved_death_coil            = find_perk_spell( "Improved Death Coil" );
 
   // Active Spells
   active_spells.blood_plague = new blood_plague_t( this );
