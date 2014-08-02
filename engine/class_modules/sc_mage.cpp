@@ -2413,9 +2413,10 @@ struct frostbolt_t : public mage_spell_t
     timespan_t cast = mage_spell_t::execute_time();
 
     if ( p() -> buffs.enhanced_frostbolt -> check() )
-      cast -= timespan_t::from_seconds( 0.5 );
-    return cast;
+      cast *= 1 + p() -> perks.enhanced_frostbolt -> effectN(1).time_value().total_seconds() /
+                  base_execute_time.total_seconds();
 
+    return cast;
   }
 
 
