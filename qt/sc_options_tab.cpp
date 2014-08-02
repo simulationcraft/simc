@@ -191,6 +191,7 @@ SC_OptionsTab::SC_OptionsTab( SC_MainWindow* parent ) :
   connect( choice.target_level,       SIGNAL( currentIndexChanged( int ) ), this, SLOT( _optionsChanged() ) );
   connect( choice.target_race,        SIGNAL( currentIndexChanged( int ) ), this, SLOT( _optionsChanged() ) );
   connect( choice.threads,            SIGNAL( currentIndexChanged( int ) ), this, SLOT( _optionsChanged() ) );
+  connect( choice.thread_priority,    SIGNAL( currentIndexChanged( int ) ), this, SLOT( _optionsChanged() ) );
   connect( choice.version,            SIGNAL( currentIndexChanged( int ) ), this, SLOT( _optionsChanged() ) );
   connect( choice.world_lag,          SIGNAL( currentIndexChanged( int ) ), this, SLOT( _optionsChanged() ) );
 
@@ -225,10 +226,11 @@ void SC_OptionsTab::createGlobalsTab()
   globalsLayout_left -> addRow( tr(   "Fight Style" ),    choice.fight_style = createChoice( 6, "Patchwerk", "HecticAddCleave", "HelterSkelter", "Ultraxion", "LightMovement", "HeavyMovement" ) );
   globalsLayout_left -> addRow( tr(  "Target Level" ),   choice.target_level = createChoice( 4, "Raid Boss", "5-man heroic", "5-man normal", "Max Player Level" ) );
   globalsLayout_left -> addRow( tr(   "Target Race" ),    choice.target_race = createChoice( 7, "humanoid", "beast", "demon", "dragonkin", "elemental", "giant", "undead" ) );
-  globalsLayout_left -> addRow( tr(   "Num Enemies" ),     choice.num_target = createChoice( 8, "1", "2", "3", "4", "5", "6", "7", "8" ) );
+  globalsLayout_left -> addRow( tr(   "Num Enemies" ),     choice.num_target = createChoice( 9, "1", "2", "3", "4", "5", "6", "7", "8", "20" ) );
   globalsLayout_left -> addRow( tr( "Challenge Mode" ),   choice.challenge_mode = createChoice( 2, "Disabled", "Enabled" ) );
   globalsLayout_left -> addRow( tr(  "Player Skill" ),   choice.player_skill = createChoice( 4, "Elite", "Good", "Average", "Ouch! Fire is hot!" ) );
   globalsLayout_left -> addRow( tr(       "Threads" ),        choice.threads = addValidatorToComboBox( 1, QThread::idealThreadCount(), createChoiceFromRange( 1, QThread::idealThreadCount() ) ) );
+  globalsLayout_left -> addRow( tr(  "Thread Priority" ), choice.thread_priority = createChoice( 5, "highest", "high", "normal", "lower", "lowest" ) );
   globalsLayout_left -> addRow( tr( "Armory Region" ),  choice.armory_region = createChoice( 5, "us", "eu", "tw", "cn", "kr" ) );
   globalsLayout_left -> addRow( tr(   "Armory Spec" ),    choice.armory_spec = createChoice( 2, "active", "inactive" ) );
   globalsLayout_left -> addRow( tr(  "Default Role" ),   choice.default_role = createChoice( 4, "auto", "dps", "heal", "tank" ) );
@@ -534,6 +536,7 @@ void SC_OptionsTab::decodeOptions()
   load_setting( settings, "num_target", choice.num_target );
   load_setting( settings, "player_skill", choice.player_skill );
   load_setting( settings, "threads", choice.threads );
+  load_setting( settings, "thread_priority", choice.thread_priority, "normal" );
   load_setting( settings, "armory_region", choice.armory_region );
   load_setting( settings, "armory_spec", choice.armory_spec );
   load_setting( settings, "default_role", choice.default_role );
@@ -626,6 +629,7 @@ void SC_OptionsTab::encodeOptions()
   settings.setValue( "num_target", choice.num_target -> currentText() );
   settings.setValue( "player_skill", choice.player_skill -> currentText() );
   settings.setValue( "threads", choice.threads -> currentText() );
+  settings.setValue( "thread_priority", choice.thread_priority -> currentText() );
   settings.setValue( "armory_region", choice.armory_region -> currentText() );
   settings.setValue( "armory_spec", choice.armory_spec -> currentText() );
   settings.setValue( "default_role", choice.default_role -> currentText() );
@@ -712,6 +716,9 @@ void SC_OptionsTab::createToolTips()
 
   choice.threads -> setToolTip( tr( "Match the number of CPUs for optimal performance.\n"
                                     "Most modern desktops have at least two CPU cores." ) );
+
+  choice.thread_priority -> setToolTip( tr( "This can allow for a more responsive computer while simulations are running.\n"
+                                            "Set to 'Lowest' for the best experience while multitasking." ) );
 
   choice.armory_region -> setToolTip( tr( "United States, Europe, Taiwan, China, Korea" ) );
 
@@ -865,6 +872,7 @@ QString SC_OptionsTab::mergeOptions()
 
   options += get_globalSettings();
   options += "threads=" + choice.threads -> currentText() + "\n";
+  options += "thread_priority=" + choice.thread_priority -> currentText() + "\n";
 
   QList<QAbstractButton*> buttons = scalingButtonGroup -> buttons();
   for ( int i = 2; i < buttons.size(); i++ )

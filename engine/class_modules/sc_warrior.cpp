@@ -2925,7 +2925,7 @@ struct die_by_the_sword_t: public warrior_spell_t
     if ( p() -> main_hand_weapon.type == WEAPON_NONE )
       return false;
 
-   return warrior_spell_t::ready();
+    return warrior_spell_t::ready();
   }
 };
 
@@ -3458,7 +3458,6 @@ struct vigilance_t: public warrior_spell_t
 } // UNNAMED NAMESPACE
 
 // warrior_t::create_action  ================================================
-
 
 action_t* warrior_t::create_action( const std::string& name,
                                     const std::string& options_str )
@@ -4362,7 +4361,7 @@ void warrior_t::create_buffs()
     .max_stack( perk.enhanced_whirlwind ? 3 : perk.enhanced_whirlwind -> effectN( 2 ).base_value() );
 
   buff.raging_blow = buff_creator_t( this, "raging_blow", find_spell( 131116 ) )
-    .cd( timespan_t::zero() ); 
+    .cd( timespan_t::zero() );
   // The buff has a 0.5 second ICD in spell data, but from in game testing this doesn't
   // do anything. Also confirmed from sparkle dragon.
 
@@ -4403,7 +4402,7 @@ void warrior_t::create_buffs()
 
   buff.sweeping_strikes = buff_creator_t( this, "sweeping_strikes", spec.sweeping_strikes )
     .duration( spec.sweeping_strikes -> duration() + perk.enhanced_sweeping_strikes -> effectN( 1 ).time_value() )
-    .cd(timespan_t::zero() );
+    .cd( timespan_t::zero() );
 
   buff.sword_and_board = buff_creator_t( this, "sword_and_board", find_spell( 50227 ) )
     .chance( spec.sword_and_board -> effectN( 1 ).percent() );
