@@ -204,6 +204,7 @@
       <TargetMachine>MachineX86</TargetMachine>
       <Profile>true</Profile>
       <ProfileGuidedDatabase>$(SolutionDir)\$(PlatformShortName)\$(Configuration)\</ProfileGuidedDatabase>
+      <LinkTimeCodeGeneration>PGUpdate</LinkTimeCodeGeneration>
     </Link>
     <PostBuildEvent />
     <PostBuildEvent />
@@ -238,7 +239,7 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <Profile>true</Profile>
       <LargeAddressAware>true</LargeAddressAware>
-      <LinkTimeCodeGeneration>PGOptimization</LinkTimeCodeGeneration>
+      <LinkTimeCodeGeneration>PGUpdate</LinkTimeCodeGeneration>
       <ProfileGuidedDatabase>$(SolutionDir)\$(PlatformShortName)\$(Configuration)\</ProfileGuidedDatabase>
     </Link>
   </ItemDefinitionGroup>
