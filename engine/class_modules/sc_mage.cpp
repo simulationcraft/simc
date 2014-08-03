@@ -1765,8 +1765,8 @@ struct blast_wave_t : public mage_spell_t
     {
         mage_spell_t::init();
 
-        // FIXME: Cannot find this info in the spell data, so I had to hard code it.
-        cooldown -> duration = timespan_t::from_seconds( 12.0 );
+        // NOTE: Cooldown missing from tooltip since WoD beta build 18379
+        cooldown -> duration = timespan_t::from_seconds( 25.0 );
         cooldown -> charges = 2;
     }
 
@@ -2811,8 +2811,8 @@ struct ice_nova_t : public mage_spell_t
     {
         mage_spell_t::init();
 
-        // FIXME: Cannot find this info in the spell data, so I had to hard code it.
-        cooldown -> duration = timespan_t::from_seconds( 12.0 );
+        // NOTE: Cooldown missing from tooltip since WoD beta build 18379
+        cooldown -> duration = timespan_t::from_seconds( 25.0 );
         cooldown -> charges = 2;
     }
 
@@ -3454,8 +3454,8 @@ struct supernova_t : public mage_spell_t
     {
         mage_spell_t::init();
 
-        // FIXME: Cannot find this info in the spell data, so I had to hard code it.
-        cooldown -> duration = timespan_t::from_seconds( 12.0 );
+        // NOTE: Cooldown missing from tooltip since WoD beta build 18379
+        cooldown -> duration = timespan_t::from_seconds( 25.0 );
         cooldown -> charges = 2;
     }
 
