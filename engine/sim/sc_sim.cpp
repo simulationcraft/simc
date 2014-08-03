@@ -1928,6 +1928,7 @@ void sim_t::merge()
     if ( child )
     {
       child -> wait();
+      children[ i ] = 0;
       delete child;
     }
   }
@@ -2501,12 +2502,15 @@ double sim_t::progress( int* current,
                         std::string* detailed )
 {
   int total_iterations = iterations;
-  for ( size_t i = 0; i < children.size(); i++ )
-    total_iterations += children[ i ] -> iterations;
-
   int total_current_iterations = current_iteration + 1;
   for ( size_t i = 0; i < children.size(); i++ )
+  {
+    if ( ! children[ i ] )
+      continue;
+
+    total_iterations += children[ i ] -> iterations;
     total_current_iterations += children[ i ] -> current_iteration + 1;
+  }
 
   if ( current ) *current = total_current_iterations;
   if ( _final   ) *_final   = total_iterations;
