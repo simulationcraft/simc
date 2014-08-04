@@ -796,6 +796,7 @@ struct paladin_heal_t : public paladin_spell_base_t<heal_t>
     may_crit          = true;
     tick_may_crit     = true;
     benefits_from_seal_of_insight = true;
+    harmful = false;
 
     weapon_multiplier = 0.0;
   }
