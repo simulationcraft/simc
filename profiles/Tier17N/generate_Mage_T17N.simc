@@ -27,7 +27,7 @@ mage=Mage_Arcane_T17N
 level=100
 race=troll
 spec=arcane
-talents=1000313
+talents=1000212
 glyphs=arcane_power
 head=primal_gladiators_hood_of_prowess,id=111084
 neck=primal_gladiators_pendant_of_cruelty,id=111128,enchant=gift_of_mastery
