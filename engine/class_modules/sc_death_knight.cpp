@@ -2536,6 +2536,9 @@ struct necrotic_plague_t : public death_knight_spell_t
 
     void execute()
     {
+      if ( dot -> target -> is_sleeping() )
+        return;
+
       // TODO-WOD: Randomize target selection.
       player_t* new_target = 0;
       for ( size_t i = 0, end = sim().target_non_sleeping_list.size(); i < end; i++ )
