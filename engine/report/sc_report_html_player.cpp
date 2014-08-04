@@ -1784,14 +1784,19 @@ void print_html_sample_sequence_table_entry( report::sc_html_stream& os,
   first = true;
   for ( size_t b = 0; b < data -> buff_list.size(); ++b )
   {
-    buff_t* buff = data -> buff_list[ b ];
-    if ( !buff -> constant )
+    buff_t* buff = data -> buff_list[ b ].first;
+    int stacks = data -> buff_list[ b ].second;
+
+    if ( ! buff -> constant )
     {
       if ( first )
         first = false;
       else
         os.printf( ", " );
+
       os.printf( "%s", buff -> name() );
+      if ( stacks > 1 )
+        os.printf( "(%d)", stacks );
     }
   }
 
@@ -1948,8 +1953,14 @@ void print_html_player_action_priority_list( report::sc_html_stream& os, sim_t* 
 
       for ( size_t b = 0; b < data -> buff_list.size(); ++b )
       {
-        buff_t* buff = data -> buff_list[ b ];
-        if ( ! buff -> constant ) os.printf( "\n%s", buff -> name() );
+        buff_t* buff = data -> buff_list[ b ].first;
+        int stacks = data -> buff_list[ b ].second;
+        if ( ! buff -> constant ) 
+        {
+          os.printf( "\n%s", buff -> name() );
+          if ( stacks > 1 )
+            os.printf( "(%d)", stacks );
+        }
       }
 
       os.printf( "\">%c</span>", data -> action -> marker );

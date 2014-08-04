@@ -4007,7 +4007,7 @@ struct player_collected_data_t
     const action_t* action;
     const player_t* target;
     const timespan_t time;
-    std::vector<buff_t*> buff_list;
+    std::vector<std::pair<buff_t*, int> > buff_list;
     std::array<double, RESOURCE_MAX> resource_snapshot;
 
     action_sequence_data_t( const action_t* a, const player_t* t, const timespan_t& ts, const player_t* p );

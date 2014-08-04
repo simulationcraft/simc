@@ -9125,8 +9125,11 @@ player_collected_data_t::action_sequence_data_t::action_sequence_data_t( const a
   action( a ), target( t ), time( ts )
 {
   for ( size_t i = 0; i < p -> buff_list.size(); ++i )
-    if ( p -> buff_list[ i ] -> check() && ! p -> buff_list[ i ] -> quiet )
-      buff_list.push_back( p -> buff_list[ i ] );
+  {
+    buff_t* b = p -> buff_list[ i ];
+    if ( b -> check() && ! b -> quiet && ! b -> constant )
+      buff_list.push_back( std::make_pair( b, b -> stack() ) );
+  }
 
   range::fill( resource_snapshot, -1 );
 
