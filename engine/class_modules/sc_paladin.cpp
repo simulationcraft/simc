@@ -3283,7 +3283,7 @@ struct harsh_word_t : public paladin_spell_t
 
 // paladin-specific melee_attack_t class for inheritance
 
-struct paladin_melee_attack_t : public paladin_action_t< melee_attack_t >
+struct paladin_melee_attack_t: public paladin_action_t < melee_attack_t >
 {
   // booleans to allow individual control of seal proc triggers
   bool trigger_seal;
@@ -3295,18 +3295,18 @@ struct paladin_melee_attack_t : public paladin_action_t< melee_attack_t >
 
   paladin_melee_attack_t( const std::string& n, paladin_t* p,
                           const spell_data_t* s = spell_data_t::nil(),
-                          bool u2h = true ) :
-    base_t( n, p, s ),
-    trigger_seal( false ),
-    trigger_seal_of_righteousness( false ),
-    trigger_seal_of_justice( false ),
-    trigger_seal_of_truth( false ),
-    use2hspec( u2h )
+                          bool u2h = true ):
+                          base_t( n, p, s ),
+                          trigger_seal( false ),
+                          trigger_seal_of_righteousness( false ),
+                          trigger_seal_of_justice( false ),
+                          trigger_seal_of_truth( false ),
+                          use2hspec( u2h )
   {
     may_crit = true;
     special = true;
     weapon = &( p -> main_hand_weapon );
-    
+
     // Sword of Light boosts action_multiplier
     if ( use2hspec && ( p -> passives.sword_of_light -> ok() ) && ( p -> main_hand_weapon.group() == WEAPON_2H ) )
     {
@@ -3337,29 +3337,26 @@ struct paladin_melee_attack_t : public paladin_action_t< melee_attack_t >
     base_t::execute();
 
     // handle all on-hit effects (seals, Ancient Power, battle healer)
-    if ( result_is_hit( execute_state -> result ) )
+    if ( trigger_seal || ( trigger_seal_of_righteousness && ( p() -> active_seal == SEAL_OF_RIGHTEOUSNESS ) )
+         || ( trigger_seal_of_justice && ( p() -> active_seal == SEAL_OF_JUSTICE ) )
+         || ( trigger_seal_of_truth && ( p() -> active_seal == SEAL_OF_TRUTH ) ) )
     {
-      if ( trigger_seal || ( trigger_seal_of_righteousness && ( p() -> active_seal == SEAL_OF_RIGHTEOUSNESS ) )
-                        || ( trigger_seal_of_justice && ( p() -> active_seal == SEAL_OF_JUSTICE ) )
-                        || ( trigger_seal_of_truth && ( p() -> active_seal == SEAL_OF_TRUTH ) ) )
+      switch ( p() -> active_seal )
       {
-        switch ( p() -> active_seal )
-        {
-          case SEAL_OF_JUSTICE:
-            p() -> active_seal_of_justice_proc       -> execute();
-            break;
-          case SEAL_OF_INSIGHT:
-            p() -> active_seal_of_insight_proc       -> execute();
-            break;
-          case SEAL_OF_RIGHTEOUSNESS:
-            p() -> active_seal_of_righteousness_proc -> execute();
-            break;
-          case SEAL_OF_TRUTH:
-            p() -> active_censure                    -> execute();
-            if ( td( target ) -> buffs.debuffs_censure -> stack() >= 1 ) p() -> active_seal_of_truth_proc -> execute();
-            break;
-          default: break;
-        }
+      case SEAL_OF_JUSTICE:
+        p() -> active_seal_of_justice_proc       -> execute();
+        break;
+      case SEAL_OF_INSIGHT:
+        p() -> active_seal_of_insight_proc       -> execute();
+        break;
+      case SEAL_OF_RIGHTEOUSNESS:
+        p() -> active_seal_of_righteousness_proc -> execute();
+        break;
+      case SEAL_OF_TRUTH:
+        p() -> active_censure                    -> execute();
+        if ( td( target ) -> buffs.debuffs_censure -> stack() >= 1 ) p() -> active_seal_of_truth_proc -> execute();
+        break;
+      default: break;
       }
     }
   }

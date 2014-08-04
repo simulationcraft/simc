@@ -292,6 +292,7 @@ void dot_t::copy( player_t* other_target, dot_copy_e copy_type )
     other_dot -> current_duration = new_duration;
     other_dot -> current_tick = 0;
     other_dot -> extended_time = timespan_t::zero();
+    other_dot -> time_to_tick = time_to_tick;
     other_dot -> num_ticks = as<int>( std::ceil( computed_tick_duration / time_to_tick ) );
     other_dot -> last_tick_factor = std::min( 1.0, computed_tick_duration / time_to_tick );
 
