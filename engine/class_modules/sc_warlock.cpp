@@ -994,7 +994,7 @@ warlock_pet_t::warlock_pet_t( sim_t* sim, warlock_t* owner, const std::string& p
   pet_t( sim, owner, pet_name, pt, guardian ), special_action( 0 ), melee_attack( 0 ), summon_stats( 0 )
 {
   owner_fury_gain = owner -> get_gain( pet_name );
-  owner_coeff.ap_from_sp = 0.6563;
+  owner_coeff.ap_from_sp = 1;
   owner_coeff.sp_from_sp = 0.75;
   supremacy = find_spell( 115578 );
 }
@@ -1147,6 +1147,7 @@ struct imp_pet_t : public warlock_pet_t
     warlock_pet_t( sim, owner, name, PET_IMP, name != "imp" )
   {
     action_list_str = "firebolt";
+    owner_coeff.ap_from_sp = 0.6563;
   }
 
   virtual action_t* create_action( const std::string& name, const std::string& options_str )
@@ -1163,6 +1164,7 @@ struct felguard_pet_t : public warlock_pet_t
     warlock_pet_t( sim, owner, name, PET_FELGUARD, name != "felguard" )
   {
     action_list_str = "legion_strike";
+    owner_coeff.ap_from_sp = 0.6563;
   }
 
   virtual void init_base_stats()
@@ -1187,6 +1189,7 @@ struct felhunter_pet_t : public warlock_pet_t
     warlock_pet_t( sim, owner, name, PET_FELHUNTER, name != "felhunter" )
   {
     action_list_str = "shadow_bite";
+    owner_coeff.ap_from_sp = 0.6563;
   }
 
   virtual void init_base_stats()
@@ -1237,6 +1240,7 @@ struct voidwalker_pet_t : public warlock_pet_t
     warlock_pet_t( sim, owner, name, PET_VOIDWALKER, name != "voidwalker" )
   {
     action_list_str = "torment";
+    owner_coeff.ap_from_sp = 0.6563;
   }
 
   virtual void init_base_stats()
@@ -1376,6 +1380,7 @@ struct fel_imp_pet_t : public warlock_pet_t
     warlock_pet_t( sim, owner, "fel_imp", PET_IMP )
   {
     action_list_str = "felbolt";
+    owner_coeff.ap_from_sp = 0.6563;
   }
 
   virtual action_t* create_action( const std::string& name, const std::string& options_str )
@@ -1420,6 +1425,7 @@ struct observer_pet_t : public warlock_pet_t
     warlock_pet_t( sim, owner, "observer", PET_FELHUNTER )
   {
     action_list_str = "tongue_lash";
+    owner_coeff.ap_from_sp = 0.6563;
   }
 
   virtual void init_base_stats()
@@ -1472,6 +1478,7 @@ struct voidlord_pet_t : public warlock_pet_t
     warlock_pet_t( sim, owner, "voidlord", PET_VOIDWALKER )
   {
     action_list_str = "torment";
+    owner_coeff.ap_from_sp = 0.6563;
   }
 
   virtual void init_base_stats()
@@ -5167,27 +5174,28 @@ void warlock_t::apl_precombat()
       precombat_list = "flask,type=warm_sun";
   }
 
-  if ( sim->allow_food )
+  if ( sim -> allow_food )
   {
     // Food
-    if ( level >= 80 )
-    {
-      precombat_list += "/food,type=";
-      precombat_list +=
-          ( level > 85 ) ? "mogu_fish_stew" : "seafood_magnifique_feast";
-    }
+    if (level == 100)
+      precombat_list += "/food,type=sleeper_surprise";
+    else if ( level >= 90 )
+      precombat_list += "/food,type=mogu_fish_stew";
   }
 
   add_action( "Dark Intent", "if=!aura.spell_power_multiplier.up",
               "precombat" );
 
   precombat_list +=
-      "/summon_pet,if=!talent.grimoire_of_sacrifice.enabled|buff.grimoire_of_sacrifice.down";
+      "/summon_pet,if=!talent.demonic_servitude.enabled&(!talent.grimoire_of_sacrifice.enabled|buff.grimoire_of_sacrifice.down)";
+
+  precombat_list +=
+      "/summon_doomguard,if=talent.demonic_servitude.enabled";
 
   precombat_list += "/snapshot_stats";
 
   precombat_list +=
-      "/grimoire_of_sacrifice,if=talent.grimoire_of_sacrifice.enabled";
+      "/grimoire_of_sacrifice,if=talent.grimoire_of_sacrifice.enabled&!talent.demonic_servitude.enabled";
   precombat_list += "/service_pet,if=talent.grimoire_of_service.enabled";
 
   if ( sim->allow_potions )
@@ -5198,6 +5206,9 @@ void warlock_t::apl_precombat()
     else if ( level >= 90 )
       precombat_list += "/potion,name=jade_serpent";
   }
+
+  if ( specialization() == WARLOCK_DESTRUCTION )
+      precombat_list += "/incinerate";
 
   // Usable Item
   for ( int i = as<int>( items.size() ) - 1; i >= 0; i-- )
@@ -5258,11 +5269,11 @@ void warlock_t::apl_precombat()
     break;
   }
 
-  action_list_str += "/run_action_list,name=aoe,if=active_enemies>"
-      + util::to_string( multidot_max );
+//  action_list_str += "/run_action_list,name=aoe,if=active_enemies>"
+//      + util::to_string( multidot_max );
 
-  add_action( "Summon Doomguard" );
-  add_action( "Summon Infernal", "", "aoe" );
+  add_action( "Summon Doomguard", "if=!talent.demonic_servitude.enabled" );
+//  add_action( "Summon Infernal", "", "aoe" );
 
 }
 
@@ -5273,47 +5284,20 @@ void warlock_t::apl_global_filler()
 
 void warlock_t::apl_default()
 {
-  add_action(
-      "Corruption",
-      "if=(!ticking|remains<tick_time)&target.time_to_die>=6&miss_react" );
-  add_action( "Shadow Bolt" );
-
-  // AoE action list
-  add_action( "Corruption", "cycle_targets=1,if=!ticking", "aoe" );
-  add_action( "Shadow Bolt", "", "aoe" );
 }
 
 void warlock_t::apl_affliction()
 {
-  add_action( "Soul Swap", "if=buff.soulburn.up" );
-  add_action( "Soulburn", "if=!dot.agony.remains&!dot.corruption.remains&!dot.unstable_affliction.remains" );
-  add_action( "Haunt", "if=shard_react&((!in_flight_to_target&remains<cast_time+travel_time+tick_time)|soul_shard=4)" );
+  add_action( "Soul Swap", "if=shard_react&!talent.soulburn_haunt.enabled&buff.soulburn.react" );
+  add_action( "Soulburn", "if=shard_react&!talent.soulburn_haunt.enabled&buff.soulburn.down&(!dot.unstable_affliction.ticking&!dot.corruption.ticking&!dot.agony.ticking)" );
+  add_action( "Haunt", "if=shard_react&!talent.soulburn_haunt.enabled&shard_react&!in_flight_to_target&(!dot.haunt.ticking|soul_shard=4)&(trinket.proc.intellect.react|buff.dark_soul.up|soul_shard>2|soul_shard*14<=target.time_to_die)" );
+  add_action( "Soulburn", "if=shard_react&talent.soulburn_haunt.enabled&buff.soulburn.down&(buff.haunting_spirits.down|soul_shard=4)" );
+  add_action( "Haunt", "if=shard_react&talent.soulburn_haunt.enabled&!in_flight_to_target&((buff.soulburn.up&buff.haunting_spirits.remains<5)|soul_shard=4)" );
   add_action( "Agony", "if=remains<=(duration*0.3)" );
   add_action( "Unstable Affliction", "if=remains<=(duration*0.3)" );
   add_action( "Corruption", "if=remains<=(duration*0.3)" );
+  add_action( "Life Tap", "if=mana.pct<40" );
   add_action( "Drain Soul" );
-
-  // AoE action list
-  add_action(
-      "Soulburn",
-      "cycle_targets=1,if=buff.soulburn.down&!dot.soulburn_seed_of_corruption.ticking&!action.soulburn_seed_of_corruption.in_flight_to_target&shard_react",
-      "aoe" );
-  add_action( "Soul Swap",
-              "if=buff.soulburn.up&!dot.agony.ticking&!dot.corruption.ticking",
-              "aoe" );
-  add_action(
-      "Soul Swap",
-      "cycle_targets=1,if=buff.soulburn.up&dot.corruption.ticking&!dot.agony.ticking",
-      "aoe" );
-  add_action(
-      "Seed of Corruption",
-      "cycle_targets=1,if=(buff.soulburn.down&!in_flight_to_target&!ticking)|(buff.soulburn.up&!dot.soulburn_seed_of_corruption.ticking&!action.soulburn_seed_of_corruption.in_flight_to_target)",
-      "aoe" );
-  add_action(
-      "Haunt",
-      "cycle_targets=1,if=!in_flight_to_target&debuff.haunt.remains<cast_time+travel_time&shard_react",
-      "aoe" );
-  add_action( "Life Tap", "if=mana.pct<70", "aoe" );
 }
 
 void warlock_t::apl_demonology()
@@ -5329,29 +5313,8 @@ void warlock_t::apl_demonology()
     add_action( "corruption", "if=target.time_to_die>=6&miss_react&remains<=(duration*0.3)" );
     add_action( "Hand of Gul'dan" );
     add_action( "Soul Fire", "if=buff.molten_core.react&(buff.dark_soul.remains<action.shadow_bolt.cast_time|buff.dark_soul.remains>cast_time)&(buff.molten_core.react>9|target.health.pct<=28)" );
-    add_action( "Life Tap", "if=mana.pct<60" );
+    add_action( "Life Tap", "if=mana.pct<40" );
     add_action( "Shadow Bolt" );
-
-  // AoE action list
-  if ( find_class_spell( "Metamorphosis" )->ok() )
-    get_action_priority_list( "aoe" )->action_list_str +=
-        "/cancel_metamorphosis,if=buff.metamorphosis.up&dot.corruption.remains>10&demonic_fury<=650&buff.dark_soul.down&!dot.immolation_aura.ticking";
-
-  add_action( "Immolation Aura", "if=buff.metamorphosis.up", "aoe" );
-  add_action(
-      spec.doom,
-      "cycle_targets=1,if=buff.metamorphosis.up&(!ticking|remains<tick_time|(ticks_remain+1<buff.dark_soul.up))&target.time_to_die>=30&miss_react",
-      "aoe" );
-  add_action( "Corruption",
-              "cycle_targets=1,if=!ticking&target.time_to_die>30&miss_react",
-              "aoe" );
-  add_action( "Hand of Gul'dan", "", "aoe" );
-  add_action(
-      "Metamorphosis",
-      "if=dot.corruption.remains<10|buff.dark_soul.up|demonic_fury>=950|demonic_fury%32>target.time_to_die",
-      "aoe" );
-  add_action( "Hellfire", "chain=1,interrupt=1", "aoe" );
-  add_action( "Life Tap", "", "aoe" );
   }
 }
 
@@ -5360,26 +5323,19 @@ void warlock_t::apl_destruction()
 
   add_action(
       "Shadowburn",
-      "if=(burning_ember>3.5|mana.pct<=20|target.time_to_die<20|trinket.proc.intellect.react|(trinket.stacking_proc.intellect.remains<cast_time*4&trinket.stacking_proc.intellect.remains>cast_time))" );
+      "if=talent.charred_remains.enabled&(burning_ember>=2.5|target.time_to_die<20|trinket.proc.intellect.react|(trinket.stacking_proc.intellect.remains<cast_time*4&trinket.stacking_proc.intellect.remains>cast_time))" );
   add_action(
-      "Immolate",
-      "if=miss_react&remains<=(duration*0.3)" );
+      "Immolate", "if=miss_react&remains<=cast_time" );
   add_action( "Conflagrate", "if=charges=2" );
   add_action(
       "Chaos Bolt",
-      "if=target.health.pct>20&(buff.backdraft.stack<3|level<86|(active_enemies>1&action.incinerate.cast_time<1))&(burning_ember>(4.5-active_enemies)|(trinket.proc.intellect.react&trinket.proc.intellect.remains>cast_time)|(trinket.stacking_proc.intellect.remains<cast_time*2.5&trinket.stacking_proc.intellect.remains>cast_time))" );
+      "if=(buff.backdraft.stack<3|talent.charred_remains.enabled)&(((burning_ember>=1&talent.charred_remains.enabled)|burning_ember>=3.5)|(trinket.proc.intellect.react&trinket.proc.intellect.remains>cast_time)|buff.dark_soul.up)" );
+  
+  action_list_str += "/cataclysm,if=talent.cataclysm.enabled";
+
+  add_action( "Immolate", "if=miss_react&remains<=(duration*0.3)" );
   add_action( "Conflagrate" );
   add_action( "Incinerate" );
-
-  // AoE action list
-  add_action( "Rain of Fire", "if=!ticking&!in_flight", "aoe" );
-  add_action( "Fire and Brimstone",
-              "if=ember_react&buff.fire_and_brimstone.down", "aoe" );
-  add_action( "Immolate", "if=buff.fire_and_brimstone.up&!ticking", "aoe" );
-  add_action( "Conflagrate", "if=buff.fire_and_brimstone.up", "aoe" );
-  add_action( "Incinerate", "if=buff.fire_and_brimstone.up", "aoe" );
-  add_action( "Incinerate", "", "aoe" );
-
 }
 
 void warlock_t::init_action_list()
