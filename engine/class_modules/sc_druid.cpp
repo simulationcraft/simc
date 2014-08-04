@@ -20,16 +20,18 @@ namespace { // UNNAMED NAMESPACE
       Thrash (both forms)
       Swipe
     pvp_2pc_melee
+    Use new FB spell data
 
     = Balance =
     PvP bonuses
     Verify stuff.
 
     = Guardian =
-    FR "none" results?
     Verify stuff (particularly DoC)
     Might of Ursoc
     PvP bonuses
+    Add SD time @ max charges statistic
+    Tooth & Claw in multi-tank sims
 
     = Restoration =
     Err'thing
@@ -2868,6 +2870,9 @@ struct maul_t : public bear_attack_t
 { 
   struct tooth_and_claw_t : public druid_action_t<absorb_t>
   {
+    /* FIXME: Functions as an absorb that only benefits the druid, to support multi-tank sims correctly
+       it must cause the target's next attack to mitigated (applying Resolve appropriately).
+       TODO: Determine if this uses the druid's resolve on application or on consumption. */
     tooth_and_claw_t( druid_t* p ) :
       druid_action_t<absorb_t>( "tooth_and_claw", p, p -> spec.tooth_and_claw )
     {
@@ -3261,6 +3266,7 @@ void druid_heal_t::init_living_seed()
 struct frenzied_regeneration_t : public druid_heal_t
 {
   double maximum_rage_cost;
+
   frenzied_regeneration_t( druid_t* p, const std::string& options_str ) :
     druid_heal_t( "frenzied_regeneration", p, p -> find_class_spell( "Frenzied Regeneration" ), options_str ),
     maximum_rage_cost( 0.0 )
@@ -3269,13 +3275,14 @@ struct frenzied_regeneration_t : public druid_heal_t
     use_off_gcd = true;
     may_crit = false;
     may_multistrike = 0;
+    target = p;
 
     attack_power_mod.direct = data().effectN( 1 ).ap_coeff();
     base_multiplier *= 1.0 + p -> perk.improved_frenzied_regeneration -> effectN( 1 ).percent();
-    target = player;
+    maximum_rage_cost = data().effectN( 2 ).base_value();
+
     if ( p -> sets.has_set_bonus( SET_T16_2PC_TANK ) )
       p -> active.ursocs_vigor = new ursocs_vigor_t( p );
-    maximum_rage_cost = data().effectN( 2 ).base_value();
   }
 
   virtual double cost() const
@@ -3312,7 +3319,8 @@ struct frenzied_regeneration_t : public druid_heal_t
 
     if ( p() -> resources.current[ RESOURCE_RAGE ] < 1 )
       return false;
-
+    
+    // This isn't how it actually works in-game, but lets us cut some bloat from the APL.
     if ( p() -> resources.current[ RESOURCE_HEALTH ] >= p() -> resources.max[ RESOURCE_HEALTH ] )
       return false;
 
@@ -4871,10 +4879,12 @@ struct savage_defense_t : public druid_spell_t
     // Savage Defense has 2 cooldowns, obey the 1.5s one via this:
     p -> cooldown.savage_defense_use -> duration = cooldown -> duration;
 
-    harmful = false;
+    // Hard code charge information since it isn't in the spell data.
     cooldown -> duration = timespan_t::from_seconds( 9.0 );
     cooldown -> charges = 2;
+
     use_off_gcd = true;
+    harmful = false;
 
     if ( p -> sets.has_set_bonus( SET_T16_2PC_TANK ) )
       p -> active.ursocs_vigor = new ursocs_vigor_t( p );
