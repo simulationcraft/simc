@@ -145,7 +145,7 @@ struct death_knight_td_t : public actor_pair_t
   dot_t* dots_necrotic_plague;
   dot_t* dots_defile;
 
-  debuff_t* debuffs_frost_vulnerability;
+  debuff_t* debuffs_razorice;
   debuff_t* debuffs_mark_of_sindragosa;
   debuff_t* debuffs_necrotic_plague;
 
@@ -540,7 +540,7 @@ inline death_knight_td_t::death_knight_td_t( player_t* target, death_knight_t* d
   dots_necrotic_plague = target -> get_dot( "necrotic_plague", death_knight );
   dots_defile          = target -> get_dot( "defile",          death_knight );
 
-  debuffs_frost_vulnerability = buff_creator_t( *this, "frost_vulnerability", death_knight -> find_spell( 51714 ) );
+  debuffs_razorice = buff_creator_t( *this, "razorice", death_knight -> find_spell( 51714 ) );
   debuffs_mark_of_sindragosa = buff_creator_t( *this, "mark_of_sindragosa", death_knight -> find_spell( 155166 ) );
   debuffs_necrotic_plague = buff_creator_t( *this, "necrotic_plague", death_knight -> find_spell( 155159 ) ).period( timespan_t::zero() );
 }
@@ -1960,11 +1960,11 @@ struct death_knight_action_t : public Base
 
     if ( dbc::is_school( action_base_t::school, SCHOOL_FROST ) )
     {
-      double debuff = td( t ) -> debuffs_frost_vulnerability -> data().effectN( 1 ).percent();
+      double debuff = td( t ) -> debuffs_razorice -> data().effectN( 1 ).percent();
       // TODO: Razorice debuff gives +1% more per stack
       debuff += 0.01;
 
-      m *= 1.0 + td( t ) -> debuffs_frost_vulnerability -> check() * debuff;
+      m *= 1.0 + td( t ) -> debuffs_razorice -> check() * debuff;
     }
 
     return m;
@@ -5880,8 +5880,8 @@ void runeforge::razorice_attack( special_effect_t& effect,
 {
   struct razorice_attack_t : public death_knight_melee_attack_t
   {
-    razorice_attack_t( death_knight_t* player, const item_t& item ) :
-      death_knight_melee_attack_t( "razorice", player , player -> find_spell( 50401 ) )
+    razorice_attack_t( death_knight_t* player, const std::string& name, const item_t& item ) :
+      death_knight_melee_attack_t( name, player, player -> find_spell( 50401 ) )
     {
       school      = SCHOOL_FROST;
       may_miss    = callbacks = false;
@@ -5890,10 +5890,13 @@ void runeforge::razorice_attack( special_effect_t& effect,
       weapon_multiplier = 0.04;
 
       weapon_multiplier += player -> perk.improved_runeforges -> effectN( 2 ).percent();
+      weapon = &( player -> main_hand_weapon );
+      /*
       if ( item.slot == SLOT_OFF_HAND )
         weapon = &( player -> off_hand_weapon );
       else if ( item.slot == SLOT_MAIN_HAND )
         weapon = &( player -> main_hand_weapon );
+      */
     }
 
     // No double dipping to Frost Vulnerability
@@ -5901,14 +5904,14 @@ void runeforge::razorice_attack( special_effect_t& effect,
     {
       double m = death_knight_melee_attack_t::composite_target_multiplier( t );
 
-      m /= 1.0 + td( t ) -> debuffs_frost_vulnerability -> check() *
-            td( t ) -> debuffs_frost_vulnerability -> data().effectN( 1 ).percent();
+      m /= 1.0 + td( t ) -> debuffs_razorice -> check() *
+            td( t ) -> debuffs_razorice -> data().effectN( 1 ).percent();
 
       return m;
     }
   };
 
-  effect.execute_action = new razorice_attack_t( debug_cast<death_knight_t*>( item.player ), item );
+  effect.execute_action = new razorice_attack_t( debug_cast<death_knight_t*>( item.player ), effect.name(), item );
 
   new dbc_proc_callback_t( item, effect );
 }
@@ -5924,7 +5927,9 @@ void runeforge::razorice_debuff( special_effect_t& effect,
 
     void execute( action_t* a, action_state_t* state )
     {
-      debug_cast< death_knight_t* >( a -> player ) -> get_target_data( state -> target ) -> debuffs_frost_vulnerability -> trigger();
+      debug_cast< death_knight_t* >( a -> player ) -> get_target_data( state -> target ) -> debuffs_razorice -> trigger();
+      if ( a -> sim -> current_time < timespan_t::from_seconds( 0.01 ) )
+        debug_cast< death_knight_t* >( a -> player ) -> get_target_data( state -> target ) -> debuffs_razorice -> constant = false;
     }
   };
 
