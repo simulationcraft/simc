@@ -3968,8 +3968,9 @@ struct blood_boil_spread_t : public death_knight_spell_t
         }
 
         np -> copy( s -> target, DOT_COPY_CLONE );
+        death_knight_td_t* tdata2 = td( np -> target );
 
-        int orig_stacks = tdata -> debuffs_necrotic_plague -> check();
+        int orig_stacks = tdata2 -> debuffs_necrotic_plague -> check();
         tdata -> debuffs_necrotic_plague -> trigger( orig_stacks );
       }
     }
