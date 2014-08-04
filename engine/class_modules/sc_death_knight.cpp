@@ -5782,7 +5782,8 @@ void death_knight_t::init_enchant()
       // double chance     = w -> proc_chance_on_swing( PPM, swing_time );
 
       debug_cast< death_knight_t* >( a -> player ) -> get_target_data( a -> execute_state -> target ) -> debuffs_frost_vulnerability -> trigger();
-      razorice_damage_proc -> weapon = w;
+      // Razorice damaging attack always uses main hand weapon
+      razorice_damage_proc -> weapon = &( a -> player -> main_hand_weapon );
       razorice_damage_proc -> execute();
     }
   };
