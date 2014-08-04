@@ -4580,6 +4580,8 @@ void mage_t::apl_fire()
   single_target -> add_action( this, "Pyroblast",
                                "if=set_bonus.tier16_2pc_caster&buff.pyroblast.up&buff.potent_flames.up&buff.potent_flames.remains<action.fireball.execute_time",
                                "Intentionally sustain 2T16 4 stack or more" );
+  single_target -> add_action( this, "Scorch",
+                               "if=set_bonus.tier16_2pc_caster&buff.potent_flames.up&buff.pyroblast.down&buff.heating_up.down&buff.potent_flames.remains<action.fireball.execute_time+gcd&buff.potent_flames.remains>2*gcd" );
   single_target -> add_action( this, "Inferno Blast",
                                "if=set_bonus.tier16_2pc_caster&buff.pyroblast.down&buff.potent_flames.up&buff.potent_flames.remains<action.fireball.execute_time&buff.potent_flames.remains>gcd&(buff.heating_up.up|action.fireball.in_flight|action.pyroblast.in_flight)" );
   single_target -> add_action( this, "Pyroblast",
