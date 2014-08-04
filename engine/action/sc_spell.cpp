@@ -80,7 +80,7 @@ result_e spell_base_t::calculate_result( action_state_t* s )
 
   if ( ! s -> target ) return RESULT_NONE;
 
-  if ( ! harmful || ! may_hit ) return RESULT_NONE;
+  if ( ! may_hit ) return RESULT_NONE;
 
   if ( ( result == RESULT_NONE ) && may_miss )
   {

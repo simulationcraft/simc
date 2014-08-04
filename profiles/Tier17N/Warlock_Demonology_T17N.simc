@@ -3,7 +3,7 @@ level=100
 race=troll
 role=spell
 position=back
-talents=http://us.battle.net/wow/en/tool/talent-calculator#VZ!....102
+talents=http://us.battle.net/wow/en/tool/talent-calculator#VZ!....10.
 spec=demonology
 
 # This default action priority list is automatically created based on your character.
@@ -15,11 +15,12 @@ spec=demonology
 # Executed before combat begins. Accepts non-harmful actions only.
 
 actions.precombat=flask,type=greater_draenic_mastery_flask
-actions.precombat+=/food,type=mogu_fish_stew
+actions.precombat+=/food,type=sleeper_surprise
 actions.precombat+=/dark_intent,if=!aura.spell_power_multiplier.up
-actions.precombat+=/summon_pet,if=!talent.grimoire_of_sacrifice.enabled|buff.grimoire_of_sacrifice.down
+actions.precombat+=/summon_pet,if=!talent.demonic_servitude.enabled&(!talent.grimoire_of_sacrifice.enabled|buff.grimoire_of_sacrifice.down)
+actions.precombat+=/summon_doomguard,if=talent.demonic_servitude.enabled
 actions.precombat+=/snapshot_stats
-actions.precombat+=/grimoire_of_sacrifice,if=talent.grimoire_of_sacrifice.enabled
+actions.precombat+=/grimoire_of_sacrifice,if=talent.grimoire_of_sacrifice.enabled&!talent.demonic_servitude.enabled
 actions.precombat+=/service_pet,if=talent.grimoire_of_service.enabled
 actions.precombat+=/potion,name=draenic_intellect
 
@@ -32,8 +33,7 @@ actions+=/dark_soul,if=!talent.archimondes_darkness.enabled|(talent.archimondes_
 actions+=/service_pet,if=talent.grimoire_of_service.enabled
 actions+=/felguard:felstorm
 actions+=/wrathguard:wrathstorm
-actions+=/run_action_list,name=aoe,if=active_enemies>4
-actions+=/summon_doomguard
+actions+=/summon_doomguard,if=!talent.demonic_servitude.enabled
 actions+=/doom,if=buff.metamorphosis.up&target.time_to_die>=30&miss_react&remains<=(duration*0.3)
 actions+=/cancel_metamorphosis,if=buff.metamorphosis.up&buff.dark_soul.down&demonic_fury<=650&target.time_to_die>30&(cooldown.metamorphosis.remains<4|demonic_fury<=300)
 actions+=/soul_fire,if=buff.metamorphosis.up&buff.molten_core.react&(buff.dark_soul.remains<action.shadow_bolt.cast_time|buff.dark_soul.remains>cast_time)
@@ -42,47 +42,37 @@ actions+=/metamorphosis,if=(buff.dark_soul.up&buff.dark_soul.remains<demonic_fur
 actions+=/corruption,if=target.time_to_die>=6&miss_react&remains<=(duration*0.3)
 actions+=/hand_of_guldan
 actions+=/soul_fire,if=buff.molten_core.react&(buff.dark_soul.remains<action.shadow_bolt.cast_time|buff.dark_soul.remains>cast_time)&(buff.molten_core.react>9|target.health.pct<=28)
-actions+=/life_tap,if=mana.pct<60
+actions+=/life_tap,if=mana.pct<40
 actions+=/shadow_bolt
 actions+=/life_tap
 
-actions.aoe=summon_infernal
-actions.aoe+=/cancel_metamorphosis,if=buff.metamorphosis.up&dot.corruption.remains>10&demonic_fury<=650&buff.dark_soul.down&!dot.immolation_aura.ticking
-actions.aoe+=/immolation_aura,if=buff.metamorphosis.up
-actions.aoe+=/doom,cycle_targets=1,if=buff.metamorphosis.up&(!ticking|remains<tick_time|(ticks_remain+1<buff.dark_soul.up))&target.time_to_die>=30&miss_react
-actions.aoe+=/corruption,cycle_targets=1,if=!ticking&target.time_to_die>30&miss_react
-actions.aoe+=/hand_of_guldan
-actions.aoe+=/metamorphosis,if=dot.corruption.remains<10|buff.dark_soul.up|demonic_fury>=950|demonic_fury%32>target.time_to_die
-actions.aoe+=/hellfire,chain=1,interrupt=1
-actions.aoe+=/life_tap
-
-head=primal_gladiators_cowl_of_cruelty,id=111089
-neck=primal_gladiators_pendant_of_prowess,id=111129,enchant=gift_of_mastery
+head=primal_gladiators_felweave_cowl,id=111235
+neck=primal_gladiators_pendant_of_cruelty,id=111128,enchant=gift_of_mastery
 shoulders=primal_gladiators_felweave_amice,id=111238
 back=primal_gladiators_drape_of_prowess,id=111125,enchant=gift_of_mastery
-chest=primal_gladiators_felweave_raiment,id=111237
-wrists=primal_gladiators_cuffs_of_victory,id=111101
+chest=primal_gladiators_robes_of_prowess,id=111086
+wrists=primal_gladiators_cuffs_of_prowess,id=111099
 hands=primal_gladiators_felweave_handguards,id=111234
-waist=primal_gladiators_cord_of_cruelty,id=111093
+waist=primal_gladiators_cord_of_victory,id=111095
 legs=primal_gladiators_felweave_trousers,id=111236
 feet=primal_gladiators_treads_of_cruelty,id=111096
-finger1=primal_gladiators_band_of_prowess,id=111135,enchant=gift_of_mastery
-finger2=primal_gladiators_band_of_cruelty,id=111134,enchant=gift_of_mastery
+finger1=primal_gladiators_band_of_victory,id=111136,enchant=gift_of_mastery
+finger2=primal_gladiators_band_of_prowess,id=111135,enchant=gift_of_mastery
 trinket1=primal_gladiators_badge_of_dominance,id=111227
 trinket2=primal_gladiators_insignia_of_dominance,id=111228
-main_hand=primal_gladiators_mageblade,id=111119,enchant=mark_of_warsong
-off_hand=primal_gladiators_reprieve,id=111133
+main_hand=primal_gladiators_mageblade,id=111119,enchant=mark_of_the_frostwolf
+off_hand=primal_gladiators_endgame,id=111132
 
 # Gear Summary
 # gear_stamina=3245
 # gear_intellect=2584
 # gear_spell_power=1244
-# gear_crit_rating=704
-# gear_haste_rating=1039
-# gear_mastery_rating=1148
+# gear_crit_rating=580
+# gear_haste_rating=553
+# gear_mastery_rating=1662
 # gear_armor=600
-# gear_multistrike_rating=307
-# gear_versatility_rating=224
+# gear_multistrike_rating=525
+# gear_versatility_rating=102
 # pvp_2pc_caster=1
 # pvp_4pc_caster=1
 default_pet=felguard

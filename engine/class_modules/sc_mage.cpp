@@ -1599,6 +1599,7 @@ struct arcane_missiles_tick_t : public mage_spell_t
     mage_spell_t( "arcane_missiles_tick", p, p -> find_class_spell( "Arcane Missiles" ) -> effectN( 2 ).trigger() )
   {
     background  = true;
+    dot_duration = timespan_t::zero();
   }
 };
 
