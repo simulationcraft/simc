@@ -1375,6 +1375,9 @@ void SC_MainWindow::simulateFinished( sim_t* sim )
     }
 
   }
+  if ( simulationQueue.isEmpty() && ! importRunning() )
+    timer -> stop();
+
   deleteSim( sim, simulateThread -> success == true ? 0:logText ); SC_MainWindow::sim = 0;
 
   if ( ! simulationQueue.isEmpty() )
@@ -1383,10 +1386,6 @@ void SC_MainWindow::simulateFinished( sim_t* sim )
   }
   else
   {
-    if ( ! importRunning() )
-    {
-      timer -> stop();
-    }
     consecutiveSimulationsRun = 0;
     cmdLine -> setState( SC_MainWindowCommandLine::IDLE );
   }

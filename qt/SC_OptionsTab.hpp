@@ -44,6 +44,7 @@ public:
     QComboBox* num_target;
     QComboBox* player_skill;
     QComboBox* threads;
+    QComboBox* thread_priority;
     QComboBox* armory_region;
     QComboBox* armory_spec;
     QComboBox* default_role;

@@ -8,7 +8,7 @@ spec=unholy
 role=attack
 position=back
 professions=blacksmithing=600/engineering=600
-talents=300010
+talents=300100
 head=helmet_of_cyclopean_dread,id=99337,gems=capacitive_primal_4str_8crit_9str,reforge=haste_crit,upgrade=2
 neck=malkoroks_tainted_dog_tags,id=105566,upgrade=2
 shoulders=tusks_of_mannoroth,id=105642,gems=4str_8crit_4str_8crit_4str_8crit_9str,enchant=10str_5crit,upgrade=2
@@ -33,7 +33,7 @@ spec=frost
 role=attack
 position=back
 professions=blacksmithing=600/engineering=600
-talents=200010
+talents=200100
 glyphs=
 head=helmet_of_cyclopean_dread,id=99337,gems=capacitive_primal_4str_8crit_9str,reforge=haste_crit,upgrade=2
 neck=malkoroks_tainted_dog_tags,id=105566,upgrade=2
@@ -59,7 +59,7 @@ spec=frost
 role=attack
 position=back
 professions=blacksmithing=600/engineering=600
-talents=200010
+talents=200100
 glyphs=
 head=helmet_of_cyclopean_dread,id=99337,upgrade=2,gems=capacitive_primal_4str_8mastery_9str,reforge=haste_crit
 neck=malkoroks_tainted_dog_tags,id=105566,upgrade=2

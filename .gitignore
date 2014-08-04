@@ -17,14 +17,10 @@ simc_report.html
 simc_report.xml
 .DS_Store
 *.[Dd]ebug
-*.[Rr]elease
-[Rr]elease
 [Dd]ebug
 moc_*.cpp
 simcqt.app
 simcqt.dmg
-SimulationCraft.app
-SimulationCraft
 */project.xcworkspace
 */xcuserdata
 .svn

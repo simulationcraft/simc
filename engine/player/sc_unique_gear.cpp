@@ -422,8 +422,8 @@ void enchant::mark_of_the_thunderlord( special_effect_t& effect,
     unsigned extensions;
     unsigned max_extensions;
 
-    mott_buff_t( const item_t& item, unsigned max_ext ) :
-      stat_buff_t( stat_buff_creator_t( item.player, "mark_of_the_thunderlord", item.player -> find_spell( 159234 ) ) ),
+    mott_buff_t( const item_t& item, const std::string& name, unsigned max_ext ) :
+      stat_buff_t( stat_buff_creator_t( item.player, name, item.player -> find_spell( 159234 ) ) ),
       extensions( 0 ), max_extensions( max_ext )
     { }
 
@@ -447,7 +447,7 @@ void enchant::mark_of_the_thunderlord( special_effect_t& effect,
   };
 
   // Max extensions is hardcoded, no spell data to fetch it
-  effect.custom_buff = new mott_buff_t( item, 3 );
+  effect.custom_buff = new mott_buff_t( item, effect.name(), 3 );
 
   // Setup another proc callback, that uses the same driver as the proc that
   // triggers the buff, however it only procs on crits. This callback will

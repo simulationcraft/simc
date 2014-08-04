@@ -42,10 +42,19 @@ enum ability_type_e {
   ABILITY_MAX
 };
 
-struct shadow_reflect_mimic_t
+struct shadow_reflect_event_t : public event_t
 {
   int combo_points;
-  actions::rogue_attack_t* source_action;
+  action_t* source_action;
+
+  shadow_reflect_event_t( int cp, action_t* a ) :
+    event_t( *a -> player, "shadow_reflect_event" ),
+    combo_points( cp ), source_action( a )
+  {
+    sim().add_event( this, timespan_t::from_seconds( 8 ) );
+  }
+
+  void execute();
 };
 
 struct combo_points_t
@@ -114,8 +123,9 @@ struct rogue_t : public player_t
   unsigned poisoned_enemies;
 
   // Shadow Reflection stuff
-  std::vector<shadow_reflect_mimic_t> shadow_reflection_sequence;
+  std::vector<shadow_reflect_event_t*> shadow_reflection_sequence;
   pet_t* shadow_reflection;
+  bool reflection_attack;
 
   // Premeditation
   core_event_t* event_premeditation;
@@ -245,6 +255,7 @@ struct rogue_t : public player_t
     const spell_data_t* tier15_4pc;
     const spell_data_t* venom_zest;
     const spell_data_t* death_from_above;
+    const spell_data_t* critical_strikes;
   } spell;
 
   // Talents
@@ -336,6 +347,7 @@ struct rogue_t : public player_t
     player_t( sim, ROGUE, name, r ),
     poisoned_enemies( 0 ),
     shadow_reflection( 0 ),
+    reflection_attack( false ),
     event_premeditation( 0 ),
     active_blade_flurry( 0 ),
     active_lethal_poison( 0 ),
@@ -390,6 +402,8 @@ struct rogue_t : public player_t
   virtual double    composite_rating_multiplier( rating_e rating ) const;
   virtual double    composite_attribute_multiplier( attribute_e attr ) const;
   virtual double    composite_melee_speed() const;
+  virtual double    composite_melee_crit() const;
+  virtual double    composite_spell_crit() const;
   virtual double    matching_gear_multiplier( attribute_e attr ) const;
   virtual double    composite_attack_power_multiplier() const;
   virtual double    composite_player_multiplier( school_e school ) const;
@@ -405,6 +419,7 @@ struct rogue_t : public player_t
   void trigger_relentless_strikes( const action_state_t* );
   void trigger_venomous_wounds( const action_state_t* );
   void trigger_blade_flurry( const action_state_t* );
+  void trigger_shadow_reflection( const action_state_t* );
 
   target_specific_t<rogue_td_t*> target_data;
 
@@ -674,6 +689,9 @@ struct sinister_calling_t : public rogue_attack_t
     may_crit = callbacks = may_multistrike = may_miss = false;
     proc = background = true;
   }
+
+  dmg_e report_amount_type( const action_state_t* ) const
+  { return DMG_DIRECT; }
 
   double target_armor( player_t* ) const
   { return 0; }
@@ -1251,6 +1269,7 @@ void rogue_attack_t::execute()
   melee_attack_t::execute();
 
   p() -> trigger_main_gauche( execute_state );
+  p() -> trigger_shadow_reflection( execute_state );
 
   if ( harmful && stealthed() )
   {
@@ -1264,18 +1283,6 @@ void rogue_attack_t::execute()
   {
     if ( adds_combo_points )
       td -> combo_points.add( adds_combo_points, name() );
-  }
-
-  // Record!
-  if ( p() -> buffs.shadow_reflection -> check() && ! background && ! proc && ability_type != ABILITY_NONE )
-  {
-    rogue_attack_state_t* rs = debug_cast<rogue_attack_state_t*>( execute_state );
-    shadow_reflect_mimic_t t;
-    t.combo_points = rs -> cp;
-    t.source_action = this;
-    p() -> shadow_reflection_sequence.push_back( t );
-    if ( sim -> debug )
-      sim -> out_debug.printf( "%s shadow_reflection recording %s, cp=%d", player -> name(), name(), rs -> cp );
   }
 }
 
@@ -1328,6 +1335,7 @@ struct melee_t : public rogue_attack_t
   melee_t( const char* name, rogue_t* p, int sw ) :
     rogue_attack_t( name, p ), sync_weapons( sw ), first( true )
   {
+    auto_attack     = true;
     school          = SCHOOL_PHYSICAL;
     background      = true;
     repeating       = true;
@@ -1385,13 +1393,13 @@ struct auto_melee_attack_t : public action_t
 
     assert( p -> main_hand_weapon.type != WEAPON_NONE );
 
-    p -> melee_main_hand = p -> main_hand_attack = new melee_t( "melee_main_hand", p, sync_weapons );
+    p -> melee_main_hand = p -> main_hand_attack = new melee_t( "auto_attack_mh", p, sync_weapons );
     p -> main_hand_attack -> weapon = &( p -> main_hand_weapon );
     p -> main_hand_attack -> base_execute_time = p -> main_hand_weapon.swing_time;
 
     if ( p -> off_hand_weapon.type != WEAPON_NONE )
     {
-      p -> melee_off_hand = p -> off_hand_attack = new melee_t( "melee_off_hand", p, sync_weapons );
+      p -> melee_off_hand = p -> off_hand_attack = new melee_t( "auto_attack_oh", p, sync_weapons );
       p -> off_hand_attack -> weapon = &( p -> off_hand_weapon );
       p -> off_hand_attack -> base_execute_time = p -> off_hand_weapon.swing_time;
       p -> off_hand_attack -> id = 1;
@@ -1505,7 +1513,7 @@ struct ambush_t : public rogue_attack_t
   {
     double c = rogue_attack_t::composite_crit();
 
-    if ( p() -> buffs.enhanced_vendetta -> up() )
+    if ( ! p() -> reflection_attack && p() -> buffs.enhanced_vendetta -> up() )
       c += p() -> buffs.enhanced_vendetta -> data().effectN( 1 ).percent();
 
     return c;
@@ -1647,7 +1655,7 @@ struct dispatch_t : public rogue_attack_t
   {
     double c = rogue_attack_t::composite_crit();
 
-    if ( p() -> buffs.enhanced_vendetta -> up() )
+    if ( ! p() -> reflection_attack && p() -> buffs.enhanced_vendetta -> up() )
       c += p() -> buffs.enhanced_vendetta -> data().effectN( 1 ).percent();
 
     return c;
@@ -1657,7 +1665,7 @@ struct dispatch_t : public rogue_attack_t
   {
     double m = rogue_attack_t::action_multiplier();
 
-    if ( p() -> perk.empowered_envenom -> ok() && p() -> buffs.envenom -> up() )
+    if ( ! p() -> reflection_attack && p() -> perk.empowered_envenom -> ok() && p() -> buffs.envenom -> up() )
       m *= 1.0 + p() -> perk.empowered_envenom -> effectN( 1 ).percent();
 
     return m;
@@ -1724,7 +1732,7 @@ struct envenom_t : public rogue_attack_t
   {
     double c = rogue_attack_t::composite_crit();
 
-    if ( p() -> buffs.enhanced_vendetta -> up() )
+    if ( ! p() -> reflection_attack && p() -> buffs.enhanced_vendetta -> up() )
       c += p() -> buffs.enhanced_vendetta -> data().effectN( 1 ).percent();
 
     return c;
@@ -1833,26 +1841,6 @@ struct eviscerate_t : public rogue_attack_t
       p() -> buffs.slice_and_dice -> trigger( 1, snd, -1.0, snd_duration );
     }
   }
-};
-
-// Expose Armor =============================================================
-
-struct expose_armor_t : public rogue_attack_t
-{
-  expose_armor_t( rogue_t* p, const std::string& options_str ) :
-    rogue_attack_t( "expose_armor", p, p -> find_class_spell( "Expose Armor" ), options_str )
-  { }
-
-  virtual void execute()
-  {
-    rogue_attack_t::execute();
-
-    if ( result_is_hit( execute_state -> result ) )
-    {
-      rogue_td_t* td = this -> td( target );
-      td -> combo_points.add( 1 );
-    }
-  };
 };
 
 // Fan of Knives ============================================================
@@ -2174,7 +2162,7 @@ struct mutilate_strike_t : public rogue_attack_t
   {
     double m = rogue_attack_t::action_multiplier();
 
-    if ( p() -> perk.empowered_envenom -> ok() && p() -> buffs.envenom -> up() )
+    if ( ! p() -> reflection_attack && p() -> perk.empowered_envenom -> ok() && p() -> buffs.envenom -> up() )
       m *= 1.0 + p() -> perk.empowered_envenom -> effectN( 1 ).percent();
 
     return m;
@@ -2184,7 +2172,7 @@ struct mutilate_strike_t : public rogue_attack_t
   {
     double c = rogue_attack_t::composite_crit();
 
-    if ( p() -> buffs.enhanced_vendetta -> up() )
+    if ( ! p() -> reflection_attack && p() -> buffs.enhanced_vendetta -> up() )
       c += p() -> buffs.enhanced_vendetta -> data().effectN( 1 ).percent();
 
     return c;
@@ -3103,6 +3091,31 @@ void rogue_t::trigger_blade_flurry( const action_state_t* state )
   active_blade_flurry -> schedule_execute();
 }
 
+void rogue_t::trigger_shadow_reflection( const action_state_t* state )
+{
+  using namespace actions;
+
+  if ( ! talent.shadow_reflection -> ok() )
+    return;
+
+  rogue_attack_t* attack = debug_cast<rogue_attack_t*>( state -> action );
+  if ( attack -> ability_type == ABILITY_NONE )
+    return;
+
+  if ( ! state -> action -> result_is_hit( state -> result ) )
+    return;
+
+  if ( buffs.shadow_reflection -> remains() < timespan_t::from_seconds( 8 ) )
+    return;
+
+  const rogue_attack_state_t* rs = debug_cast<const rogue_attack_state_t*>( state );
+
+  shadow_reflect_event_t* event = new ( *sim ) shadow_reflect_event_t( rs -> cp, state -> action );
+  shadow_reflection_sequence.push_back( event );
+  if ( sim -> debug )
+    sim -> out_debug.printf( "%s shadow_reflection recording %s, cp=%d", name(), state -> action -> name(), rs -> cp );
+}
+
 namespace buffs {
 // ==========================================================================
 // Buffs
@@ -3110,28 +3123,18 @@ namespace buffs {
 
 struct shadow_reflection_t : public buff_t
 {
-  player_t* rogue_target;
-
   shadow_reflection_t( rogue_t* p ) :
-    buff_t( buff_creator_t( p, "shadow_reflection" ).duration( p -> talent.shadow_reflection -> duration() / 2 ) ),
-    rogue_target( 0 )
+    buff_t( buff_creator_t( p, "shadow_reflection", p -> talent.shadow_reflection ).cd( timespan_t::zero() ) )
   { }
 
   void execute( int stacks, double value, timespan_t duration )
   {
     buff_t::execute( stacks, value, duration );
 
-    rogue_target = player -> target;
-  }
-
-  void expire_override()
-  {
-    buff_t::expire_override();
-
     rogue_t* rogue = debug_cast<rogue_t*>( player );
 
-    rogue -> shadow_reflection -> target = rogue_target;
-    rogue -> shadow_reflection -> summon( rogue -> talent.shadow_reflection -> duration() / 2 );
+    rogue -> shadow_reflection -> target = rogue -> target;
+    rogue -> shadow_reflection -> summon( rogue -> talent.shadow_reflection -> duration() );
   }
 };
 
@@ -3474,6 +3477,8 @@ struct shadow_reflection_pet_t : public pet_t
       // rogue itself. This should get us the correct multipliers etc, so the
       // shadow reflection mimic ability does not need them, making the mimiced
       // abilities programmatically much simpler.
+      o() -> reflection_attack = true;
+      o() -> cache.invalidate_all();
       source_action -> snapshot_internal( state, flags, rt );
 
       // Finally, the Shadow Relfection mimic abilities _do not_ get the
@@ -3490,6 +3495,9 @@ struct shadow_reflection_pet_t : public pet_t
       // on the owner are valid for the Shadow Reflection
       if ( flags & STATE_TGT_CRIT )
         state -> target_crit = composite_target_crit( state -> target ) * source_action -> composite_crit_multiplier();
+
+      o() -> reflection_attack = false;
+      o() -> cache.invalidate_all();
     }
 
     static rogue_attack_state_t* cast_state( action_state_t* st )
@@ -3833,74 +3841,15 @@ struct shadow_reflection_pet_t : public pet_t
     }
   };
 
-  // A very dummy action to do very naughty things.
-  struct shadow_reflection_t : public action_t
-  {
-    shadow_reflection_t( player_t* p ) :
-      action_t( ACTION_OTHER, "shadow_reflection", p )
-    {
-      quiet = true;
-      trigger_gcd = timespan_t::from_seconds( 1.0 );
-    }
-
-    shadow_reflection_pet_t* p()
-    { return debug_cast<shadow_reflection_pet_t*>( player ); }
-
-    void execute()
-    {
-      const shadow_reflect_mimic_t& seq = p() -> o() -> shadow_reflection_sequence[ p() -> seq_index ];
-
-      if ( sim -> debug )
-        sim -> out_debug.printf( "%s mimics %s, cp=%d", p() -> name(), seq.source_action -> name(), seq.combo_points );
-
-      // Link the source action to the mimiced action, so snapshot_state() and
-      // update_state() actually use the owner's current stats to drive the
-      // ability
-      shadow_reflection_attack_t* attack = p() -> attacks[ seq.source_action -> ability_type ];
-      attack -> source_action = seq.source_action;
-
-      // Snapshot a state for the mimiced ability, note that this snapshots
-      // based on the owner's current stats, and does some adjustments (see
-      // shadow_reflection_attack_t::snapshot_internal()).
-      action_state_t* our_state = attack -> get_state();
-      attack -> snapshot_state( our_state, type == ACTION_HEAL ? HEAL_DIRECT : DMG_DIRECT );
-
-      // Aand update combo points for us from the sequence, since shadow
-      // reflection has no combo points.
-      debug_cast<rogue_attack_state_t*>( our_state ) -> cp = seq.combo_points;
-
-      // Finally, execute the mimiced ability .. This is actually done without
-      // a GCD. The Shadow Reflection's 1 second GCD is triggered by this
-      // ("shadow_reflection") ability.
-      attack -> schedule_execute( our_state );
-
-      // And move on to the next mimiced ability
-      p() -> seq_index++;
-    }
-
-    bool ready()
-    {
-      return p() -> seq_index < p() -> o() -> shadow_reflection_sequence.size();
-    }
-  };
-
-  size_t seq_index;
   std::vector<shadow_reflection_attack_t*> attacks;
 
   shadow_reflection_pet_t( rogue_t* owner ) :
     pet_t( owner -> sim, owner, "shadow_reflection", true, true ),
-    seq_index( 0 ), attacks( ABILITY_MAX )
+    attacks( ABILITY_MAX )
   { }
 
   rogue_t* o()
   { return debug_cast<rogue_t*>( owner ); }
-
-  void init_action_list()
-  {
-    action_list_str = "shadow_reflection";
-
-    pet_t::init_action_list();
-  }
 
   void init_spells()
   {
@@ -3930,18 +3879,10 @@ struct shadow_reflection_pet_t : public pet_t
     _spec = SPEC_NONE;
   }
 
-  virtual action_t* create_action( const std::string& name,
-                                   const std::string& options_str )
-  {
-    if ( name == "shadow_reflection" ) return new shadow_reflection_t( this );
-
-    return pet_t::create_action( name, options_str );
-  }
-
   void reset()
   {
     pet_t::reset();
-    seq_index = 0;
+    o() -> shadow_reflection_sequence.clear();
   }
 
   void demise()
@@ -3949,7 +3890,6 @@ struct shadow_reflection_pet_t : public pet_t
     pet_t::demise();
 
     o() -> shadow_reflection_sequence.clear();
-    seq_index = 0;
   }
 
   void init_base_stats()
@@ -3959,6 +3899,43 @@ struct shadow_reflection_pet_t : public pet_t
     base_gcd = timespan_t::from_seconds( 1.0 );
   }
 };
+
+inline void shadow_reflect_event_t::execute()
+{
+  using namespace actions;
+
+  rogue_t* rogue = debug_cast<rogue_t*>( source_action -> player );
+  shadow_reflection_pet_t* sr = debug_cast<shadow_reflection_pet_t*>( rogue -> shadow_reflection );
+
+  if ( sr -> is_sleeping() )
+    return;
+
+  rogue_attack_t* rogue_attack = debug_cast<rogue_attack_t*>( source_action );
+
+  if ( sim().debug )
+    sim().out_debug.printf( "%s mimics %s, cp=%d", rogue -> name(), source_action -> name(), combo_points );
+
+  // Link the source action to the mimiced action, so snapshot_state() and
+  // update_state() actually use the owner's current stats to drive the
+  // ability
+  shadow_reflection_pet_t::shadow_reflection_attack_t* attack = sr -> attacks[ rogue_attack -> ability_type ];
+  attack -> source_action = rogue_attack;
+
+  // Snapshot a state for the mimiced ability, note that this snapshots
+  // based on the owner's current stats, and does some adjustments (see
+  // shadow_reflection_attack_t::snapshot_internal()).
+  action_state_t* our_state = attack -> get_state();
+  attack -> snapshot_state( our_state, attack -> amount_type( our_state ) );
+
+  // Aand update combo points for us from the sequence, since shadow
+  // reflection has no combo points.
+  debug_cast<rogue_attack_state_t*>( our_state ) -> cp = combo_points;
+
+  // Finally, execute the mimiced ability .. This is actually done without
+  // a GCD. The Shadow Reflection's 1 second GCD is triggered by this
+  // ("shadow_reflection") ability.
+  attack -> schedule_execute( our_state );
+}
 
 // ==========================================================================
 // Rogue Character Definition
@@ -4016,6 +3993,28 @@ double rogue_t::composite_melee_speed() const
   return h;
 }
 
+// rogue_t::composite_melee_crit =========================================
+
+double rogue_t::composite_melee_crit() const
+{
+  double crit = player_t::composite_melee_crit();
+
+  crit += spell.critical_strikes -> effectN( 1 ).percent();
+
+  return crit;
+}
+
+// rogue_t::composite_spell_crit =========================================
+
+double rogue_t::composite_spell_crit() const
+{
+  double crit = player_t::composite_spell_crit();
+
+  crit += spell.critical_strikes -> effectN( 1 ).percent();
+
+  return crit;
+}
+
 // rogue_t::matching_gear_multiplier ========================================
 
 double rogue_t::matching_gear_multiplier( attribute_e attr ) const
@@ -4043,19 +4042,22 @@ double rogue_t::composite_player_multiplier( school_e school ) const
 {
   double m = player_t::composite_player_multiplier( school );
 
-  if ( buffs.master_of_subtlety -> check() ||
-       ( spec.master_of_subtlety -> ok() && ( buffs.stealth -> check() || buffs.vanish -> check() ) ) )
-    // TODO-WOD: Enhance Master of Subtlety is additive or multiplicative?
-    m *= 1.0 + spec.master_of_subtlety -> effectN( 1 ).percent() + perk.enhanced_master_of_subtlety -> effectN( 1 ).percent();
+  if ( ! reflection_attack )
+  {
+    if ( buffs.master_of_subtlety -> check() ||
+         ( spec.master_of_subtlety -> ok() && ( buffs.stealth -> check() || buffs.vanish -> check() ) ) )
+      // TODO-WOD: Enhance Master of Subtlety is additive or multiplicative?
+      m *= 1.0 + spec.master_of_subtlety -> effectN( 1 ).percent() + perk.enhanced_master_of_subtlety -> effectN( 1 ).percent();
 
-  m *= 1.0 + buffs.shallow_insight -> value();
+    m *= 1.0 + buffs.shallow_insight -> value();
 
-  m *= 1.0 + buffs.moderate_insight -> value();
+    m *= 1.0 + buffs.moderate_insight -> value();
 
-  m *= 1.0 + buffs.deep_insight -> value();
+    m *= 1.0 + buffs.deep_insight -> value();
 
-  if ( perk.empowered_bandits_guile -> ok() && buffs.deep_insight -> check() )
-    m *= 1.0 + perk.empowered_bandits_guile -> effectN( 1 ).percent();
+    if ( perk.empowered_bandits_guile -> ok() && buffs.deep_insight -> check() )
+      m *= 1.0 + perk.empowered_bandits_guile -> effectN( 1 ).percent();
+  }
 
   if ( main_hand_weapon.type == WEAPON_DAGGER && off_hand_weapon.type == WEAPON_DAGGER )
     m *= 1.0 + spec.assassins_resolve -> effectN( 2 ).percent();
@@ -4357,7 +4359,6 @@ action_t* rogue_t::create_action( const std::string& name,
   if ( name == "dispatch"            ) return new dispatch_t           ( this, options_str );
   if ( name == "envenom"             ) return new envenom_t            ( this, options_str );
   if ( name == "eviscerate"          ) return new eviscerate_t         ( this, options_str );
-  if ( name == "expose_armor"        ) return new expose_armor_t       ( this, options_str );
   if ( name == "fan_of_knives"       ) return new fan_of_knives_t      ( this, options_str );
   if ( name == "garrote"             ) return new garrote_t            ( this, options_str );
   if ( name == "hemorrhage"          ) return new hemorrhage_t         ( this, options_str );
@@ -4505,6 +4506,7 @@ void rogue_t::init_spells()
   spell.fan_of_knives       = find_class_spell( "Fan of Knives" );
   spell.venom_zest          = find_spell( 156719 );
   spell.death_from_above    = find_spell( 163786 );
+  spell.critical_strikes    = find_spell( 157442 );
 
   // Glyphs
   glyph.disappearance       = find_glyph_spell( "Glyph of Disappearance" );

@@ -145,7 +145,7 @@ struct death_knight_td_t : public actor_pair_t
   dot_t* dots_necrotic_plague;
   dot_t* dots_defile;
 
-  debuff_t* debuffs_frost_vulnerability;
+  debuff_t* debuffs_razorice;
   debuff_t* debuffs_mark_of_sindragosa;
   debuff_t* debuffs_necrotic_plague;
 
@@ -391,8 +391,8 @@ public:
     // Unholy
     const spell_data_t* empowered_gargoyle;
     const spell_data_t* enhanced_dark_transformation;
-    const spell_data_t* enhanced_death_coil_unholy;
     const spell_data_t* enhanced_fallen_crusader;
+    const spell_data_t* improved_death_coil;
     const spell_data_t* improved_festering_strike;
     const spell_data_t* improved_scourge_strike;
   } perk;
@@ -540,7 +540,7 @@ inline death_knight_td_t::death_knight_td_t( player_t* target, death_knight_t* d
   dots_necrotic_plague = target -> get_dot( "necrotic_plague", death_knight );
   dots_defile          = target -> get_dot( "defile",          death_knight );
 
-  debuffs_frost_vulnerability = buff_creator_t( *this, "frost_vulnerability", death_knight -> find_spell( 51714 ) );
+  debuffs_razorice = buff_creator_t( *this, "razorice", death_knight -> find_spell( 51714 ) );
   debuffs_mark_of_sindragosa = buff_creator_t( *this, "mark_of_sindragosa", death_knight -> find_spell( 155166 ) );
   debuffs_necrotic_plague = buff_creator_t( *this, "necrotic_plague", death_knight -> find_spell( 155159 ) ).period( timespan_t::zero() );
 }
@@ -1960,8 +1960,11 @@ struct death_knight_action_t : public Base
 
     if ( dbc::is_school( action_base_t::school, SCHOOL_FROST ) )
     {
-      m *= 1.0 + td( t ) -> debuffs_frost_vulnerability -> check() *
-          td( t ) -> debuffs_frost_vulnerability -> data().effectN( 1 ).percent();
+      double debuff = td( t ) -> debuffs_razorice -> data().effectN( 1 ).percent();
+      // TODO: Razorice debuff gives +1% more per stack
+      debuff += 0.01;
+
+      m *= 1.0 + td( t ) -> debuffs_razorice -> check() * debuff;
     }
 
     return m;
@@ -2533,6 +2536,9 @@ struct necrotic_plague_t : public death_knight_spell_t
 
     void execute()
     {
+      if ( dot -> target -> is_sleeping() )
+        return;
+
       // TODO-WOD: Randomize target selection.
       player_t* new_target = 0;
       for ( size_t i = 0, end = sim().target_non_sleeping_list.size(); i < end; i++ )
@@ -3134,7 +3140,7 @@ struct death_coil_t : public death_knight_spell_t
 
     attack_power_mod.direct = 1.272;
 
-    base_multiplier *= 1.0 + p -> perk.enhanced_death_coil_unholy -> effectN( 2 ).percent();
+    base_multiplier *= 1.0 + p -> perk.improved_death_coil -> effectN( 2 ).percent();
   }
 
   virtual double cost() const
@@ -3392,8 +3398,11 @@ struct frost_strike_offhand_t : public death_knight_melee_attack_t
     background       = true;
     weapon           = &( p -> off_hand_weapon );
     special          = true;
-    base_multiplier *= 1.0 + p -> spec.might_of_the_frozen_wastes -> effectN( 3 ).percent();
+    // TODO: New dk stuff
+    base_multiplier *= 1.0 + p -> spec.might_of_the_frozen_wastes -> effectN( 3 ).percent() + 0.2;
     base_multiplier *= 1.0 + p -> sets.set( SET_T14_2PC_MELEE ) -> effectN( 1 ).percent();
+    // TODO: New dk stuff
+    base_multiplier *= 2.0;
 
     rp_gain = 0; // Incorrectly set to 10 in the DBC
   }
@@ -3418,14 +3427,20 @@ struct frost_strike_t : public death_knight_melee_attack_t
   {
     special = true;
     base_multiplier *= 1.0 + p -> sets.set( SET_T14_2PC_MELEE ) -> effectN( 1 ).percent();
+    // TODO: New dk stuff
+    base_multiplier *= 2.0;
 
     parse_options( NULL, options_str );
+
+    // TODO: New dk stuff
+    base_costs[ RESOURCE_RUNIC_POWER ] = 40;
 
     weapon     = &( p -> main_hand_weapon );
 
     if ( p -> off_hand_weapon.type != WEAPON_NONE )
     {
-      base_multiplier *= 1.0 + p -> spec.might_of_the_frozen_wastes -> effectN( 3 ).percent();
+      // TODO: New dk stuff
+      base_multiplier *= 1.0 + p -> spec.might_of_the_frozen_wastes -> effectN( 3 ).percent() + 0.2;
 
       if ( p -> spec.might_of_the_frozen_wastes -> ok() )
         oh_attack = new frost_strike_offhand_t( p );
@@ -3462,11 +3477,13 @@ struct frost_strike_t : public death_knight_melee_attack_t
   {
     death_knight_melee_attack_t::impact( s );
 
-    if ( result_is_hit( s -> result ) )
+    double consume = resource_consumed;
+
+    if ( result_is_hit( s -> result ) && consume > 0 )
     {
-      p() -> trigger_runic_empowerment( base_costs[ RESOURCE_RUNIC_POWER ] );
-      p() -> trigger_blood_charge( base_costs[ RESOURCE_RUNIC_POWER ] );
-      p() -> trigger_runic_corruption( base_costs[ RESOURCE_RUNIC_POWER ] );
+      p() -> trigger_runic_empowerment( consume );
+      p() -> trigger_blood_charge( consume );
+      p() -> trigger_runic_corruption( consume );
       p() -> trigger_plaguebearer( s );
     }
   }
@@ -3681,6 +3698,8 @@ struct obliterate_offhand_t : public death_knight_melee_attack_t
     weapon           = &( p -> off_hand_weapon );
     special          = true;
     base_multiplier *= 1.0 + p -> sets.set( SET_T14_2PC_MELEE ) -> effectN( 1 ).percent();
+    // TODO: New dk stuff
+    base_multiplier *= 1.3;
   }
 
   virtual double composite_crit() const
@@ -3704,6 +3723,8 @@ struct obliterate_t : public death_knight_melee_attack_t
 
     special = true;
     base_multiplier *= 1.0 + p -> sets.set( SET_T14_2PC_MELEE ) -> effectN( 1 ).percent();
+    // TODO: New dk stuff
+    base_multiplier *= 1.3;
 
     weapon = &( p -> main_hand_weapon );
 
@@ -3713,8 +3734,9 @@ struct obliterate_t : public death_knight_melee_attack_t
         oh_attack = new obliterate_offhand_t( p );
     }
 
+    // TODO: New dk stuff
     if ( p -> main_hand_weapon.group() == WEAPON_2H )
-      weapon_multiplier *= 1.0 + p -> spec.might_of_the_frozen_wastes -> effectN( 1 ).percent();
+      weapon_multiplier *= 1.0 + p -> spec.might_of_the_frozen_wastes -> effectN( 1 ).percent() + 0.1;
   }
 
   virtual void execute()
@@ -3797,11 +3819,13 @@ struct outbreak_t : public death_knight_spell_t
     {
       p() -> apply_diseases( execute_state, DISEASE_BLOOD_PLAGUE | DISEASE_FROST_FEVER );
 
-      if ( base_costs[ RESOURCE_RUNIC_POWER ] > 0 )
+      double consume =  resource_consumed;
+
+      if ( consume > 0 )
       {
-        p() -> trigger_runic_empowerment( base_costs[ RESOURCE_RUNIC_POWER ] );
-        p() -> trigger_runic_corruption( base_costs[ RESOURCE_RUNIC_POWER ] );
-        p() -> trigger_blood_charge( base_costs[ RESOURCE_RUNIC_POWER ] );
+        p() -> trigger_runic_empowerment( consume );
+        p() -> trigger_runic_corruption( consume );
+        p() -> trigger_blood_charge( consume );
       }
     }
 
@@ -4471,12 +4495,14 @@ struct breath_of_sindragosa_tick_t : public death_knight_spell_t
   {
     death_knight_spell_t::impact( s );
 
-    if ( result_is_hit( s -> result ) )
+    double consume = resource_consumed;
+
+    if ( result_is_hit( s -> result ) && consume > 0 )
     {
-      p() -> trigger_runic_empowerment( base_costs[ RESOURCE_RUNIC_POWER ] );
-      p() -> trigger_blood_charge( base_costs[ RESOURCE_RUNIC_POWER ] );
-      p() -> trigger_runic_corruption( base_costs[ RESOURCE_RUNIC_POWER ] );
-      p() -> trigger_shadow_infusion( base_costs[ RESOURCE_RUNIC_POWER ] );
+      p() -> trigger_runic_empowerment( consume );
+      p() -> trigger_blood_charge( consume );
+      p() -> trigger_runic_corruption( consume );
+      p() -> trigger_shadow_infusion( consume );
 
       td( target ) -> debuffs_mark_of_sindragosa -> trigger();
     }
@@ -4760,7 +4786,6 @@ struct disease_expr_t : public expr_t
     if ( bp_expr )
     {
       double val = bp_expr -> eval();
-      std::cout << "bp_expr=" << val << std::endl;
       if ( type == TYPE_NONE && val != 0 )
         return val;
       else if ( type == TYPE_MIN && val < ret )
@@ -4772,7 +4797,6 @@ struct disease_expr_t : public expr_t
     if ( ff_expr )
     {
       double val = ff_expr -> eval();
-      std::cout << "ff_expr=" << val << std::endl;
       if ( type == TYPE_NONE && val != 0 )
         return val;
       else if ( type == TYPE_MIN && val < ret )
@@ -4784,7 +4808,6 @@ struct disease_expr_t : public expr_t
     if ( np_expr )
     {
       double val = np_expr -> eval();
-      std::cout << "np_expr=" << val << std::endl;
       if ( type == TYPE_NONE && val != 0 )
         return val;
       else if ( type == TYPE_MIN && val < ret )
@@ -5377,10 +5400,10 @@ void death_knight_t::init_spells()
   // Unholy
   perk.empowered_gargoyle             = find_perk_spell( "Empowered Gargoyle" );
   perk.enhanced_dark_transformation   = find_perk_spell( "Enhanced Dark Transformation" );
-  perk.enhanced_death_coil_unholy     = find_perk_spell( "Enhanced Death Coil", DEATH_KNIGHT_UNHOLY );
   perk.enhanced_fallen_crusader       = find_perk_spell( "Enhanced Fallen Crusader" );
   perk.improved_festering_strike      = find_perk_spell( "Improved Festering Strike" );
   perk.improved_scourge_strike        = find_perk_spell( "Improved Scourge Strike" );
+  perk.improved_death_coil            = find_perk_spell( "Improved Death Coil" );
 
   // Active Spells
   active_spells.blood_plague = new blood_plague_t( this );
@@ -5860,18 +5883,23 @@ void runeforge::razorice_attack( special_effect_t& effect,
 {
   struct razorice_attack_t : public death_knight_melee_attack_t
   {
-    razorice_attack_t( death_knight_t* player, const item_t& item ) :
-      death_knight_melee_attack_t( "razorice", player , player -> find_spell( 50401 ) )
+    razorice_attack_t( death_knight_t* player, const std::string& name, const item_t& item ) :
+      death_knight_melee_attack_t( name, player, player -> find_spell( 50401 ) )
     {
       school      = SCHOOL_FROST;
       may_miss    = callbacks = false;
       background  = proc = true;
+      // TODO: New dk stuff
+      weapon_multiplier = 0.04;
 
       weapon_multiplier += player -> perk.improved_runeforges -> effectN( 2 ).percent();
+      weapon = &( player -> main_hand_weapon );
+      /*
       if ( item.slot == SLOT_OFF_HAND )
         weapon = &( player -> off_hand_weapon );
       else if ( item.slot == SLOT_MAIN_HAND )
         weapon = &( player -> main_hand_weapon );
+      */
     }
 
     // No double dipping to Frost Vulnerability
@@ -5879,14 +5907,14 @@ void runeforge::razorice_attack( special_effect_t& effect,
     {
       double m = death_knight_melee_attack_t::composite_target_multiplier( t );
 
-      m /= 1.0 + td( t ) -> debuffs_frost_vulnerability -> check() *
-            td( t ) -> debuffs_frost_vulnerability -> data().effectN( 1 ).percent();
+      m /= 1.0 + td( t ) -> debuffs_razorice -> check() *
+            td( t ) -> debuffs_razorice -> data().effectN( 1 ).percent();
 
       return m;
     }
   };
 
-  effect.execute_action = new razorice_attack_t( debug_cast<death_knight_t*>( item.player ), item );
+  effect.execute_action = new razorice_attack_t( debug_cast<death_knight_t*>( item.player ), effect.name(), item );
 
   new dbc_proc_callback_t( item, effect );
 }
@@ -5902,7 +5930,9 @@ void runeforge::razorice_debuff( special_effect_t& effect,
 
     void execute( action_t* a, action_state_t* state )
     {
-      debug_cast< death_knight_t* >( a -> player ) -> get_target_data( state -> target ) -> debuffs_frost_vulnerability -> trigger();
+      debug_cast< death_knight_t* >( a -> player ) -> get_target_data( state -> target ) -> debuffs_razorice -> trigger();
+      if ( a -> sim -> current_time < timespan_t::from_seconds( 0.01 ) )
+        debug_cast< death_knight_t* >( a -> player ) -> get_target_data( state -> target ) -> debuffs_razorice -> constant = false;
     }
   };
 
@@ -6117,7 +6147,8 @@ void death_knight_t::create_buffs()
   buffs.pillar_of_frost     = buff_creator_t( this, "pillar_of_frost", find_class_spell( "Pillar of Frost" ) )
                               .cd( timespan_t::zero() )
                               .default_value( find_class_spell( "Pillar of Frost" ) -> effectN( 1 ).percent() +
-                                              sets.set( SET_T14_4PC_MELEE ) -> effectN( 1 ).percent() )
+                                              sets.set( SET_T14_4PC_MELEE ) -> effectN( 1 ).percent() +
+                                              perk.empowered_pillar_of_frost -> effectN( 1 ).percent() )
                               .add_invalidate( CACHE_STRENGTH );
   buffs.rime                = buff_creator_t( this, "rime", find_spell( 59052 ) )
                               .max_stack( ( sets.has_set_bonus( SET_T13_2PC_MELEE ) ) ? 2 : 1 )
@@ -6414,7 +6445,7 @@ double death_knight_t::composite_attribute_multiplier( attribute_e attr ) const
   if ( attr == ATTR_STRENGTH )
   {
     m *= 1.0 + runeforge.rune_of_the_fallen_crusader -> value() + perk.enhanced_fallen_crusader -> effectN( 1 ).percent();
-    m *= 1.0 + buffs.pillar_of_frost -> value() + perk.empowered_pillar_of_frost -> effectN( 1 ).percent();
+    m *= 1.0 + buffs.pillar_of_frost -> value();
   }
   else if ( attr == ATTR_STAMINA )
   {

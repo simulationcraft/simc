@@ -1765,8 +1765,8 @@ struct blast_wave_t : public mage_spell_t
     {
         mage_spell_t::init();
 
-        // FIXME: Cannot find this info in the spell data, so I had to hard code it.
-        cooldown -> duration = timespan_t::from_seconds( 12.0 );
+        // NOTE: Cooldown missing from tooltip since WoD beta build 18379
+        cooldown -> duration = timespan_t::from_seconds( 25.0 );
         cooldown -> charges = 2;
     }
 
@@ -2413,9 +2413,10 @@ struct frostbolt_t : public mage_spell_t
     timespan_t cast = mage_spell_t::execute_time();
 
     if ( p() -> buffs.enhanced_frostbolt -> check() )
-      cast -= timespan_t::from_seconds( 0.5 );
-    return cast;
+      cast *= 1 + p() -> perks.enhanced_frostbolt -> effectN(1).time_value().total_seconds() /
+                  base_execute_time.total_seconds();
 
+    return cast;
   }
 
 
@@ -2810,8 +2811,8 @@ struct ice_nova_t : public mage_spell_t
     {
         mage_spell_t::init();
 
-        // FIXME: Cannot find this info in the spell data, so I had to hard code it.
-        cooldown -> duration = timespan_t::from_seconds( 12.0 );
+        // NOTE: Cooldown missing from tooltip since WoD beta build 18379
+        cooldown -> duration = timespan_t::from_seconds( 25.0 );
         cooldown -> charges = 2;
     }
 
@@ -3453,8 +3454,8 @@ struct supernova_t : public mage_spell_t
     {
         mage_spell_t::init();
 
-        // FIXME: Cannot find this info in the spell data, so I had to hard code it.
-        cooldown -> duration = timespan_t::from_seconds( 12.0 );
+        // NOTE: Cooldown missing from tooltip since WoD beta build 18379
+        cooldown -> duration = timespan_t::from_seconds( 25.0 );
         cooldown -> charges = 2;
     }
 
