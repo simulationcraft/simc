@@ -28,13 +28,13 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <CharacterSet>Unicode</CharacterSet>
-    <WholeProgramOptimization>PGUpdate</WholeProgramOptimization>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
     <PlatformToolset>v120</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <CharacterSet>Unicode</CharacterSet>
-    <WholeProgramOptimization>PGUpdate</WholeProgramOptimization>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
     <PlatformToolset>v120</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -204,7 +204,7 @@
       <TargetMachine>MachineX86</TargetMachine>
       <Profile>true</Profile>
       <ProfileGuidedDatabase>$(SolutionDir)\$(PlatformShortName)\$(Configuration)\</ProfileGuidedDatabase>
-      <LinkTimeCodeGeneration>PGUpdate</LinkTimeCodeGeneration>
+      <LinkTimeCodeGeneration>UseLinkTimeCodeGeneration</LinkTimeCodeGeneration>
     </Link>
     <PostBuildEvent />
     <PostBuildEvent />
@@ -239,7 +239,7 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <Profile>true</Profile>
       <LargeAddressAware>true</LargeAddressAware>
-      <LinkTimeCodeGeneration>PGUpdate</LinkTimeCodeGeneration>
+      <LinkTimeCodeGeneration>UseLinkTimeCodeGeneration</LinkTimeCodeGeneration>
       <ProfileGuidedDatabase>$(SolutionDir)\$(PlatformShortName)\$(Configuration)\</ProfileGuidedDatabase>
     </Link>
   </ItemDefinitionGroup>

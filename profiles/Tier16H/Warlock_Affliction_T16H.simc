@@ -20,9 +20,10 @@ spec=affliction
 actions.precombat=flask,type=warm_sun
 actions.precombat+=/food,type=mogu_fish_stew
 actions.precombat+=/dark_intent,if=!aura.spell_power_multiplier.up
-actions.precombat+=/summon_pet,if=!talent.grimoire_of_sacrifice.enabled|buff.grimoire_of_sacrifice.down
+actions.precombat+=/summon_pet,if=!talent.demonic_servitude.enabled&(!talent.grimoire_of_sacrifice.enabled|buff.grimoire_of_sacrifice.down)
+actions.precombat+=/summon_doomguard,if=talent.demonic_servitude.enabled
 actions.precombat+=/snapshot_stats
-actions.precombat+=/grimoire_of_sacrifice,if=talent.grimoire_of_sacrifice.enabled
+actions.precombat+=/grimoire_of_sacrifice,if=talent.grimoire_of_sacrifice.enabled&!talent.demonic_servitude.enabled
 actions.precombat+=/service_pet,if=talent.grimoire_of_service.enabled
 actions.precombat+=/potion,name=jade_serpent
 
@@ -32,24 +33,18 @@ actions=potion,name=jade_serpent,if=buff.bloodlust.react|target.health.pct<=20
 actions+=/berserking
 actions+=/dark_soul,if=!talent.archimondes_darkness.enabled|(talent.archimondes_darkness.enabled&(charges=2|trinket.proc.intellect.react|trinket.stacking_proc.intellect.react|target.health.pct<=10))
 actions+=/service_pet,if=talent.grimoire_of_service.enabled
-actions+=/run_action_list,name=aoe,if=active_enemies>6
-actions+=/summon_doomguard
-actions+=/soul_swap,if=buff.soulburn.up
-actions+=/soulburn,if=!dot.agony.remains&!dot.corruption.remains&!dot.unstable_affliction.remains
-actions+=/haunt,if=shard_react&((!in_flight_to_target&remains<cast_time+travel_time+tick_time)|soul_shard=4)
+actions+=/summon_doomguard,if=!talent.demonic_servitude.enabled
+actions+=/soul_swap,if=shard_react&!talent.soulburn_haunt.enabled&buff.soulburn.react
+actions+=/soulburn,if=shard_react&!talent.soulburn_haunt.enabled&buff.soulburn.down&(!dot.unstable_affliction.ticking&!dot.corruption.ticking&!dot.agony.ticking)
+actions+=/haunt,if=shard_react&!talent.soulburn_haunt.enabled&shard_react&!in_flight_to_target&(!dot.haunt.ticking|soul_shard=4)&(trinket.proc.intellect.react|buff.dark_soul.up|soul_shard>2|soul_shard*14<=target.time_to_die)
+actions+=/soulburn,if=shard_react&talent.soulburn_haunt.enabled&buff.soulburn.down&(buff.haunting_spirits.down|soul_shard=4)
+actions+=/haunt,if=shard_react&talent.soulburn_haunt.enabled&!in_flight_to_target&((buff.soulburn.up&buff.haunting_spirits.remains<5)|soul_shard=4)
 actions+=/agony,if=remains<=(duration*0.3)
 actions+=/unstable_affliction,if=remains<=(duration*0.3)
 actions+=/corruption,if=remains<=(duration*0.3)
+actions+=/life_tap,if=mana.pct<40
 actions+=/drain_soul
 actions+=/life_tap
-
-actions.aoe=summon_infernal
-actions.aoe+=/soulburn,cycle_targets=1,if=buff.soulburn.down&!dot.soulburn_seed_of_corruption.ticking&!action.soulburn_seed_of_corruption.in_flight_to_target&shard_react
-actions.aoe+=/soul_swap,if=buff.soulburn.up&!dot.agony.ticking&!dot.corruption.ticking
-actions.aoe+=/soul_swap,cycle_targets=1,if=buff.soulburn.up&dot.corruption.ticking&!dot.agony.ticking
-actions.aoe+=/seed_of_corruption,cycle_targets=1,if=(buff.soulburn.down&!in_flight_to_target&!ticking)|(buff.soulburn.up&!dot.soulburn_seed_of_corruption.ticking&!action.soulburn_seed_of_corruption.in_flight_to_target)
-actions.aoe+=/haunt,cycle_targets=1,if=!in_flight_to_target&debuff.haunt.remains<cast_time+travel_time&shard_react
-actions.aoe+=/life_tap,if=mana.pct<70
 
 head=flameslingers_fiery_cowl,id=105495,upgrade=2,gems=sinister_primal_16haste_9int
 neck=untainted_guardians_chain,id=105465,upgrade=2
