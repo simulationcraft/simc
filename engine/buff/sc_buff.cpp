@@ -1286,7 +1286,7 @@ stat_buff_t::stat_buff_t( const stat_buff_creator_t& params ) :
       if ( params.item )
         amount = util::round( effect.average( params.item ) );
       else
-        amount = effect.average( player, std::min( MAX_LEVEL, player -> level ) );
+        amount = util::round( effect.average( player, std::min( MAX_LEVEL, player -> level ) ) );
 
       if ( s != STAT_NONE )
         stats.push_back( buff_stat_t( s, amount ) );
