@@ -14,7 +14,7 @@ spec=guardian
 
 # Executed before combat begins. Accepts non-harmful actions only.
 
-actions.precombat=flask,type=greater_draenor_armor_flask
+actions.precombat=flask,type=greater_draenic_critical_strike_flask
 actions.precombat+=/food,type=sleeper_surprise
 actions.precombat+=/mark_of_the_wild,if=!aura.str_agi_int.up
 actions.precombat+=/bear_form
@@ -69,7 +69,7 @@ main_hand=primal_gladiators_pike,id=111075,enchant=mark_of_the_frostwolf
 # gear_stamina=3250
 # gear_crit_rating=858
 # gear_haste_rating=89
-# gear_mastery_rating=1705
+# gear_mastery_rating=1840
 # gear_armor=877
 # gear_multistrike_rating=525
 # gear_versatility_rating=249
