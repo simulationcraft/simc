@@ -299,6 +299,7 @@ public:
     const spell_data_t* killing_machine;
     const spell_data_t* might_of_the_frozen_wastes;
     const spell_data_t* rime;
+    const spell_data_t* threat_of_thassarian;
 
     // Unholy
     const spell_data_t* ebon_plaguebringer;
@@ -384,7 +385,7 @@ public:
     const spell_data_t* empowered_icebound_fortitude;
     const spell_data_t* empowered_pillar_of_frost;
     const spell_data_t* empowered_obliterate;
-    const spell_data_t* improved_runeforges;
+    const spell_data_t* improved_razorice;
 
     // Unholy
     const spell_data_t* empowered_gargoyle;
@@ -1959,8 +1960,6 @@ struct death_knight_action_t : public Base
     if ( dbc::is_school( action_base_t::school, SCHOOL_FROST ) )
     {
       double debuff = td( t ) -> debuffs_razorice -> data().effectN( 1 ).percent();
-      // TODO: Razorice debuff gives +1% more per stack
-      debuff += 0.01;
 
       m *= 1.0 + td( t ) -> debuffs_razorice -> check() * debuff;
     }
@@ -3368,11 +3367,8 @@ struct frost_strike_offhand_t : public death_knight_melee_attack_t
     background       = true;
     weapon           = &( p -> off_hand_weapon );
     special          = true;
-    // TODO: New dk stuff
-    base_multiplier *= 1.0 + p -> spec.might_of_the_frozen_wastes -> effectN( 3 ).percent() + 0.2;
+    base_multiplier *= 1.0 + p -> spec.threat_of_thassarian -> effectN( 3 ).percent();
     base_multiplier *= 1.0 + p -> sets.set( SET_T14_2PC_MELEE ) -> effectN( 1 ).percent();
-    // TODO: New dk stuff
-    base_multiplier *= 2.0;
 
     rp_gain = 0; // Incorrectly set to 10 in the DBC
   }
@@ -3397,20 +3393,14 @@ struct frost_strike_t : public death_knight_melee_attack_t
   {
     special = true;
     base_multiplier *= 1.0 + p -> sets.set( SET_T14_2PC_MELEE ) -> effectN( 1 ).percent();
-    // TODO: New dk stuff
-    base_multiplier *= 2.0;
 
     parse_options( NULL, options_str );
 
-    // TODO: New dk stuff
-    base_costs[ RESOURCE_RUNIC_POWER ] = 40;
-
     weapon     = &( p -> main_hand_weapon );
 
-    if ( p -> off_hand_weapon.type != WEAPON_NONE )
+    if ( p -> spec.threat_of_thassarian -> ok() && p -> off_hand_weapon.type != WEAPON_NONE )
     {
-      // TODO: New dk stuff
-      base_multiplier *= 1.0 + p -> spec.might_of_the_frozen_wastes -> effectN( 3 ).percent() + 0.2;
+      base_multiplier *= 1.0 + p -> spec.threat_of_thassarian -> effectN( 3 ).percent();
 
       if ( p -> spec.might_of_the_frozen_wastes -> ok() )
         oh_attack = new frost_strike_offhand_t( p );
@@ -3704,9 +3694,8 @@ struct obliterate_t : public death_knight_melee_attack_t
         oh_attack = new obliterate_offhand_t( p );
     }
 
-    // TODO: New dk stuff
     if ( p -> main_hand_weapon.group() == WEAPON_2H )
-      weapon_multiplier *= 1.0 + p -> spec.might_of_the_frozen_wastes -> effectN( 1 ).percent() + 0.1;
+      weapon_multiplier *= 1.0 + p -> spec.might_of_the_frozen_wastes -> effectN( 1 ).percent();
   }
 
   virtual void execute()
@@ -5306,6 +5295,7 @@ void death_knight_t::init_spells()
   spec.sudden_doom                = find_specialization_spell( "Sudden Doom" );
   spec.ebon_plaguebringer         = find_specialization_spell( "Ebon Plaguebringer" );
   spec.improved_unholy_presence   = find_specialization_spell( "Improved Unholy Presence" );
+  spec.threat_of_thassarian       = find_specialization_spell( "Threat of Thassarian" );
 
   mastery.blood_shield            = find_mastery_spell( DEATH_KNIGHT_BLOOD );
   mastery.frozen_heart            = find_mastery_spell( DEATH_KNIGHT_FROST );
@@ -5366,7 +5356,7 @@ void death_knight_t::init_spells()
   perk.empowered_icebound_fortitude    = find_perk_spell( "Empowered Icebound Fortitude" );
   perk.empowered_pillar_of_frost       = find_perk_spell( "Empowered Pillar of Frost" );
   perk.empowered_obliterate            = find_perk_spell( "Empowered Obliterate" );
-  perk.improved_runeforges             = find_perk_spell( "Improved Runeforges" );
+  perk.improved_razorice               = find_perk_spell( "Improved Razorice" );
 
   // Unholy
   perk.empowered_gargoyle             = find_perk_spell( "Empowered Gargoyle" );
@@ -5860,10 +5850,8 @@ void runeforge::razorice_attack( special_effect_t& effect,
       school      = SCHOOL_FROST;
       may_miss    = callbacks = false;
       background  = proc = true;
-      // TODO: New dk stuff
-      weapon_multiplier = 0.04;
 
-      weapon_multiplier += player -> perk.improved_runeforges -> effectN( 2 ).percent();
+      weapon_multiplier += player -> perk.improved_razorice -> effectN( 1 ).percent();
       weapon = &( player -> main_hand_weapon );
       /*
       if ( item.slot == SLOT_OFF_HAND )
