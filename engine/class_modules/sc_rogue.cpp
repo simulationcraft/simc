@@ -95,7 +95,6 @@ struct rogue_t : public player_t
   unsigned poisoned_enemies;
 
   // Shadow Reflection stuff
-  std::vector<shadow_reflect_event_t*> shadow_reflection_sequence;
   pet_t* shadow_reflection;
   bool reflection_attack;
 
@@ -3066,8 +3065,7 @@ void rogue_t::trigger_shadow_reflection( const action_state_t* state )
 
   const rogue_attack_state_t* rs = debug_cast<const rogue_attack_state_t*>( state );
 
-  shadow_reflect_event_t* event = new ( *sim ) shadow_reflect_event_t( rs -> cp, state -> action );
-  shadow_reflection_sequence.push_back( event );
+  new ( *sim ) shadow_reflect_event_t( rs -> cp, state -> action );
   if ( sim -> debug )
     sim -> out_debug.printf( "%s shadow_reflection recording %s, cp=%d", name(), state -> action -> name(), rs -> cp );
 }
@@ -3805,26 +3803,6 @@ struct shadow_reflection_pet_t : public pet_t
 
     _spec = SPEC_NONE;
   }
-
-  void reset()
-  {
-    pet_t::reset();
-    o() -> shadow_reflection_sequence.clear();
-  }
-
-  void demise()
-  {
-    pet_t::demise();
-
-    o() -> shadow_reflection_sequence.clear();
-  }
-
-  void init_base_stats()
-  {
-    pet_t::init_base_stats();
-
-    base_gcd = timespan_t::from_seconds( 1.0 );
-  }
 };
 
 inline void shadow_reflect_event_t::execute()
@@ -3858,9 +3836,7 @@ inline void shadow_reflect_event_t::execute()
   // reflection has no combo points.
   debug_cast<rogue_attack_state_t*>( our_state ) -> cp = combo_points;
 
-  // Finally, execute the mimiced ability .. This is actually done without
-  // a GCD. The Shadow Reflection's 1 second GCD is triggered by this
-  // ("shadow_reflection") ability.
+  // Finally, execute the mimiced ability ..
   attack -> schedule_execute( our_state );
 }
 
@@ -4752,7 +4728,6 @@ double rogue_t::energy_regen_per_second() const
   if ( buffs.blade_flurry -> check() )
     r *= 1.0 + spec.blade_flurry -> effectN( 1 ).percent();
 
-  // TODO: This is actually N% per poisoned targets.
   if ( talent.venom_zest -> ok() )
     r *= 1.0 + std::min( poisoned_enemies, 3U ) * spell.venom_zest -> effectN( 1 ).percent();
 
