@@ -3029,14 +3029,11 @@ struct recklessness_t: public warrior_spell_t
 struct rend_burst_t: public warrior_spell_t
 {
   rend_burst_t( warrior_t* p ):
-    warrior_spell_t( "rend_burst", p, p -> spec.rend )
+    warrior_spell_t( "rend_burst", p, p -> find_spell( 94009 ) )
   {
     dual = true;
     may_multistrike = 1;
-    attack_power_mod.direct = attack_power_mod.tick;
     attack_power_mod.direct *= 1.0 + p -> perk.improved_rend -> effectN( 1 ).percent();
-    dot_duration = timespan_t::zero();
-    base_costs[RESOURCE_RAGE] = 0;
   }
 
   double target_armor( player_t* ) const
@@ -3054,13 +3051,11 @@ struct rend_t: public warrior_spell_t
   {
     parse_options( NULL, options_str );
     stancemask = STANCE_BATTLE | STANCE_DEFENSE;
-    parse_effect_data( data().effectN( 2 ).trigger() -> effectN( 1 ) );
     hasted_ticks = tick_zero = false;
     tick_may_crit = true;
     may_multistrike = 1;
     add_child( burst );
     attack_power_mod.tick *= 1.0 + p -> perk.improved_rend -> effectN( 1 ).percent();
-    base_costs[RESOURCE_RAGE] = 5;
   }
 
   void impact( action_state_t* s )
