@@ -199,7 +199,10 @@ void dot_t::reduce_duration( timespan_t remove_seconds, uint32_t state_flags )
   timespan_t remains = end_event -> remains();
   remains -= remove_seconds;
   if ( remains != end_event -> remains() )
-    end_event -> reschedule( remains );
+  {
+    core_event_t::cancel( end_event );
+    end_event = new ( sim ) dot_end_event_t( this, remains );
+  }
 
   current_action -> stats -> add_refresh( state -> target );
 }
