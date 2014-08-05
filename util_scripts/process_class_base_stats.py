@@ -19,7 +19,7 @@ def import_data( filename ):
 def output_stat( filename, stats ):
     # Takes the 3-D array and constructs the text output line by line
     with open(filename,"w") as f:
-        f.write( """//  Bsse Stats (Str Agi Sta Int Spi)
+        f.write( """//  Base Stats (Str Agi Sta Int Spi)
 static stat_data_t __gt_class_stats_by_level[][100] = \n{\n""")
         for classnum in CLASSNUMMASK:            
             f.write("  { // %s\n"%(WOWCLASSES[classnum]) )
