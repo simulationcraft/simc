@@ -2842,6 +2842,16 @@ struct mangle_t : public bear_attack_t
     return t;
   }
 
+  virtual double composite_crit() const
+  {
+    double c = bear_attack_t::composite_crit();
+
+    if ( p() -> specialization() == DRUID_GUARDIAN )
+      c += p() -> talent.dream_of_cenarius -> effectN( 3 ).percent();
+
+    return c;
+  }
+
   virtual void execute()
   {
     if ( p() -> buff.berserk -> up() )
@@ -3388,8 +3398,12 @@ struct healing_touch_t : public druid_heal_t
       else if ( p() -> specialization() == DRUID_GUARDIAN )
         adm *= 1.0 + p() -> talent.dream_of_cenarius -> effectN( 2 ).percent();
     }
+
     if ( p() -> buff.predatory_swiftness -> check() )
       adm *= 1.0 + p() -> buff.predatory_swiftness -> data().effectN( 4 ).percent();
+
+    if ( p() -> spell.moonkin_form -> ok() && target == p() )
+      adm *= 1.0 + 0.50; // Not in spell data
 
     return adm;
   }
@@ -5812,7 +5826,7 @@ void druid_t::create_buffs()
 
   if ( specialization() == DRUID_GUARDIAN )
     buff.dream_of_cenarius = buff_creator_t( this, "dream_of_cenarius", talent.dream_of_cenarius )
-                            .chance( 0.40 );
+                            .chance( talent.dream_of_cenarius -> effectN( 1 ).percent() );
   else
     buff.dream_of_cenarius = buff_creator_t( this, "dream_of_cenarius", talent.dream_of_cenarius );
 
