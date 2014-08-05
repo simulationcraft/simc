@@ -20,6 +20,8 @@ namespace { // UNNAMED NAMESPACE
       Thrash (both forms)
       Swipe
     Use new FB spell data
+    Mastery doesn't benefit Thrash (Bear)
+    Savage Roar works in all forms but Bear
 
     = Balance =
     PvP bonuses
@@ -6097,6 +6099,17 @@ void druid_t::apl_feral()
     def -> add_action( this, "Cat Form", "if=prev.thrash_bear" );
     def -> add_action( "thrash_bear" );
   }
+  def -> add_action( "incarnation,sync=berserk" );
+  def -> add_action( this, "Berserk", "if=cooldown.tigers_fury.remains<8" );
+  if ( sim -> allow_potions && level >= 80 )
+    def -> add_action( potion_action + ",if=target.time_to_die<=40" );
+  // On-Use Items
+  for ( size_t i = 0; i < item_actions.size(); i++ )
+    def -> add_action( item_actions[ i ] + ",sync=tigers_fury" );
+  // Racials
+  for ( size_t i = 0; i < racial_actions.size(); i++ )
+    def -> add_action( racial_actions[ i ] + ",sync=tigers_fury" );
+  def -> add_action( this, "Tiger's Fury", "if=(!buff.omen_of_clarity.react&energy.max-energy>=60)|energy.max-energy>=80" );
   if ( race == RACE_NIGHT_ELF && glyph.savage_roar -> ok() )
     def -> add_action( "shadowmeld,if=buff.savage_roar.remains<3|(buff.bloodtalons.up&buff.savage_roar.remains<6)" );
   def -> add_action( this, "Ferocious Bite", "cycle_targets=1,if=dot.rip.ticking&dot.rip.remains<=3&target.health.pct<25",
@@ -6107,18 +6120,7 @@ void druid_t::apl_feral()
                        "Maintain Thrash during AoE, clipping before Tiger's Fury comes off cooldown." );
   def -> add_action( this, "Savage Roar", "if=buff.savage_roar.remains<3" );
   if ( sim -> allow_potions && level >= 80 )
-    def -> add_action( potion_action + ",if=target.time_to_die<=40" );
-  def -> add_action( "incarnation,if=energy<25&!buff.omen_of_clarity.react&cooldown.tigers_fury.remains<=1" );
-  // On-Use Items
-  for ( size_t i = 0; i < item_actions.size(); i++ )
-    def -> add_action( item_actions[ i ] + ",sync=tigers_fury" );
-  // Racials
-  for ( size_t i = 0; i < racial_actions.size(); i++ )
-    def -> add_action( racial_actions[ i ] + ",sync=tigers_fury" );
-  def -> add_action( this, "Tiger's Fury", "if=energy<=35&!buff.omen_of_clarity.react&(!talent.incarnation_king_of_the_jungle.enabled|buff.king_of_the_jungle.up|cooldown.incarnation.remains>0)" );
-  if ( sim -> allow_potions && level >= 80 )
     def -> add_action( potion_action + ",sync=berserk,if=target.health.pct<25" );
-  def -> add_action( this, "Berserk", "if=buff.tigers_fury.up" );
   def -> add_action( "thrash_cat,if=buff.omen_of_clarity.react&remains<=duration*0.3&active_enemies>1" );
 
   // Finishers
