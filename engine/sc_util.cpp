@@ -991,12 +991,10 @@ const char* util::flask_type_string( flask_e flask )
     case FLASK_DRAENOR_SPIRIT_FLASK:                    return "draenor_spirit_flask";
     case FLASK_DRAENIC_STAMINA_FLASK:                   return "draenic_stamina_flask";
     case FLASK_DRAENIC_VERSATILITY_FLASK:               return "draenic_versatility_flask";
-    case FLASK_GREATER_DRAENOR_ARMOR_FLASK:             return "greater_draenor_armor_flask";
     case FLASK_GREATER_DRAENIC_CRITICAL_STRIKE_FLASK:   return "greater_draenic_critical_strike_flask";
     case FLASK_GREATER_DRAENIC_HASTE_FLASK:             return "greater_draenic_haste_flask";
     case FLASK_GREATER_DRAENIC_MASTERY_FLASK:           return "greater_draenic_mastery_flask";
     case FLASK_GREATER_DRAENIC_MULTISTRIKE_FLASK:       return "greater_draenic_multistrike_flask";
-    case FLASK_GREATER_DRAENOR_SPIRIT_FLASK:            return "greater_draenor_spirit_flask";
     case FLASK_GREATER_DRAENIC_STAMINA_FLASK:           return "greater_draenic_stamina_flask";
     case FLASK_GREATER_DRAENIC_VERSATILITY_FLASK:       return "greater_draenic_versatility_flask";
       // alchemist's

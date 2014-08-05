@@ -5928,7 +5928,7 @@ void druid_t::apl_precombat()
 
     if ( ( specialization() == DRUID_GUARDIAN && primary_role() == ROLE_TANK ) || primary_role() == ROLE_TANK ) {
       if ( level > 90 )
-        flask += "greater_draenor_armor_flask";
+        flask += "greater_draenic_critical_strike_flask";
       else if ( level > 85 )
       {
         elixir1 += "mad_hozen";
