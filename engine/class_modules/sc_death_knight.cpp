@@ -3499,7 +3499,7 @@ struct howling_blast_t : public death_knight_spell_t
     parse_options( NULL, options_str );
 
     aoe                 = -1;
-    base_aoe_multiplier = data().effectN( 3 ).percent();
+    base_aoe_multiplier = data().effectN( 1 ).percent();
     attack_power_mod.direct    = 1.207;
 
     assert( p -> active_spells.frost_fever );
