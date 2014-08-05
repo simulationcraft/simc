@@ -566,7 +566,6 @@ public:
   virtual double    temporary_movement_modifier() const;
   virtual double    passive_movement_modifier() const;
   virtual double    composite_player_multiplier( school_e school ) const;
-  virtual double    composite_player_td_multiplier( school_e,  const action_t* ) const;
   virtual double    composite_player_heal_multiplier( const action_state_t* s ) const;
   virtual double    composite_spell_crit() const;
   virtual double    composite_spell_power( school_e school ) const;
@@ -2090,6 +2089,16 @@ public:
       pm *= 1.0 + p() -> buff.tigers_fury -> check() * p() -> buff.tigers_fury -> default_value; // Avoid using value() to prevent skewing benefit_pct.
 
     return pm;
+  }
+
+  virtual double composite_ta_multiplier( const action_state_t* s ) const
+  {
+    double tm = druid_attack_t::composite_ta_multiplier( s );
+
+    if ( p() -> mastery.razor_claws -> ok() && dbc::is_school( s -> action -> school, SCHOOL_PHYSICAL ) )
+      tm *= 1.0 + p() -> cache.mastery_value();
+
+    return tm;
   }
 
   void trigger_energy_refund()
@@ -6618,19 +6627,6 @@ double druid_t::composite_player_multiplier( school_e school ) const
 
   if ( ! buff.bear_form -> check() && dbc::is_school( school, SCHOOL_PHYSICAL ) )
     m *= 1.0 + buff.savage_roar -> check() * buff.savage_roar -> default_value; // Avoid using value() to prevent skewing benefit_pct.
-
-  return m;
-}
-
-// druid_t::composite_player_td_multiplier ==================================
-
-double druid_t::composite_player_td_multiplier( school_e school,  const action_t* a ) const
-{
-  double m = player_t::composite_player_td_multiplier( school, a );
-
-  if ( school == SCHOOL_PHYSICAL && mastery.razor_claws -> ok()
-    && a -> id != 146194 ) // Blacklist for Fen-yu Legendary cloak proc
-    m *= 1.0 + cache.mastery_value();
 
   return m;
 }
