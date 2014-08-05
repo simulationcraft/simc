@@ -179,6 +179,13 @@ struct rogue_t : public player_t
     gain_t* ruthlessness;
     gain_t* vitality;
     gain_t* venomous_wounds;
+
+    // CP Gains
+    gain_t* honor_among_thieves;
+    gain_t* empowered_fan_of_knives;
+    gain_t* premeditation;
+    gain_t* seal_fate;
+    gain_t* legendary_daggers;
   } gains;
 
   // Spec passives
@@ -397,7 +404,7 @@ struct rogue_t : public player_t
   void trigger_venomous_wounds( const action_state_t* );
   void trigger_blade_flurry( const action_state_t* );
   void trigger_shadow_reflection( const action_state_t* );
-  void trigger_combo_point_gain( const action_state_t*, int = -1, const std::string& = std::string() );
+  void trigger_combo_point_gain( const action_state_t*, int = -1, gain_t* gain = 0 );
   void spend_combo_points( const action_state_t* );
 
   target_specific_t<rogue_td_t*> target_data;
@@ -473,6 +480,9 @@ struct rogue_attack_t : public melee_attack_t
   // Sinister calling
   sinister_calling_t* sinister_calling;
 
+  // Combo point gains
+  gain_t* cp_gain;
+
   rogue_attack_t( const std::string& token, rogue_t* p,
                   const spell_data_t* s = spell_data_t::nil(),
                   const std::string& options = std::string() ) :
@@ -510,6 +520,14 @@ struct rogue_attack_t : public melee_attack_t
       else if ( effect.type() == E_SCHOOL_DAMAGE )
         base_dd_adder = effect.bonus( player );
     }
+  }
+
+  void init()
+  {
+    melee_attack_t::init();
+
+    if ( adds_combo_points )
+      cp_gain = player -> get_gain( name_str );
   }
 
   virtual void snapshot_state( action_state_t* state, dmg_e rt )
@@ -1162,7 +1180,7 @@ void rogue_attack_t::impact( action_state_t* state )
         if ( rng().roll( 1.0 / ( 51.0 - p() -> buffs.fof_p3 -> check() ) ) )
         {
           p() -> buffs.fof_fod -> trigger();
-          p() -> trigger_combo_point_gain( state, 5, "legendary_daggers" );
+          p() -> trigger_combo_point_gain( state, 5, p() -> gains.legendary_daggers );
         }
       }
     }
@@ -1818,7 +1836,7 @@ struct fan_of_knives_t : public rogue_attack_t
   {
     rogue_attack_t::impact( state );
     if ( p() -> perk.empowered_fan_of_knives -> ok() )
-      p() -> trigger_combo_point_gain( state, 1, "empowered_fan_of_knives" );
+      p() -> trigger_combo_point_gain( state, 1, p() -> gains.empowered_fan_of_knives );
   }
 };
 
@@ -2237,7 +2255,7 @@ struct premeditation_t : public rogue_attack_t
     add_points = std::min( add_points, player -> resources.max[ RESOURCE_COMBO_POINT ] - player -> resources.current[ RESOURCE_COMBO_POINT ] );
 
     if ( add_points > 0 )
-      p() -> trigger_combo_point_gain( 0, add_points, "premeditation" );
+      p() -> trigger_combo_point_gain( 0, add_points, p() -> gains.premeditation );
 
     p() -> event_premeditation = new ( *sim ) premeditation_event_t( *p(), state -> target, data().duration(), add_points );
   }
@@ -2866,7 +2884,7 @@ void rogue_t::trigger_seal_fate( const action_state_t* state )
   if ( cooldowns.seal_fate -> down() )
     return;
 
-  trigger_combo_point_gain( state, 1, spec.seal_fate -> name_cstr() );
+  trigger_combo_point_gain( state, 1, gains.seal_fate );
 
   cooldowns.seal_fate -> start( spec.seal_fate -> internal_cooldown() );
   procs.seal_fate -> occur();
@@ -2954,7 +2972,7 @@ void rogue_t::trigger_ruthlessness( const action_state_t* state )
 
   double cp_chance = spec.ruthlessness -> effectN( 1 ).pp_combo_points() * s -> cp / 100.0;
   if ( rng().roll( cp_chance ) )
-    trigger_combo_point_gain( state, spell.ruthlessness_cp -> effectN( 1 ).base_value(), spec.ruthlessness -> name_cstr() );
+    trigger_combo_point_gain( state, spell.ruthlessness_cp -> effectN( 1 ).base_value(), gains.ruthlessness );
 
   double energy_chance = spec.ruthlessness -> effectN( 2 ).pp_combo_points() * s -> cp / 100.0;
   if ( rng().roll( energy_chance ) )
@@ -3054,16 +3072,16 @@ void rogue_t::trigger_shadow_reflection( const action_state_t* state )
     sim -> out_debug.printf( "%s shadow_reflection recording %s, cp=%d", name(), state -> action -> name(), rs -> cp );
 }
 
-void rogue_t::trigger_combo_point_gain( const action_state_t* state, int cp_override, const std::string& name_override )
+void rogue_t::trigger_combo_point_gain( const action_state_t* state, int cp_override, gain_t* gain )
 {
   using namespace actions;
 
   assert( state || cp_override > 0 );
 
+  rogue_attack_t* attack = state ? debug_cast<rogue_attack_t*>( state -> action ) : 0;
   int n_cp = 0;
   if ( cp_override == -1 )
   {
-    rogue_attack_t* attack = debug_cast<rogue_attack_t*>( state -> action );
     if ( ! attack -> adds_combo_points )
       return;
 
@@ -3071,12 +3089,6 @@ void rogue_t::trigger_combo_point_gain( const action_state_t* state, int cp_over
   }
   else
     n_cp = cp_override;
-
-  std::string cp_name;
-  if ( ! name_override.empty() )
-    cp_name = name_override;
-  else
-    cp_name = state -> action -> name();
 
   int fill = resources.max[ RESOURCE_COMBO_POINT ] - resources.current[ RESOURCE_COMBO_POINT ];
   int added = std::min( fill, n_cp );
@@ -3088,24 +3100,42 @@ void rogue_t::trigger_combo_point_gain( const action_state_t* state, int cp_over
     int anticipation_fill =  buffs.anticipation -> max_stack() - buffs.anticipation -> check();
     anticipation_added = std::min( anticipation_fill, overflow );
     anticipation_overflow = overflow - anticipation_added;
-    if ( anticipation_added > 0 )
+    if ( anticipation_added > 0 || anticipation_overflow > 0 )
       overflow = 0;
   }
 
+  gain_t* gain_obj = gain;
+  if ( gain_obj == 0 && attack && attack -> cp_gain )
+    gain_obj = attack -> cp_gain;
+
   if ( added > 0 )
-    resource_gain( RESOURCE_COMBO_POINT, added, 0, state ? state -> action : 0 );
+  {
+    resource_gain( RESOURCE_COMBO_POINT, added,
+        gain_obj ? gain_obj : 0,
+        state ? state -> action : 0 );
+  }
+
+  if ( anticipation_added > 0 )
+  {
+    buffs.anticipation -> trigger( anticipation_added );
+    if ( gain_obj )
+      gain_obj -> add( RESOURCE_COMBO_POINT, anticipation_added, 0 );
+  }
 
   for ( int i = 0; i < overflow; i++ )
     procs.combo_points_wasted -> occur();
-
-  if ( anticipation_added > 0 )
-    buffs.anticipation -> trigger( anticipation_added );
 
   for ( int i = 0; i < anticipation_overflow; i++ )
     procs.anticipation_wasted -> occur();
 
   if ( sim -> log )
   {
+    std::string cp_name;
+    if ( gain != 0)
+      cp_name = gain -> name_str;
+    else
+      cp_name = state -> action -> name();
+
     if ( anticipation_added > 0 || anticipation_overflow > 0 )
       sim -> out_log.printf( "%s gains %d (%d) anticipation charges from %s (%d)",
           name(), anticipation_added, anticipation_overflow, cp_name.c_str(), buffs.anticipation -> check() );
@@ -3129,7 +3159,7 @@ void rogue_t::spend_combo_points( const action_state_t* state )
   if ( buffs.fof_fod -> up() )
     return;
 
-  state -> action ->stats -> consume_resource( RESOURCE_COMBO_POINT, resources.current[ RESOURCE_COMBO_POINT ] );
+  state -> action -> stats -> consume_resource( RESOURCE_COMBO_POINT, resources.current[ RESOURCE_COMBO_POINT ] );
   resource_loss( RESOURCE_COMBO_POINT, resources.current[ RESOURCE_COMBO_POINT ], 0, state ? state -> action : 0 );
 
   if ( buffs.anticipation -> stack() > 0 )
@@ -3138,7 +3168,7 @@ void rogue_t::spend_combo_points( const action_state_t* state )
       sim -> out_log.printf( "%s replenishes %d combo_points through anticipation",
           name(), buffs.anticipation -> check() );
 
-    resources.current[ RESOURCE_COMBO_POINT ] = buffs.anticipation -> check();
+    resource_gain( RESOURCE_COMBO_POINT, buffs.anticipation -> check(), 0, state ? state -> action : 0 );
     buffs.anticipation -> expire();
   }
 
@@ -4459,6 +4489,12 @@ void rogue_t::init_gains()
   gains.relentless_strikes = get_gain( "relentless_strikes" );
   gains.ruthlessness       = get_gain( "ruthlessness"       );
   gains.venomous_wounds    = get_gain( "venomous_vim"       );
+  gains.honor_among_thieves= get_gain( "honor_among_thieves" );
+  gains.empowered_fan_of_knives = get_gain( "empowered_fan_of_knives" );
+  gains.premeditation = get_gain( "premeditation" );
+  gains.seal_fate = get_gain( "seal_fate" );
+  gains.ruthlessness = get_gain( "ruthlessness" );
+  gains.legendary_daggers = get_gain( "legendary_daggers" );
 }
 
 // rogue_t::init_procs ======================================================
@@ -4647,7 +4683,7 @@ struct honor_among_thieves_callback_t : public dbc_proc_callback_t
 
   void execute( action_t*, action_state_t* )
   {
-    rogue -> trigger_combo_point_gain( 0, 1, rogue -> spec.honor_among_thieves -> name_cstr() );
+    rogue -> trigger_combo_point_gain( 0, 1, rogue -> gains.honor_among_thieves );
 
     rogue -> procs.honor_among_thieves -> occur();
 
