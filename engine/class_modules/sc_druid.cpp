@@ -2198,24 +2198,19 @@ struct ferocious_bite_t : public cat_attack_t
 {
   double excess_energy;
   double max_excess_energy;
-  double ap_per_point;
 
   ferocious_bite_t( druid_t* p, const std::string& options_str ) :
     cat_attack_t( "ferocious_bite", p, p -> find_class_spell( "Ferocious Bite" ), options_str ),
-    excess_energy( 0 ), max_excess_energy( 0 ), ap_per_point( 0.0 )
+    excess_energy( 0 ), max_excess_energy( 0 )
   {
     parse_options( NULL, options_str );
     base_costs[ RESOURCE_COMBO_POINT ] = 1;
 
-    ap_per_point           = 0.238; // 7/9/2014: Tooltip coeff is wrong. This is a perfect match to in-game damage.
     max_excess_energy      = data().effectN( 2 ).base_value();
     special                = true;
     base_multiplier       *= 1.0 + p -> perk.improved_ferocious_bite -> effectN( 1 ).percent();
     spell_power_mod.direct = 0;
   }
-
-  double attack_direct_power_coefficient( const action_state_t* ) const
-  { return ap_per_point * p() -> resources.current[ RESOURCE_COMBO_POINT ]; }
 
   virtual void execute()
   {
@@ -2283,6 +2278,8 @@ struct ferocious_bite_t : public cat_attack_t
   double action_multiplier() const
   {
     double am = cat_attack_t::action_multiplier();
+
+    am *= p() -> resources.current[ RESOURCE_COMBO_POINT ] / p() -> resources.max[ RESOURCE_COMBO_POINT ];
 
     am *= 1.0 + excess_energy / max_excess_energy;
 
