@@ -508,6 +508,7 @@ void action_t::parse_effect_data( const spelleffect_data_t& spelleffect_data )
         case A_PERIODIC_DAMAGE_PERCENT:
         case A_PERIODIC_DUMMY:
         case A_PERIODIC_TRIGGER_SPELL:
+        case A_OBS_MOD_HEALTH:
           if ( spelleffect_data.period() > timespan_t::zero() )
           {
             base_tick_time   = spelleffect_data.period();

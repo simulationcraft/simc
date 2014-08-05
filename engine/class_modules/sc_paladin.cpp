@@ -96,7 +96,6 @@ public:
     buff_t* bastion_of_glory;
     buff_t* daybreak;
     buff_t* divine_protection;
-    buff_t* divine_purpose;
     buff_t* divine_shield;
     buff_t* enhanced_holy_shock;
     buff_t* guardian_of_ancient_kings;
@@ -113,6 +112,8 @@ public:
     buff_t* glyph_of_word_of_glory;
 
     // talents
+    buff_t* divine_purpose;
+    buff_t* final_verdict;
     buff_t* hand_of_purity;
     buff_t* holy_avenger;
     absorb_buff_t* holy_shield; // Dummy buff to trigger spell damage "blocking" absorb effect
@@ -1051,8 +1052,7 @@ struct avenging_wrath_t : public paladin_heal_t
     if ( p -> glyphs.avenging_wrath -> ok() )
     {
       parse_effect_data( p -> find_spell( 115547 ) -> effectN( 1 ) );
-      // this info is very poorly encoded in the spell data; simpler just to hardcode
-      base_tick_time = timespan_t::from_seconds( 3.0 );
+      // adjust duration for Sanctified Wrath
       dot_duration = p -> buffs.avenging_wrath -> buff_duration;
       hasted_ticks = false;
       tick_may_crit = false;
@@ -2932,12 +2932,12 @@ struct seal_of_insight_proc_t : public paladin_heal_t
     trigger_gcd = timespan_t::zero();
     may_crit = true; 
 
-    // spell database info is in tooltip
-    attack_power_mod.direct = 0.236;
-    spell_power_mod.direct  = 0.236;
+    // spell database info is in spell 20167
+    parse_effect_data( p -> find_spell( 20167 ) -> effectN( 1 ) );
 
     // Battle Healer glyph
-    if ( p -> glyphs.battle_healer -> ok() ) {
+    if ( p -> glyphs.battle_healer -> ok() ) 
+    {
       attack_power_mod.direct *= p -> glyphs.battle_healer -> effectN( 1 ).percent();
       spell_power_mod.direct *= p -> glyphs.battle_healer -> effectN( 1 ).percent();
     }
@@ -3570,10 +3570,12 @@ struct divine_storm_t : public paladin_melee_attack_t
   virtual double action_multiplier() const
   {
     double am = paladin_melee_attack_t::action_multiplier();
+
     if ( p() -> buffs.divine_crusader -> check() )
-    {
       am *= 1.0 + p() -> buffs.divine_crusader -> data().effectN( 2 ).percent();
-    }
+
+    if ( p() -> buffs.final_verdict -> check() )
+      am *= 1.0 + p() -> buffs.final_verdict -> data().effectN( 3 ).percent();
 
     return am;
   }
@@ -3585,9 +3587,9 @@ struct divine_storm_t : public paladin_melee_attack_t
     if ( result_is_hit( s -> result ) )
     {
       if ( p() -> glyphs.divine_storm -> ok() )
-      {
         glyph_heal -> schedule_execute();
-      }
+
+      p() -> buffs.final_verdict -> expire();
     }
     if ( result_is_hit( s -> result ) || result_is_multistrike( s -> result ) )
       // Trigger Hand of Light procs
@@ -4264,55 +4266,55 @@ struct shield_of_the_righteous_t : public paladin_melee_attack_t
 
 // Templar's Verdict / Final Verdict ========================================================
 
-struct final_verdict_cleave_t : public paladin_melee_attack_t 
-{
-  final_verdict_cleave_t( paladin_t* p ) 
-    : paladin_melee_attack_t( "final_verdict_cleave", p, p -> find_talent_spell( "Final Verdict" ) )
-  {
-    base_multiplier *= data().effectN( 1 ).percent();
-    aoe = -1;
-    trigger_seal = true; // TODO: test, works w/ SoI
-    background = true;
-    trigger_gcd = timespan_t::zero();
-    resource_consumed = RESOURCE_NONE;
-    
-    // Tier 13 Retribution 4-piece boosts damage (TODO: Test?)
-    base_multiplier *= 1.0 + p -> sets.set( SET_T13_4PC_MELEE ) -> effectN( 1 ).percent();
-    // Tier 14 Retribution 2-piece boosts damage (TODO: Test?)
-    base_multiplier *= 1.0 + p -> sets.set( SET_T14_2PC_MELEE ) -> effectN( 1 ).percent();
-  }
-
-  
-    
-  // FV AoE does not hit the main target
-  size_t available_targets( std::vector< player_t* >& tl ) const
-  {
-    tl.clear();
-
-    for ( size_t i = 0; i < sim -> actor_list.size(); i++ )
-    {
-      if ( ! sim -> actor_list[ i ] -> is_sleeping() &&
-             sim -> actor_list[ i ] -> is_enemy() &&
-             sim -> actor_list[ i ] != target )
-        tl.push_back( sim -> actor_list[ i ] );
-    }
-
-    return tl.size();
-  }
-
-  virtual void impact( action_state_t* s )
-  {
-    paladin_melee_attack_t::impact( s );
-
-    if ( result_is_hit( s -> result ) || result_is_multistrike( s -> result ) )
-      trigger_hand_of_light( s );
-  }
-
-};
+//struct final_verdict_cleave_t : public paladin_melee_attack_t 
+//{
+//  final_verdict_cleave_t( paladin_t* p ) 
+//    : paladin_melee_attack_t( "final_verdict_cleave", p, p -> find_talent_spell( "Final Verdict" ) )
+//  {
+//    base_multiplier *= data().effectN( 1 ).percent();
+//    aoe = -1;
+//    trigger_seal = true; // TODO: test, works w/ SoI
+//    background = true;
+//    trigger_gcd = timespan_t::zero();
+//    resource_consumed = RESOURCE_NONE;
+//    
+//    // Tier 13 Retribution 4-piece boosts damage (TODO: Test?)
+//    base_multiplier *= 1.0 + p -> sets.set( SET_T13_4PC_MELEE ) -> effectN( 1 ).percent();
+//    // Tier 14 Retribution 2-piece boosts damage (TODO: Test?)
+//    base_multiplier *= 1.0 + p -> sets.set( SET_T14_2PC_MELEE ) -> effectN( 1 ).percent();
+//  }
+//
+//  
+//    
+//  // FV AoE does not hit the main target
+//  size_t available_targets( std::vector< player_t* >& tl ) const
+//  {
+//    tl.clear();
+//
+//    for ( size_t i = 0; i < sim -> actor_list.size(); i++ )
+//    {
+//      if ( ! sim -> actor_list[ i ] -> is_sleeping() &&
+//             sim -> actor_list[ i ] -> is_enemy() &&
+//             sim -> actor_list[ i ] != target )
+//        tl.push_back( sim -> actor_list[ i ] );
+//    }
+//
+//    return tl.size();
+//  }
+//
+//  virtual void impact( action_state_t* s )
+//  {
+//    paladin_melee_attack_t::impact( s );
+//
+//    if ( result_is_hit( s -> result ) || result_is_multistrike( s -> result ) )
+//      trigger_hand_of_light( s );
+//  }
+//
+//};
 
 struct final_verdict_t : public paladin_melee_attack_t
 {
-  final_verdict_cleave_t* cleave;
+  //final_verdict_cleave_t* cleave;
 
   final_verdict_t( paladin_t* p, const std::string& options_str )
     : paladin_melee_attack_t( "final_verdict", p, p -> find_talent_spell( "Final Verdict" ), true )
@@ -4327,8 +4329,8 @@ struct final_verdict_t : public paladin_melee_attack_t
     base_multiplier *= 1.0 + p -> sets.set( SET_T14_2PC_MELEE ) -> effectN( 1 ).percent();
 
     // Create a child cleave object 
-    cleave = new final_verdict_cleave_t( p );
-    add_child( cleave );
+    //cleave = new final_verdict_cleave_t( p );
+    //add_child( cleave );
 
   }
 
@@ -4359,9 +4361,12 @@ struct final_verdict_t : public paladin_melee_attack_t
       // Remove T15 Retribution 4-piece effect
       p() -> buffs.tier15_4pc_melee -> expire();
 
-      // Apply cleave if we're using SoR
-      if ( p() -> active_seal == SEAL_OF_RIGHTEOUSNESS )
-        cleave -> schedule_execute();
+      // apply Final Verdict buff (increases DS)
+      p() -> buffs.final_verdict -> trigger();
+
+      //// Apply cleave if we're using SoR
+      //if ( p() -> active_seal == SEAL_OF_RIGHTEOUSNESS )
+      //  cleave -> schedule_execute();
     }
   }
 };
@@ -4932,6 +4937,7 @@ void paladin_t::create_buffs()
   // Talents
   buffs.divine_purpose         = buff_creator_t( this, "divine_purpose", find_talent_spell( "Divine Purpose" ) )
                                  .duration( find_spell( find_talent_spell( "Divine Purpose" ) -> effectN( 1 ).trigger_spell_id() ) -> duration() );
+  buffs.final_verdict          = buff_creator_t( this, "final_verdict", find_talent_spell( "Final Verdict" ) );
   buffs.holy_avenger           = buff_creator_t( this, "holy_avenger", find_talent_spell( "Holy Avenger" ) ).cd( timespan_t::zero() ); // Let the ability handle the CD
   buffs.holy_shield            = absorb_buff_creator_t( this, "holy_shield", find_spell( 157121 ) )
                                  .school( SCHOOL_MAGIC )
