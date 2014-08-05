@@ -4975,19 +4975,19 @@ void shaman_t::create_buffs()
                                  .add_stat( STAT_CRIT_RATING, find_spell( 118522 ) -> effectN( 1 ).average( this ) );
   buff.elemental_blast_haste   = stat_buff_creator_t( this, "elemental_blast_haste", find_spell( 118522 ) )
                                  .max_stack( 1 )
-                                 .add_stat( STAT_HASTE_RATING, find_spell( 118522 ) -> effectN( 2 ).average( this ) );
+                                 .add_stat( STAT_HASTE_RATING, find_spell( 118522 ) -> effectN( 1 ).average( this ) );
   buff.elemental_blast_mastery = stat_buff_creator_t( this, "elemental_blast_mastery", find_spell( 118522 ) )
                                  .max_stack( 1 )
-                                 .add_stat( STAT_MASTERY_RATING, find_spell( 118522 ) -> effectN( 3 ).average( this ) );
+                                 .add_stat( STAT_MASTERY_RATING, find_spell( 118522 ) -> effectN( 1 ).average( this ) );
   buff.elemental_blast_multistrike = stat_buff_creator_t( this, "elemental_blast_multistrike", find_spell( 118522 ) )
                                  .max_stack( 1 )
-                                 .add_stat( STAT_MULTISTRIKE_RATING, find_spell( 118522 ) -> effectN( 4 ).average( this ) );
+                                 .add_stat( STAT_MULTISTRIKE_RATING, find_spell( 118522 ) -> effectN( 1 ).average( this ) );
   buff.elemental_blast_versatility = stat_buff_creator_t( this, "elemental_blast_versatility", find_spell( 118522 ) )
                                  .max_stack( 1 )
-                                 .add_stat( STAT_VERSATILITY_RATING, find_spell( 118522 ) -> effectN( 5 ).average( this ) );
+                                 .add_stat( STAT_VERSATILITY_RATING, find_spell( 118522 ) -> effectN( 1 ).average( this ) );
   buff.elemental_blast_agility = stat_buff_creator_t( this, "elemental_blast_agility", find_spell( 118522 ) )
                                  .max_stack( 1 )
-                                 .add_stat( STAT_AGILITY, find_spell( 118522 ) -> effectN( 6 ).average( this ) );
+                                 .add_stat( STAT_AGILITY, find_spell( 118522 ) -> effectN( 1 ).average( this ) );
   buff.tier13_2pc_caster        = stat_buff_creator_t( this, "tier13_2pc_caster", find_spell( 105779 ) );
   buff.tier13_4pc_caster        = stat_buff_creator_t( this, "tier13_4pc_caster", find_spell( 105821 ) );
   buff.tier16_2pc_melee         = buff_creator_t( this, "tier16_2pc_melee", sets.set( SET_T16_2PC_MELEE ) -> effectN( 1 ).trigger() )
