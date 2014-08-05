@@ -1,6 +1,6 @@
 #define TALENT_SIZE (306)
 
-// 306 talents, wow build 18594
+// 306 talents, wow build 18663
 static struct talent_data_t __talent_data[] = {
 //{ Name                                ,    Id, Flgs,  Class, Spc, Col, Row, SpellID, ReplaceID, S1 },
   { "Second Wind"                       , 15757, 0x00, 0x0001,   0,   1,   1,   29838,         0,  0 },
@@ -37,7 +37,7 @@ static struct talent_data_t __talent_data[] = {
   { "Pursuit of Justice"                , 17569, 0x00, 0x0002,   0,   2,   0,   26023,         0,  0 },
   { "Fist of Justice"                   , 17573, 0x00, 0x0002,   0,   0,   1,  105593,       853,  0 },
   { "Repentance"                        , 17575, 0x00, 0x0002,   0,   1,   1,   20066,         0,  0 },
-  { "Evil is a Point of View"           , 17577, 0x00, 0x0002,   0,   2,   1,  110301,         0,  0 },
+  { "Blinding Light"                    , 17577, 0x00, 0x0002,   0,   2,   1,  115750,         0,  0 },
   { "Selfless Healer"                   , 17581, 0x00, 0x0002,   0,   0,   2,   85804,         0,  0 },
   { "Eternal Flame"                     , 17583, 0x00, 0x0002,   0,   1,   2,  114163,     85673,  0 },
   { "Hand of Purity"                    , 17589, 0x00, 0x0002,   0,   0,   3,  114039,         0,  0 },
@@ -253,7 +253,7 @@ static struct talent_data_t __talent_data[] = {
   { "Clarity of Power"                  , 21637, 0x00, 0x0010, 258,   0,   6,  155246,         0,  0 },
   { "Auspicious Spirits"                , 21638, 0x00, 0x0010, 258,   2,   6,  155271,         0,  0 },
   { "Void Entropy"                      , 21644, 0x00, 0x0010, 258,   1,   6,  155361,         0,  0 },
-  { "Lunar Inspiration"                 , 21646, 0x00, 0x0400, 103,   0,   6,  155580,         0,  0 },
+  { "Lunar Inspiration"                 , 21646, 0x00, 0x0400, 103,   0,   6,  155627,         0,  0 },
 //{ Name                                ,    Id, Flgs,  Class, Spc, Col, Row, SpellID, ReplaceID, S1 },
   { "Guardian of Elune"                 , 21647, 0x00, 0x0400, 104,   0,   6,  155578,         0,  0 },
   { "Moment of Clarity"                 , 21648, 0x00, 0x0400, 105,   0,   6,  155577,         0,  0 },
@@ -273,7 +273,7 @@ static struct talent_data_t __talent_data[] = {
   { "High Tide"                         , 21675, 0x00, 0x0040, 264,   2,   6,  157154,         0,  0 },
   { "Breath of the Serpent"             , 21676, 0x00, 0x0200, 270,   0,   6,  157535,         0,  0 },
   { "Soul Dance"                        , 21677, 0x00, 0x0200, 268,   0,   6,  157533,         0,  0 },
-  { "Path of Mists"                     , 21678, 0x00, 0x0200, 270,   2,   6,  157556,         0,  0 },
+  { "Pool of Mists"                     , 21678, 0x00, 0x0200, 270,   2,   6,  173841,         0,  0 },
   { "Chi Explosion"                     , 21679, 0x00, 0x0200, 268,   1,   6,  157676,    100784,  0 },
 //{ Name                                ,    Id, Flgs,  Class, Spc, Col, Row, SpellID, ReplaceID, S1 },
   { "Chi Explosion"                     , 21680, 0x00, 0x0200, 270,   1,   6,  157675,    100784,  0 },
