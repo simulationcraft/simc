@@ -2967,7 +2967,6 @@ struct living_bomb_explosion_t : public mage_spell_t
   {
     aoe = -1;
     background = true;
-    base_multiplier *= 4.0;
   }
 
   virtual resource_e current_resource() const
@@ -2990,7 +2989,7 @@ struct living_bomb_t : public mage_spell_t
     if ( result_is_hit( s -> result ) )
     {
       dot_t* dot = get_dot( s -> target );
-      if ( dot -> is_ticking() && dot -> remains() < ( dot -> current_action -> base_tick_time * 0.3 ) )
+      if ( dot -> is_ticking() && dot -> remains() < dot_duration * 0.3 )
       {
         explosion_spell -> execute();
       }
