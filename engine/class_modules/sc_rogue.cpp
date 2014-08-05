@@ -57,27 +57,6 @@ struct shadow_reflect_event_t : public event_t
   void execute();
 };
 
-struct combo_points_t
-{
-  static const int max_combo_points = 5;
-
-  rogue_t* source;
-  player_t* target;
-
-  proc_t* proc;
-  proc_t* wasted;
-  proc_t* proc_anticipation;
-  proc_t* wasted_anticipation;
-
-  int count;
-  int anticipation_charges;
-
-  combo_points_t( rogue_t* source, player_t* target );
-
-  void add( int num, const char* action = 0 );
-  void clear( const char* action = 0, bool anticipation = false );
-};
-
 // ==========================================================================
 // Rogue
 // ==========================================================================
@@ -105,14 +84,7 @@ struct rogue_td_t : public actor_pair_t
     buff_t* enhanced_crimson_tempest;
   } debuffs;
 
-  combo_points_t combo_points;
-
   rogue_td_t( player_t* target, rogue_t* source );
-
-  void reset()
-  {
-    combo_points.clear( 0, true );
-  }
 
   bool sanguinary_veins();
 };
@@ -180,6 +152,7 @@ struct rogue_t : public player_t
     stat_buff_t* toxicologist;
 
     buff_t* enhanced_vendetta;
+    buff_t* anticipation;
   } buffs;
 
   // Cooldowns
@@ -335,6 +308,9 @@ struct rogue_t : public player_t
     proc_t* seal_fate;
     proc_t* no_revealing_strike;
     proc_t* t16_2pc_melee;
+
+    proc_t* combo_points_wasted;
+    proc_t* anticipation_wasted;
   } procs;
 
   player_t* tot_target;
@@ -384,6 +360,7 @@ struct rogue_t : public player_t
   virtual void      init_gains();
   virtual void      init_procs();
   virtual void      init_scaling();
+  virtual void      init_resources( bool force );
   virtual void      create_buffs();
   virtual void      init_action_list();
   virtual void      register_callbacks();
@@ -420,6 +397,8 @@ struct rogue_t : public player_t
   void trigger_venomous_wounds( const action_state_t* );
   void trigger_blade_flurry( const action_state_t* );
   void trigger_shadow_reflection( const action_state_t* );
+  void trigger_combo_point_gain( const action_state_t*, int = -1, const std::string& = std::string() );
+  void spend_combo_points( const action_state_t* );
 
   target_specific_t<rogue_td_t*> target_data;
 
@@ -482,7 +461,6 @@ struct rogue_attack_t : public melee_attack_t
 {
   bool         requires_stealth;
   position_e   requires_position;
-  bool         requires_combo_points;
   int          adds_combo_points;
   weapon_e     requires_weapon;
 
@@ -500,7 +478,7 @@ struct rogue_attack_t : public melee_attack_t
                   const std::string& options = std::string() ) :
     melee_attack_t( token, p, s ),
     requires_stealth( false ), requires_position( POSITION_NONE ),
-    requires_combo_points( false ), adds_combo_points( 0 ),
+    adds_combo_points( 0 ),
     requires_weapon( WEAPON_NONE ),
     combo_points_spent( 0 ),
     ability_type( ABILITY_NONE ),
@@ -537,12 +515,9 @@ struct rogue_attack_t : public melee_attack_t
   virtual void snapshot_state( action_state_t* state, dmg_e rt )
   {
     melee_attack_t::snapshot_state( state, rt );
-    // FIXME: Combo points _NEED_ to move to player .. soon.
-    // In the meantime, snapshot combo points always off the primary target
-    // and pray that nobody makes a rogue ability that has to juggle primary
-    // targets around during it's execution. Gulp.
-    if ( requires_combo_points )
-      cast_state( state ) -> cp = td( target ) -> combo_points.count;
+
+    if ( base_costs[ RESOURCE_COMBO_POINT ] > 0 )
+      cast_state( state ) -> cp = player -> resources.current[ RESOURCE_COMBO_POINT ];
   }
 
   bool stealthed()
@@ -587,42 +562,42 @@ struct rogue_attack_t : public melee_attack_t
 
   virtual double attack_direct_power_coefficient( const action_state_t* s ) const
   {
-    if ( requires_combo_points )
+    if ( base_costs[ RESOURCE_COMBO_POINT ] )
       return attack_power_mod.direct * cast_state( s ) -> cp;
     return melee_attack_t::attack_direct_power_coefficient( s );
   }
 
   virtual double attack_tick_power_coefficient( const action_state_t* s ) const
   {
-    if ( requires_combo_points )
+    if ( base_costs[ RESOURCE_COMBO_POINT ] )
       return attack_power_mod.tick * cast_state( s ) -> cp;
     return melee_attack_t::attack_tick_power_coefficient( s );
   }
 
   virtual double spell_direct_power_coefficient( const action_state_t* s ) const
   {
-    if ( requires_combo_points )
+    if ( base_costs[ RESOURCE_COMBO_POINT ] )
       return spell_power_mod.direct * cast_state( s ) -> cp;
     return melee_attack_t::spell_direct_power_coefficient( s );
   }
 
   virtual double spell_tick_power_coefficient( const action_state_t* s ) const
   {
-    if ( requires_combo_points )
+    if ( base_costs[ RESOURCE_COMBO_POINT ] )
       return spell_power_mod.tick * cast_state( s ) -> cp;
     return melee_attack_t::spell_tick_power_coefficient( s );
   }
 
   virtual double bonus_da( const action_state_t* s ) const
   {
-    if ( requires_combo_points )
+    if ( base_costs[ RESOURCE_COMBO_POINT ] )
       return base_dd_adder * cast_state( s ) -> cp;
     return melee_attack_t::bonus_da( s );
   }
 
   virtual double bonus_ta( const action_state_t* s ) const
   {
-    if ( requires_combo_points )
+    if ( base_costs[ RESOURCE_COMBO_POINT ] )
       return base_ta_adder * cast_state( s ) -> cp;
     return melee_attack_t::bonus_ta( s );
   }
@@ -631,7 +606,7 @@ struct rogue_attack_t : public melee_attack_t
   {
     double m = melee_attack_t::composite_da_multiplier( state );
 
-    if ( requires_combo_points && p() -> mastery.executioner -> ok() )
+    if ( base_costs[ RESOURCE_COMBO_POINT ] && p() -> mastery.executioner -> ok() )
       m *= 1.0 + p() -> cache.mastery_value();
 
     return m;
@@ -641,7 +616,7 @@ struct rogue_attack_t : public melee_attack_t
   {
     double m = melee_attack_t::composite_ta_multiplier( state );
 
-    if ( requires_combo_points && p() -> mastery.executioner -> ok() )
+    if ( base_costs[ RESOURCE_COMBO_POINT ] && p() -> mastery.executioner -> ok() )
       m *= 1.0 + p() -> cache.mastery_value();
 
     return m;
@@ -652,7 +627,7 @@ struct rogue_attack_t : public melee_attack_t
     double m = melee_attack_t::composite_target_multiplier( target );
 
     rogue_td_t* tdata = td( target );
-    if ( requires_combo_points )
+    if ( base_costs[ RESOURCE_COMBO_POINT ] )
     {
       if ( tdata -> dots.revealing_strike -> is_ticking() )
         m *= 1.0 + tdata -> dots.revealing_strike -> current_action -> data().effectN( 3 ).percent();
@@ -750,15 +725,17 @@ struct rogue_poison_t : public rogue_attack_t
 
   virtual void trigger( const action_state_t* source_state )
   {
-    if ( sim -> debug )
-      sim -> out_debug.printf( "%s attempts to proc %s, target=%s source_action=%s proc_chance=%.3f",
-          player -> name(), name(), source_state -> target -> name(), source_state -> action -> name(), proc_chance( source_state ) );
+    bool result = rng().roll( proc_chance( source_state ) );
 
-    if ( ! rng().roll( proc_chance( source_state ) ) )
+    if ( sim -> debug )
+      sim -> out_debug.printf( "%s attempts to proc %s, target=%s source_action=%s proc_chance=%.3f: %d",
+          player -> name(), name(), source_state -> target -> name(), source_state -> action -> name(), proc_chance( source_state ), result );
+
+    if ( ! result )
       return;
 
     target = source_state -> target;
-    schedule_execute();
+    execute();
   }
 
   virtual double composite_target_multiplier( player_t* target ) const
@@ -879,11 +856,11 @@ struct deadly_poison_t : public rogue_poison_t
     if ( result_is_hit( state -> result ) )
     {
       proc_dot -> target = state -> target;
-      proc_dot -> schedule_execute();
+      proc_dot -> execute();
       if ( is_up )
       {
         proc_instant -> target = state -> target;
-        proc_instant -> schedule_execute();
+        proc_instant -> execute();
       }
     }
   }
@@ -918,7 +895,7 @@ struct instant_poison_t : public rogue_poison_t
     rogue_poison_t::impact( state );
 
     proc_instant -> target = state -> target;
-    proc_instant -> schedule_execute();
+    proc_instant -> execute();
   }
 };
 
@@ -1002,7 +979,7 @@ struct crippling_poison_t : public rogue_poison_t
     rogue_poison_t::impact( state );
 
     proc -> target = state -> target;
-    proc -> schedule_execute();
+    proc -> execute();
   }
 };
 
@@ -1039,7 +1016,7 @@ struct leeching_poison_t : public rogue_poison_t
     rogue_poison_t::impact( state );
 
     proc -> target = state -> target;
-    proc -> schedule_execute();
+    proc -> execute();
   }
 };
 
@@ -1185,8 +1162,7 @@ void rogue_attack_t::impact( action_state_t* state )
         if ( rng().roll( 1.0 / ( 51.0 - p() -> buffs.fof_p3 -> check() ) ) )
         {
           p() -> buffs.fof_fod -> trigger();
-          rogue_td_t* td = this -> td( state -> target );
-          td -> combo_points.add( 5, "legendary_daggers" );
+          p() -> trigger_combo_point_gain( state, 5, "legendary_daggers" );
         }
       }
     }
@@ -1235,41 +1211,24 @@ void rogue_attack_t::consume_resource()
 {
   melee_attack_t::consume_resource();
 
-  rogue_t* p = cast();
+  p() -> spend_combo_points( execute_state );
 
-  combo_points_spent = 0;
+  if ( result_is_miss( execute_state -> result ) && resource_consumed > 0 )
+    p() -> trigger_energy_refund( execute_state );
 
-  if ( result_is_hit( execute_state -> result ) )
-  {
-
-    if ( requires_combo_points )
-    {
-      rogue_td_t* td = this -> td( target );
-      combo_points_spent = td -> combo_points.count;
-
-      td -> combo_points.clear( name() );
-
-      if ( p -> buffs.fof_fod -> up() )
-        td -> combo_points.add( 5, "legendary_daggers" );
-    }
-  }
-  else if ( resource_consumed > 0 )
-    p -> trigger_energy_refund( execute_state );
-
-  p -> trigger_relentless_strikes( execute_state );
-  p -> trigger_ruthlessness( execute_state );
+  p() -> trigger_relentless_strikes( execute_state );
+  p() -> trigger_ruthlessness( execute_state );
 }
 
 // rogue_attack_t::execute ==================================================
 
 void rogue_attack_t::execute()
 {
-  rogue_td_t* td = this -> td( target );
-
   melee_attack_t::execute();
 
   p() -> trigger_main_gauche( execute_state );
   p() -> trigger_shadow_reflection( execute_state );
+  p() -> trigger_combo_point_gain( execute_state );
 
   if ( harmful && stealthed() )
   {
@@ -1277,12 +1236,6 @@ void rogue_attack_t::execute()
       break_stealth( p() );
     else if ( ! p() -> buffs.subterfuge -> check() )
       p() -> buffs.subterfuge -> trigger();
-  }
-
-  if ( result_is_hit( execute_state -> result ) )
-  {
-    if ( adds_combo_points )
-      td -> combo_points.add( adds_combo_points, name() );
   }
 }
 
@@ -1295,12 +1248,9 @@ inline bool rogue_attack_t::ready()
   if ( ! melee_attack_t::ready() )
     return false;
 
-  if ( requires_combo_points )
-  {
-    rogue_td_t* td = this -> td( target );
-    if ( ! td -> combo_points.count )
-      return false;
-  }
+  if ( base_costs[ RESOURCE_COMBO_POINT ] > 0 &&
+       player -> resources.current[ RESOURCE_COMBO_POINT ] < base_costs[ RESOURCE_COMBO_POINT ] )
+    return false;
 
   if ( requires_stealth )
   {
@@ -1689,7 +1639,7 @@ struct envenom_t : public rogue_attack_t
   {
     ability_type = ENVENOM;
     weapon = &( p -> main_hand_weapon );
-    requires_combo_points  = true;
+    base_costs[ RESOURCE_COMBO_POINT ] = 1;
     attack_power_mod.direct       = 0.306;
     dot_duration = timespan_t::zero();
     weapon_multiplier = weapon_power_mod = 0.0;
@@ -1740,15 +1690,15 @@ struct envenom_t : public rogue_attack_t
 
   virtual void execute()
   {
-    rogue_td_t* td = this -> td( target );
+    rogue_attack_t::execute();
 
-    timespan_t envenom_duration = p() -> buffs.envenom -> buff_period * ( 1 + td -> combo_points.count );
+    timespan_t envenom_duration = p() -> buffs.envenom -> buff_period * ( 1 + cast_state( execute_state ) -> cp );
 
     if ( p() -> sets.has_set_bonus( SET_T15_2PC_MELEE ) )
       envenom_duration += p() -> buffs.envenom -> buff_period;
+
     p() -> buffs.envenom -> trigger( 1, buff_t::DEFAULT_VALUE(), -1.0, envenom_duration );
 
-    rogue_attack_t::execute();
   }
 
   virtual double action_da_multiplier() const
@@ -1785,7 +1735,7 @@ struct eviscerate_t : public rogue_attack_t
     rogue_attack_t( "eviscerate", p, p -> find_class_spell( "Eviscerate" ), options_str )
   {
     ability_type = EVISCERATE;
-    requires_combo_points = true;
+    base_costs[ RESOURCE_COMBO_POINT ] = 1;
     weapon = &( player -> main_hand_weapon );
     weapon_multiplier = weapon_power_mod = 0;
 
@@ -1868,7 +1818,7 @@ struct fan_of_knives_t : public rogue_attack_t
   {
     rogue_attack_t::impact( state );
     if ( p() -> perk.empowered_fan_of_knives -> ok() )
-      td( state -> target ) -> combo_points.add( 1, "empowered_fan_of_knives" );
+      p() -> trigger_combo_point_gain( state, 1, "empowered_fan_of_knives" );
   }
 };
 
@@ -1899,7 +1849,7 @@ struct crimson_tempest_t : public rogue_attack_t
   {
     ability_type = CRIMSON_TEMPEST;
     aoe = -1;
-    requires_combo_points = true;
+    base_costs[ RESOURCE_COMBO_POINT ] = 1;
     attack_power_mod.direct = 0.0602;
     weapon = &( p -> main_hand_weapon );
     weapon_power_mod = weapon_multiplier = 0;
@@ -2257,18 +2207,15 @@ struct premeditation_t : public rogue_attack_t
     void execute()
     {
       rogue_t* p = static_cast< rogue_t* >( actor );
-      rogue_td_t* td = p -> get_target_data( target );
 
-      td -> combo_points.count -= combo_points;
+      p -> resources.current[ RESOURCE_COMBO_POINT ] -= combo_points;
       if ( sim().log )
       {
         sim().out_log.printf( "%s loses %d temporary combo_points from premeditation (%d)",
-                    td -> combo_points.target -> name(),
-                    p -> find_specialization_spell( "Premeditation" ) -> effectN( 1 ).base_value(),
-                    td -> combo_points.count );
+                    actor -> name(), combo_points, p -> resources.current[ RESOURCE_COMBO_POINT ] );
       }
 
-      assert( td -> combo_points.count >= 0 );
+      assert( p -> resources.current[ RESOURCE_COMBO_POINT ] >= 0 );
     }
   };
 
@@ -2285,15 +2232,14 @@ struct premeditation_t : public rogue_attack_t
   {
     rogue_attack_t::impact( state );
 
-    rogue_td_t* td = this -> td( state -> target );
-    int add_points = data().effectN( 1 ).base_value();
+    double add_points = data().effectN( 1 ).base_value();
 
-    add_points = std::min( add_points, combo_points_t::max_combo_points - td -> combo_points.count );
+    add_points = std::min( add_points, player -> resources.max[ RESOURCE_COMBO_POINT ] - player -> resources.current[ RESOURCE_COMBO_POINT ] );
 
     if ( add_points > 0 )
-      td -> combo_points.add( add_points, "premeditation" );
+      p() -> trigger_combo_point_gain( 0, add_points, "premeditation" );
 
-    p() -> event_premeditation = new ( *sim ) premeditation_event_t( *p(), state -> target, data().duration(), data().effectN( 2 ).base_value() );
+    p() -> event_premeditation = new ( *sim ) premeditation_event_t( *p(), state -> target, data().duration(), add_points );
   }
 };
 
@@ -2304,16 +2250,13 @@ struct recuperate_t : public rogue_attack_t
   recuperate_t( rogue_t* p, const std::string& options_str ) :
     rogue_attack_t( "recuperate", p, p -> find_class_spell( "Recuperate" ), options_str )
   {
-    requires_combo_points = true;
+    base_costs[ RESOURCE_COMBO_POINT ] = 1;
     dot_behavior = DOT_REFRESH;
     harmful = false;
   }
 
   virtual timespan_t composite_dot_duration( const action_state_t* s ) const override
-  {
-    rogue_td_t* td = this->td( s->target );
-    return 2 * td->combo_points.count * base_tick_time;
-  }
+  { return 2 * cast_state( s ) -> cp * base_tick_time; }
 
   virtual void execute()
   {
@@ -2378,7 +2321,7 @@ struct rupture_t : public rogue_attack_t
   {
     ability_type          = RUPTURE;
     may_crit              = false;
-    requires_combo_points = true;
+    base_costs[ RESOURCE_COMBO_POINT ] = 1;
     tick_may_crit         = true;
     dot_behavior          = DOT_REFRESH;
     base_multiplier      *= 1.0 + p -> spec.sanguinary_vein -> effectN( 1 ).percent();
@@ -2408,7 +2351,7 @@ struct rupture_t : public rogue_attack_t
   {
     timespan_t duration = data().duration();
 
-    duration += duration * td( s -> target ) -> combo_points.count;
+    duration += duration * cast_state( s ) -> cp;
     if ( p() -> sets.has_set_bonus( SET_T15_2PC_MELEE ) )
       duration += data().duration();
 
@@ -2532,7 +2475,7 @@ struct sinister_strike_t : public rogue_attack_t
       if ( td -> dots.revealing_strike -> is_ticking() &&
           rng().roll( td -> dots.revealing_strike -> current_action -> data().proc_chance() ) )
       {
-        td -> combo_points.add( 1, "sinister_strike" );
+        p() -> trigger_combo_point_gain( state );
         if ( p() -> buffs.t16_2pc_melee -> trigger() )
           p() -> procs.t16_2pc_melee -> occur();
       }
@@ -2547,7 +2490,7 @@ struct slice_and_dice_t : public rogue_attack_t
   slice_and_dice_t( rogue_t* p, const std::string& options_str ) :
     rogue_attack_t( "slice_and_dice", p, p -> find_class_spell( "Slice and Dice" ), options_str )
   {
-    requires_combo_points = true;
+    base_costs[ RESOURCE_COMBO_POINT ] = 1;
     harmful               = false;
     dot_duration = timespan_t::zero();
   }
@@ -2567,15 +2510,12 @@ struct slice_and_dice_t : public rogue_attack_t
 
   virtual void execute()
   {
-    rogue_td_t* td = this -> td( target );
-    int action_cp = td -> combo_points.count;
-
     rogue_attack_t::execute();
 
     double snd = p() -> buffs.slice_and_dice -> data().effectN( 1 ).percent();
     if ( p() -> mastery.executioner -> ok() )
       snd *= 1.0 + p() -> cache.mastery_value();
-    timespan_t snd_duration = 3 * ( action_cp + 1 ) * p() -> buffs.slice_and_dice -> buff_period;
+    timespan_t snd_duration = 3 * ( cast_state( execute_state ) -> cp + 1 ) * p() -> buffs.slice_and_dice -> buff_period;
 
     if ( p() -> sets.has_set_bonus( SET_T15_2PC_MELEE ) )
       snd_duration += 3 * p() -> buffs.slice_and_dice -> buff_period;
@@ -2742,8 +2682,7 @@ struct death_from_above_t : public rogue_attack_t
   {
     rogue_attack_t::last_tick( d );
 
-    rogue_td_t* td = this -> td( target );
-    if ( ! td -> combo_points.count )
+    if ( player -> resources.current[ RESOURCE_COMBO_POINT ] == 0 )
       return;
 
     if ( envenom )
@@ -2927,8 +2866,7 @@ void rogue_t::trigger_seal_fate( const action_state_t* state )
   if ( cooldowns.seal_fate -> down() )
     return;
 
-  rogue_td_t* td = get_target_data( state -> target );
-  td -> combo_points.add( 1, spec.seal_fate -> name_cstr() );
+  trigger_combo_point_gain( state, 1, spec.seal_fate -> name_cstr() );
 
   cooldowns.seal_fate -> start( spec.seal_fate -> internal_cooldown() );
   procs.seal_fate -> occur();
@@ -3001,7 +2939,7 @@ void rogue_t::trigger_ruthlessness( const action_state_t* state )
     return;
 
   actions::rogue_attack_t* attack = debug_cast<actions::rogue_attack_t*>( state -> action );
-  if ( ! attack -> requires_combo_points )
+  if ( ! attack -> base_costs[ RESOURCE_COMBO_POINT ] )
     return;
 
   const actions::rogue_attack_state_t* s = actions::rogue_attack_t::cast_state( state );
@@ -3016,7 +2954,7 @@ void rogue_t::trigger_ruthlessness( const action_state_t* state )
 
   double cp_chance = spec.ruthlessness -> effectN( 1 ).pp_combo_points() * s -> cp / 100.0;
   if ( rng().roll( cp_chance ) )
-    get_target_data( state -> target ) -> combo_points.add( spell.ruthlessness_cp -> effectN( 1 ).base_value(), "ruthlessness" );
+    trigger_combo_point_gain( state, spell.ruthlessness_cp -> effectN( 1 ).base_value(), spec.ruthlessness -> name_cstr() );
 
   double energy_chance = spec.ruthlessness -> effectN( 2 ).pp_combo_points() * s -> cp / 100.0;
   if ( rng().roll( energy_chance ) )
@@ -3031,7 +2969,7 @@ void rogue_t::trigger_relentless_strikes( const action_state_t* state )
     return;
 
   actions::rogue_attack_t* attack = debug_cast<actions::rogue_attack_t*>( state -> action );
-  if ( ! attack -> requires_combo_points )
+  if ( ! attack -> base_costs[ RESOURCE_COMBO_POINT ] )
     return;
 
   const actions::rogue_attack_state_t* s = actions::rogue_attack_t::cast_state( state );
@@ -3114,6 +3052,98 @@ void rogue_t::trigger_shadow_reflection( const action_state_t* state )
   shadow_reflection_sequence.push_back( event );
   if ( sim -> debug )
     sim -> out_debug.printf( "%s shadow_reflection recording %s, cp=%d", name(), state -> action -> name(), rs -> cp );
+}
+
+void rogue_t::trigger_combo_point_gain( const action_state_t* state, int cp_override, const std::string& name_override )
+{
+  using namespace actions;
+
+  assert( state || cp_override > 0 );
+
+  int n_cp = 0;
+  if ( cp_override == -1 )
+  {
+    rogue_attack_t* attack = debug_cast<rogue_attack_t*>( state -> action );
+    if ( ! attack -> adds_combo_points )
+      return;
+
+    n_cp = attack -> adds_combo_points;
+  }
+  else
+    n_cp = cp_override;
+
+  std::string cp_name;
+  if ( ! name_override.empty() )
+    cp_name = name_override;
+  else
+    cp_name = state -> action -> name();
+
+  int fill = resources.max[ RESOURCE_COMBO_POINT ] - resources.current[ RESOURCE_COMBO_POINT ];
+  int added = std::min( fill, n_cp );
+  int overflow = n_cp - added;
+  int anticipation_added = 0;
+  int anticipation_overflow = 0;
+  if ( overflow > 0 && talent.anticipation -> ok() )
+  {
+    int anticipation_fill =  buffs.anticipation -> max_stack() - buffs.anticipation -> check();
+    anticipation_added = std::min( anticipation_fill, overflow );
+    anticipation_overflow = overflow - anticipation_added;
+    if ( anticipation_added > 0 )
+      overflow = 0;
+  }
+
+  if ( added > 0 )
+    resource_gain( RESOURCE_COMBO_POINT, added, 0, state ? state -> action : 0 );
+
+  for ( int i = 0; i < overflow; i++ )
+    procs.combo_points_wasted -> occur();
+
+  if ( anticipation_added > 0 )
+    buffs.anticipation -> trigger( anticipation_added );
+
+  for ( int i = 0; i < anticipation_overflow; i++ )
+    procs.anticipation_wasted -> occur();
+
+  if ( sim -> log )
+  {
+    if ( anticipation_added > 0 || anticipation_overflow > 0 )
+      sim -> out_log.printf( "%s gains %d (%d) anticipation charges from %s (%d)",
+          name(), anticipation_added, anticipation_overflow, cp_name.c_str(), buffs.anticipation -> check() );
+  }
+
+  if ( event_premeditation )
+    core_event_t::cancel( event_premeditation );
+
+  assert( ( resources.current[ RESOURCE_COMBO_POINT ] == 5 && buffs.anticipation -> check() >= 0 ) ||
+          ( resources.current[ RESOURCE_COMBO_POINT ] < 5 && buffs.anticipation -> check() == 0 ) );
+}
+
+void rogue_t::spend_combo_points( const action_state_t* state )
+{
+  if ( state -> action -> base_costs[ RESOURCE_COMBO_POINT ] == 0 )
+    return;
+
+  if ( ! state -> action -> result_is_hit( state -> result ) )
+    return;
+
+  if ( buffs.fof_fod -> up() )
+    return;
+
+  state -> action ->stats -> consume_resource( RESOURCE_COMBO_POINT, resources.current[ RESOURCE_COMBO_POINT ] );
+  resource_loss( RESOURCE_COMBO_POINT, resources.current[ RESOURCE_COMBO_POINT ], 0, state ? state -> action : 0 );
+
+  if ( buffs.anticipation -> stack() > 0 )
+  {
+    if ( sim -> log )
+      sim -> out_log.printf( "%s replenishes %d combo_points through anticipation",
+          name(), buffs.anticipation -> check() );
+
+    resources.current[ RESOURCE_COMBO_POINT ] = buffs.anticipation -> check();
+    buffs.anticipation -> expire();
+  }
+
+  if ( event_premeditation )
+    core_event_t::cancel( event_premeditation );
 }
 
 namespace buffs {
@@ -3265,136 +3295,6 @@ struct leeching_poison_t : public rogue_poison_buff_t
 
 } // end namespace buffs
 
-
-// ==========================================================================
-// Combo Point System Functions
-// ==========================================================================
-
-combo_points_t::combo_points_t( rogue_t* source, player_t* target ) :
-  source( source ),
-  target( target ),
-  proc( 0 ),
-  wasted( 0 ),
-  count( 0 ),
-  anticipation_charges( 0 )
-{
-  proc   = target -> get_proc( source -> name_str + ": combo_points" );
-  wasted = target -> get_proc( source -> name_str + ": combo_points_wasted" );
-  proc_anticipation = target -> get_proc( source -> name_str + ": anticipation_charges" );
-  wasted_anticipation = target -> get_proc( source -> name_str + ": anticipation_charges_wasted" );
-}
-
-void combo_points_t::add( int num, const char* action )
-{
-  int actual_num = clamp( num, 0, max_combo_points - count );
-  int overflow   = num - actual_num;
-  int anticipation_num = 0;
-
-  // Premeditation cancel on any added combo points, even if they are
-  // already full
-  rogue_t* p = source;
-  if ( num > 0 && p -> event_premeditation )
-    core_event_t::cancel( p -> event_premeditation );
-
-  // we count all combo points gained in the proc
-  for ( int i = 0; i < num; i++ )
-    proc -> occur();
-
-  // add actual combo points
-  if ( actual_num > 0 )
-  {
-    count += actual_num;
-    source -> trigger_ready();
-  }
-
-  // count wasted combo points
-  if ( overflow > 0 )
-  {
-    // Anticipation
-    if ( p -> talent.anticipation -> ok() )
-    {
-      int anticipation_overflow = 0;
-      anticipation_num = clamp( overflow, 0, max_combo_points - anticipation_charges );
-      anticipation_overflow = overflow - anticipation_num;
-
-      for ( int i = 0; i < overflow; i++ )
-        proc_anticipation -> occur();
-
-      if ( anticipation_num > 0 )
-        anticipation_charges += anticipation_num;
-
-      if ( anticipation_overflow > 0 )
-      {
-        for ( int i = 0; i < anticipation_overflow; i++ )
-          wasted_anticipation -> occur();
-      }
-    }
-    else
-    {
-      for ( int i = 0; i < overflow; i++ )
-        wasted -> occur();
-    }
-  }
-
-  if ( source -> sim -> log )
-  {
-    if ( action )
-    {
-      if ( actual_num > 0 )
-        source -> sim -> out_log.printf( "%s gains %d (%d) combo_points from %s (%d)",
-                                 target -> name(), actual_num, num, action, count );
-      if ( anticipation_num > 0 )
-        source -> sim -> out_log.printf( "%s gains %d (%d) anticipation_charges from %s (%d)",
-                                 target -> name(), anticipation_num, overflow, action, anticipation_charges );
-    }
-    else
-    {
-      if ( actual_num > 0 )
-        source -> sim -> out_log.printf( "%s gains %d (%d) combo_points (%d)",
-                                 target -> name(), actual_num, num, count );
-      if ( anticipation_num > 0 )
-        source -> sim -> out_log.printf( "%s gains %d (%d) anticipation_charges (%d)",
-                                 target -> name(), anticipation_num, overflow, anticipation_charges );
-    }
-  }
-
-  assert( ( count == 5 && anticipation_charges >= 0 ) || ( count < 5 && anticipation_charges == 0 ) );
-}
-
-void combo_points_t::clear( const char* action, bool anticipation )
-{
-  if ( source -> sim -> log )
-  {
-    if ( action )
-      source -> sim -> out_log.printf( "%s spends %d combo_points on %s",
-                               target -> name(), count, action );
-    else
-      source -> sim -> out_log.printf( "%s loses %d combo_points",
-                               target -> name(), count );
-  }
-
-  source -> trigger_ready();
-
-  // Premeditation cancels when you use the combo points
-  rogue_t* p = source;
-  if ( p -> event_premeditation )
-    core_event_t::cancel( p -> event_premeditation );
-
-  count = 0;
-  if ( anticipation )
-    anticipation_charges = 0;
-
-  if ( anticipation_charges > 0 )
-  {
-    if ( source -> sim -> log )
-      source -> sim -> out_log.printf( "%s replenishes %d combo_points through anticipation", source -> name(), anticipation_charges );
-    count = anticipation_charges;
-    anticipation_charges = 0;
-  }
-
-  assert( ( count == 5 && anticipation_charges >= 0 ) || ( count < 5 && anticipation_charges == 0 ) );
-}
-
 // ==========================================================================
 // Rogue Targetdata Definitions
 // ==========================================================================
@@ -3402,8 +3302,7 @@ void combo_points_t::clear( const char* action, bool anticipation )
 rogue_td_t::rogue_td_t( player_t* target, rogue_t* source ) :
   actor_pair_t( target, source ),
   dots( dots_t() ),
-  debuffs( debuffs_t() ),
-  combo_points( combo_points_t( source, target ) )
+  debuffs( debuffs_t() )
 {
 
   dots.crimson_tempest  = target -> get_dot( "crimson_tempest_dot", source );
@@ -3445,13 +3344,11 @@ struct shadow_reflection_pet_t : public pet_t
   struct shadow_reflection_attack_t : public melee_attack_t
   {
     rogue_attack_t* source_action;
-    bool requires_combo_points;
     position_e requires_position;
 
     shadow_reflection_attack_t( const std::string& name, player_t* p, const spell_data_t* spell, const std::string& = std::string() ) :
       melee_attack_t( name, p, spell ),
       source_action( 0 ),
-      requires_combo_points( false ),
       requires_position( POSITION_NONE )
     {
       weapon = &( o() -> main_hand_weapon );
@@ -3514,42 +3411,42 @@ struct shadow_reflection_pet_t : public pet_t
 
     double attack_direct_power_coefficient( const action_state_t* s ) const
     {
-      if ( requires_combo_points )
+      if ( base_costs[ RESOURCE_COMBO_POINT ] > 0 )
         return attack_power_mod.direct * cast_state( s ) -> cp;
       return melee_attack_t::attack_direct_power_coefficient( s );
     }
 
     double attack_tick_power_coefficient( const action_state_t* s ) const
     {
-      if ( requires_combo_points )
+      if ( base_costs[ RESOURCE_COMBO_POINT ] > 0 )
         return attack_power_mod.tick * cast_state( s ) -> cp;
       return melee_attack_t::attack_tick_power_coefficient( s );
     }
 
     double spell_direct_power_coefficient( const action_state_t* s ) const
     {
-      if ( requires_combo_points )
+      if ( base_costs[ RESOURCE_COMBO_POINT ] > 0 )
         return spell_power_mod.direct * cast_state( s ) -> cp;
       return melee_attack_t::spell_direct_power_coefficient( s );
     }
 
     double spell_tick_power_coefficient( const action_state_t* s ) const
     {
-      if ( requires_combo_points )
+      if ( base_costs[ RESOURCE_COMBO_POINT ] > 0 )
         return spell_power_mod.tick * cast_state( s ) -> cp;
       return melee_attack_t::spell_tick_power_coefficient( s );
     }
 
     double bonus_da( const action_state_t* s ) const
     {
-      if ( requires_combo_points )
+      if ( base_costs[ RESOURCE_COMBO_POINT ] > 0 )
         return base_dd_adder * cast_state( s ) -> cp;
       return melee_attack_t::bonus_da( s );
     }
 
     double bonus_ta( const action_state_t* s ) const
     {
-      if ( requires_combo_points )
+      if ( base_costs[ RESOURCE_COMBO_POINT ] > 0 )
         return base_ta_adder * cast_state( s ) -> cp;
       return melee_attack_t::bonus_ta( s );
     }
@@ -3596,7 +3493,7 @@ struct shadow_reflection_pet_t : public pet_t
     sr_eviscerate_t( shadow_reflection_pet_t* p ) :
       shadow_reflection_attack_t( "eviscerate", p, p -> find_spell( 2098 ) )
     {
-      requires_combo_points = true;
+      base_costs[ RESOURCE_COMBO_POINT ] = 1;
       attack_power_mod.direct = 0.3203;
       weapon_multiplier = 0;
     }
@@ -3715,7 +3612,7 @@ struct shadow_reflection_pet_t : public pet_t
     sr_envenom_t( shadow_reflection_pet_t* p ) :
       shadow_reflection_attack_t( "envenom", p, p -> find_spell( 32645 ) )
     {
-      requires_combo_points  = true;
+      base_costs[ RESOURCE_COMBO_POINT ] = 1;
       attack_power_mod.direct = 0.306;
       dot_duration = timespan_t::zero();
       weapon_multiplier = 0.0;
@@ -3727,7 +3624,7 @@ struct shadow_reflection_pet_t : public pet_t
     sr_rupture_t( shadow_reflection_pet_t* p ) :
       shadow_reflection_attack_t( "rupture", p, p -> find_spell( 1943 ) )
     {
-      requires_combo_points = true;
+      base_costs[ RESOURCE_COMBO_POINT ] = 1;
       may_crit              = false;
       tick_may_crit         = true;
       dot_behavior          = DOT_REFRESH;
@@ -3775,7 +3672,7 @@ struct shadow_reflection_pet_t : public pet_t
       dot( new sr_crimson_tempest_dot_t( p ) )
     {
       aoe = -1;
-      requires_combo_points = true;
+      base_costs[ RESOURCE_COMBO_POINT ] = 1;
       attack_power_mod.direct = 0.0602;
       weapon_multiplier = 0;
       add_child( dot );
@@ -4311,7 +4208,7 @@ void rogue_t::init_action_list()
     action_priority_list_t* gen = get_action_priority_list( "generator", "Combo point generators" );
     gen -> add_action( this, find_class_spell( "Preparation" ), "run_action_list", "name=pool,if=buff.master_of_subtlety.down&buff.shadow_dance.down&debuff.find_weakness.down&(energy+cooldown.shadow_dance.remains*energy.regen<80|energy+cooldown.vanish.remains*energy.regen<60)" );
     gen -> add_action( this, "Fan of Knives", "if=active_enemies>=4" );
-    gen -> add_action( this, "Hemorrhage", "if=remains<3|position_front" );
+    gen -> add_action( this, "Hemorrhage", "if=remains<8|position_front|debuff.find_weakness.up|trinket.proc.agility.up|trinket.stacking_proc.agility.stack>=trinket.stacking_proc.agility.max_stack-1" );
     gen -> add_talent( this, "Shuriken Toss", "if=energy<65&energy.regen<16" );
     gen -> add_action( this, "Backstab" );
     gen -> add_action( this, find_class_spell( "Preparation" ), "run_action_list", "name=pool" );
@@ -4391,41 +4288,9 @@ action_t* rogue_t::create_action( const std::string& name,
 expr_t* rogue_t::create_expression( action_t* a, const std::string& name_str )
 {
   if ( name_str == "combo_points" )
-  {
-    struct combo_points_expr_t : public expr_t
-    {
-      const action_t& action;
-      combo_points_expr_t( action_t* a ) : expr_t( "combo_points" ),
-        action( *a )
-      {}
-
-      virtual double evaluate()
-      {
-        rogue_t* p = debug_cast<rogue_t*>( action.player );
-        rogue_td_t* td = p -> get_target_data( action.target );
-        return td -> combo_points.count;
-      }
-    };
-    return new combo_points_expr_t( a );
-  }
-  if ( util::str_compare_ci( name_str, "anticipation_charges" ) )
-  {
-    struct anticipation_charges_expr_t : public expr_t
-    {
-      const action_t& action;
-      anticipation_charges_expr_t( action_t* a ) : expr_t( "anticipation_charges" ),
-        action( *a )
-      {}
-
-      virtual double evaluate()
-      {
-        rogue_t* p = debug_cast<rogue_t*>( action.player );
-        rogue_td_t* td = p -> get_target_data( action.target );
-        return td -> combo_points.anticipation_charges;
-      }
-    };
-    return new anticipation_charges_expr_t( a );
-  }
+    return make_ref_expr( name_str, resources.current[ RESOURCE_COMBO_POINT ] );
+  else if ( util::str_compare_ci( name_str, "anticipation_charges" ) )
+    return make_ref_expr( name_str, buffs.anticipation -> current_stack );
 
   return player_t::create_expression( a, name_str );
 }
@@ -4440,6 +4305,7 @@ void rogue_t::init_base_stats()
   base.attack_power_per_agility  = 1.0;
 
   resources.base[ RESOURCE_ENERGY ] = 100;
+  resources.base[ RESOURCE_COMBO_POINT ] = 5;
   if ( main_hand_weapon.type == WEAPON_DAGGER && off_hand_weapon.type == WEAPON_DAGGER )
     resources.base[ RESOURCE_ENERGY ] += spec.assassins_resolve -> effectN( 1 ).base_value();
   if ( sets.has_set_bonus( SET_PVP_2PC_MELEE ) )
@@ -4452,7 +4318,6 @@ void rogue_t::init_base_stats()
   base_energy_regen_per_second = 10 * ( 1.0 + spec.vitality -> effectN( 1 ).percent() );
 
   base_gcd = timespan_t::from_seconds( 1.0 );
-  
 }
 
 // rogue_t::init_spells =====================================================
@@ -4606,6 +4471,8 @@ void rogue_t::init_procs()
   procs.seal_fate                = get_proc( "seal_fate"           );
   procs.no_revealing_strike      = get_proc( "no_revealing_strike" );
   procs.t16_2pc_melee            = get_proc( "t16_2pc_melee"       );
+  procs.combo_points_wasted      = get_proc( "combo_points_wasted" );
+  procs.anticipation_wasted      = get_proc( "anticipation_wasted" );
 }
 
 // rogue_t::init_scaling ====================================================
@@ -4616,6 +4483,15 @@ void rogue_t::init_scaling()
 
   scales_with[ STAT_WEAPON_OFFHAND_DPS    ] = true;
   scales_with[ STAT_WEAPON_OFFHAND_SPEED  ] = sim -> weapon_speed_scale_factors != 0;
+}
+
+// rogue_t::init_resources =================================================
+
+void rogue_t::init_resources( bool force )
+{
+  player_t::init_resources( force );
+
+  resources.current[ RESOURCE_COMBO_POINT ] = 0;
 }
 
 // rogue_t::init_buffs ======================================================
@@ -4728,6 +4604,9 @@ void rogue_t::create_buffs()
   buffs.shadow_reflection = new buffs::shadow_reflection_t( this );
   buffs.death_from_above  = buff_creator_t( this, "death_from_above", spell.death_from_above )
                             .quiet( true );
+
+  buffs.anticipation      = buff_creator_t( this, "anticipation", find_spell( 115189 ) )
+                            .chance( talent.anticipation -> ok() );
 }
 
 // trigger_honor_among_thieves ==============================================
@@ -4768,9 +4647,7 @@ struct honor_among_thieves_callback_t : public dbc_proc_callback_t
 
   void execute( action_t*, action_state_t* )
   {
-    rogue_td_t* td = rogue -> get_target_data( rogue -> target );
-
-    td -> combo_points.add( 1, rogue -> spec.honor_among_thieves -> name_cstr() );
+    rogue -> trigger_combo_point_gain( 0, 1, rogue -> spec.honor_among_thieves -> name_cstr() );
 
     rogue -> procs.honor_among_thieves -> occur();
 
@@ -4812,12 +4689,6 @@ void rogue_t::reset()
 
   poisoned_enemies = 0;
 
-  for ( size_t i = 0; i < sim -> actor_list.size(); i++ )
-  {
-    rogue_td_t* td = target_data[ sim -> actor_list[ i ] ];
-    if ( td ) td -> reset();
-  }
-
   core_event_t::cancel( event_premeditation );
 }
 
@@ -4826,6 +4697,8 @@ void rogue_t::reset()
 void rogue_t::arise()
 {
   player_t::arise();
+
+  resources.current[ RESOURCE_COMBO_POINT ] = 0;
 
   if ( perk.improved_slice_and_dice -> ok() )
     buffs.slice_and_dice -> trigger();
