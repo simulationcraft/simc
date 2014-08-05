@@ -20,7 +20,6 @@ namespace runeforge
   void razorice_attack( special_effect_t&, const item_t& );
   void razorice_debuff( special_effect_t&, const item_t& );
   void fallen_crusader( special_effect_t&, const item_t& );
-  void cinderglacier( special_effect_t&, const item_t& );
   void stoneskin_gargoyle( special_effect_t&, const item_t& );
   void spellshattering( special_effect_t&, const item_t& );
   void spellbreaking( special_effect_t&, const item_t& );
@@ -212,7 +211,6 @@ public:
 
   struct runeforge_t
   {
-    buff_t* rune_of_cinderglacier;
     buff_t* rune_of_the_fallen_crusader;
     buff_t* rune_of_the_stoneskin_gargoyle;
     buff_t* rune_of_spellshattering;
@@ -2042,12 +2040,6 @@ struct death_knight_melee_attack_t : public death_knight_action_t<melee_attack_t
     if ( player -> main_hand_weapon.group() == WEAPON_2H )
       m *= 1.0 + p() -> spec.might_of_the_frozen_wastes -> effectN( 2 ).percent();
 
-    if ( dbc::is_school( school, SCHOOL_SHADOW ) || dbc::is_school( school, SCHOOL_FROST ) )
-    {
-      if ( ! proc )
-        m *= 1.0 + p() -> runeforge.rune_of_cinderglacier -> value();
-    }
-
     return m;
   }
 
@@ -2079,12 +2071,6 @@ struct death_knight_spell_t : public death_knight_action_t<spell_t>
   virtual double composite_da_multiplier( const action_state_t* state ) const
   {
     double m = base_t::composite_da_multiplier( state );
-
-    if ( dbc::is_school( school, SCHOOL_SHADOW ) || dbc::is_school( school, SCHOOL_FROST ) )
-    {
-      if ( ! proc )
-        m *= 1.0 + p() -> runeforge.rune_of_cinderglacier -> value();
-    }
 
     return m;
   }
@@ -2146,14 +2132,6 @@ void death_knight_melee_attack_t::execute()
 {
   base_t::execute();
 
-  if ( ! background && result_is_hit( execute_state -> result ) )
-  {
-    if ( dbc::is_school( school, SCHOOL_SHADOW ) || dbc::is_school( school, SCHOOL_FROST ) )
-    {
-      p() -> runeforge.rune_of_cinderglacier -> decrement();
-    }
-  }
-
   if ( ! result_is_hit( execute_state -> result ) && ! always_consume && resource_consumed > 0 )
     p() -> resource_gain( RESOURCE_RUNIC_POWER, resource_consumed * RUNIC_POWER_REFUND, p() -> gains.power_refund );
 
@@ -2209,14 +2187,6 @@ void death_knight_spell_t::consume_resource()
 void death_knight_spell_t::execute()
 {
   base_t::execute();
-
-  if ( ! background && result_is_hit( execute_state -> result ) )
-  {
-    if ( dbc::is_school( school, SCHOOL_SHADOW ) || dbc::is_school( school, SCHOOL_FROST ) )
-    {
-      p() -> runeforge.rune_of_cinderglacier -> decrement();
-    }
-  }
 }
 
 // death_knight_spell_t::impact() ===========================================
@@ -5953,24 +5923,6 @@ void runeforge::fallen_crusader( special_effect_t& effect,
   new dbc_proc_callback_t( item, effect );
 }
 
-void runeforge::cinderglacier( special_effect_t& effect, 
-                               const item_t& item )
-{
-  struct cinderglacier_callback_t: public dbc_proc_callback_t
-  {
-    cinderglacier_callback_t( const item_t& item, const special_effect_t& effect ) :
-     dbc_proc_callback_t( item, effect )
-    { }
-
-    void execute( action_t*, action_state_t* )
-    { proc_buff -> trigger( proc_buff -> max_stack() ); }
-  };
-
-  effect.custom_buff = buff_t::find( item.player, "cinderglacier" );
-
-  new cinderglacier_callback_t( item, effect );
-}
-
 void runeforge::stoneskin_gargoyle( special_effect_t&, const item_t& item )
 {
   death_knight_t* p = debug_cast<death_knight_t*>( item.player );
@@ -6001,7 +5953,6 @@ bool death_knight_t::init_special_effect( special_effect_t& effect,
     {  50401, 0,    runeforge::razorice_attack },
     {  51714, 0,    runeforge::razorice_debuff },
     { 166441, 0,    runeforge::fallen_crusader },
-    { 166443, 0,      runeforge::cinderglacier },
     {  62157, 0, runeforge::stoneskin_gargoyle },
     {  53362, 0,    runeforge::spellshattering }, // Damage taken, we don't use the silence reduction
     {  54449, 0,      runeforge::spellbreaking }, // Damage taken, we don't use the silence reduction
@@ -6186,10 +6137,6 @@ void death_knight_t::create_buffs()
 
   runeforge.rune_of_the_fallen_crusader = buff_creator_t( this, "unholy_strength", find_spell( 53365 ) )
                                           .add_invalidate( CACHE_STRENGTH );
-
-  runeforge.rune_of_cinderglacier       = buff_creator_t( this, "cinderglacier", find_spell( 53386 ) )
-                                          .default_value( find_spell( 53386 ) -> effectN( 1 ).percent() )
-                                          .max_stack( find_spell( 53386 ) -> initial_stacks() + perk.improved_runeforges -> effectN( 1 ).base_value() );
 
   runeforge.rune_of_the_stoneskin_gargoyle = buff_creator_t( this, "stoneskin_gargoyle", find_spell( 62157 ) )
                                              .chance( 0 );
