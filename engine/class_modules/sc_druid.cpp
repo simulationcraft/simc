@@ -66,6 +66,8 @@ struct druid_td_t : public actor_pair_t
     dot_t* rip;
     dot_t* stellar_flare;
     dot_t* sunfire;
+    dot_t* thrash_bear;
+    dot_t* thrash_cat;
     dot_t* wild_growth;
   } dots;
 
@@ -2661,8 +2663,13 @@ struct thrash_cat_t : public cat_attack_t
   {
     cat_attack_t::impact( s );
 
-    if ( result_is_hit( s -> result ) && p() -> sets.has_set_bonus( SET_T17_2PC_MELEE ) )
-      p() -> resource_gain( RESOURCE_ENERGY, 3.0, p() -> gain.tier17_2pc_melee );
+    if ( result_is_hit( s -> result ) )
+    {
+      this -> td( s -> target ) -> dots.thrash_bear -> cancel();
+
+      if ( p() -> sets.has_set_bonus( SET_T17_2PC_MELEE ) )
+        p() -> resource_gain( RESOURCE_ENERGY, 3.0, p() -> gain.tier17_2pc_melee );
+    }
   }
 
   // Treat direct damage as "bleed"
@@ -3048,6 +3055,8 @@ struct thrash_bear_t : public bear_attack_t
 
     if ( result_is_hit( s -> result ) )
     {
+      this -> td( s -> target ) -> dots.thrash_cat -> cancel();
+
       p() -> resource_gain( RESOURCE_RAGE, rage_gain, p() -> gain.thrash );
 
       if ( p() -> sets.has_set_bonus( SET_T17_2PC_MELEE ) )
@@ -6138,11 +6147,6 @@ void druid_t::apl_feral()
     def -> add_action( this, "Rake", "if=buff.prowl.up" );
   def -> add_action( "auto_attack" );
   def -> add_action( this, "Skull Bash" );
-  if ( glyph.master_shapeshifter -> ok() )
-  {
-    def -> add_action( this, "Cat Form", "if=prev.thrash_bear" );
-    def -> add_action( "thrash_bear" );
-  }
   def -> add_action( "incarnation,sync=berserk" );
   def -> add_action( this, "Berserk", "if=cooldown.tigers_fury.remains<8" );
   if ( sim -> allow_potions && level >= 80 )
@@ -6159,9 +6163,6 @@ void druid_t::apl_feral()
   def -> add_action( this, "Ferocious Bite", "cycle_targets=1,if=dot.rip.ticking&dot.rip.remains<=3&target.health.pct<25",
                      "Keep Rip from falling off during execute range." );
   def -> add_action( this, "Healing Touch", "if=talent.bloodtalons.enabled&buff.predatory_swiftness.up&(combo_points>=4|buff.predatory_swiftness.remains<1.5)" );
-  if ( glyph.master_shapeshifter -> ok() )
-    def -> add_action( "bear_form,if=active_enemies>1&energy.time_to_max>=5.5&(dot.thrash_bear.remains-gcd<=dot.thrash_bear.duration*0.3|(cooldown.tigers_fury.remains>6&cooldown.tigers_fury.remains<8))",
-                       "Maintain Thrash during AoE, clipping before Tiger's Fury comes off cooldown." );
   def -> add_action( this, "Savage Roar", "if=buff.savage_roar.remains<3" );
   if ( sim -> allow_potions && level >= 80 )
     def -> add_action( potion_action + ",sync=berserk,if=target.health.pct<25" );
@@ -6187,9 +6188,6 @@ void druid_t::apl_feral()
   /* def -> add_action( this, "Rake", "if=combo_points<5&hit_damage>=action.shred.hit_damage",
                         "Rake for CP if it hits harder than Shred." ); */
   def -> add_action( this, "Shred", "if=combo_points<5&active_enemies=1" );
-
-  if ( glyph.master_shapeshifter -> ok() )
-    def -> add_action( this, "Bear Form", "if=dot.thrash_bear.remains-gcd<=dot.thrash_bear.duration*0.3&cooldown.tigers_fury.remains>6&dot.rip.remains>6&energy.time_to_max>=5.5" );
 }
 
 // Balance Combat Action Priority List ==============================
@@ -7311,6 +7309,8 @@ druid_td_t::druid_td_t( player_t& target, druid_t& source )
   dots.rejuvenation  = target.get_dot( "rejuvenation",  &source );
   dots.rip           = target.get_dot( "rip",           &source );
   dots.sunfire       = target.get_dot( "sunfire",       &source );
+  dots.thrash_bear   = target.get_dot( "thrash_bear",   &source );
+  dots.thrash_cat    = target.get_dot( "thrash_cat",    &source );
   dots.wild_growth   = target.get_dot( "wild_growth",   &source );
 
   buffs.lifebloom = buff_creator_t( *this, "lifebloom", source.find_class_spell( "Lifebloom" ) );
