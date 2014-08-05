@@ -82,7 +82,7 @@ public:
     buff_t* focused_will;
 
     // Shadow
-    buff_t* insanity;
+    buff_t* shadow_word_insanity;
     buff_t* shadowy_insight;
     buff_t* shadow_word_death_reset_cooldown;
     buff_t* glyph_of_mind_flay;
@@ -115,7 +115,7 @@ public:
     const spell_data_t* surge_of_darkness;
     const spell_data_t* mindbender;
     const spell_data_t* power_word_solace;
-    const spell_data_t* insanity;
+    const spell_data_t* shadow_word_insanity;
 
     const spell_data_t* void_tendrils;
     const spell_data_t* psychic_scream;
@@ -288,7 +288,7 @@ public:
     proc_t* t17_2pc_caster_mind_blast_reset_overflow;
     proc_t* t17_4pc_holy;
     proc_t* t17_4pc_holy_overflow;
-    proc_t* void_entropy_extentions;
+    proc_t* void_entropy_extensions;
 
 
     luxurious_sample_data_t* sd_mind_spike_dot_removal_devouring_plague_ticks;
@@ -1621,21 +1621,26 @@ struct priest_spell_t : public priest_action_t<spell_t>
       priest.resource_gain( RESOURCE_SHADOW_ORB, num_orbs, g, this );
   }
 
-  // TODO: Check about refreshes, see if Insanity is a buff on the priest or a debuff on the target. -Twintop 2014/07/29
   void trigger_insanity( action_state_t* s, int orbs )
   {
-    if ( priest.talents.insanity -> ok() )
-      priest.buffs.insanity -> trigger(1, 0, 1, timespan_t::from_seconds( 2.0 * orbs * s -> haste ) );
+    if ( priest.talents.shadow_word_insanity -> ok() )
+    {
+      if ( priest.buffs.shadow_word_insanity -> up() )
+      {
+        priest.buffs.shadow_word_insanity -> trigger(1, 0, 1, timespan_t::from_seconds( 2.0 * orbs * s -> haste + priest.buffs.shadow_word_insanity -> remains().total_seconds() ) );
+      }
+      else
+      {
+        priest.buffs.shadow_word_insanity -> trigger(1, 0, 1, timespan_t::from_seconds( 2.0 * orbs * s -> haste ) );
+      }
+    }
   }
 
   bool trigger_surge_of_darkness()
   {
     int stack = priest.buffs.surge_of_darkness -> check();
-
-    if ( priest.talents.surge_of_darkness -> ok() && rng().roll( 0.1 ) )
+    if ( priest.buffs.surge_of_darkness -> trigger() )
     {
-      priest.buffs.surge_of_darkness -> execute();
-
       if ( priest.buffs.surge_of_darkness -> check() == stack )
         priest.procs.surge_of_darkness_overflow -> occur();
       else
@@ -3086,12 +3091,24 @@ struct devouring_plague_t final : public priest_spell_t
 
       priest_td_t& td = get_td( s -> target );
 
-      // DP refreshes the duration on VEnt, per Celestalon tweet.
-      // TODO: Verify if Multistrikes also refresh, see if pandemic applies or not - Twintop 2014/07/27
+      // TODO: Verify if Multistrikes also refresh. -- Twintop 2014/08/05
+      // DP refreshes the
       if ( td.dots.void_entropy -> is_ticking() )
       {
-        td.dots.void_entropy -> refresh_duration();
-        priest.procs.void_entropy_extentions -> occur();
+        timespan_t nextTick = td.dots.void_entropy -> time_to_next_tick();
+
+        if ( td.dots.void_entropy -> remains().total_seconds() > ( 60 + nextTick.total_seconds() ) )
+        {
+          td.dots.void_entropy -> reduce_duration( timespan_t::from_seconds( td.dots.void_entropy -> remains().total_seconds() - 60 - nextTick.total_seconds() ) );
+        }
+        else
+        {
+          td.dots.void_entropy -> extend_duration( timespan_t::from_seconds( 60 - td.dots.void_entropy -> remains().total_seconds() + nextTick.total_seconds() ) );
+        }
+
+        td.dots.void_entropy -> time_to_tick = nextTick;
+
+        priest.procs.void_entropy_extensions -> occur();
       }
     }
   }
@@ -3170,7 +3187,7 @@ struct mind_flay_insanity_t final : public mind_flay_base_t<true>
 
   virtual bool ready() override
   {
-    if ( !priest.buffs.insanity -> up() )
+    if ( !priest.buffs.shadow_word_insanity -> up() )
       return false;
 
     return base_t::ready();
@@ -5236,7 +5253,7 @@ void priest_t::create_procs()
   procs.serendipity_overflow                            = get_proc( "Serendipity lost to overflow (Non-Tier 17 4pc)"               );
   procs.t17_4pc_holy                                    = get_proc( "Tier17 4pc Serendipity"                                       );
   procs.t17_4pc_holy_overflow                           = get_proc( "Tier17 4pc Serendipity lost to overflow"                      );
-  procs.void_entropy_extentions                         = get_proc( "Void Entropy extentions from Devouring Plagues"               );
+  procs.void_entropy_extensions                         = get_proc( "Void Entropy extensions from Devouring Plagues"               );
 
   procs.sd_mind_spike_dot_removal_devouring_plague_ticks   = get_sample_data( "Devouring Plague ticks lost from Mind Spike removal"   );
 }
@@ -5742,7 +5759,7 @@ void priest_t::init_spells()
   talents.surge_of_darkness           = find_talent_spell( "Surge of Darkness" );
   talents.mindbender                  = find_talent_spell( "Mindbender" );
   talents.power_word_solace           = find_talent_spell( "Power Word: Solace" );
-  talents.insanity                    = find_talent_spell( "Insanity" );
+  talents.shadow_word_insanity        = find_talent_spell( "Insanity" );
 
   //Level 60 / Tier 4
   talents.void_tendrils               = find_talent_spell( "Void Tendrils" );
@@ -5973,12 +5990,12 @@ void priest_t::create_buffs()
                          .chance( talents.divine_insight -> effectN( 1 ).percent() );
 
   buffs.shadowy_insight = buff_creator_t( this, "shadowy_insight" )
-                              .spell( talents.shadowy_insight )
-                              .chance( talents.shadowy_insight -> effectN( 4 ).percent());
+                          .spell( talents.shadowy_insight )
+                          .chance( talents.shadowy_insight -> effectN( 4 ).percent());
 
-  buffs.insanity = buff_creator_t( this, "insanity")
-                   .spell( talents.insanity )
-                   .max_stack( 1 );
+  buffs.shadow_word_insanity = buff_creator_t( this, "insanity")
+                               .spell( talents.shadow_word_insanity )
+                               .max_stack( 1 );
 
   // Discipline
   buffs.archangel = new buffs::archangel_t( *this );
@@ -5997,8 +6014,8 @@ void priest_t::create_buffs()
   buffs.spirit_shell = new buffs::spirit_shell_t( *this );
 
   buffs.saving_grace_penalty = buff_creator_t( this, "saving_grace_penalty" )
-                            .spell( talents.saving_grace -> effectN( 2 ).trigger() )
-                            .add_invalidate( CACHE_PLAYER_HEAL_MULTIPLIER );
+                              .spell( talents.saving_grace -> effectN( 2 ).trigger() )
+                              .add_invalidate( CACHE_PLAYER_HEAL_MULTIPLIER );
 
   // Holy
   buffs.chakra_chastise = buff_creator_t( this, "chakra_chastise" )
@@ -6023,6 +6040,7 @@ void priest_t::create_buffs()
 
   buffs.focused_will = buff_creator_t( this, "focused_will" )
                        .spell( specs.focused_will -> ok() ? specs.focused_will -> effectN( 1 ).trigger() : spell_data_t::not_found() );
+
   if ( perks.enhanced_focused_will -> ok() )
     buffs.focused_will -> add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
 

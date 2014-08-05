@@ -161,6 +161,49 @@ void dot_t::extend_duration( timespan_t extra_seconds, timespan_t max_total_time
   current_action -> stats -> add_refresh( state -> target );
 }
 
+// dot_t::reduce_duration_seconds ===========================================
+
+void dot_t::reduce_duration( timespan_t remove_seconds, uint32_t state_flags )
+{
+  if ( ! ticking )
+    return;
+
+  if ( state_flags == ( uint32_t ) - 1 ) state_flags = current_action -> snapshot_flags;
+
+  // Make sure this DoT is still ticking......
+  assert( tick_event );
+  assert( state );
+  current_action -> snapshot_internal( state, state_flags, current_action -> type == ACTION_HEAL ? HEAL_OVER_TIME : DMG_OVER_TIME );
+
+  if ( remove_seconds >= current_duration )
+  {
+    cancel();
+
+    if ( sim.log )
+    {
+      sim.out_log.printf( "%s reduces duration of %s on %s by %.1f second(s), removing it.",
+                  source -> name(), name(), target -> name(), remove_seconds.total_seconds() );
+    }
+    return;
+  }
+  current_duration -= remove_seconds;
+  reduced_time -= remove_seconds;
+
+  if ( sim.log )
+  {
+    sim.out_log.printf( "%s reduces duration of %s on %s by %.1f second(s).",
+                source -> name(), name(), target -> name(), remove_seconds.total_seconds() );
+  }
+
+  assert( end_event && "Dot is ticking but has no end event." );
+  timespan_t remains = end_event -> remains();
+  remains -= remove_seconds;
+  if ( remains != end_event -> remains() )
+    end_event -> reschedule( remains );
+
+  current_action -> stats -> add_refresh( state -> target );
+}
+
 // dot_t::refresh_duration ==================================================
 
 void dot_t::refresh_duration( uint32_t state_flags )
