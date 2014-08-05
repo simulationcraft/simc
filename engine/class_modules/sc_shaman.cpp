@@ -179,7 +179,6 @@ public:
     stat_buff_t* elemental_blast_haste;
     stat_buff_t* elemental_blast_mastery;
     stat_buff_t* elemental_blast_multistrike;
-    stat_buff_t* elemental_blast_versatility;
     stat_buff_t* tier13_2pc_caster;
     stat_buff_t* tier13_4pc_caster;
 
@@ -3048,7 +3047,7 @@ struct elemental_blast_t : public shaman_spell_t
     if ( result == RESULT_NONE )
     {
       result = RESULT_HIT;
-      unsigned max_buffs = 5 + ( p() -> specialization() == SHAMAN_ENHANCEMENT ? 1 : 0 );
+      unsigned max_buffs = 4 + ( p() -> specialization() == SHAMAN_ENHANCEMENT ? 1 : 0 );
 
       unsigned b = static_cast< unsigned >( rng().range( 0, max_buffs ) );
       assert( b < max_buffs );
@@ -3058,7 +3057,6 @@ struct elemental_blast_t : public shaman_spell_t
       p() -> buff.elemental_blast_haste -> expire();
       p() -> buff.elemental_blast_mastery -> expire();
       p() -> buff.elemental_blast_multistrike -> expire();
-      p() -> buff.elemental_blast_versatility -> expire();
 
       if ( b == 0 )
         p() -> buff.elemental_blast_crit -> trigger();
@@ -3068,8 +3066,6 @@ struct elemental_blast_t : public shaman_spell_t
         p() -> buff.elemental_blast_mastery -> trigger();
       else if ( b == 3 )
         p() -> buff.elemental_blast_multistrike -> trigger();
-      else if ( b == 4 )
-        p() -> buff.elemental_blast_versatility -> trigger();
       else
         p() -> buff.elemental_blast_agility -> trigger();
 
@@ -4970,24 +4966,16 @@ void shaman_t::create_buffs()
   buff.tier13_4pc_healer       = haste_buff_creator_t( this, "tier13_4pc_healer", find_spell( 105877 ) ).add_invalidate( CACHE_HASTE );
 
   // Stat buffs
-  buff.elemental_blast_crit    = stat_buff_creator_t( this, "elemental_blast_crit", find_spell( 118522 ) )
-                                 .max_stack( 1 )
-                                 .add_stat( STAT_CRIT_RATING, find_spell( 118522 ) -> effectN( 1 ).average( this ) );
-  buff.elemental_blast_haste   = stat_buff_creator_t( this, "elemental_blast_haste", find_spell( 118522 ) )
-                                 .max_stack( 1 )
-                                 .add_stat( STAT_HASTE_RATING, find_spell( 118522 ) -> effectN( 1 ).average( this ) );
-  buff.elemental_blast_mastery = stat_buff_creator_t( this, "elemental_blast_mastery", find_spell( 118522 ) )
-                                 .max_stack( 1 )
-                                 .add_stat( STAT_MASTERY_RATING, find_spell( 118522 ) -> effectN( 1 ).average( this ) );
-  buff.elemental_blast_multistrike = stat_buff_creator_t( this, "elemental_blast_multistrike", find_spell( 118522 ) )
-                                 .max_stack( 1 )
-                                 .add_stat( STAT_MULTISTRIKE_RATING, find_spell( 118522 ) -> effectN( 1 ).average( this ) );
-  buff.elemental_blast_versatility = stat_buff_creator_t( this, "elemental_blast_versatility", find_spell( 118522 ) )
-                                 .max_stack( 1 )
-                                 .add_stat( STAT_VERSATILITY_RATING, find_spell( 118522 ) -> effectN( 1 ).average( this ) );
-  buff.elemental_blast_agility = stat_buff_creator_t( this, "elemental_blast_agility", find_spell( 118522 ) )
-                                 .max_stack( 1 )
-                                 .add_stat( STAT_AGILITY, find_spell( 118522 ) -> effectN( 1 ).average( this ) );
+  buff.elemental_blast_crit    = stat_buff_creator_t( this, "elemental_blast_critical_strike", find_spell( 118522 ) )
+                                 .max_stack( 1 );
+  buff.elemental_blast_haste   = stat_buff_creator_t( this, "elemental_blast_haste", find_spell( 173183 ) )
+                                 .max_stack( 1 );
+  buff.elemental_blast_mastery = stat_buff_creator_t( this, "elemental_blast_mastery", find_spell( 173184 ) )
+                                 .max_stack( 1 );
+  buff.elemental_blast_multistrike = stat_buff_creator_t( this, "elemental_blast_multistrike", find_spell( 173185 ) )
+                                 .max_stack( 1 );
+  buff.elemental_blast_agility = stat_buff_creator_t( this, "elemental_blast_agility", find_spell( 173186 ) )
+                                 .max_stack( 1 );
   buff.tier13_2pc_caster        = stat_buff_creator_t( this, "tier13_2pc_caster", find_spell( 105779 ) );
   buff.tier13_4pc_caster        = stat_buff_creator_t( this, "tier13_4pc_caster", find_spell( 105821 ) );
   buff.tier16_2pc_melee         = buff_creator_t( this, "tier16_2pc_melee", sets.set( SET_T16_2PC_MELEE ) -> effectN( 1 ).trigger() )
