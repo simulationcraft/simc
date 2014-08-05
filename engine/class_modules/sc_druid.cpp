@@ -20,8 +20,6 @@ namespace { // UNNAMED NAMESPACE
       Thrash (both forms)
       Swipe
     Use new FB spell data
-    Mastery doesn't benefit Thrash (Bear)
-    Savage Roar works in all forms but Bear
 
     = Balance =
     PvP bonuses
@@ -131,12 +129,13 @@ public:
   pet_t* pet_force_of_nature[ 3 ];
 
   // Auto-attacks
+  weapon_t caster_form_weapon;
   weapon_t cat_weapon;
   weapon_t bear_weapon;
+  melee_attack_t* caster_melee_attack;
   melee_attack_t* cat_melee_attack;
   melee_attack_t* bear_melee_attack;
 
-  weapon_t caster_form_weapon;
   double equipped_weapon_dps;
 
   // Buffs
@@ -1298,7 +1297,7 @@ public:
   {
     base_t::expire_override();
 
-    druid.main_hand_weapon = druid.caster_form_weapon;
+    swap_melee( druid.caster_melee_attack, druid.caster_form_weapon );
 
     sim -> auras.critical_strike -> decrement();
 
@@ -1385,8 +1384,8 @@ struct cat_form_t : public druid_buff_t< buff_t >
   virtual void expire_override()
   {
     base_t::expire_override();
-
-    druid.main_hand_weapon = druid.caster_form_weapon;
+    
+    swap_melee( druid.caster_melee_attack, druid.caster_form_weapon );
 
     druid.buff.claws_of_shirvallah -> expire();
 
@@ -1846,6 +1845,51 @@ public:
       ab::p() -> active.leader_of_the_pack -> execute();
   }
 };
+
+namespace caster_attacks {
+
+// Caster Form Melee Attack ========================================================
+
+struct caster_attack_t : public druid_attack_t < melee_attack_t >
+{
+  caster_attack_t( const std::string& token, druid_t* p,
+                const spell_data_t* s = spell_data_t::nil(),
+                const std::string& options = std::string() ) :
+    base_t( token, p, s )
+  {
+    parse_options( 0, options );
+  }
+}; // end druid_caster_attack_t
+
+struct druid_melee_t : public caster_attack_t
+{
+  druid_melee_t( druid_t* p ) :
+    caster_attack_t( "melee", p )
+  {
+    school      = SCHOOL_PHYSICAL;
+    may_glance  = background = repeating = true;
+    trigger_gcd = timespan_t::zero();
+    special     = false;
+  }
+
+  virtual timespan_t execute_time() const
+  {
+    if ( ! player -> in_combat )
+      return timespan_t::from_seconds( 0.01 );
+
+    return caster_attack_t::execute_time();
+  }
+
+  virtual void impact( action_state_t* state )
+  {
+    caster_attack_t::impact( state );
+
+    if ( result_is_hit( state -> result ) )
+      trigger_omen_of_clarity();
+  }
+};
+
+}
 
 namespace cat_attacks {
 
@@ -3013,17 +3057,6 @@ struct thrash_bear_t : public bear_attack_t
   // Treat direct damage as "bleed"
   virtual double target_armor( player_t* ) const
   { return 0.0; }
-
-  // Buff by Razor Claws for feral shenanigans
-  double composite_da_multiplier( const action_state_t* state ) const
-  {
-    double m = bear_attack_t::composite_da_multiplier( state );
-
-    if ( p() -> mastery.razor_claws -> ok() )
-      m *= 1.0 + p() -> cache.mastery_value();
-
-    return m;
-  }
 };
 
 } // end namespace bear_attacks
@@ -5491,6 +5524,8 @@ void druid_t::init_spells()
 {
   player_t::init_spells();
 
+  caster_melee_attack = new caster_attacks::druid_melee_t( this );
+
   // Specializations
   // Generic / Multiple specs
   spec.critical_strikes        = find_specialization_spell( "Critical Strikes" );
@@ -6431,7 +6466,7 @@ void druid_t::reset()
   base_gcd = timespan_t::from_seconds( 1.5 );
 
   // Restore main hand attack / weapon to normal state
-  main_hand_attack = 0;
+  main_hand_attack = caster_melee_attack;
   main_hand_weapon = caster_form_weapon;
 
   for ( size_t i = 0; i < sim -> actor_list.size(); i++ )
@@ -6581,7 +6616,7 @@ double druid_t::composite_player_multiplier( school_e school ) const
     }
   }
 
-  if ( buff.cat_form -> check() && dbc::is_school( school, SCHOOL_PHYSICAL ) )
+  if ( ! buff.bear_form -> check() && dbc::is_school( school, SCHOOL_PHYSICAL ) )
     m *= 1.0 + buff.savage_roar -> check() * buff.savage_roar -> default_value; // Avoid using value() to prevent skewing benefit_pct.
 
   return m;
