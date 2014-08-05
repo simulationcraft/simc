@@ -5943,9 +5943,10 @@ void druid_t::apl_precombat()
     std::string elixir1, elixir2;
     elixir1 = elixir2 = "elixir,type=";
 
-    if ( ( specialization() == DRUID_GUARDIAN && primary_role() == ROLE_TANK ) || primary_role() == ROLE_TANK ) {
+    if ( ( specialization() == DRUID_GUARDIAN && primary_role() == ROLE_TANK ) || primary_role() == ROLE_TANK )
+    {
       if ( level > 90 )
-        flask += "greater_draenic_critical_strike_flask";
+        flask += "greater_draenic_mastery_flask";
       else if ( level > 85 )
       {
         elixir1 += "mad_hozen";
@@ -5953,25 +5954,24 @@ void druid_t::apl_precombat()
       }
       else
         flask += "steelskin";
-    } else {
-      if ( ( specialization() == DRUID_FERAL && primary_role() == ROLE_ATTACK ) || primary_role() == ROLE_ATTACK )
-      {
-        if ( level > 90 )
-          flask += "greater_draenic_mastery_flask";
-        else if ( level > 85 )
-          flask += "spring_blossoms";
-        else
-          flask += "winds";
-      }
+    }
+    else if ( ( specialization() == DRUID_FERAL && primary_role() == ROLE_ATTACK ) || primary_role() == ROLE_ATTACK )
+    {
+      if ( level > 90 )
+        flask += "greater_draenic_mastery_flask";
+      else if ( level > 85 )
+        flask += "spring_blossoms";
       else
-      {
-        if ( level > 90 )
-          flask += "greater_draenic_mastery_flask";
-        else if ( level > 85 )
-          flask += "warm_sun";
-        else
-          flask += "draconic_mind";
-      }
+        flask += "winds";
+    }
+    else
+    {
+      if ( level > 90 )
+        flask += "greater_draenic_mastery_flask";
+      else if ( level > 85 )
+        flask += "warm_sun";
+      else
+        flask += "draconic_mind";
     }
 
     if ( ! util::str_compare_ci( flask, "flask,type=" ) )
