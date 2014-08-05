@@ -19,7 +19,6 @@ namespace { // UNNAMED NAMESPACE
     Damage check:
       Thrash (both forms)
       Swipe
-    Use new FB spell data
 
     = Balance =
     PvP bonuses
