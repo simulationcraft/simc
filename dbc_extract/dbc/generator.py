@@ -1317,6 +1317,7 @@ class SpellDataGenerator(DataGenerator):
             ( 168952, 0 ),          # Sinister Calling: Crimson Tempest
             ( 168971, 0 ),          # Sinister Calling: Garrote
             ( 168963, 0 ),          # Sinister Calling: Rupture
+            ( 115189, 0 ),          # Anticipation buff
         ),  
         
         # Priest:
@@ -1371,6 +1372,8 @@ class SpellDataGenerator(DataGenerator):
           ( 157348, 5 ), ( 157331, 5 ),                 # Storm elemental spells
           ( 159101, 0 ), ( 159105, 0 ), ( 159103, 0 ),  # Echo of the Elements spec buffs
           ( 157766, 0 ),                                # Improved Chain Lightning visible buff
+          ( 173184, 0 ), ( 173185, 0 ), ( 173186, 0 ),  # Elemental Blast buffs
+          ( 173183, 0 ),                                # Elemental Blast buffs
         ),
         
         # Mage:
