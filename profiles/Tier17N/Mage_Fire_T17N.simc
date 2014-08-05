@@ -3,7 +3,7 @@ level=100
 race=troll
 role=spell
 position=back
-talents=http://us.battle.net/wow/en/tool/talent-calculator#eZ!0...202
+talents=http://us.battle.net/wow/en/tool/talent-calculator#eZ!0...002
 glyphs=combustion,inferno_blast
 spec=fire
 
@@ -96,7 +96,7 @@ off_hand=primal_gladiators_reprieve,id=111133,gem_id=0/0/0/,enchant_id=0
 # gear_stamina=3245
 # gear_intellect=2584
 # gear_spell_power=1244
-# gear_crit_rating=1602
+# gear_crit_rating=1716
 # gear_haste_rating=596
 # gear_mastery_rating=433
 # gear_armor=600
