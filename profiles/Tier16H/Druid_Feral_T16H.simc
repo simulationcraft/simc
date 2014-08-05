@@ -30,6 +30,7 @@ actions.precombat+=/potion,name=virmens_bite
 
 actions=rake,if=buff.prowl.up|buff.shadowmeld.up
 actions+=/auto_attack
+actions+=/skull_bash
 actions+=/cat_form,if=prev.thrash_bear
 actions+=/thrash_bear
 actions+=/shadowmeld,if=buff.savage_roar.remains<3|(buff.bloodtalons.up&buff.savage_roar.remains<6)

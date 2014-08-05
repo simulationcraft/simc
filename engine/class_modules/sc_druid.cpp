@@ -19,7 +19,6 @@ namespace { // UNNAMED NAMESPACE
     Damage check:
       Thrash (both forms)
       Swipe
-    pvp_2pc_melee
     Use new FB spell data
 
     = Balance =
@@ -27,7 +26,7 @@ namespace { // UNNAMED NAMESPACE
     Verify stuff.
 
     = Guardian =
-    Verify stuff (particularly DoC)
+    Damage check
     Might of Ursoc
     PvP bonuses
     Add SD time @ max charges statistic
@@ -217,6 +216,7 @@ public:
     cooldown_t* savage_defense_use;
     cooldown_t* starfallsurge;
     cooldown_t* swiftmend;
+    cooldown_t* tigers_fury;
   } cooldown;
 
   // Gains
@@ -531,6 +531,7 @@ public:
     cooldown.savage_defense_use  = get_cooldown( "savage_defense_use"  );
     cooldown.starfallsurge       = get_cooldown( "starfallsurge"       );
     cooldown.swiftmend           = get_cooldown( "swiftmend"           );
+    cooldown.tigers_fury         = get_cooldown( "tigers_fury"         );
     
     cooldown.pvp_4pc_melee -> duration = timespan_t::from_seconds( 30.0 );
     cooldown.starfallsurge -> charges = 3;
@@ -1843,6 +1844,7 @@ public:
       ab::p() -> active.leader_of_the_pack -> execute();
   }
 };
+
 namespace cat_attacks {
 
 // ==========================================================================
@@ -2515,35 +2517,6 @@ struct shred_t : public cat_attack_t
       m *= 1.0 + p() -> buff.prowl -> data().effectN( 4 ).percent();
 
     return m;
-  }
-};
-
-// Skull Bash (Cat) =========================================================
-
-struct skull_bash_cat_t : public cat_attack_t
-{
-  skull_bash_cat_t( druid_t* p, const std::string& options_str ) :
-    cat_attack_t( "skull_bash_cat", p, p -> find_specialization_spell( "Skull Bash" ), options_str )
-  {
-    may_miss = may_glance = may_block = may_dodge = may_parry = may_crit = false;
-
-    cooldown -> duration += p -> glyph.skull_bash -> effectN( 1 ).time_value();
-  }
-
-  virtual void init()
-  {
-    cat_attack_t::init();
-
-    consume_ooc         = false;
-    consume_bloodtalons = false;
-  }
-
-  virtual bool ready()
-  {
-    if ( ! target -> debuffs.casting -> check() )
-      return false;
-
-    return cat_attack_t::ready();
   }
 };
 
@@ -4945,10 +4918,10 @@ struct savage_defense_t : public druid_spell_t
 
 // Skull Bash (Bear) ========================================================
 
-struct skull_bash_bear_t : public druid_spell_t
+struct skull_bash_t : public druid_spell_t
 {
-  skull_bash_bear_t( druid_t* player, const std::string& options_str ) :
-    druid_spell_t( "skull_bash_bear", player, player -> find_specialization_spell( "Skull Bash" ) )
+  skull_bash_t( druid_t* player, const std::string& options_str ) :
+    druid_spell_t( "skull_bash", player, player -> find_specialization_spell( "Skull Bash" ) )
   {
     parse_options( NULL, options_str );
     may_miss = may_glance = may_block = may_dodge = may_parry = may_crit = false;
@@ -4957,11 +4930,19 @@ struct skull_bash_bear_t : public druid_spell_t
     cooldown -> duration += player -> glyph.skull_bash -> effectN( 1 ).time_value();
   }
 
+  virtual void execute()
+  {
+    druid_spell_t::execute();
+
+    if ( p() -> sets.has_set_bonus( SET_PVP_2PC_MELEE ) )
+      p() -> cooldown.tigers_fury -> reset( false );
+  }
+
   virtual bool ready()
   {
     if ( ! target -> debuffs.casting -> check() )
       return false;
-    if ( ! p() -> buff.bear_form -> check() )
+    if ( ! ( p() -> buff.bear_form -> check() || p() -> buff.cat_form -> check() ) )
       return false;
 
     return druid_spell_t::ready();
@@ -5430,8 +5411,7 @@ action_t* druid_t::create_action( const std::string& name,
   if ( name == "savage_roar"            ) return new            savage_roar_t( this, options_str );
   if ( name == "savage_defense"         ) return new         savage_defense_t( this, options_str );
   if ( name == "shred"                  ) return new                  shred_t( this, options_str );
-  if ( name == "skull_bash_bear"        ) return new        skull_bash_bear_t( this, options_str );
-  if ( name == "skull_bash_cat"         ) return new         skull_bash_cat_t( this, options_str );
+  if ( name == "skull_bash"             ) return new             skull_bash_t( this, options_str );
   if ( name == "stampeding_roar"        ) return new        stampeding_roar_t( this, options_str );
   if ( name == "starfire"               ) return new               starfire_t( this, options_str );
   if ( name == "starfall"               ) return new               starfall_t( this, options_str );
@@ -6111,6 +6091,7 @@ void druid_t::apl_feral()
   else
     def -> add_action( this, "Rake", "if=buff.prowl.up" );
   def -> add_action( "auto_attack" );
+  def -> add_action( this, "Skull Bash" );
   if ( glyph.master_shapeshifter -> ok() )
   {
     def -> add_action( this, "Cat Form", "if=prev.thrash_bear" );
@@ -6262,7 +6243,7 @@ void druid_t::apl_guardian()
     default_list -> add_action( item_actions[i] );
 
   default_list -> add_action( "auto_attack" );
-  default_list -> add_action( "skull_bash_bear" );
+  default_list -> add_action( this, "Skull Bash" );
   default_list -> add_action( this, "Maul", "if=buff.tooth_and_claw.react&buff.tooth_and_claw_absorb.down&incoming_damage_1s" );
   default_list -> add_action( this, "Frenzied Regeneration", "if=incoming_damage_3>(1+action.savage_defense.charges_fractional)*0.04*health.max",
                               "Cast Frenzied Regeneration based on incoming damage, being more strict the closer we are to wasting SD charges." );

@@ -28,7 +28,7 @@ actions+=/berserking
 actions+=/arcane_torrent
 actions+=/use_item,slot=trinket1
 actions+=/auto_attack
-actions+=/skull_bash_bear
+actions+=/skull_bash
 actions+=/maul,if=buff.tooth_and_claw.react&buff.tooth_and_claw_absorb.down&incoming_damage_1s
 # Cast Frenzied Regeneration based on incoming damage, being more strict the closer we are to wasting SD charges.
 actions+=/frenzied_regeneration,if=incoming_damage_3>(1+action.savage_defense.charges_fractional)*0.04*health.max
