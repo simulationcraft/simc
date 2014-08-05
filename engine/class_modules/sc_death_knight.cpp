@@ -5010,9 +5010,7 @@ void parse_rune_type( const std::string& rune_str, bool& include_death, rune_typ
 
 void death_knight_t::trigger_runic_corruption( double rpcost )
 {
-  double multiplier = rpcost / RUNIC_POWER_DIVISOR;
-
-  if ( ! rng().roll( talent.runic_corruption -> proc_chance() * multiplier ) )
+  if ( ! rng().roll( talent.runic_corruption -> effectN( 2 ).percent() * rpcost / 100.0 ) )
     return;
 
   timespan_t duration = timespan_t::from_seconds( 3.0 * cache.attack_haste() );
@@ -6734,9 +6732,7 @@ set_e death_knight_t::decode_set( const item_t& item ) const
 
 void death_knight_t::trigger_runic_empowerment( double rpcost )
 {
-  double multiplier = rpcost / RUNIC_POWER_DIVISOR;
-
-  if ( ! rng().roll( talent.runic_empowerment -> proc_chance() * multiplier ) )
+  if ( ! rng().roll( talent.runic_empowerment -> effectN( 1 ).percent() * rpcost / 100.0 ) )
     return;
 
   int depleted_runes[RUNE_SLOT_MAX];
