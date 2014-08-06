@@ -296,7 +296,7 @@ static double __gt_base_mp5[][100] = {
   }
 };
 
-//  Bsse Stats (Str Agi Sta Int Spi)
+//  Base Stats (Str Agi Sta Int Spi)
 static stat_data_t __gt_class_stats_by_level[][100] = 
 {
   { // No Class
