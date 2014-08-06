@@ -376,7 +376,7 @@ public:
   double careful_aim_crit( player_t* target ) const
   {
     int threshold = specs.careful_aim -> effectN( 2 ).base_value();
-    if ( specs.careful_aim -> ok() && target -> health_percentage() > threshold )
+    if ( specs.careful_aim -> ok() && ( target -> health_percentage() > threshold || buffs.rapid_fire -> up() ))
     {
       return specs.careful_aim -> effectN( 1 ).percent();
     }
@@ -2346,6 +2346,13 @@ struct focusing_shot_t: public hunter_ranged_attack_t
   {
     return false;
   }
+  
+  virtual double composite_target_crit( player_t* t ) const
+  {
+    double cc = hunter_ranged_attack_t::composite_target_crit( t );
+    cc += p() -> careful_aim_crit( t );
+    return cc;
+  }
 
   virtual void execute()
   {
@@ -3359,7 +3366,7 @@ void hunter_t::init_action_list()
 
     precombat -> add_action( "summon_pet" );
     precombat -> add_action( "snapshot_stats", "Snapshot raid buffed stats before combat begins and pre-potting is done." );
-    precombat -> add_action( "exotic_munitions,ammo_type=poisoned,if=talent.exotic_munitions.enabled" );
+    precombat -> add_action( "exotic_munitions,ammo_type=poisoned" );
 
     //Pre-pot
     if ( sim -> allow_potions )
@@ -3484,11 +3491,11 @@ void hunter_t::apl_mm()
   single_target -> add_talent( this, "Powershot" );
   single_target -> add_talent( this, "Fervor", "if=focus<=50" );
   single_target -> add_action( this, "Rapid Fire", "if=!buff.rapid_fire.up" );
-  single_target -> add_talent( this, "Stampede", "if=(trinket.stat.agility.up|target.time_to_die<=20|(trinket.stacking_stat.agility.stack>10&trinket.stat.agility.cooldown_remains<=3))" );
+  single_target -> add_talent( this, "Stampede", "if=trinket.stat.agility.up|target.time_to_die<=20|(trinket.stacking_stat.agility.stack>10&trinket.stat.agility.cooldown_remains<=3)" );
   single_target -> add_talent( this, "A Murder of Crows" );
   single_target -> add_talent( this, "Dire Beast" );
 
-  single_target -> add_action( "run_action_list,name=careful_aim,if=target.health.pct>80|buff.rapid_fire.up" );
+  single_target -> add_action( "run_action_list,name=careful_aim,if=target.health.pct>=80|buff.rapid_fire.up" );
   {
     careful_aim -> add_action( this, "Chimaera Shot" ); 
     careful_aim -> add_action( this, "Aimed Shot" );

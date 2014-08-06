@@ -19,7 +19,7 @@ actions.precombat+=/food,type=blackrock_barbecue
 actions.precombat+=/summon_pet
 # Snapshot raid buffed stats before combat begins and pre-potting is done.
 actions.precombat+=/snapshot_stats
-actions.precombat+=/exotic_munitions,ammo_type=poisoned,if=talent.exotic_munitions.enabled
+actions.precombat+=/exotic_munitions,ammo_type=poisoned
 actions.precombat+=/potion,name=draenic_agility
 
 # Executed every time the actor is available.

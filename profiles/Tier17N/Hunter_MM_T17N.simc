@@ -19,7 +19,7 @@ actions.precombat+=/food,type=blackrock_barbecue
 actions.precombat+=/summon_pet
 # Snapshot raid buffed stats before combat begins and pre-potting is done.
 actions.precombat+=/snapshot_stats
-actions.precombat+=/exotic_munitions,ammo_type=poisoned,if=talent.exotic_munitions.enabled
+actions.precombat+=/exotic_munitions,ammo_type=poisoned
 actions.precombat+=/potion,name=draenic_agility
 
 # Executed every time the actor is available.
@@ -35,10 +35,10 @@ actions+=/run_action_list,name=single_target
 actions.single_target=powershot
 actions.single_target+=/fervor,if=focus<=50
 actions.single_target+=/rapid_fire,if=!buff.rapid_fire.up
-actions.single_target+=/stampede,if=(trinket.stat.agility.up|target.time_to_die<=20|(trinket.stacking_stat.agility.stack>10&trinket.stat.agility.cooldown_remains<=3))
+actions.single_target+=/stampede,if=trinket.stat.agility.up|target.time_to_die<=20|(trinket.stacking_stat.agility.stack>10&trinket.stat.agility.cooldown_remains<=3)
 actions.single_target+=/a_murder_of_crows
 actions.single_target+=/dire_beast
-actions.single_target+=/run_action_list,name=careful_aim,if=target.health.pct>80|buff.rapid_fire.up
+actions.single_target+=/run_action_list,name=careful_aim,if=target.health.pct>=80|buff.rapid_fire.up
 actions.single_target+=/glaive_toss
 actions.single_target+=/barrage
 actions.single_target+=/chimaera_shot
@@ -54,18 +54,18 @@ actions.careful_aim+=/glaive_toss
 actions.careful_aim+=/focusing_shot,if=focus<50
 actions.careful_aim+=/steady_shot
 
-head=primal_gladiators_ringmail_helm,id=111195
-neck=primal_gladiators_necklace_of_prowess,id=111080,enchant=gift_of_multistrike
-shoulders=primal_gladiators_ringmail_spaulders,id=111197
-back=primal_gladiators_cape_of_prowess,id=111078,enchant=gift_of_multistrike
-chest=primal_gladiators_ringmail_armor,id=111193
-wrists=primal_gladiators_armbands_of_victory,id=111163
-hands=primal_gladiators_ringmail_gauntlets,id=111194
-waist=primal_gladiators_waistguard_of_cruelty,id=111155
-legs=primal_gladiators_ringmail_leggings,id=111196
-feet=primal_gladiators_footguards_of_prowess,id=111159
-finger1=primal_gladiators_ring_of_prowess,id=111082,enchant=gift_of_multistrike
-finger2=primal_gladiators_ring_of_prowess,id=111271,enchant=gift_of_multistrike
+head=primal_gladiators_helm,id=111280
+neck=primal_gladiators_necklace_of_cruelty,id=111079,enchant=gift_of_multistrike
+shoulders=primal_gladiators_chain_spaulders,id=111116
+back=primal_gladiators_cape_of_cruelty,id=111077,enchant=gift_of_critical_strike
+chest=primal_gladiators_chain_armor,id=111112
+wrists=primal_gladiators_armbands_of_prowess,id=111161
+hands=primal_gladiators_chain_gauntlets,id=111113
+waist=primal_gladiators_waistguard_of_prowess,id=111156
+legs=primal_gladiators_leggings,id=111281
+feet=primal_gladiators_footguards_of_cruelty,id=111158
+finger1=primal_gladiators_ring_of_cruelty,id=111081,enchant=gift_of_critical_strike
+finger2=primal_gladiators_ring_of_prowess,id=111271,enchant=gift_of_critical_strike
 trinket1=primal_gladiators_insignia_of_conquest,id=111223
 trinket2=primal_gladiators_badge_of_conquest,id=111222
 main_hand=primal_gladiators_heavy_crossbow,id=111073,enchant=oglethorpes_missile_splitter
@@ -73,10 +73,10 @@ main_hand=primal_gladiators_heavy_crossbow,id=111073,enchant=oglethorpes_missile
 # Gear Summary
 # gear_agility=2588
 # gear_stamina=3248
-# gear_crit_rating=591
-# gear_haste_rating=1021
-# gear_mastery_rating=749
+# gear_crit_rating=1720
+# gear_haste_rating=583
+# gear_mastery_rating=488
 # gear_armor=1547
-# gear_multistrike_rating=1123
-# gear_versatility_rating=77
+# gear_multistrike_rating=770
+# pvp_2pc_melee=1
 summon_pet=cat
