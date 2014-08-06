@@ -513,6 +513,7 @@ public:
   {
   }
 
+  // these are options on the Automation tab
   struct choices_t
   {
     QComboBox* player_class;
@@ -520,6 +521,14 @@ public:
     QComboBox* player_race;
     QComboBox* player_level;
   } choice;
+  struct textBoxes_t
+  {
+    SC_TextEdit* talents;
+    SC_TextEdit* glyphs;
+    SC_TextEdit* gear;
+    SC_TextEdit* rotation;
+    SC_TextEdit* sidebar;
+  } textbox;
 
   void createAutomationTab();
 };
@@ -1508,14 +1517,15 @@ namespace automation {
 
   QString tokenize( QString qstr );
   
-  QString does_something( QString player_class,
-                              QString player_spec,
-                              QString player_race,
-                              QString player_level,
-                              QString player_talents,
-                              QString player_glyphs,
-                              QString player_gear,
-                              QString player_rotation );
+  QString do_something( QString player_class,
+                        QString player_spec,
+                        QString player_race,
+                        QString player_level,
+                        QString player_talents,
+                        QString player_glyphs,
+                        QString player_gear,
+                        QString player_rotation
+                      );
 
 } // end automation namespace
 

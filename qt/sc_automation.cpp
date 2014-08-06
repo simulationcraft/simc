@@ -18,15 +18,15 @@ QString automation::tokenize( QString qstr )
   return QString::fromStdString( temp );
 }
 
-QString automation::does_something( QString player_class,
-                                    QString player_spec,
-                                    QString player_race,
-                                    QString player_level,
-                                    QString player_talents,
-                                    QString player_glyphs,
-                                    QString player_gear,
-                                    QString player_rotation
-                                  ) 
+QString automation::do_something( QString player_class,
+                                  QString player_spec,
+                                  QString player_race,
+                                  QString player_level,
+                                  QString player_talents,
+                                  QString player_glyphs,
+                                  QString player_gear,
+                                  QString player_rotation
+                                ) 
 {
   // Dummy code - this just sets up a profile using the strings we pass. 
   // This is where we'll actually split off into different automation schemes.
@@ -46,7 +46,10 @@ QString automation::does_something( QString player_class,
   profile += "glyphs=" + player_glyphs + "\n";
 
   // gear
+  profile += player_gear + "\n";
+
   // rotation
+  profile += player_rotation;
 
   return profile;
 

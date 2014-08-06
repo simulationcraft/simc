@@ -781,51 +781,56 @@ void SC_ImportTab::createAutomationTab()
 
   // Create a label and an edit box for talents
   QLabel* talentsLabel = new QLabel( tr( "Default Talents" ) );
-  SC_TextEdit* talentsEditBox = new SC_TextEdit;
-  talentsEditBox -> resize( 200, 250 );
-  talentsEditBox -> setPlainText( " testing " );
+  textbox.talents = new SC_TextEdit;
+  textbox.talents -> resize( 200, 250 );
+  textbox.talents -> setPlainText( "0000000" );
   
   // assign the label and edit box to cells
   gridLayout -> addWidget( talentsLabel, 0, 0, 0 );
-  gridLayout -> addWidget( talentsEditBox, 1, 0, 0 );
+  gridLayout -> addWidget( textbox.talents, 1, 0, 0 );
 
   // and again for glyphs
   QLabel* glyphsLabel = new QLabel( tr( "Default Glyphs" ) );
-  SC_TextEdit* glpyhsEditBox = new SC_TextEdit;
-  glpyhsEditBox -> resize( 200, 250 );
-  glpyhsEditBox -> setPlainText( " testing " );
+  textbox.glyphs = new SC_TextEdit;
+  textbox.glyphs -> resize( 200, 250 );
+  textbox.glyphs -> setPlainText( "focused_shield/alabaster_shield" );
   
   // assign the label and edit box to cells
-  gridLayout -> addWidget( glyphsLabel, 2, 0, 0 );
-  gridLayout -> addWidget( glpyhsEditBox, 3, 0, 0 );
+  gridLayout -> addWidget( glyphsLabel,    2, 0, 0 );
+  gridLayout -> addWidget( textbox.glyphs, 3, 0, 0 );
   
   // and again for gear
   QLabel* gearLabel = new QLabel( tr( "Default Gear" ) );
-  SC_TextEdit* gearEditBox = new SC_TextEdit;
-  gearEditBox -> resize( 200, 250 );
-  gearEditBox -> setPlainText( " testing " );
+  textbox.gear = new SC_TextEdit;
+  textbox.gear -> resize( 200, 250 );
+  textbox.gear -> setPlainText( "head=\nneck=\n " );
   
   // assign the label and edit box to cells
-  gridLayout -> addWidget( gearLabel, 0, 1, 1, 1, 0 );
-  gridLayout -> addWidget( gearEditBox, 1, 1, 1, 1, 0 );
+  gridLayout -> addWidget( gearLabel,    0, 1, 0 );
+  gridLayout -> addWidget( textbox.gear, 1, 1, 0 );
   
   // and again for rotation
   QLabel* rotationLabel = new QLabel( tr( "Default Rotation" ) );
-  SC_TextEdit* rotationEditBox = new SC_TextEdit;
-  rotationEditBox -> resize( 200, 250 );
-  rotationEditBox -> setPlainText( " testing " );
+  textbox.rotation = new SC_TextEdit;
+  textbox.rotation -> resize( 200, 250 );
+  textbox.rotation -> setPlainText( "actions=/auto_attack\n" );
   
   // assign the label and edit box to cells
-  gridLayout -> addWidget( rotationLabel, 2, 1, 1, 1, 0 );
-  gridLayout -> addWidget( rotationEditBox, 3, 1, 1, 1, 0 );
+  gridLayout -> addWidget( rotationLabel,    2, 1, 0 );
+  gridLayout -> addWidget( textbox.rotation, 3, 1, 0 );
 
   // Add a box on the side for rotation conversion text (TBD)
-  QLabel* rotationTextboxLabel = new QLabel( tr( "Rotation Abbreviations" ) );
-  SC_TextEdit* rotationTextbox = new SC_TextEdit;
-  rotationTextbox -> setText( " Stuff Goes Here" );
-  rotationTextbox -> setDisabled( true );
-  gridLayout -> addWidget( rotationTextboxLabel, 0, 3, 0 );
-  gridLayout -> addWidget( rotationTextbox, 1, 3, 3, 1, 0 );
+  QLabel* sidebarLabel = new QLabel( tr( "Rotation Abbreviations" ) );
+  textbox.sidebar = new SC_TextEdit;
+  textbox.sidebar -> setText( " Stuff Goes Here" );
+  textbox.sidebar -> setDisabled( true );
+  gridLayout -> addWidget( sidebarLabel,    0, 2, 0 );
+  gridLayout -> addWidget( textbox.sidebar, 1, 2, 3, 1, 0 );
+  
+  // this adjusts the relative width of each column
+  gridLayout -> setColumnStretch( 0, 1 );
+  gridLayout -> setColumnStretch( 1, 2 );
+  gridLayout -> setColumnStretch( 2, 1 );
 
   // set the layout of the grid box
   gridGroupBox -> setLayout( gridLayout );
@@ -838,29 +843,6 @@ void SC_ImportTab::createAutomationTab()
 
   // Finally, add the tab
   addTab( automationTabScrollArea, tr( "Automation" ) );
-
-  // Create Text Boxes
-  //SC_TextEdit* talentsEditBox = new SC_TextEdit( automationTabScrollArea );
-  //talentsEditBox -> move( 10, 160 );
-  //talentsEditBox -> resize( 200, 250 );
-  //talentsEditBox -> append( " talents " );
-  //
-  //SC_TextEdit* glyphsEditBox = new SC_TextEdit( automationTabScrollArea );
-  //glyphsEditBox -> move( 10, 450 );
-  //glyphsEditBox -> resize( 350, 300 );
-  //glyphsEditBox -> append( " glyphs " );
-  //
-  //SC_TextEdit* gearEditBox = new SC_TextEdit( automationTabScrollArea );
-  //gearEditBox -> setDocumentTitle( " Default Gear " );
-  //gearEditBox -> move( 400, 160 );
-  //gearEditBox -> resize( 500, 250 );
-  //gearEditBox -> append( " gear " );
-  //
-  //SC_TextEdit* rotationEditBox = new SC_TextEdit( automationTabScrollArea );
-  //rotationEditBox -> move( 400, 450 );
-  //rotationEditBox -> resize( 500, 300 );
-  //rotationEditBox -> append( " rotation " );
-  //mainTab -> addTab( optionsTab, tr( "Options" ) );
 
   //connect( optionsTab, SIGNAL( armory_region_changed( const QString& ) ), this, SLOT( armoryRegionChanged( const QString& ) ) );
 }
@@ -1264,11 +1246,15 @@ void SC_MainWindow::startAutomationImport( int tab )
 {
   QString profile;
 
-  profile = automation::does_something( importTab -> choice.player_class -> currentText(),
-                                        importTab -> choice.player_spec -> currentText(),
-                                        importTab -> choice.player_race -> currentText(),
-                                        importTab -> choice.player_level -> currentText(),
-                                        "", "", "", "" );
+  profile = automation::do_something( importTab -> choice.player_class -> currentText(),
+                                      importTab -> choice.player_spec -> currentText(),
+                                      importTab -> choice.player_race -> currentText(),
+                                      importTab -> choice.player_level -> currentText(),
+                                      importTab -> textbox.talents -> document() -> toPlainText(),
+                                      importTab -> textbox.glyphs -> document() -> toPlainText(),
+                                      importTab -> textbox.gear -> document() -> toPlainText(),
+                                      importTab -> textbox.rotation -> document() -> toPlainText()
+                                    );
 
   simulateTab -> add_Text( profile,  tr( "Testing" ) );
   
