@@ -4413,9 +4413,9 @@ struct plague_leech_t : public death_knight_spell_t
 
   bool ready()
   {
-    if ( ( ! td( target ) -> dots_frost_fever -> is_ticking() ||
-         ! td( target ) -> dots_blood_plague -> is_ticking() ) &&
-         ! td( target ) -> dots_necrotic_plague -> is_ticking() )
+    if ( ( ! p() -> talent.necrotic_plague -> ok() && (
+         ( ! td( target ) -> dots_frost_fever -> is_ticking() || ! td( target ) -> dots_blood_plague -> is_ticking() ) ) ) ||
+         ( p() -> talent.necrotic_plague -> ok() && ! td( target ) -> dots_necrotic_plague -> is_ticking() ) )
       return false;
 
     bool rd = death_knight_spell_t::ready();
