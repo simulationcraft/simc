@@ -20,4 +20,5 @@
  SOURCES += qt/sc_window.cpp
  SOURCES += qt/sc_options_tab.cpp
  SOURCES += qt/sc_import.cpp
+ SOURCES += qt/sc_automation.cpp
  SOURCES += qt/main.cpp

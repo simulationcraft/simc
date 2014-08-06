@@ -59,6 +59,9 @@ To change the list of source files, update the QT_ files and run synchronize.py
 		<ClCompile Include="..\qt\sc_import.cpp">
 			
 		</ClCompile>
+		<ClCompile Include="..\qt\sc_automation.cpp">
+			
+		</ClCompile>
 		<ClCompile Include="..\qt\main.cpp">
 			
 		</ClCompile>
