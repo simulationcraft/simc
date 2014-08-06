@@ -3919,18 +3919,18 @@ struct astral_communion_t : public druid_spell_t
     base_tick_time = timespan_t::from_millis( 100 );
   }
 
-  virtual double composite_haste() const
+  double composite_haste() const
   {
     return 1.0;
   }
 
-  virtual void execute()
+  void execute()
   {
     druid_spell_t::execute(); // Do not move the buff trigger in front of this.
     p() -> buff.astral_communion -> trigger();
   }
 
-  virtual void tick( dot_t* d )
+  void tick( dot_t* d )
   {
     druid_spell_t::tick( d );
     p() -> balance_tracker();
@@ -3946,12 +3946,11 @@ struct astral_communion_t : public druid_spell_t
     }
   }
 
-  virtual void last_tick( dot_t* d )
+  void last_tick( dot_t* d )
   {
     druid_spell_t::last_tick( d );
     p() -> buff.astral_communion -> expire();
   }
-
 };
 
 // Barkskin =================================================================
@@ -3965,7 +3964,7 @@ struct barkskin_t : public druid_spell_t
     use_off_gcd = true;
   }
 
-  virtual void execute()
+  void execute()
   {
     druid_spell_t::execute();
 
@@ -3992,14 +3991,14 @@ struct bear_form_t : public druid_spell_t
     base_costs[ RESOURCE_MANA ] *= 1.0 + p() -> glyph.master_shapeshifter -> effectN( 1 ).percent();
   }
 
-  virtual void execute()
+  void execute()
   {
     spell_t::execute();
 
     p() -> buff.bear_form -> start();
   }
 
-  virtual bool ready()
+  bool ready()
   {
     if ( p() -> buff.bear_form -> check() )
       return false;
@@ -4018,7 +4017,7 @@ struct berserk_t : public druid_spell_t
     harmful = false;
   }
 
-  virtual void execute()
+  void execute()
   {
     druid_spell_t::execute();
 
@@ -4044,7 +4043,7 @@ struct bristling_fur_t : public druid_spell_t
     harmful = false;
   }
 
-  virtual void execute()
+  void execute()
   {
     druid_spell_t::execute();
 
@@ -4074,14 +4073,14 @@ struct cat_form_t : public druid_spell_t
     base_costs[ RESOURCE_MANA ] *= 1.0 + p() -> glyph.master_shapeshifter -> effectN( 1 ).percent();
   }
 
-  virtual void execute()
+  void execute()
   {
     spell_t::execute();
 
     p() -> buff.cat_form -> start();
   }
 
-  virtual bool ready()
+  bool ready()
   {
     if ( p() -> buff.cat_form -> check() )
       return false;
@@ -4103,7 +4102,7 @@ struct celestial_alignment_t : public druid_spell_t
     dot_duration = timespan_t::zero();
   }
 
-  virtual void execute()
+  void execute()
   {
     druid_spell_t::execute(); // Do not change the order here. 
     p() -> buff.celestial_alignment -> trigger();
@@ -4120,7 +4119,7 @@ struct cenarion_ward_t : public druid_spell_t
     harmful    = false;
   }
 
-  virtual void execute()
+  void execute()
   {
     druid_spell_t::execute();
 
@@ -4141,7 +4140,7 @@ struct dash_t : public druid_spell_t
     use_off_gcd = true;
   }
 
-  virtual void execute()
+  void execute()
   {
     druid_spell_t::execute();
 
@@ -4160,7 +4159,7 @@ struct faerie_fire_t : public druid_spell_t
     cooldown -> duration = timespan_t::from_seconds( 6.0 );
   }
 
-  virtual void update_ready( timespan_t )
+  void update_ready( timespan_t )
   {
     timespan_t cd = cooldown -> duration;
 
@@ -4170,7 +4169,7 @@ struct faerie_fire_t : public druid_spell_t
     druid_spell_t::update_ready( cd );
   }
 
-  virtual double action_multiplier() const
+  double action_multiplier() const
   {
     double am = druid_spell_t::action_multiplier();
 
@@ -4182,7 +4181,7 @@ struct faerie_fire_t : public druid_spell_t
     return am;
   }
 
-  virtual resource_e current_resource() const
+  resource_e current_resource() const
   {
     if ( p() -> buff.bear_form -> check() )
       return RESOURCE_RAGE;
@@ -4206,7 +4205,7 @@ struct feral_charge_bear_t : public druid_spell_t
     movement_directionality = MOVEMENT_OMNI;
   }
 
-  virtual bool ready()
+  bool ready()
   {
     if ( ! p() -> buff.bear_form -> check() )
       return false;
@@ -4234,7 +4233,7 @@ struct force_of_nature_spell_t : public druid_spell_t
     use_off_gcd = true;
   }
 
-  virtual void execute()
+  void execute()
   {
     druid_spell_t::execute();
 
@@ -4266,7 +4265,7 @@ struct growl_t: public druid_spell_t
     use_off_gcd = true;
   }
 
-  virtual void impact( action_state_t* s )
+  void impact( action_state_t* s )
   {
     if ( s -> target -> is_enemy() )
       target -> taunt( player );
@@ -4274,7 +4273,7 @@ struct growl_t: public druid_spell_t
     druid_spell_t::impact( s );
   }
 
-  virtual bool ready()
+  bool ready()
   {
     if ( ! p() -> buff.bear_form -> check() )
       return false;
@@ -4294,7 +4293,7 @@ struct heart_of_the_wild_t : public druid_spell_t
     harmful = may_hit = may_crit = false;
   }
 
-  virtual void execute()
+  void execute()
   {
     druid_spell_t::execute();
     p() -> buff.heart_of_the_wild -> trigger();
@@ -4324,7 +4323,7 @@ struct hurricane_t : public druid_spell_t
     dynamic_tick_action = true;
   }
 
-  virtual double action_multiplier() const
+  double action_multiplier() const
   {
     double m = druid_spell_t::action_multiplier();
 
@@ -4333,7 +4332,7 @@ struct hurricane_t : public druid_spell_t
     return m;
   }
 
-  virtual void execute()
+  void execute()
   {
     druid_spell_t::execute();
 
@@ -4341,14 +4340,13 @@ struct hurricane_t : public druid_spell_t
 
   }
 
-  virtual void last_tick( dot_t * d )
+  void last_tick( dot_t * d )
   {
     druid_spell_t::last_tick( d );
     p() -> buff.hurricane -> expire();
   }
 
-
-  virtual void schedule_execute( action_state_t* state = 0 )
+  void schedule_execute( action_state_t* state = 0 )
   {
     druid_spell_t::schedule_execute( state );
 
@@ -4368,7 +4366,7 @@ struct incarnation_moonkin_t : public druid_spell_t
     harmful = false;
   }
 
-  virtual void execute()
+  void execute()
   {
     druid_spell_t::execute();
 
@@ -4385,7 +4383,7 @@ struct incarnation_cat_t : public druid_spell_t
     harmful = false;
   }
 
-  virtual void execute()
+  void execute()
   {
     druid_spell_t::execute();
 
@@ -4402,7 +4400,7 @@ struct incarnation_resto_t : public druid_spell_t
     harmful = false;
   }
 
-  virtual void execute()
+  void execute()
   {
     druid_spell_t::execute();
 
@@ -4419,7 +4417,7 @@ struct incarnation_bear_t : public druid_spell_t
     harmful = false;
   }
 
-  virtual void execute()
+  void execute()
   {
     druid_spell_t::execute();
 
@@ -4444,7 +4442,7 @@ struct mark_of_the_wild_t : public druid_spell_t
     background  = ( sim -> overrides.str_agi_int != 0 );
   }
 
-  virtual void execute()
+  void execute()
   {
     druid_spell_t::execute();
 
@@ -4468,18 +4466,18 @@ struct might_of_ursoc_t : public druid_spell_t
     use_off_gcd = true;
   }
 
-  virtual void execute()
+  void execute()
   {
     druid_spell_t::execute();
 
     p() -> buff.might_of_ursoc -> trigger();
   }
 
-  virtual bool ready() 
+  bool ready() 
   {
     if ( ! p() -> buff.bear_form -> check() )
       return false;
-    
+
     return druid_spell_t::ready();
   }
 };
@@ -4521,7 +4519,7 @@ struct sunfire_t : public druid_spell_t
       return m;
     }
 
-    virtual void tick( dot_t* d )
+    void tick( dot_t* d )
     {
       druid_spell_t::tick( d );
 
@@ -4579,7 +4577,7 @@ struct sunfire_t : public druid_spell_t
     return m;
   }
 
-  virtual void tick( dot_t* d )
+  void tick( dot_t* d )
   {
     druid_spell_t::tick( d );
 
@@ -4587,7 +4585,7 @@ struct sunfire_t : public druid_spell_t
       p() -> trigger_shooting_stars( d -> state );
   }
 
-  virtual void impact( action_state_t* s )
+  void impact( action_state_t* s )
   {
     if ( moonfire && result_is_hit( s -> result ) )
     {
@@ -4600,7 +4598,7 @@ struct sunfire_t : public druid_spell_t
     druid_spell_t::impact( s );
   }
 
-  virtual bool ready()
+  bool ready()
   {
     bool ready = druid_spell_t::ready();
 
@@ -4654,7 +4652,7 @@ struct moonfire_t : public druid_spell_t
       return m;
     }
 
-    virtual void tick( dot_t* d )
+    void tick( dot_t* d )
     {
       druid_spell_t::tick( d );
 
@@ -4687,7 +4685,7 @@ struct moonfire_t : public druid_spell_t
       sunfire = new sunfire_CA_t( player );
   }
 
-  virtual void tick( dot_t* d )
+  void tick( dot_t* d )
   {
     druid_spell_t::tick( d );
 
@@ -4718,7 +4716,7 @@ struct moonfire_t : public druid_spell_t
     return m;
   }
 
-  virtual void schedule_execute( action_state_t* state = 0 )
+  void schedule_execute( action_state_t* state = 0 )
   {
     druid_spell_t::schedule_execute( state );
 
@@ -4726,7 +4724,7 @@ struct moonfire_t : public druid_spell_t
     p() -> buff.cat_form -> expire();
   }
 
-  virtual void impact( action_state_t* s )
+  void impact( action_state_t* s )
   {
     // The Sunfire hits BEFORE the moonfire!
     if ( sunfire && result_is_hit( s -> result ) )
@@ -4740,7 +4738,7 @@ struct moonfire_t : public druid_spell_t
     druid_spell_t::impact( s );
   }
 
-  virtual bool ready()
+  bool ready()
   {
     bool ready = druid_spell_t::ready();
 
@@ -4768,7 +4766,7 @@ struct moonfire_li_t : public druid_spell_t
     parse_options( NULL, options_str );
   }
 
-  virtual void impact( action_state_t* s )
+  void impact( action_state_t* s )
   {
     druid_spell_t::impact( s );
 
@@ -4784,7 +4782,7 @@ struct moonfire_li_t : public druid_spell_t
     }
   }
 
-  virtual bool ready()
+  bool ready()
   {
     if ( ! p() -> talent.lunar_inspiration -> ok() )
       return false;
@@ -4807,14 +4805,14 @@ struct moonkin_form_t : public druid_spell_t
     base_costs[ RESOURCE_MANA ] *= 1.0 + p() -> glyph.master_shapeshifter -> effectN( 1 ).percent();
   }
 
-  virtual void execute()
+  void execute()
   {
     spell_t::execute();
 
     p() -> buff.moonkin_form -> start();
   }
 
-  virtual bool ready()
+  bool ready()
   {
     if ( p() -> buff.moonkin_form -> check() )
       return false;
@@ -4835,14 +4833,14 @@ struct druids_swiftness_t : public druid_spell_t
     harmful = false;
   }
 
-  virtual void execute()
+  void execute()
   {
     druid_spell_t::execute();
 
     p() -> buff.natures_swiftness -> trigger();
   }
 
-  virtual bool ready()
+  bool ready()
   {
     if ( p() -> buff.natures_swiftness -> check() )
       return false;
@@ -4862,7 +4860,7 @@ struct natures_vigil_t : public druid_spell_t
     harmful = false;
   }
 
-  virtual void execute()
+  void execute()
   {
     // Don't call druid_spell_t::execute() because the spell data has some weird stuff in it.
     if ( sim -> log ) sim -> out_log.printf( "%s performs %s", player -> name(), name() );
@@ -4885,7 +4883,7 @@ struct prowl_t : public druid_spell_t
     harmful     = false;
   }
 
-  virtual void execute()
+  void execute()
   {
     if ( sim -> log )
       sim -> out_log.printf( "%s performs %s", player -> name(), name() );
@@ -4893,7 +4891,7 @@ struct prowl_t : public druid_spell_t
     p() -> buff.prowl -> trigger();
   }
 
-  virtual bool ready()
+  bool ready()
   {
     if ( p() -> buff.prowl -> check() )
       return false;
@@ -4926,7 +4924,7 @@ struct savage_defense_t : public druid_spell_t
       p -> active.ursocs_vigor = new ursocs_vigor_t( p );
   }
 
-  virtual void execute()
+  void execute()
   {
     druid_spell_t::execute();
 
@@ -4941,7 +4939,7 @@ struct savage_defense_t : public druid_spell_t
       p() -> active.ursocs_vigor -> trigger_hot();
   }
 
-  virtual double cooldown_reduction() const
+  double cooldown_reduction() const
   {
     double cdr = druid_spell_t::cooldown_reduction();
 
@@ -4954,7 +4952,7 @@ struct savage_defense_t : public druid_spell_t
     return cdr;
   }
 
-  virtual bool ready() 
+  bool ready() 
   {
     if ( p() -> cooldown.savage_defense_use -> down() )
       return false;
@@ -4979,7 +4977,7 @@ struct skull_bash_t : public druid_spell_t
     cooldown -> duration += player -> glyph.skull_bash -> effectN( 1 ).time_value();
   }
 
-  virtual void execute()
+  void execute()
   {
     druid_spell_t::execute();
 
@@ -4987,7 +4985,7 @@ struct skull_bash_t : public druid_spell_t
       p() -> cooldown.tigers_fury -> reset( false );
   }
 
-  virtual bool ready()
+  bool ready()
   {
     if ( ! target -> debuffs.casting -> check() )
       return false;
@@ -5009,7 +5007,7 @@ struct stampeding_roar_t : public druid_spell_t
     harmful = false;
   }
 
-  virtual void execute()
+  void execute()
   {
     druid_spell_t::execute();
 
@@ -5036,7 +5034,7 @@ struct starfire_t : public druid_spell_t
     base_multiplier *= 1.0 + player -> perk.improved_starfire -> effectN( 1 ).percent();
   }
 
-  virtual double action_multiplier() const
+  double action_multiplier() const
   {
     double m = druid_spell_t::action_multiplier();
 
@@ -5047,7 +5045,7 @@ struct starfire_t : public druid_spell_t
     return m;
   }
 
-  virtual timespan_t execute_time() const
+  timespan_t execute_time() const
   {
     timespan_t casttime = druid_spell_t::execute_time();
 
@@ -5057,7 +5055,7 @@ struct starfire_t : public druid_spell_t
     return casttime;
   }
 
-  virtual void execute()
+  void execute()
   {
     druid_spell_t::execute();
 
@@ -5067,7 +5065,7 @@ struct starfire_t : public druid_spell_t
     p() -> buff.lunar_empowerment -> decrement();
   }
 
-  virtual void impact( action_state_t* s )
+  void impact( action_state_t* s )
   {
     druid_spell_t::impact( s );
 
@@ -5116,19 +5114,19 @@ struct starfall_t : public druid_spell_t
     return m;
   }
 
-  virtual void tick( dot_t* )
+  void tick( dot_t* )
   {
     starfall -> execute();
   }
 
-  virtual void execute()
+  void execute()
   {
     p() -> buff.starfall -> trigger();
 
     druid_spell_t::execute();
   }
 
-  virtual bool ready()
+  bool ready()
   {
     if ( p() -> buff.starfall -> up() )
       return false;
@@ -5155,7 +5153,7 @@ struct starsurge_t : public druid_spell_t
     base_execute_time *= 1.0 + player -> perk.enhanced_starsurge -> effectN( 1 ).percent();
   }
 
-  virtual void execute()
+  void execute()
   {
     druid_spell_t::execute();
     if ( p() -> eclipse_amount < 0 )
@@ -5210,7 +5208,7 @@ struct survival_instincts_t : public druid_spell_t
     cooldown -> charges = 2;
   }
 
-  virtual void execute()
+  void execute()
   {
     druid_spell_t::execute();
 
@@ -5228,7 +5226,7 @@ struct tigers_fury_t : public druid_spell_t
     harmful = false;
   }
 
-  virtual void execute()
+  void execute()
   {
     druid_spell_t::execute();
 
@@ -5292,7 +5290,7 @@ struct wild_mushroom_t : public druid_spell_t
     harmful = false;
   }
 
-  virtual void execute()
+  void execute()
   {
     druid_spell_t::execute();
 
@@ -5311,7 +5309,7 @@ struct wrath_t : public druid_spell_t
     spell_power_mod.direct *= 1.0 + player -> perk.improved_wrath -> effectN( 1 ).percent();
   }
 
-  virtual double action_multiplier() const
+  double action_multiplier() const
   {
     double m = druid_spell_t::action_multiplier();
 
@@ -5329,7 +5327,7 @@ struct wrath_t : public druid_spell_t
     return m;
   }
 
-  virtual timespan_t execute_time() const
+  timespan_t execute_time() const
   {
     timespan_t casttime = druid_spell_t::execute_time();
 
@@ -5339,7 +5337,7 @@ struct wrath_t : public druid_spell_t
     return casttime;
   }
 
-  virtual void schedule_execute( action_state_t* state = 0 )
+  void schedule_execute( action_state_t* state = 0 )
   {
     druid_spell_t::schedule_execute( state );
 
@@ -5347,7 +5345,7 @@ struct wrath_t : public druid_spell_t
     p() -> buff.bear_form -> expire();
   }
 
-  virtual void execute()
+  void execute()
   {
     druid_spell_t::execute();
 
@@ -5357,7 +5355,7 @@ struct wrath_t : public druid_spell_t
     p() -> buff.solar_empowerment -> decrement();
   }
 
-  virtual void impact( action_state_t* s )
+  void impact( action_state_t* s )
   {
     druid_spell_t::impact( s );
 
@@ -5781,8 +5779,6 @@ void druid_t::init_base_stats()
 {
   player_t::init_base_stats();
 
-  resources.infinite_resource[RESOURCE_MANA] = true; // REMOVE LATER *~*~*~*~*~**~*// ~***$_@*$%_@
-
   // TODO: Confirm that all druid specs get both of these things.
   base.attack_power_per_agility  = 1.0;
   base.attack_power_per_strength = 0.0;
@@ -5814,8 +5810,6 @@ void druid_t::create_buffs()
   player_t::create_buffs();
 
   using namespace buffs;
-
-  // MoP checked
 
   // Generic / Multi-spec druid buffs
   buff.bear_form             = new bear_form_t( *this );
@@ -5941,7 +5935,6 @@ void druid_t::create_buffs()
   buff.harmony               = buff_creator_t( this, "harmony", mastery.harmony -> ok() ? find_spell( 100977 ) : spell_data_t::not_found() );
   buff.natures_swiftness     = buff_creator_t( this, "natures_swiftness", find_specialization_spell( "Nature's Swiftness" ) )
                                .cd( timespan_t::zero() ); // Cooldown is handled in the spell
-
 }
 
 // ALL Spec Pre-Combat Action Priority List =================================
@@ -6001,7 +5994,7 @@ void druid_t::apl_precombat()
   if ( sim -> allow_food && level > 80 )
   {
     std::string food = "food,type=";
-    
+
     if ( level > 90 )
     {
       if ( specialization() == DRUID_FERAL )
