@@ -68,6 +68,118 @@ QString automation::do_something( QString player_class,
 ///////////////////////////////////////////////////////////////////////////////
 
 
+
+QComboBox* createChoice( int count, ... )
+{
+  QComboBox* choice = new QComboBox();
+  va_list vap;
+  va_start( vap, count );
+  for ( int i = 0; i < count; i++ )
+    choice -> addItem( va_arg( vap, char* ) );
+  va_end( vap );
+  return choice;
+}
+
+
+// Method to set the "Spec" drop-down based on "Class" selection
+void SC_ImportTab::setSpecDropDown( const int player_class )
+{
+  // If we have a fourth spec, remove it here
+  if ( choice.player_spec -> count() > 3 )
+    choice.player_spec -> removeItem( 3 );
+
+  switch ( player_class )
+  {
+    case 0: 
+    {
+      choice.player_spec -> setItemText( 0, "Blood" );
+      choice.player_spec -> setItemText( 1, "Frost" );
+      choice.player_spec -> setItemText( 2, "Unholy" );
+      break;
+    }
+    case 1:
+    {
+      choice.player_spec -> setItemText( 0, "Balance" );
+      choice.player_spec -> setItemText( 1, "Feral" );
+      choice.player_spec -> setItemText( 2, "Guardian" );
+      choice.player_spec -> addItem( "Restoration" );
+      break;
+    }
+    case 2:
+    {
+      choice.player_spec -> setItemText( 0, "Beast Mastery" );
+      choice.player_spec -> setItemText( 1, "Marksmanship" );
+      choice.player_spec -> setItemText( 2, "Survival" );
+      break;
+    }
+    case 3:
+    {
+      choice.player_spec -> setItemText( 0, "Arcane" );
+      choice.player_spec -> setItemText( 1, "Fire" );
+      choice.player_spec -> setItemText( 2, "Frost" );
+      break;
+    }
+    case 4:
+    {
+      choice.player_spec -> setItemText( 0, "Brewmaster" );
+      choice.player_spec -> setItemText( 1, "Mistweaver" );
+      choice.player_spec -> setItemText( 2, "Windwalker" );
+      break;
+    }
+    case 5:
+    {
+      choice.player_spec -> setItemText( 0, "Holy" );
+      choice.player_spec -> setItemText( 1, "Protection" );
+      choice.player_spec -> setItemText( 2, "Retribution" );
+      break;
+    }
+    case 6:
+    {
+      choice.player_spec -> setItemText( 0, "Discipline" );
+      choice.player_spec -> setItemText( 1, "Holy" );
+      choice.player_spec -> setItemText( 2, "Shadow" );
+      break;
+    }
+    case 7:
+    {
+      choice.player_spec -> setItemText( 0, "Assassination" );
+      choice.player_spec -> setItemText( 1, "Combat" );
+      choice.player_spec -> setItemText( 2, "Subtlety" );
+      break;
+    }
+    case 8:
+    {
+      choice.player_spec -> setItemText( 0, "Elemental" );
+      choice.player_spec -> setItemText( 1, "Enhancement" );
+      choice.player_spec -> setItemText( 2, "Restoration" );
+      break;
+    }
+    case 9:
+    {
+      choice.player_spec -> setItemText( 0, "Affliction" );
+      choice.player_spec -> setItemText( 1, "Demonology" );
+      choice.player_spec -> setItemText( 2, "Destruction" );
+      break;
+    }
+    case 10:
+    {
+      choice.player_spec -> setItemText( 0, "Arms" );
+      choice.player_spec -> setItemText( 1, "Fury" );
+      choice.player_spec -> setItemText( 2, "Protection" );
+      break;
+    }
+    default:
+    {
+      choice.player_spec -> setItemText( 0, "What" );
+      choice.player_spec -> setItemText( 1, "The" );
+      choice.player_spec -> setItemText( 2, "F*&!" );
+      break;
+    }
+  }
+  
+}
+
+
 void SC_MainWindow::startAutomationImport( int tab )
 {
   QString profile;
@@ -86,19 +198,6 @@ void SC_MainWindow::startAutomationImport( int tab )
   
   mainTab -> setCurrentTab( TAB_SIMULATE );
 }
-
-
-QComboBox* createChoice( int count, ... )
-{
-  QComboBox* choice = new QComboBox();
-  va_list vap;
-  va_start( vap, count );
-  for ( int i = 0; i < count; i++ )
-    choice -> addItem( va_arg( vap, char* ) );
-  va_end( vap );
-  return choice;
-}
-
 void SC_ImportTab::createAutomationTab()
 { 
   // layout building based on 
@@ -122,6 +221,8 @@ void SC_ImportTab::createAutomationTab()
   formLayout -> addRow( tr( "Class" ), choice.player_class );
 
   choice.player_spec = createChoice( 3, "1", "2", "3" );
+  choice.player_spec -> setSizeAdjustPolicy( QComboBox::AdjustToContents );
+  setSpecDropDown( choice.player_class -> currentIndex() );
   formLayout -> addRow( tr( "Spec (PH)" ), choice.player_spec );
 
   choice.player_race = createChoice( 13, "Blood Elf", "Draenei", "Dwarf", "Gnome", "Goblin", "Human", "Night Elf", "Orc", "Pandaren", "Tauren", "Troll", "Undead", "Worgen");
@@ -205,5 +306,5 @@ void SC_ImportTab::createAutomationTab()
   // Finally, add the tab
   addTab( automationTabScrollArea, tr( "Automation" ) );
 
-  //connect( optionsTab, SIGNAL( armory_region_changed( const QString& ) ), this, SLOT( armoryRegionChanged( const QString& ) ) );
+  connect( choice.player_class, SIGNAL( currentIndexChanged( const int& ) ), this, SLOT( setSpecDropDown( const int ) ) );
 }

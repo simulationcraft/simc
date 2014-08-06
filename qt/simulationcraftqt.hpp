@@ -531,6 +531,9 @@ public:
   } textbox;
 
   void createAutomationTab();
+
+public slots:
+  void setSpecDropDown( const int player_class );
 };
 
 // ==========================================================================
@@ -1126,7 +1129,7 @@ public slots:
   void stopImport();
   void stopSim();
   void stopAllSim();
-
+  
 public:
   SC_MainWindow( QWidget *parent = 0 );
 };
