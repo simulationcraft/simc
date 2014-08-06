@@ -304,7 +304,7 @@ buff_t::buff_t( const buff_creation::buff_creator_basics_t& params ) :
         change_regen_rate = true;
     }
   }
-  else
+  else if ( params._affects_regen != -1 )
     change_regen_rate = params._affects_regen;
 
   invalidate_list = params._invalidate_list;
