@@ -51,7 +51,7 @@ actions+=/run_action_list,name=pool
 
 actions.generator=run_action_list,name=pool,if=buff.master_of_subtlety.down&buff.shadow_dance.down&debuff.find_weakness.down&(energy+cooldown.shadow_dance.remains*energy.regen<80|energy+cooldown.vanish.remains*energy.regen<60)
 actions.generator+=/fan_of_knives,if=active_enemies>=4
-actions.generator+=/hemorrhage,if=remains<3|position_front
+actions.generator+=/hemorrhage,if=remains<8|position_front|debuff.find_weakness.up|trinket.proc.agility.up|trinket.stacking_proc.agility.stack>=trinket.stacking_proc.agility.max_stack-1
 actions.generator+=/shuriken_toss,if=energy<65&energy.regen<16
 actions.generator+=/backstab
 actions.generator+=/run_action_list,name=pool
