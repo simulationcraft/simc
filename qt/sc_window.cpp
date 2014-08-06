@@ -739,39 +739,127 @@ QComboBox* createChoice( int count, ... )
 }
 
 void SC_ImportTab::createAutomationTab()
-{
-  QFormLayout* automationLayout = new QFormLayout();
-  automationLayout -> setFieldGrowthPolicy( QFormLayout::FieldsStayAtSizeHint );
+{ 
+  // layout building based on 
+  // http://qt-project.org/doc/qt-4.8/layouts-basiclayouts.html
+
+  QScrollArea* automationTabScrollArea = new QScrollArea;
+
+  QVBoxLayout* mainLayout = new QVBoxLayout;
+  
+  // create a box for the "Form" section of the layout
+  QGroupBox* formGroupBox = new QGroupBox(tr("Form layout"));
+  mainLayout -> addWidget( formGroupBox );
+
+  // define the formGroupBox's layout
+  QFormLayout* formLayout = new QFormLayout();
+
+  formLayout -> setFieldGrowthPolicy( QFormLayout::FieldsStayAtSizeHint );
 
   // Create Combo Boxes
   choice.player_class = createChoice( 11 , "Death Knight", "Druid", "Hunter", "Mage", "Monk", "Paladin", "Priest", "Rogue", "Shaman", "Warlock", "Warrior" );
-  automationLayout -> addRow( tr( "Class" ), choice.player_class );
+  formLayout -> addRow( tr( "Class" ), choice.player_class );
 
   choice.player_spec = createChoice( 3, "1", "2", "3" );
-  automationLayout -> addRow( tr( "Spec (PH)" ), choice.player_spec );
+  formLayout -> addRow( tr( "Spec (PH)" ), choice.player_spec );
 
   choice.player_race = createChoice( 13, "Blood Elf", "Draenei", "Dwarf", "Gnome", "Goblin", "Human", "Night Elf", "Orc", "Pandaren", "Tauren", "Troll", "Undead", "Worgen");
-  automationLayout -> addRow( tr( "Race" ), choice.player_race );
+  formLayout -> addRow( tr( "Race" ), choice.player_race );
 
   choice.player_level = createChoice( 2, "100", "90" );
-  automationLayout -> addRow( tr( "Level" ), choice.player_level );
+  formLayout -> addRow( tr( "Level" ), choice.player_level );
 
   QLabel* messageText = new QLabel( tr( "Sample Text\n" ) );
-  automationLayout -> addRow( messageText );
+  formLayout -> addRow( messageText );
 
-  messageText = new QLabel( "Default Talents\n\n (text box goes here)" );
-  automationLayout -> addRow( messageText );
+  // set the formGroupBox's layout now that we've defined it
+  formGroupBox -> setLayout( formLayout );
 
-  // text boxes go here
+  // Define a grid box for the text boxes
+  QGroupBox* gridGroupBox = new QGroupBox(tr("Grid Layout"));
+  QGridLayout* gridLayout = new QGridLayout;
+
+  // Create a label and an edit box for talents
+  QLabel* talentsLabel = new QLabel( tr( "Default Talents" ) );
+  SC_TextEdit* talentsEditBox = new SC_TextEdit;
+  talentsEditBox -> resize( 200, 250 );
+  talentsEditBox -> setPlainText( " testing " );
   
-  QGroupBox* automationGroupBox = new QGroupBox();
-  automationGroupBox -> setLayout( automationLayout );
+  // assign the label and edit box to cells
+  gridLayout -> addWidget( talentsLabel, 0, 0, 0 );
+  gridLayout -> addWidget( talentsEditBox, 1, 0, 0 );
 
-  QScrollArea* automationGroupBoxScrollArea = new QScrollArea;
-  automationGroupBoxScrollArea -> setWidget( automationGroupBox );
-  automationGroupBoxScrollArea -> setWidgetResizable( true );
-  addTab( automationGroupBoxScrollArea, tr( "Automation" ) );
+  // and again for glyphs
+  QLabel* glyphsLabel = new QLabel( tr( "Default Glyphs" ) );
+  SC_TextEdit* glpyhsEditBox = new SC_TextEdit;
+  glpyhsEditBox -> resize( 200, 250 );
+  glpyhsEditBox -> setPlainText( " testing " );
+  
+  // assign the label and edit box to cells
+  gridLayout -> addWidget( glyphsLabel, 2, 0, 0 );
+  gridLayout -> addWidget( glpyhsEditBox, 3, 0, 0 );
+  
+  // and again for gear
+  QLabel* gearLabel = new QLabel( tr( "Default Gear" ) );
+  SC_TextEdit* gearEditBox = new SC_TextEdit;
+  gearEditBox -> resize( 200, 250 );
+  gearEditBox -> setPlainText( " testing " );
+  
+  // assign the label and edit box to cells
+  gridLayout -> addWidget( gearLabel, 0, 1, 1, 1, 0 );
+  gridLayout -> addWidget( gearEditBox, 1, 1, 1, 1, 0 );
+  
+  // and again for rotation
+  QLabel* rotationLabel = new QLabel( tr( "Default Rotation" ) );
+  SC_TextEdit* rotationEditBox = new SC_TextEdit;
+  rotationEditBox -> resize( 200, 250 );
+  rotationEditBox -> setPlainText( " testing " );
+  
+  // assign the label and edit box to cells
+  gridLayout -> addWidget( rotationLabel, 2, 1, 1, 1, 0 );
+  gridLayout -> addWidget( rotationEditBox, 3, 1, 1, 1, 0 );
 
+  // Add a box on the side for rotation conversion text (TBD)
+  QLabel* rotationTextboxLabel = new QLabel( tr( "Rotation Abbreviations" ) );
+  SC_TextEdit* rotationTextbox = new SC_TextEdit;
+  rotationTextbox -> setText( " Stuff Goes Here" );
+  rotationTextbox -> setDisabled( true );
+  gridLayout -> addWidget( rotationTextboxLabel, 0, 3, 0 );
+  gridLayout -> addWidget( rotationTextbox, 1, 3, 3, 1, 0 );
+
+  // set the layout of the grid box
+  gridGroupBox -> setLayout( gridLayout );
+  
+  // add the grid box to the main layout
+  mainLayout -> addWidget( gridGroupBox );
+
+  // set the tab's layout to mainLayout
+  automationTabScrollArea -> setLayout( mainLayout );
+
+  // Finally, add the tab
+  addTab( automationTabScrollArea, tr( "Automation" ) );
+
+  // Create Text Boxes
+  //SC_TextEdit* talentsEditBox = new SC_TextEdit( automationTabScrollArea );
+  //talentsEditBox -> move( 10, 160 );
+  //talentsEditBox -> resize( 200, 250 );
+  //talentsEditBox -> append( " talents " );
+  //
+  //SC_TextEdit* glyphsEditBox = new SC_TextEdit( automationTabScrollArea );
+  //glyphsEditBox -> move( 10, 450 );
+  //glyphsEditBox -> resize( 350, 300 );
+  //glyphsEditBox -> append( " glyphs " );
+  //
+  //SC_TextEdit* gearEditBox = new SC_TextEdit( automationTabScrollArea );
+  //gearEditBox -> setDocumentTitle( " Default Gear " );
+  //gearEditBox -> move( 400, 160 );
+  //gearEditBox -> resize( 500, 250 );
+  //gearEditBox -> append( " gear " );
+  //
+  //SC_TextEdit* rotationEditBox = new SC_TextEdit( automationTabScrollArea );
+  //rotationEditBox -> move( 400, 450 );
+  //rotationEditBox -> resize( 500, 300 );
+  //rotationEditBox -> append( " rotation " );
   //mainTab -> addTab( optionsTab, tr( "Options" ) );
 
   //connect( optionsTab, SIGNAL( armory_region_changed( const QString& ) ), this, SLOT( armoryRegionChanged( const QString& ) ) );
@@ -1180,7 +1268,7 @@ void SC_MainWindow::startAutomationImport( int tab )
                                         importTab -> choice.player_spec -> currentText(),
                                         importTab -> choice.player_race -> currentText(),
                                         importTab -> choice.player_level -> currentText(),
-                                        "", "", "", "" );
+                                        "", "", "", "", "" );
 
   simulateTab -> add_Text( profile,  tr( "Testing" ) );
   
