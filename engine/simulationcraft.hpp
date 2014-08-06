@@ -1658,6 +1658,7 @@ protected:
   int _max_stack;
   timespan_t _duration, _cooldown, _period;
   int _quiet, _reverse, _activated;
+  int _affects_regen;
   buff_tick_behavior_e _behavior;
   std::function<void(buff_t*, int, int)> _tick_callback;
   std::vector<cache_e> _invalidate_list;
@@ -1719,6 +1720,8 @@ public:
   { _behavior = b; return *( static_cast<bufftype*>( this ) ); }
   bufftype& tick_callback( std::function<void(buff_t*, int, int)> cb )
   { _tick_callback = cb; return *( static_cast<bufftype*>( this ) ); }
+  bufftype& affects_regen( bool state )
+  { _affects_regen = state; return *( static_cast<bufftype*>( this ) ); }
 };
 
 struct buff_creator_t : public buff_creator_helper_t<buff_creator_t>
@@ -1961,6 +1964,8 @@ public:
   int max_stack() const { return _max_stack; }
 
   rng_t& rng();
+
+  bool change_regen_rate;
 };
 
 struct stat_buff_t : public buff_t
@@ -2779,6 +2784,8 @@ private:
       pause_mutex.unlock();
     }
   }
+public:
+  bool requires_regen_event;
 };
 
 // Module ===================================================================
@@ -5084,6 +5091,13 @@ private:
     else
       current.distance_to_move -= yards;
   }
+public:
+
+  bool dynamic_regen;
+  timespan_t last_regen;
+  std::vector<bool> regen_caches;
+
+  virtual void do_dynamic_regen();
 };
 
 // Target Specific ==========================================================
@@ -7077,6 +7091,21 @@ inline buff_creator_t::operator debuff_t* () const
 
 inline bool player_t::is_my_pet( player_t* t ) const
 { return t -> is_pet() && t -> cast_pet() -> owner == this; }
+
+inline void player_t::do_dynamic_regen()
+{
+  if ( sim -> current_time != last_regen )
+  {
+    regen( sim -> current_time - last_regen );
+    last_regen = sim -> current_time;
+
+    for ( size_t i = 0, end = active_pets.size(); i < end; i++ )
+    {
+      if ( active_pets[ i ] -> dynamic_regen )
+        active_pets[ i ] -> do_dynamic_regen();
+    }
+  }
+}
 
 
 /* Simple String to Number function, using stringstream

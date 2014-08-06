@@ -170,8 +170,8 @@ buff_t::buff_t( const buff_creation::buff_creator_basics_t& params ) :
   avg_refresh(),
   uptime_pct(),
   start_intervals(),
-  trigger_intervals()
-
+  trigger_intervals(),
+  change_regen_rate( false )
 {
   if ( source ) // Player Buffs
   {
@@ -183,7 +183,6 @@ buff_t::buff_t( const buff_creation::buff_creator_basics_t& params ) :
     sim -> buff_list.push_back( this );
     cooldown = sim -> get_cooldown( "buff_" + name_str );
   }
-
 
   // Set Buff duration
   if ( params._duration == timespan_t::min() )
@@ -296,6 +295,17 @@ buff_t::buff_t( const buff_creation::buff_creator_basics_t& params ) :
 
   if ( params._tick_callback )
     tick_callback = params._tick_callback;
+
+  if ( params._affects_regen == -1 && player && player -> dynamic_regen )
+  {
+    for ( size_t i = 0, end = params._invalidate_list.size(); i < end; i++ )
+    {
+      if ( player -> dynamic_regen && player -> regen_caches[ params._invalidate_list[ i ] ] )
+        change_regen_rate = true;
+    }
+  }
+  else
+    change_regen_rate = params._affects_regen;
 
   invalidate_list = params._invalidate_list;
   requires_invalidation = ! invalidate_list.empty();
@@ -667,6 +677,27 @@ void buff_t::start( int        stacks,
 
   start_count++;
 
+  if ( player && change_regen_rate )
+    player -> do_dynamic_regen();
+  else
+  {
+    for ( size_t i = 0, end = sim -> player_non_sleeping_list.size(); i < end; i++ )
+    {
+      player_t* actor = sim -> player_non_sleeping_list[ i ];
+      if ( ! actor -> dynamic_regen || actor -> is_pet() )
+        continue;
+
+      for ( size_t j = 0, end = invalidate_list.size(); j < end; j++ )
+      {
+        if ( actor -> regen_caches[ invalidate_list[ j ] ] )
+        {
+          actor -> do_dynamic_regen();
+          break;
+        }
+      }
+    }
+  }
+
   bump( stacks, value );
 
   if ( last_start >= timespan_t::zero() )
@@ -849,6 +880,27 @@ void buff_t::expire( timespan_t delay )
 
   assert( as<std::size_t>( current_stack ) < stack_uptime.size() );
   stack_uptime[ current_stack ] -> update( false, sim -> current_time );
+
+  if ( player && change_regen_rate )
+    player -> do_dynamic_regen();
+  else
+  {
+    for ( size_t i = 0, end = sim -> player_non_sleeping_list.size(); i < end; i++ )
+    {
+      player_t* actor = sim -> player_non_sleeping_list[ i ];
+      if ( ! actor -> dynamic_regen || actor -> is_pet() )
+        continue;
+
+      for ( size_t j = 0, end = invalidate_list.size(); j < end; j++ )
+      {
+        if ( actor -> regen_caches[ invalidate_list[ j ] ] )
+        {
+          actor -> do_dynamic_regen();
+          break;
+        }
+      }
+    }
+  }
 
   current_stack = 0;
   current_value = 0;
@@ -1621,6 +1673,7 @@ void buff_creator_basics_t::init()
   _activated = -1;
   _behavior = BUFF_TICK_NONE;
   _default_value = buff_t::DEFAULT_VALUE();
+  _affects_regen = -1;
 }
 
 buff_creator_basics_t::buff_creator_basics_t( actor_pair_t p, const std::string& n, const spell_data_t* sp, const item_t* item ) :

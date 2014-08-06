@@ -494,7 +494,10 @@ player_t::player_t( sim_t*             s,
   racials( racials_t() ),
   active_during_iteration( false ),
   _mastery( spelleffect_data_t::nil() ),
-  cache( this )
+  cache( this ),
+  dynamic_regen( false ),
+  last_regen( timespan_t::zero() ),
+  regen_caches( CACHE_MAX )
 {
   special_effects.reserve( 8 ); // TODO: Fix this properly, really really ugly hack
 
@@ -3572,6 +3575,7 @@ void player_t::arise()
   off_gcd = 0;
 
   arise_time = sim -> current_time;
+  last_regen = sim -> current_time;
 
   if ( is_enemy() )
   {
@@ -3748,6 +3752,9 @@ action_t* player_t::execute_action()
 
   action_t* action = 0;
 
+  if ( dynamic_regen )
+    do_dynamic_regen();
+
   if ( ! strict_sequence )
   {
     for ( size_t i = 0, num_actions = active_action_list -> foreground_action_list.size(); i < num_actions; ++i )
@@ -3798,6 +3805,10 @@ action_t* player_t::execute_action()
 
 void player_t::regen( timespan_t periodicity )
 {
+  if ( dynamic_regen && sim -> debug )
+    sim -> out_debug.printf( "%s dynamic regen, last=%.3f interval=%.3f",
+        name(), last_regen.total_seconds(), periodicity.total_seconds() );
+
   resource_e r = primary_resource();
   double base;
   gain_t* gain;
@@ -4076,6 +4087,10 @@ void player_t::stat_gain( stat_e    stat,
 
   int temp_value = temporary_stat ? 1 : 0;
 
+  cache_e cache_type = cache_from_stat( stat );
+  if ( dynamic_regen && regen_caches[ cache_type ] )
+    do_dynamic_regen();
+
   switch ( stat )
   {
     case STAT_STAMINA:
@@ -4098,7 +4113,7 @@ void player_t::stat_gain( stat_e    stat,
     case STAT_READINESS_RATING:
     case STAT_VERSATILITY_RATING:
       current.stats.add_stat( stat, amount );
-      invalidate_cache( cache_from_stat( stat ) );
+      invalidate_cache( cache_type );
       break;
 
     case STAT_HASTE_RATING:
@@ -4108,7 +4123,7 @@ void player_t::stat_gain( stat_e    stat,
         old_attack_speed = cache.attack_speed();
 
       current.stats.add_stat( stat, amount );
-      invalidate_cache( cache_from_stat( stat ) );
+      invalidate_cache( cache_type );
 
       if ( main_hand_attack )
         main_hand_attack -> reschedule_auto_attack( old_attack_speed );
@@ -4200,6 +4215,10 @@ void player_t::stat_loss( stat_e    stat,
   
   if ( sim -> log ) sim -> out_log.printf( "%s loses %.2f %s%s", name(), amount, util::stat_type_string( stat ), ( temporary_buff ) ? " (temporary)" : "" );
 
+  cache_e cache_type = cache_from_stat( stat );
+  if ( dynamic_regen && regen_caches[ cache_type ] )
+    do_dynamic_regen();
+
   int temp_value = temporary_buff ? 1 : 0;
   switch ( stat )
   {
@@ -4223,7 +4242,7 @@ void player_t::stat_loss( stat_e    stat,
     case STAT_READINESS_RATING:
     case STAT_VERSATILITY_RATING:
       current.stats.add_stat( stat, -amount );
-      invalidate_cache( cache_from_stat( stat ) );
+      invalidate_cache( cache_type );
       break;
 
     case STAT_ALL:
@@ -4278,7 +4297,7 @@ void player_t::stat_loss( stat_e    stat,
         old_attack_speed = cache.attack_speed();
 
       current.stats.haste_rating   -= amount;
-      invalidate_cache( CACHE_HASTE );
+      invalidate_cache( cache_type );
 
       if ( main_hand_attack )
         main_hand_attack -> reschedule_auto_attack( old_attack_speed );

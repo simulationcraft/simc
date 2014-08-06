@@ -885,6 +885,8 @@ struct regen_event_t : public event_t
     {
       player_t* p = sim().player_non_sleeping_list[ i ];
       if ( p -> primary_resource() == RESOURCE_NONE ) continue;
+      if ( p -> dynamic_regen ) continue;
+
       p -> regen( sim().regen_periodicity );
     }
 
@@ -972,7 +974,8 @@ sim_t::sim_t( sim_t* p, int index ) :
   // Multi-Threading
   threads( 0 ), thread_index( index ), thread_priority( sc_thread_t::NORMAL ), work_queue(),
   spell_query( 0 ), spell_query_level( MAX_LEVEL ),
-  pause_cvar( &pause_mutex )
+  pause_cvar( &pause_mutex ),
+  requires_regen_event( false )
 {
   item_db_sources.assign( range::begin( default_item_db_sources ),
                           range::end( default_item_db_sources ) );
@@ -1126,7 +1129,9 @@ void sim_t::combat_begin()
     player_t* p = player_list[ i ];
     p -> combat_begin();
   }
-  new ( *this ) regen_event_t( *this );
+
+  if ( requires_regen_event )
+    new ( *this ) regen_event_t( *this );
 
   if ( overrides.bloodlust )
   {
@@ -1657,6 +1662,15 @@ bool sim_t::init()
   simulation_length.reserve( iterations );
 
   initialized = true;
+
+  for ( size_t i = 0, end = player_list.size(); i < end; i++ )
+  {
+    if ( ! player_list[ i ] -> dynamic_regen )
+    {
+      requires_regen_event = true;
+      break;
+    }
+  }
 
   return canceled ? false : true;
 }
