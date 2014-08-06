@@ -4,14 +4,12 @@
 // ==========================================================================
 // WoD To-do
 // Do perks that effect crit (such as enhanced pyrotechnics) also effect the crit chance of multistrike?
-// Extensive Test - At a glance, enhanced pyrotechnics works properly. Need to test more in depth though (remember CM interacts with this! or does it? test and find out!)
+// Extensive Test - At a glance, enhanced pyrotechnics works properly. Need to test more in depth though (remember CM interacts with this!)
 // multistrike triggering ignite? - CONFIRMED BY CELESTALON TO INTERACT WITH EACHOTHER
 // change the syntax around frostfirebolts implimentation of Enhanced pyrotechnics to match fireballs
-// The the bonus on Improved Pyorblast additive or Multiplicitive (Assumed additive for now. Must confirm)
+// The the bonus on Improved Pyorblast is Additive
 // Arcane Missiles perk(+1 stack) was hardcoded into the buff definition. Need to eventually change this so it works correctly for sub-90 characters.
 // Need to add in Improved Scorch
-// Imp. Arcane Barrage needs to be tested.
-// Imp. Arcane Explosion needs to be tested.
 // Shatter is changed Shatter: Now Frost only. Multiplies the critical strike chance of all your spells against frozen targets by 1.5 plus an additional 50%. needs to be coded.
 // Having difficulties implimenting Improved Arcane Missiles.
 // Improved Arcane Power needs to have a check for the perk to exist so it functions pre-90 correctly.
@@ -21,7 +19,6 @@
 // Need to test if Improved Frostbolt is being applied correctly during Icy Veins (although, IV will change in WoD. May not actually need to this version, but rather test it's application to multi-strike)
 // Recheck all perks
 // Check that changing where icicles is inside impact does not ruin them
-// Arcane Blast cast time reduction perk testing?
 // Hardcoded enhanced FoF perk. Need to eventually make it so sub-90 toons do not have this.
 // The IV glyph works by making IV gives 35% MS. The perk then improves this to 45% MS.
 // Need to figure out how to not hard-code 2 charges and their CD for the "nova" spells.
@@ -40,14 +37,18 @@
 // Ice Lance MS should not be procing Frost Bomb explosion (as per in game testing 7/20/2014)
 // All "nova" talents have the 100% damage mod applied to the primary and AoE effects - it should only be on the primary target.
 // Frostbomb should be working correctly....(maybe not it's AoE portion? But it should be.....)
+// Enhanced Frostbolt keeps trying to trigger for non-Frost specs (causes debug log to look ugly, prolly slows down the sim)
 
 
 // To-do Completed:
 //  BUG IGNITE TRIGGERS ON MISSES. Fixing this breaks icicles. Need to investigate - DONE!
 //  Multistrike triggering ignite? - Confirmed by celestalon to interact with one another
+//  Imp. Arcane Barrage needs to be tested. - DONE!
 //  Fix how Ivy Veins interacts with spells. - DONE!
 //  Multi-strikes proc UM. Add this! - DONE!
 //  Remove pyromaniac - DONE!
+// Imp. Arcane Explosion needs to be tested. -- DONE
+//  Arcane Blast cast time reduction perk testing? - DONE! Working correctly. (I think. may be very minor problems due to it not effecting base_execute_time. But tools to do that easily are not inplace yet.)
 
 // Misc Notes:
 //  Unstable Magic Trigger is very sensative to double dipping - as we encounter new modifiers, need to check there is no double dipping going on!
@@ -1572,7 +1573,7 @@ struct arcane_explosion_t : public mage_spell_t
     mage_spell_t( "arcane_explosion", p, p -> find_class_spell( "Arcane Explosion" ) )
   {
     parse_options( NULL, options_str );
-    base_aoe_multiplier *= 1.0 + p -> perks.improved_arcane_explosion -> effectN( 1 ).percent();
+    base_multiplier *= 1.0 + p -> perks.improved_arcane_explosion -> effectN( 1 ).percent();
     aoe = -1;
   }
 
@@ -1619,6 +1620,7 @@ struct arcane_missiles_t : public mage_spell_t
 
     dynamic_tick_action = true;
     tick_action = new arcane_missiles_tick_t( p );
+    base_multiplier *= 1.0 + p -> perks.improved_arcane_missiles -> effectN( 1 ).percent();
   }
 
   virtual double action_multiplier() const
@@ -1627,7 +1629,6 @@ struct arcane_missiles_t : public mage_spell_t
 
     am *= 1.0 + p() -> buffs.arcane_charge -> stack() * p() -> spells.arcane_charge_arcane_blast -> effectN( 1 ).percent() *
           ( 1.0 + p() -> sets.set( SET_T15_4PC_CASTER ) -> effectN( 1 ).percent() );
-    am *= 1.0 + p() -> perks.improved_arcane_missiles -> effectN( 1 ).percent();
     if ( p() -> sets.has_set_bonus( SET_T14_2PC_CASTER ) )
     {
       am *= 1.07;
