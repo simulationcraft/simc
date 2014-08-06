@@ -1172,6 +1172,21 @@ void SC_MainWindow::importFinished()
   mainTab -> setCurrentTab( TAB_SIMULATE );
 }
 
+void SC_MainWindow::startAutomationImport( int tab )
+{
+  std::string profile;
+
+  profile = automation::does_something( importTab -> choice.player_class -> currentText().toLocal8Bit().constData(),
+                                        importTab -> choice.player_spec -> currentText().toLocal8Bit().constData(),
+                                        importTab -> choice.player_race -> currentText().toLocal8Bit().constData(),
+                                        importTab -> choice.player_level -> currentText().toLocal8Bit().constData(),
+                                        "", "", "", "" );
+
+  simulateTab -> add_Text( QString::fromStdString( profile ),  tr( "Testing" ) );
+  
+  mainTab -> setCurrentTab( TAB_SIMULATE );
+}
+
 void SC_MainWindow::startSim()
 {
   if ( simRunning() )
@@ -1595,6 +1610,7 @@ void SC_MainWindow::importButtonClicked()
   {
     case TAB_BATTLE_NET: startImport( TAB_BATTLE_NET, cmdLine -> commandLineText( TAB_BATTLE_NET ) ); break;
     case TAB_RECENT:     recentlyClosedTabImport -> restoreCurrentlySelected(); break;
+    case TAB_AUTOMATION: startAutomationImport( TAB_AUTOMATION ); break;
     default: break;
   }
 }

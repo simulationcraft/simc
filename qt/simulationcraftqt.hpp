@@ -1031,6 +1031,7 @@ public:
   int consecutiveSimulationsRun;
 
   void    startImport( int tab, const QString& url );
+  void    startAutomationImport( int tab );
   bool    importRunning();
   void    startSim();
   bool    simRunning();
