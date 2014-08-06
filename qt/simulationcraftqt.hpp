@@ -61,6 +61,7 @@ enum import_tabs_e
   TAB_BIS,
   TAB_HISTORY,
   TAB_RECENT,
+  TAB_AUTOMATION,
   TAB_CUSTOM
 };
 
@@ -511,6 +512,16 @@ public:
     SC_enumeratedTab<import_tabs_e>( parent )
   {
   }
+
+  struct choices_t
+  {
+    QComboBox* player_class;
+    QComboBox* player_spec;
+    QComboBox* player_race;
+    QComboBox* player_level;
+  } choice;
+
+  void createAutomationTab();
 };
 
 // ==========================================================================
@@ -1035,6 +1046,7 @@ public:
   void createOptionsTab();
   void createImportTab();
   void createBestInSlotTab();
+  void createAutomationTab();
   void createCustomTab();
   void createSimulateTab();
   void createOverridesTab();

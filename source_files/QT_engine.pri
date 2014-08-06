@@ -24,6 +24,7 @@
  HEADERS += engine/util/utf8/checked.h
  HEADERS += engine/util/utf8.h
  SOURCES += engine/util/xml.cpp
+ SOURCES += engine/util/sc_automation.cpp
  SOURCES += engine/util/rng.cpp
  SOURCES += engine/util/io.cpp
  SOURCES += engine/util/concurrency.cpp

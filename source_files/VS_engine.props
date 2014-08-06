@@ -28,6 +28,9 @@ To change the list of source files, update the QT_ files and run synchronize.py
 		<ClCompile Include="..\engine\util\xml.cpp">
 			
 		</ClCompile>
+		<ClCompile Include="..\engine\util\sc_automation.cpp">
+			
+		</ClCompile>
 		<ClCompile Include="..\engine\util\rng.cpp">
 			<PrecompiledHeader>NotUsing</PrecompiledHeader>
 		</ClCompile>

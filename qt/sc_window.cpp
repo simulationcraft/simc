@@ -535,6 +535,8 @@ void SC_MainWindow::createImportTab()
   recentlyClosedTabModel = recentlyClosedTabImport -> getModel();
   importTab -> addTab( recentlyClosedTabImport, tr( "Recently Closed" ) );
 
+  importTab -> createAutomationTab();
+
   connect( historyList, SIGNAL( itemDoubleClicked( QListWidgetItem* ) ), this, SLOT( historyDoubleClicked( QListWidgetItem* ) ) );
   connect( importTab,   SIGNAL( currentChanged( int ) ),                 this, SLOT( importTabChanged( int ) ) );
   connect( recentlyClosedTabImport, SIGNAL( restoreTab( QWidget*, const QString&, const QString&, const QIcon& ) ),
@@ -722,6 +724,57 @@ void SC_MainWindow::createBestInSlotTab()
   bisTab -> setLayout( bisTabLayout );
   importTab -> addTab( bisTab, tr( "Sample Profiles" ) );
 
+}
+
+
+QComboBox* createChoice( int count, ... )
+{
+  QComboBox* choice = new QComboBox();
+  va_list vap;
+  va_start( vap, count );
+  for ( int i = 0; i < count; i++ )
+    choice -> addItem( va_arg( vap, char* ) );
+  va_end( vap );
+  return choice;
+}
+
+void SC_ImportTab::createAutomationTab()
+{
+  QFormLayout* automationLayout = new QFormLayout();
+  automationLayout -> setFieldGrowthPolicy( QFormLayout::FieldsStayAtSizeHint );
+
+  // Create Combo Boxes
+  choice.player_class = createChoice( 11 , "Death Knight", "Druid", "Hunter", "Mage", "Monk", "Paladin", "Priest", "Rogue", "Shaman", "Warlock", "Warrior" );
+  automationLayout -> addRow( tr( "Class" ), choice.player_class );
+
+  choice.player_spec = createChoice( 3, "1", "2", "3" );
+  automationLayout -> addRow( tr( "Spec (PH)" ), choice.player_spec );
+
+  choice.player_race = createChoice( 13, "Blood Elf", "Draenei", "Dwarf", "Gnome", "Goblin", "Human", "Night Elf", "Orc", "Pandaren", "Tauren", "Troll", "Undead", "Worgen");
+  automationLayout -> addRow( tr( "Race" ), choice.player_race );
+
+  choice.player_level = createChoice( 2, "100", "90" );
+  automationLayout -> addRow( tr( "Level" ), choice.player_level );
+
+  QLabel* messageText = new QLabel( tr( "Sample Text\n" ) );
+  automationLayout -> addRow( messageText );
+
+  messageText = new QLabel( "Default Talents\n\n (text box goes here)" );
+  automationLayout -> addRow( messageText );
+
+  // text boxes go here
+  
+  QGroupBox* automationGroupBox = new QGroupBox();
+  automationGroupBox -> setLayout( automationLayout );
+
+  QScrollArea* automationGroupBoxScrollArea = new QScrollArea;
+  automationGroupBoxScrollArea -> setWidget( automationGroupBox );
+  automationGroupBoxScrollArea -> setWidgetResizable( true );
+  addTab( automationGroupBoxScrollArea, tr( "Automation" ) );
+
+  //mainTab -> addTab( optionsTab, tr( "Options" ) );
+
+  //connect( optionsTab, SIGNAL( armory_region_changed( const QString& ) ), this, SLOT( armoryRegionChanged( const QString& ) ) );
 }
 
 void SC_MainWindow::createCustomTab()
@@ -1641,6 +1694,7 @@ void SC_MainWindow::importTabChanged( int index )
   if ( index == TAB_BIS     ||
        index == TAB_CUSTOM  ||
        index == TAB_HISTORY ||
+       index == TAB_AUTOMATION ||
        index == TAB_RECENT )
   {
     cmdLine -> setTab( static_cast< import_tabs_e >( index ) );

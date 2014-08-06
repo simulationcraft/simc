@@ -1365,6 +1365,12 @@ std::ostream& stream_printf( std::ostream&, const char* format, ... );
 
 } // namespace util
 
+namespace automation {
+  
+  void does_something( const std::string& dummy );
+
+}
+
 
 // Data Access ==============================================================
 #ifndef MAX_LEVEL
