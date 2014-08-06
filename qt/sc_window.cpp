@@ -1268,7 +1268,7 @@ void SC_MainWindow::startAutomationImport( int tab )
                                         importTab -> choice.player_spec -> currentText(),
                                         importTab -> choice.player_race -> currentText(),
                                         importTab -> choice.player_level -> currentText(),
-                                        "", "", "", "", "" );
+                                        "", "", "", "" );
 
   simulateTab -> add_Text( profile,  tr( "Testing" ) );
   
