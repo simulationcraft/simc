@@ -4236,12 +4236,12 @@ void mage_t::init_base_stats()
 {
   player_t::init_base_stats();
 
-  resources.infinite_resource[RESOURCE_MANA] = true; // REMOVE LATER *~*~*~*~*~**~*// ~***$_@*$%_@
-
   base.spell_power_per_intellect = 1.0;
 
   base.attack_power_per_strength = 0.0;
   base.attack_power_per_agility = 0.0;
+  
+  base.mana_regen_per_second = resources.base[ RESOURCE_MANA ] * 0.018;
   
   // Reduce fire mage distance to avoid proc munching at high haste
   // 2 yards was selected through testing with T16H profile
@@ -4547,7 +4547,7 @@ void mage_t::apl_arcane()
   default_list -> add_talent( this, "Rune of Power", "if=cooldown.arcane_power.remains<gcd&buff.rune_of_power.remains<buff.arcane_power.duration" );
 
   default_list -> add_talent( this, "Mirror Image" );
-  default_list -> add_action( this, "Evocation", "if=mana.pct<50,interrupt_if=mana.pct>95" );
+  default_list -> add_action( this, "Evocation", "if=mana.pct<50,interrupt_if=mana.pct>95&buff.arcane_power.down" );
   default_list -> add_action( this, "Arcane Power", "if=time_to_bloodlust>cooldown.arcane_power.duration&((buff.arcane_charge.stack=4)|target.time_to_die<buff.arcane_power.duration+5),moving=0" );
 
   for( size_t i = 0; i < racial_actions.size(); i++ )
@@ -4571,8 +4571,8 @@ void mage_t::apl_arcane()
   single_target -> add_talent( this, "Supernova", "if=buff.arcane_charge.stack=4&((charges=1&recharge_time<10&cooldown.arcane_power.remains>12)|(buff.arcane_power.up))" );
   single_target -> add_action( this, "Arcane Missiles", "if=buff.arcane_charge.stack=4" );
   single_target -> add_talent( this, "Nether Tempest", "if=remains<9&target.time_to_die>6&buff.arcane_charge.stack=4" );
-  single_target -> add_talent( this, "Arcane Orb", "if=buff.arcane_charge.stack<=3" );
-  single_target -> add_action( this, "Arcane Barrage", "if=buff.arcane_charge.stack=4&mana.pct<95" );
+  single_target -> add_talent( this, "Arcane Orb", "if=talent.arcane_orb.enabled&buff.arcane_charge.stack<=3" ); //Need to safeguard that atm, since it gets used without the talent otherwise
+  single_target -> add_action( this, "Arcane Barrage", "if=buff.arcane_charge.stack=4&mana.pct<95&buff.arcane_power.down" );
   single_target -> add_action( this, "Presence of Mind", "if=cooldown.arcane_power.remains>75" );
   single_target -> add_action( this, "Arcane Blast" );
   single_target -> add_talent( this, "Ice Floes", "moving=1" );
@@ -4744,7 +4744,6 @@ void mage_t::apl_default()
 double mage_t::mana_regen_per_second() const
 {
   double mp5 = player_t::mana_regen_per_second();
-  mp5 = 8000; // FIX LATER
 
   if ( passives.nether_attunement -> ok() )
     mp5 /= cache.spell_speed();

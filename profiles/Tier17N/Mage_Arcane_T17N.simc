@@ -3,7 +3,7 @@ level=100
 race=troll
 role=spell
 position=back
-talents=http://us.battle.net/wow/en/tool/talent-calculator#ea!0...101
+talents=http://us.battle.net/wow/en/tool/talent-calculator#ea!0...202
 glyphs=arcane_power
 spec=arcane
 
@@ -35,7 +35,7 @@ actions+=/time_warp,if=target.health.pct<25|time>5
 actions+=/rune_of_power,if=buff.rune_of_power.remains<cast_time
 actions+=/rune_of_power,if=cooldown.arcane_power.remains<gcd&buff.rune_of_power.remains<buff.arcane_power.duration
 actions+=/mirror_image
-actions+=/evocation,if=mana.pct<50,interrupt_if=mana.pct>95
+actions+=/evocation,if=mana.pct<50,interrupt_if=mana.pct>95&buff.arcane_power.down
 actions+=/arcane_power,if=time_to_bloodlust>cooldown.arcane_power.duration&((buff.arcane_charge.stack=4)|target.time_to_die<buff.arcane_power.duration+5),moving=0
 actions+=/blood_fury
 actions+=/berserking
@@ -53,8 +53,8 @@ actions.single_target+=/nether_tempest,if=(!ticking|remains<tick_time)&target.ti
 actions.single_target+=/supernova,if=buff.arcane_charge.stack=4&((charges=1&recharge_time<10&cooldown.arcane_power.remains>12)|(buff.arcane_power.up))
 actions.single_target+=/arcane_missiles,if=buff.arcane_charge.stack=4
 actions.single_target+=/nether_tempest,if=remains<9&target.time_to_die>6&buff.arcane_charge.stack=4
-actions.single_target+=/arcane_orb,if=buff.arcane_charge.stack<=3
-actions.single_target+=/arcane_barrage,if=buff.arcane_charge.stack=4&mana.pct<95
+actions.single_target+=/arcane_orb,if=talent.arcane_orb.enabled&buff.arcane_charge.stack<=3
+actions.single_target+=/arcane_barrage,if=buff.arcane_charge.stack=4&mana.pct<95&buff.arcane_power.down
 actions.single_target+=/presence_of_mind,if=cooldown.arcane_power.remains>75
 actions.single_target+=/arcane_blast
 actions.single_target+=/ice_floes,moving=1
