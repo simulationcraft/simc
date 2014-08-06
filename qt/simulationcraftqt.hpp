@@ -1505,17 +1505,19 @@ public:
 
 
 namespace automation {
-  
-  std::string does_something( const std::string& player_class,
-                              const std::string& player_spec,
-                              const std::string& player_race,
-                              const std::string& player_level,
-                              const std::string& player_talents,
-                              const std::string& player_glyphs,
-                              const std::string& player_gear,
-                              const std::string& player_rotation );
 
-}
+  QString tokenize( QString qstr );
+  
+  QString does_something( QString player_class,
+                              QString player_spec,
+                              QString player_race,
+                              QString player_level,
+                              QString player_talents,
+                              QString player_glyphs,
+                              QString player_gear,
+                              QString player_rotation );
+
+} // end automation namespace
 
 #ifdef SC_PAPERDOLL
 

@@ -1174,15 +1174,15 @@ void SC_MainWindow::importFinished()
 
 void SC_MainWindow::startAutomationImport( int tab )
 {
-  std::string profile;
+  QString profile;
 
-  profile = automation::does_something( importTab -> choice.player_class -> currentText().toLocal8Bit().constData(),
-                                        importTab -> choice.player_spec -> currentText().toLocal8Bit().constData(),
-                                        importTab -> choice.player_race -> currentText().toLocal8Bit().constData(),
-                                        importTab -> choice.player_level -> currentText().toLocal8Bit().constData(),
+  profile = automation::does_something( importTab -> choice.player_class -> currentText(),
+                                        importTab -> choice.player_spec -> currentText(),
+                                        importTab -> choice.player_race -> currentText(),
+                                        importTab -> choice.player_level -> currentText(),
                                         "", "", "", "" );
 
-  simulateTab -> add_Text( QString::fromStdString( profile ),  tr( "Testing" ) );
+  simulateTab -> add_Text( profile,  tr( "Testing" ) );
   
   mainTab -> setCurrentTab( TAB_SIMULATE );
 }
