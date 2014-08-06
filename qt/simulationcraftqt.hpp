@@ -1503,6 +1503,20 @@ public:
   ImportThread( SC_MainWindow* mw ) : mainWindow( mw ), sim( 0 ), player( 0 ) {}
 };
 
+
+namespace automation {
+  
+  std::string does_something( const std::string& player_class,
+                              const std::string& player_spec,
+                              const std::string& player_race,
+                              const std::string& player_level,
+                              const std::string& player_talents,
+                              const std::string& player_glyphs,
+                              const std::string& player_gear,
+                              const std::string& player_rotation );
+
+}
+
 #ifdef SC_PAPERDOLL
 
 class PaperdollThread : public QThread

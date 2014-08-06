@@ -1365,19 +1365,6 @@ std::ostream& stream_printf( std::ostream&, const char* format, ... );
 
 } // namespace util
 
-namespace automation {
-  
-  std::string does_something( const std::string& player_class,
-                              const std::string& player_spec,
-                              const std::string& player_race,
-                              const std::string& player_level,
-                              const std::string& player_talents,
-                              const std::string& player_glyphs,
-                              const std::string& player_gear,
-                              const std::string& player_rotation );
-
-}
-
 
 // Data Access ==============================================================
 #ifndef MAX_LEVEL
