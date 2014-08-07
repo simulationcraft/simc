@@ -130,6 +130,7 @@ void SC_MainWindow::loadHistory()
     }
   }
   optionsTab -> decodeOptions();
+  importTab -> decodeSettings();
 
   if ( simulateTab -> count() <= 1 )
   { // If we haven't retrieved any simulate tabs from history, add a default one.
@@ -292,6 +293,7 @@ void SC_MainWindow::saveHistory()
   settings.endGroup();
 
   optionsTab -> encodeOptions();
+  importTab -> encodeSettings();
 }
 
 // ==========================================================================
@@ -1136,6 +1138,7 @@ void SC_MainWindow::startSim()
     return;
   }
   optionsTab -> encodeOptions();
+  importTab -> encodeSettings();
   if ( simulateTab -> current_Text() -> toPlainText() != defaultSimulateText )
   {
     //simulateTextHistory.add( simulateText -> toPlainText() );

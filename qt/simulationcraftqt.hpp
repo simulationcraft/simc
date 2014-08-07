@@ -522,6 +522,7 @@ public:
     QComboBox* player_level;
     QComboBox* comp_type;
   } choice;
+
   struct labels_t
   {
     QLabel* talents;
@@ -531,6 +532,7 @@ public:
     QLabel* advanced;
     QLabel* sidebar;
   } label;
+
   struct textBoxes_t
   {
     QLineEdit* talents;
@@ -541,6 +543,11 @@ public:
     SC_TextEdit* sidebar;
   } textbox;
 
+  void encodeSettings();
+  void load_setting( QSettings& s, const QString& name, QComboBox* choice, const QString& default_value );
+  void load_setting( QSettings& s, const QString& name, QLineEdit* textbox, const QString& default_value);
+  void load_setting( QSettings& s, const QString& name, SC_TextEdit* textbox, const QString& default_value);
+  void decodeSettings();
   void createAutomationTab();
   void createTooltips();
 
