@@ -495,9 +495,10 @@ player_t::player_t( sim_t*             s,
   active_during_iteration( false ),
   _mastery( spelleffect_data_t::nil() ),
   cache( this ),
-  dynamic_regen( false ),
+  regen_type( REGEN_STATIC ),
   last_regen( timespan_t::zero() ),
-  regen_caches( CACHE_MAX )
+  regen_caches( CACHE_MAX ),
+  dynamic_regen_pets( false )
 {
   special_effects.reserve( 8 ); // TODO: Fix this properly, really really ugly hack
 
@@ -663,6 +664,27 @@ void player_t::init()
       sim -> errorf( "Ignoring action list named default." );
     else
       get_action_priority_list( it -> first ) -> action_list_str = it -> second;
+  }
+
+  // If the owner is regenerating using dynamic resource regen, we need to
+  // ensure that pets that regen dynamically also get updated correctly. Thus,
+  // we copy any CACHE_x enum values from pets to the owner. Also, if we have
+  // no dynamically regenerating pets, we do not need to go through extra work
+  // in do_dynamic_regen() to call the pets do_dynamic_regen(), saving some cpu
+  // cycles.
+  if ( regen_type == REGEN_DYNAMIC )
+  {
+    for ( size_t i = 0, end = pet_list.size(); i < end; i++ )
+    {
+      pet_t* pet = pet_list[ i ];
+      if ( pet -> regen_type != REGEN_DYNAMIC )
+        continue;
+
+      regen_caches.insert( regen_caches.end(), pet -> regen_caches.begin(), pet -> regen_caches.end() );
+      dynamic_regen_pets = true;
+    }
+
+    range::unique( regen_caches );
   }
 }
 
@@ -3752,7 +3774,7 @@ action_t* player_t::execute_action()
 
   action_t* action = 0;
 
-  if ( dynamic_regen )
+  if ( regen_type == REGEN_DYNAMIC )
     do_dynamic_regen();
 
   if ( ! strict_sequence )
@@ -3805,7 +3827,7 @@ action_t* player_t::execute_action()
 
 void player_t::regen( timespan_t periodicity )
 {
-  if ( dynamic_regen && sim -> debug )
+  if ( regen_type == REGEN_DYNAMIC && sim -> debug )
     sim -> out_debug.printf( "%s dynamic regen, last=%.3f interval=%.3f",
         name(), last_regen.total_seconds(), periodicity.total_seconds() );
 
@@ -4088,7 +4110,7 @@ void player_t::stat_gain( stat_e    stat,
   int temp_value = temporary_stat ? 1 : 0;
 
   cache_e cache_type = cache_from_stat( stat );
-  if ( dynamic_regen && regen_caches[ cache_type ] )
+  if ( regen_type == REGEN_DYNAMIC && regen_caches[ cache_type ] )
     do_dynamic_regen();
 
   switch ( stat )
@@ -4216,7 +4238,7 @@ void player_t::stat_loss( stat_e    stat,
   if ( sim -> log ) sim -> out_log.printf( "%s loses %.2f %s%s", name(), amount, util::stat_type_string( stat ), ( temporary_buff ) ? " (temporary)" : "" );
 
   cache_e cache_type = cache_from_stat( stat );
-  if ( dynamic_regen && regen_caches[ cache_type ] )
+  if ( regen_type == REGEN_DYNAMIC && regen_caches[ cache_type ] )
     do_dynamic_regen();
 
   int temp_value = temporary_buff ? 1 : 0;

@@ -176,6 +176,23 @@ class xml_writer_t;
 // Enumerations =============================================================
 // annex _e to enumerations
 
+enum regen_type_e
+{
+  // Old resource regeneration model. Actors regen every 'periodicity' seconds
+  // through a single global event. Default.
+  REGEN_STATIC,
+
+  // Dynamic resource regeneration model. Resources are regenerated at dynamic
+  // intervals when an actor is about to execute an action, and when the state
+  // of the actor changes in a way that affects resource regeneration.
+  //
+  // See comment on player_t::regen_caches how to define what state changes
+  // affect resource regneration.
+  REGEN_DYNAMIC,
+
+  // Resource regeneration is disabled for the actor
+  REGEN_DISABLED
+};
 
 enum buff_tick_behavior_e
 {
@@ -5093,10 +5110,21 @@ private:
   }
 public:
 
-  bool dynamic_regen;
+  // Static (default), Dynamic, Disabled
+  regen_type_e regen_type;
+
+  // Last iteration time regenration occurred. Set at player_t::arise()
   timespan_t last_regen;
+
+  // A list of CACHE_x enumerations (stats) that affect the resource
+  // regeneration of the actor.
   std::vector<bool> regen_caches;
 
+  // Flag to indicate if any pets require dynamic regneration. Initialized in
+  // player_t::init().
+  bool dynamic_regen_pets;
+
+  // Perform dynamic resource regeneration
   virtual void do_dynamic_regen();
 };
 
@@ -5177,6 +5205,7 @@ public:
   pet_t( sim_t* sim, player_t* owner, const std::string& name, bool guardian = false, bool dynamic = false );
   pet_t( sim_t* sim, player_t* owner, const std::string& name, pet_e pt, bool guardian = false, bool dynamic = false );
 
+  virtual void init();
   virtual void init_base_stats();
   virtual void init_target();
   virtual void reset();
@@ -7094,14 +7123,17 @@ inline bool player_t::is_my_pet( player_t* t ) const
 
 inline void player_t::do_dynamic_regen()
 {
-  if ( sim -> current_time != last_regen )
-  {
-    regen( sim -> current_time - last_regen );
-    last_regen = sim -> current_time;
+  if ( sim -> current_time == last_regen )
+    return;
 
+  regen( sim -> current_time - last_regen );
+  last_regen = sim -> current_time;
+
+  if ( dynamic_regen_pets )
+  {
     for ( size_t i = 0, end = active_pets.size(); i < end; i++ )
     {
-      if ( active_pets[ i ] -> dynamic_regen )
+      if ( active_pets[ i ] -> regen_type == REGEN_DYNAMIC )
         active_pets[ i ] -> do_dynamic_regen();
     }
   }
