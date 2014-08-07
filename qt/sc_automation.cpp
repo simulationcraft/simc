@@ -15,7 +15,7 @@
 ///////////////////////////////////////////////////////////////////////////////
 
 
-  // stuff goes here!
+// Local method to perform tokenize on QStrings
 QString automation::tokenize( QString qstr )
 {
   std::string temp = qstr.toLocal8Bit().constData();
@@ -24,42 +24,134 @@ QString automation::tokenize( QString qstr )
   return QString::fromStdString( temp );
 }
 
-QString automation::do_something( QString player_class,
+QString automation::do_something( int sim_type,
+                                  QString player_class,
                                   QString player_spec,
                                   QString player_race,
                                   QString player_level,
                                   QString player_talents,
                                   QString player_glyphs,
                                   QString player_gear,
-                                  QString player_rotation
+                                  QString player_rotation,
+                                  QString advanced_text
                                 ) 
 {
   // Dummy code - this just sets up a profile using the strings we pass. 
   // This is where we'll actually split off into different automation schemes.
-  // For some reason, I was only able to pass "const std::string&" from SC_MainWindow::startAutomationImport (in sc_window.cpp), 
-  // hence the silly temp crap. 
 
   QString profile;
-  
-  profile += tokenize( player_class ) + "=Name\n";
-    
-  profile += "specialization=" + tokenize( player_spec )+ "\n";
+  QString base_profile_info; // class, spec, race & level definition
 
-  profile += "race=" + tokenize( player_race ) + "\n";
+  // basic profile information
+  base_profile_info += "specialization=" + tokenize( player_spec ) + "\n";
+  base_profile_info += "race=" + tokenize( player_race ) + "\n";
+  base_profile_info += "level=" + player_level + "\n";
 
-  profile += "level=" + player_level + "\n";
-  profile += "talents=" + player_talents + "\n";
-  profile += "glyphs=" + player_glyphs + "\n";
-
-  // gear
-  profile += player_gear + "\n";
-
-  // rotation
-  profile += player_rotation;
+  // simulation type check
+  switch ( sim_type )
+  {
+    case 1: // talent simulation
+      return auto_talent_sim( player_class, base_profile_info, advanced_text , player_glyphs, player_gear, player_rotation);
+    case 2: // glyph simulation
+      return auto_glyph_sim( player_class, base_profile_info, player_talents, advanced_text , player_gear, player_rotation);
+    case 3: // rotation simulation
+      return auto_rotation_sim( player_class, base_profile_info, player_talents, player_glyphs, advanced_text , player_rotation);
+    case 4: // gear simulation
+      return auto_gear_sim( player_class, base_profile_info, player_talents, player_glyphs, player_gear, advanced_text );
+    default: // default profile creation
+      profile += base_profile_info;
+      profile += "talents=" + player_talents + "\n";
+      profile += "glyphs=" + player_glyphs + "\n";
+      profile += player_gear + "\n";
+      profile += player_rotation;
+      return profile;
+  }
 
   return profile;
-
 }
+
+  // Method for profile creation for the specific TALENT simulation
+QString automation::auto_talent_sim( QString player_class,
+                                     QString base_profile_info, 
+                                     QString advanced_talents,
+                                     QString player_glyphs,
+                                     QString player_gear,
+                                     QString player_rotation
+                                   )
+{
+  QStringList talentList = advanced_talents.split( "\n", QString::SkipEmptyParts );
+
+  QString profile;
+
+  for ( int i = 0; i < talentList.size(); i++ )
+  {
+    profile += tokenize( player_class ) + "=T_" + talentList[ i ] + "\n";
+    profile += base_profile_info;
+    profile += "talents=" + talentList[ i ] + "\n";
+    profile += "glyphs=" + player_glyphs + "\n";
+    profile += player_gear + "\n";
+    profile += player_rotation + "\n";
+    profile += "\n";
+  }
+
+  return profile;
+}
+
+  // Method for profile creation for the specific GLYPHS simulation
+QString automation::auto_glyph_sim( QString player_class,
+                                    QString base_profile_info,
+                                    QString player_talents,
+                                    QString advanced_text,
+                                    QString player_gear,
+                                    QString player_rotation
+                                  )
+{
+  QStringList glyphList = advanced_text.split( "\n", QString::SkipEmptyParts );
+
+  QString profile;
+
+  for ( int i = 0; i < glyphList.size(); i++ )
+  {
+    profile += tokenize( player_class ) + "=G_" + QString::number( i ) + "\n";
+    profile += base_profile_info;
+    profile += "talents=" + player_talents + "\n";
+    profile += "glyphs=" + glyphList[ i ] + "\n";
+    profile += player_gear + "\n";
+    profile += player_rotation + "\n";
+    profile += "\n";
+  }
+
+  return profile;
+}
+
+  // Method for profile creation for the specific GEAR simulation
+QString automation::auto_gear_sim( QString player_class,
+                                   QString base_profile_info,
+                                   QString player_talents,
+                                   QString player_glyphs,
+                                   QString advanced_text,
+                                   QString player_rotation
+                                 )
+{
+  QString profile = "NYI";
+
+  return profile;
+}
+
+// Method for profile creation for the specific ROTATION simulation
+QString automation::auto_rotation_sim( QString player_class,
+                                       QString base_profile_info,
+                                       QString player_talents,
+                                       QString player_glyphs,
+                                       QString player_gear,
+                                       QString advanced_text
+                                     )
+{
+  QString profile = "NYI";
+
+  return profile;
+}
+
 
 ///////////////////////////////////////////////////////////////////////////////
 ////
@@ -67,25 +159,6 @@ QString automation::do_something( QString player_class,
 ////
 ///////////////////////////////////////////////////////////////////////////////
 
-
-void SC_MainWindow::startAutomationImport( int tab )
-{
-  QString profile;
-
-  profile = automation::do_something( importTab -> choice.player_class -> currentText(),
-                                      importTab -> choice.player_spec -> currentText(),
-                                      importTab -> choice.player_race -> currentText(),
-                                      importTab -> choice.player_level -> currentText(),
-                                      importTab -> textbox.talents -> document() -> toPlainText(),
-                                      importTab -> textbox.glyphs -> document() -> toPlainText(),
-                                      importTab -> textbox.gear -> document() -> toPlainText(),
-                                      importTab -> textbox.rotation -> document() -> toPlainText()
-                                    );
-
-  simulateTab -> add_Text( profile,  tr( "Testing" ) );
-  
-  mainTab -> setCurrentTab( TAB_SIMULATE );
-}
 
 
 QComboBox* createChoice( int count, ... )
@@ -99,111 +172,288 @@ QComboBox* createChoice( int count, ... )
   return choice;
 }
 
+
+// Method to set the "Spec" drop-down based on "Class" selection
+void SC_ImportTab::setSpecDropDown( const int player_class )
+{
+  // If we have a fourth spec, remove it here
+  if ( choice.player_spec -> count() > 3 )
+    choice.player_spec -> removeItem( 3 );
+
+  switch ( player_class )
+  {
+    case 0:
+      choice.player_spec -> setItemText( 0, "Blood" );
+      choice.player_spec -> setItemText( 1, "Frost" );
+      choice.player_spec -> setItemText( 2, "Unholy" );
+      break;
+    case 1:
+      choice.player_spec -> setItemText( 0, "Balance" );
+      choice.player_spec -> setItemText( 1, "Feral" );
+      choice.player_spec -> setItemText( 2, "Guardian" );
+      choice.player_spec -> addItem( "Restoration" );
+      break;
+    case 2:
+      choice.player_spec -> setItemText( 0, "Beast Mastery" );
+      choice.player_spec -> setItemText( 1, "Marksmanship" );
+      choice.player_spec -> setItemText( 2, "Survival" );
+      break;
+    case 3:
+      choice.player_spec -> setItemText( 0, "Arcane" );
+      choice.player_spec -> setItemText( 1, "Fire" );
+      choice.player_spec -> setItemText( 2, "Frost" );
+      break;
+    case 4:
+      choice.player_spec -> setItemText( 0, "Brewmaster" );
+      choice.player_spec -> setItemText( 1, "Mistweaver" );
+      choice.player_spec -> setItemText( 2, "Windwalker" );
+      break;
+    case 5:
+      choice.player_spec -> setItemText( 0, "Holy" );
+      choice.player_spec -> setItemText( 1, "Protection" );
+      choice.player_spec -> setItemText( 2, "Retribution" );
+      break;
+    case 6:
+      choice.player_spec -> setItemText( 0, "Discipline" );
+      choice.player_spec -> setItemText( 1, "Holy" );
+      choice.player_spec -> setItemText( 2, "Shadow" );
+      break;
+    case 7:
+      choice.player_spec -> setItemText( 0, "Assassination" );
+      choice.player_spec -> setItemText( 1, "Combat" );
+      choice.player_spec -> setItemText( 2, "Subtlety" );
+      break;
+    case 8:
+      choice.player_spec -> setItemText( 0, "Elemental" );
+      choice.player_spec -> setItemText( 1, "Enhancement" );
+      choice.player_spec -> setItemText( 2, "Restoration" );
+      break;
+    case 9:
+      choice.player_spec -> setItemText( 0, "Affliction" );
+      choice.player_spec -> setItemText( 1, "Demonology" );
+      choice.player_spec -> setItemText( 2, "Destruction" );
+      break;
+    case 10:
+      choice.player_spec -> setItemText( 0, "Arms" );
+      choice.player_spec -> setItemText( 1, "Fury" );
+      choice.player_spec -> setItemText( 2, "Protection" );
+      break;
+    default:
+      choice.player_spec -> setItemText( 0, "What" );
+      choice.player_spec -> setItemText( 1, "The" );
+      choice.player_spec -> setItemText( 2, "F*&!" );
+      break;
+  }
+}
+
+// constant for sidebar text (this will eventually get really long)
+QString sidebarText[ 11 ][ 4 ] = {
+  { "Blood shorthand goes here.", "Frost shorthand goes here", "Unholy shorthand goes here", "N/A" },
+  { "Balance shorthand goes here.", "Feral shorthand goes here.", "Guardian shorthand goes here.", "Restoration shorthand goes here." },
+  { "", "", "", "N/A" },
+  { "", "", "", "N/A" },
+  { "Holy shorthand goes here.", "Protection shorthand goes here.", "Retribution shorthand goes here.", "N/A" },
+  { "", "", "", "N/A" },
+  { "", "", "", "N/A" },
+  { "", "", "", "N/A" },
+  { "", "", "", "N/A" },
+  { "Affliction shorthand goe shere.", "Demonology shorthand goes here.", "Destruction shorthand goes here.", "N/A" },
+  { "Arms shorthand goes here.", "Fury shorthand goes here.", "Protection shorthand goes here.", "N/A" },
+};
+
+// constant for the varying labels of the advanced text box
+QString advancedText[ 5 ] = {
+  "Unused", "Talent Configurations", "Glyph Configurations", "Gear Configurations", "Rotation Shorthands"
+};
+
+// method to set the sidebar text based on class slection
+void SC_ImportTab::setSidebarClassText()
+{
+  textbox.sidebar -> setText( sidebarText[ choice.player_class -> currentIndex() ][ choice.player_spec -> currentIndex() ] );
+}
+
+void SC_ImportTab::compTypeChanged( const int comp )
+{
+  label.advanced -> setText( advancedText[ comp ] );
+  
+  // TODO: set the text of the box with some sort of default for each case
+
+  textbox.advanced -> setDisabled( false );
+  textbox.gear     -> setDisabled( false );
+  textbox.glyphs   -> setDisabled( false );
+  textbox.rotation -> setDisabled( false );
+  textbox.talents  -> setDisabled( false );
+
+  switch ( comp )
+  {
+    case 0: 
+      textbox.advanced -> setDisabled( true );break;
+    case 1:
+      textbox.talents -> setDisabled( true );break;
+    case 2:
+      textbox.glyphs -> setDisabled( true );break;
+    case 3:
+      textbox.gear -> setDisabled( true );break;
+    case 4:
+      textbox.rotation -> setDisabled( true );break;
+  }
+}
+
+void SC_MainWindow::startAutomationImport( int tab )
+{
+  QString profile;
+
+  profile = automation::do_something( importTab -> choice.comp_type -> currentIndex(),
+                                      importTab -> choice.player_class -> currentText(),
+                                      importTab -> choice.player_spec -> currentText(),
+                                      importTab -> choice.player_race -> currentText(),
+                                      importTab -> choice.player_level -> currentText(),
+                                      importTab -> textbox.talents -> text(),
+                                      importTab -> textbox.glyphs -> text(),
+                                      importTab -> textbox.gear -> document() -> toPlainText(),
+                                      importTab -> textbox.rotation -> document() -> toPlainText(),
+                                      importTab -> textbox.advanced -> document() -> toPlainText()
+                                    );
+
+  simulateTab -> add_Text( profile,  tr( "Testing" ) );
+  
+  mainTab -> setCurrentTab( TAB_SIMULATE );
+}
+
+void SC_ImportTab::createTooltips()
+{
+  choice.comp_type -> setToolTip( "Choose the comparison type." );
+  
+
+}
+
 void SC_ImportTab::createAutomationTab()
 { 
   // layout building based on 
   // http://qt-project.org/doc/qt-4.8/layouts-basiclayouts.html
 
+  // This scroll area is the parent of the entire tab
   QScrollArea* automationTabScrollArea = new QScrollArea;
 
-  QVBoxLayout* mainLayout = new QVBoxLayout;
-  
-  // create a box for the "Form" section of the layout
-  QGroupBox* formGroupBox = new QGroupBox(tr("Form layout"));
-  mainLayout -> addWidget( formGroupBox );
-
-  // define the formGroupBox's layout
-  QFormLayout* formLayout = new QFormLayout();
-
-  formLayout -> setFieldGrowthPolicy( QFormLayout::FieldsStayAtSizeHint );
-
-  // Create Combo Boxes
-  choice.player_class = createChoice( 11 , "Death Knight", "Druid", "Hunter", "Mage", "Monk", "Paladin", "Priest", "Rogue", "Shaman", "Warlock", "Warrior" );
-  formLayout -> addRow( tr( "Class" ), choice.player_class );
-
-  choice.player_spec = createChoice( 3, "1", "2", "3" );
-  formLayout -> addRow( tr( "Spec (PH)" ), choice.player_spec );
-
-  choice.player_race = createChoice( 13, "Blood Elf", "Draenei", "Dwarf", "Gnome", "Goblin", "Human", "Night Elf", "Orc", "Pandaren", "Tauren", "Troll", "Undead", "Worgen");
-  formLayout -> addRow( tr( "Race" ), choice.player_race );
-
-  choice.player_level = createChoice( 2, "100", "90" );
-  formLayout -> addRow( tr( "Level" ), choice.player_level );
-
-  QLabel* messageText = new QLabel( tr( "Sample Text\n" ) );
-  formLayout -> addRow( messageText );
-
-  // set the formGroupBox's layout now that we've defined it
-  formGroupBox -> setLayout( formLayout );
-
-  // Define a grid box for the text boxes
-  QGroupBox* gridGroupBox = new QGroupBox(tr("Grid Layout"));
+  // Define a grid Layout which we will eventually apply to the scroll area
   QGridLayout* gridLayout = new QGridLayout;
 
-  // Create a label and an edit box for talents
-  QLabel* talentsLabel = new QLabel( tr( "Default Talents" ) );
-  textbox.talents = new SC_TextEdit;
-  textbox.talents -> resize( 200, 250 );
-  textbox.talents -> setPlainText( "0000000" );
-  
-  // assign the label and edit box to cells
-  gridLayout -> addWidget( talentsLabel, 0, 0, 0 );
-  gridLayout -> addWidget( textbox.talents, 1, 0, 0 );
+  // Now we start adding things to the grid layout
 
-  // and again for glyphs
-  QLabel* glyphsLabel = new QLabel( tr( "Default Glyphs" ) );
-  textbox.glyphs = new SC_TextEdit;
-  textbox.glyphs -> resize( 200, 250 );
-  textbox.glyphs -> setPlainText( "focused_shield/alabaster_shield" );
+  // Element (0,0) is a GroupBox containing a FormLayout with one ComboBox (choice of sim type)
+  // Create box and add to Layout
+  QGroupBox* compGroupBox = new QGroupBox();
+  gridLayout -> addWidget( compGroupBox, 0, 0, 0 );
+
+  // Define a layout for the box
+  QFormLayout* compLayout = new QFormLayout();
+  compLayout -> setFieldGrowthPolicy( QFormLayout::FieldsStayAtSizeHint );
   
+  // Create Combo Box and add it to the layout
+  choice.comp_type = createChoice( 5 , "None", "Talents", "Glyphs", "Gear", "Rotation" );
+  compLayout -> addRow( tr( "Comparison Type" ), choice.comp_type );
+
+  // Apply the layout to the compGroupBox
+  compGroupBox -> setLayout( compLayout );
+
+
+  // Elements (1,0) & (2,0) are a QLabel and QGroupBox for some of the defaults  
+  QLabel* defaultsLabel = new QLabel( tr( "Defaults" ) );
+  gridLayout -> addWidget( defaultsLabel, 1, 0, 0 );
+
+  // create a box for the defaults section
+  QGroupBox* defaultsGroupBox = new QGroupBox();
+  gridLayout -> addWidget( defaultsGroupBox, 2, 0, 0 );
+
+  // define a FormLayout for the GroupBox
+  QFormLayout* defaultsFormLayout = new QFormLayout();
+  defaultsFormLayout -> setFieldGrowthPolicy( QFormLayout::ExpandingFieldsGrow );
+
+  // Create Combo Boxes and add to the FormLayout
+  choice.player_class = createChoice( 11 , "Death Knight", "Druid", "Hunter", "Mage", "Monk", "Paladin", "Priest", "Rogue", "Shaman", "Warlock", "Warrior" );
+  defaultsFormLayout -> addRow( tr( "Class" ), choice.player_class );
+
+  choice.player_spec = createChoice( 3, "1", "2", "3" );
+  choice.player_spec -> setSizeAdjustPolicy( QComboBox::AdjustToContents );
+  setSpecDropDown( choice.player_class -> currentIndex() );
+  defaultsFormLayout -> addRow( tr( "Spec" ), choice.player_spec );
+
+  choice.player_race = createChoice( 13, "Blood Elf", "Draenei", "Dwarf", "Gnome", "Goblin", "Human", "Night Elf", "Orc", "Pandaren", "Tauren", "Troll", "Undead", "Worgen");
+  defaultsFormLayout -> addRow( tr( "Race" ), choice.player_race );
+
+  choice.player_level = createChoice( 2, "100", "90" );
+  defaultsFormLayout -> addRow( tr( "Level" ), choice.player_level );
+
+  // Create text boxes for default talents and glyphs, and add them to the FormLayout
+  label.talents = new QLabel( tr("Default Talents" ) );
+  textbox.talents = new QLineEdit;
+  textbox.talents -> setText( "0000000" );
+  defaultsFormLayout -> addRow( label.talents, textbox.talents );
+  
+  label.glyphs = new QLabel( tr("Default Glypyhs" ) );
+  textbox.glyphs = new QLineEdit;
+  textbox.glyphs -> setText( "focused_shield/alabaster_shield" );
+  defaultsFormLayout -> addRow( label.glyphs, textbox.glyphs );
+
+  // set the GroupBox's layout now that we've defined it
+  defaultsGroupBox -> setLayout( defaultsFormLayout );
+
+  
+  // Elements (3,0) - (6,0) are the default gear and rotation labels and text boxes
+  
+  // Create a label and an edit box for gear
+  label.gear = new QLabel( tr( "Default Gear" ) );
+  textbox.gear = new SC_TextEdit;;
+  textbox.gear -> setPlainText( "head=\nneck=\n " );  
   // assign the label and edit box to cells
-  gridLayout -> addWidget( glyphsLabel,    2, 0, 0 );
-  gridLayout -> addWidget( textbox.glyphs, 3, 0, 0 );
-  
-  // and again for gear
-  QLabel* gearLabel = new QLabel( tr( "Default Gear" ) );
-  textbox.gear = new SC_TextEdit;
-  textbox.gear -> resize( 200, 250 );
-  textbox.gear -> setPlainText( "head=\nneck=\n " );
-  
-  // assign the label and edit box to cells
-  gridLayout -> addWidget( gearLabel,    0, 1, 0 );
-  gridLayout -> addWidget( textbox.gear, 1, 1, 0 );
+  gridLayout -> addWidget( label.gear,    3, 0, 0 );
+  gridLayout -> addWidget( textbox.gear, 4, 0, 0 );
   
   // and again for rotation
-  QLabel* rotationLabel = new QLabel( tr( "Default Rotation" ) );
+  label.rotation = new QLabel( tr( "Default Rotation" ) );
   textbox.rotation = new SC_TextEdit;
-  textbox.rotation -> resize( 200, 250 );
-  textbox.rotation -> setPlainText( "actions=/auto_attack\n" );
-  
-  // assign the label and edit box to cells
-  gridLayout -> addWidget( rotationLabel,    2, 1, 0 );
-  gridLayout -> addWidget( textbox.rotation, 3, 1, 0 );
+  textbox.rotation -> setPlainText( "" );  
+  gridLayout -> addWidget( label.rotation,    5, 0, 0 );
+  gridLayout -> addWidget( textbox.rotation, 6, 0, 0 );
 
-  // Add a box on the side for rotation conversion text (TBD)
-  QLabel* sidebarLabel = new QLabel( tr( "Rotation Abbreviations" ) );
+
+  // Elements (2,1) - (6,1) are the Advanced text box
+
+  label.advanced = new QLabel( tr( "Advanced Text Box" ) );
+  textbox.advanced = new SC_TextEdit;
+  textbox.advanced -> setPlainText( "default" );
+  gridLayout -> addWidget( label.advanced,    1, 1, 0 );
+  gridLayout -> addWidget( textbox.advanced, 2, 1, 5, 1, 0 );
+
+
+  // Eleements (2,2) - (6,2) are the Rotation Conversions text box 
+
+  label.sidebar = new QLabel( tr( "Rotation Abbreviations" ) );
   textbox.sidebar = new SC_TextEdit;
   textbox.sidebar -> setText( " Stuff Goes Here" );
   textbox.sidebar -> setDisabled( true );
-  gridLayout -> addWidget( sidebarLabel,    0, 2, 0 );
-  gridLayout -> addWidget( textbox.sidebar, 1, 2, 3, 1, 0 );
+  gridLayout -> addWidget( label.sidebar,    1, 2, 0 );
+  gridLayout -> addWidget( textbox.sidebar, 2, 2, 5, 1, 0 );
   
   // this adjusts the relative width of each column
   gridLayout -> setColumnStretch( 0, 1 );
   gridLayout -> setColumnStretch( 1, 2 );
   gridLayout -> setColumnStretch( 2, 1 );
-
-  // set the layout of the grid box
-  gridGroupBox -> setLayout( gridLayout );
   
-  // add the grid box to the main layout
-  mainLayout -> addWidget( gridGroupBox );
-
   // set the tab's layout to mainLayout
-  automationTabScrollArea -> setLayout( mainLayout );
+  automationTabScrollArea -> setLayout( gridLayout );
 
   // Finally, add the tab
   addTab( automationTabScrollArea, tr( "Automation" ) );
 
-  //connect( optionsTab, SIGNAL( armory_region_changed( const QString& ) ), this, SLOT( armoryRegionChanged( const QString& ) ) );
+  connect( choice.player_class, SIGNAL( currentIndexChanged( const int& ) ), this, SLOT( setSpecDropDown( const int ) ) );
+  connect( choice.player_class, SIGNAL( currentIndexChanged( const int& ) ), this, SLOT( setSidebarClassText() ) );
+  connect( choice.player_spec,  SIGNAL( currentIndexChanged( const int& ) ), this, SLOT( setSidebarClassText() ) );
+  connect( choice.comp_type,    SIGNAL( currentIndexChanged( const int& ) ), this, SLOT( compTypeChanged( const int ) ) );
+
+  // do some initialization
+  compTypeChanged( choice.comp_type -> currentIndex() );
+
+  // set up all the tooltips
+  createTooltips();
 }

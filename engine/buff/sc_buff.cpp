@@ -296,11 +296,11 @@ buff_t::buff_t( const buff_creation::buff_creator_basics_t& params ) :
   if ( params._tick_callback )
     tick_callback = params._tick_callback;
 
-  if ( params._affects_regen == -1 && player && player -> dynamic_regen )
+  if ( params._affects_regen == -1 && player && player -> regen_type == REGEN_DYNAMIC )
   {
     for ( size_t i = 0, end = params._invalidate_list.size(); i < end; i++ )
     {
-      if ( player -> dynamic_regen && player -> regen_caches[ params._invalidate_list[ i ] ] )
+      if ( player -> regen_caches[ params._invalidate_list[ i ] ] )
         change_regen_rate = true;
     }
   }
@@ -684,7 +684,7 @@ void buff_t::start( int        stacks,
     for ( size_t i = 0, end = sim -> player_non_sleeping_list.size(); i < end; i++ )
     {
       player_t* actor = sim -> player_non_sleeping_list[ i ];
-      if ( ! actor -> dynamic_regen || actor -> is_pet() )
+      if ( actor -> regen_type != REGEN_DYNAMIC || actor -> is_pet() )
         continue;
 
       for ( size_t j = 0, end = invalidate_list.size(); j < end; j++ )
@@ -888,7 +888,7 @@ void buff_t::expire( timespan_t delay )
     for ( size_t i = 0, end = sim -> player_non_sleeping_list.size(); i < end; i++ )
     {
       player_t* actor = sim -> player_non_sleeping_list[ i ];
-      if ( ! actor -> dynamic_regen || actor -> is_pet() )
+      if ( actor -> regen_type != REGEN_DYNAMIC || actor -> is_pet() )
         continue;
 
       for ( size_t j = 0, end = invalidate_list.size(); j < end; j++ )

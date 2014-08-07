@@ -428,6 +428,8 @@ public:
 
     t16_wind = 0;
     t16_flame = 0;
+
+    regen_type = REGEN_DYNAMIC;
   }
 
   virtual           ~shaman_t();
@@ -1141,6 +1143,7 @@ struct feral_spirit_pet_t : public pet_t
     owner_coeff.ap_from_ap = 0.33;
 
     command = owner -> find_spell( 65222 );
+    regen_type = REGEN_DISABLED;
   }
 
   shaman_t* o() const { return static_cast<shaman_t*>( owner ); }
@@ -1272,6 +1275,7 @@ struct primal_elemental_t : public pet_t
     pet_t( owner -> sim, owner, name, guardian ), gains_damage( true )
   {
     stamina_per_owner = 1.0;
+    regen_type = REGEN_DISABLED;
   }
 
   shaman_t* o() const
@@ -1554,7 +1558,10 @@ struct lightning_elemental_t : public pet_t
 
   lightning_elemental_t( shaman_t* owner ) :
     pet_t( owner -> sim, owner, "lightning_elemental", true, true )
-  { stamina_per_owner      = 1.0; }
+  {
+    stamina_per_owner = 1.0;
+    regen_type = REGEN_DISABLED;
+  }
 
   void init_base_stats()
   {
@@ -3627,7 +3634,9 @@ struct shaman_totem_pet_t : public pet_t
     totem_type( tt ),
     pulse_action( 0 ), pulse_event( 0 ), pulse_amplitude( timespan_t::zero() ),
     summon_pet( 0 ), liquid_magma( 0 ), liquid_magma_action( 0 )
-  { }
+  {
+    regen_type = REGEN_DISABLED;
+  }
 
   virtual void summon( timespan_t = timespan_t::zero() );
   virtual void dismiss();

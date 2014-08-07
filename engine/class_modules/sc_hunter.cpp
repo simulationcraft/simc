@@ -38,6 +38,10 @@ struct hunter_td_t: public actor_pair_t
 struct hunter_t: public player_t
 {
 public:
+  core_event_t* sniper_training;
+  const spell_data_t* sniper_training_cd;
+  timespan_t movement_ended;
+
   // Active
   std::vector<pets::hunter_main_pet_t*> hunter_main_pets;
   struct actives_t
@@ -290,6 +294,7 @@ public:
 
   hunter_t( sim_t* sim, const std::string& name, race_e r = RACE_NONE ):
     player_t( sim, HUNTER, name, r == RACE_NONE ? RACE_NIGHT_ELF : r ),
+    sniper_training( 0 ),
     active( actives_t() ),
     pet_dire_beasts(),
     thunderhawk(),
@@ -320,6 +325,10 @@ public:
     summon_pet_str = "";
     base.distance = 40;
     base_gcd = timespan_t::from_seconds( 1.0 );
+
+    regen_type = REGEN_DYNAMIC;
+    regen_caches.push_back( CACHE_HASTE );
+    regen_caches.push_back( CACHE_ATTACK_HASTE );
   }
 
   // Character Definition
@@ -356,6 +365,7 @@ public:
   virtual void      copy_from( player_t* source );
   virtual void      armory_extensions( const std::string& r, const std::string& s, const std::string& c, cache::behavior_e );
   virtual void      moving();
+  virtual void      finish_moving();
 
   void              apl_default();
   void              apl_surv();
@@ -369,9 +379,6 @@ public:
     if ( !td ) td = new hunter_td_t( target, const_cast<hunter_t*>( this ) );
     return td;
   }
-
-  // Event Tracking
-  virtual void regen( timespan_t periodicity );
 
   double careful_aim_crit( player_t* target ) const
   {
@@ -1458,6 +1465,7 @@ struct dire_critter_t: public hunter_pet_t
     hunter_pet_t( *owner.sim, owner, std::string( "dire_beast_" ) + util::to_string( index ), PET_HUNTER, true /*GUARDIAN*/ )
   {
     owner_coeff.ap_from_ap = 1.0;
+    regen_type = REGEN_DISABLED;
   }
 
   virtual void init_base_stats()
@@ -1495,6 +1503,7 @@ struct tier15_thunderhawk_t: public hunter_pet_t
   tier15_thunderhawk_t( hunter_t& owner ):
     hunter_pet_t( *owner.sim, owner, "tier15_thunderhawk", PET_HUNTER, true /*GUARDIAN*/ )
   {
+    regen_type = REGEN_DISABLED;
   }
 
   virtual void init_base_stats()
@@ -3145,6 +3154,8 @@ void hunter_t::init_spells()
   specs.rapid_fire           = find_specialization_spell( "Rapid Fire" );
   specs.survivalist          = find_specialization_spell( "Survivalist" );
 
+  sniper_training_cd = find_spell( 168809 );
+
   if ( specs.explosive_shot -> ok() )
     active.explosive_ticks = new attacks::explosive_shot_tick_t( this );
 
@@ -3229,8 +3240,8 @@ void hunter_t::create_buffs()
   buffs.rapid_fire -> cooldown -> duration = timespan_t::zero();
 
   buffs.sniper_training   = buff_creator_t( this, "sniper_training", mastery.sniper_training )
-    .duration( timespan_t::from_seconds( mastery.sniper_training -> effectN( 3 ).base_value() ) )
-    .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
+                            .duration( timespan_t::from_seconds( mastery.sniper_training -> effectN( 3 ).base_value() ) )
+                            .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
 
   buffs.stampede          = buff_creator_t( this, 130201, "stampede" ) // To allow action lists to react to stampede, rather than doing it in a roundabout way.
     .activated( true )
@@ -3596,9 +3607,35 @@ void hunter_t::reset()
   active.pet            = nullptr;
   active.aspect         = ASPECT_NONE;
   active.ammo           = NO_AMMO;
+
+  sniper_training = 0;
+  movement_ended = - sniper_training_cd -> duration();
 }
 
 // hunter_t::arise ==========================================================
+
+struct sniper_training_event_t : public event_t
+{
+  hunter_t* hunter;
+
+  sniper_training_event_t( hunter_t* h ) :
+    event_t( *h -> sim, "sniper_training_event" ),
+    hunter( h )
+  {
+    add_event( timespan_t::from_seconds( 0.5 ) );
+  }
+
+  void execute()
+  {
+    if ( ! hunter -> is_moving() )
+    {
+      if ( sim().current_time - hunter -> movement_ended >= hunter -> sniper_training_cd -> duration() )
+        hunter -> buffs.sniper_training -> trigger();
+    }
+
+    hunter -> sniper_training = new ( sim() ) sniper_training_event_t( hunter );
+  }
+};
 
 void hunter_t::arise()
 {
@@ -3606,6 +3643,12 @@ void hunter_t::arise()
 
   if ( specs.trueshot_aura -> is_level( level ) && !sim -> overrides.attack_power_multiplier )
     sim -> auras.attack_power_multiplier -> trigger();
+
+  if ( mastery.sniper_training -> ok() )
+  {
+    buffs.sniper_training -> trigger();
+    sniper_training = new ( *sim ) sniper_training_event_t( this );
+  }
 }
 
 // hunter_t::composite_rating_multiplier =====================================
@@ -3733,20 +3776,6 @@ double hunter_t::matching_gear_multiplier( attribute_e attr ) const
     return 0.05;
 
   return 0.0;
-}
-
-// hunter_t::regen  =========================================================
-
-void hunter_t::regen( timespan_t periodicity )
-{
-  player_t::regen( periodicity );
-
-  if ( is_moving() )
-    cooldowns.sniper_training -> start();
-  else if ( cooldowns.sniper_training -> up() )
-    buffs.sniper_training -> trigger();
-
-  periodicity *= 1.0 + composite_ranged_haste_rating() / current_rating().attack_haste;
 }
 
 // hunter_t::create_options =================================================
@@ -3992,12 +4021,18 @@ stat_e hunter_t::convert_hybrid_stat( stat_e s ) const
 
 void hunter_t::moving()
 {
-  cooldowns.sniper_training -> start();
   if ( executing )
   {
     if ( executing -> id == 163485 || executing -> id == 152245 )
       player_t::interrupt();
   }
+}
+
+void hunter_t::finish_moving()
+{
+  player_t::finish_moving();
+
+  movement_ended = sim -> current_time;
 }
 
 /* Report Extension Class

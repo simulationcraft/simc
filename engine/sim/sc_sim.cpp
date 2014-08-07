@@ -885,7 +885,7 @@ struct regen_event_t : public event_t
     {
       player_t* p = sim().player_non_sleeping_list[ i ];
       if ( p -> primary_resource() == RESOURCE_NONE ) continue;
-      if ( p -> dynamic_regen ) continue;
+      if ( p -> regen_type != REGEN_STATIC ) continue;
 
       p -> regen( sim().regen_periodicity );
     }
@@ -1665,7 +1665,7 @@ bool sim_t::init()
 
   for ( size_t i = 0, end = player_list.size(); i < end; i++ )
   {
-    if ( ! player_list[ i ] -> dynamic_regen )
+    if ( player_list[ i ] -> regen_type == REGEN_STATIC )
     {
       requires_regen_event = true;
       break;

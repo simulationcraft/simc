@@ -4,7 +4,7 @@
 #ifndef MAX_CLASS
 #define MAX_CLASS (12)
 #endif
-// Class based active abilities, wow build 18663
+// Class based active abilities, wow build 18689
 static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SIZE] = {
   {
     {
@@ -100,7 +100,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
   },
   // Class active abilities for Paladin
   {
-    // General tree, 24 abilities
+    // General tree, 23 abilities
     {
        20217, // Blessing of Kings
        19740, // Blessing of Might
@@ -114,7 +114,6 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
         1044, // Hand of Freedom
         1022, // Hand of Protection
         6940, // Hand of Sacrifice
-        1038, // Hand of Salvation
       162056, // Jailor's Judgment
        20271, // Judgment
          633, // Lay on Hands
@@ -179,8 +178,9 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
   },
   // Class active abilities for Hunter
   {
-    // General tree, 29 abilities
+    // General tree, 30 abilities
     {
+        3044, // Arcane Shot
         5118, // Aspect of the Cheetah
       172106, // Aspect of the Fox
        13159, // Aspect of the Pack
@@ -212,9 +212,8 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
        77769, // Trap Launcher
            0,
     },
-    // Beast Mastery tree, 6 abilities
+    // Beast Mastery tree, 5 abilities
     {
-        3044, // Arcane Shot
        19574, // Bestial Wrath
        77767, // Cobra Shot
        82692, // Focus Fire
@@ -230,9 +229,8 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
         3045, // Rapid Fire
            0,
     },
-    // Survival tree, 4 abilities
+    // Survival tree, 3 abilities
     {
-        3044, // Arcane Shot
         3674, // Black Arrow
        77767, // Cobra Shot
        53301, // Explosive Shot
@@ -673,7 +671,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
   },
   // Class active abilities for Warlock
   {
-    // General tree, 33 abilities
+    // General tree, 32 abilities
     {
          710, // Banish
          172, // Corruption
@@ -681,7 +679,6 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
       109773, // Dark Intent
        77801, // Dark Soul
       111771, // Demonic Gateway
-         689, // Drain Life
         1098, // Enslave Demon
         5782, // Fear
       111897, // Grimoire: Felhunter (Summon)
@@ -710,10 +707,11 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
       104773, // Unending Resolve
            0,
     },
-    // Affliction tree, 10 abilities
+    // Affliction tree, 11 abilities
     {
          980, // Agony
       113860, // Dark Soul: Misery
+         689, // Drain Life
       103103, // Drain Soul
        48181, // Haunt
          755, // Health Funnel
@@ -724,11 +722,12 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
        30108, // Unstable Affliction
            0,
     },
-    // Demonology tree, 14 abilities
+    // Demonology tree, 15 abilities
     {
       124916, // Chaos Wave (Metamorphosis)
       113861, // Dark Soul: Knowledge
       109151, // Demonic Leap
+         689, // Drain Life
       111898, // Grimoire: Felguard (Summon)
       105174, // Hand of Gul'dan
          755, // Health Funnel
@@ -742,13 +741,14 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
       103964, // Touch of Chaos (Metamorphosis)
            0,
     },
-    // Destruction tree, 11 abilities
+    // Destruction tree, 12 abilities
     {
       116858, // Chaos Bolt
        17962, // Conflagrate
       113858, // Dark Soul: Instability
       114635, // Ember Tap
       108683, // Fire and Brimstone
+      120451, // Flames of Xoroth
        80240, // Havoc
          348, // Immolate
        29722, // Incinerate
@@ -981,9 +981,9 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
   },
 };
 
-#define TREE_SPECIALIZATION_SIZE (27)
+#define TREE_SPECIALIZATION_SIZE (28)
 
-// Talent tree specialization abilities, wow build 18663
+// Talent tree specialization abilities, wow build 18689
 static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZATION_SIZE] = {
   // Specialization abilities for Hunter pets
   {
@@ -1127,6 +1127,7 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
         6343, // Thunder Clap
       122509, // Ultimatum
        29144, // Unwavering Sentinel
+           0,
     },
     {
            0,
@@ -1223,7 +1224,6 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
     // Specialization abilities for Beast Mastery
     {
       165389, // Animal Handler
-        3044, // Arcane Shot
       115939, // Beast Cleave
        19574, // Bestial Wrath
        77767, // Cobra Shot
@@ -1255,7 +1255,6 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
     },
     // Specialization abilities for Survival
     {
-        3044, // Arcane Shot
         3674, // Black Arrow
        77767, // Cobra Shot
        19387, // Entrapment
@@ -1305,6 +1304,7 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
        51690, // Killing Spree
        76806, // Mastery: Main Gauche
        84617, // Revealing Strike
+      174597, // Ruthlessness
        14161, // Ruthlessness
        61329, // Vitality
            0,
@@ -1647,6 +1647,7 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
     {
          980, // Agony
       113860, // Dark Soul: Misery
+         689, // Drain Life
       103103, // Drain Soul
       165367, // Eradication
        48181, // Haunt
@@ -1671,10 +1672,12 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
       109145, // Demonic Fury
       109151, // Demonic Leap
       165392, // Demonic Tactics
+         689, // Drain Life
       105174, // Hand of Gul'dan
          755, // Health Funnel
         1949, // Hellfire
       137044, // Hotfix Passive
+      157068, // Improved Demons
        77219, // Mastery: Master Demonologist
       103958, // Metamorphosis
       122351, // Molten Core
@@ -1696,6 +1699,7 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
       165363, // Devastation
       114635, // Ember Tap
       108683, // Fire and Brimstone
+      120451, // Flames of Xoroth
        80240, // Havoc
       137046, // Hotfix Passive
          348, // Immolate
@@ -1734,6 +1738,7 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
       119582, // Purifying Brew
       158298, // Resolve
       115069, // Stance of the Sturdy Ox
+      162700, // Stat Negation Aura - Agility Tank
       115315, // Summon Black Ox Statue
       115176, // Zen Meditation
            0,
@@ -1763,6 +1768,7 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
       115175, // Soothing Mist
       154436, // Stance of the Spirited Crane
       115070, // Stance of the Wise Serpent
+      162701, // Stat Negation Aura - Intellect Healer
       115313, // Summon Jade Serpent Statue
       116645, // Teachings of the Monastery
       116680, // Thunder Focus Tea
@@ -1786,6 +1792,7 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
       116781, // Legacy of the White Tiger
       115636, // Mastery: Bottled Fury
       107428, // Rising Sun Kick
+      162697, // Stat Negation Aura - Agility DPS
       137639, // Storm, Earth, and Fire
       116740, // Tigereye Brew
       122470, // Touch of Karma
@@ -1918,7 +1925,7 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
 
 #define CLASS_MASTERY_ABILITY_SIZE (1)
 
-// Class mastery abilities, wow build 18663
+// Class mastery abilities, wow build 18689
 static unsigned __class_mastery_ability_data[MAX_CLASS][MAX_SPECS_PER_CLASS][CLASS_MASTERY_ABILITY_SIZE] = {
   {
     {
@@ -2141,7 +2148,7 @@ static unsigned __class_mastery_ability_data[MAX_CLASS][MAX_SPECS_PER_CLASS][CLA
 #define MAX_RACE (28)
 #endif
 
-// Racial abilities, wow build 18663
+// Racial abilities, wow build 18689
 static unsigned __race_ability_data[MAX_RACE][MAX_CLASS][RACE_ABILITY_SIZE] = {
   {
     {     0, },
@@ -2864,7 +2871,7 @@ static unsigned __race_ability_data[MAX_RACE][MAX_CLASS][RACE_ABILITY_SIZE] = {
 
 #define GLYPH_ABILITIES_SIZE (41)
 
-// Glyph spells for classes, wow build 18663
+// Glyph spells for classes, wow build 18689
 static unsigned __glyph_abilities_data[][3][GLYPH_ABILITIES_SIZE] = {
   {
     {
@@ -3480,7 +3487,7 @@ static unsigned __glyph_abilities_data[][3][GLYPH_ABILITIES_SIZE] = {
       171752, // Savagery
            0,
     },
-    // Minor Glyphs (13 spells)
+    // Minor Glyphs (14 spells)
     {
        57856, // Glyph of Aquatic Form
        57855, // Glyph of Charm Woodland Creature
@@ -3492,6 +3499,7 @@ static unsigned __glyph_abilities_data[][3][GLYPH_ABILITIES_SIZE] = {
       131113, // Glyph of the Cheetah
       114333, // Glyph of the Orca
       114280, // Glyph of the Predator
+      171803, // Glyph of the Solstice
       146654, // Glyph of the Sprouting Mushroom
       114338, // Glyph of the Stag
       125047, // Glyph of the Treant
@@ -3508,7 +3516,7 @@ static unsigned __glyph_abilities_data[][3][GLYPH_ABILITIES_SIZE] = {
 
 #define TIER_BONUSES_TIER_BASE (13)
 
-// Tier item set bonuses for class, wow build 18663
+// Tier item set bonuses for class, wow build 18689
 static unsigned __tier_bonuses_data[][TIER_BONUSES_MAX_TIER][TIER_BONUSES_SIZE] = {
   {
     {
@@ -3933,7 +3941,7 @@ static unsigned __tier_bonuses_data[][TIER_BONUSES_MAX_TIER][TIER_BONUSES_SIZE] 
 
 #define SET_BONUS_DATA_SIZE (475)
 
-// Set bonus data, wow build 18663
+// Set bonus data, wow build 18689
 static item_set_bonus_t __set_bonus_data[SET_BONUS_DATA_SIZE] = {
   //                                    Tier name, Tier, Bns, Cls,         Derived Spec, Spec,  Spell, Items
   { "Siegebreaker Battlegear"                    ,    8,   2,   1,      {  71,  72, 0 },    0,  64938, {  46278,  46280,  46282,  46285,  46287,  0 } },
@@ -4431,9 +4439,9 @@ static item_set_bonus_t __set_bonus_data[SET_BONUS_DATA_SIZE] = {
   { "PH Druid Set"                               ,   17,   4,  11,                { 0 },  105, 167714, { 115540, 115541, 115542, 115543, 115544,  0 } },
 };
 
-#define PERK_SIZE (9)
+#define PERK_SIZE (4)
 
-// Perk specialization abilities, wow build 18663
+// Perk specialization abilities, wow build 18689
 static unsigned __perk_data[][MAX_SPECS_PER_CLASS][PERK_SIZE] = {
   {
     {
@@ -4452,39 +4460,24 @@ static unsigned __perk_data[][MAX_SPECS_PER_CLASS][PERK_SIZE] = {
   {
     // Arms
     {
-      157446, // 0: Improved Charge
-      157449, // 1: Improved Heroic Leap
-      157452, // 2: Improved Die by the Sword
-      157454, // 3: Empowered Execute
-      171246, // 4: Enhanced Hamstring
-      157461, // 5: Enhanced Sweeping Strikes
-      157464, // 6: Improved Mortal Strike
-      157466, // 7: Improved Whirlwind
-      157472, // 8: Improved Rend
+      157449, // 0: Improved Heroic Leap
+      157452, // 1: Improved Die by the Sword
+      157461, // 2: Enhanced Sweeping Strikes
+      174737, // 3: Enhanced Rend
     },
     // Fury
     {
       157452, // 0: Improved Die by the Sword
-      157454, // 1: Empowered Execute
-      157457, // 2: Improved Colossus Smash
-      157473, // 3: Enhanced Whirlwind
-      157474, // 4: Improved Wild Strike
-      157475, // 5: Improved Bloodthirst
-      157477, // 6: Improved Raging Blow
-      157446, // 7: Improved Charge
-      157449, // 8: Improved Heroic Leap
+      157457, // 1: Improved Colossus Smash
+      157473, // 2: Enhanced Whirlwind
+      157449, // 3: Improved Heroic Leap
     },
     // Protection
     {
-      157446, // 0: Improved Charge
-      157449, // 1: Improved Heroic Leap
-      157497, // 2: Improved Block
-      157487, // 3: Improved Revenge
-      157479, // 4: Improved Heroic Throw
-      157492, // 5: Improved Shield Barrier
-      157481, // 6: Improved Shield Slam
-      157498, // 7: Improved Thunder Clap
-      157494, // 8: Improved Defensive Stance
+      157449, // 0: Improved Heroic Leap
+      157497, // 1: Improved Block
+      157479, // 2: Improved Heroic Throw
+      157494, // 3: Improved Defensive Stance
     },
     {
            0,
@@ -4494,38 +4487,23 @@ static unsigned __perk_data[][MAX_SPECS_PER_CLASS][PERK_SIZE] = {
     // Holy
     {
       157453, // 0: Empowered Beacon of Light
-      157476, // 1: Empowered Holy Shock
-      157478, // 2: Enhanced Holy Shock
-      157455, // 3: Improved Daybreak
-      157462, // 4: Improved Denounce
-      157458, // 5: Improved Holy Light
-      157482, // 6: Improved Forbearance
-      157480, // 7: Improved Divine Protection
-      157460, // 8: Improved Flash of Light
+      157478, // 1: Enhanced Holy Shock
+      157455, // 2: Improved Daybreak
+      157482, // 3: Improved Forbearance
     },
     // Protection
     {
       157482, // 0: Improved Forbearance
-      157480, // 1: Improved Divine Protection
-      157485, // 2: Empowered Avenger's Shield
-      157488, // 3: Improved Block
-      157486, // 4: Improved Consecration
-      157483, // 5: Improved Hammer of the Righteous
-      157484, // 6: Improved Word of Glory
-      157489, // 7: Improved Crusader Strike
-      157490, // 8: Improved Judgment
+      157485, // 1: Empowered Avenger's Shield
+      157488, // 2: Improved Block
+      157486, // 3: Improved Consecration
     },
     // Retribution
     {
       157482, // 0: Improved Forbearance
-      157480, // 1: Improved Divine Protection
-      157460, // 2: Improved Flash of Light
-      157489, // 3: Improved Crusader Strike
-      157490, // 4: Improved Judgment
-      157491, // 5: Empowered Seal of Truth
-      157493, // 6: Enhanced Hand of Sacrifice
-      157495, // 7: Improved Exorcism
-      157496, // 8: Empowered Hammer of Wrath
+      157493, // 1: Enhanced Hand of Sacrifice
+      157496, // 2: Empowered Hammer of Wrath
+      174718, // 3: Empowered Divine Storm
     },
     {
            0,
@@ -4534,39 +4512,24 @@ static unsigned __perk_data[][MAX_SPECS_PER_CLASS][PERK_SIZE] = {
   {
     // Beast Mastery
     {
-      157713, // 0: Empowered Pets
-      157715, // 1: Enhanced Basic Attacks
-      157714, // 2: Improved Beast Cleave
-      157705, // 3: Improved Focus Fire
-      157709, // 4: Improved Kill Command
-      157707, // 5: Enhanced Kill Shot
-      157718, // 6: Enhanced Camouflage
-      157711, // 7: Improved Arcane Shot
-      157712, // 8: Improved Cobra Shot
+      157715, // 0: Enhanced Basic Attacks
+      157714, // 1: Improved Beast Cleave
+      157705, // 2: Improved Focus Fire
+      157718, // 3: Enhanced Camouflage
     },
     // Marksmanship
     {
       157707, // 0: Enhanced Kill Shot
       157718, // 1: Enhanced Camouflage
       157724, // 2: Enhanced Aimed Shot
-      157719, // 3: Enhanced Chimaera Shot
-      157733, // 4: Improved Chimaera Shot
-      157732, // 5: Improved Multi-Shot
-      157728, // 6: Improved Aimed Shot
-      157726, // 7: Improved Focus
-      157729, // 8: Improved Steady Shot
+      157726, // 3: Improved Focus
     },
     // Survival
     {
       157718, // 0: Enhanced Camouflage
-      157711, // 1: Improved Arcane Shot
-      157712, // 2: Improved Cobra Shot
-      157748, // 3: Empowered Explosive Shot
-      157752, // 4: Enhanced Entrapment
-      157751, // 5: Enhanced Traps
-      157749, // 6: Improved Black Arrow
-      157753, // 7: Improved Camouflage
-      157768, // 8: Improved Serpent Sting
+      157748, // 1: Empowered Explosive Shot
+      157752, // 2: Enhanced Entrapment
+      157751, // 3: Enhanced Traps
     },
     {
            0,
@@ -4577,37 +4540,22 @@ static unsigned __perk_data[][MAX_SPECS_PER_CLASS][PERK_SIZE] = {
     {
       157513, // 0: Improved Slice and Dice
       157514, // 1: Enhanced Vendetta
-      157515, // 2: Empowered Rupture
-      157560, // 3: Enhanced Poisons
-      157561, // 4: Enhanced Crimson Tempest
-      157569, // 5: Empowered Envenom
-      157570, // 6: Improved Rupture
-      157572, // 7: Enhanced Envenom
-      157576, // 8: Improved Recuperate
+      157561, // 2: Enhanced Crimson Tempest
+      157569, // 3: Empowered Envenom
     },
     // Combat
     {
-      157576, // 0: Improved Recuperate
-      157581, // 1: Empowered Bandit's Guile
-      157605, // 2: Swift Poison
-      157613, // 3: Enhanced Adrenaline Rush
-      157615, // 4: Enhanced Blade Flurry
-      157645, // 5: Empowered Crimson Tempest
-      157660, // 6: Improved Dual Wield
-      157661, // 7: Improved Sinister Strike
-      157662, // 8: Improved Eviscerate
+      157581, // 0: Empowered Bandit's Guile
+      157605, // 1: Swift Poison
+      157615, // 2: Enhanced Blade Flurry
+      157660, // 3: Improved Dual Wield
     },
     // Subtlety
     {
-      157576, // 0: Improved Recuperate
-      157663, // 1: Improved Backstab
-      157664, // 2: Improved Ambush
-      157665, // 3: Improved Hemorrhage
-      157666, // 4: Enhanced Vanish
-      157667, // 5: Enhanced Eviscerate
-      157669, // 6: Enhanced Shadow Dance
-      157671, // 7: Empowered Fan of Knives
-      157704, // 8: Enhanced Stealth
+      157666, // 0: Enhanced Vanish
+      157669, // 1: Enhanced Shadow Dance
+      157671, // 2: Empowered Fan of Knives
+      157704, // 3: Enhanced Stealth
     },
     {
            0,
@@ -4616,39 +4564,24 @@ static unsigned __perk_data[][MAX_SPECS_PER_CLASS][PERK_SIZE] = {
   {
     // Discipline
     {
-      157181, // 0: Improved Heal
-      157197, // 1: Empowered Archangel
-      157182, // 2: Improved Penance
-      157193, // 3: Enhanced Focused Will
-      157180, // 4: Enhanced Holy Fire
-      157145, // 5: Enhanced Leap of Faith
-      157156, // 6: Improved Smite
-      157129, // 7: Enhanced Power Word: Shield
-      157144, // 8: Improved Flash Heal
+      157197, // 0: Empowered Archangel
+      157193, // 1: Enhanced Focused Will
+      157145, // 2: Enhanced Leap of Faith
+      157129, // 3: Enhanced Power Word: Shield
     },
     // Holy
     {
-      157129, // 0: Enhanced Power Word: Shield
-      157144, // 1: Improved Flash Heal
-      157193, // 2: Enhanced Focused Will
-      157180, // 3: Enhanced Holy Fire
-      157145, // 4: Enhanced Leap of Faith
-      157156, // 5: Improved Smite
-      157206, // 6: Enhanced Chakras
-      157181, // 7: Improved Heal
-      157207, // 8: Enhanced Renew
+      157193, // 0: Enhanced Focused Will
+      157145, // 1: Enhanced Leap of Faith
+      157206, // 2: Enhanced Chakras
+      157207, // 3: Enhanced Renew
     },
     // Shadow
     {
       157129, // 0: Enhanced Power Word: Shield
-      157144, // 1: Improved Flash Heal
-      157221, // 2: Empowered Psychic Horror
-      157223, // 3: Enhanced Mind Flay
-      157217, // 4: Enhanced Shadow Orbs
-      157218, // 5: Enhanced Shadow Word: Death
-      157222, // 6: Improved Shadow Word: Pain
-      157219, // 7: Improved Vampiric Touch
-      157220, // 8: Improved Mind Spike
+      157223, // 1: Enhanced Mind Flay
+      157217, // 2: Enhanced Shadow Orbs
+      157218, // 3: Enhanced Shadow Word: Death
     },
     {
            0,
@@ -4661,35 +4594,20 @@ static unsigned __perk_data[][MAX_SPECS_PER_CLASS][PERK_SIZE] = {
       157337, // 1: Enhanced Death Grip
       157343, // 2: Enhanced Death Coil
       157336, // 3: Enhanced Rune Tap
-      157334, // 4: Enhanced Will of the Necropolis
-      157341, // 5: Improved Death Strike
-      157339, // 6: Improved Pestilence
-      157340, // 7: Improved Diseases
-      157342, // 8: Improved Soul Reaper
     },
     // Frost
     {
-      157340, // 0: Improved Diseases
-      157342, // 1: Improved Soul Reaper
-      157403, // 2: Empowered Icebound Fortitude
-      157389, // 3: Empowered Pillar of Frost
-      157409, // 4: Empowered Obliterate
-      157380, // 5: Improved Mind Freeze
-      157376, // 6: Improved Razorice
-      157367, // 7: Improved Death Grip
-      157408, // 8: Enhanced Death Strike
+      157389, // 0: Empowered Pillar of Frost
+      157409, // 1: Empowered Obliterate
+      157376, // 2: Improved Razorice
+      157367, // 3: Improved Death Grip
     },
     // Unholy
     {
-      157340, // 0: Improved Diseases
-      157342, // 1: Improved Soul Reaper
-      157408, // 2: Enhanced Death Strike
-      157441, // 3: Empowered Gargoyle
-      157412, // 4: Enhanced Dark Transformation
-      157439, // 5: Improved Death Coil
-      157437, // 6: Enhanced Fallen Crusader
-      157414, // 7: Improved Festering Strike
-      157413, // 8: Improved Scourge Strike
+      157342, // 0: Improved Soul Reaper
+      157441, // 1: Empowered Gargoyle
+      157412, // 2: Enhanced Dark Transformation
+      157437, // 3: Enhanced Fallen Crusader
     },
     {
            0,
@@ -4701,36 +4619,21 @@ static unsigned __perk_data[][MAX_SPECS_PER_CLASS][PERK_SIZE] = {
       157765, // 0: Improved Chain Lightning
       157774, // 1: Improved Lightning Shield
       157764, // 2: Improved Reincarnation
-      157775, // 3: Improved Fire Totems
-      157776, // 4: Improved Critical Strikes
-      157777, // 5: Improved Lightning Bolt
-      157778, // 6: Improved Lava Burst
-      157779, // 7: Improved Shocks
-      157784, // 8: Enhanced Unleash
+      157784, // 3: Enhanced Unleash
     },
     // Enhancement
     {
       157764, // 0: Improved Reincarnation
-      157775, // 1: Improved Fire Totems
-      157784, // 2: Enhanced Unleash
-      157803, // 3: Empowered Lava Lash
-      157804, // 4: Improved Flame Shock
-      157807, // 5: Improved Maelstrom Weapon
-      157808, // 6: Improved Stormstrike
-      157809, // 7: Improved Lava Lash
-      157810, // 8: Improved Feral Spirit
+      157784, // 1: Enhanced Unleash
+      157804, // 2: Improved Flame Shock
+      157807, // 3: Improved Maelstrom Weapon
     },
     // Restoration
     {
       157764, // 0: Improved Reincarnation
-      157777, // 1: Improved Lightning Bolt
-      157812, // 2: Improved Riptide
-      157813, // 3: Improved Chain Heal
-      157814, // 4: Improved Healing Wave
-      157816, // 5: Improved Healing Surge
-      157818, // 6: Improved Tidal Waves
-      157830, // 7: Improved Healing Rain
-      157784, // 8: Enhanced Unleash
+      157812, // 1: Improved Riptide
+      157813, // 2: Improved Chain Heal
+      157784, // 3: Enhanced Unleash
     },
     {
            0,
@@ -4739,39 +4642,24 @@ static unsigned __perk_data[][MAX_SPECS_PER_CLASS][PERK_SIZE] = {
   {
     // Arcane
     {
-      157532, // 0: Improved Arcane Barrage
-      157616, // 1: Improved Arcane Blast
-      157619, // 2: Improved Arcane Explosion
-      157599, // 3: Enhanced Arcane Missiles
-      157617, // 4: Improved Arcane Missiles
-      157604, // 5: Improved Arcane Power
-      157606, // 6: Improved Blink
-      157595, // 7: Enhanced Arcane Blast
-      157614, // 8: Improved Evocation
+      157604, // 0: Improved Arcane Power
+      157606, // 1: Improved Blink
+      157595, // 2: Enhanced Arcane Blast
+      157614, // 3: Improved Evocation
     },
     // Fire
     {
-      157630, // 0: Improved Combustion
-      157640, // 1: Improved Dragon's Breath
-      157642, // 2: Enhanced Pyrotechnics
-      157622, // 3: Enhanced Inferno Blast
-      157637, // 4: Improved Fireball and Frostfire Bolt
-      157621, // 5: Improved Flamestrike
-      157629, // 6: Improved Inferno Blast
-      157624, // 7: Improved Pyroblast
-      157632, // 8: Improved Scorch
+      157642, // 0: Enhanced Pyrotechnics
+      157621, // 1: Improved Flamestrike
+      157629, // 2: Improved Inferno Blast
+      157632, // 3: Improved Scorch
     },
     // Frost
     {
       157727, // 0: Improved Blizzard
       157646, // 1: Enhanced Frostbolt
-      157668, // 2: Enhanced Fingers of Frost
-      157670, // 3: Improved Frost Nova
-      157723, // 4: Improved Frostbolt
-      157770, // 5: Improved Frostfire Bolt
-      157725, // 6: Improved Ice Lance
-      157721, // 7: Improved Icy Veins
-      157738, // 8: Improved Water Elemental
+      157721, // 2: Improved Icy Veins
+      157738, // 3: Improved Water Elemental
     },
     {
            0,
@@ -4780,39 +4668,24 @@ static unsigned __perk_data[][MAX_SPECS_PER_CLASS][PERK_SIZE] = {
   {
     // Affliction
     {
-      157070, // 0: Improved Life Tap
-      157071, // 1: Empowered Agony
-      157072, // 2: Enhanced Haunt
-      157073, // 3: Improved Corruption
-      157076, // 4: Improved Unstable Affliction
-      157077, // 5: Improved Drain Soul
-      157078, // 6: Empowered Corruption
-      157068, // 7: Improved Demons
-      157069, // 8: Empowered Drain Life
+      157072, // 0: Enhanced Haunt
+      157077, // 1: Improved Drain Soul
+      157078, // 2: Empowered Corruption
+      157069, // 3: Empowered Drain Life
     },
     // Demonology
     {
-      157068, // 0: Improved Demons
-      157069, // 1: Empowered Drain Life
-      157095, // 2: Improved Molten Core
-      157096, // 3: Empowered Demons
-      157097, // 4: Improved Shadow Bolt
-      157098, // 5: Enhanced Corruption
-      157100, // 6: Empowered Doom
-      157101, // 7: Enhanced Hand of Gul'dan
-      157102, // 8: Improved Touch of Chaos
+      157069, // 0: Empowered Drain Life
+      157096, // 1: Empowered Demons
+      157098, // 2: Enhanced Corruption
+      157100, // 3: Empowered Doom
     },
     // Destruction
     {
       157103, // 0: Enhanced Chaos Bolt
       157114, // 1: Empowered Immolate
-      157118, // 2: Improved Conflagrate
-      157120, // 3: Empowered Incinerate
-      157121, // 4: Improved Ember Tap
-      157125, // 5: Improved Shadowburn
-      157126, // 6: Enhanced Havoc
-      157068, // 7: Improved Demons
-      158362, // 8: Enhanced Drain Life
+      157121, // 2: Enhanced Ember Tap
+      157126, // 3: Enhanced Havoc
     },
     {
            0,
@@ -4821,39 +4694,24 @@ static unsigned __perk_data[][MAX_SPECS_PER_CLASS][PERK_SIZE] = {
   {
     // Brewmaster
     {
-      157365, // 0: Improved Dizzying Haze
-      157378, // 1: Improved Elusive Brew
-      157362, // 2: Improved Breath of Fire
-      157363, // 3: Improved Guard
-      157377, // 4: Empowered Keg Smash
-      157381, // 5: Improved Stance of the Sturdy Ox
-      157374, // 6: Empowered Blackout Kick
-      157361, // 7: Enhanced Roll
-      157366, // 8: Enhanced Transcendence
+      157362, // 0: Improved Breath of Fire
+      157363, // 1: Improved Guard
+      157361, // 2: Enhanced Roll
+      157366, // 3: Enhanced Transcendence
     },
     // Mistweaver
     {
-      157400, // 0: Empowered Surging Mist
-      157392, // 1: Improved Expel Harm
-      157401, // 2: Improved Life Cocoon
-      157398, // 3: Improved Renewing Mist
-      157399, // 4: Empowered Tiger Palm
-      157374, // 5: Empowered Blackout Kick
-      157361, // 6: Enhanced Roll
-      157366, // 7: Enhanced Transcendence
-      157771, // 8: Improved Soothing Mist
+      157401, // 0: Improved Life Cocoon
+      157398, // 1: Improved Renewing Mist
+      157361, // 2: Enhanced Roll
+      157366, // 3: Enhanced Transcendence
     },
     // Windwalker
     {
-      157399, // 0: Empowered Tiger Palm
-      157411, // 1: Empowered Chi
-      157415, // 2: Empowered Spinning Crane Kick
-      157404, // 3: Improved Energizing Brew
-      157427, // 4: Empowered Fists of Fury
-      157426, // 5: Empowered Rising Sun Kick
-      157374, // 6: Empowered Blackout Kick
-      157361, // 7: Enhanced Roll
-      157366, // 8: Enhanced Transcendence
+      157411, // 0: Empowered Chi
+      157415, // 1: Empowered Spinning Crane Kick
+      157361, // 2: Enhanced Roll
+      157366, // 3: Enhanced Transcendence
     },
     {
            0,
@@ -4862,57 +4720,37 @@ static unsigned __perk_data[][MAX_SPECS_PER_CLASS][PERK_SIZE] = {
   {
     // Balance
     {
-      157233, // 0: Empowered Starfall
-      157229, // 1: Empowered Moonkin
-      157227, // 2: Enhanced Moonkin Form
-      157301, // 3: Enhanced Rebirth
-      157232, // 4: Enhanced Starsurge
-      157226, // 5: Enhanced Hurricane
-      157230, // 6: Improved Starfire
-      157235, // 7: Improved Moonfire
-      157231, // 8: Improved Wrath
+      157229, // 0: Empowered Moonkin
+      157227, // 1: Enhanced Moonkin Form
+      157301, // 2: Enhanced Rebirth
+      157232, // 3: Enhanced Starsurge
     },
     // Feral
     {
       157269, // 0: Enhanced Berserk
-      157272, // 1: Enhanced Cat Form
-      157274, // 2: Enhanced Prowl
-      157280, // 3: Enhanced Rejuvenation
-      157273, // 4: Enhanced Tiger's Fury
-      157277, // 5: Improved Ferocious Bite
-      157276, // 6: Improved Rake
-      157275, // 7: Improved Shred
-      157279, // 8: Improved Healing Touch
+      157274, // 1: Enhanced Prowl
+      157280, // 2: Enhanced Rejuvenation
+      157276, // 3: Improved Rake
     },
     // Guardian
     {
       157292, // 0: Empowered Bear Form
       157284, // 1: Empowered Berserk
-      157290, // 2: Empowered Thrash
-      157286, // 3: Enhanced Faerie Fire
-      157283, // 4: Enhanced Tooth and Claw
-      157296, // 5: Improved Barkskin
-      157298, // 6: Improved Frenzied Regeneration
-      157287, // 7: Improved Mangle
-      157288, // 8: Improved Maul
+      157286, // 2: Enhanced Faerie Fire
+      157283, // 3: Enhanced Tooth and Claw
     },
     // Restoration
     {
-      157235, // 0: Improved Moonfire
-      157231, // 1: Improved Wrath
-      157279, // 2: Improved Healing Touch
-      157305, // 3: Empowered Ironbark
-      157302, // 4: Empowered Regrowth
-      157300, // 5: Empowered Rejuvenation
-      157312, // 6: Enhanced Lifebloom
-      157301, // 7: Enhanced Rebirth
-      157309, // 8: Improved Living Seed
+      157305, // 0: Empowered Ironbark
+      157300, // 1: Empowered Rejuvenation
+      157312, // 2: Enhanced Lifebloom
+      157301, // 3: Enhanced Rebirth
     },
   },
 };
 
-// Glyph properties, wow build 18663
-static glyph_property_data_t __glyph_property_data[527] = {
+// Glyph properties, wow build 18689
+static glyph_property_data_t __glyph_property_data[518] = {
   {   162,  54811 },
   {   163,  54812 },
   {   164, 114338 },
@@ -5003,7 +4841,6 @@ static glyph_property_data_t __glyph_property_data[527] = {
   {   285,  56226 },
   {   286,  56240 },
   {   289,  56231 },
-  {   290,  56250 },
   {   291,  56233 },
   {   292,  56247 },
   {   312,  56363 },
@@ -5100,7 +4937,6 @@ static glyph_property_data_t __glyph_property_data[527] = {
   {   477,  58079 },
   {   478,  58070 },
   {   479,  58081 },
-  {   480,  58080 },
   {   481,  58107 },
   {   482,  58094 },
   {   483,  58095 },
@@ -5255,9 +5091,7 @@ static glyph_property_data_t __glyph_property_data[527] = {
   {   997, 146951 },
   {   998, 123401 },
   {   999, 120477 },
-  {  1000, 120479 },
   {  1001, 120483 },
-  {  1002, 120482 },
   {  1003, 120585 },
   {  1004, 120581 },
   {  1005, 120583 },
@@ -5266,7 +5100,6 @@ static glyph_property_data_t __glyph_property_data[527] = {
   {  1008, 122013 },
   {  1009, 122028 },
   {  1011, 123023 },
-  {  1012, 120479 },
   {  1013, 123334 },
   {  1014, 123391 },
   {  1015, 123394 },
@@ -5287,7 +5120,6 @@ static glyph_property_data_t __glyph_property_data[527] = {
   {  1033, 125660 },
   {  1034, 146950 },
   {  1035, 125671 },
-  {  1036, 125673 },
   {  1038, 125678 },
   {  1039, 125732 },
   {  1040, 125755 },
@@ -5304,7 +5136,6 @@ static glyph_property_data_t __glyph_property_data[527] = {
   {  1052, 126745 },
   {  1053, 126746 },
   {  1054, 131113 },
-  {  1055, 132005 },
   {  1058, 135557 },
   {  1060, 145722 },
   {  1061, 147707 },
@@ -5363,7 +5194,6 @@ static glyph_property_data_t __glyph_property_data[527] = {
   {  1119, 159436 },
   {  1121, 159444 },
   {  1122, 159445 },
-  {  1123, 159448 },
   {  1124, 159450 },
   {  1125, 159453 },
   {  1126, 159455 },
@@ -5412,7 +5242,6 @@ static glyph_property_data_t __glyph_property_data[527] = {
   {  1171, 159651 },
   {  1172, 159653 },
   {  1173, 159665 },
-  {  1174, 159667 },
   {  1175, 159669 },
   {  1176, 159680 },
   {  1177, 159688 },

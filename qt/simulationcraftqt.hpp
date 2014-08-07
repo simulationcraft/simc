@@ -520,17 +520,34 @@ public:
     QComboBox* player_spec;
     QComboBox* player_race;
     QComboBox* player_level;
+    QComboBox* comp_type;
   } choice;
+  struct labels_t
+  {
+    QLabel* talents;
+    QLabel* glyphs;
+    QLabel* gear;
+    QLabel* rotation;
+    QLabel* advanced;
+    QLabel* sidebar;
+  } label;
   struct textBoxes_t
   {
-    SC_TextEdit* talents;
-    SC_TextEdit* glyphs;
+    QLineEdit* talents;
+    QLineEdit* glyphs;
     SC_TextEdit* gear;
     SC_TextEdit* rotation;
+    SC_TextEdit* advanced;
     SC_TextEdit* sidebar;
   } textbox;
 
   void createAutomationTab();
+  void createTooltips();
+
+public slots:
+  void setSpecDropDown( const int player_class );
+  void setSidebarClassText();
+  void compTypeChanged( const int comp );
 };
 
 // ==========================================================================
@@ -1056,7 +1073,6 @@ public:
   void createOptionsTab();
   void createImportTab();
   void createBestInSlotTab();
-  void createAutomationTab();
   void createCustomTab();
   void createSimulateTab();
   void createOverridesTab();
@@ -1126,7 +1142,7 @@ public slots:
   void stopImport();
   void stopSim();
   void stopAllSim();
-
+  
 public:
   SC_MainWindow( QWidget *parent = 0 );
 };
@@ -1516,16 +1532,50 @@ public:
 namespace automation {
 
   QString tokenize( QString qstr );
-  
-  QString do_something( QString player_class,
+
+  QString do_something( int sim_type,
+                        QString player_class,
                         QString player_spec,
                         QString player_race,
                         QString player_level,
                         QString player_talents,
                         QString player_glyphs,
                         QString player_gear,
-                        QString player_rotation
+                        QString player_rotation,
+                        QString advanced_text
                       );
+
+  QString auto_talent_sim( QString player_class,
+                           QString base_profile_info,
+                           QString player_glyphs,
+                           QString player_gear,
+                           QString player_rotation,
+                           QString advanced_text
+                         );
+
+  QString auto_glyph_sim( QString player_class,
+                          QString base_profile_info, 
+                          QString player_talents,
+                          QString player_gear,
+                          QString player_rotation,
+                          QString advanced_text
+                        );
+
+  QString auto_gear_sim( QString player_class,
+                         QString base_profile_info, 
+                         QString player_talents,
+                         QString player_glyphs,
+                         QString player_rotation,
+                         QString advanced_text
+                       );
+
+  QString auto_rotation_sim( QString player_class,
+                             QString base_profile_info,
+                             QString player_talents,
+                             QString player_glyphs,
+                             QString player_gear,
+                             QString advanced_text
+                           );
 
 } // end automation namespace
 

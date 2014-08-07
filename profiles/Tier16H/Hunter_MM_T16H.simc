@@ -20,7 +20,7 @@ actions.precombat+=/food,type=blackrock_barbecue
 actions.precombat+=/summon_pet
 # Snapshot raid buffed stats before combat begins and pre-potting is done.
 actions.precombat+=/snapshot_stats
-actions.precombat+=/exotic_munitions,ammo_type=poisoned,if=talent.exotic_munitions.enabled
+actions.precombat+=/exotic_munitions,ammo_type=poisoned
 actions.precombat+=/potion,name=draenic_agility
 
 # Executed every time the actor is available.
@@ -35,10 +35,10 @@ actions+=/run_action_list,name=single_target
 actions.single_target=powershot
 actions.single_target+=/fervor,if=focus<=50
 actions.single_target+=/rapid_fire,if=!buff.rapid_fire.up
-actions.single_target+=/stampede,if=(trinket.stat.agility.up|target.time_to_die<=20|(trinket.stacking_stat.agility.stack>10&trinket.stat.agility.cooldown_remains<=3))
+actions.single_target+=/stampede,if=trinket.stat.agility.up|target.time_to_die<=20|(trinket.stacking_stat.agility.stack>10&trinket.stat.agility.cooldown_remains<=3)
 actions.single_target+=/a_murder_of_crows
 actions.single_target+=/dire_beast
-actions.single_target+=/run_action_list,name=careful_aim,if=target.health.pct>80|buff.rapid_fire.up
+actions.single_target+=/run_action_list,name=careful_aim,if=target.health.pct>=80|buff.rapid_fire.up
 actions.single_target+=/glaive_toss
 actions.single_target+=/barrage
 actions.single_target+=/chimaera_shot
