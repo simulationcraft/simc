@@ -1922,6 +1922,11 @@ struct powershot_t: public hunter_ranged_attack_t
     am *= 2.0;  // from the tooltip
     return am;
   }
+
+  bool usable_moving() const
+  {
+    return false;
+  }
 };
 
 // Black Arrow ==============================================================

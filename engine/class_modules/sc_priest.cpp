@@ -185,37 +185,21 @@ public:
   {
     // General
     const spell_data_t* enhanced_power_word_shield;
-    const spell_data_t* improved_flash_heal;
 
     // Healing
     const spell_data_t* enhanced_focused_will;
-    const spell_data_t* enhanced_holy_fire;
     const spell_data_t* enhanced_leap_of_faith;
 
-    // TODO 2014/06/09: CoP is listed under affected spells. Check what's up with that.
-    // http://howtopriest.com/viewtopic.php?f=76&t=5887&p=50469#p50469
-    const spell_data_t* improved_heal;
-    const spell_data_t* improved_smite;
-
     // Discipline
-
-    // TODO 2014/06/09: check if it procs per execute or tick, and if it procs from penance_damage as well.
-    // See http://howtopriest.com/viewtopic.php?f=76&t=5887&p=50468#p50468
-    const spell_data_t* enhanced_strength_of_soul;
-    const spell_data_t* improved_penance;
 
     // Holy
     const spell_data_t* enhanced_chakras;
     const spell_data_t* enhanced_renew;
 
     // Shadow
-    const spell_data_t* empowered_psychic_horror;
     const spell_data_t* enhanced_mind_flay;
     const spell_data_t* enhanced_shadow_orbs;
     const spell_data_t* enhanced_shadow_word_death;
-    const spell_data_t* improved_mind_spike;
-    const spell_data_t* improved_shadow_word_pain;
-    const spell_data_t* improved_vampiric_touch;
   } perks;
 
   // Cooldowns
@@ -2406,8 +2390,6 @@ struct mind_spike_t final : public priest_spell_t
     casted_with_surge_of_darkness( false )
   {
     parse_options( nullptr, options_str );
-
-  base_multiplier *= 1.0 + player.perks.improved_mind_spike -> effectN( 1 ).percent();
   }
 
   virtual action_state_t* new_state() override
@@ -3211,8 +3193,6 @@ struct shadow_word_pain_t final : public priest_spell_t
 
     base_multiplier *= 1.0 + p.sets.set( SET_T13_4PC_CASTER ) -> effectN( 1 ).percent();
 
-    base_multiplier *= 1.0 + p.perks.improved_shadow_word_pain -> effectN( 1 ).percent();
-
     base_crit   += p.sets.set( SET_T14_2PC_CASTER ) -> effectN( 1 ).percent();
 
     dot_duration += p.sets.set( SET_T14_4PC_CASTER ) -> effectN( 1 ).time_value();
@@ -3281,8 +3261,6 @@ struct vampiric_touch_t final : public priest_spell_t
   {
     parse_options( nullptr, options_str );
     may_crit   = false;
-
-    base_multiplier *= 1.0 + p.perks.improved_vampiric_touch -> effectN( 1 ).percent();
 
     dot_duration += p.sets.set( SET_T14_4PC_CASTER ) -> effectN( 1 ).time_value();
 
@@ -3371,8 +3349,6 @@ struct holy_fire_base_t : public priest_spell_t
     can_trigger_atonement = priest.specs.atonement -> ok();
 
     range += priest.glyphs.holy_fire -> effectN( 1 ).base_value();
-
-    dot_duration += priest.perks.enhanced_holy_fire -> effectN( 1 ).time_value();
   }
 
   virtual void execute() override
@@ -3570,8 +3546,6 @@ struct smite_t final : public priest_spell_t
     castable_in_shadowform = false;
 
     range += priest.glyphs.holy_fire -> effectN( 1 ).base_value();
-
-    base_multiplier *= 1.0 + priest.perks.improved_smite -> effectN( 1 ).percent();
   }
 
   virtual void execute() override
@@ -4214,8 +4188,6 @@ struct flash_heal_t final : public priest_heal_t
     can_trigger_spirit_shell = true;
 
     castable_in_shadowform = false;
-
-    base_multiplier *= 1.0 + priest.perks.improved_flash_heal -> effectN( 1 ).percent();
   }
 
   virtual void execute() override
@@ -4289,9 +4261,6 @@ struct _heal_t final : public priest_heal_t
   {
     parse_options( nullptr, options_str );
     can_trigger_spirit_shell = true;
-
-
-    base_multiplier *= 1.0 + priest.perks.improved_heal -> effectN( 1 ).percent();
   }
 
   virtual void execute() override
@@ -4617,8 +4586,6 @@ struct penance_heal_t final : public priest_heal_t
 
       school = SCHOOL_HOLY;
       stats = player.get_stats( "penance_heal", this );
-
-      base_multiplier *= 1.0 + priest.perks.improved_penance -> effectN( 1 ).percent();
     }
 
     virtual void impact( action_state_t* s ) override
@@ -4661,10 +4628,9 @@ struct penance_heal_t final : public priest_heal_t
   {
     priest_heal_t::impact( s );
 
-    if ( priest.perks.enhanced_strength_of_soul -> ok() && ! priest.buffs.spirit_shell -> check() )
+    if ( ! priest.buffs.spirit_shell -> check() )
       trigger_strength_of_soul( s -> target );
   }
-
 };
 
 // Power Word: Shield Spell =================================================
@@ -5827,37 +5793,21 @@ void priest_t::init_spells()
   // Perk Spells
   // General
   perks.enhanced_power_word_shield    = find_perk_spell( "Enhanced Power Word: Shield" );
-  perks.improved_flash_heal           = find_perk_spell( "Improved Flash Heal" );
 
   // Healing
   perks.enhanced_focused_will         = find_perk_spell( "Enhanced Focused Will" );
-  perks.enhanced_holy_fire            = find_perk_spell( "Enhanced Holy Fire" );
   perks.enhanced_leap_of_faith        = find_perk_spell( "Enhanced Leap of Faith" );            //NYI
 
-  // TODO 2014/06/09: CoP is listed under affected spells. Check what's up with that.
-  // http://howtopriest.com/viewtopic.php?f=76&t=5887&p=50469#p50469
-  perks.improved_heal                 = find_perk_spell( "Improved Heal" );
-  perks.improved_smite                = find_perk_spell( "Improved Smite" );
-
   // Discipline
-
-  // TODO 2014/06/09: check if it procs per execute or tick, and if it procs from penance_damage as well.
-  // See http://howtopriest.com/viewtopic.php?f=76&t=5887&p=50468#p50468
-  perks.enhanced_strength_of_soul     = find_perk_spell( "Enhanced Strength of Soul" );
-  perks.improved_penance              = find_perk_spell( "Improved Penance" );
 
   // Holy
   perks.enhanced_chakras              = find_perk_spell( "Enhanced Chakras" );
   perks.enhanced_renew                = find_perk_spell( "Enhanced Renew" );
 
   // Shadow
-  perks.empowered_psychic_horror      = find_perk_spell( "Empowered Psychic Horror" );          //NYI
   perks.enhanced_mind_flay            = find_perk_spell( "Enhanced Mind Flay" );
   perks.enhanced_shadow_orbs          = find_perk_spell( "Enhanced Shadow Orbs" );
   perks.enhanced_shadow_word_death    = find_perk_spell( "Enhanced Shadow Word: Death" );
-  perks.improved_mind_spike           = find_perk_spell( "Improved Mind Spike" );
-  perks.improved_shadow_word_pain     = find_perk_spell( "Improved Shadow Word: Pain" );
-  perks.improved_vampiric_touch       = find_perk_spell( "Improved Vampiric Touch" );
 
   // Glyphs
   glyphs.dispel_magic                 = find_glyph_spell( "Glyph of Dispel Magic" );            //NYI
