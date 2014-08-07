@@ -541,6 +541,7 @@ public:
     SC_TextEdit* rotation;
     SC_TextEdit* advanced;
     SC_TextEdit* sidebar;
+    SC_TextEdit* helpbar;
   } textbox;
 
   QString advTalent;

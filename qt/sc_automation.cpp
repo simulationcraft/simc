@@ -250,14 +250,14 @@ void SC_ImportTab::setSpecDropDown( const int player_class )
 QString sidebarText[ 11 ][ 4 ] = {
   { "Blood shorthand goes here.", "Frost shorthand goes here", "Unholy shorthand goes here", "N/A" },
   { "Balance shorthand goes here.", "Feral shorthand goes here.", "Guardian shorthand goes here.", "Restoration shorthand goes here." },
-  { "", "", "", "N/A" },
-  { "", "", "", "N/A" },
+  { "Beast Master shorthand goes here.", "Marksmanship shorthand goes here.", "Survival shorthand goes here." },
+  { "Arcane shorthand goes here.", "Fire shorthand goes here.", "Frost shorthand goes here.", "N/A" },
+  { "Brewmaster shorthand goes here.", "Mistweaver shorthand goes here.", "Windwalker shorthand goes here.", "N/A" },
   { "Holy shorthand goes here.", "Protection shorthand goes here.", "Retribution shorthand goes here.", "N/A" },
-  { "", "", "", "N/A" },
-  { "", "", "", "N/A" },
-  { "", "", "", "N/A" },
-  { "", "", "", "N/A" },
-  { "Affliction shorthand goe shere.", "Demonology shorthand goes here.", "Destruction shorthand goes here.", "N/A" },
+  { "Discipline shorthand goes here.", "Holy shorthand goes here.", "Shadow shorthand goes here.", "N/A" },
+  { "Assasination shorthand goes here.", "Combat shorthand goes here.", "Subtlety shorthand goes here.", "N/A" },
+  { "Elemental shorthand goes here.", "Enhancement shorthand goes here.", "Restoration shorthand goes here.", "N/A" },
+  { "Affliction shorthand goes here.", "Demonology shorthand goes here.", "Destruction shorthand goes here.", "N/A" },
   { "Arms shorthand goes here.", "Fury shorthand goes here.", "Protection shorthand goes here.", "N/A" },
 };
 
@@ -265,6 +265,15 @@ QString sidebarText[ 11 ][ 4 ] = {
 QString advancedText[ 5 ] = {
   "Unused", "Talent Configurations", "Glyph Configurations", "Gear Configurations", "Rotation Shorthands"
 };
+// constant for the varying labels of the helpbar text box
+QString helpbarText[ 5 ] = {
+  "To automate generation of a comparison, choose a comparison type from the drop-down box to the left.",
+  "To specify different talent configurations, list the talent configurations you want to test (as seven-digit integer strings, i.e. 1231231) in the box below. Each configuration should be its own new line.",
+  "To specify different glyph configurations, list the glyph configurations you want to test (i.e. alabaster_shield/focused_shield/word_of_glory) in the box below. Each configuration should be its own new line.",
+  "To specify different gear configurations, we need to implement some things still.",
+  "To specify different rotations, list the rotation shorthands you want to test in the box below. The sidebar lists the shorthand conventions for your class and spec. If a shorthand you want isn't documented, please contact the simulationcraft team to have it added."
+};
+
 
 // method to set the sidebar text based on class slection
 void SC_ImportTab::setSidebarClassText()
@@ -284,7 +293,11 @@ void SC_ImportTab::compTypeChanged( const int comp )
   else if ( ! textbox.rotation -> isEnabled() )
     advRotation = textbox.advanced -> document() -> toPlainText();
 
+  // set the label of the Advanced tab appropriately
   label.advanced -> setText( advancedText[ comp ] );
+
+  // set the text of the help bar appropriately
+  textbox.helpbar -> setText( helpbarText[ comp ] );
   
   // TODO: set the text of the box with some sort of default for each case
 
@@ -374,6 +387,14 @@ void SC_ImportTab::createAutomationTab()
 
   // Apply the layout to the compGroupBox
   compGroupBox -> setLayout( compLayout );
+  
+
+  // Elements (0,1) - (0,2) are the helpbar
+  textbox.helpbar = new SC_TextEdit;
+  textbox.helpbar -> setDisabled( true );
+  textbox.helpbar -> setMaximumHeight( 50 );
+  textbox.helpbar -> setHorizontalScrollBarPolicy( Qt::ScrollBarAlwaysOff );
+  gridLayout -> addWidget( textbox.helpbar, 0, 1, 1, 2, 0 );
 
 
   // Elements (1,0) & (2,0) are a QLabel and QGroupBox for some of the defaults  
@@ -420,7 +441,7 @@ void SC_ImportTab::createAutomationTab()
   
   // Create a label and an edit box for gear
   label.gear = new QLabel( tr( "Default Gear" ) );
-  textbox.gear = new SC_TextEdit;;
+  textbox.gear = new SC_TextEdit;
   // assign the label and edit box to cells
   gridLayout -> addWidget( label.gear,   3, 0, 0 );
   gridLayout -> addWidget( textbox.gear, 4, 0, 0 );
@@ -561,10 +582,10 @@ void SC_ImportTab::decodeSettings()
   load_setting( settings, "gearbox", textbox.gear, "head=\nneck=\n" );
   load_setting( settings, "rotationbox", textbox.rotation );
   load_setting( settings, "advancedbox", textbox.advanced, "default" );
-  load_setting( settings, "advTalent", advTalent );
-  load_setting( settings, "advGlyph", advGlyph );
+  load_setting( settings, "advTalent", advTalent, "0000000\n1111111\n2222222" );
+  load_setting( settings, "advGlyph", advGlyph, "alabaster_shield/focused_shield" );
   load_setting( settings, "advGear", advGear );
-  load_setting( settings, "advRotation", advRotation );
+  load_setting( settings, "advRotation", advRotation, "CS>J>AS>Cons" );
   
   settings.endGroup();
 }
