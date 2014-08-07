@@ -364,6 +364,7 @@ public:
     beacon_target = 0;
 
     base.distance = 3;
+    regen_type = REGEN_DYNAMIC;
   }
 
   virtual void      init_base_stats();
