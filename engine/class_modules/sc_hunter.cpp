@@ -4019,13 +4019,12 @@ stat_e hunter_t::convert_hybrid_stat( stat_e s ) const
 
 // hunter_t::moving() =======================================================
 
+/* Override moving() so that it doesn't suppress auto_shot and only interrupts the few shots that cannot be used while moving.
+*/
 void hunter_t::moving()
 {
-  if ( executing )
-  {
-    if ( executing -> id == 163485 || executing -> id == 152245 )
-      player_t::interrupt();
-  }
+  if ( executing && ! executing -> usable_moving() || channeling && ! channeling -> usable_moving() )
+    player_t::interrupt();
 }
 
 void hunter_t::finish_moving()
