@@ -43,31 +43,29 @@ QString automation::do_something( int sim_type,
   QString base_profile_info; // class, spec, race & level definition
 
   // basic profile information
-  base_profile_info += tokenize(player_class) + "=Name\n";
-  base_profile_info += "specialization=" + tokenize(player_spec) + "\n";
-  base_profile_info += "race=" + tokenize(player_race) + "\n";
+  base_profile_info += tokenize( player_class ) + "=Name\n";
+  base_profile_info += "specialization=" + tokenize( player_spec ) + "\n";
+  base_profile_info += "race=" + tokenize( player_race ) + "\n";
   base_profile_info += "level=" + player_level + "\n";
 
   // simulation type check
-  switch (sim_type) {
+  switch ( sim_type )
+  {
     case 1: // talent simulation
-      profile += auto_talent_sim(base_profile_info, player_glyphs, player_gear, player_rotation, advanced_text);
-      return profile;
+      return auto_talent_sim( base_profile_info, player_glyphs, player_gear, player_rotation, advanced_text );
     case 2: // glyph simulation
-      profile += auto_glyph_sim(base_profile_info, player_talents, player_gear, player_rotation, advanced_text);
-      return profile;
+      return auto_glyph_sim( base_profile_info, player_talents, player_gear, player_rotation, advanced_text );
     case 3: // rotation simulation
-      profile += auto_rotation_sim(base_profile_info, player_talents, player_glyphs, player_rotation, advanced_text);
-      return profile;
+      return auto_rotation_sim( base_profile_info, player_talents, player_glyphs, player_rotation, advanced_text );
     case 4: // gear simulation
-      profile += auto_gear_sim(base_profile_info, player_talents, player_glyphs, player_gear, advanced_text);
-      return profile;
+      return auto_gear_sim( base_profile_info, player_talents, player_glyphs, player_gear, advanced_text );
     default: // default profile creation
       profile += base_profile_info;
       profile += "talents=" + player_talents + "\n";
       profile += "glyphs=" + player_glyphs + "\n";
       profile += player_gear + "\n";
       profile += player_rotation;
+      return profile;
   }
 
   return profile;
@@ -81,7 +79,7 @@ QString automation::auto_talent_sim( QString base_profile_info,
                                      QString player_rotation
                                    )
 {
-  QString profile;
+  QString profile = "NYI";
 
   return profile;
 }
@@ -94,7 +92,7 @@ QString automation::auto_glyph_sim( QString base_profile_info,
                                     QString advanced_text
                                   )
 {
-  QString profile;
+  QString profile = "NYI";
   
   return profile;
 }
@@ -107,7 +105,7 @@ QString automation::auto_gear_sim( QString base_profile_info,
                                    QString advanced_text
                                  )
 {
-  QString profile;
+  QString profile = "NYI";
 
   return profile;
 }
@@ -120,7 +118,7 @@ QString automation::auto_rotation_sim( QString base_profile_info,
                                        QString advanced_text
                                      )
 {
-  QString profile;
+  QString profile = "NYI";
 
   return profile;
 }
@@ -155,93 +153,68 @@ void SC_ImportTab::setSpecDropDown( const int player_class )
 
   switch ( player_class )
   {
-    case 0: 
-    {
+    case 0:
       choice.player_spec -> setItemText( 0, "Blood" );
       choice.player_spec -> setItemText( 1, "Frost" );
       choice.player_spec -> setItemText( 2, "Unholy" );
       break;
-    }
     case 1:
-    {
       choice.player_spec -> setItemText( 0, "Balance" );
       choice.player_spec -> setItemText( 1, "Feral" );
       choice.player_spec -> setItemText( 2, "Guardian" );
       choice.player_spec -> addItem( "Restoration" );
       break;
-    }
     case 2:
-    {
       choice.player_spec -> setItemText( 0, "Beast Mastery" );
       choice.player_spec -> setItemText( 1, "Marksmanship" );
       choice.player_spec -> setItemText( 2, "Survival" );
       break;
-    }
     case 3:
-    {
       choice.player_spec -> setItemText( 0, "Arcane" );
       choice.player_spec -> setItemText( 1, "Fire" );
       choice.player_spec -> setItemText( 2, "Frost" );
       break;
-    }
     case 4:
-    {
       choice.player_spec -> setItemText( 0, "Brewmaster" );
       choice.player_spec -> setItemText( 1, "Mistweaver" );
       choice.player_spec -> setItemText( 2, "Windwalker" );
       break;
-    }
     case 5:
-    {
       choice.player_spec -> setItemText( 0, "Holy" );
       choice.player_spec -> setItemText( 1, "Protection" );
       choice.player_spec -> setItemText( 2, "Retribution" );
       break;
-    }
     case 6:
-    {
       choice.player_spec -> setItemText( 0, "Discipline" );
       choice.player_spec -> setItemText( 1, "Holy" );
       choice.player_spec -> setItemText( 2, "Shadow" );
       break;
-    }
     case 7:
-    {
       choice.player_spec -> setItemText( 0, "Assassination" );
       choice.player_spec -> setItemText( 1, "Combat" );
       choice.player_spec -> setItemText( 2, "Subtlety" );
       break;
-    }
     case 8:
-    {
       choice.player_spec -> setItemText( 0, "Elemental" );
       choice.player_spec -> setItemText( 1, "Enhancement" );
       choice.player_spec -> setItemText( 2, "Restoration" );
       break;
-    }
     case 9:
-    {
       choice.player_spec -> setItemText( 0, "Affliction" );
       choice.player_spec -> setItemText( 1, "Demonology" );
       choice.player_spec -> setItemText( 2, "Destruction" );
       break;
-    }
     case 10:
-    {
       choice.player_spec -> setItemText( 0, "Arms" );
       choice.player_spec -> setItemText( 1, "Fury" );
       choice.player_spec -> setItemText( 2, "Protection" );
       break;
-    }
     default:
-    {
       choice.player_spec -> setItemText( 0, "What" );
       choice.player_spec -> setItemText( 1, "The" );
       choice.player_spec -> setItemText( 2, "F*&!" );
       break;
-    }
   }
-  
 }
 
 // 
@@ -316,6 +289,7 @@ void SC_MainWindow::startAutomationImport( int tab )
   
   mainTab -> setCurrentTab( TAB_SIMULATE );
 }
+
 void SC_ImportTab::createAutomationTab()
 { 
   // layout building based on 
@@ -376,13 +350,15 @@ void SC_ImportTab::createAutomationTab()
   // Create text boxes for default talents and glyphs, and add them to the FormLayout
   textbox.talents = new QTextEdit;
   textbox.talents -> setMinimumHeight( 15 );
-  textbox.talents -> resize( 250, 15 );
+  textbox.talents -> setFixedHeight( 15 );
+  textbox.talents -> setVerticalScrollBarPolicy( Qt::ScrollBarAlwaysOff );
   textbox.talents -> setPlainText( "0000000" );
   defaultsFormLayout -> addRow( tr("Default Talents" ), textbox.talents );
   
   textbox.glyphs = new QTextEdit;
   textbox.glyphs -> setMinimumHeight( 15 );
-  textbox.glyphs -> resize( 250, 15 );
+  textbox.glyphs -> setFixedHeight( 15 );
+  textbox.glyphs -> setVerticalScrollBarPolicy( Qt::ScrollBarAlwaysOff );
   textbox.glyphs -> setPlainText( "focused_shield/alabaster_shield" );
   defaultsFormLayout -> addRow( tr("Default Glypyhs" ), textbox.glyphs );
 
