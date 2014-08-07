@@ -15,7 +15,7 @@
 ///////////////////////////////////////////////////////////////////////////////
 
 
-  // stuff goes here!
+// Local method to perform tokenize on QStrings
 QString automation::tokenize( QString qstr )
 {
   std::string temp = qstr.toLocal8Bit().constData();
@@ -43,7 +43,6 @@ QString automation::do_something( int sim_type,
   QString base_profile_info; // class, spec, race & level definition
 
   // basic profile information
-  base_profile_info += tokenize( player_class ) + "=Name\n";
   base_profile_info += "specialization=" + tokenize( player_spec ) + "\n";
   base_profile_info += "race=" + tokenize( player_race ) + "\n";
   base_profile_info += "level=" + player_level + "\n";
@@ -52,13 +51,13 @@ QString automation::do_something( int sim_type,
   switch ( sim_type )
   {
     case 1: // talent simulation
-      return auto_talent_sim( base_profile_info, player_glyphs, player_gear, player_rotation, advanced_text );
+      return auto_talent_sim( player_class, base_profile_info, advanced_text , player_glyphs, player_gear, player_rotation);
     case 2: // glyph simulation
-      return auto_glyph_sim( base_profile_info, player_talents, player_gear, player_rotation, advanced_text );
+      return auto_glyph_sim( player_class, base_profile_info, player_talents, advanced_text , player_gear, player_rotation);
     case 3: // rotation simulation
-      return auto_rotation_sim( base_profile_info, player_talents, player_glyphs, player_rotation, advanced_text );
+      return auto_rotation_sim( player_class, base_profile_info, player_talents, player_glyphs, advanced_text , player_rotation);
     case 4: // gear simulation
-      return auto_gear_sim( base_profile_info, player_talents, player_glyphs, player_gear, advanced_text );
+      return auto_gear_sim( player_class, base_profile_info, player_talents, player_glyphs, player_gear, advanced_text );
     default: // default profile creation
       profile += base_profile_info;
       profile += "talents=" + player_talents + "\n";
@@ -72,24 +71,39 @@ QString automation::do_something( int sim_type,
 }
 
   // Method for profile creation for the specific TALENT simulation
-QString automation::auto_talent_sim( QString base_profile_info, 
+QString automation::auto_talent_sim( QString player_class,
+                                     QString base_profile_info, 
                                      QString advanced_talents,
                                      QString player_glyphs,
                                      QString player_gear,
                                      QString player_rotation
                                    )
 {
-  QString profile = "NYI";
+  QStringList talentList = advanced_talents.split( "\n", QString::SkipEmptyParts );
+
+  QString profile;
+
+  for ( int i = 0; i < talentList.size(); i++ )
+  {
+    profile += tokenize( player_class ) + "=T_" + talentList[ i ] + "\n";
+    profile += base_profile_info;
+    profile += "talents=" + talentList[ i ] + "\n";
+    profile += player_glyphs + "\n";
+    profile += player_gear + "\n";
+    profile += player_rotation + "\n";
+    profile += "\n";
+  }
 
   return profile;
 }
 
   // Method for profile creation for the specific GLYPHS simulation
-QString automation::auto_glyph_sim( QString base_profile_info,
+QString automation::auto_glyph_sim( QString player_class,
+                                    QString base_profile_info,
                                     QString player_talents,
+                                    QString advanced_text,
                                     QString player_gear,
-                                    QString player_rotation,
-                                    QString advanced_text
+                                    QString player_rotation
                                   )
 {
   QString profile = "NYI";
@@ -98,11 +112,12 @@ QString automation::auto_glyph_sim( QString base_profile_info,
 }
 
   // Method for profile creation for the specific GEAR simulation
-QString automation::auto_gear_sim( QString base_profile_info,
+QString automation::auto_gear_sim( QString player_class,
+                                   QString base_profile_info,
                                    QString player_talents,
                                    QString player_glyphs,
-                                   QString player_rotation,
-                                   QString advanced_text
+                                   QString advanced_text,
+                                   QString player_rotation
                                  )
 {
   QString profile = "NYI";
@@ -111,7 +126,8 @@ QString automation::auto_gear_sim( QString base_profile_info,
 }
 
 // Method for profile creation for the specific ROTATION simulation
-QString automation::auto_rotation_sim( QString base_profile_info,
+QString automation::auto_rotation_sim( QString player_class,
+                                       QString base_profile_info,
                                        QString player_talents,
                                        QString player_glyphs,
                                        QString player_gear,
@@ -217,7 +233,7 @@ void SC_ImportTab::setSpecDropDown( const int player_class )
   }
 }
 
-// 
+// constant for sidebar text (this will eventually get really long)
 QString sidebarText[ 11 ][ 4 ] = {
   { "Blood shorthand goes here.", "Frost shorthand goes here", "Unholy shorthand goes here", "N/A" },
   { "Balance shorthand goes here.", "Feral shorthand goes here.", "Guardian shorthand goes here.", "Restoration shorthand goes here." },
@@ -232,6 +248,7 @@ QString sidebarText[ 11 ][ 4 ] = {
   { "Arms shorthand goes here.", "Fury shorthand goes here.", "Protection shorthand goes here.", "N/A" },
 };
 
+// constant for the varying labels of the advanced text box
 QString advancedText[ 5 ] = {
   "Unused", "Talent Configurations", "Glyph Configurations", "Gear Configurations", "Rotation Shorthands"
 };

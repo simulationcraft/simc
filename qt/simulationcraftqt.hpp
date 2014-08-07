@@ -1532,7 +1532,7 @@ public:
 namespace automation {
 
   QString tokenize( QString qstr );
-  
+
   QString do_something( int sim_type,
                         QString player_class,
                         QString player_spec,
@@ -1545,28 +1545,32 @@ namespace automation {
                         QString advanced_text
                       );
 
-  QString auto_talent_sim( QString base_profile_info,
+  QString auto_talent_sim( QString player_class,
+                           QString base_profile_info,
                            QString player_glyphs,
                            QString player_gear,
                            QString player_rotation,
                            QString advanced_text
                          );
 
-  QString auto_glyph_sim( QString base_profile_info, 
+  QString auto_glyph_sim( QString player_class,
+                          QString base_profile_info, 
                           QString player_talents,
                           QString player_gear,
                           QString player_rotation,
                           QString advanced_text
                         );
 
-  QString auto_gear_sim( QString base_profile_info, 
+  QString auto_gear_sim( QString player_class,
+                         QString base_profile_info, 
                          QString player_talents,
                          QString player_glyphs,
                          QString player_rotation,
                          QString advanced_text
                        );
 
-  QString auto_rotation_sim( QString base_profile_info,
+  QString auto_rotation_sim( QString player_class,
+                             QString base_profile_info,
                              QString player_talents,
                              QString player_glyphs,
                              QString player_gear,
