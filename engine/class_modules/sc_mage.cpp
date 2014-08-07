@@ -338,6 +338,7 @@ public:
     const spell_data_t* incanters_flow;
     const spell_data_t* prismatic_crystal;
     const spell_data_t* thermal_void;
+    const spell_data_t* comet_storm;
 
   } talents;
 
@@ -2005,6 +2006,43 @@ struct combustion_t : public mage_spell_t
     p() -> buffs.tier13_2pc -> expire();
   }
 };
+
+// Comet Storm Spell =======================================================
+
+struct comet_storm_projectile_t : public mage_spell_t
+{
+  comet_storm_projectile_t( mage_t* p) :
+    mage_spell_t( "comet_storm_projectile", p, p -> find_talent_spell( "Comet Storm" ) -> effectN( 2 ).trigger() )
+  {
+    aoe = -1;
+    background = true;
+  
+  }
+};
+struct comet_storm_t : public mage_spell_t
+{
+  comet_storm_t( mage_t* p, const std::string& options_str ) :
+    mage_spell_t( "comet_storm", p, p -> talents.comet_storm )
+  {
+
+    parse_options( NULL, options_str );
+
+    may_miss = false;
+
+    base_tick_time    = timespan_t::from_seconds( 0.2 );
+    dot_duration      = timespan_t::from_seconds( 1.4 );
+    hasted_ticks      = false;
+
+    dynamic_tick_action = true;
+    tick_action = new arcane_missiles_tick_t( p );
+  }
+
+
+
+};
+
+
+
 
 // Cone of Cold Spell =======================================================
 
