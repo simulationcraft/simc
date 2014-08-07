@@ -338,6 +338,7 @@ public:
     const spell_data_t* incanters_flow;
     const spell_data_t* prismatic_crystal;
     const spell_data_t* thermal_void;
+    const spell_data_t* comet_storm;
 
   } talents;
 
@@ -2005,6 +2006,64 @@ struct combustion_t : public mage_spell_t
     p() -> buffs.tier13_2pc -> expire();
   }
 };
+
+// Comet Storm Spell =======================================================
+
+struct comet_storm_projectile_t : public mage_spell_t
+{
+  comet_storm_projectile_t( mage_t* p) :
+    mage_spell_t( "comet_storm_projectile", p, p -> find_spell( 153596 ) )
+  {
+    aoe = -1;
+    background = true;
+  }
+
+  virtual timespan_t travel_time() const
+  {
+    timespan_t t = mage_spell_t::travel_time();
+    t = timespan_t::from_seconds( 1.0 );
+    return t;
+  }
+
+};
+
+struct comet_storm_t : public mage_spell_t
+{
+  comet_storm_projectile_t* projectile;
+
+  comet_storm_t( mage_t* p, const std::string& options_str ) :
+    mage_spell_t( "comet_storm", p, p -> talents.comet_storm ),
+    projectile( new comet_storm_projectile_t( p ) )
+  {
+
+    parse_options( NULL, options_str );
+
+    may_miss = false;
+
+    base_tick_time    = timespan_t::from_seconds( 0.2 );
+    dot_duration      = timespan_t::from_seconds( 1.2 );
+    hasted_ticks      = false;
+
+    dynamic_tick_action = true;
+    add_child( projectile );
+  }
+
+  virtual void execute()
+  {
+    mage_spell_t::execute();
+    projectile -> execute();
+  }
+  void tick( dot_t* d )
+  {
+    mage_spell_t::tick( d );
+    projectile -> execute();
+  }
+
+
+};
+
+
+
 
 // Cone of Cold Spell =======================================================
 
@@ -4042,6 +4101,7 @@ action_t* mage_t::create_action( const std::string& name,
   if ( name == "mage_armor"        ) return new              mage_armor_t( this, options_str );
   if ( name == "arcane_orb"        ) return new              arcane_orb_t( this, options_str );
   if ( name == "meteor"            ) return new                  meteor_t( this, options_str );
+  if ( name == "comet_storm"       ) return new             comet_storm_t( this, options_str );
   if ( name == "mage_bomb"         )
   {
     if ( talents.frost_bomb -> ok() )
@@ -4141,6 +4201,7 @@ void mage_t::init_spells()
   talents.incanters_flow     = find_talent_spell( "Incanter's Flow" );
   talents.prismatic_crystal  = find_talent_spell( "Prismatic Crystal" );
   talents.thermal_void       = find_talent_spell( "Thermal Void" );
+  talents.comet_storm        = find_talent_spell( "Comet Storm" );
 
 
   // Passive Spells
