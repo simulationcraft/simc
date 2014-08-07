@@ -1,6 +1,6 @@
-#define TALENT_SIZE (306)
+#define TALENT_SIZE (307)
 
-// 306 talents, wow build 18663
+// 307 talents, wow build 18689
 static struct talent_data_t __talent_data[] = {
 //{ Name                                ,    Id, Flgs,  Class, Spc, Col, Row, SpellID, ReplaceID, S1 },
   { "Second Wind"                       , 15757, 0x00, 0x0001,   0,   1,   1,   29838,         0,  0 },
@@ -253,7 +253,7 @@ static struct talent_data_t __talent_data[] = {
   { "Clarity of Power"                  , 21637, 0x00, 0x0010, 258,   0,   6,  155246,         0,  0 },
   { "Auspicious Spirits"                , 21638, 0x00, 0x0010, 258,   2,   6,  155271,         0,  0 },
   { "Void Entropy"                      , 21644, 0x00, 0x0010, 258,   1,   6,  155361,         0,  0 },
-  { "Lunar Inspiration"                 , 21646, 0x00, 0x0400, 103,   0,   6,  155627,         0,  0 },
+  { "Lunar Inspiration"                 , 21646, 0x00, 0x0400, 103,   0,   6,  155580,         0,  0 },
 //{ Name                                ,    Id, Flgs,  Class, Spc, Col, Row, SpellID, ReplaceID, S1 },
   { "Guardian of Elune"                 , 21647, 0x00, 0x0400, 104,   0,   6,  155578,         0,  0 },
   { "Moment of Clarity"                 , 21648, 0x00, 0x0400, 105,   0,   6,  155577,         0,  0 },
@@ -324,5 +324,6 @@ static struct talent_data_t __talent_data[] = {
   { "Unquenchable Thirst"               , 21791, 0x00, 0x0001,  72,   2,   2,  169683,         0,  0 },
   { "Unyielding Strikes"                , 21792, 0x00, 0x0001,  73,   2,   2,  169685,         0,  0 },
   { "Sanctified Wrath"                  , 21795, 0x00, 0x0002,  66,   1,   4,  171648,         0,  0 },
+  { "Searing Flames"                    , 21809, 0x00, 0x0100, 267,   2,   0,  174848,         0,  0 },
   { 0                                   ,     0, 0x00, 0x0000,   0,   0,   0,       0,         0,  0 },
 };
