@@ -88,7 +88,7 @@ QString automation::auto_talent_sim( QString player_class,
     profile += tokenize( player_class ) + "=T_" + talentList[ i ] + "\n";
     profile += base_profile_info;
     profile += "talents=" + talentList[ i ] + "\n";
-    profile += player_glyphs + "\n";
+    profile += "glyphs=" + player_glyphs + "\n";
     profile += player_gear + "\n";
     profile += player_rotation + "\n";
     profile += "\n";
@@ -106,8 +106,21 @@ QString automation::auto_glyph_sim( QString player_class,
                                     QString player_rotation
                                   )
 {
-  QString profile = "NYI";
-  
+  QStringList glyphList = advanced_text.split( "\n", QString::SkipEmptyParts );
+
+  QString profile;
+
+  for ( int i = 0; i < glyphList.size(); i++ )
+  {
+    profile += tokenize( player_class ) + "=G_" + QString::number( i ) + "\n";
+    profile += base_profile_info;
+    profile += "talents=" + player_talents + "\n";
+    profile += "glyphs=" + glyphList[ i ] + "\n";
+    profile += player_gear + "\n";
+    profile += player_rotation + "\n";
+    profile += "\n";
+  }
+
   return profile;
 }
 
