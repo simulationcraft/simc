@@ -524,8 +524,8 @@ public:
   } choice;
   struct textBoxes_t
   {
-    QTextEdit* talents;
-    QTextEdit* glyphs;
+    QLineEdit* talents;
+    QLineEdit* glyphs;
     SC_TextEdit* gear;
     SC_TextEdit* rotation;
     SC_TextEdit* advanced;

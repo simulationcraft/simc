@@ -278,8 +278,8 @@ void SC_MainWindow::startAutomationImport( int tab )
                                       importTab -> choice.player_spec -> currentText(),
                                       importTab -> choice.player_race -> currentText(),
                                       importTab -> choice.player_level -> currentText(),
-                                      importTab -> textbox.talents -> document() -> toPlainText(),
-                                      importTab -> textbox.glyphs -> document() -> toPlainText(),
+                                      importTab -> textbox.talents -> text(),
+                                      importTab -> textbox.glyphs -> text(),
                                       importTab -> textbox.gear -> document() -> toPlainText(),
                                       importTab -> textbox.rotation -> document() -> toPlainText(),
                                       importTab -> textbox.advanced -> document() -> toPlainText()
@@ -305,7 +305,7 @@ void SC_ImportTab::createAutomationTab()
 
   // Element (0,0) is a GroupBox containing a FormLayout with one ComboBox (choice of sim type)
   // Create box and add to Layout
-  QGroupBox* compGroupBox = new QGroupBox( tr( "Comparison Form Layout" ) );
+  QGroupBox* compGroupBox = new QGroupBox();
   gridLayout -> addWidget( compGroupBox, 0, 0, 0 );
 
   // Define a layout for the box
@@ -325,12 +325,12 @@ void SC_ImportTab::createAutomationTab()
   gridLayout -> addWidget( defaultsLabel, 1, 0, 0 );
 
   // create a box for the defaults section
-  QGroupBox* defaultsGroupBox = new QGroupBox(tr("Defaults Form layout"));
+  QGroupBox* defaultsGroupBox = new QGroupBox();
   gridLayout -> addWidget( defaultsGroupBox, 2, 0, 0 );
 
   // define a FormLayout for the GroupBox
   QFormLayout* defaultsFormLayout = new QFormLayout();
-  defaultsFormLayout -> setFieldGrowthPolicy( QFormLayout::FieldsStayAtSizeHint );
+  defaultsFormLayout -> setFieldGrowthPolicy( QFormLayout::ExpandingFieldsGrow );
 
   // Create Combo Boxes and add to the FormLayout
   choice.player_class = createChoice( 11 , "Death Knight", "Druid", "Hunter", "Mage", "Monk", "Paladin", "Priest", "Rogue", "Shaman", "Warlock", "Warrior" );
@@ -348,18 +348,20 @@ void SC_ImportTab::createAutomationTab()
   defaultsFormLayout -> addRow( tr( "Level" ), choice.player_level );
 
   // Create text boxes for default talents and glyphs, and add them to the FormLayout
-  textbox.talents = new QTextEdit;
-  textbox.talents -> setMinimumHeight( 15 );
-  textbox.talents -> setFixedHeight( 15 );
-  textbox.talents -> setVerticalScrollBarPolicy( Qt::ScrollBarAlwaysOff );
-  textbox.talents -> setPlainText( "0000000" );
+  textbox.talents = new QLineEdit;
+  //textbox.talents -> setMinimumHeight( 15 );
+  //textbox.talents -> setFixedHeight( 15 );
+  //textbox.talents -> setVerticalScrollBarPolicy( Qt::ScrollBarAlwaysOff );
+  textbox.talents -> setText( "0000000" );
+  //textbox.talents -> setSizePolicy( QSizePolicy::Expanding );
   defaultsFormLayout -> addRow( tr("Default Talents" ), textbox.talents );
   
-  textbox.glyphs = new QTextEdit;
-  textbox.glyphs -> setMinimumHeight( 15 );
-  textbox.glyphs -> setFixedHeight( 15 );
-  textbox.glyphs -> setVerticalScrollBarPolicy( Qt::ScrollBarAlwaysOff );
-  textbox.glyphs -> setPlainText( "focused_shield/alabaster_shield" );
+  textbox.glyphs = new QLineEdit;
+  //textbox.glyphs -> setLayout( new QHBoxLayout() );
+  //textbox.glyphs -> setMinimumHeight( 15 );
+  //textbox.glyphs -> setFixedHeight( 15 );
+  //textbox.glyphs -> setVerticalScrollBarPolicy( Qt::ScrollBarAlwaysOff );
+  textbox.glyphs -> setText( "focused_shield/alabaster_shield" );
   defaultsFormLayout -> addRow( tr("Default Glypyhs" ), textbox.glyphs );
 
   // set the GroupBox's layout now that we've defined it
@@ -370,8 +372,7 @@ void SC_ImportTab::createAutomationTab()
   
   // Create a label and an edit box for gear
   QLabel* gearLabel = new QLabel( tr( "Default Gear" ) );
-  textbox.gear = new SC_TextEdit;
-  //textbox.gear -> resize( 200, 250 );
+  textbox.gear = new SC_TextEdit;;
   textbox.gear -> setPlainText( "head=\nneck=\n " );  
   // assign the label and edit box to cells
   gridLayout -> addWidget( gearLabel,    3, 0, 0 );
@@ -380,8 +381,7 @@ void SC_ImportTab::createAutomationTab()
   // and again for rotation
   QLabel* rotationLabel = new QLabel( tr( "Default Rotation" ) );
   textbox.rotation = new SC_TextEdit;
-  //textbox.rotation -> resize( 200, 250 );
-  textbox.rotation -> setPlainText( "actions=/auto_attack\n" );  
+  textbox.rotation -> setPlainText( "" );  
   gridLayout -> addWidget( rotationLabel,    5, 0, 0 );
   gridLayout -> addWidget( textbox.rotation, 6, 0, 0 );
 
