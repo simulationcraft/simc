@@ -2949,16 +2949,6 @@ struct maul_t : public bear_attack_t
       absorb = new tooth_and_claw_t( player );
   }
 
-  virtual double cost() const
-  {
-    double c = bear_attack_t::cost();
-
-    if ( p() -> perk.enhanced_tooth_and_claw -> ok() && p() -> buff.tooth_and_claw -> check() )
-      c *= 1 + p() -> perk.enhanced_tooth_and_claw -> effectN( 2 ).percent();
-
-    return c;
-  }
-
   virtual void execute()
   {
     bear_attack_t::execute();
