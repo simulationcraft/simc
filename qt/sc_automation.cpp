@@ -387,12 +387,10 @@ void SC_ImportTab::createAutomationTab()
   // Create text boxes for default talents and glyphs, and add them to the FormLayout
   label.talents = new QLabel( tr("Default Talents" ) );
   textbox.talents = new QLineEdit;
-  textbox.talents -> setText( "0000000" );
   defaultsFormLayout -> addRow( label.talents, textbox.talents );
   
   label.glyphs = new QLabel( tr("Default Glypyhs" ) );
   textbox.glyphs = new QLineEdit;
-  textbox.glyphs -> setText( "focused_shield/alabaster_shield" );
   defaultsFormLayout -> addRow( label.glyphs, textbox.glyphs );
 
   // set the GroupBox's layout now that we've defined it
@@ -404,7 +402,6 @@ void SC_ImportTab::createAutomationTab()
   // Create a label and an edit box for gear
   label.gear = new QLabel( tr( "Default Gear" ) );
   textbox.gear = new SC_TextEdit;;
-  textbox.gear -> setPlainText( "head=\nneck=\n " );  
   // assign the label and edit box to cells
   gridLayout -> addWidget( label.gear,    3, 0, 0 );
   gridLayout -> addWidget( textbox.gear, 4, 0, 0 );
@@ -412,7 +409,6 @@ void SC_ImportTab::createAutomationTab()
   // and again for rotation
   label.rotation = new QLabel( tr( "Default Rotation" ) );
   textbox.rotation = new SC_TextEdit;
-  textbox.rotation -> setPlainText( "" );  
   gridLayout -> addWidget( label.rotation,    5, 0, 0 );
   gridLayout -> addWidget( textbox.rotation, 6, 0, 0 );
 
@@ -421,7 +417,6 @@ void SC_ImportTab::createAutomationTab()
 
   label.advanced = new QLabel( tr( "Advanced Text Box" ) );
   textbox.advanced = new SC_TextEdit;
-  textbox.advanced -> setPlainText( "default" );
   gridLayout -> addWidget( label.advanced,    1, 1, 0 );
   gridLayout -> addWidget( textbox.advanced, 2, 1, 5, 1, 0 );
 
@@ -456,4 +451,85 @@ void SC_ImportTab::createAutomationTab()
 
   // set up all the tooltips
   createTooltips();
+}
+
+
+// Encode all options and text fields into a string ( to be able to save it to the history )
+// Decode / Encode order needs to be equal!
+
+void SC_ImportTab::encodeSettings()
+{
+  QSettings settings;
+  settings.beginGroup( "automation" );
+  settings.setValue( "comp_type", choice.comp_type -> currentText() );
+  settings.setValue( "class", choice.player_class -> currentText() );
+  settings.setValue( "spec", choice.player_spec -> currentText() );
+  settings.setValue( "race", choice.player_race -> currentText() );
+  settings.setValue( "level", choice.player_level -> currentText() );
+  settings.setValue( "talentsbox", textbox.talents -> text() );
+  settings.setValue( "glyphsbox", textbox.glyphs -> text() );
+  settings.setValue( "gearbox", textbox.gear -> document() -> toPlainText() );
+  settings.setValue( "rotationbox", textbox.rotation -> document() -> toPlainText() );
+  settings.setValue( "advancedbox", textbox.advanced -> document() -> toPlainText() );
+  
+  QString encoded;
+
+  settings.endGroup(); // end group "automation"
+}
+
+/* Decode all options/setting from a string ( loaded from the history ).
+ * Decode / Encode order needs to be equal!
+ *
+ * If no default_value is specified, index 0 is used as default.
+ */
+
+void SC_ImportTab::load_setting( QSettings& s, const QString& name, QComboBox* choice, const QString& default_value = QString() )
+{
+  const QString& v = s.value( name ).toString();
+
+  int index = choice -> findText( v );
+  if ( index != -1 )
+    choice -> setCurrentIndex( index );
+  else if ( !default_value.isEmpty() )
+  {
+    int default_index = choice -> findText( default_value );
+    if ( default_index != -1 )
+      choice -> setCurrentIndex( default_index );
+  }
+  else
+  {
+    choice -> setCurrentIndex( 0 );
+  }
+}
+
+void SC_ImportTab::load_setting( QSettings& s, const QString& name, QLineEdit* textbox, const QString& default_value = QString() )
+{
+  const QString& v = s.value( name ).toString();
+
+  textbox -> setText( v );
+}
+
+void SC_ImportTab::load_setting( QSettings& s, const QString& name, SC_TextEdit* textbox, const QString& default_value = QString() )
+{
+  const QString& v = s.value( name ).toString();
+
+  textbox -> setText( v );
+}
+
+void SC_ImportTab::decodeSettings()
+{
+  QSettings settings;
+  settings.beginGroup( "automation" );
+  load_setting( settings, "comp_type", choice.comp_type );
+  load_setting( settings, "class", choice.player_class );
+  load_setting( settings, "spec", choice.player_spec );
+  load_setting( settings, "race", choice.player_race );
+  load_setting( settings, "level", choice.player_level );
+  load_setting( settings, "talentbox", textbox.talents , "0000000" );
+  load_setting( settings, "glyphbox", textbox.glyphs );
+  load_setting( settings, "gearbox", textbox.gear, "head=\nneck=\n" );
+  load_setting( settings, "rotationbox", textbox.rotation );
+  load_setting( settings, "advancedbox", textbox.advanced, "default" );
+  
+  settings.endGroup();
 }
