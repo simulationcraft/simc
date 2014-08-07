@@ -4798,6 +4798,7 @@ struct player_t : public actor_t
   virtual void interrupt();
   virtual void halt();
   virtual void moving();
+  virtual void finish_moving() { }
   virtual void stun();
   virtual void clear_debuffs();
   virtual void trigger_ready();

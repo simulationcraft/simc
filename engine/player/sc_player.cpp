@@ -2098,7 +2098,20 @@ void player_t::create_buffs()
                                     .max_stack( 3 )
                                     .duration( timespan_t::from_seconds( 15.0 ) );
 
-  buffs.raid_movement = buff_creator_t( this, "raid_movement" ).max_stack( 1 );
+  struct raid_movement_buff_t : public buff_t
+  {
+    raid_movement_buff_t( player_t* p ) : 
+      buff_t( buff_creator_t( p, "raid_movement" ).max_stack( 1 ) )
+    { }
+
+    void expire_override()
+    {
+      buff_t::expire_override();
+      player -> finish_moving();
+    }
+  };
+
+  buffs.raid_movement = new raid_movement_buff_t( this );
   buffs.self_movement = buff_creator_t( this, "self_movement" ).max_stack( 1 );
 
   // Infinite-Stacking Buffs and De-Buffs
