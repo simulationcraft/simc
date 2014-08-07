@@ -406,6 +406,8 @@ public:
     crit_rage_mult = 2;
     swapping = false;
     base.distance = 3.0;
+
+    regen_type = REGEN_DISABLED;
   }
 
   // Character Definition
