@@ -1531,6 +1531,30 @@ namespace automation {
                         QString player_rotation
                       );
 
+  QString auto_talent_sim( QString advanced_talents,
+						   QString player_glyphs,
+						   QString player_gear,
+						   QString player_rotation
+						 );
+
+  QString auto_glyph_sim( QString player_talents,
+						  QString advanced_glyphs,
+						  QString player_gear,
+						  QString player_rotation
+						);
+
+  QString auto_rotation_sim( QString player_talents,
+							 QString player_glyphs,
+							 QString player_gear,
+							 QString advanced_rotation
+						   );
+
+  QString auto_gear_sim( QString player_talents,
+						 QString player_glyphs,
+						 QString advanced_gear,
+						 QString player_rotation
+					   );
+
   QString sidebarText[][4];
 
 } // end automation namespace

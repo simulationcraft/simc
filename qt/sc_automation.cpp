@@ -39,27 +39,102 @@ QString automation::do_something( QString player_class,
   // For some reason, I was only able to pass "const std::string&" from SC_MainWindow::startAutomationImport (in sc_window.cpp), 
   // hence the silly temp crap. 
 
-  QString profile;
+	// #Seth
+	// named the specific simulation variables "advanced_xxx" for now
+	// going to use the do_something to create the basics for the profile (class, race, .. stuff that isnt affected by advanced options) and the default profile
+
+	// dummy strings ... need to come from the GUI
+	QString advanced_talents;
+	QString advanced_glyphs;
+	QString advanced_gear;
+	QString advanced_rotation;
+
+	QString profile;
   
+
+  // basic profile information
   profile += tokenize( player_class ) + "=Name\n";
-    
   profile += "specialization=" + tokenize( player_spec )+ "\n";
-
   profile += "race=" + tokenize( player_race ) + "\n";
-
   profile += "level=" + player_level + "\n";
-  profile += "talents=" + player_talents + "\n";
-  profile += "glyphs=" + player_glyphs + "\n";
 
-  // gear
-  profile += player_gear + "\n";
 
-  // rotation
-  profile += player_rotation;
+  // simulation type check
+  
+  int sim_type; //dummy string, needs to come from GUI (string check possible in c++ switch?)
+
+  switch (sim_type) {
+	  case 1: // talent simulation
+		  profile += auto_talent_sim(advanced_talents, player_glyphs, player_gear, player_rotation);
+		  break;
+	  case 2: // glyph simulation
+		  profile += auto_glyph_sim(player_talents, advanced_glyphs, player_gear, player_rotation);
+		  break;
+	  case 3: // rotation simulation
+		  profile += auto_rotation_sim(player_talents, player_glyphs, advanced_gear, player_rotation);
+		  break;
+	  case 4: // gear simulation
+		  profile += auto_gear_sim(player_talents, player_glyphs, player_gear, advanced_rotation);
+		  break;
+	  default: // default profile creation
+		  profile += "talents=" + player_talents + "\n";
+		  profile += "glyphs=" + player_glyphs + "\n";
+		  profile += player_gear + "\n";
+		  profile += player_rotation;
+  }
 
   return profile;
-
+  // where is the profile to simc file creation going to happen?
 }
+
+	// Method for profile creation for the specific TALENT simulation
+QString automation::auto_talent_sim(QString advanced_talents,
+									QString player_glyphs,
+									QString player_gear,
+									QString player_rotation
+									)
+{
+	QString profile;
+
+	return profile;
+}
+
+	// Method for profile creation for the specific GLYPHS simulation
+QString automation::auto_glyph_sim(QString player_talents,
+								   QString advanced_glyphs,
+								   QString player_gear,
+								   QString player_rotation
+								   )
+{
+	QString profile;
+	
+	return profile;
+}
+
+	// Method for profile creation for the specific GEAR simulation
+QString automation::auto_gear_sim(QString player_talents,
+								  QString player_glyphs,
+								  QString advanced_gear,
+								  QString player_rotation
+								  )
+{
+	QString profile;
+
+	return profile;
+}
+
+// Method for profile creation for the specific ROTATION simulation
+QString automation::auto_rotation_sim(QString player_talents,
+									  QString player_glyphs,
+									  QString player_gear,
+									  QString advanced_rotation
+									  )
+{
+	QString profile;
+
+	return profile;
+}
+
 
 ///////////////////////////////////////////////////////////////////////////////
 ////
