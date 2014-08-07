@@ -1671,12 +1671,12 @@ struct eternal_flame_t : public paladin_heal_t
     {
       trigger_gcd = timespan_t::zero();
       use_off_gcd = true;
-      base_execute_time *= 1 + p -> passives.guarded_by_the_light -> effectN( 10 ).percent();
+      base_execute_time *= 1 + p -> passives.guarded_by_the_light -> effectN( 9 ).percent();
     }
     // remove cast time for ret
     if ( p -> passives.sword_of_light -> ok() )
     {
-      base_execute_time *= 1 + p -> passives.sword_of_light -> effectN( 9 ).percent();
+      base_execute_time *= 1 + p -> passives.sword_of_light -> effectN( 7 ).percent();
     }
     // redirect to self if not specified
     if ( target -> is_enemy() || ( target -> type == HEALING_ENEMY && p -> specialization() == PALADIN_PROTECTION ) )
@@ -3115,12 +3115,12 @@ struct word_of_glory_t : public paladin_heal_t
     {
       trigger_gcd = timespan_t::zero();
       use_off_gcd = true;
-      base_execute_time *= 1 + p -> passives.guarded_by_the_light -> effectN( 10 ).percent();
+      base_execute_time *= 1 + p -> passives.guarded_by_the_light -> effectN( 9 ).percent();
     }
     // remove cast time for ret
     if ( p -> passives.sword_of_light -> ok() )
     {
-      base_execute_time *= 1 + p -> passives.sword_of_light -> effectN( 9 ).percent();
+      base_execute_time *= 1 + p -> passives.sword_of_light -> effectN( 7 ).percent();
     }
     // redirect to self if not specified
     if ( target -> is_enemy() || ( target -> type == HEALING_ENEMY && p -> specialization() == PALADIN_PROTECTION ) )
@@ -3228,7 +3228,7 @@ struct harsh_word_t : public paladin_spell_t
       background = true;
 
     base_costs[RESOURCE_HOLY_POWER] = 1;
-   
+
     base_execute_time = timespan_t::from_seconds( 1.5 ); // TODO: test if this still has a cast time as holy with HW glyph; irrelevant for prot/ret
 
     // remove GCD constraints & cast time for prot
@@ -3236,12 +3236,12 @@ struct harsh_word_t : public paladin_spell_t
     {
       trigger_gcd = timespan_t::zero();
       use_off_gcd = true;
-      base_execute_time *= 1 + p -> passives.guarded_by_the_light -> effectN( 10 ).percent();
+      base_execute_time *= 1 + p -> passives.guarded_by_the_light -> effectN( 9 ).percent();
     }
     // remove cast time for ret
     if ( p -> passives.sword_of_light -> ok() )
     {
-      base_execute_time *= 1 + p -> passives.sword_of_light -> effectN( 9 ).percent();
+      base_execute_time *= 1 + p -> passives.sword_of_light -> effectN( 7 ).percent();
     }
 
     // Improved Word of Glory perk - sure, why not (TODO: test)
