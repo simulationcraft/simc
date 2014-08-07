@@ -180,7 +180,7 @@ void SC_ImportTab::setSpecDropDown( const int player_class )
 }
 
 // 
-QString automation::sidebarText[ 11 ][ 4 ] = {
+QString sidebarText[ 11 ][ 4 ] = {
   { "Blood shorthand goes here.", "Frost shorthand goes here", "Unholy shorthand goes here", "N/A" },
   { "Balance shorthand goes here.", "Feral shorthand goes here.", "Guardian shorthand goes here.", "Restoration shorthand goes here." },
   { "", "", "", "N/A" },
@@ -197,7 +197,7 @@ QString automation::sidebarText[ 11 ][ 4 ] = {
 // method to set the sidebar text based on class slection
 void SC_ImportTab::setSidebarClassText()
 {
-  textbox.sidebar -> setText( automation::sidebarText[ choice.player_class -> currentIndex() ][ choice.player_spec -> currentIndex() ] );
+  textbox.sidebar -> setText( sidebarText[ choice.player_class -> currentIndex() ][ choice.player_spec -> currentIndex() ] );
 }
 
 void SC_MainWindow::startAutomationImport( int tab )
