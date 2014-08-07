@@ -1531,7 +1531,7 @@ namespace automation {
                         QString player_rotation
                       );
 
-  QString sidebarText[][4];
+//  QString sidebarText[11][4];
 
 } // end automation namespace
 
