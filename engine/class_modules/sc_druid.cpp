@@ -15,7 +15,7 @@ namespace { // UNNAMED NAMESPACE
     Fix Force of Nature (summons fine, but treants take no actions)
 
     = Feral =
-    Tweak LI implementation so Feral can use normal moonfire
+    Update LI implementation to work like in-game
     Damage check:
       Thrash (both forms)
       Swipe
@@ -255,47 +255,27 @@ public:
   // Perks
   struct
   {
-    // Multiple Specs
-    const spell_data_t* improved_healing_touch;
-
     // Feral
     const spell_data_t* enhanced_berserk;
-    const spell_data_t* enhanced_cat_form;
     const spell_data_t* enhanced_prowl;
     const spell_data_t* enhanced_rejuvenation;
-    const spell_data_t* enhanced_tigers_fury;
     const spell_data_t* improved_rake;
-    const spell_data_t* improved_ferocious_bite;
-    const spell_data_t* improved_shred;
 
     // Balance
     const spell_data_t* empowered_moonkin;
-    const spell_data_t* empowered_starfall;
-    const spell_data_t* enhanced_hurricane;
     const spell_data_t* enhanced_moonkin_form;
-    const spell_data_t* enhanced_mushrooms;
     const spell_data_t* enhanced_starsurge;
-    const spell_data_t* improved_moonfire;
-    const spell_data_t* improved_starfire;
-    const spell_data_t* improved_wrath;
 
     // Guardian
     const spell_data_t* empowered_bear_form;
     const spell_data_t* empowered_berserk;
-    const spell_data_t* empowered_thrash;
     const spell_data_t* enhanced_faerie_fire;
     const spell_data_t* enhanced_tooth_and_claw;
-    const spell_data_t* improved_barkskin;
-    const spell_data_t* improved_frenzied_regeneration;
-    const spell_data_t* improved_mangle;
-    const spell_data_t* improved_maul;
 
     // Restoration
     const spell_data_t* empowered_rejuvenation;
     const spell_data_t* enhanced_rebirth;
-    const spell_data_t* empowered_regrowth;
     const spell_data_t* empowered_ironbark;
-    const spell_data_t* improved_living_seed;
     const spell_data_t* enhanced_lifebloom;
 
   } perk;
@@ -2211,7 +2191,6 @@ struct ferocious_bite_t : public cat_attack_t
 
     max_excess_energy      = data().effectN( 2 ).base_value();
     special                = true;
-    base_multiplier       *= 1.0 + p -> perk.improved_ferocious_bite -> effectN( 1 ).percent();
     spell_power_mod.direct = 0;
   }
 
@@ -2332,8 +2311,8 @@ struct rake_t : public cat_attack_t
     attack_power_mod.direct = data().effectN( 1 ).ap_coeff();
 
     bleed_spell = p -> find_spell( 155722 );
-    attack_power_mod.tick = bleed_spell -> effectN( 1 ).ap_coeff();
     dot_behavior          = DOT_REFRESH;
+    attack_power_mod.tick = bleed_spell -> effectN( 1 ).ap_coeff();
     dot_duration          = bleed_spell -> duration();
     base_tick_time        = bleed_spell -> effectN( 1 ).period();
   }
@@ -2510,7 +2489,7 @@ struct shred_t : public cat_attack_t
   shred_t( druid_t* p, const std::string& options_str ) :
     cat_attack_t( "shred", p, p -> find_class_spell( "Shred" ), options_str )
   {
-    base_multiplier *= 1.0 + p -> perk.improved_shred -> effectN( 1 ).percent() + player -> sets.set( SET_T14_2PC_MELEE ) -> effectN( 1 ).percent();
+    base_multiplier *= 1.0 + player -> sets.set( SET_T14_2PC_MELEE ) -> effectN( 1 ).percent();
     special = true;
   }
 
@@ -2804,18 +2783,22 @@ struct bear_melee_t : public bear_attack_t
 
 struct lacerate_t : public bear_attack_t
 {
+  double rage_gain;
+
   lacerate_t( druid_t* p, const std::string& options_str ) :
-    bear_attack_t( "lacerate", p, p -> find_specialization_spell( "Lacerate" ) )
+    bear_attack_t( "lacerate", p, p -> find_specialization_spell( "Lacerate" ) ),
+    rage_gain( 0.0 )
   {
     parse_options( NULL, options_str );
     dot_behavior = DOT_REFRESH;
+    rage_gain = data().effectN( 3 ).resource( RESOURCE_RAGE );
   }
 
   virtual void impact( action_state_t* state )
   {
     if ( result_is_hit( state -> result ) )
     {
-      p() -> resource_gain( RESOURCE_RAGE, data().effectN( 3 ).resource( RESOURCE_RAGE ) , p() -> gain.lacerate );
+      p() -> resource_gain( RESOURCE_RAGE, rage_gain, p() -> gain.lacerate );
       if ( td( state -> target ) -> lacerate_stack < 3 )
         td( state -> target ) -> lacerate_stack++;
 
@@ -2864,7 +2847,6 @@ struct mangle_t : public bear_attack_t
     rage_gain = data().effectN( 3 ).resource( RESOURCE_RAGE ) + player -> talent.soul_of_the_forest -> effectN( 1 ).resource( RESOURCE_RAGE );
 
     base_multiplier *= 1.0 + player -> talent.soul_of_the_forest -> effectN( 2 ).percent();
-    base_multiplier *= 1.0 + player -> perk.improved_mangle -> effectN( 1 ).percent();
   }
 
   virtual int num_targets()
@@ -2947,8 +2929,6 @@ struct maul_t : public bear_attack_t
     base_add_multiplier = player -> glyph.maul -> effectN( 3 ).percent();
     use_off_gcd = true;
 
-    base_multiplier *= 1.0 + player -> perk.improved_maul -> effectN( 1 ).percent();
-
     if ( player -> spec.tooth_and_claw -> ok() )
       absorb = new tooth_and_claw_t( player );
   }
@@ -3006,8 +2986,6 @@ struct pulverize_t : public bear_attack_t
     {
       // consumes 3 stacks of Lacerate on the target
       target -> get_dot( "lacerate", p() ) -> cancel();
-      // generate 15 Rage
-      p() -> resource_gain( RESOURCE_RAGE, rage_gain, p() -> gain.pulverize );
       // and reduce damage taken by 20% for 10 sec
       p() -> buff.pulverize -> trigger();
     }
@@ -3033,7 +3011,6 @@ struct thrash_bear_t : public bear_attack_t
     parse_options( NULL, options_str );
     aoe                    = -1;
     dot_behavior           = DOT_REFRESH;
-    base_td_multiplier    *= 1.0 + p() -> perk.empowered_thrash -> effectN( 1 ).percent();
     spell_power_mod.direct = 0;
 
     rage_gain = p() -> find_spell( 158723 ) -> effectN( 1 ).resource( RESOURCE_RAGE );
@@ -3304,7 +3281,6 @@ struct frenzied_regeneration_t : public druid_heal_t
     target = p;
 
     attack_power_mod.direct = data().effectN( 1 ).ap_coeff();
-    base_multiplier *= 1.0 + p -> perk.improved_frenzied_regeneration -> effectN( 1 ).percent();
     maximum_rage_cost = data().effectN( 2 ).base_value();
 
     if ( p -> sets.has_set_bonus( SET_T16_2PC_TANK ) )
@@ -3362,7 +3338,6 @@ struct healing_touch_t : public druid_heal_t
     druid_heal_t( "healing_touch", p, p -> find_class_spell( "Healing Touch" ), options_str )
   {
     consume_ooc      = true;
-    base_multiplier *= 1.0 + p -> perk.improved_healing_touch -> effectN( 1 ).percent();
 
     init_living_seed();
   }
@@ -4492,25 +4467,14 @@ struct sunfire_t : public druid_spell_t
       dot_duration                 *= 1 + player -> spec.astral_showers -> effectN( 1 ).percent();
       dot_duration                 += player -> sets.set( SET_T14_4PC_CASTER ) -> effectN( 1 ).time_value();
       base_tick_time                = dmg_spell -> effectN( 2 ).period();
-
       spell_power_mod.tick          = dmg_spell-> effectN( 2 ).sp_coeff();
-      spell_power_mod.tick         *= 1.0 + player -> talent.balance_of_power -> effectN( 3 ).percent();
-      spell_power_mod.tick         *= 1.0 + player -> perk.improved_moonfire -> effectN( 1 ).percent();
+
+      base_td_multiplier           *= 1.0 + player -> talent.balance_of_power -> effectN( 3 ).percent();
 
       // Does no direct damage, costs no mana
       attack_power_mod.direct = 0;
       spell_power_mod.direct = 0;
       range::fill( base_costs, 0 );
-    }
-
-    double composite_target_multiplier( player_t* target ) const
-    {
-      double m = druid_spell_t::composite_target_multiplier( target );
-
-      if ( p() -> buff.hurricane -> up() )
-        m *= 1.0 + p() -> perk.enhanced_hurricane -> effectN( 1 ).percent();
-
-      return m;
     }
 
     void tick( dot_t* d )
@@ -4533,13 +4497,10 @@ struct sunfire_t : public druid_spell_t
     dot_duration                 += timespan_t::from_seconds( 4 ); //Remove
     dot_duration                 += player -> sets.set( SET_T14_4PC_CASTER ) -> effectN( 1 ).time_value();
     base_tick_time                = dmg_spell -> effectN( 2 ).period();
-
     spell_power_mod.direct        = dmg_spell-> effectN( 1 ).sp_coeff();
-    spell_power_mod.direct       *= 1.0 + player -> perk.improved_moonfire -> effectN( 1 ).percent();
-
     spell_power_mod.tick          = dmg_spell-> effectN( 2 ).sp_coeff();
-    spell_power_mod.tick         *= 1.0 + player -> talent.balance_of_power -> effectN( 3 ).percent();
-    spell_power_mod.tick         *= 1.0 + player -> perk.improved_moonfire -> effectN( 1 ).percent();
+
+    base_td_multiplier           *= 1.0 + player -> talent.balance_of_power -> effectN( 3 ).percent();
 
     if ( p() -> spec.astral_showers -> ok() )
       aoe = -1;
@@ -4559,16 +4520,6 @@ struct sunfire_t : public druid_spell_t
     }
 
     return am;
-  }
-
-  double composite_target_multiplier( player_t* target ) const
-  {
-    double m = druid_spell_t::composite_target_multiplier( target );
-
-    if ( p() -> buff.hurricane -> up() )
-      m *= 1.0 + p() -> perk.enhanced_hurricane -> effectN( 1 ).percent();
-
-    return m;
   }
 
   void tick( dot_t* d )
@@ -4622,10 +4573,9 @@ struct moonfire_t : public druid_spell_t
       dot_duration                 += timespan_t::from_seconds( 4 ); //Remove
       dot_duration                 += player -> sets.set( SET_T14_4PC_CASTER ) -> effectN( 1 ).time_value();
       base_tick_time                = dmg_spell -> effectN( 2 ).period();
+      spell_power_mod.tick          = dmg_spell -> effectN( 2 ).sp_coeff();
 
-      spell_power_mod.tick          = dmg_spell-> effectN( 2 ).sp_coeff();
-      spell_power_mod.tick         *= 1.0 + player -> talent.balance_of_power -> effectN( 3 ).percent();
-      spell_power_mod.tick         *= 1.0 + player -> perk.improved_moonfire -> effectN( 1 ).percent();
+      base_td_multiplier           *= 1.0 + player -> talent.balance_of_power -> effectN( 3 ).percent();
 
       // Does no direct damage, costs no mana
       attack_power_mod.direct = 0;
@@ -4634,16 +4584,6 @@ struct moonfire_t : public druid_spell_t
 
       if ( p() -> spec.astral_showers -> ok() )
         aoe = -1;
-    }
-
-    double composite_target_multiplier( player_t* target ) const
-    {
-      double m = druid_spell_t::composite_target_multiplier( target );
-
-      if ( p() -> buff.hurricane -> up() )
-        m *= 1.0 + p() -> perk.enhanced_hurricane -> effectN( 1 ).percent();
-
-      return m;
     }
 
     void tick( dot_t* d )
@@ -4667,13 +4607,10 @@ struct moonfire_t : public druid_spell_t
     dot_duration                 *= 1 + player -> spec.astral_showers -> effectN( 1 ).percent();
     dot_duration                 += player -> sets.set( SET_T14_4PC_CASTER ) -> effectN( 1 ).time_value();
     base_tick_time                = dmg_spell -> effectN( 2 ).period();
+    spell_power_mod.tick          = dmg_spell -> effectN( 2 ).sp_coeff();
+    spell_power_mod.direct        = dmg_spell -> effectN( 1 ).sp_coeff();
 
-    spell_power_mod.tick          = dmg_spell-> effectN( 2 ).sp_coeff();
-    spell_power_mod.tick         *= 1.0 + player -> talent.balance_of_power -> effectN( 3 ).percent();
-    spell_power_mod.tick         *= 1.0 + player -> perk.improved_moonfire -> effectN( 1 ).percent();
-
-    spell_power_mod.direct        = dmg_spell-> effectN( 1 ).sp_coeff();
-    spell_power_mod.direct       *= 1.0 + player -> perk.improved_moonfire -> effectN( 1 ).percent();
+    base_td_multiplier           *= 1.0 + player -> talent.balance_of_power -> effectN( 3 ).percent();
 
     if ( player -> specialization() == DRUID_BALANCE )
       sunfire = new sunfire_CA_t( player );
@@ -4698,16 +4635,6 @@ struct moonfire_t : public druid_spell_t
     }
 
     return am;
-  }
-
-  double composite_target_multiplier( player_t* target ) const
-  {
-    double m = druid_spell_t::composite_target_multiplier( target );
-
-    if ( p() -> buff.hurricane -> up() )
-      m *= 1.0 + p() -> perk.enhanced_hurricane -> effectN( 1 ).percent();
-
-    return m;
   }
 
   void schedule_execute( action_state_t* state = 0 )
@@ -4746,11 +4673,6 @@ struct moonfire_t : public druid_spell_t
 };
 
 // Moonfire (Lunar Inspiration) Spell =======================================
-/* TODO: Confirm whether or not this can consume Omen of Clarity. It is
-   clearly not a cast time spell and whether or not it is a "feral offensive
-   ability" is debatable.
-   Currently implemented as consuming (see whitelist in druid_spell_base_t).
- */
 
 struct moonfire_li_t : public druid_spell_t
 {
@@ -5024,8 +4946,6 @@ struct starfire_t : public druid_spell_t
     druid_spell_t( "starfire", player, player -> spec.starfire )
   {
     parse_options( NULL, options_str );
-
-    base_multiplier *= 1.0 + player -> perk.improved_starfire -> effectN( 1 ).percent();
   }
 
   double action_multiplier() const
@@ -5094,18 +5014,7 @@ struct starfall_t : public druid_spell_t
     tick_zero = true;
     cooldown = player -> cooldown.starfallsurge;
     base_multiplier *= 1.0 + player -> sets.set( SET_T14_2PC_CASTER ) -> effectN( 1 ).percent();
-    base_multiplier *= 1.0 + player -> perk.empowered_starfall -> effectN( 1 ).percent();
     add_child( starfall );
-  }
-
-  double composite_target_multiplier( player_t* target ) const
-  {
-    double m = druid_spell_t::composite_target_multiplier( target );
-
-    if ( p() -> buff.hurricane -> up() )
-      m *= 1.0 + p() -> perk.enhanced_hurricane -> effectN( 1 ).percent();
-
-    return m;
   }
 
   void tick( dot_t* )
@@ -5300,7 +5209,6 @@ struct wrath_t : public druid_spell_t
     druid_spell_t( "wrath", player, player -> find_class_spell( "Wrath" ) )
   {
     parse_options( NULL, options_str );
-    spell_power_mod.direct *= 1.0 + player -> perk.improved_wrath -> effectN( 1 ).percent();
   }
 
   double action_multiplier() const
@@ -5680,46 +5588,28 @@ void druid_t::init_spells()
     active.primal_tenacity = new primal_tenacity_t( this );
 
   // Perks
-  perk.improved_healing_touch  = find_perk_spell( "Improved Healing Touch" );
 
   // Feral
   perk.enhanced_berserk        = find_perk_spell( "Enhanced Berserk" );
-  perk.enhanced_cat_form       = find_perk_spell( "Enhanced Cat Form" );
   perk.enhanced_prowl          = find_perk_spell( "Enhanced Prowl" );
   perk.enhanced_rejuvenation   = find_perk_spell( "Enhanced Rejuvenation" );
-  perk.enhanced_tigers_fury    = find_perk_spell( "Enhanced Tiger's Fury" );
   perk.improved_rake           = find_perk_spell( "Improved Rake" );
-  perk.improved_ferocious_bite = find_perk_spell( "Improved Ferocious Bite" );
-  perk.improved_shred          = find_perk_spell( "Improved Shred" );
 
   // Balance
-  perk.enhanced_hurricane      = find_perk_spell( "Enhanced Hurricane" );
-  perk.enhanced_mushrooms      = find_perk_spell( "Enhanced Mushrooms" );
   perk.enhanced_moonkin_form   = find_perk_spell( "Enhanced Moonkin Form" );
   perk.empowered_moonkin       = find_perk_spell( "Empowered Moonkin" );
-  perk.improved_starfire       = find_perk_spell( "Improved Starfire" );
-  perk.improved_wrath          = find_perk_spell( "Improved Wrath" );
   perk.enhanced_starsurge      = find_perk_spell( "Enhanced Starsurge" );
-  perk.empowered_starfall      = find_perk_spell( "Empowered Starfall" );
-  perk.improved_moonfire       = find_perk_spell( "Improved Moonfire" );
 
   // Guardian
   perk.enhanced_faerie_fire           = find_perk_spell( "Enhanced Faerie Fire" );
   perk.enhanced_tooth_and_claw        = find_perk_spell( "Enhanced Tooth and Claw" );
-  perk.improved_mangle                = find_perk_spell( "Improved Mangle" );
-  perk.improved_maul                  = find_perk_spell( "Improved Maul" );
-  perk.empowered_thrash               = find_perk_spell( "Empowered Thrash" );
   perk.empowered_bear_form            = find_perk_spell( "Empowered Bear Form" );
   perk.empowered_berserk              = find_perk_spell( "Empowered Berserk" );
-  perk.improved_barkskin              = find_perk_spell( "Improved Barkskin" );
-  perk.improved_frenzied_regeneration = find_perk_spell( "Improved Frenzied Regeneration" );
 
   // Restoration
   perk.empowered_rejuvenation = find_perk_spell( "Empowered Rejuvenation" );
   perk.enhanced_rebirth       = find_perk_spell( "Enhanced Rebirth" );
-  perk.empowered_regrowth     = find_perk_spell( "Empowered Regrowth" );
   perk.empowered_ironbark     = find_perk_spell( "Empowered Ironbark" );
-  perk.improved_living_seed   = find_perk_spell( "Improved Living Seed" );
   perk.enhanced_lifebloom     = find_perk_spell( "Enhanced Lifebloom" );
 
   // Glyphs
@@ -5890,7 +5780,7 @@ void druid_t::create_buffs()
                                .default_value( find_specialization_spell( "Tiger's Fury" ) -> effectN( 1 ).percent() )
                                .cd( timespan_t::zero() )
                                .chance( 1.0 )
-                               .duration( find_specialization_spell( "Tiger's Fury" ) -> duration() + perk.enhanced_tigers_fury -> effectN( 1 ).time_value() );
+                               .duration( find_specialization_spell( "Tiger's Fury" ) -> duration() );
   buff.savage_roar           = buff_creator_t( this, "savage_roar", find_specialization_spell( "Savage Roar" ) )
                                .default_value( find_specialization_spell( "Savage Roar" ) -> effectN( 2 ).percent() - glyph.savagery -> effectN( 2 ).percent() )
                                .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
@@ -5917,8 +5807,9 @@ void druid_t::create_buffs()
                                .add_invalidate( CACHE_DODGE )
                                .duration( find_spell( 132402 ) -> duration() + talent.guardian_of_elune -> effectN( 2 ).time_value() )
                                .default_value( find_spell( 132402 ) -> effectN( 1 ).percent() + talent.guardian_of_elune -> effectN( 1 ).percent() );
-  buff.survival_instincts    = buff_creator_t( this, "survival_instincts", find_class_spell( "Survival Instincts" ) )
-                               .cd( timespan_t::zero() );
+  buff.survival_instincts    = buff_creator_t( this, "survival_instincts", find_specialization_spell( "Survival Instincts" ) )
+                               .cd( timespan_t::zero() )
+                               .default_value( 0.0 - find_specialization_spell( "Survival Instincts" ) -> effectN( 1 ).percent() );
   buff.tier15_2pc_tank       = buff_creator_t( this, "tier15_2pc_tank", find_spell( 138217 ) );
   buff.tooth_and_claw        = buff_creator_t( this, "tooth_and_claw", find_spell( 135286 ) )
                                .max_stack( find_spell( 135286 ) -> _max_stack + perk.enhanced_tooth_and_claw -> effectN( 1 ).base_value() );
@@ -6676,8 +6567,6 @@ double druid_t::passive_movement_modifier() const
   if ( buff.cat_form -> up() )
   {
     ms += find_spell( 113636 ) -> effectN( 1 ).percent();
-    if ( perk.enhanced_cat_form -> ok() )
-      ms += perk.enhanced_cat_form -> effectN( 1 ).percent();
     if ( buff.prowl -> up() && ! perk.enhanced_prowl -> ok() )
       ms += buff.prowl -> data().effectN( 2 ).percent();
   }
@@ -7215,7 +7104,7 @@ void druid_t::assess_damage( school_e school,
     buff.tier15_2pc_tank -> trigger();
 
   if ( buff.barkskin -> up() )
-    s -> result_amount *= 1.0 + buff.barkskin -> default_value + perk.improved_barkskin -> effectN( 1 ).percent();
+    s -> result_amount *= 1.0 + buff.barkskin -> default_value;
 
   s -> result_amount *= 1.0 + buff.survival_instincts -> value();
 
