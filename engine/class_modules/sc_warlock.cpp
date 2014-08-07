@@ -10,8 +10,10 @@
 // TODO:
 // Grimoire of Synergy
 // Level 100 talents: demonic servitude
-// Update action lists.
-// Proper Stats for childs of cataclysm
+// Update action lists, especially AoE
+// Charred Remains interaction with AoE Chaos Bolt
+// Proper spell ids for drain_soul triggered Corruption/UA/Agony ticks. Reia says they are differnt. take a look at the combatlog
+// Proper Stats calc for childs of cataclysm
 // In-depth testing of demonology and affliction is needed.
 // void consume_tick_resource( dot_t* d ) - find out why this causes drain
 // ---soul to ignite with hell fire.
@@ -284,7 +286,7 @@ public:
     buff_t* demonic_rebirth;
     buff_t* mannoroths_fury;
     buff_t* haunting_spirits;
-      
+    buff_t* demonbolt;
       
     buff_t* tier16_4pc_ember_fillup;
     buff_t* tier16_2pc_destructive_influence;
@@ -2054,30 +2056,79 @@ struct agony_t : public warlock_spell_t
     return m;
   }
 };
+    
+    struct doom_t : public warlock_spell_t
+    {
+        doom_t( warlock_t* p ) :
+        warlock_spell_t( "doom", p, p -> spec.doom )
+        {
+            may_crit = false;
+            base_crit += p -> perk.empowered_doom -> effectN( 1 ).percent();
+        }
+        
+        virtual void tick( dot_t* d )
+        {
+            warlock_spell_t::tick( d );
+            
+            if ( d -> state -> result == RESULT_CRIT ) trigger_wild_imp( p() );
+            
+            if ( p() -> glyphs.siphon_life -> ok() )
+                p() -> resource_gain( RESOURCE_HEALTH, d -> state -> result_amount * p() -> glyphs.siphon_life -> effectN( 1 ).percent(), p() -> gains.siphon_life );
+        }
+        
+        virtual bool ready()
+        {
+            bool r = warlock_spell_t::ready();
+            
+            if ( ! p() -> buffs.metamorphosis -> check() ) r = false;
+            
+            return r;
+        }
+    };
+    
+   
 
-
-struct doom_t : public warlock_spell_t
+struct demonbolt_t : public warlock_spell_t
 {
-  doom_t( warlock_t* p ) :
-    warlock_spell_t( "doom", p, p -> spec.doom )
+  demonbolt_t( warlock_t* p ) :
+    warlock_spell_t( "demonbolt", p, p -> talents.demonbolt )
   {
-    may_crit = false;
-    base_crit += p -> perk.empowered_doom -> effectN( 1 ).percent();
+      
   }
 
-  virtual void tick( dot_t* d )
+  virtual double cost() const
+    {
+        double c = warlock_spell_t::cost();
+            c *= 1.0 +  p() -> buffs.demonbolt -> stack() * p() -> talents.demonbolt -> effectN( 3 ).percent();
+        return c;
+    }
+ 
+
+  virtual void execute()
   {
-    warlock_spell_t::tick( d );
+    warlock_spell_t::execute();
 
-    if ( d -> state -> result == RESULT_CRIT ) trigger_wild_imp( p() );
+      
+    //Reduce "de"buff duration by spellhaste
+    p() -> buffs.demonbolt -> buff_duration =  p() -> buffs.demonbolt -> data().duration() * composite_haste();
+    p() -> buffs.demonbolt -> trigger();
 
-    if ( p() -> glyphs.siphon_life -> ok() )
-      p() -> resource_gain( RESOURCE_HEALTH, d -> state -> result_amount * p() -> glyphs.siphon_life -> effectN( 1 ).percent(), p() -> gains.siphon_life );
   }
 
+    virtual double action_multiplier() const
+    {
+        double am = warlock_spell_t::action_multiplier();
+        
+        am *= 1.0 + p() -> buffs.demonbolt -> stack() * p() -> talents.demonbolt -> effectN( 2 ).percent();
+        
+        return am;
+    }
+    
   virtual bool ready()
   {
     bool r = warlock_spell_t::ready();
+
+    if ( ! p() -> talents.demonbolt -> ok()  ) r = false;
 
     if ( ! p() -> buffs.metamorphosis -> check() ) r = false;
 
@@ -4745,6 +4796,7 @@ action_t* warlock_t::create_action( const std::string& action_name,
   if      ( action_name == "conflagrate"           ) a = new           conflagrate_t( this );
   else if ( action_name == "corruption"            ) a = new            corruption_t( this );
   else if ( action_name == "agony"                 ) a = new                 agony_t( this );
+  else if ( action_name == "demonbolt"             ) a = new             demonbolt_t( this );
   else if ( action_name == "doom"                  ) a = new                  doom_t( this );
   else if ( action_name == "chaos_bolt"            ) a = new            chaos_bolt_t( this );
   else if ( action_name == "chaos_wave"            ) a = new            chaos_wave_t( this );
@@ -5105,6 +5157,8 @@ void warlock_t::create_buffs()
   buffs.haunting_spirits      = buff_creator_t( this, "haunting_spirits", find_spell( 157698 ) )
     .chance(1.0);
     
+  buffs.demonbolt             = buff_creator_t( this, "demonbolt", talents.demonbolt);
+    
   buffs.tier16_4pc_ember_fillup = buff_creator_t( this, "ember_master",   find_spell( 145164 ) )
                                 .cd( find_spell( 145165 ) -> duration() )
                                 .add_invalidate(CACHE_CRIT);
@@ -5308,6 +5362,8 @@ void warlock_t::apl_demonology()
     action_list_str += "/cancel_metamorphosis,if=buff.metamorphosis.up&buff.dark_soul.down&demonic_fury<=650&target.time_to_die>30&(cooldown.metamorphosis.remains<4|demonic_fury<=300)";
     
     add_action( "Soul Fire", "if=buff.metamorphosis.up&buff.molten_core.react&(buff.dark_soul.remains<action.shadow_bolt.cast_time|buff.dark_soul.remains>cast_time)" );
+    add_action( "Demonbolt", "if=buff.demonbolt.stack<=2");
+
     add_action( "touch of chaos", "if=buff.metamorphosis.up" );
     add_action( "metamorphosis", "if=(buff.dark_soul.up&buff.dark_soul.remains<demonic_fury%32)|demonic_fury>=950|demonic_fury%32>target.time_to_die" );
     add_action( "corruption", "if=target.time_to_die>=6&miss_react&remains<=(duration*0.3)" );
