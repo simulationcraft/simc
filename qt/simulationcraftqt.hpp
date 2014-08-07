@@ -543,8 +543,14 @@ public:
     SC_TextEdit* sidebar;
   } textbox;
 
+  QString advTalent;
+  QString advGlyph;
+  QString advGear;
+  QString advRotation;
+
   void encodeSettings();
   void load_setting( QSettings& s, const QString& name, QComboBox* choice, const QString& default_value );
+  void load_setting( QSettings& s, const QString& name, QString text, const QString& default_value);
   void load_setting( QSettings& s, const QString& name, QLineEdit* textbox, const QString& default_value);
   void load_setting( QSettings& s, const QString& name, SC_TextEdit* textbox, const QString& default_value);
   void decodeSettings();

@@ -274,6 +274,16 @@ void SC_ImportTab::setSidebarClassText()
 
 void SC_ImportTab::compTypeChanged( const int comp )
 {
+  // store whatever text is in the advanced window in the appropriate QString 
+  if ( ! textbox.talents -> isEnabled() )
+    advTalent = textbox.advanced -> document() -> toPlainText();
+  else if ( ! textbox.glyphs -> isEnabled() )
+    advGlyph = textbox.advanced -> document() -> toPlainText();
+  else if ( ! textbox.gear -> isEnabled() )
+    advGear = textbox.advanced -> document() -> toPlainText();
+  else if ( ! textbox.rotation -> isEnabled() )
+    advRotation = textbox.advanced -> document() -> toPlainText();
+
   label.advanced -> setText( advancedText[ comp ] );
   
   // TODO: set the text of the box with some sort of default for each case
@@ -287,15 +297,24 @@ void SC_ImportTab::compTypeChanged( const int comp )
   switch ( comp )
   {
     case 0: 
-      textbox.advanced -> setDisabled( true );break;
+      textbox.advanced -> setDisabled( true );
+      break;
     case 1:
-      textbox.talents -> setDisabled( true );break;
+      textbox.advanced -> setText( advTalent );
+      textbox.talents -> setDisabled( true );
+      break;
     case 2:
-      textbox.glyphs -> setDisabled( true );break;
+      textbox.glyphs -> setDisabled( true );
+      textbox.advanced -> setText( advGlyph );
+      break;
     case 3:
-      textbox.gear -> setDisabled( true );break;
+      textbox.gear -> setDisabled( true );
+      textbox.advanced -> setText( advGear );
+      break;
     case 4:
-      textbox.rotation -> setDisabled( true );break;
+      textbox.rotation -> setDisabled( true );
+      textbox.advanced -> setText( advRotation );
+      break;
   }
 }
 
@@ -403,21 +422,22 @@ void SC_ImportTab::createAutomationTab()
   label.gear = new QLabel( tr( "Default Gear" ) );
   textbox.gear = new SC_TextEdit;;
   // assign the label and edit box to cells
-  gridLayout -> addWidget( label.gear,    3, 0, 0 );
+  gridLayout -> addWidget( label.gear,   3, 0, 0 );
   gridLayout -> addWidget( textbox.gear, 4, 0, 0 );
   
   // and again for rotation
   label.rotation = new QLabel( tr( "Default Rotation" ) );
   textbox.rotation = new SC_TextEdit;
-  gridLayout -> addWidget( label.rotation,    5, 0, 0 );
+  gridLayout -> addWidget( label.rotation,   5, 0, 0 );
   gridLayout -> addWidget( textbox.rotation, 6, 0, 0 );
 
 
-  // Elements (2,1) - (6,1) are the Advanced text box
+  // Elements (2,1) - (6,1) are the Advanced text box, which is actually
+  // N different text boxes that get cycled depending on sim type choice
 
   label.advanced = new QLabel( tr( "Advanced Text Box" ) );
   textbox.advanced = new SC_TextEdit;
-  gridLayout -> addWidget( label.advanced,    1, 1, 0 );
+  gridLayout -> addWidget( label.advanced,   1, 1, 0 );
   gridLayout -> addWidget( textbox.advanced, 2, 1, 5, 1, 0 );
 
 
@@ -427,7 +447,7 @@ void SC_ImportTab::createAutomationTab()
   textbox.sidebar = new SC_TextEdit;
   textbox.sidebar -> setText( " Stuff Goes Here" );
   textbox.sidebar -> setDisabled( true );
-  gridLayout -> addWidget( label.sidebar,    1, 2, 0 );
+  gridLayout -> addWidget( label.sidebar,   1, 2, 0 );
   gridLayout -> addWidget( textbox.sidebar, 2, 2, 5, 1, 0 );
   
   // this adjusts the relative width of each column
@@ -471,6 +491,10 @@ void SC_ImportTab::encodeSettings()
   settings.setValue( "gearbox", textbox.gear -> document() -> toPlainText() );
   settings.setValue( "rotationbox", textbox.rotation -> document() -> toPlainText() );
   settings.setValue( "advancedbox", textbox.advanced -> document() -> toPlainText() );
+  settings.setValue( "advTalent", advTalent );
+  settings.setValue( "advGlyph", advGlyph );
+  settings.setValue( "advGear", advGear );
+  settings.setValue( "advRotation", advRotation );
   
   QString encoded;
 
@@ -502,6 +526,13 @@ void SC_ImportTab::load_setting( QSettings& s, const QString& name, QComboBox* c
   }
 }
 
+void SC_ImportTab::load_setting( QSettings& s, const QString& name, QString text, const QString& default_value = QString() )
+{
+  const QString& v = s.value( name ).toString();
+
+  text = v;
+}
+
 void SC_ImportTab::load_setting( QSettings& s, const QString& name, QLineEdit* textbox, const QString& default_value = QString() )
 {
   const QString& v = s.value( name ).toString();
@@ -525,11 +556,15 @@ void SC_ImportTab::decodeSettings()
   load_setting( settings, "spec", choice.player_spec );
   load_setting( settings, "race", choice.player_race );
   load_setting( settings, "level", choice.player_level );
-  load_setting( settings, "talentbox", textbox.talents , "0000000" );
+  load_setting( settings, "talentbox", textbox.talents, "0000000" );
   load_setting( settings, "glyphbox", textbox.glyphs );
   load_setting( settings, "gearbox", textbox.gear, "head=\nneck=\n" );
   load_setting( settings, "rotationbox", textbox.rotation );
   load_setting( settings, "advancedbox", textbox.advanced, "default" );
+  load_setting( settings, "advTalent", advTalent );
+  load_setting( settings, "advGlyph", advGlyph );
+  load_setting( settings, "advGear", advGear );
+  load_setting( settings, "advRotation", advRotation );
   
   settings.endGroup();
 }
