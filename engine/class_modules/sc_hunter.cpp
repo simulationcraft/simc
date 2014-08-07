@@ -325,6 +325,10 @@ public:
     summon_pet_str = "";
     base.distance = 40;
     base_gcd = timespan_t::from_seconds( 1.0 );
+
+    regen_type = REGEN_DYNAMIC;
+    regen_caches.push_back( CACHE_HASTE );
+    regen_caches.push_back( CACHE_ATTACK_HASTE );
   }
 
   // Character Definition
@@ -1461,6 +1465,7 @@ struct dire_critter_t: public hunter_pet_t
     hunter_pet_t( *owner.sim, owner, std::string( "dire_beast_" ) + util::to_string( index ), PET_HUNTER, true /*GUARDIAN*/ )
   {
     owner_coeff.ap_from_ap = 1.0;
+    regen_type = REGEN_DISABLED;
   }
 
   virtual void init_base_stats()
@@ -1498,6 +1503,7 @@ struct tier15_thunderhawk_t: public hunter_pet_t
   tier15_thunderhawk_t( hunter_t& owner ):
     hunter_pet_t( *owner.sim, owner, "tier15_thunderhawk", PET_HUNTER, true /*GUARDIAN*/ )
   {
+    regen_type = REGEN_DISABLED;
   }
 
   virtual void init_base_stats()
