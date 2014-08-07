@@ -1250,18 +1250,6 @@ struct astral_communion_t : public druid_buff_t < buff_t >
   }
 };
 
-// Barkskin Buff ============================================================
-
-struct barkskin_t : public druid_buff_t < buff_t >
-{
-  barkskin_t( druid_t& p ) :
-    base_t( p, buff_creator_t( &p, "barkskin", p.find_specialization_spell( "Barkskin" ) ) )
-  {
-    cooldown -> duration = timespan_t::zero(); // CD is managed by the spell
-  }
-
-};
-
 // Bear Form ================================================================
 
 struct bear_form_t : public druid_buff_t< buff_t >
@@ -3647,7 +3635,7 @@ struct rejuvenation_t : public druid_heal_t
 struct renewal_t : public druid_heal_t
 {
   renewal_t( druid_t* p, const std::string& options_str ) :
-    druid_heal_t( "renewal", p, p -> find_spell( 108238 ), options_str )
+    druid_heal_t( "renewal", p, p -> find_talent_spell( "Renewal" ), options_str )
   {}
 
   virtual void execute()
@@ -5790,7 +5778,9 @@ void druid_t::create_buffs()
   buff.feral_rage            = buff_creator_t( this, "feral_rage", find_spell( 146874 ) ); // tier16_4pc_melee
 
   // Guardian
-  buff.barkskin              = new barkskin_t( *this );
+  buff.barkskin              = buff_creator_t( this, "barkskin", find_specialization_spell( "Barkskin" ) )
+                               .cd( timespan_t::zero() )
+                               .default_value( find_specialization_spell( "Barkskin" ) -> effectN( 2 ).percent() );
   buff.bladed_armor          = buff_creator_t( this, "bladed_armor", spec.bladed_armor )
                                .add_invalidate( CACHE_ATTACK_POWER );
   buff.bristling_fur         = buff_creator_t( this, "bristling_fur", talent.bristling_fur )
