@@ -1525,7 +1525,7 @@ namespace automation {
 
   QString tokenize( QString qstr );
   
-  QString do_something( int sim_type,
+  QString do_something( int comp_type,
                         QString player_class,
                         QString player_spec,
                         QString player_race,
@@ -1536,37 +1536,7 @@ namespace automation {
                         QString player_rotation,
                         QString advanced_text
                       );
-
-  QString auto_talent_sim( QString base_profile_info,
-                           QString player_glyphs,
-                           QString player_gear,
-                           QString player_rotation,
-                           QString advanced_text
-                         );
-
-  QString auto_glyph_sim( QString base_profile_info, 
-                          QString player_talents,
-                          QString player_gear,
-                          QString player_rotation,
-                          QString advanced_text
-                        );
-
-  QString auto_gear_sim( QString base_profile_info, 
-                         QString player_talents,
-                         QString player_glyphs,
-                         QString player_rotation,
-                         QString advanced_text
-                       );
-
-  QString auto_rotation_sim( QString base_profile_info,
-                             QString player_talents,
-                             QString player_glyphs,
-                             QString player_gear,
-                             QString advanced_text
-                           );
-
-  QString sidebarText[][4];
-
+  
 } // end automation namespace
 
 #ifdef SC_PAPERDOLL

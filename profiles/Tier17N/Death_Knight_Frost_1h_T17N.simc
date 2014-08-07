@@ -4,7 +4,7 @@ race=orc
 role=attack
 position=back
 professions=blacksmithing=600/engineering=600
-talents=http://us.battle.net/wow/en/tool/talent-calculator#dZ!1..0..0
+talents=http://us.battle.net/wow/en/tool/talent-calculator#dZ!1..2..0
 spec=frost
 
 # This default action priority list is automatically created based on your character.
@@ -96,6 +96,6 @@ off_hand=primal_gladiators_bonecracker,id=111200,enchant=rune_of_razorice
 # gear_stamina=3199
 # gear_crit_rating=1344
 # gear_haste_rating=436
-# gear_mastery_rating=1324
+# gear_mastery_rating=1109
 # gear_armor=2574
 # gear_multistrike_rating=411

@@ -33,6 +33,7 @@ void pet_t::init_pet_t_()
   intellect_per_owner = 0.30;
 
   party = owner -> party;
+  regen_type = owner -> regen_type;
 
   // Inherit owner's dbc state
   dbc.ptr = owner -> dbc.ptr;
@@ -87,6 +88,19 @@ double pet_t::composite_attribute( attribute_e attr ) const
   }
 
   return a;
+}
+
+// pet_t::init ==============================================================
+
+void pet_t::init()
+{
+  player_t::init();
+
+  if ( regen_type == REGEN_DYNAMIC && owner -> regen_type == REGEN_DISABLED )
+  {
+    sim -> errorf( "Pet %s has dynamic regen, while owner has disabled regen. Disabling pet regeneration also.", name() );
+    regen_type = REGEN_DISABLED;
+  }
 }
 
 // pet_t::init_base =========================================================

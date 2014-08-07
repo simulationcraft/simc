@@ -4349,7 +4349,7 @@ void rogue_t::init_spells()
   spec.blade_flurry         = find_specialization_spell( "Blade Flurry" );
   spec.combat_potency       = find_specialization_spell( "Combat Potency" );
   spec.killing_spree        = find_specialization_spell( "Killing Spree" );
-  spec.ruthlessness         = find_specialization_spell( "Ruthlessness" );
+  spec.ruthlessness         = find_spell( 14161 );
   spec.vitality             = find_specialization_spell( "Vitality" );
 
   // Subtlety

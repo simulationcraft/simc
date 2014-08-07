@@ -4,7 +4,7 @@ race=orc
 role=attack
 position=back
 professions=blacksmithing=600/engineering=600
-talents=http://us.battle.net/wow/en/tool/talent-calculator#db!2..0..0
+talents=http://us.battle.net/wow/en/tool/talent-calculator#db!2..2..0
 spec=unholy
 
 # This default action priority list is automatically created based on your character.
@@ -106,6 +106,6 @@ main_hand=primal_gladiators_decapitator,id=111202,enchant=rune_of_the_fallen_cru
 # gear_stamina=3250
 # gear_crit_rating=1367
 # gear_haste_rating=436
-# gear_mastery_rating=1347
+# gear_mastery_rating=1132
 # gear_armor=2574
 # gear_multistrike_rating=411

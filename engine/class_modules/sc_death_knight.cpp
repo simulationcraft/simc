@@ -175,8 +175,8 @@ public:
   // Buffs
   struct buffs_t
   {
-    buff_t* antimagic_shell;
     buff_t* army_of_the_dead;
+    buff_t* antimagic_shell;
     buff_t* bladed_armor;
     buff_t* blood_charge;
     buff_t* blood_presence;
@@ -450,6 +450,10 @@ public:
 
     cooldown.bone_shield_icd = get_cooldown( "bone_shield_icd" );
     cooldown.bone_shield_icd -> duration = timespan_t::from_seconds( 2.0 );
+
+    regen_type = REGEN_DYNAMIC;
+    regen_caches[ CACHE_HASTE ] = true;
+    regen_caches[ CACHE_ATTACK_HASTE ] = true;
   }
 
   // Character Definition
@@ -562,7 +566,6 @@ inline void rune_t::fill_rune()
 // ==========================================================================
 // Local Utility Functions
 // ==========================================================================
-
 
 // Log rune status ==========================================================
 
@@ -692,6 +695,152 @@ static int use_rune( const death_knight_t* p, rune_type rt, const std::array<boo
 
   // 7) No rune found
   return -1;
+}
+
+static std::pair<int, double> rune_ready_in( const death_knight_t* p, rune_type rt, const std::array<bool,RUNE_SLOT_MAX>& use )
+{
+  typedef std::pair<int, double> rri_t;
+
+  int fastest_remaining = -1;
+  double t = std::numeric_limits<double>::max();
+  double rps = 1.0 / 10.0 / p -> cache.attack_haste();
+  if ( p -> buffs.runic_corruption -> check() )
+    rps *= 2.0;
+
+  const rune_t* r = 0;
+  if ( rt == RUNE_TYPE_BLOOD )
+    r = &( p -> _runes.slot[ 0 ] );
+  else if ( rt == RUNE_TYPE_FROST )
+    r = &( p -> _runes.slot[ 2 ] );
+  else if ( rt == RUNE_TYPE_UNHOLY )
+    r = &( p -> _runes.slot[ 4 ] );
+
+  // 1) Choose first non-death rune of rune_type
+  if ( r && ! use[ r -> slot_number ] && ! r -> is_death() )
+  {
+    if ( r -> is_ready() )
+      return rri_t( r -> slot_number, 0 );
+    else if ( r -> state == STATE_REGENERATING )
+    {
+      double ttr = ( 1.0 - r -> value ) / rps;
+      if ( ttr < t )
+      {
+        t = ttr;
+        fastest_remaining = r -> slot_number;
+      }
+    }
+  }
+
+  // 2) Choose paired non-death rune of rune_type
+  if ( r && ! use[ r -> paired_rune -> slot_number ] && ! r -> paired_rune -> is_death() )
+  {
+    if ( r -> paired_rune -> is_ready() )
+      return rri_t( r -> paired_rune -> slot_number, 0 );
+    else if ( r -> paired_rune -> state == STATE_REGENERATING )
+    {
+      double ttr = ( 1.0 - r -> paired_rune -> value ) / rps;
+      if ( ttr < t )
+      {
+        t = ttr;
+        fastest_remaining = r -> paired_rune -> slot_number;
+      }
+    }
+  }
+
+  // 3) Choose first death rune of rune_type
+  if ( r && ! use[ r -> slot_number ] && r -> is_death() )
+  {
+    if ( r -> is_ready() )
+      return rri_t( r -> slot_number, 0 );
+    else if ( r -> state == STATE_REGENERATING )
+    {
+      double ttr = ( 1.0 - r -> value ) / rps;
+      if ( ttr < t )
+      {
+        t = ttr;
+        fastest_remaining = r -> slot_number;
+      }
+    }
+  }
+
+  // 4) Choose paired death rune of rune_type
+  if ( r && ! use[ r -> paired_rune -> slot_number ] && r -> paired_rune -> is_death() )
+  {
+    if ( r -> paired_rune -> is_ready() )
+      return rri_t( r -> paired_rune -> slot_number, 0 );
+    else if ( r -> paired_rune -> state == STATE_REGENERATING )
+    {
+      double ttr = ( 1.0 - r -> paired_rune -> value ) / rps;
+      if ( ttr < t )
+      {
+        t = ttr;
+        fastest_remaining = r -> paired_rune -> slot_number;
+      }
+    }
+  }
+
+  // 6) Choose the first death rune of any type, in the order b > u > f
+  size_t order[] = { 0, 1, 4, 5, 2, 3 };
+  for ( size_t i = 0; i < sizeof_array( order ); i++ )
+  {
+    const rune_t* r = &( p -> _runes.slot[ i ] );
+    if ( ! r -> is_death() )
+      continue;
+
+    if ( use[ r -> slot_number ] )
+      continue;
+
+    if ( r -> is_ready() )
+      return rri_t( r -> slot_number, 0 );
+    else if ( r -> state == STATE_REGENERATING )
+    {
+      double ttr = ( 1.0 - r -> value ) / rps;
+      if ( ttr < t )
+      {
+        t = ttr;
+        fastest_remaining = r -> slot_number;
+      }
+    }
+  }
+
+  // 7) We have no ready runes, return the slot that would be ready next
+  return rri_t( fastest_remaining, t );
+}
+
+static void ready_in( const death_knight_t* player, int blood, int frost, int unholy )
+{
+  typedef std::pair<int, double> rri_t;
+  assert( blood < 2 && frost < 2 && unholy < 2  );
+
+  std::array<bool,RUNE_SLOT_MAX> use;
+  range::fill( use, false );
+
+  if ( player -> sim -> debug )
+    log_rune_status( player );
+
+  if ( blood )
+  {
+    rri_t info = rune_ready_in( player, RUNE_TYPE_BLOOD, use );
+    //std::cout << "rune_info blood " << info.first << " " << info.second << std::endl;
+    if ( info.first > -1 )
+      use[ info.first ] = true;
+  }
+
+  if ( frost )
+  {
+    rri_t info = rune_ready_in( player, RUNE_TYPE_FROST, use );
+    //std::cout << "rune_info frost " << info.first << " " << info.second << std::endl;
+    if ( info.first > -1 )
+      use[ info.first ] = true;
+  }
+
+  if ( unholy )
+  {
+    rri_t info = rune_ready_in( player, RUNE_TYPE_UNHOLY, use );
+    //std::cout << "rune_info unholy " << info.first << " " << info.second << std::endl;
+    if ( info.first > -1 )
+      use[ info.first ] = true;
+  }
 }
 
 static bool group_runes ( const death_knight_t* player, int blood, int frost, int unholy, int death, std::array<bool,RUNE_SLOT_MAX>& group )
@@ -841,6 +990,8 @@ void rune_t::regen_rune( death_knight_t* p, timespan_t periodicity, bool rc )
   // linearly scales regen rate -- 100% haste means a rune regens in 5
   // seconds, etc.
   double runes_per_second = 1.0 / 10.0 / p -> cache.attack_haste();
+  if ( p -> buffs.runic_corruption -> check() )
+    runes_per_second *= 2.0;
   double regen_amount = periodicity.total_seconds() * runes_per_second;
 
   // record rune gains and overflow
@@ -1256,6 +1407,7 @@ struct dancing_rune_weapon_pet_t : public pet_t
     main_hand_weapon.swing_time = timespan_t::from_seconds( 3.5 );
 
     owner_coeff.ap_from_ap = 1.0;
+    regen_type = REGEN_DISABLED;
   }
 
   death_knight_t* o() const
@@ -1365,8 +1517,6 @@ struct army_ghoul_pet_t : public death_knight_pet_t
     main_hand_weapon.swing_time = timespan_t::from_seconds( 2.0 );
 
     action_list_str = "snapshot_stats/auto_attack/claw";
-
-
   }
 
   struct army_ghoul_pet_melee_attack_t : public melee_attack_t
@@ -1544,7 +1694,7 @@ struct gargoyle_pet_t : public death_knight_pet_t
 
   gargoyle_pet_t( sim_t* sim, death_knight_t* owner ) :
     death_knight_pet_t( sim, owner, "gargoyle", true )
-  { }
+  { regen_type = REGEN_DISABLED; }
 
   virtual void init_base_stats()
   {
@@ -2156,6 +2306,7 @@ bool death_knight_melee_attack_t::ready()
   if ( ! base_t::ready() )
     return false;
 
+  //ready_in( p(), cost_blood, cost_frost, cost_unholy );
   return group_runes( p(), cost_blood, cost_frost, cost_unholy, cost_death, use );
 }
 
@@ -4573,14 +4724,15 @@ struct antimagic_shell_t : public death_knight_spell_t
 
     death_knight_spell_t::execute();
 
+    // If using the fake soaking, immediately grant the RP in one go
     if ( damage > 0 )
     {
       double absorbed = std::min( damage * data().effectN( 1 ).percent(),
                                   p() -> resources.max[ RESOURCE_HEALTH ] * data().effectN( 2 ).percent() );
 
-      double generated = 2 * ( absorbed / p() -> resources.max[ RESOURCE_HEALTH ] );
+      double generated = absorbed / p() -> resources.max[ RESOURCE_HEALTH ];
 
-      p() -> buffs.antimagic_shell -> trigger( 1, generated / data().duration().total_seconds() );
+      p() -> resource_gain( RESOURCE_RUNIC_POWER, util::round( generated * 100.0 ), p() -> gains.antimagic_shell, this );
     }
     else
       p() -> buffs.antimagic_shell -> trigger();
@@ -4827,72 +4979,26 @@ expr_t* death_knight_action_t<Base>::create_expression( const std::string& name_
 
 // Buffs ====================================================================
 
-struct runic_corruption_regen_t : public event_t
-{
-  buff_t* buff;
-
-  runic_corruption_regen_t( death_knight_t& p, buff_t* b ) :
-    event_t( p, "runic_corruption_regen_event" ),
-    buff( b )
-  {
-    add_event( timespan_t::from_seconds( 0.1 ) );
-  }
-
-  void execute();
-};
-
 struct runic_corruption_buff_t : public buff_t
 {
   core_event_t* regen_event;
 
   runic_corruption_buff_t( death_knight_t* p ) :
     buff_t( buff_creator_t( p, "runic_corruption", p -> find_spell( 51460 ) )
-            .chance( p -> talent.runic_corruption -> ok() ) ),
+            .chance( p -> talent.runic_corruption -> ok() ).affects_regen( true ) ),
     regen_event( 0 )
-  { }
+  {  }
 
   void execute( int stacks = 1, double value = buff_t::DEFAULT_VALUE(), timespan_t duration = timespan_t::min() )
   {
     buff_t::execute( stacks, value, duration );
-    if ( sim -> debug )
-      sim -> out_debug.printf( "%s runic_corruption_regen_event duration=%f", player -> name(), duration.total_seconds() );
-    if ( ! regen_event )
-    {
-      death_knight_t& p = static_cast< death_knight_t& >( *player );
-      regen_event = new ( *sim ) runic_corruption_regen_t( p, this );
-    }
   }
 
   void expire_override()
   {
     buff_t::expire_override();
-
-    if ( regen_event )
-    {
-      timespan_t remaining_duration = timespan_t::from_seconds( 0.1 ) - ( regen_event -> occurs() - sim -> current_time );
-
-      if ( sim -> debug )
-        sim -> out_debug.printf( "%s runic_corruption_regen_event expires, remaining duration %f", player -> name(), remaining_duration.total_seconds() );
-
-      death_knight_t* p = debug_cast< death_knight_t* >( player );
-      for ( int i = 0; i < RUNE_SLOT_MAX; ++i )
-        p -> _runes.slot[i].regen_rune( p, remaining_duration, true );
-
-      core_event_t::cancel( regen_event );
-    }
   }
 };
-
-inline void runic_corruption_regen_t::execute()
-{
-  death_knight_t& p = static_cast< death_knight_t& >( *actor );
-  runic_corruption_buff_t* regen_buff = debug_cast< runic_corruption_buff_t* >( buff );
-
-  for ( int i = 0; i < RUNE_SLOT_MAX; ++i )
-    p._runes.slot[i].regen_rune( &p, timespan_t::from_seconds( 0.1 ), true );
-
-  regen_buff -> regen_event = new ( sim() ) runic_corruption_regen_t( p, buff );
-}
 
 struct vampiric_blood_buff_t : public buff_t
 {
@@ -5251,6 +5357,7 @@ void death_knight_t::init_base_stats()
   // Just need to add class- or spec-based modifiers here.
 
   base.dodge += 0.030 + spec.veteran_of_the_third_war -> effectN( 2 ).percent();
+
 }
 
 // death_knight_t::init_spells ==============================================
@@ -6253,16 +6360,16 @@ void death_knight_t::assess_damage_imminent( school_e school, dmg_e, action_stat
 {
   if ( buffs.antimagic_shell -> up() && school != SCHOOL_PHYSICAL )
   {
-    double absorbed = std::min( s -> result_amount * spell.antimagic_shell -> effectN( 1 ).percent(),
-                                resources.max[ RESOURCE_HEALTH ] * spell.antimagic_shell -> effectN( 2 ).percent() );
+    double absorbed = s -> result_amount * spell.antimagic_shell -> effectN( 1 ).percent();
 
-    double generated = 2 * ( absorbed / resources.max[ RESOURCE_HEALTH ] );
+    double generated = absorbed / resources.max[ RESOURCE_HEALTH ];
 
     s -> result_amount -= absorbed;
     s -> result_absorbed -= absorbed;
 
     gains.antimagic_shell -> add( RESOURCE_HEALTH, absorbed );
-    buffs.antimagic_shell -> current_value += generated / spell.antimagic_shell -> duration().total_seconds();
+
+    resource_gain( RESOURCE_RUNIC_POWER, util::round( generated * 100.0 ), gains.antimagic_shell, s -> action );
   }
 
   if ( talent.necrotic_plague -> ok() && ! s -> action -> result_is_multistrike( s -> result ) )
@@ -6628,11 +6735,8 @@ void death_knight_t::regen( timespan_t periodicity )
 {
   player_t::regen( periodicity );
 
-  if ( buffs.antimagic_shell -> check() && buffs.antimagic_shell -> current_value > 0 )
-    resource_gain( RESOURCE_RUNIC_POWER, buffs.antimagic_shell -> value() * periodicity.total_seconds(), gains.antimagic_shell );
-
   for ( int i = 0; i < RUNE_SLOT_MAX; ++i )
-    _runes.slot[i].regen_rune( this, periodicity );
+    _runes.slot[ i ].regen_rune( this, periodicity );
 }
 
 // death_knight_t::decode_set ===============================================
@@ -6877,13 +6981,12 @@ void death_knight_t::apply_diseases( action_state_t* state, unsigned diseases )
 // how many runes of type rt are available
 int death_knight_t::runes_count( rune_type rt, bool include_death, int position )
 {
-  int result = 0;
+  double result = 0;
   // positional checks first
   if ( position > 0 && ( rt == RUNE_TYPE_BLOOD || rt == RUNE_TYPE_FROST || rt == RUNE_TYPE_UNHOLY ) )
   {
     rune_t* r = &_runes.slot[( ( rt - 1 ) * 2 ) + ( position - 1 ) ];
-    if ( r -> is_ready() )
-      result = 1;
+    result += r -> value;
   }
   else
   {
@@ -6896,16 +6999,14 @@ int death_knight_t::runes_count( rune_type rt, bool include_death, int position 
       {
         if ( ++rpc == position )
         {
-          if ( r -> is_ready() )
-            result = 1;
+          result += r -> value;
           break;
         }
       }
       // just count the runes
-      else if ( ( ( ( include_death || rt == RUNE_TYPE_DEATH ) && r -> is_death() ) || r -> get_type() == rt )
-                && r -> is_ready() )
+      else if ( ( ( ( include_death || rt == RUNE_TYPE_DEATH ) && r -> is_death() ) || r -> get_type() == rt ) )
       {
-        result++;
+        result += r -> value;
       }
     }
   }

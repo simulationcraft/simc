@@ -900,7 +900,7 @@ struct jab_t : public monk_melee_attack_t
     mh = &( player -> main_hand_weapon );
     oh = &( player -> off_hand_weapon );
  
-    base_multiplier *= 1.2; // hardcoded into tooltip
+    base_multiplier *= 1.15; // hardcoded into tooltip
 
     base_costs[ RESOURCE_ENERGY ] += p -> active_stance_data( FIERCE_TIGER ).effectN( 5 ).base_value();
   }
@@ -969,7 +969,7 @@ struct tiger_palm_t : public monk_melee_attack_t
         stancemask = STURDY_OX | FIERCE_TIGER | SPIRITED_CRANE;
     mh = &( player -> main_hand_weapon ) ;
     oh = &( player -> off_hand_weapon ) ;
-    base_multiplier *= 3.95; // hardcoded into tooltip
+    base_multiplier *= 3.79; // hardcoded into tooltip
  
     if ( p -> spec.brewmaster_training -> ok() )
       base_costs[ RESOURCE_CHI ] = 0.0;
@@ -1055,7 +1055,7 @@ struct blackout_kick_t : public monk_melee_attack_t
     parse_options( nullptr, options_str );
     mh = &( player -> main_hand_weapon );
     oh = &( player -> off_hand_weapon );
-    base_multiplier *= 7; // hardcoded into tooltip
+    base_multiplier *= 6.7; // hardcoded into tooltip
 
     if ( p -> spec.teachings_of_the_monastery -> ok() )
     {
@@ -1347,7 +1347,7 @@ struct rising_sun_kick_t : public monk_melee_attack_t
     stancemask = FIERCE_TIGER;
     mh = &( player -> main_hand_weapon ) ;
     oh = &( player -> off_hand_weapon ) ;
-    base_multiplier *= 7.4; // hardcoded into tooltip
+    base_multiplier *= 7.08; // hardcoded into tooltip
   }
  
   virtual void impact ( action_state_t* s )
@@ -1525,7 +1525,7 @@ struct fists_of_fury_t : public monk_melee_attack_t
     stancemask = FIERCE_TIGER;
     channeled = tick_zero = true;
     school = SCHOOL_PHYSICAL;
-    base_multiplier *= 7.6; // hardcoded into tooltip
+    base_multiplier *= 7.32; // hardcoded into tooltip
     callbacks = false; // Fists of Fury driver probably does not proc anything
 
     // T14 WW 2PC
@@ -1808,7 +1808,7 @@ struct expel_harm_t : public monk_melee_attack_t
     mh = &( player -> main_hand_weapon );
     oh = &( player -> off_hand_weapon );
  
-    base_multiplier = 5.1; // hardcoded into tooltip
+    base_multiplier = 11.4; // hardcoded into tooltip
         base_multiplier *= 1/3; // 33% of the heal is done as damage
 
     if ( p -> glyph.targeted_expulsion -> ok() )

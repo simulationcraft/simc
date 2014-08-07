@@ -73,10 +73,10 @@ main_hand=primal_gladiators_heavy_crossbow,id=111073,enchant=oglethorpes_missile
 # Gear Summary
 # gear_agility=2588
 # gear_stamina=3248
-# gear_crit_rating=1720
+# gear_crit_rating=1563
 # gear_haste_rating=583
 # gear_mastery_rating=488
 # gear_armor=1547
-# gear_multistrike_rating=770
+# gear_multistrike_rating=712
 # pvp_2pc_melee=1
 summon_pet=cat
