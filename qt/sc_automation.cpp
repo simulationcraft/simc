@@ -179,6 +179,26 @@ void SC_ImportTab::setSpecDropDown( const int player_class )
   
 }
 
+// 
+QString automation::sidebarText[ 11 ][ 4 ] = {
+  { "Blood shorthand goes here.", "Frost shorthand goes here", "Unholy shorthand goes here", "N/A" },
+  { "Balance shorthand goes here.", "Feral shorthand goes here.", "Guardian shorthand goes here.", "Restoration shorthand goes here." },
+  { "", "", "", "N/A" },
+  { "", "", "", "N/A" },
+  { "Holy shorthand goes here.", "Protection shorthand goes here.", "Retribution shorthand goes here.", "N/A" },
+  { "", "", "", "N/A" },
+  { "", "", "", "N/A" },
+  { "", "", "", "N/A" },
+  { "", "", "", "N/A" },
+  { "Affliction shorthand goe shere.", "Demonology shorthand goes here.", "Destruction shorthand goes here.", "N/A" },
+  { "Arms shorthand goes here.", "Fury shorthand goes here.", "Protection shorthand goes here.", "N/A" },
+};
+
+// method to set the sidebar text based on class slection
+void SC_ImportTab::setSidebarClassText()
+{
+  textbox.sidebar -> setText( automation::sidebarText[ choice.player_class -> currentIndex() ][ choice.player_spec -> currentIndex() ] );
+}
 
 void SC_MainWindow::startAutomationImport( int tab )
 {
@@ -231,8 +251,8 @@ void SC_ImportTab::createAutomationTab()
   choice.player_level = createChoice( 2, "100", "90" );
   formLayout -> addRow( tr( "Level" ), choice.player_level );
 
-  QLabel* messageText = new QLabel( tr( "Sample Text\n" ) );
-  formLayout -> addRow( messageText );
+  //QLabel* messageText = new QLabel( tr( "Sample Text\n" ) );
+  //formLayout -> addRow( messageText );
 
   // set the formGroupBox's layout now that we've defined it
   formGroupBox -> setLayout( formLayout );
@@ -307,4 +327,7 @@ void SC_ImportTab::createAutomationTab()
   addTab( automationTabScrollArea, tr( "Automation" ) );
 
   connect( choice.player_class, SIGNAL( currentIndexChanged( const int& ) ), this, SLOT( setSpecDropDown( const int ) ) );
+  connect( choice.player_class, SIGNAL( currentIndexChanged( const int& ) ), this, SLOT( setSidebarClassText() ) );
+  connect( choice.player_spec,  SIGNAL( currentIndexChanged( const int& ) ), this, SLOT( setSidebarClassText() ) );
+
 }

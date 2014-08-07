@@ -534,6 +534,7 @@ public:
 
 public slots:
   void setSpecDropDown( const int player_class );
+  void setSidebarClassText();
 };
 
 // ==========================================================================
@@ -1529,6 +1530,8 @@ namespace automation {
                         QString player_gear,
                         QString player_rotation
                       );
+
+  QString sidebarText[][4];
 
 } // end automation namespace
 
