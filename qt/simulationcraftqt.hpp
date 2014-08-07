@@ -520,21 +520,25 @@ public:
     QComboBox* player_spec;
     QComboBox* player_race;
     QComboBox* player_level;
+    QComboBox* comp_type;
   } choice;
   struct textBoxes_t
   {
-    SC_TextEdit* talents;
-    SC_TextEdit* glyphs;
+    QTextEdit* talents;
+    QTextEdit* glyphs;
     SC_TextEdit* gear;
     SC_TextEdit* rotation;
+    SC_TextEdit* advanced;
     SC_TextEdit* sidebar;
   } textbox;
 
+  QLabel* advancedLabel;
   void createAutomationTab();
 
 public slots:
   void setSpecDropDown( const int player_class );
   void setSidebarClassText();
+  void compTypeChanged( const int comp );
 };
 
 // ==========================================================================
@@ -1521,18 +1525,18 @@ namespace automation {
 
   QString tokenize( QString qstr );
   
-  QString do_something( QString player_class,
+  QString do_something( int comp_type,
+                        QString player_class,
                         QString player_spec,
                         QString player_race,
                         QString player_level,
                         QString player_talents,
                         QString player_glyphs,
                         QString player_gear,
-                        QString player_rotation
+                        QString player_rotation,
+                        QString advanced_text
                       );
-
-//  QString sidebarText[11][4];
-
+  
 } // end automation namespace
 
 #ifdef SC_PAPERDOLL
