@@ -3925,6 +3925,9 @@ struct judgment_t : public paladin_melee_attack_t
 
     // Only triggers Seal of Truth
     trigger_seal_of_truth        = true;
+
+    // Guarded by the Light reduces mana cost
+    base_costs[ RESOURCE_MANA ] *= 1.0 +  p -> passives.guarded_by_the_light -> effectN( 8 ).percent();
     
     // damage multiplier from T14 Retribution 4-piece bonus
     base_multiplier *= 1.0 + p -> sets.set( SET_T14_4PC_MELEE ) -> effectN( 1 ).percent();
