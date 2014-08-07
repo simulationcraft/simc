@@ -522,6 +522,15 @@ public:
     QComboBox* player_level;
     QComboBox* comp_type;
   } choice;
+  struct labels_t
+  {
+    QLabel* talents;
+    QLabel* glyphs;
+    QLabel* gear;
+    QLabel* rotation;
+    QLabel* advanced;
+    QLabel* sidebar;
+  } label;
   struct textBoxes_t
   {
     QLineEdit* talents;
@@ -532,8 +541,8 @@ public:
     SC_TextEdit* sidebar;
   } textbox;
 
-  QLabel* advancedLabel;
   void createAutomationTab();
+  void createTooltips();
 
 public slots:
   void setSpecDropDown( const int player_class );
@@ -1064,7 +1073,6 @@ public:
   void createOptionsTab();
   void createImportTab();
   void createBestInSlotTab();
-  void createAutomationTab();
   void createCustomTab();
   void createSimulateTab();
   void createOverridesTab();
@@ -1564,8 +1572,6 @@ namespace automation {
                              QString player_gear,
                              QString advanced_text
                            );
-
-  QString sidebarText[][4];
 
 } // end automation namespace
 

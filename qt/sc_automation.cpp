@@ -244,7 +244,7 @@ void SC_ImportTab::setSidebarClassText()
 
 void SC_ImportTab::compTypeChanged( const int comp )
 {
-  advancedLabel -> setText( advancedText[ comp ] );
+  label.advanced -> setText( advancedText[ comp ] );
   
   // TODO: set the text of the box with some sort of default for each case
 
@@ -288,6 +288,13 @@ void SC_MainWindow::startAutomationImport( int tab )
   simulateTab -> add_Text( profile,  tr( "Testing" ) );
   
   mainTab -> setCurrentTab( TAB_SIMULATE );
+}
+
+void SC_ImportTab::createTooltips()
+{
+  choice.comp_type -> setToolTip( "Choose the comparison type." );
+  
+
 }
 
 void SC_ImportTab::createAutomationTab()
@@ -348,21 +355,15 @@ void SC_ImportTab::createAutomationTab()
   defaultsFormLayout -> addRow( tr( "Level" ), choice.player_level );
 
   // Create text boxes for default talents and glyphs, and add them to the FormLayout
+  label.talents = new QLabel( tr("Default Talents" ) );
   textbox.talents = new QLineEdit;
-  //textbox.talents -> setMinimumHeight( 15 );
-  //textbox.talents -> setFixedHeight( 15 );
-  //textbox.talents -> setVerticalScrollBarPolicy( Qt::ScrollBarAlwaysOff );
   textbox.talents -> setText( "0000000" );
-  //textbox.talents -> setSizePolicy( QSizePolicy::Expanding );
-  defaultsFormLayout -> addRow( tr("Default Talents" ), textbox.talents );
+  defaultsFormLayout -> addRow( label.talents, textbox.talents );
   
+  label.glyphs = new QLabel( tr("Default Glypyhs" ) );
   textbox.glyphs = new QLineEdit;
-  //textbox.glyphs -> setLayout( new QHBoxLayout() );
-  //textbox.glyphs -> setMinimumHeight( 15 );
-  //textbox.glyphs -> setFixedHeight( 15 );
-  //textbox.glyphs -> setVerticalScrollBarPolicy( Qt::ScrollBarAlwaysOff );
   textbox.glyphs -> setText( "focused_shield/alabaster_shield" );
-  defaultsFormLayout -> addRow( tr("Default Glypyhs" ), textbox.glyphs );
+  defaultsFormLayout -> addRow( label.glyphs, textbox.glyphs );
 
   // set the GroupBox's layout now that we've defined it
   defaultsGroupBox -> setLayout( defaultsFormLayout );
@@ -371,37 +372,37 @@ void SC_ImportTab::createAutomationTab()
   // Elements (3,0) - (6,0) are the default gear and rotation labels and text boxes
   
   // Create a label and an edit box for gear
-  QLabel* gearLabel = new QLabel( tr( "Default Gear" ) );
+  label.gear = new QLabel( tr( "Default Gear" ) );
   textbox.gear = new SC_TextEdit;;
   textbox.gear -> setPlainText( "head=\nneck=\n " );  
   // assign the label and edit box to cells
-  gridLayout -> addWidget( gearLabel,    3, 0, 0 );
+  gridLayout -> addWidget( label.gear,    3, 0, 0 );
   gridLayout -> addWidget( textbox.gear, 4, 0, 0 );
   
   // and again for rotation
-  QLabel* rotationLabel = new QLabel( tr( "Default Rotation" ) );
+  label.rotation = new QLabel( tr( "Default Rotation" ) );
   textbox.rotation = new SC_TextEdit;
   textbox.rotation -> setPlainText( "" );  
-  gridLayout -> addWidget( rotationLabel,    5, 0, 0 );
+  gridLayout -> addWidget( label.rotation,    5, 0, 0 );
   gridLayout -> addWidget( textbox.rotation, 6, 0, 0 );
 
 
   // Elements (2,1) - (6,1) are the Advanced text box
 
-  advancedLabel = new QLabel( tr( "Advanced Text Box" ) );
+  label.advanced = new QLabel( tr( "Advanced Text Box" ) );
   textbox.advanced = new SC_TextEdit;
   textbox.advanced -> setPlainText( "default" );
-  gridLayout -> addWidget( advancedLabel,    1, 1, 0 );
+  gridLayout -> addWidget( label.advanced,    1, 1, 0 );
   gridLayout -> addWidget( textbox.advanced, 2, 1, 5, 1, 0 );
 
 
   // Eleements (2,2) - (6,2) are the Rotation Conversions text box 
 
-  QLabel* sidebarLabel = new QLabel( tr( "Rotation Abbreviations" ) );
+  label.sidebar = new QLabel( tr( "Rotation Abbreviations" ) );
   textbox.sidebar = new SC_TextEdit;
   textbox.sidebar -> setText( " Stuff Goes Here" );
   textbox.sidebar -> setDisabled( true );
-  gridLayout -> addWidget( sidebarLabel,    1, 2, 0 );
+  gridLayout -> addWidget( label.sidebar,    1, 2, 0 );
   gridLayout -> addWidget( textbox.sidebar, 2, 2, 5, 1, 0 );
   
   // this adjusts the relative width of each column
@@ -423,4 +424,6 @@ void SC_ImportTab::createAutomationTab()
   // do some initialization
   compTypeChanged( choice.comp_type -> currentIndex() );
 
+  // set up all the tooltips
+  createTooltips();
 }
