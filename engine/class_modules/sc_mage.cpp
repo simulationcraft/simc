@@ -7,19 +7,12 @@
 // Extensive Test - At a glance, enhanced pyrotechnics works properly. Need to test more in depth though (remember CM interacts with this!)
 // multistrike triggering ignite? - CONFIRMED BY CELESTALON TO INTERACT WITH EACHOTHER
 // change the syntax around frostfirebolts implimentation of Enhanced pyrotechnics to match fireballs
-// The the bonus on Improved Pyorblast is Additive
-// Arcane Missiles perk(+1 stack) was hardcoded into the buff definition. Need to eventually change this so it works correctly for sub-90 characters.
 // Need to add in Improved Scorch
 // Shatter is changed Shatter: Now Frost only. Multiplies the critical strike chance of all your spells against frozen targets by 1.5 plus an additional 50%. needs to be coded.
-// Having difficulties implimenting Improved Arcane Missiles.
 // Improved Arcane Power needs to have a check for the perk to exist so it functions pre-90 correctly.
 // Need to Add Improved Blink
 // Make improved evocation only work post 90, and make it not a hardcoded 30 second reduction. Also need to test that it works, with a character template that does not have RoP.
-// Hardcoded Enhanced Fingers of Frost to 3 stacks. Need to fix eventually.
-// Need to test if Improved Frostbolt is being applied correctly during Icy Veins (although, IV will change in WoD. May not actually need to this version, but rather test it's application to multi-strike)
-// Recheck all perks
 // Check that changing where icicles is inside impact does not ruin them
-// Hardcoded enhanced FoF perk. Need to eventually make it so sub-90 toons do not have this.
 // The IV glyph works by making IV gives 35% MS. The perk then improves this to 45% MS.
 // Need to figure out how to not hard-code 2 charges and their CD for the "nova" spells.
 // All new spells need to have their damage cross-checked with in game values.
@@ -27,10 +20,9 @@
 // Need to not hardcode Overpowered
 // Can Meteor ticks crit and miss?
 // Are Meteor ticks effected by haste?
-// Living Bomb spell data has completely changed - need to re-do the entire thing.
 // Enhanced Pyrotechnics is giving global crit chance increase (not just FB/FFB). Fix this!
 // Unstable Magic Trigger is very sensative to double dipping - as we encounter new modifiers, need to check there is no double dipping going on!
-// Un-hardcode 50% damage modifier on unstable magic
+// Un-hardcode x% damage modifier on unstable magic
 // Does the IV glyph still have a hidden proc-rate increase for FoF?
 // Brainfreeze doesn't look correct in the spelldata (and isn't correct on the beta) in regards to proc chance. Until this is fixed, hardcoding it's buff and proc rate will suffice. Need to go and fix once the spell data is fixed.
 // Do not hardcode 15second duration for enhanced frostbolt perk
@@ -47,9 +39,9 @@
 //  Fix how Ivy Veins interacts with spells. - DONE!
 //  Multi-strikes proc UM. Add this! - DONE!
 //  Remove pyromaniac - DONE!
-// Imp. Arcane Explosion needs to be tested. -- DONE
+//  Imp. Arcane Explosion needs to be tested. -- DONE
 //  Arcane Blast cast time reduction perk testing? - DONE! Working correctly. (I think. may be very minor problems due to it not effecting base_execute_time. But tools to do that easily are not inplace yet.)
-
+// Living Bomb spell data has completely changed - need to re-do the entire thing. - DONE! (I think?)
 // Misc Notes:
 //  Unstable Magic Trigger is very sensative to double dipping - as we encounter new modifiers, need to check there is no double dipping going on!
 
@@ -206,34 +198,19 @@ public:
   {
       //Arcane
       const spell_data_t* enhanced_arcane_blast;
-      const spell_data_t* enhanced_arcane_missiles;
-      const spell_data_t* improved_arcane_barrage;
-      const spell_data_t* improved_arcane_blast;
-      const spell_data_t* improved_arcane_explosion;
-      const spell_data_t* improved_arcane_missiles;
       const spell_data_t* improved_arcane_power;
       const spell_data_t* improved_evocation;
       const spell_data_t* improved_blink;
 
       //Fire
-      const spell_data_t* enhanced_inferno_blast;
-      const spell_data_t* improved_dragons_breath;
-      const spell_data_t* improved_combustion;
-      const spell_data_t* improved_fireball_and_frostfire_bolt;
       const spell_data_t* enhanced_pyrotechnics;
       const spell_data_t* improved_flamestrike;
       const spell_data_t* improved_inferno_blast;
-      const spell_data_t* improved_pyroblast;
       const spell_data_t* improved_scorch;
 
       //Frost
-      const spell_data_t* enhanced_fingers_of_frost;
-      const spell_data_t* improved_frostbolt;
       const spell_data_t* enhanced_frostbolt;
       const spell_data_t* improved_blizzard;
-      const spell_data_t* improved_frost_nova;
-      const spell_data_t* improved_frostfire_bolt;
-      const spell_data_t* improved_ice_lance;
       const spell_data_t* improved_water_elemental;
       const spell_data_t* improved_icy_veins;
 
@@ -1424,10 +1401,8 @@ struct arcane_barrage_t : public mage_spell_t
   {
     parse_options( NULL, options_str );
 
-    if ( p -> perks.improved_arcane_barrage -> ok() )
-        base_aoe_multiplier *= ( p -> perks.improved_arcane_barrage -> effectN( 1 ).percent() + data().effectN( 2 ).percent() );
-    else
-        base_aoe_multiplier *= data().effectN( 2 ).percent();
+
+    base_aoe_multiplier *= data().effectN( 2 ).percent();
   }
 
   virtual void execute()
@@ -1464,7 +1439,6 @@ struct arcane_blast_t : public mage_spell_t
     mage_spell_t( "arcane_blast", p, p -> find_class_spell( "Arcane Blast" ) )
   {
     parse_options( NULL, options_str );
-    base_multiplier *= 1.0 + p -> perks.improved_arcane_blast -> effectN( 1 ).percent();
     if ( p -> sets.has_set_bonus( SET_PVP_4PC_CASTER ) )
       base_multiplier *= 1.05;
   }
@@ -1574,7 +1548,6 @@ struct arcane_explosion_t : public mage_spell_t
     mage_spell_t( "arcane_explosion", p, p -> find_class_spell( "Arcane Explosion" ) )
   {
     parse_options( NULL, options_str );
-    base_multiplier *= 1.0 + p -> perks.improved_arcane_explosion -> effectN( 1 ).percent();
     aoe = -1;
   }
 
@@ -1621,7 +1594,6 @@ struct arcane_missiles_t : public mage_spell_t
 
     dynamic_tick_action = true;
     tick_action = new arcane_missiles_tick_t( p );
-    base_multiplier *= 1.0 + p -> perks.improved_arcane_missiles -> effectN( 1 ).percent();
   }
 
   virtual double action_multiplier() const
@@ -1928,7 +1900,6 @@ struct combustion_t : public mage_spell_t
     base_tick_time = tick_spell.effectN( 1 ).period();
     dot_duration      = tick_spell.duration();
     tick_may_crit  = true;
-    dot_duration *= 1.0 + p -> perks.improved_combustion -> effectN( 1 ).percent();
 
     if ( p -> sets.has_set_bonus( SET_T14_4PC_CASTER ) )
     {
@@ -2130,7 +2101,6 @@ struct dragons_breath_t : public mage_spell_t
   {
     parse_options( NULL, options_str );
     aoe = -1;
-    base_multiplier *= 1.0 + p -> perks.improved_dragons_breath -> effectN( 1 ).percent();
   }
 };
 
@@ -2251,7 +2221,6 @@ struct fireball_t : public mage_spell_t
   {
     parse_options( NULL, options_str );
     may_hot_streak = true;
-    base_multiplier *= 1.0 + p -> perks.improved_fireball_and_frostfire_bolt -> effectN( 1 ).percent();
 
     if ( p -> sets.has_set_bonus( SET_PVP_4PC_CASTER ) )
       base_multiplier *= 1.05;
@@ -2449,9 +2418,6 @@ struct frostbolt_t : public mage_spell_t
   {
     parse_options( NULL, options_str );
 
-    if ( p -> perks.improved_frostbolt -> ok() )
-      base_multiplier *= 1.0 + p -> perks.improved_frostbolt -> effectN( 1 ).percent();
-
     if ( p -> sets.has_set_bonus( SET_PVP_4PC_CASTER ) )
       base_multiplier *= 1.05;
   }
@@ -2569,10 +2535,7 @@ struct frostfire_bolt_t : public mage_spell_t
     frigid_blast( new frigid_blast_t( p ) )
   {
     parse_options( NULL, options_str );
-    base_multiplier *= 1.0 + p -> perks.improved_fireball_and_frostfire_bolt -> effectN( 1 ).percent();
     may_hot_streak = true;
-    if ( p -> perks.improved_frostfire_bolt -> ok() )
-        base_multiplier *= 1.0 + p -> perks.improved_frostfire_bolt -> effectN( 1 ).percent();
     base_execute_time += p -> glyphs.frostfire -> effectN( 1 ).time_value();
 
     if ( p -> sets.has_set_bonus( SET_PVP_4PC_CASTER ) )
@@ -2780,8 +2743,6 @@ struct ice_lance_t : public mage_spell_t
   {
     parse_options( NULL, options_str );
 
-    if ( p -> perks.improved_ice_lance -> ok() )
-        base_multiplier *= 1.0 + p -> perks.improved_ice_lance -> effectN( 1 ).percent();
 
     if ( p -> glyphs.ice_lance -> ok() )
       aoe = p -> glyphs.ice_lance -> effectN( 1 ).base_value() + 1;
@@ -2940,7 +2901,6 @@ struct inferno_blast_t : public mage_spell_t
     parse_options( NULL, options_str );
     may_hot_streak = true;
     cooldown = p -> cooldowns.inferno_blast;
-    cooldown -> duration = data().cooldown() +  p -> perks.enhanced_inferno_blast -> effectN( 1 ).time_value();
     max_spread_targets = 3;
     max_spread_targets += p -> glyphs.inferno_blast -> ok() ? p -> glyphs.inferno_blast -> effectN( 1 ).base_value() : 0;
     max_spread_targets += p -> perks.improved_inferno_blast ? p -> perks.improved_inferno_blast -> effectN( 1 ).base_value() : 0;
@@ -3387,10 +3347,6 @@ struct pyroblast_t : public mage_spell_t
 
     if ( p() -> buffs.fiery_adept -> check() )
       c += 1.0;
-
-    c += p() -> perks.improved_pyroblast -> effectN( 1 ).percent();
-
-
 
     return c;
   }
@@ -4212,33 +4168,18 @@ void mage_t::init_spells()
 
 
   // Perks - Fire
-  perks.enhanced_inferno_blast               = find_perk_spell( "Enhanced Inferno Blast" );
-  perks.improved_dragons_breath              = find_perk_spell( "Improved Dragon's Breath");
-  perks.improved_combustion                  = find_perk_spell( "Improved combustion" );
-  perks.improved_fireball_and_frostfire_bolt = find_perk_spell( "Improved Fireball and Frostfire Bolt" );
   perks.enhanced_pyrotechnics                = find_perk_spell( "Enhanced Pyrotechnics" );
   perks.improved_flamestrike                 = find_perk_spell( "Improved Flamestrike" );
   perks.improved_inferno_blast               = find_perk_spell( "Improved Inferno Blast" );
-  perks.improved_pyroblast                   = find_perk_spell( "Improved Pyroblast" );
   perks.improved_scorch                      = find_perk_spell( "Improved Scorch" );
   // Perks - Arcane
   perks.enhanced_arcane_blast                = find_perk_spell( "Enhanced Arcane Blast" );
-  perks.enhanced_arcane_missiles             = find_perk_spell( "Enhanced Arcane Missiles" );
-  perks.improved_arcane_barrage              = find_perk_spell( "Improved Arcane Barrage" );
-  perks.improved_arcane_blast                = find_perk_spell( "Improved Arcane Blast" );
-  perks.improved_arcane_explosion            = find_perk_spell( "Improved Arcane Explosion" );
-  perks.improved_arcane_missiles             = find_perk_spell( "Improved Arcane Missiles" );
   perks.improved_arcane_power                = find_perk_spell( "Improved Arcane Power" );
   perks.improved_evocation                   = find_perk_spell( "Improved Evocation" );
   perks.improved_blink                       = find_perk_spell( "Improved Blink" );
   // Perks - Frost
-  perks.enhanced_fingers_of_frost            = find_perk_spell( "Enhanced Fingers of Frost" );
-  perks.improved_frostbolt                   = find_perk_spell( "Improved Frostbolt" );
   perks.enhanced_frostbolt                   = find_perk_spell( "Enhanced Frostbolt" );
   perks.improved_blizzard                    = find_perk_spell( "Improved Blizzard" );
-  perks.improved_frost_nova                  = find_perk_spell( "Improved Frost Nova" );
-  perks.improved_frostfire_bolt              = find_perk_spell( "Improved FrostFire Bolt" );
-  perks.improved_ice_lance                   = find_perk_spell( "Improved Ice Lance" );
   perks.improved_water_elemental             = find_perk_spell( "Improved Water Elemental" );
   perks.improved_icy_veins                   = find_perk_spell( "Improved Icy Veins" );
 
@@ -4360,7 +4301,7 @@ void mage_t::create_buffs()
   buffs.arcane_charge        = buff_creator_t( this, "arcane_charge", spec.arcane_charge )
                                .max_stack( find_spell( 36032 ) -> max_stacks() )
                                .duration( find_spell( 36032 ) -> duration() );
-  buffs.arcane_missiles      = buff_creator_t( this, "arcane_missiles", find_class_spell( "Arcane Missiles" ) -> ok() ? find_spell( 79683 ) : spell_data_t::not_found() ).chance( 0.3 ).max_stack( 3 );
+  buffs.arcane_missiles      = buff_creator_t( this, "arcane_missiles", find_class_spell( "Arcane Missiles" ) -> ok() ? find_spell( 79683 ) : spell_data_t::not_found() ).chance( 0.3 ).max_stack( 2 );
 
   buffs.arcane_power         = new buffs::arcane_power_t( this );
   buffs.blazing_speed        = buff_creator_t( this, "blazing_speed", talents.blazing_speed )
@@ -4371,7 +4312,7 @@ void mage_t::create_buffs()
 
   buffs.fingers_of_frost     = buff_creator_t( this, "fingers_of_frost", find_spell( 112965 ) ).chance( find_spell( 112965 ) -> effectN( 1 ).percent() )
                                .duration( timespan_t::from_seconds( 15.0 ) )
-                               .max_stack( 3 );
+                               .max_stack( 2 );
   buffs.frost_armor          = buff_creator_t( this, "frost_armor", find_spell( 7302 ) ).add_invalidate( CACHE_MULTISTRIKE );
   if( glyphs.icy_veins -> ok() )
     buffs.icy_veins            = buff_creator_t( this, "icy_veins", find_spell( 12472 ) ).add_invalidate( CACHE_MULTISTRIKE );
