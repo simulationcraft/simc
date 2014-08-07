@@ -3706,8 +3706,8 @@ void player_t::interrupt()
 
   if ( sim -> log ) sim -> out_log.printf( "%s is interrupted", name() );
 
-  if ( executing && ! executing -> usable_moving() ) executing  -> interrupt_action();
-  if ( channeling && ! channeling -> usable_moving() ) channeling -> interrupt_action();
+  if ( executing  ) executing  -> interrupt_action();
+  if ( channeling ) channeling -> interrupt_action();
 
   if ( strict_sequence )
   {
@@ -3722,7 +3722,7 @@ void player_t::interrupt()
   }
   else
   {
-    if ( ! readying && ! current.sleeping && ! executing && ! channeling ) schedule_ready();
+    if ( ! readying && ! current.sleeping ) schedule_ready();
   }
 }
 
