@@ -379,6 +379,8 @@ public:
     create_gains();
     create_procs();
     create_benefits();
+
+    regen_type = REGEN_DYNAMIC;
   }
 
   // player_t overrides
