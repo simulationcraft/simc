@@ -73,16 +73,24 @@ QString automation::do_something( int sim_type,
   // Method for profile creation for the specific TALENT simulation
 QString automation::auto_talent_sim( QString player_class,
                                      QString base_profile_info, 
-                                     QString advanced_talents,
+                                     QString advanced_text,
                                      QString player_glyphs,
                                      QString player_gear,
                                      QString player_rotation
                                    )
 {
-  QStringList talentList = advanced_talents.split( "\n", QString::SkipEmptyParts );
+  QStringList talentList = advanced_text.split( "\n", QString::SkipEmptyParts );
 
   QString profile;
 
+  // talent list input check
+  if (!check_automation_input(1, talentList))
+  {
+    QString auto_error = "error in talent input";
+    return auto_error;
+  }
+
+  // make profile
   for ( int i = 0; i < talentList.size(); i++ )
   {
     profile += tokenize( player_class ) + "=T_" + talentList[ i ] + "\n";
@@ -106,11 +114,12 @@ QString automation::auto_glyph_sim( QString player_class,
                                     QString player_rotation
                                   )
 {
-  QStringList glyphList = advanced_text.split( "\n", QString::SkipEmptyParts );
+  QStringList glyphList = advanced_text.split("\n", QString::SkipEmptyParts);
 
   QString profile;
 
-  for ( int i = 0; i < glyphList.size(); i++ )
+   // make profile
+   for ( int i = 0; i < glyphList.size(); i++ )
   {
     profile += tokenize( player_class ) + "=G_" + QString::number( i ) + "\n";
     profile += base_profile_info;
@@ -152,6 +161,48 @@ QString automation::auto_rotation_sim( QString player_class,
   return profile;
 }
 
+// Control Method for talentlist input
+bool automation::check_automation_input( int i, 
+                                         QStringList talentList
+                                       )
+{
+  QRegExp talentExp( "^[1-3]{1,1}$" );
+
+  switch ( i )
+  {
+    case 1: // talent list error checking   
+      for ( int i = 0; i < talentList.size(); i++ )
+      {
+        QString talent = talentList[ i ];
+        int k = 7;
+        if ( !( talent.size() == k ))
+        {
+          return false;
+        }
+        for ( int j = 0; j < talent.length(); j++ )
+        {
+          QString tal_check = talent.right( 1 );
+          talent.chop( 1 );
+          if ( ! tal_check.contains( talentExp ))
+          {
+            return false;
+          }
+        }
+      }
+      return true;
+
+    case 2: // glyph list error checking
+      return true;
+
+    case 3: // gear list error checking
+      return true;
+
+   case 4: // rotation list error checking
+      return true;
+  }
+
+  return true;
+}
 
 ///////////////////////////////////////////////////////////////////////////////
 ////
