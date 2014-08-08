@@ -327,8 +327,8 @@ public:
     base_gcd = timespan_t::from_seconds( 1.0 );
 
     regen_type = REGEN_DYNAMIC;
-    regen_caches.push_back( CACHE_HASTE );
-    regen_caches.push_back( CACHE_ATTACK_HASTE );
+    regen_caches[ CACHE_HASTE ] = true;
+    regen_caches[ CACHE_ATTACK_HASTE ] = true;
   }
 
   // Character Definition
