@@ -2414,6 +2414,7 @@ struct slam_t: public warrior_attack_t
     parse_options( NULL, options_str );
     stancemask = STANCE_BATTLE | STANCE_DEFENSE;
     weapon = &( p -> main_hand_weapon );
+    base_costs[ RESOURCE_RAGE ] = 10;
   }
 
   double cost() const
