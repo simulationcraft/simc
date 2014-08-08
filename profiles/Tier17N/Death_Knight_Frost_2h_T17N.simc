@@ -99,7 +99,7 @@ finger1=primal_gladiators_signet_of_cruelty,id=111219,enchant=gift_of_haste
 finger2=primal_gladiators_signet_of_accuracy,id=111272,enchant=gift_of_haste
 trinket1=primal_gladiators_badge_of_victory,id=111232
 trinket2=primal_gladiators_insignia_of_victory,id=111233
-main_hand=primal_gladiators_decapitator,id=111202,enchant=rune_of_the_fallen_crusader
+main_hand=primal_gladiators_decapitator,id=111202,enchant=rune_of_razorice
 
 # Gear Summary
 # gear_strength=2588
