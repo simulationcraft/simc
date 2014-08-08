@@ -160,6 +160,7 @@ struct rogue_t : public player_t
     cooldown_t* adrenaline_rush;
     cooldown_t* honor_among_thieves;
     cooldown_t* killing_spree;
+    cooldown_t* ruthlessness;
     cooldown_t* seal_fate;
     cooldown_t* sprint;
   } cooldowns;
@@ -235,6 +236,7 @@ struct rogue_t : public player_t
     const spell_data_t* venom_zest;
     const spell_data_t* death_from_above;
     const spell_data_t* critical_strikes;
+    const spell_data_t* ruthlessness;
   } spell;
 
   // Talents
@@ -355,9 +357,13 @@ struct rogue_t : public player_t
     cooldowns.seal_fate           = get_cooldown( "seal_fate"           );
     cooldowns.adrenaline_rush     = get_cooldown( "adrenaline_rush"     );
     cooldowns.killing_spree       = get_cooldown( "killing_spree"       );
+    cooldowns.ruthlessness        = get_cooldown( "ruthlessness"        );
     cooldowns.sprint              = get_cooldown( "sprint"              );
 
     base.distance = 3;
+    regen_type = REGEN_DYNAMIC;
+    regen_caches.push_back( CACHE_HASTE );
+    regen_caches.push_back( CACHE_ATTACK_HASTE );
   }
 
   // Character Definition
@@ -2949,6 +2955,9 @@ void rogue_t::trigger_energy_refund( const action_state_t* state )
 
 void rogue_t::trigger_ruthlessness( const action_state_t* state )
 {
+  if ( cooldowns.ruthlessness -> down() )
+    return;
+
   if ( ! spec.ruthlessness -> ok() )
     return;
 
@@ -2963,21 +2972,23 @@ void rogue_t::trigger_ruthlessness( const action_state_t* state )
   if ( s -> cp == 0 )
     return;
 
-  timespan_t reduction = spec.ruthlessness -> effectN( 3 ).time_value() * s -> cp;
+  timespan_t reduction = spell.ruthlessness -> effectN( 3 ).time_value() * s -> cp;
 
   cooldowns.adrenaline_rush -> ready -= reduction;
   cooldowns.killing_spree   -> ready -= reduction;
   cooldowns.sprint          -> ready -= reduction;
 
-  double cp_chance = spec.ruthlessness -> effectN( 1 ).pp_combo_points() * s -> cp / 100.0;
+  double cp_chance = spell.ruthlessness -> effectN( 1 ).pp_combo_points() * s -> cp / 100.0;
   if ( rng().roll( cp_chance ) )
-    trigger_combo_point_gain( state, spell.ruthlessness_cp -> effectN( 1 ).base_value(), gains.ruthlessness );
+    trigger_combo_point_gain( state, spell.ruthlessness -> effectN( 1 ).trigger() -> effectN( 1 ).base_value(), gains.ruthlessness );
 
-  double energy_chance = spec.ruthlessness -> effectN( 2 ).pp_combo_points() * s -> cp / 100.0;
+  double energy_chance = spell.ruthlessness -> effectN( 2 ).pp_combo_points() * s -> cp / 100.0;
   if ( rng().roll( energy_chance ) )
     resource_gain( RESOURCE_ENERGY,
-                   spec.ruthlessness -> effectN( 2 ).trigger() -> effectN( 1 ).resource( RESOURCE_ENERGY ),
+                   spell.ruthlessness -> effectN( 2 ).trigger() -> effectN( 1 ).resource( RESOURCE_ENERGY ),
                    gains.ruthlessness );
+
+  cooldowns.ruthlessness -> start( spell.ruthlessness -> internal_cooldown() );
 }
 
 void rogue_t::trigger_relentless_strikes( const action_state_t* state )
@@ -3771,7 +3782,7 @@ struct shadow_reflection_pet_t : public pet_t
   shadow_reflection_pet_t( rogue_t* owner ) :
     pet_t( owner -> sim, owner, "shadow_reflection", true, true ),
     attacks( ABILITY_MAX )
-  { }
+  { regen_type = REGEN_DISABLED; }
 
   rogue_t* o()
   { return debug_cast<rogue_t*>( owner ); }
@@ -4349,7 +4360,7 @@ void rogue_t::init_spells()
   spec.blade_flurry         = find_specialization_spell( "Blade Flurry" );
   spec.combat_potency       = find_specialization_spell( "Combat Potency" );
   spec.killing_spree        = find_specialization_spell( "Killing Spree" );
-  spec.ruthlessness         = find_spell( 14161 );
+  spec.ruthlessness         = find_specialization_spell( "Ruthlessness" );
   spec.vitality             = find_specialization_spell( "Vitality" );
 
   // Subtlety
@@ -4378,6 +4389,7 @@ void rogue_t::init_spells()
   spell.venom_zest          = find_spell( 156719 );
   spell.death_from_above    = find_spell( 163786 );
   spell.critical_strikes    = find_spell( 157442 );
+  spell.ruthlessness        = find_spell( 14161 );
 
   // Glyphs
   glyph.disappearance       = find_glyph_spell( "Glyph of Disappearance" );
@@ -4546,6 +4558,7 @@ void rogue_t::create_buffs()
                               .cd( timespan_t::zero() )
                               .duration( find_class_spell( "Adrenaline Rush" ) -> duration() + sets.set( SET_T13_4PC_MELEE ) -> effectN( 2 ).time_value() )
                               .default_value( find_class_spell( "Adrenaline Rush" ) -> effectN( 2 ).percent() )
+                              .affects_regen( true )
                               .add_invalidate( CACHE_ATTACK_SPEED );
   buffs.blindside           = buff_creator_t( this, "blindside", spec.blindside -> effectN( 1 ).trigger() )
                               .chance( spec.blindside -> proc_chance() );
@@ -4738,15 +4751,13 @@ double rogue_t::energy_regen_per_second() const
 
 void rogue_t::regen( timespan_t periodicity )
 {
-  // XXX review how this all stacks (additive/multiplicative)
-
   player_t::regen( periodicity );
 
   if ( buffs.adrenaline_rush -> up() )
   {
     if ( ! resources.is_infinite( RESOURCE_ENERGY ) )
     {
-      double energy_regen = periodicity.total_seconds() * energy_regen_per_second();
+      double energy_regen = periodicity.total_seconds() * energy_regen_per_second() * buffs.adrenaline_rush -> data().effectN( 1 ).percent();
 
       resource_gain( RESOURCE_ENERGY, energy_regen, gains.adrenaline_rush );
     }
