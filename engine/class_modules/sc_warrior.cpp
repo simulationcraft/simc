@@ -150,14 +150,15 @@ public:
     // All Warriors
     gain_t* avoided_attacks;
     gain_t* charge;
-    gain_t* defensive_stance;
     gain_t* enrage;
     gain_t* melee_main_hand;
+    // Fury and Prot
+    gain_t* defensive_stance;
     // Fury and Arms
-    gain_t* colossus_smash;
     gain_t* drawn_sword_glyph;
     // Fury Only
     gain_t* bloodthirst;
+    gain_t* colossus_smash;
     gain_t* melee_off_hand;
     // Arms Only
     gain_t* melee_crit;
@@ -3895,14 +3896,14 @@ void warrior_t::apl_arms()
 
   single_target -> add_action( this, "Rend", "if=dot.rend.remains<3&target.health.pct>20" );
   single_target -> add_action( this, "Mortal Strike", "if=target.health.pct>20" );
-  single_target -> add_action( "heroic_charge,if=rage<50" );
+  single_target -> add_action( "heroic_charge,if=rage<45" );
   single_target -> add_talent( this, "Ravager", "if=cooldown.colossus_smash.remains<3" );
   single_target -> add_action( this, "Colossus Smash" );
   single_target -> add_talent( this, "Storm Bolt", "if=cooldown.colossus_smash.remains>4|debuff.colossus_smash.up" );
   single_target -> add_talent( this, "Dragon Roar" );
-  single_target -> add_action( this, "Execute", "if=rage>70|(rage>40&debuff.colossus_smash.up)|buff.sudden_death.up&rage>30" );
-  single_target -> add_talent( this, "Slam", "if=(debuff.colossus_smash.up|rage>80)&target.health.pct>20" );
-  single_target -> add_action( this, "Whirlwind", "if=(rage>70|debuff.colossus_smash.up)&target.health.pct>20&buff.sudden_death.down&!talent.slam.enabled" );
+  single_target -> add_action( this, "Execute", "if=rage>60|(rage>40&debuff.colossus_smash.up)|buff.sudden_death.up&rage>30" );
+  single_target -> add_talent( this, "Slam", "if=(debuff.colossus_smash.up|rage>60)&target.health.pct>20" );
+  single_target -> add_action( this, "Whirlwind", "if=(rage>60|debuff.colossus_smash.up)&target.health.pct>20&buff.sudden_death.down&!talent.slam.enabled" );
 
   aoe -> add_action( this, "Sweeping Strikes" );
   aoe -> add_talent( this, "Ravager" );
