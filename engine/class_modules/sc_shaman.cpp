@@ -3221,8 +3221,8 @@ struct earthquake_t : public shaman_spell_t
     update_flags &= ~STATE_HASTE;
   }
 
-  timespan_t composite_dot_duration( const action_state_t* state ) const
-  { return dot_duration * state -> haste; }
+  //timespan_t composite_dot_duration( const action_state_t* state ) const
+  //{ return dot_duration * state -> haste; }
 
   void consume_resource()
   {
