@@ -4635,6 +4635,8 @@ warlock_t::warlock_t( sim_t* sim, const std::string& name, race_e r ) :
   cooldowns.doomguard      = get_cooldown ( "summon_doomguard" );
   cooldowns.imp_swarm      = get_cooldown ( "imp_swarm" );
   cooldowns.hand_of_guldan = get_cooldown ( "hand_of_guldan" );
+
+  regen_type = REGEN_DYNAMIC;
 }
 
 warlock_t::~warlock_t()
