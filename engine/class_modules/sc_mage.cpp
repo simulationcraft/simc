@@ -30,6 +30,8 @@
 // All "nova" talents have the 100% damage mod applied to the primary and AoE effects - it should only be on the primary target.
 // Frostbomb should be working correctly....(maybe not it's AoE portion? But it should be.....)
 // Enhanced Frostbolt keeps trying to trigger for non-Frost specs (causes debug log to look ugly, prolly slows down the sim)
+// Arcane Orb needs to be treated as a flying object that can hit multiple targets in a line, instead of as something which is basically just an explosion around a single target.
+// Need to do some basic d=vt calcs to have a more realistic travel time for AO.
 
 
 // To-do Completed:
@@ -1649,7 +1651,6 @@ struct arcane_missiles_t : public mage_spell_t
 };
 
 // Arcane Orb Spell =========================================================
-
 struct arcane_orb_bolt_t : public mage_spell_t
 {
   arcane_orb_bolt_t( mage_t* p ) :
@@ -1660,6 +1661,30 @@ struct arcane_orb_bolt_t : public mage_spell_t
     dual = true;
     cooldown -> duration = timespan_t::zero(); // dbc has CD of 15 seconds
   }
+};
+
+struct arcane_orb_t : public mage_spell_t
+{
+  arcane_orb_bolt_t* orb_bolt;
+
+  arcane_orb_t( mage_t* p, const std::string& options_str ) :
+    mage_spell_t( "arcane_orb", p, p -> find_spell( 153626 ) ),
+    orb_bolt( new arcane_orb_bolt_t( p ) )
+  {
+    parse_options( NULL, options_str );
+
+    may_miss       = false;
+    may_crit       = false;
+    add_child( orb_bolt );
+  }
+
+
+  virtual timespan_t travel_time() const
+  {
+    timespan_t t = mage_spell_t::travel_time();
+    t  = p() -> talents.arcane_orb -> duration();
+    return t;
+  }
 
   virtual void impact( action_state_t* s )
   {
@@ -1667,28 +1692,10 @@ struct arcane_orb_bolt_t : public mage_spell_t
     {
       p() -> benefits.arcane_charge[ i ] -> update( as<int>( i ) == p() -> buffs.arcane_charge -> check() );
     }
-
     mage_spell_t::impact( s );
 
     p() -> buffs.arcane_charge -> trigger();
-  }
-};
-
-struct arcane_orb_t : public mage_spell_t
-{
-  arcane_orb_t( mage_t* p, const std::string& options_str ) :
-    mage_spell_t( "arcane_orb", p, p -> find_spell( 153626 ) )
-  {
-    parse_options( NULL, options_str );
-
-    hasted_ticks = false;
-    base_tick_time = timespan_t::from_seconds( 1.0 );
-    dot_duration      = data().duration();
-    may_miss       = false;
-    may_crit       = false;
-
-    dynamic_tick_action = true;
-    tick_action = new arcane_orb_bolt_t( p );
+    orb_bolt -> execute();
   }
 };
 
