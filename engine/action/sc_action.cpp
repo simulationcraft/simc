@@ -1700,7 +1700,7 @@ void action_t::init()
   }
 
 
-  if ( ! ( background || sequence ) && ( pre_combat || action_list -> name_str == "precombat" ) )
+  if ( ! ( background || sequence ) && ( pre_combat || ( action_list && action_list -> name_str == "precombat" ) ) )
   {
     if ( harmful )
     {
