@@ -430,7 +430,6 @@ public:
   virtual double    composite_melee_crit() const;
   virtual double    composite_spell_crit() const;
   virtual void      reset();
-  virtual void      regen( timespan_t periodicity );
   virtual void      create_options();
   virtual action_t* create_proc_action( const std::string& name );
   virtual bool      create_profile( std::string& profile_str, save_e type, bool save_html );
@@ -1848,8 +1847,7 @@ struct tier16_2pc_tank_heal_t: public warrior_heal_t
 {
   tier16_2pc_tank_heal_t( warrior_t* p ):
     warrior_heal_t( "tier16_2pc_tank_heal", p )
-  {
-  }
+  {}
   resource_e current_resource() const { return RESOURCE_NONE; }
 };
 
@@ -2387,7 +2385,7 @@ struct slam_t: public warrior_attack_t
     parse_options( NULL, options_str );
     stancemask = STANCE_BATTLE | STANCE_DEFENSE;
     weapon = &( p -> main_hand_weapon );
-    base_costs[ RESOURCE_RAGE ] = 10;
+    base_costs[RESOURCE_RAGE] = 10;
   }
 
   double cost() const
@@ -4063,13 +4061,11 @@ public:
 
   warrior_buff_t( warrior_td_t& p, const buff_creator_basics_t& params ):
     Base( params ), warrior( p.warrior )
-  {
-  }
+  {}
 
   warrior_buff_t( warrior_t& p, const buff_creator_basics_t& params ):
     Base( params ), warrior( p )
-  {
-  }
+  {}
 
   warrior_td_t& get_td( player_t* t ) const
   {
@@ -4087,8 +4083,7 @@ struct bloodsurge_t: public warrior_buff_t < buff_t >
   bloodsurge_t( warrior_t& p, const std::string&n, const spell_data_t*s ):
     base_t( p, buff_creator_t( &p, n, s )
     .chance( p.spec.bloodsurge -> effectN( 1 ).percent() ) ), wasted( 0 )
-  {
-  }
+  {}
 
   void execute( int a, double b, timespan_t t )
   {
@@ -4139,8 +4134,7 @@ struct defensive_stance_t: public warrior_buff_t < buff_t >
     .add_invalidate( CACHE_BONUS_ARMOR )
     .duration( timespan_t::from_seconds( 3 ) )
     .period( timespan_t::from_seconds( 3 ) ) )
-  {
-  }
+  {}
 
   void execute( int a, double b, timespan_t t )
   {
@@ -4154,8 +4148,7 @@ struct battle_stance_t: public warrior_buff_t < buff_t >
   battle_stance_t( warrior_t& p, const std::string&n, const spell_data_t*s ):
     base_t( p, buff_creator_t( &p, n, s )
     .activated( true ) )
-  {
-  }
+  {}
 
   void execute( int a, double b, timespan_t t )
   {
@@ -4170,8 +4163,7 @@ struct gladiator_stance_t: public warrior_buff_t < buff_t >
     base_t( p, buff_creator_t( &p, n, s )
     .activated( true )
     .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER ) )
-  {
-  }
+  {}
 
   void execute( int a, double b, timespan_t t )
   {
@@ -4186,8 +4178,7 @@ struct rallying_cry_t: public warrior_buff_t < buff_t >
   int health_gain;
   rallying_cry_t( warrior_t& p, const std::string&n, const spell_data_t*s ):
     base_t( p, buff_creator_t( &p, n, s ) ), health_gain( 0 )
-  {
-  }
+  {}
 
   bool trigger( int stacks, double value, double chance, timespan_t duration )
   {
@@ -4208,8 +4199,7 @@ struct last_stand_t: public warrior_buff_t < buff_t >
   int health_gain;
   last_stand_t( warrior_t& p, const std::string&n, const spell_data_t*s ):
     base_t( p, buff_creator_t( &p, n, s ) ), health_gain( 0 )
-  {
-  }
+  {}
 
   bool trigger( int stacks, double value, double chance, timespan_t duration )
   {
@@ -4873,13 +4863,6 @@ void warrior_t::invalidate_cache( cache_e c )
     player_t::invalidate_cache( CACHE_PLAYER_DAMAGE_MULTIPLIER );
 }
 
-// warrior_t::regen =========================================================
-
-void warrior_t::regen( timespan_t periodicity )
-{
-  player_t::regen( periodicity );
-}
-
 // warrior_t::primary_role() ================================================
 
 role_e warrior_t::primary_role() const
@@ -5227,8 +5210,7 @@ class warrior_report_t: public player_report_extension_t
 public:
   warrior_report_t( warrior_t& player ):
     p( player )
-  {
-  }
+  {}
 
   virtual void html_customsection( report::sc_html_stream& os ) override
   {
