@@ -700,7 +700,7 @@ public:
       hprio_cd_min_remains_expr_t( action_t* a ) :
         expr_t( "min_remains" ), action_( a )
       {
-        action_priority_list_t* list = a -> player -> get_action_priority_list( a -> action_list );
+        action_priority_list_t* list = a -> player -> get_action_priority_list( a -> action_list -> name_str );
         for ( size_t i = 0, end = list -> foreground_action_list.size(); i < end; i++ )
         {
           action_t* list_action = list -> foreground_action_list[ i ];

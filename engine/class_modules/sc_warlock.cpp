@@ -1050,7 +1050,7 @@ void warlock_pet_t::init_action_list()
     if ( type == PLAYER_PET )
       special_action -> background = true;
     else
-      special_action -> action_list = "default";
+      special_action -> action_list -> name_str = "default";
   }
 
   pet_t::init_action_list();

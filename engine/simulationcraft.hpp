@@ -5606,7 +5606,8 @@ struct action_t : public noncopyable
   std::string label_str;
   timespan_t last_reaction_time;
   target_specific_t<dot_t*> target_specific_dot;
-  std::string action_list;
+  action_priority_list_t* action_list;
+  //std::string action_list;
   action_t* tick_action;
   action_t* execute_action;
   action_t* impact_action;

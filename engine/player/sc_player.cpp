@@ -1978,7 +1978,8 @@ bool player_t::init_actions()
         }
         else
         {
-          a -> action_list = action_priority_list[ alist ] -> name_str;
+          //a -> action_list = action_priority_list[ alist ] -> name_str;
+          a -> action_list = action_priority_list[ alist ];
 
           a -> marker = ( char ) ( ( j < 10 ) ? ( '0' + j      ) :
                                    ( j < 36 ) ? ( 'A' + j - 10 ) :
@@ -2012,7 +2013,7 @@ bool player_t::init_actions()
     action -> init();
     if ( action -> trigger_gcd == timespan_t::zero() && ! action -> background && action -> use_off_gcd )
     {
-      find_action_priority_list( action -> action_list ) -> off_gcd_actions.push_back( action );
+      action -> action_list -> off_gcd_actions.push_back( action );
       // Optimization: We don't need to do off gcd stuff when there are no other off gcd actions than these two
       if ( action -> name_str != "run_action_list" && action -> name_str != "swap_action_list" )
         have_off_gcd_actions = true;
@@ -7907,10 +7908,10 @@ bool player_t::create_profile( std::string& profile_str, save_e stype, bool save
       {
         action_t* a = action_list[ i ];
         if ( a -> signature_str.empty() ) continue;
-        if ( a -> action_list != alist_str )
+        if ( a -> action_list -> name_str != alist_str )
         {
           j = 0;
-          alist_str = a -> action_list;
+          alist_str = a -> action_list -> name_str;
           const action_priority_list_t* alist = get_action_priority_list( alist_str );
           if ( ! alist -> action_list_comment_str.empty() )
             profile_str += term + "# " + alist -> action_list_comment_str + term;
@@ -7923,8 +7924,8 @@ bool player_t::create_profile( std::string& profile_str, save_e stype, bool save
         if ( ! encoded_comment.empty() )
           profile_str += "# " + ( save_html ? util::encode_html( encoded_comment ) : encoded_comment ) + term;
         profile_str += "actions";
-        if ( ! a -> action_list.empty() && a -> action_list != "default" )
-          profile_str += "." + a -> action_list;
+        if ( a -> action_list && a -> action_list -> name_str != "default" )
+          profile_str += "." + a -> action_list -> name_str;
         profile_str += j ? "+=/" : "=";
         if ( save_html )
         {
