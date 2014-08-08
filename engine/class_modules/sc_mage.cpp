@@ -368,7 +368,9 @@ public:
 
     // Options
     base.distance = 40;
-
+    regen_type = REGEN_DYNAMIC;
+    regen_caches[ CACHE_HASTE ] = true;
+    regen_caches[ CACHE_SPELL_HASTE ] = true;
   }
 
   // Character Definition
@@ -1211,6 +1213,11 @@ public:
         pre_execute_state = 0;
       }
     }
+
+    // Regenerate just before executing the spell, so Arcane mages have a 100%
+    // correct mana level to snapshot their multiplier with
+    if ( p() -> regen_type == REGEN_DYNAMIC )
+      p() -> do_dynamic_regen();
 
     spell_t::execute();
 
@@ -4997,6 +5004,9 @@ action_t* mage_t::execute_action()
 
   action_t* action = 0;
   player_t* action_target = 0;
+
+  if ( regen_type == REGEN_DYNAMIC )
+    do_dynamic_regen();
 
   if ( ! strict_sequence )
   {

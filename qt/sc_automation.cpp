@@ -25,6 +25,7 @@ QString automation::tokenize( QString qstr )
 }
 
 QString automation::do_something( int sim_type,
+                                  Qt::CheckState input_mode,
                                   QString player_class,
                                   QString player_spec,
                                   QString player_race,
@@ -34,7 +35,7 @@ QString automation::do_something( int sim_type,
                                   QString player_gear,
                                   QString player_rotation,
                                   QString advanced_text
-                                ) 
+                                  )
 {
   // Dummy code - this just sets up a profile using the strings we pass. 
   // This is where we'll actually split off into different automation schemes.
@@ -47,17 +48,26 @@ QString automation::do_something( int sim_type,
   base_profile_info += "race=" + tokenize( player_race ) + "\n";
   base_profile_info += "level=" + player_level + "\n";
 
+  // check for advanced input mode
+  if ( input_mode == 2 )
+  {
+    // do advanced stuff here
+    profile = "ADVANCED MODE INCOMING !!";
+    return profile;
+  }
+
+  // simple mode
   // simulation type check
   switch ( sim_type )
   {
     case 1: // talent simulation
-      return auto_talent_sim( player_class, base_profile_info, advanced_text , player_glyphs, player_gear, player_rotation);
+      return auto_talent_sim( player_class, base_profile_info, advanced_text, player_glyphs, player_gear, player_rotation );
     case 2: // glyph simulation
-      return auto_glyph_sim( player_class, base_profile_info, player_talents, advanced_text , player_gear, player_rotation);
-    case 3: // rotation simulation
-      return auto_rotation_sim( player_class, base_profile_info, player_talents, player_glyphs, advanced_text , player_rotation);
-    case 4: // gear simulation
-      return auto_gear_sim( player_class, base_profile_info, player_talents, player_glyphs, player_gear, advanced_text );
+      return auto_glyph_sim( player_class, base_profile_info, player_talents, advanced_text, player_gear, player_rotation );
+    case 3: // gear simulation
+      return auto_gear_sim( player_class, base_profile_info, player_talents, player_glyphs, advanced_text, player_rotation );
+    case 4: // rotation simulation
+      return auto_rotation_sim( player_class, base_profile_info, player_talents, player_glyphs, player_rotation, advanced_text );
     default: // default profile creation
       profile += base_profile_info;
       profile += "talents=" + player_talents + "\n";
@@ -65,6 +75,7 @@ QString automation::do_something( int sim_type,
       profile += player_gear + "\n";
       profile += player_rotation;
       return profile;
+
   }
 
   return profile;
@@ -73,16 +84,17 @@ QString automation::do_something( int sim_type,
   // Method for profile creation for the specific TALENT simulation
 QString automation::auto_talent_sim( QString player_class,
                                      QString base_profile_info, 
-                                     QString advanced_talents,
+                                     QString advanced_text,
                                      QString player_glyphs,
                                      QString player_gear,
                                      QString player_rotation
                                    )
 {
-  QStringList talentList = advanced_talents.split( "\n", QString::SkipEmptyParts );
+  QStringList talentList = advanced_text.split( "\n", QString::SkipEmptyParts );
 
   QString profile;
 
+  // make profile
   for ( int i = 0; i < talentList.size(); i++ )
   {
     profile += tokenize( player_class ) + "=T_" + talentList[ i ] + "\n";
@@ -106,11 +118,12 @@ QString automation::auto_glyph_sim( QString player_class,
                                     QString player_rotation
                                   )
 {
-  QStringList glyphList = advanced_text.split( "\n", QString::SkipEmptyParts );
+  QStringList glyphList = advanced_text.split("\n", QString::SkipEmptyParts);
 
   QString profile;
 
-  for ( int i = 0; i < glyphList.size(); i++ )
+   // make profile
+   for ( int i = 0; i < glyphList.size(); i++ )
   {
     profile += tokenize( player_class ) + "=G_" + QString::number( i ) + "\n";
     profile += base_profile_info;
@@ -124,17 +137,36 @@ QString automation::auto_glyph_sim( QString player_class,
   return profile;
 }
 
-  // Method for profile creation for the specific GEAR simulation
+// Method for profile creation for the specific GEAR simulation
 QString automation::auto_gear_sim( QString player_class,
                                    QString base_profile_info,
                                    QString player_talents,
                                    QString player_glyphs,
                                    QString advanced_text,
                                    QString player_rotation
-                                 )
+                                   )
 {
-  QString profile = "NYI";
+  // split into gearSets
+  QStringList gearList = advanced_text.split( "\n\n", QString::SkipEmptyParts );
 
+  QString profile;
+
+  // make profile
+  for ( int i = 0; i < gearList.size(); i++ )
+  {
+    profile += tokenize( player_class ) + "=G_" + QString::number( i ) + "\n";
+    profile += base_profile_info;
+    profile += "talents=" + player_talents + "\n";
+    profile += "glyphs=" + player_glyphs + "\n";
+    // split gearSets into single item lines
+    QStringList gearSet = gearList[ i ].split( "\n", QString::SkipEmptyParts );
+    for ( int j = 0; j < gearSet.size(); j++ )
+    {
+      profile += gearSet[ j ] + "\n";
+    }
+    profile += player_rotation + "\n";
+    profile += "\n";
+  }
   return profile;
 }
 
@@ -151,6 +183,7 @@ QString automation::auto_rotation_sim( QString player_class,
 
   return profile;
 }
+
 
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -172,6 +205,11 @@ QComboBox* createChoice( int count, ... )
   return choice;
 }
 
+QCheckBox* createInputMode()
+{
+  QCheckBox* mode = new QCheckBox();
+  return mode;
+}
 
 // Method to set the "Spec" drop-down based on "Class" selection
 void SC_ImportTab::setSpecDropDown( const int player_class )
@@ -336,6 +374,7 @@ void SC_MainWindow::startAutomationImport( int tab )
   QString profile;
 
   profile = automation::do_something( importTab -> choice.comp_type -> currentIndex(),
+                                      importTab -> choice.input_mode -> checkState(),
                                       importTab -> choice.player_class -> currentText(),
                                       importTab -> choice.player_spec -> currentText(),
                                       importTab -> choice.player_race -> currentText(),
@@ -355,8 +394,7 @@ void SC_MainWindow::startAutomationImport( int tab )
 void SC_ImportTab::createTooltips()
 {
   choice.comp_type -> setToolTip( "Choose the comparison type." );
-  
-
+  choice.input_mode -> setToolTip( "Select to use advanced input mode.\nAdvanced input mode allows for more complex\ninput for multi-automated simulations." );
 }
 
 void SC_ImportTab::createAutomationTab()
@@ -384,6 +422,10 @@ void SC_ImportTab::createAutomationTab()
   // Create Combo Box and add it to the layout
   choice.comp_type = createChoice( 5 , "None", "Talents", "Glyphs", "Gear", "Rotation" );
   compLayout -> addRow( tr( "Comparison Type" ), choice.comp_type );
+
+  // Ceate a Checkbox for input mode
+  choice.input_mode = createInputMode();
+  compLayout->addRow( tr( "Advanced Input" ), choice.input_mode );
 
   // Apply the layout to the compGroupBox
   compGroupBox -> setLayout( compLayout );

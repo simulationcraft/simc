@@ -700,7 +700,7 @@ public:
       hprio_cd_min_remains_expr_t( action_t* a ) :
         expr_t( "min_remains" ), action_( a )
       {
-        action_priority_list_t* list = a -> player -> get_action_priority_list( a -> action_list );
+        action_priority_list_t* list = a -> player -> get_action_priority_list( a -> action_list -> name_str );
         for ( size_t i = 0, end = list -> foreground_action_list.size(); i < end; i++ )
         {
           action_t* list_action = list -> foreground_action_list[ i ];
@@ -1140,7 +1140,7 @@ struct feral_spirit_pet_t : public pet_t
     main_hand_weapon.damage     = ( main_hand_weapon.min_dmg + main_hand_weapon.max_dmg ) / 2;
     main_hand_weapon.swing_time = timespan_t::from_seconds( 1.5 );
 
-    owner_coeff.ap_from_ap = 0.33;
+    owner_coeff.ap_from_ap = 0.66;
 
     command = owner -> find_spell( 65222 );
     regen_type = REGEN_DISABLED;
@@ -3041,6 +3041,16 @@ struct elemental_blast_t : public shaman_spell_t
     shaman_spell_t::execute();
   }
 
+  double action_multiplier() const
+  {
+    double m = shaman_spell_t::action_multiplier();
+
+    if ( p() -> specialization() == SHAMAN_ENHANCEMENT && p() -> bugs )
+      m *= 0.5;
+
+    return m;
+  }
+
   result_e calculate_result( action_state_t* s )
   {
     if ( ! s -> target )
@@ -3219,6 +3229,15 @@ struct earthquake_t : public shaman_spell_t
     shaman_spell_t::consume_resource();
 
     p() -> buff.improved_chain_lightning -> expire();
+  }
+
+  double action_multiplier() const
+  {
+    double m = shaman_spell_t::action_multiplier();
+
+    m *= 1.0 + p() -> cache.mastery() * p() -> mastery.molten_earth -> effectN( 3 ).percent() / 100.0;
+
+    return m;
   }
 
   double composite_persistent_multiplier( const action_state_t* state) const
@@ -5190,6 +5209,7 @@ void shaman_t::init_action_list()
     def -> add_action( this, "Ascendance", "if=cooldown.strike.remains>=3" );
     def -> add_action( this, "Feral Spirit" );
     def -> add_talent( this, "Storm Elemental Totem", "if=!active&cooldown.fire_elemental_totem.remains>=60" );
+    def -> add_talent( this, "Liquid Magma", "if=pet.searing_totem.remains>=15|pet.magma_totem.remains>=15|pet.fire_elemental_totem.remains>=15" );
 
     // Need to remove the "/" in front of the profession action(s) for the new default action priority list stuff :/
     def -> add_action( init_use_profession_actions( ",if=(glyph.fire_elemental_totem.enabled&(pet.primal_fire_elemental.active|pet.greater_fire_elemental.active))|!glyph.fire_elemental_totem.enabled" ).erase( 0, 1 ) );
@@ -5262,6 +5282,8 @@ void shaman_t::init_action_list()
     ascendance_opts += ")&cooldown.lava_burst.remains>0)";
 
     def -> add_action( this, "Ascendance", ascendance_opts );
+
+    def -> add_talent( this, "Liquid Magma", "if=pet.searing_totem.remains>=15|pet.fire_elemental_totem.remains>=15" );
 
     // Need to remove the "/" in front of the profession action(s) for the new default action priority list stuff :/
     def -> add_action( init_use_profession_actions().erase( 0, 1 ) );

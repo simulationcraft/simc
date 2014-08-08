@@ -317,8 +317,8 @@ public:
     base_gcd = timespan_t::from_seconds( 1.0 );
 
     regen_type = REGEN_DYNAMIC;
-    regen_caches.push_back( CACHE_HASTE );
-    regen_caches.push_back( CACHE_ATTACK_HASTE );
+    regen_caches[ CACHE_HASTE ] = true;
+    regen_caches[ CACHE_ATTACK_HASTE ] = true;
   }
 
   // Character Definition
@@ -3988,7 +3988,7 @@ stat_e hunter_t::convert_hybrid_stat( stat_e s ) const
 */
 void hunter_t::moving()
 {
-  if ( executing && ! executing -> usable_moving() || channeling && ! channeling -> usable_moving() )
+  if ( ( executing && ! executing -> usable_moving() ) || ( channeling && ! channeling -> usable_moving() ) )
     player_t::interrupt();
 }
 

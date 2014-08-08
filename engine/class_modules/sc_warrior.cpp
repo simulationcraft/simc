@@ -52,6 +52,7 @@ public:
   action_t* active_bloodbath_dot;
   action_t* active_blood_craze;
   action_t* active_deep_wounds;
+  action_t* active_enhanced_rend;
   action_t* active_rallying_cry_heal;
   action_t* active_second_wind;
   attack_t* active_sweeping_strikes;
@@ -328,31 +329,19 @@ public:
   struct
   {
     //All Specs
-    const spell_data_t* enhanced_hamstring;
-    const spell_data_t* improved_charge;
     const spell_data_t* improved_heroic_leap;
-    const spell_data_t* improved_thunder_clap;
     //Arms and Fury
-    const spell_data_t* empowered_execute;
     const spell_data_t* improved_die_by_the_sword;
-    const spell_data_t* improved_whirlwind;
     //Arms only
-    const spell_data_t* improved_mortal_strike;
-    const spell_data_t* improved_rend;
+    const spell_data_t* enhanced_rend;
     const spell_data_t* enhanced_sweeping_strikes;
     //Fury only
     const spell_data_t* enhanced_whirlwind;
-    const spell_data_t* improved_bloodthirst;
     const spell_data_t* improved_colossus_smash;
-    const spell_data_t* improved_raging_blow;
-    const spell_data_t* improved_wild_strike;
     //Protection only
     const spell_data_t* improved_block;
     const spell_data_t* improved_defensive_stance;
     const spell_data_t* improved_heroic_throw;
-    const spell_data_t* improved_revenge;
-    const spell_data_t* improved_shield_barrier;
-    const spell_data_t* improved_shield_slam;
   } perk;
 
   warrior_t( sim_t* sim, const std::string& name, race_e r = RACE_NIGHT_ELF ):
@@ -374,6 +363,7 @@ public:
     active_rallying_cry_heal  = 0;
     active_second_wind        = 0;
     active_sweeping_strikes   = 0;
+    active_enhanced_rend      = 0;
     active_t16_2pc            = 0;
     active_stance             = STANCE_BATTLE;
 
@@ -440,7 +430,6 @@ public:
   virtual double    composite_melee_crit() const;
   virtual double    composite_spell_crit() const;
   virtual void      reset();
-  virtual void      regen( timespan_t periodicity );
   virtual void      create_options();
   virtual action_t* create_proc_action( const std::string& name );
   virtual bool      create_profile( std::string& profile_str, save_e type, bool save_html );
@@ -1060,7 +1049,7 @@ struct melee_t: public warrior_attack_t
   {
     warrior_attack_t::impact( s );
 
-    if ( result_is_hit( s -> result ) )
+    if ( result_is_hit( s -> result ) || result_is_block( s -> block_result ) )
     {
       trigger_t15_2pc_melee( this );
       if ( p() -> talents.sudden_death -> ok() )
@@ -1075,10 +1064,13 @@ struct melee_t: public warrior_attack_t
             p() -> proc.sudden_death_wasted -> occur();
         }
       }
-    }
-    // Any attack that hits generates rage, even a block.
-    if ( result_is_hit( s -> result ) || result_is_block( s -> block_result ) )
       trigger_rage_gain( s );
+      if ( p() -> perk.enhanced_rend -> ok() )
+      {
+        p() -> active_enhanced_rend -> target = s -> target;
+        p() -> active_enhanced_rend -> execute();
+      }
+    }
 
     if ( p() -> specialization() == WARRIOR_PROTECTION )
     {
@@ -1233,7 +1225,6 @@ struct bloodthirst_heal_t: public warrior_heal_t
     base_pct_heal( 0 )
   {
     pct_heal   = data().effectN( 1 ).percent();
-    pct_heal  *= 1.0 + p -> perk.improved_bloodthirst -> effectN( 1 ).percent();
     pct_heal  *= 1.0 + p -> glyphs.bloodthirst -> effectN( 2 ).percent();
     base_pct_heal = pct_heal;
     background = true;
@@ -1272,8 +1263,6 @@ struct bloodthirst_t: public warrior_attack_t
 
     weapon           = &( p -> main_hand_weapon );
     bloodthirst_heal = new bloodthirst_heal_t( p );
-
-    weapon_multiplier *= 1.0 + p -> perk.improved_bloodthirst -> effectN( 1 ).percent();
     weapon_multiplier += p -> sets.set( SET_T14_2PC_MELEE ) -> effectN( 2 ).percent();
   }
 
@@ -1341,7 +1330,6 @@ struct charge_t: public warrior_attack_t
     parse_options( NULL, options_str );
     stancemask = STANCE_BATTLE | STANCE_GLADIATOR | STANCE_DEFENSE;
     base_teleport_distance = data().max_range();
-    base_teleport_distance += p -> perk.improved_charge -> effectN( 1 ).base_value();
     base_teleport_distance += p -> glyphs.long_charge -> effectN( 1 ).base_value();
     movement_directionality = MOVEMENT_OMNI;
 
@@ -1549,7 +1537,6 @@ struct execute_off_hand_t: public warrior_attack_t
     may_miss = may_dodge = may_parry = may_block = false;
 
     weapon = &( p -> off_hand_weapon );
-    weapon_multiplier *= 1.0 + p -> perk.empowered_execute -> effectN( 1 ).percent();
     if ( p -> main_hand_weapon.group() == WEAPON_1H &&
          p -> off_hand_weapon.group() == WEAPON_1H )
          weapon_multiplier *= 1.0 + p -> spec.singleminded_fury -> effectN( 3 ).percent();
@@ -1564,10 +1551,7 @@ struct execute_t: public warrior_attack_t
   {
     parse_options( NULL, options_str );
     stancemask = STANCE_BATTLE | STANCE_GLADIATOR | STANCE_DEFENSE;
-
     weapon = &( p -> main_hand_weapon );
-
-    weapon_multiplier *= 1.0 + p -> perk.empowered_execute -> effectN( 1 ).percent();
 
     if ( p -> main_hand_weapon.group() == WEAPON_1H &&
          p -> off_hand_weapon.group() == WEAPON_1H )
@@ -1586,9 +1570,9 @@ struct execute_t: public warrior_attack_t
 
     if ( p() -> mastery.weapons_master -> ok() )
     {
-      am *= 6.0 * std::min( 40.0,
-                            ( p() -> buff.sudden_death -> up() ? p() -> resources.current[RESOURCE_RAGE] + 10 :
-                            p() -> resources.current[RESOURCE_RAGE] ) ) / 40;
+      if ( !p() -> buff.sudden_death -> check() )
+        am *= 6.0 * std::min( 40.0, p() -> resources.current[RESOURCE_RAGE] ) / 40;
+
       am *= 1.0 + p() -> cache.mastery_value();
     }
     return am;
@@ -1602,12 +1586,8 @@ struct execute_t: public warrior_attack_t
       c = std::min( 40.0, std::max( p() -> resources.current[RESOURCE_RAGE], c ) );
 
     if ( p() -> buff.sudden_death -> up() )
-    {
-      if ( p() -> specialization() != WARRIOR_ARMS )
-        c = 0;
-      else
-        c -= 10;
-    }
+      c = 0;
+
     return c;
   }
 
@@ -1627,8 +1607,8 @@ struct execute_t: public warrior_attack_t
     if ( p() -> main_hand_weapon.type == WEAPON_NONE )
       return false;
 
-    if ( p() -> buff.sudden_death -> up() )
-      return warrior_attack_t::ready();;
+    if ( p() -> buff.sudden_death -> check() )
+      return warrior_attack_t::ready();
 
     if ( target -> health_percentage() > 20 )
       return false;
@@ -1648,9 +1628,6 @@ struct hamstring_t: public warrior_attack_t
   {
     parse_options( NULL, options_str );
     stancemask = STANCE_BATTLE | STANCE_GLADIATOR | STANCE_DEFENSE;
-
-    base_costs[RESOURCE_RAGE] += p -> perk.enhanced_hamstring -> effectN( 1 ).resource( RESOURCE_RAGE );
-
     weapon = &( p -> main_hand_weapon );
   }
 
@@ -1870,8 +1847,7 @@ struct tier16_2pc_tank_heal_t: public warrior_heal_t
 {
   tier16_2pc_tank_heal_t( warrior_t* p ):
     warrior_heal_t( "tier16_2pc_tank_heal", p )
-  {
-  }
+  {}
   resource_e current_resource() const { return RESOURCE_NONE; }
 };
 
@@ -2011,7 +1987,6 @@ struct mortal_strike_t: public warrior_attack_t
 
     weapon = &( p -> main_hand_weapon );
     weapon_multiplier += p -> sets.set( SET_T14_2PC_MELEE ) -> effectN( 1 ).percent();
-    weapon_multiplier *= 1.0 + p -> perk.improved_mortal_strike -> effectN( 1 ).percent();
   }
 
   double action_multiplier() const
@@ -2073,7 +2048,6 @@ struct raging_blow_attack_t: public warrior_attack_t
   {
     may_miss = may_dodge = may_parry = may_block = false;
     dual = true;
-    weapon_multiplier *= 1.0 + p -> perk.improved_raging_blow -> effectN( 1 ).percent();
   }
 
   void execute()
@@ -2210,7 +2184,6 @@ struct revenge_t: public warrior_attack_t
 
     aoe = 3;
     rage_gain = data().effectN( 2 ).resource( RESOURCE_RAGE );
-    attack_power_mod.direct *= 1.0 + p -> perk.improved_revenge -> effectN( 1 ).percent();
   }
 
   double action_multiplier() const
@@ -2329,9 +2302,7 @@ struct shield_slam_t: public warrior_attack_t
     cooldown = p -> cooldown.shield_slam;
 
     rage_gain = data().effectN( 3 ).resource( RESOURCE_RAGE );
-    attack_power_mod.direct = 3.08; //Hard-coded in tooltip.
-
-    attack_power_mod.direct *= 1.0 + p -> perk.improved_shield_slam -> effectN( 1 ).percent();
+    attack_power_mod.direct = 3.696; //Hard-coded in tooltip.
   }
 
   double action_multiplier() const
@@ -2414,6 +2385,7 @@ struct slam_t: public warrior_attack_t
     parse_options( NULL, options_str );
     stancemask = STANCE_BATTLE | STANCE_DEFENSE;
     weapon = &( p -> main_hand_weapon );
+    base_costs[RESOURCE_RAGE] = 10;
   }
 
   double cost() const
@@ -2561,7 +2533,6 @@ struct thunder_clap_t: public warrior_attack_t
     cooldown -> duration = data().cooldown();
     cooldown -> duration *= 1 + p -> glyphs.resonating_power -> effectN( 2 ).percent();
     attack_power_mod.direct *= 1.0 + p -> glyphs.resonating_power -> effectN( 1 ).percent();
-    attack_power_mod.direct *= 1.0 + p -> perk.improved_thunder_clap -> effectN( 1 ).percent();
   }
 
   void impact( action_state_t* s )
@@ -2641,7 +2612,6 @@ struct whirlwind_off_hand_t: public warrior_attack_t
     dual = true;
     aoe = -1;
     weapon = &( p -> off_hand_weapon );
-    weapon_multiplier *= 1.0 + p -> perk.improved_whirlwind -> effectN( 1 ).percent();
   }
 
   double action_multiplier() const
@@ -2674,7 +2644,6 @@ struct whirlwind_t: public warrior_attack_t
     else
       weapon_multiplier *= 2;
 
-    weapon_multiplier *= 1.0 + p -> perk.improved_whirlwind -> effectN( 1 ).percent();
     weapon = &( p -> main_hand_weapon );
   }
 
@@ -2726,7 +2695,6 @@ struct wild_strike_t: public warrior_attack_t
     if ( p -> talents.furious_strikes -> ok() )
       base_costs[RESOURCE_RAGE] = 20;
     weapon  = &( player -> off_hand_weapon );
-    weapon_multiplier *= 1.0 + p -> perk.improved_wild_strike -> effectN( 1 ).percent();
     min_gcd = data().gcd();
   }
 
@@ -2931,6 +2899,17 @@ struct die_by_the_sword_t: public warrior_spell_t
   }
 };
 
+// Enhanced Rend ==============================================================
+
+struct enhanced_rend_t: public warrior_spell_t
+{
+  enhanced_rend_t( warrior_t* p ):
+    warrior_spell_t( "enhanced_rend", p, p -> find_spell( 174736 ) )
+  {
+    dual = true;
+  }
+};
+
 // Last Stand ===============================================================
 
 struct last_stand_t: public warrior_spell_t
@@ -3035,7 +3014,6 @@ struct rend_burst_t: public warrior_spell_t
   {
     dual = true;
     may_multistrike = 1;
-    attack_power_mod.direct *= 1.0 + p -> perk.improved_rend -> effectN( 1 ).percent();
   }
 
   double target_armor( player_t* ) const
@@ -3057,7 +3035,6 @@ struct rend_t: public warrior_spell_t
     tick_may_crit = true;
     may_multistrike = 1;
     add_child( burst );
-    attack_power_mod.tick *= 1.0 + p -> perk.improved_rend -> effectN( 1 ).percent();
   }
 
   void impact( action_state_t* s )
@@ -3107,8 +3084,7 @@ struct shield_barrier_t: public warrior_action_t < absorb_t >
     use_off_gcd = true;
     may_crit = false;
     target = player;
-    attack_power_mod.direct = 2.5; // Effect #1 is not correct.
-    attack_power_mod.direct *= 1.0 + p -> perk.improved_shield_barrier -> effectN( 1 ).percent();
+    attack_power_mod.direct = 2.75; // Effect #1 is not correct.
   }
 
   double cost() const
@@ -3602,28 +3578,16 @@ void warrior_t::init_spells()
   talents.gladiators_resolve    = find_talent_spell( "Gladiator's Resolve" );
 
   //Perks
-  perk.enhanced_hamstring            = find_perk_spell( "Enhanced Hamstring" );
-  perk.improved_charge               = find_perk_spell( "Improved Charge" );
   perk.improved_heroic_leap          = find_perk_spell( "Improved Heroic Leap" );
-  perk.improved_thunder_clap         = find_perk_spell( "Improved Thunder Clap" );
 
   perk.enhanced_sweeping_strikes     = find_perk_spell( "Enhanced Sweeping Strikes" );
-  perk.improved_mortal_strike        = find_perk_spell( "Improved Mortal Strike" );
   perk.improved_die_by_the_sword     = find_perk_spell( "Improved Die by The Sword" );
-  perk.empowered_execute             = find_perk_spell( "Empowered Execute" );
   perk.improved_colossus_smash       = find_perk_spell( "Improved Colossus Smash" );
-  perk.improved_whirlwind            = find_perk_spell( "Improved Whirlwind" );
-  perk.improved_rend                 = find_perk_spell( "Improved Rend" );
+  perk.enhanced_rend                 = find_perk_spell( "Enhanced Rend" );
 
   perk.enhanced_whirlwind            = find_perk_spell( "Enhanced Whirlwind" );
-  perk.improved_wild_strike          = find_perk_spell( "Improved Wild Strike" );
-  perk.improved_raging_blow          = find_perk_spell( "Improved Raging Blow" );
-  perk.improved_bloodthirst          = find_perk_spell( "Improved Bloodthirst" );
 
   perk.improved_heroic_throw         = find_perk_spell( "Improved Heroic Throw" );
-  perk.improved_shield_slam          = find_perk_spell( "Improved Shield Slam" );
-  perk.improved_revenge              = find_perk_spell( "Improved Revenge" );
-  perk.improved_shield_barrier       = find_perk_spell( "Improved Shield Barrier" );
   perk.improved_defensive_stance     = find_perk_spell( "Improved Defensive Stance" );
   perk.improved_block                = find_perk_spell( "Improved Block" );
 
@@ -3661,6 +3625,7 @@ void warrior_t::init_spells()
   active_blood_craze        = new blood_craze_t( this );
   active_rallying_cry_heal  = new rallying_cry_heal_t( this );
   active_second_wind        = new second_wind_t( this );
+  active_enhanced_rend      = new enhanced_rend_t( this );
   active_t16_2pc            = new tier16_2pc_tank_heal_t( this );
 
   static set_bonus_description_t set_bonuses =
@@ -4096,13 +4061,11 @@ public:
 
   warrior_buff_t( warrior_td_t& p, const buff_creator_basics_t& params ):
     Base( params ), warrior( p.warrior )
-  {
-  }
+  {}
 
   warrior_buff_t( warrior_t& p, const buff_creator_basics_t& params ):
     Base( params ), warrior( p )
-  {
-  }
+  {}
 
   warrior_td_t& get_td( player_t* t ) const
   {
@@ -4120,8 +4083,7 @@ struct bloodsurge_t: public warrior_buff_t < buff_t >
   bloodsurge_t( warrior_t& p, const std::string&n, const spell_data_t*s ):
     base_t( p, buff_creator_t( &p, n, s )
     .chance( p.spec.bloodsurge -> effectN( 1 ).percent() ) ), wasted( 0 )
-  {
-  }
+  {}
 
   void execute( int a, double b, timespan_t t )
   {
@@ -4172,8 +4134,7 @@ struct defensive_stance_t: public warrior_buff_t < buff_t >
     .add_invalidate( CACHE_BONUS_ARMOR )
     .duration( timespan_t::from_seconds( 3 ) )
     .period( timespan_t::from_seconds( 3 ) ) )
-  {
-  }
+  {}
 
   void execute( int a, double b, timespan_t t )
   {
@@ -4187,8 +4148,7 @@ struct battle_stance_t: public warrior_buff_t < buff_t >
   battle_stance_t( warrior_t& p, const std::string&n, const spell_data_t*s ):
     base_t( p, buff_creator_t( &p, n, s )
     .activated( true ) )
-  {
-  }
+  {}
 
   void execute( int a, double b, timespan_t t )
   {
@@ -4203,8 +4163,7 @@ struct gladiator_stance_t: public warrior_buff_t < buff_t >
     base_t( p, buff_creator_t( &p, n, s )
     .activated( true )
     .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER ) )
-  {
-  }
+  {}
 
   void execute( int a, double b, timespan_t t )
   {
@@ -4219,8 +4178,7 @@ struct rallying_cry_t: public warrior_buff_t < buff_t >
   int health_gain;
   rallying_cry_t( warrior_t& p, const std::string&n, const spell_data_t*s ):
     base_t( p, buff_creator_t( &p, n, s ) ), health_gain( 0 )
-  {
-  }
+  {}
 
   bool trigger( int stacks, double value, double chance, timespan_t duration )
   {
@@ -4241,8 +4199,7 @@ struct last_stand_t: public warrior_buff_t < buff_t >
   int health_gain;
   last_stand_t( warrior_t& p, const std::string&n, const spell_data_t*s ):
     base_t( p, buff_creator_t( &p, n, s ) ), health_gain( 0 )
-  {
-  }
+  {}
 
   bool trigger( int stacks, double value, double chance, timespan_t duration )
   {
@@ -4906,13 +4863,6 @@ void warrior_t::invalidate_cache( cache_e c )
     player_t::invalidate_cache( CACHE_PLAYER_DAMAGE_MULTIPLIER );
 }
 
-// warrior_t::regen =========================================================
-
-void warrior_t::regen( timespan_t periodicity )
-{
-  player_t::regen( periodicity );
-}
-
 // warrior_t::primary_role() ================================================
 
 role_e warrior_t::primary_role() const
@@ -5260,8 +5210,7 @@ class warrior_report_t: public player_report_extension_t
 public:
   warrior_report_t( warrior_t& player ):
     p( player )
-  {
-  }
+  {}
 
   virtual void html_customsection( report::sc_html_stream& os ) override
   {

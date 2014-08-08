@@ -49,7 +49,7 @@ finger1=devilfang_band,id=105611,gems=4str_8crit_3exp,reforge=mastery_crit,upgra
 finger2=seal_of_the_forgotten_kings,id=105589,gems=4str_8crit_3haste,upgrade=2
 trinket1=evil_eye_of_galakras,id=105491,upgrade=2
 trinket2=thoks_tail_tip,id=105609,upgrade=2
-main_hand=xalatoh_desecrated_image_of_gorehowl,id=105644,gems=4str_8crit_3str,enchant=rune_of_the_fallen_crusader,upgrade=2
+main_hand=xalatoh_desecrated_image_of_gorehowl,id=105644,gems=4str_8crit_3str,enchant=rune_of_razorice,upgrade=2
 save=Death_Knight_Frost_2h_T16H.simc
 
 deathknight="Death_Knight_Frost_1h_T16H"

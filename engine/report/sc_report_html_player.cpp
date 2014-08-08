@@ -1818,14 +1818,15 @@ void print_html_player_action_priority_list( report::sc_html_stream& os, sim_t* 
     action_t* a = p -> action_list[ i ];
     if ( a -> signature_str.empty() || ! a -> marker ) continue;
 
-    if ( ! alist || a -> action_list != alist -> name_str )
+    if ( ! alist || a -> action_list -> name_str != alist -> name_str )
     {
       if ( alist )
       {
         os << "</table>\n";
       }
 
-      alist = p -> find_action_priority_list( a -> action_list );
+      //alist = p -> find_action_priority_list( a -> action_list );
+      alist = a -> action_list;
 
       if ( ! alist -> used ) continue;
 

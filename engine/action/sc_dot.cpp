@@ -794,7 +794,8 @@ void dot_t::check_tick_zero()
 
 bool dot_t::is_higher_priority_action_available() const
 {
-  action_priority_list_t* active_actions = current_action -> player -> active_action_list;
+  assert( current_action -> action_list );
+  action_priority_list_t* active_actions = current_action -> action_list;
   size_t num_actions = active_actions -> foreground_action_list.size();
   for ( size_t i = 0; i < num_actions && active_actions -> foreground_action_list[ i ] != current_action; ++i )
   {

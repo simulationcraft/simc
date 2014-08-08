@@ -344,7 +344,7 @@ action_t::action_t( action_e       ty,
   update_flags = STATE_TGT_MUL_DA | STATE_TGT_MUL_TA | STATE_TGT_CRIT;
   execute_state = 0;
   pre_execute_state = 0;
-  action_list = "";
+  action_list = 0;
   movement_directionality = MOVEMENT_NONE;
   base_teleport_distance = 0;
 
@@ -1700,7 +1700,7 @@ void action_t::init()
   }
 
 
-  if ( ! ( background || sequence ) && ( pre_combat || action_list == "precombat" ) )
+  if ( ! ( background || sequence ) && ( pre_combat || ( action_list && action_list -> name_str == "precombat" ) ) )
   {
     if ( harmful )
     {
@@ -1720,8 +1720,8 @@ void action_t::init()
     else
       player -> precombat_action_list.push_back( this );
   }
-  else if ( ! ( background || sequence ) && ! action_list.empty() )
-    player -> find_action_priority_list( action_list ) -> foreground_action_list.push_back( this );
+  else if ( ! ( background || sequence ) && action_list )
+    player -> find_action_priority_list( action_list -> name_str ) -> foreground_action_list.push_back( this );
 
   initialized = true;
 
