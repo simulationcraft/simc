@@ -1776,7 +1776,10 @@ struct exotic_munitions_t: public hunter_ranged_attack_t
       else if ( ammo_type == "poisoned" || ammo_type == "poison" || ammo_type == "poisoned_ammo" )
         swap_ammo = POISONED_AMMO;
       else if ( ammo_type == "frozen" || ammo_type == "frozen_ammo" )
-        swap_ammo = FROZEN_AMMO;
+      {
+        swap_ammo = POISONED_AMMO;
+        sim -> errorf( "Player %s: Frozen Ammo does not work on raid bosses, poisoned ammo used instead.", name() );
+      }
     }
   }
 
