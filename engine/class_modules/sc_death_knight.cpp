@@ -3195,9 +3195,8 @@ struct defile_t : public death_knight_spell_t
     double m = death_knight_spell_t::composite_ta_multiplier( state );
 
     dot_t* dot = find_dot( state -> target );
-    assert( dot );
-
-    m *= 1.0 + std::pow( data().effectN( 2 ).percent() / 100.0, dot -> current_tick );
+    if ( dot )
+      m *= 1.0 + std::pow( data().effectN( 2 ).percent() / 100.0, dot -> current_tick );
 
     return m;
   }
