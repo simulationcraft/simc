@@ -1214,7 +1214,9 @@ struct kill_command_t: public hunter_main_pet_attack_t
     background = proc = true;
     school = SCHOOL_PHYSICAL;
 
-    attack_power_mod.direct  = 1.576 * 3; // Hard-coded in tooltip.
+    // The hardcoded parameter is taken from the $damage value in teh tooltip. e.g., 1.89 below
+    // $damage = ${ 1.5*($83381m1 + ($RAP*  1.89   ))*$<bmMastery> }
+    attack_power_mod.direct  = 1.89; // Hard-coded in tooltip.
     attack_power_mod.direct *= 1.0 + o() -> perks.improved_kill_command -> effectN( 1 ).percent();
   }
 
@@ -1224,6 +1226,13 @@ struct kill_command_t: public hunter_main_pet_attack_t
     am *= 1.0 + o() -> sets.set( SET_T14_2PC_MELEE ) -> effectN( 1 ).percent();
     return am;
   }
+  
+  // Override behavior so that Kill Command uses hunter's attack power rather than the pet's
+  virtual double composite_attack_power() const
+  {
+    return base_attack_power + o() -> cache.attack_power() * o()->composite_attack_power_multiplier();
+  }
+
 };
 
 // ==========================================================================
@@ -2244,7 +2253,7 @@ struct serpent_sting_t: public hunter_ranged_attack_t
 struct arcane_shot_t: public hunter_ranged_attack_t
 {
   arcane_shot_t( hunter_t* player, const std::string& options_str ):
-    hunter_ranged_attack_t( "arcane_shot", player, player -> find_specialization_spell( "Arcane Shot" ) )
+    hunter_ranged_attack_t( "arcane_shot", player, player -> find_spell( "Arcane Shot" ) )
   {
     parse_options( NULL, options_str );
     weapon_multiplier *= 1.0 + p() -> perks.improved_arcane_shot -> effectN( 1 ).percent();
