@@ -64,7 +64,7 @@ actions.single+=/lightning_bolt
 
 # Multi target action priority list
 
-actions.aoe=earthquake,if=((buff.improved_chain_lightning.up&level>90)|level<=90)&active_enemies>=2
+actions.aoe=earthquake,if=(buff.improved_chain_lightning.up|level<=90)&active_enemies>=2
 actions.aoe+=/lava_beam
 actions.aoe+=/earth_shock,if=buff.lightning_shield.react=buff.lightning_shield.max_stack
 actions.aoe+=/thunderstorm,if=active_enemies>=10

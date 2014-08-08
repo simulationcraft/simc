@@ -5315,7 +5315,7 @@ void shaman_t::init_action_list()
     single -> add_action( this, "Lightning Bolt" );
 
     // AoE
-    aoe -> add_action( this, "Earthquake", "if=((buff.improved_chain_lightning.up&level>90)|level<=90)&active_enemies>=2" );
+    aoe -> add_action( this, "Earthquake", "if=(buff.improved_chain_lightning.up|level<=90)&active_enemies>=2" );
     aoe -> add_action( this, find_class_spell( "Ascendance" ), "lava_beam" );
     aoe -> add_action( this, spec.fulmination, "earth_shock", "if=buff.lightning_shield.react=buff.lightning_shield.max_stack" );
     aoe -> add_action( this, "Thunderstorm", "if=active_enemies>=10" );
