@@ -3235,7 +3235,7 @@ struct earthquake_t : public shaman_spell_t
   {
     double m = shaman_spell_t::action_multiplier();
 
-    m *= 1.0 + p() -> cache.mastery() * p() -> mastery.molten_earth -> effectN( 3 ).percent() / 100.0;
+    m *= 1.0 + p() -> cache.mastery() * p() -> mastery.molten_earth -> effectN( 3 ).sp_coeff() / 100.0;
 
     return m;
   }
