@@ -329,32 +329,19 @@ public:
   struct
   {
     //All Specs
-    const spell_data_t* enhanced_hamstring;
-    const spell_data_t* improved_charge;
     const spell_data_t* improved_heroic_leap;
-    const spell_data_t* improved_thunder_clap;
     //Arms and Fury
-    const spell_data_t* empowered_execute;
     const spell_data_t* improved_die_by_the_sword;
-    const spell_data_t* improved_whirlwind;
     //Arms only
-    const spell_data_t* improved_mortal_strike;
-    const spell_data_t* improved_rend;
     const spell_data_t* enhanced_rend;
     const spell_data_t* enhanced_sweeping_strikes;
     //Fury only
     const spell_data_t* enhanced_whirlwind;
-    const spell_data_t* improved_bloodthirst;
     const spell_data_t* improved_colossus_smash;
-    const spell_data_t* improved_raging_blow;
-    const spell_data_t* improved_wild_strike;
     //Protection only
     const spell_data_t* improved_block;
     const spell_data_t* improved_defensive_stance;
     const spell_data_t* improved_heroic_throw;
-    const spell_data_t* improved_revenge;
-    const spell_data_t* improved_shield_barrier;
-    const spell_data_t* improved_shield_slam;
   } perk;
 
   warrior_t( sim_t* sim, const std::string& name, race_e r = RACE_NIGHT_ELF ):
@@ -1239,7 +1226,6 @@ struct bloodthirst_heal_t: public warrior_heal_t
     base_pct_heal( 0 )
   {
     pct_heal   = data().effectN( 1 ).percent();
-    pct_heal  *= 1.0 + p -> perk.improved_bloodthirst -> effectN( 1 ).percent();
     pct_heal  *= 1.0 + p -> glyphs.bloodthirst -> effectN( 2 ).percent();
     base_pct_heal = pct_heal;
     background = true;
@@ -1278,8 +1264,6 @@ struct bloodthirst_t: public warrior_attack_t
 
     weapon           = &( p -> main_hand_weapon );
     bloodthirst_heal = new bloodthirst_heal_t( p );
-
-    weapon_multiplier *= 1.0 + p -> perk.improved_bloodthirst -> effectN( 1 ).percent();
     weapon_multiplier += p -> sets.set( SET_T14_2PC_MELEE ) -> effectN( 2 ).percent();
   }
 
@@ -1347,7 +1331,6 @@ struct charge_t: public warrior_attack_t
     parse_options( NULL, options_str );
     stancemask = STANCE_BATTLE | STANCE_GLADIATOR | STANCE_DEFENSE;
     base_teleport_distance = data().max_range();
-    base_teleport_distance += p -> perk.improved_charge -> effectN( 1 ).base_value();
     base_teleport_distance += p -> glyphs.long_charge -> effectN( 1 ).base_value();
     movement_directionality = MOVEMENT_OMNI;
 
@@ -1555,7 +1538,6 @@ struct execute_off_hand_t: public warrior_attack_t
     may_miss = may_dodge = may_parry = may_block = false;
 
     weapon = &( p -> off_hand_weapon );
-    weapon_multiplier *= 1.0 + p -> perk.empowered_execute -> effectN( 1 ).percent();
     if ( p -> main_hand_weapon.group() == WEAPON_1H &&
          p -> off_hand_weapon.group() == WEAPON_1H )
          weapon_multiplier *= 1.0 + p -> spec.singleminded_fury -> effectN( 3 ).percent();
@@ -1571,7 +1553,6 @@ struct execute_t: public warrior_attack_t
     parse_options( NULL, options_str );
     stancemask = STANCE_BATTLE | STANCE_GLADIATOR | STANCE_DEFENSE;
     weapon = &( p -> main_hand_weapon );
-    weapon_multiplier *= 1.0 + p -> perk.empowered_execute -> effectN( 1 ).percent();
 
     if ( p -> main_hand_weapon.group() == WEAPON_1H &&
          p -> off_hand_weapon.group() == WEAPON_1H )
@@ -1648,9 +1629,6 @@ struct hamstring_t: public warrior_attack_t
   {
     parse_options( NULL, options_str );
     stancemask = STANCE_BATTLE | STANCE_GLADIATOR | STANCE_DEFENSE;
-
-    base_costs[RESOURCE_RAGE] += p -> perk.enhanced_hamstring -> effectN( 1 ).resource( RESOURCE_RAGE );
-
     weapon = &( p -> main_hand_weapon );
   }
 
@@ -2011,7 +1989,6 @@ struct mortal_strike_t: public warrior_attack_t
 
     weapon = &( p -> main_hand_weapon );
     weapon_multiplier += p -> sets.set( SET_T14_2PC_MELEE ) -> effectN( 1 ).percent();
-    weapon_multiplier *= 1.0 + p -> perk.improved_mortal_strike -> effectN( 1 ).percent();
   }
 
   double action_multiplier() const
@@ -2073,7 +2050,6 @@ struct raging_blow_attack_t: public warrior_attack_t
   {
     may_miss = may_dodge = may_parry = may_block = false;
     dual = true;
-    weapon_multiplier *= 1.0 + p -> perk.improved_raging_blow -> effectN( 1 ).percent();
   }
 
   void execute()
@@ -2210,7 +2186,6 @@ struct revenge_t: public warrior_attack_t
 
     aoe = 3;
     rage_gain = data().effectN( 2 ).resource( RESOURCE_RAGE );
-    attack_power_mod.direct *= 1.0 + p -> perk.improved_revenge -> effectN( 1 ).percent();
   }
 
   double action_multiplier() const
@@ -2329,9 +2304,7 @@ struct shield_slam_t: public warrior_attack_t
     cooldown = p -> cooldown.shield_slam;
 
     rage_gain = data().effectN( 3 ).resource( RESOURCE_RAGE );
-    attack_power_mod.direct = 3.08; //Hard-coded in tooltip.
-
-    attack_power_mod.direct *= 1.0 + p -> perk.improved_shield_slam -> effectN( 1 ).percent();
+    attack_power_mod.direct = 3.696; //Hard-coded in tooltip.
   }
 
   double action_multiplier() const
@@ -2562,7 +2535,6 @@ struct thunder_clap_t: public warrior_attack_t
     cooldown -> duration = data().cooldown();
     cooldown -> duration *= 1 + p -> glyphs.resonating_power -> effectN( 2 ).percent();
     attack_power_mod.direct *= 1.0 + p -> glyphs.resonating_power -> effectN( 1 ).percent();
-    attack_power_mod.direct *= 1.0 + p -> perk.improved_thunder_clap -> effectN( 1 ).percent();
   }
 
   void impact( action_state_t* s )
@@ -2642,7 +2614,6 @@ struct whirlwind_off_hand_t: public warrior_attack_t
     dual = true;
     aoe = -1;
     weapon = &( p -> off_hand_weapon );
-    weapon_multiplier *= 1.0 + p -> perk.improved_whirlwind -> effectN( 1 ).percent();
   }
 
   double action_multiplier() const
@@ -2675,7 +2646,6 @@ struct whirlwind_t: public warrior_attack_t
     else
       weapon_multiplier *= 2;
 
-    weapon_multiplier *= 1.0 + p -> perk.improved_whirlwind -> effectN( 1 ).percent();
     weapon = &( p -> main_hand_weapon );
   }
 
@@ -2727,7 +2697,6 @@ struct wild_strike_t: public warrior_attack_t
     if ( p -> talents.furious_strikes -> ok() )
       base_costs[RESOURCE_RAGE] = 20;
     weapon  = &( player -> off_hand_weapon );
-    weapon_multiplier *= 1.0 + p -> perk.improved_wild_strike -> effectN( 1 ).percent();
     min_gcd = data().gcd();
   }
 
@@ -3047,7 +3016,6 @@ struct rend_burst_t: public warrior_spell_t
   {
     dual = true;
     may_multistrike = 1;
-    attack_power_mod.direct *= 1.0 + p -> perk.improved_rend -> effectN( 1 ).percent();
   }
 
   double target_armor( player_t* ) const
@@ -3069,7 +3037,6 @@ struct rend_t: public warrior_spell_t
     tick_may_crit = true;
     may_multistrike = 1;
     add_child( burst );
-    attack_power_mod.tick *= 1.0 + p -> perk.improved_rend -> effectN( 1 ).percent();
   }
 
   void impact( action_state_t* s )
@@ -3119,8 +3086,7 @@ struct shield_barrier_t: public warrior_action_t < absorb_t >
     use_off_gcd = true;
     may_crit = false;
     target = player;
-    attack_power_mod.direct = 2.5; // Effect #1 is not correct.
-    attack_power_mod.direct *= 1.0 + p -> perk.improved_shield_barrier -> effectN( 1 ).percent();
+    attack_power_mod.direct = 2.75; // Effect #1 is not correct.
   }
 
   double cost() const
@@ -3614,29 +3580,16 @@ void warrior_t::init_spells()
   talents.gladiators_resolve    = find_talent_spell( "Gladiator's Resolve" );
 
   //Perks
-  perk.enhanced_hamstring            = find_perk_spell( "Enhanced Hamstring" );
-  perk.improved_charge               = find_perk_spell( "Improved Charge" );
   perk.improved_heroic_leap          = find_perk_spell( "Improved Heroic Leap" );
-  perk.improved_thunder_clap         = find_perk_spell( "Improved Thunder Clap" );
 
   perk.enhanced_sweeping_strikes     = find_perk_spell( "Enhanced Sweeping Strikes" );
-  perk.improved_mortal_strike        = find_perk_spell( "Improved Mortal Strike" );
   perk.improved_die_by_the_sword     = find_perk_spell( "Improved Die by The Sword" );
-  perk.empowered_execute             = find_perk_spell( "Empowered Execute" );
   perk.improved_colossus_smash       = find_perk_spell( "Improved Colossus Smash" );
-  perk.improved_whirlwind            = find_perk_spell( "Improved Whirlwind" );
-  perk.improved_rend                 = find_perk_spell( "Improved Rend" );
   perk.enhanced_rend                 = find_perk_spell( "Enhanced Rend" );
 
   perk.enhanced_whirlwind            = find_perk_spell( "Enhanced Whirlwind" );
-  perk.improved_wild_strike          = find_perk_spell( "Improved Wild Strike" );
-  perk.improved_raging_blow          = find_perk_spell( "Improved Raging Blow" );
-  perk.improved_bloodthirst          = find_perk_spell( "Improved Bloodthirst" );
 
   perk.improved_heroic_throw         = find_perk_spell( "Improved Heroic Throw" );
-  perk.improved_shield_slam          = find_perk_spell( "Improved Shield Slam" );
-  perk.improved_revenge              = find_perk_spell( "Improved Revenge" );
-  perk.improved_shield_barrier       = find_perk_spell( "Improved Shield Barrier" );
   perk.improved_defensive_stance     = find_perk_spell( "Improved Defensive Stance" );
   perk.improved_block                = find_perk_spell( "Improved Block" );
 
