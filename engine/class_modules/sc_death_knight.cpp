@@ -370,7 +370,6 @@ public:
   {
     // Shared
     const spell_data_t* improved_diseases;
-    const spell_data_t* improved_soul_reaper;
     const spell_data_t* enhanced_death_strike;
 
     // Blood
@@ -394,6 +393,7 @@ public:
     const spell_data_t* improved_death_coil;
     const spell_data_t* improved_festering_strike;
     const spell_data_t* improved_scourge_strike;
+    const spell_data_t* improved_soul_reaper;
   } perk;
 
   // Pets and Guardians
@@ -2782,7 +2782,6 @@ struct soul_reaper_dot_t : public death_knight_melee_attack_t
     special = background = may_crit = proc = true;
     may_miss = may_dodge = may_parry = may_block = false;
     weapon_multiplier = 0;
-    base_multiplier *= 1.0 + p -> perk.improved_soul_reaper -> effectN( 1 ).percent();
   }
 };
 
@@ -2801,8 +2800,6 @@ struct soul_reaper_t : public death_knight_melee_attack_t
 
     dynamic_tick_action = true;
     tick_action = new soul_reaper_dot_t( p );
-
-    base_multiplier *= 1.0 + p -> perk.improved_soul_reaper -> effectN( 1 ).percent();
   }
 
   virtual double composite_crit() const
@@ -2856,6 +2853,8 @@ struct soul_reaper_t : public death_knight_melee_attack_t
   void tick( dot_t* dot )
   {
     int pct = p() -> sets.has_set_bonus( SET_T15_4PC_MELEE ) ? p() -> sets.set( SET_T15_4PC_MELEE ) -> effectN( 1 ).base_value() : 35;
+    if ( p() -> perk.improved_soul_reaper -> ok() )
+      pct = p() -> perk.improved_soul_reaper -> effectN( 1 ).base_value();
 
     if ( dot -> state -> target -> health_percentage() <= pct )
       death_knight_melee_attack_t::tick( dot );
@@ -5445,7 +5444,6 @@ void death_knight_t::init_spells()
   
   // Shared
   perk.improved_diseases               = find_perk_spell( "Improved Diseases" );
-  perk.improved_soul_reaper            = find_perk_spell( "Improved Soul Reaper" );
   perk.enhanced_death_strike           = find_perk_spell( "Enhanced Death Strike" );
     
   // Blood
@@ -5469,6 +5467,7 @@ void death_knight_t::init_spells()
   perk.improved_festering_strike      = find_perk_spell( "Improved Festering Strike" );
   perk.improved_scourge_strike        = find_perk_spell( "Improved Scourge Strike" );
   perk.improved_death_coil            = find_perk_spell( "Improved Death Coil" );
+  perk.improved_soul_reaper            = find_perk_spell( "Improved Soul Reaper" );
 
   // Active Spells
   active_spells.blood_plague = new blood_plague_t( this );
