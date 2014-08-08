@@ -170,29 +170,19 @@ public:
   struct
   {
     const spell_data_t* enhanced_camouflage;
+
     //Beast Mastery
     const spell_data_t* improved_focus_fire;
-    const spell_data_t* improved_kill_command;
-    const spell_data_t* empowered_pets;
     const spell_data_t* improved_beast_cleave;
     const spell_data_t* enhanced_basic_attacks;
-    const spell_data_t* enhanced_kill_shot;
-    const spell_data_t* improved_arcane_shot;
-    const spell_data_t* improved_cobra_shot;
     // Marks
-    const spell_data_t* enhanced_chimaera_shot;
+    const spell_data_t* enhanced_kill_shot;
     const spell_data_t* enhanced_aimed_shot;
     const spell_data_t* improved_focus;
-    const spell_data_t* improved_aimed_shot;
-    const spell_data_t* improved_steady_shot;
-    const spell_data_t* improved_multishot;
     // Survival
     const spell_data_t* empowered_explosive_shot;
-    const spell_data_t* improved_black_arrow;
     const spell_data_t* enhanced_traps;
     const spell_data_t* enhanced_entrapment;
-    const spell_data_t* improved_camouflage;
-    const spell_data_t* improved_serpent_sting;
   } perks;
 
   // Specialization Spells
@@ -1217,7 +1207,6 @@ struct kill_command_t: public hunter_main_pet_attack_t
     // The hardcoded parameter is taken from the $damage value in teh tooltip. e.g., 1.89 below
     // $damage = ${ 1.5*($83381m1 + ($RAP*  1.89   ))*$<bmMastery> }
     attack_power_mod.direct  = 1.89; // Hard-coded in tooltip.
-    attack_power_mod.direct *= 1.0 + o() -> perks.improved_kill_command -> effectN( 1 ).percent();
   }
 
   virtual double action_multiplier() const
@@ -1814,7 +1803,6 @@ struct aimed_shot_t: public hunter_ranged_attack_t
     hunter_ranged_attack_t( "aimed_shot", p, p -> find_specialization_spell( "Aimed Shot" ) )
   {
     parse_options( NULL, options_str );
-    weapon_multiplier *= 1.0 + p -> perks.improved_aimed_shot -> effectN( 1 ).percent();
   }
 
   virtual double cost() const
@@ -1949,7 +1937,6 @@ struct black_arrow_t: public hunter_ranged_attack_t
 
     cooldown -> duration += p() -> specs.trap_mastery -> effectN( 4 ).time_value();
     base_multiplier *= 1.0 + p() -> specs.trap_mastery -> effectN( 2 ).percent();
-    base_multiplier *= 1.0 + p() -> perks.improved_black_arrow -> effectN( 1 ).percent();
     may_multistrike = 1;
   }
 
@@ -2048,7 +2035,6 @@ struct chimaera_shot_t: public hunter_ranged_attack_t
     nature = new chimaera_shot_impact_t( player, "chimaera_shot_nature", player -> find_spell( 171457 ) );
     add_child( nature );
     school = SCHOOL_FROSTSTRIKE; // Just so the report shows a mixture of the two colors.
-    base_costs[RESOURCE_FOCUS] += player -> perks.enhanced_chimaera_shot -> effectN( 1 ).base_value();
     aoe = 2;
   }
 
@@ -2079,7 +2065,6 @@ struct cobra_shot_t: public hunter_ranged_attack_t
 
     if ( p() -> sets.has_set_bonus( SET_T13_2PC_MELEE ) )
       focus_gain *= 2.0;
-    base_multiplier *= 1 + p() -> perks.improved_cobra_shot -> effectN( 1 ).percent();
   }
 
   virtual void execute()
@@ -2243,8 +2228,6 @@ struct serpent_sting_t: public hunter_ranged_attack_t
     background = proc = tick_may_crit = tick_zero = true;
     hasted_ticks = false;
     dot_behavior = DOT_CLIP; // Serpent sting deals immediate damage every time it is cast, and the next tick is reset.
-    attack_power_mod.direct *= 1.0 + player -> perks.improved_serpent_sting -> effectN( 1 ).percent();
-    attack_power_mod.tick   *= 1.0 + player -> perks.improved_serpent_sting -> effectN( 1 ).percent();
   }
 };
 
@@ -2256,7 +2239,6 @@ struct arcane_shot_t: public hunter_ranged_attack_t
     hunter_ranged_attack_t( "arcane_shot", player, player -> find_spell( "Arcane Shot" ) )
   {
     parse_options( NULL, options_str );
-    weapon_multiplier *= 1.0 + p() -> perks.improved_arcane_shot -> effectN( 1 ).percent();
   }
 
   virtual double cost() const
@@ -2300,8 +2282,6 @@ struct multi_shot_t: public hunter_ranged_attack_t
     parse_options( NULL, options_str );
 
     aoe = -1;
-    base_costs[RESOURCE_FOCUS] += player -> perks.improved_multishot -> effectN( 1 ).base_value();
-    weapon_multiplier *= 1.0 + player -> perks.improved_multishot -> effectN( 2 ).percent();
   }
 
   virtual double cost() const
@@ -2402,8 +2382,6 @@ struct steady_shot_t: public hunter_ranged_attack_t
     // Needs testing
     if ( p() -> sets.has_set_bonus( SET_T13_2PC_MELEE ) )
       focus_gain *= 2.0;
-
-    weapon_multiplier *= 1.0 + p() -> perks.improved_steady_shot -> effectN( 1 ).percent();
   }
 
   virtual void execute()
@@ -3066,25 +3044,14 @@ void hunter_t::init_spells()
   // Perks
   perks.enhanced_camouflage               = find_perk_spell( "Enhanced Camouflage" );
   perks.improved_focus_fire               = find_perk_spell( "Improved Focus Fire" );
-  perks.improved_kill_command             = find_perk_spell( "Improved Kill Command" );
-  perks.empowered_pets                    = find_perk_spell( "Empowered Pets" );
   perks.improved_beast_cleave             = find_perk_spell( "Improved Beast Cleave" );
   perks.enhanced_basic_attacks            = find_perk_spell( "Enhanced Basic Attacks" );
   perks.enhanced_kill_shot                = find_perk_spell( "Enhanced Kill Shot" );
-  perks.improved_arcane_shot              = find_perk_spell( "Improved Arcane Shot" );
-  perks.improved_cobra_shot               = find_perk_spell( "Improved Cobra Shot" );
-  perks.enhanced_chimaera_shot            = find_perk_spell( "Enhanced Chimaera Shot" );
   perks.enhanced_aimed_shot               = find_perk_spell( "Enhanced Aimed Shot" );
   perks.improved_focus                    = find_perk_spell( "Improved Focus" );
-  perks.improved_aimed_shot               = find_perk_spell( "Improved Aimed Shot" );
-  perks.improved_steady_shot              = find_perk_spell( "Improved Steady Shot" );
-  perks.improved_multishot                = find_perk_spell( "Improved Multishot" );
   perks.empowered_explosive_shot          = find_perk_spell( "Empowered Explosive Shot" );
-  perks.improved_black_arrow              = find_perk_spell( "Improved Black Arrow" );
   perks.enhanced_traps                    = find_perk_spell( "Enhanced Traps" );
   perks.enhanced_entrapment               = find_perk_spell( "Enhanced Entrapment" );
-  perks.improved_camouflage               = find_perk_spell( "Improved Camouflage" );
-  perks.improved_serpent_sting            = find_perk_spell( "Improved Serpent Sting" );
 
   // Mastery
   mastery.master_of_beasts     = find_mastery_spell( HUNTER_BEAST_MASTERY );
@@ -3213,8 +3180,6 @@ void hunter_t::init_base_stats()
   // Orc racial
   if ( race == RACE_ORC )
     pet_multiplier *= 1.0 + find_racial_spell( "Command" ) -> effectN( 1 ).percent();
-
-  pet_multiplier *= 1.0 + perks.empowered_pets -> effectN( 1 ).percent();
 
   stats_stampede = get_stats( "stampede" );
 }
