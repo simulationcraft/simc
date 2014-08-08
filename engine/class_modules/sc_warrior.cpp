@@ -52,10 +52,10 @@ public:
   action_t* active_bloodbath_dot;
   action_t* active_blood_craze;
   action_t* active_deep_wounds;
+  action_t* active_enhanced_rend;
   action_t* active_rallying_cry_heal;
   action_t* active_second_wind;
   attack_t* active_sweeping_strikes;
-  attack_t* active_enhanced_rend;
 
   heal_t* active_t16_2pc;
   warrior_stance active_stance;
@@ -3673,6 +3673,7 @@ void warrior_t::init_spells()
   active_blood_craze        = new blood_craze_t( this );
   active_rallying_cry_heal  = new rallying_cry_heal_t( this );
   active_second_wind        = new second_wind_t( this );
+  active_enhanced_rend      = new enhanced_rend_t( this );
   active_t16_2pc            = new tier16_2pc_tank_heal_t( this );
 
   static set_bonus_description_t set_bonuses =
