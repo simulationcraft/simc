@@ -4014,7 +4014,7 @@ stat_e hunter_t::convert_hybrid_stat( stat_e s ) const
 */
 void hunter_t::moving()
 {
-  if ( executing && ! executing -> usable_moving() || channeling && ! channeling -> usable_moving() )
+  if ( ( executing && ! executing -> usable_moving() ) || ( channeling && ! channeling -> usable_moving() ) )
     player_t::interrupt();
 }
 
