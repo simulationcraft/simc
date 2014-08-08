@@ -3221,6 +3221,15 @@ struct earthquake_t : public shaman_spell_t
     p() -> buff.improved_chain_lightning -> expire();
   }
 
+  double action_multiplier() const
+  {
+    double m = shaman_spell_t::action_multiplier();
+
+    m *= 1.0 + p() -> cache.mastery() * p() -> mastery.molten_earth -> effectN( 3 ).percent() / 100.0;
+
+    return m;
+  }
+
   double composite_persistent_multiplier( const action_state_t* state) const
   {
     double m = shaman_spell_t::composite_persistent_multiplier( state );
