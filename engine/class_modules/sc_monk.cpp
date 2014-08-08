@@ -332,6 +332,9 @@ public:
     // Cooldowns
     //cooldown.rising_sun_kick   = get_cooldown( "rising_sun_kick" );
     //cooldown.fists_of_fury     = get_cooldown( "fists_of_fury" );
+    regen_type = REGEN_DYNAMIC;
+    regen_caches[ CACHE_HASTE ] = true;
+    regen_caches[ CACHE_ATTACK_HASTE ] = true;
   }
  
   // player_t overrides
@@ -3369,6 +3372,16 @@ void monk_t::init_scaling()
  
 // monk_t::init_buffs =======================================================
  
+
+void energizing_brew_energize( buff_t* buff, int, int )
+{
+  monk_t* monk = debug_cast<monk_t*>( buff -> player );
+
+  monk -> resource_gain( RESOURCE_ENERGY,
+                         monk -> buff.energizing_brew -> data().effectN( 1 ).base_value(),
+                         monk -> gain.energizing_brew );
+}
+
 void monk_t::create_buffs()
 {
   base_t::create_buffs();
@@ -3409,6 +3422,8 @@ void monk_t::create_buffs()
   buff.combo_breaker_tp  = buff_creator_t( this, "combo_breaker_tp"    ).spell( find_spell( 118864 ) );
   buff.combo_breaker_ce  = buff_creator_t( this, "combo_breaker_ce"    ).spell( find_spell( 159407 ) );
   buff.energizing_brew   = buff_creator_t( this, "energizing_brew" ).spell( find_class_spell( "Energizing Brew" ) )
+                           .max_stack( 1 )
+                           .tick_callback( energizing_brew_energize )
                            .add_invalidate( CACHE_MULTISTRIKE );
   buff.energizing_brew -> buff_duration += sets.set( SET_T14_4PC_MELEE ) -> effectN( 1 ).time_value(); //verify working
   buff.tigereye_brew     = buff_creator_t( this, "tigereye_brew"       ).spell( find_spell( 125195 ) )
@@ -3483,13 +3498,6 @@ void monk_t::regen( timespan_t periodicity )
   if ( resource_type == RESOURCE_MANA )
   {
     //TODO: add mana tea here
-  }
-  else if ( resource_type == RESOURCE_ENERGY )
-  {
-    if ( buff.energizing_brew -> up() )
-      resource_gain( RESOURCE_ENERGY,
-                     buff.energizing_brew -> data().effectN( 1 ).base_value() * periodicity.total_seconds(),
-                     gain.energizing_brew );
   }
  
   base_t::regen( periodicity );
