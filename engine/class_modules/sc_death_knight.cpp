@@ -5650,7 +5650,7 @@ void death_knight_t::init_action_list()
   action_priority_list_t* def       = get_action_priority_list( "default"   );
   action_priority_list_t* aoe = get_action_priority_list( "aoe" );
   action_priority_list_t* st       = get_action_priority_list( "single_target"   );
-  std::string soul_reaper_pct = sets.has_set_bonus( SET_T15_4PC_MELEE ) ? "45" : "35";
+  std::string soul_reaper_pct = ( perk.improved_soul_reaper -> ok() || sets.has_set_bonus( SET_T15_4PC_MELEE ) ) ? "45" : "35";
   std::string flask_str = "flask,type=";
   std::string food_str  = "food,type=";
   std::string potion_str = "potion,name=";
