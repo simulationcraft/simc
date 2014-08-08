@@ -63,16 +63,12 @@ actions.single+=/lightning_bolt
 
 # Multi target action priority list
 
-actions.aoe=lava_beam
-actions.aoe+=/earthquake,if=buff.improved_chain_lightning.up&active_enemies>=2
+actions.aoe=earthquake,if=((buff.improved_chain_lightning.up&level>90)|level<=90)&active_enemies>=2
+actions.aoe+=/lava_beam
 actions.aoe+=/earth_shock,if=buff.lightning_shield.react=buff.lightning_shield.max_stack
-actions.aoe+=/lava_burst,if=dot.flame_shock.remains>cast_time&cooldown_react
-actions.aoe+=/flame_shock,if=dot.flame_shock.remains<9
-actions.aoe+=/earth_shock,if=buff.lightning_shield.react>15
-actions.aoe+=/thunderstorm,if=mana.pct_nonproc<80
-actions.aoe+=/searing_totem,if=cooldown.fire_elemental_totem.remains>20&!totem.fire.active
-actions.aoe+=/chain_lightning,if=active_enemies>=3
-actions.aoe+=/lightning_bolt,if=active_enemies<3
+actions.aoe+=/thunderstorm,if=active_enemies>=10
+actions.aoe+=/chain_lightning,if=active_enemies>=2
+actions.aoe+=/lightning_bolt
 
 head=headpiece_of_celestial_harmony,id=99332,upgrade=2,gems=sinister_primal_4int_8haste_9int
 neck=necklace_of_fading_light,id=105473,upgrade=2

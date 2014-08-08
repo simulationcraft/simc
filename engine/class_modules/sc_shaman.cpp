@@ -5315,16 +5315,12 @@ void shaman_t::init_action_list()
     single -> add_action( this, "Lightning Bolt" );
 
     // AoE
+    aoe -> add_action( this, "Earthquake", "if=((buff.improved_chain_lightning.up&level>90)|level<=90)&active_enemies>=2" );
     aoe -> add_action( this, find_class_spell( "Ascendance" ), "lava_beam" );
-    aoe -> add_action( this, "Earthquake", "if=buff.improved_chain_lightning.up&active_enemies>=2" );
     aoe -> add_action( this, spec.fulmination, "earth_shock", "if=buff.lightning_shield.react=buff.lightning_shield.max_stack" );
-    aoe -> add_action( this, "Lava Burst", "if=dot.flame_shock.remains>cast_time&cooldown_react" );
-    aoe -> add_action( this, "Flame Shock", "if=dot.flame_shock.remains<9" );
-    aoe -> add_action( this, spec.fulmination, "earth_shock", "if=buff.lightning_shield.react>15" );
-    aoe -> add_action( this, "Thunderstorm", "if=mana.pct_nonproc<80" );
-    aoe -> add_action( this, "Searing Totem", "if=cooldown.fire_elemental_totem.remains>20&!totem.fire.active" );
-    aoe -> add_action( this, "Chain Lightning", "if=active_enemies>=3" );
-    aoe -> add_action( this, "Lightning Bolt", "if=active_enemies<3" );
+    aoe -> add_action( this, "Thunderstorm", "if=active_enemies>=10" );
+    aoe -> add_action( this, "Chain Lightning", "if=active_enemies>=2" );
+    aoe -> add_action( this, "Lightning Bolt" );
   }
   else if ( primary_role() == ROLE_SPELL )
   {
