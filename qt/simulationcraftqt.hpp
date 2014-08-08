@@ -521,6 +521,7 @@ public:
     QComboBox* player_race;
     QComboBox* player_level;
     QComboBox* comp_type;
+    QCheckBox* input_mode;
   } choice;
 
   struct labels_t
@@ -1548,6 +1549,7 @@ namespace automation {
   QString tokenize( QString qstr );
 
   QString do_something( int sim_type,
+                        Qt::CheckState input_mode,
                         QString player_class,
                         QString player_spec,
                         QString player_race,

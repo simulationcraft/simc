@@ -25,6 +25,7 @@ QString automation::tokenize( QString qstr )
 }
 
 QString automation::do_something( int sim_type,
+                                  Qt::CheckState input_mode,
                                   QString player_class,
                                   QString player_spec,
                                   QString player_race,
@@ -47,6 +48,15 @@ QString automation::do_something( int sim_type,
   base_profile_info += "race=" + tokenize( player_race ) + "\n";
   base_profile_info += "level=" + player_level + "\n";
 
+  // check for advanced input mode
+  if ( input_mode == 2 )
+  {
+    // do advanced stuff here
+    profile = "ADVANCED MODE INCOMING !!";
+    return profile;
+  }
+
+  // simple mode
   // simulation type check
   switch ( sim_type )
   {
@@ -83,7 +93,6 @@ QString automation::auto_talent_sim( QString player_class,
   QStringList talentList = advanced_text.split( "\n", QString::SkipEmptyParts );
 
   QString profile;
-
 
   // make profile
   for ( int i = 0; i < talentList.size(); i++ )
@@ -128,14 +137,14 @@ QString automation::auto_glyph_sim( QString player_class,
   return profile;
 }
 
-  // Method for profile creation for the specific GEAR simulation
+// Method for profile creation for the specific GEAR simulation
 QString automation::auto_gear_sim( QString player_class,
                                    QString base_profile_info,
                                    QString player_talents,
                                    QString player_glyphs,
                                    QString advanced_text,
                                    QString player_rotation
-                                 )
+                                   )
 {
   // split into gearSets
   QStringList gearList = advanced_text.split( "\n\n", QString::SkipEmptyParts );
@@ -196,6 +205,11 @@ QComboBox* createChoice( int count, ... )
   return choice;
 }
 
+QCheckBox* createInputMode()
+{
+  QCheckBox* mode = new QCheckBox();
+  return mode;
+}
 
 // Method to set the "Spec" drop-down based on "Class" selection
 void SC_ImportTab::setSpecDropDown( const int player_class )
@@ -360,6 +374,7 @@ void SC_MainWindow::startAutomationImport( int tab )
   QString profile;
 
   profile = automation::do_something( importTab -> choice.comp_type -> currentIndex(),
+                                      importTab -> choice.input_mode -> checkState(),
                                       importTab -> choice.player_class -> currentText(),
                                       importTab -> choice.player_spec -> currentText(),
                                       importTab -> choice.player_race -> currentText(),
@@ -379,8 +394,7 @@ void SC_MainWindow::startAutomationImport( int tab )
 void SC_ImportTab::createTooltips()
 {
   choice.comp_type -> setToolTip( "Choose the comparison type." );
-  
-
+  choice.input_mode -> setToolTip( "Select to use advanced input mode.\nAdvanced input mode allows for more complex\ninput for multi-automated simulations." );
 }
 
 void SC_ImportTab::createAutomationTab()
@@ -408,6 +422,10 @@ void SC_ImportTab::createAutomationTab()
   // Create Combo Box and add it to the layout
   choice.comp_type = createChoice( 5 , "None", "Talents", "Glyphs", "Gear", "Rotation" );
   compLayout -> addRow( tr( "Comparison Type" ), choice.comp_type );
+
+  // Ceate a Checkbox for input mode
+  choice.input_mode = createInputMode();
+  compLayout->addRow( tr( "Advanced Input" ), choice.input_mode );
 
   // Apply the layout to the compGroupBox
   compGroupBox -> setLayout( compLayout );
