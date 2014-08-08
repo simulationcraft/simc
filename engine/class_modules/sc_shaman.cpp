@@ -3041,6 +3041,16 @@ struct elemental_blast_t : public shaman_spell_t
     shaman_spell_t::execute();
   }
 
+  double action_multiplier() const
+  {
+    double m = shaman_spell_t::action_multiplier();
+
+    if ( p() -> specialization() == SHAMAN_ENHANCEMENT && p() -> bugs )
+      m *= 0.5;
+
+    return m;
+  }
+
   result_e calculate_result( action_state_t* s )
   {
     if ( ! s -> target )
