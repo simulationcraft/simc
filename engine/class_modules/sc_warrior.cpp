@@ -55,6 +55,7 @@ public:
   action_t* active_rallying_cry_heal;
   action_t* active_second_wind;
   attack_t* active_sweeping_strikes;
+  attack_t* active_enhanced_rend;
 
   heal_t* active_t16_2pc;
   warrior_stance active_stance;
@@ -339,6 +340,7 @@ public:
     //Arms only
     const spell_data_t* improved_mortal_strike;
     const spell_data_t* improved_rend;
+    const spell_data_t* enhanced_rend;
     const spell_data_t* enhanced_sweeping_strikes;
     //Fury only
     const spell_data_t* enhanced_whirlwind;
@@ -374,6 +376,7 @@ public:
     active_rallying_cry_heal  = 0;
     active_second_wind        = 0;
     active_sweeping_strikes   = 0;
+    active_enhanced_rend      = 0;
     active_t16_2pc            = 0;
     active_stance             = STANCE_BATTLE;
 
@@ -1060,7 +1063,7 @@ struct melee_t: public warrior_attack_t
   {
     warrior_attack_t::impact( s );
 
-    if ( result_is_hit( s -> result ) )
+    if ( result_is_hit( s -> result ) || result_is_block( s -> block_result ) )
     {
       trigger_t15_2pc_melee( this );
       if ( p() -> talents.sudden_death -> ok() )
@@ -1075,10 +1078,13 @@ struct melee_t: public warrior_attack_t
             p() -> proc.sudden_death_wasted -> occur();
         }
       }
-    }
-    // Any attack that hits generates rage, even a block.
-    if ( result_is_hit( s -> result ) || result_is_block( s -> block_result ) )
       trigger_rage_gain( s );
+      if ( p() -> perk.enhanced_rend -> ok() )
+      {
+        p() -> active_enhanced_rend -> target = s -> target;
+        p() -> active_enhanced_rend -> execute();
+      }
+    }
 
     if ( p() -> specialization() == WARRIOR_PROTECTION )
     {
@@ -1564,9 +1570,7 @@ struct execute_t: public warrior_attack_t
   {
     parse_options( NULL, options_str );
     stancemask = STANCE_BATTLE | STANCE_GLADIATOR | STANCE_DEFENSE;
-
     weapon = &( p -> main_hand_weapon );
-
     weapon_multiplier *= 1.0 + p -> perk.empowered_execute -> effectN( 1 ).percent();
 
     if ( p -> main_hand_weapon.group() == WEAPON_1H &&
@@ -1586,9 +1590,9 @@ struct execute_t: public warrior_attack_t
 
     if ( p() -> mastery.weapons_master -> ok() )
     {
-      am *= 6.0 * std::min( 40.0,
-                            ( p() -> buff.sudden_death -> up() ? p() -> resources.current[RESOURCE_RAGE] + 10 :
-                            p() -> resources.current[RESOURCE_RAGE] ) ) / 40;
+      if ( !p() -> buff.sudden_death -> check() )
+        am *= 6.0 * std::min( 40.0, p() -> resources.current[RESOURCE_RAGE] ) / 40;
+
       am *= 1.0 + p() -> cache.mastery_value();
     }
     return am;
@@ -1602,12 +1606,8 @@ struct execute_t: public warrior_attack_t
       c = std::min( 40.0, std::max( p() -> resources.current[RESOURCE_RAGE], c ) );
 
     if ( p() -> buff.sudden_death -> up() )
-    {
-      if ( p() -> specialization() != WARRIOR_ARMS )
-        c = 0;
-      else
-        c -= 10;
-    }
+      c = 0;
+
     return c;
   }
 
@@ -1627,8 +1627,8 @@ struct execute_t: public warrior_attack_t
     if ( p() -> main_hand_weapon.type == WEAPON_NONE )
       return false;
 
-    if ( p() -> buff.sudden_death -> up() )
-      return warrior_attack_t::ready();;
+    if ( p() -> buff.sudden_death -> check() )
+      return warrior_attack_t::ready();
 
     if ( target -> health_percentage() > 20 )
       return false;
@@ -2931,6 +2931,17 @@ struct die_by_the_sword_t: public warrior_spell_t
   }
 };
 
+// Enhanced Rend ==============================================================
+
+struct enhanced_rend_t: public warrior_spell_t
+{
+  enhanced_rend_t( warrior_t* p ):
+    warrior_spell_t( "enhanced_rend", p, p -> find_spell( 174736 ) )
+  {
+    dual = true;
+  }
+};
+
 // Last Stand ===============================================================
 
 struct last_stand_t: public warrior_spell_t
@@ -3614,6 +3625,7 @@ void warrior_t::init_spells()
   perk.improved_colossus_smash       = find_perk_spell( "Improved Colossus Smash" );
   perk.improved_whirlwind            = find_perk_spell( "Improved Whirlwind" );
   perk.improved_rend                 = find_perk_spell( "Improved Rend" );
+  perk.enhanced_rend                 = find_perk_spell( "Enhanced Rend" );
 
   perk.enhanced_whirlwind            = find_perk_spell( "Enhanced Whirlwind" );
   perk.improved_wild_strike          = find_perk_spell( "Improved Wild Strike" );
