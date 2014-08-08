@@ -680,11 +680,14 @@ void player_t::init()
       if ( pet -> regen_type != REGEN_DYNAMIC )
         continue;
 
-      regen_caches.insert( regen_caches.end(), pet -> regen_caches.begin(), pet -> regen_caches.end() );
+      for ( cache_e c = CACHE_NONE; c < CACHE_MAX; c++ )
+      {
+        if ( pet -> regen_caches[ c ] )
+          regen_caches[ c ] = true;
+      }
+
       dynamic_regen_pets = true;
     }
-
-    range::unique( regen_caches );
   }
 }
 
