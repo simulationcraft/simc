@@ -1140,7 +1140,7 @@ struct feral_spirit_pet_t : public pet_t
     main_hand_weapon.damage     = ( main_hand_weapon.min_dmg + main_hand_weapon.max_dmg ) / 2;
     main_hand_weapon.swing_time = timespan_t::from_seconds( 1.5 );
 
-    owner_coeff.ap_from_ap = 0.33;
+    owner_coeff.ap_from_ap = 0.66;
 
     command = owner -> find_spell( 65222 );
     regen_type = REGEN_DISABLED;
@@ -5190,6 +5190,7 @@ void shaman_t::init_action_list()
     def -> add_action( this, "Ascendance", "if=cooldown.strike.remains>=3" );
     def -> add_action( this, "Feral Spirit" );
     def -> add_talent( this, "Storm Elemental Totem", "if=!active&cooldown.fire_elemental_totem.remains>=60" );
+    def -> add_talent( this, "Liquid Magma", "if=pet.searing_totem.remains>=15|pet.magma_totem.remains>=15|pet.fire_elemental_totem.remains>=15" );
 
     // Need to remove the "/" in front of the profession action(s) for the new default action priority list stuff :/
     def -> add_action( init_use_profession_actions( ",if=(glyph.fire_elemental_totem.enabled&(pet.primal_fire_elemental.active|pet.greater_fire_elemental.active))|!glyph.fire_elemental_totem.enabled" ).erase( 0, 1 ) );
@@ -5262,6 +5263,8 @@ void shaman_t::init_action_list()
     ascendance_opts += ")&cooldown.lava_burst.remains>0)";
 
     def -> add_action( this, "Ascendance", ascendance_opts );
+
+    def -> add_talent( this, "Liquid Magma", "if=pet.searing_totem.remains>=15|pet.fire_elemental_totem.remains>=15" );
 
     // Need to remove the "/" in front of the profession action(s) for the new default action priority list stuff :/
     def -> add_action( init_use_profession_actions().erase( 0, 1 ) );
