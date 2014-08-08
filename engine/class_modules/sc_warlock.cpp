@@ -8,8 +8,8 @@
 // ==========================================================================
 //
 // TODO:
-// Grimoire of Synergy
-// Level 100 talents: demonic servitude
+// Grimoire of Synergy: Change to RPPM
+// Level 100 talents: demonic servitude: check SP coefficient
 // Update action lists, especially AoE
 // Charred Remains interaction with AoE Chaos Bolt
 // Proper spell ids for drain_soul triggered Corruption/UA/Agony ticks. Reia says they are differnt. take a look at the combatlog
@@ -279,7 +279,7 @@ public:
     buff_t* soulburn;
     buff_t* havoc;
     buff_t* grimoire_of_sacrifice;
-    buff_t* grimoire_of_synergy;
+    buff_t* demonic_synergy;
     buff_t* demonic_calling;
     buff_t* fire_and_brimstone;
     buff_t* soul_swap;
@@ -473,6 +473,7 @@ struct warlock_pet_t : public pet_t
   warlock_pet_t( sim_t* sim, warlock_t* owner, const std::string& pet_name, pet_e pt, bool guardian = false );
   virtual void init_base_stats() override;
   virtual void init_action_list() override;
+  virtual void create_buffs() override;
   virtual timespan_t available() const override;
   virtual void schedule_ready( timespan_t delta_time = timespan_t::zero(),
                                bool   waiting = false ) override;
@@ -488,6 +489,11 @@ struct warlock_pet_t : public pet_t
   { return static_cast<warlock_t*>( owner ); }
   const warlock_t* o() const
   { return static_cast<warlock_t*>( owner ); }
+  
+  struct buffs_t
+  {
+    buff_t* demonic_synergy;
+  } buffs;
 };
 
 
@@ -533,6 +539,9 @@ public:
 
     if ( ab::result_is_hit( ab::execute_state -> result ) && p() -> o() -> specialization() == WARLOCK_DEMONOLOGY && generate_fury > 0 )
       p() -> o() -> resource_gain( RESOURCE_DEMONIC_FURY, generate_fury, p() -> owner_fury_gain );
+      
+    if ( ab::result_is_hit( ab::execute_state -> result ) && p() -> o() -> talents.grimoire_of_synergy -> ok())
+      p() -> o() -> buffs.demonic_synergy -> trigger();
   }
 
   double get_fury_gain( const spell_data_t& data )
@@ -1050,7 +1059,16 @@ void warlock_pet_t::init_action_list()
     for ( size_t i = 0; i < action_list.size(); ++i )
       summon_stats -> add_child( action_list[ i ] -> stats );
 }
-
+    
+void warlock_pet_t::create_buffs()
+{
+    pet_t::create_buffs();
+    
+    buffs.demonic_synergy       = buff_creator_t( this, "demonic_synergy", find_spell( 171982 ) )
+    .add_invalidate(CACHE_PLAYER_DAMAGE_MULTIPLIER)
+    .chance(0.1);   ////TODO 1.333 rppm
+}
+    
 timespan_t warlock_pet_t::available() const
 {
   assert( primary_resource() == RESOURCE_ENERGY );
@@ -1088,7 +1106,9 @@ double warlock_pet_t::composite_player_multiplier( school_e school ) const
 
   if ( o() -> buffs.tier16_2pc_fiery_wrath -> up())
     m *= 1.0  + o() -> buffs.tier16_2pc_fiery_wrath -> value();
-
+  if ( buffs.demonic_synergy -> up() )
+      m *= 1.0 + buffs.demonic_synergy -> data().effectN( 1 ).percent();
+    
   m *= 1.0 + o() -> perk.improved_demons -> effectN( 1 ).percent();
 
 
@@ -1736,6 +1756,15 @@ public:
     if ( result_is_hit( execute_state -> result ) && p() -> specialization() == WARLOCK_DEMONOLOGY
          && generate_fury > 0 && ! p() -> buffs.metamorphosis -> check() )
       p() -> resource_gain( RESOURCE_DEMONIC_FURY, generate_fury, gain );
+    if ( result_is_hit( execute_state -> result ) && p() -> talents.grimoire_of_synergy -> ok())
+    {
+        pets::warlock_pet_t* my_pet = static_cast<pets::warlock_pet_t*>(p() -> pets.active); //get active pet
+        if (my_pet != NULL)
+        {
+            my_pet -> buffs.demonic_synergy -> trigger(); //trigger buff
+
+        }
+    }
   }
 
   virtual timespan_t execute_time() const
@@ -4623,6 +4652,9 @@ double warlock_t::composite_player_multiplier( school_e school ) const
   if ( buffs.tier16_2pc_fiery_wrath -> up() )
     m *= 1.0 + buffs.tier16_2pc_fiery_wrath -> value();
 
+  if ( buffs.demonic_synergy -> up() )
+        m *= 1.0 + buffs.demonic_synergy -> data().effectN( 1 ).percent();
+    
   return m;
 }
 
@@ -5003,6 +5035,7 @@ void warlock_t::init_spells()
   talents.grimoire_of_supremacy = find_talent_spell( "Grimoire of Supremacy" );
   talents.grimoire_of_service   = find_talent_spell( "Grimoire of Service" );
   talents.grimoire_of_sacrifice = find_talent_spell( "Grimoire of Sacrifice" );
+  talents.grimoire_of_synergy   = find_talent_spell( "Grimoire of Synergy" );
 
   talents.archimondes_darkness  = find_talent_spell( "Archimonde's Darkness" );
   talents.kiljaedens_cunning    = find_talent_spell( "Kil'jaeden's Cunning" );
@@ -5145,6 +5178,10 @@ void warlock_t::create_buffs()
   buffs.molten_core           = buff_creator_t( this, "molten_core", find_spell( 122355 ) ).activated( false ).max_stack( 10 );
   buffs.soulburn              = buff_creator_t( this, "soulburn", find_class_spell( "Soulburn" ) );
   buffs.grimoire_of_sacrifice = buff_creator_t( this, "grimoire_of_sacrifice", talents.grimoire_of_sacrifice );
+  buffs.demonic_synergy       = buff_creator_t( this, "demonic_synergy", find_spell( 171982 ) )
+                                .add_invalidate(CACHE_PLAYER_DAMAGE_MULTIPLIER)
+                                .chance(0.1);   ////TODO 1.333 rppm
+    
   buffs.demonic_calling       = buff_creator_t( this, "demonic_calling", spec.wild_imps -> effectN( 1 ).trigger() ).duration( timespan_t::zero() );
   buffs.fire_and_brimstone    = buff_creator_t( this, "fire_and_brimstone", find_class_spell( "Fire and Brimstone" ) )
                                 .cd( timespan_t::zero() );
