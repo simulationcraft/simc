@@ -3184,7 +3184,7 @@ struct earthquake_rumble_t : public shaman_spell_t
     harmful = background = true;
     aoe = -1;
     school = SCHOOL_PHYSICAL;
-    spell_power_mod.direct = 0.1125; // Hardcoded into tooltip because it's cool
+    spell_power_mod.direct = 0.15; // Hardcoded into tooltip because it's cool
   }
 
   virtual double composite_spell_power() const
