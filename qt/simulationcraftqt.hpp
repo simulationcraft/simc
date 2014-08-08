@@ -1591,9 +1591,6 @@ namespace automation {
                              QString advanced_text
                            );
 
-  bool check_automation_input( int i, QStringList talentlist
-                                 );
-
 } // end automation namespace
 
 #ifdef SC_PAPERDOLL

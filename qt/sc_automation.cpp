@@ -34,7 +34,7 @@ QString automation::do_something( int sim_type,
                                   QString player_gear,
                                   QString player_rotation,
                                   QString advanced_text
-                                ) 
+                                  )
 {
   // Dummy code - this just sets up a profile using the strings we pass. 
   // This is where we'll actually split off into different automation schemes.
@@ -51,13 +51,13 @@ QString automation::do_something( int sim_type,
   switch ( sim_type )
   {
     case 1: // talent simulation
-      return auto_talent_sim( player_class, base_profile_info, advanced_text , player_glyphs, player_gear, player_rotation);
+      return auto_talent_sim( player_class, base_profile_info, advanced_text, player_glyphs, player_gear, player_rotation );
     case 2: // glyph simulation
-      return auto_glyph_sim( player_class, base_profile_info, player_talents, advanced_text , player_gear, player_rotation);
-    case 3: // rotation simulation
-      return auto_rotation_sim( player_class, base_profile_info, player_talents, player_glyphs, advanced_text , player_rotation);
-    case 4: // gear simulation
-      return auto_gear_sim( player_class, base_profile_info, player_talents, player_glyphs, player_gear, advanced_text );
+      return auto_glyph_sim( player_class, base_profile_info, player_talents, advanced_text, player_gear, player_rotation );
+    case 3: // gear simulation
+      return auto_gear_sim( player_class, base_profile_info, player_talents, player_glyphs, advanced_text, player_rotation );
+    case 4: // rotation simulation
+      return auto_rotation_sim( player_class, base_profile_info, player_talents, player_glyphs, player_rotation, advanced_text );
     default: // default profile creation
       profile += base_profile_info;
       profile += "talents=" + player_talents + "\n";
@@ -65,6 +65,7 @@ QString automation::do_something( int sim_type,
       profile += player_gear + "\n";
       profile += player_rotation;
       return profile;
+
   }
 
   return profile;
@@ -83,12 +84,6 @@ QString automation::auto_talent_sim( QString player_class,
 
   QString profile;
 
-  // talent list input check
-  if (!check_automation_input(1, talentList))
-  {
-    QString auto_error = "error in talent input";
-    return auto_error;
-  }
 
   // make profile
   for ( int i = 0; i < talentList.size(); i++ )
@@ -142,8 +137,27 @@ QString automation::auto_gear_sim( QString player_class,
                                    QString player_rotation
                                  )
 {
-  QString profile = "NYI";
+  // split into gearSets
+  QStringList gearList = advanced_text.split( "\n\n", QString::SkipEmptyParts );
 
+  QString profile;
+
+  // make profile
+  for ( int i = 0; i < gearList.size(); i++ )
+  {
+    profile += tokenize( player_class ) + "=G_" + QString::number( i ) + "\n";
+    profile += base_profile_info;
+    profile += "talents=" + player_talents + "\n";
+    profile += "glyphs=" + player_glyphs + "\n";
+    // split gearSets into single item lines
+    QStringList gearSet = gearList[ i ].split( "\n", QString::SkipEmptyParts );
+    for ( int j = 0; j < gearSet.size(); j++ )
+    {
+      profile += gearSet[ j ] + "\n";
+    }
+    profile += player_rotation + "\n";
+    profile += "\n";
+  }
   return profile;
 }
 
@@ -161,48 +175,7 @@ QString automation::auto_rotation_sim( QString player_class,
   return profile;
 }
 
-// Control Method for talentlist input
-bool automation::check_automation_input( int i, 
-                                         QStringList talentList
-                                       )
-{
-  QRegExp talentExp( "^[1-3]{1,1}$" );
 
-  switch ( i )
-  {
-    case 1: // talent list error checking   
-      for ( int i = 0; i < talentList.size(); i++ )
-      {
-        QString talent = talentList[ i ];
-        int k = 7;
-        if ( !( talent.size() == k ))
-        {
-          return false;
-        }
-        for ( int j = 0; j < talent.length(); j++ )
-        {
-          QString tal_check = talent.right( 1 );
-          talent.chop( 1 );
-          if ( ! tal_check.contains( talentExp ))
-          {
-            return false;
-          }
-        }
-      }
-      return true;
-
-    case 2: // glyph list error checking
-      return true;
-
-    case 3: // gear list error checking
-      return true;
-
-   case 4: // rotation list error checking
-      return true;
-  }
-
-  return true;
-}
 
 ///////////////////////////////////////////////////////////////////////////////
 ////
