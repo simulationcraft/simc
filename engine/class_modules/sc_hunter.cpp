@@ -3426,7 +3426,6 @@ void hunter_t::apl_bm()
   std::vector<std::string> racial_actions     = get_racial_actions();
 
   action_priority_list_t* default_list        = get_action_priority_list( "default" );
-  action_priority_list_t* single_target       = get_action_priority_list( "single_target" );
 
   default_list -> add_action( "auto_shot" );
 
@@ -3446,30 +3445,28 @@ void hunter_t::apl_bm()
     else if ( level >= 80 )
       default_list -> add_action( "potion,name=virmens_bite,if=buff.beast_within.up" );
   }
-
-  default_list -> add_action( "run_action_list,name=single_target" );
-
-  single_target -> add_talent( this, "Dire Beast" );
-  single_target -> add_talent( this, "Fervor", "if=focus<=65" );
-  single_target -> add_action( this, "Bestial Wrath", "if=focus>60&!buff.beast_within.up" );
-  single_target -> add_action( this, "Multi-Shot", "if=active_enemies>5|(active_enemies>1&pet.cat.buff.beast_cleave.down)" );
-  single_target -> add_talent( this, "Stampede", "if=(trinket.stat.agility.up|target.time_to_die<=20|(trinket.stacking_stat.agility.stack>10&trinket.stat.agility.cooldown_remains<=3))" );
-  single_target -> add_talent( this, "Barrage", "if=active_enemies>1" );
-  single_target -> add_action( this, "Kill Shot" );
-  single_target -> add_action( this, "Kill Command" );
-  single_target -> add_talent( this, "Focusing Shot", "if=focus<50" );
-  single_target -> add_talent( this, "A Murder of Crows" );
-  single_target -> add_talent( this, "Glaive Toss" );
-  single_target -> add_talent( this, "Barrage" );
-  single_target -> add_talent( this, "Powershot" );
-  single_target -> add_action( this, "Cobra Shot", "if=active_enemies>5" );
-  single_target -> add_action( this, "Arcane Shot", "if=buff.thrill_of_the_hunt.react|buff.beast_within.up" );
-  single_target -> add_action( "focus_fire,five_stacks=1" );
-  single_target -> add_action( this, "Arcane Shot", "if=focus>=61" );
+  
+  default_list ->add_talent(this, "Dire Beast");
+  default_list ->add_talent(this, "Fervor", "if=focus<=65");
+  default_list ->add_action(this, "Bestial Wrath", "if=focus>60&!buff.beast_within.up");
+  default_list ->add_action(this, "Multi-Shot", "if=active_enemies>5|(active_enemies>1&pet.cat.buff.beast_cleave.down)");
+  default_list ->add_talent(this, "Stampede", "if=(trinket.stat.agility.up|target.time_to_die<=20|(trinket.stacking_stat.agility.stack>10&trinket.stat.agility.cooldown_remains<=3))");
+  default_list ->add_talent(this, "Barrage", "if=active_enemies>1");
+  default_list ->add_action(this, "Kill Shot");
+  default_list ->add_action(this, "Kill Command");
+  default_list ->add_talent(this, "Focusing Shot", "if=focus<50");
+  default_list ->add_talent(this, "A Murder of Crows");
+  default_list ->add_talent(this, "Glaive Toss");
+  default_list ->add_talent(this, "Barrage");
+  default_list ->add_talent(this, "Powershot");
+  default_list ->add_action(this, "Cobra Shot", "if=active_enemies>5");
+  default_list ->add_action(this, "Arcane Shot", "if=buff.thrill_of_the_hunt.react|buff.beast_within.up");
+  default_list ->add_action("focus_fire,five_stacks=1");
+  default_list ->add_action(this, "Arcane Shot", "if=focus>=61");
   if ( level >= 81 )
-    single_target -> add_action( this, "Cobra Shot" );
+    default_list ->add_action(this, "Cobra Shot");
   else
-    single_target -> add_action( this, "Steady Shot" );
+    default_list ->add_action(this, "Steady Shot");
 }
 
 // Marksman Action List ======================================================================
@@ -3479,7 +3476,6 @@ void hunter_t::apl_mm()
   std::vector<std::string> racial_actions     = get_racial_actions();
 
   action_priority_list_t* default_list        = get_action_priority_list( "default" );
-  action_priority_list_t* single_target       = get_action_priority_list( "single_target" );
   action_priority_list_t* careful_aim         = get_action_priority_list( "careful_aim" );
 
   default_list -> add_action( "auto_shot" );
@@ -3501,17 +3497,15 @@ void hunter_t::apl_mm()
     else if ( level >= 80 )
       default_list -> add_action( "potion,name=virmens_bite,if=buff.rapid_fire.up" );
   }
+  
+  default_list -> add_talent( this, "Powershot" );
+  default_list -> add_talent( this, "Fervor", "if=focus<=50" );
+  default_list -> add_action( this, "Rapid Fire", "if=!buff.rapid_fire.up" );
+  default_list -> add_talent( this, "Stampede", "if=trinket.stat.agility.up|target.time_to_die<=20|(trinket.stacking_stat.agility.stack>10&trinket.stat.agility.cooldown_remains<=3)" );
+  default_list -> add_talent( this, "A Murder of Crows" );
+  default_list -> add_talent( this, "Dire Beast" );
 
-  default_list -> add_action( "run_action_list,name=single_target" );
-
-  single_target -> add_talent( this, "Powershot" );
-  single_target -> add_talent( this, "Fervor", "if=focus<=50" );
-  single_target -> add_action( this, "Rapid Fire", "if=!buff.rapid_fire.up" );
-  single_target -> add_talent( this, "Stampede", "if=trinket.stat.agility.up|target.time_to_die<=20|(trinket.stacking_stat.agility.stack>10&trinket.stat.agility.cooldown_remains<=3)" );
-  single_target -> add_talent( this, "A Murder of Crows" );
-  single_target -> add_talent( this, "Dire Beast" );
-
-  single_target -> add_action( "run_action_list,name=careful_aim,if=target.health.pct>=80|buff.rapid_fire.up" );
+  default_list -> add_action( "run_action_list,name=careful_aim,if=target.health.pct>=80|buff.rapid_fire.up" );
   {
     careful_aim -> add_action( this, "Chimaera Shot" ); 
     careful_aim -> add_action( this, "Aimed Shot" );
@@ -3520,14 +3514,14 @@ void hunter_t::apl_mm()
     careful_aim -> add_action( this, "Steady Shot" );
   }
 
-  single_target -> add_talent( this, "Glaive Toss" );
-  single_target -> add_talent( this, "Barrage" );
-  single_target -> add_action( this, "Chimaera Shot" );
-  single_target -> add_talent( this, "Focusing Shot", "if=focus<55" );
-  single_target -> add_action( this, "Kill Shot" );
-  single_target -> add_action( this, "Multi-Shot", "if=active_enemies>=4" );
-  single_target -> add_action( this, "Aimed Shot" );
-  single_target -> add_action( this, "Steady Shot" );
+  default_list -> add_talent( this, "Glaive Toss" );
+  default_list -> add_talent( this, "Barrage" );
+  default_list -> add_action( this, "Chimaera Shot" );
+  default_list -> add_talent( this, "Focusing Shot", "if=focus<55" );
+  default_list -> add_action( this, "Kill Shot" );
+  default_list -> add_action( this, "Multi-Shot", "if=active_enemies>=4" );
+  default_list -> add_action( this, "Aimed Shot" );
+  default_list -> add_action( this, "Steady Shot" );
 }
 
 // Survival Action List ===================================================================
@@ -3536,7 +3530,6 @@ void hunter_t::apl_surv()
 {
   std::vector<std::string> racial_actions     = get_racial_actions();
   action_priority_list_t* default_list        = get_action_priority_list( "default" );
-  action_priority_list_t* single_target       = get_action_priority_list( "single_target" );
 
   default_list -> add_action( "auto_shot" );
 
@@ -3558,27 +3551,25 @@ void hunter_t::apl_surv()
       default_list -> add_action( "potion,name=virmens_bite" );
   }
 
-  default_list -> add_action( "run_action_list,name=single_target" );
-
-  single_target -> add_action( this, "Explosive Trap", "if=active_enemies>1" );
-  single_target -> add_talent( this, "Fervor", "if=focus<=50" );
-  single_target -> add_talent( this, "A Murder of Crows" );
-  single_target -> add_action( this, "Explosive Shot" );
-  single_target -> add_talent( this, "Glaive Toss" );
-  single_target -> add_talent( this, "Powershot" );
-  single_target -> add_talent( this, "Barrage" );
-  single_target -> add_action( this, "Black Arrow", "if=!ticking" );
-  single_target -> add_action( this, "Multi-Shot" , "if=active_enemies>3" );
-  single_target -> add_talent( this, "Focusing Shot", "if=focus<50" );
-  single_target -> add_action( this, "Arcane Shot", "if=buff.thrill_of_the_hunt.react" );
-  single_target -> add_talent( this, "Dire Beast" );
-  single_target -> add_talent( this, "Stampede", "if=(trinket.stat.agility.up|target.time_to_die<=20|(trinket.stacking_stat.agility.stack>10&trinket.stat.agility.cooldown_remains<=3))" );
-  single_target -> add_action( this, "Arcane Shot", "if=focus>=67&active_enemies<2" );
-  single_target -> add_action( this, "Multi-Shot", "if=focus>67&active_enemies>1" );
+  default_list -> add_action( this, "Explosive Trap", "if=active_enemies>1" );
+  default_list -> add_talent( this, "Fervor", "if=focus<=50" );
+  default_list -> add_talent( this, "A Murder of Crows" );
+  default_list -> add_action( this, "Explosive Shot" );
+  default_list -> add_talent( this, "Glaive Toss" );
+  default_list -> add_talent( this, "Powershot" );
+  default_list -> add_talent( this, "Barrage" );
+  default_list -> add_action( this, "Black Arrow", "if=!ticking" );
+  default_list -> add_action( this, "Multi-Shot" , "if=active_enemies>3" );
+  default_list -> add_talent( this, "Focusing Shot", "if=focus<50" );
+  default_list -> add_action( this, "Arcane Shot", "if=buff.thrill_of_the_hunt.react" );
+  default_list -> add_talent( this, "Dire Beast" );
+  default_list -> add_talent( this, "Stampede", "if=(trinket.stat.agility.up|target.time_to_die<=20|(trinket.stacking_stat.agility.stack>10&trinket.stat.agility.cooldown_remains<=3))" );
+  default_list -> add_action( this, "Arcane Shot", "if=focus>=67&active_enemies<2" );
+  default_list -> add_action( this, "Multi-Shot", "if=focus>67&active_enemies>1" );
   if ( level >= 81 )
-    single_target -> add_action( this, "Cobra Shot" );
+    default_list -> add_action( this, "Cobra Shot" );
   else
-    single_target -> add_action( this, "Steady Shot" );
+    default_list -> add_action( this, "Steady Shot" );
 }
 
 // NO Spec Combat Action Priority List ======================================
