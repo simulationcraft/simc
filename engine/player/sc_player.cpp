@@ -7278,6 +7278,16 @@ expr_t* player_t::create_expression( action_t* a,
 
   else if ( splits[ 0 ] == "stat" && splits.size() == 2 )
   {
+    if ( util::str_compare_ci( "spell_haste_pct", splits[ 1 ] ) )
+    {
+      struct spell_haste_pct_expr_t : public player_expr_t
+      {
+        spell_haste_pct_expr_t( player_t& p ) : player_expr_t( "spell_haste_pct", p ) { }
+        double evaluate() { return 1.0 / player.cache.spell_haste() - 1.0; }
+      };
+      return new spell_haste_pct_expr_t( *this );
+    }
+
     stat_e stat = util::parse_stat_type( splits[ 1 ] );
     switch ( stat )
     {
