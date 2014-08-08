@@ -471,7 +471,7 @@ void SC_ImportTab::createAutomationTab()
   textbox.talents = new QLineEdit;
   defaultsFormLayout -> addRow( label.talents, textbox.talents );
   
-  label.glyphs = new QLabel( tr("Default Glypyhs" ) );
+  label.glyphs = new QLabel( tr("Default Glyphs" ) );
   textbox.glyphs = new QLineEdit;
   defaultsFormLayout -> addRow( label.glyphs, textbox.glyphs );
 
