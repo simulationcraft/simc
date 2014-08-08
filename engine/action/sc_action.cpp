@@ -1216,7 +1216,7 @@ void action_t::tick( dot_t* d )
       snapshot_state( state, amount_type( state, true ) );
     else
       update_state( state, amount_type( state, true ) );
-    state -> da_multiplier = state -> ta_multiplier;
+    state -> da_multiplier = state -> ta_multiplier * d -> get_last_tick_factor();
     state -> target_da_multiplier = state -> target_ta_multiplier;
     tick_action -> schedule_execute( state );
   }
