@@ -3185,11 +3185,8 @@ struct molten_armor_t : public mage_spell_t
 //FIXME_cleave: take actual distances between main_target and cleave_target into account
 struct nether_tempest_cleave_t: public mage_spell_t
 {
-  player_t* main_target;
-
   nether_tempest_cleave_t( mage_t* p ) :
-    mage_spell_t( "nether_tempest_cleave", p, p -> find_spell( 114954 ) ),
-    main_target( nullptr )
+    mage_spell_t( "nether_tempest_cleave", p, p -> find_spell( 114954 ) )
   {
     background = true;
   }
@@ -3207,7 +3204,7 @@ struct nether_tempest_t : public mage_spell_t
 
   nether_tempest_t( mage_t* p, const std::string& options_str ) :
     mage_spell_t( "nether_tempest", p, p -> talents.nether_tempest ),
-    add_cleave( nullptr )
+    add_cleave( new nether_tempest_cleave_t( p ) )
   {
     parse_options( NULL, options_str );
     add_child( add_cleave );
