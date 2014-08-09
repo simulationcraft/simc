@@ -561,7 +561,7 @@ struct mirror_image_pet_t : public pet_t
 
       am *= 1.0 + p() -> arcane_charge -> stack() * p() -> o() -> spells.arcane_charge_arcane_blast -> effectN( 1 ).percent() *
             ( 1.0 + p() -> o() -> sets.set( SET_T15_4PC_CASTER ) -> effectN( 1 ).percent() );
-
+        
       return am;
     }
   };
@@ -3197,33 +3197,6 @@ struct nether_tempest_cleave_t: public mage_spell_t
   virtual resource_e current_resource() const
   { return RESOURCE_NONE; }
 
-  virtual void execute()
-  {
-    assert( main_target ); // main target needs to be set to parent actions target
-    target = main_target;
-
-    std::vector< player_t* >& tl = target_list();
-
-    if ( tl.size() <= 1 )
-      return; // single target; back out completely
-
-    // obtain random target until it is not equal to main target
-    while ( target == main_target )
-    {
-      // Randomly select target index
-      unsigned t = static_cast<unsigned>( rng().range( 0, as<double>( tl.size() ) ) );
-      if ( t >= tl.size() ) --t; // dsfmt range should not give a value actually equal to max, but be paranoid
-      target = tl[ t ];
-    }
-
-    mage_spell_t::execute();
-  }
-
-  virtual timespan_t travel_time() const
-  {
-    return timespan_t::from_seconds( travel_speed ); // assuming 1 yard to the cleave target
-  }
-
 };
 
 // Nether Tempest ===========================================================
@@ -3237,25 +3210,49 @@ struct nether_tempest_t : public mage_spell_t
     add_cleave( nullptr )
   {
     parse_options( NULL, options_str );
-    add_cleave = new nether_tempest_cleave_t( p );
     add_child( add_cleave );
+
+    base_multiplier *= 1.0 + (0.5 * p -> buffs.arcane_charge -> stack() );
   }
 
-  void execute()
+  virtual void execute()
   {
+    mage_t& p = *this -> p();
+    bool pre_ticking = get_dot( target ) -> is_ticking();
+
     mage_spell_t::execute();
+
     if ( result_is_hit( execute_state -> result ) )
-      p() -> last_bomb_target = execute_state -> target;
+    {
+      if ( ! pre_ticking )
+        p.active_bomb_targets++;
+      p.last_bomb_target = execute_state -> target;
+    }
   }
-
-  virtual void tick( dot_t* d )
+    virtual void last_tick( dot_t* d )
   {
-    mage_spell_t::tick( d );
 
-    add_cleave -> main_target = target;
+    mage_spell_t::last_tick( d );
+
+    mage_t& p = *this -> p();
+    p.active_bomb_targets--;
+
     add_cleave -> execute();
 
   }
+
+  virtual bool ready()
+  {
+    mage_t& p = *this -> p();
+
+    assert( p.active_bomb_targets <= 1 && p.active_bomb_targets >= 0 );
+
+    if ( p.active_bomb_targets == 1 )
+      return false;
+
+    return mage_spell_t::ready();
+  }
+
 };
 
 // Presence of Mind Spell ===================================================
@@ -4315,7 +4312,7 @@ void mage_t::create_buffs()
   buffs.arcane_charge        = buff_creator_t( this, "arcane_charge", spec.arcane_charge )
                                .max_stack( find_spell( 36032 ) -> max_stacks() )
                                .duration( find_spell( 36032 ) -> duration() );
-  buffs.arcane_missiles      = buff_creator_t( this, "arcane_missiles", find_class_spell( "Arcane Missiles" ) -> ok() ? find_spell( 79683 ) : spell_data_t::not_found() ).chance( 0.3 ).max_stack( 2 );
+  buffs.arcane_missiles      = buff_creator_t( this, "arcane_missiles", find_class_spell( "Arcane Missiles" ) -> ok() ? find_spell( 79683 ) : spell_data_t::not_found() ).chance( 0.3 ).max_stack( 3 );
 
   buffs.arcane_power         = new buffs::arcane_power_t( this );
   buffs.blazing_speed        = buff_creator_t( this, "blazing_speed", talents.blazing_speed )
