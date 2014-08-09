@@ -818,48 +818,48 @@ static double ready_in( const death_knight_t* player, int blood, int frost, int 
   if ( player -> sim -> debug )
     log_rune_status( player );
 
-  double min_ready_in = 9999;
+  double min_ready_blood = 9999, min_ready_frost = 9999, min_ready_unholy = 9999;
+
+  rri_t info_blood, info_frost, info_unholy;
 
   if ( blood )
   {
-    rri_t info = rune_ready_in( player, RUNE_TYPE_BLOOD, use );
-    if ( info.first != -1 && info.second < min_ready_in )
-      min_ready_in = info.first;
+    info_blood = rune_ready_in( player, RUNE_TYPE_BLOOD, use );
+    if ( info_blood.second < min_ready_blood )
+      min_ready_blood = info_blood.second;
 
-    if ( min_ready_in == 0 )
-      return min_ready_in;
-
-    if ( info.first > -1 )
-      use[ info.first ] = true;
+    if ( info_blood.first > -1 )
+      use[ info_blood.first ] = true;
   }
 
   if ( frost )
   {
-    rri_t info = rune_ready_in( player, RUNE_TYPE_FROST, use );
-    if ( info.first != -1 && info.second < min_ready_in )
-      min_ready_in = info.first;
+    info_frost = rune_ready_in( player, RUNE_TYPE_FROST, use );
+    if ( info_frost.second < min_ready_frost )
+      min_ready_frost = info_frost.second;
 
-    if ( min_ready_in == 0 )
-      return min_ready_in;
-
-    if ( info.first > -1 )
-      use[ info.first ] = true;
+    if ( info_frost.first > -1 )
+      use[ info_frost.first ] = true;
   }
 
   if ( unholy )
   {
-    rri_t info = rune_ready_in( player, RUNE_TYPE_UNHOLY, use );
-    if ( info.first != -1 && info.second < min_ready_in )
-      min_ready_in = info.first;
+    info_unholy = rune_ready_in( player, RUNE_TYPE_UNHOLY, use );
+    if ( info_unholy.second < min_ready_unholy )
+      min_ready_unholy = info_unholy.second;
 
-    if ( min_ready_in == 0 )
-      return min_ready_in;
-
-    if ( info.first > -1 )
-      use[ info.first ] = true;
+    if ( info_unholy.first > -1 )
+      use[ info_unholy.first ] = true;
   }
 
-  return min_ready_in;
+  double min_ready = std::max( blood * min_ready_blood, frost * min_ready_frost );
+  min_ready = std::max( min_ready, unholy * min_ready_unholy );
+
+  if ( player -> sim -> debug )
+    player -> sim -> out_debug.printf( "%s ready_in blood=[%d, %.3f] frost=[%d, %.3f] unholy=[%d, %.3f] min_ready=%.3f",
+        player -> name(), info_blood.first, min_ready_blood, info_frost.first, min_ready_frost, info_unholy.first, min_ready_unholy, min_ready );
+
+  return min_ready;
 }
 
 static bool group_runes ( const death_knight_t* player, int blood, int frost, int unholy, int death, std::array<bool,RUNE_SLOT_MAX>& group )
