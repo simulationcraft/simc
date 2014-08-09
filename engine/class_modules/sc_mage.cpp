@@ -22,7 +22,7 @@
 // Are Meteor ticks effected by haste?
 // Enhanced Pyrotechnics is giving global crit chance increase (not just FB/FFB). Fix this!
 // Unstable Magic Trigger is very sensative to double dipping - as we encounter new modifiers, need to check there is no double dipping going on!
-// Un-hardcode x% damage modifier on unstable magic
+// Automate which spells use Unstable Magic
 // Does the IV glyph still have a hidden proc-rate increase for FoF?
 // Brainfreeze doesn't look correct in the spelldata (and isn't correct on the beta) in regards to proc chance. Until this is fixed, hardcoding it's buff and proc rate will suffice. Need to go and fix once the spell data is fixed.
 // Do not hardcode 15second duration for enhanced frostbolt perk
@@ -1358,7 +1358,7 @@ static void trigger_unstable_magic( action_state_t* s )
       aoe = -1;
       base_costs[ RESOURCE_MANA ] = 0;
       cooldown -> duration  = timespan_t::zero();
-      pct_damage = 0.2; // Hardcoding this until I can figure out how to get the numbers to match when not hardcoding.
+      pct_damage = talents.unstable_magic -> effectN( 2 ).percent()
       trigger_gcd = timespan_t::zero();
     }
 
@@ -2628,10 +2628,15 @@ struct frostfire_bolt_t : public mage_spell_t
     else if ( s -> result == RESULT_HIT && p() -> specialization() == MAGE_FIRE )
         p() -> buffs.enhanced_pyrotechnics -> trigger();
 
+    //Unstable Magic Trigger
+    if ( result_is_hit( s -> result ) || result_is_multistrike( s -> result ) )
+    {
+      if ( p() -> talents.unstable_magic -> ok() && rng().roll( p() -> talents.unstable_magic -> effectN( 2 ).percent() ) )
+        trigger_unstable_magic( s );
+    }
 
     if ( ( result_is_hit( s-> result) || result_is_multistrike( s -> result ) ) && p() -> specialization() == MAGE_FIRE )
       trigger_ignite( s );
-
 
 
     if ( ( result_is_hit( s-> result) || result_is_multistrike( s -> result ) ) && p() -> specialization() == MAGE_FROST )
