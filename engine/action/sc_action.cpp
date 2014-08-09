@@ -1803,7 +1803,7 @@ void action_t::interrupt_action()
   if ( player -> executing  == this ) player -> executing  = 0;
   if ( player -> channeling == this )
   {
-    dot_t* dot = get_dot();
+    dot_t* dot = get_dot( execute_state -> target );
     assert( dot -> is_ticking() );
     dot -> cancel();
   }
