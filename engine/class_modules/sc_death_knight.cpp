@@ -5713,17 +5713,14 @@ void death_knight_t::init_action_list()
       if ( main_hand_weapon.group() == WEAPON_2H )
       {
         // Diseases for free
-        st -> add_talent( this, "Plague Leech", "if=!talent.necrotic_plague.enabled&(dot.blood_plague.remains<1|dot.frost_fever.remains<1)" );
-        st -> add_talent( this, "Plague Leech", "if=talent.necrotic_plague.enabled&(dot.necrotic_plague.remains<1)" );
-        st -> add_action( this, "Outbreak", "if=!talent.necrotic_plague.enabled&(!dot.frost_fever.ticking|!dot.blood_plague.ticking)" );
-        st -> add_action( this, "Outbreak", "if=talent.necrotic_plague.enabled&(!dot.necrotic_plague.ticking)" );
-        st -> add_talent( this, "Unholy Blight", "if=!talent.necrotic_plague.enabled&(!dot.frost_fever.ticking|!dot.blood_plague.ticking)" );
-        st -> add_talent( this, "Unholy Blight", "if=talent.necrotic_plague.enabled&(!dot.necrotic_plague.ticking)" );
+        st -> add_talent( this, "Plague Leech", "if=disease.min_remains<1" );
+        st -> add_action( this, "Outbreak", "if=!disease.min_ticking" );
+        st -> add_talent( this, "Unholy Blight", "if=!disease.min_ticking" );
 
         // Soul Reaper
         st -> add_action( this, "Soul Reaper", "if=target.health.pct-3*(target.health.pct%target.time_to_die)<=" + soul_reaper_pct );
         st -> add_talent( this, "Blood Tap", "if=(target.health.pct-3*(target.health.pct%target.time_to_die)<=" + soul_reaper_pct + "&cooldown.soul_reaper.remains=0)" );
-       
+
         // Diseases for runes
         st -> add_action( this, "Howling Blast", "if=!talent.necrotic_plague.enabled&!dot.frost_fever.ticking" );
         st -> add_action( this, "Howling Blast", "if=talent.necrotic_plague.enabled&!dot.necrotic_plague.ticking" );
@@ -5735,7 +5732,7 @@ void death_knight_t::init_action_list()
         // Killing Machine
         st -> add_action( this, "Obliterate", "if=buff.killing_machine.react" );
         st -> add_talent( this, "Blood Tap", "if=buff.killing_machine.react" );
-        
+
         // Don't waste Runic Power
         st -> add_talent( this, "Blood Tap", "if=buff.blood_charge.stack>10&runic_power>76" );
         st -> add_action( this, "Frost Strike", "if=runic_power>76" );
@@ -5744,13 +5741,10 @@ void death_knight_t::init_action_list()
         st -> add_action( this, "Obliterate", "if=blood=2|frost=2|unholy=2" );
 
         // Refresh diseases
-        st -> add_talent( this, "Plague Leech", "if=!talent.necrotic_plague.enabled&(dot.blood_plague.remains<3|dot.frost_fever.remains<3)" );
-        st -> add_talent( this, "Plague Leech", "if=talent.necrotic_plague.enabled&(dot.necrotic_plague.remains<3)" );
-        st -> add_action( this, "Outbreak", "if=!talent.necrotic_plague.enabled&(dot.frost_fever.remains<3|dot.blood_plague.remains<3)" );
-        st -> add_action( this, "Outbreak", "if=talent.necrotic_plague.enabled&(dot.necrotic_plague.remains<3)" );
-        st -> add_talent( this, "Unholy Blight", "if=!talent.necrotic_plague.enabled&(dot.frost_fever.remains<3|dot.blood_plague.remains<3)" );
-        st -> add_talent( this, "Unholy Blight", "if=talent.necrotic_plague.enabled&(dot.necrotic_plague.remains<3)" );
-        
+        st -> add_talent( this, "Plague Leech", "if=disease.min_remains<3" );
+        st -> add_action( this, "Outbreak", "if=disease.min_remains<3" );
+        st -> add_talent( this, "Unholy Blight", "if=disease.min_remains<3" );
+
         // Regenerate resources
         st -> add_action( this, "Frost Strike", "if=talent.runic_empowerment.enabled&(frost=0|unholy=0|blood=0)" );
         st -> add_action( this, "Frost Strike", "if=talent.blood_tap.enabled&buff.blood_charge.stack<=10" );
