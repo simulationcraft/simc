@@ -3076,7 +3076,7 @@ struct mage_armor_t : public mage_spell_t
 struct meteor_t : public mage_spell_t
 {
   meteor_t( mage_t* p, const std::string& options_str ) :
-    mage_spell_t( "meteor", p, p -> find_spell( 153561 ) )
+    mage_spell_t( "meteor", p, p -> find_talent_spell( "Meteor" ) )
   {
     parse_options( NULL, options_str );
     aoe = -1;
