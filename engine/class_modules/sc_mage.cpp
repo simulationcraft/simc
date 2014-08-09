@@ -3200,6 +3200,13 @@ struct nether_tempest_aoe_t: public mage_spell_t
   virtual resource_e current_resource() const
   { return RESOURCE_NONE; }
 
+  virtual timespan_t travel_time() const
+  {
+    timespan_t t = mage_spell_t::travel_time();
+    t = timespan_t::from_seconds( 1.3 );
+    return t;
+  }
+
 };
 
 // Nether Tempest ===========================================================
