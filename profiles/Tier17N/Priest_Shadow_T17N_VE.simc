@@ -51,8 +51,8 @@ actions.main+=/devouring_plague,if=shadow_orb>=3&(cooldown.mind_blast.remains<1.
 actions.main+=/devouring_plague,if=shadow_orb>=3&(cooldown.mind_blast.remains<1.5|target.health.pct<20&cooldown.shadow_word_death.remains<1.5)
 actions.main+=/mind_blast,if=glyph.mind_harvest.enabled&mind_harvest=0,cycle_targets=1
 actions.main+=/mind_blast,if=active_enemies<=5&cooldown_react
-actions.main+=/mind_flay_insanity,if=dot.devouring_plague_tick.ticks_remain=1&active_enemies<=2,chain=1,cycle_targets=1
-actions.main+=/mind_flay_insanity,if=dot.devouring_plague_tick.ticking,interrupt=1,chain=1,if=active_enemies<=2,cycle_targets=1
+actions.main+=/insanity,if=buff.shadow_word_insanity.remains<0.5*gcd&active_enemies<=2,chain=1
+actions.main+=/insanity,interrupt=1,chain=1,if=active_enemies<=2
 actions.main+=/shadow_word_pain,cycle_targets=1,max_cycle_targets=5,if=miss_react&!ticking
 actions.main+=/vampiric_touch,cycle_targets=1,max_cycle_targets=5,if=remains<cast_time&miss_react
 actions.main+=/shadow_word_pain,cycle_targets=1,max_cycle_targets=5,if=miss_react&ticks_remain<=1
@@ -109,8 +109,8 @@ actions.cop_mfi+=/shadow_word_death,if=buff.shadow_word_death_reset_cooldown.sta
 actions.cop_mfi+=/devouring_plague,if=shadow_orb>=3&(cooldown.mind_blast.remains<1.5|target.health.pct<20&cooldown.shadow_word_death.remains<1.5)
 actions.cop_mfi+=/mindbender,if=talent.mindbender.enabled
 actions.cop_mfi+=/shadowfiend,if=!talent.mindbender.enabled
-actions.cop_mfi+=/mind_flay_insanity,if=target.dot.devouring_plague_tick.ticks_remain=1&active_enemies<=2,chain=1
-actions.cop_mfi+=/mind_flay_insanity,interrupt=1,chain=1,if=active_enemies<=2
+actions.cop_mfi+=/insanity,if=buff.shadow_word_insanity.remains<0.5*gcd&active_enemies<=2,chain=1
+actions.cop_mfi+=/insanity,interrupt=1,chain=1,if=active_enemies<=2
 actions.cop_mfi+=/halo,if=talent.halo.enabled&target.distance<=30&target.distance>=17
 actions.cop_mfi+=/cascade,if=talent.cascade.enabled&((active_enemies>1|target.distance>=28)&target.distance<=40&target.distance>=11)
 actions.cop_mfi+=/divine_star,if=talent.divine_star.enabled&(active_enemies>1|target.distance<=24)

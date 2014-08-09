@@ -115,7 +115,7 @@ public:
     const spell_data_t* surge_of_darkness;
     const spell_data_t* mindbender;
     const spell_data_t* power_word_solace;
-    const spell_data_t* shadow_word_insanity;
+    const spell_data_t* insanity;
 
     const spell_data_t* void_tendrils;
     const spell_data_t* psychic_scream;
@@ -1609,7 +1609,7 @@ struct priest_spell_t : public priest_action_t<spell_t>
 
   void trigger_insanity( action_state_t* s, int orbs )
   {
-    if ( priest.talents.shadow_word_insanity -> ok() )
+    if ( priest.talents.insanity -> ok() )
     {
       if ( priest.buffs.shadow_word_insanity -> up() )
       {
@@ -3112,7 +3112,7 @@ template <bool insanity = false>
 struct mind_flay_base_t : public priest_spell_t
 {
   mind_flay_base_t( priest_t& p, const std::string& options_str, const std::string& name = "mind_flay" ) :
-    priest_spell_t( name, p, p.find_class_spell( insanity ? "Mind Flay (Insanity)" : "Mind Flay" ) )
+    priest_spell_t( name, p, p.find_class_spell( insanity ? "Insanity" : "Mind Flay" ) )
   {
     parse_options( nullptr, options_str );
 
@@ -3145,12 +3145,12 @@ struct mind_flay_base_t : public priest_spell_t
   }
 };
 
-struct mind_flay_insanity_t final : public mind_flay_base_t<true>
+struct insanity_t final : public mind_flay_base_t<true>
 {
   typedef mind_flay_base_t<true> base_t;
 
-  mind_flay_insanity_t( priest_t& p, const std::string& options_str ) :
-    base_t( p, options_str, "mind_flay_insanity" )
+  insanity_t( priest_t& p, const std::string& options_str ) :
+    base_t( p, options_str, "insanity" )
   {
   }
 
@@ -5585,7 +5585,7 @@ action_t* priest_t::create_action( const std::string& name,
   if ( name == "devouring_plague"       ) return new devouring_plague_t      ( *this, options_str );
   if ( name == "mind_blast"             ) return new mind_blast_t            ( *this, options_str );
   if ( name == "mind_flay"              ) return new mind_flay_base_t<>      ( *this, options_str );
-  if ( name == "mind_flay_insanity"     ) return new mind_flay_insanity_t    ( *this, options_str );
+  if ( name == "insanity"               ) return new insanity_t              ( *this, options_str );
   if ( name == "mind_spike"             ) return new mind_spike_t            ( *this, options_str );
   if ( name == "mind_sear"              ) return new mind_sear_t             ( *this, options_str );
   if ( name == "penance"                ) return new penance_t               ( *this, options_str );
@@ -5727,7 +5727,7 @@ void priest_t::init_spells()
   talents.surge_of_darkness           = find_talent_spell( "Surge of Darkness" );
   talents.mindbender                  = find_talent_spell( "Mindbender" );
   talents.power_word_solace           = find_talent_spell( "Power Word: Solace" );
-  talents.shadow_word_insanity        = find_talent_spell( "Insanity" );
+  talents.insanity                    = find_talent_spell( "Insanity" );
 
   //Level 60 / Tier 4
   talents.void_tendrils               = find_talent_spell( "Void Tendrils" );
@@ -5945,9 +5945,8 @@ void priest_t::create_buffs()
                           .spell( talents.shadowy_insight )
                           .chance( talents.shadowy_insight -> effectN( 4 ).percent());
 
-  buffs.shadow_word_insanity = buff_creator_t( this, "insanity")
-                               .spell( talents.shadow_word_insanity )
-                               .max_stack( 1 );
+  buffs.shadow_word_insanity = buff_creator_t( this, "shadow_word_insanity")
+                               .spell( find_spell( 132572 ) );
 
   // Discipline
   buffs.archangel = new buffs::archangel_t( *this );
@@ -6256,8 +6255,8 @@ void priest_t::apl_shadow()
   main -> add_action( "devouring_plague,if=shadow_orb>=3&(cooldown.mind_blast.remains<1.5|target.health.pct<20&cooldown.shadow_word_death.remains<1.5)" );
   main -> add_action( "mind_blast,if=glyph.mind_harvest.enabled&mind_harvest=0,cycle_targets=1" );
   main -> add_action( "mind_blast,if=active_enemies<=5&cooldown_react" );
-  main -> add_action( "mind_flay_insanity,if=dot.devouring_plague_tick.ticks_remain=1&active_enemies<=2,chain=1,cycle_targets=1" );
-  main -> add_action( "mind_flay_insanity,if=dot.devouring_plague_tick.ticking,interrupt=1,chain=1,if=active_enemies<=2,cycle_targets=1" );
+  main -> add_action( "insanity,if=buff.shadow_word_insanity.remains<0.5*gcd&active_enemies<=2,chain=1" );
+  main -> add_action( "insanity,interrupt=1,chain=1,if=active_enemies<=2" );
   main -> add_action( "shadow_word_pain,cycle_targets=1,max_cycle_targets=5,if=miss_react&!ticking" );
   main -> add_action( "vampiric_touch,cycle_targets=1,max_cycle_targets=5,if=remains<cast_time&miss_react" );
   main -> add_action( "shadow_word_pain,cycle_targets=1,max_cycle_targets=5,if=miss_react&ticks_remain<=1" );
@@ -6319,8 +6318,8 @@ void priest_t::apl_shadow()
   cop_mfi -> add_action( "mindbender,if=talent.mindbender.enabled" );
   cop_mfi -> add_action( "shadowfiend,if=!talent.mindbender.enabled" );
 //  cop_mfi -> add_action( "mind_spike,if=target.dot.devouring_plague_tick.ticking&target.dot.devouring_plague_tick.tick_dmg<=stat.spell_power*1.6*0.5625" );
-  cop_mfi -> add_action( "mind_flay_insanity,if=target.dot.devouring_plague_tick.ticks_remain=1&active_enemies<=2,chain=1" );
-  cop_mfi -> add_action( "mind_flay_insanity,interrupt=1,chain=1,if=active_enemies<=2" );
+  cop_mfi -> add_action( "insanity,if=buff.shadow_word_insanity.remains<0.5*gcd&active_enemies<=2,chain=1" );
+  cop_mfi -> add_action( "insanity,interrupt=1,chain=1,if=active_enemies<=2" );
   cop_mfi -> add_action( "halo,if=talent.halo.enabled&target.distance<=30&target.distance>=17" );//When coefficients change, update minimum distance!
   cop_mfi -> add_action( "cascade,if=talent.cascade.enabled&((active_enemies>1|target.distance>=28)&target.distance<=40&target.distance>=11)" );//When coefficients change, update minimum distance!
   cop_mfi -> add_action( "divine_star,if=talent.divine_star.enabled&(active_enemies>1|target.distance<=24)" );
