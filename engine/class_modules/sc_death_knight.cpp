@@ -807,7 +807,7 @@ static std::pair<int, double> rune_ready_in( const death_knight_t* p, rune_type 
   return rri_t( fastest_remaining, t );
 }
 
-static void ready_in( const death_knight_t* player, int blood, int frost, int unholy )
+static double ready_in( const death_knight_t* player, int blood, int frost, int unholy )
 {
   typedef std::pair<int, double> rri_t;
   assert( blood < 2 && frost < 2 && unholy < 2  );
@@ -818,10 +818,17 @@ static void ready_in( const death_knight_t* player, int blood, int frost, int un
   if ( player -> sim -> debug )
     log_rune_status( player );
 
+  double min_ready_in = 9999;
+
   if ( blood )
   {
     rri_t info = rune_ready_in( player, RUNE_TYPE_BLOOD, use );
-    //std::cout << "rune_info blood " << info.first << " " << info.second << std::endl;
+    if ( info.first != -1 && info.second < min_ready_in )
+      min_ready_in = info.first;
+
+    if ( min_ready_in == 0 )
+      return min_ready_in;
+
     if ( info.first > -1 )
       use[ info.first ] = true;
   }
@@ -829,7 +836,12 @@ static void ready_in( const death_knight_t* player, int blood, int frost, int un
   if ( frost )
   {
     rri_t info = rune_ready_in( player, RUNE_TYPE_FROST, use );
-    //std::cout << "rune_info frost " << info.first << " " << info.second << std::endl;
+    if ( info.first != -1 && info.second < min_ready_in )
+      min_ready_in = info.first;
+
+    if ( min_ready_in == 0 )
+      return min_ready_in;
+
     if ( info.first > -1 )
       use[ info.first ] = true;
   }
@@ -837,10 +849,17 @@ static void ready_in( const death_knight_t* player, int blood, int frost, int un
   if ( unholy )
   {
     rri_t info = rune_ready_in( player, RUNE_TYPE_UNHOLY, use );
-    //std::cout << "rune_info unholy " << info.first << " " << info.second << std::endl;
+    if ( info.first != -1 && info.second < min_ready_in )
+      min_ready_in = info.first;
+
+    if ( min_ready_in == 0 )
+      return min_ready_in;
+
     if ( info.first > -1 )
       use[ info.first ] = true;
   }
+
+  return min_ready_in;
 }
 
 static bool group_runes ( const death_knight_t* player, int blood, int frost, int unholy, int death, std::array<bool,RUNE_SLOT_MAX>& group )
@@ -5113,6 +5132,31 @@ void death_knight_t::trigger_runic_corruption( double rpcost )
 expr_t* death_knight_t::create_expression( action_t* a, const std::string& name_str )
 {
   std::vector<std::string> splits = util::string_split( name_str, "." );
+
+  if ( splits.size() == 2 && util::str_compare_ci( splits[ 1 ], "ready_in" ) )
+  {
+    struct ability_ready_expr_t : public expr_t
+    {
+      death_knight_melee_attack_t* action;
+
+      ability_ready_expr_t( action_t* a ) :
+        expr_t( "ability_ready_expr" ),
+        action( debug_cast<death_knight_melee_attack_t*>( a ) )
+      { }
+
+      double evaluate()
+      {
+        return ready_in( debug_cast<death_knight_t*>( action -> player ),
+                         action -> cost_blood,
+                         action -> cost_frost,
+                         action -> cost_unholy );
+      }
+    };
+
+    action_t* a = find_action( splits[ 0 ] );
+    if ( a )
+      return new ability_ready_expr_t( a );
+  }
 
   if ( util::str_compare_ci( splits[ 0 ], "rune" ) )
   {
