@@ -5049,9 +5049,9 @@ struct stellar_flare_t : public druid_spell_t
     parse_options( NULL, options_str );
   }
 
-  double action_multiplier() const
+  double composite_persistent_multiplier( const action_state_t* s ) const
   {
-    double m = base_t::action_multiplier();
+    double m = base_t::composite_persistent_multiplier( s );
 
     double balance;
     balance = p() -> clamped_eclipse_amount;
@@ -5067,6 +5067,13 @@ struct stellar_flare_t : public druid_spell_t
     if ( sim -> log || sim -> debug )
       sim -> out_debug.printf( "Action modifier %f", m );
     return m;
+  }
+
+  double action_multiplier() const
+  {
+    double am = base_t::action_multiplier();
+
+    return am;
   }
 };
 
