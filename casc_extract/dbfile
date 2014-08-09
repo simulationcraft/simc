@@ -179,7 +179,6 @@ DBFilesClient\QuestInfo.dbc
 DBFilesClient\QuestFactionReward.dbc
 DBFilesClient\PvpDifficulty.dbc
 DBFilesClient\PowerDisplay.dbc
-DBFilesClient\PlayerCondition.dbc
 DBFilesClient\Phase.dbc
 DBFilesClient\PaperDollItemFrame.dbc
 DBFilesClient\PageTextMaterial.dbc
@@ -421,6 +420,7 @@ DBFilesClient\PathNode.db2
 DBFilesClient\PathNodeProperty.db2
 DBFilesClient\PathProperty.db2
 DBFilesClient\PhaseXPhaseGroup.db2
+DBFilesClient\PlayerCondition.db2
 DBFilesClient\PvpItem.db2
 DBFilesClient\QuestPackageItem.db2
 DBFilesClient\QuestLine.db2
@@ -492,6 +492,7 @@ DBFilesClient\Light.dbc
 DBFilesClient\GroundEffectTexture.dbc
 DBFilesClient\GroundEffectDoodad.dbc
 DBFilesClient\FootprintTextures.dbc
+DBFilesClient\FeedbackPath.dbc
 DBFilesClient\Map.dbc
 DBFilesClient\LightParams.dbc
 DBFilesClient\LightData.dbc
@@ -501,4 +502,5 @@ DBFilesClient\SoundEntries.dbc
 DBFilesClient\SoundEntriesAdvanced.dbc
 DBFilesClient\SoundBus.dbc
 DBFilesClient\ModelFileData.dbc
+DBFilesClient\ManifestMP3.dbc
 DBFilesClient\FileData.dbc
