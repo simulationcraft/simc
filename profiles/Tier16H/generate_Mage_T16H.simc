@@ -31,7 +31,7 @@ level=90
 race=troll
 spec=arcane
 professions=tailoring=600/engineering=600
-talents=100031
+talents=100011
 glyphs=arcane_power
 head=ebon_ritual_hood,id=105647,upgrade=2,gems=sinister_primal_8haste_8mastery_9int,reforge=haste_hit
 neck=untainted_guardians_chain,id=105465,upgrade=2,reforge=hit_haste

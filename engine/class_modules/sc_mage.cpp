@@ -1358,7 +1358,7 @@ static void trigger_unstable_magic( action_state_t* s )
       aoe = -1;
       base_costs[ RESOURCE_MANA ] = 0;
       cooldown -> duration  = timespan_t::zero();
-      pct_damage = talents.unstable_magic -> effectN( 2 ).percent()
+      pct_damage = p -> talents.unstable_magic -> effectN( 2 ).percent();
       trigger_gcd = timespan_t::zero();
     }
 
