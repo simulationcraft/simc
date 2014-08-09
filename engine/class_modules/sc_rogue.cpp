@@ -276,37 +276,23 @@ struct rogue_t : public player_t
 
   struct perks_t
   {
-    // Shared
-    const spell_data_t* improved_recuperate;
-    const spell_data_t* enhanced_crimson_tempest;
-
     // Assassination
     const spell_data_t* improved_slice_and_dice;
     const spell_data_t* enhanced_vendetta;
-    const spell_data_t* empowered_rupture;
-    const spell_data_t* enhanced_poisons;
+    const spell_data_t* enhanced_crimson_tempest;
     const spell_data_t* empowered_envenom;
-    const spell_data_t* improved_rupture;
-    const spell_data_t* enhanced_envenom;
 
     // Combat
     const spell_data_t* empowered_bandits_guile;
     const spell_data_t* swift_poison;
-    const spell_data_t* enhanced_adrenaline_rush;
     const spell_data_t* enhanced_blade_flurry;
     const spell_data_t* improved_dual_wield;
-    const spell_data_t* improved_sinister_strike;
-    const spell_data_t* improved_eviscerate;
 
     // Subtlety
-    const spell_data_t* improved_backstab;
-    const spell_data_t* improved_ambush;
-    const spell_data_t* improved_hemorrhage;
     const spell_data_t* enhanced_vanish;
-    const spell_data_t* enhanced_eviscerate;
     const spell_data_t* enhanced_shadow_dance;
-    const spell_data_t* enhanced_master_of_subtlety;
     const spell_data_t* empowered_fan_of_knives;
+    const spell_data_t* enhanced_stealth;
   } perk;
 
   // Procs
@@ -734,11 +720,7 @@ struct rogue_poison_t : public rogue_attack_t
     double chance = proc_chance_;
 
     if ( p() -> buffs.envenom -> up() )
-    {
       chance += p() -> buffs.envenom -> data().effectN( 2 ).percent();
-      if ( p() -> perk.enhanced_envenom -> ok() )
-        chance += p() -> perk.enhanced_envenom -> effectN( 1 ).percent();
-    }
 
     const rogue_attack_t* attack = debug_cast< const rogue_attack_t* >( source_state -> action );
     chance += attack -> composite_poison_flat_modifier( source_state );
@@ -1426,8 +1408,6 @@ struct ambush_t : public rogue_attack_t
     ability_type      = AMBUSH;
     requires_position = POSITION_BACK;
     requires_stealth  = true;
-
-    base_multiplier *= 1.0 + p -> perk.improved_ambush -> effectN( 1 ).percent();
   }
 
   double action_multiplier() const
@@ -1520,7 +1500,6 @@ struct backstab_t : public rogue_attack_t
     ability_type      = BACKSTAB;
     requires_weapon   = WEAPON_DAGGER;
     requires_position = POSITION_BACK;
-    base_multiplier  *= 1.0 + p -> perk.improved_backstab -> effectN( 1 ).percent();
   }
 
   virtual double cost() const
@@ -1763,8 +1742,6 @@ struct eviscerate_t : public rogue_attack_t
     weapon_multiplier = weapon_power_mod = 0;
 
     attack_power_mod.direct = 0.3203;
-    base_multiplier *= 1.0 + p -> perk.improved_eviscerate -> effectN( 1 ).percent();
-    base_costs[ RESOURCE_ENERGY ] += p -> perk.enhanced_eviscerate -> effectN( 1 ).resource( RESOURCE_ENERGY );
   }
 
   timespan_t gcd() const
@@ -1773,9 +1750,6 @@ struct eviscerate_t : public rogue_attack_t
 
     if ( t != timespan_t::zero() && p() -> buffs.adrenaline_rush -> check() )
       t += p() -> buffs.adrenaline_rush -> data().effectN( 3 ).time_value();
-
-    if ( p() -> perk.enhanced_adrenaline_rush -> ok() )
-      t += p() -> perk.enhanced_adrenaline_rush -> effectN( 1 ).time_value();
 
     return t;
   }
@@ -1827,14 +1801,6 @@ struct fan_of_knives_t : public rogue_attack_t
     weapon = &( player -> main_hand_weapon );
     weapon_multiplier = 0;
     aoe = -1;
-  }
-
-  double composite_poison_flat_modifier( const action_state_t* ) const
-  {
-    if ( p() -> perk.enhanced_poisons -> ok() )
-      return 1.0;
-
-    return 0.0;
   }
 
   void impact( action_state_t* state )
@@ -1967,8 +1933,6 @@ struct hemorrhage_t : public rogue_attack_t
   {
     ability_type = HEMORRHAGE;
     weapon = &( p -> main_hand_weapon );
-
-    base_multiplier *= 1.0 + p -> perk.improved_hemorrhage -> effectN( 1 ).percent();
   }
 
   double action_multiplier() const
@@ -2288,16 +2252,6 @@ struct recuperate_t : public rogue_attack_t
     p() -> buffs.recuperate -> trigger();
   }
 
-  virtual double action_ta_muliplier() const
-  {
-    double m = rogue_attack_t::action_ta_multiplier();
-
-    if ( p() -> perk.improved_recuperate -> ok() )
-      m *= 1.0 + p() -> perk.improved_recuperate -> effectN( 1 ).percent();
-
-    return m;
-  }
-
   virtual void last_tick( dot_t* d )
   {
     p() -> buffs.recuperate -> expire();
@@ -2328,9 +2282,6 @@ struct revealing_strike_t : public rogue_attack_t
     if ( t != timespan_t::zero() && p() -> buffs.adrenaline_rush -> check() )
       t += p() -> buffs.adrenaline_rush -> data().effectN( 3 ).time_value();
 
-    if ( p() -> perk.enhanced_adrenaline_rush -> ok() )
-      t += p() -> perk.enhanced_adrenaline_rush -> effectN( 1 ).time_value();
-
     return t;
   }
 };
@@ -2348,7 +2299,6 @@ struct rupture_t : public rogue_attack_t
     tick_may_crit         = true;
     dot_behavior          = DOT_REFRESH;
     base_multiplier      *= 1.0 + p -> spec.sanguinary_vein -> effectN( 1 ).percent();
-    base_multiplier      *= 1.0 + p -> perk.improved_rupture -> effectN( 1 ).percent();
 
     if ( p -> spec.sinister_calling -> ok() )
     {
@@ -2363,9 +2313,6 @@ struct rupture_t : public rogue_attack_t
 
     if ( t != timespan_t::zero() && p() -> buffs.adrenaline_rush -> check() )
       t += p() -> buffs.adrenaline_rush -> data().effectN( 3 ).time_value();
-
-    if ( p() -> perk.enhanced_adrenaline_rush -> ok() )
-      t += p() -> perk.enhanced_adrenaline_rush -> effectN( 1 ).time_value();
 
     return t;
   }
@@ -2444,7 +2391,6 @@ struct sinister_strike_t : public rogue_attack_t
   {
     ability_type = SINISTER_STRIKE;
     adds_combo_points = 1; // it has an effect but with no base value :rollseyes:
-    base_multiplier *= 1.0 + p -> perk.improved_sinister_strike -> effectN( 1 ).percent();
   }
 
   timespan_t gcd() const
@@ -2453,9 +2399,6 @@ struct sinister_strike_t : public rogue_attack_t
 
     if ( t != timespan_t::zero() && p() -> buffs.adrenaline_rush -> check() )
       t += p() -> buffs.adrenaline_rush -> data().effectN( 3 ).time_value();
-
-    if ( p() -> perk.enhanced_adrenaline_rush -> ok() )
-      t += p() -> perk.enhanced_adrenaline_rush -> effectN( 1 ).time_value();
 
     return t;
   }
@@ -2524,9 +2467,6 @@ struct slice_and_dice_t : public rogue_attack_t
 
     if ( t != timespan_t::zero() && p() -> buffs.adrenaline_rush -> check() )
       t += p() -> buffs.adrenaline_rush -> data().effectN( 3 ).time_value();
-
-    if ( p() -> perk.enhanced_adrenaline_rush -> ok() )
-      t += p() -> perk.enhanced_adrenaline_rush -> effectN( 1 ).time_value();
 
     return t;
   }
@@ -3021,7 +2961,7 @@ void rogue_t::trigger_venomous_wounds( const action_state_t* state )
   if ( ! state -> action -> result_is_hit( state -> result ) && ! state -> action -> result_is_multistrike( state -> result ) )
     return;
 
-  double chance = spec.venomous_wounds -> proc_chance() + perk.empowered_rupture -> effectN( 1 ).percent();
+  double chance = spec.venomous_wounds -> proc_chance();
 
   if ( ! rng().roll( chance ) )
     return;
@@ -3961,7 +3901,7 @@ double rogue_t::composite_player_multiplier( school_e school ) const
     if ( buffs.master_of_subtlety -> check() ||
          ( spec.master_of_subtlety -> ok() && ( buffs.stealth -> check() || buffs.vanish -> check() ) ) )
       // TODO-WOD: Enhance Master of Subtlety is additive or multiplicative?
-      m *= 1.0 + spec.master_of_subtlety -> effectN( 1 ).percent() + perk.enhanced_master_of_subtlety -> effectN( 1 ).percent();
+      m *= 1.0 + spec.master_of_subtlety -> effectN( 1 ).percent() + perk.enhanced_stealth -> effectN( 1 ).percent();
 
     m *= 1.0 + buffs.shallow_insight -> value();
 
@@ -4409,36 +4349,22 @@ void rogue_t::init_spells()
   talent.death_from_above   = find_talent_spell( "Death from Above" );
   talent.leeching_poison    = find_talent_spell( "Leeching Poison" );
 
-  // Shared perks
-  perk.improved_recuperate         = find_perk_spell( "Improved Recuperate" );
-  perk.enhanced_crimson_tempest    = find_perk_spell( "Enhanced Crimson Tempest" );
-
   // Assassination
   perk.improved_slice_and_dice     = find_perk_spell( "Improved Slice and Dice" );
   perk.enhanced_vendetta           = find_perk_spell( "Enhanced Vendetta" );
-  perk.empowered_rupture           = find_perk_spell( "Empowered Rupture" );
-  perk.enhanced_poisons            = find_perk_spell( "Enhanced Poisons" );
   perk.empowered_envenom           = find_perk_spell( "Empowered Envenom" );
-  perk.improved_rupture            = find_perk_spell( "Improved Rupture" );
-  perk.enhanced_envenom            = find_perk_spell( "Enhanced Envenom" );
+  perk.enhanced_crimson_tempest    = find_perk_spell( "Enhanced Crimson Tempest" );
 
   // Combat
   perk.empowered_bandits_guile     = find_perk_spell( "Empowered Bandit's Guile" );
   perk.swift_poison                = find_perk_spell( "Swift Poison" );
-  perk.enhanced_adrenaline_rush    = find_perk_spell( "Enhanced Adrenaline Rush" );
   perk.enhanced_blade_flurry       = find_perk_spell( "Enhanced Blade Flurry" );
   perk.improved_dual_wield         = find_perk_spell( "Improved Dual Wield" );
-  perk.improved_sinister_strike    = find_perk_spell( "Improved Sinister Strike" );
-  perk.improved_eviscerate         = find_perk_spell( "Improved Eviscerate" );
 
-  perk.improved_backstab           = find_perk_spell( "Improved Backstab" );
-  perk.improved_ambush             = find_perk_spell( "Improved Ambush" );
-  perk.improved_hemorrhage         = find_perk_spell( "Improved Hemorrhage" );
   perk.enhanced_vanish             = find_perk_spell( "Enhanced Vanish" );
-  perk.enhanced_eviscerate         = find_perk_spell( "Enhanced Eviscerate" );
   perk.enhanced_shadow_dance       = find_perk_spell( "Enhanced Shadow Dance" );
   perk.empowered_fan_of_knives     = find_perk_spell( "Empowered Fan of Knives" );
-  perk.enhanced_master_of_subtlety = find_perk_spell( "Enhanced Master of Subtlety" );
+  perk.enhanced_stealth            = find_perk_spell( "Enhanced Stealth" );
 
   if ( spec.venomous_wounds -> ok() )
     active_venomous_wound = new venomous_wound_t( this );
