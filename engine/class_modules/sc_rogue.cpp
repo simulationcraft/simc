@@ -4012,20 +4012,6 @@ void rogue_t::init_action_list()
 
   // Note, this only looks at static stats
   stat_e highest_rune_stat = STAT_NONE;
-  if ( find_item( "rune_of_reorigination" ) )
-  {
-    if ( gear.get_stat( STAT_CRIT_RATING ) >= gear.get_stat( STAT_HASTE_RATING ) )
-    {
-      if ( gear.get_stat( STAT_CRIT_RATING ) >= gear.get_stat( STAT_MASTERY_RATING ) )
-        highest_rune_stat = STAT_CRIT_RATING;
-      else
-        highest_rune_stat = STAT_MASTERY_RATING;
-    }
-    else if ( gear.get_stat( STAT_HASTE_RATING ) >= gear.get_stat( STAT_MASTERY_RATING ) )
-      highest_rune_stat = STAT_HASTE_RATING;
-    else
-      highest_rune_stat = STAT_MASTERY_RATING;
-  }
 
   action_priority_list_t* precombat = get_action_priority_list( "precombat" );
   action_priority_list_t* def       = get_action_priority_list( "default" );
@@ -4128,7 +4114,7 @@ void rogue_t::init_action_list()
     def -> add_action( this, "Mutilate", "if=target.health.pct>35&combo_points<5&active_enemies<5" );
     def -> add_action( this, "Dispatch", "if=combo_points<5&active_enemies<4" );
   }
-  // Action list from http://sites.google.com/site/bittensspellflash/simc-profiles
+
   else if ( specialization() == ROGUE_COMBAT )
   {
     precombat -> add_talent( this, "Marked for Death" );
