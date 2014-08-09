@@ -3228,12 +3228,15 @@ struct nether_tempest_t : public mage_spell_t
   virtual void tick( dot_t* d )
   {
     mage_spell_t::tick( d );
-    add_aoe-> execute();
+
+    action_state_t* aoe_state = add_aoe -> get_state( d -> state );
+    aoe_state -> target = d -> target;
+
+    add_aoe -> schedule_execute( aoe_state );
   }
   
   virtual void last_tick( dot_t* d )
   {
-
     mage_spell_t::last_tick( d );
 
     mage_t& p = *this -> p();
@@ -3241,13 +3244,13 @@ struct nether_tempest_t : public mage_spell_t
 
   }
   
-  virtual double action_multiplier() const
+  double composite_persistent_multiplier( const action_state_t* state ) const
   {
-    double am = mage_spell_t::action_multiplier();
+    double m = mage_spell_t::composite_persistent_multiplier( state );
 
-    am *= 1.0 + p() -> buffs.arcane_charge -> stack() * p() -> spells.arcane_charge_arcane_blast -> effectN( 1 ).percent();
+    m *= 1.0 +  p() -> buffs.arcane_charge -> stack() * p() -> spells.arcane_charge_arcane_blast -> effectN( 1 ).percent();
 
-    return am;
+    return m;
   }
 
   virtual bool ready()
