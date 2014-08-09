@@ -124,6 +124,7 @@ struct rogue_t : public player_t
     buff_t* death_from_above;
     buff_t* deep_insight;
     buff_t* killing_spree;
+    buff_t* master_of_subtlety_passive;
     buff_t* master_of_subtlety;
     buff_t* moderate_insight;
     buff_t* recuperate;
@@ -1108,16 +1109,10 @@ struct apply_poison_t : public action_t
 static void break_stealth( rogue_t* p )
 {
   if ( p -> buffs.stealth -> check() )
-  {
     p -> buffs.stealth -> expire();
-    p -> buffs.master_of_subtlety -> trigger();
-  }
 
   if ( p -> buffs.vanish -> check() )
-  {
     p -> buffs.vanish -> expire();
-    p -> buffs.master_of_subtlety -> trigger();
-  }
 
   if ( p -> player_t::buffs.shadowmeld -> check() )
     p -> player_t::buffs.shadowmeld -> expire();
@@ -3220,9 +3215,61 @@ struct subterfuge_t : public buff_t
   void expire_override()
   {
     buff_t::expire_override();
+    actions::break_stealth( rogue );
+  }
+};
 
-    if ( ! rogue -> bugs || ( rogue -> bugs && ( ! rogue -> glyph.vanish -> ok() || ! rogue -> buffs.vanish -> check() ) ) )
-      actions::break_stealth( rogue );
+struct vanish_t : public buff_t
+{
+  rogue_t* rogue;
+
+  vanish_t( rogue_t* r ) :
+    buff_t( buff_creator_t( r, "vanish", r -> find_spell( 11327 ) ) ),
+    rogue( r )
+  {
+    buff_duration += r -> glyph.vanish -> effectN( 1 ).time_value();
+  }
+
+  void execute( int stacks, double value, timespan_t duration )
+  {
+    buff_t::execute( stacks, value, duration );
+
+    rogue -> buffs.master_of_subtlety -> expire();
+    rogue -> buffs.master_of_subtlety_passive -> trigger();
+  }
+
+  void expire_override()
+  {
+    buff_t::expire_override();
+
+    rogue -> buffs.master_of_subtlety_passive -> expire();
+    rogue -> buffs.master_of_subtlety -> trigger();
+  }
+};
+
+struct stealth_t : public buff_t
+{
+  rogue_t* rogue;
+
+  stealth_t( rogue_t* r ) :
+    buff_t( buff_creator_t( r, "stealth", r -> find_spell( 1784 ) ) ),
+    rogue( r )
+  { }
+
+  void execute( int stacks, double value, timespan_t duration )
+  {
+    buff_t::execute( stacks, value, duration );
+
+    rogue -> buffs.master_of_subtlety -> expire();
+    rogue -> buffs.master_of_subtlety_passive -> trigger();
+  }
+
+  void expire_override()
+  {
+    buff_t::expire_override();
+
+    rogue -> buffs.master_of_subtlety_passive -> expire();
+    rogue -> buffs.master_of_subtlety -> trigger();
   }
 };
 
@@ -3898,9 +3945,8 @@ double rogue_t::composite_player_multiplier( school_e school ) const
 
   if ( ! reflection_attack )
   {
-    if ( buffs.master_of_subtlety -> check() ||
-         ( spec.master_of_subtlety -> ok() && ( buffs.stealth -> check() || buffs.vanish -> check() ) ) )
-      // TODO-WOD: Enhance Master of Subtlety is additive or multiplicative?
+    // TODO-WOD: Enhance Stealth is additive or multiplicative?
+    if ( buffs.master_of_subtlety -> check() || buffs.master_of_subtlety_passive -> check() )
       m *= 1.0 + spec.master_of_subtlety -> effectN( 1 ).percent() + perk.enhanced_stealth -> effectN( 1 ).percent();
 
     m *= 1.0 + buffs.shallow_insight -> value();
@@ -4488,8 +4534,9 @@ void rogue_t::create_buffs()
                               .add_invalidate( CACHE_ATTACK_SPEED );
   buffs.blindside           = buff_creator_t( this, "blindside", spec.blindside -> effectN( 1 ).trigger() )
                               .chance( spec.blindside -> proc_chance() );
-  buffs.master_of_subtlety  = buff_creator_t( this, "master_of_subtlety", spec.master_of_subtlety )
-                              .duration( timespan_t::from_seconds( 6.0 ) )
+  buffs.master_of_subtlety_passive = buff_creator_t( this, "master_of_subtlety_passive", spec.master_of_subtlety )
+                                     .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
+  buffs.master_of_subtlety  = buff_creator_t( this, "master_of_subtlety", find_spell( 31666 ) )
                               .default_value( spec.master_of_subtlety -> effectN( 1 ).percent() )
                               .chance( spec.master_of_subtlety -> ok() )
                               .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
@@ -4515,7 +4562,9 @@ void rogue_t::create_buffs()
   buffs.shiv               = buff_creator_t( this, "shiv" );
   buffs.sleight_of_hand    = buff_creator_t( this, "sleight_of_hand", find_spell( 145211 ) )
                              .chance( sets.set( SET_T16_4PC_MELEE ) -> effectN( 3 ).percent() );
-  buffs.stealth            = buff_creator_t( this, "stealth" ).add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
+  //buffs.stealth            = buff_creator_t( this, "stealth" ).add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
+  buffs.stealth            = new buffs::stealth_t( this );
+  buffs.vanish             = new buffs::vanish_t( this );
   buffs.subterfuge         = new buffs::subterfuge_t( this );
   buffs.t16_2pc_melee      = buff_creator_t( this, "silent_blades", find_spell( 145193 ) )
                              .chance( sets.has_set_bonus( SET_T16_2PC_MELEE ) );
@@ -4523,10 +4572,10 @@ void rogue_t::create_buffs()
                              .chance( sets.has_set_bonus( SET_T13_2PC_MELEE ) ? 1.0 : 0 );
   buffs.toxicologist       = stat_buff_creator_t( this, "toxicologist", find_spell( 145249 ) )
                              .chance( sets.has_set_bonus( SET_T16_4PC_MELEE ) );
-  buffs.vanish             = buff_creator_t( this, "vanish", find_spell( 11327 ) )
-                             .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
-                             .cd( timespan_t::zero() )
-                             .duration( find_spell( 11327 ) -> duration() + glyph.vanish -> effectN( 1 ).time_value() );
+  //buffs.vanish             = buff_creator_t( this, "vanish", find_spell( 11327 ) )
+  //                           .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
+  //                           .cd( timespan_t::zero() )
+  //                          .duration( find_spell( 11327 ) -> duration() + glyph.vanish -> effectN( 1 ).time_value() );
 
   // Envenom is controlled by the non-harmful dot applied to player when envenom is used
   buffs.envenom            = buff_creator_t( this, "envenom", find_specialization_spell( "Envenom" ) )
