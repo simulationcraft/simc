@@ -1661,7 +1661,7 @@ struct arcane_missiles_t : public mage_spell_t
 struct arcane_orb_bolt_t : public mage_spell_t
 {
   arcane_orb_bolt_t( mage_t* p ) :
-    mage_spell_t( "arcane_orb_bolt", p, p -> find_spell( 153640 ) )
+    mage_spell_t( "arcane_orb_bolt", p, p -> find_talent_spell( "Arcane Orb" ) )
   {
     aoe = -1;
     background = true;
