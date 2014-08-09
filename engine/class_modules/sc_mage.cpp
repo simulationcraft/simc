@@ -3183,11 +3183,12 @@ struct molten_armor_t : public mage_spell_t
 
 // Nether Tempest Cleave ====================================================
 //FIXME_cleave: take actual distances between main_target and cleave_target into account
-struct nether_tempest_cleave_t: public mage_spell_t
+struct nether_tempest_aoe_t: public mage_spell_t
 {
-  nether_tempest_cleave_t( mage_t* p ) :
-    mage_spell_t( "nether_tempest_cleave", p, p -> find_spell( 114954 ) )
+  nether_tempest_aoe_t( mage_t* p ) :
+    mage_spell_t( "nether_tempest_aoe", p, p -> find_spell( 114954 ) )
   {
+    aoe = -1;
     background = true;
   }
 
@@ -3200,16 +3201,14 @@ struct nether_tempest_cleave_t: public mage_spell_t
 
 struct nether_tempest_t : public mage_spell_t
 {
-  nether_tempest_cleave_t *add_cleave;
+  nether_tempest_aoe_t *add_aoe;
 
   nether_tempest_t( mage_t* p, const std::string& options_str ) :
     mage_spell_t( "nether_tempest", p, p -> talents.nether_tempest ),
-    add_cleave( new nether_tempest_cleave_t( p ) )
+    add_aoe( new nether_tempest_aoe_t( p ) )
   {
     parse_options( NULL, options_str );
-    add_child( add_cleave );
-
-    base_multiplier *= 1.0 + (0.5 * p -> buffs.arcane_charge -> stack() );
+    add_child( add_aoe );
   }
 
   virtual void execute()
@@ -3226,7 +3225,14 @@ struct nether_tempest_t : public mage_spell_t
       p.last_bomb_target = execute_state -> target;
     }
   }
-    virtual void last_tick( dot_t* d )
+
+  virtual void tick( dot_t* d )
+  {
+    mage_spell_t::tick( d );
+    add_aoe-> execute();
+  }
+  
+  virtual void last_tick( dot_t* d )
   {
 
     mage_spell_t::last_tick( d );
@@ -3234,8 +3240,15 @@ struct nether_tempest_t : public mage_spell_t
     mage_t& p = *this -> p();
     p.active_bomb_targets--;
 
-    add_cleave -> execute();
+  }
+  
+  virtual double action_multiplier() const
+  {
+    double am = mage_spell_t::action_multiplier();
 
+    am *= 1.0 + p() -> buffs.arcane_charge -> stack() * p() -> spells.arcane_charge_arcane_blast -> effectN( 1 ).percent();
+
+    return am;
   }
 
   virtual bool ready()
