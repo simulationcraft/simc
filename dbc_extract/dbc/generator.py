@@ -1389,6 +1389,7 @@ class SpellDataGenerator(DataGenerator):
           ( 145264, 0 ),                                          # T16 Frigid Blast
           ( 148022, 0 ),                                          # Icicle
           ( 155152, 5 ),                                          # Prismatic Crystal nuke
+          ( 157978, 0 ), ( 157979, 0 ), ( 157977, 0 ),            # Unstable magic aoe
         ), 
         
         # Warlock:
