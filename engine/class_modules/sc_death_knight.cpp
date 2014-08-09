@@ -3281,18 +3281,13 @@ struct death_coil_t : public death_knight_spell_t
     p() -> trigger_shadow_infusion( base_costs[ RESOURCE_RUNIC_POWER ] );
     if ( p() -> specialization() == DEATH_KNIGHT_BLOOD )
       p() -> buffs.shadow_of_death -> trigger();
-  }
 
-  void impact( action_state_t* s )
-  {
-    death_knight_spell_t::impact( s );
-
-    if ( result_is_hit( s -> result ) )
+    if ( result_is_hit( execute_state -> result ) )
     {
       p() -> trigger_runic_empowerment( base_costs[ RESOURCE_RUNIC_POWER ] );
       p() -> trigger_blood_charge( base_costs[ RESOURCE_RUNIC_POWER ] );
       p() -> trigger_runic_corruption( base_costs[ RESOURCE_RUNIC_POWER ] );
-      p() -> trigger_plaguebearer( s );
+      p() -> trigger_plaguebearer( execute_state );
 
       if ( p() -> sets.has_set_bonus( SET_T16_4PC_MELEE ) && p() -> buffs.dark_transformation -> check() )
         p() -> buffs.dark_transformation -> extend_duration( p(), timespan_t::from_millis( p() -> sets.set( SET_T16_4PC_MELEE ) -> effectN( 1 ).base_value() ) );
@@ -3579,21 +3574,11 @@ struct frost_strike_t : public death_knight_melee_attack_t
         p() -> procs.fs_killing_machine -> occur();
 
       p() -> buffs.killing_machine -> expire();
-    }
-  }
 
-  virtual void impact( action_state_t* s )
-  {
-    death_knight_melee_attack_t::impact( s );
-
-    double consume = resource_consumed;
-
-    if ( result_is_hit( s -> result ) && consume > 0 )
-    {
-      p() -> trigger_runic_empowerment( consume );
-      p() -> trigger_blood_charge( consume );
-      p() -> trigger_runic_corruption( consume );
-      p() -> trigger_plaguebearer( s );
+      p() -> trigger_runic_empowerment( resource_consumed );
+      p() -> trigger_blood_charge( resource_consumed );
+      p() -> trigger_runic_corruption( resource_consumed );
+      p() -> trigger_plaguebearer( execute_state );
     }
   }
 
@@ -3927,14 +3912,9 @@ struct outbreak_t : public death_knight_spell_t
     {
       p() -> apply_diseases( execute_state, DISEASE_BLOOD_PLAGUE | DISEASE_FROST_FEVER );
 
-      double consume =  resource_consumed;
-
-      if ( consume > 0 )
-      {
-        p() -> trigger_runic_empowerment( consume );
-        p() -> trigger_runic_corruption( consume );
-        p() -> trigger_blood_charge( consume );
-      }
+      p() -> trigger_runic_empowerment( resource_consumed );
+      p() -> trigger_runic_corruption( resource_consumed );
+      p() -> trigger_blood_charge( resource_consumed );
     }
 
     if ( p() -> buffs.dancing_rune_weapon -> check() )
@@ -4600,21 +4580,25 @@ struct breath_of_sindragosa_tick_t : public death_knight_spell_t
     resource_current = RESOURCE_RUNIC_POWER;
   }
 
+  void execute()
+  {
+    death_knight_spell_t::execute();
+
+    if ( result_is_hit( execute_state -> result ) )
+    {
+      p() -> trigger_runic_empowerment( resource_consumed );
+      p() -> trigger_blood_charge( resource_consumed );
+      p() -> trigger_runic_corruption( resource_consumed );
+      p() -> trigger_shadow_infusion( resource_consumed );
+    }
+  }
+
   virtual void impact( action_state_t* s )
   {
     death_knight_spell_t::impact( s );
 
-    double consume = resource_consumed;
-
-    if ( result_is_hit( s -> result ) && consume > 0 )
-    {
-      p() -> trigger_runic_empowerment( consume );
-      p() -> trigger_blood_charge( consume );
-      p() -> trigger_runic_corruption( consume );
-      p() -> trigger_shadow_infusion( consume );
-
+    if ( result_is_hit( s -> result ) )
       td( target ) -> debuffs_mark_of_sindragosa -> trigger();
-    }
   }
 };
 
@@ -6883,11 +6867,12 @@ void death_knight_t::trigger_blood_charge( double rpcost )
     blood_charge_counter--;
   }
 
+  if ( sim -> debug )
+    sim -> out_debug.printf( "%s generates %f blood charges, %u stacks, %f charges remaining",
+        name(), 2 * multiplier, stacks, blood_charge_counter );
+
   if ( stacks > 0 )
-  {
     buffs.blood_charge -> trigger( stacks );
-    blood_charge_counter -= stacks;
-  }
 }
 
 void death_knight_t::trigger_shadow_infusion( double rpcost )
