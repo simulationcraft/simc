@@ -27,7 +27,6 @@ actions.precombat+=/slice_and_dice,if=talent.marked_for_death.enabled
 # Executed every time the actor is available.
 
 actions=potion,name=draenic_agility,if=buff.bloodlust.react|target.time_to_die<40
-actions+=/auto_attack
 actions+=/kick
 actions+=/use_item,slot=trinket2
 actions+=/blood_fury

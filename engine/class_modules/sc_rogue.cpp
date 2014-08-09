@@ -22,6 +22,7 @@ struct rogue_poison_t;
 struct rogue_attack_t;
 struct rogue_poison_buff_t;
 struct sinister_calling_t;
+struct melee_t;
 }
 
 enum ability_type_e {
@@ -109,8 +110,9 @@ struct rogue_t : public player_t
   action_t* active_venomous_wound;
 
   // Autoattacks
-  attack_t* melee_main_hand;
-  attack_t* melee_off_hand;
+  action_t* auto_attack;
+  actions::melee_t* melee_main_hand;
+  actions::melee_t* melee_off_hand;
 
   // Buffs
   struct buffs_t
@@ -325,7 +327,7 @@ struct rogue_t : public player_t
     active_nonlethal_poison( 0 ),
     active_main_gauche( 0 ),
     active_venomous_wound( 0 ),
-    melee_main_hand( 0 ), melee_off_hand( 0 ),
+    auto_attack( 0 ), melee_main_hand( 0 ), melee_off_hand( 0 ),
     buffs( buffs_t() ),
     cooldowns( cooldowns_t() ),
     gains( gains_t() ),
@@ -386,6 +388,8 @@ struct rogue_t : public player_t
   virtual double    energy_regen_per_second() const;
 
   bool poisoned_enemy( player_t* target ) const;
+
+  void trigger_auto_attack( const action_state_t* );
   void trigger_sinister_calling( const action_state_t* );
   void trigger_seal_fate( const action_state_t* );
   void trigger_main_gauche( const action_state_t* );
@@ -1226,6 +1230,7 @@ void rogue_attack_t::execute()
 {
   melee_attack_t::execute();
 
+  p() -> trigger_auto_attack( execute_state );
   p() -> trigger_main_gauche( execute_state );
   p() -> trigger_shadow_reflection( execute_state );
   p() -> trigger_combo_point_gain( execute_state );
@@ -1295,6 +1300,8 @@ struct melee_t : public rogue_attack_t
 
     if ( p -> dual_wield() && ! p -> perk.improved_dual_wield -> ok() )
       base_hit -= 0.19;
+
+    p -> auto_attack = this;
   }
 
   void reset()
@@ -1343,13 +1350,17 @@ struct auto_melee_attack_t : public action_t
 
     assert( p -> main_hand_weapon.type != WEAPON_NONE );
 
-    p -> melee_main_hand = p -> main_hand_attack = new melee_t( "auto_attack_mh", p, sync_weapons );
+    p -> melee_main_hand = new melee_t( "auto_attack_mh", p, sync_weapons );
+
+    p -> main_hand_attack = p -> melee_main_hand;
     p -> main_hand_attack -> weapon = &( p -> main_hand_weapon );
     p -> main_hand_attack -> base_execute_time = p -> main_hand_weapon.swing_time;
 
     if ( p -> off_hand_weapon.type != WEAPON_NONE )
     {
-      p -> melee_off_hand = p -> off_hand_attack = new melee_t( "auto_attack_oh", p, sync_weapons );
+      p -> melee_off_hand = new melee_t( "auto_attack_oh", p, sync_weapons );
+
+      p -> off_hand_attack = p -> melee_off_hand;
       p -> off_hand_attack -> weapon = &( p -> off_hand_weapon );
       p -> off_hand_attack -> base_execute_time = p -> off_hand_weapon.swing_time;
       p -> off_hand_attack -> id = 1;
@@ -2775,6 +2786,21 @@ inline bool rogue_t::poisoned_enemy( player_t* target ) const
 // Rogue Triggers
 // ==========================================================================
 
+void rogue_t::trigger_auto_attack( const action_state_t* state )
+{
+  if ( main_hand_attack -> execute_event || off_hand_attack -> execute_event )
+    return;
+
+  if ( ! state -> action -> weapon )
+    return;
+
+  melee_main_hand -> first = true;
+  if ( melee_off_hand )
+    melee_off_hand -> first = true;
+
+  auto_attack -> execute();
+}
+
 inline void actions::rogue_attack_t::trigger_sinister_calling( dot_t* dot )
 {
   assert( sinister_calling );
@@ -4068,7 +4094,6 @@ void rogue_t::init_action_list()
   if ( sim -> allow_potions )
     def -> add_action( "potion,name=" + potion_name + ",if=buff.bloodlust.react|target.time_to_die<40" );
 
-  def -> add_action( "auto_attack" );
   def -> add_action( this, "Kick" );
 
   if ( specialization() == ROGUE_ASSASSINATION )
@@ -4375,6 +4400,8 @@ void rogue_t::init_spells()
   perk.enhanced_shadow_dance       = find_perk_spell( "Enhanced Shadow Dance" );
   perk.empowered_fan_of_knives     = find_perk_spell( "Empowered Fan of Knives" );
   perk.enhanced_stealth            = find_perk_spell( "Enhanced Stealth" );
+
+  auto_attack = new auto_melee_attack_t( this, "" );
 
   if ( spec.venomous_wounds -> ok() )
     active_venomous_wound = new venomous_wound_t( this );
