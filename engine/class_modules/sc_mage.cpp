@@ -4582,7 +4582,7 @@ void mage_t::apl_arcane()
   single_target -> add_talent( this, "Supernova", "if=buff.arcane_charge.stack=4&((charges=1&recharge_time<10&cooldown.arcane_power.remains>12)|(buff.arcane_power.up))" );
   single_target -> add_action( this, "Arcane Missiles", "if=buff.arcane_charge.stack=4" );
   single_target -> add_talent( this, "Nether Tempest", "if=remains<9&target.time_to_die>6&buff.arcane_charge.stack=4" );
-  single_target -> add_talent( this, "Arcane Orb", "if=talent.arcane_orb.enabled&buff.arcane_charge.stack<=3" ); //Need to safeguard that atm, since it gets used without the talent otherwise
+  single_target -> add_talent( this, "Arcane Orb", "if=buff.arcane_charge.stack<=3" );
   single_target -> add_action( this, "Arcane Barrage", "if=buff.arcane_charge.stack=4&mana.pct<95&buff.arcane_power.down" );
   single_target -> add_action( this, "Presence of Mind", "if=cooldown.arcane_power.remains>75" );
   single_target -> add_action( this, "Arcane Blast" );
