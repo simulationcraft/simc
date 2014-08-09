@@ -25,7 +25,7 @@ QString automation::tokenize( QString qstr )
 }
 
 QString automation::do_something( int sim_type,
-                                  Qt::CheckState input_mode,
+                                  int input_mode,
                                   QString player_class,
                                   QString player_spec,
                                   QString player_race,
@@ -48,8 +48,8 @@ QString automation::do_something( int sim_type,
   base_profile_info += "race=" + tokenize( player_race ) + "\n";
   base_profile_info += "level=" + player_level + "\n";
 
-  // check for advanced input mode
-  if ( input_mode == 2 )
+  // check for advanced input mode (This can be switched to a CheckBox easily)
+  if ( input_mode == 1 )
   {
     // do advanced stuff here
     profile = "ADVANCED MODE INCOMING !!";
@@ -205,10 +205,15 @@ QComboBox* createChoice( int count, ... )
   return choice;
 }
 
-QCheckBox* createInputMode()
+QComboBox* createInputMode( int count, ... )
 {
-  QCheckBox* mode = new QCheckBox();
-  return mode;
+  QComboBox* input_mode = new QComboBox();
+  va_list vap;
+  va_start( vap, count );
+  for ( int i = 0; i < count; i++ )
+    input_mode -> addItem( va_arg( vap, char* ) );
+  va_end( vap );
+  return input_mode;
 }
 
 // Method to set the "Spec" drop-down based on "Class" selection
@@ -300,16 +305,17 @@ QString sidebarText[ 11 ][ 4 ] = {
 };
 
 // constant for the varying labels of the advanced text box
-QString advancedText[ 5 ] = {
-  "Unused", "Talent Configurations", "Glyph Configurations", "Gear Configurations", "Rotation Shorthands"
+QString advancedText[ 6 ] = {
+  "Unused", "Talent Configurations", "Glyph Configurations", "Gear Configurations", "Rotation Shorthands", "Advanced Configuration Mode"
 };
 // constant for the varying labels of the helpbar text box
-QString helpbarText[ 5 ] = {
+QString helpbarText[ 6 ] = {
   "To automate generation of a comparison, choose a comparison type from the drop-down box to the left.",
   "To specify different talent configurations, list the talent configurations you want to test (as seven-digit integer strings, i.e. 1231231) in the box below. Each configuration should be its own new line.",
   "To specify different glyph configurations, list the glyph configurations you want to test (i.e. alabaster_shield/focused_shield/word_of_glory) in the box below. Each configuration should be its own new line.",
   "To specify different gear configurations, we need to implement some things still.",
-  "To specify different rotations, list the rotation shorthands you want to test in the box below. The sidebar lists the shorthand conventions for your class and spec. If a shorthand you want isn't documented, please contact the simulationcraft team to have it added."
+  "To specify different rotations, list the rotation shorthands you want to test in the box below. The sidebar lists the shorthand conventions for your class and spec. If a shorthand you want isn't documented, please contact the simulationcraft team to have it added.",
+  "To specify everything according to your needs. All configurations can be mixed up for more advanced multi-automated simulations but need to match the standard SimCraft input format"
 };
 
 
@@ -317,6 +323,37 @@ QString helpbarText[ 5 ] = {
 void SC_ImportTab::setSidebarClassText()
 {
   textbox.sidebar -> setText( sidebarText[ choice.player_class -> currentIndex() ][ choice.player_spec -> currentIndex() ] );
+}
+
+void SC_ImportTab::inputTypeChanged( const int mode ){
+ 
+  // get current comparison type
+  int comp = choice.comp_type -> currentIndex();
+
+  // set the label of the Advanced tab depending on comparison type chosen
+  switch ( mode )
+  {
+    case 0:
+      // set boxes & labels to the current comparison choice
+      choice.comp_type -> setDisabled ( false );
+      compTypeChanged( comp );
+      break;
+    case 1:
+      // set the label of the Advanced tab
+      label.advanced -> setText( advancedText[ 5 ] );
+
+      // set the text of the help bar for advanced mode
+      textbox.helpbar -> setText( helpbarText[ 5 ] );
+
+      textbox.advanced -> setDisabled( false );
+      textbox.gear -> setDisabled( true );
+      textbox.glyphs -> setDisabled( true );
+      textbox.rotation -> setDisabled( true );
+      textbox.talents -> setDisabled( true );
+
+      choice.comp_type -> setDisabled ( true );
+      break;
+  }
 }
 
 void SC_ImportTab::compTypeChanged( const int comp )
@@ -374,7 +411,7 @@ void SC_MainWindow::startAutomationImport( int tab )
   QString profile;
 
   profile = automation::do_something( importTab -> choice.comp_type -> currentIndex(),
-                                      importTab -> choice.input_mode -> checkState(),
+                                      importTab -> choice.input_mode -> currentIndex(),
                                       importTab -> choice.player_class -> currentText(),
                                       importTab -> choice.player_spec -> currentText(),
                                       importTab -> choice.player_race -> currentText(),
@@ -424,8 +461,8 @@ void SC_ImportTab::createAutomationTab()
   compLayout -> addRow( tr( "Comparison Type" ), choice.comp_type );
 
   // Ceate a Checkbox for input mode
-  choice.input_mode = createInputMode();
-  compLayout->addRow( tr( "Advanced Input" ), choice.input_mode );
+  choice.input_mode = createInputMode( 2 , "Simple", "Advanced" );
+  compLayout->addRow( tr( "Input Mode" ), choice.input_mode );
 
   // Apply the layout to the compGroupBox
   compGroupBox -> setLayout( compLayout );
@@ -528,9 +565,11 @@ void SC_ImportTab::createAutomationTab()
   connect( choice.player_class, SIGNAL( currentIndexChanged( const int& ) ), this, SLOT( setSidebarClassText() ) );
   connect( choice.player_spec,  SIGNAL( currentIndexChanged( const int& ) ), this, SLOT( setSidebarClassText() ) );
   connect( choice.comp_type,    SIGNAL( currentIndexChanged( const int& ) ), this, SLOT( compTypeChanged( const int ) ) );
+  connect( choice.input_mode,   SIGNAL( currentIndexChanged( const int& ) ), this, SLOT( inputTypeChanged( const int ) ) );
 
   // do some initialization
   compTypeChanged( choice.comp_type -> currentIndex() );
+  inputTypeChanged( choice.input_mode -> currentIndex() );
 
   // set up all the tooltips
   createTooltips();

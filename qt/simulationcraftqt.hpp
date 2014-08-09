@@ -521,7 +521,7 @@ public:
     QComboBox* player_race;
     QComboBox* player_level;
     QComboBox* comp_type;
-    QCheckBox* input_mode;
+    QComboBox* input_mode;
   } choice;
 
   struct labels_t
@@ -563,6 +563,7 @@ public slots:
   void setSpecDropDown( const int player_class );
   void setSidebarClassText();
   void compTypeChanged( const int comp );
+  void inputTypeChanged( const int mode );
 };
 
 // ==========================================================================
@@ -1549,7 +1550,7 @@ namespace automation {
   QString tokenize( QString qstr );
 
   QString do_something( int sim_type,
-                        Qt::CheckState input_mode,
+                        int input_mode,
                         QString player_class,
                         QString player_spec,
                         QString player_race,
