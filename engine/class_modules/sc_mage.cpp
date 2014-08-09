@@ -1661,7 +1661,7 @@ struct arcane_missiles_t : public mage_spell_t
 struct arcane_orb_bolt_t : public mage_spell_t
 {
   arcane_orb_bolt_t( mage_t* p ) :
-    mage_spell_t( "arcane_orb_bolt", p, p -> find_talent_spell( "Arcane Orb" ) )
+    mage_spell_t( "arcane_orb_bolt", p, p -> find_spell( 153640 ) )
   {
     aoe = -1;
     background = true;
@@ -1675,7 +1675,7 @@ struct arcane_orb_t : public mage_spell_t
   arcane_orb_bolt_t* orb_bolt;
 
   arcane_orb_t( mage_t* p, const std::string& options_str ) :
-    mage_spell_t( "arcane_orb", p, p -> find_spell( 153626 ) ),
+    mage_spell_t( "arcane_orb", p, p -> find_talent_spell( "Arcane Orb" ) ),
     orb_bolt( new arcane_orb_bolt_t( p ) )
   {
     parse_options( NULL, options_str );
