@@ -494,6 +494,16 @@ expr_t* dot_t::create_expression( action_t* action,
     };
     return new crit_dmg_expr_t( this, action, dynamic );
   }
+  else if ( name_str == "tick_time_remains" )
+  {
+    struct tick_time_remain_expr_t : public dot_expr_t
+    {
+      tick_time_remain_expr_t( dot_t* d, action_t* a, bool dynamic ) :
+        dot_expr_t( "dot_tick_time_remain", d, a, dynamic ) {}
+      virtual double evaluate() { return dot() -> is_ticking() ? dot() -> tick_event -> remains().total_seconds() : 0; }
+    };
+    return new tick_time_remain_expr_t( this, action, dynamic );
+  }
   else if ( name_str == "ticks_remain" )
   {
     struct ticks_remain_expr_t : public dot_expr_t
