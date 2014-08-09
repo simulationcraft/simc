@@ -244,12 +244,7 @@ public:
 
     // Guardian (Bear)
     gain_t* bear_form;
-    gain_t* bear_melee;
     gain_t* frenzied_regeneration;
-    gain_t* lacerate;
-    gain_t* mangle;
-    gain_t* pulverize;
-    gain_t* thrash;
   } gain;
 
   // Perks
@@ -2656,9 +2651,13 @@ namespace bear_attacks {
 
 struct bear_attack_t : public druid_attack_t<melee_attack_t>
 {
+public:
+  double rage_amount, rage_tick_amount;
+
   bear_attack_t( const std::string& n, druid_t* p,
                  const spell_data_t* s = spell_data_t::nil() ) :
-    base_t( n, p, s )
+    base_t( n, p, s ), rage_gain( p -> get_gain( name() ) ),
+    rage_amount( 0.0 ), rage_tick_amount( 0.0 )
   {}
 
   void trigger_ursa_major()
@@ -2707,13 +2706,25 @@ struct bear_attack_t : public druid_attack_t<melee_attack_t>
   {
     base_t::impact( s );
 
-    if ( p() -> spell.primal_fury -> ok() && s -> target == target && s -> result == RESULT_CRIT ) // Only trigger from primary target
+    if ( result_is_hit( s -> result ) )
     {
-      p() -> resource_gain( RESOURCE_RAGE,
-                            p() -> spell.primal_fury -> effectN( 1 ).resource( RESOURCE_RAGE ),
-                            p() -> gain.primal_fury );
-      p() -> proc.primal_fury -> occur();
+      p() -> resource_gain( RESOURCE_RAGE, rage_amount, rage_gain );
+
+      if ( p() -> spell.primal_fury -> ok() && s -> target == target && s -> result == RESULT_CRIT ) // Only trigger from primary target
+      {
+        p() -> resource_gain( RESOURCE_RAGE,
+                              p() -> spell.primal_fury -> effectN( 1 ).resource( RESOURCE_RAGE ),
+                              p() -> gain.primal_fury );
+        p() -> proc.primal_fury -> occur();
+      }
     }
+  }
+
+  virtual void tick( dot_t* d )
+  {
+    base_t::tick( d );
+
+    p() -> resource_gain( RESOURCE_RAGE, rage_tick_amount, rage_gain );
   }
 
   virtual bool ready() 
@@ -2723,6 +2734,8 @@ struct bear_attack_t : public druid_attack_t<melee_attack_t>
     
     return base_t::ready();
   }
+private:
+  gain_t* rage_gain;
 }; // end druid_bear_attack_t
 
 // Bear Melee Attack ========================================================
@@ -2736,6 +2749,8 @@ struct bear_melee_t : public bear_attack_t
     may_glance  = background = repeating = true;
     trigger_gcd = timespan_t::zero();
     special     = false;
+
+    rage_amount = 5.0;
   }
 
   virtual timespan_t execute_time() const
@@ -2752,8 +2767,6 @@ struct bear_melee_t : public bear_attack_t
 
     if ( result_is_hit( state -> result ) )
     {
-      p() -> resource_gain( RESOURCE_RAGE, 5.0, p() -> gain.bear_melee );
-
       if ( rng().roll( p() -> spec.tooth_and_claw -> proc_chance() ) )
       {
         if ( p() -> buff.tooth_and_claw -> current_stack == p() -> buff.tooth_and_claw -> max_stack() )
@@ -2773,22 +2786,19 @@ struct bear_melee_t : public bear_attack_t
 
 struct lacerate_t : public bear_attack_t
 {
-  double rage_gain;
-
   lacerate_t( druid_t* p, const std::string& options_str ) :
-    bear_attack_t( "lacerate", p, p -> find_specialization_spell( "Lacerate" ) ),
-    rage_gain( 0.0 )
+    bear_attack_t( "lacerate", p, p -> find_specialization_spell( "Lacerate" ) )
   {
     parse_options( NULL, options_str );
     dot_behavior = DOT_REFRESH;
-    rage_gain = data().effectN( 3 ).resource( RESOURCE_RAGE );
+
+    rage_amount = data().effectN( 3 ).resource( RESOURCE_RAGE );
   }
 
   virtual void impact( action_state_t* state )
   {
     if ( result_is_hit( state -> result ) )
     {
-      p() -> resource_gain( RESOURCE_RAGE, rage_gain, p() -> gain.lacerate );
       if ( td( state -> target ) -> lacerate_stack < 3 )
         td( state -> target ) -> lacerate_stack++;
 
@@ -2827,26 +2837,14 @@ struct lacerate_t : public bear_attack_t
 
 struct mangle_t : public bear_attack_t
 {
-  double rage_gain;
-
   mangle_t( druid_t* player, const std::string& options_str ) :
     bear_attack_t( "mangle", player, player -> find_class_spell( "Mangle" ) )
   {
     parse_options( NULL, options_str );
 
-    rage_gain = data().effectN( 3 ).resource( RESOURCE_RAGE ) + player -> talent.soul_of_the_forest -> effectN( 1 ).resource( RESOURCE_RAGE );
+    rage_amount = data().effectN( 3 ).resource( RESOURCE_RAGE ) + player -> talent.soul_of_the_forest -> effectN( 1 ).resource( RESOURCE_RAGE );
 
     base_multiplier *= 1.0 + player -> talent.soul_of_the_forest -> effectN( 2 ).percent();
-  }
-
-  virtual int num_targets()
-  {
-    int t = bear_attack_t::num_targets();
-
-    if ( p() -> buff.berserk -> check() )
-      t += p() -> spell.berserk_bear -> effectN( 1 ).base_value();
-
-    return t;
   }
 
   virtual double composite_crit() const
@@ -2861,6 +2859,7 @@ struct mangle_t : public bear_attack_t
 
   virtual void execute()
   {
+    double base_aoe = aoe;
     if ( p() -> buff.berserk -> up() )
       aoe = p() -> spell.berserk_bear -> effectN( 1 ).base_value();
 
@@ -2868,14 +2867,14 @@ struct mangle_t : public bear_attack_t
 
     if ( p() -> buff.berserk -> check() || p() -> buff.son_of_ursoc -> check() )
       cooldown -> reset( false );
+
+    aoe = base_aoe;
   }
 
   virtual void impact( action_state_t* s )
   {
     bear_attack_t::impact( s );
 
-    if ( result_is_hit( s -> result ) )
-      p() -> resource_gain( RESOURCE_RAGE, rage_gain, p() -> gain.mangle );
     if ( result_is_multistrike( s -> result ) )
       trigger_ursa_major();
   }
@@ -2957,15 +2956,10 @@ struct maul_t : public bear_attack_t
 
 struct pulverize_t : public bear_attack_t
 {
-  double rage_gain;
-
   pulverize_t( druid_t* player, const std::string& options_str ) :
-    bear_attack_t( "pulverize", player, player -> talent.pulverize ),
-    rage_gain( 0.0 )
+    bear_attack_t( "pulverize", player, player -> talent.pulverize )
   {
     parse_options( NULL, options_str );
-
-    rage_gain = player -> find_spell( 162290 ) -> effectN( 1 ).resource( RESOURCE_RAGE );
   }
 
   virtual void impact( action_state_t* s )
@@ -2994,7 +2988,6 @@ struct pulverize_t : public bear_attack_t
 
 struct thrash_bear_t : public bear_attack_t
 {
-  double rage_gain;
   thrash_bear_t( druid_t* player, const std::string& options_str ) :
     bear_attack_t( "thrash_bear", player, player -> find_spell( 77758 ) )
   {
@@ -3003,7 +2996,7 @@ struct thrash_bear_t : public bear_attack_t
     dot_behavior           = DOT_REFRESH;
     spell_power_mod.direct = 0;
 
-    rage_gain = p() -> find_spell( 158723 ) -> effectN( 1 ).resource( RESOURCE_RAGE );
+    rage_amount = rage_tick_amount = p() -> find_spell( 158723 ) -> effectN( 1 ).resource( RESOURCE_RAGE );
   }
 
   virtual void impact( action_state_t* s )
@@ -3014,19 +3007,9 @@ struct thrash_bear_t : public bear_attack_t
     {
       this -> td( s -> target ) -> dots.thrash_cat -> cancel();
 
-      p() -> resource_gain( RESOURCE_RAGE, rage_gain, p() -> gain.thrash );
-
       if ( p() -> sets.has_set_bonus( SET_T17_2PC_MELEE ) )
         p() -> resource_gain( RESOURCE_ENERGY, 3.0, p() -> gain.tier17_2pc_melee );
     }
-  }
-
-  virtual void tick( dot_t* d )
-  {
-    bear_attack_t::tick( d );
-
-    if ( result_is_hit( d -> state -> result ) )
-      p() -> resource_gain( RESOURCE_RAGE, rage_gain, p() -> gain.thrash );
   }
 
   // Treat direct damage as "bleed"
@@ -5428,8 +5411,6 @@ void druid_t::init_spells()
 {
   player_t::init_spells();
 
-  caster_melee_attack = new caster_attacks::druid_melee_t( this );
-
   // Specializations
   // Generic / Multiple specs
   spec.critical_strikes        = find_specialization_spell( "Critical Strikes" );
@@ -5539,6 +5520,12 @@ void druid_t::init_spells()
   talent.germination         = find_talent_spell( "Germination" );
   talent.rampant_growth      = find_talent_spell( "Rampant Growth" );
 
+  // Masteries
+  mastery.total_eclipse    = find_mastery_spell( DRUID_BALANCE );
+  mastery.razor_claws      = find_mastery_spell( DRUID_FERAL );
+  mastery.harmony          = find_mastery_spell( DRUID_RESTORATION );
+  mastery.primal_tenacity  = find_mastery_spell( DRUID_GUARDIAN );
+
   // Active actions
   if ( spec.leader_of_the_pack -> ok() )
     active.leader_of_the_pack = new leader_of_the_pack_t( this );
@@ -5550,14 +5537,13 @@ void druid_t::init_spells()
     active.yseras_gift        = new yseras_gift_t( this );
   if ( sets.has_set_bonus( SET_T17_4PC_MELEE ) )
     active.gushing_wound      = new gushing_wound_t( this );
+  if ( mastery.primal_tenacity -> ok() )
+    active.primal_tenacity = new primal_tenacity_t( this );
 
-  // TODO: Check if this is really the passive applied, the actual shapeshift
-  // only has data of shift, polymorph immunity and the general armor bonus
-
+  // Spells
   spell.bear_form                       = find_class_spell( "Bear Form"                   ) -> ok() ? find_spell( 1178   ) : spell_data_t::not_found(); // This is the passive applied on shapeshift!
   spell.berserk_bear                    = find_class_spell( "Berserk"                     ) -> ok() ? find_spell( 50334  ) : spell_data_t::not_found(); // Berserk bear mangler
   spell.berserk_cat                     = find_class_spell( "Berserk"                     ) -> ok() ? find_spell( 106951 ) : spell_data_t::not_found(); // Berserk cat resource cost reducer
-  spell.cat_form                        = find_class_spell( "Cat Form"                    ) -> ok() ? find_spell( 3025   ) : spell_data_t::not_found(); // Cat form buff
   spell.frenzied_regeneration           = find_class_spell( "Frenzied Regeneration"       ) -> ok() ? find_spell( 22842  ) : spell_data_t::not_found();
   spell.moonkin_form                    = find_class_spell( "Moonkin Form"                ) -> ok() ? find_spell( 24905  ) : spell_data_t::not_found(); // This is the passive applied on shapeshift!
   spell.regrowth                        = find_class_spell( "Regrowth"                    ) -> ok() ? find_spell( 93036  ) : spell_data_t::not_found(); // Regrowth refresh
@@ -5566,16 +5552,6 @@ void druid_t::init_spells()
     spell.primal_fury = find_spell( 16953 );
   else if ( specialization() == DRUID_GUARDIAN )
     spell.primal_fury = find_spell( 16959 );
-
-  // Masteries
-  mastery.total_eclipse    = find_mastery_spell( DRUID_BALANCE );
-  mastery.razor_claws      = find_mastery_spell( DRUID_FERAL );
-  mastery.harmony          = find_mastery_spell( DRUID_RESTORATION );
-  mastery.primal_tenacity  = find_mastery_spell( DRUID_GUARDIAN );
-
-  // More Active Actions!
-  if ( mastery.primal_tenacity -> ok() )
-    active.primal_tenacity = new primal_tenacity_t( this );
 
   // Perks
 
@@ -5645,6 +5621,8 @@ void druid_t::init_spells()
     t16_2pc_starfall_bolt = new spells::t16_2pc_starfall_bolt_t( this );
     t16_2pc_sun_bolt = new spells::t16_2pc_sun_bolt_t( this );
   }
+
+  caster_melee_attack = new caster_attacks::druid_melee_t( this );
 }
 
 // druid_t::init_base =======================================================
@@ -5653,23 +5631,22 @@ void druid_t::init_base_stats()
 {
   player_t::init_base_stats();
 
-  // TODO: Confirm that all druid specs get both of these things.
-  base.attack_power_per_agility  = 1.0;
-  base.attack_power_per_strength = 0.0;
-  base.spell_power_per_intellect = 1.0;
-
-  resources.base[ RESOURCE_COMBO_POINT ] = 5;
+  if ( specialization () == DRUID_FERAL || specialization() == DRUID_GUARDIAN )
+    base.attack_power_per_agility  = 1.0;
+  if ( specialization () == DRUID_BALANCE || specialization() == DRUID_RESTORATION )
+    base.spell_power_per_intellect = 1.0;
 
   // Avoidance diminishing Returns constants/conversions now handled in player_t::init_base_stats().
   // Base miss, dodge, parry, and block are set in player_t::init_base_stats().
   // Just need to add class- or spec-based modifiers here (none for druids at the moment).
 
-  resources.base[ RESOURCE_ENERGY ] = 100;
-  resources.base[ RESOURCE_RAGE   ] = 100;
+  resources.base[ RESOURCE_ENERGY      ] = 100;
+  resources.base[ RESOURCE_RAGE        ] = 100;
+  resources.base[ RESOURCE_COMBO_POINT ] = 5;
 
   base_energy_regen_per_second = 10;
 
-  // Natural Insight: +400% mana
+  // Max Mana & Mana Regen modifiers
   resources.base_multiplier[ RESOURCE_MANA ] = 1.0 + spec.natural_insight -> effectN( 1 ).percent();
   base.mana_regen_per_second *= 1.0 + spec.natural_insight -> effectN( 1 ).percent();
   base.mana_regen_per_second *= 1.0 + spec.mana_attunement -> effectN( 1 ).percent();
@@ -6233,24 +6210,19 @@ void druid_t::init_gains()
 {
   player_t::init_gains();
 
-  gain.bear_melee            = get_gain( "bear_melee"            );
   gain.bear_form             = get_gain( "bear_form"             );
   gain.energy_refund         = get_gain( "energy_refund"         );
   gain.feral_rage            = get_gain( "feral_rage"            );
   gain.frenzied_regeneration = get_gain( "frenzied_regeneration" );
   gain.glyph_ferocious_bite  = get_gain( "glyph_ferocious_bite"  );
-  gain.lacerate              = get_gain( "lacerate"              );
   gain.leader_of_the_pack    = get_gain( "leader_of_the_pack"    );
-  gain.mangle                = get_gain( "mangle"                );
   gain.moonfire              = get_gain( "moonfire"              );
   gain.omen_of_clarity       = get_gain( "omen_of_clarity"       );
   gain.primal_fury           = get_gain( "primal_fury"           );
-  gain.pulverize             = get_gain( "pulverize"             );
   gain.rake                  = get_gain( "rake"                  );
   gain.shred                 = get_gain( "shred"                 );
   gain.soul_of_the_forest    = get_gain( "soul_of_the_forest"    );
   gain.swipe                 = get_gain( "swipe"                 );
-  gain.thrash                = get_gain( "thrash"                );
   gain.tier15_2pc_melee      = get_gain( "tier15_2pc_melee"      );
   gain.tier17_2pc_melee      = get_gain( "tier17_2pc_melee"      );
   gain.tigers_fury           = get_gain( "tigers_fury"           );
