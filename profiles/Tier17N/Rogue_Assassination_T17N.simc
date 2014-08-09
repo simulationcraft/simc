@@ -37,18 +37,16 @@ actions+=/berserking
 actions+=/arcane_torrent,if=energy<60
 actions+=/vanish,if=time>10&!buff.stealth.up
 actions+=/shadow_reflection
+actions+=/rupture,if=combo_points=5&ticks_remain<3
+actions+=/rupture,cycle_targets=1,if=active_enemies>1&!ticking&combo_points=5
 actions+=/mutilate,if=buff.stealth.up
-actions+=/slice_and_dice,if=buff.slice_and_dice.remains<2
-actions+=/dispatch,if=dot.rupture.ticks_remain<2&energy>90
-actions+=/mutilate,if=dot.rupture.ticks_remain<2&energy>90
+actions+=/dispatch,if=buff.envenom.up&active_enemies<4
 actions+=/marked_for_death,if=combo_points=0
-actions+=/rupture,if=ticks_remain<2|(combo_points=5&ticks_remain<3)
 actions+=/fan_of_knives,if=combo_points<5&active_enemies>=4
 actions+=/vendetta
-actions+=/envenom,if=combo_points>4
-actions+=/envenom,if=combo_points>=2&buff.slice_and_dice.remains<3
-actions+=/dispatch,if=combo_points<5
-actions+=/mutilate
+actions+=/envenom,if=combo_points>4&dot.rupture.ticks_remain>3&active_enemies<4
+actions+=/mutilate,if=target.health.pct>35&combo_points<5&active_enemies<5
+actions+=/dispatch,if=combo_points<5&active_enemies<4
 
 head=primal_gladiators_helm,id=111275
 neck=primal_gladiators_necklace_of_cruelty,id=111079,enchant=gift_of_critical_strike

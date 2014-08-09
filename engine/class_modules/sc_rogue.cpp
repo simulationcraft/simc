@@ -1787,15 +1787,16 @@ struct eviscerate_t : public rogue_attack_t
 
 // Fan of Knives ============================================================
 
-struct fan_of_knives_t : public rogue_attack_t
+struct fan_of_knives_t: public rogue_attack_t
 {
-  fan_of_knives_t( rogue_t* p, const std::string& options_str ) :
+  fan_of_knives_t( rogue_t* p, const std::string& options_str ):
     rogue_attack_t( "fan_of_knives", p, p -> find_class_spell( "Fan of Knives" ), options_str )
   {
     ability_type = FAN_OF_KNIVES;
     weapon = &( player -> main_hand_weapon );
     weapon_multiplier = 0;
     aoe = -1;
+    adds_combo_points = 1;
   }
 
   void impact( action_state_t* state )
@@ -3977,7 +3978,7 @@ void rogue_t::init_action_list()
     return;
   }
 
-  if ( ! action_list_str.empty() )
+  if ( !action_list_str.empty() )
   {
     player_t::init_action_list();
     return;
@@ -4001,7 +4002,7 @@ void rogue_t::init_action_list()
   }
 
   action_priority_list_t* precombat = get_action_priority_list( "precombat" );
-  action_priority_list_t* def       = get_action_priority_list( "default"   );
+  action_priority_list_t* def       = get_action_priority_list( "default" );
 
   std::vector<std::string> item_actions = get_item_actions();
   std::vector<std::string> profession_actions = get_profession_actions();
@@ -4078,41 +4079,29 @@ void rogue_t::init_action_list()
     def -> add_action( this, "Preparation", "if=!buff.vanish.up&cooldown.vanish.remains>60" );
 
     for ( size_t i = 0; i < item_actions.size(); i++ )
-      def -> add_action( item_actions[ i ] );
-
-    for ( size_t i = 0; i < profession_actions.size(); i++ )
-      def -> add_action( profession_actions[ i ] );
+      def -> add_action( item_actions[i] );
 
     for ( size_t i = 0; i < racial_actions.size(); i++ )
     {
-      if ( racial_actions[ i ] == "arcane_torrent" )
-        def -> add_action( racial_actions[ i ] + ",if=energy<60" );
+      if ( racial_actions[i] == "arcane_torrent" )
+        def -> add_action( racial_actions[i] + ",if=energy<60" );
       else
-        def -> add_action( racial_actions[ i ] );
+        def -> add_action( racial_actions[i] );
     }
 
     std::string vanish_expr = "if=time>10&!buff.stealth.up";
     def -> add_action( this, "Vanish", vanish_expr );
     def -> add_talent( this, "Shadow Reflection" );
-
+    def -> add_action( this, "Rupture", "if=combo_points=5&ticks_remain<3" );
+    def -> add_action( this, "Rupture", "cycle_targets=1,if=active_enemies>1&!ticking&combo_points=5" );
     def -> add_action( this, "Mutilate", "if=buff.stealth.up" );
-    def -> add_action( this, "Slice and Dice", "if=buff.slice_and_dice.remains<2" );
-
-    def -> add_action( this, "Dispatch", "if=dot.rupture.ticks_remain<2&energy>90" );
-    def -> add_action( this, "Mutilate", "if=dot.rupture.ticks_remain<2&energy>90" );
-
+    def -> add_action( this, "Dispatch", "if=buff.envenom.up&active_enemies<4" );
     def -> add_talent( this, "Marked for Death", "if=combo_points=0" );
-
-    def -> add_action( this, "Rupture", "if=ticks_remain<2|(combo_points=5&ticks_remain<3)" );
     def -> add_action( this, "Fan of Knives", "if=combo_points<5&active_enemies>=4" );
-
     def -> add_action( this, "Vendetta" );
-
-    def -> add_action( this, "Envenom", "if=combo_points>4" );
-    def -> add_action( this, "Envenom", "if=combo_points>=2&buff.slice_and_dice.remains<3" );
-
-    def -> add_action( this, "Dispatch", "if=combo_points<5" );
-    def -> add_action( this, "Mutilate" );
+    def -> add_action( this, "Envenom", "if=combo_points>4&dot.rupture.ticks_remain>3&active_enemies<4" );
+    def -> add_action( this, "Mutilate", "if=target.health.pct>35&combo_points<5&active_enemies<5" );
+    def -> add_action( this, "Dispatch", "if=combo_points<5&active_enemies<4" );
   }
   // Action list from http://sites.google.com/site/bittensspellflash/simc-profiles
   else if ( specialization() == ROGUE_COMBAT )
@@ -4120,35 +4109,25 @@ void rogue_t::init_action_list()
     precombat -> add_talent( this, "Marked for Death" );
     precombat -> add_action( this, "Slice and Dice", "if=talent.marked_for_death.enabled" );
 
-    def -> add_action( this, "Preparation", "if=!buff.vanish.up&cooldown.vanish.remains>60" );
-
     for ( size_t i = 0; i < item_actions.size(); i++ )
-      def -> add_action( item_actions[ i ] );
-
-    for ( size_t i = 0; i < profession_actions.size(); i++ )
-      def -> add_action( profession_actions[ i ] );
+      def -> add_action( item_actions[i] );
 
     for ( size_t i = 0; i < racial_actions.size(); i++ )
     {
-      if ( racial_actions[ i ] == "arcane_torrent" )
-        def -> add_action( racial_actions[ i ] + ",if=energy<60" );
+      if ( racial_actions[i] == "arcane_torrent" )
+        def -> add_action( racial_actions[i] + ",if=energy<60" );
       else
-        def -> add_action( racial_actions[ i ] );
+        def -> add_action( racial_actions[i] );
     }
 
     def -> add_action( this, "Blade Flurry", "if=(active_enemies>=2&!buff.blade_flurry.up)|(active_enemies<2&buff.blade_flurry.up)" );
-
     def -> add_talent( this, "Shadow Reflection" );
     def -> add_action( this, "Ambush" );
-    def -> add_action( this, "Vanish", "if=time>10&(combo_points<3|(talent.anticipation.enabled&anticipation_charges<3))&((talent.shadow_focus.enabled&buff.adrenaline_rush.down&energy<20)|(talent.subterfuge.enabled&energy>=90)|(!talent.shadow_focus.enabled&!talent.subterfuge.enabled&energy>=60))" );
-
-    // Cooldowns (No Tier14)
     def -> add_action( this, "Killing Spree", "if=energy<50" );
     def -> add_action( this, "Adrenaline Rush", "if=energy<35" );
 
     // Rotation
     def -> add_action( this, "Slice and Dice", "if=buff.slice_and_dice.remains<2|(buff.slice_and_dice.remains<15&buff.bandits_guile.stack=11&combo_points>=4)" );
-
     def -> add_talent( this, "Marked for Death", "if=combo_points<=1&dot.revealing_strike.ticking" );
 
     // Generate combo points, or use combo points
@@ -4159,13 +4138,12 @@ void rogue_t::init_action_list()
 
     // Combo point generators
     action_priority_list_t* gen = get_action_priority_list( "generator", "Combo point generators" );
-    gen -> add_action( this, "Fan of Knives", "line_cd=5,if=active_enemies>=4" );
     gen -> add_action( this, "Revealing Strike", "if=ticks_remain<2" );
     gen -> add_action( this, "Sinister Strike" );
 
     // Combo point finishers
     action_priority_list_t* finisher = get_action_priority_list( "finisher", "Combo point finishers" );
-    finisher -> add_action( this, "Crimson Tempest", "if=active_enemies>=7&dot.crimson_tempest_dot.ticks_remain<=2" );
+    finisher -> add_action( this, "Crimson Tempest", "if=active_enemies>7&dot.crimson_tempest_dot.ticks_remain<=1" );
     finisher -> add_action( this, "Eviscerate" );
   }
   else if ( specialization() == ROGUE_SUBTLETY )
@@ -4174,17 +4152,14 @@ void rogue_t::init_action_list()
     precombat -> add_action( this, "Slice and Dice" );
 
     for ( size_t i = 0; i < item_actions.size(); i++ )
-      def -> add_action( item_actions[ i ] + ",if=buff.shadow_dance.up" );
-
-    for ( size_t i = 0; i < profession_actions.size(); i++ )
-      def -> add_action( profession_actions[ i ] + ",if=buff.shadow_dance.up" );
+      def -> add_action( item_actions[i] + ",if=buff.shadow_dance.up" );
 
     for ( size_t i = 0; i < racial_actions.size(); i++ )
     {
-      if ( racial_actions[ i ] == "arcane_torrent" )
-        def -> add_action( racial_actions[ i ] + ",if=energy<60" );
+      if ( racial_actions[i] == "arcane_torrent" )
+        def -> add_action( racial_actions[i] + ",if=energy<60" );
       else
-        def -> add_action( racial_actions[ i ] + ",if=buff.shadow_dance.up" );
+        def -> add_action( racial_actions[i] + ",if=buff.shadow_dance.up" );
     }
 
     // Shadow Dancing and Vanishing and Marking for the Deathing
@@ -4200,10 +4175,7 @@ void rogue_t::init_action_list()
 
     // Rotation
     def -> add_action( "run_action_list,name=generator,if=talent.anticipation.enabled&anticipation_charges<4&buff.slice_and_dice.up&dot.rupture.remains>2&(buff.slice_and_dice.remains<6|dot.rupture.remains<4)" );
-    if ( highest_rune_stat != STAT_MASTERY_RATING )
-      def -> add_action( "run_action_list,name=finisher,if=combo_points=5" );
-    else
-      def -> add_action( "run_action_list,name=finisher,if=combo_points=5|(buff.rune_of_reorigination.react&combo_points>=4)" );
+    def -> add_action( "run_action_list,name=finisher,if=combo_points=5" );
     def -> add_action( "run_action_list,name=generator,if=combo_points<4|energy>80|talent.anticipation.enabled" );
     def -> add_action( "run_action_list,name=pool" );
 
@@ -4218,18 +4190,10 @@ void rogue_t::init_action_list()
 
     // Combo point finishers
     action_priority_list_t* finisher = get_action_priority_list( "finisher", "Combo point finishers" );
-    if ( highest_rune_stat != STAT_MASTERY_RATING )
-    {
-      finisher -> add_action( this, "Slice and Dice", "if=buff.slice_and_dice.remains<4" );
-      finisher -> add_action( this, "Rupture", "if=ticks_remain<2&active_enemies<3" );
-    }
-    else
-    {
-      finisher -> add_action( this, "Slice and Dice", "if=buff.slice_and_dice.remains<4|(buff.rune_of_reorigination.react&buff.slice_and_dice.remains<25)" );
-      finisher -> add_action( this, "Rupture", "if=ticks_remain<2&active_enemies<3|(buff.rune_of_reorigination.react&ticks_remain<7)" );
-    }
-  finisher -> add_action( this, "Crimson Tempest", "if=(active_enemies>1&dot.crimson_tempest_dot.ticks_remain<=2&combo_points=5)|active_enemies>=5" );
-  finisher -> add_action( this, "Eviscerate", "if=active_enemies<4|(active_enemies>3&dot.crimson_tempest_dot.ticks_remain>=2)" );
+    finisher -> add_action( this, "Slice and Dice", "if=buff.slice_and_dice.remains<4" );
+    finisher -> add_action( this, "Rupture", "if=ticks_remain<2&active_enemies<3" );
+    finisher -> add_action( this, "Crimson Tempest", "if=(active_enemies>1&dot.crimson_tempest_dot.ticks_remain<=2&combo_points=5)|active_enemies>=5" );
+    finisher -> add_action( this, "Eviscerate", "if=active_enemies<4|(active_enemies>3&dot.crimson_tempest_dot.ticks_remain>=2)" );
     finisher -> add_action( this, find_class_spell( "Preparation" ), "run_action_list", "name=pool" );
 
     // Resource pooling
