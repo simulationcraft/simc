@@ -32,6 +32,7 @@
 // Enhanced Frostbolt keeps trying to trigger for non-Frost specs (causes debug log to look ugly, prolly slows down the sim)
 // Arcane Orb needs to be treated as a flying object that can hit multiple targets in a line, instead of as something which is basically just an explosion around a single target.
 // Need to do some basic d=vt calcs to have a more realistic travel time for AO.
+// Add the delay between tick and aoe for NT
 
 
 // To-do Completed:
@@ -301,7 +302,7 @@ public:
     const spell_data_t* greater_invis; // NYI
     const spell_data_t* cauterize; // NYI
     const spell_data_t* cold_snap;
-    const spell_data_t* nether_tempest; // Extra target NYI
+    const spell_data_t* nether_tempest;
     const spell_data_t* living_bomb;
     const spell_data_t* frost_bomb;
     const spell_data_t* rune_of_power;
@@ -3181,8 +3182,7 @@ struct molten_armor_t : public mage_spell_t
 
 
 
-// Nether Tempest Cleave ====================================================
-//FIXME_cleave: take actual distances between main_target and cleave_target into account
+// Nether Tempest AoE ====================================================
 struct nether_tempest_aoe_t: public mage_spell_t
 {
   nether_tempest_aoe_t( mage_t* p ) :
@@ -3198,7 +3198,6 @@ struct nether_tempest_aoe_t: public mage_spell_t
 };
 
 // Nether Tempest ===========================================================
-
 struct nether_tempest_t : public mage_spell_t
 {
   nether_tempest_aoe_t *add_aoe;
@@ -4594,23 +4593,23 @@ void mage_t::apl_arcane()
   single_target -> add_talent( this, "Nether Tempest", "if=(!ticking|remains<tick_time)&target.time_to_die>6&buff.arcane_charge.stack=4" );
   single_target -> add_talent( this, "Supernova", "if=buff.arcane_charge.stack=4&((charges=1&recharge_time<10&cooldown.arcane_power.remains>12)|(buff.arcane_power.up))" );
   single_target -> add_action( this, "Arcane Missiles", "if=buff.arcane_charge.stack=4" );
-  single_target -> add_talent( this, "Nether Tempest", "if=remains<9&target.time_to_die>6&buff.arcane_charge.stack=4" );
+  single_target -> add_talent( this, "Nether Tempest", "if=remains<7&target.time_to_die>6&buff.arcane_charge.stack=4" );
+  single_target -> add_action( this, "Arcane Blast", "if=talent.unstable_magic.enabled&(buff.arcane_power.up|mana.pct>=95)");
   single_target -> add_talent( this, "Arcane Orb", "if=buff.arcane_charge.stack<=3" );
-  single_target -> add_action( this, "Arcane Barrage", "if=buff.arcane_charge.stack=4&mana.pct<95&buff.arcane_power.down" );
+  single_target -> add_action( this, "Arcane Barrage", "if=buff.arcane_charge.stack=4&mana.pct<95" );
   single_target -> add_action( this, "Presence of Mind", "if=cooldown.arcane_power.remains>75" );
   single_target -> add_action( this, "Arcane Blast" );
   single_target -> add_talent( this, "Ice Floes", "moving=1" );
   single_target -> add_action( this, "Arcane Barrage", "moving=1" );
 
-  prismatic_crystal -> add_talent( this, "Nether Tempest", "if=buff.arcane_charge.stack=4&(!ticking|remains<tick_time)" );
-  prismatic_crystal -> add_action( this, "Arcane Barrage",
-            "if=buff.arcane_charge.stack=4&action.arcane_barrage.travel_time+0.5>cooldown.prismatic_crystal.remains-50");
+
   prismatic_crystal -> add_action( this, "Arcane Missiles", "if=buff.arcane_charge.stack=4");
   prismatic_crystal -> add_talent( this, "Supernova");
+  prismatic_crystal -> add_action( this, "Arcane Barrage", "if=buff.arcane_charge.stack=4&action.arcane_barrage.travel_time+0.5>cooldown.prismatic_crystal.remains-50");
   prismatic_crystal -> add_action( this, "Arcane Blast" );
   
   aoe -> add_action ( this, "Flamestrike" );
-  aoe -> add_talent ( this, "Nether Tempest", "cycle_targets=1,if=(!ticking|remains<tick_time)&target.time_to_die>6");
+  aoe -> add_talent ( this, "Nether Tempest", "if=buff.arcane_charge.stack=4&(!ticking|remains<tick_time)&target.time_to_die>6");
   aoe -> add_action ( this, "Arcane Barrage", "if=buff.arcane_charge.stack=4" );
   aoe -> add_action ( this, "Arcane Explosion" );
 }
