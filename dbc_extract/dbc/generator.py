@@ -4103,7 +4103,7 @@ class ItemBonusDataGenerator(DataGenerator):
 
     def generate(self, ids):
         # Bonus trees
-        """
+        
         data_str = "%sitem_bonus_tree%s" % (
             self._options.prefix and ('%s_' % self._options.prefix) or '',
             self._options.suffix and ('_%s' % self._options.suffix) or '',
@@ -4122,7 +4122,7 @@ class ItemBonusDataGenerator(DataGenerator):
             s += '  { %s },\n' % (', '.join(fields))
 
         s += '};\n\n'
-        """
+        
         # Bonus definitions
 
         data_str = "%sitem_bonus%s" % (
@@ -4130,7 +4130,7 @@ class ItemBonusDataGenerator(DataGenerator):
             self._options.suffix and ('_%s' % self._options.suffix) or '',
         )
 
-        s = '#define %s_SIZE (%d)\n\n' % (data_str.upper(), len(self._itembonus_db.keys()) + 1)
+        s += '#define %s_SIZE (%d)\n\n' % (data_str.upper(), len(self._itembonus_db.keys()) + 1)
         s += '// Item bonuses, wow build %d\n' % ( self._options.build )
 
         s += 'static struct item_bonus_entry_t __%s_data[%s_SIZE] = {\n' % (data_str, data_str.upper())
@@ -4141,7 +4141,7 @@ class ItemBonusDataGenerator(DataGenerator):
             s += '  { %s },\n' % (', '.join(fields))
 
         s += '};\n\n'
-        """
+        
         # Item bonuses (unsure as of yet if we need this, depends on how
         # Blizzard exports the bonus id to third parties)
         data_str = "%sitem_bonus_map%s" % (
@@ -4160,5 +4160,5 @@ class ItemBonusDataGenerator(DataGenerator):
             s += '  { %s },\n' % (', '.join(fields))
 
         s += '};\n\n'
-        """
+        
         return s
