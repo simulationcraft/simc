@@ -193,9 +193,9 @@ public:
     const spell_data_t* critical_strikes;
 
     // Shared
-    const spell_data_t* crit_attunement;
-    const spell_data_t* multistrike_attunement;
-    const spell_data_t* mastery_attunement;
+    const spell_data_t* lethal_shots;
+    const spell_data_t* lightning_reflexes;
+    const spell_data_t* animal_handler;
 
     // Beast Mastery
     const spell_data_t* kill_command;
@@ -3100,9 +3100,9 @@ void hunter_t::init_spells()
   glyphs.the_cheetah         = find_glyph_spell( "Glyph of the Cheetah" );
 
   // Attunments
-  specs.crit_attunement       = find_specialization_spell( "Critical Strike Attunement" );
-  specs.mastery_attunement    = find_specialization_spell( "Mastery Attunement" );
-  specs.multistrike_attunement = find_specialization_spell( "Multistrike Attunement" );
+  specs.lethal_shots       = find_specialization_spell( "Lethal Shots" );
+  specs.animal_handler    = find_specialization_spell( "Animal Handler" );
+  specs.lightning_reflexes = find_specialization_spell( "Lightning Reflexes" );
 
   // Spec spells
   specs.critical_strikes     = find_spell( 157443 );
@@ -3628,13 +3628,13 @@ double hunter_t::composite_rating_multiplier( rating_e rating ) const
   switch ( rating )
   {
   case RATING_MULTISTRIKE:
-    return m *= 1.0 + specs.multistrike_attunement -> effectN( 1 ).percent();
+    return m *= 1.0 + specs.lightning_reflexes -> effectN( 1 ).percent();
   case RATING_MELEE_CRIT:
-    return m *= 1.0 + specs.crit_attunement -> effectN( 1 ).percent();
+    return m *= 1.0 + specs.lethal_shots -> effectN( 1 ).percent();
   case RATING_SPELL_CRIT:
-    return m *= 1.0 + specs.crit_attunement -> effectN( 1 ).percent();
+    return m *= 1.0 + specs.lethal_shots -> effectN( 1 ).percent();
   case RATING_MASTERY:
-    return m *= 1.0 + specs.mastery_attunement -> effectN( 1 ).percent();
+    return m *= 1.0 + specs.animal_handler -> effectN( 1 ).percent();
   default:
     break;
   }
