@@ -356,7 +356,6 @@ void enchant::oglethorpes_missile_splitter( special_effect_t& effect,
   new dbc_proc_callback_t( item, effect );
 }
 
-
 void enchant::hemets_heartseeker( special_effect_t& effect,
                                             const item_t& item )
 {
@@ -365,7 +364,7 @@ void enchant::hemets_heartseeker( special_effect_t& effect,
   // link driver to the procced spell, so we do it here.
 
   effect.type = SPECIAL_EFFECT_EQUIP;
-  effect.trigger_spell_id = 173287;
+  effect.trigger_spell_id = 173288;
 
   new dbc_proc_callback_t( item, effect );
 }
