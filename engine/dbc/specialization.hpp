@@ -110,7 +110,7 @@ inline specialization_e spec_id( unsigned idx )
 { assert( idx < n_specs ); return __specs[ idx ]; }
 
 inline int spec_idx( specialization_e spec )
-{ assert( spec < sizeof_array( __idx_specs ) ); return __idx_specs[ spec ]; }
+{ assert( spec < 271 ); return __idx_specs[ spec ]; }
 
 }
 

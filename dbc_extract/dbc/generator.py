@@ -288,7 +288,7 @@ class SpecializationEnumGenerator(DataGenerator):
         s += 'static const int __idx_specs[%u] = {%s\n};\n\n' % (len(spec_to_idx_map), spec_idx_str)
         s += 'inline unsigned spec_count()\n{ return n_specs; }\n\n';
         s += 'inline specialization_e spec_id( unsigned idx )\n{ assert( idx < n_specs ); return __specs[ idx ]; }\n\n'
-        s += 'inline int spec_idx( specialization_e spec )\n{ assert( spec < sizeof_array( __idx_specs ) ); return __idx_specs[ spec ]; }\n\n'
+        s += 'inline int spec_idx( specialization_e spec )\n{ assert( spec < %d ); return __idx_specs[ spec ]; }\n\n' % len(spec_to_idx_map)
         s += '}\n'
                
         return s
