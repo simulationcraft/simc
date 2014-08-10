@@ -6056,59 +6056,29 @@ void druid_t::apl_balance()
 
   action_priority_list_t* default_list        = get_action_priority_list( "default" );
   action_priority_list_t* single_target       = get_action_priority_list( "single_target" );
-  action_priority_list_t* bop                 = get_action_priority_list( "bop");
-  action_priority_list_t* euphoria            = get_action_priority_list( "euphoria" );
   action_priority_list_t* aoe                 = get_action_priority_list( "aoe" );
 
   if ( sim -> allow_potions && level >= 80 )
-    default_list -> add_action( potion_action + ",if=buff.bloodlust.react|target.time_to_die<=40|buff.celestial_alignment.up" );
+    default_list -> add_action( potion_action + ",if=buff.celestial_alignment.up" );
 
   for ( size_t i = 0; i < racial_actions.size(); i++ )
-    default_list -> add_action( racial_actions[i] + ",if=buff.bloodlust.react|target.time_to_die<=40|buff.celestial_alignment.up" );
+    default_list -> add_action( racial_actions[i] + ",if=buff.celestial_alignment.up" );
   for ( size_t i = 0; i < item_actions.size(); i++ )
-    default_list -> add_action( item_actions[i] + ",if=buff.bloodlust.react|target.time_to_die<=40|buff.celestial_alignment.up" );
+    default_list -> add_action( item_actions[i] );
 
-  default_list -> add_action( "run_action_list,name=euphoria,if=active_enemies=1&talent.euphoria.enabled" );
-  default_list -> add_action( "run_action_list,name=bop,if=active_enemies=1&talent.balance_of_power.enabled" );
   default_list -> add_action( "run_action_list,name=single_target,if=active_enemies=1" );
   default_list -> add_action( "run_action_list,name=aoe,if=active_enemies>1" );
 
-  single_target -> add_talent( this, "Stellar Flare", "if=eclipse_change<=2|(@eclipse_energy<=20&!ticking)|(buff.celestial_alignment.up&buff.celestial_alignment.remains<=2)" );
+  single_target -> add_talent( this, "Stellar Flare", "if=eclipse_change<3&ticks_remain<3|!ticking" );
   single_target -> add_talent( this, "Force of Nature", "if=charges>=1" );
   single_target -> add_action( this, "Celestial Alignment", "if=(eclipse_dir.lunar&eclipse_max>=5)|@eclipse_energy<=10" );
-  single_target -> add_action( "incarnation,if=(eclipse_dir.lunar&eclipse_max>=5)|@eclipse_energy<=10" );
-  single_target -> add_action( this, "Starsurge", "if=charges=3&cooldown.celestial_alignment.remains>10" );
-  single_target -> add_action( this, "Moonfire" , "if=!ticking|(eclipse_max=0&remains<=25)" );
-  single_target -> add_action( this, "Sunfire", "if=!ticking|remains<=6|(buff.celestial_alignment.up&buff.celestial_alignment.remains<=2)" );
-  single_target -> add_action( this, "Starfire", "if=buff.lunar_empowerment.up" );
-  single_target -> add_action( this, "Wrath", "if=buff.solar_empowerment.up" );
-  single_target -> add_action( this, "Starfire", "if=eclipse_energy>=0|(eclipse_energy<=0&eclipse_change<2)" );
-  single_target -> add_action( this, "Starsurge", "if=buff.celestial_alignment.up|eclipse_max<=3|(charges=2&cooldown.celestial_alignment.remains>30)" );
-  single_target -> add_action( this, "Wrath" );
-
-  euphoria -> add_talent( this, "Force of Nature", "if=charges>=1" );
-  euphoria -> add_action( "incarnation,if=(eclipse_dir.lunar&eclipse_max>=5)|@eclipse_energy<=10" );
-  euphoria -> add_action( this, "Celestial Alignment", "if=(eclipse_dir.lunar&eclipse_max>=5)|@eclipse_energy<=10" );
-  euphoria -> add_action( this, "Starsurge", "if=charges=3&cooldown.celestial_alignment.remains>10" );
-  euphoria -> add_action( this, "Moonfire" , "if=!ticking|(eclipse_max=0&remains<=16)" );
-  euphoria -> add_action( this, "Sunfire", "if=!ticking|(eclipse_max=0&remains<=4)|(buff.celestial_alignment.up&buff.celestial_alignment.remains<=2)" );
-  euphoria -> add_action( this, "Starfire", "if=buff.lunar_empowerment.up" );
-  euphoria -> add_action( this, "Wrath", "if=buff.solar_empowerment.up" );
-  euphoria -> add_action( this, "Starfire", "if=eclipse_energy>=0|(eclipse_energy<=0&eclipse_change<2)" );
-  euphoria -> add_action( this, "Starsurge", "if=buff.celestial_alignment.up|eclipse_max<=3|(charges=2&cooldown.celestial_alignment.remains>30)" );
-  euphoria -> add_action( this, "Wrath" );
-
-  bop -> add_talent( this, "Force of Nature", "if=charges>=1" );
-  bop -> add_action( "incarnation,if=(eclipse_dir.lunar&eclipse_max>=5)|@eclipse_energy<=10" );
-  bop -> add_action( this, "Celestial Alignment", "if=(eclipse_dir.lunar&eclipse_max>=5)|@eclipse_energy<=10" );
-  bop -> add_action( this, "Starsurge", "if=charges=3&cooldown.celestial_alignment.remains>10" );
-  bop -> add_action( this, "Moonfire" , "if=!ticking|(eclipse_max=0&remains<=16)" );
-  bop -> add_action( this, "Sunfire", "if=!ticking|remains<=4|(buff.celestial_alignment.up&buff.celestial_alignment.remains<=2)" );
-  bop -> add_action( this, "Starfire", "if=buff.lunar_empowerment.up" );
-  bop -> add_action( this, "Wrath", "if=buff.solar_empowerment.up" );
-  bop -> add_action( this, "Starfire", "if=eclipse_energy>=0|(eclipse_energy<=0&eclipse_change<2)" );
-  bop -> add_action( this, "Starsurge", "if=buff.celestial_alignment.up|eclipse_max<=3|(charges=2&cooldown.celestial_alignment.remains>30)" );
-  bop -> add_action( this, "Wrath" );
+  single_target -> add_action( "incarnation,if=buff.celestial_alignment.up" );
+  single_target -> add_action( this, "Starsurge", "if=charges=3" );
+  single_target -> add_action( this, "Moonfire" , "if=(eclipse_max=0&buff.lunar_peak.up)|ticks_remain<3" );
+  single_target -> add_action( this, "Sunfire", "if=(eclipse_max=0&buff.solar_peak.up)|ticks_remain<3|(buff.celestial_alignment.up&buff.celestial_alignment.remains<=2)" );
+  single_target -> add_action( this, "Starsurge", "if=buff.lunar_empowerment.down&buff.solar_empowerment.down" );
+  single_target -> add_action( this, "Wrath", "if=(eclipse_energy<=0&eclipse_change>cast_time)|(eclipse_energy>0&cast_time>eclipse_change)" );
+  single_target -> add_action( this, "Starfire", "if=(eclipse_energy>=0&eclipse_change>cast_time)|(eclipse_energy<0&cast_time>eclipse_change)" );
 
   aoe -> add_action( this, "Celestial Alignment" );
   aoe -> add_action( "incarnation,if=(eclipse_dir.lunar&eclipse_max>=5)|@eclipse_energy<=10" );

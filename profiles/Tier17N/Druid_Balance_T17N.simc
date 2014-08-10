@@ -24,52 +24,24 @@ actions.precombat+=/potion,name=draenic_intellect
 
 # Executed every time the actor is available.
 
-actions=potion,name=draenic_intellect,if=buff.bloodlust.react|target.time_to_die<=40|buff.celestial_alignment.up
-actions+=/blood_fury,if=buff.bloodlust.react|target.time_to_die<=40|buff.celestial_alignment.up
-actions+=/berserking,if=buff.bloodlust.react|target.time_to_die<=40|buff.celestial_alignment.up
-actions+=/arcane_torrent,if=buff.bloodlust.react|target.time_to_die<=40|buff.celestial_alignment.up
-actions+=/use_item,slot=trinket1,if=buff.bloodlust.react|target.time_to_die<=40|buff.celestial_alignment.up
-actions+=/run_action_list,name=euphoria,if=active_enemies=1&talent.euphoria.enabled
-actions+=/run_action_list,name=bop,if=active_enemies=1&talent.balance_of_power.enabled
+actions=potion,name=draenic_intellect,if=buff.celestial_alignment.up
+actions+=/blood_fury,if=buff.celestial_alignment.up
+actions+=/berserking,if=buff.celestial_alignment.up
+actions+=/arcane_torrent,if=buff.celestial_alignment.up
+actions+=/use_item,slot=trinket1
 actions+=/run_action_list,name=single_target,if=active_enemies=1
 actions+=/run_action_list,name=aoe,if=active_enemies>1
 
-actions.single_target=stellar_flare,if=eclipse_change<=2|(@eclipse_energy<=20&!ticking)|(buff.celestial_alignment.up&buff.celestial_alignment.remains<=2)
+actions.single_target=stellar_flare,if=eclipse_change<3&ticks_remain<3|!ticking
 actions.single_target+=/force_of_nature,if=charges>=1
 actions.single_target+=/celestial_alignment,if=(eclipse_dir.lunar&eclipse_max>=5)|@eclipse_energy<=10
-actions.single_target+=/incarnation,if=(eclipse_dir.lunar&eclipse_max>=5)|@eclipse_energy<=10
-actions.single_target+=/starsurge,if=charges=3&cooldown.celestial_alignment.remains>10
-actions.single_target+=/moonfire,if=!ticking|(eclipse_max=0&remains<=25)
-actions.single_target+=/sunfire,if=!ticking|remains<=6|(buff.celestial_alignment.up&buff.celestial_alignment.remains<=2)
-actions.single_target+=/starfire,if=buff.lunar_empowerment.up
-actions.single_target+=/wrath,if=buff.solar_empowerment.up
-actions.single_target+=/starfire,if=eclipse_energy>=0|(eclipse_energy<=0&eclipse_change<2)
-actions.single_target+=/starsurge,if=buff.celestial_alignment.up|eclipse_max<=3|(charges=2&cooldown.celestial_alignment.remains>30)
-actions.single_target+=/wrath
-
-actions.bop=force_of_nature,if=charges>=1
-actions.bop+=/incarnation,if=(eclipse_dir.lunar&eclipse_max>=5)|@eclipse_energy<=10
-actions.bop+=/celestial_alignment,if=(eclipse_dir.lunar&eclipse_max>=5)|@eclipse_energy<=10
-actions.bop+=/starsurge,if=charges=3&cooldown.celestial_alignment.remains>10
-actions.bop+=/moonfire,if=!ticking|(eclipse_max=0&remains<=16)
-actions.bop+=/sunfire,if=!ticking|remains<=4|(buff.celestial_alignment.up&buff.celestial_alignment.remains<=2)
-actions.bop+=/starfire,if=buff.lunar_empowerment.up
-actions.bop+=/wrath,if=buff.solar_empowerment.up
-actions.bop+=/starfire,if=eclipse_energy>=0|(eclipse_energy<=0&eclipse_change<2)
-actions.bop+=/starsurge,if=buff.celestial_alignment.up|eclipse_max<=3|(charges=2&cooldown.celestial_alignment.remains>30)
-actions.bop+=/wrath
-
-actions.euphoria=force_of_nature,if=charges>=1
-actions.euphoria+=/incarnation,if=(eclipse_dir.lunar&eclipse_max>=5)|@eclipse_energy<=10
-actions.euphoria+=/celestial_alignment,if=(eclipse_dir.lunar&eclipse_max>=5)|@eclipse_energy<=10
-actions.euphoria+=/starsurge,if=charges=3&cooldown.celestial_alignment.remains>10
-actions.euphoria+=/moonfire,if=!ticking|(eclipse_max=0&remains<=16)
-actions.euphoria+=/sunfire,if=!ticking|(eclipse_max=0&remains<=4)|(buff.celestial_alignment.up&buff.celestial_alignment.remains<=2)
-actions.euphoria+=/starfire,if=buff.lunar_empowerment.up
-actions.euphoria+=/wrath,if=buff.solar_empowerment.up
-actions.euphoria+=/starfire,if=eclipse_energy>=0|(eclipse_energy<=0&eclipse_change<2)
-actions.euphoria+=/starsurge,if=buff.celestial_alignment.up|eclipse_max<=3|(charges=2&cooldown.celestial_alignment.remains>30)
-actions.euphoria+=/wrath
+actions.single_target+=/incarnation,if=buff.celestial_alignment.up
+actions.single_target+=/starsurge,if=charges=3
+actions.single_target+=/moonfire,if=(eclipse_max=0&buff.lunar_peak.up)|ticks_remain<3
+actions.single_target+=/sunfire,if=(eclipse_max=0&buff.solar_peak.up)|ticks_remain<3|(buff.celestial_alignment.up&buff.celestial_alignment.remains<=2)
+actions.single_target+=/starsurge,if=buff.lunar_empowerment.down&buff.solar_empowerment.down
+actions.single_target+=/wrath,if=(eclipse_energy<=0&eclipse_change>cast_time)|(eclipse_energy>0&cast_time>eclipse_change)
+actions.single_target+=/starfire,if=(eclipse_energy>=0&eclipse_change>cast_time)|(eclipse_energy<0&cast_time>eclipse_change)
 
 actions.aoe=celestial_alignment
 actions.aoe+=/incarnation,if=(eclipse_dir.lunar&eclipse_max>=5)|@eclipse_energy<=10
