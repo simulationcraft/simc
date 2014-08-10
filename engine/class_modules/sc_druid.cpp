@@ -5696,7 +5696,7 @@ void druid_t::create_buffs()
   buff.cenarion_ward = buff_creator_t( this, "cenarion_ward", find_talent_spell( "Cenarion Ward" ) );
 
   buff.chosen_of_elune    = buff_creator_t( this, "chosen_of_elune" , talent.incarnation_chosen )
-                            .default_value( find_spell( 122114) -> effectN( 1 ).percent() )
+                            .default_value( talent.incarnation_chosen -> effectN( 1 ).percent() )
                             .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
 
   buff.king_of_the_jungle = buff_creator_t( this, "king_of_the_jungle", talent.incarnation_king );
