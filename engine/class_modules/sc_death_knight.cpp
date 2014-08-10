@@ -4198,22 +4198,6 @@ struct plague_strike_offhand_t : public death_knight_melee_attack_t
     background       = true;
     weapon           = &( p -> off_hand_weapon );
     special          = true;
-
-    assert( p -> active_spells.blood_plague );
-  }
-
-  virtual void impact( action_state_t* s )
-  {
-    death_knight_melee_attack_t::impact( s );
-
-    if ( result_is_hit( s -> result ) )
-    {
-      unsigned diseases = DISEASE_BLOOD_PLAGUE;
-      if ( p() -> spec.ebon_plaguebringer -> ok() )
-        diseases |= DISEASE_FROST_FEVER;
-
-      p() -> apply_diseases( s, diseases );
-    }
   }
 };
 
