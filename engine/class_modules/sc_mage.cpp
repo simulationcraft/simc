@@ -4812,13 +4812,13 @@ double mage_t::composite_player_multiplier( school_e school ) const
     m *= 1.0 + buffs.rune_of_power -> data().effectN( 1 ).percent();
   }
 
-  if ( specialization() == MAGE_ARCANE )
-    cache.player_mult_valid[ school ] = false;
-
-
+ 
   if ( talents.incanters_flow -> ok() )
+  {
     m *= 1.0 + ( buffs.incanters_flow -> stack() ) * ( find_spell( 116267 ) -> effectN( 1 ).percent() );
-
+  }
+  cache.player_mult_valid[ school ] = false;
+  
   return m;
 }
 
