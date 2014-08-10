@@ -912,12 +912,13 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
         5176, // Wrath (Solar)
            0,
     },
-    // Balance tree, 12 abilities
+    // Balance tree, 13 abilities
     {
       127663, // Astral Communion
       106996, // Astral Storm (Lunar)
        22812, // Barkskin
       112071, // Celestial Alignment
+      122114, // Chosen of Elune
        24858, // Moonkin Form
         2782, // Remove Corruption
        78675, // Solar Beam

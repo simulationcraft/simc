@@ -3777,14 +3777,16 @@ struct druid_spell_t : public druid_spell_base_t<spell_t>
 
     if ( p() -> specialization() == DRUID_BALANCE )
     {
+      druid_t* p = debug_cast<druid_t*>( player );
+      p -> balance_tracker();
       double balance;
-      balance = p() -> clamped_eclipse_amount;
+      balance = p -> clamped_eclipse_amount;
 
       double mastery;
-      mastery = p() -> cache.mastery_value();
+      mastery = p -> cache.mastery_value();
 
       if ( ( dbc::is_school( school, SCHOOL_ARCANE ) || dbc::is_school( school, SCHOOL_NATURE ) ) &&
-           p() -> buff.celestial_alignment -> up() )
+           p -> buff.celestial_alignment -> up() )
         m *= 1.0 + mastery;
       else if ( dbc::is_school( school, SCHOOL_NATURE ) && balance < 0 )
         m *= 1.0 + mastery / 2 + mastery * std::abs( balance ) / 200;
@@ -4435,12 +4437,11 @@ struct sunfire_t : public druid_spell_t
       druid_spell_t( "moonfire", player, player -> find_spell( 8921 ) )
     {
       const spell_data_t* dmg_spell = player -> find_spell( 164812 );
-      dot_behavior = DOT_REFRESH;
       dot_duration                  = dmg_spell -> duration();
       dot_duration                 *= 1 + player -> spec.astral_showers -> effectN( 1 ).percent();
       dot_duration                 += player -> sets.set( SET_T14_4PC_CASTER ) -> effectN( 1 ).time_value();
       base_tick_time                = dmg_spell -> effectN( 2 ).period();
-      spell_power_mod.tick          = dmg_spell-> effectN( 2 ).sp_coeff();
+      spell_power_mod.tick          = dmg_spell -> effectN( 2 ).sp_coeff();
 
       base_td_multiplier           *= 1.0 + player -> talent.balance_of_power -> effectN( 3 ).percent();
 
@@ -4467,7 +4468,6 @@ struct sunfire_t : public druid_spell_t
     dot_behavior = DOT_REFRESH;
     const spell_data_t* dmg_spell = player -> find_spell( 164815 );
     dot_duration                  = dmg_spell -> duration();
-    dot_duration                 += timespan_t::from_seconds( 4 ); //Remove
     dot_duration                 += player -> sets.set( SET_T14_4PC_CASTER ) -> effectN( 1 ).time_value();
     base_tick_time                = dmg_spell -> effectN( 2 ).period();
     spell_power_mod.direct        = dmg_spell-> effectN( 1 ).sp_coeff();
@@ -4543,7 +4543,6 @@ struct moonfire_t : public druid_spell_t
       const spell_data_t* dmg_spell = player -> find_spell( 164815 );
       dot_behavior = DOT_REFRESH;
       dot_duration                  = dmg_spell -> duration();
-      dot_duration                 += timespan_t::from_seconds( 4 ); //Remove
       dot_duration                 += player -> sets.set( SET_T14_4PC_CASTER ) -> effectN( 1 ).time_value();
       base_tick_time                = dmg_spell -> effectN( 2 ).period();
       spell_power_mod.tick          = dmg_spell -> effectN( 2 ).sp_coeff();
@@ -6431,8 +6430,6 @@ double druid_t::composite_player_multiplier( school_e school ) const
     {
       if ( buff.moonkin_form -> check() )
         m *= 1.0 + spell.moonkin_form -> effectN( 2 ).percent();
-
-      // BUG? Incarnation won't apply during CA! Check in WoD.
       if ( buff.chosen_of_elune -> up() )
         m *= 1.0 + buff.chosen_of_elune -> default_value;
     }

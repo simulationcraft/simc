@@ -1463,6 +1463,7 @@ class SpellDataGenerator(DataGenerator):
           ( 106996, 1, True ), # Astral Storm
           ( 112071, 1, True ), # Celestial Alignment
           ( 110621, 0, True ), # Symbiosis spells
+          ( 122114, 1, True ), # Chosen of Elune
           ( 122283, 0, True ),
           ( 110807, 0, True ),
           ( 112997, 0, True ),
