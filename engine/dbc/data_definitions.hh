@@ -48,6 +48,7 @@ struct item_set_bonus_t {
   unsigned    bonus;
   unsigned    class_id;
   unsigned    spec_guess[4];
+  unsigned    role; // 0 tank, 1 healer, 2 meleedps/hunter, 3 caster
   unsigned    spec;
   unsigned    spell_id;
   unsigned    item_ids[10]; // TODO: This really needs a define ..
