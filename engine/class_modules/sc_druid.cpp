@@ -4365,8 +4365,6 @@ struct incarnation_bear_t : public druid_spell_t
   {
     druid_spell_t::execute();
 
-    p() -> buff.chosen_of_elune -> trigger();
-
     if ( p() -> buff.bear_form -> check() )
       p() -> cooldown.mangle -> reset( false );
   }
@@ -6421,7 +6419,7 @@ double druid_t::composite_player_multiplier( school_e school ) const
 {
   double m = player_t::composite_player_multiplier( school );
 
-  if ( buff.celestial_alignment -> up() )
+  if ( buff.celestial_alignment -> check() )
     m *= 1.0 + buff.celestial_alignment -> data().effectN( 2 ).percent();
 
   if ( specialization() == DRUID_BALANCE )
@@ -6430,7 +6428,7 @@ double druid_t::composite_player_multiplier( school_e school ) const
     {
       if ( buff.moonkin_form -> check() )
         m *= 1.0 + spell.moonkin_form -> effectN( 2 ).percent();
-      if ( buff.chosen_of_elune -> up() )
+      if ( buff.chosen_of_elune -> check() )
         m *= 1.0 + buff.chosen_of_elune -> default_value;
     }
   }

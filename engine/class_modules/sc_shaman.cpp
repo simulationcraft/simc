@@ -5620,21 +5620,15 @@ void shaman_t::arise()
 
   assert( main_hand_attack == melee_mh && off_hand_attack == melee_oh );
 
-  if ( ! sim -> overrides.mastery && dbc.spell( 116956 ) -> is_level( level ) )
+  if ( !sim -> overrides.mastery && dbc.spell( 116956 ) -> is_level( level ) )
   {
     double mastery_rating = dbc.spell( 116956 ) -> effectN( 1 ).average( this );
     if ( ! sim -> auras.mastery -> check() || sim -> auras.mastery -> current_value < mastery_rating )
       sim -> auras.mastery -> trigger( 1, mastery_rating );
   }
 
-  if ( ! sim -> overrides.spell_power_multiplier && dbc.spell( 77747 ) -> is_level( level ) )
-    sim -> auras.spell_power_multiplier -> trigger();
-
-  if ( specialization() == SHAMAN_ENHANCEMENT && ! sim -> overrides.haste && dbc.spell( 30809 ) -> is_level( level ) )
+  if ( !sim -> overrides.haste && dbc.spell( 116956 ) -> is_level( level ) )
     sim -> auras.haste -> trigger();
-
-  if ( specialization() == SHAMAN_ELEMENTAL && ! sim -> overrides.haste && dbc.spell( 51470 ) -> is_level( level ) )
-    sim -> auras.haste  -> trigger();
 
   if ( main_hand_weapon.type != WEAPON_NONE )
     main_hand_weapon.buff_type = WINDFURY_IMBUE;

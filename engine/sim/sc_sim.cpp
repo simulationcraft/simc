@@ -1572,10 +1572,10 @@ bool sim_t::init()
                       .default_value( dbc.spell( 49868 ) -> effectN( 2 ).percent() )
                       .add_invalidate( CACHE_MULTISTRIKE );
 
-  // Spell Power Multiplier, value from Burning Wrath (id=77747) (Shaman)
+  // Spell Power Multiplier, value from Arcane Brilliance (id=1459) (Mage)
   auras.spell_power_multiplier = buff_creator_t( this, "spell_power_multiplier" )
                                  .max_stack( 100 )
-                                 .default_value( dbc.spell( 77747 ) -> effectN( 1 ).percent() )
+                                 .default_value( dbc.spell( 1459 ) -> effectN( 1 ).percent() )
                                  .add_invalidate( CACHE_SPELL_POWER );
 
   // Stamina, value from fortitude (id=21562) (Priest)
