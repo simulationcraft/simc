@@ -3,6 +3,7 @@
 // Send questions to natehieter@gmail.com
 // ==========================================================================
 // WoD To-do
+
 // Do perks that effect crit (such as enhanced pyrotechnics) also effect the crit chance of multistrike?
 // Extensive Test - At a glance, enhanced pyrotechnics works properly. Need to test more in depth though (remember CM interacts with this!)
 // multistrike triggering ignite? - CONFIRMED BY CELESTALON TO INTERACT WITH EACHOTHER
@@ -11,42 +12,44 @@
 // Shatter is changed Shatter: Now Frost only. Multiplies the critical strike chance of all your spells against frozen targets by 1.5 plus an additional 50%. needs to be coded.
 // Improved Arcane Power needs to have a check for the perk to exist so it functions pre-90 correctly.
 // Need to Add Improved Blink
-// Make improved evocation only work post 90, and make it not a hardcoded 30 second reduction. Also need to test that it works, with a character template that does not have RoP.
-// Check that changing where icicles is inside impact does not ruin them
+// Evocation: need to test that it works, with a character template that does not have RoP.
 // The IV glyph works by making IV gives 35% MS. The perk then improves this to 45% MS.
-// Need to figure out how to not hard-code 2 charges and their CD for the "nova" spells.
 // All new spells need to have their damage cross-checked with in game values.
 // Is the ignite from Inferno Blast spread?
-// Need to not hardcode Overpowered
-// Can Meteor ticks crit and miss?
-// Are Meteor ticks effected by haste?
-// Enhanced Pyrotechnics is giving global crit chance increase (not just FB/FFB). Fix this!
-// Unstable Magic Trigger is very sensative to double dipping - as we encounter new modifiers, need to check there is no double dipping going on!
 // Automate which spells use Unstable Magic
-// Does the IV glyph still have a hidden proc-rate increase for FoF?
-// Brainfreeze doesn't look correct in the spelldata (and isn't correct on the beta) in regards to proc chance. Until this is fixed, hardcoding it's buff and proc rate will suffice. Need to go and fix once the spell data is fixed.
 // Do not hardcode 15second duration for enhanced frostbolt perk
-// Ice Lance MS should not be procing Frost Bomb explosion (as per in game testing 7/20/2014)
-// All "nova" talents have the 100% damage mod applied to the primary and AoE effects - it should only be on the primary target.
-// Frostbomb should be working correctly....(maybe not it's AoE portion? But it should be.....)
 // Enhanced Frostbolt keeps trying to trigger for non-Frost specs (causes debug log to look ugly, prolly slows down the sim)
 // Arcane Orb needs to be treated as a flying object that can hit multiple targets in a line, instead of as something which is basically just an explosion around a single target.
 // Need to do some basic d=vt calcs to have a more realistic travel time for AO.
-// Add the delay between tick and aoe for NT
+// Improve the delay between tick and aoe for NT by applying a guassian distribution centered around 1.25s with stddev such that travel time is ~1.2-1.3s
 
+// Are Meteor ticks effected by haste? - Maybe? They are bugged on Beta as of 8/11/2014 (http://us.battle.net/wow/en/forum/topic/13780228135)
 
 // To-do Completed:
 //  BUG IGNITE TRIGGERS ON MISSES. Fixing this breaks icicles. Need to investigate - DONE!
+//  Enhanced Pyrotechnics is giving global crit chance increase (not just FB/FFB). Fix this! - DONE!
 //  Multistrike triggering ignite? - Confirmed by celestalon to interact with one another
+//  Ice Lance MS should not be procing Frost Bomb explosion (as per in game testing 7/20/2014) - DONE!
+//  Need to figure out how to not hard-code 2 charges and their CD for the "nova" spells. - This value is hardcoded in the spelldata it seems.
+//  Frostbomb should be working correctly.
+//  All "nova" talents have the 100% damage mod applied to the primary and AoE effects - it should only be on the primary target. - DONE!
+//  Need to not hardcode Overpowered - DONE!
+//  Add the delay between tick and aoe for NT - DONE!
+//  Does the IV glyph still have a hidden proc-rate increase for FoF? - Assuming no, DONE!
+//  Brainfreeze doesn't look correct in the spelldata (and isn't correct on the beta) in regards to proc chance. Fixed. -DONE!
 //  Imp. Arcane Barrage needs to be tested. - DONE!
 //  Fix how Ivy Veins interacts with spells. - DONE!
 //  Multi-strikes proc UM. Add this! - DONE!
+//  Improved Evocation is no longer hardcoded.
+//  Can Meteor ticks crit and miss? - Miss no, Crit yes. - DONE!
 //  Remove pyromaniac - DONE!
 //  Imp. Arcane Explosion needs to be tested. -- DONE
 //  Arcane Blast cast time reduction perk testing? - DONE! Working correctly. (I think. may be very minor problems due to it not effecting base_execute_time. But tools to do that easily are not inplace yet.)
-// Living Bomb spell data has completely changed - need to re-do the entire thing. - DONE! (I think?)
+//  Living Bomb spell data has completely changed - need to re-do the entire thing. - DONE! (I think?)
 // Misc Notes:
-//  Unstable Magic Trigger is very sensative to double dipping - as we encounter new modifiers, need to check there is no double dipping going on!
+//  Unstable Magic Trigger is very sensative to double dipping - as we encounter new modifiers, need to check there is double dipping going on!
+//  Multistrike triggering ignite/Icicles? - Yes.
+
 
 
 #include "simulationcraft.hpp"
@@ -1748,6 +1751,8 @@ struct blast_wave_t : public mage_spell_t
        mage_spell_t( "blast_wave", p, p -> talents.blast_wave )
     {
         parse_options( NULL, options_str );
+        base_multiplier *= 1.0 + p -> talents.blast_wave -> effectN( 1 ).percent();
+        base_aoe_multiplier *= 0.5;
         aoe = -1;
     }
 
@@ -1758,17 +1763,6 @@ struct blast_wave_t : public mage_spell_t
         // NOTE: Cooldown missing from tooltip since WoD beta build 18379
         cooldown -> duration = timespan_t::from_seconds( 25.0 );
         cooldown -> charges = 2;
-    }
-
-
-    // Since the target is always going to be the enemy, the damage done by blast_wave needs to get the 100% damage bonus
-    virtual double action_multiplier() const
-    {
-        double am = mage_spell_t::action_multiplier();
-
-        am *= 1.0 + p() -> talents.blast_wave -> effectN( 1 ).percent();
-
-        return am;
     }
 };
 
@@ -2147,7 +2141,7 @@ public:
     hasted_ticks      = false;
 
     cooldown = p -> cooldowns.evocation;
-    cooldown -> duration = data().cooldown() - timespan_t::from_seconds( 30 );
+    cooldown -> duration = data().cooldown() + timespan_t::from_millis( p -> perks.improved_evocation -> effectN( 1 ).base_value() );
 
     timespan_t duration = data().duration();
 
@@ -2809,7 +2803,7 @@ struct ice_lance_t : public mage_spell_t
 
     if ( p() -> talents.frost_bomb -> ok() )
     {
-      if ( td( s -> target ) -> debuffs.frost_bomb -> up() && frozen )
+      if ( td( s -> target ) -> debuffs.frost_bomb -> up() && frozen && !result_is_multistrike( s -> result) )
         frost_bomb_explode -> execute();
     }
   }
@@ -2846,6 +2840,8 @@ struct ice_nova_t : public mage_spell_t
        mage_spell_t( "ice_nova", p, p -> talents.ice_nova )
     {
         parse_options( NULL, options_str );
+        base_multiplier *= 1.0 + p -> talents.blast_wave -> effectN( 1 ).percent();
+        base_aoe_multiplier *= 0.5;
         aoe = -1;
     }
 
@@ -2857,20 +2853,6 @@ struct ice_nova_t : public mage_spell_t
         cooldown -> duration = timespan_t::from_seconds( 25.0 );
         cooldown -> charges = 2;
     }
-
-
-    // Since the target is always going to be the enemy, the damage done by ice nova needs to get the 100% damage bonus
-
-    virtual double action_multiplier() const
-    {
-        double am = mage_spell_t::action_multiplier();
-
-        am *= 1.0 + p() -> talents.ice_nova -> effectN( 1 ).percent();
-
-        return am;
-    }
-
-
 };
 
 
@@ -3077,6 +3059,21 @@ struct mage_armor_t : public mage_spell_t
 
 // Meteor Spell ========================================================
 
+/* Meteor is being handled using three differently spells.
+
+      "Meteor" is a driver spell that handles the haste modified falling time animation. 
+      When it hits the target, it's equivalent to 1second remaining in game for meteor to impact the ground.
+
+      "Meteor Impact" is the final 1second of meteor fall time. In game, meteor snapshots 1second before impact;
+      so this will snapshot at the correct time. The impact is treated as a single hit explosion.
+      
+      "Meteor Burn" is the AoE DoT effect which "Meteor Impact" triggers upon impacting it's target.
+      Currently, it's only applied to one target and then pulses damage out of it at every tick.
+
+      TODO: Have a target list array built when "Meteor Impact" is cast. Impact() then goes through this array, 
+      applying a separate "Meteor Burn" to each target which "Meteor Impact" hit.
+ */
+
 // Specifying the DoT compoents
 struct meteor_burn_t : public mage_spell_t
 {
@@ -3088,6 +3085,8 @@ struct meteor_burn_t : public mage_spell_t
     spell_power_mod.tick = p -> find_spell( 155158 ) -> effectN( 1 ).sp_coeff();
     base_tick_time = p -> find_spell( 155158 ) -> effectN( 1 ).period();
     hasted_ticks = false;
+    may_crit = true;
+    may_miss = false;
     dynamic_tick_action = false;
     aoe = -1;
     cooldown -> duration = timespan_t::from_seconds( 0.0 );
@@ -3528,7 +3527,9 @@ struct supernova_t : public mage_spell_t
        mage_spell_t( "supernova", p, p -> talents.supernova )
     {
         parse_options( NULL, options_str );
-        aoe = -1;
+        aoe = 1;
+        base_multiplier *= 1.0 + p -> talents.supernova -> effectN( 1 ).percent();
+        base_aoe_multiplier *= 0.5;
     }
 
     virtual void init()
@@ -3539,20 +3540,6 @@ struct supernova_t : public mage_spell_t
         cooldown -> duration = timespan_t::from_seconds( 25.0 );
         cooldown -> charges = 2;
     }
-
-
-    // Since the target is always going to be the enemy, the damage done by supernova needs to get the 100% damage bonus
-
-    virtual double action_multiplier() const
-    {
-        double am = mage_spell_t::action_multiplier();
-
-        am *= 1.0 + p() -> talents.supernova -> effectN( 1 ).percent();
-
-        return am;
-    }
-
-
 };
 
 
@@ -4373,7 +4360,7 @@ void mage_t::create_buffs()
                                .default_value( talents.blazing_speed -> effectN( 1 ).percent() );
   buffs.brain_freeze         = buff_creator_t( this, "brain_freeze", spec.brain_freeze )
                                .duration( find_spell( 57761 ) -> duration() )
-                               .default_value( spec.brain_freeze -> effectN( 1 ).percent() ).max_stack( 2 ).chance( 0.10 );;
+                               .default_value( spec.brain_freeze -> effectN( 1 ).percent() ).max_stack( 2 ).chance( find_spell( 44549 ) -> effectN( 1 ).percent() );;
 
   buffs.fingers_of_frost     = buff_creator_t( this, "fingers_of_frost", find_spell( 112965 ) ).chance( find_spell( 112965 ) -> effectN( 1 ).percent() )
                                .duration( timespan_t::from_seconds( 15.0 ) )
