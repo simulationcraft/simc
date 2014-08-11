@@ -1093,7 +1093,7 @@ struct basic_attack_t: public hunter_main_pet_attack_t
     gain_invigoration = p -> find_spell( 53398 ) -> effectN( 1 ).resource( RESOURCE_FOCUS );
   }
 
-  virtual void execute()
+  void execute()
   {
     hunter_main_pet_attack_t::execute();
     trigger_tier16_bm_4pc_melee();
@@ -1104,28 +1104,32 @@ struct basic_attack_t: public hunter_main_pet_attack_t
       p() -> buffs.frenzy -> trigger( 1 );
   }
 
-  virtual void impact( action_state_t* s )
+  void impact( action_state_t* s )
   {
     hunter_main_pet_attack_t::impact( s );
 
     if ( result_is_hit( s -> result ) )
     {
-      p() -> buffs.enhanced_basic_attacks -> expire();
       if ( o() -> specs.invigoration -> ok() && rng().roll( chance_invigoration ) )
       {
         o() -> resource_gain( RESOURCE_FOCUS, gain_invigoration, o() -> gains.invigoration );
         o() -> procs.invigoration -> occur();
       }
       trigger_beast_cleave( s );
-      if ( o() -> rng().roll( o() -> perks.enhanced_basic_attacks -> effectN( 1 ).percent() ) )
-      {
-        cooldown -> reset( true );
-        p() -> buffs.enhanced_basic_attacks -> trigger();
-      }
     }
   }
 
-  virtual double composite_crit() const
+  void consume_resource()
+  {
+    if ( p() -> buffs.enhanced_basic_attacks -> up() )
+    {
+      p() -> buffs.enhanced_basic_attacks -> expire();
+      return;
+    }
+    hunter_main_pet_attack_t::consume_resource();
+  }
+
+  double composite_crit() const
   {
     double cc = hunter_main_pet_attack_t::composite_crit();
 
@@ -1141,7 +1145,7 @@ struct basic_attack_t: public hunter_main_pet_attack_t
     return p() -> resources.current[RESOURCE_FOCUS] > 50;
   }
 
-  virtual double action_multiplier() const
+  double action_multiplier() const
   {
     double am = hunter_main_pet_attack_t::action_multiplier();
 
@@ -1159,19 +1163,25 @@ struct basic_attack_t: public hunter_main_pet_attack_t
     return am;
   }
 
-  virtual double cost() const
+  double cost() const
   {
     double c = hunter_main_pet_attack_t::cost();
 
     if ( use_wild_hunt() )
       c *= 1.0 + p() -> specs.wild_hunt -> effectN( 2 ).percent();
 
-    if ( p() -> buffs.enhanced_basic_attacks -> up() )
-      c = 0;
-
     return c;
   }
 
+  void update_ready( timespan_t cd_duration )
+  {
+    hunter_main_pet_attack_t::update_ready( cd_duration );
+    if ( o() -> rng().roll( o() -> perks.enhanced_basic_attacks -> effectN( 1 ).percent() ) )
+    {
+      cooldown -> reset( true );
+      p() -> buffs.enhanced_basic_attacks -> trigger();
+    }
+  }
 };
 
 // Devilsaur Monstrous Bite =================================================
@@ -1214,7 +1224,6 @@ struct kill_command_t: public hunter_main_pet_attack_t
   {
     return base_attack_power + o() -> cache.attack_power() * o()->composite_attack_power_multiplier();
   }
-
 };
 
 // ==========================================================================
