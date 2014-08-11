@@ -279,16 +279,19 @@ public:
     const spell_data_t* mana_adept;
     const spell_data_t* presence_of_mind;
     const spell_data_t* slow;
+    const spell_data_t* arcane_mind;
 
     // Fire
     const spell_data_t* critical_mass;
     const spell_data_t* ignite;
+    const spell_data_t* incineration;
 
     // Frost
     const spell_data_t* frostbolt;
     const spell_data_t* brain_freeze;
     const spell_data_t* fingers_of_frost;
     const spell_data_t* icicles;
+    const spell_data_t* ice_shards;
 
   } spec;
 
@@ -401,6 +404,7 @@ public:
   virtual double    composite_multistrike() const;
   virtual double    composite_spell_crit() const;
   virtual double    composite_spell_haste() const;
+  virtual double    composite_rating_multiplier( rating_e rating ) const;
   virtual double    matching_gear_multiplier( attribute_e attr ) const;
   virtual void      stun();
   virtual void      moving();
@@ -4248,6 +4252,11 @@ void mage_t::init_spells()
   spec.fingers_of_frost      = find_specialization_spell( "Fingers of Frost" );
   spec.frostbolt             = find_specialization_spell( "Frostbolt" );
 
+  // Attunments
+  spec.arcane_mind           = find_specialization_spell( "Arcane Mind"  );
+  spec.ice_shards            = find_specialization_spell( "Ice Shards"   );
+  spec.incineration          = find_specialization_spell( "Incineration" );
+  
   // Mastery
   spec.icicles               = find_mastery_spell( MAGE_FROST );
   spec.ignite                = find_mastery_spell( MAGE_FIRE );
@@ -4811,6 +4820,29 @@ double mage_t::mana_regen_per_second() const
 
   return mp5;
 }
+
+double mage_t::composite_rating_multiplier( rating_e rating) const
+{
+  double m = player_t::composite_rating_multiplier( rating );
+
+  switch ( rating )
+  {
+  case RATING_MULTISTRIKE:
+    return m *= 1.0 + spec.ice_shards -> effectN( 1 ).percent();
+  case RATING_SPELL_CRIT:
+    return m *= 1.0 + spec.incineration -> effectN( 1 ).percent();
+  case RATING_MASTERY:
+    return m *= 1.0 + spec.arcane_mind -> effectN( 1 ).percent();
+  default:
+    break;
+  }
+
+  return m;
+
+
+
+}
+
 
 // mage_t::composite_player_multipler =======================================
 
