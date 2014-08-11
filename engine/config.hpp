@@ -9,6 +9,7 @@
  * as well as pre-C++11 macros
  */
 
+#include <ciso646>
 
 // ==========================================================================
 // Platform
@@ -94,6 +95,12 @@ public:
 
 #if ( ! ( ! defined( SC_OSX ) && ( defined( SC_VS ) || __cplusplus >= 201103L || defined(__GXX_EXPERIMENTAL_CXX0X__) ) ) )
 #define USE_TR1_NAMESPACE 1
+#endif
+
+#if ( defined( _LIBCPP_VERSION ) )
+#ifdef USE_TR1_NAMESPACE
+#undef USE_TR1_NAMESPACE
+#endif
 #endif
 
 

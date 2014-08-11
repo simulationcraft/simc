@@ -67,11 +67,11 @@ OPTS += -msse2 -mfpmath=sse
 endif
 
 # Force use of old libstdc++ on OS X + Clang so paths to tr/* work
-ifeq (${FLAVOR},Darwin)
-ifneq ($(findstring clang,$(shell ${CXX} -v 2>&1)),)
-OPTS += -stdlib=libstdc++
-endif
-endif
+#ifeq (${FLAVOR},Darwin)
+#ifneq ($(findstring clang,$(shell ${CXX} -v 2>&1)),)
+#OPTS += -stdlib=libstdc++
+#endif
+#endif
 
 ifneq (${NO_DEBUG},)
   CPP_FLAGS += -DNDEBUG
