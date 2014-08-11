@@ -1197,9 +1197,14 @@ int action_t::schedule_multistrike( action_state_t* state, dmg_e type, double ti
 
 // Generate a direct damage multistrike. Note that the multistrike damage will
 // travel like normal damage events, based off of the ability travel time.
-void action_t::multistrike_direct( const action_state_t*, action_state_t* ms_state )
+void action_t::multistrike_direct( const action_state_t* source_state, action_state_t* ms_state )
 {
-  ms_state -> result_amount = calculate_direct_amount( ms_state );
+ ms_state -> result_raw = source_state -> result_raw * composite_multistrike_multiplier( source_state );
+ double total = ms_state -> result_raw;
+ if ( ms_state -> result == RESULT_MULTISTRIKE_CRIT )
+   total *= ( 1.0 + total_crit_bonus() );
+
+ ms_state -> result_total = ms_state -> result_amount = total;
 }
 
 // action_t::tick ===========================================================
@@ -1246,9 +1251,14 @@ void action_t::tick( dot_t* d )
 // action_t::multistrike_tick ===============================================
 
 // Generate a periodic multistrike
-void action_t::multistrike_tick( const action_state_t*, action_state_t* ms_state, double tick_multiplier )
+void action_t::multistrike_tick( const action_state_t* source_state, action_state_t* ms_state, double tick_multiplier )
 {
-  ms_state -> result_amount = calculate_tick_amount( ms_state, tick_multiplier );
+  ms_state -> result_raw = source_state -> result_raw * composite_multistrike_multiplier( source_state );
+  double total = ms_state -> result_raw;
+  if ( ms_state -> result == RESULT_MULTISTRIKE_CRIT )
+    total *= ( 1.0 + total_crit_bonus() );
+
+  ms_state -> result_total = ms_state -> result_amount = total;
 }
 
 // action_t::last_tick ======================================================
