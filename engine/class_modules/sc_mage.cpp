@@ -652,7 +652,7 @@ struct mirror_image_pet_t : public pet_t
 // Pet Prismatic Crystal
 // ==========================================================================
 
-struct prismatic_crystal_t : public pet_t
+struct prismatic_crystal_t : public pet_t 
 {
   struct prismatic_crystal_aoe_t : public spell_t
   {
@@ -1550,7 +1550,7 @@ struct arcane_brilliance_t : public mage_spell_t
   }
 };
 
-// Arcane Explosion Spell ===================================================
+//   ===================================================
 
 struct arcane_explosion_t : public mage_spell_t
 {
@@ -3077,40 +3077,69 @@ struct mage_armor_t : public mage_spell_t
 
 // Meteor Spell ========================================================
 
-
-// Direction Damage Coponent
-struct meteor_t : public mage_spell_t
+// Specifying the DoT compoents
+struct meteor_burn_t : public mage_spell_t
 {
-  meteor_t( mage_t* p, const std::string& options_str ) :
-    mage_spell_t( "meteor", p, p -> find_talent_spell( "Meteor" ) )
+  meteor_burn_t( mage_t* p ) :
+    mage_spell_t( "meteor_burn", p, p -> find_spell( 155158 ) )
   {
-    parse_options( NULL, options_str );
-    aoe = -1;
-    school = SCHOOL_FIRE;
-
-    // Sp_Coeff is stored in 153564 for some reason
-    spell_power_mod.direct = p -> find_spell( 153564 ) -> effectN( 1 ).sp_coeff();
-
-    // Specifying the DoT compoents
+    background = true;
     dot_duration = timespan_t::from_seconds( 8.0 );
     spell_power_mod.tick = p -> find_spell( 155158 ) -> effectN( 1 ).sp_coeff();
     base_tick_time = p -> find_spell( 155158 ) -> effectN( 1 ).period();
     dynamic_tick_action =  true;
-
-    hasted_ticks = false;
+    aoe = -1;
+    cooldown -> duration = timespan_t::from_seconds( 0.0 );
   }
-
-  // Mirroring meteor falling to the ground
-  virtual timespan_t travel_time() const
-  {
-    return timespan_t::from_seconds( 3.0 );
-  }
-
 };
 
 
+struct meteor_impact_t : public mage_spell_t
+{
+  meteor_burn_t* meteor_burn;
 
+  meteor_impact_t( mage_t* p ) :
+    mage_spell_t( "meteor_impact", p ),
+    meteor_burn( new meteor_burn_t( p ) )
+  {
+    // Sp_Coeff is stored in 153564 for the impact
+    spell_power_mod.direct = p -> find_spell( 153564 ) -> effectN( 1 ).sp_coeff();
+    background = true;
+    split_aoe_damage = true;
+    aoe = -1;
+    cooldown -> duration = timespan_t::from_seconds( 0.0 );
+  }
 
+  virtual timespan_t travel_time() const
+  { return timespan_t::from_seconds( 1.0 ); }
+
+  virtual void impact( action_state_t* s )
+  {
+    mage_spell_t::impact( s );
+    meteor_burn -> execute();
+
+  }
+};
+struct meteor_t : public mage_spell_t
+{
+  meteor_impact_t* meteor_impact;
+
+  meteor_t( mage_t* p, const std::string& options_str ) :
+    mage_spell_t( "meteor", p, p -> find_talent_spell( "Meteor") ),
+    meteor_impact( new meteor_impact_t( p ) )
+  {
+    harmful = false;
+    dot_duration = timespan_t::from_seconds( 0.0 );
+  }
+  virtual timespan_t travel_time() const
+  { return timespan_t::from_seconds( ( 3 * p() ->  composite_spell_haste() ) - 1.0 ); }
+
+  virtual void impact( action_state_t* s )
+  {
+    mage_spell_t::impact( s );
+    meteor_impact -> execute();
+  }
+};
 // Mirror Image Spell =======================================================
 
 struct mirror_image_t : public mage_spell_t
@@ -3187,7 +3216,7 @@ struct molten_armor_t : public mage_spell_t
 
 
 
-// Nether Tempest AoE ====================================================
+// Nether Tempest AoE Spell ====================================================
 struct nether_tempest_aoe_t: public mage_spell_t
 {
   nether_tempest_aoe_t( mage_t* p ) :
@@ -3209,7 +3238,7 @@ struct nether_tempest_aoe_t: public mage_spell_t
 
 };
 
-// Nether Tempest ===========================================================
+// Nether Tempest Spell ===========================================================
 struct nether_tempest_t : public mage_spell_t
 {
   nether_tempest_aoe_t *add_aoe;
