@@ -1554,7 +1554,7 @@ struct arcane_brilliance_t : public mage_spell_t
   }
 };
 
-//   ===================================================
+// Arcane Explosion Spell ===========================================================
 
 struct arcane_explosion_t : public mage_spell_t
 {
