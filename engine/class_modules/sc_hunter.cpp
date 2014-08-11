@@ -76,6 +76,7 @@ public:
     buff_t* beast_cleave;
     buff_t* beast_within;
     buff_t* bombardment;
+    buff_t* careful_aim;
     buff_t* cobra_strikes;
     buff_t* focus_fire;
     buff_t* lock_and_load;
@@ -354,7 +355,9 @@ public:
   virtual bool      create_profile( std::string& profile_str, save_e = SAVE_ALL, bool save_html = false );
   virtual void      copy_from( player_t* source );
   virtual void      armory_extensions( const std::string& r, const std::string& s, const std::string& c, cache::behavior_e );
-  virtual void      moving();
+
+  virtual void      schedule_ready( timespan_t delta_time = timespan_t::zero( ), bool waiting = false );
+  virtual void      moving( );
   virtual void      finish_moving();
 
   void              apl_default();
@@ -368,16 +371,6 @@ public:
     hunter_td_t*& td = target_data[target];
     if ( !td ) td = new hunter_td_t( target, const_cast<hunter_t*>( this ) );
     return td;
-  }
-
-  double careful_aim_crit( player_t* target ) const
-  {
-    int threshold = specs.careful_aim -> effectN( 2 ).base_value();
-    if ( specs.careful_aim -> ok() && ( target -> health_percentage() > threshold || buffs.rapid_fire -> up() ))
-    {
-      return specs.careful_aim -> effectN( 1 ).percent();
-    }
-    return 0.0;
   }
 
   double beast_multiplier()
@@ -748,7 +741,7 @@ public:
       .activated( true )
       /*.quiet( true )*/;
 
-    double cleave_value     = o() -> find_spell( "Beast Cleave" ) -> effectN( 1 ).percent() + o() -> perks.improved_beast_cleave -> effectN( 1 ).percent();
+    double cleave_value     = o() -> find_specialization_spell( "Beast Cleave" ) -> effectN( 1 ).percent() + o() -> perks.improved_beast_cleave -> effectN( 1 ).percent();
     buffs.beast_cleave      = buff_creator_t( this, 118455, "beast_cleave" ).activated( true ).default_value( cleave_value );
 
     buffs.enhanced_basic_attacks = buff_creator_t( this, "enhanced_basic_attacks", o() -> perks.enhanced_basic_attacks );
@@ -1825,7 +1818,7 @@ struct aimed_shot_t: public hunter_ranged_attack_t
   virtual double composite_target_crit( player_t* t ) const
   {
     double cc = hunter_ranged_attack_t::composite_target_crit( t );
-    cc += p() -> careful_aim_crit( t );
+    cc += p() -> buffs.careful_aim -> value();
     return cc;
   }
 
@@ -2356,7 +2349,7 @@ struct focusing_shot_t: public hunter_ranged_attack_t
   virtual double composite_target_crit( player_t* t ) const
   {
     double cc = hunter_ranged_attack_t::composite_target_crit( t );
-    cc += p() -> careful_aim_crit( t );
+    cc += p() -> buffs.careful_aim -> value( );
     return cc;
   }
 
@@ -2401,7 +2394,7 @@ struct steady_shot_t: public hunter_ranged_attack_t
   virtual double composite_target_crit( player_t* t ) const
   {
     double cc = hunter_ranged_attack_t::composite_target_crit( t );
-    cc += p() -> careful_aim_crit( t );
+    cc += p() -> buffs.careful_aim -> value( );
     return cc;
   }
 };
@@ -3201,6 +3194,9 @@ void hunter_t::create_buffs()
 
   buffs.bombardment                 = buff_creator_t( this, "bombardment", specs.bombardment -> effectN( 1 ).trigger() );
 
+  double careful_aim_crit           = specs.careful_aim -> effectN( 1 ).percent( );
+  buffs.careful_aim                 = buff_creator_t( this, "careful_aim", specs.careful_aim ).activated( true ).default_value( careful_aim_crit );
+
   buffs.cobra_strikes               = buff_creator_t( this, 53257, "cobra_strikes" ).chance( specs.cobra_strikes -> proc_chance() );
 
   buffs.focus_fire                  = buff_creator_t( this, 82692, "focus_fire" )
@@ -3983,6 +3979,29 @@ stat_e hunter_t::convert_hybrid_stat( stat_e s ) const
     return STAT_NONE;
   default: return s;
   }
+}
+
+// hunter_t::schedule_ready() =======================================================
+
+/* Set the careful_aim buff state based on rapid fire and the enemy health. */
+void hunter_t::schedule_ready( timespan_t delta_time, bool waiting )
+{
+  if ( specs.careful_aim -> ok() ) 
+  {
+    bool ca_now = buffs.careful_aim -> check();
+    int threshold = specs.careful_aim -> effectN( 2 ).base_value();
+    if ( buffs.rapid_fire -> check() || target -> health_percentage() > threshold )
+    {
+      if ( ! ca_now ) 
+        buffs.careful_aim -> trigger();
+    }
+    else
+    {
+      if ( ca_now ) 
+        buffs.careful_aim -> expire();
+    }
+  }
+  player_t::schedule_ready( delta_time, waiting );
 }
 
 // hunter_t::moving() =======================================================
