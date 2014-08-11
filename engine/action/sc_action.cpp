@@ -1382,7 +1382,9 @@ void action_t::record_data( action_state_t* data )
 
   stats -> add_result( data -> result_amount, data -> result_total,
                        report_amount_type( data ),
-                       data -> result, data -> block_result, data -> target );
+                       data -> result,
+                       ( may_block || player -> position() == POSITION_BACK ) ? data -> block_result : BLOCK_RESULT_UNKNOWN,
+                       data -> target );
 }
 
 // action_t::schedule_execute ===============================================

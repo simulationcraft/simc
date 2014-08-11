@@ -38,14 +38,14 @@ bool has_amount_results( const std::vector<stats_t::stats_results_t>& res )
   );
 }
 
-bool has_block( const stats_t* s )
+bool has_block( const std::vector<stats_t::stats_results_t>& s )
 {
-  return ( s -> direct_results_detail[ FULLTYPE_HIT_BLOCK ].count.mean() +
-           s -> direct_results_detail[ FULLTYPE_HIT_CRITBLOCK ].count.mean() +
-           s -> direct_results_detail[ FULLTYPE_GLANCE_BLOCK ].count.mean() +
-           s -> direct_results_detail[ FULLTYPE_GLANCE_CRITBLOCK ].count.mean() +
-           s -> direct_results_detail[ FULLTYPE_CRIT_BLOCK ].count.mean() +
-           s -> direct_results_detail[ FULLTYPE_CRIT_CRITBLOCK ].count.mean() ) > 0;
+  return ( s[ FULLTYPE_HIT_BLOCK ].count.mean() +
+           s[ FULLTYPE_HIT_CRITBLOCK ].count.mean() +
+           s[ FULLTYPE_GLANCE_BLOCK ].count.mean() +
+           s[ FULLTYPE_GLANCE_CRITBLOCK ].count.mean() +
+           s[ FULLTYPE_CRIT_BLOCK ].count.mean() +
+           s[ FULLTYPE_CRIT_CRITBLOCK ].count.mean() ) > 0;
 }
 
 bool player_has_tick_results( player_t* p, unsigned stats_mask )
@@ -121,7 +121,8 @@ bool player_has_block( player_t* p, unsigned stats_mask )
     if ( ! ( stats_mask & ( 1 << p -> stats_list[ i ] -> type ) ) )
       continue;
 
-    if ( has_block( p -> stats_list[ i ] ) )
+    if ( has_block( p -> stats_list[ i ] -> direct_results_detail ) ||
+         has_block( p -> stats_list[ i ] -> tick_results_detail ) )
       return true;
   }
 
@@ -574,10 +575,13 @@ void print_html_action_info( report::sc_html_stream& os, unsigned stats_mask, st
          << "<th class=\"small\">Overkill %</th>\n"
          << "</tr>\n";
       int k = 0;
-      for ( full_result_e i = FULLTYPE_MAX; --i >= FULLTYPE_NONE; )
+      if ( has_block( s -> direct_results_detail ) )
       {
-        if ( s -> direct_results_detail[ i ].count.mean() )
+        for ( full_result_e i = FULLTYPE_MAX; --i >= FULLTYPE_NONE; )
         {
+          if ( ! s -> direct_results_detail[ i ].count.mean() )
+            continue;
+
           os << "<tr";
 
           if ( k & 1 )
@@ -615,6 +619,50 @@ void print_html_action_info( report::sc_html_stream& os, unsigned stats_mask, st
             s -> direct_results_detail[ i ].overkill_pct.mean() );
         }
       }
+      else
+      {
+        for ( result_e i = RESULT_MAX; --i >= RESULT_NONE; )
+        {
+          if ( ! s -> direct_results[ i ].count.mean() )
+            continue;
+
+          os << "<tr";
+
+          if ( k & 1 )
+          {
+            os << " class=\"odd\"";
+          }
+          k++;
+          os << ">\n";
+
+          os.printf(
+            "<td class=\"left small\">%s</td>\n"
+            "<td class=\"right small\">%.2f</td>\n"
+            "<td class=\"right small\">%.2f%%</td>\n"
+            "<td class=\"right small\">%.2f</td>\n"
+            "<td class=\"right small\">%.0f</td>\n"
+            "<td class=\"right small\">%.0f</td>\n"
+            "<td class=\"right small\">%.2f</td>\n"
+            "<td class=\"right small\">%.0f</td>\n"
+            "<td class=\"right small\">%.0f</td>\n"
+            "<td class=\"right small\">%.0f</td>\n"
+            "<td class=\"right small\">%.0f</td>\n"
+            "<td class=\"right small\">%.2f</td>\n"
+            "</tr>\n",
+            util::result_type_string( i ),
+            s -> direct_results[ i ].count.mean(),
+            s -> direct_results[ i ].pct,
+            s -> direct_results[ i ].actual_amount.mean(),
+            s -> direct_results[ i ].actual_amount.min(),
+            s -> direct_results[ i ].actual_amount.max(),
+            s -> direct_results[ i ].avg_actual_amount.mean(),
+            s -> direct_results[ i ].avg_actual_amount.min(),
+            s -> direct_results[ i ].avg_actual_amount.max(),
+            s -> direct_results[ i ].fight_actual_amount.mean(),
+            s -> direct_results[ i ].fight_total_amount.mean(),
+            s -> direct_results[ i ].overkill_pct.mean() );
+        }
+      }
 
     }
 
@@ -643,10 +691,13 @@ void print_html_action_info( report::sc_html_stream& os, unsigned stats_mask, st
          << "<th class=\"small\">Overkill %</th>\n"
          << "</tr>\n";
       int k = 0;
-      for ( full_result_e i = FULLTYPE_MAX; --i >= FULLTYPE_NONE; )
+      if ( has_block( s -> tick_results_detail ) )
       {
-        if ( s -> tick_results_detail[ i ].count.mean() )
+        for ( full_result_e i = FULLTYPE_MAX; --i >= FULLTYPE_NONE; )
         {
+          if ( ! s -> tick_results_detail[ i ].count.mean() )
+            continue;
+
           os << "<tr";
           if ( k & 1 )
           {
@@ -682,10 +733,50 @@ void print_html_action_info( report::sc_html_stream& os, unsigned stats_mask, st
             s -> tick_results_detail[ i ].overkill_pct.mean() );
         }
       }
+      else
+      {
+        for ( result_e i = RESULT_MAX; --i >= RESULT_NONE; )
+        {
+          if ( ! s -> tick_results[ i ].count.mean() )
+            continue;
 
-
+          os << "<tr";
+          if ( k & 1 )
+          {
+            os << " class=\"odd\"";
+          }
+          k++;
+          os << ">\n";
+          os.printf(
+            "<td class=\"left small\">%s</td>\n"
+            "<td class=\"right small\">%.1f</td>\n"
+            "<td class=\"right small\">%.2f%%</td>\n"
+            "<td class=\"right small\">%.2f</td>\n"
+            "<td class=\"right small\">%.0f</td>\n"
+            "<td class=\"right small\">%.0f</td>\n"
+            "<td class=\"right small\">%.2f</td>\n"
+            "<td class=\"right small\">%.0f</td>\n"
+            "<td class=\"right small\">%.0f</td>\n"
+            "<td class=\"right small\">%.0f</td>\n"
+            "<td class=\"right small\">%.0f</td>\n"
+            "<td class=\"right small\">%.2f</td>\n"
+            "</tr>\n",
+            util::result_type_string( i ),
+            s -> tick_results[ i ].count.mean(),
+            s -> tick_results[ i ].pct,
+            s -> tick_results[ i ].actual_amount.mean(),
+            s -> tick_results[ i ].actual_amount.min(),
+            s -> tick_results[ i ].actual_amount.max(),
+            s -> tick_results[ i ].avg_actual_amount.mean(),
+            s -> tick_results[ i ].avg_actual_amount.min(),
+            s -> tick_results[ i ].avg_actual_amount.max(),
+            s -> tick_results[ i ].fight_actual_amount.mean(),
+            s -> tick_results[ i ].fight_total_amount.mean(),
+            s -> tick_results[ i ].overkill_pct.mean() );
+        }
+      }
     }
-    
+
     os << "</table>\n";
 
     os << "<div class=\"clear\">&nbsp;</div>\n";
@@ -2324,8 +2415,10 @@ void print_html_player_resources( report::sc_html_stream& os, player_t* p, playe
   }
   if ( p -> primary_role() == ROLE_TANK ) // Experimental, restrict to tanks for now
   {
-    os << "<img src=\"" << ri.health_change_chart << "\" alt=\"Health Change Timeline Chart\" />\n";
-    os << "<img src=\"" << ri.health_change_sliding_chart << "\" alt=\"Health Change Sliding Timeline Chart\" />\n";
+    if ( ! ri.health_change_chart.empty() )
+      os << "<img src=\"" << ri.health_change_chart << "\" alt=\"Health Change Timeline Chart\" />\n";
+    if ( ! ri.health_change_sliding_chart.empty() )
+      os << "<img src=\"" << ri.health_change_sliding_chart << "\" alt=\"Health Change Sliding Timeline Chart\" />\n";
 
     if ( ! p -> is_enemy() )
     {

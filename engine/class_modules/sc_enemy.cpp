@@ -790,6 +790,9 @@ void enemy_t::init_defense()
 {
   player_t::init_defense();
 
+  collected_data.health_changes_tmi.collect = false;
+  collected_data.health_changes.collect = false;
+
   if ( ( gear.armor + enchant.armor ) <= 0 )
   {
     double& a = initial.stats.armor;
