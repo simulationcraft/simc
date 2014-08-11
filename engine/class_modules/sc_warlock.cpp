@@ -2524,7 +2524,14 @@ struct corruption_t : public warlock_spell_t
     if ( p() -> spec.nightfall -> ok() && d -> state -> target == p() -> latest_corruption_target && ! periodic_hit ) //5.4 only the latest corruption procs it
     {
 
-      if ( rng().roll( p() -> spec.nightfall -> effectN( 1 ).percent() + p() -> perk.enhanced_nightfall -> effectN( 1 ).percent()/10 ) )
+      double nightfall_chance = p() -> spec.nightfall -> effectN( 1 ).percent() + p() -> perk.enhanced_nightfall -> effectN( 1 ).percent()/10;
+       
+      if (p() -> sets.has_set_bonus( SET_T17_2PC_CASTER ) &&  td( d -> state -> target ) -> dots_agony -> is_ticking() && td( d -> state -> target ) -> dots_unstable_affliction -> is_ticking()) //Caster Has T17 2pc and UA/Agony are ticking as well on the target
+      {
+          nightfall_chance += p() -> sets.set( SET_T17_2PC_CASTER ) -> effectN( 1 ).percent();
+      }
+        
+      if ( rng().roll( nightfall_chance) )
       {
         p() -> resource_gain( RESOURCE_SOUL_SHARD, 1, p() -> gains.nightfall );
         // If going from 0 to 1 shard was a surprise, the player would have to react to it
@@ -2534,6 +2541,12 @@ struct corruption_t : public warlock_spell_t
           p() -> shard_react = p() -> sim -> current_time;
         else
           p() -> shard_react = timespan_t::max();
+          
+          
+         if (p() -> sets.has_set_bonus( SET_T17_4PC_CASTER )) //if we ticked, then reduce time till DS goes off CD  by 10 seconds
+         {
+             //TODO implement
+         }
       }
     }
 
@@ -4994,26 +5007,27 @@ void warlock_t::init_spells()
   static set_bonus_description_t set_bonuses =
   {
     //  C2P    C4P    M2P    M4P    T2P    T4P    H2P    H4P
+    {      0,      0,     0,     0,     0,     0,     0,     0 }, // Tier13 added with values to make sure we have enough data for proper enum referencing
     { 123136, 123141,     0,     0,     0,     0,     0,     0 }, // Tier14
     { 138129, 138134,     0,     0,     0,     0,     0,     0 }, // Tier15
     { 145072, 145091,     0,     0,     0,     0,     0,     0 }, // Tier16
-    { 0, 0,     0,     0,     0,     0,     0,     0 } // Tier17
+    {      0,      0,     0,     0,     0,     0,     0,     0 } // Tier17
   };
     
     if ( specialization() == WARLOCK_AFFLICTION )
     {
-        set_bonuses[3][0] = 165448; //T17 2PC
-        set_bonuses[3][1] = 165449; //T17 4PC
+        set_bonuses[4][0] = 165448; //T17 2PC
+        set_bonuses[4][1] = 165449; //T17 4PC
     }
     else if ( specialization() == WARLOCK_DEMONOLOGY )
     {
-        set_bonuses[3][0] = 165451; //T17 2PC
-        set_bonuses[3][1] = 165450; //T17 4PC
+        set_bonuses[4][0] = 165451; //T17 2PC
+        set_bonuses[4][1] = 165450; //T17 4PC
     }
     else if ( specialization() == WARLOCK_DESTRUCTION )
     {
-        set_bonuses[3][0] = 165455; //T17 2PC
-        set_bonuses[3][1] = 165452; //T17 4PC
+        set_bonuses[4][0] = 165455; //T17 2PC
+        set_bonuses[4][1] = 165452; //T17 4PC
     }
   sets.register_spelldata( set_bonuses );
 
