@@ -37,37 +37,42 @@ QString automation::do_something( int sim_type,
                                   QString advanced_text
                                   )
 {
-  // Dummy code - this just sets up a profile using the strings we pass. 
-  // This is where we'll actually split off into different automation schemes.
-
   QString profile;
   QString base_profile_info; // class, spec, race & level definition
+  QStringList advanced_list; // list constructed from advanced_text
 
   // basic profile information
   base_profile_info += "specialization=" + tokenize( player_spec ) + "\n";
   base_profile_info += "race=" + tokenize( player_race ) + "\n";
   base_profile_info += "level=" + player_level + "\n";
 
-  // check for advanced input mode (This can be switched to a CheckBox easily)
-  if ( input_mode == 1 )
-  {
-    // do advanced stuff here
-    profile = "ADVANCED MODE INCOMING !!";
-    return profile;
-  }
+  // Take advanced_text and try splitting by \n\n
+  advanced_list = advanced_text.split( "\n\n", QString::SkipEmptyParts );
 
-  // simple mode
+  // If that did split it, we'll just feed advanced_list to the appropriate sim.
+  // If not, then we try to split on \n instead
+  if ( advanced_list.size() == 1 )
+    advanced_list = advanced_text.split( "\n", QString::SkipEmptyParts );
+
+  // check for advanced input mode (This can be switched to a CheckBox easily)
+  //if ( input_mode == 1 )
+  //{
+  //  // do advanced stuff here
+  //  profile = "ADVANCED MODE INCOMING !!";
+  //  return profile;
+  //}
+
   // simulation type check
   switch ( sim_type )
   {
     case 1: // talent simulation
-      return auto_talent_sim( player_class, base_profile_info, advanced_text, player_glyphs, player_gear, player_rotation );
+      return auto_talent_sim( player_class, base_profile_info, advanced_list, player_glyphs, player_gear, player_rotation );
     case 2: // glyph simulation
-      return auto_glyph_sim( player_class, base_profile_info, player_talents, advanced_text, player_gear, player_rotation );
+      return auto_glyph_sim( player_class, base_profile_info, player_talents, advanced_list, player_gear, player_rotation );
     case 3: // gear simulation
-      return auto_gear_sim( player_class, base_profile_info, player_talents, player_glyphs, advanced_text, player_rotation );
+      return auto_gear_sim( player_class, base_profile_info, player_talents, player_glyphs, advanced_list, player_rotation );
     case 4: // rotation simulation
-      return auto_rotation_sim( player_class, base_profile_info, player_talents, player_glyphs, player_rotation, advanced_text );
+      return auto_rotation_sim( player_class, player_spec, base_profile_info, player_talents, player_glyphs, player_rotation, advanced_list );
     default: // default profile creation
       profile += base_profile_info;
       profile += "talents=" + player_talents + "\n";
@@ -84,25 +89,41 @@ QString automation::do_something( int sim_type,
   // Method for profile creation for the specific TALENT simulation
 QString automation::auto_talent_sim( QString player_class,
                                      QString base_profile_info, 
-                                     QString advanced_text,
+                                     QStringList talentList,
                                      QString player_glyphs,
                                      QString player_gear,
                                      QString player_rotation
                                    )
 {
-  QStringList talentList = advanced_text.split( "\n", QString::SkipEmptyParts );
-
   QString profile;
-
-  // make profile
+  
+  // make profile for each entry in talentList
   for ( int i = 0; i < talentList.size(); i++ )
   {
-    profile += tokenize( player_class ) + "=T_" + talentList[ i ] + "\n";
+    // first, check to see if the user has specified additional options within the list entry.
+    // If so, we want to split them off and append them to the end. We do this by splitting on spaces and \n
+    QStringList splitEntry = talentList[ i ].split( QRegExp( "\\n|\\s" ), QString::SkipEmptyParts );
+    
+    profile += tokenize( player_class ) + "=T_" + splitEntry[ 0 ] + "\n";
     profile += base_profile_info;
-    profile += "talents=" + talentList[ i ] + "\n";
+
+    if ( splitEntry[ 0 ].startsWith( "talents=" ) )
+      profile += splitEntry[ 0 ];
+    else 
+      profile += "talents=" + splitEntry[ 0 ];
+    profile += "\n";
+
     profile += "glyphs=" + player_glyphs + "\n";
-    profile += player_gear + "\n";
-    profile += player_rotation + "\n";
+
+    if ( player_gear.size() > 0 )
+      profile += player_gear + "\n";
+    if ( player_rotation.size() > 0 )
+      profile += player_rotation + "\n";
+
+    if ( splitEntry.size() > 1 )
+      for ( int j = 1; j < splitEntry.size(); j++ )
+        profile += splitEntry[ j ] + "\n";
+
     profile += "\n";
   }
 
@@ -113,24 +134,39 @@ QString automation::auto_talent_sim( QString player_class,
 QString automation::auto_glyph_sim( QString player_class,
                                     QString base_profile_info,
                                     QString player_talents,
-                                    QString advanced_text,
+                                    QStringList glyphList,
                                     QString player_gear,
                                     QString player_rotation
                                   )
 {
-  QStringList glyphList = advanced_text.split("\n", QString::SkipEmptyParts);
-
   QString profile;
-
-   // make profile
+  
+  // make profile for each entry in glyphList
    for ( int i = 0; i < glyphList.size(); i++ )
   {
+    // first, check to see if the user has specified additional options within the list entry.
+    // If so, we want to split them off and append them to the end. We do this by splitting on spaces and \n
+    QStringList splitEntry = glyphList[ i ].split( QRegExp( "\\n|\\s" ), QString::SkipEmptyParts );
+
     profile += tokenize( player_class ) + "=G_" + QString::number( i ) + "\n";
     profile += base_profile_info;
     profile += "talents=" + player_talents + "\n";
-    profile += "glyphs=" + glyphList[ i ] + "\n";
-    profile += player_gear + "\n";
-    profile += player_rotation + "\n";
+
+    if ( splitEntry[ 0 ].startsWith( "glyphs=" ) )
+      profile += splitEntry[ 0 ];
+    else
+      profile += "glyphs=" + splitEntry[ 0 ];
+    profile += "\n";
+
+    if ( player_gear.size() > 0 )
+      profile += player_gear + "\n";
+    if ( player_rotation.size() > 0 )
+      profile += player_rotation + "\n";
+
+    if ( splitEntry.size() > 1 )
+      for ( int j = 1; j < splitEntry.size(); j++ )
+        profile += splitEntry[ j ] + "\n";
+
     profile += "\n";
   }
 
@@ -142,29 +178,33 @@ QString automation::auto_gear_sim( QString player_class,
                                    QString base_profile_info,
                                    QString player_talents,
                                    QString player_glyphs,
-                                   QString advanced_text,
+                                   QStringList gearList,
                                    QString player_rotation
                                    )
 {
-  // split into gearSets
-  QStringList gearList = advanced_text.split( "\n\n", QString::SkipEmptyParts );
-
   QString profile;
-
-  // make profile
+  
+  // make profile for each entry in gearList, which should be a complete gear set (plus optional extra stuff)
   for ( int i = 0; i < gearList.size(); i++ )
   {
     profile += tokenize( player_class ) + "=G_" + QString::number( i ) + "\n";
     profile += base_profile_info;
     profile += "talents=" + player_talents + "\n";
     profile += "glyphs=" + player_glyphs + "\n";
-    // split gearSets into single item lines
-    QStringList gearSet = gearList[ i ].split( "\n", QString::SkipEmptyParts );
-    for ( int j = 0; j < gearSet.size(); j++ )
-    {
-      profile += gearSet[ j ] + "\n";
-    }
-    profile += player_rotation + "\n";
+
+    if ( player_rotation.size() > 0 )
+      profile += player_rotation + "\n";
+
+    // split the entry on newlines and spaces just to separate it all out
+    // (in practice unnecessary, but helps make the generated profiles more readable)
+    QStringList itemList = gearList[ i ].split( QRegExp( "\\n|\\s" ), QString::SkipEmptyParts );
+    
+    for ( int j = 0; j < itemList.size(); j++ )
+      profile += itemList[ j ] + "\n";
+
+    // note that we don't bother pushing extra options to the end here, since the gear set is
+    // already being specified at the end of the profile.
+
     profile += "\n";
   }
   return profile;
@@ -172,19 +212,64 @@ QString automation::auto_gear_sim( QString player_class,
 
 // Method for profile creation for the specific ROTATION simulation
 QString automation::auto_rotation_sim( QString player_class,
+                                       QString player_spec,
                                        QString base_profile_info,
                                        QString player_talents,
                                        QString player_glyphs,
                                        QString player_gear,
-                                       QString advanced_text
+                                       QStringList rotation_list
                                      )
 {
   QString profile = "NYI";
 
+  for ( int i = 0; i < rotation_list.size(); i++ )
+  {
+    profile += tokenize( player_class ) + "=G_" + QString::number( i ) + "\n";
+    profile += base_profile_info;
+    profile += "talents=" + player_talents + "\n";
+    profile += "glyphs=" + player_glyphs + "\n";
+    if ( player_gear.size() > 0 )
+      profile += player_gear + "\n";
+    
+    // Since action lists can be specified as shorthand with options or as full lists, we need to support both.
+    // To do that, we split on newlines and spaces just like in the other modules
+    QStringList actionList = rotation_list[ i ].split( QRegExp( "\\n|\\s" ), QString::SkipEmptyParts );
+
+    // now, we check to see if the first element is a shorthand
+    QStringList shorthandList = actionList[ 0 ].split( ">", QString::SkipEmptyParts );
+
+    // if the shorthand list has more than one element, and this wasn't because of a ">" in a conditional, 
+    // we have a shorthand sequence and need to do some conversion.
+    if ( shorthandList.size() > 0 && ! shorthandList[ 0 ].startsWith( "actions" ) )
+    {
+      profile += "#Shorthand Conversion NYI\n";
+
+      // send shorthandList off to a method for conversion based on player class and spec
+      QStringList convertedAPL = convert_shorthand( player_class, player_spec, shorthandList );
+
+      // take the returned QStringList and output it.
+
+    }
+    // Otherwise, the user has specified the action list in its full and gory detail, so we can just use that
+    // Spit out the first element here, the rest gets spit out below (for either case)
+    else
+      profile += actionList[ 0 ] + "\n";
+
+    // spit out the rest of the actionList
+    if ( actionList.size() > 1 )
+      for ( int j = 1; j < actionList.size(); j++ )
+        profile += actionList[ j ] + "\n";
+
+    profile += "\n";
+  }
   return profile;
 }
 
-
+QStringList automation::convert_shorthand( QString player_class, QString player_spec, QStringList shorthand )
+{
+  // dummy for now
+  return QStringList();
+};
 
 ///////////////////////////////////////////////////////////////////////////////
 ////
@@ -306,15 +391,15 @@ QString sidebarText[ 11 ][ 4 ] = {
 
 // constant for the varying labels of the advanced text box
 QString advancedText[ 6 ] = {
-  "Unused", "Talent Configurations", "Glyph Configurations", "Gear Configurations", "Rotation Shorthands", "Advanced Configuration Mode"
+  "Unused", "Talent Configurations", "Glyph Configurations", "Gear Configurations", "Rotation Configurations", "Advanced Configuration Mode"
 };
 // constant for the varying labels of the helpbar text box
 QString helpbarText[ 6 ] = {
   "To automate generation of a comparison, choose a comparison type from the drop-down box to the left.",
-  "To specify different talent configurations, list the talent configurations you want to test (as seven-digit integer strings, i.e. 1231231) in the box below. Each configuration should be its own new line.",
-  "To specify different glyph configurations, list the glyph configurations you want to test (i.e. alabaster_shield/focused_shield/word_of_glory) in the box below. Each configuration should be its own new line.",
-  "To specify different gear configurations, we need to implement some things still.",
-  "To specify different rotations, list the rotation shorthands you want to test in the box below. The sidebar lists the shorthand conventions for your class and spec. If a shorthand you want isn't documented, please contact the simulationcraft team to have it added.",
+  "List the talent configurations you want to test in the box below as seven-digit integer strings, i.e. 1231231.\nEach configuration should be its own new line.\nFor more advanced syntax options, see the wiki entry at (PUT LINK HERE).",
+  "List the glyph configurations you want to test (i.e. alabaster_shield/focused_shield/word_of_glory) in the box below.\nEach configuration should be its own new line.\nFor more advanced syntax options, see the wiki entry at (PUT LINK HERE).",
+  "List the different gear configurations you want to test in the box below.\nEach configuration should be separated by a blank line.\nFor more advanced syntax options, see the wiki entry at (PUT LINK HERE).",
+  "List the rotations you want to test in the box below. Rotations can be specified as usual for simc (with different configurations separated by a blank line) or as shorthands (each on a new line).\nThe sidebar lists the shorthand conventions for your class and spec. If a shorthand you want isn't documented, please contact the simulationcraft team to have it added.\nFor more advanced syntax options, see the wiki entry at (PUT LINK HERE).",
   "To specify everything according to your needs. All configurations can be mixed up for more advanced multi-automated simulations but need to match the standard SimCraft input format"
 };
 

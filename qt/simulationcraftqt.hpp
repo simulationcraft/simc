@@ -1564,35 +1564,38 @@ namespace automation {
 
   QString auto_talent_sim( QString player_class,
                            QString base_profile_info,
+                           QStringList advanced_text,
                            QString player_glyphs,
                            QString player_gear,
-                           QString player_rotation,
-                           QString advanced_text
+                           QString player_rotation
                          );
 
   QString auto_glyph_sim( QString player_class,
-                          QString base_profile_info, 
+                          QString base_profile_info,
                           QString player_talents,
+                          QStringList advanced_text,
                           QString player_gear,
-                          QString player_rotation,
-                          QString advanced_text
+                          QString player_rotation
                         );
 
   QString auto_gear_sim( QString player_class,
                          QString base_profile_info, 
                          QString player_talents,
                          QString player_glyphs,
-                         QString player_rotation,
-                         QString advanced_text
+                         QStringList advanced_text,
+                         QString player_rotation
                        );
 
   QString auto_rotation_sim( QString player_class,
+                             QString player_spec,
                              QString base_profile_info,
                              QString player_talents,
                              QString player_glyphs,
                              QString player_gear,
-                             QString advanced_text
+                             QStringList advanced_text
                            );
+
+  QStringList convert_shorthand( QString player_class, QString player_spec, QStringList shorthandList );
 
 } // end automation namespace
 
