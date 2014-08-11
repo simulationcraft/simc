@@ -3088,6 +3088,7 @@ struct meteor_burn_t : public mage_spell_t
     spell_power_mod.tick = p -> find_spell( 155158 ) -> effectN( 1 ).sp_coeff();
     base_tick_time = p -> find_spell( 155158 ) -> effectN( 1 ).period();
     hasted_ticks = false;
+    dynamic_tick_action = false;
     aoe = -1;
     cooldown -> duration = timespan_t::from_seconds( 0.0 );
   }
