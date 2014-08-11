@@ -671,6 +671,7 @@ struct prismatic_crystal_t : public pet_t
       may_crit = may_miss = callbacks = false;
       background = true;
       aoe = -1;
+      split_aoe_damage = true;
     }
 
     // Damage gets fully inherited from the Mage's own spell
