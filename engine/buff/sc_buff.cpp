@@ -679,7 +679,7 @@ void buff_t::start( int        stacks,
 
   if ( player && change_regen_rate )
     player -> do_dynamic_regen();
-  else
+  else if ( change_regen_rate )
   {
     for ( size_t i = 0, end = sim -> player_non_sleeping_list.size(); i < end; i++ )
     {
@@ -883,7 +883,7 @@ void buff_t::expire( timespan_t delay )
 
   if ( player && change_regen_rate )
     player -> do_dynamic_regen();
-  else
+  else if ( change_regen_rate )
   {
     for ( size_t i = 0, end = sim -> player_non_sleeping_list.size(); i < end; i++ )
     {
