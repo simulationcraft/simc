@@ -4991,13 +4991,30 @@ void warlock_t::init_spells()
   player_t::init_spells();
 
   // New set bonus system
-  static const set_bonus_description_t set_bonuses =
+  static set_bonus_description_t set_bonuses =
   {
     //  C2P    C4P    M2P    M4P    T2P    T4P    H2P    H4P
     { 123136, 123141,     0,     0,     0,     0,     0,     0 }, // Tier14
     { 138129, 138134,     0,     0,     0,     0,     0,     0 }, // Tier15
     { 145072, 145091,     0,     0,     0,     0,     0,     0 }, // Tier16
+    { 0, 0,     0,     0,     0,     0,     0,     0 } // Tier17
   };
+    
+    if ( specialization() == WARLOCK_AFFLICTION )
+    {
+        set_bonuses[3][0] = 165448; //T17 2PC
+        set_bonuses[3][1] = 165449; //T17 4PC
+    }
+    else if ( specialization() == WARLOCK_DEMONOLOGY )
+    {
+        set_bonuses[3][0] = 165451; //T17 2PC
+        set_bonuses[3][1] = 165450; //T17 4PC
+    }
+    else if ( specialization() == WARLOCK_DESTRUCTION )
+    {
+        set_bonuses[3][0] = 165455; //T17 2PC
+        set_bonuses[3][1] = 165452; //T17 4PC
+    }
   sets.register_spelldata( set_bonuses );
 
   // General
