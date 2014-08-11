@@ -337,6 +337,7 @@ public:
   virtual void      reset();
   virtual double    composite_attack_power_multiplier() const;
   virtual double    composite_melee_crit() const;
+  virtual double    composite_spell_crit() const;
   virtual double    composite_melee_haste() const;
   virtual double    composite_multistrike() const;
   virtual double    composite_player_critical_damage_multiplier() const;
@@ -1093,7 +1094,7 @@ struct basic_attack_t: public hunter_main_pet_attack_t
     gain_invigoration = p -> find_spell( 53398 ) -> effectN( 1 ).resource( RESOURCE_FOCUS );
   }
 
-  virtual void execute()
+  void execute()
   {
     hunter_main_pet_attack_t::execute();
     trigger_tier16_bm_4pc_melee();
@@ -1104,28 +1105,32 @@ struct basic_attack_t: public hunter_main_pet_attack_t
       p() -> buffs.frenzy -> trigger( 1 );
   }
 
-  virtual void impact( action_state_t* s )
+  void impact( action_state_t* s )
   {
     hunter_main_pet_attack_t::impact( s );
 
     if ( result_is_hit( s -> result ) )
     {
-      p() -> buffs.enhanced_basic_attacks -> expire();
       if ( o() -> specs.invigoration -> ok() && rng().roll( chance_invigoration ) )
       {
         o() -> resource_gain( RESOURCE_FOCUS, gain_invigoration, o() -> gains.invigoration );
         o() -> procs.invigoration -> occur();
       }
       trigger_beast_cleave( s );
-      if ( o() -> rng().roll( o() -> perks.enhanced_basic_attacks -> effectN( 1 ).percent() ) )
-      {
-        cooldown -> reset( true );
-        p() -> buffs.enhanced_basic_attacks -> trigger();
-      }
     }
   }
 
-  virtual double composite_crit() const
+  void consume_resource()
+  {
+    if ( p() -> buffs.enhanced_basic_attacks -> up() )
+    {
+      p() -> buffs.enhanced_basic_attacks -> expire();
+      return;
+    }
+    hunter_main_pet_attack_t::consume_resource();
+  }
+
+  double composite_crit() const
   {
     double cc = hunter_main_pet_attack_t::composite_crit();
 
@@ -1141,7 +1146,7 @@ struct basic_attack_t: public hunter_main_pet_attack_t
     return p() -> resources.current[RESOURCE_FOCUS] > 50;
   }
 
-  virtual double action_multiplier() const
+  double action_multiplier() const
   {
     double am = hunter_main_pet_attack_t::action_multiplier();
 
@@ -1159,19 +1164,25 @@ struct basic_attack_t: public hunter_main_pet_attack_t
     return am;
   }
 
-  virtual double cost() const
+  double cost() const
   {
     double c = hunter_main_pet_attack_t::cost();
 
     if ( use_wild_hunt() )
       c *= 1.0 + p() -> specs.wild_hunt -> effectN( 2 ).percent();
 
-    if ( p() -> buffs.enhanced_basic_attacks -> up() )
-      c = 0;
-
     return c;
   }
 
+  void update_ready( timespan_t cd_duration )
+  {
+    hunter_main_pet_attack_t::update_ready( cd_duration );
+    if ( o() -> rng().roll( o() -> perks.enhanced_basic_attacks -> effectN( 1 ).percent() ) )
+    {
+      cooldown -> reset( true );
+      p() -> buffs.enhanced_basic_attacks -> trigger();
+    }
+  }
 };
 
 // Devilsaur Monstrous Bite =================================================
@@ -1202,7 +1213,7 @@ struct kill_command_t: public hunter_main_pet_attack_t
     attack_power_mod.direct  = 1.89; // Hard-coded in tooltip.
   }
 
-  virtual double action_multiplier() const
+  double action_multiplier() const
   {
     double am = hunter_main_pet_attack_t::action_multiplier();
     am *= 1.0 + o() -> sets.set( SET_T14_2PC_MELEE ) -> effectN( 1 ).percent();
@@ -1210,11 +1221,10 @@ struct kill_command_t: public hunter_main_pet_attack_t
   }
   
   // Override behavior so that Kill Command uses hunter's attack power rather than the pet's
-  virtual double composite_attack_power() const
+  double composite_attack_power() const
   {
     return base_attack_power + o() -> cache.attack_power() * o()->composite_attack_power_multiplier();
   }
-
 };
 
 // ==========================================================================
@@ -2552,11 +2562,6 @@ struct barrage_t: public hunter_spell_t
     }
     trigger_tier16_bm_4pc_melee();
   }
-
-  virtual double composite_crit() const
-  {
-    return p() -> composite_melee_crit(); // Since barrage is a spell, we need to explicitly make it use attack crit.
-  }
 };
 
 // A Murder of Crows ========================================================
@@ -3368,6 +3373,9 @@ void hunter_t::init_action_list()
       precombat -> add_action( potion_action );
     }
 
+    if ( specialization() == HUNTER_MARKSMANSHIP )
+      precombat -> add_action( "aimed_shot" );
+
     switch ( specialization() )
     {
     case HUNTER_SURVIVAL:
@@ -3471,29 +3479,35 @@ void hunter_t::apl_mm()
       default_list -> add_action( "potion,name=virmens_bite,if=buff.rapid_fire.up" );
   }
   
-  default_list -> add_talent( this, "Powershot" );
+  default_list -> add_action( this, "Rapid Fire" );
   default_list -> add_talent( this, "Fervor", "if=focus<=50" );
-  default_list -> add_action( this, "Rapid Fire", "if=!buff.rapid_fire.up" );
-  default_list -> add_talent( this, "Stampede", "if=trinket.stat.agility.up|target.time_to_die<=20|(trinket.stacking_stat.agility.stack>10&trinket.stat.agility.cooldown_remains<=3)" );
+  default_list -> add_talent( this, "Stampede", "if=focus.time_to_max>action.aimed_shot.cast_time" );
   default_list -> add_talent( this, "A Murder of Crows" );
-  default_list -> add_talent( this, "Dire Beast" );
+  default_list -> add_talent( this, "Dire Beast", "if=focus.time_to_max>action.aimed_shot.cast_time" );
 
-  default_list -> add_action( "run_action_list,name=careful_aim,if=target.health.pct>=80|buff.rapid_fire.up" );
+  default_list -> add_action( "run_action_list,name=careful_aim,if=buff.careful_aim.up" );
   {
-    careful_aim -> add_action( this, "Chimaera Shot" ); 
-    careful_aim -> add_action( this, "Aimed Shot" );
+    careful_aim -> add_action( this, "Chimaera Shot" );
+    careful_aim -> add_action( this, "Kill Shot", "if=focus.time_to_max>action.aimed_shot.cast_time" );
     careful_aim -> add_talent( this, "Glaive Toss" );
-    careful_aim -> add_talent( this, "Focusing Shot", "if=focus<50" );
+    careful_aim -> add_talent( this, "Powershot" );
+    careful_aim -> add_talent( this, "Barrage", "if=focus.time_to_max>cast_time" );
+    careful_aim -> add_action( this, "Aimed Shot" );
+    careful_aim -> add_talent( this, "Focusing Shot", "if=focus+72<120" );
     careful_aim -> add_action( this, "Steady Shot" );
   }
 
-  default_list -> add_talent( this, "Glaive Toss" );
-  default_list -> add_talent( this, "Barrage" );
   default_list -> add_action( this, "Chimaera Shot" );
-  default_list -> add_talent( this, "Focusing Shot", "if=focus<55" );
-  default_list -> add_action( this, "Kill Shot" );
-  default_list -> add_action( this, "Multi-Shot", "if=active_enemies>=4" );
-  default_list -> add_action( this, "Aimed Shot" );
+  default_list -> add_action( this, "Kill Shot", "if=focus.time_to_max>action.aimed_shot.cast_time" );
+  default_list -> add_talent( this, "Glaive Toss" );
+  default_list -> add_talent( this, "Powershot" );
+  default_list -> add_talent( this, "Barrage", "if=focus.time_to_max>cast_time" );
+  default_list -> add_action( this, "Aimed Shot", "if=talent.focusing_shot.enabled" );
+  default_list -> add_action( this, "Aimed Shot", "if=focus+focus.regen*cast_time>=85" );
+  default_list -> add_action( this, "Aimed Shot", "if=buff.thrill_of_the_hunt.react&focus+focus.regen*cast_time>=65" );
+  default_list -> add_action( this, "Aimed Shot", "if=cooldown.fervor.remains>=20&(focus+(focus.regen+5)*cast_time)>=85" );
+  default_list -> add_action( this, "Aimed Shot", "if=cooldown.fervor.remains<=cast_time" );
+  default_list -> add_talent( this, "Focusing Shot", "if=focus+72<120" );
   default_list -> add_action( this, "Steady Shot" );
 }
 
@@ -3660,13 +3674,22 @@ double hunter_t::composite_melee_crit() const
   return crit;
 }
 
+// hunter_t::composite_spell_crit ===========================================
+
+double hunter_t::composite_spell_crit() const
+{
+  double crit = player_t::composite_spell_crit();
+  crit += specs.critical_strikes -> effectN( 1 ).percent();
+  return crit;
+}
+
 // hunter_t::composite_multistrike ==========================================
 
 double hunter_t::composite_multistrike() const
 {
   double m = player_t::composite_multistrike();
 
-  m += specs.survivalist -> effectN( 1 ).percent(); //Check
+  m += specs.survivalist -> effectN( 2 ).percent();
 
   return m;
 }

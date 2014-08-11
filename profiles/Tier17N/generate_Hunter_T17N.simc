@@ -33,10 +33,10 @@ race=orc
 spec=marksmanship
 position=ranged_back
 role=attack
-talents=0001111
+talents=0002112
 head=primal_gladiators_helm,id=111280
-neck=primal_gladiators_necklace_of_cruelty,id=111079,enchant=gift_of_multistrike
-shoulders=primal_gladiators_chain_spaulders,id=111116
+neck=primal_gladiators_necklace_of_cruelty,id=111079,enchant=gift_of_critical_strike
+shoulders=primal_gladiators_spaulders,id=111282
 back=primal_gladiators_cape_of_cruelty,id=111077,enchant=gift_of_critical_strike
 chest=primal_gladiators_chain_armor,id=111112
 wrists=primal_gladiators_armbands_of_prowess,id=111161
