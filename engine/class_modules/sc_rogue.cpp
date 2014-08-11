@@ -2634,17 +2634,19 @@ struct death_from_above_t : public rogue_attack_t
 
     p() -> buffs.death_from_above -> trigger();
 
-    // Apparently DfA reset swing timers
+    // Apparently DfA is out of range for ~0.8 seconds during the "attack", so
+    // ensure that we have a swing timer of at least 800ms on both hands. Note
+    // that this can sync autoattacks which also happens in game.
     if ( player -> main_hand_attack && player -> main_hand_attack -> execute_event )
     {
-      core_event_t::cancel( player -> main_hand_attack -> execute_event );
-      player -> main_hand_attack -> schedule_execute();
+      if ( player -> main_hand_attack -> execute_event -> remains() < timespan_t::from_seconds( 0.8 ) )
+        player -> main_hand_attack -> execute_event -> reschedule( timespan_t::from_seconds( 0.8 ) );
     }
 
     if ( player -> off_hand_attack && player -> off_hand_attack -> execute_event )
     {
-      core_event_t::cancel( player -> off_hand_attack -> execute_event );
-      player -> off_hand_attack -> schedule_execute();
+      if ( player -> off_hand_attack -> execute_event -> remains() < timespan_t::from_seconds( 0.8 ) )
+        player -> off_hand_attack -> execute_event -> reschedule( timespan_t::from_seconds( 0.8 ) );
     }
   }
 
