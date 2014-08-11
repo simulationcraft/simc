@@ -9,19 +9,19 @@ action_state_t* action_t::get_state( const action_state_t* other )
 {
   action_state_t* s = 0;
 
-  if ( state_cache.empty() )
+  if ( state_cache )
   {
-    s = new_state();
+    s = state_cache;
+    state_cache = s -> next;
   }
   else
-  {
-    s = state_cache.back();
-    state_cache.pop_back();
-  }
+    s = new_state();
 
   s -> action = this;
-  s -> initialize();
-  if ( other ) s -> copy_state( other );
+  if ( ! other )
+    s -> initialize();
+  else
+    s -> copy_state( other );
 
   return s;
 }
@@ -34,7 +34,8 @@ action_state_t* action_t::new_state()
 void action_t::release_state( action_state_t* s )
 {
   assert( s -> action == this );
-  state_cache.push_back( s );
+  s -> next = state_cache;
+  state_cache = s;
 }
 
 // Initialize contains all variables that must be reset every time a new
@@ -96,7 +97,7 @@ void action_state_t::copy_state( const action_state_t* o )
 }
 
 action_state_t::action_state_t( action_t* a, player_t* t ) :
-  action( a ), target( t ),
+  next( 0 ), action( a ), target( t ),
   n_targets( 0 ), chain_target( 0 ),
   result_type( RESULT_TYPE_NONE ), result( RESULT_NONE ), block_result( BLOCK_RESULT_UNKNOWN ),
   result_raw( 0 ), result_total( 0 ), result_mitigated( 0 ),

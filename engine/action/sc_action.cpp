@@ -347,6 +347,7 @@ action_t::action_t( action_e       ty,
   action_list = 0;
   movement_directionality = MOVEMENT_NONE;
   base_teleport_distance = 0;
+  state_cache = 0;
 
   range::fill( base_costs, 0.0 );
   range::fill( costs_per_second, 0 );
@@ -412,6 +413,13 @@ action_t::~action_t()
   delete if_expr;
   delete interrupt_if_expr;
   delete early_chain_if_expr;
+
+  while ( state_cache != 0 )
+  {
+    action_state_t* s = state_cache;
+    state_cache = s -> next;
+    delete s;
+  }
 }
 
 // action_t::parse_data =====================================================
