@@ -12,7 +12,6 @@
 // Grimoire of Synergy: Check whether it is using one or two different Proc counters for the caster and pet buff, i.e., whether it as an effective 1.333 or 2.666 rppm
 // Level 100 talents: demonic servitude: check SP coefficient
 // Update action lists, especially AoE
-// Charred Remains interaction with AoE Chaos Bolt
 // Proper spell ids for drain_soul triggered Corruption/UA/Agony ticks. Reia says they are differnt. take a look at the combatlog
 // Proper Stats calc for childs of cataclysm
 // In-depth testing of demonology and affliction is needed.
@@ -3242,9 +3241,12 @@ struct chaos_bolt_t : public warlock_spell_t
 
   virtual void execute()
   {
+    if ( p() -> talents.charred_remains -> ok() && p() -> buffs.fire_and_brimstone -> up() )
+        aoe = -1;
     warlock_spell_t::execute();
 
     if ( ! result_is_hit( execute_state -> result ) ) refund_embers( p() );
+      aoe = 0;
   }
 };
 
