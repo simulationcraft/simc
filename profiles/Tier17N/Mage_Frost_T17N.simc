@@ -3,7 +3,7 @@ level=100
 race=troll
 role=spell
 position=back
-talents=http://us.battle.net/wow/en/tool/talent-calculator#eb!0...001
+talents=http://us.battle.net/wow/en/tool/talent-calculator#eb!0...011
 glyphs=icy_veins/splitting_ice
 spec=frost
 
@@ -43,9 +43,12 @@ actions+=/blood_fury,if=buff.icy_veins.up|target.time_to_die<18
 actions+=/berserking,if=buff.icy_veins.up|target.time_to_die<18
 actions+=/arcane_torrent,if=buff.icy_veins.up|target.time_to_die<18
 actions+=/use_item,slot=trinket2
-actions+=/frost_bomb,if=debuff.frost_bomb.remains<cast_time&buff.fingers_of_frost.stack>=2
-actions+=/ice_lance,if=buff.fingers_of_frost.react&debuff.frost_bomb.remains>travel_time
+actions+=/comet_storm
+actions+=/frost_bomb,if=debuff.frost_bomb.remains<cast_time&buff.fingers_of_frost.stack>=1
+actions+=/ice_lance,if=talent.frost_bomb.enabled&buff.fingers_of_frost.react&debuff.frost_bomb.remains>travel_time
+actions+=/ice_lance,if=!talent.frost_bomb.enabled&buff.fingers_of_frost.react
 actions+=/frostfire_bolt,if=buff.brain_freeze.react
+actions+=/ice_nova
 actions+=/frostbolt
 actions+=/ice_floes,moving=1
 actions+=/ice_lance,moving=1

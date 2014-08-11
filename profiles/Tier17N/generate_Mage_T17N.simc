@@ -3,7 +3,7 @@ mage=Mage_Frost_T17N
 level=100
 race=troll
 spec=frost
-talents=1000112
+talents=1000122
 glyphs=icy_veins/splitting_ice
 head=primal_gladiators_silk_cowl,id=111151,bonus_id=0,upgrade=0,gem_id=0/0/0/,enchant_id=0
 neck=primal_gladiators_pendant_of_cruelty,id=111128,bonus_id=0,upgrade=0,gem_id=0/0/0/,enchant_id=5294

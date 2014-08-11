@@ -4760,9 +4760,12 @@ void mage_t::apl_frost()
     default_list -> add_action( item_actions[i] );
 
   default_list -> add_action( this, "Flamestrike", "if=active_enemies>=5" );
-  default_list -> add_talent( this, "Frost Bomb", "if=debuff.frost_bomb.remains<cast_time&buff.fingers_of_frost.stack>=2" );
-  default_list -> add_action( this, "Ice Lance", "if=buff.fingers_of_frost.react&debuff.frost_bomb.remains>travel_time" );
+  default_list -> add_talent( this, "Comet Storm" );
+  default_list -> add_talent( this, "Frost Bomb", "if=debuff.frost_bomb.remains<cast_time&buff.fingers_of_frost.stack>=1" );
+  default_list -> add_action( this, "Ice Lance", "if=talent.frost_bomb.enabled&buff.fingers_of_frost.react&debuff.frost_bomb.remains>travel_time" );
+  default_list -> add_action( this, "Ice Lance", "if=!talent.frost_bomb.enabled&buff.fingers_of_frost.react" );
   default_list -> add_action( this, "Frostfire Bolt", "if=buff.brain_freeze.react" );
+  default_list -> add_talent( this, "Ice Nova" );
   default_list -> add_action( this, "Frostbolt" );
   default_list -> add_talent( this, "Ice Floes", "moving=1" );
   default_list -> add_action( this, "Ice Lance", "moving=1" );
