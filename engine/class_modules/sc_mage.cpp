@@ -46,6 +46,7 @@
 //  Imp. Arcane Explosion needs to be tested. -- DONE
 //  Arcane Blast cast time reduction perk testing? - DONE! Working correctly. (I think. may be very minor problems due to it not effecting base_execute_time. But tools to do that easily are not inplace yet.)
 //  Living Bomb spell data has completely changed - need to re-do the entire thing. - DONE! (I think?)
+//  Comet Storm now have meteor split applied to its damage.
 // Misc Notes:
 //  Unstable Magic Trigger is very sensative to double dipping - as we encounter new modifiers, need to check there is double dipping going on!
 //  Multistrike triggering ignite/Icicles? - Yes.
@@ -1995,6 +1996,7 @@ struct comet_storm_projectile_t : public mage_spell_t
     mage_spell_t( "comet_storm_projectile", p, p -> find_spell( 153596 ) )
   {
     aoe = -1;
+    split_aoe_damage = true;
     background = true;
   }
 
