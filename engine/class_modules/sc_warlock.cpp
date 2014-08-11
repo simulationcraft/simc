@@ -8,8 +8,8 @@
 // ==========================================================================
 //
 // TODO:
+// T17 Set bonusses. T17 4pc affli, 2/4pc demo, 4p destruction.
 // Grimoire of Synergy: Check whether it is using one or two different Proc counters for the caster and pet buff, i.e., whether it as an effective 1.333 or 2.666 rppm
-//
 // Level 100 talents: demonic servitude: check SP coefficient
 // Update action lists, especially AoE
 // Charred Remains interaction with AoE Chaos Bolt
@@ -314,6 +314,7 @@ public:
     gain_t* rain_of_fire;
     gain_t* immolate;
     gain_t* immolate_fnb;
+    gain_t* immolate_t17_2pc;
     gain_t* shadowburn;
     gain_t* miss_refund;
     gain_t* siphon_life;
@@ -2832,7 +2833,11 @@ struct immolate_t : public warlock_spell_t
     if ( result_is_hit( s -> result ))
 	  {
 	    if ( s -> result == RESULT_CRIT ) trigger_ember_gain( p(), 0.1, gain );
-	  }
+        if ( p() -> sets.has_set_bonus( SET_T17_2PC_CASTER ))
+        {
+              trigger_ember_gain( p(), 1, p() -> gains.immolate_t17_2pc, p() -> sets.set( SET_T17_2PC_CASTER ) -> effectN( 1 ).percent());
+        }
+      }
   }
 
   virtual void tick( dot_t* d )
@@ -2847,6 +2852,10 @@ struct immolate_t : public warlock_spell_t
 
     if ( d -> state -> result == RESULT_CRIT ) trigger_ember_gain( p(), 0.1, gain );
 
+    if ( p() -> sets.has_set_bonus( SET_T17_2PC_CASTER ))
+    {
+      trigger_ember_gain( p(), 1, p() -> gains.immolate_t17_2pc, p() -> sets.set( SET_T17_2PC_CASTER ) -> effectN( 1 ).percent());
+    }
     if ( p() -> glyphs.siphon_life -> ok() )
     {
       if ( d -> state -> result_amount > 0 )
@@ -5294,6 +5303,7 @@ void warlock_t::init_gains()
   gains.rain_of_fire       = get_gain( "rain_of_fire" );
   gains.immolate           = get_gain( "immolate"     );
   gains.immolate_fnb       = get_gain( "immolate_fnb" );
+  gains.immolate_t17_2pc   = get_gain( "immolate_t17_2pc" );
   gains.shadowburn         = get_gain( "shadowburn"   );
   gains.miss_refund        = get_gain( "miss_refund"  );
   gains.siphon_life        = get_gain( "siphon_life"  );
