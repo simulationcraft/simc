@@ -337,6 +337,7 @@ public:
   virtual void      reset();
   virtual double    composite_attack_power_multiplier() const;
   virtual double    composite_melee_crit() const;
+  virtual double    composite_spell_crit() const;
   virtual double    composite_melee_haste() const;
   virtual double    composite_multistrike() const;
   virtual double    composite_player_critical_damage_multiplier() const;
@@ -1212,7 +1213,7 @@ struct kill_command_t: public hunter_main_pet_attack_t
     attack_power_mod.direct  = 1.89; // Hard-coded in tooltip.
   }
 
-  virtual double action_multiplier() const
+  double action_multiplier() const
   {
     double am = hunter_main_pet_attack_t::action_multiplier();
     am *= 1.0 + o() -> sets.set( SET_T14_2PC_MELEE ) -> effectN( 1 ).percent();
@@ -1220,7 +1221,7 @@ struct kill_command_t: public hunter_main_pet_attack_t
   }
   
   // Override behavior so that Kill Command uses hunter's attack power rather than the pet's
-  virtual double composite_attack_power() const
+  double composite_attack_power() const
   {
     return base_attack_power + o() -> cache.attack_power() * o()->composite_attack_power_multiplier();
   }
@@ -2561,11 +2562,6 @@ struct barrage_t: public hunter_spell_t
     }
     trigger_tier16_bm_4pc_melee();
   }
-
-  virtual double composite_crit() const
-  {
-    return p() -> composite_melee_crit(); // Since barrage is a spell, we need to explicitly make it use attack crit.
-  }
 };
 
 // A Murder of Crows ========================================================
@@ -3678,13 +3674,22 @@ double hunter_t::composite_melee_crit() const
   return crit;
 }
 
+// hunter_t::composite_spell_crit ===========================================
+
+double hunter_t::composite_spell_crit() const
+{
+  double crit = player_t::composite_spell_crit();
+  crit += specs.critical_strikes -> effectN( 1 ).percent();
+  return crit;
+}
+
 // hunter_t::composite_multistrike ==========================================
 
 double hunter_t::composite_multistrike() const
 {
   double m = player_t::composite_multistrike();
 
-  m += specs.survivalist -> effectN( 1 ).percent(); //Check
+  m += specs.survivalist -> effectN( 2 ).percent();
 
   return m;
 }

@@ -8,7 +8,7 @@
 // ==========================================================================
 //
 // TODO:
-// Grimoire of Synergy: Change to RPPM
+// Grimoire of Synergy: Check whether it is using one or two different Proc counters for the caster and pet buff, i.e., whether it as an effective 1.333 or 2.666 rppm
 // Level 100 talents: demonic servitude: check SP coefficient
 // Update action lists, especially AoE
 // Charred Remains interaction with AoE Chaos Bolt
@@ -183,6 +183,10 @@ public:
     const spell_data_t* emberstorm;
   } mastery_spells;
 
+    
+  //Procs and RNG
+    
+  real_ppm_t grimoire_of_synergy;
   // Perks
   struct
   {
@@ -396,6 +400,7 @@ public:
   virtual void      init_gains();
   virtual void      init_benefits();
   virtual void      init_procs();
+  virtual void      init_rng();
   virtual void      init_action_list();
   virtual void      init_resources( bool force );
   virtual void      reset();
@@ -541,7 +546,10 @@ public:
       p() -> o() -> resource_gain( RESOURCE_DEMONIC_FURY, generate_fury, p() -> owner_fury_gain );
       
     if ( ab::result_is_hit( ab::execute_state -> result ) && p() -> o() -> talents.grimoire_of_synergy -> ok())
-      p() -> o() -> buffs.demonic_synergy -> trigger();
+    {
+        bool procced = p() -> o() -> grimoire_of_synergy.trigger(); //check for RPPM
+        if ( procced) p() -> o() -> buffs.demonic_synergy -> trigger(); //trigger the buff
+    }
   }
 
   double get_fury_gain( const spell_data_t& data )
@@ -1066,7 +1074,7 @@ void warlock_pet_t::create_buffs()
     
     buffs.demonic_synergy       = buff_creator_t( this, "demonic_synergy", find_spell( 171982 ) )
     .add_invalidate(CACHE_PLAYER_DAMAGE_MULTIPLIER)
-    .chance(0.1);   ////TODO 1.333 rppm
+    .chance(1);
 }
     
 timespan_t warlock_pet_t::available() const
@@ -1761,8 +1769,8 @@ public:
         pets::warlock_pet_t* my_pet = static_cast<pets::warlock_pet_t*>(p() -> pets.active); //get active pet
         if (my_pet != NULL)
         {
-            my_pet -> buffs.demonic_synergy -> trigger(); //trigger buff
-
+                bool procced = p() -> grimoire_of_synergy.trigger(); //CHECK: We are assuming that the pet buff and the caster buff are using the same Proc counter.
+                if ( procced) my_pet -> buffs.demonic_synergy -> trigger();
         }
     }
   }
@@ -4614,6 +4622,7 @@ warlock_t::warlock_t( sim_t* sim, const std::string& name, race_e r ) :
   talents( talents_t() ),
   glyphs( glyphs_t() ),
   mastery_spells( mastery_spells_t() ),
+  grimoire_of_synergy( *this),
   perk(),
   cooldowns( cooldowns_t() ),
   spec( specs_t() ),
@@ -5182,7 +5191,7 @@ void warlock_t::create_buffs()
   buffs.grimoire_of_sacrifice = buff_creator_t( this, "grimoire_of_sacrifice", talents.grimoire_of_sacrifice );
   buffs.demonic_synergy       = buff_creator_t( this, "demonic_synergy", find_spell( 171982 ) )
                                 .add_invalidate(CACHE_PLAYER_DAMAGE_MULTIPLIER)
-                                .chance(0.1);   ////TODO 1.333 rppm
+                                .chance(1);
     
   buffs.demonic_calling       = buff_creator_t( this, "demonic_calling", spec.wild_imps -> effectN( 1 ).trigger() ).duration( timespan_t::zero() );
   buffs.fire_and_brimstone    = buff_creator_t( this, "fire_and_brimstone", find_class_spell( "Fire and Brimstone" ) )
@@ -5216,7 +5225,12 @@ void warlock_t::create_buffs()
                                  .default_value( find_spell( 145085 ) -> effectN( 1 ).percent());
 }
 
-
+void warlock_t::init_rng()
+{
+    player_t::init_rng();
+    grimoire_of_synergy.set_frequency(1.333);
+}
+    
 void warlock_t::init_gains()
 {
   player_t::init_gains();
@@ -5504,6 +5518,8 @@ void warlock_t::reset()
   shard_react = timespan_t::zero();
   core_event_t::cancel( demonic_calling_event );
   havoc_target = 0;
+    
+  grimoire_of_synergy.reset();
 }
 
 
