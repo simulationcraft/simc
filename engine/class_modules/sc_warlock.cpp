@@ -9,6 +9,7 @@
 //
 // TODO:
 // Grimoire of Synergy: Check whether it is using one or two different Proc counters for the caster and pet buff, i.e., whether it as an effective 1.333 or 2.666 rppm
+//
 // Level 100 talents: demonic servitude: check SP coefficient
 // Update action lists, especially AoE
 // Charred Remains interaction with AoE Chaos Bolt
@@ -3560,11 +3561,27 @@ struct dark_soul_t : public warlock_spell_t
   {
     harmful = false;
 
-    if ( p -> talents.archimondes_darkness -> ok() )
+    if ( p -> talents.archimondes_darkness -> ok() && ! p -> glyphs.dark_soul -> ok() ) //AD + noGlyph
     {
       cooldown -> charges = p -> talents.archimondes_darkness -> effectN( 1 ).base_value();
       p -> buffs.dark_soul -> cooldown -> duration = timespan_t::zero();
     }
+      
+    else if ( p -> talents.archimondes_darkness -> ok() &&  p -> glyphs.dark_soul -> ok() ) // AD + glyph
+    {
+      cooldown -> charges = p -> talents.archimondes_darkness -> effectN( 1 ).base_value(); //give two charges and make sure the buff CD doesn't give us problems
+      p -> buffs.dark_soul -> cooldown -> duration = timespan_t::zero();
+    
+      cooldown -> duration = data().cooldown() * (1.0 + p -> glyphs.dark_soul -> effectN( 1 ).percent()); //reduce CD of DS
+      p -> buffs.dark_soul -> buff_duration = p -> buffs.dark_soul -> data().duration() * (1.0 + p -> glyphs.dark_soul -> effectN( 2 ).percent()); //reduce buff duration
+    }
+    
+    else if ( !p -> talents.archimondes_darkness -> ok() &&  p -> glyphs.dark_soul -> ok() ) // noAD + glyph
+    {
+        cooldown -> duration = data().cooldown() * (1.0 + p -> glyphs.dark_soul -> effectN( 1 ).percent()); //reduce CD of DS
+        p -> buffs.dark_soul -> buff_duration = p -> buffs.dark_soul -> data().duration() * (1.0 + p -> glyphs.dark_soul -> effectN( 2 ).percent()); //reduce buff duration
+    }
+      
   }
 
   virtual void execute()
