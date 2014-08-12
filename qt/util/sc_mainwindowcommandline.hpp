@@ -6,13 +6,12 @@
 #pragma once
 
 #include "config.hpp"
+#include "../qt/simulationcraftqt.hpp"
 
 #ifdef QT_VERSION_5
 #include <QtWidgets/QtWidgets>
 #endif
 #include <QtGui/QtGui>
-
-#include "qt/simulationcraftqt.hpp"
 
 
 class SC_MainWindowCommandLine : public QWidget
