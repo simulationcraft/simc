@@ -304,6 +304,7 @@ QStringList automation::splitOption( QString s )
     for ( int i = 0; i <= numSeparators; i++ )
       optionsBreakdown << s.section( delimiter, i, i, QString::SectionIncludeTrailingSep ).simplified();
 
+    // check for the trailing separators and move them to their own entries
     for ( int i = 0; i < optionsBreakdown.size(); i++ )
     {
       QString temp = optionsBreakdown[ i ];
@@ -317,6 +318,7 @@ QStringList automation::splitOption( QString s )
   else
     optionsBreakdown.append( s );
 
+  // at this point, optionsBreakdown should consist of entries that are only delimiters or abbreviations, no mixing
   return optionsBreakdown;
 }
 
@@ -370,10 +372,11 @@ QStringList automation::convert_shorthand( QStringList shorthandList, QString si
     }
   }
 
-
   // STEP 2: now we take the shorthand and figure out what to do with each element
 
-  QStringList actionPriorityList;
+  QStringList actionPriorityList; // Final APL
+
+  // this structure is needed for finding abbreviations in the tables
   struct comp
   {
     comp( QString const& s ) : _s( s ) {}
@@ -384,6 +387,7 @@ QStringList automation::convert_shorthand( QStringList shorthandList, QString si
     QString _s;
   };
 
+  // cycle through the list of shorthands, converting as we go and appending to actionPriorityList
   for ( int i = 0; i < shorthandList.size(); i++ )
   {
     QString ability;
@@ -402,18 +406,21 @@ QStringList automation::convert_shorthand( QStringList shorthandList, QString si
       // now handle options if there are any
       if ( splits.size() > 1 )
       {
-        // options are specified just as in simc, but with shorthands, e.g. as A&(B|C)
-        // we need to split on [&|()], match the resulting abbreviations in the table,
+        // options are specified just as in simc, but with shorthands, e.g. as A&(B|!C)
+        // we need to split on [&|()!], match the resulting abbreviations in the table,
         // and use those match pairs to replace the appropriate portions of the options string.
+        // This method takes the options QString and returns a QStringList of symbols [&!()!] & abbreviations.
         QStringList optionsBreakdown = splitOption( splits[ 1 ] );
 
+        // now cycle through this QStringList and replace any recognized shorthands with their longhand forms
         for ( int j = 0; j < optionsBreakdown.size(); j++ )
         {
-          // if this entry is &|(), skip it
-          if ( optionsBreakdown[ j ].contains( QRegExp( "[&|\\(\\)]+" ) ) )
+          // if this entry is &|()!, skip it
+          if ( optionsBreakdown[ j ].contains( QRegExp( "[&|\\(\\)\\!]+" ) ) )
             continue;
 
           // Each option can have a text part and a numeric part (e.g. W3). We need to split that up using regular expressions
+          // captures[ 0 ] is the whole string, captures[ 1 ] is the first match (e.g. "W"), captures[ 2 ] is the second match (e.g. "3")
           QRegExp rx( "(\\D+)(\\d*\\.?\\d*)" );
           int pos = rx.indexIn( optionsBreakdown[ j ] );
           QStringList captures = rx.capturedTexts();
@@ -425,7 +432,7 @@ QStringList automation::convert_shorthand( QStringList shorthandList, QString si
             if ( m != optionsTable.end() )
               optionsBreakdown[ j ] = m -> second;
           }
-          // otherwise we need to do some trickery with numbers
+          // otherwise we need to do some trickery with numbers. Search for "W#" in the table and replace, then replace # with our number (e.g. "3")
           else
           {
             shorthandTable::iterator m = find_if( optionsTable.begin(), optionsTable.end(), comp( captures[ 1 ] + "#" ) );
@@ -452,6 +459,8 @@ QStringList automation::convert_shorthand( QStringList shorthandList, QString si
       entry += "=/" + ability;
       if ( options.length() > 0 )
         entry += ",if=" + options;
+
+      // add the entry to actionPriorityList
       actionPriorityList.append( entry );
     }
   }
