@@ -92,7 +92,7 @@ struct rogue_td_t : public actor_pair_t
 
 struct rogue_t : public player_t
 {
-  // Venom Zest poison tracking
+  // Venom Rush poison tracking
   unsigned poisoned_enemies;
 
   // Shadow Reflection stuff
@@ -236,7 +236,7 @@ struct rogue_t : public player_t
     const spell_data_t* tier13_2pc;
     const spell_data_t* tier13_4pc;
     const spell_data_t* tier15_4pc;
-    const spell_data_t* venom_zest;
+    const spell_data_t* venom_rush;
     const spell_data_t* death_from_above;
     const spell_data_t* critical_strikes;
     const spell_data_t* ruthlessness;
@@ -254,7 +254,7 @@ struct rogue_t : public player_t
     const spell_data_t* anticipation;
     const spell_data_t* marked_for_death;
 
-    const spell_data_t* venom_zest;
+    const spell_data_t* venom_rush;
     const spell_data_t* shadow_reflection;
     const spell_data_t* death_from_above;
   } talent;
@@ -4286,7 +4286,7 @@ void rogue_t::init_base_stats()
 
   resources.base[ RESOURCE_ENERGY ] += glyph.energy -> effectN( 1 ).base_value();
 
-  resources.base[ RESOURCE_ENERGY ] += talent.venom_zest -> effectN( 1 ).base_value();
+  resources.base[ RESOURCE_ENERGY ] += talent.venom_rush -> effectN( 1 ).base_value();
 
   base_energy_regen_per_second = 10 * ( 1.0 + spec.vitality -> effectN( 1 ).percent() );
 
@@ -4342,7 +4342,7 @@ void rogue_t::init_spells()
   spell.tier15_4pc          = find_spell( 138151 );
   spell.bandits_guile_value = find_spell( 84747 );
   spell.fan_of_knives       = find_class_spell( "Fan of Knives" );
-  spell.venom_zest          = find_spell( 156719 );
+  spell.venom_rush          = find_spell( 156719 );
   spell.death_from_above    = find_spell( 163786 );
   spell.critical_strikes    = find_spell( 157442 );
   spell.ruthlessness        = find_spell( 14161 );
@@ -4360,7 +4360,7 @@ void rogue_t::init_spells()
   talent.shadow_focus       = find_talent_spell( "Shadow Focus" );
   talent.marked_for_death   = find_talent_spell( "Marked for Death" );
   talent.anticipation       = find_talent_spell( "Anticipation" );
-  talent.venom_zest         = find_talent_spell( "Venom Zest" );
+  talent.venom_rush         = find_talent_spell( "Venom Rush" );
   talent.shadow_reflection  = find_talent_spell( "Shadow Reflection" );
   talent.death_from_above   = find_talent_spell( "Death from Above" );
   talent.leeching_poison    = find_talent_spell( "Leeching Poison" );
@@ -4688,8 +4688,8 @@ double rogue_t::energy_regen_per_second() const
   if ( buffs.blade_flurry -> check() )
     r *= 1.0 + spec.blade_flurry -> effectN( 1 ).percent();
 
-  if ( talent.venom_zest -> ok() )
-    r *= 1.0 + std::min( poisoned_enemies, 3U ) * spell.venom_zest -> effectN( 1 ).percent();
+  if ( talent.venom_rush -> ok() )
+    r *= 1.0 + std::min( poisoned_enemies, 3U ) * spell.venom_rush -> effectN( 1 ).percent();
 
   return r;
 }
