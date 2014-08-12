@@ -260,7 +260,7 @@ static const special_effect_db_item_t __special_effect_db[] = {
    */
 
   /* Warlords of Draenor */
-  { 159236, 0,                enchant::mark_of_the_shattered_hand },
+  { 159239, 0,                enchant::mark_of_the_shattered_hand },
   { 159243, 0,                   enchant::mark_of_the_thunderlord },
   { 159682, 0,                           enchant::mark_of_warsong },
   { 159683, 0,                     enchant::mark_of_the_frostwolf },
@@ -515,10 +515,25 @@ void enchant::mark_of_the_shattered_hand( special_effect_t& effect,
   // Custom callback to help the special effect initialization, we can use
   // generic initialization for the enchant, but the game client data does not
   // link driver to the procced spell, so we do it here.
- 
-  effect.type = SPECIAL_EFFECT_EQUIP;
+  effect.rppm_scale = RPPM_HASTE;
   effect.trigger_spell_id = 159238;
-  
+
+  struct bleed_attack_t : public attack_t
+  {
+    bleed_attack_t( player_t* p, const special_effect_t& effect ) :
+      attack_t( effect.name(), p, p -> find_spell( effect.trigger_spell_id ) )
+    {
+      hasted_ticks = false; background = true; callbacks = false; special = true;
+      may_miss = may_block = may_dodge = may_parry = false; may_crit = true;
+      tick_may_crit = true;
+    }
+
+    double target_armor( player_t* ) const
+    { return 0.0; }
+  };
+
+  effect.execute_action = new bleed_attack_t( item.player, effect );
+
   new dbc_proc_callback_t( item, effect );
 }
 
