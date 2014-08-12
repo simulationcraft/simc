@@ -1754,9 +1754,9 @@ public:
 
     if ( ! ab::special )
     {
-      if ( result_is_hit( s -> result ) )
+      if ( ab::result_is_hit( s -> result ) )
         trigger_omen_of_clarity();
-      else if ( result_is_multistrike( s -> result ) )
+      else if ( ab::result_is_multistrike( s -> result ) )
         trigger_ursa_major();
     }
   }
@@ -1807,29 +1807,29 @@ public:
 
   void trigger_ursa_major()
   {
-    if ( ! p() -> spec.ursa_major -> ok() )
+    if ( ! ab::p() -> spec.ursa_major -> ok() )
       return;
     
-    p() -> proc.ursa_major -> occur();
+    ab::p() -> proc.ursa_major -> occur();
 
-    if ( p() -> buff.ursa_major -> check() )
+    if ( ab::p() -> buff.ursa_major -> check() )
     {
-      double remaining_value = p() -> buff.ursa_major -> value() * ( p() -> buff.ursa_major -> remains() / p() -> buff.ursa_major -> buff_duration );
-      p() -> buff.ursa_major -> trigger( 1, p() -> buff.ursa_major -> default_value + remaining_value );
+      double remaining_value = ab::p() -> buff.ursa_major -> value() * ( ab::p() -> buff.ursa_major -> remains() / ab::p() -> buff.ursa_major -> buff_duration );
+      ab::p() -> buff.ursa_major -> trigger( 1, ab::p() -> buff.ursa_major -> default_value + remaining_value );
     } else
-      p() -> buff.ursa_major -> trigger();
+      ab::p() -> buff.ursa_major -> trigger();
   }
 
   void trigger_omen_of_clarity()
   {
     if ( ab::proc )
       return;
-    if ( ! ( p() -> specialization() == DRUID_FERAL && p() -> spec.omen_of_clarity -> ok() ) )
+    if ( ! ( ab::p() -> specialization() == DRUID_FERAL && ab::p() -> spec.omen_of_clarity -> ok() ) )
       return;
 
     if ( ab::rng().roll( ab::weapon -> proc_chance_on_swing( 3.5 ) ) ) // 3.5 PPM via https://twitter.com/Celestalon/status/482329896404799488
-      if ( p() -> buff.omen_of_clarity -> trigger() && p() -> sets.has_set_bonus( SET_T16_2PC_MELEE ) )
-        p() -> buff.feral_fury -> trigger();
+      if ( ab::p() -> buff.omen_of_clarity -> trigger() && ab::p() -> sets.has_set_bonus( SET_T16_2PC_MELEE ) )
+        ab::p() -> buff.feral_fury -> trigger();
   }
 
 };
