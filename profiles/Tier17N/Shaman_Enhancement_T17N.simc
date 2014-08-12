@@ -16,7 +16,7 @@ spec=enhancement
 
 # Executed before combat begins. Accepts non-harmful actions only.
 
-actions.precombat=flask,type=greater_draenic_haste_flask
+actions.precombat=flask,type=greater_draenic_agility_flask
 actions.precombat+=/food,type=frosty_stew
 actions.precombat+=/lightning_shield,if=!buff.lightning_shield.up
 # Snapshot raid buffed stats before combat begins and pre-potting is done.
