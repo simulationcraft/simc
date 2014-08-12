@@ -848,25 +848,34 @@ void SC_ImportTab::load_setting( QSettings& s, const QString& name, QComboBox* c
   }
 }
 
-void SC_ImportTab::load_setting( QSettings& s, const QString& name, QString text, const QString& default_value = QString() )
+void SC_ImportTab::load_setting( QSettings& s, const QString& name, QString* text, const QString& default_value = QString() )
 {
   const QString& v = s.value( name ).toString();
 
-  text = v;
+  if ( ! v.isEmpty() )
+    *text = v;
+  else if ( ! default_value.isEmpty() )
+    *text = default_value;
 }
 
 void SC_ImportTab::load_setting( QSettings& s, const QString& name, QLineEdit* textbox, const QString& default_value = QString() )
 {
   const QString& v = s.value( name ).toString();
 
-  textbox -> setText( v );
+  if ( !v.isEmpty() )
+    textbox -> setText( v );
+  else if ( !default_value.isEmpty() )
+    textbox -> setText( default_value );
 }
 
 void SC_ImportTab::load_setting( QSettings& s, const QString& name, SC_TextEdit* textbox, const QString& default_value = QString() )
 {
   const QString& v = s.value( name ).toString();
 
-  textbox -> setText( v );
+  if ( !v.isEmpty() )
+    textbox -> setText( v );
+  else if ( !default_value.isEmpty() )
+    textbox -> setText( default_value );
 }
 
 void SC_ImportTab::decodeSettings()
@@ -879,15 +888,17 @@ void SC_ImportTab::decodeSettings()
   load_setting( settings, "race", choice.player_race );
   load_setting( settings, "level", choice.player_level );
   load_setting( settings, "talentbox", textbox.talents, "0000000" );
-  load_setting( settings, "glyphbox", textbox.glyphs );
+  load_setting( settings, "glyphbox", textbox.glyphs, "alabaster_shield/focused_shield/final_wrath" );
   load_setting( settings, "gearbox", textbox.gear, "head=\nneck=\n" );
   load_setting( settings, "rotationbox", textbox.rotation );
   load_setting( settings, "advancedbox", textbox.advanced, "default" );
-  load_setting( settings, "advTalent", advTalent, "0000000\n1111111\n2222222" );
-  load_setting( settings, "advGlyph", advGlyph, "alabaster_shield/focused_shield\nfinal_wrath/word_of_glory" );
-  load_setting( settings, "advGear", advGear );
-  load_setting( settings, "advRotation", advRotation, "CS>J>AS\nCS>J>AS+GC\nCS>AS+GC&(DP|!FW)>J+SW>J" );
+  load_setting( settings, "advTalent", &advTalent, "0000000\n1111111\n2222222" );
+  load_setting( settings, "advGlyph", &advGlyph, "alabaster_shield/focused_shield\nfinal_wrath/word_of_glory" );
+  load_setting( settings, "advGear", &advGear, "head=test\nneck=test" );
+  load_setting( settings, "advRotation", &advRotation, "CS>J>AS\nCS>J>AS+GC\nCS>AS+GC&(DP|!FW)>J+SW>J" );
   load_setting( settings, "sidebox", textbox.sidebar );
   
+  
+
   settings.endGroup();
 }

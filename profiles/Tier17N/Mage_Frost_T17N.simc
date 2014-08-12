@@ -15,7 +15,7 @@ spec=frost
 
 # Executed before combat begins. Accepts non-harmful actions only.
 
-actions.precombat=flask,type=greater_draenic_multistrike_flask
+actions.precombat=flask,type=greater_draenic_intellect_flask
 actions.precombat+=/food,type=calamari_crepes
 actions.precombat+=/arcane_brilliance
 actions.precombat+=/frost_armor
@@ -78,6 +78,6 @@ off_hand=primal_gladiators_reprieve,id=111133,gem_id=0/0/0/,enchant_id=0
 # gear_haste_rating=599
 # gear_mastery_rating=669
 # gear_armor=600
-# gear_multistrike_rating=1490
+# gear_multistrike_rating=1309
 # pvp_2pc_caster=1
 # pvp_4pc_caster=1

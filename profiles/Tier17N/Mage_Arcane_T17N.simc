@@ -15,7 +15,7 @@ spec=arcane
 
 # Executed before combat begins. Accepts non-harmful actions only.
 
-actions.precombat=flask,type=greater_draenic_mastery_flask
+actions.precombat=flask,type=greater_draenic_intellect_flask
 actions.precombat+=/food,type=sleeper_surprise
 actions.precombat+=/arcane_brilliance
 actions.precombat+=/mage_armor
@@ -54,7 +54,7 @@ actions.single_target+=/supernova,if=buff.arcane_charge.stack=4&((charges=1&rech
 actions.single_target+=/arcane_missiles,if=buff.arcane_charge.stack=4
 actions.single_target+=/nether_tempest,if=remains<7&target.time_to_die>6&buff.arcane_charge.stack=4
 actions.single_target+=/arcane_blast,if=talent.unstable_magic.enabled&(buff.arcane_power.up|mana.pct>=95)
-actions.single_target+=/arcane_orb,if=buff.arcane_charge.stack<=3
+actions.single_target+=/arcane_orb,if=buff.arcane_charge.stack<=2
 actions.single_target+=/arcane_barrage,if=buff.arcane_charge.stack=4&mana.pct<95
 actions.single_target+=/presence_of_mind,if=cooldown.arcane_power.remains>75
 actions.single_target+=/arcane_blast
@@ -93,7 +93,7 @@ off_hand=primal_gladiators_endgame,id=111132
 # gear_spell_power=1244
 # gear_crit_rating=905
 # gear_haste_rating=452
-# gear_mastery_rating=1582
+# gear_mastery_rating=1397
 # gear_armor=600
 # gear_multistrike_rating=301
 # gear_versatility_rating=102
