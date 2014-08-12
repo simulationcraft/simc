@@ -1644,23 +1644,6 @@ public:
   druid_td_t* td( player_t* t ) const
   { return p() -> get_target_data( t ); }
 
-  bool trigger_omen_of_clarity()
-  {
-    if ( ab::proc )
-      return false;
-
-    if ( p() -> specialization() == DRUID_RESTORATION )
-      return p() -> buff.omen_of_clarity -> trigger(); // Proc chance is handled by buff chance
-    else if ( p() -> specialization() == DRUID_FERAL )
-    {
-      if ( ab::rng().roll( ab::weapon -> proc_chance_on_swing( 3.5 ) ) ) // 3.5 PPM via https://twitter.com/Celestalon/status/482329896404799488
-        return p() -> buff.omen_of_clarity -> trigger();
-      else
-        return false;
-    } else
-      return false;
-  }
-
   virtual void impact( action_state_t* s )
   {
     ab::impact( s );
@@ -1768,6 +1751,14 @@ public:
 
     if ( ab::p() -> spec.leader_of_the_pack -> ok() && s -> result == RESULT_CRIT )
       trigger_lotp( s );
+
+    if ( ! ab::special )
+    {
+      if ( result_is_hit( s -> result ) )
+        trigger_omen_of_clarity();
+      else if ( result_is_multistrike( s -> result ) )
+        trigger_ursa_major();
+    }
   }
 
   virtual void tick( dot_t* d )
@@ -1813,6 +1804,34 @@ public:
     if ( ab::p() -> active.leader_of_the_pack -> ready() )
       ab::p() -> active.leader_of_the_pack -> execute();
   }
+
+  void trigger_ursa_major()
+  {
+    if ( ! p() -> spec.ursa_major -> ok() )
+      return;
+    
+    p() -> proc.ursa_major -> occur();
+
+    if ( p() -> buff.ursa_major -> check() )
+    {
+      double remaining_value = p() -> buff.ursa_major -> value() * ( p() -> buff.ursa_major -> remains() / p() -> buff.ursa_major -> buff_duration );
+      p() -> buff.ursa_major -> trigger( 1, p() -> buff.ursa_major -> default_value + remaining_value );
+    } else
+      p() -> buff.ursa_major -> trigger();
+  }
+
+  void trigger_omen_of_clarity()
+  {
+    if ( ab::proc )
+      return;
+    if ( ! ( p() -> specialization() == DRUID_FERAL && p() -> spec.omen_of_clarity -> ok() ) )
+      return;
+
+    if ( ab::rng().roll( ab::weapon -> proc_chance_on_swing( 3.5 ) ) ) // 3.5 PPM via https://twitter.com/Celestalon/status/482329896404799488
+      if ( p() -> buff.omen_of_clarity -> trigger() && p() -> sets.has_set_bonus( SET_T16_2PC_MELEE ) )
+        p() -> buff.feral_fury -> trigger();
+  }
+
 };
 
 namespace caster_attacks {
@@ -1847,14 +1866,6 @@ struct druid_melee_t : public caster_attack_t
       return timespan_t::from_seconds( 0.01 );
 
     return caster_attack_t::execute_time();
-  }
-
-  virtual void impact( action_state_t* state )
-  {
-    caster_attack_t::impact( state );
-
-    if ( result_is_hit( state -> result ) )
-      trigger_omen_of_clarity();
   }
 };
 
@@ -2116,14 +2127,6 @@ struct cat_melee_t : public cat_attack_t
       cm *= 1.0 + p() -> buff.cat_form -> data().effectN( 3 ).percent();
 
     return cm;
-  }
-
-  virtual void impact( action_state_t* state )
-  {
-    cat_attack_t::impact( state );
-
-    if ( result_is_hit( state -> result ) && trigger_omen_of_clarity() && p() -> sets.has_set_bonus( SET_T16_2PC_MELEE ) )
-      p() -> buff.feral_fury -> trigger();
   }
 };
 
@@ -2660,21 +2663,6 @@ public:
     rage_amount( 0.0 ), rage_tick_amount( 0.0 )
   {}
 
-  void trigger_ursa_major()
-  {
-    if ( ! p() -> spec.ursa_major -> ok() )
-      return;
-    
-    p() -> proc.ursa_major -> occur();
-
-    if ( p() -> buff.ursa_major -> check() )
-    {
-      double remaining_value = p() -> buff.ursa_major -> value() * ( p() -> buff.ursa_major -> remains() / p() -> buff.ursa_major -> buff_duration );
-      p() -> buff.ursa_major -> trigger( 1, p() -> buff.ursa_major -> default_value + remaining_value );
-    } else
-      p() -> buff.ursa_major -> trigger();
-  }
-
   virtual timespan_t gcd() const
   {
     if ( p() -> specialization() != DRUID_GUARDIAN )
@@ -2774,11 +2762,7 @@ struct bear_melee_t : public bear_attack_t
         p() -> buff.tooth_and_claw -> trigger();
         p() -> proc.tooth_and_claw -> occur();
       }
-
-      trigger_omen_of_clarity(); // Omen can trigger in bear form for feral druids.
     }
-    if ( result_is_multistrike( state -> result ) )
-      trigger_ursa_major();
   }
 };
 
@@ -3212,6 +3196,12 @@ public:
       living_seed -> execute();
     }
   }
+
+  void trigger_omen_of_clarity()
+  {
+    if ( ! proc && p() -> specialization() == DRUID_RESTORATION && p() -> spec.omen_of_clarity -> ok() )
+      p() -> buff.omen_of_clarity -> trigger(); // Proc chance is handled by buff chance
+  }
 }; // end druid_heal_t
 
 struct living_seed_t : public druid_heal_t
@@ -3524,8 +3514,7 @@ struct lifebloom_t : public druid_heal_t
   {
     druid_heal_t::tick( d );
 
-    if ( result_is_hit( d -> state -> result ) )
-      p() -> buff.omen_of_clarity -> trigger();
+    trigger_omen_of_clarity();
   }
 };
 
@@ -5808,10 +5797,10 @@ void druid_t::apl_precombat()
     std::string elixir1, elixir2;
     elixir1 = elixir2 = "elixir,type=";
 
-    if ( ( specialization() == DRUID_GUARDIAN && primary_role() == ROLE_TANK ) || primary_role() == ROLE_TANK )
+    if ( primary_role() == ROLE_TANK ) // Guardian
     {
       if ( level > 90 )
-        flask += "greater_draenic_mastery_flask";
+        flask += "greater_draenic_agility_flask";
       else if ( level > 85 )
       {
         elixir1 += "mad_hozen";
@@ -5820,19 +5809,19 @@ void druid_t::apl_precombat()
       else
         flask += "steelskin";
     }
-    else if ( ( specialization() == DRUID_FERAL && primary_role() == ROLE_ATTACK ) || primary_role() == ROLE_ATTACK )
+    else if ( primary_role() == ROLE_ATTACK ) // Feral
     {
       if ( level > 90 )
-        flask += "greater_draenic_mastery_flask";
+        flask += "greater_draenic_agility_flask";
       else if ( level > 85 )
         flask += "spring_blossoms";
       else
         flask += "winds";
     }
-    else
+    else // Balance & Restoration
     {
       if ( level > 90 )
-        flask += "greater_draenic_mastery_flask";
+        flask += "greater_draenic_intellect_flask";
       else if ( level > 85 )
         flask += "warm_sun";
       else
@@ -5882,9 +5871,8 @@ void druid_t::apl_precombat()
   // Forms
   if ( ( specialization() == DRUID_FERAL && primary_role() == ROLE_ATTACK ) || primary_role() == ROLE_ATTACK )
   {
-    precombat -> add_action( this, "Cat Form", "if=active_enemies=1" );
+    precombat -> add_action( this, "Cat Form" );
     precombat -> add_action( this, "Prowl" );
-    precombat -> add_action( this, "Bear Form", "if=active_enemies>1" );
   }
   else if ( primary_role() == ROLE_TANK )
   {

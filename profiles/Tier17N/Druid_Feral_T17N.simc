@@ -15,13 +15,12 @@ spec=feral
 
 # Executed before combat begins. Accepts non-harmful actions only.
 
-actions.precombat=flask,type=greater_draenic_mastery_flask
+actions.precombat=flask,type=greater_draenic_agility_flask
 actions.precombat+=/food,type=blackrock_barbecue
 actions.precombat+=/mark_of_the_wild,if=!aura.str_agi_int.up
 actions.precombat+=/healing_touch,if=talent.bloodtalons.enabled
-actions.precombat+=/cat_form,if=active_enemies=1
+actions.precombat+=/cat_form
 actions.precombat+=/prowl
-actions.precombat+=/bear_form,if=active_enemies>1
 # Snapshot raid buffed stats before combat begins and pre-potting is done.
 actions.precombat+=/snapshot_stats
 actions.precombat+=/potion,name=draenic_agility

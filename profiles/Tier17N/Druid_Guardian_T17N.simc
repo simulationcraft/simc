@@ -14,7 +14,7 @@ spec=guardian
 
 # Executed before combat begins. Accepts non-harmful actions only.
 
-actions.precombat=flask,type=greater_draenic_mastery_flask
+actions.precombat=flask,type=greater_draenic_agility_flask
 actions.precombat+=/food,type=sleeper_surprise
 actions.precombat+=/mark_of_the_wild,if=!aura.str_agi_int.up
 actions.precombat+=/bear_form
