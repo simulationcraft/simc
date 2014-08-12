@@ -87,7 +87,7 @@ QString automation::do_something( int sim_type,
     case 3: // gear simulation
       return auto_gear_sim( player_class, base_profile_info, player_talents, player_glyphs, advanced_list, player_rotation );
     case 4: // rotation simulation
-      return auto_rotation_sim( player_class, player_spec, base_profile_info, player_talents, player_glyphs, player_rotation, advanced_list, sidebar_text );
+      return auto_rotation_sim( player_class, player_spec, base_profile_info, player_talents, player_glyphs, player_gear, advanced_list, sidebar_text );
     default: // default profile creation
       profile += base_profile_info;
       profile += "talents=" + player_talents + "\n";
@@ -123,12 +123,14 @@ QString automation::auto_talent_sim( QString player_class,
     profile += base_profile_info;
 
     if ( splitEntry[ 0 ].startsWith( "talents=" ) )
-      profile += splitEntry[ 0 ];
+      profile += splitEntry[ 0 ] + "\n";
     else 
-      profile += "talents=" + splitEntry[ 0 ];
-    profile += "\n";
+      profile += "talents=" + splitEntry[ 0 ] + "\n";
 
-    profile += "glyphs=" + player_glyphs + "\n";
+    if ( player_glyphs.startsWith( "glyphs=" ) )
+      profile += player_glyphs + "\n";
+    else
+      profile += "glyphs=" + player_glyphs + "\n";
 
     if ( player_gear.size() > 0 )
       profile += player_gear + "\n";
@@ -165,13 +167,16 @@ QString automation::auto_glyph_sim( QString player_class,
 
     profile += tokenize( player_class ) + "=G_" + QString::number( i ) + "\n";
     profile += base_profile_info;
-    profile += "talents=" + player_talents + "\n";
+
+    if ( player_talents.startsWith( "talents=" ) )
+      profile += player_talents + "\n";
+    else
+      profile += "talents=" + player_talents + "\n";
 
     if ( splitEntry[ 0 ].startsWith( "glyphs=" ) )
-      profile += splitEntry[ 0 ];
+      profile += splitEntry[ 0 ] + "\n";
     else
-      profile += "glyphs=" + splitEntry[ 0 ];
-    profile += "\n";
+      profile += "glyphs=" + splitEntry[ 0 ] + "\n";
 
     if ( player_gear.size() > 0 )
       profile += player_gear + "\n";
@@ -204,8 +209,16 @@ QString automation::auto_gear_sim( QString player_class,
   {
     profile += tokenize( player_class ) + "=G_" + QString::number( i ) + "\n";
     profile += base_profile_info;
-    profile += "talents=" + player_talents + "\n";
-    profile += "glyphs=" + player_glyphs + "\n";
+
+    if ( player_talents.startsWith( "talents=" ) )
+      profile += player_talents + "\n";
+    else
+      profile += "talents=" + player_talents + "\n";
+    
+    if ( player_glyphs.startsWith( "glyphs=" ) )
+      profile += player_glyphs + "\n";
+    else
+      profile += "glyphs=" + player_glyphs + "\n";
 
     if ( player_rotation.size() > 0 )
       profile += player_rotation + "\n";
@@ -242,8 +255,17 @@ QString automation::auto_rotation_sim( QString player_class,
   {
     profile += tokenize( player_class ) + "=R_" + QString::number( i ) + "\n";
     profile += base_profile_info;
-    profile += "talents=" + player_talents + "\n";
-    profile += "glyphs=" + player_glyphs + "\n";
+
+    if ( player_talents.startsWith( "talents=" ) )
+      profile += player_talents + "\n";
+    else
+      profile += "talents=" + player_talents + "\n";
+    
+    if ( player_glyphs.startsWith( "glyphs=" ) )
+      profile += player_glyphs + "\n";
+    else
+      profile += "glyphs=" + player_glyphs + "\n";
+    
     if ( player_gear.size() > 0 )
       profile += player_gear + "\n";
     
@@ -258,8 +280,6 @@ QString automation::auto_rotation_sim( QString player_class,
     // we have a shorthand sequence and need to do some conversion.
     if ( shorthandList.size() > 0 && ! shorthandList[ 0 ].startsWith( "actions" ) )
     {
-      profile += "#Warning: Shorthand Conversion not yet complete - waits aren't working quite yet\n";
-
       // send shorthandList off to a method for conversion based on player class and spec
       QStringList convertedAPL = convert_shorthand( shorthandList, sidebar_text );
 
@@ -385,6 +405,7 @@ QStringList automation::convert_shorthand( QStringList shorthandList, QString si
   {
     QString ability;
     QString options;
+    QString waitString;
 
     // first, split into ability abbreviation and options set
     QStringList splits = splitOnFirst( shorthandList[ i ], "+" );
@@ -436,13 +457,14 @@ QStringList automation::convert_shorthand( QStringList shorthandList, QString si
           if ( optionsBreakdown[ j ].contains( "$ability_name" ) )
             optionsBreakdown[ j ].replace( "$ability_name", ability );
 
-        } // end for loop
+          // special handling of the +W option
+          if ( optionsBreakdown[ j ].contains( "wait" ) )
+          {
+            waitString = optionsBreakdown[ j ];
+            optionsBreakdown.removeAt( j );
+          }
 
-        // TODO: Here we need to check for wait options and handle them a little differently
-        // Ex: CS+W3 should translate into two lines:
-        // actions+=/crusader_strike
-        // actions+=/wait,sec=cooldown.crusader_strike.remains,if=cooldown.crusader_strike.remains>0&cooldown.crusader_strike.remains<=3
-        // Thus, we eventually need to do some fancy stuff for waits here before merging options
+        } // end for loop
 
         // at this point, we should be able to merge the optionsBreakdown list into a string
         options = optionsBreakdown.join( "" );
@@ -458,6 +480,8 @@ QStringList automation::convert_shorthand( QStringList shorthandList, QString si
 
       // add the entry to actionPriorityList
       actionPriorityList.append( entry );
+      if ( waitString.length() > 0 )
+        actionPriorityList.append( "actions+=" + waitString );
     }
   }
 
@@ -507,7 +531,7 @@ void SC_ImportTab::setSpecDropDown( const int player_class )
     choice.player_spec -> addItem( classSpecText[ player_class ][ 4 ] );
 }
 
-QString defaultOptions = "W#=wait,sec=cooldown.$ability_name.remains,if=cooldown.$ability_name.remains<=#\nE=target.health.pct<=20\nNT=!ticking\nNF=target.debuff.flying.down\nT#=active_enemies>=#\nBR=buff.$ability_name.remains\nBR#=buff.$ability_name.remains<#\nCD=cooldown.$ability_name.remains\nCD#=cooldown.$ability_name.remains<#\n";
+QString defaultOptions = "BR=buff.$ability_name.remains\nBR#=buff.$ability_name.remains<#\nCD=cooldown.$ability_name.remains\nCD#=cooldown.$ability_name.remains<#\nE=target.health.pct<=20\nNT=!ticking\nNF=target.debuff.flying.down\nT#=active_enemies>=#\nW#=/wait,sec=cooldown.$ability_name.remains,if=cooldown.$ability_name.remains<=#\n";
 
 // constant for sidebar text (this will eventually get really long)
 QString sidebarText[ 11 ][ 4 ] = {
@@ -765,10 +789,14 @@ void SC_ImportTab::createTooltips()
 {
   choice.comp_type -> setToolTip( "Choose the comparison type." );
 
-  QString sidebarTooltip = "This box specifies the abbreviations used in rotation shorthands. You may define custom abbreviations by adding your own entries.\nNote that \"#\" can be used to support an optional numeric argument (e.g. \"C#\" will mach C3 and replace every # with a 3)\n and that $ability_name will automatically be replaced with the ability's name.";
+  QString sidebarTooltip = "This box specifies the abbreviations used in rotation shorthands. You may define custom abbreviations by adding your own entries.\nNote that \"#\" can be used to support an optional numeric argument (e.g. \"C#\" will mach C3 and replace every # with a 3)\nand that $ability_name will automatically be replaced with the ability's name.\n\nAlso note that the \"W#\" option is special since it adds an extra APL entry; W# should be the only option or should be separated from other options like so: (DP&!FW)W3";
   textbox.sidebar -> setToolTip( sidebarTooltip );
-
   label.sidebar   -> setToolTip( sidebarTooltip );
+
+  textbox.talents -> setToolTip( "Default talents, specified either as \"talents=0000000\" or \"0000000\"" );
+  textbox.glyphs -> setToolTip( "Default glyphs, specified either as \"glyphs=glyph1/glyph2/glyph3\" or \"glyph1/glyph2/glyph3\"" );
+  textbox.gear -> setToolTip( "Default gear, specified the same way you would in a regular simc profile." );
+  textbox.rotation -> setToolTip( "Default rotation, specified the same way you would in a regular simc profile.\nIf left blank, the default APL for the chosen spec will be used automatically." );
 }
 
 void SC_ImportTab::createAutomationTab()
