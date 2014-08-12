@@ -15,7 +15,7 @@ spec=fire
 
 # Executed before combat begins. Accepts non-harmful actions only.
 
-actions.precombat=flask,type=greater_draenic_critical_strike_flask
+actions.precombat=flask,type=greater_draenic_intellect_flask
 actions.precombat+=/food,type=blackrock_barbecue
 actions.precombat+=/arcane_brilliance
 actions.precombat+=/molten_armor
@@ -96,7 +96,7 @@ off_hand=primal_gladiators_reprieve,id=111133,gem_id=0/0/0/,enchant_id=0
 # gear_stamina=3245
 # gear_intellect=2584
 # gear_spell_power=1244
-# gear_crit_rating=1528
+# gear_crit_rating=1347
 # gear_haste_rating=596
 # gear_mastery_rating=433
 # gear_armor=600

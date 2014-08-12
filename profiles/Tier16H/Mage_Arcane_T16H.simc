@@ -54,7 +54,7 @@ actions.single_target+=/supernova,if=buff.arcane_charge.stack=4&((charges=1&rech
 actions.single_target+=/arcane_missiles,if=buff.arcane_charge.stack=4
 actions.single_target+=/nether_tempest,if=remains<7&target.time_to_die>6&buff.arcane_charge.stack=4
 actions.single_target+=/arcane_blast,if=talent.unstable_magic.enabled&(buff.arcane_power.up|mana.pct>=95)
-actions.single_target+=/arcane_orb,if=buff.arcane_charge.stack<=3
+actions.single_target+=/arcane_orb,if=buff.arcane_charge.stack<=2
 actions.single_target+=/arcane_barrage,if=buff.arcane_charge.stack=4&mana.pct<95
 actions.single_target+=/presence_of_mind,if=cooldown.arcane_power.remains>75
 actions.single_target+=/arcane_blast
