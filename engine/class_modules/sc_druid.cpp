@@ -5800,7 +5800,7 @@ void druid_t::apl_precombat()
     if ( primary_role() == ROLE_TANK ) // Guardian
     {
       if ( level > 90 )
-        flask += "greater_draenic_agility_flask";
+        flask += "greater_draenic_stamina_flask";
       else if ( level > 85 )
       {
         elixir1 += "mad_hozen";
