@@ -76,15 +76,7 @@ QString automation::do_something( int sim_type,
   // If not, then we try to split on \n instead
   if ( advanced_list.size() == 1 )
     advanced_list = advanced_text.split( "\n", QString::SkipEmptyParts );
-
-  // check for advanced input mode (This can be switched to a CheckBox easily)
-  //if ( input_mode == 1 )
-  //{
-  //  // do advanced stuff here
-  //  profile = "ADVANCED MODE INCOMING !!";
-  //  return profile;
-  //}
-
+  
   // simulation type check
   switch ( sim_type )
   {
@@ -294,8 +286,9 @@ QString automation::auto_rotation_sim( QString player_class,
 QStringList automation::splitOption( QString s )
 {
   QStringList optionsBreakdown;
-  int numSeparators = s.count( "(" ) + s.count( ")" ) + s.count( "&" ) + s.count( "|" )+s.count( "!" );
-  QRegExp delimiter( "[&|\\(\\)\\!]" );
+  int numSeparators = s.count( "(" ) + s.count( ")" ) + s.count( "&" ) + s.count( "|" ) + s.count( "!" )
+                    + s.count( "+" ) + s.count( "-" ) + s.count( ">" ) + s.count( "<" ) + s.count( "=" );
+  QRegExp delimiter( "[&|\\(\\)\\!\\+\\-\\>\\<\\=]" );
 
   // ideally we will split this into ~2*numSeparators parts 
   if ( numSeparators > 0 )
@@ -304,6 +297,7 @@ QStringList automation::splitOption( QString s )
     for ( int i = 0; i <= numSeparators; i++ )
       optionsBreakdown << s.section( delimiter, i, i, QString::SectionIncludeTrailingSep ).simplified();
 
+    // check for the trailing separators and move them to their own entries
     for ( int i = 0; i < optionsBreakdown.size(); i++ )
     {
       QString temp = optionsBreakdown[ i ];
@@ -317,63 +311,65 @@ QStringList automation::splitOption( QString s )
   else
     optionsBreakdown.append( s );
 
+  // at this point, optionsBreakdown should consist of entries that are only delimiters or abbreviations, no mixing
   return optionsBreakdown;
+}
+
+// this method splits only on the first instance of a delimiter, returning a 2-element QString
+QStringList automation::splitOnFirst( QString str, const char* delimiter )
+{
+  QStringList parts = str.split( delimiter, QString::SkipEmptyParts );
+  QStringList rest;
+  if ( parts.size() > 1 )
+  {
+    rest = parts;
+    rest.removeFirst();    
+  }
+  QStringList returnStringList;
+  returnStringList.append( parts[ 0 ] );
+  returnStringList.append( rest.join( delimiter ) );
+  
+  assert( returnStringList.size() <= 2 );
+
+  return returnStringList;
 }
 
 QStringList automation::convert_shorthand( QStringList shorthandList, QString sidebar_text )
 {
   // STEP 1:  Take the sidebar list and convert it to an abilities table and an options table
 
-  QStringList sidebarSplit = sidebar_text.split( QRegExp( "\\n\\n" ), QString::SkipEmptyParts );
+  QStringList sidebarSplit = sidebar_text.split( QRegExp( ":::\\w+:::" ), QString::SkipEmptyParts );
   
   assert( sidebarSplit.size() == 2 );
 
-  QString abilityConversions = sidebarSplit[ 0 ];
-  QString optionConversions = sidebarSplit[ 1 ];
+  QStringList abilityList = sidebarSplit[ 0 ].split( "\n", QString::SkipEmptyParts );
+  QStringList optionsList = sidebarSplit[ 1 ].split( "\n", QString::SkipEmptyParts );
 
-  QStringList abilityList = abilityConversions.split( "\n", QString::SkipEmptyParts );
-  QStringList optionsList = optionConversions.split( "\n", QString::SkipEmptyParts );
-
-  typedef std::vector<std::pair<QString, QString>> shorthandTable;
+  typedef std::vector<std::pair<QString, QString> > shorthandTable;
   shorthandTable abilityTable;
   shorthandTable optionsTable;
 
   // Construct the table for ability conversions
   for ( int i = 0; i < abilityList.size(); i++ )
   {
-    QStringList parts = abilityList[ i ].split( "=", QString::SkipEmptyParts );
+    QStringList parts = splitOnFirst( abilityList[ i ], "=" );
     if ( parts.size() > 1 )
-    {
-      // some conditionals will have ='s in them, and will generate extra elements in parts. 
-      // To handle that, we'll duplicate parts, remove the first element (the abbreviation),
-      // and then join the remainder for the second QString of the pair.
-      QStringList rest = parts;
-      rest.removeFirst();
-
-      abilityTable.push_back( std::make_pair( parts[ 0 ], rest.join( "=" ) ) );
-    }
+      abilityTable.push_back( std::make_pair( parts[ 0 ], parts[ 1 ] ) );
   }
 
-  // Construct the table for ability conversions
+  // Construct the table for option conversions
   for ( int i = 0; i < optionsList.size(); i++ )
   {
-    QStringList parts = optionsList[ i ].split( "=", QString::SkipEmptyParts );
+    QStringList parts = splitOnFirst( optionsList[ i ], "=" );
     if ( parts.size() > 1 )
-    {
-      // some conditionals will have ='s in them, and will generate extra elements in parts. 
-      // To handle that, we'll duplicate parts, remove the first element (the abbreviation),
-      // and then join the remainder for the second QString of the pair.
-      QStringList rest = parts;
-      rest.removeFirst();
-
-      optionsTable.push_back( std::make_pair( parts[ 0 ], rest.join( "=" ) ) );
-    }
+      optionsTable.push_back( std::make_pair( parts[ 0 ], parts[ 1 ] ) );
   }
-
 
   // STEP 2: now we take the shorthand and figure out what to do with each element
 
-  QStringList actionPriorityList;
+  QStringList actionPriorityList; // Final APL
+
+  // this structure is needed for finding abbreviations in the tables
   struct comp
   {
     comp( QString const& s ) : _s( s ) {}
@@ -384,14 +380,14 @@ QStringList automation::convert_shorthand( QStringList shorthandList, QString si
     QString _s;
   };
 
+  // cycle through the list of shorthands, converting as we go and appending to actionPriorityList
   for ( int i = 0; i < shorthandList.size(); i++ )
   {
     QString ability;
     QString options;
 
     // first, split into ability abbreviation and options set
-    QStringList splits = shorthandList[ i ].split( "+", QString::SkipEmptyParts );
-    assert( splits.size() <= 2 );
+    QStringList splits = splitOnFirst( shorthandList[ i ], "+" );
 
     // use abilityTable to replace the abbreviation with the full ability name
     shorthandTable::iterator m = find_if( abilityTable.begin(), abilityTable.end(), comp( splits[ 0 ] ) );
@@ -402,18 +398,21 @@ QStringList automation::convert_shorthand( QStringList shorthandList, QString si
       // now handle options if there are any
       if ( splits.size() > 1 )
       {
-        // options are specified just as in simc, but with shorthands, e.g. as A&(B|C)
-        // we need to split on [&|()], match the resulting abbreviations in the table,
+        // options are specified just as in simc, but with shorthands, e.g. as A&(B|!C)
+        // we need to split on [&|()!], match the resulting abbreviations in the table,
         // and use those match pairs to replace the appropriate portions of the options string.
+        // This method takes the options QString and returns a QStringList of symbols [&!()!] & abbreviations.
         QStringList optionsBreakdown = splitOption( splits[ 1 ] );
 
+        // now cycle through this QStringList and replace any recognized shorthands with their longhand forms
         for ( int j = 0; j < optionsBreakdown.size(); j++ )
         {
-          // if this entry is &|(), skip it
-          if ( optionsBreakdown[ j ].contains( QRegExp( "[&|\\(\\)]+" ) ) )
+          // if this entry is &|()!, skip it
+          if ( optionsBreakdown[ j ].contains( QRegExp( "[&|\\(\\)\\!\\+\\-\\>\\<\\=]+" ) ) )
             continue;
 
           // Each option can have a text part and a numeric part (e.g. W3). We need to split that up using regular expressions
+          // captures[ 0 ] is the whole string, captures[ 1 ] is the first match (e.g. "W"), captures[ 2 ] is the second match (e.g. "3")
           QRegExp rx( "(\\D+)(\\d*\\.?\\d*)" );
           int pos = rx.indexIn( optionsBreakdown[ j ] );
           QStringList captures = rx.capturedTexts();
@@ -425,13 +424,17 @@ QStringList automation::convert_shorthand( QStringList shorthandList, QString si
             if ( m != optionsTable.end() )
               optionsBreakdown[ j ] = m -> second;
           }
-          // otherwise we need to do some trickery with numbers
+          // otherwise we need to do some trickery with numbers. Search for "W#" in the table and replace, then replace # with our number (e.g. "3")
           else
           {
             shorthandTable::iterator m = find_if( optionsTable.begin(), optionsTable.end(), comp( captures[ 1 ] + "#" ) );
             if ( m != optionsTable.end() )
               optionsBreakdown[ j ] = m -> second.replace( "#", captures[ 2 ] );
           }
+
+          // we also need to do some replacements on $ability_name entries
+          if ( optionsBreakdown[ j ].contains( "$ability_name" ) )
+            optionsBreakdown[ j ].replace( "$ability_name", ability );
 
         } // end for loop
 
@@ -452,6 +455,8 @@ QStringList automation::convert_shorthand( QStringList shorthandList, QString si
       entry += "=/" + ability;
       if ( options.length() > 0 )
         entry += ",if=" + options;
+
+      // add the entry to actionPriorityList
       actionPriorityList.append( entry );
     }
   }
@@ -477,16 +482,16 @@ QComboBox* createChoice( int count, ... )
   return choice;
 }
 
-QComboBox* createInputMode( int count, ... )
-{
-  QComboBox* input_mode = new QComboBox();
-  va_list vap;
-  va_start( vap, count );
-  for ( int i = 0; i < count; i++ )
-    input_mode -> addItem( va_arg( vap, char* ) );
-  va_end( vap );
-  return input_mode;
-}
+//QComboBox* createInputMode( int count, ... )
+//{
+//  QComboBox* input_mode = new QComboBox();
+//  va_list vap;
+//  va_start( vap, count );
+//  for ( int i = 0; i < count; i++ )
+//    input_mode -> addItem( va_arg( vap, char* ) );
+//  va_end( vap );
+//  return input_mode;
+//}
 
 // Method to set the "Spec" drop-down based on "Class" selection
 void SC_ImportTab::setSpecDropDown( const int player_class )
@@ -502,21 +507,154 @@ void SC_ImportTab::setSpecDropDown( const int player_class )
     choice.player_spec -> addItem( classSpecText[ player_class ][ 4 ] );
 }
 
+QString defaultOptions = "W#=wait,sec=cooldown.$ability_name.remains,if=cooldown.$ability_name.remains<=#\nE=target.health.pct<=20\nNT=!ticking\nNF=target.debuff.flying.down\nT#=active_enemies>=#\nBR=buff.$ability_name.remains\nBR#=buff.$ability_name.remains<#\nCD=cooldown.$ability_name.remains\nCD#=cooldown.$ability_name.remains<#\n";
+
 // constant for sidebar text (this will eventually get really long)
 QString sidebarText[ 11 ][ 4 ] = {
-  { "Blood shorthand goes here.", "Frost shorthand goes here", "Unholy shorthand goes here", "N/A" },
-  { "Balance shorthand goes here.", "Feral shorthand goes here.", "Guardian shorthand goes here.", "Restoration shorthand goes here." },
-  { "Beast Master shorthand goes here.", "Marksmanship shorthand goes here.", "Survival shorthand goes here." },
-  { "Arcane shorthand goes here.", "Fire shorthand goes here.", "Frost shorthand goes here.", "N/A" },
-  { "Brewmaster shorthand goes here.", "Mistweaver shorthand goes here.", "Windwalker shorthand goes here.", "N/A" },
-  { "Holy shorthand goes here.",
-  ":::Abilities:::\nCS=crusader_strike\nJ=judgment\nAS=avengers_shield\nHW=holy_wrath\nHotR=hammer_of_the_righteous\nHoW=\hammer_of_wrath\nCons=consecration\nSS=sacred_shield\nHPr=holy_prism\nES=execution_sentence\nLH=lights_hammer\nSotR=shield_of_the_righteous\nEF=eternal_flame\nWoG=word_of_glory\nSoI=seal_of_insight\nSoT=seal_of_truth\nSoR=seal_of_righteousness\nSP=seraphim\n\n:::Options:::\nW#=wait,sec=#\nGC=buff.grand_crusader.react\nGC#=buff.grand_crusader.remains<#\nDP=buff.divine_purpose.react\nDPHP#=buff.divine_purpose.react|holy_power>=#\nE=target.health.pct<=20\nFW=glyph.final_wrath.enabled&target.health.pct<=20\nHP#=holy_power>=#\nNT=!ticking\nNF=target.debuff.flying.down\nSW=talent.sanctified_wrath.enabled\nSP=buff.seraphim.react\nT#=active_enemies>=#\nR#=buff.<ability_name>.remains<#\n",
-  "Retribution shorthand goes here.", "N/A" },
-  { "Discipline shorthand goes here.", "Holy shorthand goes here.", "Shadow shorthand goes here.", "N/A" },
-  { "Assasination shorthand goes here.", "Combat shorthand goes here.", "Subtlety shorthand goes here.", "N/A" },
-  { "Elemental shorthand goes here.", "Enhancement shorthand goes here.", "Restoration shorthand goes here.", "N/A" },
-  { "Affliction shorthand goes here.", "Demonology shorthand goes here.", "Destruction shorthand goes here.", "N/A" },
-  { "Arms shorthand goes here.", "Fury shorthand goes here.", "Protection shorthand goes here.", "N/A" },
+  {
+    ":::Abilities:::\n" "Blood ability shorthands can be added here."
+    "\n\n:::Options:::\n" + defaultOptions + "Blood-specific option shorthands can be added here",
+
+   ":::Abilities:::\n" "Frost ability shorthands can be added here."
+    "\n\n:::Options:::\n" + defaultOptions + "Frost-specific option shorthands can be added here",
+
+   ":::Abilities:::\n" "Unholy ability shorthands can be added here."
+    "\n\n:::Options:::\n" + defaultOptions + "Unholy-specific option shorthands can be added here",
+   
+    "N/A"
+  },
+
+  { 
+    ":::Abilities:::\n" "Balance ability shorthands can be added here."
+    "\n\n:::Options:::\n" + defaultOptions + "Balance-specific option shorthands can be added here",
+    
+    ":::Abilities:::\n" "Feral ability shorthands can be added here."
+    "\n\n:::Options:::\n" + defaultOptions + "Feral-specific option shorthands can be added here",
+    
+    ":::Abilities:::\n" "Guardian ability shorthands can be added here."
+    "\n\n:::Options:::\n" + defaultOptions + "Guardian-specific option shorthands can be added here",
+    
+    ":::Abilities:::\n" "Restoration ability shorthands can be added here."
+    "\n\n:::Options:::\n" + defaultOptions + "Restoration-specific option shorthands can be added here"
+  },
+
+  { 
+    ":::Abilities:::\n" "Beast Mastery ability shorthands can be added here."
+    "\n\n:::Options:::\n" + defaultOptions + "Beast Mastery-specific option shorthands can be added here",
+
+   ":::Abilities:::\n" "Marksmanship ability shorthands can be added here."
+    "\n\n:::Options:::\n" + defaultOptions + "Marksmanship-specific option shorthands can be added here",
+
+   ":::Abilities:::\n" "Survival ability shorthands can be added here."
+    "\n\n:::Options:::\n" + defaultOptions + "Survival-specific option shorthands can be added here",
+   
+    "N/A"
+  },
+  
+  { 
+    ":::Abilities:::\n" "Arcane ability shorthands can be added here."
+    "\n\n:::Options:::\n" + defaultOptions + "Arcane-specific option shorthands can be added here",
+
+   ":::Abilities:::\n" "Fire ability shorthands can be added here."
+    "\n\n:::Options:::\n" + defaultOptions + "Fire-specific option shorthands can be added here",
+
+   ":::Abilities:::\n" "Frost ability shorthands can be added here."
+    "\n\n:::Options:::\n" + defaultOptions + "Frost-specific option shorthands can be added here",
+   
+    "N/A"
+  },
+  
+  { 
+    ":::Abilities:::\n" "Brewmaster ability shorthands can be added here."
+    "\n\n:::Options:::\n" + defaultOptions + "Brewmaster-specific option shorthands can be added here",
+
+   ":::Abilities:::\n" "Mistweaver ability shorthands can be added here."
+    "\n\n:::Options:::\n" + defaultOptions + "Mistweaver-specific option shorthands can be added here",
+
+   ":::Abilities:::\n" "Windwalker ability shorthands can be added here."
+    "\n\n:::Options:::\n" + defaultOptions + "Windwalker-specific option shorthands can be added here",
+   
+    "N/A"
+  },
+
+  { 
+    ":::Abilities:::\n" "Holy ability shorthands can be added here."
+    "\n\n:::Options:::\n" + defaultOptions + "Holy-specific option shorthands can be added here",
+
+    ":::Abilities:::\nAS=avengers_shield\nCons=consecration\nCS=crusader_strike\nEF=eternal_flame\nES=execution_sentence\nHotR=hammer_of_the_righteous\nHoW=hammer_of_wrath\nHPr=holy_prism\nHW=holy_wrath\nJ=judgment\nLH=lights_hammer\nSS=sacred_shield\nSoI=seal_of_insight\nSoR=seal_of_righteousness\nSoT=seal_of_truth\nSP=seraphim\nSotR=shield_of_the_righteous\nWoG=word_of_glory"
+    "\n\n:::Options:::\n" + defaultOptions + "\nDP=buff.divine_purpose.react\nDPHP#=buff.divine_purpose.react|holy_power>=#\nFW=glyph.final_wrath.enabled&target.health.pct<=20\nHP#=holy_power>=#\nSW=talent.sanctified_wrath.enabled\nSP=buff.seraphim.react\n\nGC=buff.grand_crusader.react\nGC#=buff.grand_crusader.remains<#\nProtection-specific option shorthands can be added here",
+
+    
+    ":::Abilities:::\n" "Retribution ability shorthands can be added here."
+    "\n\n:::Options:::\n" + defaultOptions + "DP=buff.divine_purpose.react\nDPHP#=buff.divine_purpose.react|holy_power>=#\nFW=glyph.final_wrath.enabled&target.health.pct<=20\nHP#=holy_power>=#\nSW=talent.sanctified_wrath.enabled\nSP=buff.seraphim.react\n\nRetribution-specific option shorthands can be added here",
+    
+    "N/A"
+  },
+
+  { 
+    ":::Abilities:::\n" "Discipline ability shorthands can be added here."
+    "\n\n:::Options:::\n" + defaultOptions + "Discipline-specific option shorthands can be added here",
+
+   ":::Abilities:::\n" "Holy ability shorthands can be added here."
+    "\n\n:::Options:::\n" + defaultOptions + "Holy-specific option shorthands can be added here",
+
+   ":::Abilities:::\n" "Shadow ability shorthands can be added here."
+    "\n\n:::Options:::\n" + defaultOptions + "Shadow-specific option shorthands can be added here",
+   
+    "N/A"
+  },
+
+  { 
+    ":::Abilities:::\n" "Assasination ability shorthands can be added here."
+    "\n\n:::Options:::\n" + defaultOptions + "Assasination-specific option shorthands can be added here",
+
+   ":::Abilities:::\n" "Combat ability shorthands can be added here."
+    "\n\n:::Options:::\n" + defaultOptions + "Combat-specific option shorthands can be added here",
+
+   ":::Abilities:::\n" "Subtlety ability shorthands can be added here."
+    "\n\n:::Options:::\n" + defaultOptions + "Subtlety-specific option shorthands can be added here",
+   
+    "N/A"
+  },
+
+  { 
+    ":::Abilities:::\n" "Elemental ability shorthands can be added here."
+    "\n\n:::Options:::\n" + defaultOptions + "Elemental-specific option shorthands can be added here",
+
+   ":::Abilities:::\n" "Enhancement ability shorthands can be added here."
+    "\n\n:::Options:::\n" + defaultOptions + "Enhancement-specific option shorthands can be added here",
+
+   ":::Abilities:::\n" "Restoration ability shorthands can be added here."
+    "\n\n:::Options:::\n" + defaultOptions + "Restoration-specific option shorthands can be added here",
+   
+    "N/A"
+  },
+
+  { 
+    ":::Abilities:::\n" "Affliction ability shorthands can be added here."
+    "\n\n:::Options:::\n" + defaultOptions + "Affliction-specific option shorthands can be added here",
+
+   ":::Abilities:::\n" "Demonology ability shorthands can be added here."
+    "\n\n:::Options:::\n" + defaultOptions + "Demonology-specific option shorthands can be added here",
+
+   ":::Abilities:::\n" "Destruction ability shorthands can be added here."
+    "\n\n:::Options:::\n" + defaultOptions + "Destruction-specific option shorthands can be added here",
+   
+    "N/A"
+  },
+
+  { 
+    ":::Abilities:::\n" "Arms ability shorthands can be added here."
+    "\n\n:::Options:::\n" + defaultOptions + "Arms-specific option shorthands can be added here",
+
+   ":::Abilities:::\n" "Fury ability shorthands can be added here."
+    "\n\n:::Options:::\n" + defaultOptions + "Fury-specific option shorthands can be added here",
+
+   ":::Abilities:::\n" "Protection ability shorthands can be added here."
+    "\n\n:::Options:::\n" + defaultOptions + "Protection-specific option shorthands can be added here",
+   
+    "N/A"
+  },
 };
 
 // constant for the varying labels of the advanced text box
@@ -529,7 +667,7 @@ QString helpbarText[ 6 ] = {
   "List the talent configurations you want to test in the box below as seven-digit integer strings, i.e. 1231231.\nEach configuration should be its own new line.\nFor more advanced syntax options, see the wiki entry at (PUT LINK HERE).",
   "List the glyph configurations you want to test (i.e. alabaster_shield/focused_shield/word_of_glory) in the box below.\nEach configuration should be its own new line.\nFor more advanced syntax options, see the wiki entry at (PUT LINK HERE).",
   "List the different gear configurations you want to test in the box below.\nEach configuration should be separated by a blank line.\nFor more advanced syntax options, see the wiki entry at (PUT LINK HERE).",
-  "List the rotations you want to test in the box below. Rotations can be specified as usual for simc (with different configurations separated by a blank line) or as shorthands (each on a new line).\nThe sidebar lists the shorthand conventions for your class and spec. If a shorthand you want isn't documented, please contact the simulationcraft team to have it added.\nFor more advanced syntax options, see the wiki entry at (PUT LINK HERE).",
+  "List the rotations you want to test in the box below. Rotations can be specified as usual for simc (with different configurations separated by a blank line) or as shorthands (each on a new line).\nThe sidebar lists the shorthand conventions for your class and spec. You can add your own using the syntax <Shorthand>=<Longhand> (see examples).\nFor more advanced syntax options, see the wiki entry at (PUT LINK HERE).",
   "To specify everything according to your needs. All configurations can be mixed up for more advanced multi-automated simulations but need to match the standard SimCraft input format"
 };
 
@@ -538,37 +676,6 @@ QString helpbarText[ 6 ] = {
 void SC_ImportTab::setSidebarClassText()
 {
   textbox.sidebar -> setText( sidebarText[ choice.player_class -> currentIndex() ][ choice.player_spec -> currentIndex() ] );
-}
-
-void SC_ImportTab::inputTypeChanged( const int mode ){
- 
-  // get current comparison type
-  int comp = choice.comp_type -> currentIndex();
-
-  // set the label of the Advanced tab depending on comparison type chosen
-  switch ( mode )
-  {
-    case 0:
-      // set boxes & labels to the current comparison choice
-      choice.comp_type -> setDisabled ( false );
-      compTypeChanged( comp );
-      break;
-    case 1:
-      // set the label of the Advanced tab
-      label.advanced -> setText( advancedText[ 5 ] );
-
-      // set the text of the help bar for advanced mode
-      textbox.helpbar -> setText( helpbarText[ 5 ] );
-
-      textbox.advanced -> setDisabled( false );
-      textbox.gear -> setDisabled( true );
-      textbox.glyphs -> setDisabled( true );
-      textbox.rotation -> setDisabled( true );
-      textbox.talents -> setDisabled( true );
-
-      choice.comp_type -> setDisabled ( true );
-      break;
-  }
 }
 
 void SC_ImportTab::compTypeChanged( const int comp )
@@ -589,8 +696,7 @@ void SC_ImportTab::compTypeChanged( const int comp )
   // set the text of the help bar appropriately
   textbox.helpbar -> setText( helpbarText[ comp ] );
   
-  // TODO: set the text of the box with some sort of default for each case
-
+  // enable everything but the sidebar (default state) - adjust based on selection below
   textbox.advanced -> setDisabled( false );
   textbox.gear     -> setDisabled( false );
   textbox.glyphs   -> setDisabled( false );
@@ -619,6 +725,16 @@ void SC_ImportTab::compTypeChanged( const int comp )
       textbox.rotation -> setDisabled( true );
       textbox.advanced -> setText( advRotation );
       textbox.sidebar -> setDisabled( false );
+      QString advRotToolTip = "Rotations can be specified to ways:\n(1): by shorthands separated by single carriage returns, like this:\n\n"
+                              "CS>J>AS\nCS>AS>J\nJ>AS>CS\n\n"
+                              "(2): as usual simc action lists, separated by two carriage returns, like this:\n\n"
+                              "actions=/crusader_strike\nactions+=/judgment\nactions+=/avengers_shield\n\nactions=/crusader_strike\nactions+=/avengers_shield\nactions+=/judgment\n\nactions=/judgment\nactions+=/avengers_shield\nactions+=/crusader_strike\n\n"
+                              "Note that the two examples above are equivalent.\n"
+                              "For shorthand inputs, options can be specified using usual simc syntax, with \"+\" standing for \",if=\", like this:\n\n"
+                              "CS+GC&(DP|!FW)\n\n"
+                              "See the wiki entry (LINK?) for more details.";
+      textbox.advanced -> setToolTip( advRotToolTip );
+      label.advanced   -> setToolTip( advRotToolTip );
       break;
   }
 }
@@ -648,9 +764,11 @@ void SC_MainWindow::startAutomationImport( int tab )
 void SC_ImportTab::createTooltips()
 {
   choice.comp_type -> setToolTip( "Choose the comparison type." );
-  //choice.input_mode -> setToolTip( "Select to use advanced input mode.\nAdvanced input mode allows for more complex\ninput for multi-automated simulations." );
-  textbox.sidebar -> setToolTip( "This box specifies the abbreviations used in rotation shorthands. You may define custom abbreviations by adding your own entries." );
-  label.sidebar -> setToolTip( "This box specifies the abbreviations used in rotation shorthands. You may define custom abbreviations by adding your own entries." );
+
+  QString sidebarTooltip = "This box specifies the abbreviations used in rotation shorthands. You may define custom abbreviations by adding your own entries.\nNote that \"#\" can be used to support an optional numeric argument (e.g. \"C#\" will mach C3 and replace every # with a 3)\n and that $ability_name will automatically be replaced with the ability's name.";
+  textbox.sidebar -> setToolTip( sidebarTooltip );
+
+  label.sidebar   -> setToolTip( sidebarTooltip );
 }
 
 void SC_ImportTab::createAutomationTab()
@@ -678,10 +796,6 @@ void SC_ImportTab::createAutomationTab()
   // Create Combo Box and add it to the layout
   choice.comp_type = createChoice( 5 , "None", "Talents", "Glyphs", "Gear", "Rotation" );
   compLayout -> addRow( tr( "Comparison Type" ), choice.comp_type );
-
-  //// Ceate a Checkbox for input mode
-  //choice.input_mode = createInputMode( 2 , "Simple", "Advanced" );
-  //compLayout->addRow( tr( "Input Mode" ), choice.input_mode );
 
   // Apply the layout to the compGroupBox
   compGroupBox -> setLayout( compLayout );
@@ -784,11 +898,9 @@ void SC_ImportTab::createAutomationTab()
   connect( choice.player_class, SIGNAL( currentIndexChanged( const int& ) ), this, SLOT( setSidebarClassText() ) );
   connect( choice.player_spec,  SIGNAL( currentIndexChanged( const int& ) ), this, SLOT( setSidebarClassText() ) );
   connect( choice.comp_type,    SIGNAL( currentIndexChanged( const int& ) ), this, SLOT( compTypeChanged( const int ) ) );
-  //connect( choice.input_mode,   SIGNAL( currentIndexChanged( const int& ) ), this, SLOT( inputTypeChanged( const int ) ) );
 
   // do some initialization
   compTypeChanged( choice.comp_type -> currentIndex() );
-  //inputTypeChanged( choice.input_mode -> currentIndex() );
 
   // set up all the tooltips
   createTooltips();

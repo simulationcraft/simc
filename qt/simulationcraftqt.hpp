@@ -562,7 +562,6 @@ public slots:
   void setSpecDropDown( const int player_class );
   void setSidebarClassText();
   void compTypeChanged( const int comp );
-  void inputTypeChanged( const int mode );
 };
 
 // ==========================================================================
@@ -1597,6 +1596,7 @@ namespace automation {
 
   QStringList convert_shorthand( QStringList shorthandList, QString sidebar_text );
   QStringList splitOption( QString options_shorthand );
+  QStringList splitOnFirst( QString str, const char* delimiter );
 
 } // end automation namespace
 

@@ -101,7 +101,6 @@ public:
     buff_t* guardian_of_ancient_kings;
     buff_t* grand_crusader;
     buff_t* infusion_of_light;
-    buff_t* seraphim;
     buff_t* shield_of_the_righteous;
 
     // glyphs
@@ -122,6 +121,7 @@ public:
     buff_t* maraads_truth;
     buff_t* sacred_shield;  // dummy buff for APL simplicity
     buff_t* selfless_healer;
+    stat_buff_t* seraphim;
     buff_t* speed_of_light;
     buff_t* turalyons_justice;
     buff_t* uthers_insight;
@@ -4898,10 +4898,10 @@ void paladin_t::create_buffs()
   buffs.glyph_of_word_of_glory = buff_creator_t( this, "glyph_word_of_glory", spells.glyph_of_word_of_glory ).add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
 
   // Talents
-  buffs.divine_purpose         = buff_creator_t( this, "divine_purpose", find_talent_spell( "Divine Purpose" ) )
-                                 .duration( find_spell( find_talent_spell( "Divine Purpose" ) -> effectN( 1 ).trigger_spell_id() ) -> duration() );
-  buffs.final_verdict          = buff_creator_t( this, "final_verdict", find_talent_spell( "Final Verdict" ) );
-  buffs.holy_avenger           = buff_creator_t( this, "holy_avenger", find_talent_spell( "Holy Avenger" ) ).cd( timespan_t::zero() ); // Let the ability handle the CD
+  buffs.divine_purpose         = buff_creator_t( this, "divine_purpose", talents.divine_purpose )
+                                 .duration( find_spell( talents.divine_purpose -> effectN( 1 ).trigger_spell_id() ) -> duration() );
+  buffs.final_verdict          = buff_creator_t( this, "final_verdict", talents.final_verdict );
+  buffs.holy_avenger           = buff_creator_t( this, "holy_avenger", talents.holy_avenger ).cd( timespan_t::zero() ); // Let the ability handle the CD
   buffs.holy_shield            = absorb_buff_creator_t( this, "holy_shield", find_spell( 157121 ) )
                                  .school( SCHOOL_MAGIC )
                                  .source( get_stats( "holy_shield" ) )
@@ -4912,11 +4912,16 @@ void paladin_t::create_buffs()
                                  .default_value( talents.speed_of_light -> effectN( 1 ).percent() );
   buffs.selfless_healer        = buff_creator_t( this, "selfless_healer", find_spell( 114250 ) );
   buffs.liadrins_righteousness = buff_creator_t( this, "liadrins_righteousness", find_spell( 156989 ) )
-                                 .add_invalidate( CACHE_ATTACK_SPEED );
+                                 .add_invalidate( CACHE_HASTE );
   buffs.maraads_truth          = buff_creator_t( this, "maraads_truth", find_spell( 156990 ) )
                                  .add_invalidate( CACHE_ATTACK_POWER );
   buffs.turalyons_justice      = buff_creator_t( this, "turalyons_justice", find_spell( 156987 ) );
   buffs.uthers_insight         = buff_creator_t( this, "uthers_insight", find_spell( 156988 ) );
+  buffs.seraphim                       = stat_buff_creator_t( this, "seraphim", talents.seraphim )
+                                         .cd( timespan_t::zero() ) // Let the ability handle the CD
+                                         .add_invalidate( CACHE_HASTE ).add_invalidate( CACHE_CRIT )
+                                         .add_invalidate( CACHE_MASTERY ).add_invalidate( CACHE_MULTISTRIKE )
+                                         .add_invalidate( CACHE_VERSATILITY ).add_invalidate( CACHE_BONUS_ARMOR );
 
   // General
   buffs.avenging_wrath         = new buffs::avenging_wrath_buff_t( this );
@@ -4937,11 +4942,6 @@ void paladin_t::create_buffs()
   buffs.guardian_of_ancient_kings      = buff_creator_t( this, "guardian_of_ancient_kings", find_specialization_spell( "Guardian of Ancient Kings" ) )
                                           .cd( timespan_t::zero() ); // let the ability handle the CD
   buffs.grand_crusader                 = buff_creator_t( this, "grand_crusader" ).spell( passives.grand_crusader -> effectN( 1 ).trigger() ).chance( passives.grand_crusader -> proc_chance() );
-  buffs.seraphim                       = buff_creator_t( this, "seraphim", find_talent_spell( "Seraphim" ) )
-                                         .cd( timespan_t::zero() ) // Let the ability handle the CD
-                                         .add_invalidate( CACHE_HASTE ).add_invalidate( CACHE_CRIT )
-                                         .add_invalidate( CACHE_MASTERY ).add_invalidate( CACHE_MULTISTRIKE )
-                                         .add_invalidate( CACHE_READINESS ).add_invalidate( CACHE_BONUS_ARMOR ); // WOD-TODO: replace Readiness with versatility
   buffs.shield_of_the_righteous        = buff_creator_t( this, "shield_of_the_righteous" ).spell( find_spell( 132403 ) );
   buffs.ardent_defender                = new buffs::ardent_defender_buff_t( this );
 
@@ -5637,35 +5637,14 @@ double paladin_t::composite_rating_multiplier( rating_e r ) const
     case RATING_RANGED_HASTE:
     case RATING_SPELL_HASTE:
       m *= 1.0 + passives.sacred_duty -> effectN( 1 ).percent(); 
-      // Seraphim adds 30% haste. Multiplicative w/ attunement (tested)
-      if ( buffs.seraphim -> check() )
-        m *= 1.0 + buffs.seraphim -> data().effectN( 1 ).percent();
       break;
     case RATING_MASTERY:
       m *= 1.0 + passives.righteous_vengeance -> effectN( 1 ).percent();
-      // Seraphim adds 30% mastery, multiplicative w/ attunement
-      if ( buffs.seraphim -> check() )
-        m *= 1.0 + buffs.seraphim -> data().effectN( 1 ).percent();
       break;
     case RATING_MELEE_CRIT:
     case RATING_SPELL_CRIT:
     case RATING_RANGED_CRIT:
       m *= 1.0 + passives.sanctified_light -> effectN( 1 ).percent();
-      // Seraphim adds 30% crit, multiplicative w/ attunement
-      if ( buffs.seraphim -> check() )
-        m *= 1.0 + buffs.seraphim -> data().effectN( 1 ).percent();
-      break;
-    case RATING_MULTISTRIKE:
-      // Seraphim adds 30% multistrike
-      if ( buffs.seraphim -> check() )
-        m *= 1.0 + buffs.seraphim -> data().effectN( 1 ).percent();
-      break;
-    case RATING_DAMAGE_VERSATILITY:
-    case RATING_HEAL_VERSATILITY:
-    case RATING_MITIGATION_VERSATILITY:
-      // Seraphim adds 30% versatility
-      if ( buffs.seraphim -> check() )
-        m *= 1.0 + buffs.seraphim -> data().effectN( 1 ).percent();
       break;
     default:
       break;
@@ -5710,6 +5689,10 @@ double paladin_t::composite_melee_haste() const
   // Infusion of Light (Holy) adds 10% haste
   h /= 1.0 + passives.infusion_of_light -> effectN( 2 ).percent();
 
+  // Empowered Seals
+  if ( buffs.liadrins_righteousness -> check() )
+    h /= 1.0 + buffs.liadrins_righteousness -> data().effectN( 1 ).percent();
+
   return h;
 }
 
@@ -5718,10 +5701,6 @@ double paladin_t::composite_melee_haste() const
 double paladin_t::composite_melee_speed() const
 {
   double h = player_t::composite_melee_speed();
-
-  // Empowered Seals
-  if ( buffs.liadrins_righteousness -> check() )
-    h /= 1.0 + buffs.liadrins_righteousness -> data().effectN( 1 ).percent(); // TODO: check that it's multiplicative
 
   return h;
 
@@ -5752,6 +5731,10 @@ double paladin_t::composite_spell_haste() const
 
   // Infusion of Light (Holy) adds 10% haste
   h /= 1.0 + passives.infusion_of_light -> effectN( 2 ).percent();
+
+  // Empowered Seals
+  if ( buffs.liadrins_righteousness -> check() )
+    h /= 1.0 + buffs.liadrins_righteousness -> data().effectN( 1 ).percent();
 
   return h;
 }
@@ -5789,10 +5772,6 @@ double paladin_t::composite_multistrike() const
 double paladin_t::composite_bonus_armor() const
 {
   double ba = player_t::composite_bonus_armor();
-  
-  // Seraphim adds 30% bonus armor. TODO: Make sure there are no sources of bonus armor not affected by this.
-  if ( buffs.seraphim -> check() )
-    ba *= 1.0 + buffs.seraphim -> data().effectN( 1 ).percent();
 
   return ba;
 }
