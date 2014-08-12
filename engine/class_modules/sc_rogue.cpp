@@ -4029,14 +4029,7 @@ void rogue_t::init_action_list()
   {
     std::string flask_action = "flask,type=";
     if ( level > 90 )
-    {
-      if ( specialization() == ROGUE_SUBTLETY )
-        flask_action += "greater_draenic_multistrike_flask";
-      else if ( specialization() == ROGUE_COMBAT )
-        flask_action += "greater_draenic_haste_flask";
-      else
-        flask_action += "greater_draenic_mastery_flask";
-    }
+      flask_action += "greater_draenic_agility_flask";
     else
       flask_action += ( level >= 85 ) ? "spring_blossoms" : ( ( level >= 80 ) ? "winds" : "" );
 

@@ -15,7 +15,7 @@ spec=unholy
 
 # Executed before combat begins. Accepts non-harmful actions only.
 
-actions.precombat=flask,type=greater_draenic_multistrike_flask
+actions.precombat=flask,type=greater_draenic_strength_flask
 actions.precombat+=/food,type=black_pepper_ribs_and_shrimp
 actions.precombat+=/horn_of_winter
 actions.precombat+=/unholy_presence
