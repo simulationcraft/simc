@@ -8,6 +8,29 @@
 #include "simulationcraft.hpp"
 #include "simulationcraftqt.hpp"
 
+
+///////////////////////////////////////////////////////////////////////////////
+////
+////                        Constants
+////
+///////////////////////////////////////////////////////////////////////////////
+
+
+
+QString classSpecText[ 11 ][ 5 ] = {
+    { "Death Knight", "Blood", "Frost", "Unholy", "N/A" },
+    { "Druid", "Balance", "Feral", "Guardian", "Restoration" },
+    { "Hunter", "Beast Master", "Marksmanship", "Survival", "N/A" },
+    { "Mage", "Arcane", "Fire", "Frost", "N/A" },
+    { "Monk", "Brewmaster", "Mistweaver", "Windwalker", "N/A" },
+    { "Paladin", "Holy", "Protection", "Retribution", "N/A" },
+    { "Priest", "Discipline", "Holy", "Shadow", "N/A" },
+    { "Rogue", "Assassination", "Combat", "Subtlety", "N/A" },
+    { "Shaman", "Elemental", "Enhancement", "Restoration", "N/A" },
+    { "Warlock", "Affliction", "Demonology", "Destruction", "N/A" },
+    { "Warrior", "Arms", "Fury", "Protection", "N/A" }
+};
+
 ///////////////////////////////////////////////////////////////////////////////
 ////
 ////                        Logic Stuff
@@ -25,7 +48,6 @@ QString automation::tokenize( QString qstr )
 }
 
 QString automation::do_something( int sim_type,
-                                  int input_mode,
                                   QString player_class,
                                   QString player_spec,
                                   QString player_race,
@@ -34,7 +56,8 @@ QString automation::do_something( int sim_type,
                                   QString player_glyphs,
                                   QString player_gear,
                                   QString player_rotation,
-                                  QString advanced_text
+                                  QString advanced_text,
+                                  QString sidebar_text
                                   )
 {
   QString profile;
@@ -72,7 +95,7 @@ QString automation::do_something( int sim_type,
     case 3: // gear simulation
       return auto_gear_sim( player_class, base_profile_info, player_talents, player_glyphs, advanced_list, player_rotation );
     case 4: // rotation simulation
-      return auto_rotation_sim( player_class, player_spec, base_profile_info, player_talents, player_glyphs, player_rotation, advanced_list );
+      return auto_rotation_sim( player_class, player_spec, base_profile_info, player_talents, player_glyphs, player_rotation, advanced_list, sidebar_text );
     default: // default profile creation
       profile += base_profile_info;
       profile += "talents=" + player_talents + "\n";
@@ -217,14 +240,15 @@ QString automation::auto_rotation_sim( QString player_class,
                                        QString player_talents,
                                        QString player_glyphs,
                                        QString player_gear,
-                                       QStringList rotation_list
+                                       QStringList rotation_list,
+                                       QString sidebar_text
                                      )
 {
-  QString profile = "NYI";
+  QString profile;
 
   for ( int i = 0; i < rotation_list.size(); i++ )
   {
-    profile += tokenize( player_class ) + "=G_" + QString::number( i ) + "\n";
+    profile += tokenize( player_class ) + "=R_" + QString::number( i ) + "\n";
     profile += base_profile_info;
     profile += "talents=" + player_talents + "\n";
     profile += "glyphs=" + player_glyphs + "\n";
@@ -242,14 +266,16 @@ QString automation::auto_rotation_sim( QString player_class,
     // we have a shorthand sequence and need to do some conversion.
     if ( shorthandList.size() > 0 && ! shorthandList[ 0 ].startsWith( "actions" ) )
     {
-      profile += "#Shorthand Conversion NYI\n";
+      profile += "#Warning: Shorthand Conversion not yet complete - waits aren't working quite yet\n";
 
       // send shorthandList off to a method for conversion based on player class and spec
-      QStringList convertedAPL = convert_shorthand( player_class, player_spec, shorthandList );
+      QStringList convertedAPL = convert_shorthand( shorthandList, sidebar_text );
 
       // take the returned QStringList and output it.
-
+      for ( int i = 0; i < convertedAPL.size(); i++ )
+        profile += convertedAPL[ i ] + "\n";
     }
+
     // Otherwise, the user has specified the action list in its full and gory detail, so we can just use that
     // Spit out the first element here, the rest gets spit out below (for either case)
     else
@@ -265,18 +291,179 @@ QString automation::auto_rotation_sim( QString player_class,
   return profile;
 }
 
-QStringList automation::convert_shorthand( QString player_class, QString player_spec, QStringList shorthand )
+QStringList automation::splitOption( QString s )
 {
-  // dummy for now
-  return QStringList();
-};
+  QStringList optionsBreakdown;
+  int numSeparators = s.count( "(" ) + s.count( ")" ) + s.count( "&" ) + s.count( "|" )+s.count( "!" );
+  QRegExp delimiter( "[&|\\(\\)\\!]" );
+
+  // ideally we will split this into ~2*numSeparators parts 
+  if ( numSeparators > 0 )
+  {
+    // section the string
+    for ( int i = 0; i <= numSeparators; i++ )
+      optionsBreakdown << s.section( delimiter, i, i, QString::SectionIncludeTrailingSep ).simplified();
+
+    for ( int i = 0; i < optionsBreakdown.size(); i++ )
+    {
+      QString temp = optionsBreakdown[ i ];
+      if ( temp.size() > 1 && delimiter.indexIn( temp ) == temp.size() - 1 )
+      {
+        optionsBreakdown.insert( i + 1, temp.right( 1 ) );
+        optionsBreakdown[ i ].remove( temp.size() -1, 1 );
+      }
+    }
+  }
+  else
+    optionsBreakdown.append( s );
+
+  return optionsBreakdown;
+}
+
+QStringList automation::convert_shorthand( QStringList shorthandList, QString sidebar_text )
+{
+  // STEP 1:  Take the sidebar list and convert it to an abilities table and an options table
+
+  QStringList sidebarSplit = sidebar_text.split( QRegExp( "\\n\\n" ), QString::SkipEmptyParts );
+  
+  assert( sidebarSplit.size() == 2 );
+
+  QString abilityConversions = sidebarSplit[ 0 ];
+  QString optionConversions = sidebarSplit[ 1 ];
+
+  QStringList abilityList = abilityConversions.split( "\n", QString::SkipEmptyParts );
+  QStringList optionsList = optionConversions.split( "\n", QString::SkipEmptyParts );
+
+  typedef std::vector<std::pair<QString, QString>> shorthandTable;
+  shorthandTable abilityTable;
+  shorthandTable optionsTable;
+
+  // Construct the table for ability conversions
+  for ( int i = 0; i < abilityList.size(); i++ )
+  {
+    QStringList parts = abilityList[ i ].split( "=", QString::SkipEmptyParts );
+    if ( parts.size() > 1 )
+    {
+      // some conditionals will have ='s in them, and will generate extra elements in parts. 
+      // To handle that, we'll duplicate parts, remove the first element (the abbreviation),
+      // and then join the remainder for the second QString of the pair.
+      QStringList rest = parts;
+      rest.removeFirst();
+
+      abilityTable.push_back( std::make_pair( parts[ 0 ], rest.join( "=" ) ) );
+    }
+  }
+
+  // Construct the table for ability conversions
+  for ( int i = 0; i < optionsList.size(); i++ )
+  {
+    QStringList parts = optionsList[ i ].split( "=", QString::SkipEmptyParts );
+    if ( parts.size() > 1 )
+    {
+      // some conditionals will have ='s in them, and will generate extra elements in parts. 
+      // To handle that, we'll duplicate parts, remove the first element (the abbreviation),
+      // and then join the remainder for the second QString of the pair.
+      QStringList rest = parts;
+      rest.removeFirst();
+
+      optionsTable.push_back( std::make_pair( parts[ 0 ], rest.join( "=" ) ) );
+    }
+  }
+
+
+  // STEP 2: now we take the shorthand and figure out what to do with each element
+
+  QStringList actionPriorityList;
+  struct comp
+  {
+    comp( QString const& s ) : _s( s ) {}
+    bool operator () ( std::pair< QString, QString> const& p )
+    {
+      return ( p.first == _s );
+    }
+    QString _s;
+  };
+
+  for ( int i = 0; i < shorthandList.size(); i++ )
+  {
+    QString ability;
+    QString options;
+
+    // first, split into ability abbreviation and options set
+    QStringList splits = shorthandList[ i ].split( "+", QString::SkipEmptyParts );
+    assert( splits.size() <= 2 );
+
+    // use abilityTable to replace the abbreviation with the full ability name
+    shorthandTable::iterator m = find_if( abilityTable.begin(), abilityTable.end(), comp( splits[ 0 ] ) );
+    if ( m != abilityTable.end() )
+    {
+      ability = m -> second;
+
+      // now handle options if there are any
+      if ( splits.size() > 1 )
+      {
+        // options are specified just as in simc, but with shorthands, e.g. as A&(B|C)
+        // we need to split on [&|()], match the resulting abbreviations in the table,
+        // and use those match pairs to replace the appropriate portions of the options string.
+        QStringList optionsBreakdown = splitOption( splits[ 1 ] );
+
+        for ( int j = 0; j < optionsBreakdown.size(); j++ )
+        {
+          // if this entry is &|(), skip it
+          if ( optionsBreakdown[ j ].contains( QRegExp( "[&|\\(\\)]+" ) ) )
+            continue;
+
+          // Each option can have a text part and a numeric part (e.g. W3). We need to split that up using regular expressions
+          QRegExp rx( "(\\D+)(\\d*\\.?\\d*)" );
+          int pos = rx.indexIn( optionsBreakdown[ j ] );
+          QStringList captures = rx.capturedTexts();
+
+          // if we have just a text component, it's fairly easy
+          if ( captures[ 2 ].length() == 0 )
+          {
+            shorthandTable::iterator m = find_if( optionsTable.begin(), optionsTable.end(), comp( captures[ 1 ] ) );
+            if ( m != optionsTable.end() )
+              optionsBreakdown[ j ] = m -> second;
+          }
+          // otherwise we need to do some trickery with numbers
+          else
+          {
+            shorthandTable::iterator m = find_if( optionsTable.begin(), optionsTable.end(), comp( captures[ 1 ] + "#" ) );
+            if ( m != optionsTable.end() )
+              optionsBreakdown[ j ] = m -> second.replace( "#", captures[ 2 ] );
+          }
+
+        } // end for loop
+
+        // TODO: Here we need to check for wait options and handle them a little differently
+        // Ex: CS+W3 should translate into two lines:
+        // actions+=/crusader_strike
+        // actions+=/wait,sec=cooldown.crusader_strike.remains,if=cooldown.crusader_strike.remains>0&cooldown.crusader_strike.remains<=3
+        // Thus, we eventually need to do some fancy stuff for waits here before merging options
+
+        // at this point, we should be able to merge the optionsBreakdown list into a string
+        options = optionsBreakdown.join( "" );
+      }
+
+      // combine the ability and options into a single string
+      QString entry = "actions";
+      if ( ! actionPriorityList.empty() )
+        entry += "+";
+      entry += "=/" + ability;
+      if ( options.length() > 0 )
+        entry += ",if=" + options;
+      actionPriorityList.append( entry );
+    }
+  }
+
+  return actionPriorityList;
+}
 
 ///////////////////////////////////////////////////////////////////////////////
 ////
 ////                        GUI Stuff
 ////
 ///////////////////////////////////////////////////////////////////////////////
-
 
 
 QComboBox* createChoice( int count, ... )
@@ -308,70 +495,11 @@ void SC_ImportTab::setSpecDropDown( const int player_class )
   if ( choice.player_spec -> count() > 3 )
     choice.player_spec -> removeItem( 3 );
 
-  switch ( player_class )
-  {
-    case 0:
-      choice.player_spec -> setItemText( 0, "Blood" );
-      choice.player_spec -> setItemText( 1, "Frost" );
-      choice.player_spec -> setItemText( 2, "Unholy" );
-      break;
-    case 1:
-      choice.player_spec -> setItemText( 0, "Balance" );
-      choice.player_spec -> setItemText( 1, "Feral" );
-      choice.player_spec -> setItemText( 2, "Guardian" );
-      choice.player_spec -> addItem( "Restoration" );
-      break;
-    case 2:
-      choice.player_spec -> setItemText( 0, "Beast Mastery" );
-      choice.player_spec -> setItemText( 1, "Marksmanship" );
-      choice.player_spec -> setItemText( 2, "Survival" );
-      break;
-    case 3:
-      choice.player_spec -> setItemText( 0, "Arcane" );
-      choice.player_spec -> setItemText( 1, "Fire" );
-      choice.player_spec -> setItemText( 2, "Frost" );
-      break;
-    case 4:
-      choice.player_spec -> setItemText( 0, "Brewmaster" );
-      choice.player_spec -> setItemText( 1, "Mistweaver" );
-      choice.player_spec -> setItemText( 2, "Windwalker" );
-      break;
-    case 5:
-      choice.player_spec -> setItemText( 0, "Holy" );
-      choice.player_spec -> setItemText( 1, "Protection" );
-      choice.player_spec -> setItemText( 2, "Retribution" );
-      break;
-    case 6:
-      choice.player_spec -> setItemText( 0, "Discipline" );
-      choice.player_spec -> setItemText( 1, "Holy" );
-      choice.player_spec -> setItemText( 2, "Shadow" );
-      break;
-    case 7:
-      choice.player_spec -> setItemText( 0, "Assassination" );
-      choice.player_spec -> setItemText( 1, "Combat" );
-      choice.player_spec -> setItemText( 2, "Subtlety" );
-      break;
-    case 8:
-      choice.player_spec -> setItemText( 0, "Elemental" );
-      choice.player_spec -> setItemText( 1, "Enhancement" );
-      choice.player_spec -> setItemText( 2, "Restoration" );
-      break;
-    case 9:
-      choice.player_spec -> setItemText( 0, "Affliction" );
-      choice.player_spec -> setItemText( 1, "Demonology" );
-      choice.player_spec -> setItemText( 2, "Destruction" );
-      break;
-    case 10:
-      choice.player_spec -> setItemText( 0, "Arms" );
-      choice.player_spec -> setItemText( 1, "Fury" );
-      choice.player_spec -> setItemText( 2, "Protection" );
-      break;
-    default:
-      choice.player_spec -> setItemText( 0, "What" );
-      choice.player_spec -> setItemText( 1, "The" );
-      choice.player_spec -> setItemText( 2, "F*&!" );
-      break;
-  }
+  choice.player_spec -> setItemText( 0, classSpecText[ player_class ][ 1 ] );
+  choice.player_spec -> setItemText( 1, classSpecText[ player_class ][ 2 ] );
+  choice.player_spec -> setItemText( 2, classSpecText[ player_class ][ 3 ] );
+  if ( player_class == 1 )
+    choice.player_spec -> addItem( classSpecText[ player_class ][ 4 ] );
 }
 
 // constant for sidebar text (this will eventually get really long)
@@ -381,7 +509,9 @@ QString sidebarText[ 11 ][ 4 ] = {
   { "Beast Master shorthand goes here.", "Marksmanship shorthand goes here.", "Survival shorthand goes here." },
   { "Arcane shorthand goes here.", "Fire shorthand goes here.", "Frost shorthand goes here.", "N/A" },
   { "Brewmaster shorthand goes here.", "Mistweaver shorthand goes here.", "Windwalker shorthand goes here.", "N/A" },
-  { "Holy shorthand goes here.", "Protection shorthand goes here.", "Retribution shorthand goes here.", "N/A" },
+  { "Holy shorthand goes here.",
+  ":::Abilities:::\nCS=crusader_strike\nJ=judgment\nAS=avengers_shield\nHW=holy_wrath\nHotR=hammer_of_the_righteous\nHoW=\hammer_of_wrath\nCons=consecration\nSS=sacred_shield\nHPr=holy_prism\nES=execution_sentence\nLH=lights_hammer\nSotR=shield_of_the_righteous\nEF=eternal_flame\nWoG=word_of_glory\nSoI=seal_of_insight\nSoT=seal_of_truth\nSoR=seal_of_righteousness\nSP=seraphim\n\n:::Options:::\nW#=wait,sec=#\nGC=buff.grand_crusader.react\nGC#=buff.grand_crusader.remains<#\nDP=buff.divine_purpose.react\nDPHP#=buff.divine_purpose.react|holy_power>=#\nE=target.health.pct<=20\nFW=glyph.final_wrath.enabled&target.health.pct<=20\nHP#=holy_power>=#\nNT=!ticking\nNF=target.debuff.flying.down\nSW=talent.sanctified_wrath.enabled\nSP=buff.seraphim.react\nT#=active_enemies>=#\nR#=buff.<ability_name>.remains<#\n",
+  "Retribution shorthand goes here.", "N/A" },
   { "Discipline shorthand goes here.", "Holy shorthand goes here.", "Shadow shorthand goes here.", "N/A" },
   { "Assasination shorthand goes here.", "Combat shorthand goes here.", "Subtlety shorthand goes here.", "N/A" },
   { "Elemental shorthand goes here.", "Enhancement shorthand goes here.", "Restoration shorthand goes here.", "N/A" },
@@ -466,6 +596,7 @@ void SC_ImportTab::compTypeChanged( const int comp )
   textbox.glyphs   -> setDisabled( false );
   textbox.rotation -> setDisabled( false );
   textbox.talents  -> setDisabled( false );
+  textbox.sidebar  -> setDisabled( true  );
 
   switch ( comp )
   {
@@ -487,6 +618,7 @@ void SC_ImportTab::compTypeChanged( const int comp )
     case 4:
       textbox.rotation -> setDisabled( true );
       textbox.advanced -> setText( advRotation );
+      textbox.sidebar -> setDisabled( false );
       break;
   }
 }
@@ -496,7 +628,6 @@ void SC_MainWindow::startAutomationImport( int tab )
   QString profile;
 
   profile = automation::do_something( importTab -> choice.comp_type -> currentIndex(),
-                                      importTab -> choice.input_mode -> currentIndex(),
                                       importTab -> choice.player_class -> currentText(),
                                       importTab -> choice.player_spec -> currentText(),
                                       importTab -> choice.player_race -> currentText(),
@@ -505,7 +636,8 @@ void SC_MainWindow::startAutomationImport( int tab )
                                       importTab -> textbox.glyphs -> text(),
                                       importTab -> textbox.gear -> document() -> toPlainText(),
                                       importTab -> textbox.rotation -> document() -> toPlainText(),
-                                      importTab -> textbox.advanced -> document() -> toPlainText()
+                                      importTab -> textbox.advanced -> document() -> toPlainText(),
+                                      importTab -> textbox.sidebar -> document() -> toPlainText()
                                     );
 
   simulateTab -> add_Text( profile,  tr( "Testing" ) );
@@ -516,7 +648,9 @@ void SC_MainWindow::startAutomationImport( int tab )
 void SC_ImportTab::createTooltips()
 {
   choice.comp_type -> setToolTip( "Choose the comparison type." );
-  choice.input_mode -> setToolTip( "Select to use advanced input mode.\nAdvanced input mode allows for more complex\ninput for multi-automated simulations." );
+  //choice.input_mode -> setToolTip( "Select to use advanced input mode.\nAdvanced input mode allows for more complex\ninput for multi-automated simulations." );
+  textbox.sidebar -> setToolTip( "This box specifies the abbreviations used in rotation shorthands. You may define custom abbreviations by adding your own entries." );
+  label.sidebar -> setToolTip( "This box specifies the abbreviations used in rotation shorthands. You may define custom abbreviations by adding your own entries." );
 }
 
 void SC_ImportTab::createAutomationTab()
@@ -545,9 +679,9 @@ void SC_ImportTab::createAutomationTab()
   choice.comp_type = createChoice( 5 , "None", "Talents", "Glyphs", "Gear", "Rotation" );
   compLayout -> addRow( tr( "Comparison Type" ), choice.comp_type );
 
-  // Ceate a Checkbox for input mode
-  choice.input_mode = createInputMode( 2 , "Simple", "Advanced" );
-  compLayout->addRow( tr( "Input Mode" ), choice.input_mode );
+  //// Ceate a Checkbox for input mode
+  //choice.input_mode = createInputMode( 2 , "Simple", "Advanced" );
+  //compLayout->addRow( tr( "Input Mode" ), choice.input_mode );
 
   // Apply the layout to the compGroupBox
   compGroupBox -> setLayout( compLayout );
@@ -556,7 +690,8 @@ void SC_ImportTab::createAutomationTab()
   // Elements (0,1) - (0,2) are the helpbar
   textbox.helpbar = new SC_TextEdit;
   textbox.helpbar -> setDisabled( true );
-  textbox.helpbar -> setMaximumHeight( 50 );
+  textbox.helpbar -> setMaximumHeight( 65 );
+  textbox.helpbar -> setMinimumHeight( 50 );
   textbox.helpbar -> setHorizontalScrollBarPolicy( Qt::ScrollBarAlwaysOff );
   gridLayout -> addWidget( textbox.helpbar, 0, 1, 1, 2, 0 );
 
@@ -631,7 +766,6 @@ void SC_ImportTab::createAutomationTab()
   label.sidebar = new QLabel( tr( "Rotation Abbreviations" ) );
   textbox.sidebar = new SC_TextEdit;
   textbox.sidebar -> setText( " Stuff Goes Here" );
-  textbox.sidebar -> setDisabled( true );
   gridLayout -> addWidget( label.sidebar,   1, 2, 0 );
   gridLayout -> addWidget( textbox.sidebar, 2, 2, 5, 1, 0 );
   
@@ -650,11 +784,11 @@ void SC_ImportTab::createAutomationTab()
   connect( choice.player_class, SIGNAL( currentIndexChanged( const int& ) ), this, SLOT( setSidebarClassText() ) );
   connect( choice.player_spec,  SIGNAL( currentIndexChanged( const int& ) ), this, SLOT( setSidebarClassText() ) );
   connect( choice.comp_type,    SIGNAL( currentIndexChanged( const int& ) ), this, SLOT( compTypeChanged( const int ) ) );
-  connect( choice.input_mode,   SIGNAL( currentIndexChanged( const int& ) ), this, SLOT( inputTypeChanged( const int ) ) );
+  //connect( choice.input_mode,   SIGNAL( currentIndexChanged( const int& ) ), this, SLOT( inputTypeChanged( const int ) ) );
 
   // do some initialization
   compTypeChanged( choice.comp_type -> currentIndex() );
-  inputTypeChanged( choice.input_mode -> currentIndex() );
+  //inputTypeChanged( choice.input_mode -> currentIndex() );
 
   // set up all the tooltips
   createTooltips();
@@ -682,6 +816,7 @@ void SC_ImportTab::encodeSettings()
   settings.setValue( "advGlyph", advGlyph );
   settings.setValue( "advGear", advGear );
   settings.setValue( "advRotation", advRotation );
+  settings.setValue( "sidebox", textbox.sidebar -> document() -> toPlainText() );
   
   QString encoded;
 
@@ -749,9 +884,10 @@ void SC_ImportTab::decodeSettings()
   load_setting( settings, "rotationbox", textbox.rotation );
   load_setting( settings, "advancedbox", textbox.advanced, "default" );
   load_setting( settings, "advTalent", advTalent, "0000000\n1111111\n2222222" );
-  load_setting( settings, "advGlyph", advGlyph, "alabaster_shield/focused_shield" );
+  load_setting( settings, "advGlyph", advGlyph, "alabaster_shield/focused_shield\nfinal_wrath/word_of_glory" );
   load_setting( settings, "advGear", advGear );
-  load_setting( settings, "advRotation", advRotation, "CS>J>AS>Cons" );
+  load_setting( settings, "advRotation", advRotation, "CS>J>AS\nCS>J>AS+GC\nCS>AS+GC&(DP|!FW)>J+SW>J" );
+  load_setting( settings, "sidebox", textbox.sidebar );
   
   settings.endGroup();
 }

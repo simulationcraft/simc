@@ -521,7 +521,6 @@ public:
     QComboBox* player_race;
     QComboBox* player_level;
     QComboBox* comp_type;
-    QComboBox* input_mode;
   } choice;
 
   struct labels_t
@@ -1550,7 +1549,6 @@ namespace automation {
   QString tokenize( QString qstr );
 
   QString do_something( int sim_type,
-                        int input_mode,
                         QString player_class,
                         QString player_spec,
                         QString player_race,
@@ -1559,7 +1557,8 @@ namespace automation {
                         QString player_glyphs,
                         QString player_gear,
                         QString player_rotation,
-                        QString advanced_text
+                        QString advanced_text,
+                        QString sidebar_text
                       );
 
   QString auto_talent_sim( QString player_class,
@@ -1592,10 +1591,12 @@ namespace automation {
                              QString player_talents,
                              QString player_glyphs,
                              QString player_gear,
-                             QStringList advanced_text
+                             QStringList advanced_text,
+                             QString sidebar_text
                            );
 
-  QStringList convert_shorthand( QString player_class, QString player_spec, QStringList shorthandList );
+  QStringList convert_shorthand( QStringList shorthandList, QString sidebar_text );
+  QStringList splitOption( QString options_shorthand );
 
 } // end automation namespace
 
