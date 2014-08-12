@@ -4,7 +4,7 @@ race=draenei
 role=attack
 position=back
 professions=engineering=600/enchanting=600
-talents=http://us.battle.net/wow/en/tool/talent-calculator#WZ!...1.01
+talents=http://us.battle.net/wow/en/tool/talent-calculator#WZ!...1.02
 glyphs=chain_lightning
 spec=enhancement
 
@@ -100,8 +100,8 @@ finger1=primal_gladiators_ring_of_prowess,id=115609,enchant=gift_of_mastery
 finger2=primal_gladiators_ring_of_prowess,id=115771,enchant=gift_of_mastery
 trinket1=primal_gladiators_insignia_of_conquest,id=115750
 trinket2=primal_gladiators_badge_of_conquest,id=115749
-main_hand=primal_gladiators_ripper,id=115596,enchant=mark_of_warsong
-off_hand=primal_gladiators_ripper,id=115596,enchant=mark_of_warsong
+main_hand=primal_gladiators_ripper,id=115596,enchant=mark_of_bleeding_hollow
+off_hand=primal_gladiators_ripper,id=115596,enchant=mark_of_bleeding_hollow
 
 # Gear Summary
 # gear_agility=2553
