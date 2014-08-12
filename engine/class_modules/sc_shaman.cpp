@@ -3184,7 +3184,7 @@ struct earthquake_rumble_t : public shaman_spell_t
     harmful = background = true;
     aoe = -1;
     school = SCHOOL_PHYSICAL;
-    spell_power_mod.direct = 0.15; // Hardcoded into tooltip because it's cool
+    spell_power_mod.direct = 0.10; // Hardcoded into tooltip because it's cool
   }
 
   virtual double composite_spell_power() const
@@ -5106,9 +5106,9 @@ void shaman_t::init_action_list()
   {
     std::string flask_action = "flask,type=";
     if ( primary_role() == ROLE_ATTACK )
-      flask_action += ( ( level > 90 ) ? "greater_draenic_haste_flask" : ( level >= 85 ) ? "spring_blossoms" : ( level >= 80 ) ? "winds" : "" );
+      flask_action += ( ( level > 90 ) ? "greater_draenic_agility_flask" : ( level >= 85 ) ? "spring_blossoms" : ( level >= 80 ) ? "winds" : "" );
     else
-      flask_action += ( ( level > 90 ) ? "greater_draenic_multistrike_flask" : ( level >= 85 ) ? "warm_sun" : ( level >= 80 ) ? "draconic_mind" : "" );
+      flask_action += ( ( level > 90 ) ? "greater_draenic_intellect_flask" : ( level >= 85 ) ? "warm_sun" : ( level >= 80 ) ? "draconic_mind" : "" );
 
     precombat -> add_action( flask_action );
   }
@@ -5299,7 +5299,7 @@ void shaman_t::init_action_list()
     single -> add_action( this, "Lava Burst", "if=dot.flame_shock.remains>cast_time&(buff.ascendance.up|cooldown_react)" );
     single -> add_action( this, "Flame Shock", "if=dot.flame_shock.remains<9" );
     single -> add_action( this, spec.fulmination, "earth_shock", "if=buff.lightning_shield.react>15" );
-    single -> add_action( this, "Earthquake", "if=((1+stat.spell_haste)*(1+(mastery_value*2%3))>=1.7)&target.time_to_die>10" );
+    single -> add_action( this, "Earthquake", "if=((1+stat.spell_haste)*(1+(mastery_value*2%3))>=2.3)&target.time_to_die>10" );
     single -> add_talent( this, "Elemental Blast" );
     single -> add_action( this, "Flame Shock", "if=time>60&remains<=buff.ascendance.duration&cooldown.ascendance.remains+buff.ascendance.duration<duration",
                           "After the initial Ascendance, use Flame Shock pre-emptively just before Ascendance to guarantee Flame Shock staying up for the full duration of the Ascendance buff" );

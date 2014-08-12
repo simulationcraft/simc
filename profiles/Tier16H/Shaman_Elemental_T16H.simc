@@ -51,7 +51,7 @@ actions.single+=/earth_shock,if=buff.lightning_shield.react=buff.lightning_shiel
 actions.single+=/lava_burst,if=dot.flame_shock.remains>cast_time&(buff.ascendance.up|cooldown_react)
 actions.single+=/flame_shock,if=dot.flame_shock.remains<9
 actions.single+=/earth_shock,if=buff.lightning_shield.react>15
-actions.single+=/earthquake,if=((1+stat.spell_haste)*(1+(mastery_value*2%3))>=1.7)&target.time_to_die>10
+actions.single+=/earthquake,if=((1+stat.spell_haste)*(1+(mastery_value*2%3))>=2.3)&target.time_to_die>10
 actions.single+=/elemental_blast
 # After the initial Ascendance, use Flame Shock pre-emptively just before Ascendance to guarantee Flame Shock staying up for the full duration of the Ascendance buff
 actions.single+=/flame_shock,if=time>60&remains<=buff.ascendance.duration&cooldown.ascendance.remains+buff.ascendance.duration<duration

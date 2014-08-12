@@ -190,8 +190,6 @@ public:
   // Perks
   struct
   {
-    // All Specs
-    const spell_data_t* improved_demons;
     // Afflictin and Demonology
     const spell_data_t* empowered_drain_life;
     // Affliction only
@@ -246,6 +244,7 @@ public:
     const spell_data_t* readyness_affliction;
 
     // Demonology only
+    const spell_data_t* improved_demons;
     const spell_data_t* chaos_wave;
     const spell_data_t* decimation;
     const spell_data_t* demonic_fury;
@@ -1118,7 +1117,7 @@ double warlock_pet_t::composite_player_multiplier( school_e school ) const
   if ( buffs.demonic_synergy -> up() )
       m *= 1.0 + buffs.demonic_synergy -> data().effectN( 1 ).percent();
     
-  m *= 1.0 + o() -> perk.improved_demons -> effectN( 1 ).percent();
+  m *= 1.0 + o() -> spec.improved_demons -> effectN( 1 ).percent();
 
 
   return m;
@@ -5047,6 +5046,7 @@ void warlock_t::init_spells()
   spec.nethermancy = find_spell( 86091 );
 
   // Spezialization Spells
+  spec.improved_demons        = find_specialization_spell( "Improved Demons" );
   spec.demonic_tactics        = find_specialization_spell( "Demonic Tactics" );
   spec.devastation            = find_specialization_spell( "Devastation" );
   spec.eradication            = find_specialization_spell( "Eradication" );
@@ -5133,7 +5133,6 @@ void warlock_t::init_spells()
   perk.enhanced_nightfall           = find_perk_spell( "Enhanced Nightfall" );
   perk.improved_conflagrate         = find_perk_spell( "Improved Conflagrate" );
   perk.improved_corruption          = find_perk_spell( "Improved Corruption" );
-  perk.improved_demons              = find_perk_spell( "Improved Demons" );
   perk.improved_drain_soul          = find_perk_spell( "Improved Drain Soul" );
   perk.improved_ember_tap           = find_perk_spell( "Improved Ember Tap" );
   perk.improved_life_tap            = find_perk_spell( "Improved Life Tap" );
