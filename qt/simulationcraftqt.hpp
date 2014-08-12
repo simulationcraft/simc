@@ -562,7 +562,6 @@ public slots:
   void setSpecDropDown( const int player_class );
   void setSidebarClassText();
   void compTypeChanged( const int comp );
-  void inputTypeChanged( const int mode );
 };
 
 // ==========================================================================
