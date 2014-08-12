@@ -336,7 +336,7 @@ QStringList automation::convert_shorthand( QStringList shorthandList, QString si
   QStringList abilityList = abilityConversions.split( "\n", QString::SkipEmptyParts );
   QStringList optionsList = optionConversions.split( "\n", QString::SkipEmptyParts );
 
-  typedef std::vector<std::pair<QString, QString>> shorthandTable;
+  typedef std::vector<std::pair<QString, QString> > shorthandTable;
   shorthandTable abilityTable;
   shorthandTable optionsTable;
 
