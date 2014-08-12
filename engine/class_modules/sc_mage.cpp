@@ -1678,6 +1678,17 @@ struct arcane_orb_bolt_t : public mage_spell_t
     dual = true;
     cooldown -> duration = timespan_t::zero(); // dbc has CD of 15 seconds
   }
+
+  virtual void impact(action_state_t* s )
+  {
+    for ( unsigned i = 0; i < sizeof_array( p() -> benefits.arcane_charge ); i++)
+    {
+      p() -> benefits.arcane_charge[ i ] -> update( as<int>( i ) == p() -> buffs.arcane_charge -> check() );
+    }
+    
+    mage_spell_t::impact( s );
+    p() -> buffs.arcane_charge -> trigger();
+  }
 };
 
 struct arcane_orb_t : public mage_spell_t
@@ -1695,6 +1706,17 @@ struct arcane_orb_t : public mage_spell_t
     add_child( orb_bolt );
   }
 
+  virtual void execute()
+  {
+    for ( unsigned i = 0; i < sizeof_array( p() -> benefits.arcane_charge ); i++)
+    {
+      p() -> benefits.arcane_charge[ i ] -> update( as<int>( i ) == p() -> buffs.arcane_charge -> check() );
+    }
+    mage_spell_t::execute();
+
+    p() -> buffs.arcane_charge -> trigger();
+  }
+
 
   virtual timespan_t travel_time() const
   {
@@ -1705,13 +1727,8 @@ struct arcane_orb_t : public mage_spell_t
 
   virtual void impact( action_state_t* s )
   {
-    for ( unsigned i = 0; i < sizeof_array( p() -> benefits.arcane_charge ); i++)
-    {
-      p() -> benefits.arcane_charge[ i ] -> update( as<int>( i ) == p() -> buffs.arcane_charge -> check() );
-    }
     mage_spell_t::impact( s );
 
-    p() -> buffs.arcane_charge -> trigger();
     orb_bolt -> execute();
   }
 };
@@ -4508,12 +4525,8 @@ void mage_t::apl_precombat()
       flask_action += "draconic_mind" ;
     else if ( level <= 90 )
       flask_action += "warm_sun" ;
-    else if ( specialization() == MAGE_ARCANE )
-      flask_action += "greater_draenic_mastery_flask" ;
-    else if ( specialization() == MAGE_FIRE )
-      flask_action += "greater_draenic_critical_strike_flask" ;
     else
-      flask_action += "greater_draenic_multistrike_flask" ;
+      flask_action += "greater_draenic_intellect_flask" ;
 
     precombat -> add_action( flask_action );
   }
@@ -4639,7 +4652,7 @@ void mage_t::apl_arcane()
   single_target -> add_action( this, "Arcane Missiles", "if=buff.arcane_charge.stack=4" );
   single_target -> add_talent( this, "Nether Tempest", "if=remains<7&target.time_to_die>6&buff.arcane_charge.stack=4" );
   single_target -> add_action( this, "Arcane Blast", "if=talent.unstable_magic.enabled&(buff.arcane_power.up|mana.pct>=95)");
-  single_target -> add_talent( this, "Arcane Orb", "if=buff.arcane_charge.stack<=3" );
+  single_target -> add_talent( this, "Arcane Orb", "if=buff.arcane_charge.stack<=2" );
   single_target -> add_action( this, "Arcane Barrage", "if=buff.arcane_charge.stack=4&mana.pct<95" );
   single_target -> add_action( this, "Presence of Mind", "if=cooldown.arcane_power.remains>75" );
   single_target -> add_action( this, "Arcane Blast" );
