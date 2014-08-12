@@ -4978,7 +4978,7 @@ void paladin_t::create_buffs()
 }
 
 // ==========================================================================
-// Action Priority List Generation / Validation
+// Action Priority List Generation - Protection
 // ==========================================================================
 void paladin_t::generate_action_prio_list_prot()
 {
@@ -4993,9 +4993,11 @@ void paladin_t::generate_action_prio_list_prot()
   {
     std::string flask_action = "flask,type=";
     if ( level >= 90 )
-      flask_action += "greater_draenic_haste_flask";
+      flask_action += "greater_draenic_stamina_flask";
+    else if ( level > 85 )
+      flask_action += "earth";
     else
-      flask_action += ( level > 85 ) ? "earth" : "steelskin";
+      flask_action += "steelskin";
 
     precombat -> add_action( flask_action );
   }
@@ -5005,7 +5007,7 @@ void paladin_t::generate_action_prio_list_prot()
   {
     std::string food_action = "food,type=";
     if ( level >= 90 )
-      food_action += "frosty_stew";
+      food_action += "talador_surf_and_turf";
     else
       food_action += ( level > 85 ) ? "chun_tian_spring_rolls" : "seafood_magnifique_feast";
 
@@ -5078,6 +5080,10 @@ void paladin_t::generate_action_prio_list_prot()
   def -> add_talent( this, "Sacred Shield" );
 }
 
+// ==========================================================================
+// Action Priority List Generation - Retribution
+// ==========================================================================
+
 void paladin_t::generate_action_prio_list_ret()
 {
   ///////////////////////
@@ -5091,9 +5097,11 @@ void paladin_t::generate_action_prio_list_ret()
   {
     std::string flask_action = "flask,type=";
     if ( level >= 90 )
-      flask_action += "greater_draenic_multistrike_flask";
+      flask_action += "greater_draenic_strength_flask";
+    else if ( level > 85 )
+      flask_action += "winters_bite";
     else
-      flask_action += ( level > 85 ) ? "winters_bite" : "titanic_strength";
+      flask_action += "titanic_strength";
 
     precombat -> add_action( flask_action );
   }
@@ -5103,7 +5111,7 @@ void paladin_t::generate_action_prio_list_ret()
   {
     std::string food_action = "food,type=";
     if ( level >= 90 )
-      food_action += "calamari_crepes";
+      food_action += "sleeper_surprise";
     else
       food_action += ( level > 85 ) ? "black_pepper_ribs_and_shrimp" : "beer_basted_crocolisk";
 
@@ -5138,7 +5146,9 @@ void paladin_t::generate_action_prio_list_ret()
 
   if ( sim -> allow_potions )
   {
-    if ( level > 85 )
+    if ( level > 90 )
+      def -> add_action( "potion,name=draenic_strength,if=(buff.bloodlust.react|buff.avenging_wrath.up|target.time_to_die<=40)" );
+    else if ( level > 85 )
       def -> add_action( "potion,name=mogu_power,if=(buff.bloodlust.react|buff.avenging_wrath.up|target.time_to_die<=40)" );
     else if ( level >= 80 )
       def -> add_action( "potion,name=golemblood,if=buff.bloodlust.react|buff.avenging_wrath.up|target.time_to_die<=40" );
@@ -5235,6 +5245,10 @@ void paladin_t::generate_action_prio_list_ret()
   def -> add_talent( this, "Holy Prism" );
 }
 
+// ==========================================================================
+// Action Priority List Generation - Holy
+// ==========================================================================
+
 void paladin_t::generate_action_prio_list_holy()
 {
   // currently unsupported
@@ -5246,7 +5260,11 @@ void paladin_t::generate_action_prio_list_holy()
   if ( sim -> allow_flasks && level >= 80 )
   {
     std::string flask_action = "flask,type=";
+    if ( level > 90 ) 
+      flask_action += "greator_draenic_intellect_flask";
+    else
     flask_action += ( level > 85 ) ? "warm_sun" : "draconic_mind";
+
     precombat -> add_action( flask_action );
   }
 
@@ -5254,7 +5272,10 @@ void paladin_t::generate_action_prio_list_holy()
   if ( sim -> allow_food && level >= 80 )
   {
     std::string food_action = "food,type=";
-    food_action += ( level > 85 ) ? "mogu_fish_stew" : "seafood_magnifique_feast";
+    if ( level > 90 )
+      food_action += "blackrock_barbecue";
+    else
+      food_action += ( level > 85 ) ? "mogu_fish_stew" : "seafood_magnifique_feast";
     precombat -> add_action( food_action );
   }
 

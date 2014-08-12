@@ -15,8 +15,8 @@ spec=retribution
 
 # Executed before combat begins. Accepts non-harmful actions only.
 
-actions.precombat=flask,type=greater_draenic_multistrike_flask
-actions.precombat+=/food,type=calamari_crepes
+actions.precombat=flask,type=greater_draenic_strength_flask
+actions.precombat+=/food,type=sleeper_surprise
 actions.precombat+=/blessing_of_kings,if=!aura.str_agi_int.up
 actions.precombat+=/blessing_of_might,if=!aura.mastery.up
 actions.precombat+=/seal_of_truth,if=active_enemies<4
@@ -28,7 +28,7 @@ actions.precombat+=/potion,name=draenic_strength
 # Executed every time the actor is available.
 
 actions=rebuke
-actions+=/potion,name=mogu_power,if=(buff.bloodlust.react|buff.avenging_wrath.up|target.time_to_die<=40)
+actions+=/potion,name=draenic_strength,if=(buff.bloodlust.react|buff.avenging_wrath.up|target.time_to_die<=40)
 actions+=/auto_attack
 actions+=/speed_of_light,if=movement.remains>1
 actions+=/avenging_wrath
