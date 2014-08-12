@@ -1679,7 +1679,7 @@ struct arcane_orb_bolt_t : public mage_spell_t
     cooldown -> duration = timespan_t::zero(); // dbc has CD of 15 seconds
   }
 
-  virtual void impact(action_state_t* s )
+  virtual void impact( action_state_t* s )
   {
     for ( unsigned i = 0; i < sizeof_array( p() -> benefits.arcane_charge ); i++)
     {
@@ -1721,7 +1721,8 @@ struct arcane_orb_t : public mage_spell_t
   virtual timespan_t travel_time() const
   {
     timespan_t t = mage_spell_t::travel_time();
-    t  = p() -> talents.arcane_orb -> duration();
+    double distance = mage_spell_t::player -> current.distance;
+    t  = timespan_t::from_seconds( ( distance - 10 ) / 16 );
     return t;
   }
 
