@@ -4918,10 +4918,7 @@ void paladin_t::create_buffs()
   buffs.turalyons_justice      = buff_creator_t( this, "turalyons_justice", find_spell( 156987 ) );
   buffs.uthers_insight         = buff_creator_t( this, "uthers_insight", find_spell( 156988 ) );
   buffs.seraphim                       = stat_buff_creator_t( this, "seraphim", talents.seraphim )
-                                         .cd( timespan_t::zero() ) // Let the ability handle the CD
-                                         .add_invalidate( CACHE_HASTE ).add_invalidate( CACHE_CRIT )
-                                         .add_invalidate( CACHE_MASTERY ).add_invalidate( CACHE_MULTISTRIKE )
-                                         .add_invalidate( CACHE_VERSATILITY ).add_invalidate( CACHE_BONUS_ARMOR );
+                                         .cd( timespan_t::zero() ); // Let the ability handle the CD
 
   // General
   buffs.avenging_wrath         = new buffs::avenging_wrath_buff_t( this );

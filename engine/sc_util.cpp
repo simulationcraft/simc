@@ -2048,6 +2048,23 @@ int util::translate_stat( stat_e stat )
 
 // translate_rating_mod =====================================================
 
+std::vector<stat_e> util::translate_all_rating_mod( unsigned ratings )
+{
+  std::vector<stat_e> stats;
+
+  for ( unsigned i = 0; i < sizeof( unsigned ) * 8; i++ )
+  {
+    if ( ! ( ratings & ( 1 << i ) ) )
+      continue;
+
+    stat_e stat = translate_rating_mod( ratings & ( 1 << i ) );
+    if ( stat != STAT_NONE && std::find( stats.begin(), stats.end(), stat ) == stats.end() )
+      stats.push_back( stat );
+  }
+
+  return stats;
+}
+
 stat_e util::translate_rating_mod( unsigned ratings )
 {
   if ( ratings & RATING_MOD_DODGE )

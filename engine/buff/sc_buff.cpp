@@ -1319,10 +1319,19 @@ stat_buff_t::stat_buff_t( const stat_buff_creator_t& params ) :
       double amount = 0;
       const spelleffect_data_t& effect = data().effectN( i );
 
+      if ( params.item )
+        amount = util::round( effect.average( params.item ) );
+      else
+        amount = util::round( effect.average( player, std::min( MAX_LEVEL, player -> level ) ) );
+
       if ( effect.subtype() == A_MOD_STAT )
         s = static_cast< stat_e >( effect.misc_value1() + 1 );
       else if ( effect.subtype() == A_MOD_RATING )
-        s = util::translate_rating_mod( effect.misc_value1() );
+      {
+        std::vector<stat_e> s = util::translate_all_rating_mod( effect.misc_value1() );
+        for ( size_t j = 0; j < s.size(); j++ )
+          stats.push_back( buff_stat_t( s[ j ], amount ) );
+      }
       else if ( effect.subtype() == A_MOD_DAMAGE_DONE && effect.misc_value1() == 126 )
         s = STAT_SPELL_POWER;
       else if ( effect.subtype() == A_MOD_RESISTANCE )
@@ -1334,11 +1343,8 @@ stat_buff_t::stat_buff_t( const stat_buff_creator_t& params ) :
       }
       else if ( effect.subtype() == A_MOD_INCREASE_HEALTH_2 || effect.subtype() == A_MOD_INCREASE_HEALTH )
         s = STAT_MAX_HEALTH;
-
-      if ( params.item )
-        amount = util::round( effect.average( params.item ) );
-      else
-        amount = util::round( effect.average( player, std::min( MAX_LEVEL, player -> level ) ) );
+      else if ( effect.subtype() == A_465 )
+        s = STAT_BONUS_ARMOR;
 
       if ( s != STAT_NONE )
         stats.push_back( buff_stat_t( s, amount ) );
