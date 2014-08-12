@@ -4,7 +4,7 @@
 #ifndef MAX_CLASS
 #define MAX_CLASS (12)
 #endif
-// Class based active abilities, wow build 18702
+// Class based active abilities, wow build 18716
 static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SIZE] = {
   {
     {
@@ -28,7 +28,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
   },
   // Class active abilities for Warrior
   {
-    // General tree, 16 abilities
+    // General tree, 19 abilities
     {
         6673, // Battle Shout
         2457, // Battle Stance
@@ -36,6 +36,8 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
          100, // Charge
          469, // Commanding Shout
           71, // Defensive Stance
+      174894, // Devastate
+       20243, // Devastate
         1715, // Hamstring
         6544, // Heroic Leap
           78, // Heroic Strike
@@ -43,48 +45,53 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
         3411, // Intervene
         5246, // Intimidating Shout
         6552, // Pummel
+      112048, // Shield Barrier
        23920, // Spell Reflection
          355, // Taunt
        34428, // Victory Rush
            0,
     },
-    // Arms tree, 10 abilities
+    // Arms tree, 13 abilities
     {
       167105, // Colossus Smash
+      174892, // Devastate
       118038, // Die by the Sword
       163201, // Execute
        12294, // Mortal Strike
        97462, // Rallying Cry
         1719, // Recklessness
          772, // Rend
+        6572, // Revenge
+      174926, // Shield Barrier
        12328, // Sweeping Strikes
         6343, // Thunder Clap
         1680, // Whirlwind
            0,
     },
-    // Fury tree, 10 abilities
+    // Fury tree, 13 abilities
     {
        23881, // Bloodthirst
        86346, // Colossus Smash
+      174893, // Devastate
       118038, // Die by the Sword
         5308, // Execute
        12323, // Piercing Howl
        85288, // Raging Blow
        97462, // Rallying Cry
         1719, // Recklessness
+        6572, // Revenge
+      174926, // Shield Barrier
         1680, // Whirlwind
       100130, // Wild Strike
            0,
     },
-    // Protection tree, 11 abilities
+    // Protection tree, 9 abilities
     {
         1160, // Demoralizing Shout
-       20243, // Devastate
         5308, // Execute
        12975, // Last Stand
       114192, // Mocking Banner
         6572, // Revenge
-      112048, // Shield Barrier
         2565, // Shield Block
        23922, // Shield Slam
          871, // Shield Wall
@@ -984,7 +991,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
 
 #define TREE_SPECIALIZATION_SIZE (28)
 
-// Talent tree specialization abilities, wow build 18702
+// Talent tree specialization abilities, wow build 18716
 static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZATION_SIZE] = {
   // Specialization abilities for Hunter pets
   {
@@ -1055,6 +1062,7 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
     // Specialization abilities for Arms
     {
       167105, // Colossus Smash
+      174892, // Devastate
       118038, // Die by the Sword
       163201, // Execute
       137049, // Hotfix Passive
@@ -1065,7 +1073,9 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
        97462, // Rallying Cry
         1719, // Recklessness
          772, // Rend
+        6572, // Revenge
        12712, // Seasoned Soldier
+      174926, // Shield Barrier
       162698, // Stat Negation Aura - Strength DPS
        12328, // Sweeping Strikes
         6343, // Thunder Clap
@@ -1080,6 +1090,7 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
        86346, // Colossus Smash
        23588, // Crazed Berserker
       165383, // Cruelty
+      174893, // Devastate
       118038, // Die by the Sword
        13046, // Enrage
         5308, // Execute
@@ -1092,6 +1103,8 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
        85288, // Raging Blow
        97462, // Rallying Cry
         1719, // Recklessness
+        6572, // Revenge
+      174926, // Shield Barrier
        81099, // Single-Minded Fury
       162698, // Stat Negation Aura - Strength DPS
        46917, // Titan's Grip
@@ -1107,7 +1120,6 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
       159362, // Blood Craze
       115768, // Deep Wounds
         1160, // Demoralizing Shout
-       20243, // Devastate
        13046, // Enrage
         5308, // Execute
       137048, // Hotfix Passive
@@ -1118,7 +1130,6 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
       158298, // Resolve
         6572, // Revenge
       161798, // Riposte
-      112048, // Shield Barrier
         2565, // Shield Block
       165393, // Shield Mastery
        23922, // Shield Slam
@@ -1239,6 +1250,7 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
        53351, // Kill Shot
        56315, // Kindred Spirits
        76657, // Mastery: Master of Beasts
+      162697, // Stat Negation Aura - Agility DPS
            0,
     },
     // Specialization abilities for Marksmanship
@@ -1252,6 +1264,7 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
       165378, // Lethal Shots
        76659, // Mastery: Sniper Training
         3045, // Rapid Fire
+      162697, // Stat Negation Aura - Agility DPS
            0,
     },
     // Specialization abilities for Survival
@@ -1265,6 +1278,7 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
        56343, // Lock and Load
        76658, // Mastery: Essence of the Viper
        87935, // Serpent Sting
+      162697, // Stat Negation Aura - Agility DPS
       164856, // Survivalist
        63458, // Trap Mastery
            0,
@@ -1291,6 +1305,7 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
        58423, // Relentless Strikes
         1943, // Rupture
        14190, // Seal Fate
+      162697, // Stat Negation Aura - Agility DPS
        79140, // Vendetta
        79134, // Venomous Wounds
            0,
@@ -1307,6 +1322,7 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
        84617, // Revealing Strike
       174597, // Ruthlessness
        14161, // Ruthlessness
+      162697, // Stat Negation Aura - Agility DPS
        61329, // Vitality
            0,
     },
@@ -1327,6 +1343,7 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
        79147, // Sanguinary Vein
        51713, // Shadow Dance
        31220, // Sinister Calling
+      162697, // Stat Negation Aura - Agility DPS
            0,
     },
     {
@@ -1601,6 +1618,7 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
        76547, // Mastery: Mana Adept
        12043, // Presence of Mind
        31589, // Slow
+      162699, // Stat Negation Aura - Intellect DPS
            0,
     },
     // Specialization abilities for Fire
@@ -1618,6 +1636,7 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
        11366, // Pyroblast
        44448, // Pyroblast Clearcasting Driver
         2948, // Scorch
+      162699, // Stat Negation Aura - Intellect DPS
            0,
     },
     // Specialization abilities for Frost
@@ -1635,6 +1654,7 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
        12472, // Icy Veins
        76613, // Mastery: Icicles
        12982, // Shatter
+      162699, // Stat Negation Aura - Intellect DPS
        31687, // Summon Water Elemental
            0,
     },
@@ -1662,6 +1682,7 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
        74434, // Soulburn
        74434, // Soulburn
        74434, // Soulburn
+      162699, // Stat Negation Aura - Intellect DPS
        30108, // Unstable Affliction
            0,
     },
@@ -1683,6 +1704,7 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
       103958, // Metamorphosis
       122351, // Molten Core
         6353, // Soul Fire
+      162699, // Stat Negation Aura - Intellect DPS
        30146, // Summon Felguard
       114592, // Wild Imps
            0,
@@ -1708,6 +1730,7 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
        77220, // Mastery: Emberstorm
         5740, // Rain of Fire
        17877, // Shadowburn
+      162699, // Stat Negation Aura - Intellect DPS
            0,
     },
     {
@@ -1926,7 +1949,7 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
 
 #define CLASS_MASTERY_ABILITY_SIZE (1)
 
-// Class mastery abilities, wow build 18702
+// Class mastery abilities, wow build 18716
 static unsigned __class_mastery_ability_data[MAX_CLASS][MAX_SPECS_PER_CLASS][CLASS_MASTERY_ABILITY_SIZE] = {
   {
     {
@@ -2149,7 +2172,7 @@ static unsigned __class_mastery_ability_data[MAX_CLASS][MAX_SPECS_PER_CLASS][CLA
 #define MAX_RACE (28)
 #endif
 
-// Racial abilities, wow build 18702
+// Racial abilities, wow build 18716
 static unsigned __race_ability_data[MAX_RACE][MAX_CLASS][RACE_ABILITY_SIZE] = {
   {
     {     0, },
@@ -2872,7 +2895,7 @@ static unsigned __race_ability_data[MAX_RACE][MAX_CLASS][RACE_ABILITY_SIZE] = {
 
 #define GLYPH_ABILITIES_SIZE (41)
 
-// Glyph spells for classes, wow build 18702
+// Glyph spells for classes, wow build 18716
 static unsigned __glyph_abilities_data[][3][GLYPH_ABILITIES_SIZE] = {
   {
     {
@@ -3181,6 +3204,7 @@ static unsigned __glyph_abilities_data[][3][GLYPH_ABILITIES_SIZE] = {
     {
       159415, // Glyph of Absorb Magic
        58623, // Glyph of Anti-Magic Shell
+       58657, // Glyph of Blood Boil
        58620, // Glyph of Chains of Ice
        63330, // Glyph of Dancing Rune Weapon
        63331, // Glyph of Dark Simulacrum
@@ -3194,7 +3218,6 @@ static unsigned __glyph_abilities_data[][3][GLYPH_ABILITIES_SIZE] = {
        58631, // Glyph of Icy Touch
        58686, // Glyph of Mind Freeze
        59332, // Glyph of Outbreak
-       58657, // Glyph of Pestilence
        58635, // Glyph of Pillar of Frost
       159427, // Glyph of Raise Ally
       146648, // Glyph of Regenerative Magic
@@ -3488,7 +3511,7 @@ static unsigned __glyph_abilities_data[][3][GLYPH_ABILITIES_SIZE] = {
       171752, // Savagery
            0,
     },
-    // Minor Glyphs (14 spells)
+    // Minor Glyphs (15 spells)
     {
        57856, // Glyph of Aquatic Form
        57855, // Glyph of Charm Woodland Creature
@@ -3498,6 +3521,7 @@ static unsigned __glyph_abilities_data[][3][GLYPH_ABILITIES_SIZE] = {
       159456, // Glyph of Travel
       107059, // Glyph of the Chameleon
       131113, // Glyph of the Cheetah
+      164997, // Glyph of the Flapping Owl
       114333, // Glyph of the Orca
       114280, // Glyph of the Predator
       171803, // Glyph of the Solstice
@@ -3517,7 +3541,7 @@ static unsigned __glyph_abilities_data[][3][GLYPH_ABILITIES_SIZE] = {
 
 #define TIER_BONUSES_TIER_BASE (13)
 
-// Tier item set bonuses for class, wow build 18702
+// Tier item set bonuses for class, wow build 18716
 static unsigned __tier_bonuses_data[][TIER_BONUSES_MAX_TIER][TIER_BONUSES_SIZE] = {
   {
     {
@@ -3942,7 +3966,7 @@ static unsigned __tier_bonuses_data[][TIER_BONUSES_MAX_TIER][TIER_BONUSES_SIZE] 
 
 #define SET_BONUS_DATA_SIZE (475)
 
-// Set bonus data, wow build 18702
+// Set bonus data, wow build 18716
 static item_set_bonus_t __set_bonus_data[SET_BONUS_DATA_SIZE] = {
   //                                    Tier name, Tier, Bns, Cls,         Derived Spec, Role, Spec,  Spell, Items
   { "Siegebreaker Battlegear"                    ,    8,   2,   1,      {  71,  72, 0 },    2,    0,  64938, {  46278,  46280,  46282,  46285,  46287,  0 } },
@@ -4442,7 +4466,7 @@ static item_set_bonus_t __set_bonus_data[SET_BONUS_DATA_SIZE] = {
 
 #define PERK_SIZE (4)
 
-// Perk specialization abilities, wow build 18702
+// Perk specialization abilities, wow build 18716
 static unsigned __perk_data[][MAX_SPECS_PER_CLASS][PERK_SIZE] = {
   {
     {
@@ -4617,7 +4641,7 @@ static unsigned __perk_data[][MAX_SPECS_PER_CLASS][PERK_SIZE] = {
   {
     // Elemental
     {
-      157765, // 0: Improved Chain Lightning
+      157765, // 0: Enhanced Chain Lightning
       157774, // 1: Improved Lightning Shield
       157764, // 2: Improved Reincarnation
       157784, // 3: Enhanced Unleash
@@ -4750,8 +4774,8 @@ static unsigned __perk_data[][MAX_SPECS_PER_CLASS][PERK_SIZE] = {
   },
 };
 
-// Glyph properties, wow build 18702
-static glyph_property_data_t __glyph_property_data[518] = {
+// Glyph properties, wow build 18716
+static glyph_property_data_t __glyph_property_data[519] = {
   {   162,  54811 },
   {   163,  54812 },
   {   164, 114338 },
@@ -5269,6 +5293,7 @@ static glyph_property_data_t __glyph_property_data[518] = {
   {  1210, 171924 },
   {  1211, 171921 },
   {  1212, 173182 },
+  {  1213, 164997 },
   {     0,      0 }
 };
 

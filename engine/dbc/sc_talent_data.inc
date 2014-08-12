@@ -1,6 +1,6 @@
 #define TALENT_SIZE (307)
 
-// 307 talents, wow build 18702
+// 307 talents, wow build 18716
 static struct talent_data_t __talent_data[] = {
 //{ Name                                ,    Id, Flgs,  Class, Spc, Col, Row, SpellID, ReplaceID, S1 },
   { "Second Wind"                       , 15757, 0x00, 0x0001,   0,   1,   1,   29838,         0,  0 },
@@ -218,7 +218,7 @@ static struct talent_data_t __talent_data[] = {
   { "Clarity of Will"                   , 21183, 0x00, 0x0010,   0,   0,   6,  152118,         0,  0 },
   { "Words of Mending"                  , 21184, 0x00, 0x0010,   0,   1,   6,  152117,         0,  0 },
   { "Saving Grace"                      , 21185, 0x00, 0x0010,   0,   2,   6,  152116,         0,  0 },
-  { "Venom Zest"                        , 21186, 0x00, 0x0008,   0,   0,   6,  152152,         0,  0 },
+  { "Venom Rush"                        , 21186, 0x00, 0x0008,   0,   0,   6,  152152,         0,  0 },
   { "Shadow Reflection"                 , 21187, 0x00, 0x0008,   0,   1,   6,  152151,         0,  0 },
   { "Death from Above"                  , 21188, 0x00, 0x0008,   0,   2,   6,  152150,         0,  0 },
   { "Hurricane Strike"                  , 21189, 0x00, 0x0200,   0,   0,   6,  152175,         0,  0 },
