@@ -5568,7 +5568,7 @@ double shaman_t::composite_multistrike() const
 {
   double m = player_t::composite_multistrike();
 
-  if ( buff.unleashed_fury -> up() )
+  if ( buff.unleashed_fury -> up() && specialization() == SHAMAN_ENHANCEMENT )
     m += buff.unleashed_fury -> data().effectN( 1 ).percent();
 
   m += spec.elemental_overload -> effectN( 2 ).percent();

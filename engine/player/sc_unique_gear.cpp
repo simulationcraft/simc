@@ -17,6 +17,7 @@ namespace { // UNNAMED NAMESPACE
 
 namespace enchant
 {
+  void mark_of_bleeding_hollow( special_effect_t&, const item_t& );
   void megawatt_filament( special_effect_t&, const item_t& );
   void oglethorpes_missile_splitter( special_effect_t&, const item_t& );
   void hemets_heartseeker( special_effect_t&, const item_t& );
@@ -269,6 +270,7 @@ static const special_effect_db_item_t __special_effect_db[] = {
   { 156059, 0,                         enchant::megawatt_filament },
   { 156052, 0,              enchant::oglethorpes_missile_splitter },
   { 173286, 0,                        enchant::hemets_heartseeker },
+  { 173321, 0,                   enchant::mark_of_bleeding_hollow },
 
   /* Mists of Pandaria */
   { 118333, 0,                             enchant::dancing_steel },
@@ -329,6 +331,19 @@ static const special_effect_db_item_t __special_effect_db[] = {
 
 
 // Enchants ================================================================
+
+void enchant::mark_of_bleeding_hollow( special_effect_t& effect,
+                                       const item_t& item )
+{
+  // Custom callback to help the special effect initialization, we can use
+  // generic initialization for the enchant, but the game client data does not
+  // link driver to the procced spell, so we do it here.
+
+  effect.type = SPECIAL_EFFECT_EQUIP;
+  effect.trigger_spell_id = 173322;
+
+  new dbc_proc_callback_t( item, effect );
+}
 
 void enchant::megawatt_filament( special_effect_t& effect,
                                  const item_t& item )

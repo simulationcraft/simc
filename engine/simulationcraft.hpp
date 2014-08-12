@@ -1310,6 +1310,7 @@ stat_e translate_item_mod( int stat_mod );
 int translate_stat( stat_e stat );
 stat_e translate_attribute( attribute_e attribute );
 stat_e translate_rating_mod( unsigned ratings );
+std::vector<stat_e> translate_all_rating_mod( unsigned ratings );
 slot_e translate_invtype( inventory_type inv_type );
 weapon_e translate_weapon_subclass( int weapon_subclass );
 item_subclass_weapon translate_weapon( weapon_e weapon );
