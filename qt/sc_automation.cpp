@@ -47,6 +47,17 @@ QString automation::tokenize( QString qstr )
   return QString::fromStdString( temp );
 }
 
+// this structure is needed for finding abbreviations in the tables
+struct comp
+{
+  comp( QString const& s ) : _s( s ) {}
+  bool operator () ( const std::pair< QString, QString>& p ) const
+  {
+    return ( p.first == _s );
+  }
+  QString _s;
+};
+
 QString automation::do_something( int sim_type,
                                   QString player_class,
                                   QString player_spec,
@@ -389,17 +400,6 @@ QStringList automation::convert_shorthand( QStringList shorthandList, QString si
 
   QStringList actionPriorityList; // Final APL
 
-  // this structure is needed for finding abbreviations in the tables
-  struct comp
-  {
-    comp( QString const& s ) : _s( s ) {}
-    bool operator () ( std::pair< QString, QString> const& p )
-    {
-      return ( p.first == _s );
-    }
-    QString _s;
-  };
-
   // cycle through the list of shorthands, converting as we go and appending to actionPriorityList
   for ( int i = 0; i < shorthandList.size(); i++ )
   {
@@ -411,7 +411,7 @@ QStringList automation::convert_shorthand( QStringList shorthandList, QString si
     QStringList splits = splitOnFirst( shorthandList[ i ], "+" );
 
     // use abilityTable to replace the abbreviation with the full ability name
-    shorthandTable::iterator m = find_if( abilityTable.begin(), abilityTable.end(), comp( splits[ 0 ] ) );
+    shorthandTable::iterator m = std::find_if( abilityTable.begin(), abilityTable.end(), comp( splits[ 0 ] ) );
     if ( m != abilityTable.end() )
     {
       ability = m -> second;
@@ -441,14 +441,14 @@ QStringList automation::convert_shorthand( QStringList shorthandList, QString si
           // if we have just a text component, it's fairly easy
           if ( captures[ 2 ].length() == 0 )
           {
-            shorthandTable::iterator m = find_if( optionsTable.begin(), optionsTable.end(), comp( captures[ 1 ] ) );
+            shorthandTable::iterator m = std::find_if( optionsTable.begin(), optionsTable.end(), comp( captures[ 1 ] ) );
             if ( m != optionsTable.end() )
               optionsBreakdown[ j ] = m -> second;
           }
           // otherwise we need to do some trickery with numbers. Search for "W#" in the table and replace, then replace # with our number (e.g. "3")
           else
           {
-            shorthandTable::iterator m = find_if( optionsTable.begin(), optionsTable.end(), comp( captures[ 1 ] + "#" ) );
+            shorthandTable::iterator m = std::find_if( optionsTable.begin(), optionsTable.end(), comp( captures[ 1 ] + "#" ) );
             if ( m != optionsTable.end() )
               optionsBreakdown[ j ] = m -> second.replace( "#", captures[ 2 ] );
           }
