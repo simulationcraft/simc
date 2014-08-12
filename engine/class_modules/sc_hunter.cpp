@@ -3343,7 +3343,7 @@ void hunter_t::init_action_list()
     if ( sim -> allow_flasks && level >= 80 )
     {
       std::string flask_action = "flask,type=";
-        flask_action += "greater_draenic_critical_strike_flask";
+        flask_action += "greater_draenic_agility_flask";
       precombat -> add_action( flask_action );
     }
 

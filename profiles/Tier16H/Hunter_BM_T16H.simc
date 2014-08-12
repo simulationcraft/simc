@@ -15,7 +15,7 @@ spec=beast_mastery
 
 # Executed before combat begins. Accepts non-harmful actions only.
 
-actions.precombat=flask,type=greater_draenic_critical_strike_flask
+actions.precombat=flask,type=greater_draenic_agility_flask
 actions.precombat+=/food,type=blackrock_barbecue
 actions.precombat+=/summon_pet
 # Snapshot raid buffed stats before combat begins and pre-potting is done.
