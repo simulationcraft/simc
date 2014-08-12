@@ -40,6 +40,7 @@ win32 {
 
 macx {
   CONFIG(qt) {
+    QMAKE_CXXFLAGS += -stdlib=libstdc++
     QMAKE_MACOSX_DEPLOYMENT_TARGET = 10.6
     CONFIG += to_install
     QMAKE_INFO_PLIST = qt/Simulationcraft.plist
