@@ -1597,6 +1597,7 @@ namespace automation {
 
   QStringList convert_shorthand( QStringList shorthandList, QString sidebar_text );
   QStringList splitOption( QString options_shorthand );
+  QStringList splitOnFirst( QString str, const char* delimiter );
 
 } // end automation namespace
 

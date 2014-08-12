@@ -294,8 +294,9 @@ QString automation::auto_rotation_sim( QString player_class,
 QStringList automation::splitOption( QString s )
 {
   QStringList optionsBreakdown;
-  int numSeparators = s.count( "(" ) + s.count( ")" ) + s.count( "&" ) + s.count( "|" )+s.count( "!" );
-  QRegExp delimiter( "[&|\\(\\)\\!]" );
+  int numSeparators = s.count( "(" ) + s.count( ")" ) + s.count( "&" ) + s.count( "|" ) + s.count( "!" )
+                    + s.count( "+" ) + s.count( "-" ) + s.count( ">" ) + s.count( "<" ) + s.count( "=" );
+  QRegExp delimiter( "[&|\\(\\)\\!\\+\\-\\>\\<\\=]" );
 
   // ideally we will split this into ~2*numSeparators parts 
   if ( numSeparators > 0 )
@@ -322,19 +323,35 @@ QStringList automation::splitOption( QString s )
   return optionsBreakdown;
 }
 
+// this method splits only on the first instance of a delimiter, returning a 2-element QString
+QStringList automation::splitOnFirst( QString str, const char* delimiter )
+{
+  QStringList parts = str.split( delimiter, QString::SkipEmptyParts );
+  QStringList rest;
+  if ( parts.size() > 1 )
+  {
+    rest = parts;
+    rest.removeFirst();    
+  }
+  QStringList returnStringList;
+  returnStringList.append( parts[ 0 ] );
+  returnStringList.append( rest.join( delimiter ) );
+  
+  assert( returnStringList.size() <= 2 );
+
+  return returnStringList;
+}
+
 QStringList automation::convert_shorthand( QStringList shorthandList, QString sidebar_text )
 {
   // STEP 1:  Take the sidebar list and convert it to an abilities table and an options table
 
-  QStringList sidebarSplit = sidebar_text.split( QRegExp( "\\n\\n" ), QString::SkipEmptyParts );
+  QStringList sidebarSplit = sidebar_text.split( QRegExp( ":::\\w+:::" ), QString::SkipEmptyParts );
   
   assert( sidebarSplit.size() == 2 );
 
-  QString abilityConversions = sidebarSplit[ 0 ];
-  QString optionConversions = sidebarSplit[ 1 ];
-
-  QStringList abilityList = abilityConversions.split( "\n", QString::SkipEmptyParts );
-  QStringList optionsList = optionConversions.split( "\n", QString::SkipEmptyParts );
+  QStringList abilityList = sidebarSplit[ 0 ].split( "\n", QString::SkipEmptyParts );
+  QStringList optionsList = sidebarSplit[ 1 ].split( "\n", QString::SkipEmptyParts );
 
   typedef std::vector<std::pair<QString, QString> > shorthandTable;
   shorthandTable abilityTable;
@@ -343,33 +360,17 @@ QStringList automation::convert_shorthand( QStringList shorthandList, QString si
   // Construct the table for ability conversions
   for ( int i = 0; i < abilityList.size(); i++ )
   {
-    QStringList parts = abilityList[ i ].split( "=", QString::SkipEmptyParts );
+    QStringList parts = splitOnFirst( abilityList[ i ], "=" );
     if ( parts.size() > 1 )
-    {
-      // some conditionals will have ='s in them, and will generate extra elements in parts. 
-      // To handle that, we'll duplicate parts, remove the first element (the abbreviation),
-      // and then join the remainder for the second QString of the pair.
-      QStringList rest = parts;
-      rest.removeFirst();
-
-      abilityTable.push_back( std::make_pair( parts[ 0 ], rest.join( "=" ) ) );
-    }
+      abilityTable.push_back( std::make_pair( parts[ 0 ], parts[ 1 ] ) );
   }
 
-  // Construct the table for ability conversions
+  // Construct the table for option conversions
   for ( int i = 0; i < optionsList.size(); i++ )
   {
-    QStringList parts = optionsList[ i ].split( "=", QString::SkipEmptyParts );
+    QStringList parts = splitOnFirst( optionsList[ i ], "=" );
     if ( parts.size() > 1 )
-    {
-      // some conditionals will have ='s in them, and will generate extra elements in parts. 
-      // To handle that, we'll duplicate parts, remove the first element (the abbreviation),
-      // and then join the remainder for the second QString of the pair.
-      QStringList rest = parts;
-      rest.removeFirst();
-
-      optionsTable.push_back( std::make_pair( parts[ 0 ], rest.join( "=" ) ) );
-    }
+      optionsTable.push_back( std::make_pair( parts[ 0 ], parts[ 1 ] ) );
   }
 
   // STEP 2: now we take the shorthand and figure out what to do with each element
@@ -394,8 +395,7 @@ QStringList automation::convert_shorthand( QStringList shorthandList, QString si
     QString options;
 
     // first, split into ability abbreviation and options set
-    QStringList splits = shorthandList[ i ].split( "+", QString::SkipEmptyParts );
-    assert( splits.size() <= 2 );
+    QStringList splits = splitOnFirst( shorthandList[ i ], "+" );
 
     // use abilityTable to replace the abbreviation with the full ability name
     shorthandTable::iterator m = find_if( abilityTable.begin(), abilityTable.end(), comp( splits[ 0 ] ) );
@@ -416,7 +416,7 @@ QStringList automation::convert_shorthand( QStringList shorthandList, QString si
         for ( int j = 0; j < optionsBreakdown.size(); j++ )
         {
           // if this entry is &|()!, skip it
-          if ( optionsBreakdown[ j ].contains( QRegExp( "[&|\\(\\)\\!]+" ) ) )
+          if ( optionsBreakdown[ j ].contains( QRegExp( "[&|\\(\\)\\!\\+\\-\\>\\<\\=]+" ) ) )
             continue;
 
           // Each option can have a text part and a numeric part (e.g. W3). We need to split that up using regular expressions
@@ -439,6 +439,10 @@ QStringList automation::convert_shorthand( QStringList shorthandList, QString si
             if ( m != optionsTable.end() )
               optionsBreakdown[ j ] = m -> second.replace( "#", captures[ 2 ] );
           }
+
+          // we also need to do some replacements on $ability_name entries
+          if ( optionsBreakdown[ j ].contains( "$ability_name" ) )
+            optionsBreakdown[ j ].replace( "$ability_name", ability );
 
         } // end for loop
 
@@ -511,6 +515,8 @@ void SC_ImportTab::setSpecDropDown( const int player_class )
     choice.player_spec -> addItem( classSpecText[ player_class ][ 4 ] );
 }
 
+QString defaultOptions = "W#=wait,sec=cooldown.$ability_name.remains,if=cooldown.$ability_name.remains<=#\nE=target.health.pct<=20\nNT=!ticking\nNF=target.debuff.flying.down\nT#=active_enemies>=#\nBR=buff.$ability_name.remains\nBR#=buff.$ability_name.remains<#\nCD=cooldown.$ability_name.remains\nCD#=cooldown.$ability_name.remains<#\n";
+
 // constant for sidebar text (this will eventually get really long)
 QString sidebarText[ 11 ][ 4 ] = {
   { "Blood shorthand goes here.", "Frost shorthand goes here", "Unholy shorthand goes here", "N/A" },
@@ -518,9 +524,12 @@ QString sidebarText[ 11 ][ 4 ] = {
   { "Beast Master shorthand goes here.", "Marksmanship shorthand goes here.", "Survival shorthand goes here." },
   { "Arcane shorthand goes here.", "Fire shorthand goes here.", "Frost shorthand goes here.", "N/A" },
   { "Brewmaster shorthand goes here.", "Mistweaver shorthand goes here.", "Windwalker shorthand goes here.", "N/A" },
+
   { "Holy shorthand goes here.",
-  ":::Abilities:::\nCS=crusader_strike\nJ=judgment\nAS=avengers_shield\nHW=holy_wrath\nHotR=hammer_of_the_righteous\nHoW=\hammer_of_wrath\nCons=consecration\nSS=sacred_shield\nHPr=holy_prism\nES=execution_sentence\nLH=lights_hammer\nSotR=shield_of_the_righteous\nEF=eternal_flame\nWoG=word_of_glory\nSoI=seal_of_insight\nSoT=seal_of_truth\nSoR=seal_of_righteousness\nSP=seraphim\n\n:::Options:::\nW#=wait,sec=#\nGC=buff.grand_crusader.react\nGC#=buff.grand_crusader.remains<#\nDP=buff.divine_purpose.react\nDPHP#=buff.divine_purpose.react|holy_power>=#\nE=target.health.pct<=20\nFW=glyph.final_wrath.enabled&target.health.pct<=20\nHP#=holy_power>=#\nNT=!ticking\nNF=target.debuff.flying.down\nSW=talent.sanctified_wrath.enabled\nSP=buff.seraphim.react\nT#=active_enemies>=#\nR#=buff.<ability_name>.remains<#\n",
+  ":::Abilities:::\nCS=crusader_strike\nJ=judgment\nAS=avengers_shield\nHW=holy_wrath\nHotR=hammer_of_the_righteous\nHoW=hammer_of_wrath\nCons=consecration\nSS=sacred_shield\nHPr=holy_prism\nES=execution_sentence\nLH=lights_hammer\nSotR=shield_of_the_righteous\nEF=eternal_flame\nWoG=word_of_glory\nSoI=seal_of_insight\nSoT=seal_of_truth\nSoR=seal_of_righteousness\nSP=seraphim"
+  "\n\n:::Options:::\n" + defaultOptions + "\nGC=buff.grand_crusader.react\nGC#=buff.grand_crusader.remains<#\nDP=buff.divine_purpose.react\nDPHP#=buff.divine_purpose.react|holy_power>=#\nFW=glyph.final_wrath.enabled&target.health.pct<=20\nHP#=holy_power>=#\nSW=talent.sanctified_wrath.enabled\nSP=buff.seraphim.react",
   "Retribution shorthand goes here.", "N/A" },
+
   { "Discipline shorthand goes here.", "Holy shorthand goes here.", "Shadow shorthand goes here.", "N/A" },
   { "Assasination shorthand goes here.", "Combat shorthand goes here.", "Subtlety shorthand goes here.", "N/A" },
   { "Elemental shorthand goes here.", "Enhancement shorthand goes here.", "Restoration shorthand goes here.", "N/A" },
