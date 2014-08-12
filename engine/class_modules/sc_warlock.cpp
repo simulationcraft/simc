@@ -227,6 +227,7 @@ public:
     cooldown_t* doomguard;
     cooldown_t* imp_swarm;
     cooldown_t* hand_of_guldan;
+    cooldown_t* dark_soul;
   } cooldowns;
 
   // Passives
@@ -2542,10 +2543,15 @@ struct corruption_t : public warlock_spell_t
           p() -> shard_react = timespan_t::max();
           
           
-         if (p() -> sets.has_set_bonus( SET_T17_4PC_CASTER )) //if we ticked, then reduce time till DS goes off CD  by 10 seconds
+         if (p() -> sets.has_set_bonus( SET_T17_4PC_CASTER )) //if we ticked, then reduce time till next DS goes off CD by 10 seconds
          {
-             //TODO implement
-         }
+             timespan_t cd_reduction = p() -> sets.set( SET_T17_4PC_CASTER ) -> effectN( 1 ).time_value();
+             
+             if (p() -> cooldowns.dark_soul -> remains() > cd_reduction)
+             {
+                //p() -> cooldowns.dark_soul -> adjust(-cd_reduction); TODO Fix WITH AD.
+             }
+        }
       }
     }
 
@@ -4684,6 +4690,7 @@ warlock_t::warlock_t( sim_t* sim, const std::string& name, race_e r ) :
   cooldowns.doomguard      = get_cooldown ( "summon_doomguard" );
   cooldowns.imp_swarm      = get_cooldown ( "imp_swarm" );
   cooldowns.hand_of_guldan = get_cooldown ( "hand_of_guldan" );
+  cooldowns.dark_soul      = get_cooldown ( "dark_soul" );
 
   regen_type = REGEN_DYNAMIC;
 }
