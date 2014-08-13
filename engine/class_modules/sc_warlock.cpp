@@ -5389,7 +5389,6 @@ void warlock_t::apl_precombat()
   add_action( "Dark Intent", "if=!aura.spell_power_multiplier.up",
               "precombat" );
 
-  if ( specialization() != WARLOCK_DEMONOLOGY )
   precombat_list += "/summon_pet,if=!talent.demonic_servitude.enabled&(!talent.grimoire_of_sacrifice.enabled|buff.grimoire_of_sacrifice.down)";
 
   precombat_list +=
