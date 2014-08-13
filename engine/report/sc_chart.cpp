@@ -823,7 +823,7 @@ size_t chart::raid_aps( std::vector<std::string>& images,
     for ( size_t i = 0; i < num_players; i++ )
     {
       player_t* p = player_list[ i ];
-      std::string formatted_name = p -> name_str;
+      std::string formatted_name = util::google_image_chart_encode( p -> name_str );
       util::urlencode( formatted_name );
       double player_mean = 0.0;
       if      ( type == "dps" )  { player_mean = p -> collected_data.dps.mean(); }
@@ -1099,7 +1099,7 @@ std::string chart::action_dpet(  player_t* p )
 
   char buffer[ 1024 ];
 
-  std::string formatted_name = p -> name_str;
+  std::string formatted_name = util::google_image_chart_encode( p -> name_str );
   util::urlencode( formatted_name );
   sc_chart chart( formatted_name + " Damage Per Execute Time", HORIZONTAL_BAR, p -> sim -> print_styles );
   chart.set_height( num_stats * 30 + 30 );
@@ -1178,7 +1178,8 @@ std::string chart::aps_portion(  player_t* p )
 
   char buffer[ 1024 ];
 
-  std::string formatted_name = p -> name();
+  std::string formatted_name =  p -> name();
+  formatted_name =  util::google_image_chart_encode( formatted_name );
   util::urlencode( formatted_name );
   sc_chart chart( formatted_name + ( p -> primary_role() == ROLE_HEAL ? " Healing" : " Damage" ) + " Sources", PIE, p -> sim -> print_styles );
   chart.set_height( 275 );
@@ -1244,6 +1245,7 @@ std::string chart::time_spent( player_t* p )
   char buffer[ 1024 ];
 
   std::string formatted_name = p -> name();
+  formatted_name = util::google_image_chart_encode( formatted_name );
   util::urlencode( formatted_name );
   sc_chart chart( formatted_name + " Spent Time", PIE, p -> sim -> print_styles );
   chart.set_height( 275 );
@@ -1329,7 +1331,7 @@ std::string chart::gains( player_t* p, resource_e type )
   std::ostringstream s;
   s.setf( std::ios_base::fixed ); // Set fixed flag for floating point numbers
 
-  std::string formatted_name = p -> name_str;
+  std::string formatted_name = util::google_image_chart_encode( p -> name_str );
   util::urlencode( formatted_name );
   std::string r = util::resource_type_string( type );
   util::inverse_tokenize( r );
@@ -1388,7 +1390,7 @@ std::string chart::scale_factors( player_t* p )
 
   char buffer[ 1024 ];
 
-  std::string formatted_name = p -> scales_over().name;
+  std::string formatted_name = util::google_image_chart_encode( p -> scales_over().name );
   util::urlencode( formatted_name );
 
   sc_chart chart( "Scale Factors|" + formatted_name, HORIZONTAL_BAR, p -> sim -> print_styles );
@@ -1480,7 +1482,7 @@ std::string chart::scaling_dps( player_t* p )
 
   char buffer[ 1024 ];
 
-  std::string formatted_name = p -> scales_over().name;
+  std::string formatted_name = util::google_image_chart_encode( p -> scales_over().name );
   util::urlencode( formatted_name );
 
   sc_chart chart( "Stat Scaling|" + formatted_name, LINE, p -> sim -> print_styles );
@@ -1604,7 +1606,7 @@ std::string chart::reforge_dps( player_t* p )
     int ysteps = 5;
     double ystep_amount = max_ydelta / ysteps;
 
-    std::string formatted_name = p -> scales_over().name;
+    std::string formatted_name = util::google_image_chart_encode( p -> scales_over().name );
     util::urlencode( formatted_name );
 
     sc_chart chart( "Reforge Scaling|" + formatted_name, XY_LINE, p -> sim -> print_styles );

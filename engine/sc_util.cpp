@@ -2617,6 +2617,33 @@ std::string& util::urlencode( std::string& str )
   return str;
 }
 
+std::string util::google_image_chart_encode( std::string& str )
+{
+  std::string::size_type l = str.length();
+  if ( ! l ) return str;
+
+  std::string temp;
+  for ( std::string::size_type i = 0; i < l; ++i )
+  {
+    unsigned char c = str[ i ];
+    if ( c == '+' )
+      temp += "%2B";
+    else if ( c == '&' )
+      temp += "%26";
+    else if ( c == '|' )
+      temp += "%7E"; // pipe is a newline in google API, replace with ~
+    else
+      temp += c;
+  }
+
+  return temp;
+}
+
+//std::string util::google_image_chart_encode( const std::string str )
+//{ 
+//  return util::google_image_chart_encode( str ); 
+//}
+
 // urldecode ================================================================
 
 std::string& util::urldecode( std::string& str )

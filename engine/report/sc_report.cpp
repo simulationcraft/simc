@@ -959,7 +959,7 @@ void report::generate_player_charts( player_t* p, player_processed_report_inform
   ri.reforge_dps_chart    = chart::reforge_dps  ( p );
   ri.scale_factors_chart  = chart::scale_factors( p );
 
-  std::string encoded_name = p -> name_str;
+  std::string encoded_name = util::google_image_chart_encode( p -> name_str );
   util::urlencode( encoded_name );
 
   {
