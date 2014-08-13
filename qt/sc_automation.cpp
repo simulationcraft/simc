@@ -301,6 +301,9 @@ QString automation::auto_rotation_sim( QString player_class,
       // take the returned QStringList and output it.
       for ( int i = 0; i < convertedAPL.size(); i++ )
         profile += convertedAPL[ i ] + "\n";
+
+      // rename the actor to match the shorthand
+      profile += "name=" + actionList[ 0 ] + "\n";
     }
 
     // Otherwise, the user has specified the action list in its full and gory detail, so we can just use that
@@ -476,10 +479,7 @@ QStringList automation::convert_shorthand( QStringList shorthandList, QString si
       }
 
       // combine the ability and options into a single string
-      QString entry = "actions";
-      if ( ! actionPriorityList.empty() )
-        entry += "+";
-      entry += "=/" + ability;
+      QString entry = "actions+=/" + ability;
       if ( options.length() > 0 )
         entry += ",if=" + options;
 
@@ -786,9 +786,9 @@ void SC_ImportTab::compTypeChanged( const int comp )
       break;
     case 4:
       //textbox.rotation -> setDisabled( true );
-      label.rotation -> setText( "Precombat Actions" );
-      label.rotation -> setToolTip( "Use this box to specify precombat actions for all configurations." );
-      textbox.rotation -> setToolTip( "Use this box to specify precombat actions for all configurations." );
+      label.rotation -> setText( "Actions Header" );
+      label.rotation -> setToolTip( "Use this box to specify precombat actions and any actions you want to apply to all configurations (ex: auto_attack)." );
+      textbox.rotation -> setToolTip( "Use this box to specify precombat actions and any actions you want to apply to all configurations (ex: auto_attack)." );
       textbox.advanced -> setText( advRotation );
       textbox.sidebar -> setDisabled( false );
       textbox.advanced -> setToolTip( advRotToolTip );
