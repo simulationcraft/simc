@@ -6089,11 +6089,12 @@ void death_knight_t::init_scaling()
     scales_with[ STAT_WEAPON_OFFHAND_SPEED ] = sim -> weapon_speed_scale_factors != 0;
   }
 
+  scales_with[ STAT_AGILITY      ] = false;
+
   if ( primary_role() == ROLE_TANK )
   {
     scales_with[ STAT_PARRY_RATING ] = true;
     scales_with[ STAT_DODGE_RATING ] = true;
-    scales_with[ STAT_AGILITY      ] = false; // Yes yes on paper this isnt really true.
     scales_with[ STAT_BLOCK_RATING ] = false;
   }
 }
