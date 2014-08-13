@@ -827,7 +827,7 @@ void SC_ImportTab::createTooltips()
   textbox.sidebar -> setToolTip( sidebarTooltip );
   label.sidebar   -> setToolTip( sidebarTooltip );
 
-  textbox.talents -> setToolTip( "Default talents, specified either as \"talents=0000000\" or \"0000000\"" );
+  textbox.talents -> setToolTip( "Default talents, specified either as \"talents=1231231\" or \"1231231\"" );
   textbox.glyphs -> setToolTip( "Default glyphs, specified either as \"glyphs=glyph1/glyph2/glyph3\" or \"glyph1/glyph2/glyph3\"" );
   textbox.gear -> setToolTip( "Default gear, specified the same way you would in a regular simc profile." );
   textbox.rotation -> setToolTip( "Default rotation, specified the same way you would in a regular simc profile.\nIf left blank, the default APL for the chosen spec will be used automatically." );
@@ -981,8 +981,8 @@ void SC_ImportTab::encodeSettings()
   settings.setValue( "spec", choice.player_spec -> currentText() );
   settings.setValue( "race", choice.player_race -> currentText() );
   settings.setValue( "level", choice.player_level -> currentText() );
-  settings.setValue( "talentsbox", textbox.talents -> text() );
-  settings.setValue( "glyphsbox", textbox.glyphs -> text() );
+  settings.setValue( "talentbox", textbox.talents -> text() );
+  settings.setValue( "glyphbox", textbox.glyphs -> text() );
   settings.setValue( "gearbox", textbox.gear -> document() -> toPlainText() );
   settings.setValue( "rotationbox", textbox.rotation -> document() -> toPlainText() );
   settings.setValue( "advancedbox", textbox.advanced -> document() -> toPlainText() );
