@@ -31,19 +31,20 @@ actions.precombat+=/potion,name=jade_serpent
 
 actions=potion,name=jade_serpent,if=buff.bloodlust.react|target.health.pct<=20
 actions+=/berserking
+actions+=/blood_fury
+actions+=/arcane_torrent
 actions+=/dark_soul,if=!talent.archimondes_darkness.enabled|(talent.archimondes_darkness.enabled&(charges=2|trinket.proc.intellect.react|trinket.stacking_proc.intellect.react|target.health.pct<=10))
 actions+=/service_pet,if=talent.grimoire_of_service.enabled
 actions+=/summon_doomguard,if=!talent.demonic_servitude.enabled
-actions+=/soul_swap,if=shard_react&!talent.soulburn_haunt.enabled&buff.soulburn.react
-actions+=/soulburn,if=shard_react&!talent.soulburn_haunt.enabled&buff.soulburn.down&(!dot.unstable_affliction.ticking&!dot.corruption.ticking&!dot.agony.ticking)
+actions+=/cataclysm
 actions+=/haunt,if=shard_react&!talent.soulburn_haunt.enabled&shard_react&!in_flight_to_target&(!dot.haunt.ticking|soul_shard=4)&(trinket.proc.intellect.react|buff.dark_soul.up|soul_shard>2|soul_shard*14<=target.time_to_die)
 actions+=/soulburn,if=shard_react&talent.soulburn_haunt.enabled&buff.soulburn.down&(buff.haunting_spirits.down|soul_shard=4)
 actions+=/haunt,if=shard_react&talent.soulburn_haunt.enabled&!in_flight_to_target&((buff.soulburn.up&buff.haunting_spirits.remains<5)|soul_shard=4)
-actions+=/agony,if=remains<=(duration*0.3)
+actions+=/agony,if=remains<=(duration*0.3)&((talent.cataclysm.enabled&remains<=(cooldown.cataclysm.remains+action.cataclysm.cast_time))|!talent.cataclysm.enabled)
 actions+=/unstable_affliction,if=remains<=(duration*0.3)
 actions+=/corruption,if=remains<=(duration*0.3)
 actions+=/life_tap,if=mana.pct<40
-actions+=/drain_soul
+actions+=/drain_soul,interrupt=1,chain=1
 actions+=/life_tap
 
 head=flameslingers_fiery_cowl,id=105495,upgrade=2,gems=sinister_primal_16haste_9int

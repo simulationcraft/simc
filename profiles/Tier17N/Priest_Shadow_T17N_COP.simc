@@ -15,7 +15,7 @@ spec=shadow
 
 # Executed before combat begins. Accepts non-harmful actions only.
 
-actions.precombat=flask,type=greater_draenic_mastery_flask
+actions.precombat=flask,type=greater_draenic_intellect_flask
 actions.precombat+=/food,type=sleeper_surprise
 actions.precombat+=/power_word_fortitude,if=!aura.stamina.up
 actions.precombat+=/shadowform,if=!buff.shadowform.up
