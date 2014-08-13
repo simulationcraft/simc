@@ -4413,7 +4413,8 @@ void warrior_t::create_buffs()
     .default_value( glyphs.rude_interruption -> effectN( 1 ).trigger() -> effectN( 1 ).percent() )
     .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
 
-  buff.shield_barrier = absorb_buff_creator_t( this, "shield_barrier", find_specialization_spell( "Shield Barrier" ) )
+  buff.shield_barrier = absorb_buff_creator_t(this, "shield_barrier", specialization() == WARRIOR_PROTECTION ?
+                                              find_spell( 112048 ) : find_specialization_spell("Shield Barrier") )
     .source( get_stats( "shield_barrier" ) );
 
   buff.shield_block = buff_creator_t( this, "shield_block", find_spell( 132404 ) )
