@@ -74,8 +74,10 @@ bool spelleffect_data_t::override_field( const std::string& field, double value 
     _m_delta = value;
   else if ( util::str_compare_ci( field, "bonus" ) )
     _m_unk = value;
-  else if ( util::str_compare_ci( field, "coefficient" ) )
+  else if ( util::str_compare_ci( field, "sp_coefficient" ) )
     _sp_coeff = value;
+  else if ( util::str_compare_ci( field, "ap_coefficient" ) )
+    _ap_coeff = value;
   else if ( util::str_compare_ci( field, "period" ) )
     _amplitude = value;
   else if ( util::str_compare_ci( field, "base_value" ) )
