@@ -4395,8 +4395,6 @@ struct raise_dead_t : public death_knight_spell_t
 
 struct scourge_strike_t : public death_knight_melee_attack_t
 {
-  spell_t* scourge_strike_shadow;
-
   struct scourge_strike_shadow_t : public death_knight_melee_attack_t
   {
     scourge_strike_shadow_t( death_knight_t* p ) :
@@ -4406,6 +4404,7 @@ struct scourge_strike_t : public death_knight_melee_attack_t
       special = proc = background = true;
       weapon = &( player -> main_hand_weapon );
       dual = true;
+      school = SCHOOL_SHADOW;
 
       base_multiplier *= 1.0 + p -> perk.improved_scourge_strike -> effectN( 1 ).percent();
     }
@@ -4418,9 +4417,11 @@ struct scourge_strike_t : public death_knight_melee_attack_t
     }
   };
 
+  scourge_strike_shadow_t* scourge_strike_shadow;
+
   scourge_strike_t( death_knight_t* p, const std::string& options_str ) :
     death_knight_melee_attack_t( "scourge_strike", p, p -> find_class_spell( "Scourge Strike" ) ),
-    scourge_strike_shadow( 0 )
+    scourge_strike_shadow( new scourge_strike_shadow_t( p ) )
   {
     parse_options( NULL, options_str );
 
@@ -4429,13 +4430,18 @@ struct scourge_strike_t : public death_knight_melee_attack_t
     base_multiplier *= 1.0 + p -> perk.improved_scourge_strike -> effectN( 1 ).percent();
 
     // TODO-WOD: Do we need to inherit damage or is it a separate roll in WoD?
-    execute_action = new scourge_strike_shadow_t( p );
-    add_child( execute_action );
+    add_child( scourge_strike_shadow );
   }
 
   void impact( action_state_t* state )
   {
     death_knight_melee_attack_t::impact( state );
+
+    if ( result_is_hit( state -> result ) )
+    {
+      scourge_strike_shadow -> target = state -> target;
+      scourge_strike_shadow -> schedule_execute();
+    }
 
     p() -> trigger_necrosis( state );
   }
@@ -6486,7 +6492,7 @@ double death_knight_t::composite_attribute_multiplier( attribute_e attr ) const
 
   if ( attr == ATTR_STRENGTH )
   {
-    m *= 1.0 + runeforge.rune_of_the_fallen_crusader -> value() + perk.enhanced_fallen_crusader -> effectN( 1 ).percent();
+    m *= 1.0 + runeforge.rune_of_the_fallen_crusader -> value();
     m *= 1.0 + buffs.pillar_of_frost -> value();
   }
   else if ( attr == ATTR_STAMINA )
