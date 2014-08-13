@@ -6058,19 +6058,19 @@ void priest_t::apl_precombat()
       switch ( specialization() )
       {
         case PRIEST_DISCIPLINE:
-          flask_action += "greater_draenic_critical_strike_flask";
+          flask_action += "greater_draenic_intellect_flask";
           break;
         case PRIEST_HOLY:
-          flask_action += "greater_draenic_multistrike_flask";
+          flask_action += "greater_draenic_intellect_flask";
           break;
         case PRIEST_SHADOW:
         default:
           if ( talents.clarity_of_power -> ok() )
-            flask_action += "greater_draenic_mastery_flask";
+            flask_action += "greater_draenic_intellect_flask";
           else if ( talents.auspicious_spirits -> ok() )
-            flask_action += "greater_draenic_critical_strike_flask";
+            flask_action += "greater_draenic_intellect_flask";
           else
-            flask_action += "greater_draenic_haste_flask";
+            flask_action += "greater_draenic_intellect_flask";
           break;
       }
     }

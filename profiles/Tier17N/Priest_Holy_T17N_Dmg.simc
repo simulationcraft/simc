@@ -15,7 +15,7 @@ spec=holy
 
 # Executed before combat begins. Accepts non-harmful actions only.
 
-actions.precombat=flask,type=greater_draenic_multistrike_flask
+actions.precombat=flask,type=greater_draenic_intellect_flask
 actions.precombat+=/food,type=calamari_crepes
 actions.precombat+=/power_word_fortitude,if=!aura.stamina.up
 actions.precombat+=/chakra_chastise
