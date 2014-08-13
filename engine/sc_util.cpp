@@ -2639,11 +2639,6 @@ std::string util::google_image_chart_encode( std::string& str )
   return temp;
 }
 
-//std::string util::google_image_chart_encode( const std::string str )
-//{ 
-//  return util::google_image_chart_encode( str ); 
-//}
-
 // urldecode ================================================================
 
 std::string& util::urldecode( std::string& str )
