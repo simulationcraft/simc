@@ -322,8 +322,9 @@ QStringList automation::splitOption( QString s )
 {
   QStringList optionsBreakdown;
   int numSeparators = s.count( "(" ) + s.count( ")" ) + s.count( "&" ) + s.count( "|" ) + s.count( "!" )
-                    + s.count( "+" ) + s.count( "-" ) + s.count( ">" ) + s.count( "<" ) + s.count( "=" );
-  QRegExp delimiter( "[&|\\(\\)\\!\\+\\-\\>\\<\\=]" );
+                    + s.count( "+" ) + s.count( "-" ) + s.count( ">" ) + s.count( "<" ) + s.count( "=" )
+                    + s.count( "/" ) + s.count( "*" );
+  QRegExp delimiter( "[&|\\(\\)\\!\\+\\-\\>\\<\\=\\*/]" );
 
   // ideally we will split this into ~2*numSeparators parts 
   if ( numSeparators > 0 )
@@ -433,7 +434,7 @@ QStringList automation::convert_shorthand( QStringList shorthandList, QString si
         for ( int j = 0; j < optionsBreakdown.size(); j++ )
         {
           // if this entry is &|()!, skip it
-          if ( optionsBreakdown[ j ].contains( QRegExp( "[&|\\(\\)\\!\\+\\-\\>\\<\\=]+" ) ) )
+          if ( optionsBreakdown[ j ].contains( QRegExp( "[&|\\(\\)\\!\\+\\-\\>\\<\\=\\*/]+" ) ) )
             continue;
 
           // Each option can have a text part and a numeric part (e.g. W3). We need to split that up using regular expressions
