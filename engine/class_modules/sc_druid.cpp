@@ -6717,7 +6717,7 @@ void druid_t::apl_balance()
   if ( sim -> allow_potions && level >= 80 )
   {
     action_list_str += ( level > 85 ) ? "/jade_serpent_potion" : "/volcanic_potion";
-    action_list_str += ",if=buff.bloodlust.react|target.time_to_die<=40|buff.celestial_alignment.up";
+    action_list_str += ",if=trinket.stat.intellect.up";
   }
   action_list_str += "/starfall,if=!buff.starfall.up";
   action_list_str += "/force_of_nature,if=talent.force_of_nature.enabled";
@@ -6730,30 +6730,17 @@ void druid_t::apl_balance()
   action_list_str += "/wild_mushroom_detonate,moving=0,if=buff.wild_mushroom.stack>0&buff.solar_eclipse.up";
   action_list_str += "/natures_swiftness,if=talent.dream_of_cenarius.enabled";
   action_list_str += "/healing_touch,if=talent.dream_of_cenarius.enabled&!buff.dream_of_cenarius.up&mana.pct>25";
-  action_list_str += "/incarnation,if=talent.incarnation.enabled&(buff.lunar_eclipse.up|buff.solar_eclipse.up)";
-  action_list_str += "/celestial_alignment,if=(!buff.lunar_eclipse.up&!buff.solar_eclipse.up)&(buff.chosen_of_elune.up|!talent.incarnation.enabled|cooldown.incarnation.remains>10)";
+  action_list_str += "/incarnation,if=talent.incarnation.enabled&trinket.stat.intellect.up";
+  action_list_str += "/celestial_alignment,if=trinket.stat.intellect.up";
   action_list_str += "/natures_vigil,if=talent.natures_vigil.enabled";
-  add_action( "Starsurge", "if=buff.shooting_stars.react&(active_enemies<5|!buff.solar_eclipse.up)" );
-  action_list_str += "/moonfire,cycle_targets=1,if=buff.lunar_eclipse.up&(remains<(buff.natures_grace.remains-2+2*set_bonus.tier14_4pc_caster))";
-  action_list_str += "/sunfire,cycle_targets=1,if=buff.solar_eclipse.up&(remains<(buff.natures_grace.remains-2+2*set_bonus.tier14_4pc_caster))";
+  add_action( "Starsurge" );
+  action_list_str += "/moonfire,cycle_targets=1,if=dot.moonfire.remains<1|action.moonfire.tick_damage%dot.moonfire.tick_dmg>=1.3";
+  action_list_str += "/sunfire,cycle_targets=1,if=dot.sunfire.remains<1|action.sunfire.tick_damage%dot.sunfire.tick_dmg>=1.3";
   action_list_str += "/hurricane,if=active_enemies>4&buff.solar_eclipse.up&buff.natures_grace.up";
-  action_list_str += "/moonfire,cycle_targets=1,if=active_enemies<5&(remains<(buff.natures_grace.remains-2+2*set_bonus.tier14_4pc_caster))";
-  action_list_str += "/sunfire,cycle_targets=1,if=active_enemies<5&(remains<(buff.natures_grace.remains-2+2*set_bonus.tier14_4pc_caster))";
-  action_list_str += "/hurricane,if=active_enemies>5&buff.solar_eclipse.up&mana.pct>25";
-  action_list_str += "/moonfire,cycle_targets=1,if=buff.lunar_eclipse.up&ticks_remain<2";
-  action_list_str += "/sunfire,cycle_targets=1,if=buff.solar_eclipse.up&ticks_remain<2";
-  action_list_str += "/hurricane,if=active_enemies>4&buff.solar_eclipse.up&mana.pct>25";
-  action_list_str += "/starsurge,if=cooldown_react";
-  action_list_str += "/starfire,if=buff.celestial_alignment.up&cast_time<buff.celestial_alignment.remains";
-  action_list_str += "/wrath,if=buff.celestial_alignment.up&cast_time<buff.celestial_alignment.remains";
-  action_list_str += "/starfire,if=eclipse_dir=1|(eclipse_dir=0&eclipse>0)";
+  action_list_str += "/starfire,if=buff.celestial_alignment.up|eclipse_dir=1|(eclipse_dir=0&eclipse<=0)";
   action_list_str += "/wrath,if=eclipse_dir=-1|(eclipse_dir=0&eclipse<=0)";
-  action_list_str += "/moonfire,moving=1,cycle_targets=1,if=ticks_remain<2";
-  action_list_str += "/sunfire,moving=1,cycle_targets=1,if=ticks_remain<2";
-  action_list_str += "/wild_mushroom,moving=1,if=buff.wild_mushroom.stack<buff.wild_mushroom.max_stack";
-  action_list_str += "/starsurge,moving=1,if=buff.shooting_stars.react";
-  action_list_str += "/moonfire,moving=1,if=buff.lunar_eclipse.up";
-  action_list_str += "/sunfire,moving=1";
+  action_list_str += "/hurricane,if=active_enemies>5&buff.solar_eclipse.up&mana.pct>25";
+  action_list_str += "/starsurge,if=cooldown_react";
 }
 
 // Guardian Combat Action Priority List ==============================

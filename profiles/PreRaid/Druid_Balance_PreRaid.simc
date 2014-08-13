@@ -27,7 +27,7 @@ actions.precombat+=/jade_serpent_potion
 
 # Executed every time the actor is available.
 
-actions=jade_serpent_potion,if=buff.bloodlust.react|target.time_to_die<=40|buff.celestial_alignment.up
+actions=jade_serpent_potion,if=trinket.stat.intellect.up
 actions+=/starfall,if=!buff.starfall.up
 actions+=/force_of_nature,if=talent.force_of_nature.enabled
 actions+=/berserking,if=buff.celestial_alignment.up
@@ -35,30 +35,17 @@ actions+=/use_item,slot=trinket2,if=buff.celestial_alignment.up|cooldown.celesti
 actions+=/wild_mushroom_detonate,moving=0,if=buff.wild_mushroom.stack>0&buff.solar_eclipse.up
 actions+=/natures_swiftness,if=talent.dream_of_cenarius.enabled
 actions+=/healing_touch,if=talent.dream_of_cenarius.enabled&!buff.dream_of_cenarius.up&mana.pct>25
-actions+=/incarnation,if=talent.incarnation.enabled&(buff.lunar_eclipse.up|buff.solar_eclipse.up)
-actions+=/celestial_alignment,if=(!buff.lunar_eclipse.up&!buff.solar_eclipse.up)&(buff.chosen_of_elune.up|!talent.incarnation.enabled|cooldown.incarnation.remains>10)
+actions+=/incarnation,if=talent.incarnation.enabled&trinket.stat.intellect.up
+actions+=/celestial_alignment,if=trinket.stat.intellect.up
 actions+=/natures_vigil,if=talent.natures_vigil.enabled
-actions+=/starsurge,if=buff.shooting_stars.react&(active_enemies<5|!buff.solar_eclipse.up)
-actions+=/moonfire,cycle_targets=1,if=buff.lunar_eclipse.up&(remains<(buff.natures_grace.remains-2+2*set_bonus.tier14_4pc_caster))
-actions+=/sunfire,cycle_targets=1,if=buff.solar_eclipse.up&(remains<(buff.natures_grace.remains-2+2*set_bonus.tier14_4pc_caster))
+actions+=/starsurge
+actions+=/moonfire,cycle_targets=1,if=dot.moonfire.remains<1|action.moonfire.tick_damage%dot.moonfire.tick_dmg>=1.3
+actions+=/sunfire,cycle_targets=1,if=dot.sunfire.remains<1|action.sunfire.tick_damage%dot.sunfire.tick_dmg>=1.3
 actions+=/hurricane,if=active_enemies>4&buff.solar_eclipse.up&buff.natures_grace.up
-actions+=/moonfire,cycle_targets=1,if=active_enemies<5&(remains<(buff.natures_grace.remains-2+2*set_bonus.tier14_4pc_caster))
-actions+=/sunfire,cycle_targets=1,if=active_enemies<5&(remains<(buff.natures_grace.remains-2+2*set_bonus.tier14_4pc_caster))
-actions+=/hurricane,if=active_enemies>5&buff.solar_eclipse.up&mana.pct>25
-actions+=/moonfire,cycle_targets=1,if=buff.lunar_eclipse.up&ticks_remain<2
-actions+=/sunfire,cycle_targets=1,if=buff.solar_eclipse.up&ticks_remain<2
-actions+=/hurricane,if=active_enemies>4&buff.solar_eclipse.up&mana.pct>25
-actions+=/starsurge,if=cooldown_react
-actions+=/starfire,if=buff.celestial_alignment.up&cast_time<buff.celestial_alignment.remains
-actions+=/wrath,if=buff.celestial_alignment.up&cast_time<buff.celestial_alignment.remains
-actions+=/starfire,if=eclipse_dir=1|(eclipse_dir=0&eclipse>0)
+actions+=/starfire,if=buff.celestial_alignment.up|eclipse_dir=1|(eclipse_dir=0&eclipse<=0)
 actions+=/wrath,if=eclipse_dir=-1|(eclipse_dir=0&eclipse<=0)
-actions+=/moonfire,moving=1,cycle_targets=1,if=ticks_remain<2
-actions+=/sunfire,moving=1,cycle_targets=1,if=ticks_remain<2
-actions+=/wild_mushroom,moving=1,if=buff.wild_mushroom.stack<buff.wild_mushroom.max_stack
-actions+=/starsurge,moving=1,if=buff.shooting_stars.react
-actions+=/moonfire,moving=1,if=buff.lunar_eclipse.up
-actions+=/sunfire,moving=1
+actions+=/hurricane,if=active_enemies>5&buff.solar_eclipse.up&mana.pct>25
+actions+=/starsurge,if=cooldown_react
 
 head=hood_of_viridian_residue,id=81262,gems=burning_primal_160int_30int,reforge=crit_haste
 neck=mindbreaker_pendant,id=81131
