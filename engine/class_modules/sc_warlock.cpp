@@ -5513,7 +5513,7 @@ void warlock_t::apl_demonology()
 {
   {
     action_list_str += "/cataclysm,if=buff.metamorphosis.up";
-    add_action( spec.doom, "if=buff.metamorphosis.up&target.time_to_die>=30&remains<=(duration*0.3)&remains<cooldown.cataclysm.remains" );
+    add_action( spec.doom, "if=buff.metamorphosis.up&target.time_to_die>=30&remains<=(duration*0.3)&(remains<cooldown.cataclysm.remains|!talent.cataclysm.enabled)" );
     add_action( "corruption", "if=target.time_to_die>=6&remains<=(0.3*duration)&cooldown.dark_soul.remains<=8" );
     add_action( "corruption", "if=target.time_to_die>=6&remains<=action.shadow_bolt.cast_time" );
 

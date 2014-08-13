@@ -3,7 +3,7 @@ level=100
 race=troll
 role=spell
 position=back
-talents=http://us.battle.net/wow/en/tool/talent-calculator#VZ!....101
+talents=http://us.battle.net/wow/en/tool/talent-calculator#VZ!....100
 glyphs=imp_swarm/dark_soul
 spec=demonology
 
@@ -39,7 +39,7 @@ actions+=/felguard:felstorm
 actions+=/wrathguard:wrathstorm
 actions+=/summon_doomguard,if=!talent.demonic_servitude.enabled
 actions+=/cataclysm,if=buff.metamorphosis.up
-actions+=/doom,if=buff.metamorphosis.up&target.time_to_die>=30&remains<=(duration*0.3)&remains<cooldown.cataclysm.remains
+actions+=/doom,if=buff.metamorphosis.up&target.time_to_die>=30&remains<=(duration*0.3)&(remains<cooldown.cataclysm.remains|!talent.cataclysm.enabled)
 actions+=/corruption,if=target.time_to_die>=6&remains<=(0.3*duration)&cooldown.dark_soul.remains<=8
 actions+=/corruption,if=target.time_to_die>=6&remains<=action.shadow_bolt.cast_time
 actions+=/cancel_metamorphosis,if=buff.metamorphosis.up&buff.dark_soul.down&demonic_fury<=650&demonic_fury%(40%gcd)<target.time_to_die
