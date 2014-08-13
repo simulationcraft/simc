@@ -5389,16 +5389,17 @@ void warlock_t::apl_precombat()
   add_action( "Dark Intent", "if=!aura.spell_power_multiplier.up",
               "precombat" );
 
-  precombat_list +=
-      "/summon_pet,if=!talent.demonic_servitude.enabled&(!talent.grimoire_of_sacrifice.enabled|buff.grimoire_of_sacrifice.down)";
+  if ( specialization() != WARLOCK_DEMONOLOGY )
+  precombat_list += "/summon_pet,if=!talent.demonic_servitude.enabled&(!talent.grimoire_of_sacrifice.enabled|buff.grimoire_of_sacrifice.down)";
 
   precombat_list +=
       "/summon_doomguard,if=talent.demonic_servitude.enabled";
 
   precombat_list += "/snapshot_stats";
 
-  precombat_list +=
-      "/grimoire_of_sacrifice,if=talent.grimoire_of_sacrifice.enabled&!talent.demonic_servitude.enabled";
+  if ( specialization() != WARLOCK_DEMONOLOGY )
+  precombat_list += "/grimoire_of_sacrifice,if=talent.grimoire_of_sacrifice.enabled&!talent.demonic_servitude.enabled";
+
   precombat_list += "/service_pet,if=talent.grimoire_of_service.enabled";
 
   if ( sim->allow_potions )
@@ -5412,6 +5413,9 @@ void warlock_t::apl_precombat()
 
   if ( specialization() == WARLOCK_DESTRUCTION )
       precombat_list += "/incinerate";
+
+  if ( specialization() == WARLOCK_DEMONOLOGY )
+    precombat_list += "/soul_fire";
 
   // Usable Item
   for ( int i = as<int>( items.size() ) - 1; i >= 0; i-- )
@@ -5435,7 +5439,10 @@ void warlock_t::apl_precombat()
   }
 
   action_list_str += init_use_profession_actions();
-  action_list_str += init_use_racial_actions();
+  action_list_str += "/berserking";
+  action_list_str += "/blood_fury";
+  action_list_str += "/arcane_torrent";
+
   if ( specialization() == WARLOCK_DEMONOLOGY )
   {
     if ( spec.imp_swarm->ok() )
@@ -5491,7 +5498,7 @@ void warlock_t::apl_default()
 
 void warlock_t::apl_affliction()
 {
-  action_list_str += "/Cataclysm";
+  action_list_str += "/cataclysm";
 
   add_action( "Haunt", "if=shard_react&!talent.soulburn_haunt.enabled&shard_react&!in_flight_to_target&(!dot.haunt.ticking|soul_shard=4)&(trinket.proc.intellect.react|buff.dark_soul.up|soul_shard>2|soul_shard*14<=target.time_to_die)" );
   add_action( "Soulburn", "if=shard_react&talent.soulburn_haunt.enabled&buff.soulburn.down&(buff.haunting_spirits.down|soul_shard=4)" );
@@ -5500,7 +5507,7 @@ void warlock_t::apl_affliction()
   add_action( "Unstable Affliction", "if=remains<=(duration*0.3)" );
   add_action( "Corruption", "if=remains<=(duration*0.3)" );
   add_action( "Life Tap", "if=mana.pct<40" );
-  add_action( "Drain Soul,interrupt=1,chain=1" );
+  add_action( "Drain Soul", "interrupt=1,chain=1" );
 }
 
 void warlock_t::apl_demonology()
@@ -5513,8 +5520,8 @@ void warlock_t::apl_demonology()
 
     action_list_str += "/cancel_metamorphosis,if=buff.metamorphosis.up&buff.dark_soul.down&demonic_fury<=650&demonic_fury%(40%gcd)<target.time_to_die";
     action_list_str += "/cancel_metamorphosis,if=buff.metamorphosis.up&cooldown.metamorphosis.remains<=3&action.hand_of_guldan.charges=2";
+    action_list_str += "/demonbolt,if=buff.dark_soul.up";
 
-    add_action( "Demonbolt", "if=buff.dark_soul.up" );
     add_action( "touch of chaos", "if=buff.metamorphosis.up" );
     add_action( "metamorphosis", "if=buff.dark_soul.remains>gcd" );
     add_action( "metamorphosis", "if=demonic_fury>=950" );

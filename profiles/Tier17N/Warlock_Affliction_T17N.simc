@@ -3,7 +3,7 @@ level=100
 race=troll
 role=spell
 position=back
-talents=http://us.battle.net/wow/en/tool/talent-calculator#Va!....000
+talents=http://us.battle.net/wow/en/tool/talent-calculator#Va!....001
 spec=affliction
 
 # This default action priority list is automatically created based on your character.
@@ -14,7 +14,7 @@ spec=affliction
 
 # Executed before combat begins. Accepts non-harmful actions only.
 
-actions.precombat=flask,type=greater_draenic_mastery_flask
+actions.precombat=flask,type=greater_draenic_intellect_flask
 actions.precombat+=/food,type=sleeper_surprise
 actions.precombat+=/dark_intent,if=!aura.spell_power_multiplier.up
 actions.precombat+=/summon_pet,if=!talent.demonic_servitude.enabled&(!talent.grimoire_of_sacrifice.enabled|buff.grimoire_of_sacrifice.down)
@@ -29,48 +29,46 @@ actions.precombat+=/potion,name=draenic_intellect
 actions=use_item,name=primal_gladiators_badge_of_dominance
 actions+=/potion,name=draenic_intellect,if=buff.bloodlust.react|target.health.pct<=20
 actions+=/berserking
+actions+=/blood_fury
+actions+=/arcane_torrent
 actions+=/dark_soul,if=!talent.archimondes_darkness.enabled|(talent.archimondes_darkness.enabled&(charges=2|trinket.proc.intellect.react|trinket.stacking_proc.intellect.react|target.health.pct<=10))
 actions+=/service_pet,if=talent.grimoire_of_service.enabled
 actions+=/summon_doomguard,if=!talent.demonic_servitude.enabled
-actions+=/soul_swap,if=shard_react&!talent.soulburn_haunt.enabled&buff.soulburn.react
-actions+=/soulburn,if=shard_react&!talent.soulburn_haunt.enabled&buff.soulburn.down&(!dot.unstable_affliction.ticking&!dot.corruption.ticking&!dot.agony.ticking)
+actions+=/cataclysm
 actions+=/haunt,if=shard_react&!talent.soulburn_haunt.enabled&shard_react&!in_flight_to_target&(!dot.haunt.ticking|soul_shard=4)&(trinket.proc.intellect.react|buff.dark_soul.up|soul_shard>2|soul_shard*14<=target.time_to_die)
 actions+=/soulburn,if=shard_react&talent.soulburn_haunt.enabled&buff.soulburn.down&(buff.haunting_spirits.down|soul_shard=4)
 actions+=/haunt,if=shard_react&talent.soulburn_haunt.enabled&!in_flight_to_target&((buff.soulburn.up&buff.haunting_spirits.remains<5)|soul_shard=4)
-actions+=/agony,if=remains<=(duration*0.3)
+actions+=/agony,if=remains<=(duration*0.3)&((talent.cataclysm.enabled&remains<=(cooldown.cataclysm.remains+action.cataclysm.cast_time))|!talent.cataclysm.enabled)
 actions+=/unstable_affliction,if=remains<=(duration*0.3)
 actions+=/corruption,if=remains<=(duration*0.3)
 actions+=/life_tap,if=mana.pct<40
-actions+=/drain_soul
+actions+=/drain_soul,interrupt=1,chain=1
 actions+=/life_tap
 
-head=primal_gladiators_felweave_cowl,id=111235
+head=primal_gladiators_hood_of_prowess,id=111084
 neck=primal_gladiators_pendant_of_cruelty,id=111128,enchant=gift_of_mastery
-shoulders=primal_gladiators_felweave_amice,id=111238
+shoulders=primal_gladiators_amice_of_prowess,id=111087
 back=primal_gladiators_drape_of_prowess,id=111125,enchant=gift_of_mastery
 chest=primal_gladiators_robes_of_prowess,id=111086
 wrists=primal_gladiators_cuffs_of_prowess,id=111099
 hands=primal_gladiators_felweave_handguards,id=111234
-waist=primal_gladiators_cord_of_victory,id=111095
-legs=primal_gladiators_felweave_trousers,id=111236
+waist=primal_gladiators_cord_of_prowess,id=111094
+legs=primal_gladiators_leggings_of_prowess,id=111085
 feet=primal_gladiators_treads_of_cruelty,id=111096
-finger1=primal_gladiators_band_of_victory,id=111136,enchant=gift_of_mastery
-finger2=primal_gladiators_band_of_prowess,id=111135,enchant=gift_of_mastery
+finger1=primal_gladiators_band_of_prowess,id=111135,enchant=gift_of_mastery
+finger2=primal_gladiators_band_of_cruelty,id=111134,enchant=gift_of_mastery
 trinket1=primal_gladiators_badge_of_dominance,id=111227
 trinket2=primal_gladiators_insignia_of_dominance,id=111228
-main_hand=primal_gladiators_mageblade,id=111119,enchant=mark_of_the_frostwolf
-off_hand=primal_gladiators_endgame,id=111132
+main_hand=primal_gladiators_mageblade,id=111119,enchant=mark_of_bleeding_hollow
+off_hand=primal_gladiators_reprieve,id=111133
 
 # Gear Summary
 # gear_stamina=3245
 # gear_intellect=2584
 # gear_spell_power=1244
-# gear_crit_rating=580
-# gear_haste_rating=553
-# gear_mastery_rating=1397
+# gear_crit_rating=387
+# gear_haste_rating=941
+# gear_mastery_rating=1233
 # gear_armor=600
-# gear_multistrike_rating=525
-# gear_versatility_rating=102
-# pvp_2pc_caster=1
-# pvp_4pc_caster=1
+# gear_multistrike_rating=596
 default_pet=felhunter
