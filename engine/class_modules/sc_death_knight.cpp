@@ -3811,8 +3811,6 @@ struct obliterate_offhand_t : public death_knight_melee_attack_t
     weapon           = &( p -> off_hand_weapon );
     special          = true;
     base_multiplier *= 1.0 + p -> sets.set( SET_T14_2PC_MELEE ) -> effectN( 1 ).percent();
-    // TODO: New dk stuff
-    base_multiplier *= 1.3;
   }
 
   virtual double composite_crit() const
@@ -3836,8 +3834,6 @@ struct obliterate_t : public death_knight_melee_attack_t
 
     special = true;
     base_multiplier *= 1.0 + p -> sets.set( SET_T14_2PC_MELEE ) -> effectN( 1 ).percent();
-    // TODO: New dk stuff
-    base_multiplier *= 1.3;
 
     weapon = &( p -> main_hand_weapon );
 
@@ -7131,6 +7127,8 @@ void death_knight_t::arise()
 
   if ( specialization() == DEATH_KNIGHT_FROST  && ! sim -> overrides.haste ) sim -> auras.haste -> trigger();
   if ( specialization() == DEATH_KNIGHT_UNHOLY && ! sim -> overrides.haste ) sim -> auras.haste -> trigger();
+  if ( specialization() == DEATH_KNIGHT_FROST  && ! sim -> overrides.versatility ) sim -> auras.versatility -> trigger();
+  if ( specialization() == DEATH_KNIGHT_UNHOLY && ! sim -> overrides.versatility ) sim -> auras.versatility -> trigger();
 
   runeforge.rune_of_the_stoneskin_gargoyle -> trigger();
   runeforge.rune_of_spellshattering -> trigger();
