@@ -3213,8 +3213,9 @@ struct defile_t : public death_knight_spell_t
     double m = death_knight_spell_t::composite_ta_multiplier( state );
 
     dot_t* dot = find_dot( state -> target );
+    // TODO-WOD: Tooltip is wrong, defile increases by 5% per tick
     if ( dot )
-      m *= 1.0 + std::pow( data().effectN( 2 ).percent() / 100.0, dot -> current_tick );
+      m *= std::pow( 1.0 + /* data().effectN( 2 ).percent()*/ 0.05, dot -> current_tick );
 
     return m;
   }
