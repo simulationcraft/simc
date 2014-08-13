@@ -5,7 +5,7 @@ paladin="Paladin_Retribution_T17N"
 level=100
 race=blood_elf
 role=attack
-talents=2112133
+talents=2112333
 glyphs=winged_vengeance/templars_verdict/righteous_retreat/hand_of_sacrifice/fire_from_the_heavens/judgment/
 spec=retribution
 head=primal_gladiators_scaled_helm,id=111171

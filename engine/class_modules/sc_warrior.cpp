@@ -1482,14 +1482,33 @@ struct demoralizing_shout: public warrior_attack_t
 
 // Devastate ================================================================
 
+struct devastate_off_hand_t: public warrior_attack_t
+{
+  devastate_off_hand_t(warrior_t* p, const char* name, const spell_data_t* s):
+    warrior_attack_t(name, p, s)
+  {
+    dual = true;
+    may_miss = may_dodge = may_parry = false;
+    weapon = &( p -> off_hand_weapon );
+  }
+};
+
 struct devastate_t: public warrior_attack_t
 {
+  devastate_off_hand_t* oh_attack;
   devastate_t( warrior_t* p, const std::string& options_str ):
     warrior_attack_t( "devastate", p, p -> specialization() == WARRIOR_PROTECTION ? 
-                                      p -> find_spell( 20243 ) : p -> spec.devastate )
+                                      p -> find_spell( 20243 ) : p -> spec.devastate ),
+                                      oh_attack( 0 )
   {
     parse_options( NULL, options_str );
     stancemask = STANCE_GLADIATOR | STANCE_DEFENSE;
+    weapon = &( p -> main_hand_weapon );
+    if ( p -> specialization() == WARRIOR_FURY )
+    {
+      oh_attack = new devastate_off_hand_t(p, "devastate_offhand", p -> find_spell( 174894 ) );
+      add_child(oh_attack);
+    }
   }
 
   void execute()
@@ -1512,6 +1531,8 @@ struct devastate_t: public warrior_attack_t
       }
       else
       {
+        if ( oh_attack )
+          oh_attack -> execute();
         if ( rng().roll( 0.3 ) ) // No spell data for the reset yet.
           p() -> cooldown.revenge -> reset( true );
       }

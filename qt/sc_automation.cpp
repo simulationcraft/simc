@@ -301,6 +301,9 @@ QString automation::auto_rotation_sim( QString player_class,
       // take the returned QStringList and output it.
       for ( int i = 0; i < convertedAPL.size(); i++ )
         profile += convertedAPL[ i ] + "\n";
+
+      // rename the actor to match the shorthand
+      profile += "name=" + actionList[ 0 ] + "\n";
     }
 
     // Otherwise, the user has specified the action list in its full and gory detail, so we can just use that
@@ -476,10 +479,7 @@ QStringList automation::convert_shorthand( QStringList shorthandList, QString si
       }
 
       // combine the ability and options into a single string
-      QString entry = "actions";
-      if ( ! actionPriorityList.empty() )
-        entry += "+";
-      entry += "=/" + ability;
+      QString entry = "actions+=/" + ability;
       if ( options.length() > 0 )
         entry += ",if=" + options;
 
@@ -786,9 +786,9 @@ void SC_ImportTab::compTypeChanged( const int comp )
       break;
     case 4:
       //textbox.rotation -> setDisabled( true );
-      label.rotation -> setText( "Precombat Actions" );
-      label.rotation -> setToolTip( "Use this box to specify precombat actions for all configurations." );
-      textbox.rotation -> setToolTip( "Use this box to specify precombat actions for all configurations." );
+      label.rotation -> setText( "Actions Header" );
+      label.rotation -> setToolTip( "Use this box to specify precombat actions and any actions you want to apply to all configurations (ex: auto_attack)." );
+      textbox.rotation -> setToolTip( "Use this box to specify precombat actions and any actions you want to apply to all configurations (ex: auto_attack)." );
       textbox.advanced -> setText( advRotation );
       textbox.sidebar -> setDisabled( false );
       textbox.advanced -> setToolTip( advRotToolTip );
@@ -827,7 +827,7 @@ void SC_ImportTab::createTooltips()
   textbox.sidebar -> setToolTip( sidebarTooltip );
   label.sidebar   -> setToolTip( sidebarTooltip );
 
-  textbox.talents -> setToolTip( "Default talents, specified either as \"talents=0000000\" or \"0000000\"" );
+  textbox.talents -> setToolTip( "Default talents, specified either as \"talents=1231231\" or \"1231231\"" );
   textbox.glyphs -> setToolTip( "Default glyphs, specified either as \"glyphs=glyph1/glyph2/glyph3\" or \"glyph1/glyph2/glyph3\"" );
   textbox.gear -> setToolTip( "Default gear, specified the same way you would in a regular simc profile." );
   textbox.rotation -> setToolTip( "Default rotation, specified the same way you would in a regular simc profile.\nIf left blank, the default APL for the chosen spec will be used automatically." );
@@ -981,8 +981,8 @@ void SC_ImportTab::encodeSettings()
   settings.setValue( "spec", choice.player_spec -> currentText() );
   settings.setValue( "race", choice.player_race -> currentText() );
   settings.setValue( "level", choice.player_level -> currentText() );
-  settings.setValue( "talentsbox", textbox.talents -> text() );
-  settings.setValue( "glyphsbox", textbox.glyphs -> text() );
+  settings.setValue( "talentbox", textbox.talents -> text() );
+  settings.setValue( "glyphbox", textbox.glyphs -> text() );
   settings.setValue( "gearbox", textbox.gear -> document() -> toPlainText() );
   settings.setValue( "rotationbox", textbox.rotation -> document() -> toPlainText() );
   settings.setValue( "advancedbox", textbox.advanced -> document() -> toPlainText() );
