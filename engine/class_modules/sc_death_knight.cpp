@@ -4001,12 +4001,12 @@ struct pestilence_t : public death_knight_spell_t
 
     if ( result_is_hit( s -> result ) )
     {
-      if ( td( s -> target ) -> dots_blood_plague -> ticking )
+      if ( td( target ) -> dots_blood_plague -> ticking )
       {
         p() -> active_spells.blood_plague -> target = s -> target;
         p() -> active_spells.blood_plague -> execute();
       }
-      if ( td( s -> target ) -> dots_frost_fever -> ticking )
+      if ( td( target ) -> dots_frost_fever -> ticking )
       {
         p() -> active_spells.frost_fever -> target = s -> target;
         p() -> active_spells.frost_fever -> execute();
