@@ -18,6 +18,7 @@ spec=demonology
 actions.precombat=flask,type=warm_sun
 actions.precombat+=/food,type=mogu_fish_stew
 actions.precombat+=/dark_intent,if=!aura.spell_power_multiplier.up
+actions.precombat+=/summon_pet,if=!talent.demonic_servitude.enabled&(!talent.grimoire_of_sacrifice.enabled|buff.grimoire_of_sacrifice.down)
 actions.precombat+=/summon_doomguard,if=talent.demonic_servitude.enabled
 actions.precombat+=/snapshot_stats
 actions.precombat+=/service_pet,if=talent.grimoire_of_service.enabled
