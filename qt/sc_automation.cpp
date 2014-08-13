@@ -98,7 +98,7 @@ QString automation::do_something( int sim_type,
     case 3: // gear simulation
       return auto_gear_sim( player_class, base_profile_info, player_talents, player_glyphs, advanced_list, player_rotation );
     case 4: // rotation simulation
-      return auto_rotation_sim( player_class, player_spec, base_profile_info, player_talents, player_glyphs, player_gear, advanced_list, sidebar_text );
+      return auto_rotation_sim( player_class, player_spec, base_profile_info, player_talents, player_glyphs, player_gear, player_rotation, advanced_list, sidebar_text );
     default: // default profile creation
       profile += base_profile_info;
       profile += "talents=" + player_talents + "\n";
@@ -256,6 +256,7 @@ QString automation::auto_rotation_sim( QString player_class,
                                        QString player_talents,
                                        QString player_glyphs,
                                        QString player_gear,
+                                       QString precombat_actions,
                                        QStringList rotation_list,
                                        QString sidebar_text
                                      )
@@ -279,6 +280,9 @@ QString automation::auto_rotation_sim( QString player_class,
     
     if ( player_gear.size() > 0 )
       profile += player_gear + "\n";
+
+    if ( precombat_actions.size() > 0 )
+      profile += precombat_actions + "\n";
     
     // Since action lists can be specified as shorthand with options or as full lists, we need to support both.
     // To do that, we split on newlines and spaces just like in the other modules
@@ -695,6 +699,27 @@ QString helpbarText[ 6 ] = {
   "To specify everything according to your needs. All configurations can be mixed up for more advanced multi-automated simulations but need to match the standard SimCraft input format"
 };
 
+QString advTalentToolTip = "Talent configurations can be specified as 7-digit numbers (e.g. 1231231).\n"
+                           "Each configuration should be on its own new line.\n"
+                           "Additional options can be added afterward, separated by a space, as in the example below:\n\n"
+                           "1231231 name=Alic\n1231232 name=Bob\n1231233 name=Carl glyphs+=/focused_shield";
+
+QString advGlyphToolTip = "Glyph configurations can be specified exactly the same way they are in SimC normally.\n"
+                           "Each configuration should be on its own new line.\n"
+                           "Additional options can be added afterward, separated by a space, as in the example below:\n\n"
+                           "focused_shield/alabaster_shield name=Alic\nfocused_shield/final_wrath name=Bob\nfinal_wrath/alabaster_shield name=Carl talents=1231233";
+
+QString advGearToolTip = "Gear sets can be specified just like they are in SimC normally.\nSeparate each gear set by a blank line (two carriage returns).\n\n"
+                         "Example:\nhead=fake_helm,id=1111\nneck=fake_neck,id=2222\n\nhead=another_fake_helm,id=3333\nneck=another_fake_neck,id=4444";
+
+QString advRotToolTip = "Rotations can be specified in two ways:\n(1): by shorthands separated by single carriage returns, like this:\n\n"
+                        "CS>J>AS\nCS>AS>J\nJ>AS>CS\n\n"
+                        "(2): as usual simc action lists, separated by two carriage returns, like this:\n\n"
+                        "actions=/crusader_strike\nactions+=/judgment\nactions+=/avengers_shield\n\nactions=/crusader_strike\nactions+=/avengers_shield\nactions+=/judgment\n\nactions=/judgment\nactions+=/avengers_shield\nactions+=/crusader_strike\n\n"
+                        "Note that the two examples above are equivalent.\n"
+                        "For shorthand inputs, options can be specified using usual simc syntax, with \"+\" standing for \",if=\", like this:\n\n"
+                        "CS+GC&(DP|!FW)\n\n"
+                        "See the wiki entry (LINK?) for more details.";
 
 // method to set the sidebar text based on class slection
 void SC_ImportTab::setSidebarClassText()
@@ -728,35 +753,43 @@ void SC_ImportTab::compTypeChanged( const int comp )
   textbox.talents  -> setDisabled( false );
   textbox.sidebar  -> setDisabled( true  );
 
+  // clear certain tooltips
+  textbox.rotation -> setToolTip( "" );
+  label.rotation -> setToolTip( "" );
+  label.rotation -> setText( "Default Rotation" );
+
   switch ( comp )
   {
     case 0: 
       textbox.advanced -> setDisabled( true );
+      textbox.advanced -> setToolTip( "Choose a comparison type to enable this text box." );
+      label.advanced -> setToolTip( "Choose a comparison type to enable this text box." );
       break;
     case 1:
       textbox.advanced -> setText( advTalent );
       textbox.talents -> setDisabled( true );
+      textbox.advanced -> setToolTip( advTalentToolTip );
+      label.advanced   -> setToolTip( advTalentToolTip );
       break;
     case 2:
       textbox.glyphs -> setDisabled( true );
       textbox.advanced -> setText( advGlyph );
+      textbox.advanced -> setToolTip( advGlyphToolTip );
+      label.advanced   -> setToolTip( advGlyphToolTip );
       break;
     case 3:
       textbox.gear -> setDisabled( true );
       textbox.advanced -> setText( advGear );
+      textbox.advanced -> setToolTip( advGearToolTip );
+      label.advanced   -> setToolTip( advGearToolTip );
       break;
     case 4:
-      textbox.rotation -> setDisabled( true );
+      //textbox.rotation -> setDisabled( true );
+      label.rotation -> setText( "Precombat Actions" );
+      label.rotation -> setToolTip( "Use this box to specify precombat actions for all configurations." );
+      textbox.rotation -> setToolTip( "Use this box to specify precombat actions for all configurations." );
       textbox.advanced -> setText( advRotation );
       textbox.sidebar -> setDisabled( false );
-      QString advRotToolTip = "Rotations can be specified to ways:\n(1): by shorthands separated by single carriage returns, like this:\n\n"
-                              "CS>J>AS\nCS>AS>J\nJ>AS>CS\n\n"
-                              "(2): as usual simc action lists, separated by two carriage returns, like this:\n\n"
-                              "actions=/crusader_strike\nactions+=/judgment\nactions+=/avengers_shield\n\nactions=/crusader_strike\nactions+=/avengers_shield\nactions+=/judgment\n\nactions=/judgment\nactions+=/avengers_shield\nactions+=/crusader_strike\n\n"
-                              "Note that the two examples above are equivalent.\n"
-                              "For shorthand inputs, options can be specified using usual simc syntax, with \"+\" standing for \",if=\", like this:\n\n"
-                              "CS+GC&(DP|!FW)\n\n"
-                              "See the wiki entry (LINK?) for more details.";
       textbox.advanced -> setToolTip( advRotToolTip );
       label.advanced   -> setToolTip( advRotToolTip );
       break;
@@ -780,7 +813,7 @@ void SC_MainWindow::startAutomationImport( int tab )
                                       importTab -> textbox.sidebar -> document() -> toPlainText()
                                     );
 
-  simulateTab -> add_Text( profile,  tr( "Testing" ) );
+  simulateTab -> add_Text( profile,  tr( "Automation Import" ) );
   
   mainTab -> setCurrentTab( TAB_SIMULATE );
 }

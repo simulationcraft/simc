@@ -1590,6 +1590,7 @@ namespace automation {
                              QString player_talents,
                              QString player_glyphs,
                              QString player_gear,
+                             QString precombat_actions,
                              QStringList advanced_text,
                              QString sidebar_text
                            );
