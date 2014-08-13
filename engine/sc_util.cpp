@@ -2617,7 +2617,9 @@ std::string& util::urlencode( std::string& str )
   return str;
 }
 
-std::string util::google_image_chart_encode( std::string& str )
+// google image chart encoding ================================================
+
+std::string util::google_image_chart_encode( const std::string& str )
 {
   std::string::size_type l = str.length();
   if ( ! l ) return str;

@@ -1351,7 +1351,7 @@ std::string decode_html( const std::string& str );
 std::string& urlencode( std::string& str );
 std::string& urldecode( std::string& str );
 std::string uchar_to_hex( unsigned char );
-std::string google_image_chart_encode( std::string& str );
+std::string google_image_chart_encode( const std::string& str );
 
 bool str_compare_ci( const std::string& l, const std::string& r );
 std::string& glyph_name( std::string& n );

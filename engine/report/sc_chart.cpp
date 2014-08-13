@@ -1178,8 +1178,7 @@ std::string chart::aps_portion(  player_t* p )
 
   char buffer[ 1024 ];
 
-  std::string formatted_name =  p -> name();
-  formatted_name =  util::google_image_chart_encode( formatted_name );
+  std::string formatted_name = util::google_image_chart_encode(  p -> name() );
   util::urlencode( formatted_name );
   sc_chart chart( formatted_name + ( p -> primary_role() == ROLE_HEAL ? " Healing" : " Damage" ) + " Sources", PIE, p -> sim -> print_styles );
   chart.set_height( 275 );
@@ -1244,8 +1243,7 @@ std::string chart::time_spent( player_t* p )
 
   char buffer[ 1024 ];
 
-  std::string formatted_name = p -> name();
-  formatted_name = util::google_image_chart_encode( formatted_name );
+  std::string formatted_name = util::google_image_chart_encode(  p -> name() );
   util::urlencode( formatted_name );
   sc_chart chart( formatted_name + " Spent Time", PIE, p -> sim -> print_styles );
   chart.set_height( 275 );
