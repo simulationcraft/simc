@@ -292,6 +292,7 @@ public:
     buff_t* haunting_spirits;
     buff_t* demonbolt;
       
+    buff_t* tier17_4pc_ember_fillup;
     buff_t* tier16_4pc_ember_fillup;
     buff_t* tier16_2pc_destructive_influence;
     buff_t* tier16_2pc_empowered_grasp;
@@ -2013,6 +2014,15 @@ public:
       p -> buffs.tier16_4pc_ember_fillup -> trigger();
     }
 
+    if ( p -> sets.has_set_bonus( SET_T17_4PC_CASTER ) && //check whether we fill one up.
+      (( p-> resources.current[RESOURCE_BURNING_EMBER] < 1.0 && p -> resources.current[RESOURCE_BURNING_EMBER] + amount >= 1.0 ) ||
+      ( p -> resources.current[RESOURCE_BURNING_EMBER] < 2.0 && p -> resources.current[RESOURCE_BURNING_EMBER] + amount >= 2.0 ) ||
+      ( p -> resources.current[RESOURCE_BURNING_EMBER] < 3.0 && p -> resources.current[RESOURCE_BURNING_EMBER] + amount >= 3.0 ) ||
+      ( p -> resources.current[RESOURCE_BURNING_EMBER] < 4.0 && p -> resources.current[RESOURCE_BURNING_EMBER] + amount >= 4.0 )))
+    {
+      p -> buffs.tier17_4pc_ember_fillup -> trigger();
+    }
+
     p -> resource_gain( RESOURCE_BURNING_EMBER, amount, gain );
 
     // If getting to 1 full ember was a surprise, the player would have to react to it
@@ -2837,7 +2847,7 @@ struct immolate_t : public warlock_spell_t
     if ( result_is_hit( s -> result ))
 	  {
 	    if ( s -> result == RESULT_CRIT ) trigger_ember_gain( p(), 0.1, gain );
-        if ( p() -> sets.has_set_bonus( SET_T17_2PC_CASTER ))
+      if ( p() -> sets.has_set_bonus( SET_T17_2PC_CASTER ) )
         {
               trigger_ember_gain( p(), 1, p() -> gains.immolate_t17_2pc, p() -> sets.set( SET_T17_2PC_CASTER ) -> effectN( 1 ).percent());
         }
@@ -3227,6 +3237,9 @@ struct chaos_bolt_t : public warlock_spell_t
     if ( p() -> buffs.dark_soul -> check() )
       c *= 1.0 + p() -> sets.set( SET_T15_2PC_CASTER ) -> effectN( 2 ).percent();
 
+    if ( p() -> buffs.tier17_4pc_ember_fillup -> check() )
+      c *= 0;
+
     return c;
   }
 
@@ -3244,11 +3257,23 @@ struct chaos_bolt_t : public warlock_spell_t
     return m;
   }
 
+  virtual timespan_t execute_time() const
+  {
+    timespan_t t = warlock_spell_t::execute_time();
+
+    if ( p() -> buffs.tier17_4pc_ember_fillup -> check() )
+      t *= 0.5;
+
+    return t;
+  }
+
   virtual void execute()
   {
     if ( p() -> talents.charred_remains -> ok() && p() -> buffs.fire_and_brimstone -> up() )
         aoe = -1;
     warlock_spell_t::execute();
+
+    p() -> buffs.tier17_4pc_ember_fillup -> decrement();
 
     if ( ! result_is_hit( execute_state -> result ) ) refund_embers( p() );
       aoe = 0;
@@ -5275,6 +5300,9 @@ void warlock_t::create_buffs()
   buffs.tier16_4pc_ember_fillup = buff_creator_t( this, "ember_master",   find_spell( 145164 ) )
                                 .cd( find_spell( 145165 ) -> duration() )
                                 .add_invalidate(CACHE_CRIT);
+  buffs.tier17_4pc_ember_fillup = buff_creator_t( this, "t17_4pc_destruction", find_spell( 170001 ) )
+    .chance( find_spell( 165452 ) -> effectN( 5 ).percent() );
+
   buffs.tier16_2pc_destructive_influence = buff_creator_t( this, "destructive_influence", find_spell( 145075) )
                                            .chance( sets.set ( SET_T16_2PC_CASTER ) -> effectN( 4 ).percent() )
                                            .duration( timespan_t::from_seconds( 10 ))
@@ -5342,7 +5370,7 @@ void warlock_t::apl_precombat()
   {
     // Flask
     if ( level == 100 )
-      precombat_list = "flask,type=greater_draenic_mastery_flask";
+      precombat_list = "flask,type=greater_draenic_intellect_flask";
     else if ( level >= 90 )
       precombat_list = "flask,type=warm_sun";
   }
@@ -5350,7 +5378,9 @@ void warlock_t::apl_precombat()
   if ( sim -> allow_food )
   {
     // Food
-    if (level == 100)
+    if (level == 100 && specialization() == WARLOCK_DESTRUCTION)
+      precombat_list += "/food,type=blackrock_barbecue";
+    else if ( level == 100 )
       precombat_list += "/food,type=sleeper_surprise";
     else if ( level >= 90 )
       precombat_list += "/food,type=mogu_fish_stew";
@@ -5461,33 +5491,38 @@ void warlock_t::apl_default()
 
 void warlock_t::apl_affliction()
 {
-  add_action( "Soul Swap", "if=shard_react&!talent.soulburn_haunt.enabled&buff.soulburn.react" );
-  add_action( "Soulburn", "if=shard_react&!talent.soulburn_haunt.enabled&buff.soulburn.down&(!dot.unstable_affliction.ticking&!dot.corruption.ticking&!dot.agony.ticking)" );
+  action_list_str += "/Cataclysm";
+
   add_action( "Haunt", "if=shard_react&!talent.soulburn_haunt.enabled&shard_react&!in_flight_to_target&(!dot.haunt.ticking|soul_shard=4)&(trinket.proc.intellect.react|buff.dark_soul.up|soul_shard>2|soul_shard*14<=target.time_to_die)" );
   add_action( "Soulburn", "if=shard_react&talent.soulburn_haunt.enabled&buff.soulburn.down&(buff.haunting_spirits.down|soul_shard=4)" );
   add_action( "Haunt", "if=shard_react&talent.soulburn_haunt.enabled&!in_flight_to_target&((buff.soulburn.up&buff.haunting_spirits.remains<5)|soul_shard=4)" );
-  add_action( "Agony", "if=remains<=(duration*0.3)" );
+  add_action( "Agony", "if=remains<=(duration*0.3)&((talent.cataclysm.enabled&remains<=(cooldown.cataclysm.remains+action.cataclysm.cast_time))|!talent.cataclysm.enabled)" );
   add_action( "Unstable Affliction", "if=remains<=(duration*0.3)" );
   add_action( "Corruption", "if=remains<=(duration*0.3)" );
   add_action( "Life Tap", "if=mana.pct<40" );
-  add_action( "Drain Soul" );
+  add_action( "Drain Soul,interrupt=1,chain=1" );
 }
 
 void warlock_t::apl_demonology()
 {
   {
-    add_action( spec.doom, "if=buff.metamorphosis.up&target.time_to_die>=30&miss_react&remains<=(duration*0.3)" );
+    action_list_str += "/cataclysm,if=buff.metamorphosis.up";
+    add_action( spec.doom, "if=buff.metamorphosis.up&target.time_to_die>=30&remains<=(duration*0.3)&remains<cooldown.cataclysm.remains" );
+    add_action( "corruption", "if=target.time_to_die>=6&remains<=(0.3*duration)&cooldown.dark_soul.remains<=8" );
+    add_action( "corruption", "if=target.time_to_die>=6&remains<=action.shadow_bolt.cast_time" );
 
-    action_list_str += "/cancel_metamorphosis,if=buff.metamorphosis.up&buff.dark_soul.down&demonic_fury<=650&target.time_to_die>30&(cooldown.metamorphosis.remains<4|demonic_fury<=300)";
-    
-    add_action( "Soul Fire", "if=buff.metamorphosis.up&buff.molten_core.react&(buff.dark_soul.remains<action.shadow_bolt.cast_time|buff.dark_soul.remains>cast_time)" );
-    add_action( "Demonbolt", "if=buff.demonbolt.stack<=2");
+    action_list_str += "/cancel_metamorphosis,if=buff.metamorphosis.up&buff.dark_soul.down&demonic_fury<=650&demonic_fury%(40%gcd)<target.time_to_die";
+    action_list_str += "/cancel_metamorphosis,if=buff.metamorphosis.up&cooldown.metamorphosis.remains<=3&action.hand_of_guldan.charges=2";
 
+    add_action( "Demonbolt", "if=buff.dark_soul.up" );
     add_action( "touch of chaos", "if=buff.metamorphosis.up" );
-    add_action( "metamorphosis", "if=(buff.dark_soul.up&buff.dark_soul.remains<demonic_fury%32)|demonic_fury>=950|demonic_fury%32>target.time_to_die" );
-    add_action( "corruption", "if=target.time_to_die>=6&miss_react&remains<=(duration*0.3)" );
-    add_action( "Hand of Gul'dan" );
-    add_action( "Soul Fire", "if=buff.molten_core.react&(buff.dark_soul.remains<action.shadow_bolt.cast_time|buff.dark_soul.remains>cast_time)&(buff.molten_core.react>9|target.health.pct<=28)" );
+    add_action( "metamorphosis", "if=buff.dark_soul.remains>gcd" );
+    add_action( "metamorphosis", "if=demonic_fury>=950" );
+    add_action( "metamorphosis", "if=(action.hand_of_guldan.charges=0|(!dot.shadowflame.ticking&!action.hand_of_guldan.in_flight_to_target))&demonic_fury>=750&cooldown.dark_soul.remains>=8" );
+    add_action( "metamorphosis", "if=(action.hand_of_guldan.charges=0|(!dot.shadowflame.ticking&!action.hand_of_guldan.in_flight_to_target))&demonic_fury%(40%gcd)>=target.time_to_die" );
+    add_action( "metamorphosis", "if=(action.hand_of_guldan.charges=0|(!dot.shadowflame.ticking&!action.hand_of_guldan.in_flight_to_target))&demonic_fury>=500&cooldown.dark_soul.remains>=8&dot.corruption.remains<=(dot.corruption.duration*0.3)" );
+    add_action( "Hand of Gul'dan", "if=!in_flight&dot.shadowflame.remains<travel_time+action.shadow_bolt.cast_time&(charges=2|dot.shadowflame.remains>travel_time|(charges=1&recharge_time<4))" );
+    add_action( "Soul Fire", "if=buff.molten_core.react&(buff.dark_soul.remains<action.shadow_bolt.cast_time|buff.dark_soul.remains>cast_time)" );
     add_action( "Life Tap", "if=mana.pct<40" );
     add_action( "Shadow Bolt" );
   }
@@ -5502,12 +5537,11 @@ void warlock_t::apl_destruction()
   add_action(
       "Immolate", "if=miss_react&remains<=cast_time" );
   add_action( "Conflagrate", "if=charges=2" );
-  add_action(
-      "Chaos Bolt",
-      "if=(buff.backdraft.stack<3|talent.charred_remains.enabled)&(((burning_ember>=1&talent.charred_remains.enabled)|burning_ember>=3.5)|(trinket.proc.intellect.react&trinket.proc.intellect.remains>cast_time)|buff.dark_soul.up)" );
-  
-  action_list_str += "/cataclysm,if=talent.cataclysm.enabled";
-
+  action_list_str += "/cataclysm";
+  add_action( "Chaos Bolt", "if=set_bonus.tier17_4pc_caster&buff.t17_4pc_destruction.react" );
+  add_action( "Chaos Bolt", "if=set_bonus.tier17_2pc_caster&buff.backdraft.stack<3&(burning_ember>=2.5|(trinket.proc.intellect.react&trinket.proc.intellect.remains>cast_time)|buff.dark_soul.up)" );
+  add_action( "Chaos Bolt", "if=talent.charred_remains.enabled&buff.backdraft.stack<3&(burning_ember>=2.5|(trinket.proc.intellect.react&trinket.proc.intellect.remains>cast_time)|buff.dark_soul.up)" );
+  add_action( "Chaos Bolt", "if=buff.backdraft.stack<3&(burning_ember>=3.5|(trinket.proc.intellect.react&trinket.proc.intellect.remains>cast_time)|buff.dark_soul.up)" );
   add_action( "Immolate", "if=miss_react&remains<=(duration*0.3)" );
   add_action( "Conflagrate" );
   add_action( "Incinerate" );
