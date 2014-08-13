@@ -1671,7 +1671,7 @@ struct melee_t : public monk_melee_attack_t
   {
     monk_melee_attack_t::impact( s );
  
-    p() -> buff.tiger_strikes -> trigger( 4 );
+    p() -> buff.tiger_strikes -> trigger();
  
     if ( p() -> spec.brewing_elusive_brew -> ok() && s -> result == RESULT_CRIT )
     {
