@@ -3,7 +3,7 @@ level=100
 race=troll
 role=spell
 position=back
-talents=http://us.battle.net/wow/en/tool/talent-calculator#Ua!.0.1.01
+talents=http://us.battle.net/wow/en/tool/talent-calculator#Ua!.0.2.01
 spec=balance
 
 # This default action priority list is automatically created based on your character.
@@ -32,13 +32,14 @@ actions+=/use_item,slot=trinket1
 actions+=/run_action_list,name=single_target,if=active_enemies=1
 actions+=/run_action_list,name=aoe,if=active_enemies>1
 
-actions.single_target=stellar_flare,if=eclipse_change<3&ticks_remain<3|!ticking
+actions.single_target=sunfire,if=ticks_remain<4
+actions.single_target+=/stellar_flare,if=ticks_remain<4
 actions.single_target+=/force_of_nature,if=charges>=1
 actions.single_target+=/celestial_alignment,if=(eclipse_dir.lunar&eclipse_max>=5)|@eclipse_energy<=10
 actions.single_target+=/incarnation,if=buff.celestial_alignment.up
 actions.single_target+=/starsurge,if=charges=3
-actions.single_target+=/moonfire,if=(eclipse_max=0&buff.lunar_peak.up)|ticks_remain<3
-actions.single_target+=/sunfire,if=(eclipse_max=0&buff.solar_peak.up)|ticks_remain<3|(buff.celestial_alignment.up&buff.celestial_alignment.remains<=2)
+actions.single_target+=/moonfire,if=buff.lunar_peak.up|ticks_remain<3
+actions.single_target+=/sunfire,if=buff.solar_peak.up|ticks_remain<3|(buff.celestial_alignment.up&buff.celestial_alignment.remains<=2)
 actions.single_target+=/starsurge,if=(buff.lunar_empowerment.down&eclipse_energy>=0)|(eclipse_energy<0&buff.solar_empowerment.down)
 actions.single_target+=/wrath,if=(eclipse_energy<=0&eclipse_change>cast_time)|(eclipse_energy>0&cast_time>eclipse_change)
 actions.single_target+=/starfire,if=(eclipse_energy>=0&eclipse_change>cast_time)|(eclipse_energy<0&cast_time>eclipse_change)
