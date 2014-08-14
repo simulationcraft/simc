@@ -9,6 +9,14 @@
       <Configuration>Debug</Configuration>
       <Platform>x64</Platform>
     </ProjectConfiguration>
+    <ProjectConfiguration Include="PGO|Win32">
+      <Configuration>PGO</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="PGO|x64">
+      <Configuration>PGO</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
     <ProjectConfiguration Include="Release|Win32">
       <Configuration>Release</Configuration>
       <Platform>Win32</Platform>
@@ -31,10 +39,22 @@
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <PlatformToolset>v120</PlatformToolset>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='PGO|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <CharacterSet>Unicode</CharacterSet>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <PlatformToolset>v120</PlatformToolset>
+  </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <CharacterSet>Unicode</CharacterSet>
     <WholeProgramOptimization>true</WholeProgramOptimization>
+    <PlatformToolset>v120</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='PGO|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <CharacterSet>Unicode</CharacterSet>
+    <WholeProgramOptimization>PGUpdate</WholeProgramOptimization>
     <PlatformToolset>v120</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -56,7 +76,19 @@
     <Import Project="PrecompiledHeaders.props" />
     <Import Project="CommonIncludeDirectories.props" />
   </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='PGO|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="OutputDirectories.props" />
+    <Import Project="PrecompiledHeaders.props" />
+    <Import Project="CommonIncludeDirectories.props" />
+  </ImportGroup>
   <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="OutputDirectories.props" />
+    <Import Project="PrecompiledHeaders.props" />
+    <Import Project="CommonIncludeDirectories.props" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='PGO|x64'" Label="PropertySheets">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
     <Import Project="OutputDirectories.props" />
     <Import Project="PrecompiledHeaders.props" />
@@ -86,12 +118,19 @@
     <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" />
     <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" />
     <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='PGO|Win32'">AllRules.ruleset</CodeAnalysisRuleSet>
     <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='Release|x64'">AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='PGO|x64'">AllRules.ruleset</CodeAnalysisRuleSet>
     <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" />
+    <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='PGO|Win32'" />
     <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='Release|x64'" />
+    <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='PGO|x64'" />
     <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" />
+    <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='PGO|Win32'" />
     <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='Release|x64'" />
+    <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='PGO|x64'" />
     <RunCodeAnalysis Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">false</RunCodeAnalysis>
+    <RunCodeAnalysis Condition="'$(Configuration)|$(Platform)'=='PGO|Win32'">false</RunCodeAnalysis>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <RunCodeAnalysis>false</RunCodeAnalysis>
@@ -109,7 +148,16 @@
     <EnableManagedIncrementalBuild>false</EnableManagedIncrementalBuild>
     <OutDir>$(SolutionDir)\$(PlatformShortName)\$(Configuration)\</OutDir>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='PGO|x64'">
+    <RunCodeAnalysis>false</RunCodeAnalysis>
+    <TargetName>$(ProjectName)64</TargetName>
+    <EnableManagedIncrementalBuild>false</EnableManagedIncrementalBuild>
+    <OutDir>$(SolutionDir)\$(PlatformShortName)\Release\</OutDir>
+  </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <OutDir>$(SolutionDir)\$(PlatformShortName)\$(Configuration)\</OutDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='PGO|Win32'">
     <OutDir>$(SolutionDir)\$(PlatformShortName)\$(Configuration)\</OutDir>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
@@ -207,6 +255,43 @@
     <PostBuildEvent />
     <PostBuildEvent />
   </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='PGO|Win32'">
+    <ClCompile>
+      <AdditionalOptions> /w34263 /w34264 /w34265 /w34266  /analyze:stacksize65536' %(AdditionalOptions)</AdditionalOptions>
+      <Optimization>Full</Optimization>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <BufferSecurityCheck>false</BufferSecurityCheck>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <DisableSpecificWarnings>4005;4996;6011;6386;6246;6313;6102;6330;%(DisableSpecificWarnings)</DisableSpecificWarnings>
+      <EnablePREfast>true</EnablePREfast>
+      <TreatSpecificWarningsAsErrors>4101</TreatSpecificWarningsAsErrors>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <OmitFramePointers>true</OmitFramePointers>
+      <EnableEnhancedInstructionSet>NotSet</EnableEnhancedInstructionSet>
+      <StringPooling>true</StringPooling>
+      <AdditionalIncludeDirectories>$(SolutionDir)engine;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <FloatingPointModel>Precise</FloatingPointModel>
+      <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
+    </ClCompile>
+    <Link>
+      <AdditionalOptions>wininet.lib %(AdditionalOptions)</AdditionalOptions>
+      <GenerateDebugInformation>false</GenerateDebugInformation>
+      <SubSystem>Console</SubSystem>
+      <OptimizeReferences>true</OptimizeReferences>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <TargetMachine>MachineX86</TargetMachine>
+      <Profile>false</Profile>
+      <ProfileGuidedDatabase>$(SolutionDir)\$(PlatformShortName)\$(Configuration)\Simulationcraft.pgd</ProfileGuidedDatabase>
+      <LinkTimeCodeGeneration>UseLinkTimeCodeGeneration</LinkTimeCodeGeneration>
+    </Link>
+    <PostBuildEvent />
+    <PostBuildEvent />
+  </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
       <AdditionalOptions> /w34263 /w34264 /w34265 /w34266  %(AdditionalOptions)</AdditionalOptions>
@@ -240,6 +325,41 @@
       <LargeAddressAware>true</LargeAddressAware>
       <LinkTimeCodeGeneration>UseLinkTimeCodeGeneration</LinkTimeCodeGeneration>
       <ProfileGuidedDatabase>$(SolutionDir)\$(PlatformShortName)\$(Configuration)\Simulationcraft64.pgd</ProfileGuidedDatabase>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='PGO|x64'">
+    <ClCompile>
+      <AdditionalOptions> /w34263 /w34264 /w34265 /w34266  %(AdditionalOptions)</AdditionalOptions>
+      <Optimization>Full</Optimization>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <BufferSecurityCheck>false</BufferSecurityCheck>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <DisableSpecificWarnings>4005;4996;6011;6386;6246;6313;6102;6330;%(DisableSpecificWarnings)</DisableSpecificWarnings>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <OmitFramePointers>true</OmitFramePointers>
+      <EnablePREfast>false</EnablePREfast>
+      <StringPooling>true</StringPooling>
+      <AdditionalIncludeDirectories>$(SolutionDir)engine;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <FloatingPointModel>Precise</FloatingPointModel>
+      <WholeProgramOptimization>true</WholeProgramOptimization>
+      <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
+      <BrowseInformation>true</BrowseInformation>
+    </ClCompile>
+    <Link>
+      <AdditionalOptions>wininet.lib %(AdditionalOptions)</AdditionalOptions>
+      <GenerateDebugInformation>false</GenerateDebugInformation>
+      <SubSystem>Console</SubSystem>
+      <OptimizeReferences>true</OptimizeReferences>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <Profile>false</Profile>
+      <LargeAddressAware>true</LargeAddressAware>
+      <LinkTimeCodeGeneration>PGUpdate</LinkTimeCodeGeneration>
+      <ProfileGuidedDatabase>$(SolutionDir)\$(PlatformShortName)\Release\Simulationcraft64.pgd</ProfileGuidedDatabase>
     </Link>
   </ItemDefinitionGroup>
   <Import Project="..\source_files\VS_engine.props" />
