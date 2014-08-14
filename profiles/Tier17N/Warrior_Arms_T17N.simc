@@ -3,7 +3,7 @@ level=100
 race=orc
 role=attack
 position=back
-talents=http://us.battle.net/wow/en/tool/talent-calculator#Za!0110211
+talents=http://us.battle.net/wow/en/tool/talent-calculator#Za!0102211
 glyphs=unending_rage/death_from_above/bull_rush
 spec=arms
 
@@ -50,13 +50,16 @@ actions.single_target+=/slam,if=(debuff.colossus_smash.up|rage>60)&target.health
 actions.single_target+=/whirlwind,if=(rage>60|debuff.colossus_smash.up)&target.health.pct>20&buff.sudden_death.down&!talent.slam.enabled
 
 actions.aoe=sweeping_strikes
+actions.aoe+=/rend,if=!ticking
 actions.aoe+=/ravager
 actions.aoe+=/bladestorm
+actions.aoe+=/shockwave
 actions.aoe+=/dragon_roar
 actions.aoe+=/colossus_smash
-actions.aoe+=/mortal_strike,if=active_enemies<6
-actions.aoe+=/execute,if=buff.sudden_death.up|active_enemies<6
+actions.aoe+=/mortal_strike,if=active_enemies<4
+actions.aoe+=/execute,if=buff.sudden_death.up|active_enemies<4
 actions.aoe+=/whirlwind,if=rage>40
+actions.aoe+=/rend,cycle_targets=1,if=!ticking&talent.taste_for_blood.enabled
 
 head=primal_gladiators_plate_helm,id=111241
 neck=primal_gladiators_choker_of_cruelty,id=111207,enchant=gift_of_critical_strike

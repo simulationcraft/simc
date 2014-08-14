@@ -3989,13 +3989,16 @@ void warrior_t::apl_arms()
   single_target -> add_action( this, "Whirlwind", "if=(rage>60|debuff.colossus_smash.up)&target.health.pct>20&buff.sudden_death.down&!talent.slam.enabled" );
 
   aoe -> add_action( this, "Sweeping Strikes" );
+  aoe -> add_action( this, "Rend", "if=!ticking" );
   aoe -> add_talent( this, "Ravager" );
   aoe -> add_talent( this, "Bladestorm" );
+  aoe -> add_talent( this, "Shockwave" );
   aoe -> add_talent( this, "Dragon Roar" );
   aoe -> add_action( this, "Colossus Smash" );
-  aoe -> add_action( this, "Mortal Strike", "if=active_enemies<6" );
-  aoe -> add_action( this, "Execute", "if=buff.sudden_death.up|active_enemies<6" );
+  aoe -> add_action( this, "Mortal Strike", "if=active_enemies<4" );
+  aoe -> add_action( this, "Execute", "if=buff.sudden_death.up|active_enemies<4" );
   aoe -> add_action( this, "Whirlwind", "if=rage>40" );
+  aoe -> add_action( this, "Rend", "cycle_targets=1,if=!ticking&talent.taste_for_blood.enabled" );
 }
 
 // Protection Warrior Action Priority List ========================================
