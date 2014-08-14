@@ -7071,6 +7071,8 @@ expr_t* player_t::create_expression( action_t* a,
     return make_mem_fn_expr( expression_str, this -> cache, &player_stat_cache_t::attack_speed );
   if ( expression_str == "spell_haste" )
     return make_mem_fn_expr( expression_str, this-> cache, &player_stat_cache_t::spell_speed );
+  if ( expression_str == "multistrike" )
+    return make_mem_fn_expr( expression_str, this-> cache, &player_stat_cache_t::multistrike );
   if ( expression_str == "time_to_die" )
     return make_mem_fn_expr( expression_str, *this, &player_t::time_to_die );
 
