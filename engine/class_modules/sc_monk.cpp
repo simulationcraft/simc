@@ -1440,7 +1440,7 @@ struct spinning_crane_kick_t : public monk_melee_attack_t
 
     if( p -> talent.rushing_jade_wind -> ok() )
     {
-	  base_multiplier *= 0.7392; // hardcoded into tooltip
+    base_multiplier *= 0.7392; // hardcoded into tooltip
       school = SCHOOL_NATURE; // Application is Nature but the actual damage ticks is Physical
       tick_action = new rushing_jade_wind_tick_t( p, p -> find_talent_spell( "Rushing Jade Wind" ) );
     }
@@ -3336,8 +3336,10 @@ void monk_t::init_base_stats()
   base_energy_regen_per_second = 10.0;
 
   base.attack_power_per_strength = 0.0;
-  base.attack_power_per_agility  = 1.0;
-  base.spell_power_per_intellect = 1.0;
+  if ( specialization() != MONK_MISTWEAVER )
+    base.attack_power_per_agility  = 1.0;
+  if ( specialization() == MONK_MISTWEAVER )
+    base.spell_power_per_intellect = 1.0;
 
   // Mistweaver
   if ( spec.mana_meditation -> ok() )
@@ -3356,11 +3358,11 @@ void monk_t::init_scaling()
 
   if ( specialization() != MONK_MISTWEAVER )
   {
-    scales_with[ STAT_INTELLECT             ] = false;
-    scales_with[ STAT_SPIRIT                ] = false;
-    scales_with[ STAT_SPELL_POWER           ] = false;
-        scales_with[ STAT_AGILITY                               ] = true;
-        scales_with[ STAT_WEAPON_DPS                    ] = true;
+    scales_with[ STAT_INTELLECT            ] = false;
+    scales_with[ STAT_SPIRIT               ] = false;
+    scales_with[ STAT_SPELL_POWER          ] = false;
+    scales_with[ STAT_AGILITY              ] = true;
+    scales_with[ STAT_WEAPON_DPS           ] = true;
   }
 
   if ( off_hand_weapon.type != WEAPON_NONE )
@@ -3737,7 +3739,7 @@ double monk_t::composite_melee_expertise( weapon_t* weapon ) const
 
 double monk_t::composite_melee_attack_power() const
 {
-  if ( current_stance() == SPIRITED_CRANE)
+  if ( current_stance() == SPIRITED_CRANE )
     return composite_spell_power( SCHOOL_MAX ) * static_stance_data( SPIRITED_CRANE ).effectN( 3 ).percent();
 
   double ap = player_t::composite_melee_attack_power();
