@@ -775,10 +775,10 @@ QString advancedText[ 6 ] = {
 // constant for the varying labels of the helpbar text box
 QString helpbarText[ 6 ] = {
   "To automate generation of a comparison, choose a comparison type from the drop-down box to the left.",
-  "List the talent configurations you want to test in the box below as seven-digit integer strings, i.e. 1231231.\nEach configuration should be its own new line.\nFor more advanced syntax options, see the wiki entry at (PUT LINK HERE).",
-  "List the glyph configurations you want to test (i.e. alabaster_shield/focused_shield/word_of_glory) in the box below.\nEach configuration should be its own new line.\nFor more advanced syntax options, see the wiki entry at (PUT LINK HERE).",
-  "List the different gear configurations you want to test in the box below.\nEach configuration should be separated by a blank line.\nFor more advanced syntax options, see the wiki entry at (PUT LINK HERE).",
-  "List the rotations you want to test in the box below. Rotations can be specified as usual for simc (with different configurations separated by a blank line) or as shorthands (each on a new line).\nThe sidebar lists the shorthand conventions for your class and spec. You can add your own using the syntax <Shorthand>=<Longhand> (see examples).\nFor more advanced syntax options, see the wiki entry at (PUT LINK HERE).",
+  "List the talent configurations you want to test in the box below as seven-digit integer strings, i.e. 1231231.\nEach configuration should be its own new line.\nFor more advanced syntax options, see the wiki entry at https://code.google.com/p/simulationcraft/wiki/Automation#Talent_Comparisons.",
+  "List the glyph configurations you want to test (i.e. alabaster_shield/focused_shield/word_of_glory) in the box below.\nEach configuration should be its own new line.\nFor more advanced syntax options, see the wiki entry at https://code.google.com/p/simulationcraft/wiki/Automation#Glyph_Comparisons.",
+  "List the different gear configurations you want to test in the box below.\nEach configuration should be separated by a blank line.\nFor more advanced syntax options, see the wiki entry at https://code.google.com/p/simulationcraft/wiki/Automation#Gear_Comparisons.",
+  "List the rotations you want to test in the box below. Rotations can be specified as usual for simc (with different configurations separated by a blank line) or as shorthands (each on a new line).\nThe sidebar lists the shorthand conventions for your class and spec. You can add your own using the syntax <Shorthand>=<Longhand> (see examples).\nFor more advanced syntax options, see the wiki entry at https://code.google.com/p/simulationcraft/wiki/Automation#Rotation_Comparisons.",
   "To specify everything according to your needs. All configurations can be mixed up for more advanced multi-automated simulations but need to match the standard SimCraft input format"
 };
 
@@ -802,7 +802,7 @@ QString advRotToolTip = "Rotations can be specified in two ways:\n(1): by shorth
                         "Note that the two examples above are equivalent.\n"
                         "For shorthand inputs, options can be specified using usual simc syntax, with \"+\" standing for \",if=\", like this:\n\n"
                         "CS+GC&(DP|!FW)\n\n"
-                        "See the wiki entry (LINK?) for more details.";
+                        "See the wiki entry for more details. https://code.google.com/p/simulationcraft/wiki/Automation#Rotation_Comparisons";
 
 // method to set the sidebar text based on class slection
 void SC_ImportTab::setSidebarClassText()
