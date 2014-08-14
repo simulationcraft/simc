@@ -41,7 +41,6 @@ actions+=/run_action_list,name=single_target,if=active_enemies<2
 
 actions.single_target=rend,if=dot.rend.remains<3&target.health.pct>20
 actions.single_target+=/mortal_strike,if=target.health.pct>20
-actions.single_target+=/heroic_charge,if=rage<45
 actions.single_target+=/ravager,if=cooldown.colossus_smash.remains<3
 actions.single_target+=/colossus_smash
 actions.single_target+=/storm_bolt,if=cooldown.colossus_smash.remains>4|debuff.colossus_smash.up

@@ -3979,7 +3979,7 @@ void warrior_t::apl_arms()
 
   single_target -> add_action( this, "Rend", "if=dot.rend.remains<3&target.health.pct>20" );
   single_target -> add_action( this, "Mortal Strike", "if=target.health.pct>20" );
-  single_target -> add_action( "heroic_charge,if=rage<45" );
+  //single_target -> add_action( "heroic_charge,if=rage<45" ); It's not feasible in raids to do this with the rage tweaks.
   single_target -> add_talent( this, "Ravager", "if=cooldown.colossus_smash.remains<3" );
   single_target -> add_action( this, "Colossus Smash" );
   single_target -> add_talent( this, "Storm Bolt", "if=cooldown.colossus_smash.remains>4|debuff.colossus_smash.up" );
