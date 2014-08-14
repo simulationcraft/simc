@@ -403,7 +403,6 @@ public:
   virtual double    composite_armor() const override;
   virtual double    composite_spell_haste() const override;
   virtual double    composite_spell_speed() const override;
-  virtual double    composite_multistrike_multiplier( const action_state_t* s ); //TODO Wire this up when we can change the damage/heal coefficient for Multistrikes
   virtual double    composite_spell_power_multiplier() const override;
   virtual double    composite_spell_crit() const override;
   virtual double    composite_melee_crit() const override;
@@ -1411,6 +1410,17 @@ struct priest_heal_t : public priest_action_t<heal_t>
     priest.buffs.surge_of_light -> up();
     priest.buffs.surge_of_light -> expire();
   }
+
+  // action::composite_multistrike_multiplier ==========================================
+
+  double composite_multistrike_multiplier( const action_state_t* state ) const
+  {
+    double m = base_t::composite_multistrike_multiplier( state );
+
+    m *= 1.0 + priest.specs.divine_providence -> effectN( 2 ).percent();
+
+    return m;
+  }
 };
 
 // Shadow Orb State ===================================================
@@ -1634,6 +1644,18 @@ struct priest_spell_t : public priest_action_t<spell_t>
       return true;
     }
     return false;
+  }
+
+
+  // action::composite_multistrike_multiplier ==========================================
+
+  double composite_multistrike_multiplier( const action_state_t* state ) const
+  {
+    double m = base_t::composite_multistrike_multiplier( state );
+
+    m *= 1.0 + priest.specs.divine_providence -> effectN( 2 ).percent();
+
+    return m;
   }
 };
 
@@ -5380,20 +5402,6 @@ double priest_t::composite_spell_haste() const
     h /= 1.0 + buffs.mental_instinct -> data().effectN( 1 ).percent() * buffs.mental_instinct -> check();
 
   return h;
-}
-
-// priest_t::composite_spell_haste ==========================================
-
- // TODO Wire this up when we can change the damage/heal coefficient for Multistrikes
-double priest_t::composite_multistrike_multiplier( const action_state_t* /*s*/ )
-{
-    //double m = action_t::composite_multistrike_multiplier ( s );
-    double m = 0.3;
-
-    if ( specialization() == PRIEST_HOLY )
-      m = 0.375;//*= 1 + specs.divine_providence->effectN( 2 ).percent();
-
-    return m;
 }
 
 // priest_t::composite_spell_speed ==========================================
