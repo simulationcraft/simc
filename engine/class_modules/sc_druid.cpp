@@ -359,6 +359,7 @@ public:
     const spell_data_t* astral_showers;
     const spell_data_t* celestial_alignment;
     const spell_data_t* celestial_focus;
+    const spell_data_t* eclipse;
     const spell_data_t* lunar_guidance;
     const spell_data_t* moonkin_form;
     const spell_data_t* readiness_balance;
@@ -3773,6 +3774,7 @@ struct druid_spell_t : public druid_spell_base_t<spell_t>
 
       double mastery;
       mastery = p -> cache.mastery_value();
+      mastery += p -> spec.eclipse -> effectN( 1 ).percent();
 
       if ( ( dbc::is_school( school, SCHOOL_ARCANE ) || dbc::is_school( school, SCHOOL_NATURE ) ) &&
            p -> buff.celestial_alignment -> up() )
@@ -5051,8 +5053,8 @@ struct stellar_flare_t : public druid_spell_t
     double balance;
     balance = p() -> clamped_eclipse_amount;
     double mastery;
-
     mastery = p() -> cache.mastery_value();
+    mastery += p() -> spec.eclipse -> effectN(1).percent();
 
     if ( p() -> buff.celestial_alignment -> up() )
       m *= ( 1.0 + mastery ) * ( 1.0 + mastery );
@@ -5425,6 +5427,7 @@ void druid_t::init_spells()
   spec.astral_showers          = find_specialization_spell( "Astral Showers" );
   spec.celestial_alignment     = find_specialization_spell( "Celestial Alignment" );
   spec.celestial_focus         = find_specialization_spell( "Celestial Focus" );
+  spec.eclipse                 = find_specialization_spell( "Eclipse" );
   spec.lunar_guidance          = find_specialization_spell( "Lunar Guidance" );
   spec.moonkin_form            = find_specialization_spell( "Moonkin Form" );
   spec.readiness_balance       = find_specialization_spell( "Readiness: Balance" );
