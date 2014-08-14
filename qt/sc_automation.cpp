@@ -47,6 +47,33 @@ QString automation::tokenize( QString qstr )
   return QString::fromStdString( temp );
 }
 
+QStringList automation::splitPreservingComments( QString qstr )
+{
+  QStringList outputList;
+
+  // split the entry on newlines to separate it all out
+  QStringList mainList = qstr.split( "\n", QString::SkipEmptyParts );
+
+  // for each entry, do further processing
+  for ( int j = 0; j < mainList.size(); j++ )
+  {
+    // first though, check to see if this line is a comment
+    QRegExp comment = QRegExp( "\\s*\\#" );
+    // if so, preserve it and remove leading/trailing spaces
+    if ( comment.indexIn( mainList[ j ] ) == 0 )
+      outputList.append( mainList[ j ].simplified() );
+    // otherwise, try to split on spaces and add each element individually
+    // (in practice unnecessary, but helps make the generated profiles more readable)    
+    else
+    {
+      QStringList subList = mainList[ j ].split( QRegExp( "\\s" ), QString::SkipEmptyParts );
+      for ( int l = 0; l < subList.size(); l++ )
+        outputList.append( subList[ l ] );
+    }
+  }
+  return outputList;
+}
+
 // this structure is needed for finding abbreviations in the tables
 struct comp
 {
@@ -81,7 +108,7 @@ QString automation::do_something( int sim_type,
   base_profile_info += "level=" + player_level + "\n";
 
   // Take advanced_text and try splitting by \n\n
-  advanced_list = advanced_text.split( "\n\n", QString::SkipEmptyParts );
+  advanced_list = advanced_text.split( QRegExp("\\n\\s*\\n"), QString::SkipEmptyParts );
 
   // If that did split it, we'll just feed advanced_list to the appropriate sim.
   // If not, then we try to split on \n instead
@@ -127,16 +154,24 @@ QString automation::auto_talent_sim( QString player_class,
   for ( int i = 0; i < talentList.size(); i++ )
   {
     // first, check to see if the user has specified additional options within the list entry.
-    // If so, we want to split them off and append them to the end. We do this by splitting on spaces and \n
-    QStringList splitEntry = talentList[ i ].split( QRegExp( "\\n|\\s" ), QString::SkipEmptyParts );
+    // If so, we want to split them off and append them to the end.
+    QStringList splitEntry = splitPreservingComments( talentList[ i ] );
     
     profile += tokenize( player_class ) + "=T_" + splitEntry[ 0 ] + "\n";
     profile += base_profile_info;
 
-    if ( splitEntry[ 0 ].startsWith( "talents=" ) )
-      profile += splitEntry[ 0 ] + "\n";
+    // skip comments
+    int k = 0;
+    while ( k < splitEntry.size() - 1 && splitEntry[ k ].startsWith( "#" ) )
+    {
+      profile += splitEntry[ k ] + "\n";
+      k++;
+    }
+    // the first non-comment entry should be our talents
+    if ( splitEntry[ k ].startsWith( "talents=" ) )
+      profile += splitEntry[ k ] + "\n";
     else 
-      profile += "talents=" + splitEntry[ 0 ] + "\n";
+      profile += "talents=" + splitEntry[ k ] + "\n";
 
     if ( player_glyphs.startsWith( "glyphs=" ) )
       profile += player_glyphs + "\n";
@@ -148,8 +183,9 @@ QString automation::auto_talent_sim( QString player_class,
     if ( player_rotation.size() > 0 )
       profile += player_rotation + "\n";
 
-    if ( splitEntry.size() > 1 )
-      for ( int j = 1; j < splitEntry.size(); j++ )
+    // add the remaining options at the end
+    if ( splitEntry.size() > k + 1 )
+      for ( int j = k + 1; j < splitEntry.size(); j++ )
         profile += splitEntry[ j ] + "\n";
 
     profile += "\n";
@@ -174,7 +210,7 @@ QString automation::auto_glyph_sim( QString player_class,
   {
     // first, check to see if the user has specified additional options within the list entry.
     // If so, we want to split them off and append them to the end. We do this by splitting on spaces and \n
-    QStringList splitEntry = glyphList[ i ].split( QRegExp( "\\n|\\s" ), QString::SkipEmptyParts );
+    QStringList splitEntry = splitPreservingComments( glyphList[ i ] );
 
     profile += tokenize( player_class ) + "=G_" + QString::number( i ) + "\n";
     profile += base_profile_info;
@@ -183,19 +219,28 @@ QString automation::auto_glyph_sim( QString player_class,
       profile += player_talents + "\n";
     else
       profile += "talents=" + player_talents + "\n";
-
-    if ( splitEntry[ 0 ].startsWith( "glyphs=" ) )
-      profile += splitEntry[ 0 ] + "\n";
+    
+    // skip comments
+    int k = 0;
+    while ( k < splitEntry.size() - 1 && splitEntry[ k ].startsWith( "#" ) )
+    {
+      profile += splitEntry[ k ] + "\n";
+      k++;
+    }
+    // the first non-comment entry should be our glyphs
+    if ( splitEntry[ k ].startsWith( "glyphs=" ) )
+      profile += splitEntry[ k ] + "\n";
     else
-      profile += "glyphs=" + splitEntry[ 0 ] + "\n";
+      profile += "glyphs=" + splitEntry[ k ] + "\n";
 
     if ( player_gear.size() > 0 )
       profile += player_gear + "\n";
     if ( player_rotation.size() > 0 )
       profile += player_rotation + "\n";
-
-    if ( splitEntry.size() > 1 )
-      for ( int j = 1; j < splitEntry.size(); j++ )
+    
+    // add the remaining options at the end
+    if ( splitEntry.size() > k + 1 )
+      for ( int j = k + 1; j < splitEntry.size(); j++ )
         profile += splitEntry[ j ] + "\n";
 
     profile += "\n";
@@ -234,13 +279,13 @@ QString automation::auto_gear_sim( QString player_class,
     if ( player_rotation.size() > 0 )
       profile += player_rotation + "\n";
 
-    // split the entry on newlines and spaces just to separate it all out
-    // (in practice unnecessary, but helps make the generated profiles more readable)
-    QStringList itemList = gearList[ i ].split( QRegExp( "\\n|\\s" ), QString::SkipEmptyParts );
-    
+    // split the entry on newlines and spaces, preserving comments
+    QStringList itemList = splitPreservingComments( gearList[ i ] );
+
+    // add each line of the reult to the profile
     for ( int j = 0; j < itemList.size(); j++ )
       profile += itemList[ j ] + "\n";
-
+    
     // note that we don't bother pushing extra options to the end here, since the gear set is
     // already being specified at the end of the profile.
 
@@ -285,39 +330,69 @@ QString automation::auto_rotation_sim( QString player_class,
       profile += precombat_actions + "\n";
     
     // Since action lists can be specified as shorthand with options or as full lists, we need to support both.
-    // To do that, we split on newlines and spaces just like in the other modules
-    QStringList actionList = rotation_list[ i ].split( QRegExp( "\\n|\\s" ), QString::SkipEmptyParts );
+    // To do that, let's first split the provided configuration as usual:
+    QStringList actionList = splitPreservingComments( rotation_list[ i ] );
 
-    // now, we check to see if the first element is a shorthand
-    QStringList shorthandList = actionList[ 0 ].split( ">", QString::SkipEmptyParts );
-
-    // if the shorthand list has more than one element, and this wasn't because of a ">" in a conditional, 
-    // we have a shorthand sequence and need to do some conversion.
-    if ( shorthandList.size() > 0 && ! shorthandList[ 0 ].startsWith( "actions" ) )
+    // look through the split action list and attempt to find something indicating we have a longhand rotation
+    bool longhand = false;
+    for ( int j = 0; j < actionList.size(); j++ )
     {
-      // send shorthandList off to a method for conversion based on player class and spec
-      QStringList convertedAPL = convert_shorthand( shorthandList, sidebar_text );
-
-      // take the returned QStringList and output it.
-      for ( int i = 0; i < convertedAPL.size(); i++ )
-        profile += convertedAPL[ i ] + "\n";
-
-      // rename the actor to match the shorthand
-      profile += "name=" + actionList[ 0 ] + "\n";
+      if ( actionList[ j ].contains( "actions+=" ) || actionList[ j ].contains( "actions=" ) )
+        longhand = true;
     }
 
-    // Otherwise, the user has specified the action list in its full and gory detail, so we can just use that
-    // Spit out the first element here, the rest gets spit out below (for either case)
-    else
-      profile += actionList[ 0 ] + "\n";
-
-    // spit out the rest of the actionList
-    if ( actionList.size() > 1 )
-      for ( int j = 1; j < actionList.size(); j++ )
+    // if we have a longhand form, we can just dump the entire thing to the profile
+    if ( longhand )
+    {
+      for ( int j = 0; j < actionList.size(); j++ )
         profile += actionList[ j ] + "\n";
+      profile += "\n";
+      continue;
+    }
+
+    // otherwise we have a shorthand, and need more processing
+
+    // in theory, each actionList entry could be a shorthand, comment, or other option. 
+    // cycle through until we find a line that has a ">" and isn't a comment
+    QStringList shorthandList;
+    int k = -1;
+    do {
+      k++;
+      if ( ! actionList[ k ].startsWith( "#" ) )
+        shorthandList = actionList[ k ].split( ">", QString::SkipEmptyParts );
+    } while ( shorthandList.size() < 2 && k < actionList.size() - 1 );
+
+    // if the shorthandList still has less than two entries, what is this I don't even
+    // just dump it to the profile and let God sort it out
+    if ( shorthandList.size() < 2 )
+    {
+      for ( int j = 0; j < actionList.size(); j++ )
+        profile += actionList[ j ] + "\n";
+      profile += "\n";
+      continue;
+    }
+
+    // If we make it here, we have a shorthand list (hopefully). Now we want to run this through the conversion process
+
+    // send shorthandList off to a method for conversion based on player class and spec
+    QStringList convertedAPL = convert_shorthand( shorthandList, sidebar_text );
+
+    // provide a default name based on the shorthand - any name provided in the configuration will be appended after, and thus override
+      profile += "name=" + actionList[ k ] + "\n";
+
+    // spit out the actionList, replacing the shorthand line with our convertedAPL
+    for ( int j = 0; j < actionList.size(); j++ )
+    {
+      if ( j != k )
+        profile += actionList[ j ] + "\n";
+      else
+        for ( int q = 0; q < convertedAPL.size(); q++ )
+          profile += convertedAPL[ q ] + "\n";
+    }
 
     profile += "\n";
   }
+
   return profile;
 }
 
@@ -414,6 +489,13 @@ QStringList automation::convert_shorthand( QStringList shorthandList, QString si
     QString ability;
     QString options;
     QString waitString;
+
+    // skip comments - this should probably never happen though!
+    if ( shorthandList[ i ].startsWith( "#" ) )
+    {
+      actionPriorityList.append( shorthandList[ i ] );
+      continue;
+    }
 
     // first, split into ability abbreviation and options set
     QStringList splits = splitOnFirst( shorthandList[ i ], "+" );
