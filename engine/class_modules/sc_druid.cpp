@@ -6412,11 +6412,10 @@ double druid_t::composite_player_multiplier( school_e school ) const
 {
   double m = player_t::composite_player_multiplier( school );
 
-  if ( buff.celestial_alignment -> check() )
-    m *= 1.0 + buff.celestial_alignment -> data().effectN( 2 ).percent();
-
   if ( specialization() == DRUID_BALANCE )
   {
+    if ( buff.celestial_alignment -> check() )
+      m *= 1.0 + buff.celestial_alignment -> data().effectN(2).percent();
     if ( dbc::is_school( school, SCHOOL_ARCANE ) || dbc::is_school( school, SCHOOL_NATURE ) )
     {
       if ( buff.moonkin_form -> check() )

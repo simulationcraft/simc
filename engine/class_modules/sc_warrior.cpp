@@ -137,6 +137,7 @@ public:
     cooldown_t* die_by_the_sword;
     cooldown_t* recklessness;
     // Prot Only
+    cooldown_t* block;
     cooldown_t* demoralizing_shout;
     cooldown_t* last_stand;
     cooldown_t* rage_from_crit_block;
@@ -372,6 +373,8 @@ public:
     // Cooldowns
     cooldown.avatar                   = get_cooldown( "avatar" );
     cooldown.bladestorm               = get_cooldown( "bladestorm" );
+    cooldown.block                    = get_cooldown( "block" );
+    cooldown.block                    -> duration = timespan_t::from_seconds( 1.5 );
     cooldown.bloodbath                = get_cooldown( "bloodbath" );
     cooldown.charge                   = get_cooldown( "charge" );
     cooldown.demoralizing_shout       = get_cooldown( "demoralizing_shout" );
@@ -1934,7 +1937,7 @@ struct impending_victory_t: public warrior_attack_t
   impending_victory_heal_t* impending_victory_heal;
 
   impending_victory_t( warrior_t* p, const std::string& options_str ):
-    warrior_attack_t( "impending_victory", p, p -> find_spell( 103840 ) ),
+    warrior_attack_t( "impending_victory", p, p -> talents.impending_victory ),
     impending_victory_heal( new impending_victory_heal_t( p ) )
   {
     parse_options( NULL, options_str );
@@ -3221,6 +3224,7 @@ struct shield_block_t: public warrior_spell_t
   void execute()
   {
     warrior_spell_t::execute();
+    p() -> cooldown.block -> start();
 
     if ( p() -> buff.shield_block -> check() )
       p() -> buff.shield_block -> extend_duration( p(), timespan_t::from_seconds( 6.0 ) );
@@ -3231,6 +3235,9 @@ struct shield_block_t: public warrior_spell_t
   bool ready()
   {
     if ( !p() -> has_shield_equipped() )
+      return false;
+
+    if ( !p() -> cooldown.block -> up() )
       return false;
 
     return warrior_spell_t::ready();
