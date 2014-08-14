@@ -22,7 +22,7 @@ namespace { // UNNAMED NAMESPACE
 
 struct warrior_t;
 
-enum warrior_stance { STANCE_BATTLE = 1, STANCE_BERSERKER, STANCE_DEFENSE = 4 };
+enum warrior_stance { STANCE_BATTLE = 1, STANCE_BERSERKER = 2, STANCE_DEFENSE = 4 };
 
 struct warrior_td_t : public actor_pair_t
 {
@@ -41,7 +41,6 @@ public:
   int initial_rage;
 
   // Active
-
   action_t* active_bloodbath_dot;
   action_t* active_deep_wounds;
   action_t* active_opportunity_strike;
@@ -83,9 +82,7 @@ public:
     buff_t* ultimatum;
     buff_t* death_sentence;
     buff_t* tier16_reckless_defense;
-    
     haste_buff_t* flurry;
-
     //check
     buff_t* tier15_2pc_tank;
   } buff;
@@ -3840,6 +3837,7 @@ void warrior_t::init_scaling()
 
   if ( primary_role() == ROLE_TANK )
   {
+    scales_with[ STAT_DODGE_RATING ] = true;
     scales_with[ STAT_PARRY_RATING ] = true;
     scales_with[ STAT_BLOCK_RATING ] = true;
   }

@@ -546,6 +546,8 @@ void scaling_t::create_options()
     opt_float( "scale_crit_rating", stats.crit_rating ),
     opt_float( "scale_haste_rating", stats.haste_rating ),
     opt_float( "scale_mastery_rating", stats.mastery_rating ),
+    opt_float( "scale_dodge_rating", stats.dodge_rating ),
+    opt_float( "scale_parry_rating", stats.parry_rating ),
     opt_float( "scale_weapon_dps", stats.weapon_dps ),
     opt_float( "scale_weapon_speed", stats.weapon_speed ),
     opt_float( "scale_offhand_weapon_dps", stats.weapon_offhand_dps ),
