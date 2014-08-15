@@ -399,7 +399,7 @@ public:
     cooldown.storm_bolt               = get_cooldown( "storm_bolt" );
 
     initial_rage = 0;
-    arms_rage_mult = 2.15;
+    arms_rage_mult = 2.125;
     crit_rage_mult = 2;
     swapping = false;
     base.distance = 3.0;
@@ -1160,7 +1160,7 @@ struct bladestorm_tick_t: public warrior_attack_t
     dual = true;
     aoe = -1;
     if ( p -> specialization() == WARRIOR_ARMS )
-      weapon_multiplier *= 2;
+      weapon_multiplier *= 1.53333; // Hotfix? 8/15/14... Arms aoe is a bit ridiculous.
   }
 
   double action_multiplier() const
