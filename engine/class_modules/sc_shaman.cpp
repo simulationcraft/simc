@@ -169,6 +169,7 @@ public:
     buff_t* unleash_flame;
     buff_t* unleashed_fury;
     buff_t* tidal_waves;
+    buff_t* focus_of_the_elements;
 
     haste_buff_t* elemental_mastery;
     haste_buff_t* tier13_4pc_healer;
@@ -444,6 +445,8 @@ public:
   void trigger_tier16_2pc_melee( const action_state_t* );
   void trigger_tier16_4pc_melee( const action_state_t* );
   void trigger_tier16_4pc_caster( const action_state_t* );
+  void trigger_tier17_2pc_elemental( int );
+  void trigger_tier17_4pc_elemental( int );
 
   // Character Definition
   virtual void      init_spells();
@@ -982,6 +985,7 @@ struct shaman_spell_t : public shaman_spell_base_t<spell_t>
     double m = base_t::composite_multistrike_multiplier( state );
 
     m *= 1.0 + p() -> spec.elemental_overload -> effectN( 3 ).percent();
+    m *= 1.0 + p() -> buff.focus_of_the_elements -> value();
 
     return m;
   }
@@ -2490,6 +2494,9 @@ struct windstrike_t : public shaman_attack_t
 
       p() -> buff.maelstrom_weapon -> trigger( this, bonus, 1.0 );
     }
+
+    if ( result_is_hit( execute_state -> result ) && p() -> new_sets.has_set_bonus( SHAMAN_ENHANCEMENT, T17, B2 ) )
+      p() -> cooldown.feral_spirits -> adjust( - p() -> new_sets.set( SHAMAN_ENHANCEMENT, T17, B2 ) -> effectN( 1 ).time_value() );
   }
 
   void impact( action_state_t* state )
@@ -3390,6 +3397,9 @@ struct earth_shock_t : public shaman_spell_t
             consuming_stacks * tdata -> debuff.t16_2pc_caster -> data().duration() );
         p() -> buff.lightning_shield -> decrement( consuming_stacks );
       }
+
+      p() -> trigger_tier17_2pc_elemental( consuming_stacks );
+      p() -> trigger_tier17_4pc_elemental( consuming_stacks );
     }
   }
 };
@@ -4899,6 +4909,30 @@ void shaman_t::trigger_tier16_4pc_caster( const action_state_t* )
   proc.t16_4pc_caster -> occur();
 }
 
+void shaman_t::trigger_tier17_2pc_elemental( int stacks )
+{
+  if ( ! new_sets.has_set_bonus( SHAMAN_ELEMENTAL, T17, B2 ) )
+    return;
+
+  buff.focus_of_the_elements -> trigger( 1, new_sets.set( SHAMAN_ELEMENTAL, T17, B2 ) -> effectN( 1 ).percent() * stacks );
+}
+
+void shaman_t::trigger_tier17_4pc_elemental( int stacks )
+{
+  if ( ! new_sets.has_set_bonus( SHAMAN_ELEMENTAL, T17, B4 ) )
+    return;
+
+  if ( stacks <= new_sets.set( SHAMAN_ELEMENTAL, T17, B4 ) -> effectN( 1 ).base_value() )
+    return;
+
+  if ( buff.lava_surge -> check() )
+    proc.wasted_lava_surge -> occur();
+
+  proc.lava_surge -> occur();
+  buff.lava_surge -> trigger();
+}
+
+
 void shaman_t::trigger_flametongue_weapon( const action_state_t* state )
 {
   assert( debug_cast< shaman_attack_t* >( state -> action ) != 0 && "Flametongue Weapon called on invalid action type" );
@@ -5030,6 +5064,9 @@ void shaman_t::create_buffs()
 
   buff.enhanced_chain_lightning = buff_creator_t( this, "enhanced_chain_lightning", perk.enhanced_chain_lightning )
                                   .max_stack( 5 );
+
+  buff.focus_of_the_elements = buff_creator_t( this, "focus_of_the_elements", find_spell( 167205 ) )
+                               .chance( static_cast< double >( new_sets.has_set_bonus( SHAMAN_ELEMENTAL, T17, B2 ) ) );
 }
 
 // shaman_t::init_gains =====================================================
