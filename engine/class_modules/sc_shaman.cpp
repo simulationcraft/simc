@@ -4540,17 +4540,6 @@ expr_t* shaman_t::create_expression( action_t* a, const std::string& name )
 
 void shaman_t::init_spells()
 {
-  // New set bonus system
-  static const set_bonus_description_t set_bonuses =
-  {
-    //   C2P     C4P     M2P     M4P    T2P    T4P     H2P     H4P
-    { 105780, 105816, 105866, 105872,     0,     0, 105764, 105876 }, // Tier13
-    { 123123, 123124, 123132, 123133,     0,     0, 123134, 123135 }, // Tier14
-    { 138145, 138144, 138136, 138141,     0,     0, 138303, 138305 }, // Tier15
-    { 144998, 145003, 144962, 144966,     0,     0, 145378, 145380 }, // Tier16
-  };
-  sets.register_spelldata( set_bonuses );
-
   // Generic
   spec.mail_specialization   = find_specialization_spell( "Mail Specialization" );
   constant.matching_gear_multiplier = spec.mail_specialization -> effectN( 1 ).percent();
