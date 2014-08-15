@@ -41,7 +41,7 @@ actions.single_target+=/celestial_alignment,if=eclipse_dir.lunar&eclipse_max<8
 actions.single_target+=/incarnation,if=buff.celestial_alignment.up
 actions.single_target+=/moonfire,if=buff.lunar_peak.up|ticks_remain<3
 actions.single_target+=/sunfire,if=buff.solar_peak.up|ticks_remain<3|(buff.celestial_alignment.up&buff.celestial_alignment.remains<=2)
-actions.single_target+=/starsurge,if=buff.lunar_empowerment.down|buff.solar_empowerment.down
+actions.single_target+=/starsurge,if=(buff.lunar_empowerment.down&eclipse_energy>=0)|(buff.solar_empowerment.down&eclipse_energy<0)|charges>1
 actions.single_target+=/wrath,if=(eclipse_energy<=0&eclipse_change>cast_time)|(eclipse_energy>0&cast_time>eclipse_change)
 actions.single_target+=/starfire,if=(eclipse_energy>=0&eclipse_change>cast_time)|(eclipse_energy<0&cast_time>eclipse_change)
 

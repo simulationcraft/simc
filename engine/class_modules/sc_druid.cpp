@@ -6071,7 +6071,7 @@ void druid_t::apl_balance()
   single_target -> add_action( "incarnation,if=buff.celestial_alignment.up" );
   single_target -> add_action( this, "Moonfire" , "if=buff.lunar_peak.up|ticks_remain<3" );
   single_target -> add_action( this, "Sunfire", "if=buff.solar_peak.up|ticks_remain<3|(buff.celestial_alignment.up&buff.celestial_alignment.remains<=2)" );
-  single_target -> add_action( this, "Starsurge", "if=buff.lunar_empowerment.down|buff.solar_empowerment.down" );
+  single_target -> add_action( this, "Starsurge", "if=(buff.lunar_empowerment.down&eclipse_energy>=0)|(buff.solar_empowerment.down&eclipse_energy<0)|charges>1" );
   single_target -> add_action( this, "Wrath", "if=(eclipse_energy<=0&eclipse_change>cast_time)|(eclipse_energy>0&cast_time>eclipse_change)" );
   single_target -> add_action( this, "Starfire", "if=(eclipse_energy>=0&eclipse_change>cast_time)|(eclipse_energy<0&cast_time>eclipse_change)" );
 
