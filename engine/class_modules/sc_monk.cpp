@@ -196,6 +196,7 @@ public:
     const spell_data_t* soul_dance;
     const spell_data_t* breath_of_the_serpent;
     const spell_data_t* hurricane_strike;
+    const spell_data_t* chi_explosion;
     const spell_data_t* chi_explosion_bm;
     const spell_data_t* chi_explosion_ww;
     const spell_data_t* chi_explosion_mw;
@@ -606,6 +607,8 @@ public:
   {
     ab::may_crit   = true;
     range::fill( _resource_by_stance, RESOURCE_MAX );
+    if ( player -> specialization() == MONK_WINDWALKER )
+      trigger_gcd = timespan_t::from_seconds( 1.0 );
   }
   virtual ~monk_action_t() {}
 
@@ -1058,7 +1061,7 @@ struct blackout_kick_t : public monk_melee_attack_t
     parse_options( nullptr, options_str );
     mh = &( player -> main_hand_weapon );
     oh = &( player -> off_hand_weapon );
-    base_multiplier *= 6.7; // hardcoded into tooltip
+    base_multiplier *= 6.72; // hardcoded into tooltip
 
     if ( p -> spec.teachings_of_the_monastery -> ok() )
     {
@@ -3225,9 +3228,19 @@ void monk_t::init_spells()
   talent.power_strikes            = find_talent_spell( "Power Strikes" );
   talent.soul_dance               = find_talent_spell( "Soul Dance" );
   talent.hurricane_strike         = find_talent_spell( "Hurricane Strike" );
-  talent.chi_explosion_bm         = find_spell ( 157676 );
-  talent.chi_explosion_ww         = find_spell ( 152174 );
-  talent.chi_explosion_mw         = find_spell ( 157675 );
+  talent.chi_explosion            = find_talent_spell( "Chi Explosion" );
+  if ( talent.chi_explosion -> ok() )
+  {
+    talent.chi_explosion_bm = find_spell(157676);
+    talent.chi_explosion_ww = find_spell(152174);
+    talent.chi_explosion_mw = find_spell(157675);
+  }
+  else
+  {
+    talent.chi_explosion_bm = spell_data_t::nil();
+    talent.chi_explosion_mw = spell_data_t::nil();
+    talent.chi_explosion_ww = spell_data_t::nil();
+  }
   talent.serenity                 = find_talent_spell( "Serenity" );
   talent.path_of_mists            = find_talent_spell( "Path of Mists" );
 
