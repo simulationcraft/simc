@@ -453,15 +453,17 @@ QStringList automation::convert_shorthand( QStringList shorthandList, QString si
 {
   // STEP 1:  Take the sidebar list and convert it to an abilities table and an options table
 
-  QStringList sidebarSplit = sidebar_text.split( QRegExp( ":::\\w+:::" ), QString::SkipEmptyParts );
-  
-  assert( sidebarSplit.size() == 2 );
+  QStringList sidebarSplit = sidebar_text.split( QRegularExpression( ":::\\w+:::" ), QString::SkipEmptyParts );
+
+  assert( sidebarSplit.size() == 3 );
 
   QStringList abilityList = sidebarSplit[ 0 ].split( "\n", QString::SkipEmptyParts );
-  QStringList optionsList = sidebarSplit[ 1 ].split( "\n", QString::SkipEmptyParts );
+  QStringList buffList = sidebarSplit[ 1 ].split( "\n", QString::SkipEmptyParts );
+  QStringList optionsList = sidebarSplit[ 2 ].split( "\n", QString::SkipEmptyParts );
 
   typedef std::vector<std::pair<QString, QString> > shorthandTable;
   shorthandTable abilityTable;
+  shorthandTable buffTable;
   shorthandTable optionsTable;
 
   // Construct the table for ability conversions
@@ -470,6 +472,14 @@ QStringList automation::convert_shorthand( QStringList shorthandList, QString si
     QStringList parts = splitOnFirst( abilityList[ i ], "=" );
     if ( parts.size() > 1 )
       abilityTable.push_back( std::make_pair( parts[ 0 ], parts[ 1 ] ) );
+  }
+
+  // Construct the table for buff conversions
+  for ( int i = 0; i < buffList.size(); i++ )
+  {
+    QStringList parts = splitOnFirst( buffList[ i ], "=" );
+    if ( parts.size() > 1 )
+      buffTable.push_back( std::make_pair( parts[ 0 ], parts[ 1 ] ) );
   }
 
   // Construct the table for option conversions
@@ -488,6 +498,7 @@ QStringList automation::convert_shorthand( QStringList shorthandList, QString si
   for ( int i = 0; i < shorthandList.size(); i++ )
   {
     QString ability;
+    QString buff;
     QString options;
     QString waitString;
 
@@ -520,14 +531,66 @@ QStringList automation::convert_shorthand( QStringList shorthandList, QString si
         for ( int j = 0; j < optionsBreakdown.size(); j++ )
         {
           // if this entry is &|()!, skip it
-          if ( optionsBreakdown[ j ].contains( QRegExp( "[&|\\(\\)\\!\\+\\-\\>\\<\\=\\*/]+" ) ) )
+          if ( optionsBreakdown[ j ].contains( QRegularExpression( "[&|\\(\\)\\!\\+\\-\\>\\<\\=\\*/]+" ) ) )
             continue;
+
+          QStringList captures;
+          bool buffbehaviour = true;
+          QRegularExpressionMatch match;
+
+          // Checking for buff behaviour can be done by using a "." between the buffname and the buffbehaviour
+          // (e.g. "DP.BA" which equals: buff.divine_purpose.react (DP = shorthand for "divine_purpose"))
+          QRegularExpression rxb( "(\\D+)(\\.)(\\D+)(\\d*\\.?\\d*)" );
+
+          match = rxb.match( optionsBreakdown[ j ] );
+          if ( match.hasMatch() )
+          {
+            captures = match.capturedTexts();
+
+            if ( captures[ 4 ].length() == 0 )
+            {
+              shorthandTable::iterator n = std::find_if( optionsTable.begin(), optionsTable.end(), comp( captures[ 3 ] ) );
+              if ( n != optionsTable.end() )
+              {
+                optionsBreakdown[ j ] = n->second;
+              }
+            }
+            else
+            {
+              shorthandTable::iterator n = std::find_if( optionsTable.begin(), optionsTable.end(), comp( captures[ 3 ] + "#" ) );
+              if ( n != optionsTable.end() )
+              {
+                optionsBreakdown[ j ] = n->second.replace( "#", captures[ 4 ] );
+              }
+            }
+            shorthandTable::iterator o = std::find_if( buffTable.begin(), buffTable.end(), comp( captures[ 1 ] ) );
+            QString buff = o->second;
+            if ( optionsBreakdown[ j ].contains( "$ability_name" ) )
+            {
+              optionsBreakdown[ j ].replace( "$ability_name", buff );
+            }
+            continue;
+          }
 
           // Each option can have a text part and a numeric part (e.g. W3). We need to split that up using regular expressions
           // captures[ 0 ] is the whole string, captures[ 1 ] is the first match (e.g. "W"), captures[ 2 ] is the second match (e.g. "3")
+          QRegularExpression rxw( "(\\D+)(\\d*\\.?\\d*)" );
+          match = rxw.match( optionsBreakdown[ j ] );
+          if ( match.hasMatch() )
+          {
+            captures = match.capturedTexts();
+          }
+          else
+          {
+            continue;
+          }
+
+          // old QRegExp code just in case
+          /*
           QRegExp rx( "(\\D+)(\\d*\\.?\\d*)" );
           int pos = rx.indexIn( optionsBreakdown[ j ] );
-          QStringList captures = rx.capturedTexts();
+          QStringList captures = rx.capturedTexts();'
+          */
 
           // if we have just a text component, it's fairly easy
           if ( captures[ 2 ].length() == 0 )
@@ -619,150 +682,183 @@ void SC_ImportTab::setSpecDropDown( const int player_class )
     choice.player_spec -> addItem( classSpecText[ player_class ][ 4 ] );
 }
 
-QString defaultOptions = "AA=auto_attack\nBU=buff.$ability_name.up\nBRA=buff.$ability_name.react\nBR=buff.$ability_name.remains\nBR#=buff.$ability_name.remains<#\nCD=cooldown.$ability_name.remains\nCD#=cooldown.$ability_name.remains<#\nE=target.health.pct<=20\nNT=!ticking\nNF=target.debuff.flying.down\nT#=active_enemies>=#\nW#=/wait,sec=cooldown.$ability_name.remains,if=cooldown.$ability_name.remains<=#\n";
+QString defaultOptions = "AA=auto_attack\nCD=cooldown.$ability_name.remains\nCD#=cooldown.$ability_name.remains<#\nE=target.health.pct<=20\nNT=!ticking\nNF=target.debuff.flying.down\nDoT=dot.$ability_name.ticking\nT#=active_enemies>=#\nW#=/wait,sec=cooldown.$ability_name.remains,if=cooldown.$ability_name.remains<=#\n\nBuffhandling shorthands:\nBU=buff.$ability_name.up\nBA=buff.$ability_name.react\nBR=buff.$ability_name.remains\nBR#=buff.$ability_name.remains<#\n\nTalenhandling shorthand:\nT=talent.$ability_name.enabled\n\nGlyphhandling shorthand:\nG=glyph.$ability_name.enabled\n\n";
 
 // constant for sidebar text (this will eventually get really long)
 QString sidebarText[ 11 ][ 4 ] = {
-  {
+  { // DEATHKNIGHT Shorthand Declaretion
     ":::Abilities:::\n" "Blood ability shorthands can be added here."
+    "\n\n:::Buffs:::\n" "Blood-specific buff shorthands can be added here"
     "\n\n:::Options:::\n" + defaultOptions + "Blood-specific option shorthands can be added here",
 
    ":::Abilities:::\n" "Frost ability shorthands can be added here."
-    "\n\n:::Options:::\n" + defaultOptions + "Frost-specific option shorthands can be added here",
+   "\n\n:::Buffs:::\n" "Frost-specific buff shorthands can be added here"
+   "\n\n:::Options:::\n" + defaultOptions + "Frost-specific option shorthands can be added here",
 
    ":::Abilities:::\n" "Unholy ability shorthands can be added here."
-    "\n\n:::Options:::\n" + defaultOptions + "Unholy-specific option shorthands can be added here",
+   "\n\n:::Buffs:::\n" "Unholy-specific buff shorthands can be added here"
+   "\n\n:::Options:::\n" + defaultOptions + "Unholy-specific option shorthands can be added here",
    
     "N/A"
   },
 
-  { 
+  { // DRUID Shorthand Declaretion
     ":::Abilities:::\n" "Balance ability shorthands can be added here."
+    "\n\n:::Buffs:::\n" "Balance-specific buff shorthands can be added here"
     "\n\n:::Options:::\n" + defaultOptions + "Balance-specific option shorthands can be added here",
     
     ":::Abilities:::\n" "Feral ability shorthands can be added here."
+    "\n\n:::Buffs:::\n" "Feral-specific buff shorthands can be added here"
     "\n\n:::Options:::\n" + defaultOptions + "Feral-specific option shorthands can be added here",
     
     ":::Abilities:::\n" "Guardian ability shorthands can be added here."
+    "\n\n:::Buffs:::\n" "Guardian-specific buff shorthands can be added here"
     "\n\n:::Options:::\n" + defaultOptions + "Guardian-specific option shorthands can be added here",
     
     ":::Abilities:::\n" "Restoration ability shorthands can be added here."
+    "\n\n:::Buffs:::\n" "Restoration-specific buff shorthands can be added here"
     "\n\n:::Options:::\n" + defaultOptions + "Restoration-specific option shorthands can be added here"
   },
 
-  { 
+  { // HUNTER Shorthand Declaretion
     ":::Abilities:::\n" "Beast Mastery ability shorthands can be added here."
+    "\n\n:::Buffs:::\n" "Beast Mastery-specific buff shorthands can be added here"
     "\n\n:::Options:::\n" + defaultOptions + "Beast Mastery-specific option shorthands can be added here",
 
    ":::Abilities:::\n" "Marksmanship ability shorthands can be added here."
+   "\n\n:::Buffs:::\n" "Marksmanship-specific buff shorthands can be added here"
     "\n\n:::Options:::\n" + defaultOptions + "Marksmanship-specific option shorthands can be added here",
 
    ":::Abilities:::\n" "Survival ability shorthands can be added here."
+   "\n\n:::Buffs:::\n" "Survival-specific buff shorthands can be added here"
     "\n\n:::Options:::\n" + defaultOptions + "Survival-specific option shorthands can be added here",
    
     "N/A"
   },
   
-  { 
+  { // MAGE Shorthand Declaretion
     ":::Abilities:::\n" "Arcane ability shorthands can be added here."
+    "\n\n:::Buffs:::\n" "Arcane-specific buff shorthands can be added here"
     "\n\n:::Options:::\n" + defaultOptions + "Arcane-specific option shorthands can be added here",
 
    ":::Abilities:::\n" "Fire ability shorthands can be added here."
+   "\n\n:::Buffs:::\n" "Fire-specific buff shorthands can be added here"
     "\n\n:::Options:::\n" + defaultOptions + "Fire-specific option shorthands can be added here",
 
    ":::Abilities:::\n" "Frost ability shorthands can be added here."
+   "\n\n:::Buffs:::\n" "Frost-specific buff shorthands can be added here"
     "\n\n:::Options:::\n" + defaultOptions + "Frost-specific option shorthands can be added here",
    
     "N/A"
   },
   
-  { 
+  { // MONK Shorthand Declaretion
     ":::Abilities:::\n" "Brewmaster ability shorthands can be added here."
+    "\n\n:::Buffs:::\n" "Brewmaster-specific buff shorthands can be added here"
     "\n\n:::Options:::\n" + defaultOptions + "Brewmaster-specific option shorthands can be added here",
 
    ":::Abilities:::\n" "Mistweaver ability shorthands can be added here."
+   "\n\n:::Buffs:::\n" "Mistweaver-specific buff shorthands can be added here"
     "\n\n:::Options:::\n" + defaultOptions + "Mistweaver-specific option shorthands can be added here",
 
    ":::Abilities:::\n" "Windwalker ability shorthands can be added here."
+   "\n\n:::Buffs:::\n" "Windwalker-specific buff shorthands can be added here"
     "\n\n:::Options:::\n" + defaultOptions + "Windwalker-specific option shorthands can be added here",
    
     "N/A"
   },
 
-  { 
+  { // PALADIN Shorthand Declaretion
     ":::Abilities:::\n" "Holy ability shorthands can be added here."
+    "\n\n:::Buffs:::\n" "Holy-specific buff shorthands can be added here"
     "\n\n:::Options:::\n" + defaultOptions + "Holy-specific option shorthands can be added here",
 
     ":::Abilities:::\nAS=avengers_shield\nCons=consecration\nCS=crusader_strike\nEF=eternal_flame\nES=execution_sentence\nHotR=hammer_of_the_righteous\nHoW=hammer_of_wrath\nHPr=holy_prism\nHW=holy_wrath\nJ=judgment\nLH=lights_hammer\nSS=sacred_shield\nSoI=seal_of_insight\nSoR=seal_of_righteousness\nSoT=seal_of_truth\nSP=seraphim\nSotR=shield_of_the_righteous\nWoG=word_of_glory"
+    "\n\n:::Buffs:::\n" "Protection-specific buff shorthands can be added here"
     "\n\n:::Options:::\n" + defaultOptions + "\nDP=buff.divine_purpose.react\nDPHP#=buff.divine_purpose.react|holy_power>=#\nFW=glyph.final_wrath.enabled&target.health.pct<=20\nHP#=holy_power>=#\nSW=talent.sanctified_wrath.enabled\nSP=buff.seraphim.react\n\nGC=buff.grand_crusader.react\nGC#=buff.grand_crusader.remains<#\nProtection-specific option shorthands can be added here",
 
-    
     ":::Abilities:::\n" "AA=auto_attack\nCS=crusader_strike\nJ=judgment\nEXO=exorcism\nHotR=hammer_of_the_righteous\nHoW=hammer_of_wrath\nTV=templars_verdict\nFV=final_verdict\nDS=divine_storm\nES=execution_sentence\nHPr=holy_prism\nLH=lights_hammer\nSP=seraphim\nSoT=seal_of_truth\nSoR=seal_of_righteousness\nSoI=seal_of_insight\nAW=avenging_wrath\nHA=holy_avenger"
-    "\n\n:::Options:::\n" + defaultOptions + "\nDP=buff.divine_purpose.react\nDP#=buff.divine_purpose.remains<#\nDPHP#=buff.divine_purpose.react|holy_power>=#\nAWB=buff.avenging_wrath.up\nDC=buff.divine_crusader.react\nDJ=glyph.double_jeopardy.enabled\nHP#=holy_power>=#\nHPL#=holy_power<=#\nSW=talent.sanctified_wrath.enabled\nSP=buff.seraphim.react\nAWB=buff.avenging_wrath.up\nHAB = buff.holy_avenger.up\n\nRetribution - specific option shorthands can be added here",
+    "\n\n:::Buffs:::\n" "AW=avenging_wrath\nDP=divine_purpose\nHA=holy_avenger\nDC=divine_crusader\nSP=seraphim\nSW=sanctified_wrath\nDJ=double_jeopardy"
+    "\n\n:::Options:::\n" + defaultOptions + "HP#=holy_power>=#\nHPL#=holy_power<=#\n\nRetribution - specific option shorthands can be added here",
     
     "N/A"
   },
 
-  { 
+  { // PRIEST Shorthand Declaretion
     ":::Abilities:::\n" "Discipline ability shorthands can be added here."
+    "\n\n:::Buffs:::\n" "Discipline-specific buff shorthands can be added here"
     "\n\n:::Options:::\n" + defaultOptions + "Discipline-specific option shorthands can be added here",
 
    ":::Abilities:::\n" "Holy ability shorthands can be added here."
+   "\n\n:::Buffs:::\n" "Restoration-specific buff shorthands can be added here"
     "\n\n:::Options:::\n" + defaultOptions + "Holy-specific option shorthands can be added here",
 
    ":::Abilities:::\n" "Shadow ability shorthands can be added here."
+   "\n\n:::Buffs:::\n" "Shadow-specific buff shorthands can be added here"
     "\n\n:::Options:::\n" + defaultOptions + "Shadow-specific option shorthands can be added here",
    
     "N/A"
   },
 
-  { 
+  { // ROGUE Shorthand Declaretion
     ":::Abilities:::\n" "Assasination ability shorthands can be added here."
+    "\n\n:::Buffs:::\n" "Assasination-specific buff shorthands can be added here"
     "\n\n:::Options:::\n" + defaultOptions + "Assasination-specific option shorthands can be added here",
 
    ":::Abilities:::\n" "Combat ability shorthands can be added here."
+   "\n\n:::Buffs:::\n" "Combat-specific buff shorthands can be added here"
     "\n\n:::Options:::\n" + defaultOptions + "Combat-specific option shorthands can be added here",
 
    ":::Abilities:::\n" "Subtlety ability shorthands can be added here."
+   "\n\n:::Buffs:::\n" "Subtlety-specific buff shorthands can be added here"
     "\n\n:::Options:::\n" + defaultOptions + "Subtlety-specific option shorthands can be added here",
    
     "N/A"
   },
 
-  { 
+  { // SHAMAN Shorthand Declaretion
     ":::Abilities:::\n" "Elemental ability shorthands can be added here."
+    "\n\n:::Buffs:::\n" "Elemental-specific buff shorthands can be added here"
     "\n\n:::Options:::\n" + defaultOptions + "Elemental-specific option shorthands can be added here",
 
    ":::Abilities:::\n" "Enhancement ability shorthands can be added here."
+   "\n\n:::Buffs:::\n" "Enhancement-specific buff shorthands can be added here"
     "\n\n:::Options:::\n" + defaultOptions + "Enhancement-specific option shorthands can be added here",
 
    ":::Abilities:::\n" "Restoration ability shorthands can be added here."
+   "\n\n:::Buffs:::\n" "Restoration-specific buff shorthands can be added here"
     "\n\n:::Options:::\n" + defaultOptions + "Restoration-specific option shorthands can be added here",
    
     "N/A"
   },
 
-  { 
+  { // WARLOCK Shorthand Declaretion
     ":::Abilities:::\n" "Affliction ability shorthands can be added here."
+    "\n\n:::Buffs:::\n" "Affliction-specific buff shorthands can be added here"
     "\n\n:::Options:::\n" + defaultOptions + "Affliction-specific option shorthands can be added here",
 
    ":::Abilities:::\n" "Demonology ability shorthands can be added here."
+   "\n\n:::Buffs:::\n" "Demonology-specific buff shorthands can be added here"
     "\n\n:::Options:::\n" + defaultOptions + "Demonology-specific option shorthands can be added here",
 
    ":::Abilities:::\n" "Destruction ability shorthands can be added here."
+   "\n\n:::Buffs:::\n" "Destruction-specific buff shorthands can be added here"
     "\n\n:::Options:::\n" + defaultOptions + "Destruction-specific option shorthands can be added here",
    
     "N/A"
   },
 
-  { 
+  { // WARRIOR Shorthand Declaretion
     ":::Abilities:::\n" "Arms ability shorthands can be added here."
+    "\n\n:::Buffs:::\n" "Arms-specific buff shorthands can be added here"
     "\n\n:::Options:::\n" + defaultOptions + "Arms-specific option shorthands can be added here",
 
    ":::Abilities:::\n" "Fury ability shorthands can be added here."
+   "\n\n:::Buffs:::\n" "Fury-specific buff shorthands can be added here"
     "\n\n:::Options:::\n" + defaultOptions + "Fury-specific option shorthands can be added here",
 
    ":::Abilities:::\n" "Protection ability shorthands can be added here."
+   "\n\n:::Buffs:::\n" "Protection-specific buff shorthands can be added here"
     "\n\n:::Options:::\n" + defaultOptions + "Protection-specific option shorthands can be added here",
    
     "N/A"
@@ -906,7 +1002,7 @@ void SC_ImportTab::createTooltips()
 {
   choice.comp_type -> setToolTip( "Choose the comparison type." );
 
-  QString sidebarTooltip = "This box specifies the abbreviations used in rotation shorthands. You may define custom abbreviations by adding your own entries.\nNote that \"#\" can be used to support an optional numeric argument (e.g. \"C#\" will mach C3 and replace every # with a 3)\nand that $ability_name will automatically be replaced with the ability's name.\n\nAlso note that the \"W#\" option is special since it adds an extra APL entry; W# should be the only option or should be separated from other options like so: (DP&!FW)W3";
+  QString sidebarTooltip = "This box specifies the abbreviations used in rotation shorthands. You may define custom abbreviations by adding your own entries.\nNote that \"#\" can be used to support an optional numeric argument (e.g. \"C#\" will mach C3 and replace every # with a 3)\nand that $ability_name will automatically be replaced with the ability's name.\n\nAlso note that the \"W#\" option is special since it adds an extra APL entry; W# should be the only option or should be separated from other options like so: (DP&!FW)W3\n\nHow to use buffs, glyphs & talents:\nThe options for those types work as a function : buff / glyph / talent.operator\n( e.g.FV + DP.BA = > actions += / final_verdict, if = buff.divine_purpose.up )\nIt is possible to predefine often used ability/option combos in the :::Options::: section\nbut keep in mind that adding more options with + will lead to a systax error!\n\nSee the wiki entry for more details. https://code.google.com/p/simulationcraft/wiki/Automation#Rotation_Comparisons";
   textbox.sidebar -> setToolTip( sidebarTooltip );
   label.sidebar   -> setToolTip( sidebarTooltip );
 
@@ -1159,3 +1255,6 @@ void SC_ImportTab::decodeSettings()
 
   settings.endGroup();
 }
+
+// random test shorthand (ret paladin)
+// AA>AW>HA+HPL2>ES>LH>DS+T2&(HP5|DP|(HAB&HP3))>DS+DC&HP5>FV+HP5>FV+DP&DP4>HoW+W0.2>DS+DC>FV+AWB>HotR+T4>CS+W0.2>J+W0.2>DS+DC>FV+DP>EXO+W0.2>DS+T2>FV
