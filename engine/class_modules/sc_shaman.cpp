@@ -511,8 +511,8 @@ shaman_td_t::shaman_td_t( player_t* target, shaman_t* p ) :
   dot.flame_shock       = target -> get_dot( "flame_shock", p );
 
   debuff.stormstrike    = buff_creator_t( *this, "stormstrike", p -> find_specialization_spell( "Stormstrike" ) );
-  debuff.t16_2pc_caster = buff_creator_t( *this, "tier16_2pc_caster", p -> sets.set( SET_T16_2PC_CASTER ) -> effectN( 1 ).trigger() )
-                          .chance( static_cast< double >( p -> sets.has_set_bonus( SET_T16_2PC_CASTER ) ) );
+  debuff.t16_2pc_caster = buff_creator_t( *this, "tier16_2pc_caster", p -> new_sets.set( SET_CASTER, T16, B2 ) -> effectN( 1 ).trigger() )
+                          .chance( static_cast< double >( p -> new_sets.has_set_bonus( SET_CASTER, T16, B2 ) ) );
 }
 
 // ==========================================================================
@@ -959,7 +959,7 @@ struct shaman_spell_t : public shaman_spell_base_t<spell_t>
     double m = base_t::composite_da_multiplier( state );
 
     if ( instant_eligibility() && p() -> buff.maelstrom_weapon -> stack() > 0 )
-      m *= 1.0 + p() -> sets.set( SET_T13_2PC_MELEE ) -> effectN( 1 ).percent();
+      m *= 1.0 + p() -> new_sets.set( SET_MELEE, T13, B2 ) -> effectN( 1 ).percent();
 
     return m;
   }
@@ -1113,7 +1113,7 @@ struct feral_spirit_pet_t : public pet_t
       {
         shaman_t* o = p() -> o();
 
-        if ( rng().roll( o -> sets.set( SET_T13_4PC_MELEE ) -> effectN( 1 ).percent() ) )
+        if ( rng().roll( o -> new_sets.set( SET_MELEE, T13, B4 ) -> effectN( 1 ).percent() ) )
         {
           int mwstack = o -> buff.maelstrom_weapon -> total_stack();
           o -> buff.maelstrom_weapon -> trigger( 1, buff_t::DEFAULT_VALUE(), 1.0 );
@@ -1592,7 +1592,7 @@ struct t15_2pc_caster_t : public shaman_spell_t
 {
   t15_2pc_caster_t( shaman_t* player ) :
     shaman_spell_t( "t15_lightning_strike", player,
-                    player -> sets.set( SET_T15_2PC_CASTER ) -> effectN( 1 ).trigger() )
+                    player -> new_sets.set( SET_CASTER, T15, B2 ) -> effectN( 1 ).trigger() )
   {
     proc = background = split_aoe_damage = true;
     callbacks = false;
@@ -1621,7 +1621,7 @@ struct lightning_charge_t : public shaman_spell_t
     if ( td( target ) -> debuff.stormstrike -> check() )
     {
       c += td( target ) -> debuff.stormstrike -> data().effectN( 1 ).percent();
-      c += player -> sets.set( SET_T14_4PC_MELEE ) -> effectN( 1 ).percent();
+      c += player -> new_sets.set( SET_MELEE, T14, B4 ) -> effectN( 1 ).percent();
     }
 
     return c;
@@ -2204,7 +2204,7 @@ struct lava_lash_t : public shaman_attack_t
     uses_eoe = true;
     school = SCHOOL_FIRE;
 
-    base_multiplier *= 1.0 + player -> sets.set( SET_T14_2PC_MELEE ) -> effectN( 1 ).percent();
+    base_multiplier *= 1.0 + player -> new_sets.set( SET_MELEE, T14, B2 ) -> effectN( 1 ).percent();
     base_multiplier *= 1.0 + player -> perk.improved_lava_lash_2 -> effectN( 1 ).percent();
 
     parse_options( NULL, options_str );
@@ -2374,9 +2374,9 @@ struct stormstrike_t : public shaman_attack_t
   {
     shaman_attack_t::execute();
 
-    if ( result_is_hit( execute_state -> result ) && p() -> sets.has_set_bonus( SET_T15_2PC_MELEE ) )
+    if ( result_is_hit( execute_state -> result ) && p() -> new_sets.has_set_bonus( SET_MELEE, T15, B2 ) )
     {
-      int bonus = p() -> sets.set( SET_T15_2PC_MELEE ) -> effectN( 1 ).base_value();
+      int bonus = p() -> new_sets.set( SET_MELEE, T15, B2 ) -> effectN( 1 ).base_value();
 
       p() -> buff.maelstrom_weapon -> trigger( this, bonus, 1.0 );
     }
@@ -2449,9 +2449,9 @@ struct windstrike_t : public shaman_attack_t
   {
     shaman_attack_t::execute();
 
-    if ( result_is_hit( execute_state -> result ) && p() -> sets.has_set_bonus( SET_T15_2PC_MELEE ) )
+    if ( result_is_hit( execute_state -> result ) && p() -> new_sets.has_set_bonus( SET_MELEE, T15, B2 ) )
     {
-      int bonus = p() -> sets.set( SET_T15_2PC_MELEE ) -> effectN( 1 ).base_value();
+      int bonus = p() -> new_sets.set( SET_MELEE, T15, B2 ) -> effectN( 1 ).base_value();
 
       p() -> buff.maelstrom_weapon -> trigger( this, bonus, 1.0 );
     }
@@ -2619,7 +2619,7 @@ struct chain_lightning_t : public shaman_spell_t
     if ( td( target ) -> debuff.stormstrike -> check() )
     {
       c += td( target ) -> debuff.stormstrike -> data().effectN( 1 ).percent();
-      c += player -> sets.set( SET_T14_4PC_MELEE ) -> effectN( 1 ).percent();
+      c += player -> new_sets.set( SET_MELEE, T14, B4 ) -> effectN( 1 ).percent();
     }
 
     return c;
@@ -2757,7 +2757,7 @@ struct elemental_mastery_t : public shaman_spell_t
     shaman_spell_t::execute();
 
     p() -> buff.elemental_mastery -> trigger();
-    if ( p() -> sets.has_set_bonus( SET_T13_2PC_CASTER ) )
+    if ( p() -> new_sets.has_set_bonus( SET_CASTER, T13, B2 ) )
       p() -> buff.tier13_2pc_caster -> trigger();
   }
 };
@@ -2938,7 +2938,7 @@ struct lava_burst_t : public shaman_spell_t
     shaman_spell_t::execute();
 
     // FIXME: DBC Value modified in dbc_t::apply_hotfixes()
-    p() -> cooldown.ascendance -> ready -= p() -> sets.set( SET_T15_4PC_CASTER ) -> effectN( 1 ).time_value();
+    p() -> cooldown.ascendance -> ready -= p() -> new_sets.set( SET_CASTER, T15, B4 ) -> effectN( 1 ).time_value();
 
     // Lava Surge buff does not get eaten, if the Lava Surge proc happened
     // during the Lava Burst cast
@@ -2984,7 +2984,7 @@ struct lightning_bolt_t : public shaman_spell_t
   {
     double m = shaman_spell_t::composite_da_multiplier( state );
 
-    m *= 1.0 + p() -> sets.set( SET_T14_2PC_CASTER ) -> effectN( 1 ).percent();
+    m *= 1.0 + p() -> new_sets.set( SET_CASTER, T14, B2 ) -> effectN( 1 ).percent();
 
     if ( p() -> buff.unleashed_fury -> check() )
       m *= 1.0 + p() -> buff.unleashed_fury -> data().effectN( p() -> specialization() == SHAMAN_ENHANCEMENT ? 2 : 1 ).percent();
@@ -2999,7 +2999,7 @@ struct lightning_bolt_t : public shaman_spell_t
     if ( td( target ) -> debuff.stormstrike -> check() )
     {
       c += td( target ) -> debuff.stormstrike -> data().effectN( 1 ).percent();
-      c += player -> sets.set( SET_T14_4PC_MELEE ) -> effectN( 1 ).percent();
+      c += player -> new_sets.set( SET_MELEE, T14, B4 ) -> effectN( 1 ).percent();
     }
 
     return c;
@@ -3107,7 +3107,7 @@ struct elemental_blast_t : public shaman_spell_t
     if ( td( target ) -> debuff.stormstrike -> check() )
     {
       c += td( target ) -> debuff.stormstrike -> data().effectN( 1 ).percent();
-      c += player -> sets.set( SET_T14_4PC_MELEE ) -> effectN( 1 ).percent();
+      c += player -> new_sets.set( SET_MELEE, T14, B4 ) -> effectN( 1 ).percent();
     }
 
     return c;
@@ -3282,7 +3282,7 @@ struct spiritwalkers_grace_t : public shaman_spell_t
 
     p() -> buff.spiritwalkers_grace -> trigger();
 
-    if ( p() -> sets.has_set_bonus( SET_T13_4PC_HEAL ) )
+    if ( p() -> new_sets.has_set_bonus( SET_HEALER, T13, B4 ) )
       p() -> buff.tier13_4pc_healer -> trigger();
   }
 };
@@ -3330,7 +3330,7 @@ struct earth_shock_t : public shaman_spell_t
     if ( td( target ) -> debuff.stormstrike -> check() )
     {
       c += td( target ) -> debuff.stormstrike -> data().effectN( 1 ).percent();
-      c += player -> sets.set( SET_T14_4PC_MELEE ) -> effectN( 1 ).percent();
+      c += player -> new_sets.set( SET_MELEE, T14, B4 ) -> effectN( 1 ).percent();
     }
 
     return c;
@@ -3492,7 +3492,7 @@ struct healing_surge_t : public shaman_heal_t
     if ( p() -> buff.tidal_waves -> up() )
     {
       c += p() -> spec.tidal_waves -> effectN( 1 ).percent() +
-           p() -> sets.set( SET_T14_4PC_HEAL ) -> effectN( 1 ).percent();
+           p() -> new_sets.set( SET_HEALER, T14, B4 ) -> effectN( 1 ).percent();
     }
 
     return c;
@@ -3516,7 +3516,7 @@ struct healing_wave_t : public shaman_heal_t
     if ( p() -> buff.tidal_waves -> up() )
     {
       c *= 1.0 - ( p() -> spec.tidal_waves -> effectN( 1 ).percent() +
-                   p() -> sets.set( SET_T14_4PC_HEAL ) -> effectN( 1 ).percent() );
+                   p() -> new_sets.set( SET_HEALER, T14, B4 ) -> effectN( 1 ).percent() );
     }
 
     return c;
@@ -3540,7 +3540,7 @@ struct greater_healing_wave_t : public shaman_heal_t
     if ( p() -> buff.tidal_waves -> up() )
     {
       c *= 1.0 - ( p() -> spec.tidal_waves -> effectN( 1 ).percent() +
-                   p() -> sets.set( SET_T14_4PC_HEAL ) -> effectN( 1 ).percent() );
+                   p() -> new_sets.set( SET_HEALER, T14, B4 ) -> effectN( 1 ).percent() );
     }
 
     return c;
@@ -4618,12 +4618,12 @@ void shaman_t::init_spells()
   constant.speed_attack_ancestral_swiftness = 1.0 / ( 1.0 + spell.ancestral_swiftness -> effectN( 2 ).percent() );
   constant.haste_ancestral_swiftness  = 1.0 / ( 1.0 + spell.ancestral_swiftness -> effectN( 1 ).percent() );
 
-  if ( sets.has_set_bonus( SET_T15_2PC_CASTER ) )
+  if ( new_sets.has_set_bonus( SET_CASTER, T15, B2 ) )
     action_lightning_strike = new t15_2pc_caster_t( this );
 
   // Tier16 2PC Enhancement bonus actions, these need to bypass imbue checks
   // presumably, so we cannot just re-use our actual imbued ones
-  if ( sets.has_set_bonus( SET_T16_2PC_MELEE ) )
+  if ( new_sets.has_set_bonus( SET_MELEE, T16, B2 ) )
   {
     t16_wind = new unleash_wind_t( "t16_unleash_wind", this );
     t16_flame = new unleash_flame_spell_t( "t16_unleash_flame", this );
@@ -4732,7 +4732,7 @@ void shaman_t::trigger_fulmination_stack( const action_state_t* state )
     if ( buff.lightning_shield -> check() == 1 )
       ls_reset = sim -> current_time;
 
-    int stacks = ( sets.has_set_bonus( SET_T14_4PC_CASTER ) ) ? 2 : 1;
+    int stacks = ( new_sets.has_set_bonus( SET_CASTER, T14, B4 ) ) ? 2 : 1;
     int wasted_stacks = ( buff.lightning_shield -> check() + stacks ) - buff.lightning_shield -> max_stack();
 
     for ( int i = 0; i < wasted_stacks; i++ )
@@ -4769,7 +4769,7 @@ void shaman_t::trigger_windfury_weapon( const action_state_t* state )
 
   if ( rng().roll( spec.windfury -> proc_chance() ) )
   {
-    cooldown.feral_spirits -> ready -= timespan_t::from_seconds( sets.set( SET_T15_4PC_MELEE ) -> effectN( 1 ).base_value() );
+    cooldown.feral_spirits -> ready -= timespan_t::from_seconds( new_sets.set( SET_MELEE, T15, B4 ) -> effectN( 1 ).base_value() );
 
     windfury -> target = state -> target;
     windfury -> schedule_execute();
@@ -4827,14 +4827,14 @@ void shaman_t::trigger_tier16_2pc_melee( const action_state_t* )
 
 void shaman_t::trigger_tier15_2pc_caster( const action_state_t* s )
 {
-  if ( ! sets.has_set_bonus( SET_T15_2PC_CASTER ) )
+  if ( ! new_sets.has_set_bonus( SET_CASTER, T15, B2 ) )
     return;
 
   if ( ! s -> action -> result_is_hit( s -> result ) )
     return;
 
   // Do Echo of the Elements procs trigger this?
-  if ( rng().roll( sets.set( SET_T15_2PC_CASTER ) -> proc_chance() ) )
+  if ( rng().roll( new_sets.set( SET_CASTER, T15, B2 ) -> proc_chance() ) )
   {
     action_lightning_strike -> target = s -> target;
     action_lightning_strike -> schedule_execute();
@@ -4843,16 +4843,16 @@ void shaman_t::trigger_tier15_2pc_caster( const action_state_t* s )
 
 void shaman_t::trigger_tier16_4pc_melee( const action_state_t* )
 {
-  if ( ! sets.has_set_bonus( SET_T16_4PC_MELEE ) )
+  if ( ! new_sets.has_set_bonus( SET_MELEE, T16, B4 ) )
     return;
 
   if ( cooldown.t16_4pc_melee -> down() )
     return;
 
-  if ( ! rng().roll( sets.set( SET_T16_4PC_MELEE ) -> proc_chance() ) )
+  if ( ! rng().roll( new_sets.set( SET_MELEE, T16, B4 ) -> proc_chance() ) )
     return;
 
-  cooldown.t16_4pc_melee -> start( sets.set( SET_T16_4PC_MELEE ) -> internal_cooldown() );
+  cooldown.t16_4pc_melee -> start( new_sets.set( SET_MELEE, T16, B4 ) -> internal_cooldown() );
 
   proc.t16_4pc_melee -> occur();
   cooldown.lava_lash -> reset( true );
@@ -4860,18 +4860,18 @@ void shaman_t::trigger_tier16_4pc_melee( const action_state_t* )
 
 void shaman_t::trigger_tier16_4pc_caster( const action_state_t* )
 {
-  if ( ! sets.has_set_bonus( SET_T16_4PC_CASTER ) )
+  if ( ! new_sets.has_set_bonus( SET_CASTER, T16, B4 ) )
     return;
 
   if ( cooldown.t16_4pc_caster -> down() )
     return;
 
-  if ( ! rng().roll( sets.set( SET_T16_4PC_CASTER ) -> proc_chance() ) )
+  if ( ! rng().roll( new_sets.set( SET_CASTER, T16, B4 ) -> proc_chance() ) )
     return;
 
-  cooldown.t16_4pc_caster -> start( sets.set( SET_T16_4PC_CASTER ) -> internal_cooldown() );
+  cooldown.t16_4pc_caster -> start( new_sets.set( SET_CASTER, T16, B4 ) -> internal_cooldown() );
 
-  guardian_lightning_elemental -> summon( sets.set( SET_T16_4PC_CASTER ) -> effectN( 1 ).trigger() -> duration() );
+  guardian_lightning_elemental -> summon( new_sets.set( SET_CASTER, T16, B4 ) -> effectN( 1 ).trigger() -> duration() );
   proc.t16_4pc_caster -> occur();
 }
 
@@ -4961,7 +4961,7 @@ void shaman_t::create_buffs()
                                  .chance( 1.0 )
                                  .duration( find_class_spell( "Spiritwalker's Grace" ) -> duration() +
                                             glyph.spiritwalkers_grace -> effectN( 1 ).time_value() +
-                                            sets.set( SET_T13_4PC_HEAL ) -> effectN( 1 ).time_value() );
+                                            new_sets.set( SET_HEALER, T13, B4 ) -> effectN( 1 ).time_value() );
   buff.tidal_waves             = buff_creator_t( this, "tidal_waves", spec.tidal_waves -> ok() ? find_spell( 53390 ) : spell_data_t::not_found() );
   buff.unleash_flame           = new unleash_flame_buff_t( this );
 
@@ -5001,8 +5001,8 @@ void shaman_t::create_buffs()
                                  .max_stack( 1 );
   buff.tier13_2pc_caster        = stat_buff_creator_t( this, "tier13_2pc_caster", find_spell( 105779 ) );
   buff.tier13_4pc_caster        = stat_buff_creator_t( this, "tier13_4pc_caster", find_spell( 105821 ) );
-  buff.tier16_2pc_melee         = buff_creator_t( this, "tier16_2pc_melee", sets.set( SET_T16_2PC_MELEE ) -> effectN( 1 ).trigger() )
-                                  .chance( static_cast< double >( sets.has_set_bonus( SET_T16_2PC_MELEE ) ) );
+  buff.tier16_2pc_melee         = buff_creator_t( this, "tier16_2pc_melee", new_sets.set( SET_MELEE, T16, B2 ) -> effectN( 1 ).trigger() )
+                                  .chance( static_cast< double >( new_sets.has_set_bonus( SET_MELEE, T16, B2 ) ) );
 
   buff.enhanced_chain_lightning = buff_creator_t( this, "enhanced_chain_lightning", perk.enhanced_chain_lightning )
                                   .max_stack( 5 );
