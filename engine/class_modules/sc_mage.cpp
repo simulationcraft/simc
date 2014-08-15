@@ -1016,7 +1016,7 @@ public:
       if ( p() -> rotation.current != ROTATION_DPM )
         return false;
 
-    if ( p() -> cooldowns.bolt -> up() )
+    if ( p() -> cooldowns.bolt -> up() && p() -> specialization() == MAGE_FROST )
       p() -> buffs.enhanced_frostbolt -> trigger();
 
 
@@ -1790,7 +1790,7 @@ struct blast_wave_t : public mage_spell_t
     }
 };
 
-// Blazing Speed ============================================================
+// Blazing Speed Spell ============================================================
 
 struct blazing_speed_t: public mage_spell_t
 {
@@ -5081,7 +5081,7 @@ void mage_t::arise()
   if ( talents.incanters_flow -> ok() )
     buffs.incanters_flow -> trigger();
 
-  if ( perks.enhanced_frostbolt -> ok() )
+  if ( perks.enhanced_frostbolt -> ok() && specialization() == MAGE_FROST )
     buffs.enhanced_frostbolt -> trigger();
 }
 
