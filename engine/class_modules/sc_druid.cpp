@@ -349,7 +349,6 @@ public:
     const spell_data_t* sharpened_claws;
     const spell_data_t* leader_of_the_pack;
     const spell_data_t* predatory_swiftness;
-    const spell_data_t* readiness_feral;
     const spell_data_t* rip;
     const spell_data_t* savage_roar;
     const spell_data_t* tigers_fury;
@@ -362,7 +361,6 @@ public:
     const spell_data_t* eclipse;
     const spell_data_t* lunar_guidance;
     const spell_data_t* moonkin_form;
-    const spell_data_t* readiness_balance;
     const spell_data_t* shooting_stars;
     const spell_data_t* starfall;
     const spell_data_t* starfire;
@@ -371,7 +369,6 @@ public:
 
     // Guardian
     const spell_data_t* bladed_armor;
-    const spell_data_t* readiness_guardian;
     const spell_data_t* resolve;
     const spell_data_t* savage_defense;
     const spell_data_t* survival_of_the_fittest;
@@ -393,7 +390,6 @@ public:
     const spell_data_t* natures_focus;
     const spell_data_t* natures_swiftness;
     const spell_data_t* regrowth;
-    const spell_data_t* readiness_restoration;
     const spell_data_t* swiftmend;
     const spell_data_t* tranquility;
     const spell_data_t* wild_growth;
@@ -5418,7 +5414,6 @@ void druid_t::init_spells()
   spec.omen_of_clarity         = find_specialization_spell( "Omen of Clarity" );
   spec.killer_instinct         = find_specialization_spell( "Killer Instinct" );
   spec.mana_attunement         = find_specialization_spell( "Mana Attunement" );
-
   spec.natures_swiftness       = find_specialization_spell( "Nature's Swiftness" );
   spec.nurturing_instinct      = find_specialization_spell( "Nurturing Instinct" );
 
@@ -5430,7 +5425,6 @@ void druid_t::init_spells()
   spec.eclipse                 = find_specialization_spell( "Eclipse" );
   spec.lunar_guidance          = find_specialization_spell( "Lunar Guidance" );
   spec.moonkin_form            = find_specialization_spell( "Moonkin Form" );
-  spec.readiness_balance       = find_specialization_spell( "Readiness: Balance" );
   spec.shooting_stars          = find_specialization_spell( "Shooting Stars" );
   spec.starfall                = find_specialization_spell( "Starfall" );
   spec.starfire                = find_specialization_spell( "Starfire" );
@@ -5444,7 +5438,6 @@ void druid_t::init_spells()
   spec.savage_roar             = find_specialization_spell( "Savage Roar" );
   spec.sharpened_claws         = find_specialization_spell( "Sharpened Claws" );
   spec.rip                     = find_specialization_spell( "Rip" );
-  spec.readiness_feral         = find_specialization_spell( "Readiness: Feral" );
   spec.tigers_fury             = find_specialization_spell( "Tiger's Fury" );
 
   // Guardian
@@ -5467,7 +5460,6 @@ void druid_t::init_spells()
   spec.natural_insight         = find_specialization_spell( "Natural Insight" );
   spec.natures_focus           = find_specialization_spell( "Nature's Focus" );
   spec.regrowth                = find_specialization_spell( "Regrowth" );
-  spec.readiness_restoration   = find_specialization_spell( "Readiness: Restoration" );
   spec.swiftmend               = find_specialization_spell( "Swiftmend" );
   spec.tranquility             = find_specialization_spell( "Tranquility" );
   spec.wild_growth             = find_specialization_spell( "Wild Growth" );
@@ -5918,6 +5910,8 @@ void druid_t::apl_precombat()
       precombat -> add_action( potion_action );
     }
   }
+  if ( specialization() == DRUID_BALANCE )
+    precombat -> add_talent( this, "Stellar Flare" );
 }
 
 // NO Spec Combat Action Priority List ======================================
@@ -6061,15 +6055,15 @@ void druid_t::apl_balance()
   default_list -> add_action( "run_action_list,name=single_target,if=active_enemies=1" );
   default_list -> add_action( "run_action_list,name=aoe,if=active_enemies>1" );
 
-  single_target -> add_action( this, "Sunfire", "if=ticks_remain<4" );
+  single_target -> add_action( this, "Sunfire", "if=ticks_remain<4&time>10" );
   single_target -> add_talent( this, "Stellar Flare", "if=ticks_remain<4" );
   single_target -> add_talent( this, "Force of Nature", "if=charges>=1" );
-  single_target -> add_action( this, "Celestial Alignment", "if=(eclipse_dir.lunar&eclipse_max>=5)|@eclipse_energy<=10" );
-  single_target -> add_action( "incarnation,if=buff.celestial_alignment.up" );
   single_target -> add_action( this, "Starsurge", "if=charges=3" );
+  single_target -> add_action( this, "Celestial Alignment", "if=eclipse_dir.lunar&eclipse_max<8" );
+  single_target -> add_action( "incarnation,if=buff.celestial_alignment.up" );
   single_target -> add_action( this, "Moonfire" , "if=buff.lunar_peak.up|ticks_remain<3" );
   single_target -> add_action( this, "Sunfire", "if=buff.solar_peak.up|ticks_remain<3|(buff.celestial_alignment.up&buff.celestial_alignment.remains<=2)" );
-  single_target -> add_action( this, "Starsurge", "if=(buff.lunar_empowerment.down&eclipse_energy>=0)|(eclipse_energy<0&buff.solar_empowerment.down)" );
+  single_target -> add_action( this, "Starsurge", "if=(buff.lunar_empowerment.down&eclipse_energy>=0)|(buff.solar_empowerment.down&eclipse_energy<0)|charges>1" );
   single_target -> add_action( this, "Wrath", "if=(eclipse_energy<=0&eclipse_change>cast_time)|(eclipse_energy>0&cast_time>eclipse_change)" );
   single_target -> add_action( this, "Starfire", "if=(eclipse_energy>=0&eclipse_change>cast_time)|(eclipse_energy<0&cast_time>eclipse_change)" );
 
@@ -6156,19 +6150,14 @@ void druid_t::init_scaling()
   // guardian, but not a big enough deal to waste time simming it.
   scales_with[ STAT_WEAPON_SPEED ] = false;
 
-  if ( specialization() == DRUID_FERAL )
-  {
-    scales_with[ STAT_SPIRIT ] = false;
-    scales_with[ STAT_STRENGTH ] = false;
-  }
-
   if ( specialization() == DRUID_GUARDIAN )
   {
     scales_with[ STAT_WEAPON_DPS ] = false;
     scales_with[ STAT_PARRY_RATING ] = false;
     scales_with[ STAT_BLOCK_RATING ] = false;
-    scales_with[ STAT_STRENGTH ] = false;
   }
+
+  scales_with[STAT_STRENGTH] = false;
 
   // Save a copy of the weapon
   caster_form_weapon = main_hand_weapon;

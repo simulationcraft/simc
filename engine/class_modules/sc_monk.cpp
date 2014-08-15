@@ -196,6 +196,7 @@ public:
     const spell_data_t* soul_dance;
     const spell_data_t* breath_of_the_serpent;
     const spell_data_t* hurricane_strike;
+    const spell_data_t* chi_explosion;
     const spell_data_t* chi_explosion_bm;
     const spell_data_t* chi_explosion_ww;
     const spell_data_t* chi_explosion_mw;
@@ -552,7 +553,7 @@ public:
     main_hand_weapon.swing_time = timespan_t::from_seconds( 1.0 );
 
     // originally set as 50% of AP; it's actually 50.5, so Xuen wasn't being calculated properly
-    owner_coeff.ap_from_ap = 0.505;
+    owner_coeff.ap_from_ap = 0.33;
   }
 
   monk_t* o()
@@ -606,6 +607,8 @@ public:
   {
     ab::may_crit   = true;
     range::fill( _resource_by_stance, RESOURCE_MAX );
+    if ( player -> specialization() == MONK_WINDWALKER )
+      ab::trigger_gcd = timespan_t::from_seconds( 1.0 );
   }
   virtual ~monk_action_t() {}
 
@@ -1058,7 +1061,7 @@ struct blackout_kick_t : public monk_melee_attack_t
     parse_options( nullptr, options_str );
     mh = &( player -> main_hand_weapon );
     oh = &( player -> off_hand_weapon );
-    base_multiplier *= 6.7; // hardcoded into tooltip
+    base_multiplier *= 6.72; // hardcoded into tooltip
 
     if ( p -> spec.teachings_of_the_monastery -> ok() )
     {
@@ -1346,6 +1349,7 @@ struct rising_sun_kick_t : public monk_melee_attack_t
     monk_melee_attack_t( "rising_sun_kick", p, p -> find_class_spell( "Rising Sun Kick" ) ),
     rsk_debuff( new rsk_debuff_t( p, p -> find_spell( 130320 ) ) )
   {
+    cooldown -> duration = timespan_t::from_seconds( 8.0 );
     parse_options( nullptr, options_str );
     stancemask = FIERCE_TIGER;
     mh = &( player -> main_hand_weapon ) ;
@@ -1440,7 +1444,7 @@ struct spinning_crane_kick_t : public monk_melee_attack_t
 
     if( p -> talent.rushing_jade_wind -> ok() )
     {
-	  base_multiplier *= 0.7392; // hardcoded into tooltip
+    base_multiplier *= 0.7392; // hardcoded into tooltip
       school = SCHOOL_NATURE; // Application is Nature but the actual damage ticks is Physical
       tick_action = new rushing_jade_wind_tick_t( p, p -> find_talent_spell( "Rushing Jade Wind" ) );
     }
@@ -3225,9 +3229,19 @@ void monk_t::init_spells()
   talent.power_strikes            = find_talent_spell( "Power Strikes" );
   talent.soul_dance               = find_talent_spell( "Soul Dance" );
   talent.hurricane_strike         = find_talent_spell( "Hurricane Strike" );
-  talent.chi_explosion_bm         = find_spell ( 157676 );
-  talent.chi_explosion_ww         = find_spell ( 152174 );
-  talent.chi_explosion_mw         = find_spell ( 157675 );
+  talent.chi_explosion            = find_talent_spell( "Chi Explosion" );
+  if ( talent.chi_explosion -> ok() )
+  {
+    talent.chi_explosion_bm = find_spell(157676);
+    talent.chi_explosion_ww = find_spell(152174);
+    talent.chi_explosion_mw = find_spell(157675);
+  }
+  else
+  {
+    talent.chi_explosion_bm = spell_data_t::nil();
+    talent.chi_explosion_mw = spell_data_t::nil();
+    talent.chi_explosion_ww = spell_data_t::nil();
+  }
   talent.serenity                 = find_talent_spell( "Serenity" );
   talent.path_of_mists            = find_talent_spell( "Path of Mists" );
 
@@ -3336,8 +3350,10 @@ void monk_t::init_base_stats()
   base_energy_regen_per_second = 10.0;
 
   base.attack_power_per_strength = 0.0;
-  base.attack_power_per_agility  = 1.0;
-  base.spell_power_per_intellect = 1.0;
+  if ( specialization() != MONK_MISTWEAVER )
+    base.attack_power_per_agility  = 1.0;
+  if ( specialization() == MONK_MISTWEAVER )
+    base.spell_power_per_intellect = 1.0;
 
   // Mistweaver
   if ( spec.mana_meditation -> ok() )
@@ -3356,19 +3372,16 @@ void monk_t::init_scaling()
 
   if ( specialization() != MONK_MISTWEAVER )
   {
-    scales_with[ STAT_INTELLECT             ] = false;
-    scales_with[ STAT_SPIRIT                ] = false;
-    scales_with[ STAT_SPELL_POWER           ] = false;
-        scales_with[ STAT_AGILITY                               ] = true;
-        scales_with[ STAT_WEAPON_DPS                    ] = true;
+    scales_with[ STAT_INTELLECT            ] = false;
+    scales_with[ STAT_SPIRIT               ] = false;
+    scales_with[ STAT_SPELL_POWER          ] = false;
+    scales_with[ STAT_AGILITY              ] = true;
+    scales_with[ STAT_WEAPON_DPS           ] = true;
   }
+  scales_with[STAT_STRENGTH] = false;
 
   if ( off_hand_weapon.type != WEAPON_NONE )
-  {
     scales_with[ STAT_WEAPON_OFFHAND_DPS   ] = true;
-    scales_with[ STAT_WEAPON_OFFHAND_SPEED ] = sim -> weapon_speed_scale_factors != 0;
-    scales_with[ STAT_HIT_RATING2          ] = true;
-  }
 }
 
 // monk_t::init_buffs =======================================================
@@ -3737,7 +3750,7 @@ double monk_t::composite_melee_expertise( weapon_t* weapon ) const
 
 double monk_t::composite_melee_attack_power() const
 {
-  if ( current_stance() == SPIRITED_CRANE)
+  if ( current_stance() == SPIRITED_CRANE )
     return composite_spell_power( SCHOOL_MAX ) * static_stance_data( SPIRITED_CRANE ).effectN( 3 ).percent();
 
   double ap = player_t::composite_melee_attack_power();

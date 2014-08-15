@@ -4450,7 +4450,7 @@ void rogue_t::init_scaling()
   player_t::init_scaling();
 
   scales_with[ STAT_WEAPON_OFFHAND_DPS    ] = true;
-  scales_with[ STAT_WEAPON_OFFHAND_SPEED  ] = sim -> weapon_speed_scale_factors != 0;
+  scales_with[STAT_STRENGTH] = false;
 }
 
 // rogue_t::init_resources =================================================

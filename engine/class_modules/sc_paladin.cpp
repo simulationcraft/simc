@@ -4754,6 +4754,7 @@ void paladin_t::init_scaling()
     scales_with[ STAT_BLOCK_RATING ] = true;
     scales_with[ STAT_STRENGTH     ] = true;
   }
+  scales_with[STAT_AGILITY] = false;
 }
 
 // paladin_t::decode_set ====================================================

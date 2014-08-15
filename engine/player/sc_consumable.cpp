@@ -159,53 +159,51 @@ const food_data_t food_data[] =
   { FOOD_YAK_CHEESE_CURDS,             STAT_HASTE_RATING,        11 },
 
   // WoD
-  { FOOD_BLACKROCK_BARBECUE,           STAT_CRIT_RATING,        150 },
+  { FOOD_BLACKROCK_BARBECUE,           STAT_CRIT_RATING,        75 },
 
-  { FOOD_BLACKROCK_HAM,                STAT_CRIT_RATING,        125 },
+  { FOOD_BLACKROCK_HAM,                STAT_CRIT_RATING,        50 },
 
-  { FOOD_BRAISED_BASILISK,             STAT_MASTERY_RATING,     125 },
+  { FOOD_BRAISED_BASILISK,             STAT_MASTERY_RATING,     50 },
 
-  { FOOD_CALAMARI_CREPES,              STAT_MULTISTRIKE_RATING, 150 },
+  { FOOD_CALAMARI_CREPES,              STAT_MULTISTRIKE_RATING, 75 },
 
-  { FOOD_CLEFTHOOF_POT_ROAST,          STAT_SPIRIT,             125 },
+  { FOOD_CLEFTHOOF_POT_ROAST,          STAT_SPIRIT,             50 },
 
-  { FOOD_CLEFTHOOF_SAUSAGES,           STAT_READINESS_RATING,   125 },
+  { FOOD_CLEFTHOOF_SAUSAGES,           STAT_VERSATILITY_RATING, 50 },
 
-  { FOOD_CRISPY_FRIED_SCORPION,        STAT_ARMOR,              125 },
+  { FOOD_CRISPY_FRIED_SCORPION,        STAT_ARMOR,              50 },
 
-  { FOOD_DEEP_FRIED_BASILISK,          STAT_ARMOR,              125 },
+  { FOOD_DEEP_FRIED_BASILISK,          STAT_ARMOR,              50 },
 
-  { FOOD_FAT_SLEEPER_CAKES,            STAT_MASTERY_RATING,     125 },
+  { FOOD_FAT_SLEEPER_CAKES,            STAT_MASTERY_RATING,     50 },
 
-  { FOOD_FIERY_CALAMARI,               STAT_MULTISTRIKE_RATING, 125 },
+  { FOOD_FIERY_CALAMARI,               STAT_MULTISTRIKE_RATING, 50 },
 
-  { FOOD_FROSTY_STEW,                  STAT_HASTE_RATING,       150 },
+  { FOOD_FROSTY_STEW,                  STAT_HASTE_RATING,       75 },
 
-  { FOOD_GORGROND_CHOWDER,             STAT_READINESS_RATING,   150 },
+  { FOOD_GORGROND_CHOWDER,             STAT_VERSATILITY_RATING, 75 },
 
-  { FOOD_GRILLED_GULPER,               STAT_CRIT_RATING,        125 },
+  { FOOD_GRILLED_GULPER,               STAT_CRIT_RATING,        50 },
 
-  { FOOD_HEARTY_ELEKK_STEAK,           STAT_STAMINA,            187 },
+  { FOOD_HEARTY_ELEKK_STEAK,           STAT_STAMINA,            75 },
 
-  { FOOD_NAGRAND_TEMPURA,              STAT_ARMOR,              150 },
+  { FOOD_NAGRAND_TEMPURA,              STAT_ARMOR,              75 },
 
-  { FOOD_PAN_SEARED_TALBUK,            STAT_HASTE_RATING,       125 },
+  { FOOD_PAN_SEARED_TALBUK,            STAT_HASTE_RATING,       50 },
 
-  { FOOD_RYLAK_CREPES,                 STAT_MULTISTRIKE_RATING, 125 },
+  { FOOD_RYLAK_CREPES,                 STAT_MULTISTRIKE_RATING, 50 },
 
-  { FOOD_SALTED_SKULKER,               STAT_SPIRIT,             125 },
+  { FOOD_SALTED_SKULKER,               STAT_SPIRIT,             50 },
 
-  { FOOD_SLEEPER_SURPRISE,             STAT_MASTERY_RATING,     150 },
+  { FOOD_SLEEPER_SURPRISE,             STAT_MASTERY_RATING,     75 },
 
-  { FOOD_STARFLOWER_SANDWICH,          STAT_SPIRIT,             150 },
+  { FOOD_STARFLOWER_SANDWICH,          STAT_SPIRIT,             75 },
 
-  { FOOD_STEAMED_SCORPION,             STAT_STAMINA,            187 },
+  { FOOD_STEAMED_SCORPION,             STAT_STAMINA,            75 },
 
-  { FOOD_STURGEON_STEW,                STAT_HASTE_RATING,       125 },
+  { FOOD_STURGEON_STEW,                STAT_HASTE_RATING,       50 },
 
-  { FOOD_TALADOR_SURF_AND_TURF,        STAT_STAMINA,            225 },
-
-  { FOOD_WHIPTAIL_CHOWDER,             STAT_READINESS_RATING,   125 },
+  { FOOD_TALADOR_SURF_AND_TURF,        STAT_STAMINA,            112 },
 };
 
 struct flask_t : public action_t

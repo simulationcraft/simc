@@ -1548,7 +1548,7 @@ namespace automation {
   QString tokenize( QString qstr );
   QStringList splitPreservingComments( QString qstr );
 
-  QString do_something( int sim_type,
+  QString automation_main( int sim_type,
                         QString player_class,
                         QString player_spec,
                         QString player_race,

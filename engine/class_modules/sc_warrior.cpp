@@ -249,7 +249,6 @@ public:
   {
     //Arms-only
     const spell_data_t* mortal_strike;
-    const spell_data_t* readiness_arms;
     const spell_data_t* rend;
     const spell_data_t* seasoned_soldier;
     const spell_data_t* sweeping_strikes;
@@ -269,7 +268,6 @@ public:
     const spell_data_t* cruelty;
     const spell_data_t* meat_cleaver;
     const spell_data_t* raging_blow;
-    const spell_data_t* readiness_fury;
     const spell_data_t* singleminded_fury;
     const spell_data_t* wild_strike;
     // Fury and Prot
@@ -280,7 +278,6 @@ public:
     const spell_data_t* blood_craze;
     const spell_data_t* devastate;
     const spell_data_t* last_stand;
-    const spell_data_t* readiness_protection;
     const spell_data_t* resolve;
     const spell_data_t* revenge;
     const spell_data_t* riposte;
@@ -399,7 +396,7 @@ public:
     cooldown.storm_bolt               = get_cooldown( "storm_bolt" );
 
     initial_rage = 0;
-    arms_rage_mult = 2.15;
+    arms_rage_mult = 2.125;
     crit_rage_mult = 2;
     swapping = false;
     base.distance = 3.0;
@@ -1160,7 +1157,7 @@ struct bladestorm_tick_t: public warrior_attack_t
     dual = true;
     aoe = -1;
     if ( p -> specialization() == WARRIOR_ARMS )
-      weapon_multiplier *= 2;
+      weapon_multiplier *= 1.53333; // Hotfix? 8/15/14... Arms aoe is a bit ridiculous.
   }
 
   double action_multiplier() const
@@ -3606,9 +3603,6 @@ void warrior_t::init_spells()
   spec.mortal_strike            = find_specialization_spell( "Mortal Strike" );
   spec.raging_blow              = find_specialization_spell( "Raging Blow" );
   spec.rallying_cry             = find_specialization_spell( "Rallying Cry" );
-  spec.readiness_arms           = find_specialization_spell( "Readiness: Arms" );
-  spec.readiness_fury           = find_specialization_spell( "Readiness: Fury" );
-  spec.readiness_protection     = find_specialization_spell( "Readiness: Protection" );
   spec.recklessness             = find_specialization_spell( "Recklessness" );
   spec.rend                     = find_specialization_spell( "Rend" );
   spec.resolve                  = find_specialization_spell( "Resolve" );
@@ -4478,10 +4472,15 @@ void warrior_t::init_scaling()
   player_t::init_scaling();
 
   if ( specialization() == WARRIOR_FURY )
-  {
     scales_with[STAT_WEAPON_OFFHAND_DPS] = true;
-    scales_with[STAT_WEAPON_OFFHAND_SPEED] = sim -> weapon_speed_scale_factors != 0;
+
+  if ( talents.gladiators_resolve -> ok() && primary_role() == ROLE_ATTACK )
+  {
+    scales_with[STAT_STAMINA] = false;
+    scales_with[STAT_ARMOR] = false;
   }
+
+  scales_with[STAT_AGILITY] = false;
 }
 
 // warrior_t::init_gains ====================================================
