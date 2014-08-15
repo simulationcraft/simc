@@ -254,7 +254,6 @@ public:
     const spell_data_t* lava_surge;
     const spell_data_t* elemental_fury;
     const spell_data_t* elemental_overload;
-    const spell_data_t* readiness_elemental;
     const spell_data_t* shamanism;
 
     // Enhancement
@@ -263,7 +262,6 @@ public:
     const spell_data_t* flurry;
     const spell_data_t* lightning_strikes;
     const spell_data_t* mental_quickness;
-    const spell_data_t* readiness_enhancement;
     const spell_data_t* shamanistic_rage;
     const spell_data_t* spirit_walk;
     const spell_data_t* maelstrom_weapon;
@@ -4530,7 +4528,6 @@ void shaman_t::init_spells()
   spec.lava_surge            = find_specialization_spell( "Lava Surge" );
   spec.elemental_fury        = find_specialization_spell( "Elemental Fury" );
   spec.elemental_overload    = find_specialization_spell( "Elemental Overload" );
-  spec.readiness_elemental   = find_specialization_spell( "Readiness: Elemental" );
   spec.shamanism             = find_specialization_spell( "Shamanism" );
 
   // Enhancement
@@ -4540,7 +4537,6 @@ void shaman_t::init_spells()
   spec.lightning_strikes     = find_specialization_spell( "Lightning Strikes" );
   spec.maelstrom_weapon      = find_specialization_spell( "Maelstrom Weapon" );
   spec.mental_quickness      = find_specialization_spell( "Mental Quickness" );
-  spec.readiness_enhancement = find_specialization_spell( "Readiness: Enhancement" );
   spec.shamanistic_rage      = find_specialization_spell( "Shamanistic Rage" );
   spec.spirit_walk           = find_specialization_spell( "Spirit Walk" );
   spec.windfury              = find_specialization_spell( "Windfury" );

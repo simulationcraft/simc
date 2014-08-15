@@ -349,7 +349,6 @@ public:
     const spell_data_t* sharpened_claws;
     const spell_data_t* leader_of_the_pack;
     const spell_data_t* predatory_swiftness;
-    const spell_data_t* readiness_feral;
     const spell_data_t* rip;
     const spell_data_t* savage_roar;
     const spell_data_t* tigers_fury;
@@ -362,7 +361,6 @@ public:
     const spell_data_t* eclipse;
     const spell_data_t* lunar_guidance;
     const spell_data_t* moonkin_form;
-    const spell_data_t* readiness_balance;
     const spell_data_t* shooting_stars;
     const spell_data_t* starfall;
     const spell_data_t* starfire;
@@ -371,7 +369,6 @@ public:
 
     // Guardian
     const spell_data_t* bladed_armor;
-    const spell_data_t* readiness_guardian;
     const spell_data_t* resolve;
     const spell_data_t* savage_defense;
     const spell_data_t* survival_of_the_fittest;
@@ -393,7 +390,6 @@ public:
     const spell_data_t* natures_focus;
     const spell_data_t* natures_swiftness;
     const spell_data_t* regrowth;
-    const spell_data_t* readiness_restoration;
     const spell_data_t* swiftmend;
     const spell_data_t* tranquility;
     const spell_data_t* wild_growth;
@@ -5418,7 +5414,6 @@ void druid_t::init_spells()
   spec.omen_of_clarity         = find_specialization_spell( "Omen of Clarity" );
   spec.killer_instinct         = find_specialization_spell( "Killer Instinct" );
   spec.mana_attunement         = find_specialization_spell( "Mana Attunement" );
-
   spec.natures_swiftness       = find_specialization_spell( "Nature's Swiftness" );
   spec.nurturing_instinct      = find_specialization_spell( "Nurturing Instinct" );
 
@@ -5430,7 +5425,6 @@ void druid_t::init_spells()
   spec.eclipse                 = find_specialization_spell( "Eclipse" );
   spec.lunar_guidance          = find_specialization_spell( "Lunar Guidance" );
   spec.moonkin_form            = find_specialization_spell( "Moonkin Form" );
-  spec.readiness_balance       = find_specialization_spell( "Readiness: Balance" );
   spec.shooting_stars          = find_specialization_spell( "Shooting Stars" );
   spec.starfall                = find_specialization_spell( "Starfall" );
   spec.starfire                = find_specialization_spell( "Starfire" );
@@ -5444,7 +5438,6 @@ void druid_t::init_spells()
   spec.savage_roar             = find_specialization_spell( "Savage Roar" );
   spec.sharpened_claws         = find_specialization_spell( "Sharpened Claws" );
   spec.rip                     = find_specialization_spell( "Rip" );
-  spec.readiness_feral         = find_specialization_spell( "Readiness: Feral" );
   spec.tigers_fury             = find_specialization_spell( "Tiger's Fury" );
 
   // Guardian
@@ -5467,7 +5460,6 @@ void druid_t::init_spells()
   spec.natural_insight         = find_specialization_spell( "Natural Insight" );
   spec.natures_focus           = find_specialization_spell( "Nature's Focus" );
   spec.regrowth                = find_specialization_spell( "Regrowth" );
-  spec.readiness_restoration   = find_specialization_spell( "Readiness: Restoration" );
   spec.swiftmend               = find_specialization_spell( "Swiftmend" );
   spec.tranquility             = find_specialization_spell( "Tranquility" );
   spec.wild_growth             = find_specialization_spell( "Wild Growth" );
