@@ -553,7 +553,7 @@ public:
     main_hand_weapon.swing_time = timespan_t::from_seconds( 1.0 );
 
     // originally set as 50% of AP; it's actually 50.5, so Xuen wasn't being calculated properly
-    owner_coeff.ap_from_ap = 0.505;
+    owner_coeff.ap_from_ap = 0.33;
   }
 
   monk_t* o()
