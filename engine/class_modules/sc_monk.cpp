@@ -1349,6 +1349,7 @@ struct rising_sun_kick_t : public monk_melee_attack_t
     monk_melee_attack_t( "rising_sun_kick", p, p -> find_class_spell( "Rising Sun Kick" ) ),
     rsk_debuff( new rsk_debuff_t( p, p -> find_spell( 130320 ) ) )
   {
+    cooldown -> duration = timespan_t::from_seconds( 8.0 );
     parse_options( nullptr, options_str );
     stancemask = FIERCE_TIGER;
     mh = &( player -> main_hand_weapon ) ;
