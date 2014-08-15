@@ -578,11 +578,31 @@ enum slot_e   // these enum values match armory settings
 };
 
 // Tiers 13..19 + PVP
-#define N_TIER 8
+#define N_TIER 6
 #define MIN_TIER ( 13 )
 
 // Caster 2/4, Melee 2/4, Tank 2/4, Heal 2/4
 #define N_TIER_BONUS 8
+
+enum set_bonus_e
+{
+  B2 = 0,
+  B4 = 1
+};
+
+enum set_role_e
+{ SET_ROLE_NONE = -1, SET_TANK = 0, SET_HEALER, SET_MELEE, SET_CASTER };
+
+// "type safe" direct access to arrays
+enum tier_e
+{
+  // Not implemented yet
+  TPVP = 0,
+  // No spell data yet
+  T1,  T2,  T3,  T4,  T5,  T6,  T7,  T8,  T9,  T10, T11, T12,
+  // Actual tier support in SIMC
+  T13, T14, T15, T16, T17
+};
 
 enum set_e
 {
@@ -607,14 +627,6 @@ enum set_e
   SET_T17_MELEE,  SET_T17_2PC_MELEE,  SET_T17_4PC_MELEE,
   SET_T17_TANK,   SET_T17_2PC_TANK,   SET_T17_4PC_TANK,
   SET_T17_HEAL,   SET_T17_2PC_HEAL,   SET_T17_4PC_HEAL,
-  SET_T18_CASTER, SET_T18_2PC_CASTER, SET_T18_4PC_CASTER,
-  SET_T18_MELEE,  SET_T18_2PC_MELEE,  SET_T18_4PC_MELEE,
-  SET_T18_TANK,   SET_T18_2PC_TANK,   SET_T18_4PC_TANK,
-  SET_T18_HEAL,   SET_T18_2PC_HEAL,   SET_T18_4PC_HEAL,
-  SET_T19_CASTER, SET_T19_2PC_CASTER, SET_T19_4PC_CASTER,
-  SET_T19_MELEE,  SET_T19_2PC_MELEE,  SET_T19_4PC_MELEE,
-  SET_T19_TANK,   SET_T19_2PC_TANK,   SET_T19_4PC_TANK,
-  SET_T19_HEAL,   SET_T19_2PC_HEAL,   SET_T19_4PC_HEAL,
   SET_PVP_CASTER, SET_PVP_2PC_CASTER, SET_PVP_4PC_CASTER,
   SET_PVP_MELEE,  SET_PVP_2PC_MELEE,  SET_PVP_4PC_MELEE,
   SET_PVP_TANK,   SET_PVP_2PC_TANK,   SET_PVP_4PC_TANK,
@@ -3593,65 +3605,86 @@ private:
 
 namespace new_set_bonus {
 
-static const int PVP_OFFSET = 3;
-enum set_tier_e {
-  SET_MIN = -3 + PVP_OFFSET,
-  PVP_2 = -2 + PVP_OFFSET,
-  PVP_1 = -1 + PVP_OFFSET,
-  TIER_NONE = 0 + PVP_OFFSET,
-  TIER_1 = 1 + PVP_OFFSET,
-  TIER_2 = 2 + PVP_OFFSET,
-  TIER_3 = 3 + PVP_OFFSET,
-  TIER_4 = 4 + PVP_OFFSET,
-  TIER_5 = 5 + PVP_OFFSET,
-  TIER_6 = 6 + PVP_OFFSET,
-  TIER_7 = 7 + PVP_OFFSET,
-  TIER_8 = 8 + PVP_OFFSET,
-  TIER_9 = 9 + PVP_OFFSET,
-  TIER_10 = 10 + PVP_OFFSET,
-  TIER_11 = 11 + PVP_OFFSET,
-  TIER_12 = 12 + PVP_OFFSET,
-  TIER_13 = 13 + PVP_OFFSET,
-  TIER_14 = 14 + PVP_OFFSET,
-  TIER_15 = 15 + PVP_OFFSET,
-  TIER_16 = 16 + PVP_OFFSET,
-  TIER_17 = 17 + PVP_OFFSET,
-  SET_MAX = 18 + PVP_OFFSET,
-};
-static_assert( SET_MIN == 0, "PVP_OFFSET is wrong!" );
+set_role_e translate_set_bonus_role_str( const std::string& name );
+const char* translate_set_bonus_role( set_role_e );
 
+// Translate a DBC set bonus data entry to an "old style" set_e enum entry
+set_e translate_set_bonus_data( const item_set_bonus_t& );
 
 struct set_bonus_t
 {
-public:
-  set_bonus_t( const player_t* p );
+  // Some magic constants
+  static const unsigned N_BONUSES = 2;       // Number of set bonuses in tier gear
+  static const unsigned TIER_THRESHOLD = 17; // Tier when everything changes
 
-  bool has_set_bonus( set_tier_e, unsigned pieces, specialization_e ) const;
-  const spell_data_t* set( set_tier_e, unsigned pieces, specialization_e ) const;
+  // Constants used with translation from set_e to new set bonus system
+  static const unsigned tier_divisor = 12;
+  static const unsigned role_divisor = 3;
+  static const unsigned bonus_modulo = 3;
 
-  void init();
-  void copy_from( const set_bonus_t& );
-private:
-  typedef std::array<std::vector<std::vector<const spell_data_t*> >,SET_MAX> spell_data_map_t;
-  const spell_data_t* default_value;
-  spell_data_map_t set_bonuses; // [TIERX][SPEC_IDX][PIECES]
-  std::array<std::vector<unsigned>, SET_MAX> count; // [TIERX][SPEC_IDX] and unsigned var indicates the number of pieces the player is wearing
-  const player_t* p;
+  struct set_bonus_data_t
+  {
+    const spell_data_t* spell;
+    const item_set_bonus_t* bonus;
+    int overridden;
 
+    set_bonus_data_t() :
+      spell( spell_data_t::not_found() ), bonus( 0 ), overridden( -1 )
+    { }
+  };
 
-  bool has_set_bonus( set_tier_e, unsigned pieces, unsigned spec_idx ) const;
-  void decode();
-  static set_tier_e translate_from_old_set_bonus( ::set_e  old_set );
-  const spell_data_t* create_set_bonus( uint32_t spell_id );
-  set_e decode( const player_t&, const item_t& item ) const;
-  uint32_t get_spec_idx( specialization_e ) const;
-  void debug_spell_data_lists( const spell_data_map_t&, std::string type );
-  void build_filtered_spell_data_list( const spell_data_map_t& );
-  bool initialized, spelldata_registered; // help avoid initialization order problems
+  // Data structure definitions
+  typedef std::vector<set_bonus_data_t> bonus_t;
+  typedef std::vector<bonus_t> bonus_type_t;
+  typedef std::vector<bonus_type_t> set_bonus_type_t;
 
+  typedef std::vector<unsigned> bonus_count_t;
+  typedef std::vector<bonus_count_t> set_bonus_count_t;
+
+  player_t* actor;
+
+  // Set bonus data structure
+  set_bonus_type_t set_bonus_spec_data;
+  // Set item counts
+  set_bonus_count_t set_bonus_spec_count;
+
+  set_bonus_t( player_t* p );
+
+  // Collect item information about set bonuses, fully DBC driven
+  void initialize_items();
+
+  // Initialize set bonuses in earnest
+  void initialize();
+
+  expr_t* create_expression( const player_t*, const std::string& type );
+
+  // Fast accessor to a set bonus spell, returns the spell, or spell_data_t::not_found()
+  const spell_data_t* set( specialization_e spec, tier_e tier, set_bonus_e bonus ) const
+  {
+    assert( tier >= TIER_THRESHOLD && tier <= max_tier() );
+    return set_bonus_spec_data[ tier ][ specdata::spec_idx( spec ) ][ bonus ].spell;
+  }
+
+  const spell_data_t* set( set_role_e role, tier_e tier, set_bonus_e bonus ) const
+  {
+    assert( tier < TIER_THRESHOLD && tier <= max_tier() );
+    return set_bonus_spec_data[ tier ][ role ][ bonus ].spell;
+  }
+
+  // Fast accessor for checking whether a set bonus is enabled
+  bool has_set_bonus( specialization_e spec, tier_e tier, set_bonus_e bonus ) const
+  { return set( spec, tier, bonus ) != spell_data_t::not_found(); }
+
+  // Fast accessor for checking whether a set bonus is enabled
+  bool has_set_bonus( set_role_e role, tier_e tier, set_bonus_e bonus ) const
+  { return set( role, tier, bonus ) != spell_data_t::not_found(); }
+
+  unsigned max_tier() const;
+  std::string to_string() const;
+  std::string to_profile_string( const std::string& = "\n" ) const;
 };
-
 }
+
 struct action_sequence_data_t
 {
   action_t* action;

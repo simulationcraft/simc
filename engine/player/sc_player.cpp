@@ -312,6 +312,103 @@ bool parse_origin( sim_t* sim, const std::string&, const std::string& origin )
   return true;
 }
 
+bool parse_set_bonus( sim_t* sim, const std::string&, const std::string& value )
+{
+  static const char* error_str = "%s invalid 'set_bonus' option value '%s' given, format: set_bonus=tierTIER_BONUSpc[_ROLE]=0|1";
+  assert( sim -> active_player );
+
+  player_t* p = sim -> active_player;
+
+  if ( value.size() < 6 )
+  {
+    sim -> errorf( error_str, p -> name(), value.c_str() );
+    return false;
+  }
+
+  if ( value.substr( value.size() - 2 ).find( "=0" ) == std::string::npos && value.substr( value.size() - 2 ).find( "=1" ) == std::string::npos )
+  {
+    sim -> errorf( error_str, p -> name(), value.c_str() );
+    return false;
+  }
+
+  std::vector<std::string> splits = util::string_split( value, "_" );
+  if ( splits.size() < 2 )
+  {
+    sim -> errorf( error_str, p -> name(), value.c_str() );
+    return false;
+  }
+
+  if ( splits[ 0 ].empty() || ! util::str_in_str_ci( splits[ 0 ], "tier" ) )
+  {
+    sim -> errorf( error_str, p -> name(), value.c_str() );
+    return false;
+  }
+
+  unsigned tier = util::to_unsigned( splits[ 0 ].substr( 4 ) );
+  if ( tier < 1 || tier > p -> new_sets.max_tier() )
+  {
+    sim -> errorf( error_str, p -> name(), value.c_str() );
+    return false;
+  }
+
+  size_t bonus_idx = 1;
+  size_t role_idx = 0;
+
+  unsigned bonus_type = util::to_unsigned( splits[ bonus_idx ].substr( 0, splits[ bonus_idx ].size() - 2 ) );
+  if ( bonus_type != 2 && bonus_type != 4 )
+  {
+    sim -> errorf( "%s invalid set bonus type, '%s' given, valid values are 2, 4",
+        p -> name(), splits[ bonus_idx ].substr( 0, splits[ bonus_idx ].size() - 2 ).c_str() );
+    return false;
+  }
+
+  bonus_type = bonus_type / 2 - 1;
+
+  if ( splits.size() > 2 )
+    role_idx = 2;
+
+  set_role_e role = SET_ROLE_NONE;
+  if ( role_idx > 0 )
+  {
+    role = new_set_bonus::translate_set_bonus_role_str( splits[ role_idx ].substr( 0, splits[ role_idx ].size() - 2 ) );
+
+    if ( role == SET_ROLE_NONE )
+    {
+      sim -> errorf( "%s invalid set_bonus role string, '%s' given, valid values are tank, healer, melee, caster",
+          p -> name(), splits[ role_idx ].substr( splits[ role_idx ].size() - 2 ).c_str() );
+      return false;
+    }
+  }
+
+  int state;
+  if ( role_idx == 0 )
+    state = util::to_int( splits[ bonus_idx ].substr( splits[ bonus_idx ].size() - 1 ) );
+  else
+    state = util::to_int( splits[ role_idx ].substr( splits[ role_idx ].size() - 1 ) );
+
+  if ( tier >= new_set_bonus::set_bonus_t::TIER_THRESHOLD )
+  {
+    if ( role != SET_ROLE_NONE )
+      sim -> errorf( "%s tier %u set bonus given with role '%s', ignoring role",
+          p -> name(), tier, splits[ role_idx ].c_str() );
+
+    p -> new_sets.set_bonus_spec_data[ tier ][ specdata::spec_idx( p -> specialization() ) ][ bonus_type ].overridden = state;
+  }
+  else
+  {
+    if ( role == SET_ROLE_NONE )
+    {
+      sim -> errorf( "%s tier %u set bonus given without role", p -> name(), tier );
+      return false;
+    }
+
+    p -> new_sets.set_bonus_spec_data[ tier ][ role ][ bonus_type ].overridden = state;
+    p -> sets.count[ new_set_bonus::translate_set_bonus_data( *p -> new_sets.set_bonus_spec_data[ tier ][ role ][ bonus_type ].bonus ) ] = state;
+  }
+
+  return true;
+}
+
 } // UNNAMED NAMESPACE ======================================================
 
 // This is a template for Ignite like mechanics, like of course Ignite, Hunter Piercing Shots, Priest Echo of Light, etc.
@@ -986,7 +1083,8 @@ bool player_t::init_items()
   }
 
   sets.init( *this );
-  new_sets.init();
+  // Needs to be initialized after old set bonus system
+  new_sets.initialize();
 
   // these initialize the weapons, but don't have a return value (yet?)
   init_weapon( main_hand_weapon );
@@ -7417,7 +7515,12 @@ expr_t* player_t::create_expression( action_t* a,
   else if ( splits.size() == 2 )
   {
     if ( splits[ 0 ] == "set_bonus" )
-      return sets.create_expression( this, splits[ 1 ] );
+    {
+      expr_t* expr = sets.create_expression( this, splits[ 1 ] );
+      if ( ! expr )
+        expr = new_sets.create_expression( this, splits[ 1 ] );
+      return expr;
+    }
 
     if ( splits[ 0 ] == "active_dot" )
     {
@@ -8001,6 +8104,7 @@ bool player_t::create_profile( std::string& profile_str, save_e stype, bool save
         profile_str += std::string("# ") + util::set_bonus_string( s ) + "=1" + term;
       }
     }
+    profile_str += new_sets.to_profile_string( term );
 
     if ( enchant.attribute[ ATTR_STRENGTH  ] != 0 )  profile_str += "enchant_strength="
          + util::to_string( enchant.attribute[ ATTR_STRENGTH  ] ) + term;
@@ -8217,14 +8321,6 @@ void player_t::create_options()
     opt_bool( "tier16_4pc_tank",   sets.count[ SET_T16_4PC_TANK ] ),
     opt_bool( "tier16_2pc_heal",   sets.count[ SET_T16_2PC_HEAL ] ),
     opt_bool( "tier16_4pc_heal",   sets.count[ SET_T16_4PC_HEAL ] ),
-    opt_bool( "tier17_2pc_caster", sets.count[ SET_T17_2PC_CASTER ] ),
-    opt_bool( "tier17_4pc_caster", sets.count[ SET_T17_4PC_CASTER ] ),
-    opt_bool( "tier17_2pc_melee",  sets.count[ SET_T17_2PC_MELEE ] ),
-    opt_bool( "tier17_4pc_melee",  sets.count[ SET_T17_4PC_MELEE ] ),
-    opt_bool( "tier17_2pc_tank",   sets.count[ SET_T17_2PC_TANK ] ),
-    opt_bool( "tier17_4pc_tank",   sets.count[ SET_T17_4PC_TANK ] ),
-    opt_bool( "tier17_2pc_heal",   sets.count[ SET_T17_2PC_HEAL ] ),
-    opt_bool( "tier17_4pc_heal",   sets.count[ SET_T17_4PC_HEAL ] ),
     opt_bool( "pvp_2pc_caster",    sets.count[ SET_PVP_2PC_CASTER ] ),
     opt_bool( "pvp_4pc_caster",    sets.count[ SET_PVP_4PC_CASTER ] ),
     opt_bool( "pvp_2pc_melee",     sets.count[ SET_PVP_2PC_MELEE ] ),
@@ -8233,6 +8329,7 @@ void player_t::create_options()
     opt_bool( "pvp_4pc_tank",      sets.count[ SET_PVP_4PC_TANK ] ),
     opt_bool( "pvp_2pc_heal",      sets.count[ SET_PVP_2PC_HEAL ] ),
     opt_bool( "pvp_4pc_heal",      sets.count[ SET_PVP_4PC_HEAL ] ),
+    opt_func( "set_bonus",         parse_set_bonus                ),
 
     // Gear Stats
     opt_float( "gear_strength",         gear.attribute[ ATTR_STRENGTH  ] ),

@@ -78,7 +78,6 @@ set_bonus_t::set_bonus_t( const player_t* p ) :
      count(), default_value( spell_data_t::nil() ), set_bonuses(),  p( p ),
      initialized( false ), spelldata_registered( false )
 {
-
     count[ SET_T13_2PC_CASTER ] = count[ SET_T13_2PC_MELEE ] = count[ SET_T13_2PC_TANK ] = count[ SET_T13_2PC_HEAL ] = -1;
     count[ SET_T13_4PC_CASTER ] = count[ SET_T13_4PC_MELEE ] = count[ SET_T13_4PC_TANK ] = count[ SET_T13_4PC_HEAL ] = -1;
     count[ SET_T14_2PC_CASTER ] = count[ SET_T14_2PC_MELEE ] = count[ SET_T14_2PC_TANK ] = count[ SET_T14_2PC_HEAL ] = -1;
@@ -158,198 +157,331 @@ void set_bonus_t::copy_from( const set_bonus_t& s )
 { count = s.count; }
 
 namespace new_set_bonus {
-set_bonus_t::set_bonus_t( const player_t* p ) :
-  default_value( spell_data_t::nil() ),
-  set_bonuses(),
-  count(),
-  p( p ),
-  initialized( false ),
-  spelldata_registered( false )
-{
-  // Fill up count array with default data.
-  for ( size_t i = 0; i < set_bonuses.size(); ++i )
-  {
-    count[i].resize( p -> dbc.specialization_max_per_class() );
-  }
 
-  // Fill up set_bonus array for specs
-  for ( size_t i = 0; i < set_bonuses.size(); ++i )
+set_role_e translate_set_bonus_role_str( const std::string& name )
+{
+  if ( util::str_compare_ci( name, "tank" ) )
+    return SET_TANK;
+  else if ( util::str_compare_ci( name, "healer" ) )
+    return SET_HEALER;
+  else if ( util::str_compare_ci( name, "melee" ) )
+    return SET_MELEE;
+  else if ( util::str_compare_ci( name, "caster" ) )
+    return SET_CASTER;
+
+  return SET_ROLE_NONE;
+}
+
+const char* translate_set_bonus_role( set_role_e role )
+{
+  switch ( role )
   {
-    set_bonuses[i].resize( p -> dbc.specialization_max_per_class() );
+    case SET_TANK: return "tank";
+    case SET_HEALER: return "healer";
+    case SET_MELEE: return "melee";
+    case SET_CASTER: return "caster";
+    default: return "unknown";
   }
 }
 
-void set_bonus_t::init()
+unsigned set_bonus_t::max_tier() const
+{ return dbc::set_bonus( maybe_ptr( actor -> dbc.ptr ) )[ dbc::n_set_bonus( maybe_ptr( actor -> dbc.ptr ) ) - 1 ].tier; }
+
+set_bonus_t::set_bonus_t( player_t* player ) : actor( player )
 {
-  // TODO: fill up count array
-  decode();
-  if ( p -> sim -> debug )
+  if ( actor -> is_pet() || actor -> is_enemy() )
+    return;
+
+  // First, pre-allocate vectors based on current boundaries of the set bonus data in DBC
+  set_bonus_spec_data.resize( max_tier() + 1 );
+  set_bonus_spec_count.resize( max_tier() + 1 );
+  for ( size_t i = 0; i < set_bonus_spec_data.size(); i++ )
   {
-    p -> sim -> out_debug.printf( "%s new set bonus 'count' debug:", p -> name() );
-    for ( size_t i = 0; i < count.size(); ++i )
+    set_bonus_spec_data[ i ].resize( actor -> dbc.specialization_max_per_class() );
+    set_bonus_spec_count[ i ].resize( actor -> dbc.specialization_max_per_class() );
+    // For now only 2, and 4 set bonuses
+    for ( size_t j = 0; j < set_bonus_spec_data[ i ].size(); j++ )
     {
-      for ( size_t j = 0; j < count[ i ].size(); ++j )
+      set_bonus_spec_data[ i ][ j ].resize( N_BONUSES, set_bonus_data_t() );
+      set_bonus_spec_count[ i ][ j ] = 0;
+    }
+  }
+
+  // Initialize the set bonus data structure with correct set bonus data.
+  // Spells are not setup yet.
+  for ( size_t bonus_idx = 0; bonus_idx < dbc::n_set_bonus( maybe_ptr( actor -> dbc.ptr ) ) - 1; bonus_idx++ )
+  {
+    const item_set_bonus_t& bonus = dbc::set_bonus( maybe_ptr( actor -> dbc.ptr ) )[ bonus_idx ];
+    if ( bonus.class_id != static_cast<unsigned>( util::class_id( actor -> type ) ) )
+      continue;
+
+    // Translate our DBC set bonus into one of our enums
+    set_e bonus_enum = translate_set_bonus_data( bonus );
+    size_t bonus_type = bonus.bonus / 2 - 1;
+
+    // T17 onwards, new world, spec specific set bonuses. Overrides are going
+    // to be provided by the new set_bonus= option, so no need to translate
+    // anything from the old set bonus options.
+    if ( bonus.tier >= TIER_THRESHOLD )
+    {
+      assert( bonus.spec > 0 );
+      specialization_e spec = static_cast< specialization_e >( bonus.spec );
+      set_bonus_spec_data[ bonus.tier ][ specdata::spec_idx( spec ) ][ bonus_type ].bonus = &bonus;
+    }
+    // T16 and less, old world, "role" specific set bonuses.
+    else
+    {
+      set_bonus_spec_data[ bonus.tier ][ bonus.role ][ bonus_type ].bonus = &bonus;
+      // If the user had given an override for the set bonus, copy it here
+      if ( bonus_enum != SET_NONE && actor -> sets.count[ bonus_enum ] != -1 )
+        set_bonus_spec_data[ bonus.tier ][ bonus.role ][ bonus_type ].overridden = actor -> sets.count[ bonus_enum ];
+    }
+  }
+}
+
+// Translate between the DBC role types for specializations, and
+// Simulationcraft roles
+static int translate_role_type( unsigned role_type )
+{
+  switch ( role_type )
+  {
+    case 0: // TANK
+      return 2;
+    case 1: // HEALER
+      return 3;
+    case 2: // MELEE
+      return 1;
+    case 3: // CASTER
+      return 0;
+    default:
+      return -1;
+  }
+}
+
+set_e translate_set_bonus_data( const item_set_bonus_t& bonus )
+{
+  unsigned set_bonus_idx = 1;
+
+  int diff = bonus.tier - MIN_TIER;
+  if ( diff < 0 )
+    return SET_NONE;
+
+  set_bonus_idx += diff * set_bonus_t::tier_divisor;
+  set_bonus_idx += translate_role_type( bonus.role ) * set_bonus_t::role_divisor;
+  set_bonus_idx += 1 + ( bonus.bonus / 2 - 1 );
+
+  return static_cast<set_e>( set_bonus_idx );
+}
+
+// Initialize set bonus counts based on the items of the actor
+void set_bonus_t::initialize_items()
+{
+  for ( size_t i = 0, end = actor -> items.size(); i < end; i++ )
+  {
+    item_t* item = &( actor -> items[ i ] );
+    if ( item -> parsed.data.id == 0 )
+      continue;
+
+    for ( size_t bonus_idx = 0; bonus_idx < dbc::n_set_bonus( maybe_ptr( actor -> dbc.ptr ) ) - 1; bonus_idx++ )
+    {
+      const item_set_bonus_t& bonus = dbc::set_bonus( maybe_ptr( actor -> dbc.ptr ) )[ bonus_idx ];
+      if ( bonus.set_id != static_cast<unsigned>( item -> parsed.data.id_set ) )
+        continue;
+
+      if ( ! bonus.has_spec( actor -> _spec ) )
+        continue;
+
+      // T17+ is spec specific, T16 and lower is "role specific"
+      if ( bonus.tier >= TIER_THRESHOLD )
+        set_bonus_spec_count[ bonus.tier ][ specdata::spec_idx( actor -> _spec ) ]++;
+      else
+        set_bonus_spec_count[ bonus.tier ][ bonus.role ]++;
+      break;
+    }
+  }
+}
+
+void set_bonus_t::initialize()
+{
+  initialize_items();
+
+  // Enable set bonuses then. This is a combination of item-based enablation
+  // (enough items to enable a set bonus), and override based set bonus
+  // enablation. As always, user options override everything else.
+  for ( size_t tier_idx = 0; tier_idx < set_bonus_spec_data.size(); tier_idx++ )
+  {
+    for ( size_t spec_idx = 0; spec_idx < set_bonus_spec_data[ tier_idx ].size(); spec_idx++ )
+    {
+      for ( size_t bonus_idx = 0; bonus_idx < set_bonus_spec_data[ tier_idx ][ spec_idx ].size(); bonus_idx++ )
       {
-        unsigned count = this -> count[ i ][ j ];
-        if ( count > 0 )
-          p -> sim -> out_debug.printf( "%s new set bonus debug: tier=%u spec=%s count=%u", p -> name(), i,
-                                        util::specialization_string( dbc::spec_by_idx( p -> type, (int)j ) ),
-                                        count  );
+        set_bonus_data_t& data = set_bonus_spec_data[ tier_idx ][ spec_idx ][ bonus_idx ];
+        // Most specs have the fourth specialization empty, or only have
+        // limited number of roles, so there's no set bonuses for those entries
+        if ( data.bonus == 0 )
+          continue;
+
+        unsigned spec_role_idx = spec_idx;
+        // If we're below the threshold tier, the "spec_idx" is actually a role
+        // index, and our overrides are based on roles
+        if ( tier_idx < TIER_THRESHOLD )
+          spec_role_idx = data.bonus -> role;
+
+        // Set bonus is overridden, or we have sufficient number of items to enable the bonus
+        if ( data.overridden >= 1 ||
+             ( data.overridden == -1 && set_bonus_spec_count[ tier_idx ][ spec_role_idx ] >= data.bonus -> bonus ) )
+          data.spell = actor -> find_spell( data.bonus -> spell_id );
       }
     }
   }
 
-  // TODO: retrieve all set bonus data, and map it into set_bonus, depending on has_set_bonus
-  spell_data_map_t raw_data;
-  debug_spell_data_lists( raw_data, "raw_data" );
-  build_filtered_spell_data_list( raw_data );
-  debug_spell_data_lists( set_bonuses, "filtered_data" );
-
-
-
-
-  initialized = true;
+  if ( actor -> sim -> debug )
+    actor -> sim -> out_debug << to_string();
 }
 
-void set_bonus_t::build_filtered_spell_data_list( const spell_data_map_t& raw_data )
+std::string set_bonus_t::to_string() const
 {
-  for ( size_t i = 0; i < raw_data.size(); ++i )
+  std::string s;
+
+  for ( size_t tier_idx = 0; tier_idx < set_bonus_spec_data.size(); tier_idx++ )
   {
-    for ( size_t j = 0; j < raw_data[ i ].size(); ++j )
+    for ( size_t spec_idx = 0; spec_idx < set_bonus_spec_data[ tier_idx ].size(); spec_idx++ )
     {
-      set_bonuses[ i ][ j ].resize( raw_data[ i ][ j ].size(), default_value );
-      for ( size_t k = 0; k < raw_data[ i ][ j ].size(); ++k )
+      for ( size_t bonus_idx = 0; bonus_idx < set_bonus_spec_data[ tier_idx ][ spec_idx ].size(); bonus_idx++ )
       {
-        if ( has_set_bonus( static_cast<set_tier_e>((int)i), (int)k, (int)j ) )
+        const set_bonus_data_t& data = set_bonus_spec_data[ tier_idx ][ spec_idx ][ bonus_idx ];
+        if ( data.bonus == 0 )
+          continue;
+
+        unsigned spec_role_idx = spec_idx;
+        if ( tier_idx < TIER_THRESHOLD )
+          spec_role_idx = data.bonus -> role;
+
+        if ( data.overridden >= 1 ||
+           ( data.overridden == -1 && set_bonus_spec_count[ tier_idx ][ spec_role_idx ] >= data.bonus -> bonus ) )
         {
-          set_bonuses[ i ][ j ][ k ] = raw_data[ i ][ j ][ k ];
+          if ( ! s.empty() )
+            s += ", ";
+
+          std::string spec_role_str;
+          if ( tier_idx < TIER_THRESHOLD )
+            spec_role_str = translate_set_bonus_role( static_cast<set_role_e>( data.bonus -> role ) );
+          else
+            spec_role_str = util::specialization_string( actor -> specialization() );
+
+          s += "{ ";
+          s += data.bonus -> set_name;
+          s += ", tier ";
+          s += util::to_string( tier_idx );
+          s += ", ";
+          s += spec_role_str;
+          s += ", ";
+          s += util::to_string( data.bonus -> bonus );
+          s += " piece bonus";
+          if ( data.overridden >= 1 )
+            s += " (overridden)";
+          s += " }";
         }
       }
     }
   }
-}
-
-void set_bonus_t::debug_spell_data_lists( const spell_data_map_t& map, std::string type )
-{
-  if ( p -> sim -> debug )
-  {
-    p -> sim -> out_debug.printf( "%s new set bonus '%s' debug:", p -> name(), type.c_str() );
-    for ( size_t i = 0; i < map.size(); ++i )
-    {
-      for ( size_t j = 0; j < map[ i ].size(); ++j )
-      {
-        for ( size_t k = 0; k < map[ i ][ j ].size(); ++k )
-        {
-          const spell_data_t* s = map[ i ][ j ][ k ];
-          if ( s -> ok() )
-            p -> sim -> out_debug.printf( "%s new set bonus debug '%s': tier=%u spec=%s count=%u spell_id=%u",
-                                          p -> name(), type.c_str(),  i,
-                                          util::specialization_string( dbc::spec_by_idx( p -> type, (int)j ) ),
-                                          k, s -> id()  );
-        }
-      }
-    }
-  }
-}
-
-/* Retrieve spec index from given specialization_e enum.
- * Check if this is a performance bottle-neck or not.
- */
-uint32_t set_bonus_t::get_spec_idx( specialization_e spec ) const
-{
-  uint32_t class_idx, spec_idx;
-  if ( !p -> dbc.spec_idx( spec, class_idx, spec_idx ) )
-    throw std::logic_error("Could not determine class/spec from specialization_e enum");
-
-  assert( class_idx == as<uint32_t>(util::class_id_mask( p -> type )) && "Trying to get set bonus for spec of wrong class!" );
-  return spec_idx;
-}
-
-const spell_data_t* set_bonus_t::set( set_tier_e tier, unsigned pieces, specialization_e spec ) const
-{
-  assert( initialized && "Attempt to check for set bonus before initialization." );
-
-  const spell_data_t* s = default_value;
-  uint32_t spec_idx = get_spec_idx( spec );
-
-  assert( set_bonuses[ tier ].size() >= spec_idx ); // should be filled in ctor
-  if ( set_bonuses[ tier ][ spec_idx ].size() >= pieces )
-  {
-    s = set_bonuses[ tier ][ spec_idx ][ pieces ];
-
-  }
-  assert( !( has_set_bonus( tier, pieces, spec ) && s == default_value ) && "Player has given set bonus, but no non-nil spell data for it initialized!" );
 
   return s;
-
 }
 
-bool set_bonus_t::has_set_bonus( set_tier_e tier, unsigned pieces, specialization_e spec ) const
+std::string set_bonus_t::to_profile_string( const std::string& newline ) const
 {
-  assert( initialized && "Attempt to check for set bonus before initialization." );
+  std::string s;
 
-  uint32_t spec_idx = get_spec_idx( spec );
-
-  return has_set_bonus( tier, pieces, spec_idx );
-}
-
-bool set_bonus_t::has_set_bonus( set_tier_e tier, unsigned pieces, unsigned spec_idx ) const
-{
-  assert( count[ tier ].size() >= spec_idx ); // should be filled in ctor
-  if ( count[ tier ][ spec_idx ] >= pieces )
-    return true;
-
-  return false;
-}
-
-set_tier_e set_bonus_t::translate_from_old_set_bonus( ::set_e old_set )
-{
-  switch( old_set )
+  for ( size_t tier_idx = 0; tier_idx < set_bonus_spec_data.size(); tier_idx++ )
   {
-  case SET_T16_CASTER:
-  case SET_T16_HEAL:
-  case SET_T16_MELEE:
-  case SET_T16_TANK:
-    return TIER_16;
-  case SET_T17_CASTER:
-  case SET_T17_HEAL:
-  case SET_T17_MELEE:
-  case SET_T17_TANK:
-    return TIER_17;
-  default: break;
-  }
-  return TIER_NONE;
-}
-
-void set_bonus_t::decode()
-{
-  for ( size_t i = 0; i < p -> items.size(); i++ )
-  {
-    set_e s = decode( *p, p -> items[ i ] );
-    set_tier_e new_set_bonus = translate_from_old_set_bonus( s );
-    if ( new_set_bonus != TIER_NONE )
+    for ( size_t spec_idx = 0; spec_idx < set_bonus_spec_data[ tier_idx ].size(); spec_idx++ )
     {
-      // Just set all specs to true for now.
-      for ( unsigned i = 0; i < p -> dbc.specialization_max_per_class(); ++i )
+      for ( size_t bonus_idx = 0; bonus_idx < set_bonus_spec_data[ tier_idx ][ spec_idx ].size(); bonus_idx++ )
       {
-        count[ new_set_bonus ][ i ] += 1;
+        const set_bonus_data_t& data = set_bonus_spec_data[ tier_idx ][ spec_idx ][ bonus_idx ];
+        if ( data.bonus == 0 )
+          continue;
+
+        unsigned spec_role_idx = spec_idx;
+        if ( tier_idx < TIER_THRESHOLD )
+          spec_role_idx = data.bonus -> role;
+
+        if ( data.overridden >= 1 ||
+           ( data.overridden == -1 && set_bonus_spec_count[ tier_idx ][ spec_role_idx ] >= data.bonus -> bonus ) )
+        {
+          std::string spec_role_str;
+          if ( tier_idx < TIER_THRESHOLD )
+            spec_role_str = translate_set_bonus_role( static_cast<set_role_e>( data.bonus -> role ) );
+
+          s += "# set_bonus=tier" + util::to_string( tier_idx );
+          s += "_" + util::to_string( data.bonus -> bonus ) + "pc";
+          if ( ! spec_role_str.empty() )
+            s += "_" + spec_role_str;
+          s += "=1";
+          s += newline;
+        }
       }
     }
   }
+
+  return s;
 }
 
-set_e set_bonus_t::decode( const player_t& p,
-                         const item_t&   item ) const
+expr_t* set_bonus_t::create_expression( const player_t*, const std::string& type )
 {
-  if ( ! item.name() ) return SET_NONE;
+  std::vector<std::string> split = util::string_split( type, "_" );
+  unsigned tier = 0, bonus = 0;
+  set_role_e role = SET_ROLE_NONE;
 
-  if ( p.sim -> challenge_mode ) return SET_NONE;
+  size_t bonus_idx = 0;
+  size_t role_idx = 1;
 
-  set_e set = p.decode_set( item );
-  if ( set != SET_NONE ) return set;
+  if ( split[ 0 ].find( "tier" ) != std::string::npos )
+    tier = util::to_unsigned( split[ 0 ].substr( 4 ) );
 
-  return SET_NONE;
+  if ( split.size() == 3 )
+  {
+    bonus_idx++;
+    role_idx++;
+  }
+
+  if ( split[ bonus_idx ].find( "pc" ) != std::string::npos )
+    bonus = util::to_unsigned( split[ bonus_idx ].substr( 0, split[ bonus_idx ].size() - 2 ) );
+
+  if ( role_idx > 0 )
+    role = translate_set_bonus_role_str( split[ role_idx ] );
+
+  if ( tier < 1 || tier > max_tier() )
+    return 0;
+
+  if ( bonus != 2 && bonus != 4 )
+    return 0;
+
+  if ( tier < TIER_THRESHOLD && role == SET_ROLE_NONE )
+    return 0;
+
+  if ( tier >= TIER_THRESHOLD && role != SET_ROLE_NONE )
+    return 0;
+
+  bonus = bonus / 2 - 1;
+
+
+  bool state = false;
+  if ( tier < TIER_THRESHOLD )
+    state = set_bonus_spec_data[ tier ][ role ][ bonus ].spell -> id() > 0;
+  else
+    state = set_bonus_spec_data[ tier ][ specdata::spec_idx( actor -> specialization() ) ][ bonus ].spell -> id() > 0;
+
+  struct set_bonus_expr_t : public expr_t
+  {
+    double state_;
+
+    set_bonus_expr_t( bool state ) :
+      expr_t( "set_bonus_expr" ), state_( state ) { }
+    double evaluate() { return state_; }
+  };
+
+  return new set_bonus_expr_t( state );
 }
 
 }
-
