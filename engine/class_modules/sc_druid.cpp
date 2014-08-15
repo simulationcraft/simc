@@ -6150,19 +6150,14 @@ void druid_t::init_scaling()
   // guardian, but not a big enough deal to waste time simming it.
   scales_with[ STAT_WEAPON_SPEED ] = false;
 
-  if ( specialization() == DRUID_FERAL )
-  {
-    scales_with[ STAT_SPIRIT ] = false;
-    scales_with[ STAT_STRENGTH ] = false;
-  }
-
   if ( specialization() == DRUID_GUARDIAN )
   {
     scales_with[ STAT_WEAPON_DPS ] = false;
     scales_with[ STAT_PARRY_RATING ] = false;
     scales_with[ STAT_BLOCK_RATING ] = false;
-    scales_with[ STAT_STRENGTH ] = false;
   }
+
+  scales_with[STAT_STRENGTH] = false;
 
   // Save a copy of the weapon
   caster_form_weapon = main_hand_weapon;

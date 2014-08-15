@@ -1718,12 +1718,13 @@ void player_t::init_scaling()
     bool attack = ( role == ROLE_ATTACK || role == ROLE_HYBRID || role == ROLE_TANK );
     bool spell  = ( role == ROLE_SPELL  || role == ROLE_HYBRID || role == ROLE_HEAL );
     bool tank   = ( role == ROLE_TANK || specialization() == WARRIOR_PROTECTION ); // Warrior_protection is special case for gladiator stance.
+    bool heal   = ( role == ROLE_HEAL );
 
     scales_with[ STAT_STRENGTH  ] = attack;
     scales_with[ STAT_AGILITY   ] = attack;
     scales_with[ STAT_STAMINA   ] = tank;
     scales_with[ STAT_INTELLECT ] = spell;
-    scales_with[ STAT_SPIRIT    ] = spell;
+    scales_with[ STAT_SPIRIT    ] = heal;
 
     scales_with[ STAT_HEALTH ] = false;
     scales_with[ STAT_MANA   ] = false;
@@ -1733,9 +1734,7 @@ void player_t::init_scaling()
     scales_with[ STAT_RUNIC  ] = false;
 
     scales_with[ STAT_SPELL_POWER       ] = spell;
-
     scales_with[ STAT_ATTACK_POWER             ] = attack;
-
     scales_with[ STAT_CRIT_RATING               ] = true;
     scales_with[ STAT_HASTE_RATING              ] = true;
     scales_with[ STAT_MASTERY_RATING            ] = true;
@@ -1744,7 +1743,7 @@ void player_t::init_scaling()
     scales_with[ STAT_VERSATILITY_RATING        ] = true;
 
     scales_with[ STAT_WEAPON_DPS   ] = attack;
-    scales_with[ STAT_WEAPON_SPEED ] = sim -> weapon_speed_scale_factors ? attack : false;
+    scales_with[ STAT_WEAPON_SPEED ] = false;
 
     scales_with[ STAT_WEAPON_OFFHAND_DPS   ] = false;
     scales_with[ STAT_WEAPON_OFFHAND_SPEED ] = false;

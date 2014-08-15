@@ -72,9 +72,7 @@ const OptionEntry scalingOptions[] =
   { "Analyze Multistrike Rating",       "mult",     "Calculate scale factors for Multistrike Rating"       },
   { "Analyze Versatility Rating",       "vers",     "Calculate scale factors for Versatility Rating"       },
   { "Analyze Weapon DPS",               "wdps",     "Calculate scale factors for Weapon DPS"               },
-  { "Analyze Weapon Speed",             "wspeed",   "Calculate scale factors for Weapon Speed"             },
   { "Analyze Off-hand Weapon DPS",      "wohdps",   "Calculate scale factors for Off-hand Weapon DPS"      },
-  { "Analyze Off-hand Weapon Speed",    "wohspeed", "Calculate scale factors for Off-hand Weapon Speed"    },
   { "Analyze Armor",                    "armor",    "Calculate scale factors for Armor"                    },
   { "Analyze Bonus Armor",              "bonusarmor",   "Calculate scale factors for Bonus Armor"          },
   { "Analyze Latency",                  "",         "Calculate scale factors for Latency"                  },
@@ -96,6 +94,7 @@ const OptionEntry plotOptions[] =
   { "Plot Scaling per Multistrike Rating", "mult",  "Generate Scaling curve for Multistrike Rating" },
   { "Plot Scaling per Versatility Rating", "vers",  "Generate Scaling curve for Versatility Rating" },
   { "Plot Scaling per Weapon DPS",       "wdps",    "Generate Scaling curve for Weapon DPS"       },
+  { "Plot Scaling per Weapon OH DPS", "wohdps", "Generate Scaling curve for Weapon OH DPS" },
   { "Plot Scaling per Armor",            "armor",   "Generate Scaling curve for Armor"            },
   { "Plot Scaling per Bonus Armor",      "bonusarmor",  "Generate Scaling curve for Bonus Armor"      },
   { NULL, NULL, NULL }
@@ -117,7 +116,7 @@ const OptionEntry reforgePlotOptions[] =
   { "Plot Reforge Options for Intellect",        "int",     "Generate reforge plot data for Intellect"        },
   { NULL, NULL, NULL }
 };
-const int reforgePlotOption_cut = 8; // separate between secondary and primary stats
+const int reforgePlotOption_cut = 7; // separate between secondary and primary stats
 
 QComboBox* createChoiceFromRange( int lowerInclusive, int upperInclusive ) {
   QComboBox* choice = new QComboBox();

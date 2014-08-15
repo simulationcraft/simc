@@ -4472,10 +4472,15 @@ void warrior_t::init_scaling()
   player_t::init_scaling();
 
   if ( specialization() == WARRIOR_FURY )
-  {
     scales_with[STAT_WEAPON_OFFHAND_DPS] = true;
-    scales_with[STAT_WEAPON_OFFHAND_SPEED] = sim -> weapon_speed_scale_factors != 0;
+
+  if ( talents.gladiators_resolve -> ok() && primary_role() == ROLE_ATTACK )
+  {
+    scales_with[STAT_STAMINA] = false;
+    scales_with[STAT_ARMOR] = false;
   }
+
+  scales_with[STAT_AGILITY] = false;
 }
 
 // warrior_t::init_gains ====================================================

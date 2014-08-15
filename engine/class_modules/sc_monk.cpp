@@ -3378,13 +3378,10 @@ void monk_t::init_scaling()
     scales_with[ STAT_AGILITY              ] = true;
     scales_with[ STAT_WEAPON_DPS           ] = true;
   }
+  scales_with[STAT_STRENGTH] = false;
 
   if ( off_hand_weapon.type != WEAPON_NONE )
-  {
     scales_with[ STAT_WEAPON_OFFHAND_DPS   ] = true;
-    scales_with[ STAT_WEAPON_OFFHAND_SPEED ] = sim -> weapon_speed_scale_factors != 0;
-    scales_with[ STAT_HIT_RATING2          ] = true;
-  }
 }
 
 // monk_t::init_buffs =======================================================
