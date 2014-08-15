@@ -608,7 +608,7 @@ public:
     ab::may_crit   = true;
     range::fill( _resource_by_stance, RESOURCE_MAX );
     if ( player -> specialization() == MONK_WINDWALKER )
-      trigger_gcd = timespan_t::from_seconds( 1.0 );
+      ab::trigger_gcd = timespan_t::from_seconds( 1.0 );
   }
   virtual ~monk_action_t() {}
 
