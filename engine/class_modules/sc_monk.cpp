@@ -70,7 +70,7 @@ public:
   {
     debuff_t* rising_sun_kick;
     debuff_t* dizzying_haze;
-  } buff;
+  } debuff;
 
   monk_td_t( player_t* target, monk_t* p );
 };
@@ -605,10 +605,13 @@ public:
     ab( n, player, s ),
                 stancemask( STURDY_OX | FIERCE_TIGER | WISE_SERPENT | SPIRITED_CRANE )
   {
-    ab::may_crit   = true;
+    ab::may_crit = true;
     range::fill( _resource_by_stance, RESOURCE_MAX );
     if ( player -> specialization() == MONK_WINDWALKER )
+    {
       ab::trigger_gcd = timespan_t::from_seconds( 1.0 );
+      ab::min_gcd = timespan_t::from_seconds( 1.0 );
+    }
   }
   virtual ~monk_action_t() {}
 
@@ -778,8 +781,8 @@ struct monk_spell_t : public monk_action_t<spell_t>
   {
     double m = base_t::composite_target_multiplier( t );
 
-    if ( td( t ) -> buff.rising_sun_kick -> check() )
-      m *= 1.0 + td( t ) -> buff.rising_sun_kick -> data().effectN( 1 ).percent();
+    if ( td( t ) -> debuff.rising_sun_kick -> check() )
+      m *= 1.0 + td( t ) -> debuff.rising_sun_kick -> data().effectN( 1 ).percent();
 
     return m;
   }
@@ -881,8 +884,8 @@ struct monk_melee_attack_t : public monk_action_t<melee_attack_t>
   {
     double m = base_t::composite_target_multiplier( t );
 
-    if( special && td( t ) -> buff.rising_sun_kick -> check() )
-      m *= 1.0 + td( t ) -> buff.rising_sun_kick -> data().effectN( 1 ).percent();
+    if( td( t ) -> debuff.rising_sun_kick -> check() )
+      m *= 1.0 + td( t ) -> debuff.rising_sun_kick -> data().effectN( 1 ).percent();
 
     return m;
   }
@@ -1337,7 +1340,7 @@ struct rsk_debuff_t : public monk_melee_attack_t
   {
     monk_melee_attack_t::impact( s );
 
-    td( s -> target ) -> buff.rising_sun_kick -> trigger();
+    td( s -> target ) -> debuff.rising_sun_kick -> trigger();
   }
 };
 
@@ -1509,49 +1512,21 @@ struct spinning_crane_kick_t : public monk_melee_attack_t
 // Fists of Fury
 // ==========================================================================
 
-struct fists_of_fury_t : public monk_melee_attack_t
+struct fists_of_fury_tick_t: public monk_melee_attack_t
 {
-  struct fists_of_fury_tick_t : public monk_melee_attack_t
+  fists_of_fury_tick_t( monk_t* p, const std::string& name ):
+    monk_melee_attack_t( name, p )
   {
-    fists_of_fury_tick_t( monk_t* p ) :
-      monk_melee_attack_t( "fists_of_fury_tick", p )
-    {
-      background = dual = direct_tick = true;
-      aoe = -1;
-      mh = &( player -> main_hand_weapon );
-      oh = &( player -> off_hand_weapon );
-      split_aoe_damage = false;
-      school = SCHOOL_PHYSICAL;
-    }
-  };
-
-  fists_of_fury_t( monk_t* p, const std::string& options_str ) :
-    monk_melee_attack_t( "fists_of_fury", p, p -> find_class_spell( "Fists of Fury" ) )
-  {
-    parse_options( nullptr, options_str );
-    stancemask = FIERCE_TIGER;
-    channeled = tick_zero = true;
-    school = SCHOOL_PHYSICAL;
+    dual = true;
+    aoe = -1;
     base_multiplier *= 7.32; // hardcoded into tooltip
-    callbacks = false; // Fists of Fury driver probably does not proc anything
-
-    // T14 WW 2PC
-    cooldown -> duration = data().cooldown();
-    cooldown -> duration += p -> sets.set( SET_T14_2PC_MELEE ) -> effectN( 1 ).time_value();
-
-    tick_action = new fists_of_fury_tick_t( p );
-    dynamic_tick_action = true;
+    mh = &( player -> main_hand_weapon );
+    oh = &( player -> off_hand_weapon );
+    split_aoe_damage = false;
+    school = SCHOOL_PHYSICAL;
   }
 
-  virtual double cost() const
-  {
-    if ( p() -> buff.focus_of_xuen -> check() )
-      return monk_melee_attack_t::cost() - 1; // + p() -> buff.focus_of_xuen -> s_data -> effectN( 1 ).base_value();// TODO: Update to spell data
-
-    return monk_melee_attack_t::cost();
-  }
-
-  virtual double action_multiplier() const
+  double action_multiplier() const
   {
     double m = monk_melee_attack_t::action_multiplier();
 
@@ -1559,8 +1534,41 @@ struct fists_of_fury_t : public monk_melee_attack_t
 
     return m;
   }
+};
 
-  virtual void consume_resource()
+struct fists_of_fury_t : public monk_melee_attack_t
+{
+  attack_t* fists_of_fury;
+  fists_of_fury_t( monk_t* p, const std::string& options_str ) :
+    monk_melee_attack_t( "fists_of_fury", p, p -> find_specialization_spell( "Fists of Fury" ) ),
+    fists_of_fury( new fists_of_fury_tick_t( p, "fists_of_fury_tick" ) )
+  {
+    parse_options( nullptr, options_str );
+    stancemask = FIERCE_TIGER;
+    channeled = tick_zero = true;
+    callbacks = false; // Fists of Fury driver probably does not proc anything
+    add_child( fists_of_fury );
+    base_execute_time = data().duration();
+    
+    // T14 WW 2PC
+    cooldown -> duration = data().cooldown();
+    cooldown -> duration += p -> sets.set( SET_T14_2PC_MELEE ) -> effectN( 1 ).time_value();
+  }
+
+  void tick( dot_t* )
+  {
+    fists_of_fury -> execute();
+  }
+
+  double cost() const
+  {
+    if ( p() -> buff.focus_of_xuen -> check() )
+      return monk_melee_attack_t::cost() - 1; // + p() -> buff.focus_of_xuen -> s_data -> effectN( 1 ).base_value();// TODO: Update to spell data
+
+    return monk_melee_attack_t::cost();
+  }
+
+  void consume_resource()
   {
     monk_melee_attack_t::consume_resource();
 
@@ -1578,6 +1586,7 @@ struct fists_of_fury_t : public monk_melee_attack_t
       p() -> buff.focus_of_xuen -> expire();
     }
   }
+
 };
 
 // ==========================================================================
@@ -1795,7 +1804,7 @@ struct keg_smash_t : public monk_melee_attack_t
     if ( result_is_hit( s -> result ) )
     {
       if ( apply_dizzying_haze )
-        td( s -> target ) -> buff.dizzying_haze -> trigger();
+        td( s -> target ) -> debuff.dizzying_haze -> trigger();
     }
   }
 };
@@ -2316,7 +2325,7 @@ struct breath_of_fire_t : public monk_spell_t
 
     monk_td_t& td = *this -> td( s -> target );
         // Improved Breath of Fire
-    if ( ( td.buff.dizzying_haze -> up() ) || ( player -> level >= 91 ) )
+    if ( ( td.debuff.dizzying_haze -> up() ) || ( player -> level >= 91 ) )
       dot_action -> execute();
   }
 };
@@ -2342,7 +2351,7 @@ struct dizzying_haze_t : public monk_spell_t
   {
     monk_spell_t::impact( s );
 
-    td( s -> target ) -> buff.dizzying_haze -> trigger();
+    td( s -> target ) -> debuff.dizzying_haze -> trigger();
   }
 };
 
@@ -3118,10 +3127,10 @@ struct power_strikes_event_t : public event_t
 monk_td_t::monk_td_t( player_t* target, monk_t* p ) :
   actor_pair_t( target, p ),
   dots( dots_t() ),
-  buff( buffs_t() )
+  debuff( buffs_t() )
 {
-  buff.rising_sun_kick   = buff_creator_t( *this, "rising_sun_kick"   ).spell( p -> find_spell( 130320 ) );
-  buff.dizzying_haze     = buff_creator_t( *this, "dizzying_haze"     ).spell( p -> find_spell( 123727 ) );
+  debuff.rising_sun_kick = buff_creator_t( *this, "rising_sun_kick" ).spell( p -> find_spell( 130320 ) );
+  debuff.dizzying_haze   = buff_creator_t( *this, "dizzying_haze"   ).spell( p -> find_spell( 123727 ) );
 
   dots.enveloping_mist   = target -> get_dot( "enveloping_mist", p );
   dots.renewing_mist     = target -> get_dot( "renewing_mist",   p );
@@ -3339,7 +3348,8 @@ void monk_t::init_base_stats()
   base_t::init_base_stats();
 
   base.distance = ( specialization() == MONK_MISTWEAVER ) ? 40 : 3;
-  base_gcd = timespan_t::from_seconds( 1.0 );
+  if ( specialization() == MONK_WINDWALKER )
+    base_gcd = timespan_t::from_seconds( 1.0 );
 
   resources.base[  RESOURCE_CHI  ] = 4 + talent.ascension -> effectN( 1 ).base_value();
   resources.base[  RESOURCE_CHI  ] += perk.empowered_chi -> effectN( 1 ).base_value();
