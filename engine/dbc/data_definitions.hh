@@ -43,15 +43,46 @@ struct item_bonus_entry_t
 };
 
 struct item_set_bonus_t {
+#define SPEC_GUESS_MAX ( 4 )
+#define SET_BONUS_ITEM_ID_MAX ( 10 )
   const char* set_name;
+  unsigned    set_id;
   unsigned    tier;
   unsigned    bonus;
   unsigned    class_id;
-  unsigned    spec_guess[4];
+  unsigned    spec_guess[SPEC_GUESS_MAX];
   unsigned    role; // 0 tank, 1 healer, 2 meleedps/hunter, 3 caster
   unsigned    spec;
   unsigned    spell_id;
-  unsigned    item_ids[10]; // TODO: This really needs a define ..
+  unsigned    item_ids[SET_BONUS_ITEM_ID_MAX];
+
+  bool has_spec( unsigned spec_id ) const
+  {
+    if ( spec > 0 && spec_id == spec )
+      return true;
+    else if ( spec == 0 )
+    {
+      for ( size_t i = 0, end = SPEC_GUESS_MAX; i < end; i++ )
+      {
+        if ( spec_guess[ i ] == spec_id )
+          return true;
+      }
+    }
+    return false;
+  }
+
+  bool has_item( unsigned item_id ) const
+  {
+    for ( size_t i = 0; i < SET_BONUS_ITEM_ID_MAX; i++ )
+    {
+      if ( item_ids[ i ] == item_id )
+        return true;
+
+      if ( item_ids[ i ] == 0 )
+        break;
+    }
+    return false;
+  }
 };
 
 struct rppm_modifier_t {

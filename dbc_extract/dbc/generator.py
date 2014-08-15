@@ -3361,13 +3361,16 @@ class SetBonusListGenerator(DataGenerator):
     }
 
     # Older set bonuses (T16 and before) need to be mapped to "roles" in
-    # simulationcraft. We can use the specialization roles for healer and tank,
-    # however simulationcraft makes a distinction between "caster" and "melee"
-    # roles, so the DPS specialization role in the client has to be split into
-    # two, by spec. Use Blizzard's "dps" spec type (2) as "melee", and add 3 as
-    # the "caster" version. All of this is only relevant to backwards support
-    # our "tierxx_ypc_zzzz" options, where zzzz is the role. Tier17 onwards,
-    # set bonuses are spec specific, and we can simply enable/disable bonuses.
+    # simulationcraft (for backwards compatibility reasons, and because set
+    # bonuses were not "spec specific" before Warlords of Draenor). We can use
+    # the specialization roles for healer and tank, however simulationcraft
+    # makes a distinction between "caster" and "melee" roles, so the DPS
+    # specialization role in the client has to be split into two, by spec.
+    #
+    # Use Blizzard's "dps" spec type (2) as "melee", and add 3 as the "caster"
+    # version. All of this is only relevant to backwards support our
+    # "tierxx_ypc_zzzz" options, where zzzz is the role. Tier17 onwards, set
+    # bonuses are spec specific, and we can simply enable/disable bonuses.
     role_map = {
             # Balance Druid
             102: 3,
@@ -3422,7 +3425,7 @@ class SetBonusListGenerator(DataGenerator):
                 roles.add(0)
             elif name in ['DPS', 'Melee']:
                 specs = self.spec_type_map[class_][2]
-                roles.add(2)
+                roles.add(SetBonusListGenerator.role_map.get(specs[0], 2))
             elif name in ['Healer', 'Healing']:
                 specs = self.spec_type_map[class_][1]
                 roles.add(1)
@@ -3483,6 +3486,7 @@ class SetBonusListGenerator(DataGenerator):
                 'derived_specs': set_spec_arr_derived,
                 'spec'         : set_spec,
                 'role'         : set_role,
+                'set_id'       : set_spell_data.id_item_set,
                 'set_bonus_id' : id })
 
         # Check for new set bonuses that have no defined ItemSetSpell/ItemSet
@@ -3534,6 +3538,7 @@ class SetBonusListGenerator(DataGenerator):
                 'derived_specs': set_spec_arr_derived,
                 'spec'         : 0,
                 'role'         : set_role,
+                'set_id'       : 0,
                 'set_bonus_id' : 0 })
 
 
@@ -3642,7 +3647,7 @@ class SetBonusListGenerator(DataGenerator):
             entry = ids[data_idx]
 
             if data_idx % 25 == 0:
-                s += '  //%45s, Tier, Bns, Cls, %20s, Role, Spec,  Spell, Items\n' % ('Tier name', 'Derived Spec')
+                s += '  //%45s, SetID, Tier, Bns, Cls, %20s, Role, Spec,  Spell, Items\n' % ('Tier name', 'Derived Spec')
 
             item_set_spell = None
             if entry['set_bonus_id'] > 0 :
@@ -3686,8 +3691,9 @@ class SetBonusListGenerator(DataGenerator):
 
             spec_str += '0'
 
-            s += '  { %-45s, %4u, %3u, %3u, %20s, %4u, %4u, %6u, %s },\n' % (
+            s += '  { %-45s, %5u, %4u, %3u, %3u, %20s, %4u, %4u, %6u, %s },\n' % (
                 '"%s"' % item_set_str.replace('"', '\\"'),
+                entry['set_id'],
                 entry['derived_tier'],
                 set_bonus,
                 entry['derived_class'],
