@@ -1082,10 +1082,33 @@ struct shaman_heal_t : public shaman_spell_base_t<heal_t>
 
 struct feral_spirit_pet_t : public pet_t
 {
+  struct windfury_t : public melee_attack_t
+  {
+    windfury_t( feral_spirit_pet_t* player ) :
+      melee_attack_t( "windfury_attack", player, player -> find_spell( 25504 ) )
+    {
+      background = true;
+      weapon = &( player -> main_hand_weapon );
+      may_crit = true;
+    }
+
+    feral_spirit_pet_t* p() { return static_cast<feral_spirit_pet_t*>( player ); }
+
+    void init()
+    {
+      melee_attack_t::init();
+      if ( ! player -> sim -> report_pets_separately && player != p() -> o() -> pet_feral_spirit[ 0 ] )
+        stats = p() -> o() -> pet_feral_spirit[ 0 ] -> get_stats( name(), this );
+    }
+  };
+
   struct melee_t : public melee_attack_t
   {
+    windfury_t* wf;
+
     melee_t( feral_spirit_pet_t* player ) :
-      melee_attack_t( "melee", player, spell_data_t::nil() )
+      melee_attack_t( "melee", player, spell_data_t::nil() ),
+      wf( new windfury_t( player ) )
     {
       auto_attack = true;
       weapon = &( player -> main_hand_weapon );
@@ -1121,6 +1144,15 @@ struct feral_spirit_pet_t : public pet_t
 
           if ( mwstack == o -> buff.maelstrom_weapon -> max_stack() )
             o -> proc.wasted_mw -> occur();
+        }
+
+        if ( o -> new_sets.has_set_bonus( SHAMAN_ENHANCEMENT, T17, B4 ) &&
+             rng().roll( o -> spec.windfury -> proc_chance() ) )
+        {
+          wf -> target = state -> target;
+          wf -> schedule_execute();
+          wf -> schedule_execute();
+          wf -> schedule_execute();
         }
       }
     }
@@ -2380,6 +2412,9 @@ struct stormstrike_t : public shaman_attack_t
 
       p() -> buff.maelstrom_weapon -> trigger( this, bonus, 1.0 );
     }
+
+    if ( result_is_hit( execute_state -> result ) && p() -> new_sets.has_set_bonus( SHAMAN_ENHANCEMENT, T17, B2 ) )
+      p() -> cooldown.feral_spirits -> adjust( - p() -> new_sets.set( SHAMAN_ENHANCEMENT, T17, B2 ) -> effectN( 1 ).time_value() );
   }
 
   void impact( action_state_t* state )
