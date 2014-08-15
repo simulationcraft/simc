@@ -85,7 +85,7 @@ struct comp
   QString _s;
 };
 
-QString automation::do_something( int sim_type,
+QString automation::automation_main( int sim_type,
                                   QString player_class,
                                   QString player_spec,
                                   QString player_race,
@@ -325,6 +325,7 @@ QString automation::auto_rotation_sim( QString player_class,
     
     if ( player_gear.size() > 0 )
       profile += player_gear + "\n";
+    //default gear missing
 
     if ( precombat_actions.size() > 0 )
       profile += precombat_actions + "\n";
@@ -618,7 +619,7 @@ void SC_ImportTab::setSpecDropDown( const int player_class )
     choice.player_spec -> addItem( classSpecText[ player_class ][ 4 ] );
 }
 
-QString defaultOptions = "BR=buff.$ability_name.remains\nBR#=buff.$ability_name.remains<#\nCD=cooldown.$ability_name.remains\nCD#=cooldown.$ability_name.remains<#\nE=target.health.pct<=20\nNT=!ticking\nNF=target.debuff.flying.down\nT#=active_enemies>=#\nW#=/wait,sec=cooldown.$ability_name.remains,if=cooldown.$ability_name.remains<=#\n";
+QString defaultOptions = "AA=auto_attack\nBU=buff.$ability_name.up\nBRA=buff.$ability_name.react\nBR=buff.$ability_name.remains\nBR#=buff.$ability_name.remains<#\nCD=cooldown.$ability_name.remains\nCD#=cooldown.$ability_name.remains<#\nE=target.health.pct<=20\nNT=!ticking\nNF=target.debuff.flying.down\nT#=active_enemies>=#\nW#=/wait,sec=cooldown.$ability_name.remains,if=cooldown.$ability_name.remains<=#\n";
 
 // constant for sidebar text (this will eventually get really long)
 QString sidebarText[ 11 ][ 4 ] = {
@@ -696,8 +697,8 @@ QString sidebarText[ 11 ][ 4 ] = {
     "\n\n:::Options:::\n" + defaultOptions + "\nDP=buff.divine_purpose.react\nDPHP#=buff.divine_purpose.react|holy_power>=#\nFW=glyph.final_wrath.enabled&target.health.pct<=20\nHP#=holy_power>=#\nSW=talent.sanctified_wrath.enabled\nSP=buff.seraphim.react\n\nGC=buff.grand_crusader.react\nGC#=buff.grand_crusader.remains<#\nProtection-specific option shorthands can be added here",
 
     
-    ":::Abilities:::\n" "Retribution ability shorthands can be added here."
-    "\n\n:::Options:::\n" + defaultOptions + "DP=buff.divine_purpose.react\nDPHP#=buff.divine_purpose.react|holy_power>=#\nFW=glyph.final_wrath.enabled&target.health.pct<=20\nHP#=holy_power>=#\nSW=talent.sanctified_wrath.enabled\nSP=buff.seraphim.react\n\nRetribution-specific option shorthands can be added here",
+    ":::Abilities:::\n" "AA=auto_attack\nCS=crusader_strike\nJ=judgment\nEXO=exorcism\nHotR=hammer_of_the_righteous\nHoW=hammer_of_wrath\nTV=templars_verdict\nFV=final_verdict\nDS=divine_storm\nES=execution_sentence\nHPr=holy_prism\nLH=lights_hammer\nSP=seraphim\nSoT=seal_of_truth\nSoR=seal_of_righteousness\nSoI=seal_of_insight\nAW=avenging_wrath\nHA=holy_avenger"
+    "\n\n:::Options:::\n" + defaultOptions + "\nDP=buff.divine_purpose.react\nDP#=buff.divine_purpose.remains<#\nDPHP#=buff.divine_purpose.react|holy_power>=#\nAWB=buff.avenging_wrath.up\nDC=buff.divine_crusader.react\nDJ=glyph.double_jeopardy.enabled\nHP#=holy_power>=#\nHPL#=holy_power<=#\nSW=talent.sanctified_wrath.enabled\nSP=buff.seraphim.react\nAWB=buff.avenging_wrath.up\nHAB = buff.holy_avenger.up\n\nRetribution - specific option shorthands can be added here",
     
     "N/A"
   },
@@ -883,7 +884,7 @@ void SC_MainWindow::startAutomationImport( int tab )
 {
   QString profile;
 
-  profile = automation::do_something( importTab -> choice.comp_type -> currentIndex(),
+  profile = automation::automation_main( importTab -> choice.comp_type -> currentIndex(),
                                       importTab -> choice.player_class -> currentText(),
                                       importTab -> choice.player_spec -> currentText(),
                                       importTab -> choice.player_race -> currentText(),
