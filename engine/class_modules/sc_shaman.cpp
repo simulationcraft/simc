@@ -170,6 +170,7 @@ public:
     buff_t* unleashed_fury;
     buff_t* tidal_waves;
     buff_t* focus_of_the_elements;
+    buff_t* feral_spirit;
 
     haste_buff_t* elemental_mastery;
     haste_buff_t* tier13_4pc_healer;
@@ -1150,8 +1151,7 @@ struct feral_spirit_pet_t : public pet_t
             o -> proc.wasted_mw -> occur();
         }
 
-        if ( o -> new_sets.has_set_bonus( SHAMAN_ENHANCEMENT, T17, B4 ) &&
-             rng().roll( o -> spec.windfury -> proc_chance() ) )
+        if ( o -> buff.feral_spirit -> up() && rng().roll( o -> spec.windfury -> proc_chance() ) )
         {
           wf -> target = state -> target;
           wf -> schedule_execute();
@@ -3198,6 +3198,8 @@ struct feral_spirit_spell_t : public shaman_spell_t
       p() -> pet_feral_spirit[ i ] -> summon( data().duration() );
       n++;
     }
+
+    p() -> buff.feral_spirit -> trigger();
   }
 };
 
@@ -5067,6 +5069,9 @@ void shaman_t::create_buffs()
 
   buff.focus_of_the_elements = buff_creator_t( this, "focus_of_the_elements", find_spell( 167205 ) )
                                .chance( static_cast< double >( new_sets.has_set_bonus( SHAMAN_ELEMENTAL, T17, B2 ) ) );
+  buff.feral_spirit          = buff_creator_t( this, "feral_spirit", find_spell( 167204 ) )
+                               .chance( static_cast< double >( new_sets.has_set_bonus( SHAMAN_ENHANCEMENT, T17, B4 ) ) );
+
 }
 
 // shaman_t::init_gains =====================================================
@@ -5505,6 +5510,9 @@ double shaman_t::temporary_movement_modifier() const
 
   if ( buff.spirit_walk -> up() )
     ms = std::max( buff.spirit_walk -> data().effectN( 1 ).percent(), ms );
+
+  if ( buff.feral_spirit -> up() )
+    ms = std::max( buff.feral_spirit -> data().effectN( 1 ).percent(), ms );
 
   // TODO-WOD: Enhanced Unleash Elements
 
