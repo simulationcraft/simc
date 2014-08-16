@@ -5155,14 +5155,8 @@ void paladin_t::generate_action_prio_list_ret()
   // This should<tm> get Censure up before the auto attack lands
   def -> add_action( "auto_attack" );
   def -> add_talent( this, "Speed of Light", "if=movement.remains>1" );
-
-  // Avenging Wrath
+  def -> add_talent( this, "Seraphim" );
   def -> add_action( this, "Avenging Wrath" );
-
-  // Guardian of Ancient Kings
-  def -> add_action( this, "Guardian of Ancient Kings" ); 
-
-  // Holy Avenger
   def -> add_talent( this, "Holy Avenger", "if=holy_power<=2" ); 
 
   // Items (not sure why they're radomly put here? I guess after cooldowns but before rotational abilities)
@@ -5177,67 +5171,40 @@ void paladin_t::generate_action_prio_list_ret()
       def -> add_action( item_str );
     }
   }
-
-  // profession actions
-  std::vector<std::string> profession_actions = get_profession_actions();
-  for ( size_t i = 0; i < profession_actions.size(); i++ )
-    def -> add_action( profession_actions[ i ] );
-
-  // racial actions
   std::vector<std::string> racial_actions = get_racial_actions();
   for ( size_t i = 0; i < racial_actions.size(); i++ )
     def -> add_action( racial_actions[ i ] );
 
-  // Execution Sentence
   def -> add_talent( this, "Execution Sentence" );
-
-  // Light's Hammer
   def -> add_talent( this, "Light's Hammer" );
-  
-  // Divine Storm
-  def -> add_action( this, "Divine Storm", "if=active_enemies>=2&(holy_power=5|buff.divine_purpose.react|(buff.holy_avenger.up&holy_power>=3))" );
-  
-  // Divine Storm with 4T16
-  def -> add_action( this, "Divine Storm", "if=buff.divine_crusader.react&holy_power=5" );
+  def -> add_action( this, "Divine Storm", "if=active_enemies>=2&(holy_power=5|buff.divine_purpose.react|(buff.holy_avenger.up&holy_power>=3))&(!talent.final_verdict.enabled|buff.final_verdict.up)&(!talent.seraphim.enabled|cooldown.seraphim.remains>3)" );
+ 
+  def -> add_action( this, "Divine Storm", "if=buff.divine_crusader.react&holy_power=5&(!talent.final_verdict.enabled|buff.final_verdict.up)&(!talent.seraphim.enabled|cooldown.seraphim.remains>3)" );
 
   // Templar's Verdict @ 5 HP, or if DivPurp is about to expire
-  def -> add_action( this, "Templar's Verdict", "if=holy_power=5|buff.holy_avenger.up&holy_power>=3" );
+  def -> add_action( this, "Templar's Verdict", "if=holy_power=5|buff.holy_avenger.up&holy_power>=3&(!talent.seraphim.enabled|cooldown.seraphim.remains>3)" );
   def -> add_action( this, "Templar's Verdict", "if=buff.divine_purpose.react&buff.divine_purpose.remains<4" );
   def -> add_talent( this, "Final Verdict", "if=holy_power=5|buff.holy_avenger.up&holy_power>=3" );
   def -> add_talent( this, "Final Verdict", "if=buff.divine_purpose.react&buff.divine_purpose.remains<4" );
-  
-  // Hammer of Wrath
   def -> add_action( this, "Hammer of Wrath" );
   def -> add_action( "wait,sec=cooldown.hammer_of_wrath.remains,if=cooldown.hammer_of_wrath.remains>0&cooldown.hammer_of_wrath.remains<=0.2" );
-    
-  // Divine Storm with 4T16 & AW
-  def -> add_action( this, "Divine Storm", "if=buff.divine_crusader.react&buff.avenging_wrath.up" );
-  
-  // Templar's Verdict if AW is up
-  def -> add_action( this, "Templar's Verdict", "if=buff.avenging_wrath.up");
+  def -> add_action( this, "Divine Storm", "if=buff.divine_crusader.react&buff.avenging_wrath.up&(!talent.final_verdict.enabled|buff.final_verdict.up)" );
+  def -> add_action( this, "Templar's Verdict", "if=buff.avenging_wrath.up&(!talent.seraphim.enabled|cooldown.seraphim.remains>3)");
   def -> add_talent( this, "Final Verdict", "if=buff.avenging_wrath.up" );
-
-  // HotR/CS > Mexo > J
   def -> add_action( this, "Hammer of the Righteous", "if=active_enemies>=4" );
   def -> add_action( this, "Crusader Strike" );
   def -> add_action( "wait,sec=cooldown.crusader_strike.remains,if=cooldown.crusader_strike.remains>0&cooldown.crusader_strike.remains<=0.2" );
   def -> add_action( this, "Exorcism", "if=active_enemies>=2&active_enemies<=4&set_bonus.tier15_2pc_melee&glyph.mass_exorcism.enabled" );
   def -> add_action( this, "Judgment" );
   def -> add_action( "wait,sec=cooldown.judgment.remains,if=cooldown.judgment.remains>0&cooldown.judgment.remains<=0.2" );
-
-  // Divine Storm with 4T16 
-  def -> add_action( this, "Divine Storm", "if=buff.divine_crusader.react" );
-
-  // Templar's Verdict w/ Divine Purpose
+  def -> add_action( this, "Divine Storm", "if=buff.divine_crusader.react&(!talent.final_verdict.enabled|buff.final_verdict.up)" );
   def -> add_action( this, "Templar's Verdict", "if=buff.divine_purpose.react" );
   def -> add_talent( this, "Final Verdict", "if=buff.divine_purpose.react" );
-
-  // Exo > TV4T15 > DS > TV > HPr
   def -> add_action( this, "Exorcism" );
   def -> add_action( "wait,sec=cooldown.exorcism.remains,if=cooldown.exorcism.remains>0&cooldown.exorcism.remains<=0.2" );
   def -> add_action( this, "Templar's Verdict", "if=buff.tier15_4pc_melee.up&active_enemies<4" );
   def -> add_talent( this, "Final Verdict", "if=buff.tier15_4pc_melee.up&active_enemies<4" );
-  def -> add_action( this, "Divine Storm", "if=active_enemies>=2" );
+  def -> add_action( this, "Divine Storm", "if=active_enemies>=2&(!talent.final_verdict.enabled|buff.final_verdict.up)" );
   def -> add_action( this, "Templar's Verdict" );
   def -> add_talent( this, "Final Verdict" );
   def -> add_talent( this, "Holy Prism" );
