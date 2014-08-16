@@ -584,6 +584,7 @@ enum slot_e   // these enum values match armory settings
 // Caster 2/4, Melee 2/4, Tank 2/4, Heal 2/4
 #define N_TIER_BONUS 8
 
+// switch for 2 piece or 4 piece bonus
 enum set_bonus_e
 {
   B2 = 0,
