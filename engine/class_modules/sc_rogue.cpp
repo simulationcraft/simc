@@ -4281,8 +4281,8 @@ void rogue_t::init_base_stats()
   resources.base[ RESOURCE_COMBO_POINT ] = 5;
   if ( main_hand_weapon.type == WEAPON_DAGGER && off_hand_weapon.type == WEAPON_DAGGER )
     resources.base[ RESOURCE_ENERGY ] += spec.assassins_resolve -> effectN( 1 ).base_value();
-  if ( sets.has_set_bonus( SET_PVP_2PC_MELEE ) )
-    resources.base[ RESOURCE_ENERGY ] += 10;
+  //if ( sets.has_set_bonus( SET_PVP_2PC_MELEE ) )
+  //  resources.base[ RESOURCE_ENERGY ] += 10;
 
   resources.base[ RESOURCE_ENERGY ] += glyph.energy -> effectN( 1 ).base_value();
 
