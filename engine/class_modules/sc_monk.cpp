@@ -2030,6 +2030,7 @@ struct energizing_brew_t : public monk_spell_t
   {
     parse_options( nullptr, options_str );
 
+    trigger_gcd = timespan_t::zero();
     harmful   = false;
     dot_duration = timespan_t::zero();
   }
@@ -2213,6 +2214,7 @@ struct serenity_t : public monk_spell_t
   {
     parse_options( nullptr, options_str );
 
+    trigger_gcd = timespan_t::zero();
     harmful = false;
   }
 
