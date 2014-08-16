@@ -3,6 +3,17 @@
 // Send questions to natehieter@gmail.com
 // ==========================================================================
 
+
+// TODO:
+// DRW blood boil
+// DRW necrotic plague
+// DRW defile?
+// DRW breath of sindragosa?
+// Blood T17 4pc bonus
+// Blood tanking side in general
+// Frost T17 4pc bonus
+// Unholy T17 4pc bonus
+
 #include "simulationcraft.hpp"
 
 namespace { // UNNAMED NAMESPACE
@@ -271,6 +282,7 @@ public:
     gain_t* plague_leech;
     gain_t* hp_death_siphon;
     gain_t* t15_4pc_tank;
+    gain_t* t17_2pc_frost;
   } gains;
 
   // Specialization
@@ -2805,6 +2817,14 @@ struct soul_reaper_dot_t : public death_knight_melee_attack_t
     may_miss = may_dodge = may_parry = may_block = false;
     weapon_multiplier = 0;
   }
+
+  void execute()
+  {
+    death_knight_melee_attack_t::execute();
+
+    if ( p() -> new_sets.has_set_bonus( DEATH_KNIGHT_UNHOLY, T17, B2 ) )
+      p() -> buffs.shadow_infusion -> trigger( p() -> new_sets.set( DEATH_KNIGHT_UNHOLY, T17, B2 ) -> effectN( 1 ).base_value() );
+  }
 };
 
 struct soul_reaper_t : public death_knight_melee_attack_t
@@ -4135,6 +4155,12 @@ struct blood_boil_t : public death_knight_spell_t
       spread -> target = target;
       spread -> schedule_execute();
     }
+
+    if ( p() -> new_sets.has_set_bonus( DEATH_KNIGHT_BLOOD, T17, B2 ) )
+    {
+      if ( p() -> buffs.blood_shield -> check() )
+        p() -> buffs.blood_shield -> current_value *= 1.0 + p() -> new_sets.set( DEATH_KNIGHT_BLOOD, T17, B2 ) -> effectN( 1 ).percent();
+    }
   }
 
   void impact( action_state_t* state )
@@ -4176,6 +4202,26 @@ struct pillar_of_frost_t : public death_knight_spell_t
     death_knight_spell_t::execute();
 
     p() -> buffs.pillar_of_frost -> trigger();
+
+    if ( p() -> new_sets.has_set_bonus( DEATH_KNIGHT_FROST, T17, B2 ) )
+    {
+      unsigned gained = 0, overflow = 0;
+      for ( size_t i = 0; i < p() -> _runes.slot.size(); i++ )
+      {
+        if ( ! p() -> _runes.slot[ i ].is_ready() )
+          gained++;
+        else
+          overflow++;
+
+        p() -> _runes.slot[ i ].type |= RUNE_TYPE_DEATH;
+        p() -> _runes.slot[ i ].fill_rune();
+      }
+
+      p() -> gains.t17_2pc_frost -> add( RESOURCE_RUNE, gained + overflow, overflow );
+
+      if ( sim -> debug )
+        log_rune_status( p() );
+    }
   }
 
   bool ready()
@@ -6277,6 +6323,7 @@ void death_knight_t::init_gains()
   //gains.blood_tap_blood          -> type = ( resource_e ) RESOURCE_RUNE_BLOOD   ;
   gains.hp_death_siphon                  = get_gain( "hp_death_siphon"            );
   gains.t15_4pc_tank                     = get_gain( "t15_4pc_tank"               );
+  gains.t17_2pc_frost                    = get_gain( "t17_2pc_frost"              );
 }
 
 // death_knight_t::init_procs ===============================================
