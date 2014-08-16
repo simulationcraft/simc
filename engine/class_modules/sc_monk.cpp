@@ -781,7 +781,7 @@ struct monk_spell_t : public monk_action_t<spell_t>
   {
     double m = base_t::composite_target_multiplier( t );
 
-    if ( td( t ) -> debuff.rising_sun_kick -> check() && special )
+    if ( td( t ) -> debuff.rising_sun_kick -> check() )
       m *= 1.0 + td( t ) -> debuff.rising_sun_kick -> data().effectN( 1 ).percent();
 
     return m;
@@ -1604,6 +1604,7 @@ struct hurricane_strike_t : public monk_melee_attack_t
     mh = &( player -> main_hand_weapon ) ;
     oh = &( player -> off_hand_weapon ) ;
     base_multiplier *= 2; // hardcoded into tooltip
+    special = false;
   }
 
  virtual void consume_resource()
@@ -2084,7 +2085,7 @@ struct zen_sphere_damage_t : public monk_spell_t
   {
     background = true;
 
-    attack_power_mod.direct = 0.09; // hardcoded into tooltip
+    attack_power_mod.direct = 0.0694; // hardcoded into tooltip
     school = SCHOOL_NATURE;
   }
 };
@@ -2097,7 +2098,7 @@ struct zen_sphere_detonate_damage_t : public monk_spell_t
     background = true;
     aoe = -1;
 
-    attack_power_mod.direct = 0.368; // hardcoded into tooltip
+    attack_power_mod.direct = 0.4717; // hardcoded into tooltip
     school = SCHOOL_NATURE;
   }
 };
@@ -2116,7 +2117,7 @@ struct chi_wave_heal_tick_t : public monk_heal_t
     monk_heal_t( name, p, p.talent.chi_wave )
   {
     background = direct_tick = true;
-    attack_power_mod.direct = 0.757;
+    attack_power_mod.direct = 0.4993;
     target = player;
   }
 };
@@ -2127,7 +2128,7 @@ struct chi_wave_dmg_tick_t : public monk_spell_t
     monk_spell_t( name, player, player -> talent.chi_wave )
   {
     background = direct_tick = true;
-    attack_power_mod.direct = 0.757; // hardcoded into tooltip of 115098
+    attack_power_mod.direct = 0.4993; // hardcoded into tooltip of 115098
   }
 };
 
@@ -2182,7 +2183,7 @@ struct chi_burst_t : public monk_spell_t
     parse_options( nullptr, options_str );
     aoe = -1;
     special = false; // Disable pausing of auto attack while casting this spell
-    attack_power_mod.direct = 2.036; // hardcoded into tooltip
+    attack_power_mod.direct = 1.3445; // hardcoded into tooltip
   }
 };
 
