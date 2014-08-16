@@ -182,6 +182,8 @@ struct rogue_t : public player_t
     gain_t* ruthlessness;
     gain_t* vitality;
     gain_t* venomous_wounds;
+    gain_t* t17_2pc_assassination;
+    gain_t* t17_4pc_assassination;
 
     // CP Gains
     gain_t* honor_among_thieves;
@@ -1600,6 +1602,12 @@ struct dispatch_t : public rogue_attack_t
       p() -> buffs.blindside -> expire();
     else
       p() -> buffs.t16_2pc_melee -> expire();
+
+    if ( p() -> new_sets.has_set_bonus( ROGUE_ASSASSINATION, T17, B2 ) && execute_state -> result == RESULT_CRIT )
+      p() -> resource_gain( RESOURCE_ENERGY,
+                            p() -> new_sets.set( ROGUE_ASSASSINATION, T17, B2 ) -> effectN( 1 ).base_value(),
+                            p() -> gains.t17_2pc_assassination,
+                            this );
   }
 
   void consume_resource()
@@ -1664,6 +1672,12 @@ struct envenom_t : public rogue_attack_t
     rogue_attack_t::consume_resource();
 
     p() -> buffs.enhanced_vendetta -> expire();
+
+    if ( p() -> new_sets.has_set_bonus( ROGUE_ASSASSINATION, T17, B4 ) )
+    {
+      p() -> trigger_combo_point_gain( execute_state, 1, p() -> gains.t17_4pc_assassination );
+      p() -> buffs.blindside -> trigger();
+    }
   }
 
   double action_multiplier() const
@@ -1723,7 +1737,9 @@ struct envenom_t : public rogue_attack_t
   {
     rogue_attack_t::impact( state );
 
-    if ( p() -> spec.cut_to_the_chase -> ok() && p() -> buffs.slice_and_dice -> check() )
+    if ( ! p() -> perk.improved_slice_and_dice -> ok() &&
+         p() -> spec.cut_to_the_chase -> ok() &&
+         p() -> buffs.slice_and_dice -> check() )
     {
       double snd = p() -> buffs.slice_and_dice -> data().effectN( 1 ).percent();
       if ( p() -> mastery.executioner -> ok() )
@@ -2093,6 +2109,12 @@ struct mutilate_strike_t : public rogue_attack_t
     rogue_attack_t::impact( state );
 
     p() -> trigger_seal_fate( state );
+
+    if ( p() -> new_sets.has_set_bonus( ROGUE_ASSASSINATION, T17, B2 ) && state -> result == RESULT_CRIT )
+      p() -> resource_gain( RESOURCE_ENERGY,
+                            p() -> new_sets.set( ROGUE_ASSASSINATION, T17, B2 ) -> effectN( 1 ).base_value(),
+                            p() -> gains.t17_2pc_assassination,
+                            this );
   }
 
   void consume_resource()
@@ -4416,6 +4438,8 @@ void rogue_t::init_gains()
   gains.seal_fate = get_gain( "seal_fate" );
   gains.ruthlessness = get_gain( "ruthlessness" );
   gains.legendary_daggers = get_gain( "legendary_daggers" );
+  gains.t17_2pc_assassination = get_gain( "t17_2pc_assassination" );
+  gains.t17_4pc_assassination = get_gain( "t17_4pc_assassination" );
 }
 
 // rogue_t::init_procs ======================================================
