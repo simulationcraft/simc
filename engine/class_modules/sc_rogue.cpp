@@ -156,6 +156,8 @@ struct rogue_t : public player_t
     buff_t* enhanced_vendetta;
     buff_t* anticipation;
     buff_t* deceit;
+    buff_t* quick_blades;
+    buff_t* shadow_strikes;
   } buffs;
 
   // Cooldowns
@@ -186,6 +188,7 @@ struct rogue_t : public player_t
     gain_t* t17_2pc_assassination;
     gain_t* t17_4pc_assassination;
     gain_t* deceit;
+    gain_t* shadow_strikes;
 
     // CP Gains
     gain_t* honor_among_thieves;
@@ -407,6 +410,7 @@ struct rogue_t : public player_t
   void trigger_combo_point_gain( const action_state_t*, int = -1, gain_t* gain = 0 );
   void spend_combo_points( const action_state_t* );
   void trigger_t17_4pc_combat( const action_state_t* );
+  void trigger_t17_4pc_subtlety( const action_state_t* );
 
   target_specific_t<rogue_td_t*> target_data;
 
@@ -1211,6 +1215,12 @@ double rogue_attack_t::cost() const
   if ( p() -> new_sets.has_set_bonus( SET_MELEE, T15, B2 ) && p() -> buffs.tier13_2pc -> check() )
     c *= 1.0 + p() -> spell.tier13_2pc -> effectN( 1 ).percent();
 
+  if ( p() -> buffs.quick_blades -> check() )
+    c *= 1.0 + p() -> buffs.quick_blades -> data().effectN( 1 ).percent();
+
+  if ( c <= 0 )
+    c = 0;
+
   return c;
 }
 
@@ -1240,6 +1250,7 @@ void rogue_attack_t::execute()
   p() -> trigger_shadow_reflection( execute_state );
   p() -> trigger_combo_point_gain( execute_state );
   p() -> trigger_t17_4pc_combat( execute_state );
+  p() -> trigger_t17_4pc_subtlety( execute_state );
 
   if ( harmful && stealthed() )
   {
@@ -1441,6 +1452,9 @@ struct ambush_t : public rogue_attack_t
 
     c -= 2 * p() -> buffs.t16_2pc_melee -> stack();
 
+    if ( c < 0 )
+      return 0;
+
     return c;
   }
 
@@ -1518,6 +1532,8 @@ struct backstab_t : public rogue_attack_t
   {
     double c = rogue_attack_t::cost();
     c -= 2 * p() -> buffs.t16_2pc_melee -> stack();
+    if ( c < 0 )
+      c = 0;
     return c;
   }
 
@@ -1594,6 +1610,8 @@ struct dispatch_t : public rogue_attack_t
     {
       double c = rogue_attack_t::cost();
       c -= 6 * p() -> buffs.t16_2pc_melee -> stack();
+      if ( c < 0 )
+        c = 0;
       return c;
     }
   }
@@ -1701,6 +1719,9 @@ struct envenom_t : public rogue_attack_t
     if ( p() -> buffs.death_from_above -> check() )
       c *= 1.0 + p() -> buffs.death_from_above -> data().effectN( 1 ).percent();
 
+    if ( c < 0 )
+      c = 0;
+
     return c;
   }
 
@@ -1799,6 +1820,9 @@ struct eviscerate_t : public rogue_attack_t
 
     if ( p() -> buffs.deceit -> check() )
       c *= 1.0 + p() -> buffs.deceit -> data().effectN( 1 ).percent();
+
+    if ( c < 0 )
+      c = 0;
 
     return c;
   }
@@ -2194,6 +2218,9 @@ struct mutilate_t : public rogue_attack_t
     if ( p() -> buffs.t16_2pc_melee -> up() )
       c -= 6 * p() -> buffs.t16_2pc_melee -> check();
 
+    if ( c < 0 )
+      c = 0;
+
     return c;
   }
 
@@ -2451,6 +2478,8 @@ struct sinister_strike_t : public rogue_attack_t
   {
     double c = rogue_attack_t::cost();
     c -= 15 * p() -> buffs.t16_2pc_melee -> stack();
+    if ( c < 0 )
+      c = 0;
     return c;
   }
 
@@ -2579,6 +2608,7 @@ struct shadow_dance_t : public rogue_attack_t
     rogue_attack_t::execute();
 
     p() -> buffs.shadow_dance -> trigger();
+    p() -> buffs.quick_blades -> trigger();
   }
 };
 
@@ -3209,11 +3239,49 @@ void rogue_t::trigger_t17_4pc_combat( const action_state_t* state )
   buffs.deceit -> trigger();
 }
 
+void rogue_t::trigger_t17_4pc_subtlety( const action_state_t* state )
+{
+  using namespace actions;
+
+  if ( ! new_sets.has_set_bonus( ROGUE_SUBTLETY, T17, B4 ) )
+    return;
+
+  rogue_attack_t* attack = state ? debug_cast<rogue_attack_t*>( state -> action ) : 0;
+  if ( attack -> base_costs[ RESOURCE_COMBO_POINT ] == 0 )
+    return;
+
+  if ( ! attack -> result_is_hit( state -> result ) )
+    return;
+
+  if ( ! buffs.shadow_strikes -> up() )
+    return;
+
+  trigger_combo_point_gain( state, buffs.shadow_strikes-> data().effectN( 1 ).base_value(), gains.shadow_strikes );
+}
+
 namespace buffs {
 // ==========================================================================
 // Buffs
 // ==========================================================================
 
+struct shadow_dance_t : public buff_t
+{
+  shadow_dance_t( rogue_t* p ) :
+    buff_t( buff_creator_t( p, "shadow_dance", p -> find_specialization_spell( "Shadow Dance" ) )
+            .cd( timespan_t::zero() )
+            .duration( p -> find_specialization_spell( "Shadow Dance" ) -> duration() +
+                       p -> new_sets.set( SET_MELEE, T13, B4 ) -> effectN( 1 ).time_value() +
+                       p -> perk.enhanced_shadow_dance -> effectN( 1 ).time_value() ) )
+  { }
+
+  void expire_override()
+  {
+    buff_t::expire_override();
+
+    rogue_t* rogue = debug_cast<rogue_t*>( player );
+    rogue -> buffs.shadow_strikes -> trigger();
+  }
+};
 struct shadow_reflection_t : public buff_t
 {
   shadow_reflection_t( rogue_t* p ) :
@@ -4479,6 +4547,7 @@ void rogue_t::init_gains()
   gains.t17_2pc_assassination = get_gain( "t17_2pc_assassination" );
   gains.t17_4pc_assassination = get_gain( "t17_4pc_assassination" );
   gains.deceit                = get_gain( "deceit" );
+  gains.shadow_strikes        = get_gain( "shadow_strikes" );
 }
 
 // rogue_t::init_procs ======================================================
@@ -4567,11 +4636,7 @@ void rogue_t::create_buffs()
   // Killing spree buff has only 2 sec duration, main spell has 3, check.
   buffs.killing_spree       = buff_creator_t( this, "killing_spree", spec.killing_spree )
                               .duration( spec.killing_spree -> duration() + timespan_t::from_seconds( 0.001 ) );
-  buffs.shadow_dance       = buff_creator_t( this, "shadow_dance", find_specialization_spell( "Shadow Dance" ) )
-                             .cd( timespan_t::zero() )
-                             .duration( find_specialization_spell( "Shadow Dance" ) -> duration() +
-                                        new_sets.set( SET_MELEE, T13, B4 ) -> effectN( 1 ).time_value() +
-                                        perk.enhanced_shadow_dance -> effectN( 1 ).time_value() );
+  buffs.shadow_dance       = new buffs::shadow_dance_t( this );
   buffs.deadly_proc        = buff_creator_t( this, "deadly_proc" );
   buffs.shallow_insight    = buff_creator_t( this, "shallow_insight", find_spell( 84745 ) )
                              .default_value( find_spell( 84745 ) -> effectN( 1 ).percent() )
@@ -4633,6 +4698,10 @@ void rogue_t::create_buffs()
                             .chance( talent.anticipation -> ok() );
   buffs.deceit            = buff_creator_t( this, "deceit", new_sets.set( ROGUE_COMBAT, T17, B4 ) -> effectN( 1 ).trigger() )
                             .chance( new_sets.has_set_bonus( ROGUE_COMBAT, T17, B4 ) );
+  buffs.quick_blades      = buff_creator_t( this, "quick_blades", new_sets.set( ROGUE_SUBTLETY, T17, B2 ) -> effectN( 1 ).trigger() )
+                            .chance( new_sets.has_set_bonus( ROGUE_SUBTLETY, T17, B2 ) );
+  buffs.shadow_strikes    = buff_creator_t( this, "shadow_strikes", find_spell( 166881 ) )
+                            .chance( new_sets.has_set_bonus( ROGUE_SUBTLETY, T17, B4 ) );
 }
 
 // trigger_honor_among_thieves ==============================================
