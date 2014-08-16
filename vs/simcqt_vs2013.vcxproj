@@ -140,7 +140,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='PGO|x64'">
     <TargetName>SimulationCraft64</TargetName>
     <IntDir>int_gui\$(Platform)\$(Configuration)\</IntDir>
-    <OutDir>$(SolutionDir)\$(PlatformShortName)\Release\</OutDir>
+    <OutDir>$(SolutionDir)\</OutDir>
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
     <EnableManagedIncrementalBuild>false</EnableManagedIncrementalBuild>
   </PropertyGroup>
@@ -471,9 +471,15 @@
       <OptimizeReferences>true</OptimizeReferences>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <Profile>false</Profile>
-      <ProfileGuidedDatabase>$(SolutionDir)\$(PlatformShortName)\Release\</ProfileGuidedDatabase>
+      <ProfileGuidedDatabase>$(SolutionDir)\</ProfileGuidedDatabase>
       <GenerateMapFile>true</GenerateMapFile>
     </Link>
+    <PostBuildEvent>
+      <Command />
+    </PostBuildEvent>
+    <PostBuildEvent>
+      <Message />
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <Import Project="..\source_files\VS_engine.props" />
   <Import Project="..\source_files\VS_gui.props" />

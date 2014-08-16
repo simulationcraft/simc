@@ -152,7 +152,7 @@
     <RunCodeAnalysis>false</RunCodeAnalysis>
     <TargetName>$(ProjectName)64</TargetName>
     <EnableManagedIncrementalBuild>false</EnableManagedIncrementalBuild>
-    <OutDir>$(SolutionDir)\$(PlatformShortName)\Release\</OutDir>
+    <OutDir>$(SolutionDir)\</OutDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <OutDir>$(SolutionDir)\$(PlatformShortName)\$(Configuration)\</OutDir>
@@ -359,8 +359,14 @@
       <Profile>false</Profile>
       <LargeAddressAware>true</LargeAddressAware>
       <LinkTimeCodeGeneration>PGUpdate</LinkTimeCodeGeneration>
-      <ProfileGuidedDatabase>$(SolutionDir)\$(PlatformShortName)\Release\Simulationcraft64.pgd</ProfileGuidedDatabase>
+      <ProfileGuidedDatabase>$(SolutionDir)\Simulationcraft64.pgd</ProfileGuidedDatabase>
     </Link>
+    <PostBuildEvent>
+      <Command />
+    </PostBuildEvent>
+    <PostBuildEvent>
+      <Message />
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <Import Project="..\source_files\VS_engine.props" />
   <Import Project="..\source_files\VS_engine_main.props" />
