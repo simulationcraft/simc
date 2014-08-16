@@ -155,6 +155,7 @@ struct rogue_t : public player_t
 
     buff_t* enhanced_vendetta;
     buff_t* anticipation;
+    buff_t* deceit;
   } buffs;
 
   // Cooldowns
@@ -184,6 +185,7 @@ struct rogue_t : public player_t
     gain_t* venomous_wounds;
     gain_t* t17_2pc_assassination;
     gain_t* t17_4pc_assassination;
+    gain_t* deceit;
 
     // CP Gains
     gain_t* honor_among_thieves;
@@ -404,6 +406,7 @@ struct rogue_t : public player_t
   void trigger_shadow_reflection( const action_state_t* );
   void trigger_combo_point_gain( const action_state_t*, int = -1, gain_t* gain = 0 );
   void spend_combo_points( const action_state_t* );
+  void trigger_t17_4pc_combat( const action_state_t* );
 
   target_specific_t<rogue_td_t*> target_data;
 
@@ -1236,6 +1239,7 @@ void rogue_attack_t::execute()
   p() -> trigger_main_gauche( execute_state );
   p() -> trigger_shadow_reflection( execute_state );
   p() -> trigger_combo_point_gain( execute_state );
+  p() -> trigger_t17_4pc_combat( execute_state );
 
   if ( harmful && stealthed() )
   {
@@ -1793,7 +1797,18 @@ struct eviscerate_t : public rogue_attack_t
     if ( p() -> buffs.death_from_above -> check() )
       c *= 1.0 + p() -> buffs.death_from_above -> data().effectN( 1 ).percent();
 
+    if ( p() -> buffs.deceit -> check() )
+      c *= 1.0 + p() -> buffs.deceit -> data().effectN( 1 ).percent();
+
     return c;
+  }
+
+  void consume_resource()
+  {
+    rogue_attack_t::consume_resource();
+
+    // TODO: DfA + Deceit interaction?
+    p() -> buffs.deceit -> expire();
   }
 
   virtual void impact( action_state_t* state )
@@ -2467,8 +2482,10 @@ struct sinister_strike_t : public rogue_attack_t
       p() -> buffs.bandits_guile -> trigger();
 
       rogue_td_t* td = this -> td( state -> target );
-      if ( td -> dots.revealing_strike -> is_ticking() &&
-          rng().roll( td -> dots.revealing_strike -> current_action -> data().proc_chance() ) )
+      double proc_chance = td -> dots.revealing_strike -> current_action -> data().proc_chance();
+      proc_chance += p() -> new_sets.set( ROGUE_COMBAT, T17, B2 ) -> effectN( 1 ).percent();
+
+      if ( td -> dots.revealing_strike -> is_ticking() && rng().roll( proc_chance ) )
       {
         p() -> trigger_combo_point_gain( state );
         if ( p() -> buffs.t16_2pc_melee -> trigger() )
@@ -3169,6 +3186,27 @@ void rogue_t::spend_combo_points( const action_state_t* state )
 
   if ( event_premeditation )
     core_event_t::cancel( event_premeditation );
+}
+
+void rogue_t::trigger_t17_4pc_combat( const action_state_t* state )
+{
+  using namespace actions;
+
+  if ( ! new_sets.has_set_bonus( ROGUE_COMBAT, T17, B4 ) )
+    return;
+
+  rogue_attack_t* attack = state ? debug_cast<rogue_attack_t*>( state -> action ) : 0;
+  if ( attack -> base_costs[ RESOURCE_COMBO_POINT ] == 0 )
+    return;
+
+  if ( ! attack -> result_is_hit( state -> result ) )
+    return;
+
+  if ( ! rng().roll( new_sets.set( ROGUE_COMBAT, T17, B4 ) -> proc_chance() ) )
+    return;
+
+  trigger_combo_point_gain( state, buffs.deceit -> data().effectN( 2 ).base_value(), gains.deceit );
+  buffs.deceit -> trigger();
 }
 
 namespace buffs {
@@ -4440,6 +4478,7 @@ void rogue_t::init_gains()
   gains.legendary_daggers = get_gain( "legendary_daggers" );
   gains.t17_2pc_assassination = get_gain( "t17_2pc_assassination" );
   gains.t17_4pc_assassination = get_gain( "t17_4pc_assassination" );
+  gains.deceit                = get_gain( "deceit" );
 }
 
 // rogue_t::init_procs ======================================================
@@ -4592,6 +4631,8 @@ void rogue_t::create_buffs()
 
   buffs.anticipation      = buff_creator_t( this, "anticipation", find_spell( 115189 ) )
                             .chance( talent.anticipation -> ok() );
+  buffs.deceit            = buff_creator_t( this, "deceit", new_sets.set( ROGUE_COMBAT, T17, B4 ) -> effectN( 1 ).trigger() )
+                            .chance( new_sets.has_set_bonus( ROGUE_COMBAT, T17, B4 ) );
 }
 
 // trigger_honor_among_thieves ==============================================
