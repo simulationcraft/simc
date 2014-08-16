@@ -794,7 +794,7 @@ struct venomous_wound_t : public rogue_poison_t
   {
     double m = rogue_poison_t::composite_da_multiplier( state );
 
-    m *= 1.0 + p() -> sets.set( SET_T14_2PC_MELEE ) -> effectN( 1 ).percent();
+    m *= 1.0 + p() -> new_sets.set( SET_MELEE, T14, B2 ) -> effectN( 1 ).percent();
 
     return m;
   }
@@ -1203,7 +1203,7 @@ double rogue_attack_t::cost() const
     c *= 1.0 + p() -> spell.shadow_focus -> effectN( 1 ).percent();
   }
 
-  if ( p() -> sets.has_set_bonus( SET_T15_2PC_MELEE ) && p() -> buffs.tier13_2pc -> check() )
+  if ( p() -> new_sets.has_set_bonus( SET_MELEE, T15, B2 ) && p() -> buffs.tier13_2pc -> check() )
     c *= 1.0 + p() -> spell.tier13_2pc -> effectN( 1 ).percent();
 
   return c;
@@ -1521,7 +1521,7 @@ struct backstab_t : public rogue_attack_t
 
     p() -> buffs.t16_2pc_melee -> expire();
 
-    if ( result_is_hit( execute_state -> result ) && p() -> sets.has_set_bonus( SET_T16_4PC_MELEE ) )
+    if ( result_is_hit( execute_state -> result ) && p() -> new_sets.has_set_bonus( SET_MELEE, T16, B4 ) )
       p() -> buffs.sleight_of_hand -> trigger();
   }
 
@@ -1537,7 +1537,7 @@ struct backstab_t : public rogue_attack_t
   {
     double m = rogue_attack_t::composite_da_multiplier( state );
 
-    m *= 1.0 + p() -> sets.set( SET_T14_2PC_MELEE ) -> effectN( 2 ).percent();
+    m *= 1.0 + p() -> new_sets.set( SET_MELEE, T14, B2 ) -> effectN( 2 ).percent();
 
     return m;
   }
@@ -1702,7 +1702,7 @@ struct envenom_t : public rogue_attack_t
 
     timespan_t envenom_duration = p() -> buffs.envenom -> buff_period * ( 1 + cast_state( execute_state ) -> cp );
 
-    if ( p() -> sets.has_set_bonus( SET_T15_2PC_MELEE ) )
+    if ( p() -> new_sets.has_set_bonus( SET_MELEE, T15, B2 ) )
       envenom_duration += p() -> buffs.envenom -> buff_period;
 
     p() -> buffs.envenom -> trigger( 1, buff_t::DEFAULT_VALUE(), -1.0, envenom_duration );
@@ -2032,7 +2032,7 @@ struct killing_spree_t : public rogue_attack_t
 
     rogue_td_t* td = this -> td( target );
     if ( td -> dots.killing_spree -> current_tick >= 0 )
-        m *= std::pow( 1.0 + p() -> sets.set( SET_T16_4PC_MELEE ) -> effectN( 1 ).percent(),
+        m *= std::pow( 1.0 + p() -> new_sets.set( SET_MELEE, T16, B4 ) -> effectN( 1 ).percent(),
                        td -> dots.killing_spree -> current_tick + 1 );
 
     return m;
@@ -2329,7 +2329,7 @@ struct rupture_t : public rogue_attack_t
     timespan_t duration = data().duration();
 
     duration += duration * cast_state( s ) -> cp;
-    if ( p() -> sets.has_set_bonus( SET_T15_2PC_MELEE ) )
+    if ( p() -> new_sets.has_set_bonus( SET_MELEE, T15, B2 ) )
       duration += data().duration();
 
     return duration;
@@ -2424,7 +2424,7 @@ struct sinister_strike_t : public rogue_attack_t
     if ( p() -> fof_p1 || p() -> fof_p2 || p() -> fof_p3 )
       m *= 1.0 + p() -> dbc.spell( 110211 ) -> effectN( 1 ).percent();
 
-    m *= 1.0 + p() -> sets.set( SET_T14_2PC_MELEE ) -> effectN( 2 ).percent();
+    m *= 1.0 + p() -> new_sets.set( SET_MELEE, T14, B2 ) -> effectN( 2 ).percent();
 
     return m;
   }
@@ -2487,7 +2487,7 @@ struct slice_and_dice_t : public rogue_attack_t
       snd *= 1.0 + p() -> cache.mastery_value();
     timespan_t snd_duration = 3 * ( cast_state( execute_state ) -> cp + 1 ) * p() -> buffs.slice_and_dice -> buff_period;
 
-    if ( p() -> sets.has_set_bonus( SET_T15_2PC_MELEE ) )
+    if ( p() -> new_sets.has_set_bonus( SET_MELEE, T15, B2 ) )
       snd_duration += 3 * p() -> buffs.slice_and_dice -> buff_period;
 
     p() -> buffs.slice_and_dice -> trigger( 1, snd, -1.0, snd_duration );
@@ -3378,7 +3378,7 @@ rogue_td_t::rogue_td_t( player_t* target, rogue_t* source ) :
   debuffs.vendetta =           buff_creator_t( *this, "vendetta", vd )
                                .cd( timespan_t::zero() )
                                .duration ( vd -> duration() +
-                                           source -> sets.set( SET_T13_4PC_MELEE ) -> effectN( 3 ).time_value() +
+                                           source -> new_sets.set( SET_MELEE, T13, B4 ) -> effectN( 3 ).time_value() +
                                            source -> glyph.vendetta -> effectN( 2 ).time_value() )
                                .default_value( vd -> effectN( 1 ).percent() + source -> glyph.vendetta -> effectN( 1 ).percent() );
 
@@ -4392,17 +4392,6 @@ void rogue_t::init_spells()
 
   if ( spec.blade_flurry -> ok() )
     active_blade_flurry = new blade_flurry_attack_t( this );
-
-  static const set_bonus_description_t set_bonuses =
-  {
-    //  C2P    C4P    M2P    M4P    T2P    T4P    H2P    H4P
-    {     0,     0, 105849, 105865,     0,     0,     0,     0 }, // Tier13
-    {     0,     0, 123116, 123122,     0,     0,     0,     0 }, // Tier14
-    {     0,     0, 138148, 138150,     0,     0,     0,     0 }, // Tier15
-    {     0,     0, 145185, 145210,     0,     0,     0,     0 }, // Tier16
-  };
-
-  sets.register_spelldata( set_bonuses );
 }
 
 // rogue_t::init_gains ======================================================
@@ -4500,7 +4489,7 @@ void rogue_t::create_buffs()
   buffs.blade_flurry        = buff_creator_t( this, "blade_flurry", find_spell( 57142 ) );
   buffs.adrenaline_rush     = buff_creator_t( this, "adrenaline_rush", find_class_spell( "Adrenaline Rush" ) )
                               .cd( timespan_t::zero() )
-                              .duration( find_class_spell( "Adrenaline Rush" ) -> duration() + sets.set( SET_T13_4PC_MELEE ) -> effectN( 2 ).time_value() )
+                              .duration( find_class_spell( "Adrenaline Rush" ) -> duration() + new_sets.set( SET_MELEE, T13, B4 ) -> effectN( 2 ).time_value() )
                               .default_value( find_class_spell( "Adrenaline Rush" ) -> effectN( 2 ).percent() )
                               .affects_regen( true )
                               .add_invalidate( CACHE_ATTACK_SPEED );
@@ -4518,7 +4507,7 @@ void rogue_t::create_buffs()
   buffs.shadow_dance       = buff_creator_t( this, "shadow_dance", find_specialization_spell( "Shadow Dance" ) )
                              .cd( timespan_t::zero() )
                              .duration( find_specialization_spell( "Shadow Dance" ) -> duration() +
-                                        sets.set( SET_T13_4PC_MELEE ) -> effectN( 1 ).time_value() +
+                                        new_sets.set( SET_MELEE, T13, B4 ) -> effectN( 1 ).time_value() +
                                         perk.enhanced_shadow_dance -> effectN( 1 ).time_value() );
   buffs.deadly_proc        = buff_creator_t( this, "deadly_proc" );
   buffs.shallow_insight    = buff_creator_t( this, "shallow_insight", find_spell( 84745 ) )
@@ -4533,17 +4522,17 @@ void rogue_t::create_buffs()
   buffs.recuperate         = buff_creator_t( this, "recuperate" );
   buffs.shiv               = buff_creator_t( this, "shiv" );
   buffs.sleight_of_hand    = buff_creator_t( this, "sleight_of_hand", find_spell( 145211 ) )
-                             .chance( sets.set( SET_T16_4PC_MELEE ) -> effectN( 3 ).percent() );
+                             .chance( new_sets.set( SET_MELEE, T16, B4 ) -> effectN( 3 ).percent() );
   //buffs.stealth            = buff_creator_t( this, "stealth" ).add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
   buffs.stealth            = new buffs::stealth_t( this );
   buffs.vanish             = new buffs::vanish_t( this );
   buffs.subterfuge         = new buffs::subterfuge_t( this );
   buffs.t16_2pc_melee      = buff_creator_t( this, "silent_blades", find_spell( 145193 ) )
-                             .chance( sets.has_set_bonus( SET_T16_2PC_MELEE ) );
+                             .chance( new_sets.has_set_bonus( SET_MELEE, T16, B2 ) );
   buffs.tier13_2pc         = buff_creator_t( this, "tier13_2pc", spell.tier13_2pc )
-                             .chance( sets.has_set_bonus( SET_T13_2PC_MELEE ) ? 1.0 : 0 );
+                             .chance( new_sets.has_set_bonus( SET_MELEE, T13, B2 ) ? 1.0 : 0 );
   buffs.toxicologist       = stat_buff_creator_t( this, "toxicologist", find_spell( 145249 ) )
-                             .chance( sets.has_set_bonus( SET_T16_4PC_MELEE ) );
+                             .chance( new_sets.has_set_bonus( SET_MELEE, T16, B4 ) );
   //buffs.vanish             = buff_creator_t( this, "vanish", find_spell( 11327 ) )
   //                           .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
   //                           .cd( timespan_t::zero() )
