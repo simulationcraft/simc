@@ -4011,7 +4011,7 @@ void hunter_t::schedule_ready( timespan_t delta_time, bool waiting )
 {
   if ( specs.careful_aim -> ok() ) 
   {
-    bool ca_now = buffs.careful_aim -> check();
+    int ca_now = buffs.careful_aim -> check();
     int threshold = specs.careful_aim -> effectN( 2 ).base_value();
     if ( buffs.rapid_fire -> check() || target -> health_percentage() > threshold )
     {
