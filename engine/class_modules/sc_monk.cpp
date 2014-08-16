@@ -607,7 +607,7 @@ public:
   {
     ab::may_crit = true;
     range::fill( _resource_by_stance, RESOURCE_MAX );
-    if ( player -> specialization() == MONK_WINDWALKER )
+    if ( player -> specialization() != MONK_MISTWEAVER )
     {
       ab::trigger_gcd = timespan_t::from_seconds( 1.0 );
       ab::min_gcd = timespan_t::from_seconds( 1.0 );
@@ -781,7 +781,7 @@ struct monk_spell_t : public monk_action_t<spell_t>
   {
     double m = base_t::composite_target_multiplier( t );
 
-    if ( td( t ) -> debuff.rising_sun_kick -> check() )
+    if ( td( t ) -> debuff.rising_sun_kick -> check() && special )
       m *= 1.0 + td( t ) -> debuff.rising_sun_kick -> data().effectN( 1 ).percent();
 
     return m;
@@ -884,7 +884,7 @@ struct monk_melee_attack_t : public monk_action_t<melee_attack_t>
   {
     double m = base_t::composite_target_multiplier( t );
 
-    if( td( t ) -> debuff.rising_sun_kick -> check() )
+    if( td( t ) -> debuff.rising_sun_kick -> check() && special )
       m *= 1.0 + td( t ) -> debuff.rising_sun_kick -> data().effectN( 1 ).percent();
 
     return m;
@@ -1517,7 +1517,7 @@ struct fists_of_fury_tick_t: public monk_melee_attack_t
   fists_of_fury_tick_t( monk_t* p, const std::string& name ):
     monk_melee_attack_t( name, p )
   {
-    dual = true;
+    dual = special = true;
     aoe = -1;
     base_multiplier *= 7.32; // hardcoded into tooltip
     mh = &( player -> main_hand_weapon );
@@ -1545,7 +1545,7 @@ struct fists_of_fury_t : public monk_melee_attack_t
   {
     parse_options( nullptr, options_str );
     stancemask = FIERCE_TIGER;
-    channeled = tick_zero = true;
+    channeled = tick_zero = special = true;
     callbacks = false; // Fists of Fury driver probably does not proc anything
     add_child( fists_of_fury );
     base_execute_time = data().duration();
@@ -3348,7 +3348,7 @@ void monk_t::init_base_stats()
   base_t::init_base_stats();
 
   base.distance = ( specialization() == MONK_MISTWEAVER ) ? 40 : 3;
-  if ( specialization() == MONK_WINDWALKER )
+  if ( specialization() != MONK_MISTWEAVER )
     base_gcd = timespan_t::from_seconds( 1.0 );
 
   resources.base[  RESOURCE_CHI  ] = 4 + talent.ascension -> effectN( 1 ).base_value();

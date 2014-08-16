@@ -97,3 +97,5 @@ off_hand=hvitserks_formidable_shanker,id=105601,upgrade=2,gems=8agi_3agi,enchant
 # meta_gem=capacitive_primal
 # tier16_2pc_melee=1
 # tier16_4pc_melee=1
+# set_bonus=tier16_2pc_melee=1
+# set_bonus=tier16_4pc_melee=1

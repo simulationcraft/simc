@@ -85,3 +85,5 @@ main_hand=trident_of_corrupted_waters,id=105408,upgrade=2,gems=4agi_8crit_3agi,e
 # meta_gem=capacitive_primal
 # tier16_2pc_melee=1
 # tier16_4pc_melee=1
+# set_bonus=tier16_2pc_melee=1
+# set_bonus=tier16_4pc_melee=1

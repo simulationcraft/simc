@@ -102,3 +102,5 @@ off_hand=revelations_of_yshaarj,id=105650,upgrade=2,gems=8haste_8mastery_3int,en
 # meta_gem=sinister_primal
 # tier16_2pc_caster=1
 # tier16_4pc_caster=1
+# set_bonus=tier16_2pc_caster=1
+# set_bonus=tier16_4pc_caster=1
