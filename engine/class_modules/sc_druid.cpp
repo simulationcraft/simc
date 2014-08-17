@@ -5639,7 +5639,10 @@ void druid_t::init_base_stats()
     resources.base[RESOURCE_COMBO_POINT] = 5;
   }
   else
-    resources.base[ RESOURCE_ECLIPSE     ] = 105;
+  {
+    resources.base[RESOURCE_ECLIPSE] = 105;
+    resources.current[RESOURCE_ECLIPSE] = 0;
+  }
 
   base_energy_regen_per_second = 10;
 
@@ -6057,31 +6060,27 @@ void druid_t::apl_balance()
   for ( size_t i = 0; i < item_actions.size(); i++ )
     default_list -> add_action( item_actions[i] );
 
+  default_list -> add_talent( this, "Force of Nature", "if=charges>=1" );
   default_list -> add_action( "run_action_list,name=single_target,if=active_enemies=1" );
   default_list -> add_action( "run_action_list,name=aoe,if=active_enemies>1" );
 
-  single_target -> add_action( this, "Sunfire", "if=ticks_remain<4&time>10" );
-  single_target -> add_talent( this, "Stellar Flare", "if=ticks_remain<4" );
-  single_target -> add_talent( this, "Force of Nature", "if=charges>=1" );
-  single_target -> add_action( this, "Starsurge", "if=charges=3" );
-  single_target -> add_action( this, "Celestial Alignment", "if=eclipse_dir.lunar&eclipse_max<8" );
-  single_target -> add_action( "incarnation,if=buff.celestial_alignment.up" );
-  single_target -> add_action( this, "Moonfire" , "if=buff.lunar_peak.up|ticks_remain<3" );
-  single_target -> add_action( this, "Sunfire", "if=buff.solar_peak.up|ticks_remain<3|(buff.celestial_alignment.up&buff.celestial_alignment.remains<=2)" );
   single_target -> add_action( this, "Starsurge", "if=(buff.lunar_empowerment.down&eclipse_energy>=0)|(buff.solar_empowerment.down&eclipse_energy<0)|charges>1" );
+  single_target -> add_action( this, "Celestial Alignment", "if=lunar_max<8|target.time_to_die<20" );
+  single_target -> add_action( "incarnation,if=buff.celestial_alignment.up" );
+  single_target -> add_action( this, "Sunfire", "if=remains<8|buff.solar_peak.up" );
+  single_target -> add_talent( this, "Stellar Flare", "if=remains<7" );
+  single_target -> add_action( this, "Moonfire" , "if=buff.lunar_peak.up|remains<12|(buff.celestial_alignment.up&buff.celestial_alignment.remains<=2)" );
   single_target -> add_action( this, "Wrath", "if=(eclipse_energy<=0&eclipse_change>cast_time)|(eclipse_energy>0&cast_time>eclipse_change)" );
   single_target -> add_action( this, "Starfire", "if=(eclipse_energy>=0&eclipse_change>cast_time)|(eclipse_energy<0&cast_time>eclipse_change)" );
 
-  aoe -> add_action( this, "Celestial Alignment" );
-  aoe -> add_action( "incarnation,if=(eclipse_dir.lunar&eclipse_max>=5)|@eclipse_energy<=10" );
+  aoe -> add_action( this, "Celestial Alignment", "if=lunar_max<8|target.time_to_die<20" );
+  aoe -> add_action( "incarnation,if=buff.celestial_alignment.up" );
+  aoe -> add_action( this, "Sunfire", "if=remains<8" );
   aoe -> add_action( this, "Starfall" );
-  aoe -> add_talent( this, "Stellar Flare", "cycle_targets=1,if=!dot.stellar_flare.ticking" );
-  aoe -> add_action( this, "Moonfire", "cycle_targets=1,if=!dot.moonfire.ticking|(dot.moonfire.remains<=8&eclipse_change<=12&eclipse_energy=100&eclipse_change>=8)|(buff.celestial_alignment.up&dot.moonfire.ticking&dot.sunfire.ticking&dot.sunfire.remains<=6)" );
-  aoe -> add_action( this, "Sunfire", "cycle_targets=1,if=!dot.sunfire.ticking|(eclipse_energy<0&dot.sunfire.remains<=8)" );
-  aoe -> add_action( this, "Wrath", "if=buff.celestial_alignment.up&buff.solar_empowerment.up&eclipse_energy<0" );
-  aoe -> add_action( this, "Starfire", "if=buff.celestial_alignment.up&buff.lunar_empowerment.up&eclipse_energy>=0" );
-  aoe -> add_action( this, "Starfire", "if=(eclipse_energy>0&eclipse_change>execute_time)|(eclipse_energy<0&eclipse_change<execute_time)" );
-  aoe -> add_action( this, "Wrath" , "if=(eclipse_energy<0&eclipse_change>execute_time)|(eclipse_energy>0&eclipse_change<execute_time)" );
+  aoe -> add_action( this, "Moonfire", "cycle_targets=1,if=remains<12" );
+  aoe -> add_talent( this, "Stellar Flare", "cycle_targets=1,if=remains<7" );
+  aoe -> add_action( this, "Wrath", "if=(eclipse_energy<=0&eclipse_change>cast_time)|(eclipse_energy>0&cast_time>eclipse_change)" );
+  aoe -> add_action( this, "Starfire", "if=(eclipse_energy>=0&eclipse_change>cast_time)|(eclipse_energy<0&cast_time>eclipse_change)" );
 }
 
 // Guardian Combat Action Priority List ==============================
