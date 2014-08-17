@@ -430,9 +430,9 @@ public:
     return am;
   }
 
-  virtual double composite_multistrike_multiplier( const action_state_t* ) const
+  virtual double composite_multistrike_multiplier( const action_state_t* s ) const
   { 
-    double m = ab::composite_multistrike_multiplier();
+    double m = ab::composite_multistrike_multiplier( s );
     m *= 1.0 + p() -> buffs.heavy_shot -> data().effectN( 1 ).percent() ;
     return m; 
   }
@@ -2202,7 +2202,6 @@ struct explosive_shot_t: public hunter_ranged_attack_t
       
       if ( p() -> new_sets.has_set_bonus( HUNTER_BEAST_MASTERY, T17, B2 ) )
         p() -> buffs.heavy_shot -> trigger();
-      }
     }
   }
 };
