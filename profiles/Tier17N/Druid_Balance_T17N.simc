@@ -84,3 +84,5 @@ main_hand=primal_gladiators_battle_staff,id=111122,enchant=mark_of_the_frostwolf
 # gear_versatility_rating=77
 # pvp_2pc_melee=1
 # pvp_4pc_melee=1
+# set_bonus=tier0_2pc_caster=1
+# set_bonus=tier0_4pc_caster=1

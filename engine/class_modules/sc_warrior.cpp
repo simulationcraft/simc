@@ -2442,9 +2442,16 @@ struct slam_t: public warrior_attack_t
     warrior_attack_t( "slam", p, p -> talents.slam )
   {
     parse_options( NULL, options_str );
-    stancemask = STANCE_BATTLE | STANCE_DEFENSE;
+    stancemask = STANCE_BATTLE;
     weapon = &( p -> main_hand_weapon );
     base_costs[RESOURCE_RAGE] = 10;
+  }
+
+  void consume_resource()
+  {
+    warrior_attack_t::consume_resource();
+
+    p() -> buff.slam -> trigger( 1 );
   }
 
   double cost() const
@@ -2454,14 +2461,6 @@ struct slam_t: public warrior_attack_t
     c *= 1.0 + p() -> buff.slam -> current_stack;
 
     return c;
-  }
-
-  void impact( action_state_t* s )
-  {
-    warrior_attack_t::impact( s );
-
-    if ( result_is_hit( s -> result ) )
-      p() -> buff.slam -> trigger( 1 );
   }
 
   double action_multiplier() const
@@ -2479,9 +2478,6 @@ struct slam_t: public warrior_attack_t
   bool ready()
   {
     if ( p() -> main_hand_weapon.type == WEAPON_NONE )
-      return false;
-
-    if ( !p() -> cooldown.stance_cooldown -> up() )
       return false;
 
     return warrior_attack_t::ready();

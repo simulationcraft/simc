@@ -84,4 +84,5 @@ main_hand=primal_gladiators_battle_staff,id=111122,enchant=mark_of_bleeding_holl
 # gear_multistrike_rating=550
 # gear_versatility_rating=249
 # pvp_2pc_caster=1
+# set_bonus=tier0_2pc_caster=1
 default_pet=felguard
