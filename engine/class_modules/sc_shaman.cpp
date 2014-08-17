@@ -477,7 +477,6 @@ public:
   virtual pet_t*    create_pet   ( const std::string& name, const std::string& type = std::string() );
   virtual void      create_pets();
   virtual expr_t* create_expression( action_t*, const std::string& name );
-  virtual set_e       decode_set( const item_t& ) const;
   virtual resource_e primary_resource() const { return RESOURCE_MANA; }
   virtual role_e primary_role() const;
   virtual stat_e convert_hybrid_stat( stat_e s ) const;
@@ -5726,130 +5725,6 @@ void shaman_t::merge( player_t& other )
     counters[ i ] -> merge( *s.counters[ i ] );
 }
 
-// shaman_t::decode_set =====================================================
-
-set_e shaman_t::decode_set( const item_t& item ) const
-{
-  bool is_caster = false, is_melee = false, is_heal = false;
-
-  if ( item.slot != SLOT_HEAD      &&
-       item.slot != SLOT_SHOULDERS &&
-       item.slot != SLOT_CHEST     &&
-       item.slot != SLOT_HANDS     &&
-       item.slot != SLOT_LEGS      )
-  {
-    return SET_NONE;
-  }
-
-  const char* s = item.name();
-
-  if ( strstr( s, "spiritwalkers" ) )
-  {
-    is_caster = ( strstr( s, "headpiece"     ) ||
-                  strstr( s, "shoulderwraps" ) ||
-                  strstr( s, "hauberk"       ) ||
-                  strstr( s, "kilt"          ) ||
-                  strstr( s, "gloves"        ) );
-
-    is_melee = ( strstr( s, "helmet"         ) ||
-                 strstr( s, "spaulders"      ) ||
-                 strstr( s, "cuirass"        ) ||
-                 strstr( s, "legguards"      ) ||
-                 strstr( s, "grips"          ) );
-
-    is_heal  = ( strstr( s, "faceguard"      ) ||
-                 strstr( s, "mantle"         ) ||
-                 strstr( s, "tunic"          ) ||
-                 strstr( s, "legwraps"       ) ||
-                 strstr( s, "handwraps"      ) );
-
-    if ( is_caster ) return SET_T13_CASTER;
-    if ( is_melee  ) return SET_T13_MELEE;
-    if ( is_heal   ) return SET_T13_HEAL;
-  }
-
-  if ( strstr( s, "firebirds_" ) )
-  {
-    is_caster = ( strstr( s, "headpiece"     ) ||
-                  strstr( s, "shoulderwraps" ) ||
-                  strstr( s, "hauberk"       ) ||
-                  strstr( s, "kilt"          ) ||
-                  strstr( s, "gloves"        ) );
-
-    is_melee = ( strstr( s, "helmet"         ) ||
-                 strstr( s, "spaulders"      ) ||
-                 strstr( s, "cuirass"        ) ||
-                 strstr( s, "legguards"      ) ||
-                 strstr( s, "grips"          ) );
-
-    is_heal  = ( strstr( s, "faceguard"      ) ||
-                 strstr( s, "mantle"         ) ||
-                 strstr( s, "tunic"          ) ||
-                 strstr( s, "legwraps"       ) ||
-                 strstr( s, "handwraps"      ) );
-
-    if ( is_caster ) return SET_T14_CASTER;
-    if ( is_melee  ) return SET_T14_MELEE;
-    if ( is_heal   ) return SET_T14_HEAL;
-  }
-
-  if ( strstr( s, "_of_the_witch_doctor" ) )
-  {
-    is_caster = ( strstr( s, "headpiece"     ) ||
-                  strstr( s, "shoulderwraps" ) ||
-                  strstr( s, "hauberk"       ) ||
-                  strstr( s, "kilt"          ) ||
-                  strstr( s, "gloves"        ) );
-
-    is_melee = ( strstr( s, "helmet"         ) ||
-                 strstr( s, "spaulders"      ) ||
-                 strstr( s, "cuirass"        ) ||
-                 strstr( s, "legguards"      ) ||
-                 strstr( s, "grips"          ) );
-
-    is_heal  = ( strstr( s, "faceguard"      ) ||
-                 strstr( s, "mantle"         ) ||
-                 strstr( s, "tunic"          ) ||
-                 strstr( s, "legwraps"       ) ||
-                 strstr( s, "handwraps"      ) );
-
-    if ( is_caster ) return SET_T15_CASTER;
-    if ( is_melee  ) return SET_T15_MELEE;
-    if ( is_heal   ) return SET_T15_HEAL;
-  }
-
-  if ( util::str_in_str_ci( s, "_of_celestial_harmony" ) )
-  {
-    is_caster = ( util::str_in_str_ci( s, "hauberk" ) ||
-                  util::str_in_str_ci( s, "gloves" ) ||
-                  util::str_in_str_ci( s, "headpiece" ) ||
-                  util::str_in_str_ci( s, "leggings" ) ||
-                  util::str_in_str_ci( s, "shoulderwraps" ) );
-
-    is_melee = ( util::str_in_str_ci( s, "cuirass" ) ||
-                 util::str_in_str_ci( s, "grips" ) ||
-                 util::str_in_str_ci( s, "helmet" ) ||
-                 util::str_in_str_ci( s, "legguards" ) ||
-                 util::str_in_str_ci( s, "spaulders" ) );
-
-    is_heal = ( util::str_in_str_ci( s, "tunic" ) ||
-                util::str_in_str_ci( s, "handwraps" ) ||
-                util::str_in_str_ci( s, "faceguard" ) ||
-                util::str_in_str_ci( s, "legwraps" ) ||
-                util::str_in_str_ci( s, "mantle" ) );
-
-    if ( is_caster ) return SET_T16_CASTER;
-    if ( is_melee  ) return SET_T16_MELEE;
-    if ( is_heal   ) return SET_T16_HEAL;
-  }
-
-  if ( strstr( s, "_gladiators_linked_"   ) )     return SET_PVP_MELEE;
-  if ( strstr( s, "_gladiators_mail_"     ) )     return SET_PVP_CASTER;
-  if ( strstr( s, "_gladiators_ringmail_" ) )     return SET_PVP_MELEE;
-
-  return SET_NONE;
-}
-
 // shaman_t::primary_role ===================================================
 
 role_e shaman_t::primary_role() const
@@ -5876,18 +5751,18 @@ role_e shaman_t::primary_role() const
 
 // shaman_t::convert_hybrid_stat ===========================================
 stat_e shaman_t::convert_hybrid_stat( stat_e s ) const
-{  
+{
   switch ( s )
   {
-  case STAT_AGI_INT: 
+  case STAT_AGI_INT:
     if ( specialization() == SHAMAN_ENHANCEMENT )
       return STAT_AGILITY;
     else
-      return STAT_INTELLECT; 
-  // This is a guess at how AGI/STR gear will work for Resto/Elemental, TODO: confirm  
+      return STAT_INTELLECT;
+  // This is a guess at how AGI/STR gear will work for Resto/Elemental, TODO: confirm
   case STAT_STR_AGI:
     return STAT_AGILITY;
-  // This is a guess at how STR/INT gear will work for Enhance, TODO: confirm  
+  // This is a guess at how STR/INT gear will work for Enhance, TODO: confirm
   // this should probably never come up since shamans can't equip plate, but....
   case STAT_STR_INT:
     return STAT_INTELLECT;
