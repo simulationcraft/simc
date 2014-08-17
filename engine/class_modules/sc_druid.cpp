@@ -169,6 +169,7 @@ public:
     buff_t* solar_peak;
     buff_t* shooting_stars;
     buff_t* starfall;
+    buff_t* starsurge;
 
     // Feral
     buff_t* berserk;
@@ -4991,7 +4992,7 @@ struct starfall_t : public druid_spell_t
   void execute()
   {
     p() -> buff.starfall -> trigger();
-
+    p() -> buff.starsurge -> decrement();
     druid_spell_t::execute();
   }
 
@@ -5025,6 +5026,7 @@ struct starsurge_t : public druid_spell_t
   void execute()
   {
     druid_spell_t::execute();
+    p() -> buff.starsurge -> decrement();
     if ( p() -> eclipse_amount < 0 )
       p() -> buff.solar_empowerment -> trigger( 3 );
     else
@@ -5635,6 +5637,7 @@ void druid_t::init_base_stats()
   resources.base[ RESOURCE_ENERGY      ] = 100;
   resources.base[ RESOURCE_RAGE        ] = 100;
   resources.base[ RESOURCE_COMBO_POINT ] = 5;
+  resources.base[ RESOURCE_ECLIPSE     ] = 105;
 
   base_energy_regen_per_second = 10;
 
@@ -5734,6 +5737,8 @@ void druid_t::create_buffs()
 
   buff.starfall                  = buff_creator_t( this, "starfall", spec.starfall  );
 
+  buff.starsurge                 = buff_creator_t( this, "starsurge_charges" )
+                                   .max_stack ( 3 );
   // Feral
   buff.tigers_fury           = buff_creator_t( this, "tigers_fury", find_specialization_spell( "Tiger's Fury" ) )
                                .default_value( find_specialization_spell( "Tiger's Fury" ) -> effectN( 1 ).percent() )
@@ -6333,8 +6338,7 @@ void druid_t::combat_begin()
   // Start the fight with 0 rage and 0 combo points
   resources.current[ RESOURCE_RAGE ] = 0;
   resources.current[ RESOURCE_COMBO_POINT ] = 0;
-
-  // Redo eclipse balance bar starting position.
+  resources.current[ RESOURCE_ECLIPSE ] = 0;
 
   // If Ysera's Gift is talented, apply it upon entering combat
   if ( talent.yseras_gift -> ok() )
@@ -7146,6 +7150,8 @@ void druid_t::balance_tracker()
   last_check = sim -> current_time; // Set current time for last check.
 
   eclipse_amount = 105 * sin( 2 * M_PI * balance_time / timespan_t::from_millis( 40000 ) ); // Re-calculate eclipse
+
+  resources.current[ RESOURCE_ECLIPSE ] = eclipse_amount;
 
   if ( eclipse_amount >= 100 )
   {

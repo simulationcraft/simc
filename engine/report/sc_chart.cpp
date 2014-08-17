@@ -2607,6 +2607,7 @@ std::string chart::resource_color( int type )
     case RESOURCE_SOUL_SHARD:
     case RESOURCE_BURNING_EMBER:
     case RESOURCE_DEMONIC_FURY:  return class_color( WARLOCK );
+    case RESOURCE_ECLIPSE: return class_color( DRUID );
 
     case RESOURCE_CHI:           return class_color( MONK );
 
