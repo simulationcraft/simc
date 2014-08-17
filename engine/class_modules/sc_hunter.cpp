@@ -87,6 +87,8 @@ public:
     buff_t* tier13_4pc;
     buff_t* tier16_4pc_mm_keen_eye;
     buff_t* tier16_4pc_bm_brutal_kinship;
+    buff_t* heavy_shot; // t17 SV 2pc
+
   } buffs;
 
   // Cooldowns
@@ -426,6 +428,13 @@ public:
       am *= 1.0 + p() -> talents.lone_wolf -> effectN( 1 ).percent();
 
     return am;
+  }
+
+  virtual double composite_multistrike_multiplier( const action_state_t* ) const
+  { 
+    double m = ab::composite_multistrike_multiplier();
+    m *= 1.0 + p() -> buffs.heavy_shot -> data().effectN( 1 ).percent() ;
+    return m; 
   }
 
   virtual double cost() const
@@ -2190,6 +2199,10 @@ struct explosive_shot_t: public hunter_ranged_attack_t
         p() -> active.explosive_ticks, // ignite spell
         s -> target,                   // target
         damage * tick_count );
+      
+      if ( p() -> new_sets.has_set_bonus( HUNTER_BEAST_MASTERY, T17, B2 ) )
+        p() -> buffs.heavy_shot -> trigger();
+      }
     }
   }
 };
@@ -3225,6 +3238,9 @@ void hunter_t::create_buffs()
 
   buffs.tier16_4pc_bm_brutal_kinship = buff_creator_t( this, 144670, "tier16_4pc_brutal_kinship" )
     .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
+
+  buffs.heavy_shot   = buff_creator_t( this, 167165, "heavy_shot" ).chance( new_sets.set(HUNTER_SURVIVAL, T17, B2) -> effectN( 1 ).percent() );
+
 }
 
 // hunter_t::init_gains =====================================================
