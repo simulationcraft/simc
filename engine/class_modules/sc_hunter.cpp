@@ -434,7 +434,7 @@ public:
   virtual double composite_multistrike_multiplier( const action_state_t* s ) const
   { 
     double m = ab::composite_multistrike_multiplier( s );
-    m *= 1.0 + p() -> buffs.heavy_shot -> data().effectN( 1 ).percent() ;
+    m *= 1.0 + p() -> buffs.heavy_shot -> data().effectN( 1 ).percent() * p() -> buffs.heavy_shot -> stack();
     return m; 
   }
 
@@ -3262,7 +3262,7 @@ void hunter_t::create_buffs()
   buffs.tier16_4pc_bm_brutal_kinship = buff_creator_t( this, 144670, "tier16_4pc_brutal_kinship" )
     .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
 
-  buffs.heavy_shot   = buff_creator_t( this, 167165, "heavy_shot" ).chance( new_sets.set(HUNTER_SURVIVAL, T17, B4) -> effectN( 1 ).percent() );
+  buffs.heavy_shot   = buff_creator_t( this, 167165, "heavy_shot" );
 
 }
 
