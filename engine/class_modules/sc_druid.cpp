@@ -7249,7 +7249,7 @@ void druid_t::balance_expressions()
   // Another way to view this is that we "fast-forward" the cycle 12 seconds ahead over our 4 second period,
   // in addition to the 4 seconds of time we'd already be traversing. 
   // This section handles how that additional phase accrual affects the different time estimates while AC is up.
-  if ( buff.astral_communion -> up() )
+  /*if ( buff.astral_communion -> up() )
   {
     // This is the amount of "fast-forward" time left on Astral Communion; e.g. if there's 3 seconds left, we'll
     // be adding 3*3=9 seconds worth of phase to the cycle. Done as a time value rather than phase since we want
@@ -7273,7 +7273,7 @@ void druid_t::balance_expressions()
       time_to_next_solar -= ac; 
     else
       time_to_next_solar /= 4;
-  }  
+  }*/
 
   // the time to next eclipse (either one) is just the minimum of the individual results
   eclipse_max = std::min( time_to_next_lunar, time_to_next_solar );
