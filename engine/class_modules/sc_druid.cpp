@@ -169,7 +169,6 @@ public:
     buff_t* solar_peak;
     buff_t* shooting_stars;
     buff_t* starfall;
-    buff_t* starsurge;
 
     // Feral
     buff_t* berserk;
@@ -4992,7 +4991,7 @@ struct starfall_t : public druid_spell_t
   void execute()
   {
     p() -> buff.starfall -> trigger();
-    p() -> buff.starsurge -> decrement();
+
     druid_spell_t::execute();
   }
 
@@ -5026,7 +5025,6 @@ struct starsurge_t : public druid_spell_t
   void execute()
   {
     druid_spell_t::execute();
-    p() -> buff.starsurge -> decrement();
     if ( p() -> eclipse_amount < 0 )
       p() -> buff.solar_empowerment -> trigger( 3 );
     else
@@ -5634,10 +5632,14 @@ void druid_t::init_base_stats()
   // Base miss, dodge, parry, and block are set in player_t::init_base_stats().
   // Just need to add class- or spec-based modifiers here (none for druids at the moment).
 
-  resources.base[ RESOURCE_ENERGY      ] = 100;
-  resources.base[ RESOURCE_RAGE        ] = 100;
-  resources.base[ RESOURCE_COMBO_POINT ] = 5;
-  resources.base[ RESOURCE_ECLIPSE     ] = 105;
+  if ( specialization() != DRUID_BALANCE )
+  {
+    resources.base[RESOURCE_ENERGY] = 100;
+    resources.base[RESOURCE_RAGE] = 100;
+    resources.base[RESOURCE_COMBO_POINT] = 5;
+  }
+  else
+    resources.base[ RESOURCE_ECLIPSE     ] = 105;
 
   base_energy_regen_per_second = 10;
 
@@ -5737,8 +5739,6 @@ void druid_t::create_buffs()
 
   buff.starfall                  = buff_creator_t( this, "starfall", spec.starfall  );
 
-  buff.starsurge                 = buff_creator_t( this, "starsurge_charges" )
-                                   .max_stack ( 3 );
   // Feral
   buff.tigers_fury           = buff_creator_t( this, "tigers_fury", find_specialization_spell( "Tiger's Fury" ) )
                                .default_value( find_specialization_spell( "Tiger's Fury" ) -> effectN( 1 ).percent() )
