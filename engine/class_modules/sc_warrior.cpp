@@ -2480,6 +2480,9 @@ struct slam_t: public warrior_attack_t
     if ( p() -> main_hand_weapon.type == WEAPON_NONE )
       return false;
 
+    if ( !p() -> cooldown.stance_cooldown -> up() )
+      return false;
+
     return warrior_attack_t::ready();
   }
 };
