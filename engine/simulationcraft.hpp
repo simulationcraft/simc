@@ -598,7 +598,7 @@ enum set_role_e
 enum tier_e
 {
   // Not implemented yet
-  TPVP = 0,
+  PVP = 0,
   // No spell data yet
   T1,  T2,  T3,  T4,  T5,  T6,  T7,  T8,  T9,  T10, T11, T12,
   // Actual tier support in SIMC
@@ -3617,6 +3617,7 @@ struct set_bonus_t
   // Some magic constants
   static const unsigned N_BONUSES = 2;       // Number of set bonuses in tier gear
   static const unsigned TIER_THRESHOLD = 17; // Tier when everything changes
+  static const unsigned PVP_TIER = 0;        // PVP tier in internal data
 
   // Constants used with translation from set_e to new set bonus system
   static const unsigned tier_divisor = 12;
@@ -3662,13 +3663,13 @@ struct set_bonus_t
   // Fast accessor to a set bonus spell, returns the spell, or spell_data_t::not_found()
   const spell_data_t* set( specialization_e spec, tier_e tier, set_bonus_e bonus ) const
   {
-    assert( tier >= TIER_THRESHOLD && tier <= max_tier() );
+    assert( tier == PVP || ( tier >= TIER_THRESHOLD && tier <= max_tier() ) );
     return set_bonus_spec_data[ tier ][ specdata::spec_idx( spec ) ][ bonus ].spell;
   }
 
   const spell_data_t* set( set_role_e role, tier_e tier, set_bonus_e bonus ) const
   {
-    assert( tier < TIER_THRESHOLD && tier <= max_tier() );
+    assert( tier >= 8 && tier < TIER_THRESHOLD );
     return set_bonus_spec_data[ tier ][ role ][ bonus ].spell;
   }
 
@@ -3683,6 +3684,12 @@ struct set_bonus_t
   unsigned max_tier() const;
   std::string to_string() const;
   std::string to_profile_string( const std::string& = "\n" ) const;
+
+  static std::string tier_type_str( tier_e );
+  static bool old_tier( tier_e tier )
+  { return tier != PVP_TIER && tier < TIER_THRESHOLD; }
+  static bool old_tier( size_t tier )
+  { return old_tier( static_cast<tier_e>( tier ) ); }
 };
 }
 
