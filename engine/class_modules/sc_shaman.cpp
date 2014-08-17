@@ -4810,6 +4810,11 @@ void shaman_t::trigger_windfury_weapon( const action_state_t* state )
     windfury -> schedule_execute();
     windfury -> schedule_execute();
     windfury -> schedule_execute();
+    if ( new_sets.has_set_bonus( SHAMAN_ENHANCEMENT, PVP, B4 ) )
+    {
+      windfury -> schedule_execute();
+      windfury -> schedule_execute();
+    }
   }
 }
 
