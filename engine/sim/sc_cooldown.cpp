@@ -132,11 +132,11 @@ void cooldown_t::start( action_t* action, timespan_t _override, timespan_t delay
       assert( current_charge > 0 );
       current_charge--;
 
-      if ( current_charge == charges - 1 )
+      if ( !recharge_event )
       {
         recharge_event = new ( sim ) recharge_event_t( *player, this, action, delay );
       }
-      else if ( current_charge == 0 )
+      else
       {
         assert( recharge_event );
         ready = recharge_event -> occurs() + timespan_t::from_millis( 1 );
