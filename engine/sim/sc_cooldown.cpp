@@ -103,7 +103,10 @@ void cooldown_t::reset( bool require_reaction )
   ready = ready_init();
   if ( last_start > sim.current_time )
     last_start = timespan_t::zero();
-  current_charge = charges;
+  if ( charges == 1 )
+    current_charge = charges;
+  else if ( current_charge < charges )
+    current_charge ++;
   if ( require_reaction && player )
   {
     if ( was_down )
@@ -113,7 +116,8 @@ void cooldown_t::reset( bool require_reaction )
   {
     reset_react = timespan_t::zero();
   }
-  core_event_t::cancel( recharge_event );
+  if ( current_charge == charges )
+    core_event_t::cancel( recharge_event );
   core_event_t::cancel( ready_trigger_event );
 }
 
