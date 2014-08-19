@@ -1861,7 +1861,7 @@ public:
     if ( p() -> mastery_spells.master_demonologist -> ok() )
     {
       if ( p() -> buffs.metamorphosis -> up() )
-        pm *= 1.0 + p() -> cache.mastery_value() * 3.0;
+        pm *= 1.0 + p() -> cache.mastery_value() * 2.0;
       else
         pm *= 1.0 + p() -> cache.mastery_value();
     }
