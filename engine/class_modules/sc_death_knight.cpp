@@ -554,7 +554,8 @@ inline death_knight_td_t::death_knight_td_t( player_t* target, death_knight_t* d
   dots_necrotic_plague = target -> get_dot( "necrotic_plague", death_knight );
   dots_defile          = target -> get_dot( "defile",          death_knight );
 
-  debuffs_razorice = buff_creator_t( *this, "razorice", death_knight -> find_spell( 51714 ) );
+  debuffs_razorice = buff_creator_t( *this, "razorice", death_knight -> find_spell( 51714 ) )
+                     .period( timespan_t::zero() );
   debuffs_mark_of_sindragosa = buff_creator_t( *this, "mark_of_sindragosa", death_knight -> find_spell( 155166 ) );
   debuffs_necrotic_plague = buff_creator_t( *this, "necrotic_plague", death_knight -> find_spell( 155159 ) ).period( timespan_t::zero() );
 }
