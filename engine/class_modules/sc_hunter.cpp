@@ -1703,6 +1703,7 @@ struct auto_shot_t: public ranged_t
   auto_shot_t( hunter_t* p ): ranged_t( p, "auto_shot", spell_data_t::nil() )
   {
     school = SCHOOL_PHYSICAL;
+    lone_wolf = true;
   }
 };
 
@@ -1845,6 +1846,7 @@ struct aimed_shot_t: public hunter_ranged_attack_t
   {
     double cc = hunter_ranged_attack_t::composite_target_crit( t );
     cc += p() -> buffs.careful_aim -> value();
+    cc += p() -> new_sets.set( SET_MELEE, T16, B4 ) -> effectN( 2 ).percent();
     return cc;
   }
 
