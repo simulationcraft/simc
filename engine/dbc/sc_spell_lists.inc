@@ -4,7 +4,7 @@
 #ifndef MAX_CLASS
 #define MAX_CLASS (12)
 #endif
-// Class based active abilities, wow build 18716
+// Class based active abilities, wow build 18738
 static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SIZE] = {
   {
     {
@@ -28,13 +28,14 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
   },
   // Class active abilities for Warrior
   {
-    // General tree, 19 abilities
+    // General tree, 21 abilities
     {
         6673, // Battle Shout
         2457, // Battle Stance
        18499, // Berserker Rage
          100, // Charge
          469, // Commanding Shout
+      175708, // Concussion Blow
           71, // Defensive Stance
       174894, // Devastate
        20243, // Devastate
@@ -48,6 +49,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
       112048, // Shield Barrier
        23920, // Spell Reflection
          355, // Taunt
+      175710, // Unleashed Rage
        34428, // Victory Rush
            0,
     },
@@ -107,7 +109,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
   },
   // Class active abilities for Paladin
   {
-    // General tree, 23 abilities
+    // General tree, 24 abilities
     {
        20217, // Blessing of Kings
        19740, // Blessing of Might
@@ -121,7 +123,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
         1044, // Hand of Freedom
         1022, // Hand of Protection
         6940, // Hand of Sacrifice
-      162056, // Jailor's Judgment
+      162056, // Jailer's Judgment
        20271, // Judgment
          633, // Lay on Hands
        96231, // Rebuke
@@ -131,6 +133,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
       105361, // Seal of Command
        20165, // Seal of Insight
        10326, // Turn Evil
+      175699, // Weapons of the Light
        85673, // Word of Glory
            0,
     },
@@ -185,7 +188,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
   },
   // Class active abilities for Hunter
   {
-    // General tree, 30 abilities
+    // General tree, 32 abilities
     {
         3044, // Arcane Shot
         5118, // Aspect of the Cheetah
@@ -207,6 +210,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
         5384, // Feign Death
         1543, // Flare
         1499, // Freezing Trap (Frost Trap)
+      175687, // Heavy Artilery
        13809, // Ice Trap (Frost Trap)
        53271, // Master's Call
          136, // Mend Pet
@@ -214,6 +218,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
         2643, // Multi-Shot
          982, // Revive Pet
        56641, // Steady Shot
+      175686, // Stopping Power
         1515, // Tame Beast
        19801, // Tranquilizing Shot
        77769, // Trap Launcher
@@ -371,10 +376,11 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
   },
   // Class active abilities for Priest
   {
-    // General tree, 16 abilities
+    // General tree, 18 abilities
     {
       161862, // Ascension
          528, // Dispel Magic
+      175702, // Divine Burst
          586, // Fade
         6346, // Fear Ward
         2061, // Flash Heal
@@ -388,6 +394,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
         9484, // Shackle Undead
          589, // Shadow Word: Pain
        34433, // Shadowfiend
+      175701, // Shadowy Grasp
          585, // Smite
            0,
     },
@@ -449,7 +456,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
   },
   // Class active abilities for Death Knight
   {
-    // General tree, 23 abilities
+    // General tree, 26 abilities
     {
        48707, // Anti-Magic Shell
        42650, // Army of the Dead
@@ -460,10 +467,12 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
        77606, // Dark Simulacrum
        47541, // Death Coil
        49576, // Death Grip
+      175678, // Death Heal
        49998, // Death Strike
        43265, // Death and Decay
        47568, // Empower Rune Weapon
        48266, // Frost Presence
+      175680, // Grip of Death
        57330, // Horn of Winter
        48792, // Icebound Fortitude
        45477, // Icy Touch
@@ -472,6 +481,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
         3714, // Path of Frost
        45462, // Plague Strike
        61999, // Raise Ally
+      130736, // Soul Reaper
        47476, // Strangulate
        48265, // Unholy Presence
            0,
@@ -495,13 +505,12 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
       130735, // Soul Reaper
            0,
     },
-    // Unholy tree, 6 abilities
+    // Unholy tree, 5 abilities
     {
        63560, // Dark Transformation
        85948, // Festering Strike
        46584, // Raise Dead
        55090, // Scourge Strike
-      130736, // Soul Reaper
        49206, // Summon Gargoyle
            0,
     },
@@ -609,7 +618,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
   },
   // Class active abilities for Mage
   {
-    // General tree, 15 abilities
+    // General tree, 16 abilities
     {
       159916, // Amplify Magic
       120145, // Ancient Teleport: Dalaran
@@ -619,6 +628,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
         2139, // Counterspell
        61316, // Dalaran Brilliance
         2136, // Fire Blast
+      175689, // Freezing Grasp
          122, // Frost Nova
        44614, // Frostfire Bolt
        45438, // Ice Block
@@ -678,11 +688,12 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
   },
   // Class active abilities for Warlock
   {
-    // General tree, 32 abilities
+    // General tree, 33 abilities
     {
          710, // Banish
          172, // Corruption
         6201, // Create Healthstone
+      175707, // Crippling Shadows
       109773, // Dark Intent
        77801, // Dark Soul
       111771, // Demonic Gateway
@@ -694,7 +705,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
       111895, // Grimoire: Voidwalker (Summon)
         5484, // Howl of Terror
         1454, // Life Tap
-      114790, // Seed of Corruption (Soulburn)
+      114790, // Seed of Corruption
          686, // Shadow Bolt
       119678, // Soul Swap (Soulburn)
        29858, // Soulshatter
@@ -722,7 +733,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
       103103, // Drain Soul
        48181, // Haunt
          755, // Health Funnel
-      114790, // Seed of Corruption (Soulburn)
+      114790, // Seed of Corruption
        27243, // Seed of Corruption
        86121, // Soul Swap
        74434, // Soulburn
@@ -807,12 +818,14 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
   },
   // Class active abilities for Monk
   {
-    // General tree, 22 abilities
+    // General tree, 24 abilities
     {
       100784, // Blackout Kick
+      175693, // Chi Shaping
       117952, // Crackling Jade Lightning
       125170, // Detox
       115450, // Detox
+      175697, // Disabling Technique
       115072, // Expel Harm
       115203, // Fortifying Brew
       100780, // Jab
@@ -890,7 +903,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
   },
   // Class active abilities for Druid
   {
-    // General tree, 25 abilities
+    // General tree, 27 abilities
     {
         5487, // Bear Form (Shapeshift)
          768, // Cat Form (Shapeshift)
@@ -909,6 +922,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
        33917, // Mangle
         1126, // Mark of the Wild
         8921, // Moonfire (Lunar)
+      175682, // Nature's Control
         5215, // Prowl
        20484, // Rebirth
          774, // Rejuvenation
@@ -916,6 +930,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
         2908, // Soothe
       106898, // Stampeding Roar
          783, // Travel Form (Shapeshift)
+      175683, // Ursol's Power
         5176, // Wrath (Solar)
            0,
     },
@@ -991,7 +1006,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
 
 #define TREE_SPECIALIZATION_SIZE (28)
 
-// Talent tree specialization abilities, wow build 18716
+// Talent tree specialization abilities, wow build 18738
 static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZATION_SIZE] = {
   // Specialization abilities for Hunter pets
   {
@@ -1486,7 +1501,6 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
       130735, // Soul Reaper
       162698, // Stat Negation Aura - Strength DPS
        66192, // Threat of Thassarian
-      165361, // Tundra Stalker
        55610, // Unholy Aura
            0,
     },
@@ -1504,7 +1518,6 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
        56835, // Reaping
        55090, // Scourge Strike
        49572, // Shadow Infusion
-      130736, // Soul Reaper
       162698, // Stat Negation Aura - Strength DPS
        49530, // Sudden Doom
        49206, // Summon Gargoyle
@@ -1582,7 +1595,6 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
        77226, // Mastery: Deep Healing
        95862, // Meditation
       165391, // Purification
-       16213, // Purification
        77130, // Purify Spirit
        16196, // Resurgence
        61295, // Riptide
@@ -1694,6 +1706,7 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
       109145, // Demonic Fury
       109151, // Demonic Leap
       165392, // Demonic Tactics
+      124913, // Doom
          689, // Drain Life
       105174, // Hand of Gul'dan
          755, // Health Funnel
@@ -1949,7 +1962,7 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
 
 #define CLASS_MASTERY_ABILITY_SIZE (1)
 
-// Class mastery abilities, wow build 18716
+// Class mastery abilities, wow build 18738
 static unsigned __class_mastery_ability_data[MAX_CLASS][MAX_SPECS_PER_CLASS][CLASS_MASTERY_ABILITY_SIZE] = {
   {
     {
@@ -2172,7 +2185,7 @@ static unsigned __class_mastery_ability_data[MAX_CLASS][MAX_SPECS_PER_CLASS][CLA
 #define MAX_RACE (28)
 #endif
 
-// Racial abilities, wow build 18716
+// Racial abilities, wow build 18738
 static unsigned __race_ability_data[MAX_RACE][MAX_CLASS][RACE_ABILITY_SIZE] = {
   {
     {     0, },
@@ -2895,7 +2908,7 @@ static unsigned __race_ability_data[MAX_RACE][MAX_CLASS][RACE_ABILITY_SIZE] = {
 
 #define GLYPH_ABILITIES_SIZE (41)
 
-// Glyph spells for classes, wow build 18716
+// Glyph spells for classes, wow build 18738
 static unsigned __glyph_abilities_data[][3][GLYPH_ABILITIES_SIZE] = {
   {
     {
@@ -3541,7 +3554,7 @@ static unsigned __glyph_abilities_data[][3][GLYPH_ABILITIES_SIZE] = {
 
 #define TIER_BONUSES_TIER_BASE (13)
 
-// Tier item set bonuses for class, wow build 18716
+// Tier item set bonuses for class, wow build 18738
 static unsigned __tier_bonuses_data[][TIER_BONUSES_MAX_TIER][TIER_BONUSES_SIZE] = {
   {
     {
@@ -3966,7 +3979,7 @@ static unsigned __tier_bonuses_data[][TIER_BONUSES_MAX_TIER][TIER_BONUSES_SIZE] 
 
 #define SET_BONUS_DATA_SIZE (543)
 
-// Set bonus data, wow build 18716
+// Set bonus data, wow build 18738
 static item_set_bonus_t __set_bonus_data[SET_BONUS_DATA_SIZE] = {
   //                                    Tier name, SetID, Tier, Bns, Cls,         Derived Spec, Role, Spec,  Spell, Items
   { "Gladiator's Battlegear"                     ,  1230,    0,   2,   1,                { 0 },    3,   71, 165636, { 111239, 111240, 111241, 111242, 111243,  0 } },
@@ -4537,7 +4550,7 @@ static item_set_bonus_t __set_bonus_data[SET_BONUS_DATA_SIZE] = {
 
 #define PERK_SIZE (4)
 
-// Perk specialization abilities, wow build 18716
+// Perk specialization abilities, wow build 18738
 static unsigned __perk_data[][MAX_SPECS_PER_CLASS][PERK_SIZE] = {
   {
     {
@@ -4556,7 +4569,7 @@ static unsigned __perk_data[][MAX_SPECS_PER_CLASS][PERK_SIZE] = {
   {
     // Arms
     {
-      157449, // 0: Improved Heroic Leap
+      176051, // 0: Improved Recklessness
       157452, // 1: Improved Die by the Sword
       157461, // 2: Enhanced Sweeping Strikes
       174737, // 3: Enhanced Rend
@@ -4566,7 +4579,7 @@ static unsigned __perk_data[][MAX_SPECS_PER_CLASS][PERK_SIZE] = {
       157452, // 0: Improved Die by the Sword
       157457, // 1: Improved Colossus Smash
       157473, // 2: Enhanced Whirlwind
-      157449, // 3: Improved Heroic Leap
+      176051, // 3: Improved Recklessness
     },
     // Protection
     {
@@ -4845,12 +4858,11 @@ static unsigned __perk_data[][MAX_SPECS_PER_CLASS][PERK_SIZE] = {
   },
 };
 
-// Glyph properties, wow build 18716
-static glyph_property_data_t __glyph_property_data[519] = {
+// Glyph properties, wow build 18738
+static glyph_property_data_t __glyph_property_data[514] = {
   {   162,  54811 },
   {   163,  54812 },
   {   164, 114338 },
-  {   166, 116186 },
   {   167,  54821 },
   {   170,  54733 },
   {   171, 116218 },
@@ -4976,7 +4988,6 @@ static glyph_property_data_t __glyph_property_data[519] = {
   {   392,  56813 },
   {   393,  56800 },
   {   394,  56818 },
-  {   395, 146628 },
   {   396,  56806 },
   {   397,  56799 },
   {   398, 146625 },
@@ -5054,7 +5065,6 @@ static glyph_property_data_t __glyph_property_data[519] = {
   {   500,  58385 },
   {   501,  58364 },
   {   502,  58375 },
-  {   504,  58387 },
   {   505,  58384 },
   {   507,  58356 },
   {   508,  58382 },
@@ -5193,7 +5203,6 @@ static glyph_property_data_t __glyph_property_data[519] = {
   {  1005, 120583 },
   {  1006, 120584 },
   {  1007, 120581 },
-  {  1008, 122013 },
   {  1009, 122028 },
   {  1011, 123023 },
   {  1013, 123334 },
@@ -5336,7 +5345,6 @@ static glyph_property_data_t __glyph_property_data[519] = {
   {  1169, 159649 },
   {  1170, 159650 },
   {  1171, 159651 },
-  {  1172, 159653 },
   {  1173, 159665 },
   {  1175, 159669 },
   {  1176, 159680 },
