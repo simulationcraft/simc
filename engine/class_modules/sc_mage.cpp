@@ -3091,7 +3091,7 @@ struct mage_armor_t : public mage_spell_t
 
       "Meteor Impact" is the final 1second of meteor fall time. In game, meteor snapshots 1second before impact;
       so this will snapshot at the correct time. The impact is treated as a single hit explosion.
-      
+
       "Meteor Burn" is the AoE DoT effect which "Meteor Impact" triggers upon impacting it's target.
       Currently, it's only applied to one target and then pulses damage out of it at every tick.
 
@@ -4619,7 +4619,7 @@ void mage_t::apl_arcane()
   action_priority_list_t* single_target       = get_action_priority_list( "single_target"     );
   action_priority_list_t* aoe                 = get_action_priority_list( "aoe"               );
   action_priority_list_t* prismatic_crystal   = get_action_priority_list( "prismatic_crystal" );
-  action_priority_list_t* incanters_flow      = get_action_priority_list( "incanters_flow"    );
+  // action_priority_list_t* incanters_flow      = get_action_priority_list( "incanters_flow"    );
 
   default_list -> add_action( this, "Counterspell", "if=target.debuff.casting.react" );
   default_list -> add_action( this, "Blink", "if=movement.distance>10" );
@@ -4635,7 +4635,7 @@ void mage_t::apl_arcane()
   default_list -> add_action( this, "Evocation", "if=mana.pct<50,interrupt_if=mana.pct>95&buff.arcane_power.down" );
   default_list -> add_action( this, "Arcane Power", "if=!talent.overpowered.enabled&time_to_bloodlust>cooldown.arcane_power.duration&((buff.arcane_charge.stack=4)|target.time_to_die<buff.arcane_power.duration+5),moving=0" );
   default_list -> add_action( this, "Arcane Power", "if=talent.overpowered.enabled&time_to_bloodlust>cooldown.arcane_power.duration&((buff.arcane_charge.stack=4)|target.time_to_die<buff.arcane_power.duration+5)&cooldown.evocation.remains<buff.arcane_power.duration+5,moving=0" );
-  
+
   for( size_t i = 0; i < racial_actions.size(); i++ )
     default_list -> add_action( racial_actions[i] );
 
@@ -4645,7 +4645,7 @@ void mage_t::apl_arcane()
     default_list -> add_action( item_actions[i] );
 
   default_list -> add_action( this, "Presence of Mind", "if=buff.arcane_power.up" );
-  
+
   default_list -> add_talent( this, "Prismatic Crystal", "if=buff.arcane_charge.stack=4");
 
   default_list -> add_action( "run_action_list,name=prismatic_crystal,if=pet.prismatic_crystal.active" );
@@ -4670,7 +4670,7 @@ void mage_t::apl_arcane()
   prismatic_crystal -> add_talent( this, "Supernova");
   prismatic_crystal -> add_action( this, "Arcane Barrage", "if=buff.arcane_charge.stack=4&action.arcane_barrage.travel_time+0.5>cooldown.prismatic_crystal.remains-50");
   prismatic_crystal -> add_action( this, "Arcane Blast" );
-  
+
   aoe -> add_action ( this, "Flamestrike" );
   aoe -> add_talent ( this, "Nether Tempest", "if=buff.arcane_charge.stack=4&(!ticking|remains<tick_time)&target.time_to_die>6");
   aoe -> add_action ( this, "Arcane Barrage", "if=buff.arcane_charge.stack=4" );
@@ -4784,8 +4784,8 @@ void mage_t::apl_frost()
   std::vector<std::string> racial_actions = get_racial_actions();
 
   action_priority_list_t* default_list        = get_action_priority_list( "default" );
-  action_priority_list_t* prismatic_crystal   = get_action_priority_list( "prismatic_crystal" );
-  action_priority_list_t* incanters_flow      = get_action_priority_list( "incanters_flow" );
+  // action_priority_list_t* prismatic_crystal   = get_action_priority_list( "prismatic_crystal" );
+  // action_priority_list_t* incanters_flow      = get_action_priority_list( "incanters_flow" );
 
   default_list -> add_action( this, "Counterspell", "if=target.debuff.casting.react" );
   default_list -> add_action( this, "Blink", "if=movement.distance>10" );
