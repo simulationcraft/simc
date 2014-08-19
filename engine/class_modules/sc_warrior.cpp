@@ -1066,7 +1066,7 @@ struct melee_t: public warrior_attack_t
         }
       }
       trigger_rage_gain( s );
-      if ( p() -> perk.enhanced_rend -> ok() )
+      if ( p() -> perk.enhanced_rend -> ok() && td( s -> target ) -> dots_rend -> is_ticking() )
       {
         p() -> active_enhanced_rend -> target = s -> target;
         p() -> active_enhanced_rend -> execute();
