@@ -4121,7 +4121,7 @@ void monk_t::apl_pre_windwalker()
   if ( sim -> allow_flasks )
   {
     // Flask
-    if ( level = 100 )
+    if ( level == 100 )
       precombat += "flask,type=greater_draenic_agility_flask";
     else
       precombat += "flask,type=spring_blossoms";
@@ -4130,7 +4130,7 @@ void monk_t::apl_pre_windwalker()
   if ( sim -> allow_food )
   {
     // Food
-    if ( level = 100 )
+    if ( level == 100 )
       precombat += "/food,type=rylak_crepes";
     else
       precombat += "/food,type=sea_mist_rice_noodles";
@@ -4142,7 +4142,7 @@ void monk_t::apl_pre_windwalker()
   if ( sim -> allow_potions )
   {
     // Prepotion
-    if ( level = 100 )
+    if ( level == 100 )
       precombat += "/potion,name=draenic_agility";
     else if ( level >= 85 )
       precombat += "/potion,name=virmens_bite";
@@ -4242,7 +4242,7 @@ void monk_t::apl_combat_windwalker()
 
   if ( sim -> allow_potions )
   {
-    if ( level = 100 )
+    if ( level == 100 )
       action_list_str += "/potion,name=draenic_agility,if=buff.serenity.up|(!talent.serenity.enabled&trinket.proc.agility.react)";
     else if ( level >= 85 )
       action_list_str += "/potion,name=virmens_bite,if=buff.bloodlust.react|target.time_to_die<=60";

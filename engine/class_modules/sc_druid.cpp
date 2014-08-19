@@ -5060,8 +5060,6 @@ struct stellar_flare_t : public druid_spell_t
     if ( sim -> log || sim -> debug )
       sim -> out_debug.printf("Action modifier %f", m);
     return m;
-
-    return m;
   }
 };
 
@@ -5269,7 +5267,6 @@ void druid_t::trigger_soul_of_the_forest()
 {
   if ( ! talent.soul_of_the_forest -> ok() )
     return;
-
 }
 
 // druid_t::create_action  ==================================================
