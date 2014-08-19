@@ -399,11 +399,16 @@ class CDNIndex(CASCObject):
 		version_url =  '%s/versions' % CDNIndex.PATCH_BASE_URL
 		handle = self.get_url(version_url)
 	
-		version_data = handle.readlines()
-		data_split = version_data[1].split('|')
-		if data_split[0] != 'xx':
-			self.options.parser.error('Invalid version file')
+		data_split = None
+		for line in handle.readlines():
+			data_split = line.split('|')
+			if data_split[0] == 'us':
+				break
 		
+		if not data_split:
+			print >>sys.stderr, 'Invalid version file'
+			sys.exit(1)
+
 		# The CDN hash name is what we want at this point
 		self.cdn_hash = data_split[2]
 
