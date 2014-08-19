@@ -2011,20 +2011,17 @@ struct shadow_of_death_t : public buff_t
   int health_gain;
 
   shadow_of_death_t( death_knight_t* p ) :
-    buff_t( buff_creator_t( p, "shadow_of_death", p -> find_spell( 164047 ) ).chance( p -> perk.enhanced_death_coil_blood -> ok() ) ),
+    buff_t( buff_creator_t( p, "shadow_of_death", p -> find_spell( 164047 ) ).chance( p -> perk.enhanced_death_coil_blood -> ok() ).refresh_behavior( BUFF_REFRESH_DISABLED ) ),
     health_gain( 0 )
   { }
 
-  virtual bool trigger( int stacks, double value, double chance, timespan_t )
+  virtual bool trigger( int stacks, double value, double chance, timespan_t duration )
   {
-    timespan_t new_duration = data().duration();
-    if ( current_stack > 0 )
-      new_duration += remains();
+    int gain = ( int ) floor( player -> resources.max[ RESOURCE_HEALTH ] * data().effectN( 1 ).percent() );
+    player -> stat_gain( STAT_MAX_HEALTH, gain, 0, 0, true );
+    health_gain += gain;
 
-    health_gain = ( int ) floor( player -> resources.max[ RESOURCE_HEALTH ] * data().effectN( 1 ).percent() );
-    player -> stat_gain( STAT_MAX_HEALTH, health_gain, 0, 0, true );
-
-    return buff_t::trigger( stacks, value, chance, new_duration );
+    return buff_t::trigger( stacks, value, chance, duration );
   }
 
   virtual void expire_override()
@@ -2032,6 +2029,13 @@ struct shadow_of_death_t : public buff_t
     player -> stat_loss( STAT_MAX_HEALTH, health_gain, 0, 0, true );
 
     buff_t::expire_override();
+  }
+
+  void reset()
+  {
+    buff_t::reset();
+
+    health_gain = 0;
   }
 };
 
