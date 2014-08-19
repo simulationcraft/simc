@@ -1616,7 +1616,7 @@ struct execute_t: public warrior_attack_t
     if ( p() -> mastery.weapons_master -> ok() )
     {
       if ( !p() -> buff.sudden_death -> check() )
-        am *= 6.0 * std::min( 40.0, p() -> resources.current[RESOURCE_RAGE] ) / 40;
+        am *= 4.0 * std::min( 40.0, p() -> resources.current[RESOURCE_RAGE] ) / 40;
 
       am *= 1.0 + p() -> cache.mastery_value();
     }
