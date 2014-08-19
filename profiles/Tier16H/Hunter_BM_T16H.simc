@@ -67,13 +67,13 @@ main_hand=korkron_hand_cannon,id=105559,upgrade=2,gems=8agi_3agi,enchant=lord_bl
 
 # Gear Summary
 # gear_strength=4
-# gear_agility=1165
+# gear_agility=1176
 # gear_stamina=1539
 # gear_intellect=4
 # gear_hit_rating=9
-# gear_crit_rating=490
-# gear_haste_rating=483
-# gear_mastery_rating=503
+# gear_crit_rating=494
+# gear_haste_rating=487
+# gear_mastery_rating=507
 # gear_armor=721
 # meta_gem=capacitive_primal
 # tier16_2pc_melee=1

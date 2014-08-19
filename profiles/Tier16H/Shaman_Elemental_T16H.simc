@@ -91,11 +91,11 @@ off_hand=revelations_of_yshaarj,id=105650,upgrade=2,gems=4int_8haste_3int,enchan
 # gear_strength=4
 # gear_agility=8
 # gear_stamina=1534
-# gear_intellect=1091
+# gear_intellect=1102
 # gear_spell_power=590
-# gear_crit_rating=351
-# gear_haste_rating=584
-# gear_mastery_rating=507
+# gear_crit_rating=355
+# gear_haste_rating=588
+# gear_mastery_rating=511
 # gear_armor=718
 # gear_multistrike_rating=99
 # meta_gem=sinister_primal
