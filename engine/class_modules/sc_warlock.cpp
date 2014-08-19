@@ -190,33 +190,21 @@ public:
   // Perks
   struct
   {
-    // Afflictin and Demonology
+    // Affliction and Demonology
     const spell_data_t* empowered_drain_life;
     // Affliction only
-    const spell_data_t* empowered_agony;
     const spell_data_t* enhanced_haunt;
-    const spell_data_t* enhanced_nightfall;
-    const spell_data_t* improved_corruption;
+    const spell_data_t* empowered_corruption;
     const spell_data_t* improved_drain_soul;
-    const spell_data_t* improved_life_tap;
-    const spell_data_t* improved_unstable_affliction;
     // Demonology only
     const spell_data_t* empowered_demons;
     const spell_data_t* empowered_doom;
     const spell_data_t* enhanced_corruption;
-    const spell_data_t* enhanced_hand_of_guldan;
-    const spell_data_t* improved_molten_core;
-    const spell_data_t* improved_shadow_bolt;
-    const spell_data_t* improved_touch_of_chaos;
     // Destruction only
+    const spell_data_t* enhanced_havoc; // code this
     const spell_data_t* empowered_immolate;
-    const spell_data_t* empowered_incinerate;
-    const spell_data_t* enhanced_backklash;
     const spell_data_t* enhanced_chaos_bolt;
-    const spell_data_t* enhanced_drain_life;
-    const spell_data_t* improved_conflagrate;
-    const spell_data_t* improved_ember_tap;
-    const spell_data_t* improved_shadowburn;
+    const spell_data_t* improved_ember_tap; // ember tap doesn't even exist in the core.
   } perk;
 
   // Cooldowns
@@ -2081,7 +2069,7 @@ struct agony_t : public warlock_spell_t
 
   virtual void tick( dot_t* d )
   {
-    if ( td( d -> state -> target ) -> agony_stack < ( 10 + p() -> perk.empowered_agony -> effectN( 1 ).base_value() )) td( d -> state -> target ) -> agony_stack++;
+    if ( td( d -> state -> target ) -> agony_stack < ( 10 )) td( d -> state -> target ) -> agony_stack++;
     warlock_spell_t::tick( d );
   }
 
@@ -2319,7 +2307,6 @@ struct shadow_bolt_t : public warlock_spell_t
     warlock_spell_t( p, "Shadow Bolt" ), glyph_copy_1( 0 ), glyph_copy_2( 0 ),  hand_of_guldan( new hand_of_guldan_t( p ) )
   {
     base_multiplier *= 1.0 + p -> sets.set( SET_T14_2PC_CASTER ) -> effectN( 3 ).percent();
-    base_multiplier *= 1.0 + p -> perk.improved_shadow_bolt -> effectN( 1 ).percent();
 
     hand_of_guldan               -> background = true;
     hand_of_guldan               -> base_costs[ RESOURCE_MANA ] = 0;
@@ -2443,7 +2430,6 @@ struct shadowburn_t : public warlock_spell_t
   {
     min_gcd = timespan_t::from_millis( 500 );
     havoc_consume = 1;
-    base_multiplier *= 1.0 + p -> perk.improved_shadowburn -> effectN( 1 ).percent();
     mana_delay  = data().effectN( 1 ).trigger() -> duration();
     mana_amount = p -> find_spell( data().effectN( 1 ).trigger() -> effectN( 1 ).base_value() ) -> effectN( 1 ).percent();
   }
@@ -2506,7 +2492,6 @@ struct corruption_t : public warlock_spell_t
     generate_fury = 4;
     generate_fury += p -> perk.enhanced_corruption -> effectN( 1 ).base_value();
     base_multiplier *= 1.0 + p -> sets.set( SET_T14_2PC_CASTER ) -> effectN( 1 ).percent();
-    base_multiplier *= 1.0 + p -> perk.improved_corruption -> effectN( 1 ).percent();
     //pulling duration from sub-curruption, since default id has no duration...
     dot_duration = p -> find_spell( 146739 )-> duration();
     spell_power_mod.tick = p -> find_spell( 146739 ) -> effectN(1).sp_coeff(); //returning .180 for mod - supposed to be .165
@@ -2534,7 +2519,7 @@ struct corruption_t : public warlock_spell_t
     if ( p() -> spec.nightfall -> ok() && d -> state -> target == p() -> latest_corruption_target && ! periodic_hit ) //5.4 only the latest corruption procs it
     {
 
-      double nightfall_chance = p() -> spec.nightfall -> effectN( 1 ).percent() + p() -> perk.enhanced_nightfall -> effectN( 1 ).percent()/10;
+      double nightfall_chance = p() -> spec.nightfall -> effectN( 1 ).percent()/10 + p() -> perk.empowered_corruption -> effectN( 1 ).percent()/10;
        
       if (p() -> sets.has_set_bonus( SET_T17_2PC_CASTER ) &&  td( d -> state -> target ) -> dots_agony -> is_ticking() && td( d -> state -> target ) -> dots_unstable_affliction -> is_ticking()) //Caster Has T17 2pc and UA/Agony are ticking as well on the target
       {
@@ -2664,7 +2649,6 @@ struct unstable_affliction_t : public warlock_spell_t
     warlock_spell_t( p, "Unstable Affliction" )
   {
     may_crit   = false;
-    base_multiplier *= 1.0 + p -> perk.improved_unstable_affliction -> effectN( 1 ).percent();
     if ( p -> glyphs.unstable_affliction -> ok() )
       base_execute_time *= 1.0 + p -> glyphs.unstable_affliction -> effectN( 1 ).percent();
   }
@@ -2927,7 +2911,6 @@ struct conflagrate_t : public warlock_spell_t
     // FIXME: No longer in the spell data for some reason
     cooldown -> duration = timespan_t::from_seconds( 12.0 );
     cooldown -> charges = 2;
-    base_multiplier *= 1.0 + p() -> perk.improved_conflagrate -> effectN( 1 ).percent();
 
   }
 
@@ -3018,7 +3001,6 @@ struct incinerate_t : public warlock_spell_t
     warlock_spell_t::init();
 
     backdraft_consume = 1;
-    base_crit += p() -> perk.empowered_incinerate -> effectN( 1 ).percent();
     base_multiplier *= 1.0 + p() -> sets.set( SET_T14_2PC_CASTER ) -> effectN( 2 ).percent();
   }
 
@@ -3176,7 +3158,7 @@ struct soul_fire_t : public warlock_spell_t
     timespan_t t = warlock_spell_t::execute_time();
 
     if ( p() -> buffs.molten_core -> up() )
-      t *= 1.0 + p() -> buffs.molten_core -> data().effectN( 1 ).percent() + p() -> perk.improved_molten_core -> effectN( 1 ).percent();
+      t *= 1.0 + p() -> buffs.molten_core -> data().effectN( 1 ).percent();
 
     return t;
   }
@@ -3202,7 +3184,7 @@ struct soul_fire_t : public warlock_spell_t
     double c = warlock_spell_t::cost();
 
     if ( p() -> buffs.molten_core -> check() )
-      c *= 1.0 + p() -> buffs.molten_core -> data().effectN( 1 ).percent() + p() -> perk.improved_molten_core -> effectN( 1 ).percent();
+      c *= 1.0 + p() -> buffs.molten_core -> data().effectN( 1 ).percent();
 
     return c;
   }
@@ -3302,7 +3284,7 @@ struct life_tap_t : public warlock_spell_t
 
     // FIXME: Implement reduced healing debuff
     if ( ! p() -> glyphs.life_tap -> ok() ) player -> resource_loss( RESOURCE_HEALTH, health * data().effectN( 3 ).percent() );
-      player -> resource_gain( RESOURCE_MANA, health * data().effectN( 1 ).percent() * ( 1.0 + p() -> perk.improved_life_tap -> effectN( 1 ).percent() ), p() -> gains.life_tap );
+      player -> resource_gain( RESOURCE_MANA, health * data().effectN( 1 ).percent(), p() -> gains.life_tap );
 
   }
 };
@@ -3441,7 +3423,6 @@ struct touch_of_chaos_t : public warlock_spell_t
     warlock_spell_t( "touch_of_chaos", p, p -> find_spell(103964) ),chaos_wave( new chaos_wave_t( p ) )
   {
     base_multiplier *= 1.0 + p -> sets.set( SET_T14_2PC_CASTER ) -> effectN( 3 ).percent();
-    base_multiplier *= 1.0 + p -> perk.improved_touch_of_chaos -> effectN( 1 ).percent();
 
     chaos_wave               -> background = true;
     chaos_wave               -> base_costs[ RESOURCE_DEMONIC_FURY ] = 0;
@@ -3545,8 +3526,8 @@ struct drain_soul_t : public warlock_spell_t
     double multiplier = data().effectN( 3 ).percent();
     
     trigger_extra_tick( td( d -> state -> target ) -> dots_agony,               multiplier);
-    trigger_extra_tick( td( d -> state -> target ) -> dots_corruption,          multiplier * (1.0 + p() -> perk.improved_corruption -> effectN( 1 ).percent()));
-    trigger_extra_tick( td( d -> state -> target ) -> dots_unstable_affliction, multiplier * (1.0 + p() -> perk.improved_unstable_affliction -> effectN( 1 ).percent()));
+    trigger_extra_tick( td( d -> state -> target ) -> dots_corruption,          multiplier);
+    trigger_extra_tick( td( d -> state -> target ) -> dots_unstable_affliction, multiplier);
 
     consume_tick_resource( d );
   }
@@ -5150,29 +5131,16 @@ void warlock_t::init_spells()
   talents.demonic_servitude     = find_talent_spell( "Demonic Servitude" );
 
   // Perks
-  perk.empowered_agony              = find_perk_spell( "Empowered Agony" );
   perk.empowered_demons             = find_perk_spell( "Empowered Demons" );
   perk.empowered_doom               = find_perk_spell( "Empowered Doom" );
   perk.empowered_drain_life         = find_perk_spell( "Empowered Drain Life" );
   perk.empowered_immolate           = find_perk_spell( "Empowered Immolate" );
-  perk.empowered_incinerate         = find_perk_spell( "Empowered Incinerate" );
-  perk.enhanced_backklash           = find_perk_spell( "Enhanced Backklash" );
   perk.enhanced_chaos_bolt          = find_perk_spell( "Enhanced Chaos Bolt" );
   perk.enhanced_corruption          = find_perk_spell( "Enhanced Corruption" );
-  perk.enhanced_drain_life          = find_perk_spell( "Enhanced Drain Life" );
-  perk.enhanced_hand_of_guldan      = find_perk_spell( "Enhanced Hand of Gul'dan" );
   perk.enhanced_haunt               = find_perk_spell( "Enhanced Haunt" );
-  perk.enhanced_nightfall           = find_perk_spell( "Enhanced Nightfall" );
-  perk.improved_conflagrate         = find_perk_spell( "Improved Conflagrate" );
-  perk.improved_corruption          = find_perk_spell( "Improved Corruption" );
+  perk.empowered_corruption         = find_perk_spell( "Empowered Corruption" );
   perk.improved_drain_soul          = find_perk_spell( "Improved Drain Soul" );
   perk.improved_ember_tap           = find_perk_spell( "Improved Ember Tap" );
-  perk.improved_life_tap            = find_perk_spell( "Improved Life Tap" );
-  perk.improved_molten_core         = find_perk_spell( "Improved Molten Core" );
-  perk.improved_shadow_bolt         = find_perk_spell( "Improved Shadow Bolt" );
-  perk.improved_shadowburn          = find_perk_spell( "Improved Shadowburn" );
-  perk.improved_touch_of_chaos      = find_perk_spell( "Improved Touch of Chaos" );
-  perk.improved_unstable_affliction = find_perk_spell( "Improved Unstable Affliction" );
 
   // Glyphs  
   glyphs.carrion_swarm          = find_glyph_spell( "Glyph of Carrion Swarm" );

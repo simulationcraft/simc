@@ -911,7 +911,8 @@ struct jab_t : public monk_melee_attack_t
 
     base_multiplier *= 1.15; // hardcoded into tooltip
 
-    base_costs[ RESOURCE_ENERGY ] += p -> active_stance_data( FIERCE_TIGER ).effectN( 5 ).base_value();
+    if ( p -> specialization() == MONK_WINDWALKER )
+    base_costs[ RESOURCE_ENERGY ] += 5;
   }
 
   double combo_breaker_chance()
