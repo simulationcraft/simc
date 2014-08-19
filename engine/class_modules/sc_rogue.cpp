@@ -1788,7 +1788,7 @@ struct eviscerate_t : public rogue_attack_t
     weapon = &( player -> main_hand_weapon );
     weapon_multiplier = weapon_power_mod = 0;
 
-    attack_power_mod.direct = 0.3203;
+    attack_power_mod.direct = 0.577;
   }
 
   timespan_t gcd() const
@@ -3677,7 +3677,7 @@ struct shadow_reflection_pet_t : public pet_t
       shadow_reflection_attack_t( "eviscerate", p, p -> find_spell( 2098 ) )
     {
       base_costs[ RESOURCE_COMBO_POINT ] = 1;
-      attack_power_mod.direct = 0.3203;
+      attack_power_mod.direct = 0.577;
       weapon_multiplier = 0;
     }
   };
