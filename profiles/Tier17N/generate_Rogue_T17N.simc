@@ -7,8 +7,8 @@ level=100
 race=troll
 role=attack
 position=back
-talents=http://us.battle.net/wow/en/tool/talent-calculator#ca!2000020
-glyphs=vendetta
+talents=http://us.battle.net/wow/en/tool/talent-calculator#ca!2....21
+glyphs=vendetta/energy/disappearance
 spec=assassination
 head=primal_gladiators_helm,id=111275
 neck=primal_gladiators_necklace_of_cruelty,id=111079,enchant=gift_of_critical_strike
