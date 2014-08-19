@@ -322,6 +322,8 @@ buff_t::buff_t( const buff_creation::buff_creator_basics_t& params ) :
   if ( params._refresh_duration_callback )
     refresh_duration_callback = params._refresh_duration_callback;
 
+  assert( refresh_behavior != BUFF_REFRESH_CUSTOM || ( refresh_behavior == BUFF_REFRESH_CUSTOM && refresh_duration_callback ) );
+
   invalidate_list = params._invalidate_list;
   requires_invalidation = ! invalidate_list.empty();
 
