@@ -4617,6 +4617,7 @@ void mage_t::apl_arcane()
   action_priority_list_t* single_target       = get_action_priority_list( "single_target"     );
   action_priority_list_t* aoe                 = get_action_priority_list( "aoe"               );
   action_priority_list_t* prismatic_crystal   = get_action_priority_list( "prismatic_crystal" );
+  action_priority_list_t* incanters_flow      = get_action_priority_list( "incanters_flow"    );
 
   default_list -> add_action( this, "Counterspell", "if=target.debuff.casting.react" );
   default_list -> add_action( this, "Blink", "if=movement.distance>10" );
@@ -4630,8 +4631,9 @@ void mage_t::apl_arcane()
 
   default_list -> add_talent( this, "Mirror Image" );
   default_list -> add_action( this, "Evocation", "if=mana.pct<50,interrupt_if=mana.pct>95&buff.arcane_power.down" );
-  default_list -> add_action( this, "Arcane Power", "if=time_to_bloodlust>cooldown.arcane_power.duration&((buff.arcane_charge.stack=4)|target.time_to_die<buff.arcane_power.duration+5),moving=0" );
-
+  default_list -> add_action( this, "Arcane Power", "if=!talent.overpowered.enabled&time_to_bloodlust>cooldown.arcane_power.duration&((buff.arcane_charge.stack=4)|target.time_to_die<buff.arcane_power.duration+5),moving=0" );
+  default_list -> add_action( this, "Arcane Power", "if=talent.overpowered.enabled&time_to_bloodlust>cooldown.arcane_power.duration&((buff.arcane_charge.stack=4)|target.time_to_die<buff.arcane_power.duration+5)&cooldown.evocation.remains<buff.arcane_power.duration+5,moving=0" );
+  
   for( size_t i = 0; i < racial_actions.size(); i++ )
     default_list -> add_action( racial_actions[i] );
 
@@ -4650,10 +4652,10 @@ void mage_t::apl_arcane()
 
   single_target -> add_action( this, "Arcane Missiles", "if=buff.arcane_missiles.stack=3&buff.arcane_charge.stack=4" );
   single_target -> add_talent( this, "Nether Tempest", "if=(!ticking|remains<tick_time)&target.time_to_die>6&buff.arcane_charge.stack=4" );
-  single_target -> add_talent( this, "Supernova", "if=buff.arcane_charge.stack=4&((charges=1&recharge_time<10&cooldown.arcane_power.remains>12)|(buff.arcane_power.up))" );
+  single_target -> add_talent( this, "Supernova", "if=buff.arcane_charge.stack=4&((charges=1&recharge_time<10&cooldown.arcane_power.remains>12)|(buff.arcane_power.react))" );
   single_target -> add_action( this, "Arcane Missiles", "if=buff.arcane_charge.stack=4" );
   single_target -> add_talent( this, "Nether Tempest", "if=remains<7&target.time_to_die>6&buff.arcane_charge.stack=4" );
-  single_target -> add_action( this, "Arcane Blast", "if=talent.unstable_magic.enabled&(buff.arcane_power.up|mana.pct>=95)");
+  single_target -> add_action( this, "Arcane Blast", "if=talent.unstable_magic.enabled&buff.arcane_power.react");
   single_target -> add_talent( this, "Arcane Orb", "if=buff.arcane_charge.stack<=2" );
   single_target -> add_action( this, "Arcane Barrage", "if=buff.arcane_charge.stack=4&mana.pct<95" );
   single_target -> add_action( this, "Presence of Mind", "if=cooldown.arcane_power.remains>75" );
@@ -4779,7 +4781,9 @@ void mage_t::apl_frost()
   std::vector<std::string> item_actions = get_item_actions();
   std::vector<std::string> racial_actions = get_racial_actions();
 
-  action_priority_list_t* default_list = get_action_priority_list( "default" );
+  action_priority_list_t* default_list        = get_action_priority_list( "default" );
+  action_priority_list_t* prismatic_crystal   = get_action_priority_list( "prismatic_crystal" );
+  action_priority_list_t* incanters_flow      = get_action_priority_list( "incanters_flow" );
 
   default_list -> add_action( this, "Counterspell", "if=target.debuff.casting.react" );
   default_list -> add_action( this, "Blink", "if=movement.distance>10" );
@@ -4792,9 +4796,8 @@ void mage_t::apl_frost()
   default_list -> add_talent( this, "Rune of Power", "if=buff.rune_of_power.remains<cast_time" );
   default_list -> add_talent( this, "Rune of Power", "if=cooldown.icy_veins.remains=0&buff.rune_of_power.remains<20" );
 
+  default_list -> add_action( this, "Frozen Orb", "if=talent.prismatic_crystal.enabled&cooldown.prismatic_crystal.remains=0" );
   default_list -> add_talent( this, "Prismatic Crystal");
-  default_list -> add_action( this, "Mirror Image" );
-  default_list -> add_action( this, "Frozen Orb", "if=buff.fingers_of_frost.stack<2" );
   default_list -> add_action( this, "Icy Veins", "if=(time_to_bloodlust>160&(buff.brain_freeze.react|buff.fingers_of_frost.react))|target.time_to_die<22,moving=0" );
 
   for( size_t i = 0; i < racial_actions.size(); i++ )
@@ -4803,16 +4806,20 @@ void mage_t::apl_frost()
   for( size_t i = 0; i < item_actions.size(); i++ )
     default_list -> add_action( item_actions[i] );
 
+
   default_list -> add_action( this, "Flamestrike", "if=active_enemies>=5" );
   default_list -> add_talent( this, "Comet Storm" );
+  default_list -> add_action( this, "Frozen Orb", "if=!talent.prismatic_crystal.enabled&buff.fingers_of_frost.stack<2" );
   default_list -> add_talent( this, "Frost Bomb", "if=debuff.frost_bomb.remains<cast_time&buff.fingers_of_frost.stack>=1" );
+  default_list -> add_action( this, "Frostfire Bolt", "if=!pet.prismatic_crystal.active&buff.brain_freeze.react" );
   default_list -> add_action( this, "Ice Lance", "if=talent.frost_bomb.enabled&buff.fingers_of_frost.react&debuff.frost_bomb.remains>travel_time" );
   default_list -> add_action( this, "Ice Lance", "if=!talent.frost_bomb.enabled&buff.fingers_of_frost.react" );
   default_list -> add_action( this, "Frostfire Bolt", "if=buff.brain_freeze.react" );
-  default_list -> add_talent( this, "Ice Nova" );
+  default_list -> add_talent( this, "Ice Nova", "if=(charges=1&recharge_time<3&cooldown.icy_veins.remains>5&cooldown.prismatic_crystal.remains>5)|buff.icy_veins.react|pet.prismatic_crystal.active" );
   default_list -> add_action( this, "Frostbolt" );
   default_list -> add_talent( this, "Ice Floes", "moving=1" );
   default_list -> add_action( this, "Ice Lance", "moving=1" );
+
 }
 
 // Default Action List ===============================================================================================
