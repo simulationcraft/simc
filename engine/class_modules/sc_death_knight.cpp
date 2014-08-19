@@ -305,7 +305,6 @@ public:
 
     // Frost
     const spell_data_t* blood_of_the_north;
-    const spell_data_t* tundra_stalker;
     const spell_data_t* icy_talons;
     const spell_data_t* improved_frost_presence;
     const spell_data_t* killing_machine;
@@ -5350,6 +5349,8 @@ double death_knight_t::composite_melee_haste() const
 
   haste *= 1.0 / ( 1.0 + spec.veteran_of_the_third_war -> effectN( 6 ).percent() );
 
+  haste *= 1.0 / ( 1.0 + spec.icy_talons -> effectN( 2 ).percent() );
+
   return haste;
 }
 
@@ -5362,6 +5363,8 @@ double death_knight_t::composite_spell_haste() const
   haste *= 1.0 / ( 1.0 + buffs.unholy_presence -> value() );
 
   haste *= 1.0 / ( 1.0 + spec.veteran_of_the_third_war -> effectN( 6 ).percent() );
+
+  haste *= 1.0 / ( 1.0 + spec.icy_talons -> effectN( 2 ).percent() );
 
   return haste;
 }
@@ -5451,7 +5454,6 @@ void death_knight_t::init_spells()
   spec.rime                       = find_specialization_spell( "Rime" );
   spec.might_of_the_frozen_wastes = find_specialization_spell( "Might of the Frozen Wastes" );
   spec.killing_machine            = find_specialization_spell( "Killing Machine" );
-  spec.tundra_stalker             = find_specialization_spell( "Tundra Stalker" );
 
   // Unholy
   spec.master_of_ghouls           = find_specialization_spell( "Master of Ghouls" );
@@ -6556,7 +6558,7 @@ double death_knight_t::composite_rating_multiplier( rating_e rating ) const
     case RATING_SPELL_HASTE:
     case RATING_MELEE_HASTE:
     case RATING_RANGED_HASTE:
-      m *= 1.0 + spec.tundra_stalker -> effectN( 1 ).percent();
+      m *= 1.0 + spec.icy_talons -> effectN( 3 ).percent();
       break;
     default:
       break;
