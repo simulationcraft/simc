@@ -358,6 +358,7 @@ class CDNIndex(CASCObject):
 		self.cdn_hash = None
 		self.cdn_host = None
 		self.cdn_path = None
+		self.cdn_version = None
 		self.build_cfg_hash = None
 		self.archives = []
 		self.build_info = {}
@@ -381,12 +382,16 @@ class CDNIndex(CASCObject):
 		
 		data = handle.read().strip().split('\n')
 		for line in data:
-			data_split = line.split('|')
-			if data_split[0] != 'us':
+			split = line.split('|')
+			if split[0] != 'us':
 				continue
 
-			self.cdn_path = data_split[1]
-			self.cdn_host = data_split[2]
+			self.cdn_path = split[1]
+			self.cdn_host = split[2]
+
+		if not self.cdn_path or not self.cdn_host:
+			print >>sys.stderr, 'Unable to extract CDN information'
+			sys.exit(1)
 
 	
 	def cdn_base_url(self):
@@ -399,20 +404,20 @@ class CDNIndex(CASCObject):
 		version_url =  '%s/versions' % CDNIndex.PATCH_BASE_URL
 		handle = self.get_url(version_url)
 	
-		data_split = None
 		for line in handle.readlines():
-			data_split = line.split('|')
-			if data_split[0] == 'us':
-				break
+			split = line.split('|')
+			if split[0] != 'us':
+				continue
+
+			# The CDN hash name is what we want at this point
+			self.cdn_hash = split[2]
+			self.cdn_version = split[-1].strip()
 		
-		if not data_split:
+		if not self.cdn_hash:
 			print >>sys.stderr, 'Invalid version file'
 			sys.exit(1)
 
-		# The CDN hash name is what we want at this point
-		self.cdn_hash = data_split[2]
-
-		print 'Current build version: %s' % data_split[-1].strip()
+		print 'Current build version: %s' % self.cdn_version
 	
 	def open_cdn_build_cfg(self):
 		path = os.path.join(self.cache_dir('config'), self.cdn_hash)
