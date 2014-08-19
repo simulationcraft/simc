@@ -802,6 +802,9 @@ void buff_t::refresh( int        stacks,
   else
     d = refresh_duration( buff_duration );
 
+  if ( refresh_behavior == BUFF_REFRESH_DISABLED && duration != timespan_t::zero() )
+    return;
+
   // Make sure we always cancel the expiration event if we get an
   // infinite duration
   if ( d <= timespan_t::zero() )
