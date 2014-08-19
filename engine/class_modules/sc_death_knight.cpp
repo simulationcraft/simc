@@ -2028,6 +2028,7 @@ struct shadow_of_death_t : public buff_t
   {
     player -> stat_loss( STAT_MAX_HEALTH, health_gain, 0, 0, true );
 
+    health_gain = 0;
     buff_t::expire_override();
   }
 
