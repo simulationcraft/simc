@@ -95,14 +95,14 @@ trinket2=thoks_tail_tip,id=105609,upgrade=2
 main_hand=xalatoh_desecrated_image_of_gorehowl,id=105644,upgrade=2,gems=4str_8crit_3str,enchant=rune_of_razorice
 
 # Gear Summary
-# gear_strength=1097
+# gear_strength=1108
 # gear_agility=4
 # gear_stamina=1537
 # gear_intellect=4
 # gear_expertise_rating=3
-# gear_crit_rating=769
-# gear_haste_rating=309
-# gear_mastery_rating=460
+# gear_crit_rating=773
+# gear_haste_rating=313
+# gear_mastery_rating=464
 # gear_armor=1190
 # meta_gem=capacitive_primal
 # tier16_2pc_melee=1
