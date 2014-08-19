@@ -1228,7 +1228,7 @@ struct dancing_rune_weapon_pet_t : public pet_t
     drw_death_coil_t( dancing_rune_weapon_pet_t* p ) :
       drw_spell_t( "death_coil", p, p -> owner -> find_class_spell( "Death Coil" ) )
     {
-      attack_power_mod.direct = 0.514;
+      attack_power_mod.direct = 0.85;
     }
   };
 
@@ -2832,7 +2832,7 @@ struct soul_reaper_t : public death_knight_melee_attack_t
   soul_reaper_dot_t* soul_reaper_dot;
 
   soul_reaper_t( death_knight_t* p, const std::string& options_str ) :
-    death_knight_melee_attack_t( "soul_reaper", p, p -> find_specialization_spell( "Soul Reaper" ) ),
+    death_knight_melee_attack_t( "soul_reaper", p, p -> specialization() != DEATH_KNIGHT_UNHOLY ? p -> find_specialization_spell( "Soul Reaper" ) : p -> find_spell( 130736 ) ),
     soul_reaper_dot( 0 )
   {
     parse_options( NULL, options_str );
@@ -3299,7 +3299,7 @@ struct death_coil_t : public death_knight_spell_t
   {
     parse_options( NULL, options_str );
 
-    attack_power_mod.direct = 1.272;
+    attack_power_mod.direct = 0.85;
 
     base_multiplier *= 1.0 + p -> perk.improved_death_coil -> effectN( 2 ).percent();
   }
