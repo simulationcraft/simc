@@ -67,7 +67,7 @@ actions.main+=/wait,sec=cooldown.mind_blast.remains,if=cooldown.mind_blast.remai
 actions.main+=/mind_spike,if=buff.surge_of_darkness.react&active_enemies<=5
 actions.main+=/divine_star,if=talent.divine_star.enabled&target.distance<=28&active_enemies>1
 actions.main+=/mind_sear,chain=1,interrupt=1,if=active_enemies>=3
-actions.main+=/mind_flay,chain=1,interrupt=1
+actions.main+=/shadow_word_pain,moving=0,cycle_targets=1
 actions.main+=/shadow_word_death,moving=1
 actions.main+=/mind_blast,moving=1,if=buff.shadowy_insight.react&cooldown_react
 actions.main+=/divine_star,moving=1,if=talent.divine_star.enabled&target.distance<=28
@@ -91,7 +91,6 @@ actions.cop+=/vampiric_touch,cycle_targets=1,max_cycle_targets=5,if=remains<cast
 actions.cop+=/mind_sear,chain=1,interrupt=1,if=active_enemies>=8
 actions.cop+=/mind_spike,if=active_enemies<=8&buff.surge_of_darkness.react
 actions.cop+=/mind_sear,chain=1,interrupt=1,if=active_enemies>=6
-actions.cop+=/mind_flay,if=target.dot.devouring_plague_tick.ticks_remain>1&active_enemies=1,chain=1,interrupt=1
 actions.cop+=/mind_spike
 actions.cop+=/shadow_word_death,moving=1
 actions.cop+=/mind_blast,moving=1,if=buff.shadowy_insight.react&cooldown_react

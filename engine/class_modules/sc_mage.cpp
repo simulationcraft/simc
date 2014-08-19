@@ -18,7 +18,6 @@
 // Is the ignite from Inferno Blast spread?
 // Automate which spells use Unstable Magic
 // Do not hardcode 15second duration for enhanced frostbolt perk
-// Enhanced Frostbolt keeps trying to trigger for non-Frost specs (causes debug log to look ugly, prolly slows down the sim)
 // Arcane Orb needs to be treated as a flying object that can hit multiple targets in a line, instead of as something which is basically just an explosion around a single target.
 // Need to do some basic d=vt calcs to have a more realistic travel time for AO.
 // Improve the delay between tick and aoe for NT by applying a guassian distribution centered around 1.25s with stddev such that travel time is ~1.2-1.3s
@@ -28,6 +27,7 @@
 // To-do Completed:
 //  BUG IGNITE TRIGGERS ON MISSES. Fixing this breaks icicles. Need to investigate - DONE!
 //  Enhanced Pyrotechnics is giving global crit chance increase (not just FB/FFB). Fix this! - DONE!
+// Enhanced Frostbolt keeps trying to trigger for non-Frost specs (causes debug log to look ugly, prolly slows down the sim) - DONE!
 //  Multistrike triggering ignite? - Confirmed by celestalon to interact with one another
 //  Ice Lance MS should not be procing Frost Bomb explosion (as per in game testing 7/20/2014) - DONE!
 //  Need to figure out how to not hard-code 2 charges and their CD for the "nova" spells. - This value is hardcoded in the spelldata it seems.
@@ -568,7 +568,7 @@ struct mirror_image_pet_t : public pet_t
     {
       double am = mirror_image_spell_t::action_multiplier();
 
-      am *= 1.0 + p() -> arcane_charge -> stack() * p() -> o() -> spells.arcane_charge_arcane_blast -> effectN( 1 ).percent() *
+      am *= 1.0 + p() -> arcane_charge -> stack() * p() -> o() -> spells.arcane_charge_arcane_blast -> effectN( 4 ).percent() *
             ( 1.0 + p() -> o() -> sets.set( SET_T15_4PC_CASTER ) -> effectN( 1 ).percent() );
         
       return am;

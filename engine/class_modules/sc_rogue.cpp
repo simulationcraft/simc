@@ -4229,13 +4229,15 @@ void rogue_t::init_action_list()
     def -> add_action( this, "Rupture", "if=combo_points=5&ticks_remain<3" );
     def -> add_action( this, "Rupture", "cycle_targets=1,if=active_enemies>1&!ticking&combo_points=5" );
     def -> add_action( this, "Mutilate", "if=buff.stealth.up" );
-    def -> add_action( this, "Dispatch", "if=buff.envenom.up&active_enemies<4" );
     def -> add_talent( this, "Marked for Death", "if=combo_points=0" );
     def -> add_action( this, "Fan of Knives", "if=combo_points<5&active_enemies>=4" );
+    def -> add_action( this, "Rupture", "if=(remains<2|(combo_points=5&remains<=(duration*0.3)))&active_enemies=1" );
     def -> add_action( this, "Vendetta" );
-    def -> add_action( this, "Envenom", "if=combo_points>4&dot.rupture.ticks_remain>3&active_enemies<4" );
+    def -> add_talent( this, "Death From Above", "if=combo_points>4" );
+    def -> add_action( this, "Envenom", "if=(combo_points>4&buff.envenom.remains<2&(cooldown.death_from_above.remains>2|!talent.death_from_above.enabled))&active_enemies<4" );
     def -> add_action( this, "Mutilate", "if=target.health.pct>35&combo_points<5&active_enemies<5" );
-    def -> add_action( this, "Dispatch", "if=combo_points<5&active_enemies<4" );
+    def -> add_action( this, "Dispatch", "if=(combo_points<5|(talent.anticipation.enabled&anticipation_charges<4))&active_enemies<4" );
+    def -> add_action( this, "Mutilate", "if=active_enemies<5" );
   }
 
   else if ( specialization() == ROGUE_COMBAT )

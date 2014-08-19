@@ -1066,7 +1066,7 @@ struct melee_t: public warrior_attack_t
         }
       }
       trigger_rage_gain( s );
-      if ( p() -> perk.enhanced_rend -> ok() )
+      if ( p() -> perk.enhanced_rend -> ok() && td( s -> target ) -> dots_rend -> is_ticking() )
       {
         p() -> active_enhanced_rend -> target = s -> target;
         p() -> active_enhanced_rend -> execute();
@@ -2694,7 +2694,7 @@ struct whirlwind_t: public warrior_attack_t
       add_child( oh_attack );
     }
     else
-      weapon_multiplier *= 2;
+      weapon_multiplier = p -> find_spell( 168695 ) -> effectN( 2 ).percent();
 
     weapon = &( p -> main_hand_weapon );
   }
