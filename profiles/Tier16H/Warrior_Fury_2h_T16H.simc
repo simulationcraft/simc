@@ -41,7 +41,6 @@ actions+=/run_action_list,name=three_targets,if=active_enemies=3
 actions+=/run_action_list,name=aoe,if=active_enemies>3
 
 actions.single_target=bloodbath,if=(cooldown.colossus_smash.remains<2|debuff.colossus_smash.remains>=5|target.time_to_die<=20)
-actions.single_target+=/ignite_weapon,if=(target.health.pct>=20&(buff.ignite_weapon.remains<2|rage>90|(buff.enrage.up&rage>60)))
 actions.single_target+=/heroic_leap,if=debuff.colossus_smash.up
 actions.single_target+=/bloodthirst,if=!(target.health.pct<20&debuff.colossus_smash.up&rage>=30&buff.enrage.up)&!talent.unquenchable_thirst.enabled
 actions.single_target+=/bloodthirst,if=talent.unquenchable_thirst.enabled&buff.enrage.down&rage<100
@@ -51,7 +50,7 @@ actions.single_target+=/ravager,if=cooldown.colossus_smash.remains<4
 actions.single_target+=/colossus_smash
 actions.single_target+=/raging_blow,if=debuff.colossus_smash.up
 actions.single_target+=/execute,if=debuff.colossus_smash.up|rage>70|target.time_to_die<12|buff.sudden_death.up
-actions.single_target+=/wild_strike,if=buff.bloodsurge.up|(((debuff.colossus_smash.up|rage>70)&target.health.pct>20)&!talent.ignite_weapon.enabled&!talent.unquenchable_thirst.enabled)
+actions.single_target+=/wild_strike,if=buff.bloodsurge.up|((debuff.colossus_smash.up|rage>70)&target.health.pct>20)
 actions.single_target+=/raging_blow,if=cooldown.colossus_smash.remains>4
 actions.single_target+=/bladestorm,if=enabled&buff.enrage.remains>3,interrupt_if=buff.enrage.down
 actions.single_target+=/bloodthirst,if=talent.unquenchable_thirst.enabled
@@ -59,7 +58,6 @@ actions.single_target+=/shockwave
 
 actions.two_targets=bloodbath
 actions.two_targets+=/heroic_leap,if=buff.enrage.up
-actions.two_targets+=/ignite_weapon,if=(target.health.pct>=20&rage>100)|buff.ignite_weapon.down
 actions.two_targets+=/ravager
 actions.two_targets+=/bladestorm
 actions.two_targets+=/dragon_roar,if=!debuff.colossus_smash.up&(buff.bloodbath.up|!talent.bloodbath.enabled)
@@ -75,7 +73,6 @@ actions.two_targets+=/bloodthirst
 actions.three_targets=bloodbath
 actions.three_targets+=/heroic_leap,if=buff.enrage.up
 actions.three_targets+=/ravager
-actions.three_targets+=/ignite_weapon,if=(target.health.pct>=20&rage>100)|buff.ignite_weapon.down
 actions.three_targets+=/bladestorm,if=buff.enrage.remains>4
 actions.three_targets+=/dragon_roar,if=!debuff.colossus_smash.up&(buff.bloodbath.up|!talent.bloodbath.enabled)
 actions.three_targets+=/bloodthirst,if=(talent.unquenchable_thirst.enabled&buff.enrage.down)|!talent.unquenchable_thirst.enabled
@@ -87,7 +84,6 @@ actions.three_targets+=/bloodthirst
 
 actions.aoe=bloodbath
 actions.aoe+=/heroic_leap,if=buff.enrage.up
-actions.aoe+=/ignite_weapon,if=(target.health.pct>=20&rage>100)|buff.ignite_weapon.down
 actions.aoe+=/ravager
 actions.aoe+=/bladestorm
 actions.aoe+=/bloodthirst,if=(talent.unquenchable_thirst.enabled&buff.enrage.down)|!talent.unquenchable_thirst.enabled
@@ -118,13 +114,13 @@ main_hand=xalatoh_desecrated_image_of_gorehowl,id=105644,upgrade=2,gems=8haste_8
 off_hand=xalatoh_desecrated_image_of_gorehowl,id=105644,upgrade=2,gems=8haste_8crit_3str,enchant=dancing_steel
 
 # Gear Summary
-# gear_strength=1116
+# gear_strength=1127
 # gear_agility=3
 # gear_stamina=1688
 # gear_intellect=3
-# gear_crit_rating=938
-# gear_haste_rating=312
-# gear_mastery_rating=537
+# gear_crit_rating=942
+# gear_haste_rating=316
+# gear_mastery_rating=541
 # gear_armor=1187
 # meta_gem=capacitive_primal
 # tier16_2pc_melee=1

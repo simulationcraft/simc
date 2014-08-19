@@ -69,13 +69,13 @@ main_hand=siegecrafters_forge_hammer,id=105621,upgrade=2,gems=16haste,enchant=wi
 off_hand=bulwark_of_the_fallen_general,id=105556,upgrade=2,gems=16haste,enchant=9parry
 
 # Gear Summary
-# gear_strength=928
+# gear_strength=939
 # gear_stamina=1881
 # gear_crit_rating=395
-# gear_haste_rating=826
-# gear_mastery_rating=364
+# gear_haste_rating=830
+# gear_mastery_rating=368
 # gear_armor=2041
-# gear_bonus_armor=35
+# gear_bonus_armor=39
 # gear_dodge_rating=13
 # gear_parry_rating=9
 # meta_gem=indomitable_primal

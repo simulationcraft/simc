@@ -1861,7 +1861,7 @@ public:
     if ( p() -> mastery_spells.master_demonologist -> ok() )
     {
       if ( p() -> buffs.metamorphosis -> up() )
-        pm *= 1.0 + p() -> cache.mastery_value() * 3.0;
+        pm *= 1.0 + p() -> cache.mastery_value() * 2.0;
       else
         pm *= 1.0 + p() -> cache.mastery_value();
     }
@@ -5451,7 +5451,7 @@ void warlock_t::apl_precombat()
 
   add_action(
       spec.dark_soul,
-      "if=!talent.archimondes_darkness.enabled|(talent.archimondes_darkness.enabled&(charges=2|trinket.proc.intellect.react|trinket.stacking_proc.intellect.react|target.health.pct<=10))" );
+      "if=!talent.archimondes_darkness.enabled|(talent.archimondes_darkness.enabled&(buff.demonbolt.remains>=buff.dark_soul.duration|!buff.demonbolt.remains)&(charges=2|trinket.proc.intellect.react|trinket.stacking_proc.intellect.react|target.health.pct<=10))" );
 
   action_list_str += "/service_pet,if=talent.grimoire_of_service.enabled";
 

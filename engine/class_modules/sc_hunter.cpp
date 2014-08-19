@@ -2150,7 +2150,7 @@ struct explosive_shot_t: public hunter_ranged_attack_t
     parse_options( NULL, options_str );
     may_block = false;
 
-    attack_power_mod.tick = player -> specs.explosive_shot -> effectN( 1 ).ap_coeff();
+    attack_power_mod.tick = 0.46; //Welcome to the hard-coded tooltip club!
     attack_power_mod.direct = attack_power_mod.tick;
     // the inital impact is not part of the rolling dot
     dot_duration = timespan_t::zero();
@@ -2184,14 +2184,14 @@ struct explosive_shot_t: public hunter_ranged_attack_t
       hunter_ranged_attack_t::update_ready( cd_duration );
   }
 
-  virtual double action_multiplier() const
+  double action_multiplier() const
   {
     double am = hunter_ranged_attack_t::action_multiplier();
     am *= 1.0 + p() -> new_sets.set( SET_MELEE, T14, B2 ) -> effectN( 3 ).percent();
     return am;
   }
 
-  virtual void impact( action_state_t* s )
+  void impact( action_state_t* s )
   {
     hunter_ranged_attack_t::impact( s );
 
