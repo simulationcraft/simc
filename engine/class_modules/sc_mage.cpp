@@ -4347,27 +4347,29 @@ void mage_t::init_scaling()
 
 struct incanters_flow_t : public buff_t
 {
-  static void callback( buff_t* buff, int current_tick, int )
-  {
-    // First 5 ticks are increasing, 6th tick flips bit, 11th tick flips again
-    // etc.
-    if ( current_tick > 5 && ( current_tick - 1 ) % 5 == 0 )
-      buff -> reverse = ! buff -> reverse;
-  }
-
   incanters_flow_t( mage_t* p ) :
     buff_t( buff_creator_t( p, "incanters_flow", p -> find_spell( 116267 ) ) // Buff is a separate spell
-            .tick_callback( callback )
             .duration( p -> sim -> max_time * 3 ) // Long enough duration to trip twice_expected_event
             .period( p -> talents.incanters_flow -> effectN( 1 ).period() ) ) // Period is in the talent
   { }
 
+  void bump( int stacks, double value )
+  {
+    int before_stack = current_stack;
+    buff_t::bump( stacks, value );
+    // Reverse direction if max stacks achieved before bump
+    if ( before_stack == current_stack )
+      reverse = true;
+  }
+
   void decrement( int stacks, double value )
   {
-    // This buff will never fade, so just do nothing at 1 stack. Buff uptime
-    // reporting _should_ work ok with this solution
+    // This buff will never fade; reverse direction at 1 stack.
+    // Buff uptime reporting _should_ work ok with this solution
     if ( current_stack > 1 )
       buff_t::decrement( stacks, value );
+    else
+      reverse = false;
   }
 };
 
@@ -5228,6 +5230,36 @@ expr_t* mage_t::create_expression( action_t* a, const std::string& name_str )
       }
     };
     return new regen_mps_expr_t( *this );
+  }
+
+  // Incanters flow direction
+  // Evaluates to:  0.0 if IF talent not chosen or IF stack unchanged
+  //                1.0 if next IF stack increases
+  //               -1.0 if IF stack decreases
+  if ( name_str == "incanters_flow_dir" )
+  {
+    struct incanters_flow_dir_expr_t : public mage_expr_t
+    {
+      mage_t * mage;
+
+      incanters_flow_dir_expr_t( mage_t& m ) :
+        mage_expr_t( "incanters_flow_dir", m ), mage( &m )
+      {}
+
+      virtual double evaluate()
+      {
+        if ( !mage -> talents.incanters_flow -> ok() )
+          return 0.0;
+
+        incanters_flow_t * flow = mage -> buffs.incanters_flow;
+        if ( flow -> reverse )
+          return flow -> current_stack == 1 ? 0.0: -1.0;
+        else
+          return flow -> current_stack == 5 ? 0.0: 1.0;
+      }
+    };
+
+    return new incanters_flow_dir_expr_t( * this );
   }
 
 
