@@ -4121,13 +4121,19 @@ void monk_t::apl_pre_windwalker()
   if ( sim -> allow_flasks )
   {
     // Flask
-    precombat += "flask,type=spring_blossoms";
+    if ( level = 100 )
+      precombat += "flask,type=greater_draenic_agility_flask";
+    else
+      precombat += "flask,type=spring_blossoms";
   }
 
   if ( sim -> allow_food )
   {
     // Food
-    precombat += "/food,type=sea_mist_rice_noodles";
+    if ( level = 100 )
+      precombat += "/food,type=rylak_crepes";
+    else
+      precombat += "/food,type=sea_mist_rice_noodles";
   }
 
   precombat += "/stance,choose=fierce_tiger";
@@ -4136,7 +4142,9 @@ void monk_t::apl_pre_windwalker()
   if ( sim -> allow_potions )
   {
     // Prepotion
-    if ( level >= 85 )
+    if ( level = 100 )
+      precombat += "/potion,name=draenic_agility";
+    else if ( level >= 85 )
       precombat += "/potion,name=virmens_bite";
     else if ( level > 80 )
       precombat += "/potion,name=tolvir";
@@ -4234,7 +4242,9 @@ void monk_t::apl_combat_windwalker()
 
   if ( sim -> allow_potions )
   {
-    if ( level >= 85 )
+    if ( level = 100 )
+      action_list_str += "/potion,name=draenic_agility,if=buff.serenity.up|(!talent.serenity.enabled&trinket.proc.agility.react)";
+    else if ( level >= 85 )
       action_list_str += "/potion,name=virmens_bite,if=buff.bloodlust.react|target.time_to_die<=60";
   }
 
@@ -4242,15 +4252,15 @@ void monk_t::apl_combat_windwalker()
   action_list_str += init_use_profession_actions();
 
   action_list_str += init_use_racial_actions();
+  action_list_str += "/serenity,if=chi>=2";
   action_list_str += "/chi_brew,if=talent.chi_brew.enabled&chi<=2&(trinket.proc.agility.react|(charges=1&recharge_time<=10)|charges=2|target.time_to_die<charges*10)";
   action_list_str += "/tiger_palm,if=buff.tiger_power.remains<=3";
   action_list_str += "/tigereye_brew,if=buff.tigereye_brew_use.down&buff.tigereye_brew.stack=20";
-  action_list_str += "/tigereye_brew,if=buff.tigereye_brew_use.down&trinket.proc.agility.react";
+  action_list_str += "/tigereye_brew,if=buff.tigereye_brew_use.down&(trinket.proc.agility.react|buff.serenity.up)";
   action_list_str += "/tigereye_brew,if=buff.tigereye_brew_use.down&chi>=2&(trinket.proc.agility.react|trinket.proc.strength.react|buff.tigereye_brew.stack>=15|target.time_to_die<40)&debuff.rising_sun_kick.up&buff.tiger_power.up";
-  action_list_str += "/energizing_brew,if=energy.time_to_max>5";
+  action_list_str += "/energizing_brew,if=(!talent.serenity.enabled|(!buff.serenity.remains&cooldown.serenity.remains>4))&energy+energy.regen*gcd<50";
   action_list_str += "/rising_sun_kick,if=debuff.rising_sun_kick.down";
   action_list_str += "/tiger_palm,if=buff.tiger_power.down&debuff.rising_sun_kick.remains>1&energy.time_to_max>1";
-
   action_list_str += "/invoke_xuen,if=talent.invoke_xuen.enabled";
   action_list_str += "/run_action_list,name=aoe,if=active_enemies>=3";
   action_list_str += "/run_action_list,name=single_target,if=active_enemies<3";
@@ -4264,15 +4274,15 @@ void monk_t::apl_combat_windwalker()
   aoe_list_str += "/spinning_crane_kick,if=!talent.rushing_jade_wind.enabled";
 
   //st
-  st_list_str += "/fists_of_fury,if=energy.time_to_max>4&buff.tiger_power.remains>4&debuff.rising_sun_kick.remains>4";
+  st_list_str += "/fists_of_fury,if=energy.time_to_max>cast_time&buff.tiger_power.remains>cast_time&debuff.rising_sun_kick.remains>cast_time&!buff.serenity.remains";
   st_list_str += "/rising_sun_kick";
-  st_list_str += "/chi_wave,if=talent.chi_wave.enabled&energy.time_to_max>2";
-  st_list_str += "/chi_burst,if=talent.chi_burst.enabled&energy.time_to_max>2";
-  st_list_str += "/zen_sphere,cycle_targets=1,if=talent.zen_sphere.enabled&energy.time_to_max>2&!dot.zen_sphere.ticking";
-  st_list_str += "/blackout_kick,if=buff.combo_breaker_bok.react";
+  st_list_str += "/chi_wave,if=energy.time_to_max>2&buff.serenity.down";
+  st_list_str += "/chi_burst,if=talent.chi_burst.enabled&energy.time_to_max>2&buff.serenity.down";
+  st_list_str += "/zen_sphere,cycle_targets=1,if=talent.zen_sphere.enabled&energy.time_to_max>2&!dot.zen_sphere.ticking&buff.serenity.down";
+  st_list_str += "/blackout_kick,if=(buff.combo_breaker_bok.react|buff.serenity.up)";
   st_list_str += "/tiger_palm,if=buff.combo_breaker_tp.react&(buff.combo_breaker_tp.remains<=2|energy.time_to_max>=2)";
   st_list_str += "/jab,if=chi.max-chi>=2";
-  st_list_str += "/blackout_kick,if=energy+energy.regen*cooldown.rising_sun_kick.remains>=40";
+  st_list_str += "/blackout_kick,if=chi.max-chi<2";
 }
 
 // Mistweaver Combat Action Priority List
