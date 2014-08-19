@@ -211,17 +211,6 @@ void scaling_t::init_deltas()
 
   if ( stats.weapon_dps            == 0 ) stats.weapon_dps            = default_delta * 0.3;
   if ( stats.weapon_offhand_dps    == 0 ) stats.weapon_offhand_dps    = default_delta * 0.3;
-
-  if ( sim -> weapon_speed_scale_factors )
-  {
-    if ( stats.weapon_speed          == 0 ) stats.weapon_speed = 0.2;
-    if ( stats.weapon_offhand_speed  == 0 ) stats.weapon_offhand_speed  = 0.2;
-  }
-  else
-  {
-    stats.weapon_speed         = 0;
-    stats.weapon_offhand_speed = 0;
-  }
 }
 
 // scaling_t::analyze_stats =================================================
@@ -535,9 +524,7 @@ void scaling_t::create_options()
     opt_float( "scale_readiness_rating", stats.readiness_rating ),
     opt_float( "scale_versatility_rating", stats.versatility_rating ),
     opt_float( "scale_weapon_dps", stats.weapon_dps ),
-    opt_float( "scale_weapon_speed", stats.weapon_speed ),
     opt_float( "scale_offhand_weapon_dps", stats.weapon_offhand_dps ),
-    opt_float( "scale_offhand_weapon_speed", stats.weapon_offhand_speed ),
     opt_string( "scale_only", scale_only_str ),
     opt_string( "scale_over", scale_over ),
     opt_string( "scale_over_player", scale_over_player ),

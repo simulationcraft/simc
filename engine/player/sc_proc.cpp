@@ -302,7 +302,12 @@ stat_buff_t* special_effect_t::initialize_stat_buff() const
     creator.reverse( true );
 
   if ( tick > timespan_t::zero() )
+  {
     creator.period( tick );
+    creator.tick_behavior( BUFF_TICK_CLIP );
+  }
+
+  creator.refresh_behavior( BUFF_REFRESH_DURATION );
 
   // If user given stat is defined, override whatever the spell would contain
   if ( stat != STAT_NONE )
@@ -351,7 +356,12 @@ absorb_buff_t* special_effect_t::initialize_absorb_buff() const
     creator.reverse( true );
 
   if ( tick > timespan_t::zero() )
+  {
     creator.period( tick );
+    creator.tick_behavior( BUFF_TICK_CLIP );
+  }
+
+  creator.refresh_behavior( BUFF_REFRESH_DURATION );
 
   return creator;
 }

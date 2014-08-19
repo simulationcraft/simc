@@ -307,6 +307,21 @@ buff_t::buff_t( const buff_creation::buff_creator_basics_t& params ) :
   else if ( params._affects_regen != -1 )
     change_regen_rate = params._affects_regen;
 
+  if ( params._refresh_behavior == BUFF_REFRESH_NONE )
+  {
+    // In wod, default behavior for ticking buffs is to pandemic-extend the duration
+    if ( tick_behavior == BUFF_TICK_CLIP || tick_behavior == BUFF_TICK_REFRESH )
+      refresh_behavior = BUFF_REFRESH_PANDEMIC;
+    // Otherwise, just do the full-duration refresh
+    else
+      refresh_behavior = BUFF_REFRESH_DURATION;
+  }
+  else
+    refresh_behavior = params._refresh_behavior;
+
+  if ( params._refresh_duration_callback )
+    refresh_duration_callback = params._refresh_duration_callback;
+
   invalidate_list = params._invalidate_list;
   requires_invalidation = ! invalidate_list.empty();
 
@@ -380,6 +395,46 @@ void buff_t::datacollection_end()
 
   avg_start.add( start_count );
   avg_refresh.add( refresh_count );
+}
+
+// buff_t:: refresh_duration ================================================
+
+timespan_t buff_t::refresh_duration( const timespan_t& new_duration ) const
+{
+  switch ( refresh_behavior )
+  {
+    case BUFF_REFRESH_DISABLED:
+      return timespan_t::zero();
+    case BUFF_REFRESH_DURATION:
+      return new_duration;
+    case BUFF_REFRESH_TICK:
+    {
+      timespan_t residual = remains() % buff_period;
+      if ( sim -> debug )
+        sim -> out_debug.printf( "%s %s carryover duration from ongoing tick: %.3f",
+            player -> name(), name(), residual.total_seconds() );
+
+      return new_duration + residual;
+    }
+    case BUFF_REFRESH_PANDEMIC:
+    {
+      timespan_t residual = std::min( new_duration * 0.3, remains() );
+      if ( sim -> debug )
+        sim -> out_debug.printf( "%s %s carryover from ongoing buff: %.3f",
+            player -> name(), name(), residual.total_seconds() );
+
+      return new_duration + residual;
+    }
+    case BUFF_REFRESH_EXTEND:
+      return remains() + new_duration;
+    case BUFF_REFRESH_CUSTOM:
+      return refresh_duration_callback( this, new_duration );
+    default:
+    {
+      assert( 0 );
+      return new_duration;
+    }
+  }
 }
 
 // buff_t::total_stack ======================================================
@@ -711,7 +766,7 @@ void buff_t::start( int        stacks,
   {
     expiration = new ( *sim ) expiration_t( this, d );
 
-    if ( tick_behavior != BUFF_TICK_NONE && 
+    if ( tick_behavior != BUFF_TICK_NONE &&
          buff_period > timespan_t::zero() &&
          buff_period <= d )
     {
@@ -737,20 +792,13 @@ void buff_t::refresh( int        stacks,
 
   refresh_count++;
 
-  timespan_t d = ( duration >= timespan_t::zero() ) ? duration : buff_duration;
-
-  // Carryover on ticking buffs that refresh, instead of clip
-  if ( d > timespan_t::zero() && buff_period > timespan_t::zero() && tick_behavior == BUFF_TICK_REFRESH )
-  {
-    timespan_t carryover = remains() % buff_period;
-    assert( carryover < buff_period );
-
-    if ( sim -> debug )
-      sim -> out_debug.printf( "%s %s carryover duration from ongoing tick: %.3f", 
-          player -> name(), name(), carryover.total_seconds() );
-
-    d += carryover;
-  }
+  timespan_t d;
+  if ( duration > timespan_t::zero() )
+    d = refresh_duration( duration );
+  else if ( duration == timespan_t::zero() )
+    d = duration;
+  else
+    d = refresh_duration( buff_duration );
 
   // Make sure we always cancel the expiration event if we get an
   // infinite duration
@@ -763,12 +811,20 @@ void buff_t::refresh( int        stacks,
   }
   else
   {
-    assert( d > timespan_t::zero() );
     // Infinite duration -> duration of d
     if ( ! expiration )
       expiration = new ( *sim ) expiration_t( this, d );
     else
-      expiration -> reschedule( d );
+    {
+      timespan_t duration_remains = expiration -> remains();
+      if ( duration_remains < d )
+        expiration -> reschedule( d );
+      else if ( duration_remains > d )
+      {
+        core_event_t::cancel( expiration );
+        expiration = new ( *sim ) expiration_t( this, d );
+      }
+    }
 
     if ( tick_event && tick_behavior == BUFF_TICK_CLIP )
     {
@@ -1678,6 +1734,7 @@ void buff_creator_basics_t::init()
   _reverse = -1;
   _activated = -1;
   _behavior = BUFF_TICK_NONE;
+  _refresh_behavior = BUFF_REFRESH_NONE;
   _default_value = buff_t::DEFAULT_VALUE();
   _affects_regen = -1;
 }

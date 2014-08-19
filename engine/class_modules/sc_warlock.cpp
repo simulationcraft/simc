@@ -4663,7 +4663,8 @@ warlock_td_t::warlock_td_t( player_t* target, warlock_t* p ) :
   dots_soulburn_seed_of_corruption  = target -> get_dot( "soulburn_seed_of_corruption", p );
   dots_haunt               = target -> get_dot( "haunt", p );
 
-  debuffs_haunt = buff_creator_t( *this, "haunt", source -> find_class_spell( "Haunt" ) );
+  debuffs_haunt = buff_creator_t( *this, "haunt", source -> find_class_spell( "Haunt" ) )
+                  .refresh_behavior( BUFF_REFRESH_DURATION );
 }
 
 warlock_t::warlock_t( sim_t* sim, const std::string& name, race_e r ) :

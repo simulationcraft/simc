@@ -5747,6 +5747,7 @@ void druid_t::create_buffs()
                                .duration( find_specialization_spell( "Tiger's Fury" ) -> duration() );
   buff.savage_roar           = buff_creator_t( this, "savage_roar", find_specialization_spell( "Savage Roar" ) )
                                .default_value( find_specialization_spell( "Savage Roar" ) -> effectN( 2 ).percent() - glyph.savagery -> effectN( 2 ).percent() )
+                               .refresh_behavior( BUFF_REFRESH_DURATION ) // Pandemic refresh is done by the action
                                .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
   buff.predatory_swiftness   = buff_creator_t( this, "predatory_swiftness", spec.predatory_swiftness -> ok() ? find_spell( 69369 ) : spell_data_t::not_found() );
   buff.tier15_4pc_melee      = buff_creator_t( this, "tier15_4pc_melee", find_spell( 138358 ) );
@@ -6148,10 +6149,6 @@ void druid_t::init_scaling()
   player_t::init_scaling();
 
   equipped_weapon_dps = main_hand_weapon.damage / main_hand_weapon.swing_time.total_seconds();
-
-  // Technically weapon speed affects stormlash damage for feral and
-  // guardian, but not a big enough deal to waste time simming it.
-  scales_with[ STAT_WEAPON_SPEED ] = false;
 
   if ( specialization() == DRUID_GUARDIAN )
   {

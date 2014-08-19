@@ -201,6 +201,19 @@ enum buff_tick_behavior_e
   BUFF_TICK_REFRESH
 };
 
+// Buff refresh mechanism during trigger, defaults to _PANDEMIC for ticking
+// buffs, _DURATION for normal buffs.
+enum buff_refresh_behavior_e
+{
+  BUFF_REFRESH_NONE = -1,       // Constructor default, determines "autodetection" in buff_t::buff_t
+  BUFF_REFRESH_DISABLED,        // Disable refresh by triggering
+  BUFF_REFRESH_DURATION,        // Refresh to given duration
+  BUFF_REFRESH_EXTEND,          // Refresh to given duration plus remaining duration
+  BUFF_REFRESH_PANDEMIC,        // Refresh to given duration plus min( 0.3 * new_duration, remaining_duration )
+  BUFF_REFRESH_TICK,            // Refresh to given duration plus ongoing tick time
+  BUFF_REFRESH_CUSTOM           // Refresh to duration returned by the custom callback
+};
+
 enum movement_direction_e
 {
   MOVEMENT_UNKNOWN = -1,
@@ -728,8 +741,8 @@ enum stat_e
   STAT_SPELL_POWER,
   STAT_ATTACK_POWER, STAT_EXPERTISE_RATING, STAT_EXPERTISE_RATING2,
   STAT_HIT_RATING, STAT_HIT_RATING2, STAT_CRIT_RATING, STAT_HASTE_RATING, STAT_MASTERY_RATING,
-  STAT_WEAPON_DPS, STAT_WEAPON_SPEED,
-  STAT_WEAPON_OFFHAND_DPS, STAT_WEAPON_OFFHAND_SPEED,
+  STAT_WEAPON_DPS,
+  STAT_WEAPON_OFFHAND_DPS,
   STAT_ARMOR, STAT_BONUS_ARMOR, STAT_RESILIENCE_RATING, STAT_DODGE_RATING, STAT_PARRY_RATING,
   STAT_BLOCK_RATING, STAT_PVP_POWER,
   STAT_MULTISTRIKE_RATING, STAT_READINESS_RATING, STAT_VERSATILITY_RATING, STAT_LEECH_RATING,
@@ -1692,7 +1705,9 @@ protected:
   int _quiet, _reverse, _activated;
   int _affects_regen;
   buff_tick_behavior_e _behavior;
+  buff_refresh_behavior_e _refresh_behavior;
   std::function<void(buff_t*, int, int)> _tick_callback;
+  std::function<timespan_t(const buff_t*, const timespan_t&)> _refresh_duration_callback;
   std::vector<cache_e> _invalidate_list;
   friend struct ::buff_t;
   friend struct ::debuff_t;
@@ -1754,6 +1769,10 @@ public:
   { _tick_callback = cb; return *( static_cast<bufftype*>( this ) ); }
   bufftype& affects_regen( bool state )
   { _affects_regen = state; return *( static_cast<bufftype*>( this ) ); }
+  bufftype& refresh_behavior( buff_refresh_behavior_e b )
+  { _refresh_behavior = b; return *( static_cast<bufftype*>( this ) ); }
+  bufftype& refresh_duration_callback( std::function<timespan_t(const buff_t*, const timespan_t&)> cb )
+  { _refresh_duration_callback = cb; return *( static_cast<bufftype*>( this ) ); }
 };
 
 struct buff_creator_t : public buff_creator_helper_t<buff_creator_t>
@@ -1904,6 +1923,9 @@ public:
   std::vector<timespan_t> stack_occurrence, stack_react_time;
   std::vector<core_event_t*> stack_react_ready_triggers;
 
+  buff_refresh_behavior_e refresh_behavior;
+  std::function<timespan_t(const buff_t*, const timespan_t&)> refresh_duration_callback;
+
   // Ticking buff values
   timespan_t buff_period;
   buff_tick_behavior_e tick_behavior;
@@ -1969,6 +1991,8 @@ public:
   virtual void analyze();
   virtual void datacollection_begin();
   virtual void datacollection_end();
+
+  virtual timespan_t refresh_duration( const timespan_t& new_duration ) const;
 
   void add_invalidate( cache_e );
 #ifdef SC_STAT_CACHE

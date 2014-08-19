@@ -2098,9 +2098,6 @@ std::string chart::gear_weights_lootrank( player_t* p )
       case STAT_WEAPON_DPS:
         if ( HUNTER == p -> type ) name = "rdps"; else name = "dps";  break;
       case STAT_WEAPON_OFFHAND_DPS:       name = "odps"; break;
-      case STAT_WEAPON_SPEED:
-        if ( HUNTER == p -> type ) name = "rsp"; else name = "msp"; break;
-      case STAT_WEAPON_OFFHAND_SPEED:     name = "osp"; break;
       default: name = 0; break;
     }
 

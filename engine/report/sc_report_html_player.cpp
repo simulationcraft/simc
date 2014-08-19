@@ -519,11 +519,7 @@ void print_html_action_info( report::sc_html_stream& os, unsigned stats_mask, st
             value /= 2;
           }
 
-          os.printf(
-            "<td>%s%.*f</td>\n",
-            prefix.c_str(), 
-            ( i == STAT_WEAPON_OFFHAND_SPEED || i == STAT_WEAPON_SPEED ) ? 2 : 0,
-            value );
+          os.printf( "<td>%s%.0f</td>\n", prefix.c_str(), value );
         }
         os << "</tr>\n";
         os << "<tr>\n"
@@ -1655,12 +1651,7 @@ void print_html_player_scale_factors( report::sc_html_stream& os, sim_t* sim, pl
           prefix = "+/- ";
         }
 
-        os.printf(
-          "<td>%s%.*f</td>\n",
-          prefix.c_str(),
-          ( p -> scaling_stats[ i ] == STAT_WEAPON_OFFHAND_SPEED || 
-            p -> scaling_stats[ i ] == STAT_WEAPON_SPEED ) ? 2 : 0,
-          value );
+        os.printf( "<td>%s%.0f</td>\n", prefix.c_str(), value );
 
       }
       if ( p -> sim -> scaling -> scale_lag )

@@ -4191,6 +4191,7 @@ struct defensive_stance_t: public warrior_buff_t < buff_t >
     .activated( true )
     .tick_callback( defensive_stance )
     .tick_behavior( BUFF_TICK_REFRESH )
+    .refresh_behavior( BUFF_REFRESH_TICK )
     .add_invalidate( CACHE_EXP )
     .add_invalidate( CACHE_CRIT_AVOIDANCE )
     .add_invalidate( CACHE_CRIT_BLOCK )

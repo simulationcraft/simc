@@ -58,10 +58,8 @@ void gear_stats_t::add_stat( stat_e stat,
     case STAT_LEECH_RATING: leech_rating += value; break;
 
     case STAT_WEAPON_DPS:   weapon_dps   += value; break;
-    case STAT_WEAPON_SPEED: weapon_speed += value; break;
 
     case STAT_WEAPON_OFFHAND_DPS:    weapon_offhand_dps    += value; break;
-    case STAT_WEAPON_OFFHAND_SPEED:  weapon_offhand_speed  += value; break;
 
     case STAT_ARMOR:             armor          += value; break;
     case STAT_BONUS_ARMOR:       bonus_armor    += value; break;
@@ -129,10 +127,8 @@ void gear_stats_t::set_stat( stat_e stat,
     case STAT_LEECH_RATING: leech_rating = value; break;
 
     case STAT_WEAPON_DPS:   weapon_dps   = value; break;
-    case STAT_WEAPON_SPEED: weapon_speed = value; break;
 
     case STAT_WEAPON_OFFHAND_DPS:    weapon_offhand_dps    = value; break;
-    case STAT_WEAPON_OFFHAND_SPEED:  weapon_offhand_speed  = value; break;
 
     case STAT_ARMOR:             armor          = value; break;
     case STAT_BONUS_ARMOR:       bonus_armor    = value; break;
@@ -203,10 +199,8 @@ double gear_stats_t::get_stat( stat_e stat ) const
     case STAT_LEECH_RATING: return leech_rating;
 
     case STAT_WEAPON_DPS:   return weapon_dps;
-    case STAT_WEAPON_SPEED: return weapon_speed;
 
     case STAT_WEAPON_OFFHAND_DPS:    return weapon_offhand_dps;
-    case STAT_WEAPON_OFFHAND_SPEED:  return weapon_offhand_speed;
 
     case STAT_ARMOR:             return armor;
     case STAT_BONUS_ARMOR:       return bonus_armor;

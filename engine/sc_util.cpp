@@ -1488,10 +1488,8 @@ const char* util::stat_type_string( stat_e stat )
     case STAT_HASTE_RATING: return "haste_rating";
 
     case STAT_WEAPON_DPS:   return "weapon_dps";
-    case STAT_WEAPON_SPEED: return "weapon_speed";
 
     case STAT_WEAPON_OFFHAND_DPS:    return "weapon_offhand_dps";
-    case STAT_WEAPON_OFFHAND_SPEED:  return "weapon_offhand_speed";
 
     case STAT_ARMOR:             return "armor";
     case STAT_BONUS_ARMOR:       return "bonus_armor";
@@ -1557,10 +1555,8 @@ const char* util::stat_type_abbrev( stat_e stat )
     case STAT_HASTE_RATING: return "Haste";
 
     case STAT_WEAPON_DPS:   return "Wdps";
-    case STAT_WEAPON_SPEED: return "Wspeed";
 
     case STAT_WEAPON_OFFHAND_DPS:    return "WOHdps";
-    case STAT_WEAPON_OFFHAND_SPEED:  return "WOHspeed";
 
     case STAT_ARMOR:             return "Armor";
     case STAT_BONUS_ARMOR:       return "BonusArmor";
@@ -1620,7 +1616,6 @@ const char* util::stat_type_wowhead( stat_e stat )
     case STAT_HASTE_RATING: return "hasteRating";
 
     case STAT_WEAPON_DPS:   return "__dps";
-    case STAT_WEAPON_SPEED: return "__speed";
 
     case STAT_ARMOR:             return "armor"; 
     case STAT_BONUS_ARMOR:       return "armorbonus";
@@ -1730,7 +1725,6 @@ stat_e util::parse_stat_type( const std::string& name )
   if ( name == "splpwr"         ) return STAT_SPELL_POWER;
   if ( name == "spi"            ) return STAT_SPIRIT;
   if ( str_compare_ci( name, "__wpds"   ) ) return STAT_WEAPON_DPS;
-  if ( str_compare_ci( name, "__wspeed" ) ) return STAT_WEAPON_SPEED;
 
 
   return STAT_NONE;

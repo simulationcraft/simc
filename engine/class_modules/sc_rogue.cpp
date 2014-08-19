@@ -4671,7 +4671,7 @@ void rogue_t::create_buffs()
   // Envenom is controlled by the non-harmful dot applied to player when envenom is used
   buffs.envenom            = buff_creator_t( this, "envenom", find_specialization_spell( "Envenom" ) )
                              .duration( timespan_t::min() )
-                             .tick_behavior( BUFF_TICK_REFRESH );
+                             .refresh_behavior( BUFF_REFRESH_PANDEMIC );
   buffs.slice_and_dice     = buff_creator_t( this, "slice_and_dice", find_class_spell( "Slice and Dice" ) )
                              .duration( perk.improved_slice_and_dice -> ok() ? timespan_t::zero() : timespan_t::min() )
                              .tick_behavior( BUFF_TICK_REFRESH )
