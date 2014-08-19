@@ -568,7 +568,7 @@ struct mirror_image_pet_t : public pet_t
     {
       double am = mirror_image_spell_t::action_multiplier();
 
-      am *= 1.0 + p() -> arcane_charge -> stack() * p() -> o() -> spells.arcane_charge_arcane_blast -> effectN( 1 ).percent() *
+      am *= 1.0 + p() -> arcane_charge -> stack() * p() -> o() -> spells.arcane_charge_arcane_blast -> effectN( 4 ).percent() *
             ( 1.0 + p() -> o() -> sets.set( SET_T15_4PC_CASTER ) -> effectN( 1 ).percent() );
         
       return am;
