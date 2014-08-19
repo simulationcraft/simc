@@ -3,6 +3,17 @@
 // Send questions to natehieter@gmail.com
 // ==========================================================================
 
+
+// TODO:
+// DRW blood boil
+// DRW necrotic plague
+// DRW defile?
+// DRW breath of sindragosa?
+// Blood T17 4pc bonus
+// Blood tanking side in general
+// Frost T17 4pc bonus
+// Unholy T17 4pc bonus
+
 #include "simulationcraft.hpp"
 
 namespace { // UNNAMED NAMESPACE
@@ -271,6 +282,7 @@ public:
     gain_t* plague_leech;
     gain_t* hp_death_siphon;
     gain_t* t15_4pc_tank;
+    gain_t* t17_2pc_frost;
   } gains;
 
   // Specialization
@@ -1374,8 +1386,11 @@ struct dancing_rune_weapon_pet_t : public pet_t
     void tick( dot_t* dot )
     {
       int pct = 35;
-      if ( o() -> sets.has_set_bonus( SET_T15_4PC_MELEE ) )
-        pct = o() -> sets.set( SET_T15_4PC_MELEE ) -> effectN( 1 ).base_value();
+      if ( o() -> perk.improved_soul_reaper -> ok() )
+        pct = o() -> perk.improved_soul_reaper -> effectN( 1 ).base_value();
+
+      if ( o() -> new_sets.has_set_bonus( SET_MELEE, T15, B4 ) )
+        pct = o() -> new_sets.set( SET_MELEE, T15, B4 ) -> effectN( 1 ).base_value();
 
       if ( dot -> state -> target -> health_percentage() <= pct )
         drw_melee_attack_t::tick( dot );
@@ -2059,12 +2074,12 @@ struct death_knight_action_t : public Base
   void trigger_t16_2pc_tank()
   {
     death_knight_t* p = this -> p();
-    if ( ! p -> sets.has_set_bonus( SET_T16_2PC_TANK ) )
+    if ( ! p -> new_sets.has_set_bonus( SET_TANK, T16, B2 ) )
       return;
 
     p -> t16_tank_2pc_driver++;
 
-    if ( p -> t16_tank_2pc_driver == p -> sets.set( SET_T16_2PC_TANK ) -> effectN( 1 ).base_value() )
+    if ( p -> t16_tank_2pc_driver == p -> new_sets.set( SET_TANK, T16, B2 ) -> effectN( 1 ).base_value() )
     {
       p -> buffs.bone_wall -> trigger();
       p -> t16_tank_2pc_driver = 0;
@@ -2074,7 +2089,7 @@ struct death_knight_action_t : public Base
   void trigger_t16_4pc_melee( action_state_t* s )
   {
     death_knight_t* p = this -> p();
-    if ( ! p -> sets.has_set_bonus( SET_T16_4PC_MELEE ) )
+    if ( ! p -> new_sets.has_set_bonus( SET_MELEE, T16, B4 ) )
       return;
 
     if ( ! this -> special || ! this -> harmful || this -> proc )
@@ -2176,7 +2191,7 @@ struct death_knight_melee_attack_t : public death_knight_action_t<melee_attack_t
   {
     death_knight_t* p = this -> p();
 
-    if ( ! p -> sets.has_set_bonus( SET_T15_2PC_MELEE ) )
+    if ( ! p -> new_sets.has_set_bonus( SET_MELEE, T15, B2 ) )
       return;
 
     if ( ( p -> t15_2pc_melee.trigger() ) )
@@ -2448,7 +2463,7 @@ struct melee_t : public death_knight_melee_attack_t
       {
         // T13 2pc gives 2 stacks of SD, otherwise we can only ever have one
         // Ensure that if we have 1 that we only refresh, not add another stack
-        int new_stacks = ( p() -> rng().roll( p() -> sets.set( SET_T13_2PC_MELEE ) -> effectN( 1 ).percent() ) ) ? 2 : 1;
+        int new_stacks = ( p() -> rng().roll( p() -> new_sets.set( SET_MELEE, T13, B2 ) -> effectN( 1 ).percent() ) ) ? 2 : 1;
 
         // Mists of Pandaria Sudden Doom is 3 PPM
         if ( p() -> spec.sudden_doom -> ok() &&
@@ -2802,6 +2817,14 @@ struct soul_reaper_dot_t : public death_knight_melee_attack_t
     may_miss = may_dodge = may_parry = may_block = false;
     weapon_multiplier = 0;
   }
+
+  void execute()
+  {
+    death_knight_melee_attack_t::execute();
+
+    if ( p() -> new_sets.has_set_bonus( DEATH_KNIGHT_UNHOLY, T17, B2 ) )
+      p() -> buffs.shadow_infusion -> trigger( p() -> new_sets.set( DEATH_KNIGHT_UNHOLY, T17, B2 ) -> effectN( 1 ).base_value() );
+  }
 };
 
 struct soul_reaper_t : public death_knight_melee_attack_t
@@ -2824,7 +2847,7 @@ struct soul_reaper_t : public death_knight_melee_attack_t
   virtual double composite_crit() const
   {
     double cc = death_knight_melee_attack_t::composite_crit();
-    if ( player -> sets.has_set_bonus( SET_T15_4PC_MELEE ) && p() -> buffs.killing_machine -> check() )
+    if ( player -> new_sets.has_set_bonus( SET_MELEE, T15, B4 ) && p() -> buffs.killing_machine -> check() )
       cc += p() -> buffs.killing_machine -> value();
     return cc;
   }
@@ -2856,7 +2879,7 @@ struct soul_reaper_t : public death_knight_melee_attack_t
   virtual void execute()
   {
     death_knight_melee_attack_t::execute();
-    if ( player -> sets.has_set_bonus( SET_T15_4PC_MELEE ) && p() -> buffs.killing_machine -> check() )
+    if ( player -> new_sets.has_set_bonus( SET_MELEE, T15, B4 ) && p() -> buffs.killing_machine -> check() )
     {
       p() -> procs.sr_killing_machine -> occur();
       p() -> buffs.killing_machine -> expire();
@@ -2871,7 +2894,7 @@ struct soul_reaper_t : public death_knight_melee_attack_t
 
   void tick( dot_t* dot )
   {
-    int pct = p() -> sets.has_set_bonus( SET_T15_4PC_MELEE ) ? p() -> sets.set( SET_T15_4PC_MELEE ) -> effectN( 1 ).base_value() : 35;
+    int pct = p() -> new_sets.has_set_bonus( SET_MELEE, T15, B4 ) ? p() -> new_sets.set( SET_MELEE, T15, B4 ) -> effectN( 1 ).base_value() : 35;
     if ( p() -> perk.improved_soul_reaper -> ok() )
       pct = p() -> perk.improved_soul_reaper -> effectN( 1 ).base_value();
 
@@ -3058,7 +3081,7 @@ struct dancing_rune_weapon_t : public death_knight_spell_t
     p() -> buffs.dancing_rune_weapon -> trigger();
     p() -> pets.dancing_rune_weapon -> summon( data().duration() );
 
-    if ( p() -> sets.has_set_bonus( SET_T16_4PC_TANK ) )
+    if ( p() -> new_sets.has_set_bonus( SET_TANK, T16, B4 ) )
     {
       for ( int i = 2; i < RUNE_SLOT_MAX; ++i )
       {
@@ -3309,8 +3332,8 @@ struct death_coil_t : public death_knight_spell_t
       p() -> trigger_runic_corruption( base_costs[ RESOURCE_RUNIC_POWER ] );
       p() -> trigger_plaguebearer( execute_state );
 
-      if ( p() -> sets.has_set_bonus( SET_T16_4PC_MELEE ) && p() -> buffs.dark_transformation -> check() )
-        p() -> buffs.dark_transformation -> extend_duration( p(), timespan_t::from_millis( p() -> sets.set( SET_T16_4PC_MELEE ) -> effectN( 1 ).base_value() ) );
+      if ( p() -> new_sets.has_set_bonus( SET_MELEE, T16, B4 ) && p() -> buffs.dark_transformation -> check() )
+        p() -> buffs.dark_transformation -> extend_duration( p(), timespan_t::from_millis( p() -> new_sets.set( SET_MELEE, T16, B4 ) -> effectN( 1 ).base_value() ) );
 
       trigger_t16_2pc_tank();
     }
@@ -3532,7 +3555,7 @@ struct frost_strike_offhand_t : public death_knight_melee_attack_t
     weapon           = &( p -> off_hand_weapon );
     special          = true;
     base_multiplier *= 1.0 + p -> spec.threat_of_thassarian -> effectN( 3 ).percent();
-    base_multiplier *= 1.0 + p -> sets.set( SET_T14_2PC_MELEE ) -> effectN( 1 ).percent();
+    base_multiplier *= 1.0 + p -> new_sets.set( SET_MELEE, T14, B2 ) -> effectN( 1 ).percent();
 
     rp_gain = 0; // Incorrectly set to 10 in the DBC
   }
@@ -3556,7 +3579,7 @@ struct frost_strike_t : public death_knight_melee_attack_t
     oh_attack( 0 )
   {
     special = true;
-    base_multiplier *= 1.0 + p -> sets.set( SET_T14_2PC_MELEE ) -> effectN( 1 ).percent();
+    base_multiplier *= 1.0 + p -> new_sets.set( SET_MELEE, T14, B2 ) -> effectN( 1 ).percent();
 
     parse_options( NULL, options_str );
 
@@ -3811,7 +3834,7 @@ struct obliterate_offhand_t : public death_knight_melee_attack_t
     background       = true;
     weapon           = &( p -> off_hand_weapon );
     special          = true;
-    base_multiplier *= 1.0 + p -> sets.set( SET_T14_2PC_MELEE ) -> effectN( 1 ).percent();
+    base_multiplier *= 1.0 + p -> new_sets.set( SET_MELEE, T14, B2 ) -> effectN( 1 ).percent();
   }
 
   virtual double composite_crit() const
@@ -3834,7 +3857,7 @@ struct obliterate_t : public death_knight_melee_attack_t
     parse_options( NULL, options_str );
 
     special = true;
-    base_multiplier *= 1.0 + p -> sets.set( SET_T14_2PC_MELEE ) -> effectN( 1 ).percent();
+    base_multiplier *= 1.0 + p -> new_sets.set( SET_MELEE, T14, B2 ) -> effectN( 1 ).percent();
 
     weapon = &( p -> main_hand_weapon );
 
@@ -3875,7 +3898,7 @@ struct obliterate_t : public death_knight_melee_attack_t
         // T13 2pc gives 2 stacks of Rime, otherwise we can only ever have one
         // Ensure that if we have 1 that we only refresh, not add another stack
         int new_stacks = 1;
-        if ( rng().roll( p() -> sets.set( SET_T13_2PC_MELEE ) -> effectN( 2 ).percent() ) )
+        if ( rng().roll( p() -> new_sets.set( SET_MELEE, T13, B2 ) -> effectN( 2 ).percent() ) )
           new_stacks++;
 
         // If we're proccing 2 or we have 0 stacks, trigger like normal
@@ -4132,6 +4155,12 @@ struct blood_boil_t : public death_knight_spell_t
       spread -> target = target;
       spread -> schedule_execute();
     }
+
+    if ( p() -> new_sets.has_set_bonus( DEATH_KNIGHT_BLOOD, T17, B2 ) )
+    {
+      if ( p() -> buffs.blood_shield -> check() )
+        p() -> buffs.blood_shield -> current_value *= 1.0 + p() -> new_sets.set( DEATH_KNIGHT_BLOOD, T17, B2 ) -> effectN( 1 ).percent();
+    }
   }
 
   void impact( action_state_t* state )
@@ -4173,6 +4202,26 @@ struct pillar_of_frost_t : public death_knight_spell_t
     death_knight_spell_t::execute();
 
     p() -> buffs.pillar_of_frost -> trigger();
+
+    if ( p() -> new_sets.has_set_bonus( DEATH_KNIGHT_FROST, T17, B2 ) )
+    {
+      unsigned gained = 0, overflow = 0;
+      for ( size_t i = 0; i < p() -> _runes.slot.size(); i++ )
+      {
+        if ( ! p() -> _runes.slot[ i ].is_ready() )
+          gained++;
+        else
+          overflow++;
+
+        p() -> _runes.slot[ i ].type |= RUNE_TYPE_DEATH;
+        p() -> _runes.slot[ i ].fill_rune();
+      }
+
+      p() -> gains.t17_2pc_frost -> add( RESOURCE_RUNE, gained + overflow, overflow );
+
+      if ( sim -> debug )
+        log_rune_status( p() );
+    }
   }
 
   bool ready()
@@ -4426,7 +4475,7 @@ struct scourge_strike_t : public death_knight_melee_attack_t
     parse_options( NULL, options_str );
 
     special = true;
-    base_multiplier *= 1.0 + p -> sets.set( SET_T14_2PC_MELEE ) -> effectN( 1 ).percent();
+    base_multiplier *= 1.0 + p -> new_sets.set( SET_MELEE, T14, B2 ) -> effectN( 1 ).percent();
     base_multiplier *= 1.0 + p -> perk.improved_scourge_strike -> effectN( 1 ).percent();
 
     // TODO-WOD: Do we need to inherit damage or is it a separate roll in WoD?
@@ -5113,7 +5162,7 @@ void death_knight_t::trigger_runic_corruption( double rpcost )
   else
     buffs.runic_corruption -> extend_duration( this, duration );
 
-  buffs.tier13_4pc_melee -> trigger( 1, buff_t::DEFAULT_VALUE(), sets.set( SET_T13_4PC_MELEE ) -> effectN( 2 ).percent() );
+  buffs.tier13_4pc_melee -> trigger( 1, buff_t::DEFAULT_VALUE(), new_sets.set( SET_MELEE, T13, B4 ) -> effectN( 2 ).percent() );
 }
 
 expr_t* death_knight_t::create_expression( action_t* a, const std::string& name_str )
@@ -5492,19 +5541,7 @@ void death_knight_t::init_spells()
   if ( spec.necrosis -> ok() )
     active_spells.necrosis = new necrosis_t( this );
 
-  // Tier Bonuses
-  static const set_bonus_description_t set_bonuses =
-  {
-    //  C2P    C4P     M2P     M4P     T2P     T4P    H2P    H4P
-    {     0,     0, 105609, 105646, 105552, 105587,     0,     0 }, // Tier13
-    {     0,     0, 123077, 123078, 123079, 123080,     0,     0 }, // Tier14
-    {     0,     0, 138343, 138347, 138195, 138197,     0,     0 }, // Tier15
-    {     0,     0, 144899, 144907, 144934, 144950,     0,     0 }, // Tier16
-  };
-
-  sets.register_spelldata( set_bonuses );
-
-  if ( sets.has_set_bonus( SET_T16_4PC_MELEE ) && specialization() == DEATH_KNIGHT_FROST )
+  if ( new_sets.has_set_bonus( SET_MELEE, T16, B4 ) && specialization() == DEATH_KNIGHT_FROST )
   {
     struct frozen_power_t : public melee_attack_t
     {
@@ -5531,7 +5568,7 @@ void death_knight_t::default_apl_blood()
   action_priority_list_t* precombat = get_action_priority_list( "precombat" );
   action_priority_list_t* def       = get_action_priority_list( "default"   );
 
-  std::string srpct     = sets.has_set_bonus( SET_T15_4PC_MELEE ) ? "45" : "35";
+  std::string srpct     = new_sets.has_set_bonus( SET_MELEE, T15, B4 ) ? "45" : "35";
   std::string flask_str = "flask,type=";
   std::string food_str  = "food,type=";
   std::string potion_str = "potion,name=";
@@ -5665,7 +5702,7 @@ void death_knight_t::init_action_list()
   action_priority_list_t* def       = get_action_priority_list( "default"   );
   action_priority_list_t* aoe = get_action_priority_list( "aoe" );
   action_priority_list_t* st       = get_action_priority_list( "single_target"   );
-  std::string soul_reaper_pct = ( perk.improved_soul_reaper -> ok() || sets.has_set_bonus( SET_T15_4PC_MELEE ) ) ? "45" : "35";
+  std::string soul_reaper_pct = ( perk.improved_soul_reaper -> ok() || new_sets.has_set_bonus( SET_MELEE, T15, B4 ) ) ? "45" : "35";
   std::string flask_str = "flask,type=";
   std::string food_str  = "food,type=";
   std::string potion_str = "potion,name=";
@@ -6170,7 +6207,7 @@ void death_knight_t::create_buffs()
                               .max_stack( specialization() == DEATH_KNIGHT_BLOOD ? ( find_specialization_spell( "Bone Shield" ) -> initial_stacks() +
                                           find_spell( 144948 ) -> max_stacks() + perk.enhanced_bone_shield -> effectN( 1 ).base_value() ) : -1 );
   buffs.bone_wall           = buff_creator_t( this, "bone_wall", find_spell( 144948 ) )
-                              .chance( sets.has_set_bonus( SET_T16_2PC_TANK ) );
+                              .chance( new_sets.has_set_bonus( SET_TANK, T16, B2 ) );
   buffs.crimson_scourge     = buff_creator_t( this, "crimson_scourge" ).spell( find_spell( 81141 ) )
                               .chance( spec.crimson_scourge -> proc_chance() );
   buffs.dancing_rune_weapon = buff_creator_t( this, "dancing_rune_weapon", find_spell( 81256 ) )
@@ -6180,11 +6217,11 @@ void death_knight_t::create_buffs()
   buffs.deaths_advance      = buff_creator_t( this, "deaths_advance", talent.deaths_advance )
                               .default_value( talent.deaths_advance -> effectN( 1 ).percent() );
   buffs.deathbringer        = buff_creator_t( this, "deathbringer", find_spell( 144953 ) )
-                              .chance( sets.has_set_bonus( SET_T16_4PC_TANK ) );
-  buffs.death_shroud        = stat_buff_creator_t( this, "death_shroud", sets.set( SET_T16_2PC_MELEE ) -> effectN( 1 ).trigger() )
-                              .chance( sets.set( SET_T16_2PC_MELEE ) -> proc_chance() )
-                              .add_stat( STAT_MASTERY_RATING, sets.set( SET_T16_2PC_MELEE ) -> effectN( 1 ).trigger() -> effectN( 2 ).base_value(), death_shroud_mastery( this ) )
-                              .add_stat( STAT_HASTE_RATING, sets.set( SET_T16_2PC_MELEE ) -> effectN( 1 ).trigger() -> effectN( 1 ).base_value(), death_shroud_haste( this ) );
+                              .chance( new_sets.has_set_bonus( SET_TANK, T16, B4 ) );
+  buffs.death_shroud        = stat_buff_creator_t( this, "death_shroud", new_sets.set( SET_MELEE, T16, B2 ) -> effectN( 1 ).trigger() )
+                              .chance( new_sets.set( SET_MELEE, T16, B2 ) -> proc_chance() )
+                              .add_stat( STAT_MASTERY_RATING, new_sets.set( SET_MELEE, T16, B2 ) -> effectN( 1 ).trigger() -> effectN( 2 ).base_value(), death_shroud_mastery( this ) )
+                              .add_stat( STAT_HASTE_RATING, new_sets.set( SET_MELEE, T16, B2 ) -> effectN( 1 ).trigger() -> effectN( 1 ).base_value(), death_shroud_haste( this ) );
   buffs.frost_presence      = buff_creator_t( this, "frost_presence", find_class_spell( "Frost Presence" ) )
                               .default_value( find_class_spell( "Frost Presence" ) -> effectN( 1 ).percent() );
   buffs.icebound_fortitude  = buff_creator_t( this, "icebound_fortitude", find_class_spell( "Icebound Fortitude" ) )
@@ -6197,11 +6234,11 @@ void death_knight_t::create_buffs()
   buffs.pillar_of_frost     = buff_creator_t( this, "pillar_of_frost", find_class_spell( "Pillar of Frost" ) )
                               .cd( timespan_t::zero() )
                               .default_value( find_class_spell( "Pillar of Frost" ) -> effectN( 1 ).percent() +
-                                              sets.set( SET_T14_4PC_MELEE ) -> effectN( 1 ).percent() +
+                                              new_sets.set( SET_MELEE, T14, B4 ) -> effectN( 1 ).percent() +
                                               perk.empowered_pillar_of_frost -> effectN( 1 ).percent() )
                               .add_invalidate( CACHE_STRENGTH );
   buffs.rime                = buff_creator_t( this, "rime", find_spell( 59052 ) )
-                              .max_stack( ( sets.has_set_bonus( SET_T13_2PC_MELEE ) ) ? 2 : 1 )
+                              .max_stack( ( new_sets.has_set_bonus( SET_MELEE, T13, B2 ) ) ? 2 : 1 )
                               .cd( timespan_t::zero() )
                               .chance( spec.rime -> ok() );
   buffs.riposte             = stat_buff_creator_t( this, "riposte", spec.riposte -> effectN( 1 ).trigger() )
@@ -6216,7 +6253,7 @@ void death_knight_t::create_buffs()
   // Trick simulator into recalculating health when this buff goes up/down.
   buffs.shadow_of_death     = new shadow_of_death_t( this );
   buffs.sudden_doom         = buff_creator_t( this, "sudden_doom", find_spell( 81340 ) )
-                              .max_stack( ( sets.has_set_bonus( SET_T13_2PC_MELEE ) ) ? 2 : 1 )
+                              .max_stack( ( new_sets.has_set_bonus( SET_MELEE, T13, B2 ) ) ? 2 : 1 )
                               .cd( timespan_t::zero() )
                               .chance( spec.sudden_doom -> ok() );
   buffs.shadow_infusion     = buff_creator_t( this, "shadow_infusion", spec.shadow_infusion -> effectN( 1 ).trigger() );
@@ -6286,6 +6323,7 @@ void death_knight_t::init_gains()
   //gains.blood_tap_blood          -> type = ( resource_e ) RESOURCE_RUNE_BLOOD   ;
   gains.hp_death_siphon                  = get_gain( "hp_death_siphon"            );
   gains.t15_4pc_tank                     = get_gain( "t15_4pc_tank"               );
+  gains.t17_2pc_frost                    = get_gain( "t17_2pc_frost"              );
 }
 
 // death_knight_t::init_procs ===============================================
@@ -6399,7 +6437,7 @@ void death_knight_t::assess_damage( school_e     school,
       buffs.bone_shield -> decrement();
       cooldown.bone_shield_icd -> start();
 
-      if ( sets.has_set_bonus( SET_T15_4PC_TANK ) && buffs.bone_shield -> check() )
+      if ( new_sets.has_set_bonus( SET_TANK, T15, B4 ) && buffs.bone_shield -> check() )
       {
         resource_gain( RESOURCE_RUNIC_POWER,
                        spell.t15_4pc_tank -> effectN( 1 ).resource( RESOURCE_RUNIC_POWER ),
@@ -6865,7 +6903,7 @@ void death_knight_t::trigger_runic_empowerment( double rpcost )
     if ( sim -> log ) sim -> out_log.printf( "runic empowerment regen'd rune %d", rune_to_regen );
     procs.runic_empowerment -> occur();
 
-    buffs.tier13_4pc_melee -> trigger( 1, buff_t::DEFAULT_VALUE(), sets.set( SET_T13_4PC_MELEE ) -> effectN( 1 ).percent() );
+    buffs.tier13_4pc_melee -> trigger( 1, buff_t::DEFAULT_VALUE(), new_sets.set( SET_MELEE, T13, B4 ) -> effectN( 1 ).percent() );
   }
   else
   {

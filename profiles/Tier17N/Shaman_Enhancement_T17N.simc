@@ -111,4 +111,4 @@ off_hand=primal_gladiators_ripper,id=115596,enchant=mark_of_bleeding_hollow
 # gear_mastery_rating=1090
 # gear_armor=1547
 # gear_multistrike_rating=525
-# pvp_2pc_melee=1
+# set_bonus=pvp_2pc=1

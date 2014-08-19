@@ -1,4 +1,4 @@
-// ==========================================================================
+//==========================================================================
 // Dedmonwakeen's DPS-DPM Simulator.
 // Send questions to natehieter@gmail.com
 // ==========================================================================
@@ -87,12 +87,14 @@ public:
     buff_t* tier13_4pc;
     buff_t* tier16_4pc_mm_keen_eye;
     buff_t* tier16_4pc_bm_brutal_kinship;
+    buff_t* heavy_shot; // t17 SV 4pc
+
   } buffs;
 
   // Cooldowns
   struct cooldowns_t
   {
-    cooldown_t* explosive_shot;
+    cooldown_t* bestial_wrath;
     cooldown_t* kill_shot_reset;
     cooldown_t* rapid_fire;
     cooldown_t* sniper_training;
@@ -128,7 +130,8 @@ public:
     proc_t* tier15_4pc_melee_arcane_shot;
     proc_t* tier15_4pc_melee_multi_shot;
     proc_t* tier16_2pc_melee;
-    proc_t* tier16_4pc_melee;
+    proc_t* tier16_4pc_melee;  
+    proc_t* tier17_2pc_bm;
   } procs;
 
   real_ppm_t ppm_tier15_2pc_melee;
@@ -306,7 +309,7 @@ public:
     pet_multiplier( 1.0 )
   {
     // Cooldowns
-    cooldowns.explosive_shot  = get_cooldown( "explosive_shot" );
+    cooldowns.bestial_wrath   = get_cooldown( "bestial_wrath" );
     cooldowns.kill_shot_reset = get_cooldown( "kill_shot_reset" );
     cooldowns.kill_shot_reset -> duration = timespan_t::from_seconds( 6 );
     cooldowns.rapid_fire      = get_cooldown( "rapid_fire" );
@@ -428,6 +431,13 @@ public:
     return am;
   }
 
+  virtual double composite_multistrike_multiplier( const action_state_t* s ) const
+  { 
+    double m = ab::composite_multistrike_multiplier( s );
+    m *= 1.0 + p() -> buffs.heavy_shot -> data().effectN( 1 ).percent() * p() -> buffs.heavy_shot -> stack();
+    return m; 
+  }
+
   virtual double cost() const
   {
     double c = ab::cost();
@@ -492,7 +502,7 @@ void trigger_tier16_bm_4pc_brutal_kinship( hunter_t* p )
 {
   if ( p -> specialization() != HUNTER_BEAST_MASTERY )
     return;
-  if ( !p -> sets.has_set_bonus( SET_T16_4PC_MELEE ) )
+  if ( !p -> new_sets.has_set_bonus( SET_MELEE, T16, B4 ) )
     return;
   if ( p -> buffs.beast_within -> check() )
     p -> buffs.tier16_4pc_bm_brutal_kinship -> trigger( 1, 0, 1, p -> buffs.beast_within -> remains() );
@@ -731,7 +741,7 @@ public:
 
     buffs.bestial_wrath     = buff_creator_t( this, 19574, "bestial_wrath" ).activated( true );
     buffs.bestial_wrath -> cooldown -> duration = timespan_t::zero();
-    buffs.bestial_wrath -> buff_duration += owner -> sets.set( SET_T14_4PC_MELEE ) -> effectN( 1 ).time_value();
+    buffs.bestial_wrath -> buff_duration += owner -> new_sets.set( SET_MELEE, T14, B4 ) -> effectN( 1 ).time_value();
 
     buffs.frenzy            = buff_creator_t( this, 19615, "frenzy" ).chance( o() -> specs.frenzy -> effectN( 2 ).percent() );
 
@@ -865,7 +875,7 @@ public:
     if ( !buffs.stampede -> check() && buffs.bestial_wrath -> up() )
       m *= 1.0 + buffs.bestial_wrath -> data().effectN( 2 ).percent();
 
-    if ( o() -> sets.has_set_bonus( SET_T16_4PC_MELEE ) )
+    if ( o() -> new_sets.has_set_bonus( SET_MELEE, T16, B4 ) )
       m *= 1.0 + buffs.tier16_4pc_bm_brutal_kinship -> stack() * buffs.tier16_4pc_bm_brutal_kinship -> data().effectN( 1 ).percent();
 
     // Pet combat experience
@@ -964,7 +974,7 @@ struct hunter_main_pet_attack_t: public hunter_main_pet_action_t < melee_attack_
   {
     if ( o() -> specialization() != HUNTER_BEAST_MASTERY )
       return;
-    if ( !o() -> sets.has_set_bonus( SET_T16_4PC_MELEE ) )
+    if ( !o() -> new_sets.has_set_bonus( SET_MELEE, T16, B4 ) )
       return;
     if ( p() -> buffs.bestial_wrath -> check() )
       p() -> buffs.tier16_4pc_bm_brutal_kinship -> trigger( 1, 0, 1, p() -> buffs.bestial_wrath -> remains() );
@@ -1216,7 +1226,7 @@ struct kill_command_t: public hunter_main_pet_attack_t
   double action_multiplier() const
   {
     double am = hunter_main_pet_attack_t::action_multiplier();
-    am *= 1.0 + o() -> sets.set( SET_T14_2PC_MELEE ) -> effectN( 1 ).percent();
+    am *= 1.0 + o() -> new_sets.set( SET_MELEE, T16, B2 ) -> effectN( 1 ).percent();
     return am;
   }
   
@@ -1598,7 +1608,7 @@ struct hunter_ranged_attack_t: public hunter_action_t < ranged_attack_t >
 
   void trigger_tier15_2pc_melee()
   {
-    if ( !p() -> sets.has_set_bonus( SET_T15_2PC_MELEE ) )
+    if ( !p() -> new_sets.has_set_bonus( SET_MELEE, T15, B2 ) )
       return;
 
     if ( ( p() -> ppm_tier15_2pc_melee.trigger() ) )
@@ -1805,10 +1815,16 @@ struct exotic_munitions_t: public hunter_ranged_attack_t
 
 struct aimed_shot_t: public hunter_ranged_attack_t
 {
+  // focus gained on every Aimed Shot crit
+  double crit_gain;
+
   aimed_shot_t( hunter_t* p, const std::string& options_str ):
     hunter_ranged_attack_t( "aimed_shot", p, p -> find_specialization_spell( "Aimed Shot" ) )
   {
     parse_options( NULL, options_str );
+     
+    crit_gain = p -> perks.enhanced_aimed_shot -> effectN( 1 ).resource( RESOURCE_FOCUS );
+    crit_gain += p -> new_sets.set( HUNTER_MARKSMANSHIP, T17, B2 ) -> effectN( 1 ).resource( RESOURCE_FOCUS );
   }
 
   virtual double cost() const
@@ -1836,12 +1852,8 @@ struct aimed_shot_t: public hunter_ranged_attack_t
   {
     hunter_ranged_attack_t::impact( s );
 
-    if ( s -> result == RESULT_CRIT )
-    {
-      p() -> resource_gain( RESOURCE_FOCUS,
-                            p() -> perks.enhanced_aimed_shot -> effectN( 1 ).resource( RESOURCE_FOCUS ),
-                            p() -> gains.aimed_shot );
-    }
+    if ( s -> result == RESULT_CRIT && crit_gain > 0.0 )
+      p() -> resource_gain( RESOURCE_FOCUS, crit_gain, p() -> gains.aimed_shot );
   }
 
   virtual void execute()
@@ -1944,6 +1956,11 @@ struct black_arrow_t: public hunter_ranged_attack_t
     cooldown -> duration += p() -> specs.trap_mastery -> effectN( 4 ).time_value();
     base_multiplier *= 1.0 + p() -> specs.trap_mastery -> effectN( 2 ).percent();
     may_multistrike = 1;
+
+    if ( player -> new_sets.has_set_bonus( HUNTER_SURVIVAL, T17, B2 ) )
+    {
+      base_tick_time *= 1.0 + player -> new_sets.set( HUNTER_SURVIVAL, T17, B2 ) -> effectN( 1 ).percent();
+    }
   }
 
   virtual bool ready()
@@ -2020,7 +2037,7 @@ struct chimaera_shot_impact_t: public hunter_ranged_attack_t
   virtual double action_multiplier() const
   {
     double am = hunter_ranged_attack_t::action_multiplier();
-    am *= 1.0 + p() -> sets.set( SET_T14_2PC_MELEE ) -> effectN( 2 ).percent();
+    am *= 1.0 + p() -> new_sets.set( SET_MELEE, T14, B2 ) -> effectN( 2 ).percent();
     return am;
   }
 };
@@ -2069,7 +2086,7 @@ struct cobra_shot_t: public hunter_ranged_attack_t
       background = true;
     focus_gain = p() -> dbc.spell( 91954 ) -> effectN( 1 ).base_value();
 
-    if ( p() -> sets.has_set_bonus( SET_T13_2PC_MELEE ) )
+    if ( p() -> new_sets.has_set_bonus( SET_MELEE, T13, B2 ) )
       focus_gain *= 2.0;
   }
 
@@ -2170,7 +2187,7 @@ struct explosive_shot_t: public hunter_ranged_attack_t
   virtual double action_multiplier() const
   {
     double am = hunter_ranged_attack_t::action_multiplier();
-    am *= 1.0 + p() -> sets.set( SET_T14_2PC_MELEE ) -> effectN( 3 ).percent();
+    am *= 1.0 + p() -> new_sets.set( SET_MELEE, T14, B2 ) -> effectN( 3 ).percent();
     return am;
   }
 
@@ -2190,6 +2207,9 @@ struct explosive_shot_t: public hunter_ranged_attack_t
         p() -> active.explosive_ticks, // ignite spell
         s -> target,                   // target
         damage * tick_count );
+      
+      if ( p() -> new_sets.has_set_bonus( HUNTER_SURVIVAL, T17, B4 ) )
+        p() -> buffs.heavy_shot -> trigger();
     }
   }
 };
@@ -2386,7 +2406,7 @@ struct steady_shot_t: public hunter_ranged_attack_t
 
     focus_gain = p() -> dbc.spell( 77443 ) -> effectN( 1 ).base_value();
     // Needs testing
-    if ( p() -> sets.has_set_bonus( SET_T13_2PC_MELEE ) )
+    if ( p() -> new_sets.has_set_bonus( SET_MELEE, T13, B2 ) )
       focus_gain *= 2.0;
   }
 
@@ -2423,7 +2443,7 @@ struct lightning_arrow_t: public hunter_ranged_attack_t
 
 void hunter_ranged_attack_t::trigger_tier15_4pc_melee( proc_t* proc, attack_t* attack )
 {
-  if ( !p() -> sets.has_set_bonus( SET_T15_4PC_MELEE ) )
+  if ( !p() -> new_sets.has_set_bonus( SET_MELEE, T15, B4 ) )
     return;
 
   if ( p() -> ppm_tier15_4pc_melee.trigger() )
@@ -2815,12 +2835,28 @@ struct kill_command_t: public hunter_spell_t
     trigger_tier16_bm_4pc_melee();
 
     if ( p() -> active.pet )
+    {
       p() -> active.pet -> active.kill_command -> execute();
+      trigger_tier17_2pc_bm();
+    }
   }
 
   virtual bool ready()
   {
     return p() -> active.pet && hunter_spell_t::ready();
+  }
+  
+  void trigger_tier17_2pc_bm()
+  {
+    if ( !p() -> new_sets.has_set_bonus( HUNTER_BEAST_MASTERY, T17, B2 ) )
+      return;
+
+    double chance = p() -> new_sets.set( HUNTER_BEAST_MASTERY, T17, B2 ) -> proc_chance();
+    if ( rng().roll( chance ) )
+    {
+      p() -> cooldowns.bestial_wrath -> reset( true );
+      p() -> procs.tier17_2pc_bm -> occur();
+    }
   }
 };
 
@@ -3149,17 +3185,6 @@ void hunter_t::init_spells()
   action_lightning_arrow_aimed_shot = new attacks::lightning_arrow_t( this, "_aimed_shot" );
   action_lightning_arrow_arcane_shot = new attacks::lightning_arrow_t( this, "_arcane_shot" );
   action_lightning_arrow_multi_shot = new attacks::lightning_arrow_t( this, "_multi_shot" );
-
-  static const set_bonus_description_t set_bonuses =
-  {
-    //  C2P    C4P     M2P     M4P    T2P    T4P     H2P    H4P
-    { 0, 0, 105732, 105921, 0, 0, 0, 0 }, // Tier13
-    { 0, 0, 123090, 123091, 0, 0, 0, 0 }, // Tier14
-    { 0, 0, 138365, 138367, 0, 0, 0, 0 }, // Tier15
-    { 0, 0, 144637, 144641, 0, 0, 0, 0 }, // Tier16
-  };
-
-  sets.register_spelldata( set_bonuses );
 }
 
 // hunter_t::init_base ======================================================
@@ -3195,7 +3220,7 @@ void hunter_t::create_buffs()
     .chance( specs.the_beast_within -> ok() )
     .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
 
-  buffs.beast_within -> buff_duration += sets.set( SET_T14_4PC_MELEE ) -> effectN( 1 ).time_value();
+  buffs.beast_within -> buff_duration += new_sets.set( SET_MELEE, T14, B4 ) -> effectN( 1 ).time_value();
 
   buffs.bombardment                 = buff_creator_t( this, "bombardment", specs.bombardment -> effectN( 1 ).trigger() );
 
@@ -3228,7 +3253,7 @@ void hunter_t::create_buffs()
   /*.quiet( true )*/;
 
   buffs.tier13_4pc                  = buff_creator_t( this, 105919, "tier13_4pc" )
-    .chance( sets.set( SET_T13_4PC_MELEE ) -> proc_chance() )
+    .chance( new_sets.set( SET_MELEE, T13, B4 ) -> proc_chance() )
     .cd( timespan_t::from_seconds( 105.0 ) )
     .add_invalidate( CACHE_ATTACK_HASTE );
 
@@ -3236,6 +3261,9 @@ void hunter_t::create_buffs()
 
   buffs.tier16_4pc_bm_brutal_kinship = buff_creator_t( this, 144670, "tier16_4pc_brutal_kinship" )
     .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
+
+  buffs.heavy_shot   = buff_creator_t( this, 167165, "heavy_shot" );
+
 }
 
 // hunter_t::init_gains =====================================================
@@ -3293,6 +3321,7 @@ void hunter_t::init_procs()
   procs.tier15_4pc_melee_multi_shot  = get_proc( "tier15_4pc_melee_multi_shot" );
   procs.tier16_2pc_melee             = get_proc( "tier16_2pc_melee" );
   procs.tier16_4pc_melee             = get_proc( "tier16_4pc_melee" );
+  procs.tier17_2pc_bm                = get_proc( "tier17_2pc_bm" );
 }
 
 // hunter_t::init_rng =======================================================
@@ -3713,6 +3742,13 @@ double hunter_t::composite_player_critical_damage_multiplier() const
 
   if ( buffs.sniper_training -> up() )
     cdm += cache.mastery_value();
+  
+  if ( new_sets.has_set_bonus( HUNTER_MARKSMANSHIP, T17, B4 ) && buffs.rapid_fire -> up() )
+  {
+    // deadly_aim_driver
+    double seconds_buffed = floor( buffs.rapid_fire -> elapsed( sim -> current_time ).total_seconds() );
+    cdm += seconds_buffed * new_sets.set( HUNTER_MARKSMANSHIP, T17, B4 ) -> effectN( 1 ).percent();
+  }
 
   return cdm;
 }
@@ -3733,7 +3769,7 @@ double hunter_t::composite_player_multiplier( school_e school ) const
   if ( buffs.sniper_training -> up() )
     m*= 1.0 + cache.mastery_value();
 
-  if ( sets.set( SET_T16_4PC_MELEE ) -> ok() )
+  if ( new_sets.has_set_bonus( SET_MELEE, T16, B4 ) )
     m *= 1.0 + buffs.tier16_4pc_bm_brutal_kinship -> stack() * buffs.tier16_4pc_bm_brutal_kinship -> data().effectN( 1 ).percent();
 
   return m;
@@ -4011,7 +4047,7 @@ void hunter_t::schedule_ready( timespan_t delta_time, bool waiting )
 {
   if ( specs.careful_aim -> ok() ) 
   {
-    bool ca_now = buffs.careful_aim -> check();
+    int ca_now = buffs.careful_aim -> check();
     int threshold = specs.careful_aim -> effectN( 2 ).base_value();
     if ( buffs.rapid_fire -> check() || target -> health_percentage() > threshold )
     {

@@ -41,6 +41,8 @@ public:
   int initial_rage;
   double arms_rage_mult;
   double crit_rage_mult;
+  bool swapping; // Disables automated swapping when it's not required to use the ability.
+  // Set to true whenever a player uses the swap option inside of stance_t, as we should assume they are intentionally sitting in defensive stance.
 
   simple_sample_data_t cs_damage;
   simple_sample_data_t priority_damage;
@@ -396,6 +398,7 @@ public:
     initial_rage = 0;
     arms_rage_mult = 2.125;
     crit_rage_mult = 2;
+    swapping = false;
     base.distance = 3.0;
 
     regen_type = REGEN_DISABLED;
@@ -565,7 +568,7 @@ public:
 
   virtual void execute()
   {
-    if ( p() -> cooldown.stance_swap -> up() )
+    if ( p() -> cooldown.stance_swap -> up() && p() -> swapping == false )
     {
       if ( p() -> active_stance == STANCE_DEFENSE &&
            p() -> specialization() != WARRIOR_PROTECTION &&
@@ -2442,9 +2445,16 @@ struct slam_t: public warrior_attack_t
     warrior_attack_t( "slam", p, p -> talents.slam )
   {
     parse_options( NULL, options_str );
-    stancemask = STANCE_BATTLE | STANCE_DEFENSE;
+    stancemask = STANCE_BATTLE;
     weapon = &( p -> main_hand_weapon );
     base_costs[RESOURCE_RAGE] = 10;
+  }
+
+  void consume_resource()
+  {
+    warrior_attack_t::consume_resource();
+
+    p() -> buff.slam -> trigger( 1 );
   }
 
   double cost() const
@@ -2454,14 +2464,6 @@ struct slam_t: public warrior_attack_t
     c *= 1.0 + p() -> buff.slam -> current_stack;
 
     return c;
-  }
-
-  void impact( action_state_t* s )
-  {
-    warrior_attack_t::impact( s );
-
-    if ( result_is_hit( s -> result ) )
-      p() -> buff.slam -> trigger( 1 );
   }
 
   double action_multiplier() const
@@ -3387,7 +3389,10 @@ struct stance_t: public warrior_spell_t
     if ( swap == 0 )
       cooldown -> duration = p -> cooldown.stance_swap -> duration;
     else
+    {
+      p -> swapping = true;
       cooldown -> duration = ( timespan_t::from_seconds( swap ) );
+    }
 
     callbacks = harmful = false;
     use_off_gcd = true;
@@ -4242,6 +4247,7 @@ struct gladiator_stance_t: public warrior_buff_t < buff_t >
 
   void execute( int a, double b, timespan_t t )
   {
+    warrior.swapping = true; // Once you go into gladiator stance, there's no going back after precombat.
     warrior.active_stance = STANCE_GLADIATOR;
     base_t::execute( a, b, t );
   }
@@ -4640,6 +4646,7 @@ void warrior_t::reset()
   player_t::reset();
 
   active_stance = STANCE_BATTLE;
+  swapping = false;
 
   t15_2pc_melee.reset();
 }

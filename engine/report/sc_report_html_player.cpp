@@ -1855,7 +1855,8 @@ void print_html_sample_sequence_table_entry( report::sc_html_stream& os,
   bool first = true;
   for ( resource_e r = RESOURCE_HEALTH; r < RESOURCE_MAX; ++r )
   {
-    if ( !p -> resources.is_infinite( r ) && data -> resource_snapshot[ r ] >= 0 )
+    if ( !p -> resources.is_infinite( r ) && ( data -> resource_snapshot[ r ] >= 0 || 
+      ( r == RESOURCE_ECLIPSE && p -> specialization() == DRUID_BALANCE ) ) ) // Eclipse currently dips into the negatives.
     {
       if ( first )
         first = false;

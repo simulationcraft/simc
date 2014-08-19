@@ -24,8 +24,8 @@ finger2=primal_gladiators_band_of_prowess,id=111135,enchant=gift_of_mastery
 trinket1=primal_gladiators_medallion_of_cruelty,id=111229
 trinket2=primal_gladiators_insignia_of_dominance,id=111228
 main_hand=primal_gladiators_battle_staff,id=111122,enchant=mark_of_warsong
-tier17_2pc_caster=1
-tier17_4pc_caster=1
+set_bonus=tier17_2pc=1
+set_bonus=tier17_4pc=1
 save=Priest_Shadow_T17N_COP.simc
 
 copy="Priest_Shadow_T17N_VE"
@@ -45,8 +45,8 @@ finger2=primal_gladiators_band_of_prowess,id=111135,enchant=gift_of_haste
 trinket1=primal_gladiators_medallion_of_cruelty,id=111229
 trinket2=primal_gladiators_insignia_of_dominance,id=111228
 main_hand=primal_gladiators_battle_staff,id=111122,enchant=mark_of_warsong
-tier17_2pc_caster=1
-tier17_4pc_caster=1
+set_bonus=tier17_2pc=1
+set_bonus=tier17_4pc=1
 save=Priest_Shadow_T17N_VE.simc
 
 copy="Priest_Shadow_T17N_AS"
@@ -66,8 +66,8 @@ finger2=primal_gladiators_band_of_prowess,id=111135,enchant=gift_of_critical_str
 trinket1=primal_gladiators_medallion_of_cruelty,id=111229
 trinket2=primal_gladiators_insignia_of_dominance,id=111228
 main_hand=primal_gladiators_battle_staff,id=111122,enchant=mark_of_warsong
-tier17_2pc_caster=1
-tier17_4pc_caster=1
+set_bonus=tier17_2pc=1
+set_bonus=tier17_4pc=1
 save=Priest_Shadow_T17N_AS.simc
 
 # Holy Heal
@@ -95,8 +95,8 @@ trinket1=primal_gladiators_medallion_of_meditation,id=111231
 trinket2=primal_gladiators_insignia_of_dominance,id=111228
 main_hand=primal_gladiators_battle_staff,id=111122,enchant=mark_of_shadowmoon
 save=Priest_Holy_T17N_Heal.simc
-tier17_2pc_heal=1
-tier17_4pc_heal=1
+set_bonus=tier17_2pc=1
+set_bonus=tier17_4pc=1
 
 # Holy DMG
 priest="Priest_Holy_T17N_DMG"
@@ -123,8 +123,8 @@ trinket1=primal_gladiators_medallion_of_meditation,id=111231
 trinket2=primal_gladiators_insignia_of_dominance,id=111228
 main_hand=primal_gladiators_battle_staff,id=111122,enchant=mark_of_the_frostwolf
 save=Priest_Holy_T17N_Dmg.simc
-tier17_2pc_heal=1
-tier17_4pc_heal=1
+set_bonus=tier17_2pc=1
+set_bonus=tier17_4pc=1
 
 # Discipline Heal
 priest="Priest_Discipline_T17N_Heal"
@@ -151,8 +151,8 @@ trinket1=primal_gladiators_medallion_of_meditation,id=111231
 trinket2=primal_gladiators_insignia_of_dominance,id=111228
 main_hand=primal_gladiators_battle_staff,id=111122,enchant=mark_of_shadowmoon
 save=Priest_Discipline_T17N_Heal.simc
-tier17_2pc_heal=1
-tier17_4pc_heal=1
+set_bonus=tier17_2pc=1
+set_bonus=tier17_4pc=1
 
 # Discipline Dmg
 priest="Priest_Discipline_T17N_Dmg"
@@ -179,5 +179,5 @@ trinket1=primal_gladiators_medallion_of_meditation,id=111231
 trinket2=primal_gladiators_insignia_of_dominance,id=111228
 main_hand=primal_gladiators_battle_staff,id=111122,enchant=mark_of_thunderlord
 save=Priest_Discipline_T17N_Dmg.simc
-tier17_2pc_heal=1
-tier17_4pc_heal=1
+set_bonus=tier17_2pc=1
+set_bonus=tier17_4pc=1

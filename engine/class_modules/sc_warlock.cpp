@@ -2845,8 +2845,8 @@ struct immolate_t : public warlock_spell_t
       gain = p() -> gains.immolate;
 
     if ( result_is_hit( s -> result ))
-	  {
-	    if ( s -> result == RESULT_CRIT ) trigger_ember_gain( p(), 0.1, gain );
+    {
+      if ( s -> result == RESULT_CRIT ) trigger_ember_gain( p(), 0.1, gain );
       if ( p() -> sets.has_set_bonus( SET_T17_2PC_CASTER ) )
         {
               trigger_ember_gain( p(), 1, p() -> gains.immolate_t17_2pc, p() -> sets.set( SET_T17_2PC_CASTER ) -> effectN( 1 ).percent());
@@ -2962,7 +2962,7 @@ struct conflagrate_t : public warlock_spell_t
     gain_t* gain;
 
     if ( result_is_hit( s -> result ))
-	  {
+    {
       if ( ! fnb && p() -> spec.fire_and_brimstone -> ok() )
         gain = p() -> gains.conflagrate_fnb;
       else

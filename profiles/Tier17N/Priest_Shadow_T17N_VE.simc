@@ -151,5 +151,5 @@ main_hand=primal_gladiators_battle_staff,id=111122,enchant=mark_of_warsong
 # gear_armor=600
 # gear_multistrike_rating=590
 # gear_versatility_rating=212
-# tier17_2pc_caster=1
-# tier17_4pc_caster=1
+# set_bonus=tier17_2pc=1
+# set_bonus=tier17_4pc=1

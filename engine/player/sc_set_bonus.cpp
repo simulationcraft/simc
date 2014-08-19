@@ -219,22 +219,22 @@ set_bonus_t::set_bonus_t( player_t* player ) : actor( player )
     set_e bonus_enum = translate_set_bonus_data( bonus );
     size_t bonus_type = bonus.bonus / 2 - 1;
 
-    // T17 onwards, new world, spec specific set bonuses. Overrides are going
-    // to be provided by the new set_bonus= option, so no need to translate
-    // anything from the old set bonus options.
-    if ( bonus.tier >= TIER_THRESHOLD )
-    {
-      assert( bonus.spec > 0 );
-      specialization_e spec = static_cast< specialization_e >( bonus.spec );
-      set_bonus_spec_data[ bonus.tier ][ specdata::spec_idx( spec ) ][ bonus_type ].bonus = &bonus;
-    }
     // T16 and less, old world, "role" specific set bonuses.
-    else
+    if ( old_tier( bonus.tier ) )
     {
       set_bonus_spec_data[ bonus.tier ][ bonus.role ][ bonus_type ].bonus = &bonus;
       // If the user had given an override for the set bonus, copy it here
       if ( bonus_enum != SET_NONE && actor -> sets.count[ bonus_enum ] != -1 )
         set_bonus_spec_data[ bonus.tier ][ bonus.role ][ bonus_type ].overridden = actor -> sets.count[ bonus_enum ];
+    }
+    // T17 onwards and PVP, new world, spec specific set bonuses. Overrides are
+    // going to be provided by the new set_bonus= option, so no need to
+    // translate anything from the old set bonus options.
+    else
+    {
+      assert( bonus.spec > 0 );
+      specialization_e spec = static_cast< specialization_e >( bonus.spec );
+      set_bonus_spec_data[ bonus.tier ][ specdata::spec_idx( spec ) ][ bonus_type ].bonus = &bonus;
     }
   }
 }
@@ -291,11 +291,11 @@ void set_bonus_t::initialize_items()
       if ( ! bonus.has_spec( actor -> _spec ) )
         continue;
 
-      // T17+ is spec specific, T16 and lower is "role specific"
-      if ( bonus.tier >= TIER_THRESHOLD )
-        set_bonus_spec_count[ bonus.tier ][ specdata::spec_idx( actor -> _spec ) ]++;
-      else
+      // T17+ and PVP is spec specific, T16 and lower is "role specific"
+      if ( old_tier( bonus.tier ) )
         set_bonus_spec_count[ bonus.tier ][ bonus.role ]++;
+      else
+        set_bonus_spec_count[ bonus.tier ][ specdata::spec_idx( actor -> _spec ) ]++;
       break;
     }
   }
@@ -323,7 +323,7 @@ void set_bonus_t::initialize()
         unsigned spec_role_idx = spec_idx;
         // If we're below the threshold tier, the "spec_idx" is actually a role
         // index, and our overrides are based on roles
-        if ( tier_idx < TIER_THRESHOLD )
+        if ( old_tier( tier_idx ) )
           spec_role_idx = data.bonus -> role;
 
         // Set bonus is overridden, or we have sufficient number of items to enable the bonus
@@ -353,7 +353,7 @@ std::string set_bonus_t::to_string() const
           continue;
 
         unsigned spec_role_idx = spec_idx;
-        if ( tier_idx < TIER_THRESHOLD )
+        if ( old_tier( tier_idx ) )
           spec_role_idx = data.bonus -> role;
 
         if ( data.overridden >= 1 ||
@@ -363,15 +363,15 @@ std::string set_bonus_t::to_string() const
             s += ", ";
 
           std::string spec_role_str;
-          if ( tier_idx < TIER_THRESHOLD )
+          if ( old_tier( tier_idx ) )
             spec_role_str = translate_set_bonus_role( static_cast<set_role_e>( data.bonus -> role ) );
           else
             spec_role_str = util::specialization_string( actor -> specialization() );
 
           s += "{ ";
           s += data.bonus -> set_name;
-          s += ", tier ";
-          s += util::to_string( tier_idx );
+          s += ", ";
+          s += tier_type_str( static_cast<tier_e>( tier_idx ) );
           s += ", ";
           s += spec_role_str;
           s += ", ";
@@ -403,17 +403,17 @@ std::string set_bonus_t::to_profile_string( const std::string& newline ) const
           continue;
 
         unsigned spec_role_idx = spec_idx;
-        if ( tier_idx < TIER_THRESHOLD )
+        if ( old_tier( tier_idx ) )
           spec_role_idx = data.bonus -> role;
 
         if ( data.overridden >= 1 ||
            ( data.overridden == -1 && set_bonus_spec_count[ tier_idx ][ spec_role_idx ] >= data.bonus -> bonus ) )
         {
           std::string spec_role_str;
-          if ( tier_idx < TIER_THRESHOLD )
+          if ( old_tier( tier_idx ) )
             spec_role_str = translate_set_bonus_role( static_cast<set_role_e>( data.bonus -> role ) );
 
-          s += "# set_bonus=tier" + util::to_string( tier_idx );
+          s += "# set_bonus=" + tier_type_str( static_cast<tier_e>( tier_idx ) );
           s += "_" + util::to_string( data.bonus -> bonus ) + "pc";
           if ( ! spec_role_str.empty() )
             s += "_" + spec_role_str;
@@ -430,7 +430,7 @@ std::string set_bonus_t::to_profile_string( const std::string& newline ) const
 expr_t* set_bonus_t::create_expression( const player_t*, const std::string& type )
 {
   std::vector<std::string> split = util::string_split( type, "_" );
-  unsigned tier = 0, bonus = 0;
+  int tier = -1, bonus = -1;
   set_role_e role = SET_ROLE_NONE;
 
   size_t bonus_idx = 0;
@@ -438,6 +438,12 @@ expr_t* set_bonus_t::create_expression( const player_t*, const std::string& type
 
   if ( split[ 0 ].find( "tier" ) != std::string::npos )
     tier = util::to_unsigned( split[ 0 ].substr( 4 ) );
+
+  if ( split[ 0 ].find( "pvp" ) != std::string::npos )
+    tier = 0;
+
+  if ( tier == -1 || static_cast<unsigned>( tier ) > max_tier() )
+    return 0;
 
   if ( split.size() == 3 )
   {
@@ -451,23 +457,19 @@ expr_t* set_bonus_t::create_expression( const player_t*, const std::string& type
   if ( role_idx > 0 )
     role = translate_set_bonus_role_str( split[ role_idx ] );
 
-  if ( tier < 1 || tier > max_tier() )
-    return 0;
-
   if ( bonus != 2 && bonus != 4 )
     return 0;
 
-  if ( tier < TIER_THRESHOLD && role == SET_ROLE_NONE )
+  if ( old_tier( tier ) && role == SET_ROLE_NONE )
     return 0;
 
-  if ( tier >= TIER_THRESHOLD && role != SET_ROLE_NONE )
+  if ( ! old_tier( tier ) && role != SET_ROLE_NONE )
     return 0;
 
   bonus = bonus / 2 - 1;
 
-
   bool state = false;
-  if ( tier < TIER_THRESHOLD )
+  if ( old_tier( static_cast<size_t>( tier ) ) )
     state = set_bonus_spec_data[ tier ][ role ][ bonus ].spell -> id() > 0;
   else
     state = set_bonus_spec_data[ tier ][ specdata::spec_idx( actor -> specialization() ) ][ bonus ].spell -> id() > 0;
@@ -484,4 +486,11 @@ expr_t* set_bonus_t::create_expression( const player_t*, const std::string& type
   return new set_bonus_expr_t( state );
 }
 
+std::string set_bonus_t::tier_type_str( tier_e tier )
+{
+  if ( tier == PVP )
+    return "pvp";
+  else
+    return "tier" + util::to_string( tier );
+}
 }

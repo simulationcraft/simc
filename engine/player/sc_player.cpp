@@ -338,14 +338,19 @@ bool parse_set_bonus( sim_t* sim, const std::string&, const std::string& value )
     return false;
   }
 
-  if ( splits[ 0 ].empty() || ! util::str_in_str_ci( splits[ 0 ], "tier" ) )
+  if ( splits[ 0 ].empty() || ( ! util::str_in_str_ci( splits[ 0 ], "tier" ) && ! util::str_compare_ci( splits[ 0 ], "pvp" ) ) )
   {
     sim -> errorf( error_str, p -> name(), value.c_str() );
     return false;
   }
 
-  unsigned tier = util::to_unsigned( splits[ 0 ].substr( 4 ) );
-  if ( tier < 1 || tier > p -> new_sets.max_tier() )
+  int tier = -1 ;
+  if ( util::str_compare_ci( splits[ 0 ], "pvp" ) )
+    tier = 0;
+  else
+    tier = util::to_unsigned( splits[ 0 ].substr( 4 ) );
+
+  if ( tier == -1 || static_cast<unsigned>( tier ) > p -> new_sets.max_tier() )
   {
     sim -> errorf( error_str, p -> name(), value.c_str() );
     return false;
@@ -386,7 +391,7 @@ bool parse_set_bonus( sim_t* sim, const std::string&, const std::string& value )
   else
     state = util::to_int( splits[ role_idx ].substr( splits[ role_idx ].size() - 1 ) );
 
-  if ( tier >= new_set_bonus::set_bonus_t::TIER_THRESHOLD )
+  if ( tier == 0 || static_cast<unsigned>( tier ) >= new_set_bonus::set_bonus_t::TIER_THRESHOLD )
   {
     if ( role != SET_ROLE_NONE )
       sim -> errorf( "%s tier %u set bonus given with role '%s', ignoring role",
@@ -8321,14 +8326,6 @@ void player_t::create_options()
     opt_bool( "tier16_4pc_tank",   sets.count[ SET_T16_4PC_TANK ] ),
     opt_bool( "tier16_2pc_heal",   sets.count[ SET_T16_2PC_HEAL ] ),
     opt_bool( "tier16_4pc_heal",   sets.count[ SET_T16_4PC_HEAL ] ),
-    opt_bool( "pvp_2pc_caster",    sets.count[ SET_PVP_2PC_CASTER ] ),
-    opt_bool( "pvp_4pc_caster",    sets.count[ SET_PVP_4PC_CASTER ] ),
-    opt_bool( "pvp_2pc_melee",     sets.count[ SET_PVP_2PC_MELEE ] ),
-    opt_bool( "pvp_4pc_melee",     sets.count[ SET_PVP_4PC_MELEE ] ),
-    opt_bool( "pvp_2pc_tank",      sets.count[ SET_PVP_2PC_TANK ] ),
-    opt_bool( "pvp_4pc_tank",      sets.count[ SET_PVP_4PC_TANK ] ),
-    opt_bool( "pvp_2pc_heal",      sets.count[ SET_PVP_2PC_HEAL ] ),
-    opt_bool( "pvp_4pc_heal",      sets.count[ SET_PVP_4PC_HEAL ] ),
     opt_func( "set_bonus",         parse_set_bonus                ),
 
     // Gear Stats

@@ -791,7 +791,7 @@ void dot_t::check_tick_zero()
     // Recalculate num_ticks:
     timespan_t tick_time = current_action->tick_time(state->haste);
     assert( tick_time > timespan_t::zero() && "A Dot needs a positive tick time!" );
-	  num_ticks = current_tick + as<int>(std::ceil(remains() / tick_time ) );
+    num_ticks = current_tick + as<int>(std::ceil(remains() / tick_time ) );
     tick_zero();
     if ( remains() <= timespan_t::zero() )
     {

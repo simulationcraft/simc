@@ -3,8 +3,8 @@ level=100
 race=blood_elf
 role=hybrid
 position=back
-talents=http://us.battle.net/wow/en/tool/talent-calculator#bb!1021222
-glyphs=contemplation/divine_storm/righteous_retreat/templars_verdict/fire_from_the_heavens/hand_of_sacrifice/
+talents=http://us.battle.net/wow/en/tool/talent-calculator#bb!1001121
+glyphs=winged_vengeance/templars_verdict/righteous_retreat/immediate_truth/fire_from_the_heavens/judgment/
 spec=retribution
 
 # This default action priority list is automatically created based on your character.
@@ -31,6 +31,7 @@ actions=rebuke
 actions+=/potion,name=draenic_strength,if=(buff.bloodlust.react|buff.avenging_wrath.up|target.time_to_die<=40)
 actions+=/auto_attack
 actions+=/speed_of_light,if=movement.remains>1
+actions+=/seraphim
 actions+=/avenging_wrath
 actions+=/holy_avenger,if=holy_power<=2
 actions+=/use_item,name=primal_gladiators_badge_of_victory
@@ -39,16 +40,16 @@ actions+=/berserking
 actions+=/arcane_torrent
 actions+=/execution_sentence
 actions+=/lights_hammer
-actions+=/divine_storm,if=active_enemies>=2&(holy_power=5|buff.divine_purpose.react|(buff.holy_avenger.up&holy_power>=3))
-actions+=/divine_storm,if=buff.divine_crusader.react&holy_power=5
-actions+=/templars_verdict,if=holy_power=5|buff.holy_avenger.up&holy_power>=3
+actions+=/divine_storm,if=active_enemies>=2&(holy_power=5|buff.divine_purpose.react|(buff.holy_avenger.up&holy_power>=3))&(!talent.final_verdict.enabled|buff.final_verdict.up)&(!talent.seraphim.enabled|cooldown.seraphim.remains>3)
+actions+=/divine_storm,if=buff.divine_crusader.react&holy_power=5&(!talent.final_verdict.enabled|buff.final_verdict.up)&(!talent.seraphim.enabled|cooldown.seraphim.remains>3)
+actions+=/templars_verdict,if=holy_power=5|buff.holy_avenger.up&holy_power>=3&(!talent.seraphim.enabled|cooldown.seraphim.remains>3)
 actions+=/templars_verdict,if=buff.divine_purpose.react&buff.divine_purpose.remains<4
 actions+=/final_verdict,if=holy_power=5|buff.holy_avenger.up&holy_power>=3
 actions+=/final_verdict,if=buff.divine_purpose.react&buff.divine_purpose.remains<4
 actions+=/hammer_of_wrath
 actions+=/wait,sec=cooldown.hammer_of_wrath.remains,if=cooldown.hammer_of_wrath.remains>0&cooldown.hammer_of_wrath.remains<=0.2
-actions+=/divine_storm,if=buff.divine_crusader.react&buff.avenging_wrath.up
-actions+=/templars_verdict,if=buff.avenging_wrath.up
+actions+=/divine_storm,if=buff.divine_crusader.react&buff.avenging_wrath.up&(!talent.final_verdict.enabled|buff.final_verdict.up)
+actions+=/templars_verdict,if=buff.avenging_wrath.up&(!talent.seraphim.enabled|cooldown.seraphim.remains>3)
 actions+=/final_verdict,if=buff.avenging_wrath.up
 actions+=/hammer_of_the_righteous,if=active_enemies>=4
 actions+=/crusader_strike
@@ -56,42 +57,43 @@ actions+=/wait,sec=cooldown.crusader_strike.remains,if=cooldown.crusader_strike.
 actions+=/exorcism,if=active_enemies>=2&active_enemies<=4&set_bonus.tier15_2pc_melee&glyph.mass_exorcism.enabled
 actions+=/judgment
 actions+=/wait,sec=cooldown.judgment.remains,if=cooldown.judgment.remains>0&cooldown.judgment.remains<=0.2
-actions+=/divine_storm,if=buff.divine_crusader.react
+actions+=/divine_storm,if=buff.divine_crusader.react&(!talent.final_verdict.enabled|buff.final_verdict.up)
 actions+=/templars_verdict,if=buff.divine_purpose.react
 actions+=/final_verdict,if=buff.divine_purpose.react
 actions+=/exorcism
 actions+=/wait,sec=cooldown.exorcism.remains,if=cooldown.exorcism.remains>0&cooldown.exorcism.remains<=0.2
 actions+=/templars_verdict,if=buff.tier15_4pc_melee.up&active_enemies<4
 actions+=/final_verdict,if=buff.tier15_4pc_melee.up&active_enemies<4
-actions+=/divine_storm,if=active_enemies>=2
+actions+=/divine_storm,if=active_enemies>=2&(!talent.final_verdict.enabled|buff.final_verdict.up)
 actions+=/templars_verdict
 actions+=/final_verdict
 actions+=/holy_prism
 
-head=primal_gladiators_scaled_helm,id=111171,gem_id=0/0/0/,enchant_id=0
-neck=primal_gladiators_choker_of_cruelty,id=111207,gem_id=0/0/0/,enchant_id=5293
-shoulders=primal_gladiators_scaled_shoulders,id=111173,gem_id=0/0/0/,enchant_id=0
-back=primal_gladiators_cloak_of_cruelty,id=111205,gem_id=0/0/0/,enchant_id=5300
-chest=primal_gladiators_scaled_chestpiece,id=111169,gem_id=0/0/0/,enchant_id=0
-wrists=primal_gladiators_armplates_of_cruelty,id=111180,gem_id=0/0/0/,enchant_id=0
-hands=primal_gladiators_scaled_gauntlets,id=111170,gem_id=0/0/0/,enchant_id=0
-waist=primal_gladiators_girdle_of_victory,id=111176,gem_id=0/0/0/,enchant_id=0
-legs=primal_gladiators_plate_leggings,id=111217,gem_id=0/0/0/,enchant_id=0
-feet=primal_gladiators_warboots_of_prowess,id=111178,gem_id=0/0/0/,enchant_id=0
-finger1=primal_gladiators_signet_of_accuracy,id=111272,gem_id=0/0/0/,enchant_id=5299
-finger2=primal_gladiators_signet_of_cruelty,id=111219,gem_id=0/0/0/,enchant_id=5299
-trinket1=primal_gladiators_badge_of_victory,id=111232,gem_id=0/0/0/,enchant_id=0
-trinket2=primal_gladiators_insignia_of_victory,id=111233,gem_id=0/0/0/,enchant_id=0
-main_hand=primal_gladiators_greatsword,id=111204,gem_id=0/0/0/,enchant_id=5334
+head=primal_gladiators_scaled_helm,id=111171
+neck=primal_gladiators_choker_of_prowess,id=111208,enchant=gift_of_mastery
+shoulders=primal_gladiators_plate_shoulders,id=111213
+back=primal_gladiators_cloak_of_cruelty,id=111205,enchant=gift_of_mastery
+chest=primal_gladiators_scaled_chestpiece,id=111169
+wrists=primal_gladiators_armplates_of_cruelty,id=111180
+hands=primal_gladiators_scaled_gauntlets,id=111170
+waist=primal_gladiators_girdle_of_prowess,id=111175
+legs=primal_gladiators_scaled_legguards,id=111172
+feet=primal_gladiators_warboots_of_prowess,id=111178
+finger1=primal_gladiators_signet_of_cruelty,id=111219,enchant=gift_of_mastery
+finger2=primal_gladiators_signet_of_accuracy,id=111220,enchant=gift_of_mastery
+trinket1=primal_gladiators_badge_of_victory,id=111232
+trinket2=primal_gladiators_insignia_of_victory,id=111233
+main_hand=primal_gladiators_greatsword,id=111204,enchant=mark_of_the_thunderlord
 
 # Gear Summary
 # gear_strength=2588
 # gear_stamina=3250
-# gear_crit_rating=769
-# gear_haste_rating=472
-# gear_mastery_rating=1307
+# gear_crit_rating=493
+# gear_haste_rating=1017
+# gear_mastery_rating=918
 # gear_armor=2574
-# gear_multistrike_rating=289
-# gear_versatility_rating=249
+# gear_multistrike_rating=733
 # pvp_2pc_melee=1
 # pvp_4pc_melee=1
+# set_bonus=pvp_2pc=1
+# set_bonus=pvp_4pc=1

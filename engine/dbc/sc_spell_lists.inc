@@ -4,7 +4,7 @@
 #ifndef MAX_CLASS
 #define MAX_CLASS (12)
 #endif
-// Class based active abilities, wow build 18716
+// Class based active abilities, wow build 18738
 static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SIZE] = {
   {
     {
@@ -28,13 +28,14 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
   },
   // Class active abilities for Warrior
   {
-    // General tree, 19 abilities
+    // General tree, 21 abilities
     {
         6673, // Battle Shout
         2457, // Battle Stance
        18499, // Berserker Rage
          100, // Charge
          469, // Commanding Shout
+      175708, // Concussion Blow
           71, // Defensive Stance
       174894, // Devastate
        20243, // Devastate
@@ -48,6 +49,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
       112048, // Shield Barrier
        23920, // Spell Reflection
          355, // Taunt
+      175710, // Unleashed Rage
        34428, // Victory Rush
            0,
     },
@@ -107,7 +109,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
   },
   // Class active abilities for Paladin
   {
-    // General tree, 23 abilities
+    // General tree, 24 abilities
     {
        20217, // Blessing of Kings
        19740, // Blessing of Might
@@ -121,7 +123,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
         1044, // Hand of Freedom
         1022, // Hand of Protection
         6940, // Hand of Sacrifice
-      162056, // Jailor's Judgment
+      162056, // Jailer's Judgment
        20271, // Judgment
          633, // Lay on Hands
        96231, // Rebuke
@@ -131,6 +133,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
       105361, // Seal of Command
        20165, // Seal of Insight
        10326, // Turn Evil
+      175699, // Weapons of the Light
        85673, // Word of Glory
            0,
     },
@@ -185,7 +188,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
   },
   // Class active abilities for Hunter
   {
-    // General tree, 30 abilities
+    // General tree, 32 abilities
     {
         3044, // Arcane Shot
         5118, // Aspect of the Cheetah
@@ -207,6 +210,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
         5384, // Feign Death
         1543, // Flare
         1499, // Freezing Trap (Frost Trap)
+      175687, // Heavy Artilery
        13809, // Ice Trap (Frost Trap)
        53271, // Master's Call
          136, // Mend Pet
@@ -214,6 +218,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
         2643, // Multi-Shot
          982, // Revive Pet
        56641, // Steady Shot
+      175686, // Stopping Power
         1515, // Tame Beast
        19801, // Tranquilizing Shot
        77769, // Trap Launcher
@@ -371,10 +376,11 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
   },
   // Class active abilities for Priest
   {
-    // General tree, 16 abilities
+    // General tree, 18 abilities
     {
       161862, // Ascension
          528, // Dispel Magic
+      175702, // Divine Burst
          586, // Fade
         6346, // Fear Ward
         2061, // Flash Heal
@@ -388,6 +394,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
         9484, // Shackle Undead
          589, // Shadow Word: Pain
        34433, // Shadowfiend
+      175701, // Shadowy Grasp
          585, // Smite
            0,
     },
@@ -449,7 +456,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
   },
   // Class active abilities for Death Knight
   {
-    // General tree, 23 abilities
+    // General tree, 26 abilities
     {
        48707, // Anti-Magic Shell
        42650, // Army of the Dead
@@ -460,10 +467,12 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
        77606, // Dark Simulacrum
        47541, // Death Coil
        49576, // Death Grip
+      175678, // Death Heal
        49998, // Death Strike
        43265, // Death and Decay
        47568, // Empower Rune Weapon
        48266, // Frost Presence
+      175680, // Grip of Death
        57330, // Horn of Winter
        48792, // Icebound Fortitude
        45477, // Icy Touch
@@ -472,6 +481,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
         3714, // Path of Frost
        45462, // Plague Strike
        61999, // Raise Ally
+      130736, // Soul Reaper
        47476, // Strangulate
        48265, // Unholy Presence
            0,
@@ -495,13 +505,12 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
       130735, // Soul Reaper
            0,
     },
-    // Unholy tree, 6 abilities
+    // Unholy tree, 5 abilities
     {
        63560, // Dark Transformation
        85948, // Festering Strike
        46584, // Raise Dead
        55090, // Scourge Strike
-      130736, // Soul Reaper
        49206, // Summon Gargoyle
            0,
     },
@@ -609,7 +618,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
   },
   // Class active abilities for Mage
   {
-    // General tree, 15 abilities
+    // General tree, 16 abilities
     {
       159916, // Amplify Magic
       120145, // Ancient Teleport: Dalaran
@@ -619,6 +628,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
         2139, // Counterspell
        61316, // Dalaran Brilliance
         2136, // Fire Blast
+      175689, // Freezing Grasp
          122, // Frost Nova
        44614, // Frostfire Bolt
        45438, // Ice Block
@@ -678,11 +688,12 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
   },
   // Class active abilities for Warlock
   {
-    // General tree, 32 abilities
+    // General tree, 33 abilities
     {
          710, // Banish
          172, // Corruption
         6201, // Create Healthstone
+      175707, // Crippling Shadows
       109773, // Dark Intent
        77801, // Dark Soul
       111771, // Demonic Gateway
@@ -694,7 +705,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
       111895, // Grimoire: Voidwalker (Summon)
         5484, // Howl of Terror
         1454, // Life Tap
-      114790, // Seed of Corruption (Soulburn)
+      114790, // Seed of Corruption
          686, // Shadow Bolt
       119678, // Soul Swap (Soulburn)
        29858, // Soulshatter
@@ -722,7 +733,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
       103103, // Drain Soul
        48181, // Haunt
          755, // Health Funnel
-      114790, // Seed of Corruption (Soulburn)
+      114790, // Seed of Corruption
        27243, // Seed of Corruption
        86121, // Soul Swap
        74434, // Soulburn
@@ -807,12 +818,14 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
   },
   // Class active abilities for Monk
   {
-    // General tree, 22 abilities
+    // General tree, 24 abilities
     {
       100784, // Blackout Kick
+      175693, // Chi Shaping
       117952, // Crackling Jade Lightning
       125170, // Detox
       115450, // Detox
+      175697, // Disabling Technique
       115072, // Expel Harm
       115203, // Fortifying Brew
       100780, // Jab
@@ -890,7 +903,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
   },
   // Class active abilities for Druid
   {
-    // General tree, 25 abilities
+    // General tree, 27 abilities
     {
         5487, // Bear Form (Shapeshift)
          768, // Cat Form (Shapeshift)
@@ -909,6 +922,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
        33917, // Mangle
         1126, // Mark of the Wild
         8921, // Moonfire (Lunar)
+      175682, // Nature's Control
         5215, // Prowl
        20484, // Rebirth
          774, // Rejuvenation
@@ -916,6 +930,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
         2908, // Soothe
       106898, // Stampeding Roar
          783, // Travel Form (Shapeshift)
+      175683, // Ursol's Power
         5176, // Wrath (Solar)
            0,
     },
@@ -991,7 +1006,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
 
 #define TREE_SPECIALIZATION_SIZE (28)
 
-// Talent tree specialization abilities, wow build 18716
+// Talent tree specialization abilities, wow build 18738
 static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZATION_SIZE] = {
   // Specialization abilities for Hunter pets
   {
@@ -1486,7 +1501,6 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
       130735, // Soul Reaper
       162698, // Stat Negation Aura - Strength DPS
        66192, // Threat of Thassarian
-      165361, // Tundra Stalker
        55610, // Unholy Aura
            0,
     },
@@ -1504,7 +1518,6 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
        56835, // Reaping
        55090, // Scourge Strike
        49572, // Shadow Infusion
-      130736, // Soul Reaper
       162698, // Stat Negation Aura - Strength DPS
        49530, // Sudden Doom
        49206, // Summon Gargoyle
@@ -1582,7 +1595,6 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
        77226, // Mastery: Deep Healing
        95862, // Meditation
       165391, // Purification
-       16213, // Purification
        77130, // Purify Spirit
        16196, // Resurgence
        61295, // Riptide
@@ -1694,6 +1706,7 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
       109145, // Demonic Fury
       109151, // Demonic Leap
       165392, // Demonic Tactics
+      124913, // Doom
          689, // Drain Life
       105174, // Hand of Gul'dan
          755, // Health Funnel
@@ -1949,7 +1962,7 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
 
 #define CLASS_MASTERY_ABILITY_SIZE (1)
 
-// Class mastery abilities, wow build 18716
+// Class mastery abilities, wow build 18738
 static unsigned __class_mastery_ability_data[MAX_CLASS][MAX_SPECS_PER_CLASS][CLASS_MASTERY_ABILITY_SIZE] = {
   {
     {
@@ -2172,7 +2185,7 @@ static unsigned __class_mastery_ability_data[MAX_CLASS][MAX_SPECS_PER_CLASS][CLA
 #define MAX_RACE (28)
 #endif
 
-// Racial abilities, wow build 18716
+// Racial abilities, wow build 18738
 static unsigned __race_ability_data[MAX_RACE][MAX_CLASS][RACE_ABILITY_SIZE] = {
   {
     {     0, },
@@ -2895,7 +2908,7 @@ static unsigned __race_ability_data[MAX_RACE][MAX_CLASS][RACE_ABILITY_SIZE] = {
 
 #define GLYPH_ABILITIES_SIZE (41)
 
-// Glyph spells for classes, wow build 18716
+// Glyph spells for classes, wow build 18738
 static unsigned __glyph_abilities_data[][3][GLYPH_ABILITIES_SIZE] = {
   {
     {
@@ -3541,7 +3554,7 @@ static unsigned __glyph_abilities_data[][3][GLYPH_ABILITIES_SIZE] = {
 
 #define TIER_BONUSES_TIER_BASE (13)
 
-// Tier item set bonuses for class, wow build 18716
+// Tier item set bonuses for class, wow build 18738
 static unsigned __tier_bonuses_data[][TIER_BONUSES_MAX_TIER][TIER_BONUSES_SIZE] = {
   {
     {
@@ -3964,11 +3977,81 @@ static unsigned __tier_bonuses_data[][TIER_BONUSES_MAX_TIER][TIER_BONUSES_SIZE] 
   },
 };
 
-#define SET_BONUS_DATA_SIZE (475)
+#define SET_BONUS_DATA_SIZE (543)
 
-// Set bonus data, wow build 18716
+// Set bonus data, wow build 18738
 static item_set_bonus_t __set_bonus_data[SET_BONUS_DATA_SIZE] = {
   //                                    Tier name, SetID, Tier, Bns, Cls,         Derived Spec, Role, Spec,  Spell, Items
+  { "Gladiator's Battlegear"                     ,  1230,    0,   2,   1,                { 0 },    3,   71, 165636, { 111239, 111240, 111241, 111242, 111243,  0 } },
+  { "Gladiator's Battlegear"                     ,  1230,    0,   4,   1,                { 0 },    3,   71, 165670, { 111239, 111240, 111241, 111242, 111243,  0 } },
+  { "Gladiator's Battlegear"                     ,  1230,    0,   2,   1,                { 0 },    3,   72, 165639, { 111239, 111240, 111241, 111242, 111243,  0 } },
+  { "Gladiator's Battlegear"                     ,  1230,    0,   4,   1,                { 0 },    3,   72, 165670, { 111239, 111240, 111241, 111242, 111243,  0 } },
+  { "Gladiator's Battlegear"                     ,  1230,    0,   2,   1,                { 0 },    3,   73, 165641, { 111239, 111240, 111241, 111242, 111243,  0 } },
+  { "Gladiator's Battlegear"                     ,  1230,    0,   4,   1,                { 0 },    3,   73, 165670, { 111239, 111240, 111241, 111242, 111243,  0 } },
+  { "Gladiator's Vindication"                    ,  1225,    0,   2,   2,                { 0 },    3,   65, 170860, { 111169, 111170, 111171, 111172, 111173,  0 } },
+  { "Gladiator's Vindication"                    ,  1225,    0,   4,   2,                { 0 },    3,   65, 165881, { 111169, 111170, 111171, 111172, 111173,  0 } },
+  { "Gladiator's Vindication"                    ,  1225,    0,   2,   2,                { 0 },    3,   66, 165905, { 111169, 111170, 111171, 111172, 111173,  0 } },
+  { "Gladiator's Vindication"                    ,  1225,    0,   4,   2,                { 0 },    3,   66, 171427, { 111169, 111170, 111171, 111172, 111173,  0 } },
+  { "Gladiator's Vindication"                    ,  1225,    0,   2,   2,                { 0 },    3,   70, 165886, { 111169, 111170, 111171, 111172, 111173,  0 } },
+  { "Gladiator's Vindication"                    ,  1225,    0,   4,   2,                { 0 },    3,   70, 165895, { 111169, 111170, 111171, 111172, 111173,  0 } },
+  { "Gladiator's Pursuit"                        ,  1222,    0,   2,   3,                { 0 },    3,  253, 166005, { 111112, 111113, 111114, 111115, 111116,  0 } },
+  { "Gladiator's Pursuit"                        ,  1222,    0,   4,   3,                { 0 },    3,  253, 171478, { 111112, 111113, 111114, 111115, 111116,  0 } },
+  { "Gladiator's Pursuit"                        ,  1222,    0,   2,   3,                { 0 },    3,  254, 166005, { 111112, 111113, 111114, 111115, 111116,  0 } },
+  { "Gladiator's Pursuit"                        ,  1222,    0,   4,   3,                { 0 },    3,  254, 170884, { 111112, 111113, 111114, 111115, 111116,  0 } },
+  { "Gladiator's Pursuit"                        ,  1222,    0,   2,   3,                { 0 },    3,  255, 166005, { 111112, 111113, 111114, 111115, 111116,  0 } },
+  { "Gladiator's Pursuit"                        ,  1222,    0,   4,   3,                { 0 },    3,  255, 166012, { 111112, 111113, 111114, 111115, 111116,  0 } },
+  { "Gladiator's Vestments"                      ,  1227,    0,   2,   4,                { 0 },    3,  259, 165995, { 111188, 111189, 111190, 111191, 111192,  0 } },
+  { "Gladiator's Vestments"                      ,  1227,    0,   4,   4,                { 0 },    3,  259, 170883, { 111188, 111189, 111190, 111191, 111192,  0 } },
+  { "Gladiator's Vestments"                      ,  1227,    0,   2,   4,                { 0 },    3,  260, 165995, { 111188, 111189, 111190, 111191, 111192,  0 } },
+  { "Gladiator's Vestments"                      ,  1227,    0,   4,   4,                { 0 },    3,  260, 165997, { 111188, 111189, 111190, 111191, 111192,  0 } },
+  { "Gladiator's Vestments"                      ,  1227,    0,   2,   4,                { 0 },    3,  261, 165995, { 111188, 111189, 111190, 111191, 111192,  0 } },
+  { "Gladiator's Vestments"                      ,  1227,    0,   4,   4,                { 0 },    3,  261, 170877, { 111188, 111189, 111190, 111191, 111192,  0 } },
+  { "Gladiator's Investiture"                    ,  1226,    0,   2,   5,                { 0 },    3,  256, 171124, { 111183, 111184, 111185, 111186, 111187,  0 } },
+  //                                    Tier name, SetID, Tier, Bns, Cls,         Derived Spec, Role, Spec,  Spell, Items
+  { "Gladiator's Investiture"                    ,  1226,    0,   4,   5,                { 0 },    3,  256, 171141, { 111183, 111184, 111185, 111186, 111187,  0 } },
+  { "Gladiator's Investiture"                    ,  1226,    0,   2,   5,                { 0 },    3,  257, 171158, { 111183, 111184, 111185, 111186, 111187,  0 } },
+  { "Gladiator's Investiture"                    ,  1226,    0,   4,   5,                { 0 },    3,  257, 171142, { 111183, 111184, 111185, 111186, 111187,  0 } },
+  { "Gladiator's Investiture"                    ,  1226,    0,   2,   5,                { 0 },    3,  258, 171146, { 111183, 111184, 111185, 111186, 111187,  0 } },
+  { "Gladiator's Investiture"                    ,  1226,    0,   4,   5,                { 0 },    3,  258, 171151, { 111183, 111184, 111185, 111186, 111187,  0 } },
+  { "Gladiator's Desecration"                    ,  1220,    0,   2,   6,                { 0 },    3,  250, 166020, { 111102, 111103, 111104, 111105, 111106,  0 } },
+  { "Gladiator's Desecration"                    ,  1220,    0,   4,   6,                { 0 },    3,  250, 171456, { 111102, 111103, 111104, 111105, 111106,  0 } },
+  { "Gladiator's Desecration"                    ,  1220,    0,   2,   6,                { 0 },    3,  251, 166020, { 111102, 111103, 111104, 111105, 111106,  0 } },
+  { "Gladiator's Desecration"                    ,  1220,    0,   4,   6,                { 0 },    3,  251, 166056, { 111102, 111103, 111104, 111105, 111106,  0 } },
+  { "Gladiator's Desecration"                    ,  1220,    0,   2,   6,                { 0 },    3,  252, 166020, { 111102, 111103, 111104, 111105, 111106,  0 } },
+  { "Gladiator's Desecration"                    ,  1220,    0,   4,   6,                { 0 },    3,  252, 166061, { 111102, 111103, 111104, 111105, 111106,  0 } },
+  { "Gladiator's Wartide"                        ,  1228,    0,   2,   7,                { 0 },    3,  262, 166096, { 111193, 111194, 111195, 111196, 111197,  0 } },
+  { "Gladiator's Wartide"                        ,  1228,    0,   4,   7,                { 0 },    3,  262, 171109, { 111193, 111194, 111195, 111196, 111197,  0 } },
+  { "Gladiator's Wartide"                        ,  1228,    0,   2,   7,                { 0 },    3,  263, 166103, { 111193, 111194, 111195, 111196, 111197,  0 } },
+  { "Gladiator's Wartide"                        ,  1228,    0,   4,   7,                { 0 },    3,  263, 171121, { 111193, 111194, 111195, 111196, 111197,  0 } },
+  { "Gladiator's Wartide"                        ,  1228,    0,   2,   7,                { 0 },    3,  264, 171381, { 111193, 111194, 111195, 111196, 111197,  0 } },
+  { "Gladiator's Wartide"                        ,  1228,    0,   4,   7,                { 0 },    3,  264, 166063, { 111193, 111194, 111195, 111196, 111197,  0 } },
+  { "Gladiator's Regalia"                        ,  1223,    0,   2,   8,                { 0 },    3,   62, 171349, { 111150, 111151, 111152, 111153, 111154,  0 } },
+  { "Gladiator's Regalia"                        ,  1223,    0,   4,   8,                { 0 },    3,   62, 171351, { 111150, 111151, 111152, 111153, 111154,  0 } },
+  { "Gladiator's Regalia"                        ,  1223,    0,   2,   8,                { 0 },    3,   63, 165977, { 111150, 111151, 111152, 111153, 111154,  0 } },
+  { "Gladiator's Regalia"                        ,  1223,    0,   4,   8,                { 0 },    3,   63, 171169, { 111150, 111151, 111152, 111153, 111154,  0 } },
+  { "Gladiator's Regalia"                        ,  1223,    0,   2,   8,                { 0 },    3,   64, 165981, { 111150, 111151, 111152, 111153, 111154,  0 } },
+  { "Gladiator's Regalia"                        ,  1223,    0,   4,   8,                { 0 },    3,   64, 171178, { 111150, 111151, 111152, 111153, 111154,  0 } },
+  { "Gladiator's Felshroud"                      ,  1229,    0,   2,   9,                { 0 },    3,  265, 171377, { 111234, 111235, 111236, 111237, 111238,  0 } },
+  { "Gladiator's Felshroud"                      ,  1229,    0,   4,   9,                { 0 },    3,  265, 171379, { 111234, 111235, 111236, 111237, 111238,  0 } },
+  //                                    Tier name, SetID, Tier, Bns, Cls,         Derived Spec, Role, Spec,  Spell, Items
+  { "Gladiator's Felshroud"                      ,  1229,    0,   2,   9,                { 0 },    3,  266, 171393, { 111234, 111235, 111236, 111237, 111238,  0 } },
+  { "Gladiator's Felshroud"                      ,  1229,    0,   4,   9,                { 0 },    3,  266, 165967, { 111234, 111235, 111236, 111237, 111238,  0 } },
+  { "Gladiator's Felshroud"                      ,  1229,    0,   2,   9,                { 0 },    3,  267, 171383, { 111234, 111235, 111236, 111237, 111238,  0 } },
+  { "Gladiator's Felshroud"                      ,  1229,    0,   4,   9,                { 0 },    3,  267, 165970, { 111234, 111235, 111236, 111237, 111238,  0 } },
+  { "Gladiator's Ironskin"                       ,  1224,    0,   2,  10,                { 0 },    3,  268, 165691, { 111168, 111164, 111165, 111166, 111167,  0 } },
+  { "Gladiator's Ironskin"                       ,  1224,    0,   4,  10,                { 0 },    3,  268, 171445, { 111168, 111164, 111165, 111166, 111167,  0 } },
+  { "Gladiator's Ironskin"                       ,  1224,    0,   2,  10,                { 0 },    3,  269, 165691, { 111168, 111164, 111165, 111166, 111167,  0 } },
+  { "Gladiator's Ironskin"                       ,  1224,    0,   4,  10,                { 0 },    3,  269, 165696, { 111168, 111164, 111165, 111166, 111167,  0 } },
+  { "Gladiator's Ironskin"                       ,  1224,    0,   2,  10,                { 0 },    3,  270, 170799, { 111168, 111164, 111165, 111166, 111167,  0 } },
+  { "Gladiator's Ironskin"                       ,  1224,    0,   4,  10,                { 0 },    3,  270, 165697, { 111168, 111164, 111165, 111166, 111167,  0 } },
+  { "Gladiator's Sanctuary"                      ,  1221,    0,   2,  11,                { 0 },    3,  102, 165701, { 111107, 111108, 111109, 111110, 111111,  0 } },
+  { "Gladiator's Sanctuary"                      ,  1221,    0,   4,  11,                { 0 },    3,  102, 165705, { 111107, 111108, 111109, 111110, 111111,  0 } },
+  { "Gladiator's Sanctuary"                      ,  1221,    0,   2,  11,                { 0 },    3,  103, 170848, { 111107, 111108, 111109, 111110, 111111,  0 } },
+  { "Gladiator's Sanctuary"                      ,  1221,    0,   4,  11,                { 0 },    3,  103, 165698, { 111107, 111108, 111109, 111110, 111111,  0 } },
+  { "Gladiator's Sanctuary"                      ,  1221,    0,   2,  11,                { 0 },    3,  104, 171408, { 111107, 111108, 111109, 111110, 111111,  0 } },
+  { "Gladiator's Sanctuary"                      ,  1221,    0,   4,  11,                { 0 },    3,  104, 171489, { 111107, 111108, 111109, 111110, 111111,  0 } },
+  { "Gladiator's Sanctuary"                      ,  1221,    0,   2,  11,                { 0 },    3,  105, 170853, { 111107, 111108, 111109, 111110, 111111,  0 } },
+  { "Gladiator's Sanctuary"                      ,  1221,    0,   4,  11,                { 0 },    3,  105, 165707, { 111107, 111108, 111109, 111110, 111111,  0 } },
   { "Siegebreaker Battlegear"                    ,   830,    8,   2,   1,      {  71,  72, 0 },    2,    0,  64938, {  46278,  46280,  46282,  46285,  46287,  0 } },
   { "Siegebreaker Battlegear"                    ,   830,    8,   4,   1,      {  71,  72, 0 },    2,    0,  64939, {  46278,  46280,  46282,  46285,  46287,  0 } },
   { "Siegebreaker Plate"                         ,   831,    8,   2,   1,           {  73, 0 },    0,    0,  64933, {  46279,  46281,  46283,  46284,  46286,  0 } },
@@ -3976,6 +4059,7 @@ static item_set_bonus_t __set_bonus_data[SET_BONUS_DATA_SIZE] = {
   { "Aegis Regalia"                              ,   822,    8,   2,   2,           {  65, 0 },    1,    0,  64890, {  46217,  46218,  46220,  46227,  46228,  0 } },
   { "Aegis Regalia"                              ,   822,    8,   4,   2,           {  65, 0 },    1,    0,  64895, {  46217,  46218,  46220,  46227,  46228,  0 } },
   { "Aegis Plate"                                ,   821,    8,   2,   2,           {  66, 0 },    0,    0,  64881, {  46214,  46215,  46219,  46222,  46225,  0 } },
+  //                                    Tier name, SetID, Tier, Bns, Cls,         Derived Spec, Role, Spec,  Spell, Items
   { "Aegis Plate"                                ,   821,    8,   4,   2,           {  66, 0 },    0,    0,  64882, {  46214,  46215,  46219,  46222,  46225,  0 } },
   { "Aegis Battlegear"                           ,   820,    8,   2,   2,           {  70, 0 },    2,    0,  64878, {  46213,  46216,  46221,  46224,  46226,  0 } },
   { "Aegis Battlegear"                           ,   820,    8,   4,   2,           {  70, 0 },    2,    0,  64879, {  46213,  46216,  46221,  46224,  46226,  0 } },
@@ -3994,7 +4078,6 @@ static item_set_bonus_t __set_bonus_data[SET_BONUS_DATA_SIZE] = {
   { "Worldbreaker Garb"                          ,   824,    8,   2,   7,           { 262, 0 },    3,    0,  64925, {  46295,  46298,  46300,  46301,  46304,  0 } },
   { "Worldbreaker Garb"                          ,   824,    8,   4,   7,           { 262, 0 },    3,    0,  64928, {  46295,  46298,  46300,  46301,  46304,  0 } },
   { "Worldbreaker Battlegear"                    ,   823,    8,   2,   7,           { 263, 0 },    2,    0,  64916, {  46293,  46294,  46296,  46303,  46307,  0 } },
-  //                                    Tier name, SetID, Tier, Bns, Cls,         Derived Spec, Role, Spec,  Spell, Items
   { "Worldbreaker Battlegear"                    ,   823,    8,   4,   7,           { 263, 0 },    2,    0,  64917, {  46293,  46294,  46296,  46303,  46307,  0 } },
   { "Worldbreaker Regalia"                       ,   825,    8,   2,   7,           { 264, 0 },    1,    0,  64921, {  46297,  46299,  46302,  46305,  46306,  0 } },
   { "Worldbreaker Regalia"                       ,   825,    8,   4,   7,           { 264, 0 },    1,    0,  64922, {  46297,  46299,  46302,  46305,  46306,  0 } },
@@ -4002,6 +4085,7 @@ static item_set_bonus_t __set_bonus_data[SET_BONUS_DATA_SIZE] = {
   { "Kirin Tor Garb"                             ,   836,    8,   4,   8, {  62,  63,  64, 0 },    3,    0,  64869, {  46249,  46250,  46251,  46252,  46253,  0 } },
   { "Deathbringer Garb"                          ,   837,    8,   2,   9, { 265, 266, 267, 0 },    3,    0,  64931, {  46242,  46243,  46244,  46245,  46246,  0 } },
   { "Deathbringer Garb"                          ,   837,    8,   4,   9, { 265, 266, 267, 0 },    3,    0,  64932, {  46242,  46243,  46244,  46245,  46246,  0 } },
+  //                                    Tier name, SetID, Tier, Bns, Cls,         Derived Spec, Role, Spec,  Spell, Items
   { "Nightsong Garb"                             ,   828,    8,   2,  11,           { 102, 0 },    3,    0,  64818, {  45350,  46309,  46266,  46271,  46272,  0 } },
   { "Nightsong Garb"                             ,   828,    8,   4,  11,           { 102, 0 },    3,    0,  64824, {  45350,  46309,  46266,  46271,  46272,  0 } },
   { "Nightsong Battlegear"                       ,   827,    8,   2,  11,           { 103, 0 },    2,    0,  64752, {  46260,  46262,  46265,  46267,  46269,  0 } },
@@ -4020,7 +4104,6 @@ static item_set_bonus_t __set_bonus_data[SET_BONUS_DATA_SIZE] = {
   { "Turalyon's Garb"                            ,   875,    9,   2,   2,           {  65, 0 },    1,    0,  67190, {  48904,  48903,  48902,  48901,  48900,  0 } },
   { "Liadrin's Garb"                             ,   876,    9,   4,   2,           {  65, 0 },    1,    0,  67191, {  48909,  48908,  48907,  48906,  48905,  0 } },
   { "Turalyon's Garb"                            ,   875,    9,   4,   2,           {  65, 0 },    1,    0,  67191, {  48904,  48903,  48902,  48901,  48900,  0 } },
-  //                                    Tier name, SetID, Tier, Bns, Cls,         Derived Spec, Role, Spec,  Spell, Items
   { "Turalyon's Plate"                           ,   879,    9,   2,   2,           {  66, 0 },    0,    0,  67186, {  48927,  48928,  48929,  48930,  48931,  0 } },
   { "Liadrin's Plate"                            ,   880,    9,   2,   2,           {  66, 0 },    0,    0,  67186, {  48922,  48923,  48924,  48925,  48926,  0 } },
   { "Turalyon's Plate"                           ,   879,    9,   4,   2,           {  66, 0 },    0,    0,  67187, {  48927,  48928,  48929,  48930,  48931,  0 } },
@@ -4028,6 +4111,7 @@ static item_set_bonus_t __set_bonus_data[SET_BONUS_DATA_SIZE] = {
   { "Turalyon's Battlegear"                      ,   877,    9,   2,   2,           {  70, 0 },    2,    0,  67188, {  48915,  48916,  48917,  48918,  48919,  0 } },
   { "Liadrin's Battlegear"                       ,   878,    9,   2,   2,           {  70, 0 },    2,    0,  67188, {  48910,  48911,  48912,  48913,  48914,  0 } },
   { "Turalyon's Battlegear"                      ,   877,    9,   4,   2,           {  70, 0 },    2,    0,  67189, {  48915,  48916,  48917,  48918,  48919,  0 } },
+  //                                    Tier name, SetID, Tier, Bns, Cls,         Derived Spec, Role, Spec,  Spell, Items
   { "Liadrin's Battlegear"                       ,   878,    9,   4,   2,           {  70, 0 },    2,    0,  67189, {  48910,  48911,  48912,  48913,  48914,  0 } },
   { "Windrunner's Battlegear"                    ,   859,    9,   2,   3, { 253, 254, 255, 0 },    2,    0,  67150, {  48819,  48820,  48821,  48822,  48823,  0 } },
   { "Windrunner's Pursuit"                       ,   860,    9,   2,   3, { 253, 254, 255, 0 },    2,    0,  67150, {  48814,  48815,  48816,  48817,  48818,  0 } },
@@ -4046,7 +4130,6 @@ static item_set_bonus_t __set_bonus_data[SET_BONUS_DATA_SIZE] = {
   { "Zabra's Regalia"                            ,   850,    9,   4,   5,           { 258, 0 },    3,    0,  67198, {  48760,  48761,  48762,  48763,  48764,  0 } },
   { "Velen's Regalia"                            ,   849,    9,   4,   5,           { 258, 0 },    3,    0,  67198, {  48755,  48756,  48757,  48758,  48759,  0 } },
   { "Thassarian's Plate"                         ,   873,    9,   2,   6,           { 250, 0 },    0,    0,  67119, {  48895,  48896,  48897,  48898,  48899,  0 } },
-  //                                    Tier name, SetID, Tier, Bns, Cls,         Derived Spec, Role, Spec,  Spell, Items
   { "Koltira's Plate"                            ,   874,    9,   2,   6,           { 250, 0 },    0,    0,  67119, {  48890,  48891,  48892,  48893,  48894,  0 } },
   { "Thassarian's Plate"                         ,   873,    9,   4,   6,           { 250, 0 },    0,    0,  67120, {  48895,  48896,  48897,  48898,  48899,  0 } },
   { "Koltira's Plate"                            ,   874,    9,   4,   6,           { 250, 0 },    0,    0,  67120, {  48890,  48891,  48892,  48893,  48894,  0 } },
@@ -4054,6 +4137,7 @@ static item_set_bonus_t __set_bonus_data[SET_BONUS_DATA_SIZE] = {
   { "Koltira's Battlegear"                       ,   872,    9,   2,   6,      { 251, 252, 0 },    2,    0,  67115, {  48880,  48881,  48882,  48883,  48884,  0 } },
   { "Thassarian's Battlegear"                    ,   871,    9,   4,   6,      { 251, 252, 0 },    2,    0,  67118, {  48885,  48886,  48887,  48888,  48889,  0 } },
   { "Koltira's Battlegear"                       ,   872,    9,   4,   6,      { 251, 252, 0 },    2,    0,  67118, {  48880,  48881,  48882,  48883,  48884,  0 } },
+  //                                    Tier name, SetID, Tier, Bns, Cls,         Derived Spec, Role, Spec,  Spell, Items
   { "Thrall's Regalia"                           ,   863,    9,   2,   7,           { 262, 0 },    3,    0,  67227, {  48841,  48842,  48843,  48844,  48845,  0 } },
   { "Nobundo's Regalia"                          ,   864,    9,   2,   7,           { 262, 0 },    3,    0,  67227, {  48836,  48837,  48838,  48839,  48840,  0 } },
   { "Thrall's Regalia"                           ,   863,    9,   4,   7,           { 262, 0 },    3,    0,  67228, {  48841,  48842,  48843,  48844,  48845,  0 } },
@@ -4072,7 +4156,6 @@ static item_set_bonus_t __set_bonus_data[SET_BONUS_DATA_SIZE] = {
   { "Sunstrider's Regalia"                       ,   844,    9,   4,   8, {  62,  63,  64, 0 },    3,    0,  67185, {  48730,  48731,  48732,  48733,  48734,  0 } },
   { "Gul'dan's Regalia"                          ,   845,    9,   2,   9, { 265, 266, 267, 0 },    3,    0,  67230, {  48735,  48736,  48737,  48738,  48739,  0 } },
   { "Kel'Thuzad's Regalia"                       ,   846,    9,   2,   9, { 265, 266, 267, 0 },    3,    0,  67230, {  48740,  48741,  48742,  48743,  48744,  0 } },
-  //                                    Tier name, SetID, Tier, Bns, Cls,         Derived Spec, Role, Spec,  Spell, Items
   { "Gul'dan's Regalia"                          ,   845,    9,   4,   9, { 265, 266, 267, 0 },    3,    0,  67231, {  48735,  48736,  48737,  48738,  48739,  0 } },
   { "Kel'Thuzad's Regalia"                       ,   846,    9,   4,   9, { 265, 266, 267, 0 },    3,    0,  67231, {  48740,  48741,  48742,  48743,  48744,  0 } },
   { "Malfurion's Regalia"                        ,   853,    9,   2,  11,           { 102, 0 },    3,    0,  67125, {  48786,  48787,  48788,  48789,  48790,  0 } },
@@ -4080,6 +4163,7 @@ static item_set_bonus_t __set_bonus_data[SET_BONUS_DATA_SIZE] = {
   { "Malfurion's Regalia"                        ,   853,    9,   4,  11,           { 102, 0 },    3,    0,  67126, {  48786,  48787,  48788,  48789,  48790,  0 } },
   { "Runetotem's Regalia"                        ,   854,    9,   4,  11,           { 102, 0 },    3,    0,  67126, {  48781,  48782,  48783,  48784,  48785,  0 } },
   { "Runetotem's Battlegear"                     ,   856,    9,   2,  11,           { 103, 0 },    2,    0,  67121, {  48794,  48795,  48796,  48797,  48798,  0 } },
+  //                                    Tier name, SetID, Tier, Bns, Cls,         Derived Spec, Role, Spec,  Spell, Items
   { "Malfurion's Battlegear"                     ,   855,    9,   2,  11,           { 103, 0 },    2,    0,  67121, {  48799,  48800,  48801,  48802,  48803,  0 } },
   { "Runetotem's Battlegear"                     ,   856,    9,   4,  11,           { 103, 0 },    2,    0,  67123, {  48794,  48795,  48796,  48797,  48798,  0 } },
   { "Malfurion's Battlegear"                     ,   855,    9,   4,  11,           { 103, 0 },    2,    0,  67123, {  48799,  48800,  48801,  48802,  48803,  0 } },
@@ -4098,7 +4182,6 @@ static item_set_bonus_t __set_bonus_data[SET_BONUS_DATA_SIZE] = {
   { "Lightsworn Battlegear"                      ,   900,   10,   2,   2,           {  70, 0 },    2,    0,  70765, {  51721,  51720,  51719,  51718,  51717,  0 } },
   { "Lightsworn Battlegear"                      ,   900,   10,   4,   2,           {  70, 0 },    2,    0,  70762, {  51721,  51720,  51719,  51718,  51717,  0 } },
   { "Ahn'Kahar Blood Hunter's Battlegear"        ,   891,   10,   2,   3, { 253, 254, 255, 0 },    2,    0,  70727, {  51711,  51710,  51709,  51708,  51707,  0 } },
-  //                                    Tier name, SetID, Tier, Bns, Cls,         Derived Spec, Role, Spec,  Spell, Items
   { "Ahn'Kahar Blood Hunter's Battlegear"        ,   891,   10,   4,   3, { 253, 254, 255, 0 },    2,    0,  70730, {  51711,  51710,  51709,  51708,  51707,  0 } },
   { "Shadowblade's Battlegear"                   ,   890,   10,   2,   4, { 259, 260, 261, 0 },    2,    0,  70805, {  51746,  51745,  51744,  51743,  51742,  0 } },
   { "Shadowblade's Battlegear"                   ,   890,   10,   4,   4, { 259, 260, 261, 0 },    2,    0,  70803, {  51746,  51745,  51744,  51743,  51742,  0 } },
@@ -4106,6 +4189,7 @@ static item_set_bonus_t __set_bonus_data[SET_BONUS_DATA_SIZE] = {
   { "Crimson Acolyte's Raiment"                  ,   885,   10,   4,   5,      { 256, 257, 0 },    1,    0,  70798, {  51732,  51733,  51734,  51735,  51736,  0 } },
   { "Crimson Acolyte's Regalia"                  ,   886,   10,   2,   5,           { 258, 0 },    3,    0,  70800, {  51741,  51740,  51739,  51738,  51737,  0 } },
   { "Crimson Acolyte's Regalia"                  ,   886,   10,   4,   5,           { 258, 0 },    3,    0,  70801, {  51741,  51740,  51739,  51738,  51737,  0 } },
+  //                                    Tier name, SetID, Tier, Bns, Cls,         Derived Spec, Role, Spec,  Spell, Items
   { "Scourgelord's Plate"                        ,   898,   10,   2,   6,           { 250, 0 },    0,    0,  70650, {  51691,  51690,  51689,  51688,  51687,  0 } },
   { "Scourgelord's Plate"                        ,   898,   10,   4,   6,           { 250, 0 },    0,    0,  70652, {  51691,  51690,  51689,  51688,  51687,  0 } },
   { "Scourgelord's Battlegear"                   ,   897,   10,   2,   6,      { 251, 252, 0 },    2,    0,  70655, {  51686,  51685,  51684,  51683,  51682,  0 } },
@@ -4124,7 +4208,6 @@ static item_set_bonus_t __set_bonus_data[SET_BONUS_DATA_SIZE] = {
   { "Lasherweave Regalia"                        ,   888,   10,   4,  11,           { 102, 0 },    3,    0,  70723, {  51706,  51705,  51704,  51703,  51702,  0 } },
   { "Lasherweave Battlegear"                     ,   889,   10,   2,  11,           { 103, 0 },    2,    0,  70724, {  51701,  51700,  51699,  51698,  51697,  0 } },
   { "Lasherweave Battlegear"                     ,   889,   10,   4,  11,           { 103, 0 },    2,    0,  70726, {  51701,  51700,  51699,  51698,  51697,  0 } },
-  //                                    Tier name, SetID, Tier, Bns, Cls,         Derived Spec, Role, Spec,  Spell, Items
   { "Lasherweave Garb"                           ,   887,   10,   2,  11,           { 105, 0 },    1,    0,  70658, {  51696,  51695,  51694,  51693,  51692,  0 } },
   { "Lasherweave Garb"                           ,   887,   10,   4,  11,           { 105, 0 },    1,    0,  70664, {  51696,  51695,  51694,  51693,  51692,  0 } },
   { "Earthen Warplate"                           ,   942,   11,   2,   1,      {  71,  72, 0 },    2,    0,  90293, {  60327,  60324,  60325,  60326,  60323,  0 } },
@@ -4132,6 +4215,7 @@ static item_set_bonus_t __set_bonus_data[SET_BONUS_DATA_SIZE] = {
   { "Earthen Battleplate"                        ,   943,   11,   2,   1,           {  73, 0 },    0,    0,  90296, {  60331,  60330,  60328,  60332,  60329,  0 } },
   { "Earthen Battleplate"                        ,   943,   11,   4,   1,           {  73, 0 },    0,    0,  90297, {  60331,  60330,  60328,  60332,  60329,  0 } },
   { "Reinforced Sapphirium Regalia"              ,   933,   11,   2,   2,           {  65, 0 },    1,    0,  90310, {  60362,  60361,  60359,  60363,  60360,  0 } },
+  //                                    Tier name, SetID, Tier, Bns, Cls,         Derived Spec, Role, Spec,  Spell, Items
   { "Reinforced Sapphirium Regalia"              ,   933,   11,   4,   2,           {  65, 0 },    1,    0,  90313, {  60362,  60361,  60359,  60363,  60360,  0 } },
   { "Reinforced Sapphirium Battlearmor"          ,   934,   11,   2,   2,           {  66, 0 },    0,    0,  90301, {  60358,  60357,  60356,  60355,  60354,  0 } },
   { "Reinforced Sapphirium Battlearmor"          ,   934,   11,   4,   2,           {  66, 0 },    0,    0,  90306, {  60358,  60357,  60356,  60355,  60354,  0 } },
@@ -4150,7 +4234,6 @@ static item_set_bonus_t __set_bonus_data[SET_BONUS_DATA_SIZE] = {
   { "Magma Plated Battlegear"                    ,   925,   11,   2,   6,      { 251, 252, 0 },    2,    0,  90457, {  60339,  60340,  60341,  60342,  60343,  0 } },
   { "Magma Plated Battlegear"                    ,   925,   11,   4,   6,      { 251, 252, 0 },    2,    0,  90459, {  60339,  60340,  60341,  60342,  60343,  0 } },
   { "Regalia of the Raging Elements"             ,   940,   11,   2,   7,           { 262, 0 },    3,    0,  90503, {  60317,  60316,  60315,  60314,  60313,  0 } },
-  //                                    Tier name, SetID, Tier, Bns, Cls,         Derived Spec, Role, Spec,  Spell, Items
   { "Regalia of the Raging Elements"             ,   940,   11,   4,   7,           { 262, 0 },    3,    0,  90505, {  60317,  60316,  60315,  60314,  60313,  0 } },
   { "Battlegear of the Raging Elements"          ,   939,   11,   2,   7,           { 263, 0 },    2,    0,  90501, {  60322,  60321,  60320,  60319,  60318,  0 } },
   { "Battlegear of the Raging Elements"          ,   939,   11,   4,   7,           { 263, 0 },    2,    0,  90502, {  60322,  60321,  60320,  60319,  60318,  0 } },
@@ -4158,6 +4241,7 @@ static item_set_bonus_t __set_bonus_data[SET_BONUS_DATA_SIZE] = {
   { "Vestments of the Raging Elements"           ,   938,   11,   4,   7,           { 264, 0 },    1,    0,  90499, {  60311,  60310,  60308,  60312,  60309,  0 } },
   { "Firelord's Vestments"                       ,   931,   11,   2,   8, {  62,  63,  64, 0 },    3,    0,  90290, {  60246,  60244,  60245,  60243,  60247,  0 } },
   { "Firelord's Vestments"                       ,   931,   11,   4,   8, {  62,  63,  64, 0 },    3,    0,  90291, {  60246,  60244,  60245,  60243,  60247,  0 } },
+  //                                    Tier name, SetID, Tier, Bns, Cls,         Derived Spec, Role, Spec,  Spell, Items
   { "Shadowflame Regalia"                        ,   941,   11,   2,   9, { 265, 266, 267, 0 },    3,    0,  89934, {  60252,  60251,  60250,  60249,  60248,  0 } },
   { "Shadowflame Regalia"                        ,   941,   11,   4,   9, { 265, 266, 267, 0 },    3,    0,  89935, {  60252,  60251,  60250,  60249,  60248,  0 } },
   { "Stormrider's Regalia"                       ,   929,   11,   2,  11,           { 102, 0 },    3,    0,  90160, {  60284,  60281,  60283,  60282,  60285,  0 } },
@@ -4176,7 +4260,6 @@ static item_set_bonus_t __set_bonus_data[SET_BONUS_DATA_SIZE] = {
   { "Battlearmor of Immolation"                  ,  1013,   12,   4,   2,           {  66, 0 },    0,    0,  99091, {  70946,  70947,  70948,  70949,  70950,  0 } },
   { "Battleplate of Immolation"                  ,  1012,   12,   2,   2,           {  70, 0 },    2,    0,  99093, {  71067,  71066,  71065,  71064,  71063,  0 } },
   { "Battleplate of Immolation"                  ,  1012,   12,   4,   2,           {  70, 0 },    2,    0,  99116, {  71067,  71066,  71065,  71064,  71063,  0 } },
-  //                                    Tier name, SetID, Tier, Bns, Cls,         Derived Spec, Role, Spec,  Spell, Items
   { "Flamewaker's Battlegear"                    ,  1005,   12,   2,   3, { 253, 254, 255, 0 },    2,    0,  99057, {  71050,  71051,  71052,  71053,  71054,  0 } },
   { "Flamewaker's Battlegear"                    ,  1005,   12,   4,   3, { 253, 254, 255, 0 },    2,    0,  99059, {  71050,  71051,  71052,  71053,  71054,  0 } },
   { "Vestments of the Dark Phoenix"              ,  1006,   12,   2,   4, { 259, 260, 261, 0 },    2,    0,  99174, {  71045,  71046,  71047,  71048,  71049,  0 } },
@@ -4184,6 +4267,7 @@ static item_set_bonus_t __set_bonus_data[SET_BONUS_DATA_SIZE] = {
   { "Vestments of the Cleansing Flame"           ,  1009,   12,   2,   5,      { 256, 257, 0 },    1,    0,  99134, {  71271,  71272,  71273,  71274,  71275,  0 } },
   { "Vestments of the Cleansing Flame"           ,  1009,   12,   4,   5,      { 256, 257, 0 },    1,    0,  99135, {  71271,  71272,  71273,  71274,  71275,  0 } },
   { "Regalia of the Cleansing Flame"             ,  1010,   12,   2,   5,           { 258, 0 },    3,    0,  99154, {  71280,  71279,  71278,  71277,  71276,  0 } },
+  //                                    Tier name, SetID, Tier, Bns, Cls,         Derived Spec, Role, Spec,  Spell, Items
   { "Regalia of the Cleansing Flame"             ,  1010,   12,   4,   5,           { 258, 0 },    3,    0,  99157, {  71280,  71279,  71278,  71277,  71276,  0 } },
   { "Elementium Deathplate Battlearmor"          ,  1001,   12,   2,   6,           { 250, 0 },    0,    0,  98956, {  70951,  70952,  70953,  70954,  70955,  0 } },
   { "Elementium Deathplate Battlearmor"          ,  1001,   12,   4,   6,           { 250, 0 },    0,    0,  98966, {  70951,  70952,  70953,  70954,  70955,  0 } },
@@ -4202,7 +4286,6 @@ static item_set_bonus_t __set_bonus_data[SET_BONUS_DATA_SIZE] = {
   { "Obsidian Arborweave Regalia"                ,  1003,   12,   2,  11,           { 102, 0 },    3,    0,  99019, {  71107,  71108,  71109,  71110,  71111,  0 } },
   { "Obsidian Arborweave Regalia"                ,  1003,   12,   4,  11,           { 102, 0 },    3,    0,  99049, {  71107,  71108,  71109,  71110,  71111,  0 } },
   { "Obsidian Arborweave Battlegarb"             ,  1002,   12,   2,  11,           { 103, 0 },    2,    0,  99001, {  71097,  71098,  71099,  71100,  71101,  0 } },
-  //                                    Tier name, SetID, Tier, Bns, Cls,         Derived Spec, Role, Spec,  Spell, Items
   { "Obsidian Arborweave Battlegarb"             ,  1002,   12,   4,  11,           { 103, 0 },    2,    0,  99009, {  71097,  71098,  71099,  71100,  71101,  0 } },
   { "Obsidian Arborweave Vestments"              ,  1004,   12,   2,  11,           { 105, 0 },    1,    0,  99013, {  71102,  71103,  71104,  71105,  71106,  0 } },
   { "Obsidian Arborweave Vestments"              ,  1004,   12,   4,  11,           { 105, 0 },    1,    0,  99015, {  71102,  71103,  71104,  71105,  71106,  0 } },
@@ -4210,6 +4293,7 @@ static item_set_bonus_t __set_bonus_data[SET_BONUS_DATA_SIZE] = {
   { "Colossal Dragonplate Battlegear"            ,  1073,   13,   4,   1,      {  71,  72, 0 },    2,    0, 105907, {  76983,  76984,  76985,  76986,  76987,  0 } },
   { "Colossal Dragonplate Armor"                 ,  1074,   13,   2,   1,           {  73, 0 },    0,    0, 105908, {  76988,  76989,  76990,  76991,  76992,  0 } },
   { "Colossal Dragonplate Armor"                 ,  1074,   13,   4,   1,           {  73, 0 },    0,    0, 105911, {  76988,  76989,  76990,  76991,  76992,  0 } },
+  //                                    Tier name, SetID, Tier, Bns, Cls,         Derived Spec, Role, Spec,  Spell, Items
   { "Regalia of Radiant Glory"                   ,  1063,   13,   2,   2,           {  65, 0 },    1,    0, 105743, {  76765,  76766,  76767,  76768,  76769,  0 } },
   { "Regalia of Radiant Glory"                   ,  1063,   13,   4,   2,           {  65, 0 },    1,    0, 105798, {  76765,  76766,  76767,  76768,  76769,  0 } },
   { "Armor of Radiant Glory"                     ,  1065,   13,   2,   2,           {  66, 0 },    0,    0, 105800, {  77003,  77004,  77005,  77006,  77007,  0 } },
@@ -4228,7 +4312,6 @@ static item_set_bonus_t __set_bonus_data[SET_BONUS_DATA_SIZE] = {
   { "Necrotic Boneplate Armor"                   ,  1056,   13,   4,   6,           { 250, 0 },    0,    0, 105587, {  77008,  77009,  77010,  77011,  77012,  0 } },
   { "Necrotic Boneplate Battlegear"              ,  1057,   13,   2,   6,      { 251, 252, 0 },    2,    0, 105609, {  76974,  76975,  76976,  76977,  76978,  0 } },
   { "Necrotic Boneplate Battlegear"              ,  1057,   13,   4,   6,      { 251, 252, 0 },    2,    0, 105646, {  76974,  76975,  76976,  76977,  76978,  0 } },
-  //                                    Tier name, SetID, Tier, Bns, Cls,         Derived Spec, Role, Spec,  Spell, Items
   { "Spiritwalker's Regalia"                     ,  1070,   13,   2,   7,           { 262, 0 },    3,    0, 105780, {  77039,  77038,  77037,  77036,  77035,  0 } },
   { "Spiritwalker's Regalia"                     ,  1070,   13,   4,   7,           { 262, 0 },    3,    0, 105816, {  77039,  77038,  77037,  77036,  77035,  0 } },
   { "Spiritwalker's Battlegear"                  ,  1071,   13,   2,   7,           { 263, 0 },    2,    0, 105866, {  77040,  77041,  77042,  77043,  77044,  0 } },
@@ -4236,6 +4319,7 @@ static item_set_bonus_t __set_bonus_data[SET_BONUS_DATA_SIZE] = {
   { "Spiritwalker's Vestments"                   ,  1069,   13,   2,   7,           { 264, 0 },    1,    0, 105764, {  76756,  76757,  76758,  76759,  76760,  0 } },
   { "Spiritwalker's Vestments"                   ,  1069,   13,   4,   7,           { 264, 0 },    1,    0, 105876, {  76756,  76757,  76758,  76759,  76760,  0 } },
   { "Time Lord's Regalia"                        ,  1062,   13,   2,   8, {  62,  63,  64, 0 },    3,    0, 105788, {  76212,  76213,  76214,  76215,  76216,  0 } },
+  //                                    Tier name, SetID, Tier, Bns, Cls,         Derived Spec, Role, Spec,  Spell, Items
   { "Time Lord's Regalia"                        ,  1062,   13,   4,   8, {  62,  63,  64, 0 },    3,    0, 105790, {  76212,  76213,  76214,  76215,  76216,  0 } },
   { "Vestments of the Faceless Shroud"           ,  1072,   13,   2,   9, { 265, 266, 267, 0 },    3,    0, 105888, {  76343,  76342,  76341,  76340,  76339,  0 } },
   { "Vestments of the Faceless Shroud"           ,  1072,   13,   4,   9, { 265, 266, 267, 0 },    3,    0, 105787, {  76343,  76342,  76341,  76340,  76339,  0 } },
@@ -4254,7 +4338,6 @@ static item_set_bonus_t __set_bonus_data[SET_BONUS_DATA_SIZE] = {
   { "White Tiger Plate"                          ,  1136,   14,   2,   2,           {  66, 0 },    0,    0, 123104, {  85319,  85320,  85321,  85322,  85323,  0 } },
   { "White Tiger Plate"                          ,  1136,   14,   4,   2,           {  66, 0 },    0,    0, 123107, {  85319,  85320,  85321,  85322,  85323,  0 } },
   { "White Tiger Battlegear"                     ,  1135,   14,   2,   2,           {  70, 0 },    2,    0, 123108, {  85339,  85340,  85341,  85342,  85343,  0 } },
-  //                                    Tier name, SetID, Tier, Bns, Cls,         Derived Spec, Role, Spec,  Spell, Items
   { "White Tiger Battlegear"                     ,  1135,   14,   4,   2,           {  70, 0 },    2,    0,  70762, {  85339,  85340,  85341,  85342,  85343,  0 } },
   { "Yaungol Slayer Battlegear"                  ,  1129,   14,   2,   3, { 253, 254, 255, 0 },    2,    0, 123090, {  85294,  85295,  85296,  85297,  85298,  0 } },
   { "Yaungol Slayer Battlegear"                  ,  1129,   14,   4,   3, { 253, 254, 255, 0 },    2,    0, 123091, {  85294,  85295,  85296,  85297,  85298,  0 } },
@@ -4262,6 +4345,7 @@ static item_set_bonus_t __set_bonus_data[SET_BONUS_DATA_SIZE] = {
   { "Battlegear of the Thousandfold Blades"      ,  1139,   14,   4,   4, { 259, 260, 261, 0 },    2,    0, 123122, {  85299,  85300,  85301,  85302,  85303,  0 } },
   { "Vestments of the Guardian Serpent"          ,  1137,   14,   2,   5,      { 256, 257, 0 },    1,    0, 123111, {  85359,  85360,  85361,  85362,  85363,  0 } },
   { "Vestments of the Guardian Serpent"          ,  1137,   14,   4,   5,      { 256, 257, 0 },    1,    0, 123113, {  85359,  85360,  85361,  85362,  85363,  0 } },
+  //                                    Tier name, SetID, Tier, Bns, Cls,         Derived Spec, Role, Spec,  Spell, Items
   { "Regalia of the Guardian Serpent"            ,  1138,   14,   2,   5,           { 258, 0 },    3,    0, 123114, {  85368,  85367,  85366,  85365,  85364,  0 } },
   { "Regalia of the Guardian Serpent"            ,  1138,   14,   4,   5,           { 258, 0 },    3,    0, 123115, {  85368,  85367,  85366,  85365,  85364,  0 } },
   { "Plate of the Lost Catacomb"                 ,  1124,   14,   2,   6,           { 250, 0 },    0,    0, 123079, {  85314,  85315,  85316,  85317,  85318,  0 } },
@@ -4280,7 +4364,6 @@ static item_set_bonus_t __set_bonus_data[SET_BONUS_DATA_SIZE] = {
   { "Sha-Skin Regalia"                           ,  1143,   14,   4,   9, { 265, 266, 267, 0 },    3,    0, 123141, {  85373,  85372,  85371,  85370,  85369,  0 } },
   { "Armor of the Red Crane"                     ,  1133,   14,   2,  10,           { 268, 0 },    0,    0, 123157, {  85384,  85385,  85386,  85387,  85388,  0 } },
   { "Armor of the Red Crane"                     ,  1133,   14,   4,  10,           { 268, 0 },    0,    0, 123159, {  85384,  85385,  85386,  85387,  85388,  0 } },
-  //                                    Tier name, SetID, Tier, Bns, Cls,         Derived Spec, Role, Spec,  Spell, Items
   { "Battlegear of the Red Crane"                ,  1132,   14,   2,  10,           { 269, 0 },    2,    0, 123149, {  85398,  85397,  85396,  85395,  85394,  0 } },
   { "Battlegear of the Red Crane"                ,  1132,   14,   4,  10,           { 269, 0 },    2,    0, 123150, {  85398,  85397,  85396,  85395,  85394,  0 } },
   { "Vestments of the Red Crane"                 ,  1131,   14,   2,  10,           { 270, 0 },    1,    0, 123152, {  85393,  85392,  85391,  85390,  85389,  0 } },
@@ -4288,6 +4371,7 @@ static item_set_bonus_t __set_bonus_data[SET_BONUS_DATA_SIZE] = {
   { "Regalia of the Eternal Blossom"             ,  1126,   14,   2,  11,           { 102, 0 },    3,    0, 123082, {  85304,  85305,  85306,  85307,  85308,  0 } },
   { "Regalia of the Eternal Blossom"             ,  1126,   14,   4,  11,           { 102, 0 },    3,    0, 123083, {  85304,  85305,  85306,  85307,  85308,  0 } },
   { "Battlegear of the Eternal Blossom"          ,  1127,   14,   2,  11,           { 103, 0 },    2,    0, 123084, {  85309,  85310,  85311,  85312,  85313,  0 } },
+  //                                    Tier name, SetID, Tier, Bns, Cls,         Derived Spec, Role, Spec,  Spell, Items
   { "Battlegear of the Eternal Blossom"          ,  1127,   14,   4,  11,           { 103, 0 },    2,    0, 123085, {  85309,  85310,  85311,  85312,  85313,  0 } },
   { "Armor of the Eternal Blossom"               ,  1128,   14,   2,  11,           { 104, 0 },    0,    0, 123086, {  85383,  85382,  85381,  85380,  85379,  0 } },
   { "Armor of the Eternal Blossom"               ,  1128,   14,   4,  11,           { 104, 0 },    0,    0, 123087, {  85383,  85382,  85381,  85380,  85379,  0 } },
@@ -4306,7 +4390,6 @@ static item_set_bonus_t __set_bonus_data[SET_BONUS_DATA_SIZE] = {
   { "Battlegear of the Saurok Stalker"           ,  1157,   15,   2,   3, { 253, 254, 255, 0 },    2,    0, 138365, {  95255,  95256,  95257,  95258,  95259,  0 } },
   { "Battlegear of the Saurok Stalker"           ,  1157,   15,   4,   3, { 253, 254, 255, 0 },    2,    0, 138367, {  95255,  95256,  95257,  95258,  95259,  0 } },
   { "Nine-Tail Battlegear"                       ,  1167,   15,   2,   4, { 259, 260, 261, 0 },    2,    0, 138148, {  95305,  95306,  95307,  95308,  95309,  0 } },
-  //                                    Tier name, SetID, Tier, Bns, Cls,         Derived Spec, Role, Spec,  Spell, Items
   { "Nine-Tail Battlegear"                       ,  1167,   15,   4,   4, { 259, 260, 261, 0 },    2,    0, 138150, {  95305,  95306,  95307,  95308,  95309,  0 } },
   { "Vestments of the Exorcist"                  ,  1165,   15,   2,   5,      { 256, 257, 0 },    1,    0, 138293, {  95295,  95296,  95297,  95298,  95299,  0 } },
   { "Vestments of the Exorcist"                  ,  1165,   15,   4,   5,      { 256, 257, 0 },    1,    0, 138301, {  95295,  95296,  95297,  95298,  95299,  0 } },
@@ -4314,6 +4397,7 @@ static item_set_bonus_t __set_bonus_data[SET_BONUS_DATA_SIZE] = {
   { "Regalia of the Exorcist"                    ,  1166,   15,   4,   5,           { 258, 0 },    3,    0, 138158, {  95300,  95301,  95302,  95303,  95304,  0 } },
   { "Plate of the All-Consuming Maw"             ,  1151,   15,   2,   6,           { 250, 0 },    0,    0, 138195, {  95230,  95231,  95232,  95233,  95234,  0 } },
   { "Plate of the All-Consuming Maw"             ,  1151,   15,   4,   6,           { 250, 0 },    0,    0, 138197, {  95230,  95231,  95232,  95233,  95234,  0 } },
+  //                                    Tier name, SetID, Tier, Bns, Cls,         Derived Spec, Role, Spec,  Spell, Items
   { "Battleplate of the All-Consuming Maw"       ,  1152,   15,   2,   6,      { 251, 252, 0 },    2,    0, 138343, {  95225,  95226,  95227,  95228,  95229,  0 } },
   { "Battleplate of the All-Consuming Maw"       ,  1152,   15,   4,   6,      { 251, 252, 0 },    2,    0, 138347, {  95225,  95226,  95227,  95228,  95229,  0 } },
   { "Regalia of the Witch Doctor"                ,  1170,   15,   2,   7,           { 262, 0 },    3,    0, 138145, {  95320,  95321,  95322,  95323,  95324,  0 } },
@@ -4332,7 +4416,6 @@ static item_set_bonus_t __set_bonus_data[SET_BONUS_DATA_SIZE] = {
   { "Fire-Charm Battlegear"                      ,  1159,   15,   4,  10,           { 269, 0 },    2,    0, 138315, {  95265,  95266,  95267,  95268,  95269,  0 } },
   { "Fire-Charm Vestments"                       ,  1160,   15,   2,  10,           { 270, 0 },    1,    0, 138290, {  95270,  95271,  95272,  95273,  95274,  0 } },
   { "Fire-Charm Vestments"                       ,  1160,   15,   4,  10,           { 270, 0 },    1,    0, 138289, {  95270,  95271,  95272,  95273,  95274,  0 } },
-  //                                    Tier name, SetID, Tier, Bns, Cls,         Derived Spec, Role, Spec,  Spell, Items
   { "Regalia of the Haunted Forest"              ,  1155,   15,   2,  11,           { 102, 0 },    3,    0, 138348, {  95245,  95246,  95247,  95248,  95249,  0 } },
   { "Regalia of the Haunted Forest"              ,  1155,   15,   4,  11,           { 102, 0 },    3,    0, 138350, {  95245,  95246,  95247,  95248,  95249,  0 } },
   { "Battlegear of the Haunted Forest"           ,  1153,   15,   2,  11,           { 103, 0 },    2,    0, 138352, {  95235,  95236,  95237,  95238,  95239,  0 } },
@@ -4340,6 +4423,7 @@ static item_set_bonus_t __set_bonus_data[SET_BONUS_DATA_SIZE] = {
   { "Armor of the Haunted Forest"                ,  1156,   15,   2,  11,           { 104, 0 },    0,    0, 138216, {  95250,  95251,  95252,  95253,  95254,  0 } },
   { "Armor of the Haunted Forest"                ,  1156,   15,   4,  11,           { 104, 0 },    0,    0, 138222, {  95250,  95251,  95252,  95253,  95254,  0 } },
   { "Vestments of the Haunted Forest"            ,  1154,   15,   2,  11,           { 105, 0 },    1,    0, 138284, {  95240,  95241,  95242,  95243,  95244,  0 } },
+  //                                    Tier name, SetID, Tier, Bns, Cls,         Derived Spec, Role, Spec,  Spell, Items
   { "Vestments of the Haunted Forest"            ,  1154,   15,   4,  11,           { 105, 0 },    1,    0, 138286, {  95240,  95241,  95242,  95243,  95244,  0 } },
   { "Battleplate of the Prehistoric Marauder"    ,  1180,   16,   2,   1,      {  71,  72, 0 },    2,    0, 144436, {  99197,  99198,  99199,  99200,  99206,  0 } },
   { "Battleplate of the Prehistoric Marauder"    ,  1180,   16,   4,   1,      {  71,  72, 0 },    2,    0, 144441, {  99197,  99198,  99199,  99200,  99206,  0 } },
@@ -4358,7 +4442,6 @@ static item_set_bonus_t __set_bonus_data[SET_BONUS_DATA_SIZE] = {
   { "Vestments of Ternion Glory"                 ,  1187,   16,   2,   5,      { 256, 257, 0 },    1,    0, 145306, {  99117,  99118,  99119,  99120,  99131,  0 } },
   { "Vestments of Ternion Glory"                 ,  1187,   16,   4,   5,      { 256, 257, 0 },    1,    0, 145334, {  99117,  99118,  99119,  99120,  99131,  0 } },
   { "Regalia of Ternion Glory"                   ,  1186,   16,   2,   5,           { 258, 0 },    3,    0, 145174, {  99123,  99110,  99111,  99121,  99122,  0 } },
-  //                                    Tier name, SetID, Tier, Bns, Cls,         Derived Spec, Role, Spec,  Spell, Items
   { "Regalia of Ternion Glory"                   ,  1186,   16,   4,   5,           { 258, 0 },    3,    0, 145179, {  99123,  99110,  99111,  99121,  99122,  0 } },
   { "6.0 test set"                               ,  1219,   16,   2,   5,                { 0 },    1,  256, 145306, { 109278, 109379,  0 } },
   { "6.0 test set"                               ,  1219,   16,   2,   5,                { 0 },    1,  257, 145174, { 109278, 109379,  0 } },
@@ -4366,6 +4449,7 @@ static item_set_bonus_t __set_bonus_data[SET_BONUS_DATA_SIZE] = {
   { "Plate of Cyclopean Dread"                   ,  1201,   16,   2,   6,           { 250, 0 },    0,    0, 144934, {  99179,  99188,  99189,  99190,  99191,  0 } },
   { "Plate of Cyclopean Dread"                   ,  1201,   16,   4,   6,           { 250, 0 },    0,    0, 144950, {  99179,  99188,  99189,  99190,  99191,  0 } },
   { "Battleplate of Cyclopean Dread"             ,  1200,   16,   2,   6,      { 251, 252, 0 },    2,    0, 144899, {  99186,  99187,  99192,  99193,  99194,  0 } },
+  //                                    Tier name, SetID, Tier, Bns, Cls,         Derived Spec, Role, Spec,  Spell, Items
   { "Battleplate of Cyclopean Dread"             ,  1200,   16,   4,   6,      { 251, 252, 0 },    2,    0, 144907, {  99186,  99187,  99192,  99193,  99194,  0 } },
   { "Celestial Harmony Regalia"                  ,  1182,   16,   2,   7,           { 262, 0 },    3,    0, 144998, {  99092,  99093,  99094,  99095,  99106,  0 } },
   { "Celestial Harmony Regalia"                  ,  1182,   16,   4,   7,           { 262, 0 },    3,    0, 145003, {  99092,  99093,  99094,  99095,  99106,  0 } },
@@ -4384,7 +4468,6 @@ static item_set_bonus_t __set_bonus_data[SET_BONUS_DATA_SIZE] = {
   { "Vestments of Seven Sacred Seals"            ,  1192,   16,   2,  10,           { 270, 0 },    1,    0, 145439, {  99151,  99147,  99148,  99149,  99150,  0 } },
   { "Vestments of Seven Sacred Seals"            ,  1192,   16,   4,  10,           { 270, 0 },    1,    0, 145449, {  99151,  99147,  99148,  99149,  99150,  0 } },
   { "Regalia of the Shattered Vale"              ,  1197,   16,   2,  11,           { 102, 0 },    3,    0, 144767, {  99169,  99174,  99175,  99176,  99177,  0 } },
-  //                                    Tier name, SetID, Tier, Bns, Cls,         Derived Spec, Role, Spec,  Spell, Items
   { "Regalia of the Shattered Vale"              ,  1197,   16,   4,  11,           { 102, 0 },    3,    0, 144756, {  99169,  99174,  99175,  99176,  99177,  0 } },
   { "Battlegear of the Shattered Vale"           ,  1199,   16,   2,  11,           { 103, 0 },    2,    0, 144864, {  99180,  99181,  99182,  99183,  99184,  0 } },
   { "Battlegear of the Shattered Vale"           ,  1199,   16,   4,  11,           { 103, 0 },    2,    0, 144841, {  99180,  99181,  99182,  99183,  99184,  0 } },
@@ -4392,6 +4475,7 @@ static item_set_bonus_t __set_bonus_data[SET_BONUS_DATA_SIZE] = {
   { "Armor of the Shattered Vale"                ,  1196,   16,   4,  11,           { 104, 0 },    0,    0, 144887, {  99163,  99164,  99165,  99166,  99170,  0 } },
   { "Vestments of the Shattered Vale"            ,  1198,   16,   2,  11,           { 105, 0 },    1,    0, 144869, {  99171,  99172,  99173,  99178,  99185,  0 } },
   { "Vestments of the Shattered Vale"            ,  1198,   16,   4,  11,           { 105, 0 },    1,    0, 144875, {  99171,  99172,  99173,  99178,  99185,  0 } },
+  //                                    Tier name, SetID, Tier, Bns, Cls,         Derived Spec, Role, Spec,  Spell, Items
   { "PH Warrior Set"                             ,  1242,   17,   2,   1,                { 0 },    2,   71, 165336, { 115580, 115581, 115582, 115583, 115584,  0 } },
   { "PH Warrior Set"                             ,  1242,   17,   4,   1,                { 0 },    2,   71, 165345, { 115580, 115581, 115582, 115583, 115584,  0 } },
   { "PH Warrior Set"                             ,  1242,   17,   2,   1,                { 0 },    2,   72, 165337, { 115580, 115581, 115582, 115583, 115584,  0 } },
@@ -4410,7 +4494,6 @@ static item_set_bonus_t __set_bonus_data[SET_BONUS_DATA_SIZE] = {
   { "PH Hunter Set"                              ,  1236,   17,   4,   3,                { 0 },    2,  254, 165525, { 115545, 115546, 115547, 115548, 115549,  0 } },
   { "PH Hunter Set"                              ,  1236,   17,   2,   3,                { 0 },    2,  255, 165544, { 115545, 115546, 115547, 115548, 115549,  0 } },
   { "PH Hunter Set"                              ,  1236,   17,   4,   3,                { 0 },    2,  255, 165545, { 115545, 115546, 115547, 115548, 115549,  0 } },
-  //                                    Tier name, SetID, Tier, Bns, Cls,         Derived Spec, Role, Spec,  Spell, Items
   { "PH Rogue Set"                               ,  1240,   17,   2,   4,                { 0 },    2,  259, 165516, { 115570, 115571, 115572, 115573, 115574,  0 } },
   { "PH Rogue Set"                               ,  1240,   17,   4,   4,                { 0 },    2,  259, 166886, { 115570, 115571, 115572, 115573, 115574,  0 } },
   { "PH Rogue Set"                               ,  1240,   17,   2,   4,                { 0 },    2,  260, 165480, { 115570, 115571, 115572, 115573, 115574,  0 } },
@@ -4418,6 +4501,7 @@ static item_set_bonus_t __set_bonus_data[SET_BONUS_DATA_SIZE] = {
   { "PH Rogue Set"                               ,  1240,   17,   2,   4,                { 0 },    2,  261, 165482, { 115570, 115571, 115572, 115573, 115574,  0 } },
   { "PH Rogue Set"                               ,  1240,   17,   4,   4,                { 0 },    2,  261, 165514, { 115570, 115571, 115572, 115573, 115574,  0 } },
   { "PH Priest Set"                              ,  1239,   17,   2,   5,                { 0 },    1,  256, 165614, { 115560, 115561, 115562, 115563, 115564,  0 } },
+  //                                    Tier name, SetID, Tier, Bns, Cls,         Derived Spec, Role, Spec,  Spell, Items
   { "PH Priest Set"                              ,  1239,   17,   4,   5,                { 0 },    1,  256, 167694, { 115560, 115561, 115562, 115563, 115564,  0 } },
   { "PH Priest Set"                              ,  1239,   17,   2,   5,                { 0 },    1,  257, 165621, { 115560, 115561, 115562, 115563, 115564,  0 } },
   { "PH Priest Set"                              ,  1239,   17,   4,   5,                { 0 },    1,  257, 167684, { 115560, 115561, 115562, 115563, 115564,  0 } },
@@ -4436,7 +4520,6 @@ static item_set_bonus_t __set_bonus_data[SET_BONUS_DATA_SIZE] = {
   { "PH Shaman Set"                              ,  1241,   17,   2,   7,                { 0 },    1,  264, 165576, { 115575, 115576, 115577, 115578, 115579,  0 } },
   { "PH Shaman Set"                              ,  1241,   17,   4,   7,                { 0 },    1,  264, 167702, { 115575, 115576, 115577, 115578, 115579,  0 } },
   { "PH Mage Set"                                ,  1235,   17,   2,   8,                { 0 },    3,   62, 165475, { 115550, 115551, 115552, 115553, 115554,  0 } },
-  //                                    Tier name, SetID, Tier, Bns, Cls,         Derived Spec, Role, Spec,  Spell, Items
   { "PH Mage Set"                                ,  1235,   17,   4,   8,                { 0 },    3,   62, 165476, { 115550, 115551, 115552, 115553, 115554,  0 } },
   { "PH Mage Set"                                ,  1235,   17,   2,   8,                { 0 },    3,   63, 165458, { 115550, 115551, 115552, 115553, 115554,  0 } },
   { "PH Mage Set"                                ,  1235,   17,   4,   8,                { 0 },    3,   63, 165459, { 115550, 115551, 115552, 115553, 115554,  0 } },
@@ -4444,6 +4527,7 @@ static item_set_bonus_t __set_bonus_data[SET_BONUS_DATA_SIZE] = {
   { "PH Mage Set"                                ,  1235,   17,   4,   8,                { 0 },    3,   64, 165469, { 115550, 115551, 115552, 115553, 115554,  0 } },
   { "PH Warlock Set"                             ,  1243,   17,   2,   9,                { 0 },    3,  265, 165448, { 115585, 115586, 115587, 115588, 115589,  0 } },
   { "PH Warlock Set"                             ,  1243,   17,   4,   9,                { 0 },    3,  265, 165449, { 115585, 115586, 115587, 115588, 115589,  0 } },
+  //                                    Tier name, SetID, Tier, Bns, Cls,         Derived Spec, Role, Spec,  Spell, Items
   { "PH Warlock Set"                             ,  1243,   17,   2,   9,                { 0 },    3,  266, 165451, { 115585, 115586, 115587, 115588, 115589,  0 } },
   { "PH Warlock Set"                             ,  1243,   17,   4,   9,                { 0 },    3,  266, 165450, { 115585, 115586, 115587, 115588, 115589,  0 } },
   { "PH Warlock Set"                             ,  1243,   17,   2,   9,                { 0 },    3,  267, 165455, { 115585, 115586, 115587, 115588, 115589,  0 } },
@@ -4466,7 +4550,7 @@ static item_set_bonus_t __set_bonus_data[SET_BONUS_DATA_SIZE] = {
 
 #define PERK_SIZE (4)
 
-// Perk specialization abilities, wow build 18716
+// Perk specialization abilities, wow build 18738
 static unsigned __perk_data[][MAX_SPECS_PER_CLASS][PERK_SIZE] = {
   {
     {
@@ -4485,7 +4569,7 @@ static unsigned __perk_data[][MAX_SPECS_PER_CLASS][PERK_SIZE] = {
   {
     // Arms
     {
-      157449, // 0: Improved Heroic Leap
+      176051, // 0: Improved Recklessness
       157452, // 1: Improved Die by the Sword
       157461, // 2: Enhanced Sweeping Strikes
       174737, // 3: Enhanced Rend
@@ -4495,7 +4579,7 @@ static unsigned __perk_data[][MAX_SPECS_PER_CLASS][PERK_SIZE] = {
       157452, // 0: Improved Die by the Sword
       157457, // 1: Improved Colossus Smash
       157473, // 2: Enhanced Whirlwind
-      157449, // 3: Improved Heroic Leap
+      176051, // 3: Improved Recklessness
     },
     // Protection
     {
@@ -4774,12 +4858,11 @@ static unsigned __perk_data[][MAX_SPECS_PER_CLASS][PERK_SIZE] = {
   },
 };
 
-// Glyph properties, wow build 18716
-static glyph_property_data_t __glyph_property_data[519] = {
+// Glyph properties, wow build 18738
+static glyph_property_data_t __glyph_property_data[514] = {
   {   162,  54811 },
   {   163,  54812 },
   {   164, 114338 },
-  {   166, 116186 },
   {   167,  54821 },
   {   170,  54733 },
   {   171, 116218 },
@@ -4905,7 +4988,6 @@ static glyph_property_data_t __glyph_property_data[519] = {
   {   392,  56813 },
   {   393,  56800 },
   {   394,  56818 },
-  {   395, 146628 },
   {   396,  56806 },
   {   397,  56799 },
   {   398, 146625 },
@@ -4983,7 +5065,6 @@ static glyph_property_data_t __glyph_property_data[519] = {
   {   500,  58385 },
   {   501,  58364 },
   {   502,  58375 },
-  {   504,  58387 },
   {   505,  58384 },
   {   507,  58356 },
   {   508,  58382 },
@@ -5122,7 +5203,6 @@ static glyph_property_data_t __glyph_property_data[519] = {
   {  1005, 120583 },
   {  1006, 120584 },
   {  1007, 120581 },
-  {  1008, 122013 },
   {  1009, 122028 },
   {  1011, 123023 },
   {  1013, 123334 },
@@ -5265,7 +5345,6 @@ static glyph_property_data_t __glyph_property_data[519] = {
   {  1169, 159649 },
   {  1170, 159650 },
   {  1171, 159651 },
-  {  1172, 159653 },
   {  1173, 159665 },
   {  1175, 159669 },
   {  1176, 159680 },

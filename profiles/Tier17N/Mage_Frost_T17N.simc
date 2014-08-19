@@ -81,3 +81,5 @@ off_hand=primal_gladiators_reprieve,id=111133,gem_id=0/0/0/,enchant_id=0
 # gear_multistrike_rating=1309
 # pvp_2pc_caster=1
 # pvp_4pc_caster=1
+# set_bonus=pvp_2pc=1
+# set_bonus=pvp_4pc=1

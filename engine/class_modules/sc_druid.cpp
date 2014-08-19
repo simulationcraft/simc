@@ -5632,9 +5632,17 @@ void druid_t::init_base_stats()
   // Base miss, dodge, parry, and block are set in player_t::init_base_stats().
   // Just need to add class- or spec-based modifiers here (none for druids at the moment).
 
-  resources.base[ RESOURCE_ENERGY      ] = 100;
-  resources.base[ RESOURCE_RAGE        ] = 100;
-  resources.base[ RESOURCE_COMBO_POINT ] = 5;
+  if ( specialization() != DRUID_BALANCE )
+  {
+    resources.base[RESOURCE_ENERGY] = 100;
+    resources.base[RESOURCE_RAGE] = 100;
+    resources.base[RESOURCE_COMBO_POINT] = 5;
+  }
+  else
+  {
+    resources.base[RESOURCE_ECLIPSE] = 105;
+    resources.current[RESOURCE_ECLIPSE] = 0;
+  }
 
   base_energy_regen_per_second = 10;
 
@@ -6052,31 +6060,29 @@ void druid_t::apl_balance()
   for ( size_t i = 0; i < item_actions.size(); i++ )
     default_list -> add_action( item_actions[i] );
 
+  default_list -> add_talent( this, "Force of Nature", "if=trinket.stat.intellect.up|charges=3|target.time_to_die<21" );
   default_list -> add_action( "run_action_list,name=single_target,if=active_enemies=1" );
   default_list -> add_action( "run_action_list,name=aoe,if=active_enemies>1" );
 
-  single_target -> add_action( this, "Sunfire", "if=ticks_remain<4&time>10" );
-  single_target -> add_talent( this, "Stellar Flare", "if=ticks_remain<4" );
-  single_target -> add_talent( this, "Force of Nature", "if=charges>=1" );
-  single_target -> add_action( this, "Starsurge", "if=charges=3" );
-  single_target -> add_action( this, "Celestial Alignment", "if=eclipse_dir.lunar&eclipse_max<8" );
+  single_target -> add_action( this, "Starsurge", "if=buff.lunar_empowerment.down&eclipse_energy>20" );
+  single_target -> add_action( this, "Starsurge", "if=buff.solar_empowerment.down&eclipse_energy<-20" );
+  single_target -> add_action( this, "Starsurge", "if=(charges=2&recharge_time<15)|charges=3" );
+  single_target -> add_action( this, "Celestial Alignment", "if=lunar_max<8|target.time_to_die<20" );
   single_target -> add_action( "incarnation,if=buff.celestial_alignment.up" );
-  single_target -> add_action( this, "Moonfire" , "if=buff.lunar_peak.up|ticks_remain<3" );
-  single_target -> add_action( this, "Sunfire", "if=buff.solar_peak.up|ticks_remain<3|(buff.celestial_alignment.up&buff.celestial_alignment.remains<=2)" );
-  single_target -> add_action( this, "Starsurge", "if=(buff.lunar_empowerment.down&eclipse_energy>=0)|(buff.solar_empowerment.down&eclipse_energy<0)|charges>1" );
+  single_target -> add_action( this, "Sunfire", "if=remains<7|buff.solar_peak.up" );
+  single_target -> add_talent( this, "Stellar Flare", "if=remains<7" );
+  single_target -> add_action( this, "Moonfire" , "if=buff.lunar_peak.up&remains<eclipse_change+20|remains<4|(buff.celestial_alignment.up&buff.celestial_alignment.remains<=2&remains<eclipse_change+20)" );
   single_target -> add_action( this, "Wrath", "if=(eclipse_energy<=0&eclipse_change>cast_time)|(eclipse_energy>0&cast_time>eclipse_change)" );
   single_target -> add_action( this, "Starfire", "if=(eclipse_energy>=0&eclipse_change>cast_time)|(eclipse_energy<0&cast_time>eclipse_change)" );
 
-  aoe -> add_action( this, "Celestial Alignment" );
-  aoe -> add_action( "incarnation,if=(eclipse_dir.lunar&eclipse_max>=5)|@eclipse_energy<=10" );
+  aoe -> add_action( this, "Celestial Alignment", "if=lunar_max<8|target.time_to_die<20" );
+  aoe -> add_action( "incarnation,if=buff.celestial_alignment.up" );
+  aoe -> add_action( this, "Sunfire", "if=remains<8" );
   aoe -> add_action( this, "Starfall" );
-  aoe -> add_talent( this, "Stellar Flare", "cycle_targets=1,if=!dot.stellar_flare.ticking" );
-  aoe -> add_action( this, "Moonfire", "cycle_targets=1,if=!dot.moonfire.ticking|(dot.moonfire.remains<=8&eclipse_change<=12&eclipse_energy=100&eclipse_change>=8)|(buff.celestial_alignment.up&dot.moonfire.ticking&dot.sunfire.ticking&dot.sunfire.remains<=6)" );
-  aoe -> add_action( this, "Sunfire", "cycle_targets=1,if=!dot.sunfire.ticking|(eclipse_energy<0&dot.sunfire.remains<=8)" );
-  aoe -> add_action( this, "Wrath", "if=buff.celestial_alignment.up&buff.solar_empowerment.up&eclipse_energy<0" );
-  aoe -> add_action( this, "Starfire", "if=buff.celestial_alignment.up&buff.lunar_empowerment.up&eclipse_energy>=0" );
-  aoe -> add_action( this, "Starfire", "if=(eclipse_energy>0&eclipse_change>execute_time)|(eclipse_energy<0&eclipse_change<execute_time)" );
-  aoe -> add_action( this, "Wrath" , "if=(eclipse_energy<0&eclipse_change>execute_time)|(eclipse_energy>0&eclipse_change<execute_time)" );
+  aoe -> add_action( this, "Moonfire", "cycle_targets=1,if=remains<12" );
+  aoe -> add_talent( this, "Stellar Flare", "cycle_targets=1,if=remains<7" );
+  aoe -> add_action( this, "Wrath", "if=(eclipse_energy<=0&eclipse_change>cast_time)|(eclipse_energy>0&cast_time>eclipse_change)" );
+  aoe -> add_action( this, "Starfire", "if=(eclipse_energy>=0&eclipse_change>cast_time)|(eclipse_energy<0&cast_time>eclipse_change)" );
 }
 
 // Guardian Combat Action Priority List ==============================
@@ -6333,8 +6339,7 @@ void druid_t::combat_begin()
   // Start the fight with 0 rage and 0 combo points
   resources.current[ RESOURCE_RAGE ] = 0;
   resources.current[ RESOURCE_COMBO_POINT ] = 0;
-
-  // Redo eclipse balance bar starting position.
+  resources.current[ RESOURCE_ECLIPSE ] = 0;
 
   // If Ysera's Gift is talented, apply it upon entering combat
   if ( talent.yseras_gift -> ok() )
@@ -7147,6 +7152,8 @@ void druid_t::balance_tracker()
 
   eclipse_amount = 105 * sin( 2 * M_PI * balance_time / timespan_t::from_millis( 40000 ) ); // Re-calculate eclipse
 
+  resources.current[ RESOURCE_ECLIPSE ] = eclipse_amount;
+
   if ( eclipse_amount >= 100 )
   {
     clamped_eclipse_amount = 100;
@@ -7244,7 +7251,7 @@ void druid_t::balance_expressions()
   // Another way to view this is that we "fast-forward" the cycle 12 seconds ahead over our 4 second period,
   // in addition to the 4 seconds of time we'd already be traversing. 
   // This section handles how that additional phase accrual affects the different time estimates while AC is up.
-  if ( buff.astral_communion -> up() )
+  /*if ( buff.astral_communion -> up() )
   {
     // This is the amount of "fast-forward" time left on Astral Communion; e.g. if there's 3 seconds left, we'll
     // be adding 3*3=9 seconds worth of phase to the cycle. Done as a time value rather than phase since we want
@@ -7268,7 +7275,7 @@ void druid_t::balance_expressions()
       time_to_next_solar -= ac; 
     else
       time_to_next_solar /= 4;
-  }  
+  }*/
 
   // the time to next eclipse (either one) is just the minimum of the individual results
   eclipse_max = std::min( time_to_next_lunar, time_to_next_solar );

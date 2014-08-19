@@ -2161,6 +2161,18 @@ class SpellDataGenerator(DataGenerator):
 
                 self.process_spell(item_set_bonus.id_spell, ids, mask_class_category, 0)
 
+        # PVP Set bonuses, and then some
+        for id, set_spell_data in self._itemsetspell_db.iteritems():
+            itemset = self._itemset_db[set_spell_data.id_item_set]
+            if 'Gladiator' not in itemset.name:
+                continue
+
+            # Only wod pvp spells
+            if set_spell_data.unk_wod_1 == 0:
+                continue
+
+            self.process_spell(set_spell_data.id_spell, ids, 0, 0)
+
         # Glyph effects, need to do trickery here to get actual effect from spellbook data
         for ability_id, ability_data in self._skilllineability_db.iteritems():
             if ability_data.id_skill != 810 or not ability_data.mask_class:
@@ -3543,67 +3555,31 @@ class SetBonusListGenerator(DataGenerator):
 
 
         # PvP stuff very unfinished
-        """
-        # Finally .. PVP stuff. Pick out the "latest" PVP set bonus, and just
-        # use it as the PVP set bonus for things. This lets us cheat and get
-        # the correct spec information too.
-        pvp_rex = re.compile('([A-z]*)\s*[Ss]eason\s+([0-9]+)\s*([A-z]*)')
+        pvp_bonuses = {}
         for id, set_spell_data in self._itemsetspell_db.iteritems():
             itemset = self._itemset_db[set_spell_data.id_item_set]
-
-            item = None
-            for i in xrange(1, 18):
-                item_id = getattr(itemset, 'id_item_%d' % i)
-                if item_id > 0:
-                    item = self._item_sparse_db[item_id]
-                    break
-
-            if not item:
+            if 'Gladiator' not in itemset.name:
                 continue
 
-            if item.id_name_desc == 0:
+            if set_spell_data.unk_wod_1 == 0:
                 continue
 
-            name_desc = self._itemnamedescription_db[item.id_name_desc]
-            if 'season' not in name_desc.desc.lower():
-                continue
+            spec_data = self._chrspecialization_db[set_spell_data.unk_wod_1]
+            pvp_bonuses[(set_spell_data.unk_wod_1, set_spell_data.n_req_items)] = {
+                'derived_class' : spec_data.class_id,
+                'derived_tier'  : 0,
+                'derived_spell' : set_spell_data.id_spell,
+                'derived_bonus' : set_spell_data.n_req_items,
+                'derived_specs' : [ 0 ],
+                'spec'          : set_spell_data.unk_wod_1,
+                'role'          : SetBonusListGenerator.role_map.get(spec_id, spec_data.spec_type),
+                'set_id'        : itemset.id,
+                'set_bonus_id'  : id
+            }
 
-            mobj = pvp_rex.match(name_desc.desc)
-            if not mobj:
-                continue
+        for spec, pvp_data in pvp_bonuses.iteritems():
+            data.append(pvp_data)
 
-            set_class = 0
-            set_spec = 0
-            # Only do this for wod+ pvp
-            if set_spell_data.unk_wod_1 > 0:
-                spec_data = self._chrspecialization_db[set_spell_data.unk_wod_1]
-                set_class = spec_data.class_id
-                set_spec = spec_data.id
-
-            if not set_class or not set_spec:
-                continue
-
-            found = -1
-            for i in xrange(0, len(data)):
-                entry = data[i]
-                if entry['derived_tier'] == -1 and entry['derived_class'] == set_class and entry['spec'] == set_spec and entry['derived_bonus'] == set_spell_data.n_req_items:
-                    found = i
-                    break
-
-            e = {
-                'derived_class': set_class,
-                'derived_tier' : -1,
-                'derived_spell': set_spell_data.id_spell,
-                'derived_bonus': set_spell_data.n_req_items,
-                'derived_specs': [ 0 ],
-                'spec'         : set_spec,
-                'set_bonus_id' : id }
-
-            if found > -1:
-                data[found] = e
-            else:
-                data.append(e)
-        """
         return data
 
     def generate(self, ids):

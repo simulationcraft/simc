@@ -127,3 +127,4 @@ off_hand=primal_gladiators_decapitator,id=111202,enchant=mark_of_the_thunderlord
 # gear_versatility_rating=110
 # pvp_2pc_melee=1
 # pvp_4pc_melee=1
+# set_bonus=pvp_2pc=1

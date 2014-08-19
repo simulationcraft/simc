@@ -935,7 +935,7 @@ static const help_box_t help_boxes[] =
     { "RPS In", "Average primary resource points generated per second."},
     { "RPS Out", "Average primary resource points consumed per second."},
     { "Scale Factors", "Gain per unit stat increase except for <b>Hit/Expertise</b> which represent <b>Loss</b> per unit stat <b>decrease</b>."},
-    { "Gear Amount", "Amount from raw gear, before class or buff modifiers. Amount from hybrid primary stats (i.e. Agility/Intellect) shown in parentheses."},
+    { "Gear Amount", "Amount from raw gear, before class, attunement, or buff modifiers. Amount from hybrid primary stats (i.e. Agility/Intellect) shown in parentheses."},
     { "Stats Raid Buffed", "Amount after all static buffs have been accounted for. Dynamic buffs (i.e. trinkets, potions) not included."},
     { "Stats Unbuffed", "Amount after class modifiers and effects, but before buff modifiers."},
     { "Ticks", "Average number of periodic ticks per iteration. Spells that do not have a damage-over-time component will have zero ticks."},
