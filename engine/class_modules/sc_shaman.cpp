@@ -669,7 +669,8 @@ public:
 
   void update_ready( timespan_t cd )
   {
-    if ( uses_eoe && p() -> buff.echo_of_the_elements -> up() )
+    if ( uses_eoe && p() -> buff.echo_of_the_elements -> up() &&
+         ( p() -> specialization() != SHAMAN_ELEMENTAL || ! p() -> buff.ascendance -> check() ) )
     {
       cd = timespan_t::zero();
       p() -> buff.echo_of_the_elements -> expire();
@@ -3070,7 +3071,9 @@ struct elemental_blast_t : public shaman_spell_t
 {
   elemental_blast_t( shaman_t* player, const std::string& options_str ) :
     shaman_spell_t( "elemental_blast", player, player -> talent.elemental_blast, options_str )
-  { }
+  {
+    base_multiplier *= 1.0 + player -> spec.mental_quickness -> effectN( 5 ).percent();
+  }
 
   virtual void execute()
   {
@@ -3078,16 +3081,6 @@ struct elemental_blast_t : public shaman_spell_t
       p() -> proc.uf_elemental_blast -> occur();
 
     shaman_spell_t::execute();
-  }
-
-  double action_multiplier() const
-  {
-    double m = shaman_spell_t::action_multiplier();
-
-    if ( p() -> specialization() == SHAMAN_ENHANCEMENT && p() -> bugs )
-      m *= 0.5;
-
-    return m;
   }
 
   result_e calculate_result( action_state_t* s )
