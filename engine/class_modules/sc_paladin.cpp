@@ -2335,6 +2335,8 @@ struct holy_prism_t : public paladin_spell_t
 
 // Holy Radiance ============================================================
 
+// TODO: fix this - now a direct heal w/ aoe component that has aoe=5 and (presumably) doesn't hit primary target
+
 struct holy_radiance_hot_t : public paladin_heal_t
 {
   holy_radiance_hot_t( paladin_t* p, const spell_data_t* s ) :
@@ -6018,6 +6020,10 @@ void paladin_t::target_mitigation( school_e school,
     // split his out to make it more readable / easier to debug
     double sotr_mitigation = buffs.shield_of_the_righteous -> data().effectN( 1 ).percent() + cache.mastery() * passives.divine_bulwark -> effectN( 4 ).mastery_value();
     sotr_mitigation *= 1.0 + sets.set( SET_T14_4PC_TANK ) -> effectN( 2 ).percent();
+
+    // clamp is hardcoded in tooltip, not shown in effects
+    sotr_mitigation = std::max( -0.80, sotr_mitigation );
+    sotr_mitigation = std::min( -0.25, sotr_mitigation );
 
     s -> result_amount *= 1.0 + sotr_mitigation; 
 
