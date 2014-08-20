@@ -3975,7 +3975,6 @@ struct void_entropy_t : public priest_spell_t
      priest_spell_t( "void_entropy", p, p.talents.void_entropy )
   {
     parse_options( nullptr, options_str );
-    spell_power_mod.tick /= 3.0;
     may_crit = false;
     tick_zero = false;
   }
