@@ -4271,7 +4271,7 @@ struct debuff_demo_shout_t: public buff_t
   {
     warrior_t* p = (warrior_t*)player;
 
-    if ( p -> new_sets.has_set_bonus( WARRIOR_PROTECTION, T16, B4 ) )
+    if ( p -> new_sets.has_set_bonus( SET_TANK, T16, B4 ) )
       p -> buff.tier16_reckless_defense -> trigger();
 
     buff_t::expire_override();
