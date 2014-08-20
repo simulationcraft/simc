@@ -4242,7 +4242,7 @@ struct last_stand_t: public warrior_buff_t < buff_t >
 {
   int health_gain;
   last_stand_t( warrior_t& p, const std::string&n, const spell_data_t*s ):
-    base_t( p, buff_creator_t( &p, n, s ) ), health_gain( 0 )
+    base_t( p, buff_creator_t( &p, n, s ).cd( timespan_t::zero() ) ), health_gain( 0 )
   {}
 
   bool trigger( int stacks, double value, double chance, timespan_t duration )
