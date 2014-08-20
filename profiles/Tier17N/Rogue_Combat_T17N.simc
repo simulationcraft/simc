@@ -3,7 +3,7 @@ level=100
 race=troll
 role=attack
 position=back
-talents=http://us.battle.net/wow/en/tool/talent-calculator#cZ!2000020
+talents=http://us.battle.net/wow/en/tool/talent-calculator#cZ!2000010
 spec=combat
 
 # This default action priority list is automatically created based on your character.
@@ -33,19 +33,18 @@ actions+=/blood_fury
 actions+=/berserking
 actions+=/arcane_torrent,if=energy<60
 actions+=/blade_flurry,if=(active_enemies>=2&!buff.blade_flurry.up)|(active_enemies<2&buff.blade_flurry.up)
-actions+=/shadow_reflection
+actions+=/shadow_reflection,if=(cooldown.killing_spree.remains<10&combo_points>3)|buff.adrenaline_rush.up
 actions+=/ambush
-actions+=/killing_spree,if=energy<50
+actions+=/killing_spree,if=energy<50&(!talent.shadow_reflection.enabled|cooldown.shadow_reflection.remains>30|buff.shadow_reflection.remains>3)
 actions+=/adrenaline_rush,if=energy<35
 actions+=/slice_and_dice,if=buff.slice_and_dice.remains<2|(buff.slice_and_dice.remains<15&buff.bandits_guile.stack=11&combo_points>=4)
-actions+=/marked_for_death,if=combo_points<=1&dot.revealing_strike.ticking
+actions+=/marked_for_death,if=combo_points<=1&dot.revealing_strike.ticking&(!talent.shadow_reflection.enabled|buff.shadow_reflection.up|cooldown.shadow_reflection.remains>30)
 actions+=/run_action_list,name=generator,if=combo_points<5|(talent.anticipation.enabled&anticipation_charges<=4&!dot.revealing_strike.ticking)
 actions+=/run_action_list,name=finisher,if=!talent.anticipation.enabled|buff.deep_insight.up|anticipation_charges>=4
-actions+=/run_action_list,name=generator,if=energy>60|buff.deep_insight.down|buff.deep_insight.remains>5-combo_points
 
 # Combo point generators
 
-actions.generator=revealing_strike,if=ticks_remain<2
+actions.generator=revealing_strike,if=ticks_remain<2|buff.deep_insight.up|(buff.bandits_guile.stack=11&cooldown.adrenaline_rush.remains<10)
 actions.generator+=/sinister_strike
 
 # Combo point finishers
@@ -68,7 +67,7 @@ finger2=primal_gladiators_ring_of_prowess,id=111082,enchant=gift_of_haste
 trinket1=primal_gladiators_insignia_of_conquest,id=111223
 trinket2=primal_gladiators_badge_of_conquest,id=111222
 main_hand=primal_gladiators_quickblade,id=111071,enchant=mark_of_warsong
-off_hand=primal_gladiators_shanker,id=111068,enchant=mark_of_warsong
+off_hand=primal_gladiators_quickblade,id=111071,enchant=mark_of_warsong
 
 # Gear Summary
 # gear_agility=2553

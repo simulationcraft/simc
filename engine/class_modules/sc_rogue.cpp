@@ -4257,24 +4257,23 @@ void rogue_t::init_action_list()
     }
 
     def -> add_action( this, "Blade Flurry", "if=(active_enemies>=2&!buff.blade_flurry.up)|(active_enemies<2&buff.blade_flurry.up)" );
-    def -> add_talent( this, "Shadow Reflection" );
+    def -> add_talent( this, "Shadow Reflection", "if=(cooldown.killing_spree.remains<10&combo_points>3)|buff.adrenaline_rush.up" );
     def -> add_action( this, "Ambush" );
-    def -> add_action( this, "Killing Spree", "if=energy<50" );
+    def -> add_action( this, "Killing Spree", "if=energy<50&(!talent.shadow_reflection.enabled|cooldown.shadow_reflection.remains>30|buff.shadow_reflection.remains>3)" );
     def -> add_action( this, "Adrenaline Rush", "if=energy<35" );
 
     // Rotation
     def -> add_action( this, "Slice and Dice", "if=buff.slice_and_dice.remains<2|(buff.slice_and_dice.remains<15&buff.bandits_guile.stack=11&combo_points>=4)" );
-    def -> add_talent( this, "Marked for Death", "if=combo_points<=1&dot.revealing_strike.ticking" );
+    def -> add_talent( this, "Marked for Death", "if=combo_points<=1&dot.revealing_strike.ticking&(!talent.shadow_reflection.enabled|buff.shadow_reflection.up|cooldown.shadow_reflection.remains>30)" );
 
     // Generate combo points, or use combo points
     def -> add_action( "run_action_list,name=generator,if=combo_points<5|(talent.anticipation.enabled&anticipation_charges<=4&!dot.revealing_strike.ticking)" );
     if ( level >= 3 )
       def -> add_action( "run_action_list,name=finisher,if=!talent.anticipation.enabled|buff.deep_insight.up|anticipation_charges>=4" );
-    def -> add_action( "run_action_list,name=generator,if=energy>60|buff.deep_insight.down|buff.deep_insight.remains>5-combo_points" );
 
     // Combo point generators
     action_priority_list_t* gen = get_action_priority_list( "generator", "Combo point generators" );
-    gen -> add_action( this, "Revealing Strike", "if=ticks_remain<2" );
+    gen -> add_action( this, "Revealing Strike", "if=ticks_remain<2|buff.deep_insight.up|(buff.bandits_guile.stack=11&cooldown.adrenaline_rush.remains<10)" );
     gen -> add_action( this, "Sinister Strike" );
 
     // Combo point finishers
