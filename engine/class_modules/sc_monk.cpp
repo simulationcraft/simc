@@ -979,7 +979,7 @@ struct tiger_palm_t : public monk_melee_attack_t
         stancemask = STURDY_OX | FIERCE_TIGER | SPIRITED_CRANE;
     mh = &( player -> main_hand_weapon ) ;
     oh = &( player -> off_hand_weapon ) ;
-    base_multiplier *= 3.79; // hardcoded into tooltip
+    base_multiplier *= 3; // hardcoded into tooltip
 
     if ( p -> spec.brewmaster_training -> ok() )
       base_costs[ RESOURCE_CHI ] = 0.0;
@@ -1065,7 +1065,7 @@ struct blackout_kick_t : public monk_melee_attack_t
     parse_options( nullptr, options_str );
     mh = &( player -> main_hand_weapon );
     oh = &( player -> off_hand_weapon );
-    base_multiplier *= 6.72; // hardcoded into tooltip
+    base_multiplier *= 5.375; // hardcoded into tooltip
 
     if ( p -> spec.teachings_of_the_monastery -> ok() )
     {
@@ -1358,7 +1358,7 @@ struct rising_sun_kick_t : public monk_melee_attack_t
     stancemask = FIERCE_TIGER;
     mh = &( player -> main_hand_weapon ) ;
     oh = &( player -> off_hand_weapon ) ;
-    base_multiplier *= 7.08; // hardcoded into tooltip
+    base_multiplier *= 8; // hardcoded into tooltip
   }
 
   virtual void impact ( action_state_t* s )
@@ -1520,7 +1520,7 @@ struct fists_of_fury_tick_t: public monk_melee_attack_t
   {
     dual = special = true;
     aoe = -1;
-    base_multiplier *= 7.32; // hardcoded into tooltip
+    base_multiplier *= 5.877; // hardcoded into tooltip
     mh = &( player -> main_hand_weapon );
     oh = &( player -> off_hand_weapon );
     split_aoe_damage = false;
@@ -3717,7 +3717,8 @@ double monk_t::composite_player_multiplier( school_e school ) const
 {
   double m = base_t::composite_player_multiplier( school );
 
-  m *= 1.0 + active_stance_data( FIERCE_TIGER ).effectN( 3 ).percent();
+  if ( specialization() == MONK_WINDWALKER )
+    m *= 1.1;
 
   m *= 1.0 + buff.tigereye_brew_use -> value();
 
