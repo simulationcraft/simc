@@ -3099,7 +3099,7 @@ struct devouring_plague_t final : public priest_spell_t
 
       // TODO: Verify if Multistrikes also refresh. -- Twintop 2014/08/05
       // DP refreshes the
-      if ( td.dots.void_entropy -> is_ticking() )
+      if ( td.dots.void_entropy -> is_ticking() && result_is_hit( s -> result ) )
       {
         timespan_t nextTick = td.dots.void_entropy -> time_to_next_tick();
 
@@ -4017,8 +4017,6 @@ struct void_entropy_t : public priest_spell_t
   virtual double composite_persistent_multiplier( const action_state_t* s ) const override
   {
     double m = priest_spell_t::composite_persistent_multiplier( s );
-
-    m *= shadow_orbs_to_consume();
 
     return m;
   }
