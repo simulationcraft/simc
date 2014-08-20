@@ -1365,7 +1365,7 @@ struct priest_heal_t : public priest_action_t<heal_t>
     int stack = priest.buffs.serendipity -> check();
     bool triggered = false;
 
-    if ( tier17_4pc && priest.sets.has_set_bonus( SET_T17_4PC_HEAL ) && rng().roll( priest.sets.set( SET_T17_4PC_HEAL ) -> effectN( 1 ).percent() ) )
+    if ( tier17_4pc && priest.new_sets.has_set_bonus( PRIEST_HOLY, T17, B4 ) && rng().roll( priest.new_sets.set( PRIEST_HOLY, T17, B4 ) -> effectN( 1 ).percent() ) )
     {
       triggered = priest.buffs.serendipity -> trigger();
     }
@@ -1696,7 +1696,7 @@ struct archangel_t final : public priest_spell_t
     priest_spell_t::execute();
     priest.buffs.archangel -> trigger();
 
-    if ( SET_T17_4PC_HEAL )
+    if ( priest.new_sets.has_set_bonus( PRIEST_DISCIPLINE, T17, B4 ) )
       priest.buffs.clear_thoughts -> trigger();
   }
 
@@ -2235,7 +2235,7 @@ struct mind_blast_t final : public priest_spell_t
     s -> result = RESULT_HIT;
     s -> target = state -> target;
     s -> haste = dot_spell -> composite_haste();
-    s -> result_amount = state -> result_amount * priest.sets.set( SET_T17_2PC_CASTER ) -> effectN( 1 ).percent();
+    s -> result_amount = state -> result_amount * priest.new_sets.set( PRIEST_SHADOW, T17, B2 ) -> effectN( 1 ).percent();
 
     dot_spell -> schedule_travel( s );
     dot_spell -> stats -> add_execute( timespan_t::zero(), s -> target);
@@ -2252,7 +2252,7 @@ struct mind_blast_t final : public priest_spell_t
                                util::result_type_string( state -> result ),
                                state -> result_amount );
 
-    dot_spell -> append_damage( state -> target, state -> result_amount * priest.sets.set( SET_T17_2PC_CASTER ) -> effectN( 1 ).percent() );
+    dot_spell -> append_damage( state -> target, state -> result_amount * priest.new_sets.set( PRIEST_SHADOW, T17, B2 ) -> effectN( 1 ).percent() );
   }
 
   virtual void execute() override
@@ -3005,7 +3005,7 @@ struct devouring_plague_t final : public priest_spell_t
 
       trigger_insanity( execute_state, resource_consumed );
 
-      if ( priest.sets.has_set_bonus( SET_T17_2PC_CASTER ) )
+      if ( priest.new_sets.has_set_bonus( PRIEST_SHADOW, T17, B2 ) )
       {
         if ( priest.cooldowns.mind_blast -> remains() == timespan_t::zero() )
         {
@@ -3498,7 +3498,7 @@ struct penance_t final : public priest_spell_t
 
     cooldown -> duration = data().cooldown() + p.sets.set( SET_T14_4PC_HEAL ) -> effectN( 1 ).time_value();
 
-    dot_duration += p.sets.set( SET_T17_2PC_HEAL ) -> effectN( 1 ).time_value();
+    dot_duration += priest.new_sets.set( PRIEST_DISCIPLINE, T17, B2 ) -> effectN( 1 ).time_value();
 
     dynamic_tick_action = true;
     tick_action = new penance_tick_t( p, stats );
@@ -3528,7 +3528,7 @@ struct penance_t final : public priest_spell_t
     priest_spell_t::execute();
     priest.buffs.holy_evangelism -> trigger(); // re-checked 2014/07/07: offensive penance grants evangelism stacks, even though not mentioned in the tooltip.
 
-    if ( SET_T17_2PC_HEAL )
+    if ( priest.new_sets.has_set_bonus( PRIEST_DISCIPLINE, T17, B2 ) )
       priest.buffs.holy_evangelism -> trigger(); //Set bonus says "...and generates 2 stacks of Evangelism." Need to check if this happens up front or after a particular tick. - Twintop 2014/07/11
   }
 };
@@ -3990,7 +3990,7 @@ struct void_entropy_t : public priest_spell_t
 
       trigger_insanity( execute_state, resource_consumed );
 
-      if ( priest.sets.has_set_bonus( SET_T17_2PC_CASTER ) )
+      if ( priest.new_sets.has_set_bonus( PRIEST_SHADOW, T17, B2 ) )
       {
         if ( priest.cooldowns.mind_blast->remains() == timespan_t::zero() )
         {
@@ -4827,8 +4827,8 @@ struct prayer_of_mending_t final : public priest_heal_t
 
     aoe = 5;
 
-    if ( priest.sets.has_set_bonus( SET_T17_2PC_HEAL ) && priest.specialization() == PRIEST_HOLY )
-      aoe += (int)priest.sets.set( SET_T17_2PC_HEAL ) -> effectN( 1 ).percent() * 100;
+    if ( priest.new_sets.has_set_bonus( PRIEST_HOLY, T17, B2 ) )
+      aoe += (int)priest.new_sets.set( PRIEST_HOLY, T17, B2 ) -> effectN( 1 ).percent() * 100;
 
     castable_in_shadowform = false;
   }
@@ -6041,13 +6041,13 @@ void priest_t::create_buffs()
                                .default_value( glyphs.mind_flay -> effectN( 1 ).percent() );
 
   buffs.mental_instinct = buff_creator_t( this, "mental_instinct" )
-                            .spell( sets.set( SET_T17_4PC_CASTER ) -> effectN( 1 ).trigger() )
-                            .chance( sets.has_set_bonus( SET_T17_4PC_CASTER ) ? -1.0 : 0.0 )
+                            .spell( new_sets.set( PRIEST_SHADOW, T17, B4 ) -> effectN( 1 ).trigger() )
+                            .chance( new_sets.set( PRIEST_SHADOW, T17, B4 ) ? -1.0 : 0.0 )
                             .add_invalidate( CACHE_HASTE );
 
   buffs.clear_thoughts = buff_creator_t( this, "clear_thoughts" )
-                          .spell( sets.set( SET_T17_4PC_HEAL ) -> effectN( 1 ).trigger() )
-                          .chance( specialization() == PRIEST_DISCIPLINE ? sets.set( SET_T17_4PC_HEAL ) -> proc_chance() : 0.0 );
+                          .spell( new_sets.set( PRIEST_DISCIPLINE, T17, B4 ) -> effectN( 1 ).trigger() )
+                          .chance( specialization() == PRIEST_DISCIPLINE ? new_sets.set( PRIEST_DISCIPLINE, T17, B4 ) -> proc_chance() : 0.0 );
 }
 
 // ALL Spec Pre-Combat Action Priority List
