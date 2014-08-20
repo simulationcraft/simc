@@ -1232,7 +1232,7 @@ void sim_t::datacollection_begin()
 {
   if ( debug ) out_debug << "Sim Data Collection Begin";
 
-  iteration_dmg = iteration_heal = 0.0;
+  iteration_dmg = iteration_heal = iteration_absorb = 0.0;
 
   for ( size_t i = 0; i < target_list.size(); ++i )
   {
