@@ -3870,7 +3870,6 @@ void warrior_t::apl_fury()
   single_target -> add_action( this, "Execute", "if=debuff.colossus_smash.up|rage>70|target.time_to_die<12|buff.sudden_death.up" );
   single_target -> add_action( this, "Wild Strike", "if=buff.bloodsurge.up|((debuff.colossus_smash.up|rage>70)&target.health.pct>20)" );
   single_target -> add_action( this, "Raging Blow", "if=cooldown.colossus_smash.remains>4" );
-  single_target -> add_action( "bladestorm,if=enabled&buff.enrage.remains>3,interrupt_if=buff.enrage.down" );
   single_target -> add_talent( this, "Siegebreaker" );
   single_target -> add_talent( this, "Shockwave" );
   single_target -> add_talent( this, "Impending Victory" );
@@ -4036,7 +4035,6 @@ void warrior_t::apl_prot()
   prot -> add_talent( this, "Impending Victory" );
   prot -> add_action( this, "Victory Rush", "if=!talent.impending_victory.enabled" );
   prot -> add_talent( this, "Bloodbath" );
-  prot -> add_talent( this, "Bladestorm" );
   prot -> add_talent( this, "Shockwave" );
   prot -> add_talent( this, "Storm Bolt" );
   prot -> add_talent( this, "Dragon Roar" );

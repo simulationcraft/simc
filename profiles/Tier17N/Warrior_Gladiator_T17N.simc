@@ -52,7 +52,6 @@ actions.prot+=/demoralizing_shout
 actions.prot+=/impending_victory
 actions.prot+=/victory_rush,if=!talent.impending_victory.enabled
 actions.prot+=/bloodbath
-actions.prot+=/bladestorm
 actions.prot+=/shockwave
 actions.prot+=/storm_bolt
 actions.prot+=/dragon_roar
