@@ -41,11 +41,15 @@ actions+=/run_action_list,name=single_target,if=active_enemies<2
 
 actions.single_target=rend,if=ticks_remain<2
 actions.single_target+=/mortal_strike,if=target.health.pct>20
+actions.single_target+=/heroic_charge,if=rage<30&!debuff.colossus_smash.up
 actions.single_target+=/ravager,if=cooldown.colossus_smash.remains<3
 actions.single_target+=/colossus_smash
 actions.single_target+=/storm_bolt,if=cooldown.colossus_smash.remains>4|debuff.colossus_smash.up
-actions.single_target+=/dragon_roar
+actions.single_target+=/dragon_roar,if=!debuff.colossus_smash.up
 actions.single_target+=/execute,if=rage>60|(rage>40&debuff.colossus_smash.up)|buff.sudden_death.up
+actions.single_target+=/impending_victory
+actions.single_target+=/shockwave
+actions.single_target+=/siegebreaker
 actions.single_target+=/slam,if=(debuff.colossus_smash.up|rage>60)&target.health.pct>20
 actions.single_target+=/whirlwind,if=(rage>60|debuff.colossus_smash.up)&target.health.pct>20&buff.sudden_death.down&!talent.slam.enabled
 
@@ -59,6 +63,7 @@ actions.aoe+=/colossus_smash
 actions.aoe+=/mortal_strike,if=active_enemies<4
 actions.aoe+=/execute,if=buff.sudden_death.up|active_enemies<4
 actions.aoe+=/whirlwind,if=rage>40
+actions.aoe+=/siegebreaker
 actions.aoe+=/rend,cycle_targets=1,if=!ticking&talent.taste_for_blood.enabled
 
 head=helmet_of_the_prehistoric_marauder,id=99418,upgrade=2,gems=capacitive_primal_16crit_8haste_8crit_9str

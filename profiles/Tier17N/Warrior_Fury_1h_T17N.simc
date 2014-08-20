@@ -53,8 +53,10 @@ actions.single_target+=/execute,if=debuff.colossus_smash.up|rage>70|target.time_
 actions.single_target+=/wild_strike,if=buff.bloodsurge.up|((debuff.colossus_smash.up|rage>70)&target.health.pct>20)
 actions.single_target+=/raging_blow,if=cooldown.colossus_smash.remains>4
 actions.single_target+=/bladestorm,if=enabled&buff.enrage.remains>3,interrupt_if=buff.enrage.down
-actions.single_target+=/bloodthirst,if=talent.unquenchable_thirst.enabled
+actions.single_target+=/siegebreaker
 actions.single_target+=/shockwave
+actions.single_target+=/impending_victory
+actions.single_target+=/bloodthirst,if=talent.unquenchable_thirst.enabled
 
 actions.two_targets=bloodbath
 actions.two_targets+=/heroic_leap,if=buff.enrage.up

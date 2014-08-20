@@ -3962,7 +3962,7 @@ void warrior_t::apl_arms()
   single_target -> add_talent( this, "Ravager", "if=cooldown.colossus_smash.remains<3" );
   single_target -> add_action( this, "Colossus Smash" );
   single_target -> add_talent( this, "Storm Bolt", "if=cooldown.colossus_smash.remains>4|debuff.colossus_smash.up" );
-  single_target -> add_talent( this, "Dragon Roar", "!debuff.colossus_smash.up" );
+  single_target -> add_talent( this, "Dragon Roar", "if=!debuff.colossus_smash.up" );
   single_target -> add_action( this, "Execute", "if=rage>60|(rage>40&debuff.colossus_smash.up)|buff.sudden_death.up" );
   single_target -> add_talent( this, "Impending Victory" );
   single_target -> add_talent( this, "Shockwave" );
