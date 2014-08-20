@@ -2317,7 +2317,7 @@ struct siegebreaker_t: public warrior_attack_t
 
     if ( p -> specialization() == WARRIOR_FURY )
     {
-      oh_attack = new siegebreaker_off_hand_t( p, "siegebreaker_oh", data().effectN( 4 ).trigger() );
+      oh_attack = new siegebreaker_off_hand_t( p, "siegebreaker_oh", data().effectN( 5 ).trigger() );
       add_child( oh_attack );
     }
   }
@@ -3174,7 +3174,7 @@ struct shield_barrier_t: public warrior_action_t < absorb_t >
 
   bool ready()
   {
-    if ( !p() -> has_shield_equipped() )
+    if ( !p() -> has_shield_equipped() && p() -> specialization() == WARRIOR_PROTECTION )
       return false;
 
     return base_t::ready();
@@ -3965,10 +3965,10 @@ void warrior_t::apl_arms()
   single_target -> add_talent( this, "Dragon Roar", "if=!debuff.colossus_smash.up" );
   single_target -> add_action( this, "Execute", "if=rage>60|(rage>40&debuff.colossus_smash.up)|buff.sudden_death.up" );
   single_target -> add_talent( this, "Impending Victory" );
-  single_target -> add_talent( this, "Shockwave" );
   single_target -> add_talent( this, "Siegebreaker" );
   single_target -> add_talent( this, "Slam", "if=(debuff.colossus_smash.up|rage>60)&target.health.pct>20" );
   single_target -> add_action( this, "Whirlwind", "if=(rage>60|debuff.colossus_smash.up)&target.health.pct>20&buff.sudden_death.down&!talent.slam.enabled" );
+  single_target -> add_talent( this, "Shockwave" );
 
   aoe -> add_action( this, "Sweeping Strikes" );
   aoe -> add_action( this, "Rend", "if=!ticking" );

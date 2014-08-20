@@ -48,10 +48,10 @@ actions.single_target+=/storm_bolt,if=cooldown.colossus_smash.remains>4|debuff.c
 actions.single_target+=/dragon_roar,if=!debuff.colossus_smash.up
 actions.single_target+=/execute,if=rage>60|(rage>40&debuff.colossus_smash.up)|buff.sudden_death.up
 actions.single_target+=/impending_victory
-actions.single_target+=/shockwave
 actions.single_target+=/siegebreaker
 actions.single_target+=/slam,if=(debuff.colossus_smash.up|rage>60)&target.health.pct>20
 actions.single_target+=/whirlwind,if=(rage>60|debuff.colossus_smash.up)&target.health.pct>20&buff.sudden_death.down&!talent.slam.enabled
+actions.single_target+=/shockwave
 
 actions.aoe=sweeping_strikes
 actions.aoe+=/rend,if=!ticking
