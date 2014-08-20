@@ -4259,20 +4259,18 @@ struct last_stand_t: public warrior_buff_t < buff_t >
   }
 };
 
-struct debuff_demo_shout_t: public buff_t
+struct debuff_demo_shout_t: public warrior_buff_t < buff_t >
 {
-  debuff_demo_shout_t( warrior_td_t& wtd ):
-    buff_t( buff_creator_t( wtd, "demo_shout", wtd.source -> find_specialization_spell( "Demoralizing Shout" ) ) )
+  debuff_demo_shout_t( warrior_td_t& p ):
+    base_t( p, buff_creator_t( p, "demoralizing_shout", p.source -> find_specialization_spell( "Demoralizing Shout" ) ) )
   {
     default_value = data().effectN( 1 ).percent();
   }
 
   void expire_override()
   {
-    warrior_t* p = (warrior_t*)player;
-
-    if ( p -> new_sets.has_set_bonus( SET_TANK, T16, B4 ) )
-      p -> buff.tier16_reckless_defense -> trigger();
+    if ( warrior.new_sets.has_set_bonus( SET_TANK, T16, B4 ) )
+      warrior.buff.tier16_reckless_defense -> trigger();
 
     buff_t::expire_override();
   }
