@@ -4835,9 +4835,6 @@ struct rune_tap_t : public death_knight_heal_t
   {
     parse_options( NULL, options_str );
 
-    cooldown -> charges = 2;
-    cooldown -> duration = data().duration() + p -> perk.enhanced_rune_tap -> effectN( 1 ).time_value();
-
     attack_power_mod.direct = 0;
   }
 
@@ -5583,15 +5580,15 @@ void death_knight_t::default_apl_blood()
 
   if ( primary_role() == ROLE_TANK )
   {
-    potion_str += ( level >= 85 ) ? "mountains_potion" : "earthen_potion";
-    flask_str += ( level >= 90 ) ? "greater_drenic_stamina_flask" : ( level >= 85 ) ? "earth" : "steelskin";
-    food_str += ( level >= 85 ) ? "chun_tian_spring_rolls" : "beer_basted_crocolisk";
+    potion_str += ( level >= 90 ) ? "draenic_armor_potion" : ( level >= 85 ) ? "mountains_potion" : "earthen_potion";
+    flask_str += ( level >= 90 ) ? "greater_draenic_stamina_flask" : ( level >= 85 ) ? "earth" : "steelskin";
+    food_str += ( level >= 90 ) ? "talador_surf_and_turf" : ( level >= 85 ) ? "chun_tian_spring_rolls" : "beer_basted_crocolisk";
   }
   else
   {
-    potion_str += ( level >= 85 ) ? "mogu_power" : "golemblood";
+    potion_str += ( level >= 90 ) ? "draenic_strength_potion" : ( level >= 85 ) ? "mogu_power" : "golemblood";
     flask_str += ( level >= 90 ) ? "greater_draenic_strength_flask" : ( level >= 85 ) ? "winters_bite" : "titanic_strength";
-    food_str += ( level >= 85 ) ? "black_pepper_ribs_and_shrimp" : "beer_basted_crocolisk";
+    food_str += ( level >= 90 ) ? "calamari_crepes" : ( level >= 85 ) ? "black_pepper_ribs_and_shrimp" : "beer_basted_crocolisk";
   }
 
   // Precombat actions
@@ -5635,15 +5632,21 @@ void death_knight_t::default_apl_blood()
     def -> add_action( this, "Bone Shield", "if=buff.army_of_the_dead.down&buff.bone_shield.down&buff.dancing_rune_weapon.down&buff.icebound_fortitude.down&buff.vampiric_blood.down" );
     def -> add_action( this, "Vampiric Blood", "if=health.pct<50" );
     def -> add_action( this, "Icebound Fortitude", "if=health.pct<30&buff.army_of_the_dead.down&buff.dancing_rune_weapon.down&buff.bone_shield.down&buff.vampiric_blood.down" );
-    def -> add_action( this, "Rune Tap", "if=health.pct<90" );
+    def -> add_action( this, "Rune Tap", "if=health.pct<50&buff.army_of_the_dead.down&buff.dancing_rune_weapon.down&buff.bone_shield.down&buff.vampiric_blood.down&buff.icebound_fortitude.down" );
     def -> add_action( this, "Dancing Rune Weapon", "if=health.pct<80&buff.army_of_the_dead.down&buff.icebound_fortitude.down&buff.bone_shield.down&buff.vampiric_blood.down" );
     def -> add_talent( this, "Death Pact", "if=health.pct<50" );
-    def -> add_action( this, "Outbreak", "if=(dot.frost_fever.remains<=2|dot.blood_plague.remains<=2)|(!dot.blood_plague.ticking&!dot.frost_fever.ticking)" );
-    def -> add_action( this, "Plague Strike", "if=!dot.blood_plague.ticking" );
-    def -> add_action( this, "Icy Touch", "if=!dot.frost_fever.ticking" );
+    def -> add_action( this, "Outbreak", "if=(!talent.necrotic_plague.enabled&!disease.min_remains<8)|!disease.ticking" );
+    def -> add_action( this, "Death Coil", "if=runic_power>90" );
+    def -> add_action( this, "Plague Strike", "if=(!talent.necrotic_plague.enabled&!dot.blood_plague.ticking)|(talent.necrotic_plague.enabled&!dot.necrotic_plague.ticking)" );
+    def -> add_action( this, "Icy Touch", "if=(!talent.necrotic_plague.enabled&!dot.frost_fever.ticking)|(talent.necrotic_plague.enabled&!dot.necrotic_plague.ticking)" );
+    def -> add_talent( this, "Defile" );
+    def -> add_action( this, "Death Strike", "if=(unholy=2|frost=2)" );
+    def -> add_action( this, "Death Coil", "if=runic_power>70" );
     def -> add_action( this, "Soul Reaper", "if=target.health.pct-3*(target.health.pct%target.time_to_die)<=" + srpct + "&blood>=1" );
+    def -> add_action( this, "Blood Boil", "if=blood=2" );
     def -> add_talent( this, "Blood Tap" );
-    def -> add_action( this, "Death Strike", "if=(unholy=2|frost=2)&incoming_damage_5s>=health.max*0.4" );
+    def -> add_action( this, "Blood Boil" );
+    def -> add_action( this, "Death Coil" );
     def -> add_action( this, "Empower Rune Weapon", "if=!blood&!unholy&!frost" );
   }
   else
@@ -5659,11 +5662,12 @@ void death_knight_t::default_apl_blood()
     def -> add_action( this, "Icebound Fortitude", "if=health.pct<30&buff.dancing_rune_weapon.down&buff.bone_shield.down&buff.vampiric_blood.down" );
     def -> add_action( this, "Rune Tap", "if=health.pct<90" );
     def -> add_action( this, "Dancing Rune Weapon" );
+    def -> add_action( this, "Death Coil", "if=runic_power>80" );
     def -> add_talent( this, "Death Pact", "if=health.pct<50" );
     def -> add_action( this, "Outbreak", "if=buff.dancing_rune_weapon.up" );
     def -> add_action( this, "Death Strike", "if=unholy=2|frost=2" );
-    def -> add_action( this, "Plague Strike", "if=!dot.blood_plague.ticking" );
-    def -> add_action( this, "Icy Touch", "if=!dot.frost_fever.ticking" );
+    def -> add_action( this, "Plague Strike", "if=!disease.ticking" );
+    def -> add_action( this, "Icy Touch", "if=!disease.ticking" );
     def -> add_action( this, "Soul Reaper", "if=target.health.pct-3*(target.health.pct%target.time_to_die)<=" + srpct );
     def -> add_action( this, "Death Strike" );
     def -> add_talent( this, "Blood Tap" );
@@ -6256,8 +6260,8 @@ void death_knight_t::create_buffs()
   //buffs.runic_corruption    = buff_creator_t( this, "runic_corruption", find_spell( 51460 ) )
   //                            .chance( talent.runic_corruption -> proc_chance() );
   buffs.runic_corruption    = new runic_corruption_buff_t( this );
-  buffs.scent_of_blood      = buff_creator_t( this, "scent_of_blood", spec.scent_of_blood -> effectN( 1 ).trigger() )
-                              .chance( spec.scent_of_blood -> proc_chance() );
+  buffs.scent_of_blood      = buff_creator_t( this, "scent_of_blood", find_spell( 50421 ) )
+                              .chance( spec.scent_of_blood -> ok() );
   // Trick simulator into recalculating health when this buff goes up/down.
   buffs.shadow_of_death     = new shadow_of_death_t( this );
   buffs.sudden_doom         = buff_creator_t( this, "sudden_doom", find_spell( 81340 ) )
@@ -6462,14 +6466,6 @@ void death_knight_t::assess_damage( school_e     school,
 
   if ( s -> result == RESULT_DODGE || s -> result == RESULT_PARRY )
   {
-    if ( spec.scent_of_blood -> ok() && 
-         buffs.scent_of_blood -> trigger( buffs.scent_of_blood -> trigger( 1, buff_t::DEFAULT_VALUE(), main_hand_weapon.swing_time.total_seconds() / 3.6 ) ) )
-    {
-      resource_gain( RESOURCE_RUNIC_POWER,
-                     buffs.scent_of_blood -> data().effectN( 2 ).resource( RESOURCE_RUNIC_POWER ),
-                     gains.scent_of_blood );
-    }
-
     buffs.riposte -> stats[ 0 ].amount = ( current.stats.dodge_rating + current.stats.parry_rating ) * spec.riposte -> effectN( 1 ).percent();
     buffs.riposte -> trigger();
   }
@@ -6747,9 +6743,6 @@ role_e death_knight_t::primary_role() const
 
   if ( player_t::primary_role() == ROLE_DPS || player_t::primary_role() == ROLE_ATTACK )
     return ROLE_ATTACK;
-
-  if ( specialization() == DEATH_KNIGHT_BLOOD )
-    return ROLE_TANK;
 
   return ROLE_ATTACK;
 }
