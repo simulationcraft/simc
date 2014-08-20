@@ -2496,15 +2496,13 @@ struct shockwave_t: public warrior_attack_t
     if ( p() -> specialization() != WARRIOR_PROTECTION )
       cd_duration = cooldown -> duration / ( 1 + player -> cache.readiness() );
 
-    if ( result_is_hit( execute_state -> result ) )
-      if ( execute_state -> n_targets >= 3 )
-      {
+    if ( execute_state -> n_targets >= 3 )
+    {
       if ( cd_duration > timespan_t::from_seconds( 20 ) )
         cd_duration += timespan_t::from_seconds( -20 );
       else
         cd_duration = timespan_t::zero();
-      }
-
+    }
     warrior_attack_t::update_ready( cd_duration );
   }
 };
@@ -3873,8 +3871,10 @@ void warrior_t::apl_fury()
   single_target -> add_action( this, "Wild Strike", "if=buff.bloodsurge.up|((debuff.colossus_smash.up|rage>70)&target.health.pct>20)" );
   single_target -> add_action( this, "Raging Blow", "if=cooldown.colossus_smash.remains>4" );
   single_target -> add_action( "bladestorm,if=enabled&buff.enrage.remains>3,interrupt_if=buff.enrage.down" );
-  single_target -> add_action( this, "Bloodthirst", "if=talent.unquenchable_thirst.enabled" );
+  single_target -> add_talent( this, "Siegebreaker" );
   single_target -> add_talent( this, "Shockwave" );
+  single_target -> add_talent( this, "Impending Victory" );
+  single_target -> add_action( this, "Bloodthirst", "if=talent.unquenchable_thirst.enabled" );
 
   two_targets -> add_talent( this, "Bloodbath" );
   two_targets -> add_action( this, "Heroic Leap", "if=buff.enrage.up" );
@@ -3958,12 +3958,15 @@ void warrior_t::apl_arms()
 
   single_target -> add_action( this, "Rend", "if=ticks_remain<2" );
   single_target -> add_action( this, "Mortal Strike", "if=target.health.pct>20" );
-  //single_target -> add_action( "heroic_charge,if=rage<45" ); It's not feasible in raids to do this with the rage tweaks.
+  single_target -> add_action( "heroic_charge,if=rage<30&!debuff.colossus_smash.up" );
   single_target -> add_talent( this, "Ravager", "if=cooldown.colossus_smash.remains<3" );
   single_target -> add_action( this, "Colossus Smash" );
   single_target -> add_talent( this, "Storm Bolt", "if=cooldown.colossus_smash.remains>4|debuff.colossus_smash.up" );
-  single_target -> add_talent( this, "Dragon Roar" );
+  single_target -> add_talent( this, "Dragon Roar", "!debuff.colossus_smash.up" );
   single_target -> add_action( this, "Execute", "if=rage>60|(rage>40&debuff.colossus_smash.up)|buff.sudden_death.up" );
+  single_target -> add_talent( this, "Impending Victory" );
+  single_target -> add_talent( this, "Shockwave" );
+  single_target -> add_talent( this, "Siegebreaker" );
   single_target -> add_talent( this, "Slam", "if=(debuff.colossus_smash.up|rage>60)&target.health.pct>20" );
   single_target -> add_action( this, "Whirlwind", "if=(rage>60|debuff.colossus_smash.up)&target.health.pct>20&buff.sudden_death.down&!talent.slam.enabled" );
 
@@ -3977,6 +3980,7 @@ void warrior_t::apl_arms()
   aoe -> add_action( this, "Mortal Strike", "if=active_enemies<4" );
   aoe -> add_action( this, "Execute", "if=buff.sudden_death.up|active_enemies<4" );
   aoe -> add_action( this, "Whirlwind", "if=rage>40" );
+  aoe -> add_talent( this, "Siegebreaker" );
   aoe -> add_action( this, "Rend", "cycle_targets=1,if=!ticking&talent.taste_for_blood.enabled" );
 }
 
