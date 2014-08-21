@@ -27,6 +27,8 @@ actions+=/chi_sphere,if=talent.power_strikes.enabled&buff.chi_sphere.react&chi<4
 actions+=/potion,name=draenic_agility,if=buff.serenity.up|(!talent.serenity.enabled&trinket.proc.agility.react)
 actions+=/berserking
 actions+=/serenity,if=chi>=2
+actions+=/chi_explosion,if=chi>=2|buff.combo_breaker_ce.up
+actions+=/hurricane_strike
 actions+=/jab,if=energy.time_to_max<=gcd&!buff.combo_breaker_tp.react&!buff.combo_breaker_bok.react&chi.max-chi>=2&!buff.serenity.remains
 actions+=/chi_brew,if=talent.chi_brew.enabled&chi.max-chi>=2&(trinket.proc.agility.react|(charges=1&recharge_time<=10)|charges=2|target.time_to_die<charges*10)
 actions+=/tiger_palm,if=buff.tiger_power.remains<=3

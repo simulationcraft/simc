@@ -1210,6 +1210,8 @@ struct chi_explosion_t : public monk_melee_attack_t
   chi_explosion_t( monk_t* p, const std::string& options_str ) :
     monk_melee_attack_t( "chi_explosion", p, chi_explosion_data( p ) )
   {
+    if ( ! p -> talent.chi_explosion -> ok() )
+      background = true;
     parse_options( nullptr, options_str );
     mh = &( player -> main_hand_weapon );
     oh = &( player -> off_hand_weapon );
@@ -1516,7 +1518,7 @@ struct spinning_crane_kick_t : public monk_melee_attack_t
 struct fists_of_fury_tick_t: public monk_melee_attack_t
 {
   fists_of_fury_tick_t( monk_t* p, const std::string& name ):
-    monk_melee_attack_t( name, p )
+    monk_melee_attack_t( name, p, p -> find_specialization_spell( "Fists of Fury" ) )
   {
     dual = special = true;
     aoe = -1;
@@ -1524,7 +1526,6 @@ struct fists_of_fury_tick_t: public monk_melee_attack_t
     mh = &( player -> main_hand_weapon );
     oh = &( player -> off_hand_weapon );
     split_aoe_damage = false;
-    school = SCHOOL_PHYSICAL;
   }
 
   double action_multiplier() const
@@ -1596,8 +1597,8 @@ struct fists_of_fury_t : public monk_melee_attack_t
 
 struct hurricane_strike_tick_t : public monk_melee_attack_t
 {
-  hurricane_strike_tick_t( const std::string& name, monk_t* p ):
-    monk_melee_attack_t( name, p )
+  hurricane_strike_tick_t( const std::string& name, monk_t* p, const spell_data_t* s ):
+    monk_melee_attack_t( name, p, s )
   {
     mh = &( player -> main_hand_weapon );
     oh = &( player -> off_hand_weapon );
@@ -1611,20 +1612,21 @@ struct hurricane_strike_t : public monk_melee_attack_t
   hurricane_strike_tick_t* hs_tick;
   hurricane_strike_t( monk_t* p, const std::string& options_str ) :
     monk_melee_attack_t( "hurricane_strike", p, p -> talent.hurricane_strike ),
-    hs_tick( new hurricane_strike_tick_t( "hurricane_strike_tick", p ) )
+    hs_tick( new hurricane_strike_tick_t( "hurricane_strike_tick", p, p -> find_spell( 158221 ) ) )
   {
     parse_options( nullptr, options_str );
     stancemask = FIERCE_TIGER;
     add_child( hs_tick );
     hasted_ticks = interrupt_auto_attack = callbacks = false;
-    tick_zero = channeled = true;
+    channeled = true;
     dot_duration = data().duration();
     base_tick_time = dot_duration / 15;
     attack_power_mod.direct = attack_power_mod.tick = 0;
   }
 
-  void tick( dot_t )
+  void tick( dot_t*d )
   {
+    monk_melee_attack_t::tick(d);
     hs_tick -> execute();
   }
 
@@ -4299,6 +4301,8 @@ void monk_t::apl_combat_windwalker()
 
   action_list_str += init_use_racial_actions();
   action_list_str += "/serenity,if=chi>=2";
+  action_list_str += "/chi_explosion,if=chi>=2|buff.combo_breaker_ce.up";
+  action_list_str += "/hurricane_strike";
   action_list_str += "/jab,if=energy.time_to_max<=gcd&!buff.combo_breaker_tp.react&!buff.combo_breaker_bok.react&chi.max-chi>=2&!buff.serenity.remains";
   action_list_str += "/chi_brew,if=talent.chi_brew.enabled&chi.max-chi>=2&(trinket.proc.agility.react|(charges=1&recharge_time<=10)|charges=2|target.time_to_die<charges*10)";
   action_list_str += "/tiger_palm,if=buff.tiger_power.remains<=3";
