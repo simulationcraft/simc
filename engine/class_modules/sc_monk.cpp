@@ -210,6 +210,7 @@ public:
     // GENERAL
     const spell_data_t* leather_specialization;
     const spell_data_t* way_of_the_monk;
+    const spell_data_t* critical_strikes;
 
     // Brewmaster
     const spell_data_t* brewing_elusive_brew;
@@ -341,6 +342,8 @@ public:
   // player_t overrides
   virtual action_t* create_action( const std::string& name, const std::string& options );
   virtual double    composite_melee_speed() const;
+  virtual double    composite_melee_crit() const;
+  virtual double    composite_spell_crit() const;
   virtual double    energy_regen_per_second() const;
   virtual double    composite_attribute_multiplier( attribute_e attr ) const override;
   virtual double    composite_player_multiplier( school_e school ) const;
@@ -3286,6 +3289,7 @@ void monk_t::init_spells()
   // General Passives
   spec.way_of_the_monk            = find_spell( 108977 );
   spec.leather_specialization     = find_specialization_spell( "Leather Specialization" );
+  spec.critical_strikes           = find_specialization_spell( "Critical Strikes" );
 
   // Windwalker Passives
   spec.brewing_tigereye_brew      = find_specialization_spell( "Brewing: Tigereye Brew" );
@@ -3710,6 +3714,28 @@ double monk_t::composite_melee_speed() const
     cas *= 1.0 / ( 1.0 + spec.way_of_the_monk -> effectN( 2 ).percent() );
 
   return cas;
+}
+
+// monk_t::composite_melee_crit ============================================
+
+double monk_t::composite_melee_crit() const
+{
+  double crit = player_t::composite_melee_crit();
+
+  crit += spec.critical_strikes -> effectN( 1 ).percent();
+
+  return crit;
+}
+
+// monk_t::composite_spell_crit ============================================
+
+double monk_t::composite_spell_crit() const
+{
+  double crit = player_t::composite_spell_crit();
+
+  crit += spec.critical_strikes -> effectN( 1 ).percent();
+
+  return crit;
 }
 
 // monk_t::composite_player_multiplier
