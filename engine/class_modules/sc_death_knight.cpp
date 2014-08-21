@@ -218,6 +218,7 @@ public:
     stat_buff_t* death_shroud;
     stat_buff_t* riposte;
     buff_t* shadow_of_death;
+    buff_t* conversion;
   } buffs;
 
   struct runeforge_t
@@ -246,6 +247,7 @@ public:
     spell_t* necrotic_plague;
     spell_t* breath_of_sindragosa;
     spell_t* necrosis;
+    heal_t* conversion;
   } active_spells;
 
   // Gains
@@ -339,6 +341,8 @@ public:
     const spell_data_t* unholy_blight;
 
     const spell_data_t* deaths_advance;
+
+    const spell_data_t* conversion;
 
     const spell_data_t* blood_tap;
     const spell_data_t* runic_empowerment;
@@ -2312,6 +2316,12 @@ void death_knight_melee_attack_t::consume_resource()
   {
     p() -> active_spells.breath_of_sindragosa -> get_dot() -> cancel();
   }
+
+  if ( p() -> active_spells.conversion &&
+       p() -> resources.current[ RESOURCE_RUNIC_POWER ] < p() -> active_spells.conversion -> tick_action -> base_costs[ RESOURCE_RUNIC_POWER ] )
+  {
+    p() -> active_spells.conversion -> get_dot() -> cancel();
+  }
 }
 
 // death_knight_melee_attack_t::execute() ===================================
@@ -2945,6 +2955,73 @@ struct death_siphon_t : public death_knight_spell_t
 
     if ( p() -> buffs.dancing_rune_weapon -> check() )
       p() -> pets.dancing_rune_weapon -> drw_death_siphon -> execute();
+  }
+};
+
+// Conversion ===============================================================
+
+struct conversion_heal_t : public death_knight_heal_t
+{
+  conversion_heal_t( death_knight_t* p ) :
+    death_knight_heal_t( "conversion_heal", p, p -> find_spell( 119980 ) )
+  {
+    may_crit = may_multistrike = false;
+    background = true;
+    resource_current = RESOURCE_RUNIC_POWER;
+    base_costs[ RESOURCE_RUNIC_POWER ] = 15;
+    target = p;
+    pct_heal = data().effectN( 1 ).percent();
+  }
+
+  void execute()
+  {
+    death_knight_heal_t::execute();
+
+    if ( result_is_hit( execute_state -> result ) )
+    {
+      p() -> trigger_runic_empowerment( resource_consumed );
+      p() -> trigger_blood_charge( resource_consumed );
+      p() -> trigger_runic_corruption( resource_consumed );
+      p() -> trigger_shadow_infusion( resource_consumed );
+    }
+  }
+};
+
+struct conversion_t : public death_knight_heal_t
+{
+  conversion_t( death_knight_t* p, const std::string& options_str ) :
+    death_knight_heal_t( "conversion", p, p -> talent.conversion )
+  {
+    parse_options( NULL, options_str );
+
+    may_miss = may_crit = hasted_ticks = callbacks = false;
+    dot_duration = sim -> max_time * 2;
+
+    tick_action = new conversion_heal_t( p );
+    base_costs[ RESOURCE_RUNIC_POWER ] = 0;
+    target = p;
+  }
+
+  void execute()
+  {
+    dot_t* d = get_dot( target );
+
+    if ( d -> is_ticking() )
+      d -> cancel();
+    else
+    {
+      p() -> active_spells.conversion = this;
+      death_knight_heal_t::execute();
+
+      p() -> buffs.conversion -> trigger();
+    }
+  }
+
+  void last_tick( dot_t* dot )
+  {
+    death_knight_heal_t::last_tick( dot );
+    p() -> active_spells.conversion = 0;
+    p() -> buffs.conversion -> expire();
   }
 };
 
@@ -5132,6 +5209,7 @@ action_t* death_knight_t::create_action( const std::string& name, const std::str
   if ( name == "death_pact"               ) return new death_pact_t               ( this, options_str );
   if ( name == "breath_of_sindragosa"     ) return new breath_of_sindragosa_t     ( this, options_str );
   if ( name == "defile"                   ) return new defile_t                   ( this, options_str );
+  if ( name == "conversion"               ) return new conversion_t               ( this, options_str );
 
   return player_t::create_action( name, options_str );
 }
@@ -5481,6 +5559,8 @@ void death_knight_t::init_spells()
   talent.deaths_advance           = find_talent_spell( "Death's Advance" );
   spell.deaths_advance            = find_spell( 124285 ); // Passive movement speed is in a completely unlinked spell id.
 
+  talent.conversion               = find_talent_spell( "Conversion" );
+
   talent.blood_tap                = find_talent_spell( "Blood Tap" );
   talent.runic_empowerment        = find_talent_spell( "Runic Empowerment" );
   talent.runic_corruption         = find_talent_spell( "Runic Corruption" );
@@ -5627,6 +5707,7 @@ void death_knight_t::default_apl_blood()
       def -> add_action( potion_str + ",if=buff.potion.down&buff.blood_shield.down&!unholy&!frost" );
 
     def -> add_action( this, "Anti-Magic Shell" );
+    def -> add_talent( this, "Conversion", "if=!buff.conversion.up&runic_power>50&health.pct<90" );
     def -> add_action( this, "Death Strike", "if=incoming_damage_5s>=health.max*0.65" );
     def -> add_action( this, "Army of the Dead", "if=buff.bone_shield.down&buff.dancing_rune_weapon.down&buff.icebound_fortitude.down&buff.vampiric_blood.down" );
     def -> add_action( this, "Bone Shield", "if=buff.army_of_the_dead.down&buff.bone_shield.down&buff.dancing_rune_weapon.down&buff.icebound_fortitude.down&buff.vampiric_blood.down" );
@@ -6293,6 +6374,8 @@ void death_knight_t::create_buffs()
                                     .chance( 0 );
   runeforge.rune_of_spellbreaking_oh = buff_creator_t( this, "rune_of_spellbreaking_oh", find_spell( 54449 ) )
                                        .chance( 0 );
+
+  buffs.conversion = buff_creator_t( this, "conversion", talent.conversion ).duration( timespan_t::zero() );
 
 }
 

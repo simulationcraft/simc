@@ -35,6 +35,7 @@ actions+=/berserking
 actions+=/arcane_torrent
 actions+=/potion,name=draenic_armor_potion,if=buff.potion.down&buff.blood_shield.down&!unholy&!frost
 actions+=/antimagic_shell
+actions+=/conversion,if=!buff.conversion.up&runic_power>50&health.pct<90
 actions+=/death_strike,if=incoming_damage_5s>=health.max*0.65
 actions+=/army_of_the_dead,if=buff.bone_shield.down&buff.dancing_rune_weapon.down&buff.icebound_fortitude.down&buff.vampiric_blood.down
 actions+=/bone_shield,if=buff.army_of_the_dead.down&buff.bone_shield.down&buff.dancing_rune_weapon.down&buff.icebound_fortitude.down&buff.vampiric_blood.down
