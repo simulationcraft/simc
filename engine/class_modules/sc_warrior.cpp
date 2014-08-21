@@ -1621,7 +1621,7 @@ struct execute_t: public warrior_attack_t
 
     if ( p -> spec.crazed_berserker -> ok() )
     {
-      oh_attack = new execute_off_hand_t( p, "execute_oh", p -> find_spell( "Execute Off-Hand" ) );
+      oh_attack = new execute_off_hand_t( p, "execute_oh", p -> find_spell( 163558 ) );
       add_child( oh_attack );
     }
   }

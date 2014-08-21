@@ -1185,7 +1185,9 @@ struct chi_state_t final : public action_state_t
 struct dot_chi_explosion_t : public residual_action::residual_periodic_action_t< monk_melee_attack_t >
 {
   dot_chi_explosion_t( monk_t* p ) :
-    base_t( "chi_explosion_dot", p, p -> find_spell( 157681 ) )
+    base_t( "chi_explosion_dot", p, p -> specialization() == MONK_WINDWALKER ? p -> find_spell( 157680 ) : 
+                                    p -> specialization() == MONK_MISTWEAVER ? p -> find_spell( 157681 ) :
+                                    p -> find_spell( 157682 ) )
   {
     tick_may_crit = true;
     may_miss = false;
@@ -1195,16 +1197,6 @@ struct dot_chi_explosion_t : public residual_action::residual_periodic_action_t<
 
 struct chi_explosion_t : public monk_melee_attack_t
 {
-  void trigger_chi_explosion_dot( chi_explosion_t* s, player_t* t, double dmg )
-  {
-    monk_t* p = s -> p();
-
-    residual_action::trigger(
-      p -> active_actions.chi_explosion_dot,
-      t,
-      dmg );
-  }
-
   static const spell_data_t* chi_explosion_data( monk_t* p )
   {
     if (p -> specialization() == MONK_BREWMASTER)
@@ -1224,7 +1216,7 @@ struct chi_explosion_t : public monk_melee_attack_t
     school = SCHOOL_NATURE;
   }
 
-  virtual void execute()
+  void execute()
   {
     monk_melee_attack_t::execute();
 
@@ -1250,12 +1242,14 @@ struct chi_explosion_t : public monk_melee_attack_t
     else if ( p() -> talent.chi_explosion_ww -> ok() )
     {
       if ( resource_consumed >= 3 )
-        // Hard Code the Tigereye Brew stack 04/28/2014
+        // Hard Code the Tigereye Brew stack Checked 08/21/2014
         trigger_brew( 1 );
+      if ( resource_consumed == 4 )
+        aoe = -1;
     }
   }
 
-  virtual double action_multiplier() const
+  double action_multiplier() const
   {
     double m = monk_melee_attack_t::action_multiplier();
 
@@ -1271,17 +1265,20 @@ struct chi_explosion_t : public monk_melee_attack_t
     return m;
   }
 
-  virtual void assess_damage( dmg_e type, action_state_t* s )
+  void assess_damage( dmg_e type, action_state_t* s )
   {
     monk_melee_attack_t::assess_damage( type, s );
 
     if (( p() -> specialization() == MONK_WINDWALKER ) && ( resource_consumed >= 2 ) )
       // At this time, hard code the 50% increased damage 04/28/2014
       // TODO: get actual spell Effect whenever that becomes available
-      trigger_chi_explosion_dot( this, s -> target, s -> result_amount * 0.5 );
+      residual_action::trigger(
+      p() -> active_actions.chi_explosion_dot,
+      s -> target,
+      s -> result_amount * 1.5 );
   }
 
-  virtual double cost() const
+  double cost() const
   {
     // TODO: Check if Chi Explosion works with Tier 16 4-piece
     if ( p() -> buff.focus_of_xuen -> check() ){
@@ -1290,7 +1287,7 @@ struct chi_explosion_t : public monk_melee_attack_t
     return monk_melee_attack_t::cost();
   }
 
- virtual void consume_resource()
+ void consume_resource()
   {
     double savings = base_costs[ RESOURCE_CHI ] - cost();
     resource_consumed = savings;
@@ -1597,22 +1594,41 @@ struct fists_of_fury_t : public monk_melee_attack_t
 // Hurricane Strike
 // ==========================================================================
 
+struct hurricane_strike_tick_t : public monk_melee_attack_t
+{
+  hurricane_strike_tick_t( const std::string& name, monk_t* p ):
+    monk_melee_attack_t( name, p )
+  {
+    mh = &( player -> main_hand_weapon );
+    oh = &( player -> off_hand_weapon );
+    base_multiplier *= 2; // hardcoded into tooltip
+    dual = true;
+  }
+};
+
 struct hurricane_strike_t : public monk_melee_attack_t
 {
+  hurricane_strike_tick_t* hs_tick;
   hurricane_strike_t( monk_t* p, const std::string& options_str ) :
-    monk_melee_attack_t( "hurricane_strike", p, p -> find_talent_spell( "Hurricane Strike" ) )
+    monk_melee_attack_t( "hurricane_strike", p, p -> talent.hurricane_strike ),
+    hs_tick( new hurricane_strike_tick_t( "hurricane_strike_tick", p ) )
   {
     parse_options( nullptr, options_str );
-
     stancemask = FIERCE_TIGER;
-    mh = &( player -> main_hand_weapon ) ;
-    oh = &( player -> off_hand_weapon ) ;
-    base_multiplier *= 2; // hardcoded into tooltip
-    channeled = true;
-    interrupt_auto_attack = false;
+    add_child( hs_tick );
+    hasted_ticks = interrupt_auto_attack = callbacks = false;
+    tick_zero = channeled = true;
+    dot_duration = data().duration();
+    base_tick_time = dot_duration / 15;
+    attack_power_mod.direct = attack_power_mod.tick = 0;
   }
 
- virtual void consume_resource()
+  void tick( dot_t )
+  {
+    hs_tick -> execute();
+  }
+
+  void consume_resource()
   {
     monk_melee_attack_t::consume_resource();
 
@@ -3317,6 +3333,7 @@ void monk_t::init_spells()
 
   //SPELLS
   active_actions.blackout_kick_dot = new actions::dot_blackout_kick_t( this );
+  active_actions.chi_explosion_dot = new actions::dot_chi_explosion_t( this );
 
   if ( specialization() == MONK_BREWMASTER )
     active_actions.stagger_self_damage = new actions::stagger_self_damage_t( this );

@@ -878,9 +878,10 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
       116670, // Uplift
            0,
     },
-    // Windwalker tree, 12 abilities
+    // Windwalker tree, 13 abilities
     {
       116768, // Combo Breaker: Blackout Kick
+      159407, // Combo Breaker: Chi Explosion
       118864, // Combo Breaker: Tiger Palm
       116095, // Disable
       115288, // Energizing Brew
