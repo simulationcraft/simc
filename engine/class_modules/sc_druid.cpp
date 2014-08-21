@@ -2071,7 +2071,7 @@ public:
 
   virtual double composite_ta_multiplier( const action_state_t* s ) const
   {
-    double tm = druid_attack_t::composite_ta_multiplier( s );
+    double tm = base_t::composite_ta_multiplier( s );
 
     if ( p() -> mastery.razor_claws -> ok() && dbc::is_school( s -> action -> school, SCHOOL_PHYSICAL ) )
       tm *= 1.0 + p() -> cache.mastery_value();

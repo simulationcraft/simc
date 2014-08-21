@@ -3687,13 +3687,14 @@ struct set_bonus_t
   // Fast accessor to a set bonus spell, returns the spell, or spell_data_t::not_found()
   const spell_data_t* set( specialization_e spec, tier_e tier, set_bonus_e bonus ) const
   {
-    assert( tier == PVP || ( tier >= TIER_THRESHOLD && tier <= max_tier() ) );
+    assert( static_cast<unsigned>( tier ) == PVP || 
+           ( static_cast<unsigned>( tier ) >= TIER_THRESHOLD && static_cast<unsigned>( tier ) <= max_tier() ) );
     return set_bonus_spec_data[ tier ][ specdata::spec_idx( spec ) ][ bonus ].spell;
   }
 
   const spell_data_t* set( set_role_e role, tier_e tier, set_bonus_e bonus ) const
   {
-    assert( tier >= 8 && tier < TIER_THRESHOLD );
+    assert( tier >= 8 && static_cast<unsigned>( tier ) < TIER_THRESHOLD );
     return set_bonus_spec_data[ tier ][ role ][ bonus ].spell;
   }
 
@@ -3711,7 +3712,7 @@ struct set_bonus_t
 
   static std::string tier_type_str( tier_e );
   static bool old_tier( tier_e tier )
-  { return tier != PVP_TIER && tier < TIER_THRESHOLD; }
+  { return static_cast<unsigned>( tier ) != PVP_TIER && static_cast<unsigned>( tier ) < TIER_THRESHOLD; }
   static bool old_tier( size_t tier )
   { return old_tier( static_cast<tier_e>( tier ) ); }
 };
