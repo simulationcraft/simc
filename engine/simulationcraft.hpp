@@ -6421,7 +6421,7 @@ inline dot_end_event_t::dot_end_event_t( dot_t* d, timespan_t time_to_end ) :
   sim().add_event( this, time_to_end );
 }
 
-inline void dot_end_event_t::execute() override
+inline void dot_end_event_t::execute()
 {
   dot -> end_event = nullptr;
   dot -> current_tick++;
