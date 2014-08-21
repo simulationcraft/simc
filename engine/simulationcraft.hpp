@@ -6274,6 +6274,31 @@ inline proc_types2 action_state_t::execute_proc_type2() const
 
 // DoT ======================================================================
 
+// DoT Tick Event ===========================================================
+
+struct dot_tick_event_t final : public event_t
+{
+public:
+  dot_tick_event_t( dot_t* d, timespan_t time_to_tick );
+
+private:
+  virtual void execute() override;
+  dot_t* dot;
+};
+
+// DoT End Event ===========================================================
+
+struct dot_end_event_t final : public event_t
+{
+public:
+  dot_end_event_t( dot_t* d, timespan_t time_to_end );
+
+private:
+  virtual void execute() override;
+
+  dot_t* dot;
+};
+
 struct dot_t : public noncopyable
 {
 private:
@@ -6283,10 +6308,11 @@ private:
   timespan_t last_start;
   timespan_t extended_time; // Added time per extend_duration for the current dot application
   timespan_t reduced_time; // Removed time per reduce_duration for the current dot application
+public:
   core_event_t* tick_event;
   core_event_t* end_event;
   double last_tick_factor;
-public:
+
   player_t* const target;
   player_t* const source;
   action_t* current_action;
@@ -6322,18 +6348,87 @@ public:
   double get_last_tick_factor() const
   { return last_tick_factor; }
 
-private:
-  struct dot_tick_event_t;
-  struct dot_end_event_t;
   void tick();
-  void tick_zero();
   void last_tick();
+
+private:
+  void tick_zero();
   void schedule_tick();
   void start( timespan_t duration );
   void refresh( timespan_t duration );
   void check_tick_zero();
   bool is_higher_priority_action_available() const;
+
+  friend struct dot_tick_event_t;
+  friend struct dot_end_event_t;
 };
+
+inline dot_tick_event_t::dot_tick_event_t( dot_t* d, timespan_t time_to_tick ) :
+  event_t( *d -> source, "DoT Tick" ),
+  dot( d )
+{
+  if ( sim().debug )
+    sim().out_debug.printf( "New DoT Tick Event: %s %s %d-of-%d %.4f",
+                p() -> name(), dot -> name(), dot -> current_tick + 1, dot -> num_ticks, time_to_tick.total_seconds() );
+
+  sim().add_event( this, time_to_tick );
+}
+
+
+inline void dot_tick_event_t::execute() override
+{
+  dot -> tick_event = nullptr;
+  dot -> current_tick++;
+
+  if ( dot -> current_action -> channeled &&
+       dot -> current_action -> player -> current.skill < 1.0 &&
+       dot -> remains() >= dot -> current_action -> tick_time( dot -> state -> haste ) )
+  {
+    if ( rng().roll( dot -> current_action -> player -> current.skill ) )
+    {
+      dot -> tick();
+    }
+  }
+  else // No skill-check required
+  {
+    dot -> tick();
+  }
+
+  assert ( dot -> ticking );
+  expr_t* expr = dot -> current_action -> interrupt_if_expr;
+  if ( ( dot -> current_action -> channeled
+          && dot -> current_action -> player -> gcd_ready <= sim().current_time
+          && ( dot -> current_action -> interrupt || ( expr && expr -> success() ) )
+          && dot -> is_higher_priority_action_available() ) )
+  {
+    // cancel dot
+    dot -> last_tick();
+  }
+  else
+  {
+    // continue ticking
+    dot -> schedule_tick();
+  }
+}
+
+inline dot_end_event_t::dot_end_event_t( dot_t* d, timespan_t time_to_end ) :
+    event_t( *d -> source, "DoT End" ),
+    dot( d )
+{
+  if ( sim().debug )
+    sim().out_debug.printf( "New DoT End Event: %s %s %d-of-%d %.4f",
+                p() -> name(), dot -> name(), dot -> current_tick + 1, dot -> num_ticks, time_to_end.total_seconds() );
+
+  sim().add_event( this, time_to_end );
+}
+
+inline void dot_end_event_t::execute() override
+{
+  dot -> end_event = nullptr;
+  dot -> current_tick++;
+  dot -> tick();
+  dot -> last_tick();
+}
 
 // "Real" 'Procs per Minute' helper class =====================================
 
