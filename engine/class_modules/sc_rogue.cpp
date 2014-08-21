@@ -1476,9 +1476,10 @@ struct ambush_t : public rogue_attack_t
 
       td -> debuffs.find_weakness -> trigger();
     }
-
+/*
     if ( result_is_multistrike( state -> result ) )
       p() -> trigger_sinister_calling( state );
+*/
   }
 
   void consume_resource()
@@ -1550,9 +1551,10 @@ struct backstab_t : public rogue_attack_t
   void impact( action_state_t* state )
   {
     rogue_attack_t::impact( state );
-
+/*
     if ( result_is_multistrike( state -> result ) )
       p() -> trigger_sinister_calling( state );
+*/
   }
 
   double composite_da_multiplier( const action_state_t* state ) const
@@ -1969,29 +1971,8 @@ struct garrote_t : public rogue_attack_t
 
 struct hemorrhage_t : public rogue_attack_t
 {
-  struct hemorrhage_dot_t : public residual_periodic_action_t<rogue_attack_t>
-  {
-    hemorrhage_dot_t( rogue_t* p ) :
-      residual_periodic_action_t<rogue_attack_t>( "hemorrhage", p, p -> find_spell( 89775 ) )
-    {
-      if ( p -> spec.sinister_calling -> ok() )
-      {
-        sinister_calling = new sinister_calling_t( "hemorrhage_sc", p, p -> find_spell( 168908 ) );
-        add_child( sinister_calling );
-      }
-    }
-
-    action_state_t* new_state()
-    { return new residual_periodic_state_t( this, target ); }
-  };
-
-  hemorrhage_dot_t* dot;
-  double residual_damage_modifier;
-
   hemorrhage_t( rogue_t* p, const std::string& options_str ) :
-    rogue_attack_t( "hemorrhage", p, p -> find_class_spell( "Hemorrhage" ), options_str ),
-    dot( new hemorrhage_dot_t( p ) ),
-    residual_damage_modifier( data().effectN( 4 ).percent() )
+    rogue_attack_t( "hemorrhage", p, p -> find_class_spell( "Hemorrhage" ), options_str )
   {
     ability_type = HEMORRHAGE;
     weapon = &( p -> main_hand_weapon );
@@ -2005,13 +1986,6 @@ struct hemorrhage_t : public rogue_attack_t
       m *= 1.4;
 
     return m;
-  }
-
-  void impact( action_state_t* state )
-  {
-    rogue_attack_t::impact( state );
-
-    residual_action::trigger( dot, state -> target, state -> result_amount * residual_damage_modifier );
   }
 };
 
@@ -3707,29 +3681,9 @@ struct shadow_reflection_pet_t : public pet_t
 
   struct sr_hemorrhage_t : public shadow_reflection_attack_t
   {
-    struct sr_hemorrhage_dot_t : residual_periodic_action_t<attack_t>
-    {
-      sr_hemorrhage_dot_t( shadow_reflection_pet_t* p ) :
-        residual_periodic_action_t<attack_t>( "hemorrhage", p, p -> find_spell( 89775 ) )
-      { }
-
-      action_state_t* new_state()
-      { return new residual_periodic_state_t( this, target ); }
-    };
-
-    sr_hemorrhage_dot_t* dot;
-
     sr_hemorrhage_t( shadow_reflection_pet_t* p ) :
-      shadow_reflection_attack_t( "hemorrhage", p, p -> find_spell( 16511 ) ),
-      dot( new sr_hemorrhage_dot_t( p ) )
+      shadow_reflection_attack_t( "hemorrhage", p, p -> find_spell( 16511 ) )
     { }
-
-    void impact( action_state_t* state )
-    {
-      shadow_reflection_attack_t::impact( state );
-
-      residual_action::trigger( dot, state -> target, state -> result_amount * data().effectN( 4 ).percent() );
-    }
   };
 
   struct sr_backstab_t : public shadow_reflection_attack_t
