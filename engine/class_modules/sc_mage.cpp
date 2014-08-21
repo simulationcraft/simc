@@ -3133,6 +3133,7 @@ struct meteor_impact_t : public mage_spell_t
     split_aoe_damage = true;
     aoe = -1;
     cooldown -> duration = timespan_t::from_seconds( 0.0 );
+    school = SCHOOL_FIRE;
   }
 
   virtual timespan_t travel_time() const
