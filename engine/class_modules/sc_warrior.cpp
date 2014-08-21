@@ -684,7 +684,7 @@ public:
         p() -> cooldown.recklessness -> adjust( timespan_t::from_seconds( rage ) );
         p() -> cooldown.die_by_the_sword -> adjust( timespan_t::from_seconds( rage ) );
       }
-      else if ( p() -> specialization() == WARRIOR_PROTECTION )
+      else
       {
         p() -> cooldown.demoralizing_shout -> adjust( timespan_t::from_seconds( rage ) );
         p() -> cooldown.last_stand -> adjust( timespan_t::from_seconds( rage ) );
@@ -1183,7 +1183,7 @@ struct bladestorm_t: public warrior_attack_t
     stancemask = STANCE_BATTLE | STANCE_GLADIATOR | STANCE_DEFENSE;
 
     channeled = tick_zero = true;
-    callbacks = false;
+    callbacks = interrupt_auto_attack = false;
 
     bladestorm_mh -> weapon = &( player -> main_hand_weapon );
     add_child( bladestorm_mh );

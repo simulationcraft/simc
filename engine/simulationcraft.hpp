@@ -5620,7 +5620,7 @@ struct action_t : public noncopyable
   resource_e resource_current;
   int aoe, pre_combat, may_multistrike;
   bool dual; // true if this action should not be counted for executes
-  bool callbacks, special, channeled, background, sequence, use_off_gcd, quiet;
+  bool callbacks, special, channeled, background, sequence, use_off_gcd, quiet, interrupt_auto_attack;
   bool direct_tick, direct_tick_callbacks, periodic_hit, repeating, harmful, proc;
   bool initialized;
   bool may_hit, may_miss, may_dodge, may_parry, may_glance, may_block, may_crush, may_crit;

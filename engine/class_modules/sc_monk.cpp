@@ -1608,7 +1608,8 @@ struct hurricane_strike_t : public monk_melee_attack_t
     mh = &( player -> main_hand_weapon ) ;
     oh = &( player -> off_hand_weapon ) ;
     base_multiplier *= 2; // hardcoded into tooltip
-    special = false;
+    channeled = true;
+    interrupt_auto_attack = false;
   }
 
  virtual void consume_resource()

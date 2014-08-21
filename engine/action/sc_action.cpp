@@ -243,6 +243,7 @@ action_t::action_t( action_e       ty,
   callbacks( true ),
   special(),
   channeled(),
+  interrupt_auto_attack( true ),
   background(),
   sequence(),
   use_off_gcd(),
@@ -1427,7 +1428,7 @@ void action_t::schedule_execute( action_state_t* execute_state )
       player -> gcd_ready -= sim -> queue_gcd_reduction;
     }
 
-    if ( special && time_to_execute > timespan_t::zero() && ! proc )
+    if ( special && time_to_execute > timespan_t::zero() && ! proc && interrupt_auto_attack )
     {
       // While an ability is casting, the auto_attack is paused
       // So we simply reschedule the auto_attack by the ability's casttime
