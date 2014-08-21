@@ -246,6 +246,8 @@ public:
   // Spec Passives
   struct spec_t
   {
+    //All specs
+    const spell_data_t* execute;
     //Arms-only
     const spell_data_t* mortal_strike;
     const spell_data_t* rend;
@@ -257,6 +259,8 @@ public:
     //Arms and Fury
     const spell_data_t* colossus_smash;
     const spell_data_t* die_by_the_sword;
+    const spell_data_t* inspiring_presence;
+    const spell_data_t* shield_barrier;
     const spell_data_t* rallying_cry;
     const spell_data_t* recklessness;
     const spell_data_t* whirlwind;
@@ -266,8 +270,10 @@ public:
     const spell_data_t* crazed_berserker;
     const spell_data_t* cruelty;
     const spell_data_t* meat_cleaver;
+    const spell_data_t* piercing_howl;
     const spell_data_t* raging_blow;
     const spell_data_t* singleminded_fury;
+    const spell_data_t* titans_grip;
     const spell_data_t* wild_strike;
     // Fury and Prot
     const spell_data_t* enrage;
@@ -275,13 +281,18 @@ public:
     const spell_data_t* bastion_of_defense;
     const spell_data_t* bladed_armor;
     const spell_data_t* blood_craze;
+    const spell_data_t* deep_wounds;
+    const spell_data_t* demoralizing_shout;
     const spell_data_t* devastate;
     const spell_data_t* last_stand;
+    const spell_data_t* mocking_banner;
     const spell_data_t* resolve;
     const spell_data_t* revenge;
     const spell_data_t* riposte;
+    const spell_data_t* shield_block;
     const spell_data_t* shield_mastery;
     const spell_data_t* shield_slam;
+    const spell_data_t* shield_wall;
     const spell_data_t* sword_and_board;
     const spell_data_t* ultimatum;
     const spell_data_t* unwavering_sentinel;
@@ -493,6 +504,7 @@ struct warrior_action_t: public Base
   int stancemask;
   bool headlongrush;
   bool recklessness;
+  bool weapons_master;
 private:
   typedef Base ab; // action base, eg. spell_t
 public:
@@ -503,7 +515,8 @@ public:
                     ab( n, player, s ),
                     stancemask( STANCE_BATTLE | STANCE_DEFENSE | STANCE_GLADIATOR ),
                     headlongrush( ab::data().affected_by( player -> spell.headlong_rush -> effectN( 1 ) ) ),
-                    recklessness( ab::data().affected_by( player -> spec.recklessness -> effectN( 1 ) ) )
+                    recklessness( ab::data().affected_by( player -> spec.recklessness -> effectN( 1 ) ) ),
+                    weapons_master( ab::data().affected_by( player -> mastery.weapons_master -> effectN( 1 ) ) )
   {
     ab::may_crit = true;
   }
@@ -533,6 +546,16 @@ public:
       cd_duration *= ab::player -> cache.attack_haste();
     }
     ab::update_ready( cd_duration );
+  }
+
+  virtual double action_multiplier() const
+  {
+    double am = ab::action_multiplier();
+
+    if ( weapons_master )
+      am *= 1.0 + ab::player -> cache.mastery_value();
+
+    return am;
   }
 
   virtual double composite_crit() const
@@ -1400,16 +1423,6 @@ struct colossus_smash_t: public warrior_attack_t
     weapon = &( player -> main_hand_weapon );
   }
 
-  double action_multiplier() const
-  {
-    double am = warrior_attack_t::action_multiplier();
-
-    if ( p() -> mastery.weapons_master -> ok() )
-      am *= 1.0 + p() -> cache.mastery_value();
-
-    return am;
-  }
-
   void execute()
   {
     warrior_attack_t::execute();
@@ -1452,7 +1465,7 @@ struct colossus_smash_t: public warrior_attack_t
 struct demoralizing_shout: public warrior_attack_t
 {
   demoralizing_shout( warrior_t* p, const std::string& options_str ):
-    warrior_attack_t( "demoralizing_shout", p, p -> find_specialization_spell( "Demoralizing Shout" ) )
+    warrior_attack_t( "demoralizing_shout", p, p -> spec.demoralizing_shout )
   {
     parse_options( NULL, options_str );
     stancemask = STANCE_BATTLE | STANCE_GLADIATOR | STANCE_DEFENSE;
@@ -1582,9 +1595,17 @@ struct execute_off_hand_t: public warrior_attack_t
     may_miss = may_dodge = may_parry = may_block = false;
 
     weapon = &( p -> off_hand_weapon );
-    if ( p -> main_hand_weapon.group() == WEAPON_1H &&
-         p -> off_hand_weapon.group() == WEAPON_1H )
-         weapon_multiplier *= 1.0 + p -> spec.singleminded_fury -> effectN( 3 ).percent();
+  }
+
+  double action_multiplier() const
+  {
+    double am = warrior_attack_t::action_multiplier();
+
+    if ( p() -> main_hand_weapon.group() == WEAPON_1H &&
+         p() -> off_hand_weapon.group() == WEAPON_1H )
+         am *= 1.0 + p() -> spec.singleminded_fury -> effectN( 3 ).percent();
+
+    return am;
   }
 };
 
@@ -1592,19 +1613,15 @@ struct execute_t: public warrior_attack_t
 {
   execute_off_hand_t* oh_attack;
   execute_t( warrior_t* p, const std::string& options_str ):
-    warrior_attack_t( "execute", p, p -> find_specialization_spell( "Execute" ) )
+    warrior_attack_t( "execute", p, p -> spec.execute )
   {
     parse_options( NULL, options_str );
     stancemask = STANCE_BATTLE | STANCE_GLADIATOR | STANCE_DEFENSE;
     weapon = &( p -> main_hand_weapon );
 
-    if ( p -> main_hand_weapon.group() == WEAPON_1H &&
-         p -> off_hand_weapon.group() == WEAPON_1H )
-         weapon_multiplier *= 1.0 + p -> spec.singleminded_fury -> effectN( 3 ).percent();
-
     if ( p -> spec.crazed_berserker -> ok() )
     {
-      oh_attack = new execute_off_hand_t( p, "execute_oh", p -> find_spell( 163558 ) );
+      oh_attack = new execute_off_hand_t( p, "execute_oh", p -> find_spell( "Execute Off-Hand" ) );
       add_child( oh_attack );
     }
   }
@@ -1617,9 +1634,11 @@ struct execute_t: public warrior_attack_t
     {
       if ( !p() -> buff.sudden_death -> check() )
         am *= 4.0 * std::min( 40.0, p() -> resources.current[RESOURCE_RAGE] ) / 40;
-
-      am *= 1.0 + p() -> cache.mastery_value();
     }
+    else if ( p() -> main_hand_weapon.group() == WEAPON_1H &&
+           p() -> off_hand_weapon.group() == WEAPON_1H )
+           am *= 1.0 + p() -> spec.singleminded_fury -> effectN( 3 ).percent();
+
     return am;
   }
 
@@ -1982,16 +2001,6 @@ struct mortal_strike_t: public warrior_attack_t
     weapon_multiplier += p -> new_sets.set( SET_MELEE, T14, B2 ) -> effectN( 1 ).percent();
   }
 
-  double action_multiplier() const
-  {
-    double am = warrior_attack_t::action_multiplier();
-
-    if ( p() -> mastery.weapons_master -> ok() )
-      am *= 1.0 + p() -> cache.mastery_value();
-
-    return am;
-  }
-
   void impact( action_state_t* s )
   {
     warrior_attack_t::impact( s );
@@ -2346,7 +2355,7 @@ struct shield_slam_t: public warrior_attack_t
 {
   double rage_gain;
   shield_slam_t( warrior_t* p, const std::string& options_str ):
-    warrior_attack_t( "shield_slam", p, p -> find_specialization_spell( "Shield Slam" ) ),
+    warrior_attack_t( "shield_slam", p, p -> spec.shield_slam ),
     rage_gain( 0.0 )
   {
     parse_options( NULL, options_str );
@@ -2915,7 +2924,7 @@ struct commanding_shout_t: public warrior_spell_t
 struct deep_wounds_t: public warrior_spell_t
 {
   deep_wounds_t( warrior_t* p ):
-    warrior_spell_t( "deep_wounds", p, p -> find_specialization_spell( "Deep Wounds" ) -> effectN( 2 ).trigger() )
+    warrior_spell_t( "deep_wounds", p, p -> spec.deep_wounds -> effectN( 2 ).trigger() )
   {
     background = tick_may_crit = true;
     hasted_ticks = false;
@@ -3020,7 +3029,7 @@ struct rallying_cry_heal_t: public warrior_heal_t
 struct rallying_cry_t: public warrior_spell_t
 {
   rallying_cry_t( warrior_t* p, const std::string& options_str ):
-    warrior_spell_t( "rallying_cry", p, p -> find_specialization_spell( "Rallying Cry" ) )
+    warrior_spell_t( "rallying_cry", p, p -> spec.rallying_cry )
   {
     parse_options( NULL, options_str );
     stancemask = STANCE_BATTLE | STANCE_GLADIATOR | STANCE_DEFENSE;
@@ -3140,7 +3149,7 @@ struct shield_barrier_t: public warrior_action_t < absorb_t >
 {
   shield_barrier_t( warrior_t* p, const std::string& options_str ):
     base_t( "shield_barrier", p, p -> specialization() == WARRIOR_PROTECTION ? 
-                                 p -> find_spell( 112048 ) : p -> find_specialization_spell( "Shield Barrier" ) )
+                                 p -> find_spell( 112048 ) : p -> spec.shield_barrier )
   {
     parse_options( NULL, options_str );
     stancemask = STANCE_GLADIATOR | STANCE_DEFENSE;
@@ -3581,12 +3590,18 @@ void warrior_t::init_spells()
   spec.colossus_smash           = find_specialization_spell( "Colossus Smash" );
   spec.crazed_berserker         = find_specialization_spell( "Crazed Berserker" );
   spec.cruelty                  = find_specialization_spell( "Cruelty" );
+  spec.deep_wounds              = find_specialization_spell( "Deep Wounds" );
+  spec.demoralizing_shout       = find_specialization_spell( "Demoralizing Shout" );
   spec.devastate                = find_specialization_spell( "Devastate" );
   spec.die_by_the_sword         = find_specialization_spell( "Die By the Sword" );
   spec.enrage                   = find_specialization_spell( "Enrage" );
+  spec.execute                  = find_specialization_spell( "Execute" );
+  spec.inspiring_presence       = find_specialization_spell( "Inspiring Presence" );
   spec.last_stand               = find_specialization_spell( "Last Stand" );
   spec.meat_cleaver             = find_specialization_spell( "Meat Cleaver" );
+  spec.mocking_banner           = find_specialization_spell( "Mocking Banner" );
   spec.mortal_strike            = find_specialization_spell( "Mortal Strike" );
+  spec.piercing_howl            = find_specialization_spell( "Piercing Howl" );
   spec.raging_blow              = find_specialization_spell( "Raging Blow" );
   spec.rallying_cry             = find_specialization_spell( "Rallying Cry" );
   spec.recklessness             = find_specialization_spell( "Recklessness" );
@@ -3595,11 +3610,15 @@ void warrior_t::init_spells()
   spec.revenge                  = find_specialization_spell( "Revenge" );
   spec.riposte                  = find_specialization_spell( "Riposte" );
   spec.seasoned_soldier         = find_specialization_spell( "Seasoned Soldier" );
+  spec.shield_barrier           = find_specialization_spell( "Shield Barrier" );
+  spec.shield_block             = find_specialization_spell( "Shield Block" );
   spec.shield_mastery           = find_specialization_spell( "Shield Mastery" );
   spec.shield_slam              = find_specialization_spell( "Shield Slam" );
+  spec.shield_wall              = find_specialization_spell( "Shield Wall" );
   spec.singleminded_fury        = find_specialization_spell( "Single-Minded Fury" );
   spec.sweeping_strikes         = find_specialization_spell( "Sweeping Strikes" );
   spec.sword_and_board          = find_specialization_spell( "Sword and Board" );
+  spec.titans_grip              = find_specialization_spell( "Titan's Grip" );
   spec.thunder_clap             = find_specialization_spell( "Thunder Clap" );
   spec.ultimatum                = find_specialization_spell( "Ultimatum" );
   spec.unwavering_sentinel      = find_specialization_spell( "Unwavering Sentinel" );
@@ -4344,7 +4363,7 @@ void warrior_t::create_buffs()
   buff.enraged_speed = buff_creator_t( this, "enraged_speed", glyphs.enraged_speed )
     .duration( buff.enrage -> data().duration() );
 
-  buff.gladiator_stance = new buffs::gladiator_stance_t( *this, "gladiator_stance", find_spell( 156291 ) );
+  buff.gladiator_stance = new buffs::gladiator_stance_t( *this, "gladiator_stance", find_spell( talents.gladiators_resolve -> effectN( 1 ).base_value() ) );
 
   buff.hamstring = buff_creator_t( this, "hamstring", glyphs.hamstring -> effectN( 1 ).trigger() );
 
@@ -4378,7 +4397,7 @@ void warrior_t::create_buffs()
     .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
 
   buff.shield_barrier = absorb_buff_creator_t(this, "shield_barrier", specialization() == WARRIOR_PROTECTION ?
-                                              find_spell( 112048 ) : find_specialization_spell("Shield Barrier") )
+                                              find_spell( 112048 ) : spec.shield_barrier )
     .source( get_stats( "shield_barrier" ) );
 
   buff.shield_block = buff_creator_t( this, "shield_block", find_spell( 132404 ) )
@@ -4387,8 +4406,8 @@ void warrior_t::create_buffs()
   buff.shield_charge = buff_creator_t( this, "shield_charge", find_spell( 169667 ) )
     .default_value( find_spell( 169667 ) -> effectN( 1 ).percent() );
 
-  buff.shield_wall = buff_creator_t( this, "shield_wall", find_specialization_spell( "Shield Wall" ) )
-    .default_value( find_specialization_spell( "Shield Wall" ) -> effectN( 1 ).percent() )
+  buff.shield_wall = buff_creator_t( this, "shield_wall", spec.shield_wall )
+    .default_value( spec.shield_wall -> effectN( 1 ).percent() )
     .cd( timespan_t::zero() );
 
   buff.slam = buff_creator_t( this, "slam", talents.slam );
@@ -4403,7 +4422,7 @@ void warrior_t::create_buffs()
   buff.sword_and_board = buff_creator_t( this, "sword_and_board", find_spell( 50227 ) )
     .chance( spec.sword_and_board -> effectN( 1 ).percent() );
 
-  buff.tier15_2pc_tank = buff_creator_t( this, "tier15_2pc_tank", find_spell( 138279 ) );
+  buff.tier15_2pc_tank = buff_creator_t( this, "tier15_2pc_tank", new_sets.set( SET_TANK, T15, B2 ) -> effectN( 1 ).trigger() );
 
   buff.tier16_reckless_defense = buff_creator_t( this, "tier16_reckless_defense", find_spell( 144500 ) );
 
