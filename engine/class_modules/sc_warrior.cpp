@@ -662,25 +662,26 @@ public:
       //Anger management takes the amount of rage spent and reduces the cooldown of abilities by 1 second per 30 rage.
       rage /= p() -> talents.anger_management -> effectN( 1 ).base_value();
       rage *= -1;
-      p() -> cooldown.heroic_leap -> adjust( timespan_t::from_seconds( rage ) ); //All specs
+
+      // All specs
+      p() -> cooldown.heroic_leap -> adjust( timespan_t::from_seconds( rage ) );
+      // Fourth Tier Talents
+      if ( p() -> talents.storm_bolt -> ok() )
+        p() -> cooldown.storm_bolt -> adjust( timespan_t::from_seconds( rage ) );
+      else if ( p() -> talents.dragon_roar -> ok() )
+        p() -> cooldown.dragon_roar -> adjust( timespan_t::from_seconds( rage ) );
+      else if ( p() -> talents.shockwave -> ok() )
+        p() -> cooldown.shockwave -> adjust( timespan_t::from_seconds( rage ) );
+      // Sixth tier talents
+      if ( p() -> talents.bladestorm -> ok() )
+        p() -> cooldown.bladestorm -> adjust( timespan_t::from_seconds( rage ) );
+      else if ( p() -> talents.bloodbath -> ok() )
+        p() -> cooldown.bloodbath -> adjust( timespan_t::from_seconds( rage ) );
+      else if ( p() -> talents.avatar -> ok() )
+        p() -> cooldown.avatar -> adjust( timespan_t::from_seconds( rage ) );
 
       if ( p() -> specialization() != WARRIOR_PROTECTION )
       {
-        // Fourth Tier Talents
-        if ( p() -> talents.storm_bolt -> ok() )
-          p() -> cooldown.storm_bolt -> adjust( timespan_t::from_seconds( rage ) );
-        else if ( p() -> talents.dragon_roar -> ok() )
-          p() -> cooldown.dragon_roar -> adjust( timespan_t::from_seconds( rage ) );
-        else if ( p() -> talents.shockwave -> ok() )
-          p() -> cooldown.shockwave -> adjust( timespan_t::from_seconds( rage ) );
-        // Sixth tier talents
-        if ( p() -> talents.bladestorm -> ok() )
-          p() -> cooldown.bladestorm -> adjust( timespan_t::from_seconds( rage ) );
-        else if ( p() -> talents.bloodbath -> ok() )
-          p() -> cooldown.bloodbath -> adjust( timespan_t::from_seconds( rage ) );
-        else if ( p() -> talents.avatar -> ok() )
-          p() -> cooldown.avatar -> adjust( timespan_t::from_seconds( rage ) );
-
         p() -> cooldown.recklessness -> adjust( timespan_t::from_seconds( rage ) );
         p() -> cooldown.die_by_the_sword -> adjust( timespan_t::from_seconds( rage ) );
       }
