@@ -4282,7 +4282,8 @@ void monk_t::apl_combat_windwalker()
 
   action_list_str += init_use_racial_actions();
   action_list_str += "/serenity,if=chi>=2";
-  action_list_str += "/chi_brew,if=talent.chi_brew.enabled&chi<=2&(trinket.proc.agility.react|(charges=1&recharge_time<=10)|charges=2|target.time_to_die<charges*10)";
+  action_list_str += "/jab,if=energy.time_to_max<=gcd&!buff.combo_breaker_tp.react&!buff.combo_breaker_bok.react&chi.max-chi>=2&!buff.serenity.remains";
+  action_list_str += "/chi_brew,if=talent.chi_brew.enabled&chi.max-chi>=2&(trinket.proc.agility.react|(charges=1&recharge_time<=10)|charges=2|target.time_to_die<charges*10)";
   action_list_str += "/tiger_palm,if=buff.tiger_power.remains<=3";
   action_list_str += "/tigereye_brew,if=buff.tigereye_brew_use.down&buff.tigereye_brew.stack=20";
   action_list_str += "/tigereye_brew,if=buff.tigereye_brew_use.down&(trinket.proc.agility.react|buff.serenity.up)";
@@ -4303,7 +4304,7 @@ void monk_t::apl_combat_windwalker()
   aoe_list_str += "/spinning_crane_kick,if=!talent.rushing_jade_wind.enabled";
 
   //st
-  st_list_str += "/fists_of_fury,if=energy.time_to_max>cast_time&buff.tiger_power.remains>cast_time&debuff.rising_sun_kick.remains>cast_time&!buff.serenity.remains";
+  st_list_str += "/fists_of_fury,if=energy.time_to_max>cast_time&buff.tiger_power.remains>cast_time&debuff.rising_sun_kick.remains>cast_time&!buff.serenity.remains&buff.energizing_brew.down";
   st_list_str += "/rising_sun_kick";
   st_list_str += "/chi_wave,if=energy.time_to_max>2&buff.serenity.down";
   st_list_str += "/chi_burst,if=talent.chi_burst.enabled&energy.time_to_max>2&buff.serenity.down";

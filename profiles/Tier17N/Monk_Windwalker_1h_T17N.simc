@@ -27,7 +27,8 @@ actions+=/chi_sphere,if=talent.power_strikes.enabled&buff.chi_sphere.react&chi<4
 actions+=/potion,name=draenic_agility,if=buff.serenity.up|(!talent.serenity.enabled&trinket.proc.agility.react)
 actions+=/berserking
 actions+=/serenity,if=chi>=2
-actions+=/chi_brew,if=talent.chi_brew.enabled&chi<=2&(trinket.proc.agility.react|(charges=1&recharge_time<=10)|charges=2|target.time_to_die<charges*10)
+actions+=/jab,if=energy.time_to_max<=gcd&!buff.combo_breaker_tp.react&!buff.combo_breaker_bok.react&chi.max-chi>=2&!buff.serenity.remains
+actions+=/chi_brew,if=talent.chi_brew.enabled&chi.max-chi>=2&(trinket.proc.agility.react|(charges=1&recharge_time<=10)|charges=2|target.time_to_die<charges*10)
 actions+=/tiger_palm,if=buff.tiger_power.remains<=3
 actions+=/tigereye_brew,if=buff.tigereye_brew_use.down&buff.tigereye_brew.stack=20
 actions+=/tigereye_brew,if=buff.tigereye_brew_use.down&(trinket.proc.agility.react|buff.serenity.up)
@@ -46,7 +47,7 @@ actions.aoe+=/chi_burst,if=talent.chi_burst.enabled
 actions.aoe+=/rising_sun_kick,if=chi=chi.max
 actions.aoe+=/spinning_crane_kick,if=!talent.rushing_jade_wind.enabled
 
-actions.single_target=fists_of_fury,if=energy.time_to_max>cast_time&buff.tiger_power.remains>cast_time&debuff.rising_sun_kick.remains>cast_time&!buff.serenity.remains
+actions.single_target=fists_of_fury,if=energy.time_to_max>cast_time&buff.tiger_power.remains>cast_time&debuff.rising_sun_kick.remains>cast_time&!buff.serenity.remains&buff.energizing_brew.down
 actions.single_target+=/rising_sun_kick
 actions.single_target+=/chi_wave,if=energy.time_to_max>2&buff.serenity.down
 actions.single_target+=/chi_burst,if=talent.chi_burst.enabled&energy.time_to_max>2&buff.serenity.down
