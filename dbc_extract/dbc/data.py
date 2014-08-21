@@ -461,7 +461,7 @@ _DBC_FIELDS = {
           'id', 'id_spell', 'unk_15589_1', ( 'base_level', '%3u' ), ( 'max_level', '%2u' ), 'spell_level'
     ],
     'SpellPower.dbc' : [
-          ( 'id', '%6u' ), 'id_spell', 'unk_15589_1', ( 'type_power', '%2d' ),( 'cost', '%6d' ),     'unk_1',     ( 'cost_per_second', '%3d' ), 'unk_2',
+          ( 'id', '%6u' ), 'id_spell', 'unk_15589_1', ( 'type_power', '%2d' ),( 'cost', '%6d' ),     ( 'cost_per_second', '%3d' ),     'unk_1', 'unk_2',
           'id_display', ( 'cost_2', '%5.2f' ),     ( 'cost_per_second2', '%5.2f' ),   ( 'aura_id', '%6u' ), ( 'unk_15589_2', '%f' )
     ],
     'SpellProcsPerMinute.dbc' : [
