@@ -36,9 +36,11 @@ actions+=/blood_fury,if=buff.bloodlust.up|buff.ascendance.up|((cooldown.ascendan
 actions+=/arcane_torrent
 actions+=/elemental_mastery,if=action.lava_burst.cast_time>=1.2
 actions+=/ancestral_swiftness,if=!buff.ascendance.up
+actions+=/storm_elemental_totem,if=!talent.primal_elementalist.enabled
 actions+=/fire_elemental_totem,if=!active
 actions+=/ascendance,if=active_enemies>1|(dot.flame_shock.remains>buff.ascendance.duration&(target.time_to_die<20|buff.bloodlust.up|time>=60)&cooldown.lava_burst.remains>0)
 actions+=/liquid_magma,if=pet.searing_totem.remains>=15|pet.fire_elemental_totem.remains>=15
+actions+=/storm_elemental_totem,if=cooldown.fire_elemental_totem.remains>=60
 # If only one enemy, priority follows the 'single' action list.
 actions+=/run_action_list,name=single,if=active_enemies=1
 # On multiple enemies, the priority follows the 'aoe' action list.
@@ -56,7 +58,6 @@ actions.single+=/earthquake,if=((1+stat.spell_haste)*(1+(mastery_value*2%3))>=2.
 actions.single+=/elemental_blast
 # After the initial Ascendance, use Flame Shock pre-emptively just before Ascendance to guarantee Flame Shock staying up for the full duration of the Ascendance buff
 actions.single+=/flame_shock,if=time>60&remains<=buff.ascendance.duration&cooldown.ascendance.remains+buff.ascendance.duration<duration
-actions.single+=/storm_elemental_totem,if=!active&cooldown.fire_elemental_totem.remains>=60
 # Keep Searing Totem up, unless Fire Elemental Totem is coming off cooldown in the next 20 seconds
 actions.single+=/searing_totem,if=cooldown.fire_elemental_totem.remains>20&!totem.fire.active
 actions.single+=/spiritwalkers_grace,moving=1,if=((talent.elemental_blast.enabled&cooldown.elemental_blast.remains=0)|(cooldown.lava_burst.remains=0&!buff.lava_surge.react))

@@ -38,10 +38,11 @@ actions+=/berserking
 actions+=/elemental_mastery,if=talent.primal_elementalist.enabled&glyph.fire_elemental_totem.enabled&(cooldown.fire_elemental_totem.remains=0|cooldown.fire_elemental_totem.remains>=80)
 actions+=/elemental_mastery,if=talent.primal_elementalist.enabled&!glyph.fire_elemental_totem.enabled&(cooldown.fire_elemental_totem.remains=0|cooldown.fire_elemental_totem.remains>=50)
 actions+=/elemental_mastery,if=!talent.primal_elementalist.enabled
+actions+=/storm_elemental_totem,if=!talent.primal_elementalist.enabled
 actions+=/fire_elemental_totem
 actions+=/ascendance,if=cooldown.strike.remains>=3
 actions+=/feral_spirit
-actions+=/storm_elemental_totem,if=!active&cooldown.fire_elemental_totem.remains>=60
+actions+=/storm_elemental_totem,if=cooldown.fire_elemental_totem.remains>=60
 actions+=/liquid_magma,if=pet.searing_totem.remains>=15|pet.magma_totem.remains>=15|pet.fire_elemental_totem.remains>=15
 # If only one enemy, priority follows the 'single' action list.
 actions+=/run_action_list,name=single,if=active_enemies=1

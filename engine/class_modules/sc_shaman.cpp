@@ -1536,7 +1536,7 @@ struct storm_elemental_t : public primal_elemental_t
     resources.base[ RESOURCE_HEALTH ] = 32268; // TODO-WOD: FE values, placeholder
     resources.base[ RESOURCE_MANA   ] = 8908;
 
-    owner_coeff.sp_from_sp = 0.0675;
+    owner_coeff.sp_from_sp = 0.1000;
   }
 
   void init_action_list()
@@ -5263,10 +5263,11 @@ void shaman_t::init_action_list()
     def -> add_talent( this, "Elemental Mastery", "if=talent.primal_elementalist.enabled&glyph.fire_elemental_totem.enabled&(cooldown.fire_elemental_totem.remains=0|cooldown.fire_elemental_totem.remains>=80)" );
     def -> add_talent( this, "Elemental Mastery", "if=talent.primal_elementalist.enabled&!glyph.fire_elemental_totem.enabled&(cooldown.fire_elemental_totem.remains=0|cooldown.fire_elemental_totem.remains>=50)" );
     def -> add_talent( this, "Elemental Mastery", "if=!talent.primal_elementalist.enabled" );
+    def -> add_talent( this, "Storm Elemental Totem", "if=!talent.primal_elementalist.enabled" );
     def -> add_action( this, "Fire Elemental Totem" );
     def -> add_action( this, "Ascendance", "if=cooldown.strike.remains>=3" );
     def -> add_action( this, "Feral Spirit" );
-    def -> add_talent( this, "Storm Elemental Totem", "if=!active&cooldown.fire_elemental_totem.remains>=60" );
+    def -> add_talent( this, "Storm Elemental Totem", "if=cooldown.fire_elemental_totem.remains>=60" );
     def -> add_talent( this, "Liquid Magma", "if=pet.searing_totem.remains>=15|pet.magma_totem.remains>=15|pet.fire_elemental_totem.remains>=15" );
 
     // Need to remove the "/" in front of the profession action(s) for the new default action priority list stuff :/
@@ -5327,6 +5328,7 @@ void shaman_t::init_action_list()
     def -> add_talent( this, "Elemental Mastery", "if=action.lava_burst.cast_time>=1.2" );
 
     def -> add_talent( this, "Ancestral Swiftness", "if=!buff.ascendance.up" );
+    def -> add_talent( this, "Storm Elemental Totem", "if=!talent.primal_elementalist.enabled" );
     def -> add_action( this, "Fire Elemental Totem", "if=!active" );
 
     // Use Ascendance preferably with a haste CD up, but dont overdo the
@@ -5342,6 +5344,7 @@ void shaman_t::init_action_list()
     def -> add_action( this, "Ascendance", ascendance_opts );
 
     def -> add_talent( this, "Liquid Magma", "if=pet.searing_totem.remains>=15|pet.fire_elemental_totem.remains>=15" );
+    def -> add_talent( this, "Storm Elemental Totem", "if=cooldown.fire_elemental_totem.remains>=60" );
 
     // Need to remove the "/" in front of the profession action(s) for the new default action priority list stuff :/
     def -> add_action( init_use_profession_actions().erase( 0, 1 ) );
@@ -5361,7 +5364,6 @@ void shaman_t::init_action_list()
     single -> add_talent( this, "Elemental Blast" );
     single -> add_action( this, "Flame Shock", "if=time>60&remains<=buff.ascendance.duration&cooldown.ascendance.remains+buff.ascendance.duration<duration",
                           "After the initial Ascendance, use Flame Shock pre-emptively just before Ascendance to guarantee Flame Shock staying up for the full duration of the Ascendance buff" );
-    single -> add_talent( this, "Storm Elemental Totem", "if=!active&cooldown.fire_elemental_totem.remains>=60" );
     single -> add_action( this, "Searing Totem", "if=cooldown.fire_elemental_totem.remains>20&!totem.fire.active",
                           "Keep Searing Totem up, unless Fire Elemental Totem is coming off cooldown in the next 20 seconds" );
     single -> add_action( this, "Spiritwalker's Grace", "moving=1,if=((talent.elemental_blast.enabled&cooldown.elemental_blast.remains=0)|(cooldown.lava_burst.remains=0&!buff.lava_surge.react))" );
