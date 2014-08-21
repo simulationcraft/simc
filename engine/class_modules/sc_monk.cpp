@@ -1448,13 +1448,13 @@ struct spinning_crane_kick_t : public monk_melee_attack_t
 
     if( p -> talent.rushing_jade_wind -> ok() )
     {
-    base_multiplier *= 0.7392; // hardcoded into tooltip
+    base_multiplier *= 0.5988; // hardcoded into tooltip
       school = SCHOOL_NATURE; // Application is Nature but the actual damage ticks is Physical
       tick_action = new rushing_jade_wind_tick_t( p, p -> find_talent_spell( "Rushing Jade Wind" ) );
     }
     else
     {
-      base_multiplier *= 0.7392; // hardcoded into tooltip
+      base_multiplier *= 0.74906; // hardcoded into tooltip
       school = SCHOOL_PHYSICAL;
       channeled = true;
       tick_action = new spinning_crane_kick_tick_t( p, p -> find_class_spell( "Spinning Crane Kick" ) );
@@ -2087,7 +2087,7 @@ struct zen_sphere_damage_t : public monk_spell_t
   {
     background = true;
 
-    attack_power_mod.direct = 0.0694; // hardcoded into tooltip
+    attack_power_mod.direct = 0.069165; // fix this for the love of jebus
     school = SCHOOL_NATURE;
   }
 };
@@ -2100,7 +2100,7 @@ struct zen_sphere_detonate_damage_t : public monk_spell_t
     background = true;
     aoe = -1;
 
-    attack_power_mod.direct = 0.4717; // hardcoded into tooltip
+    attack_power_mod.direct = 2.5307; // hardcoded into tooltip
     school = SCHOOL_NATURE;
   }
 };
@@ -2130,7 +2130,7 @@ struct chi_wave_dmg_tick_t : public monk_spell_t
     monk_spell_t( name, player, player -> talent.chi_wave )
   {
     background = direct_tick = true;
-    attack_power_mod.direct = 0.4993; // hardcoded into tooltip of 115098
+    attack_power_mod.direct = 0.3505;
   }
 };
 
@@ -2263,6 +2263,7 @@ struct xuen_spell_t : public summon_pet_t
   {
     parse_options( nullptr, options_str );
 
+    trigger_gcd = timespan_t::zero();
     harmful = false;
     summoning_duration = data().duration();
   }
