@@ -43,6 +43,7 @@ public:
   double crit_rage_mult;
   bool swapping; // Disables automated swapping when it's not required to use the ability.
   // Set to true whenever a player uses the swap option inside of stance_t, as we should assume they are intentionally sitting in defensive stance.
+  bool t17_2pc_protection;
 
   simple_sample_data_t cs_damage;
   simple_sample_data_t priority_damage;
@@ -239,6 +240,7 @@ public:
     proc_t* t15_2pc_melee;
     proc_t* t17_4pc_arms;
     proc_t* t17_2pc_fury;
+    proc_t* t17_2pc_prot;
   } proc;
 
   real_ppm_t t15_2pc_melee;
@@ -411,6 +413,7 @@ public:
     crit_rage_mult = 2;
     swapping = false;
     base.distance = 3.0;
+    t17_2pc_protection = false;
 
     regen_type = REGEN_DISABLED;
   }
@@ -1421,6 +1424,7 @@ struct colossus_smash_t: public warrior_attack_t
     stancemask = STANCE_BATTLE;
 
     weapon = &( player -> main_hand_weapon );
+    base_costs[ RESOURCE_RAGE ] *= 1.0 + p -> new_sets.set( WARRIOR_ARMS, T17, B2 ) -> effectN( 2 ).percent();
   }
 
   void execute()
@@ -2012,6 +2016,14 @@ struct mortal_strike_t: public warrior_attack_t
     }
   }
 
+  void update_ready( timespan_t cd_duration )
+  {
+    if ( p() -> buff.tier17_4pc_arms -> up() )
+      cd_duration += cooldown -> duration * p() -> buff.tier17_4pc_arms -> data().effectN( 1 ).percent();
+
+    warrior_attack_t::update_ready( cd_duration );
+  }
+
   bool ready()
   {
     if ( p() -> main_hand_weapon.type == WEAPON_NONE )
@@ -2354,6 +2366,8 @@ struct siegebreaker_t: public warrior_attack_t
 struct shield_slam_t: public warrior_attack_t
 {
   double rage_gain;
+  action_t* shield_block;
+  action_t* shield_charge;
   shield_slam_t( warrior_t* p, const std::string& options_str ):
     warrior_attack_t( "shield_slam", p, p -> spec.shield_slam ),
     rage_gain( 0.0 )
@@ -2361,7 +2375,8 @@ struct shield_slam_t: public warrior_attack_t
     parse_options( NULL, options_str );
     stancemask = STANCE_GLADIATOR | STANCE_DEFENSE;
     cooldown = p -> cooldown.shield_slam;
-
+    shield_block = new shield_block_t( p, options_str );
+    shield_charge = new shield_charge_t( p, options_str );
     rage_gain = data().effectN( 3 ).resource( RESOURCE_RAGE );
     attack_power_mod.direct = 3.18; //Hard-coded in tooltip.
   }
@@ -2385,6 +2400,18 @@ struct shield_slam_t: public warrior_attack_t
   void execute()
   {
     warrior_attack_t::execute();
+
+    if ( rng().roll( p() -> new_sets.set( WARRIOR_PROTECTION, T17, B2 ) -> proc_chance() ) )
+    {
+      p() -> t17_2pc_protection = true;
+      p() -> proc.t17_2pc_prot -> occur();
+      if ( p() -> active_stance == STANCE_GLADIATOR )
+      {
+        shield_charge -> execute();
+      }
+      else
+        shield_block -> execute();
+    }
 
     double rage_from_snb = 0;
 
@@ -3224,6 +3251,16 @@ struct shield_block_t: public warrior_spell_t
       p() -> buff.shield_block -> trigger();
   }
 
+  void update_ready( timespan_t cd_duration )
+  {
+    if ( p() -> t17_2pc_protection )
+    {
+      p() -> t17_2pc_protection = false;
+      return;
+    }
+    warrior_spell_t::update_ready( cd_duration );
+  }
+
   bool ready()
   {
     if ( !p() -> has_shield_equipped() )
@@ -3260,6 +3297,16 @@ struct shield_charge_t: public warrior_spell_t
       p() -> buff.shield_charge -> extend_duration( p(), timespan_t::from_seconds( 6.0 ) );
     else
       p() -> buff.shield_charge -> trigger();
+  }
+
+  void update_ready( timespan_t cd_duration )
+  {
+    if ( p() -> t17_2pc_protection )
+    {
+      p() -> t17_2pc_protection = false;
+      return;
+    }
+    warrior_spell_t::update_ready( cd_duration );
   }
 
   bool ready()
@@ -4404,7 +4451,7 @@ void warrior_t::create_buffs()
     .add_invalidate( CACHE_BLOCK );
 
   buff.shield_charge = buff_creator_t( this, "shield_charge", find_spell( 169667 ) )
-    .default_value( find_spell( 169667 ) -> effectN( 1 ).percent() );
+    .default_value( find_spell( 169667 ) -> effectN( 1 ).percent() + new_sets.set( WARRIOR_PROTECTION, T17, B4 ) -> effectN( 2 ).percent() );
 
   buff.shield_wall = buff_creator_t( this, "shield_wall", spec.shield_wall )
     .default_value( spec.shield_wall -> effectN( 1 ).percent() )
@@ -4520,6 +4567,7 @@ void warrior_t::init_procs()
   proc.t15_2pc_melee           = get_proc( "t15_2pc_melee" );
   proc.t17_2pc_fury            = get_proc( "t17_2pc_fury" );
   proc.t17_4pc_arms            = get_proc( "t17_4pc_arms" );
+  proc.t17_2pc_prot            = get_proc( "t17_2pc_prot" );
 }
 
 // warrior_t::init_rng ======================================================
@@ -4627,6 +4675,7 @@ void warrior_t::reset()
 
   active_stance = STANCE_BATTLE;
   swapping = false;
+  t17_2pc_protection = false;
 
   t15_2pc_melee.reset();
 }
@@ -4774,7 +4823,11 @@ double warrior_t::composite_block() const
   b += perk.improved_block -> effectN( 1 ).percent();
 
   if ( buff.shield_block -> up() )
+  {
     b += buff.shield_block -> data().effectN( 1 ).percent();
+    if ( new_sets.has_set_bonus( WARRIOR_PROTECTION, T17, B4 ) )
+      b += spec.shield_mastery -> effectN( 1 ).percent(); // For some reason, it uses this spec's spell data.
+  }
 
   return b;
 }
