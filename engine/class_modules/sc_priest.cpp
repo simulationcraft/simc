@@ -1278,9 +1278,6 @@ struct priest_heal_t : public priest_action_t<heal_t>
   {
     double am = base_t::action_multiplier();
 
-    if ( priest.specs.grace -> ok() )
-      am *= 1.0 + priest.specs.grace -> effectN( 1 ).percent();
-
     am *= 1.0 + priest.buffs.archangel -> value();
 
     return am;
@@ -5476,6 +5473,9 @@ double priest_t::composite_player_heal_multiplier( const action_state_t* s ) con
   {
     m *= 1.0 + buffs.twist_of_fate -> current_value;
   }
+
+  if ( specs.grace -> ok () )
+    m *= 1.0 + specs.grace -> effectN( 1 ).percent();
 
   if ( buffs.saving_grace_penalty -> check() )
   {

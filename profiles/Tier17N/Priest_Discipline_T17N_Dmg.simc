@@ -34,7 +34,7 @@ actions+=/power_word_solace,if=talent.power_word_solace.enabled
 actions+=/mindbender,if=talent.mindbender.enabled&mana.pct<80
 actions+=/shadowfiend,if=!talent.mindbender.enabled
 actions+=/power_word_shield
-actions+=/penance_heal,if=buff.borrowed_time.up|target.buff.grace.stack<3
+actions+=/penance_heal,if=buff.borrowed_time.up
 actions+=/penance_heal
 actions+=/flash_heal,if=buff.surge_of_light.react
 actions+=/heal,if=buff.power_infusion.up|mana.pct>20
