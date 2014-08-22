@@ -4566,7 +4566,6 @@ struct player_t : public actor_t
     buff_t* devotion_aura;
     buff_t* earth_shield;
     buff_t* exhaustion;
-    buff_t* grace;
     buff_t* guardian_spirit;
     buff_t* hand_of_sacrifice;
     buff_t* illuminated_healing;
@@ -4606,29 +4605,22 @@ struct player_t : public actor_t
     debuff_t* dazed;
     debuff_t* damage_taken;
 
-    // MoP debuffs
+    // WoD debuffs
     debuff_t* mortal_wounds;
   } debuffs;
 
   struct gains_t
   {
     gain_t* arcane_torrent;
-    gain_t* blessing_of_might;
-    gain_t* dark_rune;
     gain_t* endurance_of_niuzao;
     gain_t* energy_regen;
-    gain_t* essence_of_the_red;
     gain_t* focus_regen;
     gain_t* health;
     gain_t* mana_potion;
-    gain_t* mana_spring_totem;
     gain_t* mp5_regen;
     gain_t* restore_mana;
-    gain_t* spellsurge;
     gain_t* touch_of_the_grave;
     gain_t* vampiric_embrace;
-    gain_t* vampiric_touch;
-    gain_t* water_elemental;
 
     gain_t* leech;
   } gains;

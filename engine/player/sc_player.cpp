@@ -1244,10 +1244,11 @@ void player_t::init_resources( bool force )
     }
   }
 
-
   resources.current = resources.max = resources.initial;
   if ( type == WARRIOR )
     resources.current[ RESOURCE_RAGE ] = 0; // Warriors do not have full resource bars pre-combat.
+  else if ( type == DRUID_BALANCE )
+    resources.current[ RESOURCE_ECLIPSE ] = 0; // Same for eclipse.
 
   // Only collect pet resource timelines if they get reported separately
   if ( ! is_pet() || sim -> report_pets_separately )
@@ -1717,22 +1718,15 @@ void player_t::init_gains()
     sim -> out_debug.printf( "Initializing gains for player (%s)", name() );
 
   gains.arcane_torrent         = get_gain( "arcane_torrent" );
-  gains.blessing_of_might      = get_gain( "blessing_of_might" );
-  gains.dark_rune              = get_gain( "dark_rune" );
   gains.endurance_of_niuzao    = get_gain( "endurance_of_niuzao" );
   gains.energy_regen           = get_gain( "energy_regen" );
-  gains.essence_of_the_red     = get_gain( "essence_of_the_red" );
   gains.focus_regen            = get_gain( "focus_regen" );
   gains.health                 = get_gain( "external_healing" );
   gains.mana_potion            = get_gain( "mana_potion" );
-  gains.mana_spring_totem      = get_gain( "mana_spring_totem" );
   gains.mp5_regen              = get_gain( "mp5_regen" );
   gains.restore_mana           = get_gain( "restore_mana" );
-  gains.spellsurge             = get_gain( "spellsurge" );
   gains.touch_of_the_grave     = get_gain( "touch_of_the_grave" );
   gains.vampiric_embrace       = get_gain( "vampiric_embrace" );
-  gains.vampiric_touch         = get_gain( "vampiric_touch" );
-  gains.water_elemental        = get_gain( "water_elemental" );
   gains.leech                  = get_gain( "leech" );
 }
 
@@ -1771,7 +1765,6 @@ void player_t::init_rng()
 {
   if ( sim -> debug )
     sim -> out_debug.printf( "Initializing rngs for player (%s)", name() );
-
 }
 
 // player_t::init_stats =====================================================
@@ -1820,7 +1813,7 @@ void player_t::init_scaling()
 
     bool attack = ( role == ROLE_ATTACK || role == ROLE_HYBRID || role == ROLE_TANK );
     bool spell  = ( role == ROLE_SPELL  || role == ROLE_HYBRID || role == ROLE_HEAL );
-    bool tank   = ( role == ROLE_TANK || specialization() == WARRIOR_PROTECTION ); // Warrior_protection is special case for gladiator stance.
+    bool tank   = ( role == ROLE_TANK );
     bool heal   = ( role == ROLE_HEAL );
 
     scales_with[ STAT_STRENGTH  ] = attack;
@@ -1836,13 +1829,13 @@ void player_t::init_scaling()
     scales_with[ STAT_FOCUS  ] = false;
     scales_with[ STAT_RUNIC  ] = false;
 
-    scales_with[ STAT_SPELL_POWER       ] = spell;
-    scales_with[ STAT_ATTACK_POWER             ] = attack;
+    scales_with[ STAT_SPELL_POWER               ] = spell;
+    scales_with[ STAT_ATTACK_POWER              ] = attack;
     scales_with[ STAT_CRIT_RATING               ] = true;
     scales_with[ STAT_HASTE_RATING              ] = true;
     scales_with[ STAT_MASTERY_RATING            ] = true;
     scales_with[ STAT_MULTISTRIKE_RATING        ] = true;
-    scales_with[ STAT_READINESS_RATING          ] = false; //no longer going to happen, so no need to sim it by default
+    scales_with[ STAT_READINESS_RATING          ] = false; // No longer a stat in game.
     scales_with[ STAT_VERSATILITY_RATING        ] = true;
 
     scales_with[ STAT_WEAPON_DPS   ] = attack;
@@ -2115,7 +2108,6 @@ bool player_t::init_actions()
     sim -> errorf( "No Default Action List available.\n" );
   }
 
-
   int capacity = std::max( 1200, static_cast<int>( sim -> max_time.total_seconds() / 2.0 ) );
   collected_data.action_sequence.reserve( capacity );
   collected_data.action_sequence.clear();
@@ -2169,10 +2161,6 @@ void player_t::create_buffs()
   buffs.body_and_soul             = buff_creator_t( this, "body_and_soul" )
                                     .max_stack( 1 )
                                     .duration( timespan_t::from_seconds( 4.0 ) );
-
-  buffs.grace                     = buff_creator_t( this,  "grace" )
-                                    .max_stack( 3 )
-                                    .duration( timespan_t::from_seconds( 15.0 ) );
 
   struct raid_movement_buff_t : public buff_t
   {
@@ -2244,7 +2232,6 @@ double player_t::mana_regen_per_second() const
   return current.mana_regen_per_second + cache.spirit() * current.mana_regen_per_spirit * current.mana_regen_from_spirit_multiplier;
 }
 
-// Need a way to include human racial.
 // player_t::composite_attack_haste =========================================
 
 double player_t::composite_melee_haste() const
@@ -2324,11 +2311,11 @@ double player_t::composite_melee_crit() const
   if ( ! is_pet() && ! is_enemy() && ! is_add() && sim -> auras.critical_strike -> check() )
     ac += sim -> auras.critical_strike -> value();
 
-    ac += racials.viciousness -> effectN( 1 ).percent();
-    ac += racials.arcane_acuity -> effectN( 1 ).percent();
+  ac += racials.viciousness -> effectN( 1 ).percent();
+  ac += racials.arcane_acuity -> effectN( 1 ).percent();
 
-    if ( timeofday == DAY_TIME )
-       ac += racials.touch_of_elune -> effectN( 1 ).percent();
+  if ( timeofday == DAY_TIME )
+    ac += racials.touch_of_elune -> effectN( 1 ).percent();
 
   return ac;
 }
@@ -2794,24 +2781,6 @@ double player_t::composite_movement_speed() const
   double passive = passive_movement_modifier();
 
   double temporary = temporary_movement_modifier();
-
-  // Pursuit of Justice, Quickening: 8%/15%
-
-  // DK: Unholy Presence: 15%
-
-  // Aspect of the Cheetah/Pack: 30%, with talent Pathfinding +34%/38%
-
-  // Shaman Ghost Wolf: 30%, with Glyph 35%
-
-  // Druid: Travel Form 40%
-
-  // Mage: Blazing Speed: 5%/10% chance after being hit for 50% for 8 sec
-  //       Improved Blink: 35%/70% for 3 sec after blink
-  //       Glyph of Invisibility: 40% while invisible
-
-  // Rogue: Sprint 70%
-
-  // Swiftness Potion: 50%
 
   speed *= ( 1 + passive + temporary );
 
@@ -3826,9 +3795,7 @@ void player_t::stun()
 void player_t::moving()
 {
   // FIXME! In the future, some movement events may not cause auto-attack to stop.
-
   halt();
-  //buffs.shadowmeld -> expire();
 }
 
 // player_t::clear_debuffs===================================================
@@ -5440,8 +5407,6 @@ struct racial_spell_t : public spell_t
   }
 };
 
-// Touch of the Grave =======================================================
-
 // Shadowmeld ===============================================================
 
 struct shadowmeld_t : public racial_spell_t
@@ -6018,6 +5983,7 @@ struct use_item_t : public action_t
 };
 
 // Cancel Buff ==============================================================
+// Need to add a flag which prevents cancelling some buffs, as there are buffs in the game that cannot be cancelled to prevent exploitation. 
 
 struct cancel_buff_t : public action_t
 {
@@ -7422,6 +7388,9 @@ expr_t* player_t::create_expression( action_t* a,
       case STAT_PARRY_RATING:     return make_mem_fn_expr( expression_str, *this, &player_t::composite_parry_rating );
       case STAT_BLOCK_RATING:     return make_mem_fn_expr( expression_str, *this, &player_t::composite_block_rating );
       case STAT_MASTERY_RATING:   return make_mem_fn_expr( expression_str, *this, &player_t::composite_mastery_rating );
+      case RATING_DAMAGE_VERSATILITY: return make_mem_fn_expr( expression_str, *this, &player_t::composite_damage_versatility_rating );
+      case RATING_HEAL_VERSATILITY: return make_mem_fn_expr( expression_str, *this, &player_t::composite_heal_versatility_rating );
+      case RATING_MITIGATION_VERSATILITY: return make_mem_fn_expr( expression_str, *this, &player_t::composite_mitigation_versatility_rating );
       default: break;
     }
 
