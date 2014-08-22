@@ -1276,15 +1276,19 @@ struct priest_heal_t : public priest_action_t<heal_t>
 
   virtual double action_multiplier() const override
   {
-    return base_t::action_multiplier() * ( 1.0 + priest.buffs.archangel -> value() );
+    double am = base_t::action_multiplier();
+
+    if ( priest.specs.grace -> ok() )
+      am *= 1.0 + priest.specs.grace -> effectN( 1 ).percent();
+
+    am *= 1.0 + priest.buffs.archangel -> value();
+
+    return am;
   }
 
   virtual double composite_target_multiplier( player_t* t ) const override
   {
     double ctm = base_t::composite_target_multiplier( t );
-
-    if ( priest.specs.grace -> ok() )
-      ctm *= 1.0 + t -> buffs.grace -> check() * t -> buffs.grace -> value();
 
     return ctm;
   }
@@ -1352,12 +1356,6 @@ struct priest_heal_t : public priest_action_t<heal_t>
       p.active_spells.echo_of_light, // ignite spell
       s -> target, // target
       s -> result_amount * p.cache.mastery_value() ); // ignite damage
-  }
-
-  void trigger_grace( player_t* t )
-  {
-    if ( priest.specs.grace -> ok() )
-      t -> buffs.grace -> trigger( 1, priest.specs.grace -> effectN( 1 ).trigger() -> effectN( 1 ).percent() );
   }
 
   void trigger_serendipity( bool tier17_4pc = false )
@@ -4224,8 +4222,6 @@ struct flash_heal_t final : public priest_heal_t
   {
     priest_heal_t::impact( s );
 
-    trigger_grace( s -> target );
-
     if ( ! priest.buffs.spirit_shell -> check() )
       trigger_strength_of_soul( s -> target );
   }
@@ -4296,8 +4292,6 @@ struct _heal_t final : public priest_heal_t
   virtual void impact( action_state_t* s ) override
   {
     priest_heal_t::impact( s );
-
-    trigger_grace( s -> target );
 
     if ( ! priest.buffs.spirit_shell -> check() )
       trigger_strength_of_soul( s -> target );
@@ -4607,13 +4601,6 @@ struct penance_heal_t final : public priest_heal_t
 
       school = SCHOOL_HOLY;
       stats = player.get_stats( "penance_heal", this );
-    }
-
-    virtual void impact( action_state_t* s ) override
-    {
-      priest_heal_t::impact( s );
-
-      trigger_grace( s -> target );
     }
   };
 
@@ -6377,7 +6364,7 @@ void priest_t::apl_disc_heal()
   def -> add_action( "mindbender,if=talent.mindbender.enabled&mana.pct<80" );
   def -> add_action( "shadowfiend,if=!talent.mindbender.enabled" );
   def -> add_action( this, "Power Word: Shield" );
-  def -> add_action( "penance_heal,if=buff.borrowed_time.up|target.buff.grace.stack<3" );
+  def -> add_action( "penance_heal,if=buff.borrowed_time.up" );
   def -> add_action( "penance_heal" );
   def -> add_action( this, "Flash Heal", "if=buff.surge_of_light.react" );
   def -> add_action( this, "Heal", "if=buff.power_infusion.up|mana.pct>20" );
