@@ -14,7 +14,7 @@ namespace { // UNNAMED NAMESPACE
 enum tmi_boss_e
 {
   TMI_NONE = 0,
-  TMI_T15LFR, TMI_T15N, TMI_T15H, TMI_T16_10N, TMI_T16_25N, TMI_T16_10H, TMI_T16_25H, TMI_T17_Q
+  TMI_T15LFR, TMI_T15N, TMI_T15H, TMI_T16_10N, TMI_T16_25N, TMI_T16_10H, TMI_T16_25H, TMI_T17_N, TMI_T17_H, TMI_T17_20M
 };
 
 
@@ -721,8 +721,12 @@ tmi_boss_e enemy_t::convert_tmi_string( const std::string& tmi_string )
     return TMI_T16_10H;
   if ( tmi_string == "T16H" || tmi_string == "T16H25" )
     return TMI_T16_25H;
-  if ( tmi_string == "T17Q" )
-    return TMI_T17_Q;
+  if ( tmi_string == "T17N" )
+    return TMI_T17_N;
+  if ( tmi_string == "T17H" )
+    return TMI_T17_H;
+  if ( tmi_string == "T17M" || tmi_string == "TMI20M" )
+    return TMI_T17_20M;
 
   if ( ! tmi_string.empty() && sim -> debug )
     sim -> out_debug.printf( "Unknown TMI string input provided: %s", tmi_string.c_str() );
@@ -884,7 +888,7 @@ void enemy_t::init_target()
 std::string enemy_t::fluffy_pillow_action_list()
 {
   std::string als = "";
-  double level_mult = sim -> dbc.combat_rating( RATING_BLOCK, sim -> max_player_level ) / sim -> dbc.combat_rating( RATING_BLOCK, 90 );
+  double level_mult = sim -> dbc.combat_rating( RATING_BLOCK, sim -> max_player_level ) / sim -> dbc.combat_rating( RATING_BLOCK, 100 );
   level_mult = std::pow( level_mult, 1.5 );
 
   // this is the standard Fluffy Pillow action list
@@ -899,8 +903,8 @@ std::string enemy_t::fluffy_pillow_action_list()
 std::string enemy_t::tmi_boss_action_list()
 {
   std::string als = "";
-  int aa_damage[ 9 ] = { 0, 5500, 7500, 9000, 12500, 15000, 25000, 45000, 100000 };
-  int dot_damage[ 9 ] = { 0, 2700, 3750, 4500, 6250, 10000, 15000, 35000, 60000 };
+  int aa_damage[ 11 ] = { 0, 5500, 7500, 9000, 12500, 15000, 25000, 45000, 100000, 150000, 200000 };
+  int dot_damage[ 11 ] = { 0, 2700, 3750, 4500, 6250, 10000, 15000, 35000, 60000, 90000, 120000 };
 
   als += "/auto_attack,damage=" + util::to_string( aa_damage[ tmi_boss_enum ] ) + ",attack_speed=1.5";
   als += "/spell_dot,damage=" + util::to_string( dot_damage[ tmi_boss_enum ] ) + ",tick_time=2,dot_duration=30,if=!ticking";

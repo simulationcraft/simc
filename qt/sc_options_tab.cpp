@@ -230,7 +230,7 @@ void SC_OptionsTab::createGlobalsTab()
   globalsLayout_left -> addRow( tr( "Armory Region" ),  choice.armory_region = createChoice( 5, "us", "eu", "tw", "cn", "kr" ) );
   globalsLayout_left -> addRow( tr(   "Armory Spec" ),    choice.armory_spec = createChoice( 2, "active", "inactive" ) );
   globalsLayout_left -> addRow( tr(  "Default Role" ),   choice.default_role = createChoice( 4, "auto", "dps", "heal", "tank" ) );
-  globalsLayout_left -> addRow( tr( "TMI Standard Boss" ),   choice.tmi_boss = createChoice( 8, "custom", "T17Q", "T16H25", "T16H10", "T16N25", "T16N10", "T15H25", "T15N25", "T15LFR" ) );
+  globalsLayout_left -> addRow( tr( "TMI Standard Boss" ),   choice.tmi_boss = createChoice( 10, "custom", "T17M", "T17H", "T17N", "T16H25", "T16H10", "T16N25", "T16N10", "T15H25", "T15N25", "T15LFR" ) );
   globalsLayout_left -> addRow( tr( "TMI Window (sec)" ),  choice.tmi_window = createChoice( 10, "0", "2", "3", "4", "5", "6", "7", "8", "9", "10" ) );
   globalsLayout_left -> addRow( tr( "Show ETMI" ),          choice.show_etmi = createChoice( 2, "Only when in group", "Always" ) );
 
@@ -536,7 +536,7 @@ void SC_OptionsTab::decodeOptions()
   load_setting( settings, "armory_region", choice.armory_region );
   load_setting( settings, "armory_spec", choice.armory_spec );
   load_setting( settings, "default_role", choice.default_role );
-  load_setting( settings, "tmi_boss", choice.tmi_boss );
+  load_setting( settings, "tmi_boss", choice.tmi_boss, "T17N" );
   load_setting( settings, "tmi_window_global", choice.tmi_window, "6" );
   load_setting( settings, "show_etmi", choice.show_etmi );
   load_setting( settings, "world_lag", choice.world_lag, "Medium - 100 ms" );
