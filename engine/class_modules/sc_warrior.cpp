@@ -58,6 +58,8 @@ public:
   action_t* active_second_wind;
   attack_t* active_sweeping_strikes;
 
+  spell_t* active_t17_2pc_shield_block;
+  spell_t* active_t17_2pc_shield_charge;
   heal_t* active_t16_2pc;
   warrior_stance active_stance;
 
@@ -378,6 +380,8 @@ public:
     active_sweeping_strikes   = 0;
     active_enhanced_rend      = 0;
     active_t16_2pc            = 0;
+    active_t17_2pc_shield_block = 0;
+    active_t17_2pc_shield_charge = 0;
     active_stance             = STANCE_BATTLE;
 
     // Cooldowns
@@ -2366,8 +2370,6 @@ struct siegebreaker_t: public warrior_attack_t
 struct shield_slam_t: public warrior_attack_t
 {
   double rage_gain;
-  action_t* shield_block;
-  action_t* shield_charge;
   shield_slam_t( warrior_t* p, const std::string& options_str ):
     warrior_attack_t( "shield_slam", p, p -> spec.shield_slam ),
     rage_gain( 0.0 )
@@ -2375,8 +2377,6 @@ struct shield_slam_t: public warrior_attack_t
     parse_options( NULL, options_str );
     stancemask = STANCE_GLADIATOR | STANCE_DEFENSE;
     cooldown = p -> cooldown.shield_slam;
-    shield_block = new shield_block_t( p, options_str );
-    shield_charge = new shield_charge_t( p, options_str );
     rage_gain = data().effectN( 3 ).resource( RESOURCE_RAGE );
     attack_power_mod.direct = 3.18; //Hard-coded in tooltip.
   }
@@ -2407,10 +2407,10 @@ struct shield_slam_t: public warrior_attack_t
       p() -> proc.t17_2pc_prot -> occur();
       if ( p() -> active_stance == STANCE_GLADIATOR )
       {
-        shield_charge -> execute();
+        p() -> active_t17_2pc_shield_charge -> execute();
       }
       else
-        shield_block -> execute();
+        p() -> active_t17_2pc_shield_block -> execute();
     }
 
     double rage_from_snb = 0;
@@ -3230,6 +3230,10 @@ struct shield_block_t: public warrior_spell_t
     cooldown -> charges = 2;
     use_off_gcd = true;
   }
+  shield_block_t( warrior_t* p ) :
+    warrior_spell_t( "shield_block", p, p -> find_class_spell( "Shield Block" ) )
+  {
+  }
 
   double cost() const
   {
@@ -3287,6 +3291,10 @@ struct shield_charge_t: public warrior_spell_t
     base_teleport_distance = data().max_range();
     movement_directionality = MOVEMENT_OMNI;
     use_off_gcd = true;
+  }
+  shield_charge_t( warrior_t* p ):
+    warrior_spell_t( "shield_charge", p, p -> find_spell( 156321 ) )
+  {
   }
 
   void execute()
@@ -3758,6 +3766,8 @@ void warrior_t::init_spells()
   active_rallying_cry_heal  = new rallying_cry_heal_t( this );
   active_second_wind        = new second_wind_t( this );
   active_t16_2pc            = new tier16_2pc_tank_heal_t( this );
+  active_t17_2pc_shield_block = new shield_block_t( this );
+  active_t17_2pc_shield_charge = new shield_charge_t( this );
 }
 
 // warrior_t::init_defense ==================================================
