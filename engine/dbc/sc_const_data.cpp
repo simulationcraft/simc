@@ -187,7 +187,7 @@ int dbc::build_level( bool ptr )
 { return maybe_ptr( ptr ) ? 17345 : 18764; }
 
 const char* dbc::wow_version( bool ptr )
-{ return maybe_ptr( ptr ) ? "5.4.0" : "6.0.1"; }
+{ return maybe_ptr( ptr ) ? "5.4.0" : "6.0.2"; }
 
 const char* dbc::wow_ptr_status( bool ptr )
 { return ( maybe_ptr( ptr ) ?
