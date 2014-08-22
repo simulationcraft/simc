@@ -174,14 +174,12 @@ public:
   // Glyphs
   struct glyphs_t
   {
-
     // Major
     const spell_data_t* arcane_power;
     const spell_data_t* blink;
     const spell_data_t* combustion;
     const spell_data_t* cone_of_cold;
     const spell_data_t* frostfire;
-    const spell_data_t* ice_lance;
     const spell_data_t* icy_veins;
     const spell_data_t* inferno_blast;
     const spell_data_t* living_bomb;
@@ -2247,11 +2245,8 @@ struct fire_blast_t : public mage_spell_t
 
 struct fireball_t : public mage_spell_t
 {
-
-
   fireball_t( mage_t* p, const std::string& options_str ) :
     mage_spell_t( "fireball", p, p -> find_class_spell( "Fireball" ) )
-
   {
     parse_options( NULL, options_str );
     may_hot_streak = true;
@@ -2290,7 +2285,6 @@ struct fireball_t : public mage_spell_t
             p() -> buffs.enhanced_pyrotechnics -> trigger();
 
     }
-
 
     if ( p() -> talents.kindling -> ok() &&  s -> result == RESULT_CRIT )
         p() -> cooldowns.combustion -> adjust( timespan_t::from_seconds( - p() -> talents.kindling -> effectN( 1 ).base_value() ) );
@@ -2546,8 +2540,6 @@ struct frostbolt_t : public mage_spell_t
 
 // Frostfire Bolt Spell =====================================================
 
-
-
 // Cast by Frost T16 4pc bonus when Brain Freeze FFB is cast
 struct frigid_blast_t : public mage_spell_t
 {
@@ -2561,7 +2553,6 @@ struct frigid_blast_t : public mage_spell_t
 
 struct frostfire_bolt_t : public mage_spell_t
 {
-
   frigid_blast_t* frigid_blast;
 
   frostfire_bolt_t( mage_t* p, const std::string& options_str ) :
@@ -2634,7 +2625,6 @@ struct frostfire_bolt_t : public mage_spell_t
 
   virtual void impact( action_state_t* s )
   {
-
     mage_spell_t::impact( s );
     // If there are five Icicles, launch the oldest at this spell's target
     // Create an Icicle, stashing damage equal to mastery * value
@@ -2660,6 +2650,9 @@ struct frostfire_bolt_t : public mage_spell_t
 
     if ( ( result_is_hit( s-> result) || result_is_multistrike( s -> result ) ) && p() -> specialization() == MAGE_FROST )
         trigger_icicle_gain( s );
+
+    if ( p() -> talents.kindling -> ok() && s -> result == RESULT_CRIT )
+      p() -> cooldowns.combustion -> adjust( timespan_t::from_seconds( - p() -> talents.kindling -> effectN( 1 ).base_value() ) );
   }
 
   virtual double composite_crit() const
@@ -2782,19 +2775,13 @@ struct ice_lance_t : public mage_spell_t
   {
     parse_options( NULL, options_str );
 
+    if ( p -> glyphs.splitting_ice -> ok() )
+      aoe = p -> glyphs.splitting_ice -> effectN( 1 ).base_value();
 
-    if ( p -> glyphs.ice_lance -> ok() )
-      aoe = p -> glyphs.ice_lance -> effectN( 1 ).base_value() + 1;
-    else if ( p -> glyphs.splitting_ice -> ok() )
-      aoe = p -> glyphs.splitting_ice -> effectN( 1 ).base_value() + 1;
-
-    if ( p -> glyphs.ice_lance -> ok() )
-      base_aoe_multiplier *= p -> glyphs.ice_lance -> effectN( 2 ).percent();
-    else if ( p -> glyphs.splitting_ice -> ok() )
+    if ( p -> glyphs.splitting_ice -> ok() )
       base_aoe_multiplier *= p -> glyphs.splitting_ice -> effectN( 2 ).percent();
 
     fof_multiplier = p -> find_specialization_spell( "Fingers of Frost" ) -> ok() ? p -> find_spell( 44544 ) -> effectN( 2 ).percent() : 0.0;
-
   }
 
   virtual void execute()
@@ -4292,7 +4279,6 @@ void mage_t::init_spells()
   glyphs.combustion          = find_glyph_spell( "Glyph of Combustion" );
   glyphs.cone_of_cold        = find_glyph_spell( "Glyph of Cone of Cold" );
   glyphs.frostfire           = find_glyph_spell( "Glyph of Frostfire" );
-  glyphs.ice_lance           = find_glyph_spell( "Glyph of Ice Lance" );
   glyphs.icy_veins           = find_glyph_spell( "Glyph of Icy Veins" );
   glyphs.inferno_blast       = find_glyph_spell( "Glyph of Inferno Blast" );
   glyphs.living_bomb         = find_glyph_spell( "Glyph of Living Bomb" );

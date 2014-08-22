@@ -13,7 +13,7 @@ For /f "tokens=2-4 delims=/ " %%a in ('date /t') do (set mydate=%%a-%%b)
 
 :: Update the qt_dir as necessary
 set qt_dir=C:\Qt\Qt5.3.1\5.3\msvc2013
-set install=simc-601-alpha-win32-%mydate%\simc-601-alpha-win32-%mydate%
+set install=simc-602-alpha-win32-%mydate%\simc-602-alpha-win32-%mydate%
 set redist="C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\redist\x86\Microsoft.VC120.CRT"
 
 :: IMPORTANT NOTE FOR DEBUGGING
