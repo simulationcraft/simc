@@ -4094,9 +4094,6 @@ void rogue_t::init_action_list()
     return;
   }
 
-  // Note, this only looks at static stats
-  stat_e highest_rune_stat = STAT_NONE;
-
   action_priority_list_t* precombat = get_action_priority_list( "precombat" );
   action_priority_list_t* def       = get_action_priority_list( "default" );
 

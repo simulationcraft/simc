@@ -3145,6 +3145,7 @@ struct meteor_t : public mage_spell_t
     mage_spell_t( "meteor", p, p -> find_talent_spell( "Meteor") ),
     meteor_impact( new meteor_impact_t( p ) )
   {
+    parse_options( NULL, options_str );
     harmful = false;
     dot_duration = timespan_t::from_seconds( 0.0 );
   }
@@ -3157,6 +3158,7 @@ struct meteor_t : public mage_spell_t
     meteor_impact -> execute();
   }
 };
+
 // Mirror Image Spell =======================================================
 
 struct mirror_image_t : public mage_spell_t

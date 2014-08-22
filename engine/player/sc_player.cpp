@@ -1247,7 +1247,7 @@ void player_t::init_resources( bool force )
   resources.current = resources.max = resources.initial;
   if ( type == WARRIOR )
     resources.current[ RESOURCE_RAGE ] = 0; // Warriors do not have full resource bars pre-combat.
-  else if ( type == DRUID_BALANCE )
+  else if ( specialization() == DRUID_BALANCE )
     resources.current[ RESOURCE_ECLIPSE ] = 0; // Same for eclipse.
 
   // Only collect pet resource timelines if they get reported separately

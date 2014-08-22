@@ -6093,7 +6093,7 @@ void runeforge::razorice_attack( special_effect_t& effect,
 {
   struct razorice_attack_t : public death_knight_melee_attack_t
   {
-    razorice_attack_t( death_knight_t* player, const std::string& name, const item_t& item ) :
+    razorice_attack_t( death_knight_t* player, const std::string& name, const item_t& /*item*/ ) :
       death_knight_melee_attack_t( name, player, player -> find_spell( 50401 ) )
     {
       school      = SCHOOL_FROST;
