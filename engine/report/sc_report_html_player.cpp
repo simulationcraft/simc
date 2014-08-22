@@ -1530,10 +1530,20 @@ void print_html_talents( report::sc_html_stream& os, player_t* p )
 
     for ( uint32_t row = 0; row < MAX_TALENT_ROWS; row++ )
     {
-      os.printf(
-        "<tr>\n"
-        "<th class=\"left\">%d</th>\n",
-        ( row + 1 ) * 15 );
+      if ( row == 6 )
+      {
+        os.printf(
+          "<tr>\n"
+          "<th class=\"left\">%d</th>\n",
+          100 );
+      }
+      else
+      {
+        os.printf(
+          "<tr>\n"
+          "<th class=\"left\">%d</th>\n",
+          ( row + 1 ) * 15 );
+      }
       for ( uint32_t col = 0; col < MAX_TALENT_COLS; col++ )
       {
         talent_data_t* t = talent_data_t::find( p -> type, row, col, p -> specialization(), p -> dbc.ptr );
