@@ -2393,7 +2393,7 @@ struct crackling_jade_lightning_t : public monk_spell_t
   {
     monk_spell_t::snapshot_state( state, rt );
     cjl_state_t* ss = debug_cast< cjl_state_t* >( state );
-    ss -> lucidity = player -> buffs.courageous_primal_diamond_lucidity -> check();
+    ss -> lucidity = player -> buffs.courageous_primal_diamond_lucidity -> check() != 0;
   }
 
   double cost_per_second( const cjl_state_t* state )

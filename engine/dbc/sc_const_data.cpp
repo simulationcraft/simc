@@ -304,11 +304,11 @@ void dbc::apply_hotfixes()
   // Hunter, hotfixes from 2013-09-23
   // Explosive Shot
   s = spell_data_t::find( 53301, false );
-  const_cast<spelleffect_data_t&>( s -> effectN( 3 ) )._base_value = 391 * 1.1;
+  const_cast<spelleffect_data_t&>( s -> effectN( 3 ) )._base_value = static_cast<int>(391 * 1.1);
 
   // Chimera Shot (untested)
   s = spell_data_t::find( 53209, false );
-  const_cast<spelleffect_data_t&>( s -> effectN( 3 ) )._base_value = 265 * 1.5;
+  const_cast<spelleffect_data_t&>( s -> effectN( 3 ) )._base_value = static_cast<int>(265 * 1.5);
   const_cast<spelleffect_data_t&>( s -> effectN( 2 ) )._m_avg = 1.25 * 1.5;
 
   // 6/1/2014: Aspect of the Hawk now increases ranged attack power by 35% (up from 25%). 
