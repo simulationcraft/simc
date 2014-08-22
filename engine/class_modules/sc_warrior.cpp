@@ -931,7 +931,7 @@ static void trigger_sweeping_strikes( action_state_t* s )
   if ( !s -> action -> weapon )
     return;
 
-  if ( !s -> action -> result_is_hit( s -> result ) && !s -> action -> result_is_multistrike( s -> result ) )
+  if ( !s -> action -> result_is_hit( s -> result ) )
     return;
 
   if ( s -> action -> sim -> active_enemies == 1 )
