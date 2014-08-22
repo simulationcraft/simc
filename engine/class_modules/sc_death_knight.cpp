@@ -4274,9 +4274,10 @@ struct pillar_of_frost_t : public death_knight_spell_t
     parse_options( NULL, options_str );
 
     harmful = false;
-
+    
     if ( p -> perk.empowered_pillar_of_frost -> ok() )
       cost_blood = cost_frost = cost_unholy = cost_death = 0;
+      rp_gain=0.0;
   }
 
   void execute()
@@ -5930,7 +5931,7 @@ void death_knight_t::init_action_list()
         st -> add_action( this, "Howling Blast", "if=death>1|frost>1" );
 
         // Diseases for free
-        st -> add_talent( this, "Unholy Blight", "if=(dot.frost_fever.remains<3|dot.blood_plague.remains<3)" );
+        st -> add_talent( this, "Unholy Blight", "if=!disease.ticking" );
 
         // Soul Reaper
         st -> add_action( this, "Soul Reaper", "if=target.health.pct-3*(target.health.pct%target.time_to_die)<=" + soul_reaper_pct );
@@ -5939,7 +5940,7 @@ void death_knight_t::init_action_list()
         // Diseases for runes
         st -> add_action( this, "Howling Blast", "if=!talent.necrotic_plague.enabled&!dot.frost_fever.ticking" );
         st -> add_action( this, "Howling Blast", "if=talent.necrotic_plague.enabled&!dot.necrotic_plague.ticking" );
-        st -> add_action( this, "Plague Strike", "if=!talent.necrotic_plague.enabled&!dot.blood_plague.ticking&unholy>0" );
+        st -> add_action( this, "Plague Strike", "if=!talent.necrotic_plague.enabled&!dot.blood_plague.remains<10&unholy>0 " );
 
         // Rime
         st -> add_action( this, "Howling Blast", "if=buff.rime.react" );
@@ -5952,11 +5953,9 @@ void death_knight_t::init_action_list()
         st -> add_action( this, "Howling Blast" );
 
         // Generate Runic Power or Runes
-        st -> add_action( this, "Frost Strike", "if=talent.runic_empowerment.enabled&unholy=1" );
         st -> add_talent( this, "Blood Tap", "if=target.health.pct-3*(target.health.pct%target.time_to_die)>35|buff.blood_charge.stack>=8" );
 
         // Better than waiting
-        st -> add_action( this, "Frost Strike", "if=runic_power>=40" );
         st -> add_talent( this, "Blood Tap" );
         st -> add_talent( this, "Plague Leech" );
         st -> add_action( this, "Empower Rune Weapon" );
