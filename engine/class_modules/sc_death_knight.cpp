@@ -5924,18 +5924,24 @@ void death_knight_t::init_action_list()
       {
         st -> add_talent( this, "Blood Tap", "if=buff.blood_charge.stack>10&(runic_power>76|(runic_power>=20&buff.killing_machine.react))" );
 
-        // Killing Machine / Very High RP
+
+        // Soul Reaper
+        st -> add_action( this, "Soul Reaper", "if=target.health.pct-3*(target.health.pct%target.time_to_die)<=" + soul_reaper_pct );
+        st -> add_talent( this, "Blood Tap", "if=(target.health.pct-3*(target.health.pct%target.time_to_die)<=" + soul_reaper_pct + "&cooldown.soul_reaper.remains=0)" );
+		
+		// Defile
+		st -> add_action( this, "Defile" );
+        st -> add_talent( this, "Blood Tap", "if=talent.defile.enabled&cooldown.defile.remains=0" );
+		
+		// Killing Machine / Very High RP
         st -> add_action( this, "Frost Strike", "if=buff.killing_machine.react|runic_power>88" );
+        st -> add_action( this, "Frost Strike", "if=cooldown.antimagic_shell.remains<1&runic_power>=50&!buff.antimagic_shell.up" );
         
         // Capped Runes
         st -> add_action( this, "Howling Blast", "if=death>1|frost>1" );
 
         // Diseases for free
         st -> add_talent( this, "Unholy Blight", "if=!disease.ticking" );
-
-        // Soul Reaper
-        st -> add_action( this, "Soul Reaper", "if=target.health.pct-3*(target.health.pct%target.time_to_die)<=" + soul_reaper_pct );
-        st -> add_talent( this, "Blood Tap", "if=(target.health.pct-3*(target.health.pct%target.time_to_die)<=" + soul_reaper_pct + "&cooldown.soul_reaper.remains=0)" );
 
         // Diseases for runes
         st -> add_action( this, "Howling Blast", "if=!talent.necrotic_plague.enabled&!dot.frost_fever.ticking" );
@@ -5950,7 +5956,7 @@ void death_knight_t::init_action_list()
 
         // Keep Runes on Cooldown
         st -> add_action( this, "Obliterate", "if=unholy>0&!buff.killing_machine.react" );
-        st -> add_action( this, "Howling Blast" );
+        st -> add_action( this, "Howling Blast", "if=!(target.health.pct-3*(target.health.pct%target.time_to_die)<=35&cooldown.soul_reaper.remains<2)|death+frost>=2" );
 
         // Generate Runic Power or Runes
         st -> add_talent( this, "Blood Tap", "if=target.health.pct-3*(target.health.pct%target.time_to_die)>35|buff.blood_charge.stack>=8" );
