@@ -10,7 +10,6 @@ namespace
 
 // ==========================================================================
 // Hunter
-// Improve lone wolf implementation -- Need to add a dismiss pet function.
 // ==========================================================================
 
 struct hunter_t;
@@ -1744,9 +1743,9 @@ struct exotic_munitions_poisoned_ammo_t: public residual_action::residual_period
 
   void init()
   {
-    hunter_ranged_attack_t::init();
+    base_t::init();
 
-    snapshot_flags &= ~( STATE_AP | STATE_CRIT | STATE_TGT_CRIT );
+    snapshot_flags |= STATE_CRIT | STATE_TGT_CRIT | STATE_AP | STATE_MUL_TA;
   }
 };
 
