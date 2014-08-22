@@ -3363,7 +3363,6 @@ struct cancel_t : public warlock_spell_t
   }
 };
 
-
 struct chaos_wave_dmg_t : public warlock_spell_t
 {
   chaos_wave_dmg_t( warlock_t* p ) :
@@ -3404,7 +3403,6 @@ struct chaos_wave_t : public warlock_spell_t
     return r;
   }
 };
-
 
 struct touch_of_chaos_t : public warlock_spell_t
 {

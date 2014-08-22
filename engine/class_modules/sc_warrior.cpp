@@ -4508,10 +4508,7 @@ void warrior_t::init_scaling()
     scales_with[STAT_WEAPON_OFFHAND_DPS] = true;
 
   if ( talents.gladiators_resolve -> ok() && primary_role() == ROLE_ATTACK )
-  {
-    scales_with[STAT_STAMINA] = false;
-    scales_with[STAT_ARMOR] = false;
-  }
+    scales_with[STAT_BONUS_ARMOR] = true;
 
   scales_with[STAT_AGILITY] = false;
 }

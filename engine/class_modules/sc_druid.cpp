@@ -11,9 +11,6 @@ namespace { // UNNAMED NAMESPACE
 // ==========================================================================
 
  /* WoD -- TODO:
-    = General =
-    Fix Force of Nature (summons fine, but treants take no actions)
-
     = Feral =
     Update LI implementation to work like in-game
     Damage check:
@@ -21,8 +18,7 @@ namespace { // UNNAMED NAMESPACE
       Swipe
 
     = Balance =
-    PvP bonuses
-    Verify stuff.
+    PvP/Tier Bonuses
 
     = Guardian =
     Damage check
@@ -33,7 +29,6 @@ namespace { // UNNAMED NAMESPACE
 
     = Restoration =
     Err'thing
-
 */
 
 // Forward declarations
@@ -5636,10 +5631,7 @@ void druid_t::init_base_stats()
     resources.base[RESOURCE_COMBO_POINT] = 5;
   }
   else
-  {
     resources.base[RESOURCE_ECLIPSE] = 105;
-    resources.current[RESOURCE_ECLIPSE] = 0;
-  }
 
   base_energy_regen_per_second = 10;
 

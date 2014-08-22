@@ -1378,7 +1378,7 @@ void print_html_stats ( report::sc_html_stream& os, player_t* a )
       100.0 * a -> cache.mastery_value(),
       a -> initial.stats.mastery_rating );
     j++;
-    if ( buffed_stats.mh_attack_expertise > 0 )
+    if ( buffed_stats.mh_attack_expertise > 7.5 )
     {
       if ( a -> dual_wield() )
       {

@@ -123,7 +123,6 @@ double attack_t::dodge_chance( double expertise, player_t* t ) const
   // subtract the player's expertise chance
   dodge -= expertise;
 
-
   return dodge;
 }
 

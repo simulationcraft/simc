@@ -8,7 +8,6 @@
   Add all buffs
   - Crackling Jade Lightning
   Change expel harm to heal later on.
-  - Change GCD to 1.5 seconds for mistweaver, allow 1.0 second gcd while in ox/tiger stance.
 
   WINDWALKER:
   Power Strikes timers not linked to spelldata (fix soon)

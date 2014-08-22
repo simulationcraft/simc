@@ -3,7 +3,7 @@
 // Send questions to natehieter@gmail.com
 // ==========================================================================
 // WoD To-do
-
+// OH MY GOD CLEAN UP THE TODO SECTION - lots of love, collision.
 // Do perks that effect crit (such as enhanced pyrotechnics) also effect the crit chance of multistrike?
 // Extensive Test - At a glance, enhanced pyrotechnics works properly. Need to test more in depth though (remember CM interacts with this!)
 // multistrike triggering ignite? - CONFIRMED BY CELESTALON TO INTERACT WITH EACHOTHER

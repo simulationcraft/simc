@@ -239,8 +239,8 @@ double gear_stats_t::stat_mod( stat_e stat )
 {
   switch ( stat )
   {
-    case STAT_ATTACK_POWER:      return 0.50;
-    case STAT_SPELL_POWER:       return 0.86;
+    case STAT_ATTACK_POWER:      return 1.0;
+    case STAT_SPELL_POWER:       return 1.0;
     default:                     return 1.0;
   }
 }
