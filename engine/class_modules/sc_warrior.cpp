@@ -124,8 +124,8 @@ public:
     // All Warriors
     cooldown_t* charge;
     cooldown_t* heroic_leap;
-    cooldown_t* intervene;
     cooldown_t* rage_from_charge;
+    cooldown_t* revenge;
     cooldown_t* stance_swap;
     cooldown_t* stance_cooldown;
     // Talents
@@ -143,7 +143,6 @@ public:
     cooldown_t* demoralizing_shout;
     cooldown_t* last_stand;
     cooldown_t* rage_from_crit_block;
-    cooldown_t* revenge;
     cooldown_t* shield_slam;
     cooldown_t* shield_wall;
   } cooldown;
@@ -395,7 +394,6 @@ public:
     cooldown.die_by_the_sword         = get_cooldown( "die_by_the_sword" );
     cooldown.dragon_roar              = get_cooldown( "dragon_roar" );
     cooldown.heroic_leap              = get_cooldown( "heroic_leap" );
-    cooldown.intervene                = get_cooldown( "intervene" );
     cooldown.last_stand               = get_cooldown( "last_stand" );
     cooldown.rage_from_charge         = get_cooldown( "rage_from_charge" );
     cooldown.rage_from_charge         -> duration = timespan_t::from_seconds( 12.0 );
@@ -1016,7 +1014,7 @@ void warrior_attack_t::impact( action_state_t* s )
           trigger_sweeping_strikes( s );
         if ( special )
         {
-          if ( p() -> buff.bloodbath -> up() && this -> id != 156287 ) // Ravager does not trigger bloodbath.
+          if ( p() -> buff.bloodbath -> up() )
             trigger_bloodbath_dot( s -> target, s -> result_amount );
           if ( p() -> new_sets.has_set_bonus( SET_MELEE, T16, B2 ) && td( s -> target ) ->  debuffs_colossus_smash -> up() && // Melee tier 16 2 piece.
                ( this ->  weapon == &( p() -> main_hand_weapon ) || this -> id == 100130 ) && // Only procs once per ability used.
@@ -2152,46 +2150,6 @@ struct raging_blow_t: public warrior_attack_t
   }
 };
 
-// Ravager ==============================================================
-
-struct ravager_tick_t: public warrior_attack_t
-{
-  ravager_tick_t( warrior_t* p, const std::string& name ):
-    warrior_attack_t( name, p, p -> find_spell( 156287 ) )
-  {
-    aoe = -1;
-    dual = true;
-  }
-};
-
-struct ravager_t: public warrior_attack_t
-{
-  attack_t* ravager;
-  ravager_t( warrior_t* p, const std::string& options_str ):
-    warrior_attack_t( "ravager", p, p -> talents.ravager ),
-    ravager( new ravager_tick_t( p, "ravager_tick" ) )
-  {
-    parse_options( NULL, options_str );
-    stancemask = STANCE_BATTLE | STANCE_GLADIATOR | STANCE_DEFENSE;
-    hasted_ticks = callbacks = false;
-    add_child( ravager );
-  }
-
-  void execute()
-  {
-    p() -> buff.ravager -> trigger();
-
-    warrior_attack_t::execute();
-  }
-
-  void tick( dot_t* )
-  {
-    ravager -> execute();
-  }
-
-  double composite_haste() const { return 1.0; }
-};
-
 // Revenge ==================================================================
 
 struct revenge_t: public warrior_attack_t
@@ -2313,6 +2271,74 @@ struct enraged_regeneration_t: public warrior_heal_t
     warrior_heal_t::execute();
   }
 };
+
+// Rend ==============================================================
+
+struct rend_burst_t: public warrior_attack_t
+{
+  rend_burst_t( warrior_t* p ):
+    warrior_attack_t( "rend_burst", p, p -> find_spell( 94009 ) )
+  {
+    dual = true;
+    may_multistrike = 1;
+  }
+
+  double target_armor( player_t* ) const
+  {
+    return 0.0;
+  }
+};
+
+struct rend_t: public warrior_attack_t
+{
+  rend_burst_t* burst;
+  rend_t( warrior_t* p, const std::string& options_str ):
+    warrior_attack_t( "rend", p, p -> spec.rend ),
+    burst( new rend_burst_t( p ) )
+  {
+    parse_options( NULL, options_str );
+    stancemask = STANCE_BATTLE | STANCE_DEFENSE;
+    hasted_ticks = tick_zero = false;
+    tick_may_crit = true;
+    may_multistrike = 1;
+    add_child( burst );
+  }
+
+  void impact( action_state_t* s )
+  {
+    if ( result_is_hit( s -> result ) )
+    {
+      dot_t* dot = get_dot( s -> target );
+      if ( dot -> is_ticking() && dot -> remains() < dot -> current_action -> base_tick_time )
+        burst -> execute();
+    }
+    warrior_attack_t::impact( s );
+  }
+
+  void tick( dot_t* d )
+  {
+    warrior_attack_t::tick( d );
+    if ( p() -> talents.taste_for_blood -> ok() )
+      p() -> resource_gain( RESOURCE_RAGE,
+      p() -> talents.taste_for_blood -> effectN( 1 ).trigger() -> effectN( 1 ).resource( RESOURCE_RAGE ),
+      p() -> gain.taste_for_blood );
+  }
+
+  void last_tick( dot_t* d )
+  {
+    warrior_attack_t::last_tick( d );
+    burst -> execute();
+  }
+
+  bool ready()
+  {
+    if ( p() -> main_hand_weapon.type == WEAPON_NONE )
+      return false;
+
+    return warrior_attack_t::ready();
+  }
+};
+
 
 // Siegebreaker ===============================================================
 
@@ -3068,6 +3094,47 @@ struct rallying_cry_t: public warrior_spell_t
   }
 };
 
+
+// Ravager ==============================================================
+
+struct ravager_tick_t: public warrior_spell_t
+{
+  ravager_tick_t( warrior_t* p, const std::string& name ):
+    warrior_spell_t( name, p, p -> find_spell( 156287 ) )
+  {
+    aoe = -1;
+    dual = true;
+  }
+};
+
+struct ravager_t: public warrior_spell_t
+{
+  spell_t* ravager;
+  ravager_t( warrior_t* p, const std::string& options_str ):
+    warrior_spell_t( "ravager", p, p -> talents.ravager ),
+    ravager( new ravager_tick_t( p, "ravager_tick" ) )
+  {
+    parse_options( NULL, options_str );
+    stancemask = STANCE_BATTLE | STANCE_GLADIATOR | STANCE_DEFENSE;
+    hasted_ticks = callbacks = false;
+    add_child( ravager );
+  }
+
+  void execute()
+  {
+    p() -> buff.ravager -> trigger();
+
+    warrior_spell_t::execute();
+  }
+
+  void tick( dot_t* )
+  {
+    ravager -> execute();
+  }
+
+  double composite_haste() const { return 1.0; }
+};
+
 // Recklessness =============================================================
 
 struct recklessness_t: public warrior_spell_t
@@ -3099,73 +3166,6 @@ struct recklessness_t: public warrior_spell_t
   {
     cd_duration = cooldown -> duration / ( 1 + player -> cache.readiness() );
     warrior_spell_t::update_ready( cd_duration );
-  }
-};
-
-// Rend ==============================================================
-
-struct rend_burst_t: public warrior_spell_t
-{
-  rend_burst_t( warrior_t* p ):
-    warrior_spell_t( "rend_burst", p, p -> find_spell( 94009 ) )
-  {
-    dual = true;
-    may_multistrike = 1;
-  }
-
-  double target_armor( player_t* ) const
-  {
-    return 0.0;
-  }
-};
-
-struct rend_t: public warrior_spell_t
-{
-  rend_burst_t* burst;
-  rend_t( warrior_t* p, const std::string& options_str ):
-    warrior_spell_t( "rend", p, p -> spec.rend ),
-    burst( new rend_burst_t( p ) )
-  {
-    parse_options( NULL, options_str );
-    stancemask = STANCE_BATTLE | STANCE_DEFENSE;
-    hasted_ticks = tick_zero = false;
-    tick_may_crit = true;
-    may_multistrike = 1;
-    add_child( burst );
-  }
-
-  void impact( action_state_t* s )
-  {
-    if ( result_is_hit( s -> result ) )
-    {
-      dot_t* dot = get_dot( s -> target );
-      if ( dot -> is_ticking() && dot -> remains() < dot -> current_action -> base_tick_time )
-        burst -> execute();
-    }
-    warrior_spell_t::impact( s );
-  }
-
-  void tick( dot_t* d )
-  {
-    warrior_spell_t::tick( d );
-    if ( p() -> talents.taste_for_blood -> ok() )
-      p() -> resource_gain( RESOURCE_RAGE,
-      p() -> talents.taste_for_blood -> effectN( 1 ).trigger() -> effectN( 1 ).resource( RESOURCE_RAGE ),
-      p() -> gain.taste_for_blood );
-  }
-
-  void last_tick( dot_t* d )
-  {
-    warrior_spell_t::last_tick( d );
-    burst -> execute();
-  }
-
-  bool ready()
-  {
-    if ( p() -> main_hand_weapon.type == WEAPON_NONE )
-      return false;
-
-    return warrior_spell_t::ready();
   }
 };
 
