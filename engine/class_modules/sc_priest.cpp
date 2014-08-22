@@ -2201,7 +2201,7 @@ struct mind_blast_t final : public priest_spell_t
       priest.cooldowns.mind_blast -> duration += timespan_t::from_millis( 6000 ); //priest.glyphs.mind_harvest -> effectN( 2 ).base_value() ); // Wrong data in DBC -- Twintop 2014/08/18
 
     if ( priest.talents.clarity_of_power -> ok() )
-      priest.cooldowns.mind_blast -> duration -= timespan_t::from_millis( - priest.talents.clarity_of_power -> effectN( 4 ).base_value() ); //Effect #4 wod.wowhead.com/spell=155246 
+      priest.cooldowns.mind_blast -> duration += priest.talents.clarity_of_power -> effectN( 3 ).time_value(); //Now Effect #3... wod.wowhead.com/spell=155246 
 
     // Set bonus changed in build 18537. Leaving old one in, but commented out, for now. - Twintop 2014/07/11
 /*    if ( priest.sets.has_set_bonus( SET_T17_2PC_CASTER ) )
