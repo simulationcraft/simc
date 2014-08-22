@@ -2363,7 +2363,7 @@ struct shield_slam_t: public warrior_attack_t
     cooldown = p -> cooldown.shield_slam;
 
     rage_gain = data().effectN( 3 ).resource( RESOURCE_RAGE );
-    attack_power_mod.direct = 3.696; //Hard-coded in tooltip.
+    attack_power_mod.direct = 3.18; //Hard-coded in tooltip.
   }
 
   double action_multiplier() const
