@@ -3130,6 +3130,9 @@ struct meteor_impact_t : public mage_spell_t
   virtual void impact( action_state_t* s )
   {
     mage_spell_t::impact( s );
+    if ( result_is_hit( s -> result) || result_is_multistrike( s -> result) )
+      trigger_ignite( s );
+    
     meteor_burn -> execute();
 
   }
