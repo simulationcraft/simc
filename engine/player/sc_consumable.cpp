@@ -25,8 +25,8 @@ struct elixir_data_t
 const elixir_data_t elixir_data[] =
 {
   // mop
-  { "mantid", ELIXIR_GUARDIAN, STAT_BONUS_ARMOR, 2250, 2730 },
-  { "mad_hozen", ELIXIR_BATTLE, STAT_CRIT_RATING, 750, 990 },
+  { "mantid", ELIXIR_GUARDIAN, STAT_BONUS_ARMOR, 256, 2730 },
+  { "mad_hozen", ELIXIR_BATTLE, STAT_CRIT_RATING, 85, 990 },
 };
 
 struct food_data_t
@@ -799,59 +799,6 @@ struct health_stone_t : public heal_t
 };
 
 // ==========================================================================
-// Dark Rune
-// ==========================================================================
-
-struct dark_rune_t : public action_t
-{
-  int trigger;
-  int health;
-  int mana;
-
-  dark_rune_t( player_t* p, const std::string& options_str ) :
-    action_t( ACTION_USE, "dark_rune", p ), trigger( 0 ), health( 0 ), mana( 0 )
-  {
-    option_t options[] =
-    {
-      opt_int( "trigger", trigger ),
-      opt_int( "mana",    mana ),
-      opt_int( "health",  health ),
-      opt_null()
-    };
-    parse_options( options, options_str );
-
-    if ( mana    == 0 ) mana = trigger;
-    if ( trigger == 0 ) trigger = mana;
-    assert( mana > 0 && trigger > 0 );
-
-    cooldown = p -> get_cooldown( "rune" );
-    cooldown -> duration = timespan_t::from_minutes( 15 );
-
-    trigger_gcd = timespan_t::zero();
-    harmful = false;
-  }
-
-  virtual void execute()
-  {
-    if ( sim -> log ) sim -> out_log.printf( "%s uses Dark Rune", player -> name() );
-    player -> resource_gain( RESOURCE_MANA,   mana, player -> gains.dark_rune );
-    player -> resource_loss( RESOURCE_HEALTH, health );
-    update_ready();
-  }
-
-  virtual bool ready()
-  {
-    if ( player -> resources.current[ RESOURCE_HEALTH ] <= health )
-      return false;
-
-    if ( ( player -> resources.max    [ RESOURCE_MANA ] -
-           player -> resources.current[ RESOURCE_MANA ] ) < trigger )
-      return false;
-
-    return action_t::ready();
-  }
-};
-// ==========================================================================
 //  Potion Base
 // ==========================================================================
 
@@ -986,13 +933,11 @@ action_t* consumable::create_action( player_t*          p,
                                      const std::string& options_str )
 {
   if ( name == "potion"               ) return new   dbc_potion_t( p, options_str );
-  if ( name == "dark_rune"            ) return new    dark_rune_t( p, options_str );
   if ( name == "flask"                ) return new        flask_t( p, options_str );
   if ( name == "elixir"               ) return new       elixir_t( p, options_str );
   if ( name == "food"                 ) return new         food_t( p, options_str );
   if ( name == "health_stone"         ) return new health_stone_t( p, options_str );
   if ( name == "mana_potion"          ) return new  mana_potion_t( p, options_str );
-  if ( name == "mythical_mana_potion" ) return new  mana_potion_t( p, options_str );
 
   return 0;
 }
