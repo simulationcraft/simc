@@ -3250,7 +3250,7 @@ void print_html_player_results_spec_gear( report::sc_html_stream& os, sim_t* sim
             }
           }
           if ( p -> talent_points.has_row_col( row, col ) )
-            os.printf( "<li><strong>%d</strong>:&nbsp;%s</li>\n", ( row + 1 ) * 15, name.c_str() );
+            os.printf( "<li><strong>%d</strong>:&nbsp;%s</li>\n", row == 6 ? 100 : ( row + 1 ) * 15, name.c_str() );
         }
       }
 
