@@ -44,6 +44,7 @@ public:
   bool swapping; // Disables automated swapping when it's not required to use the ability.
   // Set to true whenever a player uses the swap option inside of stance_t, as we should assume they are intentionally sitting in defensive stance.
   bool t17_2pc_protection;
+  bool heroic_charge;
 
   simple_sample_data_t cs_damage;
   simple_sample_data_t priority_damage;
@@ -70,7 +71,6 @@ public:
     buff_t* battle_stance;
     buff_t* berserker_rage;
     buff_t* defensive_stance;
-    buff_t* heroic_charge;
     // Talents
     buff_t* avatar;
     buff_t* bloodbath;
@@ -418,6 +418,7 @@ public:
     swapping = false;
     base.distance = 3.0;
     t17_2pc_protection = false;
+    heroic_charge = false;
 
     regen_type = REGEN_DISABLED;
   }
@@ -1382,10 +1383,11 @@ struct charge_t: public warrior_attack_t
   {
     warrior_attack_t::execute();
 
-    if ( first_charge == true )
+    if ( first_charge )
       first_charge = !first_charge;
 
-    p() -> buff.heroic_charge -> expire();
+    if ( p() -> heroic_charge )
+      p() -> heroic_charge = false;
 
     if ( p() -> cooldown.rage_from_charge -> up() )
     {
@@ -1406,7 +1408,7 @@ struct charge_t: public warrior_attack_t
 
   bool ready()
   {
-    if ( first_charge == true || p() -> buff.heroic_charge -> up() ) // Assumes that we charge into combat, instead of setting initial distance to 20 yards.
+    if ( first_charge == true || p() -> heroic_charge == true ) // Assumes that we charge into combat, instead of setting initial distance to 20 yards.
       return warrior_attack_t::ready();
 
     if ( p() -> current.distance_to_move > base_teleport_distance ||
@@ -1847,10 +1849,8 @@ struct heroic_leap_t: public warrior_attack_t
     if ( p() -> current.distance_to_move >  // Hack so that heroic leap doesn't deal damage if the target is far away.
          data().effectN( 2 ).trigger() -> effectN( 1 ).radius() )
          s -> result_amount = 0;
-
-    p() -> buff.heroic_leap_glyph -> trigger();
-
     warrior_attack_t::impact( s );
+    p() -> buff.heroic_leap_glyph -> trigger();
   }
 
   void update_ready( timespan_t cd_duration )
@@ -1964,7 +1964,6 @@ struct heroic_charge_t: public warrior_attack_t
     add_child( leap );
     add_child( charge );
     dual = true;
-    school = SCHOOL_PHYSICAL; // Used to give the pie chart a different color.
     min_gcd = timespan_t::from_millis( 750 );
   }
 
@@ -1982,7 +1981,7 @@ struct heroic_charge_t: public warrior_attack_t
       leap -> execute();
 
     warrior_attack_t::execute();
-    p() -> buff.heroic_charge -> trigger();
+    p() -> heroic_charge = true;
     charge -> execute();
   }
 
@@ -4385,8 +4384,6 @@ void warrior_t::create_buffs()
 
   using namespace buffs;
 
-  buff.heroic_charge = buff_creator_t( this, "heroic_charge" );
-
   buff.avatar = buff_creator_t( this, "avatar", talents.avatar )
     .cd( timespan_t::zero() )
     .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
@@ -4686,6 +4683,7 @@ void warrior_t::reset()
   active_stance = STANCE_BATTLE;
   swapping = false;
   t17_2pc_protection = false;
+  heroic_charge = false;
 
   t15_2pc_melee.reset();
 }
