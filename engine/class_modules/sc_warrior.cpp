@@ -543,6 +543,15 @@ public:
     return p() -> get_target_data( t );
   }
 
+  virtual double target_armor( player_t* t ) const
+  {
+    double a = ab::target_armor( t );
+
+    a *= 1.0 - td( t ) -> debuffs_colossus_smash -> current_value;
+
+    return a;
+  }
+
   virtual void update_ready( timespan_t cd_duration )
   {
     //Head Long Rush reduces the cooldown depending on the amount of haste.
@@ -765,15 +774,6 @@ struct warrior_attack_t: public warrior_action_t < melee_attack_t >
     special = true;
   }
 
-  virtual double target_armor( player_t* t ) const
-  {
-    double a = base_t::target_armor( t );
-
-    a *= 1.0 - td( t ) -> debuffs_colossus_smash -> current_value;
-
-    return a;
-  }
-
   virtual void   execute();
 
   virtual void   impact( action_state_t* s );
@@ -786,7 +786,7 @@ struct warrior_attack_t: public warrior_action_t < melee_attack_t >
     if ( dmg == 0.0 )
       return 0;
 
-    if ( weapon -> slot == SLOT_OFF_HAND )
+    if ( weapon -> slot == SLOT_OFF_HAND && !p() -> bugs ) // Currently enrage is deactivating off-hand damage multipliers.
     {
       dmg *= 1.0 + p() -> spec.crazed_berserker -> effectN( 2 ).percent();
 
