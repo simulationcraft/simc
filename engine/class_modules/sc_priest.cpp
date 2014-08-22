@@ -6263,8 +6263,8 @@ void priest_t::apl_shadow()
   main -> add_action( "mind_spike,if=buff.surge_of_darkness.react&active_enemies<=5" );
   main -> add_action( "divine_star,if=talent.divine_star.enabled&target.distance<=28&active_enemies>1" );
   main -> add_action( "mind_sear,chain=1,interrupt=1,if=active_enemies>=3" );
-  //main -> add_action( "mind_flay,chain=1,interrupt=1" );
-  main -> add_action( "shadow_word_pain,moving=0,cycle_targets=1" ); //Higher DPS, but will probably be fixed.
+  main -> add_action( "mind_flay,chain=1,interrupt=1" );
+  //main -> add_action( "shadow_word_pain,moving=0,cycle_targets=1" ); //Higher DPS, but will probably be fixed.
   main -> add_action( "shadow_word_death,moving=1" );
   main -> add_action( "mind_blast,moving=1,if=buff.shadowy_insight.react&cooldown_react" );
   main -> add_action( "divine_star,moving=1,if=talent.divine_star.enabled&target.distance<=28" );
@@ -6289,7 +6289,7 @@ void priest_t::apl_shadow()
   cop -> add_action( "mind_sear,chain=1,interrupt=1,if=active_enemies>=8" );
   cop -> add_action( "mind_spike,if=active_enemies<=8&buff.surge_of_darkness.react" );
   cop -> add_action( "mind_sear,chain=1,interrupt=1,if=active_enemies>=6" );
-//  cop -> add_action( "mind_flay,if=target.dot.devouring_plague_tick.ticks_remain>1&active_enemies=1,chain=1,interrupt=1" ); //Higher DPS, but will probably be fixed.
+  cop -> add_action( "mind_flay,if=target.dot.devouring_plague_tick.ticks_remain>1&active_enemies=1,chain=1,interrupt=1" ); //Higher DPS, but will probably be fixed.
   cop -> add_action( "mind_spike" );
   cop -> add_action( "shadow_word_death,moving=1" );
   cop -> add_action( "mind_blast,moving=1,if=buff.shadowy_insight.react&cooldown_react" );
