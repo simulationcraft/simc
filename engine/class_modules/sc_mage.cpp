@@ -21,6 +21,7 @@
 // Arcane Orb needs to be treated as a flying object that can hit multiple targets in a line, instead of as something which is basically just an explosion around a single target.
 // Need to do some basic d=vt calcs to have a more realistic travel time for AO.
 // Improve the delay between tick and aoe for NT by applying a guassian distribution centered around 1.25s with stddev such that travel time is ~1.2-1.3s
+// Removing hardcoding of Inferno Blast CD once it has returned to the spell data
 
 // Are Meteor ticks effected by haste? - Maybe? They are bugged on Beta as of 8/11/2014 (http://us.battle.net/wow/en/forum/topic/13780228135)
 
@@ -2914,7 +2915,7 @@ struct inferno_blast_t : public mage_spell_t
   {
     parse_options( NULL, options_str );
     may_hot_streak = true;
-    cooldown = p -> cooldowns.inferno_blast;
+    cooldown -> duration = timespan_t::from_seconds( 8.0 );
     max_spread_targets = 3;
     max_spread_targets += p -> glyphs.inferno_blast -> ok() ? p -> glyphs.inferno_blast -> effectN( 1 ).base_value() : 0;
     max_spread_targets += p -> perks.improved_inferno_blast ? p -> perks.improved_inferno_blast -> effectN( 1 ).base_value() : 0;
