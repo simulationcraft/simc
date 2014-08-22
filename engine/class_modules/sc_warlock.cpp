@@ -741,7 +741,6 @@ struct shadow_bite_t : public warlock_pet_spell_t
   { }
 };
 
-
 struct lash_of_pain_t : public warlock_pet_spell_t
 {
   lash_of_pain_t( warlock_pet_t* p ) :
@@ -750,7 +749,6 @@ struct lash_of_pain_t : public warlock_pet_spell_t
     if ( p -> owner -> bugs ) min_gcd = timespan_t::from_seconds( 1.5 );
   }
 };
-
 
 struct whiplash_t : public warlock_pet_spell_t
 {
@@ -761,14 +759,12 @@ struct whiplash_t : public warlock_pet_spell_t
   }
 };
 
-
 struct torment_t : public warlock_pet_spell_t
 {
   torment_t( warlock_pet_t* p ) :
     warlock_pet_spell_t( p, "Torment" )
   { }
 };
-
 
 struct felbolt_t : public warlock_pet_spell_t
 {
@@ -789,7 +785,6 @@ struct felbolt_t : public warlock_pet_spell_t
   }
 };
 
-
 struct mortal_cleave_t : public warlock_pet_melee_attack_t
 {
   mortal_cleave_t( warlock_pet_t* p ) :
@@ -807,7 +802,6 @@ struct mortal_cleave_t : public warlock_pet_melee_attack_t
   }
 };
 
-
 struct wrathstorm_tick_t : public warlock_pet_melee_attack_t
 {
   wrathstorm_tick_t( warlock_pet_t* p, const spell_data_t& s ) :
@@ -818,7 +812,6 @@ struct wrathstorm_tick_t : public warlock_pet_melee_attack_t
     weapon = &( p -> main_hand_weapon );
   }
 };
-
 
 struct wrathstorm_t : public warlock_pet_melee_attack_t
 {
@@ -856,7 +849,6 @@ struct wrathstorm_t : public warlock_pet_melee_attack_t
     if ( ! p() -> is_sleeping() ) p() -> melee_attack -> execute();
   }
 };
-
 
 struct tongue_lash_t : public warlock_pet_spell_t
 {
@@ -928,7 +920,6 @@ struct immolation_t : public warlock_pet_spell_t
     action_t::cancel();
   }
 };
-
 
 struct doom_bolt_t : public warlock_pet_spell_t
 {
@@ -1097,7 +1088,7 @@ double warlock_pet_t::composite_player_multiplier( school_e school ) const
   double m = pet_t::composite_player_multiplier( school );
 
   if ( o() -> mastery_spells.master_demonologist -> ok() )
-    m *= 1.0 + owner -> cache.mastery_value();
+    m *= 1.0 + o() -> cache.mastery() * o() -> mastery_spells.master_demonologist -> effectN( 1 ).mastery_value();
 
   if ( o() -> talents.grimoire_of_supremacy -> ok() && pet_type != PET_WILD_IMP )
     m *= 1.0 + supremacy -> effectN( 1 ).percent(); // The relevant effect is not attatched to the talent spell, weirdly enough
@@ -1106,10 +1097,8 @@ double warlock_pet_t::composite_player_multiplier( school_e school ) const
     m *= 1.0  + o() -> buffs.tier16_2pc_fiery_wrath -> value();
   if ( buffs.demonic_synergy -> up() )
       m *= 1.0 + buffs.demonic_synergy -> data().effectN( 1 ).percent();
-    
+
   m *= 1.0 + o() -> spec.improved_demons -> effectN( 1 ).percent();
-
-
   return m;
 }
 
@@ -1596,6 +1585,7 @@ struct warlock_state_t : public action_state_t
 
 struct warlock_spell_t : public spell_t
 {
+  bool demo_mastery;
 private:
   void _init_warlock_spell_t()
   {
@@ -1612,7 +1602,7 @@ private:
     ds_tick_stats -> school = school;
     mg_tick_stats = player -> get_stats( name_str + "_mg", this );
     mg_tick_stats -> school = school;
-
+ 
     parse_spell_coefficient( *this );
   }
 
@@ -1648,13 +1638,15 @@ public:
   core_event_t* cost_event;
 
   warlock_spell_t( warlock_t* p, const std::string& n ) :
-    spell_t( n, p, p -> find_class_spell( n ) )
+    spell_t( n, p, p -> find_class_spell( n ) ),
+    demo_mastery( spell_t::data().affected_by( p -> mastery_spells.master_demonologist -> effectN( 3 ) ) )
   {
     _init_warlock_spell_t();
   }
 
   warlock_spell_t( const std::string& token, warlock_t* p, const spell_data_t* s = spell_data_t::nil() ) :
-    spell_t( token, p, s )
+    spell_t( token, p, s ),
+    demo_mastery( spell_t::data().affected_by( p -> mastery_spells.master_demonologist -> effectN( 3 ) ) )
   {
     _init_warlock_spell_t();
   }
@@ -1840,19 +1832,12 @@ public:
     return spell_t::composite_target_multiplier( t ) * m;
   }
 
-  virtual double composite_persistent_multiplier( const action_state_t* s ) const
+  virtual double action_multiplier() const
   {
-    double pm = spell_t::composite_persistent_multiplier( s );
+    double pm = spell_t::action_multiplier();
 
-    /* TODO: Confirm if the actual mastery value is snapshotted or
-       if it's only whether or not the spell was cast under meta. */
-    if ( p() -> mastery_spells.master_demonologist -> ok() )
-    {
-      if ( p() -> buffs.metamorphosis -> up() )
-        pm *= 1.0 + p() -> cache.mastery_value() * 2.0;
-      else
-        pm *= 1.0 + p() -> cache.mastery_value();
-    }
+    if ( p() -> buffs.metamorphosis -> up() && demo_mastery )
+      pm *= 1.0 + p() -> cache.mastery() * p() -> mastery_spells.master_demonologist -> effectN( 3 ).mastery_value();
 
     return pm;
   }
@@ -2092,79 +2077,85 @@ struct agony_t : public warlock_spell_t
     return m;
   }
 };
-    
-    struct doom_t : public warlock_spell_t
-    {
-        doom_t( warlock_t* p ) :
-        warlock_spell_t( "doom", p, p -> spec.doom )
-        {
-            may_crit = false;
-            base_crit += p -> perk.empowered_doom -> effectN( 1 ).percent();
-        }
-        
-        virtual void tick( dot_t* d )
-        {
-            warlock_spell_t::tick( d );
-            
-            if ( d -> state -> result == RESULT_CRIT ) trigger_wild_imp( p() );
-            
-            if ( p() -> glyphs.siphon_life -> ok() )
-                p() -> resource_gain( RESOURCE_HEALTH, d -> state -> result_amount * p() -> glyphs.siphon_life -> effectN( 1 ).percent(), p() -> gains.siphon_life );
-        }
-        
-        virtual bool ready()
-        {
-            bool r = warlock_spell_t::ready();
-            
-            if ( ! p() -> buffs.metamorphosis -> check() ) r = false;
-            
-            return r;
-        }
-    };
-    
-   
 
-struct demonbolt_t : public warlock_spell_t
+struct doom_t: public warlock_spell_t
 {
-  demonbolt_t( warlock_t* p ) :
+  doom_t( warlock_t* p ):
+    warlock_spell_t( "doom", p, p -> spec.doom )
+  {
+    may_crit = false;
+    base_crit += p -> perk.empowered_doom -> effectN( 1 ).percent();
+  }
+
+  double action_multiplier()
+  {
+    double am = spell_t::action_multiplier();
+
+    am *= 1.0 + p() -> cache.mastery() * p() -> mastery_spells.master_demonologist -> effectN( 3 ).mastery_value();
+
+    return am;
+  }
+
+  virtual void tick( dot_t* d )
+  {
+    warlock_spell_t::tick( d );
+
+    if ( d -> state -> result == RESULT_CRIT ) trigger_wild_imp( p() );
+
+    if ( p() -> glyphs.siphon_life -> ok() )
+      p() -> resource_gain( RESOURCE_HEALTH, d -> state -> result_amount * p() -> glyphs.siphon_life -> effectN( 1 ).percent(), p() -> gains.siphon_life );
+  }
+
+  virtual bool ready()
+  {
+    bool r = warlock_spell_t::ready();
+
+    if ( ! p() -> buffs.metamorphosis -> check() ) r = false;
+
+    return r;
+  }
+};
+
+struct demonbolt_t: public warlock_spell_t
+{
+  demonbolt_t( warlock_t* p ):
     warlock_spell_t( "demonbolt", p, p -> talents.demonbolt )
   {
-      
+
   }
 
   virtual double cost() const
-    {
-        double c = warlock_spell_t::cost();
-            c *= 1.0 +  p() -> buffs.demonbolt -> stack() * p() -> talents.demonbolt -> effectN( 3 ).percent();
-        return c;
-    }
- 
+  {
+    double c = warlock_spell_t::cost();
+    c *= 1.0 + p() -> buffs.demonbolt -> stack() * p() -> talents.demonbolt -> effectN( 3 ).percent();
+    return c;
+  }
 
   virtual void execute()
   {
     warlock_spell_t::execute();
 
-      
+
     //Reduce "de"buff duration by spellhaste
-    p() -> buffs.demonbolt -> buff_duration =  p() -> buffs.demonbolt -> data().duration() * composite_haste();
+    p() -> buffs.demonbolt -> buff_duration = p() -> buffs.demonbolt -> data().duration() * composite_haste();
     p() -> buffs.demonbolt -> trigger();
 
   }
 
-    virtual double action_multiplier() const
-    {
-        double am = warlock_spell_t::action_multiplier();
-        
-        am *= 1.0 + p() -> buffs.demonbolt -> stack() * p() -> talents.demonbolt -> effectN( 2 ).percent();
-        
-        return am;
-    }
-    
+  virtual double action_multiplier() const
+  {
+    double am = warlock_spell_t::action_multiplier();
+
+    am *= 1.0 + p() -> buffs.demonbolt -> stack() * p() -> talents.demonbolt -> effectN( 2 ).percent();
+
+    return am;
+  }
+
   virtual bool ready()
   {
     bool r = warlock_spell_t::ready();
 
-    if ( ! p() -> talents.demonbolt -> ok()  ) r = false;
+    if ( ! p() -> talents.demonbolt -> ok() ) r = false;
 
     if ( ! p() -> buffs.metamorphosis -> check() ) r = false;
 
@@ -4718,8 +4709,11 @@ double warlock_t::composite_player_multiplier( school_e school ) const
     m *= 1.0 + buffs.tier16_2pc_fiery_wrath -> value();
 
   if ( buffs.demonic_synergy -> up() )
-        m *= 1.0 + buffs.demonic_synergy -> data().effectN( 1 ).percent();
-    
+    m *= 1.0 + buffs.demonic_synergy -> data().effectN( 1 ).percent();
+
+  if ( mastery_spells.master_demonologist -> ok() )
+    m *= 1.0 + cache.mastery() * mastery_spells.master_demonologist -> effectN( 1 ).mastery_value();
+
   return m;
 }
 
