@@ -1476,9 +1476,10 @@ struct ambush_t : public rogue_attack_t
 
       td -> debuffs.find_weakness -> trigger();
     }
-
+/*
     if ( result_is_multistrike( state -> result ) )
       p() -> trigger_sinister_calling( state );
+*/
   }
 
   void consume_resource()
@@ -1550,9 +1551,10 @@ struct backstab_t : public rogue_attack_t
   void impact( action_state_t* state )
   {
     rogue_attack_t::impact( state );
-
+/*
     if ( result_is_multistrike( state -> result ) )
       p() -> trigger_sinister_calling( state );
+*/
   }
 
   double composite_da_multiplier( const action_state_t* state ) const
@@ -2846,26 +2848,16 @@ void rogue_t::trigger_auto_attack( const action_state_t* state )
 
 inline void actions::rogue_attack_t::trigger_sinister_calling( dot_t* dot )
 {
-  dot -> current_tick++;
-  dot -> tick();
-  // Advances the time, so calculate new time to tick, num ticks, last tick factor
-  if ( dot -> remains() > dot -> current_action -> tick_time( dot -> state -> haste ) )
-  {
-    timespan_t remains = dot -> end_event -> remains() - dot -> current_action -> tick_time( dot -> state -> haste );
-    timespan_t tick_remains = dot -> tick_event ? dot -> tick_event -> remains() : timespan_t::zero();
-    core_event_t::cancel( dot -> end_event );
-    core_event_t::cancel( dot -> tick_event );
+  assert( sinister_calling );
 
-    dot -> time_to_tick = dot -> current_action -> tick_time( dot -> state -> haste );
-    //std::cout << dot -> num_ticks << " " << ( remains + tick_remains ).total_seconds() << std::endl;
-    dot -> last_tick_factor = std::min( 1.0, ( remains + tick_remains ) / dot -> time_to_tick );
+  action_state_t* new_state = 0;
+  new_state = sinister_calling -> get_state();
 
-    if ( tick_remains > timespan_t::zero() && remains > tick_remains )
-      dot -> tick_event = new ( *sim ) dot_tick_event_t( dot, tick_remains );
-    dot -> end_event = new ( *sim ) dot_end_event_t( dot, remains );
-  }
-  else
-    dot -> last_tick();
+  new_state -> result = RESULT_HIT;
+  new_state -> result_amount = dot -> current_action -> calculate_tick_amount( dot -> state, 1.0 );
+
+  sinister_calling -> target = dot -> state -> target;
+  sinister_calling -> schedule_execute( new_state );
 }
 
 void rogue_t::trigger_sinister_calling( const action_state_t* state )
