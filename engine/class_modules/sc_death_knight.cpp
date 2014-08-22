@@ -4274,10 +4274,12 @@ struct pillar_of_frost_t : public death_knight_spell_t
     parse_options( NULL, options_str );
 
     harmful = false;
-    
+
     if ( p -> perk.empowered_pillar_of_frost -> ok() )
+    {
       cost_blood = cost_frost = cost_unholy = cost_death = 0;
-      rp_gain=0.0;
+      rp_gain = 0;
+    }
   }
 
   void execute()
@@ -6515,7 +6517,7 @@ void death_knight_t::assess_damage_imminent( school_e school, dmg_e, action_stat
     resource_gain( RESOURCE_RUNIC_POWER, util::round( generated * 100.0 ), gains.antimagic_shell, s -> action );
   }
 
-  if ( talent.necrotic_plague -> ok() && ! s -> action -> result_is_multistrike( s -> result ) )
+  if ( talent.necrotic_plague -> ok() && s -> result_amount > 0 && ! s -> action -> result_is_multistrike( s -> result ) )
     resource_gain( RESOURCE_RUNIC_POWER, spell.necrotic_plague_energize -> effectN( 1 ).resource( RESOURCE_RUNIC_POWER ), gains.necrotic_plague );
 }
 
