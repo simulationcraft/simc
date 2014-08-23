@@ -3703,16 +3703,18 @@ struct prismatic_crystal_t : public mage_spell_t
 
 struct choose_target_t : public action_t
 {
+  bool check_selected;
   player_t* selected_target;
 
   choose_target_t( mage_t* p, const std::string& options_str ) :
     action_t( ACTION_OTHER, "choose_target", p ),
-    selected_target( 0 )
+    check_selected( false ), selected_target( 0 )
   {
     std::string target_name;
 
     option_t options[] = {
       opt_string( "name", target_name ),
+      opt_bool( "check_selected", check_selected ),
       opt_null()
     };
 
@@ -3771,11 +3773,18 @@ struct choose_target_t : public action_t
       return false;
 
     player_t* original_target = 0;
-    if ( target != selected_target )
-      original_target = target;
+    if ( check_selected )
+    {
+      if ( target != selected_target )
+        original_target = target;
 
-    target = selected_target;
+      target = selected_target;
+    }
+    else
+      target = p -> current_target;
+
     bool rd = action_t::ready();
+
     if ( original_target )
       target = original_target;
 
