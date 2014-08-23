@@ -600,7 +600,9 @@ player_t::player_t( sim_t*             s,
   regen_type( REGEN_STATIC ),
   last_regen( timespan_t::zero() ),
   regen_caches( CACHE_MAX ),
-  dynamic_regen_pets( false )
+  dynamic_regen_pets( false ),
+  visited_apls_( 0 ),
+  action_list_id_( 0 )
 {
   special_effects.reserve( 8 ); // TODO: Fix this properly, really really ugly hack
 
@@ -3835,21 +3837,8 @@ action_t* player_t::execute_action()
 
   if ( ! strict_sequence )
   {
-    for ( size_t i = 0, num_actions = active_action_list -> foreground_action_list.size(); i < num_actions; ++i )
-    {
-      action_t* a = active_action_list -> foreground_action_list[ i ];
-
-      if ( a -> background ) continue;
-
-      if ( a -> wait_on_ready == 1 )
-        break;
-
-      if ( a -> ready() )
-      {
-        action = a;
-        break;
-      }
-    }
+    visited_apls_ = 0; // Reset visited apl list
+    action = select_action( *active_action_list );
   }
   // Committed to a strict sequence of actions, just perform them instead of a priority list
   else
@@ -5144,6 +5133,13 @@ action_priority_list_t* player_t::get_action_priority_list( const std::string& n
   {
     a = new action_priority_list_t( name, this );
     a -> action_list_comment_str = comment;
+    a -> internal_id = action_list_id_++;
+    if ( action_list_id_ == 64 )
+    {
+      sim -> errorf( "%s maximum number of action lists is 64", name_str.c_str() );
+      sim -> cancel();
+    }
+
     action_priority_list.push_back( a );
   }
   return a;
@@ -6102,6 +6098,43 @@ struct run_action_list_t : public swap_action_list_t
   }
 };
 
+struct call_action_list_t : public action_t
+{
+  action_priority_list_t* alist;
+
+  call_action_list_t( player_t* player, const std::string& options_str ) :
+    action_t( ACTION_CALL, "call_action_list", player ), alist( 0 )
+  {
+    std::string alist_name;
+    option_t options[] =
+    {
+      opt_string( "name", alist_name ),
+      opt_null()
+    };
+    parse_options( options, options_str );
+
+    if ( alist_name.empty() )
+    {
+      sim -> errorf( "Player %s uses call_action_list without specifying the name of the action list\n", player -> name() );
+      sim -> cancel();
+    }
+
+    alist = player -> find_action_priority_list( alist_name );
+
+    if ( ! alist )
+    {
+      sim -> errorf( "Player %s uses call_action_lis with unknown action list %s\n", player -> name(), alist_name.c_str() );
+      sim -> cancel();
+    }
+
+    trigger_gcd = timespan_t::zero();
+    use_off_gcd = true;
+  }
+
+  virtual void execute()
+  { assert( 0 ); }
+};
+
 /* Pool Resource
  *
  * If the next action in the list would be "ready" if it was not constrained by resource,
@@ -6231,6 +6264,7 @@ action_t* player_t::create_action( const std::string& name,
   if ( name == "cancel_buff"        ) return new        cancel_buff_t( this, options_str );
   if ( name == "swap_action_list"   ) return new   swap_action_list_t( this, options_str );
   if ( name == "run_action_list"    ) return new    run_action_list_t( this, options_str );
+  if ( name == "call_action_list"   ) return new   call_action_list_t( this, options_str );
   if ( name == "restart_sequence"   ) return new   restart_sequence_t( this, options_str );
   if ( name == "restore_mana"       ) return new       restore_mana_t( this, options_str );
   if ( name == "rocket_barrage"     ) return new     rocket_barrage_t( this, options_str );
@@ -9933,4 +9967,51 @@ luxurious_sample_data_t::luxurious_sample_data_t( player_t& p, std::string n ) :
   buffer_value( 0.0 )
 {
 
+}
+
+action_t* player_t::select_action( const action_priority_list_t& list )
+{
+  // Mark this action list as visited with the APL internal id
+  visited_apls_ |= ( 1 << list.internal_id );
+
+  for ( size_t i = 0, num_actions = list.foreground_action_list.size(); i < num_actions; ++i )
+  {
+    action_t* a = list.foreground_action_list[ i ];
+
+    if ( a -> background ) continue;
+
+    if ( a -> wait_on_ready == 1 )
+      break;
+
+    if ( a -> ready() )
+    {
+      if ( a -> type != ACTION_CALL )
+        return a;
+      // Call_action_list action, don't execute anything, but rather recurse
+      // into the called action list.
+      else
+      {
+        call_action_list_t* call = static_cast<call_action_list_t*>( a );
+
+        // If the called APLs bitflag (based on internal id) is up, we're in an
+        // infinite loop, and need to cancel the sim
+        if ( visited_apls_ & ( 1 << call -> internal_id ) )
+        {
+          sim -> errorf( "%s action list in infinite loop", name() );
+          sim -> cancel();
+          return 0;
+        }
+
+        // We get an action from the call, return it
+        if ( action_t* real_a = select_action( *call -> alist ) )
+        {
+          if ( real_a -> action_list )
+            real_a -> action_list -> used = true;
+          return real_a;
+        }
+      }
+    }
+  }
+
+  return 0;
 }

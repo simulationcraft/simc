@@ -490,7 +490,17 @@ enum special_effect_action_e
   SPECIAL_EFFECT_ACTION_ATTACK,
 };
 
-enum action_e { ACTION_USE = 0, ACTION_SPELL, ACTION_ATTACK, ACTION_HEAL, ACTION_ABSORB, ACTION_SEQUENCE, ACTION_OTHER, ACTION_MAX };
+enum action_e {
+  ACTION_USE = 0,  // On use actions
+  ACTION_SPELL,    // Hostile spells
+  ACTION_ATTACK,   // Hostile attacks
+  ACTION_HEAL,     // Heals
+  ACTION_ABSORB,   // Absorbs
+  ACTION_SEQUENCE, // Sequences
+  ACTION_OTHER,    // Miscellaneous actions
+  ACTION_CALL,     // Call other action lists
+  ACTION_MAX
+};
 
 enum school_e
 {
@@ -4866,6 +4876,7 @@ struct player_t : public actor_t
   virtual void arise();
   virtual void demise();
   virtual timespan_t available() const { return timespan_t::from_seconds( 0.1 ); }
+  virtual action_t* select_action( const action_priority_list_t& );
   virtual action_t* execute_action();
 
   virtual void   regen( timespan_t periodicity = timespan_t::from_seconds( 0.25 ) );
@@ -5187,6 +5198,14 @@ public:
 
   // Perform dynamic resource regeneration
   virtual void do_dynamic_regen();
+
+  // Visited action lists, needed for call_action_list support. Reset by
+  // player_t::execute_action().
+  uint64_t visited_apls_;
+
+  // Internal counter for action priority lists, used to set
+  // action_priority_list_t::internal_id for lists.
+  size_t action_list_id_;
 };
 
 // Target Specific ==========================================================
@@ -6635,6 +6654,10 @@ struct action_priority_t
 
 struct action_priority_list_t
 {
+  // Internal ID of the action list, used in conjunction with the "new"
+  // call_action_list action, that allows for potential infinite loops in the
+  // APL.
+  size_t internal_id;
   std::string name_str;
   std::string action_list_comment_str;
   std::string action_list_str;
@@ -6644,7 +6667,7 @@ struct action_priority_list_t
   std::vector<action_t*> foreground_action_list;
   std::vector<action_t*> off_gcd_actions;
   action_priority_list_t( std::string name, player_t* p, const std::string& list_comment = std::string() ) :
-    name_str( name ), action_list_comment_str( list_comment ), player( p ), used( false ),
+    internal_id( 0 ), name_str( name ), action_list_comment_str( list_comment ), player( p ), used( false ),
     foreground_action_list( 0 ), off_gcd_actions( 0 )
   { }
 
