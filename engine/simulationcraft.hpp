@@ -6657,7 +6657,8 @@ struct action_priority_list_t
   // Internal ID of the action list, used in conjunction with the "new"
   // call_action_list action, that allows for potential infinite loops in the
   // APL.
-  size_t internal_id;
+  unsigned internal_id;
+  uint64_t internal_id_mask;
   std::string name_str;
   std::string action_list_comment_str;
   std::string action_list_str;
@@ -6667,7 +6668,7 @@ struct action_priority_list_t
   std::vector<action_t*> foreground_action_list;
   std::vector<action_t*> off_gcd_actions;
   action_priority_list_t( std::string name, player_t* p, const std::string& list_comment = std::string() ) :
-    internal_id( 0 ), name_str( name ), action_list_comment_str( list_comment ), player( p ), used( false ),
+    internal_id( 0 ), internal_id_mask( 0 ), name_str( name ), action_list_comment_str( list_comment ), player( p ), used( false ),
     foreground_action_list( 0 ), off_gcd_actions( 0 )
   { }
 

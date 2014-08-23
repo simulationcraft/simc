@@ -5134,6 +5134,7 @@ action_priority_list_t* player_t::get_action_priority_list( const std::string& n
     a = new action_priority_list_t( name, this );
     a -> action_list_comment_str = comment;
     a -> internal_id = action_list_id_++;
+    a -> internal_id_mask = ( 1 << a -> internal_id );
     if ( action_list_id_ == 64 )
     {
       sim -> errorf( "%s maximum number of action lists is 64", name_str.c_str() );
@@ -9972,7 +9973,7 @@ luxurious_sample_data_t::luxurious_sample_data_t( player_t& p, std::string n ) :
 action_t* player_t::select_action( const action_priority_list_t& list )
 {
   // Mark this action list as visited with the APL internal id
-  visited_apls_ |= ( 1 << list.internal_id );
+  visited_apls_ |= list.internal_id_mask;
 
   for ( size_t i = 0, num_actions = list.foreground_action_list.size(); i < num_actions; ++i )
   {
@@ -9995,7 +9996,7 @@ action_t* player_t::select_action( const action_priority_list_t& list )
 
         // If the called APLs bitflag (based on internal id) is up, we're in an
         // infinite loop, and need to cancel the sim
-        if ( visited_apls_ & ( 1 << call -> internal_id ) )
+        if ( visited_apls_ & call -> alist -> internal_id_mask )
         {
           sim -> errorf( "%s action list in infinite loop", name() );
           sim -> cancel();
