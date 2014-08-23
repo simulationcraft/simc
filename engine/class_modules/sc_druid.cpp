@@ -207,7 +207,10 @@ public:
   struct cooldowns_t
   {
     cooldown_t* berserk;
+    cooldown_t* faerie_fire;
+    cooldown_t* growl;
     cooldown_t* mangle;
+    cooldown_t* maul;
     cooldown_t* natures_swiftness;
     cooldown_t* pvp_4pc_melee;
     cooldown_t* savage_defense_use;
@@ -494,7 +497,10 @@ public:
     }
     
     cooldown.berserk             = get_cooldown( "berserk"             );
+    cooldown.faerie_fire         = get_cooldown( "faerie_fire"         );
+    cooldown.growl               = get_cooldown( "growl"               );
     cooldown.mangle              = get_cooldown( "mangle"              );
+    cooldown.maul                = get_cooldown( "maul"                );
     cooldown.natures_swiftness   = get_cooldown( "natures_swiftness"   );
     cooldown.pvp_4pc_melee       = get_cooldown( "pvp_4pc_melee"       );
     cooldown.savage_defense_use  = get_cooldown( "savage_defense_use"  );
@@ -2833,6 +2839,16 @@ struct mangle_t : public bear_attack_t
     return c;
   }
 
+  void update_ready( timespan_t )
+  {
+    timespan_t cd = cooldown -> duration;
+
+    if ( p() -> buff.berserk -> check() || p() -> buff.son_of_ursoc -> check() )
+      cd = timespan_t::zero();
+
+    bear_attack_t::update_ready( cd );
+  }
+
   virtual void execute()
   {
     double base_aoe = aoe;
@@ -2840,9 +2856,6 @@ struct mangle_t : public bear_attack_t
       aoe = p() -> spell.berserk_bear -> effectN( 1 ).base_value();
 
     bear_attack_t::execute();
-
-    if ( p() -> buff.berserk -> check() || p() -> buff.son_of_ursoc -> check() )
-      cooldown -> reset( false );
 
     aoe = base_aoe;
   }
@@ -2898,12 +2911,24 @@ struct maul_t : public bear_attack_t
       absorb = new tooth_and_claw_t( player );
   }
 
-  virtual void execute()
+  virtual double composite_target_multiplier( player_t* t ) const
   {
-    bear_attack_t::execute();
+    double tm = bear_attack_t::composite_target_multiplier( t );
+
+    if ( t -> debuffs.bleeding -> up() )
+      tm *= 1.0 + data().effectN( 3 ).percent();
+
+    return tm;
+  }
+
+  virtual void update_ready( timespan_t )
+  {
+    timespan_t cd = cooldown -> duration;
 
     if ( p() -> buff.son_of_ursoc -> check() )
-      cooldown -> reset( false );
+      cd = timespan_t::zero();
+
+    bear_attack_t::update_ready( cd );
   }
 
   virtual void impact( action_state_t* s )
@@ -2915,16 +2940,6 @@ struct maul_t : public bear_attack_t
       absorb -> execute();
       p() -> buff.tooth_and_claw -> decrement(); // Only decrements on hit, tested 6/27/2014 by Zerrahki
     }
-  }
-
-  virtual double composite_target_multiplier( player_t* t ) const
-  {
-    double tm = bear_attack_t::composite_target_multiplier( t );
-
-    if ( t -> debuffs.bleeding -> up() )
-      tm *= 1.0 + data().effectN( 3 ).percent();
-
-    return tm;
   }
 };
 
@@ -4089,7 +4104,7 @@ struct faerie_fire_t : public druid_spell_t
   {
     timespan_t cd = cooldown -> duration;
 
-    if ( ! ( ( p() -> buff.bear_form -> check() && ! p() -> perk.enhanced_faerie_fire -> ok() ) || p() -> buff.cat_form -> check() ) )
+    if ( ! ( ( p() -> buff.bear_form -> check() && ! p() -> perk.enhanced_faerie_fire -> ok() && ! p() -> buff.son_of_ursoc -> check() ) || p() -> buff.cat_form -> check() ) )
       cd = timespan_t::zero();
 
     druid_spell_t::update_ready( cd );
@@ -4189,6 +4204,16 @@ struct growl_t: public druid_spell_t
   {
     parse_options( NULL, options_str );
     use_off_gcd = true;
+  }
+
+  void update_ready( timespan_t )
+  {
+    timespan_t cd = cooldown -> duration;
+
+    if ( p() -> buff.son_of_ursoc -> check() )
+      cd = timespan_t::zero();
+
+    druid_spell_t::update_ready( cd );
   }
 
   void impact( action_state_t* s )
@@ -4347,8 +4372,11 @@ struct incarnation_bear_t : public druid_spell_t
   {
     druid_spell_t::execute();
 
-    if ( p() -> buff.bear_form -> check() )
-      p() -> cooldown.mangle -> reset( false );
+    p() -> cooldown.mangle -> reset( false );
+    p() -> cooldown.growl  -> reset( false );
+    p() -> cooldown.maul   -> reset( false );
+    if ( ! p() -> perk.enhanced_faerie_fire -> ok() )
+      p() -> cooldown.faerie_fire -> reset( false ); 
   }
 };
 
