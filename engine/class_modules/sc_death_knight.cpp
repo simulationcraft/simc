@@ -1182,6 +1182,7 @@ struct dancing_rune_weapon_pet_t : public pet_t
       background = true;
       special    = true;
       may_crit   = true;
+      school = SCHOOL_PHYSICAL;
     }
 
     dancing_rune_weapon_td_t* td( player_t* t ) const
