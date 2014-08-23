@@ -52,7 +52,7 @@ Warrior_Gladiator_T17N.simc
 enemy=Enraged_Fluffy_Pillow
 role=tank
 position=front
-actions=auto_attack,damage=300000,attack_speed=1.5,aoe_tanks=1
+actions=auto_attack,damage=350000,attack_speed=1.5,aoe_tanks=1
 actions+=/spell_dot,damage=150000,tick_time=2,dot_duration=30,if=!ticking,aoe_tanks=1
-actions+=/melee_nuke,damage=300000,cooldown=15,attack_speed=3,aoe_tanks=1
-actions+=/spell_nuke,damage=150000,cooldown=30,attack_speed=3,aoe_tanks=1
+actions+=/melee_nuke,damage=500000,cooldown=30,attack_speed=3,aoe_tanks=1
+actions+=/spell_nuke,damage=150000,cooldown=20,attack_speed=3,aoe_tanks=1
