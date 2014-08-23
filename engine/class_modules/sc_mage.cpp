@@ -440,7 +440,37 @@ public:
   virtual void      init_action_list();
 
   std::string       get_potion_action();
+
+  player_t*         actor_by_name_str( const std::string& name ) const;
+
 };
+
+player_t* mage_t::actor_by_name_str( const std::string& name ) const
+{
+  // Check player pets first
+  for ( size_t i = 0; i < pet_list.size(); i++ )
+  {
+    if ( util::str_compare_ci( pet_list[ i ] -> name_str, name ) )
+      return pet_list[ i ];
+  }
+
+  // Check harmful targets list
+  for ( size_t i = 0; i < sim -> target_list.size(); i++ )
+  {
+    if ( util::str_compare_ci( sim -> target_list[ i ] -> name_str, name ) )
+      return sim -> target_list[ i ];
+  }
+
+  // Finally, check player (non pet list), don't support targeting other
+  // people's pets for now
+  for ( size_t i = 0; i < sim -> player_no_pet_list.size(); i++ )
+  {
+    if ( util::str_compare_ci( sim -> player_no_pet_list[ i ] -> name_str, name ) )
+      return sim -> player_no_pet_list[ i ];
+  }
+
+  return 0;
+}
 
 namespace pets {
 
@@ -3690,14 +3720,9 @@ struct choose_target_t : public action_t
 
     if ( ! target_name.empty() && ! util::str_compare_ci( target_name, "default" ) )
     {
-      for ( size_t i = 0, end = sim -> actor_list.size(); i < end; i++ )
-      {
-        if ( util::str_compare_ci( sim -> actor_list[ i ] -> name_str, target_name ) )
-        {
-          selected_target = sim -> actor_list[ i ];
-          break;
-        }
-      }
+      player_t* target = p -> actor_by_name_str( target_name );
+      if ( ! target )
+        sim -> errorf( "%s unable to find target named '%s'", p -> name(), target_name.c_str() );
     }
     else
       selected_target = p -> target;
@@ -5184,33 +5209,6 @@ action_t* mage_t::execute_action()
 
 // mage_t::create_expression ================================================
 
-static player_t* actor_by_name_str( mage_t* p, const std::string& name )
-{
-  // Check player pets first
-  for ( size_t i = 0; i < p -> pet_list.size(); i++ )
-  {
-    if ( util::str_compare_ci( p -> pet_list[ i ] -> name_str, name ) )
-      return p -> pet_list[ i ];
-  }
-
-  // Check harmful targets list
-  for ( size_t i = 0; i < p -> sim -> target_list.size(); i++ )
-  {
-    if ( util::str_compare_ci( p -> sim -> target_list[ i ] -> name_str, name ) )
-      return p -> sim -> target_list[ i ];
-  }
-
-  // Finally, check player (non pet list), don't support targeting other
-  // people's pets for now
-  for ( size_t i = 0; i < p -> sim -> player_no_pet_list.size(); i++ )
-  {
-    if ( util::str_compare_ci( p -> sim -> player_no_pet_list[ i ] -> name_str, name ) )
-      return p -> sim -> player_no_pet_list[ i ];
-  }
-
-  return 0;
-}
-
 expr_t* mage_t::create_expression( action_t* a, const std::string& name_str )
 {
   struct mage_expr_t : public expr_t
@@ -5381,12 +5379,9 @@ expr_t* mage_t::create_expression( action_t* a, const std::string& name_str )
   // Fallback for string based lookup to "target name" expression. Bad things
   // will happen if you name your target a valid expression in the sim, but who
   // would do that anyhow.
-  player_t* p = actor_by_name_str( this, name_str );
+  player_t* p = actor_by_name_str( name_str );
   if ( p )
-  {
-    std::cout << "refindex for actor " << name_str << " " << p -> actor_index << std::endl;
     return make_ref_expr( name_str, p -> actor_index );
-  }
 
   return player_t::create_expression( a, name_str );
 }
