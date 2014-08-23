@@ -6127,9 +6127,6 @@ struct call_action_list_t : public action_t
       sim -> errorf( "Player %s uses call_action_lis with unknown action list %s\n", player -> name(), alist_name.c_str() );
       sim -> cancel();
     }
-
-    trigger_gcd = timespan_t::zero();
-    use_off_gcd = true;
   }
 
   virtual void execute()
