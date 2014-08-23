@@ -104,6 +104,9 @@ stat_e stat_buff_type( const spelleffect_data_t& effect )
       if ( effect.misc_value1() == 0xFE )
         stat = STAT_SPELL_POWER;
       break;
+    case A_465:
+      stat = STAT_BONUS_ARMOR;
+      break;
     default:
       break;
   }
