@@ -5273,8 +5273,8 @@ void shaman_t::init_action_list()
     // Need to remove the "/" in front of the profession action(s) for the new default action priority list stuff :/
     def -> add_action( init_use_profession_actions( ",if=(glyph.fire_elemental_totem.enabled&(pet.primal_fire_elemental.active|pet.greater_fire_elemental.active))|!glyph.fire_elemental_totem.enabled" ).erase( 0, 1 ) );
 
-    def -> add_action( "run_action_list,name=single,if=active_enemies=1", "If only one enemy, priority follows the 'single' action list." );
-    def -> add_action( "run_action_list,name=aoe,if=active_enemies>1", "On multiple enemies, the priority follows the 'aoe' action list." );
+    def -> add_action( "call_action_list,name=single,if=active_enemies=1", "If only one enemy, priority follows the 'single' action list." );
+    def -> add_action( "call_action_list,name=aoe,if=active_enemies>1", "On multiple enemies, the priority follows the 'aoe' action list." );
 
     single -> add_action( this, "Searing Totem", "if=!totem.fire.active" );
     single -> add_action( this, "Unleash Elements", "if=(talent.unleashed_fury.enabled|set_bonus.tier16_2pc_melee=1)" );
@@ -5349,8 +5349,8 @@ void shaman_t::init_action_list()
     // Need to remove the "/" in front of the profession action(s) for the new default action priority list stuff :/
     def -> add_action( init_use_profession_actions().erase( 0, 1 ) );
 
-    def -> add_action( "run_action_list,name=single,if=active_enemies=1", "If only one enemy, priority follows the 'single' action list." );
-    def -> add_action( "run_action_list,name=aoe,if=active_enemies>1", "On multiple enemies, the priority follows the 'aoe' action list." );
+    def -> add_action( "call_action_list,name=single,if=active_enemies=1", "If only one enemy, priority follows the 'single' action list." );
+    def -> add_action( "call_action_list,name=aoe,if=active_enemies>1", "On multiple enemies, the priority follows the 'aoe' action list." );
 
     single -> add_action( this, "Unleash Flame", "if=talent.unleashed_fury.enabled&!buff.ascendance.up" );
     single -> add_action( this, "Spiritwalker's Grace", "moving=1,if=buff.ascendance.up" );
