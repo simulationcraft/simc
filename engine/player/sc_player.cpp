@@ -9972,8 +9972,13 @@ action_t* player_t::select_action( const action_priority_list_t& list )
   // Mark this action list as visited with the APL internal id
   visited_apls_ |= list.internal_id_mask;
 
+  // Cached copy for recursion, we'll need it if we come back from a
+  // call_action_list tree, with nothing to show for it.
+  uint64_t _visited = visited_apls_;
+
   for ( size_t i = 0, num_actions = list.foreground_action_list.size(); i < num_actions; ++i )
   {
+    visited_apls_ = _visited;
     action_t* a = list.foreground_action_list[ i ];
 
     if ( a -> background ) continue;
