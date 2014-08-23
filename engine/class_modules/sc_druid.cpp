@@ -6955,6 +6955,15 @@ set_e druid_t::decode_set( const item_t& item ) const
     if ( is_tank   ) return SET_T16_TANK;
   }
 
+  if ( strstr( s, "living_wood" ) )
+  {
+    specialization_e s = specialization();
+    if ( s == DRUID_BALANCE     ) return SET_T17_CASTER;
+    if ( s == DRUID_FERAL       ) return SET_T17_MELEE;
+    if ( s == DRUID_RESTORATION ) return SET_T17_HEAL;
+    if ( s == DRUID_GUARDIAN    ) return SET_T17_TANK;
+  }
+
   if ( strstr( s, "_gladiators_kodohide_"   ) )   return SET_PVP_HEAL;
   if ( strstr( s, "_gladiators_wyrmhide_"   ) )   return SET_PVP_CASTER;
   if ( strstr( s, "_gladiators_dragonhide_" ) )   return SET_PVP_MELEE;
