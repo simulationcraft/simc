@@ -5184,6 +5184,33 @@ action_t* mage_t::execute_action()
 
 // mage_t::create_expression ================================================
 
+static player_t* actor_by_name_str( mage_t* p, const std::string& name )
+{
+  // Check player pets first
+  for ( size_t i = 0; i < p -> pet_list.size(); i++ )
+  {
+    if ( util::str_compare_ci( p -> pet_list[ i ] -> name_str, name ) )
+      return p -> pet_list[ i ];
+  }
+
+  // Check harmful targets list
+  for ( size_t i = 0; i < p -> sim -> target_list.size(); i++ )
+  {
+    if ( util::str_compare_ci( p -> sim -> target_list[ i ] -> name_str, name ) )
+      return p -> sim -> target_list[ i ];
+  }
+
+  // Finally, check player (non pet list), don't support targeting other
+  // people's pets for now
+  for ( size_t i = 0; i < p -> sim -> player_no_pet_list.size(); i++ )
+  {
+    if ( util::str_compare_ci( p -> sim -> player_no_pet_list[ i ] -> name_str, name ) )
+      return p -> sim -> player_no_pet_list[ i ];
+  }
+
+  return 0;
+}
+
 expr_t* mage_t::create_expression( action_t* a, const std::string& name_str )
 {
   struct mage_expr_t : public expr_t
@@ -5193,7 +5220,23 @@ expr_t* mage_t::create_expression( action_t* a, const std::string& name_str )
       expr_t( n ), mage( m ) {}
   };
 
+  if ( util::str_compare_ci( name_str, "current_target" ) )
+  {
+    struct current_target_expr_t : public mage_expr_t
+    {
+      current_target_expr_t( const std::string& n, mage_t& m ) :
+        mage_expr_t( n, m )
+      { }
 
+      double evaluate()
+      { return mage.current_target ? mage.current_target -> actor_index : 0; }
+    };
+
+    return new current_target_expr_t( name_str, *this );
+  }
+
+  if ( util::str_compare_ci( name_str, "default_target" ) )
+    return make_ref_expr( name_str, target -> actor_index );
 
   struct rotation_expr_t : public mage_expr_t
   {
@@ -5333,6 +5376,16 @@ expr_t* mage_t::create_expression( action_t* a, const std::string& name_str )
     };
 
     return new icicles_expr_t( *this );
+  }
+
+  // Fallback for string based lookup to "target name" expression. Bad things
+  // will happen if you name your target a valid expression in the sim, but who
+  // would do that anyhow.
+  player_t* p = actor_by_name_str( this, name_str );
+  if ( p )
+  {
+    std::cout << "refindex for actor " << name_str << " " << p -> actor_index << std::endl;
+    return make_ref_expr( name_str, p -> actor_index );
   }
 
   return player_t::create_expression( a, name_str );
