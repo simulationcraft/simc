@@ -1173,7 +1173,7 @@ struct felguard_pet_t : public warlock_pet_t
     warlock_pet_t( sim, owner, name, PET_FELGUARD, name != "felguard" )
   {
     action_list_str = "legion_strike";
-    owner_coeff.ap_from_sp = 0.6563;
+    owner_coeff.ap_from_sp = 1.1;
   }
 
   virtual void init_base_stats()
