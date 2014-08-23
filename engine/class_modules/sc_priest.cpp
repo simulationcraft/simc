@@ -2626,6 +2626,7 @@ struct mind_sear_tick_t final : public priest_spell_t
     aoe         = -1;
     callbacks   = false;
     direct_tick = true;
+    base_dd_max = base_dd_min = 0; // Spell data is importing 9250-10750 for this. 8/23/14
   }
 };
 
@@ -2635,7 +2636,6 @@ struct mind_sear_t final : public priest_spell_t
     priest_spell_t( "mind_sear", p, p.find_class_spell( "Mind Sear" ) )
   {
     parse_options( nullptr, options_str );
-
     channeled    = true;
     may_crit     = false;
     hasted_ticks = false;
