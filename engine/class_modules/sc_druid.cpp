@@ -243,6 +243,7 @@ public:
     // Guardian (Bear)
     gain_t* bear_form;
     gain_t* frenzied_regeneration;
+    gain_t* tier17_2pc_tank;
   } gain;
 
   // Perks
@@ -2851,7 +2852,7 @@ struct mangle_t : public bear_attack_t
 
   virtual void execute()
   {
-    double base_aoe = aoe;
+    int base_aoe = aoe;
     if ( p() -> buff.berserk -> up() )
       aoe = p() -> spell.berserk_bear -> effectN( 1 ).base_value();
 
@@ -2891,6 +2892,14 @@ struct maul_t : public bear_attack_t
 
     virtual void impact( action_state_t* s )
     {
+      if ( p() -> sets.has_set_bonus( SET_T17_2PC_TANK ) )
+      {
+        p() -> resource_gain(
+          RESOURCE_RAGE,
+          p() -> find_spell( 165410 ) -> effectN( 1 ).resource( RESOURCE_RAGE ),
+          p() -> gain.tier17_2pc_tank );
+      }
+
       p() -> buff.tooth_and_claw_absorb -> trigger( 1, s -> result_amount );
     }
   };
@@ -3238,6 +3247,7 @@ void druid_heal_t::init_living_seed()
 
 struct frenzied_regeneration_t : public druid_heal_t
 {
+public:
   double maximum_rage_cost;
 
   frenzied_regeneration_t( druid_t* p, const std::string& options_str ) :
@@ -3269,7 +3279,7 @@ struct frenzied_regeneration_t : public druid_heal_t
   {
     double am = druid_heal_t::action_multiplier();
 
-    am *= cost() / 60;
+    am *= effective_cost() / 60.0;
 
     return am;
   }
@@ -3297,6 +3307,16 @@ struct frenzied_regeneration_t : public druid_heal_t
       return false;
 
     return druid_heal_t::ready();
+  }
+private:
+  double effective_cost() const
+  {
+    double c = cost();
+
+    if ( p() -> sets.has_set_bonus( SET_T17_4PC_TANK ) )
+      c += p() -> find_spell( 165423 ) -> effectN( 1 ).resource( RESOURCE_RAGE );
+
+    return c;
   }
 };
 
@@ -6204,6 +6224,7 @@ void druid_t::init_gains()
   gain.swipe                 = get_gain( "swipe"                 );
   gain.tier15_2pc_melee      = get_gain( "tier15_2pc_melee"      );
   gain.tier17_2pc_melee      = get_gain( "tier17_2pc_melee"      );
+  gain.tier17_2pc_tank       = get_gain( "tier17_2pc_tank"       );
   gain.tigers_fury           = get_gain( "tigers_fury"           );
 }
 
@@ -6639,7 +6660,7 @@ double druid_t::composite_mitigation_versatility() const
   double mv = player_t::composite_mitigation_versatility();
 
   if ( buff.claws_of_shirvallah -> check() )
-    mv += buff.claws_of_shirvallah -> default_value;
+    mv += buff.claws_of_shirvallah -> default_value / 2.0;
 
   return mv;
 }
