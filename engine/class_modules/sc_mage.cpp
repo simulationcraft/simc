@@ -2911,11 +2911,14 @@ struct inferno_blast_t : public mage_spell_t
 {
   int max_spread_targets;
   inferno_blast_t( mage_t* p, const std::string& options_str ) :
-    mage_spell_t( "inferno_blast", p, p -> find_class_spell( "Inferno Blast" ) )
+    mage_spell_t( "inferno_blast", p,
+                  p -> find_class_spell( "Inferno Blast" ) )
   {
     parse_options( NULL, options_str );
+
     may_hot_streak = true;
     cooldown -> duration = timespan_t::from_seconds( 8.0 );
+
     max_spread_targets = 3;
     max_spread_targets += p -> glyphs.inferno_blast -> ok() ? p -> glyphs.inferno_blast -> effectN( 1 ).base_value() : 0;
     max_spread_targets += p -> perks.improved_inferno_blast ? p -> perks.improved_inferno_blast -> effectN( 1 ).base_value() : 0;
@@ -2929,49 +2932,66 @@ struct inferno_blast_t : public mage_spell_t
     {
       mage_td_t* this_td = td( s -> target );
 
-      dot_t* ignite_dot     = this_td -> dots.ignite;
-      dot_t* combustion_dot = this_td -> dots.combustion;
-      dot_t* pyroblast_dot  = this_td -> dots.pyroblast;
+      dot_t* combustion_dot  = this_td -> dots.combustion,
+           * ignite_dot      = this_td -> dots.ignite,
+           * living_bomb_dot = this_td -> dots.living_bomb,
+           * pyroblast_dot   = this_td -> dots.pyroblast;
 
       int spread_remaining = max_spread_targets;
+      std::vector< player_t* >& tl = target_list();
+      // Randomly choose spread targets
+      std::random_shuffle( tl.begin(), tl.end() );
 
-      for ( size_t i = 0, actors = target_list().size(); i < actors; i++ )
+      for ( size_t i = 0, actors = tl.size(); i < actors; i++ )
       {
-        player_t* t = target_list()[ i ];
+        player_t* t = tl[ i ];
 
         if ( t == s -> target )
           continue;
 
+        if ( combustion_dot -> is_ticking() )
+        {
+          // Combustion does not spread to targets already afflicted
+          // Source : http://goo.gl/tCsaqr
+          dot_t* target_combustion = t -> get_dot( "combustion", this -> p() );
+          if ( !target_combustion -> is_ticking() )
+            combustion_dot -> copy( t, DOT_COPY_CLONE );
+        }
+
         if ( ignite_dot -> is_ticking() )
         {
-          if ( td( t ) -> dots.ignite -> is_ticking() ) //is already ticking on target spell, so merge it
+          if ( td( t ) -> dots.ignite -> is_ticking() )
           {
-            residual_periodic_state_t* dot_state = debug_cast<residual_periodic_state_t*>( ignite_dot -> state );
-            residual_action::trigger( p() -> active_ignite, t, dot_state -> tick_amount * ignite_dot -> ticks_left() );
+            // TODO: This does nothing for now, fix this when bug is resolved
+            // Source: https://twitter.com/Celestalon/status/502030039240552448
+
+            // residual_periodic_state_t* dot_state = debug_cast<residual_periodic_state_t*>( ignite_dot -> state );
+            // residual_action::trigger( p() -> active_ignite, t, dot_state -> tick_amount * ignite_dot -> ticks_left() );
           }
           else
           {
-            ignite_dot -> copy( t );
+            ignite_dot -> copy( t, DOT_COPY_START );
           }
         }
-        if ( combustion_dot -> is_ticking() ) //just copy, regardless of target dots. This is the actual ingame behavior as of 22.03.13
+
+        if ( living_bomb_dot -> is_ticking() )
         {
-          combustion_dot -> copy( t );
+          living_bomb_dot -> copy( t, DOT_COPY_CLONE );
         }
-        if ( pyroblast_dot -> is_ticking() ) //just copy, regardless of target dots. This is the actual ingame behavior as of 22.03.13
+
+        if ( pyroblast_dot -> is_ticking() )
         {
-          pyroblast_dot -> copy( t );
+          pyroblast_dot -> copy( t, DOT_COPY_CLONE );
         }
 
         if ( --spread_remaining == 0 )
           break;
       }
 
-    if ( s -> result == RESULT_CRIT && p() -> talents.kindling -> ok() )
-        p() -> cooldowns.combustion -> adjust( timespan_t::from_seconds( - p() -> talents.kindling -> effectN( 1 ).base_value() ) );
+      if ( s -> result == RESULT_CRIT && p() -> talents.kindling -> ok() )
+          p() -> cooldowns.combustion -> adjust( timespan_t::from_seconds( - p() -> talents.kindling -> effectN( 1 ).base_value() ) );
 
-
-      trigger_ignite( s ); //Assuming that the ignite from inferno_blast isn't spread by itself
+      trigger_ignite( s );
     }
   }
 
