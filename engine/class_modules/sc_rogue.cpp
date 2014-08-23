@@ -1236,7 +1236,6 @@ void rogue_attack_t::consume_resource()
     p() -> trigger_energy_refund( execute_state );
 
   p() -> trigger_relentless_strikes( execute_state );
-  p() -> trigger_ruthlessness( execute_state );
 }
 
 // rogue_attack_t::execute ==================================================
@@ -1248,6 +1247,7 @@ void rogue_attack_t::execute()
   p() -> trigger_auto_attack( execute_state );
   p() -> trigger_main_gauche( execute_state );
   p() -> trigger_shadow_reflection( execute_state );
+  p() -> trigger_ruthlessness( execute_state );
   p() -> trigger_combo_point_gain( execute_state );
   p() -> trigger_t17_4pc_combat( execute_state );
   p() -> trigger_t17_4pc_subtlety( execute_state );
@@ -2987,7 +2987,14 @@ void rogue_t::trigger_ruthlessness( const action_state_t* state )
 
   double cp_chance = spell.ruthlessness -> effectN( 1 ).pp_combo_points() * s -> cp / 100.0;
   if ( rng().roll( cp_chance ) )
-    trigger_combo_point_gain( state, spell.ruthlessness -> effectN( 1 ).trigger() -> effectN( 1 ).base_value(), gains.ruthlessness );
+  {
+    // Ruthlessness does not refund a combo point, if Anticipation has
+    // refreshed combo points to max upon using a finisher
+    if ( resources.current[ RESOURCE_COMBO_POINT ] < resources.max[ RESOURCE_COMBO_POINT ] )
+      trigger_combo_point_gain( state, spell.ruthlessness -> effectN( 1 ).trigger() -> effectN( 1 ).base_value(), gains.ruthlessness );
+    else
+      procs.combo_points_wasted -> occur();
+  }
 
   double energy_chance = spell.ruthlessness -> effectN( 2 ).pp_combo_points() * s -> cp / 100.0;
   if ( rng().roll( energy_chance ) )
@@ -4218,7 +4225,7 @@ void rogue_t::init_action_list()
     def -> add_talent( this, "Marked for Death", "if=combo_points<=1&dot.revealing_strike.ticking&(!talent.shadow_reflection.enabled|buff.shadow_reflection.up|cooldown.shadow_reflection.remains>30)" );
 
     // Generate combo points, or use combo points
-    def -> add_action( "run_action_list,name=generator,if=combo_points<5|(talent.anticipation.enabled&anticipation_charges<=4&!dot.revealing_strike.ticking)" );
+    def -> add_action( "run_action_list,name=generator,if=combo_points<5|(talent.anticipation.enabled&anticipation_charges<=4&buff.deep_insight.down)" );
     if ( level >= 3 )
       def -> add_action( "run_action_list,name=finisher,if=!talent.anticipation.enabled|buff.deep_insight.up|anticipation_charges>=4" );
 
