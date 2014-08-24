@@ -63,7 +63,7 @@ actions.single_target+=/howling_blast,if=death>1|frost>1
 actions.single_target+=/unholy_blight,if=!disease.ticking
 actions.single_target+=/howling_blast,if=!talent.necrotic_plague.enabled&!dot.frost_fever.ticking
 actions.single_target+=/howling_blast,if=talent.necrotic_plague.enabled&!dot.necrotic_plague.ticking
-actions.single_target+=/plague_strike,if=!talent.necrotic_plague.enabled&!dot.blood_plague.remains<10&unholy>0 
+actions.single_target+=/plague_strike,if=!talent.necrotic_plague.enabled&!dot.blood_plague.remains<10&unholy>0
 actions.single_target+=/howling_blast,if=buff.rime.react
 actions.single_target+=/frost_strike,if=runic_power>76
 actions.single_target+=/obliterate,if=unholy>0&!buff.killing_machine.react

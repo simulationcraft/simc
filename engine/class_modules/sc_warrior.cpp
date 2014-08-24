@@ -3922,10 +3922,10 @@ void warrior_t::apl_fury()
   for ( size_t i = 0; i < racial_actions.size(); i++ )
     default_list -> add_action( racial_actions[i] + ",if=buff.bloodbath.up|(!talent.bloodbath.enabled&debuff.colossus_smash.up)|buff.recklessness.up" );
 
-  default_list -> add_action( "run_action_list,name=single_target,if=active_enemies=1" );
-  default_list -> add_action( "run_action_list,name=two_targets,if=active_enemies=2" );
-  default_list -> add_action( "run_action_list,name=three_targets,if=active_enemies=3" );
-  default_list -> add_action( "run_action_list,name=aoe,if=active_enemies>3" );
+  default_list -> add_action( "call_action_list,name=single_target,if=active_enemies=1" );
+  default_list -> add_action( "call_action_list,name=two_targets,if=active_enemies=2" );
+  default_list -> add_action( "call_action_list,name=three_targets,if=active_enemies=3" );
+  default_list -> add_action( "call_action_list,name=aoe,if=active_enemies>3" );
 
   single_target -> add_talent( this, "Bloodbath", "if=(cooldown.colossus_smash.remains<2|debuff.colossus_smash.remains>=5|target.time_to_die<=20)" );
   single_target -> add_action( this, "Heroic Leap", "if=debuff.colossus_smash.up" );
@@ -4021,8 +4021,8 @@ void warrior_t::apl_arms()
 
   default_list -> add_talent( this, "Bloodbath", "if=(debuff.colossus_smash.remains>0.1|cooldown.colossus_smash.remains<5|target.time_to_die<=20)" );
   default_list -> add_action( this, "Heroic Leap", "if=debuff.colossus_smash.up" );
-  default_list -> add_action( "run_action_list,name=aoe,if=active_enemies>=2" );
-  default_list -> add_action( "run_action_list,name=single_target,if=active_enemies<2" );
+  default_list -> add_action( "call_action_list,name=aoe,if=active_enemies>=2" );
+  default_list -> add_action( "call_action_list,name=single_target,if=active_enemies<2" );
 
   single_target -> add_action( this, "Rend", "if=ticks_remain<2" );
   single_target -> add_action( this, "Mortal Strike", "if=target.health.pct>20" );
@@ -4076,8 +4076,8 @@ void warrior_t::apl_prot()
   for ( size_t i = 0; i < racial_actions.size(); i++ )
     default_list -> add_action( racial_actions[i] + ",if=buff.bloodbath.up|buff.avatar.up|buff.shield_charge.up" );
   default_list -> add_action( this, "Berserker Rage", "if=buff.enrage.down" );
-  default_list -> add_action( "run_action_list,name=gladiator,if=talent.gladiators_resolve.enabled" );
-  default_list -> add_action( "run_action_list,name=prot" );
+  default_list -> add_action( "call_action_list,name=gladiator,if=talent.gladiators_resolve.enabled" );
+  default_list -> add_action( "call_action_list,name=prot" );
 
   if ( sim -> allow_potions )
   {
@@ -4092,7 +4092,7 @@ void warrior_t::apl_prot()
   prot -> add_action( this, "Shield Barrier", "if=incoming_damage_1500ms>health.max*0.3|rage>rage.max-20" );
   prot -> add_action( this, "Shield Wall", "if=incoming_damage_2500ms>health.max*0.6" );
   prot -> add_action( this, "Last Stand", "if=incoming_damage_2500ms>health.max*0.6&buff.shield_wall.down" );
-  prot -> add_action( "run_action_list,name=prot_aoe,if=active_enemies>3" );
+  prot -> add_action( "call_action_list,name=prot_aoe,if=active_enemies>3" );
 
   prot -> add_action( this, "Shield Slam" );
   prot -> add_action( this, "Revenge" );
@@ -4125,7 +4125,7 @@ void warrior_t::apl_prot()
   if ( sim -> allow_potions )
     gladiator -> add_action( "potion,name=draenic_strength,if=buff.bloodbath.up|buff.avatar.up|buff.shield_charge.up" );
 
-  gladiator -> add_action( "run_action_list,name=gladiator_aoe,if=active_enemies>3" );
+  gladiator -> add_action( "call_action_list,name=gladiator_aoe,if=active_enemies>3" );
   gladiator -> add_action( "shield_charge,if=buff.shield_charge.down&cooldown.shield_slam.remains=0&(cooldown.bloodbath.remains>15|!talent.bloodbath.enabled)" );
   gladiator -> add_action( this, "Heroic Strike", "if=buff.shield_charge.up|buff.ultimatum.up|rage>=90|target.time_to_die<=3|(talent.unyielding_strikes.enabled&buff.unyielding_strikes.max_stack)" );
   gladiator -> add_talent( this, "Bloodbath" );
