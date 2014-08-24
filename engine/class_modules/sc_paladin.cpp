@@ -4868,6 +4868,15 @@ set_e paladin_t::decode_set( const item_t& item ) const
     if ( is_heal   ) return SET_T16_HEAL;
   }
 
+    
+    if ( strstr( s, "_of_guiding_light" ) )
+    {
+        specialization_e s = specialization();
+        if ( s == PALADIN_RETRIBUTION ) return SET_T17_MELEE;
+        if ( s == PALADIN_HOLY ) return SET_T17_HEAL;
+        if ( s == PALADIN_PROTECTION ) return SET_T17_TANK;
+    }
+    
   if ( strstr( s, "gladiators_ornamented_"  ) ) return SET_PVP_HEAL;
   if ( strstr( s, "gladiators_scaled_"      ) ) return SET_PVP_MELEE;
 

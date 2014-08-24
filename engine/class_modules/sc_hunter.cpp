@@ -4009,6 +4009,9 @@ set_e hunter_t::decode_set( const item_t& item ) const
 
   if ( strstr( s, "_of_the_unblinking_vigil" ) ) return SET_T16_MELEE;
 
+    
+  if ( strstr( s, "rylakstalkers" ) ) return SET_T17_MELEE;
+    
   if ( strstr( s, "_gladiators_chain_" ) ) return SET_PVP_MELEE;
 
   return SET_NONE;

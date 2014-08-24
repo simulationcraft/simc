@@ -5622,7 +5622,9 @@ set_e warlock_t::decode_set( const item_t& item ) const
   if ( strstr( s, "_of_the_thousandfold_hells" ) ) return SET_T15_CASTER;
 
   if ( strstr( s, "_of_the_horned_nightmare" ) ) return SET_T16_CASTER;
-
+    
+  if ( strstr( s, "shadow_councils_" ) ) return SET_T17_CASTER;
+    
   if ( strstr( s, "_gladiators_felweave_" ) ) return SET_PVP_CASTER;
 
   return SET_NONE;

@@ -5416,6 +5416,8 @@ set_e mage_t::decode_set( const item_t& item ) const
 
   if ( strstr( s, "chronomancer_"     ) ) return SET_T16_CASTER;
 
+  if ( strstr( s, "arcanoshatter_"    ) ) return SET_T17_CASTER;
+    
   if ( strstr( s, "gladiators_silk_"  ) ) return SET_PVP_CASTER;
 
   return SET_NONE;

@@ -6953,7 +6953,13 @@ set_e death_knight_t::decode_set( const item_t& item ) const
     if ( is_tank  ) return SET_T16_TANK;
   }
 
-
+    if ( strstr( s, "ogreskull_boneplate" ) )
+    {
+        specialization_e s = specialization();
+        if ( s == DEATH_KNIGHT_UNHOLY ) return SET_T17_MELEE;
+        if ( s == DEATH_KNIGHT_FROST ) return SET_T17_MELEE;
+        if ( s == DEATH_KNIGHT_BLOOD ) return SET_T17_TANK;
+    }
   if ( strstr( s, "_gladiators_dreadplate_" ) ) return SET_PVP_MELEE;
 
   return SET_NONE;

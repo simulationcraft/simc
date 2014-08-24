@@ -3707,6 +3707,15 @@ set_e monk_t::decode_set( const item_t& item ) const
     }
   } // end "seven_sacred_seals"
 
+    
+    if ( util::str_in_str_ci( s, "_of_the_somber_gaze" ) )
+    {
+        specialization_e s = specialization();
+        if ( s == MONK_MISTWEAVER     ) return SET_T17_HEAL;
+        if ( s == MONK_BREWMASTER     ) return SET_T17_TANK;
+        if ( s == MONK_WINDWALKER     ) return SET_T17_MELEE;
+        
+    }
   if ( util::str_in_str_ci( s, "_gladiators_copperskin_"  ) ) return SET_PVP_HEAL;
   if ( util::str_in_str_ci( s, "_gladiators_ironskin_"    ) ) return SET_PVP_MELEE;
 

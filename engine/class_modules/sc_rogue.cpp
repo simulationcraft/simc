@@ -4833,6 +4833,9 @@ set_e rogue_t::decode_set( const item_t& item ) const
 
   if ( util::str_in_str_ci( s, "_barbed_assassin" ) ) return SET_T16_MELEE;
 
+  if ( util::str_in_str_ci( s, "poisoners_" ) ) return SET_T17_MELEE;
+   
+    
   return SET_NONE;
 }
 

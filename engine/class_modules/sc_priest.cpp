@@ -6813,6 +6813,16 @@ set_e priest_t::decode_set( const item_t& item ) const
     }
   }
 
+    
+    
+    if ( s.find( "soul_priests_" ) != std::string::npos )
+    {
+        specialization_e s = specialization();
+        if ( s == PRIEST_DISCIPLINE ) return SET_T17_HEAL;
+        if ( s == PRIEST_HOLY ) return SET_T17_HEAL;
+        if ( s == PRIEST_SHADOW ) return SET_T17_CASTER;
+    }
+    
   // PvP
   if ( s.find( "_gladiators_mooncloth_" ) != std::string::npos  ) return SET_PVP_HEAL;
   if ( s.find( "_gladiators_satin_"     ) != std::string::npos  ) return SET_PVP_CASTER;
