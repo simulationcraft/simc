@@ -4386,8 +4386,6 @@ void mage_t::init_base_stats()
 void mage_t::init_scaling()
 {
   player_t::init_scaling();
-
-  scales_with[ STAT_SPIRIT ] = false;
 }
 
 // mage_t::init_buffs =======================================================

@@ -3411,7 +3411,6 @@ void monk_t::init_scaling()
   if ( specialization() != MONK_MISTWEAVER )
   {
     scales_with[ STAT_INTELLECT            ] = false;
-    scales_with[ STAT_SPIRIT               ] = false;
     scales_with[ STAT_SPELL_POWER          ] = false;
     scales_with[ STAT_AGILITY              ] = true;
     scales_with[ STAT_WEAPON_DPS           ] = true;

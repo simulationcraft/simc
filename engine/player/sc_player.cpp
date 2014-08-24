@@ -1841,13 +1841,10 @@ void player_t::init_scaling()
     scales_with[ STAT_VERSATILITY_RATING        ] = true;
 
     scales_with[ STAT_WEAPON_DPS   ] = attack;
-
     scales_with[ STAT_WEAPON_OFFHAND_DPS   ] = false;
 
     scales_with[ STAT_ARMOR          ] = tank;
     scales_with[ STAT_BONUS_ARMOR    ] = tank;
-
-    scales_with[ STAT_BLOCK_RATING ] = tank;
 
     if ( sim -> scaling -> scale_stat != STAT_NONE && scale_player )
     {

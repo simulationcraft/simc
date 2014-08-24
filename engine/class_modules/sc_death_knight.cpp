@@ -6225,13 +6225,6 @@ void death_knight_t::init_scaling()
     scales_with[ STAT_WEAPON_OFFHAND_DPS   ] = true;
 
   scales_with[ STAT_AGILITY ] = false;
-
-  if ( primary_role() == ROLE_TANK )
-  {
-    scales_with[ STAT_PARRY_RATING ] = true;
-    scales_with[ STAT_DODGE_RATING ] = true;
-    scales_with[ STAT_BLOCK_RATING ] = false;
-  }
 }
 
 // death_knight_t::init_buffs ===============================================

@@ -6191,11 +6191,7 @@ void druid_t::init_scaling()
   equipped_weapon_dps = main_hand_weapon.damage / main_hand_weapon.swing_time.total_seconds();
 
   if ( specialization() == DRUID_GUARDIAN )
-  {
     scales_with[ STAT_WEAPON_DPS ] = false;
-    scales_with[ STAT_PARRY_RATING ] = false;
-    scales_with[ STAT_BLOCK_RATING ] = false;
-  }
 
   scales_with[STAT_STRENGTH] = false;
 
