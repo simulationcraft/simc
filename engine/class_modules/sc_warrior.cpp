@@ -41,6 +41,8 @@ public:
   int initial_rage;
   double arms_rage_mult;
   double crit_rage_mult;
+  double cs_extension;
+  bool wild_strike_extension;
   bool swapping; // Disables automated swapping when it's not required to use the ability.
   // Set to true whenever a player uses the swap option inside of stance_t, as we should assume they are intentionally sitting in defensive stance.
   bool t17_2pc_protection;
@@ -411,6 +413,8 @@ public:
     cooldown.storm_bolt               = get_cooldown( "storm_bolt" );
 
     initial_rage = 0;
+    wild_strike_extension = false;
+    cs_extension = 2.0;
     arms_rage_mult = 2.125;
     crit_rage_mult = 2;
     swapping = false;
@@ -2103,8 +2107,11 @@ struct raging_blow_t: public warrior_attack_t
   void impact( action_state_t* s )
   {
     warrior_attack_t::impact( s );
-    if ( result_is_hit( s -> result ) && td( s -> target ) -> debuffs_colossus_smash -> up() )
-      td( s -> target ) -> debuffs_colossus_smash -> extend_duration( s -> target, timespan_t::from_seconds( 2 ) );
+    if ( !p() -> wild_strike_extension )
+    {
+      if ( result_is_hit( s -> result ) && td( s -> target ) -> debuffs_colossus_smash -> up() )
+        td( s -> target ) -> debuffs_colossus_smash -> extend_duration( s -> target, timespan_t::from_seconds( p() -> cs_extension ) );
+    }
   }
 
   void execute()
@@ -2820,6 +2827,17 @@ struct wild_strike_t: public warrior_attack_t
       c += p() -> buff.bloodsurge -> data().effectN( 2 ).resource( RESOURCE_RAGE );
 
     return c;
+  }
+
+  void impact( action_state_t * s )
+  {
+    warrior_attack_t::impact( s );
+
+    if ( p() -> wild_strike_extension )
+    {
+      if ( result_is_hit( s -> result ) && td( s -> target ) -> debuffs_colossus_smash -> up() )
+        td( s -> target ) -> debuffs_colossus_smash -> extend_duration( s -> target, timespan_t::from_seconds( p() -> cs_extension ) );
+    }
   }
 
   void execute()
@@ -5119,6 +5137,9 @@ void warrior_t::create_options()
     opt_int( "initial_rage", initial_rage ),
     opt_float( "arms_rage_mult", arms_rage_mult ),
     opt_float( "crit_rage_mult", crit_rage_mult ),
+    opt_bool( "swapping", swapping ),
+    opt_bool( "wild_strike_extension", wild_strike_extension ),
+    opt_float( "cs_extension", cs_extension ),
     opt_null()
   };
 
@@ -5178,8 +5199,11 @@ void warrior_t::copy_from( player_t* source )
   warrior_t* p = debug_cast<warrior_t*>( source );
 
   initial_rage = p -> initial_rage;
+  swapping = p -> swapping;
   arms_rage_mult = p -> arms_rage_mult;
   crit_rage_mult = p -> crit_rage_mult;
+  wild_strike_extension = p -> wild_strike_extension;
+  cs_extension = p -> cs_extension;
 }
 
 void warrior_t::stance_swap()
