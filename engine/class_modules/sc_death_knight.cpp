@@ -5871,6 +5871,10 @@ void death_knight_t::init_action_list()
     for ( size_t i = 0; i < get_item_actions().size(); i++ )
       def -> add_action( get_item_actions()[i] );
 
+      //decide between single_target and aoe rotation
+      def -> add_action( "call_action_list,name=aoe,if=active_enemies>=3" );
+      def -> add_action( "call_action_list,name=single_target,if=active_enemies<3" );
+
     //decide between single_target and aoe rotation
     def -> add_action( "run_action_list,name=aoe,if=active_enemies>=3" );
     def -> add_action( "run_action_list,name=single_target,if=active_enemies<3" );
