@@ -65,6 +65,7 @@ public:
     BELOW_NORMAL = 2,
     HIGHEST = 5,
     LOWEST = 1,
+    IDLE = 0,
   };
   virtual void run() = 0;
 

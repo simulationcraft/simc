@@ -219,10 +219,11 @@ int translate_thread_priority( sc_thread_t::priority_e prio )
   switch ( prio )
   {
   case sc_thread_t::NORMAL: return THREAD_PRIORITY_NORMAL;
-  case sc_thread_t::ABOVE_NORMAL: return THREAD_PRIORITY_ABOVE_NORMAL;
-  case sc_thread_t::BELOW_NORMAL: return THREAD_PRIORITY_BELOW_NORMAL;
+  case sc_thread_t::ABOVE_NORMAL: return THREAD_PRIORITY_HIGHEST-1;
+  case sc_thread_t::BELOW_NORMAL: return THREAD_PRIORITY_LOWEST+1;
   case sc_thread_t::HIGHEST: return THREAD_PRIORITY_HIGHEST;
   case sc_thread_t::LOWEST: return THREAD_PRIORITY_LOWEST;
+  case sc_thread_t::IDLE: return THREAD_PRIORITY_IDLE;
   default: assert( false && "invalid thread priority" ); break;
   }
   return THREAD_PRIORITY_NORMAL;

@@ -486,7 +486,7 @@ bool parse_fight_style( sim_t*             sim,
   {
     sim -> fight_style = "HelterSkelter";
     sim -> raid_events_str = "casting,cooldown=30,duration=3,first=15";
-    sim -> raid_events_str += "/movement,cooldown=30,duration=5";
+    sim -> raid_events_str += "/movement,cooldown=30,distance=20";
     sim -> raid_events_str += "/stun,cooldown=60,duration=2";
     sim -> raid_events_str += "/invulnerable,cooldown=120,duration=3";
   }
@@ -495,13 +495,13 @@ bool parse_fight_style( sim_t*             sim,
     sim -> fight_style = "LightMovement";
     sim -> raid_events_str = "/movement,players_only=1,first=";
     sim -> raid_events_str += util::to_string( int( sim -> max_time.total_seconds() * 0.1 ) );
-    sim -> raid_events_str += ",cooldown=85,duration=7,last=";
+    sim -> raid_events_str += ",cooldown=85,distance=50,last=";
     sim -> raid_events_str += util::to_string( int( sim -> max_time.total_seconds() * 0.8 ) );
   }
   else if ( util::str_compare_ci( value, "HeavyMovement" ) )
   {
     sim -> fight_style = "HeavyMovement";
-    sim -> raid_events_str = "/movement,players_only=1,first=10,cooldown=10,duration=4";
+    sim -> raid_events_str = "/movement,players_only=1,first=10,cooldown=10,distance=25";
   }
   else if ( util::str_compare_ci( value, "WoD_KillableRaidDummy" ) || util::str_compare_ci( value, "WoD_KillableMythicDummy" ) )
   {
@@ -555,8 +555,8 @@ bool parse_fight_style( sim_t*             sim,
     sim -> fight_style = "HecticAddCleave";
 
     sim -> raid_events_str += "/adds,count=5,first=" + util::to_string( int( sim -> max_time.total_seconds() * 0.05 ) ) + ",cooldown=" + util::to_string( int( sim -> max_time.total_seconds() * 0.075 ) ) + ",duration=" + util::to_string( int( sim -> max_time.total_seconds() * 0.05 ) ) + ",last=" + util::to_string( int( sim -> max_time.total_seconds() * 0.75 ) ); //P1
-    sim -> raid_events_str += "/movement,players_only=1,first=" + util::to_string( int( sim -> max_time.total_seconds() * 0.05 ) ) + ",cooldown=" + util::to_string( int( sim -> max_time.total_seconds() * 0.075 ) ) + ",duration=" + util::to_string( int( sim -> max_time.total_seconds() * 0.008 ) ) + ",last=" + util::to_string( int( sim -> max_time.total_seconds() * 0.75 ) ); //move to new position of adds
-    sim -> raid_events_str += "/movement,players_only=1,first=" + util::to_string( int( sim -> max_time.total_seconds() * 0.03 ) ) + ",cooldown=" + util::to_string( int( sim -> max_time.total_seconds() * 0.03 ) ) + ",duration=" + util::to_string( std::max( int( sim -> max_time.total_seconds() * 0.003 ), 1 ) ); //move out of stuff
+    sim -> raid_events_str += "/movement,players_only=1,first=" + util::to_string( int( sim -> max_time.total_seconds() * 0.05 ) ) + ",cooldown=" + util::to_string( int( sim -> max_time.total_seconds() * 0.075 ) ) + ",distance=" + util::to_string( int( sim -> max_time.total_seconds() * 0.056 ) ) + ",last=" + util::to_string( int( sim -> max_time.total_seconds() * 0.75 ) ); //move to new position of adds
+    sim -> raid_events_str += "/movement,players_only=1,first=" + util::to_string( int( sim -> max_time.total_seconds() * 0.03 ) ) + ",cooldown=" + util::to_string( int( sim -> max_time.total_seconds() * 0.03 ) ) + ",distance=" + util::to_string( std::max( int( sim -> max_time.total_seconds() * 0.021 ), 1 ) ); //move out of stuff
 
   }
   else
@@ -711,6 +711,10 @@ bool parse_thread_priority( sim_t*             sim,
   else if ( util::str_compare_ci( value, "lowest" ) )
   {
     pr = sc_thread_t::LOWEST;
+  }
+  else if ( util::str_compare_ci( value, "idle" ) )
+  {
+    pr = sc_thread_t::IDLE;
   }
   else
   {

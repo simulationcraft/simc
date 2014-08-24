@@ -2101,7 +2101,7 @@ struct doom_t: public warlock_spell_t
     base_crit += p -> perk.empowered_doom -> effectN( 1 ).percent();
   }
 
-  double action_multiplier()
+  double action_multiplier() const
   {
     double am = spell_t::action_multiplier();
 
