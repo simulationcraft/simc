@@ -1,5 +1,3 @@
-
-
 talent_format=armory
 paladin="Paladin_Retribution_T17N"
 level=100
@@ -7,21 +5,21 @@ race=blood_elf
 role=hybrid
 position=back
 talents=2112232
-glyphs=winged_vengeance/templars_verdict/righteous_retreat/immediate_truth/fire_from_the_heavens/judgment/
+glyphs=winged_vengeance/templars_verdict/righteous_retreat/fire_from_the_heavens/judgment/
 spec=retribution
  
 head=primal_gladiators_scaled_helm,id=111171
-neck=primal_gladiators_choker_of_prowess,id=111208,enchant=gift_of_mastery
+neck=primal_gladiators_choker_of_prowess,id=111208,enchant=gift_of_haste
 shoulders=primal_gladiators_plate_shoulders,id=111213
-back=primal_gladiators_cloak_of_cruelty,id=111205,enchant=gift_of_mastery
+back=primal_gladiators_cloak_of_cruelty,id=111205,enchant=gift_of_haste
 chest=primal_gladiators_scaled_chestpiece,id=111169
 wrists=primal_gladiators_armplates_of_cruelty,id=111180
 hands=primal_gladiators_scaled_gauntlets,id=111170
 waist=primal_gladiators_girdle_of_prowess,id=111175
 legs=primal_gladiators_scaled_legguards,id=111172
 feet=primal_gladiators_warboots_of_prowess,id=111178
-finger1=primal_gladiators_signet_of_cruelty,id=111219,enchant=gift_of_mastery
-finger2=primal_gladiators_signet_of_accuracy,id=111220,enchant=gift_of_mastery
+finger1=primal_gladiators_signet_of_cruelty,id=111219,enchant=gift_of_haste
+finger2=primal_gladiators_signet_of_accuracy,id=111220,enchant=gift_of_haste
 trinket1=primal_gladiators_badge_of_victory,id=111232
 trinket2=primal_gladiators_insignia_of_victory,id=111233
 main_hand=primal_gladiators_greatsword,id=111204,enchant=mark_of_the_thunderlord

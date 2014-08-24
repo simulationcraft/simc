@@ -3,7 +3,6 @@ level=100
 race=tauren
 role=tank
 position=back
-professions=alchemy=600/mining=600
 talents=http://us.battle.net/wow/en/tool/talent-calculator#da!1.022.1
 spec=blood
 
@@ -72,7 +71,7 @@ finger1=primal_gladiators_signet_of_cruelty,id=111219,enchant=gift_of_multistrik
 finger2=primal_gladiators_signet_of_accuracy,id=111220,enchant=gift_of_multistrike
 trinket1=primal_gladiators_medallion_of_cruelty,id=111229
 trinket2=primal_gladiators_insignia_of_victory,id=111233
-main_hand=primal_gladiators_decapitator,id=111202,enchant=rune_of_the_fallen_crusader
+main_hand=primal_gladiators_decapitator,id=111202,enchant=rune_of_stoneskin_gargoyle
 
 # Gear Summary
 # gear_strength=2378

@@ -7,7 +7,6 @@ race=orc
 spec=unholy
 role=attack
 position=back
-professions=blacksmithing=600/engineering=600
 talents=3003001
 head=primal_gladiators_plate_helm,id=111241
 neck=primal_gladiators_choker_of_cruelty,id=111207,enchant=gift_of_mastery
@@ -32,7 +31,6 @@ race=orc
 spec=frost
 role=attack
 position=back
-professions=blacksmithing=600/engineering=600
 talents=2003001
 glyphs=
 head=primal_gladiators_plate_helm,id=111241
@@ -58,7 +56,6 @@ race=orc
 spec=frost
 role=attack
 position=back
-professions=blacksmithing=600/engineering=600
 talents=2003001
 glyphs=
 head=primal_gladiators_plate_helm,id=111241
@@ -83,7 +80,6 @@ deathknight="Death_Knight_Blood_T17N"
 level=100
 race=tauren
 role=tank
-professions=alchemy=600/mining=600
 talents=2013302
 spec=blood
 head=primal_gladiators_plate_helm,id=111211
@@ -100,6 +96,5 @@ finger1=primal_gladiators_signet_of_cruelty,id=111219,enchant=gift_of_multistrik
 finger2=primal_gladiators_signet_of_accuracy,id=111220,enchant=gift_of_multistrike
 trinket1=primal_gladiators_medallion_of_cruelty,id=111229
 trinket2=primal_gladiators_insignia_of_victory,id=111233
-main_hand=primal_gladiators_decapitator,id=111202,enchant=rune_of_the_fallen_crusader
+main_hand=primal_gladiators_decapitator,id=111202,enchant=rune_of_stoneskin_gargoyle
 save=Death_Knight_Blood_T17N.simc
-

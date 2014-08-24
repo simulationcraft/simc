@@ -5157,9 +5157,12 @@ void paladin_t::generate_action_prio_list_ret()
   // This should<tm> get Censure up before the auto attack lands
   def -> add_action( "auto_attack" );
   def -> add_talent( this, "Speed of Light", "if=movement.remains>1" );
-  def -> add_talent( this, "Seraphim" );
-  def -> add_action( this, "Avenging Wrath" );
-  def -> add_talent( this, "Holy Avenger", "if=holy_power<=2" ); 
+  def -> add_talent( this, "Execution Sentence" );
+  def -> add_talent( this, "Light's Hammer" );
+  def -> add_talent( this, "Holy Avenger", "sync=seraphim,if=talent.seraphim.enabled" );
+  def -> add_talent( this, "Holy Avenger", "if=holy_power<=2&!talent.seraphim.enabled" );
+  def -> add_action( this, "Avenging Wrath", "sync=seraphim,if=talent.seraphim.enabled" );
+  def -> add_action( this, "Avenging Wrath", "if=!talent.seraphim.enabled" );
 
   // Items (not sure why they're radomly put here? I guess after cooldowns but before rotational abilities)
   int num_items = ( int ) items.size();
@@ -5177,11 +5180,10 @@ void paladin_t::generate_action_prio_list_ret()
   for ( size_t i = 0; i < racial_actions.size(); i++ )
     def -> add_action( racial_actions[ i ] );
 
-  def -> add_talent( this, "Execution Sentence" );
-  def -> add_talent( this, "Light's Hammer" );
+  def -> add_talent( this, "Seraphim" );
+  def -> add_action( this, "Seal of Truth", "if=talent.empowered_seals.enabled&buff.maraads_truth.remains<3" );
   def -> add_action( this, "Divine Storm", "if=active_enemies>=2&(holy_power=5|buff.divine_purpose.react|(buff.holy_avenger.up&holy_power>=3))&(!talent.final_verdict.enabled|buff.final_verdict.up)&(!talent.seraphim.enabled|cooldown.seraphim.remains>3)" );
- 
-  def -> add_action( this, "Divine Storm", "if=buff.divine_crusader.react&holy_power=5&(!talent.final_verdict.enabled|buff.final_verdict.up)&(!talent.seraphim.enabled|cooldown.seraphim.remains>3)" );
+  def -> add_action( this, "Divine Storm", "if=buff.divine_crusader.react&holy_power=5&(!talent.final_verdict.enabled|buff.final_verdict.up)" );
 
   // Templar's Verdict @ 5 HP, or if DivPurp is about to expire
   def -> add_action( this, "Templar's Verdict", "if=holy_power=5|buff.holy_avenger.up&holy_power>=3&(!talent.seraphim.enabled|cooldown.seraphim.remains>3)" );
@@ -5196,6 +5198,7 @@ void paladin_t::generate_action_prio_list_ret()
   def -> add_action( this, "Hammer of the Righteous", "if=active_enemies>=4" );
   def -> add_action( this, "Crusader Strike" );
   def -> add_action( "wait,sec=cooldown.crusader_strike.remains,if=cooldown.crusader_strike.remains>0&cooldown.crusader_strike.remains<=0.2" );
+  def -> add_action( this, "Seal of Righteousness", "if=talent.empowered_seals.enabled&buff.maraads_truth.remains>cooldown.judgment.remains&buff.liadrins_righteousness.down" );
   def -> add_action( this, "Exorcism", "if=active_enemies>=2&active_enemies<=4&set_bonus.tier15_2pc_melee&glyph.mass_exorcism.enabled" );
   def -> add_action( this, "Judgment" );
   def -> add_action( "wait,sec=cooldown.judgment.remains,if=cooldown.judgment.remains>0&cooldown.judgment.remains<=0.2" );
@@ -5204,10 +5207,9 @@ void paladin_t::generate_action_prio_list_ret()
   def -> add_talent( this, "Final Verdict", "if=buff.divine_purpose.react" );
   def -> add_action( this, "Exorcism" );
   def -> add_action( "wait,sec=cooldown.exorcism.remains,if=cooldown.exorcism.remains>0&cooldown.exorcism.remains<=0.2" );
-  def -> add_action( this, "Templar's Verdict", "if=buff.tier15_4pc_melee.up&active_enemies<4" );
-  def -> add_talent( this, "Final Verdict", "if=buff.tier15_4pc_melee.up&active_enemies<4" );
-  def -> add_action( this, "Divine Storm", "if=active_enemies>=2&(!talent.final_verdict.enabled|buff.final_verdict.up)" );
-  def -> add_action( this, "Templar's Verdict" );
+  def -> add_action( this, "Seal of Truth", "if=talent.empowered_seals.enabled&buff.maraads_truth.remains<7" );
+  def -> add_action( this, "Divine Storm", "if=active_enemies>=2&(!talent.final_verdict.enabled|buff.final_verdict.up)&(!talent.seraphim.enabled|cooldown.seraphim.remains>3)" );
+  def -> add_action( this, "Templar's Verdict", "if=(!talent.seraphim.enabled|cooldown.seraphim.remains>3)" );
   def -> add_talent( this, "Final Verdict" );
   def -> add_talent( this, "Holy Prism" );
 }

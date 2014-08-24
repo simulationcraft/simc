@@ -41,9 +41,9 @@ actions+=/ascendance,if=active_enemies>1|(dot.flame_shock.remains>buff.ascendanc
 actions+=/liquid_magma,if=pet.searing_totem.remains>=15|pet.fire_elemental_totem.remains>=15
 actions+=/storm_elemental_totem,if=cooldown.fire_elemental_totem.remains>=60
 # If only one enemy, priority follows the 'single' action list.
-actions+=/run_action_list,name=single,if=active_enemies=1
+actions+=/call_action_list,name=single,if=active_enemies=1
 # On multiple enemies, the priority follows the 'aoe' action list.
-actions+=/run_action_list,name=aoe,if=active_enemies>1
+actions+=/call_action_list,name=aoe,if=active_enemies>1
 
 # Single target action priority list
 
