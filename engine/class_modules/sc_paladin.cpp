@@ -1718,7 +1718,7 @@ struct eternal_flame_t : public paladin_heal_t
     double c = cost();
 
     // scale the am by holy power spent, can't be more than 3 and Divine Purpose counts as 3
-    am *= ( ( p() -> holy_power_stacks() <= 3  && c > 0.0 ) ? p() -> holy_power_stacks() : 3 );
+    am *= ( ( p() -> holy_power_stacks() <= 3  && c > 0.0 ) ? p() -> holy_power_stacks() : 3 ) / 3;
 
     if ( target == player )
     {      
@@ -4766,7 +4766,7 @@ void paladin_t::create_buffs()
                                  .duration( find_spell( talents.divine_purpose -> effectN( 1 ).trigger_spell_id() ) -> duration() );
   buffs.final_verdict          = buff_creator_t( this, "final_verdict", talents.final_verdict );
   buffs.holy_avenger           = buff_creator_t( this, "holy_avenger", talents.holy_avenger ).cd( timespan_t::zero() ); // Let the ability handle the CD
-  buffs.holy_shield_absorb     = absorb_buff_creator_t( this, "holy_shield", find_spell( 157121 ) )
+  buffs.holy_shield_absorb     = absorb_buff_creator_t( this, "holy_shield", find_spell( 157122 ) )
                                  .school( SCHOOL_MAGIC )
                                  .source( get_stats( "holy_shield_absorb" ) )
                                  .gain( get_gain( "holy_shield_absorb" ) );
