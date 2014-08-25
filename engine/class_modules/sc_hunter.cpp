@@ -1232,7 +1232,7 @@ struct kill_command_t: public hunter_main_pet_attack_t
   // Override behavior so that Kill Command uses hunter's attack power rather than the pet's
   double composite_attack_power() const
   {
-    return base_attack_power + o() -> cache.attack_power() * o()->composite_attack_power_multiplier();
+    return o() -> cache.attack_power() * o()->composite_attack_power_multiplier();
   }
 };
 

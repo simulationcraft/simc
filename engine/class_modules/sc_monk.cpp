@@ -697,12 +697,6 @@ public:
       p() -> buff.mana_tea -> trigger( stacks );
   }
 
-  // Used mostly for the Chi Explosion Talent
-  double variable_chi_to_consume()
-  {
-    return std::min( 4.0, p() -> resources.current[ RESOURCE_CHI ] );
-  }
-
   virtual void consume_resource()
   {
     ab::consume_resource();
@@ -1242,7 +1236,7 @@ struct chi_explosion_t: public monk_melee_attack_t
       // damage increased by 40% for WW 2pc upon CB
       m *= 1 + ( p() -> sets.set( SET_T16_2PC_MELEE ) -> effectN( 1 ).base_value() / 100 );
 
-    m *= resource_consumed;
+    m *= 1.0 + resource_consumed;
 
     return m;
   }
@@ -1262,27 +1256,15 @@ struct chi_explosion_t: public monk_melee_attack_t
 
   double cost() const
   {
-    // TODO: Check if Chi Explosion works with Tier 16 4-piece
-    if ( p() -> buff.focus_of_xuen -> check() ){
-      return monk_melee_attack_t::cost() - 1;
-    }
-    return monk_melee_attack_t::cost();
+    double c = std::min( 4.0, p() -> resources.current[RESOURCE_CHI] );
+
+    return c;
   }
 
   void consume_resource()
   {
-    double savings = base_costs[RESOURCE_CHI] - cost();
-    resource_consumed = savings;
-
-    resource_consumed = variable_chi_to_consume();
-
     monk_melee_attack_t::consume_resource();
 
-    if ( p() -> buff.focus_of_xuen -> up() )
-    {
-      p() -> gain.focus_of_xuen_savings -> add( RESOURCE_CHI, savings );
-      p() -> buff.focus_of_xuen -> expire();
-    }
     if ( p() -> buff.combo_breaker_ce -> up() )
     {
       // Instantly restore chi

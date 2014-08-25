@@ -301,8 +301,6 @@ action_t::action_t( action_e       ty,
   base_hit                       = 0.0;
   base_crit                      = 0.0;
   rp_gain                        = 0.0;
-  base_spell_power               = 0.0;
-  base_attack_power              = 0.0;
   crit_multiplier                = 1.0;
   crit_bonus_multiplier          = 1.0;
   base_dd_adder                  = 0.0;

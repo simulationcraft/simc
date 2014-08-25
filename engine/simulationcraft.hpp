@@ -5654,7 +5654,6 @@ struct action_t : public noncopyable
   double base_dd_min, base_dd_max, base_td;
   double base_dd_multiplier, base_td_multiplier;
   double base_multiplier, base_hit, base_crit;
-  double base_spell_power, base_attack_power;
   double crit_multiplier, crit_bonus_multiplier, crit_bonus;
   double base_dd_adder;
   double base_ta_adder;
@@ -5875,9 +5874,9 @@ public:
   virtual double composite_crit() const { return base_crit; }
   virtual double composite_crit_multiplier() const { return 1.0; }
   virtual double composite_haste() const { return 1.0; }
-  virtual double composite_attack_power() const { return base_attack_power + player -> cache.attack_power(); }
+  virtual double composite_attack_power() const { return player -> cache.attack_power(); }
   virtual double composite_spell_power() const
-  { return base_spell_power + player -> cache.spell_power( get_school() ); }
+  { return player -> cache.spell_power( get_school() ); }
   virtual double composite_target_crit( player_t* /* target */ ) const;
   virtual double composite_target_multiplier( player_t* target ) const { return target -> composite_player_vulnerability( get_school() ); }
   virtual double composite_multistrike() const { return player -> cache.multistrike(); }
