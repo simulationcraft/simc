@@ -1187,7 +1187,6 @@ struct dot_chi_explosion_t : public residual_action::residual_periodic_action_t<
   {
     tick_may_crit = true;
     may_miss = false;
-    base_td_multiplier = 1.50; // hard code the 50% increase
   }
 };
 
@@ -1256,7 +1255,7 @@ struct chi_explosion_t : public monk_melee_attack_t
       residual_action::trigger(
       p() -> active_actions.chi_explosion_dot,
       s -> target,
-      s -> result_amount * 1.5 );
+      s -> result_amount * 0.5 );
   }
 
   double cost() const
