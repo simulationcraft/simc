@@ -579,6 +579,58 @@ inline void rune_t::fill_rune()
   state = STATE_FULL;
 }
 
+// Event to spread Necrotic Plague from a source actor to a target actor
+
+template<typename TARGETDATA>
+struct np_spread_event_t : public event_t
+{
+  dot_t* dot;
+  np_spread_event_t( dot_t* dot_ ) :
+    event_t( *dot_ -> source -> sim, "necrotic_plague_spread" ),
+    dot( dot_ )
+  {
+    sim().add_event( this, timespan_t::zero() );
+  }
+
+  void execute()
+  {
+    if ( dot -> target -> is_sleeping() )
+      return;
+
+    // TODO-WOD: Randomize target selection.
+    player_t* new_target = 0;
+    for ( size_t i = 0, end = sim().target_non_sleeping_list.size(); i < end; i++ )
+    {
+      player_t* t = sim().target_non_sleeping_list[ i ];
+      if ( t == dot -> state -> target )
+        continue;
+
+      TARGETDATA* tdata = debug_cast<TARGETDATA*>( dot -> source -> get_target_data( t ) );
+      if ( ! tdata -> dots_necrotic_plague -> is_ticking() )
+      {
+        new_target = t;
+        break;
+      }
+    }
+
+    // Dot is cloned to the new target
+    if ( new_target )
+    {
+      if ( sim().debug )
+        sim().out_debug.printf( "Player %s spreading Necrotic Plague from %s to %s",
+            dot -> current_action -> player -> name(),
+            dot -> target -> name(),
+            new_target -> name() );
+      dot -> copy( new_target, DOT_COPY_CLONE );
+
+      TARGETDATA* source_tdata = debug_cast<TARGETDATA*>( dot -> source -> get_target_data( dot -> state -> target ) );
+      TARGETDATA* tdata = debug_cast<TARGETDATA*>( dot -> source -> get_target_data( new_target ) );
+      assert( ! tdata -> debuffs_necrotic_plague -> check() );
+      tdata -> debuffs_necrotic_plague -> trigger( source_tdata -> debuffs_necrotic_plague -> check() );
+    }
+  }
+};
+
 // ==========================================================================
 // Local Utility Functions
 // ==========================================================================
@@ -1138,12 +1190,16 @@ struct dancing_rune_weapon_td_t : public actor_pair_t
   dot_t* dots_blood_plague;
   dot_t* dots_frost_fever;
   dot_t* dots_soul_reaper;
+  dot_t* dots_necrotic_plague;
+
+  buff_t* debuffs_necrotic_plague;
 
   int diseases() const
   {
     int disease_count = 0;
     if ( dots_blood_plague -> is_ticking() ) disease_count++;
     if ( dots_frost_fever  -> is_ticking() ) disease_count++;
+    if ( dots_necrotic_plague -> is_ticking() ) disease_count++;
     return disease_count;
   }
 
@@ -1160,7 +1216,7 @@ struct dancing_rune_weapon_pet_t : public pet_t
       background                   = true;
     }
 
-    dancing_rune_weapon_td_t* td( player_t* t = 0 )
+    dancing_rune_weapon_td_t* td( player_t* t = 0 ) const
     { return p() -> get_target_data( t ? t : target ); }
 
     dancing_rune_weapon_pet_t* p()
@@ -1226,6 +1282,78 @@ struct dancing_rune_weapon_pet_t : public pet_t
       tick_may_crit    = true;
       dot_behavior     = DOT_REFRESH;
     }
+
+    virtual double composite_crit() const
+    { return action_t::composite_crit() + player -> cache.attack_crit(); }
+  };
+
+  struct drw_necrotic_plague_t : public drw_spell_t
+  {
+
+    drw_necrotic_plague_t( dancing_rune_weapon_pet_t* p ) :
+      drw_spell_t( "necrotic_plague", p, p -> owner -> find_spell( 155159 ) )
+    {
+      hasted_ticks = may_miss = may_crit = false;
+      background = tick_may_crit = true;
+      dot_behavior = DOT_REFRESH;
+    }
+
+    double composite_target_multiplier( player_t* target ) const
+    {
+      double m = drw_spell_t::composite_target_multiplier( target );
+
+      const dancing_rune_weapon_td_t* tdata = td( target );
+      if ( tdata -> dots_necrotic_plague -> is_ticking() )
+        m *= tdata -> debuffs_necrotic_plague -> stack();
+
+      return m;
+    }
+
+    void last_tick( dot_t* dot )
+    {
+      drw_spell_t::last_tick( dot );
+      td( dot -> target ) -> debuffs_necrotic_plague -> expire();
+    }
+
+    // Spread Necrotic Plagues use the source NP dot's duration on the target,
+    // and never pandemic-extnd the dot on the target.
+    timespan_t calculate_dot_refresh_duration( const dot_t*, timespan_t triggered_duration ) const
+    { return triggered_duration; }
+
+    // Necrotic Plague duration will not be refreshed if it is already ticking on
+    // the target, only the stack count will go up. Only Festering Strike is
+    // allowed to extend the duration of the Necrotic Plague dot.
+    void trigger_dot( action_state_t* s )
+    {
+      dancing_rune_weapon_td_t* tdata = td( s -> target );
+      if ( ! tdata -> dots_necrotic_plague -> is_ticking() )
+        drw_spell_t::trigger_dot( s );
+
+      tdata -> debuffs_necrotic_plague -> trigger();
+
+      if ( sim -> debug )
+        sim -> out_debug.printf( "%s %s stack increases to %d",
+            player -> name(), name(), tdata -> debuffs_necrotic_plague -> check() );
+    }
+
+    void tick( dot_t* dot )
+    {
+      drw_spell_t::tick( dot );
+
+      if ( result_is_hit( dot -> state -> result ) && dot -> ticks_left() > 0 )
+      {
+        dancing_rune_weapon_td_t* tdata = td( dot -> state -> target );
+        tdata -> debuffs_necrotic_plague -> trigger();
+
+        if ( sim -> debug )
+          sim -> out_debug.printf( "%s %s stack %d",
+              player -> name(), name(), tdata -> debuffs_necrotic_plague -> check() );
+        new ( *sim ) np_spread_event_t<dancing_rune_weapon_td_t>( dot );
+      }
+    }
+
+    double composite_crit() const
+    { return action_t::composite_crit() + player -> cache.attack_crit(); }
   };
 
   struct drw_death_coil_t : public drw_spell_t
@@ -1268,8 +1396,16 @@ struct dancing_rune_weapon_pet_t : public pet_t
 
       if ( result_is_hit( s -> result ) )
       {
-        p() -> drw_frost_fever -> target = s -> target;
-        p() -> drw_frost_fever -> execute();
+        if ( ! p() -> o() -> talent.necrotic_plague -> ok() )
+        {
+          p() -> drw_frost_fever -> target = s -> target;
+          p() -> drw_frost_fever -> execute();
+        }
+        else
+        {
+          p() -> drw_necrotic_plague -> target = s -> target;
+          p() -> drw_necrotic_plague -> execute();
+        }
       }
     }
   };
@@ -1303,6 +1439,12 @@ struct dancing_rune_weapon_pet_t : public pet_t
           p() -> drw_frost_fever -> target = s -> target;
           p() -> drw_frost_fever -> execute();
         }
+
+        if ( td( target ) -> dots_necrotic_plague -> is_ticking() )
+        {
+          p() -> drw_necrotic_plague -> target = s -> target;
+          p() -> drw_necrotic_plague -> execute();
+        }
       }
     }
   };
@@ -1321,11 +1463,19 @@ struct dancing_rune_weapon_pet_t : public pet_t
 
       if ( result_is_hit( execute_state -> result ) )
       {
-        p() -> drw_blood_plague -> target = target;
-        p() -> drw_blood_plague -> execute();
+        if ( ! p() -> o() -> talent.necrotic_plague -> ok() )
+        {
+          p() -> drw_blood_plague -> target = target;
+          p() -> drw_blood_plague -> execute();
 
-        p() -> drw_frost_fever -> target = target;
-        p() -> drw_frost_fever -> execute();
+          p() -> drw_frost_fever -> target = target;
+          p() -> drw_frost_fever -> execute();
+        }
+        else
+        {
+          p() -> drw_necrotic_plague -> target = target;
+          p() -> drw_necrotic_plague -> execute();
+        }
       }
     }
   };
@@ -1344,8 +1494,16 @@ struct dancing_rune_weapon_pet_t : public pet_t
 
       if ( result_is_hit( s -> result ) )
       {
-        p() -> drw_blood_plague -> target = s->target;
-        p() -> drw_blood_plague -> execute();
+        if ( ! p() -> o() -> talent.necrotic_plague -> ok() )
+        {
+          p() -> drw_blood_plague -> target = s->target;
+          p() -> drw_blood_plague -> execute();
+        }
+        else
+        {
+          p() -> drw_necrotic_plague -> target = s -> target;
+          p() -> drw_necrotic_plague -> execute();
+        }
       }
     }
   };
@@ -1418,6 +1576,7 @@ struct dancing_rune_weapon_pet_t : public pet_t
 
   spell_t*        drw_blood_plague;
   spell_t*        drw_frost_fever;
+  spell_t*        drw_necrotic_plague;
 
   spell_t*        drw_death_coil;
   spell_t*        drw_death_siphon;
@@ -1432,7 +1591,7 @@ struct dancing_rune_weapon_pet_t : public pet_t
 
   dancing_rune_weapon_pet_t( sim_t* sim, player_t* owner ) :
     pet_t( sim, owner, "dancing_rune_weapon", true ),
-    drw_blood_plague( nullptr ), drw_frost_fever( nullptr ),
+    drw_blood_plague( nullptr ), drw_frost_fever( nullptr ), drw_necrotic_plague( 0 ),
     drw_death_coil( nullptr ),
     drw_death_siphon( nullptr ), drw_icy_touch( nullptr ),
     drw_outbreak( nullptr ), drw_blood_boil( nullptr ),
@@ -1473,6 +1632,7 @@ struct dancing_rune_weapon_pet_t : public pet_t
 
     drw_frost_fever   = new drw_frost_fever_t  ( this );
     drw_blood_plague  = new drw_blood_plague_t ( this );
+    drw_necrotic_plague = new drw_necrotic_plague_t( this );
 
     drw_death_coil    = new drw_death_coil_t   ( this );
     drw_death_siphon  = new drw_death_siphon_t ( this );
@@ -1511,6 +1671,9 @@ dancing_rune_weapon_td_t::dancing_rune_weapon_td_t( player_t* target, dancing_ru
   dots_blood_plague    = target -> get_dot( "blood_plague",        drw );
   dots_frost_fever     = target -> get_dot( "frost_fever",         drw );
   dots_soul_reaper     = target -> get_dot( "soul_reaper_execute", drw );
+  dots_necrotic_plague = target -> get_dot( "necrotic_plague",     drw );
+
+  debuffs_necrotic_plague = buff_creator_t( *this, "necrotic_plague", drw -> owner -> find_spell( 155159 ) ).period( timespan_t::zero() );
 }
 
 struct death_knight_pet_t : public pet_t
@@ -2693,56 +2856,6 @@ struct frost_fever_t : public death_knight_spell_t
 
 struct necrotic_plague_t : public death_knight_spell_t
 {
-  // Event to spread Necrotic Plague from a source actor to a target actor
-  struct np_spread_event_t : public event_t
-  {
-    dot_t* dot;
-    np_spread_event_t( dot_t* dot_ ) :
-      event_t( *dot_ -> source -> sim, "necrotic_plague_spread" ),
-      dot( dot_ )
-    {
-      sim().add_event( this, timespan_t::zero() );
-    }
-
-    void execute()
-    {
-      if ( dot -> target -> is_sleeping() )
-        return;
-
-      // TODO-WOD: Randomize target selection.
-      player_t* new_target = 0;
-      for ( size_t i = 0, end = sim().target_non_sleeping_list.size(); i < end; i++ )
-      {
-        player_t* t = sim().target_non_sleeping_list[ i ];
-        if ( t == dot -> state -> target )
-          continue;
-
-        death_knight_td_t* tdata = debug_cast<death_knight_td_t*>( dot -> source -> get_target_data( t ) );
-        if ( ! tdata -> dots_necrotic_plague -> is_ticking() )
-        {
-          new_target = t;
-          break;
-        }
-      }
-
-      // Dot is cloned to the new target
-      if ( new_target )
-      {
-        if ( sim().debug )
-          sim().out_debug.printf( "Player %s spreading Necrotic Plague from %s to %s",
-              dot -> current_action -> player -> name(),
-              dot -> target -> name(),
-              new_target -> name() );
-        dot -> copy( new_target, DOT_COPY_CLONE );
-
-        death_knight_td_t* source_tdata = debug_cast<death_knight_td_t*>( dot -> source -> get_target_data( dot -> state -> target ) );
-        death_knight_td_t* tdata = debug_cast<death_knight_td_t*>( dot -> source -> get_target_data( new_target ) );
-        assert( ! tdata -> debuffs_necrotic_plague -> check() );
-        tdata -> debuffs_necrotic_plague -> trigger( source_tdata -> debuffs_necrotic_plague -> check() );
-      }
-    }
-  };
-
   necrotic_plague_t( death_knight_t* p ) :
     death_knight_spell_t( "necrotic_plague", p, p -> find_spell( 155159 ) )
   {
@@ -2803,7 +2916,7 @@ struct necrotic_plague_t : public death_knight_spell_t
       if ( sim -> debug )
         sim -> out_debug.printf( "%s %s stack %d",
             player -> name(), name(), tdata -> debuffs_necrotic_plague -> check() );
-      new ( *sim ) np_spread_event_t( dot );
+      new ( *sim ) np_spread_event_t<death_knight_td_t>( dot );
     }
   }
 
