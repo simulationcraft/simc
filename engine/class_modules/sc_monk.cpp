@@ -930,6 +930,7 @@ struct jab_t: public monk_melee_attack_t
 
     mh = &( player -> main_hand_weapon );
     oh = &( player -> off_hand_weapon );
+    base_costs[ RESOURCE_ENERGY ] = 45;
 
     base_multiplier *= 1.15; // hardcoded into tooltip
   }
@@ -1187,6 +1188,7 @@ struct dot_chi_explosion_t: public residual_action::residual_periodic_action_t <
     p -> specialization() == MONK_MISTWEAVER ? p -> find_spell( 157681 ) :
     p -> find_spell( 157682 ) )
   {
+    dual = true;
     tick_may_crit = true;
     may_miss = false;
   }
@@ -1198,8 +1200,6 @@ struct chi_explosion_t: public monk_melee_attack_t
     monk_melee_attack_t( "chi_explosion", p, p -> talent.chi_explosion )
   {
     parse_options( nullptr, options_str );
-    mh = &( player -> main_hand_weapon );
-    oh = &( player -> off_hand_weapon );
   }
 
   void execute()
@@ -1244,7 +1244,7 @@ struct chi_explosion_t: public monk_melee_attack_t
       // damage increased by 40% for WW 2pc upon CB
       m *= 1 + ( p() -> sets.set( SET_T16_2PC_MELEE ) -> effectN( 1 ).base_value() / 100 );
 
-    m *= 1.0 + resource_consumed;
+    m *= 1.0 + std::min( 4.0, p() -> resources.current[RESOURCE_CHI] );
 
     return m;
   }
@@ -3596,7 +3596,7 @@ double monk_t::composite_player_multiplier( school_e school ) const
   double m = base_t::composite_player_multiplier( school );
 
   if ( specialization() == MONK_WINDWALKER )
-    m *= 1.0 + stance_data.fierce_tiger -> effectN( 3 ).percent();
+    m *= 1.1;
 
   m *= 1.0 + buff.tigereye_brew_use -> value();
 
