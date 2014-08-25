@@ -1274,8 +1274,7 @@ struct chi_explosion_t: public monk_melee_attack_t
     double savings = base_costs[RESOURCE_CHI] - cost();
     resource_consumed = savings;
 
-    if ( execute_state -> result != RESULT_MISS )
-      resource_consumed = variable_chi_to_consume();
+    resource_consumed = variable_chi_to_consume();
 
     monk_melee_attack_t::consume_resource();
 
