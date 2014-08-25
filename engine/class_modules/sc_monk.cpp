@@ -1242,6 +1242,8 @@ struct chi_explosion_t: public monk_melee_attack_t
       // damage increased by 40% for WW 2pc upon CB
       m *= 1 + ( p() -> sets.set( SET_T16_2PC_MELEE ) -> effectN( 1 ).base_value() / 100 );
 
+    m *= resource_consumed;
+
     return m;
   }
 
