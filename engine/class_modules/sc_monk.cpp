@@ -196,9 +196,6 @@ public:
     const spell_data_t* breath_of_the_serpent;
     const spell_data_t* hurricane_strike;
     const spell_data_t* chi_explosion;
-    const spell_data_t* chi_explosion_bm;
-    const spell_data_t* chi_explosion_ww;
-    const spell_data_t* chi_explosion_mw;
     const spell_data_t* serenity;
     const spell_data_t* path_of_mists;
   } talent;
@@ -939,7 +936,7 @@ struct jab_t : public monk_melee_attack_t
       return;
 
     double cb_chance = combo_breaker_chance();
-    if ( p() -> talent.chi_explosion_ww -> ok() )
+    if ( p() -> talent.chi_explosion -> ok() )
       p() -> buff.combo_breaker_ce -> trigger( 1, buff_t::DEFAULT_VALUE(), cb_chance );
     else
       p() -> buff.combo_breaker_bok -> trigger( 1, buff_t::DEFAULT_VALUE(), cb_chance );
@@ -1196,30 +1193,19 @@ struct dot_chi_explosion_t : public residual_action::residual_periodic_action_t<
 
 struct chi_explosion_t : public monk_melee_attack_t
 {
-  static const spell_data_t* chi_explosion_data( monk_t* p )
-  {
-    if (p -> specialization() == MONK_BREWMASTER)
-      return p -> talent.chi_explosion_bm;
-    else if ( p -> specialization() == MONK_MISTWEAVER)
-      return p -> talent.chi_explosion_mw;
-    else
-      return p -> talent.chi_explosion_ww;
-  }
-
   chi_explosion_t( monk_t* p, const std::string& options_str ) :
-    monk_melee_attack_t( "chi_explosion", p, chi_explosion_data( p ) )
+    monk_melee_attack_t( "chi_explosion", p, p -> talent.chi_explosion )
   {
     parse_options( nullptr, options_str );
     mh = &( player -> main_hand_weapon );
     oh = &( player -> off_hand_weapon );
-    school = SCHOOL_NATURE;
   }
 
   void execute()
   {
     monk_melee_attack_t::execute();
 
-    if ( p() -> talent.chi_explosion_bm -> ok() )
+    if ( p() -> specialization() == MONK_BREWMASTER )
     {
       if ( resource_consumed >= 2 )
       {
@@ -1238,7 +1224,7 @@ struct chi_explosion_t : public monk_melee_attack_t
         p() -> clear_stagger();
       }
     }
-    else if ( p() -> talent.chi_explosion_ww -> ok() )
+    else if ( p() -> specialization() == MONK_WINDWALKER )
     {
       if ( resource_consumed >= 3 )
         // Hard Code the Tigereye Brew stack Checked 08/21/2014
@@ -1251,10 +1237,6 @@ struct chi_explosion_t : public monk_melee_attack_t
   double action_multiplier() const
   {
     double m = monk_melee_attack_t::action_multiplier();
-
-    // TODO Check if Empowered Blackout Kick Perk applies to Chi Explosion
-    // Empowered Blackout Kick
-    m *= 1 + p() -> perk.empowered_blackout_kick -> effectN( 1 ).percent();
 
     // TODO: check for melee 2p and CB: CE, for the 40% dmg bonus
     if ( p() -> sets.has_set_bonus( SET_T16_2PC_MELEE ) && p() -> buff.combo_breaker_ce -> check() )
@@ -3263,18 +3245,6 @@ void monk_t::init_spells()
   talent.soul_dance               = find_talent_spell( "Soul Dance" );
   talent.hurricane_strike         = find_talent_spell( "Hurricane Strike" );
   talent.chi_explosion            = find_talent_spell( "Chi Explosion" );
-  if ( talent.chi_explosion -> ok() )
-  {
-    talent.chi_explosion_bm = find_spell(157676);
-    talent.chi_explosion_ww = find_spell(152174);
-    talent.chi_explosion_mw = find_spell(157675);
-  }
-  else
-  {
-    talent.chi_explosion_bm = spell_data_t::nil();
-    talent.chi_explosion_mw = spell_data_t::nil();
-    talent.chi_explosion_ww = spell_data_t::nil();
-  }
   talent.serenity                 = find_talent_spell( "Serenity" );
   talent.path_of_mists            = find_talent_spell( "Path of Mists" );
 
