@@ -2212,7 +2212,7 @@ struct holy_light_t : public paladin_heal_t
 struct holy_shield_proc_t : public paladin_spell_t
 {
   holy_shield_proc_t( paladin_t* p )
-    : paladin_spell_t( "holy_shield", p, p -> find_spell( 157122 ) ) // damage data stored in 157122
+    : paladin_spell_t( "holy_shield_proc", p, p -> find_spell( 157122 ) ) // damage data stored in 157122
   {
     background = true;
     proc = true;
