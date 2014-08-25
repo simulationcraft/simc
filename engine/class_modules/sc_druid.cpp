@@ -908,6 +908,13 @@ struct yseras_gift_t : public heal_t
     tick_pct_heal = data().effectN( 1 ).percent();
   }
 
+  virtual void init()
+  {
+    heal_t::init();
+
+    snapshot_flags &= ~STATE_RESOLVE; // Is not affected by resolve.
+  }
+
   virtual void tick( dot_t* d )
   {
     d -> refresh_duration(); // ticks indefinitely
@@ -2896,7 +2903,7 @@ struct maul_t : public bear_attack_t
       {
         p() -> resource_gain(
           RESOURCE_RAGE,
-          p() -> find_spell( 165410 ) -> effectN( 1 ).resource( RESOURCE_RAGE ),
+          p() -> find_spell( 165410 ) -> effectN( 1 ).base_value(), // Spell data contains an int value not a rage amount
           p() -> gain.tier17_2pc_tank );
       }
 
@@ -3638,6 +3645,13 @@ struct renewal_t : public druid_heal_t
   renewal_t( druid_t* p, const std::string& options_str ) :
     druid_heal_t( "renewal", p, p -> find_talent_spell( "Renewal" ), options_str )
   {}
+
+  virtual void init()
+  {
+    druid_heal_t::init();
+
+    snapshot_flags &= ~STATE_RESOLVE; // Is not affected by resolve.
+  }
 
   virtual void execute()
   {
