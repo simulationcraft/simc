@@ -46,6 +46,8 @@ public:
   bool mastery_rend;
   bool mastery_whirlwind;
   bool mastery_everything;
+  bool mastery_rend_burst;
+  double rend_burst_mastery;
   bool swapping; // Disables automated swapping when it's not required to use the ability.
   // Set to true whenever a player uses the swap option inside of stance_t, as we should assume they are intentionally sitting in defensive stance.
   bool t17_2pc_protection;
@@ -419,7 +421,9 @@ public:
     wild_strike_extension = false;
     mastery_everything = false;
     mastery_rend = false;
+    mastery_rend_burst = false;
     mastery_whirlwind = false;
+    rend_burst_mastery = 1;
     cs_extension = 2.0;
     arms_rage_mult = 2.125;
     crit_rage_mult = 2;
@@ -2304,6 +2308,9 @@ struct rend_burst_t: public warrior_attack_t
 
     if ( p() -> mastery_rend )
       am *= 1.0 + p() -> cache.mastery_value();
+
+    if ( p() -> mastery_rend_burst )
+      am *= 1.0 + ( p() -> rend_burst_mastery * p() -> cache.mastery_value() );
 
     return am;
   }
@@ -5183,6 +5190,8 @@ void warrior_t::create_options()
     opt_bool( "mastery_whirlwind", mastery_whirlwind ),
     opt_bool( "mastery_rend", mastery_rend ),
     opt_bool( "mastery_everything", mastery_everything ),
+    opt_bool( "mastery_rend_burst", mastery_rend_burst ),
+    opt_float( "burst_mastery_multiplier", rend_burst_mastery ),
     opt_float( "cs_extension", cs_extension ),
     opt_null()
   };
@@ -5250,6 +5259,8 @@ void warrior_t::copy_from( player_t* source )
   mastery_everything = p -> mastery_everything;
   mastery_rend = p -> mastery_rend;
   mastery_whirlwind = p -> mastery_whirlwind;
+  mastery_rend_burst = p -> mastery_rend_burst;
+  rend_burst_mastery = p -> rend_burst_mastery;
   cs_extension = p -> cs_extension;
 }
 
