@@ -116,8 +116,7 @@ public:
     buff_t* serenity;
     buff_t* forceful_winds;
 
-    //  buff_t* zen_meditation;
-    //  buff_t* path_of_blossoms;
+    buff_t* zen_meditation;
   } buff;
 
 private:
@@ -207,12 +206,26 @@ public:
     const spell_data_t* leather_specialization;
     const spell_data_t* way_of_the_monk;
     const spell_data_t* critical_strikes;
+    const spell_data_t* rising_sun_kick;
+    const spell_data_t* zen_meditaiton;
+    const spell_data_t* legacy_of_the_white_tiger;
 
     // Brewmaster
     const spell_data_t* brewing_elusive_brew;
     const spell_data_t* brewmaster_training;
     const spell_data_t* elusive_brew;
     const spell_data_t* desperate_measures;
+    const spell_data_t* stance_of_the_sturdy_ox;
+    const spell_data_t* dizzying_haze;
+    const spell_data_t* breath_of_fire;
+    const spell_data_t* guard;
+    const spell_data_t* summon_black_ox_statue;
+    const spell_data_t* purifying_brew;
+    const spell_data_t* keg_smash;
+    const spell_data_t* gift_of_the_ox;
+    const spell_data_t* resolve;
+    const spell_data_t* bladed_armor;
+    const spell_data_t* ferment;
 
     // Mistweaver
     const spell_data_t* brewing_mana_tea;
@@ -220,43 +233,59 @@ public:
     const spell_data_t* focus_and_harmony; // To-do: Implement
     const spell_data_t* crane_style_techniques;
     const spell_data_t* teachings_of_the_monastery;
+    const spell_data_t* stance_of_the_wise_serpent;
+    const spell_data_t* renewing_mist;
+    const spell_data_t* soothing_mist;
+    const spell_data_t* mana_tea;
+    const spell_data_t* revival;
+    const spell_data_t* summon_jade_serpent_statue;
+    const spell_data_t* internal_medicine;
+    const spell_data_t* detonate_chi;
+    const spell_data_t* mana_tea_driver;
+    const spell_data_t* legacy_of_the_emperor;
+    const spell_data_t* soothing_mists_trigger;
+    const spell_data_t* uplift;
+    const spell_data_t* thunder_focus_tea;
+    const spell_data_t* life_cocoon;
+    const spell_data_t* enveloping_mist;
+    const spell_data_t* stance_of_the_spirited_crane;
+    const spell_data_t* jade_mists;
 
     // Windwalker
     const spell_data_t* brewing_tigereye_brew;
     const spell_data_t* combo_breaker;
+    const spell_data_t* fists_of_fury;
+    const spell_data_t* flying_serpent_kick;
+    const spell_data_t* energizing_brew;
+    const spell_data_t* afterlife;
+    const spell_data_t* disable;
+    const spell_data_t* tigereye_brew;
+    const spell_data_t* touch_of_karma;
+    const spell_data_t* combat_conditioning;
+    const spell_data_t* storm_earth_and_fire;
+    const spell_data_t* battle_trance;
+    const spell_data_t* windflurry;
 
   } spec;
 
   // Warlords of Draenor Perks
   struct
   {
-     // GENERAL
-     const spell_data_t* empowered_blackout_kick;
-    // const spell_data_t* enhanced_roll;
-    // const spell_data_t* enhanced_transcendence;
-    const spell_data_t* empowered_tiger_palm;
+    // GENERAL
+    const spell_data_t* enhanced_roll;
+    const spell_data_t* enhanced_transcendence;
 
     // Brewmaster
-    const spell_data_t* empowered_keg_smash;
-    // const spell_data_t* improved_breath_of_fire;
-    // const spell_data_t* improved_dizzying_haze;
-    const spell_data_t* improved_elusive_brew;
+    const spell_data_t* improved_breath_of_fire;
     const spell_data_t* improved_guard;
-    const spell_data_t* improved_stance_of_the_sturdy_ox;
 
     // Mistweaver
-    const spell_data_t* empowered_surging_mist;
-    const spell_data_t* improved_expel_harm;
     const spell_data_t* improved_life_cocoon;
     const spell_data_t* improved_renewing_mist;
-    const spell_data_t* improved_soothing_mist;
 
     // Windwalker
     const spell_data_t* empowered_chi;
-    const spell_data_t* empowered_fists_of_fury;
-    const spell_data_t* empowered_rising_sun_kick;
     const spell_data_t* empowered_spinning_crane_kick;
-    const spell_data_t* improved_energizing_brew;
   } perk;
 
   struct mastery_spells_t
@@ -292,7 +321,6 @@ public:
   struct passives_t
   {
     const spell_data_t* tier15_2pc;
-    const spell_data_t* swift_reflexes;
     const spell_data_t* chi_brew_passive;
     const spell_data_t* enveloping_mist;
     const spell_data_t* surging_mist;
@@ -360,7 +388,6 @@ public:
   virtual void      create_buffs();
   virtual void      init_gains();
   virtual void      init_procs();
-  virtual void      init_defense();
   virtual void      regen( timespan_t periodicity );
   virtual void      reset();
   virtual void      interrupt();
@@ -690,7 +717,18 @@ public:
       stacks = as<int>( floor( base_stacks ) );
 
     if ( p() -> spec.brewing_tigereye_brew -> ok() )
+    {
       p() -> buff.tigereye_brew -> trigger( stacks );
+      if ( stacks > 0 )
+      {
+        do
+        {
+          p() -> proc.tigereye_brew -> occur();
+          stacks--;
+        }
+        while ( stacks > 0 );
+      }
+    }
     else if ( p() -> spec.brewing_elusive_brew -> ok() )
       p() -> buff.elusive_brew_stacks -> trigger( stacks );
     else if ( p() -> spec.brewing_mana_tea -> ok() )
@@ -931,10 +969,17 @@ struct jab_t : public monk_melee_attack_t
 
     double cb_chance = combo_breaker_chance();
     if ( p() -> talent.chi_explosion -> ok() )
-      p() -> buff.combo_breaker_ce -> trigger( 1, buff_t::DEFAULT_VALUE(), cb_chance );
+    {
+      if ( p() -> buff.combo_breaker_ce -> trigger( 1, buff_t::DEFAULT_VALUE(), cb_chance ) )
+        p() -> proc.combo_breaker_ce -> occur();
+    }
     else
-      p() -> buff.combo_breaker_bok -> trigger( 1, buff_t::DEFAULT_VALUE(), cb_chance );
-    p() -> buff.combo_breaker_tp  -> trigger( 1, buff_t::DEFAULT_VALUE(), cb_chance );
+    {
+      if ( p() -> buff.combo_breaker_bok -> trigger( 1, buff_t::DEFAULT_VALUE(), cb_chance ) )
+        p() -> proc.combo_breaker_bok -> occur();
+    }
+    if ( p() -> buff.combo_breaker_tp  -> trigger( 1, buff_t::DEFAULT_VALUE(), cb_chance ) )
+      p() -> proc.combo_breaker_tp -> occur();
 
     // Chi Gain
     double chi_gain = data().effectN( 2 ).base_value();
@@ -984,8 +1029,6 @@ struct tiger_palm_t : public monk_melee_attack_t
 
     if ( p() -> spec.teachings_of_the_monastery -> ok() )
       m *= 1.0 + p() -> spec.teachings_of_the_monastery -> effectN( 7 ).percent();
-
-    m *= 1.0 + p() -> perk.empowered_tiger_palm -> effectN ( 1 ).percent();
 
     // check for melee 2p and CB: TP, for the 40% dmg bonus
     if ( p() -> sets.has_set_bonus( SET_T16_2PC_MELEE ) && p() -> buff.combo_breaker_tp -> check() ) {
@@ -1056,6 +1099,8 @@ struct blackout_kick_t : public monk_melee_attack_t
     monk_melee_attack_t( "blackout_kick", p, p -> find_class_spell( "Blackout Kick" ) )
   {
     parse_options( nullptr, options_str );
+    if ( p -> talent.chi_explosion -> ok() )
+      background = true;
     mh = &( player -> main_hand_weapon );
     oh = &( player -> off_hand_weapon );
     base_multiplier *= 5.375; // hardcoded into tooltip
@@ -1090,9 +1135,6 @@ struct blackout_kick_t : public monk_melee_attack_t
   virtual double action_multiplier() const
   {
     double m = monk_melee_attack_t::action_multiplier();
-
-    // Empowered Blackout Kick
-    m *= 1 + p() -> perk.empowered_blackout_kick -> effectN( 1 ).percent();
 
     // check for melee 2p and CB: TP, for the 50% dmg bonus
     if ( p() -> sets.has_set_bonus( SET_T16_2PC_MELEE ) && p() -> buff.combo_breaker_bok -> check() ) {
@@ -1328,15 +1370,6 @@ struct rising_sun_kick_t : public monk_melee_attack_t
     return monk_melee_attack_t::cost();
   }
 
-  virtual double action_multiplier() const
-  {
-    double m = monk_melee_attack_t::action_multiplier();
-
-    m *= 1 + p() -> perk.empowered_rising_sun_kick -> effectN( 1 ).percent();
-
-    return m;
-  }
-
   virtual void consume_resource()
   {
     monk_melee_attack_t::consume_resource();
@@ -1477,15 +1510,6 @@ struct fists_of_fury_tick_t: public monk_melee_attack_t
     mh = &( player -> main_hand_weapon );
     oh = &( player -> off_hand_weapon );
     split_aoe_damage = false;
-  }
-
-  double action_multiplier() const
-  {
-    double m = monk_melee_attack_t::action_multiplier();
-
-    m *= 1 + p() -> perk.empowered_fists_of_fury -> effectN( 1 ).percent();
-
-    return m;
   }
 };
 
@@ -1754,15 +1778,6 @@ struct keg_smash_t : public monk_melee_attack_t
     base_multiplier *= 10.00; // hardcoded into tooltip
   }
 
-  virtual double action_multiplier() const
-  {
-    double m = monk_melee_attack_t::action_multiplier();
-
-    m *= 1 + p() -> perk.empowered_keg_smash -> effectN( 1 ).percent();
-
-    return m;
-  }
-
   virtual void execute()
   {
     monk_melee_attack_t::execute();
@@ -1805,16 +1820,6 @@ struct expel_harm_t : public monk_melee_attack_t
 
     if ( p -> glyph.targeted_expulsion -> ok() )
       base_multiplier *= 1.0 - p -> glyph.targeted_expulsion -> effectN( 2 ).percent();
-  }
-
-
-  virtual double action_multiplier() const
-  {
-    double m = monk_melee_attack_t::action_multiplier();
-
-    m *= 1 + p() -> perk.improved_expel_harm -> effectN( 1 ).percent();
-
-    return m;
   }
 
   double trigger_attack()
@@ -2798,8 +2803,6 @@ struct soothing_mist_t : public monk_heal_t
   {
     double tm = monk_heal_t::action_ta_multiplier();
 
-    tm *= 1.0 + p() -> perk.improved_soothing_mist -> effectN( 1 ).percent();
-
     player_t* t = ( execute_state ) ? execute_state -> target : target;
 
     if ( td( t ) -> dots.enveloping_mist -> is_ticking() )
@@ -2898,15 +2901,6 @@ struct surging_mist_t : public monk_heal_t
     double c = monk_heal_t::cost();
 
     return c;
-  }
-
-  virtual double action_multiplier() const
-  {
-    double m = monk_heal_t::action_multiplier();
-
-    m *= 1.0 + p() -> perk.empowered_surging_mist -> effectN( 1 ).percent();
-
-    return m;
   }
 
   virtual timespan_t execute_time() const
@@ -3221,28 +3215,14 @@ void monk_t::init_spells()
   talent.path_of_mists            = find_talent_spell( "Path of Mists" );
 
   // PERKS
-  perk.empowered_blackout_kick          = find_perk_spell( "Empowered Blackout Kick" );
-  perk.empowered_tiger_palm             = find_perk_spell( "Empowered Tiger Palm" );;
-
-         // Brewmaster
-  perk.empowered_keg_smash              = find_perk_spell( "Empowered Keg Smash" );
-  perk.improved_elusive_brew            = find_perk_spell( "Improved Elusive Brew" );
   perk.improved_guard                   = find_perk_spell( "Improved Guard" );
-  perk.improved_stance_of_the_sturdy_ox = find_perk_spell( "Improved Stance of the Sturdy Ox" );
-
-         // Mistweaver
-  perk.empowered_surging_mist           = find_perk_spell( "Empowered Surging Mist" );
-  perk.improved_expel_harm              = find_perk_spell( "Improved Expel Harm" );
   perk.improved_life_cocoon             = find_perk_spell( "Improved Life Cocoon" );
   perk.improved_renewing_mist           = find_perk_spell( "Improved Renewing Mist" );
-  perk.improved_soothing_mist           = find_perk_spell( "Improved Soothing Mist" );
-
-         // Windwalker
   perk.empowered_chi                    = find_perk_spell( "Empowered Chi" );
-  perk.empowered_fists_of_fury          = find_perk_spell( "Empowered Fists of Fury" );
-  perk.empowered_rising_sun_kick        = find_perk_spell( "Empowered Rising Sun Kick" );
   perk.empowered_spinning_crane_kick    = find_perk_spell( "Empowered Spinning Crane Kick" );
-  perk.improved_energizing_brew         = find_perk_spell( "Improved Energizing Brew" );
+  perk.enhanced_roll                    = find_perk_spell( "Enhanced Roll" );
+  perk.improved_breath_of_fire          = find_perk_spell( "Improved Breath of Fire" );
+  perk.enhanced_transcendence           = find_perk_spell( "Enhanced Transcendence" );
 
   // General Passives
   spec.way_of_the_monk            = find_spell( 108977 );
@@ -3280,7 +3260,6 @@ void monk_t::init_spells()
     active_actions.stagger_self_damage = new actions::stagger_self_damage_t( this );
 
   passives.tier15_2pc       = find_spell( 138311 );
-  passives.swift_reflexes   = find_spell( 124334 );
   passives.chi_brew_passive = find_spell( 145640 );
   passives.enveloping_mist  = find_class_spell( "Enveloping Mist" );
   passives.surging_mist     = find_class_spell( "Surging Mist" );
@@ -3457,10 +3436,13 @@ void monk_t::init_procs()
 {
   base_t::init_procs();
 
-  proc.mana_tea         = get_proc( "mana_tea"   );
+  proc.mana_tea         = get_proc( "mana_tea" );
   proc.tier15_2pc_melee = get_proc( "tier15_2pc" );
   proc.tier15_4pc_melee = get_proc( "tier15_4pc" );
   proc.tigereye_brew    = get_proc( "tigereye_brew" );
+  proc.combo_breaker_bok = get_proc( "combo_breaker_bok" );
+  proc.combo_breaker_ce = get_proc( "combo_breaker_ce" );
+  proc.combo_breaker_tp = get_proc( "combo_breaker_tp" );
 }
 
 // monk_t::reset ============================================================
@@ -3472,12 +3454,6 @@ void monk_t::reset()
   track_chi_consumption = 0.0;
   track_focus_of_xuen = 0.0;
   _active_stance = FIERCE_TIGER;
-}
-
-void monk_t::init_defense()
-{
-  base_t::init_defense();
-
 }
 
 // monk_t::regen (brews/teas)================================================
@@ -3726,10 +3702,7 @@ double monk_t::composite_attribute_multiplier( attribute_e attr ) const
   if ( attr == ATTR_STAMINA )
   {
     double bonus = 0;
-
     bonus = active_stance_data( STURDY_OX ).effectN( 7 ).percent();
-    // Improved Stance of the Sturdy Ox
-    bonus += perk.improved_stance_of_the_sturdy_ox -> effectN( 1 ).percent();
     cam *= 1 + bonus;
   }
   return cam;
@@ -3778,8 +3751,6 @@ double monk_t::composite_parry() const
   if ( buff.shuffle -> check() )
     p += buff.shuffle -> data().effectN( 1 ).percent();
 
-  p += passives.swift_reflexes -> effectN( 2 ).percent();
-
   return p;
 }
 
@@ -3790,11 +3761,7 @@ double monk_t::composite_dodge() const
   double d = base_t::composite_dodge();
 
   if ( buff.elusive_brew_activated -> check() )
-  {
     d += buff.elusive_brew_activated -> data().effectN( 1 ).percent();
-    // Improved Elusive Brew
-    d += perk.improved_elusive_brew -> effectN ( 1 ).percent();
-  }
 
   return d;
 }
@@ -3831,10 +3798,6 @@ double monk_t::composite_multistrike() const
 {
   double m = player_t::composite_multistrike();
 
-  // TODO-WOD: Flat or multiplicative bonus?
-  // Improved Energizing Brew
-  if ( buff.energizing_brew -> up() )
-    m += perk.improved_energizing_brew -> effectN( 1 ).percent();
   if ( buff.tiger_strikes -> up() )
     m += buff.tiger_strikes -> data().effectN( 1 ).percent();
 
