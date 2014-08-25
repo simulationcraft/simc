@@ -2717,7 +2717,6 @@ struct lights_hammer_heal_tick_t : public paladin_heal_t
     background = true;
     aoe = 6;
     may_crit = true;
-    benefits_from_seal_of_insight = false;
   }
   
   std::vector< player_t* >& target_list() const
@@ -2882,12 +2881,6 @@ struct sacred_shield_t : public paladin_heal_t
     paladin_heal_t::execute();
     
     td( target ) -> buffs.sacred_shield -> trigger();
-  }
-
-  virtual timespan_t calculate_dot_refresh_duration( const dot_t* dot, timespan_t triggered_duration ) const override
-  {
-    // Old MoP Dot Behavior
-    return dot -> time_to_next_tick() + triggered_duration;
   }
 };
 
@@ -4513,7 +4506,9 @@ paladin_td_t::paladin_td_t( player_t* target, paladin_t* paladin ) :
 
   buffs.debuffs_censure    = buff_creator_t( *this, "censure", paladin -> find_spell( 31803 ) );
   buffs.eternal_flame      = new buffs::eternal_flame_t( this );
-  buffs.sacred_shield      = buff_creator_t( *this, "sacred_shield", paladin -> find_talent_spell( "Sacred Shield" ) );
+  buffs.sacred_shield      = buff_creator_t( *this, "sacred_shield", paladin -> find_talent_spell( "Sacred Shield" ) )
+                             .cd( timespan_t::zero() ) // let ability handle cooldown
+                             .period( timespan_t::zero() );
   buffs.glyph_of_flash_of_light = buff_creator_t( *this, "glyph_of_flash_of_light", paladin -> find_spell( 54957 ) );
 }
 
