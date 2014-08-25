@@ -115,7 +115,7 @@ public:
     buff_t* final_verdict;
     buff_t* hand_of_purity;
     buff_t* holy_avenger;
-    absorb_buff_t* holy_shield; // Dummy buff to trigger spell damage "blocking" absorb effect
+    absorb_buff_t* holy_shield_absorb; // Dummy buff to trigger spell damage "blocking" absorb effect
     buff_t* liadrins_righteousness;
     buff_t* long_arm_of_the_law;
     buff_t* maraads_truth;
@@ -2212,7 +2212,7 @@ struct holy_light_t : public paladin_heal_t
 struct holy_shield_proc_t : public paladin_spell_t
 {
   holy_shield_proc_t( paladin_t* p )
-    : paladin_spell_t( "holy_shield_proc", p, p -> find_spell( 157122 ) ) // damage data stored in 157122
+    : paladin_spell_t( "holy_shield", p, p -> find_spell( 157122 ) ) // damage data stored in 157122
   {
     background = true;
     proc = true;
@@ -4699,7 +4699,7 @@ void paladin_t::init_gains()
   gains.extra_regen                 = get_gain( ( specialization() == PALADIN_RETRIBUTION ) ? "sword_of_light" : "guarded_by_the_light" );
 
   // Health
-  gains.holy_shield                 = get_gain( "holy_shield" );
+  gains.holy_shield                 = get_gain( "holy_shield_absorb" );
   gains.seal_of_insight             = get_gain( "seal_of_insight"  );
   gains.glyph_divine_storm          = get_gain( "glyph_of_divine_storm" );
   gains.glyph_divine_shield         = get_gain( "glyph_of_divine_shield" );
@@ -4908,10 +4908,10 @@ void paladin_t::create_buffs()
                                  .duration( find_spell( talents.divine_purpose -> effectN( 1 ).trigger_spell_id() ) -> duration() );
   buffs.final_verdict          = buff_creator_t( this, "final_verdict", talents.final_verdict );
   buffs.holy_avenger           = buff_creator_t( this, "holy_avenger", talents.holy_avenger ).cd( timespan_t::zero() ); // Let the ability handle the CD
-  buffs.holy_shield            = absorb_buff_creator_t( this, "holy_shield", find_spell( 157121 ) )
+  buffs.holy_shield_absorb     = absorb_buff_creator_t( this, "holy_shield", find_spell( 157121 ) )
                                  .school( SCHOOL_MAGIC )
-                                 .source( get_stats( "holy_shield" ) )
-                                 .gain( get_gain( "holy_shield" ) );
+                                 .source( get_stats( "holy_shield_absorb" ) )
+                                 .gain( get_gain( "holy_shield_absorb" ) );
   buffs.long_arm_of_the_law    = buff_creator_t( this, "long_arm_of_the_law", talents.long_arm_of_the_law )
                                  .default_value( talents.long_arm_of_the_law -> effectN( 1 ).percent() );
   buffs.speed_of_light         = buff_creator_t( this, "speed_of_light", talents.speed_of_light )
@@ -6228,8 +6228,8 @@ void paladin_t::assess_damage_imminent( school_e school, dmg_e, action_state_t* 
         s -> result_absorbed = s -> result_amount;
         
         // hack to register this on the abilities table
-        buffs.holy_shield -> trigger( 1, block_amount );
-        buffs.holy_shield -> consume( block_amount );
+        buffs.holy_shield_absorb -> trigger( 1, block_amount );
+        buffs.holy_shield_absorb -> consume( block_amount );
 
         // Trigger the damage event
         trigger_holy_shield();
