@@ -1987,7 +1987,7 @@ struct flash_of_light_t : public paladin_heal_t
     // Selfless healer has two effects
     if ( p() -> talents.selfless_healer -> ok() )
     {
-      // multiplicative 20% per Selfless Healer stack when FoL is used on others
+      // multiplicative 35% per Selfless Healer stack when FoL is used on others
       if ( target != player )
       {
         am *= 1.0 + p() -> buffs.selfless_healer -> data().effectN( 2 ).percent() * p() -> buffs.selfless_healer -> stack();
@@ -2003,13 +2003,7 @@ struct flash_of_light_t : public paladin_heal_t
 
     // if Selfless Healer is talented, expire SH buff 
     if ( p() -> talents.selfless_healer -> ok() )
-    {
-      // also expire BoG buff if self-cast
-      if ( target == player && p() -> buffs.selfless_healer -> stack() > 0 )
-        p() -> buffs.bastion_of_glory -> expire();
-
       p() -> buffs.selfless_healer -> expire();
-    }
 
     // Enhanced Holy Shock trigger
     p() -> buffs.enhanced_holy_shock -> trigger();
