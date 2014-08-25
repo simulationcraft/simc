@@ -1190,9 +1190,9 @@ struct dot_chi_explosion_t : public residual_action::residual_periodic_action_t<
   }
 };
 
-struct chi_explosion_t : public monk_melee_attack_t
+struct chi_explosion_t: public monk_melee_attack_t
 {
-  chi_explosion_t( monk_t* p, const std::string& options_str ) :
+  chi_explosion_t( monk_t* p, const std::string& options_str ):
     monk_melee_attack_t( "chi_explosion", p, p -> talent.chi_explosion )
   {
     parse_options( nullptr, options_str );
@@ -1249,7 +1249,7 @@ struct chi_explosion_t : public monk_melee_attack_t
   {
     monk_melee_attack_t::assess_damage( type, s );
 
-    if (( p() -> specialization() == MONK_WINDWALKER ) && ( resource_consumed >= 2 ) )
+    if ( ( p() -> specialization() == MONK_WINDWALKER ) && ( resource_consumed >= 2 ) )
       // At this time, hard code the 50% increased damage 04/28/2014
       // TODO: get actual spell Effect whenever that becomes available
       residual_action::trigger(
@@ -1262,32 +1262,22 @@ struct chi_explosion_t : public monk_melee_attack_t
   {
     // TODO: Check if Chi Explosion works with Tier 16 4-piece
     if ( p() -> buff.focus_of_xuen -> check() ){
-                return monk_melee_attack_t::cost() - 1;
+      return monk_melee_attack_t::cost() - 1;
     }
     return monk_melee_attack_t::cost();
   }
 
- void consume_resource()
+  void consume_resource()
   {
-    double savings = base_costs[ RESOURCE_CHI ] - cost();
+    double savings = base_costs[RESOURCE_CHI] - cost();
     resource_consumed = savings;
 
     if ( execute_state -> result != RESULT_MISS )
       resource_consumed = variable_chi_to_consume();
 
-    player -> resource_loss( current_resource(), resource_consumed, nullptr, this );
+    monk_melee_attack_t::consume_resource();
 
-    if ( sim -> log )
-      sim -> out_log.printf( "%s consumes %.1f %s for %s (%.0f)", player -> name(),
-                     resource_consumed, util::resource_type_string( current_resource() ),
-                     name(), player -> resources.current[ current_resource() ] );
-
-    stats -> consume_resource( current_resource(), resource_consumed );
-
-    if ( result_is_hit( execute_state -> result ) )
-      p() -> track_chi_consumption += savings;
-
-    else if ( p() -> buff.focus_of_xuen -> up() )
+    if ( p() -> buff.focus_of_xuen -> up() )
     {
       p() -> gain.focus_of_xuen_savings -> add( RESOURCE_CHI, savings );
       p() -> buff.focus_of_xuen -> expire();
