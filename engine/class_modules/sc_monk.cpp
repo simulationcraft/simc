@@ -1209,8 +1209,6 @@ struct chi_explosion_t : public monk_melee_attack_t
   chi_explosion_t( monk_t* p, const std::string& options_str ) :
     monk_melee_attack_t( "chi_explosion", p, chi_explosion_data( p ) )
   {
-    if ( ! p -> talent.chi_explosion -> ok() )
-      background = true;
     parse_options( nullptr, options_str );
     mh = &( player -> main_hand_weapon );
     oh = &( player -> off_hand_weapon );
