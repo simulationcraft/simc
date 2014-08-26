@@ -999,7 +999,7 @@ pet_t( sim, owner, pet_name, pt, guardian ), special_action( 0 ), melee_attack( 
 {
   owner_fury_gain = owner -> get_gain( pet_name );
   owner_coeff.ap_from_sp = 1.0;
-  owner_coeff.sp_from_sp = 0.825;
+  owner_coeff.sp_from_sp = 1.0;
   supremacy = find_spell( 115578 );
 }
 
@@ -1154,7 +1154,7 @@ struct imp_pet_t: public warlock_pet_t
     warlock_pet_t( sim, owner, name, PET_IMP, name != "imp" )
   {
     action_list_str = "firebolt";
-    owner_coeff.ap_from_sp = 0.6563;
+    owner_coeff.ap_from_sp = 1.0;
   }
 
   virtual action_t* create_action( const std::string& name, const std::string& options_str )
@@ -1171,7 +1171,7 @@ struct felguard_pet_t: public warlock_pet_t
     warlock_pet_t( sim, owner, name, PET_FELGUARD, name != "felguard" )
   {
     action_list_str = "legion_strike";
-    owner_coeff.ap_from_sp = 1.1;
+    owner_coeff.ap_from_sp = 1.0;
   }
 
   virtual void init_base_stats()
@@ -1196,7 +1196,7 @@ struct felhunter_pet_t: public warlock_pet_t
     warlock_pet_t( sim, owner, name, PET_FELHUNTER, name != "felhunter" )
   {
     action_list_str = "shadow_bite";
-    owner_coeff.ap_from_sp = 0.6563;
+    owner_coeff.ap_from_sp = 1.0;
   }
 
   virtual void init_base_stats()
@@ -1220,7 +1220,7 @@ struct succubus_pet_t: public warlock_pet_t
     warlock_pet_t( sim, owner, name, PET_SUCCUBUS, name != "succubus" )
   {
     action_list_str = "lash_of_pain";
-    owner_coeff.ap_from_sp = 0.3124;
+    owner_coeff.ap_from_sp = 0.5;
   }
 
   virtual void init_base_stats()
@@ -1247,7 +1247,7 @@ struct voidwalker_pet_t: public warlock_pet_t
     warlock_pet_t( sim, owner, name, PET_VOIDWALKER, name != "voidwalker" )
   {
     action_list_str = "torment";
-    owner_coeff.ap_from_sp = 0.6563;
+    owner_coeff.ap_from_sp = 1.0;
   }
 
   virtual void init_base_stats()
@@ -1271,7 +1271,7 @@ struct infernal_pet_t: public warlock_pet_t
     warlock_pet_t( sim, owner, "infernal", PET_INFERNAL, true )
   {
     action_list_str = "immolation,if=!ticking";
-    owner_coeff.ap_from_sp = 0.04688;
+    owner_coeff.ap_from_sp = 0.065934;
   }
 
   virtual void init_base_stats()
@@ -1294,7 +1294,7 @@ struct doomguard_pet_t: public warlock_pet_t
   doomguard_pet_t( sim_t* sim, warlock_t* owner ):
     warlock_pet_t( sim, owner, "doomguard", PET_DOOMGUARD, true )
   {
-    owner_coeff.ap_from_sp = 0.09375;
+    owner_coeff.ap_from_sp = 0.065934;
   }
 
   virtual void init_base_stats()
@@ -1321,6 +1321,8 @@ struct wild_imp_pet_t: public warlock_pet_t
   wild_imp_pet_t( sim_t* sim, warlock_t* owner ):
     warlock_pet_t( sim, owner, "wild_imp", PET_WILD_IMP, true ), firebolt_stats( 0 )
   {
+    owner_coeff.sp_from_sp = 0.75;
+
     if ( owner -> pets.wild_imps[0] )
       regular_stats = owner -> pets.wild_imps[0] -> get_stats( "firebolt" );
     else
@@ -1387,7 +1389,7 @@ struct fel_imp_pet_t: public warlock_pet_t
     warlock_pet_t( sim, owner, "fel_imp", PET_IMP )
   {
     action_list_str = "felbolt";
-    owner_coeff.ap_from_sp = 0.6563;
+    owner_coeff.ap_from_sp = 1;
   }
 
   virtual action_t* create_action( const std::string& name, const std::string& options_str )
@@ -1404,7 +1406,7 @@ struct wrathguard_pet_t: public warlock_pet_t
     warlock_pet_t( sim, owner, "wrathguard", PET_FELGUARD )
   {
     action_list_str = "mortal_cleave";
-    owner_coeff.ap_from_sp = 0.4376;
+    owner_coeff.ap_from_sp = 0.66599;
   }
 
   virtual void init_base_stats()
@@ -1432,7 +1434,7 @@ struct observer_pet_t: public warlock_pet_t
     warlock_pet_t( sim, owner, "observer", PET_FELHUNTER )
   {
     action_list_str = "tongue_lash";
-    owner_coeff.ap_from_sp = 0.6563;
+    owner_coeff.ap_from_sp = 1.0;
   }
 
   virtual void init_base_stats()
@@ -1456,7 +1458,7 @@ struct shivarra_pet_t: public warlock_pet_t
     warlock_pet_t( sim, owner, "shivarra", PET_SUCCUBUS )
   {
     action_list_str = "bladedance";
-    owner_coeff.ap_from_sp = 0.2081;
+    owner_coeff.ap_from_sp = 0.33333333333333333333;
   }
 
   virtual void init_base_stats()
@@ -1485,7 +1487,7 @@ struct voidlord_pet_t: public warlock_pet_t
     warlock_pet_t( sim, owner, "voidlord", PET_VOIDWALKER )
   {
     action_list_str = "torment";
-    owner_coeff.ap_from_sp = 0.6563;
+    owner_coeff.ap_from_sp = 1;
   }
 
   virtual void init_base_stats()
@@ -1509,7 +1511,7 @@ struct abyssal_pet_t: public warlock_pet_t
     warlock_pet_t( sim, owner, "abyssal", PET_INFERNAL, true )
   {
     action_list_str = "immolation,if=!ticking";
-    owner_coeff.ap_from_sp = 0.04688;
+    owner_coeff.ap_from_sp = 0.065934;
   }
 
   virtual void init_base_stats()
@@ -1533,7 +1535,7 @@ struct terrorguard_pet_t: public warlock_pet_t
     warlock_pet_t( sim, owner, "terrorguard", PET_DOOMGUARD, true )
   {
     action_list_str = "doom_bolt";
-    owner_coeff.ap_from_sp = 0.09375;
+    owner_coeff.ap_from_sp = 0.065934;
   }
 
   virtual action_t* create_action( const std::string& name, const std::string& options_str )
@@ -4608,6 +4610,7 @@ struct mannoroths_fury_t: public warlock_spell_t
     warlock_spell_t( "mannoroths_fury", p, p -> talents.mannoroths_fury )
   {
     harmful = false;
+    use_off_gcd = true;
   }
 
   virtual void execute()
@@ -4899,7 +4902,7 @@ action_t* warlock_t::create_action( const std::string& action_name,
   else if ( action_name == "fire_and_brimstone"    ) a = new    fire_and_brimstone_t( this );
   else if ( action_name == "soul_swap"             ) a = new             soul_swap_t( this );
   else if ( action_name == "flames_of_xoroth"      ) a = new      flames_of_xoroth_t( this );
-  else if ( action_name == "mannoroths_fury"       ) a = new mannoroths_fury_t      ( this );
+  else if ( action_name == "mannoroths_fury"       ) a = new       mannoroths_fury_t( this );
   else if ( action_name == "summon_infernal"       ) a = new       summon_infernal_t( this );
   else if ( action_name == "summon_doomguard"      ) a = new      summon_doomguard_t( this );
   else if ( action_name == "summon_felhunter"      ) a = new summon_main_pet_t( supremacy_pet( "felhunter",  talents.grimoire_of_supremacy -> ok() ), this );
