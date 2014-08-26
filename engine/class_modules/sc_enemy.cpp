@@ -1303,11 +1303,12 @@ struct enemy_module_t : public module_t
 
 struct heal_enemy_module_t : public module_t
 {
-  heal_enemy_module_t() : module_t( ENEMY ) {}
+  heal_enemy_module_t() : module_t( HEALING_ENEMY ) {}
 
   virtual player_t* create_player( sim_t* sim, const std::string& name, race_e /* r = RACE_NONE */ ) const
   {
-    return new heal_enemy_t( sim, name );
+    heal_enemy_t* p = new heal_enemy_t( sim, name );
+    return p;
   }
   virtual bool valid() const { return true; }
   virtual void init        ( sim_t* ) const {}
