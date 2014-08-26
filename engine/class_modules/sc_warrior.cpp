@@ -2241,7 +2241,7 @@ struct blood_craze_t: public residual_action::residual_periodic_action_t < warri
   {
     hasted_ticks = harmful = tick_may_crit = false;
     base_tick_time = p -> spec.blood_craze -> effectN( 1 ).trigger() -> effectN( 1 ).period();
-    dot_duration = p -> spec.blood_craze -> effectN( 1 ).trigger() -> duration();
+    dot_duration = p -> spec.blood_craze -> effectN( 1 ).trigger() -> duration() + timespan_t::from_seconds( 2 ); // Blood craze actually ticks for 5 seconds, because... reasons?
     dot_behavior = DOT_REFRESH;
   }
 };
