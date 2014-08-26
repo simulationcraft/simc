@@ -3725,6 +3725,8 @@ struct choose_target_t : public action_t
       player_t* target = p -> actor_by_name_str( target_name );
       if ( ! target )
         sim -> errorf( "%s unable to find target named '%s'", p -> name(), target_name.c_str() );
+      else
+        selected_target = target;
     }
     else
       selected_target = p -> target;
@@ -5155,33 +5157,8 @@ action_t* mage_t::execute_action()
 
   if ( ! strict_sequence )
   {
-    for ( size_t i = 0, num_actions = active_action_list -> foreground_action_list.size(); i < num_actions; ++i )
-    {
-      action_t* a = active_action_list -> foreground_action_list[ i ];
-
-      if ( a -> background ) continue;
-
-      if ( a -> wait_on_ready == 1 )
-        break;
-
-      // Change the target of the action before ready call ...
-      if ( a -> target != current_target )
-      {
-        action_target = a -> target;
-        a -> target = current_target;
-      }
-
-      if ( a -> ready() )
-      {
-        action = a;
-        break;
-      }
-      else if ( action_target )
-      {
-        a -> target = action_target;
-        action_target = 0;
-      }
-    }
+    visited_apls_ = 0; // Reset visited apl list
+    action = select_action( *active_action_list );
   }
   // Committed to a strict sequence of actions, just perform them instead of a priority list
   else
