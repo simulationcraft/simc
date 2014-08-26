@@ -1336,73 +1336,74 @@ struct rising_sun_kick_t: public monk_melee_attack_t
 // Spinning Crane Kick
 // ==========================================================================
 
+struct spinning_crane_kick_tick_t: public monk_melee_attack_t
+{
+  spinning_crane_kick_tick_t( monk_t* p, const spell_data_t* s ):
+    monk_melee_attack_t( "spinning_crane_kick_tick", p, s )
+  {
+    dual = true;
+    aoe = -1;
+    mh = &( player -> main_hand_weapon );
+    oh = &( player -> off_hand_weapon );
+    base_multiplier *= 0.75; // hardcoded into tooltip
+  }
+};
+
+struct rushing_jade_wind_tick_t: public monk_melee_attack_t
+{
+  rushing_jade_wind_tick_t( monk_t* p, const spell_data_t* s ):
+    monk_melee_attack_t( "rushing_jade_wind_tick", p, s )
+  {
+    dual = true;
+    aoe = -1;
+    mh = &( player -> main_hand_weapon );
+    oh = &( player -> off_hand_weapon );
+    base_multiplier *= 0.6; // hardcoded into tooltip
+  }
+};
+
 struct spinning_crane_kick_t: public monk_melee_attack_t
 {
-  struct spinning_crane_kick_tick_t: public monk_melee_attack_t
-  {
-    spinning_crane_kick_tick_t( monk_t* p, const spell_data_t* s ):
-      monk_melee_attack_t( "spinning_crane_kick_tick", p, s )
-    {
-      background = dual = direct_tick = may_crit = may_miss = may_block = may_dodge = may_parry = true;
-      aoe = -1;
-      mh = &( player -> main_hand_weapon );
-      oh = &( player -> off_hand_weapon );
-      school = SCHOOL_PHYSICAL;
-    }
-  };
-
-  struct rushing_jade_wind_tick_t: public monk_melee_attack_t
-  {
-    rushing_jade_wind_tick_t( monk_t* p, const spell_data_t* s ):
-      monk_melee_attack_t( "rushing_jade_wind_tick", p, s )
-    {
-      background = dual = direct_tick = may_crit = may_miss = may_block = may_dodge = may_parry = true;
-      aoe = -1;
-      mh = &( player -> main_hand_weapon );
-      oh = &( player -> off_hand_weapon );
-      school = SCHOOL_PHYSICAL;
-    }
-  };
-
+  spinning_crane_kick_tick_t* crane;
+  rushing_jade_wind_tick_t* jade;
   spinning_crane_kick_t( monk_t* p, const std::string& options_str ):
     monk_melee_attack_t( p -> talent.rushing_jade_wind -> ok() ? "rushing_jade_wind" : "spinning_crane_kick",
     p,
-    p -> talent.rushing_jade_wind -> ok() ? p -> talent.rushing_jade_wind : p -> find_class_spell( "Spinning Crane Kick" ) )
+    p -> talent.rushing_jade_wind -> ok() ? p -> talent.rushing_jade_wind : p -> find_class_spell( "Spinning Crane Kick" ) ),
+    crane( 0 ), jade( 0 )
   {
     parse_options( nullptr, options_str );
     stancemask = STURDY_OX | FIERCE_TIGER | WISE_SERPENT | SPIRITED_CRANE;
-    // Application of the spell cannot do these, but the ticks themselves can crit, miss, dodge, etc.
     may_crit = may_miss = may_block = may_dodge = may_glance = may_parry = false;
     tick_zero = hasted_ticks = true;
 
     if ( p -> talent.rushing_jade_wind -> ok() )
     {
-      base_multiplier *= 0.6; // hardcoded into tooltip
       school = SCHOOL_NATURE; // Application is Nature but the actual damage ticks is Physical
-      tick_action = new rushing_jade_wind_tick_t( p, p -> talent.rushing_jade_wind );
+      jade = new rushing_jade_wind_tick_t( p, p -> talent.rushing_jade_wind );
+      add_child( jade );
     }
     else
     {
-      base_multiplier *= 0.75; // hardcoded into tooltip
       school = SCHOOL_PHYSICAL;
       channeled = true;
-      tick_action = new spinning_crane_kick_tick_t( p, p -> find_class_spell( "Spinning Crane Kick" ) );
+      base_tick_time *= 1 + p -> perk.empowered_spinning_crane_kick -> effectN( 1 ).percent();
+      dot_duration *= 1 + p -> perk.empowered_spinning_crane_kick -> effectN( 2 ).percent();
+      crane = new spinning_crane_kick_tick_t( p, p -> find_spell( 107270 ) );
+      add_child( crane );
     }
-    dynamic_tick_action = true;
   }
 
-  virtual double action_multiplier() const
+  void tick( dot_t*d )
   {
-    double m = monk_melee_attack_t::action_multiplier();
-
-    // Empowered Spinning Crane Kick
-    if ( ( player -> specialization() == MONK_WINDWALKER ) && ( !p() -> talent.rushing_jade_wind -> ok() ) )
-      m *= 1 + p() -> perk.empowered_spinning_crane_kick -> effectN( 1 ).percent();
-
-    return m;
+    monk_melee_attack_t::tick( d );
+    if ( crane )
+      crane -> execute();
+    else
+      jade -> execute();
   }
 
-  virtual void update_ready( timespan_t cd_duration )
+  void update_ready( timespan_t cd_duration )
   {
     if ( p() -> talent.rushing_jade_wind -> ok() )
       cd_duration = cooldown -> duration * p() -> cache.attack_haste();
@@ -1423,7 +1424,7 @@ struct spinning_crane_kick_t: public monk_melee_attack_t
       p() -> proc.tier15_2pc_melee -> occur();
     }
 
-    if ( tick_action -> target_list().size() >= 3 )
+    if ( execute_state -> n_targets >= 3 )
     {
       double chi_gain;
       if ( p() -> talent.rushing_jade_wind -> ok() )
