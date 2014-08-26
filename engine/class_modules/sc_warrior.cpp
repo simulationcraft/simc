@@ -11,7 +11,6 @@
 
 namespace
 { // UNNAMED NAMESPACE
-
 // ==========================================================================
 // Warrior
 // ==========================================================================
@@ -516,7 +515,6 @@ public:
 
 namespace
 { // UNNAMED NAMESPACE
-
 // Template for common warrior action code. See priest_action_t.
 template <class Base>
 struct warrior_action_t: public Base
@@ -703,7 +701,7 @@ public:
     double rage = ab::resource_consumed;
 
     if ( p() -> talents.anger_management -> ok() )
-      anger_management(rage);
+      anger_management( rage );
 
     if ( ab::result_is_miss( ab::execute_state -> result ) && rage > 0 && !ab::aoe )
       p() -> resource_gain( RESOURCE_RAGE, rage*0.8, p() -> gain.avoided_attacks );
@@ -1270,8 +1268,8 @@ struct bloodthirst_heal_t: public warrior_heal_t
     warrior_heal_t( "bloodthirst_heal", p, p -> find_spell( 117313 ) ),
     base_pct_heal( 0 )
   {
-    pct_heal   = data().effectN( 1 ).percent();
-    pct_heal  *= 1.0 + p -> glyphs.bloodthirst -> effectN( 2 ).percent();
+    pct_heal = data().effectN( 1 ).percent();
+    pct_heal *= 1.0 + p -> glyphs.bloodthirst -> effectN( 2 ).percent();
     base_pct_heal = pct_heal;
     background = true;
   }
@@ -1444,7 +1442,7 @@ struct colossus_smash_t: public warrior_attack_t
     stancemask = STANCE_BATTLE;
 
     weapon = &( player -> main_hand_weapon );
-    base_costs[ RESOURCE_RAGE ] *= 1.0 + p -> new_sets.set( WARRIOR_ARMS, T17, B2 ) -> effectN( 2 ).percent();
+    base_costs[RESOURCE_RAGE] *= 1.0 + p -> new_sets.set( WARRIOR_ARMS, T17, B2 ) -> effectN( 2 ).percent();
   }
 
   void execute()
@@ -1513,8 +1511,8 @@ struct demoralizing_shout: public warrior_attack_t
 
 struct devastate_off_hand_t: public warrior_attack_t
 {
-  devastate_off_hand_t(warrior_t* p, const char* name, const spell_data_t* s):
-    warrior_attack_t(name, p, s)
+  devastate_off_hand_t( warrior_t* p, const char* name, const spell_data_t* s ):
+    warrior_attack_t( name, p, s )
   {
     dual = true;
     may_miss = may_dodge = may_parry = false;
@@ -1526,17 +1524,17 @@ struct devastate_t: public warrior_attack_t
 {
   devastate_off_hand_t* oh_attack;
   devastate_t( warrior_t* p, const std::string& options_str ):
-    warrior_attack_t( "devastate", p, p -> specialization() == WARRIOR_PROTECTION ? 
-                                      p -> find_spell( 20243 ) : p -> spec.devastate ),
-                                      oh_attack( 0 )
+    warrior_attack_t( "devastate", p, p -> specialization() == WARRIOR_PROTECTION ?
+    p -> find_spell( 20243 ) : p -> spec.devastate ),
+    oh_attack( 0 )
   {
     parse_options( NULL, options_str );
     stancemask = STANCE_GLADIATOR | STANCE_DEFENSE;
     weapon = &( p -> main_hand_weapon );
     if ( p -> specialization() == WARRIOR_FURY )
     {
-      oh_attack = new devastate_off_hand_t(p, "devastate_offhand", p -> find_spell( 174894 ) );
-      add_child(oh_attack);
+      oh_attack = new devastate_off_hand_t( p, "devastate_offhand", p -> find_spell( 174894 ) );
+      add_child( oh_attack );
     }
   }
 
@@ -1555,7 +1553,7 @@ struct devastate_t: public warrior_attack_t
         if ( p() -> talents.unyielding_strikes -> ok() )
         {
           if ( p() -> buff.unyielding_strikes -> current_stack != 5 )
-            p() -> buff.unyielding_strikes -> trigger(1);
+            p() -> buff.unyielding_strikes -> trigger( 1 );
         }
       }
       else
@@ -1660,8 +1658,8 @@ struct execute_t: public warrior_attack_t
         am *= 4.0 * std::min( 40.0, p() -> resources.current[RESOURCE_RAGE] ) / 40;
     }
     else if ( p() -> main_hand_weapon.group() == WEAPON_1H &&
-           p() -> off_hand_weapon.group() == WEAPON_1H )
-           am *= 1.0 + p() -> spec.singleminded_fury -> effectN( 3 ).percent();
+              p() -> off_hand_weapon.group() == WEAPON_1H )
+              am *= 1.0 + p() -> spec.singleminded_fury -> effectN( 3 ).percent();
 
     return am;
   }
@@ -1752,7 +1750,7 @@ struct heroic_strike_t: public warrior_attack_t
     parse_options( NULL, options_str );
     stancemask = STANCE_BATTLE | STANCE_GLADIATOR | STANCE_DEFENSE;
 
-    weapon  = &( player -> main_hand_weapon );
+    weapon = &( player -> main_hand_weapon );
 
     if ( p -> glyphs.cleave -> ok() )
       aoe = 2;
@@ -1818,7 +1816,7 @@ struct heroic_throw_t: public warrior_attack_t
   {
     parse_options( NULL, options_str );
 
-    weapon  = &( player -> main_hand_weapon );
+    weapon = &( player -> main_hand_weapon );
     stancemask = STANCE_BATTLE | STANCE_GLADIATOR | STANCE_DEFENSE;
     may_dodge = may_parry = may_block = false;
 
@@ -2381,7 +2379,6 @@ struct rend_t: public warrior_attack_t
   }
 };
 
-
 // Siegebreaker ===============================================================
 
 struct siegebreaker_off_hand_t: public warrior_attack_t
@@ -2853,7 +2850,7 @@ struct wild_strike_t: public warrior_attack_t
 
     if ( p -> talents.furious_strikes -> ok() )
       base_costs[RESOURCE_RAGE] = 30;
-    weapon  = &( player -> off_hand_weapon );
+    weapon = &( player -> off_hand_weapon );
     min_gcd = data().gcd();
   }
 
@@ -3092,7 +3089,7 @@ struct enhanced_rend_t: public warrior_spell_t
     return am;
   }
 
-  double target_armor(player_t*) const
+  double target_armor( player_t* ) const
   {
     return 0.0;
   }
@@ -3159,7 +3156,6 @@ struct rallying_cry_t: public warrior_spell_t
     p() -> buff.rallying_cry -> trigger();
   }
 };
-
 
 // Ravager ==============================================================
 
@@ -3240,8 +3236,8 @@ struct recklessness_t: public warrior_spell_t
 struct shield_barrier_t: public warrior_action_t < absorb_t >
 {
   shield_barrier_t( warrior_t* p, const std::string& options_str ):
-    base_t( "shield_barrier", p, p -> specialization() == WARRIOR_PROTECTION ? 
-                                 p -> find_spell( 112048 ) : p -> spec.shield_barrier )
+    base_t( "shield_barrier", p, p -> specialization() == WARRIOR_PROTECTION ?
+    p -> find_spell( 112048 ) : p -> spec.shield_barrier )
   {
     parse_options( NULL, options_str );
     stancemask = STANCE_GLADIATOR | STANCE_DEFENSE;
@@ -3295,7 +3291,7 @@ struct shield_block_t: public warrior_spell_t
     cooldown -> charges = 2;
     use_off_gcd = true;
   }
-  shield_block_t( warrior_t* p ) :
+  shield_block_t( warrior_t* p ):
     warrior_spell_t( "shield_block", p, p -> find_class_spell( "Shield Block" ) )
   {
   }
@@ -3580,7 +3576,7 @@ struct sweeping_strikes_t: public warrior_spell_t
   {
     parse_options( NULL, options_str );
     stancemask = STANCE_BATTLE;
-    cooldown -> duration  = data().cooldown();
+    cooldown -> duration = data().cooldown();
     cooldown -> duration += p -> perk.enhanced_sweeping_strikes -> effectN( 2 ).time_value();
   }
 
@@ -3623,7 +3619,6 @@ struct vigilance_t: public warrior_spell_t
     stancemask = STANCE_BATTLE | STANCE_GLADIATOR | STANCE_DEFENSE;
   }
 };
-
 } // UNNAMED NAMESPACE
 
 // warrior_t::create_action  ================================================
@@ -3673,9 +3668,9 @@ action_t* warrior_t::create_action( const std::string& name,
   if ( name == "spell_reflection" || name == "mass_spell_reflection" )
   {
     if ( talents.mass_spell_reflection->ok() )
-      return new mass_spell_reflection_t(this, options_str);
+      return new mass_spell_reflection_t( this, options_str );
     else
-      return new spell_reflection_t(this, options_str);
+      return new spell_reflection_t( this, options_str );
   }
   if ( name == "stance"               ) return new stance_t               ( this, options_str );
   if ( name == "storm_bolt"           ) return new storm_bolt_t           ( this, options_str );
@@ -3854,7 +3849,7 @@ void warrior_t::init_base_stats()
     resources.base[RESOURCE_RAGE] += glyphs.unending_rage -> effectN( 1 ).resource( RESOURCE_RAGE );
 
   base.attack_power_per_strength = 1.0;
-  base.attack_power_per_agility  = 0.0;
+  base.attack_power_per_agility = 0.0;
 
   // Avoidance diminishing Returns constants/conversions now handled in player_t::init_base_stats().
   // Base miss, dodge, parry, and block are set in player_t::init_base_stats().
@@ -3936,7 +3931,7 @@ void warrior_t::apl_precombat()
 
 void warrior_t::apl_fury()
 {
-  std::vector<std::string> racial_actions     = get_racial_actions();
+  std::vector<std::string> racial_actions = get_racial_actions();
 
   action_priority_list_t* default_list        = get_action_priority_list( "default" );
   action_priority_list_t* single_target       = get_action_priority_list( "single_target" );
@@ -4036,7 +4031,7 @@ void warrior_t::apl_fury()
 
 void warrior_t::apl_arms()
 {
-  std::vector<std::string> racial_actions     = get_racial_actions();
+  std::vector<std::string> racial_actions = get_racial_actions();
 
   action_priority_list_t* default_list        = get_action_priority_list( "default" );
   action_priority_list_t* single_target       = get_action_priority_list( "single_target" );
@@ -4104,7 +4099,7 @@ void warrior_t::apl_arms()
 
 void warrior_t::apl_prot()
 {
-  std::vector<std::string> racial_actions     = get_racial_actions();
+  std::vector<std::string> racial_actions = get_racial_actions();
 
   action_priority_list_t* default_list        = get_action_priority_list( "default" );
   action_priority_list_t* prot                = get_action_priority_list( "prot" );
@@ -4261,7 +4256,6 @@ protected:
   warrior_t& warrior;
 };
 
-
 struct bloodsurge_t: public warrior_buff_t < buff_t >
 {
   int wasted;
@@ -4417,7 +4411,6 @@ struct debuff_demo_shout_t: public warrior_buff_t < buff_t >
     buff_t::expire_override();
   }
 };
-
 } // end namespace buffs
 
 // ==========================================================================
@@ -4488,10 +4481,10 @@ void warrior_t::create_buffs()
   buff.hamstring = buff_creator_t( this, "hamstring", glyphs.hamstring -> effectN( 1 ).trigger() );
 
   buff.heroic_leap_glyph = buff_creator_t( this, "heroic_leap_glyph", glyphs.heroic_leap );
-  
+
   buff.last_stand = new buffs::last_stand_t( *this, "last_stand", spec.last_stand );
 
-  buff.meat_cleaver     = buff_creator_t( this, "meat_cleaver", spec.meat_cleaver -> effectN( 1 ).trigger() )
+  buff.meat_cleaver = buff_creator_t( this, "meat_cleaver", spec.meat_cleaver -> effectN( 1 ).trigger() )
     .max_stack( perk.enhanced_whirlwind ? 3 : perk.enhanced_whirlwind -> effectN( 2 ).base_value() );
 
   buff.raging_blow = buff_creator_t( this, "raging_blow", find_spell( 131116 ) )
@@ -4516,9 +4509,9 @@ void warrior_t::create_buffs()
     .default_value( glyphs.rude_interruption -> effectN( 1 ).trigger() -> effectN( 1 ).percent() )
     .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
 
-  buff.shield_barrier = absorb_buff_creator_t(this, "shield_barrier", specialization() == WARRIOR_PROTECTION ?
-                                              find_spell( 112048 ) : spec.shield_barrier )
-    .source( get_stats( "shield_barrier" ) );
+  buff.shield_barrier = absorb_buff_creator_t( this, "shield_barrier", specialization() == WARRIOR_PROTECTION ?
+                                               find_spell( 112048 ) : spec.shield_barrier )
+                                               .source( get_stats( "shield_barrier" ) );
 
   buff.shield_block = buff_creator_t( this, "shield_block", find_spell( 132404 ) )
     .add_invalidate( CACHE_BLOCK );
@@ -5403,7 +5396,6 @@ struct warrior_module_t: public module_t
 
   virtual void combat_end( sim_t* ) const {}
 };
-
 } // UNNAMED NAMESPACE
 
 const module_t* module_t::warrior()

@@ -43,7 +43,6 @@
 // ==========================================================================
 
 namespace { // UNNAMED NAMESPACE
-
 // Forward declarations
 namespace actions {
 namespace spells {
@@ -258,7 +257,6 @@ public:
     const spell_data_t* tigereye_brew;
     const spell_data_t* touch_of_karma;
     const spell_data_t* windflurry;
-
   } spec;
 
   // Warlords of Draenor Perks
@@ -427,7 +425,6 @@ public:
 // ==========================================================================
 
 namespace pets {
-
 struct statue_t: public pet_t
 {
   statue_t( sim_t* sim, monk_t* owner, const std::string& n, pet_e pt, bool guardian = false ):
@@ -586,11 +583,9 @@ public:
     return pet_t::create_action( name, options_str );
   }
 };
-
 } // end namespace pets
 
 namespace actions {
-
 // ==========================================================================
 // Monk Abilities
 // ==========================================================================
@@ -825,7 +820,6 @@ struct monk_heal_t: public monk_action_t < heal_t >
 };
 
 namespace attacks {
-
 struct monk_melee_attack_t: public monk_action_t < melee_attack_t >
 {
   weapon_t* mh;
@@ -930,7 +924,7 @@ struct jab_t: public monk_melee_attack_t
 
     mh = &( player -> main_hand_weapon );
     oh = &( player -> off_hand_weapon );
-    base_costs[ RESOURCE_ENERGY ] = 45;
+    base_costs[RESOURCE_ENERGY] = 45;
 
     base_multiplier *= 1.15; // hardcoded into tooltip
   }
@@ -1437,7 +1431,6 @@ struct spinning_crane_kick_t: public monk_melee_attack_t
       else
         chi_gain = data().effectN( 4 ).base_value();
       player -> resource_gain( RESOURCE_CHI, chi_gain, p() -> gain.spinning_crane_kick, this );
-
     }
   }
 };
@@ -1783,11 +1776,9 @@ struct provoke_t: public monk_melee_attack_t
     monk_melee_attack_t::impact( s );
   }
 };
-
 } // END melee_attacks NAMESPACE
 
 namespace spells {
-
 // ==========================================================================
 // Stance
 // ==========================================================================
@@ -2531,11 +2522,9 @@ struct crackling_jade_lightning_t: public monk_spell_t
       dot -> cancel();
   }
 };
-
 } // END spells NAMESPACE
 
 namespace heals {
-
 // ==========================================================================
 // Enveloping Mist
 // ==========================================================================
@@ -2890,7 +2879,6 @@ struct zen_sphere_t: public monk_heal_t
     zen_sphere_detonate_heal -> execute();
   }
 };
-
 } // end namespace heals
 
 namespace absorbs {
@@ -2926,14 +2914,12 @@ struct guard_t: public monk_absorb_t
     stats -> add_result( 0.0, s -> result_amount, ABSORB, s -> result, s -> block_result, s -> target );
   }
 };
-
 } // end namespace asborbs
 
 using namespace attacks;
 using namespace spells;
 using namespace heals;
 using namespace absorbs;
-
 } // end namespace actions;
 
 struct power_strikes_event_t: public event_t
@@ -3234,7 +3220,6 @@ void monk_t::init_scaling()
 
 // monk_t::init_buffs =======================================================
 
-
 void energizing_brew_energize( buff_t* buff, int, int )
 {
   monk_t* monk = debug_cast<monk_t*>( buff -> player );
@@ -3529,14 +3514,12 @@ set_e monk_t::decode_set( const item_t& item ) const
     }
   } // end "seven_sacred_seals"
 
-
   if ( util::str_in_str_ci( s, "_of_the_somber_gaze" ) )
   {
     specialization_e s = specialization();
     if ( s == MONK_MISTWEAVER ) return SET_T17_HEAL;
     if ( s == MONK_BREWMASTER ) return SET_T17_TANK;
     if ( s == MONK_WINDWALKER ) return SET_T17_MELEE;
-
   }
   if ( util::str_in_str_ci( s, "_gladiators_copperskin_" ) ) return SET_PVP_HEAL;
   if ( util::str_in_str_ci( s, "_gladiators_ironskin_" ) ) return SET_PVP_MELEE;
@@ -4231,7 +4214,6 @@ void monk_t::init_action_list()
   // Precombat
   switch ( specialization() )
   {
-
   case MONK_BREWMASTER:
     apl_pre_brewmaster();
     break;
@@ -4247,7 +4229,6 @@ void monk_t::init_action_list()
   // Combat
   switch ( specialization() )
   {
-
   case MONK_BREWMASTER:
     apl_combat_brewmaster();
     break;
@@ -4470,7 +4451,6 @@ public:
   monk_report_t( monk_t& player ):
     p( player )
   {
-
   }
 
   virtual void html_customsection( report::sc_html_stream& /* os*/ ) override
@@ -4515,7 +4495,6 @@ struct monk_module_t: public module_t
   virtual void combat_begin( sim_t* ) const {}
   virtual void combat_end( sim_t* ) const {}
 };
-
 } // UNNAMED NAMESPACE
 
 const module_t* module_t::monk()
