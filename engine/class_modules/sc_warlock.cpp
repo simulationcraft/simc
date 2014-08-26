@@ -10,13 +10,13 @@
 // TODO:
 // T17 Set bonusses. T17 4pc affli, 2/4pc demo, 4p destruction.
 // Grimoire of Synergy: Check whether it is using one or two different Proc counters for the caster and pet buff, i.e., whether it as an effective 1.333 or 2.666 rppm
-// Level 100 talents: demonic servitude: check SP coefficient
 // Update action lists, especially AoE
-// Proper spell ids for drain_soul triggered Corruption/UA/Agony ticks. Reia says they are differnt. take a look at the combatlog
+// Proper spell ids for drain_soul triggered Corruption/UA/Agony ticks.
+//   Main dots: UA: 30108, Corruption: 146739, Agony 980
+//   Child dots: UA: 131736, Corruption: 131740, Agony 131737
 // Proper Stats calc for childs of cataclysm
 // In-depth testing of demonology and affliction is needed.
-// void consume_tick_resource( dot_t* d ) - find out why this causes drain
-// ---soul to ignite with hell fire.
+
 
 // ==========================================================================
 namespace { // unnamed namespace
@@ -1897,12 +1897,10 @@ public:
 
   void consume_tick_resource( dot_t* d )
   {
-    //old malefic grasp code.
     resource_e r = current_resource();
     resource_consumed = costs_per_second[r] * base_tick_time.total_seconds();
 
-    //FIXME: TODO: causing drain soul to crash sim. Look for negatives of not using this.
-    //player -> resource_loss( r, resource_consumed, 0, this );
+    player -> resource_loss( r, resource_consumed, 0, this );
 
     if ( sim -> log )
       sim -> out_log.printf( "%s consumes %.1f %s for %s tick (%.0f)", player -> name(),
@@ -1954,7 +1952,7 @@ public:
     }
   }
 
-  void trigger_extra_tick( dot_t* dot, double multiplier ) //if tick_from_mg == true, then MG created the tick, otherwise DS created the tick
+  void trigger_extra_tick( dot_t* dot, double multiplier )
   {
     if ( ! dot -> is_ticking() ) return;
     double tempmulti;
