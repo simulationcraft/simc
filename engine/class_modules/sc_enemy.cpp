@@ -906,8 +906,8 @@ std::string enemy_t::tmi_boss_action_list()
   int aa_damage[ 11 ] = { 0, 5500, 7500, 9000, 12500, 15000, 25000, 45000, 100000, 150000, 200000 };
   int dot_damage[ 11 ] = { 0, 2700, 3750, 4500, 6250, 10000, 15000, 35000, 60000, 90000, 120000 };
 
-  als += "/auto_attack,damage=" + util::to_string( aa_damage[ tmi_boss_enum ] ) + ",attack_speed=1.5";
-  als += "/spell_dot,damage=" + util::to_string( dot_damage[ tmi_boss_enum ] ) + ",tick_time=2,dot_duration=30,if=!ticking";
+  als += "/auto_attack,damage=" + util::to_string( aa_damage[ tmi_boss_enum ] ) + ",attack_speed=1.5,aoe_tanks=1";
+  als += "/spell_dot,damage=" + util::to_string( dot_damage[ tmi_boss_enum ] ) + ",tick_time=2,dot_duration=30,aoe_tanks=1,if=!ticking";
 
   return als;
 }
