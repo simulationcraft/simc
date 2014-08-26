@@ -409,7 +409,7 @@ public:
   virtual void      moving();
   virtual double    temporary_movement_modifier() const;
   virtual void      arise();
-  virtual action_t* execute_action();
+  virtual action_t* select_action( const action_priority_list_t& );
 
   target_specific_t<mage_td_t*> target_data;
 
@@ -5144,53 +5144,77 @@ void mage_t::arise()
 // Copypasta, execept for target selection. This is a massive kludge. Buyer
 // beware!
 
-action_t* mage_t::execute_action()
+action_t* mage_t::select_action( const action_priority_list_t& list )
 {
-  readying = 0;
-  off_gcd = 0;
-
-  action_t* action = 0;
   player_t* action_target = 0;
 
-  if ( regen_type == REGEN_DYNAMIC )
-    do_dynamic_regen();
+  // Mark this action list as visited with the APL internal id
+  visited_apls_ |= list.internal_id_mask;
 
-  if ( ! strict_sequence )
+  // Cached copy for recursion, we'll need it if we come back from a
+  // call_action_list tree, with nothing to show for it.
+  uint64_t _visited = visited_apls_;
+
+  for ( size_t i = 0, num_actions = list.foreground_action_list.size(); i < num_actions; ++i )
   {
-    visited_apls_ = 0; // Reset visited apl list
-    action = select_action( *active_action_list );
-  }
-  // Committed to a strict sequence of actions, just perform them instead of a priority list
-  else
-    action = strict_sequence;
+    visited_apls_ = _visited;
+    action_t* a = list.foreground_action_list[ i ];
 
-  last_foreground_action = action;
+    if ( a -> background ) continue;
 
-  if ( restore_action_list != 0 )
-  {
-    activate_action_list( restore_action_list );
-    restore_action_list = 0;
-  }
+    if ( a -> wait_on_ready == 1 )
+      break;
 
-  if ( action )
-  {
-    action -> line_cooldown.start();
-    action -> schedule_execute();
-
-    if ( ! action -> quiet )
+    // Change the target of the action before ready call ...
+    if ( a -> target != current_target )
     {
-      iteration_executed_foreground_actions++;
-      action -> total_executions++;
+      action_target = a -> target;
+      a -> target = current_target;
+    }
 
-      sequence_add( action, action -> target, sim -> current_time );
-      if ( action_target )
-        action -> target = action_target;
+    if ( a -> ready() )
+    {
+      if ( a -> type != ACTION_CALL )
+        return a;
+      // Call_action_list action, don't execute anything, but rather recurse
+      // into the called action list.
+      else
+      {
+        call_action_list_t* call = static_cast<call_action_list_t*>( a );
+        // Restore original target before recursing into the called action list
+        if ( action_target )
+        {
+          a -> target = action_target;
+          action_target = 0;
+        }
+
+        // If the called APLs bitflag (based on internal id) is up, we're in an
+        // infinite loop, and need to cancel the sim
+        if ( visited_apls_ & call -> alist -> internal_id_mask )
+        {
+          sim -> errorf( "%s action list in infinite loop", name() );
+          sim -> cancel();
+          return 0;
+        }
+
+        // We get an action from the call, return it
+        if ( action_t* real_a = select_action( *call -> alist ) )
+        {
+          if ( real_a -> action_list )
+            real_a -> action_list -> used = true;
+          return real_a;
+        }
+      }
+    }
+    else if ( action_target )
+    {
+      a -> target = action_target;
+      action_target = 0;
     }
   }
 
-  return action;
+  return 0;
 }
-
 // mage_t::create_expression ================================================
 
 expr_t* mage_t::create_expression( action_t* a, const std::string& name_str )

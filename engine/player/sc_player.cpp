@@ -6096,40 +6096,6 @@ struct run_action_list_t : public swap_action_list_t
   }
 };
 
-struct call_action_list_t : public action_t
-{
-  action_priority_list_t* alist;
-
-  call_action_list_t( player_t* player, const std::string& options_str ) :
-    action_t( ACTION_CALL, "call_action_list", player ), alist( 0 )
-  {
-    std::string alist_name;
-    option_t options[] =
-    {
-      opt_string( "name", alist_name ),
-      opt_null()
-    };
-    parse_options( options, options_str );
-
-    if ( alist_name.empty() )
-    {
-      sim -> errorf( "Player %s uses call_action_list without specifying the name of the action list\n", player -> name() );
-      sim -> cancel();
-    }
-
-    alist = player -> find_action_priority_list( alist_name );
-
-    if ( ! alist )
-    {
-      sim -> errorf( "Player %s uses call_action_lis with unknown action list %s\n", player -> name(), alist_name.c_str() );
-      sim -> cancel();
-    }
-  }
-
-  virtual void execute()
-  { assert( 0 ); }
-};
-
 /* Pool Resource
  *
  * If the next action in the list would be "ready" if it was not constrained by resource,

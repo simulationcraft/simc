@@ -5966,6 +5966,15 @@ public:
   virtual timespan_t calculate_dot_refresh_duration( const dot_t*, timespan_t triggered_duration ) const;
 };
 
+struct call_action_list_t : public action_t
+{
+  action_priority_list_t* alist;
+
+  call_action_list_t( player_t*, const std::string& );
+  virtual void execute()
+  { assert( 0 ); }
+};
+
 // Attack ===================================================================
 
 struct attack_t : public action_t
