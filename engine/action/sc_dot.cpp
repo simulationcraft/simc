@@ -201,7 +201,10 @@ void dot_t::copy( player_t* other_target, dot_copy_e copy_type )
   // method
   action_state_t* target_state = 0;
   if ( ! other_dot -> state )
+  {
     target_state = current_action -> get_state( state );
+    other_dot -> state = target_state;
+  }
   else
   {
     target_state = other_dot -> state;
@@ -210,10 +213,14 @@ void dot_t::copy( player_t* other_target, dot_copy_e copy_type )
   target_state -> target = other_dot -> target;
   target_state -> action = current_action;
 
+  other_dot -> current_action = current_action;
+
   // Default behavior simply copies the current stat of the source dot
   // (including duration) to the target and starts it
   if ( copy_type == DOT_COPY_START )
+  {
     other_dot -> trigger( current_duration );
+  }
   // If we don't start the copied dot from the beginning, we need to bypass a
   // lot of the dot scheduling logic, and simply do the minimum amount possible
   // to get the dot aligned with the source dot, both in terms of state, as
