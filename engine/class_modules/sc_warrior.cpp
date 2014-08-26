@@ -3900,8 +3900,8 @@ void warrior_t::apl_precombat()
     precombat -> add_action( "stance,choose=battle" );
   else
   {
-    precombat -> add_action( "stance,choose=gladiator,if=talent.gladiators_resolve.enabled" );
-    precombat -> add_action( "stance,choose=defensive,if=!talent.gladiators_resolve.enabled" );
+    //precombat -> add_action( "stance,choose=gladiator,if=talent.gladiators_resolve.enabled" );
+    precombat -> add_action( "stance,choose=defensive" );
   }
 
   precombat -> add_action( "snapshot_stats", "Snapshot raid buffed stats before combat begins and pre-potting is done." );
@@ -4116,51 +4116,59 @@ void warrior_t::apl_prot()
   }
   for ( size_t i = 0; i < racial_actions.size(); i++ )
     default_list -> add_action( racial_actions[i] + ",if=buff.bloodbath.up|buff.avatar.up" );
-  default_list -> add_action( this, "Berserker Rage", "if=buff.enrage.down" );
-  default_list -> add_action( "call_action_list,name=prot" );
+    default_list -> add_action( this, "Berserker Rage", "if=buff.enrage.down" );
+    default_list -> add_action( "call_action_list,name=prot" );
 
+  //defensive
+  prot -> add_action( this, "Shield Block", "if=!(debuff.demoralizing_shout.up|buff.ravager.up|buff.shield_wall.up|buff.last_stand.up|buff.enraged_regeneration.up|buff.shield_block.up|buff.draenic_armor_potion.up)|action.shield_block.charges_fractional>=1.5" );
+  prot -> add_action( this, "Shield Barrier", "if=(incoming_damage_1500ms>health.max*0.3|rage>=120)&buff.shield_barrier.down" );
+  prot -> add_action( this, "Demoralizing Shout", "if=incoming_damage_2500ms>health.max*0.1&!(debuff.demoralizing_shout.up|buff.ravager.up|buff.shield_wall.up|buff.last_stand.up|buff.enraged_regeneration.up|buff.shield_block.up|buff.draenic_armor_potion.up)" );
+  prot -> add_talent( this, "Enraged Regeneration", "if=incoming_damage_2500ms>health.max*0.1&!(debuff.demoralizing_shout.up|buff.ravager.up|buff.shield_wall.up|buff.last_stand.up|buff.enraged_regeneration.up|buff.shield_block.up|buff.draenic_armor_potion.up)" );
+  prot -> add_action( this, "Shield Wall", "if=incoming_damage_2500ms>health.max*0.1&!(debuff.demoralizing_shout.up|buff.ravager.up|buff.shield_wall.up|buff.last_stand.up|buff.enraged_regeneration.up|buff.shield_block.up|buff.draenic_armor_potion.up)" );
+  prot -> add_action( this, "Last Stand", "if=incoming_damage_2500ms>health.max*0.1&!(debuff.demoralizing_shout.up|buff.ravager.up|buff.shield_wall.up|buff.last_stand.up|buff.enraged_regeneration.up|buff.shield_block.up|buff.draenic_armor_potion.up)" );
+
+  //potion
   if ( sim -> allow_potions )
   {
     if ( level >= 90 )
-      prot -> add_action( "potion,name=draenic_armor" );
+      prot -> add_action( "potion,name=draenic_armor", "if=incoming_damage_2500ms>health.max*0.1&!(debuff.demoralizing_shout.up|buff.ravager.up|buff.shield_wall.up|buff.last_stand.up|buff.enraged_regeneration.up|buff.shield_block.up|buff.draenic_armor_potion.up)" );
     else if ( level >= 80 )
-      prot -> add_action( "potion,name=mountains" );
+      prot -> add_action( "potion,name=mountains", "if=incoming_damage_2500ms>health.max*0.1&!(debuff.demoralizing_shout.up|buff.ravager.up|buff.shield_wall.up|buff.last_stand.up|buff.enraged_regeneration.up|buff.shield_block.up|buff.draenic_armor_potion.up)" );
   }
 
-  prot -> add_action( this, "Heroic Strike", "if=buff.ultimatum.up" );
-  prot -> add_action( this, "Shield Block" );
-  prot -> add_action( this, "Shield Barrier", "if=incoming_damage_1500ms>health.max*0.3|rage>rage.max-20" );
-  prot -> add_action( this, "Shield Wall", "if=incoming_damage_2500ms>health.max*0.6" );
-  prot -> add_action( this, "Last Stand", "if=incoming_damage_2500ms>health.max*0.6&buff.shield_wall.down" );
+  //dps-single-target
   prot -> add_action( "call_action_list,name=prot_aoe,if=active_enemies>3" );
-
+  prot -> add_action( this, "Heroic Strike", "if=buff.ultimatum.up|(talent.unyielding_strikes.enabled&buff.unyielding_strikes.max_stack)" );
+  prot -> add_talent( this, "Bloodbath", "if=talent.bloodbath.enabled&((cooldown.dragon_roar.remains=0&talent.dragon_roar.enabled)|(cooldown.stormbolt.remains=0&talent.stormbolt.enabled)|talent.shockwave.enabled)" );
+  prot -> add_talent( this, "Avatar", "if=talent.avatar.enabled&((cooldown.ravager.remains=0&talent.ravager.enabled)|(cooldown.dragon_roar.remains=0&talent.dragon_roar.enabled)|(talent.stormbolt.enabled&cooldown.stormbolt.remains=0)|(!(talent.dragon_roar.enabled|talent.ravager.enabled|talent.stormbolt.enabled)))" );
   prot -> add_action( this, "Shield Slam" );
   prot -> add_action( this, "Revenge" );
-  prot -> add_talent( this, "Enraged Regeneration" );
-  prot -> add_action( this, "Heroic Strike", "if=buff.ultimatum.up" );
   prot -> add_talent( this, "Ravager" );
-  prot -> add_action( this, "Thunder Clap" );
-  prot -> add_action( this, "Demoralizing Shout" );
-  prot -> add_talent( this, "Impending Victory" );
-  prot -> add_action( this, "Victory Rush", "if=!talent.impending_victory.enabled" );
-  prot -> add_talent( this, "Bloodbath" );
-  prot -> add_talent( this, "Shockwave" );
   prot -> add_talent( this, "Storm Bolt" );
   prot -> add_talent( this, "Dragon Roar" );
+  prot -> add_talent( this, "Impending Victory", "if=talent.impending_victory.enabled&cooldown.shield_slam.remains<=gcd" );
+  prot -> add_action( this, "Victory Rush", "if=!talent.impending_victory.enabled&cooldown.shield_slam.remains<=gcd" );
+  prot -> add_action( this, "Thunder Clap", "if=glyph.resonating_power.enabled&cooldown.shield_slam.remains<=gcd" );
   prot -> add_action( this, "Devastate" );
 
+  //dps-aoe
   prot_aoe -> add_talent( this, "Bloodbath" );
   prot_aoe -> add_talent( this, "Avatar" );
   prot_aoe -> add_action( this, "Thunder Clap", "if=!dot.deep_wounds.ticking" );
-  prot_aoe -> add_talent( this, "Bladestorm" );
-  prot_aoe -> add_action( this, "Heroic Strike", "if=buff.ultimatum.up|rage>110" );
+  prot_aoe -> add_action( this, "Heroic Strike", "if=buff.ultimatum.up|rage>110|(talent.unyielding_strikes.enabled&buff.unyielding_strikes.max_stack)" );
   prot_aoe -> add_action( this, "Heroic Leap", "if=(buff.bloodbath.up|cooldown.bloodbath.remains>5|!talent.bloodbath.enabled)" );
-  prot_aoe -> add_action( this, "Revenge" );
-  prot_aoe -> add_action( this, "Shield Slam" );
-  prot_aoe -> add_action( this, "Thunder Clap" );
+  prot_aoe -> add_action( this, "Shield Slam", "if=buff.shield_block.up" );
+  prot_aoe -> add_talent( this, "Ravager", "if=(buff.avatar.up|cooldown.avatar.remains>10)|!talent.avatar.enabled" );
   prot_aoe -> add_talent( this, "Dragon Roar", "if=(buff.bloodbath.up|cooldown.bloodbath.remains>10)|!talent.bloodbath.enabled" );
-  prot_aoe -> add_talent( this, "Storm Bolt", "if=(buff.bloodbath.up|cooldown.bloodbath.remains>7)|!talent.bloodbath.enabled" );
-  prot_aoe -> add_action( this, "Devastate", "if=cooldown.shield_slam.remains>gcd*0.4" );
+  prot_aoe -> add_talent( this, "Shockwave" );
+  prot_aoe -> add_action( this, "Revenge" );
+  prot_aoe -> add_action( this, "Thunder Clap" );
+  prot_aoe -> add_action( this, "Bladestorm" );
+  prot_aoe -> add_action( this, "Shield Slam" );
+  prot_aoe -> add_talent( this, "Storm Bolt" );
+  prot_aoe -> add_action( this, "Shield Slam" );
+  prot_aoe -> add_action( this, "Devastate" );
+
 }
 
 // NO Spec Combat Action Priority List
