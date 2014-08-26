@@ -3820,7 +3820,7 @@ void warrior_t::init_spells()
   // Generic spells
   spell.charge                  = find_class_spell( "Charge" );
   spell.intervene               = find_class_spell( "Intervene" );
-  spell.headlong_rush           = find_spell( "Headlong Rush" );
+  spell.headlong_rush           = find_spell( 158836 ); // Stop changing this, stupid. find_spell( "headlong rush" ) will never work.
   spell.heroic_leap             = find_class_spell( "Heroic Leap" );
 
   // Active spells

@@ -8508,11 +8508,11 @@ void player_t::analyze( sim_t& s )
 
       if ( stats -> type == STATS_DMG )
         stats -> portion_amount =  collected_data.compound_dmg.mean() ? stats -> actual_amount.mean() / collected_data.compound_dmg.mean() : 0.0 ;
-      else if ( stats -> type == STATS_HEAL  )
-        stats -> portion_amount =  collected_data.compound_heal.mean() ? stats -> actual_amount.mean() / collected_data.compound_heal.mean() : 0.0;
-      else if ( stats -> type == STATS_ABSORB )
-        stats -> portion_amount =  collected_data.compound_absorb.mean() ? stats -> actual_amount.mean() / collected_data.compound_absorb.mean() : 0.0;
-
+      else if ( stats -> type == STATS_HEAL || stats -> type == STATS_ABSORB )
+      {
+        stats -> portion_amount =  collected_data.compound_heal.mean() ? stats -> actual_amount.mean() : 0.0 + collected_data.compound_absorb.mean() ? stats -> actual_amount.mean() : 0.0;
+        stats -> portion_amount /= collected_data.compound_heal.mean() + collected_data.compound_absorb.mean();
+      }
     }
   }
 

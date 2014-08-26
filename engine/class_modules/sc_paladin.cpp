@@ -115,7 +115,7 @@ public:
     buff_t* final_verdict;
     buff_t* hand_of_purity;
     buff_t* holy_avenger;
-    absorb_buff_t* holy_shield; // Dummy buff to trigger spell damage "blocking" absorb effect
+    absorb_buff_t* holy_shield_absorb; // Dummy buff to trigger spell damage "blocking" absorb effect
     buff_t* liadrins_righteousness;
     buff_t* long_arm_of_the_law;
     buff_t* maraads_truth;
@@ -414,7 +414,6 @@ public:
   virtual void      create_options();
   virtual double    matching_gear_multiplier( attribute_e attr ) const;
   virtual action_t* create_action( const std::string& name, const std::string& options_str );
-  virtual set_e     decode_set( const item_t& ) const;
   virtual resource_e primary_resource() const { return RESOURCE_MANA; }
   virtual role_e    primary_role() const;
   virtual stat_e    convert_hybrid_stat( stat_e s ) const;
@@ -687,7 +686,7 @@ public:
     bool perk_success = false;
 
     // If T16 4pc melee set bonus is equipped, trigger a proc
-    if ( p() -> sets.has_set_bonus( SET_T16_4PC_MELEE ) )
+    if ( p() -> new_sets.has_set_bonus( SET_MELEE, T16, B4 ) )
     {
       // chance to proc the buff needs to be scaled by holy power spent
       t164pc_success = p() -> buffs.divine_crusader -> trigger( 1,
@@ -943,8 +942,8 @@ struct ardent_defender_t : public paladin_spell_t
     // required for glyph of ardent defender
     cooldown = p -> cooldowns.ardent_defender;
     // T14 set bonus reduces cooldown as well
-    if (  p -> sets.has_set_bonus( SET_T14_2PC_TANK ) )
-      cooldown -> duration = data().cooldown() + p -> sets.set( SET_T14_2PC_TANK ) -> effectN( 1 ).time_value();
+    if (  p -> new_sets.has_set_bonus( SET_TANK, T14, B2 ) )
+      cooldown -> duration = data().cooldown() + p -> new_sets.set( SET_TANK, T14, B2 ) -> effectN( 1 ).time_value();
   }
 
   virtual void execute()
@@ -1021,7 +1020,7 @@ struct avengers_shield_t : public paladin_spell_t
     }
 
     // Protection T17 2-piece grants block buff
-    if ( p() -> sets.has_set_bonus( SET_T17_2PC_TANK ) )
+    if ( p() -> new_sets.has_set_bonus( PALADIN_PROTECTION, T17, B2 ) )
       p() -> buffs.faith_barricade -> trigger();
   }
 };
@@ -1041,7 +1040,7 @@ struct avenging_wrath_t : public paladin_heal_t
     cooldown -> duration += p -> passives.sword_of_light -> effectN( 7 ).time_value();
 
     // T16 Holy 4PC reduces AW cooldown by 60s
-    cooldown -> duration -= timespan_t::from_millis( p -> sets.set( SET_T16_2PC_HEAL ) -> effectN( 1 ).base_value() );
+    cooldown -> duration -= timespan_t::from_millis( p -> new_sets.set( SET_HEALER, T16, B2 ) -> effectN( 1 ).base_value() );
 
     cooldown -> duration *= ( 1.0 + p -> glyphs.merciful_wrath -> effectN( 5 ).percent() );
 
@@ -1082,7 +1081,7 @@ struct avenging_wrath_t : public paladin_heal_t
     paladin_heal_t::execute();
 
     p() -> buffs.avenging_wrath -> trigger();
-    if ( p() -> sets.has_set_bonus( SET_T16_4PC_HEAL ) )
+    if ( p() -> new_sets.has_set_bonus( SET_HEALER, T16, B4 ) )
       p() -> buffs.favor_of_the_kings -> trigger();
   }
 };
@@ -1491,7 +1490,7 @@ struct divine_protection_t : public paladin_spell_t
     if ( p -> talents.unbreakable_spirit -> ok() )
       cooldown -> duration = data().cooldown() * ( 1 + p -> talents.unbreakable_spirit -> effectN( 1 ).percent() );
 
-    if ( p -> sets.has_set_bonus( SET_T16_2PC_TANK ) )
+    if ( p -> new_sets.has_set_bonus( SET_TANK, T16, B2 ) )
       p -> active.blessing_of_the_guardians = new blessing_of_the_guardians_t( p );
   }
 
@@ -1719,7 +1718,7 @@ struct eternal_flame_t : public paladin_heal_t
     double c = cost();
 
     // scale the am by holy power spent, can't be more than 3 and Divine Purpose counts as 3
-    am *= ( ( p() -> holy_power_stacks() <= 3  && c > 0.0 ) ? p() -> holy_power_stacks() : 3 );
+    am *= ( ( p() -> holy_power_stacks() <= 3  && c > 0.0 ) ? p() -> holy_power_stacks() : 3 ) / 3;
 
     if ( target == player )
     {      
@@ -1752,7 +1751,7 @@ struct eternal_flame_t : public paladin_heal_t
     }
 
     // Shield of Glory (Tier 15 protection 2-piece bonus)
-    if ( p() -> sets.has_set_bonus( SET_T15_2PC_TANK ) )
+    if ( p() -> new_sets.has_set_bonus( SET_TANK, T15, B2 ) )
       p() -> buffs.shield_of_glory -> trigger( 1, buff_t::DEFAULT_VALUE(), 1.0, p() -> buffs.shield_of_glory -> buff_duration * hopo );
     
     // consume BoG stacks and Bastion of Power if used on self
@@ -1942,7 +1941,7 @@ struct exorcism_t : public paladin_spell_t
 
   virtual void impact( action_state_t* s )
   {
-    if ( result_is_hit( s -> result ) && p() -> sets.has_set_bonus( SET_T15_2PC_MELEE ) )
+    if ( result_is_hit( s -> result ) && p() -> new_sets.has_set_bonus( SET_MELEE, T15, B2 ) )
     {
       p() -> buffs.tier15_2pc_melee -> trigger();
     }
@@ -1987,7 +1986,7 @@ struct flash_of_light_t : public paladin_heal_t
     // Selfless healer has two effects
     if ( p() -> talents.selfless_healer -> ok() )
     {
-      // multiplicative 20% per Selfless Healer stack when FoL is used on others
+      // multiplicative 35% per Selfless Healer stack when FoL is used on others
       if ( target != player )
       {
         am *= 1.0 + p() -> buffs.selfless_healer -> data().effectN( 2 ).percent() * p() -> buffs.selfless_healer -> stack();
@@ -2003,13 +2002,7 @@ struct flash_of_light_t : public paladin_heal_t
 
     // if Selfless Healer is talented, expire SH buff 
     if ( p() -> talents.selfless_healer -> ok() )
-    {
-      // also expire BoG buff if self-cast
-      if ( target == player && p() -> buffs.selfless_healer -> stack() > 0 )
-        p() -> buffs.bastion_of_glory -> expire();
-
       p() -> buffs.selfless_healer -> expire();
-    }
 
     // Enhanced Holy Shock trigger
     p() -> buffs.enhanced_holy_shock -> trigger();
@@ -2724,7 +2717,6 @@ struct lights_hammer_heal_tick_t : public paladin_heal_t
     background = true;
     aoe = 6;
     may_crit = true;
-    benefits_from_seal_of_insight = false;
   }
   
   std::vector< player_t* >& target_list() const
@@ -2889,12 +2881,6 @@ struct sacred_shield_t : public paladin_heal_t
     paladin_heal_t::execute();
     
     td( target ) -> buffs.sacred_shield -> trigger();
-  }
-
-  virtual timespan_t calculate_dot_refresh_duration( const dot_t* dot, timespan_t triggered_duration ) const override
-  {
-    // Old MoP Dot Behavior
-    return dot -> time_to_next_tick() + triggered_duration;
   }
 };
 
@@ -3152,7 +3138,7 @@ struct word_of_glory_t : public paladin_heal_t
     am *= ( ( p() -> holy_power_stacks() <= 3  && c > 0.0 ) ? p() -> holy_power_stacks() : 3 );
 
     // T14 protection 4-piece bonus
-    am *= ( 1.0 + p() -> sets.set( SET_T14_4PC_TANK ) -> effectN( 1 ).percent() );
+    am *= ( 1.0 + p() -> new_sets.set( SET_TANK, T14, B4 ) -> effectN( 1 ).percent() );
 
     if ( p() -> buffs.bastion_of_glory -> up() )
     {
@@ -3180,7 +3166,7 @@ struct word_of_glory_t : public paladin_heal_t
     }
 
     // Shield of Glory (Tier 15 protection 2-piece bonus)
-    if ( p() -> sets.has_set_bonus( SET_T15_2PC_TANK ) )
+    if ( p() -> new_sets.has_set_bonus( SET_TANK, T15, B2 ) )
       p() -> buffs.shield_of_glory -> trigger( 1, buff_t::DEFAULT_VALUE(), 1.0, p() -> buffs.shield_of_glory -> buff_duration * hopo );
         
     // consume BoG stacks and Bastion of Power if used on self
@@ -3380,7 +3366,7 @@ struct melee_t : public paladin_melee_attack_t
         p() -> cooldowns.exorcism -> reset( true );
 
         // activate T16 2-piece bonus
-        if ( p() -> sets.has_set_bonus( SET_T16_2PC_MELEE ) )
+        if ( p() -> new_sets.has_set_bonus( SET_MELEE, T16, B2 ) )
           p() -> buffs.warrior_of_the_light -> trigger();
       }
     }
@@ -3432,7 +3418,7 @@ struct crusader_strike_t : public paladin_melee_attack_t
     trigger_seal = true;
     
     // multiplier modification for T13 Retribution 2-piece bonus
-    base_multiplier *= 1.0 + ( p -> sets.set( SET_T13_2PC_MELEE ) -> effectN( 1 ).percent() );
+    base_multiplier *= 1.0 + ( p -> new_sets.set( SET_MELEE, T13, B2 ) -> effectN( 1 ).percent() );
 
     // Guarded by the Light and Sword of Light reduce base mana cost; spec-limited so only one will ever be active
     base_costs[ RESOURCE_MANA ] *= 1.0 +  p -> passives.guarded_by_the_light -> effectN( 7 ).percent()
@@ -3471,7 +3457,7 @@ struct crusader_strike_t : public paladin_melee_attack_t
         p() -> resource_gain( RESOURCE_HOLY_POWER, p() -> buffs.holy_avenger -> value() - g, p() -> gains.hp_holy_avenger );
       }
       // Check for T15 Ret 4-piece bonus proc
-      if ( p() -> sets.has_set_bonus( SET_T15_4PC_MELEE ) )
+      if ( p() -> new_sets.has_set_bonus( SET_MELEE, T15, B4 ) )
         p() -> buffs.tier15_4pc_melee -> trigger();
 
     }
@@ -3897,7 +3883,7 @@ struct judgment_t : public paladin_melee_attack_t
     base_costs[ RESOURCE_MANA ] *= 1.0 +  p -> passives.guarded_by_the_light -> effectN( 8 ).percent();
     
     // damage multiplier from T14 Retribution 4-piece bonus
-    base_multiplier *= 1.0 + p -> sets.set( SET_T14_4PC_MELEE ) -> effectN( 1 ).percent();
+    base_multiplier *= 1.0 + p -> new_sets.set( SET_MELEE, T14, B4 ) -> effectN( 1 ).percent();
 
     if ( p -> talents.empowered_seals -> ok() )
       uthers_insight = new uthers_insight_t( p );
@@ -4101,7 +4087,7 @@ struct seal_of_justice_proc_t : public paladin_melee_attack_t
     proc              = true;
     trigger_gcd       = timespan_t::zero();
 
-    base_multiplier *= 1.0 + p -> sets.set( SET_T14_4PC_MELEE ) -> effectN( 1 ).percent();
+    base_multiplier *= 1.0 + p -> new_sets.set( SET_MELEE, T14, B4 ) -> effectN( 1 ).percent();
   }
 };
 
@@ -4119,7 +4105,7 @@ struct seal_of_righteousness_proc_t : public paladin_melee_attack_t
     aoe         = -1;
 
     // T14 Retribution 4-piece increases seal damage
-    base_multiplier *= 1.0 + p -> sets.set( SET_T14_4PC_MELEE ) -> effectN( 1 ).percent();
+    base_multiplier *= 1.0 + p -> new_sets.set( SET_MELEE, T14, B4 ) -> effectN( 1 ).percent();
   }
 };
 
@@ -4161,7 +4147,7 @@ struct seal_of_truth_proc_t : public paladin_melee_attack_t
       base_multiplier *= 1.0 + p -> glyphs.immediate_truth -> effectN( 1 ).percent();
     
     // Retribution T14 4-piece boosts seal damage
-    base_multiplier *= 1.0 + p -> sets.set( SET_T14_4PC_MELEE ) -> effectN( 1 ).percent();
+    base_multiplier *= 1.0 + p -> new_sets.set( SET_MELEE, T14, B4 ) -> effectN( 1 ).percent();
   }
 
 };
@@ -4210,7 +4196,7 @@ struct shield_of_the_righteous_t : public paladin_melee_attack_t
     p() -> buffs.bastion_of_glory -> trigger();
 
     // if we're using T16_4PC_TANK, apply the bastion_of_power buff if BoG stacks > 3
-    if ( p() -> sets.has_set_bonus( SET_T16_4PC_TANK ) && p() -> buffs.bastion_of_glory -> stack() >= 3 )
+    if ( p() -> new_sets.has_set_bonus( SET_TANK, T16, B4 ) && p() -> buffs.bastion_of_glory -> stack() >= 3 )
       p() -> buffs.bastion_of_power -> trigger();
 
     // clear any Alabaster Shield stacks we may have
@@ -4243,9 +4229,9 @@ struct shield_of_the_righteous_t : public paladin_melee_attack_t
 //    resource_consumed = RESOURCE_NONE;
 //    
 //    // Tier 13 Retribution 4-piece boosts damage (TODO: Test?)
-//    base_multiplier *= 1.0 + p -> sets.set( SET_T13_4PC_MELEE ) -> effectN( 1 ).percent();
+//    base_multiplier *= 1.0 + p -> new_sets.set( SET_MELEE, T13, B4 ) -> effectN( 1 ).percent();
 //    // Tier 14 Retribution 2-piece boosts damage (TODO: Test?)
-//    base_multiplier *= 1.0 + p -> sets.set( SET_T14_2PC_MELEE ) -> effectN( 1 ).percent();
+//    base_multiplier *= 1.0 + p -> new_sets.set( SET_MELEE, T14, B2 ) -> effectN( 1 ).percent();
 //  }
 //
 //  
@@ -4287,10 +4273,10 @@ struct final_verdict_t : public paladin_melee_attack_t
     trigger_seal       = true;
 
     // Tier 13 Retribution 4-piece boosts damage (TODO: test?)
-    base_multiplier *= 1.0 + p -> sets.set( SET_T13_4PC_MELEE ) -> effectN( 1 ).percent();
+    base_multiplier *= 1.0 + p -> new_sets.set( SET_MELEE, T13, B4 ) -> effectN( 1 ).percent();
 
     // Tier 14 Retribution 2-piece boosts damage (TODO: test?)
-    base_multiplier *= 1.0 + p -> sets.set( SET_T14_2PC_MELEE ) -> effectN( 1 ).percent();
+    base_multiplier *= 1.0 + p -> new_sets.set( SET_MELEE, T14, B2 ) -> effectN( 1 ).percent();
 
     // Create a child cleave object 
     //cleave = new final_verdict_cleave_t( p );
@@ -4344,10 +4330,10 @@ struct templars_verdict_t : public paladin_melee_attack_t
     trigger_seal       = true;
 
     // Tier 13 Retribution 4-piece boosts damage
-    base_multiplier *= 1.0 + p -> sets.set( SET_T13_4PC_MELEE ) -> effectN( 1 ).percent();
+    base_multiplier *= 1.0 + p -> new_sets.set( SET_MELEE, T13, B4 ) -> effectN( 1 ).percent();
 
     // Tier 14 Retribution 2-piece boosts damage
-    base_multiplier *= 1.0 + p -> sets.set( SET_T14_2PC_MELEE ) -> effectN( 1 ).percent();
+    base_multiplier *= 1.0 + p -> new_sets.set( SET_MELEE, T14, B2 ) -> effectN( 1 ).percent();
 
     // disable if Final Verdict is taken
     background = p -> talents.final_verdict -> ok();
@@ -4479,7 +4465,7 @@ struct divine_protection_t : public buff_t
     buff_t::expire_override();
 
     paladin_t* p = static_cast<paladin_t*>( player );
-    if ( p -> sets.has_set_bonus( SET_T16_2PC_TANK ) )
+    if ( p -> new_sets.has_set_bonus( SET_TANK, T16, B2 ) )
     {
       // trigger the HoT
       if ( ! p -> active.blessing_of_the_guardians -> target -> is_sleeping() )
@@ -4520,7 +4506,9 @@ paladin_td_t::paladin_td_t( player_t* target, paladin_t* paladin ) :
 
   buffs.debuffs_censure    = buff_creator_t( *this, "censure", paladin -> find_spell( 31803 ) );
   buffs.eternal_flame      = new buffs::eternal_flame_t( this );
-  buffs.sacred_shield      = buff_creator_t( *this, "sacred_shield", paladin -> find_talent_spell( "Sacred Shield" ) );
+  buffs.sacred_shield      = buff_creator_t( *this, "sacred_shield", paladin -> find_talent_spell( "Sacred Shield" ) )
+                             .cd( timespan_t::zero() ) // let ability handle cooldown
+                             .period( timespan_t::zero() );
   buffs.glyph_of_flash_of_light = buff_creator_t( *this, "glyph_of_flash_of_light", paladin -> find_spell( 54957 ) );
 }
 
@@ -4699,7 +4687,7 @@ void paladin_t::init_gains()
   gains.extra_regen                 = get_gain( ( specialization() == PALADIN_RETRIBUTION ) ? "sword_of_light" : "guarded_by_the_light" );
 
   // Health
-  gains.holy_shield                 = get_gain( "holy_shield" );
+  gains.holy_shield                 = get_gain( "holy_shield_absorb" );
   gains.seal_of_insight             = get_gain( "seal_of_insight"  );
   gains.glyph_divine_storm          = get_gain( "glyph_of_divine_storm" );
   gains.glyph_divine_shield         = get_gain( "glyph_of_divine_shield" );
@@ -4753,136 +4741,6 @@ void paladin_t::init_scaling()
   scales_with[STAT_AGILITY] = false;
 }
 
-// paladin_t::decode_set ====================================================
-
-set_e paladin_t::decode_set( const item_t& item ) const
-{
-  if ( item.slot != SLOT_HEAD      &&
-       item.slot != SLOT_SHOULDERS &&
-       item.slot != SLOT_CHEST     &&
-       item.slot != SLOT_HANDS     &&
-       item.slot != SLOT_LEGS      )
-  {
-    return SET_NONE;
-  }
-
-  const char* s = item.name();
-
-  if ( strstr( s, "_of_radiant_glory" ) )
-  {
-    bool is_melee = ( strstr( s, "helmet"        ) ||
-                      strstr( s, "pauldrons"     ) ||
-                      strstr( s, "battleplate"   ) ||
-                      strstr( s, "legplates"     ) ||
-                      strstr( s, "gauntlets"     ) );
-
-    bool is_tank = ( strstr( s, "faceguard"      ) ||
-                     strstr( s, "shoulderguards" ) ||
-                     strstr( s, "chestguard"     ) ||
-                     strstr( s, "legguards"      ) ||
-                     strstr( s, "handguards"     ) );
-
-    bool is_heal = ( strstr( s, "headguard"      ) ||
-                     strstr( s, "mantle"         ) ||
-                     strstr( s, "breastplate"    ) ||
-                     strstr( s, "greaves"        ) ||
-                     strstr( s, "gloves"         ) );
-
-    if ( is_melee  ) return SET_T13_MELEE;
-    if ( is_tank   ) return SET_T13_TANK;
-    if ( is_heal   ) return SET_T13_HEAL;
-  }
-
-  if ( strstr( s, "white_tiger_" ) )
-  {
-    bool is_melee = ( strstr( s, "helmet"        ) ||
-                      strstr( s, "pauldrons"     ) ||
-                      strstr( s, "battleplate"   ) ||
-                      strstr( s, "legplates"     ) ||
-                      strstr( s, "gauntlets"     ) );
-
-    bool is_tank = ( strstr( s, "faceguard"      ) ||
-                     strstr( s, "shoulderguards" ) ||
-                     strstr( s, "chestguard"     ) ||
-                     strstr( s, "legguards"      ) ||
-                     strstr( s, "handguards"     ) );
-
-    bool is_heal = ( strstr( s, "headguard"      ) ||
-                     strstr( s, "mantle"         ) ||
-                     strstr( s, "breastplate"    ) ||
-                     strstr( s, "greaves"        ) ||
-                     strstr( s, "gloves"         ) );
-
-    if ( is_melee  ) return SET_T14_MELEE;
-    if ( is_tank   ) return SET_T14_TANK;
-    if ( is_heal   ) return SET_T14_HEAL;
-  }
-
-  if ( strstr( s, "lightning_emperor" ) )
-  {
-    bool is_melee = ( strstr( s, "helmet"        ) ||
-                      strstr( s, "pauldrons"     ) ||
-                      strstr( s, "battleplate"   ) ||
-                      strstr( s, "legplates"     ) ||
-                      strstr( s, "gauntlets"     ) );
-
-    bool is_tank = ( strstr( s, "faceguard"      ) ||
-                     strstr( s, "shoulderguards" ) ||
-                     strstr( s, "chestguard"     ) ||
-                     strstr( s, "legguards"      ) ||
-                     strstr( s, "handguards"     ) );
-
-    bool is_heal = ( strstr( s, "headguard"      ) ||
-                     strstr( s, "mantle"         ) ||
-                     strstr( s, "breastplate"    ) ||
-                     strstr( s, "greaves"        ) ||
-                     strstr( s, "gloves"         ) );
-
-    if ( is_melee  ) return SET_T15_MELEE;
-    if ( is_tank   ) return SET_T15_TANK;
-    if ( is_heal   ) return SET_T15_HEAL;
-  }
-
-  if ( strstr( s, "_of_winged_triumph" ) )
-  {
-    bool is_melee = ( strstr( s, "helmet"        ) ||
-                      strstr( s, "pauldrons"     ) ||
-                      strstr( s, "battleplate"   ) ||
-                      strstr( s, "legplates"     ) ||
-                      strstr( s, "gauntlets"     ) );
-
-    bool is_tank = ( strstr( s, "faceguard"      ) ||
-                     strstr( s, "shoulderguards" ) ||
-                     strstr( s, "chestguard"     ) ||
-                     strstr( s, "legguards"      ) ||
-                     strstr( s, "handguards"     ) );
-
-    bool is_heal = ( strstr( s, "headguard"      ) ||
-                     strstr( s, "mantle"         ) ||
-                     strstr( s, "breastplate"    ) ||
-                     strstr( s, "greaves"        ) ||
-                     strstr( s, "gloves"         ) );
-
-    if ( is_melee  ) return SET_T16_MELEE;
-    if ( is_tank   ) return SET_T16_TANK;
-    if ( is_heal   ) return SET_T16_HEAL;
-  }
-
-    
-    if ( strstr( s, "_of_guiding_light" ) )
-    {
-        specialization_e s = specialization();
-        if ( s == PALADIN_RETRIBUTION ) return SET_T17_MELEE;
-        if ( s == PALADIN_HOLY ) return SET_T17_HEAL;
-        if ( s == PALADIN_PROTECTION ) return SET_T17_TANK;
-    }
-    
-  if ( strstr( s, "gladiators_ornamented_"  ) ) return SET_PVP_HEAL;
-  if ( strstr( s, "gladiators_scaled_"      ) ) return SET_PVP_MELEE;
-
-  return SET_NONE;
-}
-
 // paladin_t::init_buffs ====================================================
 
 void paladin_t::create_buffs()
@@ -4908,10 +4766,10 @@ void paladin_t::create_buffs()
                                  .duration( find_spell( talents.divine_purpose -> effectN( 1 ).trigger_spell_id() ) -> duration() );
   buffs.final_verdict          = buff_creator_t( this, "final_verdict", talents.final_verdict );
   buffs.holy_avenger           = buff_creator_t( this, "holy_avenger", talents.holy_avenger ).cd( timespan_t::zero() ); // Let the ability handle the CD
-  buffs.holy_shield            = absorb_buff_creator_t( this, "holy_shield", find_spell( 157121 ) )
+  buffs.holy_shield_absorb     = absorb_buff_creator_t( this, "holy_shield", find_spell( 157122 ) )
                                  .school( SCHOOL_MAGIC )
-                                 .source( get_stats( "holy_shield" ) )
-                                 .gain( get_gain( "holy_shield" ) );
+                                 .source( get_stats( "holy_shield_absorb" ) )
+                                 .gain( get_gain( "holy_shield_absorb" ) );
   buffs.long_arm_of_the_law    = buff_creator_t( this, "long_arm_of_the_law", talents.long_arm_of_the_law )
                                  .default_value( talents.long_arm_of_the_law -> effectN( 1 ).percent() );
   buffs.speed_of_light         = buff_creator_t( this, "speed_of_light", talents.speed_of_light )
@@ -4967,16 +4825,16 @@ void paladin_t::create_buffs()
   buffs.bastion_of_power               = buff_creator_t( this, "bastion_of_power", find_spell( 144569 ) );
 
   // T17
-  buffs.crusaders_fury         = buff_creator_t( this, "crusaders_fury", sets.set( SET_T17_2PC_MELEE ) -> effectN( 1 ).trigger() )
-                                 .chance( sets.set( SET_T17_2PC_MELEE ) -> effectN( 1 ).trigger() -> proc_chance() );
-  buffs.blazing_contempt       = buff_creator_t( this, "blazing_contempt", sets.set( SET_T17_4PC_MELEE ) -> effectN( 1 ).trigger() )
-                                 .default_value( sets.set( SET_T17_4PC_MELEE ) -> effectN( 1 ).trigger() -> effectN( 1 ).base_value() )
-                                 .chance( sets.has_set_bonus( SET_T17_2PC_MELEE ) ? 1 : 0 );
-  buffs.faith_barricade        = buff_creator_t( this, "faith_barricade", sets.set( SET_T17_2PC_TANK ) -> effectN( 1 ).trigger() )
-                                 .default_value( sets.set( SET_T17_2PC_TANK ) -> effectN( 1 ).trigger() -> effectN( 1 ).percent() )
+  buffs.crusaders_fury         = buff_creator_t( this, "crusaders_fury", new_sets.set( PALADIN_RETRIBUTION, T17, B2 ) -> effectN( 1 ).trigger() )
+                                 .chance( new_sets.set( PALADIN_RETRIBUTION, T17, B2 ) -> effectN( 1 ).trigger() -> proc_chance() );
+  buffs.blazing_contempt       = buff_creator_t( this, "blazing_contempt", new_sets.set( PALADIN_RETRIBUTION, T17, B4 ) -> effectN( 1 ).trigger() )
+                                 .default_value( new_sets.set( PALADIN_RETRIBUTION, T17, B4 ) -> effectN( 1 ).trigger() -> effectN( 1 ).base_value() )
+                                 .chance( new_sets.has_set_bonus( PALADIN_RETRIBUTION, T17, B2 ) ? 1 : 0 );
+  buffs.faith_barricade        = buff_creator_t( this, "faith_barricade", new_sets.set( PALADIN_PROTECTION, T17, B2 ) -> effectN( 1 ).trigger() )
+                                 .default_value( new_sets.set( PALADIN_PROTECTION, T17, B2 ) -> effectN( 1 ).trigger() -> effectN( 1 ).percent() )
                                  .add_invalidate( CACHE_BLOCK );
-  buffs.defender_of_the_light  = buff_creator_t( this, "defender_of_the_light", sets.set( SET_T17_4PC_TANK ) -> effectN( 1 ).trigger() )
-                                 .default_value( sets.set( SET_T17_4PC_TANK ) -> effectN( 1 ).trigger() -> effectN( 1 ).percent() );
+  buffs.defender_of_the_light  = buff_creator_t( this, "defender_of_the_light", new_sets.set( PALADIN_PROTECTION, T17, B4 ) -> effectN( 1 ).trigger() )
+                                 .default_value( new_sets.set( PALADIN_PROTECTION, T17, B4 ) -> effectN( 1 ).trigger() -> effectN( 1 ).percent() );
                                  
 }
 
@@ -5496,21 +5354,8 @@ void paladin_t::init_spells()
 
   // TODO: check if this benefit is only for the paladin (as coded) or for all targets
   debuffs.forbearance -> buff_duration += timespan_t::from_millis( perk.improved_forbearance -> effectN( 1 ).base_value() );
-
-  // Tier Bonuses
-  static const set_bonus_description_t set_bonuses =
-  {
-    //  C2P    C4P     M2P     M4P     T2P     T4P     H2P     H4P
-    {     0,     0, 105765, 105820, 105800, 105744, 105743, 105798 }, // Tier13
-    {     0,     0, 123108,  70762, 123104, 123107, 123102, 123103 }, // Tier14
-    {     0,     0, 138159, 138164, 138238, 138244, 138291, 138292 }, // Tier15
-    {     0,     0, 144586, 144593, 144566, 144580, 144625, 144613 }, // Tier16
-    {     0,     0, 165440, 165439, 165446, 167740, 165438, 167697 }, // Tier17
-  };
-
-  sets.register_spelldata( set_bonuses );
-
-  rppm_defender_of_the_light.set_frequency( sets.set( SET_T17_4PC_TANK ) -> real_ppm() );
+  
+  rppm_defender_of_the_light.set_frequency( new_sets.set( PALADIN_PROTECTION, T17, B4 ) -> real_ppm() );
 
   // Holy Mastery uses effect#2 by default
   if ( specialization() == PALADIN_HOLY )
@@ -6024,7 +5869,7 @@ void paladin_t::target_mitigation( school_e school,
   {
     // split his out to make it more readable / easier to debug
     double sotr_mitigation = buffs.shield_of_the_righteous -> data().effectN( 1 ).percent() + cache.mastery() * passives.divine_bulwark -> effectN( 4 ).mastery_value();
-    sotr_mitigation *= 1.0 + sets.set( SET_T14_4PC_TANK ) -> effectN( 2 ).percent();
+    sotr_mitigation *= 1.0 + new_sets.set( SET_TANK, T14, B4 ) -> effectN( 2 ).percent();
 
     // clamp is hardcoded in tooltip, not shown in effects
     sotr_mitigation = std::max( -0.80, sotr_mitigation );
@@ -6169,7 +6014,7 @@ void paladin_t::assess_damage( school_e school,
     
     trigger_holy_shield();
 
-    if ( sets.set( SET_T17_4PC_TANK ) -> ok() && rppm_defender_of_the_light.trigger() )
+    if ( new_sets.set( PALADIN_PROTECTION, T17, B4 ) -> ok() && rppm_defender_of_the_light.trigger() )
       buffs.defender_of_the_light -> trigger();
   }
 
@@ -6182,7 +6027,7 @@ void paladin_t::assess_damage( school_e school,
   player_t::assess_damage( school, dtype, s );
 
   // T15 4-piece tank
-  if ( sets.has_set_bonus( SET_T15_4PC_TANK ) && buffs.divine_protection -> check() )
+  if ( new_sets.has_set_bonus( SET_TANK, T15, B4 ) && buffs.divine_protection -> check() )
   {
     // compare damage to player health to find HP gain
     double hp_gain = std::floor( s -> result_mitigated / resources.max[ RESOURCE_HEALTH ] * 5 );
@@ -6192,7 +6037,7 @@ void paladin_t::assess_damage( school_e school,
   }
 
   // T16 2-piece tank
-  if ( sets.has_set_bonus( SET_T16_2PC_TANK ) && buffs.divine_protection -> check() )
+  if ( new_sets.has_set_bonus( SET_TANK, T16, B2 ) && buffs.divine_protection -> check() )
   {
     active.blessing_of_the_guardians -> increment_damage( s -> result_mitigated ); // uses post-mitigation, pre-absorb value
   }
@@ -6228,8 +6073,8 @@ void paladin_t::assess_damage_imminent( school_e school, dmg_e, action_state_t* 
         s -> result_absorbed = s -> result_amount;
         
         // hack to register this on the abilities table
-        buffs.holy_shield -> trigger( 1, block_amount );
-        buffs.holy_shield -> consume( block_amount );
+        buffs.holy_shield_absorb -> trigger( 1, block_amount );
+        buffs.holy_shield_absorb -> consume( block_amount );
 
         // Trigger the damage event
         trigger_holy_shield();

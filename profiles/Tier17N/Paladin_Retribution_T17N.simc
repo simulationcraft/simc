@@ -96,7 +96,5 @@ main_hand=primal_gladiators_greatsword,id=111204,enchant=mark_of_the_thunderlord
 # gear_mastery_rating=643
 # gear_armor=2574
 # gear_multistrike_rating=733
-# pvp_2pc_melee=1
-# pvp_4pc_melee=1
 # set_bonus=pvp_2pc=1
 # set_bonus=pvp_4pc=1

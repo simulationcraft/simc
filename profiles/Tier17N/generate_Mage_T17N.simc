@@ -67,6 +67,6 @@ finger1=primal_gladiators_band_of_victory,id=111136,bonus_id=0,upgrade=0,gem_id=
 finger2=primal_gladiators_band_of_cruelty,id=111134,bonus_id=0,upgrade=0,gem_id=0/0/0/,enchant_id=5284
 trinket1=primal_gladiators_insignia_of_dominance,id=111228,bonus_id=0,upgrade=0,gem_id=0/0/0/,enchant_id=0
 trinket2=primal_gladiators_badge_of_dominance,id=111227,bonus_id=0,upgrade=0,gem_id=0/0/0/,enchant_id=0
-main_hand=primal_gladiators_mageblade,id=111119,bonus_id=0,upgrade=0,gem_id=0/0/0/,enchant_id=5334
+main_hand=primal_gladiators_mageblade,id=111119,bonus_id=0,upgrade=0,gem_id=0/0/0/,enchant_id=5330
 off_hand=primal_gladiators_reprieve,id=111133,bonus_id=0,upgrade=0,gem_id=0/0/0/,enchant_id=0
 save=Mage_Fire_T17N.simc

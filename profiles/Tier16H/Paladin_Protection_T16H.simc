@@ -79,7 +79,5 @@ off_hand=bulwark_of_the_fallen_general,id=105556,upgrade=2,gems=16haste,enchant=
 # gear_dodge_rating=13
 # gear_parry_rating=9
 # meta_gem=indomitable_primal
-# tier16_2pc_tank=1
-# tier16_4pc_tank=1
 # set_bonus=tier16_2pc_tank=1
 # set_bonus=tier16_4pc_tank=1

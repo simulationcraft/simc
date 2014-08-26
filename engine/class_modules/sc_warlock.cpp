@@ -344,11 +344,11 @@ public:
     bool seed_of_corruption_was_inhaled;
     dot_t* seed_of_corruption;
 
-    static void inhale_dot( dot_t* to_inhale, dot_t* soul_swap_buffer_target )//copies over the state
+    static void inhale_dot( dot_t* /* to_inhale */, dot_t* /* soul_swap_buffer_target */ )//copies over the state
     {
-      soul_swap_buffer_target -> cancel(); //clear any previous versions in the buffer;
+      //soul_swap_buffer_target -> cancel(); //clear any previous versions in the buffer;
 
-      soul_swap_buffer_target -> copy( to_inhale );
+      //soul_swap_buffer_target -> copy( to_inhale );
     }
   } soul_swap_buffer;
 
@@ -4160,6 +4160,9 @@ struct soul_swap_t: public warlock_spell_t
     seed_of_corruption  -> background = true;
     seed_of_corruption  -> dual = true;
     seed_of_corruption  -> base_costs[RESOURCE_MANA] = 0;
+
+    // TODO: Disable Soul Swap for now. The buffering no longer works.
+    background = true;
   }
 
   virtual void execute()

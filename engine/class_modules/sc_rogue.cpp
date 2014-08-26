@@ -1476,10 +1476,9 @@ struct ambush_t : public rogue_attack_t
 
       td -> debuffs.find_weakness -> trigger();
     }
-/*
+
     if ( result_is_multistrike( state -> result ) )
       p() -> trigger_sinister_calling( state );
-*/
   }
 
   void consume_resource()
@@ -1551,10 +1550,9 @@ struct backstab_t : public rogue_attack_t
   void impact( action_state_t* state )
   {
     rogue_attack_t::impact( state );
-/*
+
     if ( result_is_multistrike( state -> result ) )
       p() -> trigger_sinister_calling( state );
-*/
   }
 
   double composite_da_multiplier( const action_state_t* state ) const
@@ -2848,16 +2846,39 @@ void rogue_t::trigger_auto_attack( const action_state_t* state )
 
 inline void actions::rogue_attack_t::trigger_sinister_calling( dot_t* dot )
 {
-  assert( sinister_calling );
+  dot -> current_tick++;
+  dot -> tick();
+  // Advances the time, so calculate new time to tick, num ticks, last tick factor
+  if ( dot -> remains() > dot -> time_to_tick )
+  {
+    timespan_t remains = dot -> end_event -> remains() - dot -> time_to_tick;
+    timespan_t tick_remains = dot -> tick_event ? dot -> tick_event -> remains() : timespan_t::zero();
 
-  action_state_t* new_state = 0;
-  new_state = sinister_calling -> get_state();
+    core_event_t::cancel( dot -> tick_event );
 
-  new_state -> result = RESULT_HIT;
-  new_state -> result_amount = dot -> current_action -> calculate_tick_amount( dot -> state, 1.0 );
+    // Only start a new tick event, if there are still over one tick left.
+    if ( tick_remains > timespan_t::zero() && remains > tick_remains )
+      dot -> tick_event = new ( *sim ) dot_tick_event_t( dot, tick_remains );
+    // No tick event started, this is the last tick. Recalculate last tick
+    // factor, should be 100% for Rogues always, since the dots do not scale
+    // with haste
+    else
+      dot -> last_tick_factor = std::min( 1.0, ( dot -> time_to_tick - tick_remains + remains ) / dot -> time_to_tick );
 
-  sinister_calling -> target = dot -> state -> target;
-  sinister_calling -> schedule_execute( new_state );
+    if ( sim -> debug )
+    {
+      sim -> out_debug.printf( "%s sinister_calling %s, remains=%.3f tick_remains=%.3f new_remains=%.3f last_tick_factor=%.f",
+          player -> name(), dot -> current_action -> name(), dot -> remains().total_seconds(), tick_remains.total_seconds(),
+          remains.total_seconds(), dot -> last_tick_factor );
+    }
+
+    // Restart a new end-event, now one tick closer
+    core_event_t::cancel( dot -> end_event );
+    dot -> end_event = new ( *sim ) dot_end_event_t( dot, remains );
+  }
+  // Last ongoing tick, expire the dot early
+  else
+    dot -> last_tick();
 }
 
 void rogue_t::trigger_sinister_calling( const action_state_t* state )
@@ -4276,7 +4297,7 @@ void rogue_t::init_action_list()
     action_priority_list_t* gen = get_action_priority_list( "generator", "Combo point generators" );
     gen -> add_action( this, find_class_spell( "Preparation" ), "run_action_list", "name=pool,if=buff.master_of_subtlety.down&buff.shadow_dance.down&debuff.find_weakness.down&(energy+cooldown.shadow_dance.remains*energy.regen<80|energy+cooldown.vanish.remains*energy.regen<60)" );
     gen -> add_action( this, "Fan of Knives", "if=active_enemies>=4" );
-    gen -> add_action( this, "Hemorrhage", "if=remains<8|position_front|debuff.find_weakness.up|trinket.proc.agility.up|trinket.stacking_proc.agility.stack>=trinket.stacking_proc.agility.max_stack-1" );
+    gen -> add_action( this, "Hemorrhage", "if=(remains<8&target.time_to_die>10)|position_front" );
     gen -> add_talent( this, "Shuriken Toss", "if=energy<65&energy.regen<16" );
     gen -> add_action( this, "Backstab" );
     gen -> add_action( this, find_class_spell( "Preparation" ), "run_action_list", "name=pool" );
@@ -4284,7 +4305,7 @@ void rogue_t::init_action_list()
     // Combo point finishers
     action_priority_list_t* finisher = get_action_priority_list( "finisher", "Combo point finishers" );
     finisher -> add_action( this, "Slice and Dice", "if=buff.slice_and_dice.remains<4" );
-    finisher -> add_action( this, "Rupture", "if=ticks_remain<2&active_enemies<3" );
+    finisher -> add_action( this, "Rupture", "if=(!ticking|remains<duration*0.3)&active_enemies<3" );
     finisher -> add_action( this, "Crimson Tempest", "if=(active_enemies>1&dot.crimson_tempest_dot.ticks_remain<=2&combo_points=5)|active_enemies>=5" );
     finisher -> add_action( this, "Eviscerate", "if=active_enemies<4|(active_enemies>3&dot.crimson_tempest_dot.ticks_remain>=2)" );
     finisher -> add_action( this, find_class_spell( "Preparation" ), "run_action_list", "name=pool" );
