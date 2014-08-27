@@ -1853,6 +1853,7 @@ struct tigereye_brew_t: public monk_spell_t
   {
     parse_options( nullptr, options_str );
     harmful = false;
+    trigger_gcd = timespan_t::zero();
   }
 
   double value()
@@ -1921,6 +1922,7 @@ struct chi_brew_t: public monk_spell_t
     harmful = false;
     cooldown -> duration = timespan_t::from_seconds( 45.0 );
     cooldown -> charges = 2;
+    trigger_gcd = timespan_t::zero();
   }
 
   virtual void execute()
@@ -2073,6 +2075,7 @@ struct serenity_t: public monk_spell_t
   {
     parse_options( nullptr, options_str );
     harmful = false;
+    trigger_gcd = timespan_t::zero();
   }
 
   void execute()
