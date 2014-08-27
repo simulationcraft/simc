@@ -458,6 +458,7 @@ void dbc::apply_hotfixes()
   // Hotfixes from 2013-09-23
   // Raging blow -- Buffed from 190% weapon damage to 228% weapon damage.
   s = spell_data_t::find( 96103, false );
+  assert( ( s -> effectN( 2 ) )._base_value != 228 && "Out of date hotfix for Raging Blow" );
   const_cast<spelleffect_data_t&>( s -> effectN( 2 ) )._base_value = 228;
   // Raging blow off-hand.
   s = spell_data_t::find( 85384, false );
@@ -466,6 +467,24 @@ void dbc::apply_hotfixes()
   //Bloodthirst -- Buffed from 90% weapon damage to 108% weapon damage.
   s = spell_data_t::find( 23881, false );
   const_cast<spelleffect_data_t&>( s -> effectN( 2 ) )._base_value = 108;
+
+  s = spell_data_t::find( 96103, false );
+  assert( s -> _spell_level == 39 && "Check level on Raging Blow" );
+  s -> _spell_level = 30;
+  if ( SC_USE_PTR )
+  {
+    s = spell_data_t::find( 96103, true );
+    s -> _spell_level = 30;
+  }
+
+  s = spell_data_t::find( 85384, false );
+  assert( s -> _spell_level == 39 && "Check level on Raging Blow Off-Hand" );
+  s -> _spell_level = 30;
+  if ( SC_USE_PTR )
+  {
+    s = spell_data_t::find( 85384, true );
+    s -> _spell_level = 30;
+  }
 
 
   // Druid
