@@ -2579,6 +2579,7 @@ struct sim_t : public core_sim_t, private sc_thread_t
   player_t*   active_player;
   int         num_players;
   int         num_enemies;
+  bool        healing; // If set to true, creates healing target. Useful for ferals, I guess.
   int global_spawn_index;
   int         max_player_level;
   timespan_t  queue_lag, queue_lag_stddev;
