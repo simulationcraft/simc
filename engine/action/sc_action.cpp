@@ -1489,14 +1489,24 @@ void action_t::update_ready( timespan_t cd_duration /* = timespan_t::min() */ )
   {
 
     if ( ! background && ! proc )
-    {
+    { /*This doesn't happen anymore due to the gcd queue, in WoD if an ability has a cooldown of 20 seconds,
+      it is usable exactly every 20 seconds with proper Lag tolerance set in game.
+      The only situation that this could happen is when world lag is over 400, as blizzard does not allow
+      custom lag tolerance to go over 400.
+      */
       timespan_t lag, dev;
 
       lag = player -> world_lag_override ? player -> world_lag : sim -> world_lag;
       dev = player -> world_lag_stddev_override ? player -> world_lag_stddev : sim -> world_lag_stddev;
       delay = rng().gauss( lag, dev );
-      if ( sim -> debug )
-        sim -> out_debug.printf( "%s delaying the cooldown finish of %s by %f", player -> name(), name(), delay.total_seconds() );
+      if ( delay > timespan_t::from_millis( 400 ) )
+      {
+        delay -= timespan_t::from_millis( 400 ); //Even high latency players get some benefit from CLT.
+        if ( sim -> debug )
+          sim -> out_debug.printf( "%s delaying the cooldown finish of %s by %f", player -> name(), name(), delay.total_seconds() );
+      }
+      else
+        delay = timespan_t::zero();
     }
 
     cooldown -> start( this, cd_duration, delay );

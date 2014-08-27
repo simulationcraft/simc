@@ -531,6 +531,7 @@ public:
     QLabel* rotation;
     QLabel* advanced;
     QLabel* sidebar;
+    QLabel* footer;
   } label;
 
   struct textBoxes_t
@@ -542,6 +543,7 @@ public:
     SC_TextEdit* advanced;
     SC_TextEdit* sidebar;
     SC_TextEdit* helpbar;
+    SC_TextEdit* footer;
   } textbox;
 
   QString advTalent;
@@ -1558,7 +1560,8 @@ namespace automation {
                         QString player_gear,
                         QString player_rotation,
                         QString advanced_text,
-                        QString sidebar_text
+                        QString sidebar_text,
+                        QString footer_text
                       );
 
   QString auto_talent_sim( QString player_class,

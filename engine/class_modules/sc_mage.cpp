@@ -3706,9 +3706,13 @@ struct choose_target_t : public action_t
   bool check_selected;
   player_t* selected_target;
 
+  // Infinite loop protection
+  timespan_t last_execute;
+
   choose_target_t( mage_t* p, const std::string& options_str ) :
     action_t( ACTION_OTHER, "choose_target", p ),
-    check_selected( false ), selected_target( 0 )
+    check_selected( false ), selected_target( 0 ),
+    last_execute( timespan_t::min() )
   {
     std::string target_name;
 
@@ -3751,6 +3755,16 @@ struct choose_target_t : public action_t
 
     mage_t* p = debug_cast<mage_t*>( player );
 
+    if ( sim -> current_time == last_execute )
+    {
+      sim -> errorf( "%s choose_target infinite loop detected (due to no time passing between executes) at '%s'",
+        p -> name(), signature_str.c_str() );
+      sim -> cancel();
+      return;
+    }
+
+    last_execute = sim -> current_time;
+
     if ( sim -> debug )
       sim -> out_debug.printf( "%s swapping target from %s to %s", player -> name(), p -> current_target -> name(), selected_target -> name() );
 
@@ -3791,6 +3805,12 @@ struct choose_target_t : public action_t
       target = original_target;
 
     return rd;
+  }
+
+  void reset()
+  {
+    action_t::reset();
+    last_execute = timespan_t::min();
   }
 };
 
