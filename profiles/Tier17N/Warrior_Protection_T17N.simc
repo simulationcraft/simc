@@ -33,8 +33,8 @@ actions+=/arcane_torrent,if=buff.bloodbath.up|buff.avatar.up
 actions+=/berserker_rage,if=buff.enrage.down
 actions+=/call_action_list,name=prot
 
-actions.prot=shield_block,if=!(debuff.demoralizing_shout.up|buff.ravager.up|buff.shield_wall.up|buff.last_stand.up|buff.enraged_regeneration.up|buff.shield_block.up|buff.draenic_armor_potion.up)|action.shield_block.charges_fractional>=1.5
-actions.prot+=/shield_barrier,if=(incoming_damage_1500ms>health.max*0.3|rage>=120)&buff.shield_barrier.down
+actions.prot=shield_block,if=!(debuff.demoralizing_shout.up|buff.ravager.up|buff.shield_wall.up|buff.last_stand.up|buff.enraged_regeneration.up|buff.shield_block.up|buff.draenic_armor_potion.up)|action.shield_block.charges_fractional>=2
+actions.prot+=/shield_barrier,if=(rage>=120)&buff.shield_barrier.down
 actions.prot+=/demoralizing_shout,if=incoming_damage_2500ms>health.max*0.1&!(debuff.demoralizing_shout.up|buff.ravager.up|buff.shield_wall.up|buff.last_stand.up|buff.enraged_regeneration.up|buff.shield_block.up|buff.draenic_armor_potion.up)
 actions.prot+=/enraged_regeneration,if=incoming_damage_2500ms>health.max*0.1&!(debuff.demoralizing_shout.up|buff.ravager.up|buff.shield_wall.up|buff.last_stand.up|buff.enraged_regeneration.up|buff.shield_block.up|buff.draenic_armor_potion.up)
 actions.prot+=/shield_wall,if=incoming_damage_2500ms>health.max*0.1&!(debuff.demoralizing_shout.up|buff.ravager.up|buff.shield_wall.up|buff.last_stand.up|buff.enraged_regeneration.up|buff.shield_block.up|buff.draenic_armor_potion.up)

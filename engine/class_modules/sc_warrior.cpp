@@ -4120,8 +4120,8 @@ void warrior_t::apl_prot()
     default_list -> add_action( "call_action_list,name=prot" );
 
   //defensive
-  prot -> add_action( this, "Shield Block", "if=!(debuff.demoralizing_shout.up|buff.ravager.up|buff.shield_wall.up|buff.last_stand.up|buff.enraged_regeneration.up|buff.shield_block.up|buff.draenic_armor_potion.up)|action.shield_block.charges_fractional>=1.5" );
-  prot -> add_action( this, "Shield Barrier", "if=(incoming_damage_1500ms>health.max*0.3|rage>=120)&buff.shield_barrier.down" );
+  prot -> add_action( this, "Shield Block", "if=!(debuff.demoralizing_shout.up|buff.ravager.up|buff.shield_wall.up|buff.last_stand.up|buff.enraged_regeneration.up|buff.shield_block.up|buff.draenic_armor_potion.up)|action.shield_block.charges_fractional>=2" );
+  prot -> add_action( this, "Shield Barrier", "if=(rage>=120)&buff.shield_barrier.down" );
   prot -> add_action( this, "Demoralizing Shout", "if=incoming_damage_2500ms>health.max*0.1&!(debuff.demoralizing_shout.up|buff.ravager.up|buff.shield_wall.up|buff.last_stand.up|buff.enraged_regeneration.up|buff.shield_block.up|buff.draenic_armor_potion.up)" );
   prot -> add_talent( this, "Enraged Regeneration", "if=incoming_damage_2500ms>health.max*0.1&!(debuff.demoralizing_shout.up|buff.ravager.up|buff.shield_wall.up|buff.last_stand.up|buff.enraged_regeneration.up|buff.shield_block.up|buff.draenic_armor_potion.up)" );
   prot -> add_action( this, "Shield Wall", "if=incoming_damage_2500ms>health.max*0.1&!(debuff.demoralizing_shout.up|buff.ravager.up|buff.shield_wall.up|buff.last_stand.up|buff.enraged_regeneration.up|buff.shield_block.up|buff.draenic_armor_potion.up)" );
