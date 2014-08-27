@@ -3188,8 +3188,7 @@ void rogue_t::trigger_combo_point_gain( const action_state_t* state, int cp_over
   if ( event_premeditation )
     core_event_t::cancel( event_premeditation );
 
-  assert( ( resources.current[ RESOURCE_COMBO_POINT ] == 5 && buffs.anticipation -> check() >= 0 ) ||
-          ( resources.current[ RESOURCE_COMBO_POINT ] < 5 && buffs.anticipation -> check() == 0 ) );
+  assert( resources.current[ RESOURCE_COMBO_POINT ] <= 5 );
 }
 
 void rogue_t::spend_combo_points( const action_state_t* state )
@@ -3206,7 +3205,7 @@ void rogue_t::spend_combo_points( const action_state_t* state )
   state -> action -> stats -> consume_resource( RESOURCE_COMBO_POINT, resources.current[ RESOURCE_COMBO_POINT ] );
   resource_loss( RESOURCE_COMBO_POINT, resources.current[ RESOURCE_COMBO_POINT ], 0, state ? state -> action : 0 );
 
-  if ( buffs.anticipation -> stack() > 0 )
+  if ( state -> action -> harmful && buffs.anticipation -> stack() > 0 )
   {
     if ( sim -> log )
       sim -> out_log.printf( "%s replenishes %d combo_points through anticipation",
