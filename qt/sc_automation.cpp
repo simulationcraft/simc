@@ -95,7 +95,8 @@ QString automation::automation_main( int sim_type,
                                   QString player_gear,
                                   QString player_rotation,
                                   QString advanced_text,
-                                  QString sidebar_text
+                                  QString sidebar_text,
+                                  QString footer_text
                                   )
 {
   QString profile;
@@ -119,22 +120,26 @@ QString automation::automation_main( int sim_type,
   switch ( sim_type )
   {
     case 1: // talent simulation
-      return auto_talent_sim( player_class, base_profile_info, advanced_list, player_glyphs, player_gear, player_rotation );
+      profile += auto_talent_sim( player_class, base_profile_info, advanced_list, player_glyphs, player_gear, player_rotation );
+      break;
     case 2: // glyph simulation
-      return auto_glyph_sim( player_class, base_profile_info, player_talents, advanced_list, player_gear, player_rotation );
+      profile += auto_glyph_sim( player_class, base_profile_info, player_talents, advanced_list, player_gear, player_rotation );
+      break;
     case 3: // gear simulation
-      return auto_gear_sim( player_class, base_profile_info, player_talents, player_glyphs, advanced_list, player_rotation );
+      profile += auto_gear_sim( player_class, base_profile_info, player_talents, player_glyphs, advanced_list, player_rotation );
+      break;
     case 4: // rotation simulation
-      return auto_rotation_sim( player_class, player_spec, base_profile_info, player_talents, player_glyphs, player_gear, player_rotation, advanced_list, sidebar_text );
+      profile += auto_rotation_sim( player_class, player_spec, base_profile_info, player_talents, player_glyphs, player_gear, player_rotation, advanced_list, sidebar_text );
+      break;
     default: // default profile creation
       profile += base_profile_info;
       profile += "talents=" + player_talents + "\n";
       profile += "glyphs=" + player_glyphs + "\n";
       profile += player_gear + "\n";
-      profile += player_rotation;
-      return profile;
+      profile += player_rotation + "\n";
 
   }
+  profile += footer_text;
 
   return profile;
 }
@@ -686,7 +691,7 @@ QString defaultOptions = "AA=auto_attack\nCD=cooldown.$ability_name.remains\nCD#
 
 // constant for sidebar text (this will eventually get really long)
 QString sidebarText[ 11 ][ 4 ] = {
-  { // DEATHKNIGHT Shorthand Declaretion
+  { // DEATHKNIGHT Shorthand Declaration
     ":::Abilities:::\n" "Blood ability shorthands can be added here."
     "\n\n:::Buffs:::\n" "Blood-specific buff shorthands can be added here"
     "\n\n:::Options:::\n" + defaultOptions + "Blood-specific option shorthands can be added here",
@@ -702,7 +707,7 @@ QString sidebarText[ 11 ][ 4 ] = {
     "N/A"
   },
 
-  { // DRUID Shorthand Declaretion
+  { // DRUID Shorthand Declaration
     ":::Abilities:::\n" "Balance ability shorthands can be added here."
     "\n\n:::Buffs:::\n" "Balance-specific buff shorthands can be added here"
     "\n\n:::Options:::\n" + defaultOptions + "Balance-specific option shorthands can be added here",
@@ -720,7 +725,7 @@ QString sidebarText[ 11 ][ 4 ] = {
     "\n\n:::Options:::\n" + defaultOptions + "Restoration-specific option shorthands can be added here"
   },
 
-  { // HUNTER Shorthand Declaretion
+  { // HUNTER Shorthand Declaration
     ":::Abilities:::\n" "Beast Mastery ability shorthands can be added here."
     "\n\n:::Buffs:::\n" "Beast Mastery-specific buff shorthands can be added here"
     "\n\n:::Options:::\n" + defaultOptions + "Beast Mastery-specific option shorthands can be added here",
@@ -736,7 +741,7 @@ QString sidebarText[ 11 ][ 4 ] = {
     "N/A"
   },
   
-  { // MAGE Shorthand Declaretion
+  { // MAGE Shorthand Declaration
     ":::Abilities:::\n" "Arcane ability shorthands can be added here."
     "\n\n:::Buffs:::\n" "Arcane-specific buff shorthands can be added here"
     "\n\n:::Options:::\n" + defaultOptions + "Arcane-specific option shorthands can be added here",
@@ -752,7 +757,7 @@ QString sidebarText[ 11 ][ 4 ] = {
     "N/A"
   },
   
-  { // MONK Shorthand Declaretion
+  { // MONK Shorthand Declaration
     ":::Abilities:::\n" "Brewmaster ability shorthands can be added here."
     "\n\n:::Buffs:::\n" "Brewmaster-specific buff shorthands can be added here"
     "\n\n:::Options:::\n" + defaultOptions + "Brewmaster-specific option shorthands can be added here",
@@ -768,7 +773,7 @@ QString sidebarText[ 11 ][ 4 ] = {
     "N/A"
   },
 
-  { // PALADIN Shorthand Declaretion
+  { // PALADIN Shorthand Declaration
     ":::Abilities:::\n" "Holy ability shorthands can be added here."
     "\n\n:::Buffs:::\n" "Holy-specific buff shorthands can be added here"
     "\n\n:::Options:::\n" + defaultOptions + "Holy-specific option shorthands can be added here",
@@ -784,7 +789,7 @@ QString sidebarText[ 11 ][ 4 ] = {
     "N/A"
   },
 
-  { // PRIEST Shorthand Declaretion
+  { // PRIEST Shorthand Declaration
     ":::Abilities:::\n" "Discipline ability shorthands can be added here."
     "\n\n:::Buffs:::\n" "Discipline-specific buff shorthands can be added here"
     "\n\n:::Options:::\n" + defaultOptions + "Discipline-specific option shorthands can be added here",
@@ -800,7 +805,7 @@ QString sidebarText[ 11 ][ 4 ] = {
     "N/A"
   },
 
-  { // ROGUE Shorthand Declaretion
+  { // ROGUE Shorthand Declaration
     ":::Abilities:::\n" "Assasination ability shorthands can be added here."
     "\n\n:::Buffs:::\n" "Assasination-specific buff shorthands can be added here"
     "\n\n:::Options:::\n" + defaultOptions + "Assasination-specific option shorthands can be added here",
@@ -816,7 +821,7 @@ QString sidebarText[ 11 ][ 4 ] = {
     "N/A"
   },
 
-  { // SHAMAN Shorthand Declaretion
+  { // SHAMAN Shorthand Declaration
     ":::Abilities:::\n" "Elemental ability shorthands can be added here."
     "\n\n:::Buffs:::\n" "Elemental-specific buff shorthands can be added here"
     "\n\n:::Options:::\n" + defaultOptions + "Elemental-specific option shorthands can be added here",
@@ -832,7 +837,7 @@ QString sidebarText[ 11 ][ 4 ] = {
     "N/A"
   },
 
-  { // WARLOCK Shorthand Declaretion
+  { // WARLOCK Shorthand Declaration
     ":::Abilities:::\n" "Affliction ability shorthands can be added here."
     "\n\n:::Buffs:::\n" "Affliction-specific buff shorthands can be added here"
     "\n\n:::Options:::\n" + defaultOptions + "Affliction-specific option shorthands can be added here",
@@ -848,7 +853,7 @@ QString sidebarText[ 11 ][ 4 ] = {
     "N/A"
   },
 
-  { // WARRIOR Shorthand Declaretion
+  { // WARRIOR Shorthand Declaration
     ":::Abilities:::\n" "Arms ability shorthands can be added here."
     "\n\n:::Buffs:::\n" "Arms-specific buff shorthands can be added here"
     "\n\n:::Options:::\n" + defaultOptions + "Arms-specific option shorthands can be added here",
@@ -990,7 +995,8 @@ void SC_MainWindow::startAutomationImport( int tab )
                                       importTab -> textbox.gear -> document() -> toPlainText(),
                                       importTab -> textbox.rotation -> document() -> toPlainText(),
                                       importTab -> textbox.advanced -> document() -> toPlainText(),
-                                      importTab -> textbox.sidebar -> document() -> toPlainText()
+                                      importTab -> textbox.sidebar -> document() -> toPlainText(),
+                                      importTab -> textbox.footer -> document() -> toPlainText()
                                     );
 
   simulateTab -> add_Text( profile,  tr( "Automation Import" ) );
@@ -1005,6 +1011,10 @@ void SC_ImportTab::createTooltips()
   QString sidebarTooltip = "This box specifies the abbreviations used in rotation shorthands. You may define custom abbreviations by adding your own entries.\nNote that \"#\" can be used to support an optional numeric argument (e.g. \"C#\" will mach C3 and replace every # with a 3)\nand that $ability_name will automatically be replaced with the ability's name.\n\nAlso note that the \"W#\" option is special since it adds an extra APL entry; W# should be the only option or should be separated from other options like so: (DP&!FW)W3\n\nHow to use buffs, glyphs & talents:\nThe options for those types work as a function : buff / glyph / talent.operator\n( e.g.FV + DP.BA = > actions += / final_verdict, if = buff.divine_purpose.up )\nIt is possible to predefine often used ability/option combos in the :::Options::: section\nbut keep in mind that adding more options with + will lead to a systax error!\n\nSee the wiki entry for more details. https://code.google.com/p/simulationcraft/wiki/Automation#Rotation_Comparisons";
   textbox.sidebar -> setToolTip( sidebarTooltip );
   label.sidebar   -> setToolTip( sidebarTooltip );
+
+  QString footerTooltip = "The text in this box is added after all of the generated profiles, only once. It can be used to set global options or define custom bosses.";
+  textbox.footer -> setToolTip( footerTooltip );
+  label.footer -> setToolTip( footerTooltip );
 
   textbox.talents -> setToolTip( "Default talents, specified either as \"talents=1231231\" or \"1231231\"" );
   textbox.glyphs -> setToolTip( "Default glyphs, specified either as \"glyphs=glyph1/glyph2/glyph3\" or \"glyph1/glyph2/glyph3\"" );
@@ -1107,14 +1117,20 @@ void SC_ImportTab::createAutomationTab()
   gridLayout -> addWidget( textbox.rotation, 6, 0, 0 );
 
 
-  // Elements (2,1) - (6,1) are the Advanced text box, which is actually
+  // Elements (2,1) - (5,1) are the Advanced text box, which is actually
   // N different text boxes that get cycled depending on sim type choice
 
   label.advanced = new QLabel( tr( "Advanced Text Box" ) );
   textbox.advanced = new SC_TextEdit;
   gridLayout -> addWidget( label.advanced,   1, 1, 0 );
-  gridLayout -> addWidget( textbox.advanced, 2, 1, 5, 1, 0 );
+  gridLayout -> addWidget( textbox.advanced, 2, 1, 3, 1, 0 );
 
+  // Element (6,1) is the footer box
+
+  label.footer = new QLabel( tr( "Footer" ) );
+  textbox.footer = new SC_TextEdit;
+  gridLayout -> addWidget( label.footer,   5, 1, 0 );
+  gridLayout -> addWidget( textbox.footer, 6, 1, 0 );
 
   // Eleements (2,2) - (6,2) are the Rotation Conversions text box 
 
@@ -1170,6 +1186,7 @@ void SC_ImportTab::encodeSettings()
   settings.setValue( "advGear", advGear );
   settings.setValue( "advRotation", advRotation );
   settings.setValue( "sidebox", textbox.sidebar -> document() -> toPlainText() );
+  settings.setValue( "footer", textbox.footer -> document() -> toPlainText() );
   
   QString encoded;
 
@@ -1250,8 +1267,7 @@ void SC_ImportTab::decodeSettings()
   load_setting( settings, "advGear", &advGear, "head=test\nneck=test" );
   load_setting( settings, "advRotation", &advRotation, "CS>J>AS\nCS>J>AS+GC\nCS>AS+GC&(DP|!FW)>J+SW>J" );
   load_setting( settings, "sidebox", textbox.sidebar );
-  
-  
+  load_setting( settings, "footer", textbox.footer );
 
   settings.endGroup();
 }
