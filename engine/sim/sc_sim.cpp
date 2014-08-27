@@ -920,7 +920,7 @@ sim_t::sim_t( sim_t* p, int index ) :
   player_non_sleeping_list(),
   active_player( 0 ),
   num_players( 0 ),
-  num_enemies( 0 ), healing( false ),
+  num_enemies( 0 ), num_healing_targets( 0 ),
   global_spawn_index( 0 ),
   max_player_level( -1 ),
   queue_lag( timespan_t::from_seconds( 0.005 ) ), queue_lag_stddev( timespan_t::zero() ),
@@ -1642,8 +1642,18 @@ bool sim_t::init()
       else if ( p.primary_role() == ROLE_TANK )
         ++tanks;
     }
-    if ( healers > 0 || healing == true )
-      heal_target = module_t::heal_enemy() -> create_player( this, "Healing Target" );
+    if ( healers > 0 || num_healing_targets > 0 )
+      heal_target = module_t::heal_enemy() -> create_player( this, "Healing_Target" );
+    if ( num_healing_targets > 1 )
+    {
+      int targets_create = num_healing_targets;
+      do
+      {
+        heal_target = module_t::heal_enemy() -> create_player( this, "Healing_Target_" + util::to_string( targets_create ) );
+        targets_create--;
+      }
+      while ( targets_create > num_healing_targets );
+    }
   }
 
   if ( max_player_level < 0 )
@@ -2254,7 +2264,7 @@ void sim_t::create_options()
     opt_bool( "debug_each", debug_each ),
     opt_string( "html", html_file_str ),
     opt_bool( "hosted_html", hosted_html ),
-    opt_bool( "healing", healing ),
+    opt_bool( "num_healing_targets", num_healing_targets ),
     opt_string( "xml", xml_file_str ),
     opt_string( "xml_style", xml_stylesheet_file_str ),
     opt_bool( "log", log ),
