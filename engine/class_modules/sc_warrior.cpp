@@ -2349,7 +2349,7 @@ struct rend_t: public warrior_attack_t
     if ( result_is_hit( s -> result ) )
     {
       dot_t* dot = get_dot( s -> target );
-      if ( dot -> is_ticking() && dot -> remains() < dot -> current_action -> base_tick_time )
+      if ( dot -> is_ticking() && dot -> remains() < dot_duration * 0.3 )
         burst -> execute();
     }
     warrior_attack_t::impact( s );
