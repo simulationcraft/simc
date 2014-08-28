@@ -1439,6 +1439,9 @@ struct fists_of_fury_tick_t: public monk_melee_attack_t
     base_multiplier *= 5.875; // hardcoded into tooltip
     mh = &( player -> main_hand_weapon );
     oh = &( player -> off_hand_weapon );
+    base_costs[RESOURCE_CHI] = 0;
+    dot_duration = timespan_t::zero();
+    trigger_gcd = timespan_t::zero();
   }
 };
 
@@ -1460,8 +1463,9 @@ struct fists_of_fury_t: public monk_melee_attack_t
     cooldown -> duration += p -> sets.set( SET_T14_2PC_MELEE ) -> effectN( 1 ).time_value();
   }
 
-  void tick( dot_t* )
+  void tick( dot_t*d )
   {
+    monk_melee_attack_t::tick( d );
     fists_of_fury -> execute();
   }
 
