@@ -639,7 +639,7 @@ struct food_t : public action_t
         break;
       case FOOD_FEAST_OF_BLOOD:
       case FOOD_FEAST_OF_THE_WATERS:
-        if ( gain_amount <= 0.0 ) gain_amount = 125;
+        if ( gain_amount <= 0.0 ) gain_amount = 50;
 
         if ( p -> current.stats.dodge_rating > 0 )
         {
