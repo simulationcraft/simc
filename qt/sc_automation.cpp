@@ -460,15 +460,13 @@ QStringList automation::convert_shorthand( QStringList shorthandList, QString si
 
   QStringList sidebarSplit = sidebar_text.split( QRegularExpression( ":::.+:::" ), QString::SkipEmptyParts );
 
-  assert( sidebarSplit.size() == 3 );
+  assert( sidebarSplit.size() == 2 );
 
   QStringList abilityList = sidebarSplit[ 0 ].split( "\n", QString::SkipEmptyParts );
-  QStringList buffList = sidebarSplit[ 1 ].split( "\n", QString::SkipEmptyParts );
-  QStringList optionsList = sidebarSplit[ 2 ].split( "\n", QString::SkipEmptyParts );
+  QStringList optionsList = sidebarSplit[ 1 ].split( "\n", QString::SkipEmptyParts );
 
   typedef std::vector<std::pair<QString, QString> > shorthandTable;
   shorthandTable abilityTable;
-  shorthandTable operandTable;
   shorthandTable optionsTable;
 
   // Construct the table for ability conversions
@@ -477,14 +475,6 @@ QStringList automation::convert_shorthand( QStringList shorthandList, QString si
     QStringList parts = splitOnFirst( abilityList[ i ], "=" );
     if ( parts.size() > 1 )
       abilityTable.push_back( std::make_pair( parts[ 0 ], parts[ 1 ] ) );
-  }
-
-  // Construct the table for buff conversions
-  for ( int i = 0; i < buffList.size(); i++ )
-  {
-    QStringList parts = splitOnFirst( buffList[ i ], "=" );
-    if ( parts.size() > 1 )
-      operandTable.push_back( std::make_pair( parts[ 0 ], parts[ 1 ] ) );
   }
 
   // Construct the table for option conversions
@@ -598,7 +588,7 @@ QStringList automation::convert_shorthand( QStringList shorthandList, QString si
           // if we have an operand, look it up in the table and perform the replacement
           if ( operand.length() > 0 )
           {
-            shorthandTable::iterator o = std::find_if( operandTable.begin(), operandTable.end(), comp( operand ) );
+            shorthandTable::iterator o = std::find_if( abilityTable.begin(), abilityTable.end(), comp( operand ) );
             QString operand_string = o -> second;
             if ( optionsBreakdown[ j ].contains( "$operand_name" ) )
               optionsBreakdown[ j ].replace( "$operand_name", operand_string );
@@ -679,289 +669,226 @@ void SC_ImportTab::setSpecDropDown( const int player_class )
     choice.player_spec -> addItem( classSpecText[ player_class ][ 4 ] );
 }
 
-QString defaultOptions = "CD=cooldown.$ability_name.remains\nCD#=cooldown.$ability_name.remains<#\nE=target.health.pct<=20\nNT=!ticking\nNF=target.debuff.flying.down\nDoT=dot.$ability_name.ticking\nT#=active_enemies>=#\nW#=/wait,sec=cooldown.$ability_name.remains,if=cooldown.$ability_name.remains<=#\n\n";
-QString defaultBuffOptions = "Operator shorthands:\nBU=buff.$operand_name.up\nBA=buff.$operand_name.react\nBR=buff.$operand_name.remains\nBR#=buff.$operand_name.remains<#\nT=talent.$operand_name.enabled\nG=glyph.$operand_name.enabled\n\n";
+QString defaultOptions = "AE#=active_enemies>=#\nE=target.health.pct<=20\nNT=!ticking\nNF=target.debuff.flying.down\nW#=/wait,sec=cooldown.$ability_name.remains,if=cooldown.$ability_name.remains<=#\n\n";
+QString defaultOperators = "Operator shorthands:\nBU=buff.$operand_name.up\nBA=buff.$operand_name.react\nBR=buff.$operand_name.remains\nBR#=buff.$operand_name.remains>#\nCD=cooldown.$operand_name.remains\nCD#=cooldown.$operand_name.remains>#\nDT=dot.$operand_name.ticking\nT=talent.$operand_name.enabled\nG=glyph.$operand_name.enabled\n\n";
 
 // constant for sidebar text (this will eventually get really long)
 QString sidebarText[ 11 ][ 4 ] = {
   { // DEATHKNIGHT Shorthand Declaration
-    ":::Abilities:::\nAMS=Anti Magic Shell\nAotD=Army of the Dead\nBP=Blood Plague\nCoI=Chains of Ice\nDSim=Dark Simulacrum\nDnD=Death and Decay\nDC=Death Coil\nDG=Death Grip\nDS=Death Strike\nERW=Empower Rune Weapon\nFF=Frost Fever\nHoW=Horn of Winter\nIBF=Icebound Fortitude\nIT=Icy Touch\nMF=Mind Freeze\nOB=Outbreak\nPS=Plague Strike\nSR=Soul Reaper\nPest=Pestilence\nAMZ=Anti Magic Zone\nBT=Blood Tap\nBoS=Breath of Sindragosa\nDP=Death Pact\nDSi=Death Siphon\nGG=Gorefiend's Grasp\nNP=Necrotic Plague\nPL=Plague Leech\nRC=Runic Corruption\nRE=Runic Empowerment\nUB=Unholy Blight\nRW=Remorseless Winter\nDesG=Desecrated Ground\nPATH=Path of Frost\nDef=Defile\n\n"
+    ":::Abilities, Buffs, Glyphs, and Talents:::\nAMS=Anti Magic Shell\nAotD=Army of the Dead\nBP=Blood Plague\nCoI=Chains of Ice\nDSim=Dark Simulacrum\nDnD=Death and Decay\nDC=Death Coil\nDG=Death Grip\nDS=Death Strike\nERW=Empower Rune Weapon\nFF=Frost Fever\nHoW=Horn of Winter\nIBF=Icebound Fortitude\nIT=Icy Touch\nMF=Mind Freeze\nOB=Outbreak\nPS=Plague Strike\nSR=Soul Reaper\nPest=Pestilence\nAMZ=Anti Magic Zone\nBT=Blood Tap\nBoS=Breath of Sindragosa\nDP=Death Pact\nDSi=Death Siphon\nGG=Gorefiend's Grasp\nNP=Necrotic Plague\nPL=Plague Leech\nRC=Runic Corruption\nRE=Runic Empowerment\nUB=Unholy Blight\nRW=Remorseless Winter\nDesG=Desecrated Ground\nPATH=Path of Frost\nDef=Defile\n\n"
     "BPres=Blood Presence\nBS=Bone Shield\nDRW=Dancing Rune Weapon\nSoB=Scent of Blood\nVamp=Vampiric Blood\nWotN=Will of the Necropolis\n"
-    "Additional ability shorthands can be added here."
-    "\n\n:::Buff/Glyph/Talent Shorhands:::\n" 
-    "Additional buff, glyph, and talent shorthands can be added here"
+    "Additional ability, buff, glyph, and talent shorthands can be added here"
     "\n\n:::Options:::\n" + defaultOptions +
-    "Additional option shorthands can be added here\n\n" + defaultBuffOptions,
+    "Additional option shorthands can be added here\n\n" + defaultOperators,
 
-    ":::Abilities:::\nAMS=Anti Magic Shell\nAotD=Army of the Dead\nBP=Blood Plague\nCoI=Chains of Ice\nDSim=Dark Simulacrum\nDnD=Death and Decay\nDC=Death Coil\nDG=Death Grip\nDS=Death Strike\nERW=Empower Rune Weapon\nFF=Frost Fever\nHoW=Horn of Winter\nIBF=Icebound Fortitude\nIT=Icy Touch\nMF=Mind Freeze\nOB=Outbreak\nPS=Plague Strike\nSR=Soul Reaper\nPest=Pestilence\nAMZ=Anti Magic Zone\nBT=Blood Tap\nBoS=Breath of Sindragosa\nDP=Death Pact\nDSi=Death Siphon\nGG=Gorefiend's Grasp\nNP=Necrotic Plague\nPL=Plague Leech\nRC=Runic Corruption\nRE=Runic Empowerment\nUB=Unholy Blight\nRW=Remorseless Winter\nDesG=Desecrated Ground\nPATH=Path of Frost\nDef=Defile\n\n"
-   "FPres=Frost Presence\nFS=Frost Strike\nHB=Howling Blast\nKM=Killing Machine\nOblit=Obliterate\nPoF=Pillar of Frost\n"
-   "Additional ability shorthands can be added here."
-   "\n\n:::Buff/Glyph/Talent Shorhands:::\n" 
-   "Additional buff, glyph, and talent shorthands can be added here"
+    ":::Abilities, Buffs, Glyphs, and Talents:::\nAMS=Anti Magic Shell\nAotD=Army of the Dead\nBP=Blood Plague\nCoI=Chains of Ice\nDSim=Dark Simulacrum\nDnD=Death and Decay\nDC=Death Coil\nDG=Death Grip\nDS=Death Strike\nERW=Empower Rune Weapon\nFF=Frost Fever\nHoW=Horn of Winter\nIBF=Icebound Fortitude\nIT=Icy Touch\nMF=Mind Freeze\nOB=Outbreak\nPS=Plague Strike\nSR=Soul Reaper\nPest=Pestilence\nAMZ=Anti Magic Zone\nBT=Blood Tap\nBoS=Breath of Sindragosa\nDP=Death Pact\nDSi=Death Siphon\nGG=Gorefiend's Grasp\nNP=Necrotic Plague\nPL=Plague Leech\nRC=Runic Corruption\nRE=Runic Empowerment\nUB=Unholy Blight\nRW=Remorseless Winter\nDesG=Desecrated Ground\nPATH=Path of Frost\nDef=Defile\n\n"
+    "FPres=Frost Presence\nFS=Frost Strike\nHB=Howling Blast\nKM=Killing Machine\nOblit=Obliterate\nPoF=Pillar of Frost\n"
+    "Additional ability, buff, glyph, and talent shorthands can be added here"
    "\n\n:::Options:::\n" + defaultOptions + 
-   "Additional option shorthands can be added here\n\n" + defaultBuffOptions,
+   "Additional option shorthands can be added here\n\n" + defaultOperators,
 
-    ":::Abilities:::\nAMS=Anti Magic Shell\nAotD=Army of the Dead\nBP=Blood Plague\nCoI=Chains of Ice\nDSim=Dark Simulacrum\nDnD=Death and Decay\nDC=Death Coil\nDG=Death Grip\nDS=Death Strike\nERW=Empower Rune Weapon\nFF=Frost Fever\nHoW=Horn of Winter\nIBF=Icebound Fortitude\nIT=Icy Touch\nMF=Mind Freeze\nOB=Outbreak\nPS=Plague Strike\nSR=Soul Reaper\nPest=Pestilence\nAMZ=Anti Magic Zone\nBT=Blood Tap\nBoS=Breath of Sindragosa\nDP=Death Pact\nDSi=Death Siphon\nGG=Gorefiend's Grasp\nNP=Necrotic Plague\nPL=Plague Leech\nRC=Runic Corruption\nRE=Runic Empowerment\nUB=Unholy Blight\nRW=Remorseless Winter\nDesG=Desecrated Ground\nPATH=Path of Frost\nDef=Defile\n\n"
-   "UPres=Unholy Presence\nDT=Dark Transformation\nFeS=Festering Strike\nSS=Scourge Strike\nSD=Sudden Doom\nGarg=Summon Gargoyle\n"
-   "Additional ability shorthands can be added here."
-   "\n\n:::Buff/Glyph/Talent Shorhands:::\n" 
-   "Additional buff, glyph, and talent shorthands can be added here"
+    ":::Abilities, Buffs, Glyphs, and Talents:::\nAMS=Anti Magic Shell\nAotD=Army of the Dead\nBP=Blood Plague\nCoI=Chains of Ice\nDSim=Dark Simulacrum\nDnD=Death and Decay\nDC=Death Coil\nDG=Death Grip\nDS=Death Strike\nERW=Empower Rune Weapon\nFF=Frost Fever\nHoW=Horn of Winter\nIBF=Icebound Fortitude\nIT=Icy Touch\nMF=Mind Freeze\nOB=Outbreak\nPS=Plague Strike\nSR=Soul Reaper\nPest=Pestilence\nAMZ=Anti Magic Zone\nBT=Blood Tap\nBoS=Breath of Sindragosa\nDP=Death Pact\nDSi=Death Siphon\nGG=Gorefiend's Grasp\nNP=Necrotic Plague\nPL=Plague Leech\nRC=Runic Corruption\nRE=Runic Empowerment\nUB=Unholy Blight\nRW=Remorseless Winter\nDesG=Desecrated Ground\nPATH=Path of Frost\nDef=Defile\n\n"
+    "UPres=Unholy Presence\nDT=Dark Transformation\nFeS=Festering Strike\nSS=Scourge Strike\nSD=Sudden Doom\nGarg=Summon Gargoyle\n"
+    "Additional ability, buff, glyph, and talent shorthands can be added here"
    "\n\n:::Options:::\n" + defaultOptions + 
-   "Additional option shorthands can be added here\n\n" + defaultBuffOptions,
+   "Additional option shorthands can be added here\n\n" + defaultOperators,
    
     "N/A"
   },
 
   { // DRUID Shorthand Declaration
-    ":::Abilities:::\n" 
-    "Additional ability shorthands can be added here."
-    "\n\n:::Buff/Glyph/Talent Shorhands:::\n" 
-    "Additional buff, glyph, and talent shorthands can be added here"
+    ":::Abilities, Buffs, Glyphs, and Talents:::\n" 
+    "Additional ability, buff, glyph, and talent shorthands can be added here"
     "\n\n:::Options:::\n" + defaultOptions + 
-    "Additional option shorthands can be added here\n\n" + defaultBuffOptions,
-
-    ":::Abilities:::\n" 
-    "Additional ability shorthands can be added here."
-    "\n\n:::Buff/Glyph/Talent Shorhands:::\n" 
-    "Additional buff, glyph, and talent shorthands can be added here"
-    "\n\n:::Options:::\n" + defaultOptions + 
-    "Additional option shorthands can be added here\n\n" + defaultBuffOptions,
-
-    ":::Abilities:::\n" 
-    "Additional ability shorthands can be added here."
-    "\n\n:::Buff/Glyph/Talent Shorhands:::\n" 
-    "Additional buff, glyph, and talent shorthands can be added here"
-    "\n\n:::Options:::\n" + defaultOptions + 
-    "Additional option shorthands can be added here\n\n" + defaultBuffOptions,
+    "Additional option shorthands can be added here\n\n" + defaultOperators,
     
-    ":::Abilities:::\n" 
-    "Additional ability shorthands can be added here."
-    "\n\n:::Buff/Glyph/Talent Shorhands:::\n" 
-    "Additional buff, glyph, and talent shorthands can be added here"
+    ":::Abilities, Buffs, Glyphs, and Talents:::\n" 
+    "Additional ability, buff, glyph, and talent shorthands can be added here"
     "\n\n:::Options:::\n" + defaultOptions + 
-    "Additional option shorthands can be added here\n\n" + defaultBuffOptions,
+    "Additional option shorthands can be added here\n\n" + defaultOperators,
+    
+    ":::Abilities, Buffs, Glyphs, and Talents:::\n" 
+    "Additional ability, buff, glyph, and talent shorthands can be added here"
+    "\n\n:::Options:::\n" + defaultOptions + 
+    "Additional option shorthands can be added here\n\n" + defaultOperators,
+    
+    ":::Abilities, Buffs, Glyphs, and Talents:::\n" 
+    "Additional ability, buff, glyph, and talent shorthands can be added here"
+    "\n\n:::Options:::\n" + defaultOptions + 
+    "Additional option shorthands can be added here\n\n" + defaultOperators,
   },
 
   { // HUNTER Shorthand Declaration
-    ":::Abilities:::\n" 
-    "Additional ability shorthands can be added here."
-    "\n\n:::Buff/Glyph/Talent Shorhands:::\n" 
-    "Additional buff, glyph, and talent shorthands can be added here"
+    ":::Abilities, Buffs, Glyphs, and Talents:::\n" 
+    "Additional ability, buff, glyph, and talent shorthands can be added here"
     "\n\n:::Options:::\n" + defaultOptions + 
-    "Additional option shorthands can be added here\n\n" + defaultBuffOptions,
+    "Additional option shorthands can be added here\n\n" + defaultOperators,
     
-    ":::Abilities:::\n" 
-    "Additional ability shorthands can be added here."
-    "\n\n:::Buff/Glyph/Talent Shorhands:::\n" 
-    "Additional buff, glyph, and talent shorthands can be added here"
+    ":::Abilities, Buffs, Glyphs, and Talents:::\n" 
+    "Additional ability, buff, glyph, and talent shorthands can be added here"
     "\n\n:::Options:::\n" + defaultOptions + 
-    "Additional option shorthands can be added here\n\n" + defaultBuffOptions,
+    "Additional option shorthands can be added here\n\n" + defaultOperators,
     
-    ":::Abilities:::\n" 
-    "Additional ability shorthands can be added here."
-    "\n\n:::Buff/Glyph/Talent Shorhands:::\n" 
-    "Additional buff, glyph, and talent shorthands can be added here"
+    ":::Abilities, Buffs, Glyphs, and Talents:::\n" 
+    "Additional ability, buff, glyph, and talent shorthands can be added here"
     "\n\n:::Options:::\n" + defaultOptions + 
-    "Additional option shorthands can be added here\n\n" + defaultBuffOptions,
+    "Additional option shorthands can be added here\n\n" + defaultOperators,
    
     "N/A"
   },
   
   { // MAGE Shorthand Declaration
-    ":::Abilities:::\n" 
-    "Additional ability shorthands can be added here."
-    "\n\n:::Buff/Glyph/Talent Shorhands:::\n" 
-    "Additional buff, glyph, and talent shorthands can be added here"
+    ":::Abilities, Buffs, Glyphs, and Talents:::\n" 
+    "Additional ability, buff, glyph, and talent shorthands can be added here"
     "\n\n:::Options:::\n" + defaultOptions + 
-    "Additional option shorthands can be added here\n\n" + defaultBuffOptions,
-    ":::Abilities:::\n" 
-    "Additional ability shorthands can be added here."
-    "\n\n:::Buff/Glyph/Talent Shorhands:::\n" 
-    "Additional buff, glyph, and talent shorthands can be added here"
+    "Additional option shorthands can be added here\n\n" + defaultOperators,
+    
+    ":::Abilities, Buffs, Glyphs, and Talents:::\n" 
+    "Additional ability, buff, glyph, and talent shorthands can be added here"
     "\n\n:::Options:::\n" + defaultOptions + 
-    "Additional option shorthands can be added here\n\n" + defaultBuffOptions,
-
-    ":::Abilities:::\n" 
-    "Additional ability shorthands can be added here."
-    "\n\n:::Buff/Glyph/Talent Shorhands:::\n" 
-    "Additional buff, glyph, and talent shorthands can be added here"
+    "Additional option shorthands can be added here\n\n" + defaultOperators,
+    
+    ":::Abilities, Buffs, Glyphs, and Talents:::\n" 
+    "Additional ability, buff, glyph, and talent shorthands can be added here"
     "\n\n:::Options:::\n" + defaultOptions + 
-    "Additional option shorthands can be added here\n\n" + defaultBuffOptions,
+    "Additional option shorthands can be added here\n\n" + defaultOperators,
    
     "N/A"
   },
   
   { // MONK Shorthand Declaration
-    ":::Abilities:::\n" 
-    "Additional ability shorthands can be added here."
-    "\n\n:::Buff/Glyph/Talent Shorhands:::\n" 
-    "Additional buff, glyph, and talent shorthands can be added here"
+    ":::Abilities, Buffs, Glyphs, and Talents:::\n" 
+    "Additional ability, buff, glyph, and talent shorthands can be added here"
     "\n\n:::Options:::\n" + defaultOptions + 
-    "Additional option shorthands can be added here\n\n" + defaultBuffOptions,
+    "Additional option shorthands can be added here\n\n" + defaultOperators,
     
-    ":::Abilities:::\n" 
-    "Additional ability shorthands can be added here."
-    "\n\n:::Buff/Glyph/Talent Shorhands:::\n" 
-    "Additional buff, glyph, and talent shorthands can be added here"
+    ":::Abilities, Buffs, Glyphs, and Talents:::\n" 
+    "Additional ability, buff, glyph, and talent shorthands can be added here"
     "\n\n:::Options:::\n" + defaultOptions + 
-    "Additional option shorthands can be added here\n\n" + defaultBuffOptions,
+    "Additional option shorthands can be added here\n\n" + defaultOperators,
     
-    ":::Abilities:::\n" 
-    "Additional ability shorthands can be added here."
-    "\n\n:::Buff/Glyph/Talent Shorhands:::\n" 
-    "Additional buff, glyph, and talent shorthands can be added here"
+    ":::Abilities, Buffs, Glyphs, and Talents:::\n" 
+    "Additional ability, buff, glyph, and talent shorthands can be added here"
     "\n\n:::Options:::\n" + defaultOptions + 
-    "Additional option shorthands can be added here\n\n" + defaultBuffOptions,
+    "Additional option shorthands can be added here\n\n" + defaultOperators,
    
     "N/A"
   },
 
   { // PALADIN Shorthand Declaration
-    ":::Abilities:::\n" 
-    "Additional ability shorthands can be added here."
-    "\n\n:::Buff/Glyph/Talent Shorhands:::\n" 
-    "Additional buff, glyph, and talent shorthands can be added here"
+    ":::Abilities, Buffs, Glyphs, and Talents:::\n" 
+    "Additional ability, buff, glyph, and talent shorthands can be added here"
     "\n\n:::Options:::\n" + defaultOptions + 
-    "Additional option shorthands can be added here\n\n" + defaultBuffOptions,
-
-    ":::Abilities:::\nAS=avengers_shield\nCons=consecration\nCS=crusader_strike\nEF=eternal_flame\nES=execution_sentence\nHotR=hammer_of_the_righteous\nHoW=hammer_of_wrath\nHPr=holy_prism\nHW=holy_wrath\nJ=judgment\nLH=lights_hammer\nSS=sacred_shield\nSoI=seal_of_insight\nSoR=seal_of_righteousness\nSoT=seal_of_truth\nSP=seraphim\nSotR=shield_of_the_righteous\nWoG=word_of_glory\n"
-    "Additional ability shorthands can be added here"
-    "\n\n:::Buff/Glyph/Talent Shorhands:::\n" "DP=divine_purpose\nGC=grand_crusader\nSP=seraphim\nSotR=shield_of_the_righteous\nSW=sanctified_wrath\n"
-    "Additional buff, glyph, and talent shorthands can be added here"
+    "Additional option shorthands can be added here\n\n" + defaultOperators,
+    
+    ":::Abilities, Buffs, Glyphs, and Talents:::\n"
+    "AS=avengers_shield\nCons=consecration\nCS=crusader_strike\nEF=eternal_flame\nES=execution_sentence\nHotR=hammer_of_the_righteous\nHoW=hammer_of_wrath\nHPr=holy_prism\nHW=holy_wrath\nJ=judgment\nLH=lights_hammer\nSS=sacred_shield\nSoI=seal_of_insight\nSoR=seal_of_righteousness\nSoT=seal_of_truth\nSP=seraphim\nSotR=shield_of_the_righteous\nWoG=word_of_glory\n\n"
+    "DP=divine_purpose\nGC=grand_crusader\nSP=seraphim\nSotR=shield_of_the_righteous\nSW=sanctified_wrath\n\n"
+    "Additional ability, buff, glyph, and talent shorthands can be added here"
     "\n\n:::Options:::\n" + defaultOptions + "HP=holy_power\nHP#=holy_power>=#\nFW=glyph.final_wrath.enabled&target.health.pct<=20\nEverything below this line is redundant with the buff syntax method, just here for ease of use\nDP=buff.divine_purpose.react\nSW=talent.sanctified_wrath.enabled\nSP=buff.seraphim.react\n\nGC=buff.grand_crusader.react\nGC#=buff.grand_crusader.remains<#\n"
-    "Additional option shorthands can be added here\n\n" + defaultBuffOptions,
+    "Additional option shorthands can be added here\n\n" + defaultOperators,
 
-    ":::Abilities:::\n" "AA=auto_attack\nCS=crusader_strike\nJ=judgment\nEXO=exorcism\nHotR=hammer_of_the_righteous\nHoW=hammer_of_wrath\nTV=templars_verdict\nFV=final_verdict\nDS=divine_storm\nES=execution_sentence\nHPr=holy_prism\nLH=lights_hammer\nSP=seraphim\nSoT=seal_of_truth\nSoR=seal_of_righteousness\nSoI=seal_of_insight\nAW=avenging_wrath\nHA=holy_avenger\n"
-    "Additional ability shorthands can be added here."
-    "\n\n:::Buff/Glyph/Talent Shorhands:::\n" "AW=avenging_wrath\nDP=divine_purpose\nHA=holy_avenger\nDC=divine_crusader\nSP=seraphim\nSW=sanctified_wrath\nDJ=double_jeopardy\n"
-    "Additional buff, glyph, and talent shorthands can be added here."
+    ":::Abilities, Buffs, Glyphs, and Talents:::\n"
+    "AA=auto_attack\nCS=crusader_strike\nJ=judgment\nEXO=exorcism\nHotR=hammer_of_the_righteous\nHoW=hammer_of_wrath\nTV=templars_verdict\nFV=final_verdict\nDS=divine_storm\nES=execution_sentence\nHPr=holy_prism\nLH=lights_hammer\nSP=seraphim\nSoT=seal_of_truth\nSoR=seal_of_righteousness\nSoI=seal_of_insight\nAW=avenging_wrath\nHA=holy_avenger\n\n"
+    "AW=avenging_wrath\nDP=divine_purpose\nHA=holy_avenger\nDC=divine_crusader\nSP=seraphim\nSW=sanctified_wrath\nDJ=double_jeopardy\n\n"
+    "Additional ability, buff, glyph, and talent shorthands can be added here"
     "\n\n:::Options:::\n" + defaultOptions + "HP#=holy_power>=#\nHPL#=holy_power<=#\n"
-    "Additional option shorthands can be added here\n\n" + defaultBuffOptions,
+    "Additional option shorthands can be added here\n\n" + defaultOperators,
     
     "N/A"
   },
 
   { // PRIEST Shorthand Declaration
-    ":::Abilities:::\n" 
-    "Additional ability shorthands can be added here."
-    "\n\n:::Buff/Glyph/Talent Shorhands:::\n" 
-    "Additional buff, glyph, and talent shorthands can be added here"
+    ":::Abilities, Buffs, Glyphs, and Talents:::\n" 
+    "Additional ability, buff, glyph, and talent shorthands can be added here"
     "\n\n:::Options:::\n" + defaultOptions + 
-    "Additional option shorthands can be added here\n\n" + defaultBuffOptions,
+    "Additional option shorthands can be added here\n\n" + defaultOperators,
     
-    ":::Abilities:::\n" 
-    "Additional ability shorthands can be added here."
-    "\n\n:::Buff/Glyph/Talent Shorhands:::\n" 
-    "Additional buff, glyph, and talent shorthands can be added here"
+    ":::Abilities, Buffs, Glyphs, and Talents:::\n" 
+    "Additional ability, buff, glyph, and talent shorthands can be added here"
     "\n\n:::Options:::\n" + defaultOptions + 
-    "Additional option shorthands can be added here\n\n" + defaultBuffOptions,
+    "Additional option shorthands can be added here\n\n" + defaultOperators,
     
-    ":::Abilities:::\n" 
-    "Additional ability shorthands can be added here."
-    "\n\n:::Buff/Glyph/Talent Shorhands:::\n" 
-    "Additional buff, glyph, and talent shorthands can be added here"
+    ":::Abilities, Buffs, Glyphs, and Talents:::\n" 
+    "Additional ability, buff, glyph, and talent shorthands can be added here"
     "\n\n:::Options:::\n" + defaultOptions + 
-    "Additional option shorthands can be added here\n\n" + defaultBuffOptions,
+    "Additional option shorthands can be added here\n\n" + defaultOperators,
    
     "N/A"
   },
 
   { // ROGUE Shorthand Declaration
-    ":::Abilities:::\n" 
-    "Additional ability shorthands can be added here."
-    "\n\n:::Buff/Glyph/Talent Shorhands:::\n" 
-    "Additional buff, glyph, and talent shorthands can be added here"
+    ":::Abilities, Buffs, Glyphs, and Talents:::\n" 
+    "Additional ability, buff, glyph, and talent shorthands can be added here"
     "\n\n:::Options:::\n" + defaultOptions + 
-    "Additional option shorthands can be added here\n\n" + defaultBuffOptions,
+    "Additional option shorthands can be added here\n\n" + defaultOperators,
     
-    ":::Abilities:::\n" 
-    "Additional ability shorthands can be added here."
-    "\n\n:::Buff/Glyph/Talent Shorhands:::\n" 
-    "Additional buff, glyph, and talent shorthands can be added here"
+    ":::Abilities, Buffs, Glyphs, and Talents:::\n" 
+    "Additional ability, buff, glyph, and talent shorthands can be added here"
     "\n\n:::Options:::\n" + defaultOptions + 
-    "Additional option shorthands can be added here\n\n" + defaultBuffOptions,
+    "Additional option shorthands can be added here\n\n" + defaultOperators,
     
-    ":::Abilities:::\n" 
-    "Additional ability shorthands can be added here."
-    "\n\n:::Buff/Glyph/Talent Shorhands:::\n" 
-    "Additional buff, glyph, and talent shorthands can be added here"
+    ":::Abilities, Buffs, Glyphs, and Talents:::\n" 
+    "Additional ability, buff, glyph, and talent shorthands can be added here"
     "\n\n:::Options:::\n" + defaultOptions + 
-    "Additional option shorthands can be added here\n\n" + defaultBuffOptions,
+    "Additional option shorthands can be added here\n\n" + defaultOperators,
    
     "N/A"
   },
 
   { // SHAMAN Shorthand Declaration
-    ":::Abilities:::\n" 
-    "Additional ability shorthands can be added here."
-    "\n\n:::Buff/Glyph/Talent Shorhands:::\n" 
-    "Additional buff, glyph, and talent shorthands can be added here"
+    ":::Abilities, Buffs, Glyphs, and Talents:::\n" 
+    "Additional ability, buff, glyph, and talent shorthands can be added here"
     "\n\n:::Options:::\n" + defaultOptions + 
-    "Additional option shorthands can be added here\n\n" + defaultBuffOptions,
+    "Additional option shorthands can be added here\n\n" + defaultOperators,
     
-    ":::Abilities:::\n" 
-    "Additional ability shorthands can be added here."
-    "\n\n:::Buff/Glyph/Talent Shorhands:::\n" 
-    "Additional buff, glyph, and talent shorthands can be added here"
+    ":::Abilities, Buffs, Glyphs, and Talents:::\n" 
+    "Additional ability, buff, glyph, and talent shorthands can be added here"
     "\n\n:::Options:::\n" + defaultOptions + 
-    "Additional option shorthands can be added here\n\n" + defaultBuffOptions,
+    "Additional option shorthands can be added here\n\n" + defaultOperators,
     
-    ":::Abilities:::\n" 
-    "Additional ability shorthands can be added here."
-    "\n\n:::Buff/Glyph/Talent Shorhands:::\n" 
-    "Additional buff, glyph, and talent shorthands can be added here"
+    ":::Abilities, Buffs, Glyphs, and Talents:::\n" 
+    "Additional ability, buff, glyph, and talent shorthands can be added here"
     "\n\n:::Options:::\n" + defaultOptions + 
-    "Additional option shorthands can be added here\n\n" + defaultBuffOptions,
+    "Additional option shorthands can be added here\n\n" + defaultOperators,
    
     "N/A"
   },
 
   { // WARLOCK Shorthand Declaration
-    ":::Abilities:::\n" 
-    "Additional ability shorthands can be added here."
-    "\n\n:::Buff/Glyph/Talent Shorhands:::\n" 
-    "Additional buff, glyph, and talent shorthands can be added here"
+    ":::Abilities, Buffs, Glyphs, and Talents:::\n" 
+    "Additional ability, buff, glyph, and talent shorthands can be added here"
     "\n\n:::Options:::\n" + defaultOptions + 
-    "Additional option shorthands can be added here\n\n" + defaultBuffOptions,
+    "Additional option shorthands can be added here\n\n" + defaultOperators,
     
-    ":::Abilities:::\n" 
-    "Additional ability shorthands can be added here."
-    "\n\n:::Buff/Glyph/Talent Shorhands:::\n" 
-    "Additional buff, glyph, and talent shorthands can be added here"
+    ":::Abilities, Buffs, Glyphs, and Talents:::\n" 
+    "Additional ability, buff, glyph, and talent shorthands can be added here"
     "\n\n:::Options:::\n" + defaultOptions + 
-    "Additional option shorthands can be added here\n\n" + defaultBuffOptions,
+    "Additional option shorthands can be added here\n\n" + defaultOperators,
     
-    ":::Abilities:::\n" 
-    "Additional ability shorthands can be added here."
-    "\n\n:::Buff/Glyph/Talent Shorhands:::\n" 
-    "Additional buff, glyph, and talent shorthands can be added here"
+    ":::Abilities, Buffs, Glyphs, and Talents:::\n" 
+    "Additional ability, buff, glyph, and talent shorthands can be added here"
     "\n\n:::Options:::\n" + defaultOptions + 
-    "Additional option shorthands can be added here\n\n" + defaultBuffOptions,
+    "Additional option shorthands can be added here\n\n" + defaultOperators,
    
     "N/A"
   },
 
   { // WARRIOR Shorthand Declaration
-    ":::Abilities:::\n" 
-    "Additional ability shorthands can be added here."
-    "\n\n:::Buff/Glyph/Talent Shorhands:::\n" 
-    "Additional buff, glyph, and talent shorthands can be added here"
+    ":::Abilities, Buffs, Glyphs, and Talents:::\n" 
+    "Additional ability, buff, glyph, and talent shorthands can be added here"
     "\n\n:::Options:::\n" + defaultOptions + 
-    "Additional option shorthands can be added here\n\n" + defaultBuffOptions,
+    "Additional option shorthands can be added here\n\n" + defaultOperators,
     
-    ":::Abilities:::\n" 
-    "Additional ability shorthands can be added here."
-    "\n\n:::Buff/Glyph/Talent Shorhands:::\n" 
-    "Additional buff, glyph, and talent shorthands can be added here"
+    ":::Abilities, Buffs, Glyphs, and Talents:::\n" 
+    "Additional ability, buff, glyph, and talent shorthands can be added here"
     "\n\n:::Options:::\n" + defaultOptions + 
-    "Additional option shorthands can be added here\n\n" + defaultBuffOptions,
+    "Additional option shorthands can be added here\n\n" + defaultOperators,
     
-    ":::Abilities:::\n" 
-    "Additional ability shorthands can be added here."
-    "\n\n:::Buff/Glyph/Talent Shorhands:::\n" 
-    "Additional buff, glyph, and talent shorthands can be added here"
+    ":::Abilities, Buffs, Glyphs, and Talents:::\n" 
+    "Additional ability, buff, glyph, and talent shorthands can be added here"
     "\n\n:::Options:::\n" + defaultOptions + 
-    "Additional option shorthands can be added here\n\n" + defaultBuffOptions,
+    "Additional option shorthands can be added here\n\n" + defaultOperators,
    
     "N/A"
   },
@@ -1108,7 +1035,7 @@ void SC_ImportTab::createTooltips()
   QString sidebarTooltip = "This box specifies the abbreviations used in rotation shorthands.\n"
                            "You may define custom abbreviations by adding your own entries to the appropriate section.\n\n"
                            "For options, the pound sign \"#\" can be used to support a numeric argument and \"$ability_name\" will automatically be replaced with the name of the ability to which the option is being applied.\n"
-                           "Example: The definition \"CD#=cooldown.$ability_name.remains<#\" causes \"CS+CD3\" to translate to \"crusader_strike,if=cooldown.crusader_strike.remains<3\".\n\n"
+                           "Example: The definition \"AD#=active_dot.$ability_name=#\" causes \"NT+AD0\" to translate to \"nether_tempest,if=active_dot.nether_tempest=0\" (given NT=nether_tempest).\n\n"
                            "The \"W#\" option is special since it adds an extra APL entry; W# should be the only option or should be separated from other options like so: (DP&!FW)W3\n\n"
                            "For maximum flexibility, there are also some operator shorthands for buffs, talents and glyphs. These work as a function on the preceding abbreviation, using a period as an operator.\n"
                            "Example: since \"BA=buff.$operand_name.up\", \"FV+DP.BA\" would translate to \"final_verdict,if=buff.divine_purpose.up\"\n\n"
