@@ -19,7 +19,6 @@ struct elixir_data_t
   elixir_type_e type;
   stat_e st;
   int stat_amount;
-  int mixology_stat_amount;
 };
 
 const elixir_data_t elixir_data[] =
@@ -394,7 +393,7 @@ struct elixir_t : public action_t
     }
     else
     {
-      double amount = ( player  -> profession[ PROF_ALCHEMY ] > 50 ) ? data -> mixology_stat_amount : data -> stat_amount;
+      double amount = data -> stat_amount;
       buff = stat_buff_creator_t( player, data -> name + "_elixir" )
              .duration( timespan_t::from_seconds( 60 * 60 ) ) // 1hr
              .add_stat( data -> st, amount );
