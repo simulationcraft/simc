@@ -984,20 +984,15 @@ const char* util::flask_type_string( flask_e flask )
     case FLASK_SPRING_BLOSSOMS:                         return "spring_blossoms";
     case FLASK_CRYSTAL_OF_INSANITY:                     return "crystal_of_insanity";
       // wod
-    case FLASK_DRAENOR_ARMOR_FLASK:                     return "draenor_armor_flask";
-    case FLASK_DRAENIC_CRITICAL_STRIKE_FLASK:           return "draenic_critical_strike_flask";
-    case FLASK_DRAENIC_HASTE_FLASK:                     return "draenic_haste_flask";
-    case FLASK_DRAENIC_MASTERY_FLASK:                   return "draenic_mastery_flask";
-    case FLASK_DRAENIC_MULTISTRIKE_FLASK:               return "draenic_multistrike_flask";
-    case FLASK_DRAENOR_SPIRIT_FLASK:                    return "draenor_spirit_flask";
+    case FLASK_DRAENOR_ARMOR_FLASK:                     return "draenor_armor_flask"; //Might be removed, not 100% sure. 8-28-14
+    case FLASK_DRAENIC_STRENGTH_FLASK:                  return "draenic_strength_flask";
+    case FLASK_DRAENIC_INTELLECT_FLASK:                 return "draenic_intellect_flask";
+    case FLASK_DRAENIC_AGILITY_FLASK:                   return "draenic_agility_flask";
     case FLASK_DRAENIC_STAMINA_FLASK:                   return "draenic_stamina_flask";
-    case FLASK_DRAENIC_VERSATILITY_FLASK:               return "draenic_versatility_flask";
-    case FLASK_GREATER_DRAENIC_CRITICAL_STRIKE_FLASK:   return "greater_draenic_critical_strike_flask";
-    case FLASK_GREATER_DRAENIC_HASTE_FLASK:             return "greater_draenic_haste_flask";
-    case FLASK_GREATER_DRAENIC_MASTERY_FLASK:           return "greater_draenic_mastery_flask";
-    case FLASK_GREATER_DRAENIC_MULTISTRIKE_FLASK:       return "greater_draenic_multistrike_flask";
+    case FLASK_GREATER_DRAENIC_STRENGTH_FLASK:          return "greater_draenic_strength_flask";
+    case FLASK_GREATER_DRAENIC_INTELLECT_FLASK:         return "greater_draenic_intellect_flask";
+    case FLASK_GREATER_DRAENIC_AGILITY_FLASK:           return "greater_draenic_agility_flask";
     case FLASK_GREATER_DRAENIC_STAMINA_FLASK:           return "greater_draenic_stamina_flask";
-    case FLASK_GREATER_DRAENIC_VERSATILITY_FLASK:       return "greater_draenic_versatility_flask";
       // alchemist's
     case FLASK_ALCHEMISTS:                              return "alchemists";
     default:                                            return "unknown";
