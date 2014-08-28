@@ -19,19 +19,7 @@ namespace /* ANONYMOUS NAMESPACE */
  * item_enchantment_data_t structs in sc_item_data.inc.
  */
 static const enchant_db_item_t __enchant_db[] = {
-  /* Engineering tinkers */
-  { "synapse_springs_2",       4898 }, /* Default is "synapse_springs_mark_ii" */
 
-  /* Tailoring cloak enchants */
-  { "lightweave_1",            3722 },
-  { "lightweave_2",            4115 },
-  { "lightweave_3",            4892 },
-  { "darkglow_1",              3728 },
-  { "darkglow_2",              4116 },
-  { "darkglow_3",              4893 },
-  { "swordguard_1",            3730 },
-  { "swordguard_2",            4118 },
-  { "swordguard_3",            4894 },
   { 0,                         0    }
 };
 
