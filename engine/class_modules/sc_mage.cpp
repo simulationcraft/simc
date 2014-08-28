@@ -3138,39 +3138,19 @@ struct mage_armor_t : public mage_spell_t
  */
 
 // Specifying the DoT compoents
-struct meteor_burn_t : public mage_spell_t
-{
-  meteor_burn_t( mage_t* p ) :
-    mage_spell_t( "meteor_burn", p, p -> find_spell( 155158 ) )
-  {
-    background = true;
-    dot_duration = timespan_t::from_seconds( 8.0 );
-    spell_power_mod.tick = p -> find_spell( 155158 ) -> effectN( 1 ).sp_coeff();
-    base_tick_time = p -> find_spell( 155158 ) -> effectN( 1 ).period();
-    hasted_ticks = false;
-    may_crit = true;
-    may_miss = false;
-    dynamic_tick_action = false;
-    aoe = -1;
-    cooldown -> duration = timespan_t::from_seconds( 0.0 );
-  }
-};
-
 
 struct meteor_impact_t : public mage_spell_t
 {
-  meteor_burn_t* meteor_burn;
-
   meteor_impact_t( mage_t* p ) :
-    mage_spell_t( "meteor_impact", p ),
-    meteor_burn( new meteor_burn_t( p ) )
+    mage_spell_t( "meteor_burn", p )
   {
     // Sp_Coeff is stored in 153564 for the impact
+    parse_spell_data( *p -> dbc.spell( 155158 ) );
     spell_power_mod.direct = p -> find_spell( 153564 ) -> effectN( 1 ).sp_coeff();
-    background = true;
-    split_aoe_damage = true;
+    dot_duration = timespan_t::from_seconds( 8.0 );
+    hasted_ticks = may_miss = false;
+    may_crit = tick_may_crit = split_aoe_damage = dual = true;
     aoe = -1;
-    cooldown -> duration = timespan_t::from_seconds( 0.0 );
     school = SCHOOL_FIRE;
   }
 
@@ -3182,11 +3162,9 @@ struct meteor_impact_t : public mage_spell_t
     mage_spell_t::impact( s );
     if ( result_is_hit( s -> result) || result_is_multistrike( s -> result) )
       trigger_ignite( s );
-    
-    meteor_burn -> execute();
-
   }
 };
+
 struct meteor_t : public mage_spell_t
 {
   meteor_impact_t* meteor_impact;
@@ -3196,13 +3174,15 @@ struct meteor_t : public mage_spell_t
     meteor_impact( new meteor_impact_t( p ) )
   {
     parse_options( NULL, options_str );
-    harmful = false;
-    dot_duration = timespan_t::from_seconds( 0.0 );
+    callbacks = false;
+    add_child( meteor_impact );
+    dot_duration = timespan_t::zero();
+    school = SCHOOL_FIRE;
   }
   virtual timespan_t travel_time() const
   { return timespan_t::from_seconds( ( 3 * p() ->  composite_spell_haste() ) - 1.0 ); }
 
-  virtual void impact( action_state_t* s )
+  void impact( action_state_t* s )
   {
     mage_spell_t::impact( s );
     meteor_impact -> execute();
