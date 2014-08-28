@@ -24,8 +24,8 @@ struct elixir_data_t
 const elixir_data_t elixir_data[] =
 {
   // mop
-  { "mantid", ELIXIR_GUARDIAN, STAT_BONUS_ARMOR, 256, 2730 },
-  { "mad_hozen", ELIXIR_BATTLE, STAT_CRIT_RATING, 85, 990 },
+  { "mantid", ELIXIR_GUARDIAN, STAT_BONUS_ARMOR, 256 },
+  { "mad_hozen", ELIXIR_BATTLE, STAT_CRIT_RATING, 85 },
 };
 
 struct food_data_t
