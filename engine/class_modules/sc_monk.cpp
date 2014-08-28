@@ -153,6 +153,7 @@ public:
     proc_t* tier15_2pc_melee;
     proc_t* tier15_4pc_melee;
     proc_t* tigereye_brew;
+    proc_t* tigereye_brew_wasted;
   } proc;
 
   struct talents_t
@@ -704,16 +705,19 @@ public:
 
     if ( p() -> spec.brewing_tigereye_brew -> ok() )
     {
-      p() -> buff.tigereye_brew -> trigger( stacks );
       if ( stacks > 0 )
       {
+        int count = stacks;
         do
         {
           p() -> proc.tigereye_brew -> occur();
-          stacks--;
+          if ( p() -> buff.tigereye_brew -> current_stack + count > p() -> buff.tigereye_brew -> max_stack() )
+            p() -> proc.tigereye_brew_wasted -> occur();
+          count--;
         }
-        while ( stacks > 0 );
+        while ( count > 0 );
       }
+      p() -> buff.tigereye_brew -> trigger( stacks );
     }
     else if ( p() -> spec.brewing_elusive_brew -> ok() )
       p() -> buff.elusive_brew_stacks -> trigger( stacks );
@@ -3291,6 +3295,7 @@ void monk_t::init_procs()
   proc.tier15_2pc_melee = get_proc( "tier15_2pc" );
   proc.tier15_4pc_melee = get_proc( "tier15_4pc" );
   proc.tigereye_brew = get_proc( "tigereye_brew" );
+  proc.tigereye_brew_wasted = get_proc( "tigereye_brew_wasted" );
 }
 
 // monk_t::reset ============================================================
