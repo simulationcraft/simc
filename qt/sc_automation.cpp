@@ -468,7 +468,7 @@ QStringList automation::convert_shorthand( QStringList shorthandList, QString si
 
   typedef std::vector<std::pair<QString, QString> > shorthandTable;
   shorthandTable abilityTable;
-  shorthandTable buffTable;
+  shorthandTable operandTable;
   shorthandTable optionsTable;
 
   // Construct the table for ability conversions
@@ -484,7 +484,7 @@ QStringList automation::convert_shorthand( QStringList shorthandList, QString si
   {
     QStringList parts = splitOnFirst( buffList[ i ], "=" );
     if ( parts.size() > 1 )
-      buffTable.push_back( std::make_pair( parts[ 0 ], parts[ 1 ] ) );
+      operandTable.push_back( std::make_pair( parts[ 0 ], parts[ 1 ] ) );
   }
 
   // Construct the table for option conversions
@@ -539,77 +539,69 @@ QStringList automation::convert_shorthand( QStringList shorthandList, QString si
           if ( optionsBreakdown[ j ].contains( QRegularExpression( "[&|\\(\\)\\!\\+\\-\\>\\<\\=\\*/]+" ) ) )
             continue;
 
-          QStringList captures;
-          bool buffbehaviour = true;
+          // otherwise, use regular expressions to determine the syntax and split into components
           QRegularExpressionMatch match;
+          QString operand;
+          QString operation;
+          QString numeric;
 
-          // Checking for buff behaviour can be done by using a "." between the buffname and the buffbehaviour
-          // (e.g. "DP.BA" which equals: buff.divine_purpose.react (DP = shorthand for "divine_purpose"))
+          // Checking for operand syntax: Operand.Operator[#] (e.g. DP.BA or DP.BR3)
           QRegularExpression rxb( "(\\D+)(\\.)(\\D+)(\\d*\\.?\\d*)" );
-
           match = rxb.match( optionsBreakdown[ j ] );
           if ( match.hasMatch() )
           {
-            captures = match.capturedTexts();
+            // captures[ 0 ] is the whole string, captures[ 1 ] is the first match, captures[ 2 ] is the second match, etc.
+            QStringList captures = match.capturedTexts();
 
-            if ( captures[ 4 ].length() == 0 )
+            // split into components
+            operand =   captures[ 1 ];
+            operation = captures[ 3 ];
+            numeric =   captures[ 4 ];
+          }
+          // if that didn't work, check for simple option syntax: Option[#] (e.g. HP or HP3)
+          else
+          {
+            QRegularExpression rxw( "(\\D+)(\\d*\\.?\\d*)" );
+            match = rxw.match( optionsBreakdown[ j ] );
+            if ( match.hasMatch() )
             {
-              shorthandTable::iterator n = std::find_if( optionsTable.begin(), optionsTable.end(), comp( captures[ 3 ] ) );
-              if ( n != optionsTable.end() )
-              {
-                optionsBreakdown[ j ] = n->second;
-              }
+              // captures[ 0 ] is the whole string, captures[ 1 ] is the first match, captures[ 2 ] is the second match, etc.
+              QStringList captures = match.capturedTexts();
+
+              // split into components
+              operation = captures[ 1 ];
+              numeric =   captures[ 2 ];
             }
+            // if we don't have a match by this point, give up
             else
-            {
-              shorthandTable::iterator n = std::find_if( optionsTable.begin(), optionsTable.end(), comp( captures[ 3 ] + "#" ) );
-              if ( n != optionsTable.end() )
-              {
-                optionsBreakdown[ j ] = n->second.replace( "#", captures[ 4 ] );
-              }
-            }
-            shorthandTable::iterator o = std::find_if( buffTable.begin(), buffTable.end(), comp( captures[ 1 ] ) );
-            QString buff = o->second;
+              continue;
+          }
+
+          // now go to work on the components we have
+
+          // first, construct the option from the operation and the numeric
+          QString option;
+          if ( numeric.length() == 0 )
+            option = operation;
+          else
+            option = operation + "#";
+
+          //now look for that operation in the table
+          shorthandTable::iterator n = std::find_if( optionsTable.begin(), optionsTable.end(), comp( option ) );
+          if ( n != optionsTable.end() )
+            optionsBreakdown[ j ] = n -> second;
+
+          // replace the # sign with the numeric value if necessary
+          if ( numeric.length() > 0 )
+            optionsBreakdown[ j ].replace( "#", numeric );
+
+          // if we have an operand, look it up in the table and perform the replacement
+          if ( operand.length() > 0 )
+          {
+            shorthandTable::iterator o = std::find_if( operandTable.begin(), operandTable.end(), comp( operand ) );
+            QString operand_string = o -> second;
             if ( optionsBreakdown[ j ].contains( "$operand_name" ) )
-            {
-              optionsBreakdown[ j ].replace( "$operand_name", buff );
-            }
-            continue;
-          }
-
-          // Each option can have a text part and a numeric part (e.g. W3). We need to split that up using regular expressions
-          // captures[ 0 ] is the whole string, captures[ 1 ] is the first match (e.g. "W"), captures[ 2 ] is the second match (e.g. "3")
-          QRegularExpression rxw( "(\\D+)(\\d*\\.?\\d*)" );
-          match = rxw.match( optionsBreakdown[ j ] );
-          if ( match.hasMatch() )
-          {
-            captures = match.capturedTexts();
-          }
-          else
-          {
-            continue;
-          }
-
-          // old QRegExp code just in case
-          /*
-          QRegExp rx( "(\\D+)(\\d*\\.?\\d*)" );
-          int pos = rx.indexIn( optionsBreakdown[ j ] );
-          QStringList captures = rx.capturedTexts();'
-          */
-
-          // if we have just a text component, it's fairly easy
-          if ( captures[ 2 ].length() == 0 )
-          {
-            shorthandTable::iterator m = std::find_if( optionsTable.begin(), optionsTable.end(), comp( captures[ 1 ] ) );
-            if ( m != optionsTable.end() )
-              optionsBreakdown[ j ] = m -> second;
-          }
-          // otherwise we need to do some trickery with numbers. Search for "W#" in the table and replace, then replace # with our number (e.g. "3")
-          else
-          {
-            shorthandTable::iterator m = std::find_if( optionsTable.begin(), optionsTable.end(), comp( captures[ 1 ] + "#" ) );
-            if ( m != optionsTable.end() )
-              optionsBreakdown[ j ] = m -> second.replace( "#", captures[ 2 ] );
+              optionsBreakdown[ j ].replace( "$operand_name", operand_string );
           }
 
           // we also need to do some replacements on $ability_name entries
