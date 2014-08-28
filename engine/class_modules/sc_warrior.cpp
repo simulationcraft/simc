@@ -471,11 +471,12 @@ public:
   virtual double    passive_movement_modifier() const;
   virtual double    temporary_movement_modifier() const;
 
-  void              apl_precombat();
+  void              apl_precombat(bool);
   void              apl_default();
   void              apl_fury();
   void              apl_arms();
   void              apl_prot();
+  void              apl_glad();
   virtual void      init_action_list();
 
   virtual action_t* create_action( const std::string& name, const std::string& options );
@@ -3862,7 +3863,7 @@ void warrior_t::init_base_stats()
 
 //Pre-combat Action Priority List============================================
 
-void warrior_t::apl_precombat()
+void warrior_t::apl_precombat( bool probablynotgladiator )
 {
   action_priority_list_t* precombat = get_action_priority_list( "precombat" );
 
@@ -3870,7 +3871,7 @@ void warrior_t::apl_precombat()
   if ( sim -> allow_flasks && level >= 80 )
   {
     std::string flask_action = "flask,type=";
-    if ( primary_role() == ROLE_ATTACK )
+    if ( primary_role() == ROLE_ATTACK || !probablynotgladiator )
       flask_action += "greater_draenic_strength_flask";
     else if ( primary_role() == ROLE_TANK )
       flask_action += "greater_draenic_stamina_flask";
@@ -3881,7 +3882,7 @@ void warrior_t::apl_precombat()
   if ( sim -> allow_food )
   {
     std::string food_action = "food,type=";
-    if ( level >= 90 && specialization() != WARRIOR_PROTECTION )
+    if ( level >= 90 && ( specialization() != WARRIOR_PROTECTION || !probablynotgladiator ) )
       food_action += "blackrock_barbecue";
     else
       food_action += "nagrand_tempura";
@@ -3898,11 +3899,10 @@ void warrior_t::apl_precombat()
 
   if ( specialization() != WARRIOR_PROTECTION )
     precombat -> add_action( "stance,choose=battle" );
+  else if ( !probablynotgladiator )
+    precombat -> add_action( "stance,choose=gladiator" );
   else
-  {
-    //precombat -> add_action( "stance,choose=gladiator,if=talent.gladiators_resolve.enabled" );
     precombat -> add_action( "stance,choose=defensive" );
-  }
 
   precombat -> add_action( "snapshot_stats", "Snapshot raid buffed stats before combat begins and pre-potting is done." );
 
@@ -3911,7 +3911,7 @@ void warrior_t::apl_precombat()
   {
     if ( level >= 90 )
     {
-      if ( primary_role() == ROLE_ATTACK )
+      if ( primary_role() == ROLE_ATTACK || !probablynotgladiator )
         precombat -> add_action( "potion,name=draenic_strength" );
       else if ( primary_role() == ROLE_TANK )
         precombat -> add_action( "potion,name=draenic_armor" );
@@ -4101,9 +4101,9 @@ void warrior_t::apl_prot()
 {
   std::vector<std::string> racial_actions = get_racial_actions();
 
-  action_priority_list_t* default_list        = get_action_priority_list( "default" );
-  action_priority_list_t* prot                = get_action_priority_list( "prot" );
-  action_priority_list_t* prot_aoe            = get_action_priority_list( "prot_aoe" );
+  action_priority_list_t* default_list = get_action_priority_list( "default" );
+  action_priority_list_t* prot = get_action_priority_list( "prot" );
+  action_priority_list_t* prot_aoe = get_action_priority_list( "prot_aoe" );
 
   default_list -> add_action( this, "charge" );
   default_list -> add_action( "auto_attack" );
@@ -4116,8 +4116,8 @@ void warrior_t::apl_prot()
   }
   for ( size_t i = 0; i < racial_actions.size(); i++ )
     default_list -> add_action( racial_actions[i] + ",if=buff.bloodbath.up|buff.avatar.up" );
-    default_list -> add_action( this, "Berserker Rage", "if=buff.enrage.down" );
-    default_list -> add_action( "call_action_list,name=prot" );
+  default_list -> add_action( this, "Berserker Rage", "if=buff.enrage.down" );
+  default_list -> add_action( "call_action_list,name=prot" );
 
   //defensive
   prot -> add_action( this, "Shield Block", "if=!(debuff.demoralizing_shout.up|buff.ravager.up|buff.shield_wall.up|buff.last_stand.up|buff.enraged_regeneration.up|buff.shield_block.up|buff.draenic_armor_potion.up)|action.shield_block.charges_fractional>=2" );
@@ -4171,43 +4171,62 @@ void warrior_t::apl_prot()
 
 }
 
+// Gladiator Warrior Action Priority List ========================================
+
+void warrior_t::apl_glad()
+{
+  std::vector<std::string> racial_actions = get_racial_actions();
+
+  action_priority_list_t* default_list = get_action_priority_list( "default" );
+  action_priority_list_t* gladiator = get_action_priority_list( "gladiator" );
+  action_priority_list_t* gladiator_aoe = get_action_priority_list( "gladiator_aoe" );
+
+  default_list -> add_action( this, "charge" );
+  default_list -> add_action( "auto_attack" );
+  int num_items = (int)items.size();
+  for ( int i = 0; i < num_items; i++ )
+  {
+    if ( items[i].has_special_effect( SPECIAL_EFFECT_SOURCE_NONE, SPECIAL_EFFECT_USE ) )
+      default_list -> add_action( "use_item,name=" + items[i].name_str + ",if=buff.bloodbath.up|buff.avatar.up|buff.shield_charge.up|target.time_to_die<10" );
+  }
+  for ( size_t i = 0; i < racial_actions.size(); i++ )
+    default_list -> add_action( racial_actions[i] + ",if=buff.bloodbath.up|buff.avatar.up|buff.shield_charge.up|target.time_to_die<15" );
+  if ( sim -> allow_potions )
+    default_list -> add_action( "potion,name=draenic_strength,if=buff.bloodbath.up|buff.avatar.up|buff.shield_charge.up" );
+
+  default_list -> add_action( this, "Berserker Rage", "if=buff.enrage.down" );
+  default_list -> add_action( "call_action_list,name=gladiator,if=active_enemies<4" );
+  default_list -> add_action( "call_action_list,name=gladiator_aoe,if=active_enemies>3" );
+
+  gladiator -> add_action( "shield_charge,if=buff.shield_charge.down&cooldown.shield_slam.remains=0&(cooldown.bloodbath.remains>15|!talent.bloodbath.enabled)" );
+  gladiator -> add_action( this, "Heroic Strike", "if=buff.shield_charge.up|buff.ultimatum.up|rage>=90|target.time_to_die<=3|(talent.unyielding_strikes.enabled&buff.unyielding_strikes.max_stack)" );
+  gladiator -> add_talent( this, "Bloodbath" );
+  gladiator -> add_talent( this, "Avatar" );
+  gladiator -> add_action( this, "Heroic Leap", "if=(buff.bloodbath.up|cooldown.bloodbath.remains>10)|!talent.bloodbath.enabled" );
+  gladiator -> add_action( this, "Shield Slam" );
+  gladiator -> add_action( this, "Revenge" );
+  gladiator -> add_talent( this, "Storm Bolt", "if=(buff.bloodbath.up|cooldown.bloodbath.remains>7)|!talent.bloodbath.enabled" );
+  gladiator -> add_talent( this, "Dragon Roar", "if=(buff.bloodbath.up|cooldown.bloodbath.remains>10)|!talent.bloodbath.enabled" );
+  gladiator -> add_action( this, "Devastate", "if=cooldown.shield_slam.remains>gcd*0.4" );
+
+  gladiator_aoe -> add_talent( this, "Bloodbath" );
+  gladiator_aoe -> add_talent( this, "Avatar" );
+  gladiator_aoe -> add_action( "shield_charge,if=buff.shield_charge.down&cooldown.shield_slam.remains=0&(cooldown.bloodbath.remains>15|!talent.bloodbath.enabled)" );
+  gladiator_aoe -> add_action( this, "Thunder Clap", "if=!dot.deep_wounds.ticking" );
+  gladiator_aoe -> add_talent( this, "Bladestorm" );
+  gladiator_aoe -> add_action( this, "Heroic Strike", "if=buff.ultimatum.up|active_enemies<4|rage>110" );
+  gladiator_aoe -> add_action( this, "Heroic Leap", "if=(buff.bloodbath.up|cooldown.bloodbath.remains>5|!talent.bloodbath.enabled)" );
+  gladiator_aoe -> add_action( this, "Revenge" );
+  gladiator_aoe -> add_action( this, "Shield Slam" );
+  gladiator_aoe -> add_action( this, "Thunder Clap" );
+  gladiator_aoe -> add_talent( this, "Dragon Roar", "if=(buff.bloodbath.up|cooldown.bloodbath.remains>10)|!talent.bloodbath.enabled" );
+  gladiator_aoe -> add_talent( this, "Storm Bolt", "if=(buff.bloodbath.up|cooldown.bloodbath.remains>7)|!talent.bloodbath.enabled" );
+  gladiator_aoe -> add_action( this, "Devastate", "if=cooldown.shield_slam.remains>gcd*0.4" );
+
+}
+
 // NO Spec Combat Action Priority List
 
-/*
-
-action_priority_list_t* gladiator           = get_action_priority_list( "gladiator" );
-action_priority_list_t* gladiator_aoe       = get_action_priority_list( "gladiator_aoe" );
-
-default_list -> add_action( "call_action_list,name=gladiator,if=talent.gladiators_resolve.enabled" );
-if ( sim -> allow_potions )
-gladiator -> add_action( "potion,name=draenic_strength,if=buff.bloodbath.up|buff.avatar.up|buff.shield_charge.up" );
-
-gladiator -> add_action( "call_action_list,name=gladiator_aoe,if=active_enemies>3" );
-gladiator -> add_action( "shield_charge,if=buff.shield_charge.down&cooldown.shield_slam.remains=0&(cooldown.bloodbath.remains>15|!talent.bloodbath.enabled)" );
-gladiator -> add_action( this, "Heroic Strike", "if=buff.shield_charge.up|buff.ultimatum.up|rage>=90|target.time_to_die<=3|(talent.unyielding_strikes.enabled&buff.unyielding_strikes.max_stack)" );
-gladiator -> add_talent( this, "Bloodbath" );
-gladiator -> add_talent( this, "Avatar" );
-gladiator -> add_action( this, "Heroic Leap", "if=(buff.bloodbath.up|cooldown.bloodbath.remains>10)|!talent.bloodbath.enabled" );
-gladiator -> add_action( this, "Shield Slam" );
-gladiator -> add_action( this, "Revenge" );
-gladiator -> add_talent( this, "Storm Bolt", "if=(buff.bloodbath.up|cooldown.bloodbath.remains>7)|!talent.bloodbath.enabled" );
-gladiator -> add_talent( this, "Dragon Roar", "if=(buff.bloodbath.up|cooldown.bloodbath.remains>10)|!talent.bloodbath.enabled" );
-gladiator -> add_action( this, "Devastate", "if=cooldown.shield_slam.remains>gcd*0.4" );
-
-gladiator_aoe -> add_talent( this, "Bloodbath" );
-gladiator_aoe -> add_talent( this, "Avatar" );
-gladiator_aoe -> add_action( "shield_charge,if=buff.shield_charge.down&cooldown.shield_slam.remains=0&(cooldown.bloodbath.remains>15|!talent.bloodbath.enabled)" );
-gladiator_aoe -> add_action( this, "Thunder Clap", "if=!dot.deep_wounds.ticking" );
-gladiator_aoe -> add_talent( this, "Bladestorm" );
-gladiator_aoe -> add_action( this, "Heroic Strike", "if=buff.ultimatum.up|active_enemies<4|rage>110" );
-gladiator_aoe -> add_action( this, "Heroic Leap", "if=(buff.bloodbath.up|cooldown.bloodbath.remains>5|!talent.bloodbath.enabled)" );
-gladiator_aoe -> add_action( this, "Revenge" );
-gladiator_aoe -> add_action( this, "Shield Slam" );
-gladiator_aoe -> add_action( this, "Thunder Clap" );
-gladiator_aoe -> add_talent( this, "Dragon Roar", "if=(buff.bloodbath.up|cooldown.bloodbath.remains>10)|!talent.bloodbath.enabled" );
-gladiator_aoe -> add_talent( this, "Storm Bolt", "if=(buff.bloodbath.up|cooldown.bloodbath.remains>7)|!talent.bloodbath.enabled" );
-gladiator_aoe -> add_action( this, "Devastate", "if=cooldown.shield_slam.remains>gcd*0.4" );
-*/
 void warrior_t::apl_default()
 {
   action_priority_list_t* default_list = get_action_priority_list( "default" );
@@ -4687,8 +4706,11 @@ void warrior_t::init_action_list()
     return;
   }
   clear_action_priority_lists();
+  bool probablynotgladiator = find_proc( "Mark of Blackrock" ); // Let's hope that non-gladiator protection warriors use the bonus armor weapon enchant.
+  if ( !talents.gladiators_resolve -> ok() || role == ROLE_TANK )
+    probablynotgladiator = true;
 
-  apl_precombat();
+  apl_precombat( probablynotgladiator );
 
   switch ( specialization() )
   {
@@ -4699,7 +4721,10 @@ void warrior_t::init_action_list()
     apl_arms();
     break;
   case WARRIOR_PROTECTION:
-    apl_prot();
+    if ( probablynotgladiator )
+      apl_prot();
+    else
+      apl_glad();
     break;
   default:
     apl_default(); // DEFAULT

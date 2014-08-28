@@ -104,7 +104,7 @@ finger1=shockwave_signet,id=113860,enchant=gift_of_critical_strike
 finger2=eye_of_tectus,id=113643,enchant=gift_of_critical_strike
 trinket1=primal_gladiators_badge_of_victory,id=111232
 trinket2=primal_gladiators_insignia_of_victory,id=111233
-main_hand=primal_gladiators_bonecracker,id=111200,enchant=mark_of_the_thunderlord
+main_hand=primal_gladiators_bonecracker,id=111200,enchant=mark_of_blackrock
 off_hand=primal_gladiators_shield_wall,id=111221
 save=Warrior_Protection_T17N.simc
 
