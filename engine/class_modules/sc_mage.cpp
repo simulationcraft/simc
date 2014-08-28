@@ -3122,26 +3122,10 @@ struct mage_armor_t : public mage_spell_t
 
 // Meteor Spell ========================================================
 
-/* Meteor is being handled using three differently spells.
-
-      "Meteor" is a driver spell that handles the haste modified falling time animation. 
-      When it hits the target, it's equivalent to 1second remaining in game for meteor to impact the ground.
-
-      "Meteor Impact" is the final 1second of meteor fall time. In game, meteor snapshots 1second before impact;
-      so this will snapshot at the correct time. The impact is treated as a single hit explosion.
-
-      "Meteor Burn" is the AoE DoT effect which "Meteor Impact" triggers upon impacting it's target.
-      Currently, it's only applied to one target and then pulses damage out of it at every tick.
-
-      TODO: Have a target list array built when "Meteor Impact" is cast. Impact() then goes through this array, 
-      applying a separate "Meteor Burn" to each target which "Meteor Impact" hit.
- */
-
-// Specifying the DoT compoents
-
 struct meteor_impact_t : public mage_spell_t
 {
-  meteor_impact_t( mage_t* p ) :
+  int targets_hit;
+  meteor_impact_t( mage_t* p, int targets ) :
     mage_spell_t( "meteor_burn", p )
   {
     // Sp_Coeff is stored in 153564 for the impact
@@ -3149,9 +3133,17 @@ struct meteor_impact_t : public mage_spell_t
     spell_power_mod.direct = p -> find_spell( 153564 ) -> effectN( 1 ).sp_coeff();
     dot_duration = timespan_t::from_seconds( 8.0 );
     hasted_ticks = may_miss = false;
+    targets_hit = targets;
     may_crit = tick_may_crit = split_aoe_damage = dual = true;
-    aoe = -1;
     school = SCHOOL_FIRE;
+  }
+
+  void execute()
+  {
+    aoe = targets_hit;
+    if ( targets_hit > 0 ) // aoe = 1 will hit 2 targets, subtract one to match.
+      --aoe;
+    mage_spell_t::execute();
   }
 
   virtual timespan_t travel_time() const
@@ -3168,17 +3160,24 @@ struct meteor_impact_t : public mage_spell_t
 struct meteor_t : public mage_spell_t
 {
   meteor_impact_t* meteor_impact;
-
+  int targets;
   meteor_t( mage_t* p, const std::string& options_str ) :
     mage_spell_t( "meteor", p, p -> find_talent_spell( "Meteor") ),
-    meteor_impact( new meteor_impact_t( p ) )
+    meteor_impact( new meteor_impact_t( p, targets ) ),
+    targets( -1 )
   {
-    parse_options( NULL, options_str );
+    option_t options[] =
+    {
+      opt_int( "targets", targets ),
+      opt_null()
+    };
+    parse_options( options, options_str );
     callbacks = false;
     add_child( meteor_impact );
     dot_duration = timespan_t::zero();
     school = SCHOOL_FIRE;
   }
+
   virtual timespan_t travel_time() const
   { return timespan_t::from_seconds( ( 3 * p() ->  composite_spell_haste() ) - 1.0 ); }
 
