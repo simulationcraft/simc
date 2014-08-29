@@ -3083,6 +3083,13 @@ struct elemental_blast_t : public shaman_spell_t
     shaman_spell_t::execute();
   }
 
+  void impact( action_state_t* state )
+  {
+    shaman_spell_t::impact( state );
+
+    p() -> trigger_fulmination_stack( state );
+  }
+
   result_e calculate_result( action_state_t* s )
   {
     if ( ! s -> target )
@@ -3779,15 +3786,26 @@ struct shaman_totem_t : public shaman_spell_t
 
 struct totem_pulse_action_t : public spell_t
 {
+  bool hasted_pulse;
+  double pulse_multiplier;
   shaman_totem_pet_t* totem;
 
   totem_pulse_action_t( const std::string& token, shaman_totem_pet_t* p, const spell_data_t* s ) :
-    spell_t( token, p, s ), totem( p )
+    spell_t( token, p, s ), hasted_pulse( false ), pulse_multiplier( 1.0 ), totem( p )
   {
     may_crit = harmful = background = true;
     callbacks = false;
 
     crit_bonus_multiplier *= 1.0 + totem -> o() -> spec.elemental_fury -> effectN( 1 ).percent() + totem -> o() -> perk.improved_critical_strikes -> effectN( 1 ).percent();
+  }
+
+  double action_multiplier() const
+  {
+    double m = spell_t::action_multiplier();
+
+    m *= pulse_multiplier;
+
+    return m;
   }
 
   void init()
@@ -3796,6 +3814,12 @@ struct totem_pulse_action_t : public spell_t
 
     // Hacky, but constructor wont work.
     crit_multiplier *= util::crit_multiplier( totem -> o() -> meta_gem );
+  }
+
+  void reset()
+  {
+    spell_t::reset();
+    pulse_multiplier = 1.0;
   }
 };
 
@@ -3825,7 +3849,11 @@ struct totem_pulse_event_t : public event_t
     event_t( t, "totem_pulse" ),
     totem( &t )
   {
-    add_event( amplitude );
+    timespan_t real_amplitude = amplitude;
+    if ( totem -> pulse_action -> hasted_pulse )
+      real_amplitude *= totem -> o() -> cache.spell_speed();
+
+    add_event( real_amplitude );
   }
 
   virtual void execute()
@@ -3847,7 +3875,10 @@ void shaman_totem_pet_t::summon( timespan_t duration )
   o() -> totems[ totem_type ] = this;
 
   if ( pulse_action )
+  {
+    pulse_action -> pulse_multiplier = 1.0;
     pulse_event = new ( *sim ) totem_pulse_event_t( *this, pulse_amplitude );
+  }
 
   if ( summon_pet )
     summon_pet -> summon();
@@ -3856,6 +3887,14 @@ void shaman_totem_pet_t::summon( timespan_t duration )
 void shaman_totem_pet_t::dismiss()
 {
   pet_t::dismiss();
+
+  if ( pulse_action && pulse_event )
+  {
+    if ( pulse_event -> remains() > timespan_t::zero() )
+      pulse_action -> pulse_multiplier = pulse_event -> remains() / pulse_amplitude;
+    pulse_action -> execute();
+  }
+
   core_event_t::cancel( pulse_event );
 
   if ( summon_pet )
@@ -4031,6 +4070,7 @@ struct magma_totem_pulse_t : public totem_pulse_action_t
   {
     aoe = -1;
     base_multiplier *= 1.0 + totem -> o() -> perk.improved_fire_totems -> effectN( 1 ).percent();
+    hasted_pulse = true;
   }
 };
 
@@ -4059,12 +4099,9 @@ struct searing_totem_pulse_t : public totem_pulse_action_t
     totem_pulse_action_t( "searing_bolt", p, p -> find_spell( 3606 ) )
   {
     base_execute_time = timespan_t::zero();
-    // 15851 dbc base min/max damage is approx. 10 points too low, compared
-    // to in-game damage ranges
-    base_dd_min += 10;
-    base_dd_max += 10;
 
     base_multiplier *= 1.0 + totem -> o() -> perk.improved_fire_totems -> effectN( 1 ).percent();
+    hasted_pulse = true;
   }
 };
 
@@ -4820,7 +4857,7 @@ void shaman_t::trigger_maelstrom_weapon( const action_state_t* state )
   if ( ! spec.maelstrom_weapon -> ok() )
     return;
 
-  double chance = attack -> weapon -> proc_chance_on_swing( 10.0 );
+  double chance = attack -> weapon -> proc_chance_on_swing( 8.0 );
 
   //if ( sets.has_set_bonus( SET_PVP_2PC_MELEE ) )
   //  chance *= 1.2;
