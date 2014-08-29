@@ -5284,7 +5284,7 @@ void shaman_t::init_action_list()
   {
     std::string potion_action = "potion,name=" + potion_name + ",if=(talent.storm_elemental_totem.enabled&!talent.primal_elementalist.enabled&pet.storm_elemental_totem.remains>=25)|((!talent.storm_elemental_totem.enabled|talent.primal_elementalist.enabled)&pet.fire_elemental_totem.remains>=25)|target.time_to_die<=30";
 
-    def -> add_action( potion_action, "In-combat potion is preferentially linked to the Primal Fire Elemental, then the Storm Elemental, then the Greater Fire Elemental Totem, unless combat will end shortly" );
+    def -> add_action( potion_action, "In-combat potion is preferentially linked to the Fire or Storm Elemental, depending on talents, unless combat will end shortly" );
   }
 
   if ( specialization() == SHAMAN_ENHANCEMENT && primary_role() == ROLE_ATTACK )
