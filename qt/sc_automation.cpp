@@ -460,14 +460,16 @@ QStringList automation::convert_shorthand( QStringList shorthandList, QString si
 
   QStringList sidebarSplit = sidebar_text.split( QRegularExpression( ":::.+:::" ), QString::SkipEmptyParts );
 
-  assert( sidebarSplit.size() == 2 );
+  assert( sidebarSplit.size() == 3 );
 
   QStringList abilityList = sidebarSplit[ 0 ].split( "\n", QString::SkipEmptyParts );
   QStringList optionsList = sidebarSplit[ 1 ].split( "\n", QString::SkipEmptyParts );
+  QStringList operatorsList = sidebarSplit[ 2 ].split( "\n", QString::SkipEmptyParts );
 
   typedef std::vector<std::pair<QString, QString> > shorthandTable;
   shorthandTable abilityTable;
-  shorthandTable optionsTable;
+  shorthandTable optionTable;
+  shorthandTable operatorTable;
 
   // Construct the table for ability conversions
   for ( int i = 0; i < abilityList.size(); i++ )
@@ -482,7 +484,15 @@ QStringList automation::convert_shorthand( QStringList shorthandList, QString si
   {
     QStringList parts = splitOnFirst( optionsList[ i ], "=" );
     if ( parts.size() > 1 )
-      optionsTable.push_back( std::make_pair( parts[ 0 ], parts[ 1 ] ) );
+      optionTable.push_back( std::make_pair( parts[ 0 ], parts[ 1 ] ) );
+  }
+
+  // Construct the table for operator conversions
+  for ( int i = 0; i < operatorsList.size(); i++ )
+  {
+    QStringList parts = splitOnFirst( operatorsList[ i ], "=" );
+    if ( parts.size() > 1 )
+      operatorTable.push_back( std::make_pair( parts[ 0 ], parts[ 1 ] ) );
   }
 
   // STEP 2: now we take the shorthand and figure out what to do with each element
@@ -576,9 +586,16 @@ QStringList automation::convert_shorthand( QStringList shorthandList, QString si
           else
             option = operation + "#";
 
+          // pick the table we're using
+          shorthandTable* table;
+          if ( operand.length() > 0 )
+            table = &operatorTable;
+          else
+            table = &optionTable;
+
           //now look for that operation in the table
-          shorthandTable::iterator n = std::find_if( optionsTable.begin(), optionsTable.end(), comp( option ) );
-          if ( n != optionsTable.end() )
+          shorthandTable::iterator n = std::find_if( (*table).begin(), (*table).end(), comp( option ) );
+          if ( n != (*table).end() )
             optionsBreakdown[ j ] = n -> second;
 
           // replace the # sign with the numeric value if necessary
@@ -679,19 +696,25 @@ QString sidebarText[ 11 ][ 4 ] = {
     "BPres=Blood Presence\nBS=Bone Shield\nDRW=Dancing Rune Weapon\nSoB=Scent of Blood\nVamp=Vampiric Blood\nWotN=Will of the Necropolis\n"
     "Additional ability, buff, glyph, and talent shorthands can be added here"
     "\n\n:::Options:::\n" + defaultOptions +
-    "Additional option shorthands can be added here\n\n" + defaultOperators,
+    "Additional option shorthands can be added here"
+    "\n\n:::Operators:::\n" + defaultOperators +
+    "Additional operator shorthands can be added here\n\n",
 
     ":::Abilities, Buffs, Glyphs, and Talents:::\nAMS=Anti Magic Shell\nAotD=Army of the Dead\nBP=Blood Plague\nCoI=Chains of Ice\nDSim=Dark Simulacrum\nDnD=Death and Decay\nDC=Death Coil\nDG=Death Grip\nDS=Death Strike\nERW=Empower Rune Weapon\nFF=Frost Fever\nHoW=Horn of Winter\nIBF=Icebound Fortitude\nIT=Icy Touch\nMF=Mind Freeze\nOB=Outbreak\nPS=Plague Strike\nSR=Soul Reaper\nPest=Pestilence\nAMZ=Anti Magic Zone\nBT=Blood Tap\nBoS=Breath of Sindragosa\nDP=Death Pact\nDSi=Death Siphon\nGG=Gorefiend's Grasp\nNP=Necrotic Plague\nPL=Plague Leech\nRC=Runic Corruption\nRE=Runic Empowerment\nUB=Unholy Blight\nRW=Remorseless Winter\nDesG=Desecrated Ground\nPATH=Path of Frost\nDef=Defile\n\n"
     "FPres=Frost Presence\nFS=Frost Strike\nHB=Howling Blast\nKM=Killing Machine\nOblit=Obliterate\nPoF=Pillar of Frost\n"
     "Additional ability, buff, glyph, and talent shorthands can be added here"
    "\n\n:::Options:::\n" + defaultOptions + 
-   "Additional option shorthands can be added here\n\n" + defaultOperators,
+    "Additional option shorthands can be added here"
+    "\n\n:::Operators:::\n" + defaultOperators +
+    "Additional operator shorthands can be added here\n\n",
 
     ":::Abilities, Buffs, Glyphs, and Talents:::\nAMS=Anti Magic Shell\nAotD=Army of the Dead\nBP=Blood Plague\nCoI=Chains of Ice\nDSim=Dark Simulacrum\nDnD=Death and Decay\nDC=Death Coil\nDG=Death Grip\nDS=Death Strike\nERW=Empower Rune Weapon\nFF=Frost Fever\nHoW=Horn of Winter\nIBF=Icebound Fortitude\nIT=Icy Touch\nMF=Mind Freeze\nOB=Outbreak\nPS=Plague Strike\nSR=Soul Reaper\nPest=Pestilence\nAMZ=Anti Magic Zone\nBT=Blood Tap\nBoS=Breath of Sindragosa\nDP=Death Pact\nDSi=Death Siphon\nGG=Gorefiend's Grasp\nNP=Necrotic Plague\nPL=Plague Leech\nRC=Runic Corruption\nRE=Runic Empowerment\nUB=Unholy Blight\nRW=Remorseless Winter\nDesG=Desecrated Ground\nPATH=Path of Frost\nDef=Defile\n\n"
     "UPres=Unholy Presence\nDT=Dark Transformation\nFeS=Festering Strike\nSS=Scourge Strike\nSD=Sudden Doom\nGarg=Summon Gargoyle\n"
     "Additional ability, buff, glyph, and talent shorthands can be added here"
    "\n\n:::Options:::\n" + defaultOptions + 
-   "Additional option shorthands can be added here\n\n" + defaultOperators,
+    "Additional option shorthands can be added here"
+    "\n\n:::Operators:::\n" + defaultOperators +
+    "Additional operator shorthands can be added here\n\n",
    
     "N/A"
   },
@@ -700,39 +723,50 @@ QString sidebarText[ 11 ][ 4 ] = {
     ":::Abilities, Buffs, Glyphs, and Talents:::\n" 
     "Additional ability, buff, glyph, and talent shorthands can be added here"
     "\n\n:::Options:::\n" + defaultOptions + 
-    "Additional option shorthands can be added here\n\n" + defaultOperators,
+    "Additional option shorthands can be added here"
+    "\n\n:::Operators:::\n" + defaultOperators +
+    "Additional operator shorthands can be added here\n\n",
     
     ":::Abilities, Buffs, Glyphs, and Talents:::\n" 
     "Additional ability, buff, glyph, and talent shorthands can be added here"
     "\n\n:::Options:::\n" + defaultOptions + 
-    "Additional option shorthands can be added here\n\n" + defaultOperators,
     
     ":::Abilities, Buffs, Glyphs, and Talents:::\n" 
     "Additional ability, buff, glyph, and talent shorthands can be added here"
     "\n\n:::Options:::\n" + defaultOptions + 
-    "Additional option shorthands can be added here\n\n" + defaultOperators,
+    "Additional option shorthands can be added here"
+    "\n\n:::Operators:::\n" + defaultOperators +
+    "Additional operator shorthands can be added here\n\n",
     
     ":::Abilities, Buffs, Glyphs, and Talents:::\n" 
     "Additional ability, buff, glyph, and talent shorthands can be added here"
     "\n\n:::Options:::\n" + defaultOptions + 
-    "Additional option shorthands can be added here\n\n" + defaultOperators,
+    "Additional option shorthands can be added here"
+    "\n\n:::Operators:::\n" + defaultOperators +
+    "Additional operator shorthands can be added here\n\n",
   },
 
   { // HUNTER Shorthand Declaration
     ":::Abilities, Buffs, Glyphs, and Talents:::\n" 
     "Additional ability, buff, glyph, and talent shorthands can be added here"
     "\n\n:::Options:::\n" + defaultOptions + 
-    "Additional option shorthands can be added here\n\n" + defaultOperators,
+    "Additional option shorthands can be added here"
+    "\n\n:::Operators:::\n" + defaultOperators +
+    "Additional operator shorthands can be added here\n\n",
     
     ":::Abilities, Buffs, Glyphs, and Talents:::\n" 
     "Additional ability, buff, glyph, and talent shorthands can be added here"
     "\n\n:::Options:::\n" + defaultOptions + 
-    "Additional option shorthands can be added here\n\n" + defaultOperators,
+    "Additional option shorthands can be added here"
+    "\n\n:::Operators:::\n" + defaultOperators +
+    "Additional operator shorthands can be added here\n\n",
     
     ":::Abilities, Buffs, Glyphs, and Talents:::\n" 
     "Additional ability, buff, glyph, and talent shorthands can be added here"
     "\n\n:::Options:::\n" + defaultOptions + 
-    "Additional option shorthands can be added here\n\n" + defaultOperators,
+    "Additional option shorthands can be added here"
+    "\n\n:::Operators:::\n" + defaultOperators +
+    "Additional operator shorthands can be added here\n\n",
    
     "N/A"
   },
@@ -741,17 +775,23 @@ QString sidebarText[ 11 ][ 4 ] = {
     ":::Abilities, Buffs, Glyphs, and Talents:::\n" 
     "Additional ability, buff, glyph, and talent shorthands can be added here"
     "\n\n:::Options:::\n" + defaultOptions + 
-    "Additional option shorthands can be added here\n\n" + defaultOperators,
+    "Additional option shorthands can be added here"
+    "\n\n:::Operators:::\n" + defaultOperators +
+    "Additional operator shorthands can be added here\n\n",
     
     ":::Abilities, Buffs, Glyphs, and Talents:::\n" 
     "Additional ability, buff, glyph, and talent shorthands can be added here"
     "\n\n:::Options:::\n" + defaultOptions + 
-    "Additional option shorthands can be added here\n\n" + defaultOperators,
+    "Additional option shorthands can be added here"
+    "\n\n:::Operators:::\n" + defaultOperators +
+    "Additional operator shorthands can be added here\n\n",
     
     ":::Abilities, Buffs, Glyphs, and Talents:::\n" 
     "Additional ability, buff, glyph, and talent shorthands can be added here"
     "\n\n:::Options:::\n" + defaultOptions + 
-    "Additional option shorthands can be added here\n\n" + defaultOperators,
+    "Additional option shorthands can be added here"
+    "\n\n:::Operators:::\n" + defaultOperators +
+    "Additional operator shorthands can be added here\n\n",
    
     "N/A"
   },
@@ -760,17 +800,23 @@ QString sidebarText[ 11 ][ 4 ] = {
     ":::Abilities, Buffs, Glyphs, and Talents:::\n" 
     "Additional ability, buff, glyph, and talent shorthands can be added here"
     "\n\n:::Options:::\n" + defaultOptions + 
-    "Additional option shorthands can be added here\n\n" + defaultOperators,
+    "Additional option shorthands can be added here"
+    "\n\n:::Operators:::\n" + defaultOperators +
+    "Additional operator shorthands can be added here\n\n",
     
     ":::Abilities, Buffs, Glyphs, and Talents:::\n" 
     "Additional ability, buff, glyph, and talent shorthands can be added here"
     "\n\n:::Options:::\n" + defaultOptions + 
-    "Additional option shorthands can be added here\n\n" + defaultOperators,
+    "Additional option shorthands can be added here"
+    "\n\n:::Operators:::\n" + defaultOperators +
+    "Additional operator shorthands can be added here\n\n",
     
     ":::Abilities, Buffs, Glyphs, and Talents:::\n" 
     "Additional ability, buff, glyph, and talent shorthands can be added here"
     "\n\n:::Options:::\n" + defaultOptions + 
-    "Additional option shorthands can be added here\n\n" + defaultOperators,
+    "Additional option shorthands can be added here"
+    "\n\n:::Operators:::\n" + defaultOperators +
+    "Additional operator shorthands can be added here\n\n",
    
     "N/A"
   },
@@ -779,21 +825,27 @@ QString sidebarText[ 11 ][ 4 ] = {
     ":::Abilities, Buffs, Glyphs, and Talents:::\n" 
     "Additional ability, buff, glyph, and talent shorthands can be added here"
     "\n\n:::Options:::\n" + defaultOptions + 
-    "Additional option shorthands can be added here\n\n" + defaultOperators,
+    "Additional option shorthands can be added here"
+    "\n\n:::Operators:::\n" + defaultOperators +
+    "Additional operator shorthands can be added here\n\n",
     
     ":::Abilities, Buffs, Glyphs, and Talents:::\n"
     "AS=avengers_shield\nCons=consecration\nCS=crusader_strike\nEF=eternal_flame\nES=execution_sentence\nHotR=hammer_of_the_righteous\nHoW=hammer_of_wrath\nHPr=holy_prism\nHW=holy_wrath\nJ=judgment\nLH=lights_hammer\nSS=sacred_shield\nSoI=seal_of_insight\nSoR=seal_of_righteousness\nSoT=seal_of_truth\nSP=seraphim\nSotR=shield_of_the_righteous\nWoG=word_of_glory\n\n"
     "DP=divine_purpose\nGC=grand_crusader\nSP=seraphim\nSotR=shield_of_the_righteous\nSW=sanctified_wrath\n\n"
     "Additional ability, buff, glyph, and talent shorthands can be added here"
     "\n\n:::Options:::\n" + defaultOptions + "HP=holy_power\nHP#=holy_power>=#\nFW=glyph.final_wrath.enabled&target.health.pct<=20\nEverything below this line is redundant with the buff syntax method, just here for ease of use\nDP=buff.divine_purpose.react\nSW=talent.sanctified_wrath.enabled\nSP=buff.seraphim.react\n\nGC=buff.grand_crusader.react\nGC#=buff.grand_crusader.remains<#\n"
-    "Additional option shorthands can be added here\n\n" + defaultOperators,
+    "Additional option shorthands can be added here"
+    "\n\n:::Operators:::\n" + defaultOperators +
+    "Additional operator shorthands can be added here\n\n",
 
     ":::Abilities, Buffs, Glyphs, and Talents:::\n"
     "AA=auto_attack\nCS=crusader_strike\nJ=judgment\nEXO=exorcism\nHotR=hammer_of_the_righteous\nHoW=hammer_of_wrath\nTV=templars_verdict\nFV=final_verdict\nDS=divine_storm\nES=execution_sentence\nHPr=holy_prism\nLH=lights_hammer\nSP=seraphim\nSoT=seal_of_truth\nSoR=seal_of_righteousness\nSoI=seal_of_insight\nAW=avenging_wrath\nHA=holy_avenger\n\n"
     "AW=avenging_wrath\nDP=divine_purpose\nHA=holy_avenger\nDC=divine_crusader\nSP=seraphim\nSW=sanctified_wrath\nDJ=double_jeopardy\n\n"
     "Additional ability, buff, glyph, and talent shorthands can be added here"
     "\n\n:::Options:::\n" + defaultOptions + "HP#=holy_power>=#\nHPL#=holy_power<=#\n"
-    "Additional option shorthands can be added here\n\n" + defaultOperators,
+    "Additional option shorthands can be added here"
+    "\n\n:::Operators:::\n" + defaultOperators +
+    "Additional operator shorthands can be added here\n\n",
     
     "N/A"
   },
@@ -802,17 +854,23 @@ QString sidebarText[ 11 ][ 4 ] = {
     ":::Abilities, Buffs, Glyphs, and Talents:::\n" 
     "Additional ability, buff, glyph, and talent shorthands can be added here"
     "\n\n:::Options:::\n" + defaultOptions + 
-    "Additional option shorthands can be added here\n\n" + defaultOperators,
+    "Additional option shorthands can be added here"
+    "\n\n:::Operators:::\n" + defaultOperators +
+    "Additional operator shorthands can be added here\n\n",
     
     ":::Abilities, Buffs, Glyphs, and Talents:::\n" 
     "Additional ability, buff, glyph, and talent shorthands can be added here"
     "\n\n:::Options:::\n" + defaultOptions + 
-    "Additional option shorthands can be added here\n\n" + defaultOperators,
+    "Additional option shorthands can be added here"
+    "\n\n:::Operators:::\n" + defaultOperators +
+    "Additional operator shorthands can be added here\n\n",
     
     ":::Abilities, Buffs, Glyphs, and Talents:::\n" 
     "Additional ability, buff, glyph, and talent shorthands can be added here"
     "\n\n:::Options:::\n" + defaultOptions + 
-    "Additional option shorthands can be added here\n\n" + defaultOperators,
+    "Additional option shorthands can be added here"
+    "\n\n:::Operators:::\n" + defaultOperators +
+    "Additional operator shorthands can be added here\n\n",
    
     "N/A"
   },
@@ -821,17 +879,23 @@ QString sidebarText[ 11 ][ 4 ] = {
     ":::Abilities, Buffs, Glyphs, and Talents:::\n" 
     "Additional ability, buff, glyph, and talent shorthands can be added here"
     "\n\n:::Options:::\n" + defaultOptions + 
-    "Additional option shorthands can be added here\n\n" + defaultOperators,
+    "Additional option shorthands can be added here"
+    "\n\n:::Operators:::\n" + defaultOperators +
+    "Additional operator shorthands can be added here\n\n",
     
     ":::Abilities, Buffs, Glyphs, and Talents:::\n" 
     "Additional ability, buff, glyph, and talent shorthands can be added here"
     "\n\n:::Options:::\n" + defaultOptions + 
-    "Additional option shorthands can be added here\n\n" + defaultOperators,
+    "Additional option shorthands can be added here"
+    "\n\n:::Operators:::\n" + defaultOperators +
+    "Additional operator shorthands can be added here\n\n",
     
     ":::Abilities, Buffs, Glyphs, and Talents:::\n" 
     "Additional ability, buff, glyph, and talent shorthands can be added here"
     "\n\n:::Options:::\n" + defaultOptions + 
-    "Additional option shorthands can be added here\n\n" + defaultOperators,
+    "Additional option shorthands can be added here"
+    "\n\n:::Operators:::\n" + defaultOperators +
+    "Additional operator shorthands can be added here\n\n",
    
     "N/A"
   },
@@ -840,17 +904,23 @@ QString sidebarText[ 11 ][ 4 ] = {
     ":::Abilities, Buffs, Glyphs, and Talents:::\n" 
     "Additional ability, buff, glyph, and talent shorthands can be added here"
     "\n\n:::Options:::\n" + defaultOptions + 
-    "Additional option shorthands can be added here\n\n" + defaultOperators,
+    "Additional option shorthands can be added here"
+    "\n\n:::Operators:::\n" + defaultOperators +
+    "Additional operator shorthands can be added here\n\n",
     
     ":::Abilities, Buffs, Glyphs, and Talents:::\n" 
     "Additional ability, buff, glyph, and talent shorthands can be added here"
     "\n\n:::Options:::\n" + defaultOptions + 
-    "Additional option shorthands can be added here\n\n" + defaultOperators,
+    "Additional option shorthands can be added here"
+    "\n\n:::Operators:::\n" + defaultOperators +
+    "Additional operator shorthands can be added here\n\n",
     
     ":::Abilities, Buffs, Glyphs, and Talents:::\n" 
     "Additional ability, buff, glyph, and talent shorthands can be added here"
     "\n\n:::Options:::\n" + defaultOptions + 
-    "Additional option shorthands can be added here\n\n" + defaultOperators,
+    "Additional option shorthands can be added here"
+    "\n\n:::Operators:::\n" + defaultOperators +
+    "Additional operator shorthands can be added here\n\n",
    
     "N/A"
   },
@@ -859,17 +929,23 @@ QString sidebarText[ 11 ][ 4 ] = {
     ":::Abilities, Buffs, Glyphs, and Talents:::\n" 
     "Additional ability, buff, glyph, and talent shorthands can be added here"
     "\n\n:::Options:::\n" + defaultOptions + 
-    "Additional option shorthands can be added here\n\n" + defaultOperators,
+    "Additional option shorthands can be added here"
+    "\n\n:::Operators:::\n" + defaultOperators +
+    "Additional operator shorthands can be added here\n\n",
     
     ":::Abilities, Buffs, Glyphs, and Talents:::\n" 
     "Additional ability, buff, glyph, and talent shorthands can be added here"
     "\n\n:::Options:::\n" + defaultOptions + 
-    "Additional option shorthands can be added here\n\n" + defaultOperators,
+    "Additional option shorthands can be added here"
+    "\n\n:::Operators:::\n" + defaultOperators +
+    "Additional operator shorthands can be added here\n\n",
     
     ":::Abilities, Buffs, Glyphs, and Talents:::\n" 
     "Additional ability, buff, glyph, and talent shorthands can be added here"
     "\n\n:::Options:::\n" + defaultOptions + 
-    "Additional option shorthands can be added here\n\n" + defaultOperators,
+    "Additional option shorthands can be added here"
+    "\n\n:::Operators:::\n" + defaultOperators +
+    "Additional operator shorthands can be added here\n\n",
    
     "N/A"
   },
@@ -878,17 +954,23 @@ QString sidebarText[ 11 ][ 4 ] = {
     ":::Abilities, Buffs, Glyphs, and Talents:::\n" 
     "Additional ability, buff, glyph, and talent shorthands can be added here"
     "\n\n:::Options:::\n" + defaultOptions + 
-    "Additional option shorthands can be added here\n\n" + defaultOperators,
+    "Additional option shorthands can be added here"
+    "\n\n:::Operators:::\n" + defaultOperators +
+    "Additional operator shorthands can be added here\n\n",
     
     ":::Abilities, Buffs, Glyphs, and Talents:::\n" 
     "Additional ability, buff, glyph, and talent shorthands can be added here"
     "\n\n:::Options:::\n" + defaultOptions + 
-    "Additional option shorthands can be added here\n\n" + defaultOperators,
+    "Additional option shorthands can be added here"
+    "\n\n:::Operators:::\n" + defaultOperators +
+    "Additional operator shorthands can be added here\n\n",
     
     ":::Abilities, Buffs, Glyphs, and Talents:::\n" 
     "Additional ability, buff, glyph, and talent shorthands can be added here"
     "\n\n:::Options:::\n" + defaultOptions + 
-    "Additional option shorthands can be added here\n\n" + defaultOperators,
+    "Additional option shorthands can be added here"
+    "\n\n:::Operators:::\n" + defaultOperators +
+    "Additional operator shorthands can be added here\n\n",
    
     "N/A"
   },
@@ -1032,14 +1114,18 @@ void SC_ImportTab::createTooltips()
 {
   choice.comp_type -> setToolTip( "Choose the comparison type." );
 
-  QString sidebarTooltip = "This box specifies the abbreviations used in rotation shorthands.\n"
-                           "You may define custom abbreviations by adding your own entries to the appropriate section.\n\n"
+  QString sidebarTooltip = "This box specifies the abbreviations used in rotation shorthands. It is divided into three sections.\n"
+                           "The :::Abilities, Buffs, Glyphs, and Talents::: section defines shorthands for abilities, buffs, glyphs, and talents. For example, \"HoW=hammer_of_wrath\", \"DP=divine_purpose\", \"NT=nether_tempest\", etc."
+                           "The :::Options::: section defines conditionals you want to apply to that action. For example, \"E=target.health.pct<20\" is an option you can use to specify execute range."
+                           "Thus, the shorthand \"HoW+E\" would convert to \"hammer_of_wrath,if=target.health.pc<20\"."
                            "For options, the pound sign \"#\" can be used to support a numeric argument and \"$ability_name\" will automatically be replaced with the name of the ability to which the option is being applied.\n"
-                           "Example: The definition \"AD#=active_dot.$ability_name=#\" causes \"NT+AD0\" to translate to \"nether_tempest,if=active_dot.nether_tempest=0\" (given NT=nether_tempest).\n\n"
+                           "Example: The definition \"AD#=active_dot.$ability_name=#\" causes \"NT+AD0\" to translate to \"nether_tempest,if=active_dot.nether_tempest=0\".\n\n"
                            "The \"W#\" option is special since it adds an extra APL entry; W# should be the only option or should be separated from other options like so: (DP&!FW)W3\n\n"
-                           "For maximum flexibility, there are also some operator shorthands for buffs, talents and glyphs. These work as a function on the preceding abbreviation, using a period as an operator.\n"
-                           "Example: since \"BA=buff.$operand_name.up\", \"FV+DP.BA\" would translate to \"final_verdict,if=buff.divine_purpose.up\"\n\n"
-                           "You can string these together with logical operations, e.g. \"FV+DP.BA&HP3\" to create \"final_verdict,if=buff.divine_purpose.up&holy_power>=3\".\n\n"
+                           "The :::Operators::: section defines function that act on another abbreviation from the first section, using a period as an operator.\n"
+                           "The pound sign works as in the operators section, and \"$operand_name\" will be replaced with the abbreviation being operated upon.\n"
+                           "Example: since \"BU=buff.$operand_name.up\", \"HoW+DP.BU\" would translate to \"hammer_of_wrath,if=buff.divine_purpose.up\"\n\n"
+                           "You can string these together with logical operations, e.g. \"HoW+DP.BU&HP3\" to create \"final_verdict,if=buff.divine_purpose.up&holy_power>=3\".\n\n"
+                           "You may define custom abbreviations by adding your own entries to the appropriate section.\n"
                            "See the wiki entry for more details. https://code.google.com/p/simulationcraft/wiki/Automation#Rotation_Comparisons";
   textbox.sidebar -> setToolTip( sidebarTooltip );
   label.sidebar   -> setToolTip( sidebarTooltip );
