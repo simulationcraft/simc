@@ -2359,16 +2359,12 @@ struct rend_t: public warrior_attack_t
   void tick( dot_t* d )
   {
     warrior_attack_t::tick( d );
+    if ( d -> ticks_left() == 0 )
+      burst -> execute();
     if ( p() -> talents.taste_for_blood -> ok() )
       p() -> resource_gain( RESOURCE_RAGE,
       p() -> talents.taste_for_blood -> effectN( 1 ).trigger() -> effectN( 1 ).resource( RESOURCE_RAGE ),
       p() -> gain.taste_for_blood );
-  }
-
-  void last_tick( dot_t* d )
-  {
-    warrior_attack_t::last_tick( d );
-    burst -> execute();
   }
 
   bool ready()

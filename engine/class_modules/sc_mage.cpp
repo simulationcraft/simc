@@ -3069,7 +3069,7 @@ struct living_bomb_t : public mage_spell_t
     parse_options( NULL, options_str );
   }
 
-  virtual void impact( action_state_t* s )
+  void impact( action_state_t* s )
   {
     if ( result_is_hit( s -> result ) )
     {
@@ -3082,12 +3082,11 @@ struct living_bomb_t : public mage_spell_t
     mage_spell_t::impact( s );
   }
 
-
-  virtual void last_tick( dot_t* d )
+  void tick( dot_t* d )
   {
-    mage_spell_t::last_tick( d );
-
-    explosion_spell -> execute();
+    mage_spell_t::tick( d );
+    if ( d -> ticks_left() == 0 )
+      explosion_spell -> execute();
   }
 };
 
