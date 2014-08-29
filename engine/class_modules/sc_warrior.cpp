@@ -49,7 +49,6 @@ public:
   double rend_burst_mastery;
   bool swapping; // Disables automated swapping when it's not required to use the ability.
   // Set to true whenever a player uses the swap option inside of stance_t, as we should assume they are intentionally sitting in defensive stance.
-  bool t17_2pc_protection;
   bool heroic_charge;
 
   simple_sample_data_t cs_damage;
@@ -65,8 +64,6 @@ public:
   action_t* active_second_wind;
   attack_t* active_sweeping_strikes;
 
-  spell_t* active_t17_2pc_shield_block;
-  spell_t* active_t17_2pc_shield_charge;
   heal_t* active_t16_2pc;
   warrior_stance active_stance;
 
@@ -385,8 +382,6 @@ public:
     active_sweeping_strikes   = 0;
     active_enhanced_rend      = 0;
     active_t16_2pc            = 0;
-    active_t17_2pc_shield_block = 0;
-    active_t17_2pc_shield_charge = 0;
     active_stance             = STANCE_BATTLE;
 
     // Cooldowns
@@ -428,7 +423,6 @@ public:
     crit_rage_mult = 2;
     swapping = false;
     base.distance = 3.0;
-    t17_2pc_protection = false;
     heroic_charge = false;
 
     regen_type = REGEN_DISABLED;
@@ -2464,14 +2458,13 @@ struct shield_slam_t: public warrior_attack_t
 
     if ( rng().roll( p() -> new_sets.set( WARRIOR_PROTECTION, T17, B2 ) -> proc_chance() ) )
     {
-      p() -> t17_2pc_protection = true;
       p() -> proc.t17_2pc_prot -> occur();
       if ( p() -> active_stance == STANCE_GLADIATOR )
       {
-        p() -> active_t17_2pc_shield_charge -> execute();
+        p() -> buff.shield_charge -> trigger();
       }
       else
-        p() -> active_t17_2pc_shield_block -> execute();
+        p() -> buff.shield_block -> trigger();
     }
 
     double rage_from_snb = 0;
@@ -3313,16 +3306,6 @@ struct shield_block_t: public warrior_spell_t
       p() -> buff.shield_block -> trigger();
   }
 
-  void update_ready( timespan_t cd_duration )
-  {
-    if ( p() -> t17_2pc_protection )
-    {
-      p() -> t17_2pc_protection = false;
-      return;
-    }
-    warrior_spell_t::update_ready( cd_duration );
-  }
-
   bool ready()
   {
     if ( !p() -> has_shield_equipped() )
@@ -3363,16 +3346,6 @@ struct shield_charge_t: public warrior_spell_t
       p() -> buff.shield_charge -> extend_duration( p(), timespan_t::from_seconds( 6.0 ) );
     else
       p() -> buff.shield_charge -> trigger();
-  }
-
-  void update_ready( timespan_t cd_duration )
-  {
-    if ( p() -> t17_2pc_protection )
-    {
-      p() -> t17_2pc_protection = false;
-      return;
-    }
-    warrior_spell_t::update_ready( cd_duration );
   }
 
   bool ready()
@@ -3823,8 +3796,6 @@ void warrior_t::init_spells()
   active_rallying_cry_heal  = new rallying_cry_heal_t( this );
   active_second_wind        = new second_wind_t( this );
   active_t16_2pc            = new tier16_2pc_tank_heal_t( this );
-  active_t17_2pc_shield_block = new shield_block_t( this );
-  active_t17_2pc_shield_charge = new shield_charge_t( this );
 }
 
 // warrior_t::init_defense ==================================================
@@ -4540,10 +4511,12 @@ void warrior_t::create_buffs()
                                                .source( get_stats( "shield_barrier" ) );
 
   buff.shield_block = buff_creator_t( this, "shield_block", find_spell( 132404 ) )
+    .cd( timespan_t::zero() )
     .add_invalidate( CACHE_BLOCK );
 
   buff.shield_charge = buff_creator_t( this, "shield_charge", find_spell( 169667 ) )
-    .default_value( find_spell( 169667 ) -> effectN( 1 ).percent() + new_sets.set( WARRIOR_PROTECTION, T17, B4 ) -> effectN( 2 ).percent() );
+    .default_value( find_spell( 169667 ) -> effectN( 1 ).percent() + new_sets.set( WARRIOR_PROTECTION, T17, B4 ) -> effectN( 2 ).percent() )
+    .cd( timespan_t::zero() );
 
   buff.shield_wall = buff_creator_t( this, "shield_wall", spec.shield_wall )
     .default_value( spec.shield_wall -> effectN( 1 ).percent() )
@@ -4770,7 +4743,6 @@ void warrior_t::reset()
 
   active_stance = STANCE_BATTLE;
   swapping = false;
-  t17_2pc_protection = false;
   heroic_charge = false;
 
   t15_2pc_melee.reset();
