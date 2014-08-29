@@ -1979,23 +1979,35 @@ struct combustion_t : public mage_spell_t
   action_state_t* new_state()
   { return new residual_periodic_state_t( this, target ); }
 
-  virtual double calculate_tick_amount( action_state_t* s, double dmg_multiplier )
+  virtual double calculate_tick_amount( action_state_t* state,
+                                        double dmg_multiplier )
   {
-    double a = 0.0;
+    double amount = 0.0;
 
-    if ( dot_t* d = find_dot( s -> target ) )
+    if ( dot_t* d = find_dot( state -> target ) )
     {
 
-      const residual_periodic_state_t* dps_t = debug_cast<const residual_periodic_state_t*>( d -> state );
-      a += dps_t -> tick_amount;
+      const residual_periodic_state_t* dps_t =
+        debug_cast<const residual_periodic_state_t*>( d -> state );
+      amount += dps_t -> tick_amount;
     }
 
-    if ( s -> result == RESULT_CRIT )
-      a *= 1.0 + total_crit_bonus();
+    state -> result_raw = amount;
 
-    a *= dmg_multiplier;
+    if ( state -> result == RESULT_CRIT )
+      amount *= 1.0 + total_crit_bonus();
+    else if ( state -> result == RESULT_MULTISTRIKE )
+      amount *= composite_multistrike_multiplier( state );
+    else if ( state -> result == RESULT_MULTISTRIKE_CRIT )
+      amount *= composite_multistrike_multiplier( state ) *
+                ( 1.0 + total_crit_bonus() );
 
-    return a;
+
+    amount *= dmg_multiplier;
+
+    state -> result_total = amount;
+
+    return amount;
   }
 
   virtual void trigger_dot( action_state_t* s )
