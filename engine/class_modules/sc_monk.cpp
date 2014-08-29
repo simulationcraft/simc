@@ -1048,7 +1048,6 @@ struct dot_blackout_kick_t: public residual_action::residual_periodic_action_t <
   dot_blackout_kick_t( monk_t* p ):
     base_t( "blackout_kick_dot", p, p -> find_spell( 128531 ) )
   {
-    tick_may_crit = true;
     may_miss = false;
   }
 };
