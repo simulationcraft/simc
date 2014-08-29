@@ -923,7 +923,7 @@ struct jab_t: public monk_melee_attack_t
 
     mh = &( player -> main_hand_weapon );
     oh = &( player -> off_hand_weapon );
-	base_costs[RESOURCE_ENERGY] = (p -> specialization() ? 45 : 40);
+	base_costs[RESOURCE_ENERGY] = (p -> specialization() == MONK_WINDWALKER ? 45 : 40);
 
     base_multiplier *= 1.15; // hardcoded into tooltip
   }
