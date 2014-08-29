@@ -2324,6 +2324,7 @@ struct rend_t: public warrior_attack_t
     parse_options( NULL, options_str );
     stancemask = STANCE_BATTLE | STANCE_DEFENSE;
     hasted_ticks = tick_zero = false;
+    dot_behavior = DOT_REFRESH;
     tick_may_crit = true;
     may_multistrike = 1;
     add_child( burst );
