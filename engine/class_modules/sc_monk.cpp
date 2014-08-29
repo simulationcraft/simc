@@ -923,7 +923,7 @@ struct jab_t: public monk_melee_attack_t
 
     mh = &( player -> main_hand_weapon );
     oh = &( player -> off_hand_weapon );
-    base_costs[RESOURCE_ENERGY] = 45;
+	base_costs[RESOURCE_ENERGY] = (p -> specialization() ? 45 : 40);
 
     base_multiplier *= 1.15; // hardcoded into tooltip
   }
@@ -1180,7 +1180,7 @@ struct dot_chi_explosion_t: public residual_action::residual_periodic_action_t <
     p -> specialization() == MONK_MISTWEAVER ? p -> find_spell( 157681 ) :
     p -> find_spell( 157682 ) )
   {
-    dual = tick_may_crit = true;
+    dual = true;
     may_miss = false;
   }
 };
