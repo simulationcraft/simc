@@ -686,8 +686,8 @@ void SC_ImportTab::setSpecDropDown( const int player_class )
     choice.player_spec -> addItem( classSpecText[ player_class ][ 4 ] );
 }
 
-QString defaultOptions = "AE#=active_enemies>=#\nE=target.health.pct<=20\nNT=!ticking\nNF=target.debuff.flying.down\nW#=/wait,sec=cooldown.$ability_name.remains,if=cooldown.$ability_name.remains<=#\n\n";
-QString defaultOperators = "Operator shorthands:\nBU=buff.$operand_name.up\nBA=buff.$operand_name.react\nBR=buff.$operand_name.remains\nBR#=buff.$operand_name.remains>#\nCD=cooldown.$operand_name.remains\nCD#=cooldown.$operand_name.remains>#\nDT=dot.$operand_name.ticking\nT=talent.$operand_name.enabled\nG=glyph.$operand_name.enabled\n\n";
+QString defaultOptions = "AC#=action.$ability_name.charges>=#\nAE#=active_enemies>=#\nE=target.health.pct<=20\nE#=target.health.pct<=#\nNT=!ticking\nNF=target.debuff.flying.down\nW#=/wait,sec=cooldown.$ability_name.remains,if=cooldown.$ability_name.remains<=#\n\n";
+QString defaultOperators = "BU=buff.$operand_name.up\nBA=buff.$operand_name.react\nBR=buff.$operand_name.remains\nBR#=buff.$operand_name.remains>#\nBC#=buff.$operand_name.charges>=#\nCD=cooldown.$operand_name.remains\nCD#=cooldown.$operand_name.remains>#\nDT=dot.$operand_name.ticking\nGCD=cooldown.$operand_name.remains<=gcd\nGCD#=cooldown.$operand_name.remains<=gcd*#\nT=talent.$operand_name.enabled\nG=glyph.$operand_name.enabled\n";
 
 // constant for sidebar text (this will eventually get really long)
 QString sidebarText[ 11 ][ 4 ] = {
@@ -773,6 +773,8 @@ QString sidebarText[ 11 ][ 4 ] = {
   
   { // MAGE Shorthand Declaration
     ":::Abilities, Buffs, Glyphs, and Talents:::\n" 
+    "AB=arcane_blast\nAE=arcane_explosion\nAM=arcane_missiles\nABar=arcane_barrage\nCoC=cone_of_cold\nEvo=evocation\nFN = frost_nova\nPoM=presence_of_mind\nCS=counterspell\n\n"
+    "BS=blazing_speed\nIF=ice_floes\nNT=nether_tempest\nSN=supernova\nAO=arcane_orb\nRoP=rune_of_power\nIF=incanters_flow\nMI=mirror_image\nPC=prismatic_crystal\nUM=unstable_magic\nOP=overpowered\n"
     "Additional ability, buff, glyph, and talent shorthands can be added here"
     "\n\n:::Options:::\n" + defaultOptions + 
     "Additional option shorthands can be added here"
@@ -780,6 +782,8 @@ QString sidebarText[ 11 ][ 4 ] = {
     "Additional operator shorthands can be added here\n\n",
     
     ":::Abilities, Buffs, Glyphs, and Talents:::\n" 
+    "FB=fireball\nFFB=frostfire_bolt\nSC=scorch\nIB=inferno_blast\nPyro=pyroblast\nComb=combustion\nFN=frost_nova\nFS=flamestrike\nDB=dragons_breath\nCS=counterspell\n\n"
+    "BS=blazing_speed\nIF=ice_floes\nLB=living_bomb\nBW=blast_wave\nMet=meteor\nHU=heating_up\nHS=pyroblast\nRoP=rune_of_power\nIF=incanters_flow\nMI=mirror_image\nPC=prismatic_crystal\nUM=unstable_magic\nKind=kindling\n"
     "Additional ability, buff, glyph, and talent shorthands can be added here"
     "\n\n:::Options:::\n" + defaultOptions + 
     "Additional option shorthands can be added here"
@@ -787,6 +791,8 @@ QString sidebarText[ 11 ][ 4 ] = {
     "Additional operator shorthands can be added here\n\n",
     
     ":::Abilities, Buffs, Glyphs, and Talents:::\n" 
+    "FB=frostbolt\nIL=ice_lance\nFFB=frostfire_bolt\nCoC=cone_of_cold\nWJ=water_jet\nFrz=freeze\nFN=frost_nova\nFO=frozen_orb\nIV=icy_veins\nBLY=blizzard\nCS=counterspell\n\n"
+    "BS=blazing_speed\nIF=ice_floes\nFBomb=frost_bomb\nIN=ice_nova\nCmS=comet_storm\nBF=brain_freeze\nFoF=fingers_of_frost\nRoP=rune_of_power\nIF=incanters_flow\nMI=mirror_image\nPC=prismatic_crystal\nUM=unstable_magic\nTV=thermal_void\n"
     "Additional ability, buff, glyph, and talent shorthands can be added here"
     "\n\n:::Options:::\n" + defaultOptions + 
     "Additional option shorthands can be added here"
@@ -830,7 +836,7 @@ QString sidebarText[ 11 ][ 4 ] = {
     "Additional operator shorthands can be added here\n\n",
     
     ":::Abilities, Buffs, Glyphs, and Talents:::\n"
-    "AS=avengers_shield\nCons=consecration\nCS=crusader_strike\nEF=eternal_flame\nES=execution_sentence\nHotR=hammer_of_the_righteous\nHoW=hammer_of_wrath\nHPr=holy_prism\nHW=holy_wrath\nJ=judgment\nLH=lights_hammer\nSS=sacred_shield\nSoI=seal_of_insight\nSoR=seal_of_righteousness\nSoT=seal_of_truth\nSP=seraphim\nSotR=shield_of_the_righteous\nWoG=word_of_glory\n\n"
+    "AA=auto_attack\nAS=avengers_shield\nCons=consecration\nCS=crusader_strike\nEF=eternal_flame\nES=execution_sentence\nHotR=hammer_of_the_righteous\nHoW=hammer_of_wrath\nHPr=holy_prism\nHW=holy_wrath\nJ=judgment\nLH=lights_hammer\nSS=sacred_shield\nSoI=seal_of_insight\nSoR=seal_of_righteousness\nSoT=seal_of_truth\nSP=seraphim\nSotR=shield_of_the_righteous\nWoG=word_of_glory\n\n"
     "DP=divine_purpose\nGC=grand_crusader\nSP=seraphim\nSotR=shield_of_the_righteous\nSW=sanctified_wrath\n\n"
     "Additional ability, buff, glyph, and talent shorthands can be added here"
     "\n\n:::Options:::\n" + defaultOptions + "HP=holy_power\nHP#=holy_power>=#\nFW=glyph.final_wrath.enabled&target.health.pct<=20\nEverything below this line is redundant with the buff syntax method, just here for ease of use\nDP=buff.divine_purpose.react\nSW=talent.sanctified_wrath.enabled\nSP=buff.seraphim.react\n\nGC=buff.grand_crusader.react\nGC#=buff.grand_crusader.remains<#\n"
@@ -909,8 +915,11 @@ QString sidebarText[ 11 ][ 4 ] = {
     "Additional operator shorthands can be added here\n\n",
     
     ":::Abilities, Buffs, Glyphs, and Talents:::\n" 
+    "AA=auto_attack\nEM=elemental_mastery\nSET=storm_elemental_totem\nFET=fire_elemental_totem\nASC=ascendance\nFS=feral_spirit\nLM=liquid_magma\nAS=ancestral_swiftness\nST=searing_totem\nUE=unleash_elements\nEB=elemental_blast\nLB=lightning_bolt\nWS=windstrike\nSS=stormstrike\nLL=lava_lash\nFlS=flame_shock\nFrS=frost_shock\n\n"
+    "EM=elemental_mastery\nAS=ancestral_swiftness\nUF=unleashed_fury\nPE=primal_elementalist\nEB=elemental_blast\nEF=elemental_fusion\nSET=storm_elemental_totem\nLM=liquid_magma\n"
     "Additional ability, buff, glyph, and talent shorthands can be added here"
     "\n\n:::Options:::\n" + defaultOptions + 
+    "MW#=buff.maelstrom_weapon.react>=#\nNFT=!totem.fire.active\nNASC=!buff.ascendance.up\nCFE#=cooldown.fire_elemental_totem.remains>=#\nFTR#=pet.searing_totem.remains>=#|pet.fire_elemental_totem.remains>=#\nUFl=buff.unleash_flame.up\nFlSR#=dot.flame_shock.remains<=#\nASU=buff.ancestral_swiftness.up\n"    
     "Additional option shorthands can be added here"
     "\n\n:::Operators:::\n" + defaultOperators +
     "Additional operator shorthands can be added here\n\n",
@@ -952,6 +961,7 @@ QString sidebarText[ 11 ][ 4 ] = {
 
   { // WARRIOR Shorthand Declaration
     ":::Abilities, Buffs, Glyphs, and Talents:::\n" 
+    ""
     "Additional ability, buff, glyph, and talent shorthands can be added here"
     "\n\n:::Options:::\n" + defaultOptions + 
     "Additional option shorthands can be added here"
@@ -959,15 +969,21 @@ QString sidebarText[ 11 ][ 4 ] = {
     "Additional operator shorthands can be added here\n\n",
     
     ":::Abilities, Buffs, Glyphs, and Talents:::\n" 
+    "AA=auto_attack\nBT=bloodthirst\nCS=colossus_smash\nWS=wild_strike\nRB=raging_blow\nDBTS=die_by_the_sword\nCharge=charge\n\n"
+    "avatar=avatar\nBB=bloodbath\nSB=storm_bolt\nsbreak=siegebreaker\nDR=dragon_roar\nBS=bladestorm\nRavager=ravager\nUQT=talent.unquenchable_thirst.enabled\nFS=talent.furious_strikes.enabled\nSD=buff.sudden_death\nbloodsurge=buff.bloodsurge.react\nmc=buff.meat_cleaver.stack\n"
     "Additional ability, buff, glyph, and talent shorthands can be added here"
     "\n\n:::Options:::\n" + defaultOptions + 
+    "CS = debuff.colossus_smash.up\nenrage = buff.enrage.up\nenrage<# = buff.enrage.remains<#\nenrage># = buff.enrage.remains>#\nRB# = buff.raging_blow.stack=#\n"
     "Additional option shorthands can be added here"
     "\n\n:::Operators:::\n" + defaultOperators +
     "Additional operator shorthands can be added here\n\n",
     
     ":::Abilities, Buffs, Glyphs, and Talents:::\n" 
+    "AA=auto_attack\nSS=shield_slam\nR=revenge\nD=devastate\nTC=thunder_clap\nSBk=shield_block\nSBr=shield_barrier\nSW=shield_wall\nLS=last_stand\nDS=demoralizing_shout\nER=enraged_regeneration\nIV=impending_victory\nDR=dragon_roar\nSB=storm_bolt\nBS=bladestorm\nBB=bloodbath\nRavager=ravager\nShockwave=shockwave\nAvatar=avatar\nCharge=charge\n\n"
+    "SW=shield_wall\nLS=last_stand\nER=enraged_regeneration\nSBk=shield_block\nSBr=shield_barrier\nDS=demoralizing_shout\nRP=resonating_power\nGR=gladiators_resolve\nSB=storm_bolt\nDR=dragon_roar\nBB=bloodbath\nIV=impending_victory\nBS=bladestorm\nAvatar=avatar\nRavager=ravager\nDAP=draenic_armor_potion\n"
     "Additional ability, buff, glyph, and talent shorthands can be added here"
     "\n\n:::Options:::\n" + defaultOptions + 
+    "mCD=(buff.shield_block.up|buff.shield_wall.up|buff.last_stand.up|debuff.demoralizing_shout.up|buff.ravager.up|buff.draenic_armor_potion.up|buff.enraged_regeneration.up)\nsCD=(buff.shield_wall.up|buff.last_stand.up|debuff.demoralizing_shout.up)|(buff.shield_barrier.value>health.max*0.25)\nsCD#=(buff.shield_wall.up|buff.last_stand.up|debuff.demoralizing_shout.up)|(buff.shield_barrier.value>health.max*#*0.01)\nUR=(buff.ultimatum.up|(talent.unyielding_strikes.enabled&buff.unyielding_strikes.max_stack))\nUR#=(buff.ultimatum.up|(talent.unyielding_strikes.enabled&buff.unyielding_strikes.stack>=#))\nrage#=rage>=#\nSBr#=(buff.shield_barrier.value>health.max*#*0.01)\n"
     "Additional option shorthands can be added here"
     "\n\n:::Operators:::\n" + defaultOperators +
     "Additional operator shorthands can be added here\n\n",
@@ -1114,16 +1130,17 @@ void SC_ImportTab::createTooltips()
 {
   choice.comp_type -> setToolTip( "Choose the comparison type." );
 
-  QString sidebarTooltip = "This box specifies the abbreviations used in rotation shorthands. It is divided into three sections.\n"
-                           "The :::Abilities, Buffs, Glyphs, and Talents::: section defines shorthands for abilities, buffs, glyphs, and talents. For example, \"HoW=hammer_of_wrath\", \"DP=divine_purpose\", \"NT=nether_tempest\", etc."
-                           "The :::Options::: section defines conditionals you want to apply to that action. For example, \"E=target.health.pct<20\" is an option you can use to specify execute range."
-                           "Thus, the shorthand \"HoW+E\" would convert to \"hammer_of_wrath,if=target.health.pc<20\"."
+  QString sidebarTooltip = "This box specifies the abbreviations used in rotation shorthands. It is divided into three sections.\n\n"
+                           "The :::Abilities, Buffs, Glyphs, and Talents::: section defines shorthands for abilities, buffs, glyphs, and talents.\n"
+                           "Example, \"HoW=hammer_of_wrath\", \"DP=divine_purpose\", \"NT=nether_tempest\", etc.\n\n"
+                           "The :::Options::: section defines conditionals you want to apply to that action. For example, \"E=target.health.pct<20\" is an option you can use to specify execute range.\n"
+                           "Thus, the shorthand \"HoW+E\" would convert to \"hammer_of_wrath,if=target.health.pc<20\".\n"
                            "For options, the pound sign \"#\" can be used to support a numeric argument and \"$ability_name\" will automatically be replaced with the name of the ability to which the option is being applied.\n"
-                           "Example: The definition \"AD#=active_dot.$ability_name=#\" causes \"NT+AD0\" to translate to \"nether_tempest,if=active_dot.nether_tempest=0\".\n\n"
+                           "Example: The definition \"AD#=active_dot.$ability_name=#\" causes \"NT+AD0\" to translate to \"nether_tempest,if=active_dot.nether_tempest=0\".\n"
                            "The \"W#\" option is special since it adds an extra APL entry; W# should be the only option or should be separated from other options like so: (DP&!FW)W3\n\n"
                            "The :::Operators::: section defines function that act on another abbreviation from the first section, using a period as an operator.\n"
                            "The pound sign works as in the operators section, and \"$operand_name\" will be replaced with the abbreviation being operated upon.\n"
-                           "Example: since \"BU=buff.$operand_name.up\", \"HoW+DP.BU\" would translate to \"hammer_of_wrath,if=buff.divine_purpose.up\"\n\n"
+                           "Example: since \"BU=buff.$operand_name.up\", \"HoW+DP.BU\" would translate to \"hammer_of_wrath,if=buff.divine_purpose.up\"\n"
                            "You can string these together with logical operations, e.g. \"HoW+DP.BU&HP3\" to create \"final_verdict,if=buff.divine_purpose.up&holy_power>=3\".\n\n"
                            "You may define custom abbreviations by adding your own entries to the appropriate section.\n"
                            "See the wiki entry for more details. https://code.google.com/p/simulationcraft/wiki/Automation#Rotation_Comparisons";
