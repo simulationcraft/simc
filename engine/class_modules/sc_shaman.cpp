@@ -5282,9 +5282,9 @@ void shaman_t::init_action_list()
   // In-combat potion
   if ( sim -> allow_potions && level >= 80  )
   {
-    std::string potion_action = "potion,name=" + potion_name + ",if=time>60&(pet.primal_fire_elemental.active|pet.greater_fire_elemental.active|target.time_to_die<=60)";
+    std::string potion_action = "potion,name=" + potion_name + ",if=(talent.storm_elemental_totem.enabled&!talent.primal_elementalist.enabled&pet.storm_elemental_totem.remains>=25)|((!talent.storm_elemental_totem.enabled|talent.primal_elementalist.enabled)&pet.fire_elemental_totem.remains>=25)|target.time_to_die<=30";
 
-    def -> add_action( potion_action, "In-combat potion is linked to Primal or Greater Fire Elemental Totem, after the first 60 seconds of combat." );
+    def -> add_action( potion_action, "In-combat potion is preferentially linked to the Primal Fire Elemental, then the Storm Elemental, then the Greater Fire Elemental Totem, unless combat will end shortly" );
   }
 
   if ( specialization() == SHAMAN_ENHANCEMENT && primary_role() == ROLE_ATTACK )

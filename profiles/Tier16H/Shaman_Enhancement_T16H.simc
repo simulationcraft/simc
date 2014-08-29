@@ -29,8 +29,8 @@ actions=wind_shear
 # Bloodlust casting behavior mirrors the simulator settings for proxy bloodlust. See options 'bloodlust_percent', and 'bloodlust_time'. 
 actions+=/bloodlust,if=target.health.pct<25|time>0.500
 actions+=/auto_attack
-# In-combat potion is linked to Primal or Greater Fire Elemental Totem, after the first 60 seconds of combat.
-actions+=/potion,name=virmens_bite,if=time>60&(pet.primal_fire_elemental.active|pet.greater_fire_elemental.active|target.time_to_die<=60)
+# In-combat potion is preferentially linked to the Primal Fire Elemental, then the Storm Elemental, then the Greater Fire Elemental Totem, unless combat will end shortly
+actions+=/potion,name=virmens_bite,if=(talent.storm_elemental_totem.enabled&!talent.primal_elementalist.enabled&pet.storm_elemental_totem.remains>=25)|((!talent.storm_elemental_totem.enabled|talent.primal_elementalist.enabled)&pet.fire_elemental_totem.remains>=25)|target.time_to_die<=30
 actions+=/blood_fury
 actions+=/arcane_torrent
 actions+=/berserking
