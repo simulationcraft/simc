@@ -488,13 +488,12 @@ public:
   virtual double    composite_melee_speed() const;
   virtual double    composite_melee_haste() const;
   virtual double    composite_spell_haste() const;
-  virtual double    composite_melee_crit() const;
-  virtual double    composite_spell_crit() const;
   virtual double    composite_attribute_multiplier( attribute_e attr ) const;
   virtual double    composite_rating_multiplier( rating_e ) const;
   virtual double    matching_gear_multiplier( attribute_e attr ) const;
   virtual double    composite_parry_rating() const;
   virtual double    composite_parry() const;
+  virtual double    composite_dodge() const;
   virtual double    composite_multistrike() const;
   virtual double    composite_melee_expertise( weapon_t* ) const;
   virtual double    composite_player_multiplier( school_e school ) const;
@@ -5567,28 +5566,6 @@ double death_knight_t::composite_spell_haste() const
   return haste;
 }
 
-// death_knight_t::composite_attack_crit() =================================
-
-double death_knight_t::composite_melee_crit() const
-{
-  double crit = player_t::composite_melee_crit();
-
-  crit += spec.veteran_of_the_third_war -> effectN( 4 ).percent();
-
-  return crit;
-}
-
-// death_knight_t::composite_spell_crit() ==================================
-
-double death_knight_t::composite_spell_crit() const
-{
-  double crit= player_t::composite_spell_crit();
-
-  crit += spec.veteran_of_the_third_war -> effectN( 4 ).percent();
-
-  return crit;
-}
-
 // death_knight_t::init_rng =================================================
 
 void death_knight_t::init_rng()
@@ -6829,6 +6806,17 @@ double death_knight_t::composite_parry() const
     parry += buffs.dancing_rune_weapon -> data().effectN( 1 ).percent();
 
   return parry;
+}
+
+// death_knight_t::composite_dodge ============================================
+
+double death_knight_t::composite_dodge() const
+{
+  double dodge = player_t::composite_dodge();
+
+  dodge += spec.veteran_of_the_third_war -> effectN( 2 ).percent();
+
+  return dodge;
 }
 
 // death_knight_t::composite_player_multiplier ==============================
