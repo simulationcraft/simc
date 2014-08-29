@@ -528,7 +528,8 @@ public:
     QLabel* talents;
     QLabel* glyphs;
     QLabel* gear;
-    QLabel* rotation;
+    QLabel* rotationHeader;
+    QLabel* rotationFooter;
     QLabel* advanced;
     QLabel* sidebar;
     QLabel* footer;
@@ -539,7 +540,8 @@ public:
     QLineEdit* talents;
     QLineEdit* glyphs;
     SC_TextEdit* gear;
-    SC_TextEdit* rotation;
+    SC_TextEdit* rotationHeader;
+    SC_TextEdit* rotationFooter;
     SC_TextEdit* advanced;
     SC_TextEdit* sidebar;
     SC_TextEdit* helpbar;
@@ -1558,7 +1560,8 @@ namespace automation {
                         QString player_talents,
                         QString player_glyphs,
                         QString player_gear,
-                        QString player_rotation,
+                        QString player_rotationHeader,
+                        QString player_rotationFooter,
                         QString advanced_text,
                         QString sidebar_text,
                         QString footer_text
@@ -1594,7 +1597,8 @@ namespace automation {
                              QString player_talents,
                              QString player_glyphs,
                              QString player_gear,
-                             QString precombat_actions,
+                             QString player_rotationHeader,
+                             QString player_rotationFooter,
                              QStringList advanced_text,
                              QString sidebar_text
                            );

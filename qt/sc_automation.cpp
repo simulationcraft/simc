@@ -93,7 +93,8 @@ QString automation::automation_main( int sim_type,
                                   QString player_talents,
                                   QString player_glyphs,
                                   QString player_gear,
-                                  QString player_rotation,
+                                  QString player_rotationHeader,
+                                  QString player_rotationFooter,
                                   QString advanced_text,
                                   QString sidebar_text,
                                   QString footer_text
@@ -120,23 +121,23 @@ QString automation::automation_main( int sim_type,
   switch ( sim_type )
   {
     case 1: // talent simulation
-      profile += auto_talent_sim( player_class, base_profile_info, advanced_list, player_glyphs, player_gear, player_rotation );
+      profile += auto_talent_sim( player_class, base_profile_info, advanced_list, player_glyphs, player_gear, player_rotationHeader );
       break;
     case 2: // glyph simulation
-      profile += auto_glyph_sim( player_class, base_profile_info, player_talents, advanced_list, player_gear, player_rotation );
+      profile += auto_glyph_sim( player_class, base_profile_info, player_talents, advanced_list, player_gear, player_rotationHeader );
       break;
     case 3: // gear simulation
-      profile += auto_gear_sim( player_class, base_profile_info, player_talents, player_glyphs, advanced_list, player_rotation );
+      profile += auto_gear_sim( player_class, base_profile_info, player_talents, player_glyphs, advanced_list, player_rotationHeader );
       break;
     case 4: // rotation simulation
-      profile += auto_rotation_sim( player_class, player_spec, base_profile_info, player_talents, player_glyphs, player_gear, player_rotation, advanced_list, sidebar_text );
+      profile += auto_rotation_sim( player_class, player_spec, base_profile_info, player_talents, player_glyphs, player_gear, player_rotationHeader, player_rotationFooter, advanced_list, sidebar_text );
       break;
     default: // default profile creation
       profile += base_profile_info;
       profile += "talents=" + player_talents + "\n";
       profile += "glyphs=" + player_glyphs + "\n";
       profile += player_gear + "\n";
-      profile += player_rotation + "\n";
+      profile += player_rotationHeader + "\n";
 
   }
   profile += footer_text;
@@ -306,7 +307,8 @@ QString automation::auto_rotation_sim( QString player_class,
                                        QString player_talents,
                                        QString player_glyphs,
                                        QString player_gear,
-                                       QString precombat_actions,
+                                       QString player_rotationHeader,
+                                       QString player_rotationFooter,
                                        QStringList rotation_list,
                                        QString sidebar_text
                                      )
@@ -332,8 +334,8 @@ QString automation::auto_rotation_sim( QString player_class,
       profile += player_gear + "\n";
     //default gear missing
 
-    if ( precombat_actions.size() > 0 )
-      profile += precombat_actions + "\n";
+    if ( player_rotationHeader.size() > 0 )
+      profile += player_rotationHeader + "\n";
     
     // Since action lists can be specified as shorthand with options or as full lists, we need to support both.
     // To do that, let's first split the provided configuration as usual:
@@ -398,6 +400,10 @@ QString automation::auto_rotation_sim( QString player_class,
 
     profile += "\n";
   }
+
+  // add action footer, if it exists
+  if ( player_rotationFooter.size() > 0 )
+    profile += player_rotationFooter + "\n";
 
   return profile;
 }
@@ -782,7 +788,7 @@ QString sidebarText[ 11 ][ 4 ] = {
     "Additional operator shorthands can be added here\n\n",
     
     ":::Abilities, Buffs, Glyphs, and Talents:::\n" 
-    "FB=fireball\nFFB=frostfire_bolt\nSC=scorch\nIB=inferno_blast\nPyro=pyroblast\nComb=combustion\nFN=frost_nova\nFS=flamestrike\nDB=dragons_breath\nCS=counterspell\n\n"
+    "FB=fireball\nFFB=frostfire_bolt\nSC=scorch\nIB=inferno_blast\nPB=pyroblast\nComb=combustion\nFN=frost_nova\nFS=flamestrike\nDB=dragons_breath\nCS=counterspell\n\n"
     "BS=blazing_speed\nIF=ice_floes\nLB=living_bomb\nBW=blast_wave\nMet=meteor\nHU=heating_up\nHS=pyroblast\nRoP=rune_of_power\nIF=incanters_flow\nMI=mirror_image\nPC=prismatic_crystal\nUM=unstable_magic\nKind=kindling\n"
     "Additional ability, buff, glyph, and talent shorthands can be added here"
     "\n\n:::Options:::\n" + defaultOptions + 
@@ -791,7 +797,7 @@ QString sidebarText[ 11 ][ 4 ] = {
     "Additional operator shorthands can be added here\n\n",
     
     ":::Abilities, Buffs, Glyphs, and Talents:::\n" 
-    "FB=frostbolt\nIL=ice_lance\nFFB=frostfire_bolt\nCoC=cone_of_cold\nWJ=water_jet\nFrz=freeze\nFN=frost_nova\nFO=frozen_orb\nIV=icy_veins\nBLY=blizzard\nCS=counterspell\n\n"
+    "FB=frostbolt\nIL=ice_lance\nFFB=frostfire_bolt\nCoC=cone_of_cold\nWJ=water_jet\nFrz=freeze\nFN=frost_nova\nFO=frozen_orb\nIV=icy_veins\nBLY=blizzard\nBLZ=blizzard\nCS=counterspell\n\n"
     "BS=blazing_speed\nIF=ice_floes\nFBomb=frost_bomb\nIN=ice_nova\nCmS=comet_storm\nBF=brain_freeze\nFoF=fingers_of_frost\nRoP=rune_of_power\nIF=incanters_flow\nMI=mirror_image\nPC=prismatic_crystal\nUM=unstable_magic\nTV=thermal_void\n"
     "Additional ability, buff, glyph, and talent shorthands can be added here"
     "\n\n:::Options:::\n" + defaultOptions + 
@@ -837,7 +843,7 @@ QString sidebarText[ 11 ][ 4 ] = {
     
     ":::Abilities, Buffs, Glyphs, and Talents:::\n"
     "AA=auto_attack\nAS=avengers_shield\nCons=consecration\nCS=crusader_strike\nEF=eternal_flame\nES=execution_sentence\nHotR=hammer_of_the_righteous\nHoW=hammer_of_wrath\nHPr=holy_prism\nHW=holy_wrath\nJ=judgment\nLH=lights_hammer\nSS=sacred_shield\nSoI=seal_of_insight\nSoR=seal_of_righteousness\nSoT=seal_of_truth\nSP=seraphim\nSotR=shield_of_the_righteous\nWoG=word_of_glory\n\n"
-    "DP=divine_purpose\nGC=grand_crusader\nSP=seraphim\nSotR=shield_of_the_righteous\nSW=sanctified_wrath\n\n"
+    "DJ=double_jeopardy\nDP=divine_purpose\nGC=grand_crusader\nHA=holy_avenger\nSP=seraphim\nSotR=shield_of_the_righteous\nSW=sanctified_wrath\n\n"
     "Additional ability, buff, glyph, and talent shorthands can be added here"
     "\n\n:::Options:::\n" + defaultOptions + "HP=holy_power\nHP#=holy_power>=#\nFW=glyph.final_wrath.enabled&target.health.pct<=20\nEverything below this line is redundant with the buff syntax method, just here for ease of use\nDP=buff.divine_purpose.react\nSW=talent.sanctified_wrath.enabled\nSP=buff.seraphim.react\n\nGC=buff.grand_crusader.react\nGC#=buff.grand_crusader.remains<#\n"
     "Additional option shorthands can be added here"
@@ -1028,6 +1034,9 @@ QString advRotToolTip = "Rotations can be specified in two ways:\n(1): by shorth
                         "CS+GC&(DP|!FW)\n\n"
                         "See the wiki entry for more details. https://code.google.com/p/simulationcraft/wiki/Automation#Rotation_Comparisons";
 
+QString defaultRotationHeaderToolTip = "Default rotation, specified the same way you would in a regular simc profile.\nIf left blank, the default APL for the chosen spec will be used automatically.";
+QString defaultRotationFooterToolTip = "This box is only used for Rotation comparisons.";
+
 // method to set the sidebar text based on class slection
 void SC_ImportTab::setSidebarClassText()
 {
@@ -1043,7 +1052,7 @@ void SC_ImportTab::compTypeChanged( const int comp )
     advGlyph = textbox.advanced -> document() -> toPlainText();
   else if ( ! textbox.gear -> isEnabled() )
     advGear = textbox.advanced -> document() -> toPlainText();
-  else if ( ! textbox.rotation -> isEnabled() )
+  else
     advRotation = textbox.advanced -> document() -> toPlainText();
 
   // set the label of the Advanced tab appropriately
@@ -1052,18 +1061,24 @@ void SC_ImportTab::compTypeChanged( const int comp )
   // set the text of the help bar appropriately
   textbox.helpbar -> setText( helpbarText[ comp ] );
   
-  // enable everything but the sidebar (default state) - adjust based on selection below
+  // enable everything but the sidebar & rotation Footer (default state) - adjust based on selection below
   textbox.advanced -> setDisabled( false );
   textbox.gear     -> setDisabled( false );
   textbox.glyphs   -> setDisabled( false );
-  textbox.rotation -> setDisabled( false );
+  textbox.rotationHeader -> setDisabled( false );
   textbox.talents  -> setDisabled( false );
   textbox.sidebar  -> setDisabled( true  );
+  textbox.rotationFooter -> setDisabled( true );
 
   // clear certain tooltips
-  textbox.rotation -> setToolTip( "" );
-  label.rotation -> setToolTip( "" );
-  label.rotation -> setText( "Default Rotation" );
+  textbox.rotationHeader -> setToolTip( defaultRotationHeaderToolTip );
+  label.rotationHeader -> setToolTip( defaultRotationHeaderToolTip );
+  textbox.rotationFooter -> setToolTip( defaultRotationFooterToolTip );
+  label.rotationFooter -> setToolTip( defaultRotationFooterToolTip );
+
+  // Set rotation header/footer texts
+  label.rotationHeader -> setText( "Default Rotation" );
+  label.rotationFooter -> setText( "Unused" );
 
   switch ( comp )
   {
@@ -1091,12 +1106,16 @@ void SC_ImportTab::compTypeChanged( const int comp )
       label.advanced   -> setToolTip( advGearToolTip );
       break;
     case 4:
-      //textbox.rotation -> setDisabled( true );
-      label.rotation -> setText( "Actions Header" );
-      label.rotation -> setToolTip( "Use this box to specify precombat actions and any actions you want to apply to all configurations (ex: auto_attack)." );
-      textbox.rotation -> setToolTip( "Use this box to specify precombat actions and any actions you want to apply to all configurations (ex: auto_attack)." );
+      //textbox.rotationHeader -> setDisabled( true );
+      label.rotationHeader -> setText( "Actions Header" );
+      label.rotationHeader -> setToolTip( "Use this box to specify precombat actions and any actions you want to apply to all configurations (ex: auto_attack).\nThe text in this box will be placed BEFORE each entry in the Rotation Configurations text box." );
+      textbox.rotationHeader -> setToolTip( "Use this box to specify precombat actions and any actions you want to apply to all configurations (ex: auto_attack)\nThe text in this box will be placed BEFORE each entry in the Rotation Configurations text box.." );
+      label.rotationFooter -> setText( "Actions Footer" );
+      label.rotationFooter -> setToolTip( "Use this box to specify any actions you want to apply to all configurations.\nThe text in this box will be placed AFTER each entry in the Rotation Configurations text box." );
+      textbox.rotationFooter -> setToolTip( "Use this box to specify any actions you want to apply to all configurations.\nThe text in this box will be placed AFTER each entry in the Rotation Configurations text box." );
       textbox.advanced -> setText( advRotation );
       textbox.sidebar -> setDisabled( false );
+      textbox.rotationFooter -> setDisabled( false );
       textbox.advanced -> setToolTip( advRotToolTip );
       label.advanced   -> setToolTip( advRotToolTip );
       break;
@@ -1115,7 +1134,8 @@ void SC_MainWindow::startAutomationImport( int tab )
                                       importTab -> textbox.talents -> text(),
                                       importTab -> textbox.glyphs -> text(),
                                       importTab -> textbox.gear -> document() -> toPlainText(),
-                                      importTab -> textbox.rotation -> document() -> toPlainText(),
+                                      importTab -> textbox.rotationHeader -> document() -> toPlainText(),
+                                      importTab -> textbox.rotationFooter -> document() -> toPlainText(),
                                       importTab -> textbox.advanced -> document() -> toPlainText(),
                                       importTab -> textbox.sidebar -> document() -> toPlainText(),
                                       importTab -> textbox.footer -> document() -> toPlainText()
@@ -1141,7 +1161,7 @@ void SC_ImportTab::createTooltips()
                            "The :::Operators::: section defines function that act on another abbreviation from the first section, using a period as an operator.\n"
                            "The pound sign works as in the operators section, and \"$operand_name\" will be replaced with the abbreviation being operated upon.\n"
                            "Example: since \"BU=buff.$operand_name.up\", \"HoW+DP.BU\" would translate to \"hammer_of_wrath,if=buff.divine_purpose.up\"\n"
-                           "You can string these together with logical operations, e.g. \"HoW+DP.BU&HP3\" to create \"final_verdict,if=buff.divine_purpose.up&holy_power>=3\".\n\n"
+                           "You can string these together with logical operations, e.g. \"HoW+DP.BU&HP3\" to create \"hammer_of_wrath,if=buff.divine_purpose.up&holy_power>=3\".\n\n"
                            "You may define custom abbreviations by adding your own entries to the appropriate section.\n"
                            "See the wiki entry for more details. https://code.google.com/p/simulationcraft/wiki/Automation#Rotation_Comparisons";
   textbox.sidebar -> setToolTip( sidebarTooltip );
@@ -1154,7 +1174,8 @@ void SC_ImportTab::createTooltips()
   textbox.talents -> setToolTip( "Default talents, specified either as \"talents=1231231\" or \"1231231\"" );
   textbox.glyphs -> setToolTip( "Default glyphs, specified either as \"glyphs=glyph1/glyph2/glyph3\" or \"glyph1/glyph2/glyph3\"" );
   textbox.gear -> setToolTip( "Default gear, specified the same way you would in a regular simc profile." );
-  textbox.rotation -> setToolTip( "Default rotation, specified the same way you would in a regular simc profile.\nIf left blank, the default APL for the chosen spec will be used automatically." );
+  textbox.rotationHeader -> setToolTip( "Default rotation, specified the same way you would in a regular simc profile.\nIf left blank, the default APL for the chosen spec will be used automatically." );
+  textbox.rotationFooter-> setToolTip( "This box is only used for Rotation comparisons." );
 }
 
 void SC_ImportTab::createAutomationTab()
@@ -1236,7 +1257,7 @@ void SC_ImportTab::createAutomationTab()
   defaultsGroupBox -> setLayout( defaultsFormLayout );
 
   
-  // Elements (3,0) - (6,0) are the default gear and rotation labels and text boxes
+  // Elements (3,0) - (8,0) are the default gear and rotation labels and text boxes
   
   // Create a label and an edit box for gear
   label.gear = new QLabel( tr( "Default Gear" ) );
@@ -1245,35 +1266,40 @@ void SC_ImportTab::createAutomationTab()
   gridLayout -> addWidget( label.gear,   3, 0, 0 );
   gridLayout -> addWidget( textbox.gear, 4, 0, 0 );
   
-  // and again for rotation
-  label.rotation = new QLabel( tr( "Default Rotation" ) );
-  textbox.rotation = new SC_TextEdit;
-  gridLayout -> addWidget( label.rotation,   5, 0, 0 );
-  gridLayout -> addWidget( textbox.rotation, 6, 0, 0 );
+  // and again for rotation Header
+  label.rotationHeader = new QLabel( tr( "Default Rotation" ) );
+  textbox.rotationHeader = new SC_TextEdit;
+  gridLayout -> addWidget( label.rotationHeader,   5, 0, 0 );
+  gridLayout -> addWidget( textbox.rotationHeader, 6, 0, 0 );
 
+  // and again for rotation Footer
+  label.rotationFooter = new QLabel( tr( "Unused" ) );
+  textbox.rotationFooter = new SC_TextEdit;
+  gridLayout -> addWidget( label.rotationFooter,   7, 0, 0 );
+  gridLayout -> addWidget( textbox.rotationFooter, 8, 0, 0 );
 
-  // Elements (2,1) - (5,1) are the Advanced text box, which is actually
+  // Elements (2,1) - (6,1) are the Advanced text box, which is actually
   // N different text boxes that get cycled depending on sim type choice
 
   label.advanced = new QLabel( tr( "Advanced Text Box" ) );
   textbox.advanced = new SC_TextEdit;
   gridLayout -> addWidget( label.advanced,   1, 1, 0 );
-  gridLayout -> addWidget( textbox.advanced, 2, 1, 3, 1, 0 );
+  gridLayout -> addWidget( textbox.advanced, 2, 1, 5, 1, 0 );
 
-  // Element (6,1) is the footer box
+  // Element (8,1) is the footer box
 
   label.footer = new QLabel( tr( "Footer" ) );
   textbox.footer = new SC_TextEdit;
-  gridLayout -> addWidget( label.footer,   5, 1, 0 );
-  gridLayout -> addWidget( textbox.footer, 6, 1, 0 );
+  gridLayout -> addWidget( label.footer,   7, 1, 0 );
+  gridLayout -> addWidget( textbox.footer, 8, 1, 0 );
 
-  // Eleements (2,2) - (6,2) are the Rotation Conversions text box 
+  // Eleements (2,2) - (8,2) are the Rotation Conversions text box 
 
   label.sidebar = new QLabel( tr( "Rotation Abbreviations" ) );
   textbox.sidebar = new SC_TextEdit;
   textbox.sidebar -> setText( " Stuff Goes Here" );
   gridLayout -> addWidget( label.sidebar,   1, 2, 0 );
-  gridLayout -> addWidget( textbox.sidebar, 2, 2, 5, 1, 0 );
+  gridLayout -> addWidget( textbox.sidebar, 2, 2, 7, 1, 0 );
   
   // this adjusts the relative width of each column
   gridLayout -> setColumnStretch( 0, 1 );
@@ -1314,7 +1340,8 @@ void SC_ImportTab::encodeSettings()
   settings.setValue( "talentbox", textbox.talents -> text() );
   settings.setValue( "glyphbox", textbox.glyphs -> text() );
   settings.setValue( "gearbox", textbox.gear -> document() -> toPlainText() );
-  settings.setValue( "rotationbox", textbox.rotation -> document() -> toPlainText() );
+  settings.setValue( "rotationFooterBox", textbox.rotationFooter -> document() -> toPlainText() );
+  settings.setValue( "rotationHeaderBox", textbox.rotationHeader -> document() -> toPlainText() );
   settings.setValue( "advancedbox", textbox.advanced -> document() -> toPlainText() );
   settings.setValue( "advTalent", advTalent );
   settings.setValue( "advGlyph", advGlyph );
@@ -1395,7 +1422,8 @@ void SC_ImportTab::decodeSettings()
   load_setting( settings, "talentbox", textbox.talents, "0000000" );
   load_setting( settings, "glyphbox", textbox.glyphs, "alabaster_shield/focused_shield/final_wrath" );
   load_setting( settings, "gearbox", textbox.gear, "head=\nneck=\n" );
-  load_setting( settings, "rotationbox", textbox.rotation );
+  load_setting( settings, "rotationFooterBox", textbox.rotationFooter );
+  load_setting( settings, "rotationHeaderBox", textbox.rotationHeader );
   load_setting( settings, "advancedbox", textbox.advanced, "default" );
   load_setting( settings, "advTalent", &advTalent, "0000000\n1111111\n2222222" );
   load_setting( settings, "advGlyph", &advGlyph, "alabaster_shield/focused_shield\nfinal_wrath/word_of_glory" );
