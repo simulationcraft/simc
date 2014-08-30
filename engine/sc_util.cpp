@@ -2608,6 +2608,8 @@ std::string util::google_image_chart_encode( const std::string& str )
       temp += "%26";
     else if ( c == '|' )
       temp += "%7E"; // pipe is a newline in google API, replace with ~
+    else if ( c == '>' )
+      temp += "%3E";
     else
       temp += c;
   }
