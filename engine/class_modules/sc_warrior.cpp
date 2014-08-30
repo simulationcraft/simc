@@ -119,6 +119,9 @@ public:
     buff_t* tier17_4pc_arms;
     buff_t* tier17_4pc_fury;
     buff_t* tier17_4pc_fury_driver;
+    buff_t* pvp_2pc_fury;
+    buff_t* pvp_2pc_arms;
+    buff_t* pvp_2pc_prot;
   } buff;
 
   // Cooldowns
@@ -1312,6 +1315,9 @@ struct bloodthirst_t: public warrior_attack_t
 
     c += data().effectN( 4 ).percent();
 
+    if ( p() -> buff.pvp_2pc_fury -> up() )
+      c += p() -> buff.pvp_2pc_fury -> default_value;
+
     return c;
   }
 
@@ -1390,6 +1396,10 @@ struct charge_t: public warrior_attack_t
   void execute()
   {
     warrior_attack_t::execute();
+
+    p() -> buff.pvp_2pc_arms -> trigger();
+    p() -> buff.pvp_2pc_fury -> trigger();
+    p() -> buff.pvp_2pc_prot -> trigger();
 
     if ( first_charge )
       first_charge = !first_charge;
@@ -2027,6 +2037,16 @@ struct mortal_strike_t: public warrior_attack_t
     }
   }
 
+  double composite_crit() const
+  {
+    double cc = melee_attack_t::composite_crit();
+
+    if ( p() -> buff.pvp_2pc_arms -> up() )
+      cc += p() -> buff.pvp_2pc_arms -> default_value;
+
+    return cc;
+  }
+
   void update_ready( timespan_t cd_duration )
   {
     if ( p() -> buff.tier17_4pc_arms -> up() )
@@ -2456,6 +2476,16 @@ struct shield_slam_t: public warrior_attack_t
       am *= 1.0 + p() -> talents.heavy_repercussions -> effectN( 1 ).percent();
 
     return am;
+  }
+
+  double composite_crit() const
+  {
+    double c = warrior_attack_t::composite_crit();
+
+    if ( p() -> buff.pvp_2pc_prot -> up() )
+      c += p() -> buff.pvp_2pc_prot -> default_value;
+
+    return c;
   }
 
   void execute()
@@ -4550,6 +4580,15 @@ void warrior_t::create_buffs()
 
   buff.tier17_4pc_fury_driver = buff_creator_t( this, "rampage_driver", new_sets.set( WARRIOR_FURY, T17, B4 ) -> effectN( 1 ).trigger() )
     .tick_callback( tier17_4pc_fury );
+
+  buff.pvp_2pc_arms = buff_creator_t( this, "pvp_2pc_arms", new_sets.set( WARRIOR_ARMS, PVP, B2 ) -> effectN( 1 ).trigger() )
+    .default_value( new_sets.set( WARRIOR_ARMS, PVP, B2 ) -> effectN( 1 ).trigger() -> effectN( 1 ).percent() );
+
+  buff.pvp_2pc_fury = buff_creator_t( this, "pvp_2pc_fury", new_sets.set( WARRIOR_FURY, PVP, B2 ) -> effectN( 1 ).trigger() )
+    .default_value( new_sets.set( WARRIOR_FURY, PVP, B2 ) -> effectN( 1 ).trigger() -> effectN( 1 ).percent() );
+
+  buff.pvp_2pc_prot = buff_creator_t( this, "pvp_2pc_prot", new_sets.set( WARRIOR_PROTECTION, PVP, B2 ) -> effectN( 1 ).trigger() )
+    .default_value( new_sets.set( WARRIOR_PROTECTION, PVP, B2 ) -> effectN( 1 ).trigger() -> effectN( 1 ).percent() );
 
   buff.unyielding_strikes = buff_creator_t( this, "unyielding_strikes", talents.unyielding_strikes -> effectN( 1 ).trigger() )
     .default_value( talents.unyielding_strikes -> effectN( 1 ).trigger() -> effectN( 1 ).resource( RESOURCE_RAGE ) )
