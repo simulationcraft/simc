@@ -2087,6 +2087,15 @@ struct raging_blow_attack_t: public warrior_attack_t
     if ( aoe ) ++aoe;
 
     warrior_attack_t::execute();
+
+    if ( execute_state -> result == RESULT_CRIT )
+    {
+      if ( rng().roll( p() -> new_sets.set( WARRIOR_FURY, T17, B2 ) -> proc_chance() ) )
+      {
+        p() -> enrage();
+        p() -> proc.t17_2pc_fury -> occur();
+      }
+    }
   }
 };
 
@@ -2134,15 +2143,6 @@ struct raging_blow_t: public warrior_attack_t
       if ( mh_attack -> execute_state -> result == RESULT_CRIT &&
            oh_attack -> execute_state -> result == RESULT_CRIT )
            p() -> buff.raging_blow_glyph -> trigger();
-      if ( mh_attack -> execute_state -> result == RESULT_CRIT ||
-           oh_attack -> execute_state -> result == RESULT_CRIT )
-      {
-        if ( rng().roll( p() -> new_sets.set( WARRIOR_FURY, T17, B2 ) -> proc_chance() ) )
-        {
-          p() -> enrage();
-          p() -> proc.t17_2pc_fury -> occur();
-        }
-      }
       p() -> buff.raging_wind -> trigger();
       p() -> buff.meat_cleaver -> expire();
     }
