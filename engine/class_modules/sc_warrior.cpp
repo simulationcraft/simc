@@ -1888,6 +1888,7 @@ struct impending_victory_heal_t: public warrior_heal_t
   {
     pct_heal = data().effectN( 1 ).percent();
     base_pct_heal = pct_heal;
+    background = true;
   }
 
   double calculate_direct_amount( action_state_t* state )
@@ -1970,7 +1971,6 @@ struct heroic_charge_t: public warrior_attack_t
     charge = new charge_t( p, options_str );
     add_child( leap );
     add_child( charge );
-    dual = true;
     min_gcd = timespan_t::from_millis( 750 );
   }
 
@@ -2234,7 +2234,8 @@ struct blood_craze_t: public residual_action::residual_periodic_action_t < warri
   blood_craze_t( warrior_t* p ):
     base_t( "blood_craze", p, p -> spec.blood_craze )
   {
-    hasted_ticks = harmful = tick_may_crit = false;
+    hasted_ticks = harmful = false;
+    background = true;
     base_tick_time = p -> spec.blood_craze -> effectN( 1 ).trigger() -> effectN( 1 ).period();
     dot_duration = p -> spec.blood_craze -> effectN( 1 ).trigger() -> duration() + timespan_t::from_seconds( 2 ); // Blood craze actually ticks for 5 seconds, because... reasons?
     dot_behavior = DOT_REFRESH;
@@ -2248,7 +2249,7 @@ struct second_wind_t: public warrior_heal_t
   second_wind_t( warrior_t* p ):
     warrior_heal_t( "second_wind", p, p -> talents.second_wind )
   {
-    callbacks = false;
+    background = callbacks = false;
   }
 
   void execute()
@@ -2323,10 +2324,9 @@ struct rend_t: public warrior_attack_t
   {
     parse_options( NULL, options_str );
     stancemask = STANCE_BATTLE | STANCE_DEFENSE;
-    hasted_ticks = tick_zero = false;
+    hasted_ticks = false;
     dot_behavior = DOT_REFRESH;
     tick_may_crit = true;
-    may_multistrike = 1;
     add_child( burst );
   }
 
@@ -2706,6 +2706,7 @@ struct victory_rush_heal_t: public warrior_heal_t
     warrior_heal_t( "victory_rush_heal", p, p -> find_spell( 118779 ) )
   {
     pct_heal = data().effectN( 1 ).percent() * ( 1 + p -> glyphs.victory_rush -> effectN( 1 ).percent() );
+    background = true;
   }
   resource_e current_resource() const { return RESOURCE_NONE; }
 };
@@ -3069,7 +3070,7 @@ struct enhanced_rend_t: public warrior_spell_t
   enhanced_rend_t( warrior_t* p ):
     warrior_spell_t( "enhanced_rend", p, p -> find_spell( 174736 ) )
   {
-    dual = true;
+    background = true;
   }
 
   double action_multiplier() const
@@ -3123,6 +3124,7 @@ struct rallying_cry_heal_t: public warrior_heal_t
     warrior_heal_t( "glyph_of_rallying_cry", p, p -> glyphs.rallying_cry )
   {
     percent = data().effectN( 1 ).percent();
+    background = true;
   }
 
   void execute()
@@ -3235,7 +3237,6 @@ struct shield_barrier_t: public warrior_action_t < absorb_t >
     parse_options( NULL, options_str );
     stancemask = STANCE_GLADIATOR | STANCE_DEFENSE;
     use_off_gcd = true;
-    may_crit = false;
     target = player;
     attack_power_mod.direct = 2.75; // Effect #1 is not correct.
   }
@@ -3284,10 +3285,6 @@ struct shield_block_t: public warrior_spell_t
     cooldown -> charges = 2;
     use_off_gcd = true;
   }
-  shield_block_t( warrior_t* p ):
-    warrior_spell_t( "shield_block", p, p -> find_class_spell( "Shield Block" ) )
-  {
-  }
 
   double cost() const
   {
@@ -3335,10 +3332,6 @@ struct shield_charge_t: public warrior_spell_t
     base_teleport_distance = data().max_range();
     movement_directionality = MOVEMENT_OMNI;
     use_off_gcd = true;
-  }
-  shield_charge_t( warrior_t* p ):
-    warrior_spell_t( "shield_charge", p, p -> find_spell( 156321 ) )
-  {
   }
 
   void execute()
@@ -3549,6 +3542,7 @@ struct sweeping_strikes_t: public warrior_spell_t
   {
     parse_options( NULL, options_str );
     stancemask = STANCE_BATTLE;
+    use_off_gcd = true;
     cooldown -> duration = data().cooldown();
     cooldown -> duration += p -> perk.enhanced_sweeping_strikes -> effectN( 2 ).time_value();
   }
