@@ -2723,7 +2723,7 @@ struct dire_beast_t: public hunter_spell_t
 struct bestial_wrath_t: public hunter_spell_t
 {
   bestial_wrath_t( hunter_t* player, const std::string& options_str ):
-    hunter_spell_t( "bestial_wrath", player, player -> find_specialization_spell( "Bestial Wrath" ) )
+    hunter_spell_t( "bestial_wrath", player, player -> specs.bestial_wrath )
   {
     parse_options( NULL, options_str );
     harmful = false;
@@ -3247,7 +3247,6 @@ void hunter_t::create_buffs()
 
   buffs.bestial_wrath                = buff_creator_t( this, "bestial_wrath", specs.bestial_wrath )
     .cd( timespan_t::zero() )
-    .chance( specs.the_beast_within -> ok() )
     .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
 
   buffs.bestial_wrath -> buff_duration += new_sets.set( SET_MELEE, T14, B4 ) -> effectN( 1 ).time_value();
