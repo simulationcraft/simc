@@ -564,7 +564,8 @@ public:
     //Head Long Rush reduces the cooldown depending on the amount of haste.
     if ( headlongrush )
     {
-      cd_duration = ab::cooldown -> duration;
+      if ( cd_duration < timespan_t::zero() )
+        cd_duration = ab::cooldown -> duration;
       cd_duration *= ab::player -> cache.attack_haste();
     }
     ab::update_ready( cd_duration );
@@ -2029,7 +2030,10 @@ struct mortal_strike_t: public warrior_attack_t
   void update_ready( timespan_t cd_duration )
   {
     if ( p() -> buff.tier17_4pc_arms -> up() )
-      cd_duration += cooldown -> duration * p() -> buff.tier17_4pc_arms -> data().effectN( 1 ).percent();
+    {
+      cd_duration = cooldown -> duration;
+      cd_duration *= 1.0 + p() -> buff.tier17_4pc_arms -> data().effectN( 1 ).percent();
+    }
 
     warrior_attack_t::update_ready( cd_duration );
   }
