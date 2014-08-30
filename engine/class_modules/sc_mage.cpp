@@ -197,6 +197,9 @@ public:
   {
     const spell_data_t* nether_attunement;
     const spell_data_t* shatter;
+    const spell_data_t* frost_armor;
+    const spell_data_t* mage_armor;
+    const spell_data_t* molten_armor;
   } passives;
 
   // Perks
@@ -2373,35 +2376,6 @@ struct flamestrike_t : public mage_spell_t
   }
 };
 
-// Frost Armor Spell ========================================================
-
-struct frost_armor_t : public mage_spell_t
-{
-  frost_armor_t( mage_t* p, const std::string& options_str ) :
-    mage_spell_t( "frost_armor", p, p -> find_specialization_spell( "Frost Armor" ) )
-  {
-    parse_options( NULL, options_str );
-    harmful = false;
-  }
-
-  virtual void execute()
-  {
-    mage_spell_t::execute();
-
-    p() -> buffs.molten_armor -> expire();
-    p() -> buffs.mage_armor -> expire();
-    p() -> buffs.frost_armor -> trigger();
-  }
-
-  virtual bool ready()
-  {
-    if ( p() -> buffs.frost_armor -> check() )
-      return false;
-
-    return mage_spell_t::ready();
-  }
-};
-
 // Frost Bomb Spell ===============================================================
 
 struct frost_bomb_explosion_t : public mage_spell_t
@@ -3102,35 +3076,6 @@ struct living_bomb_t : public mage_spell_t
   }
 };
 
-// Mage Armor Spell =========================================================
-
-struct mage_armor_t : public mage_spell_t
-{
-  mage_armor_t( mage_t* p, const std::string& options_str ) :
-    mage_spell_t( "mage_armor", p, p -> find_specialization_spell( "Mage Armor" ) )
-  {
-    parse_options( NULL, options_str );
-    harmful = false;
-  }
-
-  virtual void execute()
-  {
-    mage_spell_t::execute();
-
-    p() -> buffs.frost_armor -> expire();
-    p() -> buffs.molten_armor -> expire();
-    p() -> buffs.mage_armor -> trigger();
-  }
-
-  virtual bool ready()
-  {
-    if ( p() -> buffs.mage_armor -> check() )
-      return false;
-
-    return mage_spell_t::ready();
-  }
-};
-
 // Meteor Spell ========================================================
 
 struct meteor_impact_t : public mage_spell_t
@@ -3150,7 +3095,7 @@ struct meteor_impact_t : public mage_spell_t
   }
 
   void execute()
-  {
+  { 
     aoe = targets_hit;
     if ( targets_hit > 0 ) // aoe = 1 will hit 2 targets, subtract one to match.
       --aoe;
@@ -3243,37 +3188,6 @@ struct mirror_image_t : public mage_spell_t
     }
   }
 };
-
-// Molten Armor Spell =======================================================
-
-struct molten_armor_t : public mage_spell_t
-{
-  molten_armor_t( mage_t* p, const std::string& options_str ) :
-    mage_spell_t( "molten_armor", p, p -> find_specialization_spell( "Molten Armor" ) )
-  {
-    parse_options( NULL, options_str );
-    harmful = false;
-  }
-
-  virtual void execute()
-  {
-    mage_spell_t::execute();
-
-    p() -> buffs.frost_armor -> expire();
-    p() -> buffs.mage_armor -> expire();
-    p() -> buffs.molten_armor -> trigger();
-  }
-
-  virtual bool ready()
-  {
-    if ( p() -> buffs.molten_armor -> check() )
-      return false;
-
-    return mage_spell_t::ready();
-  }
-};
-
-
 
 // Nether Tempest AoE Spell ====================================================
 struct nether_tempest_aoe_t: public mage_spell_t
@@ -4181,7 +4095,6 @@ action_t* mage_t::create_action( const std::string& name,
   if ( name == "fire_blast"        ) return new              fire_blast_t( this, options_str );
   if ( name == "fireball"          ) return new                fireball_t( this, options_str );
   if ( name == "flamestrike"       ) return new             flamestrike_t( this, options_str );
-  if ( name == "frost_armor"       ) return new             frost_armor_t( this, options_str );
   if ( name == "frost_bomb"        ) return new              frost_bomb_t( this, options_str );
   if ( name == "frostbolt"         ) return new               frostbolt_t( this, options_str );
   if ( name == "frostfire_bolt"    ) return new          frostfire_bolt_t( this, options_str );
@@ -4191,7 +4104,6 @@ action_t* mage_t::create_action( const std::string& name,
   if ( name == "icy_veins"         ) return new               icy_veins_t( this, options_str );
   if ( name == "inferno_blast"     ) return new           inferno_blast_t( this, options_str );
   if ( name == "living_bomb"       ) return new             living_bomb_t( this, options_str );
-  if ( name == "mage_armor"        ) return new              mage_armor_t( this, options_str );
   if ( name == "arcane_orb"        ) return new              arcane_orb_t( this, options_str );
   if ( name == "meteor"            ) return new                  meteor_t( this, options_str );
   if ( name == "comet_storm"       ) return new             comet_storm_t( this, options_str );
@@ -4211,7 +4123,6 @@ action_t* mage_t::create_action( const std::string& name,
     }
   }
   if ( name == "mirror_image"      ) return new            mirror_image_t( this, options_str );
-  if ( name == "molten_armor"      ) return new            molten_armor_t( this, options_str );
   if ( name == "nether_tempest"    ) return new          nether_tempest_t( this, options_str );
   if ( name == "presence_of_mind"  ) return new        presence_of_mind_t( this, options_str );
   if ( name == "pyroblast"         ) return new               pyroblast_t( this, options_str );
@@ -4302,6 +4213,9 @@ void mage_t::init_spells()
   passives.nether_attunement = ( find_spell( 117957 ) -> is_level( level ) ) ? find_spell( 117957 ) : spell_data_t::not_found();
   passives.shatter           = find_specialization_spell( "Shatter" ); // BUG: Doesn't work at present as Shatter isn't tagged as a spec of Frost.
   passives.shatter           = ( find_spell( 12982 ) -> is_level( level ) ) ? find_spell( 12982 ) : spell_data_t::not_found();
+  passives.frost_armor       = find_specialization_spell( "Frost Armor" );
+  passives.mage_armor        = find_specialization_spell( "Mage Armor" );
+  passives.molten_armor      = find_specialization_spell( "Molten Armor" );
 
 
   // Perks - Fire
@@ -4921,8 +4835,6 @@ double mage_t::composite_rating_multiplier( rating_e rating) const
 
   return m;
 
-
-
 }
 
 
@@ -5149,6 +5061,14 @@ void mage_t::arise()
 
   if ( perks.enhanced_frostbolt -> ok() && specialization() == MAGE_FROST )
     buffs.enhanced_frostbolt -> trigger();
+
+  if ( passives.molten_armor -> ok() )
+    buffs.molten_armor -> trigger();
+  else if ( passives.frost_armor -> ok() )
+    buffs.frost_armor -> trigger();
+  else if ( passives.mage_armor -> ok() )
+    buffs.mage_armor -> trigger();
+
 }
 
 // Copypasta, execept for target selection. This is a massive kludge. Buyer
