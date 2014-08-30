@@ -73,7 +73,7 @@ public:
   {
     buff_t* aspect_of_the_pack;
     buff_t* beast_cleave;
-    buff_t* beast_within;
+    buff_t* bestial_wrath;
     buff_t* bombardment;
     buff_t* careful_aim;
     buff_t* cobra_strikes;
@@ -448,8 +448,8 @@ public:
     if ( c == 0 )
       return 0;
 
-    if ( p() -> buffs.beast_within -> check() )
-      c *= ( 1.0 + p() -> buffs.beast_within -> data().effectN( 1 ).percent() );
+    if ( p() -> buffs.bestial_wrath -> check() )
+      c *= ( 1.0 + p() -> buffs.bestial_wrath -> data().effectN( 6 ).percent() );
 
     return c;
   }
@@ -507,8 +507,8 @@ void trigger_tier16_bm_4pc_brutal_kinship( hunter_t* p )
     return;
   if ( !p -> new_sets.has_set_bonus( SET_MELEE, T16, B4 ) )
     return;
-  if ( p -> buffs.beast_within -> check() )
-    p -> buffs.tier16_4pc_bm_brutal_kinship -> trigger( 1, 0, 1, p -> buffs.beast_within -> remains() );
+  if ( p -> buffs.bestial_wrath -> check() )
+    p -> buffs.tier16_4pc_bm_brutal_kinship -> trigger( 1, 0, 1, p -> buffs.bestial_wrath -> remains() );
 }
 
 namespace pets
@@ -2652,8 +2652,8 @@ struct moc_t: public ranged_attack_t
   virtual double cost() const
   {
     double c = ranged_attack_t::cost();
-    if ( p() -> buffs.beast_within -> check() )
-      c *= ( 1.0 + p() -> buffs.beast_within -> data().effectN( 1 ).percent() );
+    if ( p() -> buffs.bestial_wrath -> check() )
+      c *= ( 1.0 + p() -> buffs.bestial_wrath -> data().effectN( 6 ).percent() );
     return c;
   }
 
@@ -2731,12 +2731,12 @@ struct bestial_wrath_t: public hunter_spell_t
 
   virtual void execute()
   {
-    p() -> buffs.beast_within  -> trigger();
+    p() -> buffs.bestial_wrath  -> trigger();
     p() -> active.pet -> buffs.bestial_wrath -> trigger();
     if ( p() -> new_sets.has_set_bonus( HUNTER_BEAST_MASTERY, T17, B4 ) )
     {
       for ( unsigned int i = 0; i < p() -> hunter_main_pets.size() && i < 1; ++i )
-        p() -> hunter_main_pets[i] -> tier17_4pc_bm( p() -> buffs.beast_within -> buff_duration );
+        p() -> hunter_main_pets[i] -> tier17_4pc_bm( p() -> buffs.bestial_wrath -> buff_duration );
     }
     hunter_spell_t::execute();
   }
@@ -3245,11 +3245,12 @@ void hunter_t::create_buffs()
 {
   player_t::create_buffs();
 
-  buffs.beast_within                = buff_creator_t( this, 34471, "beast_within" )
+  buffs.bestial_wrath                = buff_creator_t( this, "bestial_wrath", specs.bestial_wrath )
+    .cd( timespan_t::zero() )
     .chance( specs.the_beast_within -> ok() )
     .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
 
-  buffs.beast_within -> buff_duration += new_sets.set( SET_MELEE, T14, B4 ) -> effectN( 1 ).time_value();
+  buffs.bestial_wrath -> buff_duration += new_sets.set( SET_MELEE, T14, B4 ) -> effectN( 1 ).time_value();
 
   buffs.bombardment                 = buff_creator_t( this, "bombardment", specs.bombardment -> effectN( 1 ).trigger() );
 
@@ -3482,14 +3483,14 @@ void hunter_t::apl_bm()
   if ( sim -> allow_potions )
   {
     if ( level >= 90 )
-      default_list -> add_action( "potion,name=draenic_agility,if=buff.beast_within.up" );
+      default_list -> add_action( "potion,name=draenic_agility,if=buff.bestial_wrath.up" );
     else if ( level >= 80 )
-      default_list -> add_action( "potion,name=virmens_bite,if=buff.beast_within.up" );
+      default_list -> add_action( "potion,name=virmens_bite,if=buff.bestial_wrath.up" );
   }
   
   default_list ->add_talent(this, "Dire Beast");
   default_list ->add_talent(this, "Fervor", "if=focus<=65");
-  default_list ->add_action(this, "Bestial Wrath", "if=focus>60&!buff.beast_within.up");
+  default_list ->add_action(this, "Bestial Wrath", "if=focus>60&!buff.bestial_wrath.up");
   default_list ->add_action(this, "Multi-Shot", "if=active_enemies>5|(active_enemies>1&pet.cat.buff.beast_cleave.down)");
   default_list ->add_talent(this, "Stampede", "if=(trinket.stat.agility.up|target.time_to_die<=20|(trinket.stacking_stat.agility.stack>10&trinket.stat.agility.cooldown_remains<=3))");
   default_list ->add_talent(this, "Barrage", "if=active_enemies>1");
@@ -3501,7 +3502,7 @@ void hunter_t::apl_bm()
   default_list ->add_talent(this, "Barrage");
   default_list ->add_talent(this, "Powershot");
   default_list ->add_action(this, "Cobra Shot", "if=active_enemies>5");
-  default_list ->add_action(this, "Arcane Shot", "if=buff.thrill_of_the_hunt.react|buff.beast_within.up");
+  default_list ->add_action(this, "Arcane Shot", "if=buff.thrill_of_the_hunt.react|buff.bestial_wrath.up");
   default_list ->add_action("focus_fire,five_stacks=1");
   default_list ->add_action(this, "Arcane Shot", "if=focus>=61");
   if ( level >= 81 )
@@ -3795,11 +3796,11 @@ double hunter_t::composite_player_multiplier( school_e school ) const
        dbc::get_school_mask( school ) & SCHOOL_MAGIC_MASK )
        m *= 1.0 + cache.mastery_value();
 
-  if ( buffs.beast_within -> up() )
-    m *= 1.0 + buffs.beast_within -> data().effectN( 2 ).percent();
+  if ( buffs.bestial_wrath -> up() )
+    m *= 1.0 + buffs.bestial_wrath -> data().effectN( 7 ).percent();
 
   if ( buffs.sniper_training -> up() )
-    m*= 1.0 + cache.mastery_value();
+    m *= 1.0 + cache.mastery_value();
 
   if ( new_sets.has_set_bonus( SET_MELEE, T16, B4 ) )
     m *= 1.0 + buffs.tier16_4pc_bm_brutal_kinship -> stack() * buffs.tier16_4pc_bm_brutal_kinship -> data().effectN( 1 ).percent();
