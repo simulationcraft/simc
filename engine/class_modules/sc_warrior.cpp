@@ -2249,7 +2249,8 @@ struct second_wind_t: public warrior_heal_t
   second_wind_t( warrior_t* p ):
     warrior_heal_t( "second_wind", p, p -> talents.second_wind )
   {
-    background = callbacks = false;
+    callbacks = false;
+    background = true;
   }
 
   void execute()
