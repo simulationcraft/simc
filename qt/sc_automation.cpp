@@ -340,6 +340,7 @@ QString automation::auto_rotation_sim( QString player_class,
     // Since action lists can be specified as shorthand with options or as full lists or a mix, we need to support both.
     // To do that, let's first split the provided configuration as usual:
     QStringList actionList = splitPreservingComments( rotation_list[ i ] );
+    QString name; // placeholder for naming the actor based on shorthand
 
     // cycle through the actionList handling each entry one at a time
     for ( int j = 0; j < actionList.size(); j++ )
@@ -349,13 +350,19 @@ QString automation::auto_rotation_sim( QString player_class,
       // comments, longhand entries, and other unrecognizeable text just gets appended line by line.
       // we only need to perform conversions on shorthand entries, so we look for those specifically
 
-      // check for a shorthand by looking for a ">" in something that isn't a comment or a longhand line
+      // check for a shorthand by looking for a ">" in something that isn't a comment, name, or a longhand line
       QStringList shorthandList = entry.split( ">", QString::SkipEmptyParts );
-      if ( ! entry.startsWith( "#" ) && ! entry.contains( "actions+=") && ! entry.contains( "actions=" ) && shorthandList.size() > 1 )
+      if ( ! entry.startsWith( "#" ) && ! entry.startsWith( "name=") && ! entry.contains( "actions+=") && ! entry.contains( "actions=" ) && shorthandList.size() > 1 )
       {
         // send shorthandList off to a method for conversion based on player class and spec
         QStringList convertedAPL = convert_shorthand( shorthandList, sidebar_text );
         
+        // use the shorthand to create a name for this actor, if we haven't already
+        if ( name.length() == 0 )
+        {
+          name = entry;
+          profile += "name=" + name + "\n";
+        }
         // add each line of the result to profile
         for ( int q = 0; q < convertedAPL.size(); q++ )
           profile += convertedAPL[ q ] + "\n";
