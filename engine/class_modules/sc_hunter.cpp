@@ -283,6 +283,7 @@ public:
   } mastery;
 
   stats_t* stats_stampede;
+  stats_t* stats_tier17_4pc_bm;
 
   double pet_multiplier;
 
@@ -307,6 +308,7 @@ public:
     glyphs( glyphs_t() ),
     mastery( mastery_spells_t() ),
     stats_stampede( nullptr ),
+    stats_tier17_4pc_bm( nullptr ),
     pet_multiplier( 1.0 )
   {
     // Cooldowns
@@ -834,6 +836,25 @@ public:
     base_t::summon( duration );
 
     o() -> active.pet = this;
+  }
+
+  void tier17_4pc_bm( timespan_t duration )
+  {
+    if ( this == o() -> active.pet )
+      return;
+
+    type = PLAYER_GUARDIAN;
+
+    for ( size_t i = 0; i < stats_list.size(); ++i )
+      if ( !( stats_list[i] -> parent ) )
+        o() -> stats_tier17_4pc_bm -> add_child( stats_list[i] );
+
+    base_t::summon( duration );
+    // pet appears at the target
+    current.distance = 0;
+
+    // pet swings immediately (without an execute time)
+    if ( !main_hand_attack -> execute_event ) main_hand_attack -> execute();
   }
 
   void stampede_summon( timespan_t duration )
@@ -2712,7 +2733,11 @@ struct bestial_wrath_t: public hunter_spell_t
   {
     p() -> buffs.beast_within  -> trigger();
     p() -> active.pet -> buffs.bestial_wrath -> trigger();
-
+    if ( p() -> new_sets.has_set_bonus( HUNTER_BEAST_MASTERY, T17, B4 ) )
+    {
+      for ( unsigned int i = 0; i < p() -> hunter_main_pets.size() && i < 1; ++i )
+        p() -> hunter_main_pets[i] -> tier17_4pc_bm( p() -> buffs.beast_within -> buff_duration );
+    }
     hunter_spell_t::execute();
   }
 
@@ -3211,6 +3236,7 @@ void hunter_t::init_base_stats()
     pet_multiplier *= 1.0 + find_racial_spell( "Command" ) -> effectN( 1 ).percent();
 
   stats_stampede = get_stats( "stampede" );
+  stats_tier17_4pc_bm = get_stats( "tier17_4pc_bm" );
 }
 
 // hunter_t::init_buffs =====================================================
