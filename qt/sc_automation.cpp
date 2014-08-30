@@ -955,17 +955,16 @@ QString sidebarText[ 11 ][ 4 ] = {
     "Additional operator shorthands can be added here\n\n",
     
     ":::Abilities, Buffs, Glyphs, and Talents:::\n" 
-    "AA=auto_attack\nSS=shield_slam\nR=revenge\nD=devastate\nTC=thunder_clap\nSBk=shield_block\nSBr=shield_barrier\nSW=shield_wall\nLS=last_stand\nDS=demoralizing_shout\nER=enraged_regeneration\nIV=impending_victory\nDR=dragon_roar\nSB=storm_bolt\nBS=bladestorm\nBB=bloodbath\nRavager=ravager\nShockwave=shockwave\nAvatar=avatar\nCharge=charge\n\n"
-    "SW=shield_wall\nLS=last_stand\nER=enraged_regeneration\nSBk=shield_block\nSBr=shield_barrier\nDS=demoralizing_shout\nRP=resonating_power\nGR=gladiators_resolve\nSB=storm_bolt\nDR=dragon_roar\nBB=bloodbath\nIV=impending_victory\nBS=bladestorm\nAvatar=avatar\nRavager=ravager\nDAP=draenic_armor_potion\n"
+    "AA=auto_attack\nSS=shield_slam\nR=revenge\nD=devastate\nHS=heroic_strike\nTC=thunder_clap\nDR=dragon_roar\nSB=storm_bolt\nBS=bladestorm\nBB=bloodbath\nSD=sudden_death\nHL=heroic_leap\nExecute=execute\nRavager=ravager\nShockwave=shockwave\nAvatar=avatar\nCharge=charge\nSBk=shield_block\nSBr=shield_barrier\nSW=shield_wall\nLS=last_stand\nDS=demoralizing_shout\nER=enraged_regeneration\nIV=impending_victory\nRP=resonating_power\nUR=unending_rage\nDAP=potion,name=draenic_armor\n\n"
     "Additional ability, buff, glyph, and talent shorthands can be added here"
     "\n\n:::Options:::\n" + defaultOptions + 
-    "mCD=(buff.shield_block.up|buff.shield_wall.up|buff.last_stand.up|debuff.demoralizing_shout.up|buff.ravager.up|buff.draenic_armor_potion.up|buff.enraged_regeneration.up)\nsCD=(buff.shield_wall.up|buff.last_stand.up|debuff.demoralizing_shout.up)|(buff.shield_barrier.value>health.max*0.25)\nsCD#=(buff.shield_wall.up|buff.last_stand.up|debuff.demoralizing_shout.up)|(buff.shield_barrier.value>health.max*#*0.01)\nUR=(buff.ultimatum.up|(talent.unyielding_strikes.enabled&buff.unyielding_strikes.max_stack))\nUR#=(buff.ultimatum.up|(talent.unyielding_strikes.enabled&buff.unyielding_strikes.stack>=#))\nrage#=rage>=#\nSBr#=(buff.shield_barrier.value>health.max*#*0.01)\n"
+    "mCD=(buff.shield_block.up|buff.shield_wall.up|buff.last_stand.up|debuff.demoralizing_shout.up|buff.ravager.up|buff.draenic_armor_potion.up|buff.enraged_regeneration.up)\nsCD=(buff.shield_wall.up|buff.last_stand.up|debuff.demoralizing_shout.up)|(buff.shield_barrier.value>health.max*0.25)\nsCD#=(buff.shield_wall.up|buff.last_stand.up|debuff.demoralizing_shout.up)|(buff.shield_barrier.value>health.max*#*0.01)\nUR=(buff.ultimatum.up|(talent.unyielding_strikes.enabled&buff.unyielding_strikes.max_stack))\nUR#=(buff.ultimatum.up|(talent.unyielding_strikes.enabled&buff.unyielding_strikes.stack>=#))\nrage#=rage>=#\nSBr#=(buff.shield_barrier.value>health.max*#*0.01)\n\n"
     "Additional option shorthands can be added here"
     "\n\n:::Operators:::\n" + defaultOperators +
     "Additional operator shorthands can be added here\n\n",
    
     "N/A"
-  },
+  }
 };
 
 // constant for the varying labels of the advanced text box
