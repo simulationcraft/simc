@@ -1316,7 +1316,10 @@ struct bloodthirst_t: public warrior_attack_t
     c += data().effectN( 4 ).percent();
 
     if ( p() -> buff.pvp_2pc_fury -> up() )
+    {
       c += p() -> buff.pvp_2pc_fury -> default_value;
+      p() -> buff.pvp_2pc_fury -> expire();
+    }
 
     return c;
   }
@@ -2042,7 +2045,10 @@ struct mortal_strike_t: public warrior_attack_t
     double cc = melee_attack_t::composite_crit();
 
     if ( p() -> buff.pvp_2pc_arms -> up() )
+    {
       cc += p() -> buff.pvp_2pc_arms -> default_value;
+      p() -> buff.pvp_2pc_arms -> expire();
+    }
 
     return cc;
   }
@@ -2483,7 +2489,10 @@ struct shield_slam_t: public warrior_attack_t
     double c = warrior_attack_t::composite_crit();
 
     if ( p() -> buff.pvp_2pc_prot -> up() )
+    {
       c += p() -> buff.pvp_2pc_prot -> default_value;
+      p() -> buff.pvp_2pc_prot -> expire();
+    }
 
     return c;
   }
