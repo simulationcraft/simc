@@ -1608,7 +1608,7 @@ std::string chart::reforge_dps( player_t* p )
     util::urlencode( formatted_name );
 
     sc_chart chart( "Reforge Scaling|" + formatted_name, XY_LINE, p -> sim -> print_styles );
-    chart.set_height( 300 );
+    chart.set_height( 400 );
 
     s << chart.create();
 

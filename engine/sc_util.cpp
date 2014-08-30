@@ -3132,6 +3132,7 @@ double stat_itemization_weight( stat_e s )
     case STAT_MULTISTRIKE_RATING:
     case STAT_READINESS_RATING:
     case STAT_VERSATILITY_RATING:
+    case STAT_BONUS_ARMOR:
     case STAT_SPIRIT:
       return 2;
     default:

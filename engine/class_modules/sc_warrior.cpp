@@ -2782,8 +2782,10 @@ struct whirlwind_t: public warrior_attack_t
       oh_attack = new whirlwind_off_hand_t( p );
       add_child( oh_attack );
     }
-    else
+    else if ( !p -> bugs )
       weapon_multiplier = p -> find_spell( 168695 ) -> effectN( 2 ).percent();
+    else // Arms whirlwind got an accidental buff in game when they merged in perks. The whirlwind damage perk was fury-only.
+      weapon_multiplier *= 2;
 
     weapon = &( p -> main_hand_weapon );
   }
