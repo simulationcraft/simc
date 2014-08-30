@@ -5279,16 +5279,16 @@ void shaman_t::init_action_list()
     }
   }
 
-  // In-combat potion
-  if ( sim -> allow_potions && level >= 80  )
-  {
-    std::string potion_action = "potion,name=" + potion_name + ",if=(talent.storm_elemental_totem.enabled&!talent.primal_elementalist.enabled&pet.storm_elemental_totem.remains>=25)|((!talent.storm_elemental_totem.enabled|talent.primal_elementalist.enabled)&pet.fire_elemental_totem.remains>=25)|target.time_to_die<=30";
-
-    def -> add_action( potion_action, "In-combat potion is preferentially linked to the Fire or Storm Elemental, depending on talents, unless combat will end shortly" );
-  }
-
   if ( specialization() == SHAMAN_ENHANCEMENT && primary_role() == ROLE_ATTACK )
   {
+    // In-combat potion
+    if ( sim -> allow_potions && level >= 80  )
+    {
+      std::string potion_action = "potion,name=" + potion_name + ",if=(talent.storm_elemental_totem.enabled&!talent.primal_elementalist.enabled&pet.storm_elemental_totem.remains>=25)|((!talent.storm_elemental_totem.enabled|talent.primal_elementalist.enabled)&pet.fire_elemental_totem.remains>=25)|target.time_to_die<=30";
+
+      def -> add_action( potion_action, "In-combat potion is preferentially linked to the Fire or Storm Elemental, depending on talents, unless combat will end shortly" );
+    }
+
     def -> add_action( "blood_fury" );
     def -> add_action( "arcane_torrent" );
     def -> add_action( "berserking" );
@@ -5346,6 +5346,13 @@ void shaman_t::init_action_list()
   }
   else if ( specialization() == SHAMAN_ELEMENTAL && ( primary_role() == ROLE_SPELL || primary_role() == ROLE_DPS ) )
   {
+    // In-combat potion
+    if ( sim -> allow_potions && level >= 80  )
+    {
+      std::string potion_action = "potion,name=" + potion_name + ",if=buff.ascendance.up|target.time_to_die<=30";
+
+      def -> add_action( potion_action, "In-combat potion is preferentially linked to Ascendance, unless combat will end shortly" );
+    }
     // Sync berserking with ascendance as they share a cooldown, but making sure
     // that no two haste cooldowns overlap, within reason
     def -> add_action( "berserking,if=!buff.bloodlust.up&!buff.elemental_mastery.up&(set_bonus.tier15_4pc_caster=1|(buff.ascendance.cooldown_remains=0&(dot.flame_shock.remains>buff.ascendance.duration|level<87)))" );
