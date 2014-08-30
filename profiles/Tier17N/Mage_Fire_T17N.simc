@@ -18,7 +18,6 @@ spec=fire
 actions.precombat=flask,type=greater_draenic_intellect_flask
 actions.precombat+=/food,type=blackrock_barbecue
 actions.precombat+=/arcane_brilliance
-actions.precombat+=/molten_armor
 actions.precombat+=/snapshot_stats
 actions.precombat+=/rune_of_power
 actions.precombat+=/mirror_image

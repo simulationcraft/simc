@@ -19,7 +19,6 @@ spec=frost
 actions.precombat=flask,type=warm_sun
 actions.precombat+=/food,type=mogu_fish_stew
 actions.precombat+=/arcane_brilliance
-actions.precombat+=/frost_armor
 actions.precombat+=/water_elemental
 actions.precombat+=/snapshot_stats
 actions.precombat+=/rune_of_power
