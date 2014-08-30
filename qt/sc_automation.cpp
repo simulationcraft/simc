@@ -582,7 +582,9 @@ QStringList automation::convert_shorthand( QStringList shorthandList, QString si
           if ( operand.length() > 0 )
           {
             shorthandTable::iterator o = std::find_if( abilityTable.begin(), abilityTable.end(), comp( operand ) );
-            QString operand_string = o -> second;
+            QString operand_string = operand;
+            if ( o != abilityTable.end() )
+               operand_string = o -> second;
             if ( optionsBreakdown[ j ].contains( "$operand_name" ) )
               optionsBreakdown[ j ].replace( "$operand_name", operand_string );
           }
