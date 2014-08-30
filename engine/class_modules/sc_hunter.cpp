@@ -135,6 +135,7 @@ public:
 
   real_ppm_t ppm_tier15_2pc_melee;
   real_ppm_t ppm_tier15_4pc_melee;
+  real_ppm_t tier17_2pc_bm;
 
   // Talents
   struct talents_t
@@ -300,6 +301,7 @@ public:
     procs( procs_t() ),
     ppm_tier15_2pc_melee( *this, std::numeric_limits<double>::min(), RPPM_HASTE ),
     ppm_tier15_4pc_melee( *this, std::numeric_limits<double>::min(), RPPM_HASTE ),
+    tier17_2pc_bm( *this, std::numeric_limits<double>::min(), RPPM_HASTE ),
     talents( talents_t() ),
     specs( specs_t() ),
     glyphs( glyphs_t() ),
@@ -2843,18 +2845,21 @@ struct kill_command_t: public hunter_spell_t
   {
     return p() -> active.pet && hunter_spell_t::ready();
   }
-  
-  void trigger_tier17_2pc_bm()
+
+  bool trigger_tier17_2pc_bm()
   {
     if ( !p() -> new_sets.has_set_bonus( HUNTER_BEAST_MASTERY, T17, B2 ) )
-      return;
+      return false;
 
-    double chance = p() -> new_sets.set( HUNTER_BEAST_MASTERY, T17, B2 ) -> proc_chance();
-    if ( rng().roll( chance ) )
+    bool procced;
+
+    if ( ( procced = p() -> tier17_2pc_bm.trigger() ) != false )
     {
       p() -> cooldowns.bestial_wrath -> reset( true );
       p() -> procs.tier17_2pc_bm -> occur();
     }
+
+    return procced;
   }
 };
 
@@ -3339,6 +3344,8 @@ void hunter_t::init_rng()
   ppm_tier15_2pc_melee.set_frequency( tier15_2pc_melee_rppm );
   ppm_tier15_4pc_melee.set_frequency( 3.0 );
 
+  tier17_2pc_bm.set_frequency( 1.0 );
+
   player_t::init_rng();
 }
 
@@ -3615,6 +3622,7 @@ void hunter_t::reset()
 
   sniper_training = 0;
   movement_ended = - sniper_training_cd -> duration();
+  tier17_2pc_bm.reset();
 }
 
 // hunter_t::arise ==========================================================
