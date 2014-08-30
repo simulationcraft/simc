@@ -29,10 +29,10 @@ actions=auto_shot
 actions+=/blood_fury
 actions+=/berserking
 actions+=/arcane_torrent
-actions+=/potion,name=draenic_agility,if=buff.beast_within.up
+actions+=/potion,name=draenic_agility,if=buff.bestial_wrath.up
 actions+=/dire_beast
 actions+=/fervor,if=focus<=65
-actions+=/bestial_wrath,if=focus>60&!buff.beast_within.up
+actions+=/bestial_wrath,if=focus>60&!buff.bestial_wrath.up
 actions+=/multishot,if=active_enemies>5|(active_enemies>1&pet.cat.buff.beast_cleave.down)
 actions+=/stampede,if=(trinket.stat.agility.up|target.time_to_die<=20|(trinket.stacking_stat.agility.stack>10&trinket.stat.agility.cooldown_remains<=3))
 actions+=/barrage,if=active_enemies>1
@@ -44,7 +44,7 @@ actions+=/glaive_toss
 actions+=/barrage
 actions+=/powershot
 actions+=/cobra_shot,if=active_enemies>5
-actions+=/arcane_shot,if=buff.thrill_of_the_hunt.react|buff.beast_within.up
+actions+=/arcane_shot,if=buff.thrill_of_the_hunt.react|buff.bestial_wrath.up
 actions+=/focus_fire,five_stacks=1
 actions+=/arcane_shot,if=focus>=61
 actions+=/cobra_shot
