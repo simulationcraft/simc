@@ -143,11 +143,7 @@ public:
     buff_t* presence_of_mind;
     buff_t* pyroblast;
     buff_t* rune_of_power;
-    buff_t* tier13_2pc;
     //buff_t* alter_time;
-    buff_t* tier15_2pc_haste;
-    buff_t* tier15_2pc_crit;
-    buff_t* tier15_2pc_mastery;
     buff_t* profound_magic;
     buff_t* potent_flames;
     buff_t* frozen_thoughts;
@@ -920,13 +916,6 @@ struct mage_state_t
     buff_t::expire_override();
 
     mage_state.write_back_state();
-
-    if ( p() -> sets.has_set_bonus( SET_T15_2PC_CASTER ) )
-    {
-      p() -> buffs.tier15_2pc_crit -> trigger();
-      p() -> buffs.tier15_2pc_haste -> trigger();
-      p() -> buffs.tier15_2pc_mastery -> trigger();
-    }
   }
 
   virtual void reset()
@@ -949,14 +938,6 @@ struct arcane_power_t : public buff_t
 
     buff_duration *= 1.0 + p -> glyphs.arcane_power -> effectN( 1 ).percent();
   }
-
-  virtual void expire_override()
-  {
-    buff_t::expire_override();
-
-    mage_t* p = static_cast<mage_t*>( player );
-    p -> buffs.tier13_2pc -> expire();
-  }
 };
 
 // Icy Veins Buff ===========================================================
@@ -967,14 +948,6 @@ struct icy_veins_t : public buff_t
     buff_t( buff_creator_t( p, "icy_veins", p -> find_class_spell( "Icy Veins" ) ).add_invalidate( CACHE_SPELL_HASTE ) )
   {
     cooldown -> duration = timespan_t::zero(); // CD is managed by the spell
-  }
-
-  virtual void expire_override()
-  {
-    buff_t::expire_override();
-
-    mage_t* p = debug_cast<mage_t*>( player );
-    p -> buffs.tier13_2pc -> expire();
   }
 };
 
@@ -1523,11 +1496,6 @@ struct arcane_blast_t : public mage_spell_t
 
     p() -> buffs.arcane_charge -> trigger();
     p() -> buffs.profound_magic -> expire();
-
-    if ( result_is_hit( execute_state -> result ) )
-    {
-      p() -> buffs.tier13_2pc -> trigger( 1, buff_t::DEFAULT_VALUE(), p() -> buffs.tier13_2pc -> default_chance * 2.0 );
-    }
   }
 
   virtual double action_multiplier() const
@@ -1781,16 +1749,6 @@ struct arcane_power_t : public mage_spell_t
     cooldown -> duration *= 1.0 + p -> glyphs.arcane_power -> effectN( 2 ).percent();
   }
 
-  virtual void update_ready( timespan_t cd_override )
-  {
-    cd_override = cooldown -> duration;
-
-    if ( p() -> sets.has_set_bonus( SET_T13_4PC_CASTER ) )
-      cd_override *= ( 1.0 - p() -> buffs.tier13_2pc -> check() * p() -> spells.stolen_time -> effectN( 1 ).base_value() );
-
-    mage_spell_t::update_ready( cd_override );
-  }
-
   virtual void execute()
   {
     mage_spell_t::execute();
@@ -2030,16 +1988,6 @@ struct combustion_t : public mage_spell_t
     }
   }
 
-  virtual void update_ready( timespan_t cd_override )
-  {
-    cd_override = cooldown -> duration;
-
-    if ( p() -> sets.has_set_bonus( SET_T13_4PC_CASTER ) )
-      cd_override *= ( 1.0 - p() -> buffs.tier13_2pc -> check() * p() -> spells.stolen_time -> effectN( 1 ).base_value() );
-
-    mage_spell_t::update_ready( cd_override );
-  }
-
   virtual void execute()
   {
     p() -> cooldowns.inferno_blast -> reset( false );
@@ -2047,12 +1995,6 @@ struct combustion_t : public mage_spell_t
     mage_spell_t::execute();
   }
 
-  virtual void last_tick( dot_t* d )
-  {
-    mage_spell_t::last_tick( d );
-
-    p() -> buffs.tier13_2pc -> expire();
-  }
 };
 
 // Comet Storm Spell =======================================================
@@ -2301,16 +2243,6 @@ struct fireball_t : public mage_spell_t
       base_multiplier *= 1.05;
   }
 
-  virtual void execute()
-  {
-    mage_spell_t::execute();
-
-    if ( result_is_hit( execute_state -> result ) )
-    {
-      p() -> buffs.tier13_2pc -> trigger();
-
-    }
-  }
 
   virtual timespan_t travel_time() const
   {
@@ -2519,7 +2451,6 @@ struct frostbolt_t : public mage_spell_t
       p() -> buffs.fingers_of_frost -> trigger( 1, buff_t::DEFAULT_VALUE(), fof_proc_chance );
       p() -> buffs.brain_freeze -> trigger(1, buff_t::DEFAULT_VALUE(), bf_proc_chance );
 
-      p() -> buffs.tier13_2pc -> trigger();
     }
 
     p() -> buffs.frozen_thoughts -> expire();
@@ -2901,16 +2832,6 @@ struct icy_veins_t : public mage_spell_t
     {
       cooldown -> duration *= 0.5;
     }
-  }
-
-  virtual void update_ready( timespan_t cd_override )
-  {
-    cd_override = cooldown -> duration;
-
-    if ( p() -> sets.has_set_bonus( SET_T13_4PC_CASTER ) )
-      cd_override *= ( 1.0 - p() -> buffs.tier13_2pc -> check() * p() -> spells.stolen_time -> effectN( 1 ).base_value() );
-
-    mage_spell_t::update_ready( cd_override );
   }
 
   virtual void execute()
@@ -4389,18 +4310,11 @@ void mage_t::create_buffs()
   buffs.heating_up           = buff_creator_t( this, "heating_up", find_specialization_spell( "Pyroblast" ) -> ok() ? find_spell( 48107 ) : spell_data_t::not_found() );
   buffs.pyroblast            = buff_creator_t( this, "pyroblast",  find_specialization_spell( "Pyroblast" ) -> ok() ? find_spell( 48108 ) : spell_data_t::not_found() );
 
-  buffs.tier13_2pc           = stat_buff_creator_t( this, "tier13_2pc" )
-                               .spell( find_spell( 105785 ) )
-                               .chance( sets.has_set_bonus( SET_T13_2PC_CASTER ) ? 0.5 : 0.0 );
+
 
   //buffs.alter_time           = new buffs::alter_time_t( this );
   buffs.enhanced_pyrotechnics = buff_creator_t( this, "enhanced_pyrotechnics", find_spell( 157644 ) );
-  buffs.tier15_2pc_crit      = stat_buff_creator_t( this, "tier15_2pc_crit", find_spell( 138317 ) )
-                               .add_stat( STAT_CRIT_RATING, find_spell( 138317 ) -> effectN( 1 ).base_value() );
-  buffs.tier15_2pc_haste     = stat_buff_creator_t( this, "tier15_2pc_haste", find_spell( 138317 ) )
-                               .add_stat( STAT_HASTE_RATING, find_spell( 138317 ) -> effectN( 1 ).base_value() );
-  buffs.tier15_2pc_mastery   = stat_buff_creator_t( this, "tier15_2pc_mastery", find_spell( 138317 ) )
-                               .add_stat( STAT_MASTERY_RATING, find_spell( 138317 ) -> effectN( 1 ).base_value() );
+
 
   buffs.profound_magic       = buff_creator_t( this, "profound_magic" )
                                .spell( find_spell( 145252 ) );
