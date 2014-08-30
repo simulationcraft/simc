@@ -3709,6 +3709,9 @@ struct hammer_of_wrath_t : public paladin_melee_attack_t
     // Cannot be parried or blocked, but can be dodged
     may_parry = may_block = false;
 
+    // Not sure if it's intended, but currently HoW procs seal of truth on beta. 8/30/14 - Alex
+    if ( p -> bugs )
+      trigger_seal_of_truth = true;
     // no weapon multiplier
     weapon_multiplier = 0.0;
 
