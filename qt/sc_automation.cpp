@@ -337,73 +337,43 @@ QString automation::auto_rotation_sim( QString player_class,
     if ( player_rotationHeader.size() > 0 )
       profile += player_rotationHeader + "\n";
     
-    // Since action lists can be specified as shorthand with options or as full lists, we need to support both.
+    // Since action lists can be specified as shorthand with options or as full lists or a mix, we need to support both.
     // To do that, let's first split the provided configuration as usual:
     QStringList actionList = splitPreservingComments( rotation_list[ i ] );
 
-    // look through the split action list and attempt to find something indicating we have a longhand rotation
-    bool longhand = false;
+    // cycle through the actionList handling each entry one at a time
     for ( int j = 0; j < actionList.size(); j++ )
     {
-      if ( actionList[ j ].contains( "actions+=" ) || actionList[ j ].contains( "actions=" ) )
-        longhand = true;
-    }
+      QString entry = actionList[ j ];
 
-    // if we have a longhand form, we can just dump the entire thing to the profile
-    if ( longhand )
-    {
-      for ( int j = 0; j < actionList.size(); j++ )
-        profile += actionList[ j ] + "\n";
-      profile += "\n";
-      continue;
-    }
+      // comments, longhand entries, and other unrecognizeable text just gets appended line by line.
+      // we only need to perform conversions on shorthand entries, so we look for those specifically
 
-    // otherwise we have a shorthand, and need more processing
-
-    // in theory, each actionList entry could be a shorthand, comment, or other option. 
-    // cycle through until we find a line that has a ">" and isn't a comment
-    QStringList shorthandList;
-    int k = -1;
-    do {
-      k++;
-      if ( ! actionList[ k ].startsWith( "#" ) )
-        shorthandList = actionList[ k ].split( ">", QString::SkipEmptyParts );
-    } while ( shorthandList.size() < 2 && k < actionList.size() - 1 );
-
-    // if the shorthandList still has less than two entries, what is this I don't even
-    // just dump it to the profile and let God sort it out
-    if ( shorthandList.size() < 2 )
-    {
-      for ( int j = 0; j < actionList.size(); j++ )
-        profile += actionList[ j ] + "\n";
-      profile += "\n";
-      continue;
-    }
-
-    // If we make it here, we have a shorthand list (hopefully). Now we want to run this through the conversion process
-
-    // send shorthandList off to a method for conversion based on player class and spec
-    QStringList convertedAPL = convert_shorthand( shorthandList, sidebar_text );
-
-    // provide a default name based on the shorthand - any name provided in the configuration will be appended after, and thus override
-      profile += "name=" + actionList[ k ] + "\n";
-
-    // spit out the actionList, replacing the shorthand line with our convertedAPL
-    for ( int j = 0; j < actionList.size(); j++ )
-    {
-      if ( j != k )
-        profile += actionList[ j ] + "\n";
-      else
+      // check for a shorthand by looking for a ">" in something that isn't a comment or a longhand line
+      QStringList shorthandList = entry.split( ">", QString::SkipEmptyParts );
+      if ( ! entry.startsWith( "#" ) && ! entry.contains( "actions+=") && ! entry.contains( "actions=" ) && shorthandList.size() > 1 )
+      {
+        // send shorthandList off to a method for conversion based on player class and spec
+        QStringList convertedAPL = convert_shorthand( shorthandList, sidebar_text );
+        
+        // add each line of the result to profile
         for ( int q = 0; q < convertedAPL.size(); q++ )
           profile += convertedAPL[ q ] + "\n";
+
+        continue;
+      }
+      // otherwise it's some other option or text, we just want to output that like usual
+      else
+        profile += entry + "\n";
     }
 
-    profile += "\n";
-  }
+    // add action footer, if it exists
+    if ( player_rotationFooter.size() > 0 )
+      profile += player_rotationFooter + "\n";
 
-  // add action footer, if it exists
-  if ( player_rotationFooter.size() > 0 )
-    profile += player_rotationFooter + "\n";
+    // leave some space
+    profile += "\n\n";
+  }
 
   return profile;
 }
