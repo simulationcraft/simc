@@ -2735,7 +2735,7 @@ struct bestial_wrath_t: public hunter_spell_t
     p() -> active.pet -> buffs.bestial_wrath -> trigger();
     if ( p() -> new_sets.has_set_bonus( HUNTER_BEAST_MASTERY, T17, B4 ) )
     {
-      for ( unsigned int i = 0; i < p() -> hunter_main_pets.size() && i < 1; ++i )
+      for ( unsigned int i = 0; i < p() -> hunter_main_pets.size() && i < 2; ++i )
         p() -> hunter_main_pets[i] -> tier17_4pc_bm( p() -> buffs.bestial_wrath -> buff_duration );
     }
     hunter_spell_t::execute();
