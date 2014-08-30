@@ -4527,14 +4527,6 @@ void mage_t::apl_precombat()
   // Arcane Brilliance
   precombat -> add_action( this, "Arcane Brilliance" );
 
-  // Armor
-  if ( specialization() == MAGE_ARCANE ) // use Frost Armor for arcane mages with 4p T16
-    precombat -> add_action( this, "Mage Armor" );
-  else if ( specialization() == MAGE_FIRE )
-    precombat -> add_action( this, "Molten Armor" );
-  else
-    precombat -> add_action( this, "Frost Armor" );
-
   // Water Elemental
   if ( specialization() == MAGE_FROST )
     precombat -> add_action( "water_elemental" );
