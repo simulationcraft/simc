@@ -5323,6 +5323,7 @@ void shaman_t::init_action_list()
     single -> add_action( this, spec.maelstrom_weapon, "lightning_bolt", "if=buff.maelstrom_weapon.react>=2&!buff.ascendance.up" );
     single -> add_action( this, "Frost Shock" );
     single -> add_action( this, spec.maelstrom_weapon, "lightning_bolt", "if=buff.maelstrom_weapon.react>=1&!buff.ascendance.up" );
+    single -> add_action( this, "Searing Totem", "if=pet.searing_totem.remains<=20&!pet.fire_elemental_totem.active&!buff.liquid_magma.up" );
 
     // AoE
     aoe -> add_action( this, "Fire Nova", "if=active_dot.flame_shock>=3" );

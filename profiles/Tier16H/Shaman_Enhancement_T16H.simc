@@ -63,6 +63,7 @@ actions.single+=/unleash_elements
 actions.single+=/lightning_bolt,if=buff.maelstrom_weapon.react>=2&!buff.ascendance.up
 actions.single+=/frost_shock
 actions.single+=/lightning_bolt,if=buff.maelstrom_weapon.react>=1&!buff.ascendance.up
+actions.single+=/searing_totem,if=pet.searing_totem.remains<=20&!pet.fire_elemental_totem.active&!buff.liquid_magma.up
 
 # Multi target action priority list
 
