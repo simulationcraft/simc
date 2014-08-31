@@ -631,6 +631,7 @@ public:
     buff_t* beast_cleave;
     buff_t* enhanced_basic_attacks;
     buff_t* tier16_4pc_bm_brutal_kinship;
+    buff_t* tier17_4pc_bm;
   } buffs;
 
   // Gains
@@ -761,6 +762,8 @@ public:
     buffs.enhanced_basic_attacks = buff_creator_t( this, "enhanced_basic_attacks", o() -> perks.enhanced_basic_attacks );
 
     buffs.tier16_4pc_bm_brutal_kinship = buff_creator_t( this, 145737, "tier16_4pc_brutal_kinship" );
+    buffs.tier17_4pc_bm = buff_creator_t( this, "tier17_4pc_bm" )
+      .duration( o() -> specs.bestial_wrath -> duration() );
   }
 
   virtual void init_gains()
@@ -840,7 +843,7 @@ public:
 
   void tier17_4pc_bm( timespan_t duration )
   {
-    if ( this == o() -> active.pet )
+    if ( this == o() -> active.pet || buffs.stampede -> check() )
       return;
 
     type = PLAYER_GUARDIAN;
@@ -853,18 +856,16 @@ public:
     // pet appears at the target
     current.distance = 0;
 
+    buffs.tier17_4pc_bm -> trigger( 1, buff_t::DEFAULT_VALUE(), 1.0, duration );
+
     // pet swings immediately (without an execute time)
     if ( !main_hand_attack -> execute_event ) main_hand_attack -> execute();
   }
 
   void stampede_summon( timespan_t duration )
   {
-    if ( this == o() -> active.pet )
-    {
-      // The active pet does not get its damage reduced
-      //buffs.stampede -> trigger( 1, -1.0, 1.0, duration );
+    if ( this == o() -> active.pet || buffs.tier17_4pc_bm -> check() )
       return;
-    }
 
     type = PLAYER_GUARDIAN;
 
@@ -986,7 +987,7 @@ struct hunter_main_pet_attack_t: public hunter_main_pet_action_t < melee_attack_
   virtual bool ready()
   {
     // Stampede pets don't use abilities or spells
-    if ( p() -> buffs.stampede -> check() )
+    if ( p() -> buffs.stampede -> check() || p() -> buffs.tier17_4pc_bm -> check() )
       return false;
 
     return base_t::ready();
@@ -1274,7 +1275,7 @@ struct hunter_main_pet_spell_t: public hunter_main_pet_action_t < spell_t >
   virtual bool ready()
   {
     // Stampede pets don't use abilities or spells
-    if ( p() -> buffs.stampede -> check() )
+    if ( p() -> buffs.stampede -> check() || p() -> buffs.tier17_4pc_bm -> check() )
       return false;
 
     return base_t::ready();
