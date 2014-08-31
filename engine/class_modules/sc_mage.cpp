@@ -3643,36 +3643,57 @@ struct choose_target_t : public action_t
 
 struct start_pyro_chain_t : public action_t
 {
-    start_pyro_chain_t( mage_t* p, const std::string& options_str ):
-        action_t( ACTION_USE, "start_pyro_chain", p )
+  // Infinite loop protection
+  timespan_t last_execute;
+
+  start_pyro_chain_t( mage_t* p, const std::string& options_str ):
+    action_t( ACTION_USE, "start_pyro_chain", p ),
+    last_execute( timespan_t::min() )
+  {
+    parse_options( NULL, options_str );
+    trigger_gcd = timespan_t::zero();
+    harmful = false;
+  }
+
+  virtual void execute()
+  {
+    mage_t* p = debug_cast<mage_t*>( player );
+
+    if ( sim -> current_time == last_execute )
     {
-        parse_options( NULL, options_str );
-        trigger_gcd = timespan_t::zero();
-        harmful = false;
+      sim -> errorf( "%s start_pyro_chain infinite loop detected (no time passing between executes) at '%s'",
+        p -> name(), signature_str.c_str() );
+      sim -> cancel();
+      return;
     }
 
-    virtual void execute()
-    {
-        mage_t* p = debug_cast<mage_t*>( player );
-        p -> pyro_switch.dump_state = true;
-    }
+    last_execute = sim -> current_time;
+
+    p -> pyro_switch.dump_state = true;
+  }
+
+  void reset()
+  {
+    action_t::reset();
+    last_execute = timespan_t::min();
+  }
 };
 
 struct stop_pyro_chain_t : public action_t
 {
-    stop_pyro_chain_t( mage_t* p, const std::string& options_str ):
-       action_t( ACTION_USE, "stop_pyro_chain", p )
-    {
-        parse_options( NULL, options_str );
-        trigger_gcd = timespan_t::zero();
-        harmful = false;
-    }
+  stop_pyro_chain_t( mage_t* p, const std::string& options_str ):
+     action_t( ACTION_USE, "stop_pyro_chain", p )
+  {
+      parse_options( NULL, options_str );
+      trigger_gcd = timespan_t::zero();
+      harmful = false;
+  }
 
-    virtual void execute()
-    {
-        mage_t* p = debug_cast<mage_t*>( player );
-        p -> pyro_switch.dump_state = false;
-    }
+  virtual void execute()
+  {
+      mage_t* p = debug_cast<mage_t*>( player );
+      p -> pyro_switch.dump_state = false;
+  }
 };
 
 // Choose Rotation =================================================================================
