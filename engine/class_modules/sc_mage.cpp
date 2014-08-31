@@ -3018,8 +3018,6 @@ struct meteor_impact_t : public mage_spell_t
   void execute()
   { 
     aoe = targets_hit;
-    if ( targets_hit > 0 ) // aoe = 1 will hit 2 targets, subtract one to match.
-      --aoe;
     mage_spell_t::execute();
   }
 
