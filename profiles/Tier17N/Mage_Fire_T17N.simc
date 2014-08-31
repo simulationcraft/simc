@@ -88,18 +88,17 @@ finger1=primal_gladiators_band_of_victory,id=111136,gem_id=0/0/0/,enchant_id=528
 finger2=primal_gladiators_band_of_cruelty,id=111134,gem_id=0/0/0/,enchant_id=5284
 trinket1=primal_gladiators_insignia_of_dominance,id=111228,gem_id=0/0/0/,enchant_id=0
 trinket2=primal_gladiators_badge_of_dominance,id=111227,gem_id=0/0/0/,enchant_id=0
-main_hand=primal_gladiators_mageblade,id=111119,gem_id=0/0/0/,enchant_id=5330
-off_hand=primal_gladiators_reprieve,id=111133,gem_id=0/0/0/,enchant_id=0
+main_hand=primal_gladiators_battle_staff,id=111122,enchant=mark_of_the_thunderlord
 
 # Gear Summary
-# gear_stamina=3245
-# gear_intellect=2584
-# gear_spell_power=1244
-# gear_crit_rating=1347
-# gear_haste_rating=596
-# gear_mastery_rating=433
+# gear_stamina=3250
+# gear_intellect=2588
+# gear_spell_power=1265
+# gear_crit_rating=1432
+# gear_haste_rating=513
+# gear_mastery_rating=518
 # gear_armor=600
-# gear_multistrike_rating=596
+# gear_multistrike_rating=513
 # gear_versatility_rating=110
 # pvp_2pc_caster=1
 # pvp_4pc_caster=1
