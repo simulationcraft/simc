@@ -2724,7 +2724,7 @@ struct ice_lance_t : public mage_spell_t
     parse_options( NULL, options_str );
 
     if ( p -> glyphs.splitting_ice -> ok() )
-      aoe = p -> glyphs.splitting_ice -> effectN( 1 ).base_value();
+      aoe = p -> glyphs.splitting_ice -> effectN( 1 ).base_value() + 1;
 
     if ( p -> glyphs.splitting_ice -> ok() )
       base_aoe_multiplier *= p -> glyphs.splitting_ice -> effectN( 2 ).percent();
