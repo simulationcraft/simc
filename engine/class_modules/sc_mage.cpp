@@ -759,7 +759,7 @@ struct prismatic_crystal_t : public pet_t
 
   void add_proxy_stats( action_t* owner_action )
   {
-    if ( proxy_stats.size() < owner_action -> internal_id - 1 )
+    if ( proxy_stats.size() <= owner_action -> internal_id )
       proxy_stats.resize( owner_action -> internal_id + 1, 0 );
 
     if ( proxy_stats[ owner_action -> internal_id ] )
@@ -3109,12 +3109,12 @@ struct meteor_impact_t : public mage_spell_t
 
 struct meteor_t : public mage_spell_t
 {
-  meteor_impact_t* meteor_impact;
   int targets;
+  meteor_impact_t* meteor_impact;
   meteor_t( mage_t* p, const std::string& options_str ) :
     mage_spell_t( "meteor", p, p -> find_talent_spell( "Meteor") ),
-    meteor_impact( new meteor_impact_t( p, targets ) ),
-    targets( -1 )
+    targets( -1 ),
+    meteor_impact( new meteor_impact_t( p, targets ) )
   {
     option_t options[] =
     {
