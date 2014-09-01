@@ -811,7 +811,7 @@ struct prismatic_crystal_t : public pet_t
 
   void assess_damage( school_e school, dmg_e type, action_state_t* state )
   {
-    pet_t::assess_damage( school, type, state );
+    base_t::assess_damage( school, type, state );
 
     if ( state -> result_amount == 0 )
       return;
