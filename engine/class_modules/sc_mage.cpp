@@ -702,6 +702,13 @@ struct prismatic_crystal_t : public pet_t
 
     std::ostringstream& debug_str( std::ostringstream& s )
     { action_state_t::debug_str( s ) << " owner_action=" << ( owner_action ? owner_action -> name_str : "unknown" ); return s; }
+
+    void copy_state( const action_state_t* other )
+    {
+      action_state_t::copy_state( other );
+
+      owner_action = debug_cast<const prismatic_crystal_aoe_state_t*>( other ) -> owner_action;
+    }
   };
 
   struct prismatic_crystal_aoe_t : public spell_t
@@ -730,16 +737,6 @@ struct prismatic_crystal_t : public pet_t
       stats = p() -> proxy_stats[ st -> owner_action -> internal_id ];
 
       spell_t::execute();
-    }
-
-    void tick( dot_t* d )
-    {
-      const prismatic_crystal_aoe_state_t* st = debug_cast<const prismatic_crystal_aoe_state_t*>( d -> state );
-
-      assert( p() -> proxy_stats[ st -> owner_action -> internal_id ] != 0 );
-      stats = p() -> proxy_stats[ st -> owner_action -> internal_id ];
-
-      spell_t::tick( d );
     }
 
     // Damage gets fully inherited from the Mage's own spell
@@ -819,17 +816,23 @@ struct prismatic_crystal_t : public pet_t
     if ( state -> result_amount == 0 )
       return;
 
-    // Note note note, prismatic_crystal_aoe_state_t::copy_state() is NOT
-    // overridden to allow easy copying of data from the owner's state object
-    // to the prismatic crystal's state.
-    action_state_t* new_state = aoe_spell -> get_state( state );
+    // NOTE: We first use get_state() here to get a correct state object
+    // (prismatic_crystal_aoe_state_t), and then EXPLICITLY USE the base class
+    // copy_state to copy the owner's damage state to the PC damage state
+    // object. After that, we assign the owner_action member variable to the PC
+    // state, so we can do correct reporting.
+    //
+    // This is done so we can have a clean prismatic_crystal_aoe_state_t
+    // implementation, where copy_state() behaves in a logical way, because the
+    // rest of the execution path will only use prismatic_crystal_aoe_state_t
+    // objects.
+    action_state_t* new_state = aoe_spell -> get_state();
+    new_state -> action_state_t::copy_state( state );
+    prismatic_crystal_aoe_state_t* st = debug_cast<prismatic_crystal_aoe_state_t*>( new_state );
+    st -> owner_action = state -> action;
 
     // Reset target to an enemy to avoid infinite looping
     new_state -> target = aoe_spell -> target;
-
-    // Set the owner's action explicitly
-    prismatic_crystal_aoe_state_t* st = debug_cast<prismatic_crystal_aoe_state_t*>( new_state );
-    st -> owner_action = state -> action;
 
     aoe_spell -> schedule_execute( new_state );
   }
