@@ -3225,7 +3225,7 @@ void hunter_t::init_base_stats()
   base.attack_power_per_agility  = 1.0;
 
   base_focus_regen_per_second = 4;
-  if ( sets.has_set_bonus( SET_PVP_4PC_MELEE ) )
+  if ( new_sets.has_set_bonus( SET_MELEE, PVP, B4 ) )
     base_focus_regen_per_second *= 1.25;
 
   resources.base[RESOURCE_FOCUS] = 100 + specs.kindred_spirits -> effectN( 1 ).resource( RESOURCE_FOCUS );
