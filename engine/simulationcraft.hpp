@@ -2613,6 +2613,7 @@ struct sim_t : public core_sim_t, private sc_thread_t
   int         target_adds;
   std::string sim_phase_str;
   int         desired_targets; // desired number of targets
+  bool        enable_taunts;
 
   // Data access
   dbc_t       dbc;
