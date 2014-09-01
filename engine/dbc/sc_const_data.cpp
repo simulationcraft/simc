@@ -2842,10 +2842,7 @@ specialization_e dbc_t::spec_by_spell( uint32_t spell_id ) const
       for ( unsigned n = 0; n < specialization_ability_size(); n++ )
       {
         if ( specialization_ability( cls, tree, n ) == spell_id )
-        {
-          std::cout << cls << " " << tree << " " << n << std::endl;
           return spec_by_idx( util::translate_class_id( cls ), tree );
-        }
       }
     }
   }
