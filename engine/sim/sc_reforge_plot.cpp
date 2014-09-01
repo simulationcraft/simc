@@ -309,8 +309,8 @@ double reforge_plot_t::progress( std::string& phase, std::string* detailed )
       phase += " to ";
   }
 
-  double total_iter = num_stat_combos * ( reforge_plot_iterations > 0 ? reforge_plot_iterations : sim -> iterations );
-  double reforge_iter = current_stat_combo * ( reforge_plot_iterations > 0 ? reforge_plot_iterations : sim -> iterations );
+  int total_iter = num_stat_combos * ( reforge_plot_iterations > 0 ? reforge_plot_iterations : sim -> iterations );
+  int reforge_iter = current_stat_combo * ( reforge_plot_iterations > 0 ? reforge_plot_iterations : sim -> iterations );
 
   if ( current_reforge_sim && current_reforge_sim -> current_iteration > 0 )
   {
@@ -325,7 +325,7 @@ double reforge_plot_t::progress( std::string& phase, std::string* detailed )
 
   sim -> detailed_progress( detailed, (int) reforge_iter, (int) total_iter );
 
-  return reforge_iter / total_iter;
+  return static_cast<double>(reforge_iter) / static_cast<double>(total_iter);
 }
 
 // reforge_plot_t::create_options ===========================================
