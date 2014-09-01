@@ -563,7 +563,6 @@ public:
   virtual action_t* create_action( const std::string& name, const std::string& options );
   virtual pet_t*    create_pet   ( const std::string& name, const std::string& type = std::string() );
   virtual void      create_pets();
-  virtual set_e     decode_set( const item_t& ) const;
   virtual resource_e primary_resource() const;
   virtual role_e    primary_role() const;
   virtual stat_e    convert_hybrid_stat( stat_e s ) const;
@@ -1654,7 +1653,7 @@ public:
   {
     ab::impact( s );
 
-    if ( p() -> sets.has_set_bonus( SET_T17_4PC_MELEE ) )
+    if ( p() -> new_sets.has_set_bonus( DRUID_FERAL, T17, B4 ) )
       trigger_gushing_wound( s -> target, s -> result_amount );
 
     if ( ab::aoe == 0 && s -> result_amount > 0 && p() -> buff.natures_vigil -> up() )
@@ -1665,7 +1664,7 @@ public:
   {
     ab::tick( d );
 
-    if ( p() -> sets.has_set_bonus( SET_T17_4PC_MELEE ) )
+    if ( p() -> new_sets.has_set_bonus( DRUID_FERAL, T17, B4 ) )
       trigger_gushing_wound( d -> target, d -> state -> result_amount );
 
     if ( ab::aoe == 0 && d -> state -> result_amount > 0 && p() -> buff.natures_vigil -> up() )
@@ -1676,7 +1675,7 @@ public:
   {
     ab::multistrike_tick( src_state, ms_state, multiplier );
 
-    if ( p() -> sets.has_set_bonus( SET_T17_4PC_MELEE ) )
+    if ( p() -> new_sets.has_set_bonus( DRUID_FERAL, T17, B4 ) )
       trigger_gushing_wound( ms_state -> target, ms_state -> result_amount );
 
     if ( ab::aoe == 0 && ms_state -> result_amount > 0 && p() -> buff.natures_vigil -> up() )
@@ -1771,7 +1770,7 @@ public:
   {
     ab::tick( d );
 
-    if ( ab::p() -> sets.has_set_bonus( SET_T17_2PC_MELEE ) && dbc::is_school( ab::school, SCHOOL_PHYSICAL ) )
+    if ( ab::p() -> new_sets.has_set_bonus( DRUID_FERAL, T17, B2 ) && dbc::is_school( ab::school, SCHOOL_PHYSICAL ) )
       ab::p() -> resource_gain( RESOURCE_ENERGY, 3.0, ab::p() -> gain.tier17_2pc_melee );
   }
 
@@ -1834,7 +1833,7 @@ public:
       return;
 
     if ( ab::rng().roll( ab::weapon -> proc_chance_on_swing( 3.5 ) ) ) // 3.5 PPM via https://twitter.com/Celestalon/status/482329896404799488
-      if ( ab::p() -> buff.omen_of_clarity -> trigger() && ab::p() -> sets.has_set_bonus( SET_T16_2PC_MELEE ) )
+      if ( ab::p() -> buff.omen_of_clarity -> trigger() && ab::p() -> new_sets.has_set_bonus( SET_MELEE, T16, B2 ) )
         ab::p() -> buff.feral_fury -> trigger();
   }
 
@@ -1971,7 +1970,7 @@ public:
 
     if ( this -> base_costs[ RESOURCE_COMBO_POINT ] > 0 )
     {
-      if ( player -> sets.has_set_bonus( SET_T15_2PC_MELEE ) &&
+      if ( player -> new_sets.has_set_bonus( SET_MELEE, T15, B2 ) &&
           rng().roll( cost() * 0.15 ) )
       {
         p() -> proc.tier15_2pc_melee -> occur();
@@ -2222,8 +2221,8 @@ struct ferocious_bite_t : public cat_attack_t
       }
 
       double health_percentage = 25.0;
-      if ( p() -> sets.has_set_bonus( SET_T13_2PC_MELEE ) )
-        health_percentage = p() -> sets.set( SET_T13_2PC_MELEE ) -> effectN( 2 ).base_value();
+      if ( p() -> new_sets.has_set_bonus( SET_MELEE, T13, B2 ) )
+        health_percentage = p() -> new_sets.set( SET_MELEE, T13, B2 ) -> effectN( 2 ).base_value();
 
       if ( state -> target -> health_percentage() <= health_percentage )
       {
@@ -2346,7 +2345,7 @@ struct rake_t : public cat_attack_t
     {
       p() -> resource_gain( RESOURCE_COMBO_POINT, combo_point_gain, p() -> gain.rake );
 
-      if ( p() -> sets.has_set_bonus( SET_T17_2PC_MELEE ) )
+      if ( p() -> new_sets.has_set_bonus( DRUID_FERAL, T17, B2 ) )
         p() -> resource_gain( RESOURCE_ENERGY, 3.0, p() -> gain.tier17_2pc_melee );
     }
   }
@@ -2413,7 +2412,7 @@ struct rip_t : public cat_attack_t
     may_crit     = false;
     dot_behavior = DOT_REFRESH;
 
-    dot_duration += player -> sets.set( SET_T14_4PC_MELEE ) -> effectN( 1 ).time_value();
+    dot_duration += player -> new_sets.set( SET_MELEE, T14, B4 ) -> effectN( 1 ).time_value();
   }
 
   action_state_t* new_state()
@@ -2483,7 +2482,7 @@ struct shred_t : public cat_attack_t
   shred_t( druid_t* p, const std::string& options_str ) :
     cat_attack_t( "shred", p, p -> find_class_spell( "Shred" ), options_str )
   {
-    base_multiplier *= 1.0 + player -> sets.set( SET_T14_2PC_MELEE ) -> effectN( 1 ).percent();
+    base_multiplier *= 1.0 + player -> new_sets.set( SET_MELEE, T14, B2 ) -> effectN( 1 ).percent();
     special = true;
   }
 
@@ -2508,7 +2507,7 @@ struct shred_t : public cat_attack_t
     {
       p() -> resource_gain( RESOURCE_COMBO_POINT, combo_point_gain, p() -> gain.shred );
 
-      if ( s -> result == RESULT_CRIT && p() -> sets.has_set_bonus( SET_PVP_4PC_MELEE ) )
+      if ( s -> result == RESULT_CRIT && p() -> new_sets.has_set_bonus( DRUID_FERAL, PVP, B4 ) )
         td( s -> target ) -> buffs.bloodletting -> trigger(); // Druid module debuff
     }
   }
@@ -2640,7 +2639,7 @@ struct thrash_cat_t : public cat_attack_t
     {
       this -> td( s -> target ) -> dots.thrash_bear -> cancel();
 
-      if ( p() -> sets.has_set_bonus( SET_T17_2PC_MELEE ) )
+      if ( p() -> new_sets.has_set_bonus( DRUID_FERAL, T17, B2 ) )
         p() -> resource_gain( RESOURCE_ENERGY, 3.0, p() -> gain.tier17_2pc_melee );
     }
   }
@@ -2899,7 +2898,7 @@ struct maul_t : public bear_attack_t
 
     virtual void impact( action_state_t* s )
     {
-      if ( p() -> sets.has_set_bonus( SET_T17_2PC_TANK ) )
+      if ( p() -> new_sets.has_set_bonus( DRUID_GUARDIAN, T17, B2 ) )
       {
         p() -> resource_gain(
           RESOURCE_RAGE,
@@ -3014,7 +3013,7 @@ struct thrash_bear_t : public bear_attack_t
     {
       this -> td( s -> target ) -> dots.thrash_cat -> cancel();
 
-      if ( p() -> sets.has_set_bonus( SET_T17_2PC_MELEE ) )
+      if ( p() -> new_sets.has_set_bonus( DRUID_FERAL, T17, B2 ) )
         p() -> resource_gain( RESOURCE_ENERGY, 3.0, p() -> gain.tier17_2pc_melee );
     }
   }
@@ -3270,7 +3269,7 @@ public:
     attack_power_mod.direct = data().effectN( 1 ).ap_coeff();
     maximum_rage_cost = data().effectN( 2 ).base_value();
 
-    if ( p -> sets.has_set_bonus( SET_T16_2PC_TANK ) )
+    if ( p -> new_sets.has_set_bonus( SET_TANK, T16, B2 ) )
       p -> active.ursocs_vigor = new ursocs_vigor_t( p );
   }
 
@@ -3297,7 +3296,7 @@ public:
 
     druid_heal_t::execute();
 
-    if ( p() -> sets.has_set_bonus( SET_T16_4PC_TANK ) )
+    if ( p() -> new_sets.has_set_bonus( SET_TANK, T16, B4 ) )
       p() -> active.ursocs_vigor -> trigger_hot( resource_consumed );
   }
 
@@ -3320,7 +3319,7 @@ private:
   {
     double c = cost();
 
-    if ( p() -> sets.has_set_bonus( SET_T17_4PC_TANK ) )
+    if ( p() -> new_sets.has_set_bonus( DRUID_GUARDIAN, T17, B4 ) )
       c += p() -> find_spell( 165423 ) -> effectN( 1 ).resource( RESOURCE_RAGE );
 
     return c;
@@ -4481,7 +4480,7 @@ struct sunfire_t: public druid_spell_t
       const spell_data_t* dmg_spell = player -> find_spell(164812);
       dot_duration = dmg_spell -> duration();
       dot_duration *= 1 + player -> spec.astral_showers -> effectN(1).percent();
-      dot_duration += player -> sets.set(SET_T14_4PC_CASTER) -> effectN(1).time_value();
+      dot_duration += player -> new_sets.set( SET_CASTER, T14, B4 ) -> effectN(1).time_value();
       base_tick_time = dmg_spell -> effectN(2).period();
       spell_power_mod.tick = dmg_spell -> effectN(2).sp_coeff();
 
@@ -4510,7 +4509,7 @@ struct sunfire_t: public druid_spell_t
     dot_behavior = DOT_REFRESH;
     const spell_data_t* dmg_spell = player -> find_spell(164815);
     dot_duration = dmg_spell -> duration();
-    dot_duration += player -> sets.set(SET_T14_4PC_CASTER) -> effectN(1).time_value();
+    dot_duration += player -> new_sets.set( SET_CASTER, T14, B4 ) -> effectN(1).time_value();
     base_tick_time = dmg_spell -> effectN(2).period();
     spell_power_mod.direct = dmg_spell-> effectN(1).sp_coeff();
     spell_power_mod.tick = dmg_spell-> effectN(2).sp_coeff();
@@ -4589,7 +4588,7 @@ struct moonfire_t : public druid_spell_t
       const spell_data_t* dmg_spell = player -> find_spell( 164815 );
       dot_behavior = DOT_REFRESH;
       dot_duration                  = dmg_spell -> duration();
-      dot_duration                 += player -> sets.set( SET_T14_4PC_CASTER ) -> effectN( 1 ).time_value();
+      dot_duration                 += player -> new_sets.set( SET_CASTER, T14, B4 ) -> effectN( 1 ).time_value();
       base_tick_time                = dmg_spell -> effectN( 2 ).period();
       spell_power_mod.tick          = dmg_spell -> effectN( 2 ).sp_coeff();
 
@@ -4623,7 +4622,7 @@ struct moonfire_t : public druid_spell_t
     dot_behavior = DOT_REFRESH;
     dot_duration                  = dmg_spell -> duration(); 
     dot_duration                 *= 1 + player -> spec.astral_showers -> effectN( 1 ).percent();
-    dot_duration                 += player -> sets.set( SET_T14_4PC_CASTER ) -> effectN( 1 ).time_value();
+    dot_duration                 += player -> new_sets.set( SET_CASTER, T14, B4 ) -> effectN( 1 ).time_value();
     base_tick_time                = dmg_spell -> effectN( 2 ).period();
     spell_power_mod.tick          = dmg_spell -> effectN( 2 ).sp_coeff();
     spell_power_mod.direct        = dmg_spell -> effectN( 1 ).sp_coeff();
@@ -4859,7 +4858,7 @@ struct savage_defense_t : public druid_spell_t
     use_off_gcd = true;
     harmful = false;
 
-    if ( p -> sets.has_set_bonus( SET_T16_2PC_TANK ) )
+    if ( p -> new_sets.has_set_bonus( SET_TANK, T16, B2 ) )
       p -> active.ursocs_vigor = new ursocs_vigor_t( p );
   }
 
@@ -4874,7 +4873,7 @@ struct savage_defense_t : public druid_spell_t
     else
       p() -> buff.savage_defense -> trigger();
 
-    if ( p() -> sets.has_set_bonus( SET_T16_4PC_TANK ) )
+    if ( p() -> new_sets.has_set_bonus( SET_TANK, T16, B4 ) )
       p() -> active.ursocs_vigor -> trigger_hot();
   }
 
@@ -4920,7 +4919,7 @@ struct skull_bash_t : public druid_spell_t
   {
     druid_spell_t::execute();
 
-    if ( p() -> sets.has_set_bonus( SET_PVP_2PC_MELEE ) )
+    if ( p() -> new_sets.has_set_bonus( SET_MELEE, PVP, B2 ) )
       p() -> cooldown.tigers_fury -> reset( false );
   }
 
@@ -5036,7 +5035,7 @@ struct starfall_t : public druid_spell_t
     may_multistrike = 0;
     tick_zero = true;
     cooldown = player -> cooldown.starfallsurge;
-    base_multiplier *= 1.0 + player -> sets.set( SET_T14_2PC_CASTER ) -> effectN( 1 ).percent();
+    base_multiplier *= 1.0 + player -> new_sets.set( SET_CASTER, T14, B2 ) -> effectN( 1 ).percent();
     add_child( starfall );
   }
 
@@ -5070,11 +5069,11 @@ struct starsurge_t : public druid_spell_t
   {
     parse_options( NULL, options_str );
 
-    base_multiplier *= 1.0 + player -> sets.set( SET_T13_4PC_CASTER ) -> effectN( 2 ).percent();
+    base_multiplier *= 1.0 + player -> new_sets.set( SET_CASTER, T13, B4 ) -> effectN( 2 ).percent();
 
-    base_multiplier *= 1.0 + p() -> sets.set( SET_T13_2PC_CASTER ) -> effectN( 1 ).percent();
+    base_multiplier *= 1.0 + p() -> new_sets.set( SET_CASTER, T13, B2 ) -> effectN( 1 ).percent();
 
-    base_crit += p() -> sets.set( SET_T15_2PC_CASTER ) -> effectN( 1 ).percent();
+    base_crit += p() -> new_sets.set( SET_CASTER, T15, B2 ) -> effectN( 1 ).percent();
     cooldown = player -> cooldown.starfallsurge;
     base_execute_time *= 1.0 + player -> perk.enhanced_starsurge -> effectN( 1 ).percent();
   }
@@ -5162,13 +5161,13 @@ struct tigers_fury_t : public druid_spell_t
                           data().effectN( 2 ).resource( RESOURCE_ENERGY ),
                           p() -> gain.tigers_fury );
 
-    if ( p() -> sets.has_set_bonus( SET_T13_4PC_MELEE ) )
+    if ( p() -> new_sets.has_set_bonus( SET_MELEE, T13, B4 ) )
       p() -> buff.omen_of_clarity -> trigger();
 
-    if ( p() -> sets.has_set_bonus( SET_T15_4PC_MELEE ) )
+    if ( p() -> new_sets.has_set_bonus( SET_MELEE, T15, B4 ) )
       p() -> buff.tier15_4pc_melee -> trigger( 3 );
 
-    if ( p() -> sets.has_set_bonus( SET_T16_4PC_MELEE ) )
+    if ( p() -> new_sets.has_set_bonus( SET_MELEE, T16, B4 ) )
       p() -> buff.feral_rage -> trigger();
   }
 };
@@ -5238,7 +5237,7 @@ struct wrath_t : public druid_spell_t
   {
     double m = druid_spell_t::action_multiplier();
 
-    m *= 1.0 + p() -> sets.set( SET_T13_2PC_CASTER ) -> effectN( 1 ).percent();
+    m *= 1.0 + p() -> new_sets.set( SET_CASTER, T13, B2 ) -> effectN( 1 ).percent();
 
     m *= 1.0 + p() -> buff.heart_of_the_wild -> damage_spell_multiplier();
 
@@ -5581,7 +5580,7 @@ void druid_t::init_spells()
     active.cenarion_ward_hot  = new cenarion_ward_hot_t( this );
   if ( talent.yseras_gift -> ok() )
     active.yseras_gift        = new yseras_gift_t( this );
-  if ( sets.has_set_bonus( SET_T17_4PC_MELEE ) )
+  if ( new_sets.has_set_bonus( DRUID_FERAL, T17, B4 ) )
     active.gushing_wound      = new gushing_wound_t( this );
   if ( mastery.primal_tenacity -> ok() )
     active.primal_tenacity = new primal_tenacity_t( this );
@@ -5650,19 +5649,7 @@ void druid_t::init_spells()
   glyph.ursols_defense        = find_glyph_spell( "Glyph of Ursol's Defense" );
   glyph.wild_growth           = find_glyph_spell( "Glyph of Wild Growth" );
 
-  // Tier Bonuses
-  static const set_bonus_description_t set_bonuses =
-  {
-    //   C2P     C4P     M2P     M4P    T2P    T4P     H2P     H4P
-    { 105722, 105717, 105725, 105735,      0,      0, 105715, 105770 }, // Tier13
-    { 123082, 123083, 123084, 123085, 123086, 123087, 123088, 123089 }, // Tier14
-    { 138348, 138350, 138352, 138357, 138216, 138222, 138284, 138286 }, // Tier15
-    { 144767, 144756, 144864, 144841, 144879, 144887, 144869, 144875 }, // Tier16
-  };
-
-  sets.register_spelldata( set_bonuses );
-
-  if ( sets.has_set_bonus( SET_T16_2PC_CASTER ) )
+  if ( new_sets.has_set_bonus( SET_CASTER, T16, B2 ) )
   {
     t16_2pc_starfall_bolt = new spells::t16_2pc_starfall_bolt_t( this );
     t16_2pc_sun_bolt = new spells::t16_2pc_sun_bolt_t( this );
@@ -5787,7 +5774,7 @@ void druid_t::create_buffs()
   buff.solar_peak                = buff_creator_t( this, "solar_peak", find_spell( 171744 ) );
 
   buff.shooting_stars            = buff_creator_t( this, "shooting_stars", spec.shooting_stars -> effectN( 1 ).trigger() )
-                                   .chance( spec.shooting_stars -> proc_chance() + sets.set( SET_T16_4PC_CASTER ) -> effectN( 1 ).percent() );
+                                   .chance( spec.shooting_stars -> proc_chance() + new_sets.set( SET_CASTER, T16, B4 ) -> effectN( 1 ).percent() );
 
   buff.solar_empowerment         = buff_creator_t( this, "solar_empowerment", find_spell( 164545 ) );
 
@@ -6833,154 +6820,6 @@ void druid_t::recalculate_resource_max( resource_e r )
     buff.ursa_major -> refresh( 1, buff.ursa_major -> value(), buff.ursa_major -> remains() );
 }
 
-// druid_t::decode_set ======================================================
-
-set_e druid_t::decode_set( const item_t& item ) const
-{
-  if ( item.slot != SLOT_HEAD      &&
-       item.slot != SLOT_SHOULDERS &&
-       item.slot != SLOT_CHEST     &&
-       item.slot != SLOT_HANDS     &&
-       item.slot != SLOT_LEGS      )
-  {
-    return SET_NONE;
-  }
-
-  const char* s = item.name();
-
-  if ( strstr( s, "deep_earth" ) )
-  {
-    bool is_caster = ( strstr( s, "cover"         ) ||
-                       strstr( s, "shoulderwraps" ) ||
-                       strstr( s, "vestment"      ) ||
-                       strstr( s, "leggings"      ) ||
-                       strstr( s, "gloves"        ) );
-
-    bool is_melee = ( strstr( s, "headpiece"      ) ||
-                      strstr( s, "spaulders"      ) ||
-                      strstr( s, "raiment"        ) ||
-                      strstr( s, "legguards"      ) ||
-                      strstr( s, "grips"          ) );
-
-    bool is_healer = ( strstr( s, "helm"          ) ||
-                       strstr( s, "mantle"        ) ||
-                       strstr( s, "robes"         ) ||
-                       strstr( s, "legwraps"      ) ||
-                       strstr( s, "handwraps"     ) );
-    if ( is_caster ) return SET_T13_CASTER;
-    if ( is_melee  ) return SET_T13_MELEE;
-    if ( is_healer ) return SET_T13_HEAL;
-  }
-
-  if ( strstr( s, "eternal_blossom" ) )
-  {
-    bool is_caster = ( strstr( s, "cover"          ) ||
-                       strstr( s, "shoulderwraps"  ) ||
-                       strstr( s, "vestment"       ) ||
-                       strstr( s, "leggings"       ) ||
-                       strstr( s, "gloves"         ) );
-
-    bool is_melee = ( strstr( s, "headpiece"       ) ||
-                      strstr( s, "spaulders"       ) ||
-                      strstr( s, "raiment"         ) ||
-                      strstr( s, "legguards"       ) ||
-                      strstr( s, "grips"           ) );
-
-    bool is_healer = ( strstr( s, "helm"           ) ||
-                       strstr( s, "mantle"         ) ||
-                       strstr( s, "robes"          ) ||
-                       strstr( s, "legwraps"       ) ||
-                       strstr( s, "handwraps"      ) );
-
-    bool is_tank   = ( strstr( s, "headguard"      ) ||
-                       strstr( s, "shoulderguards" ) ||
-                       strstr( s, "tunic"          ) ||
-                       strstr( s, "breeches"       ) ||
-                       strstr( s, "handguards"     ) );
-    if ( is_caster ) return SET_T14_CASTER;
-    if ( is_melee  ) return SET_T14_MELEE;
-    if ( is_healer ) return SET_T14_HEAL;
-    if ( is_tank   ) return SET_T14_TANK;
-  }
-
-  if ( strstr( s, "_of_the_haunted_forest" ) )
-  {
-    bool is_caster = ( strstr( s, "cover"          ) ||
-                       strstr( s, "shoulderwraps"  ) ||
-                       strstr( s, "vestment"       ) ||
-                       strstr( s, "leggings"       ) ||
-                       strstr( s, "gloves"         ) );
-
-    bool is_melee = ( strstr( s, "headpiece"       ) ||
-                      strstr( s, "spaulders"       ) ||
-                      strstr( s, "raiment"         ) ||
-                      strstr( s, "legguards"       ) ||
-                      strstr( s, "grips"           ) );
-
-    bool is_healer = ( strstr( s, "helm"           ) ||
-                       strstr( s, "mantle"         ) ||
-                       strstr( s, "robes"          ) ||
-                       strstr( s, "legwraps"       ) ||
-                       strstr( s, "handwraps"      ) );
-
-    bool is_tank   = ( strstr( s, "headguard"      ) ||
-                       strstr( s, "shoulderguards" ) ||
-                       strstr( s, "tunic"          ) ||
-                       strstr( s, "breeches"       ) ||
-                       strstr( s, "handguards"     ) );
-    if ( is_caster ) return SET_T15_CASTER;
-    if ( is_melee  ) return SET_T15_MELEE;
-    if ( is_healer ) return SET_T15_HEAL;
-    if ( is_tank   ) return SET_T15_TANK;
-  }
-
-  if ( strstr( s, "of_the_shattered_vale" ) )
-  {
-    bool is_caster = ( strstr( s, "cover"          ) ||
-                       strstr( s, "shoulderwraps"  ) ||
-                       strstr( s, "vestment"       ) ||
-                       strstr( s, "leggings"       ) ||
-                       strstr( s, "gloves"         ) );
-
-    bool is_melee = ( strstr( s, "headpiece"       ) ||
-                      strstr( s, "spaulders"       ) ||
-                      strstr( s, "raiment"         ) ||
-                      strstr( s, "legguards"       ) ||
-                      strstr( s, "grips"           ) );
-
-    bool is_healer = ( strstr( s, "helm"           ) ||
-                       strstr( s, "mantle"         ) ||
-                       strstr( s, "robes"          ) ||
-                       strstr( s, "legwraps"       ) ||
-                       strstr( s, "handwraps"      ) );
-
-    bool is_tank   = ( strstr( s, "headguard"      ) ||
-                       strstr( s, "shoulderguards" ) ||
-                       strstr( s, "tunic"          ) ||
-                       strstr( s, "breeches"       ) ||
-                       strstr( s, "handguards"     ) );
-    if ( is_caster ) return SET_T16_CASTER;
-    if ( is_melee  ) return SET_T16_MELEE;
-    if ( is_healer ) return SET_T16_HEAL;
-    if ( is_tank   ) return SET_T16_TANK;
-  }
-
-  if ( strstr( s, "living_wood" ) )
-  {
-    specialization_e s = specialization();
-    if ( s == DRUID_BALANCE     ) return SET_T17_CASTER;
-    if ( s == DRUID_FERAL       ) return SET_T17_MELEE;
-    if ( s == DRUID_RESTORATION ) return SET_T17_HEAL;
-    if ( s == DRUID_GUARDIAN    ) return SET_T17_TANK;
-  }
-
-  if ( strstr( s, "_gladiators_kodohide_"   ) )   return SET_PVP_HEAL;
-  if ( strstr( s, "_gladiators_wyrmhide_"   ) )   return SET_PVP_CASTER;
-  if ( strstr( s, "_gladiators_dragonhide_" ) )   return SET_PVP_MELEE;
-
-  return SET_NONE;
-}
-
 // druid_t::primary_role ====================================================
 
 role_e druid_t::primary_role() const
@@ -7079,7 +6918,7 @@ void druid_t::assess_damage( school_e school,
        ! ( s -> result == RESULT_DODGE || s -> result == RESULT_MISS ) )
     active.primal_tenacity -> absorb_remaining = buff.primal_tenacity -> value();
 
-  if ( sets.has_set_bonus( SET_T15_2PC_TANK ) && s -> result == RESULT_DODGE && buff.savage_defense -> check() )
+  if ( new_sets.has_set_bonus( SET_TANK, T15, B2 ) && s -> result == RESULT_DODGE && buff.savage_defense -> check() )
     buff.tier15_2pc_tank -> trigger();
 
   if ( buff.barkskin -> up() )
