@@ -367,7 +367,6 @@ public:
   virtual void      reset();
   virtual void      interrupt();
   virtual double    matching_gear_multiplier( attribute_e attr ) const;
-  virtual set_e     decode_set( const item_t& ) const;
   virtual void      create_options();
   virtual void      copy_from( player_t* );
   virtual resource_e primary_resource() const;
@@ -549,8 +548,6 @@ public:
     main_hand_weapon.max_dmg = dbc.spell_scaling( o() -> type, level );
     main_hand_weapon.damage = ( main_hand_weapon.min_dmg + main_hand_weapon.max_dmg ) / 2;
     main_hand_weapon.swing_time = timespan_t::from_seconds( 1.0 );
-
-    // originally set as 50% of AP; it's actually 50.5, so Xuen wasn't being calculated properly
     owner_coeff.ap_from_ap = 0.33;
   }
 
@@ -969,7 +966,7 @@ struct jab_t: public monk_melee_attack_t
     }
     player -> resource_gain( RESOURCE_CHI, chi_gain, p() -> gain.jab, this );
 
-    if ( rng().roll( p() -> sets.set( SET_T15_2PC_MELEE ) -> proc_chance() ) )
+    if ( rng().roll( p() -> new_sets.set( SET_MELEE, T15, B2 ) -> proc_chance() ) )
     {
       p() -> resource_gain( RESOURCE_ENERGY, p() -> passives.tier15_2pc -> effectN( 1 ).base_value(), p() -> gain.tier15_2pc );
       p() -> proc.tier15_2pc_melee -> occur();
@@ -1002,8 +999,8 @@ struct tiger_palm_t: public monk_melee_attack_t
 
     m *= 1.0 + p() -> spec.teachings_of_the_monastery -> effectN( 5 ).percent();
 
-    if ( p() -> sets.has_set_bonus( SET_T16_2PC_MELEE ) && p() -> buff.combo_breaker_tp -> check() )
-      m *= 1.0 + ( p() -> sets.set( SET_T16_2PC_MELEE ) -> effectN( 1 ).base_value() / 100 );
+    if ( p() -> new_sets.has_set_bonus( SET_MELEE, T16, B2 ) && p() -> buff.combo_breaker_tp -> check() )
+      m *= 1.0 + ( p() -> new_sets.set( SET_MELEE, T16, B2 ) -> effectN( 1 ).base_value() / 100 );
 
     return m;
   }
@@ -1099,9 +1096,9 @@ struct blackout_kick_t: public monk_melee_attack_t
     double m = monk_melee_attack_t::action_multiplier();
 
     // check for melee 2p and CB: TP, for the 50% dmg bonus
-    if ( p() -> sets.has_set_bonus( SET_T16_2PC_MELEE ) && p() -> buff.combo_breaker_bok -> check() ) {
+    if ( p() -> new_sets.has_set_bonus( SET_MELEE, T16, B2 ) && p() -> buff.combo_breaker_bok -> check() ) {
       // damage increased by 40% for WW 2pc upon CB
-      m *= 1 + ( p() -> sets.set( SET_T16_2PC_MELEE ) -> effectN( 1 ).base_value() / 100 );
+      m *= 1 + ( p() -> new_sets.set( SET_MELEE, T16, B2 ) -> effectN( 1 ).base_value() / 100 );
     }
     return m;
   }
@@ -1228,10 +1225,12 @@ struct chi_explosion_t: public monk_melee_attack_t
   {
     double m = monk_melee_attack_t::action_multiplier();
 
-    // TODO: check for melee 2p and CB: CE, for the 40% dmg bonus
-    if ( p() -> sets.has_set_bonus( SET_T16_2PC_MELEE ) && p() -> buff.combo_breaker_ce -> check() )
+
+    // check for melee 2p and CB: TP, for the 50% dmg bonus
+    if ( p() -> new_sets.has_set_bonus( SET_MELEE, T16, B2 ) && p() -> buff.combo_breaker_ce -> check() ) {
       // damage increased by 40% for WW 2pc upon CB
-      m *= 1 + ( p() -> sets.set( SET_T16_2PC_MELEE ) -> effectN( 1 ).base_value() / 100 );
+      m *= 1 + ( p() -> new_sets.set( SET_MELEE, T16, B2 ) -> effectN( 1 ).base_value() / 100 );
+    }
 
     m *= 1.0 + std::min( 4.0, p() -> resources.current[RESOURCE_CHI] );
 
@@ -1410,7 +1409,7 @@ struct spinning_crane_kick_t: public monk_melee_attack_t
     if ( p() -> talent.rushing_jade_wind -> ok() )
       p() -> buff.rushing_jade_wind -> trigger( 1, 0, 1.0, cooldown -> duration * p() -> cache.attack_haste() );
 
-    if ( rng().roll( p() -> sets.set( SET_T15_2PC_MELEE ) -> proc_chance() ) )
+    if ( rng().roll( p() -> new_sets.set( SET_MELEE, T15, B2 ) -> proc_chance() ) )
     {
       p() -> resource_gain( RESOURCE_ENERGY, p() -> passives.tier15_2pc -> effectN( 1 ).base_value(), p() -> gain.tier15_2pc );
       p() -> proc.tier15_2pc_melee -> occur();
@@ -1463,7 +1462,7 @@ struct fists_of_fury_t: public monk_melee_attack_t
 
     // T14 WW 2PC
     cooldown -> duration = data().cooldown();
-    cooldown -> duration += p -> sets.set( SET_T14_2PC_MELEE ) -> effectN( 1 ).time_value();
+    cooldown -> duration += p -> new_sets.set( SET_MELEE, T14, B2 ) -> effectN( 1 ).time_value();
   }
 
   void tick( dot_t*d )
@@ -1480,7 +1479,7 @@ struct fists_of_fury_t: public monk_melee_attack_t
     if ( result_is_hit( execute_state -> result ) )
     {
       p() -> track_chi_consumption += savings;
-      if ( p() -> sets.has_set_bonus( SET_T17_2PC_MELEE ) )
+      if ( p() -> new_sets.has_set_bonus( MONK_WINDWALKER, T17, B2 ) )
         trigger_brew( p() -> passives.tier17_2pc -> effectN( 1 ).base_value() );
     }
   }
@@ -1866,10 +1865,10 @@ struct tigereye_brew_t: public monk_spell_t
   double value()
   {
     double value = p() -> buff.tigereye_brew_use -> data().effectN( 1 ).percent();
-    if ( p() -> sets.has_set_bonus( SET_T15_4PC_MELEE ) )
+    if ( p() -> new_sets.has_set_bonus( SET_MELEE, T15, B4 ) )
     {
       // 50 / 10000 = 0.005
-      value += p() -> sets.set( SET_T15_4PC_MELEE ) -> effectN( 1 ).base_value() / 10000; // t154pc
+      value += p() -> new_sets.set( SET_MELEE, T15, B4 ) -> effectN( 1 ).base_value() / 10000; // t154pc
     }
     return value;
   }
@@ -1883,7 +1882,7 @@ struct tigereye_brew_t: public monk_spell_t
     // EEIN: Seperated teb_stacks_used from use_value so it can be used to track focus of xuen.
     double use_value = value() * teb_stacks_used;
 
-    if ( p() -> sets.has_set_bonus( SET_T17_4PC_MELEE ) )
+    if ( p() -> new_sets.has_set_bonus( MONK_WINDWALKER, T17, B4 ) )
       p() -> buff.forceful_winds-> trigger( (int)teb_stacks_used, buff_t::DEFAULT_VALUE(), 100.0 );
 
     p() -> buff.tigereye_brew_use -> trigger( 1, use_value );
@@ -2583,7 +2582,7 @@ struct expel_harm_heal_t: public monk_heal_t
 
     player -> resource_gain( RESOURCE_CHI, chi_gain, p() -> gain.expel_harm, this );
 
-    if ( rng().roll( p() -> sets.set( SET_T15_2PC_MELEE ) -> proc_chance() ) )
+    if ( rng().roll( p() -> new_sets.set( SET_MELEE, T15, B2 ) -> proc_chance() ) )
     {
       p() -> resource_gain( RESOURCE_ENERGY, p() -> passives.tier15_2pc -> effectN( 1 ).base_value(), p() -> gain.tier15_2pc );
       p() -> proc.tier15_2pc_melee -> occur();
@@ -3115,18 +3114,6 @@ void monk_t::init_spells()
   mastery.bottled_fury        = find_mastery_spell( MONK_WINDWALKER );
   mastery.elusive_brawler     = find_mastery_spell( MONK_BREWMASTER );
   mastery.gift_of_the_serpent = find_mastery_spell( MONK_MISTWEAVER );
-
-  static const set_bonus_description_t set_bonuses =
-  {
-    //    C2P      C4P    WW2P    WW4P    BM2P    BM4P    MW2P    MW4P
-    {       0,       0, 123149, 123150, 123157, 123159, 123152, 123153 }, // Tier14
-    {       0,       0, 138177, 138315, 138231, 138236, 138289, 138290 }, // Tier15
-    {       0,       0, 145022, 145004, 145049, 145055, 145439, 145449 }, // Tier16
-    {       0,       0, 165403, 165402, 165353, 165352, 165404, 165408 }, // Tier17
-
-  };
-
-  sets.register_spelldata( set_bonuses );
 }
 
 // monk_t::init_base ========================================================
@@ -3246,7 +3233,7 @@ void monk_t::create_buffs()
     .tick_callback( energizing_brew_energize )
     .add_invalidate( CACHE_MULTISTRIKE );
 
-  buff.energizing_brew -> buff_duration += sets.set( SET_T14_4PC_MELEE ) -> effectN( 1 ).time_value(); //verify working
+  buff.energizing_brew -> buff_duration += new_sets.set( SET_MELEE, T14, B4 ) -> effectN( 1 ).time_value(); //verify working
 
   buff.tigereye_brew = buff_creator_t( this, "tigereye_brew", find_spell( 125195 ) )
     .period( timespan_t::zero() ); // Tigereye Brew does not tick, despite what the spelldata implies.
@@ -3367,123 +3354,6 @@ double monk_t::matching_gear_multiplier( attribute_e attr ) const
   }
 
   return 0.0;
-}
-
-// monk_t::decode_set =======================================================
-
-set_e monk_t::decode_set( const item_t& item ) const
-{
-  if ( item.slot != SLOT_HEAD      &&
-       item.slot != SLOT_SHOULDERS &&
-       item.slot != SLOT_CHEST     &&
-       item.slot != SLOT_HANDS     &&
-       item.slot != SLOT_LEGS )
-  {
-    return SET_NONE;
-  }
-
-  std::string s = item.name();
-
-  if ( util::str_in_str_ci( s, "red_crane" ) )
-  {
-    if ( util::str_in_str_ci( s, "helm" ) ||
-         util::str_in_str_ci( s, "mantle" ) ||
-         util::str_in_str_ci( s, "vest" ) ||
-         util::str_in_str_ci( s, "legwraps" ) ||
-         util::str_in_str_ci( s, "handwraps" ) )
-    {
-      return SET_T14_HEAL;
-    }
-
-    if ( util::str_in_str_ci( s, "tunic" ) ||
-         util::str_in_str_ci( s, "headpiece" ) ||
-         util::str_in_str_ci( s, "leggings" ) ||
-         util::str_in_str_ci( s, "spaulders" ) ||
-         util::str_in_str_ci( s, "grips" ) )
-    {
-      return SET_T14_MELEE;
-    }
-
-    if ( util::str_in_str_ci( s, "chestguard" ) ||
-         util::str_in_str_ci( s, "crown" ) ||
-         util::str_in_str_ci( s, "legguards" ) ||
-         util::str_in_str_ci( s, "shoulderguards" ) ||
-         util::str_in_str_ci( s, "gauntlets" ) )
-    {
-      return SET_T14_TANK;
-    }
-  } // end "red_crane"
-
-  if ( util::str_in_str_ci( s, "firecharm" ) )
-  {
-    if ( util::str_in_str_ci( s, "helm" ) ||
-         util::str_in_str_ci( s, "mantle" ) ||
-         util::str_in_str_ci( s, "vest" ) ||
-         util::str_in_str_ci( s, "legwraps" ) ||
-         util::str_in_str_ci( s, "handwraps" ) )
-    {
-      return SET_T15_HEAL;
-    }
-
-    if ( util::str_in_str_ci( s, "tunic" ) ||
-         util::str_in_str_ci( s, "headpiece" ) ||
-         util::str_in_str_ci( s, "leggings" ) ||
-         util::str_in_str_ci( s, "spaulders" ) ||
-         util::str_in_str_ci( s, "grips" ) )
-    {
-      return SET_T15_MELEE;
-    }
-
-    if ( util::str_in_str_ci( s, "chestguard" ) ||
-         util::str_in_str_ci( s, "crown" ) ||
-         util::str_in_str_ci( s, "legguards" ) ||
-         util::str_in_str_ci( s, "shoulderguards" ) ||
-         util::str_in_str_ci( s, "gauntlets" ) )
-    {
-      return SET_T15_TANK;
-    }
-  } // end "fire_charm"
-  if ( util::str_in_str_ci( s, "_of_seven_sacred_seals" ) )
-  {
-    if ( util::str_in_str_ci( s, "helm" ) ||
-         util::str_in_str_ci( s, "mantle" ) ||
-         util::str_in_str_ci( s, "vest" ) ||
-         util::str_in_str_ci( s, "legwraps" ) ||
-         util::str_in_str_ci( s, "handwraps" ) )
-    {
-      return SET_T16_HEAL;
-    }
-
-    if ( util::str_in_str_ci( s, "tunic" ) ||
-         util::str_in_str_ci( s, "headpiece" ) ||
-         util::str_in_str_ci( s, "leggings" ) ||
-         util::str_in_str_ci( s, "spaulders" ) ||
-         util::str_in_str_ci( s, "grips" ) )
-    {
-      return SET_T16_MELEE;
-    }
-
-    if ( util::str_in_str_ci( s, "chestguard" ) ||
-         util::str_in_str_ci( s, "crown" ) ||
-         util::str_in_str_ci( s, "legguards" ) ||
-         util::str_in_str_ci( s, "shoulderguards" ) ||
-         util::str_in_str_ci( s, "gauntlets" ) )
-    {
-      return SET_T16_TANK;
-    }
-  } // end "seven_sacred_seals"
-
-  if ( util::str_in_str_ci( s, "_of_the_somber_gaze" ) )
-  {
-    specialization_e s = specialization();
-    if ( s == MONK_MISTWEAVER ) return SET_T17_HEAL;
-    if ( s == MONK_BREWMASTER ) return SET_T17_TANK;
-    if ( s == MONK_WINDWALKER ) return SET_T17_MELEE;
-  }
-  if ( util::str_in_str_ci( s, "_gladiators_copperskin_" ) ) return SET_PVP_HEAL;
-  if ( util::str_in_str_ci( s, "_gladiators_ironskin_" ) ) return SET_PVP_MELEE;
-
-  return SET_NONE;
 }
 
 // monk_t::has_stagger ====================================================
