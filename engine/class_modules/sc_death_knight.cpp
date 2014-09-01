@@ -3110,7 +3110,16 @@ struct conversion_t : public death_knight_heal_t
     dot_duration = sim -> max_time * 2;
 
     tick_action = new conversion_heal_t( p );
-    base_costs[ RESOURCE_RUNIC_POWER ] = 0;
+    for ( size_t idx = 1; idx <= p -> talent.conversion -> power_count(); idx++ )
+    {
+      const spellpower_data_t& power = p -> talent.conversion -> powerN( idx );
+      if ( power.spell_id() && p -> dbc.spec_by_spell( power.aura_id() ) == p -> specialization() )
+      {
+        base_costs[ power.resource() ] = power.cost_per_second();
+        break;
+      }
+    }
+
     target = p;
   }
 
