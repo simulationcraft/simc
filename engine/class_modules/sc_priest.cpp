@@ -395,7 +395,6 @@ public:
   virtual pet_t*    create_pet( const std::string& name, const std::string& type = std::string() ) override;
   virtual void      create_pets() override;
   virtual void      copy_from( player_t* source ) override;
-  virtual set_e     decode_set( const item_t& ) const override;
   virtual resource_e primary_resource() const override { return RESOURCE_MANA; }
   virtual role_e    primary_role() const override;
   virtual stat_e    convert_hybrid_stat( stat_e s ) const override;
@@ -2017,12 +2016,12 @@ struct shadowy_apparition_spell_t final : public priest_spell_t
       generate_shadow_orb( 1, priest.gains.shadow_orb_auspicious_spirits );
     }
 
-    if ( rng().roll( priest.sets.set( SET_T15_2PC_CASTER ) -> effectN( 1 ).percent() ) )
+    if ( rng().roll( priest.new_sets.set( SET_CASTER, T15, B2 ) -> effectN( 1 ).percent() ) )
     {
       priest_td_t& td = get_td( s -> target);
       priest.procs.t15_2pc_caster -> occur();
 
-      timespan_t extend_duration = timespan_t::from_seconds( priest.sets.set( SET_T15_2PC_CASTER ) -> effectN( 2 ).base_value() );
+      timespan_t extend_duration = timespan_t::from_seconds( priest.new_sets.set( SET_CASTER, T15, B2 ) -> effectN( 2 ).base_value() );
 
       if ( td.dots.shadow_word_pain -> is_ticking() )
       {
@@ -2199,7 +2198,7 @@ struct mind_blast_t final : public priest_spell_t
       priest.cooldowns.mind_blast -> duration += priest.talents.clarity_of_power -> effectN( 3 ).time_value(); //Now Effect #3... wod.wowhead.com/spell=155246 
 
     // Set bonus changed in build 18537. Leaving old one in, but commented out, for now. - Twintop 2014/07/11
-/*    if ( priest.sets.has_set_bonus( SET_T17_2PC_CASTER ) )
+/*    if ( priest.new_sets.set( PRIEST_SHADOW, T17, B2 ) )
     {
       dot_spell = new mind_blast_dot_t( player, this );
       add_child( dot_spell );
@@ -2208,7 +2207,7 @@ struct mind_blast_t final : public priest_spell_t
 
   void trigger_t17_2pc( action_state_t* state )
   {
-    if ( ! dot_spell ) // equivalent to !priest.sets.has_set_bonus( SET_T17_2PC_CASTER )
+    if ( ! dot_spell ) // equivalent to !priest.new_sets.has_set_bonus( PRIEST_SHADOW, T17, B2 )
       return;
 
     dot_t* dot = dot_spell -> get_dot( state -> target );
@@ -2238,7 +2237,7 @@ struct mind_blast_t final : public priest_spell_t
 
   void transfer_dmg_to_dot( action_state_t* state )
   {
-    if ( ! dot_spell ) // equivalent to !priest.sets.has_set_bonus( SET_T17_2PC_CASTER )
+    if ( ! dot_spell ) // equivalent to !priest.new_sets.has_set_bonus( PRIEST_SHADOW, T17, B2 )
       return;
 
     if ( sim -> debug )
@@ -2370,7 +2369,7 @@ struct mind_blast_t final : public priest_spell_t
     if ( priest.mastery_spells.mental_anguish -> ok() )
       d *= 1.0 + priest.cache.mastery_value();
 
-    d *= 1.0 + priest.sets.set( SET_T16_2PC_CASTER ) -> effectN( 1 ).percent();
+    d *= 1.0 + priest.new_sets.set( SET_CASTER, T16, B2 ) -> effectN( 1 ).percent();
 
     return d;
   }
@@ -2712,7 +2711,7 @@ struct shadow_word_death_t final : public priest_spell_t
   {
     parse_options( nullptr, options_str );
 
-    base_multiplier *= 1.0 + p.sets.set( SET_T13_2PC_CASTER ) -> effectN( 1 ).percent();
+    base_multiplier *= 1.0 + p.new_sets.set( SET_CASTER, T13, B2 ) -> effectN( 1 ).percent();
   }
 
   virtual void execute() override
@@ -3210,11 +3209,11 @@ struct shadow_word_pain_t final : public priest_spell_t
     may_crit   = false;
     tick_zero  = true;
 
-    base_multiplier *= 1.0 + p.sets.set( SET_T13_4PC_CASTER ) -> effectN( 1 ).percent();
+    base_multiplier *= 1.0 + p.new_sets.set( SET_CASTER, T13, B4 ) -> effectN( 1 ).percent();
 
-    base_crit   += p.sets.set( SET_T14_2PC_CASTER ) -> effectN( 1 ).percent();
+    base_crit += p.new_sets.set( SET_CASTER, T14, B2 ) -> effectN( 1 ).percent();
 
-    dot_duration += p.sets.set( SET_T14_4PC_CASTER ) -> effectN( 1 ).time_value();
+    dot_duration += p.new_sets.set( SET_CASTER, T14, B4 ) -> effectN( 1 ).time_value();
 
     if ( priest.specs.shadowy_apparitions -> ok() )
     {
@@ -3281,7 +3280,7 @@ struct vampiric_touch_t final : public priest_spell_t
     parse_options( nullptr, options_str );
     may_crit   = false;
 
-    dot_duration += p.sets.set( SET_T14_4PC_CASTER ) -> effectN( 1 ).time_value();
+    dot_duration += p.new_sets.set( SET_CASTER, T14, B4 ) -> effectN( 1 ).time_value();
 
     if ( priest.specs.shadowy_apparitions -> ok() )
       proc_shadowy_apparition = new shadowy_apparition_spell_t( p );
@@ -3294,11 +3293,11 @@ struct vampiric_touch_t final : public priest_spell_t
     if ( trigger_surge_of_darkness() )
       priest.procs.surge_of_darkness_from_vampiric_touch -> occur();
 
-    if ( priest.sets.has_set_bonus( SET_T15_4PC_CASTER ) )
+    if ( priest.new_sets.has_set_bonus( SET_CASTER, T15, B4 ) )
     {
       if ( proc_shadowy_apparition && ( d -> state -> result_amount > 0 )  )
       {
-        if ( rng().roll( priest.sets.set( SET_T15_4PC_CASTER ) -> proc_chance() ) )
+        if ( rng().roll( priest.new_sets.set( SET_CASTER, T15, B4 ) -> proc_chance() ) )
         {
           priest.procs.t15_4pc_caster -> occur();
 
@@ -3491,7 +3490,7 @@ struct penance_t final : public priest_spell_t
     // priest_heal_t::init() so that it appears in the report.
     can_trigger_atonement = priest.specs.atonement -> ok();
 
-    cooldown -> duration = data().cooldown() + p.sets.set( SET_T14_4PC_HEAL ) -> effectN( 1 ).time_value();
+    cooldown -> duration = data().cooldown() + p.new_sets.set( SET_HEALER, T14, B4 ) -> effectN( 1 ).time_value();
 
     dot_duration += priest.new_sets.set( PRIEST_DISCIPLINE, T17, B2 ) -> effectN( 1 ).time_value();
 
@@ -4097,7 +4096,7 @@ struct circle_of_healing_t final : public priest_heal_t
   virtual void execute() override
   {
     cooldown -> duration = data().cooldown();
-    cooldown -> duration += priest.sets.set( SET_T14_4PC_HEAL ) -> effectN( 2 ).time_value();
+    cooldown -> duration += priest.new_sets.set( SET_HEALER, T14, B4 ) -> effectN( 2 ).time_value();
     if ( priest.buffs.chakra_sanctuary -> up() )
       cooldown -> duration += priest.buffs.chakra_sanctuary -> data().effectN( 2 ).time_value();
 
@@ -4238,7 +4237,7 @@ struct flash_heal_t final : public priest_heal_t
 
     double c = priest_heal_t::cost();
 
-    c *= 1.0 + priest.sets.set( SET_T14_2PC_HEAL ) -> effectN( 1 ).percent();
+    c *= 1.0 + priest.new_sets.set( SET_HEALER, T14, B2 ) -> effectN( 1 ).percent();
 
     return c;
   }
@@ -4298,7 +4297,7 @@ struct _heal_t final : public priest_heal_t
   {
     double am = priest_heal_t::action_multiplier();
 
-    am *= 1.0 + priest.sets.set( SET_T16_2PC_HEAL ) -> effectN( 1 ).percent() * priest.buffs.serendipity -> check();
+    am *= 1.0 + priest.new_sets.set( SET_HEALER, T16, B2 ) -> effectN( 1 ).percent() * priest.buffs.serendipity -> check();
 
     return am;
   }
@@ -4366,7 +4365,7 @@ struct holy_word_sanctuary_t final : public priest_heal_t
     tick_action = new holy_word_sanctuary_tick_t( p );
 
     // Needs testing
-    cooldown -> duration *= 1.0 + p.sets.has_set_bonus( SET_T13_4PC_HEAL ) * -0.2;
+    cooldown -> duration *= 1.0 + p.new_sets.has_set_bonus( SET_HEALER, T13, B4 ) * -0.2;
   }
 
   virtual void execute() override
@@ -4401,7 +4400,7 @@ struct holy_word_chastise_t final : public priest_spell_t
     base_costs[ current_resource() ]  = floor( base_costs[ current_resource() ] );
 
     // Needs testing
-    cooldown -> duration *= 1.0 + p.sets.has_set_bonus( SET_T13_4PC_HEAL ) * -0.2;
+    cooldown -> duration *= 1.0 + p.new_sets.has_set_bonus( SET_HEALER, T13, B4 ) * -0.2;
 
     castable_in_shadowform = false;
   }
@@ -4447,7 +4446,7 @@ struct holy_word_serenity_t final : public priest_heal_t
     base_costs[ current_resource() ]  = floor( base_costs[ current_resource() ] );
 
     // Needs testing
-    cooldown -> duration = data().cooldown() * ( 1.0 + p.sets.has_set_bonus( SET_T13_4PC_HEAL ) * -0.2 );
+    cooldown -> duration = data().cooldown() * ( 1.0 + p.new_sets.has_set_bonus( SET_HEALER, T13, B4 ) * -0.2 );
   }
 
   virtual void execute() override
@@ -4615,7 +4614,7 @@ struct penance_heal_t final : public priest_heal_t
     dynamic_tick_action = true;
 
     cooldown = p.cooldowns.penance;
-    cooldown -> duration = data().cooldown() + p.sets.set( SET_T14_4PC_HEAL ) -> effectN( 1 ).time_value();
+    cooldown -> duration = data().cooldown() + p.new_sets.set( SET_HEALER, T14, B4 ) -> effectN( 1 ).time_value();
 
     tick_action = new penance_heal_tick_t( p );
   }
@@ -4747,7 +4746,7 @@ struct prayer_of_healing_t final : public priest_heal_t
     if ( priest.buffs.chakra_sanctuary -> up() )
       am *= 1.0 + priest.buffs.chakra_sanctuary -> data().effectN( 1 ).percent();
 
-    am *= 1.0 + priest.sets.set( SET_T16_2PC_HEAL ) -> effectN( 1 ).percent() * priest.buffs.serendipity -> check();
+    am *= 1.0 + priest.new_sets.set( SET_HEALER, T16, B2 ) -> effectN( 1 ).percent() * priest.buffs.serendipity -> check();
 
     return am;
   }
@@ -5060,10 +5059,9 @@ struct archangel_t final : public priest_buff_t<buff_t>
   {
     default_value = data().effectN( 1 ).percent();
 
-    if ( priest.sets.has_set_bonus( SET_T16_2PC_HEAL ) )
+    if ( priest.new_sets.has_set_bonus( SET_HEALER, T16, B2 ) )
     {
       add_invalidate( CACHE_CRIT );
-
     }
   }
 
@@ -5416,7 +5414,7 @@ double priest_t::composite_spell_crit() const
   double csc = base_t::composite_spell_crit();
 
   if ( buffs.archangel -> check() )
-    csc *= 1.0 + sets.set( SET_T16_2PC_HEAL ) -> effectN( 2 ).percent();
+    csc *= 1.0 + new_sets.set( SET_HEALER, T16, B2 ) -> effectN( 2 ).percent();
 
   return csc;
 }
@@ -5426,7 +5424,7 @@ double priest_t::composite_melee_crit() const
   double cmc = base_t::composite_melee_crit();
 
   if ( buffs.archangel -> check() )
-    cmc *= 1.0 + sets.set( SET_T16_2PC_HEAL ) -> effectN( 2 ).percent();
+    cmc *= 1.0 + new_sets.set( SET_HEALER, T16, B2 ) -> effectN( 2 ).percent();
 
   return cmc;
 }
@@ -5868,30 +5866,6 @@ void priest_t::init_spells()
     base.distance = 27.0;
   else
     base.distance = 27.0;
-
-  // Set Bonuses
-  static set_bonus_description_t set_bonuses =
-  {
-    //   C2P     C4P    M2P    M4P    T2P    T4P     H2P     H4P
-    { 105843, 105844,     0,     0,     0,     0, 105827, 105832 }, // Tier13
-    { 123114, 123115,     0,     0,     0,     0, 123111, 123113 }, // Tier14
-    { 138156, 138158,     0,     0,     0,     0, 138293, 138301 }, // Tier15
-    { 145174, 145179,     0,     0,     0,     0, 145306, 145334 }, // Tier16
-    { 165628, 165629,     0,     0,     0,     0,      0,      0 }, // Tier17
-  };
-
-  if ( specialization() == PRIEST_HOLY )
-  {
-      set_bonuses[4][6] = 165621; //T17 2PC
-      set_bonuses[4][7] = 167684; //T17 4PC
-  }
-  else if ( specialization() == PRIEST_DISCIPLINE )
-  {
-      set_bonuses[4][6] = 165614; //T17 2PC
-      set_bonuses[4][7] = 167694; //T17 4PC
-  }
-
-  sets.register_spelldata( set_bonuses );
 }
 
 void priest_t::assess_damage_imminent( school_e, dmg_e, action_state_t* s )
@@ -6006,16 +5980,16 @@ void priest_t::create_buffs()
 
   //Set Bonuses
   buffs.empowered_shadows = buff_creator_t( this, "empowered_shadows" )
-                            .spell( sets.set( SET_T16_4PC_CASTER ) -> effectN( 1 ).trigger() )
-                            .chance( sets.has_set_bonus( SET_T16_4PC_CASTER ) ? 1.0 : 0.0 );
+                            .spell( new_sets.set( SET_CASTER, T16, B4 ) -> effectN( 1 ).trigger() )
+                            .chance( new_sets.has_set_bonus( SET_CASTER, T16, B4 ) );
 
   buffs.absolution = buff_creator_t( this, "absolution" )
                      .spell( find_spell( 145336 ) )
-                     .chance( sets.has_set_bonus( SET_T16_4PC_HEAL ) ? 1.0 : 0.0 );
+                     .chance( new_sets.has_set_bonus( SET_HEALER, T16, B4 ) );
 
   buffs.resolute_spirit = stat_buff_creator_t( this, "resolute_spirit" )
                           .spell( find_spell( 145374 ) )
-                          .chance( sets.has_set_bonus( SET_T16_4PC_HEAL ) ? 1.0 : 0.0 )
+                          .chance( new_sets.has_set_bonus( SET_HEALER, T16, B4 ) )
                           .add_invalidate( CACHE_HASTE );
 
   buffs.glyph_of_levitate = buff_creator_t( this, "glyph_of_levitate", glyphs.levitate )
@@ -6026,12 +6000,12 @@ void priest_t::create_buffs()
 
   buffs.mental_instinct = buff_creator_t( this, "mental_instinct" )
                             .spell( new_sets.set( PRIEST_SHADOW, T17, B4 ) -> effectN( 1 ).trigger() )
-                            .chance( new_sets.set( PRIEST_SHADOW, T17, B4 ) ? -1.0 : 0.0 )
+                            .chance( new_sets.has_set_bonus( PRIEST_SHADOW, T17, B4 ) )
                             .add_invalidate( CACHE_HASTE );
 
   buffs.clear_thoughts = buff_creator_t( this, "clear_thoughts" )
                           .spell( new_sets.set( PRIEST_DISCIPLINE, T17, B4 ) -> effectN( 1 ).trigger() )
-                          .chance( specialization() == PRIEST_DISCIPLINE ? new_sets.set( PRIEST_DISCIPLINE, T17, B4 ) -> proc_chance() : 0.0 );
+                          .chance( new_sets.set( PRIEST_DISCIPLINE, T17, B4 ) -> proc_chance() );
 }
 
 // ALL Spec Pre-Combat Action Priority List
@@ -6706,128 +6680,6 @@ void priest_t::copy_from( player_t* source )
   priest_t* source_p = debug_cast<priest_t*>( source );
 
   options = source_p -> options;
-}
-
-// priest_t::decode_set =====================================================
-
-set_e priest_t::decode_set( const item_t& item ) const
-{
-  if ( item.slot != SLOT_HEAD      &&
-       item.slot != SLOT_SHOULDERS &&
-       item.slot != SLOT_CHEST     &&
-       item.slot != SLOT_HANDS     &&
-       item.slot != SLOT_LEGS      )
-  {
-    return SET_NONE;
-  }
-
-  const std::string s = item.name();
-
-  // Tier 13
-  if ( s.find( "_of_dying_light" ) != std::string::npos )
-  {
-    if ( s.find( "hood"          ) != std::string::npos ||
-         s.find( "shoulderwraps" ) != std::string::npos ||
-         s.find( "vestment"      ) != std::string::npos ||
-         s.find( "gloves"        ) != std::string::npos ||
-         s.find( "leggings"      ) != std::string::npos ||
-         ( item.slot == SLOT_SHOULDERS && item.has_item_stat( STAT_CRIT_RATING ) ) ||
-         ( item.slot == SLOT_CHEST     && item.has_item_stat( STAT_HASTE_RATING ) ) )
-    {
-      return SET_T13_CASTER;
-    }
-
-    if ( s.find( "cowl"          ) != std::string::npos ||
-         s.find( "mantle"        ) != std::string::npos ||
-         s.find( "robes"         ) != std::string::npos ||
-         s.find( "handwraps"     ) != std::string::npos ||
-         s.find( "legwraps"      ) != std::string::npos  )
-    {
-      return SET_T13_HEAL;
-    }
-  }
-
-  // Tier 14
-  if ( s.find( "guardian_serpent" ) != std::string::npos  )
-  {
-    if ( s.find( "hood"           ) != std::string::npos ||
-         s.find( "shoulderguards" ) != std::string::npos ||
-         s.find( "raiment"        ) != std::string::npos ||
-         s.find( "gloves"         ) != std::string::npos ||
-         s.find( "leggings"       ) != std::string::npos  )
-    {
-      return SET_T14_CASTER;
-    }
-
-    if ( s.find( "cowl"          ) != std::string::npos ||
-         s.find( "mantle"        ) != std::string::npos ||
-         s.find( "robes"         ) != std::string::npos ||
-         s.find( "handwraps"     ) != std::string::npos ||
-         s.find( "legwraps"      ) != std::string::npos  )
-    {
-      return SET_T14_HEAL;
-    }
-  }
-
-  // Tier 15
-  if ( s.find( "_of_the_exorcist" ) != std::string::npos  )
-  {
-    if ( s.find( "hood"           ) != std::string::npos ||
-         s.find( "shoulderguards" ) != std::string::npos ||
-         s.find( "raiment"        ) != std::string::npos ||
-         s.find( "gloves"         ) != std::string::npos ||
-         s.find( "leggings"       ) != std::string::npos  )
-    {
-      return SET_T15_CASTER;
-    }
-
-    if ( s.find( "cowl"          ) != std::string::npos ||
-         s.find( "mantle"        ) != std::string::npos ||
-         s.find( "robes"         ) != std::string::npos ||
-         s.find( "handwraps"     ) != std::string::npos ||
-         s.find( "legwraps"      ) != std::string::npos  )
-    {
-      return SET_T15_HEAL;
-    }
-  }
-
-  // Tier 16
-  if ( s.find( "_of_the_ternion_glory" ) != std::string::npos  )
-  {
-    if ( s.find( "hood"           ) != std::string::npos ||
-         s.find( "shoulderguards" ) != std::string::npos ||
-         s.find( "raiment"        ) != std::string::npos ||
-         s.find( "gloves"         ) != std::string::npos ||
-         s.find( "leggings"       ) != std::string::npos  )
-    {
-      return SET_T16_CASTER;
-    }
-
-    if ( s.find( "cowl"          ) != std::string::npos ||
-         s.find( "mantle"        ) != std::string::npos ||
-         s.find( "robes"         ) != std::string::npos ||
-         s.find( "handwraps"     ) != std::string::npos ||
-         s.find( "legwraps"      ) != std::string::npos  )
-    {
-      return SET_T16_HEAL;
-    }
-  }
-
-    
-    
-    if ( s.find( "soul_priests_" ) != std::string::npos )
-    {
-        specialization_e s = specialization();
-        if ( s == PRIEST_DISCIPLINE ) return SET_T17_HEAL;
-        if ( s == PRIEST_HOLY ) return SET_T17_HEAL;
-        if ( s == PRIEST_SHADOW ) return SET_T17_CASTER;
-    }
-    
-  // PvP
-  if ( s.find( "_gladiators_mooncloth_" ) != std::string::npos  ) return SET_PVP_HEAL;
-  if ( s.find( "_gladiators_satin_"     ) != std::string::npos  ) return SET_PVP_CASTER;
-
-  return SET_NONE;
 }
 
 /* Report Extension Class
