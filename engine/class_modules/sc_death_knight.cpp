@@ -512,7 +512,6 @@ public:
   virtual expr_t*   create_expression( action_t*, const std::string& name );
   virtual pet_t*    create_pet( const std::string& name, const std::string& type = std::string() );
   virtual void      create_pets();
-  virtual set_e     decode_set( const item_t& ) const;
   virtual resource_e primary_resource() const { return RESOURCE_RUNIC_POWER; }
   virtual role_e    primary_role() const;
   virtual stat_e    convert_hybrid_stat( stat_e s ) const;
@@ -6969,105 +6968,6 @@ void death_knight_t::regen( timespan_t periodicity )
 
   for ( int i = 0; i < RUNE_SLOT_MAX; ++i )
     _runes.slot[ i ].regen_rune( this, periodicity );
-}
-
-// death_knight_t::decode_set ===============================================
-
-set_e death_knight_t::decode_set( const item_t& item ) const
-{
-  if ( item.slot != SLOT_HEAD      &&
-       item.slot != SLOT_SHOULDERS &&
-       item.slot != SLOT_CHEST     &&
-       item.slot != SLOT_HANDS     &&
-       item.slot != SLOT_LEGS      )
-  {
-    return SET_NONE;
-  }
-
-  const char* s = item.name();
-
-  if ( strstr( s, "necrotic_boneplate" ) )
-  {
-    bool is_melee = ( strstr( s, "helmet"        ) ||
-                      strstr( s, "pauldrons"     ) ||
-                      strstr( s, "breastplate"   ) ||
-                      strstr( s, "greaves"       ) ||
-                      strstr( s, "gauntlets"     ) );
-
-    bool is_tank = ( strstr( s, "faceguard"      ) ||
-                     strstr( s, "shoulderguards" ) ||
-                     strstr( s, "chestguard"     ) ||
-                     strstr( s, "legguards"      ) ||
-                     strstr( s, "handguards"     ) );
-
-    if ( is_melee ) return SET_T13_MELEE;
-    if ( is_tank  ) return SET_T13_TANK;
-  }
-
-  if ( strstr( s, "lost_catacomb" ) )
-  {
-    bool is_melee = ( strstr( s, "helmet"        ) ||
-                      strstr( s, "pauldrons"     ) ||
-                      strstr( s, "breastplate"   ) ||
-                      strstr( s, "greaves"       ) ||
-                      strstr( s, "gauntlets"     ) );
-
-    bool is_tank = ( strstr( s, "faceguard"      ) ||
-                     strstr( s, "shoulderguards" ) ||
-                     strstr( s, "chestguard"     ) ||
-                     strstr( s, "legguards"      ) ||
-                     strstr( s, "handguards"     ) );
-
-    if ( is_melee ) return SET_T14_MELEE;
-    if ( is_tank  ) return SET_T14_TANK;
-  }
-
-  if ( strstr( s, "_of_the_allconsuming_maw" ) )
-  {
-    bool is_melee = ( strstr( s, "helmet"        ) ||
-                      strstr( s, "pauldrons"     ) ||
-                      strstr( s, "breastplate"   ) ||
-                      strstr( s, "greaves"       ) ||
-                      strstr( s, "gauntlets"     ) );
-
-    bool is_tank = ( strstr( s, "faceguard"      ) ||
-                     strstr( s, "shoulderguards" ) ||
-                     strstr( s, "chestguard"     ) ||
-                     strstr( s, "legguards"      ) ||
-                     strstr( s, "handguards"     ) );
-
-    if ( is_melee ) return SET_T15_MELEE;
-    if ( is_tank  ) return SET_T15_TANK;
-  }
-  
-    if ( strstr( s, "_of_cyclopean_dread" ) )
-  {
-    bool is_melee = ( strstr( s, "helmet"        ) ||
-                      strstr( s, "pauldrons"     ) ||
-                      strstr( s, "breastplate"   ) ||
-                      strstr( s, "greaves"       ) ||
-                      strstr( s, "gauntlets"     ) );
-
-    bool is_tank = ( strstr( s, "faceguard"      ) ||
-                     strstr( s, "shoulderguards" ) ||
-                     strstr( s, "chestguard"     ) ||
-                     strstr( s, "legguards"      ) ||
-                     strstr( s, "handguards"     ) );
-
-    if ( is_melee ) return SET_T16_MELEE;
-    if ( is_tank  ) return SET_T16_TANK;
-  }
-
-    if ( strstr( s, "ogreskull_boneplate" ) )
-    {
-        specialization_e s = specialization();
-        if ( s == DEATH_KNIGHT_UNHOLY ) return SET_T17_MELEE;
-        if ( s == DEATH_KNIGHT_FROST ) return SET_T17_MELEE;
-        if ( s == DEATH_KNIGHT_BLOOD ) return SET_T17_TANK;
-    }
-  if ( strstr( s, "_gladiators_dreadplate_" ) ) return SET_PVP_MELEE;
-
-  return SET_NONE;
 }
 
 // death_knight_t::trigger_runic_empowerment ================================
