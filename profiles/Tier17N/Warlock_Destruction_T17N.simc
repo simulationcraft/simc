@@ -73,6 +73,5 @@ main_hand=primal_gladiators_battle_staff,id=111122,enchant=mark_of_the_thunderlo
 # gear_armor=600
 # gear_multistrike_rating=403
 # gear_versatility_rating=102
-# pvp_2pc_caster=1
 # set_bonus=pvp_2pc=1
 default_pet=felhunter

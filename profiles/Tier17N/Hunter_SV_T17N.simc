@@ -71,6 +71,5 @@ main_hand=primal_gladiators_heavy_crossbow,id=111073,enchant=oglethorpes_missile
 # gear_mastery_rating=488
 # gear_armor=1547
 # gear_multistrike_rating=870
-# pvp_2pc_melee=1
 # set_bonus=pvp_2pc=1
 summon_pet=cat

@@ -80,7 +80,5 @@ main_hand=primal_gladiators_battle_staff,id=111122,enchant=mark_of_warsong
 # gear_armor=877
 # gear_multistrike_rating=513
 # gear_versatility_rating=77
-# pvp_2pc_melee=1
-# pvp_4pc_melee=1
 # set_bonus=pvp_2pc=1
 # set_bonus=pvp_4pc=1
