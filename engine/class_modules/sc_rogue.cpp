@@ -378,7 +378,6 @@ struct rogue_t : public player_t
   virtual timespan_t available() const;
   virtual action_t* create_action( const std::string& name, const std::string& options );
   virtual expr_t*   create_expression( action_t* a, const std::string& name_str );
-  virtual set_e     decode_set( const item_t& ) const;
   virtual resource_e primary_resource() const { return RESOURCE_ENERGY; }
   virtual role_e    primary_role() const  { return ROLE_ATTACK; }
   virtual stat_e    convert_hybrid_stat( stat_e s ) const;
@@ -4388,7 +4387,7 @@ void rogue_t::init_base_stats()
   resources.base[ RESOURCE_COMBO_POINT ] = 5;
   if ( main_hand_weapon.type == WEAPON_DAGGER && off_hand_weapon.type == WEAPON_DAGGER )
     resources.base[ RESOURCE_ENERGY ] += spec.assassins_resolve -> effectN( 1 ).base_value();
-  //if ( sets.has_set_bonus( SET_PVP_2PC_MELEE ) )
+  //if ( new_sets.has_set_bonus( SET_MELEE, PVP, B2 ) )
   //  resources.base[ RESOURCE_ENERGY ] += 10;
 
   resources.base[ RESOURCE_ENERGY ] += glyph.energy -> effectN( 1 ).base_value();
@@ -4826,37 +4825,6 @@ timespan_t rogue_t::available() const
            timespan_t::from_seconds( ( 25 - energy ) / energy_regen_per_second() ),
            timespan_t::from_seconds( 0.1 )
          );
-}
-
-// rogue_t::decode_set ======================================================
-
-set_e rogue_t::decode_set( const item_t& item ) const
-{
-  if ( item.slot != SLOT_HEAD      &&
-       item.slot != SLOT_SHOULDERS &&
-       item.slot != SLOT_CHEST     &&
-       item.slot != SLOT_HANDS     &&
-       item.slot != SLOT_LEGS      )
-  {
-    return SET_NONE;
-  }
-
-  const char* s = item.name();
-
-  if ( strstr( s, "blackfang_battleweave" ) ) return SET_T13_MELEE;
-
-  if ( strstr( s, "thousandfold_blades"   ) ) return SET_T14_MELEE;
-
-  if ( strstr( s, "ninetailed"            ) ) return SET_T15_MELEE;
-
-  if ( strstr( s, "_gladiators_leather_" ) )  return SET_PVP_MELEE;
-
-  if ( util::str_in_str_ci( s, "_barbed_assassin" ) ) return SET_T16_MELEE;
-
-  if ( util::str_in_str_ci( s, "poisoners_" ) ) return SET_T17_MELEE;
-   
-    
-  return SET_NONE;
 }
 
 // rogue_t::convert_hybrid_stat ==============================================
