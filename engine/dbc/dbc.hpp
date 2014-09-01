@@ -495,6 +495,9 @@ public:
   size_t effect_count() const
   { assert( _effects ); return _effects -> size(); }
 
+  size_t power_count() const
+  { return _power ? _power -> size() : 0; }
+
   bool found() const
   { return ( this != not_found() ); }
 
@@ -528,6 +531,18 @@ public:
     assert( idx <= _effects -> size() && "effect index out of bound!" );
 
     return *( ( *_effects )[ idx - 1 ] );
+  }
+
+  const spellpower_data_t& powerN( size_t idx ) const
+  {
+    if ( _power )
+    {
+      assert( idx > 0 && _power && idx <= _power -> size() );
+
+      return *_power -> at( idx - 1 );
+    }
+
+    return *spellpower_data_t::nil();
   }
 
   const spellpower_data_t& powerN( power_e pt ) const
@@ -1054,6 +1069,8 @@ public:
   bool     is_mastery_ability( uint32_t spell_id ) const;
   bool     is_glyph_spell( uint32_t spell_id ) const;
   bool     is_set_bonus_spell( uint32_t spell_id ) const;
+
+  specialization_e spec_by_spell( uint32_t spell_id ) const;
 
   bool spec_idx( specialization_e spec_id, uint32_t& class_idx, uint32_t& spec_index ) const;
   specialization_e spec_by_idx( const player_e c, unsigned idx ) const;

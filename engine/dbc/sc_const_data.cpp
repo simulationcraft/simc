@@ -2833,6 +2833,26 @@ bool dbc_t::is_specialization_ability( uint32_t spell_id ) const
   return false;
 }
 
+specialization_e dbc_t::spec_by_spell( uint32_t spell_id ) const
+{
+  for ( unsigned cls = 0; cls < dbc_t::class_max_size(); cls++ )
+  {
+    for ( unsigned tree = 0; tree < specialization_max_per_class(); tree++ )
+    {
+      for ( unsigned n = 0; n < specialization_ability_size(); n++ )
+      {
+        if ( specialization_ability( cls, tree, n ) == spell_id )
+        {
+          std::cout << cls << " " << tree << " " << n << std::endl;
+          return spec_by_idx( util::translate_class_id( cls ), tree );
+        }
+      }
+    }
+  }
+
+  return SPEC_NONE;
+}
+
 double dbc_t::weapon_dps( const item_data_t* item_data, unsigned ilevel ) const
 {
   assert( item_data );
