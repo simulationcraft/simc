@@ -671,8 +671,8 @@ void SC_ImportTab::setSpecDropDown( const int player_class )
     choice.player_spec -> addItem( classSpecText[ player_class ][ 4 ] );
 }
 
-QString defaultOptions = "AC#=action.$ability_name.charges>=#\nAE#=active_enemies>=#\nE=target.health.pct<=20\nE#=target.health.pct<=#\nNT=!ticking\nNF=target.debuff.flying.down\nW#=/wait,sec=cooldown.$ability_name.remains,if=cooldown.$ability_name.remains<=#\n\n";
-QString defaultOperators = "BU=buff.$operand_name.up\nBA=buff.$operand_name.react\nBR=buff.$operand_name.remains\nBR#=buff.$operand_name.remains>#\nBC#=buff.$operand_name.charges>=#\nCD=cooldown.$operand_name.remains\nCD#=cooldown.$operand_name.remains>#\nDT=dot.$operand_name.ticking\nGCD=cooldown.$operand_name.remains<=gcd\nGCD#=cooldown.$operand_name.remains<=gcd*#\nT=talent.$operand_name.enabled\nG=glyph.$operand_name.enabled\n";
+QString defaultOptions = "AC#=action.$ability_name.charges>=#\nAE#=active_enemies>=#\nDR=target.dot.$ability_name.remains\nDR#=target.dot.$ability_name.remains>=#\nE=target.health.pct<=20\nE#=target.health.pct<=#\nNT=!ticking\nNF=target.debuff.flying.down\nW#=/wait,sec=cooldown.$ability_name.remains,if=cooldown.$ability_name.remains<=#\n\n";
+QString defaultOperators = "BU=buff.$operand_name.up\nBA=buff.$operand_name.react\nBR=buff.$operand_name.remains\nBR#=buff.$operand_name.remains>#\nBC#=buff.$operand_name.charges>=#\nCD=cooldown.$operand_name.remains\nCD#=cooldown.$operand_name.remains>#\nDR=target.dot.$operand_name.remains\nDR#=target.dot.$operand_name.remains>=#\nDT=dot.$operand_name.ticking\nGCD=cooldown.$operand_name.remains<=gcd\nGCD#=cooldown.$operand_name.remains<=gcd*#\nT=talent.$operand_name.enabled\nG=glyph.$operand_name.enabled\n";
 
 // constant for sidebar text (this will eventually get really long)
 QString sidebarText[ 11 ][ 4 ] = {
