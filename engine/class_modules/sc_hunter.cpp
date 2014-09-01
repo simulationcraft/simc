@@ -355,7 +355,6 @@ public:
   virtual action_t* create_action( const std::string& name, const std::string& options );
   virtual pet_t*    create_pet( const std::string& name, const std::string& type = std::string() );
   virtual void      create_pets();
-  virtual set_e     decode_set( const item_t& ) const;
   virtual resource_e primary_resource() const { return RESOURCE_FOCUS; }
   virtual role_e    primary_role() const { return ROLE_ATTACK; }
   virtual stat_e    convert_hybrid_stat( stat_e s ) const;
@@ -4018,38 +4017,6 @@ void hunter_t::armory_extensions( const std::string& /* region */,
     }
   }
 #endif
-}
-
-// hunter_t::decode_set =====================================================
-
-set_e hunter_t::decode_set( const item_t& item ) const
-{
-  const char* s = item.name();
-
-
-  if ( item.slot != SLOT_HEAD      &&
-       item.slot != SLOT_SHOULDERS &&
-       item.slot != SLOT_CHEST     &&
-       item.slot != SLOT_HANDS     &&
-       item.slot != SLOT_LEGS )
-  {
-    return SET_NONE;
-  }
-
-  if ( strstr( s, "wyrmstalkers" ) ) return SET_T13_MELEE;
-
-  if ( strstr( s, "yaungol_slayer" ) ) return SET_T14_MELEE;
-
-  if ( strstr( s, "saurok_stalker" ) ) return SET_T15_MELEE;
-
-  if ( strstr( s, "_of_the_unblinking_vigil" ) ) return SET_T16_MELEE;
-
-    
-  if ( strstr( s, "rylakstalkers" ) ) return SET_T17_MELEE;
-    
-  if ( strstr( s, "_gladiators_chain_" ) ) return SET_PVP_MELEE;
-
-  return SET_NONE;
 }
 
 // hunter_::convert_hybrid_stat ==============================================
