@@ -689,6 +689,21 @@ struct mirror_image_pet_t : public pet_t
 
 struct prismatic_crystal_t : public pet_t 
 {
+  struct prismatic_crystal_aoe_state_t : public action_state_t
+  {
+    action_t* owner_action;
+
+    prismatic_crystal_aoe_state_t( action_t* action, player_t* target ) :
+      action_state_t( action, target ), owner_action( 0 )
+    { }
+
+    void initialize()
+    { action_state_t::initialize(); owner_action = 0; }
+
+    std::ostringstream& debug_str( std::ostringstream& s )
+    { action_state_t::debug_str( s ) << " owner_action=" << ( owner_action ? owner_action -> name_str : "unknown" ); return s; }
+  };
+
   struct prismatic_crystal_aoe_t : public spell_t
   {
     prismatic_crystal_aoe_t( prismatic_crystal_t* p ) :
@@ -701,19 +716,62 @@ struct prismatic_crystal_t : public pet_t
       split_aoe_damage = true;
     }
 
+    prismatic_crystal_t* p()
+    { return debug_cast<prismatic_crystal_t*>( player ); }
+
+    void execute()
+    {
+      // Note, the pre_execute_state is guaranteed to be set, as
+      // prismatic_crystal_t::assess_damage() will always schedule the aoe
+      // execute with a state
+      const prismatic_crystal_aoe_state_t* st = debug_cast<const prismatic_crystal_aoe_state_t*>( pre_execute_state );
+
+      assert( p() -> proxy_stats[ st -> owner_action -> internal_id ] != 0 );
+      stats = p() -> proxy_stats[ st -> owner_action -> internal_id ];
+
+      spell_t::execute();
+    }
+
+    void tick( dot_t* d )
+    {
+      const prismatic_crystal_aoe_state_t* st = debug_cast<const prismatic_crystal_aoe_state_t*>( d -> state );
+
+      assert( p() -> proxy_stats[ st -> owner_action -> internal_id ] != 0 );
+      stats = p() -> proxy_stats[ st -> owner_action -> internal_id ];
+
+      spell_t::tick( d );
+    }
+
     // Damage gets fully inherited from the Mage's own spell
     double calculate_direct_amount( action_state_t* state )
     { return state -> result_amount; }
+
+    action_state_t* new_state()
+    { return new prismatic_crystal_aoe_state_t( this, target ); }
   };
 
   prismatic_crystal_aoe_t* aoe_spell;
   const spell_data_t* damage_taken;
+  std::vector<stats_t*> proxy_stats;
 
   prismatic_crystal_t( sim_t* sim, mage_t* owner ) :
     pet_t( sim, owner, "prismatic_crystal", true ),
     aoe_spell( 0 ),
     damage_taken( owner -> find_spell( 155153 ) )
   { }
+
+  void add_proxy_stats( action_t* owner_action )
+  {
+    if ( proxy_stats.size() < owner_action -> internal_id - 1 )
+      proxy_stats.resize( owner_action -> internal_id + 1, 0 );
+
+    if ( proxy_stats[ owner_action -> internal_id ] )
+      return;
+
+    proxy_stats[ owner_action -> internal_id ] = get_stats( owner_action -> name_str );
+    proxy_stats[ owner_action -> internal_id ] -> action_list.push_back( owner_action );
+    proxy_stats[ owner_action -> internal_id ] -> school = owner_action -> school;
+  }
 
   mage_t* o() const
   { return debug_cast<mage_t*>( owner ); }
@@ -761,9 +819,17 @@ struct prismatic_crystal_t : public pet_t
     if ( state -> result_amount == 0 )
       return;
 
+    // Note note note, prismatic_crystal_aoe_state_t::copy_state() is NOT
+    // overridden to allow easy copying of data from the owner's state object
+    // to the prismatic crystal's state.
     action_state_t* new_state = aoe_spell -> get_state( state );
+
     // Reset target to an enemy to avoid infinite looping
     new_state -> target = aoe_spell -> target;
+
+    // Set the owner's action explicitly
+    prismatic_crystal_aoe_state_t* st = debug_cast<prismatic_crystal_aoe_state_t*>( new_state );
+    st -> owner_action = state -> action;
 
     aoe_spell -> schedule_execute( new_state );
   }
@@ -1307,6 +1373,14 @@ public:
       return;
 
     spell_t::record_data( data );
+  }
+
+  void init()
+  {
+    spell_t::init();
+
+    pets::prismatic_crystal_t* pc = debug_cast<pets::prismatic_crystal_t*>( p() -> pets.prismatic_crystal );
+    pc -> add_proxy_stats( this );
   }
 };
 
