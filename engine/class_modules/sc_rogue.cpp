@@ -25,6 +25,11 @@ struct sinister_calling_t;
 struct melee_t;
 }
 
+namespace buffs
+{
+struct insight_buff_t;
+}
+
 enum ability_type_e {
   ABILITY_NONE = -1,
   EVISCERATE,
@@ -124,15 +129,12 @@ struct rogue_t : public player_t
     buff_t* deadly_poison;
     buff_t* deadly_proc;
     buff_t* death_from_above;
-    buff_t* deep_insight;
     buff_t* killing_spree;
     buff_t* master_of_subtlety_passive;
     buff_t* master_of_subtlety;
-    buff_t* moderate_insight;
     buff_t* recuperate;
     buff_t* shadow_dance;
     buff_t* shadow_reflection;
-    buff_t* shallow_insight;
     buff_t* shiv;
     buff_t* sleight_of_hand;
     buff_t* stealth;
@@ -143,6 +145,12 @@ struct rogue_t : public player_t
     buff_t* vanish;
     buff_t* wound_poison;
 
+    // Insights
+    buffs::insight_buff_t* shallow_insight;
+    buffs::insight_buff_t* moderate_insight;
+    buffs::insight_buff_t* deep_insight;
+
+    // Ticking buffs
     buff_t* envenom;
     buff_t* slice_and_dice;
 
@@ -3314,11 +3322,45 @@ struct fof_fod_t : public buff_t
   }
 };
 
+struct insight_buff_t : public buff_t
+{
+  rogue_t* p;
+  // Flag to indicate Bandit's Guile is elevating the insight, meaning bandit's
+  // guile itself shouldnt be expired. Natural expiration of an insight buff
+  // will also expire Bandit's Guile, starting the cycle over.
+  bool insight_elevate;
+
+  insight_buff_t( rogue_t* player, const buff_creator_t& creator ) :
+    buff_t( creator ), p( player ), insight_elevate( false )
+  { }
+
+  void expire_override()
+  {
+    buff_t::expire_override();
+
+    if ( ! insight_elevate )
+      p -> buffs.bandits_guile -> expire();
+  }
+
+  void reset()
+  {
+    buff_t::reset();
+
+    insight_elevate = false;
+  }
+
+  void insight_elevate_expire()
+  {
+    insight_elevate = true;
+    expire();
+    insight_elevate = false;
+  }
+};
+
 struct bandits_guile_t : public buff_t
 {
   bandits_guile_t( rogue_t* p ) :
-    buff_t( buff_creator_t( p, "bandits_guile" )
-            .quiet( true )
+    buff_t( buff_creator_t( p, "bandits_guile", p -> spec.bandits_guile )
             .max_stack( 12 )
             .duration( p -> find_spell( 84745 ) -> duration() )
             .chance( p -> find_specialization_spell( "Bandit's Guile" ) -> proc_chance() /* 0 */ ) )
@@ -3332,10 +3374,12 @@ struct bandits_guile_t : public buff_t
       buff_t::execute( stacks, value, duration );
 
     if ( current_stack == 4 )
+    {
       p -> buffs.shallow_insight -> trigger();
+    }
     else if ( current_stack == 8 )
     {
-      p -> buffs.shallow_insight -> expire();
+      p -> buffs.shallow_insight -> insight_elevate_expire();
       p -> buffs.moderate_insight -> trigger();
     }
     else if ( current_stack == 12 )
@@ -3343,7 +3387,7 @@ struct bandits_guile_t : public buff_t
       if ( p -> buffs.deep_insight -> check() )
         return;
 
-      p -> buffs.moderate_insight -> expire();
+      p -> buffs.moderate_insight -> insight_elevate_expire();
       p -> buffs.deep_insight -> trigger();
     }
   }
@@ -4616,15 +4660,15 @@ void rogue_t::create_buffs()
                               .duration( spec.killing_spree -> duration() + timespan_t::from_seconds( 0.001 ) );
   buffs.shadow_dance       = new buffs::shadow_dance_t( this );
   buffs.deadly_proc        = buff_creator_t( this, "deadly_proc" );
-  buffs.shallow_insight    = buff_creator_t( this, "shallow_insight", find_spell( 84745 ) )
+  buffs.shallow_insight    = new buffs::insight_buff_t( this, buff_creator_t( this, "shallow_insight", find_spell( 84745 ) )
                              .default_value( find_spell( 84745 ) -> effectN( 1 ).percent() )
-                             .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
-  buffs.moderate_insight   = buff_creator_t( this, "moderate_insight", find_spell( 84746 ) )
+                             .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER ) );
+  buffs.moderate_insight   = new buffs::insight_buff_t( this, buff_creator_t( this, "moderate_insight", find_spell( 84746 ) )
                              .default_value( find_spell( 84746 ) -> effectN( 1 ).percent() )
-                             .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
-  buffs.deep_insight       = buff_creator_t( this, "deep_insight", find_spell( 84747 ) )
+                             .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER ) );
+  buffs.deep_insight       = new buffs::insight_buff_t( this, buff_creator_t( this, "deep_insight", find_spell( 84747 ) )
                              .default_value( find_spell( 84747 ) -> effectN( 1 ).percent() )
-                             .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
+                             .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER ) );
   buffs.recuperate         = buff_creator_t( this, "recuperate" );
   buffs.shiv               = buff_creator_t( this, "shiv" );
   buffs.sleight_of_hand    = buff_creator_t( this, "sleight_of_hand", find_spell( 145211 ) )
