@@ -5977,7 +5977,6 @@ struct use_item_t : public action_t
 };
 
 // Cancel Buff ==============================================================
-// Need to add a flag which prevents cancelling some buffs, as there are buffs in the game that cannot be cancelled to prevent exploitation. 
 
 struct cancel_buff_t : public action_t
 {
@@ -6006,6 +6005,12 @@ struct cancel_buff_t : public action_t
     if ( ! buff )
     {
       buff = buff_t::find( player -> get_target_data( player ) -> target, buff_name );
+    }
+
+    if ( !buff -> can_cancel )
+    {
+      sim -> errorf( "Player %s uses cancel_buff on %s, which cannot be cancelled in game\n", player -> name(), buff_name.c_str() );
+      sim -> cancel();
     }
 
     if ( ! buff )

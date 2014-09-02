@@ -4507,11 +4507,13 @@ void warrior_t::create_buffs()
     .add_invalidate( CACHE_PARRY );
 
   buff.enrage = buff_creator_t( this, "enrage", spec.enrage -> effectN( 1 ).trigger() )
+    .can_cancel( false )
     .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
 
   buff.enraged_regeneration = buff_creator_t( this, "enraged_regeneration", talents.enraged_regeneration );
 
   buff.enraged_speed = buff_creator_t( this, "enraged_speed", glyphs.enraged_speed )
+    .can_cancel( false )
     .duration( buff.enrage -> data().duration() );
 
   buff.gladiator_stance = new buffs::gladiator_stance_t( *this, "gladiator_stance", find_spell( talents.gladiators_resolve -> effectN( 1 ).base_value() ) );
@@ -4563,7 +4565,8 @@ void warrior_t::create_buffs()
     .default_value( spec.shield_wall -> effectN( 1 ).percent() )
     .cd( timespan_t::zero() );
 
-  buff.slam = buff_creator_t( this, "slam", talents.slam );
+  buff.slam = buff_creator_t( this, "slam", talents.slam )
+    .can_cancel( false );
 
   buff.sudden_death = buff_creator_t( this, "sudden_death", talents.sudden_death -> effectN( 1 ).trigger() )
     .chance( talents.sudden_death -> proc_chance() );

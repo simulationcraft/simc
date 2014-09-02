@@ -1707,7 +1707,7 @@ protected:
   double _default_value;
   int _max_stack;
   timespan_t _duration, _cooldown, _period;
-  int _quiet, _reverse, _activated;
+  int _quiet, _reverse, _activated, _can_cancel;
   int _affects_regen;
   buff_tick_behavior_e _behavior;
   buff_refresh_behavior_e _refresh_behavior;
@@ -1754,6 +1754,8 @@ public:
   { _default_value = v; return *( static_cast<bufftype*>( this ) ); }
   bufftype& chance( double c )
   { _chance = c; return *( static_cast<bufftype*>( this ) ); }
+  bufftype& can_cancel( bool cc )
+  { _can_cancel = cc; return *( static_cast<bufftype*>( this ) );  }
   bufftype& max_stack( unsigned ms )
   { _max_stack = ms; return *( static_cast<bufftype*>( this ) ); }
   bufftype& cd( timespan_t t )
@@ -1917,7 +1919,7 @@ private: // private because changing max_stacks requires resizing some stack-dep
 public:
   double default_value;
   bool activated, reactable;
-  bool reverse, constant, quiet, overridden;
+  bool reverse, constant, quiet, overridden, can_cancel;
   bool requires_invalidation;
 
   // dynamic values

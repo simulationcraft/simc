@@ -145,6 +145,7 @@ buff_t::buff_t( const buff_creation::buff_creator_basics_t& params ) :
   reverse(),
   constant(),
   quiet(),
+  can_cancel( true ),
   overridden(),
   requires_invalidation(),
   current_value(),
@@ -257,6 +258,9 @@ buff_t::buff_t( const buff_creation::buff_creator_basics_t& params ) :
   // Set Activated flag
   if ( params._activated != -1 )
     activated = params._activated != 0;
+
+  if ( params._can_cancel != -1 )
+    can_cancel = params._can_cancel != 0;
 
   if ( params._period >= timespan_t::zero() )
     buff_period = params._period;
@@ -1738,6 +1742,7 @@ void buff_creator_basics_t::init()
   _quiet = -1;
   _reverse = -1;
   _activated = -1;
+  _can_cancel = -1;
   _behavior = BUFF_TICK_NONE;
   _refresh_behavior = BUFF_REFRESH_NONE;
   _default_value = buff_t::DEFAULT_VALUE();
