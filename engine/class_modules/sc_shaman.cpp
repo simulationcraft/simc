@@ -3466,7 +3466,7 @@ struct frost_shock_t : public shaman_spell_t
   {
     base_multiplier      *= 1.0 + player -> perk.improved_shocks -> effectN( 1 ).percent();
     uses_eoe = player -> specialization() == SHAMAN_ELEMENTAL;
-
+    cooldown              = player -> cooldown.shock;
     shock      = true;
   }
 
