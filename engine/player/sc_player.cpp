@@ -2140,6 +2140,7 @@ void player_t::create_buffs()
 
       // Resolve
       buffs.resolve = buff_creator_t( this, "resolve" )
+                        .can_cancel( false )
                         .max_stack( 1 )
                         .duration( timespan_t::zero() )
                         .default_value( 0 )
