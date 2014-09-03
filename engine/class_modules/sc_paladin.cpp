@@ -1830,7 +1830,7 @@ struct execution_sentence_t : public paladin_spell_t
     hasted_ticks   = false;
     travel_speed   = 0;
     tick_may_crit  = 1;
-
+    
     // Where the 0.0374151195 comes from
     // The whole dots scales with data().effectN( 2 ).base_value()/1000 * SP
     // Tick 1-9 grow exponentionally by 10% each time, 10th deals 5x the
@@ -1839,15 +1839,24 @@ struct execution_sentence_t : public paladin_spell_t
     // 1 / 26,727163056 = 0.0374151195, which is the factor to get from the
     // whole spells SP scaling to the base scaling of the 0th tick
     // 1st tick is already 0th * 1.1!
+    
+    // 9/2/2014 edit: ES now starts with a 1.0 multiplier on tick #1, and the 
+    // 10% growth applies to tick #10. So the sequence is now:
+    // 1.0 + 1.1 + 1.1^2 + ... + 1.1^8 + 5*1.1^9 = 25.3692153650.
+    // However, the spell power mod is still hardcoded with the old value,
+    // causing the spell to do about 5% less damage overall. 
+    // Full description here:
+    // http://maintankadin.failsafedesign.com/forum/viewtopic.php?p=784654#p784654
+
     if ( data().ok() )
     {
       parse_effect_data( ( p -> find_spell( 114916 ) -> effectN( 1 ) ) );
       spell_power_mod.tick = p -> find_spell( 114916 ) -> effectN( 2 ).base_value() / 1000.0 * 0.0374151195;
 
-      tick_multiplier[ 0 ] = 1.0;
-      for ( int i = 1; i < dot_duration / base_tick_time; ++i )
+      tick_multiplier[ 1 ] = 1.0;
+      for ( int i = 2; i <= dot_duration / base_tick_time; ++i )
         tick_multiplier[ i ] = tick_multiplier[ i - 1 ] * 1.1;
-      tick_multiplier[ 10 ] = tick_multiplier[ 9 ] * 5;
+      tick_multiplier[ 10 ] *= 5;
     }
 
     stay_of_execution = new stay_of_execution_t( p, options_str );
@@ -1864,7 +1873,9 @@ struct execution_sentence_t : public paladin_spell_t
 
     // Workaround for some clang insanity. tick_multiplier.at( ... ) does not compile ..
     assert( static_cast<size_t>( td( target ) -> dots.execution_sentence -> current_tick ) < tick_multiplier.size() && "Execution Sentence current tick > tick multiplier array" );
-    m *= tick_multiplier[ td( target ) -> dots.execution_sentence -> current_tick ];
+    int idx = td( target ) -> dots.execution_sentence -> current_tick;
+    m *= tick_multiplier[ idx ];
+
 
     return m;
   }
@@ -2614,11 +2625,7 @@ struct holy_wrath_t : public paladin_spell_t
     split_aoe_damage = true;
 
     base_multiplier += p -> talents.sanctified_wrath -> effectN( 1 ).percent();
-    hp_granted += (int) p -> talents.sanctified_wrath -> effectN( 2 ).base_value();
-
-    //Holy Wrath is an oddball - spell database entry doesn't properly contain damage details
-    //Tooltip formula is suspect (has been wrong before) TODO: test
-    spell_power_mod.direct = 2.686;      
+    hp_granted += (int) p -> talents.sanctified_wrath -> effectN( 2 ).base_value();   
 
   }
 
@@ -2754,7 +2761,9 @@ struct lights_hammer_t : public paladin_spell_t
     dynamic_tick_action = true;
     //tick_action = new lights_hammer_tick_t( p, p -> find_spell( 114919 ) );
     lh_heal_tick = new lights_hammer_heal_tick_t( p );
+    add_child( lh_heal_tick );
     lh_damage_tick = new lights_hammer_damage_tick_t( p );
+    add_child( lh_damage_tick );
 
     // disable if not talented
     if ( ! ( p -> talents.lights_hammer -> ok() ) )
