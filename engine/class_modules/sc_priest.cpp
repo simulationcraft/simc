@@ -23,7 +23,6 @@ public:
     dot_t* shadow_word_pain;
     dot_t* vampiric_touch;
     dot_t* void_entropy;
-    //dot_t* mind_blast_dot; // t17 2pc shadow // Set bonus changed in build 18537. Leaving old one in, but commented out, for now. - Twintop 2014/07/11
     dot_t* holy_fire;
     dot_t* power_word_solace;
     dot_t* renew;
@@ -253,8 +252,6 @@ public:
     proc_t* mind_spike_dot_removal_vampiric_touch_ticks;
     proc_t* mind_spike_dot_removal_void_entropy;
     proc_t* mind_spike_dot_removal_void_entropy_ticks;
-    //proc_t* mind_spike_dot_removal_t17_2pc_mind_blast;     // Set bonus changed in build 18537. Leaving old one in, but commented out, for now. - Twintop 2014/07/11
-    //proc_t* mind_spike_dot_removal_t17_2pc_mind_blast_ticks;
     proc_t* serendipity;
     proc_t* serendipity_overflow;
     proc_t* shadowy_apparition;
@@ -2050,142 +2047,14 @@ struct shadowy_apparition_spell_t final : public priest_spell_t
   }
 };
 
-// Mind Blast T17 2pc Shadow Dot
-//Celestalon confirmed Ignite mechanics like DP's - Twintop 2014/07/09
-//This disappeared in build 18537. Leaving the code for now - Twintop 2014/07/11
-struct mind_blast_dot_t final : public priest_spell_t
-{
-  struct state_t final : public action_state_t
-  {
-    double tick_dmg;
-    typedef action_state_t base_t;
-
-    state_t( action_t* a, player_t* t ) :
-      base_t( a, t ),
-      tick_dmg( 0.0 )
-    { }
-
-    std::ostringstream& debug_str( std::ostringstream& s ) override
-    { base_t::debug_str( s ) << " mind_blast_dmg=" << tick_dmg; return s; }
-
-    void initialize() override
-    { base_t::initialize(); tick_dmg = 0.0; }
-
-    void copy_state( const action_state_t* o ) override
-    {
-      base_t::copy_state( o );
-      const state_t* dps_t = static_cast<const state_t*>( o );
-      tick_dmg = dps_t -> tick_dmg;
-    }
-  };
-
-  mind_blast_dot_t( priest_t& p, priest_spell_t* ) :
-    priest_spell_t( "mind_blast_dot", p, p.find_spell( 165623 ) )
-  {
-    parse_effect_data( data().effectN( 1 ) );
-
-    hasted_ticks = true;
-    tick_may_crit = false;
-    may_multistrike = false;
-    tick_zero = false;
-
-    background = true;
-  }
-
-  timespan_t composite_dot_duration( const action_state_t* s ) const override
-  {
-    return dot_duration * ( tick_time( s -> haste ) / base_tick_time );
-  }
-
-  void init() override
-  {
-    priest_spell_t::init();
-
-    snapshot_flags = update_flags = 0;
-  }
-
-  virtual void reset() override
-  { priest_spell_t::reset(); base_ta_adder = 0; }
-
-  virtual action_state_t* new_state() override
-  { return new state_t( this, target ); }
-
-  virtual action_state_t* get_state( const action_state_t* s = nullptr ) override
-  {
-    action_state_t* s_ = priest_spell_t::get_state( s );
-
-    if ( !s )
-    {
-      state_t* ds_ = static_cast<state_t*>( s_ );
-      ds_ -> tick_dmg = 0.0;
-    }
-
-    return s_;
-  }
-
-  double calculate_tick_amount( action_state_t* state, double dot_multiplier ) override
-  {
-    // We already got the dmg stored, just return it.
-    const state_t* ds = static_cast<const state_t*>( state );
-    return ds -> tick_dmg * dot_multiplier;
-  }
-
-  /* Precondition: dot is ticking!
-   */
-  void append_damage( player_t* target, double dmg )
-  {
-    dot_t* dot = get_dot( target );
-    if ( !dot -> is_ticking() )
-    {
-      if ( sim -> debug )
-        sim -> out_debug.printf( "%s could not appended damage because the dot is no longer ticking."
-                                 "( This should only be the case if the dot drops between main impact and multistrike impact. )",
-                                 player -> name() );
-      return;
-    }
-
-    state_t* ds = static_cast<state_t*>( dot -> state );
-    ds -> tick_dmg += dmg / dot -> ticks_left();
-    if ( sim -> debug )
-      sim -> out_debug.printf( "%s appended %.2f damage / %.2f per tick. New dmg per tick: %.2f",
-                               player -> name(), dmg, dmg / dot -> ticks_left(), ds -> tick_dmg );
-  }
-
-  virtual void impact( action_state_t* state ) override
-  {
-    state_t* s = static_cast<state_t*>( state );
-    double saved_impact_dmg = s -> result_amount; // catch previous remaining t17 2pc damage
-
-    s -> result_amount = 0.0;
-    priest_spell_t::impact( s );
-
-    dot_t* dot = get_dot( state -> target );
-    state_t* ds = static_cast<state_t*>( dot -> state );
-    assert( ds );
-    ds -> tick_dmg = saved_impact_dmg / dot -> ticks_left();
-    if ( sim -> debug )
-      sim -> out_debug.printf( "%s T17 2PC / Mind Blast dot started with total of %.2f damage / %.2f per tick.",
-                               player -> name(), saved_impact_dmg, ds -> tick_dmg );
-  }
-
-  virtual timespan_t calculate_dot_refresh_duration( const dot_t* dot, timespan_t triggered_duration ) const override
-  {
-    // Old Mop Dot Behaviour
-    return dot -> time_to_next_tick() + triggered_duration;
-  }
-};
-
 // Mind Blast Spell =========================================================
 
 struct mind_blast_t final : public priest_spell_t
 {
-  mind_blast_dot_t* dot_spell;
-
   bool casted_with_shadowy_insight;
 
   mind_blast_t( priest_t& player, const std::string& options_str ) :
     priest_spell_t( "mind_blast", player, player.find_class_spell( "Mind Blast" ) ),
-    //dot_spell( nullptr ),
     casted_with_shadowy_insight( false )
   {
     parse_options( nullptr, options_str );
@@ -2196,57 +2065,6 @@ struct mind_blast_t final : public priest_spell_t
 
     if ( priest.talents.clarity_of_power -> ok() )
       priest.cooldowns.mind_blast -> duration += priest.talents.clarity_of_power -> effectN( 3 ).time_value(); //Now Effect #3... wod.wowhead.com/spell=155246 
-
-    // Set bonus changed in build 18537. Leaving old one in, but commented out, for now. - Twintop 2014/07/11
-/*    if ( priest.new_sets.set( PRIEST_SHADOW, T17, B2 ) )
-    {
-      dot_spell = new mind_blast_dot_t( player, this );
-      add_child( dot_spell );
-    }*/
-  }
-
-  void trigger_t17_2pc( action_state_t* state )
-  {
-    if ( ! dot_spell ) // equivalent to !priest.new_sets.has_set_bonus( PRIEST_SHADOW, T17, B2 )
-      return;
-
-    dot_t* dot = dot_spell -> get_dot( state -> target );
-
-    double dmg_to_pass_to_t17_2pc = 0.0;
-
-    if ( dot -> is_ticking() )
-    {
-      const mind_blast_dot_t::state_t* ds = debug_cast<const mind_blast_dot_t::state_t*>( dot -> state );
-      dmg_to_pass_to_t17_2pc += ds -> tick_dmg * dot -> ticks_left();
-
-      if ( sim -> debug )
-        sim -> out_debug.printf( "%s DP was still ticking. Added %.2f damage to new dot, and %.4f%% heal%%/tick.",
-                                 player -> name(), dmg_to_pass_to_t17_2pc );
-    }
-
-    mind_blast_dot_t::state_t* s = debug_cast<mind_blast_dot_t::state_t*>( dot_spell -> get_state( state ) );
-    s -> result_amount = dmg_to_pass_to_t17_2pc;
-    s -> result = RESULT_HIT;
-    s -> target = state -> target;
-    s -> haste = dot_spell -> composite_haste();
-    s -> result_amount = state -> result_amount * priest.new_sets.set( PRIEST_SHADOW, T17, B2 ) -> effectN( 1 ).percent();
-
-    dot_spell -> schedule_travel( s );
-    dot_spell -> stats -> add_execute( timespan_t::zero(), s -> target);
-  }
-
-  void transfer_dmg_to_dot( action_state_t* state )
-  {
-    if ( ! dot_spell ) // equivalent to !priest.new_sets.has_set_bonus( PRIEST_SHADOW, T17, B2 )
-      return;
-
-    if ( sim -> debug )
-      sim -> out_debug.printf( "%s T17 2PC result %s appends %.2f damage to dot",
-                               player -> name(),
-                               util::result_type_string( state -> result ),
-                               state -> result_amount );
-
-    dot_spell -> append_damage( state -> target, state -> result_amount * priest.new_sets.set( PRIEST_SHADOW, T17, B2 ) -> effectN( 1 ).percent() );
   }
 
   virtual void execute() override
@@ -2281,10 +2099,6 @@ struct mind_blast_t final : public priest_spell_t
         }
         priest.buffs.glyph_mind_spike -> expire();
       }
-
-      // Set bonus changed in build 18537. Leaving old one in, but commented out, for now. - Twintop 2014/07/11
-      //trigger_t17_2pc( s );
-      //transfer_dmg_to_dot( s );
     }
   }
 
@@ -3010,7 +2824,14 @@ struct devouring_plague_t final : public priest_spell_t
           priest.procs.t17_2pc_caster_mind_blast_reset -> occur();
         }
 
-        priest.cooldowns.mind_blast -> reset( true );
+        if ( priest.cooldowns.mind_blast -> remains() >= timespan_t::from_seconds( resource_consumed * priest.new_sets.set( SET_CASTER, T17, B2 ) -> effectN( 1 ).base_value() ) )
+        {
+          priest.cooldowns.mind_blast -> adjust( timespan_t::from_millis( resource_consumed * priest.new_sets.set( SET_CASTER, T17, B2 ) -> effectN( 1 ).base_value() * -1 ), true );
+        }
+        else
+        {
+          priest.cooldowns.mind_blast -> reset(true);
+        }
       }
     }
 
@@ -3206,8 +3027,8 @@ struct shadow_word_pain_t final : public priest_spell_t
   {
     parse_options( nullptr, options_str );
 
-    may_crit   = false;
-    tick_zero  = true;
+    may_crit   = true;
+    tick_zero  = false;
 
     base_multiplier *= 1.0 + p.new_sets.set( SET_CASTER, T13, B4 ) -> effectN( 1 ).percent();
 
@@ -3994,7 +3815,14 @@ struct void_entropy_t : public priest_spell_t
           priest.procs.t17_2pc_caster_mind_blast_reset -> occur();
         }
 
-        priest.cooldowns.mind_blast -> reset( true );
+        if ( priest.cooldowns.mind_blast->remains() >= timespan_t::from_millis( resource_consumed * priest.new_sets.set( SET_CASTER, T17, B2 ) -> effectN( 1 ).base_value() * -1 ) )
+        {
+          priest.cooldowns.mind_blast -> adjust( timespan_t::from_millis( resource_consumed * priest.new_sets.set( SET_CASTER, T17, B2 ) -> effectN( 1 ).base_value() * -1 ), true );
+        }
+        else
+        {
+          priest.cooldowns.mind_blast -> reset(true);
+        }
       }
     }
 
@@ -6213,7 +6041,6 @@ void priest_t::apl_shadow()
   main -> add_action( "devouring_plague,if=shadow_orb>=4&!target.dot.devouring_plague_tick.ticking&talent.surge_of_darkness.enabled,cycle_targets=1" );
   main -> add_action( "devouring_plague,if=shadow_orb>=4" );
   main -> add_action( "devouring_plague,if=shadow_orb>=3&set_bonus.tier17_2pc_caster" );
-  main -> add_action( "mind_blast,if=set_bonus.tier17_2pc_caster&active_enemies<=5&cooldown_react" );
   main -> add_action( "shadow_word_death,if=buff.shadow_word_death_reset_cooldown.stack=1,cycle_targets=1" );
   main -> add_action( "shadow_word_death,if=buff.shadow_word_death_reset_cooldown.stack=0,cycle_targets=1" );
   main -> add_action( "mind_blast,if=!glyph.mind_harvest.enabled&active_enemies<=5&cooldown_react" );
@@ -6246,9 +6073,8 @@ void priest_t::apl_shadow()
   main -> add_action( "shadow_word_pain,moving=1,cycle_targets=1" );
 
   // Main CoP action list, if you don't have Insanity selected
-  cop -> add_action( "mind_blast,if=set_bonus.tier17_2pc_caster&(shadow_orb<=2|!glyph.mind_harvest.enabled)&active_enemies<=5&cooldown_react" );
-  cop -> add_action( "devouring_plague,if=shadow_orb>=3&(set_bonus.tier17_2pc_caster|cooldown.mind_blast.remains<=gcd*1.0|cooldown.shadow_word_death.remains<=gcd*1.0)&primary_target=0,cycle_targets=1" );
-  cop -> add_action( "devouring_plague,if=shadow_orb>=3&(set_bonus.tier17_2pc_caster|cooldown.mind_blast.remains<=gcd*1.0|cooldown.shadow_word_death.remains<=gcd*1.0)" );
+  cop -> add_action( "devouring_plague,if=shadow_orb>=3&(cooldown.mind_blast.remains<=gcd*1.0|cooldown.shadow_word_death.remains<=gcd*1.0)&primary_target=0,cycle_targets=1" );
+  cop -> add_action( "devouring_plague,if=shadow_orb>=3&(cooldown.mind_blast.remains<=gcd*1.0|cooldown.shadow_word_death.remains<=gcd*1.0)" );
   cop -> add_action( "mind_blast,if=mind_harvest=0,cycle_targets=1" );
   cop -> add_action( "mind_blast,if=active_enemies<=5&cooldown_react" );
   cop -> add_action( "shadow_word_death,if=buff.shadow_word_death_reset_cooldown.stack=1,cycle_targets=1" );
@@ -6273,11 +6099,9 @@ void priest_t::apl_shadow()
   cop -> add_action( "shadow_word_pain,moving=1,cycle_targets=1,if=primary_target=0" );
 
   // CoP action list, if you have Insanity selected
-  //MFI is a DPS loss right now. Leave the following logic in place until tuning occurs, then we'll optimize.
   cop_mfi -> add_action( "devouring_plague,if=shadow_orb=5" );
   cop_mfi -> add_action( "mind_blast,if=mind_harvest=0,cycle_targets=1" );
   cop_mfi -> add_action( "mind_blast,if=active_enemies<=5&cooldown_react" );
-  cop_mfi -> add_action( "devouring_plague,if=shadow_orb>=3&set_bonus.tier17_2pc_caster" );
   cop_mfi -> add_action( "shadow_word_death,if=buff.shadow_word_death_reset_cooldown.stack=1,cycle_targets=1" );
   cop_mfi -> add_action( "shadow_word_death,if=buff.shadow_word_death_reset_cooldown.stack=0,cycle_targets=1" );
   cop_mfi -> add_action( "devouring_plague,if=shadow_orb>=3&(cooldown.mind_blast.remains<1.5|target.health.pct<20&cooldown.shadow_word_death.remains<1.5)" );
@@ -6304,7 +6128,7 @@ void priest_t::apl_shadow()
 
 void priest_t::apl_disc_heal()
 {
-  action_priority_list_t* def       = get_action_priority_list( "default"   );
+  action_priority_list_t* def = get_action_priority_list( "default" );
 
   // On-Use Items
   std::vector<std::string> item_actions = get_item_actions();

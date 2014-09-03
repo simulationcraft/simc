@@ -3704,7 +3704,7 @@ struct set_bonus_t
   const spell_data_t* set( set_role_e role, tier_e tier, set_bonus_e bonus ) const
   {
     assert( static_cast<unsigned>( tier ) == PVP || (
-            tier >= 8 && static_cast<unsigned>( tier ) < TIER_THRESHOLD ) );
+            tier >= 8 && static_cast<unsigned>( tier ) <= TIER_THRESHOLD ) );
     return set_bonus_spec_data[ tier ][ role ][ bonus ].spell;
   }
 

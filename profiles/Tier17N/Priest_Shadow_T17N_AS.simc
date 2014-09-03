@@ -43,7 +43,6 @@ actions.main+=/devouring_plague,if=shadow_orb>=3&dot.void_entropy.remains<30,cyc
 actions.main+=/devouring_plague,if=shadow_orb>=4&!target.dot.devouring_plague_tick.ticking&talent.surge_of_darkness.enabled,cycle_targets=1
 actions.main+=/devouring_plague,if=shadow_orb>=4
 actions.main+=/devouring_plague,if=shadow_orb>=3&set_bonus.tier17_2pc_caster
-actions.main+=/mind_blast,if=set_bonus.tier17_2pc_caster&active_enemies<=5&cooldown_react
 actions.main+=/shadow_word_death,if=buff.shadow_word_death_reset_cooldown.stack=1,cycle_targets=1
 actions.main+=/shadow_word_death,if=buff.shadow_word_death_reset_cooldown.stack=0,cycle_targets=1
 actions.main+=/mind_blast,if=!glyph.mind_harvest.enabled&active_enemies<=5&cooldown_react
@@ -74,9 +73,8 @@ actions.main+=/divine_star,moving=1,if=talent.divine_star.enabled&target.distanc
 actions.main+=/cascade,moving=1,if=talent.cascade.enabled&target.distance<=40
 actions.main+=/shadow_word_pain,moving=1,cycle_targets=1
 
-actions.cop=mind_blast,if=set_bonus.tier17_2pc_caster&(shadow_orb<=2|!glyph.mind_harvest.enabled)&active_enemies<=5&cooldown_react
-actions.cop+=/devouring_plague,if=shadow_orb>=3&(set_bonus.tier17_2pc_caster|cooldown.mind_blast.remains<=gcd*1.0|cooldown.shadow_word_death.remains<=gcd*1.0)&primary_target=0,cycle_targets=1
-actions.cop+=/devouring_plague,if=shadow_orb>=3&(set_bonus.tier17_2pc_caster|cooldown.mind_blast.remains<=gcd*1.0|cooldown.shadow_word_death.remains<=gcd*1.0)
+actions.cop=devouring_plague,if=shadow_orb>=3&(cooldown.mind_blast.remains<=gcd*1.0|cooldown.shadow_word_death.remains<=gcd*1.0)&primary_target=0,cycle_targets=1
+actions.cop+=/devouring_plague,if=shadow_orb>=3&(cooldown.mind_blast.remains<=gcd*1.0|cooldown.shadow_word_death.remains<=gcd*1.0)
 actions.cop+=/mind_blast,if=mind_harvest=0,cycle_targets=1
 actions.cop+=/mind_blast,if=active_enemies<=5&cooldown_react
 actions.cop+=/shadow_word_death,if=buff.shadow_word_death_reset_cooldown.stack=1,cycle_targets=1
@@ -103,7 +101,6 @@ actions.cop+=/shadow_word_pain,moving=1,cycle_targets=1,if=primary_target=0
 actions.cop_mfi=devouring_plague,if=shadow_orb=5
 actions.cop_mfi+=/mind_blast,if=mind_harvest=0,cycle_targets=1
 actions.cop_mfi+=/mind_blast,if=active_enemies<=5&cooldown_react
-actions.cop_mfi+=/devouring_plague,if=shadow_orb>=3&set_bonus.tier17_2pc_caster
 actions.cop_mfi+=/shadow_word_death,if=buff.shadow_word_death_reset_cooldown.stack=1,cycle_targets=1
 actions.cop_mfi+=/shadow_word_death,if=buff.shadow_word_death_reset_cooldown.stack=0,cycle_targets=1
 actions.cop_mfi+=/devouring_plague,if=shadow_orb>=3&(cooldown.mind_blast.remains<1.5|target.health.pct<20&cooldown.shadow_word_death.remains<1.5)
@@ -145,11 +142,11 @@ main_hand=primal_gladiators_battle_staff,id=111122,enchant=mark_of_warsong
 # gear_stamina=3250
 # gear_intellect=2378
 # gear_spell_power=1265
-# gear_crit_rating=1274
-# gear_haste_rating=423
-# gear_mastery_rating=872
+# gear_crit_rating=1127
+# gear_haste_rating=570
+# gear_mastery_rating=725
 # gear_armor=600
-# gear_multistrike_rating=590
+# gear_multistrike_rating=737
 # gear_versatility_rating=212
 # set_bonus=tier17_2pc=1
 # set_bonus=tier17_4pc=1

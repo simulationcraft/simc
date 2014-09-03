@@ -31,7 +31,6 @@ actions+=/berserking
 actions+=/arcane_torrent
 actions+=/potion,name=draenic_agility,if=buff.bestial_wrath.up
 actions+=/dire_beast
-actions+=/fervor,if=focus<=65
 actions+=/bestial_wrath,if=focus>60&!buff.bestial_wrath.up
 actions+=/multishot,if=active_enemies>5|(active_enemies>1&pet.cat.buff.beast_cleave.down)
 actions+=/stampede,if=(trinket.stat.agility.up|target.time_to_die<=20|(trinket.stacking_stat.agility.stack>10&trinket.stat.agility.cooldown_remains<=3))

@@ -74,11 +74,11 @@ main_hand=primal_gladiators_battle_staff,id=111122,enchant=mark_of_warsong
 # gear_stamina=3249
 # gear_intellect=2588
 # gear_spell_power=1265
-# gear_crit_rating=899
-# gear_haste_rating=725
-# gear_mastery_rating=947
+# gear_crit_rating=752
+# gear_haste_rating=872
+# gear_mastery_rating=800
 # gear_armor=877
-# gear_multistrike_rating=513
+# gear_multistrike_rating=660
 # gear_versatility_rating=77
 # set_bonus=pvp_2pc=1
 # set_bonus=pvp_4pc=1
