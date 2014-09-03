@@ -2340,7 +2340,6 @@ struct serpent_sting_t: public hunter_ranged_attack_t
   {
     background = proc = tick_may_crit = tick_zero = true;
     hasted_ticks = false;
-    dot_behavior = DOT_CLIP; // Serpent sting deals immediate damage every time it is cast, and the next tick is reset.
   }
 };
 
