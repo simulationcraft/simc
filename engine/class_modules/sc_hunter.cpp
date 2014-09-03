@@ -2239,7 +2239,7 @@ struct explosive_shot_t: public hunter_ranged_attack_t
     stats -> action_list.push_back( p() -> active.explosive_ticks );
   }
 
-  virtual double cost()
+  virtual double cost() const
   {
     if ( p() -> buffs.lock_and_load -> check() )
       return 0;
@@ -2257,10 +2257,10 @@ struct explosive_shot_t: public hunter_ranged_attack_t
     return hunter_ranged_attack_t::ready();
   }
 
-  void update_ready()
+  void update_ready( timespan_t cd_duration )
   {
     cooldown -> duration = p() -> buffs.lock_and_load -> check() ? timespan_t::zero() : data().cooldown();
-    hunter_ranged_attack_t::update_ready();
+    hunter_ranged_attack_t::update_ready( cd_duration );
   }
 
   double action_multiplier() const
