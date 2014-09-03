@@ -3192,7 +3192,7 @@ struct recklessness_t: public warrior_spell_t
     stancemask = STANCE_BATTLE;
     bonus_crit = data().effectN( 1 ).percent();
     bonus_crit += p -> perk.improved_recklessness -> effectN( 1 ).percent();
-    bonus_crit *= ( 1 - ( -1 * p -> glyphs.recklessness -> effectN( 1 ).percent() ) );
+    bonus_crit *= 1 + p -> glyphs.recklessness -> effectN( 1 ).percent();
     cooldown -> duration = data().cooldown();
     cooldown -> duration += p -> new_sets.set( SET_MELEE, T14, B4 ) -> effectN( 1 ).time_value();
   }

@@ -2115,7 +2115,7 @@ class SpellDataGenerator(DataGenerator):
 
                     # Potions and Elixirs need to apply attributes, rating or
                     # armor
-                    if classdata.has_value('subclass', [1, 2, 3]) and spell.has_effect('sub_type', [13, 22, 29, 99, 189]):
+                    if classdata.has_value('subclass', [1, 2, 3]) and spell.has_effect('sub_type', [13, 22, 29, 99, 189, 465]):
                         self.process_spell(spell.id, ids, 0, 0)
                     # Food needs to have a periodically triggering effect
                     # (presumed to be always a stat giving effect)
