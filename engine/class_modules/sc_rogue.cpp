@@ -3007,11 +3007,14 @@ void rogue_t::trigger_ruthlessness( const action_state_t* state )
   if ( s -> cp == 0 )
     return;
 
-  timespan_t reduction = spell.ruthlessness -> effectN( 3 ).time_value() * s -> cp;
+  if ( attack -> harmful )
+  {
+    timespan_t reduction = spell.ruthlessness -> effectN( 3 ).time_value() * s -> cp;
 
-  cooldowns.adrenaline_rush -> ready -= reduction;
-  cooldowns.killing_spree   -> ready -= reduction;
-  cooldowns.sprint          -> ready -= reduction;
+    cooldowns.adrenaline_rush -> ready -= reduction;
+    cooldowns.killing_spree   -> ready -= reduction;
+    cooldowns.sprint          -> ready -= reduction;
+  }
 
   double cp_chance = spell.ruthlessness -> effectN( 1 ).pp_combo_points() * s -> cp / 100.0;
   if ( rng().roll( cp_chance ) )
