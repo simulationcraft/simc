@@ -78,6 +78,8 @@ public:
     buff_t* careful_aim;
     buff_t* cobra_strikes;
     buff_t* focus_fire;
+    buff_t* steady_focus;
+    buff_t* pre_steady_focus;
     buff_t* lock_and_load;
     buff_t* thrill_of_the_hunt;
     buff_t* stampede;
@@ -153,6 +155,7 @@ public:
     const spell_data_t* spirit_bond;
 
     const spell_data_t* fervor;
+    const spell_data_t* steady_focus;
     const spell_data_t* dire_beast;
     const spell_data_t* thrill_of_the_hunt;
 
@@ -341,11 +344,13 @@ public:
   virtual void      combat_begin();
   virtual void      arise();
   virtual void      reset();
+  
+
+  virtual double    focus_regen_per_second() const;
   virtual double    composite_attack_power_multiplier() const;
   virtual double    composite_melee_crit() const;
   virtual double    composite_spell_crit() const;
   virtual double    composite_melee_haste() const;
-  virtual double    composite_multistrike() const;
   virtual double    composite_player_critical_damage_multiplier() const;
   virtual double    composite_rating_multiplier( rating_e rating ) const;
   virtual double    composite_player_multiplier( school_e school ) const;
@@ -437,6 +442,7 @@ public:
   { 
     double m = ab::composite_multistrike_multiplier( s );
     m *= 1.0 + p() -> buffs.heavy_shot -> data().effectN( 1 ).percent() * p() -> buffs.heavy_shot -> stack();
+    m *= 1.0 + p() -> specs.survivalist -> effectN( 2 ).percent();
     return m; 
   }
 
@@ -1599,7 +1605,7 @@ struct hunter_ranged_attack_t: public hunter_action_t < ranged_attack_t >
       background = true;
     base_t::init();
   }
-
+  
   virtual bool usable_moving() const
   {
     return true;
@@ -1608,6 +1614,7 @@ struct hunter_ranged_attack_t: public hunter_action_t < ranged_attack_t >
   virtual void execute()
   {
     ranged_attack_t::execute();
+    try_steady_focus();
     trigger_thrill_of_the_hunt();
     trigger_tier16_bm_4pc_melee();
   }
@@ -1620,6 +1627,25 @@ struct hunter_ranged_attack_t: public hunter_action_t < ranged_attack_t >
       return timespan_t::zero();
 
     return t;
+  }
+  
+  virtual void try_steady_focus()
+  {
+    // Most ranged attacks reset the counter for two steady shots in a row
+    p() -> buffs.pre_steady_focus -> expire();
+  }
+
+  virtual void trigger_steady_focus()
+  {
+    if ( p() -> talents.steady_focus -> ok() )
+       p() -> buffs.pre_steady_focus -> trigger( 1 );
+
+    if ( p() -> buffs.pre_steady_focus -> stack() == 2 )
+    {
+      double regen_buff = p() -> buffs.steady_focus -> data().effectN( 1 ).percent();
+      p() -> buffs.steady_focus -> trigger( 1, regen_buff );
+      p() -> buffs.pre_steady_focus -> expire();
+    }
   }
 
   void trigger_go_for_the_throat()
@@ -2116,6 +2142,11 @@ struct cobra_shot_t: public hunter_ranged_attack_t
     if ( p() -> new_sets.has_set_bonus( SET_MELEE, T13, B2 ) )
       focus_gain *= 2.0;
   }
+   
+  virtual void try_steady_focus()
+  {
+    trigger_steady_focus();
+  }
 
   virtual void execute()
   {
@@ -2409,6 +2440,11 @@ struct focusing_shot_t: public hunter_ranged_attack_t
     cc += p() -> buffs.careful_aim -> value( );
     return cc;
   }
+  
+  virtual void try_steady_focus()
+  {
+    trigger_steady_focus();
+  }
 
   virtual void execute()
   {
@@ -2435,6 +2471,11 @@ struct steady_shot_t: public hunter_ranged_attack_t
     // Needs testing
     if ( p() -> new_sets.has_set_bonus( SET_MELEE, T13, B2 ) )
       focus_gain *= 2.0;
+  }
+   
+  virtual void try_steady_focus()
+  {
+    trigger_steady_focus();
   }
 
   virtual void execute()
@@ -2635,6 +2676,7 @@ struct peck_t: public ranged_attack_t
   }
 };
 
+// TODO this should reset CD if the target dies
 struct moc_t: public ranged_attack_t
 {
   peck_t* peck;
@@ -3089,7 +3131,9 @@ void hunter_t::init_spells()
   talents.iron_hawk                         = find_talent_spell( "Iron Hawk" );
   talents.spirit_bond                       = find_talent_spell( "Spirit Bond" );
 
+  // TODO remove Fervor when it's gone from spell data.
   talents.fervor                            = find_talent_spell( "Fervor" );
+  talents.steady_focus                      = find_talent_spell( "Steady Focus" );
   talents.dire_beast                        = find_talent_spell( "Dire Beast" );
   talents.thrill_of_the_hunt                = find_talent_spell( "Thrill of the Hunt" );
 
@@ -3263,6 +3307,8 @@ void hunter_t::create_buffs()
     .add_invalidate( CACHE_ATTACK_POWER );
 
   buffs.thrill_of_the_hunt          = buff_creator_t( this, 34720, "thrill_of_the_hunt" ).chance( talents.thrill_of_the_hunt -> proc_chance() );
+  buffs.steady_focus                = buff_creator_t( this, 177668, "steady_focus" ).chance( talents.steady_focus -> ok() );
+  buffs.pre_steady_focus            = buff_creator_t( this, "pre_steady_focus" ).max_stack( 2 ).quiet( true );
 
   buffs.lock_and_load               = buff_creator_t( this, "lock_and_load", specs.lock_and_load -> effectN( 1 ).trigger() );
 
@@ -3713,6 +3759,15 @@ double hunter_t::composite_rating_multiplier( rating_e rating ) const
   return m;
 }
 
+// hunter_t::focus_regen_per_second ==============================
+double hunter_t::focus_regen_per_second() const
+{
+  double regen = player_t::focus_regen_per_second();
+  regen *= 1.0 + buffs.steady_focus -> current_value;
+  return regen;
+}
+
+
 // hunter_t::composite_attack_power_multiplier ==============================
 
 double hunter_t::composite_attack_power_multiplier() const
@@ -3742,17 +3797,6 @@ double hunter_t::composite_spell_crit() const
   double crit = player_t::composite_spell_crit();
   crit += specs.critical_strikes -> effectN( 1 ).percent();
   return crit;
-}
-
-// hunter_t::composite_multistrike ==========================================
-
-double hunter_t::composite_multistrike() const
-{
-  double m = player_t::composite_multistrike();
-
-  m += specs.survivalist -> effectN( 2 ).percent();
-
-  return m;
 }
 
 // Haste and speed buff computations ========================================
