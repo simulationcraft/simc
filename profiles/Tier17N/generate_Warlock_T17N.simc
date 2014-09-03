@@ -27,7 +27,7 @@ warlock=Warlock_Demonology_T17N
 level=100
 race=troll
 spec=demonology
-talents=0000211
+talents=0000212
 glyphs=imp_swarm/dark_soul
 head=primal_gladiators_hood_of_prowess,id=111084
 neck=primal_gladiators_pendant_of_cruelty,id=111128,enchant=gift_of_mastery
