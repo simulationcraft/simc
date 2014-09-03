@@ -590,13 +590,17 @@ public:
   bool        hasted_cd;
   bool        hasted_gcd;
 
+  // Elemental Fusion tracking
+  proc_t*     ef_proc;
+
   shaman_action_t( const std::string& n, shaman_t* player,
                    const spell_data_t* s = spell_data_t::nil() ) :
     ab( n, player, s ),
     totem( false ), shock( false ),
     may_proc_eoe( false ), uses_eoe( false ),
     hasted_cd( ab::data().affected_by( player -> spec.flurry -> effectN( 1 ) ) ),
-    hasted_gcd( ab::data().affected_by( player -> spec.flurry -> effectN( 2 ) ) )
+    hasted_gcd( ab::data().affected_by( player -> spec.flurry -> effectN( 2 ) ) ),
+    ef_proc( 0 )
   {
     ab::may_crit = true;
   }
@@ -614,6 +618,9 @@ public:
 
     if ( may_proc_eoe && ab::s_data )
       generated_eoe = p() -> get_proc( "Echo of the Elements: " + std::string( ab::s_data -> name_cstr() ) + " (generate)" );
+
+    if ( shock && p() -> talent.elemental_fusion -> ok() )
+      ef_proc = p() -> get_proc( "Elemental Fusion: " + std::string( ab::s_data -> name_cstr() ) );
   }
 
   shaman_t* p()
@@ -935,8 +942,11 @@ struct shaman_spell_t : public shaman_spell_base_t<spell_t>
   {
     base_t::consume_resource();
 
-    if ( uses_elemental_fusion )
+    if ( uses_elemental_fusion && p() -> talent.elemental_fusion -> ok() )
+    {
+      ef_proc -> occur();
       p() -> buff.elemental_fusion -> expire();
+    }
   }
 
   virtual bool usable_moving() const
