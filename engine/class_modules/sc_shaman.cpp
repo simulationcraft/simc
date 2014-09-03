@@ -3466,6 +3466,7 @@ struct frost_shock_t : public shaman_spell_t
   {
     base_multiplier      *= 1.0 + player -> perk.improved_shocks -> effectN( 1 ).percent();
     uses_eoe = player -> specialization() == SHAMAN_ELEMENTAL;
+    uses_elemental_fusion = true;
     cooldown              = player -> cooldown.shock;
     shock      = true;
   }
@@ -3722,9 +3723,6 @@ struct shaman_totem_pet_t : public pet_t
   virtual double composite_spell_power_multiplier() const
   { return owner -> composite_spell_power_multiplier(); }
 
-  virtual double composite_spell_speed() const
-  { return 1.0; }
-
   virtual expr_t* create_expression( action_t* a, const std::string& name )
   {
     if ( util::str_compare_ci( name, "active" ) )
@@ -3826,32 +3824,30 @@ struct totem_pulse_action_t : public spell_t
 struct liquid_magma_action_t : public totem_pulse_action_t
 {
   liquid_magma_action_t( shaman_totem_pet_t* p ) :
-    totem_pulse_action_t( "liquid_magma", p, p -> find_spell( 157501 ) )
+    totem_pulse_action_t( "liquid_magma", p, p -> o() -> talent.liquid_magma )
   {
     may_miss = may_crit = false;
     tick_may_crit = true;
     aoe = -1;
     travel_speed = 0;
-    spell_power_mod.tick = data().effectN( 1 ).sp_coeff();
+    spell_power_mod.tick = p -> find_spell( 177601 ) -> effectN( 1 ).sp_coeff();
     spell_power_mod.direct = 0;
-    base_tick_time = p -> find_spell( 152255 ) -> effectN( 1 ).period();
-    dot_duration = p -> find_spell( 152255 ) -> duration();
     base_dd_min = base_dd_max = 0;
-    hasted_ticks = false;
+    hasted_ticks = true;
   }
 };
 
 struct totem_pulse_event_t : public event_t
 {
   shaman_totem_pet_t* totem;
+  timespan_t real_amplitude;
 
   totem_pulse_event_t( shaman_totem_pet_t& t, timespan_t amplitude ) :
     event_t( t, "totem_pulse" ),
-    totem( &t )
+    totem( &t ), real_amplitude( amplitude )
   {
-    timespan_t real_amplitude = amplitude;
     if ( totem -> pulse_action -> hasted_pulse )
-      real_amplitude *= totem -> o() -> cache.spell_speed();
+      real_amplitude *= totem -> cache.spell_speed();
 
     add_event( real_amplitude );
   }
@@ -3886,12 +3882,11 @@ void shaman_totem_pet_t::summon( timespan_t duration )
 
 void shaman_totem_pet_t::dismiss()
 {
-  pet_t::dismiss();
-
-  if ( pulse_action && pulse_event )
+  // Disable last (partial) tick on dismiss, as it seems not to happen in game atm
+  if ( pulse_action && pulse_event && expiration -> remains() == timespan_t::zero() )
   {
     if ( pulse_event -> remains() > timespan_t::zero() )
-      pulse_action -> pulse_multiplier = pulse_event -> remains() / pulse_amplitude;
+      pulse_action -> pulse_multiplier = pulse_event -> remains() / debug_cast<totem_pulse_event_t*>( pulse_event ) -> real_amplitude;
     pulse_action -> execute();
   }
 
@@ -3902,6 +3897,8 @@ void shaman_totem_pet_t::dismiss()
 
   if ( o() -> totems[ totem_type ] == this )
     o() -> totems[ totem_type ] = 0;
+
+  pet_t::dismiss();
 }
 
 void shaman_totem_pet_t::init_spells()
