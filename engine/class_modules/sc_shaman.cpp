@@ -1442,15 +1442,6 @@ struct fire_elemental_t : public primal_elemental_t
       primal_elemental_spell_t( "fire_blast", player, player -> find_spell( 57984 ), options )
     { }
 
-    void execute()
-    {
-      primal_elemental_spell_t::execute();
-
-      // Reset swing timer
-      if ( player -> main_hand_attack && player -> main_hand_attack -> execute_event )
-        player -> main_hand_attack -> execute_event -> reschedule( player -> main_hand_attack -> execute_time() );
-    }
-
     bool usable_moving() const
     { return true; }
   };
