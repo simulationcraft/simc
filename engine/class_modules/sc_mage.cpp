@@ -2890,7 +2890,7 @@ struct ice_nova_t : public mage_spell_t
        mage_spell_t( "ice_nova", p, p -> talents.ice_nova )
     {
         parse_options( NULL, options_str );
-        base_multiplier *= 1.0 + p -> talents.blast_wave -> effectN( 1 ).percent();
+        base_multiplier *= 1.0 + p -> talents.ice_nova -> effectN( 1 ).percent();
         base_aoe_multiplier *= 0.5;
         aoe = -1;
     }
