@@ -4,7 +4,7 @@
 #ifndef MAX_CLASS
 #define MAX_CLASS (12)
 #endif
-// Class based active abilities, wow build 18764
+// Class based active abilities, wow build 18816
 static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SIZE] = {
   {
     {
@@ -28,7 +28,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
   },
   // Class active abilities for Warrior
   {
-    // General tree, 21 abilities
+    // General tree, 19 abilities
     {
         6673, // Battle Shout
         2457, // Battle Stance
@@ -37,8 +37,6 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
          469, // Commanding Shout
       175708, // Concussion Blow
           71, // Defensive Stance
-      174894, // Devastate
-       20243, // Devastate
         1715, // Hamstring
         6544, // Heroic Leap
           78, // Heroic Strike
@@ -53,43 +51,40 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
        34428, // Victory Rush
            0,
     },
-    // Arms tree, 13 abilities
+    // Arms tree, 11 abilities
     {
       167105, // Colossus Smash
-      174892, // Devastate
       118038, // Die by the Sword
       163201, // Execute
        12294, // Mortal Strike
        97462, // Rallying Cry
         1719, // Recklessness
          772, // Rend
-        6572, // Revenge
       174926, // Shield Barrier
        12328, // Sweeping Strikes
         6343, // Thunder Clap
         1680, // Whirlwind
            0,
     },
-    // Fury tree, 13 abilities
+    // Fury tree, 11 abilities
     {
        23881, // Bloodthirst
        86346, // Colossus Smash
-      174893, // Devastate
       118038, // Die by the Sword
         5308, // Execute
        12323, // Piercing Howl
        85288, // Raging Blow
        97462, // Rallying Cry
         1719, // Recklessness
-        6572, // Revenge
       174926, // Shield Barrier
         1680, // Whirlwind
       100130, // Wild Strike
            0,
     },
-    // Protection tree, 9 abilities
+    // Protection tree, 10 abilities
     {
         1160, // Demoralizing Shout
+       20243, // Devastate
         5308, // Execute
        12975, // Last Stand
       114192, // Mocking Banner
@@ -109,8 +104,9 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
   },
   // Class active abilities for Paladin
   {
-    // General tree, 24 abilities
+    // General tree, 25 abilities
     {
+      114919, // Arcing Light
        20217, // Blessing of Kings
        19740, // Blessing of Might
         4987, // Cleanse
@@ -398,17 +394,18 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
          585, // Smite
            0,
     },
-    // Discipline tree, 9 abilities
+    // Discipline tree, 10 abilities
     {
        81700, // Archangel
         2060, // Heal
        14914, // Holy Fire
-      132157, // Holy Nova (Discipline)
+      132157, // Holy Nova
        33206, // Pain Suppression
        47540, // Penance
        62618, // Power Word: Barrier
          596, // Prayer of Healing
          527, // Purify
+       15487, // Silence
            0,
     },
     // Holy tree, 14 abilities
@@ -1007,7 +1004,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
 
 #define TREE_SPECIALIZATION_SIZE (28)
 
-// Talent tree specialization abilities, wow build 18764
+// Talent tree specialization abilities, wow build 18816
 static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZATION_SIZE] = {
   // Specialization abilities for Hunter pets
   {
@@ -1078,7 +1075,6 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
     // Specialization abilities for Arms
     {
       167105, // Colossus Smash
-      174892, // Devastate
       118038, // Die by the Sword
       163201, // Execute
       137049, // Hotfix Passive
@@ -1089,7 +1085,6 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
        97462, // Rallying Cry
         1719, // Recklessness
          772, // Rend
-        6572, // Revenge
        12712, // Seasoned Soldier
       174926, // Shield Barrier
       162698, // Stat Negation Aura - Strength DPS
@@ -1106,7 +1101,6 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
        86346, // Colossus Smash
        23588, // Crazed Berserker
       165383, // Cruelty
-      174893, // Devastate
       118038, // Die by the Sword
        13046, // Enrage
         5308, // Execute
@@ -1119,7 +1113,6 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
        85288, // Raging Blow
        97462, // Rallying Cry
         1719, // Recklessness
-        6572, // Revenge
       174926, // Shield Barrier
        81099, // Single-Minded Fury
       162698, // Stat Negation Aura - Strength DPS
@@ -1136,6 +1129,7 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
       159362, // Blood Craze
       115768, // Deep Wounds
         1160, // Demoralizing Shout
+       20243, // Devastate
        13046, // Enrage
         5308, // Execute
       137048, // Hotfix Passive
@@ -1239,7 +1233,7 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
       162698, // Stat Negation Aura - Strength DPS
        31868, // Supplication
        53503, // Sword of Light
-       20113, // Sword of Light part two (Do not display)
+       20113, // Sword of Light
        85256, // Templar's Verdict
            0,
     },
@@ -1291,7 +1285,6 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
        53301, // Explosive Shot
       137017, // Hotfix Passive
       165396, // Lightning Reflexes
-       56343, // Lock and Load
        76658, // Mastery: Essence of the Viper
        87935, // Serpent Sting
       162697, // Stat Negation Aura - Agility DPS
@@ -1392,6 +1385,7 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
          596, // Prayer of Healing
          527, // Purify
        47536, // Rapture
+       15487, // Silence
        87336, // Spiritual Healing
       162701, // Stat Negation Aura - Intellect Healer
            0,
@@ -1597,6 +1591,7 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
        95862, // Meditation
       165391, // Purification
        77130, // Purify Spirit
+       16213, // Restorative Waves
        16196, // Resurgence
        61295, // Riptide
        98008, // Spirit Link Totem
@@ -1713,7 +1708,6 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
          755, // Health Funnel
         1949, // Hellfire
       137044, // Hotfix Passive
-      157068, // Improved Demons
        77219, // Mastery: Master Demonologist
       103958, // Metamorphosis
       122351, // Molten Core
@@ -1963,7 +1957,7 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
 
 #define CLASS_MASTERY_ABILITY_SIZE (1)
 
-// Class mastery abilities, wow build 18764
+// Class mastery abilities, wow build 18816
 static unsigned __class_mastery_ability_data[MAX_CLASS][MAX_SPECS_PER_CLASS][CLASS_MASTERY_ABILITY_SIZE] = {
   {
     {
@@ -2186,7 +2180,7 @@ static unsigned __class_mastery_ability_data[MAX_CLASS][MAX_SPECS_PER_CLASS][CLA
 #define MAX_RACE (28)
 #endif
 
-// Racial abilities, wow build 18764
+// Racial abilities, wow build 18816
 static unsigned __race_ability_data[MAX_RACE][MAX_CLASS][RACE_ABILITY_SIZE] = {
   {
     {     0, },
@@ -2909,7 +2903,7 @@ static unsigned __race_ability_data[MAX_RACE][MAX_CLASS][RACE_ABILITY_SIZE] = {
 
 #define GLYPH_ABILITIES_SIZE (41)
 
-// Glyph spells for classes, wow build 18764
+// Glyph spells for classes, wow build 18816
 static unsigned __glyph_abilities_data[][3][GLYPH_ABILITIES_SIZE] = {
   {
     {
@@ -3360,7 +3354,7 @@ static unsigned __glyph_abilities_data[][3][GLYPH_ABILITIES_SIZE] = {
        63090, // Glyph of Water Elemental
            0,
     },
-    // Minor Glyphs (13 spells)
+    // Minor Glyphs (9 spells)
     {
        57925, // Glyph of Arcane Language
       147353, // Glyph of Condensation
@@ -3370,10 +3364,6 @@ static unsigned __glyph_abilities_data[][3][GLYPH_ABILITIES_SIZE] = {
        63092, // Glyph of Illusion
        56384, // Glyph of Momentum
        89749, // Glyph of Rapid Teleportation
-       58136, // Glyph of the Bear Cub
-       57927, // Glyph of the Monkey
-       52648, // Glyph of the Penguin
-       57924, // Glyph of the Porcupine
       146976, // Glyph of the Unbound Elemental
            0,
     },
@@ -3555,7 +3545,7 @@ static unsigned __glyph_abilities_data[][3][GLYPH_ABILITIES_SIZE] = {
 
 #define TIER_BONUSES_TIER_BASE (13)
 
-// Tier item set bonuses for class, wow build 18764
+// Tier item set bonuses for class, wow build 18816
 static unsigned __tier_bonuses_data[][TIER_BONUSES_MAX_TIER][TIER_BONUSES_SIZE] = {
   {
     {
@@ -3980,7 +3970,7 @@ static unsigned __tier_bonuses_data[][TIER_BONUSES_MAX_TIER][TIER_BONUSES_SIZE] 
 
 #define SET_BONUS_DATA_SIZE (543)
 
-// Set bonus data, wow build 18764
+// Set bonus data, wow build 18816
 static item_set_bonus_t __set_bonus_data[SET_BONUS_DATA_SIZE] = {
   //                                    Tier name, SetID, Tier, Bns, Cls,         Derived Spec, Role, Spec,  Spell, Items
   { "Gladiator's Battlegear"                     ,  1230,    0,   2,   1,                { 0 },    3,   71, 165636, { 111239, 111240, 111241, 111242, 111243,  0 } },
@@ -4551,7 +4541,7 @@ static item_set_bonus_t __set_bonus_data[SET_BONUS_DATA_SIZE] = {
 
 #define PERK_SIZE (4)
 
-// Perk specialization abilities, wow build 18764
+// Perk specialization abilities, wow build 18816
 static unsigned __perk_data[][MAX_SPECS_PER_CLASS][PERK_SIZE] = {
   {
     {
@@ -4859,8 +4849,8 @@ static unsigned __perk_data[][MAX_SPECS_PER_CLASS][PERK_SIZE] = {
   },
 };
 
-// Glyph properties, wow build 18764
-static glyph_property_data_t __glyph_property_data[513] = {
+// Glyph properties, wow build 18816
+static glyph_property_data_t __glyph_property_data[504] = {
   {   162,  54811 },
   {   163,  54812 },
   {   164, 114338 },
@@ -5014,11 +5004,7 @@ static glyph_property_data_t __glyph_property_data[513] = {
   {   441,  57903 },
   {   442,  57902 },
   {   443,  57904 },
-  {   445,  57924 },
-  {   447,  57927 },
   {   448, 126748 },
-  {   449,  58136 },
-  {   450,  52648 },
   {   451,  57925 },
   {   452, 125043 },
   {   453,  57958 },
@@ -5057,14 +5043,12 @@ static glyph_property_data_t __glyph_property_data[513] = {
   {   490,  58369 },
   {   491,  58355 },
   {   492,  58366 },
-  {   493,  58388 },
   {   494,  58367 },
   {   495,  58372 },
   {   496,  58357 },
   {   497,  58377 },
   {   499,  58386 },
   {   500,  58385 },
-  {   501,  58364 },
   {   502,  58375 },
   {   505,  58384 },
   {   507,  58356 },
@@ -5166,7 +5150,6 @@ static glyph_property_data_t __glyph_property_data[513] = {
   {   851,  68164 },
   {   871, 115703 },
   {   911, 148683 },
-  {   920,  57927 },
   {   923,  89749 },
   {   924,  89758 },
   {   926,  56805 },
@@ -5214,7 +5197,6 @@ static glyph_property_data_t __glyph_property_data[513] = {
   {  1021, 125967 },
   {  1022, 125042 },
   {  1023, 109263 },
-  {  1024,  58136 },
   {  1025, 146953 },
   {  1026, 124989 },
   {  1028, 125151 },
@@ -5290,7 +5272,6 @@ static glyph_property_data_t __glyph_property_data[513] = {
   {  1110, 159416 },
   {  1111, 159418 },
   {  1112, 159421 },
-  {  1113, 159422 },
   {  1114, 159427 },
   {  1115, 159428 },
   {  1116, 159429 },

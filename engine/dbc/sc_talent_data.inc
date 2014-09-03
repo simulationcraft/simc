@@ -1,6 +1,6 @@
 #define TALENT_SIZE (309)
 
-// 309 talents, wow build 18764
+// 309 talents, wow build 18816
 static struct talent_data_t __talent_data[] = {
 //{ Name                                ,    Id, Flgs,  Class, Spc, Col, Row, SpellID, ReplaceID, S1 },
   { "Second Wind"                       , 15757, 0x00, 0x0001,   0,   1,   1,   29838,         0,  0 },
@@ -158,7 +158,7 @@ static struct talent_data_t __talent_data[] = {
   { "Barrage"                           , 19349, 0x00, 0x0004,   0,   2,   5,  120360,    175687,  0 },
   { "Exhilaration"                      , 19350, 0x00, 0x0004,   0,   0,   2,  109304,         0,  0 },
   { "Spirit Bond"                       , 19351, 0x00, 0x0004,   0,   2,   2,  109212,         0,  0 },
-  { "Fervor"                            , 19352, 0x00, 0x0004,   0,   0,   3,   82726,         0,  0 },
+  { "Steady Focus"                      , 19352, 0x00, 0x0004,   0,   0,   3,  177667,         0,  0 },
   { "Dire Beast"                        , 19353, 0x00, 0x0004,   0,   1,   3,  120679,         0,  0 },
   { "Posthaste"                         , 19354, 0x00, 0x0004,   0,   0,   0,  109215,         0,  0 },
   { "Iron Hawk"                         , 19356, 0x00, 0x0004,   0,   1,   2,  109260,         0,  0 },
