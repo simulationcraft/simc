@@ -3082,6 +3082,7 @@ struct elemental_blast_t : public shaman_spell_t
   elemental_blast_t( shaman_t* player, const std::string& options_str ) :
     shaman_spell_t( "elemental_blast", player, player -> talent.elemental_blast, options_str )
   {
+    may_fulmination    = player -> spec.fulmination -> ok();
     base_multiplier *= 1.0 + player -> spec.mental_quickness -> effectN( 5 ).percent();
   }
 
