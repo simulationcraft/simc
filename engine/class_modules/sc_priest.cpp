@@ -2824,14 +2824,7 @@ struct devouring_plague_t final : public priest_spell_t
           priest.procs.t17_2pc_caster_mind_blast_reset -> occur();
         }
 
-        if ( priest.cooldowns.mind_blast -> remains() >= timespan_t::from_seconds( resource_consumed * priest.new_sets.set( SET_CASTER, T17, B2 ) -> effectN( 1 ).base_value() ) )
-        {
-          priest.cooldowns.mind_blast -> adjust( timespan_t::from_millis( resource_consumed * priest.new_sets.set( SET_CASTER, T17, B2 ) -> effectN( 1 ).base_value() * -1 ), true );
-        }
-        else
-        {
-          priest.cooldowns.mind_blast -> reset(true);
-        }
+        priest.cooldowns.mind_blast -> adjust( - timespan_t::from_seconds( resource_consumed ), true );
       }
     }
 
@@ -3815,14 +3808,7 @@ struct void_entropy_t : public priest_spell_t
           priest.procs.t17_2pc_caster_mind_blast_reset -> occur();
         }
 
-        if ( priest.cooldowns.mind_blast->remains() >= timespan_t::from_millis( resource_consumed * priest.new_sets.set( SET_CASTER, T17, B2 ) -> effectN( 1 ).base_value() * -1 ) )
-        {
-          priest.cooldowns.mind_blast -> adjust( timespan_t::from_millis( resource_consumed * priest.new_sets.set( SET_CASTER, T17, B2 ) -> effectN( 1 ).base_value() * -1 ), true );
-        }
-        else
-        {
-          priest.cooldowns.mind_blast -> reset(true);
-        }
+        priest.cooldowns.mind_blast -> adjust( - timespan_t::from_seconds( resource_consumed ), true );
       }
     }
 
