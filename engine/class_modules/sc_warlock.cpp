@@ -794,7 +794,7 @@ struct felbolt_t: public warlock_pet_spell_t
 struct mortal_cleave_t: public warlock_pet_melee_attack_t
 {
   mortal_cleave_t( warlock_pet_t* p ):
-    warlock_pet_melee_attack_t( "mortal_cleave", p, p -> find_spell( "Mortal Cleave" ) )
+    warlock_pet_melee_attack_t( "mortal_cleave", p, p -> find_spell( 115625 ))
   {
     aoe = -1;
     weapon = &( p -> main_hand_weapon );
