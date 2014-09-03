@@ -22,7 +22,6 @@
 // Need to do some basic d=vt calcs to have a more realistic travel time for AO.
 // Improve the delay between tick and aoe for NT by applying a guassian distribution centered around 1.25s with stddev such that travel time is ~1.2-1.3s
 // Removing hardcoding of Inferno Blast CD once it has returned to the spell data
-// Figure out how to not hardcode Firestarter (PvP 4pc Fire bonus)
 
 // Are Meteor ticks effected by haste? - Maybe? They are bugged on Beta as of 8/11/2014 (http://us.battle.net/wow/en/forum/topic/13780228135)
 
@@ -2358,7 +2357,7 @@ struct fireball_t : public mage_spell_t
 
     // Fire PvP 4pc set bonus
     if ( td( target ) -> debuffs.firestarter -> check() )
-      c += td( target ) -> debuffs.firestarter -> data().effectN( 1 ).percent();
+      c += p() -> find_spell( 171170 ) -> effectN( 1 ).percent();
     return c;
   }
 
@@ -2699,7 +2698,7 @@ struct frostfire_bolt_t : public mage_spell_t
 
     // 4pc Fire PvP bonus
     if ( td( target ) -> debuffs.firestarter -> check() )
-      c += td( target ) -> debuffs.firestarter -> data().effectN( 1 ).percent();
+      c += p() -> find_spell( 171170 ) -> effectN( 1 ).percent();
 
     return c;
   }
@@ -3315,6 +3314,7 @@ struct presence_of_mind_t : public mage_spell_t
 struct pyroblast_t : public mage_spell_t
 {
   bool is_hot_streak;
+
   pyroblast_t( mage_t* p, const std::string& options_str ) :
     mage_spell_t( "pyroblast", p, p -> find_class_spell( "Pyroblast" ) ),
     is_hot_streak( false )
@@ -3358,10 +3358,7 @@ struct pyroblast_t : public mage_spell_t
       p() -> buffs.potent_flames -> trigger();
     }
 
-    if ( p() -> buffs.pyroblast -> check() && p() -> new_sets.has_set_bonus( SET_CASTER, PVP, B4 ) )
-      is_hot_streak = true;
-    else
-      is_hot_streak = false;
+    is_hot_streak = p() -> buffs.pyroblast -> check();
 
     p() -> buffs.pyroblast -> expire();
     p() -> buffs.fiery_adept -> expire();
@@ -3381,11 +3378,10 @@ struct pyroblast_t : public mage_spell_t
       trigger_ignite( s );
 
     if ( s -> result == RESULT_CRIT && p() -> talents.kindling -> ok() )
-        p() -> cooldowns.combustion -> adjust( timespan_t::from_seconds( - p() -> talents.kindling -> effectN( 1 ).base_value() ) );
+      p() -> cooldowns.combustion -> adjust( timespan_t::from_seconds( - p() -> talents.kindling -> effectN( 1 ).base_value() ) );
 
-    if ( is_hot_streak = true )
+    if ( is_hot_streak )
       td( s -> target ) -> debuffs.firestarter -> trigger();
-
   }
 
   virtual double composite_crit_multiplier() const
