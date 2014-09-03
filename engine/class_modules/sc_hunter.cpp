@@ -95,6 +95,7 @@ public:
   // Cooldowns
   struct cooldowns_t
   {
+    cooldown_t* explosive_shot;
     cooldown_t* bestial_wrath;
     cooldown_t* kill_shot_reset;
     cooldown_t* rapid_fire;
@@ -315,6 +316,7 @@ public:
     pet_multiplier( 1.0 )
   {
     // Cooldowns
+    cooldowns.explosive_shot  = get_cooldown( "explosive_shot" );
     cooldowns.bestial_wrath   = get_cooldown( "bestial_wrath" );
     cooldowns.kill_shot_reset = get_cooldown( "kill_shot_reset" );
     cooldowns.kill_shot_reset -> duration = timespan_t::from_seconds( 6 );
@@ -470,7 +472,7 @@ public:
       int stacks = p() -> buffs.thrill_of_the_hunt -> data().initial_stacks();
       // "You have a $s1% chance per 10 Focus spent"
       double chance = p() -> talents.thrill_of_the_hunt -> effectN( 1 ).percent() * c / 10.0;
-      if ( p() -> buffs.thrill_of_the_hunt -> trigger( stacks, 1, chance ) )
+      if ( p() -> buffs.thrill_of_the_hunt -> trigger( stacks, buff_t::DEFAULT_VALUE(), chance ) )
         p() -> procs.thrill_of_the_hunt -> occur();
     }
   }
@@ -2026,12 +2028,26 @@ struct black_arrow_t: public hunter_ranged_attack_t
     return hunter_ranged_attack_t::ready();
   }
 
-  virtual void multistrike_tick( const action_state_t* src_state, action_state_t* ms_state, double multiplier )
+  virtual void tick( dot_t* d )
   {
-    hunter_ranged_attack_t::multistrike_tick( src_state, ms_state, multiplier );
+    hunter_ranged_attack_t::tick( d );
 
-    p() -> buffs.lock_and_load -> trigger( 1 );
-    p() -> procs.lock_and_load -> occur();
+    if ( p() -> buffs.lock_and_load -> trigger() )
+    {
+      p() -> cooldowns.explosive_shot -> reset( true );
+      p() -> procs.lock_and_load -> occur();
+    }
+  }
+
+  virtual void execute()
+  {
+    hunter_ranged_attack_t::execute();
+    if ( p() -> new_sets.has_set_bonus( HUNTER_SURVIVAL, T17, B2 ) )
+    {
+      // guaranteed trigger (but we don't count that as a proc)
+      p() -> buffs.lock_and_load -> trigger( 1,  buff_t::DEFAULT_VALUE(), 1.0 );
+      p() -> cooldowns.explosive_shot -> reset( false );
+    }
   }
 };
 
@@ -2223,6 +2239,13 @@ struct explosive_shot_t: public hunter_ranged_attack_t
     stats -> action_list.push_back( p() -> active.explosive_ticks );
   }
 
+  virtual double cost()
+  {
+    if ( p() -> buffs.lock_and_load -> check() )
+      return 0;
+    return hunter_ranged_attack_t::cost();
+  }
+
   bool ready()
   {
     if ( cooldown -> up() && !p() -> resource_available( RESOURCE_FOCUS, cost() ) )
@@ -2234,12 +2257,10 @@ struct explosive_shot_t: public hunter_ranged_attack_t
     return hunter_ranged_attack_t::ready();
   }
 
-  void update_ready( timespan_t cd_duration )
+  void update_ready()
   {
-    if ( p() -> buffs.lock_and_load -> check() )
-      p() -> buffs.lock_and_load -> decrement(); //The cooldown does not reset if lock and load is consumed.
-    else
-      hunter_ranged_attack_t::update_ready( cd_duration );
+    cooldown -> duration = p() -> buffs.lock_and_load -> check() ? timespan_t::zero() : data().cooldown();
+    hunter_ranged_attack_t::update_ready();
   }
 
   double action_multiplier() const
@@ -2247,6 +2268,14 @@ struct explosive_shot_t: public hunter_ranged_attack_t
     double am = hunter_ranged_attack_t::action_multiplier();
     am *= 1.0 + p() -> new_sets.set( SET_MELEE, T14, B2 ) -> effectN( 3 ).percent();
     return am;
+  }
+  
+  virtual void execute()
+  {
+    hunter_ranged_attack_t::execute();
+
+    p() -> buffs.lock_and_load -> up();
+    p() -> buffs.lock_and_load -> decrement();
   }
 
   void impact( action_state_t* s )
@@ -2345,7 +2374,7 @@ struct arcane_shot_t: public hunter_ranged_attack_t
 
     if ( result_is_hit( s -> result ) )
     {
-      p() -> buffs.cobra_strikes -> trigger( 1 );
+      p() -> buffs.cobra_strikes -> trigger();
       if ( p() -> specs.serpent_sting -> ok() )
       {
         p() -> active.serpent_sting -> target = s -> target;
@@ -3310,7 +3339,7 @@ void hunter_t::create_buffs()
   buffs.steady_focus                = buff_creator_t( this, 177668, "steady_focus" ).chance( talents.steady_focus -> ok() );
   buffs.pre_steady_focus            = buff_creator_t( this, "pre_steady_focus" ).max_stack( 2 ).quiet( true );
 
-  buffs.lock_and_load               = buff_creator_t( this, "lock_and_load", specs.lock_and_load -> effectN( 1 ).trigger() );
+  buffs.lock_and_load               = buff_creator_t( this, 168980, "lock_and_load" ).chance( specs.black_arrow -> effectN( 2 ).percent() );
 
   buffs.rapid_fire                  = buff_creator_t( this, "rapid_fire", specs.rapid_fire )
     .add_invalidate( CACHE_ATTACK_HASTE );
