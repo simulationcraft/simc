@@ -1652,7 +1652,7 @@ bool sim_t::init()
         heal_target = module_t::heal_enemy() -> create_player( this, "Healing_Target_" + util::to_string( targets_create ) );
         targets_create--;
       }
-      while ( targets_create > healing );
+      while ( targets_create > 1 );
     }
   }
 
