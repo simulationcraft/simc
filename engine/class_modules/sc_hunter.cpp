@@ -457,10 +457,16 @@ public:
 
   void trigger_thrill_of_the_hunt()
   {
-    if ( p() -> talents.thrill_of_the_hunt -> ok() && cost() > 0 )
+    int c = cost();
+    if ( p() -> talents.thrill_of_the_hunt -> ok() && c > 0 )
+    {
       // Stacks: 3 initial, 3 maximum
-      if ( p() -> buffs.thrill_of_the_hunt -> trigger( p() -> buffs.thrill_of_the_hunt -> data().initial_stacks() ) )
+      int stacks = p() -> buffs.thrill_of_the_hunt -> data().initial_stacks();
+      // "You have a $s1% chance per 10 Focus spent"
+      double chance = p() -> talents.thrill_of_the_hunt -> effectN( 1 ).percent() * c / 10.0;
+      if ( p() -> buffs.thrill_of_the_hunt -> trigger( stacks, 1, chance ) )
         p() -> procs.thrill_of_the_hunt -> occur();
+    }
   }
 
   double thrill_discount( double cost ) const
