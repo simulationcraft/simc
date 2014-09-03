@@ -93,6 +93,7 @@ struct mage_td_t : public actor_pair_t
   {
     buff_t* slow;
     buff_t* frost_bomb;
+    buff_t* firestarter;
   } debuffs;
 
   mage_td_t( player_t* target, mage_t* mage );
@@ -1539,8 +1540,7 @@ struct arcane_blast_t : public mage_spell_t
     mage_spell_t( "arcane_blast", p, p -> find_class_spell( "Arcane Blast" ) )
   {
     parse_options( NULL, options_str );
-    if ( p -> new_sets.has_set_bonus( SET_CASTER, PVP, B4 ) )
-      base_multiplier *= 1.05;
+
   }
 
   virtual double cost() const
@@ -2315,8 +2315,7 @@ struct fireball_t : public mage_spell_t
     parse_options( NULL, options_str );
     may_hot_streak = true;
 
-    if ( p -> new_sets.has_set_bonus( SET_CASTER, PVP, B4 ) )
-      base_multiplier *= 1.05;
+
   }
 
 
@@ -2471,8 +2470,6 @@ struct frostbolt_t : public mage_spell_t
   {
     parse_options( NULL, options_str );
 
-    if ( p -> new_sets.has_set_bonus( SET_CASTER, PVP, B4 ) )
-      base_multiplier *= 1.05;
   }
 
 
@@ -2587,8 +2584,6 @@ struct frostfire_bolt_t : public mage_spell_t
     may_hot_streak = true;
     base_execute_time += p -> glyphs.frostfire -> effectN( 1 ).time_value();
 
-    if ( p -> new_sets.has_set_bonus( SET_CASTER, PVP, B4 ) )
-      base_multiplier *= 1.05;
 
     if ( p -> new_sets.has_set_bonus( SET_CASTER, T16, B2 ) )
     {
@@ -3433,8 +3428,6 @@ struct scorch_t : public mage_spell_t
     may_hot_streak = true;
     consumes_ice_floes = false;
 
-    if ( p -> new_sets.has_set_bonus( SET_CASTER, PVP, B4 ) )
-      base_multiplier *= 1.05;
   }
 
   virtual void impact( action_state_t* s )
@@ -4079,6 +4072,7 @@ mage_td_t::mage_td_t( player_t* target, mage_t* mage ) :
 
   debuffs.slow = buff_creator_t( *this, "slow" ).spell( mage -> spec.slow );
   debuffs.frost_bomb = buff_creator_t( *this, "frost_bomb" ).spell( mage -> talents.frost_bomb );
+  debuffs.firestarter = buff_creator_t( *this, "firestarter" ).chance( 1.0 );
 
 }
 
