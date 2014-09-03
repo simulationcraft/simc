@@ -3886,7 +3886,7 @@ void hunter_t::invalidate_cache( cache_e c )
   switch ( c )
   {
   case CACHE_MASTERY:
-    if ( mastery.essence_of_the_viper -> ok() )
+    if ( mastery.essence_of_the_viper -> ok() || mastery.sniper_training -> ok() )
     {
       player_t::invalidate_cache( CACHE_PLAYER_DAMAGE_MULTIPLIER );
     }
