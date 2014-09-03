@@ -2659,19 +2659,13 @@ struct moc_t: public ranged_attack_t
   {
     double c = ranged_attack_t::cost();
     if ( p() -> buffs.bestial_wrath -> check() )
-      c *= ( 1.0 + p() -> buffs.bestial_wrath -> data().effectN( 6 ).percent() );
+      c *= 1.0 + p() -> buffs.bestial_wrath -> data().effectN( 6 ).percent();
     return c;
   }
 
   virtual void execute()
   {
     trigger_tier16_bm_4pc_brutal_kinship( p() );
-
-    cooldown -> duration = data().cooldown();
-
-    if ( target -> health_percentage() < 20 )
-      cooldown -> duration = timespan_t::from_seconds( data().effectN( 1 ).base_value() );
-
     ranged_attack_t::execute();
   }
 };
