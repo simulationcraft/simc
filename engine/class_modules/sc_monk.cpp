@@ -3126,8 +3126,7 @@ void monk_t::init_base_stats()
   if ( specialization() != MONK_MISTWEAVER )
     base_gcd = timespan_t::from_seconds( 1.0 );
 
-  resources.base[RESOURCE_CHI] = 4 + talent.ascension -> effectN( 1 ).base_value();
-  resources.base[RESOURCE_CHI] += perk.empowered_chi -> effectN( 1 ).base_value();
+  resources.base[RESOURCE_CHI] = 4 + talent.ascension->effectN(1).base_value() + perk.empowered_chi->effectN(1).base_value();
   resources.base[RESOURCE_ENERGY] = 100;
   resources.base_multiplier[RESOURCE_MANA] *= 1.0 + talent.ascension -> effectN( 2 ).percent();
 
@@ -3957,29 +3956,35 @@ void monk_t::apl_combat_windwalker()
   for ( size_t i = 0; i < racial_actions.size(); i++ )
     def -> add_action( racial_actions[i] + ",if=buff.tigereye_brew_use.up|target.time_to_die<18" );
 
-  def -> add_talent( this, "Chi Brew", "if=chi<=4&(trinket.proc.agility.react|(charges=1&recharge_time<=10)|charges=2|target.time_to_die<charges*10)" );
+  def -> add_talent( this, "Serenity", "if=talent.serenity.enabled&chi>=3&(cooldown.fists_of_fury.remains<8|cooldown.fists_of_fury.up)&buff.tiger_power.up&debuff.rising_sun_kick.up" );
+  def -> add_talent( this, "Chi Brew", "if=chi.max-chi>=2&((charges=1&recharge_time<=10)|charges=2|target.time_to_die<charges*10)&buff.tigereye_brew.stack<=16" );
   def -> add_action( this, "Tiger Palm", "if=buff.tiger_power.remains<=3" );
   def -> add_action( this, "Tigereye Brew", "if=buff.tigereye_brew_use.down&buff.tigereye_brew.stack=20" );
-  def -> add_action( this, "Tigereye Brew", "if=buff.tigereye_brew_use.down&trinket.proc.agility.react" );
-  def -> add_action( this, "Tigereye Brew", "if=buff.tigereye_brew_use.down&chi>=2&(trinket.proc.agility.react|trinket.proc.strength.react|buff.tigereye_brew.stack>=15|target.time_to_die<40)&debuff.rising_sun_kick.up&buff.tiger_power.up" );
-  def -> add_action( this, "Energizing Brew", "if=energy.time_to_max>5" );
-  def -> add_action( this, "Rising Sun Kick", "if=debuff.rising_sun_kick.down" );
+  def -> add_action( this, "Tigereye Brew", "if=buff.tigereye_brew_use.down&buff.tigereye_brew.stack>=10&buff.serenity.up" );
+  def -> add_action( this, "Tigereye Brew", "if=buff.tigereye_brew_use.down&buff.tigereye_brew.stack>=10&cooldown.fists_of_fury.up&chi>=3&debuff.rising_sun_kick.up&buff.tiger_power.up" );
+  def -> add_action( this, "Tigereye Brew", "if=talent.hurricane_strike.enabled&buff.tigereye_brew_use.down&buff.tigereye_brew.stack>=10&cooldown.hurricane_strike.up&chi>=3&debuff.rising_sun_kick.up&buff.tiger_power.up" );
+  def -> add_action( this, "Tigereye Brew", "if=buff.tigereye_brew_use.down&chi>=2&(buff.tigereye_brew.stack>=16|target.time_to_die<40)&debuff.rising_sun_kick.up&buff.tiger_power.up" );
+  def -> add_action( this, "Rising Sun Kick", "if=(debuff.rising_sun_kick.down|debuff.rising_sun_kick.remains<3)" );
   def -> add_action( this, "Tiger Palm", "if=buff.tiger_power.down&debuff.rising_sun_kick.remains>1&energy.time_to_max>1" );
-  def -> add_talent( this, "Serenity", "if=buff.tigereye_brew_use.up" );
   def -> add_action( "call_action_list,name=aoe,if=active_enemies>=3" );
   def -> add_action( "call_action_list,name=st,if=active_enemies<3" );
 
-  st -> add_action( this, "Fists of Fury", "if=energy.time_to_max>4&buff.tiger_power.remains>4&debuff.rising_sun_kick.remains>4&buff.serenity.down" );
+  st -> add_action( this, "Fists of Fury", "if=talent.serenity.enabled&buff.serenity.up&buff.serenity.remains<2" );
+  st -> add_action( this, "Fists of Fury", "if=energy.time_to_max>cast_time&buff.tiger_power.remains>cast_time&debuff.rising_sun_kick.remains>cast_time&!buff.serenity.remains" );
+  st -> add_talent( this, "Hurricane Strike", "if=talent.hurricane_strike.enabled&energy.time_to_max>cast_time&buff.tiger_power.remains>cast_time&debuff.rising_sun_kick.remains>cast_time&buff.energizing_brew.down" );
+  st -> add_action( this, "Energizing Brew", "if=cooldown.fists_of_fury.remains>6&(!talent.serenity.enabled|(!buff.serenity.remains&cooldown.serenity.remains>4))&energy+energy.regen*gcd<50" );
   st -> add_action( this, "Rising Sun Kick" );
-  st -> add_action( this, "Blackout Kick", "if=buff.serenity.up" );
-  st -> add_talent( this, "Chi Wave", "if=energy.time_to_max>2" );
-  st -> add_talent( this, "Chi Burst", "if=talent.chi_burst.enabled&energy.time_to_max>2" );
-  st -> add_action( "zen_sphere,cycle_targets=1,if=energy.time_to_max>2&!dot.zen_sphere.ticking" );
-  st -> add_action( this, "Blackout Kick", "if=buff.combo_breaker_bok.react" );
-  st -> add_action( this, "Tiger Palm", "if=buff.combo_breaker_tp.react&(buff.combo_breaker_tp.remains<=2|energy.time_to_max>=2)" );
+  st -> add_talent( this, "Chi Wave", "if=energy.time_to_max>2&buff.serenity.down" );
+  st -> add_talent( this, "Chi Burst", "if=talent.chi_burst.enabled&energy.time_to_max>2&buff.serenity.down" );
+  st -> add_action( "zen_sphere,cycle_targets=1,if=energy.time_to_max>2&!dot.zen_sphere.ticking&buff.serenity.down" );
+  st -> add_action( this, "Blackout Kick", "if=!talent.chi_explosion.enabled&(buff.combo_breaker_bok.react|buff.serenity.up)" );
+  st -> add_talent( this, "Chi Explosion", "if=talent.chi_explosion.enabled&chi>=3&buff.combo_breaker_ce.react" );
+  st -> add_action( this, "Tiger Palm", "if=buff.combo_breaker_tp.react&buff.combo_breaker_tp.remains<=2" );
+  st -> add_action( this, "Blackout Kick", "if=!talent.chi_explosion.enabled&chi.max-chi<2" );
+  st -> add_talent( this, "Chi Explosion", "if=talent.chi_explosion.enabled&chi>=3" );
   st -> add_action( this, "Jab", "if=chi.max-chi>=2" );
-  st -> add_action( this, "Blackout Kick", "if=energy+energy.regen*cooldown.rising_sun_kick.remains>=40" );
 
+  aoe -> add_talent( this, "Chi Explosion", "if=chi>=4" );
   aoe -> add_talent( this, "Rushing Jade Wind" );
   aoe -> add_action( "zen_sphere,cycle_targets=1,if=!dot.zen_sphere.ticking" );
   aoe -> add_talent( this, "Chi Wave" );
