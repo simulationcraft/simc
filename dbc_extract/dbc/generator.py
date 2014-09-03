@@ -868,7 +868,7 @@ class ItemDataGenerator(DataGenerator):
                             continue
 
                         # Grants armor, stats, or rating
-                        if not spell.has_effect('sub_type', [13, 22, 29, 99, 189]):
+                        if not spell.has_effect('sub_type', [13, 22, 29, 99, 189, 465]):
                             continue
 
                         filter_ilevel = False
