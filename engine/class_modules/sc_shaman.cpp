@@ -3883,7 +3883,7 @@ void shaman_totem_pet_t::summon( timespan_t duration )
 void shaman_totem_pet_t::dismiss()
 {
   // Disable last (partial) tick on dismiss, as it seems not to happen in game atm
-  if ( pulse_action && pulse_event && expiration -> remains() == timespan_t::zero() )
+  if ( pulse_action && pulse_event && expiration && expiration -> remains() == timespan_t::zero() )
   {
     if ( pulse_event -> remains() > timespan_t::zero() )
       pulse_action -> pulse_multiplier = pulse_event -> remains() / debug_cast<totem_pulse_event_t*>( pulse_event ) -> real_amplitude;
