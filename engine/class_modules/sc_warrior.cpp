@@ -741,8 +741,11 @@ void warrior_attack_t::consume_resource()
 
   double rage = resource_consumed;
 
-   if ( result_is_miss( execute_state -> result ) && rage > 0 && !aoe )
-     p -> resource_gain( RESOURCE_RAGE, rage*0.8, p -> gain.avoided_attacks );
+  if ( !aoe )
+  {
+    if ( result_is_miss( execute_state -> result ) && rage > 0 )
+      p -> resource_gain( RESOURCE_RAGE, rage*0.8, p -> gain.avoided_attacks );
+  }
 }
 
 // warrior_attack_t::execute ================================================
