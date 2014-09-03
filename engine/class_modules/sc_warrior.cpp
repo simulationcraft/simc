@@ -410,8 +410,6 @@ public:
     cooldown.shockwave                = get_cooldown( "shockwave" );
     cooldown.stance_swap              = get_cooldown( "stance_swap" );
     cooldown.stance_swap             -> duration = timespan_t::from_seconds( 1.5 );
-    cooldown.stance_cooldown          = get_cooldown( "stance_cooldown" );
-    cooldown.stance_cooldown         -> duration = timespan_t::from_seconds( 6.0 );
     cooldown.storm_bolt               = get_cooldown( "storm_bolt" );
 
     initial_rage = 0;
@@ -1335,7 +1333,7 @@ struct bloodthirst_t: public warrior_attack_t
 
       if ( p() -> buff.bloodsurge -> check() )
         bloodsurge = p() -> buff.bloodsurge -> current_stack;
-      if ( p() -> buff.bloodsurge -> trigger( 2 ) )
+      if ( p() -> buff.bloodsurge -> trigger( p() -> spec.bloodsurge -> effectN( 2 ).base_value() ) )
       {
         p() -> proc.bloodsurge -> occur();
         if ( bloodsurge > 0 )
@@ -1364,14 +1362,6 @@ struct bloodthirst_t: public warrior_attack_t
       return;
 
     warrior_attack_t::update_ready( cd_duration );
-  }
-
-  bool ready()
-  {
-    if ( !p() -> cooldown.stance_cooldown -> up() )
-      return false;
-
-    return warrior_attack_t::ready();
   }
 };
 
@@ -1518,33 +1508,14 @@ struct demoralizing_shout: public warrior_attack_t
 
 // Devastate ================================================================
 
-struct devastate_off_hand_t: public warrior_attack_t
-{
-  devastate_off_hand_t( warrior_t* p, const char* name, const spell_data_t* s ):
-    warrior_attack_t( name, p, s )
-  {
-    dual = true;
-    may_miss = may_dodge = may_parry = false;
-    weapon = &( p -> off_hand_weapon );
-  }
-};
-
 struct devastate_t: public warrior_attack_t
 {
-  devastate_off_hand_t* oh_attack;
   devastate_t( warrior_t* p, const std::string& options_str ):
-    warrior_attack_t( "devastate", p, p -> specialization() == WARRIOR_PROTECTION ?
-    p -> find_spell( 20243 ) : p -> spec.devastate ),
-    oh_attack( 0 )
+    warrior_attack_t( "devastate", p, p -> spec.devastate )
   {
     parse_options( NULL, options_str );
     stancemask = STANCE_GLADIATOR | STANCE_DEFENSE;
     weapon = &( p -> main_hand_weapon );
-    if ( p -> specialization() == WARRIOR_FURY )
-    {
-      oh_attack = new devastate_off_hand_t( p, "devastate_offhand", p -> find_spell( 174894 ) );
-      add_child( oh_attack );
-    }
   }
 
   void execute()
@@ -1553,24 +1524,14 @@ struct devastate_t: public warrior_attack_t
 
     if ( result_is_hit( execute_state -> result ) )
     {
-      if ( p() -> specialization() == WARRIOR_PROTECTION )
+      if ( p() -> buff.sword_and_board -> trigger() )
+        p() -> cooldown.shield_slam -> reset( true );
+      p() -> active_deep_wounds -> target = execute_state -> target;
+      p() -> active_deep_wounds -> execute();
+      if ( p() -> talents.unyielding_strikes -> ok() )
       {
-        if ( p() -> buff.sword_and_board -> trigger() )
-          p() -> cooldown.shield_slam -> reset( true );
-        p() -> active_deep_wounds -> target = execute_state -> target;
-        p() -> active_deep_wounds -> execute();
-        if ( p() -> talents.unyielding_strikes -> ok() )
-        {
-          if ( p() -> buff.unyielding_strikes -> current_stack != 5 )
-            p() -> buff.unyielding_strikes -> trigger( 1 );
-        }
-      }
-      else
-      {
-        if ( oh_attack )
-          oh_attack -> execute();
-        if ( rng().roll( 0.3 ) ) // No spell data for the reset yet.
-          p() -> cooldown.revenge -> reset( true );
+        if ( p() -> buff.unyielding_strikes -> current_stack != 5 )
+          p() -> buff.unyielding_strikes -> trigger( 1 );
       }
     }
   }
@@ -1579,11 +1540,8 @@ struct devastate_t: public warrior_attack_t
   {
     warrior_attack_t::impact( s );
 
-    if ( p() -> specialization() != WARRIOR_ARMS )
-    {
-      if ( s -> result == RESULT_CRIT )
-        p() -> enrage();
-    }
+    if ( s -> result == RESULT_CRIT )
+      p() -> enrage();
   }
 };
 
@@ -2069,9 +2027,6 @@ struct mortal_strike_t: public warrior_attack_t
     if ( p() -> main_hand_weapon.type == WEAPON_NONE )
       return false;
 
-    if ( !p() -> cooldown.stance_cooldown -> up() )
-      return false;
-
     return warrior_attack_t::ready();
   }
 };
@@ -2178,9 +2133,6 @@ struct raging_blow_t: public warrior_attack_t
   bool ready()
   {
     if ( !p() -> buff.raging_blow -> check() )
-      return false;
-
-    if ( !p() -> cooldown.stance_cooldown -> up() )
       return false;
 
     // Needs weapons in both hands
@@ -2606,9 +2558,6 @@ struct slam_t: public warrior_attack_t
     if ( p() -> main_hand_weapon.type == WEAPON_NONE )
       return false;
 
-    if ( !p() -> cooldown.stance_cooldown -> up() )
-      return false;
-
     return warrior_attack_t::ready();
   }
 };
@@ -2869,9 +2818,6 @@ struct whirlwind_t: public warrior_attack_t
     if ( p() -> main_hand_weapon.type == WEAPON_NONE )
       return false;
 
-    if ( !p() -> cooldown.stance_cooldown -> up() )
-      return false;
-
     return warrior_attack_t::ready();
   }
 };
@@ -2897,7 +2843,7 @@ struct wild_strike_t: public warrior_attack_t
     double c = warrior_attack_t::cost();
 
     if ( p() -> buff.bloodsurge -> up() )
-      c += p() -> buff.bloodsurge -> data().effectN( 2 ).resource( RESOURCE_RAGE );
+      c = 0;
 
     return c;
   }
@@ -2922,9 +2868,6 @@ struct wild_strike_t: public warrior_attack_t
 
   bool ready()
   {
-    if ( !p() -> cooldown.stance_cooldown -> up() )
-      return false;
-
     if ( p() -> off_hand_weapon.type == WEAPON_NONE )
       return false;
 
@@ -3249,7 +3192,7 @@ struct recklessness_t: public warrior_spell_t
     stancemask = STANCE_BATTLE;
     bonus_crit = data().effectN( 1 ).percent();
     bonus_crit += p -> perk.improved_recklessness -> effectN( 1 ).percent();
-    bonus_crit *= ( 1 - p -> glyphs.recklessness -> effectN( 1 ).percent() );
+    bonus_crit *= ( 1 - ( -1 * p -> glyphs.recklessness -> effectN( 1 ).percent() ) );
     cooldown -> duration = data().cooldown();
     cooldown -> duration += p -> new_sets.set( SET_MELEE, T14, B4 ) -> effectN( 1 ).time_value();
   }
@@ -5365,8 +5308,6 @@ void warrior_t::stance_swap()
   }
   }
   cooldown.stance_swap -> start();
-  if ( active_stance == STANCE_DEFENSE )
-    cooldown.stance_cooldown -> start();
 }
 
 // warrior_t::enrage ========================================================

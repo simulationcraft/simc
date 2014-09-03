@@ -338,23 +338,6 @@ void dbc::apply_hotfixes()
   // Warlock
 
   // Warrior
-  s = spell_data_t::find( 96103, false );
-  assert( s -> _spell_level == 39 && "Check level on Raging Blow" );
-  s -> _spell_level = 30;
-  if ( SC_USE_PTR )
-  {
-    s = spell_data_t::find( 96103, true );
-    s -> _spell_level = 30;
-  }
-
-  s = spell_data_t::find( 85384, false );
-  assert( s -> _spell_level == 39 && "Check level on Raging Blow Off-Hand" );
-  s -> _spell_level = 30;
-  if ( SC_USE_PTR )
-  {
-    s = spell_data_t::find( 85384, true );
-    s -> _spell_level = 30;
-  }
 
   // Druid
   s = spell_data_t::find( 50288, false ); // Starfall probably doesn't take 30 seconds to hit the target.
