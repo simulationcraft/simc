@@ -2156,7 +2156,7 @@ struct revenge_t: public warrior_attack_t
   {
     parse_options( NULL, options_str );
     stancemask = STANCE_GLADIATOR | STANCE_DEFENSE;
-
+    base_add_multiplier = data().effectN( 3 ).percent();
     aoe = 3;
     rage_gain = data().effectN( 2 ).resource( RESOURCE_RAGE );
   }
