@@ -2318,6 +2318,10 @@ struct rend_t: public warrior_attack_t
     if ( p() -> mastery_rend )
       am *= 1.0 + p() -> cache.mastery_value();
 
+    if ( p() -> bugs )
+      am /= 1.0 + p() -> spec.seasoned_soldier -> effectN( 1 ).percent(); // Seasoned Soldier isn't being applied to the rend dot, but it does apply to the burst.
+      //Divide it out here to cancel it out in composite_player_multiplier.
+
     return am;
   }
 
@@ -4763,7 +4767,16 @@ double warrior_t::composite_player_multiplier( school_e school ) const
     m *= 1.0 + buff.enrage -> data().effectN( 2 ).percent();
 
     if ( mastery.unshackled_fury -> ok() )
-      m *= 1.0 + cache.mastery_value();
+    { // Mastery is flooring at the moment. 9.99% = 9.00% damage increase.
+      double us = cache.mastery_value();
+      if ( bugs )
+      {
+        us *= 100;
+        us = std::floor( us );
+        us /= 100;
+      }
+      m *= 1.0 + us;
+    }
   }
 
   if ( main_hand_weapon.group() == WEAPON_1H &&
