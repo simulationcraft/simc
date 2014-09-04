@@ -113,6 +113,7 @@ public:
     gain_t* focus_fire;
     gain_t* thrill_of_the_hunt;
     gain_t* steady_shot;
+    gain_t* steady_focus;
     gain_t* focusing_shot;
     gain_t* cobra_shot;
     gain_t* aimed_shot;
@@ -346,9 +347,8 @@ public:
   virtual void      combat_begin();
   virtual void      arise();
   virtual void      reset();
-  
-
-  virtual double    focus_regen_per_second() const;
+ 
+  virtual void      regen( timespan_t periodicity = timespan_t::from_seconds( 0.25 ) );
   virtual double    composite_attack_power_multiplier() const;
   virtual double    composite_melee_crit() const;
   virtual double    composite_spell_crit() const;
@@ -1841,11 +1841,11 @@ struct exotic_munitions_t: public hunter_ranged_attack_t
 
     if ( !ammo_type.empty() )
     {
-      if ( ammo_type == "incendiary" || ammo_type == "incen" || ammo_type == "incendiary_ammo" )
+      if ( ammo_type == "incendiary" || ammo_type == "incen" || ammo_type == "incendiary_ammo" || ammo_type == "fire" )
         swap_ammo = INCENDIARY_AMMO;
       else if ( ammo_type == "poisoned" || ammo_type == "poison" || ammo_type == "poisoned_ammo" )
         swap_ammo = POISONED_AMMO;
-      else if ( ammo_type == "frozen" || ammo_type == "frozen_ammo" )
+      else if ( ammo_type == "frozen" || ammo_type == "frozen_ammo" || ammo_type == "ice"  )
         swap_ammo = FROZEN_AMMO;
     }
   }
@@ -3380,6 +3380,7 @@ void hunter_t::init_gains()
   gains.focus_fire           = get_gain( "focus_fire" );
   gains.thrill_of_the_hunt   = get_gain( "thrill_of_the_hunt_savings" );
   gains.steady_shot          = get_gain( "steady_shot" );
+  gains.steady_focus         = get_gain( "steady_focus" );
   gains.focusing_shot        = get_gain( "focusing_shot" );
   gains.cobra_shot           = get_gain( "cobra_shot" );
   gains.aimed_shot           = get_gain( "aimed_shot" );
@@ -3787,12 +3788,15 @@ double hunter_t::composite_rating_multiplier( rating_e rating ) const
   return m;
 }
 
-// hunter_t::focus_regen_per_second ==============================
-double hunter_t::focus_regen_per_second() const
+// hunter_t::regen ==============================
+void hunter_t::regen( timespan_t periodicity )
 {
-  double regen = player_t::focus_regen_per_second();
-  regen *= 1.0 + buffs.steady_focus -> current_value;
-  return regen;
+  player_t::regen( periodicity );
+  if ( buffs.steady_focus -> up() )
+  {
+    double base = focus_regen_per_second() * buffs.steady_focus -> current_value;
+    resource_gain( RESOURCE_FOCUS, base * periodicity.total_seconds(), gains.steady_focus );
+  }
 }
 
 
@@ -3886,7 +3890,7 @@ void hunter_t::invalidate_cache( cache_e c )
   switch ( c )
   {
   case CACHE_MASTERY:
-    if ( mastery.essence_of_the_viper -> ok() )
+    if ( mastery.essence_of_the_viper -> ok() || mastery.sniper_training -> ok() )
     {
       player_t::invalidate_cache( CACHE_PLAYER_DAMAGE_MULTIPLIER );
     }
