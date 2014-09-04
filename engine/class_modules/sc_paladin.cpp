@@ -1830,7 +1830,7 @@ struct execution_sentence_t : public paladin_spell_t
     hasted_ticks   = false;
     travel_speed   = 0;
     tick_may_crit  = 1;
-
+    
     // Where the 0.0374151195 comes from
     // The whole dots scales with data().effectN( 2 ).base_value()/1000 * SP
     // Tick 1-9 grow exponentionally by 10% each time, 10th deals 5x the
@@ -1839,15 +1839,24 @@ struct execution_sentence_t : public paladin_spell_t
     // 1 / 26,727163056 = 0.0374151195, which is the factor to get from the
     // whole spells SP scaling to the base scaling of the 0th tick
     // 1st tick is already 0th * 1.1!
+    
+    // 9/2/2014 edit: ES now starts with a 1.0 multiplier on tick #1, and the 
+    // 10% growth applies to tick #10. So the sequence is now:
+    // 1.0 + 1.1 + 1.1^2 + ... + 1.1^8 + 5*1.1^9 = 25.3692153650.
+    // However, the spell power mod is still hardcoded with the old value,
+    // causing the spell to do about 5% less damage overall. 
+    // Full description here:
+    // http://maintankadin.failsafedesign.com/forum/viewtopic.php?p=784654#p784654
+
     if ( data().ok() )
     {
       parse_effect_data( ( p -> find_spell( 114916 ) -> effectN( 1 ) ) );
       spell_power_mod.tick = p -> find_spell( 114916 ) -> effectN( 2 ).base_value() / 1000.0 * 0.0374151195;
 
-      tick_multiplier[ 0 ] = 1.0;
-      for ( int i = 1; i < dot_duration / base_tick_time; ++i )
+      tick_multiplier[ 1 ] = 1.0;
+      for ( int i = 2; i <= dot_duration / base_tick_time; ++i )
         tick_multiplier[ i ] = tick_multiplier[ i - 1 ] * 1.1;
-      tick_multiplier[ 10 ] = tick_multiplier[ 9 ] * 5;
+      tick_multiplier[ 10 ] *= 5;
     }
 
     stay_of_execution = new stay_of_execution_t( p, options_str );
@@ -1864,7 +1873,9 @@ struct execution_sentence_t : public paladin_spell_t
 
     // Workaround for some clang insanity. tick_multiplier.at( ... ) does not compile ..
     assert( static_cast<size_t>( td( target ) -> dots.execution_sentence -> current_tick ) < tick_multiplier.size() && "Execution Sentence current tick > tick multiplier array" );
-    m *= tick_multiplier[ td( target ) -> dots.execution_sentence -> current_tick ];
+    int idx = td( target ) -> dots.execution_sentence -> current_tick;
+    m *= tick_multiplier[ idx ];
+
 
     return m;
   }
@@ -2614,11 +2625,7 @@ struct holy_wrath_t : public paladin_spell_t
     split_aoe_damage = true;
 
     base_multiplier += p -> talents.sanctified_wrath -> effectN( 1 ).percent();
-    hp_granted += (int) p -> talents.sanctified_wrath -> effectN( 2 ).base_value();
-
-    //Holy Wrath is an oddball - spell database entry doesn't properly contain damage details
-    //Tooltip formula is suspect (has been wrong before) TODO: test
-    spell_power_mod.direct = 2.686;      
+    hp_granted += (int) p -> talents.sanctified_wrath -> effectN( 2 ).base_value();   
 
   }
 
@@ -2754,7 +2761,9 @@ struct lights_hammer_t : public paladin_spell_t
     dynamic_tick_action = true;
     //tick_action = new lights_hammer_tick_t( p, p -> find_spell( 114919 ) );
     lh_heal_tick = new lights_hammer_heal_tick_t( p );
+    add_child( lh_heal_tick );
     lh_damage_tick = new lights_hammer_damage_tick_t( p );
+    add_child( lh_damage_tick );
 
     // disable if not talented
     if ( ! ( p -> talents.lights_hammer -> ok() ) )
@@ -4984,8 +4993,8 @@ void paladin_t::generate_action_prio_list_ret()
 
   precombat -> add_action( this, "Blessing of Kings", "if=!aura.str_agi_int.up" );
   precombat -> add_action( this, "Blessing of Might", "if=!aura.mastery.up" );
-  precombat -> add_action( this, "Seal of Truth", "if=active_enemies<4" );
-  precombat -> add_action( this, "Seal of Righteousness", "if=active_enemies>=4" );
+  precombat -> add_action( this, "Seal of Truth", "if=active_enemies<6" );
+  precombat -> add_action( this, "Seal of Righteousness", "if=active_enemies>=6" );
 
   // Snapshot stats
   precombat -> add_action( "snapshot_stats",  "Snapshot raid buffed stats before combat begins and pre-potting is done." );
@@ -5023,6 +5032,7 @@ void paladin_t::generate_action_prio_list_ret()
   def -> add_talent( this, "Speed of Light", "if=movement.remains>1" );
   def -> add_talent( this, "Execution Sentence" );
   def -> add_talent( this, "Light's Hammer" );
+  def -> add_action( this, "Judgment", "if=buff.maraads_truth.down&talent.empowered_seals.enabled" );
   def -> add_talent( this, "Holy Avenger", "sync=seraphim,if=talent.seraphim.enabled" );
   def -> add_talent( this, "Holy Avenger", "if=holy_power<=2&!talent.seraphim.enabled" );
   def -> add_action( this, "Avenging Wrath", "sync=seraphim,if=talent.seraphim.enabled" );
@@ -5045,33 +5055,35 @@ void paladin_t::generate_action_prio_list_ret()
     def -> add_action( racial_actions[ i ] );
 
   def -> add_talent( this, "Seraphim" );
-  def -> add_action( this, "Seal of Truth", "if=talent.empowered_seals.enabled&buff.maraads_truth.remains<3" );
   def -> add_action( this, "Divine Storm", "if=active_enemies>=2&(holy_power=5|buff.divine_purpose.react|(buff.holy_avenger.up&holy_power>=3))&(!talent.final_verdict.enabled|buff.final_verdict.up)&(!talent.seraphim.enabled|cooldown.seraphim.remains>3)" );
-  def -> add_action( this, "Divine Storm", "if=buff.divine_crusader.react&holy_power=5&(!talent.final_verdict.enabled|buff.final_verdict.up)" );
-
+  def -> add_action( this, "Divine Storm", "if=buff.divine_crusader.react&holy_power=5&talent.final_verdict.enabled&buff.final_verdict.up" );
   // Templar's Verdict @ 5 HP, or if DivPurp is about to expire
   def -> add_action( this, "Templar's Verdict", "if=holy_power=5|buff.holy_avenger.up&holy_power>=3&(!talent.seraphim.enabled|cooldown.seraphim.remains>3)" );
   def -> add_action( this, "Templar's Verdict", "if=buff.divine_purpose.react&buff.divine_purpose.remains<4" );
   def -> add_talent( this, "Final Verdict", "if=holy_power=5|buff.holy_avenger.up&holy_power>=3" );
   def -> add_talent( this, "Final Verdict", "if=buff.divine_purpose.react&buff.divine_purpose.remains<4" );
+  def -> add_action( this, "Divine Storm", "if=buff.divine_crusader.react&holy_power=5&(!talent.final_verdict.enabled|buff.final_verdict.up)" );
+  def -> add_action( this, "Judgment", "if=buff.maraads_truth.remains<3&talent.empowered_seals.enabled" );
+  def -> add_action( this, "Exorcism", "if=buff.blazing_contempt.up&holy_power<=2" );
+  def -> add_action( "wait,sec=cooldown.exorcism.remains,if=cooldown.exorcism.remains>0&cooldown.exorcism.remains<=0.2&buff.blazing_contempt.up" );
   def -> add_action( this, "Hammer of Wrath" );
   def -> add_action( "wait,sec=cooldown.hammer_of_wrath.remains,if=cooldown.hammer_of_wrath.remains>0&cooldown.hammer_of_wrath.remains<=0.2" );
-  def -> add_action( this, "Divine Storm", "if=buff.divine_crusader.react&buff.avenging_wrath.up&(!talent.final_verdict.enabled|buff.final_verdict.up)" );
+  def -> add_action( this, "Divine Storm", "if=buff.divine_crusader.react&buff.avenging_wrath.up&talent.final_verdict.enabled&buff.final_verdict.up" );
   def -> add_action( this, "Templar's Verdict", "if=buff.avenging_wrath.up&(!talent.seraphim.enabled|cooldown.seraphim.remains>3)");
   def -> add_talent( this, "Final Verdict", "if=buff.avenging_wrath.up" );
+  def -> add_action( this, "Divine Storm", "if=buff.divine_crusader.react&buff.avenging_wrath.up&(!talent.final_verdict.enabled|buff.final_verdict.up)" );
   def -> add_action( this, "Hammer of the Righteous", "if=active_enemies>=4" );
   def -> add_action( this, "Crusader Strike" );
   def -> add_action( "wait,sec=cooldown.crusader_strike.remains,if=cooldown.crusader_strike.remains>0&cooldown.crusader_strike.remains<=0.2" );
-  def -> add_action( this, "Seal of Righteousness", "if=talent.empowered_seals.enabled&buff.maraads_truth.remains>cooldown.judgment.remains&buff.liadrins_righteousness.down" );
-  def -> add_action( this, "Exorcism", "if=active_enemies>=2&active_enemies<=4&set_bonus.tier15_2pc_melee&glyph.mass_exorcism.enabled" );
+  def -> add_action( this, "Exorcism", "if=active_enemies>=3&glyph.mass_exorcism.enabled" );
   def -> add_action( this, "Judgment" );
   def -> add_action( "wait,sec=cooldown.judgment.remains,if=cooldown.judgment.remains>0&cooldown.judgment.remains<=0.2" );
-  def -> add_action( this, "Divine Storm", "if=buff.divine_crusader.react&(!talent.final_verdict.enabled|buff.final_verdict.up)" );
+  def -> add_action( this, "Divine Storm", "if=buff.divine_crusader.react&talent.final_verdict.enabled&buff.final_verdict.up" );
   def -> add_action( this, "Templar's Verdict", "if=buff.divine_purpose.react" );
   def -> add_talent( this, "Final Verdict", "if=buff.divine_purpose.react" );
+  def -> add_action( this, "Divine Storm", "if=buff.divine_crusader.react&(!talent.final_verdict.enabled|buff.final_verdict.up)" );
   def -> add_action( this, "Exorcism" );
   def -> add_action( "wait,sec=cooldown.exorcism.remains,if=cooldown.exorcism.remains>0&cooldown.exorcism.remains<=0.2" );
-  def -> add_action( this, "Seal of Truth", "if=talent.empowered_seals.enabled&buff.maraads_truth.remains<7" );
   def -> add_action( this, "Divine Storm", "if=active_enemies>=2&(!talent.final_verdict.enabled|buff.final_verdict.up)&(!talent.seraphim.enabled|cooldown.seraphim.remains>3)" );
   def -> add_action( this, "Templar's Verdict", "if=(!talent.seraphim.enabled|cooldown.seraphim.remains>3)" );
   def -> add_talent( this, "Final Verdict" );

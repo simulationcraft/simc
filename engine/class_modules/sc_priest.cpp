@@ -267,6 +267,7 @@ public:
     proc_t* t15_2pc_caster_vampiric_touch;
     proc_t* t17_2pc_caster_mind_blast_reset;
     proc_t* t17_2pc_caster_mind_blast_reset_overflow;
+    proc_t* t17_2pc_caster_mind_blast_reset_overflow_seconds;
     proc_t* t17_4pc_holy;
     proc_t* t17_4pc_holy_overflow;
     proc_t* void_entropy_extensions;
@@ -2299,7 +2300,7 @@ struct mind_spike_t final : public priest_spell_t
           priest.procs.mind_spike_dot_removal_shadow_word_pain -> occur();
 
           for (int x = 0; x < ticksLost; x++)
-            priest.procs.mind_spike_dot_removal_shadow_word_pain -> occur();
+            priest.procs.mind_spike_dot_removal_shadow_word_pain_ticks -> occur();
 
           removed_dot = true;
         }
@@ -2310,7 +2311,7 @@ struct mind_spike_t final : public priest_spell_t
           priest.procs.mind_spike_dot_removal_vampiric_touch -> occur();
 
           for (int x = 0; x < ticksLost; x++)
-            priest.procs.mind_spike_dot_removal_vampiric_touch -> occur();
+            priest.procs.mind_spike_dot_removal_vampiric_touch_ticks -> occur();
 
           removed_dot = true;
         }
@@ -2321,7 +2322,7 @@ struct mind_spike_t final : public priest_spell_t
           priest.procs.mind_spike_dot_removal_void_entropy -> occur();
 
           for (int x = 0; x < ticksLost; x++)
-            priest.procs.mind_spike_dot_removal_void_entropy -> occur();
+            priest.procs.mind_spike_dot_removal_void_entropy_ticks -> occur();
 
           removed_dot = true;
         }
@@ -2825,6 +2826,9 @@ struct devouring_plague_t final : public priest_spell_t
         }
 
         priest.cooldowns.mind_blast -> adjust( - timespan_t::from_seconds( resource_consumed ), true );
+
+        for ( int x = 0; x < resource_consumed; x++ )
+          priest.procs.t17_2pc_caster_mind_blast_reset_overflow_seconds -> occur();
       }
     }
 
@@ -3809,6 +3813,9 @@ struct void_entropy_t : public priest_spell_t
         }
 
         priest.cooldowns.mind_blast -> adjust( - timespan_t::from_seconds( resource_consumed ), true );
+
+        for ( int x = 0; x < resource_consumed; x++ )
+          priest.procs.t17_2pc_caster_mind_blast_reset_overflow_seconds -> occur();
       }
     }
 
@@ -5002,43 +5009,42 @@ void priest_t::create_gains()
  */
 void priest_t::create_procs()
 {
-  procs.shadowy_apparition                              = get_proc( "Shadowy Apparition Procced"                                   );
-  procs.divine_insight                                  = get_proc( "Divine Insight Instant Prayer of Mending"                     );
-  procs.divine_insight_overflow                         = get_proc( "Divine Insight Instant Prayer of Mending lost to overflow"    );
-  procs.shadowy_insight                                 = get_proc( "Shadowy Insight Mind Blast CD Reset"                          );
-  procs.shadowy_insight_from_mind_spike                 = get_proc( "Shadowy Insight Mind Blast CD Reset from Mind Spike"          );
-  procs.shadowy_insight_from_shadow_word_pain           = get_proc( "Shadowy Insight Mind Blast CD Reset from Shadow Word: Pain"   );
-  procs.shadowy_insight_overflow                        = get_proc( "Shadowy Insight Mind Blast CD Reset lost to overflow"         );
-  procs.surge_of_darkness                               = get_proc( "Surge of Darkness"                                            );
-  procs.surge_of_darkness_from_devouring_plague         = get_proc( "Surge of Darkness from Devouring Plague"                      );
-  procs.surge_of_darkness_from_vampiric_touch           = get_proc( "Surge of Darkness from Vampiric Touch"                        );
-  procs.surge_of_darkness_overflow                      = get_proc( "Surge of Darkness lost to overflow"                           );
-  procs.surge_of_light                                  = get_proc( "Surge of Light"                                               );
-  procs.surge_of_light_overflow                         = get_proc( "Surge of Light lost to overflow"                              );
-  procs.mind_spike_dot_removal                          = get_proc( "Mind Spike removed DoTs"                                      );
-  procs.mind_spike_dot_removal_devouring_plague         = get_proc( "Mind Spike removed Devouring Plague"                          );
-  procs.mind_spike_dot_removal_shadow_word_pain         = get_proc( "Mind Spike removed Shadow Word: Pain"                         );
-  procs.mind_spike_dot_removal_vampiric_touch           = get_proc( "Mind Spike removed Vampiric Touch"                            );
-  procs.mind_spike_dot_removal_void_entropy             = get_proc( "Mind Spike removed Void Entropy"                              );
-  //procs.mind_spike_dot_removal_t17_2pc_mind_blast       = get_proc( "Mind Spike removed T17 2PC Mind Blast"                        );    // Set bonus changed in build 18537. Leaving old one in, but commented out, for now. - Twintop 2014/07/11
-  procs.mind_spike_dot_removal_devouring_plague_ticks   = get_proc( "Devouring Plague ticks lost from Mind Spike removal"          );
-  procs.mind_spike_dot_removal_shadow_word_pain_ticks   = get_proc( "Shadow Word: Pain ticks lost from Mind Spike removal"         );
-  procs.mind_spike_dot_removal_vampiric_touch_ticks     = get_proc( "Vampiric Touch ticks lost from Mind Spike removal"            );
-  procs.mind_spike_dot_removal_void_entropy_ticks       = get_proc( "Void Entropy ticks lost from Mind Spike removal"              );
-  //procs.mind_spike_dot_removal_t17_2pc_mind_blast_ticks = get_proc( "T17 2PC Mind Blast ticks lost from Mind Spike removal"        );    // Set bonus changed in build 18537. Leaving old one in, but commented out, for now. - Twintop 2014/07/11
-  procs.t15_2pc_caster                                  = get_proc( "Tier15 2pc caster"                                            );
-  procs.t15_4pc_caster                                  = get_proc( "Tier15 4pc caster"                                            );
-  procs.t15_2pc_caster_shadow_word_pain                 = get_proc( "Tier15 2pc caster Shadow Word: Pain Extra Tick"               );
-  procs.t15_2pc_caster_vampiric_touch                   = get_proc( "Tier15 2pc caster Vampiric Touch Extra Tick"                  );
-  procs.t17_2pc_caster_mind_blast_reset                 = get_proc( "Tier17 2pc Mind Blast CD Rest"                                );
-  procs.t17_2pc_caster_mind_blast_reset_overflow        = get_proc( "Tier17 2pc Mind Blast CD Rest lost to overflow"               );
-  procs.serendipity                                     = get_proc( "Serendipity (Non-Tier 17 4pc)"                                );
-  procs.serendipity_overflow                            = get_proc( "Serendipity lost to overflow (Non-Tier 17 4pc)"               );
-  procs.t17_4pc_holy                                    = get_proc( "Tier17 4pc Serendipity"                                       );
-  procs.t17_4pc_holy_overflow                           = get_proc( "Tier17 4pc Serendipity lost to overflow"                      );
-  procs.void_entropy_extensions                         = get_proc( "Void Entropy extensions from Devouring Plagues"               );
+  procs.shadowy_apparition                               = get_proc( "Shadowy Apparition Procced"                                     );
+  procs.divine_insight                                   = get_proc( "Divine Insight Instant Prayer of Mending"                       );
+  procs.divine_insight_overflow                          = get_proc( "Divine Insight Instant Prayer of Mending lost to overflow"      );
+  procs.shadowy_insight                                  = get_proc( "Shadowy Insight Mind Blast CD Reset"                            );
+  procs.shadowy_insight_from_mind_spike                  = get_proc( "Shadowy Insight Mind Blast CD Reset from Mind Spike"            );
+  procs.shadowy_insight_from_shadow_word_pain            = get_proc( "Shadowy Insight Mind Blast CD Reset from Shadow Word: Pain"     );
+  procs.shadowy_insight_overflow                         = get_proc( "Shadowy Insight Mind Blast CD Reset lost to overflow"           );
+  procs.surge_of_darkness                                = get_proc( "Surge of Darkness"                                              );
+  procs.surge_of_darkness_from_devouring_plague          = get_proc( "Surge of Darkness from Devouring Plague"                        );
+  procs.surge_of_darkness_from_vampiric_touch            = get_proc( "Surge of Darkness from Vampiric Touch"                          );
+  procs.surge_of_darkness_overflow                       = get_proc( "Surge of Darkness lost to overflow"                             );
+  procs.surge_of_light                                   = get_proc( "Surge of Light"                                                 );
+  procs.surge_of_light_overflow                          = get_proc( "Surge of Light lost to overflow"                                );
+  procs.mind_spike_dot_removal                           = get_proc( "Mind Spike removed DoTs"                                        );
+  procs.mind_spike_dot_removal_devouring_plague          = get_proc( "Mind Spike removed Devouring Plague"                            );
+  procs.mind_spike_dot_removal_shadow_word_pain          = get_proc( "Mind Spike removed Shadow Word: Pain"                           );
+  procs.mind_spike_dot_removal_vampiric_touch            = get_proc( "Mind Spike removed Vampiric Touch"                              );
+  procs.mind_spike_dot_removal_void_entropy              = get_proc( "Mind Spike removed Void Entropy"                                );
+  procs.mind_spike_dot_removal_devouring_plague_ticks    = get_proc( "Devouring Plague ticks lost from Mind Spike removal"            );
+  procs.mind_spike_dot_removal_shadow_word_pain_ticks    = get_proc( "Shadow Word: Pain ticks lost from Mind Spike removal"           );
+  procs.mind_spike_dot_removal_vampiric_touch_ticks      = get_proc( "Vampiric Touch ticks lost from Mind Spike removal"              );
+  procs.mind_spike_dot_removal_void_entropy_ticks        = get_proc( "Void Entropy ticks lost from Mind Spike removal"                );
+  procs.t15_2pc_caster                                   = get_proc( "Tier15 2pc caster"                                              );
+  procs.t15_4pc_caster                                   = get_proc( "Tier15 4pc caster"                                              );
+  procs.t15_2pc_caster_shadow_word_pain                  = get_proc( "Tier15 2pc caster Shadow Word: Pain Extra Tick"                 );
+  procs.t15_2pc_caster_vampiric_touch                    = get_proc( "Tier15 2pc caster Vampiric Touch Extra Tick"                    );
+  procs.t17_2pc_caster_mind_blast_reset                  = get_proc( "Tier17 2pc Mind Blast CD Reduction occurances"                  );
+  procs.t17_2pc_caster_mind_blast_reset_overflow         = get_proc( "Tier17 2pc Mind Blast CD Reduction occurances lost to overflow" );
+  procs.t17_2pc_caster_mind_blast_reset_overflow_seconds = get_proc( "Tier17 2pc Mind Blast CD Reduction in seconds (total)"          );
+  procs.serendipity                                      = get_proc( "Serendipity (Non-Tier 17 4pc)"                                  );
+  procs.serendipity_overflow                             = get_proc( "Serendipity lost to overflow (Non-Tier 17 4pc)"                 );
+  procs.t17_4pc_holy                                     = get_proc( "Tier17 4pc Serendipity"                                         );
+  procs.t17_4pc_holy_overflow                            = get_proc( "Tier17 4pc Serendipity lost to overflow"                        );
+  procs.void_entropy_extensions                          = get_proc( "Void Entropy extensions from Devouring Plague casts"            );
 
-  procs.sd_mind_spike_dot_removal_devouring_plague_ticks   = get_sample_data( "Devouring Plague ticks lost from Mind Spike removal"   );
+  procs.sd_mind_spike_dot_removal_devouring_plague_ticks = get_sample_data( "Devouring Plague ticks lost from Mind Spike removal"     );
 }
 
 /* Construct priest benefits
