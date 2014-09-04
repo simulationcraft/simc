@@ -1189,7 +1189,7 @@ struct bladestorm_tick_t: public warrior_attack_t
     dual = true;
     aoe = -1;
     if ( p -> specialization() == WARRIOR_ARMS )
-      weapon_multiplier *= 1.53333; // Hotfix? 8/15/14... Arms aoe is a bit ridiculous.
+      weapon_multiplier *= 1.302;
   }
 
   double action_multiplier() const
@@ -2276,7 +2276,6 @@ struct rend_burst_t: public warrior_attack_t
     warrior_attack_t( "rend_burst", p, p -> find_spell( 94009 ) )
   {
     dual = true;
-    may_multistrike = 1;
   }
 
   double action_multiplier() const
@@ -2307,7 +2306,6 @@ struct rend_t: public warrior_attack_t
   {
     parse_options( NULL, options_str );
     stancemask = STANCE_BATTLE | STANCE_DEFENSE;
-    hasted_ticks = false;
     dot_behavior = DOT_REFRESH;
     tick_may_crit = true;
     add_child( burst );
@@ -2363,7 +2361,6 @@ struct siegebreaker_off_hand_t: public warrior_attack_t
   {
     may_dodge = may_parry = may_block = may_miss = false;
     dual = true;
-
     weapon = &( p -> off_hand_weapon );
   }
 };
@@ -2832,8 +2829,7 @@ struct wild_strike_t: public warrior_attack_t
     parse_options( NULL, options_str );
     stancemask = STANCE_BATTLE | STANCE_DEFENSE;
 
-    if ( p -> talents.furious_strikes -> ok() )
-      base_costs[RESOURCE_RAGE] = 30;
+    base_costs[RESOURCE_RAGE] += p -> talents.furious_strikes -> effectN( 1 ).resource( RESOURCE_RAGE );
     weapon = &( player -> off_hand_weapon );
     min_gcd = data().gcd();
   }
@@ -2843,7 +2839,7 @@ struct wild_strike_t: public warrior_attack_t
     double c = warrior_attack_t::cost();
 
     if ( p() -> buff.bloodsurge -> up() )
-      c = 0;
+      c = 0; // No spell data at the moment.
 
     return c;
   }
@@ -3014,7 +3010,6 @@ struct deep_wounds_t: public warrior_spell_t
   {
     background = tick_may_crit = true;
     hasted_ticks = false;
-    dot_behavior = DOT_REFRESH;
   }
 };
 
@@ -3161,6 +3156,7 @@ struct ravager_t: public warrior_spell_t
     parse_options( NULL, options_str );
     stancemask = STANCE_BATTLE | STANCE_GLADIATOR | STANCE_DEFENSE;
     hasted_ticks = callbacks = false;
+    dot_duration = timespan_t::from_seconds( data().effectN( 4 ).base_value() );
     add_child( ravager );
   }
 
@@ -3862,9 +3858,9 @@ void warrior_t::apl_precombat( bool probablynotgladiator )
   {
     if ( level >= 90 )
     {
-      if ( primary_role() == ROLE_ATTACK || !probablynotgladiator )
+      if ( primary_role() == ROLE_ATTACK && specialization() != WARRIOR_PROTECTION )
         precombat -> add_action( "potion,name=draenic_strength" );
-      else if ( primary_role() == ROLE_TANK )
+      else
         precombat -> add_action( "potion,name=draenic_armor" );
     }
     //Pre-pot
@@ -4143,7 +4139,7 @@ void warrior_t::apl_glad()
   for ( size_t i = 0; i < racial_actions.size(); i++ )
     default_list -> add_action( racial_actions[i] + ",if=buff.bloodbath.up|buff.avatar.up|buff.shield_charge.up|target.time_to_die<15" );
   if ( sim -> allow_potions )
-    default_list -> add_action( "potion,name=draenic_strength,if=buff.bloodbath.up|buff.avatar.up|buff.shield_charge.up" );
+    default_list -> add_action( "potion,name=draenic_armor,if=buff.bloodbath.up|buff.avatar.up|buff.shield_charge.up" );
 
   default_list -> add_action( this, "Berserker Rage", "if=buff.enrage.down" );
   default_list -> add_action( "call_action_list,name=gladiator,if=active_enemies<4" );
@@ -4716,6 +4712,8 @@ void warrior_t::arise()
     buff.gladiator_stance -> trigger();
   else if ( active_stance == STANCE_DEFENSE )
     buff.defensive_stance -> trigger();
+
+  if ( specialization() != WARRIOR_PROTECTION  && !sim -> overrides.versatility ) sim -> auras.versatility -> trigger();
 }
 
 // warrior_t::combat_begin ==================================================

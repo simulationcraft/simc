@@ -32,8 +32,8 @@ actions+=/power_infusion,if=talent.power_infusion.enabled
 actions+=/blood_fury
 actions+=/berserking
 actions+=/arcane_torrent
-actions+=/run_action_list,name=cop_advanced_mfi_dots,if=target.health.pct>=20&(shadow_orb=5|target.dot.shadow_word_pain.ticking|target.dot.vampiric_touch.ticking|target.dot.devouring_plague.ticking)&talent.clarity_of_power.enabled&talent.insanity.enabled&talent.twist_of_fate.enabled&set_bonus.tier17_2pc_caster
-actions+=/run_action_list,name=cop_advanced_mfi,if=talent.clarity_of_power.enabled&talent.insanity.enabled&talent.twist_of_fate.enabled&set_bonus.tier17_2pc_caster
+actions+=/run_action_list,name=cop_advanced_mfi_dots,if=target.health.pct>=20&(shadow_orb=5|target.dot.shadow_word_pain.ticking|target.dot.vampiric_touch.ticking|target.dot.devouring_plague.ticking)&talent.clarity_of_power.enabled&talent.insanity.enabled&talent.twist_of_fate.enabled
+actions+=/run_action_list,name=cop_advanced_mfi,if=talent.clarity_of_power.enabled&talent.insanity.enabled&talent.twist_of_fate.enabled
 actions+=/run_action_list,name=cop_mfi,if=talent.clarity_of_power.enabled&talent.insanity.enabled
 actions+=/run_action_list,name=cop,if=talent.clarity_of_power.enabled
 actions+=/run_action_list,name=main
