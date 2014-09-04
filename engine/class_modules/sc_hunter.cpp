@@ -1271,6 +1271,11 @@ struct kill_command_t: public hunter_main_pet_attack_t
   {
     return o() -> cache.attack_power() * o()->composite_attack_power_multiplier();
   }
+
+  bool usable_moving() const
+  {
+    return true;
+  }
 };
 
 // ==========================================================================
