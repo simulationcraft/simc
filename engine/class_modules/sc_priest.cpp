@@ -5989,6 +5989,8 @@ void priest_t::apl_shadow()
   action_priority_list_t* main = get_action_priority_list( "main" );
   action_priority_list_t* cop = get_action_priority_list( "cop" );
   action_priority_list_t* cop_mfi = get_action_priority_list( "cop_mfi" );
+  action_priority_list_t* cop_advanced_mfi = get_action_priority_list( "cop_advanced_mfi" );
+  action_priority_list_t* cop_advanced_mfi_dots = get_action_priority_list( "cop_advanced_mfi_dots" );
 
   default_list -> add_action( this, "Shadowform", "if=!buff.shadowform.up" );
 
@@ -6020,7 +6022,8 @@ void priest_t::apl_shadow()
   for ( size_t i = 0; i < racial_actions.size(); i++ )
     default_list -> add_action( racial_actions[ i ] );
 
-
+  default_list -> add_action( "run_action_list,name=cop_advanced_mfi_dots,if=target.health.pct>=20&(shadow_orb=5|target.dot.shadow_word_pain.ticking|target.dot.vampiric_touch.ticking|target.dot.devouring_plague.ticking)&talent.clarity_of_power.enabled&talent.insanity.enabled&talent.twist_of_fate.enabled" );//&set_bonus.tier17_2pc" );
+  default_list -> add_action( "run_action_list,name=cop_advanced_mfi,if=talent.clarity_of_power.enabled&talent.insanity.enabled&talent.twist_of_fate.enabled" );//&set_bonus.tier17_2pc" );
   default_list -> add_action( "run_action_list,name=cop_mfi,if=talent.clarity_of_power.enabled&talent.insanity.enabled" );
   default_list -> add_action( "run_action_list,name=cop,if=talent.clarity_of_power.enabled" );
   default_list -> add_action( "run_action_list,name=main" );
@@ -6057,7 +6060,6 @@ void priest_t::apl_shadow()
   main -> add_action( "divine_star,if=talent.divine_star.enabled&target.distance<=28&active_enemies>1" );
   main -> add_action( "mind_sear,chain=1,interrupt=1,if=active_enemies>=3" );
   main -> add_action( "mind_flay,chain=1,interrupt=1" );
-  //main -> add_action( "shadow_word_pain,moving=0,cycle_targets=1" ); //Higher DPS, but will probably be fixed.
   main -> add_action( "shadow_word_death,moving=1" );
   main -> add_action( "mind_blast,moving=1,if=buff.shadowy_insight.react&cooldown_react" );
   main -> add_action( "divine_star,moving=1,if=talent.divine_star.enabled&target.distance<=28" );
@@ -6097,7 +6099,6 @@ void priest_t::apl_shadow()
   cop_mfi -> add_action( "shadow_word_death,if=buff.shadow_word_death_reset_cooldown.stack=1,cycle_targets=1" );
   cop_mfi -> add_action( "shadow_word_death,if=buff.shadow_word_death_reset_cooldown.stack=0,cycle_targets=1" );
   cop_mfi -> add_action( "devouring_plague,if=shadow_orb>=3&(cooldown.mind_blast.remains<1.5|target.health.pct<20&cooldown.shadow_word_death.remains<1.5)" );
-  cop_mfi -> add_action( "mindbender,if=talent.mindbender.enabled" );
   cop_mfi -> add_action( "shadowfiend,if=!talent.mindbender.enabled" );
   cop_mfi -> add_action( "insanity,if=buff.shadow_word_insanity.remains<0.5*gcd&active_enemies<=2,chain=1" );
   cop_mfi -> add_action( "insanity,interrupt=1,chain=1,if=active_enemies<=2" );
@@ -6114,6 +6115,37 @@ void priest_t::apl_shadow()
   cop_mfi -> add_action( "divine_star,moving=1,if=talent.divine_star.enabled&target.distance<=28" );
   cop_mfi -> add_action( "cascade,moving=1,if=talent.cascade.enabled&target.distance<=40" );
   cop_mfi -> add_action( "shadow_word_pain,moving=1,cycle_targets=1,if=primary_target=0" );
+
+  // Advanced "DoT Weaving" CoP Action List, for when you have T14 2P
+  cop_advanced_mfi -> add_action( "mind_blast,if=mind_harvest=0,cycle_targets=1" );
+  cop_advanced_mfi -> add_action( "mind_blast,if=active_enemies<=5&cooldown_react" );
+  cop_advanced_mfi -> add_action( "shadow_word_death,if=buff.shadow_word_death_reset_cooldown.stack=1,cycle_targets=1" );
+  cop_advanced_mfi -> add_action( "shadow_word_death,if=buff.shadow_word_death_reset_cooldown.stack=0,cycle_targets=1" );
+  cop_advanced_mfi -> add_action( "shadowfiend,if=!talent.mindbender.enabled" );
+  cop_advanced_mfi -> add_action( "halo,if=talent.halo.enabled&target.distance<=30&target.distance>=17" );//When coefficients change, update minimum distance!
+  cop_advanced_mfi -> add_action( "cascade,if=talent.cascade.enabled&((active_enemies>1|target.distance>=28)&target.distance<=40&target.distance>=11)" );//When coefficients change, update minimum distance!
+  cop_advanced_mfi -> add_action( "divine_star,if=talent.divine_star.enabled&(active_enemies>1|target.distance<=24)" );
+  cop_advanced_mfi -> add_action( "shadow_word_pain,cycle_targets=1,max_cycle_targets=5,if=miss_react&!ticking&primary_target=0" );
+  cop_advanced_mfi -> add_action( "vampiric_touch,cycle_targets=1,max_cycle_targets=5,if=remains<cast_time&miss_react&primary_target=0" );
+  cop_advanced_mfi -> add_action( "mind_sear,chain=1,interrupt=1,if=active_enemies>=6" );
+  cop_advanced_mfi -> add_action( "mind_spike" );
+  cop_advanced_mfi -> add_action( "shadow_word_death,moving=1" );
+  cop_advanced_mfi -> add_action( "mind_blast,moving=1,if=buff.shadowy_insight.react&cooldown_react" );
+  cop_advanced_mfi -> add_action( "halo,moving=1,if=talent.halo.enabled&target.distance<=30" );
+  cop_advanced_mfi -> add_action( "divine_star,moving=1,if=talent.divine_star.enabled&target.distance<=28" );
+  cop_advanced_mfi -> add_action( "cascade,moving=1,if=talent.cascade.enabled&target.distance<=40" );
+  cop_advanced_mfi -> add_action( "shadow_word_pain,moving=1,cycle_targets=1,if=primary_target=0" );
+
+  // Advanced "DoT Weaving" CoP Action List, for when you have T14 2P -- Part 2, the weaving
+  cop_advanced_mfi_dots -> add_action( "devouring_plague,if=shadow_orb>=4&target.dot.shadow_word_pain.ticking&target.dot.vampiric_touch.ticking" );
+  cop_advanced_mfi_dots -> add_action( "mind_spike,if=(target.dot.shadow_word_pain.ticking&target.dot.shadow_word_pain.remains<gcd*0.5)|(target.dot.vampiric_touch.ticking&target.dot.vampiric_touch.remains<gcd*0.5)" );
+  cop_advanced_mfi_dots -> add_action( "shadow_word_pain,if=!ticking&miss_react&!target.dot.vapiric_touch.ticking" );
+  cop_advanced_mfi_dots -> add_action( "vampiric_touch,if=!ticking&miss_react" );
+  cop_advanced_mfi_dots -> add_action( "mind_blast" );
+  cop_advanced_mfi_dots -> add_action( "insanity,if=buff.shadow_word_insanity.remains<0.5*gcd&active_enemies<=2,chain=1" );
+  cop_advanced_mfi_dots -> add_action( "insanity,interrupt=1,chain=1,if=active_enemies<=2" );
+  cop_advanced_mfi_dots -> add_action( "mind_spike,if=(target.dot.shadow_word_pain.ticking&target.dot.shadow_word_pain.remains<gcd*2)|(target.dot.vampiric_touch.ticking&target.dot.vampiric_touch.remains<gcd*2)" );
+  cop_advanced_mfi_dots -> add_action( "mind_flay,chain=1,interrupt=1" );
 }
 
 // Discipline Heal Combat Action Priority List
