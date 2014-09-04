@@ -444,7 +444,6 @@ public:
   virtual double    composite_attribute( attribute_e attr ) const;
   virtual double    composite_rating_multiplier( rating_e rating ) const;
   virtual double    composite_player_multiplier( school_e school ) const;
-  virtual double    composite_player_critical_damage_multiplier() const;
   virtual double    matching_gear_multiplier( attribute_e attr ) const;
   virtual double    composite_armor_multiplier() const;
   virtual double    composite_block() const;
@@ -592,6 +591,16 @@ public:
       cc += p() -> buff.recklessness -> value();
 
     return cc;
+  }
+
+  virtual double total_crit_bonus() const
+  {
+    double cdm = ab::total_crit_bonus();
+
+    if ( p() -> buff.recklessness -> up() && recklessness )
+      cdm *= 1.0 + p() -> buff.recklessness -> data().effectN( 2 ).percent() * 1.0 + p() -> glyphs.recklessness -> effectN( 1 ).percent();
+
+    return cdm;
   }
 
   virtual bool ready()
@@ -4791,19 +4800,6 @@ double warrior_t::composite_player_multiplier( school_e school ) const
     m *= 1.0 + buff.gladiator_stance -> data().effectN( 1 ).percent();
 
   return m;
-}
-
-// What a name.
-// warrior_t::composite_player_critical_damage_multiplier ======================
-
-double warrior_t::composite_player_critical_damage_multiplier() const
-{
-  double cdm = player_t::composite_player_critical_damage_multiplier();
-
-  if ( buff.recklessness -> up() )
-    cdm += buff.recklessness -> data().effectN( 2 ).percent() * 1.0 + glyphs.recklessness -> effectN( 1 ).percent();
-
-  return cdm;
 }
 
 // warrior_t::composite_attribute =============================================
