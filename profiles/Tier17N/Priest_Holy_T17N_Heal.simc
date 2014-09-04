@@ -47,31 +47,30 @@ actions+=/heal,if=buff.serendipity.react>=2&mana.pct>40
 actions+=/prayer_of_mending
 actions+=/heal
 
-head=primal_gladiators_hood_of_prowess,id=111084
-neck=primal_gladiators_pendant_of_contemplation,id=111131,enchant=gift_of_multistrike
-shoulders=primal_gladiators_amice_of_prowess,id=111087
-back=primal_gladiators_drape_of_contemplation,id=111127,enchant=gift_of_multistrike
-chest=primal_gladiators_robes_of_prowess,id=111086
-wrists=primal_gladiators_cuffs_of_cruelty,id=111100
-hands=primal_gladiators_handguards_of_cruelty,id=111088
-waist=primal_gladiators_cord_of_victory,id=111095
-legs=primal_gladiators_leggings_of_prowess,id=111085
-feet=primal_gladiators_treads_of_prowess,id=111097
-finger1=primal_gladiators_band_of_meditation,id=111137,enchant=gift_of_multistrike
-finger2=primal_gladiators_band_of_contemplation,id=111138,enchant=gift_of_multistrike
-trinket1=primal_gladiators_medallion_of_meditation,id=111231
-trinket2=primal_gladiators_insignia_of_dominance,id=111228
-main_hand=primal_gladiators_battle_staff,id=111122,enchant=mark_of_shadowmoon
+head=soul_priests_hood,id=115563
+neck=talisman_of_the_fomor,id=113932,enchant=gift_of_multistrike
+shoulders=soul_priests_shoulderguards,id=115561
+back=flame_infusion_drape,id=113945,enchant=gift_of_multistrike
+chest=soul_priests_raiment,id=115560
+wrists=bracers_of_enkindled_power,id=113956
+hands=soul_priests_gloves,id=115562
+waist=seeking_ember_girdle,id=113941
+legs=soul_priests_leggings,id=115564
+feet=cavedwellers_climbers,id=113864
+finger1=sixeyed_band,id=113901,enchant=gift_of_multistrike
+finger2=firemenders_smoldering_signet,id=113957,enchant=gift_of_multistrike
+trinket1=autorepairing_autoclave,id=113986
+trinket2=ironspike_chew_toy,id=119192
+main_hand=infernoflame_staff,id=113869,enchant=mark_of_shadowmoon
 
 # Gear Summary
-# gear_stamina=3250
-# gear_intellect=2378
-# gear_spell_power=1265
-# gear_crit_rating=541
-# gear_haste_rating=570
-# gear_mastery_rating=559
-# gear_armor=600
-# gear_multistrike_rating=947
-# gear_versatility_rating=212
+# gear_stamina=3408
+# gear_intellect=2490
+# gear_spell_power=1325
+# gear_crit_rating=707
+# gear_haste_rating=814
+# gear_mastery_rating=701
+# gear_armor=630
+# gear_multistrike_rating=690
 # set_bonus=tier17_2pc=1
 # set_bonus=tier17_4pc=1
