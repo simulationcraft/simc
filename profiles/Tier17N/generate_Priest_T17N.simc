@@ -2,7 +2,7 @@ talent_format=armory
 
 # Shadow
 priest="Priest_Shadow_T17N_COP"
-talents=1113131
+talents=1133131
 level=100
 race=draenei
 spec=shadow
@@ -23,7 +23,7 @@ finger1=ukuroggs_corrupted_seal,id=113975,enchant=gift_of_mastery
 finger2=solium_band_of_wisdom,id=118291,enchant=gift_of_mastery
 trinket1=darmacs_unstable_talisman,id=113948
 trinket2=goren_soul_repository,id=119194
-main_hand=infernoflame_staff,id=113869,enchant=mark_of_warsong
+main_hand=infernoflame_staff,id=113869,enchant=mark_of_bleeding_hollow
 save=Priest_Shadow_T17N_COP.simc
 
 copy="Priest_Shadow_T17N_VE"
