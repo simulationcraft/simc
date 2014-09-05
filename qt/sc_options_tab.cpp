@@ -226,7 +226,7 @@ void SC_OptionsTab::createGlobalsTab()
   globalsLayout_left -> addRow( tr( "Challenge Mode" ),   choice.challenge_mode = createChoice( 2, "Disabled", "Enabled" ) );
   globalsLayout_left -> addRow( tr(  "Player Skill" ),   choice.player_skill = createChoice( 4, "Elite", "Good", "Average", "Ouch! Fire is hot!" ) );
   globalsLayout_left -> addRow( tr(       "Threads" ),        choice.threads = addValidatorToComboBox( 1, QThread::idealThreadCount(), createChoiceFromRange( 1, QThread::idealThreadCount() ) ) );
-  globalsLayout_left -> addRow( tr(  "Thread Priority" ), choice.thread_priority = createChoice( 6, "highest", "high", "normal", "lower", "lowest", "idle" ) );
+  globalsLayout_left -> addRow( tr(  "Thread Priority" ), choice.thread_priority = createChoice( 5, "highest", "high", "normal", "lower", "lowest" ) );
   globalsLayout_left -> addRow( tr( "Armory Region" ),  choice.armory_region = createChoice( 5, "us", "eu", "tw", "cn", "kr" ) );
   globalsLayout_left -> addRow( tr(   "Armory Spec" ),    choice.armory_spec = createChoice( 2, "active", "inactive" ) );
   globalsLayout_left -> addRow( tr(  "Default Role" ),   choice.default_role = createChoice( 4, "auto", "dps", "heal", "tank" ) );
@@ -714,7 +714,7 @@ void SC_OptionsTab::createToolTips()
                                     "Most modern desktops have at least two CPU cores." ) );
 
   choice.thread_priority -> setToolTip( tr( "This can allow for a more responsive computer while simulations are running.\n"
-                                            "Set to 'Lowest' or 'Idle' for the best experience while multitasking." ) );
+                                            "When set to 'Lowest', it will be possible to use your computer as normal while SimC runs in the background." ) );
 
   choice.armory_region -> setToolTip( tr( "United States, Europe, Taiwan, China, Korea" ) );
 
