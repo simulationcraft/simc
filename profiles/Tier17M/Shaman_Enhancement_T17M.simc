@@ -31,18 +31,15 @@ actions+=/bloodlust,if=target.health.pct<25|time>0.500
 actions+=/auto_attack
 actions+=/use_item,name=primal_gladiators_badge_of_conquest
 # In-combat potion is preferentially linked to the Fire or Storm Elemental, depending on talents, unless combat will end shortly
-actions+=/potion,name=draenic_agility,if=(talent.storm_elemental_totem.enabled&!talent.primal_elementalist.enabled&pet.storm_elemental_totem.remains>=25)|((!talent.storm_elemental_totem.enabled|talent.primal_elementalist.enabled)&pet.fire_elemental_totem.remains>=25)|target.time_to_die<=30
+actions+=/potion,name=draenic_agility,if=(talent.storm_elemental_totem.enabled&pet.storm_elemental_totem.remains>=25)|(!talent.storm_elemental_totem.enabled&pet.fire_elemental_totem.remains>=25)|target.time_to_die<=30
 actions+=/blood_fury
 actions+=/arcane_torrent
 actions+=/berserking
-actions+=/elemental_mastery,if=talent.primal_elementalist.enabled&glyph.fire_elemental_totem.enabled&(cooldown.fire_elemental_totem.remains=0|cooldown.fire_elemental_totem.remains>=80)
-actions+=/elemental_mastery,if=talent.primal_elementalist.enabled&!glyph.fire_elemental_totem.enabled&(cooldown.fire_elemental_totem.remains=0|cooldown.fire_elemental_totem.remains>=50)
-actions+=/elemental_mastery,if=!talent.primal_elementalist.enabled
-actions+=/storm_elemental_totem,if=!talent.primal_elementalist.enabled
+actions+=/elemental_mastery
+actions+=/storm_elemental_totem
 actions+=/fire_elemental_totem
 actions+=/ascendance,if=cooldown.strike.remains>=3
 actions+=/feral_spirit
-actions+=/storm_elemental_totem,if=cooldown.fire_elemental_totem.remains>=60
 actions+=/liquid_magma,if=pet.searing_totem.remains>=15|pet.magma_totem.remains>=15|pet.fire_elemental_totem.remains>=15
 actions+=/ancestral_swiftness
 # If only one enemy, priority follows the 'single' action list.
@@ -59,10 +56,9 @@ actions.single+=/lightning_bolt,if=buff.maelstrom_weapon.react=5|(buff.maelstrom
 actions.single+=/windstrike
 actions.single+=/stormstrike
 actions.single+=/lava_lash
-actions.single+=/flame_shock,if=(buff.unleash_flame.up&dot.flame_shock.remains<9)|!ticking
+actions.single+=/flame_shock,if=(talent.elemental_fusion.enabled&buff.elemental_fusion.stack=2&buff.unleash_flame.up&dot.flame_shock.remains<16)|(!talent.elemental_fusion.enabled&buff.unleash_flame.up&dot.flame_shock.remains<=9)|!ticking
 actions.single+=/unleash_elements
-actions.single+=/lightning_bolt,if=buff.maelstrom_weapon.react>=2&!buff.ascendance.up
-actions.single+=/frost_shock
+actions.single+=/frost_shock,if=(talent.elemental_fusion.enabled&dot.flame_shock.remains>=16)|!talent.elemental_fusion.enabled
 actions.single+=/lightning_bolt,if=buff.maelstrom_weapon.react>=1&!buff.ascendance.up
 actions.single+=/searing_totem,if=pet.searing_totem.remains<=20&!pet.fire_elemental_totem.active&!buff.liquid_magma.up
 
