@@ -3,7 +3,7 @@ level=100
 race=orc
 role=attack
 position=ranged_back
-talents=http://us.battle.net/wow/en/tool/talent-calculator#YZ!...1001
+talents=http://us.battle.net/wow/en/tool/talent-calculator#YZ!...2002
 spec=marksmanship
 
 # This default action priority list is automatically created based on your character.
@@ -72,7 +72,7 @@ finger1=primal_gladiators_ring_of_cruelty,id=111081,enchant=gift_of_critical_str
 finger2=primal_gladiators_ring_of_prowess,id=111271,enchant=gift_of_critical_strike
 trinket1=primal_gladiators_insignia_of_conquest,id=111223
 trinket2=primal_gladiators_badge_of_conquest,id=111222
-main_hand=primal_gladiators_heavy_crossbow,id=111073,enchant=oglethorpes_missile_splitter
+main_hand=primal_gladiators_heavy_crossbow,id=111073,enchant=megawatt_filament
 
 # Gear Summary
 # gear_agility=2588

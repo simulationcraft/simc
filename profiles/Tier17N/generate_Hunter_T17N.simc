@@ -8,7 +8,7 @@ race=orc
 spec=beast_mastery
 position=ranged_back
 role=attack
-talents=0001213
+talents=0003213
 head=primal_gladiators_chain_helm,id=115641
 neck=primal_gladiators_necklace_of_cruelty,id=115606,enchant=gift_of_multistrike
 shoulders=primal_gladiators_pauldrons,id=115792
@@ -33,7 +33,7 @@ race=orc
 spec=marksmanship
 position=ranged_back
 role=attack
-talents=0002112
+talents=0003113
 head=primal_gladiators_helm,id=111280
 neck=primal_gladiators_necklace_of_cruelty,id=111079,enchant=gift_of_critical_strike
 shoulders=primal_gladiators_spaulders,id=111282
@@ -48,7 +48,7 @@ finger1=primal_gladiators_ring_of_cruelty,id=111081,enchant=gift_of_critical_str
 finger2=primal_gladiators_ring_of_prowess,id=111271,enchant=gift_of_critical_strike
 trinket1=primal_gladiators_insignia_of_conquest,id=111223
 trinket2=primal_gladiators_badge_of_conquest,id=111222
-main_hand=primal_gladiators_heavy_crossbow,id=111073,enchant=oglethorpes_missile_splitter
+main_hand=primal_gladiators_heavy_crossbow,id=111073,enchant=megawatt_filament
 save=Hunter_MM_T17N.simc
 
 # SV
@@ -58,7 +58,7 @@ race=orc
 spec=survival
 position=ranged_back
 role=attack
-talents=0001111
+talents=0003113
 head=primal_gladiators_helm,id=111280
 neck=primal_gladiators_necklace_of_cruelty,id=111079,enchant=gift_of_multistrike
 shoulders=primal_gladiators_chain_spaulders,id=111116
