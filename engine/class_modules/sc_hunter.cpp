@@ -465,7 +465,7 @@ public:
 
   void trigger_thrill_of_the_hunt()
   {
-    int c = static_cast<int>( cost() );
+    double c = cost();
     if ( p() -> talents.thrill_of_the_hunt -> ok() && c > 0 )
     {
       // Stacks: 3 initial, 3 maximum
@@ -2008,7 +2008,8 @@ struct powershot_t: public hunter_ranged_attack_t
 
 struct black_arrow_t: public hunter_ranged_attack_t
 {
-  int guaranteed_proc;
+  uint32_t lnl_procs;
+  double lnl_chance;
 
   black_arrow_t( hunter_t* player, const std::string& options_str ):
     hunter_ranged_attack_t( "black_arrow", player, player -> find_class_spell( "Black Arrow" ) )
@@ -2018,11 +2019,7 @@ struct black_arrow_t: public hunter_ranged_attack_t
     cooldown -> duration += p() -> specs.trap_mastery -> effectN( 4 ).time_value();
     base_multiplier *= 1.0 + p() -> specs.trap_mastery -> effectN( 2 ).percent();
     may_multistrike = 1;
-
-    if ( player -> new_sets.has_set_bonus( HUNTER_SURVIVAL, T17, B2 ) )
-    {
-      base_tick_time *= 1.0 + player -> new_sets.set( HUNTER_SURVIVAL, T17, B2 ) -> effectN( 1 ).percent();
-    }
+    lnl_chance = data().effectN( 2 ).percent();
   }
 
   virtual bool ready()
@@ -2038,11 +2035,13 @@ struct black_arrow_t: public hunter_ranged_attack_t
   virtual void tick( dot_t* d )
   {
     hunter_ranged_attack_t::tick( d );
-    // use 100% for the guaranteed proc and default chance (-100%) for normal procs
-    // that way the normal chance is picked up in spell data.
-    double chance = guaranteed_proc == d -> current_tick ? 1.0 : -1.0;
-    if ( p() -> buffs.lock_and_load -> trigger( 1,  buff_t::DEFAULT_VALUE(), chance ) )
+   
+    // All LnL procs are pre-planned. The current_tick is the order of 
+    // magnitude, so the lowest bit is for the zero_tick
+    uint32_t proc_bit = 1 << ( d -> current_tick );
+    if ( lnl_procs & proc_bit )
     {
+      p() -> buffs.lock_and_load -> trigger();
       p() -> cooldowns.explosive_shot -> reset( true );
       p() -> procs.lock_and_load -> occur();
     }
@@ -2055,7 +2054,7 @@ struct black_arrow_t: public hunter_ranged_attack_t
     if ( p() -> new_sets.has_set_bonus( HUNTER_SURVIVAL, T17, B2 ) )
     {
       // guaranteed trigger (but we don't count that as a proc)
-      p() -> buffs.lock_and_load -> trigger( 1,  buff_t::DEFAULT_VALUE(), 1.0 );
+      p() -> buffs.lock_and_load -> trigger();
       p() -> cooldowns.explosive_shot -> reset( false );
     }
   }
@@ -2065,8 +2064,37 @@ struct black_arrow_t: public hunter_ranged_attack_t
     hunter_ranged_attack_t::impact( s );
 
     // decide guaranteed proc for lnl.
-    int num_ticks = get_dot( execute_state -> target ) -> num_ticks ;
-    guaranteed_proc = floor( p() -> rng().range( 0, num_ticks )) + 1;
+    // determine number of procs by rolling proc chance until it fails
+    int num_ticks = get_dot( execute_state -> target ) -> num_ticks;
+    int proc_count = 1; // guaranteed at least one proc
+    for ( int i = 0; i < num_ticks; i++ ) 
+    {
+      if ( p() -> rng().roll( lnl_chance ) ) 
+        proc_count++;
+      else
+        break;
+    }
+
+    // assign each proc to a tick
+    lnl_procs = 0;
+    int possible_slots = num_ticks;
+    while ( proc_count > 0 )
+    {
+      // note that ticks start from 1
+      int proc_tick = floor( p() -> rng().range( 0, possible_slots ) ) + 1;
+
+      // Given N is the proc_tick, find the Nth tick that is not yet proccing
+      uint32_t proc_bit = 1;
+      for ( int p = 0; p <= proc_tick; p++ )
+      {
+        proc_bit = 1 << p;
+        if ( lnl_procs & proc_bit )
+          proc_tick++;
+      }
+      lnl_procs |= proc_bit;
+      proc_count--;
+      possible_slots--;
+    }
   }
 };
 
@@ -3357,7 +3385,7 @@ void hunter_t::create_buffs()
   buffs.steady_focus                = buff_creator_t( this, 177668, "steady_focus" ).chance( talents.steady_focus -> ok() );
   buffs.pre_steady_focus            = buff_creator_t( this, "pre_steady_focus" ).max_stack( 2 ).quiet( true );
 
-  buffs.lock_and_load               = buff_creator_t( this, 168980, "lock_and_load" ).chance( specs.black_arrow -> effectN( 2 ).percent() );
+  buffs.lock_and_load               = buff_creator_t( this, 168980, "lock_and_load" );
 
   buffs.rapid_fire                  = buff_creator_t( this, "rapid_fire", specs.rapid_fire )
     .add_invalidate( CACHE_ATTACK_HASTE );
