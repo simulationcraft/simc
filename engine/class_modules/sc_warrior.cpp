@@ -1683,10 +1683,8 @@ struct execute_t: public warrior_attack_t
 
 struct hamstring_t: public warrior_attack_t
 {
-  bool rage_spent;
   hamstring_t( warrior_t* p, const std::string& options_str ):
-    warrior_attack_t( "hamstring", p, p -> find_class_spell( "Hamstring" ) ),
-    rage_spent( false )
+    warrior_attack_t( "hamstring", p, p -> find_class_spell( "Hamstring" ) )
   {
     parse_options( NULL, options_str );
     stancemask = STANCE_BATTLE | STANCE_GLADIATOR | STANCE_DEFENSE;
