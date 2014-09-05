@@ -33,7 +33,7 @@ SHARE_INSTALL_PATH =
 ifneq (${PREFIX},..)
   SHARED_DATA = $(PREFIX)/share/SimulationCraft
 
-  BIN_INSTALL_PATH = $(BASE_DIR)/bin
+  BIN_INSTALL_PATH = $(BASE_DIR)
   SHARE_INSTALL_PATH = $(BASE_DIR)/share/SimulationCraft
 endif
 
