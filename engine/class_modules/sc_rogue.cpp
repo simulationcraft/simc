@@ -4921,7 +4921,7 @@ double rogue_t::temporary_movement_modifier() const
   double temporary = player_t::temporary_movement_modifier();
 
   if ( buffs.sprint -> up() )
-    temporary = std::max( buffs.sprint -> data().effectN( 1 ).percent(), temporary );
+    temporary = std::max( buffs.sprint -> data().effectN( 1 ).percent() + glyph.sprint -> effectN( 1 ).percent(), temporary );
 
   if ( buffs.burst_of_speed -> up() )
     temporary = std::max( buffs.burst_of_speed -> data().effectN( 1 ).percent(), temporary );
