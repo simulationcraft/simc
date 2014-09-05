@@ -1691,28 +1691,7 @@ struct hamstring_t: public warrior_attack_t
     parse_options( NULL, options_str );
     stancemask = STANCE_BATTLE | STANCE_GLADIATOR | STANCE_DEFENSE;
     weapon = &( p -> main_hand_weapon );
-  }
-
-  double cost() const
-  {
-    double c = warrior_attack_t::cost();
-
-    if ( p() -> buff.hamstring -> up() )
-      c = 0;
-
-    return c;
-  }
-
-  void execute()
-  {
-    if ( cost() > 0 )
-      rage_spent = true;
-    else
-      rage_spent = false;
-    warrior_attack_t::execute();
-    p() -> buff.hamstring -> expire();
-    if ( rage_spent )
-      p() -> buff.hamstring -> trigger();
+    use_off_gcd = true;
   }
 };
 
