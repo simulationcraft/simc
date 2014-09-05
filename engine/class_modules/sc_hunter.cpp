@@ -2008,6 +2008,8 @@ struct powershot_t: public hunter_ranged_attack_t
 
 struct black_arrow_t: public hunter_ranged_attack_t
 {
+  int guaranteed_proc;
+
   black_arrow_t( hunter_t* player, const std::string& options_str ):
     hunter_ranged_attack_t( "black_arrow", player, player -> find_class_spell( "Black Arrow" ) )
   {
@@ -2036,8 +2038,10 @@ struct black_arrow_t: public hunter_ranged_attack_t
   virtual void tick( dot_t* d )
   {
     hunter_ranged_attack_t::tick( d );
-
-    if ( p() -> buffs.lock_and_load -> trigger() )
+    // use 100% for the guaranteed proc and default chance (-100%) for normal procs
+    // that way the normal chance is picked up in spell data.
+    double chance = guaranteed_proc == d -> current_tick ? 1.0 : -1.0;
+    if ( p() -> buffs.lock_and_load -> trigger( 1,  buff_t::DEFAULT_VALUE(), chance ) )
     {
       p() -> cooldowns.explosive_shot -> reset( true );
       p() -> procs.lock_and_load -> occur();
@@ -2047,12 +2051,22 @@ struct black_arrow_t: public hunter_ranged_attack_t
   virtual void execute()
   {
     hunter_ranged_attack_t::execute();
+   
     if ( p() -> new_sets.has_set_bonus( HUNTER_SURVIVAL, T17, B2 ) )
     {
       // guaranteed trigger (but we don't count that as a proc)
       p() -> buffs.lock_and_load -> trigger( 1,  buff_t::DEFAULT_VALUE(), 1.0 );
       p() -> cooldowns.explosive_shot -> reset( false );
     }
+  }
+  
+  virtual void impact( action_state_t* s )
+  {
+    hunter_ranged_attack_t::impact( s );
+
+    // decide guaranteed proc for lnl.
+    int num_ticks = get_dot( execute_state -> target ) -> num_ticks ;
+    guaranteed_proc = floor( p() -> rng().range( 0, num_ticks )) + 1;
   }
 };
 
