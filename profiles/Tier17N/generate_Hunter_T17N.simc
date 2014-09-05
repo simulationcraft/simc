@@ -8,7 +8,7 @@ race=orc
 spec=beast_mastery
 position=ranged_back
 role=attack
-talents=0003213
+talents=0002213
 head=primal_gladiators_chain_helm,id=115641
 neck=primal_gladiators_necklace_of_cruelty,id=115606,enchant=gift_of_multistrike
 shoulders=primal_gladiators_pauldrons,id=115792

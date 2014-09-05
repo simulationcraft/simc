@@ -1683,36 +1683,13 @@ struct execute_t: public warrior_attack_t
 
 struct hamstring_t: public warrior_attack_t
 {
-  bool rage_spent;
   hamstring_t( warrior_t* p, const std::string& options_str ):
-    warrior_attack_t( "hamstring", p, p -> find_class_spell( "Hamstring" ) ),
-    rage_spent( false )
+    warrior_attack_t( "hamstring", p, p -> find_class_spell( "Hamstring" ) )
   {
     parse_options( NULL, options_str );
     stancemask = STANCE_BATTLE | STANCE_GLADIATOR | STANCE_DEFENSE;
     weapon = &( p -> main_hand_weapon );
-  }
-
-  double cost() const
-  {
-    double c = warrior_attack_t::cost();
-
-    if ( p() -> buff.hamstring -> up() )
-      c = 0;
-
-    return c;
-  }
-
-  void execute()
-  {
-    if ( cost() > 0 )
-      rage_spent = true;
-    else
-      rage_spent = false;
-    warrior_attack_t::execute();
-    p() -> buff.hamstring -> expire();
-    if ( rage_spent )
-      p() -> buff.hamstring -> trigger();
+    use_off_gcd = true;
   }
 };
 
@@ -4681,7 +4658,7 @@ void warrior_t::init_action_list()
     return;
   }
   clear_action_priority_lists();
-  bool probablynotgladiator = find_proc( "Mark of Blackrock" ); // Let's hope that non-gladiator protection warriors use the bonus armor weapon enchant.
+  bool probablynotgladiator = find_proc( "Mark of Blackrock" ) != 0; // Let's hope that non-gladiator protection warriors use the bonus armor weapon enchant.
   if ( !talents.gladiators_resolve -> ok() || role == ROLE_TANK )
     probablynotgladiator = true;
 

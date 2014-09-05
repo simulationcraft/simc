@@ -5131,7 +5131,7 @@ action_priority_list_t* player_t::get_action_priority_list( const std::string& n
   {
     a = new action_priority_list_t( name, this );
     a -> action_list_comment_str = comment;
-    a -> internal_id = action_list_id_++;
+    a -> internal_id = static_cast<int>( action_list_id_++ );
     a -> internal_id_mask = ( 1 << a -> internal_id );
     if ( action_list_id_ == 64 )
     {
@@ -8482,7 +8482,7 @@ void player_t::analyze( sim_t& s )
         stats -> portion_amount =  collected_data.compound_dmg.mean() ? stats -> actual_amount.mean() / collected_data.compound_dmg.mean() : 0.0 ;
       else if ( stats -> type == STATS_HEAL || stats -> type == STATS_ABSORB )
       {
-        stats -> portion_amount =  collected_data.compound_heal.mean() ? stats -> actual_amount.mean() : 0.0 + collected_data.compound_absorb.mean() ? stats -> actual_amount.mean() : 0.0;
+        stats -> portion_amount =  collected_data.compound_heal.mean() ? stats -> actual_amount.mean() : collected_data.compound_absorb.mean() ? stats -> actual_amount.mean() : 0.0;
         stats -> portion_amount /= collected_data.compound_heal.mean() + collected_data.compound_absorb.mean();
       }
     }

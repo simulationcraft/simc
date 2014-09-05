@@ -557,7 +557,7 @@ int dot_t::ticks_left() const
 {
   if ( ! current_action ) return 0;
   if ( ! ticking ) return 0;
-  return std::ceil( remains() / current_action -> tick_time( state -> haste ) );
+  return static_cast<int>( std::ceil( remains() / current_action -> tick_time( state -> haste ) ) );
 }
 
 /* Called on Dot start if dot action has tick_zero = true set.

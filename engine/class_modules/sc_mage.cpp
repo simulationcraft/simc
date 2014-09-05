@@ -3358,7 +3358,7 @@ struct pyroblast_t : public mage_spell_t
       p() -> buffs.potent_flames -> trigger();
     }
 
-    is_hot_streak = p() -> buffs.pyroblast -> check();
+    is_hot_streak = p() -> buffs.pyroblast -> check() != 0;
 
     p() -> buffs.pyroblast -> expire();
     p() -> buffs.fiery_adept -> expire();
@@ -5276,7 +5276,9 @@ expr_t* mage_t::create_expression( action_t* a, const std::string& name_str )
       { }
 
       double evaluate()
-      { return mage.current_target ? mage.current_target -> actor_index : 0; }
+      {
+        return mage.current_target ? static_cast<double>( mage.current_target -> actor_index ) : 0;
+      }
     };
 
     return new current_target_expr_t( name_str, *this );

@@ -465,7 +465,7 @@ public:
 
   void trigger_thrill_of_the_hunt()
   {
-    int c = cost();
+    int c = static_cast<int>( cost() );
     if ( p() -> talents.thrill_of_the_hunt -> ok() && c > 0 )
     {
       // Stacks: 3 initial, 3 maximum

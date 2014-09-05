@@ -712,10 +712,6 @@ bool parse_thread_priority( sim_t*             sim,
   {
     pr = sc_thread_t::LOWEST;
   }
-  else if ( util::str_compare_ci( value, "idle" ) )
-  {
-    pr = sc_thread_t::IDLE;
-  }
   else
   {
     sim -> errorf( "Could not set thread priority to %s. Using Normal priority.", value.c_str() );

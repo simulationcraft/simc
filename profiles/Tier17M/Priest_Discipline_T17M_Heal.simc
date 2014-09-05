@@ -1,0 +1,70 @@
+priest="Priest_Discipline_T17M_Heal"
+level=100
+race=draenei
+role=heal
+position=back
+talents=http://us.battle.net/wow/en/tool/talent-calculator#Xa!2112121
+glyphs=prayer_of_mending/circle_of_healing/deep_wells
+spec=discipline
+
+# This default action priority list is automatically created based on your character.
+# It is a attempt to provide you with a action list that is both simple and practicable,
+# while resulting in a meaningful and good simulation. It may not result in the absolutely highest possible dps.
+# Feel free to edit, adapt and improve it to your own needs.
+# SimulationCraft is always looking for updates and improvements to the default action lists.
+
+# Executed before combat begins. Accepts non-harmful actions only.
+
+actions.precombat=flask,type=greater_draenic_intellect_flask
+actions.precombat+=/food,type=blackrock_barbecue
+actions.precombat+=/power_word_fortitude,if=!aura.stamina.up
+# Snapshot raid buffed stats before combat begins and pre-potting is done.
+actions.precombat+=/snapshot_stats
+actions.precombat+=/potion,name=draenic_intellect
+actions.precombat+=/prayer_of_mending
+
+# Executed every time the actor is available.
+
+actions=mana_potion,if=mana.pct<=75
+actions+=/blood_fury
+actions+=/berserking
+actions+=/arcane_torrent
+actions+=/power_infusion,if=talent.power_infusion.enabled
+actions+=/power_word_solace,if=talent.power_word_solace.enabled
+actions+=/mindbender,if=talent.mindbender.enabled&mana.pct<80
+actions+=/shadowfiend,if=!talent.mindbender.enabled
+actions+=/power_word_shield
+actions+=/penance_heal,if=buff.borrowed_time.up
+actions+=/penance_heal
+actions+=/flash_heal,if=buff.surge_of_light.react
+actions+=/heal,if=buff.power_infusion.up|mana.pct>20
+actions+=/prayer_of_mending
+actions+=/heal
+
+head=soul_priests_hood,id=115563
+neck=feldspars_control_choker,id=113890,enchant=gift_of_critical_strike
+shoulders=soul_priests_shoulderguards,id=115561
+back=barrage_dodger_cloak,id=113878,enchant=gift_of_critical_strike
+chest=soul_priests_raiment,id=115560
+wrists=bracers_of_enkindled_power,id=113956
+hands=soul_priests_gloves,id=115562
+waist=seeking_ember_girdle,id=113941
+legs=soul_priests_leggings,id=115564
+feet=cavedwellers_climbers,id=113864
+finger1=sixeyed_band,id=113901,enchant=gift_of_critical_strike
+finger2=firemenders_smoldering_signet,id=113957,enchant=gift_of_critical_strike
+trinket1=autorepairing_autoclave,id=113986
+trinket2=ironspike_chew_toy,id=119192
+main_hand=blackhand_doomstaff,id=113988,enchant=mark_of_shadowmoon
+
+# Gear Summary
+# gear_stamina=3408
+# gear_intellect=2490
+# gear_spell_power=1325
+# gear_crit_rating=1335
+# gear_haste_rating=597
+# gear_mastery_rating=657
+# gear_armor=630
+# gear_multistrike_rating=339
+# set_bonus=tier17_2pc=1
+# set_bonus=tier17_4pc=1

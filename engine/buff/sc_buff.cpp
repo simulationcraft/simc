@@ -309,7 +309,7 @@ buff_t::buff_t( const buff_creation::buff_creator_basics_t& params ) :
     }
   }
   else if ( params._affects_regen != -1 )
-    change_regen_rate = params._affects_regen;
+    change_regen_rate = params._affects_regen != 0;
 
   if ( params._refresh_behavior == BUFF_REFRESH_NONE )
   {

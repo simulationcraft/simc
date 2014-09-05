@@ -1,0 +1,70 @@
+priest="Priest_Discipline_T17H_Dmg"
+level=100
+race=draenei
+role=heal
+position=back
+talents=http://us.battle.net/wow/en/tool/talent-calculator#Xa!2112121
+glyphs=smite/holy_fire/inquisitor
+spec=discipline
+
+# This default action priority list is automatically created based on your character.
+# It is a attempt to provide you with a action list that is both simple and practicable,
+# while resulting in a meaningful and good simulation. It may not result in the absolutely highest possible dps.
+# Feel free to edit, adapt and improve it to your own needs.
+# SimulationCraft is always looking for updates and improvements to the default action lists.
+
+# Executed before combat begins. Accepts non-harmful actions only.
+
+actions.precombat=flask,type=greater_draenic_intellect_flask
+actions.precombat+=/food,type=blackrock_barbecue
+actions.precombat+=/power_word_fortitude,if=!aura.stamina.up
+# Snapshot raid buffed stats before combat begins and pre-potting is done.
+actions.precombat+=/snapshot_stats
+actions.precombat+=/potion,name=draenic_intellect
+actions.precombat+=/prayer_of_mending
+
+# Executed every time the actor is available.
+
+actions=mana_potion,if=mana.pct<=75
+actions+=/blood_fury
+actions+=/berserking
+actions+=/arcane_torrent
+actions+=/power_infusion,if=talent.power_infusion.enabled
+actions+=/power_word_solace,if=talent.power_word_solace.enabled
+actions+=/mindbender,if=talent.mindbender.enabled&mana.pct<80
+actions+=/shadowfiend,if=!talent.mindbender.enabled
+actions+=/power_word_shield
+actions+=/penance_heal,if=buff.borrowed_time.up
+actions+=/penance_heal
+actions+=/flash_heal,if=buff.surge_of_light.react
+actions+=/heal,if=buff.power_infusion.up|mana.pct>20
+actions+=/prayer_of_mending
+actions+=/heal
+
+head=soul_priests_hood,id=115563
+neck=choker_of_bloody_flame,id=120077,enchant=gift_of_critical_strike
+shoulders=soul_priests_shoulderguards,id=115561
+back=runescribed_gronncloak,id=120078,enchant=gift_of_critical_strike
+chest=eyecatching_gilded_robe,id=113898
+wrists=bracers_of_enkindled_power,id=113956
+hands=soul_priests_gloves,id=115562
+waist=deckhands_rope_belt,id=113967
+legs=leggings_of_the_molten_torrent,id=113914
+feet=inferno_breath_sandals,id=113942
+finger1=epicenter_loop,id=113947,enchant=gift_of_critical_strike
+finger2=signet_of_crystalline_barrage,id=113651,enchant=gift_of_critical_strike
+trinket1=darmacs_unstable_talisman,id=113948
+trinket2=goren_soul_repository,id=119194
+main_hand=franzoks_headsmasher,id=113904,enchant=mark_of_thunderlord
+off_hand=enginestokers_lantern,id=113960
+
+# Gear Summary
+# gear_stamina=3386
+# gear_intellect=2696
+# gear_spell_power=1307
+# gear_crit_rating=1175
+# gear_haste_rating=881
+# gear_armor=630
+# gear_multistrike_rating=832
+# gear_versatility_rating=327
+# set_bonus=tier17_2pc=1
