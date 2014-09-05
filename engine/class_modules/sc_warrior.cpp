@@ -420,7 +420,7 @@ public:
     mastery_whirlwind = false;
     rend_burst_mastery = 1;
     cs_extension = 2.0;
-    arms_rage_mult = 1.69;
+    arms_rage_mult = 1.695;
     crit_rage_mult = 2.325;
     swapping = false;
     base.distance = 3.0;
@@ -1950,8 +1950,6 @@ struct heroic_charge_t: public warrior_attack_t
     stancemask = STANCE_DEFENSE | STANCE_GLADIATOR | STANCE_BATTLE;
     leap = new heroic_leap_t( p, options_str );
     charge = new charge_t( p, options_str );
-    add_child( leap );
-    add_child( charge );
     min_gcd = timespan_t::from_millis( 750 );
   }
 
