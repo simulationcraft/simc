@@ -5288,7 +5288,7 @@ void shaman_t::init_action_list()
     // In-combat potion
     if ( sim -> allow_potions && level >= 80  )
     {
-      std::string potion_action = "potion,name=" + potion_name + ",if=(talent.storm_elemental_totem.enabled&!talent.primal_elementalist.enabled&pet.storm_elemental_totem.remains>=25)|((!talent.storm_elemental_totem.enabled|talent.primal_elementalist.enabled)&pet.fire_elemental_totem.remains>=25)|target.time_to_die<=30";
+      std::string potion_action = "potion,name=" + potion_name + ",if=(talent.storm_elemental_totem.enabled&pet.storm_elemental_totem.remains>=25)|(!talent.storm_elemental_totem.enabled&pet.fire_elemental_totem.remains>=25)|target.time_to_die<=30";
 
       def -> add_action( potion_action, "In-combat potion is preferentially linked to the Fire or Storm Elemental, depending on talents, unless combat will end shortly" );
     }
@@ -5296,15 +5296,11 @@ void shaman_t::init_action_list()
     def -> add_action( "blood_fury" );
     def -> add_action( "arcane_torrent" );
     def -> add_action( "berserking" );
-
-    def -> add_talent( this, "Elemental Mastery", "if=talent.primal_elementalist.enabled&glyph.fire_elemental_totem.enabled&(cooldown.fire_elemental_totem.remains=0|cooldown.fire_elemental_totem.remains>=80)" );
-    def -> add_talent( this, "Elemental Mastery", "if=talent.primal_elementalist.enabled&!glyph.fire_elemental_totem.enabled&(cooldown.fire_elemental_totem.remains=0|cooldown.fire_elemental_totem.remains>=50)" );
-    def -> add_talent( this, "Elemental Mastery", "if=!talent.primal_elementalist.enabled" );
-    def -> add_talent( this, "Storm Elemental Totem", "if=!talent.primal_elementalist.enabled" );
+    def -> add_talent( this, "Elemental Mastery" );
+    def -> add_talent( this, "Storm Elemental Totem" );
     def -> add_action( this, "Fire Elemental Totem" );
     def -> add_action( this, "Ascendance", "if=cooldown.strike.remains>=3" );
     def -> add_action( this, "Feral Spirit" );
-    def -> add_talent( this, "Storm Elemental Totem", "if=cooldown.fire_elemental_totem.remains>=60" );
     def -> add_talent( this, "Liquid Magma", "if=pet.searing_totem.remains>=15|pet.magma_totem.remains>=15|pet.fire_elemental_totem.remains>=15" );
     def -> add_talent( this, "Ancestral Swiftness" );
 
@@ -5322,10 +5318,9 @@ void shaman_t::init_action_list()
     single -> add_action( this, "Stormstrike" );
     single -> add_action( this, "Primal Strike" );
     single -> add_action( this, "Lava Lash" );
-    single -> add_action( this, "Flame Shock", "if=(buff.unleash_flame.up&dot.flame_shock.remains<9)|!ticking" );
+    single -> add_action( this, "Flame Shock", "if=(talent.elemental_fusion.enabled&buff.elemental_fusion.stack=2&buff.unleash_flame.up&dot.flame_shock.remains<16)|(!talent.elemental_fusion.enabled&buff.unleash_flame.up&dot.flame_shock.remains<=9)|!ticking" );
     single -> add_action( this, "Unleash Elements" );
-    single -> add_action( this, spec.maelstrom_weapon, "lightning_bolt", "if=buff.maelstrom_weapon.react>=2&!buff.ascendance.up" );
-    single -> add_action( this, "Frost Shock" );
+    single -> add_action( this, "Frost Shock", "if=(talent.elemental_fusion.enabled&dot.flame_shock.remains>=16)|!talent.elemental_fusion.enabled" );
     single -> add_action( this, spec.maelstrom_weapon, "lightning_bolt", "if=buff.maelstrom_weapon.react>=1&!buff.ascendance.up" );
     single -> add_action( this, "Searing Totem", "if=pet.searing_totem.remains<=20&!pet.fire_elemental_totem.active&!buff.liquid_magma.up" );
 
