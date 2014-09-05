@@ -126,17 +126,21 @@ struct rogue_t : public player_t
     buff_t* bandits_guile;
     buff_t* blade_flurry;
     buff_t* blindside;
+    buff_t* burst_of_speed;
     buff_t* deadly_poison;
     buff_t* deadly_proc;
     buff_t* death_from_above;
     buff_t* killing_spree;
-    buff_t* master_of_subtlety_passive;
     buff_t* master_of_subtlety;
+    buff_t* master_of_subtlety_passive;
+    buff_t* nightstalker;
     buff_t* recuperate;
     buff_t* shadow_dance;
     buff_t* shadow_reflection;
+    buff_t* shadowstep;
     buff_t* shiv;
     buff_t* sleight_of_hand;
+    buff_t* sprint;
     buff_t* stealth;
     buff_t* subterfuge;
     buff_t* t16_2pc_melee;
@@ -146,9 +150,9 @@ struct rogue_t : public player_t
     buff_t* wound_poison;
 
     // Insights
-    buffs::insight_buff_t* shallow_insight;
-    buffs::insight_buff_t* moderate_insight;
     buffs::insight_buff_t* deep_insight;
+    buffs::insight_buff_t* moderate_insight;
+    buffs::insight_buff_t* shallow_insight;
 
     // Ticking buffs
     buff_t* envenom;
@@ -161,9 +165,9 @@ struct rogue_t : public player_t
     stat_buff_t* fof_p3;
     stat_buff_t* toxicologist;
 
-    buff_t* enhanced_vendetta;
     buff_t* anticipation;
     buff_t* deceit;
+    buff_t* enhanced_vendetta;
     buff_t* quick_blades;
     buff_t* shadow_strikes;
   } buffs;
@@ -184,19 +188,19 @@ struct rogue_t : public player_t
   {
     gain_t* adrenaline_rush;
     gain_t* combat_potency;
-    gain_t* energy_refund;
+    gain_t* deceit;
     gain_t* energetic_recovery;
+    gain_t* energy_refund;
     gain_t* murderous_intent;
     gain_t* overkill;
     gain_t* recuperate;
     gain_t* relentless_strikes;
     gain_t* ruthlessness;
-    gain_t* vitality;
-    gain_t* venomous_wounds;
+    gain_t* shadow_strikes;
     gain_t* t17_2pc_assassination;
     gain_t* t17_4pc_assassination;
-    gain_t* deceit;
-    gain_t* shadow_strikes;
+    gain_t* venomous_wounds;
+    gain_t* vitality;
 
     // CP Gains
     gain_t* honor_among_thieves;
@@ -214,47 +218,49 @@ struct rogue_t : public player_t
 
     // Assassination
     const spell_data_t* assassins_resolve;
+    const spell_data_t* blindside;
+    const spell_data_t* cut_to_the_chase;
     const spell_data_t* improved_poisons;
     const spell_data_t* master_poisoner;
     const spell_data_t* seal_fate;
     const spell_data_t* venomous_wounds;
-    const spell_data_t* cut_to_the_chase;
-    const spell_data_t* blindside;
 
     // Combat
     const spell_data_t* ambidexterity;
-    const spell_data_t* blade_flurry;
-    const spell_data_t* vitality;
-    const spell_data_t* combat_potency;
     const spell_data_t* bandits_guile;
+    const spell_data_t* blade_flurry;
+    const spell_data_t* combat_potency;
     const spell_data_t* killing_spree;
     const spell_data_t* ruthlessness;
+    const spell_data_t* vitality;
 
     // Subtlety
-    const spell_data_t* master_of_subtlety;
-    const spell_data_t* sinister_calling;
+    const spell_data_t* energetic_recovery;
     const spell_data_t* find_weakness;
     const spell_data_t* honor_among_thieves;
+    const spell_data_t* master_of_subtlety;
     const spell_data_t* sanguinary_vein;
-    const spell_data_t* energetic_recovery;
     const spell_data_t* shadow_dance;
+    const spell_data_t* sinister_calling;
   } spec;
 
   // Spell Data
   struct spells_t
   {
-    const spell_data_t* fan_of_knives;
     const spell_data_t* bandits_guile_value;
+    const spell_data_t* critical_strikes;
+    const spell_data_t* death_from_above;
+    const spell_data_t* fan_of_knives;
+    const spell_data_t* fleet_footed;
+    const spell_data_t* sprint;
     const spell_data_t* relentless_strikes;
+    const spell_data_t* ruthlessness;
     const spell_data_t* ruthlessness_cp;
     const spell_data_t* shadow_focus;
     const spell_data_t* tier13_2pc;
     const spell_data_t* tier13_4pc;
     const spell_data_t* tier15_4pc;
     const spell_data_t* venom_rush;
-    const spell_data_t* death_from_above;
-    const spell_data_t* critical_strikes;
-    const spell_data_t* ruthlessness;
   } spell;
 
   // Talents
@@ -265,6 +271,8 @@ struct rogue_t : public player_t
     const spell_data_t* shadow_focus;
 
     const spell_data_t* leeching_poison;
+    const spell_data_t* burst_of_speed;
+    const spell_data_t* shadowstep;
 
     const spell_data_t* anticipation;
     const spell_data_t* marked_for_death;
@@ -288,6 +296,7 @@ struct rogue_t : public player_t
     const spell_data_t* energy;
     const spell_data_t* hemorrhaging_veins;
     const spell_data_t* kick;
+    const spell_data_t* sprint;
     const spell_data_t* vanish;
     const spell_data_t* vendetta;
   } glyph;
@@ -400,6 +409,8 @@ struct rogue_t : public player_t
   virtual double    composite_attack_power_multiplier() const;
   virtual double    composite_player_multiplier( school_e school ) const;
   virtual double    energy_regen_per_second() const;
+  virtual double    passive_movement_modifier() const;
+  virtual double    temporary_movement_modifier() const;
 
   bool poisoned_enemy( player_t* target ) const;
 
@@ -2391,9 +2402,18 @@ struct rupture_t : public rogue_attack_t
 struct shadowstep_t : public rogue_attack_t
 {
   shadowstep_t( rogue_t* p, const std::string& options_str ) :
-    rogue_attack_t( "shadowstep", p, p -> find_class_spell( "Shadowstep" ), options_str )
+    rogue_attack_t( "shadowstep", p, p -> talent.shadowstep, options_str )
   {
     harmful = false;
+    dot_duration = timespan_t::zero();
+    base_teleport_distance = data().max_range();
+    movement_directionality = MOVEMENT_OMNI;
+  }
+
+  void execute()
+  {
+    rogue_attack_t::execute();
+    p() -> buffs.shadowstep -> trigger();
   }
 };
 
@@ -2588,6 +2608,45 @@ struct shadow_dance_t : public rogue_attack_t
 
     p() -> buffs.shadow_dance -> trigger();
     p() -> buffs.quick_blades -> trigger();
+  }
+};
+
+// Burst of Speed ===========================================================
+
+struct burst_of_speed_t: public rogue_attack_t
+{
+  burst_of_speed_t( rogue_t* p, const std::string& options_str ):
+    rogue_attack_t( "burst_of_speed", p, p -> talent.burst_of_speed, options_str )
+  {
+    harmful = callbacks = false;
+    dot_duration = timespan_t::zero();
+    cooldown -> duration = p -> buffs.burst_of_speed -> data().duration();
+  }
+
+  void execute()
+  {
+    rogue_attack_t::execute();
+
+    p() -> buffs.burst_of_speed -> trigger();
+  }
+};
+
+// Sprint ===================================================================
+
+struct sprint_t: public rogue_attack_t
+{
+  sprint_t( rogue_t* p, const std::string& options_str ):
+    rogue_attack_t( "sprint", p, p -> spell.sprint, options_str )
+  {
+    harmful = callbacks = false;
+    cooldown = p -> cooldowns.sprint;
+  }
+
+  void execute()
+  {
+    rogue_attack_t::execute();
+
+    p() -> buffs.sprint -> trigger();
   }
 };
 
@@ -4372,13 +4431,15 @@ action_t* rogue_t::create_action( const std::string& name,
 {
   using namespace actions;
 
-  if ( name == "auto_attack"         ) return new auto_melee_attack_t  ( this, options_str );
   if ( name == "adrenaline_rush"     ) return new adrenaline_rush_t    ( this, options_str );
   if ( name == "ambush"              ) return new ambush_t             ( this, options_str );
   if ( name == "apply_poison"        ) return new apply_poison_t       ( this, options_str );
+  if ( name == "auto_attack"         ) return new auto_melee_attack_t  ( this, options_str );
   if ( name == "backstab"            ) return new backstab_t           ( this, options_str );
   if ( name == "blade_flurry"        ) return new blade_flurry_t       ( this, options_str );
+  if ( name == "burst_of_speed"      ) return new burst_of_speed_t     ( this, options_str );
   if ( name == "crimson_tempest"     ) return new crimson_tempest_t    ( this, options_str );
+  if ( name == "death_from_above"    ) return new death_from_above_t   ( this, options_str );
   if ( name == "dispatch"            ) return new dispatch_t           ( this, options_str );
   if ( name == "envenom"             ) return new envenom_t            ( this, options_str );
   if ( name == "eviscerate"          ) return new eviscerate_t         ( this, options_str );
@@ -4395,16 +4456,16 @@ action_t* rogue_t::create_action( const std::string& name,
   if ( name == "revealing_strike"    ) return new revealing_strike_t   ( this, options_str );
   if ( name == "rupture"             ) return new rupture_t            ( this, options_str );
   if ( name == "shadow_dance"        ) return new shadow_dance_t       ( this, options_str );
+  if ( name == "shadow_reflection"   ) return new shadow_reflection_t  ( this, options_str );
   if ( name == "shadowstep"          ) return new shadowstep_t         ( this, options_str );
   if ( name == "shiv"                ) return new shiv_t               ( this, options_str );
   if ( name == "shuriken_toss"       ) return new shuriken_toss_t      ( this, options_str );
   if ( name == "sinister_strike"     ) return new sinister_strike_t    ( this, options_str );
   if ( name == "slice_and_dice"      ) return new slice_and_dice_t     ( this, options_str );
+  if ( name == "sprint"              ) return new sprint_t             ( this, options_str );
   if ( name == "stealth"             ) return new stealth_t            ( this, options_str );
   if ( name == "vanish"              ) return new vanish_t             ( this, options_str );
   if ( name == "vendetta"            ) return new vendetta_t           ( this, options_str );
-  if ( name == "shadow_reflection"   ) return new shadow_reflection_t( this, options_str );
-  if ( name == "death_from_above"    ) return new death_from_above_t( this, options_str );
 
   return player_t::create_action( name, options_str );
 }
@@ -4487,36 +4548,41 @@ void rogue_t::init_spells()
   mastery.executioner       = find_mastery_spell( ROGUE_SUBTLETY );
 
   // Misc spells
+  spell.bandits_guile_value = find_spell( 84747 );
+  spell.critical_strikes    = find_spell( 157442 );
+  spell.death_from_above    = find_spell( 163786 );
+  spell.fan_of_knives       = find_class_spell( "Fan of Knives" );
+  spell.fleet_footed        = find_class_spell( "Fleet Footed" );
+  spell.sprint              = find_class_spell( "Sprint" );
   spell.relentless_strikes  = find_spell( 58423 );
+  spell.ruthlessness        = find_spell( 14161 );
   spell.ruthlessness_cp     = spec.ruthlessness -> effectN( 1 ).trigger();
   spell.shadow_focus        = find_spell( 112942 );
   spell.tier13_2pc          = find_spell( 105864 );
   spell.tier13_4pc          = find_spell( 105865 );
   spell.tier15_4pc          = find_spell( 138151 );
-  spell.bandits_guile_value = find_spell( 84747 );
-  spell.fan_of_knives       = find_class_spell( "Fan of Knives" );
   spell.venom_rush          = find_spell( 156719 );
-  spell.death_from_above    = find_spell( 163786 );
-  spell.critical_strikes    = find_spell( 157442 );
-  spell.ruthlessness        = find_spell( 14161 );
 
   // Glyphs
   glyph.disappearance       = find_glyph_spell( "Glyph of Disappearance" );
   glyph.energy              = find_glyph_spell( "Glyph of Energy" );
   glyph.hemorrhaging_veins  = find_glyph_spell( "Glyph of Hemorrhaging Veins" );
   glyph.kick                = find_glyph_spell( "Glyph of Kick" );
+  glyph.sprint              = find_glyph_spell( "Glyph of Sprint" );
   glyph.vanish              = find_glyph_spell( "Glyph of Vanish" );
   glyph.vendetta            = find_glyph_spell( "Glyph of Vendetta" );
 
-  talent.nightstalker       = find_talent_spell( "Nightstalker" );
-  talent.subterfuge         = find_talent_spell( "Subterfuge" );
-  talent.shadow_focus       = find_talent_spell( "Shadow Focus" );
-  talent.marked_for_death   = find_talent_spell( "Marked for Death" );
   talent.anticipation       = find_talent_spell( "Anticipation" );
-  talent.venom_rush         = find_talent_spell( "Venom Rush" );
-  talent.shadow_reflection  = find_talent_spell( "Shadow Reflection" );
+  talent.burst_of_speed     = find_talent_spell( "Burst of Speed" );
   talent.death_from_above   = find_talent_spell( "Death from Above" );
   talent.leeching_poison    = find_talent_spell( "Leeching Poison" );
+  talent.marked_for_death   = find_talent_spell( "Marked for Death" );
+  talent.nightstalker       = find_talent_spell( "Nightstalker" );
+  talent.shadow_focus       = find_talent_spell( "Shadow Focus" );
+  talent.shadow_reflection  = find_talent_spell( "Shadow Reflection" );
+  talent.shadowstep         = find_talent_spell( "Shadowstep" );
+  talent.subterfuge         = find_talent_spell( "Subterfuge" );
+  talent.venom_rush         = find_talent_spell( "Venom Rush" );
 
   // Assassination
   perk.improved_slice_and_dice     = find_perk_spell( "Improved Slice and Dice" );
@@ -4526,14 +4592,14 @@ void rogue_t::init_spells()
 
   // Combat
   perk.empowered_bandits_guile     = find_perk_spell( "Empowered Bandit's Guile" );
-  perk.swift_poison                = find_perk_spell( "Swift Poison" );
   perk.enhanced_blade_flurry       = find_perk_spell( "Enhanced Blade Flurry" );
   perk.improved_dual_wield         = find_perk_spell( "Improved Dual Wield" );
+  perk.swift_poison                = find_perk_spell( "Swift Poison" );
 
-  perk.enhanced_vanish             = find_perk_spell( "Enhanced Vanish" );
-  perk.enhanced_shadow_dance       = find_perk_spell( "Enhanced Shadow Dance" );
   perk.empowered_fan_of_knives     = find_perk_spell( "Empowered Fan of Knives" );
+  perk.enhanced_shadow_dance       = find_perk_spell( "Enhanced Shadow Dance" );
   perk.enhanced_stealth            = find_perk_spell( "Enhanced Stealth" );
+  perk.enhanced_vanish             = find_perk_spell( "Enhanced Vanish" );
 
   auto_attack = new auto_melee_attack_t( this, "" );
 
@@ -4553,26 +4619,26 @@ void rogue_t::init_gains()
 {
   player_t::init_gains();
 
-  gains.adrenaline_rush    = get_gain( "adrenaline_rush"    );
-  gains.combat_potency     = get_gain( "combat_potency"     );
-  gains.energetic_recovery = get_gain( "energetic_recovery" );
-  gains.energy_refund      = get_gain( "energy_refund"      );
-  gains.murderous_intent   = get_gain( "murderous_intent"   );
-  gains.overkill           = get_gain( "overkill"           );
-  gains.recuperate         = get_gain( "recuperate"         );
-  gains.relentless_strikes = get_gain( "relentless_strikes" );
-  gains.ruthlessness       = get_gain( "ruthlessness"       );
-  gains.venomous_wounds    = get_gain( "venomous_vim"       );
-  gains.honor_among_thieves= get_gain( "honor_among_thieves" );
+  gains.adrenaline_rush         = get_gain( "adrenaline_rush"    );
+  gains.combat_potency          = get_gain( "combat_potency"     );
+  gains.deceit                  = get_gain( "deceit" );
   gains.empowered_fan_of_knives = get_gain( "empowered_fan_of_knives" );
-  gains.premeditation = get_gain( "premeditation" );
-  gains.seal_fate = get_gain( "seal_fate" );
-  gains.ruthlessness = get_gain( "ruthlessness" );
-  gains.legendary_daggers = get_gain( "legendary_daggers" );
-  gains.t17_2pc_assassination = get_gain( "t17_2pc_assassination" );
-  gains.t17_4pc_assassination = get_gain( "t17_4pc_assassination" );
-  gains.deceit                = get_gain( "deceit" );
-  gains.shadow_strikes        = get_gain( "shadow_strikes" );
+  gains.energetic_recovery      = get_gain( "energetic_recovery" );
+  gains.energy_refund           = get_gain( "energy_refund"      );
+  gains.honor_among_thieves     = get_gain( "honor_among_thieves" );
+  gains.legendary_daggers       = get_gain( "legendary_daggers" );
+  gains.murderous_intent        = get_gain( "murderous_intent"   );
+  gains.overkill                = get_gain( "overkill"           );
+  gains.premeditation           = get_gain( "premeditation" );
+  gains.recuperate              = get_gain( "recuperate"         );
+  gains.relentless_strikes      = get_gain( "relentless_strikes" );
+  gains.ruthlessness            = get_gain( "ruthlessness"       );
+  gains.ruthlessness            = get_gain( "ruthlessness" );
+  gains.seal_fate               = get_gain( "seal_fate" );
+  gains.shadow_strikes          = get_gain( "shadow_strikes" );
+  gains.t17_2pc_assassination   = get_gain( "t17_2pc_assassination" );
+  gains.t17_4pc_assassination   = get_gain( "t17_4pc_assassination" );
+  gains.venomous_wounds         = get_gain( "venomous_vim"       );
 }
 
 // rogue_t::init_procs ======================================================
@@ -4581,12 +4647,12 @@ void rogue_t::init_procs()
 {
   player_t::init_procs();
 
-  procs.honor_among_thieves      = get_proc( "honor_among_thieves" );
-  procs.seal_fate                = get_proc( "seal_fate"           );
-  procs.no_revealing_strike      = get_proc( "no_revealing_strike" );
-  procs.t16_2pc_melee            = get_proc( "t16_2pc_melee"       );
-  procs.combo_points_wasted      = get_proc( "combo_points_wasted" );
   procs.anticipation_wasted      = get_proc( "anticipation_wasted" );
+  procs.combo_points_wasted      = get_proc( "combo_points_wasted" );
+  procs.honor_among_thieves      = get_proc( "honor_among_thieves" );
+  procs.no_revealing_strike      = get_proc( "no_revealing_strike" );
+  procs.seal_fate                = get_proc( "seal_fate"           );
+  procs.t16_2pc_melee            = get_proc( "t16_2pc_melee"       );
 }
 
 // rogue_t::init_scaling ====================================================
@@ -4727,6 +4793,12 @@ void rogue_t::create_buffs()
                             .chance( new_sets.has_set_bonus( ROGUE_SUBTLETY, T17, B2 ) );
   buffs.shadow_strikes    = buff_creator_t( this, "shadow_strikes", find_spell( 166881 ) )
                             .chance( new_sets.has_set_bonus( ROGUE_SUBTLETY, T17, B4 ) );
+
+  buffs.burst_of_speed    = buff_creator_t( this, "burst_of_speed", find_spell( 137573 ) );
+  buffs.sprint            = buff_creator_t( this, "sprint", spell.sprint )
+    .cd( timespan_t::zero() );
+  buffs.shadowstep        = buff_creator_t( this, "shadowstep", talent.shadowstep )
+    .cd( timespan_t::zero() );
 }
 
 // trigger_honor_among_thieves ==============================================
@@ -4841,6 +4913,39 @@ double rogue_t::energy_regen_per_second() const
 
   return r;
 }
+
+// rogue_t::temporary_movement_modifier ==================================
+
+double rogue_t::temporary_movement_modifier() const
+{
+  double temporary = player_t::temporary_movement_modifier();
+
+  if ( buffs.sprint -> up() )
+    temporary = std::max( buffs.sprint -> data().effectN( 1 ).percent(), temporary );
+
+  if ( buffs.burst_of_speed -> up() )
+    temporary = std::max( buffs.burst_of_speed -> data().effectN( 1 ).percent(), temporary );
+
+  if ( buffs.shadowstep -> up() )
+    temporary = std::max( buffs.shadowstep -> data().effectN( 2 ).percent(), temporary );
+
+  return temporary;
+}
+
+// rogue_t::passive_movement_modifier===================================
+
+double rogue_t::passive_movement_modifier() const
+{
+  double ms = player_t::passive_movement_modifier();
+
+  ms += spell.fleet_footed -> effectN( 1 ).percent();
+
+  if ( buffs.stealth -> up() ) // Check if nightstalker is temporary or passive.
+    ms += talent.nightstalker -> effectN( 1 ).percent();
+
+  return ms;
+}
+
 
 // rogue_t::regen ===========================================================
 
