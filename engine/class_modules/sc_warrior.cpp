@@ -420,8 +420,8 @@ public:
     mastery_whirlwind = false;
     rend_burst_mastery = 1;
     cs_extension = 2.0;
-    arms_rage_mult = 2.125;
-    crit_rage_mult = 2;
+    arms_rage_mult = 1.69;
+    crit_rage_mult = 2.325;
     swapping = false;
     base.distance = 3.0;
     heroic_charge = false;
