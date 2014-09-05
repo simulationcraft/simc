@@ -156,6 +156,7 @@ public:
     buff_t* ascendance;
     buff_t* echo_of_the_elements;
     buff_t* enhanced_chain_lightning;
+    buff_t* enhanced_unleash;
     buff_t* lava_surge;
     buff_t* liquid_magma;
     buff_t* lightning_shield;
@@ -312,7 +313,7 @@ public:
   {
     // Enhancement
     const spell_data_t* improved_fire_totems;
-    const spell_data_t* enhanced_unleash_elements;
+    const spell_data_t* enhanced_unleash;
     const spell_data_t* improved_lava_lash;
     const spell_data_t* improved_flame_shock;
     const spell_data_t* improved_maelstrom_weapon;
@@ -2548,6 +2549,7 @@ struct unleash_elements_t : public shaman_attack_t
     p() -> buff.unleash_wind -> trigger( p() -> buff.unleash_wind -> data().initial_stacks() );
     p() -> buff.unleash_flame -> trigger();
     p() -> buff.tier16_2pc_melee -> trigger();
+    p() -> buff.enhanced_unleash -> trigger();
   }
 };
 
@@ -3308,6 +3310,7 @@ struct unleash_flame_t : public shaman_spell_t
     shaman_spell_t::execute();
 
     p() -> buff.unleash_flame -> trigger();
+    p() -> buff.enhanced_unleash -> trigger();
     if ( p() -> talent.unleashed_fury -> ok() )
       p() -> buff.unleashed_fury -> trigger();
   }
@@ -4640,7 +4643,7 @@ void shaman_t::init_spells()
 
   // Perks - Shared
   perk.improved_fire_totems          = find_perk_spell( "Improved Fire Totems" );
-  perk.enhanced_unleash_elements     = find_perk_spell( "Enhanced Unleash" );
+  perk.enhanced_unleash              = find_perk_spell( "Enhanced Unleash" );
 
   // Perks - Enhancement
   perk.improved_lava_lash            = find_perk_spell( "Empowered Lava Lash" );
@@ -5095,6 +5098,8 @@ void shaman_t::create_buffs()
 
   buff.enhanced_chain_lightning = buff_creator_t( this, "enhanced_chain_lightning", perk.enhanced_chain_lightning )
                                   .max_stack( 5 );
+
+  buff.enhanced_unleash         = buff_creator_t( this, "enhanced_unleash", perk.enhanced_unleash -> effectN( 1 ).trigger() );
 
   buff.focus_of_the_elements = buff_creator_t( this, "focus_of_the_elements", find_spell( 167205 ) )
                                .chance( static_cast< double >( new_sets.has_set_bonus( SHAMAN_ELEMENTAL, T17, B2 ) ) );
@@ -5551,7 +5556,8 @@ double shaman_t::temporary_movement_modifier() const
   if ( buff.feral_spirit -> up() )
     ms = std::max( buff.feral_spirit -> data().effectN( 1 ).percent(), ms );
 
-  // TODO-WOD: Enhanced Unleash Elements
+  if ( buff.enhanced_unleash -> up() )
+    ms = std::max( buff.enhanced_unleash -> data().effectN( 1 ).percent(), ms );
 
   return ms;
 }
