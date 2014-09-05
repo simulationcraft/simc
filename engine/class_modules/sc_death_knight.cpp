@@ -7158,7 +7158,7 @@ int death_knight_t::runes_count( rune_type rt, bool include_death, int position 
       }
     }
   }
-  return result;
+  return static_cast<int>( result );
 }
 
 // death_knight_t::runes_cooldown_any =======================================

@@ -320,7 +320,7 @@ void set_bonus_t::initialize()
         if ( data.bonus == 0 )
           continue;
 
-        unsigned spec_role_idx = spec_idx;
+        unsigned spec_role_idx = static_cast<int>( spec_idx );
         // If we're below the threshold tier, the "spec_idx" is actually a role
         // index, and our overrides are based on roles
         if ( old_tier( tier_idx ) )
@@ -352,7 +352,7 @@ std::string set_bonus_t::to_string() const
         if ( data.bonus == 0 )
           continue;
 
-        unsigned spec_role_idx = spec_idx;
+        unsigned spec_role_idx = static_cast<int>( spec_idx );
         if ( old_tier( tier_idx ) )
           spec_role_idx = data.bonus -> role;
 
@@ -402,7 +402,7 @@ std::string set_bonus_t::to_profile_string( const std::string& newline ) const
         if ( data.bonus == 0 )
           continue;
 
-        unsigned spec_role_idx = spec_idx;
+        unsigned spec_role_idx = static_cast<int>( spec_idx );
         if ( old_tier( tier_idx ) )
           spec_role_idx = data.bonus -> role;
 

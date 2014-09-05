@@ -4681,7 +4681,7 @@ void warrior_t::init_action_list()
     return;
   }
   clear_action_priority_lists();
-  bool probablynotgladiator = find_proc( "Mark of Blackrock" ); // Let's hope that non-gladiator protection warriors use the bonus armor weapon enchant.
+  bool probablynotgladiator = find_proc( "Mark of Blackrock" ) != 0; // Let's hope that non-gladiator protection warriors use the bonus armor weapon enchant.
   if ( !talents.gladiators_resolve -> ok() || role == ROLE_TANK )
     probablynotgladiator = true;
 

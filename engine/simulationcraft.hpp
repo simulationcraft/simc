@@ -5131,7 +5131,7 @@ struct player_t : public actor_t
     for ( size_t i = 0; i < action_map.size(); i++ )
     {
       if ( util::str_compare_ci( name, action_map[ i ] ) )
-        return i;
+        return static_cast<int>(i);
     }
 
     return -1;

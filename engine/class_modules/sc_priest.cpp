@@ -2812,7 +2812,7 @@ struct devouring_plague_t final : public priest_spell_t
     {
       resource_consumed = shadow_orbs_to_consume();
 
-      trigger_insanity( execute_state, resource_consumed );
+      trigger_insanity( execute_state, static_cast<int>( resource_consumed ) );
 
       if ( priest.new_sets.has_set_bonus( PRIEST_SHADOW, T17, B2 ) )
       {
@@ -3799,7 +3799,7 @@ struct void_entropy_t : public priest_spell_t
     {
       resource_consumed = shadow_orbs_to_consume();
 
-      trigger_insanity( execute_state, resource_consumed );
+      trigger_insanity( execute_state, static_cast<int>( resource_consumed ) );
 
       if ( priest.new_sets.has_set_bonus( PRIEST_SHADOW, T17, B2 ) )
       {

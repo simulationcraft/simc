@@ -5131,7 +5131,7 @@ action_priority_list_t* player_t::get_action_priority_list( const std::string& n
   {
     a = new action_priority_list_t( name, this );
     a -> action_list_comment_str = comment;
-    a -> internal_id = action_list_id_++;
+    a -> internal_id = static_cast<int>( action_list_id_++ );
     a -> internal_id_mask = ( 1 << a -> internal_id );
     if ( action_list_id_ == 64 )
     {

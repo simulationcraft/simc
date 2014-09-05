@@ -547,7 +547,7 @@ struct rogue_attack_t : public melee_attack_t
     melee_attack_t::snapshot_state( state, rt );
 
     if ( base_costs[ RESOURCE_COMBO_POINT ] > 0 )
-      cast_state( state ) -> cp = player -> resources.current[ RESOURCE_COMBO_POINT ];
+      cast_state( state ) -> cp = static_cast<int>( player -> resources.current[RESOURCE_COMBO_POINT] );
   }
 
   bool stealthed()
@@ -2274,9 +2274,9 @@ struct premeditation_t : public rogue_attack_t
     add_points = std::min( add_points, player -> resources.max[ RESOURCE_COMBO_POINT ] - player -> resources.current[ RESOURCE_COMBO_POINT ] );
 
     if ( add_points > 0 )
-      p() -> trigger_combo_point_gain( 0, add_points, p() -> gains.premeditation );
+      p() -> trigger_combo_point_gain( 0, static_cast<int>( add_points ), p() -> gains.premeditation );
 
-    p() -> event_premeditation = new ( *sim ) premeditation_event_t( *p(), state -> target, data().duration(), add_points );
+    p() -> event_premeditation = new ( *sim ) premeditation_event_t( *p(), state -> target, data().duration(), static_cast<int>( add_points ) );
   }
 };
 
@@ -3144,7 +3144,7 @@ void rogue_t::trigger_combo_point_gain( const action_state_t* state, int cp_over
   else
     n_cp = cp_override;
 
-  int fill = resources.max[ RESOURCE_COMBO_POINT ] - resources.current[ RESOURCE_COMBO_POINT ];
+  int fill = static_cast<int>( resources.max[RESOURCE_COMBO_POINT] - resources.current[RESOURCE_COMBO_POINT] );
   int added = std::min( fill, n_cp );
   int overflow = n_cp - added;
   int anticipation_added = 0;
