@@ -1604,6 +1604,24 @@ std::string chart::reforge_dps( player_t* p )
     int ysteps = 5;
     double ystep_amount = max_ydelta / ysteps;
 
+    int negative_steps = 0, positive_steps = 0, positive_offset = -1;
+
+    for ( int i = 0; i < num_points; i++ )
+    {
+      if ( pd[ i ][ 0 ].value < 0 )
+        negative_steps++;
+      else if ( pd[ i ][ 0 ].value > 0 )
+      {
+        if ( positive_offset == -1 )
+          positive_offset = i;
+        positive_steps++;
+      }
+    }
+
+    // We want to fit about 4 labels per side, but if there's many plot points, have some sane 
+    int negative_mod = std::max( std::ceil( negative_steps / 4 ), 4.0 );
+    int positive_mod = std::max( std::ceil( positive_steps / 4 ), 4.0 );
+
     std::string formatted_name = util::google_image_chart_encode( p -> scales_over().name );
     util::urlencode( formatted_name );
 
@@ -1612,6 +1630,9 @@ std::string chart::reforge_dps( player_t* p )
 
     s << chart.create();
 
+    // Generate reasonable X-axis labels in conjunction with the X data series.
+    std::string xl1, xl2;
+
     // X series
     s << "chd=t2:";
     for ( int i = 0; i < num_points; i++ )
@@ -1619,6 +1640,55 @@ std::string chart::reforge_dps( player_t* p )
       s << static_cast< int >( pd[ i ][ 0 ].value );
       if ( i < num_points - 1 )
         s << ",";
+
+      bool label = false;
+      // Label start
+      if ( i == 0 )
+        label = true;
+      // Label end
+      else if ( i == num_points - 1 )
+        label = true;
+      // Label baseline
+      else if ( pd[ i ][ 0 ].value == 0 )
+        label = true;
+      // Label every negative_modth value (left side of baseline)
+      else if ( pd[ i ][ 0 ].value < 0 && i % negative_mod == 0 )
+        label = true;
+      // Label every positive_modth value (right side of baseline), if there is
+      // enough room until the end of the graph
+      else if ( pd[ i ][ 0 ].value > 0 && i <= num_points - positive_mod && ( i - positive_offset ) > 0 && ( i - positive_offset + 1 ) % positive_mod == 0 )
+        label = true;
+
+      if ( label )
+      {
+        xl1 += util::to_string( pd[ i ][ 0 ].value );
+        if ( i == 0 || i == num_points - 1 )
+        {
+          xl1 += "+";
+          xl1 += util::stat_type_abbrev( stat_indices[ 0 ] );
+        }
+
+        xl2 += util::to_string( pd[ i ][ 1 ].value );
+        if ( i == 0 || i == num_points - 1 )
+        {
+          xl2 += "+";
+          xl2 += util::stat_type_abbrev( stat_indices[ 1 ] );
+        }
+
+      }
+      // Otherwise, "fake" a label by adding simply a space. This is required
+      // so that we can get asymmetric reforge ranges to correctly display the
+      // baseline position on the X axis
+      else
+      {
+        xl1 += "+";
+        xl2 += "+";
+      }
+
+      if ( i < num_points - 1 )
+        xl1 += "|";
+      if ( i < num_points - 1 )
+        xl2 += "|";
     }
 
     // Y series
@@ -1657,18 +1727,8 @@ std::string chart::reforge_dps( player_t* p )
     s << "chxt=x,y,x";
     s << amp;
 
-    // X Axis labels
-    s << "chxl=0:|" << ( int ) pd[ 0 ][ 0 ].value << "+" << util::stat_type_abbrev( stat_indices[ 0 ] ) << "|";
-    s << ( int ) pd[ 0 ][ 0 ].value / 2;
-    s << "|0|";
-    s << ( int ) pd[ ( num_points - 1 ) ][ 0 ].value / 2;
-    s << "|" << ( int ) pd[ num_points - 1 ][ 0 ].value << "+" << util::stat_type_abbrev( stat_indices[ 0 ] ) << "|";
-
-    s << "2:|" << ( int ) pd[ 0 ][ 1 ].value << "+" << util::stat_type_abbrev( stat_indices[ 1 ] ) << "|";
-    s << ( int ) pd[ 0 ][ 1 ].value / 2;
-    s << "|0|";
-    s << ( int ) pd[ num_points - 1 ][ 1 ].value / 2;
-    s << "|" << ( int ) pd[ ( num_points - 1 ) ][ 1 ].value << "+" << util::stat_type_abbrev( stat_indices[ 1 ] ) << "|";
+    // X Axis labels (generated above)
+    s << "chxl=0:|" << xl1 << "|2:|" << xl2 << "|";
 
     // Y Axis labels
     s << "1:|";
@@ -1698,9 +1758,9 @@ std::string chart::reforge_dps( player_t* p )
     s << amp;
 
     // Grid lines
-    s << "chg=5,";
+    s << "chg=" << util::to_string( 100 / ( 1.0 * num_points ) ) << ",";
     s << util::to_string( 100 / ( ysteps * 2 ) );
-    s << ",1,3";
+    s << ",3,3,0,0";
     s << amp;
 
     // Chart markers (Errorbars and Center-line)
