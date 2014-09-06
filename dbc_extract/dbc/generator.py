@@ -1277,7 +1277,9 @@ class SpellDataGenerator(DataGenerator):
          105617,                    # Alchemist's Flask
          137596,                    # Capacitance
          104510, 104423,            # Windsong Mastery / Haste buffs
-         156060, 156055, 173287     # Hunter Scopes
+         156060, 156055, 173287,    # Hunter Scopes
+         177172, 177175, 177176,    # WoD Legendary ring, phase 1(?)
+         177161, 177159, 177160,    # WoD Legendary ring, phase 1(?)
         ),
         
         # Warrior:
