@@ -549,17 +549,11 @@ bool download_item_data( item_t& item, cache::behavior_e caching )
         item.parsed.data.type_flags |= RAID_TYPE_HEROIC;
       else if ( util::str_in_str_ci( nameDescription, "raid finder" ) )
         item.parsed.data.type_flags |= RAID_TYPE_LFR;
-      else if ( util::str_in_str_ci( nameDescription, "flexible" ) )
-        item.parsed.data.type_flags |= RAID_TYPE_FLEXIBLE;
-
-      if ( util::str_in_str_ci( nameDescription, "thunderforged" ) )
-        item.parsed.data.type_flags |= RAID_TYPE_ELITE;
+      else if ( util::str_in_str_ci( nameDescription, "mythic" ) )
+        item.parsed.data.type_flags |= RAID_TYPE_MYTHIC;
 
       if ( util::str_in_str_ci( nameDescription, "warforged" ) )
-        item.parsed.data.type_flags |= RAID_TYPE_ELITE;
-
-      if ( util::str_in_str_ci( nameDescription, "timeless" ) )
-        item.parsed.data.type_flags |= RAID_TYPE_ELITE;
+        item.parsed.data.type_flags |= RAID_TYPE_WARFORGED;
     }
 
     if ( js.HasMember( "itemSpells" ) )

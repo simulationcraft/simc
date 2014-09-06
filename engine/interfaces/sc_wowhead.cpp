@@ -160,20 +160,17 @@ bool wowhead::download_item_data( item_t&            item,
     if ( json.HasMember( "reqlevel" ) )
       item.parsed.data.req_level = json[ "reqlevel" ].GetInt();
 
-    if ( json.HasMember( "heroic" ) )
-      item.parsed.data.type_flags |= RAID_TYPE_HEROIC;
-
-    if ( json.HasMember( "flexible" ) )
-      item.parsed.data.type_flags |= RAID_TYPE_FLEXIBLE;
-
     if ( json.HasMember( "raidfinder" ) )
       item.parsed.data.type_flags |= RAID_TYPE_LFR;
 
-    if ( json.HasMember( "warforged" ) )
-      item.parsed.data.type_flags |= RAID_TYPE_ELITE;
+    if ( json.HasMember( "heroic" ) )
+      item.parsed.data.type_flags |= RAID_TYPE_HEROIC;
 
-    if ( json.HasMember( "thunderforged" ) )
-      item.parsed.data.type_flags |= RAID_TYPE_ELITE;
+    if ( json.HasMember( "mythic" ) )
+      item.parsed.data.type_flags |= RAID_TYPE_MYTHIC;
+
+    if ( json.HasMember( "warforged" ) )
+      item.parsed.data.type_flags |= RAID_TYPE_WARFORGED;
 
     if ( item.parsed.data.item_class == ITEM_CLASS_WEAPON )
     {

@@ -177,16 +177,16 @@ struct item_data_t {
 
   bool is_armor()
   { return item_class == ITEM_CLASS_ARMOR && ( item_subclass >= ITEM_SUBCLASS_ARMOR_CLOTH && item_subclass <= ITEM_SUBCLASS_ARMOR_SHIELD ); }
+  bool warforged() const
+  { return ( type_flags & RAID_TYPE_WARFORGED ) == RAID_TYPE_WARFORGED; }
+  bool lfr() const
+  { return ( type_flags & RAID_TYPE_LFR ) == RAID_TYPE_LFR; }
   bool normal() const
   { return type_flags == 0; }
   bool heroic() const
   { return ( type_flags & RAID_TYPE_HEROIC ) == RAID_TYPE_HEROIC; }
-  bool lfr() const
-  { return ( type_flags & RAID_TYPE_LFR ) == RAID_TYPE_LFR; }
-  bool flex() const
-  { return ( type_flags & RAID_TYPE_FLEXIBLE ) == RAID_TYPE_FLEXIBLE; }
-  bool elite() const
-  { return ( type_flags & RAID_TYPE_ELITE ) == RAID_TYPE_ELITE; }
+  bool mythic() const
+  { return ( type_flags & RAID_TYPE_MYTHIC ) == RAID_TYPE_MYTHIC; }
 };
 
 struct item_scale_data_t {

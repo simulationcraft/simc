@@ -3434,10 +3434,10 @@ struct item_t
   std::string option_equip_str;
   std::string option_use_str;
   std::string option_weapon_str;
-  std::string option_heroic_str;
   std::string option_lfr_str;
-  std::string option_flex_str;
-  std::string option_elite_str;
+  std::string option_warforged_str;
+  std::string option_heroic_str;
+  std::string option_mythic_str;
   std::string option_armor_type_str;
   std::string option_ilevel_str;
   std::string option_quality_str;
@@ -3490,10 +3490,10 @@ struct item_t
   bool decode_enchant();
   bool decode_addon();
   bool decode_weapon();
-  bool decode_heroic();
+  bool decode_warforged();
   bool decode_lfr();
-  bool decode_elite();
-  bool decode_flexible();
+  bool decode_heroic();
+  bool decode_mythic();
   bool decode_armor_type();
   bool decode_random_suffix();
   bool decode_upgrade_level();
@@ -6917,8 +6917,8 @@ double item_budget( const item_t* item, unsigned max_ilevel );
 
 inline bool heroic( unsigned f ) { return ( f & RAID_TYPE_HEROIC ) == RAID_TYPE_HEROIC; }
 inline bool lfr( unsigned f ) { return ( f & RAID_TYPE_LFR ) == RAID_TYPE_LFR; }
-inline bool flex( unsigned f ) { return ( f & RAID_TYPE_FLEXIBLE ) == RAID_TYPE_FLEXIBLE; }
-inline bool elite( unsigned f ) { return ( f & RAID_TYPE_ELITE ) == RAID_TYPE_ELITE; }
+inline bool warforged( unsigned f ) { return ( f & RAID_TYPE_WARFORGED ) == RAID_TYPE_WARFORGED; }
+inline bool mythic( unsigned f ) { return ( f & RAID_TYPE_MYTHIC ) == RAID_TYPE_MYTHIC; }
 
 bool apply_item_bonus( item_t& item, const item_bonus_entry_t& entry );
 

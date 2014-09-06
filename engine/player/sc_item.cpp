@@ -113,12 +113,12 @@ std::string item_t::to_string()
     s << " (" << parsed.data.level << ")";
   if ( parsed.data.lfr() )
     s << " LFR";
-  if ( parsed.data.flex() )
-    s << " Flexible";
   if ( parsed.data.heroic() )
     s << " Heroic";
-  if ( parsed.data.elite() )
-    s << " Elite";
+  if ( parsed.data.mythic() )
+    s << " Mythic";
+  if ( parsed.data.warforged() )
+    s << " Warforged";
   if ( util::is_match_slot( slot ) )
     s << " match=" << is_matching_type();
 
@@ -406,10 +406,10 @@ bool item_t::parse_options()
     opt_string( "equip", option_equip_str ),
     opt_string( "use", option_use_str ),
     opt_string( "weapon", option_weapon_str ),
-    opt_string( "heroic", option_heroic_str ),
+    opt_string( "warforged", option_warforged_str ),
     opt_string( "lfr", option_lfr_str ),
-    opt_string( "flex", option_flex_str ),
-    opt_string( "elite", option_elite_str ),
+    opt_string( "heroic", option_heroic_str ),
+    opt_string( "mythic", option_mythic_str ),
     opt_string( "type", option_armor_type_str ),
     opt_string( "reforge", DUMMY_REFORGE ),
     opt_int( "suffix", parsed.suffix_id ),
@@ -435,10 +435,10 @@ bool item_t::parse_options()
   util::tolower( option_equip_str            );
   util::tolower( option_use_str              );
   util::tolower( option_weapon_str           );
-  util::tolower( option_heroic_str           );
+  util::tolower( option_warforged_str        );
   util::tolower( option_lfr_str              );
-  util::tolower( option_flex_str             );
-  util::tolower( option_elite_str            );
+  util::tolower( option_heroic_str           );
+  util::tolower( option_mythic_str           );
   util::tolower( option_armor_type_str       );
   util::tolower( option_ilevel_str           );
   util::tolower( option_quality_str          );
@@ -545,17 +545,17 @@ std::string item_t::encoded_item()
   if ( ! option_armor_type_str.empty() )
     s << ",type=" << util::armor_type_string( parsed.data.item_subclass );
 
+  if ( !option_warforged_str.empty() )
+    s << ",warforged=" << ( parsed.data.warforged() ? 1 : 0 );
+
+  if ( !option_lfr_str.empty() )
+    s << ",lfr=" << ( parsed.data.lfr() ? 1 : 0 );
+
   if ( ! option_heroic_str.empty() )
     s << ",heroic=" << ( parsed.data.heroic() ? 1 : 0 );
 
-  if ( ! option_lfr_str.empty() )
-    s << ",lfr=" << ( parsed.data.lfr() ? 1 : 0 );
-
-  if ( ! option_flex_str.empty() )
-    s << ",flex=" << ( parsed.data.flex() ? 1 : 0 );
-
-  if ( ! option_elite_str.empty() )
-    s << ",elite=" << ( parsed.data.elite() ? 1 : 0 );
+  if ( ! option_mythic_str.empty() )
+    s << ",mythic=" << ( parsed.data.mythic() ? 1 : 0 );
 
   if ( ! option_quality_str.empty() )
     s << ",quality=" << util::item_quality_string( parsed.data.quality );
@@ -639,11 +639,11 @@ std::string item_t::encoded_comment()
   if ( option_lfr_str.empty() && parsed.data.lfr() )
     s << "lfr=1,";
 
-  if ( option_flex_str.empty() && parsed.data.flex() )
-    s << "flex=1,";
+  if ( option_mythic_str.empty() && parsed.data.mythic() )
+    s << "mythic=1,";
 
-  if ( option_elite_str.empty() && parsed.data.elite() )
-    s << "elite=1,";
+  if ( option_warforged_str.empty() && parsed.data.warforged() )
+    s << "warforged=1,";
 
   if ( option_stats_str.empty() && ! encoded_stats().empty() )
     s << "stats=" << encoded_stats() << ",";
@@ -860,10 +860,10 @@ bool item_t::init()
     return true;
 
   // Process basic stats
-  if ( ! decode_heroic()                           ) return false;
+  if ( ! decode_warforged()                        ) return false;
   if ( ! decode_lfr()                              ) return false;
-  if ( ! decode_flexible()                         ) return false;
-  if ( ! decode_elite()                            ) return false;
+  if ( ! decode_heroic()                           ) return false;
+  if ( ! decode_mythic()                           ) return false;
   if ( ! decode_quality()                          ) return false;
   if ( ! decode_ilevel()                           ) return false;
   if ( ! decode_armor_type()                       ) return false;
@@ -919,22 +919,22 @@ bool item_t::decode_lfr()
   return true;
 }
 
-// item_t::decode_elite =====================================================
+// item_t::decode_mythic =====================================================
 
-bool item_t::decode_elite()
+bool item_t::decode_mythic()
 {
-  if ( ! option_elite_str.empty() )
-    parsed.data.type_flags |= RAID_TYPE_ELITE;
+  if ( ! option_mythic_str.empty() )
+    parsed.data.type_flags |= RAID_TYPE_MYTHIC;
 
   return true;
 }
 
-// item_t::decode_flexible ==================================================
+// item_t::decode_warforged ==================================================
 
-bool item_t::decode_flexible()
+bool item_t::decode_warforged()
 {
-  if ( ! option_flex_str.empty() )
-    parsed.data.type_flags |= RAID_TYPE_FLEXIBLE;
+  if ( ! option_warforged_str.empty() )
+    parsed.data.type_flags |= RAID_TYPE_WARFORGED;
 
   return true;
 }
