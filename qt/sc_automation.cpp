@@ -1030,7 +1030,7 @@ void SC_ImportTab::compTypeChanged( const int comp )
     advGlyph = textbox.advanced -> document() -> toPlainText();
   else if ( ! textbox.gear -> isEnabled() )
     advGear = textbox.advanced -> document() -> toPlainText();
-  else
+  else if ( textbox.rotationFooter -> isEnabled() )
     advRotation = textbox.advanced -> document() -> toPlainText();
 
   // set the label of the Advanced tab appropriately
