@@ -2102,7 +2102,7 @@ struct raging_blow_t: public warrior_attack_t
       if ( result_is_hit( s -> result ) && td( s -> target ) -> debuffs_colossus_smash -> up() )
       {
         td( s -> target ) -> debuffs_colossus_smash -> extend_duration( s -> target, timespan_t::from_seconds( p() -> cs_extension ) );
-        p() -> buff.colossus_smash -> extend_duration( player, timespan_t::from_seconds( p() -> cs_extension ) );
+        p() -> buff.colossus_smash -> extend_duration( p(), timespan_t::from_seconds( p() -> cs_extension ) );
       }
     }
   }
@@ -2851,7 +2851,7 @@ struct wild_strike_t: public warrior_attack_t
       if ( result_is_hit( s -> result ) && td( s -> target ) -> debuffs_colossus_smash -> up() )
       {
         td( s -> target ) -> debuffs_colossus_smash -> extend_duration( s -> target, timespan_t::from_seconds( p() -> cs_extension ) );
-        p() -> buff.colossus_smash -> extend_duration( player, timespan_t::from_seconds( p() -> cs_extension ) );
+        p() -> buff.colossus_smash -> extend_duration( p(), timespan_t::from_seconds( p() -> cs_extension ) );
       }
     }
   }
