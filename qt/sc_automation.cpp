@@ -1405,7 +1405,7 @@ void SC_ImportTab::decodeSettings()
   load_setting( settings, "advancedbox", textbox.advanced );
   load_setting( settings, "advTalent", &advTalent, "0000000\n1111111\n2222222" );
   load_setting( settings, "advGlyph", &advGlyph, "alabaster_shield/focused_shield\nfinal_wrath/word_of_glory" );
-  load_setting( settings, "advGear", &advGear, "head=fake_helm,stats=100sta\nneck=malachite_pendant,id=25438\n\nhead=different_helm,stats=100str\nneck=thick_bronze_necklace,id=21933," );
+  load_setting( settings, "advGear", &advGear, "head=fake_helm,stats=100sta\nneck=malachite_pendant,id=25438\n\nhead=different_helm,stats=100str\nneck=thick_bronze_necklace,id=21933\n" );
   load_setting( settings, "advRotation", &advRotation, "CS>J>AS\nCS>J>AS+GC\nCS>AS+GC&(DP|!FW)>J+SW>J" );
   load_setting( settings, "sidebox", textbox.sidebar );
   load_setting( settings, "footer", textbox.footer );
