@@ -27,6 +27,7 @@ void gear_stats_t::add_stat( stat_e stat,
     case STAT_AGI_INT:  attribute[ ATTR_AGI_INT ] += value; break;
     case STAT_STR_AGI:  attribute[ ATTR_STR_AGI ] += value; break;
     case STAT_STR_INT:  attribute[ ATTR_STR_INT ] += value; break;
+    case STAT_STR_AGI_INT: attribute[ ATTR_STR_AGI_INT ] += value; break;
 
     case STAT_HEALTH: resource[ RESOURCE_HEALTH ] += value; break;
     case STAT_MANA:   resource[ RESOURCE_MANA   ] += value; break;
@@ -96,6 +97,11 @@ void gear_stats_t::set_stat( stat_e stat,
     case STAT_STAMINA:   attribute[ ATTR_STAMINA   ] = value; break;
     case STAT_INTELLECT: attribute[ ATTR_INTELLECT ] = value; break;
     case STAT_SPIRIT:    attribute[ ATTR_SPIRIT    ] = value; break;
+
+    case STAT_AGI_INT:  attribute[ ATTR_AGI_INT ] = value; break;
+    case STAT_STR_AGI:  attribute[ ATTR_STR_AGI ] = value; break;
+    case STAT_STR_INT:  attribute[ ATTR_STR_INT ] = value; break;
+    case STAT_STR_AGI_INT: attribute[ ATTR_STR_AGI_INT ] = value; break;
 
     case STAT_HEALTH: resource[ RESOURCE_HEALTH ] = value; break;
     case STAT_MANA:   resource[ RESOURCE_MANA   ] = value; break;
@@ -168,6 +174,7 @@ double gear_stats_t::get_stat( stat_e stat ) const
     case STAT_AGI_INT:   return attribute[ ATTR_AGI_INT ];
     case STAT_STR_AGI:   return attribute[ ATTR_STR_AGI ];
     case STAT_STR_INT:   return attribute[ ATTR_STR_INT ];
+    case STAT_STR_AGI_INT: return attribute[ ATTR_STR_AGI_INT ];
 
     case STAT_HEALTH: return resource[ RESOURCE_HEALTH ];
     case STAT_MANA:   return resource[ RESOURCE_MANA   ];
