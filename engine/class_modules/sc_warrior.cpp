@@ -4443,7 +4443,7 @@ void warrior_t::create_buffs()
 
   buff.bloodsurge = new buffs::bloodsurge_t( *this, "bloodsurge", spec.bloodsurge -> effectN( 1 ).trigger() );
 
-  buff.colossus_smash = buff_creator_t( this, "colossus_smash", spec.colossus_smash )
+  buff.colossus_smash = buff_creator_t( this, "colossus_smash_up", spec.colossus_smash )
     .duration( glyphs.colossus_smash -> effectN( 1 ).time_value() + spec.colossus_smash -> duration() )
     .cd( timespan_t::zero() );
 
