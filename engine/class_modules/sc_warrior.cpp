@@ -2102,7 +2102,7 @@ struct raging_blow_t: public warrior_attack_t
       if ( result_is_hit( s -> result ) && td( s -> target ) -> debuffs_colossus_smash -> up() )
       {
         td( s -> target ) -> debuffs_colossus_smash -> extend_duration( s -> target, timespan_t::from_seconds( p() -> cs_extension ) );
-        p() -> buff.colossus_smash -> extend_duration( p(), timespan_t::from_seconds( p() -> cs_extension ) );
+        p() -> buff.colossus_smash -> extend_duration( player, timespan_t::from_seconds( p() -> cs_extension ) );
       }
     }
   }
@@ -2851,7 +2851,7 @@ struct wild_strike_t: public warrior_attack_t
       if ( result_is_hit( s -> result ) && td( s -> target ) -> debuffs_colossus_smash -> up() )
       {
         td( s -> target ) -> debuffs_colossus_smash -> extend_duration( s -> target, timespan_t::from_seconds( p() -> cs_extension ) );
-        p() -> buff.colossus_smash -> extend_duration( p(), timespan_t::from_seconds( p() -> cs_extension ) );
+        p() -> buff.colossus_smash -> extend_duration( player, timespan_t::from_seconds( p() -> cs_extension ) );
       }
     }
   }
@@ -4410,7 +4410,8 @@ actor_pair_t( target, &p ), warrior( p )
 
   debuffs_colossus_smash = buff_creator_t( *this, "colossus_smash" )
     .duration( p.glyphs.colossus_smash -> effectN( 1 ).time_value() +
-    p.spec.colossus_smash -> duration() );
+    p.spec.colossus_smash -> duration() )
+    .cd( timespan_t::zero() );
 
   debuffs_demoralizing_shout = new buffs::debuff_demo_shout_t( *this );
   debuffs_taunt = buff_creator_t( *this, "taunt", p.find_class_spell( "Taunt" ) );
@@ -4443,7 +4444,8 @@ void warrior_t::create_buffs()
   buff.bloodsurge = new buffs::bloodsurge_t( *this, "bloodsurge", spec.bloodsurge -> effectN( 1 ).trigger() );
 
   buff.colossus_smash = buff_creator_t( this, "colossus_smash", spec.colossus_smash )
-    .duration( glyphs.colossus_smash -> effectN( 1 ).time_value() + spec.colossus_smash -> duration() );
+    .duration( glyphs.colossus_smash -> effectN( 1 ).time_value() + spec.colossus_smash -> duration() )
+    .cd( timespan_t::zero() );
 
   buff.defensive_stance = new buffs::defensive_stance_t( *this, "defensive_stance", find_class_spell( "Defensive Stance" ) );
 
