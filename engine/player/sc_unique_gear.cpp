@@ -55,6 +55,9 @@ namespace item
   void unerring_vision_of_leishen( special_effect_t&, const item_t& );
   /* Warlards of Draenor 6.0 */
   void blackiron_micro_crucible( special_effect_t&, const item_t& );
+  void humming_blackiron_trigger( special_effect_t&, const item_t& );
+  void forgemasters_insignia( special_effect_t&, const item_t& );
+  void autorepairing_autoclave( special_effect_t&, const item_t& );
 }
 
 namespace gem
@@ -198,7 +201,9 @@ static const special_effect_db_item_t __special_effect_db[] = {
 
   /* Warlords of Draenor 6.0 */
   { 177085, 0,                     item::blackiron_micro_crucible }, /* Blackiron Micro Crucible */
-
+  { 177071, 0,                    item::humming_blackiron_trigger }, /* Humming Blackiron Trigger */
+  { 177098, 0,                        item::forgemasters_insignia }, /* Forgemaster's Insignia */
+  { 177090, 0,                      item::autorepairing_autoclave }, /* Forgemaster's Insignia */
 
   /* Mists of Pandaria: 5.4 */
   { 146195, 0,                               item::flurry_of_xuen }, /* Melee legendary cloak */
@@ -1275,6 +1280,84 @@ void item::blackiron_micro_crucible( special_effect_t& effect,
 
   stat_buff_t* b = stat_buff_creator_t( item.player, buff_name, spell )
                    .add_stat( STAT_MULTISTRIKE_RATING, spell -> effectN( 1 ).average( item ) )
+                   .max_stack( 20 ) // Hardcoded for now - spell->max_stacks() returns 0
+                   .tick_behavior( BUFF_TICK_CLIP )
+                   .period( spell -> effectN( 1 ).period() )
+                   .duration( spell -> duration() );
+
+  effect.custom_buff = b;
+
+  new dbc_proc_callback_t( item.player, effect );
+}
+
+void item::humming_blackiron_trigger( special_effect_t& effect,
+                                        const item_t& item )
+{
+  maintenance_check( 528 );
+
+  const spell_data_t* driver = item.player -> find_spell( effect.spell_id );
+  const spell_data_t* spell = driver -> effectN( 1 ).trigger();
+
+  std::string buff_name = spell -> name_cstr();
+  util::tokenize( buff_name );
+
+  // Require a damaging result, instead of any harmful spell hit
+  effect.proc_flags2_ = PF2_ALL_HIT;
+
+  stat_buff_t* b = stat_buff_creator_t( item.player, buff_name, spell )
+                   .add_stat( STAT_CRIT_RATING, spell -> effectN( 1 ).average( item ) )
+                   .max_stack( 20 ) // Hardcoded for now - spell->max_stacks() returns 0
+                   .tick_behavior( BUFF_TICK_CLIP )
+                   .period( spell -> effectN( 1 ).period() )
+                   .duration( spell -> duration() );
+
+  effect.custom_buff = b;
+
+  new dbc_proc_callback_t( item.player, effect );
+}
+
+void item::forgemasters_insignia( special_effect_t& effect,
+                                        const item_t& item )
+{
+  maintenance_check( 528 );
+
+  const spell_data_t* driver = item.player -> find_spell( effect.spell_id );
+  const spell_data_t* spell = driver -> effectN( 1 ).trigger();
+
+  std::string buff_name = spell -> name_cstr();
+  util::tokenize( buff_name );
+
+  // Require a damaging result, instead of any harmful spell hit
+  effect.proc_flags2_ = PF2_ALL_HIT;
+
+  stat_buff_t* b = stat_buff_creator_t( item.player, buff_name, spell )
+                   .add_stat( STAT_MULTISTRIKE_RATING, spell -> effectN( 1 ).average( item ) )
+                   .max_stack( 20 ) // Hardcoded for now - spell->max_stacks() returns 0
+                   .tick_behavior( BUFF_TICK_CLIP )
+                   .period( spell -> effectN( 1 ).period() )
+                   .duration( spell -> duration() );
+
+  effect.custom_buff = b;
+
+  new dbc_proc_callback_t( item.player, effect );
+}
+
+void item::autorepairing_autoclave( special_effect_t& effect,
+                                        const item_t& item )
+{
+  maintenance_check( 528 );
+
+  const spell_data_t* driver = item.player -> find_spell( effect.spell_id );
+  const spell_data_t* spell = driver -> effectN( 1 ).trigger();
+
+  std::string buff_name = spell -> name_cstr();
+  util::tokenize( buff_name );
+
+  // Require a damaging result, instead of any harmful spell hit
+  effect.proc_flags2_ = PF2_ALL_HIT;
+
+  stat_buff_t* b = stat_buff_creator_t( item.player, buff_name, spell )
+                   .add_stat( STAT_HASTE_RATING, spell -> effectN( 1 ).average( item ) )
                    .max_stack( 20 ) // Hardcoded for now - spell->max_stacks() returns 0
                    .tick_behavior( BUFF_TICK_CLIP )
                    .period( spell -> effectN( 1 ).period() )
