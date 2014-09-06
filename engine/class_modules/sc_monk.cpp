@@ -3619,6 +3619,17 @@ stat_e monk_t::convert_hybrid_stat( stat_e s ) const
   // for certain specs into the appropriate "basic" stats
   switch ( s )
   {
+  case STAT_STR_AGI_INT:
+    switch ( specialization() )
+    {
+      case MONK_MISTWEAVER:
+        return STAT_INTELLECT;
+      case MONK_BREWMASTER:
+      case MONK_WINDWALKER:
+        return STAT_AGILITY;
+      default:
+        return STAT_NONE;
+    }
   case STAT_AGI_INT:
     if ( specialization() == MONK_MISTWEAVER )
       return STAT_INTELLECT;

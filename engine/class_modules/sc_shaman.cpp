@@ -5793,6 +5793,7 @@ stat_e shaman_t::convert_hybrid_stat( stat_e s ) const
 {
   switch ( s )
   {
+  case STAT_STR_AGI_INT:
   case STAT_AGI_INT:
     if ( specialization() == SHAMAN_ENHANCEMENT )
       return STAT_AGILITY;

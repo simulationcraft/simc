@@ -5405,6 +5405,17 @@ stat_e paladin_t::convert_hybrid_stat( stat_e s ) const
 
   switch ( s )
   {
+    case STAT_STR_AGI_INT:
+      switch ( specialization() )
+      {
+        case PALADIN_HOLY:
+          return STAT_INTELLECT;
+        case PALADIN_RETRIBUTION:
+        case PALADIN_PROTECTION:
+          return STAT_STRENGTH;
+        default:
+          return STAT_NONE;
+      }
     // Guess at how AGI/INT mail or leather will be handled for plate - probably INT?
     case STAT_AGI_INT:
       converted_stat = STAT_INTELLECT;

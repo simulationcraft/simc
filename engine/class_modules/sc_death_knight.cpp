@@ -6954,8 +6954,8 @@ stat_e death_knight_t::convert_hybrid_stat( stat_e s ) const
   // This is a guess at how AGI/INT will work for DKs, TODO: confirm
   case STAT_AGI_INT: 
     return STAT_NONE; 
+  case STAT_STR_AGI_INT:
   case STAT_STR_AGI:
-    return STAT_STRENGTH;
   case STAT_STR_INT:
     return STAT_STRENGTH;
   case STAT_SPIRIT:

@@ -1457,6 +1457,7 @@ const char* util::stat_type_string( stat_e stat )
     case STAT_AGI_INT:   return "agiint";
     case STAT_STR_AGI:   return "stragi";
     case STAT_STR_INT:   return "strint";
+    case STAT_STR_AGI_INT: return "stragiint";
 
     case STAT_HEALTH: return "health";
     case STAT_MAX_HEALTH: return "maximum_health";
@@ -1524,6 +1525,7 @@ const char* util::stat_type_abbrev( stat_e stat )
     case STAT_AGI_INT:   return "AgiInt";
     case STAT_STR_AGI:   return "StrAgi";
     case STAT_STR_INT:   return "StrInt";
+    case STAT_STR_AGI_INT: return "StrAgiInt";
 
     case STAT_HEALTH: return "Health";
     case STAT_MAX_HEALTH: return "MaxHealth";
@@ -1593,6 +1595,7 @@ const char* util::stat_type_wowhead( stat_e stat )
     case STAT_AGI_INT:   return "agiint";
     case STAT_STR_AGI:   return "agistr";
     case STAT_STR_INT:   return "strint";
+    case STAT_STR_AGI_INT: return "agistrint";
 
     case STAT_HEALTH: return "health";
     case STAT_MANA:   return "mana";
@@ -1978,6 +1981,7 @@ stat_e util::translate_item_mod( int item_mod )
     case ITEM_MOD_PVP_POWER:           return STAT_PVP_POWER;
     case ITEM_MOD_MULTISTRIKE_RATING:  return STAT_MULTISTRIKE_RATING;
     case ITEM_MOD_READINESS_RATING:    return STAT_READINESS_RATING;
+    case ITEM_MOD_STRENGTH_AGILITY_INTELLECT: return STAT_STR_AGI_INT;
     case ITEM_MOD_AGILITY_INTELLECT:   return STAT_AGI_INT;
     case ITEM_MOD_STRENGTH_AGILITY:    return STAT_STR_AGI;
     case ITEM_MOD_STRENGTH_INTELLECT:  return STAT_STR_INT;
@@ -2011,6 +2015,7 @@ int util::translate_stat( stat_e stat )
     case STAT_PVP_POWER:          return ITEM_MOD_PVP_POWER;
     case STAT_MULTISTRIKE_RATING: return ITEM_MOD_MULTISTRIKE_RATING;
     case STAT_READINESS_RATING:   return ITEM_MOD_READINESS_RATING;
+    case STAT_STR_AGI_INT:        return ITEM_MOD_STRENGTH_AGILITY_INTELLECT;
     case STAT_AGI_INT:            return ITEM_MOD_AGILITY_INTELLECT;
     case STAT_STR_AGI:            return ITEM_MOD_STRENGTH_AGILITY;
     case STAT_STR_INT:            return ITEM_MOD_STRENGTH_INTELLECT;

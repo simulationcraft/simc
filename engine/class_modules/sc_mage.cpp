@@ -5447,16 +5447,16 @@ stat_e mage_t::convert_hybrid_stat( stat_e s ) const
   {
   // This is all a guess at how the hybrid primaries will work, since they
   // don't actually appear on cloth gear yet. TODO: confirm behavior
+  case STAT_STR_AGI_INT:
   case STAT_AGI_INT:
+  case STAT_STR_INT:
     return STAT_INTELLECT;
   case STAT_STR_AGI:
     return STAT_NONE;
-  case STAT_STR_INT:
-    return STAT_INTELLECT;
   case STAT_SPIRIT:
-      return STAT_NONE;
+    return STAT_NONE;
   case STAT_BONUS_ARMOR:
-      return STAT_NONE;
+    return STAT_NONE;
   default: return s;
   }
 }

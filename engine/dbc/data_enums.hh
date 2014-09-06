@@ -422,6 +422,7 @@ enum item_mod_type {
   ITEM_MOD_WOD_4                    = 64,
   ITEM_MOD_WOD_5                    = 65,
   ITEM_MOD_WOD_6                    = 66,
+  ITEM_MOD_STRENGTH_AGILITY_INTELLECT = 71,
   ITEM_MOD_STRENGTH_AGILITY         = 72,
   ITEM_MOD_AGILITY_INTELLECT        = 73,
   ITEM_MOD_STRENGTH_INTELLECT       = 74,

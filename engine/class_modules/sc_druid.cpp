@@ -6867,6 +6867,18 @@ stat_e druid_t::convert_hybrid_stat( stat_e s ) const
   // for certain specs into the appropriate "basic" stats
   switch ( s )
   {
+  case STAT_STR_AGI_INT:
+    switch ( specialization() )
+    {
+      case DRUID_BALANCE:
+      case DRUID_RESTORATION:
+        return STAT_INTELLECT;
+      case DRUID_FERAL:
+      case DRUID_GUARDIAN:
+        return STAT_AGILITY;
+      default:
+        return STAT_NONE;
+    }
   case STAT_AGI_INT: 
     if ( specialization() == DRUID_BALANCE || specialization() == DRUID_RESTORATION )
       return STAT_INTELLECT;

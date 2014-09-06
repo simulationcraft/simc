@@ -4150,8 +4150,8 @@ stat_e hunter_t::convert_hybrid_stat( stat_e s ) const
   // for certain specs into the appropriate "basic" stats
   switch ( s )
   {
+  case STAT_STR_AGI_INT:
   case STAT_AGI_INT:
-    return STAT_AGILITY;
   case STAT_STR_AGI:
     return STAT_AGILITY;
     // This is a guess at how STR/INT gear will work for Rogues, TODO: confirm  
