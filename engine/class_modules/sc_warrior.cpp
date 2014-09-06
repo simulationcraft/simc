@@ -89,6 +89,7 @@ public:
     buff_t* raging_wind;
     buff_t* rude_interruption;
     // Arms and Fury
+    buff_t* colossus_smash;
     buff_t* die_by_the_sword;
     buff_t* rallying_cry;
     buff_t* recklessness;
@@ -1476,9 +1477,15 @@ struct colossus_smash_t: public warrior_attack_t
     if ( result_is_hit( s -> result ) )
     {
       if ( p() -> glyphs.colossus_smash -> ok() )
+      {
         td( s -> target ) -> debuffs_colossus_smash -> trigger( 1, p() -> glyphs.colossus_smash -> effectN( 3 ).percent() );
+        p() -> buff.colossus_smash -> trigger( 1, p() -> glyphs.colossus_smash -> effectN( 3 ).percent() );
+      }
       else
+      {
         td( s -> target ) -> debuffs_colossus_smash -> trigger( 1, data().effectN( 2 ).percent() );
+        p() -> buff.colossus_smash -> trigger( 1, data().effectN( 2 ).percent() );
+      }
 
       if ( s -> result == RESULT_CRIT && p() -> specialization() != WARRIOR_ARMS )
         p() -> enrage();
@@ -1927,15 +1934,15 @@ struct heroic_charge_t: public warrior_attack_t
     stancemask = STANCE_DEFENSE | STANCE_GLADIATOR | STANCE_BATTLE;
     leap = new heroic_leap_t( p, options_str );
     charge = new charge_t( p, options_str );
-    min_gcd = timespan_t::from_millis( 750 );
+    min_gcd = timespan_t::from_millis( 250 );
   }
 
   timespan_t gcd() const
   {
     if ( p() -> cooldown.heroic_leap -> up() )
-      return timespan_t::from_millis( 750 );
+      return timespan_t::from_millis( 250 );
     else
-      return timespan_t::from_millis( 1250 );
+      return timespan_t::from_millis( 750 );
   }
 
   void execute()
@@ -2093,7 +2100,10 @@ struct raging_blow_t: public warrior_attack_t
     if ( !p() -> wild_strike_extension )
     {
       if ( result_is_hit( s -> result ) && td( s -> target ) -> debuffs_colossus_smash -> up() )
+      {
         td( s -> target ) -> debuffs_colossus_smash -> extend_duration( s -> target, timespan_t::from_seconds( p() -> cs_extension ) );
+        p() -> buff.colossus_smash -> extend_duration( p(), timespan_t::from_seconds( p() -> cs_extension ) );
+      }
     }
   }
 
@@ -2839,7 +2849,10 @@ struct wild_strike_t: public warrior_attack_t
     if ( p() -> wild_strike_extension )
     {
       if ( result_is_hit( s -> result ) && td( s -> target ) -> debuffs_colossus_smash -> up() )
+      {
         td( s -> target ) -> debuffs_colossus_smash -> extend_duration( s -> target, timespan_t::from_seconds( p() -> cs_extension ) );
+        p() -> buff.colossus_smash -> extend_duration( p(), timespan_t::from_seconds( p() -> cs_extension ) );
+      }
     }
   }
 
@@ -4428,6 +4441,9 @@ void warrior_t::create_buffs()
   buff.blood_craze = buff_creator_t( this, "blood_craze", spec.blood_craze -> effectN( 1 ).trigger() );
 
   buff.bloodsurge = new buffs::bloodsurge_t( *this, "bloodsurge", spec.bloodsurge -> effectN( 1 ).trigger() );
+
+  buff.colossus_smash = buff_creator_t( this, "colossus_smash", spec.colossus_smash )
+    .duration( glyphs.colossus_smash -> effectN( 1 ).time_value() + spec.colossus_smash -> duration() );
 
   buff.defensive_stance = new buffs::defensive_stance_t( *this, "defensive_stance", find_class_spell( "Defensive Stance" ) );
 
