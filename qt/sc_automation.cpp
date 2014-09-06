@@ -80,7 +80,7 @@ struct comp
   comp( QString const& s ) : _s( s ) {}
   bool operator () ( const std::pair< QString, QString>& p ) const
   {
-    return ( p.first == _s );
+    return ( p.first.toLower() == _s.toLower() );
   }
   QString _s;
 };
