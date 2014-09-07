@@ -3,7 +3,7 @@ level=100
 race=orc
 role=attack
 position=back
-talents=http://us.battle.net/wow/en/tool/talent-calculator#Za!0102211
+talents=http://us.battle.net/wow/en/tool/talent-calculator#Za!0202211
 glyphs=unending_rage/death_from_above/bull_rush
 spec=arms
 
@@ -26,31 +26,31 @@ actions.precombat+=/potion,name=draenic_strength
 
 actions=charge
 actions+=/auto_attack
-actions+=/use_item,name=primal_gladiators_badge_of_victory,if=debuff.colossus_smash.up
+actions+=/use_item,name=primal_gladiators_badge_of_victory,if=active_enemies=1&(buff.bloodbath.up|(!talent.bloodbath.enabled&debuff.colossus_smash.up))|(active_enemies>1&buff.ravager.up)
 actions+=/potion,name=draenic_strength,if=(target.health.pct<20&buff.recklessness.up)|target.time_to_die<=25
 # This incredibly long line (Due to differing talent choices) says 'Use recklessness on cooldown with colossus smash, unless the boss will die before the ability is usable again, and then use it with execute.'
-actions+=/recklessness,if=!talent.bloodbath.enabled&((cooldown.colossus_smash.remains<2|debuff.colossus_smash.remains>=5)&(target.time_to_die>192|target.health.pct<20))|buff.bloodbath.up&(target.time_to_die>192|target.health.pct<20)|target.time_to_die<=12
-actions+=/avatar,if=(buff.recklessness.up|target.time_to_die<=25)
+actions+=/recklessness,if=!talent.bloodbath.enabled&((cooldown.colossus_smash.remains<2|debuff.colossus_smash.remains>=5)&(target.time_to_die>190|target.health.pct<20))|buff.bloodbath.up&(target.time_to_die>190|target.health.pct<20)|target.time_to_die<=10
+actions+=/avatar,if=buff.recklessness.up|target.time_to_die<=25
 actions+=/blood_fury,if=buff.bloodbath.up|(!talent.bloodbath.enabled&debuff.colossus_smash.up)|buff.recklessness.up
 actions+=/berserking,if=buff.bloodbath.up|(!talent.bloodbath.enabled&debuff.colossus_smash.up)|buff.recklessness.up
 actions+=/arcane_torrent,if=buff.bloodbath.up|(!talent.bloodbath.enabled&debuff.colossus_smash.up)|buff.recklessness.up
-actions+=/bloodbath,if=(debuff.colossus_smash.remains>0.1|cooldown.colossus_smash.remains<5|target.time_to_die<=20)
-actions+=/heroic_leap,if=debuff.colossus_smash.up
-actions+=/call_action_list,name=aoe,if=active_enemies>=2
-actions+=/call_action_list,name=single_target,if=active_enemies<2
+actions+=/bloodbath,if=cooldown.colossus_smash.remains<5|target.time_to_die<=20
+actions+=/heroic_leap,if=debuff.colossus_smash.up&rage>70
+actions+=/call_action_list,name=aoe,if=active_enemies>1
+actions+=/call_action_list,name=single_target,if=active_enemies=1
 
-actions.single_target=rend,if=ticks_remain<2
+actions.single_target=rend,if=ticks_remain<2&target.time_to_die>4
 actions.single_target+=/mortal_strike,if=target.health.pct>20
-actions.single_target+=/heroic_charge,if=rage<30&!debuff.colossus_smash.up
+actions.single_target+=/heroic_charge,if=((!debuff.colossus_smash.up&cooldown.colossus_smash.remains)|(debuff.colossus_smash.up&!cooldown.heroic_leap.remains))&rage<=85
 actions.single_target+=/ravager,if=cooldown.colossus_smash.remains<3
 actions.single_target+=/colossus_smash
-actions.single_target+=/storm_bolt,if=cooldown.colossus_smash.remains>4|debuff.colossus_smash.up
-actions.single_target+=/dragon_roar,if=!debuff.colossus_smash.up
-actions.single_target+=/execute,if=rage>60|(rage>40&debuff.colossus_smash.up)|buff.sudden_death.up
-actions.single_target+=/impending_victory
+actions.single_target+=/storm_bolt,if=(cooldown.colossus_smash.remains>4|debuff.colossus_smash.up)&rage<90
 actions.single_target+=/siegebreaker
-actions.single_target+=/slam,if=(debuff.colossus_smash.up|rage>60)&target.health.pct>20
-actions.single_target+=/whirlwind,if=(rage>60|debuff.colossus_smash.up)&target.health.pct>20&buff.sudden_death.down&!talent.slam.enabled
+actions.single_target+=/dragon_roar,if=!debuff.colossus_smash.up
+actions.single_target+=/execute,if=(rage>60&cooldown.colossus_smash.remains>gcd)|debuff.colossus_smash.up|buff.sudden_death.up|target.time_to_die<5
+actions.single_target+=/impending_victory,if=rage<30&!debuff.colossus_smash.up&target.health.pct>20
+actions.single_target+=/slam,if=(rage>20|cooldown.colossus_smash.remains>gcd)&target.health.pct>20
+actions.single_target+=/whirlwind,if=(rage>60|cooldown.colossus_smash.remains>gcd)&target.health.pct>20&!talent.slam.enabled
 actions.single_target+=/shockwave
 
 actions.aoe=sweeping_strikes
