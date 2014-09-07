@@ -75,9 +75,9 @@ main_hand=halberd_of_inner_shadows,id=105560,upgrade=2,gems=4agi_8crit_3agi,ench
 
 # Gear Summary
 # gear_strength=4
-# gear_agility=1252
+# gear_agility=1240
 # gear_stamina=1539
-# gear_intellect=8
+# gear_intellect=4
 # gear_hit_rating=9
 # gear_crit_rating=478
 # gear_haste_rating=376

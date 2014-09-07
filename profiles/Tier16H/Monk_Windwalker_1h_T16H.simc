@@ -85,9 +85,9 @@ off_hand=softfoots_last_resort,id=105430,upgrade=2,gems=4agi_8crit_3agi,enchant=
 
 # Gear Summary
 # gear_strength=4
-# gear_agility=1109
+# gear_agility=1097
 # gear_stamina=1512
-# gear_intellect=8
+# gear_intellect=4
 # gear_crit_rating=739
 # gear_haste_rating=427
 # gear_mastery_rating=403
