@@ -865,6 +865,12 @@ QString SC_OptionsTab::get_globalSettings()
 QString SC_OptionsTab::mergeOptions()
 {
   QString options = "### Begin GUI options ###\n";
+  QString spell_query = mainWindow -> cmdLine -> commandLineText();
+  if ( spell_query.startsWith( "spell_query" ) )
+  {
+    options += spell_query;
+    return options;
+  }
 
   options += get_globalSettings();
   options += "threads=" + choice.threads -> currentText() + "\n";

@@ -1835,6 +1835,13 @@ void SimulateThread::run()
   }
   if ( sim -> challenge_mode ) sim -> scale_to_itemlevel = 620; //Check
 
+  if ( sim -> spell_query != 0 )
+  {
+    sim -> spell_query -> evaluate();
+    report::print_spell_query( sim, MAX_LEVEL );
+    success = false;
+  }
+
   if ( success )
   {
     success = sim -> execute();

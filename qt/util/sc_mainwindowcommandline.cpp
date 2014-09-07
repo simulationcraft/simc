@@ -571,9 +571,13 @@ void SC_MainWindowCommandLine::createCommandLine( state_e state,
   progressBar->setMaximum( 100 );
   progressBar->setMaximumWidth( 200 );
   progressBar->setMinimumWidth( 150 );
+  QFont override_font = QFont();
+  override_font.setPixelSize( 20 );
+
+  commandLineEdit -> setFont( override_font );
 
   QFont progressBarFont( progressBar->font() );
-  progressBarFont.setPointSize( 11 );
+  progressBarFont.setPointSize( 14 );
   progressBar->setFont( progressBarFont );
 
   parentLayout->addWidget( progressBar );
