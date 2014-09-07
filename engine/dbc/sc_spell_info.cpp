@@ -542,7 +542,7 @@ std::string spell_info::to_str( const dbc_t& dbc, const spell_data_t* spell, int
 
     for ( unsigned int i = 1; i < 12; i++ )
     {
-      if ( spell -> class_mask() & ( 1 << ( i - 1 ) ) )
+      if ( ( spell -> class_mask() & ( 1 << ( i - 1 ) ) ) && _class_map[ i ].name )
       {
         s << _class_map[ i ].name << ", ";
         if ( ! pt )
@@ -561,7 +561,7 @@ std::string spell_info::to_str( const dbc_t& dbc, const spell_data_t* spell, int
     s << "Race             : ";
     for ( unsigned int i = 0; i < 24; i++ )
     {
-      if ( spell -> race_mask() & ( 1 << ( i - 1 ) ) )
+      if ( ( spell -> race_mask() & ( 1 << ( i - 1 ) ) ) && _race_strings[ i ] )
         s << _race_strings[ i ] << ", ";
     }
 
