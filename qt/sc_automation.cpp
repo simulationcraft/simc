@@ -592,13 +592,13 @@ QStringList automation::convert_shorthand( QStringList shorthandList, QString si
             QString operand_string = operand;
             if ( o != abilityTable.end() )
                operand_string = o -> second;
-            if ( optionsBreakdown[ j ].contains( "$operand_name" ) )
-              optionsBreakdown[ j ].replace( "$operand_name", operand_string );
+            if ( optionsBreakdown[ j ].contains( "$operand" ) )
+              optionsBreakdown[ j ].replace( "$operand", operand_string );
           }
 
-          // we also need to do some replacements on $ability_name entries
-          if ( optionsBreakdown[ j ].contains( "$ability_name" ) )
-            optionsBreakdown[ j ].replace( "$ability_name", ability );
+          // we also need to do some replacements on $ability entries
+          if ( optionsBreakdown[ j ].contains( "$ability" ) )
+            optionsBreakdown[ j ].replace( "$ability", ability );
 
           // special handling of the +W option
           if ( optionsBreakdown[ j ].contains( "wait" ) )
@@ -671,8 +671,8 @@ void SC_ImportTab::setSpecDropDown( const int player_class )
     choice.player_spec -> addItem( classSpecText[ player_class ][ 4 ] );
 }
 
-QString defaultOptions = "AC#=action.$ability_name.charges>=#\nAE#=active_enemies>=#\nDR=target.dot.$ability_name.remains\nDR#=target.dot.$ability_name.remains>=#\nE=target.health.pct<=20\nE#=target.health.pct<=#\nNT=!ticking\nNF=target.debuff.flying.down\nW#=/wait,sec=cooldown.$ability_name.remains,if=cooldown.$ability_name.remains<=#\n\n";
-QString defaultOperators = "BU=buff.$operand_name.up\nBA=buff.$operand_name.react\nBR=buff.$operand_name.remains\nBR#=buff.$operand_name.remains>#\nBC#=buff.$operand_name.charges>=#\nCD=cooldown.$operand_name.remains\nCD#=cooldown.$operand_name.remains>#\nDR=target.dot.$operand_name.remains\nDR#=target.dot.$operand_name.remains>=#\nDT=dot.$operand_name.ticking\nGCD=cooldown.$operand_name.remains<=gcd\nGCD#=cooldown.$operand_name.remains<=gcd*#\nT=talent.$operand_name.enabled\nG=glyph.$operand_name.enabled\n";
+QString defaultOptions = "AC#=action.$ability.charges>=#\nAE#=active_enemies>=#\nDR=target.dot.$ability.remains\nDR#=target.dot.$ability.remains>=#\nE=target.health.pct<=20\nE#=target.health.pct<=#\nNT=!ticking\nNF=target.debuff.flying.down\nW#=/wait,sec=cooldown.$ability.remains,if=cooldown.$ability.remains<=#\n\n";
+QString defaultOperators = "BU=buff.$operand.up\nBA=buff.$operand.react\nBR=buff.$operand.remains\nBR#=buff.$operand.remains>#\nBC#=buff.$operand.charges>=#\nCD=cooldown.$operand.remains\nCD#=cooldown.$operand.remains>#\nDR=target.dot.$operand.remains\nDR#=target.dot.$operand.remains>=#\nDT=dot.$operand.ticking\nGCD=cooldown.$operand.remains<=gcd\nGCD#=cooldown.$operand.remains<=gcd*#\nT=talent.$operand.enabled\nG=glyph.$operand.enabled\n";
 
 // constant for sidebar text (this will eventually get really long)
 QString sidebarText[ 11 ][ 4 ] = {
@@ -1133,12 +1133,12 @@ void SC_ImportTab::createTooltips()
                            "Example, \"HoW=hammer_of_wrath\", \"DP=divine_purpose\", \"NT=nether_tempest\", etc.\n\n"
                            "The :::Options::: section defines conditionals you want to apply to that action. For example, \"E=target.health.pct<20\" is an option you can use to specify execute range.\n"
                            "Thus, the shorthand \"HoW+E\" would convert to \"hammer_of_wrath,if=target.health.pc<20\".\n"
-                           "For options, the pound sign \"#\" can be used to support a numeric argument and \"$ability_name\" will automatically be replaced with the name of the ability to which the option is being applied.\n"
-                           "Example: The definition \"AD#=active_dot.$ability_name=#\" causes \"NT+AD0\" to translate to \"nether_tempest,if=active_dot.nether_tempest=0\".\n"
+                           "For options, the pound sign \"#\" can be used to support a numeric argument and \"$ability\" will automatically be replaced with the name of the ability to which the option is being applied.\n"
+                           "Example: The definition \"AD#=active_dot.$ability=#\" causes \"NT+AD0\" to translate to \"nether_tempest,if=active_dot.nether_tempest=0\".\n"
                            "The \"W#\" option is special since it adds an extra APL entry; W# should be the only option or should be separated from other options like so: (DP&!FW)W3\n\n"
                            "The :::Operators::: section defines function that act on another abbreviation from the first section, using a period as an operator.\n"
-                           "The pound sign works as in the operators section, and \"$operand_name\" will be replaced with the abbreviation being operated upon.\n"
-                           "Example: since \"BU=buff.$operand_name.up\", \"HoW+DP.BU\" would translate to \"hammer_of_wrath,if=buff.divine_purpose.up\"\n"
+                           "The pound sign works as in the operators section, and \"$operand\" will be replaced with the abbreviation being operated upon.\n"
+                           "Example: since \"BU=buff.$operand.up\", \"HoW+DP.BU\" would translate to \"hammer_of_wrath,if=buff.divine_purpose.up\"\n"
                            "You can string these together with logical operations, e.g. \"HoW+DP.BU&HP3\" to create \"hammer_of_wrath,if=buff.divine_purpose.up&holy_power>=3\".\n\n"
                            "You may define custom abbreviations by adding your own entries to the appropriate section.\n"
                            "See the wiki entry for more details. https://code.google.com/p/simulationcraft/wiki/Automation#Rotation_Comparisons";
