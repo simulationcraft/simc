@@ -4375,11 +4375,11 @@ void mage_t::apl_arcane()
   default_list -> add_talent( this, "Rune of Power", "if=buff.rune_of_power.remains<cast_time" );
   default_list -> add_talent( this, "Rune of Power", "if=cooldown.arcane_power.remains<gcd&buff.rune_of_power.remains<buff.arcane_power.duration" );
 
-  default_list -> add_action( this, "Evocation", "if=talent.invocation.enabled&buff.invokers_energy.down&talent.invocation.enabled" );
+  default_list -> add_action( this, "Evocation", "if=talent.invocation.enabled&buff.invokers_energy.down" );
   default_list -> add_action( this, "Evocation", "if=talent.invocation.enabled&cooldown.arcane_power.remains=0&buff.invokers_energy.remains<buff.arcane_power.duration" );
   default_list -> add_action( this, "Evocation", "if=talent.invocation.enabled&mana.pct<50,interrupt_if=mana.pct>95&buff.invokers_energy.remains>10" );
 
-  default_list -> add_action( this, "Evocation", "if=!talent.invocation.enabled=mana.pct<50,interrupt_if=mana.pct>95" );
+  default_list -> add_action( this, "Evocation", "if=!talent.invocation.enabled&mana.pct<50,interrupt_if=mana.pct>95" );
   default_list -> add_action( this, "Mirror Image" );
   default_list -> add_action( this, "Arcane Power", "if=time_to_bloodlust>cooldown.arcane_power.duration&((buff.arcane_charge.stack=4)|target.time_to_die<buff.arcane_power.duration+5),moving=0" );
   default_list -> add_action( "mana_gem,if=glyph.loose_mana.enabled&mana.pct<90&buff.arcane_power.up&buff.arcane_charge.stack=4&buff.alter_time.down" );
