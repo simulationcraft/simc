@@ -1144,8 +1144,14 @@ public:
     if ( state == 0 )
     {
       state = get_state();
+
+      // If cycle_targets is used, we need to target the spell to the (found)
+      // target of the action, as it was selected during the ready() call.
+      if ( cycle_targets == 1 )
+        state -> target = target;
       // Put the actor's current target into the state object always.
-      state -> target = p() -> current_target;
+      else
+        state -> target = p() -> current_target;
     }
 
     spell_t::schedule_execute( state );
@@ -5247,6 +5253,7 @@ action_t* mage_t::select_action( const action_priority_list_t& list )
         }
       }
     }
+    // Action not ready, restore target for extra safety
     else if ( action_target )
     {
       a -> target = action_target;
