@@ -695,7 +695,11 @@ const char* util::full_result_type_string( full_result_e fulltype )
     case FULLTYPE_HIT_CRITBLOCK:    return "hit (crit blocked)";
     case FULLTYPE_HIT_BLOCK:        return "hit (blocked)";
     case FULLTYPE_HIT:              return "hit";
+    case FULLTYPE_MULTISTRIKE_CRITBLOCK: return "multistrike (crit blocked)";
+    case FULLTYPE_MULTISTRIKE_BLOCK: return "multistrike (blocked)";
     case FULLTYPE_MULTISTRIKE:      return "multistrike";
+    case FULLTYPE_MULTISTRIKE_CRIT_CRITBLOCK: return "multistrike_crit (crit blocked)";
+    case FULLTYPE_MULTISTRIKE_CRIT_BLOCK: return "multistrike_crit (blocked)";
     case FULLTYPE_MULTISTRIKE_CRIT: return "multistrike_crit";
     default:                        return "unknown";
   }

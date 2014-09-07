@@ -1184,6 +1184,8 @@ int action_t::schedule_multistrike( action_state_t* state, dmg_e type, double ti
     ms_state -> n_targets = 1;
     ms_state -> chain_target = 0;
     ms_state -> result = r;
+    // Multistrikes can be blocked
+    ms_state -> block_result = calculate_block_result( state );
 
     if ( type == DMG_DIRECT || type == HEAL_DIRECT )
       multistrike_direct( state, ms_state );

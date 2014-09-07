@@ -102,6 +102,8 @@ full_result_e stats_t::translate_result( result_e result, block_result_e block_r
     case RESULT_GLANCE:
     case RESULT_CRIT:
     case RESULT_HIT:
+    case RESULT_MULTISTRIKE:
+    case RESULT_MULTISTRIKE_CRIT:
     {
       switch ( block_result )
       {
