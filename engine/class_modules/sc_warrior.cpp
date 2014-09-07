@@ -1090,7 +1090,7 @@ struct melee_t: public warrior_attack_t
       first = false;
 
     // If we're casting, we should clip a swing
-    if ( time_to_execute > timespan_t::zero() && player -> executing )
+    if ( time_to_execute > timespan_t::zero() && player -> executing && player -> executing -> interrupt_auto_attack )
       schedule_execute();
     else
       warrior_attack_t::execute();
