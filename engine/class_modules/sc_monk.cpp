@@ -302,8 +302,10 @@ public:
   {
     const spell_data_t* enveloping_mist;
     const spell_data_t* surging_mist;
-    const spell_data_t* tier15_2pc;
-    const spell_data_t* tier17_2pc;
+    const spell_data_t* tier15_2pc_melee;
+    const spell_data_t* tier17_2pc_melee;
+    const spell_data_t* tier17_2pc_tank;
+    const spell_data_t* tier17_4pc_tank;
   } passives;
 
   // Options
@@ -968,7 +970,7 @@ struct jab_t: public monk_melee_attack_t
 
     if ( rng().roll( p() -> new_sets.set( SET_MELEE, T15, B2 ) -> proc_chance() ) )
     {
-      p() -> resource_gain( RESOURCE_ENERGY, p() -> passives.tier15_2pc -> effectN( 1 ).base_value(), p() -> gain.tier15_2pc );
+      p() -> resource_gain( RESOURCE_ENERGY, p() -> passives.tier15_2pc_melee -> effectN( 1 ).base_value(), p() -> gain.tier15_2pc );
       p() -> proc.tier15_2pc_melee -> occur();
     }
   }
@@ -1411,7 +1413,7 @@ struct spinning_crane_kick_t: public monk_melee_attack_t
 
     if ( rng().roll( p() -> new_sets.set( SET_MELEE, T15, B2 ) -> proc_chance() ) )
     {
-      p() -> resource_gain( RESOURCE_ENERGY, p() -> passives.tier15_2pc -> effectN( 1 ).base_value(), p() -> gain.tier15_2pc );
+      p() -> resource_gain( RESOURCE_ENERGY, p() -> passives.tier15_2pc_melee -> effectN( 1 ).base_value(), p() -> gain.tier15_2pc );
       p() -> proc.tier15_2pc_melee -> occur();
     }
 
@@ -1480,7 +1482,7 @@ struct fists_of_fury_t: public monk_melee_attack_t
     {
       p() -> track_chi_consumption += savings;
       if ( p() -> new_sets.has_set_bonus( MONK_WINDWALKER, T17, B2 ) )
-        trigger_brew( p() -> passives.tier17_2pc -> effectN( 1 ).base_value() );
+        trigger_brew( p() -> passives.tier17_2pc_melee -> effectN( 1 ).base_value() );
     }
   }
 };
@@ -1496,7 +1498,7 @@ struct hurricane_strike_tick_t: public monk_melee_attack_t
   {
     mh = &( player -> main_hand_weapon );
     oh = &( player -> off_hand_weapon );
-    base_multiplier *= 2.5; // hardcoded into tooltip
+    base_multiplier *= 2.0; // hardcoded into tooltip
     dual = true;
   }
 };
@@ -2391,6 +2393,9 @@ struct purifying_brew_t: public monk_spell_t
 
     // Optional addition: Track and report amount of damage cleared
     p() -> active_actions.stagger_self_damage -> clear_all_damage();
+
+    if ( p() -> new_sets.set( SET_TANK, T17, B4 ) )
+      trigger_brew( p() -> passives.tier17_4pc_tank -> effectN( 1 ).base_value() );
   }
 
   bool ready()
@@ -2584,7 +2589,7 @@ struct expel_harm_heal_t: public monk_heal_t
 
     if ( rng().roll( p() -> new_sets.set( SET_MELEE, T15, B2 ) -> proc_chance() ) )
     {
-      p() -> resource_gain( RESOURCE_ENERGY, p() -> passives.tier15_2pc -> effectN( 1 ).base_value(), p() -> gain.tier15_2pc );
+      p() -> resource_gain( RESOURCE_ENERGY, p() -> passives.tier15_2pc_melee -> effectN( 1 ).base_value(), p() -> gain.tier15_2pc );
       p() -> proc.tier15_2pc_melee -> occur();
     }
   }
@@ -3100,10 +3105,12 @@ void monk_t::init_spells()
   if ( specialization() == MONK_BREWMASTER )
     active_actions.stagger_self_damage = new actions::stagger_self_damage_t( this );
 
-  passives.tier15_2pc       = find_spell( 138311 );
-  passives.enveloping_mist  = find_class_spell( "Enveloping Mist" );
-  passives.surging_mist     = find_class_spell( "Surging Mist" );
-  passives.tier17_2pc       = find_spell( 165403 );
+  passives.tier15_2pc_melee       = find_spell( 138311 );
+  passives.enveloping_mist        = find_class_spell( "Enveloping Mist" );
+  passives.surging_mist           = find_class_spell( "Surging Mist" );
+  passives.tier17_2pc_melee       = find_spell( 165403 );
+  passives.tier17_2pc_tank        = find_spell( 165356 );
+  passives.tier17_4pc_tank        = find_spell( 165352 );
 
   // GLYPHS
   glyph.fortifying_brew    = find_glyph( "Glyph of Fortifying Brew"    );
@@ -3745,6 +3752,9 @@ void monk_t::assess_damage( school_e school,
   buff.elusive_brew_activated -> up();
   if ( s -> result_total > 0 )
     buff.guard -> up();
+
+  if ( s -> result == RESULT_DODGE && new_sets.set( MONK_BREWMASTER, T17, B2 ) )
+    resource_gain(RESOURCE_ENERGY, passives.tier17_2pc_tank -> effectN( 1 ).base_value(), gain.energy_refund);
 
   base_t::assess_damage( school, dtype, s );
 }
