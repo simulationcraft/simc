@@ -7093,9 +7093,12 @@ bool get( std::string& result, const std::string& url, cache::behavior_e b,
 
 struct wait_action_base_t : public action_t
 {
-  wait_action_base_t( player_t* player, const std::string& name ) :
+  wait_action_base_t( player_t* player, const std::string& name ):
     action_t( ACTION_OTHER, name, player )
-  { trigger_gcd = timespan_t::zero(); }
+  {
+    trigger_gcd = timespan_t::zero();
+    interrupt_auto_attack = false;
+  }
 
   virtual void execute()
   { player -> iteration_waiting_time += time_to_execute; }

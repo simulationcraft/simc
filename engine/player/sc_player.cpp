@@ -5151,6 +5151,7 @@ wait_for_cooldown_t::wait_for_cooldown_t( player_t* player, const std::string& c
   wait_cd( player -> get_cooldown( cd_name ) ), a( player -> find_action( cd_name ) )
 {
   assert( a );
+  interrupt_auto_attack = false;
 }
 
 timespan_t wait_for_cooldown_t::execute_time() const
@@ -5793,6 +5794,7 @@ struct wait_fixed_t : public wait_action_base_t
       opt_null()
     };
     parse_options( options, options_str );
+    interrupt_auto_attack = false; //Probably shouldn't interrupt autoattacks while waiting.
 
     time_expr = std::shared_ptr<expr_t>( expr_t::parse( this, sec_str ) );
     if ( ! time_expr )
@@ -5817,7 +5819,9 @@ struct wait_until_ready_t : public wait_fixed_t
 {
   wait_until_ready_t( player_t* player, const std::string& options_str ) :
     wait_fixed_t( player, options_str )
-  {}
+  {
+   interrupt_auto_attack = false;
+  }
 
   virtual timespan_t execute_time() const
   {
