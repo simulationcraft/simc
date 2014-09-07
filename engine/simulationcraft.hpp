@@ -362,7 +362,25 @@ enum dot_behavior_e { DOT_CLIP, DOT_REFRESH, DOT_EXTEND };
 
 enum dot_copy_e { DOT_COPY_START, DOT_COPY_CLONE };
 
-enum attribute_e { ATTRIBUTE_NONE = 0, ATTR_STRENGTH, ATTR_AGILITY, ATTR_STAMINA, ATTR_INTELLECT, ATTR_SPIRIT, ATTR_AGI_INT, ATTR_STR_AGI, ATTR_STR_INT, ATTR_STR_AGI_INT, ATTRIBUTE_MAX };
+enum attribute_e
+{
+  ATTRIBUTE_NONE = 0,
+  ATTR_STRENGTH,
+  ATTR_AGILITY,
+  ATTR_STAMINA,
+  ATTR_INTELLECT,
+  ATTR_SPIRIT,
+  // WoD Hybrid attributes
+  ATTR_AGI_INT,
+  ATTR_STR_AGI,
+  ATTR_STR_INT,
+  ATTR_STR_AGI_INT,
+  ATTRIBUTE_MAX,
+
+  // "All stats" enchant attribute cap to prevent
+  // double/triple/quadrupledipping
+  ATTRIBUTE_STAT_ALL_MAX = ATTR_AGI_INT
+};
 
 enum resource_e
 {
@@ -770,6 +788,7 @@ check( SPIRIT );
 check( AGI_INT );
 check( STR_AGI );
 check( STR_INT );
+check( STR_AGI_INT );
 #undef check
 
 inline stat_e stat_from_attr( attribute_e a )

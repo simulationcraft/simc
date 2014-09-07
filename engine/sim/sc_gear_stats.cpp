@@ -75,7 +75,7 @@ void gear_stats_t::add_stat( stat_e stat,
     case STAT_PVP_POWER:                 pvp_power += value; break;
 
     case STAT_ALL:
-      for ( attribute_e i = ATTRIBUTE_NONE; i < ATTRIBUTE_MAX; i++ )
+      for ( attribute_e i = ATTRIBUTE_NONE; i < ATTRIBUTE_STAT_ALL_MAX; i++ )
       { attribute[ i ] += value; }
       break;
 
@@ -149,7 +149,7 @@ void gear_stats_t::set_stat( stat_e stat,
     case STAT_PVP_POWER:                 pvp_power += value; break;
 
     case STAT_ALL:
-      for ( attribute_e i = ATTRIBUTE_NONE; i < ATTRIBUTE_MAX; i++ )
+      for ( attribute_e i = ATTRIBUTE_NONE; i < ATTRIBUTE_STAT_ALL_MAX; i++ )
       { attribute[ i ] = value; }
       break;
 
