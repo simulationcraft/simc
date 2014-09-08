@@ -2813,6 +2813,10 @@ struct light_of_dawn_t : public paladin_heal_t
 // Sacred Shield ============================================================
 // The sacred_shield_t action is the driver, which should act like a HoT that doesn't do any healing.
 // Instead it has a sacred_shield_tick_t tick_action, which is the absorb bubble.
+// In the spell data, Sacred Shield is Bizarre. The driver for prot/ret is id 20925, but for holy it's 148039.
+// The 6-second buff is id 65148 for both specs though, and presumably the value is set by the driver.
+// However, the spell power coefficients aren't stored anywhere - they're in the tooltips, but those appear hardcoded
+// (and thus frequently wrong) since they don't update automatically when the spell is buffed or nerfed. Fun!
 
 struct sacred_shield_tick_t : public absorb_t 
 {
@@ -2823,15 +2827,26 @@ struct sacred_shield_tick_t : public absorb_t
     may_multistrike = true;
     background = true;
 
-    // unfortunately, this spell info is split between effects and tooltip 
-    base_dd_min = base_dd_max = data().effectN( 1 ).average( p ); 
-    spell_power_mod.direct = 1.3059044; // tooltip wrong, hardcoding based on testing (7/7/2014 http://maintankadin.failsafedesign.com/forum/viewtopic.php?p=783749#p783749)
-    
+    // unfortunately, the following spell info is missing, and only hinted at in tooltips
+    // hardcoding these values based on testing on beta servers
+    // last updated (9/8/2014 http://maintankadin.failsafedesign.com/forum/viewtopic.php?p=784745#p784745)
 
-    // Spell data reflects protection values; Ret and Holy are 30% larger (tested 7/7/2014)
-    if ( ( p -> specialization() == PALADIN_RETRIBUTION || p -> specialization() == PALADIN_HOLY ) )
+    // base amount is zero for prot and holy - this SHOULD be the value in the data
+    base_dd_min = base_dd_max = data().effectN( 1 ).average( p ); 
+        
+    // Spell power mod in tooltip reflects protection values
+    spell_power_mod.direct = 1.3059954410;
+
+    // Holy has a different spellpower coefficient entirely, in tooltip of 148039
+    if ( p -> specialization() == PALADIN_HOLY )
+      spell_power_mod.direct = 0.9946876987;
+      
+    // Ret gets a 30% larger spellpower coefficient and an extra base amount
+    else if ( p -> specialization() == PALADIN_RETRIBUTION )
     {
       spell_power_mod.direct /= 0.7;
+      base_dd_min++;
+      base_dd_max++;
     }
   }
 
