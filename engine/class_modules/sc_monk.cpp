@@ -3968,7 +3968,7 @@ void monk_t::apl_combat_windwalker()
 
   def -> add_action( "auto_attack" );
   def -> add_action( "invoke_xuen,if=talent.invoke_xuen.enabled&time>5" );
-  def -> add_action( "/chi_sphere,if=talent.power_strikes.enabled&buff.chi_sphere.react&chi<4" );
+  def -> add_action( "chi_sphere,if=talent.power_strikes.enabled&buff.chi_sphere.react&chi<4" );
 
   if ( sim -> allow_potions )
   {

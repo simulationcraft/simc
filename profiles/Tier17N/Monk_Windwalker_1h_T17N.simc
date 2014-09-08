@@ -24,7 +24,7 @@ actions.precombat+=/potion,name=draenic_agility
 
 actions=auto_attack
 actions+=/invoke_xuen,if=talent.invoke_xuen.enabled&time>5
-actions+=//chi_sphere,if=talent.power_strikes.enabled&buff.chi_sphere.react&chi<4
+actions+=/chi_sphere,if=talent.power_strikes.enabled&buff.chi_sphere.react&chi<4
 actions+=/potion,name=draenic_agility,if=buff.serenity.up|(!talent.serenity.enabled&trinket.proc.agility.react)
 actions+=/use_item,name=primal_gladiators_badge_of_conquest,if=buff.tigereye_brew_use.up|target.time_to_die<18
 actions+=/blood_fury,if=buff.tigereye_brew_use.up|target.time_to_die<18
