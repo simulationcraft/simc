@@ -2939,9 +2939,9 @@ struct seal_of_insight_proc_t : public paladin_heal_t
     weapon = &( p -> main_hand_weapon );
     weapon_multiplier = 0.0;
     
-    // proc chance is now 20 PPM, spell database info still says 15.  //TODO: was this nerfed to 10 PPM? both effects are now 5
-    // Best guess is that the 2nd effect describes the additional 5 PPM.
-    proc_chance = ppm_proc_chance( data().effectN( 1 ).base_value() + data().effectN( 2 ).base_value() );
+    // proc chance is 20 PPM, tested 9/8/14 (http://maintankadin.failsafedesign.com/forum/viewtopic.php?p=784737#p784737)
+    // Base PPM value of 15 isn't in spell data, 2nd effect describes the additional 5 PPM added in MoP.
+    proc_chance = ppm_proc_chance( 15 + data().effectN( 2 ).base_value() );
 
     target = player;
   }
