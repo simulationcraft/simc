@@ -3252,6 +3252,7 @@ void monk_t::create_buffs()
   buff.tigereye_brew = buff_creator_t( this, "tigereye_brew", find_spell( 125195 ) )
     .period( timespan_t::zero() ); // Tigereye Brew does not tick, despite what the spelldata implies.
   buff.tigereye_brew_use = buff_creator_t( this, "tigereye_brew_use", spec.tigereye_brew ).add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
+  buff.tigereye_brew_use -> buff_duration += new_sets.set( SET_MELEE, PVP, B4 ) -> effectN( 1 ).time_value();
 
   buff.forceful_winds = buff_creator_t( this, "forceful_winds", find_spell( 166603 ) );
 }
