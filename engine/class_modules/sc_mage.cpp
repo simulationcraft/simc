@@ -4719,10 +4719,10 @@ void mage_t::apl_fire()
   crystal_targeting -> add_action( "choose_target,name=prismatic_crystal,if=pet.prismatic_crystal.dot.combustion.ticking" );
 
 
-  init_crystal -> add_action( "prismatic_crystal,if=!talent.living_bomb.enabled&cooldown.combustion.remains>0&buff.pyroblast.up&buff.heating_up.up",
+// TODO: Add multi LB explosions on multitarget fights.
+  init_crystal -> add_action( "prismatic_crystal,if=cooldown.combustion.remains>0&buff.pyroblast.up&buff.heating_up.up&(!talent.living_bomb.enabled|(dot.living_bomb.ticking&dot.living_bomb.remains<10))",
                               "Prismatic Crystal sequence initialization\n"
                               "# This sequence is triggered only when Combustion is glyphed, on even numbered PCs which are not used in conjunction with it" );
-  init_crystal -> add_action( "prismatic_crystal,if=talent.living_bomb.enabled&cooldown.combustion.remains>0&buff.pyroblast.up&buff.heating_up.up&dot.living_bomb.remains<10" );
 
 
   crystal_sequence -> add_action( this, "Inferno Blast",
@@ -4741,8 +4741,7 @@ void mage_t::apl_fire()
   init_combust -> add_action( "start_pyro_chain,if=talent.meteor.enabled&cooldown.combustion.remains<action.scorch.gcd*3&cooldown.meteor.up&buff.pyroblast.up&((buff.heating_up.down&action.fireball.in_flight)|(buff.heating_up.up&!action.fireball.in_flight))",
                               "Combustion sequence initialization\n"
                               "# This sequence lists the requirements for preparing a Combustion combo with each talent choice" );
-  init_combust -> add_action( "start_pyro_chain,if=talent.prismatic_crystal.enabled&talent.living_bomb.enabled&cooldown.combustion.remains<action.scorch.gcd*2&cooldown.prismatic_crystal.up&buff.pyroblast.up&buff.heating_up.up&action.fireball.in_flight&dot.living_bomb.remains>action.scorch.execute_time*3" );
-  init_combust -> add_action( "start_pyro_chain,if=talent.prismatic_crystal.enabled&!talent.living_bomb.enabled&cooldown.combustion.remains<action.scorch.gcd*2&cooldown.prismatic_crystal.up&buff.pyroblast.up&buff.heating_up.up&action.fireball.in_flight" );
+  init_combust -> add_action( "start_pyro_chain,if=talent.prismatic_crystal.enabled&(!talent.living_bomb.enabled|dot.living_bomb.remains>action.scorch.execute_time*3)&cooldown.combustion.remains<action.scorch.gcd*2&cooldown.prismatic_crystal.up&buff.pyroblast.up&buff.heating_up.up&action.fireball.in_flight" );
   init_combust -> add_action( "start_pyro_chain,if=!(talent.prismatic_crystal.enabled|talent.meteor.enabled)&cooldown.combustion.remains<action.scorch.gcd*4&buff.pyroblast.up&buff.heating_up.up&action.fireball.in_flight" );
 
 
@@ -4810,35 +4809,24 @@ void mage_t::apl_fire()
 
 
   active_talents -> add_talent( this, "Meteor",
-                                "if=glyph.combustion.enabled&!talent.incanters_flow.enabled&cooldown.meteor.duration-cooldown.combustion.remains<10",
+                                "if=glyph.combustion.enabled&(!talent.incanters_flow.enabled|buff.incanters_flow.stack+incanters_flow_dir>=4)&cooldown.meteor.duration-cooldown.combustion.remains<10",
                                 "Active talents usage\n"
                                 "# This sequence summarizes all usage of active talents (BW, LB, Met), and their optimizations with Incanter's Flow and Prismatic Crystal" );
-  active_talents -> add_talent( this, "Meteor",
-                                "if=glyph.combustion.enabled&talent.incanters_flow.enabled&cooldown.meteor.duration-cooldown.combustion.remains<10&buff.incanters_flow.stack+incanters_flow_dir>=4" );
   active_talents -> add_action( "call_action_list,name=living_bomb,if=talent.living_bomb.enabled" );
   active_talents -> add_talent( this, "Blast Wave",
-                                "if=time_to_die<recharge_time" );
-  active_talents -> add_talent( this, "Blast Wave",
-                                "if=!talent.incanters_flow.enabled&(!talent.prismatic_crystal.enabled|(charges=1&cooldown.prismatic_crystal.remains>recharge_time+8)|charges=2|current_target=prismatic_crystal)" );
-  active_talents -> add_talent( this, "Blast Wave",
-                                "if=talent.incanters_flow.enabled&buff.incanters_flow.stack=5&(!talent.prismatic_crystal.enabled|(charges=1&cooldown.prismatic_crystal.remains>recharge_time+8)|charges=2|current_target=prismatic_crystal)" );
+                                "if=(!talent.incanters_flow.enabled|buff.incanters_flow.stack>=4)&(time_to_die<10|!talent.prismatic_crystal.enabled|(charges=1&cooldown.prismatic_crystal.remains>recharge_time)|charges=2|current_target=prismatic_crystal)" );
 
 
-  living_bomb -> add_talent( this, "Living Bomb",
-                             "cycle_targets=1,if=!talent.incanters_flow.enabled&(!ticking|remains<3.6)&target.time_to_die>remains+12&current_target!=prismatic_crystal",
+  living_bomb -> add_action( this, "Inferno Blast",
+                             "cycle_targets=1,if=dot.living_bomb.ticking&active_dot.living_bomb<active_enemies",
                              "Living Bomb application" );
   living_bomb -> add_talent( this, "Living Bomb",
-                             "cycle_targets=1,if=talent.incanters_flow.enabled&incanters_flow_dir<=0&(!ticking|remains<3.6)&target.time_to_die>remains+12&current_target!=prismatic_crystal" );
-  living_bomb -> add_talent( this, "Living Bomb",
-                             "cycle_targets=1,if=talent.incanters_flow.enabled&incanters_flow_dir>0&(!ticking|remains<gcd)&target.time_to_die>remains+12&current_target!=prismatic_crystal" );
-  living_bomb -> add_action( this, "Inferno Blast",
-                             "if=dot.living_bomb.ticking&active_dot.living_bomb<active_enemies" );
+                             "cycle_targets=1,if=(((!talent.incanters_flow.enabled|incanters_flow_dir<0|buff.incanters_flow.stack=5)&remains<3.6)|((incanters_flow_dir>0|buff.incanters_flow.stack=1)&remains<gcd)|!ticking)&target.time_to_die>remains+12&current_target!=prismatic_crystal" );
 
 
   aoe -> add_action( this, "Inferno Blast",
                      "cycle_targets=1,if=(dot.combustion.ticking&active_dot.combustion<active_enemies)|(dot.living_bomb.ticking&active_dot.living_bomb<active_enemies)|(dot.pyroblast.ticking&active_dot.pyroblast<active_enemies)",
                      "AoE sequence" );
-  aoe -> add_action( "call_action_list,name=living_bomb,cycle_targets=1,if=talent.living_bomb.enabled&current_target!=prismatic_crystal" );
   aoe -> add_action( "call_action_list,name=active_talents" );
   aoe -> add_action( this, "Dragon's Breath",
                      "if=glyph.dragons_breath.enabled" );

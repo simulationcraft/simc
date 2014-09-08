@@ -3,7 +3,7 @@ level=100
 race=troll
 role=spell
 position=back
-talents=http://us.battle.net/wow/en/tool/talent-calculator#eZ!0...011
+talents=http://us.battle.net/wow/en/tool/talent-calculator#eZ!0...102
 glyphs=inferno_blast
 spec=fire
 
@@ -50,8 +50,7 @@ actions.crystal_targeting+=/choose_target,name=prismatic_crystal,if=pet.prismati
 
 # Prismatic Crystal sequence initialization
 # This sequence is triggered only when Combustion is glyphed, on even numbered PCs which are not used in conjunction with it
-actions.init_crystal=prismatic_crystal,if=!talent.living_bomb.enabled&cooldown.combustion.remains>0&buff.pyroblast.up&buff.heating_up.up
-actions.init_crystal+=/prismatic_crystal,if=talent.living_bomb.enabled&cooldown.combustion.remains>0&buff.pyroblast.up&buff.heating_up.up&dot.living_bomb.remains<10
+actions.init_crystal=prismatic_crystal,if=cooldown.combustion.remains>0&buff.pyroblast.up&buff.heating_up.up&(!talent.living_bomb.enabled|(dot.living_bomb.ticking&dot.living_bomb.remains<10))
 
 # Action list while Prismatic Crystal is up
 # This line attempts to spread any ticking Combustion onto PC
@@ -65,8 +64,7 @@ actions.crystal_sequence+=/call_action_list,name=single_target,if=current_target
 # Combustion sequence initialization
 # This sequence lists the requirements for preparing a Combustion combo with each talent choice
 actions.init_combust=start_pyro_chain,if=talent.meteor.enabled&cooldown.combustion.remains<action.scorch.gcd*3&cooldown.meteor.up&buff.pyroblast.up&((buff.heating_up.down&action.fireball.in_flight)|(buff.heating_up.up&!action.fireball.in_flight))
-actions.init_combust+=/start_pyro_chain,if=talent.prismatic_crystal.enabled&talent.living_bomb.enabled&cooldown.combustion.remains<action.scorch.gcd*2&cooldown.prismatic_crystal.up&buff.pyroblast.up&buff.heating_up.up&action.fireball.in_flight&dot.living_bomb.remains>action.scorch.execute_time*3
-actions.init_combust+=/start_pyro_chain,if=talent.prismatic_crystal.enabled&!talent.living_bomb.enabled&cooldown.combustion.remains<action.scorch.gcd*2&cooldown.prismatic_crystal.up&buff.pyroblast.up&buff.heating_up.up&action.fireball.in_flight
+actions.init_combust+=/start_pyro_chain,if=talent.prismatic_crystal.enabled&(!talent.living_bomb.enabled|dot.living_bomb.remains>action.scorch.execute_time*3)&cooldown.combustion.remains<action.scorch.gcd*2&cooldown.prismatic_crystal.up&buff.pyroblast.up&buff.heating_up.up&action.fireball.in_flight
 actions.init_combust+=/start_pyro_chain,if=!(talent.prismatic_crystal.enabled|talent.meteor.enabled)&cooldown.combustion.remains<action.scorch.gcd*4&buff.pyroblast.up&buff.heating_up.up&action.fireball.in_flight
 
 # Combustion sequence
@@ -115,22 +113,16 @@ actions.crystal_combust+=/combustion
 
 # Active talents usage
 # This sequence summarizes all usage of active talents (BW, LB, Met), and their optimizations with Incanter's Flow and Prismatic Crystal
-actions.active_talents=meteor,if=glyph.combustion.enabled&!talent.incanters_flow.enabled&cooldown.meteor.duration-cooldown.combustion.remains<10
-actions.active_talents+=/meteor,if=glyph.combustion.enabled&talent.incanters_flow.enabled&cooldown.meteor.duration-cooldown.combustion.remains<10&buff.incanters_flow.stack+incanters_flow_dir>=4
+actions.active_talents=meteor,if=glyph.combustion.enabled&(!talent.incanters_flow.enabled|buff.incanters_flow.stack+incanters_flow_dir>=4)&cooldown.meteor.duration-cooldown.combustion.remains<10
 actions.active_talents+=/call_action_list,name=living_bomb,if=talent.living_bomb.enabled
-actions.active_talents+=/blast_wave,if=time_to_die<recharge_time
-actions.active_talents+=/blast_wave,if=!talent.incanters_flow.enabled&(!talent.prismatic_crystal.enabled|(charges=1&cooldown.prismatic_crystal.remains>recharge_time+8)|charges=2|current_target=prismatic_crystal)
-actions.active_talents+=/blast_wave,if=talent.incanters_flow.enabled&buff.incanters_flow.stack=5&(!talent.prismatic_crystal.enabled|(charges=1&cooldown.prismatic_crystal.remains>recharge_time+8)|charges=2|current_target=prismatic_crystal)
+actions.active_talents+=/blast_wave,if=(!talent.incanters_flow.enabled|buff.incanters_flow.stack>=4)&(time_to_die<10|!talent.prismatic_crystal.enabled|(charges=1&cooldown.prismatic_crystal.remains>recharge_time)|charges=2|current_target=prismatic_crystal)
 
 # Living Bomb application
-actions.living_bomb=living_bomb,cycle_targets=1,if=!talent.incanters_flow.enabled&(!ticking|remains<3.6)&target.time_to_die>remains+12&current_target!=prismatic_crystal
-actions.living_bomb+=/living_bomb,cycle_targets=1,if=talent.incanters_flow.enabled&incanters_flow_dir<=0&(!ticking|remains<3.6)&target.time_to_die>remains+12&current_target!=prismatic_crystal
-actions.living_bomb+=/living_bomb,cycle_targets=1,if=talent.incanters_flow.enabled&incanters_flow_dir>0&(!ticking|remains<gcd)&target.time_to_die>remains+12&current_target!=prismatic_crystal
-actions.living_bomb+=/inferno_blast,if=dot.living_bomb.ticking&active_dot.living_bomb<active_enemies
+actions.living_bomb=inferno_blast,cycle_targets=1,if=dot.living_bomb.ticking&active_dot.living_bomb<active_enemies
+actions.living_bomb+=/living_bomb,cycle_targets=1,if=(((!talent.incanters_flow.enabled|incanters_flow_dir<0|buff.incanters_flow.stack=5)&remains<3.6)|((incanters_flow_dir>0|buff.incanters_flow.stack=1)&remains<gcd)|!ticking)&target.time_to_die>remains+12&current_target!=prismatic_crystal
 
 # AoE sequence
 actions.aoe=inferno_blast,cycle_targets=1,if=(dot.combustion.ticking&active_dot.combustion<active_enemies)|(dot.living_bomb.ticking&active_dot.living_bomb<active_enemies)|(dot.pyroblast.ticking&active_dot.pyroblast<active_enemies)
-actions.aoe+=/call_action_list,name=living_bomb,cycle_targets=1,if=talent.living_bomb.enabled&current_target!=prismatic_crystal
 actions.aoe+=/call_action_list,name=active_talents
 actions.aoe+=/dragons_breath,if=glyph.dragons_breath.enabled
 actions.aoe+=/pyroblast,if=active_dot.pyroblast=0
