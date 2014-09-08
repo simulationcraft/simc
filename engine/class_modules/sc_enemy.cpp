@@ -92,7 +92,7 @@ struct enemy_action_t : public ACTION_TYPE
   typedef enemy_action_t<ACTION_TYPE> base_t;
 
   bool apply_debuff;
-  std::string dmg_type_override = "none";
+  std::string dmg_type_override;
   int num_debuff_stacks;
   double damage_range;
   timespan_t cooldown_;
@@ -113,6 +113,8 @@ struct enemy_action_t : public ACTION_TYPE
     options.push_back( opt_timespan( "cooldown", cooldown_ ) );
     options.push_back( opt_string( "type", dmg_type_override ) );
     options.push_back( opt_null() );
+
+    dmg_type_override = "none";
   }
 
   void add_option( const option_t& new_option )
