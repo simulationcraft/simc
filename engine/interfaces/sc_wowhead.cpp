@@ -339,8 +339,8 @@ std::string wowhead::decorated_spell_name( const std::string& name,
 {
   std::string decorated_name, base_href, prefix, suffix;
 
-  if ( spell_id > 1 )
-  {
+  if ( spell_id > 1 && spell_id != 1719 ) // Tooltips with a 2nd tooltip inside them, such as Recklessness showing Improved Recklessness, 
+  { // Will completely freeze the gui for 10-20 seconds anytime they are displayed on mouseover. Not sure how to fix, so I'm going to kludge it away.
     base_href = "http://" + domain_str( domain ) + ".wowhead.com/spell=" + util::to_string( spell_id );
 
     if ( affix )
