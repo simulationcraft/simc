@@ -44,7 +44,7 @@ actions.gladiator+=/shield_slam
 actions.gladiator+=/revenge
 actions.gladiator+=/storm_bolt,if=(buff.bloodbath.up|cooldown.bloodbath.remains>7)|!talent.bloodbath.enabled
 actions.gladiator+=/dragon_roar,if=(buff.bloodbath.up|cooldown.bloodbath.remains>10)|!talent.bloodbath.enabled
-actions.gladiator+=/devastate,if=cooldown.shield_slam.remains>gcd*0.4
+actions.gladiator+=/devastate,if=cooldown.shield_slam.remains>execute_time*0.4
 
 actions.gladiator_aoe=bloodbath
 actions.gladiator_aoe+=/avatar
@@ -58,7 +58,7 @@ actions.gladiator_aoe+=/shield_slam
 actions.gladiator_aoe+=/thunder_clap
 actions.gladiator_aoe+=/dragon_roar,if=(buff.bloodbath.up|cooldown.bloodbath.remains>10)|!talent.bloodbath.enabled
 actions.gladiator_aoe+=/storm_bolt,if=(buff.bloodbath.up|cooldown.bloodbath.remains>7)|!talent.bloodbath.enabled
-actions.gladiator_aoe+=/devastate,if=cooldown.shield_slam.remains>gcd*0.4
+actions.gladiator_aoe+=/devastate,if=cooldown.shield_slam.remains>execute_time*0.4
 
 head=primal_gladiators_plate_helm,id=111241
 neck=collar_of_wailing_mouths,id=113662,enchant=gift_of_critical_strike

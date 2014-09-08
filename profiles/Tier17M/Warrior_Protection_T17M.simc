@@ -49,9 +49,9 @@ actions.prot+=/revenge
 actions.prot+=/ravager
 actions.prot+=/storm_bolt
 actions.prot+=/dragon_roar
-actions.prot+=/impending_victory,if=talent.impending_victory.enabled&cooldown.shield_slam.remains<=gcd
-actions.prot+=/victory_rush,if=!talent.impending_victory.enabled&cooldown.shield_slam.remains<=gcd
-actions.prot+=/thunder_clap,if=glyph.resonating_power.enabled&cooldown.shield_slam.remains<=gcd
+actions.prot+=/impending_victory,if=talent.impending_victory.enabled&cooldown.shield_slam.remains<=execute_time
+actions.prot+=/victory_rush,if=!talent.impending_victory.enabled&cooldown.shield_slam.remains<=execute_time
+actions.prot+=/thunder_clap,if=glyph.resonating_power.enabled&cooldown.shield_slam.remains<=execute_time
 actions.prot+=/devastate
 
 actions.prot_aoe=bloodbath

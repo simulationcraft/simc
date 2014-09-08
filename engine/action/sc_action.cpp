@@ -1914,6 +1914,8 @@ expr_t* action_t::create_expression( const std::string& name_str )
 
   if ( name_str == "cast_time" )
     return make_mem_fn_expr( name_str, *this, &action_t::execute_time );
+  else if ( name_str == "gcd" )
+    return make_mem_fn_expr( name_str, *this, &action_t::gcd );
   else if ( name_str == "execute_time" )
   {
     struct execute_time_expr_t : public action_expr_t
@@ -1956,25 +1958,6 @@ expr_t* action_t::create_expression( const std::string& name_str )
       }
     };
     return new new_tick_time_expr_t( *this );
-  }
-  else if ( name_str == "gcd" )
-  {
-    struct gcd_expr_t: public action_expr_t
-    {
-      double gcd_time;
-      gcd_expr_t( action_t & a ): action_expr_t( "gcd", a )
-      {
-      }
-      double evaluate()
-      {
-        gcd_time = ( action.player -> base_gcd ).total_seconds();
-        gcd_time *= action.player -> cache.attack_haste();
-        if ( gcd_time < 1.0 )
-          gcd_time = 1.0;
-        return gcd_time;
-      }
-    };
-    return new gcd_expr_t( *this );
   }
   else if ( name_str == "travel_time" )
     return make_mem_fn_expr( name_str, *this, &action_t::travel_time );
@@ -2195,6 +2178,44 @@ expr_t* action_t::create_expression( const std::string& name_str )
       };
 
       return new prev_expr_t( *this, splits[ 1 ] );
+    }
+    else if ( splits[ 0 ] == "gcd" )
+    {
+      if ( splits[1] == "max" )
+      {
+        struct gcd_expr_t: public action_expr_t
+        {
+          double gcd_time;
+          gcd_expr_t( action_t & a ): action_expr_t( "gcd", a )
+          {
+          }
+          double evaluate()
+          {
+            gcd_time = ( action.player -> base_gcd ).total_seconds();
+            gcd_time *= action.player -> cache.attack_haste();
+            if ( gcd_time < 1.0 )
+              gcd_time = 1.0;
+            return gcd_time;
+          }
+        };
+        return new gcd_expr_t( *this );
+      }
+      else if ( splits[1] == "remains" )
+      {
+        struct gcd_remains_expr_t: public action_expr_t
+        {
+          double gcd_remains;
+          gcd_remains_expr_t( action_t & a ): action_expr_t( "gcd", a )
+          {
+          }
+          double evaluate()
+          {
+            gcd_remains = ( action.player -> gcd_ready ).total_seconds();
+            return gcd_remains;
+          }
+        };
+        return new gcd_remains_expr_t( *this );
+      }
     }
   }
 
