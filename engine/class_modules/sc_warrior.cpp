@@ -1598,8 +1598,9 @@ struct execute_off_hand_t: public warrior_attack_t
   {
     dual = true;
     may_miss = may_dodge = may_parry = may_block = false;
-
     weapon = &( p -> off_hand_weapon );
+    if ( !p -> bugs )
+      weapon_multiplier = 3.0;
   }
 
   double action_multiplier() const
