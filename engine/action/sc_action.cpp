@@ -249,7 +249,6 @@ action_t::action_t( action_e       ty,
   use_off_gcd(),
   quiet(),
   direct_tick(),
-  direct_tick_callbacks(),
   periodic_hit(),
   repeating(),
   harmful( true ),
@@ -337,7 +336,6 @@ action_t::action_t( action_e       ty,
   execute_action                 = 0;
   impact_action                  = 0;
   dynamic_tick_action            = false;
-  special_proc                   = false;
   // New Stuff
   snapshot_flags = 0;
   update_flags = STATE_TGT_MUL_DA | STATE_TGT_MUL_TA | STATE_TGT_CRIT;
@@ -1115,8 +1113,6 @@ void action_t::execute()
     }
 
     // New callback system; proc abilities on execute. 
-    // Note: direct_tick_callbacks should not be used with the new system, 
-    // override action_t::proc_type() instead
     if ( callbacks )
     {
       proc_types pt = execute_state -> proc_type();
@@ -1379,8 +1375,7 @@ void action_t::assess_damage( dmg_e    type,
     player -> resource_gain( RESOURCE_HEALTH, composite_leech( s ) * s -> result_amount, player -> gains.leech );
 
   // New callback system; proc spells on impact. 
-  // Note: direct_tick_callbacks should not be used with the new system, 
-  // override action_t::proc_type() instead
+
   if ( callbacks )
   {
     proc_types pt = s -> proc_type();
@@ -1919,6 +1914,8 @@ expr_t* action_t::create_expression( const std::string& name_str )
 
   if ( name_str == "cast_time" )
     return make_mem_fn_expr( name_str, *this, &action_t::execute_time );
+  else if ( name_str == "gcd" )
+    return make_mem_fn_expr( name_str, *this, &action_t::gcd );
   else if ( name_str == "execute_time" )
   {
     struct execute_time_expr_t : public action_expr_t
@@ -1961,25 +1958,6 @@ expr_t* action_t::create_expression( const std::string& name_str )
       }
     };
     return new new_tick_time_expr_t( *this );
-  }
-  else if ( name_str == "gcd" )
-  {
-    struct gcd_expr_t: public action_expr_t
-    {
-      double gcd_time;
-      gcd_expr_t( action_t & a ): action_expr_t( "gcd", a )
-      {
-      }
-      double evaluate()
-      {
-        gcd_time = ( action.player -> base_gcd ).total_seconds();
-        gcd_time *= action.player -> cache.attack_haste();
-        if ( gcd_time < 1.0 )
-          gcd_time = 1.0;
-        return gcd_time;
-      }
-    };
-    return new gcd_expr_t( *this );
   }
   else if ( name_str == "travel_time" )
     return make_mem_fn_expr( name_str, *this, &action_t::travel_time );
@@ -2200,6 +2178,44 @@ expr_t* action_t::create_expression( const std::string& name_str )
       };
 
       return new prev_expr_t( *this, splits[ 1 ] );
+    }
+    else if ( splits[ 0 ] == "gcd" )
+    {
+      if ( splits[1] == "max" )
+      {
+        struct gcd_expr_t: public action_expr_t
+        {
+          double gcd_time;
+          gcd_expr_t( action_t & a ): action_expr_t( "gcd", a )
+          {
+          }
+          double evaluate()
+          {
+            gcd_time = ( action.player -> base_gcd ).total_seconds();
+            gcd_time *= action.player -> cache.attack_haste();
+            if ( gcd_time < 1.0 )
+              gcd_time = 1.0;
+            return gcd_time;
+          }
+        };
+        return new gcd_expr_t( *this );
+      }
+      else if ( splits[1] == "remains" )
+      {
+        struct gcd_remains_expr_t: public action_expr_t
+        {
+          double gcd_remains;
+          gcd_remains_expr_t( action_t & a ): action_expr_t( "gcd", a )
+          {
+          }
+          double evaluate()
+          {
+            gcd_remains = ( action.player -> gcd_ready ).total_seconds();
+            return gcd_remains;
+          }
+        };
+        return new gcd_remains_expr_t( *this );
+      }
     }
   }
 

@@ -1619,8 +1619,8 @@ std::string chart::reforge_dps( player_t* p )
     }
 
     // We want to fit about 4 labels per side, but if there's many plot points, have some sane 
-    int negative_mod = std::max( std::ceil( negative_steps / 4 ), 4.0 );
-    int positive_mod = std::max( std::ceil( positive_steps / 4 ), 4.0 );
+    int negative_mod = static_cast<int>( std::max( std::ceil( negative_steps / 4 ), 4.0 ) );
+    int positive_mod = static_cast<int>( std::max( std::ceil( positive_steps / 4 ), 4.0 ) );
 
     std::string formatted_name = util::google_image_chart_encode( p -> scales_over().name );
     util::urlencode( formatted_name );

@@ -140,7 +140,7 @@ public:
     gain_t* soothing_mist;
     gain_t* spinning_crane_kick;
     gain_t* surging_mist;
-    gain_t* tier15_2pc;
+    gain_t* tier15_2pc_melee;
     gain_t* tier16_4pc_melee;
   } gain;
 
@@ -152,6 +152,7 @@ public:
     proc_t* mana_tea;
     proc_t* tier15_2pc_melee;
     proc_t* tier15_4pc_melee;
+    proc_t* tier17_4pc_heal;
     proc_t* tigereye_brew;
     proc_t* tigereye_brew_wasted;
   } proc;
@@ -302,8 +303,10 @@ public:
   {
     const spell_data_t* enveloping_mist;
     const spell_data_t* surging_mist;
-    const spell_data_t* tier15_2pc;
-    const spell_data_t* tier17_2pc;
+    const spell_data_t* tier15_2pc_melee;
+    const spell_data_t* tier17_2pc_melee;
+    const spell_data_t* tier17_2pc_tank;
+    const spell_data_t* tier17_4pc_tank;
   } passives;
 
   // Options
@@ -968,7 +971,7 @@ struct jab_t: public monk_melee_attack_t
 
     if ( rng().roll( p() -> new_sets.set( SET_MELEE, T15, B2 ) -> proc_chance() ) )
     {
-      p() -> resource_gain( RESOURCE_ENERGY, p() -> passives.tier15_2pc -> effectN( 1 ).base_value(), p() -> gain.tier15_2pc );
+      p() -> resource_gain( RESOURCE_ENERGY, p() -> passives.tier15_2pc_melee -> effectN( 1 ).base_value(), p() -> gain.tier15_2pc_melee );
       p() -> proc.tier15_2pc_melee -> occur();
     }
   }
@@ -1411,7 +1414,7 @@ struct spinning_crane_kick_t: public monk_melee_attack_t
 
     if ( rng().roll( p() -> new_sets.set( SET_MELEE, T15, B2 ) -> proc_chance() ) )
     {
-      p() -> resource_gain( RESOURCE_ENERGY, p() -> passives.tier15_2pc -> effectN( 1 ).base_value(), p() -> gain.tier15_2pc );
+      p() -> resource_gain( RESOURCE_ENERGY, p() -> passives.tier15_2pc_melee -> effectN( 1 ).base_value(), p() -> gain.tier15_2pc_melee );
       p() -> proc.tier15_2pc_melee -> occur();
     }
 
@@ -1480,7 +1483,7 @@ struct fists_of_fury_t: public monk_melee_attack_t
     {
       p() -> track_chi_consumption += savings;
       if ( p() -> new_sets.has_set_bonus( MONK_WINDWALKER, T17, B2 ) )
-        trigger_brew( p() -> passives.tier17_2pc -> effectN( 1 ).base_value() );
+        trigger_brew( p() -> passives.tier17_2pc_melee -> effectN( 1 ).base_value() );
     }
   }
 };
@@ -1496,7 +1499,7 @@ struct hurricane_strike_tick_t: public monk_melee_attack_t
   {
     mh = &( player -> main_hand_weapon );
     oh = &( player -> off_hand_weapon );
-    base_multiplier *= 2.5; // hardcoded into tooltip
+    base_multiplier *= 2.0; // hardcoded into tooltip
     dual = true;
   }
 };
@@ -1949,7 +1952,7 @@ struct chi_brew_t: public monk_spell_t
 // ==========================================================================
 // Zen Sphere
 // ==========================================================================
-// Redo this.
+// Healing tick Co-efficient = 0.156
 
 struct zen_sphere_damage_t: public monk_spell_t
 {
@@ -1971,7 +1974,7 @@ struct zen_sphere_detonate_damage_t: public monk_spell_t
     background = true;
     aoe = -1;
 
-    attack_power_mod.direct = 2.5307; // hardcoded into tooltip
+    attack_power_mod.direct = 0.47155; // hardcoded into tooltip
     school = SCHOOL_NATURE;
   }
 };
@@ -1986,7 +1989,7 @@ struct chi_wave_heal_tick_t: public monk_heal_t
     monk_heal_t( name, p, p.talent.chi_wave )
   {
     background = direct_tick = true;
-    attack_power_mod.direct = 0.757;
+    attack_power_mod.direct = 0.914; // Hard code 09/07/14
     target = player;
   }
 };
@@ -1997,7 +2000,7 @@ struct chi_wave_dmg_tick_t: public monk_spell_t
     monk_spell_t( name, player, player -> talent.chi_wave )
   {
     background = direct_tick = true;
-    attack_power_mod.direct = 0.757;
+    attack_power_mod.direct = 0.352; // Hard code 09/07/14
   }
 };
 
@@ -2043,6 +2046,7 @@ struct chi_wave_t: public monk_spell_t
 // ==========================================================================
 // Chi Burst
 // ==========================================================================
+// Healing Coefficient = 2.03
 
 struct chi_burst_t: public monk_spell_t
 {
@@ -2052,7 +2056,7 @@ struct chi_burst_t: public monk_spell_t
     parse_options( nullptr, options_str );
     aoe = -1;
     interrupt_auto_attack = false;
-    attack_power_mod.direct = 2.036; // hardcoded into tooltip
+    attack_power_mod.direct = 1.345; // hardcoded into tooltip
   }
 };
 
@@ -2391,6 +2395,9 @@ struct purifying_brew_t: public monk_spell_t
 
     // Optional addition: Track and report amount of damage cleared
     p() -> active_actions.stagger_self_damage -> clear_all_damage();
+
+    if ( p() -> new_sets.set( SET_TANK, T17, B4 ) )
+      trigger_brew( p() -> passives.tier17_4pc_tank -> effectN( 1 ).base_value() );
   }
 
   bool ready()
@@ -2584,7 +2591,7 @@ struct expel_harm_heal_t: public monk_heal_t
 
     if ( rng().roll( p() -> new_sets.set( SET_MELEE, T15, B2 ) -> proc_chance() ) )
     {
-      p() -> resource_gain( RESOURCE_ENERGY, p() -> passives.tier15_2pc -> effectN( 1 ).base_value(), p() -> gain.tier15_2pc );
+      p() -> resource_gain( RESOURCE_ENERGY, p() -> passives.tier15_2pc_melee -> effectN( 1 ).base_value(), p() -> gain.tier15_2pc_melee );
       p() -> proc.tier15_2pc_melee -> occur();
     }
   }
@@ -2782,6 +2789,12 @@ struct surging_mist_t: public monk_heal_t
     if ( p() -> specialization() == MONK_MISTWEAVER )
       player -> resource_gain( RESOURCE_CHI, p() -> passives.surging_mist -> effectN( 2 ).base_value(), p() -> gain.surging_mist, this );
   }
+
+  virtual void impact(action_state_t* s)
+  {
+    //if (result_is_multistrike(s->result) && p() -> new_sets.set(SET_HEALER, T17, B4) )
+      
+  }
 };
 
 // ==========================================================================
@@ -2801,7 +2814,7 @@ struct zen_sphere_t: public monk_heal_t
       background = dual = true;
       aoe = -1;
 
-      attack_power_mod.direct = 0.368; // hardcoded into tooltip
+      attack_power_mod.direct = 0.547; // hardcoded into tooltip
       school = SCHOOL_NATURE;
     }
   };
@@ -2818,9 +2831,9 @@ struct zen_sphere_t: public monk_heal_t
 
     school = SCHOOL_NATURE;
     if ( player -> specialization() == MONK_MISTWEAVER )
-      attack_power_mod.tick = 0.09 * 1.2; // hardcoded into tooltip
+      attack_power_mod.tick = 0.156 * 1.2; // hardcoded into tooltip
     else
-      attack_power_mod.tick = 0.09;  // hardcoded into tooltip
+      attack_power_mod.tick = 0.156;  // hardcoded into tooltip
 
     cooldown -> duration = timespan_t::from_seconds( 10.0 );
   }
@@ -3100,10 +3113,12 @@ void monk_t::init_spells()
   if ( specialization() == MONK_BREWMASTER )
     active_actions.stagger_self_damage = new actions::stagger_self_damage_t( this );
 
-  passives.tier15_2pc       = find_spell( 138311 );
-  passives.enveloping_mist  = find_class_spell( "Enveloping Mist" );
-  passives.surging_mist     = find_class_spell( "Surging Mist" );
-  passives.tier17_2pc       = find_spell( 165403 );
+  passives.tier15_2pc_melee       = find_spell( 138311 );
+  passives.enveloping_mist        = find_class_spell( "Enveloping Mist" );
+  passives.surging_mist           = find_class_spell( "Surging Mist" );
+  passives.tier17_2pc_melee       = find_spell( 165403 );
+  passives.tier17_2pc_tank        = find_spell( 165356 );
+  passives.tier17_4pc_tank        = find_spell( 165352 );
 
   // GLYPHS
   glyph.fortifying_brew    = find_glyph( "Glyph of Fortifying Brew"    );
@@ -3264,7 +3279,7 @@ void monk_t::init_gains()
   gain.soothing_mist = get_gain( "soothing_mist" );
   gain.spinning_crane_kick = get_gain( "spinning_crane_kick" );
   gain.surging_mist = get_gain( "surging_mist" );
-  gain.tier15_2pc = get_gain( "tier15_2pc" );
+  gain.tier15_2pc_melee = get_gain( "tier15_2pc_melee" );
 }
 
 // monk_t::init_procs =======================================================
@@ -3277,8 +3292,9 @@ void monk_t::init_procs()
   proc.combo_breaker_ce = get_proc( "combo_breaker_ce" );
   proc.combo_breaker_tp = get_proc( "combo_breaker_tp" );
   proc.mana_tea = get_proc( "mana_tea" );
-  proc.tier15_2pc_melee = get_proc( "tier15_2pc" );
-  proc.tier15_4pc_melee = get_proc( "tier15_4pc" );
+  proc.tier15_2pc_melee = get_proc( "tier15_2pc_melee" );
+  proc.tier15_4pc_melee = get_proc( "tier15_4pc_melee" );
+  proc.tier17_4pc_heal = get_proc( "tier17_2pc_heal" );
   proc.tigereye_brew = get_proc( "tigereye_brew" );
   proc.tigereye_brew_wasted = get_proc( "tigereye_brew_wasted" );
 }
@@ -3746,6 +3762,9 @@ void monk_t::assess_damage( school_e school,
   if ( s -> result_total > 0 )
     buff.guard -> up();
 
+  if ( s -> result == RESULT_DODGE && new_sets.set( MONK_BREWMASTER, T17, B2 ) )
+    resource_gain(RESOURCE_ENERGY, passives.tier17_2pc_tank -> effectN( 1 ).base_value(), gain.energy_refund);
+
   base_t::assess_damage( school, dtype, s );
 }
 
@@ -3967,7 +3986,6 @@ void monk_t::apl_combat_windwalker()
   for ( size_t i = 0; i < racial_actions.size(); i++ )
     def -> add_action( racial_actions[i] + ",if=buff.tigereye_brew_use.up|target.time_to_die<18" );
 
-  def -> add_talent( this, "Serenity", "if=talent.serenity.enabled&chi>=3&(cooldown.fists_of_fury.remains<8|cooldown.fists_of_fury.up)&buff.tiger_power.up&debuff.rising_sun_kick.up" );
   def -> add_talent( this, "Chi Brew", "if=chi.max-chi>=2&((charges=1&recharge_time<=10)|charges=2|target.time_to_die<charges*10)&buff.tigereye_brew.stack<=16" );
   def -> add_action( this, "Tiger Palm", "if=buff.tiger_power.remains<=3" );
   def -> add_action( this, "Tigereye Brew", "if=buff.tigereye_brew_use.down&buff.tigereye_brew.stack=20" );
@@ -3976,15 +3994,15 @@ void monk_t::apl_combat_windwalker()
   def -> add_action( this, "Tigereye Brew", "if=talent.hurricane_strike.enabled&buff.tigereye_brew_use.down&buff.tigereye_brew.stack>=10&cooldown.hurricane_strike.up&chi>=3&debuff.rising_sun_kick.up&buff.tiger_power.up" );
   def -> add_action( this, "Tigereye Brew", "if=buff.tigereye_brew_use.down&chi>=2&(buff.tigereye_brew.stack>=16|target.time_to_die<40)&debuff.rising_sun_kick.up&buff.tiger_power.up" );
   def -> add_action( this, "Rising Sun Kick", "if=(debuff.rising_sun_kick.down|debuff.rising_sun_kick.remains<3)" );
-  def -> add_action( this, "Tiger Palm", "if=buff.tiger_power.down&debuff.rising_sun_kick.remains>1&energy.time_to_max>1" );
-  def -> add_action( "call_action_list,name=aoe,if=active_enemies>=3" );
+  def -> add_action( this, "Tiger Palm", "if=!talent.chi_explosion.enabled&buff.tiger_power.down&debuff.rising_sun_kick.remains>1&energy.time_to_max>1" );
+  def -> add_talent( this, "Serenity", "if=talent.serenity.enabled&chi>=2&buff.tiger_power.up&debuff.rising_sun_kick.up" );
+  def->add_action("call_action_list,name=aoe,if=active_enemies>=3");
   def -> add_action( "call_action_list,name=st,if=active_enemies<3" );
 
-  st -> add_action( this, "Fists of Fury", "if=talent.serenity.enabled&buff.serenity.up&buff.serenity.remains<2" );
   st -> add_action( this, "Fists of Fury", "if=energy.time_to_max>cast_time&buff.tiger_power.remains>cast_time&debuff.rising_sun_kick.remains>cast_time&!buff.serenity.remains" );
   st -> add_talent( this, "Hurricane Strike", "if=talent.hurricane_strike.enabled&energy.time_to_max>cast_time&buff.tiger_power.remains>cast_time&debuff.rising_sun_kick.remains>cast_time&buff.energizing_brew.down" );
   st -> add_action( this, "Energizing Brew", "if=cooldown.fists_of_fury.remains>6&(!talent.serenity.enabled|(!buff.serenity.remains&cooldown.serenity.remains>4))&energy+energy.regen*gcd<50" );
-  st -> add_action( this, "Rising Sun Kick" );
+  st -> add_action( this, "Rising Sun Kick", "if=!talent.chi_explosion.enabled");
   st -> add_talent( this, "Chi Wave", "if=energy.time_to_max>2&buff.serenity.down" );
   st -> add_talent( this, "Chi Burst", "if=talent.chi_burst.enabled&energy.time_to_max>2&buff.serenity.down" );
   st -> add_action( "zen_sphere,cycle_targets=1,if=energy.time_to_max>2&!dot.zen_sphere.ticking&buff.serenity.down" );

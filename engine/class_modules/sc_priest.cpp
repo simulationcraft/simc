@@ -6023,7 +6023,7 @@ void priest_t::apl_shadow()
     default_list -> add_action( racial_actions[ i ] );
 
   default_list -> add_action( "run_action_list,name=cop_advanced_mfi_dots,if=target.health.pct>=20&(shadow_orb=5|target.dot.shadow_word_pain.ticking|target.dot.vampiric_touch.ticking|target.dot.devouring_plague.ticking)&talent.clarity_of_power.enabled&talent.insanity.enabled&talent.twist_of_fate.enabled" );//&set_bonus.tier17_2pc" );
-  default_list -> add_action( "run_action_list,name=cop_advanced_mfi,if=talent.clarity_of_power.enabled&talent.insanity.enabled&talent.twist_of_fate.enabled" );//&set_bonus.tier17_2pc" );
+  default_list -> add_action( "run_action_list,name=cop_advanced_mfi,if=target.health.pct>=20&talent.clarity_of_power.enabled&talent.insanity.enabled&talent.twist_of_fate.enabled" );//&set_bonus.tier17_2pc" );
   default_list -> add_action( "run_action_list,name=cop_mfi,if=talent.clarity_of_power.enabled&talent.insanity.enabled" );
   default_list -> add_action( "run_action_list,name=cop,if=talent.clarity_of_power.enabled" );
   default_list -> add_action( "run_action_list,name=main" );

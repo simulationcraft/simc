@@ -2150,7 +2150,7 @@ struct melee_t : public shaman_attack_t
     {
       first = false;
     }
-    if ( time_to_execute > timespan_t::zero() && p() -> executing )
+    if ( time_to_execute > timespan_t::zero() && p() -> executing && p() -> executing -> interrupt_auto_attack )
     {
       if ( sim -> debug )
         sim -> out_debug.printf( "Executing '%s' during melee (%s).", p() -> executing -> name(), util::slot_type_string( weapon -> slot ) );

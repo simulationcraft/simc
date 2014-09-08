@@ -1090,7 +1090,7 @@ struct melee_t: public warrior_attack_t
       first = false;
 
     // If we're casting, we should clip a swing
-    if ( time_to_execute > timespan_t::zero() && player -> executing )
+    if ( time_to_execute > timespan_t::zero() && player -> executing && player -> executing -> interrupt_auto_attack )
       schedule_execute();
     else
       warrior_attack_t::execute();
@@ -1598,8 +1598,9 @@ struct execute_off_hand_t: public warrior_attack_t
   {
     dual = true;
     may_miss = may_dodge = may_parry = may_block = false;
-
     weapon = &( p -> off_hand_weapon );
+    if ( !p -> bugs )
+      weapon_multiplier = 3.0;
   }
 
   double action_multiplier() const
@@ -4023,10 +4024,10 @@ void warrior_t::apl_arms()
   single_target -> add_talent( this, "Storm Bolt", "if=(cooldown.colossus_smash.remains>4|debuff.colossus_smash.up)&rage<90" );
   single_target -> add_talent( this, "Siegebreaker" );
   single_target -> add_talent( this, "Dragon Roar", "if=!debuff.colossus_smash.up" );
-  single_target -> add_action( this, "Execute", "if=(rage>60&cooldown.colossus_smash.remains>gcd)|debuff.colossus_smash.up|buff.sudden_death.up|target.time_to_die<5" );
+  single_target -> add_action( this, "Execute", "if=(rage>60&cooldown.colossus_smash.remains>execute_time)|debuff.colossus_smash.up|buff.sudden_death.up|target.time_to_die<5" );
   single_target -> add_talent( this, "Impending Victory", "if=rage<30&!debuff.colossus_smash.up&target.health.pct>20" );
-  single_target -> add_talent( this, "Slam", "if=(rage>20|cooldown.colossus_smash.remains>gcd)&target.health.pct>20" );
-  single_target -> add_action( this, "Whirlwind", "if=(rage>60|cooldown.colossus_smash.remains>gcd)&target.health.pct>20&!talent.slam.enabled" );
+  single_target -> add_talent( this, "Slam", "if=(rage>20|cooldown.colossus_smash.remains>execute_time)&target.health.pct>20" );
+  single_target -> add_action( this, "Whirlwind", "if=(rage>60|cooldown.colossus_smash.remains>execute_time)&target.health.pct>20&!talent.slam.enabled" );
   single_target -> add_talent( this, "Shockwave" );
 
   aoe -> add_action( this, "Sweeping Strikes" );
@@ -4094,9 +4095,9 @@ void warrior_t::apl_prot()
   prot -> add_talent( this, "Ravager" );
   prot -> add_talent( this, "Storm Bolt" );
   prot -> add_talent( this, "Dragon Roar" );
-  prot -> add_talent( this, "Impending Victory", "if=talent.impending_victory.enabled&cooldown.shield_slam.remains<=gcd" );
-  prot -> add_action( this, "Victory Rush", "if=!talent.impending_victory.enabled&cooldown.shield_slam.remains<=gcd" );
-  prot -> add_action( this, "Thunder Clap", "if=glyph.resonating_power.enabled&cooldown.shield_slam.remains<=gcd" );
+  prot -> add_talent( this, "Impending Victory", "if=talent.impending_victory.enabled&cooldown.shield_slam.remains<=execute_time" );
+  prot -> add_action( this, "Victory Rush", "if=!talent.impending_victory.enabled&cooldown.shield_slam.remains<=execute_time" );
+  prot -> add_action( this, "Thunder Clap", "if=glyph.resonating_power.enabled&cooldown.shield_slam.remains<=execute_time" );
   prot -> add_action( this, "Devastate" );
 
   //dps-aoe
@@ -4155,7 +4156,7 @@ void warrior_t::apl_glad()
   gladiator -> add_action( this, "Revenge" );
   gladiator -> add_talent( this, "Storm Bolt", "if=(buff.bloodbath.up|cooldown.bloodbath.remains>7)|!talent.bloodbath.enabled" );
   gladiator -> add_talent( this, "Dragon Roar", "if=(buff.bloodbath.up|cooldown.bloodbath.remains>10)|!talent.bloodbath.enabled" );
-  gladiator -> add_action( this, "Devastate", "if=cooldown.shield_slam.remains>gcd*0.4" );
+  gladiator -> add_action( this, "Devastate", "if=cooldown.shield_slam.remains>execute_time*0.4" );
 
   gladiator_aoe -> add_talent( this, "Bloodbath" );
   gladiator_aoe -> add_talent( this, "Avatar" );
@@ -4169,7 +4170,7 @@ void warrior_t::apl_glad()
   gladiator_aoe -> add_action( this, "Thunder Clap" );
   gladiator_aoe -> add_talent( this, "Dragon Roar", "if=(buff.bloodbath.up|cooldown.bloodbath.remains>10)|!talent.bloodbath.enabled" );
   gladiator_aoe -> add_talent( this, "Storm Bolt", "if=(buff.bloodbath.up|cooldown.bloodbath.remains>7)|!talent.bloodbath.enabled" );
-  gladiator_aoe -> add_action( this, "Devastate", "if=cooldown.shield_slam.remains>gcd*0.4" );
+  gladiator_aoe -> add_action( this, "Devastate", "if=cooldown.shield_slam.remains>execute_time*0.4" );
 
 }
 

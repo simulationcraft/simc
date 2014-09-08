@@ -5645,15 +5645,22 @@ struct action_t : public noncopyable
     target_cache_t() : is_valid( false ) {}
   } mutable target_cache;
 
-  school_e school;
-
+  school_e school; // What type of damage - Fire, Physical, etc.
   uint32_t id;
   unsigned internal_id;
   resource_e resource_current;
-  int aoe, pre_combat, may_multistrike;
-  bool dual; // true if this action should not be counted for executes
-  bool callbacks, special, channeled, background, sequence, use_off_gcd, quiet, interrupt_auto_attack;
-  bool direct_tick, direct_tick_callbacks, periodic_hit, repeating, harmful, proc;
+  int aoe; // Number of targets the action will impact. -1 = no target limit.
+  int pre_combat, may_multistrike;
+  bool dual; // true if this action should not be counted for executes.
+  bool callbacks; // When set to false, action will not trigger trinkets, enchants, rppm.
+  bool special, channeled, sequence;
+  bool quiet; // When set to true, action will not show up in raid report or count towards executes.
+  bool background; // Background actions cannot be executed via action list, but can be triggered by other actions. Background actions do not count for executes.
+  bool use_off_gcd; // When set to true, will check every 100 ms to see if this action needs to be used, rather than waiting until the next gcd.
+  bool interrupt_auto_attack; // true if channeled action does not reschedule autoattacks.
+  bool direct_tick; // Used with DoT Drivers, tells simc that the direct hit is actually a tick.
+  bool periodic_hit, repeating, harmful;
+  bool proc; // Procs do not consume resources.
   bool initialized;
   bool may_hit, may_miss, may_dodge, may_parry, may_glance, may_block, may_crush, may_crit;
   bool tick_may_crit, tick_zero, hasted_ticks;
@@ -5710,8 +5717,7 @@ struct action_t : public noncopyable
   action_t* tick_action;
   action_t* execute_action;
   action_t* impact_action;
-  bool dynamic_tick_action;
-  bool special_proc;
+  bool dynamic_tick_action; // Used with tick_action, tells tick_action to update state on every tick.
   int64_t total_executions;
   cooldown_t line_cooldown;
   const action_priority_t* signature;
@@ -5775,7 +5781,7 @@ struct action_t : public noncopyable
   void   check_spec( specialization_e );
   void   check_spell( const spell_data_t* );
   const char* name() const { return name_str.c_str(); }
-  virtual school_e get_school() const { return school; };
+  virtual school_e get_school() const { return school; }; // Use when damage schools change during runtime.
 
   static bool result_is_hit( result_e r )
   {
@@ -5858,9 +5864,9 @@ public:
   virtual void trigger_dot( action_state_t* );
 
   virtual void snapshot_internal( action_state_t*, uint32_t, dmg_e );
-  virtual void   snapshot_state( action_state_t* s, dmg_e rt )
+  virtual void snapshot_state( action_state_t* s, dmg_e rt )
   { snapshot_internal( s, snapshot_flags, rt ); }
-  virtual void   update_state( action_state_t* s, dmg_e rt )
+  virtual void update_state( action_state_t* s, dmg_e rt )
   { snapshot_internal( s, update_flags, rt ); }
   virtual void consolidate_snapshot_flags();
 
@@ -6060,7 +6066,7 @@ struct melee_attack_t : public attack_t
 
   // Melee Attack Overrides
   virtual void init();
-  virtual double  parry_chance( double /* expertise */, player_t* t ) const;
+  virtual double parry_chance( double /* expertise */, player_t* t ) const;
   virtual double glance_chance( int delta_level ) const;
 
   virtual proc_types proc_type() const;
@@ -7015,8 +7021,6 @@ action_t* create_action( player_t*, const std::string& name, const std::string& 
 
 // Wowhead  =================================================================
 
-// Wowhead  =================================================================
-
 namespace wowhead
 {
 enum wowhead_e
@@ -7350,7 +7354,6 @@ inline void player_t::do_dynamic_regen()
     }
   }
 }
-
 
 /* Simple String to Number function, using stringstream
  * This will NOT translate all numbers in the string to a number,
