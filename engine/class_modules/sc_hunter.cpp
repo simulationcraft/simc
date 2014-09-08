@@ -2081,7 +2081,7 @@ struct black_arrow_t: public hunter_ranged_attack_t
     while ( proc_count > 0 )
     {
       // note that ticks start from 1
-      int proc_tick = floor( p() -> rng().range( 0, possible_slots ) ) + 1;
+      int proc_tick = static_cast<int>( floor( p() -> rng().range( 0, possible_slots ) ) + 1 );
 
       // Given N is the proc_tick, find the Nth tick that is not yet proccing
       uint32_t proc_bit = 1;

@@ -249,7 +249,6 @@ action_t::action_t( action_e       ty,
   use_off_gcd(),
   quiet(),
   direct_tick(),
-  direct_tick_callbacks(),
   periodic_hit(),
   repeating(),
   harmful( true ),
@@ -337,7 +336,6 @@ action_t::action_t( action_e       ty,
   execute_action                 = 0;
   impact_action                  = 0;
   dynamic_tick_action            = false;
-  special_proc                   = false;
   // New Stuff
   snapshot_flags = 0;
   update_flags = STATE_TGT_MUL_DA | STATE_TGT_MUL_TA | STATE_TGT_CRIT;
@@ -1115,8 +1113,6 @@ void action_t::execute()
     }
 
     // New callback system; proc abilities on execute. 
-    // Note: direct_tick_callbacks should not be used with the new system, 
-    // override action_t::proc_type() instead
     if ( callbacks )
     {
       proc_types pt = execute_state -> proc_type();
@@ -1379,8 +1375,7 @@ void action_t::assess_damage( dmg_e    type,
     player -> resource_gain( RESOURCE_HEALTH, composite_leech( s ) * s -> result_amount, player -> gains.leech );
 
   // New callback system; proc spells on impact. 
-  // Note: direct_tick_callbacks should not be used with the new system, 
-  // override action_t::proc_type() instead
+
   if ( callbacks )
   {
     proc_types pt = s -> proc_type();

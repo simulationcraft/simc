@@ -3834,7 +3834,6 @@ struct rain_of_fire_tick_t: public warlock_spell_t
   {
     aoe = -1;
     background = true;
-    direct_tick_callbacks = true;
   }
 
   virtual void impact( action_state_t* s )
