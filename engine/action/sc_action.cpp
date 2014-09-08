@@ -1307,8 +1307,9 @@ void action_t::update_resolve( dmg_e type,
     // Skip updating the Resolve tables if the damage is zero to limit unnecessary events
     if ( raw_resolve_amount > 0.0 )
     {
-      // modify according to damage type; spell damage gives 2.5x as much Resolve
-      raw_resolve_amount *= ( get_school() == SCHOOL_PHYSICAL ? 1.0 : 2.5 );
+      // modify according to damage type; spell damage and bleeds give 2.5x as much Resolve
+      if ( get_school() != SCHOOL_PHYSICAL || type == DMG_OVER_TIME )
+        raw_resolve_amount *= 2.5;
 
       // normalize by player's current health, ignoring any temporary health buffs
       raw_resolve_amount /= ( target -> resources.max[ RESOURCE_HEALTH ] - target -> resources.temporary[ RESOURCE_HEALTH ] );

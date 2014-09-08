@@ -92,6 +92,7 @@ struct enemy_action_t : public ACTION_TYPE
   typedef enemy_action_t<ACTION_TYPE> base_t;
 
   bool apply_debuff;
+  std::string dmg_type_override = "none";
   int num_debuff_stacks;
   double damage_range;
   timespan_t cooldown_;
@@ -110,6 +111,7 @@ struct enemy_action_t : public ACTION_TYPE
     options.push_back( opt_int( "aoe_tanks", aoe_tanks ) );
     options.push_back( opt_float( "range", damage_range ) );
     options.push_back( opt_timespan( "cooldown", cooldown_ ) );
+    options.push_back( opt_string( "type", dmg_type_override ) );
     options.push_back( opt_null() );
   }
 
@@ -166,6 +168,8 @@ struct enemy_action_t : public ACTION_TYPE
         }
       }
     }
+    if ( dmg_type_override != "none" )
+      this -> school = util::parse_school_type( dmg_type_override );
   }
 
   size_t available_targets( std::vector< player_t* >& tl ) const
