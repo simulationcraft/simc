@@ -101,7 +101,7 @@ stat_e stat_buff_type( const spelleffect_data_t& effect )
       stat = STAT_ATTACK_POWER;
       break;
     case A_MOD_DAMAGE_DONE:
-      if ( effect.misc_value1() == 0xFE )
+      if ( effect.misc_value1() & 0x7E )
         stat = STAT_SPELL_POWER;
       break;
     case A_465:
