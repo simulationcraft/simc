@@ -45,7 +45,7 @@ static bool dual_tooltip_disable( unsigned spell_id )
     61777, 49206, 158392, 24275, 158392, 348, 102342, 59052, 51271, 774, 101546,
     22482, 49222, 51753, 9484, 81209, 81206, 81208, 116858, 172, 63560, 49576,
     770, 53365, 116, 6940, 48181, 80240, 157708 };
-  std::vector<int> naughtylist( arr, arr + sizeof(arr) / sizeof( arr[0] ) );
+  static const std::vector<int> naughtylist( arr, arr + sizeof(arr) / sizeof( arr[0] ) );
 
   for ( unsigned i = 0; i < naughtylist.size(); ++i )
     if ( spell == naughtylist[ i ] )
