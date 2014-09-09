@@ -1396,6 +1396,7 @@ class SpellDataGenerator(DataGenerator):
           ( 157766, 0 ),                                # Improved Chain Lightning visible buff
           ( 173184, 0 ), ( 173185, 0 ), ( 173186, 0 ),  # Elemental Blast buffs
           ( 173183, 0 ),                                # Elemental Blast buffs
+          ( 170512, 0 ),                                # Feral Spirit windfury (t17 enhance 4pc set bonus)
         ),
         
         # Mage:
