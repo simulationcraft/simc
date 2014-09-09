@@ -1310,10 +1310,7 @@ void action_t::update_resolve( dmg_e type,
       // modify according to damage type; spell damage and bleeds give 2.5x as much Resolve
       if ( get_school() != SCHOOL_PHYSICAL || type == DMG_OVER_TIME )
         raw_resolve_amount *= 2.5;
-
-      // normalize by player's current health, ignoring any temporary health buffs
-      raw_resolve_amount /= ( target -> resources.max[ RESOURCE_HEALTH ] - target -> resources.temporary[ RESOURCE_HEALTH ] );
-
+      
       // update the player's resolve diminishing return list first!
       target -> resolve_manager.add_diminishing_return_entry( source, source -> get_raw_dps( s ), sim -> current_time );
 
