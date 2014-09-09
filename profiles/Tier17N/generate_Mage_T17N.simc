@@ -51,8 +51,8 @@ mage=Mage_Fire_T17N
 level=100
 race=troll
 spec=fire
-talents=1000213
-glyphs=inferno_blast
+talents=1000113
+glyphs=inferno_blast,combustion
 head=primal_gladiators_silk_cowl,id=111151,bonus_id=0,upgrade=0,gem_id=0/0/0/,enchant_id=0
 neck=primal_gladiators_pendant_of_prowess,id=111129,bonus_id=0,upgrade=0,gem_id=0/0/0/,enchant_id=5285
 shoulder=primal_gladiators_silk_amice,id=111154,bonus_id=0,upgrade=0,gem_id=0/0/0/,enchant_id=0

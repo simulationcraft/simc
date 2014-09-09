@@ -1,5 +1,3 @@
-
-
 talent_format=armory
 mage=Mage_Frost_T16H
 level=90
@@ -57,7 +55,7 @@ race=troll
 spec=fire
 professions=tailoring=600/engineering=600
 talents=100022
-glyphs=combustion
+glyphs=inferno_blast,combustion
 
 head=ebon_ritual_hood,id=105647,upgrade=2,gems=sinister_primal_8haste_8mastery_9int
 neck=untainted_guardians_chain,id=105465,upgrade=2
