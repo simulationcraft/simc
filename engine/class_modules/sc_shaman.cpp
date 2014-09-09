@@ -4081,7 +4081,7 @@ struct magma_totem_t : public shaman_totem_pet_t
   magma_totem_t( shaman_t* p ) :
     shaman_totem_pet_t( p, "magma_totem", TOTEM_FIRE )
   {
-    pulse_amplitude = p -> dbc.spell( 8188 ) -> effectN( 1 ).period();
+    pulse_amplitude = p -> dbc.spell( 8190 ) -> effectN( 2 ).period();
   }
 
   void init_spells()
