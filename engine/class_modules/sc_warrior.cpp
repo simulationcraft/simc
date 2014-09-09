@@ -4838,7 +4838,7 @@ double warrior_t::composite_armor_multiplier() const
   double a = player_t::composite_armor_multiplier();
 
   if ( active_stance == STANCE_DEFENSE )
-   a += perk.improved_defensive_stance -> effectN( 1 ).percent();
+   a *= 1.0 + perk.improved_defensive_stance -> effectN( 1 ).percent();
 
   return a;
 }
