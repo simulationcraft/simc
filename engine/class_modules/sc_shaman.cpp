@@ -1101,10 +1101,10 @@ struct feral_spirit_pet_t : public pet_t
   struct windfury_t : public melee_attack_t
   {
     windfury_t( feral_spirit_pet_t* player ) :
-      melee_attack_t( "windfury_attack", player, player -> find_spell( 25504 ) )
+      melee_attack_t( "windfury_attack", player, player -> find_spell( 170512 ) )
     {
       background = true;
-      weapon = &( player -> main_hand_weapon );
+      //weapon = &( player -> main_hand_weapon );
       may_crit = true;
     }
 
