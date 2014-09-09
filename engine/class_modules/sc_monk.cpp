@@ -344,6 +344,7 @@ public:
 
   // player_t overrides
   virtual action_t* create_action( const std::string& name, const std::string& options );
+  virtual double    composite_armor_multiplier() const;
   virtual double    composite_melee_speed() const;
   virtual double    composite_melee_crit() const;
   virtual double    composite_spell_crit() const;
@@ -1730,7 +1731,7 @@ struct expel_harm_t: public monk_melee_attack_t
     mh = &( player -> main_hand_weapon );
     oh = &( player -> off_hand_weapon );
 
-    base_multiplier = 11.4; // hardcoded into tooltip
+    base_multiplier = 7.5; // hardcoded into tooltip
     base_multiplier *= p -> find_spell( 115129 ) -> effectN( 2 ).percent(); // 33% of the heal is done as damage
 
     if ( p -> glyph.targeted_expulsion -> ok() )
@@ -2572,7 +2573,7 @@ struct expel_harm_heal_t: public monk_heal_t
     stancemask = STURDY_OX | FIERCE_TIGER | SPIRITED_CRANE;
     if ( !p.glyph.targeted_expulsion -> ok() )
       target = &p;
-    base_multiplier = 3.0;
+    base_multiplier = 7.5;
 
     attack = new attacks::expel_harm_t( &p );
   }
@@ -2879,7 +2880,7 @@ struct guard_t: public monk_absorb_t
     trigger_gcd = timespan_t::zero();
     target = &p;
     cooldown -> charges = p.perk.improved_guard -> effectN( 1 ).base_value();
-    attack_power_mod.direct = 11.335; // hardcoded into tooltip 2013/04/10
+    attack_power_mod.direct = 9; // hardcoded into tooltip 2014/09/09
   }
 
   virtual void impact( action_state_t* s )
@@ -3438,7 +3439,7 @@ double monk_t::composite_attribute_multiplier( attribute_e attr ) const
   double cam = base_t::composite_attribute_multiplier( attr );
 
   if ( attr == ATTR_STAMINA )
-   cam *= 1.0 + active_stance_data( STURDY_OX ).effectN( 7 ).percent();
+   cam *= 1.0 + active_stance_data( STURDY_OX ).effectN( 5 ).percent();
 
   return cam;
 }
@@ -3551,6 +3552,17 @@ double monk_t::composite_multistrike() const
   return m;
 }
 
+// monk_t::composite_armor_multiplier ===================================
+
+double monk_t::composite_armor_multiplier() const
+{
+  double a = player_t::composite_armor_multiplier();
+
+  a += active_stance_data( STURDY_OX ).effectN( 13 ).percent();
+
+  return a;
+}
+
 // monk_t::composite_dodge ==============================================
 
 void monk_t::invalidate_cache( cache_e c )
@@ -3566,6 +3578,7 @@ void monk_t::invalidate_cache( cache_e c )
   default: break;
   }
 }
+
 
 // monk_t::create_options ===================================================
 
@@ -3693,8 +3706,6 @@ double monk_t::energy_regen_per_second() const
 
   r *= 1.0 + talent.ascension -> effectN( 3 ).percent();
 
-  r *= 1.0 + active_stance_data( STURDY_OX ).effectN( 9 ).percent();
-
   return r;
 }
 
@@ -3748,7 +3759,8 @@ void monk_t::target_mitigation( school_e school,
     s -> result_amount *= 1.0 + buff.fortifying_brew -> data().effectN( 2 ).percent();
 
 
-  s -> result_amount *= 1.0 + active_stance_data( STURDY_OX ).effectN( 4 ).percent();
+  if ( dt == SCHOOL_MAGIC)
+    s -> result_amount *= 1.0 + active_stance_data( STURDY_OX ).effectN( 4 ).percent();
 }
 
 // monk_t::assess_damage ====================================================
@@ -3995,7 +4007,7 @@ void monk_t::apl_combat_windwalker()
   def -> add_action( this, "Tigereye Brew", "if=talent.hurricane_strike.enabled&buff.tigereye_brew_use.down&buff.tigereye_brew.stack>=10&cooldown.hurricane_strike.up&chi>=3&debuff.rising_sun_kick.up&buff.tiger_power.up" );
   def -> add_action( this, "Tigereye Brew", "if=buff.tigereye_brew_use.down&chi>=2&(buff.tigereye_brew.stack>=16|target.time_to_die<40)&debuff.rising_sun_kick.up&buff.tiger_power.up" );
   def -> add_action( this, "Rising Sun Kick", "if=(debuff.rising_sun_kick.down|debuff.rising_sun_kick.remains<3)" );
-  def -> add_action( this, "Tiger Palm", "if=!talent.chi_explosion.enabled&buff.tiger_power.down&debuff.rising_sun_kick.remains>1&energy.time_to_max>1" );
+  def -> add_action( this, "Tiger Palm", "if=buff.tiger_power.down&debuff.rising_sun_kick.remains>1&energy.time_to_max>1" );
   def -> add_talent( this, "Serenity", "if=talent.serenity.enabled&chi>=2&buff.tiger_power.up&debuff.rising_sun_kick.up" );
   def->add_action("call_action_list,name=aoe,if=active_enemies>=3");
   def -> add_action( "call_action_list,name=st,if=active_enemies<3" );
@@ -4019,8 +4031,8 @@ void monk_t::apl_combat_windwalker()
   aoe -> add_action( "zen_sphere,cycle_targets=1,if=!dot.zen_sphere.ticking" );
   aoe -> add_talent( this, "Chi Wave" );
   aoe -> add_talent( this, "Chi Burst", "if=chi>=4" );
-  aoe -> add_action( this, "Rising Sun Kick", "if=chi=chi.max" );
-  aoe -> add_action( this, "Spinning Crane Kick", "if=!talent.rushing_jade_wind.enabled" );
+  aoe -> add_action(this, "Rising Sun Kick", "if=chi=chi.max");
+  aoe -> add_action(this, "Spinning Crane Kick", "if=!talent.rushing_jade_wind.enabled");
 }
 
 // Mistweaver Combat Action Priority List ==================================
