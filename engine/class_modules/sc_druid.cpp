@@ -6952,7 +6952,7 @@ void druid_t::assess_damage( school_e school,
     if ( s -> result == RESULT_DODGE )
     {
       resource_gain( RESOURCE_RAGE,
-        spell.primal_fury -> effectN( 1 ).resource( RESOURCE_RAGE ),
+        find_spell( 178090 ) -> effectN( 1 ).resource( RESOURCE_RAGE ), // 2 rage from dodging.
         gain.primal_fury );
       proc.primal_fury -> occur();
      }
