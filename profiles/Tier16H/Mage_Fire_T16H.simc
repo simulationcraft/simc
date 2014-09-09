@@ -5,7 +5,7 @@ role=spell
 position=back
 professions=tailoring=600/engineering=600
 talents=http://us.battle.net/wow/en/tool/talent-calculator#eZ!0...11.
-glyphs=combustion
+glyphs=inferno_blast,combustion
 spec=fire
 
 # This default action priority list is automatically created based on your character.
