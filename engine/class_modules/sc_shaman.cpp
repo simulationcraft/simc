@@ -1401,7 +1401,7 @@ struct earth_elemental_t : public primal_elemental_t
     resources.base[ RESOURCE_HEALTH ] = 8000; // Approximated from lvl85 earth elemental in game
     resources.base[ RESOURCE_MANA   ] = 0; //
 
-    owner_coeff.ap_from_sp = 0.05625;
+    owner_coeff.ap_from_sp = 0.05;
   }
 
   void init_action_list()
