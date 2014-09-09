@@ -380,7 +380,6 @@ public:
   
   // player stat functions
   virtual double    composite_attribute_multiplier( attribute_e attr ) const;
-  virtual double    composite_armor_multiplier() const;
   virtual double    composite_rating_multiplier( rating_e rating ) const;
   virtual double    composite_attack_power_multiplier() const;
   virtual double    composite_mastery() const;
@@ -5491,17 +5490,6 @@ double paladin_t::composite_attribute_multiplier( attribute_e attr ) const
   }
 
   return m;
-}
-
-// paladin_t::composite_armor_multiplier ===================================
-
-double paladin_t::composite_armor_multiplier() const
-{
-  double a = player_t::composite_armor_multiplier();
-  
-  a *= 1.0 + passives.sanctuary -> effectN( 2 ).percent();
-
-  return a;
 }
 
 // paladin_t::composite_rating_multiplier ==================================
