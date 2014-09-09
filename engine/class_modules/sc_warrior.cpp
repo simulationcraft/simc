@@ -22,7 +22,7 @@ enum warrior_stance { STANCE_BATTLE = 2, STANCE_DEFENSE = 4, STANCE_GLADIATOR = 
 static bool bloodbath_blacklist( unsigned spell_id )
 {
   // These spells do not proc bloodbath. Tested 9-9-14, spell ids are in the following order
-  // Heroic Throw, Execute Off-hand, Storm Bolt Off-Hand, Ravager, Deep Wounds, Rend Burst, Enhanced Rend
+  // Heroic Throw, Execute Off-hand, Storm Bolt Off-Hand, Ravager, Deep Wounds, Siegebreaker Off-hand, Rend Burst, Enhanced Rend
   static const unsigned blacklist[] = { 57755, 163558, 145585, 156287, 115768, 176318, 94009, 174736 };
 
   for ( size_t i = 0; i < sizeof_array( blacklist ); i++ )

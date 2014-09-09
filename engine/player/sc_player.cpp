@@ -553,6 +553,7 @@ player_t::player_t( sim_t*             s,
   // Events
   executing( 0 ), channeling( 0 ), strict_sequence( 0 ), readying( 0 ), off_gcd( 0 ), in_combat( false ), action_queued( false ), first_cast( true ),
   last_foreground_action( 0 ), last_gcd_action( 0 ),
+  off_gcdactions(),
   cast_delay_reaction( timespan_t::zero() ), cast_delay_occurred( timespan_t::zero() ),
   // Actions
   use_default_action_list( 0 ),
@@ -3436,6 +3437,8 @@ void player_t::reset()
 
   last_foreground_action = 0;
   last_gcd_action = 0;
+  off_gcdactions.clear();
+
   first_cast = true;
 
   executing = 0;
@@ -3860,7 +3863,12 @@ action_t* player_t::execute_action()
       iteration_executed_foreground_actions++;
       action -> total_executions++;
       if ( action -> trigger_gcd > timespan_t::zero() )
+      {
         last_gcd_action = action;
+        off_gcdactions.clear();
+      }
+      else
+        off_gcdactions.push_back( action );
 
       sequence_add( action, action -> target, sim -> current_time );
     }

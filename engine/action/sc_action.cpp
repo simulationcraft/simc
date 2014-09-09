@@ -2179,16 +2179,34 @@ expr_t* action_t::create_expression( const std::string& name_str )
       };
       return new prev_expr_t( *this, splits[ 1 ] );
     }
-    else if ( splits[0] == "prevgcd" )
+    else if ( splits[0] == "prev_gcd" )
     {
       struct prev_gcd_expr_t: public action_expr_t
       {
         std::string prev_gcd_action;
-        prev_gcd_expr_t( action_t& a, const std::string& prev_action ): action_expr_t( "prevgcd", a ), prev_gcd_action( prev_action ) {}
+        prev_gcd_expr_t( action_t& a, const std::string& prev_action ): action_expr_t( "prev_gcd", a ), prev_gcd_action( prev_action ) {}
         virtual double evaluate()
         {
           if ( action.player -> last_gcd_action )
             return action.player -> last_gcd_action -> name_str == prev_gcd_action;
+          return false;
+        }
+      };
+      return new prev_gcd_expr_t( *this, splits[1] );
+    }
+    else if ( splits[0] == "prev_off_gcd" )
+    {
+      struct prev_gcd_expr_t: public action_expr_t
+      {
+        std::string offgcdaction;
+        prev_gcd_expr_t( action_t& a, const std::string& offgcdaction ): action_expr_t( "prev_off_gcd", a ), offgcdaction( offgcdaction ) {}
+        virtual double evaluate()
+        {
+          for ( size_t i = 0; i < action.player -> off_gcdactions.size(); i++ )
+          {
+            if ( action.player -> off_gcdactions[ i ] -> name_str == offgcdaction )
+              return true;
+          }
           return false;
         }
       };
