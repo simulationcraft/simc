@@ -1670,7 +1670,6 @@ struct gargoyle_pet_t : public death_knight_pet_t
       harmful            = true;
       trigger_gcd        = timespan_t::from_seconds( 1.5 );
       may_crit           = true;
-      min_gcd            = timespan_t::from_seconds( 1.5 ); // issue961
       school             = SCHOOL_SHADOWSTORM;
       auto_cast          = true;
     }
