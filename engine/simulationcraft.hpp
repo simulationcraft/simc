@@ -4489,6 +4489,7 @@ struct player_t : public actor_t
   bool action_queued;
   bool first_cast;
   action_t* last_foreground_action;
+  action_t* last_gcd_action;
 
   // Delay time used by "cast_delay" expression to determine when an action
   // can be used at minimum after a spell cast has finished, including GCD

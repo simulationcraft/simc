@@ -2177,8 +2177,22 @@ expr_t* action_t::create_expression( const std::string& name_str )
           return false;
         }
       };
-
       return new prev_expr_t( *this, splits[ 1 ] );
+    }
+    else if ( splits[0] == "prevgcd" )
+    {
+      struct prev_gcd_expr_t: public action_expr_t
+      {
+        std::string prev_gcd_action;
+        prev_gcd_expr_t( action_t& a, const std::string& prev_action ): action_expr_t( "prevgcd", a ), prev_gcd_action( prev_action ) {}
+        virtual double evaluate()
+        {
+          if ( action.player -> last_gcd_action )
+            return action.player -> last_gcd_action -> name_str == prev_gcd_action;
+          return false;
+        }
+      };
+      return new prev_gcd_expr_t( *this, splits[1] );
     }
     else if ( splits[ 0 ] == "gcd" )
     {
