@@ -2626,7 +2626,7 @@ struct frostbolt_t : public mage_spell_t
       pets::water_elemental_pet_td_t* we_td = p() -> pets.water_elemental -> get_target_data( execute_state -> target );
       if ( we_td -> water_jet -> up() )
       {
-        // do stuff here
+        p() -> buffs.fingers_of_frost -> trigger();
       }
     }
 
