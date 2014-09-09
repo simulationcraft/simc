@@ -1989,7 +1989,7 @@ struct chi_wave_heal_tick_t: public monk_heal_t
     monk_heal_t( name, p, p.talent.chi_wave )
   {
     background = direct_tick = true;
-    attack_power_mod.direct = 0.914; // Hard code 09/07/14
+    attack_power_mod.direct = 0.500; // Hard code 09/09/14
     target = player;
   }
 };
@@ -2000,7 +2000,7 @@ struct chi_wave_dmg_tick_t: public monk_spell_t
     monk_spell_t( name, player, player -> talent.chi_wave )
   {
     background = direct_tick = true;
-    attack_power_mod.direct = 0.352; // Hard code 09/07/14
+    attack_power_mod.direct = 0.500; // Hard code 09/09/14
   }
 };
 
